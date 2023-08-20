@@ -1,0 +1,589 @@
+name: Harvestmoon64 (North America)
+sha1: 90631460f1876a14849df0541d534012b410a34c
+options:
+  basename: hm64
+  target_path: baserom.us.z64
+  base_path: ..
+  compiler: GCC
+  find_file_boundaries: True
+  header_encoding: ASCII
+  platform: n64
+  asm_path: asm
+  src_path: src
+  build_path: build
+  asset_path: bin
+  asm_inc_header: ".include \"macro.inc\"\n.set noat\n.set noreorder\n"
+  asm_function_macro: glabel
+  asm_data_macro: dlabel
+  asm_emit_size_directive: false
+  symbol_addrs_path: symbol_addrs.txt
+  generated_c_preamble: "#include \"common.h\"\n"
+  migrate_rodata_to_functions: true
+  # extensions_path: tools/splat_ext
+  libultra_symbols: True
+segments:
+  - name: header
+    type: header
+    start: 0x0
+
+  - name: boot
+    type: bin
+    start: 0x40
+    vram: 0xA4000040
+    subsegments:
+    - [0x0040, bin, ipl3]
+    - [0x0b70, bin, ipl3font]
+
+  - name: entry
+    type: code
+    start: 0x1000
+    vram: 0x80025C00
+    subsegments:
+      - [0x1000, hasm, entry]
+
+  - name: main
+    type: code
+    start: 0x1050
+    vram: 0x80025C50
+    follows_vram: entry
+    subsegments:
+      - [ 0x1050, c, lib/nusys-1/nuboot]
+      - [ 0x1190, c, mainproc] 
+      - [ 0x13F0, c, mainLoop]
+      - [ 0x1AC0, c, system/volume]
+      - [ 0x1C50, c, system/mathUtils]
+      - [ 0x1CF0, c, system/graphic]
+      - [ 0x4400, c, system/sprite]
+      - [ 0x63E0, c, system/globalSprites] 
+      - [ 0x9070, c, system/renderedSprites]
+      - [ 0xEBD0, c, system/map]
+      - [ 0x16C70, c, system/tiles]
+      - [ 0x181C0, c, system/audio]
+      - [ 0x18D70, c, system/message]
+      - [ 0x1E360, c, system/dialogue]
+      - [ 0x211E0, c, system/pauseScreen]
+      - [ 0x21C60, c, system/cutscene]
+      - [ 0x281A0, c, system/controller]
+      - [ 0x28FA0, c, system/memory]
+      - [ 0x292B0, c, system/flags]
+      - [ 0x29310, c, gameStart]
+      - [ 0x29560, c, initialize]
+      - [ 0x31220, c, initialize2]
+      - [ 0x34CE0, c, load]
+      - [ 0x35190, c, game]
+      - [ 0x3EEF0, c, gameStatus]
+      # possible splits
+      # - [ 0x400F0, c, ]
+      # - [ 0x404E0, c, ]
+      - [ 0x40BD0, c, player]
+      - [ 0x49C20, c, level]
+      - [ 0x506C0, c, npc]
+      # possible split, but might not be separate file
+      # - [ 0x5CF00, asm, npcAnimation]
+      - [ 0x61370, c, animals]
+      - [ 0x77390, c, setCutscenes]
+      - [ 0x87C20, c, evaluation]      
+      - [ 0x87EB0, c, gameAudio]
+      - [ 0x88170, c, levelInteractions]
+      - [ 0x8E0E0, c, overlayScreens]
+      # possible split, but might not be separate file
+      # - [ 0x92470, c, evaluationScreen]
+      - [ 0xAAC50, c, itemHandlers]
+      - [ 0xB3020, c, updateGame]
+      - [ 0xB3940, c, tv]
+      - [ 0xB4A00, c, mapObjects]
+      - [ 0xB7760, c, weather]
+      - [ 0xB7B50, c, shop]
+      - [ 0xB7EA0, c, title]
+      # might not be separate file
+      - [ 0xBC780, c, loadGameScreen]
+      - [ 0xC8CA0, c, namingScreen]
+      # start of libraries
+      - [ 0xCC770, c, lib/nusys-1/nupakmenu]
+      - [ 0xCD4D0, c, lib/nusys-1/nupakmenuloadfont]
+      - [ 0xCD870, c, lib/nusys-1/nuaustlinit] 
+      - [ 0xCD900, c, lib/nusys-1/nuaustlbankset]
+      - [ 0xCD9A0, c, lib/nusys-1/nuaustlplayerinit]
+      - [ 0xCDA60, c, lib/nusys-1/nuauseqplayerseqset] 
+      - [ 0xCDAE0, c, lib/nusys-1/nuaustlseqplayerplay]
+      - [ 0xCDB40, c, lib/nusys-1/nuaustlsndplayerplay]
+      - [ 0xCDB80, c, lib/nusys-1/nuauprenmifuncset]
+      - [ 0xCDBC0, c, lib/nusys-1/nuauprenmiproc]
+      # nuaudma.c + nuaumgr.c
+      - [ 0xCDC20, c, lib/nusys-1/nuaumisc]
+      # includes player_api.c since player_api.c isn't word aligned
+      - [ 0xCE620, c, lib/libmus/libsrc/player_commands]
+      - [ 0xD1000, c, lib/libmus/libsrc/player]
+      - [ 0xD3600, c, lib/os/libultra/libnaudio/n_sl]
+      - [ 0xD3680, c, lib/os/libultra/libnaudio/n_synaddplayer]
+      - [ 0xD36D0, c, lib/os/libultra/libnaudio/n_synallocvoice]
+      - [ 0xD38B0, c, lib/os/libultra/libnaudio/n_syndelete]
+      - [ 0xD38C0, c, lib/os/libultra/libnaudio/n_synsetfxmix]
+      - [ 0xD3960, c, lib/os/libultra/libnaudio/n_synsetpan]
+      - [ 0xD39F0, c, lib/os/libultra/libnaudio/n_synsetpitch]
+      - [ 0xD3A80, c, lib/os/libultra/libnaudio/n_synsetvol]
+      - [ 0xD3B30, c, lib/os/libultra/libnaudio/n_synstartvoice]
+      - [ 0xD3BC0, c, lib/os/libultra/libnaudio/n_synstopvoice]
+      - [ 0xD3C40, c, lib/os/libultra/libnaudio/n_synthesizer]
+      - [ 0xD41A0, c, lib/os/libultra/libnaudio/n_auxbus]
+      - [ 0xD4240, c, lib/os/libultra/libnaudio/n_drvrnew]
+      - [ 0xD4760, c, lib/os/libultra/libnaudio/n_env]
+      - [ 0xD5130, c, lib/os/libultra/libnaudio/load]
+      - [ 0xD5850, c, lib/os/libultra/libnaudio/n_resample]
+      - [ 0xD5A30, c, lib/os/libultra/libnaudio/n_reverb]
+      - [ 0xD6470, c, lib/os/libultra/libnaudio/n_synallocfx]
+      - [ 0xD64C0, c, lib/os/libultra/libnaudio/unknown_libnaudio]
+      - [ 0xD6540, c, lib/nusys-1/nusched]
+      - [ 0xD6D10, c, lib/nusys-1/nugfxthread]
+      - [ 0xD6E60, c, lib/nusys-1/nugfxtaskmgr]
+      #  possible split
+      # - [0xD6420, c]
+      - [ 0xD7250, c, lib/nusys-1/nugfxfuncset]
+      - [ 0xD7290, c, lib/nusys-1/nugfxprenmifuncset]
+      - [ 0xD72D0, c, lib/nusys-1/nugfxswapcfbfuncset]
+      - [ 0xD7310, c, lib/nusys-1/nugfxswapcfb]
+      - [ 0xD7330, c, lib/nusys-1/nugfxtaskallendwait]
+      - [ 0xD7350, c, lib/nusys-1/nugfxretracewait]
+      - [ 0xD73D0, c, lib/nusys-1/nugfxsetcfb]
+      - [ 0xD7400, c, lib/nusys-1/nugfxdisplayoff]
+      - [ 0xD7430, c, lib/nusys-1/nugfxdisplayon]
+      - [ 0xD7440, c, lib/nusys-1/nucontmgr]
+      - [ 0xD7800, c, lib/nusys-1/nucontinit]
+      - [ 0xD7840, c, lib/nusys-1/nucontdatalock]
+      - [ 0xD78A0, c, lib/nusys-1/nucontdatareadwait]
+      - [ 0xD78D0, c, lib/nusys-1/nucontdatareadstart]
+      - [ 0xD7910, c, lib/nusys-1/nucontdatagetex]
+      - [ 0xD79A0, c, lib/nusys-1/nucontdatagetexall]   
+      - [ 0xD7A50, c, lib/nusys-1/nucontqueryread]
+      - [ 0xD7AC0, c, lib/nusys-1/nucontpakmgr]
+      - [ 0xD7D10, c, lib/nusys-1/nucontpakopen]
+      - [ 0xD7DC0, c, lib/nusys-1/nucontpakgetfree]
+      - [ 0xD7E50, c, lib/nusys-1/nucontdataread]
+      - [ 0xD7ED0, c, lib/nusys-1/nucontpakfileopenjis]
+      - [ 0xD7FF0, c, lib/nusys-1/nucontpakcodeset]
+      - [ 0xD8040, c, lib/nusys-1/nucontpakfilereadwrite]
+      - [ 0xD8100, c, lib/nusys-1/nucontpakfiledelete]
+      - [ 0xD81A0, c, lib/nusys-1/nucontpakfiledeletejis]
+      - [ 0xD82A0, c, lib/nusys-1/nucontpakfilestate]
+      - [ 0xD8330, c, lib/nusys-1/nucontpakfilenum]
+      - [ 0xD83D0, c, lib/nusys-1/nucontrmbmgr]
+      - [ 0xD89B0, c, lib/nusys-1/nupiinit]
+      - [ 0xD89E0, c, lib/nusys-1/nupireadrom]
+      - [ 0xD8B40, c, lib/nusys-1/nusimgr]
+      - [ 0xD8C80, c, lib/nusys-1/nusicallbackadd]
+      - [ 0xD8D00, c, lib/nusys-1/nusicallbackremove]
+      - [ 0xD8D80, c, lib/nusys-1/nucontpakjiston64]
+      - [ 0xD9040, hasm, lib/os/libultra/gu/sqrtf]
+      - [ 0xD9050, hasm, lib/os/libultra/gu/cosf]
+      - [ 0xD9520, c, lib/os/libultra/gu/lookat]
+      - [ 0xD98B0, c, lib/os/libultra/gu/mtxutil]
+      - [ 0xD9B30, c, lib/os/libultra/gu/ortho]
+      - [ 0xD9D90, c, lib/os/libultra/gu/perspective]
+      # fix rodata
+      - [ 0xDA130, asm, lib/os/libultra/gu/rotate]
+      - [ 0xDA450, c, lib/os/libultra/gu/scale]
+      - [ 0xDA530, c, lib/os/libultra/gu/sins]
+      - [ 0xDA6D0, c, lib/os/libultra/gu/translate]
+      - [ 0xDA7A0, hasm, lib/os/libultra/invaldcache]
+      - [ 0xDA8B0, hasm, lib/os/libultra/setintmask]
+      - [ 0xDA950, hasm, lib/os/libultra/writebackdcache]
+      - [ 0xDA9D0, hasm, lib/os/libultra/writebackdcacheall]
+      - [ 0xDAA00, c, lib/os/libultra/createmesgqueue]
+      - [ 0xDAA30, c, lib/os/libultra/createthread]
+      - [ 0xDAB00, c, lib/os/libultra/recvmesg]
+      - [ 0xDAC30, c, lib/os/libultra/sendmesg]
+      - [ 0xDAD60, c, lib/os/libultra/setthreadpri]
+      - [ 0xDAE30, c, lib/os/libultra/startthread]
+      - [ 0xDAF50, c, lib/os/libultra/stopthread]
+      # fix rodata
+      - [ 0xDB010, asm, lib/os/libultra/thread]
+      - [ 0xDB050, c, lib/os/libultra/virtualtophysical]
+      # fix rodata
+      - [ 0xDB0B0, c, lib/os/libultra/assert]
+      - [ 0xDB0E0, asm, lib/os/libultra/audio/sl]
+      - [ 0xDB190, c, lib/os/libultra/audio/heapinit]
+      - [ 0xDB1D0, c, lib/os/libultra/audio/heapalloc]
+      - [ 0xDB220, c, lib/os/libultra/audio/copy]
+      - [ 0xDB260, c, lib/os/libultra/audio/syndelete]
+      - [ 0xDB270, c, lib/os/libultra/io/aigetlen]
+      - [ 0xDB280, c, lib/os/libultra/io/aigetstat]
+      - [ 0xDB290, c, lib/os/libultra/io/aisetnextbuf]
+      - [ 0xDB330, c, lib/os/libultra/io/spsetpc]
+      - [ 0xDB360, c, lib/os/libultra/io/sptask]
+      - [ 0xDB5A0, c, lib/os/libultra/io/sptaskyield]
+      - [ 0xDB5C0, c, lib/os/libultra/io/sptaskyielded]
+      - [ 0xDB610, c, lib/os/libultra/io/vigetcurrframebuf]
+      - [ 0xDB650, c, lib/os/libultra/io/vigetnextframebuf]
+      - [ 0xDB690, c, lib/os/libultra/io/visetevent]
+      - [ 0xDB6F0, c, lib/os/libultra/io/visetmode]
+      - [ 0xDB740, c, lib/os/libultra/io/visetyscale]
+      - [ 0xDB790, c, lib/os/libultra/io/viswapbuf]
+      - [ 0xDB7E0, c, lib/os/libultra/io/viblack]
+      - [ 0xDB840, c, lib/os/libultra/io/contquery]
+      - [ 0xDB8E0, c, lib/os/libultra/io/controller] 
+      - [ 0xDBBF0, c, lib/os/libultra/io/epidma]
+      - [ 0xDBC90, c, lib/os/libultra/io/epilinkhandle] 
+      - [ 0xDBCE0, c, lib/libc/bcopy]
+      - [ 0xDC000, c, lib/libc/bzero]
+        # contains osSyncPrintf; maybe change file or path
+      - [ 0xDC0A0, c, lib/kmc/syncPrintf]
+      - [ 0xDC3F0, c, lib/os/libultra/audio/drvrNew]
+      - [ 0xDCC20, c, lib/os/libultra/audio/env]
+      - [ 0xDD8D0, c, lib/os/libultra/audio/reverb]
+      - [ 0xDE470, c, lib/os/libultra/audio/save]
+      - [ 0xDE540, c, lib/os/libultra/audio/synthesizer]
+      - [ 0xDEB80, c, lib/os/libultra/io/osaisetfreq]
+      - [ 0xDECA0, c, lib/os/libultra/io/cartrominit]
+      - [ 0xDEE20, c, lib/os/libultra/io/contreaddata]
+      - [ 0xDF000, c, lib/os/libultra/io/motor]
+      - [ 0xDF390, c, lib/os/libultra/io/pfsallocatefile]
+      - [ 0xDF7C0, c, lib/os/libultra/io/pfsdeletefile]
+      - [ 0xDF9E0, c, lib/os/libultra/io/pfsfilestate]
+      - [ 0xDFB70, c, lib/os/libultra/io/pfsfreeblocks]
+      - [ 0xDFC80, c, lib/os/libultra/io/pfsinitpak]
+      - [ 0xDFF50, c, lib/os/libultra/io/unknown_pfs] 
+      - [ 0xE0050, c, lib/os/libultra/io/unknown_pfs2]
+      - [ 0xE0490, c, lib/os/libultra/io/pfsrepairid]
+      - [ 0xE04F0, c, lib/os/libultra/io/pfssearchfile]
+      - [ 0xE0690, c, lib/os/libultra/io/pfsselectbank]
+      - [ 0xE0700, c, lib/os/libultra/io/pimgr] 
+      - [ 0xE09B0, c, lib/os/libultra/io/pirawdma]
+      - [ 0xE0A60, c, lib/os/libultra/io/sirawdma]
+      - [ 0xE0B30, c, lib/os/libultra/io/sprawdma]
+      - [ 0xE0BC0, c, lib/os/libultra/io/vimgr]
+      - [ 0xE0D60, c, lib/os/libultra/io/vi_unknown]
+      - [ 0xE0F00, c, lib/os/libultra/io/visetspecial]
+      - [ 0xE1070, c, lib/os/libultra/io/viswapcontext]
+      - [ 0xE1380, hasm, lib/os/libultra/exceptasm]
+      - [ 0xE2170, c, lib/os/libultra/initialize]
+      - [ 0xE2570, hasm, lib/os/libultra/interrupt]
+      - [ 0xE2600, c, lib/os/libultra/seteventmsg]
+      - [ 0xE26B0, hasm, lib/os/libultra/getcause]
+      - [ 0xE26C0, hasm, lib/os/libultra/getcount]
+      - [ 0xE26D0, hasm, lib/os/libultra/getsr]
+      - [ 0xE26E0, hasm, lib/os/libultra/invalicache] 
+      - [ 0xE2760, hasm, lib/os/libultra/probetlb]
+      - [ 0xE2820, hasm, lib/os/libultra/setfpcsr]
+      - [ 0xE2830, hasm, lib/os/libultra/setsr]
+      - [ 0xE2840, hasm, lib/os/libultra/unmaptlball]
+      - [ 0xE2890, hasm, lib/os/libultra/maptlbrdb]
+      - [ 0xE28F0, c, lib/os/libultra/destroythread] 
+      - [ 0xE29C0, c, lib/os/libultra/getthreadpri]
+      - [ 0xE29E0, c, lib/os/libultra/gettime]
+      - [ 0xE2A70, c, lib/os/libultra/jammesg]
+      - [ 0xE2BB0, c, lib/os/libultra/kdebugserver]
+      - [ 0xE2E70, c, lib/os/libultra/settimer]
+      - [ 0xE2F10, c, lib/os/libultra/timerintr]
+      - [ 0xE32B0, c, lib/os/libultra/initrdb]
+      - [ 0xE3330, c, lib/os/libultra/rdbsend]
+      - [ 0xE3550, c, lib/os/libultra/readhost]
+      - [ 0xE3620, c, lib/os/libultra/audio/load]
+      - [ 0xE4130, c, lib/os/libultra/audio/auxbus]
+      - [ 0xE4240, c, lib/os/libultra/audio/filter]
+      - [ 0xE4260, c, lib/os/libultra/audio/mainbus]
+      - [ 0xE43D0, c, lib/os/libultra/audio/resample]
+      - [ 0xE4680, c, lib/os/libultra/audio/synallocfx]
+      - [ 0xE4720, c, lib/os/libultra/io/ai]
+      - [ 0xE4740, c, lib/os/libultra/io/sp]
+      - [ 0xE4760, c, lib/os/libultra/io/spgetstat]
+      - [ 0xE4770, c, lib/os/libultra/io/spsetstat]
+      - [ 0xE4780, c, lib/os/libultra/io/vi]
+      - [ 0xE4890, c, lib/os/libultra/io/vigetcurrcontext]
+      - [ 0xE48A0, c, lib/os/libultra/io/siacs]
+      - [ 0xE4990, c, lib/os/libultra/io/pigetcmdq]
+      - [ 0xE49B0, c, lib/os/libultra/io/piacs]
+      - [ 0xE4AA0, c, lib/os/libultra/rmon/rmonsio]
+      - [ 0xE4C50, c, lib/os/libultra/bcmp]
+      # fix rodata
+      - [ 0xE4D60, asm, lib/os/libultra/printf]
+      - [ 0xE5790, c, lib/os/libultra/io/contpfs]
+      - [ 0xE6220, c, lib/os/libultra/io/contramread]
+      - [ 0xE6420, c, lib/os/libultra/io/contramwrite]
+      - [ 0xE6640, c, lib/os/libultra/io/crc]
+      - [ 0xE6730, c, lib/os/libultra/io/devmgr]
+      - [ 0xE6AF0, c, lib/os/libultra/io/epirawstartdma]
+      - [ 0xE6CE0, c, lib/os/libultra/io/epirawread]
+      - [ 0xE6E50, c, lib/os/libultra/io/epirawwrite]
+      - [ 0xE6FC0, c, lib/os/libultra/io/ospfschecker]
+      - [ 0xE76E0, c, lib/os/libultra/io/pfsgetstatus]
+      - [ 0xE78F0, c, lib/os/libultra/io/sirawread]
+      - [ 0xE7940, c, lib/os/libultra/io/sirawwrite]
+      - [ 0xE7990, hasm, lib/os/libultra/io/ossetcompare]
+      - [ 0xE79A0, c, lib/os/libultra/io/resetglobalintmask]
+      - [ 0xE79F0, c, lib/os/libultra/io/setglobalintmask]
+      - [ 0xE7A30, c, lib/os/libultra/io/yieldthread]
+      - [ 0xE7A80, c, lib/os/libultra/io/si]
+      - [ 0xE7AA0, c, lib/os/libultra/io/pfsisplug]
+      - [ 0xE7D80, c, lib/os/libultra/rmon/rmoncmd]
+      - [ 0xE7E10, c, lib/os/libultra/rmon/rmonmem]
+      - [ 0xE8580, c, lib/os/libultra/rmon/rmonmisc]
+      - [ 0xE86D0, c, lib/os/libultra/rmon/rmonreg]
+      - [ 0xE9190, c, lib/os/libultra/rmon/rmontask]
+      - [ 0xE9A60, c, lib/os/libultra/rmon/rmonmain]
+      - [ 0xE9E00, c, lib/os/libultra/libc/string]
+      - [ 0xE9E90, c, lib/os/libultra/libc/litob]
+      # fix rodata
+      - [ 0xEA0E0, asm, lib/os/libultra/libc/ldtob]
+      - [ 0xEAB60, c, lib/os/libultra/io/sprawread]
+      - [ 0xEABB0, c, lib/os/libultra/io/sprawwrite]
+      - [ 0xEAC00, c, lib/os/libultra/io/getactivequeue]
+      - [ 0xEAC10, c, lib/os/libultra/rmon/rmonrcp]
+      - [ 0xEACB0, c, lib/os/libultra/rmon/rmonbreak]
+      - [ 0xEB650, hasm, ldiv]
+      - [ 0xEB810, c, lib/os/libultra/unknown/randomNumber]
+      - [ 0xEBA50, hasm, lib/gcc/dividi3]
+      - [ 0xEBBC0, hasm, lib/gcc/udivid3]
+      - [ 0xEBBE0, hasm, lib/gcc/umoddi3]
+      # end of functions
+      - [ 0xEBC20, bin, lib/os/libultra/rspbootTextStart]
+      - [ 0xEBCF0, bin, lib/os/libultra/n_aspMainTextStart]
+      # - [ 0xEBE10, data]
+      # - [ 0xECAB0, .data, lib/os/libultra/audio/sl]
+      - [ 0xECAC0, data]
+      - [ 0xEDD00, data, viewport]
+      - [ 0xEDD10, data, nugfxtaskinit]
+      - [ 0xEE110, data, system/map]
+      - [ 0xF3780, data, itemHandlers]
+      - [ 0xF3B00, data, mapObjects]
+      - [ 0xF3F50, data, weather]
+      - [ 0xF3F70, data, shop]
+      - [ 0xF4A60, data]
+      # should be rodata
+      - [ 0xF4B40, data, packinsoftFarmString]
+      # possibly data from fun_80033058; should be rodata
+      - [ 0xF4B50, data, spriteIndices]
+      - [ 0xF4B80, data, possibleCharMap]
+      - [ 0xF7D70, data, lib/libmus/n_sl]
+      - [ 0xF7D80, data, lib/libmus/n_drvnew]
+      - [ 0xF7F10, data, lib/libmus/n_env]
+      - [ 0xF8020, data, lib/nusys-1/nusched]
+      - [ 0xF8030, data, lib/nusys-1/nugfxfuncset]
+      - [ 0xF8040, data, lib/nusys-1/nugfxtaskmgr]
+      - [ 0xF8050, data, lib/nusys-1/nucontmgr]
+      - [ 0xF8060, data, lib/nusys-1/nusimgr]
+      - [ 0xF8070, data, lib/nusys-1/nucontpakmgr]
+      - [ 0xF8080, data, lib/nusys-1/nucontrmbmgr]
+      - [ 0xF8090, data, lib/nusys-1/nucontpakjiston64]
+      - [ 0xF80D0, rodata, lib/os/libultra/gu/rotate]
+      - [ 0xF80E0, rodata, lib/os/libultra/thread]
+      - [ 0xF8100, rodata, lib/os/libultra/audio/sl]
+      - [ 0xF8110, rodata, lib/os/libultra/io/aisetnextbuf]
+      - [ 0xF8120, rodata, lib/os/libultra/io/controller]
+      - [ 0xF8130, rodata, lib/kmc/syncPrintf]
+      - [ 0xF8140, rodata, lib/os/libultra/audio/drvrnew]
+      - [ 0xF8280, rodata]
+      - [ 0xF82D0, rodata, lib/os/libultra/audio/env]
+      - [ 0xF83F0, rodata, lib/os/libultra/io/cartrominit]
+      - [ 0xF8400, rodata, lib/os/libultra/io/piimgr]
+      - [ 0xF8430, rodata, lib/os/libultra/io/viimgr]
+      - [ 0xF8450, rodata, lib/os/libultra/vitbl]
+      - [ 0xF95D0, rodata] 
+      - [ 0xF9600, rodata, lib/os/libultra/exceptasm]
+      - [ 0xF9610, rodata, lib/os/libultra/initialize]
+      - [ 0xF9630, rodata, lib/os/libultra/osseteventmesg]
+      - [ 0xF9640, .rodata, lib/os/libultra/kdebugserver]
+      - [ 0xF9650, .rodata, lib/os/libultra/settimer]
+      - [ 0xF9660, rodata] # rdbssend/send
+      - [ 0xF9670, .rodata, lib/os/libultra/readhost]
+      - [ 0xF9680, .rodata, lib/os/libultra/io/vi]
+      - [ 0xF96E0, rodata] # osViInit, osViGetCurrentContext, osViGetCurrentFramebuffer, viSwapContext
+      - [ 0xF96F0, .rodata, lib/os/libultra/io/siacs]
+      - [ 0xF9700, rodata] # lib/os/libultra/io/vitbl
+      - [ 0xF9800, rodata] # lib/os/libultra/printf
+      - [ 0xF9850, .rodata, lib/os/libultra/io/contpfs]
+      - [ 0xF9860, rodata] # osContRamRead/Write
+      - [ 0xF9870, .rodata, lib/os/libultra/rmon/rmoncmd] 
+      - [ 0xF9950, rodata] # rmonmain
+      - [ 0xF9960, rodata] # _litob
+      - [ 0xF9990, rodata] # nuAuStlMgrInit
+      - [ 0xFA040, .rodata, system/graphic] # system/graphic
+      - [ 0xFA0C0, rodata] # system/sprite
+      - [ 0xFA100, rodata] # system/sprite
+      - [ 0xFA200, rodata] # unused_doubles
+      - [ 0xFA210, rodata] # system/message
+      - [ 0xFA2E0, rodata] # system/dialogue
+      - [ 0xFA350, .rodata, game]
+      - [ 0xFA700, .rodata, gameStatus]
+      - [ 0xFA7F0, .rodata, player]
+      - [ 0xFAB10, rodata] # level
+      - [ 0xFB410, rodata,] # npc
+      - [ 0xFB720, rodata] # animal
+      - [ 0xFC2C0, rodata]
+      - [ 0xFC7F0, rodata]
+      - [ 0xFD090, .rodata, overlayScreens]
+      - [ 0xFD6B0, rodata] # itemHandlers
+      - [ 0xFE880, rodata] # title
+      - [ 0xFEA90, rodata] # loadGameScreen
+      - [ 0xFEAC0, rodata] # evaluation
+      - [ 0xFEBF0, rodata]
+      - [ 0xFEC40, rodata] # lib/nusys-1/nupakmenu
+      - [ 0xFED00, rodata]
+      - [ 0xFEE30, rodata]
+      - [ 0xFEEA0, rodata]
+      - [ 0xFEEB0, rodata]
+      - [ 0xFEEF0, rodata]
+      - [ 0xFEF70, rodata]
+      - [ 0xFF030, rodata]
+      - [ 0xFF0B0, .rodata, lib/os/libultra/assert]
+      - [ 0xFF0D0, rodata, lib/unkknown]
+      - [ 0xFF110, rodata]
+      - [ 0xFF280, rodata]
+      - [ 0xFF290, rodata]
+      - [ 0xFF300, rodata]
+      - [ 0xFF310, rodata]
+      - [ 0xFF340, rodata, lib/os/libultra/printf]
+      - [ 0xFF360, rodata]
+      - [ 0xFF4E0, rodata]
+      - [ 0xFF4F0, rodata, lib/os/libultra/libc/ldtob]
+      - [ 0xFF560, rodata, lib/os/libultra/rmon/rmonbrk]
+
+  - name: cutsceneMaps
+    type: bin
+    start: 0xFF5C0
+    follows_vram: main
+    files:
+      - [0xFF5C0, bin, cutsceneMap1]
+      - [0x100180, bin, cutsceneMap2]
+      - [0x109920, bin, cutsceneMap3]
+      - [0x10EA80, bin, cutsceneMap4]
+      - [0x10F980, bin, cutsceneMap5]
+      - [0x115310, bin, cutsceneMap6]
+      - [0x1175F0, bin, cutsceneMap7]
+      - [0x118D70, bin, cutsceneMap8]
+      - [0x120910, bin, cutsceneMap9]
+      - [0x123CE0, bin, cutsceneMap10]
+      - [0x125200, bin, cutsceneMap11]
+      - [0x129760, bin, cutsceneMap12]
+      - [0x12FE90, bin, cutsceneMap13]
+      - [0x134510, bin, cutsceneMap14]
+      - [0x135F40, bin, cutsceneMap15]
+      - [0x136930, bin, cutsceneMap16]
+      - [0x1385E0, bin, cutsceneMap17]
+      - [0x139840, bin, cutsceneMap18]
+      - [0x13AFC0, bin, cutsceneMap19]
+      - [0x13D470, bin, cutsceneMap20]
+      - [0x13FAC0, bin, cutsceneMap21]
+      - [0x1485B0, bin, cutsceneMap22]
+      - [0x149CC0, bin, cutsceneMap23]
+      - [0x14B8F0, bin, cutsceneMap24]
+      - [0x150120, bin, cutsceneMap25]
+      - [0x1510B0, bin, cutsceneMap26]
+    
+  - name: characterSprites
+    type: bin
+    start: 0x159330
+    files:
+      - [ 0x159330, ci4, sprites/player.ci]
+      - [ 0x2D0660, palette, sprites/player.pal]
+      - [ 0x2D0680, bin, sprites/player.res.idx]
+      - [ 0x2D15E0, ci4, sprites/maria.ci]
+    
+  - name: ci-tile-data
+    type: bin
+    start: 0x800530
+    
+  - name: objectSprites
+    type: bin
+    start: 0xC951A0
+    
+  - name: font
+    type: bin
+    start: 0xE08870
+    files:
+    - [0xE08870, bin, "font.16x11200.i2"]
+    - [0xE13770, bin, "font.1.pal"]
+    - [0xE137A0, bin, "font.2.pal"]
+    - [0xE137D0, bin, "font.3.pal"]
+    
+  - name: dialogues
+    type: bin
+    start: 0xE13800
+    files:
+    - [ 0xE13800, bin, sys.script ]
+    - [ 0xE13920, bin, sys.idx ]
+    
+  # related to dialogues/sprites
+  - name: unknown
+    type: bin
+    start: 0xE871C0
+    
+  - name: ptr_table
+    type: bin
+    start: 0xE93080
+
+  - name: wbk
+    type: bin
+    start: 0xE99910
+
+  - name: audio
+    type: bin
+    start: 0xFD8510
+    files:
+    - [0xFD8510, bin, "snd01.bin"]
+    - [0xFDAD00, bin, "snd02.bin"]
+    - [0xFDD6C0, bin, "snd03.bin"]
+    - [0xFDFB50, bin, "snd04.bin"]
+    - [0xFE12F0, bin, "snd05.bin"]
+    - [0xFE27B0, bin, "snd06.bin"]
+    - [0xFE4D20, bin, "snd07.bin"]
+    - [0xFE5E50, bin, "snd08.bin"]
+    - [0xFE6E60, bin, "snd09.bin"]
+    - [0xFE7E00, bin, "snd10.bin"]
+    - [0xFE9040, bin, "snd11.bin"]
+    - [0xFEAB70, bin, "snd12.bin"]
+    - [0xFEB8F0, bin, "snd13.bin"]
+    - [0xFED5F0, bin, "snd14.bin"]
+    - [0xFEEA40, bin, "snd15.bin"]
+    - [0xFEF9F0, bin, "snd16.bin"]
+    - [0xFF1CD0, bin, "snd17.bin"]
+    - [0xFF3760, bin, "snd18.bin"]
+    - [0xFF4160, bin, "snd19.bin"]
+    - [0xFF4750, bin, "snd20.bin"]
+    - [0xFF6300, bin, "snd21.bin"]
+    - [0xFF6ED0, bin, "snd22.bin"]
+    - [0xFF7D80, bin, "snd23.bin"]
+    - [0xFF9370, bin, "snd24.bin"]
+    - [0xFF95A0, bin, "snd25.bin"]
+    - [0xFF9840, bin, "snd26.bin"]
+    - [0xFF99F0, bin, "snd27.bin"]
+    - [0xFF9BC0, bin, "snd28.bin"]
+    - [0xFF9DC0, bin, "snd29.bin"]
+    - [0xFF9F40, bin, "snd30.bin"]
+    - [0xFFA7B0, bin, "snd31.bin"]
+    - [0xFFA950, bin, "snd32.bin"]
+    - [0xFFAF80, bin, "snd33.bin"]
+    - [0xFFB090, bin, "snd34.bin"]
+    - [0xFFB700, bin, "snd35.bin"]
+    - [0xFFC530, bin, "snd36.bin"]
+    - [0xFFC9F0, bin, "snd37.bin"]
+    - [0xFFCC40, bin, "snd38.bin"]
+    - [0xFFCE10, bin, "snd39.bin"]
+    - [0xFFD490, bin, "snd40.bin"]
+    - [0xFFD680, bin, "snd41.bin"]
+    - [0xFFD820, bin, "snd42.bin"]
+    - [0xFFD920, bin, "snd43.bin"]
+    - [0xFFDA30, bin, "snd44.bin"]
+    - [0xFFDBA0, bin, "snd45.bin"]
+    - [0xFFDCF0, bin, "snd46.bin"]
+    - [0xFFDEF0, bin, "snd47.bin"]
+    - [0xFFE520, bin, "snd48.bin"]
+    - [0xFFE620, bin, "snd49.bin"]
+    - [0xFFE720, bin, "snd50.bin"]
+    - [0xFFE820, bin, "snd51.bin"]
+    - [0xFFE920, bin, "snd52.bin"]
+    - [0xFFEA30, bin, "snd53.bin"]
+    - [0xFFEB30, bin, "snd54.bin"]
+    - [0xFFEC30, bin, "snd55.bin"]
+    - [0xFFEE40, bin, "snd56.bin"]
+    - [0xFFEF50, bin, "snd57.bin"]
+    - [0xFFF070, bin, "snd58.bin"]
+    - [0xFFF180, bin, "snd59.bin"]
+    - [0xFFF350, bin, "snd60.bin"]
+    - [0xFFF470, bin, "snd61.bin"]
+    - [0xFFF580, bin, "snd62.bin"]
+
+  - name: padding
+    type: bin
+    start: 0xFFF700
+    
+  - [0x1000000]

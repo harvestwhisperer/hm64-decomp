@@ -1,0 +1,17 @@
+*.z64
+*.n64
+*.v64
+*.ld
+*.map
+*.o
+*.s
+*.bin
+*.elf
+*.d
+*.a
+asm/
+bin/
+build/
+tools/gcc-2.7.2
+tools/splat
+.vscode/
