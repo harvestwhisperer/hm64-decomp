@@ -92,7 +92,7 @@ INCLUDE_ASM(const s32, "lib/libmus/libsrc/player_commands", func_800F4840);
 
 // player_api.c
 
-INCLUDE_ASM(const s32, "lib/libmus/libsrc/player_commands", func_800F4884);
+INCLUDE_ASM(const s32, "lib/libmus/libsrc/player_commands", MusInitialize);
 
 INCLUDE_ASM(const s32, "lib/libmus/libsrc/player_commands", MusSetMasterVolume);
 

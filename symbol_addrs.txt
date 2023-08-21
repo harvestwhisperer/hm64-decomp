@@ -6,6 +6,7 @@ rmonmisc_text_010C = 0x800262B0;
 __udiv_w_sdiv = 0x80043140;
 Fstereo = 0x800F4218;
 player_text_1164 = 0x800F423C;
+MusInitialize = 0x800F4884;
 MusSetMasterVolume = 0x800F4B68;
 n_alInit = 0x800F8200;
 n_alClose = 0x800F8244;
@@ -984,6 +985,7 @@ calculateFieldScore = 0x800AC95C;
 calculateShippingScore = 0x800AC9CC;
 
 initializeWaveTable = 0x800ACAB0;
+setAudio = 0x800ACC50;
 
 checkWineBarrelInteraction = 0x800AD07C;
 checkAllSfxInactive = 0x800ACD18;

@@ -76,7 +76,7 @@ void func_8009A2D0();
 void func_8009A53C();  
 void func_8009AAC8();     
 void func_8009B25C();         
-void func_800ACC50(u16);
+void setAudio(u16);
 u8 func_800ACE50(u8);
 u8 func_800ACFE8(u8);                 
 void func_800D0360();                                  
@@ -141,7 +141,7 @@ INCLUDE_ASM(const s32, "itemHandlers", func_800D0074);
 
 void handleToolUse(void) {
     
-    switch (D_8018907D) {
+    switch (gPlayer.currentTool) {
         case 0:
             return;
         case SICKLE:
@@ -242,7 +242,7 @@ void func_800D0318(void) {
 
     int temp = D_80189828.unk_E; 
 
-    // very bad programming: really just need to check if D_80189828.unk_E == 2
+    // bad programming: really just need to check if D_80189828.unk_E == 2
     if (temp) {
         if (temp != 3) {
             if (temp < 4) {
@@ -338,7 +338,7 @@ void func_800D373C(void) {
     }
     
     if (!D_80189828.unk_2) {
-        func_800ACC50(0x1D);
+        setAudio(0x1D);
     }
     
     D_80189828.unk_2 += 1;
@@ -388,7 +388,7 @@ void func_800D3958(void) {
     }
     
     if (!D_80189828.unk_2) {
-        func_800ACC50(0x1D);
+        setAudio(0x1D);
     }
     
     D_80189828.unk_2 += 1;
@@ -439,7 +439,7 @@ void func_800D3B74(void) {
     }
     
     if (!D_80189828.unk_2) {
-        func_800ACC50(0x1D);
+        setAudio(0x1D);
     }
     
     D_80189828.unk_2 += 1;
@@ -489,7 +489,7 @@ void func_800D3D90(void) {
     }
     
     if (!D_80189828.unk_2) {
-        func_800ACC50(0x1D);
+        setAudio(0x1D);
     }
     
     D_80189828.unk_2 += 1;
@@ -540,7 +540,7 @@ void func_800D3FAC(void) {
     }
     
     if (!D_80189828.unk_2) {
-        func_800ACC50(0x1D);
+        setAudio(0x1D);
     }
     
     D_80189828.unk_2 += 1;
@@ -591,7 +591,7 @@ void func_800D41C8(void) {
     }
     
     if (!D_80189828.unk_2) {
-        func_800ACC50(0x1D);
+        setAudio(0x1D);
     }
     
     D_80189828.unk_2 += 1;
@@ -639,7 +639,7 @@ void func_800D43E4(void) {
     }
 
     if (!D_80189828.unk_2) {
-        func_800ACC50(0x1D);
+        setAudio(0x1D);
     }
 
     D_80189828.unk_2 += 1;
@@ -693,7 +693,7 @@ void func_800D45F4(void) {
     }
     
     if (!D_80189828.unk_2) {
-        func_800ACC50(0x1D);
+        setAudio(0x1D);
     }
     
     D_80189828.unk_2 += 1;
@@ -746,7 +746,7 @@ void func_800D4814(void) {
     }
     
     if (!D_80189828.unk_2) {
-        func_800ACC50(0x1D);
+        setAudio(0x1D);
     }
     
     D_80189828.unk_2 += 1;
@@ -792,7 +792,7 @@ void func_800D4A34(void) {
     }
     
     if (!D_80189828.unk_2) {
-        func_800ACC50(0x1D);
+        setAudio(0x1D);
     }
     
     D_80189828.unk_2 += 1;
@@ -900,7 +900,7 @@ void func_800D4D68(void) {
     }
     
     if (!D_80189828.unk_2) {
-        func_800ACC50(0x1D);
+        setAudio(0x1D);
     }
     
     D_80189828.unk_2 += 1;
@@ -990,7 +990,7 @@ void handleBlueFeatherUse(void) {
 
     if (checkDailyEventBit(0x14)) {
         // use up blue feather if successful proposal
-        gPlayer.unk_1D = 0;
+        gPlayer.currentTool = 0;
     }
     
 func_end:

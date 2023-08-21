@@ -83,9 +83,9 @@ void func_800ACC1C(u16 songIndex) {
     }
 }
 
-//INCLUDE_ASM(const s32, "gameAudio", func_800ACC50);
+//INCLUDE_ASM(const s32, "gameAudio", setAudio);
 
-void func_800ACC50(u16 index) {
+void setAudio(u16 index) {
     
   if (index < TOTAL_SFX) {
       

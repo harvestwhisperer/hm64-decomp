@@ -17,7 +17,7 @@ extern UnknownStruct3 D_80189828;
 extern u8 D_80189836;
 extern u16 D_80237410;
 
-
+void setAudio(u16);   
 void setSpriteAnimation(u8, u32);    
 
 u8 func_8002E284(u16, u16, u32);                           
@@ -35,7 +35,6 @@ u32 func_8004D35C(u16, s16);
 u8 func_80067A24(u8);                               
 void func_80099DE8();                                  
 void func_800DC7BC(u8);                            
-void func_800ACC50(u8);   
 void func_800CF850();                                  
 void func_800D55E4(u8, u8);         
 void func_800DC9C0(u8);
@@ -433,7 +432,7 @@ INCLUDE_ASM(const s32, "player", func_80069830);
 
 void func_80069C5C(void) {
     if (func_80031380(0)) {
-        func_800ACC50(0xA);
+        setAudio(0xA);
     }
 }
 
@@ -441,7 +440,7 @@ void func_80069C5C(void) {
 
 void func_80069C90(void) {
     if (func_80031380(0)) {
-        func_800ACC50(0xA);
+        setAudio(0xA);
     }
 }
 
@@ -605,7 +604,7 @@ void func_8006E0D4(void) {
                 }
                 D_80237410 += adjustValue(D_80237410, -1, 0x3E7);;
                 if (!D_80237410) {
-                    gPlayer.unk_1D = 0;
+                    gPlayer.currentTool = 0;
                 }
             }
             break;
@@ -661,7 +660,7 @@ void func_8006E240(void) {
                     gPlayer.action2 = 0;
                 }
                 if (checkDailyEventBit(0x14)) {
-                    gPlayer.unk_1D = 0;
+                    gPlayer.currentTool = 0;
                 }
             }
             break;

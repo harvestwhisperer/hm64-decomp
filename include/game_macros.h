@@ -155,9 +155,6 @@
 #define NEW_YEARS_EVE 0x146
 #define STARRY_NIGHT_FESTIVAL_DIALOGUE_BIT 0x147
 
-/* map indices */
-#define HOUSE_START 0xc
-
 /* main loop callback function indices */
 #define MAIN_GAME 1
 #define MAP_LOAD 2
@@ -216,6 +213,7 @@
 #define BEACH 9
 #define RACE_TRACK 0xD
 #define MOUNTAIN_1 0x11
+#define MOUNTAIN_1_SUMMER 0x12
 #define MOUNTAIN_2 0x15
 #define TOP_OF_MOUNTAIN_1 0x19
 #define TOP_OF_MOUNTAIN_1_SUMMER 0x1A
@@ -356,5 +354,17 @@
 #define WHISTLING 19
 #define DRINKING 20
 #define CASTING_FISHING_ROD 22
+
+// exit indices
+#define HOUSE_EXIT 0
+#define BATHROOM_TO_KITCHEN 11
+#define MIDDLE_OF_HOUSE 12
+#define CARPENTER_HUT_EXIT 32
+#define MOON_MOUNTAIN_EXIT 33
+#define DUMPLING_HOUSE_EXIT 38
+#define MINE_EXIT 71
+#define SPRING_ENTER 72
+#define CARPERNTER_HUT_ENTER 73
+#define FLOWER_SHOP_ENTRANCE 87
 
 #endif

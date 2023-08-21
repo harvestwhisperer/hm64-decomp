@@ -27,7 +27,7 @@ typedef struct {
     u32 unk_10;
     u8 unk_14;
     u8 toolSlots[8];
-    u8 unk_1D;
+    u8 currentTool;
     u8 bottleContents;
     u32 unk_20;
     u8 belongingsSlots[8];

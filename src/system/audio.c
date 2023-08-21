@@ -21,7 +21,7 @@ void initializeAudio(musConfig *config) {
     u16 i;
     u16 j;
 
-    for (i = 0; i < 4; i++) {
+    for (i = 0; i < MAX_ACTIVE_SONGS; i++) {
         
         gSongs[i].flags = 0;
         gSongs[i].handle = 0;
@@ -35,7 +35,7 @@ void initializeAudio(musConfig *config) {
         
     }
 
-    for (j = 0; j < 4; j++) {
+    for (j = 0; j < MAX_ACTIVE_SFX; j++) {
         gSfx[j].flags = 0;
         gSfx[j].sfxIndex = 0;
         gSfx[j].handle = 0;

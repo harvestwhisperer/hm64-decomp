@@ -10,6 +10,23 @@
 #define TOTAL_SONGS 64
 #define TOTAL_SFX 128
 
+#define CLOSE 1
+#define MOVE_CURSOR 2
+#define STORE_ITEM 4
+#define SELECT 7
+#define WHISTLE 10
+#define SICKLE 11
+#define AX 17
+#define SEEDS 29
+#define MILKER 30
+#define ROOSTER 63
+#define CHICKEN_CLUCK 64
+#define BIRD_CHIRP 66
+#define CAT_MEOW 67
+#define BIRD_CHIRP 70
+#define DIALOGUE 87
+#define RUMBLE 89
+
 u8 setSong(u16 songIndex, u8 *songAddrStart, u8 *songAddrEnd);
 u32 setSongSpeed(u16 index, u32 speed);
 u32 stopSong(u16 songIndex);
@@ -58,6 +75,5 @@ typedef struct {
     u8 *pbk_end;
     u8 *wbk_addr;
 } WaveTableInfo;
-
 
 #endif

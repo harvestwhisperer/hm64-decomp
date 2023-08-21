@@ -297,6 +297,7 @@ INCLUDE_ASM(const s32, "system/renderedSprites", func_80031050);
 
 INCLUDE_ASM(const s32, "system/renderedSprites", func_800311E0);
 
+// get audio related flag from sprite
 INCLUDE_ASM(const s32, "system/renderedSprites", func_80031380);
 
 INCLUDE_ASM(const s32, "system/renderedSprites", func_800313FC);

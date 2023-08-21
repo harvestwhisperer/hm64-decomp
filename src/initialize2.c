@@ -77,7 +77,7 @@ u8 func_8009B564();
 void func_800A8F74();   
 void func_800A7DFC();                                  
 void loadCutscene(u32);   
-void func_800ACC50(u16);    
+void setAudio(u16);    
 void func_800D0318();      
 void func_800D51B0();                                  
 void func_800D5290();  
@@ -167,7 +167,7 @@ void mainGameLoopCallback(void) {
 
 //INCLUDE_ASM(const s32, "initialize2", func_80055F08);
 
-void func_80055F08(s16 cutsceneIndex, u16 mapIndex, u8 arg2) {
+void func_80055F08(s16 cutsceneIndex, u16 exitIndex, u8 arg2) {
     
     func_8002E1B8();
     func_8002B710();
@@ -196,7 +196,7 @@ void func_80055F08(s16 cutsceneIndex, u16 mapIndex, u8 arg2) {
     // set ptrs to rom addresses for sprites
     func_800563D0(arg2);
 
-    setExit(mapIndex);
+    setExit(exitIndex);
 
     gCutsceneIndex = cutsceneIndex;
 
@@ -321,9 +321,10 @@ block_end:
             D_8018908C = 0;
         }
         if (!(D_8016FE00 & 1) && (func_8009B5E0() & 0xFF)) {
-            func_800ACC50(0x3F);
+            setAudio(0x3F);
         }
     }
+
     toggleDailyEventBit(0x53);
     toggleDailyEventBit(0x54);
     

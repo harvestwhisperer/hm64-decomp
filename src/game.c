@@ -127,7 +127,7 @@ u16 func_800A87C4();
 void func_800A8F74();
 void func_800ACB5C(u16);                          
 u8 func_800ACBB8(u16 songIndex);
-void func_800ACC50(u16);   
+void setAudio(u16);   
 void func_800D5548(u8);  
 void func_800ED8A0(u8*, u8);
 
@@ -1573,13 +1573,13 @@ void func_80060624(void) {
         func_800610DC();
         
         if (func_80060DC0()) {
-            func_800ACC50(0x59);
+            setAudio(0x59);
             setMainLoopCallbackFunctionIndex(0xF);
             D_80205230.unk_0 = 0xD;
             return;
         }
         
-        setExit(0xC);
+        setExit(MIDDLE_OF_HOUSE);
         func_80056030(2);
         
         if (func_800A87C4()) {
@@ -1649,7 +1649,7 @@ void func_80060624(void) {
         gPlayer.currentStamina = gMaximumStamina;
         
         startNewDay();
-        setExit(0xC);
+        setExit(MIDDLE_OF_HOUSE);
         
         setMainLoopCallbackFunctionIndex(2);
         
@@ -1681,7 +1681,7 @@ void func_80060838(void) {
         if (func_80060DC0()) {
             
             // set sound effect
-            func_800ACC50(0x59);
+            setAudio(0x59);
             
             setMainLoopCallbackFunctionIndex(0xF);
 
@@ -1691,7 +1691,7 @@ void func_80060838(void) {
             return;
         }
 
-        setExit(HOUSE_START);
+        setExit(MIDDLE_OF_HOUSE);
         
         // setup/handle loading
         func_80056030(2);
@@ -1708,7 +1708,7 @@ void func_80060838(void) {
 
         startNewDay();
 
-        setExit(HOUSE_START);
+        setExit(MIDDLE_OF_HOUSE);
         
         setMainLoopCallbackFunctionIndex(MAP_LOAD);
 

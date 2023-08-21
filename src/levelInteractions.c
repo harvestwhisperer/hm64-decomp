@@ -1,5 +1,8 @@
 #include "common.h"
 
+
+extern Player gPlayer;
+
 u32 checkDailyEventBit(u16 bitIndex);                   \
 void setExit(u8 extiIndex);  
 
@@ -10,30 +13,31 @@ void func_8005AE8C(u16 arg0, u16 arg1, u16 arg2, int arg3, u16 arg4);
 void func_8005CA2C(u16, u16);                            
 
 
-// part of player struct
-extern u8 D_801890D4;
-
-
 //INCLUDE_ASM(const s32, "levelInteractions", func_800ACD70);
 
 u8 func_800ACD70(u16 mapIndex) {
+
     u8 temp;
     u8 result;
 
     result = 0xFF;
     
     if ((mapIndex == FARM || mapIndex == COOP || mapIndex == BARN || mapIndex == GREENHOUSE)) {
+
         temp = func_800309B4(0, 0, 32.0f);
+
         if (temp == 0x10) {
             result = temp;
         }
     }
+
     return result;
 }
 
 //INCLUDE_ASM(const s32, "levelInteractions", func_800ACDF4);
 
 u8 func_800ACDF4(u16 mapIndex) {
+
     u8 temp;
     u8 temp2;
     u8 result;
@@ -47,6 +51,7 @@ u8 func_800ACDF4(u16 mapIndex) {
             result = temp;
         }
     }
+
     return result;
 }
 
@@ -107,7 +112,7 @@ u8 func_800ACEF8(u16 mapIndex) {
     
     if (mapIndex == MOUNTAIN_1) {
         temp = func_800309B4(0, 0.0f, 32.0f);
-        if ((temp == 0x10 | temp == 0x14)) {
+        if (temp == 0x10 || temp == 0x14) {
             result = 1;
         }
     }
@@ -138,41 +143,42 @@ u8 checkWineBarrelInteraction(u16 mapIndex) {
 
 //INCLUDE_ASM(const s32, "levelInteractions", func_800AD0C4);
 
-u8 func_800AD0C4(u16 arg0) {
+u8 func_800AD0C4(u16 mapIndex) {
 
     u8 result = 0;
-    u8 temp_a0;
+    u8 object;
     
-    if (arg0 == 0x11) {
-        temp_a0 = func_800309B4(0, 0, 64.0f);
-        if ((temp_a0 == 0x10) | (temp_a0 == 0x14)) {
-            D_801890D4 = 0;
+    if (mapIndex == MOUNTAIN_1) {
+
+        object = func_800309B4(0, 0, 64.0f);
+
+        if (object == 0x10 || object == 0x14) {
+            gPlayer.fatigue[3] = 0;
             result = 1;
         }
         
-        if (temp_a0 == 0x12) {
-            D_801890D4 = 1;
+        if (object == 0x12) {
+            gPlayer.fatigue[3] = 1;
             result = 1;
         }
     }
     
-    if (arg0 == 0x15) {
+    if (mapIndex == MOUNTAIN_2) {
         if (func_800309B4(0, 0, 64.0f) == 0x10) {
-            D_801890D4 = 2;
+            gPlayer.fatigue[3] = 2;
             result = 1;
         }
     }
     
-    if (arg0 == 9) {
+    if (mapIndex == BEACH) {
         if (func_800309B4(0, 0, 64.0f) == 0x10) {
-            D_801890D4 = 3;
+            gPlayer.fatigue[3] = 3;
             result = 1;
         }
     }
     
     return result;
 }
-
 
 // jtbl_80121408
 INCLUDE_ASM(const s32, "levelInteractions", func_800AD1D0);
@@ -204,15 +210,14 @@ INCLUDE_ASM(const s32, "levelInteractions", func_800AF494);
 
 //INCLUDE_ASM(const s32, "levelInteractions", func_800AFA2C);
 
-// exit popuri's room
-u8 func_800AFA2C(u8 arg0, u8 arg1) {
+u8 func_800AFA2C(u8 arg0, u8 flag) {
     
     u8 result = 0;
     
-    if (arg1 == 1) {
+    if (flag == 1) {
         if (!checkDailyEventBit(0x2D)) {
             result = 1;
-            setExit(0x57);
+            setExit(FLOWER_SHOP_ENTRANCE);
         }
     } 
     
@@ -327,7 +332,7 @@ u32 handleDumplingHouseExit(u32 arg0, u8 arg1) {
     if (arg1 == 1) {
         if (!checkDailyEventBit(0x2D)) {
             result = 1;
-            setExit(0x26);
+            setExit(DUMPLING_HOUSE_EXIT);
         }
     } 
 
@@ -340,13 +345,13 @@ INCLUDE_ASM(const s32, "levelInteractions", func_800B1EE4);
 
 //INCLUDE_ASM(const s32, "levelInteractions", func_800B2078);
 
-u32 func_800B2078(u32 arg0, u8 arg1) {
+u32 func_800B2078(u32 arg0, u8 flag) {
     u32 result = 0;
 
-    if (arg1 == 1) {
+    if (flag == 1) {
         if (!checkDailyEventBit(0x2D)) {
             result = 1;
-            setExit(0x47);
+            setExit(MINE_EXIT);
         }
     } 
     
