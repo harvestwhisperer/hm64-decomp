@@ -3,16 +3,29 @@
 
 #include "common.h"
 
-// 80158248
+// alternate
+// typedef struct {
+// 	f32 unk_0;
+// 	f32 unk_4;
+// 	u16 unk_8;
+// 	u16 unk_A;
+// 	u16 unk_C;
+// 	u8 unk_E;
+// 	u16 spriteCounter;
+// 	u16 flags;
+// } UnknownMapStruct1;
+
+// should start at 80158240 but causes rodata issue
 typedef struct {
-	f32 unk_0;
-	f32 unk_4;
-	u16 unk_8;
-	u16 unk_A;
-	u16 unk_C;
-	u8 unk_E;
-	u16 spriteCounter;
-	u16 flags;
+    f32 unk_8;
+    f32 unk_C;
+    u16 unk_10;
+    u16 unk_12;
+    u16 unk_14;
+    u16 unk_16;
+    u8 unk_18;
+    u8 unk_19;
+    u16 flags;
 } UnknownMapStruct1;
 
 // 0x8013DC40

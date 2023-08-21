@@ -10,7 +10,6 @@ u16  func_80036880(u32, u32, u32);
 extern u16 D_80141D28;
 
 extern f32 D_8013D550;
-extern u16 D_8015825A;
 extern f32 D_80170460;
 extern f32 D_801FB5D4;
 extern f32 D_802226EC;
@@ -38,8 +37,6 @@ extern f32 D_801580E8;
 extern f32 D_801580EC;
 extern f32 D_801580F0;
 extern f32 D_801580F4;
-
-extern u16 D_8015825A;
 
 extern UnknownMapStruct1 D_80158248;
 extern UnknownMapStruct2 D_8013DC40;
@@ -71,7 +68,7 @@ u8 func_80034350(u16 arg0, u8 arg1, u8 arg2, u8 arg3, u8 arg4) {
 
     res = 0;
     
-    if (!arg0 && (D_8015825A & 1)) {
+    if (!arg0 && (D_80158248.flags & 1)) {
         
         res = 1;
         
@@ -126,7 +123,7 @@ u8 func_80035004(u16 arg0, u16 arg1, u8 arg2, u8 arg3) {
 
     result = 0;
 
-    if (!arg0 && (D_8015825A & 1)) {
+    if (!arg0 && (D_80158248.flags & 1)) {
         // convert to 2D array if possible
         *(&D_80141D28 + (arg3 * 0x14 + arg2)) = arg1;
         result = 1;
@@ -146,7 +143,7 @@ u8 func_80035054(u16 arg0, u32 arg1, u16 arg2, f32 arg3, f32 arg4, f32 arg5) {
 
     if (!arg0) {
         
-        if (D_8015825A & 1) {
+        if (D_80158248.flags & 1) {
             if (arg2) {
                 func_80026E78(&D_80143168[arg1], func_80028888(arg2, D_80141C98), func_800288B8(arg2, D_80141C9C, D_80141CA0));
                 res = 1;
@@ -174,7 +171,7 @@ u8 func_80035914(u16 arg0, f32 arg1, f32 arg2) {
     u8 res = 0;
 
     if (!arg0) {
-        if (D_8015825A & 1) {
+        if (D_80158248.flags & 1) {
             func_800366F4(arr, 0, arg1, arg2);
             if (arr[1] != 65535.0f) {
                 res = func_80036880(0, arr2[0], arr2[2]) != 0;
@@ -219,7 +216,6 @@ INCLUDE_ASM(const s32, "system/map", func_80036490);
 
 //INCLUDE_ASM(const s32, "system/map", func_80036610);
 
-
 Vec3f *func_80036610(Vec3f *arg0, u16 arg1, f32 arg2, f32 arg3) {
 
     Vec3f vec;
@@ -232,8 +228,8 @@ Vec3f *func_80036610(Vec3f *arg0, u16 arg1, f32 arg2, f32 arg3) {
     if (!arg1 && D_80158248.flags & 1) {
         
         vec2.y = 0;
-        vec2.x = (arg2 + D_80158248.unk_0) / D_8013DC40.unk_2C;
-        vec2.z = (arg3 + D_80158248.unk_4) / D_8013DC40.unk_2D;
+        vec2.x = (arg2 + D_80158248.unk_8) / D_8013DC40.unk_2C;
+        vec2.z = (arg3 + D_80158248.unk_C) / D_8013DC40.unk_2D;
 
         vec = vec2;
     }
@@ -254,9 +250,9 @@ INCLUDE_ASM(const s32, "system/map", func_80036980);
 u16 func_80036A84(u16 arg0) {
     u16 result = 0;
     
-    if (!arg0 && (D_8015825A & 1)) {
+    if (!arg0 && (D_80158248.flags & 1)) {
         // bit 4
-        result = (D_8015825A >> 3) & 1;
+        result = (D_80158248.flags >> 3) & 1;
     }
 
     return result;

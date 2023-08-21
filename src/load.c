@@ -1,22 +1,19 @@
 #include "common.h"
+
 #include "animals.h"
 
-                        
 void func_8005A60C();                                  
-void func_8006096C();                                  
-                   
-u8 handleHouseConstruction(u8);                                
 void func_80075A18();                                  
 void func_800886D0();                   
 void func_8009BC64();                                  
 void func_800CC17C();                                  
-void setSeasonName();                                  
 void func_800D9BFC();                                  
 u32 func_800DC008();                                
 u32 func_800DC080();                                
 u32 func_800DC0F8();                                
 u32 func_800DC170();                
 
+u8 handleHouseConstruction(u8);                          
 u8 getSumBacholerettesWithAffectionThreshold(u8 affectionLevel);
 
 u32 checkDailyEventBit(u16 bitIndex);                          
@@ -25,7 +22,8 @@ void setDailyEventBit(u16 bitIndex);
 void setLifeEventBit(u16 bitIndex);                               
 void toggleLifeEventBit(u16 bitIndex);      
 void resetDailyBits();    
-
+void setFestivalDailyBits();                                  
+void setSeasonName();        
 void setSpecialDialogues();           
 void setWifeNameString(u8 wife);          
 
@@ -123,7 +121,7 @@ void func_800598E0(void) {
     // decrease wife/baby/horse/dog affection
     func_8005A60C();
     // set festival daily event bits 
-    func_8006096C();
+    setFestivalDailyBits();
     
     if (checkDailyEventBit(0x4E)) {
         gWeather = SUNNY;
@@ -156,11 +154,12 @@ void func_800598E0(void) {
     if (gSeason == FALL) {
         if (gDayOfMonth == 3) {
             toggleLifeEventBit(0x91);
-            // some kind of index
+            // animal index
             D_80189054 = 0xFF;
         }
         if (gSeason == FALL) {
-            if (gDayOfMonth == 5) {       
+            if (gDayOfMonth == 5) {  
+                // animal index     
                 D_80189054 = 0xFF;
             }
         }

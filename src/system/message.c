@@ -1,5 +1,8 @@
 #include "common.h"
 
+#include "message.h"
+
+extern DialogueBox D_80188B70[6];
 
 extern u16 D_80204BF0[];
 
@@ -82,7 +85,20 @@ INCLUDE_ASM(const s32, "system/message", func_8003FFF4);
 
 INCLUDE_ASM(const s32, "system/message", func_80040140);
 
-INCLUDE_ASM(const s32, "system/message", func_800401C8);
+//INCLUDE_ASM(const s32, "system/message", func_800401C8);
+
+u8 func_800401C8(u16 index) {
+
+    u8 result = 0;
+
+    if (index < 6) {
+        if (D_80188B70[index].flags & 1 && D_80188B70[index].flags & 2) {
+            result = D_80188B70[index].buttonSfxCounter != 0;
+        }
+    }
+
+    return result;
+}
 
 INCLUDE_ASM(const s32, "system/message", func_8004022C);
 

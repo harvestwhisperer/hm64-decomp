@@ -49,7 +49,8 @@ typedef struct {
 	u8 unk_6E; // 6E
 	u8 unk_6F; // 6F
 	u8 unk_70; // 70
-	u8 fatigue[6]; // 71
+	u8 fatigue[5]; // 71
+    u16 flags;
 } Player;
 
 typedef struct {
@@ -80,6 +81,36 @@ typedef struct {
 	u8 rotation;
 	u16 flags;
 } MapTileContext;
+
+typedef struct {
+    u8 unk_0;
+    u8 unk_1;
+    u8 unk_2;
+    u8 unk_3;
+    u8 unk_4;
+    u8 unk_5; 
+} Days;
+
+typedef struct {
+    u16 unk_0;
+    u16 unk_2;
+    u16 unk_4;
+    u16 unk_6;
+    u16 unk_8;
+    u16 unk_A;
+} Bits;
+
+typedef struct {
+    void* romAddr;
+    void *vaddr;
+} Addresses;
+
+typedef struct {
+    u16 unk_0;
+    u16 unk_2;
+    u16 unk_4;
+    u8 unk_6;
+} MainLoopCallbackInfo;
 
 typedef struct {
     Vec3f unk_0;
@@ -113,29 +144,6 @@ typedef struct {
     f32 unk_3D7C;
 } UnknownStruct2;
 
-typedef struct {
-    u8 unk_0;
-    u8 unk_1;
-    u8 unk_2;
-    u8 unk_3;
-    u8 unk_4;
-    u8 unk_5; 
-} Days;
-
-typedef struct {
-    u16 unk_0;
-    u16 unk_2;
-    u16 unk_4;
-    u16 unk_6;
-    u16 unk_8;
-    u16 unk_A;
-} Bits;
-
-typedef struct {
-    void* romAddr;
-    void *vaddr;
-} Addresses;
-
 // likely related to tool use
 typedef struct {
     u16 unk_0; // 28
@@ -143,10 +151,10 @@ typedef struct {
     u8 unk_3; // 2B
     u16 unk_4; // 2C
     u16 unk_6; // 2E
-    u16 unk_8; // 30
+    u8 unk_8; // 30
     u16 unk_A; // 32
     u16 unk_C; // 34
-    u16 unk_E; // 36
+    u8 unk_E; // 36
 } UnknownStruct3;
 
 #endif

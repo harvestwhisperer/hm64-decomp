@@ -920,11 +920,15 @@ setSpecialDialogues = 0x8005A708;
 resetDailyBits = 0x8005ABBC;
 adjustValue = 0x8005AE64;
 
+setFestivalDailyBits = 0x8006096C;
 setWifeNameString = 0x800611E0;
 setDefaultBabyName = 0x80061354;
 setHarvestKingName = 0x800614D0;
 setFlowerFestivalGoddess = 0x80061860;
 getSumBacholerettesWithAffectionThreshold = 0x800618EC;
+setRecipes = 0x80062084;
+handleHouseConstruction = 0x800623E4;
+setLetters = 0x8006252C;
 setAlbumPicture = 0x80065404;
 setDailyEventBit = 0x80065074;
 toggleDailyEventBit = 0x800650A8;
@@ -936,29 +940,19 @@ setSpecialDialogueBit = 0x800651A4;
 toggleSpecialDialogueBit = 0x800651D8;
 checkSpecialDialogueBit = 0x80065210;
 toggleReadLetterBit = 0x80065270;
-
+checkMailRead = 0x800652A8;
+setMail = 0x800652D4;
 acquireKeyItem = 0x80065DCC;
 removeKeyItem = 0x80065E24;
 checkHaveKeyItem = 0x80065F10;
-
-setRecipes = 0x80062084;
-setLetters = 0x8006252C;
-handleHouseConstruction = 0x800623E4;
-checkMailRead = 0x800652A8;
-setMail = 0x800652D4;
-
 setPlayerAction = 0x800661FC; 
-
-
+checkFatigueLevel = 0x800679EC;
 setExit = 0x8006E820;
 setLevelGraphicsData = 0x8006E9B8;
 getLevelFlags = 0x8006EC40;
-
 setNPCSpawningLocations = 0x80076B54;
 setEllenLocation = 0x8007DDF0;
-
 setNpcAnimations = 0x80081B00;
-
 adjustDogAffection = 0x800863B0;
 adjustHorseAffection = 0x80086404;
 initializeDog = 0x80088918;
@@ -1000,6 +994,7 @@ addRecipe = 0x800C77B8;
 checkRecipe = 0x800C7824;
 
 handleToolUse = 0x800D0110;
+handleBlueFeatherUse = 0x800D4F70;
 updateClock = 0x800D7E28;
 setupNewYear = 0x800D8004;
 toggleMonthlyLetterBits = 0x800D8180;

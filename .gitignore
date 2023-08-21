@@ -14,4 +14,4 @@ bin/
 build/
 tools/gcc-2.7.2
 tools/splat
-.vscode/
+.vscode

@@ -269,7 +269,7 @@
 #define POTATO_SEEDS 11
 #define CABBAGE_SEEDS 12
 #define TOMATO_SEEDS 13
-#define CORD_SEEDS 14
+#define CORN_SEEDS 14
 #define EGGPLANT_SEEDS 15
 #define STRAWBERRY_SEEDS 16
 #define MOON_DROP_SEEDS 17
@@ -346,5 +346,15 @@
 #define char_x 0xD2
 #define char_y 0xD3
 #define char_z 0xD4
+
+#define TOOL_USE 1
+#define THROWING 2
+#define PICKING_UP 4
+#define PUTTING_DOWN 5
+#define EATING 6
+#define ABOUT_TO_DRINK 12
+#define WHISTLING 19
+#define DRINKING 20
+#define CASTING_FISHING_ROD 22
 
 #endif

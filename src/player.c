@@ -17,6 +17,9 @@ extern UnknownStruct3 D_80189828;
 extern u8 D_80189836;
 extern u16 D_80237410;
 
+
+void setSpriteAnimation(u8, u32);    
+
 u8 func_8002E284(u16, u16, u32);                           
 u8 func_8002F014(u16, u8, u8, u8, u8);             
 u8 func_8002F114(u16, u8);                              
@@ -38,51 +41,47 @@ void func_800D55E4(u8, u8);
 void func_800DC9C0(u8);
 u8 func_800DCAA0(u8); 
 
-void setSpriteAnimation(u8, u32);    
 
+//INCLUDE_ASM(const s32, "player", func_800657D0);
 
-// can't use -fforce-addr
-INCLUDE_ASM(const s32, "player", func_800657D0);
+void func_800657D0(u16 arg0, u8 arg1) {
 
-// debuig why not matching
-// void func_800657D0(u16 arg0, u8 arg1) {
-
-//     s32 temp;
-//     s32 temp2;
+    s32 temp;
+    s32 temp2;
     
-//     func_8002E284(0, 0, 1);
-//     func_8003019C(0, 1);
-//     func_80030054(0, 1);
-//     func_8002FF38(0, 1);
-//     func_8002FCB4(0, 1);
-//     func_8002F014(0, globalLightingRgba.r, globalLightingRgba.g, globalLightingRgba.b, globalLightingRgba.a);
-//     func_8002F114(0, 0);
+    func_8002E284(0, 0, 1);
+    func_8003019C(0, 1);
+    func_80030054(0, 1);
+    func_8002FF38(0, 1);
+    func_8002FCB4(0, 1);
+    func_8002F014(0, globalLightingRgba.r, globalLightingRgba.g, globalLightingRgba.b, globalLightingRgba.a);
+    func_8002F114(0, 0);
 
-//     if (arg1) {
-//         gPlayer.startingCoordinates.x = D_80113C50[arg0].x;
-//         gPlayer.startingCoordinates.y = D_80113C50[arg0].y;
-//         gPlayer.startingCoordinates.z = D_80113C50[arg0].z;
-//         gPlayer.direction = D_801141A8[arg0];
-//     }
+    if (arg1) {
+        gPlayer.startingCoordinates.x = D_80113C50[arg0].x;
+        gPlayer.startingCoordinates.y = D_80113C50[arg0].y;
+        gPlayer.startingCoordinates.z = D_80113C50[arg0].z;
+        gPlayer.direction = D_801141A8[arg0];
+    }
 
-//     temp = gPlayer.direction + 8 - (func_8003C1A4(0));
-//     temp2 = temp;
+    temp = gPlayer.direction + 8 - (func_8003C1A4(0));
+    temp2 = temp;
     
-//     if (temp < 0) {
-//         temp2 = temp + 7;
-//     }
+    if (temp < 0) {
+        temp2 = temp + 7;
+    }
 
-//     func_8002F684(0, (temp - (temp2 >> 3) * 8));
-//     func_8002FD80(0, gPlayer.startingCoordinates.x, gPlayer.startingCoordinates.y, gPlayer.startingCoordinates.z);
+    func_8002F684(0, (temp - (temp2 >> 3) * 8));
+    func_8002FD80(0, gPlayer.startingCoordinates.x, gPlayer.startingCoordinates.y, gPlayer.startingCoordinates.z);
 
-//     D_80189828.unk_3 = 0;
-//     D_80189828.unk_4 = 0;
-//     D_80189828.unk_6 = 0;
-//     D_80189828.unk_8 = 0;
-//     D_80189828.unk_A = 0;
-//     D_80189828.unk_C = 0;
+    D_80189828.unk_3 = 0;
+    D_80189828.unk_4 = 0;
+    D_80189828.unk_6 = 0;
+    D_80189828.unk_8 = 0;
+    D_80189828.unk_A = 0;
+    D_80189828.unk_C = 0;
 
-// }
+}
 
 INCLUDE_ASM(const s32, "player", func_80065AA0);
 
@@ -98,7 +97,6 @@ INCLUDE_ASM(const s32, "player", removeKeyItem);
 
 INCLUDE_ASM(const s32, "player", func_80065E80);
 
-// can't use -fforce-addr
 //INCLUDE_ASM(const s32, "player", checkHaveKeyItem);
 
 u8 checkHaveKeyItem(u8 item) {
@@ -111,7 +109,6 @@ u8 checkHaveKeyItem(u8 item) {
         if (keyItemSlots[i] == item) {
             found = 1;
         }
-        
     }
 
     return found;
@@ -132,20 +129,24 @@ void setPlayerAction(u16 arg0, u16 arg1) {
         gPlayer.action4 = 0;
         gPlayer.action1 = arg0;
     }
+
     if (arg1 != 0xFF) {
         gPlayer.action2 = arg1;
     }
+    
 }
 
-INCLUDE_RODATA(const s32, "player", D_8011F3F0);
+//INCLUDE_RODATA(const s32, "player", D_8011F3F0);
 
-INCLUDE_RODATA(const s32, "player", D_8011F3FC);
+const u8 D_8011F3F0[12] = { 0, 0xFF, 0xFF, 0xFF, 0, 1, 1, 1, 0, 0, 0, 0 };
 
-// can't use -fforce-addr
+//INCLUDE_RODATA(const s32, "player", D_8011F3FC);
+
+const u8 D_8011F3FC[12] = { 1, 1, 0, 0xFF, 0xFF, 0xFF, 0, 1, 0, 0, 0, 0 };
+
 // jtbl_8011F408
-INCLUDE_ASM(const s32, "player", func_8006623C);
+//INCLUDE_ASM(const s32, "player", func_8006623C);
 
-/*
 void func_8006623C(void) {
     
     u32 temp;
@@ -161,19 +162,19 @@ void func_8006623C(void) {
         case 0:
             func_80067BC4();
             break;
-        case 1:
+        case TOOL_USE:
             func_80067E5C();
             break;
-        case 2:
+        case THROWING:
             func_80067EE0();
             break;
         case 3:
             func_80067F50();
             break;
-        case 4:
+        case PICKING_UP:
             func_8006807C();
             break;
-        case 5:
+        case PUTTING_DOWN:
             func_80068120();
             break;
         case 7:
@@ -191,7 +192,7 @@ void func_8006623C(void) {
         case 11:
             func_80068558();
             break;
-        case 12:
+        case ABOUT_TO_DRINK:
             func_80068A98();
             break;
         case 13:
@@ -215,16 +216,16 @@ void func_8006623C(void) {
         case 18:
             func_80069C90();
             break;
-        case 19:
+        case WHISTLING:
             func_80069CC4();
             break;
-        case 20:
+        case DRINKING:
             func_80069DA8();
             break;
         case 21:
             func_80069DB0();
             break;
-        case 22:
+        case CASTING_FISHING_ROD:
             func_80069E54();
             break;
         case 23:
@@ -265,7 +266,6 @@ void func_8006623C(void) {
     func_800D7010();
     func_800D0318();
 }
-*/
 
 // D_8011F490
 // D_801FC1C7
@@ -279,10 +279,9 @@ INCLUDE_ASM(const s32, "player", func_80067290);
 
 INCLUDE_ASM(const s32, "player", func_80067950);
 
-// -fforce-addr irrelevant
-//INCLUDE_ASM(const s32, "player", func_800679EC);
+//INCLUDE_ASM(const s32, "player", checkFatigueLevel);
 
-u8 func_800679EC(void) {
+u8 checkFatigueLevel(void) {
 
     u8 temp;
     
@@ -305,15 +304,16 @@ INCLUDE_ASM(const s32, "player", func_80067BC4);
 
 INCLUDE_ASM(const s32, "player", func_80067E5C);
 
-// can't use -fforce-addr
 //INCLUDE_ASM(const s32, "player", func_80067EE0);
 
 void func_80067EE0(void) {
+
     if (gPlayer.action3 == 3) {
         func_800D55E4(gPlayer.unk_2D, 0xE);
         gPlayer.unk_2C = 0;
         gPlayer.action4 += 1;
     }
+
     gPlayer.action3 += 1;
 }
 
@@ -323,10 +323,10 @@ INCLUDE_ASM(const s32, "player", func_8006807C);
 
 INCLUDE_ASM(const s32, "player", func_80068120);
 
-// doesn't need -fforce-addr
 //INCLUDE_ASM(const s32, "player", func_80068258);
 
 void func_80068258(void) {
+
     if (gPlayer.action4 == 0) {
         func_8002FD80(0, -140.0f, 0.0f, -152.0f);
         func_8003019C(0, 0);
@@ -335,6 +335,7 @@ void func_80068258(void) {
         gPlayer.action4 += 1;
         func_80034DC8(0, 0, 7);
     }
+
     if (gPlayer.action4 == 3) {
         func_80034DC8(0, 0, 8);
     }
@@ -350,35 +351,33 @@ void func_800682F8(void) {
 
 INCLUDE_ASM(const s32, "player", func_80068340);
 
-// can't use -fforce-addr
-INCLUDE_ASM(const s32, "player", func_80068410);
+//INCLUDE_ASM(const s32, "player", func_80068410);
 
-// non-matching
-// void func_80068410(void) {
-//     if (gPlayer.action4 == 0) {
-//         if (gPlayer.action3 == 4) {
-//             if (func_800DCAA0(gPlayer.unk_6B)) {
-//                 func_800D55E4(gPlayer.direction, 7);
-//             }
-//             gPlayer.action4++;
-//         }
-//         gPlayer.action3++;
-//     }
-//     if (gPlayer.action4 == 2) {
-//         if (func_800DCAA0(gPlayer.unk_6B)) {
-//             func_800D55E4(gPlayer.direction, 1);
-//         }
-//         func_800DC7BC(gPlayer.unk_6B);
-//         gPlayer.action4 = 5;
-//     }
-//     if (gPlayer.action4 == 3) {
-//         if (func_800DCAA0(gPlayer.unk_6B)) {
-//             func_800D55E4(gPlayer.direction, 1);
-//         }
-//         func_800DC9C0(gPlayer.unk_6B);
-//         gPlayer.action4 = 5;
-//     }
-// }
+void func_80068410(void) {
+    if (gPlayer.action4 == 0) {
+        if (gPlayer.action3 == 4) {
+            if (func_800DCAA0(gPlayer.unk_6B)) {
+                func_800D55E4(gPlayer.unk_2D, 7);
+            }
+            gPlayer.action4++;
+        }
+        gPlayer.action3++;
+    }
+    if (gPlayer.action4 == 2) {
+        if (func_800DCAA0(gPlayer.unk_6B)) {
+            func_800D55E4(gPlayer.unk_2D, 1);
+        }
+        func_800DC7BC(gPlayer.unk_6B);
+        gPlayer.action4 = 5;
+    }
+    if (gPlayer.action4 == 3) {
+        if (func_800DCAA0(gPlayer.unk_6B)) {
+            func_800D55E4(gPlayer.unk_2D, 1);
+        }
+        func_800DC9C0(gPlayer.unk_6B);
+        gPlayer.action4 = 5;
+    }
+}
 
 // D_8011F498
 INCLUDE_ASM(const s32, "player", func_80068558);
@@ -386,35 +385,35 @@ INCLUDE_ASM(const s32, "player", func_80068558);
 // D_8011F4A0
 INCLUDE_ASM(const s32, "player", func_80068738);
 
-void func_80068918(void) {
-}
+void func_80068918(void) {}
 
-// can't use -fforce-addr
 //INCLUDE_ASM(const s32, "player", func_80068920);
 
 void func_80068920(void) {
+
     if (gPlayer.action3 == 3) {
         func_800D55E4(gPlayer.unk_2D, 0x12U);
         gPlayer.unk_2C = 0;
         gPlayer.action4 += 1;
     }
+
     gPlayer.action3 += 1;
 }
 
-// can't use -fforce-addr
 //INCLUDE_ASM(const s32, "player", func_80068990);
 
 void func_80068990(void) {
+
     if (gPlayer.action3 == 3) {
         func_800D55E4(gPlayer.unk_2D, 0x14);
         gPlayer.unk_2C = 0;
         gPlayer.action4++;
     }
+
     gPlayer.action3++;
 }
 
-void func_80068A00(void) {
-}
+void func_80068A00(void) {}
 
 INCLUDE_ASM(const s32, "player", func_80068A08);
 
@@ -430,7 +429,6 @@ INCLUDE_ASM(const s32, "player", func_800692E4);
 
 INCLUDE_ASM(const s32, "player", func_80069830);
 
-// -fforce-addr irrelevant
 //INCLUDE_ASM(const s32, "player", func_80069C5C);
 
 void func_80069C5C(void) {
@@ -454,22 +452,17 @@ void func_80069DA8(void) {
 
 INCLUDE_ASM(const s32, "player", func_80069DB0);
 
-void func_80069E54(void) {
-}
+void func_80069E54(void) {}
 
-void func_80069E5C(void) {
-}
+void func_80069E5C(void) {}
 
-void func_80069E64(void) {
-}
+void func_80069E64(void) {}
 
-void func_80069E6C(void) {
-}
+void func_80069E6C(void) {}
 
 INCLUDE_ASM(const s32, "player", func_80069E74);
 
-void func_8006A2E0(void) {
-}
+void func_8006A2E0(void) {}
 
 INCLUDE_ASM(const s32, "player", func_8006A2E8);
 
@@ -497,8 +490,7 @@ INCLUDE_ASM(const s32, "player", func_8006AFE4);
 
 INCLUDE_ASM(const s32, "player", func_8006B104);
 
-void func_8006B4D4(void) {
-}
+void func_8006B4D4(void) {}
 
 INCLUDE_ASM(const s32, "player", func_8006B4DC);
 
@@ -514,14 +506,11 @@ INCLUDE_ASM(const s32, "player", func_8006B8BC);
 
 INCLUDE_ASM(const s32, "player", func_8006B910);
 
-void func_8006B964(void) {
-}
+void func_8006B964(void) {}
 
-void func_8006B96C(void) {
-}
+void func_8006B96C(void) {}
 
-void func_8006B974(void) {
-}
+void func_8006B974(void) {}
 
 INCLUDE_ASM(const s32, "player", func_8006B97C);
 
@@ -533,11 +522,9 @@ INCLUDE_ASM(const s32, "player", func_8006BBC4);
 
 INCLUDE_ASM(const s32, "player", func_8006BC84);
 
-void func_8006C12C(void) {
-}
+void func_8006C12C(void) {}
 
-void func_8006C134(void) {
-}
+void func_8006C134(void) {}
 
 INCLUDE_ASM(const s32, "player", func_8006C13C);
 
@@ -592,7 +579,6 @@ INCLUDE_ASM(const s32, "player", func_8006DE8C);
 INCLUDE_ASM(const s32, "player", func_8006DFB0);
 
 // chicken feed
-// can't use -fforce-addr
 //INCLUDE_ASM(const s32, "player", func_8006E0D4);
 
 void func_8006E0D4(void) {
@@ -626,6 +612,7 @@ void func_8006E0D4(void) {
         default:
             break;
     }
+
 }
 
 void func_8006E1F8(void) {
@@ -637,7 +624,6 @@ void func_8006E200(void) {
 void func_8006E208(void) {
 }
 
-// doesn't need -fforce-addr
 //INCLUDE_ASM(const s32, "player", func_8006E210);
 
 void func_8006E210(void) {
@@ -648,10 +634,10 @@ void func_8006E210(void) {
 }
 
 // empty bottle
-// can't use -fforce-addr
 //INCLUDE_ASM(const s32, "player", func_8006E240);
 
 void func_8006E240(void) {
+
     switch (gPlayer.action4) {                           
         case 0:
             setSpriteAnimation(0, 0);
@@ -682,6 +668,7 @@ void func_8006E240(void) {
         default:
             break;
     }
+
 }
 
 INCLUDE_ASM(const s32, "player", func_8006E348);

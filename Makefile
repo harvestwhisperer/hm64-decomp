@@ -59,10 +59,8 @@ endif
 
 dir_guard = @mkdir -p $(@D)
 
-build/src/game.c.o: CFLAGS += -fforce-addr
 build/src/spriteAnimation.c.o: CFLAGS += -fforce-addr
 build/src/animals.c.o: CFLAGS += -fforce-addr
-build/src/itemHandlers.c.o: CFLAGS += -fforce-addr
 
 build/src/lib/nusys-1/nuboot.c.o: NU_OPTFLAGS := -O0
 

@@ -16,14 +16,13 @@ int getRandomNumber(void) {
     
 }
 
-// -O2/-O3
+// has an extra nop that's not generated when compiled
 // 80110444
 INCLUDE_ASM(const s32, "lib/os/libultra/unknown/randomNumber", func_80110444);
 
-// void func_80110444(u32 value) {
-//     D_8013CDF0 = value;
-//     return;
-// }
+// void func_80110444(int value) {
+//     D_8013CDF0 = value; 
+// } 
 
 INCLUDE_ASM(const s32, "lib/os/libultra/unknown/randomNumber", func_80110454);
 

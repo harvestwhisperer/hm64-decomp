@@ -50,6 +50,7 @@ void func_800D8540(void) {
     D_80170274 = 0;
 }
 
+// jtbl_80122760
 
 #ifdef PERMUTER
 void func_800D86D8(void) {

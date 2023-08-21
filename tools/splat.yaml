@@ -411,7 +411,8 @@ segments:
       - [ 0xFC2C0, rodata]
       - [ 0xFC7F0, rodata]
       - [ 0xFD090, .rodata, overlayScreens]
-      - [ 0xFD6B0, rodata] # itemHandlers
+      - [ 0xFD6B0, .rodata, itemHandlers] # itemHandlers
+      - [ 0xFDB60, rodata] # tv
       - [ 0xFE880, rodata] # title
       - [ 0xFEA90, rodata] # loadGameScreen
       - [ 0xFEAC0, rodata] # evaluation

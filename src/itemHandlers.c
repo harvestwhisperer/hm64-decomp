@@ -1,26 +1,84 @@
 #include "common.h"
 
+#include "animals.h"
+#include "npc.h"
+#include "system/sprite.h"
+
 // rodata
 extern u16 itemFlags[];
 
+extern u8 gBaseMapIndex;
 extern u8 gSeason;
+
+extern u8 gWife;
+
+extern u8 npcAffection[];
+extern npcInfo npcInfoArray[];
+
+extern Player gPlayer;
+
+extern Chicken gChickens[];
+
+extern u8 gItemBeingHeld;
+
+extern u32 dailyShippingBinValue;
+extern u32 gTotalCropsShipped;
+extern u32 gTotalEggsShipped;
+extern u32 gTotalGoldenMilkShipped;
 
 extern u16 D_801174A0[4][5];
 extern u8 D_80117F20[];
 extern u8 D_8018907D;
 extern u8 D_801890CC;
 extern u16 D_80118000[];
-extern u8 D_80189836;
 
+extern u8 D_80117180[];
+extern u8 D_8011718C[];
+extern u16 D_801181C0[];
+extern u8 D_80118540[];
+extern u8 D_80118620[];
+extern u8 D_801C3E18;
+extern u8 D_801C3F35;
+extern u8 D_801FD624;
+
+extern u32 D_801654F4;
+extern u32 D_801806C0;
+extern u32 D_80188F60;
+extern u32 D_801C3F80;
+extern u32 D_801FB5D0;
+extern u32 D_801FB6FC;
+extern u32 D_80237414;
+
+extern UnknownStruct3 D_80189828;
+extern RenderedSprite renderedSprites[];
 extern UnknownStruct D_80204DF8[10];
 
+u32 adjustValue(s32 current, s32 amount, s32 max);   
+void setDailyEventBit(u16);  
+void setDefaultBabyName(u8);
+
+u8 checkWineBarrelInteraction(u8);
+
+void func_8002FA2C(u16);
+void func_80034DC8(u16, u8, u16);    
+u8 func_8003C1A4(u16);
+u32 func_8004D380(u8, u32);    
 void func_8005AE8C(u8, u8, u16, u8, u8);
+void func_80065F94(f32[], f32, u16);
+void func_80073244(u8); 
+void func_80085D48(u8, u32);   
+void func_8009A398(void);                                  
+u8 func_8009A400();
+u8 func_8009A810();    
+void func_8009A97C(); 
 void func_8009A17C();                               
 void func_8009A2D0();
 void func_8009A53C();  
 void func_8009AAC8();     
-void func_8009B25C();                          
-
+void func_8009B25C();         
+void func_800ACC50(u16);
+u8 func_800ACE50(u8);
+u8 func_800ACFE8(u8);                 
 void func_800D0360();                                  
 void func_800D093C();                                  
 void func_800D0DD4();                                  
@@ -47,61 +105,17 @@ void func_800D4CC0();
 void func_800D4CD0();                                  
 void func_800D4D1C();                                  
 void func_800D4D68();                                  
-void func_800D4F70();                                  
+void handleBlueFeatherUse();                  
 void func_800D5130();
-
-void func_8002FA2C(u16);
+void func_800D56E8(u8, u16);   
 u8 func_800D67E4(u8);
-
-u8 func_8009A810();    
-u8 func_8009A400();
-
-u8 func_8003C1A4(u16);
-void func_80065F94(f32[], f32, u16);
-void func_800ACC50(u16);
-u16 func_800DA948(u8);
-void func_800DAC70(u8, u8, u8, u8);
-u8 func_800DAF58(f32, u8);
-
-extern u8 D_80117180[];
-extern u8 D_8011718C[];
-extern u8 D_80118540[];
-extern u8 D_80118620[];
-extern u8 D_8018982A;
-extern u8 D_801FD624;
-extern u8 D_801C3F35;
-extern u8 D_801FC1C7;
-extern u8 D_801FD624;
-extern u8 gBaseMapIndex;
-extern u8 gSeason;
-
-u8 func_800D67E4(u8);
-extern u8 gItemBeingHeld;
-
-u32 func_8004D380(u8, u32);                            
 u8 func_800DA8B8(u8);                             
 u8 func_800DA918(u8);                              
+u16 func_800DA948(u8);
+void func_800DAC70(u8, u8, u8, u8);
 f32* func_800DAD74(u8, f32, u8);                           
 u8 func_800DAF58(f32, u8);                            
-extern u8 D_8018908C;
 
-u32 adjustValue(s32 current, s32 amount, s32 max);                    
-void func_8009A398(void);                                  
-extern u16 D_801181C0[];
-extern u32 D_801654F4;
-extern u32 D_801806C0;
-extern u32 D_80188F60;
-extern u32 D_801C3F80;
-extern u32 D_801FB5D0;
-extern u32 D_801FB6FC;
-extern u32 dailyShippingBinValue;
-extern u32 D_80237414;
-extern u32 gTotalCropsShipped;
-extern u32 gTotalEggsShipped;
-extern u32 gTotalGoldenMilkShipped;
-
-void func_80034DC8(u16, u8, u16);                      
-void setDailyEventBit(u16);  
 
 INCLUDE_ASM(const s32, "itemHandlers", func_800CF850);
 
@@ -123,11 +137,8 @@ INCLUDE_ASM(const s32, "itemHandlers", func_800CFF1C);
 INCLUDE_ASM(const s32, "itemHandlers", func_800D0074);
 
 // jtbl_801222C8
-INCLUDE_ASM(const s32, "itemHandlers", handleToolUse);
+//INCLUDE_ASM(const s32, "itemHandlers", handleToolUse);
 
-// jumptable: 0xFD6C8, 0x801222C8
-/*
-// handle tool use
 void handleToolUse(void) {
     
     switch (D_8018907D) {
@@ -181,7 +192,7 @@ void handleToolUse(void) {
         case STRAWBERRY_SEEDS:
             func_800D43E4();
             break;
-        case MOONDROP_SEEDS:
+        case MOON_DROP_SEEDS:
             func_800D45F4();
             break;
         case PINK_CAT_MINT_SEEDS:
@@ -215,7 +226,7 @@ void handleToolUse(void) {
             func_800D4D68();
             break;
         case BLUE_FEATHER:
-            func_800D4F70();
+            handleBlueFeatherUse();
             break;
         case EMPTY_BOTTLE:
             func_800D5130();
@@ -224,15 +235,14 @@ void handleToolUse(void) {
             return;
     }
 }
-*/
 
 //INCLUDE_ASM(const s32, "itemHandlers", func_800D0318);
 
 void func_800D0318(void) {
 
-    int temp = D_80189836; 
+    int temp = D_80189828.unk_E; 
 
-    // very bad programming: really just need to check if D_80189836 == 2
+    // very bad programming: really just need to check if D_80189828.unk_E == 2
     if (temp) {
         if (temp != 3) {
             if (temp < 4) {
@@ -242,7 +252,6 @@ void func_800D0318(void) {
             }
         }
     }
-
 }
 
 INCLUDE_ASM(const s32, "itemHandlers", func_800D0360);
@@ -260,16 +269,15 @@ INCLUDE_ASM(const s32, "itemHandlers", func_800D304C);
 // milker
 void func_800D3694(void) {
     func_8009A53C();
-    D_80189836 = 0;
+    D_80189828.unk_E = 0;
 }
-
 
 //INCLUDE_ASM(const s32, "itemHandlers", func_800D36BC);
 
 // cow bell
 void func_800D36BC(void) {
     func_8009B25C();
-    D_80189836 = 0;
+    D_80189828.unk_E = 0;
 }
 
 //INCLUDE_ASM(const s32, "itemHandlers", func_800D36E4);
@@ -278,7 +286,7 @@ void func_800D36BC(void) {
 void func_800D36E4(void) {
     func_8009A17C();
     func_8009A2D0();
-    D_80189836 = 0;
+    D_80189828.unk_E = 0;
 }
 
 //INCLUDE_ASM(const s32, "itemHandlers", func_800D3714);
@@ -286,24 +294,22 @@ void func_800D36E4(void) {
 // clippers
 void func_800D3714(void) {
     func_8009AAC8();
-    D_80189836 = 0;
+    D_80189828.unk_E = 0;
 }
 
 //INCLUDE_ASM(const s32, "itemHandlers", func_800D373C);
 
-// needs -fforce-addr
 // turnip seeds
 void func_800D373C(void) {
 
-    // to-do: fix varaible naming
     int temp1;
     int temp3;
     u8 temp2;
     u8 temp5;
     u8 temp4;
-    f32 floatArray[3];
+    f32 float_array[3];
 
-    temp1 = D_801FC1C7 + func_8003C1A4(0);
+    temp1 = renderedSprites[0].direction + func_8003C1A4(0);
     temp3 = temp1;
     
     if (temp3 < 0) {
@@ -313,32 +319,32 @@ void func_800D373C(void) {
     temp5 = temp1 - (temp3 & 0xF8);
     
     if (temp5 < 5) {
-        temp2 = D_80117180[D_8018982A];
+        temp2 = D_80117180[D_80189828.unk_2];
     }
     else {
-        temp2 = D_8011718C[D_8018982A];
+        temp2 = D_8011718C[D_80189828.unk_2];
     }
     
-    func_80065F94(floatArray, 0.0, temp2);
+    func_80065F94(&float_array, 0.0, temp2);
  
-    if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && (floatArray[1] != 65535)) {
-        if ((gSeason == SPRING) || (gBaseMapIndex == GREENHOUSE)) {
+    if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && (float_array[1] != 65535)) {
+        if ((gSeason == 1) || (gBaseMapIndex == 0x56)) {
           temp4 = 8;
         } else {
           temp4 = 0xD7;
         }
         
-        func_800DAC70(gBaseMapIndex, temp4, ((u8)floatArray[0] - D_801FD624), ((u8)floatArray[2]- D_801C3F35));
+        func_800DAC70(gBaseMapIndex, temp4, ((u8)float_array[0] - D_801FD624), ((u8)float_array[2]- D_801C3F35));
     }
     
-    if (!D_8018982A) {
+    if (!D_80189828.unk_2) {
         func_800ACC50(0x1D);
     }
     
-    D_8018982A += 1;
+    D_80189828.unk_2 += 1;
     
-    if (D_8018982A == 9) {
-        D_80189836 = 0;
+    if (D_80189828.unk_2 == 9) {
+        D_80189828.unk_E = 0;
     }
 }
 
@@ -353,20 +359,20 @@ void func_800D3958(void) {
     u8 temp4;
     f32 floatArray[3];
 
-    temp1 = D_801FC1C7 + func_8003C1A4(0);
+    temp1 = renderedSprites[0].direction + func_8003C1A4(0);
     temp3 = temp1;
     
     if (temp3 < 0) {
         temp3 = temp1 + 7;
     }
     
-    temp5 = temp1 - (temp3 & 0xf8);
+    temp5 = temp1 - (temp3 & 0xF8);
     
     if (temp5 < 5) {
-        temp2 = D_80117180[D_8018982A];
+        temp2 = D_80117180[D_80189828.unk_2];
     }
     else {
-        temp2 = D_8011718C[D_8018982A];
+        temp2 = D_8011718C[D_80189828.unk_2];
     }
     
     func_80065F94(floatArray, 0.0, temp2);
@@ -381,18 +387,19 @@ void func_800D3958(void) {
         func_800DAC70(gBaseMapIndex, temp4, ((u8)floatArray[0] - D_801FD624), ((u8)floatArray[2]- D_801C3F35));
     }
     
-    if (!D_8018982A) {
+    if (!D_80189828.unk_2) {
         func_800ACC50(0x1D);
     }
     
-    D_8018982A += 1;
+    D_80189828.unk_2 += 1;
     
-    if (D_8018982A == 9) {
-        D_80189836 = 0;
+    if (D_80189828.unk_2 == 9) {
+        D_80189828.unk_E = 0;
     }
 }
 
 //INCLUDE_ASM(const s32, "itemHandlers", func_800D3B74);
+
 // cabbage seeds
 void func_800D3B74(void) {
  
@@ -403,20 +410,20 @@ void func_800D3B74(void) {
     u8 temp4;
     f32 floatArray[3];
 
-    temp1 = D_801FC1C7 + func_8003C1A4(0);
+    temp1 = renderedSprites[0].direction + func_8003C1A4(0);
     temp3 = temp1;
     
     if (temp3 < 0) {
         temp3 = temp1 + 7;
     }
     
-    temp5 = temp1 - (temp3 & 0xf8);
+    temp5 = temp1 - (temp3 & 0xF8);
     
     if (temp5 < 5) {
-        temp2 = D_80117180[D_8018982A];
+        temp2 = D_80117180[D_80189828.unk_2];
     }
     else {
-        temp2 = D_8011718C[D_8018982A];
+        temp2 = D_8011718C[D_80189828.unk_2];
     }
     
     func_80065F94(floatArray, 0.0, temp2);
@@ -431,18 +438,19 @@ void func_800D3B74(void) {
         func_800DAC70(gBaseMapIndex, temp4, ((u8)floatArray[0] - D_801FD624), ((u8)floatArray[2]- D_801C3F35));
     }
     
-    if (!D_8018982A) {
+    if (!D_80189828.unk_2) {
         func_800ACC50(0x1D);
     }
     
-    D_8018982A += 1;
+    D_80189828.unk_2 += 1;
     
-    if (D_8018982A == 9) {
-        D_80189836 = 0;
+    if (D_80189828.unk_2 == 9) {
+        D_80189828.unk_E = 0;
     }
 }
 
 //INCLUDE_ASM(const s32, "itemHandlers", func_800D3D90);
+
 // tomato seeds
 void func_800D3D90(void) {
     int temp1;
@@ -452,20 +460,20 @@ void func_800D3D90(void) {
     u8 temp4;
     f32 floatArray[3];
 
-    temp1 = D_801FC1C7 + func_8003C1A4(0);
+    temp1 = renderedSprites[0].direction + func_8003C1A4(0);
     temp3 = temp1;
     
     if (temp3 < 0) {
         temp3 = temp1 + 7;
     }
     
-    temp5 = temp1 - (temp3 & 0xf8);
+    temp5 = temp1 - (temp3 & 0xF8);
     
     if (temp5 < 5) {
-        temp2 = D_80117180[D_8018982A];
+        temp2 = D_80117180[D_80189828.unk_2];
     }
     else {
-        temp2 = D_8011718C[D_8018982A];
+        temp2 = D_8011718C[D_80189828.unk_2];
     }
     
     func_80065F94(floatArray, 0.0, temp2);
@@ -480,14 +488,14 @@ void func_800D3D90(void) {
         func_800DAC70(gBaseMapIndex, temp4, ((u8)floatArray[0] - D_801FD624), ((u8)floatArray[2]- D_801C3F35));
     }
     
-    if (!D_8018982A) {
+    if (!D_80189828.unk_2) {
         func_800ACC50(0x1D);
     }
     
-    D_8018982A += 1;
+    D_80189828.unk_2 += 1;
     
-    if (D_8018982A == 9) {
-        D_80189836 = 0;
+    if (D_80189828.unk_2 == 9) {
+        D_80189828.unk_E = 0;
     }
 }
 
@@ -503,20 +511,20 @@ void func_800D3FAC(void) {
     u8 temp4;
     f32 floatArray[3];
 
-    temp1 = D_801FC1C7 + func_8003C1A4(0);
+    temp1 = renderedSprites[0].direction + func_8003C1A4(0);
     temp3 = temp1;
     
     if (temp3 < 0) {
         temp3 = temp1 + 7;
     }
     
-    temp5 = temp1 - (temp3 & 0xf8);
+    temp5 = temp1 - (temp3 & 0xF8);
     
     if (temp5 < 5) {
-        temp2 = D_80117180[D_8018982A];
+        temp2 = D_80117180[D_80189828.unk_2];
     }
     else {
-        temp2 = D_8011718C[D_8018982A];
+        temp2 = D_8011718C[D_80189828.unk_2];
     }
     
     func_80065F94(floatArray, 0.0, temp2);
@@ -531,14 +539,14 @@ void func_800D3FAC(void) {
         func_800DAC70(gBaseMapIndex, temp4, ((u8)floatArray[0] - D_801FD624), ((u8)floatArray[2]- D_801C3F35));
     }
     
-    if (!D_8018982A) {
+    if (!D_80189828.unk_2) {
         func_800ACC50(0x1D);
     }
     
-    D_8018982A += 1;
+    D_80189828.unk_2 += 1;
     
-    if (D_8018982A == 9) {
-        D_80189836 = 0;
+    if (D_80189828.unk_2 == 9) {
+        D_80189828.unk_E = 0;
     }
 }
 
@@ -546,6 +554,7 @@ void func_800D3FAC(void) {
 
 // eggplant seeds
 void func_800D41C8(void) {
+
     int temp1;
     int temp3;
     u8 temp2;
@@ -553,20 +562,20 @@ void func_800D41C8(void) {
     u8 temp4;
     f32 floatArray[3];
 
-    temp1 = D_801FC1C7 + func_8003C1A4(0);
+    temp1 = renderedSprites[0].direction + func_8003C1A4(0);
     temp3 = temp1;
     
     if (temp3 < 0) {
         temp3 = temp1 + 7;
     }
     
-    temp5 = temp1 - (temp3 & 0xf8);
+    temp5 = temp1 - (temp3 & 0xF8);
     
     if (temp5 < 5) {
-        temp2 = D_80117180[D_8018982A];
+        temp2 = D_80117180[D_80189828.unk_2];
     }
     else {
-        temp2 = D_8011718C[D_8018982A];
+        temp2 = D_8011718C[D_80189828.unk_2];
     }
     
     func_80065F94(floatArray, 0.0, temp2);
@@ -581,14 +590,14 @@ void func_800D41C8(void) {
         func_800DAC70(gBaseMapIndex, temp4, ((u8)floatArray[0] - D_801FD624), ((u8)floatArray[2]- D_801C3F35));
     }
     
-    if (!D_8018982A) {
+    if (!D_80189828.unk_2) {
         func_800ACC50(0x1D);
     }
     
-    D_8018982A += 1;
+    D_80189828.unk_2 += 1;
     
-    if (D_8018982A == 9) {
-        D_80189836 = 0;
+    if (D_80189828.unk_2 == 9) {
+        D_80189828.unk_E = 0;
     }
 }
 
@@ -606,20 +615,20 @@ void func_800D43E4(void) {
 
     f32 floatArray[3];
 
-    temp1 = D_801FC1C7 + func_8003C1A4(0);
+    temp1 = renderedSprites[0].direction + func_8003C1A4(0);
     temp3 = temp1;
     
     if (temp3 < 0) {
         temp3 = temp1 + 7;
     }
     
-    temp5 = temp1 - (temp3 & 0xf8);
+    temp5 = temp1 - (temp3 & 0xF8);
     
     if (temp5 < 5) {
-        temp2 = D_80117180[D_8018982A];
+        temp2 = D_80117180[D_80189828.unk_2];
     }
     else {
-        temp2 = D_8011718C[D_8018982A];
+        temp2 = D_8011718C[D_80189828.unk_2];
     }
 
     func_80065F94(floatArray, 0.0, temp2);
@@ -629,19 +638,20 @@ void func_800D43E4(void) {
         func_800DAC70(gBaseMapIndex, temp4, ((u8)floatArray[0] - D_801FD624), ((u8)floatArray[2]- D_801C3F35));
     }
 
-    if (!D_8018982A) {
+    if (!D_80189828.unk_2) {
         func_800ACC50(0x1D);
     }
 
-    D_8018982A += 1;
+    D_80189828.unk_2 += 1;
     
-    if (D_8018982A == 9) {
-        D_80189836 = 0;
+    if (D_80189828.unk_2 == 9) {
+        D_80189828.unk_E = 0;
     }
 }
 
 //INCLUDE_ASM(const s32, "itemHandlers", func_800D45F4);
-// moond drop seeds
+
+// moon drop seeds
 void func_800D45F4(void) {
 
     int temp1;
@@ -653,20 +663,20 @@ void func_800D45F4(void) {
 
     f32 floatArray[3];
 
-    temp1 = D_801FC1C7 + func_8003C1A4(0);
+    temp1 = renderedSprites[0].direction + func_8003C1A4(0);
     temp3 = temp1;
     
     if (temp3 < 0) {
         temp3 = temp1 + 7;
     }
     
-    temp5 = temp1 - (temp3 & 0xf8);
+    temp5 = temp1 - (temp3 & 0xF8);
     
     if (temp5 < 5) {
-        temp2 = D_80117180[D_8018982A];
+        temp2 = D_80117180[D_80189828.unk_2];
     }
     else {
-        temp2 = D_8011718C[D_8018982A];
+        temp2 = D_8011718C[D_80189828.unk_2];
     }
     
     func_80065F94(floatArray, 0.0, temp2);
@@ -682,17 +692,16 @@ void func_800D45F4(void) {
         func_800DAC70(gBaseMapIndex, temp4, ((u8)floatArray[0] - D_801FD624), ((u8)floatArray[2]- D_801C3F35));
     }
     
-    if (!D_8018982A) {
+    if (!D_80189828.unk_2) {
         func_800ACC50(0x1D);
     }
     
-    D_8018982A += 1;
+    D_80189828.unk_2 += 1;
     
-    if (D_8018982A == 9) {
-        D_80189836 = 0;
+    if (D_80189828.unk_2 == 9) {
+        D_80189828.unk_E = 0;
     }
 }
-
 
 //INCLUDE_ASM(const s32, "itemHandlers", func_800D4814);
 
@@ -707,20 +716,20 @@ void func_800D4814(void) {
 
     f32 floatArray[3];
 
-    temp1 = D_801FC1C7 + func_8003C1A4(0);
+    temp1 = renderedSprites[0].direction + func_8003C1A4(0);
     temp3 = temp1;
     
     if (temp3 < 0) {
         temp3 = temp1 + 7;
     }
     
-    temp5 = temp1 - (temp3 & 0xf8);
+    temp5 = temp1 - (temp3 & 0xF8);
     
     if (temp5 < 5) {
-        temp2 = D_80117180[D_8018982A];
+        temp2 = D_80117180[D_80189828.unk_2];
     }
     else {
-        temp2 = D_8011718C[D_8018982A];
+        temp2 = D_8011718C[D_80189828.unk_2];
     }
     
     func_80065F94(floatArray, 0.0, temp2);
@@ -736,14 +745,14 @@ void func_800D4814(void) {
         func_800DAC70(gBaseMapIndex, temp4, ((u8)floatArray[0] - D_801FD624), ((u8)floatArray[2]- D_801C3F35));
     }
     
-    if (!D_8018982A) {
+    if (!D_80189828.unk_2) {
         func_800ACC50(0x1D);
     }
     
-    D_8018982A += 1;
+    D_80189828.unk_2 += 1;
     
-    if (D_8018982A == 9) {
-        D_80189836 = 0;
+    if (D_80189828.unk_2 == 9) {
+        D_80189828.unk_E = 0;
     }
 }
 
@@ -760,20 +769,20 @@ void func_800D4A34(void) {
 
     f32 floatArray[3];
 
-    temp1 = D_801FC1C7 + func_8003C1A4(0);
+    temp1 = renderedSprites[0].direction + func_8003C1A4(0);
     temp3 = temp1;
     
     if (temp3 < 0) {
         temp3 = temp1 + 7;
     }
     
-    temp5 = temp1 - (temp3 & 0xf8);
+    temp5 = temp1 - (temp3 & 0xF8);
     
     if (temp5 < 5) {
-        temp2 = D_80117180[D_8018982A];
+        temp2 = D_80117180[D_80189828.unk_2];
     }
     else {
-        temp2 = D_8011718C[D_8018982A];
+        temp2 = D_8011718C[D_80189828.unk_2];
     }
     
     func_80065F94(floatArray, 0.0, temp2);
@@ -782,22 +791,20 @@ void func_800D4A34(void) {
         func_800DAC70(gBaseMapIndex, 0xB2, ((u8)floatArray[0] - D_801FD624), ((u8)floatArray[2]- D_801C3F35));
     }
     
-    if (!D_8018982A) {
+    if (!D_80189828.unk_2) {
         func_800ACC50(0x1D);
     }
     
-    D_8018982A += 1;
+    D_80189828.unk_2 += 1;
     
-    if (D_8018982A == 9) {
-        D_80189836 = 0;
+    if (D_80189828.unk_2 == 9) {
+        D_80189828.unk_E = 0;
     }
 }
 
-INCLUDE_ASM(const s32, "itemHandlers", func_800D4C28);
+//INCLUDE_ASM(const s32, "itemHandlers", func_800D4C28);
 
 // chicken feed
-// can't use -fforce-addr
-/*
 void func_800D4C28(void) {
     
     u8 chicken;
@@ -805,58 +812,55 @@ void func_800D4C28(void) {
     chicken = func_800ACE50(gBaseMapIndex);
   
     if (chicken != 0xFF) {
-        func_80073244((chicken - 0x13));
+        func_80073244(chicken - 0x13);
         gChickens[chicken - 0x13].upkeep |= 0x10;
     }
     
-    D_80189836 = 0;  
+    D_80189828.unk_E = 0;  
 }
-*/
 
 // ball
-void func_800D4CA8(void) {
-}
+void func_800D4CA8(void) {}
 
 // feeding bottle
-void func_800D4CB0(void) {
-}
+void func_800D4CB0(void) {}
 
 // unknown tool
-void func_800D4CB8(void) {
-}
+void func_800D4CB8(void) {}
 
 //INCLUDE_ASM(const s32, "itemHandlers", func_800D4CC0);
 
 // fishing pole
 void func_800D4CC0(void) {
-    D_80189836 = 0;
+    D_80189828.unk_E = 0;
 }
-
-
-// split
 
 //INCLUDE_ASM(const s32, "itemHandlers", func_800D4CD0);
 
 // miracle potion
 void func_800D4CD0(void) {
+
     if (func_8009A810()) {
         setDailyEventBit(0x14);
     } else {
         toggleDailyEventBit(0x14);
     }
-    D_80189836 = 0;
+
+    D_80189828.unk_E = 0;
 }
 
 //INCLUDE_ASM(const s32, "itemHandlers", func_800D4D1C);
 
 // cow medicine
 void func_800D4D1C(void) {
+
     if (func_8009A400()) {
         setDailyEventBit(0x14);
     } else {
         toggleDailyEventBit(0x14);
     }
-    D_80189836 = 0;
+
+    D_80189828.unk_E = 0;
 }
 
 //INCLUDE_ASM(const s32, "itemHandlers", func_800D4D68);
@@ -871,20 +875,20 @@ void func_800D4D68(void) {
     u8 temp4;
     f32 floatArray[3];
 
-    temp1 = D_801FC1C7 + func_8003C1A4(0);
+    temp1 = renderedSprites[0].direction + func_8003C1A4(0);
     temp3 = temp1;
     
     if (temp3 < 0) {
         temp3 = temp1 + 7;
     }
     
-    temp5 = temp1 - (temp3 & 0xf8);
+    temp5 = temp1 - (temp3 & 0xF8);
     
     if (temp5 < 5) {
-        temp2 = D_80117180[D_8018982A];
+        temp2 = D_80117180[D_80189828.unk_2];
     }
     else {
-        temp2 = D_8011718C[D_8018982A];
+        temp2 = D_8011718C[D_80189828.unk_2];
     }
     
     func_80065F94(floatArray, 0.0, temp2);
@@ -895,28 +899,39 @@ void func_800D4D68(void) {
         }
     }
     
-    if (!D_8018982A) {
+    if (!D_80189828.unk_2) {
         func_800ACC50(0x1D);
     }
     
-    D_8018982A += 1;
+    D_80189828.unk_2 += 1;
     
-    if (D_8018982A == 9) {
-        D_80189836 = 0;
+    if (D_80189828.unk_2 == 9) {
+        D_80189828.unk_E = 0;
     }
 }
 
+INCLUDE_RODATA(const s32, "itemHandlers", D_80122340);
 
+INCLUDE_RODATA(const s32, "itemHandlers", D_80122344);
 
-// file split
+INCLUDE_RODATA(const s32, "itemHandlers", D_80122348);
 
-INCLUDE_ASM(const s32, "itemHandlers", func_800D4F70);
+INCLUDE_RODATA(const s32, "itemHandlers", D_8012234C);
 
-// can't use -fforce-addr
+INCLUDE_RODATA(const s32, "itemHandlers", D_80122350);
+
+INCLUDE_RODATA(const s32, "itemHandlers", D_8012235C);
+
+INCLUDE_RODATA(const s32, "itemHandlers", D_80122368);
+
+//INCLUDE_RODATA(const s32, "itemHandlers", D_80122374);
+
+const u8 D_80122374[12] = { 5, 4, 3, 6, 8, 2, 7, 0, 1, 0, 0, 0 };
+
+//INCLUDE_ASM(const s32, "itemHandlers", handleBlueFeatherUse);
+
 // jumtable: 80122380, 0xFD780
-// blue feather
-/*
-void func_800D4F70(void) {
+void handleBlueFeatherUse(void) {
     
     toggleDailyEventBit(0x14);
     
@@ -930,7 +945,7 @@ void func_800D4F70(void) {
     
     switch (D_801C3E18) {
         case 0:
-            if (npcAffection[MARIA] >= 0xDC) {
+            if (npcAffection[MARIA] >= 220) {
                 gWife = MARIA;   
                 setDailyEventBit(0x14);
                 setLifeEventBit(ENGAGED);
@@ -938,15 +953,15 @@ void func_800D4F70(void) {
             }
             break;
         case 1:
-            if (npcAffection[POPURI] >= 0xDC) {
-                gWife = 1;
+            if (npcAffection[POPURI] >= 220) {
+                gWife = POPURI;
                 setDailyEventBit(0x14);
                 setLifeEventBit(ENGAGED);
                 setDefaultBabyName(POPURI);
             }
             break;
         case 2:
-            if (npcAffection[ELLI] >= 0xDC) {
+            if (npcAffection[ELLI] >= 220) {
                 gWife = ELLI;
                 setDailyEventBit(0x14);
                 setLifeEventBit(ENGAGED);
@@ -954,7 +969,7 @@ void func_800D4F70(void) {
             }
             break;
         case 3:
-            if (npcAffection[ANN] >= 0xDC) {
+            if (npcAffection[ANN] >= 220) {
                 gWife = ANN;
                 setDailyEventBit(0x14);
                 setLifeEventBit(ENGAGED);
@@ -962,7 +977,7 @@ void func_800D4F70(void) {
             }
             break;
         case 4:
-            if (npcAffection[KAREN] >= 0xDC) {
+            if (npcAffection[KAREN] >= 220) {
                 gWife = KAREN;
                 setDailyEventBit(0x14);
                 setLifeEventBit(ENGAGED);
@@ -975,36 +990,31 @@ void func_800D4F70(void) {
 
     if (checkDailyEventBit(0x14)) {
         // use up blue feather if successful proposal
-        D_8018907D = 0;
+        gPlayer.unk_1D = 0;
     }
     
 func_end:
-        D_80189836 = 0;
+        D_80189828.unk_E = 0;
 }
-*/
 
-INCLUDE_ASM(const s32, "itemHandlers", func_800D5130);
+//INCLUDE_ASM(const s32, "itemHandlers", func_800D5130);
 
-// can't use -fforce-addr
-/*
 // empty bottle
 void func_800D5130(void) {
+
     if (func_800ACFE8(gBaseMapIndex)) {
-        D_8018907E = 1;
+        gPlayer.bottleContents = 1;
     } else if (checkWineBarrelInteraction(gBaseMapIndex) ) {
-        D_8018907E = 2;
+        gPlayer.bottleContents = 2;
     } else {
         func_8009A97C();
     }
-    D_80189836 = 0;
+
+    D_80189828.unk_E = 0;
 }
-*/
 
+//INCLUDE_ASM(const s32, "itemHandlers", func_800D51B0);
 
-INCLUDE_ASM(const s32, "itemHandlers", func_800D51B0);
-
-// can't use -fforce-addr
-/*
 void func_800D51B0(void) {
     u8 i;
 
@@ -1025,28 +1035,23 @@ void func_800D51B0(void) {
         D_80204DF8[i].flags = 0;
     }
 }
-*/
 
-INCLUDE_ASM(const s32, "itemHandlers", func_800D5290);
 
-// can't use -fforce-addr
-/*
+//INCLUDE_ASM(const s32, "itemHandlers", func_800D5290);
+
 void func_800D5290(void) {
 
     u8 i;
     
     for (i = 0; i < 10; i++) {
-        if (D_80204DF8[i].unk_2A & 1) {
+        if (D_80204DF8[i].flags & 1) {
             func_800D56E8(i, D_80204DF8[i].unk_28);
         }    
     }
 }
-*/
 
-INCLUDE_ASM(const s32, "itemHandlers", func_800D5308);
+//INCLUDE_ASM(const s32, "itemHandlers", func_800D5308);
 
-// can't use -fforce-addr
-/*
 // tool acquisition handler
 u8 func_800D5308(u8 arg0, u8 arg1, u32 arg2, s32 arg3, s32 arg4) {
 
@@ -1059,12 +1064,9 @@ u8 func_800D5308(u8 arg0, u8 arg1, u32 arg2, s32 arg3, s32 arg4) {
     
     return arg0;
 }
-*/
 
-INCLUDE_ASM(const s32, "itemHandlers", func_800D5390);
+//INCLUDE_ASM(const s32, "itemHandlers", func_800D5390);
 
-// can't use -fforce-addr
-/*
 u8 func_800D5390(u8 arg0, u8 arg1, u32 arg2, u16 arg3, u8 arg4) {
     
     u8 found = 0;
@@ -1093,12 +1095,9 @@ u8 func_800D5390(u8 arg0, u8 arg1, u32 arg2, u16 arg3, u8 arg4) {
     
     return arg0;
 }
-*/
 
-INCLUDE_ASM(const s32, "itemHandlers", func_800D5488);
+//INCLUDE_ASM(const s32, "itemHandlers", func_800D5488);
 
-// can't use -fforce-addr
-/*
 u8 func_800D5488(u8 arg0, u8 arg1, u32 arg2, u16 arg3, u8 arg4) {
     
     u8 found = 0;
@@ -1124,12 +1123,9 @@ u8 func_800D5488(u8 arg0, u8 arg1, u32 arg2, u16 arg3, u8 arg4) {
     
     return arg0;
 }
-*/
 
-INCLUDE_ASM(const s32, "itemHandlers", func_800D5548);
+//INCLUDE_ASM(const s32, "itemHandlers", func_800D5548);
 
-// can't use -fforce-addr
-/*
 void func_800D5548(u8 arg0) {
 
     if (D_80204DF8[arg0].flags & 1) {        
@@ -1138,7 +1134,6 @@ void func_800D5548(u8 arg0) {
         D_80204DF8[arg0].flags = 0;
     }
 }
-*/
 
 //INCLUDE_ASM(const s32, "itemHandlers", func_800D55B8);
 
@@ -1146,22 +1141,17 @@ u16 func_800D55B8(u8 arg0) {
     return D_80204DF8[arg0].unk_28;
 }
 
-INCLUDE_ASM(const s32, "itemHandlers", func_800D55E4);
+//INCLUDE_ASM(const s32, "itemHandlers", func_800D55E4);
 
-// can't use -fforce-addr
-/*
 void func_800D55E4(u8 arg0, u8 arg1) {
 
     if (D_80204DF8[arg0].flags & 1) {
         D_80204DF8[arg0].unk_2A = arg1;
     }
 }
-*/
 
-INCLUDE_ASM(const s32, "itemHandlers", func_800D5628);
+//INCLUDE_ASM(const s32, "itemHandlers", func_800D5628);
 
-// can't use -fforce-addr
-/*
 void func_800D5628(u8 arg0, f32 arg1, f32 arg2, f32 arg3) {
 
     D_80204DF8[arg0].unk_0.x = arg1;
@@ -1170,12 +1160,9 @@ void func_800D5628(u8 arg0, f32 arg1, f32 arg2, f32 arg3) {
     D_80204DF8[arg0].flags |= 2;
 
 }
-*/
 
-INCLUDE_ASM(const s32, "itemHandlers", func_800D5688);
+//INCLUDE_ASM(const s32, "itemHandlers", func_800D5688);
 
-// can't use -fforce-addr
-/*
 void func_800D5688(u8 arg0, u32 arg1, u32 arg2, u32 arg3) {
 
     D_80204DF8[arg0].unk_18 = arg1;
@@ -1184,11 +1171,8 @@ void func_800D5688(u8 arg0, u32 arg1, u32 arg2, u32 arg3) {
     D_80204DF8[arg0].flags |= 8;
     
 }
-*/
 
 INCLUDE_ASM(const s32, "itemHandlers", func_800D56E8);
-
-//INCLUDE_ASM(const s32, "itemHandlers", func_800D5A6C);
 
 u16 func_800D5A6C(u16 index) {
     return itemFlags[index];
@@ -1220,97 +1204,28 @@ u16 func_800D5A88(u16 arg0) {
 
 //INCLUDE_ASM(const s32, "itemHandlers", func_800D5B00);
 
-// -fforce-addr irrelevant
 u8 func_800D5B00(u16 arg0) {
     return D_80118540[arg0];
 }
 
 //INCLUDE_ASM(const s32, "itemHandlers", func_800D5B18);
 
-// -fforce-addr irrelevant
 u8 func_800D5B18(u16 arg0) {
     return D_80118620[arg0];
 }
 
-// needs -fforce-addr
-#ifdef PERMUTER
-u8 func_800D5B30(void) {
-
-    u8 temp;
-    u8 temp2;
-    u8 temp3;
-    
-    if (!func_8004D380(0, 0x8000)) return 0;
-    
-    if (!D_8018908C) return 0;
-
-    temp = !func_800DAF58(1.0f, 8);
-
-    if (temp != 0xFF) {
-        temp2 = func_800DA918(temp);
-    }
-    
-    if (!temp) {
-        return 0;
-    }    
-
-    if (temp == 0xFF || !temp2) {
-        return 0;
-    }
-
-    D_8018908C = temp2;
-
-    if (temp2 < 0x67) {
-        if (temp2 < 0x65) {
-            if (temp2 < 0x32) {
-                if (temp2 < 0x30) {
-                    goto func_end;
-                }
-                temp = 0x2A;
-            } else {
-                goto func_end;
-            }
-        }
-    }
-
-    else if (temp2 < 0x84) {
-        if (temp2 < 0x82) {
-            goto func_end;
-        }
-        temp = 0x7A;
-    }
-
-    temp3 = func_800DA8B8(temp);
-
-    if (temp3 == 4) {
-        temp = 2;
-    } else {
-        temp = 1;
-        if (temp3 == 5) {
-            temp = 3;
-        }
-    }
-
-func_end:
-    func_800DAD74(temp, 1.0f, 8);
-    return 1;
-}
-#else
 INCLUDE_ASM(const s32, "itemHandlers", func_800D5B30);
-#endif
 
 INCLUDE_ASM(const s32, "itemHandlers", func_800D5CC0);
 
 //INCLUDE_ASM(const s32, "itemHandlers", func_800D67E4);
 
-// -fforce-addr irrelevant
 u8 func_800D67E4(u8 arg0) {
     return D_80117F20[arg0];
 }
 
 //INCLUDE_ASM(const s32, "itemHandlers", func_800D67FC);
 
-// -fforce-addr irrelevant
 void func_800D67FC(u8 arg0) {
     
     s32 temp;
@@ -1337,58 +1252,58 @@ func_end:
 }
 
 // jumptable: 801226D8, 0xFDAD8
-INCLUDE_ASM(const s32, "itemHandlers", func_800D6868);
+//INCLUDE_ASM(const s32, "itemHandlers", func_800D6868);
 
-// can't use -fforce-addr
 // shipping bin
-/*
 void func_800D6868(u8 arg0) {
+
     u32 result;
+    
     dailyShippingBinValue += adjustValue(dailyShippingBinValue, D_801181C0[arg0], 999999);
+    
     switch (arg0) {
         case 13:
             D_801654F4 += adjustValue(D_801654F4, 1, 999);
             gTotalCropsShipped += adjustValue(gTotalCropsShipped,1, 99999);
-            goto func_end;
+            break;
         case 14:
             D_80237414 += adjustValue(D_80237414, 1, 999);
             gTotalCropsShipped += adjustValue(gTotalCropsShipped,1, 99999);
-            goto func_end;
+            break;
         case 18:
             D_801FB6FC += adjustValue(D_801FB6FC, 1, 999);
             gTotalCropsShipped += adjustValue(gTotalCropsShipped,1, 99999);
-            goto func_end;
+            break;
         case 15:
             D_801C3F80 += adjustValue(D_801C3F80, 1U, 0x3E7);
             gTotalCropsShipped += adjustValue(gTotalCropsShipped,1, 99999);
-            goto func_end;
+            break;
         case 19:
             D_801806C0 += adjustValue(D_801806C0, 1U, 0x3E7);
             gTotalCropsShipped += adjustValue(gTotalCropsShipped,1, 99999);
-            goto func_end;
+            break;
         case 16:
             D_80188F60 += adjustValue(D_80188F60, 1U, 0x3E7);
             gTotalCropsShipped += adjustValue(gTotalCropsShipped,1, 99999);
-            goto func_end;
+            break;
         case 17:
             D_801FB5D0 += adjustValue(D_801FB5D0, 1U, 0x3E7);
             gTotalCropsShipped += adjustValue(gTotalCropsShipped,1, 99999);
-            goto func_end;
+            break;
         case 21:
         case 22:
         case 23:
         case 24:
             gTotalGoldenMilkShipped += adjustValue(gTotalGoldenMilkShipped, 1U, 0x270F);
-            goto func_end;
+            break;
         case 20:
             gTotalEggsShipped += adjustValue(gTotalEggsShipped, 1, 0x270F);
-            goto func_end;
+            break;
             
     }
-func_end:
+
     func_8009A398();
 }
-*/
 
 //INCLUDE_ASM(const s32, "itemHandlers", func_800D6B28);
 
@@ -1469,4 +1384,5 @@ void func_800D6B58(u8 arg0, u8 arg1) {
 INCLUDE_ASM(const s32, "itemHandlers", func_800D6B58);
 #endif
 
+// jtbl_80122708
 INCLUDE_ASM(const s32, "itemHandlers", func_800D7010);

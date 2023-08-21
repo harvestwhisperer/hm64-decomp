@@ -1,6 +1,7 @@
 #include "common.h"
 
 #include "system/controller.h"
+#include "system/map.h"
 
 #include "animals.h"
 #include "npc.h"
@@ -10,31 +11,33 @@ extern u8 gDayOfWeek;
 extern u8 gDayOfMonth;
 extern u8 gSeason;
 extern u8 gForecast;
-extern u8 gWife;
 extern u8 gYear;
 
 extern u8 gHarvestKing;
-extern u8 gWifeConceptionCounter;
 extern u8 gFlowerFestivalGoddess;
 extern u8 gVoteForFlowerFestivalGoddess;
+
+extern u8 gWife;
+extern u8 gWifePregnancyCounter;
+extern u8 gWifeConceptionCounter;
+
 extern u8 houseExtensionConstructionCounter;
 
+extern Player gPlayer;
 extern u8 gMaximumStamina;
+extern u8 gHappiness;
+extern u8 gItemBeingHeld;
 
 extern u32 gCutsceneFlags;
+extern u16 gCurrentSongIndex;
+extern u8 gNamingScreenIndex;
 
 extern u8 gBaseMapIndex;
 extern Vec4f globalLightingRgba;
 extern u16 gTileContextFlags;
 
-extern Player gPlayer;
-
-extern u8 gItemBeingHeld;
-extern u16 gCurrentSongIndex;
-
-// naming screen index
-extern u8 gNamingScreenIndex;
-
+extern Dog dogInfo;
+extern Horse horseInfo;
 extern FarmAnimal gFarmAnimals[];
 extern Chicken gChickens[0xC];
 
@@ -52,10 +55,19 @@ extern u8 gWifeName[6];
 extern u8 gBabyName[6];
 extern u8 harvestKingName[6];
 
+extern UnknownMapStruct1 D_80158248;
+
 void adjustDogAffection(s8 value);                            
-void adjustHorseAffection(s8 value);                                
+void adjustHorseAffection(s8 value);     
+void setAnimalLocations(u8);  
+void setDogLocation(u8);        
+void setHorseLocation(u16);                            
            
-void setPlayerAction(u16, u16);                 
+void setPlayerAction(u16, u16);    
+u8 checkFatigueLevel(); 
+u32 acquireKeyItem(u8);
+void removeKeyItem(u32);  
+u8 checkHaveKeyItem(u8);
 
 void setMainLoopCallbackFunctionIndex(u16 callbackIndex); 
 
@@ -70,12 +82,13 @@ void setSpecialDialogueBit(u16 bitIndex);
 void toggleSpecialDialogueBit(u16 bitIndex);    
 u32 checkMailRead(u16);                            
 void setMail(u16);      
+void setRecipes(void);  
 
 void setExit(u16 locationIndex);
 void setClockNewDay(void);
 void startNewDay(void);   
 
-u8 checkHaveKeyItem(u8);
+u8 checkAllSfxInactive(void);
 
 u16 getRandomNumberInRange(u16 min, u16 max);
                
@@ -105,10 +118,6 @@ u8 func_80060DC0();
 void func_80060E58();                                   
 void func_800610DC();
 void func_80061A88(void); 
-void setRecipes(void);  
-u32 acquireKeyItem(u8);
-void removeKeyItem(u32);  
-u8 func_800679EC(); 
 void func_8006EA44(u8, u8, u8);            
 void func_80088C1C(u8, u8);            
 u8 func_8009B3DC();                             
@@ -119,14 +128,14 @@ void func_800A8F74();
 void func_800ACB5C(u16);                          
 u8 func_800ACBB8(u16 songIndex);
 void func_800ACC50(u16);   
-u8 checkAllSfxInactive(void);
-
 void func_800D5548(u8);  
-void func_800ED8A0(u8*, u8);     
+void func_800ED8A0(u8*, u8);
 
-void setAnimalLocations(u8);  
-void setDogLocation(u8);        
-void setHorseLocation(u16);  
+u8 func_8003F910(u8, u16, void*, void*, void*, void*, void*, void*, void*, u32, u32, u16, u16, f32, f32, f32); 
+u8 func_80043A88();                                
+void func_8005CDCC();                              
+void func_800D55E4(u8, u8);                               
+u16 func_800D5A6C(u16 index);      
                   
 extern u8 D_8011F244;
 extern u8 D_8011F245;
@@ -151,9 +160,6 @@ extern u8 D_801886D4[6];
 
 extern u32 D_8013D45C;  
 
-// map struct?
-extern u16 D_8015825A;
-
 extern u8 D_8016F6E3;
 extern u8 D_8016FAD8;
 extern u16 D_8016FDF0;
@@ -163,7 +169,7 @@ extern u8 D_80170444;
 extern u8 D_801886A0;
 
 extern u16 D_801890D6;
-extern u8 D_80189134;
+extern u8 gBabyAge;
 extern u8 D_801891C4;
 extern s32 D_801891D4;
 extern u8 D_8018A059;
@@ -176,39 +182,29 @@ extern u8 D_801FC15C;
 extern u8 D_801FD618;
 extern u8 D_801FD621;
 extern u8 D_80205201;
+
+extern u8 D_8016FFE8;
+extern u8 D_80170464;
+extern u8 D_80182FB8;
+extern u8 D_801FC155;
+extern u8 D_80205624;
+
 // related to callback index
-extern u16 D_80205230;
-extern u8 D_802055D0;
+extern MainLoopCallbackInfo D_80205230;
+
 extern u8 D_802055D1;
 extern u8 D_8020562C;
 extern u8 D_80237412;
-extern u8 D_80205236;
-
-extern u16 D_80205230;
-extern u16 D_80205232;
-extern u16 D_80205234;
-   
-u8 func_8003F910(u8, u16, void*, void*, void*, void*, void*, void*, void*, u32, u32, u16, u16, f32, f32, f32); 
-u8 func_80043A88();                                
-void func_8005CDCC();                              
-void func_800D55E4(u8, u8);                               
-u16 func_800D5A6C(u16 index);                         
+extern u8 D_80205236;                   
 
 extern void *D_D47F00;
 extern void *D_D49B80;
 extern void *D_D49B80_2;
 extern void *tvSprites_romTextureStart;
 
-extern u8 D_801C3FB3;
-extern u8 harvestSprite1Affection;
-extern u8 harvestSprite2Affection;
-
-
 // has jumptable
-INCLUDE_ASM(const s32, "game", func_80059D90);
+//INCLUDE_ASM(const s32, "game", func_80059D90);
 
-// can't use -fforce-addr
-/*
 void func_80059D90(void) {
 
     u16 temp;
@@ -217,30 +213,30 @@ void func_80059D90(void) {
 
     gWifeConceptionCounter += adjustValue(gWifeConceptionCounter, 1, 120);
     
-    if ((checkLifeEventBit(HAVE_BABY)) && (D_80189134 < 0xFF)) {
-            D_80189134 += 1;
+    if ((checkLifeEventBit(HAVE_BABY)) && (gBabyAge < 0xFF)) {
+        gBabyAge += 1;
     }
 
-     if (!checkLifeEventBit(HAVE_BABY) && checkLifeEventBit(WIFE_PREGNANT) && (D_802055D0 >= 0x3C)) {
+    if (!checkLifeEventBit(HAVE_BABY) && checkLifeEventBit(WIFE_PREGNANT) && (gWifePregnancyCounter >= 60)) {
          
         toggleLifeEventBit(WIFE_PREGNANT);
-        setLifeEventBit(1);
+        setLifeEventBit(HAVE_BABY);
         setSpecialDialogueBit(4);
         
          switch (gWife) {                     
-            case 0:                              
+            case MARIA:                              
                 temp = 0x151;
                 break;
-            case 1:                             
+            case POPURI:                             
                 temp = 0x152;
                 break;
-            case 2:                                
+            case ELLI:                                
                 temp = 0x153;
                 break;
-            case 3:                               
+            case ANN:                               
                 temp = 0x154;
                 break;
-            case 4:                                
+            case KAREN:                                
                 temp = 0x155;
                 break;
             default:
@@ -251,30 +247,31 @@ void func_80059D90(void) {
      }
         
 check_kid:
+
     if (!checkLifeEventBit(HAVE_BABY) && checkLifeEventBit(WIFE_PREGNANT)) {
-        D_802055D0 += 1;
+        gWifePregnancyCounter += 1;
     }
 
-    if (!checkLifeEventBit(HAVE_BABY) && checkLifeEventBit(0x15) && !checkLifeEventBit(WIFE_PREGNANT) && (npcAffection[gWife] >= 0xFA) && (gWifeConceptionCounter >= 0x1E)) {
+    if (!checkLifeEventBit(HAVE_BABY) && checkLifeEventBit(HAVE_BABY_BED) && !checkLifeEventBit(WIFE_PREGNANT) && (npcAffection[gWife] >= 250) && (gWifeConceptionCounter >= 30)) {
         
         setLifeEventBit(WIFE_PREGNANT);
         
-        D_802055D0 = 0;
+        gWifePregnancyCounter = 0;
         
          switch (gWife) {                        
-            case 0:                               
-                temp =  0x14C;
+            case MARIA:                               
+                temp = 0x14C;
                 break;
-            case 1:                               
+            case POPURI:                               
                 temp = 0x14D;
                 break;
-            case 2:                                
+            case ELLI:                                
                 temp = 0x14E;
                 break;
-            case 3:                             
+            case ANN:                             
                 temp = 0x14F;
                 break;
-            case 4:                               
+            case KAREN:                               
                 temp = 0x150;
                 break;
             default:
@@ -285,139 +282,141 @@ check_kid:
     }
 
 not_married:
-    if (checkLifeEventBit(0x1A)) {
+
+    if (checkLifeEventBit(MARIA_HARRIS_MARRIED)) {
+
         D_801FB9A4 += adjustValue(D_801FB9A4, 1, 120);
-        if (checkLifeEventBit(0x26) && (D_80205201 < 120)) {
+
+        if (checkLifeEventBit(MARIA_HARRIS_BABY) && (D_80205201 < 120)) {
             D_80205201 += 1;
         }
-        if (!checkLifeEventBit(0x26) && checkLifeEventBit(0x21) && (D_8016FAD8 >= 0x3C)) {
+
+        if (!checkLifeEventBit(MARIA_HARRIS_BABY) && checkLifeEventBit(0x21) && (D_8016FAD8 >= 60)) {
             toggleLifeEventBit(0x21);
-            setLifeEventBit(0x26);
+            setLifeEventBit(MARIA_HARRIS_BABY);
             setSpecialDialogueBit(0x32);
             toggleSpecialDialogueBit(0x37);
         }
-        if ((checkLifeEventBit(0x26) == 0) && (checkLifeEventBit(0x21) != 0)) {
+
+        if (!checkLifeEventBit(MARIA_HARRIS_BABY) && checkLifeEventBit(0x21)) {
             D_8016FAD8 += 1;
         }
-        if (!checkLifeEventBit(0x26) && !checkLifeEventBit(0x21) && (D_801C3F96 >= 0xFA) && (D_801FB9A4 >= 0x1E)) {
+
+        if (!checkLifeEventBit(MARIA_HARRIS_BABY) && !checkLifeEventBit(0x21) && (D_801C3F96 >= 250) && (D_801FB9A4 >= 30)) {
             setLifeEventBit(0x21);
             D_8016FAD8 = 0;
             setSpecialDialogueBit(0x37);
         }
     }
 
-     if (checkLifeEventBit(0x1B)) {
+     if (checkLifeEventBit(POPURI_GRAY_MARRIED)) {
 
         D_801886A0 += adjustValue(D_801886A0, 1, 120);
 
-        if (checkLifeEventBit(0x27) && (D_801C3F36 < 120)) {
+        if (checkLifeEventBit(POPURI_GRAY_BABY) && (D_801C3F36 < 120)) {
             D_801C3F36 += 1;
         }
 
-        if (!checkLifeEventBit(0x27) && checkLifeEventBit(0x22) && (D_801891C4 >= 0x3C)) {
+        if (!checkLifeEventBit(POPURI_GRAY_BABY) && checkLifeEventBit(0x22) && (D_801891C4 >= 60)) {
             toggleLifeEventBit(0x22);
-            setLifeEventBit(0x27);
+            setLifeEventBit(POPURI_GRAY_BABY);
             setSpecialDialogueBit(0x33);
             toggleSpecialDialogueBit(0x38);
         }
 
-        if (!checkLifeEventBit(0x27) && checkLifeEventBit(0x22)) {
+        if (!checkLifeEventBit(POPURI_GRAY_BABY) && checkLifeEventBit(0x22)) {
             D_801891C4 += 1;
         }
 
-        if (!checkLifeEventBit(0x27) && !checkLifeEventBit(0x22) && (D_801C3F97 >= 0xFA) && (D_801886A0 >= 0x1E)) {
+        if (!checkLifeEventBit(POPURI_GRAY_BABY) && !checkLifeEventBit(0x22) && (D_801C3F97 >= 250) && (D_801886A0 >= 30)) {
             setLifeEventBit(0x22);
             D_801891C4 = 0;
             setSpecialDialogueBit(0x38);
         }
     }
 
-    if (checkLifeEventBit(0x1C)) {
+    if (checkLifeEventBit(ELLI_JEFF_MARRIED)) {
 
         D_8017027E += adjustValue(D_8017027E, 1, 120);
 
-        if (checkLifeEventBit(0x28) && (D_801FC15C < 120)) {
+        if (checkLifeEventBit(ELLI_JEFF_BABY) && (D_801FC15C < 120)) {
             D_801FC15C += 1;
 
         }
 
-        if (!checkLifeEventBit(0x28) && checkLifeEventBit(0x23) && (D_8020562C >= 0x3C)) {
+        if (!checkLifeEventBit(ELLI_JEFF_BABY) && checkLifeEventBit(0x23) && (D_8020562C >= 60)) {
             toggleLifeEventBit(0x23);
-            setLifeEventBit(0x28);
+            setLifeEventBit(ELLI_JEFF_BABY);
             setSpecialDialogueBit(0x34);
             toggleSpecialDialogueBit(0x39);
         }
 
-        if (!checkLifeEventBit(0x28) && checkLifeEventBit(0x23)) {
+        if (!checkLifeEventBit(ELLI_JEFF_BABY) && checkLifeEventBit(0x23)) {
             D_8020562C += 1;
         }
 
-        if (!checkLifeEventBit(0x28) && !checkLifeEventBit(0x23) && (D_801C3F98 >= 0xFA) && (D_8017027E >= 0x1E)) {
+        if (!checkLifeEventBit(ELLI_JEFF_BABY) && !checkLifeEventBit(0x23) && (D_801C3F98 >= 250) && (D_8017027E >= 30)) {
             setLifeEventBit(0x23);
             D_8020562C = 0;
             setSpecialDialogueBit(0x39);
         }
     }
 
-    if (checkLifeEventBit(0x1D)) {
+    if (checkLifeEventBit(ANN_CLIFF_MARRIED)) {
 
         D_80170444 += adjustValue(D_80170444, 1, 120);
 
-        if (checkLifeEventBit(0x29) && (D_8016F6E3 < 120)) {
+        if (checkLifeEventBit(ANN_CLIFF_BABY) && (D_8016F6E3 < 120)) {
             D_8016F6E3 += 1;
         }
 
-        if (!checkLifeEventBit(0x29) && checkLifeEventBit(0x24) && (D_8018A059 >= 0x3C)) {
+        if (!checkLifeEventBit(ANN_CLIFF_BABY) && checkLifeEventBit(0x24) && (D_8018A059 >= 60)) {
             toggleLifeEventBit(0x24);
-            setLifeEventBit(0x29);
+            setLifeEventBit(ANN_CLIFF_BABY);
             setSpecialDialogueBit(0x35);
             toggleSpecialDialogueBit(0x3A);
         }
 
-        if (!checkLifeEventBit(0x29) && checkLifeEventBit(0x24)) {
+        if (!checkLifeEventBit(ANN_CLIFF_BABY) && checkLifeEventBit(0x24)) {
             D_8018A059 += 1;
         }
 
-        if (!checkLifeEventBit(0x29) && !checkLifeEventBit(0x24) && (D_801C3F99 >= 0xFA) && (D_80170444 >= 0x1E)) {
+        if (!checkLifeEventBit(ANN_CLIFF_BABY) && !checkLifeEventBit(0x24) && (D_801C3F99 >= 250) && (D_80170444 >= 30)) {
             setLifeEventBit(0x24);
             D_8018A059 = 0;
             setSpecialDialogueBit(0x3A);
         }
-
     }
 
-    if (checkLifeEventBit(0x1E)) {
+    if (checkLifeEventBit(KAREN_KAI_MARRIED)) {
         
         D_802055D1 += adjustValue(D_802055D1, 1, 120);
 
-        if ((checkLifeEventBit(0x2A)) && (D_801FD618 < 120)) {
+        if ((checkLifeEventBit(KAREN_KAI_BABY)) && (D_801FD618 < 120)) {
             D_801FD618 += 1;
         }
 
-        if (!checkLifeEventBit(0x2A) && checkLifeEventBit(0x25) && (D_8017026F >= 0x3C)) {
+        if (!checkLifeEventBit(KAREN_KAI_BABY) && checkLifeEventBit(0x25) && (D_8017026F >= 60)) {
             toggleLifeEventBit(0x25);
-            setLifeEventBit(0x2A);
+            setLifeEventBit(KAREN_KAI_BABY);
             setSpecialDialogueBit(0x36);
             toggleSpecialDialogueBit(0x3B);
         }
 
-        if (!checkLifeEventBit(0x2A) && checkLifeEventBit(0x25)) {
+        if (!checkLifeEventBit(KAREN_KAI_BABY) && checkLifeEventBit(0x25)) {
             D_8017026F += 1;
         }
 
-        if (!checkLifeEventBit(0x2A) && !checkLifeEventBit(0x25) && (D_801C3F9A >= 0xFA) && (D_802055D1 >= 0x1EU)) {
+        if (!checkLifeEventBit(KAREN_KAI_BABY) && !checkLifeEventBit(0x25) && (D_801C3F9A >= 250) && (D_802055D1 >= 30)) {
             setLifeEventBit(0x25);
             D_8017026F = 0;
             setSpecialDialogueBit(0x3B);
         }
     }
 }
-*/
 
 // jtbl_8011EF80
 //INCLUDE_ASM(const s32, "game", func_8005A60C);
-
-// -fforce-addr -irrelevant
 
 void func_8005A60C(void) {
 
@@ -460,10 +459,8 @@ handleAnimals:
 
 
 // func_8005A708
-
 //INCLUDE_ASM(const s32, "game", setSpecialDialogues);
 
-// -fforce-addr irrelevant
 void setSpecialDialogues(void) {
 
     // have at least 1 house extensions
@@ -593,8 +590,8 @@ void setSpecialDialogues(void) {
 
 //INCLUDE_ASM(const s32, "game", func_8005AAE4);
 
-// -fforce-addr irrelevant
 void func_8005AAE4(void) {
+
     toggleSpecialDialogueBit(0x40);
     toggleSpecialDialogueBit(0x46);
     toggleSpecialDialogueBit(0x91);
@@ -619,13 +616,12 @@ void func_8005AAE4(void) {
     toggleSpecialDialogueBit(0x134);
     toggleSpecialDialogueBit(0x136);
     toggleSpecialDialogueBit(0x137);
+    
 }
 
 // func_8005ABBC
-
 //INCLUDE_ASM(const s32, "game", resetDailyBits);
 
-// -fforce-addr irrelevant
 void resetDailyBits(void) {
     
     u16 i;
@@ -713,8 +709,6 @@ void resetDailyBits(void) {
 }
 
 // func_8005AE64
-// -fforce-addr irrelevant
-
 u32 adjustValue(s32 current, s32 amount, s32 max) {
 
     s32 sum;
@@ -737,7 +731,6 @@ u32 adjustValue(s32 current, s32 amount, s32 max) {
 
 //INCLUDE_ASM(const s32, "game", func_8005AE8C);
 
-// -fforce-addr irrelevant
 void func_8005AE8C(u16 arg0, u16 arg1, u16 arg2, int arg3, u16 arg4) {
   
     u32 temp;
@@ -776,7 +769,6 @@ void func_8005AE8C(u16 arg0, u16 arg1, u16 arg2, int arg3, u16 arg4) {
 
 //INCLUDE_ASM(const s32, "game", func_8005AF94);
 
-// -fforce-addr irrelevant
 void func_8005AF94(u16 arg0, u16 arg1, u16 arg2, u32 arg3, u16 arg4) {
     
     func_8002F6F0();
@@ -808,15 +800,16 @@ void func_8005AF94(u16 arg0, u16 arg1, u16 arg2, u32 arg3, u16 arg4) {
 
 }
 
-// -fforce-addr irrelevant
 // jumptable: jbtl_8011EF98, 0xFA398
 // 99.9%....
 #ifdef PERMUTER
 void func_8005B09C(u8 arg0) {
 
-    D_80205236 = arg0;
+    D_80205230.unk_6 = arg0;
 
     switch (arg0) {
+        default:
+            goto func_end;
         case 0:
             func_8002F6F0();
             func_80046C98();
@@ -826,6 +819,7 @@ void func_8005B09C(u8 arg0) {
             func_8003F360(0, -4, 2);
             func_80043430(0, 1, 0, 0);
             break;
+            
         case 1:
             func_8002F6F0();
             func_80046C98();
@@ -835,6 +829,7 @@ void func_8005B09C(u8 arg0) {
             func_8003F360(0, -4, 2);
             func_80043430(0, 1, 1, 0);
             break;
+            
         case 2:
             func_8002F6F0();
             func_80046C98();
@@ -844,6 +839,7 @@ void func_8005B09C(u8 arg0) {
             func_8003F360(0, -4, 0);
             func_80043430(0, 0x3D, 0xC, 0x40);
             break;
+            
         case 3:
             func_8002F6F0();
             func_80046C98();
@@ -851,8 +847,9 @@ void func_8005B09C(u8 arg0) {
             func_8003F54C(0, 24.0f, -64.0f, 352.0f);
             func_8003F690(0, 0, 0, 0);
             func_8003F360(0, -4, 0);
-            func_80043430(0, 0x3D, 0xB, 0x40);      
+            func_80043430(0, 0x3D, 0xB, 0x40);
             break;
+            
         case 4:
             func_8002F6F0();
             func_80046C98();
@@ -860,8 +857,9 @@ void func_8005B09C(u8 arg0) {
             func_8003F54C(0, 24.0f, -64.0f, 352.0f);
             func_8003F690(0, 0, 0, 0);
             func_8003F360(0, -4, 0);
-            func_80043430(0, 0x3D, 0x12, 0x40);
+            func_80043430(0, 0x3D, 0x12, 0x40);;
             break;
+            
         case 5:
             func_8002F6F0();
             func_80046C98();
@@ -871,6 +869,7 @@ void func_8005B09C(u8 arg0) {
             func_8003F360(0, -4, 0);
             func_80043430(0, 0x3D, 0xD, 0x40);
             break;
+            
         case 6:
             func_8002F6F0();
             func_80046C98();
@@ -880,6 +879,7 @@ void func_8005B09C(u8 arg0) {
             func_8003F360(0, -4, 0);
             func_80043430(0, 0x3D, 0xE, 0x40);
             break;
+            
         case 7:
             func_8002F6F0();
             func_80046C98();
@@ -889,6 +889,7 @@ void func_8005B09C(u8 arg0) {
             func_8003F360(0, -4, 0);
             func_80043430(0, 0x3D, 0xF, 0x40);
             break;
+            
         case 8:
             func_8002F6F0();
             func_80046C98();
@@ -898,6 +899,7 @@ void func_8005B09C(u8 arg0) {
             func_8003F360(0, -4, 0);
             func_80043430(0, 0x3E, 7, 0x40);
             break;
+            
         case 9:
             func_8002F6F0();
             func_80046C98();
@@ -907,6 +909,7 @@ void func_8005B09C(u8 arg0) {
             func_8003F360(0, -4, 0);
             func_80043430(0, 0x3E, 6, 0x40);
             break;
+            
         case 10:
             func_8002F6F0();
             func_80046C98();
@@ -916,6 +919,7 @@ void func_8005B09C(u8 arg0) {
             func_8003F360(0, -4, 0);
             func_80043430(0, 0x3E, 2, 0x40);
             break;
+            
         case 11:
             func_8002F6F0();
             func_80046C98();
@@ -924,7 +928,8 @@ void func_8005B09C(u8 arg0) {
             func_8003F690(0, 0, 0, 0);
             func_8003F360(0, -4, 0);
             func_80043430(0, 0x3E, 0, 0x40);
-            break;
+            break;   
+            
         case 12:
             func_8002F6F0();
             func_80046C98();
@@ -933,7 +938,8 @@ void func_8005B09C(u8 arg0) {
             func_8003F690(0, 0, 0, 0);
             func_8003F360(0, -4, 0);
             func_80043430(0, 0x3E, 1, 0x40);
-            break;
+            break;      
+            
         case 13:
             if (((gSeason == SPRING) | (gSeason == WINTER))) {
                 func_8002F6F0();
@@ -953,6 +959,7 @@ void func_8005B09C(u8 arg0) {
                 func_80043430(0, 0x44, 0xA, 0);
             }            
             break;
+            
         case 14:
             if (((gSeason == SPRING) | (gSeason == WINTER))) {
                 func_8002F6F0();
@@ -972,6 +979,7 @@ void func_8005B09C(u8 arg0) {
                 func_80043430(0, 0x44, 0xB, 0);
             }
             break;
+            
         case 15:
             if (((gSeason == SPRING) | (gSeason == WINTER))) {
                 func_8002F6F0();
@@ -991,6 +999,7 @@ void func_8005B09C(u8 arg0) {
                 func_80043430(0, 0x44, 0xC, 0);
             }
             break;
+            
         case 16:
             if (((gSeason == SPRING) | (gSeason == WINTER))) {
                 func_8002F6F0();
@@ -1010,6 +1019,7 @@ void func_8005B09C(u8 arg0) {
                 func_80043430(0, 0x44, 0xD, 0);
             }
             break;
+            
         case 17:
             if (((gSeason == SPRING) | (gSeason == WINTER))) {
                 func_8002F6F0();
@@ -1029,6 +1039,7 @@ void func_8005B09C(u8 arg0) {
                 func_80043430(0, 0x44, 0xE, 0);
             }
             break;
+            
         case 18:
             if (((gSeason == SPRING) | (gSeason == WINTER))) {
                 func_8002F6F0();
@@ -1038,7 +1049,6 @@ void func_8005B09C(u8 arg0) {
                 func_8003F690(0, 1, 0, 0);
                 func_8003F360(0, -4, 2);
                 func_80043430(0, 0x44, 5, 0x40);
-
             } else {
                 func_8002F6F0();
                 func_80046C98();
@@ -1049,6 +1059,7 @@ void func_8005B09C(u8 arg0) {
                 func_80043430(0, 0x44, 0xF, 0);
             }
             break;
+            
         case 19:
             if (((gSeason == SPRING) | (gSeason == WINTER))) {
                 func_8002F6F0();
@@ -1068,6 +1079,7 @@ void func_8005B09C(u8 arg0) {
                 func_80043430(0, 0x44, 0x10, 0);
             }
             break;
+            
         case 20:
             if (((gSeason == SPRING) | (gSeason == WINTER))) {
                 func_8002F6F0();
@@ -1086,8 +1098,8 @@ void func_8005B09C(u8 arg0) {
                 func_8003F360(0, -4, 2);
                 func_80043430(0, 0x44, 0x11, 0);
             }
-
             break;
+            
         case 21:
             if (((gSeason == SPRING) | (gSeason == WINTER))) {
                 func_8002F6F0();
@@ -1107,6 +1119,7 @@ void func_8005B09C(u8 arg0) {
                 func_80043430(0, 0x44, 0x12, 0);
             }
             break;
+            
         case 22:
             if (((gSeason == SPRING) | (gSeason == WINTER))) {
                 func_8002F6F0();
@@ -1123,9 +1136,10 @@ void func_8005B09C(u8 arg0) {
                 func_8003F54C(0, 0, -64.0f, 352.0f);
                 func_8003F690(0, 1, 0, 0);
                 func_8003F360(0, -4, 2);
-                func_80043430(0, 0x44, 0x13, 0);         
-            }   
+                func_80043430(0, 0x44, 0x13, 0);
+            }
             break;
+        
         case 23:
             func_8002F6F0();
             func_80046C98();
@@ -1135,15 +1149,14 @@ void func_8005B09C(u8 arg0) {
             func_8003F360(0, -4, 2);
             func_80043430(0, 1, 0x15, 0);
             break;
-        default:
-            goto func_end;
-    }
-    
-    setMainLoopCallbackFunctionIndex(9);
-    D_8013D45C = 0;
-    setPlayerAction(0, 0);
 
-func_end:
+    }
+           
+    setMainLoopCallbackFunctionIndex(9);
+    D_8013D440[0].unk_1C = 0;
+    setPlayerToDefaultStanding(0, 0);
+       
+func_end:    
     setMainLoopCallbackFunctionIndex(0xC);
 }
 #else
@@ -1152,7 +1165,6 @@ INCLUDE_ASM(const s32, "game", func_8005B09C);
 
 //INCLUDE_ASM(const s32, "game", func_8005C00C);
 
-// -fforce-addr irrelevant
 void func_8005C00C(void) {
     
     if (D_801891D4 < 0) {
@@ -1174,7 +1186,6 @@ INCLUDE_ASM(const s32, "game", func_8005C07C);
 
 //INCLUDE_ASM(const s32, "game", func_8005C940);
 
-// -fforce-addr irrelevant
 void func_8005C940(u16 arg0, u16 arg1) {
     
     func_8003BF7C(0, 0, 0, 0, 0, 8);
@@ -1183,7 +1194,7 @@ void func_8005C940(u16 arg0, u16 arg1) {
     // set song speed with default
     func_800ACB5C(gCurrentSongIndex);
     
-    D_80205230 = arg1;
+    D_80205230.unk_0 = arg1;
 
     globalLightingRgba.r = 0;
     globalLightingRgba.g = 0;
@@ -1207,18 +1218,20 @@ void func_8005C940(u16 arg0, u16 arg1) {
 //INCLUDE_ASM(const s32, "game", func_8005CA2C);
 
 void func_8005CA2C(u16 arg0, u16 arg1) {
-    D_80205234 = arg0;
-    D_80205232 = 0;
-    D_80205230 = arg1;
+    D_80205230.unk_4 = arg0;
+    D_80205230.unk_2 = 0;
+    D_80205230.unk_0 = arg1;
     setMainLoopCallbackFunctionIndex(7);
 }
 
 //INCLUDE_ASM(const s32, "game", func_8005CA64);
 
 void func_8005CA64(void) {
+
     func_800A8F74();
+
     if (func_80036A84(0)) {
-        setMainLoopCallbackFunctionIndex(D_80205230);
+        setMainLoopCallbackFunctionIndex(D_80205230.unk_0);
     }
 }
 
@@ -1229,36 +1242,38 @@ void func_8005CAA8(void) {
     func_800A8F74();
 
     if ((func_80036A84(0)) && (func_800ACBB8(gCurrentSongIndex))) {
+
         func_8002F7C8(0, 0, 0, 0);
         func_8003BE98(0, 0, 0, 0, 0);
         func_80046BB8();
         func_80046860();
-        D_801891D4 = 0;
-        gCutsceneFlags = 0;
-        setMainLoopCallbackFunctionIndex(D_80205230);
-    }
 
+        D_801891D4 = 0;
+
+        gCutsceneFlags = 0;
+
+        setMainLoopCallbackFunctionIndex(D_80205230.unk_0);
+    }
 }
 
 //INCLUDE_ASM(const s32, "game", func_8005CB50);
 
-// needs -fforce-addr
 void func_8005CB50(void) {
 
-    if (D_80205232 >= D_80205234) {
-        setMainLoopCallbackFunctionIndex(D_80205230);
+    if (D_80205230.unk_2 >= D_80205230.unk_4) {
+        setMainLoopCallbackFunctionIndex(D_80205230.unk_0);
         return;
     }
 
-    D_80205232++;
+    D_80205230.unk_2++;
 }
 
 //INCLUDE_ASM(const s32, "game", func_8005CBA4);
 
-// -fforce-addr irrelevant
 void func_8005CBA4(void) {
 
     // gTileContextFlags = flags on global tile struct
+    // bits 4 and 5
     if (!(gTileContextFlags & 0x18)) {
         func_8002F730();
         func_80046CF4();
@@ -1267,22 +1282,24 @@ void func_8005CBA4(void) {
     }
 }
 
-// needs -fforce-addr
-
 //INCLUDE_ASM(const s32, "game", func_8005CBF0);
 
 void func_8005CBF0(void) {
     
     if (func_80043A88()) {
+        
         if (!(func_800D5A6C(gPlayer.unk_2C) & 0xD80)) {
             func_800D55E4(gPlayer.unk_2D, 1);
             gPlayer.unk_2C = 0;
             gItemBeingHeld = 0xFF;
         }
+        
         func_8003F910(0, 0x78, &D_D47F00, &D_D49B80, &D_D49B80_2, &tvSprites_romTextureStart, 0x8023B400, 0x8023CC00, 0x8023CE00, 0x8023D200, 0, 4, 0xFE, 106.0f, -15.0f, 0);
         func_8003F910(1, 0x78, &D_D47F00, &D_D49B80, &D_D49B80_2, &tvSprites_romTextureStart, 0x8023B400, 0x8023CC00, 0x8023CE00, 0x8023D200, 0, 0xD, 0xFE, 106.0f, -15.0f, 0);
         func_8005CDCC();
+        
         setMainLoopCallbackFunctionIndex(1);
+        
         func_8002F730();
         func_80046CF4();
         func_8002FCB4(0, 1);
@@ -1337,7 +1354,6 @@ void func_8005CDCC(void) {
 
 //INCLUDE_ASM(const s32, "game", func_8005CEFC);
 
-// -fforce-addr irrelevant
 void func_8005CEFC(void) {
     
     if (func_8003F0DC() & 0xFF) {
@@ -1348,14 +1364,13 @@ void func_8005CEFC(void) {
         func_8002F730();
         func_80046CF4();
         func_8002FCB4(0, 1);
-        
     }
 }
 
 //INCLUDE_ASM(const s32, "game", func_8005CF4C);
 
-// -fforce-addr irrelevant
 void func_8005CF4C(void) {
+
     if (D_801FB686 == 0) {
         setMainLoopCallbackFunctionIndex(1);
         func_8002F730();
@@ -1365,10 +1380,8 @@ void func_8005CF4C(void) {
 }
 
 // jtbl_8011F010, 0xFA410
-INCLUDE_ASM(const s32, "game", func_8005CF94);
+//INCLUDE_ASM(const s32, "game", func_8005CF94);
 
-// can't use -fforce-addr
-/* 
 void func_8005CF94(void) {
     
     u8* namePtr;
@@ -1382,7 +1395,7 @@ void func_8005CF94(void) {
     switch (gNamingScreenIndex) {
         // player
         case 0:
-            namePtr = &D_80189061; gPlayer.name
+            namePtr = gPlayer.name;
             break;
         // farm
         case 1:
@@ -1390,12 +1403,12 @@ void func_8005CF94(void) {
             break;
         // dog
         case 2:
-            namePtr = &D_801886B1; // dogInfo.name
+            namePtr = dogInfo.name;
             break;
         // horse
         case 3:
-            namePtr = &D_8016FDD1; // horseInfo.name
-            break;
+            namePtr = horseInfo.name; 
+        break;
         // baby
         case 4:
             namePtr = &gBabyName;
@@ -1416,12 +1429,9 @@ void func_8005CF94(void) {
     
     func_800ED8A0(namePtr, gNamingScreenIndex);
 }
-*/
 
-INCLUDE_ASM(const s32, "game", func_8005D0BC);
+//INCLUDE_ASM(const s32, "game", func_8005D0BC);
 
-// can't use -fforce-addr
-/*
 void func_8005D0BC(void) {
     
     u8 set;
@@ -1507,8 +1517,6 @@ void func_8005D0BC(void) {
         setMainLoopCallbackFunctionIndex(4);
     }
 }
-*/
-
 
 // possible split
 
@@ -1534,7 +1542,7 @@ INCLUDE_ASM(const s32, "game", func_8005D2B0);
 
 void func_80060454(void) {
     if (checkAllSfxInactive()) {
-        setMainLoopCallbackFunctionIndex(D_80205230);
+        setMainLoopCallbackFunctionIndex(D_80205230.unk_0);
     }
 }
 
@@ -1550,8 +1558,6 @@ INCLUDE_ASM(const s32, "game", func_800605F0);
 
 //INCLUDE_ASM(const s32, "game", func_80060624);
 
-// doesn't need -fforce-addr
-
 void func_80060624(void) {
     
     short temp = 1;
@@ -1562,14 +1568,14 @@ void func_80060624(void) {
     int tempStamina;
     u8 tempTime;
 
-    if ((func_80036A84(0)) || !(D_8015825A & 1)) {
+    if ((func_80036A84(0)) || !(D_80158248.flags & 1)) {
         
         func_800610DC();
         
         if (func_80060DC0()) {
             func_800ACC50(0x59);
             setMainLoopCallbackFunctionIndex(0xF);
-            D_80205230 = 0xD;
+            D_80205230.unk_0 = 0xD;
             return;
         }
         
@@ -1585,7 +1591,7 @@ void func_80060624(void) {
             func_80060E58();
         }
         
-        if (func_800679EC() != 3) {
+        if (checkFatigueLevel() != 3) {
             
             tempTime = gHour;
             
@@ -1654,23 +1660,22 @@ void func_80060624(void) {
 
 //INCLUDE_ASM(const s32, "game", func_80060838);
 
-// needs -fforce-addr
 void func_80060838(void) {
     
     // check map flags
-    if ((func_80036A84(0)) || !(D_8015825A & 1)) {
+    if ((func_80036A84(0)) || !(D_80158248.flags & 1)) {
 
         func_800610DC();
 
-        if (D_801890D6 & 1) {
+        if (gPlayer.flags & 1) {
 
-            D_801890D6 &= 0xFFFE;
+            gPlayer.flags &= 0xFFFE;
             
             toggleDailyEventBit(0x5C);
             
             setHorseLocation(0xFF);
             
-            D_8016FDF0 &= 0xFFF7;
+            horseInfo.flags &= 0xFFF7;
         }
 
         if (func_80060DC0()) {
@@ -1681,7 +1686,7 @@ void func_80060838(void) {
             setMainLoopCallbackFunctionIndex(0xF);
 
             // last loading screen callback index?
-            D_80205230 = 0xD;
+            D_80205230.unk_0 = 0xD;
 
             return;
         }
@@ -1712,12 +1717,9 @@ void func_80060838(void) {
     }
 }
 
+//INCLUDE_ASM(const s32, "game", setFestivalDailyBits);
 
-INCLUDE_ASM(const s32, "game", func_8006096C);
-
-// can't use -fforce-addr
-/*
-void func_8006096C(void) {
+void setFestivalDailyBits(void) {
 
     if (gSeason == SPRING && gDayOfMonth == 1) {
         setDailyEventBit(0x30);
@@ -1829,7 +1831,6 @@ void func_8006096C(void) {
         setDailyEventBit(0x4E);
     }
 }
-*/
 
 INCLUDE_ASM(const s32, "game", func_80060DC0);
 
@@ -1839,7 +1840,6 @@ INCLUDE_ASM(const s32, "game", func_80060EC8);
 
 //INCLUDE_ASM(const s32, "game", func_800610DC);
 
-// -fforce-addr irrelevant
 void func_800610DC(void) {
 
     int temp; 
@@ -1858,9 +1858,9 @@ void func_800610DC(void) {
                     func_80088C1C(0xff, gPlayer.unk_6C);
                 }
                 
-                } else {
-                    setDogLocation(0xff);
-                }
+            } else {
+                setDogLocation(0xff);
+            }
         }
         
         gPlayer.unk_2C = 0;
@@ -1870,7 +1870,6 @@ void func_800610DC(void) {
 
 //INCLUDE_ASM(const s32, "game", func_80061178);
 
-// -fforce-addr irrelevant
 s32 func_80061178(void) {
     
     s32 result;
@@ -2065,8 +2064,6 @@ void func_80061690(void) {
     D_801886D4[5] = 0xF6;
 }
 
-// can't use -fforce-addr
-
 #ifdef PERMUTER
 u8 func_800616CC(u8 arg0) {
 
@@ -2165,16 +2162,13 @@ INCLUDE_ASM(const s32, "game", func_800616CC);
 #endif
 
 // func_80061860
+//INCLUDE_ASM(const s32, "game", setFlowerFestivalGoddess);
 
-INCLUDE_ASM(const s32, "game", setFlowerFestivalGoddess);
-
-// can't use -fforce-addr
-/*
 void setFlowerFestivalGoddess(void) {
     
     u8 temp;
 
-    if ((gVoteForFlowerFestivalGoddess < 5) && !(getRandomNumberInRange(0, 2))) {
+    if (gVoteForFlowerFestivalGoddess < 5 && !getRandomNumberInRange(0, 2)) {
         temp = gVoteForFlowerFestivalGoddess;
     } else {
         temp = getRandomNumberInRange(0, 4);
@@ -2182,17 +2176,14 @@ void setFlowerFestivalGoddess(void) {
     
     gFlowerFestivalGoddess = temp;
     
-    if ((checkLifeEventBit(0x2F)) && (gFlowerFestivalGoddess == KAREN)) {
+    if (checkLifeEventBit(0x2F) && gFlowerFestivalGoddess == KAREN) {
         gFlowerFestivalGoddess = 0;
     }
 }
-*/
 
 // func_800618EC
-
 //INCLUDE_ASM(const s32, "game", getSumBacholerettesWithAffectionThreshold);
 
-// needs -fforce-addr
 u8 getSumBacholerettesWithAffectionThreshold(u8 affectionLevel) {
     
     u8 girlIndex = 0;
@@ -2233,6 +2224,7 @@ INCLUDE_ASM(const s32, "game", func_80061A88);
 //INCLUDE_ASM(const s32, "game", setRecipes);
 
 void setRecipes(void) {
+
     if (checkSpecialDialogueBit(7)) {
         addRecipe(0);
     }
@@ -2341,10 +2333,8 @@ void setRecipes(void) {
 }
 
 // func_800623E4
-
 //INCLUDE_ASM(const s32, "game", handleHouseConstruction);
 
-// -fforce-addr irrelevant
 u8 handleHouseConstruction(u8 day) {
 
     u8 *dayArrayPtr;
@@ -2387,10 +2377,8 @@ u8 handleHouseConstruction(u8 day) {
 }
 
 // func_8006252C
-
 //INCLUDE_ASM(const s32, "game", setLetters);
 
-// -fforce-addr irrelevant
 void setLetters(void) {
 
     if (!checkMailRead(0) && ((!checkLifeEventBit(MARRIED)) || gWife != MARIA) && (npcAffection[MARIA] >= 120) && (gSeason == SPRING) && !(getRandomNumberInRange(0, 10))) {
