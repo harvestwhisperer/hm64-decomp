@@ -22,12 +22,10 @@ LD_SCRIPT := $(BASENAME).ld
 OBJECTS := $(shell grep -E 'build.+\.o' $(LD_SCRIPT) -o)
 
 KMC_PATH := tools/gcc-2.7.2/
-SN_PATH := tools/gcc-2.7.2-sn/
 
 CROSS := mips-linux-gnu-
 
 CC = $(KMC_PATH)gcc
-CC_SN = $(SN_PATH)gcc
 AS := $(CROSS)as
 LD := $(CROSS)ld
 OBJCOPY := $(CROSS)objcopy
@@ -58,9 +56,6 @@ MACROS += -D_PERMUTER=1
 endif
 
 dir_guard = @mkdir -p $(@D)
-
-build/src/spriteAnimation.c.o: CFLAGS += -fforce-addr
-build/src/animals.c.o: CFLAGS += -fforce-addr
 
 build/src/lib/nusys-1/nuboot.c.o: NU_OPTFLAGS := -O0
 
