@@ -210,6 +210,7 @@ INCLUDE_ASM(const s32, "system/map", func_80035EE0);
 
 INCLUDE_ASM(const s32, "system/map", func_800360BC);
 
+// returns index for interactable object/exit from rodata array per level
 INCLUDE_ASM(const s32, "system/map", func_80036318);
 
 INCLUDE_ASM(const s32, "system/map", func_80036490);

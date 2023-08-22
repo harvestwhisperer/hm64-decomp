@@ -172,7 +172,7 @@ void registerMainLoopCallbacks(void) {
     registerMainLoopCallback(OVERLAY_SCREEN_LOAD, &func_8005CB50);
     registerMainLoopCallback(ROTATING, &func_8005CBA4);
     registerMainLoopCallback(DIALOGUE, &func_8005CBF0);
-    registerMainLoopCallback(ITEM_TEXT, &func_8005CEFC);
+    registerMainLoopCallback(TEXT, &func_8005CEFC);
     registerMainLoopCallback(0xB, &func_8005CF4C);
     registerMainLoopCallback(PINK_OVERLAY_TEXT, &func_8005D2B0);
     registerMainLoopCallback(END_OF_DAY_1, &func_80060624);

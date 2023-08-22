@@ -991,6 +991,7 @@ checkWineBarrelInteraction = 0x800AD07C;
 checkAllSfxInactive = 0x800ACD18;
 
 handleDumplingHouseExit = 0x800B1D6C;
+handleRanchStoreExits = 0x800B28D8;
 
 addRecipe = 0x800C77B8;
 checkRecipe = 0x800C7824;
@@ -1196,7 +1197,7 @@ houseExtensionConstructionCounter = 0x801FC151;
 renderedSprites = 0x801FC160;
 
 gGold = 0x801FD60C;
-gSeasonTomorrow = 0x801FD620;
+gNextSeason = 0x801FD620;
 gCurrentSongIndex = 0x801FD622;
 globalSprites = 0x801FD630;
 
@@ -1224,7 +1225,7 @@ gAverageFarmAnimalAffection = 0x8020563A;
 
 mainLoopCallbackCurrentIndex = 0x8020564A;
 
- gSeconds = 0x80215DF2;
+gSeconds = 0x80215DF2;
 
 gTotalCropsShipped = 0x80215DFC;
 gHouseExtensionSelection = 0x8021E6D1;

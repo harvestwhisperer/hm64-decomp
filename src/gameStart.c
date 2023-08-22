@@ -74,7 +74,7 @@ void func_8004DF10(void) {
 
 void startGame(void) {
 
-    setExit(0xC);
+    setExit(MIDDLE_OF_HOUSE);
 
     // set spawnable/foragable items
     func_800598E0();

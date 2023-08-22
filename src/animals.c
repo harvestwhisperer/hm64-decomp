@@ -1,13 +1,16 @@
 #include "common.h"
+
 #include "animals.h"
+
+extern Dog dogInfo;
+extern Horse horseInfo;
+
+extern u8 D_801886D4[6];
 
 void setDogLocation(u8);       
 void setHorseLocation(u8);                             
 void func_80088BB0(u8, u8);                    
 void func_80088C1C(u8, u8);  
-
-extern Dog dogInfo;
-extern Horse horseInfo;
 
 
 INCLUDE_ASM(const s32, "animals", func_80085F70);
@@ -320,7 +323,17 @@ INCLUDE_ASM(const s32, "animals", func_8009B914);
 
 INCLUDE_ASM(const s32, "animals", func_8009BA74);
 
-INCLUDE_ASM(const s32, "animals", func_8009BB70);
+//INCLUDE_ASM(const s32, "animals", func_8009BB70);
+
+// same as func_80061690
+void func_8009BB70(void) {
+    D_801886D4[0] = 0xF6;
+    D_801886D4[1] = 0xF6;
+    D_801886D4[2] = 0xF6;
+    D_801886D4[3] = 0xF6;
+    D_801886D4[4] = 0xF6;
+    D_801886D4[5] = 0xF6;
+}
 
 INCLUDE_ASM(const s32, "animals", func_8009BBAC);
 

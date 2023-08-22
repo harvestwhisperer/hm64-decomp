@@ -7,7 +7,10 @@
 // rodata
 extern u16 itemFlags[];
 
+extern u32 gCutsceneFlags;
+
 extern u8 gBaseMapIndex;
+extern u8 gHour;
 extern u8 gSeason;
 
 extern u8 gWife;
@@ -59,6 +62,8 @@ void setDefaultBabyName(u8);
 
 u8 checkWineBarrelInteraction(u8);
 
+void handleBlueFeatherUse();         
+
 void func_8002FA2C(u16);
 void func_80034DC8(u16, u8, u16);    
 u8 func_8003C1A4(u16);
@@ -105,7 +110,7 @@ void func_800D4CC0();
 void func_800D4CD0();                                  
 void func_800D4D1C();                                  
 void func_800D4D68();                                  
-void handleBlueFeatherUse();                  
+         
 void func_800D5130();
 void func_800D56E8(u8, u16);   
 u8 func_800D67E4(u8);
@@ -114,7 +119,16 @@ u8 func_800DA918(u8);
 u16 func_800DA948(u8);
 void func_800DAC70(u8, u8, u8, u8);
 f32* func_800DAD74(u8, f32, u8);                           
-u8 func_800DAF58(f32, u8);                            
+u8 func_800DAF58(f32, u8);             
+
+u32 func_8002ECD4(u16, u16, u16);                         
+u32 func_8002F2FC(u16, u16);                            
+u32 func_8002FE10(u16, f32, f32, f32, f32);           
+u32 func_80030054(u16, u8);                            
+u32 func_8003019C(u16, u8);                            
+u32 func_80030240(u16, u8);                            
+u32 func_800302E4(u16, u8);                            
+u8 func_800309B4(u16, f32, f32);                       
 
 
 INCLUDE_ASM(const s32, "itemHandlers", func_800CF850);
@@ -328,7 +342,7 @@ void func_800D373C(void) {
     func_80065F94(&float_array, 0.0, temp2);
  
     if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && (float_array[1] != 65535)) {
-        if ((gSeason == 1) || (gBaseMapIndex == 0x56)) {
+        if (gSeason == SPRING || gBaseMapIndex == GREENHOUSE) {
           temp4 = 8;
         } else {
           temp4 = 0xD7;
@@ -378,7 +392,7 @@ void func_800D3958(void) {
     func_80065F94(floatArray, 0.0, temp2);
  
     if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && (floatArray[1] != 65535)) {
-        if ((gSeason == SPRING) || (gBaseMapIndex == GREENHOUSE)) {
+        if (gSeason == SPRING || gBaseMapIndex == GREENHOUSE) {
           temp4 = 0x13;
         } else {
           temp4 = 0xD7;
@@ -429,7 +443,7 @@ void func_800D3B74(void) {
     func_80065F94(floatArray, 0.0, temp2);
  
     if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && (floatArray[1] != 65535)) {
-        if ((gSeason == SPRING) || (gBaseMapIndex == GREENHOUSE)) {
+        if (gSeason == SPRING || gBaseMapIndex == GREENHOUSE) {
           temp4 = 0x33;
         } else {
           temp4 = 0xD7;
@@ -479,7 +493,7 @@ void func_800D3D90(void) {
     func_80065F94(floatArray, 0.0, temp2);
  
     if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && (floatArray[1] != 65535)) {
-        if ((gSeason == SUMMER) || (gBaseMapIndex == GREENHOUSE)) {
+        if (gSeason == SUMMER || gBaseMapIndex == GREENHOUSE) {
           temp4 = 0x53;
         } else {
           temp4 = 0xD7;
@@ -530,7 +544,7 @@ void func_800D3FAC(void) {
     func_80065F94(floatArray, 0.0, temp2);
  
     if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && (floatArray[1] != 65535)) {
-        if ((gSeason == SUMMER) || (gBaseMapIndex == GREENHOUSE)) {
+        if (gSeason == SUMMER || gBaseMapIndex == GREENHOUSE) {
           temp4 = 0x68;
         } else {
           temp4 = 0xD7;
@@ -580,8 +594,8 @@ void func_800D41C8(void) {
     
     func_80065F94(floatArray, 0.0, temp2);
  
-    if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && (floatArray[1] != 65535)) {
-        if ((gSeason == 3) || (gBaseMapIndex == 0x56)) {
+    if (func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20 && floatArray[1] != 65535) {
+        if (gSeason == FALL || gBaseMapIndex == GREENHOUSE) {
           temp4 = 0x22;
         } else {
           temp4 = 0xD7;
@@ -683,7 +697,7 @@ void func_800D45F4(void) {
  
     if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && (floatArray[1] != 65535)) {
         
-        if ((gSeason - 1 < 2U) || (gBaseMapIndex == 0x56)) {
+        if ((gSeason - 1 < 2U) || gBaseMapIndex == GREENHOUSE) {
             temp4 = 0x90; 
         } else {
             temp4 = 0xD7;
@@ -736,7 +750,7 @@ void func_800D4814(void) {
  
     if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && (floatArray[1] != 65535)) {
         
-        if ((gSeason - 1 < 2U) || (gBaseMapIndex == 0x56)) {
+        if ((gSeason - 1 < 2U) || gBaseMapIndex == GREENHOUSE) {
             temp4 = 0x9F; 
         } else {
             temp4 = 0xD7;
@@ -749,7 +763,7 @@ void func_800D4814(void) {
         setAudio(0x1D);
     }
     
-    D_80189828.unk_2 += 1;
+    D_80189828.unk_2++;
     
     if (D_80189828.unk_2 == 9) {
         D_80189828.unk_E = 0;
@@ -1025,9 +1039,9 @@ void func_800D51B0(void) {
         D_80204DF8[i].unk_C = 0;
         D_80204DF8[i].unk_10 = 0;
         D_80204DF8[i].unk_14 = 0;
-        D_80204DF8[i].unk_18 = 0;
-        D_80204DF8[i].unk_1C = 0;
-        D_80204DF8[i].unk_20 = 0;
+        D_80204DF8[i].unk_18.x = 0;
+        D_80204DF8[i].unk_18.y = 0;
+        D_80204DF8[i].unk_18.z = 0;
         D_80204DF8[i].unk_24 = 0;
         D_80204DF8[i].unk_26 = 0;
         D_80204DF8[i].unk_28 = 0;
@@ -1053,123 +1067,123 @@ void func_800D5290(void) {
 //INCLUDE_ASM(const s32, "itemHandlers", func_800D5308);
 
 // tool acquisition handler
-u8 func_800D5308(u8 arg0, u8 arg1, u32 arg2, s32 arg3, s32 arg4) {
+u8 func_800D5308(u8 index, u8 arg1, u32 arg2, s32 arg3, s32 arg4) {
 
-    D_80204DF8[arg0].unk_2A = arg1;
-    D_80204DF8[arg0].unk_28 = arg2;
-    D_80204DF8[arg0].unk_26 = 0;
-    D_80204DF8[arg0].flags = arg3 | (arg4 | 1);;
+    D_80204DF8[index].unk_2A = arg1;
+    D_80204DF8[index].unk_28 = arg2;
+    D_80204DF8[index].unk_26 = 0;
+    D_80204DF8[index].flags = arg3 | (arg4 | 1);;
     
     gItemBeingHeld = func_800D67E4(arg2);
     
-    return arg0;
+    return index;
 }
 
 //INCLUDE_ASM(const s32, "itemHandlers", func_800D5390);
 
-u8 func_800D5390(u8 arg0, u8 arg1, u32 arg2, u16 arg3, u8 arg4) {
+u8 func_800D5390(u8 index, u8 arg1, u32 arg2, u16 arg3, u8 arg4) {
     
     u8 found = 0;
     int tempBit = 1;
     
-    while ((arg0 < 10) && (!found)) {
-        if (!(D_80204DF8[arg0].flags & 1)) {
+    while ((index < 10) && (!found)) {
+        if (!(D_80204DF8[index].flags & 1)) {
           found = 1;
         }
         else {
-          arg0++;
+          index++;
         }
     }
     
     if (found) {
-        D_80204DF8[arg0].unk_2A = arg1;
-        D_80204DF8[arg0].unk_28 = arg2;
-        D_80204DF8[arg0].flags = arg3 | (arg4 | tempBit);
-        D_80204DF8[arg0].unk_26 = 0;
+        D_80204DF8[index].unk_2A = arg1;
+        D_80204DF8[index].unk_28 = arg2;
+        D_80204DF8[index].flags = arg3 | (arg4 | tempBit);
+        D_80204DF8[index].unk_26 = 0;
         gItemBeingHeld = func_800D67E4(arg2);
     }
       
     else {
-        arg0 = 0xff;
+        index = 0xff;
     }
     
-    return arg0;
+    return index;
 }
 
 //INCLUDE_ASM(const s32, "itemHandlers", func_800D5488);
 
-u8 func_800D5488(u8 arg0, u8 arg1, u32 arg2, u16 arg3, u8 arg4) {
+u8 func_800D5488(u8 index, u8 arg1, u32 arg2, u16 arg3, u8 arg4) {
     
     u8 found = 0;
     
-    while ((arg0 < 10) && (!found)) {
-        if (!(D_80204DF8[arg0].flags & 1)) {
+    while ((index < 10) && (!found)) {
+        if (!(D_80204DF8[index].flags & 1)) {
           found = 1;
         }
         else {
-          arg0++;
+          index++;
         }
     }
 
     if (found) {
-        D_80204DF8[arg0].unk_2A = arg1;
-        D_80204DF8[arg0].unk_28 = arg2;
-        D_80204DF8[arg0].flags = arg3 | (arg4 | 1);
-        D_80204DF8[arg0].unk_26 = 0;
+        D_80204DF8[index].unk_2A = arg1;
+        D_80204DF8[index].unk_28 = arg2;
+        D_80204DF8[index].flags = arg3 | (arg4 | 1);
+        D_80204DF8[index].unk_26 = 0;
     }
     else {
-        arg0 = 0xff;
+        index = 0xff;
     }
     
-    return arg0;
+    return index;
 }
 
 //INCLUDE_ASM(const s32, "itemHandlers", func_800D5548);
 
-void func_800D5548(u8 arg0) {
+void func_800D5548(u8 index) {
 
-    if (D_80204DF8[arg0].flags & 1) {        
-        func_8002FA2C(arg0 + 0x27);
-        D_80204DF8[arg0].unk_2A = 0;
-        D_80204DF8[arg0].flags = 0;
+    if (D_80204DF8[index].flags & 1) {        
+        func_8002FA2C(index + 0x27);
+        D_80204DF8[index].unk_2A = 0;
+        D_80204DF8[index].flags = 0;
     }
 }
 
 //INCLUDE_ASM(const s32, "itemHandlers", func_800D55B8);
 
-u16 func_800D55B8(u8 arg0) {
-    return D_80204DF8[arg0].unk_28;
+u16 func_800D55B8(u8 index) {
+    return D_80204DF8[index].unk_28;
 }
 
 //INCLUDE_ASM(const s32, "itemHandlers", func_800D55E4);
 
-void func_800D55E4(u8 arg0, u8 arg1) {
+void func_800D55E4(u8 index, u8 arg1) {
 
-    if (D_80204DF8[arg0].flags & 1) {
-        D_80204DF8[arg0].unk_2A = arg1;
+    if (D_80204DF8[index].flags & 1) {
+        D_80204DF8[index].unk_2A = arg1;
     }
 }
 
 //INCLUDE_ASM(const s32, "itemHandlers", func_800D5628);
 
-void func_800D5628(u8 arg0, f32 arg1, f32 arg2, f32 arg3) {
+void func_800D5628(u8 index, f32 arg1, f32 arg2, f32 arg3) {
 
-    D_80204DF8[arg0].unk_0.x = arg1;
-    D_80204DF8[arg0].unk_0.y = arg2;
-    D_80204DF8[arg0].unk_0.z = arg3;
-    D_80204DF8[arg0].flags |= 2;
+    D_80204DF8[index].unk_0.x = arg1;
+    D_80204DF8[index].unk_0.y = arg2;
+    D_80204DF8[index].unk_0.z = arg3;
+    D_80204DF8[index].flags |= 2;
 
 }
 
 //INCLUDE_ASM(const s32, "itemHandlers", func_800D5688);
 
-void func_800D5688(u8 arg0, u32 arg1, u32 arg2, u32 arg3) {
+void func_800D5688(u8 index, u32 arg1, u32 arg2, u32 arg3) {
 
-    D_80204DF8[arg0].unk_18 = arg1;
-    D_80204DF8[arg0].unk_1C = arg2;
-    D_80204DF8[arg0].unk_20 = arg3;
-    D_80204DF8[arg0].flags |= 8;
-    
+    D_80204DF8[index].unk_18.x = arg1;
+    D_80204DF8[index].unk_18.y = arg2;
+    D_80204DF8[index].unk_18.z = arg3;
+    D_80204DF8[index].flags |= 8;
+     
 }
 
 INCLUDE_ASM(const s32, "itemHandlers", func_800D56E8);
@@ -1180,21 +1194,21 @@ u16 func_800D5A6C(u16 index) {
 
 //INCLUDE_ASM(const s32, "itemHandlers", func_800D5A88);
 
-u16 func_800D5A88(u16 arg0) {
+u16 func_800D5A88(u16 index) {
 
   u16 result;
   
-  result = D_801174A0[arg0][gSeason];
+  result = D_801174A0[index][gSeason];
 
-  if ((u16)(arg0 - 0xBA) < 8) {
+  if ((u16)(index - 0xBA) < 8) {
     result = 0xF9;
 
   }
-  if ((u16)(arg0 - 0xC2) < 8) {
+  if ((u16)(index - 0xC2) < 8) {
     result = 0xFA;
   }
 
-  if ((u16)(arg0 - 0xAB) < 8) {
+  if ((u16)(index - 0xAB) < 8) {
     result = 0xFB;
   }
 
@@ -1204,14 +1218,14 @@ u16 func_800D5A88(u16 arg0) {
 
 //INCLUDE_ASM(const s32, "itemHandlers", func_800D5B00);
 
-u8 func_800D5B00(u16 arg0) {
-    return D_80118540[arg0];
+u8 func_800D5B00(u16 index) {
+    return D_80118540[index];
 }
 
 //INCLUDE_ASM(const s32, "itemHandlers", func_800D5B18);
 
-u8 func_800D5B18(u16 arg0) {
-    return D_80118620[arg0];
+u8 func_800D5B18(u16 index) {
+    return D_80118620[index];
 }
 
 INCLUDE_ASM(const s32, "itemHandlers", func_800D5B30);
@@ -1220,21 +1234,20 @@ INCLUDE_ASM(const s32, "itemHandlers", func_800D5CC0);
 
 //INCLUDE_ASM(const s32, "itemHandlers", func_800D67E4);
 
-u8 func_800D67E4(u8 arg0) {
-    return D_80117F20[arg0];
+u8 func_800D67E4(u8 index) {
+    return D_80117F20[index];
 }
 
 //INCLUDE_ASM(const s32, "itemHandlers", func_800D67FC);
 
-void func_800D67FC(u8 arg0) {
+void func_800D67FC(u8 index) {
     
     s32 temp;
 
     // member of dialogue box struct
     u16 var_a2;
 
-    // why is this needed?
-    temp = arg0;
+    temp = index;
     
     if (temp < 0x70) {
         if (temp > 0x5F) {
@@ -1245,7 +1258,7 @@ void func_800D67FC(u8 arg0) {
     } 
 
     // array of npc/dialogue-related u16s
-    var_a2 = D_80118000[arg0];
+    var_a2 = D_80118000[index];
     
 func_end:
     func_8005AE8C(1, 6, var_a2, 0, 2);
@@ -1255,13 +1268,13 @@ func_end:
 //INCLUDE_ASM(const s32, "itemHandlers", func_800D6868);
 
 // shipping bin
-void func_800D6868(u8 arg0) {
+void func_800D6868(u8 index) {
 
     u32 result;
     
-    dailyShippingBinValue += adjustValue(dailyShippingBinValue, D_801181C0[arg0], 999999);
+    dailyShippingBinValue += adjustValue(dailyShippingBinValue, D_801181C0[index], 999999);
     
-    switch (arg0) {
+    switch (index) {
         case 13:
             D_801654F4 += adjustValue(D_801654F4, 1, 999);
             gTotalCropsShipped += adjustValue(gTotalCropsShipped,1, 99999);
@@ -1312,77 +1325,80 @@ void func_800D6B28(void) {
     setDailyEventBit(0x43);
 }
 
-#ifdef PERMUTER
-// pretty much 99%, but does array shifting on Vec3f before loading floats 
-void func_800D6B58(u8 arg0, u8 arg1) {
+//INCLUDE_ASM(const s32, "itemHandlers", func_800D6B58);
+
+static inline void setVec3(u8 index, float x, float y, float z) {
+    D_80204DF8[index].unk_0.x = x;
+    D_80204DF8[index].unk_0.y = y;
+    D_80204DF8[index].unk_0.z = z;
+    D_80204DF8[index].flags |= 2;
+}
+
+void func_800D6B58(u8 arg0, u8 index) {
 
     u8 temp;
     u8 temp2;
- 
-    D_80204DF8[arg1].unk_0.x = 0;
-    D_80204DF8[arg1].unk_0.y = 0;
-    D_80204DF8[arg1].unk_0.z = 0;
-    D_80204DF8[arg1].flags |= 8;
-
-    func_8002FE10(arg1 + 0x27, 0.0f, 0.0f, 0.0f, 0.0f);
-    func_8002ECD4(arg1 + 0x27, 0xFFFF, 0xFF);
+    u8 flags;
     
-    func_8003019C(arg1 + 0x27, 0);
-    func_80030054(arg1 + 0x27, 0);
-    func_80030240(arg1 + 0x27, 0);
-    func_800302E4(arg1 + 0x27, 0);
+    D_80204DF8[index].unk_18.x = 0;
+    D_80204DF8[index].unk_18.y = 0;
+    D_80204DF8[index].unk_18.z = 0;
+    D_80204DF8[index].flags |= 8;
 
-    if (gBaseMapIndex == 0x52) {
+    func_8002FE10(index + 0x27, 0.0f, 0.0f, 0.0f, 0.0f);
+    func_8002ECD4(index + 0x27, 0xFFFF, 0xFF);
+    
+    func_8003019C(index + 0x27, 0);
+    func_80030054(index + 0x27, 0);
+    func_80030240(index + 0x27, 0);
+    func_800302E4(index + 0x27, 0);
+
+    if (gBaseMapIndex == FARM) {
+        
         temp = func_800309B4(0, 0.0f, 32.0f);
         temp2 = temp - 0x1B;
+        
         if (temp2 < 2 || temp == 0x1D) {
-            D_80204DF8[arg1].unk_0.x = 288.0f;
-            D_80204DF8[arg1].unk_0.y = 80.0f;
-            D_80204DF8[arg1].unk_0.z = -404.0f;
-            D_80204DF8[arg1].flags |= 2;
-            func_8002F2FC(arg1 + 0x27, 0xE9);
+            setVec3(index, 288.0f, 80.0f, -404.0f);
+            func_8002F2FC(index + 0x27, 0xE9);
         } 
     }
     
-    if (gBaseMapIndex == 0x11) {
+    if (gBaseMapIndex == MOUNTAIN_1) {
+        
         temp = func_800309B4(0, 0.0f, 40.0f);
+        
         if (temp == 0x10 || temp == 0x14) {
-            D_80204DF8[arg1].unk_0.x = 160.0f;
-            D_80204DF8[arg1].unk_0.y = 64.0f;
-            D_80204DF8[arg1].unk_0.z = -128.0f;
-            D_80204DF8[arg1].flags |= 2;
-            func_8002F2FC(arg1 + 0x27, 0xE9);
+            setVec3(index, 160.0f, 64.0f, -128.0f);
+            func_8002F2FC(index + 0x27, 0xE9);
         }
-        if (!(D_8016FE00 & 1)) {
-            if ((!checkLifeEventBit(0x5E)) && (!checkDailyEventBit(0x21)) && (D_80204DF8[arg1].unk_28 - 0x25 < 2U) && (gHour - 9) < 8U) {
+        
+        if (!(gCutsceneFlags & 1)) {
+            if (!checkLifeEventBit(0x5E) && !checkDailyEventBit(0x21) && (D_80204DF8[index].unk_28 - 0x25) < 2U && (gHour - 9) < 8U) {
                 setDailyEventBit(0x47);
             }
-            if ((!checkLifeEventBit(0x5F)) && (!checkDailyEventBit(0x21)) && (D_80204DF8[arg1].unk_28 ==  0x27) && (gHour - 9) < 8U) {
+            if (!checkLifeEventBit(0x5F) && !checkDailyEventBit(0x21) && D_80204DF8[index].unk_28 ==  0x27 && (gHour - 9) < 8U) {
                 setDailyEventBit(0x48);
             }
         }
     }
 
-    if (gBaseMapIndex == 0x23) {
+    if (gBaseMapIndex == POND) {
+        
         temp = func_800309B4(0, 0.0f, 32.0f);
+        
         if (temp == 0x10) {
-            D_80204DF8[arg1].unk_0.x = -16.0f;
-            D_80204DF8[arg1].unk_0.y = 80.0f;
-            D_80204DF8[arg1].unk_0.z = -224.0f;
-            D_80204DF8[arg1].flags |= 2;
-            func_8002F2FC(arg1 + 0x27, 0xE9);
+            setVec3(index, -16.0f, 80.0f, -224.0f);
+            func_8002F2FC(index + 0x27, 0xE9);
         }
         
-        if (!(D_8016FE00 & 1)) {
-            if (!checkDailyEventBit(0x46) && itemFlags[D_80204DF8[arg1].unk_28] & 0x8000 && (gHour - 9) < 8U ) {
+        if (!(gCutsceneFlags & 1)) {
+            if (!checkDailyEventBit(0x46) && itemFlags[D_80204DF8[index].unk_28] & 0x8000 && (gHour - 9) < 8U ) {
                 setDailyEventBit(0x45);    
             }
         }
     }
 }
-#else
-INCLUDE_ASM(const s32, "itemHandlers", func_800D6B58);
-#endif
 
 // jtbl_80122708
 INCLUDE_ASM(const s32, "itemHandlers", func_800D7010);

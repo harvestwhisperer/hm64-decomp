@@ -409,7 +409,8 @@ segments:
       - [ 0xFB410, rodata,] # npc
       - [ 0xFB720, rodata] # animal
       - [ 0xFC2C0, rodata]
-      - [ 0xFC7F0, rodata]
+      - [ 0xFC7F0, rodata] # levelInteractions. but one jump table from another file
+      - [ 0xFC9F0, .rodata, levelInteractions] 
       - [ 0xFD090, .rodata, overlayScreens]
       - [ 0xFD6B0, .rodata, itemHandlers] # itemHandlers
       - [ 0xFDB60, rodata] # tv

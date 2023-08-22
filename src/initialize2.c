@@ -17,7 +17,7 @@ void setFlowerFestivalGoddess();
 void setLetters();  
 void setForecast();     
 
-void setExit(s32);                                 
+void setExit(u16);                                 
 void setMainLoopCallbackFunctionIndex(u16);         
 
 void setPlayerAction(u8, u8);                              
@@ -96,9 +96,6 @@ extern u8 gDayOfMonth;
 extern u8 gSeason;
 extern u8 gWeather;
 extern u8 gForecast;
-
-extern u8 harvestSprite1Affection;
-extern u8 harvestSprite2Affection;
 
 extern u8 gCurrentGameIndex;
 
@@ -469,7 +466,7 @@ void startNewDay(void) {
     if (gWeather == TYPHOON) {
         
         // get average of sprite affection
-        if (((harvestSprite1Affection + harvestSprite2Affection + (&harvestSprite2Affection)[1]) / 3) >= 120) {
+        if (((npcAffection[HARVEST_SPRITE_1] + npcAffection[HARVEST_SPRITE_2] + npcAffection[HARVEST_SPRITE_3]) / 3) >= 120) {
             
             // check animal score
             if ((func_8009B564() + func_8009B374()) >= 2) {
@@ -499,9 +496,8 @@ void startNewDay(void) {
     removeKeyItem(0xE);
 
     // equalize harvest sprite affection
-    // npcAffection[HARVEST_SPRITE_2] = npcAffection[HARVEST_SPRITE_1];
-    harvestSprite2Affection = harvestSprite1Affection;
-    (&harvestSprite2Affection)[1] = harvestSprite1Affection;
+    npcAffection[HARVEST_SPRITE_2] = npcAffection[HARVEST_SPRITE_1];
+    npcAffection[HARVEST_SPRITE_3] = npcAffection[HARVEST_SPRITE_1];
     
     if (gWeather == RAIN) {
         // update animal status based on rain

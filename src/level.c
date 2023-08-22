@@ -23,8 +23,8 @@ extern u8 D_801147C0[];
 
 //INCLUDE_ASM(const s32, "level", setExit);
 
-void setExit(u8 index) {
-    u8 temp = exitIndex;
+void setExit(u16 index) {
+    u16 temp = exitIndex;
     exitIndex = index;
     previousExitIndex = temp;
 }

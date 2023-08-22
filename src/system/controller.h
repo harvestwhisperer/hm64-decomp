@@ -1,6 +1,8 @@
 #ifndef _CONTROLLER_H_
 #define _CONTROLLER_H_
 
+#define CONTROLLER_1 0
+
 #define BUTTON_C_RIGHT       0x00000001
 #define BUTTON_C_LEFT        0x00000002
 #define BUTTON_C_DOWN        0x00000004

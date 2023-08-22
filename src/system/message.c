@@ -22,7 +22,7 @@ INCLUDE_ASM(const s32, "system/message", func_8003E910);
 INCLUDE_ASM(const s32, "system/message", func_8003EA1C);
 
 INCLUDE_ASM(const s32, "system/message", func_8003EE7C);
-
+ 
 INCLUDE_ASM(const s32, "system/message", func_8003EFD8);
 
 INCLUDE_ASM(const s32, "system/message", func_8003F024);

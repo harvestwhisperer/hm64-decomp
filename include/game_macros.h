@@ -102,6 +102,7 @@
 /* daily event bit indices */
 #define CARPENTER_ESTIMATE 9
 #define CARPENTER_FINISHED 0xB
+#define STORES_CLOSED_FOR_FESTIVAL 0x2D
 #define FESTIVAL 0x4D
 
 /* life event bit indices */
@@ -165,7 +166,7 @@
 #define OVERLAY_SCREEN_LOAD 7
 #define ROTATING 8
 #define DIALOGUE 9
-#define ITEM_TEXT 0xA
+#define TEXT 0xA
 // 0xb unknown
 #define PINK_OVERLAY_TEXT 0xC
 #define END_OF_DAY_1 0xD
@@ -210,6 +211,7 @@
 #define RANCH 0
 #define RANCH_BARN 5
 #define RANCH_STORE 6
+#define RANCH_HOUSE 7
 #define BEACH 9
 #define RACE_TRACK 0xD
 #define MOUNTAIN_1 0x11
@@ -357,14 +359,18 @@
 
 // exit indices
 #define HOUSE_EXIT 0
-#define BATHROOM_TO_KITCHEN 11
-#define MIDDLE_OF_HOUSE 12
-#define CARPENTER_HUT_EXIT 32
-#define MOON_MOUNTAIN_EXIT 33
-#define DUMPLING_HOUSE_EXIT 38
-#define MINE_EXIT 71
-#define SPRING_ENTER 72
-#define CARPERNTER_HUT_ENTER 73
-#define FLOWER_SHOP_ENTRANCE 87
+#define BATHROOM_TO_KITCHEN 0xB
+#define MIDDLE_OF_HOUSE 0xC
+#define ROAD_FROM_VILLAGE_1 0x17
+#define CARPENTER_HUT_EXIT 0x20
+#define MOON_MOUNTAIN_EXIT 0x21
+#define DUMPLING_HOUSE_EXIT 0x26
+#define RANCH_FROM_RANCH_STORE 0x2B
+#define RANCH_FROM_RANCH_HOUSE 0x2C
+#define MINE_EXIT 0x47
+#define SPRING_ENTER 0x48
+#define CARPERNTER_HUT_ENTER 0x49
+#define ANN_ROOM_ENTER 0x4D
+#define FLOWER_SHOP_ENTRANCE 0x57
 
 #endif

@@ -8,6 +8,10 @@ typedef struct {
 } Vec3f;
 
 typedef struct {
+    u32 x, y, z;
+} Vec3i;
+
+typedef struct {
 	f32 r,g,b,a;
 } Vec4f;
 
@@ -117,9 +121,7 @@ typedef struct {
     u32 unk_C;
     u32 unk_10;
     u32 unk_14;
-    u32 unk_18;
-    u32 unk_1C;
-    u32 unk_20;
+    Vec3i unk_18;
     u16 unk_24;
     u16 unk_26;
     u16 unk_28;

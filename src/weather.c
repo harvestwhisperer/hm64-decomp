@@ -17,7 +17,7 @@ extern void *D_D92D70_2;
 
 extern u8 D_80118B50[5][4];
 
-// bss?
+// likely bss
 extern u8 gWeather;
 
 //INCLUDE_ASM(const s32, "weather", func_800DC360);
@@ -27,20 +27,20 @@ void func_800DC360(void) {
     u8 i;
     u16 temp;
     
-    u16 var_s2 = (u8) (-(((gWeather == 2) | (gWeather == 4)) == 0));
+    u16 temp2 = (u8)(-(((gWeather == 2) | (gWeather == 4)) == 0));
     
-    if (gWeather == 3) {
-        var_s2 = 1;
+    if (gWeather == SNOW) {
+        temp2 = 1;
     }
     
-    if (var_s2 != 0xFF) {
+    if (temp2 != 0xFF) {
         for (i = 0; i < 10; i++) {
             temp = i;
             func_8002B138(temp+0x6b, &D_D92970, &D_D92D50, &D_D92D50_2, &D_D92D70_2, 0, 0, 0x802A5AC0, 0, 0x802A5DC0, 0x802A5EC0, 0x802A5FC0, 0, 0, 1);
             func_8002BD90(temp+0x6b, 1.0f, 1.0f, 1.0f);
             func_8002C7EC(temp+0x6b, 4);
             func_8002C914(temp+0x6b, 0xFF, 0xFF, 0xFF, 0xFF);
-            func_80034D64(0, i+3, temp+0x6b, var_s2);
+            func_80034D64(0, i+3, temp+0x6b, temp2);
         }
     }
 }
@@ -70,9 +70,9 @@ void setForecast(void) {
     
     while (i < 5 && j < temp) {
         if (checkLifeEventBit(0x44) || checkLifeEventBit(0x46)) {
-            j += ptr2[gSeasonTomorrow*5 + i];
+            j += ptr2[gNextSeason*5 + i];
         } else {
-            j += ptr1[gSeasonTomorrow*5 + i-5];
+            j += ptr1[gNextSeason*5 + i-5];
         }
         j+=i;
         i++;

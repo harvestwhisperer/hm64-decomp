@@ -1,16 +1,24 @@
 #include "common.h"
 
+#include "controller.h"
 
 extern Player gPlayer;
 
-u32 checkDailyEventBit(u16 bitIndex);                   \
-void setExit(u8 extiIndex);  
+extern u8 D_80126560;
+extern u8 D_80126561;
+
+u32 checkDailyEventBit(u16 bitIndex);                   
+void setExit(u16 extiIndex);  
 
 u8 func_800309B4(u16, u8, f32); 
 u32 func_8004D380(u8, u32);                        
 void func_80059334();                          
 void func_8005AE8C(u16 arg0, u16 arg1, u16 arg2, int arg3, u16 arg4);                    
-void func_8005CA2C(u16, u16);                            
+void func_8005AF94(u16, u16, u16, u16, u8);                   
+void func_8005B09C(u8);                                 
+void func_8005CA2C(u16, u16);                                             
+void func_800DC9FC(u8);                                 
+u8 func_800DDDFC(u16);                               
 
 
 //INCLUDE_ASM(const s32, "levelInteractions", func_800ACD70);
@@ -215,7 +223,7 @@ u8 func_800AFA2C(u8 arg0, u8 flag) {
     u8 result = 0;
     
     if (flag == 1) {
-        if (!checkDailyEventBit(0x2D)) {
+        if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
             result = 1;
             setExit(FLOWER_SHOP_ENTRANCE);
         }
@@ -284,7 +292,7 @@ u32 func_800B1C6C(u32 arg0, u8 arg1) {
                 temp = 0;
                 goto func_end;
             }
-            if (checkDailyEventBit(0x2D)) {
+            if (checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
                 temp = 0;
                 goto func_end;
             }        
@@ -295,7 +303,7 @@ u32 func_800B1C6C(u32 arg0, u8 arg1) {
 
 
     } else {
-       if (func_8004D380(0, 0x8000)) {
+       if (func_8004D380(CONTROLLER_1, BUTTON_A)) {
            
             if (!checkDailyEventBit(8)) {
                 
@@ -307,7 +315,7 @@ u32 func_800B1C6C(u32 arg0, u8 arg1) {
                 //func_8005AE8C(0,6,0x6E,0,0);
            }
                 
-           if (!func_8004D380(0, 0x8000)) {
+           if (!func_8004D380(CONTROLLER_1, BUTTON_A)) {
                temp = 0;
                goto func_end;
            } 
@@ -330,7 +338,7 @@ u32 handleDumplingHouseExit(u32 arg0, u8 arg1) {
     u32 result = 0;
 
     if (arg1 == 1) {
-        if (!checkDailyEventBit(0x2D)) {
+        if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
             result = 1;
             setExit(DUMPLING_HOUSE_EXIT);
         }
@@ -349,7 +357,7 @@ u32 func_800B2078(u32 arg0, u8 flag) {
     u32 result = 0;
 
     if (flag == 1) {
-        if (!checkDailyEventBit(0x2D)) {
+        if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
             result = 1;
             setExit(MINE_EXIT);
         }
@@ -375,10 +383,137 @@ INCLUDE_ASM(const s32, "levelInteractions", func_800B256C);
 // jtbl_80121C18
 INCLUDE_ASM(const s32, "levelInteractions", func_800B2604);
 
-INCLUDE_ASM(const s32, "levelInteractions", func_800B27CC);
+//INCLUDE_ASM(const s32, "levelInteractions", func_800B27CC);
+
+u32 func_800B27CC(u8 mapIndex, u8 collisionIndex) {
+
+    u32 result = 0;
+
+    switch (collisionIndex) {
+        case 1: 
+            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+                result = 1;
+                setExit(RANCH_FROM_RANCH_HOUSE);
+            }
+            break;
+        case 16:
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
+                func_8005AE8C(1, 6, 0x95, 0, 2);
+                result = 1;
+            }
+            break;
+        case 17:
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
+                func_8005AE8C(1, 6, 0x93, 0, 2);
+                result = 1;
+            }
+            break;
+        case 18:
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
+                func_8005AE8C(1, 6, 0xD0, 0, 2);
+                result = 1;
+            }
+            break;
+    }
+    
+    return result;
+}
 
 // jtbl_80121C30
-INCLUDE_ASM(const s32, "levelInteractions", func_800B28D8);
+//INCLUDE_ASM(const s32, "levelInteractions", handleRanchStoreExits);
+
+u32 handleRanchStoreExits(u8 mapIndex, u8 collisionIndex) {
+
+    u32 result = 0;
+    
+    switch (collisionIndex) {
+        // exit
+        case 1:
+            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+                result = 1;
+                setExit(RANCH_FROM_RANCH_STORE);
+            }
+            break;
+        // ann's room
+        case 2:
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) {
+                if (checkDailyEventBit(0x28) || checkDailyEventBit(0x4D)) {
+                    func_8005AE8C(1, 6, 0x168, 0, 2);
+                    result = 1;
+                } else {
+                    D_80126560 = 0;
+                    result = 1;
+                    setExit(ANN_ROOM_ENTER);
+                }
+                D_80126561 = 0x32;
+            } 
+            break;
+
+        // the following seem like unused items/interactions
+        case 16:
+            if (func_8004D380(CONTROLLER_1, BUTTON_A) && gPlayer.direction == 2) {
+                    if (!checkDailyEventBit(1) && !checkDailyEventBit(2)) {
+                         if (checkDailyEventBit(5)) {
+                            func_8005AE8C(0, 6, 0x165, 0, 0);
+                        } else {
+                            func_8005B09C(5);  
+                        }
+                    } else {
+                        func_8005AE8C(0, 6, 0x164, 0, 0);
+                    }
+                result = 1;   
+            } 
+            break;
+        case 17:
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
+                if (gPlayer.unk_2C == 0) {
+                    if (func_800DDDFC(0x1A)) {
+                        func_800DC9FC(0x1A);
+                    }
+                    result = 2;
+                }
+            }
+            break;
+        case 18:
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
+                if (gPlayer.unk_2C == 0) {
+                    if (func_800DDDFC(0x1D)) {
+                        func_800DC9FC(0x1D);
+                    }
+                    result = 2;
+                }
+            }
+            break;
+        case 19:
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
+                if (gPlayer.unk_2C == 0) {
+                     if (func_800DDDFC(0x1B)) {
+                        func_800DC9FC(0x1B);
+                    }
+                    result = 2;
+                }
+            }
+            break;
+        case 20:
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
+                if (gPlayer.unk_2C == 0) {
+                     if (func_800DDDFC(0x1C)) {
+                        func_800DC9FC(0x1C);
+                    }
+                    result = 2;
+                }
+            }
+            break;
+        case 21:
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
+                func_8005AF94(1, 0x3D, 0x29, 0x80, 2);
+                result = 1;
+            }
+            break;
+   }
+    
+    return result;
+}
 
 INCLUDE_ASM(const s32, "levelInteractions", func_800B2B90);
 

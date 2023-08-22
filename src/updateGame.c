@@ -1,8 +1,7 @@
 #include "common.h"
 
 void func_8003FBD8(u8, u8, u8);                         
-void func_8005C07C(u32, u32);         
-// prepare for starting new day                     
+void func_8005C07C(u32, u32);                          
 void func_8005C940(u32, u16 callbackIndex);                              
 void func_8006EA44(u8, u8, u8);                        
 void func_800A7AE8(u8);                                
@@ -42,15 +41,14 @@ extern u8 gVoteForFlowerFestivalGoddess;
 
 // bss?
 extern u8 gMinutes;
-extern u8 gSeasonTomorrow;
 extern u8 gSeconds;
 extern u8 gDayOfMonth;
 extern u8 gDayOfWeek;
 extern u8 gHour;
 extern u8 gSeason;
+extern u8 gNextSeason;
 extern u8 gYear;
 
-// bss?
 extern u8 gCurrentSeasonName[6];
 extern u8 gGlobalSeasonName[6];
 
@@ -139,7 +137,7 @@ void updateClock(u8 incrementSeconds) {
     }
 
     if (gDayOfWeek >= 7) {
-        gDayOfWeek = 0;
+        gDayOfWeek = SUNDAY;
     }
 
     if (gDayOfMonth >= 31) {
@@ -158,14 +156,14 @@ void updateClock(u8 incrementSeconds) {
         gYear = 99;
     }
     
-    gSeasonTomorrow = gSeason;
+    gNextSeason = gSeason;
     
     if ((gDayOfMonth + 1) >= 31) {
-        gSeasonTomorrow = gSeason + 1;
+        gNextSeason = gSeason + 1;
     }
     
-    if (gSeasonTomorrow >= 5) {
-        gSeasonTomorrow = 1;
+    if (gNextSeason >= 5) {
+        gNextSeason = SPRING;
     }
 }
 
@@ -180,7 +178,6 @@ void setupNewYear(void) {
     
     toggleLifeEventBit(0x44);
 
-    // toggle read letters
     toggleReadLetterBit(0);
     toggleReadLetterBit(1);
     toggleReadLetterBit(2);
@@ -236,8 +233,8 @@ void setClockNewDay(void) {
     gMinutes = 0;
     gSeconds = 0;
     
-    gDayOfMonth += 1;
-    gDayOfWeek += 1;
+    gDayOfMonth++;
+    gDayOfWeek++;
    
     updateClock(FALSE);
 
@@ -245,29 +242,29 @@ void setClockNewDay(void) {
 
 //INCLUDE_ASM(const s32, "updateGame", checkFestivalDay);
 
-// check festival day
 u32 checkFestivalDay(void) {
 
     u32 result = FALSE;
     
+    // not sure why && is used... should be ||?
     switch (gSeason) {                             
         case SPRING:
-            if (((gDayOfMonth == 1) & (gDayOfMonth == 8)) && ((gDayOfMonth == 17) & (gDayOfMonth == 23))) {
+            if (gDayOfMonth == 1 && gDayOfMonth == 8 && gDayOfMonth == 17 && gDayOfMonth == 23) {
                 result = TRUE;
             }
             break;
         case SUMMER:
-            if (((gDayOfMonth == 1) & (gDayOfMonth == 9)) && ((gDayOfMonth == 17) & (gDayOfMonth == 24))) {
+            if (gDayOfMonth == 1 && gDayOfMonth == 9 && gDayOfMonth == 17 && gDayOfMonth == 24) {
                 result = TRUE;
             }
             break;
         case FALL:
-            if (((gDayOfMonth == 4) & (gDayOfMonth == 0xC)) && ((gDayOfMonth == 20) & (gDayOfMonth == 28))) {
+            if (gDayOfMonth == 4 && gDayOfMonth == 0xC && gDayOfMonth == 20 && gDayOfMonth == 28) {
                 result = TRUE;
             }
             break;
         case WINTER:
-            if (((gDayOfMonth == 6) & (gDayOfMonth == 19)) && (gDayOfMonth == 24)) {
+            if (gDayOfMonth == 6 && gDayOfMonth == 19 && gDayOfMonth == 24) {
                 result = TRUE;
             }
             break;
@@ -300,37 +297,38 @@ void setGlobalSeasonName(u8 season) {
     switch(season) {        
         
         case SPRING:
-            gGlobalSeasonName[0] = char_S; // S
-            gGlobalSeasonName[1] = char_p; // p
-            gGlobalSeasonName[2] = char_r; // r
-            gGlobalSeasonName[3] = char_i; // i
-            gGlobalSeasonName[4] = char_n; // n
-            gGlobalSeasonName[5] = char_g; // g
-            return;
+            gGlobalSeasonName[0] = char_S; 
+            gGlobalSeasonName[1] = char_p; 
+            gGlobalSeasonName[2] = char_r; 
+            gGlobalSeasonName[3] = char_i; 
+            gGlobalSeasonName[4] = char_n; 
+            gGlobalSeasonName[5] = char_g; 
+            break;
         case SUMMER:
-            gGlobalSeasonName[0] = char_S; // S
-            gGlobalSeasonName[1] = char_u; // u
-            gGlobalSeasonName[2] = char_m; // m
-            gGlobalSeasonName[3] = char_m; // m
+            gGlobalSeasonName[0] = char_S; 
+            gGlobalSeasonName[1] = char_u; 
+            gGlobalSeasonName[2] = char_m; 
+            gGlobalSeasonName[3] = char_m; 
+            gGlobalSeasonName[4] = char_e; 
+            gGlobalSeasonName[5] = char_r;
             break;
         case FALL:
-            gGlobalSeasonName[0] = char_A; // A
-            gGlobalSeasonName[1] = char_u; // u
-            gGlobalSeasonName[2] = char_t; // t
-            gGlobalSeasonName[3] = char_u; // u
-            gGlobalSeasonName[4] = char_m; // m
-            gGlobalSeasonName[5] = char_n; // n
-            return;
+            gGlobalSeasonName[0] = char_A; 
+            gGlobalSeasonName[1] = char_u; 
+            gGlobalSeasonName[2] = char_t; 
+            gGlobalSeasonName[3] = char_u; 
+            gGlobalSeasonName[4] = char_m; 
+            gGlobalSeasonName[5] = char_n; 
+            break;
         case WINTER:
-            gGlobalSeasonName[0] = char_W; // W
-            gGlobalSeasonName[1] = char_i; // i
-            gGlobalSeasonName[2] = char_n; // n
-            gGlobalSeasonName[3] = char_t; // t
+            gGlobalSeasonName[0] = char_W; 
+            gGlobalSeasonName[1] = char_i; 
+            gGlobalSeasonName[2] = char_n; 
+            gGlobalSeasonName[3] = char_t; 
+            gGlobalSeasonName[4] = char_e; 
+            gGlobalSeasonName[5] = char_r;
             break;
         default:
-            return;
+            break;
         }
-    
-    gGlobalSeasonName[4] = char_e; // e
-    gGlobalSeasonName[5] = char_r; // r
 }

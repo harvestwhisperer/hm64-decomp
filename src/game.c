@@ -90,6 +90,8 @@ void startNewDay(void);
 
 u8 checkAllSfxInactive(void);
 
+void setPlayerAction(u16, u16);
+
 u16 getRandomNumberInRange(u16 min, u16 max);
                
 void func_8002F6F0();                               
@@ -158,8 +160,6 @@ extern f32 D_80180724;
 
 extern u8 D_801886D4[6];
 
-extern u32 D_8013D45C;  
-
 extern u8 D_8016F6E3;
 extern u8 D_8016FAD8;
 extern u16 D_8016FDF0;
@@ -194,8 +194,7 @@ extern MainLoopCallbackInfo D_80205230;
 
 extern u8 D_802055D1;
 extern u8 D_8020562C;
-extern u8 D_80237412;
-extern u8 D_80205236;                   
+extern u8 D_80237412;             
 
 extern void *D_D47F00;
 extern void *D_D49B80;
@@ -252,7 +251,7 @@ check_kid:
         gWifePregnancyCounter += 1;
     }
 
-    if (!checkLifeEventBit(HAVE_BABY) && checkLifeEventBit(HAVE_BABY_BED) && !checkLifeEventBit(WIFE_PREGNANT) && (npcAffection[gWife] >= 250) && (gWifeConceptionCounter >= 30)) {
+    if (!checkLifeEventBit(HAVE_BABY) && checkLifeEventBit(HAVE_BABY_BED) && !checkLifeEventBit(WIFE_PREGNANT) && npcAffection[gWife] >= 250 && gWifeConceptionCounter >= 30) {
         
         setLifeEventBit(WIFE_PREGNANT);
         
@@ -511,7 +510,7 @@ void setSpecialDialogues(void) {
     }
 
     // spirit festival
-    if ((gSeason == WINTER) && (gDayOfMonth == 27)) {
+    if (gSeason == WINTER && gDayOfMonth == 27) {
 
         if (gHarvestKing == PLAYER) {
             setSpecialDialogueBit(0x142);
@@ -538,49 +537,49 @@ void setSpecialDialogues(void) {
         toggleSpecialDialogueBit(0x142);
     }
 
-    if ((gSeason == WINTER) && (gDayOfMonth == 10)) {
+    if (gSeason == WINTER && gDayOfMonth == 10) {
         setSpecialDialogueBit(THANKSGIVING);
     } else {
         toggleSpecialDialogueBit(THANKSGIVING);
     }
 
-    if ((gSeason == WINTER) && (gDayOfMonth == 30)) {
+    if (gSeason == WINTER && gDayOfMonth == 30) {
         setSpecialDialogueBit(NEW_YEARS_EVE);
     } else {
         toggleSpecialDialogueBit(NEW_YEARS_EVE);
     }
 
-    if ((gSeason == WINTER) && (gDayOfMonth == 24)) {
+    if (gSeason == WINTER && gDayOfMonth == 24) {
         setSpecialDialogueBit(STARRY_NIGHT_FESTIVAL_DIALOGUE_BIT);
     } else {
         toggleSpecialDialogueBit(STARRY_NIGHT_FESTIVAL_DIALOGUE_BIT);
     }
 
-    if ((gSeason == WINTER) && (gDayOfMonth == 11)) {
+    if (gSeason == WINTER && gDayOfMonth == 11) {
         setSpecialDialogueBit(MARIA_BIRTHDAY);
     } else {
         toggleSpecialDialogueBit(MARIA_BIRTHDAY);
     }
 
-    if ((gSeason == SPRING) && (gDayOfMonth == 22)) {
+    if (gSeason == SPRING && gDayOfMonth == 22) {
         setSpecialDialogueBit(POPURI_BIRTHDAY);
     } else {
         toggleSpecialDialogueBit(POPURI_BIRTHDAY);
     }
 
-    if ((gSeason == FALL) && (gDayOfMonth == 1)) {
+    if ((gSeason == FALL) && gDayOfMonth == 1) {
         setSpecialDialogueBit(ELLI_BIRTHDAY);
     } else {
         toggleSpecialDialogueBit(ELLI_BIRTHDAY);
     }
 
-    if ((gSeason == SUMMER) && (gDayOfMonth == 14)) {
+    if (gSeason == SUMMER && gDayOfMonth == 14) {
         setSpecialDialogueBit(ANN_BIRTHDAY);
     } else {
         toggleSpecialDialogueBit(ANN_BIRTHDAY);
     }
 
-    if ((gSeason == WINTER) && (gDayOfMonth == 29)) {
+    if (gSeason == WINTER && gDayOfMonth == 29) {
         setSpecialDialogueBit(KAREN_BIRTHDAY);
     }
     else {
@@ -731,6 +730,7 @@ u32 adjustValue(s32 current, s32 amount, s32 max) {
 
 //INCLUDE_ASM(const s32, "game", func_8005AE8C);
 
+// show text box
 void func_8005AE8C(u16 arg0, u16 arg1, u16 arg2, int arg3, u16 arg4) {
   
     u32 temp;
@@ -760,15 +760,16 @@ void func_8005AE8C(u16 arg0, u16 arg1, u16 arg2, int arg3, u16 arg4) {
   
     func_8003DDF8(0, arg1, arg2, arg3);
   
-    setMainLoopCallbackFunctionIndex(0xA);
+    setMainLoopCallbackFunctionIndex(TEXT);
     
-    D_8013D45C = 0;
+    controllers[0].unk_1C = 0;
 
     setPlayerAction(0, 0);
 }
 
 //INCLUDE_ASM(const s32, "game", func_8005AF94);
 
+// show dialogue box
 void func_8005AF94(u16 arg0, u16 arg1, u16 arg2, u32 arg3, u16 arg4) {
     
     func_8002F6F0();
@@ -788,11 +789,10 @@ void func_8005AF94(u16 arg0, u16 arg1, u16 arg2, u32 arg3, u16 arg4) {
             break;
     }
 
-
     func_8003F360(0, -4, arg4);
     func_80043430(0, arg1, arg2, arg3);
 
-    setMainLoopCallbackFunctionIndex(9);
+    setMainLoopCallbackFunctionIndex(DIALOGUE);
 
     controllers[0].unk_1C = 0;
     
@@ -800,16 +800,16 @@ void func_8005AF94(u16 arg0, u16 arg1, u16 arg2, u32 arg3, u16 arg4) {
 
 }
 
+//INCLUDE_ASM(const s32, "game", func_8005B09C);
+
 // jumptable: jbtl_8011EF98, 0xFA398
-// 99.9%....
-#ifdef PERMUTER
 void func_8005B09C(u8 arg0) {
 
     D_80205230.unk_6 = arg0;
 
     switch (arg0) {
         default:
-            goto func_end;
+            break;
         case 0:
             func_8002F6F0();
             func_80046C98();
@@ -818,8 +818,10 @@ void func_8005B09C(u8 arg0) {
             func_8003F690(0, 1, 0, 0);
             func_8003F360(0, -4, 2);
             func_80043430(0, 1, 0, 0);
+            setMainLoopCallbackFunctionIndex(9);
+            controllers[0].unk_1C = 0;
+            setPlayerAction(0, 0);
             break;
-            
         case 1:
             func_8002F6F0();
             func_80046C98();
@@ -828,8 +830,10 @@ void func_8005B09C(u8 arg0) {
             func_8003F690(0, 1, 0, 0);
             func_8003F360(0, -4, 2);
             func_80043430(0, 1, 1, 0);
-            break;
-            
+            setMainLoopCallbackFunctionIndex(9);
+            controllers[0].unk_1C = 0;
+            setPlayerAction(0, 0);
+            break;    
         case 2:
             func_8002F6F0();
             func_80046C98();
@@ -838,8 +842,10 @@ void func_8005B09C(u8 arg0) {
             func_8003F690(0, 0, 0, 0);
             func_8003F360(0, -4, 0);
             func_80043430(0, 0x3D, 0xC, 0x40);
-            break;
-            
+            setMainLoopCallbackFunctionIndex(9);
+            controllers[0].unk_1C = 0;
+            setPlayerAction(0, 0);
+            break;         
         case 3:
             func_8002F6F0();
             func_80046C98();
@@ -848,8 +854,10 @@ void func_8005B09C(u8 arg0) {
             func_8003F690(0, 0, 0, 0);
             func_8003F360(0, -4, 0);
             func_80043430(0, 0x3D, 0xB, 0x40);
-            break;
-            
+            setMainLoopCallbackFunctionIndex(9);
+            controllers[0].unk_1C = 0;
+            setPlayerAction(0, 0);
+            break;          
         case 4:
             func_8002F6F0();
             func_80046C98();
@@ -857,9 +865,11 @@ void func_8005B09C(u8 arg0) {
             func_8003F54C(0, 24.0f, -64.0f, 352.0f);
             func_8003F690(0, 0, 0, 0);
             func_8003F360(0, -4, 0);
-            func_80043430(0, 0x3D, 0x12, 0x40);;
-            break;
-            
+            func_80043430(0, 0x3D, 0x12, 0x40);
+            setMainLoopCallbackFunctionIndex(9);
+            controllers[0].unk_1C = 0;
+            setPlayerAction(0, 0);
+            break;       
         case 5:
             func_8002F6F0();
             func_80046C98();
@@ -868,8 +878,10 @@ void func_8005B09C(u8 arg0) {
             func_8003F690(0, 0, 0, 0);
             func_8003F360(0, -4, 0);
             func_80043430(0, 0x3D, 0xD, 0x40);
-            break;
-            
+            setMainLoopCallbackFunctionIndex(9);
+            controllers[0].unk_1C = 0;
+            setPlayerAction(0, 0);
+            break;        
         case 6:
             func_8002F6F0();
             func_80046C98();
@@ -878,8 +890,10 @@ void func_8005B09C(u8 arg0) {
             func_8003F690(0, 0, 0, 0);
             func_8003F360(0, -4, 0);
             func_80043430(0, 0x3D, 0xE, 0x40);
-            break;
-            
+            setMainLoopCallbackFunctionIndex(9);
+            controllers[0].unk_1C = 0;
+            setPlayerAction(0, 0);
+            break;      
         case 7:
             func_8002F6F0();
             func_80046C98();
@@ -888,8 +902,10 @@ void func_8005B09C(u8 arg0) {
             func_8003F690(0, 0, 0, 0);
             func_8003F360(0, -4, 0);
             func_80043430(0, 0x3D, 0xF, 0x40);
-            break;
-            
+            setMainLoopCallbackFunctionIndex(9);
+            controllers[0].unk_1C = 0;
+            setPlayerAction(0, 0);
+            break;      
         case 8:
             func_8002F6F0();
             func_80046C98();
@@ -898,8 +914,10 @@ void func_8005B09C(u8 arg0) {
             func_8003F690(0, 0, 0, 0);
             func_8003F360(0, -4, 0);
             func_80043430(0, 0x3E, 7, 0x40);
-            break;
-            
+            setMainLoopCallbackFunctionIndex(9);    
+            controllers[0].unk_1C = 0;
+            setPlayerAction(0, 0);
+            break;      
         case 9:
             func_8002F6F0();
             func_80046C98();
@@ -908,8 +926,10 @@ void func_8005B09C(u8 arg0) {
             func_8003F690(0, 0, 0, 0);
             func_8003F360(0, -4, 0);
             func_80043430(0, 0x3E, 6, 0x40);
-            break;
-            
+            setMainLoopCallbackFunctionIndex(9);
+            controllers[0].unk_1C = 0;
+            setPlayerAction(0, 0);
+            break;    
         case 10:
             func_8002F6F0();
             func_80046C98();
@@ -918,8 +938,10 @@ void func_8005B09C(u8 arg0) {
             func_8003F690(0, 0, 0, 0);
             func_8003F360(0, -4, 0);
             func_80043430(0, 0x3E, 2, 0x40);
-            break;
-            
+            setMainLoopCallbackFunctionIndex(9);
+            controllers[0].unk_1C = 0;
+            setPlayerAction(0, 0);
+            break;  
         case 11:
             func_8002F6F0();
             func_80046C98();
@@ -928,8 +950,10 @@ void func_8005B09C(u8 arg0) {
             func_8003F690(0, 0, 0, 0);
             func_8003F360(0, -4, 0);
             func_80043430(0, 0x3E, 0, 0x40);
-            break;   
-            
+            setMainLoopCallbackFunctionIndex(9);
+            controllers[0].unk_1C = 0;
+            setPlayerAction(0, 0);
+            break;        
         case 12:
             func_8002F6F0();
             func_80046C98();
@@ -938,10 +962,12 @@ void func_8005B09C(u8 arg0) {
             func_8003F690(0, 0, 0, 0);
             func_8003F360(0, -4, 0);
             func_80043430(0, 0x3E, 1, 0x40);
-            break;      
-            
+            setMainLoopCallbackFunctionIndex(9);
+            controllers[0].unk_1C = 0;
+            setPlayerAction(0, 0);
+            break;          
         case 13:
-            if (((gSeason == SPRING) | (gSeason == WINTER))) {
+            if (gSeason == SPRING | gSeason == WINTER) {
                 func_8002F6F0();
                 func_80046C98();
                 func_8002FCB4(0, 0);
@@ -949,6 +975,9 @@ void func_8005B09C(u8 arg0) {
                 func_8003F690(0, 1, 0, 0);
                 func_8003F360(0, -4, 2);
                 func_80043430(0, 0x44, 0, 0);
+                setMainLoopCallbackFunctionIndex(9);
+                controllers[0].unk_1C = 0;
+                setPlayerAction(0, 0);
             } else {
                 func_8002F6F0();
                 func_80046C98();
@@ -957,11 +986,13 @@ void func_8005B09C(u8 arg0) {
                 func_8003F690(0, 1, 0, 0);
                 func_8003F360(0, -4, 2);
                 func_80043430(0, 0x44, 0xA, 0);
+                setMainLoopCallbackFunctionIndex(9);
+                controllers[0].unk_1C = 0;
+                setPlayerAction(0, 0);
             }            
             break;
-            
         case 14:
-            if (((gSeason == SPRING) | (gSeason == WINTER))) {
+            if (gSeason == SPRING | gSeason == WINTER) {
                 func_8002F6F0();
                 func_80046C98();
                 func_8002FCB4(0, 0);
@@ -969,6 +1000,9 @@ void func_8005B09C(u8 arg0) {
                 func_8003F690(0, 1, 0, 0);
                 func_8003F360(0, -4, 2);
                 func_80043430(0, 0x44, 1, 0x40);
+                setMainLoopCallbackFunctionIndex(9);
+                controllers[0].unk_1C = 0;
+                setPlayerAction(0, 0);
             } else {
                 func_8002F6F0();
                 func_80046C98();
@@ -977,11 +1011,13 @@ void func_8005B09C(u8 arg0) {
                 func_8003F690(0, 1, 0, 0);
                 func_8003F360(0, -4, 2);
                 func_80043430(0, 0x44, 0xB, 0);
+                setMainLoopCallbackFunctionIndex(9);
+                controllers[0].unk_1C = 0;
+                setPlayerAction(0, 0);
             }
             break;
-            
         case 15:
-            if (((gSeason == SPRING) | (gSeason == WINTER))) {
+            if (gSeason == SPRING | gSeason == WINTER) {
                 func_8002F6F0();
                 func_80046C98();
                 func_8002FCB4(0, 0);
@@ -989,6 +1025,9 @@ void func_8005B09C(u8 arg0) {
                 func_8003F690(0, 1, 0, 0);
                 func_8003F360(0, -4, 2);
                 func_80043430(0, 0x44, 2, 0x40);
+                setMainLoopCallbackFunctionIndex(9);
+                controllers[0].unk_1C = 0;
+                setPlayerAction(0, 0);
             } else {
                 func_8002F6F0();
                 func_80046C98();
@@ -997,11 +1036,13 @@ void func_8005B09C(u8 arg0) {
                 func_8003F690(0, 1, 0, 0);
                 func_8003F360(0, -4, 2);
                 func_80043430(0, 0x44, 0xC, 0);
+                setMainLoopCallbackFunctionIndex(9);
+                controllers[0].unk_1C = 0;
+                setPlayerAction(0, 0);
             }
-            break;
-            
+            break; 
         case 16:
-            if (((gSeason == SPRING) | (gSeason == WINTER))) {
+            if (gSeason == SPRING | gSeason == WINTER) {
                 func_8002F6F0();
                 func_80046C98();
                 func_8002FCB4(0, 0);
@@ -1009,6 +1050,9 @@ void func_8005B09C(u8 arg0) {
                 func_8003F690(0, 1, 0, 0);
                 func_8003F360(0, -4, 2);
                 func_80043430(0, 0x44, 3, 0x40);
+                setMainLoopCallbackFunctionIndex(9);
+                controllers[0].unk_1C = 0;
+                setPlayerAction(0, 0);
             } else {
                 func_8002F6F0();
                 func_80046C98();
@@ -1017,11 +1061,13 @@ void func_8005B09C(u8 arg0) {
                 func_8003F690(0, 1, 0, 0);
                 func_8003F360(0, -4, 2);
                 func_80043430(0, 0x44, 0xD, 0);
+                setMainLoopCallbackFunctionIndex(9);
+                controllers[0].unk_1C = 0;
+                setPlayerAction(0, 0);
             }
-            break;
-            
+            break;   
         case 17:
-            if (((gSeason == SPRING) | (gSeason == WINTER))) {
+            if (gSeason == SPRING | gSeason == WINTER) {
                 func_8002F6F0();
                 func_80046C98();
                 func_8002FCB4(0, 0);
@@ -1029,6 +1075,9 @@ void func_8005B09C(u8 arg0) {
                 func_8003F690(0, 1, 0, 0);
                 func_8003F360(0, -4, 2);
                 func_80043430(0, 0x44, 4, 0x40);
+                setMainLoopCallbackFunctionIndex(9);
+                controllers[0].unk_1C = 0;
+                setPlayerAction(0, 0);
             } else {
                 func_8002F6F0();
                 func_80046C98();
@@ -1037,11 +1086,13 @@ void func_8005B09C(u8 arg0) {
                 func_8003F690(0, 1, 0, 0);
                 func_8003F360(0, -4, 2);
                 func_80043430(0, 0x44, 0xE, 0);
+                setMainLoopCallbackFunctionIndex(9);
+                controllers[0].unk_1C = 0;
+                setPlayerAction(0, 0);
             }
-            break;
-            
+            break;     
         case 18:
-            if (((gSeason == SPRING) | (gSeason == WINTER))) {
+            if (gSeason == SPRING | gSeason == WINTER) {
                 func_8002F6F0();
                 func_80046C98();
                 func_8002FCB4(0, 0);
@@ -1049,6 +1100,9 @@ void func_8005B09C(u8 arg0) {
                 func_8003F690(0, 1, 0, 0);
                 func_8003F360(0, -4, 2);
                 func_80043430(0, 0x44, 5, 0x40);
+                setMainLoopCallbackFunctionIndex(9);
+                controllers[0].unk_1C = 0;
+                setPlayerAction(0, 0);
             } else {
                 func_8002F6F0();
                 func_80046C98();
@@ -1057,11 +1111,13 @@ void func_8005B09C(u8 arg0) {
                 func_8003F690(0, 1, 0, 0);
                 func_8003F360(0, -4, 2);
                 func_80043430(0, 0x44, 0xF, 0);
+                setMainLoopCallbackFunctionIndex(9);
+                controllers[0].unk_1C = 0;
+                setPlayerAction(0, 0);
             }
-            break;
-            
+            break;        
         case 19:
-            if (((gSeason == SPRING) | (gSeason == WINTER))) {
+            if (gSeason == SPRING | gSeason == WINTER) {
                 func_8002F6F0();
                 func_80046C98();
                 func_8002FCB4(0, 0);
@@ -1069,6 +1125,9 @@ void func_8005B09C(u8 arg0) {
                 func_8003F690(0, 1, 0, 0);
                 func_8003F360(0, -4, 2);
                 func_80043430(0, 0x44, 6, 0x40);
+                setMainLoopCallbackFunctionIndex(9);
+                controllers[0].unk_1C = 0;
+                setPlayerAction(0, 0);
             } else {
                 func_8002F6F0();
                 func_80046C98();
@@ -1077,11 +1136,13 @@ void func_8005B09C(u8 arg0) {
                 func_8003F690(0, 1, 0, 0);
                 func_8003F360(0, -4, 2);
                 func_80043430(0, 0x44, 0x10, 0);
+                setMainLoopCallbackFunctionIndex(9);
+                controllers[0].unk_1C = 0;
+                setPlayerAction(0, 0);
             }
-            break;
-            
+            break;        
         case 20:
-            if (((gSeason == SPRING) | (gSeason == WINTER))) {
+            if (gSeason == SPRING | gSeason == WINTER) {
                 func_8002F6F0();
                 func_80046C98();
                 func_8002FCB4(0, 0);
@@ -1089,6 +1150,9 @@ void func_8005B09C(u8 arg0) {
                 func_8003F690(0, 1, 0, 0);
                 func_8003F360(0, -4, 2);
                 func_80043430(0, 0x44, 7, 0x40);
+                setMainLoopCallbackFunctionIndex(9);
+                controllers[0].unk_1C = 0;
+                setPlayerAction(0, 0);
             } else {
                 func_8002F6F0();
                 func_80046C98();
@@ -1097,11 +1161,13 @@ void func_8005B09C(u8 arg0) {
                 func_8003F690(0, 1, 0, 0);
                 func_8003F360(0, -4, 2);
                 func_80043430(0, 0x44, 0x11, 0);
+                setMainLoopCallbackFunctionIndex(9);
+                controllers[0].unk_1C = 0;
+                setPlayerAction(0, 0);
             }
-            break;
-            
+            break;       
         case 21:
-            if (((gSeason == SPRING) | (gSeason == WINTER))) {
+            if (gSeason == SPRING | gSeason == WINTER) {
                 func_8002F6F0();
                 func_80046C98();
                 func_8002FCB4(0, 0);
@@ -1109,6 +1175,9 @@ void func_8005B09C(u8 arg0) {
                 func_8003F690(0, 1, 0, 0);
                 func_8003F360(0, -4, 2);
                 func_80043430(0, 0x44, 8, 0x40);
+                setMainLoopCallbackFunctionIndex(9);
+                controllers[0].unk_1C = 0;
+                setPlayerAction(0, 0);
             } else {
                 func_8002F6F0();
                 func_80046C98();
@@ -1117,11 +1186,13 @@ void func_8005B09C(u8 arg0) {
                 func_8003F690(0, 1, 0, 0);
                 func_8003F360(0, -4, 2);
                 func_80043430(0, 0x44, 0x12, 0);
+                setMainLoopCallbackFunctionIndex(9);
+                controllers[0].unk_1C = 0;
+                setPlayerAction(0, 0);
             }
-            break;
-            
+            break;       
         case 22:
-            if (((gSeason == SPRING) | (gSeason == WINTER))) {
+            if (gSeason == SPRING | gSeason == WINTER) {
                 func_8002F6F0();
                 func_80046C98();
                 func_8002FCB4(0, 0);
@@ -1129,6 +1200,9 @@ void func_8005B09C(u8 arg0) {
                 func_8003F690(0, 1, 0, 0);
                 func_8003F360(0, -4, 2);
                 func_80043430(0, 0x44, 9, 0x40);
+                setMainLoopCallbackFunctionIndex(9);
+                controllers[0].unk_1C = 0;
+                setPlayerAction(0, 0);
             } else {
                 func_8002F6F0();
                 func_80046C98();
@@ -1137,9 +1211,11 @@ void func_8005B09C(u8 arg0) {
                 func_8003F690(0, 1, 0, 0);
                 func_8003F360(0, -4, 2);
                 func_80043430(0, 0x44, 0x13, 0);
+                setMainLoopCallbackFunctionIndex(9);
+                controllers[0].unk_1C = 0;
+                setPlayerAction(0, 0);
             }
-            break;
-        
+            break;     
         case 23:
             func_8002F6F0();
             func_80046C98();
@@ -1148,20 +1224,15 @@ void func_8005B09C(u8 arg0) {
             func_8003F690(0, 1, 0, 0);
             func_8003F360(0, -4, 2);
             func_80043430(0, 1, 0x15, 0);
-            break;
-
+            setMainLoopCallbackFunctionIndex(9);
+            controllers[0].unk_1C = 0;
+            setPlayerAction(0, 0);
+            break;    
     }
-           
-    setMainLoopCallbackFunctionIndex(9);
-    D_8013D440[0].unk_1C = 0;
-    setPlayerToDefaultStanding(0, 0);
-       
-func_end:    
+
     setMainLoopCallbackFunctionIndex(0xC);
+    
 }
-#else
-INCLUDE_ASM(const s32, "game", func_8005B09C);
-#endif
 
 //INCLUDE_ASM(const s32, "game", func_8005C00C);
 
@@ -1241,7 +1312,7 @@ void func_8005CAA8(void) {
 
     func_800A8F74();
 
-    if ((func_80036A84(0)) && (func_800ACBB8(gCurrentSongIndex))) {
+    if (func_80036A84(0) && func_800ACBB8(gCurrentSongIndex)) {
 
         func_8002F7C8(0, 0, 0, 0);
         func_8003BE98(0, 0, 0, 0, 0);
@@ -1393,35 +1464,27 @@ void func_8005CF94(void) {
     
     // naming screen index
     switch (gNamingScreenIndex) {
-        // player
         case 0:
             namePtr = gPlayer.name;
             break;
-        // farm
         case 1:
             namePtr = &gFarmName;
             break;
-        // dog
         case 2:
             namePtr = dogInfo.name;
             break;
-        // horse
         case 3:
             namePtr = horseInfo.name; 
-        break;
-        // baby
+            break;
         case 4:
             namePtr = &gBabyName;
             break;
-        // cow or sheep
         case 5:
             namePtr = gFarmAnimals[D_801FC155].name;
             break;
-        // cow or sheep
         case 6:
             namePtr = gFarmAnimals[D_801FC155].name;
             break;
-        // chicken
         case 7:
             namePtr = gChickens[D_801FC155].name;
             break;
@@ -1449,7 +1512,7 @@ void func_8005D0BC(void) {
     
     set = 0;
     
-    if ((gBaseMapIndex == COOP) && checkLifeEventBit(3)) {
+    if (gBaseMapIndex == COOP && checkLifeEventBit(3)) {
         
         gNamingScreenIndex = 7;
         D_801FC155 = D_8016FFE8;
@@ -1478,7 +1541,7 @@ void func_8005D0BC(void) {
         gHappiness += happinessIncrease;
     }
     
-    if ((gBaseMapIndex == BARN) && checkLifeEventBit(4)) {
+    if (gBaseMapIndex == BARN && checkLifeEventBit(4)) {
         
         gNamingScreenIndex = 5;
         D_801FC155 = D_80170464;
@@ -1568,7 +1631,7 @@ void func_80060624(void) {
     int tempStamina;
     u8 tempTime;
 
-    if ((func_80036A84(0)) || !(D_80158248.flags & 1)) {
+    if (func_80036A84(0) || !(D_80158248.flags & 1)) {
         
         func_800610DC();
         
@@ -1663,7 +1726,7 @@ void func_80060624(void) {
 void func_80060838(void) {
     
     // check map flags
-    if ((func_80036A84(0)) || !(D_80158248.flags & 1)) {
+    if (func_80036A84(0) || !(D_80158248.flags & 1)) {
 
         func_800610DC();
 
@@ -1724,35 +1787,35 @@ void setFestivalDailyBits(void) {
     if (gSeason == SPRING && gDayOfMonth == 1) {
         setDailyEventBit(0x30);
         setDailyEventBit(0x28);
-        setDailyEventBit(0x4D);
+        setDailyEventBit(FESTIVAL);
         setDailyEventBit(0x4E);
     }
     
     if (gSeason == SPRING && gDayOfMonth == 8) {
         setDailyEventBit(0x30);
         setDailyEventBit(0x28);
-        setDailyEventBit(0x4D);
+        setDailyEventBit(FESTIVAL);
         setDailyEventBit(0x4E);
     }
     
     if (gSeason == SPRING && gDayOfMonth == 17) {
         setDailyEventBit(0x30);
         setDailyEventBit(0x28);
-        setDailyEventBit(0x4D);
+        setDailyEventBit(FESTIVAL);
         setDailyEventBit(0x4E);
     }
 
     if (gSeason == FALL && gDayOfMonth == 28) {
         setDailyEventBit(0x30);
         setDailyEventBit(0x28);
-        setDailyEventBit(0x4D);
+        setDailyEventBit(FESTIVAL);
         setDailyEventBit(0x4E);
     }
     
     if (gSeason == SPRING && gDayOfMonth == 23) {
         setDailyEventBit(0x30);
         setDailyEventBit(0x28);
-        setDailyEventBit(0x4D);
+        setDailyEventBit(FESTIVAL);
         setDailyEventBit(0x4E);
     }
 
@@ -1764,7 +1827,7 @@ void setFestivalDailyBits(void) {
     if (gSeason == SUMMER && gDayOfMonth == 9) {
         setDailyEventBit(0x30);
         setDailyEventBit(0x28);
-        setDailyEventBit(0x4D);
+        setDailyEventBit(FESTIVAL);
         setDailyEventBit(0x4E);
     }
 
@@ -1776,28 +1839,28 @@ void setFestivalDailyBits(void) {
     if (gSeason == SUMMER && gDayOfMonth == 24) {
         setDailyEventBit(0x30);
         setDailyEventBit(0x28);
-        setDailyEventBit(0x4D);
+        setDailyEventBit(FESTIVAL);
         setDailyEventBit(0x4E);
     }
 
     if (gSeason == FALL && gDayOfMonth == 4) {
         setDailyEventBit(0x30);
         setDailyEventBit(0x28);
-        setDailyEventBit(0x4D);
+        setDailyEventBit(FESTIVAL);
         setDailyEventBit(0x4E);
     }
 
     if (gSeason == FALL && gDayOfMonth == 12) {
         setDailyEventBit(0x30);
         setDailyEventBit(0x28);
-        setDailyEventBit(0x4D);
+        setDailyEventBit(FESTIVAL);
         setDailyEventBit(0x4E);
     }
     
     if (gSeason == FALL && gDayOfMonth == 20) {
         setDailyEventBit(0x30);
         setDailyEventBit(0x28);
-        setDailyEventBit(0x4D);
+        setDailyEventBit(FESTIVAL);
         setDailyEventBit(0x4E);
     }
 
@@ -1809,7 +1872,7 @@ void setFestivalDailyBits(void) {
     if (gSeason == WINTER && gDayOfMonth == 19) {
         setDailyEventBit(0x30);
         setDailyEventBit(0x28);
-        setDailyEventBit(0x4D);
+        setDailyEventBit(FESTIVAL);
         setDailyEventBit(0x4E);
     }
 
@@ -1944,7 +2007,7 @@ void setWifeNameString(u8 wife) {
 }
 
 // func_80061354
-// dlabel jtbl_8011F1F8
+// jtbl_8011F1F8
 //INCLUDE_ASM(const s32, "game", setDefaultBabyName);
 
 void setDefaultBabyName(u8 wife) {
@@ -2381,302 +2444,302 @@ u8 handleHouseConstruction(u8 day) {
 
 void setLetters(void) {
 
-    if (!checkMailRead(0) && ((!checkLifeEventBit(MARRIED)) || gWife != MARIA) && (npcAffection[MARIA] >= 120) && (gSeason == SPRING) && !(getRandomNumberInRange(0, 10))) {
+    if (!checkMailRead(0) && (!checkLifeEventBit(MARRIED) || gWife != MARIA) && npcAffection[MARIA] >= 120 && gSeason == SPRING && !getRandomNumberInRange(0, 10)) {
         setMail(0);
     }
 
-    if (!checkMailRead(1) && ((!checkLifeEventBit(MARRIED)) || gWife != MARIA) && (npcAffection[MARIA] >= 140) && (gSeason == SUMMER) && !(getRandomNumberInRange(0, 10))) {
+    if (!checkMailRead(1) && (!checkLifeEventBit(MARRIED) || gWife != MARIA) && npcAffection[MARIA] >= 140 && gSeason == SUMMER && !getRandomNumberInRange(0, 10)) {
         setMail(1);
     }
 
-    if (!checkMailRead(2) && ((!checkLifeEventBit(MARRIED)) || gWife != MARIA) && (npcAffection[MARIA] >= 160) && (gSeason == FALL) && !(getRandomNumberInRange(0, 10))) {
+    if (!checkMailRead(2) && (!checkLifeEventBit(MARRIED) || gWife != MARIA) && npcAffection[MARIA] >= 160 && gSeason == FALL && !getRandomNumberInRange(0, 10)) {
         setMail(2);
     }
 
-    if (!checkMailRead(3) && ((!checkLifeEventBit(MARRIED)) || gWife != MARIA) && (npcAffection[MARIA] >= 180) && (gSeason == WINTER) && !(getRandomNumberInRange(0, 10))) {
+    if (!checkMailRead(3) && (!checkLifeEventBit(MARRIED) || gWife != MARIA) && npcAffection[MARIA] >= 180 && gSeason == WINTER && !getRandomNumberInRange(0, 10)) {
         setMail(3);
     }
 
-    if (!checkMailRead(4) && ((!checkLifeEventBit(MARRIED)) || (gWife != POPURI)) && (npcAffection[POPURI] >= 120) && (gSeason == SPRING) && !(getRandomNumberInRange(0, 10))) {
+    if (!checkMailRead(4) && (!checkLifeEventBit(MARRIED) || gWife != POPURI) && npcAffection[POPURI] >= 120 && gSeason == SPRING && !getRandomNumberInRange(0, 10)) {
         setMail(4);
     }
 
-    if (!checkMailRead(5) && ((!checkLifeEventBit(MARRIED)) || (gWife != POPURI)) && (npcAffection[POPURI] >= 140) && (gSeason == SUMMER) && !(getRandomNumberInRange(0, 10))) {
+    if (!checkMailRead(5) && (!checkLifeEventBit(MARRIED) || gWife != POPURI) && npcAffection[POPURI] >= 140 && gSeason == SUMMER && !getRandomNumberInRange(0, 10)) {
         setMail(5);
     }
-    if (!checkMailRead(6) && ((!checkLifeEventBit(MARRIED)) || (gWife != POPURI)) && (npcAffection[POPURI] >= 160) && (gSeason == FALL) && !(getRandomNumberInRange(0, 10))) {
+    if (!checkMailRead(6) && (!checkLifeEventBit(MARRIED) || gWife != POPURI) && npcAffection[POPURI] >= 160 && gSeason == FALL && !getRandomNumberInRange(0, 10)) {
         setMail(6);
     }
 
-    if (!checkMailRead(7) && ((!checkLifeEventBit(MARRIED)) || (gWife != POPURI)) && (npcAffection[POPURI] >= 180) && (gSeason == WINTER) && !(getRandomNumberInRange(0, 10))) {
+    if (!checkMailRead(7) && (!checkLifeEventBit(MARRIED) || gWife != POPURI) && npcAffection[POPURI] >= 180 && gSeason == WINTER && !getRandomNumberInRange(0, 10)) {
         setMail(7);
     }
 
-    if (!checkMailRead(8) && ((!checkLifeEventBit(MARRIED)) || (gWife != ELLI)) && (npcAffection[ELLI] >= 120) && (gSeason == SPRING) && !(getRandomNumberInRange(0, 10))) {
+    if (!checkMailRead(8) && (!checkLifeEventBit(MARRIED) || gWife != ELLI) && npcAffection[ELLI] >= 120 && gSeason == SPRING && !getRandomNumberInRange(0, 10)) {
         setMail(8);
     }
 
-    if (!checkMailRead(9) && ((!checkLifeEventBit(MARRIED)) || (gWife != ELLI)) && (npcAffection[ELLI] >= 140) && (gSeason == SUMMER) && !(getRandomNumberInRange(0, 10))) {
+    if (!checkMailRead(9) && (!checkLifeEventBit(MARRIED) || gWife != ELLI) && npcAffection[ELLI] >= 140 && gSeason == SUMMER && !getRandomNumberInRange(0, 10)) {
         setMail(9);
     }
 
-    if (!checkMailRead(0xA) && ((!checkLifeEventBit(MARRIED)) || (gWife != ELLI)) && (npcAffection[ELLI] >= 160) && (gSeason == FALL) && !(getRandomNumberInRange(0, 10))) {
+    if (!checkMailRead(0xA) && (!checkLifeEventBit(MARRIED) || (gWife != ELLI)) && npcAffection[ELLI] >= 160 && gSeason == FALL && !getRandomNumberInRange(0, 10)) {
         setMail(0xA);
     }
 
-    if (!checkMailRead(0xB) && ((!checkLifeEventBit(MARRIED)) || (gWife != ELLI)) && (npcAffection[ELLI] >= 180) && (gSeason == WINTER) && !(getRandomNumberInRange(0, 10))) {
+    if (!checkMailRead(0xB) && (!checkLifeEventBit(MARRIED) || gWife != ELLI) && npcAffection[ELLI] >= 180 && gSeason == WINTER && !getRandomNumberInRange(0, 10)) {
         setMail(0xB);
     }
 
-    if (!checkMailRead(0xC) && ((!checkLifeEventBit(MARRIED)) || (gWife != ANN)) && (npcAffection[ANN] >= 120) && (gSeason == SPRING) && !(getRandomNumberInRange(0, 10))) {
+    if (!checkMailRead(0xC) && (!checkLifeEventBit(MARRIED) || gWife != ANN) && npcAffection[ANN] >= 120 && gSeason == SPRING && !getRandomNumberInRange(0, 10)) {
         setMail(0xC);
     }
 
-    if (!checkMailRead(0xD) && ((!checkLifeEventBit(MARRIED)) || (gWife != ANN)) && (npcAffection[ANN] >= 140) && (gSeason == SUMMER) && !(getRandomNumberInRange(0, 10))) {
+    if (!checkMailRead(0xD) && (!checkLifeEventBit(MARRIED) || gWife != ANN) && npcAffection[ANN] >= 140 && gSeason == SUMMER && !getRandomNumberInRange(0, 10)) {
         setMail(0xD);
     }
 
-    if (!checkMailRead(0xE) && ((!checkLifeEventBit(MARRIED)) || (gWife != ANN)) && (npcAffection[ANN] >= 160) && (gSeason == FALL) && !(getRandomNumberInRange(0, 10))) {
+    if (!checkMailRead(0xE) && (!checkLifeEventBit(MARRIED) || gWife != ANN) && npcAffection[ANN] >= 160 && (gSeason == FALL) && !getRandomNumberInRange(0, 10)) {
         setMail(0xE);
     }
 
-    if (!checkMailRead(0xF) && ((!checkLifeEventBit(MARRIED)) || (gWife != ANN)) && (npcAffection[ANN] >= 180) && (gSeason == WINTER) && !(getRandomNumberInRange(0, 10))) {
+    if (!checkMailRead(0xF) && (!checkLifeEventBit(MARRIED) || gWife != ANN) && npcAffection[ANN] >= 180 && gSeason == WINTER && !getRandomNumberInRange(0, 10)) {
         setMail(0xF);
     }
 
-    if (!checkMailRead(0x10) && ((!checkLifeEventBit(MARRIED)) || (gWife != KAREN)) && (npcAffection[KAREN] >= 120) && (gSeason == SPRING) && !(getRandomNumberInRange(0, 10))) {
+    if (!checkMailRead(0x10) && (!checkLifeEventBit(MARRIED) || gWife != KAREN) && npcAffection[KAREN] >= 120 && gSeason == SPRING && !getRandomNumberInRange(0, 10)) {
         setMail(0x10);
     }
     
-    if (!checkMailRead(0x11) && ((!checkLifeEventBit(MARRIED)) || (gWife != KAREN)) && (npcAffection[KAREN] >= 140) && (gSeason == SUMMER) && !(getRandomNumberInRange(0, 10))) {
+    if (!checkMailRead(0x11) && (!checkLifeEventBit(MARRIED) || gWife != KAREN) && npcAffection[KAREN] >= 140 && gSeason == SUMMER && !getRandomNumberInRange(0, 10)) {
         setMail(0x11);
     }
 
-    if (!checkMailRead(0x12) && ((!checkLifeEventBit(MARRIED)) || (gWife != KAREN)) && (npcAffection[KAREN] >= 160) && (gSeason == FALL) && !(getRandomNumberInRange(0, 10))) {
+    if (!checkMailRead(0x12) && (!checkLifeEventBit(MARRIED) || gWife != KAREN) && npcAffection[KAREN] >= 160 && gSeason == FALL && !getRandomNumberInRange(0, 10)) {
         setMail(0x12);
     }
 
-    if (!checkMailRead(0x13) && ((!checkLifeEventBit(MARRIED)) || (gWife != KAREN)) && (npcAffection[KAREN] >= 180) && (gSeason == WINTER) && !(getRandomNumberInRange(0, 10))) {
+    if (!checkMailRead(0x13) && (!checkLifeEventBit(MARRIED) || gWife != KAREN) && npcAffection[KAREN] >= 180 && gSeason == WINTER && !getRandomNumberInRange(0, 10)) {
         setMail(0x13);
     }
 
-    if (!checkMailRead(0x14) && (npcAffection[MAYOR] >= 120) && (gSeason == SPRING) && !(getRandomNumberInRange(0, 10))) {
+    if (!checkMailRead(0x14) && npcAffection[MAYOR] >= 120 && gSeason == SPRING && !getRandomNumberInRange(0, 10)) {
         setMail(0x14);
     }
 
-    if (!checkMailRead(0x15) && (npcAffection[HARRIS] >= 120) && (gSeason == SPRING) && !(getRandomNumberInRange(0, 10))) {
+    if (!checkMailRead(0x15) && npcAffection[HARRIS] >= 120 && gSeason == SPRING && !getRandomNumberInRange(0, 10)) {
         setMail(0x15);
     }
 
-    if (!checkMailRead(0x16) && (checkLifeEventBit(MARIA_HARRIS_BABY))) {
+    if (!checkMailRead(0x16) && checkLifeEventBit(MARIA_HARRIS_BABY)) {
         setMail(0x16);
     }
 
-    if (!checkMailRead(0x17) && (npcAffection[GRAY] >= 120) && (gSeason == SPRING) && !(getRandomNumberInRange(0, 10))) {
+    if (!checkMailRead(0x17) && npcAffection[GRAY] >= 120 && gSeason == SPRING && !getRandomNumberInRange(0, 10)) {
         setMail(0x17);
     }
 
-    if (!checkMailRead(0x18) && (checkLifeEventBit(POPURI_GRAY_BABY))) {
+    if (!checkMailRead(0x18) && checkLifeEventBit(POPURI_GRAY_BABY)) {
         setMail(0x18);
     }
 
-    if (!checkMailRead(0x19) && (npcAffection[JEFF] >= 120) && (gSeason == SPRING) && !(getRandomNumberInRange(0, 10))) {
+    if (!checkMailRead(0x19) && npcAffection[JEFF] >= 120 && gSeason == SPRING && !getRandomNumberInRange(0, 10)) {
         setMail(0x19);
     }
 
-    if (!checkMailRead(0x1A) && (checkLifeEventBit(ELLI_JEFF_BABY))) {
+    if (!checkMailRead(0x1A) && checkLifeEventBit(ELLI_JEFF_BABY)) {
         setMail(0x1A);
     }
 
-    if (!checkMailRead(0x1B) && (checkLifeEventBit(0x2D)) && !(getRandomNumberInRange(0, 10))) {
+    if (!checkMailRead(0x1B) && checkLifeEventBit(0x2D) && !getRandomNumberInRange(0, 10)) {
         setMail(0x1B);
     }
 
-    if (!checkMailRead(0x1C) && (checkLifeEventBit(ANN_CLIFF_BABY))) {
+    if (!checkMailRead(0x1C) && checkLifeEventBit(ANN_CLIFF_BABY)) {
         setMail(0x1C);
     }
 
-    if (!checkMailRead(0x1D) && (npcAffection[KAI] >= 120) && (gSeason == SPRING) && !(getRandomNumberInRange(0, 10))) {
+    if (!checkMailRead(0x1D) && npcAffection[KAI] >= 120 && gSeason == SPRING && !getRandomNumberInRange(0, 10)) {
         setMail(0x1D);
     }
 
-    if (!checkMailRead(0x1E) && (checkLifeEventBit(KAREN_KAI_BABY))) {
+    if (!checkMailRead(0x1E) && checkLifeEventBit(KAREN_KAI_BABY)) {
         setMail(0x1E);
     }
 
-    if (!checkMailRead(0x1F) && (checkLifeEventBit(0x2E)) && !(getRandomNumberInRange(0, 10))) {
+    if (!checkMailRead(0x1F) && checkLifeEventBit(0x2E) && !getRandomNumberInRange(0, 10)) {
         setMail(0x1F);
     }
 
-    if (!checkMailRead(0x20) && ((npcAffection[KENT] + npcAffection[STU]) >= 160) && (gSeason == SPRING) && !(getRandomNumberInRange(0, 10))) {
+    if (!checkMailRead(0x20) && (npcAffection[KENT] + npcAffection[STU]) >= 160 && gSeason == SPRING && !getRandomNumberInRange(0, 10)) {
         setMail(0x20);
     }
 
-    if (!checkMailRead(0x21) && (npcAffection[RICK] >= 120) && (gSeason == SPRING) && !(getRandomNumberInRange(0, 10))) {
+    if (!checkMailRead(0x21) && npcAffection[RICK] >= 120 && gSeason == SPRING && !getRandomNumberInRange(0, 10)) {
         setMail(0x21);
     }
     
-    if (!checkMailRead(0x22) && (npcAffection[BASIL] >= 0x64) && (gSeason == WINTER) && !(getRandomNumberInRange(0, 10))) {
+    if (!checkMailRead(0x22) && npcAffection[BASIL] >= 100 && gSeason == WINTER && !getRandomNumberInRange(0, 10)) {
         setMail(0x22);
     }
 
-    if (!checkMailRead(0x23) && (checkLifeEventBit(SHADY_SALESMAN_MARIA_CUTSCENE))) {
+    if (!checkMailRead(0x23) && checkLifeEventBit(SHADY_SALESMAN_MARIA_CUTSCENE)) {
         setMail(0x23);
     }
 
-    if (!checkMailRead(0x24) && (checkLifeEventBit(MARRIED)) && (gWife == MARIA)) {
+    if (!checkMailRead(0x24) && checkLifeEventBit(MARRIED) && gWife == MARIA) {
         setMail(0x24);
     }
 
-    if (!checkMailRead(0x25) && (checkLifeEventBit(MARRIED)) && (gWife == POPURI)) {
+    if (!checkMailRead(0x25) && checkLifeEventBit(MARRIED) && (gWife == POPURI)) {
         setMail(0x25);
     }
 
-    if (!checkMailRead(0x26) && (checkLifeEventBit(MARRIED)) && (gWife == ELLI)) {
+    if (!checkMailRead(0x26) && checkLifeEventBit(MARRIED) && (gWife == ELLI)) {
         setMail(0x26);
     }
 
-    if (!checkMailRead(0x27) && (checkLifeEventBit(MARRIED)) && (gWife == ANN)) {
+    if (!checkMailRead(0x27) && checkLifeEventBit(MARRIED) && (gWife == ANN)) {
         setMail(0x27);
     }
 
-    if (!checkMailRead(0x28) && (checkLifeEventBit(MARRIED)) && (gWife == KAREN)) {
+    if (!checkMailRead(0x28) && checkLifeEventBit(MARRIED) && (gWife == KAREN)) {
         setMail(0x28);
     }
 
-    if (!checkMailRead(0x29) && (checkLifeEventBit(HAVE_BABY)) && (gWife == MARIA)) {
+    if (!checkMailRead(0x29) && checkLifeEventBit(HAVE_BABY) && (gWife == MARIA)) {
         setMail(0x29);
     }
 
-    if (!checkMailRead(0x2A) && (checkLifeEventBit(HAVE_BABY)) && (gWife == POPURI)) {
+    if (!checkMailRead(0x2A) && checkLifeEventBit(HAVE_BABY) && (gWife == POPURI)) {
         setMail(0x2A);
     }
 
-    if (!checkMailRead(0x2B) && (checkLifeEventBit(HAVE_BABY)) && (gWife == ELLI)) {
+    if (!checkMailRead(0x2B) && checkLifeEventBit(HAVE_BABY) && (gWife == ELLI)) {
         setMail(0x2B);
     }
 
-    if (!checkMailRead(0x2C) && (checkLifeEventBit(HAVE_BABY)) && (gWife == ANN)) {
+    if (!checkMailRead(0x2C) && checkLifeEventBit(HAVE_BABY) && (gWife == ANN)) {
         setMail(0x2C);
     }
 
-    if (!checkMailRead(0x2D) && (checkLifeEventBit(HAVE_BABY)) && (gWife == KAREN)) {
+    if (!checkMailRead(0x2D) && checkLifeEventBit(HAVE_BABY) && (gWife == KAREN)) {
         setMail(0x2D);
     }
 
-    if (!checkMailRead(0x2E) && (checkDailyEventBit(0x34))) {
+    if (!checkMailRead(0x2E) && checkDailyEventBit(0x34)) {
         setMail(0x2E);
     }
 
-    if (!checkMailRead(0x2F) && (checkDailyEventBit(0x35))) {
+    if (!checkMailRead(0x2F) && checkDailyEventBit(0x35)) {
         setMail(0x2F);
     }
 
-    if (!checkMailRead(0x30) && (checkDailyEventBit(0x37))) {
+    if (!checkMailRead(0x30) && checkDailyEventBit(0x37)) {
         setMail(0x30);
     }
 
-    if (!checkMailRead(0x31) && (checkDailyEventBit(0x39))) {
+    if (!checkMailRead(0x31) && checkDailyEventBit(0x39)) {
         setMail(0x31);
     }
 
-    if (!checkMailRead(0x32) && (checkDailyEventBit(WON_CALENDAR_STICKERS_FROM_RAFFLE))) {
+    if (!checkMailRead(0x32) && checkDailyEventBit(WON_CALENDAR_STICKERS_FROM_RAFFLE)) {
         setMail(0x32);
     }
 
-    if (!checkMailRead(0x33) && (checkLifeEventBit(HAVE_KITCHEN)) && (checkLifeEventBit(HAVE_BATHROOM)) && (checkLifeEventBit(HAVE_STAIRS)) && (checkLifeEventBit(HAVE_GREENHOUSE)) && (checkLifeEventBit(HAVE_LOG_TERRACE)) && (checkLifeEventBit(HAVE_BABY_BED))) {
+    if (!checkMailRead(0x33) && checkLifeEventBit(HAVE_KITCHEN) && checkLifeEventBit(HAVE_BATHROOM) && checkLifeEventBit(HAVE_STAIRS) && checkLifeEventBit(HAVE_GREENHOUSE) && checkLifeEventBit(HAVE_LOG_TERRACE) && checkLifeEventBit(HAVE_BABY_BED)) {
         setMail(0x33);
     }
     
-    if (!checkMailRead(0x34) && (checkDailyEventBit(0x36))) {
+    if (!checkMailRead(0x34) && checkDailyEventBit(0x36)) {
         setMail(0x34);
     }
 
-    if (!checkMailRead(0x35) && (checkDailyEventBit(0x3A))) {
+    if (!checkMailRead(0x35) && checkDailyEventBit(0x3A)) {
         setMail(0x35);
     }
 
-    if (!checkMailRead(0x36) && (checkDailyEventBit(0x3B))) {
+    if (!checkMailRead(0x36) && checkDailyEventBit(0x3B)) {
         setMail(0x36);
     }
 
-    if (!checkMailRead(0x37) && (checkDailyEventBit(0x3C))) {
+    if (!checkMailRead(0x37) && checkDailyEventBit(0x3C)) {
         setMail(0x37);
     }
 
-    if (!checkMailRead(0x38) && (checkDailyEventBit(0x3D))) {
+    if (!checkMailRead(0x38) && checkDailyEventBit(0x3D)) {
         setMail(0x38);
     }
 
-    if (!checkMailRead(0x39) && (checkDailyEventBit(0x3E))) {
+    if (!checkMailRead(0x39) && checkDailyEventBit(0x3E)) {
         setMail(0x39);
     }
 
-    if (!checkMailRead(0x3A) && (((gYear == 1 && (1 < gSeason)) || (1 < gYear)))) {
+    if (!checkMailRead(0x3A) && ((gYear == 1 && 1 < gSeason) || 1 < gYear)) {
         setMail(0x3A);
     }
 
-    if (!checkMailRead(0x3B) && (gSeason == SPRING) && (gDayOfMonth == 20)) {
+    if (!checkMailRead(0x3B) && gSeason == SPRING && gDayOfMonth == 20) {
         setMail(0x3B);
     }
 
-    if (!checkMailRead(0x3D) && (gSeason == SPRING) && (gDayOfMonth == 15)) {
+    if (!checkMailRead(0x3D) && gSeason == SPRING && gDayOfMonth == 15) {
         setMail(0x3D);
     }
 
-    if (!checkMailRead(0x3E) && (gSeason == SPRING) && (gDayOfMonth == 19)) {
+    if (!checkMailRead(0x3E) && gSeason == SPRING && gDayOfMonth == 19) {
         setMail(0x3E);
     }
 
-    if (!checkMailRead(0x3F) && (gSeason == SUMMER) && (gDayOfMonth == 1)) {
+    if (!checkMailRead(0x3F) && gSeason == SUMMER && gDayOfMonth == 1) {
         setMail(0x3F);
     }
 
-    if (!checkMailRead(0x40) && !(getRandomNumberInRange(0, 20))) {
+    if (!checkMailRead(0x40) && !getRandomNumberInRange(0, 20)) {
         setMail(0x40);
     }
     
-    if (!checkMailRead(0x41) && (gSeason == SPRING) && (gDayOfMonth == 30)) {
+    if (!checkMailRead(0x41) && gSeason == SPRING && gDayOfMonth == 30) {
         setMail(0x41);
     }
 
-    if (!checkMailRead(0x42) && (gSeason == FALL) && (gDayOfMonth == 30)) {
+    if (!checkMailRead(0x42) && gSeason == FALL && gDayOfMonth == 30) {
         setMail(0x42);
     }
 
-    if (!checkMailRead(0x43) && (gSeason == FALL) && (gDayOfMonth == 10)) {
+    if (!checkMailRead(0x43) && gSeason == FALL && gDayOfMonth == 10) {
         setMail(0x43);
     }
 
-    if (!checkMailRead(0x44) && (gSeason == FALL) && (gDayOfMonth == 1)) {
+    if (!checkMailRead(0x44) && gSeason == FALL && gDayOfMonth == 1) {
         setMail(0x44);
     }
 
-    if (!checkMailRead(0x45) && (gSeason == WINTER) && (gDayOfMonth == 7)) {
+    if (!checkMailRead(0x45) && gSeason == WINTER && gDayOfMonth == 7) {
         setMail(0x45);
     }
 
-    if (!checkMailRead(0x46) && (gSeason == WINTER) && (gDayOfMonth == 6)) {
+    if (!checkMailRead(0x46) && gSeason == WINTER && gDayOfMonth == 6) {
         setMail(0x46);
     }
 
-    if (!checkMailRead(0x47) && (gSeason == WINTER) && (gDayOfMonth == 17)) {
+    if (!checkMailRead(0x47) && gSeason == WINTER && gDayOfMonth == 17) {
         setMail(0x47);
     }
 
-    if (!checkMailRead(0x49) && (gYear >= 2) && (gSeason == SPRING) && (gDayOfMonth == 24)) {
+    if (!checkMailRead(0x49) && gYear >= 2 && gSeason == SPRING && gDayOfMonth == 24) {
         setMail(0x49);
     }
     
-    if (!checkMailRead(0x4A) && (gYear >= 2) && (gSeason == SPRING)) {
+    if (!checkMailRead(0x4A) && gYear >= 2 && gSeason == SPRING) {
         setMail(0x4A);
     }
 
-    if (!checkMailRead(0x4B) && (checkLifeEventBit(MARRIED))) {
+    if (!checkMailRead(0x4B) && checkLifeEventBit(MARRIED)) {
         setMail(0x4B);
     }
 
-    if (!checkMailRead(0x4C) && (gYear >= 3) && (gSeason == SPRING) && (gDayOfMonth == 3)) {
+    if (!checkMailRead(0x4C) && gYear >= 3 && gSeason == SPRING && gDayOfMonth == 3) {
         setMail(0x4C);
     }
 }

@@ -26,6 +26,7 @@ INCLUDE_ASM(const s32, "title", func_800DCAB8);
 // jtbl_80123498
 INCLUDE_ASM(const s32, "title", func_800DD44C);
 
+// animals/ranch store
 // jtbl_80123578
 INCLUDE_ASM(const s32, "title", func_800DDDFC);
 

@@ -4,6 +4,61 @@
 #include "common.h"
 #include "audio.h"
 
+// 80180790
+typedef struct {
+	u32 unk_0; 
+	u32 unk_4;
+	u32 unk_8;
+	u16 unk_C; 
+	u16 unk_E; 
+	u16 unk_10; 
+} UnknownMessageStruct;
+
+// count: 0x49
+typedef struct {
+    void *indexMap;
+    void *indexEnd;
+    void *vaddr;
+    void *scriptRomAddress;
+} Dialogue;
+
+typedef struct {
+	void *romPtr1;
+	void *romPtr2;
+	void *romPtr3;
+	void *romPtr4;
+	void *vaddr1;
+	void *vaddr2;
+	void *vaddr3;
+	void *vaddr4;
+	void *unk_20;
+	Vec3f unk_24;
+	u16 unk_30;
+	u16 unk_32;
+	u16 unk_34;
+} DialogueSprite;
+
+typedef struct {
+	void *romPtr1;
+	void *romPtr2;
+	void *romPtr3;
+	void *romPtr4;
+	void *romPtr5;
+	void *romPtr6;
+	void *vaddr1;
+	void *vaddr2;
+	void *vaddr3;
+	void *vaddr4;
+	void *vaddr5;
+	void *vaddr6;
+	Vec3f unk_30;
+	u16 unk_3C;
+	u16 unk_3E;
+	u32 unk_40;
+	u32 unk_44;
+	Vec4f unk_48;
+} DialogueIcon;
+
 typedef struct {
     void *unk_0;
     Vec4f unk_4;
@@ -19,9 +74,10 @@ typedef struct {
     u8 unk_60;
     u8 unk_61;
     u16 unk_62;
-    u16 unk_63;
-    u16 frameCounter; // 0x64
-    u16 unk_65;
+    u16 unk_64;
+    u16 frameCounter; // 0x66
+    u16 unk_68;
+    u16 unk_6A;
     Volume volume; // 0x6C
     u16 unk_7C;
     u16 unk_7E;
