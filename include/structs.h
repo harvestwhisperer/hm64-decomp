@@ -159,4 +159,16 @@ typedef struct {
     u8 unk_E; // 36
 } UnknownStruct3;
 
+typedef struct {
+    s8 unk_0;
+    s8 unk_2;
+    s8 unk_4;
+    s8 unk_6;
+    s8 unk_8;
+    s8 unk_A;
+    s8 unk_C;
+    s8 unk_E;
+    s8 unk_F;
+} UnknownStruct4;
+
 #endif

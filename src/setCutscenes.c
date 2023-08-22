@@ -46,7 +46,7 @@ void func_8002F730();
 u32 func_800469A8(u16, void*);                       
 void func_80060E58();                                
 u8 func_800616CC(u8);   
-u8 func_80065E80(u8); 
+u8 checkHaveTool(u8); 
 u8 func_8009B2BC(u8);                               
 u16 func_8009C324(u8);                                
 
@@ -332,7 +332,7 @@ u16 setMountain1Cutscenes(void) {
     }
 
     if (!set) {
-        if (!func_80065E80(0x18)) {
+        if (!checkHaveTool(0x18)) {
             setDailyEventBit(0x21);
             gCutsceneIndex = 0x13E;
             loadCutscene(0);

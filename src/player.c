@@ -1,6 +1,12 @@
 #include "common.h"
 
+#include "system/sprite.h"
+
+extern RenderedSprite renderedSprites[];
+
 extern Player gPlayer;
+
+extern u8 gMaximumStamina;
 
 extern u8 keyItemSlots[];
 
@@ -11,32 +17,45 @@ extern u8 D_801141A8[];
 extern Vec3f D_8016F8A4;
 extern Vec4f globalLightingRgba;
 
+extern s8 D_8011F3F0[12];
+extern s8 D_8011F3FC[12];
+
+extern u8 gToolchestSlots[];  
 // tool use info struct?
 extern UnknownStruct3 D_80189828;
 
 extern u8 D_80189836;
+extern u16 D_801FD610;
 extern u16 D_80237410;
 
+u32 adjustValue(s32 current, s32 amount, s32 max);                 
+
 void setAudio(u16);   
-void setSpriteAnimation(u8, u32);    
+void setSpriteAnimation(u8, u32);
 
 u8 func_8002E284(u16, u16, u32);                           
 u8 func_8002F014(u16, u8, u8, u8, u8);             
 u8 func_8002F114(u16, u8);                              
 u8 func_8002F684(u16, u8);                    
 u32 func_8002FD80(u8, f32, f32, f32);   
+u8 func_8002FECC(u16); 
 u32 func_8002FF38(u8, u16);                           
 u32 func_80030054(u8, u8);
 u32 func_8003019C(u16, u8);                              
+Vec3f* func_800315A0(Vec3f*, u16 index);                   
 u8 func_80031380(s32);                               
 u32 func_80034DC8(u8, u8, u8);   
 u8 func_8003C1A4(u16);            
 u32 func_8004D35C(u16, s16);      
 u8 func_80067A24(u8);                               
 void func_80099DE8();                                  
-void func_800DC7BC(u8);                            
 void func_800CF850();                                  
+u8 func_800D5390(u8 index, u8 arg1, u32 arg2, u16 arg3, u8 arg4);
+void func_800D5548(u8);                 
+u8 func_800D5B00(u16 index);                          
+u8 func_800D5B18(u16 index);                  
 void func_800D55E4(u8, u8);         
+void func_800DC7BC(u8);                            
 void func_800DC9C0(u8);
 u8 func_800DCAA0(u8); 
 
@@ -84,17 +103,149 @@ void func_800657D0(u16 arg0, u8 arg1) {
 
 INCLUDE_ASM(const s32, "player", func_80065AA0);
 
-INCLUDE_ASM(const s32, "player", func_80065B74);
+//INCLUDE_ASM(const s32, "player", addItemToRucksack);
 
-INCLUDE_ASM(const s32, "player", func_80065BCC);
+u8 addItemToRucksack(u8 item) {
 
-INCLUDE_ASM(const s32, "player", func_80065D18);
+    u8 i;
+    u8 found = 0xFF;
 
-INCLUDE_ASM(const s32, "player", acquireKeyItem);
+    for (i = 0; i < MAX_RUCKSACK_SLOTS && found == 0xFF; i++) {
+        if (gPlayer.belongingsSlots[i] == 0) {
+            gPlayer.belongingsSlots[i] = item;
+            found = 1;
+        }
+    }
 
-INCLUDE_ASM(const s32, "player", removeKeyItem);
+    return found;    
+}
 
-INCLUDE_ASM(const s32, "player", func_80065E80);
+//INCLUDE_ASM(const s32, "player", func_80065BCC);
+
+// store tool
+u8 func_80065BCC(u8 arg0) {
+
+    u8 i;
+    u8 found = 0xFF;
+
+    for (i = 0; i <  MAX_TOOL_SLOTS_RUCKSACK && found == 0xFF; i++) {
+        if (gPlayer.toolSlots[i] == arg0) {
+            found = 1;
+        }
+    }
+
+    if (found == 0xFF) {
+        for (i = 0; i < MAX_TOOLCHEST_SLOTS && found == 0xFF; i++) {
+            if (gToolchestSlots[i] == arg0) {
+                found = 2;
+            }
+        }
+    }
+
+    if (found == 0xFF) {
+        for (i = 0; i <  MAX_TOOL_SLOTS_RUCKSACK && found == 0xFF; i++) {
+            if (gPlayer.toolSlots[i] == 0) {
+                gPlayer.toolSlots[i] = arg0;
+                found = 1;
+            }
+        }
+    }
+
+    if (found == 0xFF) {
+        for (i = 0; i < MAX_TOOLCHEST_SLOTS && found == 0xFF; i++) {
+            if (gToolchestSlots[i] == 0) {
+                gToolchestSlots[i] = arg0;
+                found = 2;
+            }
+        }
+    }
+    
+    return found;
+}
+
+//INCLUDE_ASM(const s32, "player", removeTool);
+
+// remove tool
+u8 removeTool(u8 arg0) {
+
+    u8 i;
+    u8 found = 0xFF;
+
+    for (i = 0; i < MAX_TOOL_SLOTS_RUCKSACK && found == 0xFF; i++) {
+        if (gPlayer.toolSlots[i] == arg0) {
+            gPlayer.toolSlots[i] = 0;
+            found = 1;
+        }
+    }
+
+    if (found == 0xFF) {
+        for (i = 0; i < MAX_TOOLCHEST_SLOTS && found == 0xFF; i++) {
+            if (gToolchestSlots[i] == arg0) {
+                gToolchestSlots[i] = 0;
+                found = 2;
+            }
+        }
+    }
+
+    return found;
+}
+
+//INCLUDE_ASM(const s32, "player", acquireKeyItem);
+
+u8 acquireKeyItem(u8 item) {
+
+    u8 i;
+    u8 found = 0xFF;
+
+    for (i = 0; i < MAX_KEY_ITEMS && found == 0xFF; i++) {
+        if (keyItemSlots[i] == 0) {
+            keyItemSlots[i] = item;
+            found = 1;
+        }
+    }
+    
+    return found;
+}
+
+//INCLUDE_ASM(const s32, "player", removeKeyItem);
+
+u8 removeKeyItem(u8 item) {
+    u8 i;
+    u8 found = 0xFF;
+
+    for (i = 0; i < MAX_KEY_ITEMS && found == 0xFF; i++) {
+        if (keyItemSlots[i] == item) {
+            keyItemSlots[i] = 0;
+            found = 1;
+        }
+    }
+    
+    return found;
+}
+
+//INCLUDE_ASM(const s32, "player", checkHaveTool);
+
+u8 checkHaveTool(u8 arg0) {
+
+    u8 i;
+    u8 found = 0;
+
+    for (i = 0; i < MAX_TOOL_SLOTS_RUCKSACK && !found; i++) {
+        if (gPlayer.toolSlots[i] == arg0) {
+            found = 1;
+        }
+    }
+
+    if (!found) {
+        for (i = 0; i < MAX_TOOLCHEST_SLOTS && !found; i++) {
+            if (gToolchestSlots[i] == arg0) {
+                found = 2;
+            }
+        }
+    }
+
+    return found;
+}
 
 //INCLUDE_ASM(const s32, "player", checkHaveKeyItem);
 
@@ -113,11 +264,80 @@ u8 checkHaveKeyItem(u8 item) {
     return found;
 }
 
-INCLUDE_ASM(const s32, "player", func_80065F5C);
+//INCLUDE_ASM(const s32, "player", func_80065F5C);
 
-// D_8011F3F0
-// D_8011F3FC
-INCLUDE_ASM(const s32, "player", func_80065F94);
+void func_80065F5C(void) {
+    gPlayer.startingCoordinates.x = renderedSprites[PLAYER].startingCoordinates.x;
+    gPlayer.startingCoordinates.y = renderedSprites[PLAYER].startingCoordinates.y;
+    gPlayer.startingCoordinates.z = renderedSprites[PLAYER].startingCoordinates.z;
+}
+
+//INCLUDE_ASM(const s32, "player", func_80065F94);
+
+Vec3f* func_80065F94(Vec3f *arg0, f32 arg1, u8 arg2) {
+    
+    Vec3f vec;
+    UnknownStruct4 struct1;
+    UnknownStruct4 struct2;
+    int temp1;
+    int temp2;
+    s8 *ptr;
+    s8 *ptr2;
+
+    struct1 = *(UnknownStruct4*)D_8011F3F0;
+    struct2 = *(UnknownStruct4*)D_8011F3FC;
+    
+    ptr = (u8*)&struct1;
+    ptr2 = (u8*)&struct2;
+
+    func_800315A0(&vec, 0);
+
+    if (vec.y != 65535.0f) {
+
+        temp1 = renderedSprites[PLAYER].direction + func_8003C1A4(D_801FD610);
+        temp2 = temp1;
+        
+        if (temp1 < 0) {
+            temp2 = temp1 + 7;
+        }
+
+        vec.x += ptr[temp1 - (temp2 & 0x3F8)] * arg1;
+
+        temp1 = renderedSprites[PLAYER].direction + func_8003C1A4(D_801FD610);
+        temp2 = temp1;
+        
+        if (temp1 < 0) {
+            temp2 = temp1 + 7;
+        }
+
+        vec.z += ptr2[temp1 - (temp2 & 0x3F8)] * arg1;
+
+        if (arg2 != 8) {
+            
+            temp1 = renderedSprites[PLAYER].direction + func_8003C1A4(D_801FD610) + arg2;
+            temp2 = temp1;
+        
+            if (temp1 < 0) {
+                temp2 = temp1 + 7;
+            } 
+
+            vec.x += ptr[temp1 - (temp2 & 0x7F8)];
+
+            temp1 = renderedSprites[PLAYER].direction + func_8003C1A4(D_801FD610) + arg2;
+            temp2 = temp1;
+        
+            if (temp1 < 0) {
+                temp2 = temp1 + 7;
+            } 
+
+            vec.z += ptr2[temp1 - (temp2 & 0x7F8)];
+        }
+    }
+
+    *arg0 = vec;
+    
+    return arg0;
+}
 
 //INCLUDE_ASM(const s32, "player", setPlayerAction);
 
@@ -137,11 +357,11 @@ void setPlayerAction(u16 arg0, u16 arg1) {
 
 //INCLUDE_RODATA(const s32, "player", D_8011F3F0);
 
-const u8 D_8011F3F0[12] = { 0, 0xFF, 0xFF, 0xFF, 0, 1, 1, 1, 0, 0, 0, 0 };
+const s8 D_8011F3F0[12] = { 0, 0xFF, 0xFF, 0xFF, 0, 1, 1, 1, 0, 0, 0, 0 };
 
 //INCLUDE_RODATA(const s32, "player", D_8011F3FC);
 
-const u8 D_8011F3FC[12] = { 1, 1, 0, 0xFF, 0xFF, 0xFF, 0, 1, 0, 0, 0, 0 };
+const s8 D_8011F3FC[12] = { 1, 1, 0, 0xFF, 0xFF, 0xFF, 0, 1, 0, 0, 0, 0 };
 
 // jtbl_8011F408
 //INCLUDE_ASM(const s32, "player", func_8006623C);
@@ -272,6 +492,7 @@ INCLUDE_ASM(const s32, "player", func_800664C8);
 
 INCLUDE_ASM(const s32, "player", func_80066F98);
 
+// reads from unset register
 INCLUDE_ASM(const s32, "player", func_80067034);
 
 INCLUDE_ASM(const s32, "player", func_80067290);
@@ -301,7 +522,18 @@ INCLUDE_ASM(const s32, "player", func_80067B38);
 
 INCLUDE_ASM(const s32, "player", func_80067BC4);
 
-INCLUDE_ASM(const s32, "player", func_80067E5C);
+//INCLUDE_ASM(const s32, "player", func_80067E5C);
+
+void func_80067E5C(void) {
+
+    if (!(*(s32*)&gPlayer.action3 & ~0xFF)) {
+        setAudio(0x26);
+        func_800D5548(gPlayer.unk_2D);
+        func_800D5390(1, 3, gPlayer.unk_2C, 0, 8);
+        gPlayer.unk_2C = 0;
+        gPlayer.action3 = 1;
+    }
+}
 
 //INCLUDE_ASM(const s32, "player", func_80067EE0);
 
@@ -318,9 +550,56 @@ void func_80067EE0(void) {
 
 INCLUDE_ASM(const s32, "player", func_80067F50);
 
-INCLUDE_ASM(const s32, "player", func_8006807C);
+//INCLUDE_ASM(const s32, "player", func_8006807C);
 
-INCLUDE_ASM(const s32, "player", func_80068120);
+void func_8006807C(void) {
+
+    if (func_8002FECC(0)) {
+     
+        if (!gPlayer.action4) {
+            func_800D55E4(gPlayer.unk_2D, 9);
+            gPlayer.unk_2C = 0;
+            setAudio(0x24);
+        }
+
+        if (gPlayer.action4 != 1 || (gPlayer.action3++, gPlayer.action3 == 2)) {
+            gPlayer.action4++;
+        }
+    }   
+}
+
+
+//INCLUDE_ASM(const s32, "player", func_80068120);
+
+// putting down action
+void func_80068120(void) {
+
+    if (gPlayer.action4 == 2) {
+
+        if (gPlayer.action3 == 0xA) {
+            func_800D55E4(gPlayer.unk_2D, 1);
+            gPlayer.unk_2C = 0;
+            gPlayer.action4++;
+            setAudio(0x25); 
+        }
+
+        gPlayer.action3++;
+    }
+
+    if (gPlayer.action4 == 0) {
+
+        if (gPlayer.action3 == 0) {
+            gPlayer.currentStamina += adjustValue(gPlayer.currentStamina, func_800D5B00(gPlayer.unk_2C), gMaximumStamina);
+            gPlayer.fatigue[0] += adjustValue(gPlayer.fatigue[0], -func_800D5B18(gPlayer.unk_2C), 100);
+        }
+
+        if (gPlayer.action3 == 0x1E) {
+            gPlayer.action4++;
+        }
+
+        gPlayer.action3++;
+    }
+}
 
 //INCLUDE_ASM(const s32, "player", func_80068258);
 
@@ -446,8 +725,7 @@ void func_80069C90(void) {
 
 INCLUDE_ASM(const s32, "player", func_80069CC4);
 
-void func_80069DA8(void) {
-}
+void func_80069DA8(void) {}
 
 INCLUDE_ASM(const s32, "player", func_80069DB0);
 
@@ -602,7 +880,7 @@ void func_8006E0D4(void) {
                     gPlayer.action1 = 0;
                     gPlayer.action2 = 0;
                 }
-                D_80237410 += adjustValue(D_80237410, -1, 0x3E7);;
+                D_80237410 += adjustValue(D_80237410, -1, 0x3E7);
                 if (!D_80237410) {
                     gPlayer.currentTool = 0;
                 }

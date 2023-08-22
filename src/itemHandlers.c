@@ -1072,7 +1072,7 @@ u8 func_800D5308(u8 index, u8 arg1, u32 arg2, s32 arg3, s32 arg4) {
     D_80204DF8[index].unk_2A = arg1;
     D_80204DF8[index].unk_28 = arg2;
     D_80204DF8[index].unk_26 = 0;
-    D_80204DF8[index].flags = arg3 | (arg4 | 1);;
+    D_80204DF8[index].flags = arg3 | (arg4 | 1);
     
     gItemBeingHeld = func_800D67E4(arg2);
     
@@ -1086,7 +1086,7 @@ u8 func_800D5390(u8 index, u8 arg1, u32 arg2, u16 arg3, u8 arg4) {
     u8 found = 0;
     int tempBit = 1;
     
-    while ((index < 10) && (!found)) {
+    while (index < 10 && !found) {
         if (!(D_80204DF8[index].flags & 1)) {
           found = 1;
         }
@@ -1116,7 +1116,7 @@ u8 func_800D5488(u8 index, u8 arg1, u32 arg2, u16 arg3, u8 arg4) {
     
     u8 found = 0;
     
-    while ((index < 10) && (!found)) {
+    while (index < 10 && !found) {
         if (!(D_80204DF8[index].flags & 1)) {
           found = 1;
         }
@@ -1243,25 +1243,22 @@ u8 func_800D67E4(u8 index) {
 void func_800D67FC(u8 index) {
     
     s32 temp;
-
-    // member of dialogue box struct
-    u16 var_a2;
+    u16 temp2;
 
     temp = index;
     
     if (temp < 0x70) {
         if (temp > 0x5F) {
-            // from player struct
-            var_a2 = D_801890CC + 0xF5;
+            temp2 = gPlayer.unk_6C + 0xF5;
             goto func_end;
         } 
     } 
 
     // array of npc/dialogue-related u16s
-    var_a2 = D_80118000[index];
+    temp2 = D_80118000[index];
     
 func_end:
-    func_8005AE8C(1, 6, var_a2, 0, 2);
+    func_8005AE8C(1, 6, temp2, 0, 2);
 }
 
 // jumptable: 801226D8, 0xFDAD8

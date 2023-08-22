@@ -943,8 +943,12 @@ checkSpecialDialogueBit = 0x80065210;
 toggleReadLetterBit = 0x80065270;
 checkMailRead = 0x800652A8;
 setMail = 0x800652D4;
+
+addItemToRucksack = 0x80065B74;
+removeTool = 0x80065D18;
 acquireKeyItem = 0x80065DCC;
 removeKeyItem = 0x80065E24;
+checkHaveTool = 0x80065E80;
 checkHaveKeyItem = 0x80065F10;
 setPlayerAction = 0x800661FC; 
 checkFatigueLevel = 0x800679EC;
@@ -1124,6 +1128,7 @@ gHappiness = 0x80182FB8;
 gWifeConceptionCounter = 0x80182FB9;
 
 contData = 0x801831B8;
+gToolchestSlots = 0x801831D8;
 
 dogInfo = 0x801886B0;
 dogXCoordinate = 0x801886B8;

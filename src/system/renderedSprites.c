@@ -304,10 +304,10 @@ INCLUDE_ASM(const s32, "system/renderedSprites", func_800313FC);
 
 //INCLUDE_ASM(const s32, "system/renderedSprites", func_800315A0);
 
-Vec3f func_800315A0(u16 index) {
-    
-    int padding[11];
+Vec3f* func_800315A0(Vec3f* arg0, u16 index) {
 
+    int padding[11];
+    
     Vec3f vec;
 
     vec.x = 0;
@@ -319,9 +319,31 @@ Vec3f func_800315A0(u16 index) {
             func_80036610(&vec, D_802055D8[D_801FD610].unk_40, renderedSprites[index].startingCoordinates.x, renderedSprites[index].startingCoordinates.z);
         } 
     }
+
+    *arg0 = vec;
  
-    return vec;
+    return arg0;
 }
+
+// alternate
+// Vec3f func_800315A0(u16 index) {
+    
+//     int padding[11];
+
+//     Vec3f vec;
+
+//     vec.x = 0;
+//     vec.z = 0;
+//     vec.y = 65535.0f;
+    
+//     if (index < MAX_RENDERED_SPRITES) {
+//         if ((renderedSprites[index].flags & 1) && !(renderedSprites[index].flags & 0x40) && !(renderedSprites[index].flags & 0x100)) {
+//             func_80036610(&vec, D_802055D8[D_801FD610].unk_40, renderedSprites[index].startingCoordinates.x, renderedSprites[index].startingCoordinates.z);
+//         } 
+//     }
+ 
+//     return vec;
+// }
 
 INCLUDE_ASM(const s32, "system/renderedSprites", func_8003168C);
 

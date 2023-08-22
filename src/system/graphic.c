@@ -22,7 +22,7 @@ Gfx D_80112A60[] = {
   // gsSPEndDisplayList(),
 }
 */
-
+  
 extern Gfx D_801836A0[2][0x280];
 
 extern f32 D_8011EC90[8];
@@ -213,7 +213,7 @@ void func_80026E78(Bitmap *sprite, u16 *arg1, u16 *arg2) {
         
         case 1:
           sprite->fmt = 2;
-          sprite->flag = 0;
+          sprite->flag = 0; 
     }
 }
 
