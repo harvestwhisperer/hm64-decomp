@@ -132,20 +132,20 @@ u8 addItemToRucksack(u8 item) {
 //INCLUDE_ASM(const s32, "player", func_80065BCC);
 
 // store tool
-u8 func_80065BCC(u8 arg0) {
+u8 func_80065BCC(u8 tool) {
 
     u8 i;
     u8 found = 0xFF;
 
     for (i = 0; i <  MAX_TOOL_SLOTS_RUCKSACK && found == 0xFF; i++) {
-        if (gPlayer.toolSlots[i] == arg0) {
+        if (gPlayer.toolSlots[i] == tool) {
             found = 1;
         }
     }
 
     if (found == 0xFF) {
         for (i = 0; i < MAX_TOOLCHEST_SLOTS && found == 0xFF; i++) {
-            if (gToolchestSlots[i] == arg0) {
+            if (gToolchestSlots[i] == tool) {
                 found = 2;
             }
         }
@@ -154,7 +154,7 @@ u8 func_80065BCC(u8 arg0) {
     if (found == 0xFF) {
         for (i = 0; i <  MAX_TOOL_SLOTS_RUCKSACK && found == 0xFF; i++) {
             if (gPlayer.toolSlots[i] == 0) {
-                gPlayer.toolSlots[i] = arg0;
+                gPlayer.toolSlots[i] = tool;
                 found = 1;
             }
         }
@@ -163,7 +163,7 @@ u8 func_80065BCC(u8 arg0) {
     if (found == 0xFF) {
         for (i = 0; i < MAX_TOOLCHEST_SLOTS && found == 0xFF; i++) {
             if (gToolchestSlots[i] == 0) {
-                gToolchestSlots[i] = arg0;
+                gToolchestSlots[i] = tool;
                 found = 2;
             }
         }
@@ -174,14 +174,13 @@ u8 func_80065BCC(u8 arg0) {
 
 //INCLUDE_ASM(const s32, "player", removeTool);
 
-// remove tool
-u8 removeTool(u8 arg0) {
+u8 removeTool(u8 tool) {
 
     u8 i;
     u8 found = 0xFF;
 
     for (i = 0; i < MAX_TOOL_SLOTS_RUCKSACK && found == 0xFF; i++) {
-        if (gPlayer.toolSlots[i] == arg0) {
+        if (gPlayer.toolSlots[i] == tool) {
             gPlayer.toolSlots[i] = 0;
             found = 1;
         }
@@ -189,7 +188,7 @@ u8 removeTool(u8 arg0) {
 
     if (found == 0xFF) {
         for (i = 0; i < MAX_TOOLCHEST_SLOTS && found == 0xFF; i++) {
-            if (gToolchestSlots[i] == arg0) {
+            if (gToolchestSlots[i] == tool) {
                 gToolchestSlots[i] = 0;
                 found = 2;
             }
@@ -234,20 +233,20 @@ u8 removeKeyItem(u8 item) {
 
 //INCLUDE_ASM(const s32, "player", checkHaveTool);
 
-u8 checkHaveTool(u8 arg0) {
+u8 checkHaveTool(u8 tool) {
 
     u8 i;
     u8 found = 0;
 
     for (i = 0; i < MAX_TOOL_SLOTS_RUCKSACK && !found; i++) {
-        if (gPlayer.toolSlots[i] == arg0) {
+        if (gPlayer.toolSlots[i] == tool) {
             found = 1;
         }
     }
 
     if (!found) {
         for (i = 0; i < MAX_TOOLCHEST_SLOTS && !found; i++) {
-            if (gToolchestSlots[i] == arg0) {
+            if (gToolchestSlots[i] == tool) {
                 found = 2;
             }
         }
@@ -285,7 +284,7 @@ void func_80065F5C(void) {
 
 Vec3f* func_80065F94(Vec3f *arg0, f32 arg1, u8 arg2) {
     
-        Vec3f vec;
+    Vec3f vec;
     UnknownStruct4 struct1;
     UnknownStruct4 struct2;
     s8 *ptr;

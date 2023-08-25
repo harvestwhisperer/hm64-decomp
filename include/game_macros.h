@@ -238,6 +238,7 @@
 #define MAYOR_HOUSE 0x3E
 #define HARVEST_SPRITE_CAVE 0x42
 #define CAVE 0x43
+#define MINE 0x44
 #define VINEYARD 0x47
 #define VINEYARD_HOUSE 0x4B
 #define VINEYARD_CELLAR 0x4C

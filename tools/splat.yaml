@@ -113,7 +113,7 @@ segments:
       - [ 0xCDBC0, c, lib/nusys-1/nuauprenmiproc]
       # nuaudma.c + nuaumgr.c
       - [ 0xCDC20, c, lib/nusys-1/nuaumisc]
-      # includes player_api.c since player_api.c isn't word aligned
+      # includes player_api.c since player_api.c isn't aligned by 10 bytes
       - [ 0xCE620, c, lib/libmus/libsrc/player_commands]
       # - [ 0xCFC84, c, lib/libmus/libsrc/player_api]
       - [ 0xD1000, c, lib/libmus/libsrc/player]
@@ -432,9 +432,8 @@ segments:
       - [ 0xFC9F0, .rodata, levelInteractions] 
       - [ 0xFD090, .rodata, overlayScreens]
       - [ 0xFD6B0, .rodata, itemHandlers] # itemHandlers
-      - [ 0xFDB60, rodata]
-      #- [ 0xFDB60, .rodata, tv] 
-      # - [ 0xFDC58, .rodata, mapObjects] 
+      - [ 0xFDB60, rodata] # tv 
+      #- [ 0xFDC58, .rodata, mapObjects] # map objects
       # - [ 0xFE838, .rodata, weather]
       - [ 0xFE860, rodata] # shop
       #- [ 0xFEA58, .rodata, title]
