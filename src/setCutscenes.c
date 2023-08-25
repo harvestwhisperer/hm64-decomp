@@ -15,7 +15,7 @@ u8 checkHaveKeyItem(u8);
 
 void loadCutscene(u32);         
 
-extern u8 exitIndex;
+extern u8 gEntranceIndex;
 extern u8 previousMapIndex;
 extern u8 gBaseMapIndex;
 
@@ -180,6 +180,7 @@ u16 func_8009C054(u16 mapIndex) {
 
 */
 
+// jtbl_80121030
 INCLUDE_ASM(const s32, "setCutscenes", func_8009C324);
 
 //INCLUDE_ASM(const s32, "setCutscenes", setFarmCutscenes);
@@ -332,7 +333,7 @@ u16 setMountain1Cutscenes(void) {
     }
 
     if (!set) {
-        if (!checkHaveTool(0x18)) {
+        if (!checkHaveTool(FISHING_POLE)) {
             setDailyEventBit(0x21);
             gCutsceneIndex = 0x13E;
             loadCutscene(0);
@@ -341,7 +342,7 @@ u16 setMountain1Cutscenes(void) {
     }
 
     if (!set) {
-        if (!checkLifeEventBit(0xA4) && npcAffection[JEFF] >= 0xB4 && gWeather == SUNNY && gSeason == SUMMER && DAYTIME &&  (!checkLifeEventBit(MARRIED) || gWife != ELLI) && !checkLifeEventBit(ELLI_JEFF_MARRIED) && exitIndex == TOP_OF_MOUNTAIN_1_SUMMER) {
+        if (!checkLifeEventBit(0xA4) && npcAffection[JEFF] >= 0xB4 && gWeather == SUNNY && gSeason == SUMMER && DAYTIME &&  (!checkLifeEventBit(MARRIED) || gWife != ELLI) && !checkLifeEventBit(ELLI_JEFF_MARRIED) && gEntranceIndex == TOP_OF_MOUNTAIN_1_SUMMER) {
             setDailyEventBit(0x21);
             setLifeEventBit(0xA4);
             gCutsceneIndex = 0x134;
@@ -352,7 +353,7 @@ u16 setMountain1Cutscenes(void) {
     }
 
     if (!set) {
-        if (!checkLifeEventBit(0xA6) && npcAffection[MARIA] >= 150 && npcAffection[ELLI] >= 150 && gWeather == SUNNY && gSeason == SUMMER && DAYTIME && exitIndex == TOP_OF_MOUNTAIN_1_SUMMER) {
+        if (!checkLifeEventBit(0xA6) && npcAffection[MARIA] >= 150 && npcAffection[ELLI] >= 150 && gWeather == SUNNY && gSeason == SUMMER && DAYTIME && gEntranceIndex == TOP_OF_MOUNTAIN_1_SUMMER) {
             setDailyEventBit(0x21);
             setLifeEventBit(0xA6);
             gCutsceneIndex = 0x136;
@@ -363,7 +364,7 @@ u16 setMountain1Cutscenes(void) {
     }
 
     if (!set) {
-        if (!checkLifeEventBit(0xA9) && npcAffection[POPURI] >= 150 && npcAffection[KAREN] >= 150 && gWeather == SUNNY && gSeason == SPRING && DAYTIME && exitIndex == 0x1A) {
+        if (!checkLifeEventBit(0xA9) && npcAffection[POPURI] >= 150 && npcAffection[KAREN] >= 150 && gWeather == SUNNY && gSeason == SPRING && DAYTIME && gEntranceIndex == 0x1A) {
             setDailyEventBit(0x21);
             setLifeEventBit(0xA9);
             gCutsceneIndex = 0x13A;
@@ -490,6 +491,7 @@ u16 setCaveCutscenes(void) {
 
 }
 
+// jtbl_80121048
 INCLUDE_ASM(const s32, "setCutscenes", func_800A29B0);
 
 INCLUDE_ASM(const s32, "setCutscenes", func_800A2FA8);
@@ -906,6 +908,8 @@ u16 func_800A7AE8(void) {
     
 }
 
+// jtbl_80121060
+// jtbl_80121078
 INCLUDE_ASM(const s32, "setCutscenes", func_800A7DFC);
 
 INCLUDE_ASM(const s32, "setCutscenes", func_800A87C4);

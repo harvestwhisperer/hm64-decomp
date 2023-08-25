@@ -54,6 +54,8 @@ segments:
       - [ 0x1C50, c, system/mathUtils]
       - [ 0x1CF0, c, system/graphic]
       - [ 0x4400, c, system/sprite]
+      - [ 0x4570, c, system/sprite2]
+      - [ 0x4F30, c, system/sprite3]
       - [ 0x63E0, c, system/globalSprites] 
       - [ 0x9070, c, system/renderedSprites]
       - [ 0xEBD0, c, system/map]
@@ -94,7 +96,7 @@ segments:
       - [ 0xB4A00, c, mapObjects]
       - [ 0xB7760, c, weather]
       - [ 0xB7B50, c, shop]
-      - [ 0xB7EA0, c, title]
+      - [ 0xB97C0, c, title]
       # might not be separate file
       - [ 0xBC780, c, loadGameScreen]
       - [ 0xC8CA0, c, namingScreen]
@@ -113,6 +115,7 @@ segments:
       - [ 0xCDC20, c, lib/nusys-1/nuaumisc]
       # includes player_api.c since player_api.c isn't word aligned
       - [ 0xCE620, c, lib/libmus/libsrc/player_commands]
+      # - [ 0xCFC84, c, lib/libmus/libsrc/player_api]
       - [ 0xD1000, c, lib/libmus/libsrc/player]
       - [ 0xD3600, c, lib/os/libultra/libnaudio/n_sl]
       - [ 0xD3680, c, lib/os/libultra/libnaudio/n_synaddplayer]
@@ -131,6 +134,7 @@ segments:
       - [ 0xD5130, c, lib/os/libultra/libnaudio/load]
       - [ 0xD5850, c, lib/os/libultra/libnaudio/n_resample]
       - [ 0xD5A30, c, lib/os/libultra/libnaudio/n_reverb]
+      - [ 0xD6420, c, lib/os/libultra/libnaudio/n_unknown]
       - [ 0xD6470, c, lib/os/libultra/libnaudio/n_synallocfx]
       - [ 0xD64C0, c, lib/os/libultra/libnaudio/unknown_libnaudio]
       - [ 0xD6540, c, lib/nusys-1/nusched]
@@ -180,6 +184,7 @@ segments:
       - [ 0xD9B30, c, lib/os/libultra/gu/ortho]
       - [ 0xD9D90, c, lib/os/libultra/gu/perspective]
       # fix rodata
+      # - [ 0xD9DB0, c,  ] 
       - [ 0xDA130, asm, lib/os/libultra/gu/rotate]
       - [ 0xDA450, c, lib/os/libultra/gu/scale]
       - [ 0xDA530, c, lib/os/libultra/gu/sins]
@@ -341,18 +346,32 @@ segments:
       # - [ 0xECAB0, .data, lib/os/libultra/audio/sl]
       - [ 0xECAC0, data]
       - [ 0xEDD00, data, viewport]
-      - [ 0xEDD10, data, nugfxtaskinit]
+      - [ 0xEDD10, data, lib/nusys-1/nugfxtaskinit]
       - [ 0xEE110, data, system/map]
-      - [ 0xF3780, data, itemHandlers]
-      - [ 0xF3B00, data, mapObjects]
+      - [ 0xEE7B0, data, system/pauseScreen]
+      - [ 0xEE7D0, data, system/cutscene] # cutscene function pointer table
+      - [ 0xEE980, data] # used by setCutscenes and initialize
+      - [ 0xEEB60, data, gameStatus ] # used by gameStatus and initialize
+      - [ 0xEED40, data, mapObjects]
+      - [ 0xEEF20, data, game]
+      - [ 0xEF050, data, player] # default starting coordinates
+      - [ 0xEF680, data, level]
+      - [ 0xEFD00, data, npc]
+      - [ 0xEFDC0, data, animals]
+      - [ 0xEFEF0, data, setCutscenes]
+      - [ 0xF16F0, data, gameAudio] # wave table
+      - [ 0xF2080, data, overlayScreens]
+      - [ 0xF2580, data] # unused
+      - [ 0xF25A0, data, itemHandlers]
+      - [ 0xF3B00, data] # used by mapObjects
       - [ 0xF3F50, data, weather]
       - [ 0xF3F70, data, shop]
-      - [ 0xF4A60, data]
+      - [ 0xF4A60, data, title]
       # should be rodata
       - [ 0xF4B40, data, packinsoftFarmString]
       # possibly data from fun_80033058; should be rodata
       - [ 0xF4B50, data, spriteIndices]
-      - [ 0xF4B80, data, possibleCharMap]
+      - [ 0xF4B80, data] # char map?
       - [ 0xF7D70, data, lib/libmus/n_sl]
       - [ 0xF7D80, data, lib/libmus/n_drvnew]
       - [ 0xF7F10, data, lib/libmus/n_env]
@@ -413,8 +432,12 @@ segments:
       - [ 0xFC9F0, .rodata, levelInteractions] 
       - [ 0xFD090, .rodata, overlayScreens]
       - [ 0xFD6B0, .rodata, itemHandlers] # itemHandlers
-      - [ 0xFDB60, rodata] # tv
-      - [ 0xFE880, rodata] # title
+      - [ 0xFDB60, rodata]
+      #- [ 0xFDB60, .rodata, tv] 
+      # - [ 0xFDC58, .rodata, mapObjects] 
+      # - [ 0xFE838, .rodata, weather]
+      - [ 0xFE860, rodata] # shop
+      #- [ 0xFEA58, .rodata, title]
       - [ 0xFEA90, rodata] # loadGameScreen
       - [ 0xFEAC0, rodata] # evaluation
       - [ 0xFEBF0, rodata]

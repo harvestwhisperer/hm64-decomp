@@ -4,11 +4,20 @@
 
 extern Player gPlayer;
 
+extern u8 gSeason;
+extern u8 gHour;
+extern u8 gDayOfMonth;
+
 extern u8 D_80126560;
 extern u8 D_80126561;
 
+extern u8 D_80189826;
+extern u8 D_801C3E2C;
+extern u8 gEntranceIndex;
+
 u32 checkDailyEventBit(u16 bitIndex);                   
 void setExit(u16 extiIndex);  
+
 
 u8 func_800309B4(u16, u8, f32); 
 u32 func_8004D380(u8, u32);                        
@@ -18,7 +27,63 @@ void func_8005AF94(u16, u16, u16, u16, u8);
 void func_8005B09C(u8);                                 
 void func_8005CA2C(u16, u16);                                             
 void func_800DC9FC(u8);                                 
-u8 func_800DDDFC(u16);                               
+u8 func_800DDDFC(u16);
+
+//u8 func_800309B4(u16, f32, f32);                            
+u32 func_80038990(u16, u16, u8);                          
+u32 func_8004D380(u8, u32);                           
+void func_8005AE8C(u16 arg0, u16 arg1, u16 arg2, int arg3, u16 arg4);                
+void func_8005C940(u16 arg0, u16 arg1);                             
+s32 func_80074C38(u8);                              
+s32 func_80074C50(u8);                              
+s32 func_800AD8D0(s32, s32);                        
+s32 func_800ADCDC(s32, s32);                        
+s32 func_800AE00C(s32, s32);                        
+s32 func_800AEB54(s32, s32);                        
+s32 func_800AED60(s32, s32);                        
+s32 func_800AEE8C(s32, s32);                        
+s32 func_800AF060(s32, s32);                        
+s32 func_800AF0B0(s32, s32);                        
+s32 func_800AF494(s32, s32);                        
+s32 func_800AFA7C(s32, s32);                        
+s32 func_800AFCD0(s32, s32);                        
+s32 func_800AFD20(s32, s32);                        
+s32 func_800AFF9C(s32, s32);                        
+s32 func_800B00E0(s32, s32);                        
+s32 func_800B01EC(s32, s32);                        
+s32 func_800B0378(s32, s32);                        
+s32 func_800B0714(s32, s32);                        
+s32 func_800B0A64(s32, s32);                        
+s32 func_800B0AFC(s32, s32);                        
+s32 func_800B0C48(s32, s32);                        
+s32 func_800B0C98(s32, s32);                        
+s32 func_800B0FB8(s32, s32);                        
+s32 func_800B106C(s32, s32);                        
+s32 func_800B1438(s32, s32);                        
+s32 func_800B1540(s32, s32);                        
+s32 func_800B1808(s32, s32);                        
+s32 func_800B1994(s32, s32);                        
+s32 func_800B1AC4(s32, s32);                        
+s32 func_800B1C6C(s32, s32);                        
+s32 func_800B1DBC(s32, s32);                        
+s32 func_800B1EE4(s32, s32);                        
+s32 func_800B20C8(s32, s32);                        
+s32 func_800B2118(s32, s32);                        
+s32 func_800B2264(s32, s32);                        
+s32 func_800B2340(s32, s32);                        
+s32 func_800B23A4(s32, s32);                        
+s32 func_800B24D4(s32, s32);                        
+s32 func_800B256C(s32, s32);                        
+s32 func_800B2604(s32, s32);                        
+s32 func_800B2B90(s32, s32);                        
+s32 func_800B2C28(s32, s32);                        
+s32 func_800B2C78(s32, s32);                        
+
+u32 handleDumplingHouseExit(u16, u8);              
+u32 handleRanchStoreExits(u16 mapIndex, u8 collisionIndex);                
+
+void setAudio(u16);                                     
+void setPlayerAction(u16, u16);     
 
 
 //INCLUDE_ASM(const s32, "levelInteractions", func_800ACD70);
@@ -191,6 +256,255 @@ u8 func_800AD0C4(u16 mapIndex) {
 // jtbl_80121408
 INCLUDE_ASM(const s32, "levelInteractions", func_800AD1D0);
 
+/*
+u8 func_800AD1D0(u16 arg0) {
+
+    u8 set;
+    s32 tempExit;
+    u8 temp;
+    u16 temp2;
+
+    tempExit = gEntranceIndex;
+    
+    D_80126560 = 0xFF;
+    D_80126561 = 0xFF;
+
+    temp = func_800309B4(0, 0, 32.0f);
+
+    D_80189826 = temp;
+    
+    if (func_8004D380(0, 0x8000)) {
+        D_801C3E2C = D_80189826;
+    } else {
+        D_801C3E2C = 0xFF;
+    }
+
+    set = 0;
+    
+    if (temp) {
+        switch (arg0) {
+            case 0x52:
+                set = func_800AD8D0(arg0, temp);
+                break;
+            case 0x57:
+                set = func_800ADCDC(arg0, temp);
+                break;
+            case 0x58:
+                set = func_800AE00C(arg0, temp);
+                break;
+            case 0x59:
+                set = func_800AEB54(arg0, temp);
+                break;
+            case 0x5A:
+                set = func_800AED60(arg0, temp);
+                break;
+            case 0x5B:
+                set = func_800AEE8C(arg0, temp);
+                break;
+            case 0x56:
+                set = func_800AF060(arg0, temp);
+                break;
+            case 0x29:
+                set = func_800AF0B0(arg0, temp);
+                break;
+            case 0x32:
+                set = func_800AF494(arg0, temp);
+                break;
+            case 0x31:
+                set = func_800AFA2C(arg0, temp);
+                break;
+            case 0x28:
+                set = func_800AFA7C(arg0, temp);
+                break;
+            case 0x27:
+                set = func_800AFCD0(arg0, temp);
+                break;
+            case 0x39:
+                set = func_800AFD20(arg0, temp);
+                break;
+            case 0x34:
+                set = func_800AFF9C(arg0, temp);
+                break;
+            case 0x33:
+                set = func_800B00E0(arg0, temp);
+                break;
+            case 0x3B:
+                set = func_800B01EC(arg0, temp);
+                break;
+            case 0x2D:
+                set = func_800B0378(arg0, temp);
+                break;
+            case 0x3C:
+                set = func_800B0714(arg0, temp);
+                break;
+            case 0x3A:
+                set = func_800B0A64(arg0, temp);
+                break;
+            case 0x3E:
+                set = func_800B0AFC(arg0, temp);
+                break;
+            case 0x3D:
+                set = func_800B0C48(arg0, temp);
+                break;
+            case 0x40:
+                set = func_800B0C98(arg0, temp);
+                break;
+            case 0x3F:
+                set = func_800B0FB8(arg0, temp);
+                break;
+            case 0x35:
+                set = func_800B106C(arg0, temp);
+                break;
+            case 0x11:
+                set = func_800B1438(arg0, temp);
+                break;
+            case 0x15:
+                set = func_800B1540(arg0, temp);
+                break;
+            case 0x19:
+                set = func_800B1808(arg0, temp);
+                break;
+            case 0x1D:
+                set = func_800B1994(arg0, temp);
+                break;
+            case 0x4E:
+                set = func_800B1AC4(arg0, temp);
+                break;
+            case 0x21:
+                set = func_800B1C6C(arg0, temp);
+                break;
+            case 0x22:
+                set = handleDumplingHouseExit(arg0, temp);
+                break;
+            case 0x43:
+                set = func_800B1DBC(arg0, temp);
+                break;
+            case 0x23:
+                set = func_800B20C8(arg0, temp);
+                break;
+            case 0x47:
+                set = func_800B2118(arg0, temp);
+                break;
+            case 0x4B:
+                set = func_800B2264(arg0, temp);
+                break;
+            case 0x46:
+                set = func_800B2340(arg0, temp);
+                break;
+            case 0x4C:
+                set = func_800B23A4(arg0, temp);
+                break;
+            case 0x4D:
+                set = func_800B24D4(arg0, temp);
+                break;
+            case 0xD:
+                set = func_800B256C(arg0, temp);
+                break;
+            case 0x0:
+                set = func_800B2604(arg0, temp);
+                break;
+            case 0x7:
+                set = func_800B27CC(arg0, temp);
+                break;
+            case 0x6:
+                set = handleRanchStoreExits(arg0, temp);
+                break;
+            case 0x4:
+                set = func_800B2B90(arg0, temp);
+                break;
+            case 0x5:
+                set = func_800B2C28(arg0, temp);
+                break;
+            case 0x9:
+                set = func_800B2C78(arg0, temp);
+                break;
+            case 0x42:
+                set = func_800B1EE4(arg0, temp);
+                break;
+            case 0x44:
+                set = func_800B2078(arg0, temp);
+                break;
+            default:
+                break;
+        }
+    }
+
+    if (set == 1) {
+        setPlayerAction(0, 0);
+    }
+
+    if (D_80126561 != 0xFF) {
+        setAudio(D_80126561);
+    }
+
+    if (tempExit != gEntranceIndex) {
+        
+        if (!(gPlayer.flags & 1)) {
+            
+            temp2 = func_80074C50(gEntranceIndex);
+        
+            if (gEntranceIndex == 0x5F) {
+                if (!checkLifeEventBit(0)) {
+                    if (gSeason == 4) {
+                        if (gDayOfMonth == 24 && (gHour - 0x13) < 2U) {
+                            temp2 = 0xFFFF;
+                        }
+                        if (gSeason == 4 && gDayOfMonth == 30 && (gHour - 0x12) < 6U) {
+                            temp2 = 0xFFFF;
+                        }
+                    }
+                } else {
+                    if (gSeason == 4 && gDayOfMonth == 30 && (gHour - 0x12) < 6U) {
+                        temp2 = 0xFFFF;
+                    }
+                }
+            }
+    
+            if ((gEntranceIndex == 0x59 || gEntranceIndex == 0x5B) && !checkLifeEventBit(0) && gSeason == 2 && gDayOfMonth == 1 && (gHour - 0x13) < 2U) {
+                temp2 = 0xFFFF;
+            }
+    
+            if (temp2 == 0xFFFF) {
+                if (D_80126560 != 0xFF) {
+                    func_80038990(0, D_80126560, 0);
+                }
+                func_8005C940(8, 2);
+                return set;
+                
+            } else {
+                temp = func_80074C38(gEntranceIndex);
+                switch (temp) {                           
+                    case 0x46:                                  
+                        func_8005AE8C(0, 6, temp2, 0, 0);
+                        setPlayerAction(0xF, 0);
+                        gPlayer.unk_6F = 0x20;
+                        gPlayer.unk_6E = 6;
+                        break;
+                    case 0x31:                               
+                    case 0x3D:                                
+                    case 0x4:                                  
+                    case 0x27:                    
+                        func_8005AE8C(0, 6, temp2, 0, 0);
+                        break;
+                    default:            
+                        func_8005AE8C(1, 6, temp2, 0, 2);
+                        break;
+                    }
+                    
+                gEntranceIndex = tempExit;
+            }
+        } else {
+            set = 0;
+        }
+        
+        gEntranceIndex = tempExit;
+        
+    } 
+    
+    return set;
+}
+*/
+
 // jtbl_80121578
 INCLUDE_ASM(const s32, "levelInteractions", func_800AD8D0);
 
@@ -334,7 +648,7 @@ INCLUDE_ASM(const s32, "levelInteractions", func_800B1C6C);
 
 //INCLUDE_ASM(const s32, "levelInteractions", handleDumplingHouseExit);
 
-u32 handleDumplingHouseExit(u32 arg0, u8 arg1) {
+u32 handleDumplingHouseExit(u16 arg0, u8 arg1) {
     u32 result = 0;
 
     if (arg1 == 1) {
@@ -385,7 +699,7 @@ INCLUDE_ASM(const s32, "levelInteractions", func_800B2604);
 
 //INCLUDE_ASM(const s32, "levelInteractions", func_800B27CC);
 
-u32 func_800B27CC(u8 mapIndex, u8 collisionIndex) {
+u32 func_800B27CC(u16 mapIndex, u8 collisionIndex) {
 
     u32 result = 0;
 
@@ -422,7 +736,7 @@ u32 func_800B27CC(u8 mapIndex, u8 collisionIndex) {
 // jtbl_80121C30
 //INCLUDE_ASM(const s32, "levelInteractions", handleRanchStoreExits);
 
-u32 handleRanchStoreExits(u8 mapIndex, u8 collisionIndex) {
+u32 handleRanchStoreExits(u16 mapIndex, u8 collisionIndex) {
 
     u32 result = 0;
     

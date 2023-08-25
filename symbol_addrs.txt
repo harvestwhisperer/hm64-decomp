@@ -840,6 +840,9 @@ nuContPakFileNum = 0x800FCF30;
 nugfx_ucode = 0x80112910;
 FrameBuf = 0x80112918;
 
+playerDefaultStartingCoordinates = 0x80113C50;
+playerDefaultStartingDirections = 0x801141A8;
+
 gWifeName = 0x801C3F51;
 
 nuGfxUcode = 0x801C3F74;
@@ -885,6 +888,9 @@ setCameraPerspectiveValues = 0x80028DBC;
 setCameraLookAt = 0x80028DD4;
 nuGfxInit = 0x80028F44;
 
+resetSpriteAddressesFlags = 0x80029000;
+setSpriteAddresses = 0x8002903C;
+dmaSprites = 0x800290B8;
 resetSpriteCounter = 0x80029284;
 initializeNpcSpriteStructs = 0x8002DC70;
 setSpriteAnimation = 0x8002F3F0;
@@ -893,6 +899,7 @@ setSpriteCollisionBuffers = 0x8002FF9C;
 setTileInfo = 0x8003B9DC;
 
 initializeAudio = 0x8003CDC0;
+mainLoopAudioHandler = 0x8003CF38;
 setSongBank = 0x8003D250;
 setSong = 0x8003D270;
 setSongSpeed = 0x8003D350;
@@ -943,6 +950,8 @@ checkSpecialDialogueBit = 0x80065210;
 toggleReadLetterBit = 0x80065270;
 checkMailRead = 0x800652A8;
 setMail = 0x800652D4;
+
+setupPlayerSprite = 0x800657D0;
 
 addItemToRucksack = 0x80065B74;
 removeTool = 0x80065D18;
@@ -1239,7 +1248,7 @@ gElliGrievingCounter = 0x80215EC0;
 
 mountainConstructionWorkDays = 0x801FB68C;
 
-exitIndex = 0x802231C0;
+gEntranceIndex = 0x802231C0; 
 nusched = 0x80222B40;
 
 dailyShippingBinValue = 0x80237388;
@@ -1281,3 +1290,16 @@ D_D82FD0 = 0xD82FD0;
 D_D82FF0 = 0xD82FF0;
 D_D82FF0_2 = 0xD82FF0; 
 D_D835A0 = 0xD835A0;
+D_CC9330_2 = 0xCC9330;
+D_CC9330 = 0xCC9330;
+D_CFE610 = 0xCFE610;
+D_CFE610_2 = 0xCFE610;
+D_CFF6F0 = 0xCFF6F0;
+D_CFF6F0_2 = 0xCFF6F0;
+D_CFF6F0_3 = 0xCFF6F0;
+D_CFF6F0_4 = 0xCFF6F0;
+D_CFF710 = 0xCFF710;
+D_CFF6F0 = 0xCFF6F0;
+D_CFF6F0_2 = 0xCFF6F0;
+D_D3DCC0 = 0xD3DCC0;
+D_D3DCC0_2 = 0xD3DCC0;

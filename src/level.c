@@ -10,7 +10,7 @@ void func_800D9600(u8);
 void func_800DC360();    
 
 extern u8 previousExitIndex;
-extern u8 exitIndex;
+extern u8 gEntranceIndex;
 
 extern u8 gBaseMapIndex;
 
@@ -24,8 +24,8 @@ extern u8 D_801147C0[];
 //INCLUDE_ASM(const s32, "level", setExit);
 
 void setExit(u16 index) {
-    u16 temp = exitIndex;
-    exitIndex = index;
+    u16 temp = gEntranceIndex;
+    gEntranceIndex = index;
     previousExitIndex = temp;
 }
 

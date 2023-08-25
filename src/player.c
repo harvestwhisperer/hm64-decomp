@@ -1,19 +1,24 @@
 #include "common.h"
 
 #include "system/sprite.h"
+#include "animals.h"
 
 extern RenderedSprite renderedSprites[];
+
+extern Horse horseInfo;
 
 extern Player gPlayer;
 
 extern u8 gMaximumStamina;
 
+extern u8 gBaseMapIndex;
+
 extern u8 keyItemSlots[];
 
 // player starting coordinates
-extern Vec3f D_80113C50[];
+extern Vec3f playerDefaultStartingCoordinates[];
 // player starting directions
-extern u8 D_801141A8[];
+extern u8 playerDefaultStartingDirections[];
 extern Vec3f D_8016F8A4;
 extern Vec4f globalLightingRgba;
 
@@ -25,7 +30,7 @@ extern u8 gToolchestSlots[];
 extern UnknownStruct3 D_80189828;
 
 extern u8 D_80189836;
-extern u16 D_801FD610;
+extern s16 D_801FD610;
 extern u16 D_80237410;
 
 u32 adjustValue(s32 current, s32 amount, s32 max);                 
@@ -59,38 +64,42 @@ void func_800DC7BC(u8);
 void func_800DC9C0(u8);
 u8 func_800DCAA0(u8); 
 
+u8 func_80031830(u16, u32, u8);                       
+Vec3f *func_80031904(Vec3f*, u8, u8, u8);                   
+u8 func_8003C1A4(u16);                        
+void func_8008B9AC();                                  
+u8 func_800DA978(u8 index);                             
+u8 func_800DB1BC(f32, f32);    
 
-//INCLUDE_ASM(const s32, "player", func_800657D0);
+u32 checkLifeEventBit(u16);        
+void setLifeEventBit(u16);     
+u32 checkDailyEventBit(u16);                        
+void setDailyEventBit(u16);                              
+void toggleDailyEventBit(u16);      
 
-void func_800657D0(u16 arg0, u8 arg1) {
 
-    s32 temp;
-    s32 temp2;
-    
-    func_8002E284(0, 0, 1);
-    func_8003019C(0, 1);
-    func_80030054(0, 1);
-    func_8002FF38(0, 1);
-    func_8002FCB4(0, 1);
-    func_8002F014(0, globalLightingRgba.r, globalLightingRgba.g, globalLightingRgba.b, globalLightingRgba.a);
-    func_8002F114(0, 0);
 
-    if (arg1) {
-        gPlayer.startingCoordinates.x = D_80113C50[arg0].x;
-        gPlayer.startingCoordinates.y = D_80113C50[arg0].y;
-        gPlayer.startingCoordinates.z = D_80113C50[arg0].z;
-        gPlayer.direction = D_801141A8[arg0];
+//INCLUDE_ASM(const s32, "player", setupPlayerSprite);
+
+void setupPlayerSprite(u16 arg0, u8 resetPlayer) {
+
+    func_8002E284(PLAYER, 0, 1);
+    func_8003019C(PLAYER, 1);
+    func_80030054(PLAYER, 1);
+    func_8002FF38(PLAYER, 1);
+    func_8002FCB4(PLAYER, 1);
+    func_8002F014(PLAYER, globalLightingRgba.r, globalLightingRgba.g, globalLightingRgba.b, globalLightingRgba.a);
+    func_8002F114(PLAYER, 0);
+
+    if (resetPlayer) {
+        gPlayer.startingCoordinates.x = playerDefaultStartingCoordinates[arg0].x;
+        gPlayer.startingCoordinates.y = playerDefaultStartingCoordinates[arg0].y;
+        gPlayer.startingCoordinates.z = playerDefaultStartingCoordinates[arg0].z;
+        gPlayer.direction = playerDefaultStartingDirections[arg0];
     }
 
-    temp = gPlayer.direction + 8 - (func_8003C1A4(0));
-    temp2 = temp;
-    
-    if (temp < 0) {
-        temp2 = temp + 7;
-    }
-
-    func_8002F684(0, (temp - (temp2 >> 3) * 8));
-    func_8002FD80(0, gPlayer.startingCoordinates.x, gPlayer.startingCoordinates.y, gPlayer.startingCoordinates.z);
+    func_8002F684(PLAYER, (gPlayer.direction + 8 - func_8003C1A4(0)) % 8);
+    func_8002FD80(PLAYER, gPlayer.startingCoordinates.x, gPlayer.startingCoordinates.y, gPlayer.startingCoordinates.z);
 
     D_80189828.unk_3 = 0;
     D_80189828.unk_4 = 0;
@@ -276,11 +285,9 @@ void func_80065F5C(void) {
 
 Vec3f* func_80065F94(Vec3f *arg0, f32 arg1, u8 arg2) {
     
-    Vec3f vec;
+        Vec3f vec;
     UnknownStruct4 struct1;
     UnknownStruct4 struct2;
-    int temp1;
-    int temp2;
     s8 *ptr;
     s8 *ptr2;
 
@@ -294,43 +301,14 @@ Vec3f* func_80065F94(Vec3f *arg0, f32 arg1, u8 arg2) {
 
     if (vec.y != 65535.0f) {
 
-        temp1 = renderedSprites[PLAYER].direction + func_8003C1A4(D_801FD610);
-        temp2 = temp1;
-        
-        if (temp1 < 0) {
-            temp2 = temp1 + 7;
-        }
-
-        vec.x += ptr[temp1 - (temp2 & 0x3F8)] * arg1;
-
-        temp1 = renderedSprites[PLAYER].direction + func_8003C1A4(D_801FD610);
-        temp2 = temp1;
-        
-        if (temp1 < 0) {
-            temp2 = temp1 + 7;
-        }
-
-        vec.z += ptr2[temp1 - (temp2 & 0x3F8)] * arg1;
+        vec.x += ptr[(renderedSprites[PLAYER].direction + func_8003C1A4(D_801FD610)) % 8] * arg1;
+        vec.z += ptr2[(renderedSprites[PLAYER].direction + func_8003C1A4(D_801FD610)) % 8] * arg1;
 
         if (arg2 != 8) {
             
-            temp1 = renderedSprites[PLAYER].direction + func_8003C1A4(D_801FD610) + arg2;
-            temp2 = temp1;
-        
-            if (temp1 < 0) {
-                temp2 = temp1 + 7;
-            } 
-
-            vec.x += ptr[temp1 - (temp2 & 0x7F8)];
-
-            temp1 = renderedSprites[PLAYER].direction + func_8003C1A4(D_801FD610) + arg2;
-            temp2 = temp1;
-        
-            if (temp1 < 0) {
-                temp2 = temp1 + 7;
-            } 
-
-            vec.z += ptr2[temp1 - (temp2 & 0x7F8)];
+            vec.x += ptr[((renderedSprites[PLAYER].direction + func_8003C1A4(D_801FD610)+ arg2) % 8)];
+            vec.z += ptr2[((renderedSprites[PLAYER].direction + func_8003C1A4(D_801FD610) + arg2) % 8)];
+            
         }
     }
 
@@ -356,11 +334,11 @@ void setPlayerAction(u16 arg0, u16 arg1) {
 }
 
 //INCLUDE_RODATA(const s32, "player", D_8011F3F0);
-
+ 
 const s8 D_8011F3F0[12] = { 0, 0xFF, 0xFF, 0xFF, 0, 1, 1, 1, 0, 0, 0, 0 };
 
 //INCLUDE_RODATA(const s32, "player", D_8011F3FC);
-
+ 
 const s8 D_8011F3FC[12] = { 1, 1, 0, 0xFF, 0xFF, 0xFF, 0, 1, 0, 0, 0, 0 };
 
 // jtbl_8011F408
@@ -492,8 +470,62 @@ INCLUDE_ASM(const s32, "player", func_800664C8);
 
 INCLUDE_ASM(const s32, "player", func_80066F98);
 
-// reads from unset register
-INCLUDE_ASM(const s32, "player", func_80067034);
+//INCLUDE_ASM(const s32, "player", func_80067034);
+
+void func_80067034(void) {
+
+    Vec3f vec1;
+    Vec3f vec2;
+    u8 i; // not initialied: likely a bug
+    u8 set = 0;
+    int temp;
+    
+    while (i < 8 && !set) {
+    
+        if (func_80031830(0, 8, (i + func_8003C1A4(D_801FD610)) % 8) == 0) {
+
+            if (func_80031830(0, 0x20, (i + func_8003C1A4(D_801FD610)) % 8) == 0) {
+
+                func_80031904(&vec1, 0, 0x20, (i + func_8003C1A4(0)) % 8);
+                
+                temp = func_800DB1BC(vec1.x, vec1.z);
+                
+                if (temp == 0xFF || (func_800DA978(temp) & 8)) {
+                    set = 1;
+                }
+            }
+        }
+
+        if (!set) {
+            i++;
+        }
+    }
+
+    if (set) {
+
+            func_80031904(&vec2, 0, 0, i);
+            
+            horseInfo.coordinates = vec2;
+            
+            horseInfo.unk_18 = (renderedSprites[PLAYER].direction + func_8003C1A4(0)) % 8;
+            horseInfo.location = gBaseMapIndex;
+            horseInfo.flags &= 0xFFF7;            
+            gPlayer.flags &= -2;
+            
+            toggleDailyEventBit(0x5C);
+            func_8008B9AC();
+           
+            renderedSprites[PLAYER].direction = i;
+
+            gPlayer.action1 = 0xE;
+            gPlayer.action3 = 0;
+            gPlayer.action4 = 0;
+            gPlayer.action2 = 0x10;
+            gPlayer.action4 = 0;
+            gPlayer.action3 = 0;
+
+        }
+}
 
 INCLUDE_ASM(const s32, "player", func_80067290);
 
@@ -504,7 +536,7 @@ INCLUDE_ASM(const s32, "player", func_80067950);
 u8 checkFatigueLevel(void) {
 
     u8 temp;
-    
+     
     if (gPlayer.fatigue[0] == 100) {
         temp = 3;
     } else if (gPlayer.fatigue[0] >= 75) {
@@ -666,11 +698,11 @@ INCLUDE_ASM(const s32, "player", func_80068738);
 void func_80068918(void) {}
 
 //INCLUDE_ASM(const s32, "player", func_80068920);
-
+  
 void func_80068920(void) {
-
+ 
     if (gPlayer.action3 == 3) {
-        func_800D55E4(gPlayer.unk_2D, 0x12U);
+        func_800D55E4(gPlayer.unk_2D, 0x12);
         gPlayer.unk_2C = 0;
         gPlayer.action4 += 1;
     }
@@ -889,17 +921,13 @@ void func_8006E0D4(void) {
         default:
             break;
     }
-
 }
 
-void func_8006E1F8(void) {
-}
+void func_8006E1F8(void) {}
 
-void func_8006E200(void) {
-}
+void func_8006E200(void) {}
 
-void func_8006E208(void) {
-}
+void func_8006E208(void) {}
 
 //INCLUDE_ASM(const s32, "player", func_8006E210);
 

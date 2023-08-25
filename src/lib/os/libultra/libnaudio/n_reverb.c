@@ -18,5 +18,3 @@ INCLUDE_ASM(const s32, "lib/os/libultra/libnaudio/n_reverb", _n_saveBuffer);
 INCLUDE_ASM(const s32, "lib/os/libultra/libnaudio/n_reverb", n_reverb_text_0918);
 
 INCLUDE_ASM(const s32, "lib/os/libultra/libnaudio/n_reverb", _n_filterBuffer);
-
-INCLUDE_ASM(const s32, "lib/os/libultra/libnaudio/n_reverb", func_800FB020);

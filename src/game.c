@@ -213,7 +213,7 @@ void func_80059D90(void) {
     gWifeConceptionCounter += adjustValue(gWifeConceptionCounter, 1, 120);
     
     if ((checkLifeEventBit(HAVE_BABY)) && (gBabyAge < 0xFF)) {
-        gBabyAge += 1;
+        gBabyAge++;
     }
 
     if (!checkLifeEventBit(HAVE_BABY) && checkLifeEventBit(WIFE_PREGNANT) && (gWifePregnancyCounter >= 60)) {
@@ -1516,7 +1516,7 @@ void func_8005D0BC(void) {
         
         gNamingScreenIndex = 7;
         D_801FC155 = D_8016FFE8;
-        gChickens[D_8016FFE8].upkeep &= 0xFEFF;
+        gChickens[D_8016FFE8].flags &= 0xFEFF;
         
         setMainLoopCallbackFunctionIndex(0x33);
         toggleLifeEventBit(3);
@@ -1545,7 +1545,7 @@ void func_8005D0BC(void) {
         
         gNamingScreenIndex = 5;
         D_801FC155 = D_80170464;
-        gFarmAnimals[D_80170464].upkeep &= 0xF7FF;
+        gFarmAnimals[D_80170464].flags &= 0xF7FF;
             
         setMainLoopCallbackFunctionIndex(0x33);
         toggleLifeEventBit(4);

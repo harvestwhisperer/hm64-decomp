@@ -45,8 +45,8 @@ Gfx* initRcp(Gfx*);
 u32 startGfxTask(void);
                                                       
 // assert strings                                                      
-extern const char *D_8011EC60;
-extern const char *D_8011EC64;
+extern const char D_8011EC60[];
+extern const char D_8011EC64[];
 
 extern f64 D_8011EC78;
 extern f64 D_8011EC80;
@@ -245,7 +245,7 @@ INCLUDE_RODATA(const s32, "system/graphic", D_8011EC40);
 
 INCLUDE_RODATA(const s32, "system/graphic", D_8011EC60);
 
-//static const char *D_8011EC60 = "EX";
+//static const char D_8011EC60 = "EX";
 
 INCLUDE_RODATA(const s32, "system/graphic", D_8011EC64);
 

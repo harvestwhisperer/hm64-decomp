@@ -6,7 +6,7 @@ void func_8002B138(u16, void*, void*, void*, void*, void*, void*, void*, void*, 
 
 void func_8002BD90(u16, f32, f32, f32);            
 void func_8002C7EC(u16, u16);                   
-void func_8002C914(u16, u8, u8, u8, u8);                 
+u8 func_8002C914(u16, u8, u8, u8, u8);                 
 void func_80034D64(u32, u8, u16, u32);
 
 extern void *D_D92970;
@@ -27,7 +27,7 @@ void func_800DC360(void) {
     u8 i;
     u16 temp;
     
-    u16 temp2 = (u8)(-(((gWeather == 2) | (gWeather == 4)) == 0));
+    u16 temp2 = (u8)(-(((gWeather == RAIN) | (gWeather == 4)) == 0));
     
     if (gWeather == SNOW) {
         temp2 = 1;
@@ -98,3 +98,7 @@ Vec4f setWeatherLighting(u8 weather) {
         
     return vec;
 }
+
+// rodata
+// D_80123438
+// D_8012344C 

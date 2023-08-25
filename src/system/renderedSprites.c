@@ -3,19 +3,25 @@
 #include "npc.h"
 #include "sprite.h"
 
-extern npcSpriteInfo npcSpriteInfoArray[MAX_NPC_SPRITES];
+extern CharacterSprite npcSpriteInfoArray[MAX_NPC_SPRITES];
 extern RenderedSprite renderedSprites[MAX_RENDERED_SPRITES];
 extern Sprite globalSprites[MAX_RENDERED_SPRITES];
+extern Shadow D_8016FFF8[3];
 extern MapTileContext D_802055D8[];
 
 extern u16 D_801FD610;
-
-void func_8002BB88(u16);
+extern u16 gTileContextFlags;
+ 
+f32 func_80028820(u8 arg0);                       
+void func_80027950(Vec3f, Vec3f*, Vec3f);
+void func_8002BB88(u16); 
 u8 func_8002FBBC(u16); 
 void func_8002FC38(u16); 
-Vec3f *func_80036610(Vec3f*, u16, f32, f32);               
+Vec3f *func_80031904(Vec3f*, u16, s16, u8);             
+f32 func_80035150(u16, f32, f32);          
+Vec3f *func_80036610(Vec3f*, u16, f32, f32);   
 
-
+ 
 //INCLUDE_ASM(const s32, "system/renderedSprites", initializeNpcSpriteStructs);
 
 void initializeNpcSpriteStructs(void) {
@@ -56,23 +62,193 @@ INCLUDE_ASM(const s32, "system/renderedSprites", func_8002DDDC);
 
 INCLUDE_ASM(const s32, "system/renderedSprites", func_8002DEE8);
 
-INCLUDE_ASM(const s32, "system/renderedSprites", func_8002E024);
+//INCLUDE_ASM(const s32, "system/renderedSprites", func_8002E024);
 
-INCLUDE_ASM(const s32, "system/renderedSprites", func_8002E108);
+u8 func_8002E024(u16 index, void* arg1, void* arg2, void* arg3, void* arg4) {
 
-INCLUDE_ASM(const s32, "system/renderedSprites", func_8002E1B8);
+    u8 result = 0;
+    
+    if (index < MAX_RENDERED_SPRITES) {
+        
+        result = 1;
+        
+        renderedSprites[index].ptr_14 = arg4;
+        
+        renderedSprites[index].flags = 1;
+        
+        renderedSprites[index].ptr_08 = arg1;
+        renderedSprites[index].ptr_0C = arg2;
+        renderedSprites[index].ptr_10 = arg3;
+
+        renderedSprites[index].startingCoordinates.x = 0;
+        renderedSprites[index].startingCoordinates.y = 0;
+        renderedSprites[index].startingCoordinates.z = 0;
+
+        renderedSprites[index].currentCoordinates.x = 0;
+        renderedSprites[index].currentCoordinates.y = 0;
+        renderedSprites[index].currentCoordinates.z = 0;
+
+        renderedSprites[index].unk_4C = 0;
+        renderedSprites[index].unk_58 = 0xFFFF;
+        renderedSprites[index].unk_64 = 0;
+        
+    }
+
+    return result;
+}
+
+//INCLUDE_ASM(const s32, "system/renderedSprites", func_8002E108);
+
+u8 func_8002E108(u16 index) {
+
+    u8 result = 0;
+    
+    if (index < MAX_RENDERED_SPRITES) {
+        
+        renderedSprites[index].flags = 0;
+
+        func_8002B6B8(renderedSprites[index].unk_52);
+        
+        if (npcSpriteInfoArray[renderedSprites[index].characterIndex].flag != 0xFF) {
+            func_8002B6B8(renderedSprites[index].spriteOffset);
+        }
+        
+        result = 1;
+    }
+
+    return result;
+}
+
+//INCLUDE_ASM(const s32, "system/renderedSprites", func_8002E1B8);
+ 
+void func_8002E1B8(void) {
+
+    u16 i = 0;
+    u16 temp;
+
+    while (i < MAX_RENDERED_SPRITES) {
+
+        temp = i;
+
+        if (temp < MAX_RENDERED_SPRITES) {
+
+            renderedSprites[i].flags = 0;
+        
+            func_8002B6B8(renderedSprites[i].unk_52);
+            
+            if (npcSpriteInfoArray[renderedSprites[i].characterIndex].flag != 0xFF) {
+                func_8002B6B8(renderedSprites[i].spriteOffset);
+            } 
+        }
+        
+        i++;
+      
+    }
+}
 
 INCLUDE_ASM(const s32, "system/renderedSprites", func_8002E284);
 
-INCLUDE_ASM(const s32, "system/renderedSprites", func_8002EC18);
+//INCLUDE_ASM(const s32, "system/renderedSprites", func_8002EC18);
 
-INCLUDE_ASM(const s32, "system/renderedSprites", func_8002ECD4);
+// sprite shadows
+u8 func_8002EC18(u16 index, u32 arg1, void *arg2, void *arg3, void *arg4, void *arg5, s32 arg6, s32 arg7, s32 arg8, u16 arg9, u8 argA) {
 
-INCLUDE_ASM(const s32, "system/renderedSprites", func_8002ED80);
+    u8 result = 0;
+    
+    if (index < 3) {
+        result = 1;
+        D_8016FFF8[index].romTextureStart = arg1;
+        D_8016FFF8[index].romTextureEnd = arg2;
+        D_8016FFF8[index].romPaletteStart = arg3;
+        D_8016FFF8[index].romPaletteEnd = arg4;
+        D_8016FFF8[index].vaddr1 = arg5;
+        D_8016FFF8[index].vaddr2 = arg6;
+        D_8016FFF8[index].vaddr3 = arg7;
+        D_8016FFF8[index].vaddr4 = arg8;
+        D_8016FFF8[index].unk_20 = arg9;
+        D_8016FFF8[index].unk_22 = argA;
+    }
 
-INCLUDE_ASM(const s32, "system/renderedSprites", func_8002EDF0);
+    return result;
+    
+}
 
-INCLUDE_ASM(const s32, "system/renderedSprites", func_8002EEA4);
+//INCLUDE_ASM(const s32, "system/renderedSprites", func_8002ECD4);
+
+u8 func_8002ECD4(u16 index, u16 arg1, u8 arg2) {
+
+    u8 result = 0;
+
+    if (index < MAX_RENDERED_SPRITES) {
+
+        if ((renderedSprites[index].flags & 1) && (renderedSprites[index].flags & 4)) {
+
+            renderedSprites[index].unk_24 = arg1;
+            renderedSprites[index].unk_26 = arg2;
+
+            if (arg1 == 0xFFFF) {
+                renderedSprites[index].flags &= 0xFDFF;
+            } else {
+                renderedSprites[index].flags |= 0x200;
+                renderedSprites[index].flags &= 0xFFBF;
+            }
+
+            result = 1;
+        }
+    }
+     
+    return result;
+}
+
+//INCLUDE_ASM(const s32, "system/renderedSprites", func_8002ED80);
+
+u8 func_8002ED80(u16 index, s16 arg1) {
+    
+    u8 result = 0;
+
+    if (index < MAX_RENDERED_SPRITES) {
+        if (renderedSprites[index].flags & 1) {
+            result = 1;
+            renderedSprites[index].unk_62 = arg1;
+            renderedSprites[index].flags |= 0x2000;
+        }
+    }
+    
+    return result;
+}
+ 
+//INCLUDE_ASM(const s32, "system/renderedSprites", func_8002EDF0);
+
+u8 func_8002EDF0(u16 index, s16 arg1, s16 arg2, s16 arg3) {
+
+    u8 result = 0;
+
+    if (index < MAX_RENDERED_SPRITES) {
+        if ((renderedSprites[index].flags & 1) && (renderedSprites[index].flags & 4)) {
+            result = 1;
+            renderedSprites[index].unk_18.x = arg1;
+            renderedSprites[index].unk_18.y = arg2;
+            renderedSprites[index].unk_18.z = arg3;
+        }
+    }
+    
+    return result;
+    
+}
+
+//INCLUDE_ASM(const s32, "system/renderedSprites", func_8002EEA4);
+
+u8 func_8002EEA4(u16 arg0) {
+
+    u8 result = 0;
+
+    if (!arg0 && gTileContextFlags & 1 && gTileContextFlags & 2) {
+        D_801FD610 = arg0;
+        result = 1;
+    }
+
+    return result;
+}
 
 INCLUDE_ASM(const s32, "system/renderedSprites", func_8002EEE4);
 
@@ -114,6 +290,7 @@ INCLUDE_ASM(const s32, "system/renderedSprites", func_8002F684);
 //INCLUDE_ASM(const s32, "system/renderedSprites", func_8002F6F0);
 
 void func_8002F6F0(void) {
+
     u16 i;
 
     for (i = 0; i < MAX_RENDERED_SPRITES; i++) {
@@ -347,9 +524,74 @@ Vec3f* func_800315A0(Vec3f* arg0, u16 index) {
 
 INCLUDE_ASM(const s32, "system/renderedSprites", func_8003168C);
 
-INCLUDE_ASM(const s32, "system/renderedSprites", func_80031830);
+//INCLUDE_ASM(const s32, "system/renderedSprites", func_80031830);
 
-INCLUDE_ASM(const s32, "system/renderedSprites", func_80031904);
+u8 func_80031830(u16 index, u32 arg1, u8 arg2) {
+
+    Vec3f vec;
+    
+    f32 temp1;
+    f32 temp2;
+    f32 temp3;
+    f32 temp4;
+    
+    u8 result = 0;
+    u8 check1;
+    u8 check2;
+    
+    temp3 = renderedSprites[index].startingCoordinates.y + 24.0f;
+    temp4 = renderedSprites[index].startingCoordinates.y - 24.0f;
+    
+    func_80031904(&vec, index, arg1, arg2);
+    temp2 = func_80035150(0, vec.x, vec.z);
+
+    check2 = 1;
+    
+    if (!(temp3 <= temp2)) {
+        check2 = 0;
+    }
+
+    check1 = 1;
+    
+    if (!(temp2 <= temp4)) {
+        check1 = 0;
+    }
+
+    if (check1 || check2) {
+        result = 1;
+    }
+    
+    return result;
+    
+}
+
+//INCLUDE_ASM(const s32, "system/renderedSprites", func_80031904);
+
+Vec3f* func_80031904(Vec3f* vec, u16 index, s16 arg2, u8 arg3) {
+
+    Vec3f vec1;
+    Vec3f vec2;
+    Vec3f vec3;
+
+    vec1.x = 0.0f;
+    vec1.y = 0.0f;
+    vec1.z = arg2;
+
+    vec3.x = 0;
+    vec3.y = func_80028820(arg3 & 7);
+    vec3.z = 0;
+
+    func_80027950(vec1, &vec2, vec3);
+
+    vec1.x = renderedSprites[index].startingCoordinates.x + vec2.x;
+    vec1.y = renderedSprites[index].startingCoordinates.y + vec2.y;
+    vec1.z = renderedSprites[index].startingCoordinates.z + vec2.z;
+
+    *vec = vec1;
+    
+    return vec;
+    
+}
 
 INCLUDE_ASM(const s32, "system/renderedSprites", func_80031A10);
 

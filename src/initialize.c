@@ -101,7 +101,7 @@ extern u8 gBabyAge;
 
 extern u8 gAlcoholTolerance;
 
-extern u16 gGold;
+extern u32 gGold;
 extern u8 gItemBeingHeld;
 
 extern u8 gElliGrievingCounter;

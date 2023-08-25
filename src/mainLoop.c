@@ -6,9 +6,9 @@
 // gfx wrapper
 void drawFrame(void);  
 
-// sprites
-void func_800290B8();
+void dmaSprites();
 void resetSpriteCounter();
+
 // no op or shelved code
 u32 func_800293B8();
 u32 func_8002AE58();
@@ -22,7 +22,7 @@ void func_8003A1BC();
 void func_8003C6E4();
 
 // audio
-void func_8003CF38();
+void mainLoopAudioHandler();
 
 // message
 void func_80042634();
@@ -103,7 +103,8 @@ int mainLoop(void) {
 
                         D_80182BA0 = 1;
                         
-                        do {} while (FALSE); 
+                        // need to fix
+                        do {} while (0); 
 
                         // handle specific logic depending on game mode/screen
                         mainLoopCallbacksTable[mainLoopCallbackCurrentIndex](); 
@@ -117,8 +118,8 @@ int mainLoop(void) {
                     // reset tile flags
                     func_80029CC8();
 
-                    // audio/music
-                    func_8003CF38(); 
+                    mainLoopAudioHandler(); 
+                    
                     resetSpriteCounter();
                     // cutscenes 
                     func_80046D78(); 
@@ -133,7 +134,7 @@ int mainLoop(void) {
                     // sprite lighting adjustments
                     func_8002D3D4(); 
                     // load object sprites with nuPiReadRom
-                    func_800290B8(); 
+                    dmaSprites(); 
                     // sprite.c: sprite microcode, texturing
                     func_8002AE58(); 
                     // message.c

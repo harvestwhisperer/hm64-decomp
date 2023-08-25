@@ -5,6 +5,10 @@
 extern u32 dailyEventBits[];
 extern u32 lifeEventBits[];
 extern u32 specialDialogueBits[];
+// mail bits
+extern u32 D_801C3F38[];
+// mailbox bits
+extern u32 D_8016FFEC[];
 
 extern u32 D_80189058;
 
@@ -49,9 +53,9 @@ void func_80064048(void) {
     u8 i;
 
     for (i = 0; i < MAX_CHICKENS; i++) {
-        if ((gChickens[i].upkeep & 1) && (gChickens[i].type == 2) && (gChickens[i].location == COOP)) {
+        if ((gChickens[i].flags & 1) && (gChickens[i].type == 2) && (gChickens[i].location == COOP)) {
             setSpecialDialogueBit(0x86);
-            gChickens[i].upkeep |= 0x10;
+            gChickens[i].flags |= 0x10;
         }
     }
 }
@@ -127,19 +131,50 @@ u32 checkSpecialDialogueBit(u16 bitIndex) {
     return specialDialogueBits[temp >> 5] & (1 << (temp & 0x1F));
 }
 
-INCLUDE_ASM(const s32, "gameStatus", func_8006523C);
+//INCLUDE_ASM(const s32, "gameStatus", func_8006523C);
 
-INCLUDE_ASM(const s32, "gameStatus", toggleReadLetterBit);
+void func_8006523C(u16 bitIndex) {
+    u32 temp = bitIndex;
+    return D_801C3F38[temp >> 5] |= (1 << (temp & 0x1F));
+}
 
-INCLUDE_ASM(const s32, "gameStatus", checkMailRead);
+//INCLUDE_ASM(const s32, "gameStatus", toggleReadLetterBit);
 
-INCLUDE_ASM(const s32, "gameStatus", setMail);
+void toggleReadLetterBit(u16 bitIndex) {
+    u32 temp = bitIndex;
+    return D_801C3F38[temp >> 5] &= ~(1 << (temp & 0x1F));
+}
 
-INCLUDE_ASM(const s32, "gameStatus", func_80065308);
+//INCLUDE_ASM(const s32, "gameStatus", checkMailRead);
 
-INCLUDE_ASM(const s32, "gameStatus", func_80065340);
+u32 checkMailRead(u16 bitIndex) {
+    u32 temp = bitIndex;
+    return D_801C3F38[temp >> 5] & (1 << (temp & 0x1F));
+}
+
+//NCLUDE_ASM(const s32, "gameStatus", setMail);
+
+void setMail(u16 bitIndex) {
+    u32 temp = bitIndex;
+    return D_8016FFEC[temp >> 5] |= (1 << (temp & 0x1F));
+}
+
+//INCLUDE_ASM(const s32, "gameStatus", func_80065308);
+
+void func_80065308(u16 bitIndex) {
+    u32 temp = bitIndex;
+    return D_8016FFEC[temp >> 5] &= ~(1 << (temp & 0x1F));
+}
+
+//INCLUDE_ASM(const s32, "gameStatus", func_80065340);
+
+u32 func_80065340(u16 bitIndex) {
+    u32 temp = bitIndex;
+    return D_8016FFEC[temp >> 5] & (1 << (temp & 0x1F));
+}
 
 INCLUDE_ASM(const s32, "gameStatus", func_8006536C);
+
 
 // jtbl_8011F398
 //INCLUDE_ASM(const s32, "gameStatus", setAlbumPicture);

@@ -24,20 +24,4 @@ typedef struct {
 	/* 0x26 */ u16 flags;
 } npcInfo;
 
-typedef struct {
-	void *vaddr; /* 0x00 */
-	void *romTextureAddress; /* 0x04 */
-	void *romPaletteAddressStart; /* 0x08 */
-	void *romPaletteAddressEnd; /* 0x0C */
-	void *romIndexAddressStart; /* 0x10 */
-	void *romIndexAddressEnd; /* 0x14 */
-	void *romUnknown; /* 0x18 */
-	u16 unk_1C; /* 0x1C */
-	u16 unk_1E; /* 0x1E */
-	u8 collisionBufferX; /* 0x20 */
-	u8 collisionBufferY; /* 0x21 */
-	u16 flag; /* 0x22 */
-	u16 flags; /* 0x24 */
-} npcSpriteInfo;
-
 #endif

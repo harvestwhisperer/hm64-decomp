@@ -30,31 +30,31 @@ typedef struct {
     u32 unk_C;
     u32 unk_10;
     u8 unk_14;
-    u8 toolSlots[8];
-    u8 currentTool;
-    u8 bottleContents;
-    u32 unk_20;
+    u8 toolSlots[8]; // 0x15
+    u8 currentTool; // 0x1D
+    u8 bottleContents; // 0x1E
+    u8 unk_1F[5];
     u8 belongingsSlots[8];
     u8 unk_2C;
     u8 unk_2D;
     u8 keyItemSlots[24];
     u8 unk_46;
     u8 unk_47;
-	Vec3f startingCoordinates; // 48
-	Vec3f currentCoordinates; // 54
-	u32 unk_60; // 60
-	u16 action1; // 64
-	u16 action2; // 66
-	u16 action3; // 68
-	u8 action4; // 6A
-	u8 unk_6B; // 6B
-	u8 unk_6C; // 6C
-	u8 direction; // 6D
-	u8 unk_6E; // 6E
-	u8 unk_6F; // 6F
-	u8 unk_70; // 70
+	Vec3f startingCoordinates; // 0x48
+	Vec3f currentCoordinates; // 0x54
+	u32 unk_60; // 0x60
+	u16 action1; // 0x64
+	u16 action2; // 0x66
+	u16 action3; // 0x68
+	u8 action4; // 0x6A
+	u8 unk_6B; // 0x6B
+	u8 unk_6C; // 0x6C
+	u8 direction; // 0x6D
+	u8 unk_6E; // 0x6E
+	u8 unk_6F; // 0x6F
+	u8 unk_70;
 	u8 fatigue[5]; // 71
-    u16 flags;
+    u16 flags; // 0x78
 } Player;
 
 typedef struct {

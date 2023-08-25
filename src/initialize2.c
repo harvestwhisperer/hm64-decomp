@@ -120,7 +120,7 @@ extern u8 D_8018908C;
 extern s32 D_801891D4;
 extern s16 D_8018A062;
 extern u8 D_80205635;
-extern u8 D_802231C0;
+extern u8 gEntranceIndex;
 extern s16 D_80237A20;
 
 // calendar
@@ -200,8 +200,8 @@ void func_80055F08(s16 cutsceneIndex, u16 exitIndex, u8 arg2) {
     // trigger cutscene and load cutscene assets
     loadCutscene(0);
     
-    func_8006E840(D_802231C0);
-    func_800657D0(D_802231C0, 0);
+    func_8006E840(gEntranceIndex);
+    setupPlayerSprite(gEntranceIndex, 0);
 
     func_8006A2E8();
 
@@ -239,9 +239,9 @@ void func_80056030(u8 arg0) {
     
     setDailyEventBit(0x2F);
     
-    temp_s0 = func_80074C38(D_802231C0);
+    temp_s0 = func_80074C38(gEntranceIndex);
     
-    func_8006E840(D_802231C0);
+    func_8006E840(gEntranceIndex);
     
     var_a0 = 0;
 
@@ -325,7 +325,7 @@ block_end:
     toggleDailyEventBit(0x53);
     toggleDailyEventBit(0x54);
     
-    func_800657D0(D_802231C0, arg0);
+    func_800657D0(gEntranceIndex, arg0);
     func_80065AA0();
     func_800D5290();
     

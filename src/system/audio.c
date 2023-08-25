@@ -51,9 +51,9 @@ void initializeAudio(musConfig *config) {
     
 }
 
-//INCLUDE_ASM(const s32, "system/audio", func_8003CF38);
+//INCLUDE_ASM(const s32, "system/audio", mainLoopAudioHandler);
 
-void func_8003CF38(void) {
+void mainLoopAudioHandler(void) {
 
     u16 i;
     u16 j;

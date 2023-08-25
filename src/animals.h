@@ -20,7 +20,7 @@ typedef struct {
 	u8 condition;
 	u8 unk_1E;
 	u8 starvedCounter;
-	u16 upkeep;
+	u16 flags;
 } Chicken;
 
 typedef struct {
@@ -49,7 +49,7 @@ typedef struct {
 	u8 birthdaySeason;
 	u8 birthdayDayOfMonth;
 	u8 goldenMilk;
-	u16 upkeep;
+	u16 flags;
 } FarmAnimal;
 
 typedef struct {

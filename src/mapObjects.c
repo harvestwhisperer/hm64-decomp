@@ -16,8 +16,10 @@ extern u8 D_801C3F35;
 extern u8 D_801FD624;
 
 
+// jtbl_80122858
 INCLUDE_ASM(const s32, "mapObjects", func_800D9600);
 
+// jtbl_801229B8
 INCLUDE_ASM(const s32, "mapObjects", func_800D9AC8);
 
 INCLUDE_ASM(const s32, "mapObjects", func_800D9BFC);
@@ -39,8 +41,10 @@ u8 func_800DA978(u8 index) {
     return 0;
 }
 
+// jtbl_80122AD0
 INCLUDE_ASM(const s32, "mapObjects", func_800DA9A8);
 
+// jtbl_80122C30
 INCLUDE_ASM(const s32, "mapObjects", func_800DAA90);
 
 #ifdef PERMUTER

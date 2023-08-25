@@ -12,7 +12,7 @@ void controllerInit();
 void graphicsInit();  
 
 void func_80025F04();           
-void func_80029000();                                   
+void resetSpriteAddressesFlags();                                   
 void func_80029170();                                   
 void func_80029B30();                                   
 void func_8002AFE0();                                   
@@ -106,7 +106,7 @@ void initializeAll(void) {
     controllerInit();
     graphicsInit();
 
-    func_80029000();
+    resetSpriteAddressesFlags();
     func_80029170();
     func_80029B30();
     func_8002AFE0();

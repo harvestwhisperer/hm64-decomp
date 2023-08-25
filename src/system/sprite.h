@@ -8,6 +8,9 @@
 #define MAX_RENDERED_SPRITES 49
 #define MAX_ACTIVE_SPRITES 192
 
+#define NEED_DMA 1
+#define FINISHED_DMA 0xFFFE
+
 typedef struct {	
 	void *vaddrStart;
 	void *vaddrCurrent;
@@ -45,6 +48,22 @@ typedef struct {
 } SpriteInfo;
 
 typedef struct {
+	void *vaddr; /* 0x00 */
+	void *romTextureStart; /* 0x04 */
+	void *romTextureEnd; /* 0x08 */
+	void *romPaletteStart; /* 0x0C */
+	void *romPaletteEnd; /* 0x10 */
+	void *romIndexStart; /* 0x14 */
+	void *romIndexEnd; /* 0x18 */
+	u16 unk_1C; /* 0x1C */
+	u16 unk_1E; /* 0x1E */
+	u8 collisionBufferX; /* 0x20 */
+	u8 collisionBufferY; /* 0x21 */
+	u8 flag; /* 0x22 */
+	u16 flags; /* 0x24 */
+} CharacterSprite;
+
+typedef struct {
 	void *ptr_00; // 00
 	void *ptr_04; // 04
 	void *ptr_08;  // 08
@@ -53,7 +72,7 @@ typedef struct {
 	void *ptr_14; // 14
 	Vec3f unk_18; // 18-24
 	u16 unk_24; // 24
-	u16 unk_26; // 26
+	u8 unk_26; // 26
 	Vec3f startingCoordinates; // 28-34
 	Vec3f currentCoordinates; // 34-40
 	Vec3f unk_3C; // 40-4C
@@ -91,5 +110,28 @@ typedef struct {
 	u16 unk_54;
 	u16 flags; //56
 } Bitmap;
+
+typedef struct {
+	void *romTextureStart;
+	void *romTextureEnd;
+	void *romPaletteStart;
+	void *romPaletteEnd;
+	void *vaddr1;
+	void *vaddr2;
+	void *vaddr3;
+	void *vaddr4;
+	u16 unk_20;
+	u16 unk_22;
+} Shadow;
+
+typedef struct {
+	Vec3f unk_0;
+	Vec3f unk_C;
+	Vec3f angles;
+    Vec4f unk_C8;
+	Vec4f groundRgba;
+	Vec4f defaultRgba;
+	Vec4f unk_54;
+} UnknownStruct5;
 
 #endif

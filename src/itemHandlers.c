@@ -69,7 +69,7 @@ void func_80034DC8(u16, u8, u16);
 u8 func_8003C1A4(u16);
 u32 func_8004D380(u8, u32);    
 void func_8005AE8C(u8, u8, u16, u8, u8);
-void func_80065F94(f32[], f32, u16);
+Vec3f* func_80065F94(Vec3f*, f32, u16);
 void func_80073244(u8); 
 void func_80085D48(u8, u32);   
 void func_8009A398(void);                                  
@@ -131,10 +131,33 @@ u32 func_800302E4(u16, u8);
 u8 func_800309B4(u16, f32, f32);                       
 
 
-INCLUDE_ASM(const s32, "itemHandlers", func_800CF850);
+//INCLUDE_ASM(const s32, "itemHandlers", func_800CF850);
+
+void func_800CF850(void) {
+    D_80189828.unk_0 = 0;
+    D_80189828.unk_2 = 0;
+    D_80189828.unk_E = 2;
+}
 
 // jtbl_801222B0
-INCLUDE_ASM(const s32, "itemHandlers", func_800CF874);
+//INCLUDE_ASM(const s32, "itemHandlers", func_800CF874);
+
+u8 func_800CF874(u8 arg0) {
+    switch (arg0) {
+        case 1:
+            return gPlayer.unk_1F[0];
+        case 2:
+            return gPlayer.unk_1F[1];
+        case 3:
+            return gPlayer.unk_1F[2];
+        case 4:
+            return gPlayer.unk_1F[3];
+        case 5:
+            return gPlayer.unk_1F[4];
+        default:
+            return 0;
+    }
+}
 
 INCLUDE_ASM(const s32, "itemHandlers", func_800CF8F8);
 
@@ -316,39 +339,31 @@ void func_800D3714(void) {
 // turnip seeds
 void func_800D373C(void) {
 
-    int temp1;
-    int temp3;
+    u8 temp1;
     u8 temp2;
-    u8 temp5;
-    u8 temp4;
-    f32 float_array[3];
+    u8 temp3;
 
-    temp1 = renderedSprites[0].direction + func_8003C1A4(0);
-    temp3 = temp1;
+    Vec3f vec;
+
+    temp1 = (renderedSprites[PLAYER].direction + func_8003C1A4(0)) % 8;
     
-    if (temp3 < 0) {
-        temp3 = temp1 + 7;
-    }
-    
-    temp5 = temp1 - (temp3 & 0xF8);
-    
-    if (temp5 < 5) {
+    if (temp1 < 5) {
         temp2 = D_80117180[D_80189828.unk_2];
     }
     else {
         temp2 = D_8011718C[D_80189828.unk_2];
     }
     
-    func_80065F94(&float_array, 0.0, temp2);
+    func_80065F94(&vec, 0.0, temp2);
  
-    if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && (float_array[1] != 65535)) {
+    if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && vec.y != 65535) {
         if (gSeason == SPRING || gBaseMapIndex == GREENHOUSE) {
-          temp4 = 8;
+          temp3 = 8;
         } else {
-          temp4 = 0xD7;
+          temp3 = 0xD7;
         }
         
-        func_800DAC70(gBaseMapIndex, temp4, ((u8)float_array[0] - D_801FD624), ((u8)float_array[2]- D_801C3F35));
+        func_800DAC70(gBaseMapIndex, temp3, (u8)vec.x - D_801FD624, (u8)vec.z - D_801C3F35);
     }
     
     if (!D_80189828.unk_2) {
@@ -366,39 +381,31 @@ void func_800D373C(void) {
 
 void func_800D3958(void) {
 
-    int temp1;
-    int temp3;
+    u8 temp1;
     u8 temp2;
-    u8 temp5;
-    u8 temp4;
-    f32 floatArray[3];
+    u8 temp3;
 
-    temp1 = renderedSprites[0].direction + func_8003C1A4(0);
-    temp3 = temp1;
+    Vec3f vec;
+
+    temp1 = (renderedSprites[PLAYER].direction + func_8003C1A4(0)) % 8;
     
-    if (temp3 < 0) {
-        temp3 = temp1 + 7;
-    }
-    
-    temp5 = temp1 - (temp3 & 0xF8);
-    
-    if (temp5 < 5) {
+    if (temp1 < 5) {
         temp2 = D_80117180[D_80189828.unk_2];
     }
     else {
         temp2 = D_8011718C[D_80189828.unk_2];
     }
-    
-    func_80065F94(floatArray, 0.0, temp2);
+
+    func_80065F94(&vec, 0.0, temp2);
  
-    if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && (floatArray[1] != 65535)) {
+    if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && vec.y != 65535) {
         if (gSeason == SPRING || gBaseMapIndex == GREENHOUSE) {
-          temp4 = 0x13;
+          temp3 = 0x13;
         } else {
-          temp4 = 0xD7;
+          temp3 = 0xD7;
         }
         
-        func_800DAC70(gBaseMapIndex, temp4, ((u8)floatArray[0] - D_801FD624), ((u8)floatArray[2]- D_801C3F35));
+        func_800DAC70(gBaseMapIndex, temp3, (u8)vec.x - D_801FD624, (u8)vec.z - D_801C3F35);
     }
     
     if (!D_80189828.unk_2) {
@@ -417,39 +424,31 @@ void func_800D3958(void) {
 // cabbage seeds
 void func_800D3B74(void) {
  
-    int temp1;
-    int temp3;
+    u8 temp1;
     u8 temp2;
-    u8 temp5;
-    u8 temp4;
-    f32 floatArray[3];
+    u8 temp3;
 
-    temp1 = renderedSprites[0].direction + func_8003C1A4(0);
-    temp3 = temp1;
+    Vec3f vec;
+
+    temp1 = (renderedSprites[PLAYER].direction + func_8003C1A4(0)) % 8;
     
-    if (temp3 < 0) {
-        temp3 = temp1 + 7;
-    }
-    
-    temp5 = temp1 - (temp3 & 0xF8);
-    
-    if (temp5 < 5) {
+    if (temp1 < 5) {
         temp2 = D_80117180[D_80189828.unk_2];
     }
     else {
         temp2 = D_8011718C[D_80189828.unk_2];
     }
     
-    func_80065F94(floatArray, 0.0, temp2);
+    func_80065F94(&vec, 0.0, temp2);
  
-    if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && (floatArray[1] != 65535)) {
+    if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && vec.y != 65535) {
         if (gSeason == SPRING || gBaseMapIndex == GREENHOUSE) {
-          temp4 = 0x33;
+          temp3 = 0x33;
         } else {
-          temp4 = 0xD7;
+          temp3 = 0xD7;
         }
         
-        func_800DAC70(gBaseMapIndex, temp4, ((u8)floatArray[0] - D_801FD624), ((u8)floatArray[2]- D_801C3F35));
+        func_800DAC70(gBaseMapIndex, temp3, (u8)vec.x - D_801FD624, (u8)vec.z - D_801C3F35);
     }
     
     if (!D_80189828.unk_2) {
@@ -467,39 +466,32 @@ void func_800D3B74(void) {
 
 // tomato seeds
 void func_800D3D90(void) {
-    int temp1;
-    int temp3;
-    u8 temp2;
-    u8 temp5;
-    u8 temp4;
-    f32 floatArray[3];
 
-    temp1 = renderedSprites[0].direction + func_8003C1A4(0);
-    temp3 = temp1;
+    u8 temp1;
+    u8 temp2;
+    u8 temp3;
+
+    Vec3f vec;
+
+    temp1 = (renderedSprites[PLAYER].direction + func_8003C1A4(0)) % 8;
     
-    if (temp3 < 0) {
-        temp3 = temp1 + 7;
-    }
-    
-    temp5 = temp1 - (temp3 & 0xF8);
-    
-    if (temp5 < 5) {
+    if (temp1 < 5) {
         temp2 = D_80117180[D_80189828.unk_2];
     }
     else {
         temp2 = D_8011718C[D_80189828.unk_2];
     }
     
-    func_80065F94(floatArray, 0.0, temp2);
+    func_80065F94(&vec, 0.0, temp2);
  
-    if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && (floatArray[1] != 65535)) {
+    if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && vec.y != 65535) {
         if (gSeason == SUMMER || gBaseMapIndex == GREENHOUSE) {
-          temp4 = 0x53;
+          temp3 = 0x53;
         } else {
-          temp4 = 0xD7;
+          temp3 = 0xD7;
         }
         
-        func_800DAC70(gBaseMapIndex, temp4, ((u8)floatArray[0] - D_801FD624), ((u8)floatArray[2]- D_801C3F35));
+        func_800DAC70(gBaseMapIndex, temp3, (u8)vec.x - D_801FD624, (u8)vec.z - D_801C3F35);
     }
     
     if (!D_80189828.unk_2) {
@@ -518,39 +510,31 @@ void func_800D3D90(void) {
 // corn seeds
 void func_800D3FAC(void) {
 
-    int temp1;
-    int temp3;
+    u8 temp1;
     u8 temp2;
-    u8 temp5;
-    u8 temp4;
-    f32 floatArray[3];
+    u8 temp3;
 
-    temp1 = renderedSprites[0].direction + func_8003C1A4(0);
-    temp3 = temp1;
+    Vec3f vec;
+
+    temp1 = (renderedSprites[PLAYER].direction + func_8003C1A4(0)) % 8;
     
-    if (temp3 < 0) {
-        temp3 = temp1 + 7;
-    }
-    
-    temp5 = temp1 - (temp3 & 0xF8);
-    
-    if (temp5 < 5) {
+    if (temp1 < 5) {
         temp2 = D_80117180[D_80189828.unk_2];
     }
     else {
         temp2 = D_8011718C[D_80189828.unk_2];
     }
     
-    func_80065F94(floatArray, 0.0, temp2);
+    func_80065F94(&vec, 0.0, temp2);
  
-    if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && (floatArray[1] != 65535)) {
+    if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && vec.y != 65535) {
         if (gSeason == SUMMER || gBaseMapIndex == GREENHOUSE) {
-          temp4 = 0x68;
+          temp3 = 0x68;
         } else {
-          temp4 = 0xD7;
+          temp3 = 0xD7;
         }
         
-        func_800DAC70(gBaseMapIndex, temp4, ((u8)floatArray[0] - D_801FD624), ((u8)floatArray[2]- D_801C3F35));
+        func_800DAC70(gBaseMapIndex, temp3, (u8)vec.x - D_801FD624, (u8)vec.z - D_801C3F35);
     }
     
     if (!D_80189828.unk_2) {
@@ -569,39 +553,31 @@ void func_800D3FAC(void) {
 // eggplant seeds
 void func_800D41C8(void) {
 
-    int temp1;
-    int temp3;
+    u8 temp1;
     u8 temp2;
-    u8 temp5;
-    u8 temp4;
-    f32 floatArray[3];
+    u8 temp3;
 
-    temp1 = renderedSprites[0].direction + func_8003C1A4(0);
-    temp3 = temp1;
+    Vec3f vec;
+
+    temp1 = (renderedSprites[PLAYER].direction + func_8003C1A4(0)) % 8;
     
-    if (temp3 < 0) {
-        temp3 = temp1 + 7;
-    }
-    
-    temp5 = temp1 - (temp3 & 0xF8);
-    
-    if (temp5 < 5) {
+    if (temp1 < 5) {
         temp2 = D_80117180[D_80189828.unk_2];
     }
     else {
         temp2 = D_8011718C[D_80189828.unk_2];
     }
-    
-    func_80065F94(floatArray, 0.0, temp2);
+
+    func_80065F94(&vec, 0.0, temp2);
  
-    if (func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20 && floatArray[1] != 65535) {
+    if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && vec.y != 65535) {
         if (gSeason == FALL || gBaseMapIndex == GREENHOUSE) {
-          temp4 = 0x22;
+          temp3 = 0x22;
         } else {
-          temp4 = 0xD7;
+          temp3 = 0xD7;
         }
         
-        func_800DAC70(gBaseMapIndex, temp4, ((u8)floatArray[0] - D_801FD624), ((u8)floatArray[2]- D_801C3F35));
+        func_800DAC70(gBaseMapIndex, temp3, (u8)vec.x - D_801FD624, (u8)vec.z - D_801C3F35);
     }
     
     if (!D_80189828.unk_2) {
@@ -620,36 +596,26 @@ void func_800D41C8(void) {
 // strawberry seeds
 void func_800D43E4(void) {
     
-    int temp1;
-    int temp3;
-
+    u8 temp1;
     u8 temp2;
-    u8 temp5;
-    u8 temp4;
+    u8 temp3;
 
-    f32 floatArray[3];
+    Vec3f vec;
 
-    temp1 = renderedSprites[0].direction + func_8003C1A4(0);
-    temp3 = temp1;
+    temp1 = (renderedSprites[PLAYER].direction + func_8003C1A4(0)) % 8;
     
-    if (temp3 < 0) {
-        temp3 = temp1 + 7;
-    }
-    
-    temp5 = temp1 - (temp3 & 0xF8);
-    
-    if (temp5 < 5) {
+    if (temp1 < 5) {
         temp2 = D_80117180[D_80189828.unk_2];
     }
     else {
         temp2 = D_8011718C[D_80189828.unk_2];
     }
 
-    func_80065F94(floatArray, 0.0, temp2);
+    func_80065F94(&vec, 0.0, temp2);
 
-    if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && (floatArray[1] != 65535)) {
-        temp4 =  ((-(gBaseMapIndex != 0x56) & ~0x28) | 0x44);
-        func_800DAC70(gBaseMapIndex, temp4, ((u8)floatArray[0] - D_801FD624), ((u8)floatArray[2]- D_801C3F35));
+    if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && vec.y != 65535) {
+        temp3 = ((-(gBaseMapIndex != 0x56) & ~0x28) | 0x44);
+        func_800DAC70(gBaseMapIndex, temp3, (u8)vec.x - D_801FD624, (u8)vec.z - D_801C3F35);
     }
 
     if (!D_80189828.unk_2) {
@@ -668,42 +634,32 @@ void func_800D43E4(void) {
 // moon drop seeds
 void func_800D45F4(void) {
 
-    int temp1;
-    int temp3;
-
+    u8 temp1;
     u8 temp2;
-    u8 temp5;
-    u8 temp4;
+    u8 temp3;
 
-    f32 floatArray[3];
+    Vec3f vec;
 
-    temp1 = renderedSprites[0].direction + func_8003C1A4(0);
-    temp3 = temp1;
+    temp1 = (renderedSprites[PLAYER].direction + func_8003C1A4(0)) % 8;
     
-    if (temp3 < 0) {
-        temp3 = temp1 + 7;
-    }
-    
-    temp5 = temp1 - (temp3 & 0xF8);
-    
-    if (temp5 < 5) {
+    if (temp1 < 5) {
         temp2 = D_80117180[D_80189828.unk_2];
     }
     else {
         temp2 = D_8011718C[D_80189828.unk_2];
     }
     
-    func_80065F94(floatArray, 0.0, temp2);
+    func_80065F94(&vec, 0.0, temp2);
  
-    if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && (floatArray[1] != 65535)) {
+    if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && vec.y != 65535) {
         
         if ((gSeason - 1 < 2U) || gBaseMapIndex == GREENHOUSE) {
-            temp4 = 0x90; 
+            temp3 = 0x90; 
         } else {
-            temp4 = 0xD7;
+            temp3 = 0xD7;
         }
 
-        func_800DAC70(gBaseMapIndex, temp4, ((u8)floatArray[0] - D_801FD624), ((u8)floatArray[2]- D_801C3F35));
+        func_800DAC70(gBaseMapIndex, temp3, (u8)vec.x - D_801FD624, (u8)vec.z - D_801C3F35);
     }
     
     if (!D_80189828.unk_2) {
@@ -721,42 +677,32 @@ void func_800D45F4(void) {
 
 void func_800D4814(void) {
 
-    int temp1;
-    int temp3;
-
+    u8 temp1;
     u8 temp2;
-    u8 temp5;
-    u8 temp4;
+    u8 temp3;
 
-    f32 floatArray[3];
+    Vec3f vec;
 
-    temp1 = renderedSprites[0].direction + func_8003C1A4(0);
-    temp3 = temp1;
+    temp1 = (renderedSprites[PLAYER].direction + func_8003C1A4(0)) % 8;
     
-    if (temp3 < 0) {
-        temp3 = temp1 + 7;
-    }
-    
-    temp5 = temp1 - (temp3 & 0xF8);
-    
-    if (temp5 < 5) {
+    if (temp1 < 5) {
         temp2 = D_80117180[D_80189828.unk_2];
     }
     else {
         temp2 = D_8011718C[D_80189828.unk_2];
     }
     
-    func_80065F94(floatArray, 0.0, temp2);
+    func_80065F94(&vec, 0.0, temp2);
  
-    if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && (floatArray[1] != 65535)) {
+    if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && vec.y != 65535) {
         
         if ((gSeason - 1 < 2U) || gBaseMapIndex == GREENHOUSE) {
-            temp4 = 0x9F; 
+            temp3 = 0x9F; 
         } else {
-            temp4 = 0xD7;
+            temp3 = 0xD7;
         }
 
-        func_800DAC70(gBaseMapIndex, temp4, ((u8)floatArray[0] - D_801FD624), ((u8)floatArray[2]- D_801C3F35));
+        func_800DAC70(gBaseMapIndex, temp3, (u8)vec.x - D_801FD624, (u8)vec.z - D_801C3F35);
     }
     
     if (!D_80189828.unk_2) {
@@ -774,35 +720,25 @@ void func_800D4814(void) {
 
 void func_800D4A34(void) {
 
-    int temp1;
-    int temp3;
-
+    u8 temp1;
     u8 temp2;
-    u8 temp5;
-    u8 temp4;
+    u8 temp3;
 
-    f32 floatArray[3];
+    Vec3f vec;
 
-    temp1 = renderedSprites[0].direction + func_8003C1A4(0);
-    temp3 = temp1;
+    temp1 = (renderedSprites[PLAYER].direction + func_8003C1A4(0)) % 8;
     
-    if (temp3 < 0) {
-        temp3 = temp1 + 7;
-    }
-    
-    temp5 = temp1 - (temp3 & 0xF8);
-    
-    if (temp5 < 5) {
+    if (temp1 < 5) {
         temp2 = D_80117180[D_80189828.unk_2];
     }
     else {
         temp2 = D_8011718C[D_80189828.unk_2];
     }
     
-    func_80065F94(floatArray, 0.0, temp2);
+    func_80065F94(&vec, 0.0, temp2);
  
-    if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && (floatArray[1] != 65535)) {
-        func_800DAC70(gBaseMapIndex, 0xB2, ((u8)floatArray[0] - D_801FD624), ((u8)floatArray[2]- D_801C3F35));
+    if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && vec.y != 65535) {
+        func_800DAC70(gBaseMapIndex, 0xB2, (u8)vec.x - D_801FD624, (u8)vec.z - D_801C3F35);
     }
     
     if (!D_80189828.unk_2) {
@@ -827,7 +763,7 @@ void func_800D4C28(void) {
   
     if (chicken != 0xFF) {
         func_80073244(chicken - 0x13);
-        gChickens[chicken - 0x13].upkeep |= 0x10;
+        gChickens[chicken - 0x13].flags |= 0x10;
     }
     
     D_80189828.unk_E = 0;  
@@ -882,34 +818,26 @@ void func_800D4D1C(void) {
 // grass seeds
 void func_800D4D68(void) {
 
-    int temp1;
-    int temp3;
+    u8 temp1;
     u8 temp2;
-    u8 temp5;
-    u8 temp4;
-    f32 floatArray[3];
+    u8 temp3;
 
-    temp1 = renderedSprites[0].direction + func_8003C1A4(0);
-    temp3 = temp1;
+    Vec3f vec;
+
+    temp1 = (renderedSprites[PLAYER].direction + func_8003C1A4(0)) % 8;
     
-    if (temp3 < 0) {
-        temp3 = temp1 + 7;
-    }
-    
-    temp5 = temp1 - (temp3 & 0xF8);
-    
-    if (temp5 < 5) {
+    if (temp1 < 5) {
         temp2 = D_80117180[D_80189828.unk_2];
     }
     else {
         temp2 = D_8011718C[D_80189828.unk_2];
     }
     
-    func_80065F94(floatArray, 0.0, temp2);
+    func_80065F94(&vec, 0.0, temp2);
  
-    if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && (floatArray[1] != 65535)) {
+    if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && vec.y != 65535) {
         if (gBaseMapIndex == FARM) {
-            func_800DAC70(FARM, 0x85, ((u8)floatArray[0] - D_801FD624), ((u8)floatArray[2]- D_801C3F35));    
+            func_800DAC70(FARM, 0x85, (u8)vec.x - D_801FD624, (u8)vec.z - D_801C3F35);    
         }
     }
     
@@ -1319,6 +1247,7 @@ void func_800D6868(u8 index) {
 
 void func_800D6B28(void) {
     func_80034DC8(0, 0, 0x13);
+    // put food in dog bowl
     setDailyEventBit(0x43);
 }
 
