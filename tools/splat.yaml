@@ -78,22 +78,15 @@ segments:
       - [ 0x34CE0, c, load]
       - [ 0x35190, c, game]
       - [ 0x3EEF0, c, gameStatus]
-      # possible splits
-      # - [ 0x400F0, c, ]
-      # - [ 0x404E0, c, ]
       - [ 0x40BD0, c, player]
       - [ 0x49C20, c, level]
       - [ 0x506C0, c, npc]
-      # possible split, but might not be separate file
-      # - [ 0x5CF00, asm, npcAnimation]
       - [ 0x61370, c, animals]
       - [ 0x77390, c, setCutscenes]
       - [ 0x87C20, c, evaluation]      
       - [ 0x87EB0, c, gameAudio]
       - [ 0x88170, c, levelInteractions]
       - [ 0x8E0E0, c, overlayScreens]
-      # possible split, but might not be separate file
-      # - [ 0x92470, c, evaluationScreen]
       - [ 0xAAC50, c, itemHandlers]
       - [ 0xB3020, c, updateGame]
       - [ 0xB3940, c, tv]
@@ -187,9 +180,7 @@ segments:
       - [ 0xD98B0, c, lib/os/libultra/gu/mtxutil]
       - [ 0xD9B30, c, lib/os/libultra/gu/ortho]
       - [ 0xD9D90, c, lib/os/libultra/gu/perspective]
-      # fix rodata
-      # - [ 0xD9DB0, c,  ] 
-      - [ 0xDA130, asm, lib/os/libultra/gu/rotate]
+      - [ 0xDA130, c, lib/os/libultra/gu/rotate]
       - [ 0xDA450, c, lib/os/libultra/gu/scale]
       - [ 0xDA530, c, lib/os/libultra/gu/sins]
       - [ 0xDA6D0, c, lib/os/libultra/gu/translate]
@@ -204,12 +195,11 @@ segments:
       - [ 0xDAD60, c, lib/os/libultra/setthreadpri]
       - [ 0xDAE30, c, lib/os/libultra/startthread]
       - [ 0xDAF50, c, lib/os/libultra/stopthread]
-      # fix rodata
+      # rodata issue with exceptasm referencing ____osFaultedThread
       - [ 0xDB010, asm, lib/os/libultra/thread]
       - [ 0xDB050, c, lib/os/libultra/virtualtophysical]
-      # fix rodata
       - [ 0xDB0B0, c, lib/os/libultra/assert]
-      - [ 0xDB0E0, asm, lib/os/libultra/audio/sl]
+      - [ 0xDB0E0, c, lib/os/libultra/audio/sl]
       - [ 0xDB190, c, lib/os/libultra/audio/heapinit]
       - [ 0xDB1D0, c, lib/os/libultra/audio/heapalloc]
       - [ 0xDB220, c, lib/os/libultra/audio/copy]
@@ -303,7 +293,7 @@ segments:
       - [ 0xE49B0, c, lib/os/libultra/io/piacs]
       - [ 0xE4AA0, c, lib/os/libultra/rmon/rmonsio]
       - [ 0xE4C50, c, lib/os/libultra/bcmp]
-      # fix rodata
+      # rodata issue
       - [ 0xE4D60, asm, lib/os/libultra/printf]
       - [ 0xE5790, c, lib/os/libultra/io/contpfs]
       - [ 0xE6220, c, lib/os/libultra/io/contramread]
@@ -331,8 +321,7 @@ segments:
       - [ 0xE9A60, c, lib/os/libultra/rmon/rmonmain]
       - [ 0xE9E00, c, lib/os/libultra/libc/string]
       - [ 0xE9E90, c, lib/os/libultra/libc/litob]
-      # fix rodata
-      - [ 0xEA0E0, asm, lib/os/libultra/libc/ldtob]
+      - [ 0xEA0E0, c, lib/os/libultra/libc/ldtob]
       - [ 0xEAB60, c, lib/os/libultra/io/sprawread]
       - [ 0xEABB0, c, lib/os/libultra/io/sprawwrite]
       - [ 0xEAC00, c, lib/os/libultra/io/getactivequeue]
@@ -346,16 +335,16 @@ segments:
       # end of functions
       - [ 0xEBC20, bin, lib/os/libultra/rspbootTextStart]
       - [ 0xEBCF0, bin, lib/os/libultra/n_aspMainTextStart]
-      - [ 0xEBE10, data]
+      - [ 0xEBE10, data] # unused?
       - [ 0xECAB0, data, lib/os/libultra/audio/sl]
-      - [ 0xECAC0, data]
+      - [ 0xECAC0, data] # unused?
       - [ 0xEDD00, data, viewport]
       - [ 0xEDD10, data, lib/nusys-1/nugfxtaskinit]
       - [ 0xEE110, data, system/map]
       - [ 0xEE7B0, data, system/pauseScreen]
       - [ 0xEE7D0, data, system/cutscene] # cutscene function pointer table
-      - [ 0xEE980, data] # used by setCutscenes and initialize
-      - [ 0xEEB60, data, gameStatus ] # used by gameStatus and initialize
+      - [ 0xEE980, data, setCutscene]
+      - [ 0xEEB60, data, gameStatus]
       - [ 0xEED40, data, mapObjects]
       - [ 0xEEF20, data, game]
       - [ 0xEF050, data, player] # default starting coordinates
@@ -365,17 +354,20 @@ segments:
       - [ 0xEFEF0, data, setCutscenes]
       - [ 0xF16F0, data, gameAudio] # wave table
       - [ 0xF2080, data, overlayScreens]
-      - [ 0xF2580, data] # unused
-      - [ 0xF25A0, data, itemHandlers]
-      - [ 0xF3B00, data] # used by mapObjects
+      - [ 0xF2580, data, itemHandlers]
+      - [ 0xF3B00, data] # mapObjects
       - [ 0xF3F50, data, weather]
       - [ 0xF3F70, data, shop]
-      - [ 0xF4A60, data, title]
-      # should be rodata
-      - [ 0xF4B40, data, packinsoftFarmString]
-      # possibly data from fun_80033058; should be rodata
-      - [ 0xF4B50, data, spriteIndices]
-      - [ 0xF4B80, data] # char map?
+      - [ 0xF4B40, data, loadGameScreen] # packinsoft farm string
+      - [ 0xF4B50, data]
+      - [ 0xF71B0, data, sfx]
+      - [ 0xF7AD0, data, namingScreen]
+      - [ 0xF7BF0, data, lib/nusys-1/nupakmenu/displayterm]
+      - [ 0xF7C20, data, lib/nusys-1/nupakmenuloadfont]
+      - [ 0xF7C50, data, lib/nusys-1/nuaustlinit] # nuausynconfig
+      - [ 0xF7CA0, data, lib/nusys-1/nuaumisc] # nuaumisc
+      - [ 0xF7CB0, data, lib/nusys-1/nuauprenmifuncset] 
+      - [ 0xF7CC0, data, lib/libmus/libsrc/player]
       - [ 0xF7D70, data, lib/libmus/n_sl]
       - [ 0xF7D80, data, lib/libmus/n_drvnew]
       - [ 0xF7F10, data, lib/libmus/n_env]
@@ -387,21 +379,21 @@ segments:
       - [ 0xF8070, data, lib/nusys-1/nucontpakmgr]
       - [ 0xF8080, data, lib/nusys-1/nucontrmbmgr]
       - [ 0xF8090, data, lib/nusys-1/nucontpakjiston64]
-      - [ 0xF80D0, rodata, lib/os/libultra/gu/rotate]
-      - [ 0xF80E0, rodata, lib/os/libultra/thread]
-      - [ 0xF8100, rodata, lib/os/libultra/audio/sl]
+      - [ 0xF80D0, .rodata, lib/os/libultra/gu/rotate]
+      - [ 0xF80E0, rodata]  # lib/os/libultra/thread
+      - [ 0xF8100, .rodata, lib/os/libultra/audio/sl]
       - [ 0xF8110, .rodata, lib/os/libultra/io/aisetnextbuf]
       - [ 0xF8120, .rodata, lib/os/libultra/io/controller]
       - [ 0xF8130, .rodata, lib/kmc/syncPrintf] 
       - [ 0xF8140, .rodata, lib/os/libultra/audio/drvrnew] 
-      - [ 0xF8280, rodata]
+      #- [ 0xF8280, rodata]
       - [ 0xF82D0, .rodata, lib/os/libultra/audio/env]
       - [ 0xF83F0, .rodata, lib/os/libultra/io/cartrominit]
       - [ 0xF8400, .rodata, lib/os/libultra/io/pimgr]
       - [ 0xF8430, .rodata, lib/os/libultra/io/vimgr]
       - [ 0xF8450, rodata] # vimode table
-      - [ 0xF95D0, rodata] 
-      - [ 0xF9600, rodata, lib/os/libultra/exceptasm]
+      - [ 0xF95D0, rodata, lib/os/libultra/exceptasm] 
+      #- [ 0xF9600, rodata, lib/os/libultra/exceptasm]
       - [ 0xF9610, .rodata, lib/os/libultra/initialize]
       - [ 0xF9630, .rodata, lib/os/libultra/seteventmesg]
       - [ 0xF9640, .rodata, lib/os/libultra/kdebugserver]
@@ -418,51 +410,63 @@ segments:
       - [ 0xF9870, .rodata, lib/os/libultra/rmon/rmoncmd] 
       - [ 0xF9950, rodata] # rmonmain
       - [ 0xF9960, rodata] # _litob
-      - [ 0xF9990, rodata] # nuAuStlMgrInit
+      - [ 0xF9990, .rodata, lib/nusys-1/nuaumisc]
+      - [ 0xF9C40, rodata ] # referenced by nu gfx ucode
       - [ 0xFA040, .rodata, system/graphic] # system/graphic
-      - [ 0xFA0C0, rodata] # system/sprite
-      - [ 0xFA100, rodata] # system/sprite
-      - [ 0xFA200, rodata] # unused_doubles
-      - [ 0xFA210, rodata] # system/message
-      - [ 0xFA2E0, rodata] # system/dialogue
+      - [ 0xFA0C0, rodata] # system/sprite3 to 0xFA168 
+      #- [ 0xFA168, rodata, system/map]
+      - [ 0xFA170, rodata] # system/map
+      - [ 0xFA1E0, .rodata, system/tiles]
+      - [ 0xFA200, .rodata, system/audio] 
+      - [ 0xFA210, .rodata, system/message]
+      - [ 0xFA2E0, .rodata, system/dialogue]
       - [ 0xFA350, .rodata, game]
       - [ 0xFA700, .rodata, gameStatus]
       - [ 0xFA7F0, .rodata, player]
-      - [ 0xFAB10, rodata] # level
-      - [ 0xFB410, rodata] # npc
-      - [ 0xFB720, rodata] # animal
-      - [ 0xFC2C0, rodata] # setCutscenes to 0xFC708
-      # - [ 0xFC808, .rodata, levelInteractions]
+      - [ 0xFAB10, .rodata, level] 
+      - [ 0xFB410, .rodata, npc]
+      - [ 0xFB720, .rodata, animals]
+      - [ 0xFC2C0, rodata] # setCutscenes to 0xFC808
+      #- [ 0xFC808, .rodata, levelInteractions]
       - [ 0xFC9F0, .rodata, levelInteractions] 
       - [ 0xFD090, .rodata, overlayScreens]
       - [ 0xFD6B0, .rodata, itemHandlers]
       - [ 0xFDB60, rodata] # tv 
-      # - [ 0xFDC58, .rodata, mapObjects]
-      # - [ 0xFE838, .rodata, weather]
+      #- [ 0xFDC58, .rodata, mapObjects]
+      #- [ 0xFE838, .rodata, weather]
       - [ 0xFE860, rodata] # shop
-      # - [ 0xFEA58, .rodata, title]
-      - [ 0xFEA90, rodata] # loadGameScreen
-      - [ 0xFEAC0, rodata] # evaluation
-      - [ 0xFEBF0, rodata]
+      #- [ 0xFEA58, .rodata, title]
+      - [ 0xFEA90, .rodata, loadGameScreen]
+      - [ 0xFEBF0, .rodata, namingScreen]
       - [ 0xFEC40, rodata] # lib/nusys-1/nupakmenu
-      - [ 0xFED00, rodata]
-      - [ 0xFEE30, rodata]
-      - [ 0xFEEA0, rodata]
-      - [ 0xFEEB0, rodata]
-      - [ 0xFEEF0, rodata]
-      - [ 0xFEF70, rodata]
-      - [ 0xFF030, rodata]
+      - [ 0xFED00, rodata] # lib/libmus/libsrc/player_commands
+      - [ 0xFED40, rodata] # lib/libmus/libsrc/player
+      - [ 0xFEDD0, rodata] # libnaudio/n_synthesizer
+      - [ 0xFEE00, rodata] # n_drvrnew
+      - [ 0xFEE30, rodata] # libnaudio/n_env
+      - [ 0xFEEA0, rodata] # libnaudio/n_resample
+      - [ 0xFEEB0, rodata] # libnaudio/n_reverb
+      - [ 0xFEEF0, rodata] # nucontpakmgr
+      - [ 0xFEF10, rodata] # gu/cosf
+      - [ 0xFEF80, rodata] # gu/lookat
+      - [ 0xFEF90, rodata] # gu/perspective
+      # - [ 0xFEFD8, rodata] # gu/sinf
+      - [ 0xFF030, rodata] # setintmask and exceptasm
       - [ 0xFF0B0, .rodata, lib/os/libultra/assert]
       - [ 0xFF0D0, rodata, lib/unkknown]
-      - [ 0xFF110, rodata]
-      - [ 0xFF280, rodata]
-      - [ 0xFF290, rodata]
-      - [ 0xFF300, rodata]
-      - [ 0xFF310, rodata]
-      - [ 0xFF340, rodata, lib/os/libultra/printf]
-      - [ 0xFF360, rodata]
-      - [ 0xFF4E0, rodata]
-      - [ 0xFF4F0, rodata, lib/os/libultra/libc/ldtob]
+      - [ 0xFF110, rodata] # lib/os/libultra/audio/env
+      - [ 0xFF200, rodata] # lib/os/libultra/audio/reverb
+      - [ 0xFF250, rodata] # lib/os/libultra/audio/synthesizer
+      - [ 0xFF270, rodata] # lob/os/libultra/io/aisetfreq
+      - [ 0xFF280, .rodata, lib/os/libultra/io/viswapcontext]
+      - [ 0xFF290, rodata] # lib/os/libultra/exceptasm
+      - [ 0xFF300, rodata] # used by sin and cos; __libm_qnan_f
+      - [ 0xFF310, rodata, lib/os/libultra/libnaudio/n_resample]
+      - [ 0xFF340, rodata] # lib/os/libultra/printf
+      #- [ 0xFF4B8, .rodata, lib/os/libultra/io/devmgr]
+      #- [ 0xFF4D8, .rodata, lib/os/libultra/rmon/rmonmem]
+      - [ 0xFF4E0, rodata, lib/os/libultra/rmon/rmonmem]
+      - [ 0xFF4F0, .rodata, lib/os/libultra/libc/ldtob]
       - [ 0xFF560, rodata, lib/os/libultra/rmon/rmonbrk]
 
   - name: cutsceneMaps

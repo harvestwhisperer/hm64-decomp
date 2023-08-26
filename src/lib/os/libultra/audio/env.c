@@ -27,7 +27,8 @@ INCLUDE_ASM(const s32, "lib/os/libultra/audio/env", env_text_0888);
 
 INCLUDE_ASM(const s32, "lib/os/libultra/audio/env", _frexpf);
 
-void env_text_0980(void) {}
+void env_text_0980(void) {
+}
 
 INCLUDE_ASM(const s32, "lib/os/libultra/audio/env", _ldexpf);
 
@@ -37,6 +38,7 @@ INCLUDE_ASM(const s32, "lib/os/libultra/audio/env", env_text_0C24);
 
 INCLUDE_ASM(const s32, "lib/os/libultra/audio/env", env_text_0C2C);
 
-void env_text_0CA8(void) {}
+void env_text_0CA8(void) {
+}
 
 INCLUDE_RODATA(const s32, "lib/os/libultra/audio/env", env_data_0000);

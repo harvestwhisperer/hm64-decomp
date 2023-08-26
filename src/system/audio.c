@@ -346,9 +346,19 @@ u32 setSfxVolume(u32 sfxIndex, s32 volume) {
     return result;    
 }
 
-//INCLUDE_ASM(const s32, "system/audio", setSfxFrequency);
+INCLUDE_ASM(const s32, "system/audio", setSfxFrequency);
 
+/*
 u32 setSfxFrequency(u32 sfxIndex, s32 frequency) {
+
+    static const double minSfxFrequency = -6;
+    static const double maxSfxFrequency = 6;
+
+//     dlabel minSfxFrequency
+//  FA200 8011EE00 C018000000000000 .double -6
+
+// dlabel maxSfxFrequency
+//  FA208 8011EE08 4018000000000000 .double 6
 
     u16 i = 0;
     u32 result = 0;
@@ -372,6 +382,7 @@ u32 setSfxFrequency(u32 sfxIndex, s32 frequency) {
     
     return result;
 }
+*/
 
 //INCLUDE_ASM(const s32, "system/audio", setSfxPan);
 

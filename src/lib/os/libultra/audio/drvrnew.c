@@ -30,3 +30,7 @@ INCLUDE_RODATA(const s32, "lib/os/libultra/audio/drvrnew", drvrnew_data_0068);
 INCLUDE_RODATA(const s32, "lib/os/libultra/audio/drvrnew", drvrnew_data_00F0);
 
 INCLUDE_RODATA(const s32, "lib/os/libultra/audio/drvrnew", drvrnew_data_0118);
+
+INCLUDE_RODATA(const s32, "lib/os/libultra/audio/drvrnew", drvrnew_data_0140);
+
+INCLUDE_RODATA(const s32, "lib/os/libultra/audio/drvrnew", drvrnew_data_0168);

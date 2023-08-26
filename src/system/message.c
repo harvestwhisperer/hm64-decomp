@@ -104,6 +104,10 @@ INCLUDE_ASM(const s32, "system/message", func_8004022C);
 
 INCLUDE_ASM(const s32, "system/message", func_80040318);
 
+INCLUDE_RODATA(const s32, "system/message", D_8011EE10);
+
+INCLUDE_RODATA(const s32, "system/message", D_8011EE30);
+
 INCLUDE_ASM(const s32, "system/message", func_800403F0);
 
 INCLUDE_ASM(const s32, "system/message", func_80040628);
@@ -125,5 +129,31 @@ INCLUDE_ASM(const s32, "system/message", func_80041CD8);
 INCLUDE_ASM(const s32, "system/message", func_80042014);
 
 INCLUDE_ASM(const s32, "system/message", func_800423F0);
+
+INCLUDE_RODATA(const s32, "system/message", D_8011EE90);
+
+INCLUDE_RODATA(const s32, "system/message", D_8011EE98);
+
+INCLUDE_RODATA(const s32, "system/message", D_8011EE9C);
+
+INCLUDE_RODATA(const s32, "system/message", D_8011EEA0);
+
+INCLUDE_RODATA(const s32, "system/message", D_8011EEA4);
+
+INCLUDE_RODATA(const s32, "system/message", D_8011EEA8);
+
+INCLUDE_RODATA(const s32, "system/message", D_8011EEAC);
+
+INCLUDE_RODATA(const s32, "system/message", D_8011EEB0);
+
+INCLUDE_RODATA(const s32, "system/message", D_8011EEB4);
+
+INCLUDE_RODATA(const s32, "system/message", D_8011EEB8);
+
+INCLUDE_RODATA(const s32, "system/message", D_8011EEBC);
+
+INCLUDE_RODATA(const s32, "system/message", D_8011EEC0);
+
+INCLUDE_RODATA(const s32, "system/message", D_8011EEC4);
 
 INCLUDE_ASM(const s32, "system/message", func_80042634);

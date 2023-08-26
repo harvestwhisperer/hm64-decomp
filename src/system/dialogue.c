@@ -34,8 +34,6 @@ u8 setGameVariable(u16 index, void *address, u8 numSet, s32 max) {
 
 INCLUDE_ASM(const s32, "system/dialogue", func_80043138);
 
-INCLUDE_ASM(const s32, "system/dialogue", __udiv_w_sdiv);
-
 INCLUDE_ASM(const s32, "system/dialogue", func_80043148);
 
 INCLUDE_ASM(const s32, "system/dialogue", func_8004318C);
