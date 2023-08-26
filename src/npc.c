@@ -135,8 +135,11 @@ u8 func_80075374(u8, u8);
 void setNpcAnimations();                         
 void setNPCSpawningLocations();       
 
- 
+
+
 INCLUDE_ASM(const s32, "npc", func_800752C0);
+
+INCLUDE_RODATA(const s32, "npc", jtbl_80120010);
 
 #ifdef PERMUTER
 u8 func_80075374(u8 arg0, u8 arg2, u8 arg1) {

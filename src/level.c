@@ -19,7 +19,6 @@ extern u8 levelFlags[];
 // map indices for level interactions
 extern u8 D_801147C0[];
 
-//u8 getLevelFlags(u8);
 
 //INCLUDE_ASM(const s32, "level", setExit);
 
@@ -77,6 +76,10 @@ INCLUDE_ASM(const s32, "level", func_80073244);
 
 INCLUDE_ASM(const s32, "level", func_8007341C);
 
+INCLUDE_RODATA(const s32, "level", D_8011FB28);
+
+INCLUDE_RODATA(const s32, "level", D_8011FB70);
+
 INCLUDE_ASM(const s32, "level", func_800735FC);
 
 INCLUDE_ASM(const s32, "level", func_800746B4);
@@ -90,5 +93,6 @@ u8 func_80074C38(u8 mapIndex) {
 // jtbl_8011FEA0
 INCLUDE_ASM(const s32, "level", func_80074C50);
 
-// D_80120008
-// __osRunningThread?
+INCLUDE_RODATA(const s32, "level", D_80120008);
+
+INCLUDE_RODATA(const s32, "level", D_8012000C);

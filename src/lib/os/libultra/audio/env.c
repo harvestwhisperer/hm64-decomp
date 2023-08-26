@@ -40,3 +40,5 @@ INCLUDE_ASM(const s32, "lib/os/libultra/audio/env", env_text_0C2C);
 
 void env_text_0CA8(void) {
 }
+
+INCLUDE_RODATA(const s32, "lib/os/libultra/audio/env", env_data_0000);

@@ -11,7 +11,3 @@ wget -c "https://github.com/decompals/mips-binutils-2.6/releases/latest/download
 sudo chmod -R +x tools/gcc-2.7.2
 
 pip3 install -U -r tools/splat/requirements.txt
-
-# 1.16.4 and 1.16.4 currently break linking
-pip uninstall spimdisasm
-pip install spimdisasm==1.16.3

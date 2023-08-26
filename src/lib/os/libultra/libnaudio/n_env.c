@@ -27,7 +27,8 @@ INCLUDE_ASM(const s32, "lib/os/libultra/libnaudio/n_env", func_800F9B9C);
 
 INCLUDE_ASM(const s32, "lib/os/libultra/libnaudio/n_env", n_env_text_096C);
 
-void n_env_text_0974(void) {}
+void n_env_text_0974(void) {
+}
 
 INCLUDE_ASM(const s32, "lib/os/libultra/libnaudio/n_env", _getVol);
 

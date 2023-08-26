@@ -3,7 +3,7 @@ osRomBase = 0x80000308;
 osResetType = 0x8000030C;
 osAppNMIBuffer = 0x8000031C;
 rmonmisc_text_010C = 0x800262B0;
-__udiv_w_sdiv = 0x80043140;
+
 Fstereo = 0x800F4218;
 player_text_1164 = 0x800F423C;
 MusInitialize = 0x800F4884;
@@ -548,6 +548,7 @@ __osThreadTail = 0x8011CCE0;
 __osRunQueue = 0x8011CCE8;
 __osActiveQueue = 0x8011CCEC;
 __osRunningThread = 0x8011CCF0;
+____osFaultedThread = 0x8011CCF4;
 aisetnextbuf_data_0000 = 0x8011CD10;
 controller_data_0000 = 0x8011CD20;
 syncprintf_data_0000 = 0x8011CD30;
