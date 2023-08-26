@@ -1,5 +1,6 @@
 name: Harvestmoon64 (North America)
 sha1: 90631460f1876a14849df0541d534012b410a34c
+
 options:
   basename: hm64
   target_path: baserom.us.z64
@@ -21,6 +22,8 @@ options:
   migrate_rodata_to_functions: true
   # extensions_path: tools/splat_ext
   libultra_symbols: True
+  gfx_ucode: f3dex2
+
 segments:
   - name: header
     type: header
@@ -45,6 +48,7 @@ segments:
     type: code
     start: 0x1050
     vram: 0x80025C50
+    subalign: 16
     follows_vram: entry
     subsegments:
       - [ 0x1050, c, lib/nusys-1/nuboot]
@@ -232,7 +236,7 @@ segments:
       - [ 0xDC000, c, lib/libc/bzero]
         # contains osSyncPrintf; maybe change file or path
       - [ 0xDC0A0, c, lib/kmc/syncPrintf]
-      - [ 0xDC3F0, c, lib/os/libultra/audio/drvrNew]
+      - [ 0xDC3F0, c, lib/os/libultra/audio/drvrnew]
       - [ 0xDCC20, c, lib/os/libultra/audio/env]
       - [ 0xDD8D0, c, lib/os/libultra/audio/reverb]
       - [ 0xDE470, c, lib/os/libultra/audio/save]
@@ -253,7 +257,7 @@ segments:
       - [ 0xE0690, c, lib/os/libultra/io/pfsselectbank]
       - [ 0xE0700, c, lib/os/libultra/io/pimgr] 
       - [ 0xE09B0, c, lib/os/libultra/io/pirawdma]
-      - [ 0xE0A60, c, lib/os/libultra/io/sirawdma]
+      - [ 0xE0A80, c, lib/os/libultra/io/sirawdma]
       - [ 0xE0B30, c, lib/os/libultra/io/sprawdma]
       - [ 0xE0BC0, c, lib/os/libultra/io/vimgr]
       - [ 0xE0D60, c, lib/os/libultra/io/vi_unknown]
@@ -262,7 +266,7 @@ segments:
       - [ 0xE1380, hasm, lib/os/libultra/exceptasm]
       - [ 0xE2170, c, lib/os/libultra/initialize]
       - [ 0xE2570, hasm, lib/os/libultra/interrupt]
-      - [ 0xE2600, c, lib/os/libultra/seteventmsg]
+      - [ 0xE2600, c, lib/os/libultra/seteventmesg]
       - [ 0xE26B0, hasm, lib/os/libultra/getcause]
       - [ 0xE26C0, hasm, lib/os/libultra/getcount]
       - [ 0xE26D0, hasm, lib/os/libultra/getsr]
@@ -342,8 +346,8 @@ segments:
       # end of functions
       - [ 0xEBC20, bin, lib/os/libultra/rspbootTextStart]
       - [ 0xEBCF0, bin, lib/os/libultra/n_aspMainTextStart]
-      # - [ 0xEBE10, data]
-      # - [ 0xECAB0, .data, lib/os/libultra/audio/sl]
+      - [ 0xEBE10, data]
+      - [ 0xECAB0, data, lib/os/libultra/audio/sl]
       - [ 0xECAC0, data]
       - [ 0xEDD00, data, viewport]
       - [ 0xEDD10, data, lib/nusys-1/nugfxtaskinit]
@@ -386,20 +390,20 @@ segments:
       - [ 0xF80D0, rodata, lib/os/libultra/gu/rotate]
       - [ 0xF80E0, rodata, lib/os/libultra/thread]
       - [ 0xF8100, rodata, lib/os/libultra/audio/sl]
-      - [ 0xF8110, rodata, lib/os/libultra/io/aisetnextbuf]
-      - [ 0xF8120, rodata, lib/os/libultra/io/controller]
-      - [ 0xF8130, rodata, lib/kmc/syncPrintf]
-      - [ 0xF8140, rodata, lib/os/libultra/audio/drvrnew]
+      - [ 0xF8110, .rodata, lib/os/libultra/io/aisetnextbuf]
+      - [ 0xF8120, .rodata, lib/os/libultra/io/controller]
+      - [ 0xF8130, .rodata, lib/kmc/syncPrintf] 
+      - [ 0xF8140, .rodata, lib/os/libultra/audio/drvrnew] 
       - [ 0xF8280, rodata]
-      - [ 0xF82D0, rodata, lib/os/libultra/audio/env]
-      - [ 0xF83F0, rodata, lib/os/libultra/io/cartrominit]
-      - [ 0xF8400, rodata, lib/os/libultra/io/piimgr]
-      - [ 0xF8430, rodata, lib/os/libultra/io/viimgr]
-      - [ 0xF8450, rodata, lib/os/libultra/vitbl]
+      - [ 0xF82D0, .rodata, lib/os/libultra/audio/env]
+      - [ 0xF83F0, .rodata, lib/os/libultra/io/cartrominit]
+      - [ 0xF8400, .rodata, lib/os/libultra/io/pimgr]
+      - [ 0xF8430, .rodata, lib/os/libultra/io/vimgr]
+      - [ 0xF8450, rodata] # vimode table
       - [ 0xF95D0, rodata] 
       - [ 0xF9600, rodata, lib/os/libultra/exceptasm]
-      - [ 0xF9610, rodata, lib/os/libultra/initialize]
-      - [ 0xF9630, rodata, lib/os/libultra/osseteventmesg]
+      - [ 0xF9610, .rodata, lib/os/libultra/initialize]
+      - [ 0xF9630, .rodata, lib/os/libultra/seteventmesg]
       - [ 0xF9640, .rodata, lib/os/libultra/kdebugserver]
       - [ 0xF9650, .rodata, lib/os/libultra/settimer]
       - [ 0xF9660, rodata] # rdbssend/send
@@ -407,7 +411,7 @@ segments:
       - [ 0xF9680, .rodata, lib/os/libultra/io/vi]
       - [ 0xF96E0, rodata] # osViInit, osViGetCurrentContext, osViGetCurrentFramebuffer, viSwapContext
       - [ 0xF96F0, .rodata, lib/os/libultra/io/siacs]
-      - [ 0xF9700, rodata] # lib/os/libultra/io/vitbl
+      - [ 0xF9700, rodata] # lib/os/libultra/io/vitbl?
       - [ 0xF9800, rodata] # lib/os/libultra/printf
       - [ 0xF9850, .rodata, lib/os/libultra/io/contpfs]
       - [ 0xF9860, rodata] # osContRamRead/Write
@@ -425,18 +429,18 @@ segments:
       - [ 0xFA700, .rodata, gameStatus]
       - [ 0xFA7F0, .rodata, player]
       - [ 0xFAB10, rodata] # level
-      - [ 0xFB410, rodata,] # npc
+      - [ 0xFB410, rodata] # npc
       - [ 0xFB720, rodata] # animal
-      - [ 0xFC2C0, rodata]
-      - [ 0xFC7F0, rodata] # levelInteractions. but one jump table from another file
+      - [ 0xFC2C0, rodata] # setCutscenes to 0xFC708
+      # - [ 0xFC808, .rodata, levelInteractions]
       - [ 0xFC9F0, .rodata, levelInteractions] 
       - [ 0xFD090, .rodata, overlayScreens]
-      - [ 0xFD6B0, .rodata, itemHandlers] # itemHandlers
+      - [ 0xFD6B0, .rodata, itemHandlers]
       - [ 0xFDB60, rodata] # tv 
-      #- [ 0xFDC58, .rodata, mapObjects] # map objects
+      # - [ 0xFDC58, .rodata, mapObjects]
       # - [ 0xFE838, .rodata, weather]
       - [ 0xFE860, rodata] # shop
-      #- [ 0xFEA58, .rodata, title]
+      # - [ 0xFEA58, .rodata, title]
       - [ 0xFEA90, rodata] # loadGameScreen
       - [ 0xFEAC0, rodata] # evaluation
       - [ 0xFEBF0, rodata]
