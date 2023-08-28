@@ -19,6 +19,7 @@ s32 getAbsoluteValue(s32 number) {
 //INCLUDE_ASM(const s32, "system/mathUtils", getRandomNumberInRange);
 
 u16 getRandomNumberInRange(u16 min, u16 max) {
+    
     int temp;
 
     getRandomNumber();

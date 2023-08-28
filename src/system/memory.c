@@ -1,4 +1,5 @@
 #include "common.h"
+#include "PR/os.h"
 
 #include "memory.h"
 
@@ -22,7 +23,7 @@ OSPiHandle* sramInit(void) {
     
     SramHandle.speed = 0;
     
-    _bzero((void*)&SramHandle.transferInfo, sizeof(SramHandle.transferInfo));
+    bzero((void*)&SramHandle.transferInfo, sizeof(SramHandle.transferInfo));
     
     osEPiLinkHandle(&SramHandle);
 
@@ -31,4 +32,40 @@ OSPiHandle* sramInit(void) {
 
 INCLUDE_ASM(const s32, "system/memory", func_8004DC48);
 
+#ifdef PERMUTER
+void func_8004DD7C(void *dramAddr, void *devAddr, u32 size) {
+
+    OSPiHandle *ptr = &D_80181B18;
+    OSIoMesg osIoMesg;
+    OSMesgQueue queue;
+    OSMesg mesg;
+
+    if (ptr->baseAddress != PHYS_TO_K1(SRAM_START_ADDR)) {
+        ptr->type = 3;
+        ptr->latency = 5;
+        ptr->pulse = 12;
+        ptr->pageSize = 13;
+        ptr->relDuration = 2;
+        ptr->baseAddress = PHYS_TO_K1(SRAM_START_ADDR);
+        ptr->domain = 1;
+        ptr->speed = 0;
+        _bzero((void*)&ptr->transferInfo, sizeof(ptr->transferInfo));
+        osEPiLinkHandle(ptr);
+    }
+
+    osCreateMesgQueue(&queue, &mesg, 1);
+    osWritebackDCache(devAddr, size);
+
+    osIoMesg.hdr.pri = 0;
+    osIoMesg.hdr.retQueue = &queue;
+    osIoMesg.dramAddr = devAddr;
+    osIoMesg.devAddr = dramAddr;
+    osIoMesg.size = size;
+    
+    osEPiStartDma(ptr, &osIoMesg, 1);
+    osRecvMesg(&queue, &mesg, 1);
+    
+}
+#else
 INCLUDE_ASM(const s32, "system/memory", func_8004DD7C);
+#endif

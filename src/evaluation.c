@@ -53,38 +53,25 @@ u8 calculateHouseExtensionScore(void) {
     return score;
 }
 
-//INCLUDE_ASM(const s32, "evaluation", calculateGrassScore);
-
 u16 calculateGrassScore(void) {
     
-  u8 j;
-  u8 i;
-  u16 result = 0;
+    u8 j, i;
+    u16 score = 0;
 
-  int currentTile;
-  int temp;
-    
-  for (i = 0; i < FARM_FIELD_WIDTH; i++) {
-    for (j = 0; j < FARM_FIELD_HEIGHT; j++) {
-        
-      // MOONDROP_PLANTED = 0x90; 0x85-0x8F are grass tiles
-      temp = MOONDROP_PLANTED;
-      
-      currentTile = farmFieldTiles[i][j];
-
-      temp = currentTile < temp;
-        
-      if (temp) {
-        // this is a bug: withered corn plants are counted towards grass score
-        if (currentTile >= CORN_PLANT_WITHERED) {
-          result++;
+    for (i = 0; i < FARM_FIELD_WIDTH; i++) {
+        for (j = 0; j < FARM_FIELD_HEIGHT; j++) {
+            switch (farmFieldTiles[i][j]) {
+                 default:
+                    break;
+                // bug?
+                case CORN_PLANT_WITHERED ... GRASS_CUT:
+                    score++;
+                    break;
+            }
         }
-      }
     }
-  }
 
-  return result;
-
+  return score;
 }
 
 //INCLUDE_ASM(const s32, "evaluation", calculateFieldScore);

@@ -72,11 +72,6 @@ extern void *D_D3DCC0;
 extern void *D_D3DCC0_2;
 extern void *D_D3DCE0;
 
-
-
-
-
-
 // rodata
 /*
 // const double D_80121C90 = 0.5;
@@ -314,6 +309,7 @@ INCLUDE_ASM(const s32, "overlayScreens", func_800B42E0);
 
 //INCLUDE_ASM(const s32, "overlayScreens", func_800B59AC);
 
+// adjust sprite colors
 void func_800B59AC(void) {
     func_8002C1C0(0x80, 0xFF, 0xFF, 0xFF, 0xFF, 0x18);
     func_8002C1C0(0x82, 0xFF, 0xFF, 0xFF, 0xFF, 0x18);

@@ -1,5 +1,22 @@
 #include "common.h"
-
+       
+u8 func_8002B6B8(u16);                                 
+u8 func_8002B80C(u16, u16, u8);                           
+u8 func_8002BAD8(u16);                                    
+u8 func_8002BD0C(u16 index, f32 x, f32 y, f32 z);       
+u8 func_8002BE98(u16, f32, f32, f32);                        
+u8 func_8002C1C0(u16, u8, u8, u8, s32, s32);              
+u8 func_8002CBF8(u16);                               
+u32 func_8004D380(u8, u32);                            
+u32 func_8004D3C8(u8, u32);                            
+void func_80055F08(u16, u8, u8);                           
+void func_800ACB5C(u16);                                 
+u8 func_800ACBB8(u8);                               
+void func_800ACC50(u16);                                 
+void func_800E0ED4();                                  
+void func_800E0FEC();                                  
+void func_800E10E8();                                  
+void func_800E1380(u8);            
 
 extern f32 D_80126578;
 extern f32 D_80200AC4;
@@ -9,24 +26,25 @@ extern f32 D_80200C98;
 extern f32 D_80200D34;
 extern f32 D_80200DD0;
 
-u8 func_8002BD0C(u16 index, f32 x, f32 y, f32 z);       
-void func_8002BE98(u8, f32, f32, f32);                        
+extern u8 D_80126570;
+extern u8 D_80126571;
+extern u16 D_80126574;
+extern u32 D_8012657C;
+extern u8 D_801C3F50;
 
+              
 
 INCLUDE_ASM(const s32, "title", func_800DE3C0);
 
 INCLUDE_ASM(const s32, "title", func_800DFF64);
 
 // jtbl_80123658
-#ifdef PERMUTER
+//INCLUDE_ASM(const s32, "title", func_800E00A4);
+
+// main loop callback
 void func_800E00A4(void) {
 
-    u8 temp = 0;
-    u16 temp2;
-    u16 temp3;
-    u16 temp4;
-    u16 temp5;
-    int temp6;
+    u8 set = 0;
     
     switch (D_80126570) {
         case 0:
@@ -59,10 +77,10 @@ void func_800E00A4(void) {
                 func_8002C1C0(0x5A, 0, 0, 0, 0, 8);
                 func_8002C1C0(0x5B, 0, 0, 0, 0, 8);
                 func_800ACB5C(1);
-                temp = 1;
+                set = 1;
                 D_80126570 = 5;
             }
-            if (func_8004D380(0, 0x1000) && !temp) {
+            if (func_8004D380(0, 0x1000) && !set) {
                 func_8002BAD8(0x46);
                 func_8002B80C(0x46, 4, 0xFF);
                 func_8002BAD8(0x44);
@@ -72,7 +90,7 @@ void func_800E00A4(void) {
                 func_800ACC50(0);
             }
             func_800E0ED4();
-            goto func_end;
+            break;
         
         case 1:
             if (D_80126574 < 0x40) {
@@ -103,7 +121,7 @@ void func_800E00A4(void) {
                 D_80126574 = 0;
             }
             D_80126574 += 1;
-            goto func_end;
+            break;
         
         case 2:
             func_8002BAD8(0x44);
@@ -112,46 +130,41 @@ void func_800E00A4(void) {
             func_8002B80C(0x45, 3, 0xFE);
             D_80126570 = 3;
             D_80126571 = 0;
-            goto func_end;
+            break;
         
         case 3:
             if (func_8004D3C8(0, 0x10000)) {         
-                
-                if (!temp) {
-                    temp = 1;
+                if (!set) {
                     if (D_80126571 != 1) {
                         func_8002BD0C(0x45, -56.0f, -52.0f, 56.0f);
                         D_80126571 = 1;
                         func_800ACC50(2);
                     }
+                    set = 1;
                 }
             }
             
             if (func_8004D3C8(0, 0x100000)) {
-                if (!temp) {
-                    temp = 1;
+                if (!set) {
                     if (D_80126571) {
                         func_8002BD0C(0x45, -56.0f, -20.0f, 56.0f);
                         D_80126571 = 0;
                         func_800ACC50(2);
-                        temp = 1;
                     }
+                    set = 1;
                 }
             }
             
-            if (func_8004D380(0, 0x9000) && !temp) {
+            if (func_8004D380(0, 0x9000) && !set) {
                 
                 if (!D_80126571) {
                     func_8002BAD8(0x47);
-                    temp2 = 0x47;
-                    temp3 = 6;
+                    func_8002B80C(0x47, 6, 0xFF);
                 } else {
                     func_8002BAD8(0x48);
-                    temp2 = 0x48;
-                    temp3 = 8;
+                    func_8002B80C(0x48, 8, 0xFF);
                 }
-                
-                func_8002B80C(temp2, temp3, 0xFF);
+                  
                 func_8002C1C0(0x42, 0, 0, 0, 0, 8);
                 func_8002C1C0(0x43, 0, 0, 0, 0, 8);
                 func_8002C1C0(0x44, 0, 0, 0, 0, 8);
@@ -179,15 +192,18 @@ void func_800E00A4(void) {
                 func_8002C1C0(0x5A, 0, 0, 0, 0, 8);
                 func_8002C1C0(0x5B, 0, 0, 0, 0, 8);
                 D_80126570 = 4;
-block:
                 func_800ACC50(0);
             }
+
         func_800E0ED4();
-        goto func_end;
+        break;
 
         case 4:
             
+            // check sprite flag
             if (func_8002CBF8(0x42)) {
+
+                // toggle sprite flags
                 func_8002B6B8(0x42);
                 func_8002B6B8(0x43);
                 func_8002B6B8(0x44);
@@ -215,18 +231,22 @@ block:
                 func_8002B6B8(0x5A);
                 func_8002B6B8(0x5B);
                 
+                // row index
                 if (!D_80126571) {
+                    // load select game screen
                     func_800E1380(0);
                 } else {
                     func_80055F08(0x640, 0, 0);
                 }
             }
-            goto func_end;
+
+            break;
 
         case 5:
             
             if (func_8002CBF8(0x42) && func_800ACBB8(1)) {
                 
+                // reset sprite flags
                 func_8002B6B8(0x42);
                 func_8002B6B8(0x43);
                 func_8002B6B8(0x44);
@@ -254,42 +274,33 @@ block:
                 func_8002B6B8(0x5A);
                 func_8002B6B8(0x5B);
 
-                temp6 = D_801C3F50; 
-
-                if (D_801C3F50 != 1) {
-                    if (temp6 != 2) {
-                    
-                        func_80055F08(0x5DD, 0x32, 1);
-                    } else {
-                        goto label;
-                    }
-                } else {
-                    if (D_801C3F50  == 0) {
-                        
-                        func_80055F08(0x5DC, 0x32, 1);
-                    } else {
-                        label:
+                // demo cutscene index
+                switch (D_801C3F50) {
+                    case 0:
+                        func_80055F08(0x5DC, 0, 1);
+                        break;
+                    case 1:
                         func_80055F08(0x5DD, 0x1D, 1);
-                    }
-                } 
+                        break;
+                    case 2:
+                        func_80055F08(0x5DF, 0x32, 1);
+                        break;
+                    default:
+                        break;
+                }
 
                 D_801C3F50++;
 
                 if (D_801C3F50 > 2) {
                     D_801C3F50 = 0;
-                }
-                
+                }   
             }
-            goto func_end;
         }  
             
-func_end:
     func_800E0FEC();
     func_800E10E8();
 }
-#else
-INCLUDE_ASM(const s32, "title", func_800E00A4);
-#endif
+
 
 // jtbl_80123670
 INCLUDE_ASM(const s32, "title", func_800E0ED4);

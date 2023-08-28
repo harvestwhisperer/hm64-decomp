@@ -1,8 +1,6 @@
 #ifndef _GAME_MACROS_H	
 #define _GAME_MACROS_H 
 
-#define NULL 0
-
 #define TRUE 1
 #define FALSE 0
 
@@ -13,7 +11,7 @@
 
 #define SPRING 1
 #define SUMMER 2
-#define FALL 3
+#define AUTUMN 3
 #define WINTER 4
 
 #define SUNDAY 0
@@ -66,6 +64,7 @@
 #define SYDNEY 0x24
 #define BARLEY 0x25
 #define GOURMET_JUDGE 0x26
+#define PHOTOGRAPHER 0x27
 
 #define MAX_NPC_SPRITES 102
 #define TOTAL_GAME_VARIABLES 80

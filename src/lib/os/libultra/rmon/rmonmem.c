@@ -36,3 +36,7 @@ INCLUDE_ASM(const s32, "lib/os/libultra/rmon/rmonmem", rmonmem_text_0578);
 INCLUDE_ASM(const s32, "lib/os/libultra/rmon/rmonmem", __rmonGetRegionCount);
 
 INCLUDE_ASM(const s32, "lib/os/libultra/rmon/rmonmem", __rmonGetRegions);
+
+INCLUDE_RODATA(const s32, "lib/os/libultra/rmon/rmonmem", D_801240D8);
+
+INCLUDE_RODATA(const s32, "lib/os/libultra/rmon/rmonmem", D_801240E0);

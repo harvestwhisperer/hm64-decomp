@@ -140,7 +140,7 @@ void func_800598E0(void) {
         }
     }
     
-    if ((gSeason == FALL) && (gDayOfMonth == 28)) {
+    if ((gSeason == AUTUMN) && (gDayOfMonth == 28)) {
         setDailyEventBit(0x41);
         toggleLifeEventBit(0x90);
         func_800CC17C();
@@ -151,13 +151,13 @@ void func_800598E0(void) {
         func_800CC17C();            
     }
 
-    if (gSeason == FALL) {
+    if (gSeason == AUTUMN) {
         if (gDayOfMonth == 3) {
             toggleLifeEventBit(0x91);
             // animal index
             D_80189054 = 0xFF;
         }
-        if (gSeason == FALL) {
+        if (gSeason == AUTUMN) {
             if (gDayOfMonth == 5) {  
                 // animal index     
                 D_80189054 = 0xFF;
@@ -172,7 +172,7 @@ void func_800598E0(void) {
     temp2 = gSeason;
     
     if (gYear == 1) {
-        if (temp2 == FALL && gDayOfMonth == 23) {
+        if (temp2 == AUTUMN && gDayOfMonth == 23) {
           mountainConstructionWorkDays = 1;
         }
     }

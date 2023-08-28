@@ -306,7 +306,7 @@ u16 setMountain1Cutscenes(void) {
     u8 set = 0;
     u16 index = 0xFFFF;
 
-    if (!checkLifeEventBit(0x48) && gSeason == FALL && (gDayOfMonth - 23) < 5U && (gHour - 6) < 9U) {
+    if (!checkLifeEventBit(0x48) && gSeason == AUTUMN && (gDayOfMonth - 23) < 5U && (gHour - 6) < 9U) {
         setDailyEventBit(0x21);
         if (checkDailyEventBit(0x2C)) {
             gCutsceneIndex = 0x145;
@@ -436,7 +436,7 @@ u16 setSpringCutscenes(void) {
     }
 
     if (!set) {
-        if (!checkLifeEventBit(0xD5) && checkLifeEventBit(0x9F) && (blueMistFlowerPlot >= 0xC2) && (gSeason < FALL) && DAYTIME) {
+        if (!checkLifeEventBit(0xD5) && checkLifeEventBit(0x9F) && (blueMistFlowerPlot >= 0xC2) && (gSeason < AUTUMN) && DAYTIME) {
             setLifeEventBit(0xD5);
             setDailyEventBit(0x46);
             gCutsceneIndex = 0x13C;
@@ -447,7 +447,7 @@ u16 setSpringCutscenes(void) {
     }
 
     if (!set) {
-         if (!checkLifeEventBit(0xD6) && checkLifeEventBit(0xD5) && (blueMistFlowerPlot >= 0xC2) && (gSeason < FALL) && DAYTIME) {
+         if (!checkLifeEventBit(0xD6) && checkLifeEventBit(0xD5) && (blueMistFlowerPlot >= 0xC2) && (gSeason < AUTUMN) && DAYTIME) {
             setLifeEventBit(0xD6);
             setDailyEventBit(0x46);
             gCutsceneIndex = 0x13D;
@@ -869,7 +869,7 @@ u16 func_800A7AE8(void) {
         
         if (!set) {
             
-            if (!checkDailyEventBit(0x1D) && !checkDailyEventBit(0x1E) && gSeason == FALL && gDayOfMonth == 3 && (gHour - 6) < 9U && func_8009B2BC(2)) {
+            if (!checkDailyEventBit(0x1D) && !checkDailyEventBit(0x1E) && gSeason == AUTUMN && gDayOfMonth == 3 && (gHour - 6) < 9U && func_8009B2BC(2)) {
                
                 setDailyEventBit(0x1D);
                 

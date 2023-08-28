@@ -16,7 +16,7 @@ int getRandomNumber(void) {
     
 }
 
-// has an extra nop that's not generated when compiled
+// has an extra nop that's not generated when compiled: likely an unaligned file split
 // 80110444
 INCLUDE_ASM(const s32, "lib/os/libultra/unknown/randomNumber", func_80110444);
 

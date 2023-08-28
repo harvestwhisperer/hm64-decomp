@@ -348,3 +348,55 @@ INCLUDE_ASM(const s32, "system/map", func_8003AF58);
 INCLUDE_ASM(const s32, "system/map", func_8003B100);
 
 INCLUDE_ASM(const s32, "system/map", func_8003B1BC);
+
+INCLUDE_RODATA(const s32, "system/map", D_8011ED68);
+
+INCLUDE_RODATA(const s32, "system/map", D_8011ED6C);
+
+INCLUDE_RODATA(const s32, "system/map", D_8011ED70);
+
+INCLUDE_RODATA(const s32, "system/map", D_8011ED74);
+
+INCLUDE_RODATA(const s32, "system/map", D_8011ED78);
+
+INCLUDE_RODATA(const s32, "system/map", D_8011ED7C);
+
+INCLUDE_RODATA(const s32, "system/map", D_8011ED80);
+
+INCLUDE_RODATA(const s32, "system/map", D_8011ED84);
+
+INCLUDE_RODATA(const s32, "system/map", D_8011ED88);
+
+INCLUDE_RODATA(const s32, "system/map", D_8011ED8C);
+
+INCLUDE_RODATA(const s32, "system/map", D_8011ED90);
+
+INCLUDE_RODATA(const s32, "system/map", D_8011ED94);
+
+INCLUDE_RODATA(const s32, "system/map", D_8011ED98);
+
+INCLUDE_RODATA(const s32, "system/map", D_8011ED9C);
+
+INCLUDE_RODATA(const s32, "system/map", D_8011EDA0);
+
+INCLUDE_RODATA(const s32, "system/map", D_8011EDA4);
+
+INCLUDE_RODATA(const s32, "system/map", D_8011EDA8);
+
+INCLUDE_RODATA(const s32, "system/map", D_8011EDAC);
+
+INCLUDE_RODATA(const s32, "system/map", D_8011EDB0);
+
+INCLUDE_RODATA(const s32, "system/map", D_8011EDB4);
+
+INCLUDE_RODATA(const s32, "system/map", D_8011EDC8);
+
+INCLUDE_RODATA(const s32, "system/map", D_8011EDCC);
+
+INCLUDE_RODATA(const s32, "system/map", D_8011EDD0);
+
+INCLUDE_RODATA(const s32, "system/map", D_8011EDD4);
+
+INCLUDE_RODATA(const s32, "system/map", D_8011EDD8);
+
+INCLUDE_RODATA(const s32, "system/map", D_8011EDDC);

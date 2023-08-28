@@ -569,7 +569,7 @@ extern void		osStartThread(OSThread *);
 extern void		osStopThread(OSThread *);
 extern OSId		osGetThreadId(OSThread *);
 extern void		osSetThreadPri(OSThread *, OSPri);
-extern OSPri		osGetThreadPri(OSThread *);
+extern OSPri	osGetThreadPri(OSThread *);
 
 extern void		osCreateMesgQueue(OSMesgQueue *, OSMesg *, s32);
 extern s32		osSendMesg(OSMesgQueue *, OSMesg, s32);
@@ -698,6 +698,7 @@ extern s32 osEPiRawStartDma(OSPiHandle *, s32 , u32 , void *, u32 );
 extern s32 osEPiWriteIo(OSPiHandle *, u32 , u32 );
 extern s32 osEPiReadIo(OSPiHandle *, u32 , u32 *);
 extern s32 osEPiStartDma(OSPiHandle *, OSIoMesg *, s32);
+extern s32 osEPiLinkHandle(OSPiHandle *);
 
 extern void		osProfileInit(OSProf *, u32 profcnt);
 extern void		osProfileStart(u32);

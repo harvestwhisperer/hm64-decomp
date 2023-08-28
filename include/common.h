@@ -10,4 +10,6 @@
 #include "game_macros.h"
 #include "structs.h"
 
+typedef u8 bool;
+
 #endif

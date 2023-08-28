@@ -1,4 +1,4 @@
 #include "common.h"
 
 
-INCLUDE_ASM(const s32, "lib/libc/bzero", _bzero);
+INCLUDE_ASM(const s32, "lib/libc/bzero", bzero);

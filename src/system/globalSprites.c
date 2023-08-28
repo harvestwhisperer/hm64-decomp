@@ -259,7 +259,44 @@ INCLUDE_ASM(const s32, "system/globalSprites", func_8002CD34);
 
 INCLUDE_ASM(const s32, "system/globalSprites", func_8002CD4C);
 
-INCLUDE_ASM(const s32, "system/globalSprites", func_8002CDB4);
+//INCLUDE_ASM(const s32, "system/globalSprites", func_8002CDB4);
+
+// unused
+u32 func_8002CDB4(u16 arg0, u32 arg1) {
+    
+    u16 i = 0;
+    // necessary to match
+    u32 padding[2];
+    
+    if (arg0) {
+        do {
+            arg1 += 8;
+            i++;
+        } while (i < arg0);
+    }
+    
+    return arg1;
+}
+
+// also matches
+/*
+u32 func_8002CDB4(u16 arg0, u32 arg1) {
+    
+    u32 result;
+    u32 padding[2];
+    
+    u16 i = 0;
+    
+    if (arg0) {
+        do {
+            result += 8;
+            i++;
+        } while (i < arg0);
+    }
+    
+    return result;
+}
+*/
 
 INCLUDE_ASM(const s32, "system/globalSprites", func_8002CDE8);
 
