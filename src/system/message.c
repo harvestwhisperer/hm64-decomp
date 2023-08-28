@@ -131,6 +131,11 @@ INCLUDE_ASM(const s32, "system/message", func_80042014);
 INCLUDE_ASM(const s32, "system/message", func_800423F0);
 
 INCLUDE_RODATA(const s32, "system/message", D_8011EE90);
+/*
+dlabel D_8011EE90
+.word 0x80402010
+.word 0x08040201
+*/
 
 INCLUDE_RODATA(const s32, "system/message", D_8011EE98);
 

@@ -1,19 +1,40 @@
 #include "common.h"
 
+#include "system/message.h"
+
 void func_8002B138(u16, void*, void*, void*, void*, void*, void*, void*, void*, void*, void*, void*, void*, void*, u8); 
 void func_8002BD90(u16, f32, f32, f32);                        
 void func_8002BE14(u16, f32, f32, f32);                        
 void func_8002C7EC(u16, u16);                              
 u8 func_8002C914(u16, u8, u8, u8, u8);                    
 void func_80034C40(u16, u16, u16, u16, f32, f32, f32, s32, s32, s32, s32); 
-void func_80034E64(u8, u8);                              
+void func_80034E64(u8, u8);                                                 
+void func_8003DDF8(u32, u32, u32, u32);                     
+void func_8003F360(u16, s16, u8);                              
+void func_8003F54C(u16, f32, f32, f32);                        
+void func_8003F690(u16, u8, u8, u8);                     
+u32 func_8004D380(u8, u32);                              
+void func_800B2CE0();                                  
+void func_800B3A60();                                 
 void func_800D879C();                                  
 void func_800D897C();                                  
-void func_800D9298();                                  
+void func_800D9298();            
+void func_800D8540();          
 
+u16 getRandomNumberInRange(u16 min, u16 max);
+
+void setAudio(u16);   
+
+// struct
 // likely bss
+extern u16 D_80170270;
+extern u8 D_80170272[1];
 extern u8 D_80170273;
-extern u8 D_80170274;
+extern u8 D_80170274[1];
+extern u8 D_80170275;
+extern u8 D_80170277;
+
+extern DialogueBox D_80188B70[2];
 
 // rodata
 extern void *tvSprites_romTextureStart;
@@ -33,6 +54,7 @@ extern u8 D_8017027B;
 extern u8 D_8017027C;
 
 extern u8 gDayOfWeek;
+extern u8 gForecast;
 
 //INCLUDE_ASM(const s32, "tv", func_800D8540);
 
@@ -52,66 +74,156 @@ void func_800D8540(void) {
 
     func_80034C40(0, 9, 0x6A, D_80170273, -12.0f, 36.0f, -154.0f, 0xFF, 0xFE, 0, 0);
 
-    D_80170274 = 0;
+    D_80170274[0] = 0;
 }
 
 // jtbl_80122760
 INCLUDE_ASM(const s32, "tv", func_800D86D8);
 
-// void func_800D86D8(void) {
+/*
+void func_800D86D8(void) {
     
-//     u8 *ptr;
-//     u8 temp;
+    u8 *ptr;
+    u8 temp;
     
-//     switch (gDayOfWeek) {
-//         case 2:
-//             ptr = &D_80170276;
-//             break;
+    switch (gDayOfWeek) {
+        case 2:
+            ptr = &D_80170276;
+            break;
         
-//         case 3:
-//             ptr = &D_80170277;
-//             break;
+        case 3:
+            ptr = &D_80170277;
+            break;
         
-//         case 4:
-//             ptr = &D_80170278;
-//             break;
+        case 4:
+            ptr = &D_80170278;
+            break;
         
-//         case 5:
-//             ptr = &D_80170279;
-//             break;
+        case 5:
+            ptr = &D_80170279;
+            break;
 
-//         case 6:
-//             ptr = &D_8017027A;
-//             break;
+        case 6:
+            ptr = &D_8017027A;
+            break;
         
-//         case 0:
-//             ptr = &D_8017027B;
-//             temp = *ptr+1;
-//             *ptr = temp;
-//             if (!(temp < 0x14)) {
-//                 *ptr = 0;
-//             }
-//             return;
+        case 0:
+            ptr = &D_8017027B;
+            temp = *ptr+1;
+            *ptr = temp;
+            if (!(temp < 0x14)) {
+                *ptr = 0;
+            }
+            return;
         
-//         case 1:
-//             ptr = &D_8017027C;
-//             break;
+        case 1:
+            ptr = &D_8017027C;
+            break;
 
-//         default:
-//             return;
-//     }
+        default:
+            return;
+    }
 
-//     temp = *ptr+1;
-//     *ptr = temp;
+    temp = *ptr+1;
+    *ptr = temp;
     
-// check:
-//     if (!(temp < 0xA)) {
-//         *ptr = 0;
-//     }
-// }
+check:
+    if (!(temp < 0xA)) {
+        *ptr = 0;
+    }
+}
+*/
 
 // jtbl_80122780
 INCLUDE_ASM(const s32, "tv", func_800D879C);
+
+/*
+void func_800D879C(void) {
+
+    D_80170272[0] = 0xFF;
+    
+    if (gHour < 6) {
+        D_80170272[0] = 0;
+        return;
+    }
+
+    if (gWeather != 5) {
+        switch (D_80170275) {
+            case 0:
+                switch (gForecast) {
+                    case 1:
+                        D_80170272[0] = 1;
+                        return;
+                    case 2:
+                        D_80170272[0] = 2;
+                        break;
+                    case 3:
+                        D_80170272[0] = 3;
+                        break;
+                    case 5:
+                        D_80170272[0] = 4;
+                        break;
+                }
+                break;
+            case 1:
+                switch (gSeason) {
+                    case 1:
+                        D_80170272[0] = 5;
+                        return;
+                    case 2:
+                        D_80170272[0] = 6;
+                        return;
+                    case 3:
+                        D_80170272[0] = 7;
+                        return;
+                    case 4:
+                        D_80170272[0] = 8;
+                        return;
+                }
+                break;
+            case 2:
+                switch (gDayOfWeek) {
+                    case 0:
+                       switch (getRandomNumberInRange(0, 2)) {
+                           case 0:
+                               D_80170272[0] = 9;
+                               return;
+                           case 1:
+                               D_80170272[0] = 10;
+                               return;
+                           case 2:    
+                               break;
+                           default:
+                               return;
+                       } 
+                        break;
+                    case 1:
+                    case 2:
+                        D_80170272[0] = 9;
+                        return;
+                    case 3:
+                    case 4:
+                       D_80170272[0] = 10;
+                       return;
+                    case 5:
+                    case 6:
+                        break;
+                    default:
+                        return;
+                }
+                
+                D_80170272[0] = 11;
+                break;
+            
+            case 3:
+                D_80170272[0] = 0x13;
+                break;
+        }
+    } else {
+        D_80170272[0] = 19;
+    }
+}
+*/
 
 // jtbl_801227A0
 // jtbl_801227F0
@@ -119,5 +231,87 @@ INCLUDE_ASM(const s32, "tv", func_800D897C);
 
 // jtbl_80122808
 INCLUDE_ASM(const s32, "tv", func_800D9298);
+
+/*
+void func_800D9298(void) {
+
+    switch (D_80170272[0]) {
+        case 0:
+            D_80170273 = 1;
+            break;
+        case 19:
+            D_80170273 = 0;
+            break;
+        case 1:
+            D_80170273 = 3;
+            break;
+        case 2:
+            D_80170273 = 4;
+            break;
+        case 3:
+            D_80170273 = 5;
+            break;
+        case 4:
+            D_80170273 = 6;
+            break;
+        case 5:
+            D_80170273 = 7;
+            break;
+        case 6:
+            D_80170273 = 8;
+            break;
+        case 7:
+            D_80170273 = 9;
+            break;
+        case 8:
+            D_80170273 = 10;
+            break;
+        case 9:
+            D_80170273 = 2;
+            break;
+        case 10:
+            D_80170273 = 2;
+            break;
+        case 11:
+            D_80170273 = 2;
+            break;
+        case 12:
+            D_80170273 = 11;
+            break;
+        case 13:
+            if (D_80170277 == 3 || D_80170277 == 6) {
+                D_80170273 = 13;
+                break;
+            }
+            if (D_80170277 == 7) {
+                D_80170273 = 13;
+                break;
+            }
+            D_80170273 = 12;
+            break;
+        case 14:
+            D_80170273 = 14;
+            break;        
+        case 15:
+            D_80170273 = 15;
+            break;
+        case 16:
+            if (!getRandomNumberInRange(0, 1)) {
+                D_80170273 = 17;
+                break;
+            }
+            D_80170273 = 16;
+            break;
+        case 17:
+            D_80170273 = 18;
+            break;
+        case 18:
+            D_80170273 = 19;
+            break;
+        default:
+            break;
+    }
+}
+*/
 
 INCLUDE_ASM(const s32, "tv", func_800D93CC);

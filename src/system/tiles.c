@@ -215,4 +215,6 @@ INCLUDE_ASM(const s32, "system/tiles", func_8003C8D4);
 
 INCLUDE_ASM(const s32, "system/tiles", func_8003CB3C);
 
-INCLUDE_RODATA(const s32, "system/tiles", D_8011EDE0);
+//INCLUDE_RODATA(const s32, "system/tiles", D_8011EDE0);
+
+static const f32 D_8011EDE0[] = { 0, 45.0f, 90.0f, 135.0f, 180.0f, 225.0f, 270.0f, 315.0f };

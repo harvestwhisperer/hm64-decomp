@@ -4,7 +4,7 @@
 #include "common.h"
 
 typedef struct {
-    short *cutsceneMapPointer;
+    u16 *cutsceneMapPointer;
     short *unk_4;
     short *unk_8;
     Vec3f unk_C;

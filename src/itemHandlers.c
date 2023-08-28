@@ -277,19 +277,34 @@ void handleToolUse(void) {
 
 void func_800D0318(void) {
 
-    int temp = D_80189828.unk_E; 
-
-    // bad programming: really just need to check if D_80189828.unk_E == 2
-    if (temp) {
-        if (temp != 3) {
-            if (temp < 4) {
-                if (temp == 2) {
-                    handleToolUse();
-                }       
-            }
+    if (D_80189828.unk_E) {
+        switch (D_80189828.unk_E) {        
+            case 2:
+                handleToolUse();
+            case 3:
+                break;
+            case 4:
+            default:
+                break;
         }
     }
 }
+
+// also matches but less readable
+// void func_800D0318(void) {
+
+//     int temp = D_80189828.unk_E; 
+
+//     if (temp) {
+//         if (temp != 3) {
+//             if (temp < 4) {
+//                 if (temp == 2) {
+//                     handleToolUse();
+//                 }       
+//             }
+//         }
+//     }
+// }
 
 INCLUDE_ASM(const s32, "itemHandlers", func_800D0360);
 
@@ -571,7 +586,7 @@ void func_800D41C8(void) {
     func_80065F94(&vec, 0.0, temp2);
  
     if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && vec.y != 65535) {
-        if (gSeason == FALL || gBaseMapIndex == GREENHOUSE) {
+        if (gSeason == AUTUMN || gBaseMapIndex == GREENHOUSE) {
           temp3 = 0x22;
         } else {
           temp3 = 0xD7;

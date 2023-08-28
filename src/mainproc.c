@@ -34,31 +34,33 @@ void gfxRetraceCallback(void);
 void gfxBufferSwap(void);
 void gfxPreNMICallback(void);
 
-
-extern u16 D_801594E4;
-extern u8 D_8016FB04;
-
-extern u32 D_801C3B68;
-extern u32 D_801C3B6C;
-extern u32 D_801C3B70;
-extern u32 D_801C3B74;
-extern u8 D_801C3BEC;
-extern u8 D_801C3F34;
-extern u8 D_801C3F71;
-extern u8 D_801D6230;
-extern u16 D_801FD610;
-extern u8 D_80204B38;
-extern u8 D_80205208;
 extern u8 gfxTaskNo;
-extern u8 D_802226E2;
-extern u8 D_802373F1;
-extern u8 D_80237408;
-extern u8 D_80237A04;
+
+extern volatile u16 D_801594E4;
+extern volatile u8 D_8016FB04;
+
+extern volatile u32 D_801C3B68[4];
+extern volatile u8 D_801C3BEC;
+extern volatile u8 D_801C3F34;
+extern volatile u8 D_801C3F71;
+extern volatile u8 D_801D6230;
+extern volatile u16 D_801FD610;
+extern volatile u8 D_80204B38;
+extern volatile u8 D_80205208;
+extern volatile u8 D_8020520A;
+extern volatile u32 D_80205630;
+extern volatile u8 D_80205634;
+extern volatile u16 D_8020564A;
+extern volatile u8 D_802226E2;
+extern volatile u8 D_802373F1;
+extern volatile u8 D_80237408;
+extern volatile u8 D_80237A04;
 
 extern u8 frameCount;
 extern u32 gDisplayContext;
+
 extern u16 mainLoopCallbackCurrentIndex;
-extern void (*mainLoopCallbacksTable[0x39])(void);
+extern void (*mainLoopCallbacksTable[MAIN_LOOP_CALLBACK_FUNCTION_TABLE_SIZE])();
 
 
 //INCLUDE_ASM(const s32, "mainproc", func_80025D90);
@@ -129,37 +131,38 @@ void initializeAll(void) {
     nuGfxFuncSet((NUGfxFunc)gfxRetraceCallback);
 }
 
-#ifdef PERMUTER
+//INCLUDE_ASM(const s32, "mainproc", func_80025F04);
+
 void func_80025F04(void) {
     
     u8 i;
     
-    mainLoopCallbackCurrentIndex = 0;
-    D_801594E4 = 0;
     D_80205208 = 0;
+    D_801594E4 = 0;
+    D_8020564A = 0;
+    D_80205634 = 0;
     D_8016FB04 = 0;
-    frameCount = 0;
     D_801C3F71 = 0;
     D_801D6230 = 0;
     D_801C3F34 = 0;
     D_801C3BEC = 0;
     D_80237A04 = 0;
-    gfxTaskNo = 0xFF;
+    D_8020520A = 0xFF;
     D_80237408 = 0;
     D_802373F1 = 1;
     D_802226E2 = 1;
-    D_801C3B68 = 0;
-    D_801C3B6C = 0;
-    D_801C3B70 = 0;
-    D_801C3B74 = 0;
-    gDisplayContext = 0;
+    
+    D_801C3B68[0] = 0;
+    D_801C3B68[1] = 0;
+    D_801C3B68[2] = 0;
+    D_801C3B68[3] = 0;
+
+    D_80205630 = 0;
     D_80204B38 = 0;
     D_801FD610 = 0;
-
-    for (i = 0; i < 0x39; i++) {
+    
+    for (i = 0; i < MAIN_LOOP_CALLBACK_FUNCTION_TABLE_SIZE; i++) {
         mainLoopCallbacksTable[i] = 0;
     }
+
 }
-#else
-INCLUDE_ASM(const s32, "mainproc", func_80025F04);
-#endif

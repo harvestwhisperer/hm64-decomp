@@ -80,7 +80,9 @@ void func_80046D78(void) {
     u16 i;
 
     for (i = 0; i < 0x2A; i++) {
+
         if (D_801808B0[i].flags & 1 && !(D_801808B0[i].flags & 0x20)) {
+
             if (D_801808B0[i].flags & 8) {
                 
                 D_801808B0[i].coordinates.x = renderedSprites[D_801808B0[i].unk_64].startingCoordinates.x;
@@ -126,7 +128,7 @@ skip_callback:
             
             if (D_801808B0[i].flags & 0x10) {
                 func_80047E34(i);
-            }
+            } 
             
             if (D_801808B0[i].flags & 2) {
                 func_800471B0(i);
@@ -154,10 +156,12 @@ void func_800475B4(u16 arg0) {
 //INCLUDE_ASM(const s32, "system/cutscene", func_800475F8);
 
 void func_800475F8(u16 arg0) {
+
     int temp;
     D_801808B0[arg0].unk_4 += 1;
     temp = D_801808B0[arg0].unk_4;
     D_801808B0[arg0].unk_4 = temp + (*D_801808B0[arg0].unk_4);
+    
 }
  
 INCLUDE_ASM(const s32, "system/cutscene", func_80047640);

@@ -73,95 +73,183 @@ extern volatile u8 D_802373F1;
 
 //INCLUDE_ASM(s32, "mainLoop", mainLoop)
 
-int mainLoop(void) {
+void mainLoop(void) {
 
-    int res;
+  // int res
     
     D_80205208 = 0;
     D_801594E4 = 1;
-
+    
     func_80026284();
     // toggle flags
     func_8004DEC8();
-
+    
     D_80182BA0 = 1;
     D_8020564C = 0;
 
     while (TRUE) {
       
         nuGfxDisplayOn();
-            
-        goto inner_loop_end;
-            
+          
         while (D_801594E4 & 1) {
             
             while (!D_80205208);
             
-                do { 
-                    
-                    if (!D_8020564C) { 
+            if (!D_8020564C) { 
+              
+              D_80182BA0 = 1;
+              
+              // necessary to match
+              while (1) {
+                  break;
+              }
 
-                        D_80182BA0 = 1;
-                        
-                        // need to fix
-                        do {} while (0); 
+              // handle specific logic depending on game mode/screen
+              mainLoopCallbacksTable[mainLoopCallbackCurrentIndex](); 
 
-                        // handle specific logic depending on game mode/screen
-                        mainLoopCallbacksTable[mainLoopCallbackCurrentIndex](); 
-                        D_8020564C = D_80182BA0; 
-                        
-                    } 
+              D_8020564C = D_80182BA0; 
 
-                    D_8020564C -= 1;    
-                    res = D_8020564C;
+            } 
+            
+            D_8020564C -= 1;    
+            D_8020564C;
+            
+            // reset tile flags
+            func_80029CC8();
 
-                    // reset tile flags
-                    func_80029CC8();
+            mainLoopAudioHandler(); 
+            
+            resetSpriteCounter();
+            // cutscenes 
+            func_80046D78(); 
+            // sprite graphics, collisions
+            func_80033058(); 
+            // tiling
+            func_8003C6E4(); 
+            // map graphics/display lists
+            func_8003A1BC();
+            // pause screen sprites
+            func_800467F8(); 
+            // sprite lighting adjustments
+            func_8002D3D4(); 
+            // load object sprites with nuPiReadRom
+            dmaSprites(); 
+            // sprite.c: sprite microcode, texturing
+            func_8002AE58(); 
+            // message.c
+            func_80042634(); 
+            // handle dialogue box close
+            func_80045CB0(); 
+            // no op/shelved code
+            func_800293B8(); 
 
-                    mainLoopAudioHandler(); 
-                    
-                    resetSpriteCounter();
-                    // cutscenes 
-                    func_80046D78(); 
-                    // sprite graphics, collisions
-                    func_80033058(); 
-                    // tiling
-                    func_8003C6E4(); 
-                    // map graphics/display lists
-                    func_8003A1BC();
-                    // pause screen sprites
-                    func_800467F8(); 
-                    // sprite lighting adjustments
-                    func_8002D3D4(); 
-                    // load object sprites with nuPiReadRom
-                    dmaSprites(); 
-                    // sprite.c: sprite microcode, texturing
-                    func_8002AE58(); 
-                    // message.c
-                    func_80042634(); 
-                    // handle dialogue box close
-                    func_80045CB0(); 
-                    // no op/shelved code
-                    func_800293B8(); 
+            // necessary to match
+            while (1) {
+                break;   
+            }
 
-                    D_80205208 = 0; 
-
-                } while (FALSE);
-        
+            D_80205208 = 0; 
             D_80237A04 = D_801C3BEC;
-
-            // ?
+              
             getRandomNumber();
-
-inner_loop_end:
-    
+            // res = getRandomNumber(); also matches
+            
         }
+    
+        nuGfxDisplayOff();
+    }
+}
 
+// alternate with int return
+/*
+int mainLoop(void) {
+
+  // int res
+    
+    D_80205208 = 0;
+    D_801594E4 = 1;
+    
+    func_80026284();
+    // toggle flags
+    func_8004DEC8();
+    
+    D_80182BA0 = 1;
+    D_8020564C = 0;
+
+    while (TRUE) {
+      
+        nuGfxDisplayOn();
+          
+        while (D_801594E4 & 1) {
+            
+            while (!D_80205208);
+            
+            if (!D_8020564C) { 
+              
+              D_80182BA0 = 1;
+              
+              // necessary to match
+              while (1) {
+                  break;
+              }
+
+              // handle specific logic depending on game mode/screen
+              mainLoopCallbacksTable[mainLoopCallbackCurrentIndex](); 
+
+              D_8020564C = D_80182BA0; 
+            } 
+            
+            D_8020564C -= 1;    
+            res = D_8020564C;
+            
+            // reset tile flags
+            func_80029CC8();
+
+            mainLoopAudioHandler(); 
+            
+            resetSpriteCounter();
+            // cutscenes 
+            func_80046D78(); 
+            // sprite graphics, collisions
+            func_80033058(); 
+            // tiling
+            func_8003C6E4(); 
+            // map graphics/display lists
+            func_8003A1BC();
+            // pause screen sprites
+            func_800467F8(); 
+            // sprite lighting adjustments
+            func_8002D3D4(); 
+            // load object sprites with nuPiReadRom
+            dmaSprites(); 
+            // sprite.c: sprite microcode, texturing
+            func_8002AE58(); 
+            // message.c
+            func_80042634(); 
+            // handle dialogue box close
+            func_80045CB0(); 
+            // no op/shelved code
+            func_800293B8(); 
+
+            // necessary to match
+            while (1) {
+                break;   
+            }
+
+            D_80205208 = 0; 
+            D_80237A04 = D_801C3BEC;
+              
+            getRandomNumber();
+            // res = getRandomNumber(); also matches
+            
+        }
+    
         nuGfxDisplayOff();
     }
 
     return res;
 }
+*/
 
 //INCLUDE_ASM(const s32, "registerMainLoopCallbacks", registerMainLoopCallback);
 
@@ -200,18 +288,21 @@ INCLUDE_ASM(const s32, "mainLoop", setMainLoopCallbackFunctionIndex);
 
 //INCLUDE_ASM(const s32, "registerMainLoopCallbacks", func_8002620C);
 
+// unused
 void func_8002620C(void) {
     D_80204B38 = 1;
 }
 
 //INCLUDE_ASM(const s32, "registerMainLoopCallbacks", func_80026220);
 
+// unused
 void func_80026220(void) {
     D_80204B38 = 0;
 }
 
 //INCLUDE_ASM(const s32, "registerMainLoopCallbacks", func_80026230);
 
+// unused
 // n64sym identified this as fbSetBg
 void func_80026230(u16 arg0) {
     // identified as FB_BGCOLOR
@@ -222,6 +313,7 @@ void noOpCallback(void) {}
 
 //INCLUDE_ASM(const s32, "mainLoop", func_80026248);
 
+// unused
 void func_80026248(u16 arg0) {
 
   u16 counter = 1;
@@ -240,6 +332,7 @@ void func_80026248(u16 arg0) {
 
 //INCLUDE_ASM(const s32, "mainLoop", func_80026284);
 
+// called by main loop
 void func_80026284(void) {
 
     u16 counter;
@@ -264,6 +357,9 @@ loop_end:
     }
 
 }
+
+
+// gfx retrace funcs
 
 //INCLUDE_ASM(const s32, "mainLoop", gfxRetraceCallback);
 
@@ -339,8 +435,6 @@ void func_800263B0(int pendingGfx) {
 //INCLUDE_ASM(const s32, "mainLoop", func_800264CC);
 
 void func_800264CC(int arg0) {
-
-    u8 temp;
     
     if (!(frameCount % D_802226E2)) {
         
@@ -357,7 +451,7 @@ void func_800264CC(int arg0) {
           D_801C3BEC = 0;
           D_801C3F34 += 1;
           // ?
-          temp = D_801C3F34;  
+          D_801C3F34;  
         }
     }
 }

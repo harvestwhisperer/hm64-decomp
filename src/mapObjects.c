@@ -273,40 +273,41 @@ INCLUDE_ASM(const s32, "mapObjects", func_800DC080);
 //INCLUDE_ASM(const s32, "mapObjects", func_800DC0F8);
 
 u16 func_800DC0F8(void) {
+
     u8 i, j;
     u16 count = 0;
-    int temp;
+
     for (i = 0; i < 0x18; i++) {
         for (j = 0; j < 0x14; j++) {
-            temp = farmFieldTiles[i][j];
-            if (temp < 0xB1) { 
-                if (0xAE < temp) {
-                    count++;                    
-                }
+            switch (farmFieldTiles[i][j]) {
+                case 0xAF ... 0xB0:
+                    count++;
+                    break;
+                default:
+                    break;
             }
         }
     }
+    
     return count;
 }
-
 
 //INCLUDE_ASM(const s32, "mapObjects", func_800DC170);
 
 // greenhouse
 u16 func_800DC170(void) {
 
-    u8 i;
-    u8 j;
-    int tempVal;
+    u8 i, j;
     u16 count = 0;
 
     for (i = 0; i < 0x18; i++) {
         for (j = 0; j < 0x14; j++) {
-            tempVal = D_80182BA8[i][j];
-            if (tempVal < 0xB1) {
-                if (tempVal > 0xAE) {
-                    count++;                    
-                }
+            switch (D_80182BA8[i][j]) {
+                case 0xAF ... 0xB0:
+                    count++;
+                    break;
+                default:
+                    break;
             }
         }
     }

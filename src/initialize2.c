@@ -415,7 +415,7 @@ void startNewDay(void) {
         setLifeEventBit(HOUSE_EXTENSION_CONSTRUCTION);
     }
      
-    if (gSeason == FALL && gDayOfMonth == 28) {
+    if (gSeason == AUTUMN && gDayOfMonth == 28) {
         setLifeEventBit(0x48);
     }
     
@@ -438,7 +438,7 @@ void startNewDay(void) {
         setFlowerFestivalGoddess();
     }
 
-    if (gSeason == FALL) {
+    if (gSeason == AUTUMN) {
 
         if (gDayOfMonth == 12) {
             gHarvestCoinFinder = getRandomNumberInRange(0, 5);
@@ -450,7 +450,7 @@ void startNewDay(void) {
             }
         }
 
-        if (gSeason == FALL && gDayOfMonth == 13 && !checkDailyEventBit(0x5D) && gHarvestCoinFinder == PLAYER) {
+        if (gSeason == AUTUMN && gDayOfMonth == 13 && !checkDailyEventBit(0x5D) && gHarvestCoinFinder == PLAYER) {
             gHarvestCoinFinder = 3;
         }
     }

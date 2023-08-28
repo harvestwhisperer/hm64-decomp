@@ -48,7 +48,7 @@ segments:
     type: code
     start: 0x1050
     vram: 0x80025C50
-    subalign: 16
+    subalign: 8
     follows_vram: entry
     subsegments:
       - [ 0x1050, c, lib/nusys-1/nuboot]
@@ -57,9 +57,9 @@ segments:
       - [ 0x1AC0, c, system/volume]
       - [ 0x1C50, c, system/mathUtils]
       - [ 0x1CF0, c, system/graphic]
-      - [ 0x4400, c, system/sprite]
-      - [ 0x4570, c, system/sprite2]
-      - [ 0x4F30, c, system/sprite3]
+      - [ 0x4400, c, system/spriteAddresses]
+      - [ 0x4570, c, system/worldGraphics]
+      - [ 0x4F30, c, system/sprite]
       - [ 0x63E0, c, system/globalSprites] 
       - [ 0x9070, c, system/renderedSprites]
       - [ 0xEBD0, c, system/map]
@@ -195,7 +195,7 @@ segments:
       - [ 0xDAD60, c, lib/os/libultra/setthreadpri]
       - [ 0xDAE30, c, lib/os/libultra/startthread]
       - [ 0xDAF50, c, lib/os/libultra/stopthread]
-      # rodata issue with exceptasm referencing ____osFaultedThread
+      # rodata issue with exceptasm referencing __osFaultedThread
       - [ 0xDB010, asm, lib/os/libultra/thread]
       - [ 0xDB050, c, lib/os/libultra/virtualtophysical]
       - [ 0xDB0B0, c, lib/os/libultra/assert]
@@ -386,19 +386,17 @@ segments:
       - [ 0xF8120, .rodata, lib/os/libultra/io/controller]
       - [ 0xF8130, .rodata, lib/kmc/syncPrintf] 
       - [ 0xF8140, .rodata, lib/os/libultra/audio/drvrnew] 
-      #- [ 0xF8280, rodata]
       - [ 0xF82D0, .rodata, lib/os/libultra/audio/env]
       - [ 0xF83F0, .rodata, lib/os/libultra/io/cartrominit]
       - [ 0xF8400, .rodata, lib/os/libultra/io/pimgr]
       - [ 0xF8430, .rodata, lib/os/libultra/io/vimgr]
       - [ 0xF8450, rodata] # vimode table
       - [ 0xF95D0, rodata, lib/os/libultra/exceptasm] 
-      #- [ 0xF9600, rodata, lib/os/libultra/exceptasm]
       - [ 0xF9610, .rodata, lib/os/libultra/initialize]
       - [ 0xF9630, .rodata, lib/os/libultra/seteventmesg]
       - [ 0xF9640, .rodata, lib/os/libultra/kdebugserver]
       - [ 0xF9650, .rodata, lib/os/libultra/settimer]
-      - [ 0xF9660, rodata] # rdbssend/send
+      - [ 0xF9660, rodata, lib/os/libultra/rdbssend] 
       - [ 0xF9670, .rodata, lib/os/libultra/readhost]
       - [ 0xF9680, .rodata, lib/os/libultra/io/vi]
       - [ 0xF96E0, rodata] # osViInit, osViGetCurrentContext, osViGetCurrentFramebuffer, viSwapContext
@@ -413,9 +411,8 @@ segments:
       - [ 0xF9990, .rodata, lib/nusys-1/nuaumisc]
       - [ 0xF9C40, rodata ] # referenced by nu gfx ucode
       - [ 0xFA040, .rodata, system/graphic] # system/graphic
-      - [ 0xFA0C0, rodata] # system/sprite3 to 0xFA168 
-      #- [ 0xFA168, rodata, system/map]
-      - [ 0xFA170, rodata] # system/map
+      - [ 0xFA0C0, .rodata, system/sprite] # system/sprite to 0xFA168 
+      - [ 0xFA168, .rodata, system/map]
       - [ 0xFA1E0, .rodata, system/tiles]
       - [ 0xFA200, .rodata, system/audio] 
       - [ 0xFA210, .rodata, system/message]
@@ -427,15 +424,14 @@ segments:
       - [ 0xFB410, .rodata, npc]
       - [ 0xFB720, .rodata, animals]
       - [ 0xFC2C0, rodata] # setCutscenes to 0xFC808
-      #- [ 0xFC808, .rodata, levelInteractions]
-      - [ 0xFC9F0, .rodata, levelInteractions] 
+      - [ 0xFC808, .rodata, levelInteractions]
       - [ 0xFD090, .rodata, overlayScreens]
       - [ 0xFD6B0, .rodata, itemHandlers]
       - [ 0xFDB60, rodata] # tv 
-      #- [ 0xFDC58, .rodata, mapObjects]
-      #- [ 0xFE838, .rodata, weather]
+      - [ 0xFDC58, .rodata, mapObjects]
+      - [ 0xFE838, .rodata, weather]
       - [ 0xFE860, rodata] # shop
-      #- [ 0xFEA58, .rodata, title]
+      - [ 0xFEA58, .rodata, title]
       - [ 0xFEA90, .rodata, loadGameScreen]
       - [ 0xFEBF0, .rodata, namingScreen]
       - [ 0xFEC40, rodata] # lib/nusys-1/nupakmenu
@@ -450,7 +446,7 @@ segments:
       - [ 0xFEF10, rodata] # gu/cosf
       - [ 0xFEF80, rodata] # gu/lookat
       - [ 0xFEF90, rodata] # gu/perspective
-      # - [ 0xFEFD8, rodata] # gu/sinf
+      - [ 0xFEFD8, rodata] # gu/sinf
       - [ 0xFF030, rodata] # setintmask and exceptasm
       - [ 0xFF0B0, .rodata, lib/os/libultra/assert]
       - [ 0xFF0D0, rodata, lib/unkknown]
@@ -463,9 +459,8 @@ segments:
       - [ 0xFF300, rodata] # used by sin and cos; __libm_qnan_f
       - [ 0xFF310, rodata, lib/os/libultra/libnaudio/n_resample]
       - [ 0xFF340, rodata] # lib/os/libultra/printf
-      #- [ 0xFF4B8, .rodata, lib/os/libultra/io/devmgr]
-      #- [ 0xFF4D8, .rodata, lib/os/libultra/rmon/rmonmem]
-      - [ 0xFF4E0, rodata, lib/os/libultra/rmon/rmonmem]
+      - [ 0xFF4B8, .rodata, lib/os/libultra/io/devmgr]
+      - [ 0xFF4D8, .rodata, lib/os/libultra/rmon/rmonmem]
       - [ 0xFF4F0, .rodata, lib/os/libultra/libc/ldtob]
       - [ 0xFF560, rodata, lib/os/libultra/rmon/rmonbrk]
 

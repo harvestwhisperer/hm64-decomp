@@ -251,12 +251,11 @@ u8 func_800AD0C4(u16 mapIndex) {
     }
     
     return result;
-}
+} 
 
 // jtbl_80121408
-INCLUDE_ASM(const s32, "levelInteractions", func_800AD1D0);
+//INCLUDE_ASM(const s32, "levelInteractions", func_800AD1D0);
 
-/*
 u8 func_800AD1D0(u16 arg0) {
 
     u8 set;
@@ -503,7 +502,6 @@ u8 func_800AD1D0(u16 arg0) {
     
     return set;
 }
-*/
 
 // jtbl_80121578
 INCLUDE_ASM(const s32, "levelInteractions", func_800AD8D0);
@@ -594,6 +592,7 @@ INCLUDE_ASM(const s32, "levelInteractions", func_800B1994);
 // jtbl_80121BD0
 INCLUDE_ASM(const s32, "levelInteractions", func_800B1AC4);
 
+// todo: use switch statements
 #ifdef PERMUTER
 u32 func_800B1C6C(u32 arg0, u8 arg1) {
 
@@ -734,8 +733,10 @@ u32 func_800B27CC(u16 mapIndex, u8 collisionIndex) {
 }
 
 // jtbl_80121C30
-//INCLUDE_ASM(const s32, "levelInteractions", handleRanchStoreExits);
+// jumptable end alignment is messed up now
+INCLUDE_ASM(const s32, "levelInteractions", handleRanchStoreExits);
 
+/*
 u32 handleRanchStoreExits(u16 mapIndex, u8 collisionIndex) {
 
     u32 result = 0;
@@ -828,6 +829,7 @@ u32 handleRanchStoreExits(u16 mapIndex, u8 collisionIndex) {
     
     return result;
 }
+*/
 
 INCLUDE_ASM(const s32, "levelInteractions", func_800B2B90);
 

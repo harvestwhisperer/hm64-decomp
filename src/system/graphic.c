@@ -255,17 +255,21 @@ INCLUDE_RODATA(const s32, "system/graphic", D_8011EC64);
 
 INCLUDE_ASM(const s32, "system/graphic", func_800278F0);
 
-// f32 func_800278F0(f32 angle) {
-//     return sinf(angle * D_8011EC78);
-// }
+/*
+f32 func_800278F0(f32 angle) {
+    return sinf(angle * D_8011EC78);
+}
+*/
 
 // matches but include_rodata macro creates a problem for the assembler
 
 INCLUDE_ASM(const s32, "system/graphic", func_80027920);
 
-// f32 func_80027920(f32 angle) {
-//     return cosf(angle * D_8011EC80);
-// }
+/*
+f32 func_80027920(f32 angle) {
+    return cosf(angle * D_8011EC80);
+}
+*/
 
 INCLUDE_ASM(const s32, "system/graphic", func_80027950);
 

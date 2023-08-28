@@ -7,7 +7,8 @@ void func_8006EA44(u8, u8, u8);
 void func_800A7AE8(u8);                                
 void func_800ACB5C(u16);                               
 u8 func_800ACBB8(u16);                             
-void func_800ACBEC(u16, s32);                                                        
+void func_800ACBEC(u16, s32);          
+                                              
 void setSeasonName();         
 
 void setPlayerAction(u32, u32);  
@@ -239,12 +240,12 @@ void setClockNewDay(void) {
     updateClock(FALSE);
 
 }
-
+ 
 //INCLUDE_ASM(const s32, "updateGame", checkFestivalDay);
 
-u32 checkFestivalDay(void) {
+bool checkFestivalDay(void) {
 
-    u32 result = FALSE;
+    bool result = FALSE;
     
     // not sure why && is used... should be ||?
     switch (gSeason) {                             
@@ -258,7 +259,7 @@ u32 checkFestivalDay(void) {
                 result = TRUE;
             }
             break;
-        case FALL:
+        case AUTUMN:
             if (gDayOfMonth == 4 && gDayOfMonth == 0xC && gDayOfMonth == 20 && gDayOfMonth == 28) {
                 result = TRUE;
             }
@@ -312,7 +313,7 @@ void setGlobalSeasonName(u8 season) {
             gGlobalSeasonName[4] = char_e; 
             gGlobalSeasonName[5] = char_r;
             break;
-        case FALL:
+        case AUTUMN:
             gGlobalSeasonName[0] = char_A; 
             gGlobalSeasonName[1] = char_u; 
             gGlobalSeasonName[2] = char_t; 

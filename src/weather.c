@@ -99,6 +99,6 @@ Vec4f setWeatherLighting(u8 weather) {
     return vec;
 }
 
-// INCLUDE_RODATA(const s32, "weather", D_80123438);
+INCLUDE_RODATA(const s32, "weather", D_80123438);
 
-// INCLUDE_RODATA(const s32, "weather", D_8012344C);
+INCLUDE_RODATA(const s32, "weather", D_8012344C);

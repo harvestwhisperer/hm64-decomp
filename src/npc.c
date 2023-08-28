@@ -17,6 +17,8 @@ extern u8 gBaseMapIndex;
 extern u8 gHour;
 extern u8 gWeather;
 
+extern u8 gWife;
+
 u8 func_8003F910(u8, u16, void*, void*, void*, void*, void*, void*, void*, u32, u32, u16, u16, f32, f32, f32); 
 u8 func_8005AF94(u8, u16, u16, u16, u8);               
 u8 setSpriteAnimation(u16, u16);                           
@@ -130,174 +132,186 @@ void func_800855EC();
 void func_800856E4();                                  
 void func_800857DC();      
 
-u8 func_80075374(u8, u8);                        
+u8 func_80075374(u8, int);                        
 
 void setNpcAnimations();                         
 void setNPCSpawningLocations();       
 
 
+void func_8002EDF0(u16, u8, u8, u8);
+u8 func_8003019C(u16, u16);   
+u8 func_80030054(u16, u16);
+u8 func_80030240(u16, u16);
+u8 func_800302E4(u16, u16);
+u8 func_8003C1A4(u8);
+u8 func_8002F684(u16, u8);    
+u8 func_8002FD80(u16, f32, f32, f32);
+u8 func_8002E284(u16, u16, u16);
+u8 func_8002FF38(u16, u8);
+
+u16 D_80114900[];
+
 
 INCLUDE_ASM(const s32, "npc", func_800752C0);
 
-INCLUDE_RODATA(const s32, "npc", jtbl_80120010);
+//INCLUDE_RODATA(const s32, "npc", jtbl_80120010);
 
-#ifdef PERMUTER
-u8 func_80075374(u8 arg0, u8 arg2, u8 arg1) {
+// jtbl_80120010
+//INCLUDE_ASM(const s32, "npc", func_80075374);
 
-    s32 tempDirection;
-    s32 adjustedDirection;
-    
-    if ((D_801FB9D0[arg0].flags & 1) && D_801FB9D0[arg0].levelIndex == gBaseMapIndex) {
+u8 func_80075374(u8 npcIndex, int arg1) {
+
+    int temp = arg1;
+
+    if ((npcInfoArray[npcIndex].flags & 1) && npcInfoArray[npcIndex].levelIndex == gBaseMapIndex) {
         
-        D_801FB9D0[arg0].flags |= 4;
+        npcInfoArray[npcIndex].flags |= 4;
 
-        switch (arg0) {
-            case 0:
-                if (checkLifeEventBit(0)) {
-                    if (gWife != 0) {
-                        D_801FB9D0[arg0].spriteIndex = 0x23; 
+        switch (npcIndex) {
+            case MARIA:
+                if (checkLifeEventBit(MARRIED)) {
+                    if (gWife == MARIA) {
+                        npcInfoArray[npcIndex].spriteIndex = 0x23; 
                         break;
                     } 
                 } 
-                goto default_set;
-            case 1:
-                if (checkLifeEventBit(0)) {
-                    if (gWife != 1) {
-                        D_801FB9D0[arg0].spriteIndex = 0x23;
-                        break;
-                    } 
-                }
-                goto default_set;
-            case 2:
-                if (checkLifeEventBit(0)) {
-                    if (gWife != 2) {
-                        D_801FB9D0[arg0].spriteIndex = 0x23;
-                        break;
-                    } 
-                }
-                goto default_set;
-            case 3:
-                if (checkLifeEventBit(0)) {
-                    if (gWife != 3) {
-                        D_801FB9D0[arg0].spriteIndex = 0x23;
-                        break;
-                    } 
-                }
-                goto default_set;
-            case 4:
-                if (checkLifeEventBit(0)) {
-                    if (gWife == 4) {
-                        D_801FB9D0[arg0].spriteIndex = 0x23;
-                        break;
-                    } 
-                }
-                goto default_set;
-            case 5:                               
-                D_801FB9D0[arg0].spriteIndex = 0x24;
+                npcInfoArray[npcIndex].spriteIndex = (u8)temp + 0x15;
+                temp++;
                 break;
-            case 39:
-                D_801FB9D0[arg0].spriteIndex = 0x1D;
+            case POPURI:
+                if (checkLifeEventBit(MARRIED)) {
+                    if (gWife == POPURI) {
+                        npcInfoArray[npcIndex].spriteIndex = 0x23;
+                        break;
+                    } 
+                }
+                npcInfoArray[npcIndex].spriteIndex = (u8)temp + 0x15;
+                temp++;
                 break;
-            case 6:                                 
-            case 7:                                 
-            case 8:                                 
-            case 9:                                 
-            case 10:                                
-            case 11:                                
-            case 12:                                
-            case 13:                                
-            case 14:                                
-            case 15:                                
-            case 16:                                
-            case 17:                                
-            case 18:                                
-            case 19:                                
-            case 20:                                
-            case 21:                                
-            case 22:                                
-            case 23:                                
-            case 24:                                
-            case 25:                                
-            case 26:                                
-            case 27:                                
-            case 28:                                
-            case 29:                                
-            case 30:                                
-            case 31:                                
-            case 32:                                
-            case 33:                                
-            case 34:                                
-            case 35:                                
-            case 36:                                
-            case 37:                                
-            case 38:
+            case ELLI:
+                if (checkLifeEventBit(MARRIED)) {
+                    if (gWife == ELLI) {
+                        npcInfoArray[npcIndex].spriteIndex = 0x23;
+                        break;
+                    } 
+                }
+                npcInfoArray[npcIndex].spriteIndex = (u8)temp + 0x15;
+                temp++;
+                break;
+            case ANN:
+                if (checkLifeEventBit(MARRIED)) {
+                    if (gWife == ANN) {
+                        npcInfoArray[npcIndex].spriteIndex = 0x23;
+                        break;
+                    } 
+                }
+                npcInfoArray[npcIndex].spriteIndex = (u8)temp + 0x15;
+                temp++;
+                break;
+            case KAREN:
+                if (checkLifeEventBit(MARRIED)) {
+                    if (gWife == KAREN) {
+                        npcInfoArray[npcIndex].spriteIndex = 0x23;
+                        break;
+                    } 
+                }
+                npcInfoArray[npcIndex].spriteIndex = (u8)temp + 0x15;
+                temp++;
+                break;
+            case BABY:                               
+                npcInfoArray[npcIndex].spriteIndex = 0x24;
+                break;
+            case PHOTOGRAPHER:
+                npcInfoArray[npcIndex].spriteIndex = 0x1D;
+                break;
+            case HARRIS:                                 
+            case GRAY:                                 
+            case JEFF:                                 
+            case CLIFF:                                 
+            case KAI:                                
+            case MAYOR:                                
+            case MAYOR_WIFE:                                
+            case LILLIA:                                
+            case BASIL:                                
+            case ELLEN:                                
+            case DOUG:                                
+            case GOTZ:                                
+            case SASHA:                                
+            case POTION_SHOP_DEALER:                                
+            case KENT:                                
+            case STU:                                
+            case MIDWIFE:                                
+            case MAY:                                
+            case RICK:                                
+            case PASTOR:                                
+            case SHIPPER:                                
+            case SAIBARA:                                
+            case DUKE:                                
+            case GREG:                                
+            case CARPENTER_1:                                
+            case CARPENTER_2:                                
+            case MASTER_CARPENTER:                                
+            case HARVEST_SPRITE_1:                                
+            case HARVEST_SPRITE_2:                                
+            case HARVEST_SPRITE_3:                                
+            case SYDNEY:                                
+            case BARLEY:                                
+            case GOURMET_JUDGE:
             default:
-default_set:
-                D_801FB9D0[arg0].spriteIndex = arg1 + 0x15;
-                arg1++;
+                npcInfoArray[npcIndex].spriteIndex = (u8)temp + 0x15;
+                temp++;
                 break;
         }
     
-        D_801FB9D0[arg0].currentCoordinates.x = D_801FB9D0[arg0].startingCoordinates.x;
-        D_801FB9D0[arg0].currentCoordinates.y = D_801FB9D0[arg0].startingCoordinates.y;
-        D_801FB9D0[arg0].currentCoordinates.z = D_801FB9D0[arg0].startingCoordinates.z;
+        npcInfoArray[npcIndex].currentCoordinates.x = npcInfoArray[npcIndex].startingCoordinates.x;
+        npcInfoArray[npcIndex].currentCoordinates.y = npcInfoArray[npcIndex].startingCoordinates.y;
+        npcInfoArray[npcIndex].currentCoordinates.z = npcInfoArray[npcIndex].startingCoordinates.z;
     
-        func_8002E284(D_801FB9D0[arg0].spriteIndex, D_80114900[arg0], 1);
-        func_8003019C(D_801FB9D0[arg0].spriteIndex, 1);
-        func_80030054(D_801FB9D0[arg0].spriteIndex, 1);
-        func_8002FF38(D_801FB9D0[arg0].spriteIndex, 0);
+        func_8002E284(npcInfoArray[npcIndex].spriteIndex, D_80114900[npcIndex], 1);
+        func_8003019C(npcInfoArray[npcIndex].spriteIndex, 1);
+        func_80030054(npcInfoArray[npcIndex].spriteIndex, 1);
+        func_8002FF38(npcInfoArray[npcIndex].spriteIndex, 0);
     
-        tempDirection = D_801FB9D0[arg0].direction + 8 - func_8003C1A4(0);
+        func_8002F684(npcInfoArray[npcIndex].spriteIndex, (npcInfoArray[npcIndex].direction + 8 - func_8003C1A4(0)) % 8);
+        func_8002FD80(npcInfoArray[npcIndex].spriteIndex, npcInfoArray[npcIndex].currentCoordinates.x, npcInfoArray[npcIndex].currentCoordinates.y, npcInfoArray[npcIndex].currentCoordinates.z);
     
-        adjustedDirection = tempDirection;
-    
-        if (tempDirection < 0) {
-            adjustedDirection = tempDirection + 7;
-        }
-        
-        func_8002F684(D_801FB9D0[arg0].spriteIndex, (tempDirection - (adjustedDirection >> 3)*8));
-        func_8002FD80(D_801FB9D0[arg0].spriteIndex, D_801FB9D0[arg0].currentCoordinates.x, D_801FB9D0[arg0].currentCoordinates.y, D_801FB9D0[arg0].currentCoordinates.z);
-    
-        if (D_801FB9D0[arg0].flags & 8) {
-            switch (arg0) {                   
-                case 5:                             
-                    func_8002ECD4(D_801FB9D0[arg0].spriteIndex, 0x23, 0xFE);
+        if (npcInfoArray[npcIndex].flags & 8) {
+            switch (npcIndex) {                   
+                case BABY:                             
+                    func_8002ECD4(npcInfoArray[npcIndex].spriteIndex, 0x23, 0xFE);
                     break;
                 case 41:                            
-                    func_8002ECD4(D_801FB9D0[arg0].spriteIndex, D_801FB9D0[0].spriteIndex, 0xFE);
+                    func_8002ECD4(npcInfoArray[npcIndex].spriteIndex, npcInfoArray[MARIA].spriteIndex, 0xFE);
                     break;
                 case 42:                            
-                    func_8002ECD4(D_801FB9D0[arg0].spriteIndex, D_801FB9D0[1].spriteIndex, 0xFE);
+                    func_8002ECD4(npcInfoArray[npcIndex].spriteIndex, npcInfoArray[POPURI].spriteIndex, 0xFE);
                     break;
                 case 43:                            
-                    func_8002ECD4(D_801FB9D0[arg0].spriteIndex, D_801FB9D0[2].spriteIndex, 0xFE);
+                    func_8002ECD4(npcInfoArray[npcIndex].spriteIndex, npcInfoArray[ELLI].spriteIndex, 0xFE);
                     break;
                 case 44:                            
-                    func_8002ECD4(D_801FB9D0[arg0].spriteIndex, D_801FB9D0[3].spriteIndex, 0xFE);
+                    func_8002ECD4(npcInfoArray[npcIndex].spriteIndex, npcInfoArray[ANN].spriteIndex, 0xFE);
                     break;
                 case 45:                            
-                    func_8002ECD4(D_801FB9D0[arg0].spriteIndex, D_801FB9D0[4].spriteIndex, 0xFE);
+                    func_8002ECD4(npcInfoArray[npcIndex].spriteIndex, npcInfoArray[KAREN].spriteIndex, 0xFE);
                     break;
                 }
             
-                func_8002EDF0(D_801FB9D0[arg0].spriteIndex, 0, 0xE, 0x14);
-                func_8003019C(D_801FB9D0[arg0].spriteIndex, 0);
-                func_80030054(D_801FB9D0[arg0].spriteIndex, 0);
-                func_80030240(D_801FB9D0[arg0].spriteIndex, 0);
-                func_800302E4(D_801FB9D0[arg0].spriteIndex, 0);
+                func_8002EDF0(npcInfoArray[npcIndex].spriteIndex, 0, 0xE, 0x14);
+                func_8003019C(npcInfoArray[npcIndex].spriteIndex, 0);
+                func_80030054(npcInfoArray[npcIndex].spriteIndex, 0);
+                func_80030240(npcInfoArray[npcIndex].spriteIndex, 0);
+                func_800302E4(npcInfoArray[npcIndex].spriteIndex, 0);
         }
     
-        D_801FB9D0[arg0].unk_21 = 0;
-        D_801FB9D0[arg0].unk_22 = 0;
-        D_801FB9D0[arg0].flags |= 4;
+        npcInfoArray[npcIndex].unk_21 = 0;
+        npcInfoArray[npcIndex].unk_22 = 0;
+        npcInfoArray[npcIndex].flags |= 4;
+        
     }
 
-    return arg1;
+    return temp;
 }
-#else
-// jtbl_80120010
-INCLUDE_ASM(const s32, "npc", func_80075374);
-#endif
 
 //INCLUDE_ASM(const s32, "npc", func_800758B8);
 
@@ -352,15 +366,15 @@ INCLUDE_ASM(const s32, "npc", func_80075A78);
 
 //INCLUDE_ASM(const s32, "npc", func_80075E28);//
 
-void func_80075E28(u8 index) {
+void func_80075E28(u8 npcIndex) {
 
-    npcInfoArray[index].unk_20 = 0;
-    npcInfoArray[index].unk_21 = 0xA;
-    npcInfoArray[index].unk_22 = 0;
+    npcInfoArray[npcIndex].unk_20 = 0;
+    npcInfoArray[npcIndex].unk_21 = 0xA;
+    npcInfoArray[npcIndex].unk_22 = 0;
 
-    setSpriteAnimation(npcInfoArray[index].spriteIndex, npcInfoArray[index].unk_24);
+    setSpriteAnimation(npcInfoArray[npcIndex].spriteIndex, npcInfoArray[npcIndex].unk_24);
 
-    npcInfoArray[index].flags |= 2;
+    npcInfoArray[npcIndex].flags |= 2;
     
 }
 
@@ -434,25 +448,34 @@ void func_80076108(u8 index, u8 arg1, u8 arg2) {
     u16 temp;
     
     if (!npcInfoArray[index].unk_21) {
+
         npcInfoArray[index].unk_20 = 0;
         npcInfoArray[index].unk_22 = 0;
+
         setSpriteAnimation(npcInfoArray[index].spriteIndex, arg1);
+
         temp = getRandomNumberInRange(0, 60);
+
         if (temp < 4) {
             npcInfoArray[index].direction = temp*2;
             npcInfoArray[index].unk_21 = 1;
         }
+
         npcInfoArray[index].flags |= 2;
         return;
     }
     
     if (npcInfoArray[index].direction & 1) {
+
         npcInfoArray[index].unk_20 = 0;
         npcInfoArray[index].unk_22 = 0;
         npcInfoArray[index].unk_21 = 0;
+
     } else {
+
         npcInfoArray[index].unk_20 = 1;
         npcInfoArray[index].unk_22 = 0;
+        
         setSpriteAnimation(npcInfoArray[index].spriteIndex, arg2);
         
         if (getRandomNumberInRange(0, 19) < 8) {
@@ -915,6 +938,7 @@ u8 func_80085C94(void) {
                 D_801C3E18 = i;
             }
         }  
+
         i++;
     } 
     
@@ -928,6 +952,7 @@ u8 func_80085D48(int index, u16 arg1) {
     u8 result;
     
     int temp;
+    // something very wrong here... maybe a struct?
     u8 arr[8];
     
     arr[7] = index;

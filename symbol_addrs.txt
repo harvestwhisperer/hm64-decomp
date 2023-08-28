@@ -142,7 +142,7 @@ epidma_text_0038 = 0x80100828;
 epidma_text_0084 = 0x80100874;
 osEPiLinkHandle = 0x80100890;
 _bcopy = 0x801008E0;
-_bzero = 0x80100C00;
+bzero = 0x80100C00;
 kmc_proutSyncPrintf = 0x80100CA0;
 syncprintf_text_0090 = 0x80100D30;
 osSyncPrintf = 0x80100ED8;
@@ -1130,6 +1130,8 @@ gFarmAnimals = 0x80170280;
 gCurrentSeasonName = 0x80170445;
 
 gBaseMapIndex = 0x80170458;
+
+nuContDataLockKey = 0x80181B14;
 
 SramHandle = 0x80181B18;
 
