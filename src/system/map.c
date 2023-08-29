@@ -1,10 +1,17 @@
 #include "common.h"
 
-#include "map.h"
-#include "graphic.h"
+#include "system/map.h"
 
-void func_800366F4(f32 [], u16, f32, f32);                     
-u16  func_80036880(u32, u32, u32);     
+#include "system/graphic.h"
+
+// forward declarations
+void func_800366F4(Vec3f*, u16, f32, f32);                  
+u16 func_80036880(u32, f32, f32);  
+
+// bss
+extern UnknownMapStruct1 D_80158248;
+extern UnknownMapStruct2 D_8013DC40;
+extern UnknownMapStruct3 D_80143168[];
 
 // convert to 2d array
 extern u16 D_80141D28;
@@ -14,12 +21,7 @@ extern f32 D_80170460;
 extern f32 D_801FB5D4;
 extern f32 D_802226EC;
 
-void func_80026E78(void*, void*, void*);                   
-void *func_80028888(u32, u32);                        
-void *func_800288B8(u32, u32, u32);                   
-
-// struct
-//extern ? D_80143168;
+// struct/array
 extern f32 D_80143180;
 extern f32 D_80143184;
 extern f32 D_80143188;
@@ -28,6 +30,7 @@ extern u32 D_80141C98;
 extern u32 D_80141C9C;
 extern u32 D_80141CA0;
 
+// shared
 // array?
 extern f32 D_801580D8;
 extern f32 D_801580DC;
@@ -37,11 +40,6 @@ extern f32 D_801580E8;
 extern f32 D_801580EC;
 extern f32 D_801580F0;
 extern f32 D_801580F4;
-
-extern UnknownMapStruct1 D_80158248;
-extern UnknownMapStruct2 D_8013DC40;
-extern UnknownMapStruct3 D_80143168[];
-
 
 INCLUDE_ASM(const s32, "system/map", func_800337D0);
 
@@ -57,9 +55,9 @@ INCLUDE_ASM(const s32, "system/map", func_800342F4);
 
 //INCLUDE_ASM(const s32, "system/map", func_80034350);
 
-u8 func_80034350(u16 arg0, u8 arg1, u8 arg2, u8 arg3, u8 arg4) {
+bool func_80034350(u16 arg0, u8 arg1, u8 arg2, u8 arg3, u8 arg4) {
     
-    u8 res;
+    bool res;
 
     f32 temp_f0;
     f32 temp_f2;
@@ -117,9 +115,9 @@ INCLUDE_ASM(const s32, "system/map", func_80034EF0);
 
 //INCLUDE_ASM(const s32, "system/map", func_80035004);
 
-u8 func_80035004(u16 arg0, u16 arg1, u8 arg2, u8 arg3) {
+bool func_80035004(u16 arg0, u16 arg1, u8 arg2, u8 arg3) {
 
-    u8 result;
+    bool result;
 
     result = 0;
 
@@ -164,22 +162,26 @@ INCLUDE_ASM(const s32, "system/map", func_8003544C);
 
 //INCLUDE_ASM(const s32, "system/map", func_80035914);
 
-u8 func_80035914(u16 arg0, f32 arg1, f32 arg2) {
+bool func_80035914(u16 arg0, f32 arg1, f32 arg2) {
 
-    f32 arr[0];
-    u32 arr2[3];
-    u8 res = 0;
+    Vec3f vec;
+    
+    bool result = 0;
 
     if (!arg0) {
+
         if (D_80158248.flags & 1) {
-            func_800366F4(arr, 0, arg1, arg2);
-            if (arr[1] != 65535.0f) {
-                res = func_80036880(0, arr2[0], arr2[2]) != 0;
+
+            func_800366F4(&vec, 0, arg1, arg2);
+
+            if (vec.y != MAX_UNSIGNED_SHORT) {
+                result = func_80036880(0, vec.x, vec.z) != 0;
             }
+
         }
     }
     
-    return res;
+    return result;
 }
 
 INCLUDE_ASM(const s32, "system/map", func_800359C8);
@@ -224,7 +226,7 @@ Vec3f *func_80036610(Vec3f *arg0, u16 arg1, f32 arg2, f32 arg3) {
 
     vec.x = 0.0f;
     vec.z = 0.0f;
-    vec.y = 65535.0f;
+    vec.y = MAX_UNSIGNED_SHORT;
 
     if (!arg1 && D_80158248.flags & 1) {
         
@@ -248,8 +250,9 @@ INCLUDE_ASM(const s32, "system/map", func_80036980);
 
 //INCLUDE_ASM(const s32, "system/map", func_80036A84);
 
-u16 func_80036A84(u16 arg0) {
-    u16 result = 0;
+bool func_80036A84(u16 arg0) {
+
+    bool result = 0;
     
     if (!arg0 && (D_80158248.flags & 1)) {
         // bit 4

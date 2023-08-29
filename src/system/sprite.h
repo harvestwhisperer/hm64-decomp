@@ -25,7 +25,7 @@ typedef struct {
 	u16 animation;
 	Vec3f shrink;
 	Vec3f scale;
-	Vec3f vec3Unk;
+	Vec3f unk_44;
     Vec4f rgba;
 	Vec4f rgbaCurrent;
 	Vec4f rgbaDefault;
@@ -133,5 +133,74 @@ typedef struct {
 	Vec4f defaultRgba;
 	Vec4f unk_54;
 } UnknownStruct5;
+
+/* renderedSprites.c */
+void initializeNpcSpriteStructs(void);
+bool func_8002E284(u16, u16, u32);      
+bool func_8002EDF0(u16 index, s16 arg1, s16 arg2, s16 arg3);
+bool func_8002F014(u16, u8, u8, u8, u8);             
+bool func_8002ECD4(u16, u16, u16);              
+bool func_8002F114(u16, u8);                              
+bool func_8002F684(u16, u8);                    
+void func_8002F6F0();    
+bool func_8002F2FC(u16, u16); 
+void func_8002F730();               
+bool func_8002F7C8(u8, u8, u8, u8);               
+bool func_8002F8F0(u8, u8, u8, u8, s32);      
+bool func_8002FA2C(u16);      
+bool func_8002FD80(u16, f32, f32, f32);   
+void func_8002FB3C();
+void func_8002FCB4(u16, u8);  
+bool func_8002FD24(u16 index);
+bool func_8002FE10(u16, f32, f32, f32, f32);           
+bool func_8002FECC(u16); 
+bool func_8002FF38(u16, u8);
+bool func_80030054(u16, u8);                                                   
+bool func_80030388(u16 index);                   
+void func_80033058(void);                           
+bool func_8003019C(u16, u8);                            
+bool func_80030240(u16, u8);                            
+bool func_800302E4(u16, u8);         
+bool func_800309B4(u16, f32, f32);     
+u16 func_80030BA0(u16* ptr, u16 offset);  
+Vec3f* func_800315A0(Vec3f*, u16 index);    
+bool func_80031380(s32);   
+bool func_80031830(u16, u32, u8);        
+Vec3f* func_80031904(Vec3f* vec, u16 index, s16 arg2, u8 arg3);
+bool setSpriteAnimation(u16 index, u16 arg1);
+
+/* globalSprites.c */
+void func_8002AFE0(void); 
+void func_8002B138(u16, void*, void*, void*, void*, void*, void*, void*, void*, void*, void*, void*, void*, void*, u8); 
+bool func_8002B6B8(u16 index);
+bool func_8002B80C(u16 index, u16 offset, u8 arg2);
+bool func_8002BAD8(u16);   
+void func_8002BB88(u16); 
+bool func_8002BD0C(u16 index, f32 x, f32 y, f32 z);  
+bool func_8002BD90(u16, f32, f32, f32);                                                                                                        
+bool func_8002BE98(u16, f32, f32, f32);    
+bool func_8002BE14(u16, f32, f32, f32);                        
+bool func_8002C1C0(u16 index, u8 r, u8 g, u8 b, u8 a, s16 arg5);
+bool func_8002C7EC(u16, u16);                              
+bool func_8002C85C(u16 index, u8 r, u8 g, u8 b, u8 a);
+bool func_8002C914(u16, u8, u8, u8, u8);
+bool func_8002CAA8(u16, u8);  
+bool func_8002CB24(u16, u8);     
+void func_8002CB88(u16, u16);     
+bool func_8002CBF8(u16);   
+void func_8002D3D4(void);
+
+/* spriteAddresses.c */
+void resetSpriteAddressesFlags(void);
+u16 setSpriteAddresses(u8 *romAddr, u8 *vaddr, u32 length);
+void dmaSprites();
+
+/* sprite.c */
+void func_80029B30(void);
+bool func_8002AE58(void);
+
+
+extern RenderedSprite renderedSprites[MAX_RENDERED_SPRITES];
+extern Sprite globalSprites[MAX_ACTIVE_SPRITES];
 
 #endif

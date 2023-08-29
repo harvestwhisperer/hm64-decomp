@@ -23,41 +23,6 @@ typedef struct {
 } Animation;
 
 typedef struct {
-	u8 currentStamina; // 0
-	char name[6]; // 1-7
-    u8 padding;
-	u8 fatigueCounter; // 8
-    u32 unk_C;
-    u32 unk_10;
-    u8 unk_14;
-    u8 toolSlots[8]; // 0x15
-    u8 currentTool; // 0x1D
-    u8 bottleContents; // 0x1E
-    u8 unk_1F[5];
-    u8 belongingsSlots[8];
-    u8 unk_2C;
-    u8 unk_2D;
-    u8 keyItemSlots[24];
-    u8 unk_46;
-    u8 unk_47;
-	Vec3f startingCoordinates; // 0x48
-	Vec3f currentCoordinates; // 0x54
-	u32 unk_60; // 0x60
-	u16 action1; // 0x64
-	u16 action2; // 0x66
-	u16 action3; // 0x68
-	u8 action4; // 0x6A
-	u8 unk_6B; // 0x6B
-	u8 unk_6C; // 0x6C
-	u8 direction; // 0x6D
-	u8 unk_6E; // 0x6E
-	u8 unk_6F; // 0x6F
-	u8 unk_70;
-	u8 fatigue[5]; // 71
-    u16 flags; // 0x78
-} Player;
-
-typedef struct {
 	void *address;
 	u32 maxValue;
 	u8 set;
@@ -68,23 +33,6 @@ typedef struct {
     void *romEnd;
     u16 flags;
 } TileInfo;
-
-typedef struct {
-	void *tileBank;
-	Vec3f unk_4;
-	Vec3f unk_10;
-	Vec3f unk_1C;
-	Vec3f unk_28;
-	Vec3f unk_34; 
-	u16 unk_40;
-	u8 unk_42;
-	u8 mapIndex;
-	u8 unk_44;
-	u8 unk_45;
-	u16 unk_46;
-	u8 rotation;
-	u16 flags;
-} MapTileContext;
 
 typedef struct {
     u8 unk_0;
@@ -110,54 +58,6 @@ typedef struct {
 } Addresses;
 
 typedef struct {
-    u16 unk_0;
-    u16 unk_2;
-    u16 unk_4;
-    u8 unk_6;
-} MainLoopCallbackInfo;
-
-// D_801D6238
-typedef struct {
-    u8 unk_0[15];
-    u8 numGamePaks; // 0xF, D_801D624C
-    u32 unk_10;
-    u8 unk_14;
-    u8 unk_15[20]; //  D_801D624D
-    u8 unk_29; // D_801D6261
-    u8 unk_2A[6]; // D_801D6262
-    u8 unk_2B;
-    u32 unk_2C;
-    u32 unk_34;
-    u16 unk_3A;
-    u8 unk_3C;
-    u8 gamePakEnabled; // 0x3D, D_801D6275
-    u8 playerNames[4][6]; // D_801D6278
-    u8 dateNumbers[4][2]; // D_801D6290
-    u8 seasonNames[4][6]; // D_801D6298
-    u8 dateEndings[4][2];  // "st" or "rd" strings /* 0x78 */ D_801D62B0
-    u8 fontLoadingFlags[4]; // D_801D62B8
-    u8 diaryHighlighted; /* 0x84 */  // D_801D62BC
-    u8 actionColumnHighlighted; /* 0x85 */
-    u8 unk_86;
-    u8 showControllerPakScreen; /* 0x87 */
-    u8 unk_88;
-    u8 action; // move/delete /* 0x89 */
-} LoadGameScreenInfo;
-
-typedef struct {
-    Vec3f unk_0;
-    u32 unk_C;
-    u32 unk_10;
-    u32 unk_14;
-    Vec3i unk_18;
-    u16 unk_24;
-    u16 unk_26;
-    u16 unk_28;
-    u8 unk_2A;
-    u8 flags;
-} UnknownStruct;
-
-typedef struct {
     u32 padding[3923];
     f32 unk_3D4C;
     f32 unk_3D50;
@@ -173,19 +73,6 @@ typedef struct {
     f32 unk_3D78;
     f32 unk_3D7C;
 } UnknownStruct2;
-
-// likely related to tool use
-typedef struct {
-    u16 unk_0; // 28
-    u8 unk_2; // 2A
-    u8 unk_3; // 2B
-    u16 unk_4; // 2C
-    u16 unk_6; // 2E
-    u8 unk_8; // 30
-    u16 unk_A; // 32
-    u16 unk_C; // 34
-    u8 unk_E; // 36
-} UnknownStruct3;
 
 typedef struct {
     s8 unk_0;

@@ -1,88 +1,48 @@
 #include "common.h"
 
+#include "player.h"
+
+#include "system/controller.h"
 #include "system/sprite.h"
+#include "system/tiles.h"
+
 #include "animals.h"
-
-extern RenderedSprite renderedSprites[];
-
-extern Horse horseInfo;
-
-extern Player gPlayer;
-
-extern u8 gMaximumStamina;
-
-extern u8 gBaseMapIndex;
-
-extern u8 keyItemSlots[];
-
-// player starting coordinates
-extern Vec3f playerDefaultStartingCoordinates[];
-// player starting directions
-extern u8 playerDefaultStartingDirections[];
-extern Vec3f D_8016F8A4;
-extern Vec4f globalLightingRgba;
-
-extern s8 D_8011F3F0[12];
-extern s8 D_8011F3FC[12];
-
-extern u8 gToolchestSlots[];  
-// tool use info struct?
-extern UnknownStruct3 D_80189828;
-
-extern u8 D_80189836;
-extern s16 D_801FD610;
-extern u16 D_80237410;
-
-u32 adjustValue(s32 current, s32 amount, s32 max);                 
-
-void setAudio(u16);   
-void setSpriteAnimation(u8, u32);
-
-u8 func_8002E284(u16, u16, u32);                           
-u8 func_8002F014(u16, u8, u8, u8, u8);             
-u8 func_8002F114(u16, u8);                              
-u8 func_8002F684(u16, u8);                    
-u32 func_8002FD80(u8, f32, f32, f32);   
-u8 func_8002FECC(u16); 
-u32 func_8002FF38(u8, u16);                           
-u32 func_80030054(u8, u8);
-u32 func_8003019C(u16, u8);                              
-Vec3f* func_800315A0(Vec3f*, u16 index);                   
-u8 func_80031380(s32);                               
-u32 func_80034DC8(u8, u8, u8);   
-u8 func_8003C1A4(u16);            
-u32 func_8004D35C(u16, s16);      
+#include "game.h"
+#include "gameAudio.h"
+#include "gameStatus.h"
+#include "itemHandlers.h"
+#include "level.h"
+#include "mainproc.h"
+#include "mapObjects.h"
+#include "shop.h"
+ 
+// forward declaration
 u8 func_80067A24(u8);                               
-void func_80099DE8();                                  
-void func_800CF850();                                  
-u8 func_800D5390(u8 index, u8 arg1, u32 arg2, u16 arg3, u8 arg4);
-void func_800D5548(u8);                 
-u8 func_800D5B00(u16 index);                          
-u8 func_800D5B18(u16 index);                  
-void func_800D55E4(u8, u8);         
-void func_800DC7BC(u8);                            
-void func_800DC9C0(u8);
-u8 func_800DCAA0(u8); 
 
-u8 func_80031830(u16, u32, u8);                       
-Vec3f *func_80031904(Vec3f*, u8, u8, u8);                   
-u8 func_8003C1A4(u16);                        
-void func_8008B9AC();                                  
-u8 func_800DA978(u8 index);                             
-u8 func_800DB1BC(f32, f32);    
+// rodata
+extern s8 D_8011F3F0[12];
+extern s8 D_8011F3FC[12]; 
 
-u32 checkLifeEventBit(u16);        
-void setLifeEventBit(u16);     
-u32 checkDailyEventBit(u16);                        
-void setDailyEventBit(u16);                              
-void toggleDailyEventBit(u16);      
+// data
+extern Vec3f playerDefaultStartingCoordinates[];
+// data
+extern u8 playerDefaultStartingDirections[];
 
+// bss here or itemHandlers.c
+extern u8 D_80189836;
+
+// possible bss
+extern u8 gMaximumStamina;
+extern u8 gToolchestSlots[];  
+
+// unknown
+extern u16 D_80237410;
 
 
 //INCLUDE_ASM(const s32, "player", setupPlayerSprite);
 
 void setupPlayerSprite(u16 arg0, u8 resetPlayer) {
-
+ 
     func_8002E284(PLAYER, 0, 1);
     func_8003019C(PLAYER, 1);
     func_80030054(PLAYER, 1);
@@ -206,8 +166,8 @@ u8 acquireKeyItem(u8 item) {
     u8 found = 0xFF;
 
     for (i = 0; i < MAX_KEY_ITEMS && found == 0xFF; i++) {
-        if (keyItemSlots[i] == 0) {
-            keyItemSlots[i] = item;
+        if (gPlayer.keyItemSlots[i] == 0) {
+            gPlayer.keyItemSlots[i] = item;
             found = 1;
         }
     }
@@ -222,8 +182,8 @@ u8 removeKeyItem(u8 item) {
     u8 found = 0xFF;
 
     for (i = 0; i < MAX_KEY_ITEMS && found == 0xFF; i++) {
-        if (keyItemSlots[i] == item) {
-            keyItemSlots[i] = 0;
+        if (gPlayer.keyItemSlots[i] == item) {
+            gPlayer.keyItemSlots[i] = 0;
             found = 1;
         }
     }
@@ -264,7 +224,7 @@ u8 checkHaveKeyItem(u8 item) {
     
     for (i = 0; i < MAX_KEY_ITEMS && !found; i++) {
 
-        if (keyItemSlots[i] == item) {
+        if (gPlayer.keyItemSlots[i] == item) {
             found = 1;
         }
     }
@@ -298,7 +258,7 @@ Vec3f* func_80065F94(Vec3f *arg0, f32 arg1, u8 arg2) {
 
     func_800315A0(&vec, 0);
 
-    if (vec.y != 65535.0f) {
+    if (vec.y != MAX_UNSIGNED_SHORT) {
 
         vec.x += ptr[(renderedSprites[PLAYER].direction + func_8003C1A4(D_801FD610)) % 8] * arg1;
         vec.z += ptr2[(renderedSprites[PLAYER].direction + func_8003C1A4(D_801FD610)) % 8] * arg1;

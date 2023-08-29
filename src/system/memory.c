@@ -3,7 +3,8 @@
 
 #include "memory.h"
 
-extern OSPiHandle SramHandle;
+// bss
+OSPiHandle SramHandle;
 
 //INCLUDE_ASM(const s32, "system/memory", sramInit);
 

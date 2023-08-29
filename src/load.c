@@ -1,53 +1,24 @@
 #include "common.h"
 
 #include "animals.h"
+#include "game.h"
+#include "gameStatus.h"
+#include "npc.h"
+#include "mapObjects.h"
+#include "overlayScreens.h"
+#include "updateGame.h"     
+#include "weather.h"       
 
-void func_8005A60C();                                  
-void func_80075A18();                                  
-void func_800886D0();                   
-void func_8009BC64();                                  
-void func_800CC17C();                                  
-void func_800D9BFC();                                  
-u32 func_800DC008();                                
-u32 func_800DC080();                                
-u32 func_800DC0F8();                                
-u32 func_800DC170();                
-
-u8 handleHouseConstruction(u8);                          
-u8 getSumBacholerettesWithAffectionThreshold(u8 affectionLevel);
-
-u32 checkDailyEventBit(u16 bitIndex);                          
-u32 checkLifeEventBit(u16 bitIndex);                       
-void setDailyEventBit(u16 bitIndex);                              
-void setLifeEventBit(u16 bitIndex);                               
-void toggleLifeEventBit(u16 bitIndex);      
-void resetDailyBits();    
-void setFestivalDailyBits();                                  
-void setSeasonName();        
-void setSpecialDialogues();           
-void setWifeNameString(u8 wife);          
-
-extern u8 D_8016F898;
-extern u8 D_8016FAF8;
-extern u8 D_80189054;
-extern u8 D_801C3F46;
-
+// bss
+u8 mountainConstructionWorkDays;
 // unused scoring variables
-extern u16 gTotalGrassTiles;
-extern u16 gTotalPinkCatMintFlowersGrowing;
-extern u8 gSumGirlsWithHighAffection;
-extern u8 gAverageFarmAnimalAffection;
+u16 gTotalGrassTiles;
+u16 gTotalPinkCatMintFlowersGrowing;
+u8 gSumGirlsWithHighAffection;
+u8 gAverageFarmAnimalAffection;
 
-extern u8 mountainConstructionWorkDays;
+// shared
 extern u8 gHouseExtensionSelection;
-
-extern u8 gDayOfMonth;
-extern u8 gSeason;
-extern u8 gWeather;
-extern u8 gWife;
-extern u8 gYear;
-
-extern FarmAnimal gFarmAnimals[];
 
 //INCLUDE_ASM(const s32, "load", func_800598E0);
 
@@ -90,9 +61,9 @@ void func_800598E0(void) {
     
     setSpecialDialogues();
     
-    gSumGirlsWithHighAffection = getSumBacholerettesWithAffectionThreshold(140);
+    gSumGirlsWithHighAffection = getBacholeretteWithHighestAffection(140);
     gTotalGrassTiles = func_800DC008() + func_800DC080(); // farm field + greenhouse
-    gTotalPinkCatMintFlowersGrowing = func_800DC0F8() + func_800DC170(); // farm field + greenhouse
+    gTotalPinkCatMintFlowersGrowing = countPinkCatMintFlowersFarm() + countPinkCatMintFlowersGreenhouse(); // farm field + greenhouse
     
     if (checkLifeEventBit(MARRIED)) {
         setWifeNameString(gWife);
@@ -106,7 +77,6 @@ void func_800598E0(void) {
 
             if (gDayOfMonth == 5) {
                 gAverageFarmAnimalAffection = (gFarmAnimals[D_8016FAF8].affection + gFarmAnimals[D_801C3F46].affection + gFarmAnimals[D_8016F898].affection) / 3;
-                // reset farm animal structs; why on winter 5?
                 func_800886D0();
             }
 

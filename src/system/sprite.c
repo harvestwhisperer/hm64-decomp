@@ -3,7 +3,6 @@
 #include "sprite.h"
 #include "graphic.h"
 
-
 extern u16 D_801C3E2A;
 
 extern const char *D_8011ED4C;
@@ -16,7 +15,7 @@ extern u16 D_8021E6E6[2][128][32];
 extern volatile u32 gDisplayContext;
  
 void __assert(const char*, const char*, u32);                              
-void func_80026E78(Bitmap*, s32, s32);                   
+               
 Gfx* func_8002A66C(Gfx*, Bitmap*, u16);             
 bool func_8002ACA4(Bitmap*, Gfx*);                      
 
@@ -327,6 +326,22 @@ u8 *func_8002A340(u16 arg0, u32 *start, u8 *timg, u8 *romAddr) {
 // get length of texture segment
 INCLUDE_ASM(const s32, "system/sprite", func_8002A3A0);
 
+// display lists
+
+// have to match functions to fix asm referencing each array element as its own variable
+// func_8002A66C and func_8002A410
+/*
+static const Gfx D_8011ECC0[] = {
+
+    gsDPSetCombineMode(G_CC_MODULATEIA, G_CC_MODULATEIA),
+    gsDPSetRenderMode(G_RM_AA_ZB_XLU_SURF, G_RM_AA_ZB_XLU_SURF2),
+    gsDPSetCombineMode(G_CC_MODULATEIDECALA, G_CC_MODULATEIDECALA),
+    gsDPSetRenderMode(G_RM_AA_ZB_TEX_EDGE, G_RM_AA_ZB_TEX_EDGE2),
+    gsDPSetRenderMode(G_RM_AA_TEX_EDGE, G_RM_AA_TEX_EDGE2),
+
+};
+*/
+
 INCLUDE_RODATA(const s32, "system/sprite", D_8011ECC0);
 
 INCLUDE_RODATA(const s32, "system/sprite", D_8011ECC4);
@@ -347,9 +362,26 @@ INCLUDE_RODATA(const s32, "system/sprite", D_8011ECE0);
 
 INCLUDE_RODATA(const s32, "system/sprite", D_8011ECE4);
 
+
 INCLUDE_ASM(const s32, "system/sprite", func_8002A410);
 
 INCLUDE_ASM(const s32, "system/sprite", func_8002A530);
+
+
+// func_8002A66C
+/*
+static const Gfx D_8011ED00[] = {
+
+    gsSPTexture(qu016(0.5), qu016(0.5), 0, G_TX_RENDERTILE, G_ON),
+    gsDPSetTextureFilter(G_TF_BILERP),
+    gsDPSetTextureFilter(G_TF_POINT),
+    gsSP2Triangles(0, 2, 1, 0, 0, 3, 2, 0),
+    gsSP2Triangles(0, 1, 2, 0, 0, 2, 3, 0),
+    gsDPPipeSync(),
+    gsSPEndDisplayList()
+
+};
+*/
 
 INCLUDE_RODATA(const s32, "system/sprite", D_8011ED00);
 
@@ -378,6 +410,8 @@ INCLUDE_RODATA(const s32, "system/sprite", D_8011ED2C);
 INCLUDE_RODATA(const s32, "system/sprite", D_8011ED30);
 
 INCLUDE_RODATA(const s32, "system/sprite", D_8011ED34);
+
+
 
 INCLUDE_ASM(const s32, "system/sprite", func_8002A66C);
 

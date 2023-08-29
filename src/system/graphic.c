@@ -1,20 +1,55 @@
 #include "common.h"
-#include "graphic.h"
-#include "sprite.h"
 
-extern Camera gCamera;
+#include "system/graphic.h"
 
-extern NUUcode	nugfx_ucode[];
-extern u16*	FrameBuf[3];
+#include "system/sprite.h"
+#include "system/worldGraphics.h"
 
+#include "mainproc.h"
+
+// forward declarations
+
+void func_80026F30(Bitmap* arg0, u16* arg1);
+Gfx *func_80028A64(Gfx*, Camera*, WorldGraphics*);
+Gfx* func_800293C0(Gfx*, Mtx*);    
+u8 func_80026BE0();      
+void func_80028EB8(f32, f32, f32);            
+
+Gfx* clearFramebuffer(Gfx* dl);                  
+Gfx* initRcp(Gfx*);                               
+u32 startGfxTask(void);
+
+void setCameraLookAt(Camera*, f32, f32, f32, f32, f32, f32, f32, f32, f32); 
+void setCameraOrthographicValues(Camera*, f32, f32, f32, f32, f32, f32); 
+void setCameraPerspectiveValues(Camera*, f32, f32, f32, f32);    
+
+// bss
+Camera gCamera;
+
+LookAt D_80126540;
+
+Gfx gfxList[0x1F];
+Gfx D_801836A0[2][0x280];
+Gfx D_80205000[0x20];
+
+// should be Mtx?
+f32 D_80237460[0x2D][4];
+// doesn't seem right; need to fix this struct and base address
+UnknownGraphicsStruct1 D_802373B4[2];
+                        
+// data, possibly external
 extern Gfx setup_rdpstate[];
 extern Gfx setup_rspstate[];
 extern Gfx rdpstateinit_dl[];
-extern Gfx gfxList[0x1F];
-extern Gfx D_80112A60[3];
-extern Gfx D_80205000[0x20];
 
 // data
+extern NUUcode nugfx_ucode[];
+// nugfxtaskinit data?
+extern u16*	FrameBuf[3];
+
+extern Vp viewport;
+
+extern Gfx D_80112A60[3];
 /*
 Gfx D_80112A60[] = { 
   // gsSPViewport(&viewport),
@@ -22,48 +57,21 @@ Gfx D_80112A60[] = {
   // gsSPEndDisplayList(),
 }
 */
-  
-extern Gfx D_801836A0[2][0x280];
 
-extern f32 D_8011EC90[8];
+// rodata
+extern f64 D_8011EC78;
+extern f64 D_8011EC80;
 
-extern volatile u8 gfxTaskNo;
-extern volatile u32 gDisplayContext;
-
-extern LookAt D_80126540;
-//D_80112900
-extern Vp viewport;
-
-// should be Mtx?
-extern f32 D_80237460[0x2D][4];
-
-// doesn't seem right; need to fix this struct and base address
-extern UnknownGraphicsStruct1 D_802373B4[2];
-
-Gfx* clearFramebuffer(Gfx* dl);                  
-Gfx* initRcp(Gfx*);                               
-u32 startGfxTask(void);
-                                                      
 // assert strings                                                      
 extern const char D_8011EC60[];
 extern const char D_8011EC64[];
 
-extern f64 D_8011EC78;
-extern f64 D_8011EC80;
+// shared globals
+// also used by tiles.c, map.c, and worldGraphics.c
 extern Vec3f D_8013D5D8;
 extern Vec3f D_8017044C;
 extern f32 D_80170450;
 extern f32 D_80170454;
-
-// forward declarations
-void func_80026F30(Bitmap* arg0, u16* arg1);
-Gfx *func_80028A64(Gfx*, Camera*, WorldGraphics*);
-Gfx* func_800293C0(Gfx*, Mtx*);    
-u8 func_80026BE0();      
-void func_80028EB8(f32, f32, f32);                      
-void setCameraLookAt(Camera*, f32, f32, f32, f32, f32, f32, f32, f32, f32); 
-void setCameraOrthographicValues(Camera*, f32, f32, f32, f32, f32, f32); 
-void setCameraPerspectiveValues(Camera*, f32, f32, f32, f32);       
 
 
 //INCLUDE_ASM(const s32, "system/graphic", graphicsInit);
@@ -155,7 +163,7 @@ u8 func_80026BE0(void) {
 
 //INCLUDE_ASM(const s32, "system/graphic", func_80026CEC);
 
-u8 func_80026CEC(s32 arg0, s32 arg1) {
+u8 func_80026CEC() {
 
     Gfx *dl;
 
@@ -384,7 +392,7 @@ f32 func_80028820(u8 arg0) {
 
     return ptr[arg0];
 }
-
+ 
 //INCLUDE_ASM(const s32, "system/graphic", func_80028888);
 
 void *func_80028888(u16 arg0, u32 *arg1) {

@@ -1,10 +1,16 @@
 #include "common.h"
 
-#include "graphic.h"
+#include "system/worldGraphics.h"
 
+#include "system/graphic.h"
+#include "system/map.h"
+
+// bss
 extern u16 spriteCounter;
 
+// unused
 extern u8 D_80189135[9];
+
 extern WorldGraphics D_8018A850[0x150];
 
 

@@ -1,7 +1,12 @@
 #include "common.h"
-#include "animals.h"
 
-// likely bss
+#include "gameStatus.h"
+
+#include "animals.h"
+#include "game.h"
+#include "mapObjects.h"
+
+// bss
 extern u32 dailyEventBits[];
 extern u32 lifeEventBits[];
 extern u32 specialDialogueBits[];
@@ -10,14 +15,8 @@ extern u32 D_801C3F38[];
 // mailbox bits
 extern u32 D_8016FFEC[];
 
+// shared
 extern u32 D_80189058;
-
-extern Chicken gChickens[MAX_CHICKENS];
-
-extern u8 farmFieldTiles[FARM_FIELD_WIDTH][FARM_FIELD_HEIGHT];
-extern u8 gSeason;
-
-void func_800DAA90(u8, u8, u8, u8); 
 
 
 // jtbl_8011F300
@@ -32,8 +31,8 @@ void func_80063D38(void) {
     u8 j;
 
     if (gSeason != WINTER) {
-        for (i = 0; i < FARM_FIELD_WIDTH; i++) {
-            for (j = 0; j < FARM_FIELD_HEIGHT; j++) {
+        for (i = 0; i < FIELD_WIDTH; i++) {
+            for (j = 0; j < FIELD_HEIGHT; j++) {
                 if (farmFieldTiles[i][j] == WEED) {
                     setSpecialDialogueBit(0x88);
                     func_800DAA90(FARM, 1, j, i);

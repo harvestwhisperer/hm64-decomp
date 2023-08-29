@@ -1,24 +1,44 @@
 #include "common.h"
 
 #include "system/controller.h"
+#include "system/cutscene.h"
+#include "system/dialogue.h"
 #include "system/map.h"
+#include "system/mathUtils.h"
+#include "system/message.h"
+#include "system/sprite.h"
+#include "system/tiles.h"
 
 #include "animals.h"
+#include "game.h"
+#include "gameAudio.h"
+#include "gameStatus.h"
+#include "initialize2.h"
+#include "itemHandlers.h"
+#include "level.h"
+#include "mainLoop.h"
+#include "namingScreen.h"
 #include "npc.h"
+#include "player.h"
+#include "setCutscenes.h"
+#include "updateGame.h"
+#include "weather.h"
 
+// forward declaration
+u8 func_80060DC0();
+
+// bss
+extern u8 gSeconds;
 extern u8 gHour;
+extern u8 gMinutes;
 extern u8 gDayOfWeek;
 extern u8 gDayOfMonth;
 extern u8 gSeason;
-extern u8 gForecast;
+extern u8 gNextSeason;
 extern u8 gYear;
-extern u8 gWeather;
 
 extern Vec4f D_80180718;
 extern Vec4f globalLightingRgba;
-
-extern u16 gCurrentSongIndex;
-extern s32 gSongVolume;
 
 extern u8 gHarvestKing;
 extern u8 gFlowerFestivalGoddess;
@@ -28,168 +48,38 @@ extern u8 gWife;
 extern u8 gWifePregnancyCounter;
 extern u8 gWifeConceptionCounter;
 
+extern u8 gBabyAge;
+
 extern u32 gGold;
 extern u32 dailyShippingBinValue;
 
-extern u16 gCutsceneIndex;
-
 extern u8 houseExtensionConstructionCounter;
 
-extern Player gPlayer;
-extern u8 gMaximumStamina;
-extern u8 gHappiness;
 extern u8 gItemBeingHeld;
 
-extern u32 gCutsceneFlags;
 extern u16 gCurrentSongIndex;
 extern u8 gNamingScreenIndex;
-
-extern u8 gBaseMapIndex;
-extern Vec4f globalLightingRgba;
-extern u16 gTileContextFlags;
-
-extern Dog dogInfo;
-extern Horse horseInfo;
-extern FarmAnimal gFarmAnimals[];
-extern Chicken gChickens[0xC];
-
-extern u8 npcAffection[TOTAL_NPCS];
-extern u32 dailyEventBits[];
-
-extern Controller controllers[4];
-
-extern u8 houseConstructionDays[6];
-extern u16 lifeEventHouseConstructionBits[6];
-extern u8 animalLocationsHouseConstruction[6];
 
 extern u8 gFarmName[6];
 extern u8 gWifeName[6];
 extern u8 gBabyName[6];
 extern u8 harvestKingName[6];
 
-extern UnknownMapStruct1 D_80158248;
+extern u16 gTotalGrassTiles;
+extern u16 gTotalPinkCatMintFlowersGrowing;
 
-void adjustDogAffection(s8 value);                            
-void adjustHorseAffection(s8 value);     
-void setAnimalLocations(u8);  
-void setDogLocation(u8);        
-void setHorseLocation(u16);                            
-           
-void setPlayerAction(u16, u16);    
-u8 checkFatigueLevel(); 
-u32 acquireKeyItem(u8);
-void removeKeyItem(u32);  
-u8 checkHaveKeyItem(u8);
-
-void setMainLoopCallbackFunctionIndex(u16 callbackIndex); 
-
-u32 checkDailyEventBit(u16 bitIndex);
-void setDailyEventBit(u16 bitIndex);
-void toggleDailyEventBit(u16 bitIndex);                  
-void setLifeEventBit(u16);                    
-void toggleLifeEventBit(u16);                            
-u32 checkLifeEventBit(u16 bitIndex);   
-u32 checkSpecialDialogueBit(u16 bitIndex);
-void setSpecialDialogueBit(u16 bitIndex);
-void toggleSpecialDialogueBit(u16 bitIndex);    
-u32 checkMailRead(u16);                            
-void setMail(u16);      
-void setRecipes(void);  
-
-void setExit(u16 locationIndex);
-void setClockNewDay(void);
-void startNewDay(void);   
-
-u8 checkAllSfxInactive(void);
-
-void setPlayerAction(u16, u16);
-
-u16 getRandomNumberInRange(u16 min, u16 max);
-               
-void func_8002F6F0();                               
-void func_8002F8F0(u8, u8, u8, u8, s32);                   
-void func_8002F730();   
-void func_8002F7C8(u8, u8, u8, u8);   
-void func_8002FB3C();
-void func_8002FCB4(u16, u8);    
-u8 func_80036A84(u16);       
-void func_8003BE98(u16, u8, u8, u8, u8);
-//void func_8003BF7C(u16, u8, u8, u8, u8, u8);                                               
-void func_8003C504(u32);     
-void func_8003DDF8(u32, u32, u32, u32);
-s32 func_8003F0DC();  
-void func_8003F360(u16, s16, u8);     
-void func_8003F54C(u16, f32, f32, f32);
-void func_8003F690(u16, u8, u8, u8);  
-void func_80043430(u16, u16, u16, u16);
-void func_80046860();
-void func_80046BB8();   
-void func_80046C98();
-void func_80046CF4(); 
-void func_80056030(u8);        
-void func_8005C07C(s16 arg0, u16 arg1);
-u8 func_80060DC0();                                 
-void func_80060E58();                                   
-void func_800610DC();
-void func_80061A88(void); 
-void func_8006EA44(u8, u8, u8);            
-void func_80088C1C(u8, u8);            
-u8 func_8009B3DC();                             
-u8 func_8009B4EC();                                
-u8 func_8009B564();          
-u16 func_800A87C4();       
-void func_800A8F74();
-void func_800ACB5C(u16);                          
-u8 func_800ACBB8(u16 songIndex);
-void setAudio(u16);   
-void func_800D5548(u8);  
-void func_800ED8A0(u8*, u8);
-
-u8 func_8003F910(u8, u16, void*, void*, void*, void*, void*, void*, void*, u32, u32, u16, u16, f32, f32, f32); 
-u8 func_80043A88();                                
-void func_8005CDCC();                              
-void func_800D55E4(u8, u8);                               
-u16 func_800D5A6C(u16 index);      
-  
-void func_8003BF7C(u16, u8, u8, u8, u8, s32);
-void func_8006EB94(Vec4f*, u16);                          
-void func_800ACBEC(u16, s32);                      
-
-u32 getLevelFlags(u8);                              
-Vec4f setWeatherLighting(u8 weather);                      
-                  
-extern u8 D_8011F244;
-extern u8 D_8011F245;
-extern u16 D_8011F250;
-extern u8 D_8011F258;
-extern u8 D_8011F259;
+extern u32 gTotalCropsShipped;
+extern u32 gTotalEggsShipped;
+extern u32 gTotalGoldenMilkShipped;
 
 extern u8 D_801C3F36;
 extern u8 D_801C3F96;
 extern u8 D_801C3F97;
 extern u8 D_801C3F98;
 extern u8 D_801C3F99;
-extern u8 D_801C3F9A;
 
-extern u8 D_801886D4[6];
+extern MainLoopCallbackInfo D_80205230;
 
-extern u16 D_8015825A;
-
-extern u8 D_8016F6E3;
-extern u8 D_8016FAD8;
-extern u16 D_8016FDF0;
-extern u8 D_8017026F;
-extern u8 D_8017027E;
-extern u8 D_80170444;
-extern u8 D_801886A0;
-
-extern u16 D_801890D6;
-extern u8 gBabyAge;
-extern u8 D_801891C4;
-extern s32 D_801891D4;
-extern u8 D_8018A059;
-extern u16 D_801FB686;   
-extern u8 D_801FB9A4;
 extern u8 D_801C3F37;
 extern u8 D_801FC150;
 extern u8 D_801FC155;
@@ -197,24 +87,28 @@ extern u8 D_801FC15C;
 extern u8 D_801FD618;
 extern u8 D_801FD621;
 extern u8 D_80205201;
-
-extern u8 D_8016FFE8;
-extern u8 D_80170464;
-extern u8 D_80182FB8;
-extern u8 D_801FC155;
-extern u8 D_80205624;
-
-extern MainLoopCallbackInfo D_80205230;
-
 extern u8 D_802055D1;
 extern u8 D_8020562C;
-extern u8 D_80237412;             
+extern u8 D_80237412;  
 
-extern void *D_D47F00;
-extern void *D_D49B80;
-extern void *D_D49B80_2;
-extern void *tvSprites_romTextureStart;
+// unused
+extern u16 D_801FB686;   
 
+// maybe evaluation.c
+extern u16 D_80215DF0;
+
+// shared: likely bss
+extern u8 D_8016F6E3;
+extern u8 D_8016FAD8;
+extern u8 D_8017026F;
+extern u8 D_8017027E;
+extern u8 D_80170444;
+extern u8 D_801886A0;
+extern u8 D_801891C4;
+extern u8 D_8018A059;
+extern u8 D_801FB9A4;
+
+// data
 extern u8 D_80113B20[];
 extern u8 D_80113B38[];
 extern u8 D_80113B50[];
@@ -228,7 +122,18 @@ extern u8 D_80113BF8[];
 extern u8 D_80113C10[];
 extern u8 D_80113C28[];
 
-// has jumptable
+// rodata
+extern u8 houseConstructionDays[6];
+extern u16 lifeEventHouseConstructionBits[6];
+extern u8 animalLocationsHouseConstruction[6];
+                                                  
+// shared sprite rom addresses
+extern void *D_D47F00;
+extern void *D_D49B80;
+extern void *D_D49B80_2;
+extern void *tvSprites_romTextureStart;
+
+
 //INCLUDE_ASM(const s32, "game", func_80059D90);
 
 void func_80059D90(void) {
@@ -264,11 +169,9 @@ void func_80059D90(void) {
                 setSpecialDialogueBit(0x155);
                 break;
             default:
-                goto check_kid;
+                break;
         }
      }
-        
-check_kid:
 
     if (!checkLifeEventBit(HAVE_BABY) && checkLifeEventBit(WIFE_PREGNANT)) {
         gWifePregnancyCounter += 1;
@@ -297,7 +200,7 @@ check_kid:
                 setSpecialDialogueBit(0x150);
                 break;
             default:
-                goto not_married;
+                break;
         }
     }
 
@@ -401,7 +304,7 @@ not_married:
             D_8018A059 += 1;
         }
 
-        if (!checkLifeEventBit(ANN_CLIFF_BABY) && !checkLifeEventBit(0x24) && (D_801C3F99 >= 250) && (D_80170444 >= 30)) {
+        if (!checkLifeEventBit(ANN_CLIFF_BABY) && !checkLifeEventBit(0x24) && (npcAffection[CLIFF] >= 250) && (D_80170444 >= 30)) {
             setLifeEventBit(0x24);
             D_8018A059 = 0;
             setSpecialDialogueBit(0x3A);
@@ -427,7 +330,7 @@ not_married:
             D_8017026F += 1;
         }
 
-        if (!checkLifeEventBit(KAREN_KAI_BABY) && !checkLifeEventBit(0x25) && (D_801C3F9A >= 250) && (D_802055D1 >= 30)) {
+        if (!checkLifeEventBit(KAREN_KAI_BABY) && !checkLifeEventBit(0x25) && (npcAffection[KAI] >= 250) && (D_802055D1 >= 30)) {
             setLifeEventBit(0x25);
             D_8017026F = 0;
             setSpecialDialogueBit(0x3B);
@@ -435,7 +338,6 @@ not_married:
     }
 }
 
-// jtbl_8011EF80
 //INCLUDE_ASM(const s32, "game", func_8005A60C);
 
 void func_8005A60C(void) {
@@ -1696,7 +1598,7 @@ void func_80060490(void) {
 
 void func_800604B0(void) {
 
-    if (func_80036A84(0) || !(D_8015825A & 1)) {
+    if (func_80036A84(0) || !(D_80158248.flags & 1)) {
         
         func_8003F54C(0, 0, -64.0f, 352.0f);
         func_8003F690(0, 1, 0, 0);
@@ -1830,7 +1732,7 @@ void func_80060624(void) {
 }
 
 //INCLUDE_ASM(const s32, "game", func_80060838);
-
+ 
 void func_80060838(void) {
     
     // check map flags
@@ -1843,7 +1745,7 @@ void func_80060838(void) {
             gPlayer.flags &= 0xFFFE;
             
             toggleDailyEventBit(0x5C);
-            
+             
             setHorseLocation(0xFF);
             
             horseInfo.flags &= 0xFFF7;
@@ -2388,9 +2290,9 @@ void setFlowerFestivalGoddess(void) {
 }
 
 // func_800618EC
-//INCLUDE_ASM(const s32, "game", getSumBacholerettesWithAffectionThreshold);
+//INCLUDE_ASM(const s32, "game", getBacholeretteWithHighestAffection);
 
-u8 getSumBacholerettesWithAffectionThreshold(u8 affectionLevel) {
+u8 getBacholeretteWithHighestAffection(u8 affectionLevel) {
     
     u8 girlIndex = 0;
 
@@ -2694,7 +2596,7 @@ void setLetters(void) {
         setMail(0x1A);
     }
 
-    if (!checkMailRead(0x1B) && checkLifeEventBit(0x2D) && !getRandomNumberInRange(0, 10)) {
+    if (!checkMailRead(0x1B) && checkLifeEventBit(CLIFF_GONE) && !getRandomNumberInRange(0, 10)) {
         setMail(0x1B);
     }
 
@@ -2710,7 +2612,7 @@ void setLetters(void) {
         setMail(0x1E);
     }
 
-    if (!checkMailRead(0x1F) && checkLifeEventBit(0x2E) && !getRandomNumberInRange(0, 10)) {
+    if (!checkMailRead(0x1F) && checkLifeEventBit(KAI_GONE) && !getRandomNumberInRange(0, 10)) {
         setMail(0x1F);
     }
 

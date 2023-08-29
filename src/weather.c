@@ -1,24 +1,20 @@
 #include "common.h"
 
+#include "system/map.h"
+#include "system/sprite.h"
+
+// likely bss
+extern u8 gWeather;
+
+// data
 extern u8 D_80118B50[5][4];
 
-void func_8002B138(u16, void*, void*, void*, void*, void*, void*, void*, void*, void*, void*, void*, void*, void*, u8); 
-
-void func_8002BD90(u16, f32, f32, f32);            
-void func_8002C7EC(u16, u16);                   
-u8 func_8002C914(u16, u8, u8, u8, u8);                 
-void func_80034D64(u32, u8, u16, u32);
-
+// shared: level.c
 extern void *D_D92970;
 extern void *D_D92D50;
 extern void *D_D92D50_2;
 extern void *D_D92D70;
 extern void *D_D92D70_2;
-
-extern u8 D_80118B50[5][4];
-
-// likely bss
-extern u8 gWeather;
 
 //INCLUDE_ASM(const s32, "weather", func_800DC360);
 

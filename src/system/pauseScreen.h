@@ -24,4 +24,11 @@ typedef struct {
     u16 flags;
 } PauseScreenSprites;
 
+extern void func_80045DE0();  
+extern bool func_80045E20(u16 index, u16 arg1, void *arg2, void *arg3, void *arg4, void *arg5, void *arg6, void *arg7, void *arg8, void *arg9, void *argA, u16 argB, u8 argC, f32 argD, f32 argE, f32 argF, u8 arg10);
+extern bool func_80045F5C(u16 index, u32 arg1, u8 arg2, u16 flag);
+extern bool func_80046120(u16 index);
+extern void func_800461D8(s32, u8, u8, u8, u8); 
+extern void func_800467F8();
+
 #endif

@@ -1,5 +1,7 @@
 #include "common.h"
 
+// bss
+// struct/array
 extern u32 D_8013CE0C;
 extern u8 D_8013CE10;
 

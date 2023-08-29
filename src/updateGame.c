@@ -1,51 +1,28 @@
 #include "common.h"
 
-void func_8003FBD8(u8, u8, u8);                         
-void func_8005C07C(u32, u32);                          
-void func_8005C940(u32, u16 callbackIndex);                              
-void func_8006EA44(u8, u8, u8);                        
-void func_800A7AE8(u8);                                
-void func_800ACB5C(u16);                               
-u8 func_800ACBB8(u16);                             
-void func_800ACBEC(u16, s32);          
-                                              
-void setSeasonName();         
+#include "updateGame.h"
 
-void setPlayerAction(u32, u32);  
+#include "system/message.h"
 
-u32 getLevelFlags(u8);                              
-
-u32 checkDailyEventBit(u16); 
-void setDailyEventBit(u16);                              
-void toggleDailyEventBit(u16);        
-void toggleLifeEventBit(u16);
-void toggleReadLetterBit(u16);      
-
+#include "game.h"
+#include "gameStatus.h"
+#include "gameAudio.h"
+#include "level.h"
+#include "player.h"
+#include "setCutscenes.h"
+                    
 // forward declarations
+void setSeasonName();         
 void toggleMonthlyLetterBits();                    
 void setGlobalSeasonName(u8);           
 void setupNewYear();        
 
-extern u32 gSongVolume;
-extern u16 gCurrentSongIndex;
-
-// cutscene flags?
-extern s32 D_801891D4;
-
-extern u8 gBaseMapIndex;
-extern u8 gWeather;
-
-extern u8 gFlowerFestivalGoddess;
-extern u8 gHarvestCoinFinder;
-extern u8 gHarvestKing;
-extern u8 gVoteForFlowerFestivalGoddess;
-
-// bss?
-extern u8 gMinutes;
+// likely bss
 extern u8 gSeconds;
-extern u8 gDayOfMonth;
-extern u8 gDayOfWeek;
 extern u8 gHour;
+extern u8 gMinutes;
+extern u8 gDayOfWeek;
+extern u8 gDayOfMonth;
 extern u8 gSeason;
 extern u8 gNextSeason;
 extern u8 gYear;
@@ -53,6 +30,8 @@ extern u8 gYear;
 extern u8 gCurrentSeasonName[6];
 extern u8 gGlobalSeasonName[6];
 
+// shared
+extern u8 gWeather;
 
 //INCLUDE_ASM(const s32, "updateGame", func_800D7C20);
 

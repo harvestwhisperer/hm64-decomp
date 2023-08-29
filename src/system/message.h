@@ -108,4 +108,28 @@ typedef struct {
     u32 flags; // 0xA4
 } DialogueBox;
 
+
+extern void func_8003D970();  
+extern bool func_8003DBE8(u16, s32);     
+extern bool func_8003DD14(u16);                      
+extern void func_8003DDF8(u32, u32, u32, u32);     
+extern bool func_8003E77C(u16, u8, u8, u8, u8);                   
+extern bool func_8003EA1C(u16, u8, u8, u8, u8, s32);       
+extern s32 func_8003F0DC();  
+extern bool func_8003F360(u16, s16, u8);                           
+extern bool func_8003F464(u16, u8, u8, s32, s32);                   
+extern bool func_8003F54C(u16, f32, f32, f32);                        
+extern bool func_8003F5D0(u16, u8, u8);                           
+extern bool func_8003F630(u16, u8, u8);                           
+extern bool func_8003F690(u16, u8, u8, u8);                        
+extern bool func_8003FAF8(u16, u16);                              
+extern bool func_8003FB4C(u16, u16);                              
+extern bool func_8003FBA0(u16, u8*, s32);  
+extern void func_8003FBD8(u8, u8, u8);    
+extern bool func_8003F910(u8, u16, void*, void*, void*, void*, void*, void*, void*, u32, u32, u16, u16, f32, f32, f32); 
+extern void func_80042634();
+extern void func_80045CB0();
+
+extern DialogueBox D_80188B70[2];
+
 #endif

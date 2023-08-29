@@ -1,6 +1,7 @@
 #include "common.h"
 
-u16 getRandomNumber(void);
+// library func
+extern u16 getRandomNumber(void);
 
 //INCLUDE_ASM(const s32, "system/utility", func_80026850);
 

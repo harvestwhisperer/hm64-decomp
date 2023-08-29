@@ -32,4 +32,13 @@ typedef struct {
     u16 flags; // 0x6C
 } Cutscene;
 
+extern u32 gCutsceneFlags;
+
+extern void func_80046860();
+extern bool func_800469A8(u16 index, void *cutsceneMapPointer);
+extern void func_80046BB8();   
+extern void func_80046C98();     
+extern void func_80046CF4();    
+extern void func_80046D78();
+
 #endif

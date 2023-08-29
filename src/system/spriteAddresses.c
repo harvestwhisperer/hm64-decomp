@@ -1,7 +1,8 @@
 #include "common.h"
 
-#include "sprite.h"
+#include "system/sprite.h"
 
+// bss
 extern SpriteInfo spriteAddresses[MAX_SPRITE_INFO];
 
 extern u16 D_801FADB2;

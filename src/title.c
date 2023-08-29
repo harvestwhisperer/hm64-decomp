@@ -1,24 +1,29 @@
 #include "common.h"
-       
-u8 func_8002B6B8(u16);                                 
-u8 func_8002B80C(u16, u16, u8);                           
-u8 func_8002BAD8(u16);                                    
-u8 func_8002BD0C(u16 index, f32 x, f32 y, f32 z);       
-u8 func_8002BE98(u16, f32, f32, f32);                        
-u8 func_8002C1C0(u16, u8, u8, u8, s32, s32);              
-u8 func_8002CBF8(u16);                               
-u32 func_8004D380(u8, u32);                            
-u32 func_8004D3C8(u8, u32);                            
-void func_80055F08(u16, u8, u8);                           
-void func_800ACB5C(u16);                                 
-u8 func_800ACBB8(u8);                               
-void func_800ACC50(u16);                                 
+
+#include "system/controller.h"  
+#include "system/sprite.h"
+                                                        
+#include "gameAudio.h"
+#include "initialize2.h"                                 
+     
+// forward declarations
 void func_800E0ED4();                                  
 void func_800E0FEC();                                  
 void func_800E10E8();                                  
 void func_800E1380(u8);            
 
+// bss
+
+// struct
+extern u8 D_80126570;
 extern f32 D_80126578;
+extern u8 D_80126571;
+extern u16 D_80126574;
+extern u32 D_8012657C;
+
+extern u8 D_801C3F50;
+
+// struct/float aray/vec?
 extern f32 D_80200AC4;
 extern f32 D_80200B60;
 extern f32 D_80200BFC;
@@ -26,13 +31,6 @@ extern f32 D_80200C98;
 extern f32 D_80200D34;
 extern f32 D_80200DD0;
 
-extern u8 D_80126570;
-extern u8 D_80126571;
-extern u16 D_80126574;
-extern u32 D_8012657C;
-extern u8 D_801C3F50;
-
-              
 
 INCLUDE_ASM(const s32, "title", func_800DE3C0);
 
@@ -87,7 +85,7 @@ void func_800E00A4(void) {
                 func_8002BAD8(0x45);
                 func_8002B80C(0x44, 8, 0xFE);
                 D_80126570 = 1;
-                func_800ACC50(0);
+                setAudio(0);
             }
             func_800E0ED4();
             break;
@@ -138,7 +136,7 @@ void func_800E00A4(void) {
                     if (D_80126571 != 1) {
                         func_8002BD0C(0x45, -56.0f, -52.0f, 56.0f);
                         D_80126571 = 1;
-                        func_800ACC50(2);
+                        setAudio(2);
                     }
                     set = 1;
                 }
@@ -149,7 +147,7 @@ void func_800E00A4(void) {
                     if (D_80126571) {
                         func_8002BD0C(0x45, -56.0f, -20.0f, 56.0f);
                         D_80126571 = 0;
-                        func_800ACC50(2);
+                        setAudio(2);
                     }
                     set = 1;
                 }
@@ -192,7 +190,7 @@ void func_800E00A4(void) {
                 func_8002C1C0(0x5A, 0, 0, 0, 0, 8);
                 func_8002C1C0(0x5B, 0, 0, 0, 0, 8);
                 D_80126570 = 4;
-                func_800ACC50(0);
+                setAudio(0);
             }
 
         func_800E0ED4();

@@ -94,4 +94,62 @@ typedef struct {
     u8 unk_5; 
 } AnimalLocations;
 
+
+extern void func_800876D0();     
+extern void func_800879C8();
+extern void func_80087CD4();    
+extern void func_80087D5C();   
+extern void func_80087DEC();                   
+extern void func_8008841C();    
+extern void func_800886D0();  
+extern void func_80088C1C(u8, u8);                
+extern void func_80088D54();                                  
+extern void func_8008B9AC();                                  
+extern void func_80099DE8();  
+extern void func_8009A398(void);   
+extern u8 func_8009A400();
+extern u8 func_8009A810();    
+extern void func_8009A97C(); 
+extern void func_8009A17C();       
+extern void func_8009A2D0();
+extern void func_8009A53C();  
+extern void func_8009AAC8();     
+extern void func_8009B25C();     
+extern u8 func_8009B2BC(u8);  
+extern u8 func_8009B374();
+extern u8 func_8009B3DC();  
+extern u8 func_8009B464();                                
+extern u8 func_8009B4EC();  
+extern u8 func_8009B564();          
+extern s32 func_8009B5E0();     
+extern u8 func_8009B658();                                
+extern u8 func_8009B828(u8);
+extern void func_8009BC64();      
+
+extern void initializeHorse(void); 
+
+void adjustDogAffection(s8 value);                            
+void adjustHorseAffection(s8 value);    
+
+void setAnimalLocations(u8);  
+void setDogLocation(u8);        
+void setHorseLocation(u8);     
+
+
+extern Chicken gChickens[MAX_CHICKENS];
+extern FarmAnimal gFarmAnimals[];
+extern u8 D_801886D4[6];
+extern Dog dogInfo;
+extern Horse horseInfo;
+
+extern u8 D_8016F898;
+extern u8 D_8016FAF8;
+extern u16 D_8016FDF0;
+extern u8 D_8016FFE8;
+extern u8 D_80170464;
+extern u8 D_80189054;
+extern u8 D_8018908C;
+extern u8 D_801C3F46;
+extern u8 D_801FC155;
+
 #endif

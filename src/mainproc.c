@@ -1,66 +1,50 @@
 #include "common.h"
 
-void initializeAll();                                                                    
-void func_8004DF10();               
+#include "system/controller.h"
+#include "system/dialogue.h"
+#include "system/flags.h"
+#include "system/graphic.h"
+#include "system/message.h"
+#include "system/pauseScreen.h"
+#include "system/sprite.h"
+#include "system/tiles.h"
+#include "system/worldGraphics.h"
 
-void mainLoop();
+#include "gameStart.h"
+#include "mainproc.h"
+#include "mainLoop.h"                                                 
 
-void registerMainLoopCallback(int, void*);       
-void setMainLoopCallbackFunctionIndex(int);    
+// bss
+volatile u16 D_801594E4;
+volatile u8 D_8016FB04;
+volatile u8 D_8013DC30;
+volatile u8 D_8016FB04;
+volatile u8 D_801C3BEC;
+volatile u8 D_801C3F34;
+volatile u8 D_801C3F71;
+volatile u8 D_801C4215;
+u16 D_801FD610;
+volatile u8 D_80204B38;
+volatile u8 D_80205208;
+volatile u16 D_8020564C;
+volatile u32 D_802226E8;
+volatile u8 D_802226E2;
+volatile u8 D_80222730;
+volatile u8 D_802373F1;
+volatile u8 D_80237A04;
+volatile u8 frameCount;
 
-void controllerInit();
-void graphicsInit();  
+volatile u32 gDisplayContext;
+volatile u8 gfxTaskNo;
 
-void func_80025F04();           
-void resetSpriteAddressesFlags();                                   
-void func_80029170();                                   
-void func_80029B30();                                   
-void func_8002AFE0();                                   
-void initializeNpcSpriteStructs();                                   
-void func_800337D0();                                   
-void func_8003B870();                                   
-void func_8003D970();                                   
-void func_80042F60();                                   
-void func_80045DE0();                                   
-void func_80046860();                                             
-void func_8004DEB0();              
- 
-void nuGfxPreNMIFuncSet(void (*func)(void));                                                      
+volatile u32 D_801C3B68[4];
+volatile u8 D_801C3F34;
+volatile u8 D_801C3F71;
+volatile u8 D_801D6230;
 
-// fix name
-void noOpCallback(void);
-
-void gfxRetraceCallback(void);
-void gfxBufferSwap(void);
-void gfxPreNMICallback(void);
-
-extern u8 gfxTaskNo;
-
-extern volatile u16 D_801594E4;
-extern volatile u8 D_8016FB04;
-
-extern volatile u32 D_801C3B68[4];
-extern volatile u8 D_801C3BEC;
-extern volatile u8 D_801C3F34;
-extern volatile u8 D_801C3F71;
-extern volatile u8 D_801D6230;
-extern volatile u16 D_801FD610;
-extern volatile u8 D_80204B38;
-extern volatile u8 D_80205208;
-extern volatile u8 D_8020520A;
-extern volatile u32 D_80205630;
-extern volatile u8 D_80205634;
-extern volatile u16 D_8020564A;
-extern volatile u8 D_802226E2;
-extern volatile u8 D_802373F1;
-extern volatile u8 D_80237408;
-extern volatile u8 D_80237A04;
-
-extern u8 frameCount;
-extern u32 gDisplayContext;
-
-extern u16 mainLoopCallbackCurrentIndex;
-extern void (*mainLoopCallbacksTable[MAIN_LOOP_CALLBACK_FUNCTION_TABLE_SIZE])();
+// internal variables
+volatile u16 D_8020564A;
+volatile u8 D_80237408;
 
 
 //INCLUDE_ASM(const s32, "mainproc", func_80025D90);
@@ -140,14 +124,18 @@ void func_80025F04(void) {
     D_80205208 = 0;
     D_801594E4 = 0;
     D_8020564A = 0;
-    D_80205634 = 0;
+
+    frameCount = 0;
+
     D_8016FB04 = 0;
     D_801C3F71 = 0;
     D_801D6230 = 0;
     D_801C3F34 = 0;
     D_801C3BEC = 0;
     D_80237A04 = 0;
-    D_8020520A = 0xFF;
+
+    gfxTaskNo = 0xFF;
+
     D_80237408 = 0;
     D_802373F1 = 1;
     D_802226E2 = 1;
@@ -157,7 +145,8 @@ void func_80025F04(void) {
     D_801C3B68[2] = 0;
     D_801C3B68[3] = 0;
 
-    D_80205630 = 0;
+    gDisplayContext = 0;
+    
     D_80204B38 = 0;
     D_801FD610 = 0;
     

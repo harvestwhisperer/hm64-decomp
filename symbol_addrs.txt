@@ -605,6 +605,7 @@ __osPiAccessQueueEnabled = 0x8011E3F0;
 xprintf_data_0000 = 0x8011E400;
 xprintf_data_0024 = 0x8011E424;
 contpfs_data_0000 = 0x8011E450;
+__osPfsLastChannel = 0x8011E460;
 __osPfsInodeCacheBank = 0x8011E454;
 rmoncmds_data_0000 = 0x8011E470;
 rmonmain_data_0000 = 0x8011E550;
@@ -934,7 +935,7 @@ setWifeNameString = 0x800611E0;
 setDefaultBabyName = 0x80061354;
 setHarvestKingName = 0x800614D0;
 setFlowerFestivalGoddess = 0x80061860;
-getSumBacholerettesWithAffectionThreshold = 0x800618EC;
+getBacholeretteWithHighestAffection = 0x800618EC;
 setRecipes = 0x80062084;
 handleHouseConstruction = 0x800623E4;
 setLetters = 0x8006252C;
@@ -978,7 +979,7 @@ setHorseLocation = 0x80088B34;
 
 setFarmCutscenes = 0x800A1364;
 setMountain1Cutscenes = 0x800A16D4;
-setMountain2Cutscenes = 0x800A2540;
+setMoonMountainCutscenes = 0x800A2540;
 setSpringCutscenes = 0x800A2690;
 setHarvestSpriteCaveCutscenes = 0x800A289C;
 setCaveCutscenes = 0x800A2924;
@@ -1019,6 +1020,8 @@ setClockNewDay = 0x800D81A8;
 checkFestivalDay = 0x800D820C;
 setSeasonName = 0x800D835C;
 setGlobalSeasonName = 0x800D83F8;
+countPinkCatMintFlowersFarm = 0x800DC0F8;
+countPinkCatMintFlowersGreenhouse = 0x800DC170;
 setForecast = 0x800DC4F0;
 setWeatherLighting = 0x800DC694;
 
@@ -1050,6 +1053,7 @@ MusHandleSetFreqOffset = 0x800F5664;
 getRandomNumber = 0x80110410;
 
 levelFlags = 0x80114460;
+cutsceneMapAddresses = 0x80114AF0;
 
 waveTableAddresses = 0x801162F0;
 songRomAddresses = 0x801162FC;
@@ -1182,13 +1186,6 @@ gVoteForFlowerFestivalGoddess = 0x801C3F7E;
 gTotalGoldenMilkShipped = 0x801C3F88;
 
 npcAffection = 0x801C3F90;
-mariaAffection = 0x801C3F90;
-popuriAffection = 0x801C3F91;
-elliAffection = 0x801C3F92;
-annAffection = 0x801C3F93;
-karenAffection = 0x801C3F94;
-harvestSprite1Affection = 0x801C3FB1;
-harvestSprite2Affection = 0x801C3FB2;
 
 contPattern = 0x801D6ED0;
 
@@ -1222,6 +1219,7 @@ mus_init_bank = 0x80204B30;
 nuAuSeqBank_ptr = 0x80204B34;
 
 gTotalEggsShipped = 0x80204B44;
+gPlayerBirthdaySeason = 0x80204BEA;
 gGlobalSeasonName = 0x80204FB1;
 
 gSumGirlsWithHighAffection = 0x80204FB0;

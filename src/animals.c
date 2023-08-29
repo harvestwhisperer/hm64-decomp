@@ -2,16 +2,22 @@
 
 #include "animals.h"
 
+// bss
+extern Chicken gChickens[MAX_CHICKENS];
+extern FarmAnimal gFarmAnimals[];
+extern u8 D_801886D4[6];
 extern Dog dogInfo;
 extern Horse horseInfo;
 
-extern u8 D_801886D4[6];
-
-void setDogLocation(u8);       
-void setHorseLocation(u8);                             
-void func_80088BB0(u8, u8);                    
-void func_80088C1C(u8, u8);  
-
+extern u8 D_8016F898;
+extern u8 D_8016FAF8;
+extern u16 D_8016FDF0;
+extern u8 D_8016FFE8;
+extern u8 D_80170464;
+extern u8 D_80189054;
+extern u8 D_8018908C;
+extern u8 D_801C3F46;
+extern u8 D_801FC155;
 
 INCLUDE_ASM(const s32, "animals", func_80085F70);
 
