@@ -1,33 +1,18 @@
 #include "common.h"
 
+#include "shop.h"
 
-extern Player gPlayer;
+#include "system/map.h"
+#include "system/sprite.h"
 
-void setMainLoopCallbackFunctionIndex(u16);
+#include "gameAudio.h"
+#include "itemHandlers.h"
+#include "mainLoop.h"
+#include "overlayScreens.h"
+#include "player.h"
 
-void setAudio(u16);                                        
-void setPlayerAction(u16, u16);                            
-
-void func_8002B138(u16, void*, void*, void*, void*, void*, void*, void*, void*, void*, void*, void*, void*, void*, u8); 
-void func_8002BD90(u16, f32, f32, f32);                             
-void func_8002C7EC(u16, u16);                               
-u32 func_8002C85C(u16 index, u8 r, u8 g, u8 b, u8 a);               
-u8 func_8002C914(u16, u8, u8, u8, u8);                
-u16 func_80030BA0(u16* ptr, u16 offset);           
-void func_80034C40(u16, u16, u16, u16, f32, f32, f32, s32, s32, s32, s32); 
-void func_80034E64(u8, u8);          
-u16 func_800D5A88(u16 arg0);          
-void func_80034E64(u8, u8);                             
-u8 func_800D5308(u8 index, u8 arg1, u32 arg2, s32 arg3, s32 arg4);               
-u8 func_800DCAA0(u8);        
-
-
-extern void *D_D52670;
-extern void *D_D82FD0;
-extern void *D_D82FD0_2;
-extern void *D_D82FF0;
-extern void *D_D82FF0_2;
-extern void *D_D835A0;
+// bss
+extern u16 D_8023740A;
 
 // rodata
 extern u16 D_80118B70[];
@@ -39,9 +24,6 @@ extern u8 D_80119548[];
 extern u8 D_801195B8[];
 extern u8 D_801194A0[];
 extern u16 D_8011BA10[];
-
-extern u16 D_8023740A;
-extern u8 D_8023740C[6];
 
 //INCLUDE_ASM(const s32, "shop", func_800DC750);
 

@@ -1,29 +1,21 @@
 #include "common.h"
 
+#include "system/controller.h"
+#include "system/map.h"
 #include "system/message.h"
+#include "system/sprite.h"
+#include "system/mathUtils.h"
 
-void func_8002B138(u16, void*, void*, void*, void*, void*, void*, void*, void*, void*, void*, void*, void*, void*, u8); 
-void func_8002BD90(u16, f32, f32, f32);                        
-void func_8002BE14(u16, f32, f32, f32);                        
-void func_8002C7EC(u16, u16);                              
-u8 func_8002C914(u16, u8, u8, u8, u8);                    
-void func_80034C40(u16, u16, u16, u16, f32, f32, f32, s32, s32, s32, s32); 
-void func_80034E64(u8, u8);                                                 
-void func_8003DDF8(u32, u32, u32, u32);                     
-void func_8003F360(u16, s16, u8);                              
-void func_8003F54C(u16, f32, f32, f32);                        
-void func_8003F690(u16, u8, u8, u8);                     
-u32 func_8004D380(u8, u32);                              
-void func_800B2CE0();                                  
-void func_800B3A60();                                 
+#include "game.h"
+#include "gameAudio.h"
+#include "overlayScreens.h"
+#include "weather.h"
+       
+// forward declarations   
 void func_800D879C();                                  
-void func_800D897C();                                  
+void func_800D897C();       
 void func_800D9298();            
-void func_800D8540();          
-
-u16 getRandomNumberInRange(u16 min, u16 max);
-
-void setAudio(u16);   
+void func_800D8540();      
 
 // struct
 // likely bss
@@ -33,8 +25,6 @@ extern u8 D_80170273;
 extern u8 D_80170274[1];
 extern u8 D_80170275;
 extern u8 D_80170277;
-
-extern DialogueBox D_80188B70[2];
 
 // rodata
 extern void *tvSprites_romTextureStart;
@@ -53,8 +43,6 @@ extern u8 D_8017027A;
 extern u8 D_8017027B;
 extern u8 D_8017027C;
 
-extern u8 gDayOfWeek;
-extern u8 gForecast;
 
 //INCLUDE_ASM(const s32, "tv", func_800D8540);
 
@@ -78,9 +66,8 @@ void func_800D8540(void) {
 }
 
 // jtbl_80122760
-INCLUDE_ASM(const s32, "tv", func_800D86D8);
+//INCLUDE_ASM(const s32, "tv", func_800D86D8);
 
-/*
 void func_800D86D8(void) {
     
     u8 *ptr;
@@ -132,12 +119,10 @@ check:
         *ptr = 0;
     }
 }
-*/
 
 // jtbl_80122780
-INCLUDE_ASM(const s32, "tv", func_800D879C);
+//INCLUDE_ASM(const s32, "tv", func_800D879C);
 
-/*
 void func_800D879C(void) {
 
     D_80170272[0] = 0xFF;
@@ -223,16 +208,14 @@ void func_800D879C(void) {
         D_80170272[0] = 19;
     }
 }
-*/
 
 // jtbl_801227A0
 // jtbl_801227F0
 INCLUDE_ASM(const s32, "tv", func_800D897C);
 
 // jtbl_80122808
-INCLUDE_ASM(const s32, "tv", func_800D9298);
+//INCLUDE_ASM(const s32, "tv", func_800D9298);
 
-/*
 void func_800D9298(void) {
 
     switch (D_80170272[0]) {
@@ -312,6 +295,5 @@ void func_800D9298(void) {
             break;
     }
 }
-*/
 
 INCLUDE_ASM(const s32, "tv", func_800D93CC);

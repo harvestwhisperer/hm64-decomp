@@ -1,32 +1,21 @@
 #include "common.h"
 
-u8 func_8003DBE8(u16, s32);                              
-u8 func_8003DD14(u16);                                 
-u8 func_8003DDF8(u16, u16, u16, s32);                        
-u8 func_8003F360(u16, s16, u8);                           
-u8 func_8003F464(u16, u8, u8, s32, s32);                   
-u8 func_8003F54C(u16, f32, f32, f32);                        
-u8 func_8003F5D0(u16, u8, u8);                           
-u8 func_8003F630(u16, u8, u8);                           
-u8 func_8003F690(u16, u8, u8, u8);                        
-u8 func_8003FAF8(u16, u16);                              
-u8 func_8003FB4C(u16, u16);                              
-u8 func_8003E77C(u16, u8, u8, u8, u8);                   
-u8 func_8003EA1C(u16, u8, u8, u8, u8, s32);              
-void func_8004DD7C(void*, void*, u8);
-void func_800B42E0();                                  
-void func_800B59AC();                                  
-void func_800B5BD4();                                  
-void func_800E16A0();                                  
-void func_800E16D0(u8, u8);                             
-void func_800E1998();                                  
-void func_800E1A94();                                  
-void func_800E3358(u8, u8, u8);                           
-u32 func_8003FBA0(u16, u32, s32);         
-void func_8003FBD8(u8, u8, u8);
-u8 func_800E4424(u8, u8);                 
+#include "loadGameScreen.h"
 
-void setGlobalSeasonName(u8);      
+#include "system/message.h"
+
+#include "game.h"
+#include "overlayScreens.h"
+#include "player.h"
+#include "updateGame.h"
+                                                                         
+// forward declaration
+u8 func_800E4424(u8, u8);                 
+ 
+// bss
+u32 D_801654F4;
+extern LoadGameScreenInfo D_801D6238;
+extern u8 D_8030E000[16];
 
 // struct
 extern u8 D_801D624C;
@@ -39,15 +28,8 @@ extern u8 D_801D62BF;
 extern u8 D_801D62BC;
 extern u8 D_801D62BF;
 
+// shared
 extern u8 gGlobalSeasonName[6];
-extern u8 D_8030E000[16];
-
-extern u8 gSeason;
-extern u8 gYear;
-
-extern Player gPlayer;
-
-extern LoadGameScreenInfo D_801D6238;
 
 //INCLUDE_ASM(const s32, "loadGameScreen", func_800E1380);
 

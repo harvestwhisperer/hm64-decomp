@@ -1,18 +1,12 @@
 #include "common.h"
+
 #include "system/audio.h"
 
-
-void func_800266C0(Volume*, u16, u16, u16, u16); 
-u8 func_800266F8(u16*);
-void func_800267A4(Volume*, s16, s16);   
-
-extern SongInfo gSongs[4];
-extern Sfx gSfx[4];
+#include "gameAudio.h"
 
 // rodata
 extern f64 minSfxFrequency;
 extern f64 maxSfxFrequency;
-
 
 //INCLUDE_ASM(const s32, "system/audio", initializeAudio);
 
@@ -119,9 +113,9 @@ void setSongBank(u8 *pBankStart, u8 *pBankEnd, u8 *wBankStart) {
 
 //INCLUDE_ASM(const s32, "system/audio", setSong);
 
-u8 setSong(u16 songIndex, u8 *songAddrStart, u8 *songAddrEnd) {
+bool setSong(u16 songIndex, u8 *songAddrStart, u8 *songAddrEnd) {
     
-    u8 result = 0;
+    bool result = 0;
     
     if (songIndex < MAX_ACTIVE_SONGS) {
         if (!(gSongs[songIndex].flags & 1)) {
@@ -141,9 +135,9 @@ u8 setSong(u16 songIndex, u8 *songAddrStart, u8 *songAddrEnd) {
 
 //INCLUDE_ASM(const s32, "system/audio", setSongSpeed);
 
-u32 setSongSpeed(u16 index, u32 speed) {
+bool setSongSpeed(u16 index, u32 speed) {
 
-    u32 result = 0;
+    bool result = 0;
 
     if (index < MAX_ACTIVE_SONGS) {
         if (gSongs[index].flags & 1) {
@@ -158,9 +152,9 @@ u32 setSongSpeed(u16 index, u32 speed) {
 
 //INCLUDE_ASM(const s32, "system/audio", stopSong);
 
-u32 stopSong(u16 songIndex) {
+bool stopSong(u16 songIndex) {
 
-    u32 result = 0;
+    bool result = 0;
 
     if (songIndex < MAX_ACTIVE_SONGS) {
     
@@ -177,9 +171,9 @@ u32 stopSong(u16 songIndex) {
 
 //INCLUDE_ASM(const s32, "system/audio", setSongVolumes);
 
-u32 setSongVolumes(u16 index, s32 maxVolume, s16 arg2) {
+bool setSongVolumes(u16 index, s32 maxVolume, s16 arg2) {
     
-    u32 result = 0;
+    bool result = 0;
     
     if (index < MAX_ACTIVE_SONGS) {
         
@@ -206,9 +200,9 @@ u32 setSongVolumes(u16 index, s32 maxVolume, s16 arg2) {
 
 //INCLUDE_ASM(const s32, "system/audio", func_8003D4E4);
 
-u32 func_8003D4E4(u16 songIndex, s32 arg1) {
+bool func_8003D4E4(u16 songIndex, s32 arg1) {
     
-    u32 result = 0;
+    bool result = 0;
 
     if (songIndex < MAX_ACTIVE_SONGS) {
         
@@ -234,9 +228,9 @@ u32 func_8003D4E4(u16 songIndex, s32 arg1) {
 
 //INCLUDE_ASM(const s32, "system/audio", func_8003D570);
 
-u32 func_8003D570(u16 songIndex, s32 arg1) {
+bool func_8003D570(u16 songIndex, s32 arg1) {
     
-    u32 result = 0;
+    bool result = 0;
 
     if (songIndex < MAX_ACTIVE_SONGS) {
         
@@ -267,10 +261,11 @@ void stopMusic(int speed) {
 
 //INCLUDE_ASM(const s32, "system/audio", setSfx);
 
-u32 setSfx(u32 sfxIndex) {
+bool setSfx(u32 sfxIndex) {
 
     u16 i = 0;
-    u32 result = 0;
+    bool result = 0;
+
     u32 current;
 
     while (TRUE) {
@@ -299,10 +294,10 @@ u32 setSfx(u32 sfxIndex) {
 
 //INCLUDE_ASM(const s32, "system/audio", func_8003D6A8);
 
-u32 func_8003D6A8(u32 sfxIndex) {
+bool func_8003D6A8(u32 sfxIndex) {
     
     u16 i = 0;
-    u32 result = 0;
+    bool result = 0;
     
     for (i = 0; i < MAX_ACTIVE_SFX; i++) {
         if (gSfx[i].flags & 1) {
@@ -318,9 +313,9 @@ u32 func_8003D6A8(u32 sfxIndex) {
 
 //INCLUDE_ASM(const s32, "system/audio", setSfxVolume);
 
-u32 setSfxVolume(u32 sfxIndex, s32 volume) {
+bool setSfxVolume(u32 sfxIndex, s32 volume) {
 
-    u32 result;
+    bool result;
     u16 i = 0;
     
     result = 0;
@@ -348,8 +343,9 @@ u32 setSfxVolume(u32 sfxIndex, s32 volume) {
 
 INCLUDE_ASM(const s32, "system/audio", setSfxFrequency);
 
+// not matching with rodata declarations
 /*
-u32 setSfxFrequency(u32 sfxIndex, s32 frequency) {
+bool setSfxFrequency(u32 sfxIndex, s32 frequency) {
 
     static const double minSfxFrequency = -6;
     static const double maxSfxFrequency = 6;
@@ -361,7 +357,7 @@ u32 setSfxFrequency(u32 sfxIndex, s32 frequency) {
 //  FA208 8011EE08 4018000000000000 .double 6
 
     u16 i = 0;
-    u32 result = 0;
+    bool result = 0;
 
     for (i = 0; i < MAX_ACTIVE_SFX; i++) {
 
@@ -386,10 +382,10 @@ u32 setSfxFrequency(u32 sfxIndex, s32 frequency) {
 
 //INCLUDE_ASM(const s32, "system/audio", setSfxPan);
 
-u32 setSfxPan(u32 sfxIndex, s32 arg1) {
+bool setSfxPan(u32 sfxIndex, s32 arg1) {
 
     u16 i = 0;
-    u32 result = 0;
+    bool result = 0;
 
     for (i = 0; i < MAX_ACTIVE_SFX; i++) {
         if (gSfx[i].flags & 1) {

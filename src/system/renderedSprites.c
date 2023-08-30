@@ -1,27 +1,19 @@
 #include "common.h"
 
-#include "npc.h"
-#include "sprite.h"
+#include "system/sprite.h"
 
+#include "system/graphic.h"
+#include "system/map.h"
+#include "system/tiles.h"
+
+#include "mainproc.h"
+#include "npc.h"
+
+// bss
 extern CharacterSprite npcSpriteInfoArray[MAX_NPC_SPRITES];
 extern RenderedSprite renderedSprites[MAX_RENDERED_SPRITES];
-extern Sprite globalSprites[MAX_RENDERED_SPRITES];
 extern Shadow D_8016FFF8[3];
-extern MapTileContext D_802055D8[];
 
-extern u16 D_801FD610;
-extern u16 gTileContextFlags;
- 
-f32 func_80028820(u8 arg0);                       
-void func_80027950(Vec3f, Vec3f*, Vec3f);
-void func_8002BB88(u16); 
-u8 func_8002FBBC(u16); 
-void func_8002FC38(u16); 
-Vec3f *func_80031904(Vec3f*, u16, s16, u8);             
-f32 func_80035150(u16, f32, f32);          
-Vec3f *func_80036610(Vec3f*, u16, f32, f32);   
-
- 
 //INCLUDE_ASM(const s32, "system/renderedSprites", initializeNpcSpriteStructs);
 
 void initializeNpcSpriteStructs(void) {
@@ -58,7 +50,45 @@ void initializeNpcSpriteStructs(void) {
     } 
 }
 
-INCLUDE_ASM(const s32, "system/renderedSprites", func_8002DDDC);
+//INCLUDE_ASM(const s32, "system/renderedSprites", func_8002DDDC);
+
+u8 func_8002DDDC(u16 npcIndex, void* arg1, void* arg2, void* arg3, void* arg4, void* arg5, void* arg6, u8 arg7, u8 arg8, void* arg9) {
+
+    u8 result = 0;
+
+    if (npcIndex < 0x66) {
+
+        if (!(npcSpriteInfoArray[npcIndex].flags & 1)) {
+            
+            
+            npcSpriteInfoArray[npcIndex].romTextureStart = arg1;
+            npcSpriteInfoArray[npcIndex].romTextureEnd = arg2;
+            npcSpriteInfoArray[npcIndex].romPaletteStart = arg3;
+            npcSpriteInfoArray[npcIndex].romPaletteEnd = arg4;
+            npcSpriteInfoArray[npcIndex].romIndexStart = arg5;
+            npcSpriteInfoArray[npcIndex].romIndexEnd = arg6;
+            npcSpriteInfoArray[npcIndex].flag = arg8;
+            npcSpriteInfoArray[npcIndex].vaddr = arg9;
+
+            npcSpriteInfoArray[npcIndex].collisionBufferX = 0;
+            npcSpriteInfoArray[npcIndex].collisionBufferY = 0;
+
+            npcSpriteInfoArray[npcIndex].unk_1C = 0;
+            npcSpriteInfoArray[npcIndex].unk_1E = 0;
+
+            npcSpriteInfoArray[npcIndex].flags = 1;
+
+            if (arg7) {
+                npcSpriteInfoArray[npcIndex].flags = 3;
+            }
+            
+            result = 1;
+            
+        }
+    }
+    
+    return result;
+}
 
 INCLUDE_ASM(const s32, "system/renderedSprites", func_8002DEE8);
 
@@ -175,9 +205,10 @@ u8 func_8002EC18(u16 index, u32 arg1, void *arg2, void *arg3, void *arg4, void *
 
 //INCLUDE_ASM(const s32, "system/renderedSprites", func_8002ECD4);
 
-u8 func_8002ECD4(u16 index, u16 arg1, u8 arg2) {
+// double check
+bool func_8002ECD4(u16 index, u16 arg1, u16 arg2) {
 
-    u8 result = 0;
+    bool result = 0;
 
     if (index < MAX_RENDERED_SPRITES) {
 
@@ -374,9 +405,9 @@ u8 func_8002FD24(u16 index) {
 
 //INCLUDE_ASM(const s32, "system/renderedSprites", func_8002FD80);
 
-u8 func_8002FD80(u16 spriteIndex, f32 x, f32 y, f32 z) {
+bool func_8002FD80(u16 spriteIndex, f32 x, f32 y, f32 z) {
 
-    u8 result = 0;
+    bool result = 0;
     
     if (spriteIndex < MAX_RENDERED_SPRITES) {
         // bits 1 and 13
@@ -483,17 +514,18 @@ INCLUDE_ASM(const s32, "system/renderedSprites", func_800313FC);
 
 Vec3f* func_800315A0(Vec3f* arg0, u16 index) {
 
+    // maybe a struct?
     int padding[11];
     
     Vec3f vec;
 
     vec.x = 0;
     vec.z = 0;
-    vec.y = 65535.0f;
+    vec.y = MAX_UNSIGNED_SHORT;
     
     if (index < MAX_RENDERED_SPRITES) {
         if ((renderedSprites[index].flags & 1) && !(renderedSprites[index].flags & 0x40) && !(renderedSprites[index].flags & 0x100)) {
-            func_80036610(&vec, D_802055D8[D_801FD610].unk_40, renderedSprites[index].startingCoordinates.x, renderedSprites[index].startingCoordinates.z);
+            func_80036610(&vec, gTileContext[D_801FD610].unk_40, renderedSprites[index].startingCoordinates.x, renderedSprites[index].startingCoordinates.z);
         } 
     }
 
@@ -515,7 +547,7 @@ Vec3f* func_800315A0(Vec3f* arg0, u16 index) {
     
 //     if (index < MAX_RENDERED_SPRITES) {
 //         if ((renderedSprites[index].flags & 1) && !(renderedSprites[index].flags & 0x40) && !(renderedSprites[index].flags & 0x100)) {
-//             func_80036610(&vec, D_802055D8[D_801FD610].unk_40, renderedSprites[index].startingCoordinates.x, renderedSprites[index].startingCoordinates.z);
+//             func_80036610(&vec, gTileContext[D_801FD610].unk_40, renderedSprites[index].startingCoordinates.x, renderedSprites[index].startingCoordinates.z);
 //         } 
 //     }
  

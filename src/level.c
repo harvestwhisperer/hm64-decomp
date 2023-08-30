@@ -1,17 +1,16 @@
 #include "common.h"
 
+#include "level.h"
 
-void func_80036C08(s32);                                 
-void func_80036FA0(s32);                                 
-void func_8003BD60(s32);                                 
-void func_8006EC58(s32);                               
-void func_800735FC(s32);                               
-void func_800D9600(u8);                                
-void func_800DC360();    
+#include "system/map.h"
+#include "system/tiles.h"
 
+#include "mapObjects.h"                                                                        
+#include "weather.h"      
+                             
+// likely bss
 extern u8 previousExitIndex;
 extern u8 gEntranceIndex;
-
 extern u8 gBaseMapIndex;
 
 // rodata

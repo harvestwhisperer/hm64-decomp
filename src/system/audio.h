@@ -2,6 +2,7 @@
 #define _AUDIO_H_
 
 #include "common.h"
+#include "system/volume.h"
 
 #define SONG 1
 #define SFX 0xFF
@@ -15,38 +16,17 @@
 #define STORE_ITEM 4
 #define SELECT 7
 #define WHISTLE 10
-#define SICKLE 11
-#define AX 17
+#define SICKLE_SFX 11
+#define AX_SFX 17
 #define SEEDS 29
-#define MILKER 30
+#define MILKER_SFX 30
 #define ROOSTER 63
 #define CHICKEN_CLUCK 64
 #define BIRD_CHIRP 66
 #define CAT_MEOW 67
-#define BIRD_CHIRP 70
-#define DIALOGUE 87
+#define BIRD_CHIRP_2 70
+#define DIALOGUE_BEEP 87
 #define RUMBLE 89
-
-u8 setSong(u16 songIndex, u8 *songAddrStart, u8 *songAddrEnd);
-u32 setSongSpeed(u16 index, u32 speed);
-u32 stopSong(u16 songIndex);
-u32 setSongVolumes(u16 index, s32 maxVolume, s16 arg2);
-void setSongBank(u8 *pBankStart, u8 *pBankEnd, u8 *wBankStart);
-u32 setSfx(u32 sfxIndex);
-u32 func_8003D6A8(u32 sfxIndex);                     
-u32 setSfxVolume(u32 sfxIndex, s32 volume);  
-u32 setSfxFrequency(u32 sfxIndex, s32 frequency);                   
-u32 setSfxPan(u32 sfxIndex, s32 arg1);
-void stopSfx(void);
-
-typedef struct {
-    s16 unk_0;
-    s16 unk_2;
-    s16 unk_4;
-    s16 unk_6;
-    s32 mainVolume;
-    s32 maxVolume;
-} Volume;
 
 typedef struct {
     u8 *currentSongRomAddrStart;
@@ -75,5 +55,26 @@ typedef struct {
     u8 *pbk_end;
     u8 *wbk_addr;
 } WaveTableInfo;
+
+extern void initializeAudio(musConfig*);      
+extern void mainLoopAudioHandler();
+extern bool setSong(u16 songIndex, u8 *songAddrStart, u8 *songAddrEnd);
+extern bool setSongSpeed(u16 index, u32 speed);
+extern bool stopSong(u16 songIndex);
+extern bool setSongVolumes(u16 index, s32 maxVolume, s16 arg2);
+extern void setSongBank(u8 *pBankStart, u8 *pBankEnd, u8 *wBankStart);
+extern bool setSfx(u32 sfxIndex);
+extern bool func_8003D6A8(u32 sfxIndex);                     
+extern bool setSfxVolume(u32 sfxIndex, s32 volume);  
+extern bool setSfxFrequency(u32 sfxIndex, s32 frequency);                   
+extern bool setSfxPan(u32 sfxIndex, s32 arg1);
+extern void stopSfx(void);
+
+extern u16 gCurrentSongIndex;
+extern s32 gSongVolume;
+
+// might be gameAudio.c
+extern Sfx gSfx[4];
+extern SongInfo gSongs[4];
 
 #endif

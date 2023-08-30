@@ -1,12 +1,14 @@
 #include "common.h"
 
-#include "sprite.h"
+#include "system/sprite.h"
+#include "system/mathUtils.h"
 
-extern Sprite globalSprites[MAX_ACTIVE_SPRITES];
-
+// forward declarations
 u8 func_8002B8E0(u16, u8, void*);
-void *func_8002CD34(u16, void*);  
+void *func_8002CD34(u16, void*);
 
+// bss
+extern Sprite globalSprites[MAX_ACTIVE_SPRITES];
 
 //INCLUDE_ASM(const s32, "system/globalSprites", func_8002AFE0);
 
@@ -32,9 +34,9 @@ void func_8002AFE0(void) {
         globalSprites[i].scale.y = 1.0f;
         globalSprites[i].scale.z = 1.0f;
 
-        globalSprites[i].vec3Unk.x = 0;
-        globalSprites[i].vec3Unk.y = 0;
-        globalSprites[i].vec3Unk.z = 0;
+        globalSprites[i].unk_44.x = 0;
+        globalSprites[i].unk_44.y = 0;
+        globalSprites[i].unk_44.z = 0;
         
         globalSprites[i].rgbaCurrent.r = 0;
         globalSprites[i].rgbaCurrent.g = 0;
@@ -46,7 +48,6 @@ void func_8002AFE0(void) {
         globalSprites[i].rgbaDefault.b = 0;
         globalSprites[i].rgbaDefault.a = 0;
     }
-    
 }
 
 INCLUDE_ASM(const s32, "system/globalSprites", func_8002B138);
@@ -57,8 +58,9 @@ INCLUDE_ASM(const s32, "system/globalSprites", func_8002B50C);
 
 //INCLUDE_ASM(const s32, "system/globalSprites", func_8002B6B8);
 
-u32 func_8002B6B8(u16 index) {
-    u32 result = 0;
+bool func_8002B6B8(u16 index) {
+
+    bool result = 0;
 
     if (index < MAX_ACTIVE_SPRITES) {
         if (globalSprites[index].flags2 & 1) {
@@ -76,10 +78,10 @@ INCLUDE_ASM(const s32, "system/globalSprites", func_8002B7A0);
 
 //INCLUDE_ASM(const s32, "system/globalSprites", func_8002B80C);
 
-u8 func_8002B80C(u16 index, u16 offset, u8 arg2) {
+bool func_8002B80C(u16 index, u16 offset, u8 arg2) {
 
     u32 *ptr;
-    u8 result = 0;
+    bool result = 0;
     
     if (index < MAX_ACTIVE_SPRITES) {
 
@@ -115,9 +117,9 @@ INCLUDE_ASM(const s32, "system/globalSprites", func_8002BCC8);
 
 //INCLUDE_ASM(const s32, "system/globalSprites", func_8002BD0C);
 
-u8 func_8002BD0C(u16 index, f32 x, f32 y, f32 z) {
+bool func_8002BD0C(u16 index, f32 x, f32 y, f32 z) {
 
-    u8 result = 0;
+    bool result = 0;
 
     if (index < MAX_ACTIVE_SPRITES) {
         if (globalSprites[index].flags2 & 1) {
@@ -138,11 +140,114 @@ INCLUDE_ASM(const s32, "system/globalSprites", func_8002BE98);
 
 INCLUDE_ASM(const s32, "system/globalSprites", func_8002BF4C);
 
-INCLUDE_ASM(const s32, "system/globalSprites", func_8002C000);
+//INCLUDE_ASM(const s32, "system/globalSprites", func_8002C000);
 
-INCLUDE_ASM(const s32, "system/globalSprites", func_8002C0B4);
+bool func_8002C000(u16 index, f32 x, f32 y, f32 z) {
 
-INCLUDE_ASM(const s32, "system/globalSprites", func_8002C1C0);
+    bool result = 0;
+    
+    if (index < MAX_ACTIVE_SPRITES) {
+        
+        if (globalSprites[index].flags2 & 1) {
+
+            globalSprites[index].unk_44.x += x;
+            globalSprites[index].unk_44.y += y;
+            globalSprites[index].unk_44.z += z;
+                
+            result = 1;
+            
+        }   
+    }
+    
+    return result;
+}
+
+//INCLUDE_ASM(const s32, "system/globalSprites", func_8002C0B4);
+
+bool func_8002C0B4(u16 index, s8 r, s8 g, s8 b, s8 a) {
+
+    bool result = 0;
+    
+    if (index < MAX_ACTIVE_SPRITES) {
+
+        if (globalSprites[index].flags2 & 1) {
+
+            globalSprites[index].rgbaCurrent.r += r;
+            globalSprites[index].rgbaCurrent.g += g;
+            globalSprites[index].rgbaCurrent.b += b;
+            globalSprites[index].rgbaCurrent.a += a;
+            
+            result = 1;
+            
+        }   
+    }
+    
+    return result;
+}
+
+//INCLUDE_ASM(const s32, "system/globalSprites", func_8002C1C0);
+
+// update sprite rgba
+bool func_8002C1C0(u16 index, u8 r, u8 g, u8 b, u8 a, s16 arg5) {
+
+    bool result;
+    
+    s16 temp = getAbsoluteValue(arg5);
+    f32 tempFloat;
+    
+    result = 0;
+    
+    if (index < MAX_ACTIVE_SPRITES) {
+        
+        if (globalSprites[index].flags2 & 1) {
+
+            
+            globalSprites[index].rgbaDefault.r = (globalSprites[index].rgba.r * r) / 255.0f;
+            globalSprites[index].rgbaDefault.g = (globalSprites[index].rgba.g * g) / 255.0f;
+            globalSprites[index].rgbaDefault.b = (globalSprites[index].rgba.b * b) / 255.0f;
+            globalSprites[index].rgbaDefault.a = (globalSprites[index].rgba.a * a) / 255.0f;
+            
+            globalSprites[index].flags2 &= 0xFBFF;
+
+            if (globalSprites[index].rgbaDefault.r < globalSprites[index].rgbaCurrent.r) {
+                tempFloat = globalSprites[index].rgbaCurrent.r - globalSprites[index].rgbaDefault.r;
+            } else {
+                tempFloat = globalSprites[index].rgbaDefault.r - globalSprites[index].rgbaCurrent.r;
+            }
+
+            globalSprites[index].normalized.r = (tempFloat * temp) / globalSprites[index].rgba.r;
+
+            if (globalSprites[index].rgbaDefault.g < globalSprites[index].rgbaCurrent.g) {
+                tempFloat = globalSprites[index].rgbaCurrent.g - globalSprites[index].rgbaDefault.g;
+            } else {
+                tempFloat = globalSprites[index].rgbaDefault.g - globalSprites[index].rgbaCurrent.g;
+            }
+
+            globalSprites[index].normalized.g = (tempFloat * temp) / globalSprites[index].rgba.g;
+
+            if (globalSprites[index].rgbaDefault.b < globalSprites[index].rgbaCurrent.b) {
+                tempFloat = globalSprites[index].rgbaCurrent.b - globalSprites[index].rgbaDefault.b;
+            } else {
+                tempFloat = globalSprites[index].rgbaDefault.b - globalSprites[index].rgbaCurrent.b;
+            }
+
+            globalSprites[index].normalized.b = (tempFloat * temp) / globalSprites[index].rgba.b;
+
+            if (globalSprites[index].rgbaDefault.a < globalSprites[index].rgbaCurrent.a) {
+                tempFloat = globalSprites[index].rgbaCurrent.a - globalSprites[index].rgbaDefault.a;
+            } else {
+                tempFloat = globalSprites[index].rgbaDefault.a - globalSprites[index].rgbaCurrent.a;
+            }
+
+            globalSprites[index].normalized.a = (tempFloat * temp) / globalSprites[index].rgba.a;
+            
+            result = 1;
+            
+        }
+    }
+    
+    return result;
+}
 
 INCLUDE_ASM(const s32, "system/globalSprites", func_8002C52C);
 
@@ -176,9 +281,9 @@ u8 func_8002C7EC(u16 index, u16 arg1) {
 
 //INCLUDE_ASM(const s32, "system/globalSprites", func_8002C85C);
 
-u32 func_8002C85C(u16 index, u8 r, u8 g, u8 b, u8 a) {
+bool func_8002C85C(u16 index, u8 r, u8 g, u8 b, u8 a) {
 
-    u32 result = 0;
+    bool result = 0;
 
     if (index < MAX_ACTIVE_SPRITES) {
         if (globalSprites[index].flags2 & 1) {

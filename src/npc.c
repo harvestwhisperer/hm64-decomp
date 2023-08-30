@@ -1,155 +1,36 @@
 #include "common.h"
-#include "npc.h"
-#include "system/sprite.h"
 
-u16 getRandomNumberInRange(u16 min, u16 max);                           
-u32 checkDailyEventBit(u16);                          
+#include "npc.h"
+
+#include "system/mathUtils.h"
+#include "system/message.h"
+#include "system/sprite.h"
+#include "system/tiles.h"
+
+#include "game.h"
+#include "gameStatus.h"
+#include "level.h"
+#include "weather.h"
 
 // bss
-extern npcInfo npcInfoArray[0x30];
-extern RenderedSprite renderedSprites[0x31];
+npcInfo npcInfoArray[0x30];
+u16 D_80114900[];
+u8 D_801C3E18;
+u16 D_801FBE2E;  
+u16 D_801FBFBE;
 
-extern u8 D_801C3E18;
+// shared global: animals, npc, cutscene, renderedSprite 
 extern u16 D_801FC1B8[30][54];
 
-extern u8 gBaseMapIndex;
- 
-extern u8 gHour;
-extern u8 gWeather;
-
-extern u8 gWife;
-
-u8 func_8003F910(u8, u16, void*, void*, void*, void*, void*, void*, void*, u32, u32, u16, u16, f32, f32, f32); 
-u8 func_8005AF94(u8, u16, u16, u16, u8);               
-u8 setSpriteAnimation(u16, u16);                           
-u8 func_8002FECC(u16);                             
-void func_80075A78(u8);                                 
-void func_80075EBC(u8);
-
-extern u16 D_80114960[30];
+// shared: overlayScreens, npc, title
 extern void *D_D47F00;
+// naming screen
 extern void *D_D49B80;
 extern void *D_D49B80_2;
-extern u8 npcAffection[0x30];
 extern void *tvSprites_romTextureStart;
 
-extern u16 D_801FBFBE;
-extern u16 D_801FBE2E;
-
-void func_80076F10();                                  
-void func_80077D14();                                  
-void func_80078BF0();                                  
-void func_80079A74();                                  
-void func_8007A9B0();                                  
-void func_8007B828();                                  
-void func_8007BD50();                                  
-void func_8007C088();                                  
-void func_8007C3D4();                                  
-void func_8007C7C4();                                  
-void func_8007CEB4();                                  
-void func_8007D3C4();                                  
-void func_8007D6E0();                                  
-void func_8007D9F4();                                  
-void func_8007DB38();                                  
-void setEllenLocation();                                  
-void func_8007DF14();                                  
-void func_8007E07C();                                  
-void func_8007E2E4();                                  
-void func_8007E440();                                  
-void func_8007E600();                                  
-void func_8007ECE4();                                  
-void func_8007F378();                                  
-void func_8007F4E0();                                  
-void func_8007F81C();                                  
-void func_8007FA44();                                  
-void func_8007FC0C();                                  
-void func_8007FCD8();                                  
-void func_8007FE40();                                  
-void func_8007FF04();                                  
-void func_800800D0();                                  
-void func_80080364();                                  
-void func_80080630();                                  
-void func_800807F8();                                  
-void func_800808B0();                                  
-void func_80080958();                                  
-void func_80080A10();                                  
-void func_80080B6C();                                  
-void func_80080C9C();                                  
-void func_80080DAC();                                  
-void func_80080EBC();                                  
-void func_80081030();                                  
-void func_80081228();                                  
-void func_80081420();                                  
-void func_80081618();                                  
-void func_80081810();                                  
-void func_80081A08();                  
-
-void func_80081C90();                                  
-void func_80081E5C();                                  
-void func_80082164();                                  
-void func_80082330();                                  
-void func_800824FC();                                  
-void func_8008277C();                                  
-void func_80082A0C();                                  
-void func_80082B04();                                  
-void func_80082C5C();                                  
-void func_80082DB4();                                  
-void func_80082EAC();                                  
-void func_80082FA4();                                  
-void func_8008309C();                                  
-void func_80083194();                                  
-void func_8008328C();                                  
-void func_80083384();                                  
-void func_80083458();                                  
-void func_80083550();                                  
-void func_8008374C();                                  
-void func_80083948();                                  
-void func_80083A40();                                  
-void func_80083C3C();                                  
-void func_80083D34();                                  
-void func_80083E2C();                                  
-void func_80083F24();                                  
-void func_8008401C();                                  
-void func_80084114();                                  
-void func_8008420C();                                  
-void func_80084304();                                  
-void func_800843FC();                                  
-void func_800844F4();                                  
-void func_80084770();                                  
-void func_800849EC();                                  
-void func_80084B44();                                  
-void func_80084C3C();                                  
-void func_80084D34();                                  
-void func_80084E2C();                                  
-void func_80084F24();                                  
-void func_8008501C();                                  
-void func_80085114();                                  
-void func_8008520C();                                  
-void func_80085304();                                  
-void func_800853FC();                                  
-void func_800854F4();                                  
-void func_800855EC();                                  
-void func_800856E4();                                  
-void func_800857DC();      
-
-u8 func_80075374(u8, int);                        
-
-void setNpcAnimations();                         
-void setNPCSpawningLocations();       
-
-
-void func_8002EDF0(u16, u8, u8, u8);
-u8 func_8003019C(u16, u16);   
-u8 func_80030054(u16, u16);
-u8 func_80030240(u16, u16);
-u8 func_800302E4(u16, u16);
-u8 func_8003C1A4(u8);
-u8 func_8002F684(u16, u8);    
-u8 func_8002FD80(u16, f32, f32, f32);
-u8 func_8002E284(u16, u16, u16);
-u8 func_8002FF38(u16, u8);
-
-u16 D_80114900[];
+// data
+extern u16 D_80114960[30];
 
 
 INCLUDE_ASM(const s32, "npc", func_800752C0);
@@ -364,7 +245,7 @@ void func_80075A18(void) {
 
 INCLUDE_ASM(const s32, "npc", func_80075A78);
 
-//INCLUDE_ASM(const s32, "npc", func_80075E28);//
+//INCLUDE_ASM(const s32, "npc", func_80075E28);
 
 void func_80075E28(u8 npcIndex) {
 
@@ -947,9 +828,9 @@ u8 func_80085C94(void) {
 
 //INCLUDE_ASM(const s32, "npc", func_80085D48);
 
-u8 func_80085D48(int index, u16 arg1) {
+bool func_80085D48(int index, u16 arg1) {
 
-    u8 result;
+    bool result;
     
     int temp;
     // something very wrong here... maybe a struct?

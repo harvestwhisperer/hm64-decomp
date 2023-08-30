@@ -1,187 +1,1470 @@
 #include "common.h"
 
 #include "setCutscenes.h"
+
+#include "system/cutscene.h"
+#include "system/message.h"
+#include "system/sprite.h"
+
+#include "animals.h"
+#include "game.h"
+#include "gameStatus.h"
+#include "mapObjects.h"
+#include "level.h"
 #include "npc.h"
-
-u32 checkLifeEventBit(u16);        
-void setLifeEventBit(u16);     
-u32 checkDailyEventBit(u16);                        
-void setDailyEventBit(u16);                              
-void toggleDailyEventBit(u16);         
-
-u32 adjustValue(s32 current, s32 amount, s32 max);
-
-u8 checkHaveKeyItem(u8);  
-
+#include "player.h"
+#include "weather.h"
+                                 
+// forward declarations
+u16 setBeachCutscenes(void);                         
+u16 setCaveCutscenes(void);                          
+u16 setChurchCutscenes(void);                        
+u16 setFlowerShopCutscenes(void);                    
+u16 setHarvestSpriteCaveCutscenes(void);             
+u16 setMoonMountainCutscenes(void);                     
+u16 setRanchStoreCutscenes(void);                    
+u16 setRickStoreCutscenes(void);                     
+u16 setRoadCutscenes(void);                          
+u16 setSpringCutscenes(void);                        
+u16 setVineyardCellarCutscenes(void);                
+u16 setVineyardHouseCutscenes(void);         
 void loadCutscene(u32);         
 
-extern u8 gEntranceIndex;
-extern u8 previousMapIndex;
-extern u8 gBaseMapIndex;
+// bss
+extern s32 D_801891D4;
+extern u16 D_8018981C;
 
-extern u32 gCutsceneFlags;
+// likely bss
 extern u16 gCutsceneIndex;
 
-extern u8 gHour;
-extern u8 gDayOfWeek;
-extern u8 gDayOfMonth;
-extern u8 gSeason;
-extern u8 gYear;
-extern u8 gWeather;
-
-extern u8 gFlowerFestivalGoddess;
-extern u8 gHappiness;
+// shared globals   
 extern u8 gHouseExtensionSelection;
-extern u8 gWife;
-
-extern u8 npcAffection[TOTAL_NPCS];
-
-extern u8 blueMistFlowerPlot;
-
+extern u8 D_8016FE6F;
 // flower shop points
 extern u8 D_80181B10;
 extern u8 D_801C4216;
+extern u16 D_80237410;
 
-void func_8002F730();   
-u32 func_800469A8(u16, void*);                       
-void func_80060E58();                                
-u8 func_800616CC(u8);   
-u8 checkHaveTool(u8); 
-u8 func_8009B2BC(u8);                               
-u16 func_8009C324(u8);                                
-
-//void nuPiReadRom(u32 rom_addr, void* buf_ptr, u32 size);
-
-extern Addresses D_80114AF0[];
+// data
+extern Addresses cutsceneMapAddresses[];
 extern void *D_80114C70[];
 extern void *D_80114D30[];
 extern u16 D_80114DF0[];
-
-extern u32 D_801891D4;
-extern u16 D_8018981C;
-extern u32 dailyShippingBinValue;
 
 
 INCLUDE_ASM(const s32, "setCutscenes", func_8009BF90);
 
 // jtbl_80120EC0
-INCLUDE_ASM(const s32, "setCutscenes", func_8009C054);
+//INCLUDE_ASM(const s32, "setCutscenes", func_8009C054);
 
-// has rodata
-/*
 u16 func_8009C054(u16 mapIndex) {
     
-    u16 index = 0xFFFF;
+    u16 result = 0xFFFF;
     
     if (!(gCutsceneFlags & 1)) {
+        
         gCutsceneFlags &= ~2;
+
         switch (mapIndex) {
             case FARM:
-                index = setFarmCutscenes();
+                result = setFarmCutscenes();
                 break;
             case MOUNTAIN_1:
-                index = setMountain1Cutscenes();
+                result = setMountain1Cutscenes();
                 break;
             case MOUNTAIN_2:
-                index = func_800A1C04();
+                result = func_800A1C04();
                 break;
             case TOP_OF_MOUNTAIN_1:
-                index = func_800A2250();
+                result = func_800A2250();
                 break;
             case MOON_MOUNTAIN:
-                index = setMountain2Cutscenes();
+                result = setMoonMountainCutscenes();
                 break;
-            case SPRING:
-                index = setSpringCutscenes();
+            case POND:
+                result = setSpringCutscenes();
                 break;
             case HARVEST_SPRITE_CAVE:
-                index = setHarvestSpriteCaveCutscenes();
+                result = setHarvestSpriteCaveCutscenes();
                 break;
             case CAVE:
-                index = setCaveCutscenes();
+                result = setCaveCutscenes();
                 break;
             case HOUSE:
-                index = func_800A29B0();
+                result = func_800A29B0();
                 break;
             case KITCHEN:
-                index = func_800A2FA8();
+                result = func_800A2FA8();
                 break;
             case RANCH:
-                index = func_800A3F04();
+                result = func_800A3F04();
                 break;
             case RANCH_STORE:
-                index = setRanchStoreCutscenes();
+                result = setRanchStoreCutscenes();
                 break;
             case VINEYARD:
-                index = func_800A4878();
+                result = func_800A4878();
                 break;
             case VINEYARD_HOUSE:
-                index = setVineyardHouseCutscenes();
+                result = setVineyardHouseCutscenes();
                 break;
             case VINEYARD_CELLAR:
-                index = setVineyardCellarCutscenes();
+                result = setVineyardCellarCutscenes();
                 break;
             case VILLAGE_1:
-                index = func_800A4E50();
+                result = func_800A4E50();
                 break;
             case VILLAGE_2:
-                index = func_800A5314();
+                result = func_800A5314();
                 break;
             case RICK_STORE:
-                index = setRickStoreCutscenes();
+                result = setRickStoreCutscenes();
                 break;
             case FLOWER_SHOP:
-                index = setFlowerShopCutscenes();
+                result = setFlowerShopCutscenes();
                 break;
             case BAKERY:
-                index = func_800A5F48();
+                result = func_800A5F48();
                 break;
             case MAYOR_HOUSE:
-                index = func_800A6440();
+                result = func_800A6440();
                 break;
             case LIBRARY:
-                index = func_800A6634();
+                result = func_800A6634();
                 break;
             case CHURCH:
-                index = setChurchCutscenes();
+                result = setChurchCutscenes();
                 break;
             case TAVERN:
-                index = func_800A68C0();
+                result = func_800A68C0();
                 break;
             case SQUARE:
-                index = func_800A6A14();
+                result = func_800A6A14();
                 break;
             case RACE_TRACK:
-                index = func_800A6EE4();
+                result = func_800A6EE4();
                 break;
             case BEACH:
-                index = setBeachCutscenes();
+                result = setBeachCutscenes();
                 break;
             case ROAD:
-                index = setRoadCutscenes();
+                result = setRoadCutscenes();
                 break;
             default:
                 break;
             }
         
-        if (index != 0xFFFF) {
-            nuPiReadRom(D_80114AF0[index].romAddr, D_80114D30[index], D_80114AF0[index].vaddr - D_80114AF0[index].romAddr);
+        if (result != 0xFFFF) {
+
+            nuPiReadRom(cutsceneMapAddresses[result].romAddr, D_80114D30[result], cutsceneMapAddresses[result].vaddr - cutsceneMapAddresses[result].romAddr);
+            
             D_801891D4 = 0;
-            func_800469A8(D_80114DF0[index], D_80114C70[index]);
+            
+            func_800469A8(D_80114DF0[result], D_80114C70[result]);
             func_8002F730();
-            D_8018981C = index;
+            
+            D_8018981C = result;
+            
             gCutsceneFlags |= 1;
+            
             toggleDailyEventBit(0x53);
         }
     }
     
-    return index;
+    return result;
 }
 
-*/
-
 // jtbl_80121030
-INCLUDE_ASM(const s32, "setCutscenes", func_8009C324);
+//INCLUDE_ASM(const s32, "setCutscenes", func_8009C324);
+
+u16 func_8009C324(u8 arg0) {
+
+    u8 set = 0;
+    u16 result = 0xFFFF;
+    u8 tempGirl;
+    
+    if (!checkLifeEventBit(MAYOR_TOUR)) {
+        setLifeEventBit(MAYOR_TOUR);
+        gCutsceneIndex = MAYOR_VILLAGE_TOUR;
+        gCutsceneFlags |= 2;
+        loadCutscene(arg0);
+        set = 1;
+    }
+
+    if (gEntranceIndex != 0x6F) {
+        
+        if (!set) {
+            if (!checkDailyEventBit(FARM_MORNING_VISIT) && gYear == 1 && gSeason == AUTUMN && gDayOfMonth == 22 && (gHour - 6) < 12U) {
+                setDailyEventBit(FARM_MORNING_VISIT);
+                gCutsceneIndex = 0xDF;
+                loadCutscene(arg0);
+                set = 1;
+            }
+        }
+
+        if (!set) {
+            if (!checkDailyEventBit(FARM_MORNING_VISIT) && gYear == 1 && gSeason == WINTER && gDayOfMonth == 11 && (gHour - 6) < 12U) {
+                setDailyEventBit(FARM_MORNING_VISIT);
+                gCutsceneIndex = 0xDE;
+                loadCutscene(arg0);
+                set = 1;
+            }
+        }
+
+        if (!set) {
+            if (!checkDailyEventBit(FARM_MORNING_VISIT) && gSeason == SPRING && gDayOfMonth == 16 && (gHour - 6) < 0x9U && (horseInfo.flags & 1) && horseInfo.grown == TRUE) {
+                setDailyEventBit(FARM_MORNING_VISIT);
+                gCutsceneIndex = DOUG_FARM_HORSE_RACE;
+                loadCutscene(arg0);
+                set = 1;
+            }
+        }
+
+        if (!set) {
+            if (!checkDailyEventBit(FARM_MORNING_VISIT) && gSeason == AUTUMN && gDayOfMonth == 27 && (gHour - 6) < 9U && (horseInfo.flags & 1) && horseInfo.grown == TRUE) {
+                setDailyEventBit(FARM_MORNING_VISIT);
+                gCutsceneIndex = 0x7E;
+                loadCutscene(arg0);
+                set = 1;
+            }
+        }
+
+        if (!set) {
+            if (!checkDailyEventBit(FARM_MORNING_VISIT) && gSeason == WINTER && gDayOfMonth == 18 && (gHour - 6) < 9U) {
+                setDailyEventBit(FARM_MORNING_VISIT);
+                gCutsceneIndex = DOUG_FARM_DOG_RACE;
+                loadCutscene(arg0);
+                set = 1;
+            }
+        }
+
+        if (!set) {
+            if (!checkDailyEventBit(FARM_MORNING_VISIT) && gSeason == SPRING && gDayOfMonth == 7 && (gHour - 6) < 3U) {
+                
+                setDailyEventBit(FARM_MORNING_VISIT);
+                
+                if (npcAffection[KENT] < 30) {
+                    if (gYear == 1) {
+                        gCutsceneIndex = MAYOR_FARM_SOWING_FESTIVAL_YEAR_1;
+                    } else {
+                        gCutsceneIndex = MAYOR_FARM_SOWING_FESTIVAL;
+                    }
+                } else {
+                    gCutsceneIndex = KENT_FARM_SOWING_FESITVAL;
+                }
+                
+                loadCutscene(arg0);
+                set = 1;
+            }
+        }
+
+        if (!set) {
+            if (!checkDailyEventBit(FARM_MORNING_VISIT) && gSeason == AUTUMN && gDayOfMonth == 2 && (gHour - 6) < 3U && npcAffection[KENT] >= 0x1E) {
+                setDailyEventBit(FARM_MORNING_VISIT);
+                
+                if (func_8009B2BC(2)) {
+                    gCutsceneIndex = 0x66;
+                    func_8003FBA0(0xE, gFarmAnimals[func_8009B464()].name, 6);
+                } else {
+                    gCutsceneIndex = 0x65;
+                }
+                
+                loadCutscene(arg0);
+                set = 1;
+            }
+        }
+
+        if (!set) {
+            if (!checkDailyEventBit(FARM_MORNING_VISIT) && gSeason == WINTER && gDayOfMonth == 9 && (gHour - 6) < 3U && npcAffection[KENT] >= 0x1E) {
+                setDailyEventBit(FARM_MORNING_VISIT);
+                
+                if (gYear == 1) {
+                    gCutsceneIndex = KENT_FARM_THANKSGIVING_FESTIVAL;
+                } else {
+                    gCutsceneIndex = 0x68;
+                }
+                
+                loadCutscene(arg0);
+                set = 1;
+            }
+        }
+
+        if (!set) {
+            if (!checkDailyEventBit(FARM_MORNING_VISIT) && gSeason == SPRING && gDayOfMonth == 16 && (gHour - 6) < 3U) {
+                setDailyEventBit(FARM_MORNING_VISIT);
+                gCutsceneIndex = MAYOR_FARM_HORSE_RACE;
+                loadCutscene(arg0);
+                set = 1;
+            }
+        }
+
+        if (!set) {
+            if (!checkDailyEventBit(FARM_MORNING_VISIT) && gSeason == SUMMER && gDayOfMonth == 17 && (gHour - 6) < 3U) {
+                setDailyEventBit(FARM_MORNING_VISIT);
+                gCutsceneIndex = MAYOR_FARM_FIREFLY_FESTIVAL;
+                loadCutscene(arg0);
+                set = 1;
+            }
+        }
+
+        if (!set) {
+            if (!checkDailyEventBit(FARM_MORNING_VISIT) && gSeason == SUMMER && gDayOfMonth == 23 && (gHour - 6) < 3U) {
+                setDailyEventBit(FARM_MORNING_VISIT);
+                gCutsceneIndex = MAYOR_FARM_SEA_FESTIVAL;
+                loadCutscene(arg0);
+                set = 1;
+            }
+        }
+
+        if (!set) {
+            if (!checkDailyEventBit(FARM_MORNING_VISIT) && gSeason == AUTUMN && gDayOfMonth == 11 && (gHour - 6) < 3U) {
+                setDailyEventBit(FARM_MORNING_VISIT);
+                gCutsceneIndex = MAYOR_FARM_HARVEST_FESTIVAL;
+                loadCutscene(arg0);
+                set = 1;
+            }
+        }
+
+        if (!set) {
+            if (!checkDailyEventBit(FARM_MORNING_VISIT) && gSeason == AUTUMN && gDayOfMonth == 19 && (gHour - 6) < 3U) {
+                setDailyEventBit(FARM_MORNING_VISIT);
+                gCutsceneIndex = MAYOR_FARM_EGG_FESTIVAL;
+                loadCutscene(arg0);
+                set = 1;
+            }
+        }
+
+        if (!set) {
+            if (!checkDailyEventBit(FARM_MORNING_VISIT) && gSeason == WINTER && gDayOfMonth == 27 && (gHour - 6) < 3U) {
+                
+                setDailyEventBit(FARM_MORNING_VISIT);
+                
+                if (gHarvestKing == PLAYER) {
+                    gCutsceneIndex = MAYOR_FARM_SPIRIT_FESTIVAL_PLAYER_HARVEST_KING;
+                } else {
+                    gCutsceneIndex = MAYOR_FARM_SPIRIT_FESTIVAL;
+                }
+                
+                loadCutscene(arg0);
+                set = 1;
+            }
+        }
+
+        if (!set) {
+            if (!checkDailyEventBit(FARM_MORNING_VISIT) && gSeason == SPRING && gDayOfMonth == 19 && (gHour - 6) < 3U) {
+                setDailyEventBit(FARM_MORNING_VISIT);
+                gCutsceneIndex = BASIL_FARM_FLOWER_FESTIVAL;
+                loadCutscene(arg0);
+                set = 1;
+            }
+        }
+
+        if (!set) {
+            if (!checkDailyEventBit(FARM_MORNING_VISIT) && gSeason == SUMMER && gDayOfMonth == 8 && (gHour - 6) < 3U) {
+                setDailyEventBit(FARM_MORNING_VISIT);
+                gCutsceneIndex = BASIL_FARM_VEGETABLE_FESTIVAL;
+                loadCutscene(arg0);
+                set = 1;
+            }
+        }
+
+        if (!set) {
+            if (!checkDailyEventBit(0x19) && npcAffection[POPURI] >= 50 && gSeason == SPRING && gDayOfMonth == 22 && (gHour - 6) < 3U && !checkLifeEventBit(MARRIED) && !checkLifeEventBit(POPURI_GRAY_MARRIED)) {
+                setDailyEventBit(0x19);
+                gCutsceneIndex = 0x9C;
+                loadCutscene(arg0);
+                set = 1;
+            }
+        }
+
+        if (!set) {
+            if (!checkDailyEventBit(0x1A) && npcAffection[ELLI] >= 50 && gSeason == AUTUMN && gDayOfMonth == 11 && (gHour - 7) < 2U && !checkLifeEventBit(MARRIED) && !checkLifeEventBit(ELLI_JEFF_MARRIED)) {
+                setDailyEventBit(0x1A);
+                gCutsceneIndex = 0xA8;
+                loadCutscene(arg0);
+                set = 1;
+            }
+        }
+
+        if (!set) {
+            if (!checkDailyEventBit(0x1B) && npcAffection[ANN] >= 80 && gSeason == SPRING && gDayOfMonth == 16 && (gHour - 7) < 2U && !checkLifeEventBit(MARRIED) && checkLifeEventBit(0x51) && !checkLifeEventBit(ANN_CLIFF_MARRIED)) {
+                setDailyEventBit(0x1B);
+                gCutsceneIndex = 0xB3;
+                loadCutscene(arg0);
+                set = 1;
+            }
+        }
+
+        if (!set) {
+            if (!checkDailyEventBit(0x18) && npcAffection[MARIA] >= 50 && gSeason == SUMMER && gDayOfMonth == 1 && gHour == 8 && !checkLifeEventBit(MARRIED) && !checkLifeEventBit(MARIA_HARRIS_MARRIED)) {
+                setDailyEventBit(0x18);
+                gCutsceneIndex = MARIA_FIREWORKS_INVITATION;
+                loadCutscene(arg0);
+                set = 1;
+            }            
+        }
+        
+        if (!set) {
+            if (!checkDailyEventBit(0x19) && npcAffection[POPURI] >= 50 && gSeason == SUMMER && gDayOfMonth == 1 && gHour == 10 && !checkLifeEventBit(MARRIED) && !checkLifeEventBit(POPURI_GRAY_MARRIED)) {
+                setDailyEventBit(0x19);
+                gCutsceneIndex = POPURI_FIREWORKS_INVITATION;
+                loadCutscene(arg0);
+                set = 1;
+            }            
+        }
+
+        if (!set) {
+            if (!checkDailyEventBit(0x1A) && npcAffection[ELLI] >= 50 && gSeason == SUMMER && gDayOfMonth == 1 && gHour == 12 && !checkLifeEventBit(MARRIED) && !checkLifeEventBit(ELLI_JEFF_MARRIED)) {
+                setDailyEventBit(0x1A);
+                gCutsceneIndex = ELLI_FIREWORKS_INVITATION;
+                loadCutscene(arg0);
+                set = 1;
+            }            
+        }
+
+        if (!set) {
+            if (!checkDailyEventBit(0x1B) && npcAffection[ANN] >= 50 && gSeason == SUMMER && gDayOfMonth == 1 && gHour == 14 && !checkLifeEventBit(MARRIED) && !checkLifeEventBit(ANN_CLIFF_MARRIED)) {
+                setDailyEventBit(0x1B);
+                gCutsceneIndex = ANN_FIREWORKS_INVITATION;
+                loadCutscene(arg0);
+                set = 1;
+            }            
+        }
+
+        if (!set) {
+            if (!checkDailyEventBit(0x1C) && npcAffection[KAREN] >= 50 && gSeason == SUMMER && gDayOfMonth == 1 && gHour == 16 && !checkLifeEventBit(MARRIED) && !checkLifeEventBit(KAREN_KAI_MARRIED)) {
+                setDailyEventBit(0x1C);
+                gCutsceneIndex = KAREN_FIREWORKS_INVITATION;
+                loadCutscene(arg0);
+                set = 1;
+            }            
+        }
+        
+        if (!set) {
+            if (!checkDailyEventBit(0x18) && npcAffection[MARIA] >= 140 && gSeason == WINTER && gDayOfMonth == 10 && gHour == 8 && !checkLifeEventBit(MARRIED) && !checkLifeEventBit(MARIA_HARRIS_MARRIED)) {
+                setDailyEventBit(0x18);
+                gCutsceneIndex = MARIA_THANKSGIVING_GIFT;
+                loadCutscene(arg0);
+                set = 1;
+            }            
+        }        
+
+        if (!set) {
+            if (!checkDailyEventBit(0x19) && npcAffection[POPURI] >= 140 && gSeason == WINTER && gDayOfMonth == 10 && gHour == 10 && !checkLifeEventBit(MARRIED) && !checkLifeEventBit(POPURI_GRAY_MARRIED)) {
+                setDailyEventBit(0x19);
+                gCutsceneIndex = POPURI_THANKSGIVING_GIFT;
+                loadCutscene(arg0);
+                set = 1;
+            }            
+        }        
+
+        if (!set) {
+            if (!checkDailyEventBit(0x1A) && npcAffection[ELLI] >= 140 && gSeason == WINTER && gDayOfMonth == 10 && gHour == 12 && !checkLifeEventBit(MARRIED) && !checkLifeEventBit(ELLI_JEFF_MARRIED)) {
+                setDailyEventBit(0x1A);
+                gCutsceneIndex = ELLI_THANKSGIVING_GIFT;
+                loadCutscene(arg0);
+                set = 1;
+            }            
+        }        
+
+        if (!set) {
+            if (!checkDailyEventBit(0x1B) && npcAffection[ANN] >= 140 && gSeason == WINTER && gDayOfMonth == 10 && gHour == 14 && !checkLifeEventBit(MARRIED) && !checkLifeEventBit(ANN_CLIFF_MARRIED)) {
+                setDailyEventBit(0x1B);
+                gCutsceneIndex = ANN_THANKSGIVING_GIFT;
+                loadCutscene(arg0);
+                set = 1;
+            }            
+        }    
+
+        if (!set) {
+            if (!checkDailyEventBit(0x1C) && npcAffection[KAREN] >= 140 && gSeason == WINTER && gDayOfMonth == 10 && gHour == 16 && !checkLifeEventBit(MARRIED) && !checkLifeEventBit(KAREN_KAI_MARRIED)) {
+                setDailyEventBit(0x1C);
+                gCutsceneIndex = KAREN_THANKSGIVING_GIFT;
+                loadCutscene(arg0);
+                set = 1;
+            }            
+        }       
+
+        if (!set) {
+            if (!checkDailyEventBit(0x18) && npcAffection[MARIA] >= 100 && gSeason == WINTER && gDayOfMonth == 24 && gHour == 8 && !checkLifeEventBit(MARRIED) && !checkLifeEventBit(MARIA_HARRIS_MARRIED)) {
+                setDailyEventBit(0x18);
+                gCutsceneIndex = 0x95;
+                loadCutscene(arg0);
+                set = 1;
+            }            
+        }        
+
+        if (!set) {
+            if (!checkDailyEventBit(0x19) && npcAffection[POPURI] >= 100 && gSeason == WINTER && gDayOfMonth == 24 && gHour == 10 && !checkLifeEventBit(MARRIED) && !checkLifeEventBit(POPURI_GRAY_MARRIED)) {
+                setDailyEventBit(0x19);
+                gCutsceneIndex = 0xA0;
+                loadCutscene(arg0);
+                set = 1;
+            }            
+        }        
+
+        if (!set) {
+            if (!checkDailyEventBit(0x1A) && npcAffection[ELLI] >= 100 && gSeason == WINTER && gDayOfMonth == 24 && gHour == 12 && !checkLifeEventBit(MARRIED) && !checkLifeEventBit(ELLI_JEFF_MARRIED)) {
+                setDailyEventBit(0x1A);
+                gCutsceneIndex = 0xAC;
+                loadCutscene(arg0);
+                set = 1;
+            }            
+        }       
+
+        if (!set) {
+            if (!checkDailyEventBit(0x1B) && npcAffection[ANN] >= 100 && gSeason == WINTER && gDayOfMonth == 24 && gHour == 14 && !checkLifeEventBit(MARRIED) && !checkLifeEventBit(ANN_CLIFF_MARRIED)) {
+                setDailyEventBit(0x1B);
+                gCutsceneIndex = 0xB7;
+                loadCutscene(arg0);
+                set = 1;
+            }            
+        }       
+
+        if (!set) {
+            if (!checkDailyEventBit(0x1C) && npcAffection[KAREN] >= 100 && gSeason == WINTER && gDayOfMonth == 24 && gHour == 16 && !checkLifeEventBit(MARRIED) && !checkLifeEventBit(KAREN_KAI_MARRIED)) {
+                setDailyEventBit(0x1C);
+                gCutsceneIndex = 0xC4;
+                loadCutscene(arg0);
+                set = 1;
+            }            
+        }       
+
+       if (!set) {
+           
+            if (!checkDailyEventBit(FARM_MORNING_VISIT) && gSeason == gPlayerBirthdaySeason && gDayOfMonth == 25 && (gHour - 6) < 12U) {
+                
+                tempGirl = getBacholeretteWithHighestAffection(120);
+                
+                if (tempGirl) {       
+
+                    setDailyEventBit(FARM_MORNING_VISIT);
+                    
+                    switch (tempGirl) {
+                        
+                        case 1:
+                            
+                            if (!checkLifeEventBit(MARRIED) && !checkLifeEventBit(MARIA_HARRIS_MARRIED)) {
+                                
+                                if (npcAffection[MARIA] >= 160) {
+                                    setLifeEventBit(0x3F);
+                                    gCutsceneIndex = 0x99;
+                                } else {
+                                    gCutsceneIndex = 0x98;
+                                }
+                                
+                                gCutsceneFlags |= 2;
+                                loadCutscene(arg0);
+                                set = 1;
+                            }
+
+                            break;
+                        
+                        case 2:
+                            
+                            if (!checkLifeEventBit(MARRIED) && !checkLifeEventBit(POPURI_GRAY_MARRIED)) {
+                                
+                               if (npcAffection[POPURI] >= 160) {
+                                    acquireKeyItem(POTPURRI);
+                                    gCutsceneIndex = 0xA4;
+                                } else {
+                                    gCutsceneIndex = 0xA3;
+                                }
+                                
+                                gCutsceneFlags |= 2;
+                                loadCutscene(arg0);
+                                set = 1;                                
+                            }
+
+                            break;
+
+                        case 3:
+
+                            if (!checkLifeEventBit(MARRIED) && !checkLifeEventBit(ELLI_JEFF_MARRIED)) {
+                                
+                               if (npcAffection[ELLI] >= 160) {
+                                    acquireKeyItem(EMBROIDERED_HANDKERCHIEF);
+                                    gCutsceneIndex = 0xB0;
+                                } else {
+                                    gCutsceneIndex = 0xAF;
+                                }
+                                
+                                gCutsceneFlags |= 2;
+                                loadCutscene(arg0);
+                                set = 1;                                
+                            }
+
+                            break;
+
+                        case 4:
+
+                            if (!checkLifeEventBit(MARRIED) && !checkLifeEventBit(ANN_CLIFF_MARRIED)) {
+                                
+                               if (npcAffection[ANN] >= 160) {
+                                    acquireKeyItem(HAND_KNIT_SOCKS);
+                                    gCutsceneIndex = 0xBB;
+                                } else {
+                                    gCutsceneIndex = 0xBA;
+                                }
+                                
+                                gCutsceneFlags |= 2;
+                                loadCutscene(arg0);
+                                set = 1;                                
+                            }
+
+                            break;   
+
+                        case 5:
+
+                            if (!checkLifeEventBit(MARRIED) && !checkLifeEventBit(KAREN_KAI_MARRIED)) {
+                                
+                               if (npcAffection[KAREN] >= 160) {
+                                    acquireKeyItem(LUCKY_BRACELET);
+                                    gCutsceneIndex = 0xC8;
+                                } else {
+                                    gCutsceneIndex = 0xC7;
+                                }
+                                
+                                gCutsceneFlags |= 2;
+                                loadCutscene(arg0);
+                                set = 1;                                
+                            }
+
+                            break;
+
+                        default:
+                            break; 
+                    }
+                }
+            }            
+        }      
+
+        if (!set) {
+            if (!checkLifeEventBit(BASIL_IN_TOWN) && ((gSeason == SPRING && gDayOfMonth >= 15) || gSeason == SUMMER) && (gHour - 6) < 11U) {
+                
+                setLifeEventBit(BASIL_IN_TOWN);
+                toggleLifeEventBit(BASIL_GONE);       
+                
+                if (gYear != 1) {
+                    if (npcAffection[BASIL] >= 150) {
+                        gCutsceneIndex = BASIL_POWER_NUT_GIFT;
+                    } else {
+                        gCutsceneIndex = BASIL_RETURN;
+                    }
+                } else {
+                    gCutsceneIndex = BASIL_INTRO;
+                }
+                
+                loadCutscene(arg0);
+                set = 1;
+            }            
+        }
+
+        if (!set) {
+            if (checkLifeEventBit(BASIL_IN_TOWN) && ((gSeason == AUTUMN && gDayOfMonth >= 5) || gSeason == WINTER) && (gHour - 6) < 11U) {
+                toggleLifeEventBit(BASIL_IN_TOWN);
+                setLifeEventBit(BASIL_GONE);      
+                gCutsceneIndex = BASIL_LEAVING;
+                loadCutscene(arg0);
+                set = 1;
+            }
+        }
+
+        if (!set && !arg0) {
+            if (!checkLifeEventBit(CLIFF_ARRIVED) && (gSeason == SPRING && !(gDayOfMonth < 18) || !(gSeason < SUMMER))) {
+                setLifeEventBit(CLIFF_ARRIVED);      
+                gCutsceneIndex = CLIFF_INTRO;
+                loadCutscene(arg0);      
+                set = 1;
+            }
+        } 
+
+        // Cliff leaving
+        if (!set) {
+            if (checkLifeEventBit(0x41) && !checkLifeEventBit(0x42) && gSeason == WINTER && (gHour - 6) < 12U && gHarvestKing != 4 && gHarvestCoinFinder != 4) {
+                
+                if (checkLifeEventBit(MARRIED) && gWife == ANN && npcAffection[CLIFF] >= 150 && !checkLifeEventBit(ANN_CLIFF_MARRIED)) {
+                    setLifeEventBit(0x42);
+                    setLifeEventBit(0x2D);
+                    gCutsceneIndex = 0xD5;
+                    loadCutscene(arg0);
+                    set = 1;                    
+                }
+                
+                if (npcAffection[CLIFF] < 51 && !checkLifeEventBit(ANN_CLIFF_MARRIED)) {              
+                    setLifeEventBit(0x42);
+                    setLifeEventBit(0x2D);
+                    gCutsceneIndex = CLIFF_LEAVING_DEFAULT;
+                    loadCutscene(arg0);
+                    set = 1;                                
+                } 
+            }
+        }
+
+        if (!set) {
+            if (!checkLifeEventBit(0x33) && checkDailyEventBit(0x22) && npcAffection[KENT] >= 5 && (gHour - 6) < 3U) {
+                setLifeEventBit(0x33);
+                gCutsceneIndex = 0x69;
+                loadCutscene(arg0);
+                set = 1;                               
+            }
+        }
+        
+        if (!set) {
+            if (!checkLifeEventBit(0x35) && checkDailyEventBit(0x23) && npcAffection[KENT] >= 5 && (gHour - 6) < 3U) {
+                setLifeEventBit(0x35);
+                gCutsceneIndex = 0x6A;
+                loadCutscene(arg0);
+                set = 1;                               
+            }
+        }
+        
+        if (!set) {
+            if (!checkLifeEventBit(0x37) && checkDailyEventBit(0x24) && npcAffection[KENT] >= 5 && gWeather == SUNNY && (gHour - 6) < 3U) {
+                
+                setLifeEventBit(0x37);
+
+                if (!func_8009B828(0)) {
+                    gCutsceneIndex = 0x6C;
+                } else {
+                    gCutsceneIndex = 0x6B;
+                }
+                
+                loadCutscene(arg0);
+                set = 1;                               
+            }
+        }
+        
+        if (!set) {
+            if (!checkLifeEventBit(0x39) && checkDailyEventBit(0x25) && npcAffection[KENT] >= 5 && (gHour - 6) < 3U) {
+                setLifeEventBit(0x39);
+                gCutsceneIndex = 0x6F;
+                loadCutscene(arg0);
+                set = 1;                               
+            }
+        }            
+        
+        if (!set) {
+            if (!checkLifeEventBit(0x3B) && checkDailyEventBit(0x26) && npcAffection[KENT] >= 5 && (gHour - 6) < 3U) {
+                setLifeEventBit(0x3B);
+                gCutsceneIndex = 0x6D;
+                loadCutscene(arg0);
+                set = 1;                               
+            }
+        }     
+
+        if (!set) {
+            if (!checkLifeEventBit(0x3D) && checkDailyEventBit(0x27) && npcAffection[KENT] >= 5 && (gHour - 6) < 3U) {
+                setLifeEventBit(0x3D);
+                gCutsceneIndex = 0x6E;
+                loadCutscene(arg0);
+                set = 1;                               
+            }
+        }     
+
+        if (!set) {
+            
+            if (!checkDailyEventBit(FARM_MORNING_VISIT) && gForecast == TYPHOON && ((npcAffection[HARVEST_SPRITE_1] + npcAffection[HARVEST_SPRITE_2] + npcAffection[HARVEST_SPRITE_3]) / 3) >= 120 && (gHour - 6) < 3U) {
+
+                if ((func_8009B564() + func_8009B374()) >= 2) {           
+                    setDailyEventBit(FARM_MORNING_VISIT);
+                    gCutsceneIndex = 0xE3;
+                    loadCutscene(arg0);
+                    set = 1;                               
+                }
+            }
+        }    
+
+        if (!set) {
+            
+            if (!checkDailyEventBit(FARM_MORNING_VISIT) && ((npcAffection[CARPENTER_1] + npcAffection[CARPENTER_2] + npcAffection[MASTER_CARPENTER]) / 3) >= 120 && (gHour - 6) < 3U) {
+
+                if (checkDailyEventBit(0x3F)) {           
+                    setDailyEventBit(FARM_MORNING_VISIT);
+                    gCutsceneIndex = 0xDD;
+                    loadCutscene(arg0);
+                    set = 1;                               
+                }
+            }
+        }    
+
+        if (!set) {
+            if (!checkLifeEventBit(0x8E) && func_8009B374() < 6 && gYear == 1 && gSeason == AUTUMN && gDayOfMonth == 30 && (gHour - 6) < 18U) {
+                setLifeEventBit(0x8E);
+                gCutsceneIndex = DOUG_FARM_FAVOR;
+                loadCutscene(arg0);
+                set = 1;    
+            }
+        }
+        
+        if (!set && !arg0) {
+            if (!checkLifeEventBit(0x8F) && checkLifeEventBit(0x94) && gSeason == WINTER && gDayOfMonth == 1 && (gHour - 6) < 4U && gEntranceIndex == HOUSE_EXIT) {
+                setLifeEventBit(0x8F);
+                gCutsceneIndex = DOUG_DROPPING_OFF_COWS;
+                loadCutscene(arg0);
+                set = 1;    
+            }
+        }
+        
+        if (!set && !arg0) {
+            if (checkLifeEventBit(0x94) && gSeason == WINTER && gDayOfMonth == 5 && (gHour - 6) < 4U && gEntranceIndex == HOUSE_EXIT) {
+                toggleLifeEventBit(0x94);
+                gCutsceneIndex = MISS_MANA_PICKUP_COWS;
+                loadCutscene(arg0);
+                set = 1;    
+            }
+        }      
+
+        if (!set) {
+            if (!checkLifeEventBit(0x68) && npcAffection[KENT] >= 50 && gSeason == SUMMER && (gHour - 15) < 2U) {
+                setLifeEventBit(0x68);
+                gCutsceneIndex = 0x70;
+                loadCutscene(arg0);
+                set = 1;    
+            }
+        }
+        
+        if (!set) {
+            if (!checkLifeEventBit(PUPPIES) && (npcAffection[KENT] >= 150 || npcAffection[KENT] + npcAffection[STU] >= 250) && (gHour - 6) < 12U) {
+                setLifeEventBit(PUPPIES);
+                gCutsceneIndex = KENT_AND_STU_FARM_PUPPIES;
+                loadCutscene(arg0);
+                set = 1;    
+            }
+        }
+        
+        if (!set) {
+            if (!checkLifeEventBit(0x6A) && func_800DC008() >= 8 && gWeather == SUNNY && (gSeason && gSeason < 3) && (gHour - 6) < 6U) {
+                setLifeEventBit(0x6A);
+                gCutsceneIndex = 0x72;
+                loadCutscene(arg0);
+                set = 1;    
+            }
+        }        
+        
+        if (!set) {
+            if (!checkLifeEventBit(0x6B) && countPinkCatMintFlowersFarm() && gWeather == SUNNY && (gSeason && gSeason < 3) && (gHour - 6) < 6U) {
+                setLifeEventBit(0x6B);
+                gCutsceneIndex = 0x73;
+                loadCutscene(arg0);
+                set = 1;    
+            }
+        }        
+
+        if (!set) {
+            if (!checkLifeEventBit(0x6C) && countPinkCatMintFlowersFarm() >= 16 && npcAffection[STU] >= 80 && gWeather == SUNNY && (gSeason && gSeason < 3) && (gHour - 6) < 6U) {
+                setLifeEventBit(0x6C);
+                gCutsceneIndex = 0x74;
+                loadCutscene(arg0);
+                set = 1;    
+            }
+        }      
+
+        if (!set) {
+            if (!checkLifeEventBit(0x6D) && npcAffection[MARIA] >= 50 && (gHour - 15) < 2U && (!checkLifeEventBit(MARRIED) || gWife != MARIA)) {
+                setLifeEventBit(0x6D);
+                gCutsceneIndex = MARIA_FARM_GIFT_CHOCOLATE;
+                loadCutscene(arg0);
+                set = 1;    
+            }
+        }               
+        
+        if (!set) {
+            if (!checkLifeEventBit(0x6E) && npcAffection[MARIA] >= 80 && (gHour - 15) < 2U && !checkLifeEventBit(MARRIED) && !checkLifeEventBit(MARIA_HARRIS_MARRIED)) {
+                setLifeEventBit(0x6E);
+                gCutsceneIndex = MARIA_FARM_GIFT_RICE_BALLS;
+                loadCutscene(arg0);
+                set = 1;                               
+            }
+        }     
+
+        if (!set) {
+            if (!checkLifeEventBit(0x6F) && npcAffection[MARIA] >= 200 && gWeather == SUNNY && gSeason == SUMMER && (gHour - 18) < 6U && !checkDailyEventBit(0x30) && !checkLifeEventBit(MARRIED) && !checkLifeEventBit(MARIA_HARRIS_MARRIED)) {
+                setLifeEventBit(0x6F);
+                gCutsceneIndex = 0x93;
+                loadCutscene(arg0);
+                set = 1;                               
+            }
+        }     
+        
+        if (!set) {
+            if (!checkLifeEventBit(0x70) && npcAffection[POPURI] >= 50 && (gHour - 15) < 2U && (!checkLifeEventBit(MARRIED) || gWife != POPURI)) {
+                setLifeEventBit(0x70);
+                gCutsceneIndex = POPURI_FARM_GIFT_TEA;
+                loadCutscene(arg0);
+                set = 1;                               
+            }
+        }          
+        
+        if (!set) {
+            if (!checkLifeEventBit(0x71) && npcAffection[POPURI] >= 80 && (gHour - 15) < 2U && !checkLifeEventBit(MARRIED) && !checkLifeEventBit(POPURI_GRAY_MARRIED)) {
+                setLifeEventBit(0x71);
+                gCutsceneIndex = POPURI_FARM_GIFT_COOKIES;
+                loadCutscene(arg0);
+                set = 1;                               
+            }
+        }          
+        if (!set) {
+            if (!checkLifeEventBit(0x72) && blueMistFlowerPlot >= 0xC2 && npcAffection[POPURI] >= 200 && gWeather == SUNNY && gSeason == SUMMER && gDayOfMonth == 30 && (gHour - 6) < 12U 
+                    && ((checkLifeEventBit(MARRIED) && gWife == POPURI) || (!checkLifeEventBit(MARRIED) && !checkLifeEventBit(POPURI_GRAY_MARRIED)))) {
+                blueMistFlowerPlot = 0;
+                D_8016FE6F = 0;
+                setLifeEventBit(0x72);
+                gCutsceneIndex = 0x9E;
+                loadCutscene(arg0);
+                set = 1;           
+                
+            }
+        } 
+
+        if (!set) {
+            if (!checkLifeEventBit(0x73) && npcAffection[ELLI] >= 50 && (gHour - 15) < 2U && (!checkLifeEventBit(MARRIED) || gWife != ELLI)) {
+                setLifeEventBit(0x73);
+                gCutsceneIndex = 0xA5;
+                loadCutscene(arg0);
+                set = 1;                      
+            }
+        }
+        
+        if (!set) {
+            if (!checkLifeEventBit(0x74) && npcAffection[ELLI] >= 80 && (gHour - 15) < 2U && !checkLifeEventBit(MARRIED) && !checkLifeEventBit(ELLI_JEFF_MARRIED)) {
+                setLifeEventBit(0x74);
+                gCutsceneIndex = 0xA6;
+                loadCutscene(arg0);
+                set = 1;                      
+            }
+        }
+        
+        if (!set) {
+            if (!checkLifeEventBit(0x75) && npcAffection[ELLI] >= 200 && gWeather == SUNNY && gSeason == AUTUMN && gDayOfMonth == 9 && (gHour - 18) < 6U && !checkLifeEventBit(MARRIED) && !checkLifeEventBit(ELLI_JEFF_MARRIED)) {
+                setLifeEventBit(0x75);
+                gCutsceneIndex = 0xA9;
+                loadCutscene(arg0);
+                set = 1;                      
+            }
+        }      
+
+        if (!set) {
+            if (!checkLifeEventBit(0x76) && func_8009B658() >= 6 && gSeason == WINTER && gDayOfMonth == 9 && (gHour - 6) < 18U && (!checkLifeEventBit(MARRIED) || gWife != ELLI)) {
+                setLifeEventBit(0x76);
+                gCutsceneIndex = 0xAA;
+                loadCutscene(arg0);
+                set = 1;                      
+            }
+        }  
+
+        if (!set) {
+            if (!checkLifeEventBit(0x77) && npcAffection[ANN] >= 50 && (gHour - 15) < 2U && (!checkLifeEventBit(MARRIED) || gWife != ANN)) {
+                setLifeEventBit(0x77);
+                gCutsceneIndex = 0xB1;
+                loadCutscene(arg0);
+                set = 1;                      
+            }
+        }  
+
+        if (!set) {
+            if (!checkLifeEventBit(0x78) && npcAffection[ANN] >= 80 && (gHour - 15) < 2U && !checkLifeEventBit(MARRIED) && !checkLifeEventBit(ANN_CLIFF_MARRIED)) {
+                setLifeEventBit(0x78);
+                gCutsceneIndex = 0xB2;
+                loadCutscene(arg0);
+                set = 1;                      
+            }
+        }  
+        
+        if (!set) {
+            if (!checkLifeEventBit(0x79) && npcAffection[ANN] >= 200 && gWeather == SUNNY && gSeason == WINTER && (gHour - 6) < 12U && !checkLifeEventBit(MARRIED) && !checkLifeEventBit(ANN_CLIFF_MARRIED)) {
+                setLifeEventBit(0x79);
+                gCutsceneIndex = 0xB5;
+                loadCutscene(arg0);
+                set = 1;                      
+            }
+        }  
+
+        if (!set) {
+            if (!checkLifeEventBit(0x7A) && npcAffection[ANN] >= 50 && (gHour - 6) < 6U && !checkLifeEventBit(MARRIED) && !checkLifeEventBit(ANN_CLIFF_MARRIED) && checkLifeEventBit(0x3C)) {
+                setLifeEventBit(0x7A);
+                gCutsceneIndex = 0xBC;
+                loadCutscene(arg0);
+                set = 1;                      
+            }
+        }  
+
+        if (!set) {
+            if (!checkLifeEventBit(0x7B) && npcAffection[ANN] >= 80 && (gHour - 6) < 6U && !checkLifeEventBit(MARRIED) && !checkLifeEventBit(ANN_CLIFF_MARRIED) && checkLifeEventBit(0x3C)) {
+                setLifeEventBit(0x7B);
+                gCutsceneIndex = 0xBD;
+                loadCutscene(arg0);
+                set = 1;                      
+            }
+        }  
+
+        if (!set) {
+            if (!checkLifeEventBit(0x7C) && npcAffection[KAREN] >= 60 && (gSeason - 2) < 2U && (gHour - 15) < 2U && (!checkLifeEventBit(MARRIED) || gWife != KAREN)) {
+                setLifeEventBit(0x7C);
+                gCutsceneIndex = 0xBE;
+                loadCutscene(arg0);
+                set = 1;                      
+            }
+        }  
+        
+        if (!set) {
+            if (!checkLifeEventBit(0x7D) && npcAffection[KAREN] >= 100 && (gHour - 15) < 2U && !checkLifeEventBit(MARRIED) && !checkLifeEventBit(KAREN_KAI_MARRIED)) {
+                setLifeEventBit(0x7D);
+                gCutsceneIndex = 0xBF;
+                loadCutscene(arg0);
+                set = 1;                      
+            }
+        }  
+        
+        if (!set) {
+            if (!checkLifeEventBit(0x7E) && checkLifeEventBit(0x96) && npcAffection[KAREN] >= 200 && gWeather == SUNNY && gSeason == AUTUMN && gDayOfMonth == 7 && (gHour - 18) < 6U && !checkLifeEventBit(MARRIED) && !checkLifeEventBit(KAREN_KAI_MARRIED)) {
+                setLifeEventBit(0x7E);
+                gCutsceneIndex = 0xC1;
+                loadCutscene(arg0);
+                set = 1;                      
+            }
+        }  
+        
+        if (!set) {
+            if (!checkLifeEventBit(0x7F) && checkLifeEventBit(0x96) && gSeason == WINTER && (gDayOfMonth - 7) < 24U && (gHour - 6) < 12U) {
+                
+                setLifeEventBit(0x7F);
+                setLifeEventBit(0x20);
+
+                if (npcAffection[KAREN] >= npcAffection[KAI]) {
+                    
+                    if (!checkLifeEventBit(0x2F)) {
+                        gCutsceneIndex = 0xC2;
+                    } else {   
+                        gCutsceneIndex = 0xD7;
+                    }
+                } else {
+                    if (checkLifeEventBit(KAI_GONE)) {
+                        gCutsceneIndex = 0xC2;
+                    } else {
+                        gCutsceneIndex = 0xD7;
+                    }      
+                }
+
+                loadCutscene(arg0);
+                set = 1;                      
+            }
+        }          
+
+        if (!set) {
+            if (!checkLifeEventBit(0x80) && npcAffection[HARRIS] >= 50 && gSeason == AUTUMN && (gHour - 15) < 2U) {
+                setLifeEventBit(0x80);
+                gCutsceneIndex = 0xCC;
+                loadCutscene(arg0);
+                set = 1;                      
+            }
+        }       
+        
+        if (!set) {
+            if (!checkLifeEventBit(0x81) && npcAffection[CLIFF] >= 50 && (gHour - 15) < 2U) {
+                setLifeEventBit(0x81);
+                gCutsceneIndex = 0xD2;
+                loadCutscene(arg0);
+                set = 1;                      
+            }
+        }       
+        
+        if (!set) {
+            if (!checkLifeEventBit(0x83) && checkLifeEventBit(0x2A) && (gHour - 6) < 12U && (!checkLifeEventBit(MARRIED) || gWife != 4) && !checkLifeEventBit(KAREN_KAI_MARRIED)) {
+                setLifeEventBit(0x83);
+                gCutsceneIndex = 0xDA;
+                loadCutscene(arg0);
+                set = 1;                      
+            }
+        }    
+
+        if (!set && !arg0) {
+            if (!checkLifeEventBit(0x84) && checkLifeEventBit(6) && npcAffection[RICK] >= 120 && gWeather == SUNNY && (gSeason && gSeason < 4) && (gHour - 6) < 12U && gEntranceIndex == HOUSE_EXIT) {
+                setLifeEventBit(0x84);
+                gCutsceneIndex = 0xDC;
+                loadCutscene(arg0);
+                set = 1;                             
+            }
+        }
+        
+        if (!set) {
+            if (!checkLifeEventBit(0x85) && (gHour - 6) < 6U && func_8009B564() >= 5 && D_80237410 < 990) {
+                setLifeEventBit(0x85);
+                gCutsceneIndex = 0xE0;
+                loadCutscene(arg0);
+                set = 1;                             
+            }
+        }
+
+        if (!set) {
+            if (!checkLifeEventBit(0x86) && (gSeason && gSeason < 4) && (gHour - 6) < 6U && gTotalCropsShipped >= 900 && D_80237410 < 990) {
+                setLifeEventBit(0x86);
+                gCutsceneIndex = 0xE1;
+                loadCutscene(arg0);
+                set = 1;                             
+            }
+        }
+        
+        if (!set && !arg0) {
+            if (!checkLifeEventBit(0x87) && (func_800DC008() + countPinkCatMintFlowersFarm()) >= 24 && gWeather == SUNNY && gSeason == SPRING && (gHour - 6) < 12U && gEntranceIndex == HOUSE_EXIT) {
+                setLifeEventBit(0x87);
+                gCutsceneIndex = 0xE4;
+                loadCutscene(arg0);
+                set = 1;                             
+            }
+        }
+
+        if (!set && !arg0) {
+            if (!checkLifeEventBit(0x88) && func_800DBF90() >= 90 && gWeather == SUNNY && gSeason == AUTUMN && (gHour - 6) < 12U && gEntranceIndex == HOUSE_EXIT) {
+                setLifeEventBit(0x88);
+                gCutsceneIndex = 0xE6;
+                loadCutscene(arg0);
+                set = 1;                             
+            }
+        }
+        
+        if (!set && !arg0) {
+            if (!checkLifeEventBit(0x89) && checkLifeEventBit(0x20) && gWeather == SUNNY && gSeason == AUTUMN && (gHour - 6) < 12U) {
+                setLifeEventBit(0x89);
+                gCutsceneIndex = 0xE7;
+                loadCutscene(arg0);
+                set = 1;                             
+            }
+        }
+        
+        if (!set && !arg0) {
+            if (!checkLifeEventBit(0x8A) && checkLifeEventBit(0x53) && gWeather == SUNNY && gSeason == SPRING && (gHour - 6) < 12U && gEntranceIndex == HOUSE_EXIT) {
+                setLifeEventBit(0x8A);
+                gCutsceneIndex = 0xE8;
+                loadCutscene(arg0);
+                set = 1;                             
+            }
+        }
+        
+        if (!set && !arg0) {
+            if (!checkLifeEventBit(0x8B) && checkLifeEventBit(0x30) && gWeather == SUNNY && func_8009B3DC() >= 3 && gSeason == WINTER && (gHour - 6) < 12U && gEntranceIndex == HOUSE_EXIT) {
+                setLifeEventBit(0x8B);
+                gCutsceneIndex = 0xE9;
+                loadCutscene(arg0);
+                set = 1;                             
+            }
+        }
+        
+        if (!set && !arg0) {
+            if (!checkLifeEventBit(0x8C) && checkLifeEventBit(0x30) && func_8009B828(1) && gWeather == SUNNY && gSeason == AUTUMN && (gHour - 6) < 12U && gEntranceIndex == HOUSE_EXIT) {
+                setLifeEventBit(0x8C);
+                gCutsceneIndex = 0xEA;
+                loadCutscene(arg0);
+                set = 1;                             
+            }
+        }
+
+        if (!set && !arg0) {
+            if (!checkLifeEventBit(0x8D) && (func_800DC008() + countPinkCatMintFlowersFarm()) >= 24 && gWeather == SUNNY && gSeason == SUMMER && (gHour - 6) < 12U && gEntranceIndex == HOUSE_EXIT) {
+                setLifeEventBit(0x8D);
+                gCutsceneIndex = 0xEC;
+                loadCutscene(arg0);
+                set = 1;                             
+            }
+        }        
+
+        if (!set) {
+            if (checkLifeEventBit(0x90) && npcAffection[DOUG] >= 60 && (gHour - 17) < 4U && ((gSeason == SPRING && gDayOfMonth == 18) || gSeason == AUTUMN && gDayOfMonth == 29)) {
+                toggleLifeEventBit(0x90);
+                gCutsceneIndex = 0x81;
+                loadCutscene(arg0);
+                set = 1;                             
+            }
+        }       
+        
+        if (!set) {
+            if (checkLifeEventBit(0x91) && npcAffection[DOUG] >= 60 && gSeason == AUTUMN && gDayOfMonth == 5 && (gHour - 17) < 4U) {
+                toggleLifeEventBit(0x91);
+                gCutsceneIndex = 0x82;
+                loadCutscene(arg0);
+                set = 1;                             
+            }
+        }          
+
+        if (!set) {
+            if (checkLifeEventBit(0x92) && npcAffection[BASIL] >= 60 && gSeason == SUMMER && gDayOfMonth == 10 && (gHour - 17) < 4U) {
+                toggleLifeEventBit(0x92);
+                gCutsceneIndex = 0x8B;
+                loadCutscene(arg0);
+                set = 1;                             
+            }
+        }       
+        
+        if (!set) {
+            if (!checkLifeEventBit(0x95) && checkLifeEventBit(0x2F) && npcAffection[KAI] <= 80 && gSeason == WINTER && (gHour - 6) < 12U && gHarvestKing != 5 && gHarvestCoinFinder != 5 && (!checkLifeEventBit(MARRIED) || gWife != 4) && !checkLifeEventBit(KAREN_KAI_MARRIED)) {
+                setLifeEventBit(0x95);
+                setLifeEventBit(0x2E);
+                setSpecialDialogueBit(0x24);
+                gCutsceneIndex = 0xDB;
+                loadCutscene(arg0);
+                set = 1;                             
+            }
+        }      
+        
+        if (!set) {
+            if (!checkDailyEventBit(0x51) && npcAffection[POTION_SHOP_DEALER] >= 50 && gWeather == SUNNY && gYear == 1 && gSeason == WINTER && gDayOfMonth == 27 && (gHour - 6) < 3U) {
+                setDailyEventBit(0x51);
+                gCutsceneIndex = 0xC9;
+                loadCutscene(arg0);
+                set = 1;                             
+            }
+        } 
+
+      if (!set) {
+            if (!checkDailyEventBit(0x51) && npcAffection[HARRIS] >= 100 && gHarvestKing == 1 && gWeather == SUNNY && gSeason == WINTER && gDayOfMonth == 27 && (gHour - 6) < 3U) {
+                setDailyEventBit(0x51);
+                gCutsceneIndex = 0xCA;
+                loadCutscene(arg0);
+                set = 1;                             
+            }
+        }    
+        
+      if (!set) {
+            if (!checkDailyEventBit(0x51) && npcAffection[GRAY] >= 100 && gHarvestKing == 2 && gWeather == SUNNY && gSeason == WINTER && gDayOfMonth == 27 && (gHour - 6) < 3U) {
+                setDailyEventBit(0x51);
+                gCutsceneIndex = 0xCD;
+                loadCutscene(arg0);
+                set = 1;                             
+            }
+        }    
+
+      if (!set) {
+            if (!checkDailyEventBit(0x51) && npcAffection[JEFF] >= 100 && gHarvestKing == 3 && gWeather == SUNNY && gSeason == WINTER && gDayOfMonth == 27 && (gHour - 6) < 3U) {
+                setDailyEventBit(0x51);
+                gCutsceneIndex = 0xCF;
+                loadCutscene(arg0);
+                set = 1;                             
+            }
+        }    
+        
+    if (!set) {
+        if (!checkDailyEventBit(0x51) && npcAffection[CLIFF] >= 100 && gHarvestKing == 4 && gWeather == SUNNY && gSeason == WINTER && gDayOfMonth == 27 && (gHour - 6) < 3U) {
+            setDailyEventBit(0x51);
+            gCutsceneIndex = 0xD3;
+            loadCutscene(arg0);
+            set = 1;                             
+        }
+    }        
+        
+       if (!set) {
+            if (!checkDailyEventBit(0x51) && npcAffection[KAI] >= 100 && gHarvestKing == 5 && gWeather == SUNNY && gSeason == WINTER && gDayOfMonth == 27 && (gHour - 6) < 3U) {
+                setDailyEventBit(0x51);
+                gCutsceneIndex = 0xD8;
+                loadCutscene(arg0);
+                set = 1;                             
+            }
+        }      
+            
+        if (!set && !arg0) {
+            if (!checkDailyEventBit(0x18) && gSeason == SUMMER && gDayOfMonth == 1 && gWeather == SUNNY && (gHour - 18) < 3U && checkLifeEventBit(MARRIED) && gWife == MARIA) {
+                setDailyEventBit(0x18);
+                gCutsceneIndex = 0xEF;
+                loadCutscene(arg0);
+                gCutsceneFlags |= 2;
+                set = 1;                             
+            }
+        }
+            
+        if (!set && !arg0) {
+            if (!checkDailyEventBit(0x19) && gSeason == SUMMER && gDayOfMonth == 1 && gWeather == SUNNY && (gHour - 18) < 3U && checkLifeEventBit(MARRIED) && gWife == POPURI) {
+                setDailyEventBit(0x19);
+                gCutsceneIndex = 0xF0;
+                loadCutscene(arg0);
+                gCutsceneFlags |= 2;
+                set = 1;                             
+            }
+        }
+            
+        if (!set && !arg0) {
+            if (!checkDailyEventBit(0x1A) && gSeason == SUMMER && gDayOfMonth == 1 && gWeather == SUNNY && (gHour - 18) < 3U && checkLifeEventBit(MARRIED) && gWife == ELLI) {
+                setDailyEventBit(0x1A);
+                gCutsceneIndex = 0xF1;
+                loadCutscene(arg0);
+                gCutsceneFlags |= 2;
+                set = 1;                             
+            }
+        }
+            
+        if (!set && !arg0) {
+            if (!checkDailyEventBit(0x1B) && gSeason == SUMMER && gDayOfMonth == 1 && gWeather == SUNNY && (gHour - 18) < 3U && checkLifeEventBit(MARRIED) && gWife == ANN) {
+                setDailyEventBit(0x1B);
+                gCutsceneIndex = 0xF2;
+                loadCutscene(arg0);
+                gCutsceneFlags |= 2;
+                set = 1;                             
+            }
+        }
+            
+        if (!set && !arg0) {
+            if (!checkDailyEventBit(0x1C) && gSeason == SUMMER && gDayOfMonth == 1 && gWeather == SUNNY && (gHour - 18) < 3U && checkLifeEventBit(MARRIED) && gWife == KAREN) {
+                setDailyEventBit(0x1C);
+                gCutsceneIndex = 0xF3;
+                loadCutscene(arg0);
+                gCutsceneFlags |= 2;
+                set = 1;                             
+            }
+        }
+    
+        if (!set && !arg0) {
+            if (!checkDailyEventBit(0x18) && gSeason == WINTER && gDayOfMonth == 24 && gWeather == SUNNY && (gHour - 18) < 3U && checkLifeEventBit(MARRIED) && gWife == MARIA) {
+                setDailyEventBit(0x18);
+                gCutsceneIndex = 0xF4;
+                loadCutscene(arg0);
+                gCutsceneFlags |= 2;
+                set = 1;                             
+            }
+        }
+    
+        if (!set && !arg0) {
+            if (!checkDailyEventBit(0x19) && gSeason == WINTER && gDayOfMonth == 24 && gWeather == SUNNY && (gHour - 18) < 3U && checkLifeEventBit(MARRIED) && gWife == POPURI) {
+                setDailyEventBit(0x19);
+                gCutsceneIndex = 0xF5;
+                loadCutscene(arg0);
+                gCutsceneFlags |= 2;
+                set = 1;                             
+            }
+        }
+    
+        if (!set && !arg0) {
+            if (!checkDailyEventBit(0x1A) && gSeason == WINTER && gDayOfMonth == 24 && gWeather == SUNNY && (gHour - 18) < 3U && checkLifeEventBit(MARRIED) && gWife == ELLI) {
+                setDailyEventBit(0x1A);
+                gCutsceneIndex = 0xF6;
+                loadCutscene(arg0);
+                gCutsceneFlags |= 2;
+                set = 1;                             
+            }
+        }
+    
+        if (!set && !arg0) {
+            if (!checkDailyEventBit(0x1B) && gSeason == WINTER && gDayOfMonth == 24 && gWeather == SUNNY && (gHour - 18) < 3U && checkLifeEventBit(MARRIED) && gWife == ANN) {
+                setDailyEventBit(0x1B);
+                gCutsceneIndex = 0xF7;
+                loadCutscene(arg0);
+                gCutsceneFlags |= 2;
+                set = 1;                             
+            }
+        }
+    
+        if (!set && !arg0) {
+            if (!checkDailyEventBit(0x1C) && gSeason == WINTER && gDayOfMonth == 24 && gWeather == SUNNY && (gHour - 18) < 3U && checkLifeEventBit(MARRIED) && gWife == KAREN) {
+                setDailyEventBit(0x1C);
+                gCutsceneIndex = 0xF8;
+                loadCutscene(arg0);
+                gCutsceneFlags |= 2;
+                set = 1;                             
+            }
+        }
+    
+        if (!set && !arg0) {
+            if (!checkDailyEventBit(0x18) && gSeason == SUMMER && gDayOfMonth == 7 && gWeather == SUNNY && (gHour - 17) < 4U && checkLifeEventBit(MARRIED) && gWife == MARIA && npcAffection[MARIA] >= 220) {
+                setDailyEventBit(0x18);
+                gCutsceneIndex = 0x96;
+                loadCutscene(arg0);
+                gCutsceneFlags |= 2;
+                set = 1;                             
+            }
+        }
+            
+        if (!set && !arg0) {
+            if (!checkDailyEventBit(0x19) && gSeason == SUMMER && gDayOfMonth == 7 && gWeather == SUNNY && (gHour - 17) < 4U && checkLifeEventBit(MARRIED) && gWife == POPURI && npcAffection[POPURI] >= 220) {
+                setDailyEventBit(0x19);
+                gCutsceneIndex = 0xA1;
+                loadCutscene(arg0);
+                gCutsceneFlags |= 2;
+                set = 1;                             
+            }
+        }
+    
+        if (!set && !arg0) {
+            if (!checkDailyEventBit(0x1A) && gSeason == SUMMER && gDayOfMonth == 7 && gWeather == SUNNY && (gHour - 17) < 4U && checkLifeEventBit(MARRIED) && gWife == ELLI && npcAffection[ELLI] >= 220) {
+                setDailyEventBit(0x1A);
+                gCutsceneIndex = 0xAD;
+                loadCutscene(arg0);
+                gCutsceneFlags |= 2;
+                set = 1;                             
+            }
+        }
+    
+        if (!set && !arg0) {
+            if (!checkDailyEventBit(0x1B) && gSeason == SUMMER && gDayOfMonth == 7 && gWeather == SUNNY && (gHour - 17) < 4U && checkLifeEventBit(MARRIED) && gWife == ANN && npcAffection[ANN] >= 220) {
+                setDailyEventBit(0x1B);
+                gCutsceneIndex = 0xB8;
+                loadCutscene(arg0);
+                gCutsceneFlags |= 2;
+                set = 1;                             
+            }
+        }
+    
+        if (!set && !arg0) {
+            if (!checkDailyEventBit(0x1C) && gSeason == SUMMER && gDayOfMonth == 7 && gWeather == SUNNY && (gHour - 17) < 4U && checkLifeEventBit(MARRIED) && gWife == KAREN && npcAffection[KAREN] >= 220) {
+                setDailyEventBit(0x1C);
+                gCutsceneIndex = 0xC5;
+                loadCutscene(arg0);
+                gCutsceneFlags |= 2;
+                set = 1;                             
+            }
+        }
+            
+        if (!set && !arg0) {
+            if (!checkDailyEventBit(0x18) && gSeason == AUTUMN && gDayOfMonth == 9 && gWeather == SUNNY && (gHour - 17) < 4U && checkLifeEventBit(MARRIED) && gWife == MARIA && npcAffection[MARIA] >= 220) {
+                setDailyEventBit(0x18);
+                gCutsceneIndex = 0x97;
+                loadCutscene(arg0);
+                gCutsceneFlags |= 2;
+                set = 1;                             
+            }
+        }       
+    
+        if (!set && !arg0) {
+            if (!checkDailyEventBit(0x19) && gSeason == AUTUMN && gDayOfMonth == 9 && gWeather == SUNNY && (gHour - 17) < 4U && checkLifeEventBit(MARRIED) && gWife == POPURI && npcAffection[POPURI] >= 220) {
+                setDailyEventBit(0x19);
+                gCutsceneIndex = 0xA2;
+                loadCutscene(arg0);
+                gCutsceneFlags |= 2;
+                set = 1;                             
+            }
+        }      
+    
+        if (!set && !arg0) {
+            if (!checkDailyEventBit(0x1A) && gSeason == AUTUMN && gDayOfMonth == 9 && gWeather == SUNNY && (gHour - 17) < 4U && checkLifeEventBit(MARRIED) && gWife == ELLI && npcAffection[ELLI] >= 220) {
+                setDailyEventBit(0x1A);
+                gCutsceneIndex = 0xAE;
+                loadCutscene(arg0);
+                gCutsceneFlags |= 2;
+                set = 1;                             
+            }
+        }        
+            
+        if (!set && !arg0) {
+            if (!checkDailyEventBit(0x1B) && gSeason == AUTUMN && gDayOfMonth == 9 && gWeather == SUNNY && (gHour - 17) < 4U && checkLifeEventBit(MARRIED) && gWife == ANN && npcAffection[ANN] >= 220) {
+                setDailyEventBit(0x1B);
+                gCutsceneIndex = 0xB9;
+                loadCutscene(arg0);
+                gCutsceneFlags |= 2;
+                set = 1;                             
+            }
+        }     
+            
+        if (!set && !arg0) {
+            if (!checkDailyEventBit(0x1C) && gSeason == AUTUMN && gDayOfMonth == 9 && gWeather == SUNNY && (gHour - 17) < 4U && checkLifeEventBit(MARRIED) && gWife == KAREN && npcAffection[KAREN] >= 220) {
+                setDailyEventBit(0x1C);
+                gCutsceneIndex = 0xC6;
+                loadCutscene(arg0);
+                gCutsceneFlags |= 2;
+                set = 1;                             
+            }
+        }       
+
+    }
+
+    return result;
+}
+
 
 //INCLUDE_ASM(const s32, "setCutscenes", setFarmCutscenes);
 
@@ -205,7 +1488,6 @@ u16 setFarmCutscenes(void) {
             gCutsceneIndex = 0;
             gCutsceneFlags |= 2;
         }
-
     }
     
     if (!set) {
@@ -342,7 +1624,7 @@ u16 setMountain1Cutscenes(void) {
     }
 
     if (!set) {
-        if (!checkLifeEventBit(0xA4) && npcAffection[JEFF] >= 0xB4 && gWeather == SUNNY && gSeason == SUMMER && DAYTIME &&  (!checkLifeEventBit(MARRIED) || gWife != ELLI) && !checkLifeEventBit(ELLI_JEFF_MARRIED) && gEntranceIndex == TOP_OF_MOUNTAIN_1_SUMMER) {
+        if (!checkLifeEventBit(0xA4) && npcAffection[JEFF] >= 0xB4 && gWeather == SUNNY && gSeason == SUMMER && DAYTIME && (!checkLifeEventBit(MARRIED) || gWife != ELLI) && !checkLifeEventBit(ELLI_JEFF_MARRIED) && gEntranceIndex == TOP_OF_MOUNTAIN_1_SUMMER) {
             setDailyEventBit(0x21);
             setLifeEventBit(0xA4);
             gCutsceneIndex = 0x134;
@@ -392,10 +1674,10 @@ INCLUDE_ASM(const s32, "setCutscenes", func_800A1C04);
 
 INCLUDE_ASM(const s32, "setCutscenes", func_800A2250);
 
-//INCLUDE_ASM(const s32, "setCutscenes", setMountain2Cutscenes);
+//INCLUDE_ASM(const s32, "setCutscenes", setMoonMountainCutscenes);
 
 // mountain 2
-u16 setMountain2Cutscenes(void) {
+u16 setMoonMountainCutscenes(void) {
 
     u8 set = 0;
     u16 index = 0xFFFF;
@@ -762,7 +2044,7 @@ u16 setRoadCutscenes(void) {
     u8 set = 0;
     u16 index = 0xFFFF;
 
-    if (!checkLifeEventBit(0xCC) && npcAffection[CLIFF] >= 200 && gSeason == WINTER && DAYTIME && (!checkLifeEventBit(0) || gWife != 3) && !checkLifeEventBit(ANN_CLIFF_MARRIED) && previousMapIndex == 0x52) {
+    if (!checkLifeEventBit(0xCC) && npcAffection[CLIFF] >= 200 && gSeason == WINTER && DAYTIME && (!checkLifeEventBit(MARRIED) || gWife != 3) && !checkLifeEventBit(ANN_CLIFF_MARRIED) && previousMapIndex == 0x52) {
         setLifeEventBit(0xCC);
         gCutsceneIndex = 0x320;
         gCutsceneFlags |= 6;
@@ -816,8 +2098,8 @@ u16 setRoadCutscenes(void) {
 }
 
 //INCLUDE_ASM(const s32, "setCutscenes", func_800A7AE8);
-
-u16 func_800A7AE8(void) {
+ 
+u16 func_800A7AE8(u8 index) {
 
     u16 index = 0xFFFF;
     u8 set = 0;
@@ -894,7 +2176,7 @@ u16 func_800A7AE8(void) {
         }
         
         if (index != 0xFFFF) {
-            nuPiReadRom(D_80114AF0[index].romAddr, D_80114D30[index], D_80114AF0[index].vaddr - D_80114AF0[index].romAddr);
+            nuPiReadRom(cutsceneMapAddresses[index].romAddr, D_80114D30[index], cutsceneMapAddresses[index].vaddr - cutsceneMapAddresses[index].romAddr);
             D_801891D4 = 0;
             func_800469A8(D_80114DF0[index], D_80114C70[index]);
             func_8002F730();

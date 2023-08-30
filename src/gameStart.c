@@ -1,45 +1,22 @@
 #include "common.h"
 
+#include "system/controller.h"
+#include "system/message.h"
+
 #include "animals.h"
+#include "game.h"
+#include "gameStatus.h"
+#include "initialize.h"
+#include "initialize2.h"
+#include "level.h"
+#include "load.h"
+#include "mainLoop.h"
 #include "npc.h"
+#include "player.h"
 #include "setCutscenes.h"
 
-void setMainLoopCallbackFunctionIndex(u16 index);        
-
-void func_8003DDF8(u32, u16, u16, u32);                         
-void func_8003F360(u32, s8, u8);                            
-void func_8003F54C(int, int, f32, f32);                         
-void func_8003F690(int, int, int, int);                         
-void func_8004E160();                                   
-void func_80055F08(u16, u8, int);         
-
-void func_800598E0();     
-
-void initializeHorse(void);    
-
-void setDailyEventBit(u16 bitIndex);    
-void setLifeEventBit(u16 bitIndex);                             
-void setSpecialDialogueBit(u16 bitIndex);                                             
-void setExit(u16);         
-
+// possible bss
 extern u32 D_8016FB00;
-
-extern s32 recipesBitField;
-
-extern Player gPlayer;
-
-extern Dog dogInfo;
-extern Horse horseInfo;
-
-extern u8 gDayOfMonth;
-extern u8 gHour;
-extern u8 gSeason;
-extern u8 gWife;
-
-extern u8 contPattern;
-
-extern u8 npcAffection[TOTAL_NPCS];
-
 
 //INCLUDE_ASM(const s32, "gameStart", func_8004DF10);
 
@@ -138,7 +115,7 @@ void func_8004DFF8(void) {
     gHour = 8;
     
     // max recipes
-    recipesBitField = -1;
+    recipesBitField[0] = -1;
     
     // unused game variable
     D_8016FB00 = 7;

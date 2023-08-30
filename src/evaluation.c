@@ -1,16 +1,9 @@
 #include "common.h"
+
+#include "game.h"
+#include "gameStatus.h"
+#include "mapObjects.h"
 #include "npc.h"
-
-extern u32 gTotalGoldenMilkShipped;
-extern u32 gTotalEggsShipped;
-extern u32 gTotalCropsShipped;
-
-extern u8 npcAffection[TOTAL_NPCS];
-
-extern u8 farmFieldTiles[FARM_FIELD_WIDTH][FARM_FIELD_HEIGHT];
-
-u32 checkLifeEventBit(u16 bitIndex);
-
 
 //INCLUDE_ASM(const s32, "evaluation", calculateNPCAffectionScore);
 
@@ -58,8 +51,8 @@ u16 calculateGrassScore(void) {
     u8 j, i;
     u16 score = 0;
 
-    for (i = 0; i < FARM_FIELD_WIDTH; i++) {
-        for (j = 0; j < FARM_FIELD_HEIGHT; j++) {
+    for (i = 0; i < FIELD_WIDTH; i++) {
+        for (j = 0; j < FIELD_HEIGHT; j++) {
             switch (farmFieldTiles[i][j]) {
                  default:
                     break;
@@ -82,8 +75,8 @@ u16 calculateFieldScore(void) {
     u8 j;
     u16 score = 0;
 
-    for (i = 0; i < FARM_FIELD_WIDTH; i++) {
-        for (j = 0; j < FARM_FIELD_HEIGHT; j++) {
+    for (i = 0; i < FIELD_WIDTH; i++) {
+        for (j = 0; j < FIELD_HEIGHT; j++) {
             if (farmFieldTiles[i][j] > WEED) {
                 score++;
             } 

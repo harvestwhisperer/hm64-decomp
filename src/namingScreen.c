@@ -1,11 +1,12 @@
 #include "common.h"
 
+#include "system/sprite.h"
+
+// bss
+// struct
 extern u8 D_8016FBD7;
 extern f32 D_8016FBD8;
 extern f32 D_8016FBDC;
-
-void func_8002CB88(u16, u16);                          
-
 
 INCLUDE_ASM(const s32, "namingScreen", func_800ED8A0);
 

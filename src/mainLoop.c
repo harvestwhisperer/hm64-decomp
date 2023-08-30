@@ -1,75 +1,25 @@
 #include "common.h"
 
+#include "system/audio.h"
+#include "system/controller.h"
+#include "system/cutscene.h"
+#include "system/flags.h"
+#include "system/graphic.h"
+#include "system/message.h"
+#include "system/pauseScreen.h"
+#include "system/sprite.h"
+#include "system/tiles.h"
+#include "system/worldGraphics.h"
 
-// system functions
+#include "mainproc.h"
 
-// gfx wrapper
-void drawFrame(void);  
+// bss
+u16 mainLoopCallbackCurrentIndex;
+void (*mainLoopCallbacksTable[MAIN_LOOP_CALLBACK_FUNCTION_TABLE_SIZE])();
 
-void dmaSprites();
-void resetSpriteCounter();
-
-// no op or shelved code
-u32 func_800293B8();
-u32 func_8002AE58();
-void func_8002D3D4();
-
-// graphics/collisions
-void func_80033058();
-
-// map
-void func_8003A1BC();
-void func_8003C6E4();
-
-// audio
-void mainLoopAudioHandler();
-
-// message
-void func_80042634();
-void func_80045CB0();
-// pause screen
-void func_800467F8();
-// cutscenes
-void func_80046D78();
-// controller
-void func_8004CF68();
-void func_8004DF00();
-
-// toggles two unused flags
-void func_8004DEC8();       
-
-
-// forward declarations
-void func_800263B0(int);
-void func_800264CC(int);
-
-
-// likely bss
-extern u16 mainLoopCallbackCurrentIndex;
-extern void (*mainLoopCallbacksTable[MAIN_LOOP_CALLBACK_FUNCTION_TABLE_SIZE])();
-
-extern void *currentGfxTaskPtr;
-
-extern u16 D_80182BA0;
-extern u8 D_801D6230;
-extern u8 D_80237A04;
-extern u8 D_80204B38;
-
-extern volatile u8 D_8013DC30;
-extern volatile u16 D_801594E4;
-extern volatile u8 D_8016FB04;
-extern volatile u8 D_801C3BEC;
-extern volatile u8 D_801C3F34;
-extern volatile u8 D_801C3F71;
-extern volatile u8 D_801C4215;
-extern volatile u8 D_80205208;
-extern volatile u8 frameCount;
-extern volatile u16 D_8020564C;
-extern volatile u8 D_802226E2;
-extern volatile u32 D_802226E8;
-extern volatile u8 D_80222730;
-extern volatile u8 D_802373F1;
-
+u16 D_80182BA0;
+void *currentGfxTaskPtr;
+ 
 
 //INCLUDE_ASM(s32, "mainLoop", mainLoop)
 
@@ -253,9 +203,9 @@ int mainLoop(void) {
 
 //INCLUDE_ASM(const s32, "registerMainLoopCallbacks", registerMainLoopCallback);
 
-u32 registerMainLoopCallback(u16 index, void *(func)()) {
+bool registerMainLoopCallback(u16 index, void *(func)()) {
 
-    u32 result = 0;
+    bool result = 0;
 
     if (index < MAIN_LOOP_CALLBACK_FUNCTION_TABLE_SIZE) {
         if (mainLoopCallbacksTable[index] == NULL) {

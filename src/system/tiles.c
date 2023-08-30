@@ -1,58 +1,45 @@
 #include "common.h"
 
-// vec4f
-extern f32 D_8013D248;
-extern f32 D_8013D24C;
-extern f32 D_8013D250;
-extern f32 D_8013D254;
+#include "tiles.h"
 
-// vec4f
-extern f32 D_802373F8;
-extern f32 D_802373FC;
-extern f32 D_80237400;
-extern f32 D_80237404;
+#include "system/map.h"
+
+// bss
+extern Vec4f D_8013D248;
+extern Vec4f D_802373F8;
 
 // flags
 extern u16 D_8017045A;
 
-extern TileInfo gTiles[0x60];
-
-void func_8003423C(u16, f32, f32, f32);
-void func_80034298(u16, f32, f32, f32);                
-void func_800342F4(u16, f32, f32, f32);                  
-void func_80034350(u16, u8, u8, u8, u8);              
-void func_8003BC50(u8, u16);                           
-void func_8003BDA4(u8, f32, f32, f32);                      
-void func_8003C084(u16, u8);                             
-void func_8003C1E0(u16, f32, f32, f32, u8, u8);             
-
-extern MapTileContext gTileContext[1];
-
 extern u16 gTileContextFlags;
 
+extern MapTileContext gTileContext[1];
+extern TileInfo gTiles[0x60];
 
+// forward declarations
+void func_8003BDA4(u8, f32, f32, f32);  
+                    
+                    
 //INCLUDE_ASM(const s32, "system/tiles", func_8003B870);
 
 void func_8003B870(void) {
     
     u16 i;
     
-    // vec4f
-    D_802373F8 = 0;
-    D_802373FC = 0;
-    D_80237400 = 0;
-    D_80237404 = 0;
+    D_802373F8.r = 0;
+    D_802373F8.g = 0;
+    D_802373F8.b = 0;
+    D_802373F8.a = 0;
     
-    // vec4f
-    D_8013D248 = 0;
-    D_8013D24C = 0;
-    D_8013D250 = 0;
-    D_8013D254 = 0;
+    D_8013D248.r = 0;
+    D_8013D248.g = 0;
+    D_8013D248.b = 0;
+    D_8013D248.a = 0;
     
     // flags
     D_8017045A = 0;
     
-    for (i = 0; i < 1; i++ ){
+    for (i = 0; i < 1; i++) {
         
         gTileContext[i].flags = 0;
         
@@ -84,13 +71,13 @@ void func_8003B870(void) {
         gTileContext[i].unk_34.z = 0;
     
     }
-    
 }
 
 //INCLUDE_ASM(const s32, "system/tiles", setTileInfo);
 
-u8 setTileInfo(u16 index, void *start, void *end) {
-    u8 result = 0;
+bool setTileInfo(u16 index, void *start, void *end) {
+    
+    bool result = 0;
     
     if (index < MAX_TILES) {
         if (!(gTiles[index].flags & 1)) {
@@ -100,13 +87,15 @@ u8 setTileInfo(u16 index, void *start, void *end) {
             gTiles[index].flags = 1;
         }
     }
+
     return result;
 }
 
 //INCLUDE_ASM(const s32, "system/tiles", func_8003BA44);
 
-u32 func_8003BA44(u16 arg0, s16 flag, void *tileBank) {
-    u32 result;
+bool func_8003BA44(u16 arg0, s16 flag, void *tileBank) {
+    
+    bool result;
 
     result = 0;
     
@@ -150,11 +139,9 @@ u32 func_8003BA44(u16 arg0, s16 flag, void *tileBank) {
 }
 
 // map loading function
-u8 func_8003BB14(u16 arg0, u16 mapIndex) {
+bool func_8003BB14(u16 arg0, u16 mapIndex) {
 
-    u8 result;
-
-    result = 0;
+    bool result = 0;
     
     if (!arg0 && (gTileContext[0].flags & 1)) {
         

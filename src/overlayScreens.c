@@ -1,50 +1,18 @@
 #include "common.h"
 
-void func_8002B138(u16, void*, void*, void*, void*, void*, void*, void*, void*, void*, void*, void*, void*, void*, u8); 
-void func_8002B6B8(u32);                               
-void func_8002B80C(u8, u8, u8);                         
-void func_8002BAD8(u8);  
-u8 func_8002BD0C(u16 index, f32 x, f32 y, f32 z);  
-void func_8002BD90(u16, f32, f32, f32);                   
-u8 func_8002C1C0(u16, u8, u8, u8, u8, u8);
-void func_8002C7EC(u16, u16);                                
-u8 func_8002C914(u16, u8, u8, u8, u8);
-u8 func_8002CAA8(u16, u8);                              
-u8 func_8002CB24(u16, u8);  
+#include "overlayScreens.h"
 
-u8 func_80045E20(u16 index, u16 arg1, void *arg2, void *arg3, void *arg4, void *arg5, void *arg6, void *arg7, void *arg8, void *arg9, void *argA, u16 argB, u8 argC, f32 argD, f32 argE, f32 argF, u8 arg10);
-u8 func_80045F5C(u16 index, u32 arg1, u8 arg2, u16 flag);             
-void func_80046120(u8);                                 
-void func_800461D8(s32, u8, u8, u8, u8);    
+#include "system/pauseScreen.h"
+#include "system/sprite.h"
 
-void func_800593EC();   
+#include "game.h"
+#include "gameStatus.h"
+#include "initialize2.h"
+#include "shop.h"
+#include "tv.h"
 
-void func_800B4160();                                  
-void func_800C7DF8();                                  
-void func_800C7E18();                                  
-void func_800C7E38();                                  
-void func_800C7E58();                                  
-void func_800C81A8();                                  
-void func_800C81C8();      
-
-
-// data/rodata
-extern f32 D_80116D80[];
-extern f32 D_80116D90[];
-extern f32 D_80116DA0[];
-extern f32 D_80116DB0[];
-
-extern u32 gGold;
-
-extern u32 recipesBitField[];
-
-// part of TV struct
-extern u8 D_80170275;
-
-extern u8 D_8023740C;
-// buy/don't buy animal
-extern u8 D_8023740F;
-
+// bss
+// struct
 // cell index
 extern u8 D_801FB6F0;
 // previous cell index
@@ -54,12 +22,17 @@ extern u8 D_801FB6F2;
 extern u8 D_801FB6F3;
 extern u8 D_801FB6F6;
 
-// estimate/evaluations screen sprite addresses 
+// data/rodata
+extern f32 D_80116D80[];
+extern f32 D_80116D90[];
+extern f32 D_80116DA0[];
+extern f32 D_80116DB0[];
+
+// shared sprite addresses 
 extern void *D_CC6D40;
 extern void *D_CC9330;
 extern void *D_CC9330_2;
 extern void *D_CC9350;
-
 extern void *D_CFE610;
 extern void *D_CFE610_2;
 extern void *D_CFF6F0;
@@ -291,13 +264,13 @@ void func_800B4238(u8 arg0) {
     
     func_8002B80C(0x87, 9, 0xFE);
     
-    if (D_8023740C && D_8023740C < arg0) {
+    if (D_8023740C[0] && D_8023740C[0] < arg0) {
         func_8002B80C(0x85, 3, 0);
     } else {
         func_8002BAD8(0x85);
     }
     
-    if (D_8023740C >= 2 && arg0 >= D_8023740C) {
+    if (D_8023740C[0] >= 2 && arg0 >= D_8023740C[0]) {
         func_8002B80C(0x86, 4, 0);
         return;
     }

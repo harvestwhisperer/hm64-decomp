@@ -1,129 +1,28 @@
 #include "common.h"
+
+#include "initialize.h"
+
+#include "system/audio.h"
+#include "system/tiles.h"
+
 #include "animals.h"
+#include "game.h"
+#include "gameAudio.h"
+#include "initialize2.h"
+#include "itemHandlers.h"
+#include "loadGameScreen.h"
+#include "mainLoop.h"
 #include "npc.h"
+#include "player.h"
+#include "weather.h"
 
-void registerMainLoopCallback(u8, void (*func)(void)); 
-
-extern void mainGameLoopCallback;
-
-extern void func_8005C00C;
-extern void func_8005CA64;
-extern void func_8005CAA8;
-extern void func_8005CB50;
-extern void func_8005CBA4;
-extern void func_8005CBF0;
-extern void func_8005CEFC;
-extern void func_8005CF4C;
-extern void func_8005CF94;
-extern void func_8005D0BC;
-extern void func_8005D2B0;
-extern void func_80060454;
-extern void func_80060490;
-extern void func_800604B0;
-extern void func_800605F0;
-extern void func_80060624;
-extern void func_80060838;
-extern void func_800657B4;
-extern void func_800657C4;
-extern void func_800B8018;
-extern void func_800B815C;
-extern void func_800B82AC;
-extern void func_800B83F0;
-extern void func_800B8554;
-extern void func_800B86B8;
-extern void func_800B881C;
-extern void func_800B9D3C;
-extern void func_800BADD0;
-extern void func_800BBEC0;
-extern void func_800BCA9C;
-extern void func_800BDB24;
-extern void func_800BE808;
-extern void func_800BF990;
-extern void func_800C1124;
-extern void func_800C224C;
-extern void func_800C2B8C;
-extern void func_800C3D20;
-extern void func_800C53C0;
-extern void func_800C7058;
-extern void func_800C8424;
-extern void func_800C8784;
-extern void func_800C88F4;
-extern void func_800CA808;
-extern void func_800CC518;
-extern void func_800CD750;
-extern void func_800CD928;
-extern void func_800CE068;
-extern void func_800CE930;
-extern void func_800CEDF0;
-extern void func_800D93CC;
-extern void func_800DCAB8;
-extern void func_800E00A4;
-extern void func_800E1FAC;
-extern void func_800E8F08;
-extern void func_800ED974;
-
-void func_8002F7C8(u32, u32, u32, u32);
-void func_8003BE98(u32, u32, u32, u32, s32);            
-void initializeAudio(musConfig*);                            
-void func_8004E210();                               
-void registerMainLoopCallbacks();                            
-void func_8004F768();                          
-void func_800527D4();                            
-void func_80053088();                                
-void func_80054550();                            
-void initializeWaveTable(u32);                                
-void setMainLoopCallbackFunctionIndex(u16);             
-
-void setGameVariable(u8 index, void* variable, u8, u32 max);
-
-extern u16 D_801654F4;
+// unused variables
 extern u8 D_8017044B;
 extern u8 D_80180712;
-extern u16 D_80188F60;
 extern u8 D_801890D8;
 extern u8 D_80189A48;
 extern u8 D_801C3B64;
-extern u16 D_801C3F80;
 extern u8 D_801C4214;
-extern u16 D_801FB5D0;
-extern u16 D_801FB6FC;
-extern u16 D_80215DF0;
-extern u16 D_80237414;
-
-extern u8 gFarmAnimals;
-
-extern u16 gTotalPinkCatMintFlowersGrowing;
-extern u16 gTotalGrassTiles;
-
-extern u8 gWifeConceptionCounter;
-extern u8 gWifePregnancyCounter;
-extern u8 gBabyAge;
-
-extern u8 gAlcoholTolerance;
-
-extern u32 gGold;
-extern u8 gItemBeingHeld;
-
-extern u8 gElliGrievingCounter;
-
-extern u8 gHour;
-extern u8 gDayOfWeek;
-extern u8 gDayOfMonth;
-extern u8 gSeason;
-extern u8 gYear;
-
-extern u8 gWeather;
-
-extern Dog dogInfo;
-extern Horse horseInfo;
-
-extern u8 npcAffection[TOTAL_NPCS];
-
-// current game index
-extern u8 gCurrentGameIndex; 
-extern u8 *sfxList[];
-extern int musPriorityList[];
-
 
 void func_8004E160(void) {
     
@@ -284,6 +183,7 @@ void setGameVariables(void) {
     setGameVariable(0x24, &npcAffection[GREG], 1, MAX_AFFECTION);
     setGameVariable(0x25, &npcAffection[BABY], 1, MAX_AFFECTION);
 
+    // sum of girls' affection
     setGameVariable(0x26, &D_80215DF0, 2, 1275);
 
     setGameVariable(0x27, &gDayOfMonth, 1, 30);
@@ -308,7 +208,7 @@ void setGameVariables(void) {
     setGameVariable(0x36, &horseInfo.affection, 1, MAX_AFFECTION);
     
     // cow status
-    setGameVariable(0x37, &gFarmAnimals, 1, MAX_AFFECTION);
+    setGameVariable(0x37, &gFarmAnimals[0].affection, 1, MAX_AFFECTION);
 
     setGameVariable(0x38, &dogInfo.affection, 1, MAX_AFFECTION);
 
@@ -328,6 +228,7 @@ void setGameVariables(void) {
     setGameVariable(0x44, &D_80180712, 1, 30);
     setGameVariable(0x45, &gWifePregnancyCounter, 1, 60);
     setGameVariable(0x46, &gWifePregnancyCounter, 1, 60);
+    // unused
     setGameVariable(0x47, &D_8017044B, 1, 0xFF);
     setGameVariable(0x48, &D_801C3B64, 1, 0xFF);
     setGameVariable(0x49, &gWifePregnancyCounter, 1, 60);

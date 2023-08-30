@@ -6,7 +6,6 @@
 void func_800267A4(Volume* volumePtr, s16 arg1, s16 arg2);
 s16 func_800267B4(Volume* volumePtr);       
 
-
 //INCLUDE_ASM(const s32, "system/audioUtils", func_800266C0);
 
 void func_800266C0(Volume* volumePtr, u32 mainVolume, u32 maxVolume, s16 arg3, s16 arg4) {

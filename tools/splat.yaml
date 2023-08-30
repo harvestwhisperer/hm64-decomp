@@ -108,9 +108,10 @@ segments:
       - [ 0xCDB40, c, lib/nusys-1/nuaustlsndplayerplay]
       - [ 0xCDB80, c, lib/nusys-1/nuauprenmifuncset]
       - [ 0xCDBC0, c, lib/nusys-1/nuauprenmiproc]
-      # nuaudma.c + nuaumgr.c
-      - [ 0xCDC20, c, lib/nusys-1/nuaumisc]
-      # includes player_api.c since player_api.c isn't aligned by 10 bytes
+      # nuaudma.c + nuaumgr.c; not 10 bytes aligned
+      - [ 0xCDC20, c, lib/nusys-1/nuaumisc] # nuadma
+      #- [ 0xCDFCC, c, lib/nusys-1/nuaumgr]
+      # player_commandsc + player_api.c; not 10 bytes aligneds
       - [ 0xCE620, c, lib/libmus/libsrc/player_commands]
       # - [ 0xCFC84, c, lib/libmus/libsrc/player_api]
       - [ 0xD1000, c, lib/libmus/libsrc/player]
@@ -231,7 +232,7 @@ segments:
       - [ 0xDD8D0, c, lib/os/libultra/audio/reverb]
       - [ 0xDE470, c, lib/os/libultra/audio/save]
       - [ 0xDE540, c, lib/os/libultra/audio/synthesizer]
-      - [ 0xDEB80, c, lib/os/libultra/io/osaisetfreq]
+      - [ 0xDEB80, c, lib/os/libultra/io/aisetfreq]
       - [ 0xDECA0, c, lib/os/libultra/io/cartrominit]
       - [ 0xDEE20, c, lib/os/libultra/io/contreaddata]
       - [ 0xDF000, c, lib/os/libultra/io/motor]
@@ -332,14 +333,14 @@ segments:
       - [ 0xEBA50, hasm, lib/gcc/dividi3]
       - [ 0xEBBC0, hasm, lib/gcc/udivid3]
       - [ 0xEBBE0, hasm, lib/gcc/umoddi3]
-      # end of functions
+      # end of functions/text
       - [ 0xEBC20, bin, lib/os/libultra/rspbootTextStart]
       - [ 0xEBCF0, bin, lib/os/libultra/n_aspMainTextStart]
       - [ 0xEBE10, data] # unused?
       - [ 0xECAB0, data, lib/os/libultra/audio/sl]
       - [ 0xECAC0, data] # unused?
       - [ 0xEDD00, data, viewport]
-      - [ 0xEDD10, data, lib/nusys-1/nugfxtaskinit]
+      - [ 0xEDD10, data, viewportInitDL]
       - [ 0xEE110, data, system/map]
       - [ 0xEE7B0, data, system/pauseScreen]
       - [ 0xEE7D0, data, system/cutscene] # cutscene function pointer table
@@ -379,6 +380,7 @@ segments:
       - [ 0xF8070, data, lib/nusys-1/nucontpakmgr]
       - [ 0xF8080, data, lib/nusys-1/nucontrmbmgr]
       - [ 0xF8090, data, lib/nusys-1/nucontpakjiston64]
+      # library rodata
       - [ 0xF80D0, .rodata, lib/os/libultra/gu/rotate]
       - [ 0xF80E0, rodata]  # lib/os/libultra/thread
       - [ 0xF8100, .rodata, lib/os/libultra/audio/sl]
@@ -404,14 +406,15 @@ segments:
       - [ 0xF9700, rodata] # lib/os/libultra/io/vitbl?
       - [ 0xF9800, rodata] # lib/os/libultra/printf
       - [ 0xF9850, .rodata, lib/os/libultra/io/contpfs]
-      - [ 0xF9860, rodata] # osContRamRead/Write
+      - [ 0xF9860, rodata] # contramread // __osPfsLastChannel  
       - [ 0xF9870, .rodata, lib/os/libultra/rmon/rmoncmd] 
-      - [ 0xF9950, rodata] # rmonmain
+      - [ 0xF9950, .rodata, lib/os/libultra/rmon/rmonmain]
       - [ 0xF9960, rodata] # _litob
       - [ 0xF9990, .rodata, lib/nusys-1/nuaumisc]
       - [ 0xF9C40, rodata ] # referenced by nu gfx ucode
-      - [ 0xFA040, .rodata, system/graphic] # system/graphic
-      - [ 0xFA0C0, .rodata, system/sprite] # system/sprite to 0xFA168 
+      # game rodata
+      - [ 0xFA040, .rodata, system/graphic]
+      - [ 0xFA0C0, .rodata, system/sprite] 
       - [ 0xFA168, .rodata, system/map]
       - [ 0xFA1E0, .rodata, system/tiles]
       - [ 0xFA200, .rodata, system/audio] 
@@ -423,46 +426,47 @@ segments:
       - [ 0xFAB10, .rodata, level] 
       - [ 0xFB410, .rodata, npc]
       - [ 0xFB720, .rodata, animals]
-      - [ 0xFC2C0, rodata] # setCutscenes to 0xFC808
+      - [ 0xFC2C0, .rodata, setCutscenes]
       - [ 0xFC808, .rodata, levelInteractions]
       - [ 0xFD090, .rodata, overlayScreens]
       - [ 0xFD6B0, .rodata, itemHandlers]
-      - [ 0xFDB60, rodata] # tv 
+      - [ 0xFDB60, .rodata, tv]
       - [ 0xFDC58, .rodata, mapObjects]
       - [ 0xFE838, .rodata, weather]
-      - [ 0xFE860, rodata] # shop
+      - [ 0xFE860, .rodata, shop]
       - [ 0xFEA58, .rodata, title]
       - [ 0xFEA90, .rodata, loadGameScreen]
       - [ 0xFEBF0, .rodata, namingScreen]
-      - [ 0xFEC40, rodata] # lib/nusys-1/nupakmenu
+      # library rodata continued
+      - [ 0xFEC40, .rodata, lib/nusys-1/nupakmenu]
       - [ 0xFED00, rodata] # lib/libmus/libsrc/player_commands
       - [ 0xFED40, rodata] # lib/libmus/libsrc/player
-      - [ 0xFEDD0, rodata] # libnaudio/n_synthesizer
-      - [ 0xFEE00, rodata] # n_drvrnew
-      - [ 0xFEE30, rodata] # libnaudio/n_env
-      - [ 0xFEEA0, rodata] # libnaudio/n_resample
-      - [ 0xFEEB0, rodata] # libnaudio/n_reverb
-      - [ 0xFEEF0, rodata] # nucontpakmgr
-      - [ 0xFEF10, rodata] # gu/cosf
-      - [ 0xFEF80, rodata] # gu/lookat
-      - [ 0xFEF90, rodata] # gu/perspective
-      - [ 0xFEFD8, rodata] # gu/sinf
+      - [ 0xFEDE0, .rodata, lib/os/libultra/libnaudio/n_synthesizer]
+      - [ 0xFEE00, .rodata, lib/os/libultra/libnaudio/n_drvrnew]
+      - [ 0xFEE30, .rodata, lib/os/libultra/libnaudio/n_env]
+      - [ 0xFEEA0, rodata] # lib/os/libultra/libnaudio/n_resample
+      - [ 0xFEEB0, .rodata, lib/os/libultra/libnaudio/n_reverb]
+      - [ 0xFEEF0, .rodata, lib/nusys-1/nucontpakmgr]
+      - [ 0xFEF10, rodata, lib/os/libultra/gu/cosf]
+      - [ 0xFEF80, .rodata, lib/os/libultra/gu/lookat]
+      - [ 0xFEF90, .rodata, lib/os/libultra/gu/perspective]
+      - [ 0xFEFD8, rodata, lib/os/libultra/gu/sinf]
       - [ 0xFF030, rodata] # setintmask and exceptasm
       - [ 0xFF0B0, .rodata, lib/os/libultra/assert]
-      - [ 0xFF0D0, rodata, lib/unkknown]
-      - [ 0xFF110, rodata] # lib/os/libultra/audio/env
-      - [ 0xFF200, rodata] # lib/os/libultra/audio/reverb
-      - [ 0xFF250, rodata] # lib/os/libultra/audio/synthesizer
-      - [ 0xFF270, rodata] # lob/os/libultra/io/aisetfreq
+      - [ 0xFF0D0, rodata, lib/unknown]
+      - [ 0xFF110, rodata] # lib/os/libultra/audio/env  
+      - [ 0xFF200, .rodata, lib/os/libultra/audio/reverb]
+      - [ 0xFF250, .rodata, lib/os/libultra/audio/synthesizer]
+      - [ 0xFF270, .rodata, lib/os/libultra/io/aisetfreq] # lib/os/libultra/io/aisetfreq
       - [ 0xFF280, .rodata, lib/os/libultra/io/viswapcontext]
       - [ 0xFF290, rodata] # lib/os/libultra/exceptasm
-      - [ 0xFF300, rodata] # used by sin and cos; __libm_qnan_f
+      - [ 0xFF300, rodata] # used by sin and cos; identified as __libm_qnan_f
       - [ 0xFF310, rodata, lib/os/libultra/libnaudio/n_resample]
-      - [ 0xFF340, rodata] # lib/os/libultra/printf
+      - [ 0xFF340, rodata, lib/os/libultra/printf] 
       - [ 0xFF4B8, .rodata, lib/os/libultra/io/devmgr]
       - [ 0xFF4D8, .rodata, lib/os/libultra/rmon/rmonmem]
       - [ 0xFF4F0, .rodata, lib/os/libultra/libc/ldtob]
-      - [ 0xFF560, rodata, lib/os/libultra/rmon/rmonbrk]
+      - [ 0xFF560, .rodata, lib/os/libultra/rmon/rmonbreak]
 
   - name: cutsceneMaps
     type: bin

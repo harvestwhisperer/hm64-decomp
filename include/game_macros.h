@@ -104,6 +104,7 @@
 /* daily event bit indices */
 #define CARPENTER_ESTIMATE 9
 #define CARPENTER_FINISHED 0xB
+#define FARM_MORNING_VISIT 0x17
 #define STORES_CLOSED_FOR_FESTIVAL 0x2D
 #define FESTIVAL 0x4D
 
@@ -133,10 +134,21 @@
 #define ELLI_JEFF_BABY 0x28
 #define ANN_CLIFF_BABY 0x29
 #define KAREN_KAI_BABY 0x2A
+#define BASIL_GONE 0x2C
+#define CLIFF_GONE 0x2D
+#define KAI_GONE 0x2E
 #define KAREN_GONE 0x2F
 #define ELLEN_DIED 0x31
 #define NAMED_HORSE 0x3A
+#define MAYOR_TOUR 0x3E
+#define BASIL_IN_TOWN 0x40
+#define CLIFF_ARRIVED 0x41
 #define WON_CALENDAR_STICKERS_FROM_RAFFLE 0x5B
+#define PUPPIES 0x69
+#define MARIA_FARM_GIFT_1 0x6D
+#define MARIA_FARM_GIFT_2 0x6E
+#define POPURI_FARM_GIFT_1 0x70
+#define POPURI_FARM_GIFT_2 0x71
 #define ANN_RICK_CUTSCENE 0xB0
 #define POPURI_SICK_CUTSCENE 0xB4
 #define ANN_SICK_VISIT 0xC2
@@ -238,6 +250,7 @@
 #define HARVEST_SPRITE_CAVE 0x42
 #define CAVE 0x43
 #define MINE 0x44
+// 0x45 another mine map
 #define VINEYARD 0x47
 #define VINEYARD_HOUSE 0x4B
 #define VINEYARD_CELLAR 0x4C
@@ -250,8 +263,8 @@
 #define COOP 0x59
 #define KITCHEN 0x5A
 
-#define FARM_FIELD_WIDTH 24
-#define FARM_FIELD_HEIGHT 20
+#define FIELD_WIDTH 24
+#define FIELD_HEIGHT 20
 
 /* map flags */
 #define INDOORS 1
@@ -259,6 +272,7 @@
 
 #define MAIN_LOOP_CALLBACK_FUNCTION_TABLE_SIZE 0x39
 
+/* tools */
 #define SICKLE 1
 #define HOE 2
 #define AX 3
@@ -288,6 +302,7 @@
 #define BLUE_FEATHER 28
 #define EMPTY_BOTTLE 29
 
+/* special items */
 #define OCARINA 1
 #define FLOWER_SHOP_CARD 2
 #define BAKERY_CARD 3
@@ -350,6 +365,7 @@
 #define char_y 0xD3
 #define char_z 0xD4
 
+/* actions */
 #define TOOL_USE 1
 #define THROWING 2
 #define PICKING_UP 4
@@ -360,7 +376,7 @@
 #define DRINKING 20
 #define CASTING_FISHING_ROD 22
 
-// exit indices
+/* entrances/exits */
 #define HOUSE_EXIT 0
 #define BATHROOM_TO_KITCHEN 0xB
 #define MIDDLE_OF_HOUSE 0xC
@@ -375,5 +391,7 @@
 #define CARPERNTER_HUT_ENTER 0x49
 #define ANN_ROOM_ENTER 0x4D
 #define FLOWER_SHOP_ENTRANCE 0x57
+
+#define MAX_UNSIGNED_SHORT 65535
 
 #endif

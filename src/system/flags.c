@@ -1,7 +1,9 @@
 #include "common.h"
 
-extern u8 D_80222730;
-extern u16 D_80181B8C;
+#include "mainproc.h"
+
+// bss
+u16 D_80181B8C;
 
 //INCLUDE_ASM(const s32, "system/flags", func_8004DEB0);
 

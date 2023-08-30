@@ -1,16 +1,16 @@
 #include "common.h"
-#include "pauseScreen.h"
 
-void func_8002B138(u16, void*, void*, void*, void*, u32, u32, void*, u32, void*, void*, void*, u32, u32, u32);
-void func_8002B6B8(u16);                    
-void func_800461D8(s32, u8, u8, u8, u8);                
+#include "system/pauseScreen.h"
 
+#include "system/sprite.h"
+
+// bss
+// struct/array?
 extern u16 D_80189A88;
 extern u8 D_80189A8A;
 extern u16 D_80189A8C;
 
 extern PauseScreenSprites D_80189A50[0x10];
-
 
 //INCLUDE_ASM(const s32, "system/pauseScreen", func_80045DE0);
 
@@ -26,9 +26,9 @@ void func_80045DE0(void) {
 
 //INCLUDE_ASM(const s32, "system/pauseScreen", func_80045E20);
 
-u8 func_80045E20(u16 index, u16 arg1, void *arg2, void *arg3, void *arg4, void *arg5, void *arg6, void *arg7, void *arg8, void *arg9, void *argA, u16 argB, u8 argC, f32 argD, f32 argE, f32 argF, u8 arg10) {
+bool func_80045E20(u16 index, u16 arg1, void *arg2, void *arg3, void *arg4, void *arg5, void *arg6, void *arg7, void *arg8, void *arg9, void *argA, u16 argB, u8 argC, f32 argD, f32 argE, f32 argF, u8 arg10) {
     
-    u8 result = 0;
+    bool result = 0;
     
     if (index < 0x10) {
         if (!(D_80189A50[index].flags & 1)) {
@@ -58,9 +58,9 @@ u8 func_80045E20(u16 index, u16 arg1, void *arg2, void *arg3, void *arg4, void *
 
 //INCLUDE_ASM(const s32, "system/pauseScreen", func_80045F5C);
 
-u8 func_80045F5C(u16 index, u32 arg1, u8 arg2, u16 flag) {
+bool func_80045F5C(u16 index, u32 arg1, u8 arg2, u16 flag) {
     
-    u8 result = 0;
+    bool result = 0;
     u16 tempIndex = index;
     u16 tempFlag = flag;
     u8 count;
@@ -113,8 +113,8 @@ u8 func_80045F5C(u16 index, u32 arg1, u8 arg2, u16 flag) {
 
 //INCLUDE_ASM(const s32, "system/pauseScreen", func_80046120);
 
-u32 func_80046120(u16 index) {
-    u32 result = 0;
+bool func_80046120(u16 index) {
+    bool result = 0;
     u8 i;
     u16 check;
 
@@ -132,7 +132,6 @@ u32 func_80046120(u16 index) {
     
     return result;
 }
-
 
 INCLUDE_ASM(const s32, "system/pauseScreen", func_800461D8);
 

@@ -1,6 +1,10 @@
 #include "common.h"
+
 #include "system/audio.h"
 
+#include "gameAudio.h"
+
+// bss or system/audio.c
 extern Sfx gSfx[4];
 extern SongInfo gSongs[4];
 
@@ -9,7 +13,6 @@ extern WaveTableInfo waveTableAddresses[1];
 extern u8 *songRomAddresses[0x40][2];
 extern u8 *sfxRomAddresses[0x80][2];
 extern s32 volumesTable[];
-
 // rodata: 0xF1CFC
 // size 0x60 or 0x180? 0x60 set elements, but takes up 0x180 bytes in rodata
 extern u8 audioTypeTable[0x60];

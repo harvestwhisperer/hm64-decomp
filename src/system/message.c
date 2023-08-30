@@ -1,9 +1,8 @@
 #include "common.h"
 
-#include "message.h"
+#include "system/message.h"
 
-extern DialogueBox D_80188B70[6];
-
+// bss
 extern u16 D_80204BF0[];
 
 

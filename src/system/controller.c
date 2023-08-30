@@ -1,22 +1,20 @@
 #include "common.h"
+
 #include "controller.h"
 
-void func_8004D47C(u8);                               
-s32 getAbsoluteValue(s32 number); 
+#include "system/mathUtils.h"
 
-NUContData contData[NU_CONT_MAXCONTROLLERS];
-OSContStatus D_80181B90[NU_CONT_MAXCONTROLLERS];
+#include "mainproc.h"
 
-extern Controller controllers[NU_CONT_MAXCONTROLLERS];
-extern Controller D_8018A738[NU_CONT_MAXCONTROLLERS];
-
-extern u8 frameCount;
-
-extern u8 contPattern;
-
+// forward declaration
+void func_8004D47C(u8);                         
+      
+// bss
 extern u16 D_80182FBA;
 extern u16 D_801FADB0;
-extern u8 D_802226E2;
+
+// likely bss (or gameStatus.c)
+extern u8 contPattern;
 
 //INCLUDE_ASM(const s32, "system/controller", controllerInit);
 

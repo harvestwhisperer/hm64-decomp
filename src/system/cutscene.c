@@ -1,27 +1,28 @@
 #include "common.h"
 
 #include "cutscene.h"
-#include "sprite.h"
 
+#include "system/map.h"
+#include "system/sprite.h"
+
+// forward declarations
 void func_800471B0(u16);                               
 void func_80047640(u16);                               
 void func_80047E34(u16);                               
 
+// bss
 // cutscene handler callbacks
 extern void (*D_801133D0[])(u16);
 
 extern Cutscene D_801808B0[42];
-extern RenderedSprite renderedSprites[];
-extern MapTileContext D_802055D8[];
-
 
 INCLUDE_ASM(const s32, "system/cutscene", func_80046860);
 
 //INCLUDE_ASM(const s32, "system/cutscene", func_800469A8);
 
-u8 func_800469A8(u16 index, void *cutsceneMapPointer) {
+bool func_800469A8(u16 index, void *cutsceneMapPointer) {
 
-    u8 result = 0;
+    bool result = 0;
     
     if (index < 42) {
 
@@ -98,9 +99,9 @@ void func_80046D78(void) {
             }
             
             if (D_801808B0[i].flags & 0x10) {
-                D_801808B0[i].coordinates.x = D_802055D8[D_801808B0[i].unk_64].unk_4.x;
-                D_801808B0[i].coordinates.y = D_802055D8[D_801808B0[i].unk_64].unk_4.y;
-                D_801808B0[i].coordinates.z = D_802055D8[D_801808B0[i].unk_64].unk_4.z;
+                D_801808B0[i].coordinates.x = gTileContext[D_801808B0[i].unk_64].unk_4.x;
+                D_801808B0[i].coordinates.y = gTileContext[D_801808B0[i].unk_64].unk_4.y;
+                D_801808B0[i].coordinates.z = gTileContext[D_801808B0[i].unk_64].unk_4.z;
             }
 
             if (D_801808B0[i].unk_66) {

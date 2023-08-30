@@ -1,50 +1,42 @@
 #include "common.h"
 
-#include "animals.h"
-#include "npc.h"
+#include "itemHandlers.h"
+
+#include "system/controller.h"
+#include "system/cutscene.h"
+#include "system/map.h"
 #include "system/sprite.h"
+#include "system/tiles.h"
 
-// rodata
+#include "animals.h"
+#include "game.h"
+#include "gameAudio.h"
+#include "gameStatus.h"
+#include "level.h"
+#include "levelInteractions.h"
+#include "loadGameScreen.h"
+#include "mapObjects.h"
+#include "npc.h"
+#include "player.h"
+
+// data
 extern u16 itemFlags[];
-
-extern u32 gCutsceneFlags;
-
-extern u8 gBaseMapIndex;
-extern u8 gHour;
-extern u8 gSeason;
-
-extern u8 gWife;
-
-extern u8 npcAffection[];
-extern npcInfo npcInfoArray[];
-
-extern Player gPlayer;
-
-extern Chicken gChickens[];
-
-extern u8 gItemBeingHeld;
-
-extern u32 dailyShippingBinValue;
-extern u32 gTotalCropsShipped;
-extern u32 gTotalEggsShipped;
-extern u32 gTotalGoldenMilkShipped;
-
+extern u16 D_80118000[];
 extern u16 D_801174A0[4][5];
 extern u8 D_80117F20[];
-extern u8 D_8018907D;
-extern u8 D_801890CC;
-extern u16 D_80118000[];
-
 extern u8 D_80117180[];
 extern u8 D_8011718C[];
 extern u16 D_801181C0[];
 extern u8 D_80118540[];
 extern u8 D_80118620[];
-extern u8 D_801C3E18;
+
+// bss
+extern u8 D_8018907D;
+extern u8 D_801890CC;
 extern u8 D_801C3F35;
 extern u8 D_801FD624;
 
-extern u32 D_801654F4;
+// load game screen
 extern u32 D_801806C0;
 extern u32 D_80188F60;
 extern u32 D_801C3F80;
@@ -52,38 +44,13 @@ extern u32 D_801FB5D0;
 extern u32 D_801FB6FC;
 extern u32 D_80237414;
 
-extern UnknownStruct3 D_80189828;
-extern RenderedSprite renderedSprites[];
-extern UnknownStruct D_80204DF8[10];
+extern ToolUse D_80189828;
 
-u32 adjustValue(s32 current, s32 amount, s32 max);   
-void setDailyEventBit(u16);  
-void setDefaultBabyName(u8);
+// bss
+extern ToolStatus D_80204DF8[10];
 
-u8 checkWineBarrelInteraction(u8);
-
+// forward declarations
 void handleBlueFeatherUse();         
-
-void func_8002FA2C(u16);
-void func_80034DC8(u16, u8, u16);    
-u8 func_8003C1A4(u16);
-u32 func_8004D380(u8, u32);    
-void func_8005AE8C(u8, u8, u16, u8, u8);
-Vec3f* func_80065F94(Vec3f*, f32, u16);
-void func_80073244(u8); 
-void func_80085D48(u8, u32);   
-void func_8009A398(void);                                  
-u8 func_8009A400();
-u8 func_8009A810();    
-void func_8009A97C(); 
-void func_8009A17C();                               
-void func_8009A2D0();
-void func_8009A53C();  
-void func_8009AAC8();     
-void func_8009B25C();         
-void setAudio(u16);
-u8 func_800ACE50(u8);
-u8 func_800ACFE8(u8);                 
 void func_800D0360();                                  
 void func_800D093C();                                  
 void func_800D0DD4();                                  
@@ -110,25 +77,11 @@ void func_800D4CC0();
 void func_800D4CD0();                                  
 void func_800D4D1C();                                  
 void func_800D4D68();                                  
-         
 void func_800D5130();
 void func_800D56E8(u8, u16);   
 u8 func_800D67E4(u8);
-u8 func_800DA8B8(u8);                             
-u8 func_800DA918(u8);                              
-u16 func_800DA948(u8);
-void func_800DAC70(u8, u8, u8, u8);
-f32* func_800DAD74(u8, f32, u8);                           
-u8 func_800DAF58(f32, u8);             
 
-u32 func_8002ECD4(u16, u16, u16);                         
-u32 func_8002F2FC(u16, u16);                            
-u32 func_8002FE10(u16, f32, f32, f32, f32);           
-u32 func_80030054(u16, u8);                            
-u32 func_8003019C(u16, u8);                            
-u32 func_80030240(u16, u8);                            
-u32 func_800302E4(u16, u8);                            
-u8 func_800309B4(u16, f32, f32);                       
+
 
 
 //INCLUDE_ASM(const s32, "itemHandlers", func_800CF850);
@@ -371,7 +324,7 @@ void func_800D373C(void) {
     
     func_80065F94(&vec, 0.0, temp2);
  
-    if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && vec.y != 65535) {
+    if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && vec.y != MAX_UNSIGNED_SHORT) {
         if (gSeason == SPRING || gBaseMapIndex == GREENHOUSE) {
           temp3 = 8;
         } else {
@@ -413,7 +366,7 @@ void func_800D3958(void) {
 
     func_80065F94(&vec, 0.0, temp2);
  
-    if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && vec.y != 65535) {
+    if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && vec.y != MAX_UNSIGNED_SHORT) {
         if (gSeason == SPRING || gBaseMapIndex == GREENHOUSE) {
           temp3 = 0x13;
         } else {
@@ -456,7 +409,7 @@ void func_800D3B74(void) {
     
     func_80065F94(&vec, 0.0, temp2);
  
-    if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && vec.y != 65535) {
+    if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && vec.y != MAX_UNSIGNED_SHORT) {
         if (gSeason == SPRING || gBaseMapIndex == GREENHOUSE) {
           temp3 = 0x33;
         } else {
@@ -499,7 +452,7 @@ void func_800D3D90(void) {
     
     func_80065F94(&vec, 0.0, temp2);
  
-    if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && vec.y != 65535) {
+    if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && vec.y != MAX_UNSIGNED_SHORT) {
         if (gSeason == SUMMER || gBaseMapIndex == GREENHOUSE) {
           temp3 = 0x53;
         } else {
@@ -542,7 +495,7 @@ void func_800D3FAC(void) {
     
     func_80065F94(&vec, 0.0, temp2);
  
-    if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && vec.y != 65535) {
+    if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && vec.y != MAX_UNSIGNED_SHORT) {
         if (gSeason == SUMMER || gBaseMapIndex == GREENHOUSE) {
           temp3 = 0x68;
         } else {
@@ -585,7 +538,7 @@ void func_800D41C8(void) {
 
     func_80065F94(&vec, 0.0, temp2);
  
-    if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && vec.y != 65535) {
+    if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && vec.y != MAX_UNSIGNED_SHORT) {
         if (gSeason == AUTUMN || gBaseMapIndex == GREENHOUSE) {
           temp3 = 0x22;
         } else {
@@ -628,7 +581,7 @@ void func_800D43E4(void) {
 
     func_80065F94(&vec, 0.0, temp2);
 
-    if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && vec.y != 65535) {
+    if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && vec.y != MAX_UNSIGNED_SHORT) {
         temp3 = ((-(gBaseMapIndex != 0x56) & ~0x28) | 0x44);
         func_800DAC70(gBaseMapIndex, temp3, (u8)vec.x - D_801FD624, (u8)vec.z - D_801C3F35);
     }
@@ -666,7 +619,7 @@ void func_800D45F4(void) {
     
     func_80065F94(&vec, 0.0, temp2);
  
-    if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && vec.y != 65535) {
+    if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && vec.y != MAX_UNSIGNED_SHORT) {
         
         if ((gSeason - 1 < 2U) || gBaseMapIndex == GREENHOUSE) {
             temp3 = 0x90; 
@@ -709,7 +662,7 @@ void func_800D4814(void) {
     
     func_80065F94(&vec, 0.0, temp2);
  
-    if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && vec.y != 65535) {
+    if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && vec.y != MAX_UNSIGNED_SHORT) {
         
         if ((gSeason - 1 < 2U) || gBaseMapIndex == GREENHOUSE) {
             temp3 = 0x9F; 
@@ -752,7 +705,7 @@ void func_800D4A34(void) {
     
     func_80065F94(&vec, 0.0, temp2);
  
-    if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && vec.y != 65535) {
+    if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && vec.y != MAX_UNSIGNED_SHORT) {
         func_800DAC70(gBaseMapIndex, 0xB2, (u8)vec.x - D_801FD624, (u8)vec.z - D_801C3F35);
     }
     
@@ -850,7 +803,7 @@ void func_800D4D68(void) {
     
     func_80065F94(&vec, 0.0, temp2);
  
-    if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && vec.y != 65535) {
+    if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && vec.y != MAX_UNSIGNED_SHORT) {
         if (gBaseMapIndex == FARM) {
             func_800DAC70(FARM, 0x85, (u8)vec.x - D_801FD624, (u8)vec.z - D_801C3F35);    
         }
@@ -884,12 +837,12 @@ INCLUDE_RODATA(const s32, "itemHandlers", D_80122368);
 //INCLUDE_RODATA(const s32, "itemHandlers", D_80122374);
 
 const u8 D_80122374[12] = { 5, 4, 3, 6, 8, 2, 7, 0, 1, 0, 0, 0 };
-
+ 
 //INCLUDE_ASM(const s32, "itemHandlers", handleBlueFeatherUse);
 
 // jumtable: 80122380, 0xFD780
 void handleBlueFeatherUse(void) {
-    
+     
     toggleDailyEventBit(0x14);
     
     if (D_801C3E18 == 0xFF) goto func_end;

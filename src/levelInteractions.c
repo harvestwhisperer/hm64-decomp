@@ -1,91 +1,24 @@
 #include "common.h"
 
-#include "controller.h"
+#include "system/controller.h"
+#include "system/map.h"
+#include "system/sprite.h"
 
-extern Player gPlayer;
+#include "game.h"
+#include "gameAudio.h"
+#include "gameStatus.h"
+#include "initialize2.h"
+#include "level.h"
+#include "player.h"
+#include "shop.h"
 
-extern u8 gSeason;
-extern u8 gHour;
-extern u8 gDayOfMonth;
-
-extern u8 D_80126560;
-extern u8 D_80126561;
-
-extern u8 D_80189826;
-extern u8 D_801C3E2C;
-extern u8 gEntranceIndex;
-
-u32 checkDailyEventBit(u16 bitIndex);                   
-void setExit(u16 extiIndex);  
-
-
-u8 func_800309B4(u16, u8, f32); 
-u32 func_8004D380(u8, u32);                        
-void func_80059334();                          
-void func_8005AE8C(u16 arg0, u16 arg1, u16 arg2, int arg3, u16 arg4);                    
-void func_8005AF94(u16, u16, u16, u16, u8);                   
-void func_8005B09C(u8);                                 
-void func_8005CA2C(u16, u16);                                             
-void func_800DC9FC(u8);                                 
-u8 func_800DDDFC(u16);
-
-//u8 func_800309B4(u16, f32, f32);                            
-u32 func_80038990(u16, u16, u8);                          
-u32 func_8004D380(u8, u32);                           
-void func_8005AE8C(u16 arg0, u16 arg1, u16 arg2, int arg3, u16 arg4);                
-void func_8005C940(u16 arg0, u16 arg1);                             
-s32 func_80074C38(u8);                              
-s32 func_80074C50(u8);                              
-s32 func_800AD8D0(s32, s32);                        
-s32 func_800ADCDC(s32, s32);                        
-s32 func_800AE00C(s32, s32);                        
-s32 func_800AEB54(s32, s32);                        
-s32 func_800AED60(s32, s32);                        
-s32 func_800AEE8C(s32, s32);                        
-s32 func_800AF060(s32, s32);                        
-s32 func_800AF0B0(s32, s32);                        
-s32 func_800AF494(s32, s32);                        
-s32 func_800AFA7C(s32, s32);                        
-s32 func_800AFCD0(s32, s32);                        
-s32 func_800AFD20(s32, s32);                        
-s32 func_800AFF9C(s32, s32);                        
-s32 func_800B00E0(s32, s32);                        
-s32 func_800B01EC(s32, s32);                        
-s32 func_800B0378(s32, s32);                        
-s32 func_800B0714(s32, s32);                        
-s32 func_800B0A64(s32, s32);                        
-s32 func_800B0AFC(s32, s32);                        
-s32 func_800B0C48(s32, s32);                        
-s32 func_800B0C98(s32, s32);                        
-s32 func_800B0FB8(s32, s32);                        
-s32 func_800B106C(s32, s32);                        
-s32 func_800B1438(s32, s32);                        
-s32 func_800B1540(s32, s32);                        
-s32 func_800B1808(s32, s32);                        
-s32 func_800B1994(s32, s32);                        
-s32 func_800B1AC4(s32, s32);                        
-s32 func_800B1C6C(s32, s32);                        
-s32 func_800B1DBC(s32, s32);                        
-s32 func_800B1EE4(s32, s32);                        
-s32 func_800B20C8(s32, s32);                        
-s32 func_800B2118(s32, s32);                        
-s32 func_800B2264(s32, s32);                        
-s32 func_800B2340(s32, s32);                        
-s32 func_800B23A4(s32, s32);                        
-s32 func_800B24D4(s32, s32);                        
-s32 func_800B256C(s32, s32);                        
-s32 func_800B2604(s32, s32);                        
-s32 func_800B2B90(s32, s32);                        
-s32 func_800B2C28(s32, s32);                        
-s32 func_800B2C78(s32, s32);                        
-
-u32 handleDumplingHouseExit(u16, u8);              
-u32 handleRanchStoreExits(u16 mapIndex, u8 collisionIndex);                
-
-void setAudio(u16);                                     
-void setPlayerAction(u16, u16);     
-
-
+// bss
+// struct
+u8 D_80126560;
+u8 D_80126561;
+u8 D_80189826;
+u8 D_801C3E2C;
+                                                                 
 //INCLUDE_ASM(const s32, "levelInteractions", func_800ACD70);
 
 u8 func_800ACD70(u16 mapIndex) {
@@ -647,8 +580,8 @@ INCLUDE_ASM(const s32, "levelInteractions", func_800B1C6C);
 
 //INCLUDE_ASM(const s32, "levelInteractions", handleDumplingHouseExit);
 
-u32 handleDumplingHouseExit(u16 arg0, u8 arg1) {
-    u32 result = 0;
+bool handleDumplingHouseExit(u16 arg0, u8 arg1) {
+    bool result = 0;
 
     if (arg1 == 1) {
         if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
@@ -698,9 +631,9 @@ INCLUDE_ASM(const s32, "levelInteractions", func_800B2604);
 
 //INCLUDE_ASM(const s32, "levelInteractions", func_800B27CC);
 
-u32 func_800B27CC(u16 mapIndex, u8 collisionIndex) {
+bool func_800B27CC(u16 mapIndex, u8 collisionIndex) {
 
-    u32 result = 0;
+    bool result = 0;
 
     switch (collisionIndex) {
         case 1: 
@@ -733,13 +666,11 @@ u32 func_800B27CC(u16 mapIndex, u8 collisionIndex) {
 }
 
 // jtbl_80121C30
-// jumptable end alignment is messed up now
-INCLUDE_ASM(const s32, "levelInteractions", handleRanchStoreExits);
+//INCLUDE_ASM(const s32, "levelInteractions", handleRanchStoreExits);
 
-/*
-u32 handleRanchStoreExits(u16 mapIndex, u8 collisionIndex) {
+bool handleRanchStoreExits(u16 mapIndex, u8 collisionIndex) {
 
-    u32 result = 0;
+    bool result = 0;
     
     switch (collisionIndex) {
         // exit
@@ -829,10 +760,12 @@ u32 handleRanchStoreExits(u16 mapIndex, u8 collisionIndex) {
     
     return result;
 }
-*/
 
 INCLUDE_ASM(const s32, "levelInteractions", func_800B2B90);
 
 INCLUDE_ASM(const s32, "levelInteractions", func_800B2C28);
 
 INCLUDE_ASM(const s32, "levelInteractions", func_800B2C78);
+
+// hack to get this rodata to align along 10 bytes
+static const padding[2] = { 0, 0 };
