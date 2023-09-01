@@ -90,7 +90,7 @@ u8 func_800401C8(u16 index) {
 
     u8 result = 0;
 
-    if (index < 6) {
+    if (index < MAX_DIALOGUE_BOXES) {
         if (D_80188B70[index].flags & 1 && D_80188B70[index].flags & 2) {
             result = D_80188B70[index].buttonSfxCounter != 0;
         }
@@ -125,6 +125,8 @@ INCLUDE_ASM(const s32, "system/message", func_80041B80);
 
 INCLUDE_ASM(const s32, "system/message", func_80041CD8);
 
+// param 1: 0x80159510 + 0x10 * offset
+// extern Gfx* func_80042014(Gfx*, DialogueBox*, u16);
 INCLUDE_ASM(const s32, "system/message", func_80042014);
 
 INCLUDE_ASM(const s32, "system/message", func_800423F0);

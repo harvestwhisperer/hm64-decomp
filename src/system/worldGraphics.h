@@ -16,8 +16,9 @@ typedef struct {
 	u16 flags;
 } WorldGraphics;
 
-extern void func_80029170();   
+extern void initializeWorldGraphics();   
 // no op or shelved code
 extern void func_800293B8();
+extern Gfx* func_800293C0(Gfx*, Mtx*);  
 
 #endif

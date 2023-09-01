@@ -77,6 +77,7 @@
 #define MAYOR_VILLAGE_TOUR 0x5AD
 #define INTRO 0x5B0
 
+u16 func_8009C054(u16 mapIndex);
 extern u16 func_800A7AE8(u8);  
 extern void func_800A7DFC();        
 extern u16 func_800A87C4();   

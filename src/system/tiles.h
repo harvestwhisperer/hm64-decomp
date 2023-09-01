@@ -21,17 +21,23 @@ typedef struct {
 	u16 flags;
 } MapTileContext;
 
-extern void func_8003B870();      
+typedef struct {
+    void *romStart;
+    void *romEnd;
+    u16 flags;
+} TileInfo;
+
+extern void intializeTileContext();      
+bool func_8003BB14(u16 arg0, u16 mapIndex); 
 extern void func_8003BC50(u8, u16);   
 extern void func_8003BD60(s32);                      
 extern void func_8003BE98(u16, u8, u8, u8, u8);
 extern void func_8003BF7C(u16, u8, u8, u8, u8, s32);
-extern void func_8003C084(u16, u8);    
-extern void func_8003C6E4();
-extern u8 func_8003C1A4(u16);
+extern bool func_8003C084(u16, u8);    
+extern bool func_8003C6E4();
+extern bool func_8003C1A4(u16);
 extern void func_8003C1E0(u16, f32, f32, f32, u8, u8);      
 extern void func_8003C504(u32);     
-extern u32 func_8004D380(u8, u32);   
 
 extern u16 gTileContextFlags;
 extern MapTileContext gTileContext[];

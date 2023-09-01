@@ -22,7 +22,7 @@ void func_8004DEC8(void) {
 //INCLUDE_ASM(const s32, "system/flags", func_8004DEE4);
 
 void func_8004DEE4(void) {
-    D_80181B8C &= 0xFFFE;
+    D_80181B8C &= ~1;
 }
 
 void func_8004DF00(void) {}

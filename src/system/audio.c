@@ -54,17 +54,19 @@ void mainLoopAudioHandler(void) {
     u8 current;
 
     for (i = 0; i < MAX_ACTIVE_SONGS; i++) {
+
         if (gSongs[i].flags & 1) {
+
             if (gSongs[i].flags & 2) {
                 current = i;
                 nuAuStlSeqPlayerDataSet(current, gSongs[i].currentSongRomAddrStart, gSongs[i].currentSongRomAddrEnd - gSongs[i].currentSongRomAddrStart);
                 gSongs[i].handle = nuAuStlSeqPlayerPlay2(current);
-                gSongs[i].flags &= 0xFFFD;
+                gSongs[i].flags &= ~2;
             }
             
             if (gSongs[i].flags & 4) {
                 MusHandleStop(gSongs[i].handle, gSongs[i].speed);
-                gSongs[i].flags &= 0xFFFB;
+                gSongs[i].flags &= ~4;
             }
             
             func_800266F8(&gSongs[i].volumes);
@@ -80,15 +82,17 @@ void mainLoopAudioHandler(void) {
     }
 
     for (j = 0; j < MAX_ACTIVE_SFX; j++) {
+
         if (gSfx[j].flags & 1) {
+
             if (gSfx[j].flags & 2) {
                 gSfx[j].handle = nuAuStlSndPlayerPlay(gSfx[j].sfxIndex);
-                gSfx[j].flags &= 0xFFFD;
+                gSfx[j].flags &= ~2;
             }
             
             if (gSfx[j].flags & 4) {
                 MusHandleStop(gSfx[j].handle, 0);
-                gSfx[j].flags &= 0xFFFB;
+                gSfx[j].flags &= ~4;
             }
             
             MusHandleSetFreqOffset(gSfx[j].handle, gSfx[j].frequency);
@@ -178,12 +182,12 @@ bool setSongVolumes(u16 index, s32 maxVolume, s16 arg2) {
     if (index < MAX_ACTIVE_SONGS) {
         
         if (gSongs[index].flags & 1) {
-            
-            // unpack to short?
+
+            // get sign bit
             maxVolume &= (~maxVolume >> 0x1F);
             
-            if (maxVolume > 256) {
-                maxVolume = 256;
+            if (maxVolume > MAX_VOLUME) {
+                maxVolume = MAX_VOLUME;
             }
             
             gSongs[index].volumes.maxVolume = maxVolume;
@@ -264,6 +268,7 @@ void stopMusic(int speed) {
 bool setSfx(u32 sfxIndex) {
 
     u16 i = 0;
+
     bool result = 0;
 
     u32 current;
@@ -275,10 +280,12 @@ bool setSfx(u32 sfxIndex) {
         if (!(gSfx[current].flags & 1)) {
             
             i = MAX_ACTIVE_SFX;
+            
             gSfx[current].sfxIndex = sfxIndex;
             gSfx[current].frequency = 0;
             gSfx[current].pan = 128;
             gSfx[current].flags = 3;
+
             result = 1;
 
         } else {
@@ -388,13 +395,19 @@ bool setSfxPan(u32 sfxIndex, s32 arg1) {
     bool result = 0;
 
     for (i = 0; i < MAX_ACTIVE_SFX; i++) {
+
         if (gSfx[i].flags & 1) {
+
             if (gSfx[i].sfxIndex == sfxIndex) {
+
                 gSfx[i].pan = arg1;
+                
                 if (arg1 < 0) {
                     gSfx[i].pan = 0;
                 }
+                
                 result = 1;
+                
                 if (gSfx[i].pan >= 257) {
                     gSfx[i].pan = 256;
                 }

@@ -1,7 +1,8 @@
 #include "common.h"
 
-#include "tiles.h"
+#include "system/tiles.h"
 
+#include "system/graphic.h"
 #include "system/map.h"
 
 // bss
@@ -18,11 +19,12 @@ extern TileInfo gTiles[0x60];
 
 // forward declarations
 void func_8003BDA4(u8, f32, f32, f32);  
-                    
-                    
-//INCLUDE_ASM(const s32, "system/tiles", func_8003B870);
 
-void func_8003B870(void) {
+static const f32 D_8011EDE0[];
+                    
+//INCLUDE_ASM(const s32, "system/tiles", intializeTileContext);
+
+void intializeTileContext(void) {
     
     u16 i;
     
@@ -176,7 +178,37 @@ INCLUDE_ASM(const s32, "system/tiles", func_8003BE98);
 
 INCLUDE_ASM(const s32, "system/tiles", func_8003BF7C);
 
-INCLUDE_ASM(const s32, "system/tiles", func_8003C084);
+//INCLUDE_ASM(const s32, "system/tiles", func_8003C084);
+
+bool func_8003C084(u16 arg0, u8 arg1) {
+
+    bool result;
+
+    Angles angles;
+    f32 *ptr;
+    f32 tempf;
+    
+    angles = *(Angles*)D_8011EDE0;
+    ptr = (f32*)&angles;
+
+    result = 0;
+
+    if (!arg0 && gTileContextFlags & 1 && gTileContextFlags & 2) {
+
+        if (!(gTileContextFlags & 0x18)) {
+        
+            gTileContext[0].rotation = arg1;
+            tempf = ptr[arg1];
+        
+            func_800342F4(gTileContext[0].unk_40, 45.0f, tempf, 0);
+            func_80028EB8(45.0f, tempf, 0);
+         
+            result = 1;
+        }
+    }
+
+    return result;
+}
 
 INCLUDE_ASM(const s32, "system/tiles", func_8003C1A4);
 

@@ -15,36 +15,50 @@
 // 	u16 flags;
 // } UnknownMapStruct1;
 
-// should start at 80158240 but causes rodata issue
+// 80158248
 typedef struct {
-    f32 unk_8;
-    f32 unk_C;
-    u16 unk_10;
-    u16 unk_12;
-    u16 unk_14;
-    u16 unk_16;
-    u8 unk_18;
-    u8 unk_19;
+    f32 unk_0;
+    f32 unk_4;
+    u16 unk_8;
+    u16 unk_A;
+    u16 unk_C;
+    u16 unk_E;
+    u8 unk_10;
+    u8 unk_11; // counter
     u16 flags;
 } UnknownMapStruct1;
 
 // 0x8013DC40
-typedef struct {
-	void *unk_0;
-	void *unk_4;
-	void *unk_8;
-	void *unk_C;
-	void *unk_10;
-	void *unk_14;
-	void *unk_18;
-	void *unk_1C;
-	void *unk_20;
-	void *unk_24;
-	void *unk_28;
-	u8 unk_2C; // spacing between tiles
-	u8 unk_2D; // spacing between tiles
-	u8 unk_2E; // size (used in division)
-	u8 unk_2F; // size (used in division)
+typedef struct  {
+    void *unk_0;
+    void *unk_4;
+    void *unk_8;
+    void *unk_C;
+    void *unk_10;
+    void *unk_14;
+    void *unk_18;
+    void *unk_1C;
+    void *unk_20;
+    void *unk_24;
+    void *unk_28;
+    u8 unk_2C; // spacing between tiles
+    u8 unk_2D; // spacing between tiles
+    u8 unk_2E; // size (used in division)
+    u8 unk_2F; // size (used in division)
+    u32 padding[3911];
+    f32 unk_3D4C;
+    f32 unk_3D50;
+    f32 unk_3D54;
+    f32 unk_3D58;
+    f32 unk_3D5C;
+    f32 unk_3D60;
+    f32 unk_3D64;
+    f32 unk_3D68;
+    f32 unk_3D6C;
+    f32 unk_3D70;
+    f32 unk_3D74;
+    f32 unk_3D78;
+    f32 unk_3D7C;
 } UnknownMapStruct2;
 
 typedef struct {
@@ -53,6 +67,17 @@ typedef struct {
     void *unk_2C;
     void *unk_30;
 } UnknownMapStruct3;
+
+//D_80141C98
+typedef struct {
+    void *vaddr1;
+    void *vaddr2;
+    void *vaddr3;
+    u32 unk_C;
+    u8 unk_10;
+    u8 unk_11;
+    u16 unk_12;
+} UnknownMapStruct4;
 
 
 extern void func_800337D0(void);    

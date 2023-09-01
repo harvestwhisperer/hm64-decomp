@@ -12,7 +12,7 @@
 // bss
 extern CharacterSprite npcSpriteInfoArray[MAX_NPC_SPRITES];
 extern RenderedSprite renderedSprites[MAX_RENDERED_SPRITES];
-extern Shadow D_8016FFF8[3];
+extern Shadow shadowSpritesInfo[3];
 
 //INCLUDE_ASM(const s32, "system/renderedSprites", initializeNpcSpriteStructs);
 
@@ -56,7 +56,7 @@ u8 func_8002DDDC(u16 npcIndex, void* arg1, void* arg2, void* arg3, void* arg4, v
 
     u8 result = 0;
 
-    if (npcIndex < 0x66) {
+    if (npcIndex < MAX_NPC_SPRITES) {
 
         if (!(npcSpriteInfoArray[npcIndex].flags & 1)) {
             
@@ -180,23 +180,22 @@ INCLUDE_ASM(const s32, "system/renderedSprites", func_8002E284);
 
 //INCLUDE_ASM(const s32, "system/renderedSprites", func_8002EC18);
 
-// sprite shadows
 u8 func_8002EC18(u16 index, u32 arg1, void *arg2, void *arg3, void *arg4, void *arg5, s32 arg6, s32 arg7, s32 arg8, u16 arg9, u8 argA) {
 
     u8 result = 0;
     
-    if (index < 3) {
+    if (index < MAX_SHADOW_SPRITES) {
         result = 1;
-        D_8016FFF8[index].romTextureStart = arg1;
-        D_8016FFF8[index].romTextureEnd = arg2;
-        D_8016FFF8[index].romPaletteStart = arg3;
-        D_8016FFF8[index].romPaletteEnd = arg4;
-        D_8016FFF8[index].vaddr1 = arg5;
-        D_8016FFF8[index].vaddr2 = arg6;
-        D_8016FFF8[index].vaddr3 = arg7;
-        D_8016FFF8[index].vaddr4 = arg8;
-        D_8016FFF8[index].unk_20 = arg9;
-        D_8016FFF8[index].unk_22 = argA;
+        shadowSpritesInfo[index].romTextureStart = arg1;
+        shadowSpritesInfo[index].romTextureEnd = arg2;
+        shadowSpritesInfo[index].romPaletteStart = arg3;
+        shadowSpritesInfo[index].romPaletteEnd = arg4;
+        shadowSpritesInfo[index].vaddr1 = arg5;
+        shadowSpritesInfo[index].vaddr2 = arg6;
+        shadowSpritesInfo[index].vaddr3 = arg7;
+        shadowSpritesInfo[index].vaddr4 = arg8;
+        shadowSpritesInfo[index].unk_20 = arg9;
+        shadowSpritesInfo[index].unk_22 = argA;
     }
 
     return result;
@@ -218,10 +217,10 @@ bool func_8002ECD4(u16 index, u16 arg1, u16 arg2) {
             renderedSprites[index].unk_26 = arg2;
 
             if (arg1 == 0xFFFF) {
-                renderedSprites[index].flags &= 0xFDFF;
+                renderedSprites[index].flags &= ~0x200;
             } else {
                 renderedSprites[index].flags |= 0x200;
-                renderedSprites[index].flags &= 0xFFBF;
+                renderedSprites[index].flags &= ~0x40;
             }
 
             result = 1;
@@ -303,7 +302,7 @@ u8 setSpriteAnimation(u16 index, u16 arg1) {
         if ((renderedSprites[index].flags & 1) && (renderedSprites[index].flags & 4) && !(renderedSprites[index].flags & 0x1000)) {     
                 renderedSprites[index].anim.animationIndex = arg1;
                 renderedSprites[index].flags |= 0x18;
-                globalSprites[renderedSprites[index].unk_52].flags2 &= 0xFFBF;
+                globalSprites[renderedSprites[index].unk_52].flags2 &= ~0x40;
                 result = 1;
                 globalSprites[renderedSprites[index].unk_52].unk_92 = 0;
         }
@@ -370,7 +369,6 @@ u8 func_8002FBBC(u16 index) {
     
     if (index < MAX_RENDERED_SPRITES) {
         if (renderedSprites[index].flags & 1) {
-            // bit 7
             renderedSprites[index].flags |= 0x40;
             func_8002BB88(renderedSprites[index].unk_52);
             result = 1;
@@ -393,10 +391,8 @@ u8 func_8002FD24(u16 index) {
     u16 temp;
 
     if (index < MAX_RENDERED_SPRITES) {
-        // bits 1 and 3
         if ((renderedSprites[index].flags & 1) && (renderedSprites[index].flags & 8)) {
-            // check bit 9
-            temp = (renderedSprites[index].flags & 0x100);
+            temp = renderedSprites[index].flags & 0x100;
             result = !temp;
         }
     }
@@ -410,7 +406,6 @@ bool func_8002FD80(u16 spriteIndex, f32 x, f32 y, f32 z) {
     bool result = 0;
     
     if (spriteIndex < MAX_RENDERED_SPRITES) {
-        // bits 1 and 13
         if ((renderedSprites[spriteIndex].flags & 1) && !(renderedSprites[spriteIndex].flags & 0x1000)) {
             result = 1;
             renderedSprites[spriteIndex].startingCoordinates.x = x;
@@ -467,7 +462,6 @@ u8 func_80030388(u16 index) {
     if (index < MAX_RENDERED_SPRITES) {
         
         if (renderedSprites[index].flags & 1) {
-            // bit 7
             result = (renderedSprites[index].flags >> 6) & 1;
         }
     }
@@ -514,7 +508,7 @@ INCLUDE_ASM(const s32, "system/renderedSprites", func_800313FC);
 
 Vec3f* func_800315A0(Vec3f* arg0, u16 index) {
 
-    // maybe a struct?
+    // likely a struct
     int padding[11];
     
     Vec3f vec;

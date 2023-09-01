@@ -4,7 +4,13 @@
 #include "common.h"
 
 typedef struct {
-    u16 *cutsceneMapPointer;
+
+    u16 unk_0;
+
+} Cutscene;
+
+typedef struct {
+    Cutscene *cutscenePointer;
     short *unk_4;
     short *unk_8;
     Vec3f unk_C;
@@ -19,8 +25,8 @@ typedef struct {
     u16 unk_28; // sprite animation
     u16 unk_2A; // sprite animation
     u32 unk_2C;
-    u32 cameraFlags; // 0x30
-    Vec3f coordiantes; // 0x34
+    u16 cameraFlags; // 0x30
+    Vec3f coordinates; // 0x34
     Vec3f scaling; // 0x40
     Vec3f offsets; // 0x4C
     Vec3f unk_58;
@@ -30,12 +36,12 @@ typedef struct {
     u8 unk_69;
     u8 unk_6A;
     u16 flags; // 0x6C
-} Cutscene;
+} CutsceneMap;
 
 extern u32 gCutsceneFlags;
 
-extern void func_80046860();
-extern bool func_800469A8(u16 index, void *cutsceneMapPointer);
+extern void initializeCutsceneMaps(void);
+extern bool func_800469A8(u16 index, Cutscene *cutsceneMapPointer);
 extern void func_80046BB8();   
 extern void func_80046C98();     
 extern void func_80046CF4();    

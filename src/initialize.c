@@ -24,9 +24,11 @@ extern u8 D_80189A48;
 extern u8 D_801C3B64;
 extern u8 D_801C4214;
 
+
+//INCLUDE_ASM(const s32, "initialize", func_8004E160);
+
 void func_8004E160(void) {
     
-    // why volatile?
     volatile musConfig c;
     
     c.fxs = sfxList;
@@ -51,9 +53,6 @@ void func_8004E160(void) {
     
     initializeWaveTable(0);
 }
-
-//INCLUDE_ASM(const s32, "initialize", func_8004E160);
-
 
 // initialize bss game variables
 INCLUDE_ASM(const s32, "initialize", func_8004E210);
@@ -188,7 +187,7 @@ void setGameVariables(void) {
 
     setGameVariable(0x27, &gDayOfMonth, 1, 30);
 
-    setGameVariable(0x28, &gGold, 4, 999999);
+    setGameVariable(0x28, &gGold, 4, MAX_GOLD);
 
     setGameVariable(0x29, &gTotalGrassTiles, 2, 1000);
     setGameVariable(0x2A, &gTotalPinkCatMintFlowersGrowing, 2, 1000);

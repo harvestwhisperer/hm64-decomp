@@ -34,7 +34,7 @@ volatile u8 D_802373F1;
 volatile u8 D_80237A04;
 volatile u8 frameCount;
 
-volatile u32 gDisplayContext;
+volatile u32 gDisplayContextIndex;
 volatile u8 gfxTaskNo;
 
 volatile u32 D_801C3B68[4];
@@ -42,10 +42,11 @@ volatile u8 D_801C3F34;
 volatile u8 D_801C3F71;
 volatile u8 D_801D6230;
 
-// internal variables
-volatile u16 D_8020564A;
-volatile u8 D_80237408;
+// shared
+volatile u16 mainLoopCallbackCurrentIndex;
 
+// internal variable
+volatile u8 D_80237408;
 
 //INCLUDE_ASM(const s32, "mainproc", func_80025D90);
 
@@ -93,17 +94,22 @@ void initializeAll(void) {
     graphicsInit();
 
     resetSpriteAddressesFlags();
-    func_80029170();
-    func_80029B30();
-    func_8002AFE0();
+    initializeWorldGraphics();
+    initializeBitmaps();
+    initializeGlobalSprites();
+    // system/map.c
     func_800337D0();
+    // system/message.c
     func_8003D970();
+    // system/dialogue.c
     func_80042F60();
+    // system/pauseScreen.c
     func_80045DE0();
-    func_80046860();
+    initializeCutsceneMaps();
+    // system/flags.c
     func_8004DEB0();
     initializeNpcSpriteStructs();
-    func_8003B870();
+    intializeTileContext();
 
     nuGfxSwapCfbFuncSet(NULL);
     nuGfxSwapCfbFuncSet(gfxBufferSwap);
@@ -123,7 +129,7 @@ void func_80025F04(void) {
     
     D_80205208 = 0;
     D_801594E4 = 0;
-    D_8020564A = 0;
+    mainLoopCallbackCurrentIndex = 0;
 
     frameCount = 0;
 
@@ -145,7 +151,7 @@ void func_80025F04(void) {
     D_801C3B68[2] = 0;
     D_801C3B68[3] = 0;
 
-    gDisplayContext = 0;
+    gDisplayContextIndex = 0;
     
     D_80204B38 = 0;
     D_801FD610 = 0;

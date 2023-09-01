@@ -36,12 +36,15 @@ extern void func_8005CA2C(u16, u16);
 extern void func_8005CDCC(); 
 extern void func_80060E58();   
 extern u8 func_800616CC(u8);  
+u16 func_80063A2C(u8 arg0);
+
 
 extern Vec3f D_8016F8A4;
 extern Vec4f D_80180718;
 extern Vec4f globalLightingRgba;
 
 extern u32 gGold;
+extern u16 gLumber;
 
 extern u32 dailyShippingBinValue;
 extern u32 gTotalCropsShipped;

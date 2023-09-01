@@ -27,6 +27,7 @@ typedef struct {
     u16 unk_A; // 32
     u16 unk_C; // 34
     u8 unk_E; // 36
+    u8 unk_F; // 37;
 } ToolUse;
 
 

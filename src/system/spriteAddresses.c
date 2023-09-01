@@ -51,7 +51,7 @@ void dmaSprites(void) {
     for (i = 0; i < MAX_SPRITE_INFO; i++) {
         if (spriteAddresses[i].flags & NEED_DMA) {
             nuPiReadRom(spriteAddresses[i].romAddr, spriteAddresses[i].vaddr, spriteAddresses[i].length);
-            spriteAddresses[i].flags &= FINISHED_DMA;
+            spriteAddresses[i].flags &= ~NEED_DMA;
         }
     }
 

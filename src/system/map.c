@@ -31,15 +31,14 @@ extern u32 D_80141C9C;
 extern u32 D_80141CA0;
 
 // shared
-// array?
-extern f32 D_801580D8;
-extern f32 D_801580DC;
-extern f32 D_801580E0;
-extern f32 D_801580E4;
-extern f32 D_801580E8;
-extern f32 D_801580EC;
-extern f32 D_801580F0;
-extern f32 D_801580F4;
+// ground rgba
+extern Vec4f D_801580D8;
+extern Vec4f D_801580E8;
+
+// rodata
+extern Gfx D_8011ED68[4];
+extern Gfx D_8011ED88[5];
+extern Gfx D_8011EDC8[3];
 
 INCLUDE_ASM(const s32, "system/map", func_800337D0);
 
@@ -57,37 +56,27 @@ INCLUDE_ASM(const s32, "system/map", func_800342F4);
 
 bool func_80034350(u16 arg0, u8 arg1, u8 arg2, u8 arg3, u8 arg4) {
     
-    bool res;
-
-    f32 temp_f0;
-    f32 temp_f2;
-    f32 temp_f4;
-    f32 temp_f6;
-
-    res = 0;
+    bool res = 0;
     
     if (!arg0 && (D_80158248.flags & 1)) {
         
         res = 1;
+
+        D_801580D8.r = arg1;
+        D_801580D8.g = arg2;
+        D_801580D8.b = arg3;
+        D_801580D8.a = arg4;
         
-        temp_f6 = (f32) arg1;
-        temp_f4 = (f32) arg2;
-        temp_f2 = (f32) arg3;
-        temp_f0 = (f32) arg4;
-        
-        D_801580D8 = temp_f6;
-        D_801580DC = temp_f4;
-        D_801580E0 = temp_f2;
-        D_801580E4 = temp_f0;
-        D_801580E8 = temp_f6;
-        D_801580EC = temp_f4;
-        D_801580F0 = temp_f2;
-        D_801580F4 = temp_f0;
+        D_801580E8.r = arg1;
+        D_801580E8.g = arg2;
+        D_801580E8.b = arg3;
+        D_801580E8.a = arg4;
     
     }
     
     return res;
 }
+
 
 INCLUDE_ASM(const s32, "system/map", func_800343FC);
 
@@ -168,29 +157,27 @@ bool func_80035914(u16 arg0, f32 arg1, f32 arg2) {
     
     bool result = 0;
 
-    if (!arg0) {
 
-        if (D_80158248.flags & 1) {
+    if (!arg0 && (D_80158248.flags & 1)) {
 
-            func_800366F4(&vec, 0, arg1, arg2);
+        func_800366F4(&vec, 0, arg1, arg2);
 
-            if (vec.y != MAX_UNSIGNED_SHORT) {
-                result = func_80036880(0, vec.x, vec.z) != 0;
-            }
-
+        if (vec.y != MAX_UNSIGNED_SHORT) {
+            result = func_80036880(0, vec.x, vec.z) != 0;
         }
+
     }
     
     return result;
 }
-
+ 
 INCLUDE_ASM(const s32, "system/map", func_800359C8);
 
 INCLUDE_ASM(const s32, "system/map", func_80035A58);
 
 //INCLUDE_ASM(const s32, "system/map", func_80035DA4);
 
-u8 func_80035DA4(UnknownStruct2 *arg0, u8 arg1, u8 arg2) {
+u8 func_80035DA4(UnknownMapStruct2 *arg0, u8 arg1, u8 arg2) {
     
   u8 res = 0;
 
@@ -231,8 +218,8 @@ Vec3f *func_80036610(Vec3f *arg0, u16 arg1, f32 arg2, f32 arg3) {
     if (!arg1 && D_80158248.flags & 1) {
         
         vec2.y = 0;
-        vec2.x = (arg2 + D_80158248.unk_8) / D_8013DC40.unk_2C;
-        vec2.z = (arg3 + D_80158248.unk_C) / D_8013DC40.unk_2D;
+        vec2.x = (arg2 + D_80158248.unk_0) / D_8013DC40.unk_2C;
+        vec2.z = (arg3 + D_80158248.unk_4) / D_8013DC40.unk_2D;
 
         vec = vec2;
     }
@@ -342,8 +329,28 @@ INCLUDE_ASM(const s32, "system/map", func_80039F58);
 
 INCLUDE_ASM(const s32, "system/map", func_8003A1BC);
 
-INCLUDE_ASM(const s32, "system/map", func_8003AC14);
+//INCLUDE_ASM(const s32, "system/map", func_8003AC14);
 
+void func_8003AC14(Gfx* dl, UnknownMapStruct1* arg1) {
+    
+    *dl = D_8011ED88[1];
+    dl++;
+    *dl = D_8011EDC8[0];
+    dl++;
+    *dl = D_8011EDC8[1];
+    dl++;
+    *dl = D_8011ED68[2];
+    dl++;
+
+    func_80026F88(dl++, arg1, 0, arg1->unk_E);
+}
+
+// param1: Gfx* 8020DE78
+// Vertex bank: D_80165500[]
+//      size 0x40
+// param2: 8013DC40
+// param3: 8014318C
+// param4 = offset into vertex bank
 INCLUDE_ASM(const s32, "system/map", func_8003ACA8);
 
 INCLUDE_ASM(const s32, "system/map", func_8003AF58);
@@ -352,53 +359,111 @@ INCLUDE_ASM(const s32, "system/map", func_8003B100);
 
 INCLUDE_ASM(const s32, "system/map", func_8003B1BC);
 
+
+// static const Gfx D_8011ED68[4] = {
+
+//     gsDPSetCombineMode(G_CC_MODULATEIA, G_CC_MODULATEIA),
+//     gsDPSetRenderMode(G_RM_RA_ZB_OPA_SURF, G_RM_RA_ZB_OPA_SURF2),
+//     gsDPSetTextureFilter(G_TF_BILERP),
+//     gsSPEndDisplayList()
+
+// };
+
+// gsDPSetCombineMode(G_CC_MODULATEIA, G_CC_MODULATEIA)
+
 INCLUDE_RODATA(const s32, "system/map", D_8011ED68);
 
 INCLUDE_RODATA(const s32, "system/map", D_8011ED6C);
+
+// gsDPSetRenderMode(G_RM_RA_ZB_OPA_SURF, G_RM_RA_ZB_OPA_SURF2)
 
 INCLUDE_RODATA(const s32, "system/map", D_8011ED70);
 
 INCLUDE_RODATA(const s32, "system/map", D_8011ED74);
 
+// gsDPSetTextureFilter(G_TF_BILERP)
+
 INCLUDE_RODATA(const s32, "system/map", D_8011ED78);
 
 INCLUDE_RODATA(const s32, "system/map", D_8011ED7C);
+
+// gsSPEndDisplayList()
 
 INCLUDE_RODATA(const s32, "system/map", D_8011ED80);
 
 INCLUDE_RODATA(const s32, "system/map", D_8011ED84);
 
+
+// static const Gfx D_8011ED88[5] = {
+
+//     gsSPTexture(0, 0, 0, G_TX_RENDERTILE, G_ON),
+//     gsDPSetCombineMode(G_CC_MODULATEIDECALA, G_CC_MODULATEIDECALA),
+//     gsSPTexture(0, 0, 0, G_TX_RENDERTILE, G_OFF),
+//     gsDPSetCombineLERP(PRIMITIVE, 0, SHADE, 0, PRIMITIVE, 0, SHADE, 0, PRIMITIVE, 0, SHADE, 0, PRIMITIVE, 0, SHADE, 0),
+//     gsDPPipeSync()
+
+// };
+
+// gsSPTexture(0, 0, 0, G_TX_RENDERTILE, G_ON),
+
 INCLUDE_RODATA(const s32, "system/map", D_8011ED88);
 
 INCLUDE_RODATA(const s32, "system/map", D_8011ED8C);
+
+// gsDPSetCombineMode(G_CC_MODULATEIDECALA, G_CC_MODULATEIDECALA)
 
 INCLUDE_RODATA(const s32, "system/map", D_8011ED90);
 
 INCLUDE_RODATA(const s32, "system/map", D_8011ED94);
 
+// gsSPTexture(0, 0, 0, G_TX_RENDERTILE, G_OFF)
+
 INCLUDE_RODATA(const s32, "system/map", D_8011ED98);
 
 INCLUDE_RODATA(const s32, "system/map", D_8011ED9C);
+
+// gsDPSetCombineMode
+// gsDPSetCombineLERP(PRIMITIVE, 0, SHADE, 0, PRIMITIVE, 0, SHADE, 0, PRIMITIVE, 0, SHADE, 0, PRIMITIVE, 0, SHADE, 0)
 
 INCLUDE_RODATA(const s32, "system/map", D_8011EDA0);
 
 INCLUDE_RODATA(const s32, "system/map", D_8011EDA4);
 
+// gsDPPipeSync()
+
 INCLUDE_RODATA(const s32, "system/map", D_8011EDA8);
 
 INCLUDE_RODATA(const s32, "system/map", D_8011EDAC);
+
+
+// binary data
 
 INCLUDE_RODATA(const s32, "system/map", D_8011EDB0);
 
 INCLUDE_RODATA(const s32, "system/map", D_8011EDB4);
 
+
+// static const Gfx D_8011EDC8[3] = {
+
+//     gsDPSetRenderMode(G_RM_TEX_EDGE, G_RM_TEX_EDGE2),
+//     gsSPTexture(qu016(0.5), qu016(0.5), 0, G_TX_RENDERTILE, G_ON),
+//     gsSP2Triangles(0, 1, 2, 0, 0, 2, 3, 0)
+
+// };
+
+// gsDPSetRenderMode(G_RM_TEX_EDGE, G_RM_TEX_EDGE2)
+
 INCLUDE_RODATA(const s32, "system/map", D_8011EDC8);
 
 INCLUDE_RODATA(const s32, "system/map", D_8011EDCC);
 
+// gsSPTexture(qu016(0.5), qu016(0.5), 0, G_TX_RENDERTILE, G_ON)
+
 INCLUDE_RODATA(const s32, "system/map", D_8011EDD0);
 
 INCLUDE_RODATA(const s32, "system/map", D_8011EDD4);
+
+// gsSP2Triangles(0, 1, 2, 0, 0, 2, 3, 0)
 
 INCLUDE_RODATA(const s32, "system/map", D_8011EDD8);
 

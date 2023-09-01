@@ -10,32 +10,30 @@
 // forward declarations
 
 void func_80026F30(Bitmap* arg0, u16* arg1);
-Gfx *func_80028A64(Gfx*, Camera*, WorldGraphics*);
-Gfx* func_800293C0(Gfx*, Mtx*);    
-u8 func_80026BE0();      
+Gfx *func_80028A64(Gfx*, Camera*, WorldMatrices*);
+volatile u8 func_80026BE0();      
 void func_80028EB8(f32, f32, f32);            
 
 Gfx* clearFramebuffer(Gfx* dl);                  
 Gfx* initRcp(Gfx*);                               
-u32 startGfxTask(void);
+volatile u8 startGfxTask(void);
 
 void setCameraLookAt(Camera*, f32, f32, f32, f32, f32, f32, f32, f32, f32); 
 void setCameraOrthographicValues(Camera*, f32, f32, f32, f32, f32, f32); 
 void setCameraPerspectiveValues(Camera*, f32, f32, f32, f32);    
+
 
 // bss
 Camera gCamera;
 
 LookAt D_80126540;
 
-Gfx gfxList[0x1F];
-Gfx D_801836A0[2][0x280];
-Gfx D_80205000[0x20];
+Gfx initGfxList[2][0x20];
+Gfx D_801836A0[2][0x500];
+Gfx D_80205000[2][0x20];
 
-// should be Mtx?
-f32 D_80237460[0x2D][4];
-// doesn't seem right; need to fix this struct and base address
-UnknownGraphicsStruct1 D_802373B4[2];
+WorldMatrices worldMatrices[2];
+
                         
 // data, possibly external
 extern Gfx setup_rdpstate[];
@@ -49,6 +47,7 @@ extern u16*	FrameBuf[3];
 
 extern Vp viewport;
 
+// sets viewport at end of display lists
 extern Gfx D_80112A60[3];
 /*
 Gfx D_80112A60[] = { 
@@ -58,6 +57,7 @@ Gfx D_80112A60[] = {
 }
 */
 
+
 // rodata
 extern f64 D_8011EC78;
 extern f64 D_8011EC80;
@@ -66,13 +66,17 @@ extern f64 D_8011EC80;
 extern const char D_8011EC60[];
 extern const char D_8011EC64[];
 
+
 // shared globals
 // also used by tiles.c, map.c, and worldGraphics.c
 extern Vec3f D_8013D5D8;
 extern Vec3f D_8017044C;
 extern f32 D_80170450;
 extern f32 D_80170454;
-
+// func_800276AC
+extern Mtx D_8021E6E0[2][4];
+// nu idle statck
+extern u64 *D_80126520;
 
 //INCLUDE_ASM(const s32, "system/graphic", graphicsInit);
 
@@ -89,15 +93,15 @@ void graphicsInit(void) {
     setCameraLookAt(&gCamera, 0.0f, 0.0f, 400.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.1f, 0.0f);
 
     for (i = 0; i < 2; i++) {
-        D_802373B4[i].translationCoords.x = 0.0f;
-        D_802373B4[i].translationCoords.y = 0.0f;
-        D_802373B4[i].translationCoords.z = 0.0f;
-        D_802373B4[i].scaleCoords.x = 1.0f;
-        D_802373B4[i].scaleCoords.y = 1.0f;
-        D_802373B4[i].scaleCoords.z = 1.0f;
-        D_802373B4[i].rotationCoords.x = 0.0f;
-        D_802373B4[i].rotationCoords.y = 0.0f;
-        D_802373B4[i].rotationCoords.z = 0.0f;
+        worldMatrices[i].translationCoords.x = 0.0f;
+        worldMatrices[i].translationCoords.y = 0.0f;
+        worldMatrices[i].translationCoords.z = 0.0f;
+        worldMatrices[i].scaleCoords.x = 1.0f;
+        worldMatrices[i].scaleCoords.y = 1.0f;
+        worldMatrices[i].scaleCoords.z = 1.0f;
+        worldMatrices[i].rotationCoords.x = 0.0f;
+        worldMatrices[i].rotationCoords.y = 0.0f;
+        worldMatrices[i].rotationCoords.z = 0.0f;
     }
 
     func_80028EB8(45.0f, 315.0f, 0.0f);  
@@ -113,26 +117,26 @@ void drawFrame(void) {
     func_80026CEC();
     // draw
     func_80026BE0();
-    gDisplayContext ^= 1;
+    gDisplayContextIndex ^= 1;
 }
 
 //INCLUDE_ASM(const s32, "system/graphic", startGfxTask);
 
-u32 startGfxTask(void) {
+volatile u8 startGfxTask(void) {
 
     Gfx *dl;
  
-    dl = initRcp(&gfxList[gDisplayContext*32]);
+    dl = initRcp(initGfxList[gDisplayContextIndex]);
     dl = clearFramebuffer(dl);
 
     gDPFullSync(dl++);
     gSPEndDisplayList(dl++);
 
-    if ((dl - &gfxList[gDisplayContext*32]) > GFX_GLIST_LEN) {
+    if (dl - initGfxList[gDisplayContextIndex] > GFX_GLIST_LEN) {
         __assert(&D_8011EC60, &D_8011EC64, 288);
     }
     
-    nuGfxTaskStart(&gfxList[gDisplayContext*32], (s32)(dl - &gfxList[gDisplayContext*32]) << 3, NU_GFX_UCODE_F3DEX2, NU_SC_NOSWAPBUFFER);
+    nuGfxTaskStart(initGfxList[gDisplayContextIndex], (s32)(dl - initGfxList[gDisplayContextIndex]) << 3, NU_GFX_UCODE_F3DEX2, NU_SC_NOSWAPBUFFER);
     
     gfxTaskNo += 1;
     
@@ -141,21 +145,20 @@ u32 startGfxTask(void) {
 
 //INCLUDE_ASM(const s32, "system/graphic", func_80026BE0);
 
-u8 func_80026BE0(void) {
+volatile u8 func_80026BE0(void) {
 
-    Gfx *dl;
-
-    dl = &D_80205000[gDisplayContext*32];
+    Gfx *dl = D_80205000[gDisplayContextIndex];
     
+    // set viewport
     gSPDisplayList(dl++, OS_K0_TO_PHYSICAL(&D_80112A60));
     gDPFullSync(dl++);
     gSPEndDisplayList(dl++);
 
-    if (32 <= (dl - &D_80205000[gDisplayContext*32])) {
+    if (dl - D_80205000[gDisplayContextIndex] >= 0x20) {
         __assert(&D_8011EC60, &D_8011EC64, 319);
     }
 
-    nuGfxTaskStart(&D_80205000[gDisplayContext*32], (s32)(dl - &D_80205000[gDisplayContext*32]) << 3, NU_GFX_UCODE_F3DEX2, 1);
+    nuGfxTaskStart(D_80205000[gDisplayContextIndex], (s32)(dl - D_80205000[gDisplayContextIndex]) << 3, NU_GFX_UCODE_F3DEX2, NU_SC_SWAPBUFFER);
     
     gfxTaskNo += 1;
     return gfxTaskNo;
@@ -163,25 +166,24 @@ u8 func_80026BE0(void) {
 
 //INCLUDE_ASM(const s32, "system/graphic", func_80026CEC);
 
-u8 func_80026CEC() {
+volatile u8 func_80026CEC(s32 arg0, s32 arg1) {
 
-    Gfx *dl;
-
-    dl = &D_801836A0[gDisplayContext*2][0];
+    Gfx *dl = D_801836A0[gDisplayContextIndex];
     
+    // set viewport
     gSPDisplayList(dl++, OS_K0_TO_PHYSICAL(&D_80112A60));
     
-    dl = func_80028A64(dl++, &gCamera, &D_80237460[gDisplayContext*0x2D][0]);
-    dl = func_800293C0(dl++, &D_80237460[gDisplayContext*0x2D][0]);
+    dl = func_80028A64(dl++, &gCamera, &worldMatrices[gDisplayContextIndex]);
+    dl = func_800293C0(dl++, &worldMatrices[gDisplayContextIndex]);
     
     gDPFullSync(dl++);
     gSPEndDisplayList(dl++);
     
-    if (1279 < (dl - &D_801836A0[gDisplayContext*2][0])) {
-        __assert(&D_8011EC60, &D_8011EC64, 358);
+    if (dl - D_801836A0[gDisplayContextIndex] >= 0x500) {
+        __assert(&D_8011EC60, &D_8011EC64, 0x166);
     }
 
-    nuGfxTaskStart(&D_801836A0[gDisplayContext*2], (s32)(dl - &D_801836A0[gDisplayContext*2][0]) << 3, NU_GFX_UCODE_F3DEX2, 0);
+    nuGfxTaskStart(D_801836A0[gDisplayContextIndex], (s32)(dl - D_801836A0[gDisplayContextIndex]) << 3, NU_GFX_UCODE_F3DEX2, NU_SC_NOSWAPBUFFER);
     
     gfxTaskNo += 1;
     return gfxTaskNo;
@@ -194,6 +196,7 @@ void func_80026E78(Bitmap *sprite, u16 *arg1, u16 *arg2) {
     u16 temp1;
     u16 temp2;
     int temp3;
+    // probably struct 2x or mtx
     u32 padding[10];
 
     func_80026F30(sprite, arg2);
@@ -229,6 +232,7 @@ void func_80026E78(Bitmap *sprite, u16 *arg1, u16 *arg2) {
 
 void func_80026F30(Bitmap* sprite, u16* arg1) {
 
+    // probably struct
     u32 padding[5];
     
     sprite->pal = arg1 + 2;
@@ -247,6 +251,8 @@ void func_80026F30(Bitmap* sprite, u16* arg1) {
 
 INCLUDE_ASM(const s32, "system/graphic", func_80026F88);
 
+// param1 = Mtx*
+// param1: 8021E6E0 + sizeof(Mtx) * offset = + 0x40 * n
 INCLUDE_ASM(const s32, "system/graphic", func_800276AC);
 
 INCLUDE_RODATA(const s32, "system/graphic", D_8011EC40);
@@ -295,6 +301,7 @@ INCLUDE_ASM(const s32, "system/graphic", func_800284E8);
 
 static const f32 D_8011EC90[8] = { 0.0f, 315.0f, 270.0f, 225.0f, 180.0f, 135.0f, 90.0f, 45.0f };
 
+// radians conversion
 //static const double D_8011ECB0 = 0.017453292519943295;
 
 #ifdef PERMUTER
@@ -335,7 +342,8 @@ Vec3f* func_80028520(Vec3f* arg0, u8 arg1, f32 arg2, f32 arg3) {
         vec3 = vec1;
         vec4 = vec2;
 
-        //temp_f26 = (f32) ((f64) sp70 * 0.017453292519943295);
+        // radians conversion
+        // temp_f26 = (f32) ((f64) sp70 * 0.017453292519943295);
         x = vec3.x * D_8011ECB0;
         y = vec3.y * D_8011ECB0;
         z = vec3.z * D_8011ECB0;
@@ -440,7 +448,32 @@ Gfx* clearFramebuffer(Gfx* dl) {
     return dl++;
 }
 
-INCLUDE_ASM(const s32, "system/graphic", func_80028A64);
+//INCLUDE_ASM(const s32, "system/graphic", func_80028A64);
+
+Gfx* func_80028A64(Gfx* dl, Camera* camera, WorldMatrices* matrices) {
+
+    u16 perspNorm;
+
+    switch (camera->perspectiveMode) {
+        case 0:
+            guOrtho(&matrices->projection, camera->l, camera->r, camera->t, camera->b, camera->n, camera->f, 0.9999f);
+            break;
+        case 1:
+            guPerspective(&matrices->projection, &perspNorm, camera->fov, camera->aspect, camera->near, camera->far, 1.0f);
+            gSPPerspNormalize(dl++, perspNorm);
+            break;
+        default:
+            break;
+    }
+
+    guLookAt(&matrices->viewing, camera->eye.x, camera->eye.y, camera->eye.z, camera->at.x, camera->at.y, camera->at.z, camera->up.x, camera->up.y, camera->up.z);
+    gSPLookAt(dl++, &D_80126520);
+
+    gSPMatrix(dl++, &matrices->projection, G_MTX_NOPUSH | G_MTX_LOAD | G_MTX_PROJECTION);
+    gSPMatrix(dl++, &matrices->viewing, G_MTX_NOPUSH | G_MTX_MUL | G_MTX_PROJECTION);
+
+    return dl++;
+}
 
 //INCLUDE_ASM(const s32, "system/graphic", func_80028C00);
 
@@ -450,21 +483,21 @@ Gfx* func_80028C00(Gfx* dl, Camera* camera) {
     
     switch (camera->perspectiveMode) {
         case 0:
-            guOrtho(&camera->matrix1, camera->l, camera->r, camera->t, camera->b, camera->n, camera->f, 1.0f);
+            guOrtho(&camera->projection, camera->l, camera->r, camera->t, camera->b, camera->n, camera->f, 1.0f);
             break;
         case 1:
-            guPerspective(&camera->matrix1, &perspNorm, camera->fov, camera->aspect, camera->near, camera->far, 1.0f);
+            guPerspective(&camera->projection, &perspNorm, camera->fov, camera->aspect, camera->near, camera->far, 1.0f);
             gSPPerspNormalize(dl++, perspNorm);
             break;
         default:
             break;
     }
 
-    guLookAt(&camera->matrix2, camera->eye.x, camera->eye.y, camera->eye.z, camera->at.x, camera->at.y, camera->at.z, camera->up.x, camera->up.y, camera->up.z);
+    guLookAt(&camera->viewing, camera->eye.x, camera->eye.y, camera->eye.z, camera->at.x, camera->at.y, camera->at.z, camera->up.x, camera->up.y, camera->up.z);
     gSPLookAt(dl++, &D_80126540);
 
-    gSPMatrix(dl++, &camera->matrix1, G_MTX_NOPUSH | G_MTX_LOAD | G_MTX_PROJECTION);
-    gSPMatrix(dl++, &camera->matrix2, G_MTX_NOPUSH | G_MTX_MUL | G_MTX_PROJECTION);
+    gSPMatrix(dl++, &camera->projection, G_MTX_NOPUSH | G_MTX_LOAD | G_MTX_PROJECTION);
+    gSPMatrix(dl++, &camera->viewing, G_MTX_NOPUSH | G_MTX_MUL | G_MTX_PROJECTION);
 
     return dl++;
 
@@ -557,7 +590,7 @@ void func_80028EF8(f32 x, f32 y, f32 z) {
 
 void nuGfxInit(void) {
 
-    Gfx	 gfxList[0x100];
+    Gfx	gfxList[0x100];
     Gfx* gfxList_ptr;
     
     nuGfxThreadStart();
@@ -579,7 +612,7 @@ void nuGfxInit(void) {
     gDPFullSync(gfxList_ptr++);
     gSPEndDisplayList(gfxList_ptr++);
     
-    nuGfxTaskStart(gfxList, (s32)(gfxList_ptr - gfxList) * sizeof (Gfx), NU_GFX_UCODE_F3DEX2, 0);
+    nuGfxTaskStart(gfxList, (s32)(gfxList_ptr - gfxList) * sizeof(Gfx), NU_GFX_UCODE_F3DEX2, 0);
 
     nuGfxTaskAllEndWait();
     

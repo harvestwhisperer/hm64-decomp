@@ -14,9 +14,9 @@ extern u8 D_80189135[9];
 extern WorldGraphics D_8018A850[0x150];
 
 
-//INCLUDE_ASM(const s32, "system/worldGraphics", func_80029170);
+//INCLUDE_ASM(const s32, "system/worldGraphics", initializeWorldGraphics);
 
-void func_80029170(void) {
+void initializeWorldGraphics(void) {
 
     u16 i;
     
