@@ -10,12 +10,10 @@
 #include "level.h"
 #include "player.h"
 #include "setCutscenes.h"
+#include "weather.h"
                     
-// forward declarations
-void setSeasonName();         
-void toggleMonthlyLetterBits();                    
-void setGlobalSeasonName(u8);           
-void setupNewYear();        
+// forward declarations           
+void setGlobalSeasonName(u8);
 
 // likely bss
 extern u8 gSeconds;
@@ -30,15 +28,10 @@ extern u8 gYear;
 extern u8 gCurrentSeasonName[6];
 extern u8 gGlobalSeasonName[6];
 
-// shared
-extern u8 gWeather;
-
 //INCLUDE_ASM(const s32, "updateGame", func_800D7C20);
 
 void func_800D7C20(void) {
     
-    u16 bitIndex;
-
     if ((getLevelFlags(gBaseMapIndex) & 1) && !checkDailyEventBit(6)) {
         updateClock(1);
     }
@@ -63,19 +56,19 @@ void func_800D7C20(void) {
     if ((gHour - 18) < 6U) {
         
         if (!checkDailyEventBit(0xF)) {
+
             // set song speed with default
             func_800ACB5C(gCurrentSongIndex);
-            bitIndex = 0xF;
-            goto set_daily_bit;
-        }
-        
-        if (!(checkDailyEventBit(0x10)) && (gCurrentSongIndex != 0xFF) && (func_800ACBB8(gCurrentSongIndex))) {
+            setDailyEventBit(0xF);
+
+        } else if (!(checkDailyEventBit(0x10)) && (gCurrentSongIndex != 0xFF) && (func_800ACBB8(gCurrentSongIndex))) {
+
             func_8006EA44(gBaseMapIndex, gSeason, gHour);
             // set song volume
             func_800ACBEC(gCurrentSongIndex, gSongVolume);
-            bitIndex = 0x10;
-set_daily_bit:
-            setDailyEventBit(bitIndex);
+
+            setDailyEventBit(0x10);
+
         }
         
     }
@@ -310,5 +303,5 @@ void setGlobalSeasonName(u8 season) {
             break;
         default:
             break;
-        }
+    }
 }

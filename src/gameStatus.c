@@ -174,7 +174,6 @@ u32 func_80065340(u16 bitIndex) {
 
 INCLUDE_ASM(const s32, "gameStatus", func_8006536C);
 
-
 // jtbl_8011F398
 //INCLUDE_ASM(const s32, "gameStatus", setAlbumPicture);
 

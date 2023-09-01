@@ -35,7 +35,6 @@ s16 D_80182D8C;
 s16 D_8018A062;
 s16 D_80237A20;
 
-
 //INCLUDE_ASM(const s32, "initialize2", mainGameLoopCallback);
 
 void mainGameLoopCallback(void) {
@@ -76,7 +75,7 @@ void func_80055F08(s16 cutsceneIndex, u16 exitIndex, u8 arg2) {
     func_8002E1B8();
     func_8002B710();
     func_8003D970();
-    func_80046860();
+    initializeCutsceneMaps();
     func_80053088();
     
     // reset global lighting rgba vec4f
@@ -100,7 +99,7 @@ void func_80055F08(s16 cutsceneIndex, u16 exitIndex, u8 arg2) {
     // set ptrs to rom addresses for sprites
     func_800563D0(arg2);
 
-    setExit(exitIndex);
+    setEntrance(exitIndex);
 
     gCutsceneIndex = cutsceneIndex;
 
@@ -136,12 +135,12 @@ void func_80056030(u8 arg0) {
     func_80075910();
     func_8002E1B8();
     func_8002B710();
-    func_80046860();
+    initializeCutsceneMaps();
     func_800752C0();
     func_80085F70();
     func_800D51B0();
     
-    if (checkDailyEventBit(0x2F) == 0) {
+    if (!checkDailyEventBit(0x2F)) {
         func_800A7DFC();
     }
     
@@ -401,7 +400,7 @@ void startNewDay(void) {
         func_8008841C();
     }
     
-    removeKeyItem(0xE);
+    removeKeyItem(HORSE_RACE_TICKET);
 
     // equalize harvest sprite affection
     npcAffection[HARVEST_SPRITE_2] = npcAffection[HARVEST_SPRITE_1];

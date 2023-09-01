@@ -51,6 +51,7 @@ extern u8 gWifeConceptionCounter;
 extern u8 gBabyAge;
 
 extern u32 gGold;
+extern u16 gLumber;
 extern u32 dailyShippingBinValue;
 
 extern u8 houseExtensionConstructionCounter;
@@ -126,6 +127,7 @@ extern u8 D_80113C28[];
 extern u8 houseConstructionDays[6];
 extern u16 lifeEventHouseConstructionBits[6];
 extern u8 animalLocationsHouseConstruction[6];
+extern MemoryRead_32 D_8011F25C[];
                                                   
 // shared sprite rom addresses
 extern void *D_D47F00;
@@ -1295,8 +1297,9 @@ void func_8005CAA8(void) {
 
         func_8002F7C8(0, 0, 0, 0);
         func_8003BE98(0, 0, 0, 0, 0);
+        // reset cutscene structs
         func_80046BB8();
-        func_80046860();
+        initializeCutsceneMaps();
 
         D_801891D4 = 0;
 
@@ -1495,7 +1498,7 @@ void func_8005D0BC(void) {
         
         gNamingScreenIndex = 7;
         D_801FC155 = D_8016FFE8;
-        gChickens[D_8016FFE8].flags &= 0xFEFF;
+        gChickens[D_8016FFE8].flags &= ~0x100;
         
         setMainLoopCallbackFunctionIndex(0x33);
         toggleLifeEventBit(3);
@@ -1524,7 +1527,7 @@ void func_8005D0BC(void) {
         
         gNamingScreenIndex = 5;
         D_801FC155 = D_80170464;
-        gFarmAnimals[D_80170464].flags &= 0xF7FF;
+        gFarmAnimals[D_80170464].flags &= ~0x800;
             
         setMainLoopCallbackFunctionIndex(0x33);
         toggleLifeEventBit(4);
@@ -1590,6 +1593,7 @@ void func_80060454(void) {
 
 //INCLUDE_ASM(const s32, "game", func_80060490);
 
+// main loop callback 3
 void func_80060490(void) {
     func_800A8F74();
 }
@@ -1652,7 +1656,7 @@ void func_80060624(void) {
             return;
         }
         
-        setExit(MIDDLE_OF_HOUSE);
+        setEntrance(MIDDLE_OF_HOUSE);
         func_80056030(2);
         
         if (func_800A87C4()) {
@@ -1722,7 +1726,7 @@ void func_80060624(void) {
         gPlayer.currentStamina = gMaximumStamina;
         
         startNewDay();
-        setExit(MIDDLE_OF_HOUSE);
+        setEntrance(MIDDLE_OF_HOUSE);
         
         setMainLoopCallbackFunctionIndex(2);
         
@@ -1742,13 +1746,13 @@ void func_80060838(void) {
 
         if (gPlayer.flags & 1) {
 
-            gPlayer.flags &= 0xFFFE;
+            gPlayer.flags &= ~1;
             
             toggleDailyEventBit(0x5C);
              
             setHorseLocation(0xFF);
             
-            horseInfo.flags &= 0xFFF7;
+            horseInfo.flags &= ~0x8;
         }
 
         if (func_80060DC0()) {
@@ -1764,11 +1768,12 @@ void func_80060838(void) {
             return;
         }
 
-        setExit(MIDDLE_OF_HOUSE);
+        setEntrance(MIDDLE_OF_HOUSE);
         
         // setup/handle loading
         func_80056030(2);
 
+        // dream cutscenes
         if (func_800A87C4()) {
             setMainLoopCallbackFunctionIndex(3);
             return;
@@ -1781,7 +1786,7 @@ void func_80060838(void) {
 
         startNewDay();
 
-        setExit(MIDDLE_OF_HOUSE);
+        setEntrance(MIDDLE_OF_HOUSE);
         
         setMainLoopCallbackFunctionIndex(MAP_LOAD);
 
@@ -1934,10 +1939,10 @@ void func_80060E58(void) {
     moneyEarned = dailyShippingBinValue;
     checkOverflow = gGold + moneyEarned;
     
-    if (checkOverflow > 999999) {
-        temp = checkOverflow - 999999;
+    if (checkOverflow > MAX_GOLD) {
+        temp = checkOverflow - MAX_GOLD;
         moneyEarned -= temp;
-        checkOverflow = 999999;
+        checkOverflow = MAX_GOLD;
     }
     
     if (checkOverflow < 0) {
@@ -1972,15 +1977,15 @@ void func_800610DC(void) {
         }
         
         gPlayer.unk_2C = 0;
-        gItemBeingHeld = 0xff;
+        gItemBeingHeld = 0xFF;
     }
 }
 
 //INCLUDE_ASM(const s32, "game", func_80061178);
 
-s32 func_80061178(void) {
+bool func_80061178(void) {
     
-    s32 result;
+    bool result;
 
     result = (npcAffection[MARIA] < 220) ^ 1;
     
@@ -2005,6 +2010,7 @@ s32 func_80061178(void) {
 //INCLUDE_ASM(const s32, "game", setWifeNameString);
 
 void setWifeNameString(u8 wife) {
+
     switch (wife) {
         case MARIA:
             gWifeName[0] = char_M;
@@ -2048,6 +2054,7 @@ void setWifeNameString(u8 wife) {
             break;
         default:
             return;
+            
     }
 }
 
@@ -2058,7 +2065,7 @@ void setWifeNameString(u8 wife) {
 void setDefaultBabyName(u8 wife) {
     
     switch (wife) {
-        case 0:
+        case MARIA:
             gBabyName[0] = char_L;
             gBabyName[1] = char_i;
             gBabyName[2] = char_y;
@@ -2066,7 +2073,7 @@ void setDefaultBabyName(u8 wife) {
             gBabyName[4] = 0xFF;
             gBabyName[5] = 0xFF;
             break;
-        case 1:
+        case POPURI:
             gBabyName[0] = char_P;
             gBabyName[1] = char_a;
             gBabyName[2] = char_r;
@@ -2074,7 +2081,7 @@ void setDefaultBabyName(u8 wife) {
             gBabyName[4] = char_l;
             gBabyName[5] = char_y;
             break;
-        case 2:
+        case ELLI:
             gBabyName[0] = char_C;
             gBabyName[1] = char_o;
             gBabyName[2] = char_c;
@@ -2082,7 +2089,7 @@ void setDefaultBabyName(u8 wife) {
             gBabyName[4] = char_t;
             gBabyName[5] = char_e;
             break;
-        case 3:
+        case ANN:
             gBabyName[0] = char_M;
             gBabyName[1] = char_i;
             gBabyName[2] = char_n;
@@ -2090,7 +2097,7 @@ void setDefaultBabyName(u8 wife) {
             gBabyName[4] = 0xFF;
             gBabyName[5] = 0xFF; 
             break;
-        case 4:
+        case KAREN:
             gBabyName[0] = char_K;
             gBabyName[1] = char_e;
             gBabyName[2] = char_l;
@@ -2790,10 +2797,36 @@ void setLetters(void) {
 }
 
 // D_8011F25C
-INCLUDE_ASM(const s32, "game", func_80063A2C);
+//INCLUDE_ASM(const s32, "game", func_80063A2C);
+
+u16 func_80063A2C(u8 arg0) {
+
+    u16 arr[80];
+    
+    MemoryRead_32 *ptr;
+    MemoryRead_32 *ptr2 = D_8011F25C;
+    
+    ptr = arr;
+
+    if (((u32)arr | (u32)D_8011F25C) % 4) {
+        do {
+            *(Unaligned32*)ptr = *(Unaligned32*)ptr2;
+            ptr2++;
+            ptr++;
+        } while (ptr2 != (D_8011F25C + 0xA));        
+    } else {
+        do {
+            *(Aligned32*)ptr = *(Aligned32*)ptr2;
+            ptr2++;
+            ptr++;
+        } while (ptr2 != (D_8011F25C + 0xA));       
+    }
+
+    return arr[arg0];
+}
 
 
-/* data */
+/* rodata */
 
 // D_8011F228-D_8011FA700
 

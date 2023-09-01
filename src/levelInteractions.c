@@ -1,13 +1,16 @@
 #include "common.h"
 
 #include "system/controller.h"
+#include "system/dialogue.h"
 #include "system/map.h"
+#include "system/message.h"
 #include "system/sprite.h"
 
 #include "game.h"
 #include "gameAudio.h"
 #include "gameStatus.h"
 #include "initialize2.h"
+#include "itemHandlers.h"
 #include "level.h"
 #include "player.h"
 #include "shop.h"
@@ -16,17 +19,16 @@
 // struct
 u8 D_80126560;
 u8 D_80126561;
-u8 D_80189826;
+u8 D_80189826; 
 u8 D_801C3E2C;
                                                                  
 //INCLUDE_ASM(const s32, "levelInteractions", func_800ACD70);
 
 u8 func_800ACD70(u16 mapIndex) {
 
+    u8 result = 0xFF;
+    
     u8 temp;
-    u8 result;
-
-    result = 0xFF;
     
     if ((mapIndex == FARM || mapIndex == COOP || mapIndex == BARN || mapIndex == GREENHOUSE)) {
 
@@ -44,11 +46,10 @@ u8 func_800ACD70(u16 mapIndex) {
 
 u8 func_800ACDF4(u16 mapIndex) {
 
+    u8 result = 0xFF;
+    
     u8 temp;
     u8 temp2;
-    u8 result;
-
-    result = 0xFF;
     
     if (mapIndex == BARN) {
         temp = func_800309B4(0, 0, 32.0f);
@@ -66,30 +67,27 @@ u8 func_800ACDF4(u16 mapIndex) {
 // coop/chicken feed
 u8 func_800ACE50(u16 mapIndex) {
 
-    u8 temp_v0;
-    u8 var_s0;
-
-    var_s0 = 0xFF;
+    u8 temp;
+    u8 result = 0xFF;
     
     if (mapIndex == COOP) {
         
-        temp_v0 = func_800309B4(0, 0, 32.0f);
+        temp = func_800309B4(0, 0, 32.0f);
 
-        if (((temp_v0 - 0x13) & 0xFF) < 6U) {
-            var_s0 = temp_v0;
+        if (((temp - 0x13) & 0xFF) < 6U) {
+            result = temp;
         }
 
     }
     
-    return var_s0;
+    return result;
 }
 
 //INCLUDE_ASM(const s32, "levelInteractions", func_800ACEAC);
 
 u8 func_800ACEAC(u16 mapIndex) {
-    u8 result;
 
-    result = 0xFF;
+    u8 result = 0xFF;
     
     if (mapIndex == FARM) {
         result = -(func_800309B4(0, 0, 32.0f) != 0x17) | 1;
@@ -205,7 +203,7 @@ u8 func_800AD1D0(u16 arg0) {
 
     D_80189826 = temp;
     
-    if (func_8004D380(0, 0x8000)) {
+    if (func_8004D380(0, BUTTON_A)) {
         D_801C3E2C = D_80189826;
     } else {
         D_801C3E2C = 0xFF;
@@ -377,22 +375,22 @@ u8 func_800AD1D0(u16 arg0) {
         
             if (gEntranceIndex == 0x5F) {
                 if (!checkLifeEventBit(0)) {
-                    if (gSeason == 4) {
-                        if (gDayOfMonth == 24 && (gHour - 0x13) < 2U) {
+                    if (gSeason == WINTER) {
+                        if (gDayOfMonth == 24 && (gHour - 19) < 2U) {
                             temp2 = 0xFFFF;
                         }
-                        if (gSeason == 4 && gDayOfMonth == 30 && (gHour - 0x12) < 6U) {
+                        if (gSeason == WINTER && gDayOfMonth == 30 && (gHour - 18) < 6U) {
                             temp2 = 0xFFFF;
                         }
                     }
                 } else {
-                    if (gSeason == 4 && gDayOfMonth == 30 && (gHour - 0x12) < 6U) {
+                    if (gSeason == WINTER && gDayOfMonth == 30 && (gHour - 18) < 6U) {
                         temp2 = 0xFFFF;
                     }
                 }
             }
     
-            if ((gEntranceIndex == 0x59 || gEntranceIndex == 0x5B) && !checkLifeEventBit(0) && gSeason == 2 && gDayOfMonth == 1 && (gHour - 0x13) < 2U) {
+            if ((gEntranceIndex == 0x59 || gEntranceIndex == 0x5B) && !checkLifeEventBit(MARRIED) && gSeason == SUMMER && gDayOfMonth == 1 && (gHour - 19) < 2U) {
                 temp2 = 0xFFFF;
             }
     
@@ -404,8 +402,7 @@ u8 func_800AD1D0(u16 arg0) {
                 return set;
                 
             } else {
-                temp = func_80074C38(gEntranceIndex);
-                switch (temp) {                           
+                switch (func_80074C38(gEntranceIndex)) {                           
                     case 0x46:                                  
                         func_8005AE8C(0, 6, temp2, 0, 0);
                         setPlayerAction(0xF, 0);
@@ -425,6 +422,7 @@ u8 func_800AD1D0(u16 arg0) {
                     
                 gEntranceIndex = tempExit;
             }
+
         } else {
             set = 0;
         }
@@ -437,7 +435,174 @@ u8 func_800AD1D0(u16 arg0) {
 }
 
 // jtbl_80121578
-INCLUDE_ASM(const s32, "levelInteractions", func_800AD8D0);
+//INCLUDE_ASM(const s32, "levelInteractions", func_800AD8D0);
+
+// farm
+u8 func_800AD8D0(u32 arg0, u8 arg1) {
+
+    u8 result = 0;
+    u8 temp;
+    
+    switch (arg1) {
+
+        case 1:
+        case 2:
+            break;
+            break;
+         
+        case 3:        
+            if (!checkDailyEventBit(0x2D)) {
+                result = 1;
+                setEntrance(0x14);
+            }
+            
+            return result;
+        
+        case 4:
+            if (func_8004D380(0, BUTTON_A)) {
+                if (gPlayer.direction == 4) {
+                    result = 1;
+                    D_80126560 = 9;
+                    D_80126561 = 0x32;
+                    setEntrance(0xA);
+                }
+            }
+            break;
+        
+        case 5:
+            if (func_8004D380(0, BUTTON_A)) {
+                if (gPlayer.direction == 4) {
+                    result = 1;
+                    D_80126560 = 0xD;
+                    D_80126561 = 0x32;
+                    setEntrance(0xE);
+                }
+            }
+            break;
+        
+        case 6:
+            if (func_8004D380(0, BUTTON_A)) {
+                result = 1;
+                D_80126560 = 0xA;
+                D_80126561 = 0x32;
+                setEntrance(0x11);
+            }
+            break;
+        
+        case 7:
+            if (func_8004D380(0, BUTTON_A)) {
+                result = 1;
+                D_80126560 = 0xB;
+                D_80126561 = 0x32;
+                setEntrance(0x12);
+            }
+            break;
+
+        case 8:
+            if (func_8004D380(0, BUTTON_A)) {
+                result = 1;
+                D_80126560 = 0x14;
+                D_80126561 = 0x32;
+                setEntrance(0x13);
+            }
+            break;
+
+        case 9:
+            if (func_8004D380(0, BUTTON_A)) {
+                if (gPlayer.direction == 6) {
+                    result = 1;
+                    D_80126560 = 0xC;
+                    D_80126561 = 0x32;
+                    setEntrance(0xB);
+                }
+            }
+            break;
+        
+        case 26:
+            if (!checkDailyEventBit(0x2D)) {
+                result = 1;
+                setEntrance(0x70);
+            }
+            break;
+        
+        case 17:
+            if (func_8004D380(0, BUTTON_A)) {
+                if (gPlayer.unk_2C == 0) {
+                    if (!(gPlayer.flags & 1)) {
+                        if (gLumber != 0) {
+                            gPlayer.unk_2C = 3;
+                            setPlayerAction(4, 6);
+                            gLumber += adjustValue(gLumber, -1, 0x3E7);
+                            result = 2;
+                        }
+                    }
+                }
+            }
+            break;
+
+        case 18:
+            if (func_8004D380(0, BUTTON_A)) {
+                
+                temp = func_8006536C(); 
+ 
+                if (temp != 0xFF) {
+                    setAlbumPicture(temp);
+                    func_8005AE8C(1, 5, func_80063A2C(temp), 0, 2);
+                    if (temp == 0x23) {
+                        acquireKeyItem(GOLD_PENDANT);
+                        setSpecialDialogueBit(HAVE_GOLD_PENDANT);
+                    }
+                } else {
+                    func_8005AE8C(1, 5, 0x3A, 0, 2);
+                }
+
+                result = 1;
+            }
+            break;
+        
+        case 19:
+            if (func_8004D380(0, BUTTON_A)) {
+                
+                if (gPlayer.direction == 2) {
+                    func_8003FBD8(0x18, gLumber, 0);
+                    func_8005AE8C(1, 6, 0xA3, 0, 2);
+                    result = 1;
+                }
+            }
+            break;
+
+        case 20:
+            if (func_8004D380(0, BUTTON_A)) {
+                func_8003FBD8(0x17, D_801806D0.unk_44, 0);
+                func_8005AE8C(1, 6, 0xA2, 0, 2);
+                result = 1;
+            }
+            break;
+        
+        case 21:
+            if (func_8004D380(0, BUTTON_A)) {
+                func_8005AE8C(1, 6, 0xA1, 0, 2);
+                result = 1;
+            }
+            break;
+        
+        case 25:
+            if (func_8004D380(0, BUTTON_A)) {
+                if (!checkHaveKeyItem(TREASURE_MAP)) {
+                    func_8005AE8C(1, 6, 0xA7, 0, 2);
+                    acquireKeyItem(TREASURE_MAP);
+                    result = 1;
+                    D_80189828.unk_F = 0;
+                }
+            }
+
+        case 30:
+            break;
+    }
+
+    return result;
+   
+}
 
 // jtbl_801215F0
 INCLUDE_ASM(const s32, "levelInteractions", func_800ADCDC);
@@ -470,7 +635,7 @@ u8 func_800AFA2C(u8 arg0, u8 flag) {
     if (flag == 1) {
         if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
             result = 1;
-            setExit(FLOWER_SHOP_ENTRANCE);
+            setEntrance(FLOWER_SHOP_ENTRANCE);
         }
     } 
     
@@ -543,7 +708,7 @@ u32 func_800B1C6C(u32 arg0, u8 arg1) {
                 goto func_end;
             }        
             temp = 1;
-            setExit(0x20);
+            setEntrance(0x20);
             goto func_end;
         }
 
@@ -586,7 +751,7 @@ bool handleDumplingHouseExit(u16 arg0, u8 arg1) {
     if (arg1 == 1) {
         if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
             result = 1;
-            setExit(DUMPLING_HOUSE_EXIT);
+            setEntrance(DUMPLING_HOUSE_EXIT);
         }
     } 
 
@@ -605,7 +770,7 @@ u32 func_800B2078(u32 arg0, u8 flag) {
     if (flag == 1) {
         if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
             result = 1;
-            setExit(MINE_EXIT);
+            setEntrance(MINE_EXIT);
         }
     } 
     
@@ -639,7 +804,7 @@ bool func_800B27CC(u16 mapIndex, u8 collisionIndex) {
         case 1: 
             if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
                 result = 1;
-                setExit(RANCH_FROM_RANCH_HOUSE);
+                setEntrance(RANCH_FROM_RANCH_HOUSE);
             }
             break;
         case 16:
@@ -677,7 +842,7 @@ bool handleRanchStoreExits(u16 mapIndex, u8 collisionIndex) {
         case 1:
             if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
                 result = 1;
-                setExit(RANCH_FROM_RANCH_STORE);
+                setEntrance(RANCH_FROM_RANCH_STORE);
             }
             break;
         // ann's room
@@ -689,7 +854,7 @@ bool handleRanchStoreExits(u16 mapIndex, u8 collisionIndex) {
                 } else {
                     D_80126560 = 0;
                     result = 1;
-                    setExit(ANN_ROOM_ENTER);
+                    setEntrance(ANN_ROOM_ENTER);
                 }
                 D_80126561 = 0x32;
             } 

@@ -64,7 +64,6 @@ extern u8 func_8004D788(u8 contIndex);
 extern s32 func_8004D87C(u8 contIndex);
 extern u32 func_8004D8B4(u8 contIndex, s32 *max_files, s32 *used_files);
 extern u32 func_8004D904(u8 contIndex, u8 *companyCode, u8 *gameCode);
-extern u32 func_8004D380(u8, u32);     
 extern u32 func_8004D954(u8 contIndex, u8* noteName, u8 *extName);
 extern u32 func_8004D9AC(u8 contIndex, u8 *noteName, u8 *extName, s32 offset, s32 size, s32 buf);
 extern u32 func_8004DA48(u8 contIndex, u8* noteName, u8* extName, s32 offset, s32 size, u8* buf);

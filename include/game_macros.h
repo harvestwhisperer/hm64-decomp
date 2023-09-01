@@ -160,6 +160,7 @@
 // 0x4d = sprites taking care of animals during typhoon
 
 /* special dialogue bit indices */
+#define HAVE_GOLD_PENDANT 0x17
 #define ELLI_FINISH_GRIEVING 0x43
 #define MARIA_BIRTHDAY 0x7E
 #define POPURI_BIRTHDAY 0x7F
@@ -269,8 +270,6 @@
 /* map flags */
 #define INDOORS 1
 #define OUTDOORS 2
-
-#define MAIN_LOOP_CALLBACK_FUNCTION_TABLE_SIZE 0x39
 
 /* tools */
 #define SICKLE 1
@@ -391,6 +390,8 @@
 #define CARPERNTER_HUT_ENTER 0x49
 #define ANN_ROOM_ENTER 0x4D
 #define FLOWER_SHOP_ENTRANCE 0x57
+
+#define MAX_GOLD 999999
 
 #define MAX_UNSIGNED_SHORT 65535
 

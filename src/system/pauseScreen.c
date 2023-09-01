@@ -10,7 +10,7 @@ extern u16 D_80189A88;
 extern u8 D_80189A8A;
 extern u16 D_80189A8C;
 
-extern PauseScreenSprites D_80189A50[0x10];
+extern PauseScreenSprites D_80189A50[MAX_PAUSE_SCREEN_SPRITES];
 
 //INCLUDE_ASM(const s32, "system/pauseScreen", func_80045DE0);
 
@@ -18,7 +18,7 @@ void func_80045DE0(void) {
 
     u16 i;
 
-    for (i = 0; i < 0x10; i++) {
+    for (i = 0; i < MAX_PAUSE_SCREEN_SPRITES; i++) {
         D_80189A50[i].unk_38 = 0;
         D_80189A50[i].flags = 0;
     }
@@ -30,7 +30,7 @@ bool func_80045E20(u16 index, u16 arg1, void *arg2, void *arg3, void *arg4, void
     
     bool result = 0;
     
-    if (index < 0x10) {
+    if (index < MAX_PAUSE_SCREEN_SPRITES) {
         if (!(D_80189A50[index].flags & 1)) {
             result = 1;
             D_80189A50[index].romAddr1 = arg2;
@@ -66,7 +66,7 @@ bool func_80045F5C(u16 index, u32 arg1, u8 arg2, u16 flag) {
     u8 count;
     u8 check;
     
-    if (tempIndex < 0x10) {
+    if (tempIndex < MAX_PAUSE_SCREEN_SPRITES) {
         
         if (D_80189A50[tempIndex].flags & 1) {
             
@@ -118,7 +118,7 @@ bool func_80046120(u16 index) {
     u8 i;
     u16 check;
 
-    if (index < 0x10) {
+    if (index < MAX_PAUSE_SCREEN_SPRITES) {
         if (D_80189A50[index].flags & 1) {
             i = D_80189A50[index].count;
             do {

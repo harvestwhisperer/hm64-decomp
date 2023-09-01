@@ -43,24 +43,26 @@ INCLUDE_ASM(const s32, "namingScreen", func_800F0F84);
 
 // birthday season selection
 void func_800F121C(void) {
-    u16 temp_s0;
-    u16 var_s0;
 
-    temp_s0 = D_8016FBD7;
+    u16 temp1;
+    u16 temp2;
+
+    temp1 = D_8016FBD7;
     
-    func_8002CB88(temp_s0 + 0x83, 0);
+    func_8002CB88(temp1 + 0x83, 0);
     
     if (D_8016FBDC == 52.0f) {
         D_8016FBDC -= 48.0f;
-        var_s0 = temp_s0 + 2;
+        temp2 = temp1 + 2;
     } else {
-        var_s0 = temp_s0 - 2;
+        temp2 = temp1 - 2;
         D_8016FBDC += 48.0f;
     }
     
-    func_8002CB88(var_s0 + 0x83, var_s0 + 1);
+    func_8002CB88(temp2 + 0x83, temp2 + 1);
     
-    D_8016FBD7 = var_s0;
+    D_8016FBD7 = temp2;
+
 }
 
 //INCLUDE_ASM(const s32, "namingScreen", func_800F12C4);
@@ -68,22 +70,22 @@ void func_800F121C(void) {
 // birthday season selection
 void func_800F12C4(void) {
 
-    u16 temp_s0;
-    u16 var_s0;
+    u16 temp1;
+    u16 temp2;
 
-    temp_s0 = D_8016FBD7;
+    temp1 = D_8016FBD7;
     
-    func_8002CB88(temp_s0 + 0x83, 0);
+    func_8002CB88(temp1 + 0x83, 0);
     
     if (D_8016FBD8 == -128.0f) {
         D_8016FBD8 += 144.0f;
-        var_s0 = temp_s0 + 1;
+        temp2 = temp1 + 1;
     } else {
-        var_s0 = temp_s0 - 1;
+        temp2 = temp1 - 1;
         D_8016FBD8 -= 144.0f;
     }
  
-    func_8002CB88(var_s0 + 0x83, var_s0+1);
-    D_8016FBD7 = var_s0;
+    func_8002CB88(temp2 + 0x83, temp2+1);
+    D_8016FBD7 = temp2;
 
 }

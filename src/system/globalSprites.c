@@ -10,9 +10,9 @@ void *func_8002CD34(u16, void*);
 // bss
 extern Sprite globalSprites[MAX_ACTIVE_SPRITES];
 
-//INCLUDE_ASM(const s32, "system/globalSprites", func_8002AFE0);
+//INCLUDE_ASM(const s32, "system/globalSprites", initializeGlobalSprites);
 
-void func_8002AFE0(void) {
+void initializeGlobalSprites(void) {
 
     u16 i;
 
@@ -64,12 +64,12 @@ bool func_8002B6B8(u16 index) {
 
     if (index < MAX_ACTIVE_SPRITES) {
         if (globalSprites[index].flags2 & 1) {
-            globalSprites[index].flags2 &= 0xFFFC;
+            globalSprites[index].flags2 &= ~(1 | 2);
             result = 1;
         }        
     }
 
-    return result;
+    return result; 
 }
 
 INCLUDE_ASM(const s32, "system/globalSprites", func_8002B710);
@@ -200,14 +200,13 @@ bool func_8002C1C0(u16 index, u8 r, u8 g, u8 b, u8 a, s16 arg5) {
     if (index < MAX_ACTIVE_SPRITES) {
         
         if (globalSprites[index].flags2 & 1) {
-
-            
+ 
             globalSprites[index].rgbaDefault.r = (globalSprites[index].rgba.r * r) / 255.0f;
             globalSprites[index].rgbaDefault.g = (globalSprites[index].rgba.g * g) / 255.0f;
             globalSprites[index].rgbaDefault.b = (globalSprites[index].rgba.b * b) / 255.0f;
             globalSprites[index].rgbaDefault.a = (globalSprites[index].rgba.a * a) / 255.0f;
             
-            globalSprites[index].flags2 &= 0xFBFF;
+            globalSprites[index].flags2 &= ~0x400;
 
             if (globalSprites[index].rgbaDefault.r < globalSprites[index].rgbaCurrent.r) {
                 tempFloat = globalSprites[index].rgbaCurrent.r - globalSprites[index].rgbaDefault.r;
@@ -268,7 +267,7 @@ u8 func_8002C7EC(u16 index, u16 arg1) {
         
         if (globalSprites[index].flags2 & 1) {
             
-            globalSprites[index].flags1 &= 0xE3FF;
+            globalSprites[index].flags1 &= ~(0x400 | 0x800 | 0x1000);
             temp = arg1 << 10;
             globalSprites[index].flags1 |= temp;
             
@@ -338,7 +337,7 @@ u8 func_8002CB24(u16 index, u8 flag) {
             if (flag == TRUE) {
                 globalSprites[index].flags2 |= 0x80;
             } else {
-                globalSprites[index].flags2 &= 0xFF7F;
+                globalSprites[index].flags2 &= ~(0x80);
             }
             result = 1;
         }

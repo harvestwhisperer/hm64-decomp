@@ -74,36 +74,36 @@ void func_800D86D8(void) {
     u8 temp;
     
     switch (gDayOfWeek) {
-        case 2:
+        case TUESDAY:
             ptr = &D_80170276;
             break;
         
-        case 3:
+        case WEDNESDAY:
             ptr = &D_80170277;
             break;
         
-        case 4:
+        case THURSDAY:
             ptr = &D_80170278;
             break;
         
-        case 5:
+        case FRIDAY:
             ptr = &D_80170279;
             break;
 
-        case 6:
+        case SATURDAY:
             ptr = &D_8017027A;
             break;
         
-        case 0:
+        case SUNDAY:
             ptr = &D_8017027B;
             temp = *ptr+1;
             *ptr = temp;
-            if (!(temp < 0x14)) {
+            if (!(temp < 20)) {
                 *ptr = 0;
             }
             return;
         
-        case 1:
+        case MONDAY:
             ptr = &D_8017027C;
             break;
 
@@ -115,7 +115,7 @@ void func_800D86D8(void) {
     *ptr = temp;
     
 check:
-    if (!(temp < 0xA)) {
+    if (!(temp < 10)) {
         *ptr = 0;
     }
 }
@@ -132,43 +132,43 @@ void func_800D879C(void) {
         return;
     }
 
-    if (gWeather != 5) {
+    if (gWeather != TYPHOON) {
         switch (D_80170275) {
             case 0:
                 switch (gForecast) {
-                    case 1:
+                    case SUNNY:
                         D_80170272[0] = 1;
                         return;
-                    case 2:
+                    case RAIN:
                         D_80170272[0] = 2;
                         break;
-                    case 3:
+                    case SNOW:
                         D_80170272[0] = 3;
                         break;
-                    case 5:
+                    case TYPHOON:
                         D_80170272[0] = 4;
                         break;
                 }
                 break;
             case 1:
                 switch (gSeason) {
-                    case 1:
+                    case SPRING:
                         D_80170272[0] = 5;
                         return;
-                    case 2:
+                    case SUMMER:
                         D_80170272[0] = 6;
                         return;
-                    case 3:
+                    case AUTUMN:
                         D_80170272[0] = 7;
                         return;
-                    case 4:
+                    case WINTER:
                         D_80170272[0] = 8;
                         return;
                 }
                 break;
             case 2:
                 switch (gDayOfWeek) {
-                    case 0:
+                    case SUNDAY:
                        switch (getRandomNumberInRange(0, 2)) {
                            case 0:
                                D_80170272[0] = 9;
@@ -182,16 +182,16 @@ void func_800D879C(void) {
                                return;
                        } 
                         break;
-                    case 1:
-                    case 2:
+                    case MONDAY:
+                    case TUESDAY:
                         D_80170272[0] = 9;
                         return;
-                    case 3:
-                    case 4:
+                    case WEDNESDAY:
+                    case THURSDAY:
                        D_80170272[0] = 10;
                        return;
-                    case 5:
-                    case 6:
+                    case FRIDAY:
+                    case SATURDAY:
                         break;
                     default:
                         return;

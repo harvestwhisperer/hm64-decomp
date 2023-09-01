@@ -83,7 +83,7 @@ void initializeDog(void) {
 //INCLUDE_ASM(const s32, "animals", initializeHorse);
 
 void initializeHorse(void) {
-    horseInfo.location = 0x52;
+    horseInfo.location = FARM;
     horseInfo.coordinates.y = 0;
     horseInfo.unk_17 = 0;
     horseInfo.unk_18 = 0;
@@ -111,7 +111,7 @@ void setAnimalLocations(u8 mapIndex) {
         func_80088BB0(mapIndex, i);
     }
 
-    for (i = 0; i < 0xC; i++) {
+    for (i = 0; i < MAX_CHICKENS; i++) {
         func_80088C1C(mapIndex, i);
     }
 
@@ -122,10 +122,10 @@ void setAnimalLocations(u8 mapIndex) {
 void setDogLocation(u8 mapIndex) {
 
     if ((dogInfo.flags & 1) && ((mapIndex == 0xFF) || (dogInfo.location == mapIndex))) {
-        dogInfo.location = 0x52;
+        dogInfo.location = FARM;
         dogInfo.coordinates.y = 0.0f;
         dogInfo.unk_18 = 0;
-        dogInfo.flags &= 0xFFF7;
+        dogInfo.flags &= ~0x8;
         dogInfo.coordinates.x = -432.0f;
         dogInfo.coordinates.z = 96.0f;
     }
@@ -137,7 +137,7 @@ void setHorseLocation(u8 mapIndex) {
 
     if ((horseInfo.flags & 1) && ((mapIndex == 0xFF) || (horseInfo.location == mapIndex))) {
         horseInfo.coordinates.y = 0;
-        horseInfo.location = 0x52;
+        horseInfo.location = FARM;
         horseInfo.unk_18 = 0;
         horseInfo.coordinates.x = -240.0f;
         horseInfo.coordinates.z = -384.0f;

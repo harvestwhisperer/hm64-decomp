@@ -865,11 +865,12 @@ idleThread = 0x801241C0;
 mainThread = 0x80124370;
 nuIdleFunc = 0x801FD628;
 
+initializeGlobalSprites = 0x8002AFE0;
 nuBoot = 0x80025C50;
 idle = 0x80025CB4;
 mainproc = 0x80025D90;
 initializeAll = 0x80025E24;
-mainLoop = 0x80025ff0;
+mainLoop = 0x80025FF0;
 registerMainLoopCallback = 0x80026190;
 setMainLoopCallbackFunctionIndex = 0x800261CC;
 noOpCallback = 0x80026240;
@@ -893,11 +894,14 @@ nuGfxInit = 0x80028F44;
 resetSpriteAddressesFlags = 0x80029000;
 setSpriteAddresses = 0x8002903C;
 dmaSprites = 0x800290B8;
+initializeWorldGraphics = 0x80029170;
 resetSpriteCounter = 0x80029284;
+initializeBitmaps = 0x80029B30;
 initializeNpcSpriteStructs = 0x8002DC70;
 setSpriteAnimation = 0x8002F3F0;
 setSpriteCollisionBuffers = 0x8002FF9C;
 
+intializeTileContext = 0x8003B870;
 setTileInfo = 0x8003B9DC;
 
 initializeAudio = 0x8003CDC0;
@@ -915,6 +919,7 @@ setSfxPan = 0x8003D8A0;
 stopSfx = 0x8003D948;
 
 setGameVariable = 0x800430DC;
+initializeCutsceneMaps = 0x80046860;
 
 controllerInit = 0x8004CDA0;
 
@@ -963,7 +968,7 @@ checkHaveTool = 0x80065E80;
 checkHaveKeyItem = 0x80065F10;
 setPlayerAction = 0x800661FC; 
 checkFatigueLevel = 0x800679EC;
-setExit = 0x8006E820;
+setEntrance = 0x8006E820;
 setLevelGraphicsData = 0x8006E9B8;
 getLevelFlags = 0x8006EC40;
 setNPCSpawningLocations = 0x80076B54;
@@ -1114,31 +1119,22 @@ npcSpriteInfoArray = 0x801584F0;
 gTotalGrassTiles = 0x801654F0;
 farmFieldTiles = 0x8016F500;
 previousMapIndex = 0x8016F899;
-gCutsceneFlags = 0x8016FE00;
-
 globalLightingRgba = 0x8016F8A0;
-
 specialDialogueBits = 0x8016F8B0;
 recipesBitField = 0x8016FAFC;
-
 horseInfo = 0x8016FDD0;
-
 harvestKingName = 0x8016FDF4;
+gCutsceneFlags = 0x8016FE00;
+shadowSpritesInfo = 0x8016FFF8;
 
-gfxList = 0x80170068;
-
+initGfxList = 0x80170068;
 gMinutes = 0x8017027F;
-
 gFarmAnimals = 0x80170280;
-
 gCurrentSeasonName = 0x80170445;
-
 gBaseMapIndex = 0x80170458;
 
 nuContDataLockKey = 0x80181B14;
-
 SramHandle = 0x80181B18;
-
 gSeason = 0x80182DB1;
 gHappiness = 0x80182FB8;
 gWifeConceptionCounter = 0x80182FB9;
@@ -1172,11 +1168,12 @@ gAlcoholTolerance = 0x80189E52;
 spriteCounter = 0x8018A05A;
 
 currentGfxTaskPtr = 0x801C3E14;
+bitmapCounter = 0x801C3E2A;
 gCutsceneIndex = 0x801C3B66;
 
 gChickens = 0x801C3BF0;
 
-previousExitIndex = 0x801C3E20;
+previousEntranceIndex = 0x801C3E20;
 
 gFlowerFestivalGoddess = 0x801C3F44;
 blueMistFlowerPlot = 0x801C3F45;
@@ -1233,8 +1230,9 @@ gWifePregnancyCounter = 0x802055D0;
 gTileContext = 0x802055D8;
 gTileContextFlags = 0x80205622;
 gNamingScreenIndex = 0x80205624;
-gDisplayContext = 0x80205630;
+gDisplayContextIndex = 0x80205630;
 frameCount = 0x80205634;
+gMapWithSeasonIndex = 0x80205635;
 gMaximumStamina = 0x8020563F;
 gAverageFarmAnimalAffection = 0x8020563A;
 
@@ -1259,6 +1257,8 @@ gItemBeingHeld = 0x802373C8;
 gHarvestCoinFinder = 0x80237409;
 gWife = 0x802373E9;
 
+worldMatrices = 0x80237460;
+
 NU_AU_HEAP_ADDR = 0x8030F800;
 
 tvSprites_romTextureStart = 0xD49BA0;
@@ -1270,37 +1270,4 @@ tvSprites_romIndexEnd = 0xD4DAB0;
 
 setup_rspstate = 0x80112A38;
 setup_rdpstate = 0x80112A10;
-rdpstateinit_dl = 0x80112928; 
-
-D_80112A60 = 0x80112A60;
-D_802373B4 = 0x802373B4;
-D_80158268 = 0x80158268;
-D_8018A738 = 0x8018A738;
-
-D_D92970 = 0xD92970;
-D_D92D50 = 0xD92D50;
-D_D92D50_2 = 0xD92D50;
-D_D92D70 = 0xD92D70;
-D_D92D70_2 = 0xD92D70;
-D_D49B80 = 0xD49B80;
-D_D49B80_2 = 0xD49B80;
-D_D47F00 = 0xD47F00;
-D_D52670 = 0xD52670;
-D_D82FD0_2 = 0xD82FD0;
-D_D82FD0 = 0xD82FD0;
-D_D82FF0 = 0xD82FF0;
-D_D82FF0_2 = 0xD82FF0; 
-D_D835A0 = 0xD835A0;
-D_CC9330_2 = 0xCC9330;
-D_CC9330 = 0xCC9330;
-D_CFE610 = 0xCFE610;
-D_CFE610_2 = 0xCFE610;
-D_CFF6F0 = 0xCFF6F0;
-D_CFF6F0_2 = 0xCFF6F0;
-D_CFF6F0_3 = 0xCFF6F0;
-D_CFF6F0_4 = 0xCFF6F0;
-D_CFF710 = 0xCFF710;
-D_CFF6F0 = 0xCFF6F0;
-D_CFF6F0_2 = 0xCFF6F0;
-D_D3DCC0 = 0xD3DCC0;
-D_D3DCC0_2 = 0xD3DCC0;
+rdpstateinit_dl = 0x80112928;

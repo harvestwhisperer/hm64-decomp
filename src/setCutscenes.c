@@ -27,11 +27,10 @@ u16 setRickStoreCutscenes(void);
 u16 setRoadCutscenes(void);                          
 u16 setSpringCutscenes(void);                        
 u16 setVineyardCellarCutscenes(void);                
-u16 setVineyardHouseCutscenes(void);         
-void loadCutscene(u32);         
+u16 setVineyardHouseCutscenes(void);            
 
 // bss
-extern s32 D_801891D4;
+s32 D_801891D4;
 extern u16 D_8018981C;
 
 // likely bss

@@ -17,12 +17,14 @@ extern u32 checkMailRead(u16);
 extern void setMail(u16);      
 extern void toggleReadLetterBit(u16);      
 
+void setAlbumPicture(u8 pictureBitIndex);
 extern void setRecipes(void);  
 
 extern void func_80063AF0(void); 
 extern void func_80064114(void);
 extern void func_800644B0(void);     
 extern void func_80064814(void);     
+extern u8 func_8006536C();
 
 extern u32 dailyEventBits[];
 extern u32 lifeEventBits[];

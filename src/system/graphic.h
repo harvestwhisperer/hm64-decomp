@@ -6,11 +6,12 @@
 #define GFX_GLIST_LEN 31
 
 #include "common.h"
+#include "system/map.h"
 #include "system/sprite.h"
 
 typedef struct {
-	Mtx matrix1;
-	Mtx matrix2;
+	Mtx projection;
+	Mtx viewing;
 	f32 l;
 	f32 r;
 	f32 t;
@@ -28,26 +29,19 @@ typedef struct {
 } Camera;
 
 typedef struct {
-	Mtx projection;
-	Mtx viewing;
-	Mtx translation;
-	Mtx scale;
-	Mtx rotationX;
-	Mtx rotationY;
-	Mtx rotationZ;
-	Vec3f translationCoords;
+    Mtx projection;
+    Mtx mtx2;
+    Mtx identity;
+    Mtx mtx4;
+    Mtx mtx5;
+    Mtx mtx6;
+    Mtx mtx7;
+    Mtx viewing;
+   	Vec3f translationCoords;
 	Vec3f scaleCoords;
 	Vec3f rotationCoords;
-	Mtx unk_B90;
+    u32 padding[0x2B];
 } WorldMatrices;
-
-// need to fix this struct
-typedef struct {
-    u32 unk[171];
-	Vec3f translationCoords;
-	Vec3f scaleCoords;
-	Vec3f rotationCoords;
-} UnknownGraphicsStruct1;
 
 typedef struct {
     u32 padding[4];
@@ -67,11 +61,13 @@ typedef struct {
     f32 angle8;
 } Angles;
 
-void func_80026E78(Bitmap *sprite, u16 *arg1, u16 *arg2);   
-void func_80027950(Vec3f, Vec3f*, Vec3f);
-void* func_80028888(u16 arg0, u32* arg1);                   
-void* func_800288B8(u32, u32, u32);              
-f32 func_80028820(u8 arg0);    
+extern void func_80026E78(Bitmap *sprite, u16 *arg1, u16 *arg2);   
+extern Gfx* func_80026F88(Gfx*, UnknownMapStruct1*, u16, u16);
+extern void func_80027950(Vec3f, Vec3f*, Vec3f);
+extern void* func_80028888(u16 arg0, u32* arg1);                   
+extern void* func_800288B8(u32, u32, u32);              
+extern f32 func_80028820(u8 arg0);    
+extern void func_80028EB8(f32 x, f32 y, f32 z);
 
 extern void drawFrame(void);  
 extern void graphicsInit();  

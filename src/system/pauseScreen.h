@@ -3,6 +3,8 @@
 
 #include "common.h"
 
+#define MAX_PAUSE_SCREEN_SPRITES 16
+
 typedef struct {
     void *romAddr1;
     void *romAddr2;

@@ -1,5 +1,7 @@
 #include "common.h"
 
+#include "mainLoop.h"
+
 #include "system/audio.h"
 #include "system/controller.h"
 #include "system/cutscene.h"
@@ -14,19 +16,16 @@
 #include "mainproc.h"
 
 // bss
-u16 mainLoopCallbackCurrentIndex;
+volatile u16 mainLoopCallbackCurrentIndex;
 void (*mainLoopCallbacksTable[MAIN_LOOP_CALLBACK_FUNCTION_TABLE_SIZE])();
 
-u16 D_80182BA0;
+volatile u16 D_80182BA0;
 void *currentGfxTaskPtr;
  
-
 //INCLUDE_ASM(s32, "mainLoop", mainLoop)
 
 void mainLoop(void) {
 
-  // int res
-    
     D_80205208 = 0;
     D_801594E4 = 1;
     
@@ -49,11 +48,6 @@ void mainLoop(void) {
               
               D_80182BA0 = 1;
               
-              // necessary to match
-              while (1) {
-                  break;
-              }
-
               // handle specific logic depending on game mode/screen
               mainLoopCallbacksTable[mainLoopCallbackCurrentIndex](); 
 
@@ -62,6 +56,7 @@ void mainLoop(void) {
             } 
             
             D_8020564C -= 1;    
+            // ?
             D_8020564C;
             
             // reset tile flags
@@ -92,11 +87,6 @@ void mainLoop(void) {
             func_80045CB0(); 
             // no op/shelved code
             func_800293B8(); 
-
-            // necessary to match
-            while (1) {
-                break;   
-            }
 
             D_80205208 = 0; 
             D_80237A04 = D_801C3BEC;
@@ -138,12 +128,6 @@ int mainLoop(void) {
               
               D_80182BA0 = 1;
               
-              // necessary to match
-              while (1) {
-                  break;
-              }
-
-              // handle specific logic depending on game mode/screen
               mainLoopCallbacksTable[mainLoopCallbackCurrentIndex](); 
 
               D_8020564C = D_80182BA0; 
@@ -181,11 +165,6 @@ int mainLoop(void) {
             // no op/shelved code
             func_800293B8(); 
 
-            // necessary to match
-            while (1) {
-                break;   
-            }
-
             D_80205208 = 0; 
             D_80237A04 = D_801C3BEC;
               
@@ -218,23 +197,26 @@ bool registerMainLoopCallback(u16 index, void *(func)()) {
 
 }
 
-// matches 99% with SN compiler
-#ifdef PERMUTER
-u32 setMainLoopCallbackFunctionIndex(u16 index) {
+//INCLUDE_ASM(const s32, "mainLoop", setMainLoopCallbackFunctionIndex);
 
-    u32 result = 0;
-    if (index < MAIN_LOOP_CALLBACK_FUNCTION_TABLE_SIZE) {
-        if (mainLoopCallbacksTable[index]) {
-            mainLoopCallbackCurrentIndex = index;
-            result = 1; 
-        }
-    }
-    return result;
+u32 setMainLoopCallbackFunctionIndex(u16 index) {
     
+    u32 result = 0;
+
+    volatile int *temp;
+    
+    if (index < MAIN_LOOP_CALLBACK_FUNCTION_TABLE_SIZE) {
+
+        temp = &mainLoopCallbacksTable;
+      
+        if (temp[index]) {
+            mainLoopCallbackCurrentIndex = index;
+            result = 1;
+        }
+    } 
+    
+    return result;
 }
-#else
-INCLUDE_ASM(const s32, "mainLoop", setMainLoopCallbackFunctionIndex);
-#endif
 
 //INCLUDE_ASM(const s32, "registerMainLoopCallbacks", func_8002620C);
 
@@ -319,7 +301,7 @@ u8 gfxRetraceCallback(int arg0) {
     u8 temp;
     
     D_802226E8 = arg0;
-    D_801594E4 &= 0xFFFD;
+    D_801594E4 &= ~2;
     
     // controller
     func_8004CF68();

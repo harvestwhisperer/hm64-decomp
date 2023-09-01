@@ -19,14 +19,9 @@
 // forward declaration
 u8 func_80067A24(u8);                               
 
-// rodata
-extern s8 D_8011F3F0[12];
-extern s8 D_8011F3FC[12]; 
-
-// data
-extern Vec3f playerDefaultStartingCoordinates[];
-// data
-extern u8 playerDefaultStartingDirections[];
+// consumable tool counters (seeds, feed)
+extern u16 D_80237410;
+extern u8 D_802373A8;
 
 // bss here or itemHandlers.c
 extern u8 D_80189836;
@@ -35,8 +30,14 @@ extern u8 D_80189836;
 extern u8 gMaximumStamina;
 extern u8 gToolchestSlots[];  
 
-// unknown
-extern u16 D_80237410;
+// data
+extern Vec3f playerDefaultStartingCoordinates[];
+// data
+extern u8 playerDefaultStartingDirections[];
+
+// rodata
+extern s8 D_8011F3F0[12];
+extern s8 D_8011F3FC[12]; 
 
 
 //INCLUDE_ASM(const s32, "player", setupPlayerSprite);
@@ -424,7 +425,6 @@ void func_8006623C(void) {
 }
 
 // D_8011F490
-// D_801FC1C7
 INCLUDE_ASM(const s32, "player", func_800664C8);
 
 INCLUDE_ASM(const s32, "player", func_80066F98);
@@ -468,7 +468,7 @@ void func_80067034(void) {
             
             horseInfo.unk_18 = (renderedSprites[PLAYER].direction + func_8003C1A4(0)) % 8;
             horseInfo.location = gBaseMapIndex;
-            horseInfo.flags &= 0xFFF7;            
+            horseInfo.flags &= ~0x8;            
             gPlayer.flags &= -2;
             
             toggleDailyEventBit(0x5C);
@@ -517,6 +517,7 @@ INCLUDE_ASM(const s32, "player", func_80067BC4);
 
 void func_80067E5C(void) {
 
+    // ?
     if (!(*(s32*)&gPlayer.action3 & ~0xFF)) {
         setAudio(0x26);
         func_800D5548(gPlayer.unk_2D);
@@ -623,6 +624,7 @@ INCLUDE_ASM(const s32, "player", func_80068340);
 //INCLUDE_ASM(const s32, "player", func_80068410);
 
 void func_80068410(void) {
+
     if (gPlayer.action4 == 0) {
         if (gPlayer.action3 == 4) {
             if (func_800DCAA0(gPlayer.unk_6B)) {
@@ -632,6 +634,7 @@ void func_80068410(void) {
         }
         gPlayer.action3++;
     }
+    
     if (gPlayer.action4 == 2) {
         if (func_800DCAA0(gPlayer.unk_6B)) {
             func_800D55E4(gPlayer.unk_2D, 1);
@@ -639,6 +642,7 @@ void func_80068410(void) {
         func_800DC7BC(gPlayer.unk_6B);
         gPlayer.action4 = 5;
     }
+    
     if (gPlayer.action4 == 3) {
         if (func_800DCAA0(gPlayer.unk_6B)) {
             func_800D55E4(gPlayer.unk_2D, 1);
@@ -844,7 +848,43 @@ INCLUDE_ASM(const s32, "player", func_8006DD68);
 
 INCLUDE_ASM(const s32, "player", func_8006DE8C);
 
-INCLUDE_ASM(const s32, "player", func_8006DFB0);
+//INCLUDE_ASM(const s32, "player", func_8006DFB0);
+
+void func_8006DFB0(void) {
+
+    switch (gPlayer.action4) {
+        case 0:
+            func_8002F2FC(0, 0);
+            return;
+        case 1:
+            func_8002F2FC(0, 0x148);
+            break;
+        case 2:
+            func_800CF850();
+            gPlayer.action4++;
+            break;
+            // necessary to match
+            do {} while (0);
+        case 3:            
+            if (!D_80189836) {
+                if (!func_80067A24(0)) {
+                    gPlayer.action3 = 0;
+                    gPlayer.action4 = 0;
+                    gPlayer.action1 = 0;
+                    gPlayer.action2 = 0;
+                }
+
+                D_802373A8 += adjustValue(D_802373A8, -1, 1);
+
+                if (!D_802373A8) {
+                    gPlayer.currentTool = 0;
+                }
+            }
+            break;
+        default:
+            break;
+    }
+}
 
 // chicken feed
 //INCLUDE_ASM(const s32, "player", func_8006E0D4);
@@ -862,6 +902,7 @@ void func_8006E0D4(void) {
             func_800CF850();
             gPlayer.action4++;
             break;
+            // necessary to match
             do {} while (0);
         case 3:
             if (!D_80189836) {

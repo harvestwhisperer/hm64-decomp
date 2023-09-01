@@ -82,8 +82,6 @@ void func_800D56E8(u8, u16);
 u8 func_800D67E4(u8);
 
 
-
-
 //INCLUDE_ASM(const s32, "itemHandlers", func_800CF850);
 
 void func_800CF850(void) {

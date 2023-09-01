@@ -13,14 +13,53 @@ void func_80047E34(u16);
 // bss
 // cutscene handler callbacks
 extern void (*D_801133D0[])(u16);
+ 
+extern CutsceneMap D_801808B0[42];
 
-extern Cutscene D_801808B0[42];
+//INCLUDE_ASM(const s32, "system/cutscene", initializeCutsceneMaps);
 
-INCLUDE_ASM(const s32, "system/cutscene", func_80046860);
+void initializeCutsceneMaps(void) {
+
+    u16 i;
+
+    for (i = 0; i < 42; i++) {
+        
+        D_801808B0[i].unk_64 = 0;
+        D_801808B0[i].unk_66 = 0;
+        D_801808B0[i].unk_68 = 0;
+        D_801808B0[i].unk_69 = 0;
+        D_801808B0[i].unk_6A = 0;
+
+        D_801808B0[i].offsets.x = 0;
+        D_801808B0[i].offsets.y = 0;
+        D_801808B0[i].offsets.z = 0;
+
+        D_801808B0[i].unk_58.x = 0;
+        D_801808B0[i].unk_58.y = 0;
+        D_801808B0[i].unk_58.z = 0;
+
+        D_801808B0[i].flags = 0;
+
+        D_801808B0[i].unk_20 = 0;
+        D_801808B0[i].unk_22 = 0;
+        D_801808B0[i].unk_24 = 0;
+        D_801808B0[i].unk_26 = 0;
+        D_801808B0[i].unk_28 = 0;
+        D_801808B0[i].unk_2A = 0;
+
+        D_801808B0[i].unk_1C = 0xFFFF;
+
+        D_801808B0[i].unk_C.x = 0;
+        D_801808B0[i].unk_C.y = 0;
+        D_801808B0[i].unk_C.z = 0;
+
+        D_801808B0[i].cameraFlags = 0;
+    }
+}
 
 //INCLUDE_ASM(const s32, "system/cutscene", func_800469A8);
 
-bool func_800469A8(u16 index, void *cutsceneMapPointer) {
+bool func_800469A8(u16 index, Cutscene *cutscenePointer) {
 
     bool result = 0;
     
@@ -30,7 +69,7 @@ bool func_800469A8(u16 index, void *cutsceneMapPointer) {
             
             result = 1;
             
-            D_801808B0[index].cutsceneMapPointer = cutsceneMapPointer;
+            D_801808B0[index].cutscenePointer = cutscenePointer;
             
             D_801808B0[index].unk_66 = 0;
             
@@ -51,7 +90,22 @@ bool func_800469A8(u16 index, void *cutsceneMapPointer) {
     
 }
 
-INCLUDE_ASM(const s32, "system/cutscene", func_80046A58);
+//INCLUDE_ASM(const s32, "system/cutscene", func_80046A58);
+
+bool func_80046A58(u16 arg0, Cutscene* arg1) {
+    
+    bool result = 0;
+
+    if (arg0 < 0x2A) {
+        
+        if (D_801808B0[arg0].flags & 1) {
+            result = 1;
+            D_801808B0[arg0].unk_66 = 0;
+            D_801808B0[arg0].cutscenePointer = arg1;
+        }
+    }
+    return result;
+}
 
 INCLUDE_ASM(const s32, "system/cutscene", func_80046AB0);
 
@@ -93,7 +147,7 @@ void func_80046D78(void) {
                 if (D_801808B0[i].unk_1C != 0xFFFF && renderedSprites[D_801808B0[i].unk_64].unk_58 == D_801808B0[i].unk_1C && D_801808B0[i].unk_1E == renderedSprites[D_801808B0[i].unk_64].unk_5A) {
                     D_801808B0[i].unk_1C = 0xFFFF;
                     D_801808B0[i].unk_66 = 0;
-                    D_801808B0[i].cutsceneMapPointer = D_801808B0[i].sfxIndex;
+                    D_801808B0[i].cutscenePointer = D_801808B0[i].sfxIndex;
                 
                 }
             }
@@ -118,7 +172,7 @@ void func_80046D78(void) {
                 D_801808B0[i].offsets.y = 0;
                 D_801808B0[i].offsets.z = 0;
 
-                D_801133D0[*(D_801808B0[i].cutsceneMapPointer)](i);
+                D_801133D0[*(D_801808B0[i].cutscenePointer)](i);
                 
 skip_callback:
                 D_801808B0[i].coordinates.x += D_801808B0[i].offsets.x;
@@ -151,7 +205,7 @@ INCLUDE_ASM(const s32, "system/cutscene", func_800471B0);
 
 void func_800475B4(u16 arg0) {
     D_801808B0[arg0].unk_68 = 1;
-    D_801808B0[arg0].flags &= 0xFFFD;
+    D_801808B0[arg0].flags &= ~2;
 }
 
 //INCLUDE_ASM(const s32, "system/cutscene", func_800475F8);
@@ -177,14 +231,14 @@ INCLUDE_ASM(const s32, "system/cutscene", func_80047F90);
 
 INCLUDE_ASM(const s32, "system/cutscene", func_80048124);
 
-//INCLUDE_ASM(const s32, "system/cutscene", func_80048258);
+INCLUDE_ASM(const s32, "system/cutscene", func_80048258);
 
-void func_80048258(u16 arg0) {
+// void func_80048258(u16 arg0) {
 
-    D_801808B0[arg0].cutsceneMapPointer += 1;
-    D_801808B0[arg0].unk_66 = *D_801808B0[arg0].cutsceneMapPointer;
-    D_801808B0[arg0].cutsceneMapPointer++;
-}
+//     D_801808B0[arg0].cutscenePointer += 1;
+//     D_801808B0[arg0].unk_66 = *(u16*)D_801808B0[arg0].cutscenePointer;
+//     D_801808B0[arg0].cutscenePointer++;
+// }
 
 //INCLUDE_ASM(const s32, "system/cutscene", func_800482B8);
 
@@ -199,21 +253,21 @@ void func_800482F8(u16 arg0) {
 
     s32 temp;
 
-    temp = D_801808B0[arg0].cutsceneMapPointer;
-    D_801808B0[arg0].cutsceneMapPointer++;
+    temp = D_801808B0[arg0].cutscenePointer;
+    D_801808B0[arg0].cutscenePointer++;
     D_801808B0[arg0].unk_8 = temp+4;
-    D_801808B0[arg0].cutsceneMapPointer = temp + *(D_801808B0[arg0].cutsceneMapPointer);
+    D_801808B0[arg0].cutscenePointer = temp + *(D_801808B0[arg0].cutscenePointer);
     
 }
 #else
 INCLUDE_ASM(const s32, "system/cutscene", func_800482F8);
 #endif
 
-//INCLUDE_ASM(const s32, "system/cutscene", func_8004835C);
+INCLUDE_ASM(const s32, "system/cutscene", func_8004835C);
 
-void func_8004835C(u16 arg0) {
-    D_801808B0[arg0].cutsceneMapPointer = D_801808B0[arg0].unk_8;
-}
+// void func_8004835C(u16 arg0) {
+//     D_801808B0[arg0].cutscenePointer = D_801808B0[arg0].unk_8;
+// }
 
 INCLUDE_ASM(const s32, "system/cutscene", func_8004838C);
 
@@ -229,10 +283,10 @@ INCLUDE_ASM(const s32, "system/cutscene", func_800485EC);
 #ifdef PERMUTER
 void func_80048694(u16 arg0) {
 
-    s16 *temp = D_801808B0[arg0].cutsceneMapPointer; 
-    D_801808B0[arg0].cutsceneMapPointer += 1;
-    D_801808B0[arg0].cutsceneMapPointer = (u16)*(temp+1) + 4;
-    func_80046AB0(D_801808B0[arg0].cutsceneMapPointer);
+    s16 *temp = D_801808B0[arg0].cutscenePointer; 
+    D_801808B0[arg0].cutscenePointer += 1;
+    D_801808B0[arg0].cutscenePointer = (u16)*(temp+1) + 4;
+    func_80046AB0(D_801808B0[arg0].cutscenePointer);
     
 }
 #else

@@ -21,7 +21,7 @@ extern volatile u8 D_802373F1;
 extern volatile u8 D_80237A04;
 extern volatile u8 frameCount;
 
-extern volatile u32 gDisplayContext;
+extern volatile u32 gDisplayContextIndex;
 extern volatile u8 gfxTaskNo;
 
 

@@ -4,6 +4,8 @@
 #include "common.h"
 #include "audio.h"
 
+#define MAX_DIALOGUE_BOXES 6
+
 // 80180790
 typedef struct {
 	u32 unk_0; 
@@ -37,27 +39,6 @@ typedef struct {
 	u16 unk_32;
 	u16 unk_34;
 } DialogueSprite;
-
-typedef struct {
-	void *romPtr1;
-	void *romPtr2;
-	void *romPtr3;
-	void *romPtr4;
-	void *romPtr5;
-	void *romPtr6;
-	void *vaddr1;
-	void *vaddr2;
-	void *vaddr3;
-	void *vaddr4;
-	void *vaddr5;
-	void *vaddr6;
-	Vec3f unk_30;
-	u16 unk_3C;
-	u16 unk_3E;
-	u32 unk_40;
-	u32 unk_44;
-	Vec4f unk_48;
-} DialogueIcon;
 
 typedef struct {
     void *unk_0;
@@ -125,11 +106,11 @@ extern bool func_8003F690(u16, u8, u8, u8);
 extern bool func_8003FAF8(u16, u16);                              
 extern bool func_8003FB4C(u16, u16);                              
 extern bool func_8003FBA0(u16, u8*, s32);  
-extern void func_8003FBD8(u8, u8, u8);    
+extern void func_8003FBD8(u8, u16, u8);    
 extern bool func_8003F910(u8, u16, void*, void*, void*, void*, void*, void*, void*, u32, u32, u16, u16, f32, f32, f32); 
 extern void func_80042634();
 extern void func_80045CB0();
 
-extern DialogueBox D_80188B70[2];
+extern DialogueBox D_80188B70[MAX_DIALOGUE_BOXES];
 
 #endif

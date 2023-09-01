@@ -15,8 +15,6 @@ typedef struct {
 	f32 r,g,b,a;
 } Vec4f;
 
-// move following structs to more specific headers in src directory
-
 typedef struct {
 	u16 animationIndex;
 	u16 animationIndexPlusOne;
@@ -28,12 +26,7 @@ typedef struct {
 	u8 set;
 } GameVariable;
 
-typedef struct {
-    void *romStart;
-    void *romEnd;
-    u16 flags;
-} TileInfo;
-
+// change to generic struct for reading 6 bits
 typedef struct {
     u8 unk_0;
     u8 unk_1;
@@ -43,6 +36,7 @@ typedef struct {
     u8 unk_5; 
 } Days;
 
+// change to generic struct for reading 6 shorts
 typedef struct {
     u16 unk_0;
     u16 unk_2;
@@ -53,26 +47,37 @@ typedef struct {
 } Bits;
 
 typedef struct {
-    void* romAddr;
-    void *vaddr;
-} Addresses;
+    u16 unk_0;
+    u16 unk_2;
+    u16 unk_4;
+    u16 unk_6;
+    u16 unk_8;
+    u16 unk_A;
+    u16 unk_C;
+    u16 unk_E;
+} Unaligned32;
 
 typedef struct {
-    u32 padding[3923];
-    f32 unk_3D4C;
-    f32 unk_3D50;
-    f32 unk_3D54;
-    f32 unk_3D58;
-    f32 unk_3D5C;
-    f32 unk_3D60;
-    f32 unk_3D64;
-    f32 unk_3D68;
-    f32 unk_3D6C;
-    f32 unk_3D70;
-    f32 unk_3D74;
-    f32 unk_3D78;
-    f32 unk_3D7C;
-} UnknownStruct2;
+    u32 unk_0;
+    u32 unk_4;
+    u32 unk_8;
+    u32 unk_C;
+} Aligned32;
+
+typedef union {
+    Unaligned32 unaligned_32;
+    Aligned32 aligned_32;
+} MemoryRead_32;
+
+typedef union {
+    Vec4f vec4;
+    Vec3f vec3;
+} Vec;
+
+typedef struct {
+    void *romAddr;
+    void *vaddr;
+} Addresses;
 
 typedef struct {
     s8 unk_0;

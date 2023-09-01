@@ -3,6 +3,8 @@
 
 #include "common.h"
 
+#define MAX_VOLUME 256
+
 typedef struct {
     s16 unk_0;
     s16 unk_2;

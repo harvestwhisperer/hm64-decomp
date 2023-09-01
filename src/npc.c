@@ -18,6 +18,7 @@ u16 D_80114900[];
 u8 D_801C3E18;
 u16 D_801FBE2E;  
 u16 D_801FBFBE;
+u16 D_801FBFE6;
 
 // shared global: animals, npc, cutscene, renderedSprite 
 extern u16 D_801FC1B8[30][54];
@@ -31,6 +32,9 @@ extern void *tvSprites_romTextureStart;
 
 // data
 extern u16 D_80114960[30];
+
+// forward declarations
+void func_80075A78(u8);
 
 
 INCLUDE_ASM(const s32, "npc", func_800752C0);
@@ -491,7 +495,7 @@ void setEllenLocation(void) {
     npcInfoArray[ELLEN].unk_25 = 8;
     
     if (!checkLifeEventBit(ELLEN_DIED)) {
-        if (gWeather == 1 && (gHour - 8) < 9U) {
+        if (gWeather == SUNNY && (gHour - 8) < 9U) {
                 npcInfoArray[ELLEN].levelIndex = VILLAGE_1;
                 npcInfoArray[ELLEN].startingCoordinates.y = 0;
                 npcInfoArray[ELLEN].direction = 0;
@@ -781,7 +785,40 @@ func_end:
     func_80075A78(0x25);
 }
 
-INCLUDE_ASM(const s32, "npc", func_8008501C);
+//INCLUDE_ASM(const s32, "npc", func_8008501C);
+
+void func_8008501C(void) {
+
+    if (npcInfoArray[38].flags & 4) {
+        
+        if (func_8002FECC(npcInfoArray[38].spriteIndex)) {
+
+            if (!npcInfoArray[38].unk_22) {
+                
+                switch (npcInfoArray[38].movingFlag) {
+                    case 0:
+                        npcInfoArray[38].unk_20 = 0;
+                        npcInfoArray[38].unk_21 = 0xA;
+                        npcInfoArray[38].unk_22 = 0;
+                        setSpriteAnimation(npcInfoArray[38].spriteIndex, npcInfoArray[38].unk_24);
+                        D_801FBFE6 |= 2;
+                        break;
+                    case 1:
+                        func_80075EBC(0x26);
+                        break;
+                }
+
+            }
+
+        }
+
+        if (npcInfoArray[38].unk_22) {
+            npcInfoArray[38].unk_22--;
+        }
+
+        func_80075A78(0x26);
+    }
+}
 
 INCLUDE_ASM(const s32, "npc", func_80085114);
 
