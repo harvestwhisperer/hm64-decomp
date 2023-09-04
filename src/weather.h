@@ -3,6 +3,11 @@
 
 #include "common.h"
 
+#define SUNNY 1
+#define RAIN 2
+#define SNOW 3
+#define TYPHOON 5
+
 extern void func_800DC360(void);    
 
 extern void setForecast(void);    

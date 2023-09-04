@@ -311,8 +311,10 @@ INCLUDE_ASM(const s32, "system/cutscene", func_80048DA8);
 
 INCLUDE_ASM(const s32, "system/cutscene", func_80048E98);
 
+// set bit on cutscene flags
 INCLUDE_ASM(const s32, "system/cutscene", func_80048F88);
 
+// toggle bit
 INCLUDE_ASM(const s32, "system/cutscene", func_80048FF4);
 
 INCLUDE_ASM(const s32, "system/cutscene", func_80049064);

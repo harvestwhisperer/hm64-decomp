@@ -8,9 +8,12 @@
 #define MAX_RENDERED_SPRITES 49
 #define MAX_ACTIVE_SPRITES 192
 #define MAX_SHADOW_SPRITES 3
+#define MAX_NPC_SPRITES 102
 #define MAX_BITMAPS 176
 
 #define NEED_DMA 1
+
+#define OBJECT_SPRITE_BANK_1_START 0x802EB800
 
 typedef struct {	
 	void *vaddrStart;
@@ -162,6 +165,7 @@ extern void func_80033058(void);
 extern bool func_8003019C(u16, u8);                            
 extern bool func_80030240(u16, u8);                            
 extern bool func_800302E4(u16, u8);         
+extern bool func_800305CC(u16, f32, f32, f32);
 extern bool func_800309B4(u16, f32, f32);     
 extern u16 func_80030BA0(u16* ptr, u16 offset);  
 extern Vec3f* func_800315A0(Vec3f*, u16 index);    

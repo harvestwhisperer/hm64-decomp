@@ -413,8 +413,7 @@ INCLUDE_RODATA(const s32, "system/sprite", D_8011ED30);
 
 INCLUDE_RODATA(const s32, "system/sprite", D_8011ED34);
 
-
-
+// uses D_8021E6E0[2][]
 INCLUDE_ASM(const s32, "system/sprite", func_8002A66C);
 
 INCLUDE_ASM(const s32, "system/sprite", func_8002ACA4);

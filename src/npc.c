@@ -13,7 +13,7 @@
 #include "weather.h"
 
 // bss
-npcInfo npcInfoArray[0x30];
+extern npcInfo npcInfoArray[0x30];
 u16 D_80114900[];
 u8 D_801C3E18;
 u16 D_801FBE2E;  
@@ -37,7 +37,31 @@ extern u16 D_80114960[30];
 void func_80075A78(u8);
 
 
-INCLUDE_ASM(const s32, "npc", func_800752C0);
+static inline void setFlag(u16 index) {
+    npcInfoArray[index].flags |= 2;
+}
+
+//INCLUDE_ASM(const s32, "npc", func_800752C0);
+
+void func_800752C0(void) {
+    
+    u8 i;
+
+    for (i = 0; i < TOTAL_NPCS; i++) {
+        
+        if (npcInfoArray[i].flags & 4) {
+            func_8002FA2C(npcInfoArray[i].spriteIndex);
+        }
+        
+        npcInfoArray[i].flags = 0;
+        npcInfoArray[i].movingFlag = 0;
+        npcInfoArray[i].unk_24 = 0;
+        npcInfoArray[i].unk_25 = 0;
+        npcInfoArray[i].unk_21 = 0;
+        
+    }
+
+}
 
 //INCLUDE_RODATA(const s32, "npc", jtbl_80120010);
 
@@ -441,7 +465,36 @@ void setNPCSpawningLocations(void) {
     }
 }
 
-INCLUDE_ASM(const s32, "npc", func_80076CF4);
+//INCLUDE_ASM(const s32, "npc", func_80076CF4);
+
+u8 func_80076CF4(void) {
+
+    u8 result = 0;
+
+    if (checkLifeEventBit(0) && checkLifeEventBit(1)) {
+
+        if (gBabyAge < 30) {
+            if ((gHour - 6) <= 13U) {
+                result = 2;
+                if (npcInfoArray[gWife].levelIndex != HOUSE) {
+                    result = 1;
+                }
+            } else {
+                result = 3;
+            }  
+        } else {
+            if ((gHour - 6) < 14U) {
+                // ??
+                result = !(gBabyAge < 120) ? 6 : 4;
+            } else {
+                result = 5;
+            }
+        }
+    }
+    
+    return result;
+    
+}
 
 // jtbl_80120188
 INCLUDE_ASM(const s32, "npc", func_80076DCC);
@@ -707,8 +760,7 @@ void func_8008420C(void) {
             npcInfoArray[SAIBARA].unk_21 = 10;
             npcInfoArray[SAIBARA].unk_22 = 0;
             setSpriteAnimation(npcInfoArray[SAIBARA].spriteIndex, npcInfoArray[SAIBARA].unk_24);
-            // can't use struct member for some reason
-            D_801FBE2E |= 2;
+            setFlag(SAIBARA);
             break;
         case TRUE:
             func_80075EBC(SAIBARA);
@@ -763,8 +815,7 @@ void func_80084F24(void) {
             npcInfoArray[37].unk_21 = 10;
             npcInfoArray[37].unk_22 = 0;
             setSpriteAnimation(npcInfoArray[37].spriteIndex, npcInfoArray[37].unk_24);
-            // can't use struct member for some reason
-            D_801FBFBE |= 2;
+            setFlag(37);
             break;
         case TRUE:
             func_80075EBC(0x25);

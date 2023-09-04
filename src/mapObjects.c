@@ -1,9 +1,9 @@
 #include "common.h"
 
-#include "system/map.h"
+#include "level.h"
+#include "mapObjects.h"
 
-// data
-extern u8 D_80118704[0xDA][5];
+#include "system/map.h"
 
 // bss
 // object maps for levels
@@ -33,6 +33,9 @@ extern u8 D_80118700[0xDA][4];
 // shared
 extern u8 D_801C3F35;
 extern u8 D_801FD624;
+
+// data
+extern u8 D_80118704[0xDA][5];
 
 
 // jtbl_80122858
@@ -241,7 +244,7 @@ void func_800DAC70(u8 arg0, u8 arg1, u8 arg2, u8 arg3) {
         func_80036FA0(0);
         func_80036C08(0);
     }
-}
+} 
 #else
 INCLUDE_ASM(const s32, "mapObjects", func_800DAC70);
 #endif

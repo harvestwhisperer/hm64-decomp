@@ -99,6 +99,6 @@ s16 func_80026844(Volume *volumePtr) {
 // alternate if used with a different/generic struct (seems to be used by dialogue box struct)
 /*
 s16 func_80026844(void *arg0) {
-    return *(s16 *)(arg0+4);
+    return *(s16*)(arg0+4);
 }
 */

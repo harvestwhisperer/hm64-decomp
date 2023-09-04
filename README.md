@@ -8,4 +8,4 @@ To build the project, first run `git submodule init` and `./tools/setup.sh`. Thi
 
 ## Progress
 
-Currently, about 30% of the 1459 game functions have been decompiled, and most library functions have been identified.
+Currently, about 33% of the 1459 game functions have been decompiled, and most library functions have been identified.

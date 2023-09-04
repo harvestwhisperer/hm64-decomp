@@ -46,6 +46,7 @@ extern u16 D_80237410;
 
 // data
 extern Addresses cutsceneMapAddresses[];
+// cutscene vaddrs
 extern void *D_80114C70[];
 extern void *D_80114D30[];
 extern u16 D_80114DF0[];
@@ -2115,7 +2116,7 @@ u16 func_800A7AE8(u8 index) {
                 gCutsceneIndex = 1;
             }
 
-            func_80060E58();
+            handleDailyShipment();
 
             if (gBaseMapIndex == FARM) {
                 index = 0;

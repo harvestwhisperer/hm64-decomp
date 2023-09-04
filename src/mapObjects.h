@@ -3,10 +3,34 @@
 
 #include "common.h"
 
+/* field tiles */
+#define UNTILLED 1
+#define TILLED 2	
+#define TILLED_WATERED 3
+#define SMALL_ROCK 4
+#define WEED 5
+#define LOG 6
+#define BROKEN_LOG 7
+// to-do: add crops
+#define BOULDER 0xC4
+#define STUMP 0xC8
+#define CORN_RIPE 0x83
+#define CORN_DEAD 0x84
+#define CORN_PLANT_WITHERED 0x85
+#define GRASS_PLANTED 0x88
+#define GRASS_GROWING 0x8B
+#define GRASS_GROWN 0x8E
+#define GRASS_CUT 0x8F
+#define MOONDROP_PLANTED 0x90
+// to-do: add foragables
+
+#define FIELD_WIDTH 24
+#define FIELD_HEIGHT 20
+
 extern void func_800D9600(u8);   
 extern void func_800D9BFC(); 
 extern u8 func_800DA8B8(u8);                             
-extern u8 func_800DA918(u8);                              
+extern u8 func_800DA918(u8);                 
 extern u16 func_800DA948(u8);
 extern u8 func_800DA978(u8 index);     
 extern void func_800DAA90(u8, u8, u8, u8); 
@@ -17,6 +41,7 @@ extern u8 func_800DB1BC(f32, f32);
 extern void func_800DB424();                                   
 extern void func_800DB858();                                   
 extern void func_800DBAC4();     
+extern void func_800DBBB0(u8);             
 extern u16 func_800DBF90();     
 extern u16 func_800DC008();       
 extern u32 func_800DC080(); 

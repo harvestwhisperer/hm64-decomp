@@ -513,6 +513,10 @@ segments:
     type: bin
     start: 0x800530
     
+ # - name: compressedVec3fs
+ #   type: bin:
+ #   start: 0xB051BC
+ 
   - name: objectSprites
     type: bin
     start: 0xC951A0

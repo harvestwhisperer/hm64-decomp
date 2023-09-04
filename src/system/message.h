@@ -6,6 +6,46 @@
 
 #define MAX_DIALOGUE_BOXES 6
 
+#define char_A 0xA1
+#define char_C 0xA3
+#define char_E 0xA5
+#define char_G 0xA7
+#define char_H 0xA8
+#define char_J 0xAA
+#define char_K 0xAB
+#define char_L 0xAC
+#define char_M 0xAD
+#define char_P 0xB0
+#define char_S 0xB3
+#define char_W 0xB7
+#define char_Z 0xB9
+#define char_a 0xBB
+#define char_b 0xBC
+#define char_c 0xBD
+#define char_d 0xBE
+#define char_e 0xBF
+#define char_f 0xC0
+#define char_g 0xC1
+#define char_h 0xC2
+#define char_i 0xC3
+#define char_j 0xC4
+#define char_k 0xC5
+#define char_l 0xC6
+#define char_m 0xC7
+#define char_n 0xC8
+#define char_o 0xC9
+#define char_p 0xCA
+#define char_q 0xCB
+#define char_r 0xCC
+#define char_s 0xCD
+#define char_t 0xCE
+#define char_u 0xCF
+#define char_v 0xD0
+#define char_w 0xD1
+#define char_x 0xD2
+#define char_y 0xD3
+#define char_z 0xD4
+
 // 80180790
 typedef struct {
 	u32 unk_0; 
@@ -96,7 +136,7 @@ extern bool func_8003DD14(u16);
 extern void func_8003DDF8(u32, u32, u32, u32);     
 extern bool func_8003E77C(u16, u8, u8, u8, u8);                   
 extern bool func_8003EA1C(u16, u8, u8, u8, u8, s32);       
-extern s32 func_8003F0DC();  
+extern bool func_8003F0DC();  
 extern bool func_8003F360(u16, s16, u8);                           
 extern bool func_8003F464(u16, u8, u8, s32, s32);                   
 extern bool func_8003F54C(u16, f32, f32, f32);                        

@@ -43,6 +43,8 @@ extern u8 func_800D5B18(u16 index);
 extern void func_800D51B0();                                  
 extern void func_800D5290();  
 extern u16 func_800D5A6C(u16 index);   
+extern bool func_800D5B30();
+extern void func_800D67FC(u8 index);
 extern void func_800D7010();  
 
 

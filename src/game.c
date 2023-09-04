@@ -5,6 +5,7 @@
 #include "system/dialogue.h"
 #include "system/map.h"
 #include "system/mathUtils.h"
+#include "system/memory.h"
 #include "system/message.h"
 #include "system/sprite.h"
 #include "system/tiles.h"
@@ -656,6 +657,7 @@ void func_8005AE8C(u16 arg0, u16 arg1, u16 arg2, int arg3, u16 arg4) {
     func_8002FCB4(0, 0);
     
     switch (arg0) {
+        
         case 0:
           func_8003F54C(0, 24.0f, -64.0f, 352.0f);
           func_8003F690(0, 0, 0, 0);
@@ -1346,7 +1348,7 @@ void func_8005CBF0(void) {
             gPlayer.unk_2C = 0;
             gItemBeingHeld = 0xFF;
         }
-        
+         
         func_8003F910(0, 0x78, &D_D47F00, &D_D49B80, &D_D49B80_2, &tvSprites_romTextureStart, 0x8023B400, 0x8023CC00, 0x8023CE00, 0x8023D200, 0, 4, 0xFE, 106.0f, -15.0f, 0);
         func_8003F910(1, 0x78, &D_D47F00, &D_D49B80, &D_D49B80_2, &tvSprites_romTextureStart, 0x8023B400, 0x8023CC00, 0x8023CE00, 0x8023D200, 0, 0xD, 0xFE, 106.0f, -15.0f, 0);
         func_8005CDCC();
@@ -1409,7 +1411,7 @@ void func_8005CDCC(void) {
 
 void func_8005CEFC(void) {
     
-    if (func_8003F0DC() & 0xFF) {
+    if (func_8003F0DC()) {
 
         setMainLoopCallbackFunctionIndex(MAIN_GAME);
 
@@ -1596,13 +1598,13 @@ void func_80060454(void) {
 // main loop callback 3
 void func_80060490(void) {
     func_800A8F74();
-}
+} 
 
 //INCLUDE_ASM(const s32, "game", func_800604B0);
 
 void func_800604B0(void) {
 
-    if (func_80036A84(0) || !(D_80158248.flags & 1)) {
+    if (func_80036A84(0) || !(mainMap[0].mapStruct8.flags & 1)) {
         
         func_8003F54C(0, 0, -64.0f, 352.0f);
         func_8003F690(0, 1, 0, 0);
@@ -1631,7 +1633,13 @@ void func_800604B0(void) {
     }
 }
 
-INCLUDE_ASM(const s32, "game", func_800605F0);
+//INCLUDE_ASM(const s32, "game", func_800605F0);
+
+void func_800605F0(void) {
+    if (func_8003F0DC()) {
+        setMainLoopCallbackFunctionIndex(0xD);
+    }
+}
 
 //INCLUDE_ASM(const s32, "game", func_80060624);
 
@@ -1645,7 +1653,7 @@ void func_80060624(void) {
     int tempStamina;
     u8 tempTime;
 
-    if (func_80036A84(0) || !(D_80158248.flags & 1)) {
+    if (func_80036A84(0) || !(mainMap[0].mapStruct8.flags & 1)) {
         
         func_800610DC();
         
@@ -1665,7 +1673,7 @@ void func_80060624(void) {
         }
         
         if (!checkDailyEventBit(0)) {
-            func_80060E58();
+            handleDailyShipment();
         }
         
         if (checkFatigueLevel() != 3) {
@@ -1720,8 +1728,8 @@ void func_80060624(void) {
         } else {
             toggleLifeEventBit(0x60);
         }
-        
-        setClockNewDay();
+         
+        setClockNewDay(); 
         
         gPlayer.currentStamina = gMaximumStamina;
         
@@ -1740,7 +1748,7 @@ void func_80060624(void) {
 void func_80060838(void) {
     
     // check map flags
-    if (func_80036A84(0) || !(D_80158248.flags & 1)) {
+    if (func_80036A84(0) || !(mainMap[0].mapStruct8.flags & 1)) {
 
         func_800610DC();
 
@@ -1781,7 +1789,7 @@ void func_80060838(void) {
 
         if (!checkDailyEventBit(0)) {
             // handle daily shipment
-            func_80060E58();
+            handleDailyShipment();
         }
 
         startNewDay();
@@ -1928,34 +1936,73 @@ bool func_80060DC0(void) {
     return result;
 }
 
-//INCLUDE_ASM(const s32, "game", func_80060E58);
+//INCLUDE_ASM(const s32, "game", handleDailyShipment);
 
-void func_80060E58(void) {
-    
-    int moneyEarned;
-    int checkOverflow;
-    int temp;
-    
-    moneyEarned = dailyShippingBinValue;
-    checkOverflow = gGold + moneyEarned;
-    
-    if (checkOverflow > MAX_GOLD) {
-        temp = checkOverflow - MAX_GOLD;
-        moneyEarned -= temp;
-        checkOverflow = MAX_GOLD;
-    }
-    
-    if (checkOverflow < 0) {
-        moneyEarned -= checkOverflow;
-    }
-    
-    gGold += moneyEarned;
-    dailyShippingBinValue = 0;
-    
-    setDailyEventBit(0);
+void handleDailyShipment(void) {
+    handleCompleteShipment();
+    setDailyEventBit(DAILY_SHIPMENT);
 }
 
-INCLUDE_ASM(const s32, "game", func_80060EC8);
+//INCLUDE_ASM(const s32, "game", func_80060EC8);
+
+// has to be compiler generated code
+u8 func_80060EC8(f32 arg0, f32 arg1, f32 arg2, f32 arg3) {
+   
+    s32 temp_s0;
+    s32 temp_v0;
+    u8 result;
+    u32 temp_a2;
+
+    temp_s0 = getAbsoluteValue((s32)(s16)(arg2 - arg0));
+    temp_v0 = getAbsoluteValue((s32)(s16)(arg3 - arg1));
+    
+    if (arg0 <= arg2) {
+        
+        temp_a2 = temp_s0 << 0x10;
+        
+        if (arg1 <= arg3) {
+            
+            if ((s16)temp_s0 <= (s16)temp_v0) {
+                result = -(((s32) ((s16) temp_v0 + ((u32) (temp_v0 << 0x10) >> 0x1F)) >> 1) < (s16) temp_s0) & 7;
+            } else {
+                result = (-(((s32) ((s16) temp_s0 + ((temp_a2) >> 0x1F)) >> 1) < (s16) temp_v0) & 7) | 6;
+            }
+            
+        } else if ((s16) temp_s0 <= (s16) temp_v0) {
+            result = (-(((s32) ((s16) temp_v0 + ((u32) (temp_v0 << 0x10) >> 0x1F)) >> 1) < (s16) temp_s0) & 5) | 4;
+        } else {
+            do {
+                result = 5;
+                if (((s32) ((s16) temp_s0 + ((temp_a2) >> 0x1F)) >> 1) >= (s16) temp_v0) {
+                    result = 6;
+                }
+            } while (0);
+        }
+        
+    } else if (arg1 <= arg3) {
+        
+        if ((s16)temp_s0 <= (s16)temp_v0) {
+            result = ((s32) ((s16) temp_v0 + ((u32) (temp_v0 << 0x10) >> 0x1F)) >> 1) < (s16) temp_s0;
+        } else {
+            result = 1;
+            if (((s32) ((s16) temp_s0 + ((u32) (temp_s0 << 0x10) >> 0x1F)) >> 1) >= (s16) temp_v0) {
+                result = 2;
+            }
+        }
+        
+    } else if ((s16) temp_s0 <= (s16) temp_v0) {
+        result = 3;
+        if (((s32) ((s16) temp_v0 + ((u32) (temp_v0 << 0x10) >> 0x1F)) >> 1) >= (s16) temp_s0) {
+            result = 4;
+        }
+        
+    } else {
+        result = (-(((s32) ((s16) temp_s0 + ((u32) (temp_s0 << 0x10) >> 0x1F)) >> 1) < (s16) temp_v0) & 3) | 2;
+    }
+    
+    return result;
+
+}
 
 //INCLUDE_ASM(const s32, "game", func_800610DC);
 
@@ -2332,7 +2379,21 @@ u8 getBacholeretteWithHighestAffection(u8 affectionLevel) {
 
 }
 
-INCLUDE_ASM(const s32, "game", func_80061A1C);
+//INCLUDE_ASM(const s32, "game", func_80061A1C);
+
+void func_80061A1C(u8 arg0, u8 arg1) {
+    switch (arg0) {                   
+        case 1:
+            D_801FD621 = arg1;
+            break;
+        case 2:
+            D_801FC150 = arg1;
+            break;
+        case 3:
+            D_80237412 = arg1;
+            break;
+    }
+}
 
 INCLUDE_ASM(const s32, "game", func_80061A88);
 
@@ -2606,7 +2667,7 @@ void setLetters(void) {
     if (!checkMailRead(0x1B) && checkLifeEventBit(CLIFF_GONE) && !getRandomNumberInRange(0, 10)) {
         setMail(0x1B);
     }
-
+ 
     if (!checkMailRead(0x1C) && checkLifeEventBit(ANN_CLIFF_BABY)) {
         setMail(0x1C);
     }
