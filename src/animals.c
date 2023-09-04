@@ -2,6 +2,8 @@
 
 #include "animals.h"
 
+#include "level.h"
+
 // bss
 extern Chicken gChickens[MAX_CHICKENS];
 extern FarmAnimal gFarmAnimals[];
@@ -121,7 +123,7 @@ void setAnimalLocations(u8 mapIndex) {
 
 void setDogLocation(u8 mapIndex) {
 
-    if ((dogInfo.flags & 1) && ((mapIndex == 0xFF) || (dogInfo.location == mapIndex))) {
+    if (dogInfo.flags & 1 && (mapIndex == 0xFF || dogInfo.location == mapIndex)) {
         dogInfo.location = FARM;
         dogInfo.coordinates.y = 0.0f;
         dogInfo.unk_18 = 0;
@@ -135,7 +137,7 @@ void setDogLocation(u8 mapIndex) {
 
 void setHorseLocation(u8 mapIndex) {
 
-    if ((horseInfo.flags & 1) && ((mapIndex == 0xFF) || (horseInfo.location == mapIndex))) {
+    if (horseInfo.flags & 1 && (mapIndex == 0xFF || horseInfo.location == mapIndex)) {
         horseInfo.coordinates.y = 0;
         horseInfo.location = FARM;
         horseInfo.unk_18 = 0;

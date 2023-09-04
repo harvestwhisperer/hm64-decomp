@@ -1,5 +1,9 @@
 #include "common.h"
 
+#include "system/dialogue.h"
+
+#include "game.h"
+
 // bss
 // struct/array
 extern u32 D_8013CE0C;
@@ -30,7 +34,7 @@ u8 setGameVariable(u16 index, void *address, u8 numSet, s32 max) {
         }
 
     }
-
+ 
     return result;
 }
 

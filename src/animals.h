@@ -7,7 +7,7 @@
 #define MAX_CHICKENS 12
 
 typedef struct {
-	char name[6];
+	u8 name[6];
 	Vec3f coordinates;
 	u16 unk_14;
 	u8 location;
@@ -25,7 +25,7 @@ typedef struct {
 
 typedef struct {
 	u8 affection;
-	char name[6];
+	u8 name[6];
 	u32 unk_8;
 	u32 unk_C;
 	u32 unk_10;
@@ -54,7 +54,7 @@ typedef struct {
 
 typedef struct {
 	u8 affection; // 00
-	char name[6]; // 01-07
+	u8 name[6]; // 01-07
 	Vec3f coordinates; // 8
 	u16 spriteInfo; // 14
 	u8 location; // 16
@@ -69,7 +69,7 @@ typedef struct {
 
 typedef struct {
 	u8 affection; // 00
-	char name[6]; // 01
+	u8 name[6]; // 01
 	Vec3f coordinates; // 08 
 	u16 unk_14; // 14
 	u8 location; // 16
@@ -94,7 +94,27 @@ typedef struct {
     u8 unk_5; 
 } AnimalLocations;
 
+// D_8016FB08
+typedef struct {
+    u32 unk_0; // 08
+    u32 unk_4; // 0C
+    u32 unk_8; // 10
+    u16 unk_C; // 14
+    u8 unk_E; // 16
+    u8 unk_F; // 17
+    u8 unk_10; // 18
+    u8 unk_11; // 19
+    u8 unk_12; // 1A
+    u8 unk_13; // 1B
+    u8 unk_14; // 1C
+    u8 unk_15; // 1D
+    u8 unk_16; // 1E
+    u8 unk_17; // 1F
+    u16 flags; // 20
+} UnknownAnimalStruct;
 
+
+extern bool func_80086764();    
 extern void func_800876D0();     
 extern void func_800879C8();
 extern void func_80087CD4();    
@@ -106,13 +126,17 @@ extern void func_80088C1C(u8, u8);
 extern void func_80088D54();                                  
 extern void func_8008B9AC();                                  
 extern void func_80099DE8();  
+extern void func_80099EEC(); 
+extern void func_80099FF0();
 extern void func_8009A398(void);   
-extern u8 func_8009A400();
+extern bool func_8009A074();
+extern bool func_8009A400();
 extern u8 func_8009A810();    
-extern void func_8009A97C(); 
+extern bool func_8009A100();
 extern void func_8009A17C();       
 extern void func_8009A2D0();
 extern void func_8009A53C();  
+extern void func_8009A97C(); 
 extern void func_8009AAC8();     
 extern void func_8009B25C();     
 extern u8 func_8009B2BC(u8);  

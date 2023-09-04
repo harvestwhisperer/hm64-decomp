@@ -3,6 +3,7 @@
 #include "level.h"
 
 #include "system/map.h"
+#include "system/memory.h"
 #include "system/sprite.h"
 #include "system/tiles.h"
 
@@ -29,6 +30,7 @@ extern u8 levelFlags[];
 // map indices for level interactions
 extern u8 D_80114280[];
 extern u8 D_801147C0[];
+extern u8 D_8011FB28[];
 extern Vec D_8011FB70[6];
 
 // shared with player.c and setCutscenes.c
@@ -65,7 +67,7 @@ void func_8006E840(u16 arg0) {
     } else {
         func_8003C084(0, D_80114280[gMapWithSeasonIndex] & 7);
     }
-    
+     
     func_8003C1E0(0, 0, 0, 0, 8, 8);
     func_8009C054(gBaseMapIndex);
     setLevelGraphicsData(gBaseMapIndex);
@@ -100,7 +102,7 @@ void setLevelGraphicsData(u16 mapIndex) {
 
     func_80036FA0(0);
 }
-
+ 
 INCLUDE_ASM(const s32, "level", func_8006EA44);
 
 INCLUDE_ASM(const s32, "level", func_8006EB94);
@@ -115,7 +117,32 @@ INCLUDE_ASM(const s32, "level", func_8006EC58);
 
 INCLUDE_ASM(const s32, "level", func_8006F938);
 
-INCLUDE_ASM(const s32, "level", func_80073244);
+//INCLUDE_ASM(const s32, "level", func_80073244);
+
+void func_80073244(u8 arg0) {
+
+    Vec3f arr[6];
+
+    MemoryRead_32 *ptr = arr;
+    MemoryRead_32 *ptr2 = D_8011FB28;
+
+    do {
+        *(Aligned32*)ptr = *(Aligned32*)ptr2;
+        ptr2++;
+        ptr++;
+    } while (ptr2 != (D_8011FB28 + 0x40));    
+
+    *(Vec2f*)ptr = *(Vec2f*)ptr2;
+
+    func_8002B138(arg0 +  0x62, &D_D86D90, &D_D8B140, &D_D8B140_2, &D_D8B160, &D_D8B160_2, &D_D8B1D0, (void*)0x802E4000, (void*)0x802E4D00, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
+    func_8002BD90(arg0 +  0x62, 1.0f, 1.0f, 1.0f);
+    func_8002C7EC(arg0 +  0x62, 3);
+    func_8002C85C(arg0 +  0x62, 0xFF, 0xFF, 0xFF, 0xFF);
+    func_8002C914(arg0 +  0x62, 0xFF, 0xFF, 0xFF, 0xFF);
+
+    func_80034C40(0, arg0, arg0 + 0x62, 0xC, arr[arg0].x, arr[arg0].y, arr[arg0].z, 0xFF, 0xFF, 0, 0);
+    
+}
 
 //INCLUDE_ASM(const s32, "level", func_8007341C);
 
@@ -132,7 +159,6 @@ void func_8007341C(u8 arg0) {
         ptr++;
     } while (ptr2 != (D_8011FB70 + 0x6));
 
-    // I have no clue
     *(Vec3f*)ptr = *(Vec3f*)ptr2;
 
     func_8002B138(arg0 + 0x62, &D_D86D90, &D_D8B140, &D_D8B140_2, &D_D8B160, &D_D8B160_2, &D_D8B1D0, (void* )0x802E4000, (void* )0x802E4D00, (void* )0x802E7400, (void* )0x802E7700, (void* )0x802E7A00, (void* )0x802E7B00, (void* )1, (u8) (void* )1);

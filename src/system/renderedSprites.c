@@ -10,7 +10,7 @@
 #include "npc.h"
 
 // bss
-extern CharacterSprite npcSpriteInfoArray[MAX_NPC_SPRITES];
+extern CharacterSprite npcSprites[MAX_NPC_SPRITES];
 extern RenderedSprite renderedSprites[MAX_RENDERED_SPRITES];
 extern Shadow shadowSpritesInfo[3];
 
@@ -42,11 +42,11 @@ void initializeNpcSpriteStructs(void) {
     }
     
     for (i = 0; i < MAX_RENDERED_SPRITES; i++) {
-        npcSpriteInfoArray[i].collisionBufferX = 0;
-        npcSpriteInfoArray[i].collisionBufferY = 0;
-        npcSpriteInfoArray[i].unk_1C = 0;
-        npcSpriteInfoArray[i].unk_1E = 0;
-        npcSpriteInfoArray[i].flags = 0; 
+        npcSprites[i].collisionBufferX = 0;
+        npcSprites[i].collisionBufferY = 0;
+        npcSprites[i].unk_1C = 0;
+        npcSprites[i].unk_1E = 0;
+        npcSprites[i].flags = 0; 
     } 
 }
 
@@ -58,28 +58,28 @@ u8 func_8002DDDC(u16 npcIndex, void* arg1, void* arg2, void* arg3, void* arg4, v
 
     if (npcIndex < MAX_NPC_SPRITES) {
 
-        if (!(npcSpriteInfoArray[npcIndex].flags & 1)) {
+        if (!(npcSprites[npcIndex].flags & 1)) {
             
             
-            npcSpriteInfoArray[npcIndex].romTextureStart = arg1;
-            npcSpriteInfoArray[npcIndex].romTextureEnd = arg2;
-            npcSpriteInfoArray[npcIndex].romPaletteStart = arg3;
-            npcSpriteInfoArray[npcIndex].romPaletteEnd = arg4;
-            npcSpriteInfoArray[npcIndex].romIndexStart = arg5;
-            npcSpriteInfoArray[npcIndex].romIndexEnd = arg6;
-            npcSpriteInfoArray[npcIndex].flag = arg8;
-            npcSpriteInfoArray[npcIndex].vaddr = arg9;
+            npcSprites[npcIndex].romTextureStart = arg1;
+            npcSprites[npcIndex].romTextureEnd = arg2;
+            npcSprites[npcIndex].romPaletteStart = arg3;
+            npcSprites[npcIndex].romPaletteEnd = arg4;
+            npcSprites[npcIndex].romIndexStart = arg5;
+            npcSprites[npcIndex].romIndexEnd = arg6;
+            npcSprites[npcIndex].flag = arg8;
+            npcSprites[npcIndex].vaddr = arg9;
 
-            npcSpriteInfoArray[npcIndex].collisionBufferX = 0;
-            npcSpriteInfoArray[npcIndex].collisionBufferY = 0;
+            npcSprites[npcIndex].collisionBufferX = 0;
+            npcSprites[npcIndex].collisionBufferY = 0;
 
-            npcSpriteInfoArray[npcIndex].unk_1C = 0;
-            npcSpriteInfoArray[npcIndex].unk_1E = 0;
+            npcSprites[npcIndex].unk_1C = 0;
+            npcSprites[npcIndex].unk_1E = 0;
 
-            npcSpriteInfoArray[npcIndex].flags = 1;
+            npcSprites[npcIndex].flags = 1;
 
             if (arg7) {
-                npcSpriteInfoArray[npcIndex].flags = 3;
+                npcSprites[npcIndex].flags = 3;
             }
             
             result = 1;
@@ -139,7 +139,7 @@ u8 func_8002E108(u16 index) {
 
         func_8002B6B8(renderedSprites[index].unk_52);
         
-        if (npcSpriteInfoArray[renderedSprites[index].characterIndex].flag != 0xFF) {
+        if (npcSprites[renderedSprites[index].characterIndex].flag != 0xFF) {
             func_8002B6B8(renderedSprites[index].spriteOffset);
         }
         
@@ -166,7 +166,7 @@ void func_8002E1B8(void) {
         
             func_8002B6B8(renderedSprites[i].unk_52);
             
-            if (npcSpriteInfoArray[renderedSprites[i].characterIndex].flag != 0xFF) {
+            if (npcSprites[renderedSprites[i].characterIndex].flag != 0xFF) {
                 func_8002B6B8(renderedSprites[i].spriteOffset);
             } 
         }
@@ -353,7 +353,25 @@ INCLUDE_ASM(const s32, "system/renderedSprites", func_8002F7C8);
 
 INCLUDE_ASM(const s32, "system/renderedSprites", func_8002F8F0);
 
-INCLUDE_ASM(const s32, "system/renderedSprites", func_8002FA2C);
+//INCLUDE_ASM(const s32, "system/renderedSprites", func_8002FA2C);
+
+bool func_8002FA2C(u16 arg0) {
+
+    bool result = 0;
+
+    if (arg0 < 0x31) {
+        if (renderedSprites[arg0].flags & 1 && renderedSprites[arg0].flags & 8) {
+            renderedSprites[arg0].flags &= ~( 0x8 | 0x2000);
+            func_8002B6B8(renderedSprites[arg0].unk_52);
+            if (npcSprites[renderedSprites[arg0].characterIndex].flag != 0xFF) {
+                func_8002B6B8(renderedSprites[arg0].spriteOffset);
+            }
+            result = 1;
+        }
+    }
+
+    return result;
+}
 
 INCLUDE_ASM(const s32, "system/renderedSprites", func_8002FAFC);
 
@@ -431,9 +449,9 @@ u16 setSpriteCollisionBuffers(u16 spriteIndex, u8 xValue, u8 yValue) {
     u16 result = 0;
     
     if (spriteIndex < MAX_NPC_SPRITES) {
-        if (npcSpriteInfoArray[spriteIndex].flags & 1) {
-            npcSpriteInfoArray[spriteIndex].collisionBufferX = xValue;
-            npcSpriteInfoArray[spriteIndex].collisionBufferY = yValue;
+        if (npcSprites[spriteIndex].flags & 1) {
+            npcSprites[spriteIndex].collisionBufferX = xValue;
+            npcSprites[spriteIndex].collisionBufferY = yValue;
             result = 1;
         }
     }
@@ -519,7 +537,7 @@ Vec3f* func_800315A0(Vec3f* arg0, u16 index) {
     
     if (index < MAX_RENDERED_SPRITES) {
         if ((renderedSprites[index].flags & 1) && !(renderedSprites[index].flags & 0x40) && !(renderedSprites[index].flags & 0x100)) {
-            func_80036610(&vec, gTileContext[D_801FD610].unk_40, renderedSprites[index].startingCoordinates.x, renderedSprites[index].startingCoordinates.z);
+            func_80036610(&vec, gTileContext[D_801FD610].mapIndex, renderedSprites[index].startingCoordinates.x, renderedSprites[index].startingCoordinates.z);
         } 
     }
 
@@ -541,7 +559,7 @@ Vec3f* func_800315A0(Vec3f* arg0, u16 index) {
     
 //     if (index < MAX_RENDERED_SPRITES) {
 //         if ((renderedSprites[index].flags & 1) && !(renderedSprites[index].flags & 0x40) && !(renderedSprites[index].flags & 0x100)) {
-//             func_80036610(&vec, gTileContext[D_801FD610].unk_40, renderedSprites[index].startingCoordinates.x, renderedSprites[index].startingCoordinates.z);
+//             func_80036610(&vec, gTileContext[D_801FD610].mapIndex, renderedSprites[index].startingCoordinates.x, renderedSprites[index].startingCoordinates.z);
 //         } 
 //     }
  

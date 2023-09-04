@@ -20,6 +20,7 @@ volatile u16 mainLoopCallbackCurrentIndex;
 void (*mainLoopCallbacksTable[MAIN_LOOP_CALLBACK_FUNCTION_TABLE_SIZE])();
 
 volatile u16 D_80182BA0;
+volatile u16 D_8020564C;
 void *currentGfxTaskPtr;
  
 //INCLUDE_ASM(s32, "mainLoop", mainLoop)
@@ -92,7 +93,6 @@ void mainLoop(void) {
             D_80237A04 = D_801C3BEC;
               
             getRandomNumber();
-            // res = getRandomNumber(); also matches
             
         }
     
@@ -207,7 +207,7 @@ u32 setMainLoopCallbackFunctionIndex(u16 index) {
     
     if (index < MAIN_LOOP_CALLBACK_FUNCTION_TABLE_SIZE) {
 
-        temp = &mainLoopCallbacksTable;
+        temp = mainLoopCallbacksTable;
       
         if (temp[index]) {
             mainLoopCallbackCurrentIndex = index;
@@ -264,7 +264,7 @@ void func_80026248(u16 arg0) {
 
 //INCLUDE_ASM(const s32, "mainLoop", func_80026284);
 
-// called by main loop
+// start up before main loop
 void func_80026284(void) {
 
     u16 counter;
@@ -379,6 +379,7 @@ void func_800264CC(int arg0) {
         }
       
         if (!D_80205208) {
+
           D_80205208 = 1;
           D_801C3BEC = 0;
           D_801C3F34 += 1;

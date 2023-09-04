@@ -25,7 +25,6 @@ extern u8 gHouseExtensionSelection;
 void func_800598E0(void) {
 
     u32 tempSeason;
-    u32 temp2;
 
     resetDailyBits();
     
@@ -70,17 +69,15 @@ void func_800598E0(void) {
     }
     
     if (checkLifeEventBit(0x94)) {
-        
-        tempSeason = gSeason;
 
-        if (tempSeason == WINTER) {
+        if (gSeason == WINTER) {
 
             if (gDayOfMonth == 5) {
                 gAverageFarmAnimalAffection = (gFarmAnimals[D_8016FAF8].affection + gFarmAnimals[D_801C3F46].affection + gFarmAnimals[D_8016F898].affection) / 3;
                 func_800886D0();
             }
 
-            if (tempSeason == gSeason && gDayOfMonth == 6) {
+            if (gSeason == WINTER && gDayOfMonth == 6) {
                 toggleLifeEventBit(0x94);
             }
         }
@@ -103,7 +100,7 @@ void func_800598E0(void) {
     }
     
     if (gSeason == SPRING) {
-        if (gDayOfMonth == 0x11) {
+        if (gDayOfMonth == 17) {
             setDailyEventBit(0x41);
             toggleLifeEventBit(0x90);
             func_800CC17C();
@@ -139,10 +136,10 @@ void func_800598E0(void) {
         toggleLifeEventBit(0x92);
     }
 
-    temp2 = gSeason;
+    tempSeason = gSeason;
     
     if (gYear == 1) {
-        if (temp2 == AUTUMN && gDayOfMonth == 23) {
+        if (tempSeason == AUTUMN && gDayOfMonth == 23) {
           mountainConstructionWorkDays = 1;
         }
     }

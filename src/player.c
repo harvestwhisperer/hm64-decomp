@@ -3,6 +3,7 @@
 #include "player.h"
 
 #include "system/controller.h"
+#include "system/graphic.h"
 #include "system/sprite.h"
 #include "system/tiles.h"
 
@@ -20,8 +21,11 @@
 u8 func_80067A24(u8);                               
 
 // consumable tool counters (seeds, feed)
-extern u16 D_80237410;
 extern u8 D_802373A8;
+extern u16 D_80237410;
+
+// part of player struct, but necessary for matching right now
+extern u16 D_801890C8;
 
 // bss here or itemHandlers.c
 extern u8 D_80189836;
@@ -41,6 +45,18 @@ extern s8 D_8011F3FC[12];
 
 
 //INCLUDE_ASM(const s32, "player", setupPlayerSprite);
+
+static inline void resetAction() {
+    gPlayer.action3 = 0;
+    gPlayer.action4 = 0;
+    gPlayer.action1 = 0;
+    gPlayer.action2 = 0;
+}
+
+static inline resetAction2() {
+    gPlayer.action3 = 0;
+    gPlayer.action4 = 0;
+}
 
 void setupPlayerSprite(u16 arg0, u8 resetPlayer) {
  
@@ -98,7 +114,7 @@ u8 func_80065BCC(u8 tool) {
     u8 i;
     u8 found = 0xFF;
 
-    for (i = 0; i <  MAX_TOOL_SLOTS_RUCKSACK && found == 0xFF; i++) {
+    for (i = 0; i < MAX_TOOL_SLOTS_RUCKSACK && found == 0xFF; i++) {
         if (gPlayer.toolSlots[i] == tool) {
             found = 1;
         }
@@ -156,7 +172,7 @@ u8 removeTool(u8 tool) {
         }
     }
 
-    return found;
+    return found; 
 }
 
 //INCLUDE_ASM(const s32, "player", acquireKeyItem);
@@ -179,6 +195,7 @@ u8 acquireKeyItem(u8 item) {
 //INCLUDE_ASM(const s32, "player", removeKeyItem);
 
 u8 removeKeyItem(u8 item) {
+
     u8 i;
     u8 found = 0xFF;
 
@@ -248,14 +265,15 @@ Vec3f* func_80065F94(Vec3f *arg0, f32 arg1, u8 arg2) {
     Vec3f vec;
     UnknownStruct4 struct1;
     UnknownStruct4 struct2;
+
     s8 *ptr;
     s8 *ptr2;
 
     struct1 = *(UnknownStruct4*)D_8011F3F0;
     struct2 = *(UnknownStruct4*)D_8011F3FC;
     
-    ptr = (u8*)&struct1;
-    ptr2 = (u8*)&struct2;
+    ptr = (s8*)&struct1;
+    ptr2 = (s8*)&struct2;
 
     func_800315A0(&vec, 0);
 
@@ -305,17 +323,12 @@ const s8 D_8011F3FC[12] = { 1, 1, 0, 0xFF, 0xFF, 0xFF, 0, 1, 0, 0, 0, 0 };
 //INCLUDE_ASM(const s32, "player", func_8006623C);
 
 void func_8006623C(void) {
-    
-    u32 temp;
 
-    temp = gPlayer.action1 - 1;
-    
     if (gPlayer.action1 == 0) {
         func_800664C8();
-        temp = gPlayer.action1 - 1;
     }
     
-    switch (temp) {
+    switch (gPlayer.action1 - 1) {
         case 0:
             func_80067BC4();
             break;
@@ -614,7 +627,7 @@ void func_80068258(void) {
 //INCLUDE_ASM(const s32, "player", func_800682F8);
 
 void func_800682F8(void) {
-    if ((func_8004D35C(0, -1)) && (gPlayer.action4 < 4)) {
+    if (func_8004D35C(0, -1) && gPlayer.action4 < 4) {
         gPlayer.action4 = 4;
     }
 }
@@ -700,7 +713,97 @@ INCLUDE_ASM(const s32, "player", func_80068FB0);
 
 INCLUDE_ASM(const s32, "player", func_800692E4);
 
-INCLUDE_ASM(const s32, "player", func_80069830);
+//INCLUDE_ASM(const s32, "player", func_80069830);
+
+void func_80069830(void) {
+
+    Vec3f vec;
+    Vec3f vec2;
+
+    switch (gPlayer.action4) {
+        case 0:
+            func_8003019C(0, 0);
+            func_80030240(0, 0);
+            func_800302E4(0, 0);
+            func_80030054(0, 0);
+            func_80038990(0, 1, 0);
+            gPlayer.direction = 4;
+            gPlayer.unk_6F = 0x12;
+            gPlayer.action4++;
+            func_80028520(&vec, 4.0f, 4, 0);
+            gPlayer.currentCoordinates = vec;
+            func_8002F684(0, (gPlayer.direction + 8 - func_8003C1A4(0)) % 8);
+            gPlayer.action2 = 2;
+            break;
+        case 1:
+            if (gPlayer.unk_6F == 0) {
+                func_80038990(0, 0, 0);
+                gPlayer.direction = 5;
+                gPlayer.action1 = 0xC;
+                gPlayer.currentCoordinates.x = 0;
+                gPlayer.currentCoordinates.y = 0;
+                gPlayer.currentCoordinates.z = 0;
+                gPlayer.action3 = 0;
+                D_801890C8 = 0;
+                gPlayer.action4 = 0;
+                gPlayer.action2 = 0xE;
+                gPlayer.flags |= 0x10;
+            } else {
+                gPlayer.unk_6F -= 1;
+            }
+            break;
+        case 2:
+            if (gPlayer.action3 == 0x3C) {
+                gPlayer.direction = 1;
+                gPlayer.action1 = 0xC;
+                resetAction2();
+                gPlayer.action2 = 0xE;
+                gPlayer.flags |= 0x40;
+            } else {
+                gPlayer.action3++;
+            }
+            break;
+        case 3:
+            if (gPlayer.unk_6F == 0) {
+                func_80038990(0, 1, 0);
+                setAudio(0x32);
+                gPlayer.direction = 0;
+                gPlayer.unk_6F = 0x12;
+                func_80028520(&vec2, 4, 0, 0);
+                gPlayer.currentCoordinates = vec2;
+                func_8002F684(0, (gPlayer.direction + 8 - func_8003C1A4(0)) % 8);
+                gPlayer.action2 = 2;
+                gPlayer.action4++;
+            } else {
+                gPlayer.unk_6F--;
+            }
+            break;
+        case 4:
+            if (gPlayer.unk_6F == 0) {
+                gPlayer.currentCoordinates.x = 0;
+                gPlayer.currentCoordinates.y = 0;
+                gPlayer.currentCoordinates.z = 0;
+                func_8003019C(0, 1);
+                func_80030240(0, 1);
+                func_800302E4(0, 1);
+                func_80030054(0, 1);
+                func_80038990(0, 0, 0);
+                gPlayer.action3 = 0;
+                gPlayer.action4 = 0;
+                gPlayer.action1 = 0;
+                gPlayer.action2 = 0;
+                toggleDailyEventBit(6);
+                if (!checkDailyEventBit(0x33)) {
+                    gPlayer.fatigue[0] += adjustValue(gPlayer.fatigue[0], -10, 0x64);
+                }
+                setDailyEventBit(0x33);
+            } else {
+                gPlayer.unk_6F--;
+            }
+            break;
+    }
+    func_8002FE10(0, gPlayer.currentCoordinates.x, 0, gPlayer.currentCoordinates.z, 1.0f);
+}
 
 //INCLUDE_ASM(const s32, "player", func_80069C5C);
 
@@ -863,15 +966,10 @@ void func_8006DFB0(void) {
             func_800CF850();
             gPlayer.action4++;
             break;
-            // necessary to match
-            do {} while (0);
         case 3:            
             if (!D_80189836) {
                 if (!func_80067A24(0)) {
-                    gPlayer.action3 = 0;
-                    gPlayer.action4 = 0;
-                    gPlayer.action1 = 0;
-                    gPlayer.action2 = 0;
+                    resetAction();
                 }
 
                 D_802373A8 += adjustValue(D_802373A8, -1, 1);
@@ -902,15 +1000,10 @@ void func_8006E0D4(void) {
             func_800CF850();
             gPlayer.action4++;
             break;
-            // necessary to match
-            do {} while (0);
         case 3:
             if (!D_80189836) {
                 if (!func_80067A24(0)) {
-                    gPlayer.action3 = 0;
-                    gPlayer.action4 = 0;
-                    gPlayer.action1 = 0;
-                    gPlayer.action2 = 0;
+                    resetAction();
                 }
                 D_80237410 += adjustValue(D_80237410, -1, 0x3E7);
                 if (!D_80237410) {
@@ -955,15 +1048,10 @@ void func_8006E240(void) {
             func_800CF850();
             gPlayer.action4++;
             break;
-            // necessary to match
-            do {} while (0);
         case 3:
             if (!D_80189836) {
                 if (!func_80067A24(0)) {
-                    gPlayer.action3 = 0;
-                    gPlayer.action4 = 0;
-                    gPlayer.action1 = 0;
-                    gPlayer.action2 = 0;
+                    resetAction();
                 }
                 if (checkDailyEventBit(0x14)) {
                     gPlayer.currentTool = 0;

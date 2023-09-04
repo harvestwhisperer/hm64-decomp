@@ -4,16 +4,18 @@
 
 #include "common.h"
 
+#define MAX_TILES 96
+
 typedef struct {
-	void *tileBank;
+	u8 *tileBank;
 	Vec3f unk_4;
 	Vec3f unk_10;
 	Vec3f unk_1C;
 	Vec3f unk_28;
 	Vec3f unk_34; 
-	u16 unk_40;
+	u16 mapIndex;
 	u8 unk_42;
-	u8 mapIndex;
+	u8 unk_43;
 	u8 unk_44;
 	u8 unk_45;
 	u16 unk_46;
@@ -36,8 +38,9 @@ extern void func_8003BF7C(u16, u8, u8, u8, u8, s32);
 extern bool func_8003C084(u16, u8);    
 extern bool func_8003C6E4();
 extern bool func_8003C1A4(u16);
-extern void func_8003C1E0(u16, f32, f32, f32, u8, u8);      
+bool func_8003C1E0(u16 arg0, f32 arg1, f32 arg2, f32 arg3, u8 arg4, u8 arg5);
 extern void func_8003C504(u32);     
+extern bool func_8003C5C0(u16, u8, u8);
 
 extern u16 gTileContextFlags;
 extern MapTileContext gTileContext[];

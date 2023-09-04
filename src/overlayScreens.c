@@ -8,6 +8,7 @@
 #include "game.h"
 #include "gameStatus.h"
 #include "initialize2.h"
+#include "mainLoop.h"
 #include "shop.h"
 #include "tv.h"
 

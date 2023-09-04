@@ -32,7 +32,6 @@ extern u8 D_80118620[];
 
 // bss
 extern u8 D_8018907D;
-extern u8 D_801890CC;
 extern u8 D_801C3F35;
 extern u8 D_801FD624;
 
@@ -91,23 +90,25 @@ void func_800CF850(void) {
 }
 
 // jtbl_801222B0
-//INCLUDE_ASM(const s32, "itemHandlers", func_800CF874);
+//INCLUDE_ASM(const s32, "itemHandlers", getToolLevel);
 
-u8 func_800CF874(u8 arg0) {
-    switch (arg0) {
-        case 1:
-            return gPlayer.unk_1F[0];
-        case 2:
-            return gPlayer.unk_1F[1];
-        case 3:
-            return gPlayer.unk_1F[2];
-        case 4:
-            return gPlayer.unk_1F[3];
-        case 5:
-            return gPlayer.unk_1F[4];
+u8 getToolLevel(u8 tool) {
+
+    switch (tool) {
+        case SICKLE:
+            return gPlayer.toolLevels[0];
+        case HOE:
+            return gPlayer.toolLevels[1];
+        case AX:
+            return gPlayer.toolLevels[2];
+        case HAMMER:
+            return gPlayer.toolLevels[3];
+        case WATERING_CAN:
+            return gPlayer.toolLevels[4];
         default:
             return 0;
     }
+
 }
 
 INCLUDE_ASM(const s32, "itemHandlers", func_800CF8F8);
@@ -241,7 +242,7 @@ void func_800D0318(void) {
     }
 }
 
-// also matches but less readable
+// alternate for studying
 // void func_800D0318(void) {
 
 //     int temp = D_80189828.unk_E; 
@@ -1135,73 +1136,90 @@ u8 func_800D67E4(u8 index) {
 //INCLUDE_ASM(const s32, "itemHandlers", func_800D67FC);
 
 void func_800D67FC(u8 index) {
-    
-    s32 temp;
-    u16 temp2;
 
-    temp = index;
-    
-    if (temp < 0x70) {
-        if (temp > 0x5F) {
-            temp2 = gPlayer.unk_6C + 0xF5;
-            goto func_end;
-        } 
-    } 
+    u16 temp;
 
-    // array of npc/dialogue-related u16s
-    temp2 = D_80118000[index];
-    
-func_end:
-    func_8005AE8C(1, 6, temp2, 0, 2);
+    switch (index) {
+        case 0x60 ... 0x6F:
+            temp =  gPlayer.unk_6C + 0xF5;
+            break;
+        default:
+            // array of npc/dialogue-related u16s
+            temp = D_80118000[index];
+            break;
+    }
+
+    func_8005AE8C(1, 6, temp, 0, 2);
 }
+
+// alternate for study
+// void func_800D67FC(u8 index) {
+    
+//     s32 temp;
+//     u16 temp2;
+
+//     temp = index;
+    
+//     if (temp < 0x70) {
+//         if (temp > 0x5F) {
+//             temp2 = gPlayer.unk_6C + 0xF5;
+//             goto func_end;
+//         } 
+//     } 
+
+// 
+//     temp2 = D_80118000[index];
+    
+// func_end:
+//     func_8005AE8C(1, 6, temp2, 0, 2);
+// }
 
 // jumptable: 801226D8, 0xFDAD8
 //INCLUDE_ASM(const s32, "itemHandlers", func_800D6868);
 
-// shipping bin
 void func_800D6868(u8 index) {
 
     u32 result;
     
-    dailyShippingBinValue += adjustValue(dailyShippingBinValue, D_801181C0[index], 999999);
+    dailyShippingBinValue += adjustValue(dailyShippingBinValue, D_801181C0[index], MAX_TOTAL_SHIPPING);
     
     switch (index) {
         case 13:
-            D_801654F4 += adjustValue(D_801654F4, 1, 999);
-            gTotalCropsShipped += adjustValue(gTotalCropsShipped,1, 99999);
+            D_801654F4 += adjustValue(D_801654F4, 1, MAX_ITEM_SHIPPING_VALUE);
+            gTotalCropsShipped += adjustValue(gTotalCropsShipped,1, MAX_TOTAL_CROPS_SHIPPED);
             break;
         case 14:
-            D_80237414 += adjustValue(D_80237414, 1, 999);
-            gTotalCropsShipped += adjustValue(gTotalCropsShipped,1, 99999);
+            D_80237414 += adjustValue(D_80237414, 1, MAX_ITEM_SHIPPING_VALUE);
+            gTotalCropsShipped += adjustValue(gTotalCropsShipped,1, MAX_TOTAL_CROPS_SHIPPED);
             break;
         case 18:
-            D_801FB6FC += adjustValue(D_801FB6FC, 1, 999);
-            gTotalCropsShipped += adjustValue(gTotalCropsShipped,1, 99999);
+            D_801FB6FC += adjustValue(D_801FB6FC, 1, MAX_ITEM_SHIPPING_VALUE);
+            gTotalCropsShipped += adjustValue(gTotalCropsShipped,1, MAX_TOTAL_CROPS_SHIPPED);
             break;
         case 15:
-            D_801C3F80 += adjustValue(D_801C3F80, 1U, 0x3E7);
-            gTotalCropsShipped += adjustValue(gTotalCropsShipped,1, 99999);
+            D_801C3F80 += adjustValue(D_801C3F80, 1, MAX_ITEM_SHIPPING_VALUE);
+            gTotalCropsShipped += adjustValue(gTotalCropsShipped,1, MAX_TOTAL_CROPS_SHIPPED);
             break;
         case 19:
-            D_801806C0 += adjustValue(D_801806C0, 1U, 0x3E7);
-            gTotalCropsShipped += adjustValue(gTotalCropsShipped,1, 99999);
+            D_801806C0 += adjustValue(D_801806C0, 1, MAX_ITEM_SHIPPING_VALUE);
+            gTotalCropsShipped += adjustValue(gTotalCropsShipped,1, MAX_TOTAL_CROPS_SHIPPED);
             break;
         case 16:
-            D_80188F60 += adjustValue(D_80188F60, 1U, 0x3E7);
-            gTotalCropsShipped += adjustValue(gTotalCropsShipped,1, 99999);
+            D_80188F60 += adjustValue(D_80188F60, 1, MAX_ITEM_SHIPPING_VALUE);
+            gTotalCropsShipped += adjustValue(gTotalCropsShipped,1, MAX_TOTAL_CROPS_SHIPPED);
             break;
         case 17:
-            D_801FB5D0 += adjustValue(D_801FB5D0, 1U, 0x3E7);
-            gTotalCropsShipped += adjustValue(gTotalCropsShipped,1, 99999);
+            D_801FB5D0 += adjustValue(D_801FB5D0, 1, MAX_ITEM_SHIPPING_VALUE);
+            gTotalCropsShipped += adjustValue(gTotalCropsShipped,1, MAX_TOTAL_CROPS_SHIPPED);
             break;
         case 21:
         case 22:
         case 23:
         case 24:
-            gTotalGoldenMilkShipped += adjustValue(gTotalGoldenMilkShipped, 1U, 0x270F);
+            gTotalGoldenMilkShipped += adjustValue(gTotalGoldenMilkShipped, 1, MAX_ANIMAL_ITEM_SHIPPED);
             break;
         case 20:
-            gTotalEggsShipped += adjustValue(gTotalEggsShipped, 1, 0x270F);
+            gTotalEggsShipped += adjustValue(gTotalEggsShipped, 1, MAX_ANIMAL_ITEM_SHIPPED);
             break;
             
     }

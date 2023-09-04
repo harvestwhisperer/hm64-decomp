@@ -3,7 +3,6 @@ osRomBase = 0x80000308;
 osResetType = 0x8000030C;
 osAppNMIBuffer = 0x8000031C;
 rmonmisc_text_010C = 0x800262B0;
-
 Fstereo = 0x800F4218;
 player_text_1164 = 0x800F423C;
 MusInitialize = 0x800F4884;
@@ -884,6 +883,8 @@ getAbsoluteValue = 0x80026850;
 graphicsInit = 0x800268F0;
 drawFrame = 0x80026A98;
 startGfxTask = 0x80026AE4;
+sinfRadians = 0x800278F0;
+cosfRadians = 0x80027920;
 initRcp = 0x800288D8;
 clearFramebuffer = 0x80028920;
 setCameraOrthographicValues = 0x80028D94;
@@ -935,6 +936,7 @@ setSpecialDialogues = 0x8005A708;
 resetDailyBits = 0x8005ABBC;
 adjustValue = 0x8005AE64;
 
+handleDailyShipment = 0x80060E58;
 setFestivalDailyBits = 0x8006096C;
 setWifeNameString = 0x800611E0;
 setDefaultBabyName = 0x80061354;
@@ -1016,6 +1018,7 @@ handleRanchStoreExits = 0x800B28D8;
 addRecipe = 0x800C77B8;
 checkRecipe = 0x800C7824;
 
+getToolLevel = 0x800CF874;
 handleToolUse = 0x800D0110;
 handleBlueFeatherUse = 0x800D4F70;
 updateClock = 0x800D7E28;
@@ -1103,18 +1106,18 @@ piEventQueue = 0x80137380;
 gameVariables = 0x8013CE08;
 
 lifeEventBits = 0x8013D1C8;
-
 controllers = 0x8013D440;
 
 gSongVolume = 0x8013D5E4;
 
 nuAuHeap = 0x8013d5c8;
+mainMap = 0x8013DC40;
 
 gDayOfMonth = 0x80158260;
 
 spriteAddresses = 0x80158268;
 
-npcSpriteInfoArray = 0x801584F0;
+npcSprites = 0x801584F0;
 
 gTotalGrassTiles = 0x801654F0;
 farmFieldTiles = 0x8016F500;

@@ -17,6 +17,7 @@ u16 calculateNPCAffectionScore(void) {
     }
     
     return score;
+
 }
 
 //INCLUDE_ASM(const s32, "evaluation", calculateHouseExtensionScore);
@@ -44,6 +45,7 @@ u8 calculateHouseExtensionScore(void) {
     }
     
     return score;
+    
 }
 
 u16 calculateGrassScore(void) {
@@ -65,6 +67,7 @@ u16 calculateGrassScore(void) {
     }
 
   return score;
+
 }
 
 //INCLUDE_ASM(const s32, "evaluation", calculateFieldScore);
@@ -97,15 +100,18 @@ u8 calculateShippingScore(void) {
     u8 eggsShipped;
     u8 goldenMilkShipped;
     
-    totalCropsShipped = ((gTotalCropsShipped * 100) / 99999);
-    goldenMilkShipped = ((gTotalGoldenMilkShipped * 100) / 9999);
-    eggsShipped = ((gTotalEggsShipped * 100) / 9999);
+    totalCropsShipped = (gTotalCropsShipped * 100) / MAX_TOTAL_CROPS_SHIPPED;
+    goldenMilkShipped = (gTotalGoldenMilkShipped * 100) / MAX_ANIMAL_ITEM_SHIPPED;
+    eggsShipped = (gTotalEggsShipped * 100) / MAX_ANIMAL_ITEM_SHIPPED;
 
-    if ((goldenMilkShipped <= eggsShipped) || (goldenMilkShipped <= totalCropsShipped)) {
+    if (eggsShipped >= goldenMilkShipped || totalCropsShipped >= goldenMilkShipped) {
+
         score = 1;
-        if (eggsShipped <= totalCropsShipped) {
+
+        if (totalCropsShipped >= eggsShipped) {
             score = 2;            
         }
+        
     }
 
     return score;

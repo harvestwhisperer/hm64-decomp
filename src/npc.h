@@ -5,6 +5,47 @@
 
 #define TOTAL_NPCS 48
 
+#define MARIA 0
+#define POPURI 1
+#define ELLI 2
+#define ANN 3
+#define KAREN 4
+#define BABY 5
+#define HARRIS 6
+#define GRAY 7
+#define JEFF 8
+#define CLIFF 9
+#define KAI 0xA
+#define MAYOR 0xB
+#define MAYOR_WIFE 0xC
+#define LILLIA 0xD
+#define BASIL 0xE
+#define ELLEN 0xF
+#define DOUG 0x10
+#define GOTZ 0x11
+#define SASHA 0x12
+#define POTION_SHOP_DEALER 0x13
+#define KENT 0x14
+#define STU 0x15
+#define MIDWIFE 0x16
+#define MAY 0x17
+#define RICK 0x18
+#define PASTOR 0x19
+#define SHIPPER 0x1A
+#define SAIBARA 0x1B
+#define DUKE 0x1C
+#define GREG 0x1D
+#define CARPENTER_1 0x1E
+#define CARPENTER_2 0x1F
+#define MASTER_CARPENTER 0x20
+#define HARVEST_SPRITE_1 0x21
+#define HARVEST_SPRITE_2 0x22
+#define HARVEST_SPRITE_3 0x23
+#define SYDNEY 0x24
+#define BARLEY 0x25
+#define GOURMET_JUDGE 0x26
+#define PHOTOGRAPHER 0x27
+
 typedef struct {
 	/* 0x00*/  Vec3f startingCoordinates;
 	/* 0x0C */ Vec3f currentCoordinates;
@@ -24,11 +65,11 @@ typedef struct {
 	/* 0x26 */ u16 flags;
 } npcInfo;
 
-
 extern void func_800752C0();  
 extern void func_80075A18(); 
 extern void func_800758B8();                                  
 extern void func_80075910();  
+extern u8 func_800858D4();    
 extern bool func_80085D48(int index, u16 arg1); 
 extern void setNpcAnimations(); 
 extern void setNPCSpawningLocations();                     

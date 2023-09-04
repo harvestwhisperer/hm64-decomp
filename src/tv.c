@@ -53,7 +53,7 @@ void func_800D8540(void) {
     func_800D9298();
     func_80034E64(0, 9);
 
-    func_8002B138(0x6A, &tvSprites_romTextureStart, &tvSprites_romTextureEnd, &tvSprites_romPaletteStart, &tvSprites_romPaletteEnd, &tvSprites_romIndexStart, &tvSprites_romIndexEnd, 0x802EB800, 0x802EC800, 0x802ED800, 0x802EDB00, 0x802EDE00, 0x802EDF00, 1, 1);
+    func_8002B138(0x6A, &tvSprites_romTextureStart, &tvSprites_romTextureEnd, &tvSprites_romPaletteStart, &tvSprites_romPaletteEnd, &tvSprites_romIndexStart, &tvSprites_romIndexEnd, (void*)OBJECT_SPRITE_BANK_1_START, 0x802EC800, 0x802ED800, 0x802EDB00, 0x802EDE00, 0x802EDF00, 1, 1);
     
     func_8002BD90(0x6A, 2.0f, 2.0f, 1.0f);
     func_8002BE14(0x6A, 45.0f, -45.0f, 0.0f);

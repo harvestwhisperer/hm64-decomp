@@ -74,7 +74,8 @@ extern Vec3f D_8017044C;
 extern f32 D_80170450;
 extern f32 D_80170454;
 // func_800276AC
-extern Mtx D_8021E6E0[2][4];
+// unknown struct size 0x40
+extern Mtx D_8021E6E0[2][0x47];
 // nu idle statck
 extern u64 *D_80126520;
 
@@ -85,7 +86,7 @@ void graphicsInit(void) {
     u8 i;
 
     nuGfxInit();
-
+ 
     gCamera.perspectiveMode = FALSE;
 
     setCameraOrthographicValues(&gCamera, -160.0f, 160.0f, -120.0f, 120.0f, 0.0f, 900.0f);
@@ -93,15 +94,15 @@ void graphicsInit(void) {
     setCameraLookAt(&gCamera, 0.0f, 0.0f, 400.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.1f, 0.0f);
 
     for (i = 0; i < 2; i++) {
-        worldMatrices[i].translationCoords.x = 0.0f;
-        worldMatrices[i].translationCoords.y = 0.0f;
-        worldMatrices[i].translationCoords.z = 0.0f;
-        worldMatrices[i].scaleCoords.x = 1.0f;
-        worldMatrices[i].scaleCoords.y = 1.0f;
-        worldMatrices[i].scaleCoords.z = 1.0f;
-        worldMatrices[i].rotationCoords.x = 0.0f;
-        worldMatrices[i].rotationCoords.y = 0.0f;
-        worldMatrices[i].rotationCoords.z = 0.0f;
+        worldMatrices[i].translation.x = 0.0f;
+        worldMatrices[i].translation.y = 0.0f;
+        worldMatrices[i].translation.z = 0.0f;
+        worldMatrices[i].scaling.x = 1.0f;
+        worldMatrices[i].scaling.y = 1.0f;
+        worldMatrices[i].scaling.z = 1.0f;
+        worldMatrices[i].rotation.x = 0.0f;
+        worldMatrices[i].rotation.y = 0.0f;
+        worldMatrices[i].rotation.z = 0.0f;
     }
 
     func_80028EB8(45.0f, 315.0f, 0.0f);  
@@ -136,7 +137,7 @@ volatile u8 startGfxTask(void) {
         __assert(&D_8011EC60, &D_8011EC64, 288);
     }
     
-    nuGfxTaskStart(initGfxList[gDisplayContextIndex], (s32)(dl - initGfxList[gDisplayContextIndex]) << 3, NU_GFX_UCODE_F3DEX2, NU_SC_NOSWAPBUFFER);
+    nuGfxTaskStart(initGfxList[gDisplayContextIndex], (s32)(dl - initGfxList[gDisplayContextIndex]) * sizeof(Gfx), NU_GFX_UCODE_F3DEX2, NU_SC_NOSWAPBUFFER);
     
     gfxTaskNo += 1;
     
@@ -158,7 +159,7 @@ volatile u8 func_80026BE0(void) {
         __assert(&D_8011EC60, &D_8011EC64, 319);
     }
 
-    nuGfxTaskStart(D_80205000[gDisplayContextIndex], (s32)(dl - D_80205000[gDisplayContextIndex]) << 3, NU_GFX_UCODE_F3DEX2, NU_SC_SWAPBUFFER);
+    nuGfxTaskStart(D_80205000[gDisplayContextIndex], (s32)(dl - D_80205000[gDisplayContextIndex]) * sizeof(Gfx), NU_GFX_UCODE_F3DEX2, NU_SC_SWAPBUFFER);
     
     gfxTaskNo += 1;
     return gfxTaskNo;
@@ -183,7 +184,7 @@ volatile u8 func_80026CEC(s32 arg0, s32 arg1) {
         __assert(&D_8011EC60, &D_8011EC64, 0x166);
     }
 
-    nuGfxTaskStart(D_801836A0[gDisplayContextIndex], (s32)(dl - D_801836A0[gDisplayContextIndex]) << 3, NU_GFX_UCODE_F3DEX2, NU_SC_NOSWAPBUFFER);
+    nuGfxTaskStart(D_801836A0[gDisplayContextIndex], (s32)(dl - D_801836A0[gDisplayContextIndex]) * sizeof(Gfx), NU_GFX_UCODE_F3DEX2, NU_SC_NOSWAPBUFFER);
     
     gfxTaskNo += 1;
     return gfxTaskNo;
@@ -196,7 +197,6 @@ void func_80026E78(Bitmap *sprite, u16 *arg1, u16 *arg2) {
     u16 temp1;
     u16 temp2;
     int temp3;
-    // probably struct 2x or mtx
     u32 padding[10];
 
     func_80026F30(sprite, arg2);
@@ -230,14 +230,14 @@ void func_80026E78(Bitmap *sprite, u16 *arg1, u16 *arg2) {
 
 //INCLUDE_ASM(const s32, "system/graphic", func_80026F30);
 
-void func_80026F30(Bitmap* sprite, u16* arg1) {
+void func_80026F30(Bitmap* sprite, u16* palette) {
 
     // probably struct
     u32 padding[5];
     
-    sprite->pal = arg1 + 2;
+    sprite->pal = palette + 2;
 
-    switch ((*(arg1 + 1) >> 4) & 0xF) {                           
+    switch ((*(palette + 1) >> 4) & 0xF) {                           
         case 0:
             sprite->fmt = 2;
             sprite->flag = 1;
@@ -267,20 +267,20 @@ INCLUDE_RODATA(const s32, "system/graphic", D_8011EC64);
 
 // matches but include_rodata macro creates a problem for the assembler
 
-INCLUDE_ASM(const s32, "system/graphic", func_800278F0);
+INCLUDE_ASM(const s32, "system/graphic", sinfRadians);
 
 /*
-f32 func_800278F0(f32 angle) {
+f32 sinfRadians(f32 angle) {
     return sinf(angle * D_8011EC78);
 }
 */
 
 // matches but include_rodata macro creates a problem for the assembler
 
-INCLUDE_ASM(const s32, "system/graphic", func_80027920);
+INCLUDE_ASM(const s32, "system/graphic", cosfRadians);
 
 /*
-f32 func_80027920(f32 angle) {
+f32 cosfRadians(f32 angle) {
     return cosf(angle * D_8011EC80);
 }
 */
@@ -477,6 +477,7 @@ Gfx* func_80028A64(Gfx* dl, Camera* camera, WorldMatrices* matrices) {
 
 //INCLUDE_ASM(const s32, "system/graphic", func_80028C00);
 
+// unused
 Gfx* func_80028C00(Gfx* dl, Camera* camera) {
  
     u16 perspNorm;
@@ -557,7 +558,7 @@ Gfx *func_80028E60(Gfx* dl, u8 a, u8 r, u8 g, u8 b) {
 
 //INCLUDE_ASM(const s32, "system/graphic", func_80028EA8);
 
-void func_80028EA8(UnknownGraphicsStruct2* arg0, u8 arg1, u8 arg2, u8 arg3) {
+void func_80028EA8(UnknownGraphicsStruct* arg0, u8 arg1, u8 arg2, u8 arg3) {
     arg0->unk_10 = arg1;
     arg0->unk_11 = arg2;
     arg0->unk_12 = arg3;

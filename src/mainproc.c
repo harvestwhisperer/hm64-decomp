@@ -26,7 +26,6 @@ volatile u8 D_801C4215;
 u16 D_801FD610;
 volatile u8 D_80204B38;
 volatile u8 D_80205208;
-volatile u16 D_8020564C;
 volatile u32 D_802226E8;
 volatile u8 D_802226E2;
 volatile u8 D_80222730;
@@ -88,6 +87,7 @@ void mainproc(void *arg) {
 
 void initializeAll(void) {
 
+    // initialize mainproc and main loop variables
     func_80025F04();
 
     controllerInit();

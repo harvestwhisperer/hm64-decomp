@@ -7,9 +7,13 @@
 #include "nusys.h"
 #include "libmus/libmus.h"
 
-#include "game_macros.h"
 #include "structs.h"
 
 typedef u8 bool;
+
+#define TRUE 1
+#define FALSE 0
+
+#define MAX_UNSIGNED_SHORT 65535
 
 #endif

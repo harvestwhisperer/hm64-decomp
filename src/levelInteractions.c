@@ -187,9 +187,9 @@ u8 func_800AD0C4(u16 mapIndex) {
 // jtbl_80121408
 //INCLUDE_ASM(const s32, "levelInteractions", func_800AD1D0);
 
-u8 func_800AD1D0(u16 arg0) {
+bool func_800AD1D0(u16 arg0) {
 
-    u8 set;
+    bool set;
     s32 tempExit;
     u8 temp;
     u16 temp2;
