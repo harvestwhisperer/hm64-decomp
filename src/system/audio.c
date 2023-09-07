@@ -339,8 +339,8 @@ bool setSfxVolume(u32 sfxIndex, s32 volume) {
             
             result = 1;
             
-            if (gSfx[i].volume >= 257) {
-                gSfx[i].volume = 256;
+            if (gSfx[i].volume > MAX_VOLUME) {
+                gSfx[i].volume = MAX_VOLUME;
             }
         }
     }

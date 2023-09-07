@@ -6,6 +6,8 @@
 
 #define MAX_DIALOGUE_BOXES 6
 
+#define DIALOGUE_ICONS_TEXTURES_VADDR 0x8023B400
+
 #define char_A 0xA1
 #define char_C 0xA3
 #define char_E 0xA5
@@ -152,5 +154,12 @@ extern void func_80042634();
 extern void func_80045CB0();
 
 extern DialogueBox D_80188B70[MAX_DIALOGUE_BOXES];
+
+// shared: overlayScreens, npc, title
+extern void *dialogueIconsTextureStart;
+// naming screen
+extern void *dialogueIconsTextureEnd;
+extern void *dialogueIconsPaletteStart;
+extern void *dialogueIconsPaletteEnd;
 
 #endif

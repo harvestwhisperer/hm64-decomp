@@ -565,7 +565,7 @@ void func_800D43E4(void) {
     
     u8 temp1;
     u8 temp2;
-    u8 temp3;
+    u8 tempFlags;
 
     Vec3f vec;
 
@@ -581,8 +581,13 @@ void func_800D43E4(void) {
     func_80065F94(&vec, 0.0, temp2);
 
     if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && vec.y != MAX_UNSIGNED_SHORT) {
-        temp3 = ((-(gBaseMapIndex != 0x56) & ~0x28) | 0x44);
-        func_800DAC70(gBaseMapIndex, temp3, (u8)vec.x - D_801FD624, (u8)vec.z - D_801C3F35);
+
+        // leaving for reference
+        //tempFlags = ((-(gBaseMapIndex != 0x56) & ~0x28) | 0x44);
+
+        tempFlags = (gBaseMapIndex == 0x56) ? ( 4 | 0x40 ) : ~( 8 | 0x20 );
+
+        func_800DAC70(gBaseMapIndex, tempFlags, (u8)vec.x - D_801FD624, (u8)vec.z - D_801C3F35);
     }
 
     if (!D_80189828.unk_2) {
@@ -620,6 +625,7 @@ void func_800D45F4(void) {
  
     if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && vec.y != MAX_UNSIGNED_SHORT) {
         
+        // should be range
         if ((gSeason - 1 < 2U) || gBaseMapIndex == GREENHOUSE) {
             temp3 = 0x90; 
         } else {
@@ -662,7 +668,8 @@ void func_800D4814(void) {
     func_80065F94(&vec, 0.0, temp2);
  
     if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && vec.y != MAX_UNSIGNED_SHORT) {
-        
+
+        // should be range
         if ((gSeason - 1 < 2U) || gBaseMapIndex == GREENHOUSE) {
             temp3 = 0x9F; 
         } else {
@@ -1095,16 +1102,16 @@ u16 func_800D5A88(u16 index) {
   
   result = D_801174A0[index][gSeason];
 
-  if ((u16)(index - 0xBA) < 8) {
-    result = 0xF9;
-
-  }
-  if ((u16)(index - 0xC2) < 8) {
-    result = 0xFA;
+  if (185 < index && index < 194) {
+    result = 249;
   }
 
-  if ((u16)(index - 0xAB) < 8) {
-    result = 0xFB;
+  if (193 < index && index < 202) {
+    result = 250;
+  }
+
+  if (170 < index && index < 179) {
+    result = 251;
   }
 
   return result;
@@ -1182,7 +1189,7 @@ void func_800D6868(u8 index) {
     u32 result;
     
     dailyShippingBinValue += adjustValue(dailyShippingBinValue, D_801181C0[index], MAX_TOTAL_SHIPPING);
-    
+     
     switch (index) {
         case 13:
             D_801654F4 += adjustValue(D_801654F4, 1, MAX_ITEM_SHIPPING_VALUE);
@@ -1284,10 +1291,10 @@ void func_800D6B58(u8 arg0, u8 index) {
         }
         
         if (!(gCutsceneFlags & 1)) {
-            if (!checkLifeEventBit(0x5E) && !checkDailyEventBit(0x21) && (D_80204DF8[index].unk_28 - 0x25) < 2U && (gHour - 9) < 8U) {
+            if (!checkLifeEventBit(0x5E) && !checkDailyEventBit(0x21) && (D_80204DF8[index].unk_28 - 0x25) < 2U && 8 < gHour && gHour < 17) {
                 setDailyEventBit(0x47);
             }
-            if (!checkLifeEventBit(0x5F) && !checkDailyEventBit(0x21) && D_80204DF8[index].unk_28 ==  0x27 && (gHour - 9) < 8U) {
+            if (!checkLifeEventBit(0x5F) && !checkDailyEventBit(0x21) && D_80204DF8[index].unk_28 ==  0x27 && 8 < gHour && gHour < 17) {
                 setDailyEventBit(0x48);
             }
         }
@@ -1303,7 +1310,7 @@ void func_800D6B58(u8 arg0, u8 index) {
         }
         
         if (!(gCutsceneFlags & 1)) {
-            if (!checkDailyEventBit(0x46) && itemFlags[D_80204DF8[index].unk_28] & 0x8000 && (gHour - 9) < 8U ) {
+            if (!checkDailyEventBit(0x46) && itemFlags[D_80204DF8[index].unk_28] & 0x8000 && 8 < gHour && gHour < 17 ) {
                 setDailyEventBit(0x45);    
             }
         }

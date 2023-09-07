@@ -90,7 +90,11 @@ u8 func_800ACEAC(u16 mapIndex) {
     u8 result = 0xFF;
     
     if (mapIndex == FARM) {
-        result = -(func_800309B4(0, 0, 32.0f) != 0x17) | 1;
+        // for reference
+        // -(cVar1 != '\x17') | 1;
+        //result = -(func_800309B4(0, 0, 32.0f) != 0x17) | 1;
+        //result = -((func_800309B4(0, 0, 32.0f) != 0x17) ? 1 : 0) | 1;        
+        result = func_800309B4(0, 0, 32.0f) == 0x17 ? 1 : 0xFF;
     }
 
     return result;
@@ -376,21 +380,20 @@ bool func_800AD1D0(u16 arg0) {
             if (gEntranceIndex == 0x5F) {
                 if (!checkLifeEventBit(0)) {
                     if (gSeason == WINTER) {
-                        if (gDayOfMonth == 24 && (gHour - 19) < 2U) {
+                        if (gDayOfMonth == 24 && (18 < gHour && gHour < 21)) {
                             temp2 = 0xFFFF;
                         }
-                        if (gSeason == WINTER && gDayOfMonth == 30 && (gHour - 18) < 6U) {
+                        if (gSeason == WINTER && gDayOfMonth == 30 && (17 < gHour && gHour < 24)) {
                             temp2 = 0xFFFF;
                         }
                     }
                 } else {
-                    if (gSeason == WINTER && gDayOfMonth == 30 && (gHour - 18) < 6U) {
+                    if (gSeason == WINTER && gDayOfMonth == 30 && (17 < gHour && gHour < 24)) {
                         temp2 = 0xFFFF;
                     }
                 }
             }
-    
-            if ((gEntranceIndex == 0x59 || gEntranceIndex == 0x5B) && !checkLifeEventBit(MARRIED) && gSeason == SUMMER && gDayOfMonth == 1 && (gHour - 19) < 2U) {
+            if ((gEntranceIndex == 0x59 || gEntranceIndex == 0x5B) && !checkLifeEventBit(MARRIED) && gSeason == SUMMER && gDayOfMonth == 1 && (18 < gHour && gHour < 21)) {
                 temp2 = 0xFFFF;
             }
     

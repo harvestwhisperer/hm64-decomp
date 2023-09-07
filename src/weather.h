@@ -8,6 +8,8 @@
 #define SNOW 3
 #define TYPHOON 5
 
+#define RAIN_TEXTURE_VADDR 0x802A5AC0
+
 extern void func_800DC360(void);    
 
 extern void setForecast(void);    

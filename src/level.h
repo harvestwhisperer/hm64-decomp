@@ -66,8 +66,8 @@
 #define OUTDOORS 2
 
 extern void func_8006E840(u16);  
-extern void func_8006EA44(u8, u8, u8);     
-extern void func_8006EB94(Vec4f*, u16);      
+extern void setLevelAudio(u16, u8, u8);     
+extern Vec4f* func_8006EB94(Vec4f*, u16);      
 extern void func_80073244(u8); 
 extern u8 func_80074C38(u8);
 extern s32 func_80074C50(u8);    

@@ -53,7 +53,7 @@ static inline void resetAction() {
     gPlayer.action2 = 0;
 }
 
-static inline resetAction2() {
+static inline void resetAction2() {
     gPlayer.action3 = 0;
     gPlayer.action4 = 0;
 }
@@ -211,10 +211,10 @@ u8 removeKeyItem(u8 item) {
 
 //INCLUDE_ASM(const s32, "player", checkHaveTool);
 
-u8 checkHaveTool(u8 tool) {
+bool checkHaveTool(u8 tool) {
 
     u8 i;
-    u8 found = 0;
+    bool found = 0;
 
     for (i = 0; i < MAX_TOOL_SLOTS_RUCKSACK && !found; i++) {
         if (gPlayer.toolSlots[i] == tool) {
@@ -235,10 +235,10 @@ u8 checkHaveTool(u8 tool) {
 
 //INCLUDE_ASM(const s32, "player", checkHaveKeyItem);
 
-u8 checkHaveKeyItem(u8 item) {
+bool checkHaveKeyItem(u8 item) {
 
     u8 i;
-    u8 found = 0;
+    bool found = 0;
     
     for (i = 0; i < MAX_KEY_ITEMS && !found; i++) {
 
@@ -991,10 +991,10 @@ void func_8006E0D4(void) {
 
     switch (gPlayer.action4) {
         case 0:
-            setSpriteAnimation(0, 0);
+            setSpriteAnimation(PLAYER, 0);
             break;
         case 1:
-            setSpriteAnimation(0, 0x169);
+            setSpriteAnimation(PLAYER, 0x169);
             break;
         case 2:
             func_800CF850();
@@ -1038,11 +1038,11 @@ void func_8006E240(void) {
 
     switch (gPlayer.action4) {                           
         case 0:
-            setSpriteAnimation(0, 0);
+            setSpriteAnimation(PLAYER, 0);
             func_80099DE8();
             break;
         case 1:
-            setSpriteAnimation(0, 0x234);
+            setSpriteAnimation(PLAYER, 0x234);
             break;
         case 2:
             func_800CF850();

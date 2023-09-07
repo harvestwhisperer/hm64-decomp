@@ -23,23 +23,12 @@ u16 D_801FBFE6;
 // shared global: animals, npc, cutscene, renderedSprite 
 extern u16 D_801FC1B8[30][54];
 
-// shared: overlayScreens, npc, title
-extern void *D_D47F00;
-// naming screen
-extern void *D_D49B80;
-extern void *D_D49B80_2;
-extern void *tvSprites_romTextureStart;
-
 // data
 extern u16 D_80114960[30];
 
 // forward declarations
 void func_80075A78(u8);
 
-
-static inline void setFlag(u16 index) {
-    npcInfoArray[index].flags |= 2;
-}
 
 //INCLUDE_ASM(const s32, "npc", func_800752C0);
 
@@ -273,12 +262,15 @@ void func_80075A18(void) {
 
 INCLUDE_ASM(const s32, "npc", func_80075A78);
 
+
+/* inlines */
+
 //INCLUDE_ASM(const s32, "npc", func_80075E28);
 
-void func_80075E28(u8 npcIndex) {
+inline void setStartMovingDefault(u8 npcIndex) {
 
     npcInfoArray[npcIndex].unk_20 = 0;
-    npcInfoArray[npcIndex].unk_21 = 0xA;
+    npcInfoArray[npcIndex].unk_21 = 10;
     npcInfoArray[npcIndex].unk_22 = 0;
 
     setSpriteAnimation(npcInfoArray[npcIndex].spriteIndex, npcInfoArray[npcIndex].unk_24);
@@ -289,6 +281,7 @@ void func_80075E28(u8 npcIndex) {
 
 //INCLUDE_ASM(const s32, "npc", func_80075EBC);
 
+// should be inline?
 void func_80075EBC(u8 index) {
     
     u16 temp;
@@ -327,19 +320,19 @@ void func_80075EBC(u8 index) {
         
         if (getRandomNumberInRange(0, 19) < 8) {
             npcInfoArray[index].unk_21 = 1;
-            goto func_end;
+            
+        } else {
+            npcInfoArray[index].unk_21 = 0;
         }
         
-        npcInfoArray[index].unk_21 = 0;
     }
     
-func_end:
     npcInfoArray[index].flags |= 2;
 }
 
 //INCLUDE_ASM(const s32, "npc", func_80076080);
 
-void func_80076080(u8 index, u8 arg1) {
+inline void func_80076080(u8 index, u8 arg1) {
 
     npcInfoArray[index].unk_20 = 0;
     npcInfoArray[index].unk_21 = 10;
@@ -352,7 +345,7 @@ void func_80076080(u8 index, u8 arg1) {
 
 //INCLUDE_ASM(const s32, "npc", func_80076108);
 
-void func_80076108(u8 index, u8 arg1, u8 arg2) {
+inline void func_80076108(u8 index, u8 arg1, u8 arg2) {
 
     u16 temp;
     
@@ -389,16 +382,17 @@ void func_80076108(u8 index, u8 arg1, u8 arg2) {
         
         if (getRandomNumberInRange(0, 19) < 8) {
             npcInfoArray[index].unk_21 = 1;
-            goto func_end;
+        } else {
+            npcInfoArray[index].unk_21 = 0;
         }
         
-        npcInfoArray[index].unk_21 = 0;
     }
     
-func_end:
     npcInfoArray[index].flags |= 2;
     
 }
+
+
 
 // jtbl_80120158
 INCLUDE_ASM(const s32, "npc", func_800762B4);
@@ -474,7 +468,7 @@ u8 func_80076CF4(void) {
     if (checkLifeEventBit(0) && checkLifeEventBit(1)) {
 
         if (gBabyAge < 30) {
-            if ((gHour - 6) <= 13U) {
+            if (5 < gHour && gHour < 20) {
                 result = 2;
                 if (npcInfoArray[gWife].levelIndex != HOUSE) {
                     result = 1;
@@ -483,9 +477,9 @@ u8 func_80076CF4(void) {
                 result = 3;
             }  
         } else {
-            if ((gHour - 6) < 14U) {
-                // ??
-                result = !(gBabyAge < 120) ? 6 : 4;
+            if (5 < gHour && gHour < 20) {
+                // -(120 < DAT_80189134) & 6U | 4;
+                result = (gBabyAge < 120) ? 4 : 6;
             } else {
                 result = 5;
             }
@@ -498,6 +492,9 @@ u8 func_80076CF4(void) {
 
 // jtbl_80120188
 INCLUDE_ASM(const s32, "npc", func_80076DCC);
+
+
+/* set starting locations */
 
 INCLUDE_ASM(const s32, "npc", func_80076F10);
 
@@ -533,10 +530,135 @@ INCLUDE_ASM(const s32, "npc", func_8007D3C4);
 // jtbl_80120278
 INCLUDE_ASM(const s32, "npc", func_8007D6E0);
 
-INCLUDE_ASM(const s32, "npc", func_8007D9F4);
+//INCLUDE_ASM(const s32, "npc", func_8007D9F4);
+
+void func_8007D9F4(void) {
+
+    npcInfoArray[LILLIA].unk_1A = 0x40;
+    npcInfoArray[LILLIA].unk_1B = 0x40;
+    npcInfoArray[LILLIA].unk_25 = 8;
+    npcInfoArray[LILLIA].unk_24 = 0;
+
+    if (gWeather != SUNNY) goto DEFAULT;
+
+    switch (gDayOfWeek) {
+
+        case SUNDAY:
+
+            if (8 < gHour && gHour < 17) { 
+                npcInfoArray[LILLIA].levelIndex = SQUARE;
+                npcInfoArray[LILLIA].startingCoordinates.y = 0;
+                npcInfoArray[LILLIA].direction = 4;
+                npcInfoArray[LILLIA].unk_1E = 0;
+                npcInfoArray[LILLIA].startingCoordinates.x = -144.0f;
+                npcInfoArray[LILLIA].startingCoordinates.z = 256.0f;
+                npcInfoArray[LILLIA].flags |= 1;
+            }
+            break;
+
+        default:
+            break;
+
+        case MONDAY ... SATURDAY:
+DEFAULT:
+            if (8 < gHour && gHour < 17) {
+                npcInfoArray[LILLIA].levelIndex = FLOWER_SHOP;
+                npcInfoArray[LILLIA].startingCoordinates.y = 0;
+                npcInfoArray[LILLIA].direction = 0;
+                npcInfoArray[LILLIA].unk_1E = 0;
+                npcInfoArray[LILLIA].startingCoordinates.x = 64.0f;
+                npcInfoArray[LILLIA].startingCoordinates.z = -128.0f;
+                npcInfoArray[LILLIA].flags |= 1;
+            }
+    
+            break;
+    }
+    
+    npcInfoArray[LILLIA].movingFlag = npcInfoArray[LILLIA].unk_1E;
+
+}
 
 // jtbl_80120298
-INCLUDE_ASM(const s32, "npc", func_8007DB38);
+//INCLUDE_ASM(const s32, "npc", func_8007DB38);
+
+void func_8007DB38(void) {
+
+    npcInfoArray[BASIL].unk_1A = 0x40;
+    npcInfoArray[BASIL].unk_1B = 0x40;
+    npcInfoArray[BASIL].unk_24 = 0;
+    npcInfoArray[BASIL].unk_25 = 8;
+
+    if (!checkLifeEventBit(BASIL_IN_TOWN)) goto FUNC_END;
+
+    if (gWeather != SUNNY) goto NOT_SUNNY;
+            
+    switch (gDayOfWeek) {
+        case SUNDAY:
+            if (8 < gHour && gHour < 17) {
+                npcInfoArray[BASIL].levelIndex = SQUARE;
+                npcInfoArray[BASIL].startingCoordinates.y = 0;
+                npcInfoArray[BASIL].direction = 4;
+                npcInfoArray[BASIL].unk_1E = 0;
+                npcInfoArray[BASIL].startingCoordinates.x = -176.0f;
+                npcInfoArray[BASIL].startingCoordinates.z = 256.0f;
+                npcInfoArray[BASIL].flags |= 1;
+            }
+            break;
+        case THURSDAY:
+            if (7  < gHour && gHour < 18) {
+                npcInfoArray[BASIL].levelIndex = VILLAGE_1;
+                npcInfoArray[BASIL].startingCoordinates.y = 0;
+                npcInfoArray[BASIL].direction = 6;
+                npcInfoArray[BASIL].unk_1E = 0;
+                npcInfoArray[BASIL].startingCoordinates.x = 128.0f;
+                npcInfoArray[BASIL].startingCoordinates.z = -416.0f;
+                npcInfoArray[BASIL].flags |= 1;
+            }
+            break;
+        case FRIDAY:
+        case SATURDAY:
+            if (7  < gHour && gHour < 18) {
+                npcInfoArray[BASIL].levelIndex = MOUNTAIN_1;
+                npcInfoArray[BASIL].startingCoordinates.y = 0;
+                npcInfoArray[BASIL].direction = 4;
+                npcInfoArray[BASIL].unk_1E = 1;
+                npcInfoArray[BASIL].startingCoordinates.x = 192.0f;
+                npcInfoArray[BASIL].startingCoordinates.z = -64.0f;
+                npcInfoArray[BASIL].flags |= 1;
+            }
+            break;
+        case MONDAY:
+        case TUESDAY:
+        case WEDNESDAY:
+NOT_SUNNY:
+            if (8 < gHour && gHour < 17) {
+                npcInfoArray[BASIL].levelIndex = FLOWER_SHOP;
+                npcInfoArray[BASIL].startingCoordinates.y = 0;
+                npcInfoArray[BASIL].direction = 0;
+                npcInfoArray[BASIL].unk_1E = 0;
+                npcInfoArray[BASIL].startingCoordinates.x = -48.0f;
+                npcInfoArray[BASIL].startingCoordinates.z = -64.0f;
+                npcInfoArray[BASIL].flags |= 1;
+            }
+            break;
+        default:
+            break;
+    }
+        
+    if ((17 < gHour && gHour < 24) && npcInfoArray[BASIL].location < 2) {
+        npcInfoArray[BASIL].levelIndex = 0x3B;
+        npcInfoArray[BASIL].startingCoordinates.y = 0;
+        npcInfoArray[BASIL].direction = 6;
+        npcInfoArray[BASIL].unk_1E = 0;
+        npcInfoArray[BASIL].startingCoordinates.x = 32.0f;
+        npcInfoArray[BASIL].startingCoordinates.z = 48.0f;
+        npcInfoArray[BASIL].flags |= 1;
+    }
+
+FUNC_END:
+    npcInfoArray[BASIL].movingFlag = npcInfoArray[BASIL].unk_1E;
+    
+}
 
 //INCLUDE_ASM(const s32, "npc", setEllenLocation);
 
@@ -548,7 +670,7 @@ void setEllenLocation(void) {
     npcInfoArray[ELLEN].unk_25 = 8;
     
     if (!checkLifeEventBit(ELLEN_DIED)) {
-        if (gWeather == SUNNY && (gHour - 8) < 9U) {
+        if (gWeather == SUNNY && (7 < gHour && gHour < 17)) {
                 npcInfoArray[ELLEN].levelIndex = VILLAGE_1;
                 npcInfoArray[ELLEN].startingCoordinates.y = 0;
                 npcInfoArray[ELLEN].direction = 0;
@@ -557,7 +679,7 @@ void setEllenLocation(void) {
                 npcInfoArray[ELLEN].startingCoordinates.z = 128.0f;
                 npcInfoArray[ELLEN].flags |= 1;
         } else {
-            if ((gHour - 8) < 9U) {
+            if (7 < gHour && gHour < 17) {
                 npcInfoArray[ELLEN].levelIndex = BAKERY;
                 npcInfoArray[ELLEN].startingCoordinates.y = 0;
                 npcInfoArray[ELLEN].direction = 0;
@@ -572,7 +694,42 @@ void setEllenLocation(void) {
     npcInfoArray[ELLEN].movingFlag = npcInfoArray[ELLEN].unk_1E;
 }
 
-INCLUDE_ASM(const s32, "npc", func_8007DF14);
+//INCLUDE_ASM(const s32, "npc", func_8007DF14);
+
+void func_8007DF14(void) {
+
+    int temp = gDayOfWeek;
+    int temp2;
+
+    npcInfoArray[DOUG].unk_1A = 0x40;
+    npcInfoArray[DOUG].unk_1B = 0x40;
+    npcInfoArray[DOUG].unk_24 = 0;
+    npcInfoArray[DOUG].unk_25 = 8;
+
+    // something off here
+    if (temp >= SUNDAY && (temp < THURSDAY || temp < 7 && (temp2 = temp) >= FRIDAY) && (7 < gHour && gHour < 17)) {
+        npcInfoArray[DOUG].levelIndex = RANCH_STORE;
+        npcInfoArray[DOUG].startingCoordinates.y = 0;
+        npcInfoArray[DOUG].direction = 6;
+        npcInfoArray[DOUG].unk_1E = 0;
+        npcInfoArray[DOUG].startingCoordinates.x = -96.0f;
+        npcInfoArray[DOUG].startingCoordinates.z = 64.0f;
+        npcInfoArray[DOUG].flags |= 1;
+    }
+
+    if (NIGHTTIME && npcInfoArray[DOUG].location < 2) {
+        npcInfoArray[DOUG].levelIndex = TAVERN;
+        npcInfoArray[DOUG].startingCoordinates.y = 0;
+        npcInfoArray[DOUG].direction = 2;
+        npcInfoArray[DOUG].unk_1E = 0;
+        npcInfoArray[DOUG].startingCoordinates.x = -96.0f;
+        npcInfoArray[DOUG].startingCoordinates.z = 48.0f;
+        npcInfoArray[DOUG].flags |= 1;
+    }
+
+    npcInfoArray[DOUG].movingFlag = npcInfoArray[DOUG].unk_1E;
+    
+}
 
 INCLUDE_ASM(const s32, "npc", func_8007E07C);
 
@@ -634,6 +791,24 @@ INCLUDE_ASM(const s32, "npc", func_80081618);
 INCLUDE_ASM(const s32, "npc", func_80081810);
 
 INCLUDE_ASM(const s32, "npc", func_80081A08);
+
+
+/* update animation */
+
+static inline void updateAnimation(u8 index) {
+    
+    switch (npcInfoArray[index].movingFlag) {
+
+        case 0:
+            setStartMovingDefault(index);
+            break;
+
+        case 1:
+            func_80075EBC(index);
+            break;
+            
+    }
+}
 
 //INCLUDE_ASM(const s32, "npc", setNpcAnimations);
 
@@ -722,68 +897,411 @@ INCLUDE_ASM(const s32, "npc", func_8008328C);
 
 INCLUDE_ASM(const s32, "npc", func_80083384);
 
-INCLUDE_ASM(const s32, "npc", func_80083458);
+//INCLUDE_ASM(const s32, "npc", func_80083458);
 
-INCLUDE_ASM(const s32, "npc", func_80083550);
+void func_80083458(void) {
 
-INCLUDE_ASM(const s32, "npc", func_8008374C);
+    if (npcInfoArray[DOUG].flags & 4) {
+        
+        if (func_8002FECC(npcInfoArray[DOUG].spriteIndex) && !npcInfoArray[DOUG].unk_22) {
+            updateAnimation(DOUG);
+        }
 
-INCLUDE_ASM(const s32, "npc", func_80083948);
+        if (npcInfoArray[DOUG].unk_22) {
+            npcInfoArray[DOUG].unk_22--; 
+        } 
+        
+        func_80075A78(DOUG);
+    }   
+}
 
-INCLUDE_ASM(const s32, "npc", func_80083A40);
+//INCLUDE_ASM(const s32, "npc", func_80083550);
 
-INCLUDE_ASM(const s32, "npc", func_80083C3C);
+void func_80083550(void) {
 
-INCLUDE_ASM(const s32, "npc", func_80083D34);
+   u16 tempDirection;
 
-INCLUDE_ASM(const s32, "npc", func_80083E2C);
+    if (npcInfoArray[GOTZ].flags & 4) {
+        
+        if (func_8002FECC(npcInfoArray[GOTZ].spriteIndex) && !npcInfoArray[GOTZ].unk_22) {
 
-INCLUDE_ASM(const s32, "npc", func_80083F24);
+            switch (npcInfoArray[GOTZ].movingFlag) {
 
-INCLUDE_ASM(const s32, "npc", func_8008401C);
+                case 0:
+                    setStartMovingDefault(GOTZ);
+                    break;
 
-INCLUDE_ASM(const s32, "npc", func_80084114);
+                case 1:
+                    func_80075EBC(GOTZ);
+                    break;
+
+                case 3:
+
+                    // should be inline function
+                    if (npcInfoArray[GOTZ].unk_21 == 0 ) {
+
+                        npcInfoArray[GOTZ].unk_20 = 0;
+                        npcInfoArray[GOTZ].unk_22 = 0;
+
+                        setSpriteAnimation(npcInfoArray[GOTZ].spriteIndex, 0);
+
+                        tempDirection = getRandomNumberInRange(0, 60);
+
+                        if (tempDirection < 4) {
+                            npcInfoArray[GOTZ].direction = tempDirection * 2;
+                            npcInfoArray[GOTZ].unk_21 = 1;
+                        }
+
+                        npcInfoArray[GOTZ].flags |= 2;
+                        
+                    } else {       
+
+                        npcInfoArray[GOTZ].unk_20 = 1;
+                        npcInfoArray[GOTZ].unk_22 = 0;
+
+                        setSpriteAnimation(npcInfoArray[GOTZ].spriteIndex, 8);
+
+                        if (getRandomNumberInRange(0, 19) < 8) {
+                            npcInfoArray[GOTZ].unk_21 = 1;
+                        } else {
+                            npcInfoArray[GOTZ].unk_21 = 0;
+                        }
+
+                        npcInfoArray[GOTZ].flags |= 2;                
+                    }
+
+                    break;
+
+                default:
+                    break;
+            }
+        }
+    
+    if (npcInfoArray[GOTZ].unk_22) {
+        npcInfoArray[GOTZ].unk_22--;
+    }
+    
+    func_80075A78(GOTZ);
+
+    }
+}
+
+//INCLUDE_ASM(const s32, "npc", func_8008374C);
+
+void func_8008374C(void) {
+
+   u16 tempDirection;
+
+    if (npcInfoArray[SASHA].flags & 4) {
+        
+        if (func_8002FECC(npcInfoArray[SASHA].spriteIndex) && !npcInfoArray[SASHA].unk_22) {
+
+            switch (npcInfoArray[SASHA].movingFlag) {
+
+                case 0:
+                    setStartMovingDefault(SASHA);
+                    break;
+
+                case 1:
+                    func_80075EBC(SASHA);
+                    break;
+
+                case 3:
+
+                    // should be inline function
+                    if (npcInfoArray[SASHA].unk_21 == 0 ) {
+
+                        npcInfoArray[SASHA].unk_20 = 0;
+                        npcInfoArray[SASHA].unk_22 = 0;
+
+                        setSpriteAnimation(npcInfoArray[SASHA].spriteIndex, 0);
+                        tempDirection = getRandomNumberInRange(0, 60);
+
+                        if (tempDirection < 4) {
+                            npcInfoArray[SASHA].direction = tempDirection * 2;
+                            npcInfoArray[SASHA].unk_21 = 1;
+                        }
+
+                        npcInfoArray[SASHA].flags |= 2;
+                        
+                    } else {       
+
+                        npcInfoArray[SASHA].unk_20 = 1;
+                        npcInfoArray[SASHA].unk_22 = 0;
+
+                        setSpriteAnimation(npcInfoArray[SASHA].spriteIndex, 8);
+
+                        if (getRandomNumberInRange(0, 19) < 8) {
+                            npcInfoArray[SASHA].unk_21 = 1;
+                        } else {
+                            npcInfoArray[SASHA].unk_21 = 0;
+                        }
+
+                        npcInfoArray[SASHA].flags |= 2;                
+                    }
+
+                    break;
+
+                default:
+                    break;
+            }
+        }
+    
+    if (npcInfoArray[SASHA].unk_22) {
+        npcInfoArray[SASHA].unk_22--;
+    }
+    
+    func_80075A78(SASHA);
+
+    }
+}
+
+void func_80083948(void) {
+
+    if (npcInfoArray[POTION_SHOP_DEALER].flags & 4) {
+        
+        if (func_8002FECC(npcInfoArray[POTION_SHOP_DEALER].spriteIndex) && !npcInfoArray[POTION_SHOP_DEALER].unk_22) {
+            updateAnimation(POTION_SHOP_DEALER);
+        }
+
+        if (npcInfoArray[POTION_SHOP_DEALER].unk_22) {
+            npcInfoArray[POTION_SHOP_DEALER].unk_22--; 
+        } 
+        
+        func_80075A78(POTION_SHOP_DEALER);
+    }   
+}
+
+
+//INCLUDE_ASM(const s32, "npc", func_80083A40);
+
+void func_80083A40(void) {
+
+    u16 tempDirection;
+
+    if (npcInfoArray[KENT].flags & 4) {
+        
+        if (func_8002FECC(npcInfoArray[KENT].spriteIndex) && !npcInfoArray[KENT].unk_22) {
+
+            switch (npcInfoArray[KENT].movingFlag) {
+
+                case 0:
+                    setStartMovingDefault(KENT);
+                    break;
+                
+                case 1:
+                    func_80075EBC(KENT);
+                    break;
+
+                case 2:
+
+                    // should be inline function
+                    if (npcInfoArray[KENT].unk_21 == 0) {
+                        
+                        npcInfoArray[KENT].unk_20 = 0;
+                        npcInfoArray[KENT].unk_22 = 0;
+                        setSpriteAnimation(npcInfoArray[KENT].spriteIndex, 0);
+                        tempDirection = getRandomNumberInRange(0, 60);
+
+                        if (tempDirection < 4) {
+                            npcInfoArray[KENT].direction = tempDirection * 2 ;
+                            npcInfoArray[KENT].unk_21 = 1;
+                        } 
+
+                        npcInfoArray[KENT].flags |= 2;  
+
+                    } else {
+
+                        npcInfoArray[KENT].unk_20 = 2;
+                        npcInfoArray[KENT].unk_22 = 0;
+
+                        setSpriteAnimation(npcInfoArray[KENT].spriteIndex, 0x10);
+
+                        if (getRandomNumberInRange(0, 19) < 8) {
+                            npcInfoArray[KENT].unk_21 = 1;
+                        } else {
+                            npcInfoArray[KENT].unk_21 = 0;
+                        }
+
+                        npcInfoArray[KENT].flags |= 2;
+                    }
+
+                    break;
+
+                default:
+                    break;
+            }
+       }    
+
+    if (npcInfoArray[KENT].unk_22) {
+        npcInfoArray[KENT].unk_22--;
+    }
+    
+    func_80075A78(KENT);
+    
+    }
+}
+
+//INCLUDE_ASM(const s32, "npc", func_80083C3C);
+
+void func_80083C3C(void) {
+
+    if (npcInfoArray[STU].flags & 4) {
+        
+        if (func_8002FECC(npcInfoArray[STU].spriteIndex) && !npcInfoArray[STU].unk_22) {
+            updateAnimation(STU);
+        }
+
+        if (npcInfoArray[STU].unk_22) {
+            npcInfoArray[STU].unk_22--; 
+        } 
+        
+        func_80075A78(STU);
+    }   
+}
+
+//INCLUDE_ASM(const s32, "npc", func_80083D34);
+
+void func_80083D34(void) {
+
+    if (npcInfoArray[MIDWIFE].flags & 4) {
+        
+        if (func_8002FECC(npcInfoArray[MIDWIFE].spriteIndex) && !npcInfoArray[MIDWIFE].unk_22) {
+            updateAnimation(MIDWIFE);
+        }
+
+        if (npcInfoArray[MIDWIFE].unk_22) {
+            npcInfoArray[MIDWIFE].unk_22--; 
+        } 
+        
+        func_80075A78(MIDWIFE);
+    }   
+}
+
+//INCLUDE_ASM(const s32, "npc", func_80083E2C);
+
+void func_80083E2C(void) {
+
+    if (npcInfoArray[MAY].flags & 4) {
+        
+        if (func_8002FECC(npcInfoArray[MAY].spriteIndex) && !npcInfoArray[MAY].unk_22) {
+            updateAnimation(MAY);
+        }
+
+        if (npcInfoArray[MAY].unk_22) {
+            npcInfoArray[MAY].unk_22--; 
+        } 
+        
+        func_80075A78(MAY);
+    }   
+}
+
+//INCLUDE_ASM(const s32, "npc", func_80083F24);
+
+void func_80083F24(void) {
+
+    if (npcInfoArray[RICK].flags & 4) {
+        
+        if (func_8002FECC(npcInfoArray[RICK].spriteIndex) && !npcInfoArray[RICK].unk_22) {
+            updateAnimation(RICK);
+        }
+
+        if (npcInfoArray[RICK].unk_22) {
+            npcInfoArray[RICK].unk_22--; 
+        } 
+        
+        func_80075A78(RICK);
+    }   
+}
+
+//INCLUDE_ASM(const s32, "npc", func_8008401C);
+
+void func_8008401C(void) {
+
+    if (npcInfoArray[PASTOR].flags & 4) {
+        
+        if (func_8002FECC(npcInfoArray[PASTOR].spriteIndex) && !npcInfoArray[PASTOR].unk_22) {
+            updateAnimation(PASTOR);
+        }
+
+        if (npcInfoArray[PASTOR].unk_22) {
+            npcInfoArray[PASTOR].unk_22--; 
+        } 
+        
+        func_80075A78(PASTOR);
+    }   
+}
+
+//INCLUDE_ASM(const s32, "npc", func_80084114);
+
+void func_80084114(void) {
+
+    if (npcInfoArray[SHIPPER].flags & 4) {
+        
+        if (func_8002FECC(npcInfoArray[SHIPPER].spriteIndex) && !npcInfoArray[SHIPPER].unk_22) {
+            updateAnimation(SHIPPER);
+        }
+
+        if (npcInfoArray[SHIPPER].unk_22) {
+            npcInfoArray[SHIPPER].unk_22--; 
+        } 
+        
+        func_80075A78(SHIPPER);
+    }   
+}
 
 //INCLUDE_ASM(const s32, "npc", func_8008420C);
 
 void func_8008420C(void) {
 
-    if (!(npcInfoArray[SAIBARA].flags & 4)) return;
+    if (npcInfoArray[SAIBARA].flags & 4) {
+        
+        if (func_8002FECC(npcInfoArray[SAIBARA].spriteIndex) && !npcInfoArray[SAIBARA].unk_22) {
+            updateAnimation(SAIBARA);
+        }
 
-    if (!func_8002FECC(npcInfoArray[SAIBARA].spriteIndex)) goto check; 
-    
-    if (npcInfoArray[SAIBARA].unk_22) goto decrement;
-
-    switch (npcInfoArray[SAIBARA].movingFlag) {
-        case FALSE:
-            npcInfoArray[SAIBARA].unk_20 = 0;
-            npcInfoArray[SAIBARA].unk_21 = 10;
-            npcInfoArray[SAIBARA].unk_22 = 0;
-            setSpriteAnimation(npcInfoArray[SAIBARA].spriteIndex, npcInfoArray[SAIBARA].unk_24);
-            setFlag(SAIBARA);
-            break;
-        case TRUE:
-            func_80075EBC(SAIBARA);
-            break;
-        default:
-            break;
-    }
-    
-check:
-     if (!npcInfoArray[SAIBARA].unk_22) {
-         goto func_end;
-    }
-    
-decrement:
-    npcInfoArray[SAIBARA].unk_22--;
-    
-func_end:    
-    func_80075A78(SAIBARA);
+        if (npcInfoArray[SAIBARA].unk_22) {
+            npcInfoArray[SAIBARA].unk_22--; 
+        } 
+        
+        func_80075A78(SAIBARA);
+    }   
 }
 
-INCLUDE_ASM(const s32, "npc", func_80084304);
+//INCLUDE_ASM(const s32, "npc", func_80084304);
+void func_80084304(void) {
 
-INCLUDE_ASM(const s32, "npc", func_800843FC);
+    if (npcInfoArray[DUKE].flags & 4) {
+        
+        if (func_8002FECC(npcInfoArray[DUKE].spriteIndex) && !npcInfoArray[DUKE].unk_22) {
+            updateAnimation(DUKE);
+        }
+
+        if (npcInfoArray[DUKE].unk_22) {
+            npcInfoArray[DUKE].unk_22--; 
+        } 
+        
+        func_80075A78(DUKE);
+    }   
+}
+
+//INCLUDE_ASM(const s32, "npc", func_800843FC);
+
+void func_800843FC(void) {
+
+    if (npcInfoArray[GREG].flags & 4) {
+        
+        if (func_8002FECC(npcInfoArray[GREG].spriteIndex) && !npcInfoArray[GREG].unk_22) {
+            updateAnimation(GREG);
+        }
+
+        if (npcInfoArray[GREG].unk_22) {
+            npcInfoArray[GREG].unk_22--; 
+        } 
+        
+        func_80075A78(GREG);
+    }   
+}
 
 INCLUDE_ASM(const s32, "npc", func_800844F4);
 
@@ -797,83 +1315,95 @@ INCLUDE_ASM(const s32, "npc", func_80084C3C);
 
 INCLUDE_ASM(const s32, "npc", func_80084D34);
 
-INCLUDE_ASM(const s32, "npc", func_80084E2C);
+//INCLUDE_ASM(const s32, "npc", func_80084E2C);
+
+void func_80084E2C(void) {
+
+    if (npcInfoArray[SYDNEY].flags & 4) {
+        
+        if (func_8002FECC(npcInfoArray[SYDNEY].spriteIndex) && !npcInfoArray[SYDNEY].unk_22) {
+            updateAnimation(SYDNEY);
+        }
+
+        if (npcInfoArray[SYDNEY].unk_22) {
+            npcInfoArray[SYDNEY].unk_22--; 
+        } 
+        
+        func_80075A78(SYDNEY);
+    }   
+}
 
 //INCLUDE_ASM(const s32, "npc", func_80084F24);
 
 void func_80084F24(void) {
 
-    if (!(npcInfoArray[37].flags & 4)) return;
+    if (npcInfoArray[BARLEY].flags & 4) {
+        
+        if (func_8002FECC(npcInfoArray[BARLEY].spriteIndex) && !npcInfoArray[BARLEY].unk_22) {
+            updateAnimation(BARLEY);
+        }
 
-    if (!func_8002FECC(npcInfoArray[37].spriteIndex)) goto check; 
-    
-    if (npcInfoArray[37].unk_22) goto decrement;
-
-    switch (npcInfoArray[37].movingFlag) {
-        case FALSE:
-            npcInfoArray[37].unk_20 = 0;
-            npcInfoArray[37].unk_21 = 10;
-            npcInfoArray[37].unk_22 = 0;
-            setSpriteAnimation(npcInfoArray[37].spriteIndex, npcInfoArray[37].unk_24);
-            setFlag(37);
-            break;
-        case TRUE:
-            func_80075EBC(0x25);
-            break;
-        default:
-            break;
-    }
-    
-check:
-     if (!npcInfoArray[37].unk_22) {
-         goto func_end;
-    }
-    
-decrement:
-    npcInfoArray[37].unk_22--;
-    
-func_end:    
-    func_80075A78(0x25);
+        if (npcInfoArray[BARLEY].unk_22) {
+            npcInfoArray[BARLEY].unk_22--; 
+        } 
+        
+        func_80075A78(BARLEY);
+    }   
 }
 
 //INCLUDE_ASM(const s32, "npc", func_8008501C);
 
 void func_8008501C(void) {
 
-    if (npcInfoArray[38].flags & 4) {
+    if (npcInfoArray[GOURMET_JUDGE].flags & 4) {
         
-        if (func_8002FECC(npcInfoArray[38].spriteIndex)) {
-
-            if (!npcInfoArray[38].unk_22) {
-                
-                switch (npcInfoArray[38].movingFlag) {
-                    case 0:
-                        npcInfoArray[38].unk_20 = 0;
-                        npcInfoArray[38].unk_21 = 0xA;
-                        npcInfoArray[38].unk_22 = 0;
-                        setSpriteAnimation(npcInfoArray[38].spriteIndex, npcInfoArray[38].unk_24);
-                        D_801FBFE6 |= 2;
-                        break;
-                    case 1:
-                        func_80075EBC(0x26);
-                        break;
-                }
-
-            }
-
+        if (func_8002FECC(npcInfoArray[GOURMET_JUDGE].spriteIndex) && !npcInfoArray[GOURMET_JUDGE].unk_22) {
+            updateAnimation(GOURMET_JUDGE);
         }
 
-        if (npcInfoArray[38].unk_22) {
-            npcInfoArray[38].unk_22--;
-        }
-
-        func_80075A78(0x26);
-    }
+        if (npcInfoArray[GOURMET_JUDGE].unk_22) {
+            npcInfoArray[GOURMET_JUDGE].unk_22--; 
+        } 
+        
+        func_80075A78(GOURMET_JUDGE);
+    }   
 }
 
-INCLUDE_ASM(const s32, "npc", func_80085114);
+//INCLUDE_ASM(const s32, "npc", func_80085114);
 
-INCLUDE_ASM(const s32, "npc", func_8008520C);
+void func_80085114(void) {
+
+    if (npcInfoArray[PHOTOGRAPHER].flags & 4) {
+        
+        if (func_8002FECC(npcInfoArray[PHOTOGRAPHER].spriteIndex) && !npcInfoArray[PHOTOGRAPHER].unk_22) {
+            updateAnimation(PHOTOGRAPHER);
+        }
+
+        if (npcInfoArray[PHOTOGRAPHER].unk_22) {
+            npcInfoArray[PHOTOGRAPHER].unk_22--; 
+        } 
+        
+        func_80075A78(PHOTOGRAPHER);
+    }   
+}
+
+//INCLUDE_ASM(const s32, "npc", func_8008520C);
+
+void func_8008520C(void) {
+
+    if (npcInfoArray[0x28].flags & 4) {
+        
+        if (func_8002FECC(npcInfoArray[0x28].spriteIndex) && !npcInfoArray[0x28].unk_22) {
+            updateAnimation(0x28);
+        }
+
+        if (npcInfoArray[0x28].unk_22) {
+            npcInfoArray[0x28].unk_22--; 
+        } 
+        
+        func_80075A78(0x28);
+    }   
+}
 
 INCLUDE_ASM(const s32, "npc", func_80085304);
 
@@ -887,13 +1417,15 @@ INCLUDE_ASM(const s32, "npc", func_800856E4);
 
 INCLUDE_ASM(const s32, "npc", func_800857DC);
 
+
+
 INCLUDE_ASM(const s32, "npc", func_800858D4);
 
 //INCLUDE_ASM(const s32, "npc", func_80085C94);
 
-u8 func_80085C94(void) {
+bool func_80085C94(void) {
 
-    u8 found = 0;
+    bool found = 0;
     u8 i = 0;
     
     D_801C3E18 = 0xFF;
@@ -902,7 +1434,6 @@ u8 func_80085C94(void) {
         if (npcInfoArray[i].flags & 4) {
             if (!renderedSprites[npcInfoArray[i].spriteIndex].unk_58) {
                 found = 1;
-                // bit 6
                 npcInfoArray[i].movingFlag = 0x20;
                 D_801C3E18 = i;
             }
@@ -933,8 +1464,8 @@ bool func_80085D48(int index, u16 arg1) {
     if (npcInfoArray[index].flags & 4) {
         // check if girl and load heart icon
         if ((index < 5) && (index >= (result = 0))) {
-            func_8003F910(0, 0x78, &D_D47F00, &D_D49B80, &D_D49B80_2, &tvSprites_romTextureStart, 0x8023B400, 0x8023CC00, 0x8023CE00, 0x8023D200, 0, (npcAffection[index] / 52) + 5, 0xFE, 106.0f, -15.0f, 0);
-            func_8003F910(1, 0x78, &D_D47F00, &D_D49B80, &D_D49B80_2, &tvSprites_romTextureStart, 0x8023B400, 0x8023CC00, 0x8023CE00, 0x8023D200, 0, (npcAffection[index] / 52) + 5, 0xFE, 106.0f, -15.0f, 0);
+            func_8003F910(0, 0x78, &dialogueIconsTextureStart, &dialogueIconsTextureEnd, &dialogueIconsPaletteStart, &dialogueIconsPaletteEnd, (void*)DIALOGUE_ICONS_TEXTURES_VADDR, 0x8023CC00, 0x8023CE00, 0x8023D200, 0, (npcAffection[index] / 52) + 5, 0xFE, 106.0f, -15.0f, 0);
+            func_8003F910(1, 0x78, &dialogueIconsTextureStart, &dialogueIconsTextureEnd, &dialogueIconsPaletteStart, &dialogueIconsPaletteEnd, (void*)DIALOGUE_ICONS_TEXTURES_VADDR, 0x8023CC00, 0x8023CE00, 0x8023D200, 0, (npcAffection[index] / 52) + 5, 0xFE, 106.0f, -15.0f, 0);
         }
         // get dialogue index
         func_8005AF94(0, D_80114960[arr[7]], arg1, 0, 0);

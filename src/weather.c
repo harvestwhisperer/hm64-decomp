@@ -11,39 +11,35 @@ extern u8 gWeather;
 // data
 extern u8 D_80118B50[5][4];
 
-// shared: level.c
-extern void *D_D92970;
-extern void *D_D92D50;
-extern void *D_D92D50_2;
-extern void *D_D92D70;
-extern void *D_D92D70_2;
+extern void *rainTextureStart;
+extern void *rainTextureEnd;
+extern void *rainPaletteStart;
+extern void *rainPaletteEnd;
 
 //INCLUDE_ASM(const s32, "weather", func_800DC360);
 
 void func_800DC360(void) {
     
     u8 i;
-    u16 temp;
     
-    u16 temp2 = (u8)-((gWeather == RAIN || gWeather == 4) == 0);
+    u16 check = ((gWeather == RAIN || gWeather == 4) == FALSE) ? 0xFF : 0;
 
     if (gWeather == SNOW) {
-        temp2 = 1;
+        check = 1;
     }
     
-    if (temp2 != 0xFF) {
-        for (i = 0; i < 10; i++) {
-            
-            temp = i;
+    if (check != 0xFF) {
 
+        for (i = 0; i < 10; i++) {
+        
             // sprite funcs
-            func_8002B138(temp+0x6b, &D_D92970, &D_D92D50, &D_D92D50_2, &D_D92D70_2, 0, 0, 0x802A5AC0, 0, 0x802A5DC0, 0x802A5EC0, 0x802A5FC0, 0, 0, 1);
-            func_8002BD90(temp+0x6b, 1.0f, 1.0f, 1.0f);
-            func_8002C7EC(temp+0x6b, 4);
-            func_8002C914(temp+0x6b, 0xFF, 0xFF, 0xFF, 0xFF);
+            func_8002B138(i+0x6B, &rainTextureStart, &rainTextureEnd, &rainPaletteStart, &rainPaletteEnd, 0, 0, (void*)RAIN_TEXTURE_VADDR, NULL, 0x802A5DC0, 0x802A5EC0, 0x802A5FC0, 0, 0, 1);
+            func_8002BD90(i+0x6B, 1.0f, 1.0f, 1.0f);
+            func_8002C7EC(i+0x6B, 4);
+            func_8002C914(i+0x6B, 0xFF, 0xFF, 0xFF, 0xFF);
 
             // map
-            func_80034D64(0, i+3, temp+0x6B, temp2);
+            func_80034D64(0, i+3, i+0x6B, check);
         }
     }
 }

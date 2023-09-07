@@ -3,7 +3,7 @@
 
 #include "common.h"
 
-extern void func_80055F08(s16 cutsceneIndex, u16 exitIndex, u8 arg2);
+extern void func_80055F08(u16 cutsceneIndex, u16 exitIndex, u8 arg2);
 extern void func_80056030(u8 arg0);
 extern void func_80059334();    
 extern void func_800593EC();   

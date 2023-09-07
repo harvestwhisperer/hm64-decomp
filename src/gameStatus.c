@@ -10,13 +10,11 @@
 #include "npc.h"
 
 // bss
-extern u32 dailyEventBits[];
-extern u32 lifeEventBits[];
-extern u32 specialDialogueBits[];
-// mail bits
-extern u32 D_801C3F38[];
-// mailbox bits
-extern u32 D_8016FFEC[];
+u32 dailyEventBits[];
+u32 lifeEventBits[];
+u32 specialDialogueBits[];
+u32 readMailBits[];
+u32 mailboxBits[];
 
 // shared
 extern u32 D_80189058;
@@ -24,6 +22,53 @@ extern u32 D_80189058;
 // forward declaration
 void toggleSpecialDialogueBit(u16);
 
+
+// should be inline adjustValue from game.c ... have to mess with linker options
+static inline int adjustValue2(int initial, int value, int max) {
+
+    int temp;
+    int adjusted;
+
+    adjusted = value;
+    temp = initial + adjusted;
+    
+    if (max < temp) {
+        adjusted -= temp - max;
+        temp = max;
+    }
+    
+    if (temp < 0) {
+        adjusted -= temp;
+    } 
+      
+    return adjusted;
+}
+
+// should be adjustValue() call
+static inline void handleAddShipment(s32 amount) {
+
+    int temp;
+    int checkShippingOverflow;
+    int shippingValue;    
+    int maxShipping;
+
+    checkShippingOverflow = dailyShippingBinValue + amount;
+    shippingValue = amount;
+    maxShipping = MAX_TOTAL_SHIPPING;
+    
+    if (checkShippingOverflow > maxShipping) {
+        temp = checkShippingOverflow - MAX_TOTAL_SHIPPING;
+        shippingValue -= temp;
+        checkShippingOverflow = maxShipping;
+    }
+
+    if (checkShippingOverflow < 0) {
+        shippingValue -= checkShippingOverflow;
+    }
+    
+    dailyShippingBinValue += shippingValue;
+    
+}
 
 // jtbl_8011F300
 //INCLUDE_ASM(const s32, "gameStatus", func_80063AF0);
@@ -40,8 +85,10 @@ void func_80063AF0(void) {
     temp = getRandomNumberInRange(0, 1);
 
     switch (gWife) {
-        case 0:
-            if (!getRandomNumberInRange(0,  (5 - npcAffection[0] / 50))) {
+
+        case MARIA:
+
+            if (!getRandomNumberInRange(0,  (5 - npcAffection[MARIA] / 50))) {
                 if (temp) {
                     func_80063D38();
                     break;
@@ -49,8 +96,10 @@ void func_80063AF0(void) {
                 func_80063E18();
             } 
             break;
-        case 1:
-            if (!getRandomNumberInRange(0,  (5 - npcAffection[1] / 50))) {
+
+        case POPURI:
+
+            if (!getRandomNumberInRange(0,  (5 - npcAffection[POPURI] / 50))) {
                 if (temp) {
                     func_80063F3C();
                     break;
@@ -58,17 +107,21 @@ void func_80063AF0(void) {
                 func_80063E18();
             } 
             break;
-        case 2:
-            if (!getRandomNumberInRange(0,  (5 - npcAffection[2] / 50))) {
+
+        case ELLI:
+
+            if (!getRandomNumberInRange(0,  (5 - npcAffection[ELLI] / 50))) {
                 if (temp) {
                     func_80064048();
                     break;
                 }
                 func_80063E18();
             } 
-            break;        
-        case 3:
-            if (!getRandomNumberInRange(0,  (5 - npcAffection[3] / 50))) {
+            break;       
+
+        case ANN:
+
+            if (!getRandomNumberInRange(0,  (5 - npcAffection[ANN] / 50))) {
                 if (temp) {
                     func_80064048();
                     break;
@@ -76,13 +129,16 @@ void func_80063AF0(void) {
                 func_80063E18();
             } 
             break;
-        case 4:
-            if (!getRandomNumberInRange(0,  (5 - npcAffection[4] / 50))) {
+
+        case KAREN:
+
+            if (!getRandomNumberInRange(0,  (5 - npcAffection[KAREN] / 50))) {
                 if (temp) {
                     func_80063E18();
                 }
             } 
             break;
+
         default:
             break;
     }
@@ -98,6 +154,7 @@ void func_80063D38(void) {
     u8 j;
 
     if (gSeason != WINTER) {
+
         for (i = 0; i < FIELD_WIDTH; i++) {
             for (j = 0; j < FIELD_HEIGHT; j++) {
                 if (farmFieldTiles[i][j] == WEED) {
@@ -106,6 +163,7 @@ void func_80063D38(void) {
                 } 
             }
         } 
+        
     }
 }
 
@@ -123,7 +181,8 @@ void func_80063E18(void) {
             gChickens[i].flags = 0;
 
             handleAddShipment(EGG_VALUE);
-            handleShipEgg();
+
+            gTotalEggsShipped += adjustValue2(gTotalEggsShipped, 1, MAX_ANIMAL_ITEM_SHIPPED);
             
         }
     }
@@ -157,7 +216,7 @@ void func_80064048(void) {
     u8 i;
 
     for (i = 0; i < MAX_CHICKENS; i++) {
-        if ((gChickens[i].flags & 1) && (gChickens[i].type == 2) && (gChickens[i].location == COOP)) {
+        if ((gChickens[i].flags & 1) && gChickens[i].type == 2 && gChickens[i].location == COOP) {
             setSpecialDialogueBit(0x86);
             gChickens[i].flags |= 0x10;
         }
@@ -239,42 +298,42 @@ u32 checkSpecialDialogueBit(u16 bitIndex) {
 
 void func_8006523C(u16 bitIndex) {
     u32 temp = bitIndex;
-    return D_801C3F38[temp >> 5] |= (1 << (temp & 0x1F));
+    return readMailBits[temp >> 5] |= (1 << (temp & 0x1F));
 }
 
 //INCLUDE_ASM(const s32, "gameStatus", toggleReadLetterBit);
 
 void toggleReadLetterBit(u16 bitIndex) {
     u32 temp = bitIndex;
-    return D_801C3F38[temp >> 5] &= ~(1 << (temp & 0x1F));
+    return readMailBits[temp >> 5] &= ~(1 << (temp & 0x1F));
 }
 
 //INCLUDE_ASM(const s32, "gameStatus", checkMailRead);
 
 u32 checkMailRead(u16 bitIndex) {
     u32 temp = bitIndex;
-    return D_801C3F38[temp >> 5] & (1 << (temp & 0x1F));
+    return readMailBits[temp >> 5] & (1 << (temp & 0x1F));
 }
 
 //NCLUDE_ASM(const s32, "gameStatus", setMail);
 
 void setMail(u16 bitIndex) {
     u32 temp = bitIndex;
-    return D_8016FFEC[temp >> 5] |= (1 << (temp & 0x1F));
+    return mailboxBits[temp >> 5] |= (1 << (temp & 0x1F));
 }
 
 //INCLUDE_ASM(const s32, "gameStatus", func_80065308);
 
 void func_80065308(u16 bitIndex) {
     u32 temp = bitIndex;
-    return D_8016FFEC[temp >> 5] &= ~(1 << (temp & 0x1F));
+    return mailboxBits[temp >> 5] &= ~(1 << (temp & 0x1F));
 }
 
 //INCLUDE_ASM(const s32, "gameStatus", func_80065340);
 
 u32 func_80065340(u16 bitIndex) {
     u32 temp = bitIndex;
-    return D_8016FFEC[temp >> 5] & (1 << (temp & 0x1F));
+    return mailboxBits[temp >> 5] & (1 << (temp & 0x1F));
 }
 
 #ifdef PERMUTER
@@ -288,10 +347,10 @@ u8 func_8006536C(void) {
 
         temp = i;
 
-        if (D_8016FFEC[temp >> 5] & 1 << (temp & 0x1F)) {
+        if (mailboxBits[temp >> 5] & 1 << (temp & 0x1F)) {
             
-            D_8016FFEC[temp] &= ~(1 << (temp & 0x1F));
-            D_801C3F38[temp >> 5] |= 1 << (temp & 0x1F);
+            mailboxBits[temp] &= ~(1 << (temp & 0x1F));
+            readMailBits[temp >> 5] |= 1 << (temp & 0x1F);
             
             result = i;
         }

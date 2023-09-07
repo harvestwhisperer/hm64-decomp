@@ -31,12 +31,10 @@ typedef struct {
     u8 action; // move/delete /* 0x89 */
 } LoadGameScreenInfo;
 
-
+void func_800E1380(u8);            
 extern void func_800E53E8(u8);    
 
-
 extern u8 gCurrentGameIndex;
-
 extern u32 D_801654F4;
 
 #endif

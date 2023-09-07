@@ -30,8 +30,8 @@ typedef struct {
 } Animation;
 
 typedef struct {
-    void *romAddr;
-    void *vaddr;
+    void *romAddrStart;
+    void *romAddrEnd;
 } Addresses;
 
 typedef struct {

@@ -35,9 +35,9 @@ void func_800ACB04(u16 songIndex) {
     setSongVolumes(0, 0, 0);
 }
 
-//INCLUDE_ASM(const s32, "gameAudio", func_800ACB5C);
+//INCLUDE_ASM(const s32, "gameAudio", setSongWithDefaultSpeed);
 
-void func_800ACB5C(u16 songIndex) {
+void setSongWithDefaultSpeed(u16 songIndex) {
     if (songIndex < TOTAL_SONGS) {
         setSongSpeed(0, 32);
     }
@@ -51,10 +51,10 @@ void func_800ACB8C(u16 songIndex) {
     }
 }
 
-//INCLUDE_ASM(const s32, "gameAudio", func_800ACBB8);
+//INCLUDE_ASM(const s32, "gameAudio", checkDefaultSongChannelOpen);
 
 // check if first song is open/not set
-u8 func_800ACBB8(u16 songIndex) {
+u8 checkDefaultSongChannelOpen(u16 songIndex) {
     
     u8 result = 0;
     
@@ -70,9 +70,9 @@ u8 func_800ACBB8(u16 songIndex) {
 }
 
 
-//INCLUDE_ASM(const s32, "gameAudio", func_800ACBEC);
+//INCLUDE_ASM(const s32, "gameAudio", setSongWithVolume);
 
-void func_800ACBEC(u16 songIndex, u32 arg1) {
+void setSongWithVolume(u16 songIndex, u32 arg1) {
     if (songIndex < TOTAL_SONGS) {
         setSongVolumes(0, arg1, 32);
     }

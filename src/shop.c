@@ -41,7 +41,7 @@ void func_800DC750(u8 arg0) {
 //INCLUDE_ASM(const s32, "shop", func_800DC7BC);
 
 void func_800DC7BC(u8 index) {
-    func_8002B138(D_801194A0[index] + 0x62, &D_D52670, &D_D82FD0, &D_D82FD0_2, &D_D82FF0, &D_D82FF0_2, &D_D835A0, D_801192E0[index][0], D_801192E0[index][1], 0x8028DD50, 0x80290550, 0x80293A50, 0x80293C50, 1, 1);
+    func_8002B138(D_801194A0[index] + 0x62, &holdableItemsTexturesStart, &holdableItemsTexturesEnd, &holdableItemsPaletteStart, &holdableItemsPaletteEnd, &holdableItemsTableStart, &holdableItemsTableEnd, D_801192E0[index][0], D_801192E0[index][1], 0x8028DD50, 0x80290550, 0x80293A50, 0x80293C50, 1, 1);
     func_8002BD90(D_801194A0[index] + 0x62, 1.0f, 1.0f, 1.0f);
     func_8002C7EC(D_801194A0[index] + 0x62, 3);
     func_8002C85C(D_801194A0[index] + 0x62, 0xFF, 0xFF, 0xFF, 0xFF);

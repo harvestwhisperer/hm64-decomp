@@ -3,12 +3,11 @@
 
 #include "memory.h"
 
-// bss
 OSPiHandle SramHandle;
 
 //INCLUDE_ASM(const s32, "system/memory", sramInit);
 
-OSPiHandle* sramInit(void) {
+inline OSPiHandle* sramInit(void) {
     
     if (SramHandle.baseAddress == PHYS_TO_K1(SRAM_START_ADDR)) {
         return (&SramHandle);
@@ -31,28 +30,37 @@ OSPiHandle* sramInit(void) {
     return (&SramHandle);
 }
 
-INCLUDE_ASM(const s32, "system/memory", func_8004DC48);
+//INCLUDE_ASM(const s32, "system/memory", func_8004DC48);
 
-#ifdef PERMUTER
-void func_8004DD7C(void *dramAddr, void *devAddr, u32 size) {
+void func_8004DC48(void* devAddr, void* dramAddr, u32 size) {
 
-    OSPiHandle *ptr = &D_80181B18;
+    OSPiHandle* handle = sramInit();
     OSIoMesg osIoMesg;
     OSMesgQueue queue;
     OSMesg mesg;
 
-    if (ptr->baseAddress != PHYS_TO_K1(SRAM_START_ADDR)) {
-        ptr->type = 3;
-        ptr->latency = 5;
-        ptr->pulse = 12;
-        ptr->pageSize = 13;
-        ptr->relDuration = 2;
-        ptr->baseAddress = PHYS_TO_K1(SRAM_START_ADDR);
-        ptr->domain = 1;
-        ptr->speed = 0;
-        _bzero((void*)&ptr->transferInfo, sizeof(ptr->transferInfo));
-        osEPiLinkHandle(ptr);
-    }
+    osCreateMesgQueue(&queue, &mesg, 1);
+    osInvalDCache(dramAddr, size);
+
+    osIoMesg.hdr.pri = 0;
+    osIoMesg.hdr.retQueue = &queue;
+    osIoMesg.dramAddr = dramAddr;
+    osIoMesg.devAddr = devAddr;
+    osIoMesg.size = size;
+
+    osEPiStartDma(handle, &osIoMesg, OS_READ);
+    osRecvMesg(&queue, &mesg, 1);
+    
+}
+
+//INCLUDE_ASM(const s32, "system/memory", func_8004DD7C);
+
+void func_8004DD7C(void *dramAddr, void *devAddr, u32 size) {
+
+    OSPiHandle *handle = sramInit();
+    OSIoMesg osIoMesg; 
+    OSMesgQueue queue;
+    OSMesg mesg;
 
     osCreateMesgQueue(&queue, &mesg, 1);
     osWritebackDCache(devAddr, size);
@@ -63,10 +71,7 @@ void func_8004DD7C(void *dramAddr, void *devAddr, u32 size) {
     osIoMesg.devAddr = dramAddr;
     osIoMesg.size = size;
     
-    osEPiStartDma(ptr, &osIoMesg, 1);
-    osRecvMesg(&queue, &mesg, 1);
+    osEPiStartDma(handle, &osIoMesg, OS_WRITE);
+    osRecvMesg(&queue, &mesg, OS_MESG_BLOCK);
     
 }
-#else
-INCLUDE_ASM(const s32, "system/memory", func_8004DD7C);
-#endif

@@ -22,7 +22,6 @@ void setCameraLookAt(Camera*, f32, f32, f32, f32, f32, f32, f32, f32, f32);
 void setCameraOrthographicValues(Camera*, f32, f32, f32, f32, f32, f32); 
 void setCameraPerspectiveValues(Camera*, f32, f32, f32, f32);    
 
-
 // bss
 Camera gCamera;
 
@@ -33,7 +32,6 @@ Gfx D_801836A0[2][0x500];
 Gfx D_80205000[2][0x20];
 
 WorldMatrices worldMatrices[2];
-
                         
 // data, possibly external
 extern Gfx setup_rdpstate[];
@@ -47,7 +45,7 @@ extern u16*	FrameBuf[3];
 
 extern Vp viewport;
 
-// sets viewport at end of display lists
+// sets viewport at beginning of display lists
 extern Gfx D_80112A60[3];
 /*
 Gfx D_80112A60[] = { 
@@ -57,7 +55,6 @@ Gfx D_80112A60[] = {
 }
 */
 
-
 // rodata
 extern f64 D_8011EC78;
 extern f64 D_8011EC80;
@@ -66,11 +63,10 @@ extern f64 D_8011EC80;
 extern const char D_8011EC60[];
 extern const char D_8011EC64[];
 
-
 // shared globals
 // also used by tiles.c, map.c, and worldGraphics.c
-extern Vec3f D_8013D5D8;
-extern Vec3f D_8017044C;
+extern Vec3f previousWorldRotationAngles;
+extern Vec3f currentWorldRotationAngles;
 extern f32 D_80170450;
 extern f32 D_80170454;
 // func_800276AC
@@ -568,23 +564,23 @@ void func_80028EA8(UnknownGraphicsStruct* arg0, u8 arg1, u8 arg2, u8 arg3) {
 
 void func_80028EB8(f32 x, f32 y, f32 z) {
     
-    D_8017044C.x = x;
-    D_8017044C.y = y;
+    currentWorldRotationAngles.x = x;
+    currentWorldRotationAngles.y = y;
 
-    D_8013D5D8.x = x;
-    D_8013D5D8.y = y;
+    previousWorldRotationAngles.x = x;
+    previousWorldRotationAngles.y = y;
 
-    D_8017044C.z = z;
-    D_8013D5D8.z = z;
+    currentWorldRotationAngles.z = z;
+    previousWorldRotationAngles.z = z;
 
 }
 
 //INCLUDE_ASM(const s32, "system/graphic", func_80028EF8);
 
 void func_80028EF8(f32 x, f32 y, f32 z) {
-    D_8017044C.x += x;
-    D_8017044C.y += y;
-    D_8017044C.z += z;
+    currentWorldRotationAngles.x += x;
+    currentWorldRotationAngles.y += y;
+    currentWorldRotationAngles.z += z;
 }
 
 //INCLUDE_ASM(const s32, "system/graphic", nuGfxInit);
@@ -613,7 +609,7 @@ void nuGfxInit(void) {
     gDPFullSync(gfxList_ptr++);
     gSPEndDisplayList(gfxList_ptr++);
     
-    nuGfxTaskStart(gfxList, (s32)(gfxList_ptr - gfxList) * sizeof(Gfx), NU_GFX_UCODE_F3DEX2, 0);
+    nuGfxTaskStart(gfxList, (s32)(gfxList_ptr - gfxList) * sizeof(Gfx), NU_GFX_UCODE_F3DEX2, NU_SC_NOSWAPBUFFER);
 
     nuGfxTaskAllEndWait();
     

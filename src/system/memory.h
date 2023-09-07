@@ -33,6 +33,6 @@ typedef union {
     Aligned32 aligned_32;
 } MemoryRead_32;
 
-extern void func_8004DD7C(void*, void*, u8);
+void func_8004DD7C(void *dramAddr, void *devAddr, u32 size);
 
 #endif

@@ -52,9 +52,9 @@ void initializeNpcSpriteStructs(void) {
 
 //INCLUDE_ASM(const s32, "system/renderedSprites", func_8002DDDC);
 
-u8 func_8002DDDC(u16 npcIndex, void* arg1, void* arg2, void* arg3, void* arg4, void* arg5, void* arg6, u8 arg7, u8 arg8, void* arg9) {
+bool func_8002DDDC(u16 npcIndex, void* arg1, void* arg2, void* arg3, void* arg4, void* arg5, void* arg6, u8 arg7, u8 arg8, void* arg9) {
 
-    u8 result = 0;
+    bool result = 0;
 
     if (npcIndex < MAX_NPC_SPRITES) {
 
@@ -94,9 +94,9 @@ INCLUDE_ASM(const s32, "system/renderedSprites", func_8002DEE8);
 
 //INCLUDE_ASM(const s32, "system/renderedSprites", func_8002E024);
 
-u8 func_8002E024(u16 index, void* arg1, void* arg2, void* arg3, void* arg4) {
+bool func_8002E024(u16 index, void* arg1, void* arg2, void* arg3, void* arg4) {
 
-    u8 result = 0;
+    bool result = 0;
     
     if (index < MAX_RENDERED_SPRITES) {
         
@@ -129,9 +129,9 @@ u8 func_8002E024(u16 index, void* arg1, void* arg2, void* arg3, void* arg4) {
 
 //INCLUDE_ASM(const s32, "system/renderedSprites", func_8002E108);
 
-u8 func_8002E108(u16 index) {
+bool func_8002E108(u16 index) {
 
-    u8 result = 0;
+    bool result = 0;
     
     if (index < MAX_RENDERED_SPRITES) {
         
@@ -180,9 +180,9 @@ INCLUDE_ASM(const s32, "system/renderedSprites", func_8002E284);
 
 //INCLUDE_ASM(const s32, "system/renderedSprites", func_8002EC18);
 
-u8 func_8002EC18(u16 index, u32 arg1, void *arg2, void *arg3, void *arg4, void *arg5, s32 arg6, s32 arg7, s32 arg8, u16 arg9, u8 argA) {
+bool func_8002EC18(u16 index, u32 arg1, void *arg2, void *arg3, void *arg4, void *arg5, s32 arg6, s32 arg7, s32 arg8, u16 arg9, u8 argA) {
 
-    u8 result = 0;
+    bool result = 0;
     
     if (index < MAX_SHADOW_SPRITES) {
         result = 1;
@@ -232,9 +232,9 @@ bool func_8002ECD4(u16 index, u16 arg1, u16 arg2) {
 
 //INCLUDE_ASM(const s32, "system/renderedSprites", func_8002ED80);
 
-u8 func_8002ED80(u16 index, s16 arg1) {
+bool func_8002ED80(u16 index, s16 arg1) {
     
-    u8 result = 0;
+    bool result = 0;
 
     if (index < MAX_RENDERED_SPRITES) {
         if (renderedSprites[index].flags & 1) {
@@ -249,9 +249,9 @@ u8 func_8002ED80(u16 index, s16 arg1) {
  
 //INCLUDE_ASM(const s32, "system/renderedSprites", func_8002EDF0);
 
-u8 func_8002EDF0(u16 index, s16 arg1, s16 arg2, s16 arg3) {
+bool func_8002EDF0(u16 index, s16 arg1, s16 arg2, s16 arg3) {
 
-    u8 result = 0;
+    bool result = 0;
 
     if (index < MAX_RENDERED_SPRITES) {
         if ((renderedSprites[index].flags & 1) && (renderedSprites[index].flags & 4)) {
@@ -268,9 +268,9 @@ u8 func_8002EDF0(u16 index, s16 arg1, s16 arg2, s16 arg3) {
 
 //INCLUDE_ASM(const s32, "system/renderedSprites", func_8002EEA4);
 
-u8 func_8002EEA4(u16 arg0) {
+bool func_8002EEA4(u16 arg0) {
 
-    u8 result = 0;
+    bool result = 0;
 
     if (!arg0 && gTileContextFlags & 1 && gTileContextFlags & 2) {
         D_801FD610 = arg0;
@@ -296,7 +296,7 @@ INCLUDE_ASM(const s32, "system/renderedSprites", func_8002F2FC);
 
 u8 setSpriteAnimation(u16 index, u16 arg1) {
     
-    u8 result = 0;
+    bool result = 0;
 
     if (index < MAX_RENDERED_SPRITES) {
         if ((renderedSprites[index].flags & 1) && (renderedSprites[index].flags & 4) && !(renderedSprites[index].flags & 0x1000)) {     
@@ -349,22 +349,38 @@ void func_8002F770(u16 arg0) {
     }
 }
 
-INCLUDE_ASM(const s32, "system/renderedSprites", func_8002F7C8);
+//INCLUDE_ASM(const s32, "system/renderedSprites", func_8002F7C8);
+
+void func_8002F7C8(u8 r, u8 g, u8 b, u8 a) {
+
+    u16 i;
+
+    for (i = 0; i < MAX_RENDERED_SPRITES; i++) {
+        if (renderedSprites[i].flags & 1 && renderedSprites[i].flags & 8) {
+            if (i < MAX_RENDERED_SPRITES && renderedSprites[i].flags & 4) {
+                func_8002C914(renderedSprites[i].unk_52, r, g, b, a);
+                if (npcSprites[renderedSprites[i].characterIndex].flag != 0xFF) {
+                    func_8002C914(renderedSprites[i].spriteOffset, r, g, b, 0x60);
+                }
+            }
+        }
+    }
+}
 
 INCLUDE_ASM(const s32, "system/renderedSprites", func_8002F8F0);
 
 //INCLUDE_ASM(const s32, "system/renderedSprites", func_8002FA2C);
 
-bool func_8002FA2C(u16 arg0) {
+bool func_8002FA2C(u16 index) {
 
     bool result = 0;
 
-    if (arg0 < 0x31) {
-        if (renderedSprites[arg0].flags & 1 && renderedSprites[arg0].flags & 8) {
-            renderedSprites[arg0].flags &= ~( 0x8 | 0x2000);
-            func_8002B6B8(renderedSprites[arg0].unk_52);
-            if (npcSprites[renderedSprites[arg0].characterIndex].flag != 0xFF) {
-                func_8002B6B8(renderedSprites[arg0].spriteOffset);
+    if (index < MAX_RENDERED_SPRITES) {
+        if (renderedSprites[index].flags & 1 && renderedSprites[index].flags & 8) {
+            renderedSprites[index].flags &= ~( 0x8 | 0x2000);
+            func_8002B6B8(renderedSprites[index].unk_52);
+            if (npcSprites[renderedSprites[index].characterIndex].flag != 0xFF) {
+                func_8002B6B8(renderedSprites[index].spriteOffset);
             }
             result = 1;
         }
@@ -381,9 +397,9 @@ INCLUDE_ASM(const s32, "system/renderedSprites", func_8002FB7C);
 
 //INCLUDE_ASM(const s32, "system/renderedSprites", func_8002FBBC);
 
-u8 func_8002FBBC(u16 index) {
+bool func_8002FBBC(u16 index) {
 
-    u8 result = 0;
+    bool result = 0;
     
     if (index < MAX_RENDERED_SPRITES) {
         if (renderedSprites[index].flags & 1) {
@@ -403,9 +419,9 @@ INCLUDE_ASM(const s32, "system/renderedSprites", func_8002FCB4);
 
 //INCLUDE_ASM(const s32, "system/renderedSprites", func_8002FD24);
 
-u8 func_8002FD24(u16 index) {
+bool func_8002FD24(u16 index) {
     
-    u8 result = 0;
+    bool result = 0;
     u16 temp;
 
     if (index < MAX_RENDERED_SPRITES) {
@@ -473,9 +489,9 @@ INCLUDE_ASM(const s32, "system/renderedSprites", func_800302E4);
 
 //INCLUDE_ASM(const s32, "system/renderedSprites", func_80030388);
 
-u8 func_80030388(u16 index) {
+bool func_80030388(u16 index) {
 
-    u8 result = 0;
+    bool result = 0;
 
     if (index < MAX_RENDERED_SPRITES) {
         
@@ -570,7 +586,7 @@ INCLUDE_ASM(const s32, "system/renderedSprites", func_8003168C);
 
 //INCLUDE_ASM(const s32, "system/renderedSprites", func_80031830);
 
-u8 func_80031830(u16 index, u32 arg1, u8 arg2) {
+bool func_80031830(u16 index, u32 arg1, u8 arg2) {
 
     Vec3f vec;
     
@@ -579,7 +595,7 @@ u8 func_80031830(u16 index, u32 arg1, u8 arg2) {
     f32 temp3;
     f32 temp4;
     
-    u8 result = 0;
+    bool result = 0;
     u8 check1;
     u8 check2;
     

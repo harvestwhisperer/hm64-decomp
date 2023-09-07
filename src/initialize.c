@@ -110,7 +110,7 @@ void registerMainLoopCallbacks(void) {
     registerMainLoopCallback(HORSE_RACE_RESULTS, &func_800CD750);
     registerMainLoopCallback(HORSE_RACE_GIFTS, &func_800CE068);
     registerMainLoopCallback(LOTTERY_2, &func_800CEDF0);
-    registerMainLoopCallback(TITLE_SCREEN, &func_800E00A4);
+    registerMainLoopCallback(TITLE_SCREEN, &titleScreenMainLoopCallback);
     registerMainLoopCallback(NAMING_SCREEN, &func_8005CF94);
     registerMainLoopCallback(0x34, &func_800ED974);
     registerMainLoopCallback(SELECT_GAME, &func_800E1FAC);

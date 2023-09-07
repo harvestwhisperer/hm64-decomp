@@ -4,11 +4,6 @@
 #include "common.h"
 #include "game.h"
 
-#define DAYTIME (gHour - 6) < 12U
-#define NIGHTTIME (gHour - 18) < 6U
-#define NOT_WINTER (gSeason - 2) < 2U
-#define RAINING (gWeather - 2) < 2U
-
 #define MARRIED_TO_POPURI checkLifeEventBit(MARRIED) && gWife == POPURI
 #define MARRIED_TO_ANN checkLifeEventBit(MARRIED) && gWife == ANN
 #define MARRIED_TO_KAREN checkLifeEventBit(MARRIED) && gWife == KAREN
@@ -76,6 +71,11 @@
 #define SEA_FESTIVAL 0x44C
 #define MAYOR_VILLAGE_TOUR 0x5AD
 #define INTRO 0x5B0
+
+#define DEMO_CUTSCENE_1 0x5DC
+#define DEMO_CUTSCENE_2 0x5DD
+// where is 0x5DE...?
+#define DEMO_CUTSCENE_3 0x5DF
 
 u16 func_8009C054(u16 mapIndex);
 extern u16 func_800A7AE8(u8);  

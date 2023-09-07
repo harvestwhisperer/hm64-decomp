@@ -107,7 +107,7 @@ void func_800598E0(void) {
         }
     }
     
-    if ((gSeason == AUTUMN) && (gDayOfMonth == 28)) {
+    if (gSeason == AUTUMN && gDayOfMonth == 28) {
         setDailyEventBit(0x41);
         toggleLifeEventBit(0x90);
         func_800CC17C();

@@ -19,7 +19,8 @@ extern u16 D_8021E6E6[2][0x80][0x20];
                
 // forward declarations
 Gfx* func_8002A66C(Gfx*, Bitmap*, u16);             
-bool func_8002ACA4(Bitmap*, Gfx*);                      
+bool func_8002ACA4(Bitmap*, Gfx*);       
+
 
 //INCLUDE_ASM(const s32, "system/sprite", initializeBitmaps);
 
@@ -311,7 +312,22 @@ bool func_8002A228(u16 index, u8 r, u8 g, u8 b, u8 a) {
     return result;
 }
 
-INCLUDE_ASM(const s32, "system/sprite", func_8002A2E0);
+//INCLUDE_ASM(const s32, "system/sprite", func_8002A2E0);
+
+bool func_8002A2E0(u16 index, u16 arg1, u16 arg2) {
+
+    bool result = 0;
+    
+    if (index < 0xB0) {
+        if (D_801F7110[index].flags & 1) {
+            D_801F7110[index].unk_50 = arg1;
+            D_801F7110[index].unk_52 = arg2;
+            result = 1;
+        }
+    }
+    
+    return result;
+}
 
 //INCLUDE_ASM(const s32, "system/sprite", func_8002A340);
 
@@ -325,10 +341,25 @@ u8 *func_8002A340(u16 index, u32 *start, u8 *timg, u8 *romAddr) {
 
 }
 
-// get length of texture segment
-INCLUDE_ASM(const s32, "system/sprite", func_8002A3A0);
+//INCLUDE_ASM(const s32, "system/sprite", func_8002A3A0);
 
-// display lists
+// get length of texture segment
+u32 func_8002A3A0(u16 arg0, u32 arg1[]) {
+
+    u16 counter = arg0+1;
+    
+    if (arg1[counter] == arg1[arg0]) {
+        
+        while (arg1[counter] == arg1[arg0]) {
+            counter++;
+        } 
+        
+    }
+    
+    return arg1[counter] - arg1[arg0];
+}
+
+// graphics render modes enum
 
 // have to match functions to fix asm referencing each array element as its own variable
 // func_8002A66C and func_8002A410
@@ -348,17 +379,21 @@ INCLUDE_RODATA(const s32, "system/sprite", D_8011ECC0);
 
 INCLUDE_RODATA(const s32, "system/sprite", D_8011ECC4);
 
+
 INCLUDE_RODATA(const s32, "system/sprite", D_8011ECC8);
 
 INCLUDE_RODATA(const s32, "system/sprite", D_8011ECCC);
+
 
 INCLUDE_RODATA(const s32, "system/sprite", D_8011ECD0);
 
 INCLUDE_RODATA(const s32, "system/sprite", D_8011ECD4);
 
+
 INCLUDE_RODATA(const s32, "system/sprite", D_8011ECD8);
 
 INCLUDE_RODATA(const s32, "system/sprite", D_8011ECDC);
+
 
 INCLUDE_RODATA(const s32, "system/sprite", D_8011ECE0);
 
@@ -367,6 +402,43 @@ INCLUDE_RODATA(const s32, "system/sprite", D_8011ECE4);
 
 INCLUDE_ASM(const s32, "system/sprite", func_8002A410);
 
+// unused
+// matches but rodata issue
+/*
+Gfx* func_8002A410(Gfx* dl, u16 arg1) {
+
+    switch (arg1) {
+        case 0:
+            break;
+        case 1:
+            gDPSetCombineMode(dl++, G_CC_MODULATEIDECALA, G_CC_MODULATEIDECALA);
+            gDPSetRenderMode(dl++, G_RM_AA_ZB_OPA_SURF, G_RM_NOOP2);
+            break;
+        case 2:
+            *dl = D_8011ECC0[0];
+            dl++;
+            *dl = D_8011ECC0[1];
+            dl++;
+            break;
+        case 3:
+            *dl = D_8011ECC0[2];
+            dl++;
+            *dl = D_8011ECC0[3];
+            dl++;
+            break;
+        case 4:
+            *dl = D_8011ECC0[2];
+            dl++;
+            *dl = D_8011ECC0[4];
+            dl++;
+            break;
+    }
+    
+    return dl++;
+}
+*/
+
+// unused
 INCLUDE_ASM(const s32, "system/sprite", func_8002A530);
 
 
@@ -414,6 +486,8 @@ INCLUDE_RODATA(const s32, "system/sprite", D_8011ED30);
 INCLUDE_RODATA(const s32, "system/sprite", D_8011ED34);
 
 // uses D_8021E6E0[2][]
+// param_1 = Gfx*
+// param_2 = Bitmap*
 INCLUDE_ASM(const s32, "system/sprite", func_8002A66C);
 
 INCLUDE_ASM(const s32, "system/sprite", func_8002ACA4);
@@ -422,33 +496,32 @@ INCLUDE_ASM(const s32, "system/sprite", func_8002ACA4);
 void func_8002AE58(void) {
 
     u16 i;
-    u32 count = 0;
-    Gfx *dl;
     Gfx *tempDl;
+    int size = 0;
+    Gfx *dl = D_80215ED0[gDisplayContext];
 
-    dl = &D_80215ED0[gDisplayContextIndex*0x880][0];
-
-    for (i = 0; i < MAX_BITMAPS; i++) {
+    for (i = 0; i < 0xB0; i++) {
 
         if (D_801F7110[i].flags & 1) {
+
+            func_80026E78(&D_801F7110[i], D_801F7110[i].timg, D_801F7110[i].pal);  
             
-            func_80026E78(&D_801F7110[i], D_801F7110[i].vaddr1, D_801F7110[i].vaddr2);
+            tempDl = dl;
+
+            dl = func_8002A66C(dl, &D_801F7110[i], size);
             
-            tempDl = func_8002A66C(dl, &D_801F7110[i], count);
-            
-            dl = tempDl;
-            
-            func_8002ACA4(&D_801F7110[i], dl);
-            
-            count += D_801F7110[i].unk_1A;
+            func_8002ACA4(&D_801F7110[i], tempDl);
+
+            size += D_801F7110[i].size;
             
             D_801F7110[i].flags &= ~1;
 
+            dl = tempDl;
         }
     }
 
-    if (((dl - &D_80215ED0[0][0]) - (gDisplayContextIndex * 0x880)) >= 0x880) {
-        __assert(&D_8011ED4C, &D_8011ED50, 0x334);
+    if (dl - D_80215ED0[gDisplayContext] >= 0x880) {
+        __assert(&D_8011ED4C, &D_8011ED50, 820);
     }
 }
 #else
