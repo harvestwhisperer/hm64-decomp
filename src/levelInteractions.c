@@ -52,9 +52,10 @@ u8 func_800ACDF4(u16 mapIndex) {
     u8 temp2;
     
     if (mapIndex == BARN) {
+
         temp = func_800309B4(0, 0, 32.0f);
-        temp2 = temp - 0x12;
-        if (temp2 < 9) {
+        
+        if (17 < temp && temp < 27) {
             result = temp;
         }
     }
@@ -74,7 +75,7 @@ u8 func_800ACE50(u16 mapIndex) {
         
         temp = func_800309B4(0, 0, 32.0f);
 
-        if (((temp - 0x13) & 0xFF) < 6U) {
+        if (18 < temp && temp < 25) {
             result = temp;
         }
 
@@ -114,6 +115,7 @@ u8 func_800ACEF8(u16 mapIndex) {
         temp = func_800309B4(0, 0.0f, 32.0f);
         temp2 = temp - 0x1B;
         temp2 = (temp2 < 2 | temp == 0x1D);
+        // needs fixing: ternary
         temp2 = -(temp2 < 1) | 1;
         result = temp2;
     }

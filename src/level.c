@@ -147,7 +147,7 @@ void setLevelAudio(u16 mapIndex, u8 season, u8 hour) {
             
             offset = 0;
             
-            if ((u8)(hour - 18) < 6U) {
+            if (17 < hour &&  hour < 24) {
 
                 offset = 4;
 
