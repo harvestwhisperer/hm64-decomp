@@ -58,7 +58,7 @@ extern void func_800CE930();
 extern void func_800CEDF0();
 extern void func_800D93CC();
 extern void func_800DCAB8();
-extern void func_800E00A4();
+extern void titleScreenMainLoopCallback();
 extern void func_800E1FAC();
 extern void func_800E8F08();
 extern void func_800ED974();

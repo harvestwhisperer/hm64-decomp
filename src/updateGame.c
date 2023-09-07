@@ -53,20 +53,18 @@ void func_800D7C20(void) {
         }
     }
     
-    if ((gHour - 18) < 6U) {
+    if (NIGHTTIME) {
         
         if (!checkDailyEventBit(0xF)) {
 
-            // set song speed with default
-            func_800ACB5C(gCurrentSongIndex);
+            setSongWithDefaultSpeed(gCurrentSongIndex);
             setDailyEventBit(0xF);
 
-        } else if (!(checkDailyEventBit(0x10)) && (gCurrentSongIndex != 0xFF) && (func_800ACBB8(gCurrentSongIndex))) {
+        } else if (!(checkDailyEventBit(0x10)) && gCurrentSongIndex != 0xFF && checkDefaultSongChannelOpen(gCurrentSongIndex)) {
 
-            func_8006EA44(gBaseMapIndex, gSeason, gHour);
-            // set song volume
-            func_800ACBEC(gCurrentSongIndex, gSongVolume);
-
+            setLevelAudio(gBaseMapIndex, gSeason, gHour);
+            setSongWithVolume(gCurrentSongIndex, gSongVolume);
+ 
             setDailyEventBit(0x10);
 
         }
@@ -74,8 +72,7 @@ void func_800D7C20(void) {
     }
     
     if (gHour < 6 && gWeather != RAIN && gBaseMapIndex != BEACH && !checkDailyEventBit(0x11)) {
-        // set song speed with default
-        func_800ACB5C(gCurrentSongIndex);
+        setSongWithDefaultSpeed(gCurrentSongIndex);
         setDailyEventBit(0x11);
     }
     
@@ -215,6 +212,7 @@ void setClockNewDay(void) {
  
 //INCLUDE_ASM(const s32, "updateGame", checkFestivalDay);
 
+// unused
 bool checkFestivalDay(void) {
 
     bool result = FALSE;

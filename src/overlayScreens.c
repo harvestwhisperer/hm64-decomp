@@ -29,11 +29,7 @@ extern f32 D_80116D90[];
 extern f32 D_80116DA0[];
 extern f32 D_80116DB0[];
 
-// shared sprite addresses 
-extern void *D_CC6D40;
-extern void *D_CC9330;
-extern void *D_CC9330_2;
-extern void *D_CC9350;
+// money
 extern void *D_CFE610;
 extern void *D_CFE610_2;
 extern void *D_CFF6F0;
@@ -41,6 +37,7 @@ extern void *D_CFF6F0_2;
 extern void *D_CFF6F0_3;
 extern void *D_CFF6F0_4;
 extern void *D_CFF710;
+
 extern void *D_D3BFE0;
 extern void *D_D3DCC0;
 extern void *D_D3DCC0_2;
@@ -417,7 +414,7 @@ INCLUDE_ASM(const s32, "overlayScreens", func_800B7FC8);
 void func_800B8018(void) {
     
     func_800593EC();
-    func_8002B138(0x80, &D_CC6D40, &D_CC9330, &D_CC9330_2, &D_CC9350, 0, 0, 0x802DE5C0, 0, 0x802E0BC0, 0x802E0CC0, 0x802E0DC0, 0, 0, 0);
+    func_8002B138(0x80, &checkerboardBackgroundTextureStart, &checkerboardBackgroundTextureEnd, &checkerboardBackgroundPaletteStart, &checkerboardBackgroundPaletteEnd, 0, 0, 0x802DE5C0, 0, 0x802E0BC0, 0x802E0CC0, 0x802E0DC0, 0, 0, 0);
     func_8002BD0C(0x80, 0, 0, 0);
     func_8002BD90(0x80, 2.0f, 2.0f, 1.0f);
     func_8002CB24(0x80, 1);
@@ -654,7 +651,7 @@ INCLUDE_ASM(const s32, "overlayScreens", func_800C77EC);
 
 u32 checkRecipe(u16 bitIndex) {
     u32 temp = bitIndex;
-    return recipesBitField[temp >> 5] & (1 << (temp & 0x1F));
+    return recipesBits[temp >> 5] & (1 << (temp & 0x1F));
 }
 
 // possible split: 0xA2C50

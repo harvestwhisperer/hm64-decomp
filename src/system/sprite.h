@@ -15,6 +15,8 @@
 
 #define OBJECT_SPRITE_BANK_1_START 0x802EB800
 
+#define DOG_TITLE_SPRITE 0x44
+
 typedef struct {	
 	void *vaddrStart;
 	void *vaddrCurrent;
@@ -110,7 +112,8 @@ typedef struct {
 	Vec3f scaling; // 28
 	Vec3f unk_34; // 34
 	Vec4f rgba; // 40
-    u32 unk_50;
+    u16 unk_50;
+	u16 unk_52;
 	u16 unk_54;
 	u16 flags; //56
 } Bitmap;
@@ -138,18 +141,21 @@ typedef struct {
 	Vec4f unk_54;
 } UnknownStruct5;
 
+
 /* renderedSprites.c */
 extern void initializeNpcSpriteStructs(void);
+extern bool func_8002DEE8(u16, u16, u16, void*, void*, void*, void*, void*, void*);
 extern bool func_8002E284(u16, u16, u32);      
 extern bool func_8002EDF0(u16 index, s16 arg1, s16 arg2, s16 arg3);
-extern bool func_8002F014(u16, u8, u8, u8, u8);             
+extern bool func_8002EEA4(u16 arg0);     
+extern bool func_8002F014(u16, u8, u8, u8, u8);        
 extern bool func_8002ECD4(u16, u16, u16);              
 extern bool func_8002F114(u16, u8);                              
 extern bool func_8002F684(u16, u8);                    
 extern void func_8002F6F0();    
 extern bool func_8002F2FC(u16, u16); 
 extern void func_8002F730();               
-extern bool func_8002F7C8(u8, u8, u8, u8);               
+extern void func_8002F7C8(u8, u8, u8, u8);               
 extern bool func_8002F8F0(u8, u8, u8, u8, s32);      
 extern bool func_8002FA2C(u16);      
 extern bool func_8002FD80(u16, f32, f32, f32);   
@@ -158,6 +164,7 @@ extern void func_8002FCB4(u16, u8);
 extern bool func_8002FD24(u16 index);
 extern bool func_8002FE10(u16, f32, f32, f32, f32);           
 extern bool func_8002FECC(u16); 
+extern bool func_8002ED80(u16 index, s16 arg1);
 extern bool func_8002FF38(u16, u8);
 extern bool func_80030054(u16, u8);                                                   
 extern bool func_80030388(u16 index);                   
@@ -187,6 +194,7 @@ extern bool func_8002BD90(u16, f32, f32, f32);
 extern bool func_8002BE98(u16, f32, f32, f32);    
 extern bool func_8002BE14(u16, f32, f32, f32);                        
 extern bool func_8002C1C0(u16 index, u8 r, u8 g, u8 b, u8 a, s16 arg5);
+extern bool func_8002C52C(u16, u8, s16);
 extern bool func_8002C7EC(u16, u16);                              
 extern bool func_8002C85C(u16 index, u8 r, u8 g, u8 b, u8 a);
 extern bool func_8002C914(u16, u8, u8, u8, u8);
@@ -194,6 +202,7 @@ extern bool func_8002CAA8(u16, u8);
 extern bool func_8002CB24(u16, u8);     
 extern void func_8002CB88(u16, u16);     
 extern bool func_8002CBF8(u16);   
+extern bool func_8002CC44(u16);
 extern void func_8002D3D4(void);
 
 /* spriteAddresses.c */

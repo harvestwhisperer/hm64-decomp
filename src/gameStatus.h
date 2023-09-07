@@ -103,9 +103,8 @@ extern u8 func_8006536C();
 extern u32 dailyEventBits[0x20];
 extern u32 lifeEventBits[0x20];
 extern u32 specialDialogueBits[0x10];
-extern u32 recipesBitField[1];
-extern u32 D_801C3F38[];
-// mailbox
-extern u32 D_8016FFEC[];
+extern u32 recipesBits[1];
+extern u32 readMailBits[];
+extern u32 mailboxBits[];
 
 #endif

@@ -71,7 +71,7 @@ u16 func_8002929C(Gfx *dl, u16 flags) {
 
 //INCLUDE_ASM(const s32, "system/worldGraphics", func_800292EC);
 
-u8 func_800292EC(u16 index, f32 x, f32 y, f32 z) {
+bool func_800292EC(u16 index, f32 x, f32 y, f32 z) {
     D_8018A850[index].positions.x = x;
     D_8018A850[index].positions.y = y;
     D_8018A850[index].positions.z = z;
@@ -80,7 +80,7 @@ u8 func_800292EC(u16 index, f32 x, f32 y, f32 z) {
 
 //INCLUDE_ASM(const s32, "system/worldGraphics", func_80029330);
 
-u8 func_80029330(u16 index, f32 arg1, f32 arg2, f32 arg3) {
+bool func_80029330(u16 index, f32 arg1, f32 arg2, f32 arg3) {
     D_8018A850[index].scaling.x = arg1;
     D_8018A850[index].scaling.y = arg2;
     D_8018A850[index].scaling.z = arg3;
@@ -89,7 +89,7 @@ u8 func_80029330(u16 index, f32 arg1, f32 arg2, f32 arg3) {
 
 //INCLUDE_ASM(const s32, "system/worldGraphics", func_80029374);
 
-u8 func_80029374(u16 index, f32 arg1, f32 arg2, f32 arg3) {
+bool func_80029374(u16 index, f32 arg1, f32 arg2, f32 arg3) {
     D_8018A850[index].rotation.x = arg1;
     D_8018A850[index].rotation.y = arg2;
     D_8018A850[index].rotation.z = arg3;
@@ -149,33 +149,33 @@ Gfx* func_800293C0(Gfx* dl, WorldMatrices* arg1) {
     gSPMatrix(dl++, OS_K0_TO_PHYSICAL(&arg1->rotationY), G_MTX_NOPUSH | G_MTX_MUL | G_MTX_PROJECTION);
     gSPMatrix(dl++, OS_K0_TO_PHYSICAL(&arg1->rotationZ), G_MTX_NOPUSH | G_MTX_MUL | G_MTX_PROJECTION);
 
-    if (D_8017044C.x < 0.0f) {
-        D_8017044C.x += 360.0f;
+    if (currentWorldRotationAngles.x < 0.0f) {
+        currentWorldRotationAngles.x += 360.0f;
     }
     
-    if (D_8017044C.x >= 360.0f) {
-        D_8017044C.x -= 360.0f;
+    if (currentWorldRotationAngles.x >= 360.0f) {
+        currentWorldRotationAngles.x -= 360.0f;
     }
     
-    if (D_8017044C.y < 0.0f) {
-        D_8017044C.y += 360.0f;
+    if (currentWorldRotationAngles.y < 0.0f) {
+        currentWorldRotationAngles.y += 360.0f;
     }
     
-    if (D_8017044C.y >= 360.0f) {
-        D_8017044C.y -= 360.0f;
+    if (currentWorldRotationAngles.y >= 360.0f) {
+        currentWorldRotationAngles.y -= 360.0f;
     }
 
-    sinXCurrent = sinfRadians(D_8017044C.x);
-    sinYCurrent = sinfRadians(D_8017044C.y);
+    sinXCurrent = sinfRadians(currentWorldRotationAngles.x);
+    sinYCurrent = sinfRadians(currentWorldRotationAngles.y);
     
-    cosXCurrent = cosfRadians(D_8017044C.x);
-    cosYCurrent = cosfRadians(D_8017044C.y);
+    cosXCurrent = cosfRadians(currentWorldRotationAngles.x);
+    cosYCurrent = cosfRadians(currentWorldRotationAngles.y);
     
-    sinXPrevious = sinfRadians(D_8013D5D8.x);
-    sinYPrevious = sinfRadians(D_8013D5D8.y);
+    sinXPrevious = sinfRadians(previousWorldRotationAngles.x);
+    sinYPrevious = sinfRadians(previousWorldRotationAngles.y);
     
-    cosXPrevious = cosfRadians(D_8013D5D8.x);
-    cosYPrevious = cosfRadians(D_8013D5D8.y);
+    cosXPrevious = cosfRadians(previousWorldRotationAngles.x);
+    cosYPrevious = cosfRadians(previousWorldRotationAngles.y);
 
     for (i = spriteCounter; i < 0x150; i++) {
         D_8018A850[i].flags = 0;
@@ -183,7 +183,7 @@ Gfx* func_800293C0(Gfx* dl, WorldMatrices* arg1) {
 
     for (i = 0; i < 0x150; i++) {
         
-        if (D_8018A850[i].flags & 1) {
+        if (D_8018A850[i].flags & ACTIVE) {
         
             if (D_8018A850[i].flags & 0x40) {
 
@@ -213,7 +213,7 @@ Gfx* func_800293C0(Gfx* dl, WorldMatrices* arg1) {
             
             gSPMatrix(dl++, OS_K0_TO_PHYSICAL(&D_8018A850[i].translation), G_MTX_NOPUSH | G_MTX_LOAD | G_MTX_MODELVIEW);
 
-            if (D_8018A850[i].flags & 0x20) {
+            if (D_8018A850[i].flags & UPDATE_ROTATION) {
 
                 guRotateRPY(&D_8018A850[i].rotationX, D_8018A850[i].rotation.x, 0.0f, 0.0f);
                 guRotateRPY(&D_8018A850[i].rotationY, 0.0f, D_8018A850[i].rotation.y, 0.0f);
@@ -225,7 +225,7 @@ Gfx* func_800293C0(Gfx* dl, WorldMatrices* arg1) {
                 
             }
 
-            if (D_8018A850[i].flags & 0x10) {
+            if (D_8018A850[i].flags & UPDATE_SCALE) {
 
                 guScale(&D_8018A850[i].scale, D_8018A850[i].scaling.x, D_8018A850[i].scaling.y, D_8018A850[i].scaling.z);                
                 gSPMatrix(dl++, OS_K0_TO_PHYSICAL(&D_8018A850[i].scale), G_MTX_NOPUSH | G_MTX_MUL | G_MTX_MODELVIEW);

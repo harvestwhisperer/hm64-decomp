@@ -23,7 +23,7 @@ extern u32 D_8016FB00;
 void func_8004DF10(void) {
     
     // set up game
-    func_8004E160();
+    func_8004E160(); 
     
     if (contPattern & 1) {
         func_80055F08(INTRO, 0x61, 1);
@@ -115,7 +115,7 @@ void func_8004DFF8(void) {
     gHour = 8;
     
     // max recipes
-    recipesBitField[0] = -1;
+    recipesBits[0] = -1;
     
     // unused game variable
     D_8016FB00 = 7;

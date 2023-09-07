@@ -351,7 +351,19 @@ INCLUDE_ASM(const s32, "system/globalSprites", func_8002CB88);
 
 INCLUDE_ASM(const s32, "system/globalSprites", func_8002CBF8);
 
-INCLUDE_ASM(const s32, "system/globalSprites", func_8002CC44);
+//INCLUDE_ASM(const s32, "system/globalSprites", func_8002CC44);
+
+bool func_8002CC44(u16 arg0) {
+
+    bool result = 0;
+
+    if (arg0 < MAX_ACTIVE_SPRITES) {
+        result = (globalSprites[arg0].flags2 >> 6) & 1;
+    }
+
+    return result;
+    
+}
 
 INCLUDE_ASM(const s32, "system/globalSprites", func_8002CC84);
 

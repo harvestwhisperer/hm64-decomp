@@ -16,7 +16,6 @@ extern MapTileContext gTileContext[1];
 extern TileInfo gTiles[0x60];
 
 // forward declarations
-void func_8003BDA4(u8, f32, f32, f32);  
 void func_8003C8D4(u8*); 
 
 static const f32 D_8011EDE0[];
@@ -157,7 +156,7 @@ bool func_8003BB14(u16 index, u16 mapIndex) {
         func_8003C1E0(0, 0.0f, 0.0f, 0.0f, 0, 0);
         func_80034350(gTileContext[index].mapIndex, 0, 0, 0, 0);
         
-        result = 1;
+        result = 1; 
 
     }
 
@@ -170,7 +169,21 @@ INCLUDE_ASM(const s32, "system/tiles", func_8003BD60);
 
 INCLUDE_ASM(const s32, "system/tiles", func_8003BDA4);
 
-INCLUDE_ASM(const s32, "system/tiles", func_8003BE0C);
+//INCLUDE_ASM(const s32, "system/tiles", func_8003BE0C);
+
+bool func_8003BE0C(u16 index, f32 arg1, f32 arg2, f32 arg3) {
+    
+    bool result = 0;
+    
+    if (index == 0 &&  (gTileContext[index].flags & 1) && (gTileContext[index].flags & 2)) {
+        result = 1;
+        gTileContext[index].unk_4.x += arg1;
+        gTileContext[index].unk_4.y += arg2;
+        gTileContext[index].unk_4.z += arg3;
+    }
+    
+    return result;
+}
 
 INCLUDE_ASM(const s32, "system/tiles", func_8003BE98);
 
@@ -276,20 +289,20 @@ bool func_8003C280(u16 index, f32 arg1, f32 arg2, f32 arg3, f32 arg4, f32 arg5, 
 
 //INCLUDE_ASM(const s32, "system/tiles", func_8003C318);
 
-f32 func_8003C318(u16 arg0, f32 arg1) {
+f32 func_8003C318(u16 index, f32 arg1) {
 
     f32 result = 0.0f;
 
-    if (!arg0 && (gTileContext[arg0].flags & 1)) { 
+    if (index == 0 && (gTileContext[index].flags & 1)) { 
 
-        if (gTileContext[arg0].unk_10.x < arg1 && gTileContext[arg0].unk_34.x < arg1) {
+        if (gTileContext[index].unk_10.x < arg1 && gTileContext[index].unk_34.x < arg1) {
             
-            if (!(arg1 < gTileContext[arg0].unk_1C.x) || !(arg1 < gTileContext[arg0].unk_28.x)) {
-                result = gTileContext[arg0].unk_1C.x;
+            if (!(arg1 < gTileContext[index].unk_1C.x) || !(arg1 < gTileContext[index].unk_28.x)) {
+                result = gTileContext[index].unk_1C.x;
             } 
             
         } else {
-            result = gTileContext[arg0].unk_10.x;
+            result = gTileContext[index].unk_10.x;
         }
     }
     
@@ -302,7 +315,20 @@ INCLUDE_ASM(const s32, "system/tiles", func_8003C4B0);
 
 INCLUDE_ASM(const s32, "system/tiles", func_8003C504);
 
-INCLUDE_ASM(const s32, "system/tiles", func_8003C570);
+//INCLUDE_ASM(const s32, "system/tiles", func_8003C570);
+
+void func_8003C570(void) {
+
+    u16 i = 0;
+
+    do {
+
+        gTileContext[i].flags &= ~( 2 | 4);
+        i++;
+        
+    } while (i == 0);
+    
+}
 
 INCLUDE_ASM(const s32, "system/tiles", func_8003C5C0);
 

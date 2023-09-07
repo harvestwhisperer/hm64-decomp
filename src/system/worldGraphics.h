@@ -3,6 +3,12 @@
 
 #include "common.h"
 
+#define ACTIVE 1
+#define UPDATE_SCALE 0x10
+#define UPDATE_ROTATION 0x20
+// 0x40 don't update translation based on rotation
+// 0x80 = bump up z value
+
 // D_8018A850
 typedef struct {
 	Vec3f positions;
@@ -33,14 +39,15 @@ typedef struct {
 	u32 unknown[0x2B];
 } WorldMatrices;
 
-extern void initializeWorldGraphics();   
+extern void initializeWorldGraphics(void);   
 // no op or shelved code
-extern void func_800293B8();
-Gfx* func_800293C0(Gfx* dl, WorldMatrices* arg1);
+extern void func_800293B8(void);
+extern bool func_800292EC(u16 index, f32 x, f32 y, f32 z);
+extern bool func_80029330(u16 index, f32 arg1, f32 arg2, f32 arg3);
+extern bool func_80029374(u16 index, f32 arg1, f32 arg2, f32 arg3);
+extern Gfx* func_800293C0(Gfx* dl, WorldMatrices* arg1);
 
-// previous rotation
-extern Vec3f D_8013D5D8;
-// current rotation
-extern Vec3f D_8017044C;
+extern Vec3f previousWorldRotationAngles;
+extern Vec3f currentWorldRotationAngles;
 
 #endif

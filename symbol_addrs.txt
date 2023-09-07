@@ -972,6 +972,7 @@ setPlayerAction = 0x800661FC;
 checkFatigueLevel = 0x800679EC;
 setEntrance = 0x8006E820;
 setLevelGraphicsData = 0x8006E9B8;
+setLevelAudio = 0x8006EA44;
 getLevelFlags = 0x8006EC40;
 setNPCSpawningLocations = 0x80076B54;
 setEllenLocation = 0x8007DDF0;
@@ -1007,7 +1008,10 @@ calculateFieldScore = 0x800AC95C;
 calculateShippingScore = 0x800AC9CC;
 
 initializeWaveTable = 0x800ACAB0;
+setSongWithVolume = 0x800ACBEC;
+setSongWithDefaultSpeed = 0x800ACB5C;
 setAudio = 0x800ACC50;
+checkDefaultSongChannelOpen = 0x800ACBB8;
 
 checkWineBarrelInteraction = 0x800AD07C;
 checkAllSfxInactive = 0x800ACD18;
@@ -1032,6 +1036,9 @@ countPinkCatMintFlowersFarm = 0x800DC0F8;
 countPinkCatMintFlowersGreenhouse = 0x800DC170;
 setForecast = 0x800DC4F0;
 setWeatherLighting = 0x800DC694;
+loadDogTitleSprite = 0x800DFF64;
+
+titleScreenMainLoopCallback = 0x800E00A4;
 
 nuAuStlInit = 0x800F2470;
 nuAuStlBankSet = 0x800F2500;
@@ -1059,6 +1066,8 @@ MusHandlePan = 0x800F558C;
 MusHandleSetFreqOffset = 0x800F5664;
 
 getRandomNumber = 0x80110410;
+
+cutsceneCallbacksTable = 0x801133D0;
 
 levelFlags = 0x80114460;
 cutsceneMapAddresses = 0x80114AF0;
@@ -1093,6 +1102,8 @@ houseConstructionDays = 0x8011F240;
 lifeEventHouseConstructionBits = 0x8011F248;
 animalLocationsHouseConstruction = 0x8011F254;
 
+titleScreenContext = 0x80126570;
+
 nuScStack = 0x8012A430;
 nuScAudioStack = 0x8012C430;
 nuScGraphicsStack = 0x8012E430;
@@ -1110,7 +1121,7 @@ controllers = 0x8013D440;
 
 gSongVolume = 0x8013D5E4;
 
-nuAuHeap = 0x8013d5c8;
+nuAuHeap = 0x8013D5C8;
 mainMap = 0x8013DC40;
 
 gDayOfMonth = 0x80158260;
@@ -1124,17 +1135,23 @@ farmFieldTiles = 0x8016F500;
 previousMapIndex = 0x8016F899;
 globalLightingRgba = 0x8016F8A0;
 specialDialogueBits = 0x8016F8B0;
-recipesBitField = 0x8016FAFC;
+recipesBits = 0x8016FAFC;
 horseInfo = 0x8016FDD0;
 harvestKingName = 0x8016FDF4;
 gCutsceneFlags = 0x8016FE00;
+mailboxBits = 0x8016FFEC;
 shadowSpritesInfo = 0x8016FFF8;
+
+previousWorldRotationAngles = 0x8013D5D8;
 
 initGfxList = 0x80170068;
 gMinutes = 0x8017027F;
 gFarmAnimals = 0x80170280;
 gCurrentSeasonName = 0x80170445;
+currentWorldRotationAngles = 0x8017044C;
 gBaseMapIndex = 0x80170458;
+
+cutsceneMaps = 0x801808B0;
 
 nuContDataLockKey = 0x80181B14;
 SramHandle = 0x80181B18;
@@ -1164,6 +1181,8 @@ keyItemSlots = 0x8018908E;
 gBabyAge = 0x80189134;
 gBabyName = 0x8018981E;
 dailyEventBits = 0x80189140;
+
+pauseScreenSprites = 0x80189A50;
 gLumber = 0x80189E50;
 
 gAlcoholTolerance = 0x80189E52;
@@ -1178,6 +1197,7 @@ gChickens = 0x801C3BF0;
 
 previousEntranceIndex = 0x801C3E20;
 
+readMailBits = 0x801C3F38;
 gFlowerFestivalGoddess = 0x801C3F44;
 blueMistFlowerPlot = 0x801C3F45;
 gTotalPinkCatMintFlowersGrowing = 0x801C3F7C;
@@ -1274,3 +1294,50 @@ tvSprites_romIndexEnd = 0xD4DAB0;
 setup_rspstate = 0x80112A38;
 setup_rdpstate = 0x80112A10;
 rdpstateinit_dl = 0x80112928;
+
+
+homeItemsTextureStart = 0xD86D90;
+homeItemsTextureEnd = 0xD8B140;
+homeItemsPaletteStart = 0xD8B140;
+homeItemsPaletteEnd = 0xD8B160;
+homeItemsTableStart = 0xD8B160;
+homeItemsTableEnd = 0xD8B1D0;
+
+dialogueIconsTextureStart = 0xD47F00;
+dialogueIconsTextureEnd = 0xD49B80;
+dialogueIconsPaletteStart = 0xD49B80;
+dialogueIconsPaletteEnd = 0xD49BA0;
+
+titleSpritesTextureStart = 0xDBA100;
+titleSpritesTextureEnd = 0xDD38F0;
+titleSpritesPaletteStart = 0xDD38F0;
+titleSpritesPaletteEnd = 0xDD3910;
+
+checkerboardBackgroundTextureStart = 0xCC6D40;
+checkerboardBackgroundTextureEnd = 0xCC9330;
+checkerboardBackgroundPaletteStart = 0xCC9330;
+checkerboardBackgroundPaletteEnd = 0xCC9350;
+
+holdableItemsTexturesStart = 0xD52670;
+holdableItemsTexturesEnd = 0xD82FD0;
+holdableItemsPaletteStart = 0xD82FD0;
+holdableItemsPaletteEnd = 0xD82FF0;
+holdableItemsTableStart = 0xD82FF0;
+holdableItemsTableEnd = 0xD835A0;
+
+dogTitleTextureStart = 0x60EC20;
+dogTitleTextureEnd = 0x630EC0;
+dogTitlePaletteStart = 0x630EC0;
+dogTitlePaletteEnd = 0x630EE0;
+dogTitleTableStart = 0x630EE0;
+dogTitleTableEnd = 0x631400;
+
+groundItemsTextureStart = 0xD8B1D0;
+groundItemsTextureEnd = 0xD92950;
+groundItemsPaletteStart = 0xD92950;
+groundItemsPaletteEnd = 0xD92970;
+
+rainTextureStart = 0xD92970;
+rainTextureEnd = 0xD92D50;
+rainPaletteStart = 0xD92D50;
+rainPaletteEnd = 0xD92D70;

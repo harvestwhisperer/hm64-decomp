@@ -22,6 +22,10 @@
 #define FRIDAY 5
 #define SATURDAY 6
 
+#define DAYTIME (5 < gHour && gHour < 18)
+#define NIGHTTIME (17 < gHour && gHour < 24)
+#define RAINING (2 <= gWeather && gWeather < 4)
+
 #define EGG_VALUE 50
 
 typedef struct {
@@ -55,7 +59,16 @@ typedef struct {
     u16 unk_A;
 } Bits;
 
-extern u32 adjustValue(s32 current, s32 amount, s32 max);
+typedef struct {
+    s16 unk_0;
+    s16 unk_2;
+    s16 unk_4;
+    s16 unk_6;
+    s16 unk_8;
+    s16 unk_A;
+} UnknownStruct;
+
+extern inline int adjustValue(int initial, int value, int max);
 
 void resetDailyBits();
 extern void setFestivalDailyBits(void);      
@@ -84,7 +97,6 @@ extern void func_8005CA2C(u16, u16);
 extern void func_8005CDCC(); 
 extern u8 func_800616CC(u8);  
 u16 func_80063A2C(u8 arg0);
-
 
 extern Vec3f D_8016F8A4;
 extern Vec4f D_80180718;
@@ -132,78 +144,5 @@ extern u16 gTotalPinkCatMintFlowersGrowing;
 
 // maybe evaluation.c
 extern u16 D_80215DF0;
-
-
-static inline void handleCompleteShipment() {
-
-    int moneyEarned;
-    int checkOverflow;
-    int temp;
-    
-    moneyEarned = dailyShippingBinValue;
-    checkOverflow = gGold + moneyEarned;
-    
-    if (checkOverflow > MAX_GOLD) {
-        temp = checkOverflow - MAX_GOLD;
-        moneyEarned -= temp;
-        checkOverflow = MAX_GOLD;
-    }
-    
-    if (checkOverflow < 0) {
-        moneyEarned -= checkOverflow;
-    }
-    
-    gGold += moneyEarned;
-    dailyShippingBinValue = 0;
-}
-
-static inline void handleAddShipment(s32 amount) {
-
-    int temp;
-    int checkShippingOverflow;
-    int shippingValue;    
-    int maxShipping;
-
-    checkShippingOverflow = dailyShippingBinValue + amount;
-    shippingValue = amount;
-    maxShipping = MAX_TOTAL_SHIPPING;
-    
-    if (checkShippingOverflow > maxShipping) {
-        temp = checkShippingOverflow - MAX_TOTAL_SHIPPING;
-        shippingValue -= temp;
-        checkShippingOverflow = maxShipping;
-    }
-    if (checkShippingOverflow < 0) {
-        shippingValue -= checkShippingOverflow;
-    }
-    
-    dailyShippingBinValue += shippingValue;
-    
-}
-
-static inline void handleShipEgg() {
-
-    int temp;
-    
-    int checkEggsOverflow;
-    int eggValue;
-    
-    int maxEggsShipped = MAX_ANIMAL_ITEM_SHIPPED;
-
-    checkEggsOverflow = gTotalEggsShipped + 1;
-    eggValue = 1;
-    
-    if (maxEggsShipped < checkEggsOverflow) {
-        temp = gTotalEggsShipped - (MAX_ANIMAL_ITEM_SHIPPED - 1);
-        eggValue -= temp;
-        checkEggsOverflow = MAX_ANIMAL_ITEM_SHIPPED;
-    }
-    if (checkEggsOverflow < 0) {
-        eggValue -= checkEggsOverflow;
-    }
-    
-    gTotalEggsShipped += eggValue;
-    
-}
 
 #endif

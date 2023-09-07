@@ -129,12 +129,9 @@ extern u8 houseConstructionDays[6];
 extern u16 lifeEventHouseConstructionBits[6];
 extern u8 animalLocationsHouseConstruction[6];
 extern MemoryRead_32 D_8011F25C[];
-                                                  
-// shared sprite rom addresses
-extern void *D_D47F00;
-extern void *D_D49B80;
-extern void *D_D49B80_2;
-extern void *tvSprites_romTextureStart;
+
+static const s16 houseExtensionPrices[6];     
+static const s16 houseExtensionLumberCosts[6];
 
 
 //INCLUDE_ASM(const s32, "game", func_80059D90);
@@ -267,7 +264,6 @@ not_married:
 
         if (checkLifeEventBit(ELLI_JEFF_BABY) && (D_801FC15C < 120)) {
             D_801FC15C += 1;
-
         }
 
         if (!checkLifeEventBit(ELLI_JEFF_BABY) && checkLifeEventBit(0x23) && (D_8020562C >= 60)) {
@@ -307,7 +303,7 @@ not_married:
             D_8018A059 += 1;
         }
 
-        if (!checkLifeEventBit(ANN_CLIFF_BABY) && !checkLifeEventBit(0x24) && (npcAffection[CLIFF] >= 250) && (D_80170444 >= 30)) {
+        if (!checkLifeEventBit(ANN_CLIFF_BABY) && !checkLifeEventBit(0x24) && npcAffection[CLIFF] >= 250 && D_80170444 >= 30) {
             setLifeEventBit(0x24);
             D_8018A059 = 0;
             setSpecialDialogueBit(0x3A);
@@ -333,7 +329,7 @@ not_married:
             D_8017026F += 1;
         }
 
-        if (!checkLifeEventBit(KAREN_KAI_BABY) && !checkLifeEventBit(0x25) && (npcAffection[KAI] >= 250) && (D_802055D1 >= 30)) {
+        if (!checkLifeEventBit(KAREN_KAI_BABY) && !checkLifeEventBit(0x25) && npcAffection[KAI] >= 250 && D_802055D1 >= 30) {
             setLifeEventBit(0x25);
             D_8017026F = 0;
             setSpecialDialogueBit(0x3B);
@@ -486,7 +482,7 @@ void setSpecialDialogues(void) {
         toggleSpecialDialogueBit(POPURI_BIRTHDAY);
     }
 
-    if ((gSeason == AUTUMN) && gDayOfMonth == 1) {
+    if (gSeason == AUTUMN && gDayOfMonth == 1) {
         setSpecialDialogueBit(ELLI_BIRTHDAY);
     } else {
         toggleSpecialDialogueBit(ELLI_BIRTHDAY);
@@ -626,25 +622,25 @@ void resetDailyBits(void) {
     toggleSpecialDialogueBit(0x12A);
 }
 
-// adjustValue
-u32 adjustValue(s32 current, s32 amount, s32 max) {
+// same as func_80046D50
+inline int adjustValue(int initial, int value, int max) {
 
-    s32 sum;
-    s32 temp;
+    int temp;
+    int adjusted;
 
-    temp = amount;
-    sum = current + temp;
+    adjusted = value;
+    temp = initial + adjusted;
     
-    if (sum > max) {
-        temp -= sum - max;
-        sum = max;
+    if (max < temp) {
+        adjusted -= temp - max;
+        temp = max;
     }
     
-    if (sum < 0) {
-        temp -= sum;
-    }
-    
-    return temp;
+    if (temp < 0) {
+        adjusted -= temp;
+    } 
+      
+    return adjusted;
 }
 
 //INCLUDE_ASM(const s32, "game", func_8005AE8C);
@@ -1161,9 +1157,9 @@ void func_8005C00C(void) {
     
     if (!checkDailyEventBit(0x4B)) {
         // set audio settings for level
-        func_8006EA44(gBaseMapIndex, gSeason, gHour);
+        setLevelAudio(gBaseMapIndex, gSeason, gHour);
     }
-    
+     
     // set lighting for level based on weather
     func_8005C07C(8, 1);
 }
@@ -1181,21 +1177,21 @@ void func_8005C07C(s16 arg0, u16 arg1) {
         vec = setWeatherLighting(gWeather);
 
         switch (gWeather) {
-            case 1:
+            case SUNNY:
             case 4:
-            case 5:
+            case TYPHOON:
                 globalLightingRgba.r = D_80113B20[gHour];
                 globalLightingRgba.g = D_80113B38[gHour];
                 globalLightingRgba.b = D_80113B50[gHour];
                 globalLightingRgba.a = D_80113B68[gHour];
                 break;
-            case 2:
+            case RAIN:
                 globalLightingRgba.r = D_80113B80[gHour];
                 globalLightingRgba.g = D_80113B98[gHour];
                 globalLightingRgba.b = D_80113BB0[gHour];
                 globalLightingRgba.a = D_80113BC8[gHour];  
                 break;
-            case 3:
+            case SNOW:
                 globalLightingRgba.r = D_80113BE0[gHour];
                 globalLightingRgba.g = D_80113BF8[gHour];
                 globalLightingRgba.b = D_80113C10[gHour];
@@ -1209,7 +1205,7 @@ void func_8005C07C(s16 arg0, u16 arg1) {
         func_8006EB94(&globalLightingRgba, gBaseMapIndex);
     }
     
-    if (!arg0) {
+    if (arg0 == 0) {
         
         func_8002F7C8(globalLightingRgba.r, globalLightingRgba.g, globalLightingRgba.b, globalLightingRgba.a);
         func_8003BE98(0, globalLightingRgba.r, globalLightingRgba.g, globalLightingRgba.b, globalLightingRgba.a);
@@ -1220,7 +1216,7 @@ void func_8005C07C(s16 arg0, u16 arg1) {
         func_8003BF7C(0, globalLightingRgba.r, globalLightingRgba.g, globalLightingRgba.b, globalLightingRgba.a, arg0);
         
         if (!checkDailyEventBit(0x4B)) {
-            func_800ACBEC(gCurrentSongIndex, gSongVolume);
+            setSongWithVolume(gCurrentSongIndex, gSongVolume);
         }
     }
 
@@ -1245,8 +1241,7 @@ void func_8005C940(u16 arg0, u16 arg1) {
     func_8003BF7C(0, 0, 0, 0, 0, 8);
     func_8002F8F0(0, 0, 0, 0, 8);
     
-    // set song speed with default
-    func_800ACB5C(gCurrentSongIndex);
+    setSongWithDefaultSpeed(gCurrentSongIndex);
     
     D_80205230.unk_0 = arg1;
 
@@ -1295,7 +1290,7 @@ void func_8005CAA8(void) {
 
     func_800A8F74();
 
-    if (func_80036A84(0) && func_800ACBB8(gCurrentSongIndex)) {
+    if (func_80036A84(0) && checkDefaultSongChannelOpen(gCurrentSongIndex)) {
 
         func_8002F7C8(0, 0, 0, 0);
         func_8003BE98(0, 0, 0, 0, 0);
@@ -1349,8 +1344,9 @@ void func_8005CBF0(void) {
             gItemBeingHeld = 0xFF;
         }
          
-        func_8003F910(0, 0x78, &D_D47F00, &D_D49B80, &D_D49B80_2, &tvSprites_romTextureStart, 0x8023B400, 0x8023CC00, 0x8023CE00, 0x8023D200, 0, 4, 0xFE, 106.0f, -15.0f, 0);
-        func_8003F910(1, 0x78, &D_D47F00, &D_D49B80, &D_D49B80_2, &tvSprites_romTextureStart, 0x8023B400, 0x8023CC00, 0x8023CE00, 0x8023D200, 0, 0xD, 0xFE, 106.0f, -15.0f, 0);
+        func_8003F910(0, 0x78, &dialogueIconsTextureStart, &dialogueIconsTextureEnd, &dialogueIconsPaletteStart, &dialogueIconsPaletteEnd, (void*)DIALOGUE_ICONS_TEXTURES_VADDR, 0x8023CC00, 0x8023CE00, 0x8023D200, 0, 4, 0xFE, 106.0f, -15.0f, 0);
+        func_8003F910(1, 0x78, &dialogueIconsTextureStart, &dialogueIconsTextureEnd, &dialogueIconsPaletteStart, &dialogueIconsPaletteEnd, (void*)DIALOGUE_ICONS_TEXTURES_VADDR, 0x8023CC00, 0x8023CE00, 0x8023D200, 0, 0xD, 0xFE, 106.0f, -15.0f, 0);
+       
         func_8005CDCC();
         
         setMainLoopCallbackFunctionIndex(1);
@@ -1508,6 +1504,8 @@ void func_8005D0BC(void) {
         
         set = 1;
         
+        // should be inline adjustValue call
+
         checkOverflow = gHappiness;
         checkOverflow += 2;
         maxHappiness = 0xFF;
@@ -1523,6 +1521,10 @@ void func_8005D0BC(void) {
         }
         
         gHappiness += happinessIncrease;
+
+        //
+
+
     }
     
     if (gBaseMapIndex == BARN && checkLifeEventBit(4)) {
@@ -1536,6 +1538,9 @@ void func_8005D0BC(void) {
             
         set = 1;
         
+
+        // should be inline adjustValue call
+
         checkOverflow = gHappiness;
         checkOverflow += 20;
         maxHappiness = 0xFF;
@@ -1552,6 +1557,8 @@ void func_8005D0BC(void) {
         }
             
         gHappiness += happinessIncrease;
+
+        //
     
     }
     
@@ -1685,45 +1692,13 @@ void func_80060624(void) {
             }
             
             if (checkLifeEventBit(0x5A)) {
-
-                tempStamina = gPlayer.fatigue[0];
-                temp1 = -((30 - tempTime) * 3);
-                temp2 = tempStamina + temp1;
-                
-                if ((101 - temp) < temp2) {
-                    temp2 -= 100;
-                    temp = temp2;
-                    temp1 -= temp;
-                    temp2 = 100;
-                }
-                
-                if (temp2 < 0) {
-                    temp1 -= temp2;
-                }
-                
-                 gPlayer.fatigue[0] += temp1;
-                
+                gPlayer.fatigue[0] += adjustValue(gPlayer.fatigue[0], -((30 - tempTime) * 3), 100);
             } else {
-                
-                tempStamina = gPlayer.fatigue[0];
-                temp2 = -((30 - tempTime) * 2);
-                temp1 = tempStamina + temp2;
-                
-                if ((101 - temp) < temp1) {
-                    temp1 -= 100;
-                    temp = temp1;
-                    temp2 -= temp;
-                    temp1 = 100;
-                }
-                if (temp1 < 0) {
-                    temp2 -= temp1;
-                }
-                
-                gPlayer.fatigue[0] += temp2;
+                gPlayer.fatigue[0] += adjustValue(gPlayer.fatigue[0], -((30 - tempTime) * 2), 100);
             }
         }
         
-        if ((gHour - 18) < 5U) {
+        if ((17 < gHour && gHour < 23)) {
             setLifeEventBit(0x60);
         } else {
             toggleLifeEventBit(0x60);
@@ -1924,7 +1899,7 @@ bool func_80060DC0(void) {
 
     bool result = 0;
 
-    if (!checkLifeEventBit(0x4E) && gSeason >= WINTER && (gDayOfMonth - 6) < 4U) {
+    if (!checkLifeEventBit(0x4E) && gSeason >= WINTER && (5 < gDayOfMonth && gDayOfMonth < 10)) {
 
         if (!getRandomNumberInRange(0, 2) || gDayOfMonth == 9) {
             setLifeEventBit(0x4E);
@@ -1939,10 +1914,24 @@ bool func_80060DC0(void) {
 //INCLUDE_ASM(const s32, "game", handleDailyShipment);
 
 void handleDailyShipment(void) {
-    handleCompleteShipment();
-    setDailyEventBit(DAILY_SHIPMENT);
-}
 
+    gGold += adjustValue(gGold, dailyShippingBinValue, MAX_GOLD);
+    dailyShippingBinValue = 0;
+
+    setDailyEventBit(DAILY_SHIPMENT);
+
+}
+ 
+// alternate, but inline adjustValue has to be in same translation unit or linked 
+// void handleDailyShipment(void) { 
+
+//     gGold += adjustValue(gGold, dailyShippingBinValue, 999999);
+//     dailyShippingBinValue = 0;
+
+//     setDailyEventBit(DAILY_SHIPMENT);
+
+// }
+ 
 //INCLUDE_ASM(const s32, "game", func_80060EC8);
 
 // has to be compiler generated code
@@ -2226,102 +2215,50 @@ void func_80061690(void) {
     D_801886D4[5] = 0xF6;
 }
 
-#ifdef PERMUTER
-u8 func_800616CC(u8 arg0) {
+//INCLUDE_ASM(const s32, "game", func_800616CC);
 
-    u8 result;
+u8 func_800616CC(u8 houseExtensionIndex) {
     
-    s32 lumberCost;
-    s32 goldCost;
- 
-    s32 lumberAfterCost;
-    s32 adjustedLumber;
-
-    s32 goldAfterCost;
-    s32 adjustedGold;
-
-    s16 *ptr1;
-    s16 *ptr2;
-
-    UnknownStruct costStruct = *(UnknownStruct*)D_8011F228;
-    UnknownStruct lumberStruct = *(UnknownStruct*)D_8011F234;
-
-    ptr1 = (s16*)&costStruct;
-    ptr2 = (s16*)&lumberStruct;
+    int goldCost;
+    int lumberCost;
+    int temp1;
+    int temp2;
     
-    lumberCost = ptr1[arg0];
-    goldCost = ptr2[arg0];
+    s16 *arr;
     
-    lumberAfterCost = (u16)(D_80189E50) + (int)ptr1[arg0];
-    adjustedLumber = (u16*)&costStruct;
+    UnknownStruct costStruct = *(UnknownStruct*)houseExtensionPrices;
+    UnknownStruct lumberStruct = *(UnknownStruct*)houseExtensionLumberCosts;
     
-    if (lumberAfterCost < MAX_LUMBER) {
-        adjustedLumber -= (s32)(ptr1[arg0] - MAX_LUMBER);
-        lumberAfterCost = MAX_LUMBER;
-    }
+    arr = (s16*)(&costStruct);
+    lumberCost = arr[houseExtensionIndex + 8];
     
-    if (lumberAfterCost < 0) {
-        adjustedLumber -= lumberAfterCost;
-    }
+    temp1 = adjustValue(gLumber, lumberCost, 999);
 
-    result = 2;
+    if (temp1 == lumberCost) {    
+          
+        goldCost = arr[houseExtensionIndex];
+        temp2 = adjustValue(gGold, goldCost, 999999);
 
-    if (ptr1[arg0] == ptr2[arg0]) {
+        temp1 = 1;
         
-        goldAfterCost = D_801FD60C + goldCost;
+        if (temp2 == goldCost) {
+
+            gLumber += adjustValue(gLumber, lumberCost, 999);
+            gGold += adjustValue(gGold, arr[houseExtensionIndex], 999999);
+
+            houseExtensionConstructionCounter = 0;
+            setDailyEventBit(9);
+                
+            return 0; 
+            
+        }
         
-        if (goldAfterCost > MAX_GOLD) {
-            adjustedGold = (ptr2[arg0] + (goldAfterCost - MAX_GOLD));
-            goldAfterCost = MAX_GOLD;
-        }
-        if (goldAfterCost < 0) {
-            adjustedGold -= goldAfterCost;
-        }
-
-        result = 1;
-
-        if (adjustedGold == ptr2[arg0]) {
-
-            //adjustedLumber = D_80189E50 - ptr2[arg0];
-
-            if (ptr2[arg0] + D_80189E50 < MAX_LUMBER) {
-                adjustedLumber -= ((s32)(ptr1[arg0] + MAX_LUMBER));
-                lumberAfterCost = MAX_LUMBER;
-            }
-
-            if (lumberAfterCost < 0) {
-                lumberAfterCost -= adjustedLumber;
-            }
-
-            D_80189E50 += lumberAfterCost;
-
-            goldAfterCost = D_801FD60C + ptr2[arg0];
-            
-            if (D_801FD60C + goldCost > MAX_GOLD) {
-                adjustedGold = (goldAfterCost - MAX_GOLD);
-                goldAfterCost = MAX_GOLD;
-            }
-            
-            if (goldAfterCost < 0) {
-                adjustedGold -= goldAfterCost;
-            }
-            
-            D_801FD60C += adjustedGold;
-            
-            D_801FC151 = 0;
-            
-            func_80065074(9);
-            
-            result = 0;
-        }
+        return temp1;
         
     }
     
-    return result;
+    return 2;
 }
-#else
-INCLUDE_ASM(const s32, "game", func_800616CC);
-#endif
 
 // func_80061860
 //INCLUDE_ASM(const s32, "game", setFlowerFestivalGoddess);
@@ -2395,7 +2332,107 @@ void func_80061A1C(u8 arg0, u8 arg1) {
     }
 }
 
-INCLUDE_ASM(const s32, "game", func_80061A88);
+//INCLUDE_ASM(const s32, "game", func_80061A88);
+
+static inline void setUnknown(u8 value) {
+    
+    D_801C3F37++;
+
+    switch (D_801C3F37) {
+        case 1:
+            D_801FD621 = value;
+            break;
+        case 2:
+            D_801FC150 = value;
+            break;
+        case 3:
+            D_80237412 = value;
+            break;
+        default:
+            break;
+    }
+}
+
+void func_80061A88(void) {
+
+    u8 temp;
+    u8 temp2;
+    
+    if (checkSpecialDialogueBit(0x138)) {
+        
+        toggleSpecialDialogueBit(0x138);
+        
+        setUnknown(1);
+        
+    }
+    
+    if (checkSpecialDialogueBit(0x139)) {
+        
+        toggleSpecialDialogueBit(0x139);
+        
+        setUnknown(3);
+    }
+
+    if (checkSpecialDialogueBit(0x13A)) {
+        
+        toggleSpecialDialogueBit(0x13A);
+        
+        setUnknown(2);
+    }
+    
+    if (checkSpecialDialogueBit(0x13B)) {
+        
+        toggleSpecialDialogueBit(0x13B);
+        
+        setUnknown(4);
+    }
+    
+   if (checkSpecialDialogueBit(0x13C)) {
+        
+        toggleSpecialDialogueBit(0x13C);
+       
+        setUnknown(5);
+    } 
+
+   if (checkSpecialDialogueBit(0x13D)) {
+        
+        toggleSpecialDialogueBit(0x13D);
+       
+        setUnknown(6);
+    }
+
+   if (checkSpecialDialogueBit(0x13E)) {
+        
+        toggleSpecialDialogueBit(0x13E);
+       
+        setUnknown(7);
+    } 
+
+   if (checkSpecialDialogueBit(0x13F)) {
+        
+        toggleSpecialDialogueBit(0x13F);
+       
+        setUnknown(8);
+    } 
+
+   if (checkSpecialDialogueBit(0x140)) {
+        
+        toggleSpecialDialogueBit(0x140);
+       
+        setUnknown(9);
+    } 
+
+   if (checkSpecialDialogueBit(0x141)) {
+        
+        toggleSpecialDialogueBit(0x141);
+       
+        setUnknown(10);
+    } 
+    
+    if (D_801C3F37 >= 3) {
+        toggleSpecialDialogueBit(0x142);
+    }
+}
 
 //INCLUDE_ASM(const s32, "game", setRecipes);
 
@@ -2448,7 +2485,7 @@ void setRecipes(void) {
     }
     if (checkSpecialDialogueBit(0x5E)) {
         addRecipe(0xF);
-    }
+    } 
     if (checkSpecialDialogueBit(0x5F)) {
         addRecipe(0x10);
     }

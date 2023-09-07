@@ -164,6 +164,7 @@ typedef struct  {
 
 
 extern void func_800337D0(void);    
+extern bool func_80033A90(u16, u16*, void*, void*, void *, void*, void*, void*, void*, void*, void*);
 extern void func_8003423C(u16, f32, f32, f32);
 extern bool func_80034298(u16, f32, f32, f32);   
 extern void func_800342F4(u16, f32, f32, f32);     
@@ -172,14 +173,16 @@ extern bool func_80034C40(u16 arg0, u8 arg1, u16 arg2, u16 arg3, f32 arg4, f32 a
 extern bool func_80034D64(u16 arg0, u8 arg1, u16 arg2, u16 arg3);
 extern bool func_80034DC8(u16, u8, u16);
 extern bool func_80034E64(u8, u8);     
+extern bool func_80034EF0(u16, u8, u8, void*, void*, void*, void*, void*, void*, void*, u8); 
 extern bool func_80035004(u16 arg0, u16 arg1, u8 arg2, u8 arg3); 
+extern bool func_80035054(u16 mapIndex, u16 bitmapIndex, u16 arg2, f32 arg3, f32 arg4, f32 arg5);
 extern f32 func_80035150(u16, f32, f32);      
 extern Vec3f* func_80036610(Vec3f*, u16, f32, f32);   
 extern bool func_80036A84(u16);      
 extern void func_80036C08(u32);                                 
 extern void func_80036FA0(u16); 
 extern bool func_80038990(u16, u16, u8);       
-extern void func_80038B58(u8, u8, u8, u8);   
+extern bool func_80038B58(u16, u16, u8, u8);   
 extern void func_8003A1BC(void);
 
 

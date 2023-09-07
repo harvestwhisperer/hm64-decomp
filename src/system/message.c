@@ -126,7 +126,7 @@ INCLUDE_ASM(const s32, "system/message", func_80041B80);
 INCLUDE_ASM(const s32, "system/message", func_80041CD8);
 
 // param 1: 0x80159510 + 0x10 * offset
-// extern Gfx* func_80042014(Gfx*, DialogueBox*, u16);
+// Gfx* func_80042014(Gfx*, DialogueBox*, u16);
 INCLUDE_ASM(const s32, "system/message", func_80042014);
 
 INCLUDE_ASM(const s32, "system/message", func_800423F0);

@@ -11,6 +11,9 @@ u16 func_80036880(u32, f32, f32);
 // bss
 extern MainMap mainMap[1];
 
+// inner struct member
+extern u16 D_80142868;
+
 extern f32 D_8013D550;
 extern f32 D_80170460;
 extern u8 D_801FB5CB;
@@ -259,7 +262,7 @@ bool func_80035004(u16 mapIndex, u16 arg1, u8 arg2, u8 arg3) {
     bool result = 0;
     
     if (mapIndex == 0 && (mainMap[mapIndex].mapStruct8.flags & 1)) {
-        // 2D array?
+        // 2D array or nested struct?
         mainMap[mapIndex].mapStruct6.arr2[arg3*0x14+arg2] = arg1;
         result = 1;
     }
@@ -529,7 +532,19 @@ INCLUDE_ASM(const s32, "system/map", func_80038A2C);
 
 INCLUDE_ASM(const s32, "system/map", func_80038AE0);
 
-INCLUDE_ASM(const s32, "system/map", func_80038B58);
+//INCLUDE_ASM(const s32, "system/map", func_80038B58);
+
+bool func_80038B58(u16 mapIndex, u16 arg1, u8 arg2, u8 arg3) {
+    
+    bool result  = 0;
+
+    if (mapIndex == 0 && (mainMap[mapIndex].mapStruct8.flags & 1)) {
+        func_800360BC(0, *(&D_80142868 + arg1 * 0x24), arg2 , arg3, 2);
+        result = 1;
+    }
+    
+    return result;
+}
 
 INCLUDE_ASM(const s32, "system/map", func_80038BC4);
 
@@ -548,6 +563,11 @@ INCLUDE_ASM(const s32, "system/map", func_8003A1BC);
 //INCLUDE_ASM(const s32, "system/map", func_8003AC14);
 
 void func_8003AC14(Gfx* dl, UnknownMapStruct8* arg1) {
+    
+    // gsDPSetCombineMode(G_CC_MODULATEIDECALA, G_CC_MODULATEIDECALA)
+    // gsDPSetRenderMode(G_RM_TEX_EDGE, G_RM_TEX_EDGE2)
+    // gsSPTexture(qu016(0.5), qu016(0.5), 0, G_TX_RENDERTILE, G_ON)
+    // gsDPSetCombineMode(G_CC_MODULATEIA, G_CC_MODULATEIA)
     
     *dl = D_8011ED88[1];
     dl++;
