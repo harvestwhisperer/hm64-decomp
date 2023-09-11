@@ -80,8 +80,6 @@ extern u8 D_801C3F97;
 extern u8 D_801C3F98;
 extern u8 D_801C3F99;
 
-extern MainLoopCallbackInfo D_80205230;
-
 extern u8 D_801C3F37;
 extern u8 D_801FC150;
 extern u8 D_801FC155;
@@ -730,7 +728,7 @@ void func_8005B09C(u8 arg0) {
             func_8003F690(0, 1, 0, 0);
             func_8003F360(0, -4, 2);
             func_80043430(0, 1, 0, 0);
-            setMainLoopCallbackFunctionIndex(9);
+            setMainLoopCallbackFunctionIndex(DIALOGUE);
             controllers[0].unk_1C = 0;
             setPlayerAction(0, 0);
             break;
@@ -742,7 +740,7 @@ void func_8005B09C(u8 arg0) {
             func_8003F690(0, 1, 0, 0);
             func_8003F360(0, -4, 2);
             func_80043430(0, 1, 1, 0);
-            setMainLoopCallbackFunctionIndex(9);
+            setMainLoopCallbackFunctionIndex(DIALOGUE);
             controllers[0].unk_1C = 0;
             setPlayerAction(0, 0);
             break;    
@@ -754,7 +752,7 @@ void func_8005B09C(u8 arg0) {
             func_8003F690(0, 0, 0, 0);
             func_8003F360(0, -4, 0);
             func_80043430(0, 0x3D, 0xC, 0x40);
-            setMainLoopCallbackFunctionIndex(9);
+            setMainLoopCallbackFunctionIndex(DIALOGUE);
             controllers[0].unk_1C = 0;
             setPlayerAction(0, 0);
             break;         
@@ -766,7 +764,7 @@ void func_8005B09C(u8 arg0) {
             func_8003F690(0, 0, 0, 0);
             func_8003F360(0, -4, 0);
             func_80043430(0, 0x3D, 0xB, 0x40);
-            setMainLoopCallbackFunctionIndex(9);
+            setMainLoopCallbackFunctionIndex(DIALOGUE);
             controllers[0].unk_1C = 0;
             setPlayerAction(0, 0);
             break;          
@@ -778,7 +776,7 @@ void func_8005B09C(u8 arg0) {
             func_8003F690(0, 0, 0, 0);
             func_8003F360(0, -4, 0);
             func_80043430(0, 0x3D, 0x12, 0x40);
-            setMainLoopCallbackFunctionIndex(9);
+            setMainLoopCallbackFunctionIndex(DIALOGUE);
             controllers[0].unk_1C = 0;
             setPlayerAction(0, 0);
             break;       
@@ -790,7 +788,7 @@ void func_8005B09C(u8 arg0) {
             func_8003F690(0, 0, 0, 0);
             func_8003F360(0, -4, 0);
             func_80043430(0, 0x3D, 0xD, 0x40);
-            setMainLoopCallbackFunctionIndex(9);
+            setMainLoopCallbackFunctionIndex(DIALOGUE);
             controllers[0].unk_1C = 0;
             setPlayerAction(0, 0);
             break;        
@@ -802,7 +800,7 @@ void func_8005B09C(u8 arg0) {
             func_8003F690(0, 0, 0, 0);
             func_8003F360(0, -4, 0);
             func_80043430(0, 0x3D, 0xE, 0x40);
-            setMainLoopCallbackFunctionIndex(9);
+            setMainLoopCallbackFunctionIndex(DIALOGUE);
             controllers[0].unk_1C = 0;
             setPlayerAction(0, 0);
             break;      
@@ -814,7 +812,7 @@ void func_8005B09C(u8 arg0) {
             func_8003F690(0, 0, 0, 0);
             func_8003F360(0, -4, 0);
             func_80043430(0, 0x3D, 0xF, 0x40);
-            setMainLoopCallbackFunctionIndex(9);
+            setMainLoopCallbackFunctionIndex(DIALOGUE);
             controllers[0].unk_1C = 0;
             setPlayerAction(0, 0);
             break;      
@@ -826,7 +824,7 @@ void func_8005B09C(u8 arg0) {
             func_8003F690(0, 0, 0, 0);
             func_8003F360(0, -4, 0);
             func_80043430(0, 0x3E, 7, 0x40);
-            setMainLoopCallbackFunctionIndex(9);    
+            setMainLoopCallbackFunctionIndex(DIALOGUE);    
             controllers[0].unk_1C = 0;
             setPlayerAction(0, 0);
             break;      
@@ -838,7 +836,7 @@ void func_8005B09C(u8 arg0) {
             func_8003F690(0, 0, 0, 0);
             func_8003F360(0, -4, 0);
             func_80043430(0, 0x3E, 6, 0x40);
-            setMainLoopCallbackFunctionIndex(9);
+            setMainLoopCallbackFunctionIndex(DIALOGUE);
             controllers[0].unk_1C = 0;
             setPlayerAction(0, 0);
             break;    
@@ -850,7 +848,7 @@ void func_8005B09C(u8 arg0) {
             func_8003F690(0, 0, 0, 0);
             func_8003F360(0, -4, 0);
             func_80043430(0, 0x3E, 2, 0x40);
-            setMainLoopCallbackFunctionIndex(9);
+            setMainLoopCallbackFunctionIndex(DIALOGUE);
             controllers[0].unk_1C = 0;
             setPlayerAction(0, 0);
             break;  
@@ -862,7 +860,7 @@ void func_8005B09C(u8 arg0) {
             func_8003F690(0, 0, 0, 0);
             func_8003F360(0, -4, 0);
             func_80043430(0, 0x3E, 0, 0x40);
-            setMainLoopCallbackFunctionIndex(9);
+            setMainLoopCallbackFunctionIndex(DIALOGUE);
             controllers[0].unk_1C = 0;
             setPlayerAction(0, 0);
             break;        
@@ -874,7 +872,7 @@ void func_8005B09C(u8 arg0) {
             func_8003F690(0, 0, 0, 0);
             func_8003F360(0, -4, 0);
             func_80043430(0, 0x3E, 1, 0x40);
-            setMainLoopCallbackFunctionIndex(9);
+            setMainLoopCallbackFunctionIndex(DIALOGUE);
             controllers[0].unk_1C = 0;
             setPlayerAction(0, 0);
             break;          
@@ -887,7 +885,7 @@ void func_8005B09C(u8 arg0) {
                 func_8003F690(0, 1, 0, 0);
                 func_8003F360(0, -4, 2);
                 func_80043430(0, 0x44, 0, 0);
-                setMainLoopCallbackFunctionIndex(9);
+                setMainLoopCallbackFunctionIndex(DIALOGUE);
                 controllers[0].unk_1C = 0;
                 setPlayerAction(0, 0);
             } else {
@@ -898,7 +896,7 @@ void func_8005B09C(u8 arg0) {
                 func_8003F690(0, 1, 0, 0);
                 func_8003F360(0, -4, 2);
                 func_80043430(0, 0x44, 0xA, 0);
-                setMainLoopCallbackFunctionIndex(9);
+                setMainLoopCallbackFunctionIndex(DIALOGUE);
                 controllers[0].unk_1C = 0;
                 setPlayerAction(0, 0);
             }            
@@ -912,7 +910,7 @@ void func_8005B09C(u8 arg0) {
                 func_8003F690(0, 1, 0, 0);
                 func_8003F360(0, -4, 2);
                 func_80043430(0, 0x44, 1, 0x40);
-                setMainLoopCallbackFunctionIndex(9);
+                setMainLoopCallbackFunctionIndex(DIALOGUE);
                 controllers[0].unk_1C = 0;
                 setPlayerAction(0, 0);
             } else {
@@ -923,7 +921,7 @@ void func_8005B09C(u8 arg0) {
                 func_8003F690(0, 1, 0, 0);
                 func_8003F360(0, -4, 2);
                 func_80043430(0, 0x44, 0xB, 0);
-                setMainLoopCallbackFunctionIndex(9);
+                setMainLoopCallbackFunctionIndex(DIALOGUE);
                 controllers[0].unk_1C = 0;
                 setPlayerAction(0, 0);
             }
@@ -937,7 +935,7 @@ void func_8005B09C(u8 arg0) {
                 func_8003F690(0, 1, 0, 0);
                 func_8003F360(0, -4, 2);
                 func_80043430(0, 0x44, 2, 0x40);
-                setMainLoopCallbackFunctionIndex(9);
+                setMainLoopCallbackFunctionIndex(DIALOGUE);
                 controllers[0].unk_1C = 0;
                 setPlayerAction(0, 0);
             } else {
@@ -948,7 +946,7 @@ void func_8005B09C(u8 arg0) {
                 func_8003F690(0, 1, 0, 0);
                 func_8003F360(0, -4, 2);
                 func_80043430(0, 0x44, 0xC, 0);
-                setMainLoopCallbackFunctionIndex(9);
+                setMainLoopCallbackFunctionIndex(DIALOGUE);
                 controllers[0].unk_1C = 0;
                 setPlayerAction(0, 0);
             }
@@ -962,7 +960,7 @@ void func_8005B09C(u8 arg0) {
                 func_8003F690(0, 1, 0, 0);
                 func_8003F360(0, -4, 2);
                 func_80043430(0, 0x44, 3, 0x40);
-                setMainLoopCallbackFunctionIndex(9);
+                setMainLoopCallbackFunctionIndex(DIALOGUE);
                 controllers[0].unk_1C = 0;
                 setPlayerAction(0, 0);
             } else {
@@ -973,7 +971,7 @@ void func_8005B09C(u8 arg0) {
                 func_8003F690(0, 1, 0, 0);
                 func_8003F360(0, -4, 2);
                 func_80043430(0, 0x44, 0xD, 0);
-                setMainLoopCallbackFunctionIndex(9);
+                setMainLoopCallbackFunctionIndex(DIALOGUE);
                 controllers[0].unk_1C = 0;
                 setPlayerAction(0, 0);
             }
@@ -987,7 +985,7 @@ void func_8005B09C(u8 arg0) {
                 func_8003F690(0, 1, 0, 0);
                 func_8003F360(0, -4, 2);
                 func_80043430(0, 0x44, 4, 0x40);
-                setMainLoopCallbackFunctionIndex(9);
+                setMainLoopCallbackFunctionIndex(DIALOGUE);
                 controllers[0].unk_1C = 0;
                 setPlayerAction(0, 0);
             } else {
@@ -998,7 +996,7 @@ void func_8005B09C(u8 arg0) {
                 func_8003F690(0, 1, 0, 0);
                 func_8003F360(0, -4, 2);
                 func_80043430(0, 0x44, 0xE, 0);
-                setMainLoopCallbackFunctionIndex(9);
+                setMainLoopCallbackFunctionIndex(DIALOGUE);
                 controllers[0].unk_1C = 0;
                 setPlayerAction(0, 0);
             }
@@ -1012,7 +1010,7 @@ void func_8005B09C(u8 arg0) {
                 func_8003F690(0, 1, 0, 0);
                 func_8003F360(0, -4, 2);
                 func_80043430(0, 0x44, 5, 0x40);
-                setMainLoopCallbackFunctionIndex(9);
+                setMainLoopCallbackFunctionIndex(DIALOGUE);
                 controllers[0].unk_1C = 0;
                 setPlayerAction(0, 0);
             } else {
@@ -1023,7 +1021,7 @@ void func_8005B09C(u8 arg0) {
                 func_8003F690(0, 1, 0, 0);
                 func_8003F360(0, -4, 2);
                 func_80043430(0, 0x44, 0xF, 0);
-                setMainLoopCallbackFunctionIndex(9);
+                setMainLoopCallbackFunctionIndex(DIALOGUE);
                 controllers[0].unk_1C = 0;
                 setPlayerAction(0, 0);
             }
@@ -1037,7 +1035,7 @@ void func_8005B09C(u8 arg0) {
                 func_8003F690(0, 1, 0, 0);
                 func_8003F360(0, -4, 2);
                 func_80043430(0, 0x44, 6, 0x40);
-                setMainLoopCallbackFunctionIndex(9);
+                setMainLoopCallbackFunctionIndex(DIALOGUE);
                 controllers[0].unk_1C = 0;
                 setPlayerAction(0, 0);
             } else {
@@ -1048,7 +1046,7 @@ void func_8005B09C(u8 arg0) {
                 func_8003F690(0, 1, 0, 0);
                 func_8003F360(0, -4, 2);
                 func_80043430(0, 0x44, 0x10, 0);
-                setMainLoopCallbackFunctionIndex(9);
+                setMainLoopCallbackFunctionIndex(DIALOGUE);
                 controllers[0].unk_1C = 0;
                 setPlayerAction(0, 0);
             }
@@ -1062,7 +1060,7 @@ void func_8005B09C(u8 arg0) {
                 func_8003F690(0, 1, 0, 0);
                 func_8003F360(0, -4, 2);
                 func_80043430(0, 0x44, 7, 0x40);
-                setMainLoopCallbackFunctionIndex(9);
+                setMainLoopCallbackFunctionIndex(DIALOGUE);
                 controllers[0].unk_1C = 0;
                 setPlayerAction(0, 0);
             } else {
@@ -1073,7 +1071,7 @@ void func_8005B09C(u8 arg0) {
                 func_8003F690(0, 1, 0, 0);
                 func_8003F360(0, -4, 2);
                 func_80043430(0, 0x44, 0x11, 0);
-                setMainLoopCallbackFunctionIndex(9);
+                setMainLoopCallbackFunctionIndex(DIALOGUE);
                 controllers[0].unk_1C = 0;
                 setPlayerAction(0, 0);
             }
@@ -1087,7 +1085,7 @@ void func_8005B09C(u8 arg0) {
                 func_8003F690(0, 1, 0, 0);
                 func_8003F360(0, -4, 2);
                 func_80043430(0, 0x44, 8, 0x40);
-                setMainLoopCallbackFunctionIndex(9);
+                setMainLoopCallbackFunctionIndex(DIALOGUE);
                 controllers[0].unk_1C = 0;
                 setPlayerAction(0, 0);
             } else {
@@ -1098,7 +1096,7 @@ void func_8005B09C(u8 arg0) {
                 func_8003F690(0, 1, 0, 0);
                 func_8003F360(0, -4, 2);
                 func_80043430(0, 0x44, 0x12, 0);
-                setMainLoopCallbackFunctionIndex(9);
+                setMainLoopCallbackFunctionIndex(DIALOGUE);
                 controllers[0].unk_1C = 0;
                 setPlayerAction(0, 0);
             }
@@ -1112,7 +1110,7 @@ void func_8005B09C(u8 arg0) {
                 func_8003F690(0, 1, 0, 0);
                 func_8003F360(0, -4, 2);
                 func_80043430(0, 0x44, 9, 0x40);
-                setMainLoopCallbackFunctionIndex(9);
+                setMainLoopCallbackFunctionIndex(DIALOGUE);
                 controllers[0].unk_1C = 0;
                 setPlayerAction(0, 0);
             } else {
@@ -1123,7 +1121,7 @@ void func_8005B09C(u8 arg0) {
                 func_8003F690(0, 1, 0, 0);
                 func_8003F360(0, -4, 2);
                 func_80043430(0, 0x44, 0x13, 0);
-                setMainLoopCallbackFunctionIndex(9);
+                setMainLoopCallbackFunctionIndex(DIALOGUE);
                 controllers[0].unk_1C = 0;
                 setPlayerAction(0, 0);
             }
@@ -1136,13 +1134,13 @@ void func_8005B09C(u8 arg0) {
             func_8003F690(0, 1, 0, 0);
             func_8003F360(0, -4, 2);
             func_80043430(0, 1, 0x15, 0);
-            setMainLoopCallbackFunctionIndex(9);
+            setMainLoopCallbackFunctionIndex(DIALOGUE);
             controllers[0].unk_1C = 0;
             setPlayerAction(0, 0);
             break;    
     }
 
-    setMainLoopCallbackFunctionIndex(0xC);
+    setMainLoopCallbackFunctionIndex(PINK_OVERLAY_TEXT);
     
 }
 
@@ -1151,7 +1149,7 @@ void func_8005B09C(u8 arg0) {
 void func_8005C00C(void) {
     
     if (D_801891D4 < 0) {
-        setMainLoopCallbackFunctionIndex(1);
+        setMainLoopCallbackFunctionIndex(MAIN_GAME);
         return;
     }
     
@@ -1257,7 +1255,7 @@ void func_8005C940(u16 arg0, u16 arg1) {
     D_80180718.a = 0;
     
     if (arg1) {
-        setMainLoopCallbackFunctionIndex(6);
+        setMainLoopCallbackFunctionIndex(LEVEL_LOAD_2);
         func_8002F6F0();
         func_80046C98();
         func_8002FCB4(0, 0);
@@ -1270,7 +1268,7 @@ void func_8005CA2C(u16 arg0, u16 arg1) {
     D_80205230.unk_4 = arg0;
     D_80205230.unk_2 = 0;
     D_80205230.unk_0 = arg1;
-    setMainLoopCallbackFunctionIndex(7);
+    setMainLoopCallbackFunctionIndex(OVERLAY_SCREEN_LOAD);
 }
 
 //INCLUDE_ASM(const s32, "game", func_8005CA64);
@@ -1328,7 +1326,7 @@ void func_8005CBA4(void) {
         func_8002F730();
         func_80046CF4();
         func_8002FCB4(0, 1);
-        setMainLoopCallbackFunctionIndex(1);
+        setMainLoopCallbackFunctionIndex(MAIN_GAME);
     }
 }
 
@@ -1349,7 +1347,7 @@ void func_8005CBF0(void) {
        
         func_8005CDCC();
         
-        setMainLoopCallbackFunctionIndex(1);
+        setMainLoopCallbackFunctionIndex(MAIN_GAME);
         
         func_8002F730();
         func_80046CF4();
@@ -1423,7 +1421,7 @@ void func_8005CEFC(void) {
 void func_8005CF4C(void) {
 
     if (D_801FB686 == 0) {
-        setMainLoopCallbackFunctionIndex(1);
+        setMainLoopCallbackFunctionIndex(MAIN_GAME);
         func_8002F730();
         func_80046CF4();
         func_8002FCB4(0, 1);
@@ -1498,7 +1496,7 @@ void func_8005D0BC(void) {
         D_801FC155 = D_8016FFE8;
         gChickens[D_8016FFE8].flags &= ~0x100;
         
-        setMainLoopCallbackFunctionIndex(0x33);
+        setMainLoopCallbackFunctionIndex(NAMING_SCREEN);
         toggleLifeEventBit(3);
         setLifeEventBit(0x38);
         
@@ -1533,7 +1531,7 @@ void func_8005D0BC(void) {
         D_801FC155 = D_80170464;
         gFarmAnimals[D_80170464].flags &= ~0x800;
             
-        setMainLoopCallbackFunctionIndex(0x33);
+        setMainLoopCallbackFunctionIndex(NAMING_SCREEN);
         toggleLifeEventBit(4);
             
         set = 1;
@@ -1636,7 +1634,7 @@ void func_800604B0(void) {
                 break;
         }
         
-        setMainLoopCallbackFunctionIndex(0x11);
+        setMainLoopCallbackFunctionIndex(END_OF_FESTIVAL_DAY_2);
     }
 }
 
@@ -1644,7 +1642,7 @@ void func_800604B0(void) {
 
 void func_800605F0(void) {
     if (func_8003F0DC()) {
-        setMainLoopCallbackFunctionIndex(0xD);
+        setMainLoopCallbackFunctionIndex(END_OF_DAY_1);
     }
 }
 
@@ -1711,7 +1709,7 @@ void func_80060624(void) {
         startNewDay();
         setEntrance(MIDDLE_OF_HOUSE);
         
-        setMainLoopCallbackFunctionIndex(2);
+        setMainLoopCallbackFunctionIndex(MAP_LOAD);
         
         setDailyEventBit(0x53);
         setDailyEventBit(0x54);

@@ -27,6 +27,28 @@
 #define FIELD_WIDTH 24
 #define FIELD_HEIGHT 20
 
+// object maps for levels
+// top of mountain 1
+extern u8 D_8013D258[FIELD_WIDTH][FIELD_HEIGHT];
+// moon mountain
+extern u8 D_8016FBF0[FIELD_WIDTH][FIELD_HEIGHT];
+// pond
+extern u8 D_8016FE08[FIELD_WIDTH][FIELD_HEIGHT];
+// cave
+extern u8 D_8016F8F8[FIELD_WIDTH][FIELD_HEIGHT];
+// mine
+extern u8 D_80170468[FIELD_WIDTH][FIELD_HEIGHT];
+// greenhouse
+extern u8 D_80182BA8[FIELD_WIDTH][FIELD_HEIGHT];
+// mountain 1
+extern u8 D_80182FD8[FIELD_WIDTH][FIELD_HEIGHT];
+// mountain 2
+extern u8 D_80189868[FIELD_WIDTH][FIELD_HEIGHT];
+// ranch
+extern u8 D_801C3FC0[FIELD_WIDTH][FIELD_HEIGHT];
+
+extern u8 farmFieldTiles[FIELD_WIDTH][FIELD_HEIGHT];
+
 extern void func_800D9600(u8);   
 extern void func_800D9BFC(); 
 extern u8 func_800DA8B8(u8);                             

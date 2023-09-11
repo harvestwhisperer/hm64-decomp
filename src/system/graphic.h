@@ -49,12 +49,13 @@ typedef struct {
 extern f32 sinfRadians(f32);
 extern f32 cosfRadians(f32);
 extern void func_80026E78(Bitmap *sprite, u16 *arg1, u16 *arg2);   
-extern Gfx* func_80026F88(Gfx*, UnknownMapStruct8*, u16, u16);
+extern Gfx* func_80026F88(Gfx* dl, Bitmap* arg1, u32 arg2, u16 arg3);
+extern void func_800276AC(Mtx*, u16, u16, u16, u16, u16, u16, u16, u16, u16, u8, u8, u8, u8);
 extern void func_80027950(Vec3f, Vec3f*, Vec3f);
 extern Vec3f* func_80028520(Vec3f* arg0, f32 arg1, s32 arg2, s32 arg3);          
 extern void* func_80028888(u16 arg0, u32* arg1);                   
 extern void *func_800288A0(u16 arg0, u32 *arg1);
-extern void* func_800288B8(u16, void*, void*);             
+extern u8* func_800288B8(u16 arg0, u32 *arg1, u8 *arg2);
 extern f32 func_80028820(u8 arg0);    
 extern void func_80028EB8(f32 x, f32 y, f32 z);
 

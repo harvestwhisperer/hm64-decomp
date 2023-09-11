@@ -40,11 +40,11 @@ typedef struct {
 } WorldMatrices;
 
 extern void initializeWorldGraphics(void);   
-// no op or shelved code
-extern void func_800293B8(void);
+extern u16 func_8002929C(Gfx *dl, u16 flags);
 extern bool func_800292EC(u16 index, f32 x, f32 y, f32 z);
 extern bool func_80029330(u16 index, f32 arg1, f32 arg2, f32 arg3);
 extern bool func_80029374(u16 index, f32 arg1, f32 arg2, f32 arg3);
+extern void func_800293B8(void);
 extern Gfx* func_800293C0(Gfx* dl, WorldMatrices* arg1);
 
 extern Vec3f previousWorldRotationAngles;

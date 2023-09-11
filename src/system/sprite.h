@@ -101,13 +101,13 @@ typedef struct {
 
 typedef struct {
 	void *timg; // 00
-	void *pal;  // 04
-	u32 width;  // 08 
-	u32 height; // 0C
-	u32 fmt; // image format // 10
-	u32 flag; // 14
+	u16 *pal;  // 04
+	s32 width;  // 08 
+	s32 height; // 0C
+	u32 fmt; // 10
+	s32 pixelSize; // 14
 	u16 spriteNumber; // 18
-	u16 size; // image size // 1A
+	u16 unk_1A; // 1A
 	Vec3f unk_1C;
 	Vec3f scaling; // 28
 	Vec3f unk_34; // 34

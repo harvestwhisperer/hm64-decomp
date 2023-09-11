@@ -72,7 +72,9 @@ void func_8004CF68(void) {
     nuContDataGetExAll(contData);
 
     for (i = 0; i < 4; i++) {
+
         if (!D_80181B90[i].errno) {
+        
             if ((frameCount % D_802226E2) == 0) {            
                 
                 D_8013D450[i].stick_x = contData[i].stick_x;
@@ -88,6 +90,7 @@ void func_8004CF68(void) {
                 j = 0;
 
                 while (1) {
+                    
                     if (((D_8013D450[i].button >> j) & 1)) {
                         if ((D_8013D450[i].unk_18 >> j) & 1) {
                             if (D_80182FBA < D_8013D450[i].unk_1C[j]) {

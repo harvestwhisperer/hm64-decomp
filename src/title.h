@@ -20,4 +20,7 @@ typedef struct {
     u32 frameCounter;
 } TitleContext;
 
+// demo cutscenes index
+extern u8 D_801C3F50;
+
 #endif

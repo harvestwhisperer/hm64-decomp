@@ -83,8 +83,7 @@ typedef struct {
     void *unk_4;
     void *unk_8;
     Vec3f unk_C;
-    u16 sfxIndex; // 0x18
-    u16 unk_1A;
+    u32 unk_18; // 0x18
     u16 unk_1C; // sprite info
     u16 unk_1E; // sprite info
     u16 unk_20; // sprite animation
@@ -110,11 +109,11 @@ typedef struct {
 extern u32 gCutsceneFlags;
 
 extern void initializeCutsceneMaps(void);
+extern void mainLoopCutsceneHandler(void);
 extern bool func_800469A8(u16 index, void *cutsceneMapPointer);
 extern void func_80046BB8(void);   
 extern void func_80046C98(void);     
 extern void func_80046CF4(void);    
 extern inline int func_80046D50(int adjustment, int value, int max);
-extern void func_80046D78(void);
 
 #endif

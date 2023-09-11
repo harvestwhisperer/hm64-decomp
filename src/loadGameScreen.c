@@ -5,6 +5,7 @@
 #include "system/message.h"
 
 #include "game.h"
+#include "mainLoop.h"
 #include "overlayScreens.h"
 #include "player.h"
 #include "updateGame.h"
@@ -115,7 +116,7 @@ void func_800E1380(u8 controllerPakEnabled) {
     
     func_800E16D0(1, D_801D6238.diaryHighlighted);
     
-    setMainLoopCallbackFunctionIndex(0x35);
+    setMainLoopCallbackFunctionIndex(SELECT_GAME);
 }
 
 INCLUDE_ASM(const s32, "loadGameScreen", func_800E16A0);
@@ -481,6 +482,7 @@ INCLUDE_ASM(const s32, "loadGameScreen", func_800E9B2C);
 //INCLUDE_ASM(const s32, "loadGameScreen", func_800EA2A4);
 
 void func_800EA2A4(u8 arg0) {
+    
     D_8030E000[0] = 0;
     D_8030E000[1] = 0;
     D_8030E000[2] = 0;
@@ -497,6 +499,7 @@ void func_800EA2A4(u8 arg0) {
     D_8030E000[13] = 0;
     D_8030E000[14] = 0;
     D_8030E000[15] = 0;
+
     func_8004DD7C(((arg0  << 8) + 0x4000) | 0x08000000, 0x8030E000, 0x10);
 } 
 

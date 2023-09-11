@@ -2,6 +2,7 @@
 
 #include "initialize2.h"
 
+#include "system/audio.h"
 #include "system/controller.h"
 #include "system/cutscene.h"
 #include "system/mathUtils.h"
@@ -14,7 +15,6 @@
 #include "gameAudio.h"
 #include "gameStatus.h"
 #include "initialize.h"
-#include "itemHandlers.h"
 #include "level.h"
 #include "load.h"
 #include "loadGameScreen.h"
@@ -23,13 +23,9 @@
 #include "overlayScreens.h"
 #include "player.h"
 #include "setCutscenes.h"
-#include "sprite.h"
-#include "tv.h"
-#include "updateGame.h"
-#include "weather.h"
+#include "weather.h"    
       
 // bss
-extern u32 D_8016FE00;
 // unused: likely to show player coordinates on screen for debugging
 s16 D_80182D8C;
 s16 D_8018A062;
@@ -125,7 +121,7 @@ void func_80056030(u8 arg0) {
 
     D_801891D4 = 0;
     cutsceneIndex = 0;
-    D_8016FE00 = 0;
+    gCutsceneFlags = 0;
     
     toggleDailyEventBit(0x28);
     toggleDailyEventBit(0x4B);
@@ -225,7 +221,7 @@ block_end:
             setPlayerAction(0, 0);
             D_8018908C = 0;
         }
-        if (!(D_8016FE00 & 1) && (func_8009B5E0())) {
+        if (!(gCutsceneFlags & 1) && (func_8009B5E0())) {
             setAudio(0x3F);
         }
     }
@@ -238,16 +234,16 @@ block_end:
     func_800D5290();
     
     if (arg0 != 2) {
-        if (!(D_8016FE00 & 6)) {
+        if (!(gCutsceneFlags & 6)) {
             if (checkDailyEventBit(0x4D) == 0) {
                 func_80088D54();
             }
-            if (!(D_8016FE00 & 6)) {
+            if (!(gCutsceneFlags & 6)) {
                 func_8005AAE4();
                 func_800758B8();
             }
         }
-        if (!(D_8016FE00 & 4)) {
+        if (!(gCutsceneFlags & 4)) {
             func_800876D0();
         }
     }
@@ -494,7 +490,7 @@ void func_80059368(void) {
     func_80046CF4();
     func_8002FCB4(0, 1);
     func_80065AA0();
-    func_8003BC50(0, D_80205635);
+    func_8003BC50(0, gMapWithSeasonIndex);
     setLevelGraphicsData(gBaseMapIndex);
     setPlayerAction(0xFE, 0);
     func_8006623C();
@@ -536,7 +532,6 @@ void startNewDay(void) {
     
     if (gDayOfMonth == 1) {
         
-        // calendar?
         for (i = 0; i < 5; i++) {
             for (j = 0; j < 7; j++) {
                 D_80189108[i][j] = 0xFF;

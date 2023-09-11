@@ -9,4 +9,7 @@ extern void func_800D7C20(void);
 extern void setSeasonName();  
 void setGlobalSeasonName(u8);  
 
+extern u8 gCurrentSeasonName[6];
+extern u8 gGlobalSeasonName[6];
+
 #endif

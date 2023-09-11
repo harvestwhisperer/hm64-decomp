@@ -50,6 +50,7 @@ extern Addresses cutsceneMapAddresses[];
 extern void *D_80114C70[];
 extern void *D_80114D30[];
 extern u16 D_80114DF0[];
+extern u8 D_80113580[0x18][0x14];
 
 
 INCLUDE_ASM(const s32, "setCutscenes", func_8009BF90);

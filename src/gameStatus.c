@@ -16,7 +16,7 @@ u32 specialDialogueBits[];
 u32 readMailBits[];
 u32 mailboxBits[];
 
-// shared
+// album bits
 extern u32 D_80189058;
 
 // forward declaration

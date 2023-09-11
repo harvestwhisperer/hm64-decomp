@@ -2,6 +2,10 @@
 
 #include "animals.h"
 
+#include "system/graphic.h"
+#include "system/sprite.h"
+#include "system/tiles.h"
+
 #include "level.h"
 
 // bss
@@ -21,15 +25,52 @@ extern u8 D_8018908C;
 extern u8 D_801C3F46;
 extern u8 D_801FC155;
 
+// forward declarations
+void func_80086458(u8, s8); 
+void func_80088718(u8); 
+void func_8008C208();                                  
+void func_8008CF94(u8);                               
+void func_8008DAA0(u8);                               
+void func_80093B80();                                  
+void func_80093CE0();                                 
+void func_8009476C(u8);     
+void func_8009427C();                       
+
+
 INCLUDE_ASM(const s32, "animals", func_80085F70);
 
 INCLUDE_ASM(const s32, "animals", func_800861A4);
 
-INCLUDE_ASM(const s32, "animals", func_8008634C);
+//INCLUDE_ASM(const s32, "animals", func_8008634C);
 
-INCLUDE_ASM(const s32, "animals", adjustDogAffection);
+void func_8008634C(s8 arg0) {
 
-INCLUDE_ASM(const s32, "animals", adjustHorseAffection);
+    u8 i;
+
+    adjustDogAffection(arg0);
+    adjustHorseAffection(arg0);
+
+    for (i = 0; i < 8; i++) {
+        func_80086458(i, arg0);
+    }
+    
+}
+
+//INCLUDE_ASM(const s32, "animals", adjustDogAffection);
+
+void adjustDogAffection(s8 arg0) {
+    if (dogInfo.flags & 1) {
+        dogInfo.affection += adjustValue(dogInfo.affection, arg0, 0xFF);
+    }
+}
+
+//INCLUDE_ASM(const s32, "animals", adjustHorseAffection);
+
+void adjustHorseAffection(s8 arg0) {
+    if (horseInfo.flags & 1) {
+        horseInfo.affection += adjustValue(horseInfo.affection, arg0, 0xFF);
+    }
+}
 
 // jtbl_80120320
 INCLUDE_ASM(const s32, "animals", func_80086458);
@@ -46,7 +87,29 @@ INCLUDE_ASM(const s32, "animals", func_8008779C);
 
 INCLUDE_ASM(const s32, "animals", func_800879C8);
 
-INCLUDE_ASM(const s32, "animals", func_80087CD4);
+//INCLUDE_ASM(const s32, "animals", func_80087CD4);
+
+void func_80087CD4(void) {
+
+    u8 i;
+    
+    func_8008C208();
+
+    for (i = 0; i < MAX_CHICKENS; i++) {
+        func_8008CF94(i);
+    }
+
+    for (i = 0; i < MAX_FARM_ANIMALS; i++) {
+        func_8008DAA0(i);
+    }
+
+    func_80093B80();
+    
+    for (i = 0; i < 7; i++) {
+        func_8009476C(i);
+    }
+    
+}
 
 INCLUDE_ASM(const s32, "animals", func_80087D5C);
 
@@ -73,7 +136,7 @@ void initializeDog(void) {
     dogInfo.coordinates.y = 0;
     dogInfo.unk_17 = 0;
     dogInfo.unk_18 = 0;
-    dogInfo.affection = 0;
+    dogInfo.affection = 0; 
     dogInfo.unk_19 = 0;
     dogInfo.unk_1A = 0;
     dogInfo.unk_1B = 0;
@@ -109,7 +172,7 @@ void setAnimalLocations(u8 mapIndex) {
     setDogLocation(mapIndex);
     setHorseLocation(mapIndex);
 
-    for (i = 0; i < 8; i++) {
+    for (i = 0; i < MAX_FARM_ANIMALS; i++) {
         func_80088BB0(mapIndex, i);
     }
 
@@ -146,7 +209,15 @@ void setHorseLocation(u8 mapIndex) {
     }
 }
 
-INCLUDE_ASM(const s32, "animals", func_80088BB0);
+//INCLUDE_ASM(const s32, "animals", func_80088BB0);
+
+void func_80088BB0(u8 mapIndex, u8 animalIndex) {
+
+    if (gFarmAnimals[animalIndex].flags & 1 && (mapIndex == 0xFF ||  gFarmAnimals[animalIndex].location == mapIndex)) {
+        func_80088718(animalIndex);
+    }
+    
+}
 
 INCLUDE_ASM(const s32, "animals", func_80088C1C);
 
@@ -172,7 +243,32 @@ INCLUDE_ASM(const s32, "animals", func_8008B9AC);
 
 INCLUDE_ASM(const s32, "animals", func_8008BAF0);
 
-INCLUDE_ASM(const s32, "animals", func_8008C208);
+//INCLUDE_ASM(const s32, "animals", func_8008C208);
+
+void func_8008C208(void) {
+
+    Vec3f vec;
+
+    if ((dogInfo.flags & 1) && (dogInfo.flags & 4)) {
+        
+        if (func_8002FECC(dogInfo.spriteIndex) || dogInfo.flags & 0x20) {
+
+            if (dogInfo.unk_1A == 0) {
+                func_8008C358();
+            } else {
+                dogInfo.unk_1A--;
+            }
+            
+            dogInfo.flags &= ~0x20;
+            
+        }
+        
+        func_8002F684(dogInfo.spriteIndex, (dogInfo.unk_18 + 8 - func_8003C1A4(0)) % 8);
+        func_80028520(&vec, dogInfo.unk_19, dogInfo.unk_18, 0);
+        func_8002FE10(dogInfo.spriteIndex, vec.x, vec.y, vec.z, dogInfo.unk_19);
+    } 
+    
+}
 
 INCLUDE_ASM(const s32, "animals", func_8008C358);
 
@@ -212,7 +308,34 @@ INCLUDE_ASM(const s32, "animals", func_800931D8);
 
 INCLUDE_ASM(const s32, "animals", func_80093434);
 
-INCLUDE_ASM(const s32, "animals", func_80093B80);
+//INCLUDE_ASM(const s32, "animals", func_80093B80);
+
+void func_80093B80(void) {
+
+    Vec3f vec;
+
+    if ((horseInfo.flags & 1) && (horseInfo.flags & 4)) {
+
+        if (func_8002FECC(horseInfo.unk_14) || horseInfo.flags & 0x20) {
+            
+            switch (horseInfo.grown) {
+                case 0:
+                    func_8009427C();
+                    break;                    
+                case 1:
+                    func_80093CE0();
+                    break;
+            }
+            
+            horseInfo.flags &= ~(0x20 | 0x80);
+        }
+        
+        func_8002F684(horseInfo.unk_14, (horseInfo.unk_18 + 8 - func_8003C1A4(0)) % 8);
+        func_80028520(&vec, horseInfo.unk_19, horseInfo.unk_18, 0);
+        func_8002FE10(horseInfo.unk_14, vec.x,vec.y, vec.z, horseInfo.unk_19);
+
+    } 
+}
 
 INCLUDE_ASM(const s32, "animals", func_80093CE0);
 
