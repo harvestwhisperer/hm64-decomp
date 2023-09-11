@@ -13,7 +13,8 @@
 #include "weather.h"
 
 // bss
-extern npcInfo npcInfoArray[0x30];
+npcInfo npcInfoArray[0x30];
+
 u16 D_80114900[];
 u8 D_801C3E18;
 u16 D_801FBE2E;  

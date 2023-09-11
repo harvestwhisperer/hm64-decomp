@@ -95,10 +95,13 @@ extern void func_8005C07C(s16 arg0, u16 arg1);
 extern void func_8005C940(u16, u16 callbackIndex); 
 extern void func_8005CA2C(u16, u16);   
 extern void func_8005CDCC(); 
+extern void func_80061690(void);
 extern u8 func_800616CC(u8);  
-u16 func_80063A2C(u8 arg0);
+extern u16 func_80063A2C(u8);
 
-extern Vec3f D_8016F8A4;
+extern MainLoopCallbackInfo D_80205230;
+
+extern Vec4f D_8016F8A0;
 extern Vec4f D_80180718;
 extern Vec4f globalLightingRgba;
 
@@ -128,9 +131,6 @@ extern u8 gBabyAge;
 
 extern u8 gElliGrievingCounter;
 
-extern s32 gSongVolume;
-extern u16 gCurrentSongIndex;
-
 extern u8 gFlowerFestivalGoddess;
 extern u8 gHarvestCoinFinder;
 extern u8 gHarvestKing;
@@ -142,7 +142,16 @@ extern u8 houseExtensionConstructionCounter;
 extern u16 gTotalGrassTiles;
 extern u16 gTotalPinkCatMintFlowersGrowing;
 
+extern u8 D_801FC150;
+extern u8 D_801FD621;
+extern u8 D_80237412;  
+
 // maybe evaluation.c
 extern u16 D_80215DF0;
+
+extern u8 gFarmName[6];
+extern u8 gWifeName[6];
+extern u8 gBabyName[6];
+extern u8 harvestKingName[6];
 
 #endif

@@ -108,13 +108,14 @@ typedef struct {
 	u8 unk_6E; // 0x6E
 	u8 unk_6F; // 0x6F
 	u8 unk_70;
-	u8 fatigue[5]; // 71
+	u8 fatigue[4]; // 71
     u16 flags; // 0x78
 } Player;
 
 extern void setupPlayerSprite(u16 arg0, u8 resetPlayer);
 
 extern void func_80065AA0();
+extern u8 func_80065BCC(u8 tool);
 extern void func_80065F5C();   
 extern Vec3f* func_80065F94(Vec3f *arg0, f32 arg1, u8 arg2);
 extern void func_8006623C();  
@@ -135,5 +136,40 @@ extern u8 gAlcoholTolerance;
 extern u8 gHappiness;
 extern u8 gMaximumStamina;
 extern u8 gPlayerBirthdaySeason;
+
+extern u8 gToolchestSlots[];
+
+// seed counters
+// turnip
+extern u8 D_801FC154;
+// potato
+extern u8 D_80204DF4;
+// eggplant
+extern u8 D_80237458;
+// cabbage
+extern u8 D_8018A725;
+// strawberry
+extern u8 D_802373E8;
+// tomato
+extern u8 D_8013DC2C;
+// corn
+extern u8 D_801FAD91;
+// grass seeds
+extern u8 D_801C3E28;
+// moondrop flower
+extern u8 D_801C3F70;
+// pink cat mint
+extern u8 D_80205636;
+// blue mist
+extern u8 D_802373A8;
+
+// watering can uses
+extern u8 D_8016FBCD;
+extern u16 D_80237410;
+
+// counter until napping animation
+extern u16 D_802226E0;
+// likely player sick days
+extern u16 D_8016F8F4;
 
 #endif

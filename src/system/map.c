@@ -4,13 +4,31 @@
 
 #include "system/graphic.h"
 
+#include "mainproc.h"
+
 // forward declarations
+void func_80035A58(UnknownMapStruct2*);
 void func_800366F4(Vec3f*, u16, f32, f32);                  
 u16 func_80036880(u32, f32, f32);  
+u8* func_800374C0(UnknownMapStruct5*, u8*);
+u8* func_80037614(MapVtx* arg0, VtxTexture* arg1);      
+u8* func_80037650(u16 arg0, void *arg1);
+bool func_80037668(MainMap*, u16, f32, f32, f32);
+Gfx* func_80037BC4(Gfx*, MainMap*, u16, u16);
+s16 func_80037F08(Gfx*, MainMap*, UnknownMapStruct5*);  
+Gfx* func_80037BC4(Gfx*, MainMap*, u16, u16);
+Gfx* func_800383B0(Gfx* arg0, MainMap* arg1, u16 arg2, f32 arg3, f32 arg4, f32 arg5);
+void func_8003851C(MainMap*);              
+void func_80038BC4(MainMap*);                             
+void func_800393E0(MainMap*);                             
+void func_80039990(MainMap*);                             
+void func_80039E20(u16, Gfx*);                        
+void func_80039F58(u16);                               
+bool func_8003B1BC(MainMap*);               
 
 // bss
 extern MainMap mainMap[1];
-
+ 
 // inner struct member
 extern u16 D_80142868;
 
@@ -21,17 +39,23 @@ extern u8 D_801FB700;
 extern f32 D_801FB5D4;
 extern f32 D_802226EC;
 
+extern Vtx D_80223380[2][0x1400];
+extern Mtx D_80165500[2][0x140];
+
 // rodata
 extern Gfx D_8011ED68[4];
 extern Gfx D_8011ED88[5];
 extern Gfx D_8011EDC8[3];
+extern Gfx D_8011ED80;
+extern Gfx D_8011EDA8;
+extern Gfx D_8011EDD8;
 
 //INCLUDE_ASM(const s32, "system/map", func_800337D0);
 
 void func_800337D0(void) {
-
-    u16 i, j;
-    
+ 
+    u16 i, j; 
+     
     D_801FB700 = 0;
     D_801FB5CB = 0;
     
@@ -40,7 +64,7 @@ void func_800337D0(void) {
         mainMap[i].mapStruct8.flags = 0;
         mainMap[i].mapStruct8.unk_A = 0;
         mainMap[i].mapStruct8.unk_C = 0;
-        mainMap[i].mapStruct8.unk_E = 0;
+        mainMap[i].mapStruct8.height = 0;
 
         mainMap[i].mapStruct7.unk_0.x = 0;
         mainMap[i].mapStruct7.unk_0.y = 0;
@@ -89,15 +113,15 @@ void func_800337D0(void) {
         mainMap[i].mapStruct2.unk_30.z = 0;
  
         for (j = 0; j < 0x400; j++) {
-            mainMap[i].mapStruct1[j].unk_4 = 0;
-            mainMap[i].mapStruct1[j].unk_6 = 0;
-            mainMap[i].mapStruct1[j].unk_8 = 0;
-            mainMap[i].mapStruct1[j].unk_9 = 0;
-            mainMap[i].mapStruct1[j].unk_A = 0;
-            mainMap[i].mapStruct1[j].unk_B = 0;
+            mainMap[i].vtxs[j].currentVtxIndex = 0;
+            mainMap[i].vtxs[j].vtxCount = 0;
+            mainMap[i].vtxs[j].ob[0] = 0;
+            mainMap[i].vtxs[j].ob[1] = 0;
+            mainMap[i].vtxs[j].ob[2] = 0;
+            mainMap[i].vtxs[j].flags = 0;
         }
     }
-}
+} 
 
 INCLUDE_ASM(const s32, "system/map", func_80033A90);
 
@@ -116,16 +140,18 @@ bool func_80034090(u16 mapIndex) {
         for (i = 0; i < 0x10; i++) {
             
             if (mainMap[mapIndex].mapStruct4[i].flags & 1) {
-                func_8002B6B8(mainMap[mapIndex].mapStruct4[i].unk_C);
+                func_8002B6B8(mainMap[mapIndex].mapStruct4[i].spriteIndex);
             }
             
             mainMap[mapIndex].mapStruct4[i].flags = 0;
         }
         
         for (i = 0; i < 0x10; i++) { 
+            
             if (mainMap[mapIndex].mapStruct5[i].flags & 1) {
-                func_8002B6B8(mainMap[mapIndex].mapStruct5[i].unk_0);
+                func_8002B6B8(mainMap[mapIndex].mapStruct5[i].spriteIndex);
             }
+
             mainMap[mapIndex].mapStruct5[i].flags = 0;
         }
         
@@ -165,7 +191,7 @@ bool func_80034350(u16 mapIndex, u8 arg1, u8 arg2, u8 arg3, u8 arg4) {
     
     if (mapIndex == 0 && (mainMap[mapIndex].mapStruct8.flags & 1)) {
         
-        result = 1;
+        result = 1; 
 
         mainMap[mapIndex].mapStruct7.groundRgba.r = arg1;
         mainMap[mapIndex].mapStruct7.groundRgba.g = arg2;
@@ -182,7 +208,37 @@ bool func_80034350(u16 mapIndex, u8 arg1, u8 arg2, u8 arg3, u8 arg4) {
     return result;
 }
 
-INCLUDE_ASM(const s32, "system/map", func_800343FC);
+//INCLUDE_ASM(const s32, "system/map", func_800343FC);
+
+bool func_800343FC(u16 mapIndex, u8 arg1, u8 arg2, u8 arg3, u8 arg4, f32 arg5, f32 arg6, f32 arg7, u8 arg8) {
+
+    bool result = 0;
+
+    if (mapIndex == 0 && (mainMap[mapIndex].mapStruct8.flags & 1)) {
+
+        mainMap[mapIndex].mapStruct2.unk_48 = arg1;
+        mainMap[mapIndex].mapStruct2.unk_49 = arg2;
+        mainMap[mapIndex].mapStruct2.unk_4A = arg3;
+        mainMap[mapIndex].mapStruct2.unk_4B = arg4;
+
+        mainMap[mapIndex].mapStruct2.unk_3C.x = -arg5;
+        mainMap[mapIndex].mapStruct2.unk_3C.y = -arg6;
+        mainMap[mapIndex].mapStruct2.unk_3C.z = -arg7;
+        
+        if (arg8 == 1) {
+            mainMap[mapIndex].mapStruct8.flags |= 4;
+        } else {
+            mainMap[mapIndex].mapStruct8.flags &= ~4;
+        }
+
+        func_80035A58(&mainMap[mapIndex].mapStruct2);
+        
+        result = 1;
+    }
+    
+    return result;
+    
+}
 
 INCLUDE_ASM(const s32, "system/map", func_800344E8);
 
@@ -204,7 +260,7 @@ bool func_80034C40(u16 mapIndex, u8 arg1, u16 arg2, u16 arg3, f32 arg4, f32 arg5
 
     if (mapIndex == 0 && (mainMap[mapIndex].mapStruct8.flags & 1)) {
          
-        mainMap[mapIndex].mapStruct4[arg1].unk_C = arg2; 
+        mainMap[mapIndex].mapStruct4[arg1].spriteIndex = arg2; 
         mainMap[mapIndex].mapStruct4[arg1].unk_E = arg3;
 
         mainMap[mapIndex].mapStruct4[arg1].unk_0.x = arg4;
@@ -239,8 +295,8 @@ bool func_80034D64(u16 mapIndex, u8 arg1, u16 arg2, u16 arg3) {
     bool result = 0;
  
     if (mapIndex == 0 && (mainMap[mapIndex].mapStruct8.flags & 1)) {
-        mainMap[mapIndex].mapStruct5[arg1].unk_0 = arg2;
-        mainMap[mapIndex].mapStruct5[arg1].unk_2 = arg3;
+        mainMap[mapIndex].mapStruct5[arg1].spriteIndex = arg2;
+        mainMap[mapIndex].mapStruct5[arg1].unk_E = arg3;
         mainMap[mapIndex].mapStruct5[arg1].flags = 1;
         result = 1;
     }
@@ -282,7 +338,7 @@ bool func_80035054(u16 mapIndex, u16 bitmapIndex, u16 arg2, f32 arg3, f32 arg4, 
         if (bitmapIndex) {
             
             func_80026E78(&mainMap[mapIndex].mapBitmaps[bitmapIndex], func_80028888(arg2, mainMap[mapIndex].mapStruct6.vaddr1), func_800288B8(arg2, mainMap[mapIndex].mapStruct6.vaddr2, mainMap[mapIndex].mapStruct6.vaddr3));
-            
+             
             mainMap[mapIndex].mapBitmaps[bitmapIndex].unk_1C.x = arg3;
             mainMap[mapIndex].mapBitmaps[bitmapIndex].unk_1C.y = arg4;
             mainMap[mapIndex].mapBitmaps[bitmapIndex].unk_1C.z = arg5;
@@ -352,7 +408,7 @@ INCLUDE_ASM(const s32, "system/map", func_80036318);
 INCLUDE_ASM(const s32, "system/map", func_80036490);
 
 //INCLUDE_ASM(const s32, "system/map", func_80036610);
-
+ 
 Vec3f *func_80036610(Vec3f *arg0, u16 mapIndex, f32 arg2, f32 arg3) {
 
     Vec3f vec;
@@ -365,12 +421,12 @@ Vec3f *func_80036610(Vec3f *arg0, u16 mapIndex, f32 arg2, f32 arg3) {
     if (mapIndex == 0 && (mainMap[mapIndex].mapStruct8.flags & 1)) {
         
         vec2.y = 0;
-        vec2.x = (arg2 + mainMap[mapIndex].mapStruct8.unk_0) / mainMap[mapIndex].unk_2C;
-        vec2.z = (arg3 + mainMap[mapIndex].mapStruct8.unk_4) / mainMap[mapIndex].unk_2D;
+        vec2.x = (arg2 + mainMap[mapIndex].mapStruct8.unk_0) / mainMap[mapIndex].mapStruct1.unk_8;
+        vec2.z = (arg3 + mainMap[mapIndex].mapStruct8.unk_4) / mainMap[mapIndex].mapStruct1.unk_9;
 
-        vec = vec2;
+        vec = vec2; 
     }
-
+ 
     *arg0 = vec;
     
     return arg0;
@@ -395,7 +451,54 @@ bool func_80036A84(u16 mapIndex) {
     return result;
 }
 
-INCLUDE_ASM(const s32, "system/map", func_80036AB4);
+//INCLUDE_ASM(const s32, "system/map", func_80036AB4);
+
+void func_80036AB4(MainMap* map) {
+
+    u16 i;
+    u16 j;
+    u16 count;
+    u8* ptr;
+    u16 temp;
+    UnknownMapStruct5 mapStructs[32]; 
+
+    count = 0;
+    i = 0;
+  
+    if (map->mapStruct1.unk_6) {
+        
+        do {
+
+            ptr = func_80037614(&map->vtxs[i], func_80037650(i, map->unk_0));
+
+            j = 0;
+            
+            while (1) {
+
+                ptr =  func_800374C0(&mapStructs[j], ptr);
+    
+                if (mapStructs[j].flags & 0x80) {
+                    // probably should be a flag?
+                    map->vtxs[i].ob[2] |= 0x80;
+                }
+
+                if (mapStructs[j++].flags & 0x10) {
+                    break;
+                } 
+
+            } 
+
+            map->vtxs[i].currentVtxIndex = count;
+            temp = func_80037F08(&map->displayLists[count], map, mapStructs);
+
+            count += temp;
+            map->vtxs[i].vtxCount = temp;
+            
+            i++;
+            
+        } while (i < map->mapStruct1.unk_6);
+    }  
+} 
 
 INCLUDE_ASM(const s32, "system/map", func_80036C08);
 
@@ -403,7 +506,25 @@ INCLUDE_ASM(const s32, "system/map", func_80036FA0);
 
 INCLUDE_ASM(const s32, "system/map", func_80037254);
 
+#ifdef PERMUTER
+void func_800372F0(UnknownMapStruct1* arg0, Unknown1* arg1) {
+
+    Unknown1 struc;
+    
+    arg0->unk_8 = arg1->unk_4;
+    arg0->unk_9 = arg1->unk_5;
+    arg0->unk_A = arg1->unk_6;
+    arg0->unk_B = arg1->unk_7;
+    
+    arg0->unk_4 = arg1->unk_9 << 8 | arg1->unk_8;
+    arg0->unk_6 = arg1->unk_B << 8 | arg1->unk_A;
+    
+    arg0->ptr = arg1+1;
+
+}
+#else
 INCLUDE_ASM(const s32, "system/map", func_800372F0);
+#endif
 
 INCLUDE_ASM(const s32, "system/map", func_80037350);
 
@@ -413,17 +534,81 @@ INCLUDE_ASM(const s32, "system/map", func_80037400);
 
 INCLUDE_ASM(const s32, "system/map", func_800374C0);
 
-INCLUDE_ASM(const s32, "system/map", func_80037614);
+//INCLUDE_ASM(const s32, "system/map", func_80037614);
 
-// (signed or unsigned) int func_80037650(<signed/unsigned> int/short arg0, int arg1) {
-//     return arg1 + *(int*)((arg0 & 0xffff) * 4 + arg1);
+// param 2 = 80255A10 + (n * 0x28)
+u8* func_80037614(MapVtx* arg0, VtxTexture* arg1) {
 
-INCLUDE_ASM(const s32, "system/map", func_80037650);
+    u8 *ptr;
+    
+    arg0->ob[0] = arg1->cn[0];
+    arg0->ob[1] = arg1->cn[1];
+    arg0->ob[2] = arg1->cn[2];
+    arg0->flags = arg1->cn[3];
+
+    ptr = arg1+1;
+    
+    arg0->vtx = ptr;
+    
+    return (ptr + arg0->flags*3);
+    
+}
+
+/*
+u8* func_80037614(VtxTextureInfo* arg0, VtxTexture* arg1) {
+
+    u8 *ptr;
+    
+    arg0->vtxTex.cn[0] = arg1->cn[0];
+    arg0->vtxTex.cn[1] = arg1->cn[1];
+    arg0->vtxTex.cn[2] = arg1->cn[2];
+    arg0->vtxTex.cn[3] = arg1->cn[3];
+
+    ptr = arg1+1;
+    
+    arg0->vtx = ptr;
+    
+    return (ptr + (arg0->vtxTex.cn[3]*3));
+    
+}
+*/
+
+// alternate
+/*
+UnknownMapStruct9* func_80037614(VtxTextureInfo* arg0, UnknownMapStruct9* arg1) {
+
+    void *ptr;
+    
+    arg0->unk_8 = arg1->unk_4;
+    arg0->unk_9 = arg1->unk_5;
+    arg0->unk_A = arg1->unk_6;
+    arg0->unk_B = arg1->unk_7;
+
+    ptr = arg1;
+    ptr += 8;
+    
+    arg0->ptr = ptr;
+    
+    return (UnknownMapStruct9*)(ptr + (arg0->unk_B*3));
+    
+}
+*/
+
+//INCLUDE_ASM(const s32, "system/map", func_80037650);
+
+u8* func_80037650(u16 arg0, void *arg1) {
+    return (u8*)(arg1 + *(u32*)(arg1 + arg0*4));
+}
+
+// alternate
+/*
+s32 func_80037650(u16 arg0, s32 arg1) {
+    return arg1 + *(s32*)(arg0*4 + arg1);
+}
+*/
 
 INCLUDE_ASM(const s32, "system/map", func_80037668);
 
-// param1: Gfx*
-// param2: 8013DC40
 //INCLUDE_ASM(const s32, "system/map", func_8003797C);
 
 Gfx* func_8003797C(Gfx* dl, MainMap* arg1, u8 arg2) {
@@ -440,7 +625,39 @@ Gfx* func_8003797C(Gfx* dl, MainMap* arg1, u8 arg2) {
 
 INCLUDE_ASM(const s32, "system/map", func_80037BC4);
 
-INCLUDE_ASM(const s32, "system/map", func_80037DF0);
+//INCLUDE_ASM(const s32, "system/map", func_80037DF0);
+
+inline Gfx* func_80037DF0(Gfx* dl, MainMap* arg1, u16 arg2) {
+
+    u8 i;
+    u16 temp;
+    
+    arg1->mapStruct8.unk_A = 0;
+    arg1->mapStruct8.unk_C = arg2;
+
+    *dl = D_8011ED68[0]; 
+    dl++;
+    *dl = D_8011ED68[1]; 
+    dl++;
+    *dl = D_8011ED68[2]; 
+    dl++;
+
+    for (i = 0; i < 0x51; i++) {
+        temp = arg1->unk_arr[i];
+        if (temp != 0xFFFF) {
+            dl = func_80037BC4(dl, arg1, temp, i);
+        }
+    }
+
+    *dl = D_8011ED68[3];
+
+    arg1->mapStruct8.height = arg1->mapStruct8.unk_A;
+
+    dl++;
+    
+    return dl++;
+    
+}
 
 INCLUDE_ASM(const s32, "system/map", func_80037F08);
 
@@ -491,15 +708,13 @@ u8* func_800386D4(u16 arg0, u8* arg1) {
 INCLUDE_ASM(const s32, "system/map", func_800386D4);
 #endif
 
-#ifdef PERMUTER
-u32 func_800387E0(u16 arg0, u32* arg1) {
-    return arg1 + *(arg1 + arg0);
-}
-#else
 INCLUDE_ASM(const s32, "system/map", func_80038728);
-#endif
 
-INCLUDE_ASM(const s32, "system/map", func_800387E0);
+//INCLUDE_ASM(const s32, "system/map", func_800387E0);
+
+u8* func_800387E0(u16 arg0, void* arg1) {
+    return (u8*)(arg1 + *(u32*)(arg1 + arg0*4));
+}
 
 INCLUDE_ASM(const s32, "system/map", func_800387F8);
 
@@ -562,7 +777,7 @@ INCLUDE_ASM(const s32, "system/map", func_8003A1BC);
 
 //INCLUDE_ASM(const s32, "system/map", func_8003AC14);
 
-void func_8003AC14(Gfx* dl, UnknownMapStruct8* arg1) {
+inline void func_8003AC14(Gfx* dl, UnknownMapStruct8* arg1) {
     
     // gsDPSetCombineMode(G_CC_MODULATEIDECALA, G_CC_MODULATEIDECALA)
     // gsDPSetRenderMode(G_RM_TEX_EDGE, G_RM_TEX_EDGE2)
@@ -578,16 +793,41 @@ void func_8003AC14(Gfx* dl, UnknownMapStruct8* arg1) {
     *dl = D_8011ED68[2];
     dl++;
 
-    func_80026F88(dl++, arg1, 0, arg1->unk_E);
+    func_80026F88(dl++, (Bitmap*)arg1, 0, arg1->height);
 }
  
 // param1: Gfx* 8020DE78
+// param2: MainMap*
+// param3: mapBitmap*, 8014318C
+// param4 = offset into vertex bank
 // Vertex bank: D_80165500[]
 //      size 0x40
-// param2: 8013DC40
-// param3: 8014318C
-// param4 = offset into vertex bank
-INCLUDE_ASM(const s32, "system/map", func_8003ACA8);
+//INCLUDE_ASM(const s32, "system/map", func_8003ACA8);
+
+Gfx* func_8003ACA8(Gfx* arg0, MainMap* arg1, MapBitmap* arg2, u16 arg3) {
+
+    Gfx dl[2];
+    
+    func_800276AC(&D_80165500[gDisplayContextIndex][arg3], arg2->height, arg2->width, arg2->width, 0, 0,
+        0, 0, 0, 0x150, arg1->mapStruct7.groundRgba.r, arg1->mapStruct7.groundRgba.g, arg1->mapStruct7.groundRgba.b,
+        arg1->mapStruct7.groundRgba.a);
+
+    gSPVertex(&dl[1], &D_80165500[gDisplayContextIndex][arg3], 4, 0);
+
+    *dl = *(dl+1);
+    *arg0 = *dl;
+    
+    arg0++;
+    *arg0 = D_8011EDD8;
+    arg0++;
+    *arg0 = D_8011EDA8;
+    arg0++;
+    *arg0 = D_8011ED80;
+    arg0++;
+    
+    return arg0++;
+    
+}
 
 INCLUDE_ASM(const s32, "system/map", func_8003AF58);
 

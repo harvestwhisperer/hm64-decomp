@@ -120,7 +120,7 @@ INCLUDE_ASM(const s32, "lib/libmus/libsrc/player_commands", func_800F573C);
 
 INCLUDE_ASM(const s32, "lib/libmus/libsrc/player_commands", func_800F5858);
 
-INCLUDE_ASM(const s32, "lib/libmus/libsrc/player_commands", func_800F595C);
+INCLUDE_ASM(const s32, "lib/libmus/libsrc/player_commands", MusBankInitialize);
 
 INCLUDE_ASM(const s32, "lib/libmus/libsrc/player_commands", func_800F5994);
 

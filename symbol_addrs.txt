@@ -922,11 +922,14 @@ stopSfx = 0x8003D948;
 setGameVariable = 0x800430DC;
 initializeCutsceneMaps = 0x80046860;
 
+mainLoopCutsceneHandler = 0x80046D78;
+
 controllerInit = 0x8004CDA0;
 
 sramInit = 0x8004DBA0;
 
 startGame = 0x8004DFAC;
+initializeGameVariables = 0x8004E210;
 registerMainLoopCallbacks = 0x8004F3D0;
 
 setGameVariables = 0x80055768;
@@ -1016,6 +1019,7 @@ checkDefaultSongChannelOpen = 0x800ACBB8;
 checkWineBarrelInteraction = 0x800AD07C;
 checkAllSfxInactive = 0x800ACD18;
 
+handleCarpenterHutInteractions = 0x800B1C6C;
 handleDumplingHouseExit = 0x800B1D6C;
 handleRanchStoreExits = 0x800B28D8;
 
@@ -1064,6 +1068,7 @@ MusHandleAsk = 0x800F5404;
 MusHandleSetVolume = 0x800F54C0;
 MusHandlePan = 0x800F558C;
 MusHandleSetFreqOffset = 0x800F5664;
+MusBankInitialize = 0x800F595C;
 
 getRandomNumber = 0x80110410;
 
@@ -1114,6 +1119,7 @@ freeRamromQ = 0x80137360;
 freeRamromBuf = 0x80137378;
 piEventQueue = 0x80137380;
 
+specialDialogueBitsPointer = 0x8013CE00;
 gameVariables = 0x8013CE08;
 
 lifeEventBits = 0x8013D1C8;
@@ -1163,11 +1169,6 @@ contData = 0x801831B8;
 gToolchestSlots = 0x801831D8;
 
 dogInfo = 0x801886B0;
-dogXCoordinate = 0x801886B8;
-dogZCoordinate = 0x801886BC;
-dogYCoordinate = 0x801886C0;
-dogLocation = 0x801886C6;
-dogFlags = 0x801886CE;
 
 __cursor = 0x801886DC;
 
@@ -1222,6 +1223,9 @@ nuGfxTaskSpool = 0x801FB5C0;
 gHour = 0x801FB5CA;
 
 gSongs = 0x801FB5D8;
+
+mountainConstructionWorkDays = 0x801FB68C;
+
 gSfx = 0x801FB690;
 
 npcInfoArray = 0x801FB9D0;
@@ -1268,7 +1272,7 @@ gHouseExtensionSelection = 0x8021E6D1;
 gFarmName = 0x8021E6D2;
 gElliGrievingCounter = 0x80215EC0;
 
-mountainConstructionWorkDays = 0x801FB68C;
+
 
 gEntranceIndex = 0x802231C0; 
 nusched = 0x80222B40;
@@ -1284,17 +1288,17 @@ worldMatrices = 0x80237460;
 
 NU_AU_HEAP_ADDR = 0x8030F800;
 
-tvSprites_romTextureStart = 0xD49BA0;
-tvSprites_romTextureEnd = 0xD4D9F0;
-tvSprites_romPaletteStart = 0xD4D9F0;
-tvSprites_romPaletteEnd = 0xD4DA10;
-tvSprites_romIndexStart = 0xD4DA10;
-tvSprites_romIndexEnd = 0xD4DAB0;
-
 setup_rspstate = 0x80112A38;
 setup_rdpstate = 0x80112A10;
 rdpstateinit_dl = 0x80112928;
 
+
+tvSpritesTextureStart = 0xD49BA0;
+tvSpritesTextureEnd = 0xD4D9F0;
+tvSpritesPaletteStart = 0xD4D9F0;
+tvSpritesPaletteEnd = 0xD4DA10;
+tvSpritesIndexStart = 0xD4DA10;
+tvSpritesIndexEnd = 0xD4DAB0;
 
 homeItemsTextureStart = 0xD86D90;
 homeItemsTextureEnd = 0xD8B140;

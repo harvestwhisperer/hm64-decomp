@@ -5,6 +5,7 @@
 #include "system/sprite.h"
 
 #define MAX_CHICKENS 12
+#define MAX_FARM_ANIMALS 8
 
 typedef struct {
 	u8 name[6];
@@ -56,14 +57,14 @@ typedef struct {
 	u8 affection; // 00
 	u8 name[6]; // 01-07
 	Vec3f coordinates; // 8
-	u16 spriteInfo; // 14
+	u16 spriteIndex; // 14
 	u8 location; // 16
 	u8 unk_17; // 17
 	u8 unk_18; // 18
 	u8 unk_19; // 19
 	u8 unk_1A; // 1A
 	u8 unk_1B; // 1B
-    u16 unk_1C; // 1C 
+    u8 unk_1C; // 1C 
 	u16 flags; // 1E
 } Dog;
 
@@ -100,7 +101,7 @@ typedef struct {
     u32 unk_4; // 0C
     u32 unk_8; // 10
     u16 unk_C; // 14
-    u8 unk_E; // 16
+    u8 unk_E; // 16, 0xB1E
     u8 unk_F; // 17
     u8 unk_10; // 18
     u8 unk_11; // 19
@@ -148,21 +149,26 @@ extern u8 func_8009B564();
 extern s32 func_8009B5E0();     
 extern u8 func_8009B658();                                
 extern u8 func_8009B828(u8);
+extern void func_8009BA74(u8, u16);
 extern void func_8009BC64();      
 
+extern void initializeDog(void);
 extern void initializeHorse(void); 
 
-void adjustDogAffection(s8 value);                            
-void adjustHorseAffection(s8 value);    
+extern void adjustDogAffection(s8 value);                            
+extern void adjustHorseAffection(s8 value);    
 
-void setAnimalLocations(u8);  
-void setDogLocation(u8);        
-void setHorseLocation(u8);     
+extern void setAnimalLocations(u8);  
+extern void setDogLocation(u8);        
+extern void setHorseLocation(u8);     
 
 
+extern UnknownAnimalStruct D_8016FB08[];
 extern Chicken gChickens[MAX_CHICKENS];
 extern FarmAnimal gFarmAnimals[];
+extern u8 D_8016FBCC[1];
 extern u8 D_801886D4[6];
+extern u8 D_8018985C[6];
 extern Dog dogInfo;
 extern Horse horseInfo;
 

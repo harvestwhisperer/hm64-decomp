@@ -48,6 +48,7 @@ extern void func_800D67FC(u8 index);
 extern void func_800D7010();  
 
 
+extern ToolStatus D_80204DF8[10];
 extern ToolUse D_80189828;
 
 extern u32 D_80188F60;

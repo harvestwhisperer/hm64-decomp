@@ -95,7 +95,7 @@ bool func_800469A8(u16 index, void *cutscenePointer) {
 
 //INCLUDE_ASM(const s32, "system/cutscene", func_80046A58);
 
-bool func_80046A58(u16 index, void* cutsceneMapPointer) {
+bool func_80046A58(u16 index, void* cutscenePointer) {
     
     bool result = 0;
 
@@ -104,7 +104,7 @@ bool func_80046A58(u16 index, void* cutsceneMapPointer) {
         if (cutsceneMaps[index].flags & ACTIVE) {
             result = 1;
             cutsceneMaps[index].unk_66 = 0;
-            cutsceneMaps[index].cutscenePointer = cutsceneMapPointer;
+            cutsceneMaps[index].cutscenePointer = cutscenePointer;
         }
     }
 
@@ -245,16 +245,17 @@ inline int func_80046D50(int initial, int value, int max) {
     return adjusted;
 }
  
-#ifdef PERMUTER
-void func_80046D78(void) {
+//INCLUDE_ASM(const s32, "system/cutscene", mainLoopCutsceneHandler);
+
+void mainLoopCutsceneHandler(void) {
 
     u16 i;
 
     for (i = 0; i < MAX_CUTSCENE_ASSETS; i++) {
-
-        if (cutsceneMaps[i].flags & ACTIVE && !(cutsceneMaps[i].flags & 0x20)) {
-
-            if (cutsceneMaps[i].flags & 8) { 
+        
+        if (cutsceneMaps[i].flags & 1 && !(cutsceneMaps[i].flags & 0x20)) {
+            
+            if (cutsceneMaps[i].flags & 8) {
                 
                 cutsceneMaps[i].coordinates.x = renderedSprites[cutsceneMaps[i].spriteIndex].startingCoordinates.x;
                 cutsceneMaps[i].coordinates.y = renderedSprites[cutsceneMaps[i].spriteIndex].startingCoordinates.y;
@@ -263,7 +264,8 @@ void func_80046D78(void) {
                 if (cutsceneMaps[i].unk_1C != 0xFFFF && renderedSprites[cutsceneMaps[i].spriteIndex].unk_58 == cutsceneMaps[i].unk_1C && cutsceneMaps[i].unk_1E == renderedSprites[cutsceneMaps[i].spriteIndex].unk_5A) {
                     cutsceneMaps[i].unk_1C = 0xFFFF;
                     cutsceneMaps[i].unk_66 = 0;
-                    cutsceneMaps[i].cutscenePointer = cutsceneMaps[i].sfxIndex;
+                    cutsceneMaps[i].cutscenePointer = cutsceneMaps[i].unk_18;
+                
                 }
             }
             
@@ -275,14 +277,14 @@ void func_80046D78(void) {
 
             if (cutsceneMaps[i].unk_66) {
                  cutsceneMaps[i].unk_66--;
+                if (cutsceneMaps[i].unk_66) {
+                    goto skip_callback;
+                }
             }
-            
-            if (cutsceneMaps[i].unk_66) {
-                goto skip_callback;
-            }
-
-            while (!cutsceneMaps[i].unk_66) {
-
+      
+ inner_loop:    
+            while (1) {
+                
                 cutsceneMaps[i].offsets.x = 0;
                 cutsceneMaps[i].offsets.y = 0;
                 cutsceneMaps[i].offsets.z = 0;
@@ -293,12 +295,18 @@ skip_callback:
                 cutsceneMaps[i].coordinates.x += cutsceneMaps[i].offsets.x;
                 cutsceneMaps[i].coordinates.y += cutsceneMaps[i].offsets.y;
                 cutsceneMaps[i].coordinates.z += cutsceneMaps[i].offsets.z;
+
+                if (!cutsceneMaps[i].unk_66)  {
+                    goto inner_loop;
+                } else {
+                    break;
+                }
         
             }
             
             if (cutsceneMaps[i].flags & 0x10) {
                 func_80047E34(i);
-            } 
+            }
             
             if (cutsceneMaps[i].flags & 2) {
                 func_800471B0(i);
@@ -310,9 +318,6 @@ skip_callback:
         }
     }
 }
-#else
-INCLUDE_ASM(const s32, "system/cutscene", func_80046D78);
-#endif
 
 INCLUDE_ASM(const s32, "system/cutscene", func_800471B0);
 

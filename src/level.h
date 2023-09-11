@@ -5,6 +5,7 @@
 
 /* map indices */
 #define RANCH 0
+#define ANN_ROOM 4
 #define RANCH_BARN 5
 #define RANCH_STORE 6
 #define RANCH_HOUSE 7
@@ -19,20 +20,28 @@
 #define CARPENTER_HUT 0x21
 #define DUMPLING_HOUSE 0x22
 #define POND 0x23
+#define ELLI_ROOM 0x27
 #define BAKERY 0x28
 #define VILLAGE_1 0x29
 #define VILLAGE_2 0x2D
+#define POPURI_ROOM 0x31
 #define FLOWER_SHOP 0x32
 #define CHURCH 0x33
+#define SOUVENIR_SHOP 0x34
 #define SQUARE 0x35
 #define RICK_STORE 0x39
+#define MIDWIFE_HOUSE 0x3A
 #define TAVERN 0x3B
 #define LIBRARY 0x3C
+#define MARIA_ROOM 0x3D
 #define MAYOR_HOUSE 0x3E
+#define POTION_SHOP_BEDROOM 0x3F
+#define POTION_SHOP 0x40
 #define HARVEST_SPRITE_CAVE 0x42
 #define CAVE 0x43
 #define MINE 0x44
 // 0x45 another mine map
+#define KAREN_ROOM 0x46
 #define VINEYARD 0x47
 #define VINEYARD_HOUSE 0x4B
 #define VINEYARD_CELLAR 0x4C
@@ -44,6 +53,7 @@
 #define BARN 0x58
 #define COOP 0x59
 #define KITCHEN 0x5A
+#define BATHROOM 0x5B
 
 /* entrances/exits */
 #define HOUSE_EXIT 0
@@ -74,12 +84,12 @@ extern s32 func_80074C50(u8);
 
 extern void setLevelGraphicsData(u16);        
 extern u8 getLevelFlags(u16);    
-extern void setEntrance(u16 extiIndex);  
+extern void setEntrance(u16 entranceIndex);  
 
 extern u8 gBaseMapIndex;
 extern u8 gEntranceIndex;
+extern u8 previousEntranceIndex;
 extern u8 previousMapIndex;
-
-extern u8 D_80205635;
+extern u8 gMapWithSeasonIndex;
 
 #endif

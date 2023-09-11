@@ -30,8 +30,6 @@ extern u16 D_80126576;
 extern f32 D_80126578;
 extern u32 D_8012657C;
 
-extern u8 D_801C3F50;
-
 // struct/float aray/vec?
 extern f32 D_80200AC4;
 extern f32 D_80200B60;

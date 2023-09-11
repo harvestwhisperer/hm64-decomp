@@ -9,6 +9,7 @@
 #include "gameStatus.h"
 #include "initialize2.h"
 #include "mainLoop.h"
+#include "player.h"
 #include "shop.h"
 #include "tv.h"
 
@@ -22,12 +23,22 @@ extern u8 D_801FB6F1;
 extern u8 D_801FB6F2;
 extern u8 D_801FB6F3;
 extern u8 D_801FB6F6;
+extern u8 D_801FB6F8;
+extern u8 D_801FB6F9;
+extern u8 D_801FB6FA;
+extern u8 D_801FB6FB;
 
-// data/rodata
+// shared
+extern u8 D_801C3F70;
+extern u8 D_80205636;
+
+// data
 extern f32 D_80116D80[];
 extern f32 D_80116D90[];
 extern f32 D_80116DA0[];
 extern f32 D_80116DB0[];
+extern f32 D_80116DC0[5];
+extern f32 D_80116DD4[5];
 
 // money
 extern void *D_CFE610;
@@ -44,6 +55,7 @@ extern void *D_D3DCC0_2;
 extern void *D_D3DCE0;
 
 // rodata
+
 /*
 // const double D_80121C90 = 0.5;
 const u8 D_80121E34[16] = { 0x15, 0x16, 0x17, 0x18, 0x19, 0x1A, 0x1B, 0x1C, 0x1D, 0x1E, 0x1F, 0x20, 0x21, 0x22, 0x2D, 0x2E }
@@ -404,9 +416,29 @@ INCLUDE_ASM(const s32, "overlayScreens", func_800B7CB4);
 
 INCLUDE_ASM(const s32, "overlayScreens", func_800B7E28);
 
-INCLUDE_ASM(const s32, "overlayScreens", func_800B7F6C);
+//INCLUDE_ASM(const s32, "overlayScreens", func_800B7F6C);
 
-INCLUDE_ASM(const s32, "overlayScreens", func_800B7FC8);
+void func_800B7F6C(u8 arg0) {
+
+    if (arg0 != 0xFF) {
+        func_8002BD0C(0x79, D_80116DC0[arg0], D_80116DD4[arg0], 32.0f);
+    }
+
+    func_8002B80C(0x79, 3, 0);
+}
+
+//INCLUDE_ASM(const s32, "overlayScreens", func_800B7FC8);
+
+void func_800B7FC8(u8 arg0, u8 arg1) {
+
+    if (arg0 != 0xFF) {
+        if (arg1) {
+            func_8002CB88(arg0 + 0x83, 1);
+        } else {
+            func_8002CB88(arg0+ 0x83, 0xF);
+        }
+    }
+}
 
 //INCLUDE_ASM(const s32, "overlayScreens", func_800B8018);
 
@@ -430,17 +462,103 @@ void func_800B8018(void) {
     setMainLoopCallbackFunctionIndex(ESTIMATE);
 }
 
+//INCLUDE_ASM(const s32, "overlayScreens", func_800B815C);
+
 // kitchen picture
-INCLUDE_ASM(const s32, "overlayScreens", func_800B815C);
+void func_800B815C(void) {
+
+    func_800593EC();
+    func_8002B138(0x80, &checkerboardBackgroundTextureStart, &checkerboardBackgroundTextureEnd, &checkerboardBackgroundPaletteStart, &checkerboardBackgroundPaletteEnd, NULL, NULL, (void*)0x802DE5C0, NULL, (void*)0x802E0BC0, (void*)0x802E0CC0, (void*)0x802E0DC0, NULL, NULL, 0);
+    func_8002BD0C(0x80, 0.0f, 0.0f, 0.0f);
+    func_8002BD90(0x80, 2.0f, 2.0f, 1.0f);
+    func_8002CB24(0x80, 1);
+    func_8002C914(0x80, 0xFF, 0xFF, 0xFF, 0xFF);
+    func_8002B80C(0x80, 0, 0);
+    
+    D_801FB6F0 = func_800C2780(0, 0);
+    D_801FB6F1 = 0;
+    D_801FB6F2 = 0;
+    D_801FB6F3 = 0xFF;
+    D_801FB6F6 = 0;
+    
+    setMainLoopCallbackFunctionIndex(KITCHEN_PICTURE);
+}
+
+
+//INCLUDE_ASM(const s32, "overlayScreens", func_800B82AC);
 
 // home extensions selection
-INCLUDE_ASM(const s32, "overlayScreens", func_800B82AC);
+void func_800B82AC(void) {
+
+    func_800593EC();
+    func_8002B138(0x80, &checkerboardBackgroundTextureStart, &checkerboardBackgroundTextureEnd, &checkerboardBackgroundPaletteStart, &checkerboardBackgroundPaletteEnd, NULL, NULL, (void*)0x802DE5C0, NULL, (void*)0x802E0BC0, (void*)0x802E0CC0, (void*)0x802E0DC0, NULL, NULL, 0);
+    func_8002BD0C(0x80, 0.0f, 0.0f, 0.0f);
+    func_8002BD90(0x80, 2.0f, 2.0f, 1.0f);
+    func_8002CB24(0x80, 1);
+    func_8002C914(0x80, 0xFF, 0xFF, 0xFF, 0xFF);
+    func_8002B80C(0x80, 0, 0);
+    
+    D_801FB6F0 = 0;
+    D_801FB6F1 = 0;
+    D_801FB6F2 = 0;
+    D_801FB6F3 = 0xFF;
+    D_801FB6F6 = 0;
+    
+    setMainLoopCallbackFunctionIndex(HOME_EXTENSIONS_SELECT);
+
+}
+
+//INCLUDE_ASM(const s32, "overlayScreens", func_800B83F0);
 
 // calendar
-INCLUDE_ASM(const s32, "overlayScreens", func_800B83F0);
+void func_800B83F0(void) {
 
-// toolbox
-INCLUDE_ASM(const s32, "overlayScreens", func_800B8554);
+    func_800593EC();
+    func_8002B138(0x80, &checkerboardBackgroundTextureStart, &checkerboardBackgroundTextureEnd, &checkerboardBackgroundPaletteStart, &checkerboardBackgroundPaletteEnd, NULL, NULL, (void*)0x802DE5C0, NULL, (void*)0x802E0BC0, (void*)0x802E0CC0, (void*)0x802E0DC0, NULL, NULL, 0);
+    func_8002BD0C(0x80, 0.0f, 0.0f, 0.0f);
+    func_8002BD90(0x80, 2.0f, 2.0f, 1.0f);
+    func_8002CB24(0x80, 1);
+    func_8002C914(0x80, 0xFF, 0xFF, 0xFF, 0xFF);
+    func_8002B80C(0x80, 0, 0);
+
+    D_801FB6F0 = 0;
+    D_801FB6F1 = 0;
+    D_801FB6F2 = 0;
+    D_801FB6F3 = 0xFF;
+    D_801FB6F6 = 0;
+    D_801FB6F8 = 0;
+    D_801FB6F9 = 0;
+    D_801FB6FA = 0;
+    D_801FB6FB = 0;
+
+    setMainLoopCallbackFunctionIndex(CALENDAR);
+}
+
+//INCLUDE_ASM(const s32, "overlayScreens", func_800B8554);
+
+// recipe book
+void func_800B8554(void) {
+    
+    func_800593EC();
+    func_8002B138(0x80, &checkerboardBackgroundTextureStart, &checkerboardBackgroundTextureEnd, &checkerboardBackgroundPaletteStart, &checkerboardBackgroundPaletteEnd, NULL, NULL, (void*)0x802DE5C0, NULL, (void*)0x802E0BC0, (void*)0x802E0CC0, (void*)0x802E0DC0, NULL, NULL, 0);
+    func_8002BD0C(0x80, 0.0f, 0.0f, 0.0f);
+    func_8002BD90(0x80, 2.0f, 2.0f, 1.0f);
+    func_8002CB24(0x80, 1);
+    func_8002C914(0x80, 0xFF, 0xFF, 0xFF, 0xFF);
+    func_8002B80C(0x80, 0, 0);
+
+    D_801FB6F0 = 0;
+    D_801FB6F1 = 0;
+    D_801FB6F2 = 0;
+    D_801FB6F3 = 0xFF;
+    D_801FB6F6 = 0;
+    D_801FB6F8 = 0;
+    D_801FB6F9 = 0;
+    D_801FB6FA = 0;
+    D_801FB6FB = 0;
+
+    setMainLoopCallbackFunctionIndex(RECIPE_BOOK);
+}
 
 INCLUDE_ASM(const s32, "overlayScreens", func_800B86B8);
 
@@ -779,9 +897,21 @@ INCLUDE_ASM(const s32, "overlayScreens", func_800CE930);
 
 INCLUDE_ASM(const s32, "overlayScreens", func_800CEA74);
 
-INCLUDE_ASM(const s32, "overlayScreens", func_800CED60);
+//INCLUDE_ASM(const s32, "overlayScreens", func_800CED60);
 
-INCLUDE_ASM(const s32, "overlayScreens", func_800CEDA8);
+void func_800CED60(void) {
+    func_8002C52C(0x81, 0xFF, 0x18);
+    func_8002C52C(0x82, 0xFF, 0x18);
+    func_8002C52C(0x83, 0xFF, 0x18);
+}
+
+//INCLUDE_ASM(const s32, "overlayScreens", func_800CEDA8);
+
+void func_800CEDA8(void) {
+    func_8002C52C(0x81, 0, 0x18);
+    func_8002C52C(0x82, 0, 0x18);
+    func_8002C52C(0x83, 0, 0x18);
+}
 
 // jtbl_80122200
 // jtbl_80122220
@@ -789,13 +919,102 @@ INCLUDE_ASM(const s32, "overlayScreens", func_800CEDA8);
 INCLUDE_ASM(const s32, "overlayScreens", func_800CEDF0);
 
 // jtbl_80122250
-INCLUDE_ASM(const s32, "overlayScreens", func_800CF34C);
+//INCLUDE_ASM(const s32, "overlayScreens", func_800CF34C);
+
+bool func_800CF34C(u8 arg0) {
+
+    bool result = 0;
+    
+    switch (arg0) {
+        case 3:
+        case 4:
+            break;
+        case 0:
+            if (checkLifeEventBit(0x5A)) {
+                result = 1;
+            }
+            break;
+        case 1:
+            if (checkHaveKeyItem(FLOWER_BATH_CRYSTALS)) {
+                result = 1;
+            }
+            break;
+        case 2:
+            if (checkLifeEventBit(0x5B)) {
+                result = 1;
+            }
+            break;
+    }
+
+    return result;
+    
+}
 
 // jtbl_80122268
-INCLUDE_ASM(const s32, "overlayScreens", func_800CF3C4);
+//INCLUDE_ASM(const s32, "overlayScreens", func_800CF3C4);
+
+void func_800CF3C4(u8 arg0) {
+
+    switch (arg0) {
+        case 0:
+            setLifeEventBit(0x5A);
+            break;
+        case 1:
+            acquireKeyItem(0x14);
+            break;
+        case 2:
+            setLifeEventBit(0x5B);
+            break;
+        case 3:
+            func_80065BCC(0x12);
+            D_80205636 += adjustValue(D_80205636, 1, 0x14);
+            break;
+        case 4:
+            func_80065BCC(0x11);
+            D_801C3F70 += adjustValue(D_801C3F70, 1, 0x14);
+        default:
+            break;
+    }
+} 
 
 // jtbl_80122280
-INCLUDE_ASM(const s32, "overlayScreens", func_800CF498);
+//INCLUDE_ASM(const s32, "overlayScreens", func_800CF498);
+
+bool func_800CF498(u8 arg0) {
+
+    bool result = 0;
+    
+    switch (arg0) {
+
+        case 0:
+            if (checkLifeEventBit(0x17)) {
+                result = 1;
+            }
+            break;
+ 
+        case 1:
+             if (checkLifeEventBit(0x5C)) {
+                 result = 1;
+             }
+            break;
+        
+        case 2:
+             if (checkLifeEventBit(0x5D)) {
+                 result = 1;
+             }
+            break;
+        case 3:
+             if (!checkHaveTool(0x1D)) {
+                 result = 1;
+             }
+            break;
+        case 4:
+            break;
+    }
+
+    return result;
+    
+}
 
 // jtbl_80122298
 INCLUDE_ASM(const s32, "overlayScreens", func_800CF544);

@@ -30,9 +30,9 @@ extern u16 D_801890C8;
 // bss here or itemHandlers.c
 extern u8 D_80189836;
 
-// possible bss
+// possible bss s
 extern u8 gMaximumStamina;
-extern u8 gToolchestSlots[];  
+extern u8 gToolchestSlots[];   
 
 // data
 extern Vec3f playerDefaultStartingCoordinates[];
@@ -42,7 +42,7 @@ extern u8 playerDefaultStartingDirections[];
 // rodata
 extern s8 D_8011F3F0[12];
 extern s8 D_8011F3FC[12]; 
-
+ 
 
 //INCLUDE_ASM(const s32, "player", setupPlayerSprite);
 
@@ -721,7 +721,9 @@ void func_80069830(void) {
     Vec3f vec2;
 
     switch (gPlayer.action4) {
+
         case 0:
+
             func_8003019C(0, 0);
             func_80030240(0, 0);
             func_800302E4(0, 0);
@@ -735,7 +737,9 @@ void func_80069830(void) {
             func_8002F684(0, (gPlayer.direction + 8 - func_8003C1A4(0)) % 8);
             gPlayer.action2 = 2;
             break;
+
         case 1:
+
             if (gPlayer.unk_6F == 0) {
                 func_80038990(0, 0, 0);
                 gPlayer.direction = 5;
@@ -752,7 +756,9 @@ void func_80069830(void) {
                 gPlayer.unk_6F -= 1;
             }
             break;
+
         case 2:
+
             if (gPlayer.action3 == 0x3C) {
                 gPlayer.direction = 1;
                 gPlayer.action1 = 0xC;
@@ -763,13 +769,15 @@ void func_80069830(void) {
                 gPlayer.action3++;
             }
             break;
+
         case 3:
+
             if (gPlayer.unk_6F == 0) {
                 func_80038990(0, 1, 0);
                 setAudio(0x32);
                 gPlayer.direction = 0;
                 gPlayer.unk_6F = 0x12;
-                func_80028520(&vec2, 4, 0, 0);
+                func_80028520(&vec2, 4.0f, 0, 0);
                 gPlayer.currentCoordinates = vec2;
                 func_8002F684(0, (gPlayer.direction + 8 - func_8003C1A4(0)) % 8);
                 gPlayer.action2 = 2;
@@ -778,7 +786,9 @@ void func_80069830(void) {
                 gPlayer.unk_6F--;
             }
             break;
+
         case 4:
+
             if (gPlayer.unk_6F == 0) {
                 gPlayer.currentCoordinates.x = 0;
                 gPlayer.currentCoordinates.y = 0;
@@ -793,15 +803,19 @@ void func_80069830(void) {
                 gPlayer.action1 = 0;
                 gPlayer.action2 = 0;
                 toggleDailyEventBit(6);
+
                 if (!checkDailyEventBit(0x33)) {
                     gPlayer.fatigue[0] += adjustValue(gPlayer.fatigue[0], -10, 0x64);
                 }
                 setDailyEventBit(0x33);
+
             } else {
                 gPlayer.unk_6F--;
             }
+
             break;
     }
+
     func_8002FE10(0, gPlayer.currentCoordinates.x, 0, gPlayer.currentCoordinates.z, 1.0f);
 }
 

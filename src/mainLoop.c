@@ -60,14 +60,13 @@ void mainLoop(void) {
             // ?
             D_8020564C;
             
-            // reset tile flags
+            // reset bitmap flags
             func_80029CC8();
 
             mainLoopAudioHandler(); 
-            
             resetSpriteCounter();
-            // cutscenes 
-            func_80046D78(); 
+            mainLoopCutsceneHandler(); 
+
             // sprite graphics, collisions
             func_80033058(); 
             // tiling
@@ -143,7 +142,7 @@ int mainLoop(void) {
             
             resetSpriteCounter();
             // cutscenes 
-            func_80046D78(); 
+            mainLoopCutsceneHandler(); 
             // sprite graphics, collisions
             func_80033058(); 
             // tiling

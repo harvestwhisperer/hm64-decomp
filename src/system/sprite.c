@@ -3,6 +3,7 @@
 #include "system/sprite.h"
 
 #include "system/graphic.h"
+#include "system/worldGraphics.h"
 
 #include "mainproc.h"
 
@@ -19,7 +20,7 @@ extern u16 D_8021E6E6[2][0x80][0x20];
                
 // forward declarations
 Gfx* func_8002A66C(Gfx*, Bitmap*, u16);             
-bool func_8002ACA4(Bitmap*, Gfx*);       
+void func_8002ACA4(Bitmap* sprite, Gfx *dl);
 
 
 //INCLUDE_ASM(const s32, "system/sprite", initializeBitmaps);
@@ -32,7 +33,7 @@ void initializeBitmaps(void) {
         D_801F7110[i].flags = 0;
         D_801F7110[i].unk_54 = 0;
         D_801F7110[i].spriteNumber = 0;
-        D_801F7110[i].size = 0;
+        D_801F7110[i].unk_1A = 0;
         D_801F7110[i].unk_1C.x = 0;
         D_801F7110[i].unk_1C.y = 0;
         D_801F7110[i].unk_1C.z = 0;
@@ -60,43 +61,40 @@ void initializeBitmaps(void) {
     bitmapCounter = 0;
 }
 
-#ifdef PERMUTER
+//INCLUDE_ASM(const s32, "system/sprite", func_80029CC8);
+
 void func_80029CC8(void) {
 
-    u32 i;
+    int i = 0;
+    
     bitmapCounter = 0;
 
-    i = 0x3C28;
-
-    while (1) {
-        D_801F7110[i].flags = 0;
-        i -= 0x58;
-        if (i = 0) break;
-    };
+    while (i < MAX_BITMAPS) {
+        D_801F7110[i].flags = 0; 
+        i++;
+    } 
 }
-#else
-INCLUDE_ASM(const s32, "system/sprite", func_80029CC8);
-#endif
 
 //INCLUDE_ASM(const s32, "system/sprite", func_80029CF4);
 
-u16 func_80029CF4(u8 *timg, u8 *pal, u32 width, u32 height, u32 fmt, u32 flag, u32 arg6, u32 arg7, u16 flags) {
+// unused
+u16 func_80029CF4(u8 *timg, u8 *pal, s32 width, s32 height, s32 fmt, s32 size, u32 arg6, u32 arg7, u16 flags) {
     
     u16 result;
     
-    result = bitmapCounter;
-    
+    result = bitmapCounter;  
+     
     if (bitmapCounter < MAX_BITMAPS) {
         D_801F7110[bitmapCounter].timg = timg;
         D_801F7110[bitmapCounter].pal = pal;
         D_801F7110[bitmapCounter].width = width;
         D_801F7110[bitmapCounter].height = height;
         D_801F7110[bitmapCounter].fmt = fmt;
-        D_801F7110[bitmapCounter].flag = flag;
+        D_801F7110[bitmapCounter].pixelSize = size; 
         D_801F7110[bitmapCounter].flags = flags | 1;
         D_801F7110[bitmapCounter].unk_54 = 0;
         bitmapCounter++;
-    } else {
+    } else { 
         result = 0xFFFF;
     }
     
@@ -318,7 +316,7 @@ bool func_8002A2E0(u16 index, u16 arg1, u16 arg2) {
 
     bool result = 0;
     
-    if (index < 0xB0) {
+    if (index < MAX_BITMAPS) {
         if (D_801F7110[index].flags & 1) {
             D_801F7110[index].unk_50 = arg1;
             D_801F7110[index].unk_52 = arg2;
@@ -402,10 +400,9 @@ INCLUDE_RODATA(const s32, "system/sprite", D_8011ECE4);
 
 INCLUDE_ASM(const s32, "system/sprite", func_8002A410);
 
-// unused
 // matches but rodata issue
 /*
-Gfx* func_8002A410(Gfx* dl, u16 arg1) {
+inline Gfx* func_8002A410(Gfx* dl, u16 arg1) {
 
     switch (arg1) {
         case 0:
@@ -438,8 +435,42 @@ Gfx* func_8002A410(Gfx* dl, u16 arg1) {
 }
 */
 
-// unused
-INCLUDE_ASM(const s32, "system/sprite", func_8002A530);
+//INCLUDE_ASM(const s32, "system/sprite", func_8002A530);
+
+inline void func_8002A530(Vec3f* arg0, Bitmap* arg1) {
+    
+    s32 width;
+    s32 height;
+    f32 scaleX;
+    f32 scaleY;
+    s32 scaledWidth;
+    s32 scaledHeight;
+
+    width = arg1->width;
+    scaleX = arg1->scaling.x;
+    height = arg1->height;
+    scaleY = arg1->scaling.y;
+    
+    arg0->x = arg1->unk_1C.x;
+    arg0->y = arg1->unk_1C.y;
+    arg0->z = arg1->unk_1C.z;
+
+    scaledWidth = (width / 2) * scaleX;
+    scaledHeight  = (height / 2) * scaleY;
+
+    if (((arg1->unk_54 >> 3) & 3) == 1) {
+        arg0->x = arg1->unk_1C.x + scaledWidth;
+    }
+    if (((arg1->unk_54 >> 3) & 3) == 3) {
+        arg0->x = arg1->unk_1C.x - scaledWidth;
+    }
+    if (((arg1->unk_54 >> 5) & 3) == 1) {
+        arg0->y = arg1->unk_1C.y + scaledHeight;
+    }
+    if (((arg1->unk_54 >> 5) & 3) == 3) {
+        arg0->y = arg1->unk_1C.y - scaledHeight;
+    }
+}
 
 
 // func_8002A66C
@@ -486,11 +517,27 @@ INCLUDE_RODATA(const s32, "system/sprite", D_8011ED30);
 INCLUDE_RODATA(const s32, "system/sprite", D_8011ED34);
 
 // uses D_8021E6E0[2][]
-// param_1 = Gfx*
-// param_2 = Bitmap*
+// Gfx* func_8002A66C(Gfx* arg0, Bitmap* arg1, u16 arg2)
 INCLUDE_ASM(const s32, "system/sprite", func_8002A66C);
 
-INCLUDE_ASM(const s32, "system/sprite", func_8002ACA4);
+//INCLUDE_ASM(const s32, "system/sprite", func_8002ACA4);
+
+void func_8002ACA4(Bitmap* sprite, Gfx *dl) {
+
+    Vec3f vec;
+
+    u16 temp;
+
+    func_8002A530(&vec, sprite);
+
+    // maybe a ternary
+    temp = func_8002929C(dl, (sprite->flags & 0x78) | 0x80);
+    
+    func_800292EC(temp, vec.x, vec.y, vec.z);
+    func_80029330(temp, sprite->scaling.x, sprite->scaling.y, sprite->scaling.z);
+    func_80029374(temp, sprite->unk_34.x, sprite->unk_34.y, sprite->unk_34.z);
+   
+}
 
 #ifdef PERMUTER
 void func_8002AE58(void) {

@@ -188,39 +188,39 @@ volatile u8 func_80026CEC(s32 arg0, s32 arg1) {
 
 //INCLUDE_ASM(const s32, "system/graphic", func_80026E78);
 
-void func_80026E78(Bitmap *sprite, u16 *arg1, u16 *arg2) {
+void func_80026E78(Bitmap *sprite, u16 *timg, u16 *palette) {
     
     u16 temp1;
     u16 temp2;
     int temp3;
     u32 padding[10];
 
-    func_80026F30(sprite, arg2);
+    func_80026F30(sprite, palette);
     
-    sprite->timg = arg1 + 4;
+    sprite->timg = timg + 4;
     
-    temp1 = arg1[2];
+    temp1 = *(timg+2);
     temp3 = temp1;
-    sprite->width = (u8) temp1 << 8;
+    sprite->width = (u8)temp1 << 8;
     
     temp3 >>= 8;
     temp1 = temp3 | sprite->width;
-    sprite->width = temp1;
-    
-    temp1 = arg1[3];
-    sprite->height = (u8) temp1 << 8;
+    sprite->width = temp1;  
+     
+    temp1 = *(timg+3);
+    sprite->height = (u8)temp1 << 8;
     temp2 = (temp1 >> 8) | sprite->height;
     sprite->height = temp2;
     
-    switch (*(arg1 + 1) >> 4 & 0xF) {
+    switch (*(timg + 1) >> 4 & 0xF) {
         case 0:
-          sprite->fmt = 2;
-          sprite->flag = 1;
+          sprite->fmt = G_IM_FMT_CI;
+          sprite->pixelSize = G_IM_SIZ_8b;
           return;
         
         case 1:
-          sprite->fmt = 2;
-          sprite->flag = 0; 
+          sprite->fmt = G_IM_FMT_CI;
+          sprite->pixelSize = G_IM_SIZ_4b; 
     }
 }
 
@@ -235,21 +235,48 @@ void func_80026F30(Bitmap* sprite, u16* palette) {
 
     switch ((*(palette + 1) >> 4) & 0xF) {                           
         case 0:
-            sprite->fmt = 2;
-            sprite->flag = 1;
+            sprite->fmt = G_IM_FMT_CI;
+            sprite->pixelSize = G_IM_SIZ_8b;
             return;
         case 1:
-            sprite->fmt = 2;
-            sprite->flag = 0;
+            sprite->fmt = G_IM_FMT_CI;
+            sprite->pixelSize = G_IM_SIZ_4b;
             return;
         }
 }
 
-INCLUDE_ASM(const s32, "system/graphic", func_80026F88);
+//INCLUDE_ASM(const s32, "system/graphic", func_80026F88);
+
+Gfx* func_80026F88(Gfx* dl, Bitmap* sprite, u32 offset, u16 height) {
+    
+    switch (sprite->pixelSize) {
+        case G_IM_SIZ_4b:
+            gDPLoadTextureTile_4b(dl++, sprite->timg + offset, sprite->fmt, sprite->width, sprite->height, 0, 0, sprite->width - 1, height - 1, 0, G_TX_NOMIRROR | G_TX_WRAP, G_TX_NOMIRROR | G_TX_WRAP, G_TX_NOMASK, G_TX_NOMASK, G_TX_NOLOD, G_TX_NOLOD);        
+            gDPLoadTLUT_pal16(dl++, 0, sprite->pal);
+            break; 
+        case G_IM_SIZ_8b:
+            gDPLoadTextureTile(dl++, sprite->timg + offset, sprite->fmt, G_IM_SIZ_8b, sprite->width, sprite->height, 0, 0, sprite->width - 1, height - 1, sprite->pal, G_TX_NOMIRROR | G_TX_WRAP, G_TX_NOMIRROR | G_TX_WRAP, G_TX_NOMASK, G_TX_NOMASK, G_TX_NOLOD, G_TX_NOLOD);
+            gDPLoadTLUT_pal256(dl++, sprite->pal);
+            break;
+        case G_IM_SIZ_16b:
+            gDPLoadTextureBlock(dl++, sprite->timg + offset, sprite->fmt, G_IM_SIZ_16b, sprite->width, height, sprite->pal, G_TX_NOMIRROR | G_TX_WRAP, G_TX_NOMIRROR | G_TX_WRAP, G_TX_NOMASK, G_TX_NOMASK, G_TX_NOLOD, G_TX_NOLOD);
+            break;
+        case G_IM_SIZ_32b:
+            gDPLoadTextureBlock(dl++, sprite->timg + offset, sprite->fmt, G_IM_SIZ_32b, sprite->width, height, sprite->pal, G_TX_NOMIRROR | G_TX_WRAP, G_TX_NOMIRROR | G_TX_WRAP, G_TX_NOMASK, G_TX_NOMASK, G_TX_NOLOD, G_TX_NOLOD);
+            break;
+        default:
+            break;
+    }
+
+    return dl++;
+}
 
 // param1 = Mtx*
 // param1: 8021E6E0 + sizeof(Mtx) * offset = + 0x40 * n
 INCLUDE_ASM(const s32, "system/graphic", func_800276AC);
+
+// unused
+//static const u32 D_8011EC40[8] = { 0x10000000, 0x20000000, 0x00004000, 0x00000040, 0x00001188, 0x020712D0, 0x00000250, 0x021F12D0 };
 
 INCLUDE_RODATA(const s32, "system/graphic", D_8011EC40);
 
@@ -281,7 +308,56 @@ f32 cosfRadians(f32 angle) {
 }
 */
 
+#ifdef PERMUTER
+void func_80027950(f32 arg0, f32 arg1, f32 arg2, Vec3f* arg3, f32 arg4, f32 arg5, f32 arg6) {
+
+    f32 temp1;
+    f32 temp2;
+    f32 temp3;
+    f32 temp4;
+    f32 temp5;
+    f32 temp6;
+
+    f32 temp7;
+    f32 temp8;
+    f32 temp9;
+
+    f32 tempRadiansX = arg4*D_8011EC88;
+    f32 tempRadiansY = arg5*D_8011EC88;
+    f32 tempRadiansZ = arg6*D_8011EC88;
+
+    temp1 = sinf(tempRadiansX);
+    temp2 = cosf(tempRadiansX);
+    
+    temp3 = sinf(tempRadiansY);
+    temp4 = cosf(tempRadiansY);
+
+    temp5 = sinf(tempRadiansZ);
+    temp6 = cosf(tempRadiansZ);
+    
+    arg3->x = arg0;
+    arg3->y = arg1;
+    arg3->z = arg2;
+
+    if (tempRadiansZ != 0.0f) {
+        arg3->y = (arg3->y*temp5) + (arg3->x * temp5);
+        arg3->x = (-arg3->y * temp5) + (arg3->x * temp6);
+    }
+
+    if (tempRadiansY != 0.0f) {
+        arg3->x = (arg3->z * temp3) + (arg3->x * temp4);
+        arg3->z = (arg3->z * temp4) + (arg3->x * temp3);
+    }
+
+    if (tempRadiansX != 0.0f) {
+        arg3->z = (arg3->z * temp2) + (arg3->y * temp1);
+        arg3->y = (-arg3->z * temp1) + (arg3->y * temp2);
+    }
+    
+}
+#else
 INCLUDE_ASM(const s32, "system/graphic", func_80027950);
+#endif
 
 INCLUDE_ASM(const s32, "system/graphic", func_80027B74);
 
@@ -291,7 +367,13 @@ INCLUDE_ASM(const s32, "system/graphic", func_80027DC0);
 
 INCLUDE_ASM(const s32, "system/graphic", func_80027E10);
 
+#ifdef PERMUTER
+f32 func_800284E8(f32 arg0, f32 arg1, f32 arg2, f32 arg3, f32 arg4, f32 arg5, f32 arg6) {
+    return (arg3 * arg0) + (arg4 * arg1) + (arg5 * arg2) + arg6;
+}
+#else
 INCLUDE_ASM(const s32, "system/graphic", func_800284E8);
+#endif
 
 //INCLUDE_RODATA(const s32, "system/graphic", D_8011EC90);
 
@@ -411,7 +493,11 @@ void *func_800288A0(u16 arg0, u32 *arg1) {
   return res + *(arg1 + arg0);
 }
 
-INCLUDE_ASM(const s32, "system/graphic", func_800288B8);
+//INCLUDE_ASM(const s32, "system/graphic", func_800288B8);
+
+u8* func_800288B8(u16 arg0, u32 *arg1, u8 *arg2) {
+    return (u8*)arg1 + *(arg1 + *(arg0 + arg2 + 4));
+}
 
 //INCLUDE_ASM(const s32, "system/graphic", initRcp);
 

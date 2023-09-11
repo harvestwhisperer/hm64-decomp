@@ -61,7 +61,7 @@ void startGame(void) {
 
     gHour = 6;
 
-    setMainLoopCallbackFunctionIndex(2);
+    setMainLoopCallbackFunctionIndex(MAP_LOAD);
 }
 
 //INCLUDE_ASM(const s32, "gameStart", func_8004DFF8);
