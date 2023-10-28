@@ -1,4 +1,3 @@
-
 #ifndef _ITEM_HANDLERS_H_
 #define _ITEM_HANDLERS_H
 
@@ -30,13 +29,13 @@ typedef struct {
     u8 unk_F; // 37;
 } ToolUse;
 
-
 extern void func_800CF850();     
 extern void func_800D0318(); 
 extern u8 func_800D5308(u8 index, u8 arg1, u32 arg2, s32 arg3, s32 arg4);     
 extern u8 func_800D5390(u8 index, u8 arg1, u32 arg2, u16 arg3, u8 arg4);
-extern void func_800D5548(u8);            
+extern void func_800D5548(u8);           
 extern void func_800D55E4(u8, u8);  
+extern void func_800D5688(u8 index, u32 arg1, u32 arg2, u32 arg3); 
 extern u16 func_800D5A88(u16 arg0);         
 extern u8 func_800D5B00(u16 index);                          
 extern u8 func_800D5B18(u16 index);   
@@ -46,7 +45,6 @@ extern u16 func_800D5A6C(u16 index);
 extern bool func_800D5B30();
 extern void func_800D67FC(u8 index);
 extern void func_800D7010();  
-
 
 extern ToolStatus D_80204DF8[10];
 extern ToolUse D_80189828;

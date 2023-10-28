@@ -4,6 +4,7 @@
 
 #include "system/controller.h"
 #include "system/graphic.h"
+#include "system/mathUtils.h"
 #include "system/sprite.h"
 #include "system/tiles.h"
 
@@ -15,6 +16,7 @@
 #include "level.h"
 #include "mainproc.h"
 #include "mapObjects.h"
+#include "npc.h"
 #include "shop.h"
  
 // forward declaration
@@ -44,8 +46,6 @@ extern s8 D_8011F3F0[12];
 extern s8 D_8011F3FC[12]; 
  
 
-//INCLUDE_ASM(const s32, "player", setupPlayerSprite);
-
 static inline void resetAction() {
     gPlayer.action3 = 0;
     gPlayer.action4 = 0;
@@ -57,6 +57,8 @@ static inline void resetAction2() {
     gPlayer.action3 = 0;
     gPlayer.action4 = 0;
 }
+
+//INCLUDE_ASM(const s32, "player", setupPlayerSprite);
 
 void setupPlayerSprite(u16 arg0, u8 resetPlayer) {
  
@@ -440,7 +442,21 @@ void func_8006623C(void) {
 // D_8011F490
 INCLUDE_ASM(const s32, "player", func_800664C8);
 
-INCLUDE_ASM(const s32, "player", func_80066F98);
+//INCLUDE_ASM(const s32, "player", func_80066F98);
+
+void func_80066F98(void) {
+
+    func_8002FA2C(horseInfo.unk_14);
+
+    horseInfo.flags &= ~4;
+    horseInfo.flags |= 8;
+    gPlayer.flags |= 1;
+
+    setDailyEventBit(0x5C);
+ 
+    func_8002F684(0, (horseInfo.direction + 8 - func_8003C1A4(0)) % 8);
+    
+}
 
 //INCLUDE_ASM(const s32, "player", func_80067034);
 
@@ -479,7 +495,7 @@ void func_80067034(void) {
             
             horseInfo.coordinates = vec2;
             
-            horseInfo.unk_18 = (renderedSprites[PLAYER].direction + func_8003C1A4(0)) % 8;
+            horseInfo.direction = (renderedSprites[PLAYER].direction + func_8003C1A4(0)) % 8;
             horseInfo.location = gBaseMapIndex;
             horseInfo.flags &= ~0x8;            
             gPlayer.flags &= -2;
@@ -835,11 +851,50 @@ void func_80069C90(void) {
     }
 }
 
-INCLUDE_ASM(const s32, "player", func_80069CC4);
+//INCLUDE_ASM(const s32, "player", func_80069CC4);
+
+void func_80069CC4(void) {
+
+    if (gPlayer.action4 == 0) {
+        if (gPlayer.action3 == 0) {
+            gPlayer.currentStamina += adjustValue(gPlayer.currentStamina, func_800D5B00(gPlayer.unk_2C), gMaximumStamina);
+            gPlayer.fatigue[0] += adjustValue(gPlayer.fatigue[0], -func_800D5B18(gPlayer.unk_2C), 0x64);
+        }
+        
+        if (gPlayer.action3 == 0x1E) {
+            func_800D55E4(gPlayer.unk_2D, 1);
+            gPlayer.action4++;
+        }
+        
+        gPlayer.action3++;
+    }
+}
 
 void func_80069DA8(void) {}
 
-INCLUDE_ASM(const s32, "player", func_80069DB0);
+//INCLUDE_ASM(const s32, "player", func_80069DB0);
+
+void func_80069DB0(void) {
+
+    if (gPlayer.action4 == 2) {
+
+        if (!getRandomNumberInRange(0, 400)) {
+            gPlayer.action4 = 3;
+        }
+    }
+    
+    if (gPlayer.action4 && func_8004D3A4(CONTROLLER_1, BUTTON_B)) {
+        switch (gPlayer.action4) {
+            
+            case 3 ... 5:
+                gPlayer.action4 = 6;
+                break;
+            default:
+                gPlayer.action4 = 8;
+                break;
+        }
+    }
+}
 
 void func_80069E54(void) {}
 
@@ -855,27 +910,322 @@ void func_8006A2E0(void) {}
 
 INCLUDE_ASM(const s32, "player", func_8006A2E8);
 
-INCLUDE_ASM(const s32, "player", func_8006A714);
+static inline handleStopHolding() {
+    gPlayer.action3 = 0;
+    gPlayer.action4 = 0;
+    gPlayer.action1 = 0;
+    gPlayer.action2 = 0;
+    gItemBeingHeld = 0xFF;
+}
 
-INCLUDE_ASM(const s32, "player", func_8006A7B0);
+//INCLUDE_ASM(const s32, "player", func_8006A714);
 
-INCLUDE_ASM(const s32, "player", func_8006A848);
+void func_8006A714(void) {
+    
+    if (func_8002FECC(0) || gPlayer.action4 == 0) {
+        
+        if (gPlayer.action4 == 0) {
+            setSpriteAnimation(PLAYER, 0x1A5);
+            gPlayer.action4++;
+            return;
+        }
+        
+       handleStopHolding();
+    }
+}
 
-INCLUDE_ASM(const s32, "player", func_8006A8C4);
+//INCLUDE_ASM(const s32, "player", func_8006A7B0);
 
-INCLUDE_ASM(const s32, "player", func_8006A9A8);
+static inline updateAnimation(u16 animation) {
+    
+     if (gPlayer.action4 == 0) {
+        setSpriteAnimation(PLAYER, animation);
+        func_800D55E4(gPlayer.unk_2D, 0xD);
+        return;
+    }
+    
+    handleStopHolding();
+}
 
-INCLUDE_ASM(const s32, "player", func_8006AA9C);
+void func_8006A7B0(void) {
+    
+    if (func_8002FECC(0) || gPlayer.action4 == 0) {
+       updateAnimation(0x1A5);
+    }
+}
 
-INCLUDE_ASM(const s32, "player", func_8006AB90);
+//INCLUDE_ASM(const s32, "player", func_8006A848);
 
-INCLUDE_ASM(const s32, "player", func_8006AC4C);
+void func_8006A848(void) {
+    if (func_8002FECC(0) || gPlayer.action4 == 0) {
+        if (gPlayer.action4 == 0) {
+            setSpriteAnimation(PLAYER, 0x1AD);
+            return;
+        }
+        resetAction();
+    }
+}
 
-INCLUDE_ASM(const s32, "player", func_8006ADF4);
+//INCLUDE_ASM(const s32, "player", func_8006A8C4);
 
-INCLUDE_ASM(const s32, "player", func_8006AEEC);
+void func_8006A8C4(void) {
+    
+    if (func_8002FECC(0) || gPlayer.action4 == 0) {
+        switch (gPlayer.action4) {                       
+            case 0:
+                setSpriteAnimation(PLAYER, 0x1B7);
+                func_800D55E4(gPlayer.unk_2D, 8);
+                return;
+            case 1:
+                setSpriteAnimation(PLAYER, 0x1BF);
+                return;
+            case 2:
+                setSpriteAnimation(PLAYER, 0x1B7);
+                return;
+            default:
+                handleStopHolding();
+                break;
+            }
+    }
+}
 
-INCLUDE_ASM(const s32, "player", func_8006AFE4);
+//INCLUDE_ASM(const s32, "player", func_8006A9A8);
+
+void func_8006A9A8(void) {
+    
+    if (func_8002FECC(0) || gPlayer.action4 == 0) {
+        switch (gPlayer.action4) {       
+            case 0:
+                setSpriteAnimation(PLAYER, 0x18);
+                return;
+            case 1:
+                func_800D55E4(gPlayer.unk_2D, 0xA);
+                gPlayer.action3 = 0;
+                gPlayer.action4++;
+                return;
+            case 2:
+                func_8002F2FC(0, 0x1B5);
+                return;
+            default:
+                handleStopHolding();
+                break;
+            }
+    }
+}
+
+//INCLUDE_ASM(const s32, "player", func_8006AA9C);
+
+void func_8006AA9C(void) {
+
+    if (func_8002FECC(0) || gPlayer.action4 == 0) {
+        
+        if (gPlayer.action4 == 0) {
+            
+            switch (gPlayer.fatigue[1]) {       
+                case 1:
+                    func_8002F2FC(0, 0x1D0);
+                    break;
+                case 2:
+                    func_8002F2FC(0, 0x1D1);
+                    break;
+                case 3:
+                    func_8002F2FC(0, 0x1D2);
+                    break;
+                case 4:
+                    func_8002F2FC(0, 0x1D3);
+                    break;
+            }
+    
+            gPlayer.action4++;
+            return;
+        }
+
+        resetAction();
+           
+    }
+}
+
+//INCLUDE_ASM(const s32, "player", func_8006AB90);
+
+void func_8006AB90(void) {
+
+    if (func_8002FECC(0) || gPlayer.action4 == 0) {
+        
+        if (gPlayer.action4 == 0) {
+            switch (gPlayer.fatigue[2]) {                   
+                case 1:
+                    func_8002F2FC(0, 0x299);
+                    break;
+                case 2:
+                    func_8002F2FC(0, 0x29A);
+                    break;
+                case 3:
+                    break;
+                }
+            
+            gPlayer.action4++;
+            return;
+        }
+        
+        resetAction();
+    }
+}
+
+//INCLUDE_ASM(const s32, "player", func_8006AC4C);
+
+void func_8006AC4C(void) {
+
+    if (func_8002FECC(0) || gPlayer.action4 == 0) {
+
+        switch (gPlayer.action4) {         
+
+            case 1:
+
+                func_8002F2FC(0, 0x1D4);
+                gPlayer.action4++;
+
+                if (checkLifeEventBit(MARRIED) && (19 < gHour && gHour < 22)) {
+                    switch (gWife) {
+                        case MARIA:
+                            npcInfoArray[0].movingFlag = 4;
+                            break;
+                        case POPURI:
+                            npcInfoArray[1].movingFlag = 4;
+                            break;
+                        case ELLI:
+                            npcInfoArray[2].movingFlag = 4;
+                            break;
+                        case ANN:
+                            npcInfoArray[3].movingFlag = 4;
+                            break;
+                        case KAREN:
+                            npcInfoArray[4].movingFlag = 4;
+                            break;
+                    }
+                }
+
+                break;
+
+            case 2:
+                func_8002F2FC(0, 0x1D5);
+                gPlayer.action4++;
+                break;
+
+            case 3:
+                func_8002F2FC(0, 0x1D6);
+                gPlayer.action4++;
+                break;             
+
+            default:
+                if (gPlayer.action4 >= 10) {
+                    func_8005C940(8, 0xD);
+                    return;
+                }
+                gPlayer.action4++;
+                break;
+         }
+    }
+}
+
+//INCLUDE_ASM(const s32, "player", func_8006ADF4);
+
+// napping/idle animation
+void func_8006ADF4(void) {
+
+    if (func_8002FECC(0) || gPlayer.action4 == 0) {
+
+        switch (gPlayer.action4) { 
+            case 0:
+                func_8002F2FC(0, 0x1E0);
+                gPlayer.action4++;
+                break;
+            case 1:
+                func_8002F2FC(0, 0x1E1);
+                gPlayer.action4++;
+                break;
+            case 2:
+                // counter until napping animation
+                D_802226E0++;
+                if (D_802226E0 == 1800) {
+                    func_8002F2FC(0, 0x1E2);
+                    gPlayer.action4++;
+                }
+                break;
+            case 4:
+                func_8002F2FC(0, 0x1E3);
+                gPlayer.action4++;
+                break;
+            default:
+                resetAction();
+                D_802226E0 = 0;
+                break;
+            case 3:
+                break;
+        } 
+    }
+}
+
+//INCLUDE_ASM(const s32, "player", func_8006AEEC);
+
+void func_8006AEEC(void) {
+    
+    if (func_8002FECC(0) || gPlayer.action4 == 0) {
+
+        switch (gPlayer.action4) { 
+            case 0:
+                setSpriteAnimation(PLAYER, 0x1B7);
+                break;
+            case 1:
+                setSpriteAnimation(PLAYER, 0x1BF);
+                gPlayer.action4++;
+                break;
+            case 3:
+                setSpriteAnimation(PLAYER, 0x1BF);
+                break;            
+            case 4:
+                setSpriteAnimation(PLAYER, 0x1B7);
+                gPlayer.action4++;
+                break;           
+            default:
+                resetAction();
+        }
+    }
+}
+
+//INCLUDE_ASM(const s32, "player", func_8006AFE4);
+
+void func_8006AFE4(void) {
+    
+    if (func_8002FECC(0) || gPlayer.action4 == 0) {
+
+        switch (gPlayer.action4) {  
+            case 0:
+                if (!func_800DCAA0(gPlayer.unk_6B)) {
+                    setSpriteAnimation(PLAYER, 0);
+                    break;
+                }
+                setSpriteAnimation(PLAYER, 0x1AD);
+                break;
+            case 1:
+                func_800DC750(gPlayer.unk_6B);
+                gPlayer.action3 = 0;
+                func_80059334();
+                break;
+            case 2:
+                if (func_800DCAA0(gPlayer.unk_6B)) {
+                    setSpriteAnimation(PLAYER, 0x1AD);
+                }
+                break;
+            case 3:
+                if (func_800DCAA0(gPlayer.unk_6B)) {
+                    setSpriteAnimation(PLAYER, 0x1AD);
+                }
+                break;
+            default:
+                resetAction();
+        }
+    }
+}
 
 INCLUDE_ASM(const s32, "player", func_8006B104);
 

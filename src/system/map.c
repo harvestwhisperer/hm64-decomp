@@ -3,6 +3,8 @@
 #include "system/map.h"
 
 #include "system/graphic.h"
+#include "system/mathUtils.h"
+#include "system/worldGraphics.h"
 
 #include "mainproc.h"
 
@@ -16,7 +18,6 @@ u8* func_80037650(u16 arg0, void *arg1);
 bool func_80037668(MainMap*, u16, f32, f32, f32);
 Gfx* func_80037BC4(Gfx*, MainMap*, u16, u16);
 s16 func_80037F08(Gfx*, MainMap*, UnknownMapStruct5*);  
-Gfx* func_80037BC4(Gfx*, MainMap*, u16, u16);
 Gfx* func_800383B0(Gfx* arg0, MainMap* arg1, u16 arg2, f32 arg3, f32 arg4, f32 arg5);
 void func_8003851C(MainMap*);              
 void func_80038BC4(MainMap*);                             
@@ -163,7 +164,21 @@ bool func_80034090(u16 mapIndex) {
     return result;
 }
 
-INCLUDE_ASM(const s32, "system/map", func_8003423C);
+//INCLUDE_ASM(const s32, "system/map", func_8003423C);
+
+bool func_8003423C(u16 mapIndex, f32 arg1, f32 arg2, f32 arg3) {
+
+    bool result = 0;
+    
+    if (mapIndex == 0 && (mainMap[mapIndex].mapStruct8.flags & 1)) {
+        result = 1;
+        mainMap[mapIndex].mapStruct7.unk_0.x = arg1;
+        mainMap[mapIndex].mapStruct7.unk_0.y = arg2;
+        mainMap[mapIndex].mapStruct7.unk_0.z = arg3;
+    }
+    
+    return result;
+}
 
 //INCLUDE_ASM(const s32, "system/map", func_80034298);
 
@@ -181,7 +196,21 @@ bool func_80034298(u16 mapIndex, f32 arg1, f32 arg2, f32 arg3) {
     return result;
 }
 
-INCLUDE_ASM(const s32, "system/map", func_800342F4);
+//INCLUDE_ASM(const s32, "system/map", func_800342F4);
+
+bool func_800342F4(u16 mapIndex, f32 arg1, f32 arg2, f32 arg3) {
+
+    bool result = 0;
+    
+    if (mapIndex == 0 && (mainMap[mapIndex].mapStruct8.flags & 1)) {
+        result = 1;
+        mainMap[mapIndex].mapStruct7.angles.x = arg1;
+        mainMap[mapIndex].mapStruct7.angles.y = arg2;
+        mainMap[mapIndex].mapStruct7.angles.z = arg3;
+    }
+    
+    return result;
+}
 
 //INCLUDE_ASM(const s32, "system/map", func_80034350);
 
@@ -240,17 +269,141 @@ bool func_800343FC(u16 mapIndex, u8 arg1, u8 arg2, u8 arg3, u8 arg4, f32 arg5, f
     
 }
 
-INCLUDE_ASM(const s32, "system/map", func_800344E8);
+//INCLUDE_ASM(const s32, "system/map", func_800344E8);
 
-INCLUDE_ASM(const s32, "system/map", func_80034568);
+bool func_800344E8(u16 mapIndex, f32 arg1, f32 arg2, f32 arg3) {
 
-INCLUDE_ASM(const s32, "system/map", func_800345E8);
+    bool result = 0;
+    
+    if (mapIndex == 0 && (mainMap[mapIndex].mapStruct8.flags & 1)) {
+        result = 1;
+        mainMap[mapIndex].mapStruct7.unk_0.x += arg1;
+        mainMap[mapIndex].mapStruct7.unk_0.y += arg2;
+        mainMap[mapIndex].mapStruct7.unk_0.z += arg3;
+    }
+    
+    return result;
+}
 
-INCLUDE_ASM(const s32, "system/map", func_80034668);
+//INCLUDE_ASM(const s32, "system/map", func_80034568);
+
+bool func_80034568(u16 mapIndex, f32 arg1, f32 arg2, f32 arg3) {
+
+    bool result = 0;
+    
+    if (mapIndex == 0 && (mainMap[mapIndex].mapStruct8.flags & 1)) {
+        result = 1;
+        mainMap[mapIndex].mapStruct7.unk_C.x += arg1;
+        mainMap[mapIndex].mapStruct7.unk_C.y += arg2;
+        mainMap[mapIndex].mapStruct7.unk_C.z += arg3;
+    }
+    
+    return result;
+}
+
+//INCLUDE_ASM(const s32, "system/map", func_800345E8);
+
+bool func_800345E8(u16 mapIndex, f32 arg1, f32 arg2, f32 arg3) {
+
+    bool result = 0;
+    
+    if (mapIndex == 0 && (mainMap[mapIndex].mapStruct8.flags & 1)) {
+        result = 1;
+        mainMap[mapIndex].mapStruct7.angles.x += arg1;
+        mainMap[mapIndex].mapStruct7.angles.y += arg2;
+        mainMap[mapIndex].mapStruct7.angles.z += arg3;
+    }
+    
+    return result;
+}
+
+//INCLUDE_ASM(const s32, "system/map", func_80034668);
+
+bool func_80034668(u16 mapIndex, s8 arg1, s8 arg2, s8 arg3, s8 arg4) {
+
+    bool result = 0;
+    
+    if (mapIndex == 0 && (mainMap[mapIndex].mapStruct8.flags & 1)) {
+        result = 1;
+        mainMap[mapIndex].mapStruct7.groundRgba.r += arg1;
+        mainMap[mapIndex].mapStruct7.groundRgba.g += arg2;
+        mainMap[mapIndex].mapStruct7.groundRgba.b += arg3;
+        mainMap[mapIndex].mapStruct7.groundRgba.a += arg4;
+    }
+    
+    return result;
+}
 
 INCLUDE_ASM(const s32, "system/map", func_80034738);
 
-INCLUDE_ASM(const s32, "system/map", func_80034A6C);
+// bool func_80034738(u16 arg0, u8 arg1, u8 arg2, u8 arg3, u8 arg4, s16 arg5) {
+
+//     bool result;
+
+//     f32 tempF;
+    
+//     s16 temp = getAbsoluteValue(arg5);
+
+//     result = 0;
+
+//     if (arg0 == 0 && (mainMap[arg0].mapStruct8.flags & 1)) {
+
+//         mainMap[arg0].mapStruct7.defaultRgba.r = arg1;
+//         mainMap[arg0].mapStruct7.defaultRgba.g = arg2;
+//         mainMap[arg0].mapStruct7.defaultRgba.b = arg3;
+//         mainMap[arg0].mapStruct7.defaultRgba.a = arg4;
+        
+//         handleRgba(arg0, temp, tempF);
+
+//         result = 1;
+//     }
+    
+
+//     return result;
+// }
+
+//INCLUDE_ASM(const s32, "system/map", func_80034A6C);
+
+bool func_80034A6C(u16 mapIndex, s8 arg1, s8 arg2, s8 arg3, u8 arg4, f32 arg5, f32 arg6, f32 arg7) {
+
+    bool result = 0; 
+
+    if (mapIndex == 0 && (mainMap[mapIndex].mapStruct8.flags & 1)) { 
+
+        mainMap[mapIndex].mapStruct2.unk_48 += arg1;
+
+        mainMap[mapIndex].mapStruct2.unk_0.y = 0;
+        mainMap[mapIndex].mapStruct2.unk_C.y = 0;
+        mainMap[mapIndex].mapStruct2.unk_18.y = 0;
+        mainMap[mapIndex].mapStruct2.unk_24.y = 0;
+        
+        mainMap[mapIndex].mapStruct2.unk_49 += arg2;
+        mainMap[mapIndex].mapStruct2.unk_4A += arg3;
+        mainMap[mapIndex].mapStruct2.unk_4B += arg4;
+
+        mainMap[mapIndex].mapStruct2.unk_3C.x += arg5;
+        mainMap[mapIndex].mapStruct2.unk_3C.y += arg6;
+        mainMap[mapIndex].mapStruct2.unk_3C.z += arg7;
+
+        mainMap[mapIndex].mapStruct2.unk_0.x += arg1;
+        mainMap[mapIndex].mapStruct2.unk_0.z += arg2;
+
+        mainMap[mapIndex].mapStruct2.unk_C.x += arg1;
+        mainMap[mapIndex].mapStruct2.unk_C.z += arg2;
+
+        mainMap[mapIndex].mapStruct2.unk_18.x += arg1;
+        mainMap[mapIndex].mapStruct2.unk_18.z += arg2;
+
+        mainMap[mapIndex].mapStruct2.unk_24.x += arg1;
+        mainMap[mapIndex].mapStruct2.unk_24.z += arg2;
+        
+        result = 1;
+    
+    }
+
+    return result;
+    
+}
 
 //INCLUDE_ASM(const s32, "system/map", func_80034C40);
 
@@ -305,10 +458,40 @@ bool func_80034D64(u16 mapIndex, u8 arg1, u16 arg2, u16 arg3) {
         
 }
 
-INCLUDE_ASM(const s32, "system/map", func_80034DC8);
+//INCLUDE_ASM(const s32, "system/map", func_80034DC8);
 
-INCLUDE_ASM(const s32, "system/map", func_80034E64);
- 
+bool func_80034DC8(u16 mapIndex, u8 arg1, u16 arg2) {
+
+    bool result = 0; 
+
+    if (mapIndex == 0 && (mainMap[mapIndex].mapStruct8.flags & 1)) { 
+        func_8002BAD8(mainMap[mapIndex].mapStruct4[arg1].spriteIndex);
+        mainMap[mapIndex].mapStruct4[arg1].unk_E = arg2;
+        mainMap[mapIndex].mapStruct4[arg1].flags &= ~2;
+        result = 1;
+    }
+
+    return result;
+    
+}
+
+//INCLUDE_ASM(const s32, "system/map", func_80034E64);
+
+bool func_80034E64(u16 mapIndex, u8 arg1) {
+
+    bool result = 0; 
+
+    if (mapIndex == 0 && (mainMap[mapIndex].mapStruct8.flags & 1)) { 
+        if (mainMap[mapIndex].mapStruct4[arg1].flags & 2) {
+            func_8002B6B8(mainMap[mapIndex].mapStruct4[arg1].spriteIndex);
+            mainMap[mapIndex].mapStruct4[arg1].flags = 0;
+            result = 1;
+        }
+    }
+
+    return result;
+    
+}
 INCLUDE_ASM(const s32, "system/map", func_80034EF0);
   
 //INCLUDE_ASM(const s32, "system/map", func_80035004);
@@ -375,7 +558,20 @@ bool func_80035914(u16 mapIndex, f32 arg1, f32 arg2) {
     return result;
 }
  
-INCLUDE_ASM(const s32, "system/map", func_800359C8);
+//INCLUDE_ASM(const s32, "system/map", func_800359C8);
+
+Vec3f* func_800359C8(Vec3f* arg0, MainMap* arg1, f32 arg2, f32 arg3) {
+    
+    Vec3f vec;
+
+    vec.x = (arg2 + arg1->mapStruct8.unk_0) / arg1->mapStruct1.unk_8;
+    vec.y = 0;
+    vec.z = (arg3 + arg1->mapStruct8.unk_4) / arg1->mapStruct1.unk_9;
+
+    *arg0 = vec;
+    
+    return arg0;
+}
 
 INCLUDE_ASM(const s32, "system/map", func_80035A58);
 
@@ -720,9 +916,9 @@ INCLUDE_ASM(const s32, "system/map", func_800387F8);
 
 //INCLUDE_ASM(const s32, "system/map", func_80038810);
 
-u8 func_80038810(u16 mapIndex) {
+bool func_80038810(u16 mapIndex) {
 
-    u8 result;
+    bool result;
 
     if (mapIndex == 0 && (mainMap[mapIndex].mapStruct8.flags & 1)) {
         if (!(mainMap[mapIndex].mapStruct8.flags & 2)) {
@@ -735,9 +931,59 @@ u8 func_80038810(u16 mapIndex) {
     return result;
 }
 
-INCLUDE_ASM(const s32, "system/map", func_8003886C);
+//INCLUDE_ASM(const s32, "system/map", func_8003886C);
 
-INCLUDE_ASM(const s32, "system/map", func_800388A4);
+bool func_8003886C(u16 mapIndex) {
+    
+    bool result  = 0;
+
+    if (mapIndex == 0 && (mainMap[mapIndex].mapStruct8.flags & 1)) {
+        mainMap[mapIndex].mapStruct8.flags &= ~2;
+        result = 1;
+    }
+    
+    return result;
+}
+
+//INCLUDE_ASM(const s32, "system/map", func_800388A4);
+
+// param_2 = mainMap.unk_20 (set from gTileContext in func_80033A90, called by func_8003BC50)
+u8 *func_800388A4(u16 arg0, u8 *arg1) {
+    
+    u32 temp1;
+    u32 temp2;
+
+    u16 i;
+    
+    arg1 += 6;
+    
+    i = 0;
+    
+    if (arg0) {
+
+        do {
+            
+            arg1 += 2;
+            
+            temp1 = *arg1;
+            
+            arg1++;
+            
+            temp2 = *arg1;
+            temp2 = temp2 * temp1;
+
+            arg1++;
+            
+            arg1 += temp2 * 2;
+            arg1 += temp2;
+
+            i++;
+            
+        } while (i < arg0);
+    }
+    
+    return arg1;
+}
 
 INCLUDE_ASM(const s32, "system/map", func_80038900);
 
@@ -769,7 +1015,21 @@ INCLUDE_ASM(const s32, "system/map", func_80039990);
 
 //INCLUDE_ASM(const s32, "system/map", func_80039E00);
 
-INCLUDE_ASM(const s32, "system/map", func_80039E20);
+//INCLUDE_ASM(const s32, "system/map", func_80039E20);
+
+void func_80039E20(u16 arg0, Gfx* arg1) {
+
+    u16 temp = func_8002929C(arg1, 0x28);
+    
+    func_800292EC(temp, mainMap[arg0].mapStruct7.unk_0.x + mainMap[arg0].mapStruct2.unk_3C.x, 
+        mainMap[arg0].mapStruct7.unk_0.y + mainMap[arg0].mapStruct2.unk_3C.y, 
+        mainMap[arg0].mapStruct7.unk_0.z + mainMap[arg0].mapStruct2.unk_3C.z);
+
+    func_80029330(temp, mainMap[arg0].mapStruct7.unk_C.x, mainMap[arg0].mapStruct7.unk_C.y, mainMap[arg0].mapStruct7.unk_C.z);
+    
+    func_80029374(temp, mainMap[arg0].mapStruct7.angles.x, mainMap[arg0].mapStruct7.angles.y, mainMap[arg0].mapStruct7.angles.z);
+}
+
 
 INCLUDE_ASM(const s32, "system/map", func_80039F58);
 
@@ -831,7 +1091,22 @@ Gfx* func_8003ACA8(Gfx* arg0, MainMap* arg1, MapBitmap* arg2, u16 arg3) {
 
 INCLUDE_ASM(const s32, "system/map", func_8003AF58);
 
-INCLUDE_ASM(const s32, "system/map", func_8003B100);
+//INCLUDE_ASM(const s32, "system/map", func_8003B100);
+
+void func_8003B100(MainMap* map, f32 arg1, f32 arg2, f32 arg3, f32 arg4, f32 arg5, Gfx* dl) {
+
+    Vec3f vec;
+    
+    f32 temp_f20;
+    f32 temp_f22;
+    f32 temp_f24;
+
+    temp_f22 = (arg1 + map->mapStruct8.unk_0 + map->mapStruct2.unk_3C.x) - arg4;
+    temp_f24 = arg2 + map->mapStruct2.unk_3C.y;
+    temp_f20 = (arg3 + map->mapStruct8.unk_4 + map->mapStruct2.unk_3C.z) - arg5;
+    
+    func_800292EC(func_8002929C(dl, 8), temp_f22, temp_f24, temp_f20);
+}
 
 // main loop function
 INCLUDE_ASM(const s32, "system/map", func_8003B1BC);

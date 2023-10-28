@@ -131,13 +131,13 @@ typedef struct {
 
 // D_801580A4
 typedef struct {
-    Vec3f unk_0;
-    Vec3f unk_C; 
-    Vec3f angles; // 0x18
-    Vec4f rgba; // 0x24
-    Vec4f groundRgba; // 0x34
-    Vec4f defaultRgba;
-    Vec4f unk_60;
+    Vec3f unk_0; // 0xA4
+    Vec3f unk_C; // 0xB0
+    Vec3f angles; // 0xBC
+    Vec4f rgba; // 0xC8
+    Vec4f groundRgba; // 0xD8
+    Vec4f defaultRgba; // 0xE8
+    Vec4f unk_60; // 0xF8
 } UnknownMapStruct7;
 
 // 0x1A608
@@ -202,14 +202,14 @@ typedef struct  {
 
 extern void func_800337D0(void);    
 extern bool func_80033A90(u16, u16*, void*, void*, void *, void*, void*, void*, void*, void*, void*);
-extern void func_8003423C(u16, f32, f32, f32);
+extern bool func_8003423C(u16, f32, f32, f32);
 extern bool func_80034298(u16, f32, f32, f32);   
-extern void func_800342F4(u16, f32, f32, f32);     
+extern bool func_800342F4(u16, f32, f32, f32);     
 extern bool func_80034350(u16 arg0, u8 arg1, u8 arg2, u8 arg3, u8 arg4);
 extern bool func_80034C40(u16 arg0, u8 arg1, u16 arg2, u16 arg3, f32 arg4, f32 arg5, f32 arg6, u8 arg7, u8 arg8, u8 arg9, u8 argA);
 extern bool func_80034D64(u16 arg0, u8 arg1, u16 arg2, u16 arg3);
 extern bool func_80034DC8(u16, u8, u16);
-extern bool func_80034E64(u8, u8);     
+extern bool func_80034E64(u16, u8);     
 extern bool func_80034EF0(u16, u8, u8, void*, void*, void*, void*, void*, void*, void*, u8); 
 extern bool func_80035004(u16 arg0, u16 arg1, u8 arg2, u8 arg3); 
 extern bool func_80035054(u16 mapIndex, u16 bitmapIndex, u16 arg2, f32 arg3, f32 arg4, f32 arg5);
@@ -221,7 +221,7 @@ extern void func_80036FA0(u16);
 extern bool func_80038990(u16, u16, u8);       
 extern bool func_80038B58(u16, u16, u8, u8);   
 extern void func_8003A1BC(void);
-
+Vec3f* func_800359C8(Vec3f* arg0, MainMap* arg1, f32 arg2, f32 arg3);
 
 extern MainMap mainMap[1];
 

@@ -151,7 +151,7 @@ void initializeHorse(void) {
     horseInfo.location = FARM;
     horseInfo.coordinates.y = 0;
     horseInfo.unk_17 = 0;
-    horseInfo.unk_18 = 0;
+    horseInfo.direction = 0;
     horseInfo.unk_19 = 0;
     horseInfo.unk_1A = 0;
     horseInfo.unk_1B = 0;
@@ -203,7 +203,7 @@ void setHorseLocation(u8 mapIndex) {
     if (horseInfo.flags & 1 && (mapIndex == 0xFF || horseInfo.location == mapIndex)) {
         horseInfo.coordinates.y = 0;
         horseInfo.location = FARM;
-        horseInfo.unk_18 = 0;
+        horseInfo.direction = 0;
         horseInfo.coordinates.x = -240.0f;
         horseInfo.coordinates.z = -384.0f;
     }
@@ -330,8 +330,8 @@ void func_80093B80(void) {
             horseInfo.flags &= ~(0x20 | 0x80);
         }
         
-        func_8002F684(horseInfo.unk_14, (horseInfo.unk_18 + 8 - func_8003C1A4(0)) % 8);
-        func_80028520(&vec, horseInfo.unk_19, horseInfo.unk_18, 0);
+        func_8002F684(horseInfo.unk_14, (horseInfo.direction + 8 - func_8003C1A4(0)) % 8);
+        func_80028520(&vec, horseInfo.unk_19, horseInfo.direction, 0);
         func_8002FE10(horseInfo.unk_14, vec.x,vec.y, vec.z, horseInfo.unk_19);
 
     } 

@@ -75,7 +75,7 @@ typedef struct {
 	u16 unk_14; // 14
 	u8 location; // 16
 	u8 unk_17; // 17
-	u8 unk_18; // 18
+	u8 direction; // 18
 	u8 unk_19; // 19
 	u8 unk_1A; // 1A
 	u8 unk_1B; // 1B
@@ -113,7 +113,6 @@ typedef struct {
     u8 unk_17; // 1F
     u16 flags; // 20
 } UnknownAnimalStruct;
-
 
 extern bool func_80086764();    
 extern void func_800876D0();     
@@ -161,7 +160,6 @@ extern void adjustHorseAffection(s8 value);
 extern void setAnimalLocations(u8);  
 extern void setDogLocation(u8);        
 extern void setHorseLocation(u8);     
-
 
 extern UnknownAnimalStruct D_8016FB08[];
 extern Chicken gChickens[MAX_CHICKENS];

@@ -295,7 +295,7 @@ void initializeGameVariables(void) {
     horseInfo.coordinates.z = 0;
     horseInfo.location = 0x52;
     horseInfo.unk_17 = 0;
-    horseInfo.unk_18 = 0;
+    horseInfo.direction = 0;
     horseInfo.unk_19 = 0;
     horseInfo.unk_1A = 0;
     horseInfo.unk_1B = 0;
@@ -804,6 +804,57 @@ void func_800527D4(void) {
 */
 
 INCLUDE_ASM(const s32, "initialize", func_80053088);
+
+// rodata issue
+/*
+void func_80053088(void) {
+
+    u32 ptr = &fontTextureStart;
+    u32 ptr2 = &fontTextureEnd;
+    u32 ptr3 = &fontPalette1Start;
+    u32 ptr4 = &fontPalette1End;
+    u32 ptr5 = &fontPalette2Start;
+    u32 ptr6 = &fontPalette2End;
+
+    func_800535DC();
+    func_80054180();
+    func_8003FAE8(&D_8011BD18);
+
+    nuPiReadRom(ptr, (void*)0x802FF000, ptr2 - ptr);
+    nuPiReadRom(ptr3, (void*)0x8030A000, ptr4 - ptr3);
+    nuPiReadRom(ptr5, (void*)0x8030A400, ptr6 - ptr5);
+
+    func_8003F80C(0, 0x76, &dialogueWindowTextureStart, &dialogueWindowTextureEnd, &dialogueWindowPaletteStart, &dialogueWindowPaletteEnd, 0x80238800, 0x8023B100, 0x8023B200, 0x8023B300, 0, 0, 1, -24.0f, 0, 0);
+    func_8003F80C(1, 0x76, &dialogueWindowTextureStart, &dialogueWindowTextureEnd, &dialogueWindowPaletteStart, &dialogueWindowPaletteEnd, 0x80238800, 0x8023B100, 0x8023B200, 0x8023B300, 0, 0, 0, 0, 0, 0);
+    func_8003F80C(2, 0x77, &dialogueWindowTextureStart, &dialogueWindowTextureEnd, &dialogueWindowPaletteStart, &dialogueWindowPaletteEnd, 0x80238800, 0x8023B100, 0x8023B200, 0x8023B300, 0, 1, 0, 0, 0, 0);
+
+    func_8003F910(0, 0x78, &dialogueIconsTextureStart, &dialogueIconsTextureEnd, &dialogueIconsPaletteStart, &dialogueIconsPaletteEnd, (void* )0x8023B400, (void* )0x8023CC00, (void* )0x8023CE00, 0x8023D200, 0, 4, 0xFE, 106.0f, -15.0f, 0.0f);
+    func_8003F910(1, 0x78, &dialogueIconsTextureStart, &dialogueIconsTextureEnd, &dialogueIconsPaletteStart, &dialogueIconsPaletteEnd, (void* )0x8023B400, (void* )0x8023CC00, (void* )0x8023CE00, 0x8023D200, 0, 0xD, 0xFE, 106.0f, -15.0f, 0.0f);
+    func_8003FA1C(0, 0x75, &characterDialogueIconsTextureStart, &characterDialogueIconsTextureEnd, &characterDialogueIconsPaletteStart, &characterDialogueIconsPaletteEnd, &characterDialogueIconsIndexStart, &characterDialogueIconsIndexEnd, 0x8023D300, 0x8023DB00, 0x8023E300, 0x8023EF00, 0x8023FF00, 0x80240000, -139.0f, 1.0f, 0);
+ 
+    func_8003DBE8(0, 0x8030B000);
+    func_8003F54C(0, 24.0f, -64.0f, 352.0f);
+    func_8003F5D0(0, 0x10, 3);
+    func_8003F630(0, 0, 2);
+    func_8003F464(0, 0xE, 0xE, 0x802FF000, 0x8030A000);
+    func_8003F360(0, -4, 0);
+    func_8003F690(0, 0, 0, 0);
+    func_8003F4E0(0, 0x57, 8, 1);
+    func_8003FAF8(0, 0xC000);
+    func_8003FB4C(0, 1);
+    func_8003DBE8(1, 0x8030B400);
+    func_8003F54C(1, 64.0f, 32.0f, 352.0f);
+    func_8003F630(1, 0, 2);
+    func_8003F464(1, 0xE, 0xE, 0x802FF000, 0x8030A400);
+    func_8003F5D0(1, 0xB, 4);
+    func_8003F360(1, -4, 3);
+    func_8003FAF8(1, 0xC000);
+    func_8003FB4C(1, 2);
+    func_8003F690(1, 2, 0xFF, 0xFF);
+    func_8003F4E0(1, 0xFF, 0xFF, 0xFF);
+    
+}
+*/
 
 // dialogues
 INCLUDE_ASM(const s32, "initialize", func_800535DC);

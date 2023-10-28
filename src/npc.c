@@ -21,9 +21,6 @@ u16 D_801FBE2E;
 u16 D_801FBFBE;
 u16 D_801FBFE6;
 
-// shared global: animals, npc, cutscene, renderedSprite 
-extern u16 D_801FC1B8[30][54];
-
 // data
 extern u16 D_80114960[30];
 

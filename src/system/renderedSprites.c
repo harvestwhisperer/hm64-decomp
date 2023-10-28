@@ -14,6 +14,10 @@ extern CharacterSprite npcSprites[MAX_NPC_SPRITES];
 extern RenderedSprite renderedSprites[MAX_RENDERED_SPRITES];
 extern Shadow shadowSpritesInfo[3];
 
+// forward declaration
+void func_800326C0(u16);
+
+
 //INCLUDE_ASM(const s32, "system/renderedSprites", initializeNpcSpriteStructs);
 
 void initializeNpcSpriteStructs(void) {
@@ -59,7 +63,6 @@ bool func_8002DDDC(u16 npcIndex, void* arg1, void* arg2, void* arg3, void* arg4,
     if (npcIndex < MAX_NPC_SPRITES) {
 
         if (!(npcSprites[npcIndex].flags & 1)) {
-            
             
             npcSprites[npcIndex].romTextureStart = arg1;
             npcSprites[npcIndex].romTextureEnd = arg2;

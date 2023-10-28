@@ -216,11 +216,12 @@ void func_80026E78(Bitmap *sprite, u16 *timg, u16 *palette) {
         case 0:
           sprite->fmt = G_IM_FMT_CI;
           sprite->pixelSize = G_IM_SIZ_8b;
-          return;
+          break;
         
         case 1:
           sprite->fmt = G_IM_FMT_CI;
           sprite->pixelSize = G_IM_SIZ_4b; 
+          break;
     }
 }
 
@@ -228,7 +229,7 @@ void func_80026E78(Bitmap *sprite, u16 *timg, u16 *palette) {
 
 void func_80026F30(Bitmap* sprite, u16* palette) {
 
-    // probably struct
+    // probably a stack struct
     u32 padding[5];
     
     sprite->pal = palette + 2;
