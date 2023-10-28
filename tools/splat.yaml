@@ -360,7 +360,7 @@ segments:
       - [ 0xF3F50, data, weather]
       - [ 0xF3F70, data, shop]
       - [ 0xF4B40, data, loadGameScreen] # packinsoft farm string
-      - [ 0xF4B50, data] # dialogue
+      - [ 0xF4B50, data, initialize]
       - [ 0xF71B0, data, sfx]
       - [ 0xF7AD0, data, namingScreen]
       - [ 0xF7BF0, data, lib/nusys-1/nupakmenu/displayterm]

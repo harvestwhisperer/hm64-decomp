@@ -1312,6 +1312,27 @@ dialogueIconsTextureEnd = 0xD49B80;
 dialogueIconsPaletteStart = 0xD49B80;
 dialogueIconsPaletteEnd = 0xD49BA0;
 
+fontTextureStart = 0xE08870;
+fontTextureEnd = 0xE13770;
+fontPalette1Start = 0xE13770;
+fontPalette1End = 0xE137A0;
+fontPalette2Start = 0xE137A0;
+fontPalette2End = 0xE137D0;
+
+characterDialogueIconsTextureStart = 0xD92D70;
+characterDialogueIconsTextureEnd = 0xDB9EA0;
+characterDialogueIconsPaletteStart = 0xDB9EA0;
+characterDialogueIconsPaletteEnd = 0xDB9EC0;
+characterDialogueIconsIndexStart = 0xDB9EC0;
+characterDialogueIconsIndexEnd = 0xDBA100;
+
+dialogueWindowTextureStart = 0xD1B500;
+dialogueWindowTextureEnd = 0xD1DDE0;
+dialogueWindowPaletteStart = 0xD1DDE0;
+dialogueWindowPaletteEnd = 0xD2D600;
+dialogueWindowIconStart = 0xD2D600;
+dialogueWindowIconEnd = 0xD1DE00;
+
 titleSpritesTextureStart = 0xDBA100;
 titleSpritesTextureEnd = 0xDD38F0;
 titleSpritesPaletteStart = 0xDD38F0;

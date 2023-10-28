@@ -5,7 +5,7 @@
 
 // forward declarations
 u8 func_8002B8E0(u16, u8, void*);
-void *func_8002CD34(u16, void*);
+u8* func_8002CD34(u16 arg0, void* arg1);
 
 // bss
 extern Sprite globalSprites[MAX_ACTIVE_SPRITES];
@@ -111,7 +111,35 @@ INCLUDE_ASM(const s32, "system/globalSprites", func_8002BB30);
 
 INCLUDE_ASM(const s32, "system/globalSprites", func_8002BB88);
 
-INCLUDE_ASM(const s32, "system/globalSprites", func_8002BBE0);
+//INCLUDE_ASM(const s32, "system/globalSprites", func_8002BBE0);
+
+bool func_8002BBE0(u16 index, u8 arg1, u8 arg2) {
+
+    bool result = 0;
+    
+    if (index < MAX_ACTIVE_SPRITES) {
+
+        if (globalSprites[index].flags2 & 1) {
+
+            if (arg1) {
+                globalSprites[index].flags1 |= 1;
+            } else {
+                globalSprites[index].flags1 &= ~1;
+            }
+
+            if (arg2) {
+                globalSprites[index].flags1 |= 2;
+            } else {
+                globalSprites[index].flags1 &= ~2;
+            }
+            
+            result = 1;
+        }
+    }
+
+    return result;
+    
+}
 
 INCLUDE_ASM(const s32, "system/globalSprites", func_8002BCC8);
 
@@ -337,7 +365,7 @@ u8 func_8002CB24(u16 index, u8 flag) {
             if (flag == TRUE) {
                 globalSprites[index].flags2 |= 0x80;
             } else {
-                globalSprites[index].flags2 &= ~(0x80);
+                globalSprites[index].flags2 &= ~0x80;
             }
             result = 1;
         }
@@ -346,19 +374,34 @@ u8 func_8002CB24(u16 index, u8 flag) {
     return result;
 }
 
+//INCLUDE_ASM(const s32, "system/globalSprites", func_8002CB88);
 
-INCLUDE_ASM(const s32, "system/globalSprites", func_8002CB88);
+bool func_8002CB88(u16 index, u16 arg1) {
+
+    bool result = 0;
+
+    if (index < MAX_ACTIVE_SPRITES) {
+        if (globalSprites[index].flags2 & 1) {
+            globalSprites[index].unk_94 = arg1;
+            globalSprites[index].flags2 |= 0x100;
+            result = 1;
+        }
+    }
+
+    return result;
+
+}
 
 INCLUDE_ASM(const s32, "system/globalSprites", func_8002CBF8);
 
 //INCLUDE_ASM(const s32, "system/globalSprites", func_8002CC44);
 
-bool func_8002CC44(u16 arg0) {
+bool func_8002CC44(u16 index) {
 
     bool result = 0;
 
-    if (arg0 < MAX_ACTIVE_SPRITES) {
-        result = (globalSprites[arg0].flags2 >> 6) & 1;
+    if (index < MAX_ACTIVE_SPRITES) {
+        result = (globalSprites[index].flags2 >> 6) & 1;
     }
 
     return result;
@@ -371,7 +414,11 @@ INCLUDE_ASM(const s32, "system/globalSprites", func_8002CCA8);
 
 INCLUDE_ASM(const s32, "system/globalSprites", func_8002CCDC);
 
-INCLUDE_ASM(const s32, "system/globalSprites", func_8002CD34);
+//INCLUDE_ASM(const s32, "system/globalSprites", func_8002CD34);
+
+u8* func_8002CD34(u16 arg0, void* arg1) {
+    return (u8*)(arg1 + *(u32*)(arg1 + arg0*4));
+}
 
 INCLUDE_ASM(const s32, "system/globalSprites", func_8002CD4C);
 

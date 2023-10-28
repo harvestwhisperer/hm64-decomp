@@ -6,6 +6,8 @@
 extern void func_800B2CE0(void);
 extern void func_800B3694(void);
 extern void func_800B3A60(void);     
+extern void func_800B3BD8(void);
+extern void func_800B4238(u8);
 extern void func_800B42E0(void);    
 extern void func_800B59AC(void);  
 extern void func_800B5BD4(void);

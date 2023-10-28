@@ -1320,9 +1320,7 @@ void func_8005CB50(void) {
 
 void func_8005CBA4(void) {
 
-    // gTileContextFlags = flags on global tile struct
-    // bits 4 and 5
-    if (!(gTileContextFlags & 0x18)) {
+    if (!(gTileContextFlags & (0x10 | 0x8))) {
         func_8002F730();
         func_80046CF4();
         func_8002FCB4(0, 1);

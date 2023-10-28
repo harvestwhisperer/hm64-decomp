@@ -18,24 +18,24 @@
 #define DOG_TITLE_SPRITE 0x44
 
 typedef struct {	
-	void *vaddrStart;
-	void *vaddrCurrent;
-	void *vaddrIndex;
-	void *vaddrPalette;
-	void *vaddrUnk1;
-	void *vaddrUnk2;
-	void *vaddrUnk3;
-	void *rom;
-	void *vaddrAnimationStart;
-	void *vaddrAnimationEnd;
-	u16 animation;
-	Vec3f shrink;
-	Vec3f scale;
+	void *vaddrStart; // 0x0
+	void *vaddrCurrent; // 0x4
+	void *vaddrIndex; // 0x8
+	void *vaddrPalette; // 0xC
+	void *vaddrUnk1; // 0x10
+	void *vaddrUnk2; // 0x14
+	void *vaddrUnk3; // 0x18
+	void *rom; // 0x1C
+	void *vaddrAnimationStart; // 0x20
+	void *vaddrAnimationEnd; // 0x24
+	u16 animation; // 0x28
+	Vec3f shrink; // 0x2C
+	Vec3f scale; // 0x38
 	Vec3f unk_44;
-    Vec4f rgba;
-	Vec4f rgbaCurrent;
-	Vec4f rgbaDefault;
-	Vec4f normalized;
+    Vec4f rgba; // 0x50 
+	Vec4f rgbaCurrent; // 0x60
+	Vec4f rgbaDefault; // 0x70
+	Vec4f normalized; // 0x80
 	u8 unk_90;
 	u8 unk_91;
 	u8 unk_92;
@@ -54,7 +54,7 @@ typedef struct {
 } SpriteInfo;
 
 typedef struct {
-	void *vaddr; /* 0x00 */
+	void *vaddr; /* 0x00 */ // offset indices; data from initalize.c: 80119750-8011BCA0
 	void *romTextureStart; /* 0x04 */
 	void *romTextureEnd; /* 0x08 */
 	void *romPaletteStart; /* 0x0C */
@@ -150,10 +150,10 @@ extern bool func_8002EDF0(u16 index, s16 arg1, s16 arg2, s16 arg3);
 extern bool func_8002EEA4(u16 arg0);     
 extern bool func_8002F014(u16, u8, u8, u8, u8);        
 extern bool func_8002ECD4(u16, u16, u16);              
-extern bool func_8002F114(u16, u8);                              
+extern bool func_8002F114(u16, u8);
+extern bool func_8002F2FC(u16, u16); 
 extern bool func_8002F684(u16, u8);                    
 extern void func_8002F6F0();    
-extern bool func_8002F2FC(u16, u16); 
 extern void func_8002F730();               
 extern void func_8002F7C8(u8, u8, u8, u8);               
 extern bool func_8002F8F0(u8, u8, u8, u8, s32);      
@@ -200,7 +200,7 @@ extern bool func_8002C85C(u16 index, u8 r, u8 g, u8 b, u8 a);
 extern bool func_8002C914(u16, u8, u8, u8, u8);
 extern bool func_8002CAA8(u16, u8);  
 extern bool func_8002CB24(u16, u8);     
-extern void func_8002CB88(u16, u16);     
+extern bool func_8002CB88(u16, u16);     
 extern bool func_8002CBF8(u16);   
 extern bool func_8002CC44(u16);
 extern void func_8002D3D4(void);
