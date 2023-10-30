@@ -12,12 +12,12 @@ typedef struct {
 } Tile;
 
 typedef struct {
-    f32 x, y, z;
-    u8 size;
+    f32 x, y, z; // Vec3f
+    u8 flags;
 } Decompressed;
 
 typedef struct {
-    u8 size;
+    u8 flags;
     u8 part1;
     u8 part2;
     u8 part3;
@@ -25,6 +25,12 @@ typedef struct {
     u8 part5;
     u8 part6;
 } Compressed;
+
+typedef struct {
+    s16 ob[3];
+    u32 unk;
+    u8 cn[4]; 
+} Vtx2;
 
 typedef struct {
     short tc[2];
@@ -38,11 +44,11 @@ typedef struct {
 
 // 8013DC70
 typedef struct MapVtx {
-    struct MapVtx *vtx;
+    Vtx2 *vtx;
     u16 currentVtxIndex;
     u16 vtxCount;
     u8 ob[3];
-    u8 flags;
+    u8 count;
 } MapVtx;
 
 typedef u16 VtxArray[0x30][0x30];
@@ -67,7 +73,7 @@ typedef struct {
     Vec3f unk_C; //0x998
     Vec3f unk_18; // 0x9A4
     Vec3f unk_24; // 0x9B0
-    Vec3f unk_30; // 0x9BC
+    Vec3f unk_30; // 0x9BC // angles
     Vec3f unk_3C; // 0x9C8
     u8 unk_48; // 0x9D4
     u8 unk_49; // 0x9D5
@@ -77,9 +83,9 @@ typedef struct {
 
 // D_801418D8
 typedef struct {
-    u16 unk_0;
-    u8 unk_2;
-    u8 unk_3;
+    u16 unk_0; // counter
+    u8 unk_2; // related to bitmap scale for traversing timg
+    u8 unk_3; // counter for compressed/decompressed Vec3fs
 } UnknownMapStruct3;
 
 // D_80141A18
@@ -115,6 +121,17 @@ typedef struct {
     u16 arr2[0x40]; // 0x40E8
 } UnknownMapStruct6;
 
+// D_80142868
+typedef struct {
+    u16 arr1[16];
+    u16 arr2[16]; // 0x80142888
+    u16 unk_40; // 0x801428A8
+    u16 unk_42; // 0x801428AA
+    u8 unk_44; // 0x801428AC
+    u8 unk_45; // 0x801428AD
+    u16 flags; // 0x801428AE
+} UnknownMapStruct7;
+
 // 0x5528
 // D_80143168
 // size 0x24
@@ -138,7 +155,7 @@ typedef struct {
     Vec4f groundRgba; // 0xD8
     Vec4f defaultRgba; // 0xE8
     Vec4f unk_60; // 0xF8
-} UnknownMapStruct7;
+} UnknownMapStruct8;
 
 // 0x1A608
 // D_80158248
@@ -149,10 +166,10 @@ typedef struct {
     u16 unk_A; // 0x52
     u16 unk_C; // 0x54
     u16 height; // 0x56
-    u8 unk_10; // 0x58
+    u8 unk_10; // 0x58 // set from *mainMap.unk_c
     u8 unk_11; // counter // 0x59
     u16 flags; // 0x5A
-} UnknownMapStruct8;
+} UnknownMapStruct9;
 
 // more likely just binary data
 // typedef struct {
@@ -168,34 +185,36 @@ typedef struct {
 typedef struct  {
     // active vertex?
     void *unk_0;
-    void *unk_4;
+    void *unk_4; // current tile sheet
     void *unk_8;
-    void *unk_C;
+    u8 *unk_C; // ptr to compressed Vec3fs bank
     void *unk_10;
     void *unk_14;
-    void *unk_18;
-    void *unk_1C;
+    void *unk_18; // bitmap timg ptr
+    void *unk_1C; // bitmap palette ptr
     void *unk_20;
     UnknownMapStruct1 mapStruct1; // 0x24
     MapVtx vtxs[0x400]; // 0x30
     u16 unk_arr[0x50]; // 0x3030
     u32 padding2[0x31F];
     UnknownMapStruct2 mapStruct2; // 0x3D4C
-    UnknownMapStruct3 mapStruct3[0x10]; // 0x3D98
+    UnknownMapStruct3 mapStruct3[0x10]; // 0x3D98 // related to tile bitmaps
     UnknownMapStruct4 mapStruct4[12]; // 0x3DD8
     u32 padding4[0x14];
     UnknownMapStruct5 mapStruct5[0x10];
     UnknownMapStruct6 mapStruct6; // 0x4058;
-    u32 padding6[0x4F0]; // 0x4168
+    u32 padding6[0x2B0]; // 0x4168, 0x80141DA8
     // 0x44A8 / 0x801420E8: array
+    UnknownMapStruct7 mapStruct7[0x20]; // 0x4C28 
     MapBitmap mapBitmaps[0x38]; // 0x5528
     u32 padding7[0x48]; // 0x5D08
     // might be bigger
     Gfx displayLists[0x1000]; // 0x5E28
     u32 padding8[0x318F];
-    UnknownMapStruct7 mapStruct7; // 0x1A464
+    UnknownMapStruct8 mapStruct8; // 0x1A464
     u32 padding9[0x50]; // 0x1A4C8
-    UnknownMapStruct8 mapStruct8; // 0x1A608
+    // 0x80157A68, 0x19e28 = related to decompressed Vec3f scaling
+    UnknownMapStruct9 mapStruct9; // 0x1A608
     u32 padding10;
 } MainMap;
 
@@ -218,6 +237,7 @@ extern Vec3f* func_80036610(Vec3f*, u16, f32, f32);
 extern bool func_80036A84(u16);      
 extern void func_80036C08(u32);                                 
 extern void func_80036FA0(u16); 
+extern bool func_80038900(u16 mapIndex, u16 arg1, u16 arg2, u16 arg3, u16 arg4); 
 extern bool func_80038990(u16, u16, u8);       
 extern bool func_80038B58(u16, u16, u8, u8);   
 extern void func_8003A1BC(void);

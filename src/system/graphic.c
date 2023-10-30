@@ -237,6 +237,7 @@ void func_80026F30(Bitmap* sprite, u16* palette) {
     switch ((*(palette + 1) >> 4) & 0xF) {                           
         case 0:
             sprite->fmt = G_IM_FMT_CI;
+            // SDK docs say to use this pixel size only with G_IM_FMT_I
             sprite->pixelSize = G_IM_SIZ_8b;
             return;
         case 1:
