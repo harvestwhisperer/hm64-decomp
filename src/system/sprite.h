@@ -108,9 +108,9 @@ typedef struct {
 	s32 pixelSize; // 14
 	u16 spriteNumber; // 18
 	u16 unk_1A; // 1A
-	Vec3f unk_1C;
+	Vec3f unk_1C; // set from decompressed level Vec3fs
 	Vec3f scaling; // 28
-	Vec3f unk_34; // 34
+	Vec3f unk_34; // 34 // angles
 	Vec4f rgba; // 40
     u16 unk_50;
 	u16 unk_52;

@@ -105,7 +105,7 @@ u16 func_80029CF4(u8 *timg, u8 *pal, s32 width, s32 height, s32 fmt, s32 size, u
 
 u16 func_80029DAC(void *timg, void *pal, u16 flags) {
 
-    u16 result = bitmapCounter;
+    u16 bitmapIndex = bitmapCounter;
     
     if (bitmapCounter < MAX_BITMAPS) {
         D_801F7110[bitmapCounter].flags = flags | 1;
@@ -114,10 +114,10 @@ u16 func_80029DAC(void *timg, void *pal, u16 flags) {
         D_801F7110[bitmapCounter].pal = pal;
         bitmapCounter++;
     } else {
-        result = 0xFFFF;
+        bitmapIndex = 0xFFFF;
     }
 
-    return result;
+    return bitmapIndex;
     
 }
 

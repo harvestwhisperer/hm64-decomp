@@ -1607,7 +1607,7 @@ void func_80060490(void) {
 
 void func_800604B0(void) {
 
-    if (func_80036A84(0) || !(mainMap[0].mapStruct8.flags & 1)) {
+    if (func_80036A84(0) || !(mainMap[0].mapStruct9.flags & 1)) {
         
         func_8003F54C(0, 0, -64.0f, 352.0f);
         func_8003F690(0, 1, 0, 0);
@@ -1656,7 +1656,7 @@ void func_80060624(void) {
     int tempStamina;
     u8 tempTime;
 
-    if (func_80036A84(0) || !(mainMap[0].mapStruct8.flags & 1)) {
+    if (func_80036A84(0) || !(mainMap[0].mapStruct9.flags & 1)) {
         
         func_800610DC();
         
@@ -1719,7 +1719,7 @@ void func_80060624(void) {
 void func_80060838(void) {
     
     // check map flags
-    if (func_80036A84(0) || !(mainMap[0].mapStruct8.flags & 1)) {
+    if (func_80036A84(0) || !(mainMap[0].mapStruct9.flags & 1)) {
 
         func_800610DC();
 
