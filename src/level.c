@@ -488,10 +488,8 @@ void func_800735FC(u16 levelIndex) {
             func_80038900(0, 7, 0, 8, 0);
             func_80038900(0, 8, 0, 0x10, 0);
             break;
-            
         default:
             break;
-
         case GREENHOUSE:
             func_80038900(0, 0, 0, 0, 2);
             func_80038900(0, 0, 1, 1, 2);
@@ -504,7 +502,6 @@ void func_800735FC(u16 levelIndex) {
             func_80038900(0, 7, 0, 7, 0);
             func_80038900(0, 8, 0, 8, 0);
             break;
-            
         case HOUSE:
             func_80038900(0, 0, 0, 2, 1);
             func_80038900(0, 1, 0, 9, 1);
@@ -520,21 +517,18 @@ void func_800735FC(u16 levelIndex) {
             func_80038900(0, 0xB, 0, 0xB, 1);
             func_80038900(0, 0xC, 0, 0xC, 1);
             break;
-
         case KITCHEN:
             func_80038900(0, 0, 0, 0, 1);
             func_80038900(0, 1, 0, 1, 1);
             func_80038900(0, 2, 0, 2, 1);
             func_80038900(0, 3, 0, 3, 1);
             break;
-            
         case BATHROOM:
             func_80038900(0, 0, 0, 0, 1);
             func_80038900(0, 1, 1, 1, 1);
             func_80038900(0, 2, 2, 3, 1);
             func_80038900(0, 3, 3, 2, 1);
             break;
-            
         case COOP:
             func_80038900(0, 0, 0, 0, 2);
             func_80038900(0, 0, 1, 1, 2);
@@ -543,7 +537,6 @@ void func_800735FC(u16 levelIndex) {
             func_80038900(0, 0, 4, 3, 2);
             func_80038900(0, 1, 0, 4, 1);
             break;
-            
         case BARN:
             func_80038900(0, 0, 0, 0, 2);
             func_80038900(0, 0, 1, 1, 2);
@@ -551,7 +544,6 @@ void func_800735FC(u16 levelIndex) {
             func_80038900(0, 0, 3, 2, 2);
             func_80038900(0, 0, 4, 3, 2);
             break;
-
         case VILLAGE_1:
             func_80038900(0, 0, 0, 0, 1);
             func_80038900(0, 1, 0, 1, 1);
@@ -567,7 +559,6 @@ void func_800735FC(u16 levelIndex) {
             func_80038900(0, 0xB, 0, 0xB, 1);
             func_80038900(0, 0xC, 0, 0xC, 1);
             break;
-
         case VILLAGE_2:
             func_80038900(0, 0, 0, 0, 1);
             func_80038900(0, 1, 0, 1, 1);
@@ -590,7 +581,6 @@ void func_800735FC(u16 levelIndex) {
                     func_80038900(0, 9, 0, 9, 1);
                     func_80038900(0, 0xA, 0, 0xA, 1);
                     break;
-
                 case SUMMER:                                     
                     func_80038900(0, 0, 0, 0, 1);
                     func_80038900(0, 1, 0, 1, 1);
@@ -600,7 +590,6 @@ void func_800735FC(u16 levelIndex) {
                     func_80038900(0, 5, 0, 5, 1);
                     func_80038900(0, 6, 0, 6, 1);
                     break;
-
                 case AUTUMN:                                     
                     func_80038900(0, 0, 0, 0, 1);
                     func_80038900(0, 1, 0, 1, 1);
@@ -610,14 +599,12 @@ void func_800735FC(u16 levelIndex) {
                     func_80038900(0, 5, 0, 5, 1);
                     func_80038900(0, 6, 0, 6, 1);
                     break;
-
                 case WINTER:                                     
                     func_80038900(0, 0, 0, 0, 1);
                     func_80038900(0, 1, 0, 1, 1);
                     break;
                 }
             break;
-
         case FLOWER_SHOP:
             func_80038900(0, 0, 0, 0, 1);
             break;
@@ -640,7 +627,6 @@ void func_800735FC(u16 levelIndex) {
             func_80038900(0, 2, 0, 2, 1);
             func_80038900(0, 3, 0, 3, 1);
             break;
-
         case TOP_OF_MOUNTAIN_1:
             func_80038900(0, 0, 0, 0, 1);
             func_80038900(0, 1, 0, 1, 1);
@@ -648,31 +634,24 @@ void func_800735FC(u16 levelIndex) {
             func_80038900(0, 3, 0, 3, 1);
             func_80038900(0, 4, 0, 4, 1);
             func_80038900(0, 5, 0, 5, 1);
-
             if (gSeason == WINTER) {
                 func_80038900(0, 6, 0, 6, 1);
                 break;
             }
             break;
-            
         case MOON_MOUNTAIN:
             func_80038900(0, 0, 0, 0, 1);
             break;
-            
         case POND:
-            func_80038900(0, 0, 0, 0, 1);
-            break;
             func_80038900(0, 4, 0, 0, 0);
             func_80038900(0, 5, 0, 1, 0);
             func_80038900(0, 6, 0, 2, 0);
             func_80038900(0, 7, 0, 3, 0);
             break;
-            
         case VINEYARD:
             func_80038900(0, 0, 0, 1, 1);
             func_80038900(0, 1, 0, 0, 1);
             break;
-            
         case RANCH:
             func_80038900(0, 0, 0, 0, 1);
             func_80038900(0, 1, 0, 1, 1);
@@ -704,7 +683,6 @@ void func_800735FC(u16 levelIndex) {
             func_80038900(0, 0, 0xA, 2, 4);
             func_80038900(0, 0, 0xB, 1, 4);
             break;
-            
         case VINEYARD_CELLAR:
             func_80038900(0, 0, 0, 0, 1);
             break;
