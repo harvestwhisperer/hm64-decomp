@@ -6,7 +6,7 @@
 #include "system/cutscene.h"
 #include "system/map.h"
 #include "system/sprite.h"
-#include "system/tiles.h"
+#include "system/mapContext.h"
 
 #include "animals.h"
 #include "game.h"

@@ -166,6 +166,7 @@ extern Chicken gChickens[MAX_CHICKENS];
 extern FarmAnimal gFarmAnimals[];
 extern u8 D_8016FBCC[1];
 extern u8 D_801886D4[6];
+// dead animal name for funeral
 extern u8 D_8018985C[6];
 extern Dog dogInfo;
 extern Horse horseInfo;
@@ -179,5 +180,8 @@ extern u8 D_80189054;
 extern u8 D_8018908C;
 extern u8 D_801C3F46;
 extern u8 D_801FC155;
+
+// dead animal count
+extern u16 D_8013DC2E;
 
 #endif

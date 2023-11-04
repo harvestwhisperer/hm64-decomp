@@ -107,14 +107,14 @@ typedef struct {
 	u32 fmt; // 10
 	s32 pixelSize; // 14
 	u16 spriteNumber; // 18
-	u16 unk_1A; // 1A
+	u16 vtxIndex; // 1A
 	Vec3f unk_1C; // set from decompressed level Vec3fs
 	Vec3f scaling; // 28
 	Vec3f unk_34; // 34 // angles
 	Vec4f rgba; // 40
-    u16 unk_50;
+    s16 unk_50;
 	u16 unk_52;
-	u16 unk_54;
+	u16 unk_54; // flags for microcodes
 	u16 flags; //56
 } Bitmap;
 
@@ -212,7 +212,7 @@ extern void dmaSprites();
 
 /* sprite.c */
 extern void initializeBitmaps(void);
-extern bool func_8002AE58(void);
+extern void func_8002AE58(void);
 
 
 extern RenderedSprite renderedSprites[MAX_RENDERED_SPRITES];

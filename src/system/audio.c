@@ -122,15 +122,20 @@ bool setSong(u16 songIndex, u8 *songAddrStart, u8 *songAddrEnd) {
     bool result = 0;
     
     if (songIndex < MAX_ACTIVE_SONGS) {
+
         if (!(gSongs[songIndex].flags & 1)) {
+
             // set volumes
             func_800266C0(&gSongs[songIndex].volumes, 0, 0, 0, 0);
+
             result = 1;
+
             gSongs[songIndex].unk_1C = 128;
             gSongs[songIndex].unk_20 = 128;
             gSongs[songIndex].currentSongRomAddrStart = songAddrStart;
             gSongs[songIndex].currentSongRomAddrEnd = songAddrEnd;
             gSongs[songIndex].flags = 3;
+            
         }
     } 
 

@@ -427,6 +427,7 @@ void setAlbumPicture(u8 pictureBitIndex) {
 
 //INCLUDE_ASM(const s32, "gameStatus", func_80065518);
 
+// get sum of recipes
 u8 func_80065518(void) {
     
     u8 result = 0;

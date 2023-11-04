@@ -58,7 +58,7 @@ typedef struct {
 typedef struct {
     u16 unk_0;
     u16 index;
-} CutsceneTileInfo;
+} CutsceneMapInfo;
 
 typedef struct {
     u16 unk_0;
@@ -73,7 +73,7 @@ typedef union {
     CutsceneSongSpeedInfo songSpeed;
     CutsceneSongVolumeInfo songVolume;
     CutsceneSfxVolumeInfo sfxVolume;
-    CutsceneTileInfo tileInfo;
+    CutsceneMapInfo tileInfo;
     CutsceneButtonCheck buttonCheck;
 } CutsceneContext;
 

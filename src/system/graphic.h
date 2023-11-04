@@ -48,9 +48,9 @@ typedef struct {
 
 extern f32 sinfRadians(f32);
 extern f32 cosfRadians(f32);
-extern void func_80026E78(Bitmap *sprite, u16 *arg1, u16 *arg2);   
+extern void setBitmapFormat(Bitmap *sprite, u16 *arg1, u16 *arg2);
 extern Gfx* func_80026F88(Gfx* dl, Bitmap* arg1, u32 arg2, u16 arg3);
-extern void func_800276AC(Mtx*, u16, u16, u16, u16, u16, u16, u16, u16, u16, u8, u8, u8, u8);
+extern void func_800276AC(Vtx*, u16 width, u16 height, u16 textureSize, u16, u16, u16, s16, s16, u16, u8, u8, u8, u8);
 extern void func_80027950(Vec3f, Vec3f*, Vec3f);
 extern Vec3f* func_80028520(Vec3f* arg0, f32 arg1, s32 arg2, s32 arg3);          
 extern void* func_80028888(u16 arg0, u32* arg1);                   

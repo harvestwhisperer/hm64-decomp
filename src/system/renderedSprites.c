@@ -4,7 +4,7 @@
 
 #include "system/graphic.h"
 #include "system/map.h"
-#include "system/tiles.h"
+#include "system/mapContext.h"
 
 #include "mainproc.h"
 #include "npc.h"
@@ -275,7 +275,7 @@ bool func_8002EEA4(u16 arg0) {
 
     bool result = 0;
 
-    if (!arg0 && gTileContextFlags & 1 && gTileContextFlags & 2) {
+    if (!arg0 && gMapModelContextFlags & 1 && gMapModelContextFlags & 2) {
         D_801FD610 = arg0;
         result = 1;
     }
@@ -556,7 +556,7 @@ Vec3f* func_800315A0(Vec3f* arg0, u16 index) {
     
     if (index < MAX_RENDERED_SPRITES) {
         if ((renderedSprites[index].flags & 1) && !(renderedSprites[index].flags & 0x40) && !(renderedSprites[index].flags & 0x100)) {
-            func_80036610(&vec, gTileContext[D_801FD610].mapIndex, renderedSprites[index].startingCoordinates.x, renderedSprites[index].startingCoordinates.z);
+            func_80036610(&vec, gMapModelContext[D_801FD610].mapIndex, renderedSprites[index].startingCoordinates.x, renderedSprites[index].startingCoordinates.z);
         } 
     }
 
@@ -578,7 +578,7 @@ Vec3f* func_800315A0(Vec3f* arg0, u16 index) {
     
 //     if (index < MAX_RENDERED_SPRITES) {
 //         if ((renderedSprites[index].flags & 1) && !(renderedSprites[index].flags & 0x40) && !(renderedSprites[index].flags & 0x100)) {
-//             func_80036610(&vec, gTileContext[D_801FD610].mapIndex, renderedSprites[index].startingCoordinates.x, renderedSprites[index].startingCoordinates.z);
+//             func_80036610(&vec, gMapModelContext[D_801FD610].mapIndex, renderedSprites[index].startingCoordinates.x, renderedSprites[index].startingCoordinates.z);
 //         } 
 //     }
  

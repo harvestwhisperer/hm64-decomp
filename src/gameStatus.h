@@ -9,7 +9,9 @@
 #define CARPENTER_FINISHED 0xB
 #define FARM_MORNING_VISIT 0x17
 #define STORES_CLOSED_FOR_FESTIVAL 0x2D
+#define FESTIVAL_DAY 0x30
 #define FESTIVAL 0x4D
+#define FESTIVAL_2 0x4E
 
 /* life event bit indices */
 #define MARRIED 0
@@ -37,6 +39,7 @@
 #define ELLI_JEFF_BABY 0x28
 #define ANN_CLIFF_BABY 0x29
 #define KAREN_KAI_BABY 0x2A
+#define ANIMAL_DIED 0x2B
 #define BASIL_GONE 0x2C
 #define CLIFF_GONE 0x2D
 #define KAI_GONE 0x2E
@@ -98,6 +101,8 @@ extern void func_80063AF0(void);
 extern void func_80064114(void);
 extern void func_800644B0(void);     
 extern void func_80064814(void);     
+// recipes
+u8 func_80065518(void);
 extern u8 func_8006536C();
 
 extern u32 dailyEventBits[0x20];

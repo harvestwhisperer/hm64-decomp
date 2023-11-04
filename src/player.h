@@ -169,7 +169,7 @@ extern u16 D_80237410;
 
 // counter until napping animation
 extern u16 D_802226E0;
-// likely player sick days
+// sick days count
 extern u16 D_8016F8F4;
 
 #endif

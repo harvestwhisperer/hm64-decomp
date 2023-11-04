@@ -6,7 +6,7 @@
 #include "system/controller.h"
 #include "system/map.h"
 #include "system/sprite.h"
-#include "system/tiles.h"
+#include "system/mapContext.h"
 
 // forward declarations
 void func_800471B0(u16);                               
@@ -113,20 +113,24 @@ bool func_80046A58(u16 index, void* cutscenePointer) {
 
 //INCLUDE_ASM(const s32, "system/cutscene", func_80046AB0);
 
+// toggle flags
 bool func_80046AB0(u16 index) {
 
     bool result = 0;
 
     if (index < MAX_CUTSCENE_ASSETS && (cutsceneMaps[index].flags & ACTIVE)) {
 
+        // global sprite flags
         if (cutsceneMaps[index].flags & 2) {
             func_8002B6B8(cutsceneMaps[index].spriteIndex);
         }
 
+        // global sprite flags
         if (cutsceneMaps[index].flags & 8) {
             func_8002FA2C(cutsceneMaps[index].spriteIndex);
         }
 
+        // tiles/map
         if (cutsceneMaps[index].flags & 0x10) {
             func_8003C504(cutsceneMaps[index].spriteIndex);
         }
@@ -148,6 +152,7 @@ void func_80046BB8(void) {
     u16 i;
 
     for (i = 0; i < MAX_CUTSCENE_ASSETS; i++) {
+        // update flags on assets
         func_80046AB0(i);
     }
 
@@ -270,9 +275,9 @@ void mainLoopCutsceneHandler(void) {
             }
             
             if (cutsceneMaps[i].flags & 0x10) {
-                cutsceneMaps[i].coordinates.x = gTileContext[cutsceneMaps[i].spriteIndex].unk_4.x;
-                cutsceneMaps[i].coordinates.y = gTileContext[cutsceneMaps[i].spriteIndex].unk_4.y;
-                cutsceneMaps[i].coordinates.z = gTileContext[cutsceneMaps[i].spriteIndex].unk_4.z;
+                cutsceneMaps[i].coordinates.x = gMapModelContext[cutsceneMaps[i].spriteIndex].unk_4.x;
+                cutsceneMaps[i].coordinates.y = gMapModelContext[cutsceneMaps[i].spriteIndex].unk_4.y;
+                cutsceneMaps[i].coordinates.z = gMapModelContext[cutsceneMaps[i].spriteIndex].unk_4.z;
             }
 
             if (cutsceneMaps[i].unk_66) {
@@ -304,6 +309,7 @@ skip_callback:
         
             }
             
+            // sprite handling
             if (cutsceneMaps[i].flags & 0x10) {
                 func_80047E34(i);
             }
@@ -362,6 +368,7 @@ INCLUDE_ASM(const s32, "system/cutscene", func_80047640);
 
 //INCLUDE_ASM(const s32, "system/cutscene", func_80047E34);
 
+// tiles
 void func_80047E34(u16 index) {
     func_8003BE0C(cutsceneMaps[index].spriteIndex, cutsceneMaps[index].offsets.x, cutsceneMaps[index].offsets.y, cutsceneMaps[index].offsets.z);
 }
@@ -402,6 +409,7 @@ void func_80047F20(u16 index) {
     cutsceneMaps[index].cutscenePointer += 2;
 }
 
+// alternate
 /*
 void func_80047F20(u16 index) {
     
@@ -418,6 +426,7 @@ void func_80047F20(u16 index) {
 }
 */
 
+// alternate
 /*
 void func_80047F20(u16 index) {
     
@@ -452,10 +461,12 @@ void func_80047F90(u16 index) {
 
     cutsceneMaps[index].cutscenePointer += 2;
 
+    // tiles
     if (cutsceneMaps[index].flags & 0x10) {
         func_8003BDA4(cutsceneMaps[index].spriteIndex, cutsceneMaps[index].coordinates.x, cutsceneMaps[index].coordinates.y, cutsceneMaps[index].coordinates.z);
     }
 
+    // set sprite coordinates
     if (cutsceneMaps[index].flags & 0x8) {
         func_8002FD80(cutsceneMaps[index].spriteIndex, cutsceneMaps[index].coordinates.x, cutsceneMaps[index].coordinates.y, cutsceneMaps[index].coordinates.z);
     }
@@ -476,6 +487,7 @@ void func_80048258(u16 index) {
 
 void func_800482B8(u16 index) {
     cutsceneMaps[index].unk_66 = 1;
+    // update flags on asset
     func_80046AB0(index);
 }
 
@@ -590,7 +602,7 @@ INCLUDE_ASM(const s32, "system/cutscene", func_8004910C);
 
 void func_80049228(u16 index) {
 
-    CutsceneTileInfo *ptr = cutsceneMaps[index].cutscenePointer;
+    CutsceneMapInfo *ptr = cutsceneMaps[index].cutscenePointer;
 
     cutsceneMaps[index].cutscenePointer += 2;
 
@@ -598,7 +610,7 @@ void func_80049228(u16 index) {
 
     cutsceneMaps[index].cutscenePointer += 2;
 
-    func_8003C1E0(cutsceneMaps[index].spriteIndex, gTileContext[cutsceneMaps[index].spriteIndex].unk_4.x, gTileContext[cutsceneMaps[index].spriteIndex].unk_4.y, gTileContext[cutsceneMaps[index].spriteIndex].unk_4.z, 8, 8);
+    func_8003C1E0(cutsceneMaps[index].spriteIndex, gMapModelContext[cutsceneMaps[index].spriteIndex].unk_4.x, gMapModelContext[cutsceneMaps[index].spriteIndex].unk_4.y, gMapModelContext[cutsceneMaps[index].spriteIndex].unk_4.z, 8, 8);
     func_8003BD60(cutsceneMaps[index].spriteIndex);
     func_8002EEA4(cutsceneMaps[index].spriteIndex);
 
@@ -707,11 +719,11 @@ INCLUDE_ASM(const s32, "system/cutscene", func_8004B920);
 
 void func_8004B9A0(u16 index) {
 
-    CutsceneTileInfo* ptr = (CutsceneTileInfo*)cutsceneMaps[index].cutscenePointer; 
+    CutsceneMapInfo* ptr = (CutsceneMapInfo*)cutsceneMaps[index].cutscenePointer; 
 
     cutsceneMaps[index].cutscenePointer += 2;
 
-    if (!(gTileContext[ptr->index].flags & 0x18)) {
+    if (!(gMapModelContext[ptr->index].flags & (0x8 | 0x10))) {
         cutsceneMaps[index].cutscenePointer += 2;
         return;
     }

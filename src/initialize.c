@@ -7,9 +7,10 @@
 #include "system/dialogue.h"
 #include "system/memory.h"
 #include "system/message.h"
-#include "system/tiles.h"
+#include "system/mapContext.h"
 
 #include "animals.h"
+#include "evaluation.h"
 #include "game.h"
 #include "gameAudio.h"
 #include "gameStart.h"
@@ -604,15 +605,11 @@ void initializeGameVariables(void) {
 
     if (((u32)D_80113580 | (u32)farmFieldTiles) % 4) { 
         do {
-            *(Unaligned32*)ptr = *(Unaligned32*)ptr2;
-            ptr2++;
-            ptr++;
+            *(Unaligned32*)ptr++ = *(Unaligned32*)ptr2++;
         } while (ptr2 != (D_80113580 + 0x18));        
     } else {
         do {
-            *(Aligned32*)ptr = *(Aligned32*)ptr2;
-            ptr2++;
-            ptr++;
+            *(Aligned32*)ptr++ = *(Aligned32*)ptr2++;
         } while (ptr2 != (D_80113580 + 0x18));       
     }
 
@@ -621,15 +618,11 @@ void initializeGameVariables(void) {
 
     if (((u32)D_80113760 | (u32)D_80182BA8) % 4) { 
         do {
-            *(Unaligned32*)ptr = *(Unaligned32*)ptr2;
-            ptr2++;
-            ptr++;
+            *(Unaligned32*)ptr++ = *(Unaligned32*)ptr2++;
         } while (ptr2 != (D_80113760 + 0x14));        
     } else {
         do {
-            *(Aligned32*)ptr = *(Aligned32*)ptr2;
-            ptr2++;
-            ptr++;
+            *(Aligned32*)ptr++ = *(Aligned32*)ptr2++;
         } while (ptr2 != (D_80113760 + 0x14));       
     }
         
@@ -707,99 +700,100 @@ INCLUDE_ASM(const s32, "initialize", func_800527D4);
 // have to add symbols to undefined_syms/symbol_addrs
 /*
 void func_800527D4(void) {
-    setTileInfo(0, &D_800530, &D_80D9D0);
-    setTileInfo(1, &D_80D9D0_2, &D_81AE30);
-    setTileInfo(2, &D_81AE30_2, &D_828FC0);
-    setTileInfo(3, &D_828FC0_2, &D_836420);
-    setTileInfo(4, &D_836420_2, &D_83DC90);
-    setTileInfo(5, &D_83DC90_2, &D_849700);
-    setTileInfo(6, &D_849700_2, &D_84F100);
-    setTileInfo(7, &D_84F100_2, &D_856B80);
-    setTileInfo(8, &D_856B80_2, &D_856B90);
-    setTileInfo(9, &D_856B90_2, &D_85EE70);
-    setTileInfo(0xA, &D_85EE70_2, &D_867150);
-    setTileInfo(0xB, &D_867150_2, &D_86F430);
-    setTileInfo(0xC, &D_86F430_2, &D_877710);
-    setTileInfo(0xD, &D_877710_2, &D_87F510);
-    setTileInfo(0xF, &D_87F520_2, &D_887320);
-    setTileInfo(0x10, &D_887320_2, &D_88F120);
-    setTileInfo(0x11, &D_88F120_2, &D_8A6C20);
-    setTileInfo(0x12, &D_8A6C20_2, &D_8BE720);
-    setTileInfo(0x13, &D_8BE720_2, &D_8D6220);
-    setTileInfo(0x14, &D_8D6220_2, &D_8ED8E0);
-    setTileInfo(0x15, &D_8ED8E0_2, &D_905980);
-    setTileInfo(0x16, &D_905980_2, &D_91D8A0);
-    setTileInfo(0x17, &D_91D8A0_2, &D_9357C0);
-    setTileInfo(0x18, &D_9357C0_2, &D_94D6E0);
-    setTileInfo(0x19, &D_94D6E0_2, &D_961BD0);
-    setTileInfo(0x1A, &D_961BD0_2, &D_975E50);
-    setTileInfo(0x1B, &D_975E50_2, &D_98A0D0);
-    setTileInfo(0x1C, &D_98A0D0_2, &D_99F9C0);
-    setTileInfo(0x1D, &D_99F9C0_2, &D_9B4530);
-    setTileInfo(0x1E, &D_9B4530_2, &D_9C90A0);
-    setTileInfo(0x1F, &D_9C90A0_2, &D_9DDC10);
-    setTileInfo(0x20, &D_9DDC10_2, &D_9F2780);
-    setTileInfo(0x21, &D_9F2780_2, &D_9FAA80);
-    setTileInfo(0x22, &D_9FAA80_2, &D_A04C80);
-    setTileInfo(0x23, &D_A04C80_2, &D_A0CEC0);
-    setTileInfo(0x24, &D_A0CEC0_2, &D_A14F10);
-    setTileInfo(0x25, &D_A14F10_2, &D_A1CF60);
-    setTileInfo(0x26, &D_A1CF60_2, &D_A24FB0);
-    setTileInfo(0x27, &D_A24FB0_2, &D_A2C350);
-    setTileInfo(0x28, &D_A2C350_2, &D_A33460);
-    setTileInfo(0x29, &D_A33460_2, &D_A4C640);
-    setTileInfo(0x2A, &D_A4C640_2, &D_A65820);
-    setTileInfo(0x2B, &D_A65820_2, &D_A7F2B0);
-    setTileInfo(0x2C, &D_A7F2B0_2, &D_A98210);
-    setTileInfo(0x2D, &D_A98210_2, &D_AAC2C0);
-    setTileInfo(0x2E, &D_AAC2C0_2, &D_AC0370);
-    setTileInfo(0x2F, &D_AC0370_2, &D_AD4420);
-    setTileInfo(0x30, &D_AD4420_2, &D_AE84D0);
-    setTileInfo(0x31, &D_AE84D0_2, &D_AEF920);
-    setTileInfo(0x32, &D_AEF920_2, &D_AF4F00);
-    setTileInfo(0x33, &D_AF4F00_2, &D_AFAAC0);
-    setTileInfo(0x34, &D_AFAAC0_2, &D_AFF110);
-    setTileInfo(0x35, &D_AFF110_2, &D_B0E3C0);
-    setTileInfo(0x36, &D_B0E3C0_2, &D_B1D460);
-    setTileInfo(0x37, &D_B1D460_2, &D_B2C500);
-    setTileInfo(0x38, &D_B2C500_2, &D_B38990);
-    setTileInfo(0x39, &D_B38990_2, &D_B3CE10);
-    setTileInfo(0x3A, &D_B3CE10_2, &D_B41CC0);
-    setTileInfo(0x3B, &D_B41CC0_2, &D_B4A9C0);
-    setTileInfo(0x3C, &D_B4A9C0_2, &D_B4E440);
-    setTileInfo(0x3D, &D_B4E440_2, &D_B543D0);
-    setTileInfo(0x3E, &D_B543D0_2, &D_B5B0B0);
-    setTileInfo(0x3F, &D_B5B0B0_2, &D_B60990);
-    setTileInfo(0x40, &D_B60990_2, &D_B64E30);
-    setTileInfo(0x41, &D_B64E30_2, &D_B64E40);
-    setTileInfo(0x42, &D_B64E40_2, &D_B6AAC0);
-    setTileInfo(0x43, &D_B6AAC0_2, &D_B6E700);
-    setTileInfo(0x44, &D_B6E700_2, &D_B6E710);
-    setTileInfo(0x45, &D_B6E710_2, &D_B6FB70);
-    setTileInfo(0x46, &D_B6FB70_2, &D_B7AFB0);
-    setTileInfo(0x47, &D_B7AFB0_2, &D_B8B840);
-    setTileInfo(0x48, &D_B8B840_2, &D_B9C0D0);
-    setTileInfo(0x49, &D_B9C0D0_2, &D_BAC960);
-    setTileInfo(0x4A, &D_BAC960_2, &D_BBCD10);
-    setTileInfo(0x4B, &D_BBCD10_2, &D_BC5710);
-    setTileInfo(0x4C, &D_BC5710_2, &D_BC9C30);
-    setTileInfo(0x4D, &D_BC9C30_2, &D_BD1C80);
-    setTileInfo(0x4E, &D_BD1C80_2, &D_BDBD50);
-    setTileInfo(0x4F, &D_BDBD50_2, &D_BE5E20);
-    setTileInfo(0x50, &D_BE5E20_2, &D_BEFEF0);
-    setTileInfo(0x51, &D_BEFEF0_2, &D_BF9FC0);
-    setTileInfo(0x52, &D_BF9FC0_2, &D_C13C40);
-    setTileInfo(0x53, &D_C13C40_2, &D_C2D8C0);
-    setTileInfo(0x54, &D_C2D8C0_2, &D_C47540);
-    setTileInfo(0x55, &D_C47540_2, &D_C609F0);
-    setTileInfo(0x56, &D_C609F0_2, &D_C64D60);
-    setTileInfo(0x57, &D_C64D60_2, &D_C72FB0);
-    setTileInfo(0x58, &D_C72FB0_2, &D_C7DE40);
-    setTileInfo(0x59, &D_C7DE40_2, &D_C840E0);
-    setTileInfo(0x5A, &D_C840E0_2, &D_C8D5C0);
-    setTileInfo(0x5B, &D_C8D5C0_2, &D_C951A0);
     
-    func_8003BA44(0, 0, 0x80255000);
+    setMapModelAddresses(0, &D_800530, &D_80D9D0);
+    setMapModelAddresses(1, &D_80D9D0_2, &D_81AE30);
+    setMapModelAddresses(2, &D_81AE30_2, &D_828FC0);
+    setMapModelAddresses(3, &D_828FC0_2, &D_836420);
+    setMapModelAddresses(4, &D_836420_2, &D_83DC90);
+    setMapModelAddresses(5, &D_83DC90_2, &D_849700);
+    setMapModelAddresses(6, &D_849700_2, &D_84F100);
+    setMapModelAddresses(7, &D_84F100_2, &D_856B80);
+    setMapModelAddresses(8, &D_856B80_2, &D_856B90);
+    setMapModelAddresses(9, &D_856B90_2, &D_85EE70);
+    setMapModelAddresses(0xA, &D_85EE70_2, &D_867150);
+    setMapModelAddresses(0xB, &D_867150_2, &D_86F430);
+    setMapModelAddresses(0xC, &D_86F430_2, &D_877710);
+    setMapModelAddresses(0xD, &D_877710_2, &D_87F510);
+    setMapModelAddresses(0xF, &D_87F520_2, &D_887320);
+    setMapModelAddresses(0x10, &D_887320_2, &D_88F120);
+    setMapModelAddresses(0x11, &D_88F120_2, &D_8A6C20);
+    setMapModelAddresses(0x12, &D_8A6C20_2, &D_8BE720);
+    setMapModelAddresses(0x13, &D_8BE720_2, &D_8D6220);
+    setMapModelAddresses(0x14, &D_8D6220_2, &D_8ED8E0);
+    setMapModelAddresses(0x15, &D_8ED8E0_2, &D_905980);
+    setMapModelAddresses(0x16, &D_905980_2, &D_91D8A0);
+    setMapModelAddresses(0x17, &D_91D8A0_2, &D_9357C0);
+    setMapModelAddresses(0x18, &D_9357C0_2, &D_94D6E0);
+    setMapModelAddresses(0x19, &D_94D6E0_2, &D_961BD0);
+    setMapModelAddresses(0x1A, &D_961BD0_2, &D_975E50);
+    setMapModelAddresses(0x1B, &D_975E50_2, &D_98A0D0);
+    setMapModelAddresses(0x1C, &D_98A0D0_2, &D_99F9C0);
+    setMapModelAddresses(0x1D, &D_99F9C0_2, &D_9B4530);
+    setMapModelAddresses(0x1E, &D_9B4530_2, &D_9C90A0);
+    setMapModelAddresses(0x1F, &D_9C90A0_2, &D_9DDC10);
+    setMapModelAddresses(0x20, &D_9DDC10_2, &D_9F2780);
+    setMapModelAddresses(0x21, &D_9F2780_2, &D_9FAA80);
+    setMapModelAddresses(0x22, &D_9FAA80_2, &D_A04C80);
+    setMapModelAddresses(0x23, &D_A04C80_2, &D_A0CEC0);
+    setMapModelAddresses(0x24, &D_A0CEC0_2, &D_A14F10);
+    setMapModelAddresses(0x25, &D_A14F10_2, &D_A1CF60);
+    setMapModelAddresses(0x26, &D_A1CF60_2, &D_A24FB0);
+    setMapModelAddresses(0x27, &D_A24FB0_2, &D_A2C350);
+    setMapModelAddresses(0x28, &D_A2C350_2, &D_A33460);
+    setMapModelAddresses(0x29, &D_A33460_2, &D_A4C640);
+    setMapModelAddresses(0x2A, &D_A4C640_2, &D_A65820);
+    setMapModelAddresses(0x2B, &D_A65820_2, &D_A7F2B0);
+    setMapModelAddresses(0x2C, &D_A7F2B0_2, &D_A98210);
+    setMapModelAddresses(0x2D, &D_A98210_2, &D_AAC2C0);
+    setMapModelAddresses(0x2E, &D_AAC2C0_2, &D_AC0370);
+    setMapModelAddresses(0x2F, &D_AC0370_2, &D_AD4420);
+    setMapModelAddresses(0x30, &D_AD4420_2, &D_AE84D0);
+    setMapModelAddresses(0x31, &D_AE84D0_2, &D_AEF920);
+    setMapModelAddresses(0x32, &D_AEF920_2, &D_AF4F00);
+    setMapModelAddresses(0x33, &D_AF4F00_2, &D_AFAAC0);
+    setMapModelAddresses(0x34, &D_AFAAC0_2, &D_AFF110);
+    setMapModelAddresses(0x35, &D_AFF110_2, &D_B0E3C0);
+    setMapModelAddresses(0x36, &D_B0E3C0_2, &D_B1D460);
+    setMapModelAddresses(0x37, &D_B1D460_2, &D_B2C500);
+    setMapModelAddresses(0x38, &D_B2C500_2, &D_B38990);
+    setMapModelAddresses(0x39, &D_B38990_2, &D_B3CE10);
+    setMapModelAddresses(0x3A, &D_B3CE10_2, &D_B41CC0);
+    setMapModelAddresses(0x3B, &D_B41CC0_2, &D_B4A9C0);
+    setMapModelAddresses(0x3C, &D_B4A9C0_2, &D_B4E440);
+    setMapModelAddresses(0x3D, &D_B4E440_2, &D_B543D0);
+    setMapModelAddresses(0x3E, &D_B543D0_2, &D_B5B0B0);
+    setMapModelAddresses(0x3F, &D_B5B0B0_2, &D_B60990);
+    setMapModelAddresses(0x40, &D_B60990_2, &D_B64E30);
+    setMapModelAddresses(0x41, &D_B64E30_2, &D_B64E40);
+    setMapModelAddresses(0x42, &D_B64E40_2, &D_B6AAC0);
+    setMapModelAddresses(0x43, &D_B6AAC0_2, &D_B6E700);
+    setMapModelAddresses(0x44, &D_B6E700_2, &D_B6E710);
+    setMapModelAddresses(0x45, &D_B6E710_2, &D_B6FB70);
+    setMapModelAddresses(0x46, &D_B6FB70_2, &D_B7AFB0);
+    setMapModelAddresses(0x47, &D_B7AFB0_2, &D_B8B840);
+    setMapModelAddresses(0x48, &D_B8B840_2, &D_B9C0D0);
+    setMapModelAddresses(0x49, &D_B9C0D0_2, &D_BAC960);
+    setMapModelAddresses(0x4A, &D_BAC960_2, &D_BBCD10);
+    setMapModelAddresses(0x4B, &D_BBCD10_2, &D_BC5710);
+    setMapModelAddresses(0x4C, &D_BC5710_2, &D_BC9C30);
+    setMapModelAddresses(0x4D, &D_BC9C30_2, &D_BD1C80);
+    setMapModelAddresses(0x4E, &D_BD1C80_2, &D_BDBD50);
+    setMapModelAddresses(0x4F, &D_BDBD50_2, &D_BE5E20);
+    setMapModelAddresses(0x50, &D_BE5E20_2, &D_BEFEF0);
+    setMapModelAddresses(0x51, &D_BEFEF0_2, &D_BF9FC0);
+    setMapModelAddresses(0x52, &D_BF9FC0_2, &D_C13C40);
+    setMapModelAddresses(0x53, &D_C13C40_2, &D_C2D8C0);
+    setMapModelAddresses(0x54, &D_C2D8C0_2, &D_C47540);
+    setMapModelAddresses(0x55, &D_C47540_2, &D_C609F0);
+    setMapModelAddresses(0x56, &D_C609F0_2, &D_C64D60);
+    setMapModelAddresses(0x57, &D_C64D60_2, &D_C72FB0);
+    setMapModelAddresses(0x58, &D_C72FB0_2, &D_C7DE40);
+    setMapModelAddresses(0x59, &D_C7DE40_2, &D_C840E0);
+    setMapModelAddresses(0x5A, &D_C840E0_2, &D_C8D5C0);
+    setMapModelAddresses(0x5B, &D_C8D5C0_2, &D_C951A0);
+    
+    func_8003BA44(0, 0, MODEL_DATA_BANK);
 }
 */
 

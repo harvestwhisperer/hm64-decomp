@@ -71,6 +71,7 @@
 #define SEA_FESTIVAL 0x44C
 #define MAYOR_VILLAGE_TOUR 0x5AD
 #define INTRO 0x5B0
+#define EVALUATION 0x60E
 
 #define DEMO_CUTSCENE_1 0x5DC
 #define DEMO_CUTSCENE_2 0x5DD
@@ -79,7 +80,7 @@
 
 u16 func_8009C054(u16 mapIndex);
 extern u16 func_800A7AE8(u8);  
-extern void func_800A7DFC();        
+extern u16 func_800A7DFC();        
 extern u16 func_800A87C4();   
 extern void func_800A8F74();   
 extern void loadCutscene(u32);  

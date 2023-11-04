@@ -6,17 +6,17 @@
 #include "system/mathUtils.h"
 #include "system/worldGraphics.h"
 
-#include "mainproc.h"
-
+#include "mainproc.h" 
+ 
 // forward declarations
 void func_80035A58(UnknownMapStruct2*);
 bool func_800360BC(u16, u16, u8, u8, u32);       
 Vec3f* func_800366F4(Vec3f*, u16, f32, f32);                  
 u16 func_80036880(u32, f32, f32);  
 u8* func_800374C0(UnknownMapStruct5*, u8*);
-u8* func_80037614(MapVtx* arg0, VtxTexture* arg1);      
-u8* func_80037650(u16 arg0, void *arg1);
-bool func_80037668(MainMap*, u16, f32, f32, f32);
+u8* func_80037614(MapVtx* arg0, VtxInfo* arg1);    
+u16* func_80037650(u16 arg0, void *arg1);
+u32 func_80037668(MainMap*, u16, f32, f32, f32);
 Gfx* func_80037BC4(Gfx*, MainMap*, u16, u16);
 s16 func_80037F08(Gfx*, MainMap*, UnknownMapStruct5*);  
 Gfx* func_800383B0(Gfx* arg0, MainMap* arg1, u16 arg2, f32 arg3, f32 arg4, f32 arg5);
@@ -45,9 +45,9 @@ extern u8 D_801FB700;
 extern f32 D_801FB5D4;
 extern f32 D_802226EC;
 
-//extern Vtx D_80223380[2][0x1400];
-extern Vtx2 D_80223380[2][0xA00];
-extern Mtx D_80165500[2][0x140];
+extern Vtx D_80165500[2][320][4];
+extern Gfx D_801A8B60[2][6912];
+extern Vtx D_80223380[2][2560];
 
 // rodata
 extern Gfx D_8011ED68[4];
@@ -56,6 +56,9 @@ extern Gfx D_8011EDC8[3];
 extern Gfx D_8011ED80;
 extern Gfx D_8011EDA8;
 extern Gfx D_8011EDD8;
+
+extern const char D_8011EDB0[];
+extern const char D_8011EDB4[];
 
 //INCLUDE_ASM(const s32, "system/map", func_800337D0);
 
@@ -119,12 +122,12 @@ void func_800337D0(void) {
         mainMap[i].mapStruct2.unk_30.y = 0;
         mainMap[i].mapStruct2.unk_30.z = 0;
   
-        for (j = 0; j < 0x400; j++) {
+        for (j = 0; j < 1024; j++) {
             mainMap[i].vtxs[j].currentVtxIndex = 0;
             mainMap[i].vtxs[j].vtxCount = 0;
-            mainMap[i].vtxs[j].ob[0] = 0;
-            mainMap[i].vtxs[j].ob[1] = 0;
-            mainMap[i].vtxs[j].ob[2] = 0;
+            mainMap[i].vtxs[j].unk_8 = 0;
+            mainMap[i].vtxs[j].unk_9 = 0;
+            mainMap[i].vtxs[j].flags = 0;
             mainMap[i].vtxs[j].count = 0;
         }
     }
@@ -340,33 +343,67 @@ bool func_80034668(u16 mapIndex, s8 arg1, s8 arg2, s8 arg3, s8 arg4) {
     return result;
 }
 
-INCLUDE_ASM(const s32, "system/map", func_80034738);
+//INCLUDE_ASM(const s32, "system/map", func_80034738);
 
-// bool func_80034738(u16 arg0, u8 arg1, u8 arg2, u8 arg3, u8 arg4, s16 arg5) {
+bool func_80034738(u16 mapIndex, u8 r, u8 g, u8 b, u8 a, s16 arg5) {
 
-//     bool result;
+    bool result;
 
-//     f32 tempF;
-    
-//     s16 temp = getAbsoluteValue(arg5);
+    f32 tempFloat;
 
-//     result = 0;
+    s16 temp = getAbsoluteValue(arg5);
 
-//     if (arg0 == 0 && (mainMap[arg0].mapStruct9.flags & 1)) {
+    result = 0;
 
-//         mainMap[arg0].mapStruct8.defaultRgba.r = arg1;
-//         mainMap[arg0].mapStruct8.defaultRgba.g = arg2;
-//         mainMap[arg0].mapStruct8.defaultRgba.b = arg3;
-//         mainMap[arg0].mapStruct8.defaultRgba.a = arg4;
+    if (mapIndex == 0 && (mainMap[mapIndex].mapStruct9.flags & 1)) {
+
+        mainMap[mapIndex].mapStruct8.defaultRgba.r = r;
+        mainMap[mapIndex].mapStruct8.defaultRgba.g = g;
+        mainMap[mapIndex].mapStruct8.defaultRgba.b = b;
+        mainMap[mapIndex].mapStruct8.defaultRgba.a = a;
+
+        mainMap[mapIndex].mapStruct9.unk_8 = temp;
+
+        mainMap[mapIndex].mapStruct9.flags &= ~8;
+
+        if (mainMap[mapIndex].mapStruct8.defaultRgba.r < mainMap[mapIndex].mapStruct8.groundRgba.r) {
+            tempFloat = mainMap[mapIndex].mapStruct8.groundRgba.r - mainMap[mapIndex].mapStruct8.defaultRgba.r;
+        } else {
+            tempFloat = mainMap[mapIndex].mapStruct8.defaultRgba.r - mainMap[mapIndex].mapStruct8.groundRgba.r;
+        }
+
+        mainMap[mapIndex].mapStruct8.unk_60.r = (tempFloat * temp) / 255.0f;
         
-//         handleRgba(arg0, temp, tempF);
+        if (mainMap[mapIndex].mapStruct8.defaultRgba.g < mainMap[mapIndex].mapStruct8.groundRgba.g) {
+            tempFloat = mainMap[mapIndex].mapStruct8.groundRgba.g - mainMap[mapIndex].mapStruct8.defaultRgba.g;
+        } else {
+            tempFloat = mainMap[mapIndex].mapStruct8.defaultRgba.g - mainMap[mapIndex].mapStruct8.groundRgba.g;
+        }
 
-//         result = 1;
-//     }
+        mainMap[mapIndex].mapStruct8.unk_60.g = (tempFloat * temp) / 255.0f;
+
+        if (mainMap[mapIndex].mapStruct8.defaultRgba.b < mainMap[mapIndex].mapStruct8.groundRgba.b) {
+            tempFloat = mainMap[mapIndex].mapStruct8.groundRgba.b - mainMap[mapIndex].mapStruct8.defaultRgba.b;
+        } else {
+            tempFloat = mainMap[mapIndex].mapStruct8.defaultRgba.b - mainMap[mapIndex].mapStruct8.groundRgba.b;
+        }
+
+        mainMap[mapIndex].mapStruct8.unk_60.b = (tempFloat * temp) / 255.0f;
+        
+        if (mainMap[mapIndex].mapStruct8.defaultRgba.a < mainMap[mapIndex].mapStruct8.groundRgba.a) {
+            tempFloat = mainMap[mapIndex].mapStruct8.groundRgba.a - mainMap[mapIndex].mapStruct8.defaultRgba.a;
+        } else {
+            tempFloat = mainMap[mapIndex].mapStruct8.defaultRgba.a - mainMap[mapIndex].mapStruct8.groundRgba.a;
+        }
+
+        mainMap[mapIndex].mapStruct8.unk_60.a = (tempFloat * temp) / 255.0f;
+
+        result = 1;
+    }
+
+    return result;
     
-
-//     return result;
-// }
+}
 
 //INCLUDE_ASM(const s32, "system/map", func_80034A6C);
 
@@ -413,6 +450,7 @@ bool func_80034A6C(u16 mapIndex, s8 arg1, s8 arg2, s8 arg3, u8 arg4, f32 arg5, f
 
 //INCLUDE_ASM(const s32, "system/map", func_80034C40);
 
+// holdable items, overlay sprites
 bool func_80034C40(u16 mapIndex, u8 arg1, u16 arg2, u16 arg3, f32 arg4, f32 arg5, f32 arg6, u8 arg7, u8 arg8, u8 arg9, u8 argA) {
 
     bool result = 0; 
@@ -518,6 +556,7 @@ bool func_80035004(u16 mapIndex, u16 arg1, u8 arg2, u8 arg3) {
 
 //INCLUDE_ASM(const s32, "system/map", func_80035054);
 
+// used for maps with foragable items
 bool func_80035054(u16 mapIndex, u16 bitmapIndex, u16 arg2, f32 arg3, f32 arg4, f32 arg5) {
 
     bool result = 0;
@@ -526,7 +565,7 @@ bool func_80035054(u16 mapIndex, u16 bitmapIndex, u16 arg2, f32 arg3, f32 arg4, 
     
         if (bitmapIndex) {
             
-            func_80026E78(&mainMap[mapIndex].mapBitmaps[bitmapIndex], func_80028888(arg2, mainMap[mapIndex].mapStruct6.vaddr1), func_800288B8(arg2, mainMap[mapIndex].mapStruct6.vaddr2, mainMap[mapIndex].mapStruct6.vaddr3));
+            setBitmapFormat(&mainMap[mapIndex].mapBitmaps[bitmapIndex], func_80028888(arg2, mainMap[mapIndex].mapStruct6.vaddr1), func_800288B8(arg2, mainMap[mapIndex].mapStruct6.vaddr2, mainMap[mapIndex].mapStruct6.vaddr3));
              
             mainMap[mapIndex].mapBitmaps[bitmapIndex].unk_1C.x = arg3;
             mainMap[mapIndex].mapBitmaps[bitmapIndex].unk_1C.y = arg4;
@@ -704,6 +743,7 @@ void func_80036AB4(MainMap* map) {
         
         do {
 
+            // func_80037650 = get vertex info object from vertex info object bank + (offset)
             ptr = func_80037614(&map->vtxs[i], func_80037650(i, map->unk_0));
 
             j = 0;
@@ -713,8 +753,7 @@ void func_80036AB4(MainMap* map) {
                 ptr =  func_800374C0(&mapStructs[j], ptr);
     
                 if (mapStructs[j].flags & 0x80) {
-                    // probably should be a flag?
-                    map->vtxs[i].ob[2] |= 0x80;
+                    map->vtxs[i].flags |= 0x80;
                 }
 
                 if (mapStructs[j++].flags & 0x10) {
@@ -761,9 +800,76 @@ void func_800372F0(UnknownMapStruct1* arg0, Unknown1* arg1) {
 INCLUDE_ASM(const s32, "system/map", func_800372F0);
 #endif
 
-INCLUDE_ASM(const s32, "system/map", func_80037350);
+//INCLUDE_ASM(const s32, "system/map", func_80037350);
 
+// unused or inline
+// arg0 = struct
+u8* func_80037350(UnknownVertexStruct* arg0, u8* arg1) {
+
+    // arg1 = &*(arg1+4);
+    arg1 = &arg1[4];
+    
+    arg0->arr2[0] = *arg1;
+    
+    arg1++;
+
+    arg0->arr2[1] = *arg1;
+    
+    arg1++;
+    
+    arg0->arr2[2] = *arg1;
+    
+    arg1++;
+    
+    arg0->arr2[3] = *arg1;
+    
+    arg1++;
+
+    return arg1;
+    
+}
+
+// inline (called by func_80037400 and func_800374C0)
+#ifdef PERMUTER
+u8* func_80037388(UnknownVertexStruct* arg0, u8* arg1, u8 arg2) {
+
+    UnknownVertexStruct struc;
+
+    u8 temp;
+
+    arg0->arr[0] = *arg1;
+    arg1++;
+    
+    arg0->arr2[0] = *arg1;
+    arg1++;
+    
+    arg0->arr3[0] = *arg1;
+    arg1++;
+
+    temp = *arg1;
+
+    arg1++;
+
+    arg0->unk_0 = temp | (*arg1 << 8);
+    
+    arg1++;
+
+    if (arg2) {
+
+        temp = *arg1;
+
+        arg1++;
+
+        arg0->unk_2 = temp | (*arg1 << 8);
+
+        arg1++;
+    }
+    
+    return arg1;
+}
+#else
 INCLUDE_ASM(const s32, "system/map", func_80037388);
+#endif
 
 INCLUDE_ASM(const s32, "system/map", func_80037400);
 
@@ -772,67 +878,37 @@ INCLUDE_ASM(const s32, "system/map", func_800374C0);
 //INCLUDE_ASM(const s32, "system/map", func_80037614);
 
 // param 2 = 80255A10 + (n * 0x28)
-u8* func_80037614(MapVtx* arg0, VtxTexture* arg1) {
+u8* func_80037614(MapVtx* arg0, VtxInfo* arg1) {
 
     u8 *ptr;
-    
-    arg0->ob[0] = arg1->cn[0];
-    arg0->ob[1] = arg1->cn[1];
-    arg0->ob[2] = arg1->cn[2];
-    arg0->count = arg1->cn[3];
-
-    ptr = arg1+1;
-    
-    arg0->vtx = ptr;
-    
-    return (ptr + arg0->count*3);
-    
-} 
-
-/*
-u8* func_80037614(VtxTextureInfo* arg0, VtxTexture* arg1) {
-
-    u8 *ptr;
-    
-    arg0->vtxTex.cn[0] = arg1->cn[0];
-    arg0->vtxTex.cn[1] = arg1->cn[1];
-    arg0->vtxTex.cn[2] = arg1->cn[2];
-    arg0->vtxTex.cn[3] = arg1->cn[3];
-
-    ptr = arg1+1;
-    
-    arg0->vtx = ptr;
-    
-    return (ptr + (arg0->vtxTex.cn[3]*3));
-    
-}
-*/
-
-// alternate
-/*
-UnknownMapStruct9* func_80037614(VtxTextureInfo* arg0, UnknownMapStruct9* arg1) {
-
-    void *ptr;
     
     arg0->unk_8 = arg1->unk_4;
     arg0->unk_9 = arg1->unk_5;
-    arg0->unk_A = arg1->unk_6;
-    arg0->unk_B = arg1->unk_7;
+    arg0->flags = arg1->flags;
+    arg0->count = arg1->count;
 
+    arg1++;
     ptr = arg1;
-    ptr += 8;
     
-    arg0->ptr = ptr;
+    arg0->vtx = ptr;
     
-    return (UnknownMapStruct9*)(ptr + (arg0->unk_B*3));
+    return (ptr + arg0->count*3); 
     
-}
-*/
+} 
 
 //INCLUDE_ASM(const s32, "system/map", func_80037650);
 
-u8* func_80037650(u16 arg0, void *arg1) {
-    return (u8*)(arg1 + *(u32*)(arg1 + arg0*4));
+// arg0 = i
+// arg1 = map.unk_0, u16*
+// get ptr to vertex value from offset table 
+// arg2 = 802551A8, u32 array of offsets
+// vtx = &802551A8 + 802551A8[offset]
+u16* func_80037650(u16 arg0, void* arg1) {
+
+    u32* ptr = (u32*)arg1;
+    u32 offset = ptr[arg0];
+    
+    return (u16*)(arg1+offset);
 }
 
 // alternate
@@ -842,9 +918,17 @@ s32 func_80037650(u16 arg0, s32 arg1) {
 }
 */
 
+// alternate
+/*
+u16* func_80037650(u16 arg0, void *arg1) {
+    // should be: return (u16*)&(u32*)arg1[arg0];
+    return (u16*)(arg1 + *(u32*)(arg1 + arg0*4));
+}
+*/
+
 //INCLUDE_ASM(const s32, "system/map", func_80037668);
 
-u8 func_80037668(MainMap* map, u16 vtxIndex, f32 arg2, f32 arg3, f32 arg4) {
+u32 func_80037668(MainMap* map, u16 vtxIndex, f32 arg2, f32 arg3, f32 arg4) {
 
     u8 count = 0;
     u16 count2;
@@ -858,17 +942,17 @@ u8 func_80037668(MainMap* map, u16 vtxIndex, f32 arg2, f32 arg3, f32 arg4) {
         
         do {
             
-            D_80223380[gDisplayContextIndex][count2].ob[0] = *vtx + arg2;
+            D_80223380[gDisplayContextIndex][count2].v.ob[0] = *vtx + arg2;
             vtx++;
-            D_80223380[gDisplayContextIndex][count2].ob[1] = *(u8*)vtx + arg3;
+            D_80223380[gDisplayContextIndex][count2].v.ob[1] = *(u8*)vtx + arg3;
             vtx++;
-            D_80223380[gDisplayContextIndex][count2].ob[2] = *vtx + arg4;
+            D_80223380[gDisplayContextIndex][count2].v.ob[2] = *vtx + arg4;
             vtx++;
 
-            D_80223380[gDisplayContextIndex][count2].cn[0] = map->mapStruct8.groundRgba.r;
-            D_80223380[gDisplayContextIndex][count2].cn[1] = map->mapStruct8.groundRgba.g;
-            D_80223380[gDisplayContextIndex][count2].cn[2] = map->mapStruct8.groundRgba.b;
-            D_80223380[gDisplayContextIndex][count2].cn[3] = map->mapStruct8.groundRgba.a;
+            D_80223380[gDisplayContextIndex][count2].v.cn[0] = map->mapStruct8.groundRgba.r;
+            D_80223380[gDisplayContextIndex][count2].v.cn[1] = map->mapStruct8.groundRgba.g;
+            D_80223380[gDisplayContextIndex][count2].v.cn[2] = map->mapStruct8.groundRgba.b;
+            D_80223380[gDisplayContextIndex][count2].v.cn[3] = map->mapStruct8.groundRgba.a;
             
             count2++;
             count++;
@@ -886,7 +970,7 @@ Gfx* func_8003797C(Gfx* dl, MainMap* arg1, u8 arg2) {
 
     Tile bitmap;
 
-    func_80026E78((Bitmap*)&bitmap, func_80028888(arg2, arg1->unk_10), func_800288A0(arg2, arg1->unk_14));
+    setBitmapFormat((Bitmap*)&bitmap, func_80028888(arg2, arg1->unk_10), func_800288A0(arg2, arg1->unk_14));
 
     gDPLoadTextureTile_4b(dl++, bitmap.timg, bitmap.fmt, bitmap.width, bitmap.height, 0, 0, bitmap.width - 1, bitmap.height - 1, 0, G_TX_NOMIRROR | G_TX_WRAP, G_TX_NOMIRROR | G_TX_WRAP, G_TX_NOMASK, G_TX_NOMASK, G_TX_NOLOD, G_TX_NOLOD);
     gDPLoadTLUT_pal16(dl++, 0, bitmap.pal);
@@ -926,13 +1010,47 @@ inline Gfx* func_80037DF0(Gfx* dl, MainMap* arg1, u16 arg2) {
 
     dl++;
     
-    return dl++;
+    return dl;
     
 }
 
 INCLUDE_ASM(const s32, "system/map", func_80037F08);
 
-INCLUDE_ASM(const s32, "system/map", func_800383B0);
+//INCLUDE_ASM(const s32, "system/map", func_800383B0);
+
+Gfx* func_800383B0(Gfx* arg0, MainMap* map, u16 vtxIndex, f32 arg3, f32 arg4, f32 arg5) {
+
+    u16 i;
+    
+    u32 count;
+    
+    Gfx* dl;
+    Gfx dl2;
+
+    // ??
+    f32 temp;
+    u32 padding[2];
+
+    temp = arg4;
+
+    // ??
+    count = func_80037668(map, vtxIndex, arg3, *(f32*)&arg4, arg5);
+
+    gSPVertex(&dl2 + 1, &D_80223380[gDisplayContextIndex][map->mapStruct9.unk_C + map->mapStruct9.unk_A], map->vtxs[vtxIndex].count, 0);
+
+    dl2 = *(&dl2 + 1);
+    *arg0++ = dl2;
+    
+    map->mapStruct9.unk_A += count;
+
+    dl = &map->displayLists[map->vtxs[vtxIndex].currentVtxIndex];
+    
+    for (i = 0; i < map->vtxs[vtxIndex].vtxCount; i++) {
+        *arg0++ = *dl++;
+    }
+
+    return arg0++;
+}
 
 void func_80038514(void) {}
 
@@ -993,6 +1111,7 @@ void func_80038630(Decompressed* arg0, Compressed* arg1) {
     arg0->x = (s16)(arg1->part1 | (arg1->part2 << 8));
     arg0->y = (s16)(arg1->part3 | (arg1->part4 << 8));
     arg0->z = (s16)(arg1->part5 | (arg1->part6 << 8));
+
 }
 
 //INCLUDE_ASM(const s32, "system/map", func_800386C0);
@@ -1027,13 +1146,15 @@ INCLUDE_ASM(const s32, "system/map", func_800386D4);
 //INCLUDE_ASM(const s32, "system/map", func_80038728);
 
 // arg0 = stack array
-// arg1 = timg from level data ROM section; tile sheets
+// arg1 = map.unk_4
+// arg2 = offset
 void func_80038728(u8 arg0[], u8* arg1, u16 arg2) {
 
     u8* arr;
 
-    // skip timg header
+    // skip header
     arr = (arg1 + 4);
+
     // get offset
     // 0x13 = sizeof arrays
     arr += (arg2*0x13);
@@ -1101,8 +1222,8 @@ bool func_8003886C(u16 mapIndex) {
 
 //INCLUDE_ASM(const s32, "system/map", func_800388A4);
 
-// param_2 = mainMap.unk_20 (set from gTileContext in func_80033A90, called by func_8003BC50)
-u8 *func_800388A4(u16 arg0, u8 *arg1) {
+// param_2 = mainMap.unk_20 (set from gMapModelContext in func_80033A90, called by func_8003BC50)
+u8* func_800388A4(u16 arg0, u8 *arg1) {
     
     u32 temp1;
     u32 temp2;
@@ -1271,7 +1392,198 @@ void func_80039E20(u16 arg0, Gfx* arg1) {
 
 INCLUDE_ASM(const s32, "system/map", func_80039F58);
 
+static inline u8 handleRgba(u16 i) {
+
+    u8 count = 0;
+    
+    if (mainMap[i].mapStruct8.groundRgba.r < mainMap[i].mapStruct8.rgba.r) {
+                
+        mainMap[i].mapStruct8.groundRgba.r += mainMap[i].mapStruct8.unk_60.r; 
+        
+        if (mainMap[i].mapStruct8.rgba.r <= mainMap[i].mapStruct8.groundRgba.r) {
+            mainMap[i].mapStruct8.groundRgba.r = mainMap[i].mapStruct8.rgba.r;
+        } else {
+            count = 1;
+        } 
+    }
+
+    if (mainMap[i].mapStruct8.groundRgba.r > mainMap[i].mapStruct8.defaultRgba.r) {
+        
+        mainMap[i].mapStruct8.groundRgba.r -= mainMap[i].mapStruct8.unk_60.r;
+
+        if (mainMap[i].mapStruct8.groundRgba.r <= mainMap[i].mapStruct8.defaultRgba.r) {
+            mainMap[i].mapStruct8.groundRgba.r = mainMap[i].mapStruct8.defaultRgba.r;
+        } else {
+            count += 1;
+        } 
+        
+    }
+
+    if (mainMap[i].mapStruct8.groundRgba.g < mainMap[i].mapStruct8.rgba.g) {
+        
+        mainMap[i].mapStruct8.groundRgba.g += mainMap[i].mapStruct8.unk_60.g; 
+        
+        if (mainMap[i].mapStruct8.rgba.g <= mainMap[i].mapStruct8.groundRgba.g) {
+            mainMap[i].mapStruct8.groundRgba.g = mainMap[i].mapStruct8.rgba.g;
+        } else {
+            count += 1;
+        } 
+    }
+
+    if (mainMap[i].mapStruct8.groundRgba.g > mainMap[i].mapStruct8.defaultRgba.g) {
+        
+        mainMap[i].mapStruct8.groundRgba.g -= mainMap[i].mapStruct8.unk_60.g;
+
+        if (mainMap[i].mapStruct8.groundRgba.g <= mainMap[i].mapStruct8.defaultRgba.g) {
+            mainMap[i].mapStruct8.groundRgba.g = mainMap[i].mapStruct8.defaultRgba.g;
+        } else {
+            count += 1;
+        } 
+        
+    }
+
+    if (mainMap[i].mapStruct8.groundRgba.b < mainMap[i].mapStruct8.rgba.b) {
+        
+        mainMap[i].mapStruct8.groundRgba.b += mainMap[i].mapStruct8.unk_60.b; 
+        
+        if (mainMap[i].mapStruct8.rgba.b <= mainMap[i].mapStruct8.groundRgba.b) {
+            mainMap[i].mapStruct8.groundRgba.b = mainMap[i].mapStruct8.rgba.b;
+        } else {
+            count += 1;
+        } 
+    }
+
+    if (mainMap[i].mapStruct8.groundRgba.b > mainMap[i].mapStruct8.defaultRgba.b) {
+        
+        mainMap[i].mapStruct8.groundRgba.b -= mainMap[i].mapStruct8.unk_60.b;
+
+        if (mainMap[i].mapStruct8.groundRgba.b <= mainMap[i].mapStruct8.defaultRgba.b) {
+            mainMap[i].mapStruct8.groundRgba.b = mainMap[i].mapStruct8.defaultRgba.b;
+        } else {
+            count += 1;
+        } 
+        
+    }
+
+    if (mainMap[i].mapStruct8.groundRgba.a < mainMap[i].mapStruct8.rgba.a) {
+        
+        mainMap[i].mapStruct8.groundRgba.a += mainMap[i].mapStruct8.unk_60.a; 
+        
+        if (mainMap[i].mapStruct8.rgba.a <= mainMap[i].mapStruct8.groundRgba.a) {
+            mainMap[i].mapStruct8.groundRgba.a = mainMap[i].mapStruct8.rgba.a;
+        } else {
+            count += 1;
+        } 
+    }
+
+    if (mainMap[i].mapStruct8.groundRgba.a > mainMap[i].mapStruct8.defaultRgba.a) {
+        
+        mainMap[i].mapStruct8.groundRgba.a -= mainMap[i].mapStruct8.unk_60.a;
+
+        if (mainMap[i].mapStruct8.groundRgba.a <= mainMap[i].mapStruct8.defaultRgba.a) {
+            mainMap[i].mapStruct8.groundRgba.a = mainMap[i].mapStruct8.defaultRgba.a;
+        } else {
+            count += 1;
+        } 
+        
+    }
+
+    return count;
+}
+
+static inline void handleRotation(u16 i) {
+    
+    mainMap[i].mapStruct2.unk_30.x = 0.0f;
+    mainMap[i].mapStruct2.unk_30.y = 360.0f - currentWorldRotationAngles.y;
+    mainMap[i].mapStruct2.unk_30.z = 0.0f;
+
+    if (mainMap[i].mapStruct2.unk_30.y < 0.0f) {
+        mainMap[i].mapStruct2.unk_30.y += 360.0f;
+    }
+
+    if (mainMap[i].mapStruct2.unk_30.y >= 360.0f) {
+        mainMap[i].mapStruct2.unk_30.y -= 360.0f;
+    }
+    
+}
+
 INCLUDE_ASM(const s32, "system/map", func_8003A1BC);
+
+// main loop function
+// need to keep debugging why not matching in build
+/*
+void func_8003A1BC(void) {
+
+    u16 height = 0;
+    u16 i;
+    
+    Gfx *dl = D_801A8B60[gDisplayContextIndex];
+    Gfx *tempDl;
+    
+    u32 padding[4];
+    
+    for (i = 0; i < 1; i++) {
+
+        if ((mainMap[i].mapStruct9.flags & 1) && (mainMap[i].mapStruct9.flags & 2)) {
+            
+            func_80039F58(i);
+
+            if (!handleRgba(i)) {
+                mainMap[i].mapStruct9.flags |= 8;
+            } else {
+                mainMap[i].mapStruct9.flags &= ~8;
+            }
+
+            if (mainMap[i].mapStruct8.angles.x < 0) {
+                mainMap[i].mapStruct8.angles.x += 360.0f;
+            }
+
+            if (mainMap[i].mapStruct8.angles.x >= 360.0f) {
+                mainMap[i].mapStruct8.angles.x -= 360.0f;
+            }
+            
+            if (mainMap[i].mapStruct8.angles.y < 0) {
+                mainMap[i].mapStruct8.angles.y += 360.0f;
+            }
+
+            if (mainMap[i].mapStruct8.angles.y >= 360.0f) {
+                mainMap[i].mapStruct8.angles.y -= 360.0f;
+            }
+
+            if (mainMap[i].mapStruct8.angles.z < 0) {
+                mainMap[i].mapStruct8.angles.z += 360.0f;
+            }
+
+            if (mainMap[i].mapStruct8.angles.z >= 360.0f) {
+                mainMap[i].mapStruct8.angles.z -= 360.0f;
+            }
+
+            handleRotation(i);
+            
+            tempDl = dl;
+            
+            dl = func_80037DF0(tempDl, &mainMap[i], height);
+            
+            func_80038BC4(&mainMap[i]);
+            func_800393E0(&mainMap[i]);
+            func_80039990(&mainMap[i]);
+            
+            func_80039E20(i, tempDl);
+
+            func_8003B1BC(&mainMap[i]);
+
+            height += mainMap[i].mapStruct9.height;
+
+        }
+        
+    }
+
+    if (dl - D_801A8B60[gDisplayContextIndex] >= 0x1B00) {
+        __assert(D_8011EDB0, D_8011EDB4, 3912);
+    }
+
+}
+*/
 
 //INCLUDE_ASM(const s32, "system/map", func_8003AC14);
 
@@ -1302,15 +1614,15 @@ inline void func_8003AC14(Gfx* dl, UnknownMapStruct9* arg1) {
 //      size 0x40
 //INCLUDE_ASM(const s32, "system/map", func_8003ACA8);
 
-Gfx* func_8003ACA8(Gfx* arg0, MainMap* arg1, MapBitmap* arg2, u16 arg3) {
+Gfx* func_8003ACA8(Gfx* arg0, MainMap* arg1, MapBitmap* arg2, u16 vtxIndex) {
 
     Gfx dl[2];
-    
-    func_800276AC(&D_80165500[gDisplayContextIndex][arg3], arg2->height, arg2->width, arg2->width, 0, 0,
+      
+    func_800276AC((Vtx*)&D_80165500[gDisplayContextIndex][vtxIndex], arg2->height, arg2->width, arg2->width, 0, 0,
         0, 0, 0, 0x150, arg1->mapStruct8.groundRgba.r, arg1->mapStruct8.groundRgba.g, arg1->mapStruct8.groundRgba.b,
         arg1->mapStruct8.groundRgba.a);
-
-    gSPVertex(&dl[1], &D_80165500[gDisplayContextIndex][arg3], 4, 0);
+ 
+    gSPVertex(&dl[1], &D_80165500[gDisplayContextIndex][vtxIndex][0], 4, 0);
 
     *dl = *(dl+1);
     *arg0 = *dl;
@@ -1346,9 +1658,10 @@ void func_8003B100(MainMap* map, f32 arg1, f32 arg2, f32 arg3, f32 arg4, f32 arg
     func_800292EC(func_8002929C(dl, 8), temp_f22, temp_f24, temp_f20);
 }
 
-// main loop function
 INCLUDE_ASM(const s32, "system/map", func_8003B1BC);
 
+
+// have to remove all references to D_8011ED6C, D_8011ED74, etc. before using
 
 // static const Gfx D_8011ED68[4] = {
 
@@ -1425,8 +1738,6 @@ INCLUDE_RODATA(const s32, "system/map", D_8011EDA8);
 
 INCLUDE_RODATA(const s32, "system/map", D_8011EDAC);
 
-
-// binary data
 
 INCLUDE_RODATA(const s32, "system/map", D_8011EDB0);
 

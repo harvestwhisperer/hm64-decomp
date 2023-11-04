@@ -9,6 +9,7 @@
 extern u32 D_8013CE0C;
 extern u8 D_8013CE10;
 
+// state that appears in conversation
 extern GameVariable gameVariables[];
 
 extern u32* specialDialogueBitsPointer;

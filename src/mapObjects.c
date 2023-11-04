@@ -104,7 +104,7 @@ void func_800D9600(u8 mapIndex) {
             return;    
 
         case MINE:
-        case 0x45:
+        case MINE_2:
             for (i = 0; i < FIELD_WIDTH; i++) {
                 for (j = 0; j < FIELD_HEIGHT; j++) {
                     if (D_80170468[i][j]) {
@@ -157,7 +157,7 @@ void func_800D9AC8(u8 mapIndex) {
                     D_8016F8F8[i][j] = 0;
                     break;
                 case MINE:
-                case 0x45:
+                case MINE_2:
                     D_80170468[i][j] = 0;
                     break;
                 case RANCH:

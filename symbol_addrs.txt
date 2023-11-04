@@ -883,6 +883,7 @@ getAbsoluteValue = 0x80026850;
 graphicsInit = 0x800268F0;
 drawFrame = 0x80026A98;
 startGfxTask = 0x80026AE4;
+setBitmapFormat = 0x80026E78;
 sinfRadians = 0x800278F0;
 cosfRadians = 0x80027920;
 initRcp = 0x800288D8;
@@ -903,7 +904,7 @@ setSpriteAnimation = 0x8002F3F0;
 setSpriteCollisionBuffers = 0x8002FF9C;
 
 intializeTileContext = 0x8003B870;
-setTileInfo = 0x8003B9DC;
+setMapModelAddresses = 0x8003B9DC;
 
 initializeAudio = 0x8003CDC0;
 mainLoopAudioHandler = 0x8003CF38;
@@ -1172,7 +1173,7 @@ dogInfo = 0x801886B0;
 
 __cursor = 0x801886DC;
 
-gTiles = 0x801886F0;
+gMapModelAddresses = 0x801886F0;
 
 mainLoopCallbacksTable = 0x80188F70;
 
@@ -1254,8 +1255,8 @@ gCurrentGameIndex = 0x80205200;
 gfxTaskNo = 0x8020520A;
 gForecast = 0x80205238;
 gWifePregnancyCounter = 0x802055D0;
-gTileContext = 0x802055D8;
-gTileContextFlags = 0x80205622;
+gMapModelContext = 0x802055D8;
+gMapModelContextFlags = 0x80205622;
 gNamingScreenIndex = 0x80205624;
 gDisplayContextIndex = 0x80205630;
 frameCount = 0x80205634;

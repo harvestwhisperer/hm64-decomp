@@ -27,42 +27,43 @@ typedef struct {
 } Compressed;
 
 typedef struct {
-    s16 ob[3];
-    u32 unk;
-    u8 cn[4]; 
-} Vtx2;
+    u16 unk_0;
+    u16 unk_2;
+    u8 arr[4];
+    u8 arr2[4];
+    u8 arr3[4];
+} UnknownVertexStruct;
 
 typedef struct {
-    short tc[2];
-    unsigned char cn[4];
-} VtxTexture;
-
-typedef struct {
-    VtxTexture *vtx;
-    VtxTexture vtxTex;
-} VtxTextureInfo;
+    u8 ob[3];
+    u8 unk_3;
+    u8 unk_4;
+    u8 unk_5;
+    u8 flags;
+    u8 count;
+} VtxInfo;
 
 // 8013DC70
 typedef struct MapVtx {
-    Vtx2 *vtx;
+    Vtx *vtx;
     u16 currentVtxIndex;
     u16 vtxCount;
-    u8 ob[3];
+    u8 unk_8;
+    u8 unk_9;
+    u8 flags;
     u8 count;
 } MapVtx;
 
-typedef u16 VtxArray[0x30][0x30];
-
 // 8013DC64
+// same layout as MapVtx but looks like members have a different function
 typedef struct {
-    // 2D array pointer: u16 arr[0x13][?] at 0x8025503C
-    VtxArray *ptr; // 0x64
+    Vtx *ptr; // 0x64 // 0x8025503C
     u16 unk_4; // 0x68
-    u16 unk_6; // 0x6A
+    u16 unk_6; // 0x6A // loop counter for vertex info objects
     u8 unk_8; // 0x6C
     u8 unk_9; // 0x6D
     // counters for indexing into 8025503C
-    u8 unk_A; // 0x6E
+    u8 unk_A; // 0x6E // related to data from mainMap.unk_8, possibly collisions/interactables
     u8 unk_B; // 0x6F
 } UnknownMapStruct1;
 
@@ -89,6 +90,7 @@ typedef struct {
 } UnknownMapStruct3;
 
 // D_80141A18
+// objects
 typedef struct {
     Vec3f unk_0; // 0xA18
     u16 spriteIndex; // 0xA24
@@ -159,47 +161,38 @@ typedef struct {
 
 // 0x1A608
 // D_80158248
+// cast to Bitmap
 typedef struct {
     f32 unk_0; // 0x48
     f32 unk_4; // 0x4C
     u16 unk_8; // 0x50
-    u16 unk_A; // 0x52
-    u16 unk_C; // 0x54
+    u16 unk_A; // 0x52 // vertex count or part of map size
+    u16 unk_C; // 0x54 // vertex count or part of map size
     u16 height; // 0x56
     u8 unk_10; // 0x58 // set from *mainMap.unk_c
     u8 unk_11; // counter // 0x59
     u16 flags; // 0x5A
 } UnknownMapStruct9;
 
-// more likely just binary data
-// typedef struct {
-//     u32 unk_0;
-//     u8 unk_4;
-//     u8 unk_5;
-//     u8 unk_6;
-//     u8 unk_7;
-//     u32 padding[8];
-// } UnknownMapStruct9;
-
 // 0x8013DC40
 typedef struct  {
-    // active vertex?
-    void *unk_0;
-    void *unk_4; // current tile sheet
-    void *unk_8;
+    // ptrs set from offset array at 80255000
+    void *unk_0; // ptr to array of offsets + vertex info structs
+    u8 *unk_4; // u8 array used for float calculations
+    u8 **unk_8;
     u8 *unk_C; // ptr to compressed Vec3fs bank
-    void *unk_10;
-    void *unk_14;
-    void *unk_18; // bitmap timg ptr
-    void *unk_1C; // bitmap palette ptr
-    void *unk_20;
-    UnknownMapStruct1 mapStruct1; // 0x24
-    MapVtx vtxs[0x400]; // 0x30
+    void *unk_10; // index + tile spritesheets
+    void *unk_14; // index + tile palette
+    void *unk_18; // index + ci sprites
+    void *unk_1C; // index + palette
+    void *unk_20; // param 2 of func_800388A4
+    UnknownMapStruct1 mapStruct1; // 0x24, vertex/mesh info
+    MapVtx vtxs[1024]; // 0x30 // map model vertices
     u16 unk_arr[0x50]; // 0x3030
     u32 padding2[0x31F];
     UnknownMapStruct2 mapStruct2; // 0x3D4C
-    UnknownMapStruct3 mapStruct3[0x10]; // 0x3D98 // related to tile bitmaps
-    UnknownMapStruct4 mapStruct4[12]; // 0x3DD8
+    UnknownMapStruct3 mapStruct3[0x10]; // 0x3D98 // related to tile bitmaps/compressed vecs
+    UnknownMapStruct4 mapStruct4[12]; // 0x3DD8 // objects
     u32 padding4[0x14];
     UnknownMapStruct5 mapStruct5[0x10];
     UnknownMapStruct6 mapStruct6; // 0x4058;
@@ -221,6 +214,7 @@ typedef struct  {
 
 extern void func_800337D0(void);    
 extern bool func_80033A90(u16, u16*, void*, void*, void *, void*, void*, void*, void*, void*, void*);
+extern bool func_80034090(u16 mapIndex);  
 extern bool func_8003423C(u16, f32, f32, f32);
 extern bool func_80034298(u16, f32, f32, f32);   
 extern bool func_800342F4(u16, f32, f32, f32);     

@@ -64,14 +64,13 @@ extern const char D_8011EC60[];
 extern const char D_8011EC64[];
 
 // shared globals
-// also used by tiles.c, map.c, and worldGraphics.c
+// also used by mapContext.c, map.c, and worldGraphics.c
 extern Vec3f previousWorldRotationAngles;
 extern Vec3f currentWorldRotationAngles;
 extern f32 D_80170450;
 extern f32 D_80170454;
-// func_800276AC
-// unknown struct size 0x40
-extern Mtx D_8021E6E0[2][0x47];
+// sprite vertices
+extern Vtx D_8021E6E0[2][0x80][4];
 // nu idle statck
 extern u64 *D_80126520;
 
@@ -151,7 +150,7 @@ volatile u8 func_80026BE0(void) {
     gDPFullSync(dl++);
     gSPEndDisplayList(dl++);
 
-    if (dl - D_80205000[gDisplayContextIndex] >= 0x20) {
+    if (dl - D_80205000[gDisplayContextIndex] >= 32) {
         __assert(&D_8011EC60, &D_8011EC64, 319);
     }
 
@@ -186,9 +185,9 @@ volatile u8 func_80026CEC(s32 arg0, s32 arg1) {
     return gfxTaskNo;
 }
 
-//INCLUDE_ASM(const s32, "system/graphic", func_80026E78);
+//INCLUDE_ASM(const s32, "system/graphic", setBitmapFormat);
 
-void func_80026E78(Bitmap *sprite, u16 *timg, u16 *palette) {
+void setBitmapFormat(Bitmap *sprite, u16 *timg, u16 *palette) {
     
     u16 temp1;
     u16 temp2;
@@ -197,8 +196,10 @@ void func_80026E78(Bitmap *sprite, u16 *timg, u16 *palette) {
 
     func_80026F30(sprite, palette);
     
+    // skip header and size
     sprite->timg = timg + 4;
     
+    // bytes 4-8 = width and height (16 bit)
     temp1 = *(timg+2);
     temp3 = temp1;
     sprite->width = (u8)temp1 << 8;
@@ -212,6 +213,7 @@ void func_80026E78(Bitmap *sprite, u16 *timg, u16 *palette) {
     temp2 = (temp1 >> 8) | sprite->height;
     sprite->height = temp2;
     
+    // get pixel size from bit
     switch (*(timg + 1) >> 4 & 0xF) {
         case 0:
           sprite->fmt = G_IM_FMT_CI;
@@ -232,6 +234,7 @@ void func_80026F30(Bitmap* sprite, u16* palette) {
     // probably a stack struct
     u32 padding[5];
     
+    // skip header
     sprite->pal = palette + 2;
 
     switch ((*(palette + 1) >> 4) & 0xF) {                           
@@ -483,6 +486,7 @@ f32 func_80028820(u8 arg0) {
  
 //INCLUDE_ASM(const s32, "system/graphic", func_80028888);
 
+// get ptr to ci texture from index
 void *func_80028888(u16 arg0, u32 *arg1) {
   void *res = arg1;
   return res + *(arg1 + arg0);
