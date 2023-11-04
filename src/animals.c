@@ -4,7 +4,7 @@
 
 #include "system/graphic.h"
 #include "system/sprite.h"
-#include "system/tiles.h"
+#include "system/mapContext.h"
 
 #include "level.h"
 

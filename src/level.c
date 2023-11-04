@@ -5,7 +5,7 @@
 #include "system/map.h"
 #include "system/memory.h"
 #include "system/sprite.h"
-#include "system/tiles.h"
+#include "system/mapContext.h"
 
 #include "game.h"
 #include "gameAudio.h"
@@ -46,7 +46,7 @@ extern u8 D_801142E0[4][4];
 extern u8 D_801144C0[4][8];
 extern u8 D_801147C0[];
 extern u8 D_8011FB28[];
-extern Vec D_8011FB70[6];
+extern Vec D_8011FB70[];
 
 // shared with player.c and setCutscenes.c
 extern u8 D_8021E6D0;
@@ -195,6 +195,7 @@ u8 getLevelFlags(u16 mapIndex) {
 
 //INCLUDE_ASM(const s32, "level", func_8006EC58);
 
+// call map.c functions for foragable maps
 void func_8006EC58(u16 mapIndex) {
 
     switch (mapIndex) {
@@ -240,7 +241,7 @@ void func_8006EC58(u16 mapIndex) {
             func_80034EF0(0, 0, 0, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &groundItemsTextureStart, &groundItemsTextureEnd, &groundItemsPaletteStart, &groundItemsPaletteEnd, 0); 
             break;    
         case MINE:                                      
-        case 0x45:        
+        case MINE_2:        
             D_801FD624 = 2;
             D_801C3F35 = 2;
             func_80034EF0(0, 2, 2, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &groundItemsTextureStart, &groundItemsTextureEnd, &groundItemsPaletteStart, &groundItemsPaletteEnd, 0); 
@@ -262,7 +263,7 @@ void func_8006EC58(u16 mapIndex) {
         case POND:                                      
         case CAVE:                                      
         case MINE:                                      
-        case 0x45:                                      
+        case MINE_2:                                      
         case FARM:                                      
         case GREENHOUSE:        
             
@@ -360,9 +361,7 @@ void func_80073244(u8 itemIndex) {
     MemoryRead_32 *ptr2 = D_8011FB28;
 
     do {
-        *(Aligned32*)ptr = *(Aligned32*)ptr2;
-        ptr2++;
-        ptr++;
+        *(Aligned32*)ptr++ = *(Aligned32*)ptr2++;
     } while (ptr2 != (D_8011FB28 + 0x40));    
 
     *(Vec2f*)ptr = *(Vec2f*)ptr2;
@@ -387,9 +386,7 @@ void func_8007341C(u8 itemIndex) {
     Vec* ptr2 = D_8011FB70;
 
     do {    
-        *(Vec4f*)ptr = *(Vec4f*)ptr2;
-        ptr2++;
-        ptr++;
+        *(Vec4f*)ptr++ = *(Vec4f*)ptr2++;
     } while (ptr2 != (D_8011FB70 + 0x6));
 
     *(Vec3f*)ptr = *(Vec3f*)ptr2;
@@ -435,7 +432,269 @@ INCLUDE_RODATA(const s32, "level", D_8011FB28);
 
 INCLUDE_RODATA(const s32, "level", D_8011FB70);
 
+// static const f32 D_8011FB70[28] = {
+//     -136.0f, 0.0f, 88.0f,
+//     -136.0f, 0.0f, 24.0f,
+//     -136.0f, 0.0f, -40.0f,
+//     -136.0f, 0.0f, -104.0f,
+//     120.0f, 0.0f, 88.0f,
+//     120.0f, 0.0f, 24.0f,
+//     120.0f, 0.0f, -40.0f,
+//     120.0f, 0.0f, -104.0f,
+//     220.0f, 0.0f, -264.0f,
+//     0.0f
+// };
+
 INCLUDE_ASM(const s32, "level", func_800735FC);
+
+// matches but have to match preceding rodata
+/*
+void func_800735FC(u16 levelIndex) {
+
+    switch (levelIndex) {
+        case FARM:
+            func_80038900(0, 9, 0, 0, 1);
+            func_80038900(0, 0xA, 0, 2, 3);
+            func_80038900(0, 0xA, 1, 3, 2);
+            func_80038900(0, 0xB, 0, 4, 1);
+            func_80038900(0, 0xC, 0, 1, 1);
+            func_80038900(0, 0xD, 0, 0xC, 1);
+            func_80038900(0, 0xE, 0, 0xA, 1);
+            func_80038900(0, 0xF, 0, 0xB, 1);
+            func_80038900(0, 0x10, 0, 0xD, 1);
+            func_80038900(0, 0x11, 0, 9, 1);
+            func_80038900(0, 0x13, 0, 0xE, 1);
+            func_80038900(0, 0x14, 0, 0xF, 1);
+            func_80038900(0, 0x12, 0, 0x11, 2);
+            func_80038900(0, 0x12, 1, 0x12, 2);
+            func_80038900(0, 0x12, 2, 0x11, 2);
+            func_80038900(0, 0x12, 3, 0x13, 2);
+            func_80038900(0, 0x12, 4, 0x14, 2);
+            func_80038900(0, 0x1A, 0, 0x1A, 1);
+            func_80038900(0, 0x1B, 0, 2, 3);
+            func_80038900(0, 0x1B, 1, 3, 8);
+            func_80038900(0, 0x1B, 2, 2, 2);
+            func_80038900(0, 0x1B, 3, 0x1B, 2);
+            func_80038900(0, 0x1C, 0, 0x1C, 1);
+            func_80038900(0, 0x1D, 0, 0x1D, 1);
+            func_80038900(0, 0x1E, 0, 0x1E, 1);
+            func_80038900(0, 0, 0, 0x20, 0);
+            func_80038900(0, 1, 0, 0x21, 0);
+            func_80038900(0, 2, 0, 0x22, 0);
+            func_80038900(0, 3, 0, 0x1F, 0);
+            func_80038900(0, 4, 0, 5, 0);
+            func_80038900(0, 5, 0, 6, 0);
+            func_80038900(0, 6, 0, 7, 0);
+            func_80038900(0, 7, 0, 8, 0);
+            func_80038900(0, 8, 0, 0x10, 0);
+            break;
+        default:
+            break;
+        case GREENHOUSE:
+            func_80038900(0, 0, 0, 0, 2);
+            func_80038900(0, 0, 1, 1, 2);
+            func_80038900(0, 0, 2, 0, 2);
+            func_80038900(0, 0, 3, 2, 2);
+            func_80038900(0, 0, 4, 3, 2);
+            func_80038900(0, 4, 0, 4, 0);
+            func_80038900(0, 5, 0, 5, 0);
+            func_80038900(0, 6, 0, 6, 0);
+            func_80038900(0, 7, 0, 7, 0);
+            func_80038900(0, 8, 0, 8, 0);
+            break;
+        case HOUSE:
+            func_80038900(0, 0, 0, 2, 1);
+            func_80038900(0, 1, 0, 9, 1);
+            func_80038900(0, 2, 0, 3, 1);
+            func_80038900(0, 3, 0, 0, 1);
+            func_80038900(0, 4, 0, 7, 1);
+            func_80038900(0, 5, 0, 6, 1);
+            func_80038900(0, 6, 0, 5, 1);
+            func_80038900(0, 7, 0, 4, 1);
+            func_80038900(0, 8, 0, 1, 1);
+            func_80038900(0, 9, 0, 8, 1);
+            func_80038900(0, 0xA, 0, 0xA, 1);
+            func_80038900(0, 0xB, 0, 0xB, 1);
+            func_80038900(0, 0xC, 0, 0xC, 1);
+            break;
+        case KITCHEN:
+            func_80038900(0, 0, 0, 0, 1);
+            func_80038900(0, 1, 0, 1, 1);
+            func_80038900(0, 2, 0, 2, 1);
+            func_80038900(0, 3, 0, 3, 1);
+            break;
+        case BATHROOM:
+            func_80038900(0, 0, 0, 0, 1);
+            func_80038900(0, 1, 1, 1, 1);
+            func_80038900(0, 2, 2, 3, 1);
+            func_80038900(0, 3, 3, 2, 1);
+            break;
+        case COOP:
+            func_80038900(0, 0, 0, 0, 2);
+            func_80038900(0, 0, 1, 1, 2);
+            func_80038900(0, 0, 2, 0, 2);
+            func_80038900(0, 0, 3, 2, 2);
+            func_80038900(0, 0, 4, 3, 2);
+            func_80038900(0, 1, 0, 4, 1);
+            break;
+        case BARN:
+            func_80038900(0, 0, 0, 0, 2);
+            func_80038900(0, 0, 1, 1, 2);
+            func_80038900(0, 0, 2, 0, 2);
+            func_80038900(0, 0, 3, 2, 2);
+            func_80038900(0, 0, 4, 3, 2);
+            break;
+        case VILLAGE_1:
+            func_80038900(0, 0, 0, 0, 1);
+            func_80038900(0, 1, 0, 1, 1);
+            func_80038900(0, 2, 0, 2, 1);
+            func_80038900(0, 3, 0, 4, 1);
+            func_80038900(0, 4, 0, 3, 1);
+            func_80038900(0, 5, 0, 5, 1);
+            func_80038900(0, 6, 0, 6, 1);
+            func_80038900(0, 7, 0, 7, 1);
+            func_80038900(0, 8, 0, 8, 1);
+            func_80038900(0, 9, 0, 9, 1);
+            func_80038900(0, 0xA, 0, 0xA, 1);
+            func_80038900(0, 0xB, 0, 0xB, 1);
+            func_80038900(0, 0xC, 0, 0xC, 1);
+            break;
+        case VILLAGE_2:
+            func_80038900(0, 0, 0, 0, 1);
+            func_80038900(0, 1, 0, 1, 1);
+            func_80038900(0, 2, 0, 2, 1);
+            func_80038900(0, 3, 0, 3, 1);
+            break;
+
+        case SQUARE:
+            switch (gSeason) {                          
+                case SPRING:                                     
+                    func_80038900(0, 0, 0, 0, 1);
+                    func_80038900(0, 1, 0, 1, 1);
+                    func_80038900(0, 2, 0, 2, 1);
+                    func_80038900(0, 3, 0, 3, 1);
+                    func_80038900(0, 4, 0, 4, 1);
+                    func_80038900(0, 5, 0, 5, 1);
+                    func_80038900(0, 6, 0, 6, 1);
+                    func_80038900(0, 7, 0, 7, 1);
+                    func_80038900(0, 8, 0, 8, 1);
+                    func_80038900(0, 9, 0, 9, 1);
+                    func_80038900(0, 0xA, 0, 0xA, 1);
+                    break;
+                case SUMMER:                                     
+                    func_80038900(0, 0, 0, 0, 1);
+                    func_80038900(0, 1, 0, 1, 1);
+                    func_80038900(0, 2, 0, 2, 1);
+                    func_80038900(0, 3, 0, 3, 1);
+                    func_80038900(0, 4, 0, 4, 1);
+                    func_80038900(0, 5, 0, 5, 1);
+                    func_80038900(0, 6, 0, 6, 1);
+                    break;
+                case AUTUMN:                                     
+                    func_80038900(0, 0, 0, 0, 1);
+                    func_80038900(0, 1, 0, 1, 1);
+                    func_80038900(0, 2, 0, 2, 1);
+                    func_80038900(0, 3, 0, 3, 1);
+                    func_80038900(0, 4, 0, 4, 1);
+                    func_80038900(0, 5, 0, 5, 1);
+                    func_80038900(0, 6, 0, 6, 1);
+                    break;
+                case WINTER:                                     
+                    func_80038900(0, 0, 0, 0, 1);
+                    func_80038900(0, 1, 0, 1, 1);
+                    break;
+                }
+            break;
+        case FLOWER_SHOP:
+            func_80038900(0, 0, 0, 0, 1);
+            break;
+        case BAKERY:
+            func_80038900(0, 0, 0, 0, 1);
+            func_80038900(0, 1, 0, 1, 1);
+            break;
+        case MAYOR_HOUSE:
+            func_80038900(0, 0, 0, 0, 1);
+            break;
+        case POTION_SHOP:
+            func_80038900(0, 0, 0, 0, 1);
+            break;
+        case MOUNTAIN_1:
+            func_80038900(0, 0, 0, 0, 1);
+            break;
+        case MOUNTAIN_2:
+            func_80038900(0, 0, 0, 0, 1);
+            func_80038900(0, 1, 0, 1, 1);
+            func_80038900(0, 2, 0, 2, 1);
+            func_80038900(0, 3, 0, 3, 1);
+            break;
+        case TOP_OF_MOUNTAIN_1:
+            func_80038900(0, 0, 0, 0, 1);
+            func_80038900(0, 1, 0, 1, 1);
+            func_80038900(0, 2, 0, 2, 1);
+            func_80038900(0, 3, 0, 3, 1);
+            func_80038900(0, 4, 0, 4, 1);
+            func_80038900(0, 5, 0, 5, 1);
+            if (gSeason == WINTER) {
+                func_80038900(0, 6, 0, 6, 1);
+                break;
+            }
+            break;
+        case MOON_MOUNTAIN:
+            func_80038900(0, 0, 0, 0, 1);
+            break;
+        case POND:
+            func_80038900(0, 4, 0, 0, 0);
+            func_80038900(0, 5, 0, 1, 0);
+            func_80038900(0, 6, 0, 2, 0);
+            func_80038900(0, 7, 0, 3, 0);
+            break;
+        case VINEYARD:
+            func_80038900(0, 0, 0, 1, 1);
+            func_80038900(0, 1, 0, 0, 1);
+            break;
+        case RANCH:
+            func_80038900(0, 0, 0, 0, 1);
+            func_80038900(0, 1, 0, 1, 1);
+            func_80038900(0, 2, 0, 2, 1);
+            if (gSeason == AUTUMN) {
+                func_80038900(0, 3, 0, 3, 1);
+            }
+            break;
+        case RANCH_STORE:
+            func_80038900(0, 0, 0, 0, 1);
+            break;
+        case RICK_STORE:
+            func_80038900(0, 0, 0, 0, 1);
+            break;
+        case CAVE:
+            func_80038900(0, 0, 0, 0, 1);
+            break;
+        case BEACH:
+            func_80038900(0, 0, 0, 0, 4);
+            func_80038900(0, 0, 1, 1, 4);
+            func_80038900(0, 0, 2, 2, 4);
+            func_80038900(0, 0, 3, 3, 4);
+            func_80038900(0, 0, 4, 4, 4);
+            func_80038900(0, 0, 5, 5, 4);
+            func_80038900(0, 0, 6, 6, 4);
+            func_80038900(0, 0, 7, 5, 4);
+            func_80038900(0, 0, 8, 4, 4);
+            func_80038900(0, 0, 9, 3, 4);
+            func_80038900(0, 0, 0xA, 2, 4);
+            func_80038900(0, 0, 0xB, 1, 4);
+            break;
+        case VINEYARD_CELLAR:
+            func_80038900(0, 0, 0, 0, 1);
+            break;
+        case MINE:
+        case MINE_2:
+            func_80038900(0, 4, 0, 0, 0);
+            func_80038900(0, 0, 0, 1, 0);
+            break;
+        
+    }   
+}
+*/
 
 INCLUDE_ASM(const s32, "level", func_800746B4);
 

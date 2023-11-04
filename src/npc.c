@@ -5,7 +5,7 @@
 #include "system/mathUtils.h"
 #include "system/message.h"
 #include "system/sprite.h"
-#include "system/tiles.h"
+#include "system/mapContext.h"
 
 #include "game.h"
 #include "gameStatus.h"

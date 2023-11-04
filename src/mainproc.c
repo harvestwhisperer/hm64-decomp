@@ -7,7 +7,7 @@
 #include "system/message.h"
 #include "system/pauseScreen.h"
 #include "system/sprite.h"
-#include "system/tiles.h"
+#include "system/mapContext.h"
 #include "system/worldGraphics.h"
 
 #include "gameStart.h"

@@ -10,8 +10,8 @@
 // bss
 extern u16 bitmapCounter;
 
-extern const char *D_8011ED4C;
-extern const char *D_8011ED50;
+// extern const char D_8011ED4C[];
+// extern const char D_8011ED50[];
 
 extern Bitmap D_801F7110[MAX_BITMAPS];
 extern Gfx D_80215ED0[2][0x880];
@@ -33,7 +33,7 @@ void initializeBitmaps(void) {
         D_801F7110[i].flags = 0;
         D_801F7110[i].unk_54 = 0;
         D_801F7110[i].spriteNumber = 0;
-        D_801F7110[i].unk_1A = 0;
+        D_801F7110[i].vtxIndex = 0;
         D_801F7110[i].unk_1C.x = 0;
         D_801F7110[i].unk_1C.y = 0;
         D_801F7110[i].unk_1C.z = 0;
@@ -105,7 +105,7 @@ u16 func_80029CF4(u8 *timg, u8 *pal, s32 width, s32 height, s32 fmt, s32 size, u
 
 u16 func_80029DAC(void *timg, void *pal, u16 flags) {
 
-    u16 result = bitmapCounter;
+    u16 bitmapIndex = bitmapCounter;
     
     if (bitmapCounter < MAX_BITMAPS) {
         D_801F7110[bitmapCounter].flags = flags | 1;
@@ -114,10 +114,10 @@ u16 func_80029DAC(void *timg, void *pal, u16 flags) {
         D_801F7110[bitmapCounter].pal = pal;
         bitmapCounter++;
     } else {
-        result = 0xFFFF;
+        bitmapIndex = 0xFFFF;
     }
 
-    return result;
+    return bitmapIndex;
     
 }
 
@@ -522,55 +522,60 @@ INCLUDE_ASM(const s32, "system/sprite", func_8002A66C);
 
 //INCLUDE_ASM(const s32, "system/sprite", func_8002ACA4);
 
+// update world graphics from sprite
 void func_8002ACA4(Bitmap* sprite, Gfx *dl) {
 
     Vec3f vec;
 
-    u16 temp;
+    u16 spriteIndex; 
 
+    // adjust scaling if needed
     func_8002A530(&vec, sprite);
 
-    // maybe a ternary
-    temp = func_8002929C(dl, (sprite->flags & 0x78) | 0x80);
+    // update worldGraphics struct
+    spriteIndex = func_8002929C(dl, (sprite->flags & 0x78) | 0x80);
     
-    func_800292EC(temp, vec.x, vec.y, vec.z);
-    func_80029330(temp, sprite->scaling.x, sprite->scaling.y, sprite->scaling.z);
-    func_80029374(temp, sprite->unk_34.x, sprite->unk_34.y, sprite->unk_34.z);
-   
+    func_800292EC(spriteIndex, vec.x, vec.y, vec.z);
+    func_80029330(spriteIndex, sprite->scaling.x, sprite->scaling.y, sprite->scaling.z);
+    func_80029374(spriteIndex, sprite->unk_34.x, sprite->unk_34.y, sprite->unk_34.z);
+
 }
 
-#ifdef PERMUTER
+//INCLUDE_ASM(const s32, "system/sprite", func_8002AE58);
+
+static const char D_8011ED4C[] = "EX";
+static const char D_8011ED50[] = "s:/system/sprite.c";
+
+// main loop function
 void func_8002AE58(void) {
 
     u16 i;
+
     Gfx *tempDl;
-    int size = 0;
-    Gfx *dl = D_80215ED0[gDisplayContext];
 
-    for (i = 0; i < 0xB0; i++) {
+    Gfx *dl = D_80215ED0[gDisplayContextIndex];
 
+    u16 spriteNumber = 0;
+    
+    for (i = 0; i < MAX_BITMAPS; i++) {
+        
         if (D_801F7110[i].flags & 1) {
+    
+            setBitmapFormat(&D_801F7110[i], D_801F7110[i].timg, D_801F7110[i].pal);
 
-            func_80026E78(&D_801F7110[i], D_801F7110[i].timg, D_801F7110[i].pal);  
-            
             tempDl = dl;
+            dl = func_8002A66C(tempDl, &D_801F7110[i], spriteNumber);
 
-            dl = func_8002A66C(dl, &D_801F7110[i], size);
+            func_8002ACA4(&D_801F7110[i], tempDl); 
             
-            func_8002ACA4(&D_801F7110[i], tempDl);
-
-            size += D_801F7110[i].size;
-            
+            spriteNumber += D_801F7110[i].vtxIndex;
             D_801F7110[i].flags &= ~1;
-
-            dl = tempDl;
-        }
-    }
-
-    if (dl - D_80215ED0[gDisplayContext] >= 0x880) {
-        __assert(&D_8011ED4C, &D_8011ED50, 820);
+            
+       }
+   }
+    
+    if (dl - D_80215ED0[gDisplayContextIndex] >= 0x880) {
+        __assert(D_8011ED4C, D_8011ED50, 820);
+        //__assert("EX", "s:/system/sprite.c", 820);
     }
 }
-#else
-INCLUDE_ASM(const s32, "system/sprite", func_8002AE58);
-#endif

@@ -40,7 +40,7 @@
 #define HARVEST_SPRITE_CAVE 0x42
 #define CAVE 0x43
 #define MINE 0x44
-// 0x45 another mine map
+#define MINE_2 0x45
 #define KAREN_ROOM 0x46
 #define VINEYARD 0x47
 #define VINEYARD_HOUSE 0x4B

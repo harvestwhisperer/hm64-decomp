@@ -16,8 +16,8 @@ extern u32 D_801133B0[];
 extern PauseScreenSprite pauseScreenSprites[MAX_PAUSE_SCREEN_SPRITES];
 
 // forward declaration
-bool func_80046504(u16);
-bool func_80046650(u16 arg0, u8 arg1, u8 arg2);
+bool func_80046504(u16 spriteIndex);
+bool func_80046650(u16 spriteIndex, u8 arg1, u8 arg2);
 
 //INCLUDE_ASM(const s32, "system/pauseScreen", func_80045DE0);
 
@@ -153,17 +153,22 @@ bool func_80046120(u16 index) {
 
 //INCLUDE_ASM(const s32, "system/pauseScreen", func_800461D8);
 
-bool func_800461D8(u16 arg0, u8 arg1, u8 arg2, u8 arg3, u8 arg4) {
+bool func_800461D8(u16 spriteIndex, u8 arg1, u8 arg2, u8 arg3, u8 arg4) {
 
     u8 count = 0;
     u8 result = 0;
 
-    if (arg0 < MAX_PAUSE_SCREEN_SPRITES) {
-        if (pauseScreenSprites[arg0].flags & 1) {
-            count = pauseScreenSprites[arg0].count;
+    if (spriteIndex < MAX_PAUSE_SCREEN_SPRITES) {
+
+        if (pauseScreenSprites[spriteIndex].flags & 1) {
+
+            count = pauseScreenSprites[spriteIndex].count;
+
             do {
-                func_8002C914(pauseScreenSprites[arg0].unk_38 + count, arg1, arg2, arg3, arg4);
+                // set rgba
+                func_8002C914(pauseScreenSprites[spriteIndex].unk_38 + count, arg1, arg2, arg3, arg4);
             } while (count--);
+
             result = 1;
         }
     }
@@ -174,17 +179,21 @@ bool func_800461D8(u16 arg0, u8 arg1, u8 arg2, u8 arg3, u8 arg4) {
 
 //INCLUDE_ASM(const s32, "system/pauseScreen", func_800462B4);
 
-bool func_800462B4(u16 arg0, u8 arg1) {
+bool func_800462B4(u16 spriteIndex, u8 arg1) {
 
     u8 count = 0;
     u8 result = 0;
 
-    if (arg0 < MAX_PAUSE_SCREEN_SPRITES) {
-        if (pauseScreenSprites[arg0].flags & 1) {
-            count = pauseScreenSprites[arg0].count;
+    if (spriteIndex < MAX_PAUSE_SCREEN_SPRITES) {
+        
+        if (pauseScreenSprites[spriteIndex].flags & 1) {
+
+            count = pauseScreenSprites[spriteIndex].count;
+
             do {
-                func_8002CAA8(pauseScreenSprites[arg0].unk_38 + count, arg1);
+                func_8002CAA8(pauseScreenSprites[spriteIndex].unk_38 + count, arg1);
             } while (count--);
+
             result = 1;
         }
     }
@@ -194,17 +203,21 @@ bool func_800462B4(u16 arg0, u8 arg1) {
 
 //INCLUDE_ASM(const s32, "system/pauseScreen", func_8004635C);
 
-bool func_8004635C(u16 arg0, u8 arg1, u8 arg2, u8 arg3, u8 arg4, u16 arg5) {
+bool func_8004635C(u16 spriteIndex, u8 arg1, u8 arg2, u8 arg3, u8 arg4, u16 arg5) {
 
     u8 count = 0;
     u8 result = 0;
 
-    if (arg0 < MAX_PAUSE_SCREEN_SPRITES) {
-        if (pauseScreenSprites[arg0].flags & 1) {
-            count = pauseScreenSprites[arg0].count;
+    if (spriteIndex < MAX_PAUSE_SCREEN_SPRITES) {
+
+        if (pauseScreenSprites[spriteIndex].flags & 1) {
+
+            count = pauseScreenSprites[spriteIndex].count;
+
             do {
-                func_8002C1C0(pauseScreenSprites[arg0].unk_38 + count, arg1, arg2, arg3, arg4, arg5);
+                func_8002C1C0(pauseScreenSprites[spriteIndex].unk_38 + count, arg1, arg2, arg3, arg4, arg5);
             } while (count--);
+
             result = 1;
         }
     }
@@ -214,17 +227,22 @@ bool func_8004635C(u16 arg0, u8 arg1, u8 arg2, u8 arg3, u8 arg4, u16 arg5) {
 
 //INCLUDE_ASM(const s32, "system/pauseScreen", func_8004644C);
 
-bool func_8004644C(u16 arg0, u8 arg1, s16 arg2) {
+// update rgba alpha
+bool func_8004644C(u16 spriteIndex, u8 arg1, s16 arg2) {
 
     u8 count = 0;
     u8 result = 0;
 
-    if (arg0 < MAX_PAUSE_SCREEN_SPRITES) {
-        if (pauseScreenSprites[arg0].flags & 1) {
-            count = pauseScreenSprites[arg0].count;
+    if (spriteIndex < MAX_PAUSE_SCREEN_SPRITES) {
+
+        if (pauseScreenSprites[spriteIndex].flags & 1) {
+
+            count = pauseScreenSprites[spriteIndex].count;
+
             do {
-                func_8002C52C(pauseScreenSprites[arg0].unk_38 + count, arg1, arg2);
+                func_8002C52C(pauseScreenSprites[spriteIndex].unk_38 + count, arg1, arg2);
             } while (count--);
+
             result = 1;
         }
     }
@@ -234,7 +252,7 @@ bool func_8004644C(u16 arg0, u8 arg1, s16 arg2) {
 
 //INCLUDE_ASM(const s32, "system/pauseScreen", func_80046504);
 
-bool func_80046504(u16 arg0) {
+bool func_80046504(u16 spriteIndex) {
 
     u8 count = 0;
     u8 found = 0;
@@ -242,30 +260,30 @@ bool func_80046504(u16 arg0) {
     u32 value;
     u32 check;
 
-    if (arg0 < MAX_PAUSE_SCREEN_SPRITES) {
+    if (spriteIndex < MAX_PAUSE_SCREEN_SPRITES) {
 
-        if (pauseScreenSprites[arg0].flags & 1) {
+        if (pauseScreenSprites[spriteIndex].flags & 1) {
             
-            value = pauseScreenSprites[arg0].value;
-            count = pauseScreenSprites[arg0].count;
+            value = pauseScreenSprites[spriteIndex].value;
+            count = pauseScreenSprites[spriteIndex].count;
             
             do {
 
-                func_8002BAD8(pauseScreenSprites[arg0].unk_38 + count);
+                func_8002BAD8(pauseScreenSprites[spriteIndex].unk_38 + count);
 
                 check = value / D_801133B0[count];
 
                 value %= D_801133B0[count];
 
                 if (check) {
-                    func_80046650(arg0, check, count);
+                    func_80046650(spriteIndex, check, count);
                     found = 1;
                 } else if (!found) {
                     if (count == 0) {
-                        func_80046650(arg0, 0, count);
+                        func_80046650(spriteIndex, 0, count);
                     }
                 } else {
-                    func_80046650(arg0, 0, count);
+                    func_80046650(spriteIndex, 0, count);
                 }
                 
             } while (count--);
@@ -280,35 +298,39 @@ bool func_80046504(u16 arg0) {
 
 //INCLUDE_ASM(const s32, "system/pauseScreen", func_80046650);
 
-bool func_80046650(u16 arg0, u8 arg1, u8 arg2) {
+bool func_80046650(u16 spriteIndex, u8 arg1, u8 arg2) {
 
     u8 result = 0;
     u16 temp;
     
-    if (arg0 < MAX_PAUSE_SCREEN_SPRITES) {
-        if (pauseScreenSprites[arg0].flags & 1) {
+    if (spriteIndex < MAX_PAUSE_SCREEN_SPRITES) {
 
-            temp = pauseScreenSprites[arg0].unk_38 + arg2; 
+        if (pauseScreenSprites[spriteIndex].flags & 1) {
+
+            temp = pauseScreenSprites[spriteIndex].unk_38 + arg2; 
             
-            func_8002BD0C(temp, pauseScreenSprites[arg0].unk_28.x - pauseScreenSprites[arg0].unk_27 * arg2, pauseScreenSprites[arg0].unk_28.y, pauseScreenSprites[arg0].unk_28.z);
+            // adjust Vec3fs
+            func_8002BD0C(temp, pauseScreenSprites[spriteIndex].unk_28.x - pauseScreenSprites[spriteIndex].unk_27 * arg2, pauseScreenSprites[spriteIndex].unk_28.y, pauseScreenSprites[spriteIndex].unk_28.z);
             func_8002BD90(temp, 1.0f, 1.0f, 1.0f);
             func_8002BE14(temp, 0, 0, 0);
+            
             func_8002C680(temp, 2, 2);
 
-            if (pauseScreenSprites[arg0].flags & 4) {
+            if (pauseScreenSprites[spriteIndex].flags & 4) {
                 func_8002C7EC(temp, 3);
             } else {
                 func_8002C7EC(temp, 2);
             }
 
-            func_8002B80C(temp, pauseScreenSprites[arg0].specialItemPages, pauseScreenSprites[arg0].unk_26 + arg1);
+            func_8002B80C(temp, pauseScreenSprites[spriteIndex].specialItemPages, pauseScreenSprites[spriteIndex].unk_26 + arg1);
             
             result = 1;
         }
     }
 
     return result;
-}
+
+} 
 
 //INCLUDE_ASM(const s32, "system/pauseScreen", func_800467F8);
 

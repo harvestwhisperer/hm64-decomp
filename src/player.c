@@ -6,7 +6,7 @@
 #include "system/graphic.h"
 #include "system/mathUtils.h"
 #include "system/sprite.h"
-#include "system/tiles.h"
+#include "system/mapContext.h"
 
 #include "animals.h"
 #include "game.h"
@@ -1259,6 +1259,7 @@ INCLUDE_ASM(const s32, "player", func_8006BAAC);
 
 INCLUDE_ASM(const s32, "player", func_8006BBC4);
 
+// fishing handler
 INCLUDE_ASM(const s32, "player", func_8006BC84);
 
 void func_8006C12C(void) {}

@@ -63,7 +63,7 @@ segments:
       - [ 0x63E0, c, system/globalSprites] 
       - [ 0x9070, c, system/renderedSprites]
       - [ 0xEBD0, c, system/map]
-      - [ 0x16C70, c, system/tiles]
+      - [ 0x16C70, c, system/mapContext]
       - [ 0x181C0, c, system/audio]
       - [ 0x18D70, c, system/message]
       - [ 0x1E360, c, system/dialogue]
@@ -416,7 +416,7 @@ segments:
       - [ 0xFA040, .rodata, system/graphic]
       - [ 0xFA0C0, .rodata, system/sprite] 
       - [ 0xFA168, .rodata, system/map]
-      - [ 0xFA1E0, .rodata, system/tiles]
+      - [ 0xFA1E0, .rodata, system/mapContext]
       - [ 0xFA200, .rodata, system/audio] 
       - [ 0xFA210, .rodata, system/message]
       - [ 0xFA2E0, .rodata, system/dialogue]
@@ -508,21 +508,24 @@ segments:
       - [ 0x2D0660, palette, sprites/player.pal]
       - [ 0x2D0680, bin, sprites/player.res.idx]
       - [ 0x2D15E0, ci4, sprites/maria.ci]
-    
+  
+  # map data: indices, meshes, textures, palettes
   - name: map-data
     type: bin
     start: 0x800530
 
-  # - name: beachMapData
+  # ranch
+
+  # - name: beachMap
   #   type: bin
   #   start: 0x85ECF0
   #   vaddr: 0x8025D160
 
-  # - name: mountain2MapData
+  # - name: mountain2Map
   #   type: bin
   #   start: 0x905920
 
-  # - name: mountain1MapData
+  # - name: mountain1Map
   #   type: bin
   #   vaddr: 0x8026CAF0
     
@@ -530,11 +533,16 @@ segments:
  #   type: bin
  #   start: 0xB051BC
 
- # - name: farmMapData
+ # - name: farmMap
  #   type: bin
  #   start: 0xC13908
  #   vaddr: 0x8026E948
- 
+
+  # - name: houseMap
+  #   type: bin
+  #   start: 0xC64F00
+  #   vaddr: 802554D8
+
   - name: objectSprites
     type: bin
     start: 0xC951A0

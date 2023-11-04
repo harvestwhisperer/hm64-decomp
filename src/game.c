@@ -8,7 +8,7 @@
 #include "system/memory.h"
 #include "system/message.h"
 #include "system/sprite.h"
-#include "system/tiles.h"
+#include "system/mapContext.h"
 
 #include "animals.h"
 #include "game.h"
@@ -93,9 +93,6 @@ extern u8 D_80237412;
 
 // unused
 extern u16 D_801FB686;   
-
-// maybe evaluation.c
-extern u16 D_80215DF0;
 
 // shared: likely bss
 extern u8 D_8016F6E3;
@@ -1320,12 +1317,13 @@ void func_8005CB50(void) {
 
 void func_8005CBA4(void) {
 
-    if (!(gTileContextFlags & (0x10 | 0x8))) {
+    if (!(gMapModelContext[0].flags & (0x8 | 0x10))) {
         func_8002F730();
         func_80046CF4();
         func_8002FCB4(0, 1);
-        setMainLoopCallbackFunctionIndex(MAIN_GAME);
+        setMainLoopCallbackFunctionIndex(1);
     }
+
 }
 
 //INCLUDE_ASM(const s32, "game", func_8005CBF0);
@@ -1607,7 +1605,7 @@ void func_80060490(void) {
 
 void func_800604B0(void) {
 
-    if (func_80036A84(0) || !(mainMap[0].mapStruct8.flags & 1)) {
+    if (func_80036A84(0) || !(mainMap[0].mapStruct9.flags & 1)) {
         
         func_8003F54C(0, 0, -64.0f, 352.0f);
         func_8003F690(0, 1, 0, 0);
@@ -1656,7 +1654,7 @@ void func_80060624(void) {
     int tempStamina;
     u8 tempTime;
 
-    if (func_80036A84(0) || !(mainMap[0].mapStruct8.flags & 1)) {
+    if (func_80036A84(0) || !(mainMap[0].mapStruct9.flags & 1)) {
         
         func_800610DC();
         
@@ -1684,7 +1682,7 @@ void func_80060624(void) {
             tempTime = gHour;
             
             if (tempTime < 6) {
-                tempTime += 0x18;
+                tempTime += 24;
             }
             
             if (checkLifeEventBit(0x5A)) {
@@ -1719,7 +1717,7 @@ void func_80060624(void) {
 void func_80060838(void) {
     
     // check map flags
-    if (func_80036A84(0) || !(mainMap[0].mapStruct8.flags & 1)) {
+    if (func_80036A84(0) || !(mainMap[0].mapStruct9.flags & 1)) {
 
         func_800610DC();
 
@@ -2024,12 +2022,15 @@ bool func_80061178(void) {
     if (npcAffection[POPURI] >= 220) {
         result = 1;
     }
+    
     if (npcAffection[ELLI] >= 220) {
         result = 1;
     }
+
     if (npcAffection[ANN] >= 220) {
         result = 1;
     }
+
     if (npcAffection[KAREN] >= 220) {
         result = 1;
     }
@@ -2904,15 +2905,11 @@ u16 func_80063A2C(u8 arg0) {
 
     if (((u32)arr | (u32)D_8011F25C) % 4) {
         do {
-            *(Unaligned32*)ptr = *(Unaligned32*)ptr2;
-            ptr2++;
-            ptr++;
+            *(Unaligned32*)ptr++ = *(Unaligned32*)ptr2++;
         } while (ptr2 != (D_8011F25C + 0xA));        
     } else {
         do {
-            *(Aligned32*)ptr = *(Aligned32*)ptr2;
-            ptr2++;
-            ptr++;
+            *(Aligned32*)ptr++ = *(Aligned32*)ptr2++;
         } while (ptr2 != (D_8011F25C + 0xA));       
     }
 

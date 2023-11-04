@@ -113,6 +113,9 @@ extern u32 gTotalCropsShipped;
 extern u32 gTotalEggsShipped;
 extern u32 gTotalGoldenMilkShipped;
 
+// fish caught total
+extern u32 D_80189838;
+
 extern u8 gItemBeingHeld;
 
 extern u8 gSeconds;
@@ -146,12 +149,14 @@ extern u8 D_801FC150;
 extern u8 D_801FD621;
 extern u8 D_80237412;  
 
-// maybe evaluation.c
-extern u16 D_80215DF0;
-
 extern u8 gFarmName[6];
 extern u8 gWifeName[6];
 extern u8 gBabyName[6];
 extern u8 harvestKingName[6];
+
+// season married in
+extern u8 D_80183690;
+// day of month married on
+extern u8 D_801C6220;
 
 #endif
