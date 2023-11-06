@@ -795,12 +795,12 @@ INCLUDE_ASM(const s32, "initialize", func_80053088);
 /*
 void func_80053088(void) {
 
-    u32 ptr = &fontTextureStart;
-    u32 ptr2 = &fontTextureEnd;
-    u32 ptr3 = &fontPalette1Start;
-    u32 ptr4 = &fontPalette1End;
-    u32 ptr5 = &fontPalette2Start;
-    u32 ptr6 = &fontPalette2End;
+    u32 ptr = &fontTexture_ROM_START;
+    u32 ptr2 = &fontTexture_ROM_END;
+    u32 ptr3 = &fontPalette1_ROM_START;
+    u32 ptr4 = &fontPalette1_ROM_END;
+    u32 ptr5 = &fontPalette2_ROM_START;
+    u32 ptr6 = &fontPalette2_ROM_END;
 
     func_800535DC();
     func_80054180();
@@ -810,13 +810,13 @@ void func_80053088(void) {
     nuPiReadRom(ptr3, (void*)0x8030A000, ptr4 - ptr3);
     nuPiReadRom(ptr5, (void*)0x8030A400, ptr6 - ptr5);
 
-    func_8003F80C(0, 0x76, &dialogueWindowTextureStart, &dialogueWindowTextureEnd, &dialogueWindowPaletteStart, &dialogueWindowPaletteEnd, 0x80238800, 0x8023B100, 0x8023B200, 0x8023B300, 0, 0, 1, -24.0f, 0, 0);
-    func_8003F80C(1, 0x76, &dialogueWindowTextureStart, &dialogueWindowTextureEnd, &dialogueWindowPaletteStart, &dialogueWindowPaletteEnd, 0x80238800, 0x8023B100, 0x8023B200, 0x8023B300, 0, 0, 0, 0, 0, 0);
-    func_8003F80C(2, 0x77, &dialogueWindowTextureStart, &dialogueWindowTextureEnd, &dialogueWindowPaletteStart, &dialogueWindowPaletteEnd, 0x80238800, 0x8023B100, 0x8023B200, 0x8023B300, 0, 1, 0, 0, 0, 0);
+    func_8003F80C(0, 0x76, &dialogueWindowTexture_ROM_START, &dialogueWindowTexture_ROM_END, &dialogueWindowPalette_ROM_START, &dialogueWindowPalette_ROM_END, 0x80238800, 0x8023B100, 0x8023B200, 0x8023B300, 0, 0, 1, -24.0f, 0, 0);
+    func_8003F80C(1, 0x76, &dialogueWindowTexture_ROM_START, &dialogueWindowTexture_ROM_END, &dialogueWindowPalette_ROM_START, &dialogueWindowPalette_ROM_END, 0x80238800, 0x8023B100, 0x8023B200, 0x8023B300, 0, 0, 0, 0, 0, 0);
+    func_8003F80C(2, 0x77, &dialogueWindowTexture_ROM_START, &dialogueWindowTexture_ROM_END, &dialogueWindowPalette_ROM_START, &dialogueWindowPalette_ROM_END, 0x80238800, 0x8023B100, 0x8023B200, 0x8023B300, 0, 1, 0, 0, 0, 0);
 
-    func_8003F910(0, 0x78, &dialogueIconsTextureStart, &dialogueIconsTextureEnd, &dialogueIconsPaletteStart, &dialogueIconsPaletteEnd, (void* )0x8023B400, (void* )0x8023CC00, (void* )0x8023CE00, 0x8023D200, 0, 4, 0xFE, 106.0f, -15.0f, 0.0f);
-    func_8003F910(1, 0x78, &dialogueIconsTextureStart, &dialogueIconsTextureEnd, &dialogueIconsPaletteStart, &dialogueIconsPaletteEnd, (void* )0x8023B400, (void* )0x8023CC00, (void* )0x8023CE00, 0x8023D200, 0, 0xD, 0xFE, 106.0f, -15.0f, 0.0f);
-    func_8003FA1C(0, 0x75, &characterDialogueIconsTextureStart, &characterDialogueIconsTextureEnd, &characterDialogueIconsPaletteStart, &characterDialogueIconsPaletteEnd, &characterDialogueIconsIndexStart, &characterDialogueIconsIndexEnd, 0x8023D300, 0x8023DB00, 0x8023E300, 0x8023EF00, 0x8023FF00, 0x80240000, -139.0f, 1.0f, 0);
+    func_8003F910(0, 0x78, &dialogueIconsTexture_ROM_START, &dialogueIconsTexture_ROM_END, &dialogueIconsPalette_ROM_START, &dialogueIconsPalette_ROM_END, (void* )0x8023B400, (void* )0x8023CC00, (void* )0x8023CE00, 0x8023D200, 0, 4, 0xFE, 106.0f, -15.0f, 0.0f);
+    func_8003F910(1, 0x78, &dialogueIconsTexture_ROM_START, &dialogueIconsTexture_ROM_END, &dialogueIconsPalette_ROM_START, &dialogueIconsPalette_ROM_END, (void* )0x8023B400, (void* )0x8023CC00, (void* )0x8023CE00, 0x8023D200, 0, 0xD, 0xFE, 106.0f, -15.0f, 0.0f);
+    func_8003FA1C(0, 0x75, &characterDialogueIconsTexture_ROM_START, &characterDialogueIconsTexture_ROM_END, &characterDialogueIconsPalette_ROM_START, &characterDialogueIconsPalette_ROM_END, &characterDialogueIconsTable_ROM_START, &characterDialogueIconsTable_ROM_END, (void*)0x8023D300, (void*)0x8023DB00, (void*)0x8023E300, (void*)0x8023EF00, (void*)0x8023FF00, (void*)0x80240000, -139.0f, 1.0f, 0);
  
     func_8003DBE8(0, 0x8030B000);
     func_8003F54C(0, 24.0f, -64.0f, 352.0f);
@@ -941,8 +941,8 @@ void func_80054180(void) {
     func_8003FBA0(1, gFarmName, 6);
     func_8003FBA0(2, dogInfo.name, 6);
     func_8003FBA0(3, horseInfo.name, 6);
-    func_8003FBA0(4, gBabyName, 6);
-    
+    func_8003FBA0(4, gBabyName, 6); 
+     
     func_8003FBA0(5, gFarmAnimals[0].name, 6);
     func_8003FBA0(6, gFarmAnimals[1].name, 6);
     func_8003FBA0(7, gFarmAnimals[2].name, 6);
@@ -1010,9 +1010,9 @@ void func_80054550(void) {
 
     func_80042FEC(0, 0, 1);
 
-    func_8004318C(0, 0x79, &dialogueIconsTextureStart, &dialogueIconsTextureEnd, &dialogueIconsPaletteStart, &dialogueIconsPaletteEnd, 0x8023B400, 0x8023CC00, 0x8023CE00, 0x8023D200, 0, 3, 0, 8.0f, -16.0f, 0);
-    func_80043260(0, 0x7A, &dialogueIconsTextureStart, &dialogueIconsTextureEnd, &dialogueIconsPaletteStart, &dialogueIconsPaletteEnd, 0x8023B400, 0x8023CC00, 0x8023CE00, 0x8023D200, 0, 0xA, 0xFE, 0, 40.0f, 0);
-    func_80043334(0, 0x7B, &dialogueIconsTextureStart, &dialogueIconsTextureEnd, &dialogueIconsPaletteStart, &dialogueIconsPaletteEnd, 0x8023B400, 0x8023CC00, 0x8023CE00, 0x8023D200, 0, 0xB, 0xFE, 0, -40.0f, 0);
+    func_8004318C(0, 0x79, &dialogueIconsTexture_ROM_START, &dialogueIconsTexture_ROM_END, &dialogueIconsPalette_ROM_START, &dialogueIconsPalette_ROM_END, 0x8023B400, 0x8023CC00, 0x8023CE00, 0x8023D200, 0, 3, 0, 8.0f, -16.0f, 0);
+    func_80043260(0, 0x7A, &dialogueIconsTexture_ROM_START, &dialogueIconsTexture_ROM_END, &dialogueIconsPalette_ROM_START, &dialogueIconsPalette_ROM_END, 0x8023B400, 0x8023CC00, 0x8023CE00, 0x8023D200, 0, 0xA, 0xFE, 0, 40.0f, 0);
+    func_80043334(0, 0x7B, &dialogueIconsTexture_ROM_START, &dialogueIconsTexture_ROM_END, &dialogueIconsPalette_ROM_START, &dialogueIconsPalette_ROM_END, 0x8023B400, 0x8023CC00, 0x8023CE00, 0x8023D200, 0, 0xB, 0xFE, 0, -40.0f, 0);
    
     func_80043148(0, 2, 0, 8);
 

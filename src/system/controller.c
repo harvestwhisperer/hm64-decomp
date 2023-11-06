@@ -63,7 +63,6 @@ void controllerInit(void) {
     contPattern = nuContInit();
 }
 
-
 #ifdef PERMUTER
 void func_8004CF68(void) {
 

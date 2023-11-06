@@ -500,14 +500,47 @@ segments:
       - [0x150120, bin, cutsceneMap25]
       - [0x1510B0, bin, cutsceneMap26]
     
-  - name: characterSprites
+  # - name: characterSprites
+  #   type: bin
+  #   start: 0x159330
+  #   files:
+  #     - [ 0x159330, ci4, sprites/player.ci]
+  #     - [ 0x2D0660, palette, sprites/player.pal]
+  #     - [ 0x2D0680, bin, sprites/player.res.idx]
+  #     - [ 0x2D15E0, ci4, sprites/maria.ci]
+
+  - name: playerTexture
     type: bin
     start: 0x159330
-    files:
-      - [ 0x159330, ci4, sprites/player.ci]
-      - [ 0x2D0660, palette, sprites/player.pal]
-      - [ 0x2D0680, bin, sprites/player.res.idx]
-      - [ 0x2D15E0, ci4, sprites/maria.ci]
+
+  - name: playerPalette
+    type: bin
+    start: 0x2D0660
+
+  - name: playerTable
+    type: bin
+    start: 0x2D0660
+
+  # split up individual assets
+  - name: npcSprites
+    type: bin
+    start: 0x2D15E0
+
+  - name: dogTitleTexture
+    type: bin
+    start: 0x60EC20
+
+  - name: dogTitlePalette
+    type: bin
+    start: 0x630EC0
+
+  - name: dogTitleTable
+    type: bin
+    start: 0x630EE0
+
+  - name: miscSprites
+    type: bin
+    start: 0x631400
   
   # map data: indices, meshes, textures, palettes
   - name: map-data
@@ -546,16 +579,153 @@ segments:
   - name: objectSprites
     type: bin
     start: 0xC951A0
-    
-  - name: font
+
+  - name: checkerboardBackgroundTexture
+    type: bin
+    start: 0xCC6D40
+
+  - name: checkerboardBackgroundPalette
+    type: bin
+    start: 0xCC9330
+
+  - name: miscTextures
+    type: bin
+    start: 0xCC9350
+
+  - name: dialogueWindowTexture
+    type: bin
+    start: 0xD1B500
+
+  - name: dialogueWindowPalette
+    type: bin
+    start: 0xD1DDE0
+
+  - name: namingScreenTexture
+    type: bin
+    start: 0xD1DE00
+
+  - name: namingScreenPalette
+    type: bin
+    start: 0xD2D600
+
+  # estimate/evaluation screen
+  - name: miscTexture2
+    type: bin
+    start: 0xD2D620
+
+  - name: dialogueIconsTexture
+    type: bin
+    start: 0xD47F00
+
+  - name: dialogueIconsPalette
+    type: bin
+    start: 0xD49B80
+
+  - name: miscTextures2
+    type: bin
+    start: 0xD49BA0
+
+  - name: tvContentTexture
+    type: bin
+    start: 0xD49BA0
+
+  - name: tvContentPalette
+    type: bin
+    start: 0xD4D9F0
+
+  - name: tvContentTable
+    type: bin
+    start: 0xD4DA10
+
+  - name: miscTextures3
+    type: bin
+    start: 0xD4DAB0
+
+  - name: holdableItemsTexture
+    type: bin
+    start: 0xD52670
+
+  - name: holdableItemsPalette
+    type: bin
+    start: 0xD82FD0
+
+  - name: holdableItemsTable
+    type: bin
+    start: 0xD82FF0
+
+  - name: miscTextures4
+    type: bin
+    start: 0xD835A0
+
+  - name: homeItemsTexture
+    type: bin
+    start: 0xD86D90
+
+  - name: homeItemsPalette
+    type: bin
+    start: 0xD8B140
+
+  - name: homeItemsTable
+    type: bin
+    start: 0xD8B160
+
+  - name: groundObjectsTexture
+    type: bin
+    start: 0xD8B1D0
+
+  - name: groundObjectsPalette
+    type: bin
+    start: 0xD92950
+
+  - name: rainTexture
+    type: bin
+    start: 0xD92970
+
+  - name: rainPalette
+    type: bin
+    start: 0xD92D50
+
+  - name: characterDialogueIconsTexture
+    type: bin
+    start: 0xD92D70
+
+  - name: characterDialogueIconsPalette
+    type: bin
+    start: 0xDB9EA0
+
+  - name: characterDialogueIconsTable
+    type: bin
+    start: 0xDB9EC0
+
+  - name: titleSpritesTexture
+    type: bin
+    start: 0xDBA100
+
+  - name: titleSpritesPalette
+    type: bin
+    start: 0xDD38F0
+
+  - name: miscTextures6
+    type: bin
+    start: 0xDD3910
+
+  # 16x11200, i2
+  - name: fontTexture
     type: bin
     start: 0xE08870
-    files:
-    - [0xE08870, bin, "font.16x11200.i2"]
-    - [0xE13770, bin, "font.1.pal"]
-    - [0xE137A0, bin, "font.2.pal"]
-    - [0xE137D0, bin, "font.3.pal"]
-    
+
+  - name: fontPalette1
+    type: bin
+    start: 0xE13770
+
+  - name: fontPalette2
+    type: bin
+    start: 0xE137A0
+
+  - name: fontPalette3
+    type: bin
+    start: 0xE137D0
+
   - name: dialogues
     type: bin
     start: 0xE13800

@@ -74,7 +74,7 @@ void mainproc(void *arg) {
 
     nuGfxDisplayOff();
 
-    initializeAll();
+    initializeEngine();
     
     // load "no controller" screen or intro cutscene
     func_8004DF10();
@@ -83,9 +83,9 @@ void mainproc(void *arg) {
 
 }
 
-//INCLUDE_ASM(const s32, "mainproc", initializeAll);
+//INCLUDE_ASM(const s32, "mainproc", initializeEngine);
 
-void initializeAll(void) {
+void initializeEngine(void) {
 
     // initialize mainproc and main loop variables
     func_80025F04();

@@ -719,11 +719,6 @@ motor_bss_0000 = 0x80135AE0;
 motor_bss_003C = 0x80135B1C;
 pimgr_bss_0000 = 0x80135BE0;
 pimgr_bss_11B0 = 0x80136D90;
-pimgr_bss_1760 = 0x80137340;
-pimgr_bss_1778 = 0x80137358;
-pimgr_bss_1780 = 0x80137360;
-pimgr_bss_1798 = 0x80137378;
-pimgr_bss_17A0 = 0x80137380;
 pimgr_bss_17B8 = 0x80137398;
 vimgr_bss_0000 = 0x801373A0;
 vimgr_bss_0008 = 0x801373A8;
@@ -868,7 +863,7 @@ initializeGlobalSprites = 0x8002AFE0;
 nuBoot = 0x80025C50;
 idle = 0x80025CB4;
 mainproc = 0x80025D90;
-initializeAll = 0x80025E24;
+initializeEngine = 0x80025E24;
 mainLoop = 0x80025FF0;
 registerMainLoopCallback = 0x80026190;
 setMainLoopCallbackFunctionIndex = 0x800261CC;
@@ -1048,7 +1043,6 @@ setForecast = 0x800DC4F0;
 setWeatherLighting = 0x800DC694;
 loadDogTitleSprite = 0x800DFF64;
 
-
 titleScreenMainLoopCallback = 0x800E00A4;
 
 nuAuStlInit = 0x800F2470;
@@ -1097,16 +1091,11 @@ musPriorityList = 0x8011C4E0;
 auSynConfig = 0x8011C850;
 
 nuScPreNMIFunc = 0x8011CC20;
-__osActiveQueue = 0x8011CCEC;
 
 osViModeTable = 0x8011D050;
 
 minSfxFrequency = 0x8011EE00;
 maxSfxFrequency = 0x8011EE08;
-
-__OSGlobalIntMask = 0x8011E220;
-
-__osPiAccessQueueEnabled = 0x8011E3F0;
 
 houseExtensionPrices = 0x8011F228;
 houseExtensionLumberCosts = 0x8011F234;
@@ -1286,8 +1275,6 @@ gHouseExtensionSelection = 0x8021E6D1;
 gFarmName = 0x8021E6D2;
 gElliGrievingCounter = 0x80215EC0;
 
-
-
 gEntranceIndex = 0x802231C0; 
 nusched = 0x80222B40;
 
@@ -1305,78 +1292,3 @@ NU_AU_HEAP_ADDR = 0x8030F800;
 setup_rspstate = 0x80112A38;
 setup_rdpstate = 0x80112A10;
 rdpstateinit_dl = 0x80112928;
-
-
-tvSpritesTextureStart = 0xD49BA0;
-tvSpritesTextureEnd = 0xD4D9F0;
-tvSpritesPaletteStart = 0xD4D9F0;
-tvSpritesPaletteEnd = 0xD4DA10;
-tvSpritesIndexStart = 0xD4DA10;
-tvSpritesIndexEnd = 0xD4DAB0;
-
-homeItemsTextureStart = 0xD86D90;
-homeItemsTextureEnd = 0xD8B140;
-homeItemsPaletteStart = 0xD8B140;
-homeItemsPaletteEnd = 0xD8B160;
-homeItemsTableStart = 0xD8B160;
-homeItemsTableEnd = 0xD8B1D0;
-
-dialogueIconsTextureStart = 0xD47F00;
-dialogueIconsTextureEnd = 0xD49B80;
-dialogueIconsPaletteStart = 0xD49B80;
-dialogueIconsPaletteEnd = 0xD49BA0;
-
-fontTextureStart = 0xE08870;
-fontTextureEnd = 0xE13770;
-fontPalette1Start = 0xE13770;
-fontPalette1End = 0xE137A0;
-fontPalette2Start = 0xE137A0;
-fontPalette2End = 0xE137D0;
-
-characterDialogueIconsTextureStart = 0xD92D70;
-characterDialogueIconsTextureEnd = 0xDB9EA0;
-characterDialogueIconsPaletteStart = 0xDB9EA0;
-characterDialogueIconsPaletteEnd = 0xDB9EC0;
-characterDialogueIconsIndexStart = 0xDB9EC0;
-characterDialogueIconsIndexEnd = 0xDBA100;
-
-dialogueWindowTextureStart = 0xD1B500;
-dialogueWindowTextureEnd = 0xD1DDE0;
-dialogueWindowPaletteStart = 0xD1DDE0;
-dialogueWindowPaletteEnd = 0xD2D600;
-dialogueWindowIconStart = 0xD2D600;
-dialogueWindowIconEnd = 0xD1DE00;
-
-titleSpritesTextureStart = 0xDBA100;
-titleSpritesTextureEnd = 0xDD38F0;
-titleSpritesPaletteStart = 0xDD38F0;
-titleSpritesPaletteEnd = 0xDD3910;
-
-checkerboardBackgroundTextureStart = 0xCC6D40;
-checkerboardBackgroundTextureEnd = 0xCC9330;
-checkerboardBackgroundPaletteStart = 0xCC9330;
-checkerboardBackgroundPaletteEnd = 0xCC9350;
-
-holdableItemsTexturesStart = 0xD52670;
-holdableItemsTexturesEnd = 0xD82FD0;
-holdableItemsPaletteStart = 0xD82FD0;
-holdableItemsPaletteEnd = 0xD82FF0;
-holdableItemsTableStart = 0xD82FF0;
-holdableItemsTableEnd = 0xD835A0;
-
-dogTitleTextureStart = 0x60EC20;
-dogTitleTextureEnd = 0x630EC0;
-dogTitlePaletteStart = 0x630EC0;
-dogTitlePaletteEnd = 0x630EE0;
-dogTitleTableStart = 0x630EE0;
-dogTitleTableEnd = 0x631400;
-
-groundItemsTextureStart = 0xD8B1D0;
-groundItemsTextureEnd = 0xD92950;
-groundItemsPaletteStart = 0xD92950;
-groundItemsPaletteEnd = 0xD92970;
-
-rainTextureStart = 0xD92970;
-rainTextureEnd = 0xD92D50;
-rainPaletteStart = 0xD92D50;
-rainPaletteEnd = 0xD92D70;

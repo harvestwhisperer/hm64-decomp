@@ -8,12 +8,12 @@
 
 #define DIALOGUE_ICONS_TEXTURES_VADDR 0x8023B400
 
-extern void* fontTextureStart;
-extern void* fontTextureEnd;
-extern void* fontPalette1Start;
-extern void* fontPalette1End;
-extern void* fontPalette2Start;
-extern void* fontPalette2End;
+extern u32 fontTexture_ROM_START;
+extern u32 fontTexture_ROM_END;
+extern u32 fontPalette1_ROM_START;
+extern u32 fontPalette1_ROM_END;
+extern u32 fontPalette2_ROM_START;
+extern u32 fontPalette2_ROM_END;
 
 // 1 - 0xA0 = Japanese characters
 
@@ -70,6 +70,11 @@ typedef struct {
 	u16 unk_10; 
 } UnknownMessageStruct;
 
+typedef struct {
+    u8* unk_0;
+    u8 unk_4;
+} GameVariableReference;
+
 // count: 0x49
 typedef struct {
     void *indexMap;
@@ -94,6 +99,7 @@ typedef struct {
 	u16 unk_34;
 } DialogueSprite;
 
+// 0x80188B70
 typedef struct {
     void *unk_0;
     Vec4f unk_4;
@@ -160,7 +166,7 @@ extern bool func_8003F630(u16, u8, u8);
 extern bool func_8003F690(u16, u8, u8, u8);                        
 extern bool func_8003FAF8(u16, u16);                              
 extern bool func_8003FB4C(u16, u16);                      
-extern bool func_8003FBA0(u16, u8*, s32);  
+extern bool func_8003FBA0(u16, u8*, s8);  
 extern void func_8003FBD8(u8, u16, u8);    
 extern bool func_8003F910(u8, u16, void*, void*, void*, void*, void*, void*, void*, u32, u32, u16, u16, f32, f32, f32); 
 extern void func_80042634();

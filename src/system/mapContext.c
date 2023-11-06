@@ -4,13 +4,15 @@
 
 #include "system/graphic.h"
 #include "system/map.h"
+#include "sprite.h"
+#include "system/worldGraphics.h"
 
 // bss
 extern Vec4f D_8013D248;
 extern Vec4f D_802373F8;
 
 // flags
-extern u16 D_8017045A;
+extern s16 D_8017045A;
 
 extern LevelMapContext gMapModelContext[1];
 extern MapContextAddresses gMapModelAddresses[0x60];
@@ -166,9 +168,36 @@ bool func_8003BB14(u16 index, u16 mapIndex) {
 
 INCLUDE_ASM(const s32, "system/mapContext", func_8003BC50);
 
-INCLUDE_ASM(const s32, "system/mapContext", func_8003BD60);
+//INCLUDE_ASM(const s32, "system/mapContext", func_8003BD60);
 
-INCLUDE_ASM(const s32, "system/mapContext", func_8003BDA4);
+bool func_8003BD60(u16 index) {
+    
+    bool result = 0;
+    
+    if (index == 0 &&  (gMapModelContext[index].flags & 1) && (gMapModelContext[index].flags & 2)) {
+        gMapModelContext[index].flags |= 4;
+        result = 1;
+    }
+    
+    return result;
+}
+
+//INCLUDE_ASM(const s32, "system/mapContext", func_8003BDA4);
+
+bool func_8003BDA4(u16 index, f32 arg1, f32 arg2, f32 arg3) {
+    
+    bool result = 0;
+    
+    if (index == 0 &&  (gMapModelContext[index].flags & 1) && (gMapModelContext[index].flags & 2)) {
+        result = 1;
+        gMapModelContext[index].unk_4.x = arg1;
+        gMapModelContext[index].unk_4.y = arg2;
+        gMapModelContext[index].unk_4.z = arg3;
+    }
+    
+    return result;
+}
+
 
 //INCLUDE_ASM(const s32, "system/mapContext", func_8003BE0C);
 
@@ -186,9 +215,42 @@ bool func_8003BE0C(u16 index, f32 arg1, f32 arg2, f32 arg3) {
     return result;
 }
 
-INCLUDE_ASM(const s32, "system/mapContext", func_8003BE98);
+//INCLUDE_ASM(const s32, "system/mapContext", func_8003BE98);
 
-INCLUDE_ASM(const s32, "system/mapContext", func_8003BF7C);
+bool func_8003BE98(u16 index, u8 r, u8 g, u8 b, u8 a) {
+    
+    bool result = 0;
+    
+    if (index == 0 &&  (gMapModelContext[index].flags & 1) && (gMapModelContext[index].flags & 2)) {
+        func_80034350(gMapModelContext[index].mapIndex, r, g, b, a);
+        D_802373F8.r = r;
+        D_802373F8.g = g;
+        D_802373F8.b = b;
+        D_802373F8.a = a;
+        result = 1;
+    }
+    
+    return result;
+}
+
+//INCLUDE_ASM(const s32, "system/mapContext", func_8003BF7C);
+
+bool func_8003BF7C(u16 index, u8 r, u8 g, u8 b, u8 a, s16 arg5) {
+    
+    bool result = 0;
+    
+    if (index == 0 &&  (gMapModelContext[index].flags & 1) && (gMapModelContext[index].flags & 2)) {
+        func_80034738(gMapModelContext[index].mapIndex, r, g, b, a, arg5);
+        D_8013D248.r = r;
+        D_8013D248.g = g;
+        D_8013D248.b = b;
+        D_8013D248.a = a;
+        D_8017045A = arg5;
+        result = 1;
+    }
+    
+    return result;
+}
 
 //INCLUDE_ASM(const s32, "system/mapContext", func_8003C084);
 
@@ -310,20 +372,60 @@ f32 func_8003C318(u16 index, f32 arg1) {
     return result;
 }
 
-INCLUDE_ASM(const s32, "system/mapContext", func_8003C3E4);
 
-INCLUDE_ASM(const s32, "system/mapContext", func_8003C4B0);
+//INCLUDE_ASM(const s32, "system/mapContext", func_8003C3E4);
 
-//INCLUDE_ASM(const s32, "system/mapContext", func_8003C504);
+// get z value
+f32 func_8003C3E4(u16 index, f32 arg1) {
 
-bool func_8003C504(u16 arg0) {
+    f32 result = 0.0f;
+    
+    if (index == 0 && gMapModelContext[index].flags & 1) {
+
+        if (arg1 < gMapModelContext[index].unk_10.z && arg1 < gMapModelContext[index].unk_1C.z) {
+
+            if (!(arg1 > gMapModelContext[index].unk_28.z)) {
+                goto label;
+            } else if (!(arg1 > gMapModelContext[index].unk_34.z)) {
+label:
+                result = gMapModelContext[index].unk_28.z;
+            }
+            
+        } else {
+            result = gMapModelContext[index].unk_10.z;
+        }
+    } 
+
+    return result;
+    
+}
+
+//INCLUDE_ASM(const s32, "system/mapContext", func_8003C4B0);
+
+bool func_8003C4B0(u16 index) {
 
     bool result = 0;
 
-    if (arg0 == 0 && (gMapModelContext[arg0].flags & 1) && (gMapModelContext[arg0].flags & 4)) {
-        func_80034090(gMapModelContext[arg0].mapIndex);
+    if (index == 0 && (gMapModelContext[index].flags & 1)) {
+        func_80034090(gMapModelContext[index].mapIndex);
         result = 1;
-        gMapModelContext[arg0].flags &= ~(2 | 4);
+        gMapModelContext[index].flags = 0;
+    }
+
+    return result;
+}
+
+
+//INCLUDE_ASM(const s32, "system/mapContext", func_8003C504);
+
+bool func_8003C504(u16 index) {
+
+    bool result = 0;
+
+    if (index == 0 && (gMapModelContext[index].flags & 1) && (gMapModelContext[index].flags & 4)) {
+        func_80034090(gMapModelContext[index].mapIndex);
+        result = 1;
+        gMapModelContext[index].flags &= ~(2 | 4);
     }
 
     return result;
@@ -352,7 +454,48 @@ INCLUDE_ASM(const s32, "system/mapContext", func_8003C6E4);
 
 INCLUDE_ASM(const s32, "system/mapContext", func_8003C8D4);
 
-INCLUDE_ASM(const s32, "system/mapContext", func_8003CB3C);
+//INCLUDE_ASM(const s32, "system/mapContext", func_8003CB3C);
+
+void func_8003CB3C(u16 index) {
+
+    if (gMapModelContext[index].flags & 8) {
+        func_800345E8(gMapModelContext[index].mapIndex, 0, -1.0f, 0);
+        func_80028EF8(0, -1.0f, 0);
+    } else {
+        func_800345E8(gMapModelContext[index].mapIndex, 0, 1.0f, 0);
+        func_80028EF8(0, 1.0f, 0);
+    }
+
+    gMapModelContext[index].unk_46++;
+
+    if (gMapModelContext[index].unk_46 == 22) {
+        if (gMapModelContext[index].flags & 8) {
+            func_8002F770(1);
+        } else {
+            func_8002F770(-1);
+        }
+    }
+
+    if (gMapModelContext[index].unk_46 >= 45) { 
+
+        if (gMapModelContext[index].flags & 8) { 
+            gMapModelContext[index].rotation = (gMapModelContext[index].rotation + 7) % 8; 
+        } else {
+            gMapModelContext[index].rotation = (gMapModelContext[index].rotation + 1) % 8;
+        }
+
+        gMapModelContext[index].flags &= ~( 8 | 0x10);
+
+        if (gMapModelContext[index].unk_47 == 0xFF || gMapModelContext[index].rotation == gMapModelContext[index].unk_47) {
+            previousWorldRotationAngles.x = currentWorldRotationAngles.x;
+            previousWorldRotationAngles.y = currentWorldRotationAngles.y;
+            previousWorldRotationAngles.z = currentWorldRotationAngles.z;
+        } else {
+            func_8003C5C0(index, 0xFF, gMapModelContext[index].unk_47);
+        }
+        
+    }
+}
 
 //INCLUDE_RODATA(const s32, "system/mapContext", D_8011EDE0);
 

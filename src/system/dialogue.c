@@ -1,6 +1,7 @@
 #include "common.h"
 
 #include "system/dialogue.h"
+#include "system/message.h"
 
 #include "game.h"
 
@@ -13,6 +14,10 @@ extern u8 D_8013CE10;
 extern GameVariable gameVariables[];
 
 extern u32* specialDialogueBitsPointer;
+
+// forward declarations
+extern void func_80044D78(u16);
+extern void func_80045260(u16);
 
 //INCLUDE_ASM(const s32, "system/dialogue", func_80042F60);
 
@@ -254,7 +259,11 @@ INCLUDE_ASM(const s32, "system/dialogue", func_80043AD8);
 
 INCLUDE_ASM(const s32, "system/dialogue", func_80043B84);
 
-INCLUDE_ASM(const s32, "system/dialogue", func_80043C6C);
+//INCLUDE_ASM(const s32, "system/dialogue", func_80043C6C);
+
+u8 func_80043C6C(u16 arg0) {
+    return D_801C3E40[arg0].struct5.unk_17;
+}
 
 INCLUDE_ASM(const s32, "system/dialogue", func_80043C98);
 
@@ -280,4 +289,37 @@ INCLUDE_ASM(const s32, "system/dialogue", func_80044D78);
 
 INCLUDE_ASM(const s32, "system/dialogue", func_80045260);
 
-INCLUDE_ASM(const s32, "system/dialogue", func_80045CB0);
+//INCLUDE_ASM(const s32, "system/dialogue", func_80045CB0);
+
+void func_80045CB0(void) {
+
+    u16 i;
+    u8 set;
+
+    for (i = 0; i < 1; i++) {
+        
+        if (D_801C3E40[i].struct5.flags & 1 && D_801C3E40[i].struct5.flags & 2) {
+            
+            set = 0;
+            
+            if (D_801C3E40[i].struct5.flags & 0x10) {
+                
+                if (dialogueBoxes[D_801C3E40[i].struct5.unk_10].flags & 4 || dialogueBoxes[D_801C3E40[i].struct5.unk_10].flags & 0x20000) {
+                    D_801C3E40[i].struct5.flags &= ~0x10;
+                }
+                
+                set = 1;
+            }
+            
+            if (D_801C3E40[i].struct5.flags & 0x20) {
+                func_80044D78(i);
+                set = 1;
+            }
+            
+            if (!set) {
+                func_80045260(i);
+            }
+        }
+    }
+    
+}
