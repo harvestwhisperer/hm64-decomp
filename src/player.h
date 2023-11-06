@@ -78,6 +78,7 @@
 #define MAX_TOOLCHEST_SLOTS 0x20
 #define MAX_KEY_ITEMS 24 
 
+// 80189060
 typedef struct {
 	u8 currentStamina; // 0
 	u8 name[6]; // 1-7

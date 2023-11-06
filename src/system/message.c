@@ -4,7 +4,7 @@
 
 // bss
 extern u16 D_80204BF0[];
-
+DialogueBox dialogueBoxes[MAX_DIALOGUE_BOXES];
 
 INCLUDE_ASM(const s32, "system/message", func_8003D970);
 
@@ -40,13 +40,67 @@ INCLUDE_ASM(const s32, "system/message", func_8003F464);
 
 INCLUDE_ASM(const s32, "system/message", func_8003F4E0);
 
-INCLUDE_ASM(const s32, "system/message", func_8003F54C);
+//INCLUDE_ASM(const s32, "system/message", func_8003F54C);
+
+bool func_8003F54C(u16 index, f32 x, f32 y, f32 z) {
+
+    bool result = 0;
+
+    if (index < MAX_DIALOGUE_BOXES) {
+        if (dialogueBoxes[index].flags & 1) {
+            result = 1;
+            dialogueBoxes[index].unk_4C.x = x;
+            dialogueBoxes[index].unk_4C.y = y;
+            dialogueBoxes[index].unk_4C.z = z;
+        }
+    }
+
+    return result;
+}
 
 INCLUDE_ASM(const s32, "system/message", func_8003F5D0);
 
 INCLUDE_ASM(const s32, "system/message", func_8003F630);
 
-INCLUDE_ASM(const s32, "system/message", func_8003F690);
+//INCLUDE_ASM(const s32, "system/message", func_8003F690);
+
+bool func_8003F690(u16 index, u8 arg1, u8 arg2, u8 arg3) {
+
+    bool result = 0;
+    
+    if (index < MAX_DIALOGUE_BOXES) {
+
+        if (dialogueBoxes[index].flags & 1) { 
+            
+            dialogueBoxes[index].currentLineFromTop = arg1;
+            dialogueBoxes[index].maxLinesInText = arg2;
+            dialogueBoxes[index].charPerLineCount = arg3;
+
+            if (dialogueBoxes[index].currentLineFromTop != 0xFF) {
+                dialogueBoxes[index].flags |= 0x200;
+            } else {
+                dialogueBoxes[index].flags &= ~0x200;
+            }
+
+            if (dialogueBoxes[index].maxLinesInText != 0xFF) {
+                dialogueBoxes[index].flags |= 0x400;
+            } else {
+                dialogueBoxes[index].flags &= ~0x400;
+            }
+
+            if (dialogueBoxes[index].charPerLineCount != 0xFF) {
+                dialogueBoxes[index].flags |= 0x10000;
+            } else {
+                dialogueBoxes[index].flags &= ~0x10000;
+            }
+
+            result = 1;
+        }
+    }
+
+    return result;
+    
+}
 
 INCLUDE_ASM(const s32, "system/message", func_8003F80C);
 
@@ -91,8 +145,8 @@ u8 func_800401C8(u16 index) {
     u8 result = 0;
 
     if (index < MAX_DIALOGUE_BOXES) {
-        if (D_80188B70[index].flags & 1 && D_80188B70[index].flags & 2) {
-            result = D_80188B70[index].buttonSfxCounter != 0;
+        if (dialogueBoxes[index].flags & 1 && dialogueBoxes[index].flags & 2) {
+            result = dialogueBoxes[index].buttonSfxCounter != 0;
         }
     }
 

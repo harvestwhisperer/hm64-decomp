@@ -26,25 +26,27 @@ void func_8004DF10(void) {
     func_8004E160(); 
     
     if (contPattern & 1) {
+        
         func_80055F08(INTRO, 0x61, 1);
-        return;
+
+    } else {
+
+        // set to no op
+        setMainLoopCallbackFunctionIndex(0);
+
+        // set position floats
+        func_8003F54C(0, 0, -64.0f, 352.0f);
+
+        // dialogue box flags
+        func_8003F690(0, 1, 0, 0);
+
+        // dialogue box flags
+        func_8003F360(0, ~(1 | 2), 2);
+
+        // load "no controller" dialogue
+        func_8003DDF8(0, 0, 0x19, 0x80000);
+
     }
-    
-    // set to no op
-    setMainLoopCallbackFunctionIndex(0);
-
-    // set position floats
-    func_8003F54C(0, 0, -64.0f, 352.0f);
-
-    // dialogue box flags
-    func_8003F690(0, 1, 0, 0);
-
-    // dialogue box flags
-    func_8003F360(0, 0xFFFC, 2);
-
-    // load "no controller" dialogue
-    func_8003DDF8(0, 0, 0x19, 0x80000);
-
 }
 
 //INCLUDE_ASM(const s32, "gameStart", startGame);
@@ -70,25 +72,25 @@ void startGame(void) {
 void func_8004DFF8(void) {
     
     setLifeEventBit(HAVE_HORSE);
-    setLifeEventBit(0x10);
-    setLifeEventBit(0x11);
-    setLifeEventBit(0x12);
-    setLifeEventBit(0x13);
-    setLifeEventBit(0x14);
-    setLifeEventBit(0x15);
-    setLifeEventBit(0x16);
-    setLifeEventBit(0x17);
-    setLifeEventBit(0x3E);
-    setLifeEventBit(0x3F);
-    setLifeEventBit(0x40);
-    setLifeEventBit(0x41);
-    setLifeEventBit(0x48);
+    setLifeEventBit(HAVE_KITCHEN);
+    setLifeEventBit(HAVE_BATHROOM);
+    setLifeEventBit(HAVE_STAIRS);
+    setLifeEventBit(HAVE_GREENHOUSE);
+    setLifeEventBit(HAVE_LOG_TERRACE);
+    setLifeEventBit(HAVE_BABY_BED);
+    setLifeEventBit(HAVE_CABINET);
+    setLifeEventBit(HAVE_TABLECLOTH);
+    setLifeEventBit(MAYOR_TOUR);
+    setLifeEventBit(PAINTING_FROM_MARIA);
+    setLifeEventBit(BASIL_IN_TOWN);
+    setLifeEventBit(CLIFF_ARRIVED);
+    setLifeEventBit(BRIDGE_COMPLETED);
     setLifeEventBit(0x46);
     setLifeEventBit(0x47);
     setLifeEventBit(0x58);
     setLifeEventBit(0x59);
     setLifeEventBit(0x5A);
-    setLifeEventBit(0x5B);
+    setLifeEventBit(WON_CALENDAR_STICKERS_FROM_RAFFLE);
     setLifeEventBit(0x5C);
     setLifeEventBit(0x5D);
     

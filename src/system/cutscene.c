@@ -663,7 +663,15 @@ void func_8004A000(u16 index) {
     func_8002F684(cutsceneMaps[index].spriteIndex, (renderedSprites[spriteIndex].direction + 4)  % 8);
 }
 
-INCLUDE_ASM(const s32, "system/cutscene", func_8004A0A8);
+//INCLUDE_ASM(const s32, "system/cutscene", func_8004A0A8);
+
+void func_8004A0A8(u16 index) {
+
+    cutsceneMaps[index].cutscenePointer += 4;
+    
+    func_8002F6F0();
+    
+}
 
 INCLUDE_ASM(const s32, "system/cutscene", func_8004A0F4);
 

@@ -26,7 +26,7 @@ void initializeNpcSpriteStructs(void) {
 
     for (i = 0; i < MAX_RENDERED_SPRITES; i++) {
         renderedSprites[i].flags = 0;
-        renderedSprites[i].unk_52 = 0;
+        renderedSprites[i].globalSpriteIndex = 0;
         renderedSprites[i].anim.animationIndex = 0;
         renderedSprites[i].anim.animationIndexPlusOne = 0xFFFF;
         renderedSprites[i].direction = 0;
@@ -140,7 +140,7 @@ bool func_8002E108(u16 index) {
         
         renderedSprites[index].flags = 0;
 
-        func_8002B6B8(renderedSprites[index].unk_52);
+        func_8002B6B8(renderedSprites[index].globalSpriteIndex);
         
         if (npcSprites[renderedSprites[index].characterIndex].flag != 0xFF) {
             func_8002B6B8(renderedSprites[index].spriteOffset);
@@ -167,7 +167,7 @@ void func_8002E1B8(void) {
 
             renderedSprites[i].flags = 0;
         
-            func_8002B6B8(renderedSprites[i].unk_52);
+            func_8002B6B8(renderedSprites[i].globalSpriteIndex);
             
             if (npcSprites[renderedSprites[i].characterIndex].flag != 0xFF) {
                 func_8002B6B8(renderedSprites[i].spriteOffset);
@@ -293,7 +293,32 @@ INCLUDE_ASM(const s32, "system/renderedSprites", func_8002F114);
 
 INCLUDE_ASM(const s32, "system/renderedSprites", func_8002F1E0);
 
-INCLUDE_ASM(const s32, "system/renderedSprites", func_8002F2FC);
+//INCLUDE_ASM(const s32, "system/renderedSprites", func_8002F2FC);
+
+bool func_8002F2FC(u16 index, u16 arg1) {
+
+    bool result = 0;
+
+    if (index < MAX_RENDERED_SPRITES) {
+        
+        if (renderedSprites[index].flags & 1 && renderedSprites[index].flags & 4 && !(renderedSprites[index].flags & 0x1000)) {
+
+            renderedSprites[index].anim.animationIndex = arg1;
+            
+            renderedSprites[index].flags |= 8;
+            renderedSprites[index].flags &= ~0x10; 
+
+            globalSprites[renderedSprites[index].globalSpriteIndex].flags2 &= ~0x40;
+            globalSprites[renderedSprites[index].globalSpriteIndex].unk_92 = 0;
+            
+            result = 1;
+            
+        }
+    }
+    
+    return result;
+    
+}
 
 //INCLUDE_ASM(const s32, "system/renderedSprites", setSpriteAnimation);
 
@@ -305,9 +330,9 @@ u8 setSpriteAnimation(u16 index, u16 arg1) {
         if ((renderedSprites[index].flags & 1) && (renderedSprites[index].flags & 4) && !(renderedSprites[index].flags & 0x1000)) {     
                 renderedSprites[index].anim.animationIndex = arg1;
                 renderedSprites[index].flags |= 0x18;
-                globalSprites[renderedSprites[index].unk_52].flags2 &= ~0x40;
+                globalSprites[renderedSprites[index].globalSpriteIndex].flags2 &= ~0x40;
                 result = 1;
-                globalSprites[renderedSprites[index].unk_52].unk_92 = 0;
+                globalSprites[renderedSprites[index].globalSpriteIndex].unk_92 = 0;
         }
     }
     
@@ -334,7 +359,9 @@ void func_8002F6F0(void) {
 //INCLUDE_ASM(const s32, "system/renderedSprites", func_8002F730);
 
 void func_8002F730(void) {
+
     u16 i;
+
     for (i = 0; i < MAX_RENDERED_SPRITES; i++) {
         func_8002FC38(i);
     }
@@ -361,7 +388,7 @@ void func_8002F7C8(u8 r, u8 g, u8 b, u8 a) {
     for (i = 0; i < MAX_RENDERED_SPRITES; i++) {
         if (renderedSprites[i].flags & 1 && renderedSprites[i].flags & 8) {
             if (i < MAX_RENDERED_SPRITES && renderedSprites[i].flags & 4) {
-                func_8002C914(renderedSprites[i].unk_52, r, g, b, a);
+                func_8002C914(renderedSprites[i].globalSpriteIndex, r, g, b, a);
                 if (npcSprites[renderedSprites[i].characterIndex].flag != 0xFF) {
                     func_8002C914(renderedSprites[i].spriteOffset, r, g, b, 0x60);
                 }
@@ -381,7 +408,7 @@ bool func_8002FA2C(u16 index) {
     if (index < MAX_RENDERED_SPRITES) {
         if (renderedSprites[index].flags & 1 && renderedSprites[index].flags & 8) {
             renderedSprites[index].flags &= ~( 0x8 | 0x2000);
-            func_8002B6B8(renderedSprites[index].unk_52);
+            func_8002B6B8(renderedSprites[index].globalSpriteIndex);
             if (npcSprites[renderedSprites[index].characterIndex].flag != 0xFF) {
                 func_8002B6B8(renderedSprites[index].spriteOffset);
             }
@@ -407,7 +434,7 @@ bool func_8002FBBC(u16 index) {
     if (index < MAX_RENDERED_SPRITES) {
         if (renderedSprites[index].flags & 1) {
             renderedSprites[index].flags |= 0x40;
-            func_8002BB88(renderedSprites[index].unk_52);
+            func_8002BB88(renderedSprites[index].globalSpriteIndex);
             result = 1;
         }
     }
@@ -641,7 +668,7 @@ Vec3f* func_80031904(Vec3f* vec, u16 index, s16 arg2, u8 arg3) {
     vec1.z = arg2;
 
     vec3.x = 0;
-    vec3.y = func_80028820(arg3 & 7);
+    vec3.y = func_80028820(arg3 % 8);
     vec3.z = 0;
 
     func_80027950(vec1, &vec2, vec3);

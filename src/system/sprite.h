@@ -17,6 +17,12 @@
 
 #define DOG_TITLE_SPRITE 0x44
 
+typedef struct {
+	u16 animationIndex;
+	u16 animationIndexPlusOne;
+} Animation;
+
+// 0x801FD630
 typedef struct {	
 	void *vaddrStart; // 0x0
 	void *vaddrCurrent; // 0x4
@@ -69,6 +75,7 @@ typedef struct {
 	u16 flags; /* 0x24 */
 } CharacterSprite;
 
+// 0x801FC160
 typedef struct {
 	void *ptr_00; // 00
 	void *ptr_04; // 04
@@ -84,7 +91,7 @@ typedef struct {
 	Vec3f unk_3C; // 40-4C
 	u32 unk_4C;
 	u16 characterIndex; // 0x50
-	u16 unk_52;
+	u16 globalSpriteIndex;
 	Animation anim; // 0x54-0x58
 	u16 unk_58; 
 	u16	unk_5A;
@@ -204,6 +211,7 @@ extern bool func_8002CB88(u16, u16);
 extern bool func_8002CBF8(u16);   
 extern bool func_8002CC44(u16);
 extern void func_8002D3D4(void);
+extern void func_8002E1B8(void);
 
 /* spriteAddresses.c */
 extern void resetSpriteAddressesFlags(void);

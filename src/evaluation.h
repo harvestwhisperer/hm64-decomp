@@ -5,7 +5,7 @@
 
 extern u16 calculateFieldScore();
 extern u16 calculateGrassScore();                         
-extern u8 calculateHouseExtensionScore();    
+extern u32 calculateHouseExtensionScore();    
 extern u16 calculateNPCAffectionScore();               
 extern u32 calculateShippingScore();                      
 

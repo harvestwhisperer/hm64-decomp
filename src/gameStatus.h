@@ -7,6 +7,7 @@
 #define DAILY_SHIPMENT 0
 #define CARPENTER_ESTIMATE 9
 #define CARPENTER_FINISHED 0xB
+#define SUCCESSFUL_PROPOSAL 0x14
 #define FARM_MORNING_VISIT 0x17
 #define STORES_CLOSED_FOR_FESTIVAL 0x2D
 #define FESTIVAL_DAY 0x30
@@ -34,6 +35,11 @@
 #define ANN_CLIFF_MARRIED 0x1D
 #define KAREN_KAI_MARRIED 0x1E
 #define WIFE_PREGNANT 0x1F
+#define MARIA_PREGNANT 0x21
+#define POPURI_PREGNANT 0x22
+#define ELLI_PREGNANT 0x23
+#define ANN_PREGNANT 0x24
+#define KAREN_PREGNANT 0x25
 #define MARIA_HARRIS_BABY 0x26
 #define POPURI_GRAY_BABY 0x27
 #define ELLI_JEFF_BABY 0x28
@@ -47,8 +53,11 @@
 #define ELLEN_DIED 0x31
 #define NAMED_HORSE 0x3A
 #define MAYOR_TOUR 0x3E
+#define PAINTING_FROM_MARIA 0x3F
 #define BASIL_IN_TOWN 0x40
 #define CLIFF_ARRIVED 0x41
+#define BRIDGE_COMPLETED 0x48
+#define HOT_SPRINGS_COMPLETED 0x4C
 #define WON_CALENDAR_STICKERS_FROM_RAFFLE 0x5B
 #define PUPPIES 0x69
 #define MARIA_FARM_GIFT_1 0x6D
@@ -66,17 +75,35 @@
 // 0x4d = sprites taking care of animals during typhoon
 
 /* special dialogue bit indices */
+#define HAVE_HOUSE_EXTENSION 0x12
+#define RAIN_FORECAST 0x13
 #define HAVE_GOLD_PENDANT 0x17
+#define HAVE_HORSE_DIALOGUE 0x27
+#define MARIA_HARRIS_BABY_DIALOGUE 0x32
+#define POPURI_GRAY_BABY_DIALOGUE 0x33
+#define ELLI_JEFF_BABY_DIALOGUE 0x34
+#define ANN_CLIFF_BABY_DIALOGUE 0x35
+#define KAREN_KAI_BABY_DIALOGUE 0x36
+#define MARIA_PREGNANT_DIALOGUE 0x37
+#define POPURI_PREGNANT_DIALOGUE 0x38
+#define ELLI_PREGNANT_DIALOGUE 0x39
+#define ANN_PREGNANT_DIALOGUE 0x3A
+#define KAREN_PREGNANT_DIALOGUE 0x3B
 #define ELLI_FINISH_GRIEVING 0x43
 #define MARIA_BIRTHDAY 0x7E
 #define POPURI_BIRTHDAY 0x7F
 #define ELLI_BIRTHDAY 0x80
 #define ANN_BIRTHDAY 0x81
 #define KAREN_BIRTHDAY 0x82
+#define PLAYER_HARVEST_KING 0x142
 #define THANKSGIVING 0x145
 #define NEW_YEARS_EVE 0x146
 #define STARRY_NIGHT_FESTIVAL_DIALOGUE_BIT 0x147
-
+#define WIFE_PREGNANT_MARIA 0x14C
+#define WIFE_PREGNANT_POPURI 0x14D
+#define WIFE_PREGNANT_ELLI 0x14E
+#define WIFE_PREGNANT_ANN 0x14F
+#define WIFE_PREGNANT_KAREN 0x150
 
 extern u32 checkDailyEventBit(u16 bitIndex);
 extern void setDailyEventBit(u16 bitIndex);
@@ -97,13 +124,15 @@ extern void toggleReadLetterBit(u16);
 void setAlbumPicture(u8 pictureBitIndex);
 extern void setRecipes(void);  
 
-extern void func_80063AF0(void); 
+extern void handleWifeMorningHelp(void); 
 extern void func_80064114(void);
 extern void func_800644B0(void);     
 extern void func_80064814(void);     
 // recipes
-u8 func_80065518(void);
+extern u8 func_80065518(void);
 extern u8 func_8006536C();
+// might be s32 return value
+extern s32 getSumNpcAffection(void);
 
 extern u32 dailyEventBits[0x20];
 extern u32 lifeEventBits[0x20];
@@ -112,7 +141,7 @@ extern u32 recipesBits[1];
 extern u32 readMailBits[];
 extern u32 mailboxBits[];
 // should be array [1]?
-extern u32 D_80189058;
+extern u32 albumBits;
 
 extern u8 D_80113760[0x14][0x18];
 

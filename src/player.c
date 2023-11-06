@@ -29,10 +29,7 @@ extern u16 D_80237410;
 // part of player struct, but necessary for matching right now
 extern u16 D_801890C8;
 
-// bss here or itemHandlers.c
-extern u8 D_80189836;
-
-// possible bss s
+// possible bss
 extern u8 gMaximumStamina;
 extern u8 gToolchestSlots[];   
 
@@ -696,10 +693,10 @@ void func_80068920(void) {
     if (gPlayer.action3 == 3) {
         func_800D55E4(gPlayer.unk_2D, 0x12);
         gPlayer.unk_2C = 0;
-        gPlayer.action4 += 1;
+        gPlayer.action4++;
     }
 
-    gPlayer.action3 += 1;
+    gPlayer.action3++;
 }
 
 //INCLUDE_ASM(const s32, "player", func_80068990);
@@ -769,7 +766,7 @@ void func_80069830(void) {
                 gPlayer.action2 = 0xE;
                 gPlayer.flags |= 0x10;
             } else {
-                gPlayer.unk_6F -= 1;
+                gPlayer.unk_6F--;
             }
             break;
 
@@ -1087,19 +1084,19 @@ void func_8006AC4C(void) {
                 if (checkLifeEventBit(MARRIED) && (19 < gHour && gHour < 22)) {
                     switch (gWife) {
                         case MARIA:
-                            npcInfoArray[0].movingFlag = 4;
+                            npcInfoArray[MARIA].movingFlag = 4;
                             break;
                         case POPURI:
-                            npcInfoArray[1].movingFlag = 4;
+                            npcInfoArray[POPURI].movingFlag = 4;
                             break;
                         case ELLI:
-                            npcInfoArray[2].movingFlag = 4;
+                            npcInfoArray[ELLI].movingFlag = 4;
                             break;
                         case ANN:
-                            npcInfoArray[3].movingFlag = 4;
+                            npcInfoArray[ANN].movingFlag = 4;
                             break;
                         case KAREN:
-                            npcInfoArray[4].movingFlag = 4;
+                            npcInfoArray[KAREN].movingFlag = 4;
                             break;
                     }
                 }
@@ -1332,7 +1329,7 @@ void func_8006DFB0(void) {
             gPlayer.action4++;
             break;
         case 3:            
-            if (!D_80189836) {
+            if (!D_80189828.unk_E) {
                 if (!func_80067A24(0)) {
                     resetAction();
                 }
@@ -1366,7 +1363,7 @@ void func_8006E0D4(void) {
             gPlayer.action4++;
             break;
         case 3:
-            if (!D_80189836) {
+            if (!D_80189828.unk_E) {
                 if (!func_80067A24(0)) {
                     resetAction();
                 }
@@ -1414,7 +1411,7 @@ void func_8006E240(void) {
             gPlayer.action4++;
             break;
         case 3:
-            if (!D_80189836) {
+            if (!D_80189828.unk_E) {
                 if (!func_80067A24(0)) {
                     resetAction();
                 }

@@ -1,6 +1,8 @@
 #ifndef _GAME_H_
 #define _GAME_H_
 
+#include "common.h"
+
 #define MAX_GOLD 999999
 #define MAX_ITEM_SHIPPING_VALUE 999
 #define MAX_ANIMAL_ITEM_SHIPPED 9999
@@ -158,5 +160,18 @@ extern u8 harvestKingName[6];
 extern u8 D_80183690;
 // day of month married on
 extern u8 D_801C6220;
+
+static inline void resetGlobalLighting() {
+    globalLightingRgba.r = 0;
+    globalLightingRgba.g = 0;
+    globalLightingRgba.b = 0;
+    globalLightingRgba.a = 0;
+
+    // dialogue icon struct
+    D_80180718.r = 0;
+    D_80180718.g = 0;
+    D_80180718.b = 0;
+    D_80180718.a = 0;
+}
 
 #endif

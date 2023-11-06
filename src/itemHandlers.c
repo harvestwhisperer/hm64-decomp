@@ -849,7 +849,7 @@ const u8 D_80122374[12] = { 5, 4, 3, 6, 8, 2, 7, 0, 1, 0, 0, 0 };
 // jumtable: 80122380, 0xFD780
 void handleBlueFeatherUse(void) {
      
-    toggleDailyEventBit(0x14);
+    toggleDailyEventBit(SUCCESSFUL_PROPOSAL);
     
     if (D_801C3E18 == 0xFF) goto func_end;
 
@@ -863,7 +863,7 @@ void handleBlueFeatherUse(void) {
         case 0:
             if (npcAffection[MARIA] >= 220) {
                 gWife = MARIA;   
-                setDailyEventBit(0x14);
+                setDailyEventBit(SUCCESSFUL_PROPOSAL);
                 setLifeEventBit(ENGAGED);
                 setDefaultBabyName(MARIA);
             }
@@ -871,7 +871,7 @@ void handleBlueFeatherUse(void) {
         case 1:
             if (npcAffection[POPURI] >= 220) {
                 gWife = POPURI;
-                setDailyEventBit(0x14);
+                setDailyEventBit(SUCCESSFUL_PROPOSAL);
                 setLifeEventBit(ENGAGED);
                 setDefaultBabyName(POPURI);
             }
@@ -879,7 +879,7 @@ void handleBlueFeatherUse(void) {
         case 2:
             if (npcAffection[ELLI] >= 220) {
                 gWife = ELLI;
-                setDailyEventBit(0x14);
+                setDailyEventBit(SUCCESSFUL_PROPOSAL);
                 setLifeEventBit(ENGAGED);
                 setDefaultBabyName(ELLI);
             }
@@ -887,7 +887,7 @@ void handleBlueFeatherUse(void) {
         case 3:
             if (npcAffection[ANN] >= 220) {
                 gWife = ANN;
-                setDailyEventBit(0x14);
+                setDailyEventBit(SUCCESSFUL_PROPOSAL);
                 setLifeEventBit(ENGAGED);
                 setDefaultBabyName(ANN);
             }
@@ -895,7 +895,7 @@ void handleBlueFeatherUse(void) {
         case 4:
             if (npcAffection[KAREN] >= 220) {
                 gWife = KAREN;
-                setDailyEventBit(0x14);
+                setDailyEventBit(SUCCESSFUL_PROPOSAL);
                 setLifeEventBit(ENGAGED);
                 setDefaultBabyName(KAREN);
             }
@@ -904,7 +904,7 @@ void handleBlueFeatherUse(void) {
             break;
         }
 
-    if (checkDailyEventBit(0x14)) {
+    if (checkDailyEventBit(SUCCESSFUL_PROPOSAL)) {
         // use up blue feather if successful proposal
         gPlayer.currentTool = 0;
     }

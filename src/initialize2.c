@@ -29,7 +29,7 @@
 // unused: likely to show player coordinates on screen for debugging
 s16 D_80182D8C;
 s16 D_8018A062;
-s16 D_80237A20;
+s16 D_80237A20; 
 
 //INCLUDE_ASM(const s32, "initialize2", mainGameLoopCallback);
 
@@ -67,7 +67,8 @@ void mainGameLoopCallback(void) {
 //INCLUDE_ASM(const s32, "initialize2", func_80055F08);
 
 // setup title/demo/non game cutscenes
-void func_80055F08(u16 cutsceneIndex, u16 entranceIndex, u8 arg2) {
+// inline, used by game.c
+inline void func_80055F08(u16 cutsceneIndex, u16 entranceIndex, u8 arg2) {
     
     func_8002E1B8();
     func_8002B710();
@@ -75,18 +76,7 @@ void func_80055F08(u16 cutsceneIndex, u16 entranceIndex, u8 arg2) {
     initializeCutsceneMaps();
     func_80053088();
     
-    // reset global lighting rgba vec4f
-    globalLightingRgba.r = 0;
-    globalLightingRgba.g = 0;
-    globalLightingRgba.b = 0;
-    globalLightingRgba.a = 0;
-
-    // rgba vec4f
-    // dialogue icon struct
-    D_80180718.r = 0;
-    D_80180718.g = 0;
-    D_80180718.b = 0;
-    D_80180718.a = 0;
+    resetGlobalLighting();
 
     func_8002F7C8(0, 0, 0, 0);
     func_8003BE98(0, 0, 0, 0, 0);
@@ -522,11 +512,11 @@ void startNewDay(void) {
     }
      
     if (gSeason == AUTUMN && gDayOfMonth == 28) {
-        setLifeEventBit(0x48);
+        setLifeEventBit(BRIDGE_COMPLETED);
     }
     
     if (gSeason == WINTER && gDayOfMonth == 17) {
-        setLifeEventBit(0x4C);
+        setLifeEventBit(HOT_SPRINGS_COMPLETED);
         setDailyEventBit(0x38);
     }
     
@@ -621,7 +611,7 @@ void startNewDay(void) {
     
     gWeather = gForecast;
     
-    // set indices for weather channel graphics
+    // increment variety show episode counters
     func_800D86D8();
     setForecast();
     
@@ -637,10 +627,11 @@ void startNewDay(void) {
     setLetters();
     
     if (checkLifeEventBit(MARRIED)) {
-        func_80063AF0();
+        handleWifeMorningHelp();
     }
     
     if (checkDailyEventBit(7)) {
+        // save game
         func_800E53E8(gCurrentGameIndex);
     }
     

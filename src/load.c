@@ -51,7 +51,7 @@ void func_800598E0(void) {
     
     // set npc location indices
     func_80075A18();
-    // sets member on unknown struct to random value
+    // animals
     func_8009BC64();
     // sets foragable item defaults
     func_800D9BFC();

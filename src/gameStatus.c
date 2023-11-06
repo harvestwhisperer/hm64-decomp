@@ -17,7 +17,7 @@ u32 readMailBits[];
 u32 mailboxBits[];
 
 // album bits
-extern u32 D_80189058;
+extern u32 albumBits;
 
 // forward declaration
 void toggleSpecialDialogueBit(u16);
@@ -71,9 +71,9 @@ static inline void handleAddShipment(s32 amount) {
 }
 
 // jtbl_8011F300
-//INCLUDE_ASM(const s32, "gameStatus", func_80063AF0);
+//INCLUDE_ASM(const s32, "gameStatus", handleWifeMorningHelp);
 
-void func_80063AF0(void) {
+void handleWifeMorningHelp(void) {
 
     u8 temp;
 
@@ -90,9 +90,11 @@ void func_80063AF0(void) {
 
             if (!getRandomNumberInRange(0,  (5 - npcAffection[MARIA] / 50))) {
                 if (temp) {
+                    // weeding
                     func_80063D38();
                     break;
                 }
+                // eggs
                 func_80063E18();
             } 
             break;
@@ -169,6 +171,7 @@ void func_80063D38(void) {
 
 //INCLUDE_ASM(const s32, "gameStatus", func_80063E18);
 
+// wife crates eggs
 void func_80063E18(void) {
 
     u8 i = 0;
@@ -203,7 +206,7 @@ void func_80063F3C(void) {
                 if (farmFieldTiles[i][j] && func_800DA948(temp) & 0x10 && !(getRandomNumberInRange(0, 3))) {
                     setSpecialDialogueBit(0x89);
                     temp++;
-                    func_800DAA90(0x52, temp, j, i);
+                    func_800DAA90(FARM, temp, j, i);
                 }
             }
         }   
@@ -377,50 +380,50 @@ void setAlbumPicture(u8 pictureBitIndex) {
         case 0x26:
         case 0x27:
         case 0x28:
-            D_80189058 |= 0x80;
+            albumBits |= 0x80;
             break;
         case 0x29:
         case 0x2A:
         case 0x2B:
         case 0x2C:
         case 0x2D:
-            D_80189058 |= 0x100;
+            albumBits |= 0x100;
             break;
         case 0x2E:
-            D_80189058 |= 2;
+            albumBits |= 2;
             break;
         case 0x2F:
-            D_80189058 |= 4;
+            albumBits |= 4;
             break;
         case 0x30:
-            D_80189058 |= 0x10;
+            albumBits |= 0x10;
             break;
         case 0x31:
-            D_80189058 |= 0x40;
+            albumBits |= 0x40;
             break;
         case 0x32:
-            D_80189058 |= 0x20;
+            albumBits |= 0x20;
             break;
         case 0x33:
-            D_80189058 |= 0x4000;
+            albumBits |= 0x4000;
             break;
         case 0x34:
-            D_80189058 |= 8;
+            albumBits |= 8;
             break;
         case 0x35:
-            D_80189058 |= 0x200;
+            albumBits |= 0x200;
             break;
         case 0x36:
-            D_80189058 |= 0x400;
+            albumBits |= 0x400;
             break;
         case 0x37:
-            D_80189058 |= 0x800;
+            albumBits |= 0x800;
             break;
         case 0x38:
-            D_80189058 |= 0x1000;
+            albumBits |= 0x1000;
             break;
         case 0x39:
-            D_80189058 |= 0x2000;
+            albumBits |= 0x2000;
             break;
         }
 }
@@ -571,9 +574,10 @@ u8 func_80065518(void) {
     return result;
 }
 
-//INCLUDE_ASM(const s32, "gameStatus", func_80065774);
+//INCLUDE_ASM(const s32, "gameStatus", getSumNpcAffection);
 
-u16 func_80065774(void) {
+// get total npc affection
+s32 getSumNpcAffection(void) {
 
     u16 result = 0;
     u8 i;
