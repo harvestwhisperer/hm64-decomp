@@ -328,6 +328,8 @@ extern bool func_80043260(u16 arg0, u16 arg1, void* arg2, void* arg3, void* arg4
 extern bool func_80043334(u16 arg0, u16 arg1, void* arg2, void* arg3, void* arg4, void* arg5, void* arg6, void* arg7, void* arg8, void* arg9, void* argA, u16 argB, u8 argC, f32 argD, f32 argE, f32 argF);
 extern void func_80043430(u16, u16, u16, u16);
 extern u8 func_80043A88();  
+extern bool func_80043AD8(u16);
+extern u8 func_80043C6C(u16);
 
 extern DialogueIcon D_801806D0;
 

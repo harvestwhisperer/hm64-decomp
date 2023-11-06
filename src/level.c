@@ -80,7 +80,7 @@ void func_8006E840(u16 arg0) {
     if (gBaseMapIndex == FARM) {
         func_8003C084(0, (D_80114280[gMapWithSeasonIndex] + D_8021E6D0) % 8);
     } else {
-        func_8003C084(0, D_80114280[gMapWithSeasonIndex] & 7);
+        func_8003C084(0, D_80114280[gMapWithSeasonIndex] % 8);
     }
      
     func_8003C1E0(0, 0, 0, 0, 8, 8);

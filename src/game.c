@@ -11,6 +11,7 @@
 #include "system/mapContext.h"
 
 #include "animals.h"
+#include "evaluation.h"
 #include "game.h"
 #include "gameAudio.h"
 #include "gameStatus.h"
@@ -22,6 +23,7 @@
 #include "npc.h"
 #include "player.h"
 #include "setCutscenes.h"
+#include "shop.h"
 #include "updateGame.h"
 #include "weather.h"
 
@@ -44,6 +46,8 @@ extern Vec4f globalLightingRgba;
 extern u8 gHarvestKing;
 extern u8 gFlowerFestivalGoddess;
 extern u8 gVoteForFlowerFestivalGoddess;
+
+extern u8 gHappiness;
 
 extern u8 gWife;
 extern u8 gWifePregnancyCounter;
@@ -82,28 +86,35 @@ extern u8 D_801C3F99;
 
 extern u8 D_801C3F37;
 extern u8 D_801FC150;
-extern u8 D_801FC155;
 extern u8 D_801FC15C;
-extern u8 D_801FD618;
 extern u8 D_801FD621;
 extern u8 D_80205201;
-extern u8 D_802055D1;
 extern u8 D_8020562C;
 extern u8 D_80237412;  
+
+extern u8 karenKaiBabyAge;
+extern u8 karenKaiNewlywedCounter;
+extern u8 karenPregnancyCounter;
+extern u8 annCliffBabyAge;
+extern u8 annAndCliffNewlywedCounter;
+extern u8 annPregnancyCounter;
+extern u8 gVoteForFlowerFestivalGoddess;
 
 // unused
 extern u16 D_801FB686;   
 
 // shared: likely bss
-extern u8 D_8016F6E3;
 extern u8 D_8016FAD8;
-extern u8 D_8017026F;
 extern u8 D_8017027E;
-extern u8 D_80170444;
 extern u8 D_801886A0;
 extern u8 D_801891C4;
-extern u8 D_8018A059;
 extern u8 D_801FB9A4;
+
+//extern u16 D_801C3F32;
+extern u8 D_801C4216;
+extern u16 D_801886D2;
+extern u8 D_80189054;
+extern u32 D_801890E0;
 
 // data
 extern u8 D_80113B20[];
@@ -128,6 +139,136 @@ extern MemoryRead_32 D_8011F25C[];
 static const s16 houseExtensionPrices[6];     
 static const s16 houseExtensionLumberCosts[6];
 
+// forward declarations
+extern inline void func_8005AE8C(u16 arg0, u16 arg1, u16 arg2, int arg3, u16 arg4);
+extern void func_8005B09C(u8);
+
+
+// -----------------------------
+// temp
+extern u32 calculateHouseExtensionScore();
+
+// sprite
+extern void func_8002B710(void);                                  
+extern void func_8002E1B8(void);                                
+extern void func_8002F6F0();                                
+extern void func_8002F7C8(u8, u8, u8, u8);                       
+extern bool func_8002F8F0(u8, u8, u8, u8, s32);                   
+
+// map
+extern void func_8003BE98(u16, u8, u8, u8, u8);
+extern void func_8003BF7C(u16, u8, u8, u8, u8, s32);
+
+// message
+extern void func_8003D970();  
+extern void func_8003DDF8(u32, u32, u32, u32);                       
+extern bool func_8003F360(u16, s16, u8);     
+extern bool func_8003F54C(u16, f32, f32, f32);                          
+extern bool func_8003F690(u16, u8, u8, u8);                         
+
+// dialogue
+extern void func_80043430(u16, u16, u16, u16);                        
+extern bool func_80043AD8(u16);                 
+extern u8 func_80043C6C(u16);                                
+
+// cutscene
+extern void func_80046C98(void);                                
+extern void initializeCutsceneMaps();                         
+
+// initialize
+extern void func_80053088(void); 
+
+// initialize2
+extern void func_800563D0(u8 arg0);                                
+
+// game
+extern void func_8005B09C(u8);                                 
+
+// gameStatus
+//extern s32 getSumNpcAffection(void);                             
+
+// player
+extern void func_8006A2E8();                                    
+extern void setPlayerAction(u16, u16);                       
+extern void setupPlayerSprite(u16 arg0, u8 resetPlayer);                         
+
+// level
+extern void func_8006E840(u16);                                 
+extern void setEntrance(u16 entranceIndex);  
+
+// animals
+extern void func_80088104(u8);                                
+extern void func_80088810(u8);                                
+extern u8 func_8009B5E0();                           
+
+// mapObjects
+extern u16 func_800DBF90();                                
+
+// shop
+extern void func_800DC9FC(u8);    
+
+// gameAudio
+extern void setSongWithDefaultSpeed(u16 songIndex);
+
+extern Controller controllers[4];    
+extern u32 D_8013D45C;
+
+// game
+extern Vec4f D_80180718;
+// extern s32 D_8018071C;
+// extern s32 D_80180720;
+// extern s32 D_80180724;
+
+extern u8 D_801C4216;
+
+// animals
+extern u8 D_801FC155;
+extern Dog dogInfo;
+extern u16 D_801886D2;
+extern u8 D_80189054;
+extern u8 D_8018908C;
+extern u8 D_8018908D;
+extern u16 D_801890C4;
+extern u32 D_801890E0;
+
+extern MainLoopCallbackInfo D_80205230;
+
+extern u16 gCurrentSongIndex;
+extern u8 gEntranceIndex;
+extern u32 gGold;
+extern u8 gHappiness;
+extern u8 gMaximumStamina;
+extern u8 gVoteForFlowerFestivalGoddess;
+
+extern Vec4f globalLightingRgba;
+// extern s32 D_8016F8A4;
+// extern s32 D_8016F8A8;
+// extern s32 D_8016F8AC;
+
+extern u8 npcAffection[];
+
+extern Dialogue D_801C3E40[1];
+
+extern Player D_80189060;
+
+
+extern f32 D_8016F8A4;
+extern f32 D_8016F8A8;
+extern f32 D_8016F8AC;
+
+extern f32 D_8018071C;
+extern f32 D_80180720;
+extern f32 D_80180724;
+
+typedef struct {
+    u16 flags;
+} Placeholder;
+
+extern Placeholder D_801C3F32[1];
+
+extern u8 D_80205236;
+
+
 
 //INCLUDE_ASM(const s32, "game", func_80059D90);
 
@@ -137,11 +278,11 @@ void func_80059D90(void) {
 
     gWifeConceptionCounter += adjustValue(gWifeConceptionCounter, 1, 120);
     
-    if ((checkLifeEventBit(HAVE_BABY)) && (gBabyAge < 0xFF)) {
+    if (checkLifeEventBit(HAVE_BABY) && gBabyAge < 0xFF) {
         gBabyAge++;
     }
 
-    if (!checkLifeEventBit(HAVE_BABY) && checkLifeEventBit(WIFE_PREGNANT) && (gWifePregnancyCounter >= 60)) {
+    if (!checkLifeEventBit(HAVE_BABY) && checkLifeEventBit(WIFE_PREGNANT) && gWifePregnancyCounter >= 60) {
          
         toggleLifeEventBit(WIFE_PREGNANT);
         setLifeEventBit(HAVE_BABY);
@@ -169,7 +310,7 @@ void func_80059D90(void) {
      }
 
     if (!checkLifeEventBit(HAVE_BABY) && checkLifeEventBit(WIFE_PREGNANT)) {
-        gWifePregnancyCounter += 1;
+        gWifePregnancyCounter++;
     }
 
     if (!checkLifeEventBit(HAVE_BABY) && checkLifeEventBit(HAVE_BABY_BED) && !checkLifeEventBit(WIFE_PREGNANT) && npcAffection[gWife] >= 250 && gWifeConceptionCounter >= 30) {
@@ -180,19 +321,19 @@ void func_80059D90(void) {
         
          switch (gWife) {                        
             case MARIA:                               
-                setSpecialDialogueBit(0x14C);
+                setSpecialDialogueBit(WIFE_PREGNANT_MARIA);
                 break;
             case POPURI:                               
-                setSpecialDialogueBit(0x14D);
+                setSpecialDialogueBit(WIFE_PREGNANT_POPURI);
                 break;
             case ELLI:                                
-                setSpecialDialogueBit(0x14E);
+                setSpecialDialogueBit(WIFE_PREGNANT_ELLI);
                 break;
             case ANN:                             
-                setSpecialDialogueBit(0x14F);
+                setSpecialDialogueBit(WIFE_PREGNANT_ANN);
                 break;
             case KAREN:                               
-                setSpecialDialogueBit(0x150);
+                setSpecialDialogueBit(WIFE_PREGNANT_KAREN);
                 break;
             default:
                 break;
@@ -205,25 +346,25 @@ not_married:
 
         D_801FB9A4 += adjustValue(D_801FB9A4, 1, 120);
 
-        if (checkLifeEventBit(MARIA_HARRIS_BABY) && (D_80205201 < 120)) {
-            D_80205201 += 1;
+        if (checkLifeEventBit(MARIA_HARRIS_BABY) && D_80205201 < 120) {
+            D_80205201++;
         }
 
-        if (!checkLifeEventBit(MARIA_HARRIS_BABY) && checkLifeEventBit(0x21) && (D_8016FAD8 >= 60)) {
-            toggleLifeEventBit(0x21);
+        if (!checkLifeEventBit(MARIA_HARRIS_BABY) && checkLifeEventBit(MARIA_PREGNANT) && D_8016FAD8 >= 60) {
+            toggleLifeEventBit(MARIA_PREGNANT);
             setLifeEventBit(MARIA_HARRIS_BABY);
-            setSpecialDialogueBit(0x32);
-            toggleSpecialDialogueBit(0x37);
+            setSpecialDialogueBit(MARIA_HARRIS_BABY_DIALOGUE);
+            toggleSpecialDialogueBit(MARIA_PREGNANT_DIALOGUE);
         }
 
-        if (!checkLifeEventBit(MARIA_HARRIS_BABY) && checkLifeEventBit(0x21)) {
-            D_8016FAD8 += 1;
+        if (!checkLifeEventBit(MARIA_HARRIS_BABY) && checkLifeEventBit(MARIA_PREGNANT)) {
+            D_8016FAD8++;
         }
 
-        if (!checkLifeEventBit(MARIA_HARRIS_BABY) && !checkLifeEventBit(0x21) && (D_801C3F96 >= 250) && (D_801FB9A4 >= 30)) {
-            setLifeEventBit(0x21);
+        if (!checkLifeEventBit(MARIA_HARRIS_BABY) && !checkLifeEventBit(MARIA_PREGNANT) && D_801C3F96 >= 250 && D_801FB9A4 >= 30) {
+            setLifeEventBit(MARIA_PREGNANT);
             D_8016FAD8 = 0;
-            setSpecialDialogueBit(0x37);
+            setSpecialDialogueBit(MARIA_PREGNANT_DIALOGUE);
         }
     }
 
@@ -231,23 +372,23 @@ not_married:
 
         D_801886A0 += adjustValue(D_801886A0, 1, 120);
 
-        if (checkLifeEventBit(POPURI_GRAY_BABY) && (D_801C3F36 < 120)) {
-            D_801C3F36 += 1;
+        if (checkLifeEventBit(POPURI_GRAY_BABY) && D_801C3F36 < 120) {
+            D_801C3F36++;
         }
 
-        if (!checkLifeEventBit(POPURI_GRAY_BABY) && checkLifeEventBit(0x22) && (D_801891C4 >= 60)) {
-            toggleLifeEventBit(0x22);
+        if (!checkLifeEventBit(POPURI_GRAY_BABY) && checkLifeEventBit(POPURI_PREGNANT) && D_801891C4 >= 60) {
+            toggleLifeEventBit(POPURI_PREGNANT);
             setLifeEventBit(POPURI_GRAY_BABY);
-            setSpecialDialogueBit(0x33);
+            setSpecialDialogueBit(POPURI_GRAY_BABY_DIALOGUE);
             toggleSpecialDialogueBit(0x38);
         }
 
-        if (!checkLifeEventBit(POPURI_GRAY_BABY) && checkLifeEventBit(0x22)) {
-            D_801891C4 += 1;
+        if (!checkLifeEventBit(POPURI_GRAY_BABY) && checkLifeEventBit(POPURI_PREGNANT)) {
+            D_801891C4++;
         }
 
-        if (!checkLifeEventBit(POPURI_GRAY_BABY) && !checkLifeEventBit(0x22) && (D_801C3F97 >= 250) && (D_801886A0 >= 30)) {
-            setLifeEventBit(0x22);
+        if (!checkLifeEventBit(POPURI_GRAY_BABY) && !checkLifeEventBit(POPURI_PREGNANT) && D_801C3F97 >= 250 && D_801886A0 >= 30) {
+            setLifeEventBit(POPURI_PREGNANT);
             D_801891C4 = 0;
             setSpecialDialogueBit(0x38);
         }
@@ -257,77 +398,77 @@ not_married:
 
         D_8017027E += adjustValue(D_8017027E, 1, 120);
 
-        if (checkLifeEventBit(ELLI_JEFF_BABY) && (D_801FC15C < 120)) {
-            D_801FC15C += 1;
+        if (checkLifeEventBit(ELLI_JEFF_BABY) && D_801FC15C < 120) {
+            D_801FC15C++;
         }
 
-        if (!checkLifeEventBit(ELLI_JEFF_BABY) && checkLifeEventBit(0x23) && (D_8020562C >= 60)) {
-            toggleLifeEventBit(0x23);
+        if (!checkLifeEventBit(ELLI_JEFF_BABY) && checkLifeEventBit(ELLI_PREGNANT) && D_8020562C >= 60) {
+            toggleLifeEventBit(ELLI_PREGNANT);
             setLifeEventBit(ELLI_JEFF_BABY);
-            setSpecialDialogueBit(0x34);
-            toggleSpecialDialogueBit(0x39);
+            setSpecialDialogueBit(ELLI_JEFF_BABY_DIALOGUE);
+            toggleSpecialDialogueBit(ELLI_PREGNANT_DIALOGUE);
         }
 
-        if (!checkLifeEventBit(ELLI_JEFF_BABY) && checkLifeEventBit(0x23)) {
-            D_8020562C += 1;
+        if (!checkLifeEventBit(ELLI_JEFF_BABY) && checkLifeEventBit(ELLI_PREGNANT)) {
+            D_8020562C++;
         }
 
-        if (!checkLifeEventBit(ELLI_JEFF_BABY) && !checkLifeEventBit(0x23) && (D_801C3F98 >= 250) && (D_8017027E >= 30)) {
-            setLifeEventBit(0x23);
+        if (!checkLifeEventBit(ELLI_JEFF_BABY) && !checkLifeEventBit(ELLI_PREGNANT) && D_801C3F98 >= 250 && D_8017027E >= 30) {
+            setLifeEventBit(ELLI_PREGNANT);
             D_8020562C = 0;
-            setSpecialDialogueBit(0x39);
+            setSpecialDialogueBit(ELLI_PREGNANT_DIALOGUE);
         }
     }
 
     if (checkLifeEventBit(ANN_CLIFF_MARRIED)) {
 
-        D_80170444 += adjustValue(D_80170444, 1, 120);
+        annAndCliffNewlywedCounter += adjustValue(annAndCliffNewlywedCounter, 1, 120);
 
-        if (checkLifeEventBit(ANN_CLIFF_BABY) && (D_8016F6E3 < 120)) {
-            D_8016F6E3 += 1;
+        if (checkLifeEventBit(ANN_CLIFF_BABY) && annCliffBabyAge < 120) {
+            annCliffBabyAge++;
         }
 
-        if (!checkLifeEventBit(ANN_CLIFF_BABY) && checkLifeEventBit(0x24) && (D_8018A059 >= 60)) {
-            toggleLifeEventBit(0x24);
+        if (!checkLifeEventBit(ANN_CLIFF_BABY) && checkLifeEventBit(ANN_PREGNANT) && annPregnancyCounter >= 60) {
+            toggleLifeEventBit(ANN_PREGNANT);
             setLifeEventBit(ANN_CLIFF_BABY);
-            setSpecialDialogueBit(0x35);
-            toggleSpecialDialogueBit(0x3A);
+            setSpecialDialogueBit(ANN_CLIFF_BABY_DIALOGUE);
+            toggleSpecialDialogueBit(ANN_PREGNANT_DIALOGUE);
         }
 
-        if (!checkLifeEventBit(ANN_CLIFF_BABY) && checkLifeEventBit(0x24)) {
-            D_8018A059 += 1;
+        if (!checkLifeEventBit(ANN_CLIFF_BABY) && checkLifeEventBit(ANN_PREGNANT)) {
+            annPregnancyCounter++;
         }
 
-        if (!checkLifeEventBit(ANN_CLIFF_BABY) && !checkLifeEventBit(0x24) && npcAffection[CLIFF] >= 250 && D_80170444 >= 30) {
-            setLifeEventBit(0x24);
-            D_8018A059 = 0;
-            setSpecialDialogueBit(0x3A);
+        if (!checkLifeEventBit(ANN_CLIFF_BABY) && !checkLifeEventBit(ANN_PREGNANT) && npcAffection[CLIFF] >= 250 && annAndCliffNewlywedCounter >= 30) {
+            setLifeEventBit(ANN_PREGNANT);
+            annPregnancyCounter = 0;
+            setSpecialDialogueBit(ANN_PREGNANT_DIALOGUE);
         }
     }
 
     if (checkLifeEventBit(KAREN_KAI_MARRIED)) {
         
-        D_802055D1 += adjustValue(D_802055D1, 1, 120);
+        karenKaiNewlywedCounter += adjustValue(karenKaiNewlywedCounter, 1, 120);
 
-        if ((checkLifeEventBit(KAREN_KAI_BABY)) && (D_801FD618 < 120)) {
-            D_801FD618 += 1;
+        if (checkLifeEventBit(KAREN_KAI_BABY) && karenKaiBabyAge < 120) {
+            karenKaiBabyAge++;
         }
 
-        if (!checkLifeEventBit(KAREN_KAI_BABY) && checkLifeEventBit(0x25) && (D_8017026F >= 60)) {
-            toggleLifeEventBit(0x25);
+        if (!checkLifeEventBit(KAREN_KAI_BABY) && checkLifeEventBit(KAREN_PREGNANT) && karenPregnancyCounter >= 60) {
+            toggleLifeEventBit(KAREN_PREGNANT);
             setLifeEventBit(KAREN_KAI_BABY);
-            setSpecialDialogueBit(0x36);
-            toggleSpecialDialogueBit(0x3B);
+            setSpecialDialogueBit(KAREN_KAI_BABY_DIALOGUE);
+            toggleSpecialDialogueBit(KAREN_PREGNANT_DIALOGUE);
         }
 
-        if (!checkLifeEventBit(KAREN_KAI_BABY) && checkLifeEventBit(0x25)) {
-            D_8017026F += 1;
+        if (!checkLifeEventBit(KAREN_KAI_BABY) && checkLifeEventBit(KAREN_PREGNANT)) {
+            karenPregnancyCounter++;
         }
 
-        if (!checkLifeEventBit(KAREN_KAI_BABY) && !checkLifeEventBit(0x25) && npcAffection[KAI] >= 250 && D_802055D1 >= 30) {
+        if (!checkLifeEventBit(KAREN_KAI_BABY) && !checkLifeEventBit(KAREN_PREGNANT) && npcAffection[KAI] >= 250 && karenKaiNewlywedCounter >= 30) {
             setLifeEventBit(0x25);
-            D_8017026F = 0;
-            setSpecialDialogueBit(0x3B);
+            karenPregnancyCounter = 0;
+            setSpecialDialogueBit(KAREN_PREGNANT_DIALOGUE);
         }
     }
 }
@@ -374,9 +515,9 @@ void setSpecialDialogues(void) {
 
     // have at least 1 house extensions
     if (func_8009B3DC()) {
-        setSpecialDialogueBit(0x12);
+        setSpecialDialogueBit(HAVE_HOUSE_EXTENSION);
     } else {
-        toggleSpecialDialogueBit(0x12);
+        toggleSpecialDialogueBit(HAVE_HOUSE_EXTENSION);
     }
 
     // cow and sheep status
@@ -394,28 +535,28 @@ void setSpecialDialogues(void) {
     }
 
     if (checkLifeEventBit(HAVE_HORSE)) {
-        setSpecialDialogueBit(0x27);
+        setSpecialDialogueBit(HAVE_HORSE_DIALOGUE);
     }
 
     if (gForecast == RAIN) {
-        setSpecialDialogueBit(0x13);
+        setSpecialDialogueBit(RAIN_FORECAST);
     } else {
-        toggleSpecialDialogueBit(0x13);
+        toggleSpecialDialogueBit(RAIN_FORECAST);
     }
 
-    if (checkLifeEventBit(0x10)) {
+    if (checkLifeEventBit(HAVE_KITCHEN)) {
         setSpecialDialogueBit(0x18);
     }
 
-    if (checkLifeEventBit(0x11)) {
+    if (checkLifeEventBit(HAVE_BATHROOM)) {
         setSpecialDialogueBit(0x19);
     }
 
-    if (checkLifeEventBit(0x12)) {
+    if (checkLifeEventBit(HAVE_STAIRS)) {
         setSpecialDialogueBit(0x1A);
     }
 
-    if (checkLifeEventBit(0x13)) {
+    if (checkLifeEventBit(HAVE_GREENHOUSE)) {
         setSpecialDialogueBit(0x1B);
     }
 
@@ -423,7 +564,7 @@ void setSpecialDialogues(void) {
     if (gSeason == WINTER && gDayOfMonth == 27) {
 
         if (gHarvestKing == PLAYER) {
-            setSpecialDialogueBit(0x142);
+            setSpecialDialogueBit(PLAYER_HARVEST_KING);
         }
 
         toggleSpecialDialogueBit(0x138);
@@ -444,7 +585,7 @@ void setSpecialDialogues(void) {
         D_80237412 = 0;
 
     } else {
-        toggleSpecialDialogueBit(0x142);
+        toggleSpecialDialogueBit(PLAYER_HARVEST_KING);
     }
 
     if (gSeason == WINTER && gDayOfMonth == 10) {
@@ -641,7 +782,7 @@ inline int adjustValue(int initial, int value, int max) {
 //INCLUDE_ASM(const s32, "game", func_8005AE8C);
 
 // show text box
-void func_8005AE8C(u16 arg0, u16 arg1, u16 arg2, int arg3, u16 arg4) {
+inline void func_8005AE8C(u16 arg0, u16 arg1, u16 arg2, int arg3, u16 arg4) {
   
     func_8002F6F0();
     func_80046C98();
@@ -663,7 +804,7 @@ void func_8005AE8C(u16 arg0, u16 arg1, u16 arg2, int arg3, u16 arg4) {
           break;
     }
 
-    func_8003F360(0, -4, arg4);
+    func_8003F360(0, ~(1 | 2), arg4);
   
     func_8003DDF8(0, arg1, arg2, arg3);
   
@@ -677,7 +818,7 @@ void func_8005AE8C(u16 arg0, u16 arg1, u16 arg2, int arg3, u16 arg4) {
 //INCLUDE_ASM(const s32, "game", func_8005AF94);
 
 // show dialogue box
-void func_8005AF94(u16 arg0, u16 arg1, u16 arg2, u32 arg3, u16 arg4) {
+inline void func_8005AF94(u16 arg0, u16 arg1, u16 arg2, u32 arg3, u16 arg4) {
     
     func_8002F6F0();
     func_80046C98();
@@ -696,7 +837,7 @@ void func_8005AF94(u16 arg0, u16 arg1, u16 arg2, u32 arg3, u16 arg4) {
             break;
     }
 
-    func_8003F360(0, -4, arg4);
+    func_8003F360(0, ~(1 | 2), arg4);
     func_80043430(0, arg1, arg2, arg3);
 
     setMainLoopCallbackFunctionIndex(DIALOGUE);
@@ -718,427 +859,120 @@ void func_8005B09C(u8 arg0) {
         default:
             break;
         case 0:
-            func_8002F6F0();
-            func_80046C98();
-            func_8002FCB4(0, 0);
-            func_8003F54C(0, 0, -64.0f, 352.0f);
-            func_8003F690(0, 1, 0, 0);
-            func_8003F360(0, -4, 2);
-            func_80043430(0, 1, 0, 0);
-            setMainLoopCallbackFunctionIndex(DIALOGUE);
-            controllers[0].unk_1C = 0;
-            setPlayerAction(0, 0);
+            func_8005AF94(1, 1, 0, 0, 2);
             break;
         case 1:
-            func_8002F6F0();
-            func_80046C98();
-            func_8002FCB4(0, 0);
-            func_8003F54C(0, 0, -64.0f, 352.0f);
-            func_8003F690(0, 1, 0, 0);
-            func_8003F360(0, -4, 2);
-            func_80043430(0, 1, 1, 0);
-            setMainLoopCallbackFunctionIndex(DIALOGUE);
-            controllers[0].unk_1C = 0;
-            setPlayerAction(0, 0);
+            func_8005AF94(1, 1, 1, 0, 2);
             break;    
         case 2:
-            func_8002F6F0();
-            func_80046C98();
-            func_8002FCB4(0, 0);
-            func_8003F54C(0, 24.0f, -64.0f, 352.0f);
-            func_8003F690(0, 0, 0, 0);
-            func_8003F360(0, -4, 0);
-            func_80043430(0, 0x3D, 0xC, 0x40);
-            setMainLoopCallbackFunctionIndex(DIALOGUE);
-            controllers[0].unk_1C = 0;
-            setPlayerAction(0, 0);
+            func_8005AF94(0, 0x3D, 0xC, 0x40, 0);
             break;         
         case 3:
-            func_8002F6F0();
-            func_80046C98();
-            func_8002FCB4(0, 0);
-            func_8003F54C(0, 24.0f, -64.0f, 352.0f);
-            func_8003F690(0, 0, 0, 0);
-            func_8003F360(0, -4, 0);
-            func_80043430(0, 0x3D, 0xB, 0x40);
-            setMainLoopCallbackFunctionIndex(DIALOGUE);
-            controllers[0].unk_1C = 0;
-            setPlayerAction(0, 0);
+            func_8005AF94(0, 0x3D, 0xB, 0x40, 0);
             break;          
         case 4:
-            func_8002F6F0();
-            func_80046C98();
-            func_8002FCB4(0, 0);
-            func_8003F54C(0, 24.0f, -64.0f, 352.0f);
-            func_8003F690(0, 0, 0, 0);
-            func_8003F360(0, -4, 0);
-            func_80043430(0, 0x3D, 0x12, 0x40);
-            setMainLoopCallbackFunctionIndex(DIALOGUE);
-            controllers[0].unk_1C = 0;
-            setPlayerAction(0, 0);
+            func_8005AF94(0, 0x3D, 0x12, 0x40, 0);
             break;       
         case 5:
-            func_8002F6F0();
-            func_80046C98();
-            func_8002FCB4(0, 0);
-            func_8003F54C(0, 24.0f, -64.0f, 352.0f);
-            func_8003F690(0, 0, 0, 0);
-            func_8003F360(0, -4, 0);
-            func_80043430(0, 0x3D, 0xD, 0x40);
-            setMainLoopCallbackFunctionIndex(DIALOGUE);
-            controllers[0].unk_1C = 0;
-            setPlayerAction(0, 0);
+            func_8005AF94(0, 0x3D, 0xD, 0x40, 0);
             break;        
         case 6:
-            func_8002F6F0();
-            func_80046C98();
-            func_8002FCB4(0, 0);
-            func_8003F54C(0, 24.0f, -64.0f, 352.0f);
-            func_8003F690(0, 0, 0, 0);
-            func_8003F360(0, -4, 0);
-            func_80043430(0, 0x3D, 0xE, 0x40);
-            setMainLoopCallbackFunctionIndex(DIALOGUE);
-            controllers[0].unk_1C = 0;
-            setPlayerAction(0, 0);
+            func_8005AF94(0, 0x3D, 0xE, 0x40, 0);
             break;      
         case 7:
-            func_8002F6F0();
-            func_80046C98();
-            func_8002FCB4(0, 0);
-            func_8003F54C(0, 24.0f, -64.0f, 352.0f);
-            func_8003F690(0, 0, 0, 0);
-            func_8003F360(0, -4, 0);
-            func_80043430(0, 0x3D, 0xF, 0x40);
-            setMainLoopCallbackFunctionIndex(DIALOGUE);
-            controllers[0].unk_1C = 0;
-            setPlayerAction(0, 0);
+            func_8005AF94(0, 0x3D, 0xF, 0x40, 0);
             break;      
         case 8:
-            func_8002F6F0();
-            func_80046C98();
-            func_8002FCB4(0, 0);
-            func_8003F54C(0, 24.0f, -64.0f, 352.0f);
-            func_8003F690(0, 0, 0, 0);
-            func_8003F360(0, -4, 0);
-            func_80043430(0, 0x3E, 7, 0x40);
-            setMainLoopCallbackFunctionIndex(DIALOGUE);    
-            controllers[0].unk_1C = 0;
-            setPlayerAction(0, 0);
+            func_8005AF94(0, 0x3E, 7, 0x40, 0);
             break;      
         case 9:
-            func_8002F6F0();
-            func_80046C98();
-            func_8002FCB4(0, 0);
-            func_8003F54C(0, 24.0f, -64.0f, 352.0f);
-            func_8003F690(0, 0, 0, 0);
-            func_8003F360(0, -4, 0);
-            func_80043430(0, 0x3E, 6, 0x40);
-            setMainLoopCallbackFunctionIndex(DIALOGUE);
-            controllers[0].unk_1C = 0;
-            setPlayerAction(0, 0);
+            func_8005AF94(0, 0x3E, 6, 0x40, 0);
             break;    
         case 10:
-            func_8002F6F0();
-            func_80046C98();
-            func_8002FCB4(0, 0);
-            func_8003F54C(0, 24.0f, -64.0f, 352.0f);
-            func_8003F690(0, 0, 0, 0);
-            func_8003F360(0, -4, 0);
-            func_80043430(0, 0x3E, 2, 0x40);
-            setMainLoopCallbackFunctionIndex(DIALOGUE);
-            controllers[0].unk_1C = 0;
-            setPlayerAction(0, 0);
+            func_8005AF94(0, 0x3E, 2, 0x40, 0);
             break;  
         case 11:
-            func_8002F6F0();
-            func_80046C98();
-            func_8002FCB4(0, 0);
-            func_8003F54C(0, 24.0f, -64.0f, 352.0f);
-            func_8003F690(0, 0, 0, 0);
-            func_8003F360(0, -4, 0);
-            func_80043430(0, 0x3E, 0, 0x40);
-            setMainLoopCallbackFunctionIndex(DIALOGUE);
-            controllers[0].unk_1C = 0;
-            setPlayerAction(0, 0);
+            func_8005AF94(0, 0x3E, 0, 0x40, 0);
             break;        
         case 12:
-            func_8002F6F0();
-            func_80046C98();
-            func_8002FCB4(0, 0);
-            func_8003F54C(0, 24.0f, -64.0f, 352.0f);
-            func_8003F690(0, 0, 0, 0);
-            func_8003F360(0, -4, 0);
-            func_80043430(0, 0x3E, 1, 0x40);
-            setMainLoopCallbackFunctionIndex(DIALOGUE);
-            controllers[0].unk_1C = 0;
-            setPlayerAction(0, 0);
+            func_8005AF94(0, 0x3E, 1, 0x40, 0);
             break;          
         case 13:
-            if (gSeason == SPRING | gSeason == WINTER) {
-                func_8002F6F0();
-                func_80046C98();
-                func_8002FCB4(0, 0);
-                func_8003F54C(0, 0, -64.0f, 352.0f);
-                func_8003F690(0, 1, 0, 0);
-                func_8003F360(0, -4, 2);
-                func_80043430(0, 0x44, 0, 0);
-                setMainLoopCallbackFunctionIndex(DIALOGUE);
-                controllers[0].unk_1C = 0;
-                setPlayerAction(0, 0);
+            if (gSeason == SPRING || gSeason == WINTER) {
+                func_8005AF94(1, 0x44, 0, 0, 2);
             } else {
-                func_8002F6F0();
-                func_80046C98();
-                func_8002FCB4(0, 0);
-                func_8003F54C(0, 0, -64.0f, 352.0f);
-                func_8003F690(0, 1, 0, 0);
-                func_8003F360(0, -4, 2);
-                func_80043430(0, 0x44, 0xA, 0);
-                setMainLoopCallbackFunctionIndex(DIALOGUE);
-                controllers[0].unk_1C = 0;
-                setPlayerAction(0, 0);
+                func_8005AF94(1, 0x44, 10, 0, 2);
             }            
             break;
         case 14:
-            if (gSeason == SPRING | gSeason == WINTER) {
-                func_8002F6F0();
-                func_80046C98();
-                func_8002FCB4(0, 0);
-                func_8003F54C(0, 0, -64.0f, 352.0f);
-                func_8003F690(0, 1, 0, 0);
-                func_8003F360(0, -4, 2);
-                func_80043430(0, 0x44, 1, 0x40);
-                setMainLoopCallbackFunctionIndex(DIALOGUE);
-                controllers[0].unk_1C = 0;
-                setPlayerAction(0, 0);
+            if (gSeason == SPRING || gSeason == WINTER) {
+                func_8005AF94(1, 0x44, 1, 0x40, 2);
             } else {
-                func_8002F6F0();
-                func_80046C98();
-                func_8002FCB4(0, 0);
-                func_8003F54C(0, 0, -64.0f, 352.0f);
-                func_8003F690(0, 1, 0, 0);
-                func_8003F360(0, -4, 2);
-                func_80043430(0, 0x44, 0xB, 0);
-                setMainLoopCallbackFunctionIndex(DIALOGUE);
-                controllers[0].unk_1C = 0;
-                setPlayerAction(0, 0);
+                func_8005AF94(1, 0x44, 0xB, 0, 2);
             }
             break;
         case 15:
-            if (gSeason == SPRING | gSeason == WINTER) {
-                func_8002F6F0();
-                func_80046C98();
-                func_8002FCB4(0, 0);
-                func_8003F54C(0, 0, -64.0f, 352.0f);
-                func_8003F690(0, 1, 0, 0);
-                func_8003F360(0, -4, 2);
-                func_80043430(0, 0x44, 2, 0x40);
-                setMainLoopCallbackFunctionIndex(DIALOGUE);
-                controllers[0].unk_1C = 0;
-                setPlayerAction(0, 0);
+            if (gSeason == SPRING || gSeason == WINTER) {
+                func_8005AF94(1, 0x44, 2, 0x40, 2);
             } else {
-                func_8002F6F0();
-                func_80046C98();
-                func_8002FCB4(0, 0);
-                func_8003F54C(0, 0, -64.0f, 352.0f);
-                func_8003F690(0, 1, 0, 0);
-                func_8003F360(0, -4, 2);
-                func_80043430(0, 0x44, 0xC, 0);
-                setMainLoopCallbackFunctionIndex(DIALOGUE);
-                controllers[0].unk_1C = 0;
-                setPlayerAction(0, 0);
+                func_8005AF94(1, 0x44, 0xC, 0, 2);
             }
             break; 
         case 16:
-            if (gSeason == SPRING | gSeason == WINTER) {
-                func_8002F6F0();
-                func_80046C98();
-                func_8002FCB4(0, 0);
-                func_8003F54C(0, 0, -64.0f, 352.0f);
-                func_8003F690(0, 1, 0, 0);
-                func_8003F360(0, -4, 2);
-                func_80043430(0, 0x44, 3, 0x40);
-                setMainLoopCallbackFunctionIndex(DIALOGUE);
-                controllers[0].unk_1C = 0;
-                setPlayerAction(0, 0);
+            if (gSeason == SPRING || gSeason == WINTER) {
+                func_8005AF94(1, 0x44, 3, 0x40, 2);
             } else {
-                func_8002F6F0();
-                func_80046C98();
-                func_8002FCB4(0, 0);
-                func_8003F54C(0, 0, -64.0f, 352.0f);
-                func_8003F690(0, 1, 0, 0);
-                func_8003F360(0, -4, 2);
-                func_80043430(0, 0x44, 0xD, 0);
-                setMainLoopCallbackFunctionIndex(DIALOGUE);
-                controllers[0].unk_1C = 0;
-                setPlayerAction(0, 0);
+                func_8005AF94(1, 0x44, 0xD, 0, 2);
             }
             break;   
         case 17:
-            if (gSeason == SPRING | gSeason == WINTER) {
-                func_8002F6F0();
-                func_80046C98();
-                func_8002FCB4(0, 0);
-                func_8003F54C(0, 0, -64.0f, 352.0f);
-                func_8003F690(0, 1, 0, 0);
-                func_8003F360(0, -4, 2);
-                func_80043430(0, 0x44, 4, 0x40);
-                setMainLoopCallbackFunctionIndex(DIALOGUE);
-                controllers[0].unk_1C = 0;
-                setPlayerAction(0, 0);
+            if (gSeason == SPRING || gSeason == WINTER) {
+                func_8005AF94(1, 0x44, 4, 0x40, 2);
             } else {
-                func_8002F6F0();
-                func_80046C98();
-                func_8002FCB4(0, 0);
-                func_8003F54C(0, 0, -64.0f, 352.0f);
-                func_8003F690(0, 1, 0, 0);
-                func_8003F360(0, -4, 2);
-                func_80043430(0, 0x44, 0xE, 0);
-                setMainLoopCallbackFunctionIndex(DIALOGUE);
-                controllers[0].unk_1C = 0;
-                setPlayerAction(0, 0);
+                func_8005AF94(1, 0x44, 0xE, 0, 2);
             }
             break;     
         case 18:
-            if (gSeason == SPRING | gSeason == WINTER) {
-                func_8002F6F0();
-                func_80046C98();
-                func_8002FCB4(0, 0);
-                func_8003F54C(0, 0, -64.0f, 352.0f);
-                func_8003F690(0, 1, 0, 0);
-                func_8003F360(0, -4, 2);
-                func_80043430(0, 0x44, 5, 0x40);
-                setMainLoopCallbackFunctionIndex(DIALOGUE);
-                controllers[0].unk_1C = 0;
-                setPlayerAction(0, 0);
+            if (gSeason == SPRING || gSeason == WINTER) {
+                func_8005AF94(1, 0x44, 5, 0x40, 2);
             } else {
-                func_8002F6F0();
-                func_80046C98();
-                func_8002FCB4(0, 0);
-                func_8003F54C(0, 0, -64.0f, 352.0f);
-                func_8003F690(0, 1, 0, 0);
-                func_8003F360(0, -4, 2);
-                func_80043430(0, 0x44, 0xF, 0);
-                setMainLoopCallbackFunctionIndex(DIALOGUE);
-                controllers[0].unk_1C = 0;
-                setPlayerAction(0, 0);
+                func_8005AF94(1, 0x44, 0xF, 0, 2);
             }
             break;        
         case 19:
-            if (gSeason == SPRING | gSeason == WINTER) {
-                func_8002F6F0();
-                func_80046C98();
-                func_8002FCB4(0, 0);
-                func_8003F54C(0, 0, -64.0f, 352.0f);
-                func_8003F690(0, 1, 0, 0);
-                func_8003F360(0, -4, 2);
-                func_80043430(0, 0x44, 6, 0x40);
-                setMainLoopCallbackFunctionIndex(DIALOGUE);
-                controllers[0].unk_1C = 0;
-                setPlayerAction(0, 0);
+            if (gSeason == SPRING || gSeason == WINTER) {
+                func_8005AF94(1, 0x44, 6, 0x40, 2);
             } else {
-                func_8002F6F0();
-                func_80046C98();
-                func_8002FCB4(0, 0);
-                func_8003F54C(0, 0, -64.0f, 352.0f);
-                func_8003F690(0, 1, 0, 0);
-                func_8003F360(0, -4, 2);
-                func_80043430(0, 0x44, 0x10, 0);
-                setMainLoopCallbackFunctionIndex(DIALOGUE);
-                controllers[0].unk_1C = 0;
-                setPlayerAction(0, 0);
+                func_8005AF94(1, 0x44, 0x10, 0, 2);
             }
             break;        
         case 20:
-            if (gSeason == SPRING | gSeason == WINTER) {
-                func_8002F6F0();
-                func_80046C98();
-                func_8002FCB4(0, 0);
-                func_8003F54C(0, 0, -64.0f, 352.0f);
-                func_8003F690(0, 1, 0, 0);
-                func_8003F360(0, -4, 2);
-                func_80043430(0, 0x44, 7, 0x40);
-                setMainLoopCallbackFunctionIndex(DIALOGUE);
-                controllers[0].unk_1C = 0;
-                setPlayerAction(0, 0);
+            if (gSeason == SPRING || gSeason == WINTER) {
+                func_8005AF94(1, 0x44, 7, 0x40, 2);
             } else {
-                func_8002F6F0();
-                func_80046C98();
-                func_8002FCB4(0, 0);
-                func_8003F54C(0, 0, -64.0f, 352.0f);
-                func_8003F690(0, 1, 0, 0);
-                func_8003F360(0, -4, 2);
-                func_80043430(0, 0x44, 0x11, 0);
-                setMainLoopCallbackFunctionIndex(DIALOGUE);
-                controllers[0].unk_1C = 0;
-                setPlayerAction(0, 0);
+                func_8005AF94(1, 0x44, 0x11, 0, 2);
             }
             break;       
         case 21:
-            if (gSeason == SPRING | gSeason == WINTER) {
-                func_8002F6F0();
-                func_80046C98();
-                func_8002FCB4(0, 0);
-                func_8003F54C(0, 0, -64.0f, 352.0f);
-                func_8003F690(0, 1, 0, 0);
-                func_8003F360(0, -4, 2);
-                func_80043430(0, 0x44, 8, 0x40);
-                setMainLoopCallbackFunctionIndex(DIALOGUE);
-                controllers[0].unk_1C = 0;
-                setPlayerAction(0, 0);
+            if (gSeason == SPRING || gSeason == WINTER) {
+                func_8005AF94(1, 0x44, 8, 0x40, 2);
             } else {
-                func_8002F6F0();
-                func_80046C98();
-                func_8002FCB4(0, 0);
-                func_8003F54C(0, 0, -64.0f, 352.0f);
-                func_8003F690(0, 1, 0, 0);
-                func_8003F360(0, -4, 2);
-                func_80043430(0, 0x44, 0x12, 0);
-                setMainLoopCallbackFunctionIndex(DIALOGUE);
-                controllers[0].unk_1C = 0;
-                setPlayerAction(0, 0);
+                func_8005AF94(1, 0x44, 0x12, 0, 2);
             }
             break;       
         case 22:
-            if (gSeason == SPRING | gSeason == WINTER) {
-                func_8002F6F0();
-                func_80046C98();
-                func_8002FCB4(0, 0);
-                func_8003F54C(0, 0, -64.0f, 352.0f);
-                func_8003F690(0, 1, 0, 0);
-                func_8003F360(0, -4, 2);
-                func_80043430(0, 0x44, 9, 0x40);
-                setMainLoopCallbackFunctionIndex(DIALOGUE);
-                controllers[0].unk_1C = 0;
-                setPlayerAction(0, 0);
+            if (gSeason == SPRING || gSeason == WINTER) {
+                func_8005AF94(1, 0x44, 9, 0x40, 2);
             } else {
-                func_8002F6F0();
-                func_80046C98();
-                func_8002FCB4(0, 0);
-                func_8003F54C(0, 0, -64.0f, 352.0f);
-                func_8003F690(0, 1, 0, 0);
-                func_8003F360(0, -4, 2);
-                func_80043430(0, 0x44, 0x13, 0);
-                setMainLoopCallbackFunctionIndex(DIALOGUE);
-                controllers[0].unk_1C = 0;
-                setPlayerAction(0, 0);
+                func_8005AF94(1, 0x44, 0x13, 0, 2);
             }
             break;     
         case 23:
-            func_8002F6F0();
-            func_80046C98();
-            func_8002FCB4(0, 0);
-            func_8003F54C(0, 0, -64.0f, 352.0f);
-            func_8003F690(0, 1, 0, 0);
-            func_8003F360(0, -4, 2);
-            func_80043430(0, 1, 0x15, 0);
-            setMainLoopCallbackFunctionIndex(DIALOGUE);
-            controllers[0].unk_1C = 0;
-            setPlayerAction(0, 0);
+            func_8005AF94(1, 1, 0x15, 0, 2);
             break;    
     }
 
     setMainLoopCallbackFunctionIndex(PINK_OVERLAY_TEXT);
-    
 }
 
 //INCLUDE_ASM(const s32, "game", func_8005C00C);
@@ -1231,7 +1065,7 @@ void func_8005C07C(s16 arg0, u16 arg1) {
 
 //INCLUDE_ASM(const s32, "game", func_8005C940);
 
-void func_8005C940(u16 arg0, u16 arg1) {
+inline void func_8005C940(u16 arg0, u16 arg1) {
     
     func_8003BF7C(0, 0, 0, 0, 0, 8);
     func_8002F8F0(0, 0, 0, 0, 8);
@@ -1240,18 +1074,9 @@ void func_8005C940(u16 arg0, u16 arg1) {
     
     D_80205230.unk_0 = arg1;
 
-    globalLightingRgba.r = 0;
-    globalLightingRgba.g = 0;
-    globalLightingRgba.b = 0;
-    globalLightingRgba.a = 0;
+    resetGlobalLighting();
     
-    // vec4f
-    D_80180718.r = 0;
-    D_80180718.g = 0;
-    D_80180718.b = 0;
-    D_80180718.a = 0;
-    
-    if (arg1) {
+    if (D_80205230.unk_0) {
         setMainLoopCallbackFunctionIndex(LEVEL_LOAD_2);
         func_8002F6F0();
         func_80046C98();
@@ -1566,8 +1391,97 @@ void func_8005D0BC(void) {
     }
 }
 
+static inline void inline1(u8 arg0, u8 arg1, u8 arg2, u8 arg3, u8 arg4) {
+    switch (arg0) {                   
+        case 0:                                 
+            func_800DC9FC(arg1);
+            setMainLoopCallbackFunctionIndex(1);
+            break;
+        case 1:                                 
+            func_800DC9FC(arg2);
+            setMainLoopCallbackFunctionIndex(1);
+            break;
+        case 2:                                 
+            func_800DC9FC(arg3);
+            setMainLoopCallbackFunctionIndex(1);
+            break;
+        case 3:                                 
+            func_800DC9FC(arg4);
+            setMainLoopCallbackFunctionIndex(1);
+            break;
+    }
+}
+
+static inline void inline2(u8 arg0, u8 arg1, u8 arg2, u8 arg3, u8 arg4, u8 arg5) {
+    switch (arg0) {                    
+        case 0:                                 
+            func_800DC9FC(arg1);
+            setMainLoopCallbackFunctionIndex(1);
+            break;
+        case 1:                                 
+            func_800DC9FC(arg2);
+            setMainLoopCallbackFunctionIndex(1);
+            break;
+        case 2:                                 
+            func_800DC9FC(arg3);
+            setMainLoopCallbackFunctionIndex(1);
+            break;
+        case 3:                                 
+            func_800DC9FC(arg4);
+            setMainLoopCallbackFunctionIndex(1);
+            break;
+        case 4:                                 
+            func_800DC9FC(arg5);
+            setMainLoopCallbackFunctionIndex(1);
+            break;
+    }
+}
+
+static inline void inline3() {                 
+    D_801C3E40[0].struct5.flags &= ~0x40;
+    func_80043AD8(0);
+    setPlayerAction(0, 0);
+    setMainLoopCallbackFunctionIndex(1);
+}
+
+static inline void func_80055F08_2(u16 cutsceneIndex, u16 entranceIndex, u8 arg2) {
+    
+    func_8002E1B8();
+    func_8002B710();
+    func_8003D970();
+    initializeCutsceneMaps();
+    func_80053088();
+    
+    resetGlobalLighting();
+
+    func_8002F7C8(0, 0, 0, 0);
+    func_8003BE98(0, 0, 0, 0, 0);
+
+    gHour = 12;
+
+    // set ptrs to rom addresses for sprites
+    func_800563D0(arg2);
+
+    setEntrance(entranceIndex);
+
+    gCutsceneIndex = cutsceneIndex;
+
+    // trigger cutscene and load cutscene assets
+    loadCutscene(0);
+    
+    func_8006E840(gEntranceIndex);
+    setupPlayerSprite(gEntranceIndex, 0);
+
+    func_8006A2E8();
+
+    setMainLoopCallbackFunctionIndex(4);
+
+}
+
 // possible split
 
+// pink overlay callback
+// handles write in diary
 // jtbl_8011F030
 // jtbl_8011F090
 // jtbl_8011F0A8
@@ -1585,6 +1499,888 @@ void func_8005D0BC(void) {
 // jtbl_8011F1C8
 // 0xFA430-0xFA600
 INCLUDE_ASM(const s32, "game", func_8005D2B0);
+
+// matches but diffing in build
+/*
+void func_8005D2B0() {
+
+    u8 temp;
+
+    if (D_801C3E40[0].struct5.flags & 4) {
+        
+        func_8002F730();
+        func_80046CF4();
+        func_8002FCB4(0, 1);
+
+        temp = func_80043C6C(0);
+
+        switch (D_80205230.unk_6) {
+
+            case 0:                                     
+                switch (temp) {                      
+                    case 0:                                 
+                        func_8005B09C(1);
+                        break;
+                    case 1:                                 
+                        func_8005AF94(1, 1, 2, 0x80, 2);
+                        break;
+                    case 2:                                 
+                        setMainLoopCallbackFunctionIndex(0x19);
+                        break;
+                    case 3:                                 
+                        setMainLoopCallbackFunctionIndex(0x1D);
+                        break;
+                    case 4:                                 
+                        setMainLoopCallbackFunctionIndex(1);
+                        break;
+                    }
+                
+                break;
+            
+            case 1:
+                switch (temp) {
+                    case 0:                                 
+                        setMainLoopCallbackFunctionIndex(1);
+                        setPlayerAction(8, 10);
+                        setDailyEventBit(7);
+                        break;
+                    case 1:                                 
+                        setMainLoopCallbackFunctionIndex(1);
+                        setPlayerAction(8, 10);
+                        break;
+                    case 2:
+                        setMainLoopCallbackFunctionIndex(1);
+                        break;
+                }
+                
+                break;
+
+            case 2:                       
+                inline1(temp, 11, 12, 13, 18);
+                break;
+
+            case 3:
+                inline1(temp, 14, 15, 16, 17);
+                break;
+
+            case 4:       
+                inline2(temp, 40, 41, 42, 43, 44);
+                break;
+
+            case 5:                                     
+                switch (temp) {                    
+                    case 0:                                
+                        func_8005B09C(6);
+                        return;
+                    case 1:                                
+                        func_8005AE8C(0, 6, 0x55, 0, 0);
+                        setDailyEventBit(2);
+                        setDailyEventBit(5);
+                        return;
+                    case 2:                                
+                        func_800DC9FC(0x21);
+                        setMainLoopCallbackFunctionIndex(1);
+                        break;
+                    }
+                
+                break;
+
+            case 6:                                
+                inline1(temp, 30, 31, 32, 33);
+                break;
+
+            case 7:                                     
+                switch (temp) {                    
+                    case 0:                         
+
+                        gGold += adjustValue(gGold, D_801890E0, 999999);
+                        
+                        D_801890E0 = 0;                        
+                        D_801C3E40[0].struct5.flags &= ~0x40;
+                        
+                        func_80043AD8(0);
+                        setEntrance(9);
+
+                        func_8005C940(0, 2);
+
+                        toggleDailyEventBit(2);
+                        setDailyEventBit(4);
+
+                        switch (D_801C4216) {
+                            case 4:
+                                func_80088104(D_801FC155);
+                                break;
+                            case 2 ... 3:
+                                func_80088810(D_801FC155);
+                                break;
+                        }
+                        
+                        break;
+                    
+                    case 1:                                 
+                        D_801C3E40[0].struct5.flags &= ~0x40;
+                        func_80043AD8(0);
+                        setMainLoopCallbackFunctionIndex(1);
+                        break;
+                    }
+                
+                break;
+
+            case 8:                         
+                switch (temp) {                    
+                    case 0:                                 
+                        
+                        D_801C3E40[0].struct5.flags &= ~0x40;
+                        func_80043AD8(0);
+                        setEntrance(9);
+
+                        func_8005C940(0, 2);
+
+                        toggleDailyEventBit(0x1D);
+                        setDailyEventBit(0x1E);
+                        setDailyEventBit(0x20);
+                        D_80189054 = D_801FC155;
+                        break;
+                        
+                    case 1:                                 
+                        D_801C3E40[0].struct5.flags &= ~0x40;
+                        func_80043AD8(0);
+                        setMainLoopCallbackFunctionIndex(1);
+                        break;
+                    }
+                
+                break;
+
+            case 9:                                     
+                if (temp >= 5) {
+                    gVoteForFlowerFestivalGoddess = 0xFF;
+                } else {
+                    gVoteForFlowerFestivalGoddess = temp;
+                }
+                
+                D_801C3E40[0].struct5.flags &= ~0x40;
+                func_80043AD8(0);
+                setMainLoopCallbackFunctionIndex(1);
+                break;
+            
+            case 10:                                    
+                switch (temp) {                   
+                    case 0:                                 
+                        func_800DC9FC(50);
+                        setMainLoopCallbackFunctionIndex(1);
+                        break;
+                    case 1:                                 
+                        func_800DC9FC(51);
+                        setMainLoopCallbackFunctionIndex(1);
+                        break;    
+                    case 2:                                 
+                        func_800DC9FC(52);
+                        setMainLoopCallbackFunctionIndex(1);
+                        break;    
+                    case 3:                                 
+                        func_8005AE8C(0, 4, 31, 0, 0);
+                        break; 
+                    }
+                
+                    break;
+
+            case 11:                     
+                switch (temp) {                     
+                    case 0:                                 
+                        func_800DC9FC(45);
+                        setMainLoopCallbackFunctionIndex(1);
+                        break;    
+                    case 1:                                 
+                        func_800DC9FC(46);
+                        setMainLoopCallbackFunctionIndex(1);
+                        break;    
+                    case 2:                                 
+                        func_800DC9FC(49);
+                        setMainLoopCallbackFunctionIndex(1);
+                        break;    
+                    case 3:
+                        func_8005AE8C(0, 4, 20, 0, 0);
+                        break;
+                    }
+                
+                break;
+
+            case 12:                                    
+                switch (temp) {                     
+                    case 0:                                 
+                        func_800DC9FC(47);
+                        setMainLoopCallbackFunctionIndex(1);
+                        break;    
+                    case 1:                                 
+                        func_800DC9FC(48);
+                        setMainLoopCallbackFunctionIndex(1);
+                        break;    
+                    case 2:                                 
+                        func_800DC9FC(49);
+                        setMainLoopCallbackFunctionIndex(1);
+                        break;    
+                    case 3:
+                        func_8005AE8C(0, 4, 20, 0, 0);
+                        break;
+                    }
+                
+                break;
+
+            case 13:                                    
+                if (gSeason == 1 || gSeason == 4) {
+                    if (gPlayer.action1 == 0x1E || temp == 3) {
+                        switch (temp) {             
+                            case 0:                         
+                                func_8005AE8C(1, 1, 0, 0, 0);
+                                break;
+                            case 1:                         
+                                func_8005AE8C(1, 1, 1, 0, 0);
+                                break;
+                            case 2:                         
+                                func_8005AE8C(1, 1, 2, 0, 0);
+                                break;
+                            case 3:
+                                D_801C3E40[0].struct5.flags &= ~0x40;
+                                func_80043AD8(0);
+                                setPlayerAction(0, 0);
+                                setMainLoopCallbackFunctionIndex(1);
+                                break;
+                            }
+                        
+                        func_800D55E4(gPlayer.unk_2D, 1);
+                        gPlayer.unk_2C = 0;
+                        return;
+                    }
+                    
+                    setPlayerAction(0x1E, 0x1F);
+                    setMainLoopCallbackFunctionIndex(1);
+                    break;
+                }
+                
+                if (gPlayer.action1 == 0x1E || temp == 3) {
+                    switch (temp) {                 
+                        case 0:                             
+                            func_8005AE8C(1, 1, 3, 0, 0);
+                            break;
+                        case 1:                             
+                            func_8005AE8C(1, 1, 4, 0, 0);
+                            break;     
+                        case 2:                             
+                            func_8005AE8C(1, 1, 5, 0, 0);
+                            break;
+                        case 3:
+                            D_801C3E40[0].struct5.flags &= ~0x40;
+                            func_80043AD8(0);
+                            setPlayerAction(0, 0);
+                            setMainLoopCallbackFunctionIndex(1);
+                            break;
+                        }
+                    
+                    func_800D55E4(gPlayer.unk_2D, 1);
+                    gPlayer.unk_2C = 0;
+                    return;
+                    
+                }
+                
+                setPlayerAction(0x1E, 0x1F);
+                setMainLoopCallbackFunctionIndex(1);
+                break;
+
+            case 14:                                    
+                if (gSeason == 1 || gSeason == 4) {
+                    if (gPlayer.action1 == 0x1E || temp == 3) {
+                        switch (temp) {            
+                            case 0:                        
+                                func_8005AE8C(1, 1, 9, 0, 0);
+                                break;
+                            case 1:                        
+                                func_8005AE8C(1, 1, 10, 0, 0);
+                                break;
+                            case 2:                        
+                                func_8005AE8C(1, 1, 11, 0, 0);
+                                break;
+                            case 3:
+                                D_801C3E40[0].struct5.flags &= ~0x40;
+                                func_80043AD8(0);
+                                setPlayerAction(0, 0);
+                                setMainLoopCallbackFunctionIndex(1);
+                                break;
+                            }
+                        
+                        func_800D55E4(gPlayer.unk_2D, 1);
+                        gPlayer.unk_2C = 0;
+                        return;
+                        
+                    }
+                    
+                    setPlayerAction(0x1E, 0x1F);
+                    setMainLoopCallbackFunctionIndex(1);
+                    break;
+                }
+                
+                if (gPlayer.action1 == 0x1E || temp == 3) {
+                    switch (temp) {                
+                        case 0:                             
+                            func_8005AE8C(1, 1, 6, 0, 0);
+                            break;
+                        case 1:                             
+                            func_8005AE8C(1, 1, 7, 0, 0);
+                            break;
+                        case 2:                             
+                            func_8005AE8C(1, 1, 8, 0, 0);
+                            break;
+                        case 3:
+                            D_801C3E40[0].struct5.flags &= ~0x40;
+                            func_80043AD8(0);
+                            setPlayerAction(0, 0);
+                            setMainLoopCallbackFunctionIndex(1);
+                            break;
+                    }
+                
+                    func_800D55E4(gPlayer.unk_2D, 1);
+                    gPlayer.unk_2C = 0;
+                    return;
+                    
+                }
+                
+                setPlayerAction(0x1E, 0x1F);
+                setMainLoopCallbackFunctionIndex(1);
+                break;
+
+
+        case 15:                                    
+            if (gSeason == 1 || gSeason == 4) {
+                if (gPlayer.action1 == 0x1E || temp == 3) {
+                    switch (temp) {             
+                        case 0:                         
+                            func_8005AE8C(1, 1, 12, 0, 0);
+                            break;
+                        case 1:                         
+                            func_8005AE8C(1, 1, 13, 0, 0);
+                            break;
+                        case 2:                         
+                            func_8005AE8C(1, 1, 14, 0, 0);
+                            break;
+                        case 3:
+                            D_801C3E40[0].struct5.flags &= ~0x40;
+                            func_80043AD8(0);
+                            setPlayerAction(0, 0);
+                            setMainLoopCallbackFunctionIndex(1);
+                            break;
+                        }
+                    
+                    func_800D55E4(gPlayer.unk_2D, 1);
+                    gPlayer.unk_2C = 0;
+                    return;
+                }
+                
+                setPlayerAction(0x1E, 0x1F);
+                setMainLoopCallbackFunctionIndex(1);
+                break;
+            }
+            
+            if (gPlayer.action1 == 0x1E || temp == 3) {
+                switch (temp) {                         
+                    case 0:                             
+                        func_8005AE8C(1, 1, 15, 0, 0);
+                        break;
+                    case 1:                             
+                        func_8005AE8C(1, 1, 16, 0, 0);
+                        break;
+                    case 2:                             
+                        func_8005AE8C(1, 1, 17, 0, 0);
+                        break;
+                    case 3:
+                        D_801C3E40[0].struct5.flags &= ~0x40;
+                        func_80043AD8(0);
+                        setPlayerAction(0, 0);
+                        setMainLoopCallbackFunctionIndex(1);
+                        break;
+                    }
+                
+                func_800D55E4(gPlayer.unk_2D, 1);
+                gPlayer.unk_2C = 0;
+                break;
+                
+            }
+            
+            setPlayerAction(0x1E, 0x1F);
+            setMainLoopCallbackFunctionIndex(1);
+            break;
+
+        case 16:                                    
+            if (gSeason == 1 || gSeason == 4) {
+                if (gPlayer.action1 == 0x1E || temp == 3) {
+                    switch (temp) {             
+                        case 0:                         
+                            func_8005AE8C(1, 1, 18, 0, 0);
+                            break;
+                        case 1:                         
+                            func_8005AE8C(1, 1, 19, 0, 0);
+                            break;
+                        case 2:                         
+                            func_8005AE8C(1, 1, 20, 0, 0);
+                            break;                        
+                        case 3:
+                            D_801C3E40[0].struct5.flags &= ~0x40;
+                            func_80043AD8(0);
+                            setPlayerAction(0, 0);
+                            setMainLoopCallbackFunctionIndex(1);
+                            break;
+                        }
+                    
+                        func_800D55E4(gPlayer.unk_2D, 1);
+                        gPlayer.unk_2C = 0;
+                        return;
+                    }
+                
+                    setPlayerAction(0x1E, 0x1F);
+                    setMainLoopCallbackFunctionIndex(1);
+                    break;
+                }
+            
+            if (gPlayer.action1 == 0x1E || temp == 3) {
+                switch (temp) {                 
+                    case 0:                             
+                        func_8005AE8C(1, 1, 21, 0, 0);
+                        break;
+                    case 1:                             
+                        func_8005AE8C(1, 1, 22, 0, 0);
+                        break;
+                    case 2:                             
+                        func_8005AE8C(1, 1, 23, 0, 0);
+                        break;
+                    case 3:
+                        D_801C3E40[0].struct5.flags &= ~0x40;
+                        func_80043AD8(0);
+                        setPlayerAction(0, 0);
+                        setMainLoopCallbackFunctionIndex(1);
+                        break;
+                    }
+                
+                    func_800D55E4(gPlayer.unk_2D, 1);
+                    gPlayer.unk_2C = 0;
+                    return;
+                }
+            
+            setPlayerAction(0x1E, 0x1F);
+            setMainLoopCallbackFunctionIndex(1);
+            break;
+
+        case 17:                                    
+            if (gSeason == 1 || gSeason == 4) {
+                if (gPlayer.action1 == 0x1E || temp == 4) {
+                    switch (temp) {            
+                        case 0:                         
+                            func_8005AE8C(1, 1, 25, 0, 0);
+                            break;
+                        case 1:                         
+                            func_8005AE8C(1, 1, 26, 0, 0);
+                            break;
+                        case 2:                         
+                            func_8005AE8C(1, 1, 27, 0, 0);
+                            break;
+                        case 3:                         
+                            func_8005AE8C(1, 1, 24, 0, 0);
+                            break;
+                        case 4:
+                            D_801C3E40[0].struct5.flags &= ~0x40;
+                            func_80043AD8(0);
+                            setPlayerAction(0, 0);
+                            setMainLoopCallbackFunctionIndex(1);
+                            break;
+                        }
+                    
+                    func_800D55E4(gPlayer.unk_2D, 1);
+                    gPlayer.unk_2C = 0;
+                    break;
+                }
+                
+                setPlayerAction(0x1E, 0x1F);
+                setMainLoopCallbackFunctionIndex(1);
+                break;
+            }
+            
+            if (gPlayer.action1 == 0x1E || temp == 4) {
+                    switch (temp) {                
+                        case 0:                             
+                            func_8005AE8C(1, 1, 28, 0, 0);
+                            break;
+                        case 1:                             
+                            func_8005AE8C(1, 1, 29, 0, 0);
+                            break;
+                        case 2:                             
+                            func_8005AE8C(1, 1, 30, 0, 0);
+                            break;
+                        case 3:                             
+                            func_8005AE8C(1, 1, 31, 0, 0);
+                            break;                       
+                        case 4:        
+                            D_801C3E40[0].struct5.flags &= ~0x40;
+                            func_80043AD8(0);
+                            setPlayerAction(0, 0);
+                            setMainLoopCallbackFunctionIndex(1);
+                            break;
+                        }
+                
+                        func_800D55E4(gPlayer.unk_2D, 1);
+                        gPlayer.unk_2C = 0;
+                        return;
+                    }
+            
+                setPlayerAction(0x1E, 0x1F);
+                setMainLoopCallbackFunctionIndex(1);
+                break;
+
+        case 18:                                    
+            if (gSeason == 1 || gSeason == 4) {
+                if (gPlayer.action1 == 0x1E || temp == 4) {
+                    switch (temp) {             
+                        case 0:                         
+                            func_8005AE8C(1, 1, 32, 0, 0);
+                            break;
+                        case 1:                         
+                            func_8005AE8C(1, 1, 33, 0, 0);
+                            break;
+                        case 2:                         
+                            func_8005AE8C(1, 1, 34, 0, 0);
+                            break;
+                        case 3:
+                            func_8005AE8C(1, 1, 35, 0, 0);
+                            break;
+                        case 4:
+                            D_801C3E40[0].struct5.flags &= ~0x40;
+                            func_80043AD8(0);
+                            setPlayerAction(0, 0);
+                            setMainLoopCallbackFunctionIndex(1);
+                            break;
+                            
+                        }
+                    
+                        func_800D55E4(gPlayer.unk_2D, 1);
+                        gPlayer.unk_2C = 0;
+                        return;
+                    }
+                
+                    setPlayerAction(0x1E, 0x1F);
+                    setMainLoopCallbackFunctionIndex(1);
+                    break;
+                }
+            
+            if (gPlayer.action1 == 0x1E || temp == 4) {
+                switch (temp) {                 
+                    case 0:                             
+                        func_8005AE8C(1, 1, 36, 0, 0);
+                        break;
+                    case 1:                             
+                        func_8005AE8C(1, 1, 37, 0, 0);
+                        break;
+                    case 2:                             
+                        func_8005AE8C(1, 1, 38, 0, 0);
+                        break;
+                    case 3:
+                        func_8005AE8C(1, 1, 39, 0, 0);
+                        break;
+                    case 4:
+                        D_801C3E40[0].struct5.flags &= ~0x40;
+                        func_80043AD8(0);
+                        setPlayerAction(0, 0);
+                        setMainLoopCallbackFunctionIndex(1);
+                        break;
+                    }
+                
+                    func_800D55E4(gPlayer.unk_2D, 1);
+                    gPlayer.unk_2C = 0;
+                    return;
+                }
+            
+            setPlayerAction(0x1E, 0x1F);
+            setMainLoopCallbackFunctionIndex(1);
+            break;
+        
+        case 19:                                    
+            if (gSeason == 1 || gSeason == 4) {
+                if (gPlayer.action1 == 0x1E || temp == 4) {
+                    switch (temp) {             
+                        case 0:                         
+                            func_8005AE8C(1, 1, 40, 0, 0);
+                            break;
+                        case 1:                         
+                            func_8005AE8C(1, 1, 41, 0, 0);
+                            break;
+                        case 2:                         
+                            func_8005AE8C(1, 1, 42, 0, 0);
+                            break;
+                        case 3:
+                            func_8005AE8C(1, 1, 43, 0, 0);
+                            break;
+                        case 4:
+                            D_801C3E40[0].struct5.flags &= ~0x40;
+                            func_80043AD8(0);
+                            setPlayerAction(0, 0);
+                            setMainLoopCallbackFunctionIndex(1);
+                            break;
+                        }
+                    
+                        func_800D55E4(gPlayer.unk_2D, 1);
+                        gPlayer.unk_2C = 0;
+                        return;
+                    }
+                
+                    setPlayerAction(0x1E, 0x1F);
+                    setMainLoopCallbackFunctionIndex(1);
+                    break;
+                }
+            
+            if (gPlayer.action1 == 0x1E || temp == 4) {
+                switch (temp) {                 
+                    case 0:                             
+                        func_8005AE8C(1, 1, 44, 0, 0);
+                        break;
+                    case 1:                             
+                        func_8005AE8C(1, 1, 45, 0, 0);
+                        break;
+                    case 2:                             
+                        func_8005AE8C(1, 1, 46, 0, 0);
+                        break;
+                    case 3:
+                        func_8005AE8C(1, 1, 47, 0, 0);
+                        break;
+                    case 4:
+                        D_801C3E40[0].struct5.flags &= ~0x40;
+                        func_80043AD8(0);
+                        setPlayerAction(0, 0);
+                        setMainLoopCallbackFunctionIndex(1);
+                        break;
+                    }
+                
+                    func_800D55E4(gPlayer.unk_2D, 1);
+                    gPlayer.unk_2C = 0;
+                    return;
+                }
+            
+            setPlayerAction(0x1E, 0x1F);
+            setMainLoopCallbackFunctionIndex(1);
+            break;
+        
+        case 20:                                    
+            if (gSeason == 1 || gSeason == 4) {
+                if (gPlayer.action1 == 0x1E || temp == 4) {
+                    switch (temp) {             
+                        case 0:                         
+                            func_8005AE8C(1, 1, 48, 0, 0);
+                            break;
+                        case 1:                         
+                            func_8005AE8C(1, 1, 49, 0, 0);
+                            break;
+                        case 2:                         
+                            func_8005AE8C(1, 1, 50, 0, 0);
+                            break;
+                        case 3:
+                            func_8005AE8C(1, 1, 51, 0, 0);
+                            break;
+                        case 4:
+                            D_801C3E40[0].struct5.flags &= ~0x40;
+                            func_80043AD8(0);
+                            setPlayerAction(0, 0);
+                            setMainLoopCallbackFunctionIndex(1);
+                            break;
+                        }
+                    
+                        func_800D55E4(gPlayer.unk_2D, 1);
+                        gPlayer.unk_2C = 0;
+                        return;
+                    }
+                
+                setPlayerAction(0x1E, 0x1F);
+                setMainLoopCallbackFunctionIndex(1);
+                break;
+            }
+            
+            if (gPlayer.action1 == 0x1E || temp == 4) {
+                switch (temp) {                 
+                    case 0:                             
+                        func_8005AE8C(1, 1, 52, 0, 0);
+                        break;
+                    case 1:                             
+                        func_8005AE8C(1, 1, 53, 0, 0);
+                        break;
+                    case 2:                             
+                        func_8005AE8C(1, 1, 54, 0, 0);
+                        break;
+                    case 3:   
+                        func_8005AE8C(1, 1, 55, 0, 0);
+                        break;
+                    case 4:
+                        D_801C3E40[0].struct5.flags &= ~0x40;
+                        func_80043AD8(0);
+                        setPlayerAction(0, 0);
+                        setMainLoopCallbackFunctionIndex(1);
+                        break;
+                    }
+                
+                func_800D55E4(gPlayer.unk_2D, 1);
+                gPlayer.unk_2C = 0;
+                break;
+            }
+            
+            setPlayerAction(0x1E, 0x1F);
+            setMainLoopCallbackFunctionIndex(1);
+            break;
+
+        case 21:                                    
+            if (gSeason == 1 || gSeason == 4) {
+                if (gPlayer.action1 == 0x1E || temp == 4) {
+                    switch (temp) {             
+                        case 0:                         
+                            func_8005AE8C(1, 1, 56, 0, 0);
+                            break;
+                        case 1:                         
+                            func_8005AE8C(1, 1, 57, 0, 0);
+                            break;
+                        case 2:                         
+                            func_8005AE8C(1, 1, 58, 0, 0);
+                            break;
+                        case 3:
+                            func_8005AE8C(1, 1, 59, 0, 0);
+                            break;
+                        case 4:
+                            D_801C3E40[0].struct5.flags &= ~0x40;
+                            func_80043AD8(0);
+                            setPlayerAction(0, 0);
+                            setMainLoopCallbackFunctionIndex(1);
+                            break;
+                        }
+                
+                    func_800D55E4(gPlayer.unk_2D, 1);
+                    gPlayer.unk_2C = 0;
+                    break;
+                
+                }
+                
+                setPlayerAction(0x1E, 0x1F);
+                setMainLoopCallbackFunctionIndex(1);
+                break;
+            }
+            
+            if (gPlayer.action1 == 0x1E || temp == 4) {
+                switch (temp) {                 
+                    case 0:                             
+                        func_8005AE8C(1, 1, 60, 0, 0);
+                        break;
+                    case 1:                             
+                        func_8005AE8C(1, 1, 61, 0, 0);
+                        break;
+                    case 2:                             
+                        func_8005AE8C(1, 1, 62, 0, 0);
+                        break;
+                    case 3:
+                        func_8005AE8C(1, 1, 63, 0, 0);
+                        break;
+                    case 4:
+                        D_801C3E40[0].struct5.flags &= ~0x40;
+                        func_80043AD8(0);
+                        setPlayerAction(0, 0);
+                        setMainLoopCallbackFunctionIndex(1);
+                        break;
+                    }
+                
+                    func_800D55E4(gPlayer.unk_2D, 1);
+                    gPlayer.unk_2C = 0;
+                    break;
+                }
+            
+            setPlayerAction(0x1E, 0x1F);
+            setMainLoopCallbackFunctionIndex(1);
+            break;
+
+        case 22:                                    
+            if (gSeason == 1 || gSeason == 4) {
+                if (gPlayer.action1 == 0x1E || temp == 4) {
+                    switch (temp) {             
+                        case 0:                         
+                            func_8005AE8C(1, 1, 64, 0, 0);
+                            break;
+                        case 1:                         
+                            func_8005AE8C(1, 1, 65, 0, 0);
+                            break;
+                        case 2:                         
+                            func_8005AE8C(1, 1, 66, 0, 0);
+                            break;
+                        case 3:
+                            func_8005AE8C(1, 1, 67, 0, 0);
+                            break;
+                        case 4:
+                            D_801C3E40[0].struct5.flags &= ~0x40;
+                            func_80043AD8(0);
+                            setPlayerAction(0, 0);
+                            setMainLoopCallbackFunctionIndex(1);
+                            break;
+                        }
+                    
+                        func_800D55E4(gPlayer.unk_2D, 1);
+                        gPlayer.unk_2C = 0;
+                        break;
+                    }
+                
+                    setPlayerAction(0x1E, 0x1F);
+                    setMainLoopCallbackFunctionIndex(1);
+                    break;
+                }
+            
+            if (gPlayer.action1 == 0x1E || temp == 4) {
+                switch (temp) {                 
+                    case 0:                             
+                        func_8005AE8C(1, 1, 68, 0, 0);
+                        break;
+                    case 1:                             
+                        func_8005AE8C(1, 1, 69, 0, 0);
+                        break;
+                    case 2:                             
+                        func_8005AE8C(1, 1, 70, 0, 0);
+                        break;
+                    case 3:
+                        func_8005AE8C(1, 1, 71, 0, 0);
+                        break;
+                    case 4:
+                        D_801C3E40[0].struct5.flags &= ~0x40;
+                        func_80043AD8(0);
+                        setPlayerAction(0, 0);
+                        setMainLoopCallbackFunctionIndex(1);
+                        break;
+                    }
+                
+                func_800D55E4(gPlayer.unk_2D, 1);
+                gPlayer.unk_2C = 0;
+                break;
+                
+            }
+            
+            setPlayerAction(0x1E, 0x1F);
+            setMainLoopCallbackFunctionIndex(1);
+            break;
+
+        case 23:                                    
+            switch (temp) {                   
+                case 0:                 
+                    if (calculateHouseExtensionScore() == 6 && checkLifeEventBit(0) && npcAffection[gWife] >= 250 && checkLifeEventBit(1) && dogInfo.affection >= 200 && getSumNpcAffection() >= 2500 && func_800DBF90() >= 384 && gMaximumStamina >= 190 && gHappiness >= 250 && func_8009B5E0() && D_801886D2 >= 10) {          
+                        albumBits |= 0x8000;  
+                    }
+                    
+                    setMainLoopCallbackFunctionIndex(13);
+                    break;
+                
+                case 1:                                 
+                    func_80055F08_2(0x5AA, 0x61, 1);
+                    break;
+                }
+            
+            break;
+
+        }
+    }
+}
+*/
 
 //INCLUDE_ASM(const s32, "game", func_80060454);
 
@@ -1609,7 +2405,7 @@ void func_800604B0(void) {
         
         func_8003F54C(0, 0, -64.0f, 352.0f);
         func_8003F690(0, 1, 0, 0);
-        func_8003F360(0, -4, 0);
+        func_8003F360(0, ~(1 | 2), 0);
         
         switch (gCutsceneIndex) {
             case 0x81 ... 0x82:
@@ -1692,7 +2488,7 @@ void func_80060624(void) {
             }
         }
         
-        if ((17 < gHour && gHour < 23)) {
+        if (17 < gHour && gHour < 23) {
             setLifeEventBit(0x60);
         } else {
             toggleLifeEventBit(0x60);
@@ -1893,7 +2689,7 @@ bool func_80060DC0(void) {
 
     bool result = 0;
 
-    if (!checkLifeEventBit(0x4E) && gSeason >= WINTER && (5 < gDayOfMonth && gDayOfMonth < 10)) {
+    if (!checkLifeEventBit(0x4E) && gSeason > AUTUMN && (5 < gDayOfMonth && gDayOfMonth < 10)) {
 
         if (!getRandomNumberInRange(0, 2) || gDayOfMonth == 9) {
             setLifeEventBit(0x4E);
@@ -1915,16 +2711,6 @@ void handleDailyShipment(void) {
     setDailyEventBit(DAILY_SHIPMENT);
 
 }
- 
-// alternate, but inline adjustValue has to be in same translation unit or linked 
-// void handleDailyShipment(void) { 
-
-//     gGold += adjustValue(gGold, dailyShippingBinValue, 999999);
-//     dailyShippingBinValue = 0;
-
-//     setDailyEventBit(DAILY_SHIPMENT);
-
-// }
  
 //INCLUDE_ASM(const s32, "game", func_80060EC8);
 
@@ -2017,7 +2803,7 @@ bool func_80061178(void) {
     
     bool result;
 
-    result = (npcAffection[MARIA] < 220) ^ 1;
+    result = npcAffection[MARIA] >= 220;
     
     if (npcAffection[POPURI] >= 220) {
         result = 1;
@@ -2315,7 +3101,7 @@ u8 getBacholeretteWithHighestAffection(u8 affectionLevel) {
 
 //INCLUDE_ASM(const s32, "game", func_80061A1C);
 
-void func_80061A1C(u8 arg0, u8 arg1) {
+inline void func_80061A1C(u8 arg0, u8 arg1) {
     switch (arg0) {                   
         case 1:
             D_801FD621 = arg1;
@@ -2329,26 +3115,16 @@ void func_80061A1C(u8 arg0, u8 arg1) {
     }
 }
 
-//INCLUDE_ASM(const s32, "game", func_80061A88);
-
 static inline void setUnknown(u8 value) {
     
     D_801C3F37++;
 
-    switch (D_801C3F37) {
-        case 1:
-            D_801FD621 = value;
-            break;
-        case 2:
-            D_801FC150 = value;
-            break;
-        case 3:
-            D_80237412 = value;
-            break;
-        default:
-            break;
-    }
+    func_80061A1C(D_801C3F37, value);
+
 }
+
+//INCLUDE_ASM(const s32, "game", func_80061A88);
+
 
 void func_80061A88(void) {
 
@@ -2915,7 +3691,6 @@ u16 func_80063A2C(u8 arg0) {
 
     return arr[arg0];
 }
-
 
 /* rodata */
 

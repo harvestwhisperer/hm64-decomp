@@ -22,7 +22,7 @@ u16 calculateNPCAffectionScore(void) {
 
 //INCLUDE_ASM(const s32, "evaluation", calculateHouseExtensionScore);
 
-u8 calculateHouseExtensionScore(void) {
+u32 calculateHouseExtensionScore(void) {
 
     u8 score;
 

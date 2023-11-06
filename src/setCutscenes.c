@@ -2227,7 +2227,7 @@ u16 func_800A7DFC(void) {
             
             D_8017026E = calculateHouseExtensionScore();
             D_80205638 = calculateGrassScore();
-            D_8013D438 = calculateFieldScore();
+            D_8013D438 = calculateFieldScore(); 
             D_80189824 = calculateShippingScore();
             
             // animals

@@ -5,14 +5,16 @@
 #include "system/pauseScreen.h"
 #include "system/sprite.h"
 
+#include "animals.h"
 #include "game.h"
 #include "gameStatus.h"
 #include "initialize2.h"
 #include "mainLoop.h"
 #include "player.h"
 #include "shop.h"
-#include "tv.h"
 
+extern u8 D_80170275;
+ 
 // bss
 // struct
 // cell index
@@ -877,7 +879,15 @@ INCLUDE_ASM(const s32, "overlayScreens", func_800CDA6C);
 
 INCLUDE_ASM(const s32, "overlayScreens", func_800CDFB0);
 
-INCLUDE_ASM(const s32, "overlayScreens", func_800CE008);
+//INCLUDE_ASM(const s32, "overlayScreens", func_800CE008);
+
+void func_800CE008(void) {
+    func_8002C52C(0x81, 0, 0x18);
+    func_8002C52C(0x82, 0, 0x18);
+    func_8002C52C(0x83, 0, 0x18);
+    func_8002C52C(0x84, 0, 0x18);
+    func_80046120(2);
+}
 
 INCLUDE_RODATA(const s32, "overlayScreens", D_801221CC);
 
@@ -887,9 +897,48 @@ INCLUDE_ASM(const s32, "overlayScreens", func_800CE068);
 
 INCLUDE_ASM(const s32, "overlayScreens", func_800CE714);
 
-INCLUDE_ASM(const s32, "overlayScreens", func_800CE7A8);
+//INCLUDE_ASM(const s32, "overlayScreens", func_800CE7A8);
 
-INCLUDE_ASM(const s32, "overlayScreens", func_800CE828);
+void func_800CE7A8(u8 arg0) {
+
+    switch (arg0) {                              
+        case 0:
+            setLifeEventBit(0x56);
+            adjustHorseAffection(10);
+            break;
+        case 1:
+            setLifeEventBit(0x58);
+            break;
+        case 2:
+            acquireKeyItem(STAMINA_CARROT);
+            break;
+        }
+}
+
+//INCLUDE_ASM(const s32, "overlayScreens", func_800CE828);
+
+bool func_800CE828(u8 arg0) {
+
+    bool result = 0;
+
+    switch (arg0) {
+        case 0:
+            if (checkLifeEventBit(0x57)) {
+                result = 1;
+            }
+            break;
+        case 1:
+            if (checkLifeEventBit(0x59)) {
+                result = 1;
+            }
+            break;
+        case 2:
+            break;
+    }
+
+    return result;
+    
+}
 
 INCLUDE_ASM(const s32, "overlayScreens", func_800CE894);
 

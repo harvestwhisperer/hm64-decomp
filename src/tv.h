@@ -4,20 +4,45 @@
 #include "common.h"
 
 extern void func_800D8540(void);
-extern void func_800D86D8(void);   
+extern void func_800D86D8(void); 
+extern void tvMainLoopCallback(void);
 
-// struct or array
-extern u16 D_80170270;
-extern u8 D_80170272[1];
-extern u8 D_80170273;
-extern u8 D_80170274[1];
-extern u8 D_80170275;
-extern u8 D_80170276;
-extern u8 D_80170277;
-extern u8 D_80170278;
-extern u8 D_80170279;
-extern u8 D_8017027A;
-extern u8 D_8017027B;
-extern u8 D_8017027C;
+#define WEATHER_CHANNEL 0
+#define NEWS_CHANNEL 1
+#define EDUCATION_CHANNEL 2
+#define STATIC_CHANNEL 3
+#define VARIETY_CHANNEL 3
+
+// content
+#define BLUE_SCREEN 0
+#define SUNNY_FORECAST 1
+#define RAIN_FORECAST 2
+#define SNOW_FORECAST 3
+#define TYPHOON_FORECAST 4
+#define STATIC 19
+
+#define STATIC_PICTURE 0
+#define BLUE_SCREEN_PICTURE 1
+#define EDUCATION_CHANNEL_PICTURE 2
+#define NEWS_SPRING 5
+#define NEWS_SUMMER 6
+#define NEWS_AUTUMN 7
+#define NEWS_WINTER 8
+
+#define TV_MODE_LOAD 0
+#define TV_MODE_DIALOGUE 1
+#define TV_MODE_WATCHING 2
+
+// D_80170270
+typedef struct {
+    u16 dialogueIndex; // probably dialogue index
+    u8 contentIndex;
+    u8 pictureIndex;
+    u8 mode;
+    u8 channelIndex;
+    u8 varietyShowEpisodeCounters[7];
+} TVContext;
+
+extern TVContext tvContext;
 
 #endif

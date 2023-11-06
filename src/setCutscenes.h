@@ -75,7 +75,7 @@
 
 #define DEMO_CUTSCENE_1 0x5DC
 #define DEMO_CUTSCENE_2 0x5DD
-// where is 0x5DE...?
+// 0x5DE
 #define DEMO_CUTSCENE_3 0x5DF
 
 u16 func_8009C054(u16 mapIndex);

@@ -15,6 +15,8 @@ extern void* fontPalette1End;
 extern void* fontPalette2Start;
 extern void* fontPalette2End;
 
+// 1 - 0xA0 = Japanese characters
+
 #define char_A 0xA1
 #define char_C 0xA3
 #define char_E 0xA5
@@ -54,6 +56,9 @@ extern void* fontPalette2End;
 #define char_x 0xD2
 #define char_y 0xD3
 #define char_z 0xD4
+
+// 0xD5-0xDF = numbers
+// 0xDF-0xFF = symbols
 
 // 80180790
 typedef struct {
@@ -161,7 +166,7 @@ extern bool func_8003F910(u8, u16, void*, void*, void*, void*, void*, void*, voi
 extern void func_80042634();
 extern void func_80045CB0();
 
-extern DialogueBox D_80188B70[MAX_DIALOGUE_BOXES];
+extern DialogueBox dialogueBoxes[MAX_DIALOGUE_BOXES];
 
 extern void *dialogueIconsTextureStart;
 extern void *dialogueIconsTextureEnd;

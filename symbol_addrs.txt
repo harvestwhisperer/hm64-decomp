@@ -950,6 +950,7 @@ getBacholeretteWithHighestAffection = 0x800618EC;
 setRecipes = 0x80062084;
 handleHouseConstruction = 0x800623E4;
 setLetters = 0x8006252C;
+handleWifeMorningHelp = 0x80063AF0;
 setAlbumPicture = 0x80065404;
 setDailyEventBit = 0x80065074;
 toggleDailyEventBit = 0x800650A8;
@@ -964,8 +965,9 @@ toggleReadLetterBit = 0x80065270;
 checkMailRead = 0x800652A8;
 setMail = 0x800652D4;
 
-setupPlayerSprite = 0x800657D0;
 
+getSumNpcAffection = 0x80065774;
+setupPlayerSprite = 0x800657D0;
 addItemToRucksack = 0x80065B74;
 removeTool = 0x80065D18;
 acquireKeyItem = 0x80065DCC;
@@ -1037,11 +1039,15 @@ setClockNewDay = 0x800D81A8;
 checkFestivalDay = 0x800D820C;
 setSeasonName = 0x800D835C;
 setGlobalSeasonName = 0x800D83F8;
+
+tvMainLoopCallback = 0x800D93CC;
+
 countPinkCatMintFlowersFarm = 0x800DC0F8;
 countPinkCatMintFlowersGreenhouse = 0x800DC170;
 setForecast = 0x800DC4F0;
 setWeatherLighting = 0x800DC694;
 loadDogTitleSprite = 0x800DFF64;
+
 
 titleScreenMainLoopCallback = 0x800E00A4;
 
@@ -1136,9 +1142,9 @@ gDayOfMonth = 0x80158260;
 spriteAddresses = 0x80158268;
 
 npcSprites = 0x801584F0;
-
 gTotalGrassTiles = 0x801654F0;
 farmFieldTiles = 0x8016F500;
+annCliffBabyAge = 0x8016F6E3;
 previousMapIndex = 0x8016F899;
 globalLightingRgba = 0x8016F8A0;
 specialDialogueBits = 0x8016F8B0;
@@ -1150,14 +1156,16 @@ mailboxBits = 0x8016FFEC;
 shadowSpritesInfo = 0x8016FFF8;
 
 previousWorldRotationAngles = 0x8013D5D8;
-
 initGfxList = 0x80170068;
+karenPregnancyCounter = 0x8017026F;
 gMinutes = 0x8017027F;
 gFarmAnimals = 0x80170280;
 gCurrentSeasonName = 0x80170445;
 currentWorldRotationAngles = 0x8017044C;
 gBaseMapIndex = 0x80170458;
 
+tvContext = 0x80170270;
+annAndCliffNewlywedCounter = 0x80170444;
 cutsceneMaps = 0x801808B0;
 
 nuContDataLockKey = 0x80181B14;
@@ -1168,14 +1176,17 @@ gWifeConceptionCounter = 0x80182FB9;
 
 contData = 0x801831B8;
 gToolchestSlots = 0x801831D8;
-
 dogInfo = 0x801886B0;
+
+dialogueBoxes = 0x80188B70;
 
 __cursor = 0x801886DC;
 
 gMapModelAddresses = 0x801886F0;
 
 mainLoopCallbacksTable = 0x80188F70;
+
+albumBits = 0x80189058;
 
 gPlayer = 0x80189060;
 belongingsSlots = 0x80189084;
@@ -1189,6 +1200,7 @@ gLumber = 0x80189E50;
 
 gAlcoholTolerance = 0x80189E52;
 
+annPregnancyCounter = 0x8018A059;
 spriteCounter = 0x8018A05A;
 
 currentGfxTaskPtr = 0x801C3E14;
@@ -1236,10 +1248,10 @@ houseExtensionConstructionCounter = 0x801FC151;
 renderedSprites = 0x801FC160;
 
 gGold = 0x801FD60C;
+karenKaiBabyAge = 0x801FD618;
 gNextSeason = 0x801FD620;
 gCurrentSongIndex = 0x801FD622;
 globalSprites = 0x801FD630;
-
 mus_init_bank = 0x80204B30;
 nuAuSeqBank_ptr = 0x80204B34;
 
@@ -1255,6 +1267,7 @@ gCurrentGameIndex = 0x80205200;
 gfxTaskNo = 0x8020520A;
 gForecast = 0x80205238;
 gWifePregnancyCounter = 0x802055D0;
+karenKaiNewlywedCounter = 0x802055D1;
 gMapModelContext = 0x802055D8;
 gMapModelContextFlags = 0x80205622;
 gNamingScreenIndex = 0x80205624;

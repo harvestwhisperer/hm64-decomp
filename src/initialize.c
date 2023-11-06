@@ -9,7 +9,7 @@
 #include "system/message.h"
 #include "system/mapContext.h"
 
-#include "animals.h"
+#include "animals.h" 
 #include "evaluation.h"
 #include "game.h"
 #include "gameAudio.h"
@@ -74,7 +74,7 @@ void func_8004E160(void) {
     // initialize all bss variables and structs
     initializeGameVariables();
 
-    gCurrentGameIndex = 0;
+    gCurrentGameIndex = 0; 
     
     registerMainLoopCallbacks();
     func_8004F768();
@@ -112,15 +112,7 @@ void initializeGameVariables(void) {
     
     gWife = 0xFF;
 
-    globalLightingRgba.r = 0;
-    globalLightingRgba.g = 0;
-    globalLightingRgba.b = 0;
-    globalLightingRgba.a = 0;
-
-    D_80180718.r = 0;
-    D_80180718.g = 0;
-    D_80180718.b = 0;
-    D_80180718.a = 0;
+    resetGlobalLighting();
 
     gYear = 1;
     gDayOfWeek = WEDNESDAY;
@@ -362,7 +354,7 @@ void initializeGameVariables(void) {
         gFarmAnimals[i].name[3] = 0;
         gFarmAnimals[i].name[4] = 0;
         gFarmAnimals[i].name[5] = 0;
-         
+          
         gFarmAnimals[i].existence = 0xFF;
          
         gFarmAnimals[i].unk_24 = 0xFF;
@@ -417,15 +409,15 @@ void initializeGameVariables(void) {
     D_801FB6F3 = 0;
     D_801FB6F6 = 0;
 
-    D_80170275 = 0;
-    D_80170274[0] = 0;
-    D_80170276 = 1;
-    D_80170277 = 1;
-    D_80170278 = 0;
-    D_80170279 = 0;
-    D_8017027A = 0;
-    D_8017027B = 0;
-    D_8017027C = 0;
+    tvContext.channelIndex = 0;
+    tvContext.mode = 0;
+    tvContext.varietyShowEpisodeCounters[0] = 1;
+    tvContext.varietyShowEpisodeCounters[1] = 1;
+    tvContext.varietyShowEpisodeCounters[2] = 0;
+    tvContext.varietyShowEpisodeCounters[3] = 0;
+    tvContext.varietyShowEpisodeCounters[4] = 0;
+    tvContext.varietyShowEpisodeCounters[5] = 0;
+    tvContext.varietyShowEpisodeCounters[6] = 0;
 
     D_801FC154 = 0;
     D_80204DF4 = 0;
@@ -546,7 +538,7 @@ void initializeGameVariables(void) {
 
     recipesBits[0] = 0;
     D_8016FB00 = 0;
-    D_80189058 = 0;
+    albumBits = 0;
 
     for (i = 0; i < 0x20; i++) {
         lifeEventBits[i] = 0;
@@ -626,7 +618,7 @@ void initializeGameVariables(void) {
         } while (ptr2 != (D_80113760 + 0x14));       
     }
         
-    D_80189058 |= 1;
+    albumBits |= 1;
 }
 
 //INCLUDE_ASM(const s32, "initialize", registerMainLoopCallbacks);
@@ -650,7 +642,7 @@ void registerMainLoopCallbacks(void) {
     registerMainLoopCallback(END_OF_FESTIVAL_DAY_2, &func_800605F0);
     registerMainLoopCallback(END_OF_DAY_2, &func_80060838);
     registerMainLoopCallback(0xF, &func_80060454);
-    registerMainLoopCallback(TV, &func_800D93CC);
+    registerMainLoopCallback(TV, &tvMainLoopCallback);
     registerMainLoopCallback(SHOP_DIALOGUE, &func_800DCAB8);
     registerMainLoopCallback(PAUSE_SCREEN_LOAD, &func_800B881C);
     registerMainLoopCallback(TOOLBOX_LOAD, &func_800BADD0);
@@ -831,7 +823,7 @@ void func_80053088(void) {
     func_8003F5D0(0, 0x10, 3);
     func_8003F630(0, 0, 2);
     func_8003F464(0, 0xE, 0xE, 0x802FF000, 0x8030A000);
-    func_8003F360(0, -4, 0);
+    func_8003F360(0, ~(1 | 2), 0);
     func_8003F690(0, 0, 0, 0);
     func_8003F4E0(0, 0x57, 8, 1);
     func_8003FAF8(0, 0xC000);

@@ -145,7 +145,7 @@ extern u8 func_8009B3DC();
 extern u8 func_8009B464();                                
 extern u8 func_8009B4EC();  
 extern u8 func_8009B564();          
-extern s32 func_8009B5E0();     
+extern u8 func_8009B5E0();     
 extern u8 func_8009B658();                                
 extern u8 func_8009B828(u8);
 extern void func_8009BA74(u8, u16);
@@ -177,7 +177,6 @@ extern u16 D_8016FDF0;
 extern u8 D_8016FFE8;
 extern u8 D_80170464;
 extern u8 D_80189054;
-extern u8 D_8018908C;
 extern u8 D_801C3F46;
 extern u8 D_801FC155;
 

@@ -1,6 +1,8 @@
 #ifndef _SHOP_H_
 #define _SHOP_H_
 
+#include "common.h"
+
 extern void func_800DC750(u8);
 extern void func_800DC7BC(u8);                            
 extern void func_800DC9C0(u8);

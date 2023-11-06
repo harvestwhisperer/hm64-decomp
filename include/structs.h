@@ -25,11 +25,6 @@ typedef union {
 } Vec;
 
 typedef struct {
-	u16 animationIndex;
-	u16 animationIndexPlusOne;
-} Animation;
-
-typedef struct {
     void *romAddrStart;
     void *romAddrEnd;
 } Addresses;

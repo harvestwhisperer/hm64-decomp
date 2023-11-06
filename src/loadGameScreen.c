@@ -224,7 +224,7 @@ void func_800E1A94(void) {
             func_8003F5D0(0, 0xC, 2);
             func_8003F630(0, 0, 2);
             func_8003F464(0, 0xE, 0xE, (void*)0x802FF000, (void*)0x8030A000);
-            func_8003F360(0, -4, 2);
+            func_8003F360(0, ~(1 | 2), 2);
             func_8003F690(0, 0xFF, 0, 0);
             func_8003FAF8(0, 0x8000);
             func_8003FB4C(0, 1);
@@ -277,7 +277,7 @@ void func_800E1A94(void) {
             func_8003F5D0(0, 0xC, 2);
             func_8003F630(0, 0, 2);
             func_8003F464(0, 0xE, 0xE, (void*)0x802FF000, (void*)0x8030A000);
-            func_8003F360(0, -4, 2);
+            func_8003F360(0, ~(1 | 2), 2);
             func_8003F690(0, 0xFF, 0, 0);
             func_8003FAF8(0, 0x8000);
             func_8003FB4C(0, 1);
