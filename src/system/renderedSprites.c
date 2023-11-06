@@ -369,7 +369,7 @@ void func_8002F730(void) {
 
 //INCLUDE_ASM(const s32, "system/renderedSprites", func_8002F770);
 
-void func_8002F770(u16 arg0) {
+void func_8002F770(s16 arg0) {
 
     u16 i;
 

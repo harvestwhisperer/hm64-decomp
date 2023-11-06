@@ -3,6 +3,7 @@
 #include "title.h"
 
 #include "system/controller.h"  
+#include "system/dialogue.h"
 #include "system/mathUtils.h"
 #include "system/message.h"
 #include "system/sprite.h"
@@ -38,19 +39,17 @@ extern f32 D_80200C98;
 extern f32 D_80200D34;
 extern f32 D_80200DD0;
 
-extern void* dogTitleTextureStart;
-extern void* dogTitleTextureEnd;
-extern void* dogTitlePaletteStart;
-extern void* dogTitlePaletteEnd;
-extern void* dogTitleTableStart;
-extern void* dogTitleTableEnd;
+extern u32 dogTitleTexture_ROM_START;
+extern u32 dogTitleTexture_ROM_END;
+extern u32 dogTitlePalette_ROM_START;
+extern u32 dogTitlePalette_ROM_END;
+extern u32 dogTitleTable_ROM_START;
+extern u32 dogTitleTable_ROM_END;
 
-extern void* titleSpritesTextureStart;
-extern void* titleSpritesTextureEnd;
-extern void* titleSpritesPaletteStart;
-extern void* titleSpritesPaletteEnd;
-
-
+extern u32 titleSpritesTexture_ROM_START;
+extern u32 titleSpritesTexture_ROM_END;
+extern u32 titleSpritesPalette_ROM_START;
+extern u32 titleSpritesPalette_ROM_END;
 
 //INCLUDE_ASM(const s32, "title", func_800DE3C0);
 
@@ -62,7 +61,7 @@ void func_800DE3C0(u8 arg0) {
     titleScreenContext.dogIdleCounter = 0;
     titleScreenContext.centerCoordinate = -160.0f;
     
-    func_8002B138(0x42, &titleSpritesTextureStart, &titleSpritesTextureEnd, &titleSpritesPaletteStart, &titleSpritesPaletteEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
+    func_8002B138(0x42, &titleSpritesTexture_ROM_START, &titleSpritesTexture_ROM_END, &titleSpritesPalette_ROM_START, &titleSpritesPalette_ROM_END, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
     func_8002BD0C(0x42, 0.0f, 64.0f, 64.0f);
     func_8002BD90(0x42, 1.0f, 1.0f, 1.0f);
     func_8002BE14(0x42, 0.0f, 0.0f, 0.0f);
@@ -71,7 +70,7 @@ void func_800DE3C0(u8 arg0) {
     func_8002CB24(0x42, 1);
     func_8002B80C(0x42, 0, 0xFE);
     
-    func_8002B138(0x43, &titleSpritesTextureStart, &titleSpritesTextureEnd, &titleSpritesPaletteStart, &titleSpritesPaletteEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
+    func_8002B138(0x43, &titleSpritesTexture_ROM_START, &titleSpritesTexture_ROM_END, &titleSpritesPalette_ROM_START, &titleSpritesPalette_ROM_END, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
     func_8002BD0C(0x43, 0.0f, -96.0f, 64.0f);
     func_8002BD90(0x43, 1.0f, 1.0f, 1.0f);
     func_8002BE14(0x43, 0.0f, 0.0f, 0.0f);
@@ -79,7 +78,7 @@ void func_800DE3C0(u8 arg0) {
     func_8002C914(0x43, 0xFF, 0xFF, 0xFF, 0xFF);
     func_8002B80C(0x43, 1, 0xFE);
     
-    func_8002B138(0x46, &titleSpritesTextureStart, &titleSpritesTextureEnd, &titleSpritesPaletteStart, &titleSpritesPaletteEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
+    func_8002B138(0x46, &titleSpritesTexture_ROM_START, &titleSpritesTexture_ROM_END, &titleSpritesPalette_ROM_START, &titleSpritesPalette_ROM_END, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
     func_8002BD0C(0x46, D_80126578 + 160.0f, -16.0f, 48.0f);
     func_8002BD90(0x46, 1.0f, 1.0f, 1.0f);
     func_8002BE14(0x46, 0.0f, 0.0f, 0.0f);
@@ -88,7 +87,7 @@ void func_800DE3C0(u8 arg0) {
     func_8002CB24(0x46, 1);
     func_8002B80C(0x46, 3, 0xFE);
     
-    func_8002B138(0x47, &titleSpritesTextureStart, &titleSpritesTextureEnd, &titleSpritesPaletteStart, &titleSpritesPaletteEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
+    func_8002B138(0x47, &titleSpritesTexture_ROM_START, &titleSpritesTexture_ROM_END, &titleSpritesPalette_ROM_START, &titleSpritesPalette_ROM_END, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
     func_8002BD0C(0x47, D_80126578 - 160.0f, -12.0f, 48.0f);
     func_8002BD90(0x47, 1.0f, 1.0f, 1.0f);
     func_8002BE14(0x47, 0.0f, 0.0f, 0.0f);
@@ -97,7 +96,7 @@ void func_800DE3C0(u8 arg0) {
     func_8002CB24(0x47, 1);
     func_8002B80C(0x47, 5, 0xFE);
     
-    func_8002B138(0x48, &titleSpritesTextureStart, &titleSpritesTextureEnd, &titleSpritesPaletteStart, &titleSpritesPaletteEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
+    func_8002B138(0x48, &titleSpritesTexture_ROM_START, &titleSpritesTexture_ROM_END, &titleSpritesPalette_ROM_START, &titleSpritesPalette_ROM_END, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
     func_8002BD0C(0x48, D_80126578 - 160.0f, -44.0f, 48.0f);
     func_8002BD90(0x48, 1.0f, 1.0f, 1.0f);
     func_8002BE14(0x48, 0.0f, 0.0f, 0.0f);
@@ -106,7 +105,7 @@ void func_800DE3C0(u8 arg0) {
     func_8002CB24(0x48, 1);
     func_8002B80C(0x48, 7, 0xFE);
     
-    func_8002B138(0x49, &titleSpritesTextureStart, &titleSpritesTextureEnd, &titleSpritesPaletteStart, &titleSpritesPaletteEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
+    func_8002B138(0x49, &titleSpritesTexture_ROM_START, &titleSpritesTexture_ROM_END, &titleSpritesPalette_ROM_START, &titleSpritesPalette_ROM_END, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
     func_8002BD0C(0x49, D_80126578 + 160.0f, -32.0f, 40.0f);
     func_8002BD90(0x49, 1.0f, 1.0f, 1.0f);
     func_8002BE14(0x49, 0.0f, 0.0f, 0.0f);
@@ -115,7 +114,7 @@ void func_800DE3C0(u8 arg0) {
     func_8002CB24(0x49, 1);
     func_8002B80C(0x49, 2, 0xFE);
     
-    func_8002B138(0x4A, &titleSpritesTextureStart, &titleSpritesTextureEnd, &titleSpritesPaletteStart, &titleSpritesPaletteEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
+    func_8002B138(0x4A, &titleSpritesTexture_ROM_START, &titleSpritesTexture_ROM_END, &titleSpritesPalette_ROM_START, &titleSpritesPalette_ROM_END, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
     func_8002BD0C(0x4A, D_80126578 - 192.0f, -32.0f, 40.0f);
     func_8002BD90(0x4A, 1.0f, 1.0f, 1.0f);
     func_8002BE14(0x4A, 0.0f, 0.0f, 0.0f);
@@ -124,7 +123,7 @@ void func_800DE3C0(u8 arg0) {
     func_8002CB24(0x4A, 1);
     func_8002B80C(0x4A, 2, 0xFE);
     
-    func_8002B138(0x4B, &titleSpritesTextureStart, &titleSpritesTextureEnd, &titleSpritesPaletteStart, &titleSpritesPaletteEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
+    func_8002B138(0x4B, &titleSpritesTexture_ROM_START, &titleSpritesTexture_ROM_END, &titleSpritesPalette_ROM_START, &titleSpritesPalette_ROM_END, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
     func_8002BD0C(0x4B, D_80126578 - 128.0f, -32.0f, 40.0f);
     func_8002BD90(0x4B, 1.0f, 1.0f, 1.0f);
     func_8002BE14(0x4B, 0.0f, 0.0f, 0.0f);
@@ -133,7 +132,7 @@ void func_800DE3C0(u8 arg0) {
     func_8002CB24(0x4B, 1);
     func_8002B80C(0x4B, 2, 0xFE);
     
-    func_8002B138(0x54, &titleSpritesTextureStart, &titleSpritesTextureEnd, &titleSpritesPaletteStart, &titleSpritesPaletteEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
+    func_8002B138(0x54, &titleSpritesTexture_ROM_START, &titleSpritesTexture_ROM_END, &titleSpritesPalette_ROM_START, &titleSpritesPalette_ROM_END, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
     func_8002BD0C(0x54, D_80126578 + 160.0f, 0.0f, 56.0f);
     func_8002BD90(0x54, 1.0f, 1.0f, 1.0f);
     func_8002BE14(0x54, 0.0f, 0.0f, 0.0f);
@@ -142,7 +141,7 @@ void func_800DE3C0(u8 arg0) {
     func_8002CB24(0x54, 1);
     func_8002B80C(0x54, 9, 0xFE);
     
-    func_8002B138(0x55, &titleSpritesTextureStart, &titleSpritesTextureEnd, &titleSpritesPaletteStart, &titleSpritesPaletteEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
+    func_8002B138(0x55, &titleSpritesTexture_ROM_START, &titleSpritesTexture_ROM_END, &titleSpritesPalette_ROM_START, &titleSpritesPalette_ROM_END, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
     func_8002BD0C(0x55, D_80126578 - 160.0f, 0.0f, 56.0f);
     func_8002BD90(0x55, 1.0f, 1.0f, 1.0f);
     func_8002BE14(0x55, 0.0f, 0.0f, 0.0f);
@@ -151,7 +150,7 @@ void func_800DE3C0(u8 arg0) {
     func_8002CB24(0x55, 1);
     func_8002B80C(0x55, 9, 0xFE);
     
-    func_8002B138(0x56, &titleSpritesTextureStart, &titleSpritesTextureEnd, &titleSpritesPaletteStart, &titleSpritesPaletteEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
+    func_8002B138(0x56, &titleSpritesTexture_ROM_START, &titleSpritesTexture_ROM_END, &titleSpritesPalette_ROM_START, &titleSpritesPalette_ROM_END, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
     func_8002BD0C(0x56, D_80126578 + 160.0f, 64.0f, 64.0f);
     func_8002BD90(0x56, 1.0f, 1.0f, 1.0f);
     func_8002BE14(0x56, 0.0f, 0.0f, 0.0f);
@@ -160,7 +159,7 @@ void func_800DE3C0(u8 arg0) {
     func_8002CB24(0x56, 1);
     func_8002B80C(0x56, 0x10, 0xFE);
     
-    func_8002B138(0x57, &titleSpritesTextureStart, &titleSpritesTextureEnd, &titleSpritesPaletteStart, &titleSpritesPaletteEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
+    func_8002B138(0x57, &titleSpritesTexture_ROM_START, &titleSpritesTexture_ROM_END, &titleSpritesPalette_ROM_START, &titleSpritesPalette_ROM_END, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
     func_8002BD0C(0x57, D_80126578 + 32.0f, 96.0f, 64.0f);
     func_8002BD90(0x57, 1.0f, 1.0f, 1.0f);
     func_8002BE14(0x57, 0.0f, 0.0f, 0.0f);
@@ -169,7 +168,7 @@ void func_800DE3C0(u8 arg0) {
     func_8002CB24(0x57, 1);
     func_8002B80C(0x57, 0x11, 0xFE);
     
-    func_8002B138(0x58, &titleSpritesTextureStart, &titleSpritesTextureEnd, &titleSpritesPaletteStart, &titleSpritesPaletteEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
+    func_8002B138(0x58, &titleSpritesTexture_ROM_START, &titleSpritesTexture_ROM_END, &titleSpritesPalette_ROM_START, &titleSpritesPalette_ROM_END, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
     func_8002BD0C(0x58, D_80126578 + 224.0f, 80.0f, 64.0f);
     func_8002BD90(0x58, 1.0f, 1.0f, 1.0f);
     func_8002BE14(0x58, 0.0f, 0.0f, 0.0f);
@@ -178,7 +177,7 @@ void func_800DE3C0(u8 arg0) {
     func_8002CB24(0x58, 1);
     func_8002B80C(0x58, 0x12, 0xFE);
     
-    func_8002B138(0x59, &titleSpritesTextureStart, &titleSpritesTextureEnd, &titleSpritesPaletteStart, &titleSpritesPaletteEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
+    func_8002B138(0x59, &titleSpritesTexture_ROM_START, &titleSpritesTexture_ROM_END, &titleSpritesPalette_ROM_START, &titleSpritesPalette_ROM_END, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
     func_8002BD0C(0x59, D_80126578 - 64.0f, 72.0f, 64.0f);
     func_8002BD90(0x59, 1.0f, 1.0f, 1.0f);
     func_8002BE14(0x59, 0.0f, 0.0f, 0.0f);
@@ -187,7 +186,7 @@ void func_800DE3C0(u8 arg0) {
     func_8002CB24(0x59, 1);
     func_8002B80C(0x59, 0x12, 0xFE);
     
-    func_8002B138(0x5A, &titleSpritesTextureStart, &titleSpritesTextureEnd, &titleSpritesPaletteStart, &titleSpritesPaletteEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
+    func_8002B138(0x5A, &titleSpritesTexture_ROM_START, &titleSpritesTexture_ROM_END, &titleSpritesPalette_ROM_START, &titleSpritesPalette_ROM_END, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
     func_8002BD0C(0x5A, D_80126578 - 192.0f, 108.0f, 64.0f);
     func_8002BD90(0x5A, 1.0f, 1.0f, 1.0f);
     func_8002BE14(0x5A, 0.0f, 0.0f, 0.0f);
@@ -196,7 +195,7 @@ void func_800DE3C0(u8 arg0) {
     func_8002CB24(0x5A, 1);
     func_8002B80C(0x5A, 0x11, 0xFE);
     
-    func_8002B138(0x5B, &titleSpritesTextureStart, &titleSpritesTextureEnd, &titleSpritesPaletteStart, &titleSpritesPaletteEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
+    func_8002B138(0x5B, &titleSpritesTexture_ROM_START, &titleSpritesTexture_ROM_END, &titleSpritesPalette_ROM_START, &titleSpritesPalette_ROM_END, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
     func_8002BD0C(0x5B, D_80126578 - 288.0f, 88.0f, 64.0f);
     func_8002BD90(0x5B, 1.0f, 1.0f, 1.0f);
     func_8002BE14(0x5B, 0.0f, 0.0f, 0.0f);
@@ -205,7 +204,7 @@ void func_800DE3C0(u8 arg0) {
     func_8002CB24(0x5B, 1);
     func_8002B80C(0x5B, 0x10, 0xFE);
     
-    func_8002B138(0x52, &titleSpritesTextureStart, &titleSpritesTextureEnd, &titleSpritesPaletteStart, &titleSpritesPaletteEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
+    func_8002B138(0x52, &titleSpritesTexture_ROM_START, &titleSpritesTexture_ROM_END, &titleSpritesPalette_ROM_START, &titleSpritesPalette_ROM_END, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
     func_8002BD0C(0x52, D_80126578 + 160.0f, 0.0f, 8.0f);
     func_8002BD90(0x52, 1.0f, 1.0f, 1.0f);
     func_8002BE14(0x52, 0.0f, 0.0f, 0.0f);
@@ -214,7 +213,7 @@ void func_800DE3C0(u8 arg0) {
     func_8002CB24(0x52, 1);
     func_8002B80C(0x52, 0xA, 0xFE);
     
-    func_8002B138(0x53, &titleSpritesTextureStart, &titleSpritesTextureEnd, &titleSpritesPaletteStart, &titleSpritesPaletteEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
+    func_8002B138(0x53, &titleSpritesTexture_ROM_START, &titleSpritesTexture_ROM_END, &titleSpritesPalette_ROM_START, &titleSpritesPalette_ROM_END, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
     func_8002BD0C(0x53, D_80126578 - 160.0f, 0.0f, 8.0f);
     func_8002BD90(0x53, 1.0f, 1.0f, 1.0f);
     func_8002BE14(0x53, 0.0f, 0.0f, 0.0f);
@@ -223,7 +222,7 @@ void func_800DE3C0(u8 arg0) {
     func_8002CB24(0x53, 1);
     func_8002B80C(0x53, 0xA, 0xFE);
     
-    func_8002B138(0x4E, &titleSpritesTextureStart, &titleSpritesTextureEnd, &titleSpritesPaletteStart, &titleSpritesPaletteEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
+    func_8002B138(0x4E, &titleSpritesTexture_ROM_START, &titleSpritesTexture_ROM_END, &titleSpritesPalette_ROM_START, &titleSpritesPalette_ROM_END, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
     func_8002BD0C(0x4E, D_80126578 + 160.0f, 0.0f, 16.0f);
     func_8002BD90(0x4E, 1.0f, 1.0f, 1.0f);
     func_8002BE14(0x4E, 0.0f, 0.0f, 0.0f);
@@ -232,7 +231,7 @@ void func_800DE3C0(u8 arg0) {
     func_8002CB24(0x4E, 1);
     func_8002B80C(0x4E, 0xB, 0xFE);
     
-    func_8002B138(0x4D, &titleSpritesTextureStart, &titleSpritesTextureEnd, &titleSpritesPaletteStart, &titleSpritesPaletteEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
+    func_8002B138(0x4D, &titleSpritesTexture_ROM_START, &titleSpritesTexture_ROM_END, &titleSpritesPalette_ROM_START, &titleSpritesPalette_ROM_END, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
     func_8002BD0C(0x4D, D_80126578 + 160.0f, 0.0f, 24.0f);
     func_8002BD90(0x4D, 1.0f, 1.0f, 1.0f);
     func_8002BE14(0x4D, 0.0f, 0.0f, 0.0f);
@@ -241,7 +240,7 @@ void func_800DE3C0(u8 arg0) {
     func_8002CB24(0x4D, 1);
     func_8002B80C(0x4D, 0xC, 0xFE);
     
-    func_8002B138(0x4C, &titleSpritesTextureStart, &titleSpritesTextureEnd, &titleSpritesPaletteStart, &titleSpritesPaletteEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
+    func_8002B138(0x4C, &titleSpritesTexture_ROM_START, &titleSpritesTexture_ROM_END, &titleSpritesPalette_ROM_START, &titleSpritesPalette_ROM_END, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
     func_8002BD0C(0x4C, D_80126578 + 160.0f, 0.0f, 32.0f);
     func_8002BD90(0x4C, 1.0f, 1.0f, 1.0f);
     func_8002BE14(0x4C, 0.0f, 0.0f, 0.0f);
@@ -250,7 +249,7 @@ void func_800DE3C0(u8 arg0) {
     func_8002CB24(0x4C, 1);
     func_8002B80C(0x4C, 0xE, 0xFE);
     
-    func_8002B138(0x51, &titleSpritesTextureStart, &titleSpritesTextureEnd, &titleSpritesPaletteStart, &titleSpritesPaletteEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
+    func_8002B138(0x51, &titleSpritesTexture_ROM_START, &titleSpritesTexture_ROM_END, &titleSpritesPalette_ROM_START, &titleSpritesPalette_ROM_END, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
     func_8002BD0C(0x51, D_80126578 - 160.0f, 0.0f, 16.0f);
     func_8002BD90(0x51, 1.0f, 1.0f, 1.0f);
     func_8002BE14(0x51, 0.0f, 0.0f, 0.0f);
@@ -259,7 +258,7 @@ void func_800DE3C0(u8 arg0) {
     func_8002CB24(0x51, 1);
     func_8002B80C(0x51, 0xB, 0xFE);
     
-    func_8002B138(0x50, &titleSpritesTextureStart, &titleSpritesTextureEnd, &titleSpritesPaletteStart, &titleSpritesPaletteEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
+    func_8002B138(0x50, &titleSpritesTexture_ROM_START, &titleSpritesTexture_ROM_END, &titleSpritesPalette_ROM_START, &titleSpritesPalette_ROM_END, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
     func_8002BD0C(0x50, D_80126578 - 160.0f, 0.0f, 24.0f);
     func_8002BD90(0x50, 1.0f, 1.0f, 1.0f);
     func_8002BE14(0x50, 0.0f, 0.0f, 0.0f);
@@ -268,7 +267,7 @@ void func_800DE3C0(u8 arg0) {
     func_8002CB24(0x50, 1);
     func_8002B80C(0x50, 0xC, 0xFE);
     
-    func_8002B138(0x4F, &titleSpritesTextureStart, &titleSpritesTextureEnd, &titleSpritesPaletteStart, &titleSpritesPaletteEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
+    func_8002B138(0x4F, &titleSpritesTexture_ROM_START, &titleSpritesTexture_ROM_END, &titleSpritesPalette_ROM_START, &titleSpritesPalette_ROM_END, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
     func_8002BD0C(0x4F, D_80126578 - 160.0f, 0.0f, 32.0f);
     func_8002BD90(0x4F, 1.0f, 1.0f, 1.0f);
     func_8002BE14(0x4F, 0.0f, 0.0f, 0.0f);
@@ -277,7 +276,7 @@ void func_800DE3C0(u8 arg0) {
     func_8002CB24(0x4F, 1);
     func_8002B80C(0x4F, 0xE, 0xFE);
     
-    func_8002B138(0x45, &dialogueIconsTextureStart, &dialogueIconsTextureEnd, &dialogueIconsPaletteStart, &dialogueIconsPaletteEnd, NULL, NULL, (void*)0x8023B400, NULL, (void*)0x8023CC00, (void*)0x8023CE00, (void*)0x8023D200, NULL, NULL, 0);
+    func_8002B138(0x45, &dialogueIconsTexture_ROM_START, &dialogueIconsTexture_ROM_END, &dialogueIconsPalette_ROM_START, &dialogueIconsPalette_ROM_END, NULL, NULL, (void*)0x8023B400, NULL, (void*)0x8023CC00, (void*)0x8023CE00, (void*)0x8023D200, NULL, NULL, 0);
     func_8002BD0C(0x45, -54.0f, -24.0f, 56.0f);
     func_8002BD90(0x45, 1.0f, 1.0f, 1.0f);
     func_8002BE14(0x45, 0.0f, 0.0f, 0.0f);
@@ -328,7 +327,7 @@ void func_800DE3C0(u8 arg0) {
 //INCLUDE_ASM(const s32, "title", loadDogTitleSprite);
 
 void loadDogTitleSprite(void) {
-    func_8002B138(DOG_TITLE_SPRITE, &dogTitleTextureStart, &dogTitleTextureEnd, &dogTitlePaletteStart, &dogTitlePaletteEnd, &dogTitleTableStart, &dogTitleTableEnd, (void*)0x80240B00, (void*)0x80243B00, (void*)0x80246B00, (void*)0x8024AB00, (void*)0x80252300, (void*)0x80252B00, 1, 0);
+    func_8002B138(DOG_TITLE_SPRITE, &dogTitleTexture_ROM_START, &dogTitleTexture_ROM_END, &dogTitlePalette_ROM_START, &dogTitlePalette_ROM_END, &dogTitleTable_ROM_START, &dogTitleTable_ROM_END, (void*)0x80240B00, (void*)0x80243B00, (void*)0x80246B00, (void*)0x8024AB00, (void*)0x80252300, (void*)0x80252B00, 1, 0);
     func_8002BD0C(DOG_TITLE_SPRITE, 64.0f, -80.0f, 56.0f);
     func_8002BD90(DOG_TITLE_SPRITE, 1.0f, 1.0f, 1.0f);
     func_8002BE14(DOG_TITLE_SPRITE, 0, 0, 0);

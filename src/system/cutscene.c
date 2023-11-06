@@ -616,7 +616,7 @@ void func_80049228(u16 index) {
 
     cutsceneMaps[index].flags |= 0x10;
     
-}
+} 
 
 INCLUDE_ASM(const s32, "system/cutscene", func_80049350);
 

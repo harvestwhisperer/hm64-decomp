@@ -2,6 +2,7 @@
 
 #include "npc.h"
 
+#include "system/dialogue.h"
 #include "system/mathUtils.h"
 #include "system/message.h"
 #include "system/sprite.h"
@@ -790,9 +791,6 @@ INCLUDE_ASM(const s32, "npc", func_80081810);
 
 INCLUDE_ASM(const s32, "npc", func_80081A08);
 
-
-/* update animation */
-
 static inline void updateAnimation(u8 index) {
     
     switch (npcInfoArray[index].movingFlag) {
@@ -1462,8 +1460,8 @@ bool func_80085D48(int index, u16 arg1) {
     if (npcInfoArray[index].flags & 4) {
         // check if girl and load heart icon
         if ((index < 5) && (index >= (result = 0))) {
-            func_8003F910(0, 0x78, &dialogueIconsTextureStart, &dialogueIconsTextureEnd, &dialogueIconsPaletteStart, &dialogueIconsPaletteEnd, (void*)DIALOGUE_ICONS_TEXTURES_VADDR, 0x8023CC00, 0x8023CE00, 0x8023D200, 0, (npcAffection[index] / 52) + 5, 0xFE, 106.0f, -15.0f, 0);
-            func_8003F910(1, 0x78, &dialogueIconsTextureStart, &dialogueIconsTextureEnd, &dialogueIconsPaletteStart, &dialogueIconsPaletteEnd, (void*)DIALOGUE_ICONS_TEXTURES_VADDR, 0x8023CC00, 0x8023CE00, 0x8023D200, 0, (npcAffection[index] / 52) + 5, 0xFE, 106.0f, -15.0f, 0);
+            func_8003F910(0, 0x78, &dialogueIconsTexture_ROM_START, &dialogueIconsTexture_ROM_END, &dialogueIconsPalette_ROM_START, &dialogueIconsPalette_ROM_END, (void*)DIALOGUE_ICONS_TEXTURES_VADDR, (void*)0x8023CC00, (void*)0x8023CE00, (void*)0x8023D200, 0, (npcAffection[index] / 52) + 5, 0xFE, 106.0f, -15.0f, 0);
+            func_8003F910(1, 0x78, &dialogueIconsTexture_ROM_START, &dialogueIconsTexture_ROM_END, &dialogueIconsPalette_ROM_START, &dialogueIconsPalette_ROM_END, (void*)DIALOGUE_ICONS_TEXTURES_VADDR, (void*)0x8023CC00, (void*)0x8023CE00, (void*)0x8023D200, 0, (npcAffection[index] / 52) + 5, 0xFE, 106.0f, -15.0f, 0);
         }
         // get dialogue index
         func_8005AF94(0, D_80114960[arr[7]], arg1, 0, 0);

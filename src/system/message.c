@@ -5,6 +5,12 @@
 // bss
 extern u16 D_80204BF0[];
 DialogueBox dialogueBoxes[MAX_DIALOGUE_BOXES];
+extern GameVariableReference D_80189E58[64];
+
+// forward delcarations
+extern bool func_8003FDB0(u16);      
+extern void func_80040628(u16, u8); 
+extern u16 func_80041850(u16);
 
 INCLUDE_ASM(const s32, "system/message", func_8003D970);
 
@@ -114,7 +120,21 @@ INCLUDE_ASM(const s32, "system/message", func_8003FAF8);
 
 INCLUDE_ASM(const s32, "system/message", func_8003FB4C);
 
-INCLUDE_ASM(const s32, "system/message", func_8003FBA0);
+//INCLUDE_ASM(const s32, "system/message", func_8003FBA0);
+
+bool func_8003FBA0(u16 arg0, u8* arg1, s8 arg2) {
+
+    bool result = 0;
+
+    if (arg0 < 0x40) {
+        result = 1;
+        D_80189E58[arg0].unk_0 = arg1;
+        D_80189E58[arg0].unk_4 = arg2;
+    }
+    
+    return result;
+    
+}
 
 INCLUDE_ASM(const s32, "system/message", func_8003FBD8);
 

@@ -23,18 +23,17 @@ extern u8 gBaseMapIndex;
 extern u8 gMapWithSeasonIndex;
 extern u8 D_8021E6D0;
 
-extern void* homeItemsTextureStart;
-extern void* homeItemsTextureEnd;
-extern void* homeItemsPaletteStart;
-extern void* homeItemsPaletteEnd;
-extern void* homeItemsTableStart;
-extern void* homeItemsTableEnd;
+extern u32 homeItemsTexture_ROM_START;
+extern u32 homeItemsTexture_ROM_END;
+extern u32 homeItemsPalette_ROM_START;
+extern u32 homeItemsPalette_ROM_END;
+extern u32 homeItemsTable_ROM_START;
+extern u32 homeItemsTable_ROM_END;
 
-extern void* groundItemsTextureStart;
-extern void* groundItemsTextureEnd;
-extern void* groundItemsPaletteStart;
-extern void* groundItemsPaletteEnd;
-
+extern u32 groundObjectsTexture_ROM_START;
+extern u32 groundObjectsTexture_ROM_END;
+extern u32 groundObjectsPalette_ROM_START;
+extern u32 groundObjectsPalette_ROM_END;
 
 // rodata
 extern u8 levelFlags[];
@@ -101,7 +100,7 @@ void setLevelGraphicsData(u16 mapIndex) {
     func_800735FC(mapIndex);
 
     // load map object sprites
-    func_8006F938(mapIndex);
+    func_8006F938(mapIndex); 
 
     func_800746B4(mapIndex);
 
@@ -203,53 +202,53 @@ void func_8006EC58(u16 mapIndex) {
         case FARM:
             D_801FD624 = 0xE;
             D_801C3F35 = 0xB;
-            func_80034EF0(0, 0xE, 0xB, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &groundItemsTextureStart, &groundItemsTextureEnd, &groundItemsPaletteStart, &groundItemsPaletteEnd, 0x60); 
+            func_80034EF0(0, 0xE, 0xB, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &groundObjectsTexture_ROM_START, &groundObjectsTexture_ROM_END, &groundObjectsPalette_ROM_START, &groundObjectsPalette_ROM_END, 0x60); 
             break;
         case GREENHOUSE:
             D_801FD624 = 1;
             D_801C3F35 = 1;
-            func_80034EF0(0, 1, 1, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &groundItemsTextureStart, &groundItemsTextureEnd, &groundItemsPaletteStart, &groundItemsPaletteEnd, 2); 
+            func_80034EF0(0, 1, 1, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &groundObjectsTexture_ROM_START, &groundObjectsTexture_ROM_END, &groundObjectsPalette_ROM_START, &groundObjectsPalette_ROM_END, 2); 
             break;            
         case MOUNTAIN_1:
             D_801FD624 = 5;
             D_801C3F35 = 0;
-            func_80034EF0(0, 5, 0, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &groundItemsTextureStart, &groundItemsTextureEnd, &groundItemsPaletteStart, &groundItemsPaletteEnd, 0); 
+            func_80034EF0(0, 5, 0, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &groundObjectsTexture_ROM_START, &groundObjectsTexture_ROM_END, &groundObjectsPalette_ROM_START, &groundObjectsPalette_ROM_END, 0); 
             break;    
         case MOUNTAIN_2:
             D_801FD624 = 3;
             D_801C3F35 = 5;
-            func_80034EF0(0, 3, 5, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &groundItemsTextureStart, &groundItemsTextureEnd, &groundItemsPaletteStart, &groundItemsPaletteEnd, 0); 
+            func_80034EF0(0, 3, 5, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &groundObjectsTexture_ROM_START, &groundObjectsTexture_ROM_END, &groundObjectsPalette_ROM_START, &groundObjectsPalette_ROM_END, 0); 
             break;  
         case TOP_OF_MOUNTAIN_1:
             D_801FD624 = 5;
             D_801C3F35 = 0;
-            func_80034EF0(0, 5, 0, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &groundItemsTextureStart, &groundItemsTextureEnd, &groundItemsPaletteStart, &groundItemsPaletteEnd, 0); 
+            func_80034EF0(0, 5, 0, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &groundObjectsTexture_ROM_START, &groundObjectsTexture_ROM_END, &groundObjectsPalette_ROM_START, &groundObjectsPalette_ROM_END, 0); 
             break;  
         case MOON_MOUNTAIN:
             D_801FD624 = 5;
             D_801C3F35 = 0;
-            func_80034EF0(0, 5, 0, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &groundItemsTextureStart, &groundItemsTextureEnd, &groundItemsPaletteStart, &groundItemsPaletteEnd, 0); 
+            func_80034EF0(0, 5, 0, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &groundObjectsTexture_ROM_START, &groundObjectsTexture_ROM_END, &groundObjectsPalette_ROM_START, &groundObjectsPalette_ROM_END, 0); 
             break;                            
         case POND:
             D_801FD624 = 5;
             D_801C3F35 = 0;
-            func_80034EF0(0, 5, 0, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &groundItemsTextureStart, &groundItemsTextureEnd, &groundItemsPaletteStart, &groundItemsPaletteEnd, 0); 
+            func_80034EF0(0, 5, 0, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &groundObjectsTexture_ROM_START, &groundObjectsTexture_ROM_END, &groundObjectsPalette_ROM_START, &groundObjectsPalette_ROM_END, 0); 
             break;          
         case CAVE:
             D_801FD624 = 0;
             D_801C3F35 = 0;
-            func_80034EF0(0, 0, 0, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &groundItemsTextureStart, &groundItemsTextureEnd, &groundItemsPaletteStart, &groundItemsPaletteEnd, 0); 
+            func_80034EF0(0, 0, 0, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &groundObjectsTexture_ROM_START, &groundObjectsTexture_ROM_END, &groundObjectsPalette_ROM_START, &groundObjectsPalette_ROM_END, 0); 
             break;    
         case MINE:                                      
         case MINE_2:        
             D_801FD624 = 2;
             D_801C3F35 = 2;
-            func_80034EF0(0, 2, 2, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &groundItemsTextureStart, &groundItemsTextureEnd, &groundItemsPaletteStart, &groundItemsPaletteEnd, 0); 
+            func_80034EF0(0, 2, 2, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &groundObjectsTexture_ROM_START, &groundObjectsTexture_ROM_END, &groundObjectsPalette_ROM_START, &groundObjectsPalette_ROM_END, 0); 
             break;    
         case RANCH:
             D_801FD624 = 0x10;
             D_801C3F35 = 0xA;
-            func_80034EF0(0, 0x10, 0xA, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &groundItemsTextureStart, &groundItemsTextureEnd, &groundItemsPaletteStart, &groundItemsPaletteEnd, 0); 
+            func_80034EF0(0, 0x10, 0xA, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &groundObjectsTexture_ROM_START, &groundObjectsTexture_ROM_END, &groundObjectsPalette_ROM_START, &groundObjectsPalette_ROM_END, 0); 
             break;   
     }
 
@@ -366,7 +365,7 @@ void func_80073244(u8 itemIndex) {
 
     *(Vec2f*)ptr = *(Vec2f*)ptr2;
 
-    func_8002B138(itemIndex +  0x62, &homeItemsTextureStart, &homeItemsTextureEnd, &homeItemsPaletteStart, &homeItemsPaletteEnd, &homeItemsTableStart, &homeItemsTableEnd, (void*)0x802E4000, (void*)0x802E4D00, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
+    func_8002B138(itemIndex +  0x62, &homeItemsTexture_ROM_START, &homeItemsTexture_ROM_END, &homeItemsPalette_ROM_START, &homeItemsPalette_ROM_END, &homeItemsTable_ROM_START, &homeItemsTable_ROM_END, (void*)0x802E4000, (void*)0x802E4D00, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
     func_8002BD90(itemIndex +  0x62, 1.0f, 1.0f, 1.0f);
     func_8002C7EC(itemIndex +  0x62, 3);
     func_8002C85C(itemIndex +  0x62, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -391,7 +390,7 @@ void func_8007341C(u8 itemIndex) {
 
     *(Vec3f*)ptr = *(Vec3f*)ptr2;
 
-    func_8002B138(itemIndex + 0x62, &homeItemsTextureStart, &homeItemsTextureEnd, &homeItemsPaletteStart, &homeItemsPaletteEnd, &homeItemsTableStart, &homeItemsTableEnd, (void* )0x802E4000, (void* )0x802E4D00, (void* )0x802E7400, (void* )0x802E7700, (void* )0x802E7A00, (void* )0x802E7B00, (void* )1, (u8) (void* )1);
+    func_8002B138(itemIndex + 0x62, &homeItemsTexture_ROM_START, &homeItemsTexture_ROM_END, &homeItemsPalette_ROM_START, &homeItemsPalette_ROM_END, &homeItemsTable_ROM_START, &homeItemsTable_ROM_END, (void* )0x802E4000, (void* )0x802E4D00, (void* )0x802E7400, (void* )0x802E7700, (void* )0x802E7A00, (void* )0x802E7B00, (void* )1, (u8) (void* )1);
     func_8002BD90(itemIndex + 0x62, 1.0f, 1.0f, 1.0f);
     func_8002C7EC(itemIndex + 0x62, 3);
     func_8002C85C(itemIndex + 0x62, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -418,7 +417,7 @@ void func_8007341C(u8 arg0) {
 
     *(Vec3f*)ptr = *(Vec3f*)ptr2;
 
-    func_8002B138(arg0 + 0x62, &homeItemsTextureStart, &homeItemsTextureEnd, &homeItemsPaletteStart, &homeItemsPaletteEnd, &homeItemsTableStart, &homeItemsTableEnd, (void* )0x802E4000, (void* )0x802E4D00, (void* )0x802E7400, (void* )0x802E7700, (void* )0x802E7A00, (void* )0x802E7B00, (void* )1, (u8) (void* )1);
+    func_8002B138(arg0 + 0x62, &homeItemsTexture_ROM_START, &homeItemsTexture_ROM_END, &homeItemsPalette_ROM_START, &homeItemsPalette_ROM_END, &homeItemsTable_ROM_START, &homeItemsTable_ROM_END, (void* )0x802E4000, (void* )0x802E4D00, (void* )0x802E7400, (void* )0x802E7700, (void* )0x802E7A00, (void* )0x802E7B00, (void* )1, (u8) (void* )1);
     func_8002BD90(arg0 + 0x62, 1.0f, 1.0f, 1.0f);
     func_8002C7EC(arg0 + 0x62, 3);
     func_8002C85C(arg0 + 0x62, 0xFF, 0xFF, 0xFF, 0xFF);

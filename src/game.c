@@ -19,6 +19,7 @@
 #include "itemHandlers.h"
 #include "level.h"
 #include "mainLoop.h"
+#include "mapObjects.h"
 #include "namingScreen.h"
 #include "npc.h"
 #include "player.h"
@@ -98,7 +99,10 @@ extern u8 karenPregnancyCounter;
 extern u8 annCliffBabyAge;
 extern u8 annAndCliffNewlywedCounter;
 extern u8 annPregnancyCounter;
-extern u8 gVoteForFlowerFestivalGoddess;
+
+extern u8 D_801C4216;
+
+extern MainLoopCallbackInfo D_80205230;
 
 // unused
 extern u16 D_801FB686;   
@@ -142,133 +146,7 @@ static const s16 houseExtensionLumberCosts[6];
 // forward declarations
 extern inline void func_8005AE8C(u16 arg0, u16 arg1, u16 arg2, int arg3, u16 arg4);
 extern void func_8005B09C(u8);
-
-
-// -----------------------------
-// temp
-extern u32 calculateHouseExtensionScore();
-
-// sprite
-extern void func_8002B710(void);                                  
-extern void func_8002E1B8(void);                                
-extern void func_8002F6F0();                                
-extern void func_8002F7C8(u8, u8, u8, u8);                       
-extern bool func_8002F8F0(u8, u8, u8, u8, s32);                   
-
-// map
-extern void func_8003BE98(u16, u8, u8, u8, u8);
-extern void func_8003BF7C(u16, u8, u8, u8, u8, s32);
-
-// message
-extern void func_8003D970();  
-extern void func_8003DDF8(u32, u32, u32, u32);                       
-extern bool func_8003F360(u16, s16, u8);     
-extern bool func_8003F54C(u16, f32, f32, f32);                          
-extern bool func_8003F690(u16, u8, u8, u8);                         
-
-// dialogue
-extern void func_80043430(u16, u16, u16, u16);                        
-extern bool func_80043AD8(u16);                 
-extern u8 func_80043C6C(u16);                                
-
-// cutscene
-extern void func_80046C98(void);                                
-extern void initializeCutsceneMaps();                         
-
-// initialize
-extern void func_80053088(void); 
-
-// initialize2
-extern void func_800563D0(u8 arg0);                                
-
-// game
-extern void func_8005B09C(u8);                                 
-
-// gameStatus
-//extern s32 getSumNpcAffection(void);                             
-
-// player
-extern void func_8006A2E8();                                    
-extern void setPlayerAction(u16, u16);                       
-extern void setupPlayerSprite(u16 arg0, u8 resetPlayer);                         
-
-// level
-extern void func_8006E840(u16);                                 
-extern void setEntrance(u16 entranceIndex);  
-
-// animals
-extern void func_80088104(u8);                                
-extern void func_80088810(u8);                                
-extern u8 func_8009B5E0();                           
-
-// mapObjects
-extern u16 func_800DBF90();                                
-
-// shop
-extern void func_800DC9FC(u8);    
-
-// gameAudio
-extern void setSongWithDefaultSpeed(u16 songIndex);
-
-extern Controller controllers[4];    
-extern u32 D_8013D45C;
-
-// game
-extern Vec4f D_80180718;
-// extern s32 D_8018071C;
-// extern s32 D_80180720;
-// extern s32 D_80180724;
-
-extern u8 D_801C4216;
-
-// animals
-extern u8 D_801FC155;
-extern Dog dogInfo;
-extern u16 D_801886D2;
-extern u8 D_80189054;
-extern u8 D_8018908C;
-extern u8 D_8018908D;
-extern u16 D_801890C4;
-extern u32 D_801890E0;
-
-extern MainLoopCallbackInfo D_80205230;
-
-extern u16 gCurrentSongIndex;
-extern u8 gEntranceIndex;
-extern u32 gGold;
-extern u8 gHappiness;
-extern u8 gMaximumStamina;
-extern u8 gVoteForFlowerFestivalGoddess;
-
-extern Vec4f globalLightingRgba;
-// extern s32 D_8016F8A4;
-// extern s32 D_8016F8A8;
-// extern s32 D_8016F8AC;
-
-extern u8 npcAffection[];
-
-extern Dialogue D_801C3E40[1];
-
-extern Player D_80189060;
-
-
-extern f32 D_8016F8A4;
-extern f32 D_8016F8A8;
-extern f32 D_8016F8AC;
-
-extern f32 D_8018071C;
-extern f32 D_80180720;
-extern f32 D_80180724;
-
-typedef struct {
-    u16 flags;
-} Placeholder;
-
-extern Placeholder D_801C3F32[1];
-
-extern u8 D_80205236;
-
-
+extern void func_8005B09C(u8);        
 
 //INCLUDE_ASM(const s32, "game", func_80059D90);
 
@@ -1069,7 +947,7 @@ inline void func_8005C940(u16 arg0, u16 arg1) {
     
     func_8003BF7C(0, 0, 0, 0, 0, 8);
     func_8002F8F0(0, 0, 0, 0, 8);
-    
+       
     setSongWithDefaultSpeed(gCurrentSongIndex);
     
     D_80205230.unk_0 = arg1;
@@ -1163,8 +1041,8 @@ void func_8005CBF0(void) {
             gItemBeingHeld = 0xFF;
         }
          
-        func_8003F910(0, 0x78, &dialogueIconsTextureStart, &dialogueIconsTextureEnd, &dialogueIconsPaletteStart, &dialogueIconsPaletteEnd, (void*)DIALOGUE_ICONS_TEXTURES_VADDR, 0x8023CC00, 0x8023CE00, 0x8023D200, 0, 4, 0xFE, 106.0f, -15.0f, 0);
-        func_8003F910(1, 0x78, &dialogueIconsTextureStart, &dialogueIconsTextureEnd, &dialogueIconsPaletteStart, &dialogueIconsPaletteEnd, (void*)DIALOGUE_ICONS_TEXTURES_VADDR, 0x8023CC00, 0x8023CE00, 0x8023D200, 0, 0xD, 0xFE, 106.0f, -15.0f, 0);
+        func_8003F910(0, 0x78, &dialogueIconsTexture_ROM_START, &dialogueIconsTexture_ROM_END, &dialogueIconsPalette_ROM_START, &dialogueIconsPalette_ROM_END, (void*)DIALOGUE_ICONS_TEXTURES_VADDR, (void*)0x8023CC00, (void*)0x8023CE00, (void*)0x8023D200, 0, 4, 0xFE, 106.0f, -15.0f, 0);
+        func_8003F910(1, 0x78, &dialogueIconsTexture_ROM_START, &dialogueIconsTexture_ROM_END, &dialogueIconsPalette_ROM_START, &dialogueIconsPalette_ROM_END, (void*)DIALOGUE_ICONS_TEXTURES_VADDR, (void*)0x8023CC00, (void*)0x8023CE00, (void*)0x8023D200, 0, 0xD, 0xFE, 106.0f, -15.0f, 0);
        
         func_8005CDCC();
         
@@ -1444,6 +1322,7 @@ static inline void inline3() {
     setMainLoopCallbackFunctionIndex(1);
 }
 
+// from initialize2.c
 static inline void func_80055F08_2(u16 cutsceneIndex, u16 entranceIndex, u8 arg2) {
     
     func_8002E1B8();
@@ -1480,8 +1359,6 @@ static inline void func_80055F08_2(u16 cutsceneIndex, u16 entranceIndex, u8 arg2
 
 // possible split
 
-// pink overlay callback
-// handles write in diary
 // jtbl_8011F030
 // jtbl_8011F090
 // jtbl_8011F0A8
@@ -1498,10 +1375,9 @@ static inline void func_80055F08_2(u16 cutsceneIndex, u16 entranceIndex, u8 arg2
 // jtbl_8011F1B0
 // jtbl_8011F1C8
 // 0xFA430-0xFA600
-INCLUDE_ASM(const s32, "game", func_8005D2B0);
+//INCLUDE_ASM(const s32, "game", func_8005D2B0);
 
-// matches but diffing in build
-/*
+// pink overlay main loop callback
 void func_8005D2B0() {
 
     u8 temp;
@@ -1537,13 +1413,16 @@ void func_8005D2B0() {
                 
                 break;
             
+            // diary
             case 1:
                 switch (temp) {
+                        // write in diary/save game
                     case 0:                                 
                         setMainLoopCallbackFunctionIndex(1);
                         setPlayerAction(8, 10);
                         setDailyEventBit(7);
                         break;
+                        // don't write
                     case 1:                                 
                         setMainLoopCallbackFunctionIndex(1);
                         setPlayerAction(8, 10);
@@ -1571,12 +1450,12 @@ void func_8005D2B0() {
                 switch (temp) {                    
                     case 0:                                
                         func_8005B09C(6);
-                        return;
+                        break;
                     case 1:                                
                         func_8005AE8C(0, 6, 0x55, 0, 0);
                         setDailyEventBit(2);
                         setDailyEventBit(5);
-                        return;
+                        break;
                     case 2:                                
                         func_800DC9FC(0x21);
                         setMainLoopCallbackFunctionIndex(1);
@@ -1727,7 +1606,7 @@ void func_8005D2B0() {
                 break;
 
             case 13:                                    
-                if (gSeason == 1 || gSeason == 4) {
+                if (gSeason == SPRING || gSeason == WINTER) {
                     if (gPlayer.action1 == 0x1E || temp == 3) {
                         switch (temp) {             
                             case 0:                         
@@ -1749,7 +1628,7 @@ void func_8005D2B0() {
                         
                         func_800D55E4(gPlayer.unk_2D, 1);
                         gPlayer.unk_2C = 0;
-                        return;
+                        break;
                     }
                     
                     setPlayerAction(0x1E, 0x1F);
@@ -1778,7 +1657,7 @@ void func_8005D2B0() {
                     
                     func_800D55E4(gPlayer.unk_2D, 1);
                     gPlayer.unk_2C = 0;
-                    return;
+                    break;
                     
                 }
                 
@@ -1787,7 +1666,7 @@ void func_8005D2B0() {
                 break;
 
             case 14:                                    
-                if (gSeason == 1 || gSeason == 4) {
+                if (gSeason == SPRING || gSeason == WINTER) {
                     if (gPlayer.action1 == 0x1E || temp == 3) {
                         switch (temp) {            
                             case 0:                        
@@ -1809,7 +1688,7 @@ void func_8005D2B0() {
                         
                         func_800D55E4(gPlayer.unk_2D, 1);
                         gPlayer.unk_2C = 0;
-                        return;
+                        break;
                         
                     }
                     
@@ -1839,7 +1718,7 @@ void func_8005D2B0() {
                 
                     func_800D55E4(gPlayer.unk_2D, 1);
                     gPlayer.unk_2C = 0;
-                    return;
+                    break;
                     
                 }
                 
@@ -1849,7 +1728,7 @@ void func_8005D2B0() {
 
 
         case 15:                                    
-            if (gSeason == 1 || gSeason == 4) {
+            if (gSeason == SPRING || gSeason == WINTER) {
                 if (gPlayer.action1 == 0x1E || temp == 3) {
                     switch (temp) {             
                         case 0:                         
@@ -1871,7 +1750,7 @@ void func_8005D2B0() {
                     
                     func_800D55E4(gPlayer.unk_2D, 1);
                     gPlayer.unk_2C = 0;
-                    return;
+                    break;
                 }
                 
                 setPlayerAction(0x1E, 0x1F);
@@ -1904,12 +1783,12 @@ void func_8005D2B0() {
                 
             }
             
-            setPlayerAction(0x1E, 0x1F);
-            setMainLoopCallbackFunctionIndex(1);
-            break;
+                setPlayerAction(0x1E, 0x1F);
+                setMainLoopCallbackFunctionIndex(1);
+                break;
 
         case 16:                                    
-            if (gSeason == 1 || gSeason == 4) {
+            if (gSeason == SPRING || gSeason == WINTER) {
                 if (gPlayer.action1 == 0x1E || temp == 3) {
                     switch (temp) {             
                         case 0:                         
@@ -1931,7 +1810,7 @@ void func_8005D2B0() {
                     
                         func_800D55E4(gPlayer.unk_2D, 1);
                         gPlayer.unk_2C = 0;
-                        return;
+                        break;
                     }
                 
                     setPlayerAction(0x1E, 0x1F);
@@ -1960,7 +1839,7 @@ void func_8005D2B0() {
                 
                     func_800D55E4(gPlayer.unk_2D, 1);
                     gPlayer.unk_2C = 0;
-                    return;
+                    break;
                 }
             
             setPlayerAction(0x1E, 0x1F);
@@ -1968,7 +1847,7 @@ void func_8005D2B0() {
             break;
 
         case 17:                                    
-            if (gSeason == 1 || gSeason == 4) {
+            if (gSeason == SPRING || gSeason == WINTER) {
                 if (gPlayer.action1 == 0x1E || temp == 4) {
                     switch (temp) {            
                         case 0:                         
@@ -2002,38 +1881,38 @@ void func_8005D2B0() {
             }
             
             if (gPlayer.action1 == 0x1E || temp == 4) {
-                    switch (temp) {                
-                        case 0:                             
-                            func_8005AE8C(1, 1, 28, 0, 0);
-                            break;
-                        case 1:                             
-                            func_8005AE8C(1, 1, 29, 0, 0);
-                            break;
-                        case 2:                             
-                            func_8005AE8C(1, 1, 30, 0, 0);
-                            break;
-                        case 3:                             
-                            func_8005AE8C(1, 1, 31, 0, 0);
-                            break;                       
-                        case 4:        
-                            D_801C3E40[0].struct5.flags &= ~0x40;
-                            func_80043AD8(0);
-                            setPlayerAction(0, 0);
-                            setMainLoopCallbackFunctionIndex(1);
-                            break;
-                        }
-                
-                        func_800D55E4(gPlayer.unk_2D, 1);
-                        gPlayer.unk_2C = 0;
-                        return;
+                switch (temp) {                
+                    case 0:                             
+                        func_8005AE8C(1, 1, 28, 0, 0);
+                        break;
+                    case 1:                             
+                        func_8005AE8C(1, 1, 29, 0, 0);
+                        break;
+                    case 2:                             
+                        func_8005AE8C(1, 1, 30, 0, 0);
+                        break;
+                    case 3:                             
+                        func_8005AE8C(1, 1, 31, 0, 0);
+                        break;                       
+                    case 4:        
+                        D_801C3E40[0].struct5.flags &= ~0x40;
+                        func_80043AD8(0);
+                        setPlayerAction(0, 0);
+                        setMainLoopCallbackFunctionIndex(1);
+                        break;
                     }
             
-                setPlayerAction(0x1E, 0x1F);
-                setMainLoopCallbackFunctionIndex(1);
-                break;
+                    func_800D55E4(gPlayer.unk_2D, 1);
+                    gPlayer.unk_2C = 0;
+                    break;
+                }
+        
+            setPlayerAction(0x1E, 0x1F);
+            setMainLoopCallbackFunctionIndex(1);
+            break;
 
         case 18:                                    
-            if (gSeason == 1 || gSeason == 4) {
+            if (gSeason == SPRING || gSeason == WINTER) {
                 if (gPlayer.action1 == 0x1E || temp == 4) {
                     switch (temp) {             
                         case 0:                         
@@ -2059,7 +1938,7 @@ void func_8005D2B0() {
                     
                         func_800D55E4(gPlayer.unk_2D, 1);
                         gPlayer.unk_2C = 0;
-                        return;
+                        break;
                     }
                 
                     setPlayerAction(0x1E, 0x1F);
@@ -2091,7 +1970,7 @@ void func_8005D2B0() {
                 
                     func_800D55E4(gPlayer.unk_2D, 1);
                     gPlayer.unk_2C = 0;
-                    return;
+                    break;
                 }
             
             setPlayerAction(0x1E, 0x1F);
@@ -2099,7 +1978,7 @@ void func_8005D2B0() {
             break;
         
         case 19:                                    
-            if (gSeason == 1 || gSeason == 4) {
+            if (gSeason == SPRING || gSeason == WINTER) {
                 if (gPlayer.action1 == 0x1E || temp == 4) {
                     switch (temp) {             
                         case 0:                         
@@ -2124,7 +2003,7 @@ void func_8005D2B0() {
                     
                         func_800D55E4(gPlayer.unk_2D, 1);
                         gPlayer.unk_2C = 0;
-                        return;
+                        break;
                     }
                 
                     setPlayerAction(0x1E, 0x1F);
@@ -2156,7 +2035,7 @@ void func_8005D2B0() {
                 
                     func_800D55E4(gPlayer.unk_2D, 1);
                     gPlayer.unk_2C = 0;
-                    return;
+                    break;
                 }
             
             setPlayerAction(0x1E, 0x1F);
@@ -2164,7 +2043,7 @@ void func_8005D2B0() {
             break;
         
         case 20:                                    
-            if (gSeason == 1 || gSeason == 4) {
+            if (gSeason == SPRING || gSeason == WINTER) {
                 if (gPlayer.action1 == 0x1E || temp == 4) {
                     switch (temp) {             
                         case 0:                         
@@ -2189,7 +2068,7 @@ void func_8005D2B0() {
                     
                         func_800D55E4(gPlayer.unk_2D, 1);
                         gPlayer.unk_2C = 0;
-                        return;
+                        break;
                     }
                 
                 setPlayerAction(0x1E, 0x1F);
@@ -2229,7 +2108,7 @@ void func_8005D2B0() {
             break;
 
         case 21:                                    
-            if (gSeason == 1 || gSeason == 4) {
+            if (gSeason == SPRING || gSeason == WINTER) {
                 if (gPlayer.action1 == 0x1E || temp == 4) {
                     switch (temp) {             
                         case 0:                         
@@ -2295,7 +2174,7 @@ void func_8005D2B0() {
             break;
 
         case 22:                                    
-            if (gSeason == 1 || gSeason == 4) {
+            if (gSeason == SPRING || gSeason == WINTER) {
                 if (gPlayer.action1 == 0x1E || temp == 4) {
                     switch (temp) {             
                         case 0:                         
@@ -2363,7 +2242,7 @@ void func_8005D2B0() {
         case 23:                                    
             switch (temp) {                   
                 case 0:                 
-                    if (calculateHouseExtensionScore() == 6 && checkLifeEventBit(0) && npcAffection[gWife] >= 250 && checkLifeEventBit(1) && dogInfo.affection >= 200 && getSumNpcAffection() >= 2500 && func_800DBF90() >= 384 && gMaximumStamina >= 190 && gHappiness >= 250 && func_8009B5E0() && D_801886D2 >= 10) {          
+                    if (calculateHouseExtensionScore() == 6 && checkLifeEventBit(MARRIED) && npcAffection[gWife] >= 250 && checkLifeEventBit(1) && dogInfo.affection >= 200 && getSumNpcAffection() >= 2500 && func_800DBF90() >= 0x180 && gMaximumStamina >= 0xBE && gHappiness >= 250 && func_8009B5E0() && D_801886D2 >= 10) {          
                         albumBits |= 0x8000;  
                     }
                     
@@ -2380,7 +2259,6 @@ void func_8005D2B0() {
         }
     }
 }
-*/
 
 //INCLUDE_ASM(const s32, "game", func_80060454);
 

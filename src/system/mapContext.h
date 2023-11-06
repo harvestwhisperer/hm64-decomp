@@ -224,7 +224,8 @@ typedef struct {
 	u8 unk_43;
 	u8 unk_44;
 	u8 unk_45;
-	u16 unk_46;
+	u8 unk_46;
+	u8 unk_47;
 	u8 rotation;
 	u16 flags;
 } LevelMapContext;
@@ -239,11 +240,11 @@ extern void intializeTileContext();
 extern bool func_8003BA44(u16 index, s16 flag, void *tileBank);
 extern bool func_8003BB14(u16 arg0, u16 mapIndex); 
 extern void func_8003BC50(u8, u16);   
-extern void func_8003BD60(s32);                      
-extern void func_8003BDA4(u16, f32, f32, f32);  
+extern bool func_8003BD60(u16);                      
+extern bool func_8003BDA4(u16, f32, f32, f32);  
 extern bool func_8003BE0C(u16 arg0, f32 arg1, f32 arg2, f32 arg3);
-extern void func_8003BE98(u16, u8, u8, u8, u8);
-extern void func_8003BF7C(u16, u8, u8, u8, u8, s32);
+extern bool func_8003BE98(u16, u8, u8, u8, u8);
+extern bool func_8003BF7C(u16, u8, u8, u8, u8, s16);
 extern bool func_8003C084(u16, u8);    
 extern bool func_8003C6E4();
 extern bool func_8003C1A4(u16);
@@ -252,6 +253,6 @@ extern bool func_8003C504(u16);
 extern bool func_8003C5C0(u16, u8, u8);
 
 extern u16 gMapModelContextFlags;
-extern LevelMapContext gMapModelContext[];
+extern LevelMapContext gMapModelContext[1];
 
 #endif

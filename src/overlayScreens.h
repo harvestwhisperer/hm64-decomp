@@ -18,18 +18,17 @@ extern u8 D_801890E8[31];
 extern u8 D_80189108[5][7];
 extern u8 D_80237420[31];
 
-extern void *checkerboardBackgroundTextureStart;
-extern void *checkerboardBackgroundTextureEnd;
-extern void *checkerboardBackgroundPaletteStart;
-extern void *checkerboardBackgroundPaletteEnd;
+extern u32 checkerboardBackgroundTexture_ROM_START;
+extern u32 checkerboardBackgroundTexture_ROM_END;
+extern u32 checkerboardBackgroundPalette_ROM_START;
+extern u32 checkerboardBackgroundPalette_ROM_END;
 
-// sprite rom addresses
-extern void *holdableItemsTexturesStart;
-extern void *holdableItemsTexturesEnd;
-extern void *holdableItemsPaletteStart;
-extern void *holdableItemsPaletteEnd;
-extern void *holdableItemsTableStart;
-extern void *holdableItemsTableEnd;
+extern u32 holdableItemsTexture_ROM_START;
+extern u32 holdableItemsTexture_ROM_END;
+extern u32 holdableItemsPalette_ROM_START;
+extern u32 holdableItemsPalette_ROM_END;
+extern u32 holdableItemsTable_ROM_START;
+extern u32 holdableItemsTable_ROM_END;
 
 extern u16 D_80180714;
 
