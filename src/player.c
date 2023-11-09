@@ -74,7 +74,7 @@ void setupPlayerSprite(u16 arg0, u8 resetPlayer) {
         gPlayer.direction = playerDefaultStartingDirections[arg0];
     }
 
-    func_8002F684(PLAYER, (gPlayer.direction + 8 - func_8003C1A4(0)) % 8);
+    setSpriteDirection(PLAYER, (gPlayer.direction + 8 - func_8003C1A4(0)) % 8);
     func_8002FD80(PLAYER, gPlayer.startingCoordinates.x, gPlayer.startingCoordinates.y, gPlayer.startingCoordinates.z);
 
     D_80189828.unk_3 = 0;
@@ -324,6 +324,7 @@ const s8 D_8011F3FC[12] = { 1, 1, 0, 0xFF, 0xFF, 0xFF, 0, 1, 0, 0, 0, 0 };
 void func_8006623C(void) {
 
     if (gPlayer.action1 == 0) {
+        // handle button input
         func_800664C8();
     }
     
@@ -451,7 +452,7 @@ void func_80066F98(void) {
 
     setDailyEventBit(0x5C);
  
-    func_8002F684(0, (horseInfo.direction + 8 - func_8003C1A4(0)) % 8);
+    setSpriteDirection(PLAYER, (horseInfo.direction + 8 - func_8003C1A4(0)) % 8);
     
 }
 
@@ -527,7 +528,7 @@ u8 checkFatigueLevel(void) {
     } else if (gPlayer.fatigue[0] >= 75) {
         return 2;
     }  else {
-        return (gPlayer.fatigue[0] < 50) ^ 1;  
+        return (gPlayer.fatigue[0] < 50) == 0;  
     }
 
     return temp;
@@ -737,24 +738,24 @@ void func_80069830(void) {
 
         case 0:
 
-            func_8003019C(0, 0);
-            func_80030240(0, 0);
-            func_800302E4(0, 0);
-            func_80030054(0, 0);
-            func_80038990(0, 1, 0);
+            func_8003019C(PLAYER, 0);
+            func_80030240(PLAYER, 0);
+            func_800302E4(PLAYER, 0);
+            func_80030054(PLAYER, 0);
+            func_80038990(PLAYER, 1, 0);
             gPlayer.direction = 4;
             gPlayer.unk_6F = 0x12;
             gPlayer.action4++;
             func_80028520(&vec, 4.0f, 4, 0);
             gPlayer.currentCoordinates = vec;
-            func_8002F684(0, (gPlayer.direction + 8 - func_8003C1A4(0)) % 8);
+            setSpriteDirection(PLAYER, (gPlayer.direction + 8 - func_8003C1A4(0)) % 8);
             gPlayer.action2 = 2;
             break;
 
         case 1:
 
             if (gPlayer.unk_6F == 0) {
-                func_80038990(0, 0, 0);
+                func_80038990(PLAYER, 0, 0);
                 gPlayer.direction = 5;
                 gPlayer.action1 = 0xC;
                 gPlayer.currentCoordinates.x = 0;
@@ -781,45 +782,49 @@ void func_80069830(void) {
             } else {
                 gPlayer.action3++;
             }
+
             break;
 
         case 3:
 
             if (gPlayer.unk_6F == 0) {
-                func_80038990(0, 1, 0);
+                func_80038990(PLAYER, 1, 0);
                 setAudio(0x32);
                 gPlayer.direction = 0;
                 gPlayer.unk_6F = 0x12;
                 func_80028520(&vec2, 4.0f, 0, 0);
                 gPlayer.currentCoordinates = vec2;
-                func_8002F684(0, (gPlayer.direction + 8 - func_8003C1A4(0)) % 8);
+                setSpriteDirection(PLAYER, (gPlayer.direction + 8 - func_8003C1A4(0)) % 8);
                 gPlayer.action2 = 2;
                 gPlayer.action4++;
             } else {
                 gPlayer.unk_6F--;
             }
+
             break;
 
         case 4:
 
             if (gPlayer.unk_6F == 0) {
+
                 gPlayer.currentCoordinates.x = 0;
                 gPlayer.currentCoordinates.y = 0;
                 gPlayer.currentCoordinates.z = 0;
-                func_8003019C(0, 1);
-                func_80030240(0, 1);
-                func_800302E4(0, 1);
-                func_80030054(0, 1);
-                func_80038990(0, 0, 0);
-                gPlayer.action3 = 0;
-                gPlayer.action4 = 0;
-                gPlayer.action1 = 0;
-                gPlayer.action2 = 0;
+
+                func_8003019C(PLAYER, 1);
+                func_80030240(PLAYER, 1);
+                func_800302E4(PLAYER, 1);
+                func_80030054(PLAYER, 1);
+                func_80038990(PLAYER, 0, 0);
+
+                resetAction();
+
                 toggleDailyEventBit(6);
 
                 if (!checkDailyEventBit(0x33)) {
-                    gPlayer.fatigue[0] += adjustValue(gPlayer.fatigue[0], -10, 0x64);
+                    gPlayer.fatigue[0] += adjustValue(gPlayer.fatigue[0], -10, 100);
                 }
+
                 setDailyEventBit(0x33);
 
             } else {
@@ -829,7 +834,7 @@ void func_80069830(void) {
             break;
     }
 
-    func_8002FE10(0, gPlayer.currentCoordinates.x, 0, gPlayer.currentCoordinates.z, 1.0f);
+    func_8002FE10(PLAYER, gPlayer.currentCoordinates.x, 0.0f, gPlayer.currentCoordinates.z, 1.0f);
 }
 
 //INCLUDE_ASM(const s32, "player", func_80069C5C);
@@ -847,7 +852,7 @@ void func_80069C90(void) {
         setAudio(0xA);
     }
 }
-
+ 
 //INCLUDE_ASM(const s32, "player", func_80069CC4);
 
 void func_80069CC4(void) {
@@ -881,6 +886,7 @@ void func_80069DB0(void) {
     }
     
     if (gPlayer.action4 && func_8004D3A4(CONTROLLER_1, BUTTON_B)) {
+
         switch (gPlayer.action4) {
             
             case 3 ... 5:

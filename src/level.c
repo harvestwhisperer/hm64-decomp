@@ -21,6 +21,7 @@ extern u8 previousEntranceIndex;
 extern u8 gEntranceIndex;
 extern u8 gBaseMapIndex;
 extern u8 gMapWithSeasonIndex;
+// rotation
 extern u8 D_8021E6D0;
 
 extern u32 homeItemsTexture_ROM_START;
@@ -32,8 +33,8 @@ extern u32 homeItemsTable_ROM_END;
 
 extern u32 groundObjectsTexture_ROM_START;
 extern u32 groundObjectsTexture_ROM_END;
-extern u32 groundObjectsPalette_ROM_START;
-extern u32 groundObjectsPalette_ROM_END;
+extern u32 groundObjectsIndex_ROM_START;
+extern u32 groundObjectsIndex_ROM_END;
 
 // rodata
 extern u8 levelFlags[];
@@ -76,6 +77,7 @@ void func_8006E840(u16 arg0) {
 
     func_8003BB14(0, gMapWithSeasonIndex);
 
+    // set rotation
     if (gBaseMapIndex == FARM) {
         func_8003C084(0, (D_80114280[gMapWithSeasonIndex] + D_8021E6D0) % 8);
     } else {
@@ -202,53 +204,53 @@ void func_8006EC58(u16 mapIndex) {
         case FARM:
             D_801FD624 = 0xE;
             D_801C3F35 = 0xB;
-            func_80034EF0(0, 0xE, 0xB, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &groundObjectsTexture_ROM_START, &groundObjectsTexture_ROM_END, &groundObjectsPalette_ROM_START, &groundObjectsPalette_ROM_END, 0x60); 
+            func_80034EF0(0, 0xE, 0xB, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &groundObjectsTexture_ROM_START, &groundObjectsTexture_ROM_END, &groundObjectsIndex_ROM_START, &groundObjectsIndex_ROM_END, 0x60); 
             break;
         case GREENHOUSE:
             D_801FD624 = 1;
             D_801C3F35 = 1;
-            func_80034EF0(0, 1, 1, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &groundObjectsTexture_ROM_START, &groundObjectsTexture_ROM_END, &groundObjectsPalette_ROM_START, &groundObjectsPalette_ROM_END, 2); 
+            func_80034EF0(0, 1, 1, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &groundObjectsTexture_ROM_START, &groundObjectsTexture_ROM_END, &groundObjectsIndex_ROM_START, &groundObjectsIndex_ROM_END, 2); 
             break;            
         case MOUNTAIN_1:
             D_801FD624 = 5;
             D_801C3F35 = 0;
-            func_80034EF0(0, 5, 0, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &groundObjectsTexture_ROM_START, &groundObjectsTexture_ROM_END, &groundObjectsPalette_ROM_START, &groundObjectsPalette_ROM_END, 0); 
+            func_80034EF0(0, 5, 0, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &groundObjectsTexture_ROM_START, &groundObjectsTexture_ROM_END, &groundObjectsIndex_ROM_START, &groundObjectsIndex_ROM_END, 0); 
             break;    
         case MOUNTAIN_2:
             D_801FD624 = 3;
             D_801C3F35 = 5;
-            func_80034EF0(0, 3, 5, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &groundObjectsTexture_ROM_START, &groundObjectsTexture_ROM_END, &groundObjectsPalette_ROM_START, &groundObjectsPalette_ROM_END, 0); 
+            func_80034EF0(0, 3, 5, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &groundObjectsTexture_ROM_START, &groundObjectsTexture_ROM_END, &groundObjectsIndex_ROM_START, &groundObjectsIndex_ROM_END, 0); 
             break;  
         case TOP_OF_MOUNTAIN_1:
             D_801FD624 = 5;
             D_801C3F35 = 0;
-            func_80034EF0(0, 5, 0, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &groundObjectsTexture_ROM_START, &groundObjectsTexture_ROM_END, &groundObjectsPalette_ROM_START, &groundObjectsPalette_ROM_END, 0); 
+            func_80034EF0(0, 5, 0, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &groundObjectsTexture_ROM_START, &groundObjectsTexture_ROM_END, &groundObjectsIndex_ROM_START, &groundObjectsIndex_ROM_END, 0); 
             break;  
         case MOON_MOUNTAIN:
             D_801FD624 = 5;
             D_801C3F35 = 0;
-            func_80034EF0(0, 5, 0, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &groundObjectsTexture_ROM_START, &groundObjectsTexture_ROM_END, &groundObjectsPalette_ROM_START, &groundObjectsPalette_ROM_END, 0); 
+            func_80034EF0(0, 5, 0, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &groundObjectsTexture_ROM_START, &groundObjectsTexture_ROM_END, &groundObjectsIndex_ROM_START, &groundObjectsIndex_ROM_END, 0); 
             break;                            
         case POND:
             D_801FD624 = 5;
             D_801C3F35 = 0;
-            func_80034EF0(0, 5, 0, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &groundObjectsTexture_ROM_START, &groundObjectsTexture_ROM_END, &groundObjectsPalette_ROM_START, &groundObjectsPalette_ROM_END, 0); 
+            func_80034EF0(0, 5, 0, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &groundObjectsTexture_ROM_START, &groundObjectsTexture_ROM_END, &groundObjectsIndex_ROM_START, &groundObjectsIndex_ROM_END, 0); 
             break;          
         case CAVE:
             D_801FD624 = 0;
             D_801C3F35 = 0;
-            func_80034EF0(0, 0, 0, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &groundObjectsTexture_ROM_START, &groundObjectsTexture_ROM_END, &groundObjectsPalette_ROM_START, &groundObjectsPalette_ROM_END, 0); 
+            func_80034EF0(0, 0, 0, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &groundObjectsTexture_ROM_START, &groundObjectsTexture_ROM_END, &groundObjectsIndex_ROM_START, &groundObjectsIndex_ROM_END, 0); 
             break;    
         case MINE:                                      
         case MINE_2:        
             D_801FD624 = 2;
             D_801C3F35 = 2;
-            func_80034EF0(0, 2, 2, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &groundObjectsTexture_ROM_START, &groundObjectsTexture_ROM_END, &groundObjectsPalette_ROM_START, &groundObjectsPalette_ROM_END, 0); 
+            func_80034EF0(0, 2, 2, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &groundObjectsTexture_ROM_START, &groundObjectsTexture_ROM_END, &groundObjectsIndex_ROM_START, &groundObjectsIndex_ROM_END, 0); 
             break;    
         case RANCH:
             D_801FD624 = 0x10;
             D_801C3F35 = 0xA;
-            func_80034EF0(0, 0x10, 0xA, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &groundObjectsTexture_ROM_START, &groundObjectsTexture_ROM_END, &groundObjectsPalette_ROM_START, &groundObjectsPalette_ROM_END, 0); 
+            func_80034EF0(0, 0x10, 0xA, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &groundObjectsTexture_ROM_START, &groundObjectsTexture_ROM_END, &groundObjectsIndex_ROM_START, &groundObjectsIndex_ROM_END, 0); 
             break;   
     }
 

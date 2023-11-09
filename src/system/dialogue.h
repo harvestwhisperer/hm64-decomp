@@ -223,41 +223,47 @@ extern u32 D_E87080;
 
 extern u32 dialogueIconsTexture_ROM_START;
 extern u32 dialogueIconsTexture_ROM_END;
-extern u32 dialogueIconsPalette_ROM_START;
-extern u32 dialogueIconsPalette_ROM_END;
+extern u32 dialogueIconsIndex_ROM_START;
+extern u32 dialogueIconsIndex_ROM_END;
 
 extern u32 characterDialogueIconsTexture_ROM_START;
 extern u32 characterDialogueIconsTexture_ROM_END;
-extern u32 characterDialogueIconsPalette_ROM_START;
-extern u32 characterDialogueIconsPalette_ROM_END;
-extern u32 characterDialogueIconsTable_ROM_START;
-extern u32 characterDialogueIconsTable_ROM_END;
+extern u32 characterdialogueIconsAssetsIndex_ROM_START;
+extern u32 characterdialogueIconsAssetsIndex_ROM_END;
+extern u32 characterDialogueIconsSpritesheetIndex_ROM_START;
+extern u32 characterDialogueIconsSpritesheetIndex_ROM_END;
 
 extern u32 dialogueWindowTexture_ROM_START;
 extern u32 dialogueWindowTexture_ROM_END;
-extern u32 dialogueWindowPalette_ROM_START;
-extern u32 dialogueWindowPalette_ROM_END;
+extern u32 dialogueWindowIndex_ROM_START;
+extern u32 dialogueWindowIndex_ROM_END;
 
+// 0x80205760
 typedef struct {
     void* romStart;
     void* romEnd;
-    void* vaddr;
-    void* romIndex;
-    void* vaddrIndex;
+    u32* vaddr;
+    u32* romIndex;
+    u32* vaddrIndex;
     u16 unk_14;
     u16 unk_16;
 } Conversation;
 
 // D_801C3E40
 typedef struct {
-	u32 unk_0;
-	u32 unk_4;
-	u32 unk_8;
-	u16 unk_C;
+	u16 unk_0;
+	u16 unk_2;
+	u16 unk_4;
+    u16 unk_6;	
+    u16 unk_8;
+	u16 unk_A;
+    u16 unk_C;
 	u16 unk_E;
 	u16 unk_10;
-	u16 unk_12;
-	u16 unk_14;
+    u8 unk_12;
+	u8 unk_13;
+	u8 unk_14;
+    u8 unk_15;
 	u8 unk_16;
 	u8 unk_17;
 	u8 unk_18;
@@ -276,20 +282,36 @@ typedef struct {
 	void* unk_1C;
 	u32 unk_20; // 0x8C
 	Vec3f unk_24;
-	u16 unk_30; // 0x9C
+	u16 unk_30; // 0x9C // spriteIndex
 	u16 unk_32; // 0x98
 	u8 unk_34; // 0xA0
-} UnknownDialogueStruct2;
+} DialogueSpriteInfo;
+
+// 0x801C3F18
+typedef struct {
+	u32 unk_0;
+	u32 unk_4;
+	u32 unk_8;
+	u16 unk_C;
+	u16 unk_E; // 0xF26 // index into conversation
+	u16 unk_10; // 0xF28, message struct index
+	u16 unk_12;
+	u16 unk_14;
+	u8 unk_16;
+	u8 unk_17;
+	u8 unk_18;
+    u16 flags;
+} UnknownDialogueStruct3;
 
 // 0x801C3E40
 typedef struct {
 	UnknownDialogueStruct1 struct1;
 	u32 padding[4];  // 0x801C3E5C
-	UnknownDialogueStruct2 struct2; // 0x801C3E6C
-	UnknownDialogueStruct2 struct3; // 0x801C3EA4
-	UnknownDialogueStruct2 struct4;
+	DialogueSpriteInfo struct2; // 0x801C3E6C
+	DialogueSpriteInfo struct3; // 0x801C3EA4
+	DialogueSpriteInfo struct4;
 	u32 unk_D4; // 0x801C3F14
-	UnknownDialogueStruct1 struct5; // 0x801C3F18
+	UnknownDialogueStruct3 struct5; // 0x801C3F18
 } Dialogue;
 
 typedef struct {
@@ -323,7 +345,7 @@ extern bool func_80043148(u16, u32, u32, u32);
 extern bool func_8004318C(u16 arg0, u16 arg1, void* arg2, void* arg3, void* arg4, void* arg5, void* arg6, void* arg7, void* arg8, void* arg9, void* argA, u16 argB, u8 argC, f32 argD, f32 argE, f32 argF);
 extern bool func_80043260(u16 arg0, u16 arg1, void* arg2, void* arg3, void* arg4, void* arg5, void* arg6, void* arg7, void* arg8, void* arg9, void* argA, u16 argB, u8 argC, f32 argD, f32 argE, f32 argF);
 extern bool func_80043334(u16 arg0, u16 arg1, void* arg2, void* arg3, void* arg4, void* arg5, void* arg6, void* arg7, void* arg8, void* arg9, void* argA, u16 argB, u8 argC, f32 argD, f32 argE, f32 argF);
-extern void func_80043430(u16, u16, u16, u16);
+extern bool func_80043430(u16, u16, u16, u16);
 extern u8 func_80043A88();  
 extern bool func_80043AD8(u16);
 extern u8 func_80043C6C(u16);

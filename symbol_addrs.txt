@@ -896,9 +896,10 @@ resetSpriteCounter = 0x80029284;
 initializeBitmaps = 0x80029B30;
 initializeNpcSpriteStructs = 0x8002DC70;
 setSpriteAnimation = 0x8002F3F0;
+setSpriteDirection = 0x8002F684;
 setSpriteCollisionBuffers = 0x8002FF9C;
 
-intializeTileContext = 0x8003B870;
+initializeMapContext = 0x8003B870;
 setMapModelAddresses = 0x8003B9DC;
 
 initializeAudio = 0x8003CDC0;

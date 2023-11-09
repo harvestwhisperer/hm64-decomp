@@ -78,6 +78,13 @@
 #define MAX_TOOLCHEST_SLOTS 0x20
 #define MAX_KEY_ITEMS 24 
 
+typedef struct {
+    u8 fatigueCounter;
+    u8 fatigueLevel;
+    u8 unk_2;
+    u8 unk_3;
+} Fatigue;
+
 // 80189060
 typedef struct {
 	u8 currentStamina; // 0
@@ -102,13 +109,13 @@ typedef struct {
 	u16 action1; // 0x64
 	u16 action2; // 0x66
 	u16 action3; // 0x68
-	u8 action4; // 0x6A
+	u8 action4; // 0x6A // animation state
 	u8 unk_6B; // 0x6B
 	u8 unk_6C; // 0x6C
 	u8 direction; // 0x6D
 	u8 unk_6E; // 0x6E
 	u8 unk_6F; // 0x6F
-	u8 unk_70;
+	u8 unk_70; // collision object id? 
 	u8 fatigue[4]; // 71
     u16 flags; // 0x78
 } Player;

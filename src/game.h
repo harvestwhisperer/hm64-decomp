@@ -37,6 +37,7 @@ typedef struct {
     u8 unk_6;
 } MainLoopCallbackInfo;
 
+// might be dialogue.h
 typedef struct {
 	void *address;
 	u32 maxValue;

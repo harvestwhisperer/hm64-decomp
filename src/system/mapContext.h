@@ -236,8 +236,8 @@ typedef struct {
     u16 flags;
 } MapContextAddresses;
 
-extern void intializeTileContext();      
-extern bool func_8003BA44(u16 index, s16 flag, void *tileBank);
+extern void initializeMapContext();      
+extern bool func_8003BA44(u16 index, u16 mapIndex, void *levelMap);
 extern bool func_8003BB14(u16 arg0, u16 mapIndex); 
 extern void func_8003BC50(u8, u16);   
 extern bool func_8003BD60(u16);                      
