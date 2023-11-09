@@ -1041,8 +1041,8 @@ void func_8005CBF0(void) {
             gItemBeingHeld = 0xFF;
         }
          
-        func_8003F910(0, 0x78, &dialogueIconsTexture_ROM_START, &dialogueIconsTexture_ROM_END, &dialogueIconsPalette_ROM_START, &dialogueIconsPalette_ROM_END, (void*)DIALOGUE_ICONS_TEXTURES_VADDR, (void*)0x8023CC00, (void*)0x8023CE00, (void*)0x8023D200, 0, 4, 0xFE, 106.0f, -15.0f, 0);
-        func_8003F910(1, 0x78, &dialogueIconsTexture_ROM_START, &dialogueIconsTexture_ROM_END, &dialogueIconsPalette_ROM_START, &dialogueIconsPalette_ROM_END, (void*)DIALOGUE_ICONS_TEXTURES_VADDR, (void*)0x8023CC00, (void*)0x8023CE00, (void*)0x8023D200, 0, 0xD, 0xFE, 106.0f, -15.0f, 0);
+        func_8003F910(0, 0x78, &dialogueIconsTexture_ROM_START, &dialogueIconsTexture_ROM_END, &dialogueIconsIndex_ROM_START, &dialogueIconsIndex_ROM_END, (void*)DIALOGUE_ICONS_TEXTURES_VADDR, (void*)0x8023CC00, (void*)0x8023CE00, (void*)0x8023D200, 0, 4, 0xFE, 106.0f, -15.0f, 0);
+        func_8003F910(1, 0x78, &dialogueIconsTexture_ROM_START, &dialogueIconsTexture_ROM_END, &dialogueIconsIndex_ROM_START, &dialogueIconsIndex_ROM_END, (void*)DIALOGUE_ICONS_TEXTURES_VADDR, (void*)0x8023CC00, (void*)0x8023CE00, (void*)0x8023D200, 0, 0xD, 0xFE, 106.0f, -15.0f, 0);
        
         func_8005CDCC();
         

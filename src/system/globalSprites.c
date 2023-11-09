@@ -88,15 +88,13 @@ bool func_8002B80C(u16 index, u16 offset, u8 arg2) {
 
         if (globalSprites[index].flags2 & 1) {
             
-            ptr = globalSprites[index].vaddrStart + (offset*(long long)4);
-            
-            // this also matches, but vaddrStart member has to be int/u32/long pointer
-            // if (*(globalSpritesindex].vaddrStart + offset) != *((globalSprites[index].vaddrStart + offset) + 1)) {
+            if (globalSprites[index].unknownAssetIndexPtr[offset] != globalSprites[index].unknownAssetIndexPtr[offset+1]) {
 
-            if (*ptr != *(ptr+1)) {
-                result = func_8002B8E0(index, arg2, func_8002CD34(offset, globalSprites[index].vaddrStart));
+                result = func_8002B8E0(index, arg2, func_8002CD34(offset, globalSprites[index].unknownAssetIndexPtr));
+                
                 globalSprites[index].animationCounter1 = 0xFF;
                 globalSprites[index].animationCounter2 = 0xFF;
+           
             }
         }
     }

@@ -109,7 +109,7 @@ void initializeEngine(void) {
     // system/flags.c
     func_8004DEB0();
     initializeNpcSpriteStructs();
-    intializeTileContext();
+    initializeMapContext();
 
     nuGfxSwapCfbFuncSet(NULL);
     nuGfxSwapCfbFuncSet(gfxBufferSwap);

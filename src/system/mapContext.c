@@ -22,9 +22,9 @@ void func_8003C8D4(u8*);
  
 static const f32 D_8011EDE0[];
                     
-//INCLUDE_ASM(const s32, "system/mapContext", intializeTileContext);
+//INCLUDE_ASM(const s32, "system/mapContext", initializeMapContext);
 
-void intializeTileContext(void) {
+void initializeMapContext(void) {
     
     u16 i;
     
@@ -95,7 +95,7 @@ bool setMapModelAddresses(u16 index, void *start, void *end) {
 
 //INCLUDE_ASM(const s32, "system/mapContext", func_8003BA44);
 
-bool func_8003BA44(u16 index, s16 flag, void *modelData) {
+bool func_8003BA44(u16 index, u16 mapIndex, void *modelData) {
     
     bool result;
 
@@ -105,7 +105,7 @@ bool func_8003BA44(u16 index, s16 flag, void *modelData) {
         
         result = 1;
         
-        gMapModelContext[index].mapIndex = flag;
+        gMapModelContext[index].mapIndex = mapIndex;
         
         gMapModelContext[index].modelData = modelData;
         
@@ -146,7 +146,9 @@ bool func_8003BB14(u16 index, u16 mapIndex) {
     
     if (index == 0 && (gMapModelContext[index].flags & 1)) {
         
+        // dma
         func_8003BC50(0, mapIndex);
+        
         // set vec3fs on mapStruct8
         func_8003423C(gMapModelContext[index].mapIndex, 0.0f, 0.0f, 0.0f);
         func_80034298(gMapModelContext[index].mapIndex, 1.0f, 1.0f, 1.0f);

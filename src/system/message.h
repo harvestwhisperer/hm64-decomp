@@ -155,6 +155,7 @@ extern bool func_8003DD14(u16);
 extern void func_8003DDF8(u32, u32, u32, u32);     
 extern bool func_8003E77C(u16, u8, u8, u8, u8);                   
 extern bool func_8003EA1C(u16, u8, u8, u8, u8, s32);       
+extern bool func_8003F130(u16);  
 extern bool func_8003F30C(u8, void*, void*, void*, void*); 
 extern bool func_8003F0DC();  
 extern bool func_8003F360(u16, s16, u8);                           
@@ -176,7 +177,7 @@ extern DialogueBox dialogueBoxes[MAX_DIALOGUE_BOXES];
 
 extern void *dialogueIconsTextureStart;
 extern void *dialogueIconsTextureEnd;
-extern void *dialogueIconsPaletteStart;
-extern void *dialogueIconsPaletteEnd;
+extern void *dialogueIconsIndexStart;
+extern void *dialogueIconsIndexEnd;
 
 #endif

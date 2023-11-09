@@ -45,7 +45,7 @@ void mainGameLoopCallback(void) {
 
         // increment clock and handle audio changes
         func_800D7C20();
-        // handle player animation
+        // handle button input and player animation
         func_8006623C();
         setNpcAnimations();
         func_80087CD4();
@@ -475,6 +475,7 @@ void func_80059334(void) {
  
 //INCLUDE_ASM(const s32, "initialize2", func_80059368);
 
+// overlay screen/naming screen transition
 void func_80059368(void) {
     func_8002FB7C();
     func_80046CF4();

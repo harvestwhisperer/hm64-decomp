@@ -42,7 +42,7 @@ void func_800DC750(u8 arg0) {
 
 void func_800DC7BC(u8 index) {
     
-    func_8002B138(D_801194A0[index] + 0x62, &holdableItemsTexture_ROM_START, &holdableItemsTexture_ROM_END, &holdableItemsPalette_ROM_START, &holdableItemsPalette_ROM_END, &holdableItemsTable_ROM_START, &holdableItemsTable_ROM_END, D_801192E0[index][0], D_801192E0[index][1], 0x8028DD50, 0x80290550, 0x80293A50, 0x80293C50, 1, 1);
+    func_8002B138(D_801194A0[index] + 0x62, &holdableItemsTexture_ROM_START, &holdableItemsTexture_ROM_END, &holdableItemsAssetsIndex_ROM_START, &holdableItemsAssetsIndex_ROM_END, &holdableItemsSpritesheetIndex_ROM_START, &holdableItemsSpritesheetIndex_ROM_END, D_801192E0[index][0], D_801192E0[index][1], 0x8028DD50, 0x80290550, 0x80293A50, 0x80293C50, 1, 1);
     func_8002BD90(D_801194A0[index] + 0x62, 1.0f, 1.0f, 1.0f);
     func_8002C7EC(D_801194A0[index] + 0x62, 3);
     func_8002C85C(D_801194A0[index] + 0x62, 0xFF, 0xFF, 0xFF, 0xFF);

@@ -230,6 +230,7 @@ extern bool func_80034EF0(u16, u8, u8, void*, void*, void*, void*, void*, void*,
 extern bool func_80035004(u16 arg0, u16 arg1, u8 arg2, u8 arg3); 
 extern bool func_80035054(u16 mapIndex, u16 bitmapIndex, u16 arg2, f32 arg3, f32 arg4, f32 arg5);
 extern f32 func_80035150(u16, f32, f32);      
+extern u8 func_80036318(u16, f32, f32);
 extern Vec3f* func_80036610(Vec3f*, u16, f32, f32);   
 extern bool func_80036A84(u16);      
 extern void func_80036C08(u32);                                 

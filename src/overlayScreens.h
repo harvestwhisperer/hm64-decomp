@@ -20,15 +20,15 @@ extern u8 D_80237420[31];
 
 extern u32 checkerboardBackgroundTexture_ROM_START;
 extern u32 checkerboardBackgroundTexture_ROM_END;
-extern u32 checkerboardBackgroundPalette_ROM_START;
-extern u32 checkerboardBackgroundPalette_ROM_END;
+extern u32 checkerboardBackgroundIndex_ROM_START;
+extern u32 checkerboardBackgroundIndex_ROM_END;
 
 extern u32 holdableItemsTexture_ROM_START;
 extern u32 holdableItemsTexture_ROM_END;
-extern u32 holdableItemsPalette_ROM_START;
-extern u32 holdableItemsPalette_ROM_END;
-extern u32 holdableItemsTable_ROM_START;
-extern u32 holdableItemsTable_ROM_END;
+extern u32 holdableItemsAssetsIndex_ROM_START;
+extern u32 holdableItemsAssetsIndex_ROM_END;
+extern u32 holdableItemsSpritesheetIndex_ROM_START;
+extern u32 holdableItemsSpritesheetIndex_ROM_END;
 
 extern u16 D_80180714;
 
