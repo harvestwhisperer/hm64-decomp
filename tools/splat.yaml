@@ -23,6 +23,7 @@ options:
   # extensions_path: tools/splat_ext
   libultra_symbols: True
   gfx_ucode: f3dex2
+  disassemble_all: True
 
 segments:
   - name: header
@@ -500,7 +501,7 @@ segments:
       - [0x150120, bin, cutsceneMap25]
       - [0x1510B0, bin, cutsceneMap26]
 
-  # spritesheet format:
+  # ci8 spritesheet format:
   #   sprite1:
   #     header (4 bytes)
   #     width (4 bytes)
@@ -521,7 +522,7 @@ segments:
   #   ...
   #   unknown index
   #   unknown data, varying size
-  #   unknown data2
+  #   sprite to palettes mapping table u8[] --> table[spritesheetEntry] --> paletteIndex
   #   assets index
   #     offset for palette section
   #     offset for unknown section
@@ -550,6 +551,7 @@ segments:
       - [ 0x2C63D0, bin]
       - [ 0x2C63D4, bin]
       - [ 0x2C65D8, bin]
+      - [ 0x2D0280, bin, spriteToPaletteTable]
 
   - name: playerAssetsIndex
     type: bin
@@ -582,14 +584,54 @@ segments:
     type: bin
     start: 0x631400
   
-  # map data: indices, meshes, textures, palettes
-  - name: ranchMap
+  # map format: 
+  #   main index
+  #   unknown data  
+  #   custom vertices?
+  #     index, offsets = 0x28
+  #     data array
+  #       header
+  #       data
+  #   unknown data2, used for float calculations
+  #   unknown data3, possibly grid-to-texture tile map
+  #   shorts used for floats (byte-swapped)
+  #   ci4 textures1
+  #     index
+  #     textures
+  #       header
+  #       dimensions
+  #       texture
+  #   ci4 palettes
+  #     palette1
+  #       header
+  #       palette
+  #   ci4 textures2, 32 x 32, 15-16 elements
+  #     index
+  #     textures
+  #       header
+  #       dimensions
+  #       ci4 data
+  #   unknown data5, arrays of size 0x28
+  #     index
+  #     data1, size 0x28
+  #       header
+  #       data
+  #     data2
+  #   unknown data6
+  #     header
+  #     data: u16 arr[7]
+  #   padding/end, 8 bytes
+  - name: ranchSpringMap
     type: bin
     start: 0x800530
 
-  - name: maps
+  - name: ranchSummerMap
     type: bin
     start: 0x80D9D0
+
+  - name: maps
+    type: bin
+    start: 0x81AE30
 
   # - name: beachMap
   #   type: bin
@@ -600,18 +642,9 @@ segments:
     type: bin
     start: 0x8ED8E0
 
-  # - name: mountain2Map
-  #   type: bin
-  
-  #   start: 0x905920
-
   # - name: mountain1Map
   #   type: bin
   #   vaddr: 0x8026CAF0
-    
- # - name: compressedVec3fs
- #   type: bin
- #   start: 0xB051BC
 
  # - name: farmMap
  #   type: bin
@@ -623,11 +656,23 @@ segments:
   #   start: 0xC64F00
   #   vaddr: 802554D8
 
+  # ci4 format
+  #   spritesheet
+  #     index
+  #     ci4 textures
+  #       header
+  #       dimensions
+  #   palette
+  #     index
+  #     palettes
+  #   unknown asset
+  #     index
+  #     asset
+  #   unknown asset2
   - name: objectSprites
     type: bin
     start: 0xC951A0
 
-  # ci4
   - name: checkerboardBackgroundTexture
     type: bin
     start: 0xCC6D40
@@ -709,11 +754,11 @@ segments:
     type: bin
     start: 0xD86D90
 
-  - name: homeItemsPalette
+  - name: homeItemsAssetsIndex
     type: bin
     start: 0xD8B140
 
-  - name: homeItemsTable
+  - name: homeItemsSpritesheetIndex
     type: bin
     start: 0xD8B160
 
@@ -733,6 +778,11 @@ segments:
     type: bin
     start: 0xD92D50
 
+  # ci4 (same as ci8 layout)
+  #   sprite array
+  #     header
+  #     dimensions, 48 x 46
+  #     texture
   - name: characterDialogueIconsTexture
     type: bin
     start: 0xD92D70
@@ -745,6 +795,7 @@ segments:
     type: bin
     start: 0xDB9EC0
 
+  # ci4
   - name: titleSpritesTexture
     type: bin
     start: 0xDBA100
@@ -777,11 +828,8 @@ segments:
   - name: dialogues
     type: bin
     start: 0xE13800
-    files:
-    - [ 0xE13800, bin, sys.script ]
-    - [ 0xE13920, bin, sys.idx ]
     
-  # related to dialogues/sprites
+  # related to dialogues/conversations
   - name: unknown
     type: bin
     start: 0xE871C0

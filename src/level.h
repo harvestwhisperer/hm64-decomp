@@ -74,6 +74,7 @@
 /* map flags */
 #define INDOORS 1
 #define OUTDOORS 2
+#define HAS_SEASON_MAP 8
 
 extern void func_8006E840(u16);  
 extern void setLevelAudio(u16, u8, u8);     

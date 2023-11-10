@@ -25,15 +25,15 @@ typedef struct {
 // 0x801FD630
 typedef struct {	
 	u32 *unknownAssetIndexPtr; // 0x0
-	void *unknownAssetPtr; // 0x4
+	void *unknownAssetPtr; // 0x4 // compressed/unaligned
 	u32 *spriteSheetIndexPtr; // 0x8
 	u32 *paletteIndexPtr; // 0xC
-	void *unknownAsset2Ptr; // 0x10
+	void *unknownAsset2Ptr; // 0x10 // sprite to palette mapping
 	void *texturePtr; // 0x14
 	void *texture2Ptr; // 0x18
 	void *romTexturePtr; // 0x1C
-	void *unknownAsset3Ptr; // 0x20
-	void *unknownAsset4Ptr; // 0x24
+	void *unknownAsset3Ptr; // 0x20 // set from unknownAssetPtr
+	void *unknownAsset4Ptr; // 0x24 // func_8002CDE8
 	u16 animation; // 0x28
 	Vec3f shrink; // 0x2C
 	Vec3f scale; // 0x38
@@ -42,7 +42,7 @@ typedef struct {
 	Vec4f rgbaCurrent; // 0x60
 	Vec4f rgbaDefault; // 0x70
 	Vec4f normalized; // 0x80
-	u8 unk_90;
+	u8 unk_90; // counter for operation with unknownAssetPtr
 	u8 unk_91;
 	u8 unk_92; // audio
     u16 unk_94;
@@ -61,13 +61,13 @@ typedef struct {
 
 // 0x801584F0
 typedef struct {
-	void *vaddr; /* 0x00 */ // offset indices; data from initalize.c: 80119750-8011BCA0
+	void *vaddr; /* 0x00 */ // offset indices; data from 80119750-8011BCA0, related to animation
 	void *romTextureStart; /* 0x04 */
 	void *romTextureEnd; /* 0x08 */
-	void *romPaletteStart; /* 0x0C */
-	void *romPaletteEnd; /* 0x10 */
-	void *romIndexStart; /* 0x14 */
-	void *romIndexEnd; /* 0x18 */
+	void *romAssetIndexStart; /* 0x0C */
+	void *romAssetIndexEnd; /* 0x10 */
+	void *romSpritesheetIndexStart; /* 0x14 */
+	void *romSpritesheetIndexEnd; /* 0x18 */
 	u16 unk_1C; /* 0x1C */
 	u16 unk_1E; /* 0x1E */
 	u8 collisionBufferX; /* 0x20 */
@@ -78,12 +78,12 @@ typedef struct {
 
 // 0x801FC160
 typedef struct {
-	void *ptr_00; // 00
-	void *ptr_04; // 04
-	void *ptr_08;  // 08
-	void *ptr_0C; // 0C
-	void *ptr_10; // 10
-	void *ptr_14; // 14
+	void *vaddrTexture1; // 00
+	void *vaddrTexture2; // 04
+	void *vaddrPalette;  // 08
+	void *vaddrUnknownAsset; // 0C
+	void *vaddrTextureToPaletteLookup; // 10
+	void *vaddrSpritesheetIndex; // 14
 	Vec3f unk_18; // 18-24
 	u16 unk_24; // 24
 	u8 unk_26; // 26
@@ -107,6 +107,7 @@ typedef struct {
 	u16 flags; // 0x6A
 } RenderedSprite;
 
+// 0x801F7110
 typedef struct {
 	void *timg; // 00
 	u16 *pal;  // 04
@@ -126,15 +127,17 @@ typedef struct {
 	u16 flags; //56
 } Bitmap;
 
+// 0x8016FFF8
+// ci4 asset layout
 typedef struct {
 	void *romTextureStart;
 	void *romTextureEnd;
-	void *romPaletteStart;
-	void *romPaletteEnd;
-	void *vaddr1;
-	void *vaddr2;
-	void *vaddr3;
-	void *vaddr4;
+	void *romAssetIndexStart;
+	void *romAssetIndexEnd;
+	void *vaddrSpritesheet;
+	void *vaddrPalette;
+	void *vaddrUnknownAssetSheet;
+	void *vaddrUnknownAsset2;
 	u16 unk_20;
 	u16 unk_22;
 } Shadow;
@@ -197,8 +200,8 @@ extern bool func_8002B6B8(u16 index);
 extern void func_8002B710(void);
 extern bool func_8002B80C(u16 index, u16 offset, u8 arg2);
 extern bool func_8002BAD8(u16);   
-extern void func_8002BB30(u16, u16);
-extern void func_8002BB88(u16); 
+extern bool func_8002BB30(u16);
+extern bool func_8002BB88(u16); 
 extern bool func_8002BD0C(u16 index, f32 x, f32 y, f32 z);  
 extern bool func_8002BD90(u16, f32, f32, f32);                                                                                                        
 extern bool func_8002BE98(u16, f32, f32, f32);    

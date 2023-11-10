@@ -223,6 +223,8 @@ void func_800E1A94(void) {
             func_8003F54C(0, 16.0f, 52.0f, 0);
             func_8003F5D0(0, 0xC, 2);
             func_8003F630(0, 0, 2);
+            // 0x802FF000 = 
+            // 0x8030A000 = font palette vaddr
             func_8003F464(0, 0xE, 0xE, (void*)0x802FF000, (void*)0x8030A000);
             func_8003F360(0, ~(1 | 2), 2);
             func_8003F690(0, 0xFF, 0, 0);

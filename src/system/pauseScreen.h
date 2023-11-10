@@ -5,15 +5,16 @@
 
 #define MAX_PAUSE_SCREEN_SPRITES 16
 
+// ci4 asset layout
 typedef struct {
-    void *romAddr1;
-    void *romAddr2;
-    void *romAddr3;
-    void *romAddr4;
-    void *vaddr1;
-    void *vaddr2;
-    void *vaddr3;
-    void *vaddr4;
+    void *romSpritesheetStart;
+    void *romSpritesheetEnd;
+    void *romAssetIndexStart;
+    void *romAssetIndexEnd;
+    void *vaddrSpritesheet;
+    void *vaddrPalette;
+    void *vaddrUnknownAssetSheet;
+    void *vaddrUnknownAsset2;
     u32 unk_20;
     u16 specialItemPages;
     u8 unk_26;

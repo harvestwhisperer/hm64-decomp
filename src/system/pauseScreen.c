@@ -43,14 +43,14 @@ bool func_80045E20(u16 index, u16 arg1, void *arg2, void *arg3, void *arg4, void
         
             result = 1;
         
-            pauseScreenSprites[index].romAddr1 = arg2;
-            pauseScreenSprites[index].romAddr2 = arg3;
-            pauseScreenSprites[index].romAddr3 = arg4;
-            pauseScreenSprites[index].romAddr4 = arg5;
-            pauseScreenSprites[index].vaddr1 = arg6;
-            pauseScreenSprites[index].vaddr2 = arg7;
-            pauseScreenSprites[index].vaddr3 = arg8;
-            pauseScreenSprites[index].vaddr4 = arg9;
+            pauseScreenSprites[index].romSpritesheetStart = arg2;
+            pauseScreenSprites[index].romSpritesheetEnd = arg3;
+            pauseScreenSprites[index].romAssetIndexStart = arg4;
+            pauseScreenSprites[index].romAssetIndexEnd = arg5;
+            pauseScreenSprites[index].vaddrSpritesheet = arg6;
+            pauseScreenSprites[index].vaddrPalette = arg7;
+            pauseScreenSprites[index].vaddrUnknownAssetSheet = arg8;
+            pauseScreenSprites[index].vaddrUnknownAsset2 = arg9;
             pauseScreenSprites[index].unk_20 = argA;
             pauseScreenSprites[index].specialItemPages = argB;
             pauseScreenSprites[index].unk_26 = argC;
@@ -89,17 +89,17 @@ bool func_80045F5C(u16 index, u32 arg1, u8 arg2, u16 flag) {
             do {
                 
                 func_8002B138(pauseScreenSprites[index].unk_38 + count, 
-                    pauseScreenSprites[index].romAddr1, 
-                    pauseScreenSprites[index].romAddr2, 
-                    pauseScreenSprites[index].romAddr3, 
-                    pauseScreenSprites[index].romAddr4, 
+                    pauseScreenSprites[index].romSpritesheetStart, 
+                    pauseScreenSprites[index].romSpritesheetEnd, 
+                    pauseScreenSprites[index].romAssetIndexStart, 
+                    pauseScreenSprites[index].romAssetIndexEnd, 
                     0, 
                     0, 
-                    pauseScreenSprites[index].vaddr1, 
+                    pauseScreenSprites[index].vaddrSpritesheet, 
                     0, 
-                    pauseScreenSprites[index].vaddr2, 
-                    pauseScreenSprites[index].vaddr3, 
-                    pauseScreenSprites[index].vaddr4, 
+                    pauseScreenSprites[index].vaddrPalette, 
+                    pauseScreenSprites[index].vaddrUnknownAssetSheet, 
+                    pauseScreenSprites[index].vaddrUnknownAsset2, 
                     pauseScreenSprites[index].unk_20, 
                     0, 
                     0);
@@ -301,28 +301,30 @@ bool func_80046504(u16 spriteIndex) {
 bool func_80046650(u16 spriteIndex, u8 arg1, u8 arg2) {
 
     u8 result = 0;
-    u16 temp;
+    u16 tempIndex;
     
     if (spriteIndex < MAX_PAUSE_SCREEN_SPRITES) {
 
         if (pauseScreenSprites[spriteIndex].flags & 1) {
 
-            temp = pauseScreenSprites[spriteIndex].unk_38 + arg2; 
+            // global sprite index
+            tempIndex = pauseScreenSprites[spriteIndex].unk_38 + arg2; 
             
             // adjust Vec3fs
-            func_8002BD0C(temp, pauseScreenSprites[spriteIndex].unk_28.x - pauseScreenSprites[spriteIndex].unk_27 * arg2, pauseScreenSprites[spriteIndex].unk_28.y, pauseScreenSprites[spriteIndex].unk_28.z);
-            func_8002BD90(temp, 1.0f, 1.0f, 1.0f);
-            func_8002BE14(temp, 0, 0, 0);
+            func_8002BD0C(tempIndex, pauseScreenSprites[spriteIndex].unk_28.x - pauseScreenSprites[spriteIndex].unk_27 * arg2, pauseScreenSprites[spriteIndex].unk_28.y, pauseScreenSprites[spriteIndex].unk_28.z);
+            func_8002BD90(tempIndex, 1.0f, 1.0f, 1.0f);
+            func_8002BE14(tempIndex, 0, 0, 0);
             
-            func_8002C680(temp, 2, 2);
+            func_8002C680(tempIndex, 2, 2);
 
             if (pauseScreenSprites[spriteIndex].flags & 4) {
-                func_8002C7EC(temp, 3);
+                func_8002C7EC(tempIndex, 3);
             } else {
-                func_8002C7EC(temp, 2);
+                func_8002C7EC(tempIndex, 2);
             }
 
-            func_8002B80C(temp, pauseScreenSprites[spriteIndex].specialItemPages, pauseScreenSprites[spriteIndex].unk_26 + arg1);
+            // animation
+            func_8002B80C(tempIndex, pauseScreenSprites[spriteIndex].specialItemPages, pauseScreenSprites[spriteIndex].unk_26 + arg1);
             
             result = 1;
         }

@@ -7,6 +7,9 @@
 u8 func_8002B8E0(u16, u8, void*);
 u8* func_8002CD34(u16 arg0, void* arg1);
 
+void func_8002CC84(u16*, u32*);             \
+u16* func_8002CD4C(u16, u16*);   
+
 // bss
 extern Sprite globalSprites[MAX_ACTIVE_SPRITES];
 
@@ -79,21 +82,22 @@ INCLUDE_ASM(const s32, "system/globalSprites", func_8002B7A0);
 
 //INCLUDE_ASM(const s32, "system/globalSprites", func_8002B80C);
 
-bool func_8002B80C(u16 index, u16 offset, u8 arg2) {
+bool func_8002B80C(u16 spriteIndex, u16 offset, u8 arg2) {
 
     u32 *ptr;
     bool result = 0;
     
-    if (index < MAX_ACTIVE_SPRITES) {
+    if (spriteIndex < MAX_ACTIVE_SPRITES) {
 
-        if (globalSprites[index].flags2 & 1) {
+        if (globalSprites[spriteIndex].flags2 & 1) {
             
-            if (globalSprites[index].unknownAssetIndexPtr[offset] != globalSprites[index].unknownAssetIndexPtr[offset+1]) {
+            if (globalSprites[spriteIndex].unknownAssetIndexPtr[offset] != globalSprites[spriteIndex].unknownAssetIndexPtr[offset+1]) {
 
-                result = func_8002B8E0(index, arg2, func_8002CD34(offset, globalSprites[index].unknownAssetIndexPtr));
+                // func_8002CD34(offset, globalSprites[spriteIndex].unknownAssetIndexPtr) = get address + offset for unknown asset ptr based on sprite index
+                result = func_8002B8E0(spriteIndex, arg2, func_8002CD34(offset, globalSprites[spriteIndex].unknownAssetIndexPtr));
                 
-                globalSprites[index].animationCounter1 = 0xFF;
-                globalSprites[index].animationCounter2 = 0xFF;
+                globalSprites[spriteIndex].animationCounter1 = 0xFF;
+                globalSprites[spriteIndex].animationCounter2 = 0xFF;
            
             }
         }
@@ -102,7 +106,58 @@ bool func_8002B80C(u16 index, u16 offset, u8 arg2) {
     return result;   
 }
 
-INCLUDE_ASM(const s32, "system/globalSprites", func_8002B8E0);
+//INCLUDE_ASM(const s32, "system/globalSprites", func_8002B8E0);
+
+bool func_8002B8E0(u16 index, u8 arg1, void* arg2) {
+
+    bool result = 0;
+    u16 *temp;
+    
+    if (index < MAX_ACTIVE_SPRITES && globalSprites[index].flags2 & 1 && !(globalSprites[index].flags2 & 2)) {
+
+        globalSprites[index].unknownAssetPtr = arg2;
+
+        globalSprites[index].unk_91 = 0;
+        globalSprites[index].unk_92 = 0;
+
+        globalSprites[index].flags2 &= ~0x40;
+        globalSprites[index].flags2 |= 2;
+
+        switch (arg1) {
+            case 0xFF:
+                globalSprites[index].unk_90 = 0;
+                globalSprites[index].flags2 &= ~0x10;
+                globalSprites[index].flags2 |= 8;
+                break;
+            case 0xFE:
+                globalSprites[index].unk_90 = 0;
+                globalSprites[index].flags2 |= 8 | 0x10;
+                break;
+            case 0xFD:
+                globalSprites[index].unk_90 = 0;
+                globalSprites[index].flags2 |= 8 | 0x800;
+                break;
+            default:
+                globalSprites[index].unk_90 = arg1;
+                globalSprites[index].flags2 &= ~(8 | 0x10);
+                break;
+        }
+
+        // update animation from byteswapped table
+        func_8002CC84(&globalSprites[index].animation, globalSprites[index].unknownAssetPtr);
+
+        temp = func_8002CD4C(globalSprites[index].unk_90, globalSprites[index].unknownAssetPtr+8);
+        
+        globalSprites[index].unknownAsset3Ptr = temp;
+        globalSprites[index].unknownAsset4Ptr = temp + 2;
+
+        result = 1;
+        
+    }
+
+    return result;
+    
+}
 
 //INCLUDE_ASM(const s32, "system/globalSprites", func_8002BAD8);
 
@@ -122,9 +177,41 @@ bool func_8002BAD8(u16 index) {
 
 }
 
-INCLUDE_ASM(const s32, "system/globalSprites", func_8002BB30);
+//INCLUDE_ASM(const s32, "system/globalSprites", func_8002BB30);
 
-INCLUDE_ASM(const s32, "system/globalSprites", func_8002BB88);
+bool func_8002BB30(u16 index) {
+
+    bool result = 0;
+
+    if (index < MAX_ACTIVE_SPRITES) {
+
+        if (globalSprites[index].flags2 & 1) {
+            globalSprites[index].flags2 &= ~0x20;
+            result = 1;
+        }
+    }
+    
+    return result;
+
+}
+
+//INCLUDE_ASM(const s32, "system/globalSprites", func_8002BB88);
+
+bool func_8002BB88(u16 index) {
+
+    bool result = 0;
+
+    if (index < MAX_ACTIVE_SPRITES) {
+
+        if (globalSprites[index].flags2 & 1) {
+            globalSprites[index].flags2 |= 0x20;
+            result = 1;
+        }
+    }
+    
+    return result;
+
+}
 
 //INCLUDE_ASM(const s32, "system/globalSprites", func_8002BBE0);
 
@@ -156,7 +243,22 @@ bool func_8002BBE0(u16 index, u8 arg1, u8 arg2) {
     
 }
 
-INCLUDE_ASM(const s32, "system/globalSprites", func_8002BCC8);
+//INCLUDE_ASM(const s32, "system/globalSprites", func_8002BCC8);
+
+bool func_8002BCC8(u16 index) {
+
+    bool result = 0;
+
+    if (index < MAX_ACTIVE_SPRITES) {
+
+        if (globalSprites[index].flags2 & 1) {
+            result = globalSprites[index].flags2 & 0x40;;
+        }
+    }
+    
+    return result;
+
+}
 
 //INCLUDE_ASM(const s32, "system/globalSprites", func_8002BD0C);
 
@@ -222,8 +324,29 @@ bool func_8002BE14(u16 index, f32 x, f32 y, f32 z) {
     
 }
 
-INCLUDE_ASM(const s32, "system/globalSprites", func_8002BE98);
+//INCLUDE_ASM(const s32, "system/globalSprites", func_8002BE98);
 
+bool func_8002BE98(u16 index, f32 x, f32 y, f32 z) {
+
+    bool result = 0;
+    
+    if (index < MAX_ACTIVE_SPRITES) {
+        
+        if (globalSprites[index].flags2 & 1) {
+
+            globalSprites[index].shrink.x += x;
+            globalSprites[index].shrink.y += y;
+            globalSprites[index].shrink.z += z;
+                
+            result = 1;
+            
+        }   
+    }
+    
+    return result;
+}
+
+// rgba
 INCLUDE_ASM(const s32, "system/globalSprites", func_8002BF4C);
 
 //INCLUDE_ASM(const s32, "system/globalSprites", func_8002C000);
@@ -545,7 +668,27 @@ bool func_8002CC44(u16 index) {
     
 }
 
+// arg0 = ptr to animation index on sprite struct
+// arg1 = ptr to unknown asset (byte swapped u16)
+// 16 bit swap
+#ifdef PERMUTER
+void func_8002CC84(u16* arg0, u16* arg1) {
+
+    u16 arr[2];
+    
+    u16 temp;
+    u16 temp2;
+    u16 temp3;
+
+    temp = (arg1[2] << 8);
+    temp2 = (arg1[2] >> 8);
+    
+    *arg0 = temp | temp2;
+
+}
+#else
 INCLUDE_ASM(const s32, "system/globalSprites", func_8002CC84);
+#endif
 
 INCLUDE_ASM(const s32, "system/globalSprites", func_8002CCA8);
 
@@ -553,9 +696,21 @@ INCLUDE_ASM(const s32, "system/globalSprites", func_8002CCDC);
 
 //INCLUDE_ASM(const s32, "system/globalSprites", func_8002CD34);
 
+// unknown sprite asset index lookup
+u8* func_8002CD34(u16 arg0, void* arg1) {
+
+    u32 *arr = (u32*)arg1;
+    
+    return (u8*)(arg1 + arr[arg0]);
+    
+}
+
+// alternate
+/*
 u8* func_8002CD34(u16 arg0, void* arg1) {
     return (u8*)(arg1 + *(u32*)(arg1 + arg0*4));
 }
+*/
 
 INCLUDE_ASM(const s32, "system/globalSprites", func_8002CD4C);
 
@@ -600,4 +755,5 @@ u32 func_8002CDB4(u16 arg0, u32 arg1) {
 
 INCLUDE_ASM(const s32, "system/globalSprites", func_8002CDE8);
 
+// loop through all sprites and update (rgba, animation)
 INCLUDE_ASM(const s32, "system/globalSprites", func_8002D3D4);

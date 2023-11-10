@@ -2374,7 +2374,7 @@ u16 func_800A7DFC(void) {
         // sick day
         if (!set && checkFatigueLevel() == 3) {
             
-            gPlayer.fatigue[0] = 0;
+            gPlayer.fatigue.counter = 0;
             
             setEntrance(0xA);
 
