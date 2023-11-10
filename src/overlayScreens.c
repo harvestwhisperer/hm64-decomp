@@ -451,7 +451,7 @@ void func_800B7FC8(u8 arg0, u8 arg1) {
 void func_800B8018(void) {
     
     func_800593EC();
-    func_8002B138(0x80, &checkerboardBackgroundTexture_ROM_START, &checkerboardBackgroundTexture_ROM_END, &checkerboardBackgroundPalette_ROM_START, &checkerboardBackgroundPalette_ROM_END, 0, 0, 0x802DE5C0, 0, 0x802E0BC0, 0x802E0CC0, 0x802E0DC0, 0, 0, 0);
+    func_8002B138(0x80, &checkerboardBackgroundTexture_ROM_START, &checkerboardBackgroundTexture_ROM_END, &checkerboardBackgroundIndex_ROM_START, &checkerboardBackgroundIndex_ROM_END, 0, 0, 0x802DE5C0, 0, 0x802E0BC0, 0x802E0CC0, 0x802E0DC0, 0, 0, 0);
     func_8002BD0C(0x80, 0, 0, 0);
     func_8002BD90(0x80, 2.0f, 2.0f, 1.0f);
     func_8002CB24(0x80, 1);
@@ -473,7 +473,7 @@ void func_800B8018(void) {
 void func_800B815C(void) {
 
     func_800593EC();
-    func_8002B138(0x80, &checkerboardBackgroundTexture_ROM_START, &checkerboardBackgroundTexture_ROM_END, &checkerboardBackgroundPalette_ROM_START, &checkerboardBackgroundPalette_ROM_END, NULL, NULL, (void*)0x802DE5C0, NULL, (void*)0x802E0BC0, (void*)0x802E0CC0, (void*)0x802E0DC0, NULL, NULL, 0);
+    func_8002B138(0x80, &checkerboardBackgroundTexture_ROM_START, &checkerboardBackgroundTexture_ROM_END, &checkerboardBackgroundIndex_ROM_START, &checkerboardBackgroundIndex_ROM_END, NULL, NULL, (void*)0x802DE5C0, NULL, (void*)0x802E0BC0, (void*)0x802E0CC0, (void*)0x802E0DC0, NULL, NULL, 0);
     func_8002BD0C(0x80, 0.0f, 0.0f, 0.0f);
     func_8002BD90(0x80, 2.0f, 2.0f, 1.0f);
     func_8002CB24(0x80, 1);
@@ -496,7 +496,7 @@ void func_800B815C(void) {
 void func_800B82AC(void) {
 
     func_800593EC();
-    func_8002B138(0x80, &checkerboardBackgroundTexture_ROM_START, &checkerboardBackgroundTexture_ROM_END, &checkerboardBackgroundPalette_ROM_START, &checkerboardBackgroundPalette_ROM_END, NULL, NULL, (void*)0x802DE5C0, NULL, (void*)0x802E0BC0, (void*)0x802E0CC0, (void*)0x802E0DC0, NULL, NULL, 0);
+    func_8002B138(0x80, &checkerboardBackgroundTexture_ROM_START, &checkerboardBackgroundTexture_ROM_END, &checkerboardBackgroundIndex_ROM_START, &checkerboardBackgroundIndex_ROM_END, NULL, NULL, (void*)0x802DE5C0, NULL, (void*)0x802E0BC0, (void*)0x802E0CC0, (void*)0x802E0DC0, NULL, NULL, 0);
     func_8002BD0C(0x80, 0.0f, 0.0f, 0.0f);
     func_8002BD90(0x80, 2.0f, 2.0f, 1.0f);
     func_8002CB24(0x80, 1);
@@ -519,7 +519,7 @@ void func_800B82AC(void) {
 void func_800B83F0(void) {
 
     func_800593EC();
-    func_8002B138(0x80, &checkerboardBackgroundTexture_ROM_START, &checkerboardBackgroundTexture_ROM_END, &checkerboardBackgroundPalette_ROM_START, &checkerboardBackgroundPalette_ROM_END, NULL, NULL, (void*)0x802DE5C0, NULL, (void*)0x802E0BC0, (void*)0x802E0CC0, (void*)0x802E0DC0, NULL, NULL, 0);
+    func_8002B138(0x80, &checkerboardBackgroundTexture_ROM_START, &checkerboardBackgroundTexture_ROM_END, &checkerboardBackgroundIndex_ROM_START, &checkerboardBackgroundIndex_ROM_END, NULL, NULL, (void*)0x802DE5C0, NULL, (void*)0x802E0BC0, (void*)0x802E0CC0, (void*)0x802E0DC0, NULL, NULL, 0);
     func_8002BD0C(0x80, 0.0f, 0.0f, 0.0f);
     func_8002BD90(0x80, 2.0f, 2.0f, 1.0f);
     func_8002CB24(0x80, 1);
@@ -545,7 +545,7 @@ void func_800B83F0(void) {
 void func_800B8554(void) {
     
     func_800593EC();
-    func_8002B138(0x80, &checkerboardBackgroundTexture_ROM_START, &checkerboardBackgroundTexture_ROM_END, &checkerboardBackgroundPalette_ROM_START, &checkerboardBackgroundPalette_ROM_END, NULL, NULL, (void*)0x802DE5C0, NULL, (void*)0x802E0BC0, (void*)0x802E0CC0, (void*)0x802E0DC0, NULL, NULL, 0);
+    func_8002B138(0x80, &checkerboardBackgroundTexture_ROM_START, &checkerboardBackgroundTexture_ROM_END, &checkerboardBackgroundIndex_ROM_START, &checkerboardBackgroundIndex_ROM_END, NULL, NULL, (void*)0x802DE5C0, NULL, (void*)0x802E0BC0, (void*)0x802E0CC0, (void*)0x802E0DC0, NULL, NULL, 0);
     func_8002BD0C(0x80, 0.0f, 0.0f, 0.0f);
     func_8002BD90(0x80, 2.0f, 2.0f, 1.0f);
     func_8002CB24(0x80, 1);

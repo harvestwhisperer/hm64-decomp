@@ -896,9 +896,10 @@ resetSpriteCounter = 0x80029284;
 initializeBitmaps = 0x80029B30;
 initializeNpcSpriteStructs = 0x8002DC70;
 setSpriteAnimation = 0x8002F3F0;
+setSpriteDirection = 0x8002F684;
 setSpriteCollisionBuffers = 0x8002FF9C;
 
-intializeTileContext = 0x8003B870;
+initializeMapContext = 0x8003B870;
 setMapModelAddresses = 0x8003B9DC;
 
 initializeAudio = 0x8003CDC0;
@@ -935,6 +936,9 @@ setSpecialDialogues = 0x8005A708;
 resetDailyBits = 0x8005ABBC;
 adjustValue = 0x8005AE64;
 
+showTextBox = 0x8005AE8C;
+showDialogueBox = 0x8005AF94;
+
 handleDailyShipment = 0x80060E58;
 setFestivalDailyBits = 0x8006096C;
 setWifeNameString = 0x800611E0;
@@ -959,7 +963,6 @@ checkSpecialDialogueBit = 0x80065210;
 toggleReadLetterBit = 0x80065270;
 checkMailRead = 0x800652A8;
 setMail = 0x800652D4;
-
 
 getSumNpcAffection = 0x80065774;
 setupPlayerSprite = 0x800657D0;
@@ -1036,11 +1039,11 @@ setSeasonName = 0x800D835C;
 setGlobalSeasonName = 0x800D83F8;
 
 tvMainLoopCallback = 0x800D93CC;
-
 countPinkCatMintFlowersFarm = 0x800DC0F8;
 countPinkCatMintFlowersGreenhouse = 0x800DC170;
 setForecast = 0x800DC4F0;
 setWeatherLighting = 0x800DC694;
+initializeTitleScreen = 0x800DE3C0;
 loadDogTitleSprite = 0x800DFF64;
 
 titleScreenMainLoopCallback = 0x800E00A4;
@@ -1130,7 +1133,7 @@ gDayOfMonth = 0x80158260;
 
 spriteAddresses = 0x80158268;
 
-npcSprites = 0x801584F0;
+characterSprites = 0x801584F0;
 gTotalGrassTiles = 0x801654F0;
 farmFieldTiles = 0x8016F500;
 annCliffBabyAge = 0x8016F6E3;
@@ -1155,6 +1158,9 @@ gBaseMapIndex = 0x80170458;
 
 tvContext = 0x80170270;
 annAndCliffNewlywedCounter = 0x80170444;
+
+dialogueIcons = 0x801806D0;
+
 cutsceneMaps = 0x801808B0;
 
 nuContDataLockKey = 0x80181B14;
@@ -1217,6 +1223,8 @@ mus_default_bank = 0x801D6F28;
 gYear = 0x801F6F30;
 
 gCamera = 0x801F6F38;
+
+bitmaps = 0x801F7110;
 
 gDayOfWeek = 0x801FAD90;
 

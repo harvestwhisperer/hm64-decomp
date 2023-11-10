@@ -111,11 +111,11 @@ typedef struct {
 } UnknownMapStruct5;
 
 // D_80141C98
-// map object sprites
+// map object or tile sprite info
 typedef struct {
-    void *vaddr1; // 0x98
-    void *vaddr2; // 0x9C
-    void *vaddr3; // 0xA0
+    void *textureIndex; // 0x98
+    void *paletteIndex; // 0x9C
+    void *spriteToPaletteIndex; // 0xA0
     u8 unk_10; // 0xA4
     u8 unk_11; // 0xA5
     u8 unk_12; // 0xA6
@@ -140,8 +140,8 @@ typedef struct {
 typedef struct {
     void *timg; // 0x0
     void *pal; // 0x4
-    u32 height; // 0xC
     u32 width; // 0x8
+    u32 height; // 0xC
     u32 fmt; // 0x10
     u16 spriteNumber; // 0x14
     u16 size; // 0x16
@@ -161,7 +161,6 @@ typedef struct {
 
 // 0x1A608
 // D_80158248
-// cast to Bitmap
 typedef struct {
     f32 unk_0; // 0x48
     f32 unk_4; // 0x4C
@@ -179,7 +178,7 @@ typedef struct  {
     // ptrs set from offset array at 80255000
     void *unk_0; // ptr to array of offsets + vertex info structs
     u8 *unk_4; // u8 array used for float calculations
-    u8 **unk_8;
+    u8 **unk_8; // seems like grid to tile mapping
     u8 *unk_C; // ptr to compressed Vec3fs bank
     void *unk_10; // index + tile spritesheets
     void *unk_14; // index + tile palette
@@ -230,6 +229,7 @@ extern bool func_80034EF0(u16, u8, u8, void*, void*, void*, void*, void*, void*,
 extern bool func_80035004(u16 arg0, u16 arg1, u8 arg2, u8 arg3); 
 extern bool func_80035054(u16 mapIndex, u16 bitmapIndex, u16 arg2, f32 arg3, f32 arg4, f32 arg5);
 extern f32 func_80035150(u16, f32, f32);      
+extern u8 func_80036318(u16, f32, f32);
 extern Vec3f* func_80036610(Vec3f*, u16, f32, f32);   
 extern bool func_80036A84(u16);      
 extern void func_80036C08(u32);                                 

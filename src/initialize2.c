@@ -45,7 +45,7 @@ void mainGameLoopCallback(void) {
 
         // increment clock and handle audio changes
         func_800D7C20();
-        // handle player animation
+        // handle button input and player animation
         func_8006623C();
         setNpcAnimations();
         func_80087CD4();
@@ -102,7 +102,7 @@ inline void func_80055F08(u16 cutsceneIndex, u16 entranceIndex, u8 arg2) {
 
 }
 
-// to-do: use switch statements
+// fix with switch statements
 #ifdef PERMUTER
 void func_80056030(u8 arg0) {
     
@@ -475,17 +475,24 @@ void func_80059334(void) {
  
 //INCLUDE_ASM(const s32, "initialize2", func_80059368);
 
+// overlay screen/naming screen transition
 void func_80059368(void) {
+
     func_8002FB7C();
     func_80046CF4();
     func_8002FCB4(0, 1);
     func_80065AA0();
+
+    // load current map
     func_8003BC50(0, gMapWithSeasonIndex);
     setLevelGraphicsData(gBaseMapIndex);
+    
     setPlayerAction(0xFE, 0);
     func_8006623C();
-    setMainLoopCallbackFunctionIndex(1);
+    
+    setMainLoopCallbackFunctionIndex(MAIN_GAME);
     setPlayerAction(0, 0);
+
 }
 
 //INCLUDE_ASM(const s32, "initialize2", func_800593EC);

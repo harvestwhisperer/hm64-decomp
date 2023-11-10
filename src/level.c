@@ -21,19 +21,20 @@ extern u8 previousEntranceIndex;
 extern u8 gEntranceIndex;
 extern u8 gBaseMapIndex;
 extern u8 gMapWithSeasonIndex;
+// rotation
 extern u8 D_8021E6D0;
 
 extern u32 homeItemsTexture_ROM_START;
 extern u32 homeItemsTexture_ROM_END;
-extern u32 homeItemsPalette_ROM_START;
-extern u32 homeItemsPalette_ROM_END;
-extern u32 homeItemsTable_ROM_START;
-extern u32 homeItemsTable_ROM_END;
+extern u32 homeItemsAssetsIndex_ROM_START;
+extern u32 homeItemsAssetsIndex_ROM_END;
+extern u32 homeItemsSpritesheetIndex_ROM_START;
+extern u32 homeItemsSpritesheetIndex_ROM_END;
 
 extern u32 groundObjectsTexture_ROM_START;
 extern u32 groundObjectsTexture_ROM_END;
-extern u32 groundObjectsPalette_ROM_START;
-extern u32 groundObjectsPalette_ROM_END;
+extern u32 groundObjectsIndex_ROM_START;
+extern u32 groundObjectsIndex_ROM_END;
 
 // rodata
 extern u8 levelFlags[];
@@ -43,7 +44,23 @@ extern u8 D_80114280[];
 extern u8 D_801142E0[4][4];
 // song indices for level
 extern u8 D_801144C0[4][8];
+
+// exit to map indices
 extern u8 D_801147C0[];
+
+/*
+u8 D_801147C0[] = {
+    FARM, FARM, FARM, FARM,
+    FARM, FARM, FARM, FARM,
+    FARM, FARM, HOUSE, HOUSE,
+    HOUSE, BATHROOM, BATHROOM, KITCHEN,
+    KITCHEN, BARN, COOP, GREENHOUSE,
+    ROAD, ROAD, ROAD, ROAD,
+    ROAD, ROAD, MOUNTAIN_1, MOUNTAIN_1,
+    ...
+}
+*/
+
 extern u8 D_8011FB28[];
 extern Vec D_8011FB70[];
 
@@ -60,22 +77,24 @@ void setEntrance(u16 index) {
 
 //INCLUDE_ASM(const s32, "level", func_8006E840);
 
-void func_8006E840(u16 arg0) {
+void func_8006E840(u16 entranceIndex) {
 
     if (gBaseMapIndex != 0xFF) {
         func_8003C504(0);
     }
 
     previousMapIndex = gBaseMapIndex;
-    gBaseMapIndex = D_801147C0[arg0];
+    gBaseMapIndex = D_801147C0[entranceIndex];
     gMapWithSeasonIndex = gBaseMapIndex;
 
-    if (getLevelFlags(gMapWithSeasonIndex) & 8) {
-        gMapWithSeasonIndex = (gSeason + 0xFF) + gMapWithSeasonIndex;
+    if (getLevelFlags(gMapWithSeasonIndex) & HAS_SEASON_MAP) {
+        gMapWithSeasonIndex = gMapWithSeasonIndex + (gSeason - 1);
     }
 
+    // load map
     func_8003BB14(0, gMapWithSeasonIndex);
 
+    // set rotation
     if (gBaseMapIndex == FARM) {
         func_8003C084(0, (D_80114280[gMapWithSeasonIndex] + D_8021E6D0) % 8);
     } else {
@@ -202,53 +221,53 @@ void func_8006EC58(u16 mapIndex) {
         case FARM:
             D_801FD624 = 0xE;
             D_801C3F35 = 0xB;
-            func_80034EF0(0, 0xE, 0xB, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &groundObjectsTexture_ROM_START, &groundObjectsTexture_ROM_END, &groundObjectsPalette_ROM_START, &groundObjectsPalette_ROM_END, 0x60); 
+            func_80034EF0(0, 0xE, 0xB, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &groundObjectsTexture_ROM_START, &groundObjectsTexture_ROM_END, &groundObjectsIndex_ROM_START, &groundObjectsIndex_ROM_END, 0x60); 
             break;
         case GREENHOUSE:
             D_801FD624 = 1;
             D_801C3F35 = 1;
-            func_80034EF0(0, 1, 1, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &groundObjectsTexture_ROM_START, &groundObjectsTexture_ROM_END, &groundObjectsPalette_ROM_START, &groundObjectsPalette_ROM_END, 2); 
+            func_80034EF0(0, 1, 1, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &groundObjectsTexture_ROM_START, &groundObjectsTexture_ROM_END, &groundObjectsIndex_ROM_START, &groundObjectsIndex_ROM_END, 2); 
             break;            
         case MOUNTAIN_1:
             D_801FD624 = 5;
             D_801C3F35 = 0;
-            func_80034EF0(0, 5, 0, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &groundObjectsTexture_ROM_START, &groundObjectsTexture_ROM_END, &groundObjectsPalette_ROM_START, &groundObjectsPalette_ROM_END, 0); 
+            func_80034EF0(0, 5, 0, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &groundObjectsTexture_ROM_START, &groundObjectsTexture_ROM_END, &groundObjectsIndex_ROM_START, &groundObjectsIndex_ROM_END, 0); 
             break;    
         case MOUNTAIN_2:
             D_801FD624 = 3;
             D_801C3F35 = 5;
-            func_80034EF0(0, 3, 5, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &groundObjectsTexture_ROM_START, &groundObjectsTexture_ROM_END, &groundObjectsPalette_ROM_START, &groundObjectsPalette_ROM_END, 0); 
+            func_80034EF0(0, 3, 5, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &groundObjectsTexture_ROM_START, &groundObjectsTexture_ROM_END, &groundObjectsIndex_ROM_START, &groundObjectsIndex_ROM_END, 0); 
             break;  
         case TOP_OF_MOUNTAIN_1:
             D_801FD624 = 5;
             D_801C3F35 = 0;
-            func_80034EF0(0, 5, 0, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &groundObjectsTexture_ROM_START, &groundObjectsTexture_ROM_END, &groundObjectsPalette_ROM_START, &groundObjectsPalette_ROM_END, 0); 
+            func_80034EF0(0, 5, 0, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &groundObjectsTexture_ROM_START, &groundObjectsTexture_ROM_END, &groundObjectsIndex_ROM_START, &groundObjectsIndex_ROM_END, 0); 
             break;  
         case MOON_MOUNTAIN:
             D_801FD624 = 5;
             D_801C3F35 = 0;
-            func_80034EF0(0, 5, 0, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &groundObjectsTexture_ROM_START, &groundObjectsTexture_ROM_END, &groundObjectsPalette_ROM_START, &groundObjectsPalette_ROM_END, 0); 
+            func_80034EF0(0, 5, 0, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &groundObjectsTexture_ROM_START, &groundObjectsTexture_ROM_END, &groundObjectsIndex_ROM_START, &groundObjectsIndex_ROM_END, 0); 
             break;                            
         case POND:
             D_801FD624 = 5;
             D_801C3F35 = 0;
-            func_80034EF0(0, 5, 0, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &groundObjectsTexture_ROM_START, &groundObjectsTexture_ROM_END, &groundObjectsPalette_ROM_START, &groundObjectsPalette_ROM_END, 0); 
+            func_80034EF0(0, 5, 0, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &groundObjectsTexture_ROM_START, &groundObjectsTexture_ROM_END, &groundObjectsIndex_ROM_START, &groundObjectsIndex_ROM_END, 0); 
             break;          
         case CAVE:
             D_801FD624 = 0;
             D_801C3F35 = 0;
-            func_80034EF0(0, 0, 0, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &groundObjectsTexture_ROM_START, &groundObjectsTexture_ROM_END, &groundObjectsPalette_ROM_START, &groundObjectsPalette_ROM_END, 0); 
+            func_80034EF0(0, 0, 0, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &groundObjectsTexture_ROM_START, &groundObjectsTexture_ROM_END, &groundObjectsIndex_ROM_START, &groundObjectsIndex_ROM_END, 0); 
             break;    
         case MINE:                                      
         case MINE_2:        
             D_801FD624 = 2;
             D_801C3F35 = 2;
-            func_80034EF0(0, 2, 2, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &groundObjectsTexture_ROM_START, &groundObjectsTexture_ROM_END, &groundObjectsPalette_ROM_START, &groundObjectsPalette_ROM_END, 0); 
+            func_80034EF0(0, 2, 2, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &groundObjectsTexture_ROM_START, &groundObjectsTexture_ROM_END, &groundObjectsIndex_ROM_START, &groundObjectsIndex_ROM_END, 0); 
             break;    
         case RANCH:
             D_801FD624 = 0x10;
             D_801C3F35 = 0xA;
-            func_80034EF0(0, 0x10, 0xA, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &groundObjectsTexture_ROM_START, &groundObjectsTexture_ROM_END, &groundObjectsPalette_ROM_START, &groundObjectsPalette_ROM_END, 0); 
+            func_80034EF0(0, 0x10, 0xA, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &groundObjectsTexture_ROM_START, &groundObjectsTexture_ROM_END, &groundObjectsIndex_ROM_START, &groundObjectsIndex_ROM_END, 0); 
             break;   
     }
 
@@ -365,7 +384,7 @@ void func_80073244(u8 itemIndex) {
 
     *(Vec2f*)ptr = *(Vec2f*)ptr2;
 
-    func_8002B138(itemIndex +  0x62, &homeItemsTexture_ROM_START, &homeItemsTexture_ROM_END, &homeItemsPalette_ROM_START, &homeItemsPalette_ROM_END, &homeItemsTable_ROM_START, &homeItemsTable_ROM_END, (void*)0x802E4000, (void*)0x802E4D00, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
+    func_8002B138(itemIndex +  0x62, &homeItemsTexture_ROM_START, &homeItemsTexture_ROM_END, &homeItemsAssetsIndex_ROM_START, &homeItemsAssetsIndex_ROM_END, &homeItemsSpritesheetIndex_ROM_START, &homeItemsSpritesheetIndex_ROM_END, (void*)0x802E4000, (void*)0x802E4D00, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
     func_8002BD90(itemIndex +  0x62, 1.0f, 1.0f, 1.0f);
     func_8002C7EC(itemIndex +  0x62, 3);
     func_8002C85C(itemIndex +  0x62, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -390,7 +409,7 @@ void func_8007341C(u8 itemIndex) {
 
     *(Vec3f*)ptr = *(Vec3f*)ptr2;
 
-    func_8002B138(itemIndex + 0x62, &homeItemsTexture_ROM_START, &homeItemsTexture_ROM_END, &homeItemsPalette_ROM_START, &homeItemsPalette_ROM_END, &homeItemsTable_ROM_START, &homeItemsTable_ROM_END, (void* )0x802E4000, (void* )0x802E4D00, (void* )0x802E7400, (void* )0x802E7700, (void* )0x802E7A00, (void* )0x802E7B00, (void* )1, (u8) (void* )1);
+    func_8002B138(itemIndex + 0x62, &homeItemsTexture_ROM_START, &homeItemsTexture_ROM_END, &homeItemsAssetsIndex_ROM_START, &homeItemsAssetsIndex_ROM_END, &homeItemsSpritesheetIndex_ROM_START, &homeItemsSpritesheetIndex_ROM_END, (void* )0x802E4000, (void* )0x802E4D00, (void* )0x802E7400, (void* )0x802E7700, (void* )0x802E7A00, (void* )0x802E7B00, (void* )1, (u8) (void* )1);
     func_8002BD90(itemIndex + 0x62, 1.0f, 1.0f, 1.0f);
     func_8002C7EC(itemIndex + 0x62, 3);
     func_8002C85C(itemIndex + 0x62, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -417,7 +436,7 @@ void func_8007341C(u8 arg0) {
 
     *(Vec3f*)ptr = *(Vec3f*)ptr2;
 
-    func_8002B138(arg0 + 0x62, &homeItemsTexture_ROM_START, &homeItemsTexture_ROM_END, &homeItemsPalette_ROM_START, &homeItemsPalette_ROM_END, &homeItemsTable_ROM_START, &homeItemsTable_ROM_END, (void* )0x802E4000, (void* )0x802E4D00, (void* )0x802E7400, (void* )0x802E7700, (void* )0x802E7A00, (void* )0x802E7B00, (void* )1, (u8) (void* )1);
+    func_8002B138(arg0 + 0x62, &homeItemsTexture_ROM_START, &homeItemsTexture_ROM_END, &homeItemsAssetsIndex_ROM_START, &homeItemsAssetsIndex_ROM_END, &homeItemsSpritesheetIndex_ROM_START, &homeItemsSpritesheetIndex_ROM_END, (void* )0x802E4000, (void* )0x802E4D00, (void* )0x802E7400, (void* )0x802E7700, (void* )0x802E7A00, (void* )0x802E7B00, (void* )1, (u8) (void* )1);
     func_8002BD90(arg0 + 0x62, 1.0f, 1.0f, 1.0f);
     func_8002C7EC(arg0 + 0x62, 3);
     func_8002C85C(arg0 + 0x62, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -699,8 +718,9 @@ INCLUDE_ASM(const s32, "level", func_800746B4);
 
 //INCLUDE_ASM(const s32, "level", func_80074C38);
 
-u8 func_80074C38(u8 mapIndex) {
-    return D_801147C0[mapIndex];
+// get map index from exit
+u8 func_80074C38(u8 exitIndex) {
+    return D_801147C0[exitIndex];
 }
 
 // jtbl_8011FEA0

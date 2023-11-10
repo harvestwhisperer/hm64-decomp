@@ -1,5 +1,6 @@
 #include "common.h"
 
+#include "system/dialogue.h"
 #include "system/message.h"
 
 // bss
@@ -38,7 +39,26 @@ INCLUDE_ASM(const s32, "system/message", func_8003F130);
 
 INCLUDE_ASM(const s32, "system/message", func_8003F28C);
 
-INCLUDE_ASM(const s32, "system/message", func_8003F30C);
+//INCLUDE_ASM(const s32, "system/message", func_8003F30C);
+
+bool func_8003F30C(u16 dialogueIndex, u32 romIndexStart, u32 romIndexEnd, u32 romTextStart, u32 textBufferVaddr) {
+
+    bool result = 0;
+
+    if (dialogueIndex < MAX_DIALOGUE_BANKS) {
+
+        D_80183200[dialogueIndex].romIndexStart = romIndexStart;
+        D_80183200[dialogueIndex].romIndexEnd = romIndexEnd;
+        D_80183200[dialogueIndex].textBufferVaddr = textBufferVaddr;
+        D_80183200[dialogueIndex].romTextStart = romTextStart;
+        
+        result = 1;
+        
+    }
+    
+    return result;
+    
+}
 
 INCLUDE_ASM(const s32, "system/message", func_8003F360);
 
@@ -112,7 +132,47 @@ INCLUDE_ASM(const s32, "system/message", func_8003F80C);
 
 INCLUDE_ASM(const s32, "system/message", func_8003F910);
 
-INCLUDE_ASM(const s32, "system/message", func_8003FA1C);
+//INCLUDE_ASM(const s32, "system/message", func_8003FA1C);
+
+bool func_8003FA1C(u16 index, u16 arg1, u32 romTextureStart, u32 romTextureEnd, 
+    u32 romAssetIndexStart, u32 romAssetIndexEnd, 
+    u32 romSpritesheetIndexStart, u32 romSpritesheetIndexEnd, 
+    u32 vaddrTexture, u32 vaddrTexture2, 
+    u32 vaddrPalette, u32 vaddrUnknownAsset, 
+    u32 vaddrUnknownAsset2, u32 vaddrSpritesheetIndex, 
+    f32 argE, f32 argF, f32 arg10) {
+
+    bool result = 0;
+
+    if (index == 0) {
+        
+        dialogueIcons[index].romTextureStart = romTextureStart;
+        dialogueIcons[index].romTextureEnd = romTextureEnd;
+        dialogueIcons[index].romAssetIndexStart = romAssetIndexStart;
+        dialogueIcons[index].romAssetIndexEnd = romAssetIndexEnd;
+        dialogueIcons[index].romSpritesheetIndexStart = romSpritesheetIndexStart;
+        dialogueIcons[index].romSpritesheetIndexEnd = romSpritesheetIndexEnd;
+
+        dialogueIcons[index].vaddrTexture = vaddrTexture;
+        dialogueIcons[index].vaddrTexture2 = vaddrTexture2;
+        dialogueIcons[index].vaddrPalette = vaddrPalette;
+        dialogueIcons[index].vaddrUnknownAsset = vaddrUnknownAsset;
+        dialogueIcons[index].vaddrUnknownAsset2 = vaddrUnknownAsset2;
+        dialogueIcons[index].vaddrSpritesheetIndex = vaddrSpritesheetIndex;
+
+        dialogueIcons[index].unk_3C = arg1;
+
+        dialogueIcons[index].unk_30.x = argE;
+        dialogueIcons[index].unk_30.y = argF;
+        dialogueIcons[index].unk_30.z = arg10;
+
+        result = 1;
+        
+    }
+    
+    return result;
+    
+}
 
 INCLUDE_ASM(const s32, "system/message", func_8003FAE8);
 
@@ -195,6 +255,7 @@ INCLUDE_ASM(const s32, "system/message", func_800419C4);
 
 INCLUDE_ASM(const s32, "system/message", func_80041B28);
 
+// dialogue box rendering/printing
 INCLUDE_ASM(const s32, "system/message", func_80041B80);
 
 INCLUDE_ASM(const s32, "system/message", func_80041CD8);

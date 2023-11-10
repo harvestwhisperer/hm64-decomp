@@ -165,9 +165,9 @@ void initializeGameVariables(void) {
 
     D_802226E0 = 0;
 
-    gPlayer.fatigue[0] = 0;
-    gPlayer.fatigue[1] = 0;
-    gPlayer.fatigue[2] = 0;
+    gPlayer.fatigue.counter = 0;
+    gPlayer.fatigue.level = 0;
+    gPlayer.fatigue.unk_2 = 0;
     gPlayer.unk_6B = 0;
     gPlayer.direction = 0;
     gPlayer.unk_70 = 0;
@@ -175,7 +175,7 @@ void initializeGameVariables(void) {
     gPlayer.action2 = 0;
     gPlayer.action3 = 0;
     gPlayer.action4 = 0;
-    gPlayer.fatigue[3] = 0;
+    gPlayer.fatigue.unk_3 = 0;
     gPlayer.flags = 0;
     gPlayer.unk_60 = 0.0f;
     gPlayer.toolHeldCounter = 0;
@@ -693,96 +693,197 @@ INCLUDE_ASM(const s32, "initialize", func_800527D4);
 /*
 void func_800527D4(void) {
     
+    // ranch spring-winter
     setMapModelAddresses(0, &D_800530, &D_80D9D0);
     setMapModelAddresses(1, &D_80D9D0_2, &D_81AE30);
     setMapModelAddresses(2, &D_81AE30_2, &D_828FC0);
     setMapModelAddresses(3, &D_828FC0_2, &D_836420);
+
+    // ann's room
     setMapModelAddresses(4, &D_836420_2, &D_83DC90);
+
+    // ranch barn
     setMapModelAddresses(5, &D_83DC90_2, &D_849700);
+
+    // ranch store
     setMapModelAddresses(6, &D_849700_2, &D_84F100);
+
+    // ranch house
     setMapModelAddresses(7, &D_84F100_2, &D_856B80);
+
+    // empty
     setMapModelAddresses(8, &D_856B80_2, &D_856B90);
+    
+    // beach spring-winter
     setMapModelAddresses(9, &D_856B90_2, &D_85EE70);
     setMapModelAddresses(0xA, &D_85EE70_2, &D_867150);
     setMapModelAddresses(0xB, &D_867150_2, &D_86F430);
     setMapModelAddresses(0xC, &D_86F430_2, &D_877710);
+
+    // race track spring, autumn, and winter
     setMapModelAddresses(0xD, &D_877710_2, &D_87F510);
+    
+    // no race track summer: 0xE
+    // empty 4 words in rom
+
     setMapModelAddresses(0xF, &D_87F520_2, &D_887320);
     setMapModelAddresses(0x10, &D_887320_2, &D_88F120);
+
+    // mountain 1 spring-winter 
     setMapModelAddresses(0x11, &D_88F120_2, &D_8A6C20);
     setMapModelAddresses(0x12, &D_8A6C20_2, &D_8BE720);
     setMapModelAddresses(0x13, &D_8BE720_2, &D_8D6220);
     setMapModelAddresses(0x14, &D_8D6220_2, &D_8ED8E0);
+
+    // mountain 2 spring-winter 
     setMapModelAddresses(0x15, &D_8ED8E0_2, &D_905980);
     setMapModelAddresses(0x16, &D_905980_2, &D_91D8A0);
     setMapModelAddresses(0x17, &D_91D8A0_2, &D_9357C0);
     setMapModelAddresses(0x18, &D_9357C0_2, &D_94D6E0);
+
+    top of mountain 1 spring-winter
     setMapModelAddresses(0x19, &D_94D6E0_2, &D_961BD0);
     setMapModelAddresses(0x1A, &D_961BD0_2, &D_975E50);
     setMapModelAddresses(0x1B, &D_975E50_2, &D_98A0D0);
     setMapModelAddresses(0x1C, &D_98A0D0_2, &D_99F9C0);
+    
+    // moon mountain spring-winter
     setMapModelAddresses(0x1D, &D_99F9C0_2, &D_9B4530);
     setMapModelAddresses(0x1E, &D_9B4530_2, &D_9C90A0);
     setMapModelAddresses(0x1F, &D_9C90A0_2, &D_9DDC10);
     setMapModelAddresses(0x20, &D_9DDC10_2, &D_9F2780);
+
+    // carpenter's
     setMapModelAddresses(0x21, &D_9F2780_2, &D_9FAA80);
+    
+    // dumpling house
     setMapModelAddresses(0x22, &D_9FAA80_2, &D_A04C80);
+
+    // spring spring-winter
     setMapModelAddresses(0x23, &D_A04C80_2, &D_A0CEC0);
     setMapModelAddresses(0x24, &D_A0CEC0_2, &D_A14F10);
     setMapModelAddresses(0x25, &D_A14F10_2, &D_A1CF60);
     setMapModelAddresses(0x26, &D_A1CF60_2, &D_A24FB0);
+
+    // elli's room
     setMapModelAddresses(0x27, &D_A24FB0_2, &D_A2C350);
+
+    // bakery
     setMapModelAddresses(0x28, &D_A2C350_2, &D_A33460);
+
+    // village 1 spring-winter
     setMapModelAddresses(0x29, &D_A33460_2, &D_A4C640);
     setMapModelAddresses(0x2A, &D_A4C640_2, &D_A65820);
     setMapModelAddresses(0x2B, &D_A65820_2, &D_A7F2B0);
     setMapModelAddresses(0x2C, &D_A7F2B0_2, &D_A98210);
+
+    // village 2 spring-winter
     setMapModelAddresses(0x2D, &D_A98210_2, &D_AAC2C0);
     setMapModelAddresses(0x2E, &D_AAC2C0_2, &D_AC0370);
     setMapModelAddresses(0x2F, &D_AC0370_2, &D_AD4420);
     setMapModelAddresses(0x30, &D_AD4420_2, &D_AE84D0);
+
+    // popuri's room
     setMapModelAddresses(0x31, &D_AE84D0_2, &D_AEF920);
+
+    // flower shop
     setMapModelAddresses(0x32, &D_AEF920_2, &D_AF4F00);
+
+    // church
     setMapModelAddresses(0x33, &D_AF4F00_2, &D_AFAAC0);
+
+    // souvenir shop
     setMapModelAddresses(0x34, &D_AFAAC0_2, &D_AFF110);
+
+    // square spring-winter
     setMapModelAddresses(0x35, &D_AFF110_2, &D_B0E3C0);
     setMapModelAddresses(0x36, &D_B0E3C0_2, &D_B1D460);
     setMapModelAddresses(0x37, &D_B1D460_2, &D_B2C500);
     setMapModelAddresses(0x38, &D_B2C500_2, &D_B38990);
+
+    // rick's
     setMapModelAddresses(0x39, &D_B38990_2, &D_B3CE10);
+
+    // midwife's
     setMapModelAddresses(0x3A, &D_B3CE10_2, &D_B41CC0);
+    
+    // tavern
     setMapModelAddresses(0x3B, &D_B41CC0_2, &D_B4A9C0);
+    
+    // library
     setMapModelAddresses(0x3C, &D_B4A9C0_2, &D_B4E440);
+    
+    // maria's room
     setMapModelAddresses(0x3D, &D_B4E440_2, &D_B543D0);
+    
+    // mayor's house
     setMapModelAddresses(0x3E, &D_B543D0_2, &D_B5B0B0);
+
+    // potion shop back
     setMapModelAddresses(0x3F, &D_B5B0B0_2, &D_B60990);
+
+    // potion shop
     setMapModelAddresses(0x40, &D_B60990_2, &D_B64E30);
+
+    // empty
     setMapModelAddresses(0x41, &D_B64E30_2, &D_B64E40);
+    
+    // sprite cave
     setMapModelAddresses(0x42, &D_B64E40_2, &D_B6AAC0);
+
+    // cave
     setMapModelAddresses(0x43, &D_B6AAC0_2, &D_B6E700);
+    
+    // empty (mine)
     setMapModelAddresses(0x44, &D_B6E700_2, &D_B6E710);
+    // mine 2
     setMapModelAddresses(0x45, &D_B6E710_2, &D_B6FB70);
+
+    // karen's room
     setMapModelAddresses(0x46, &D_B6FB70_2, &D_B7AFB0);
+
+    // vineyard spring-winter
     setMapModelAddresses(0x47, &D_B7AFB0_2, &D_B8B840);
     setMapModelAddresses(0x48, &D_B8B840_2, &D_B9C0D0);
     setMapModelAddresses(0x49, &D_B9C0D0_2, &D_BAC960);
     setMapModelAddresses(0x4A, &D_BAC960_2, &D_BBCD10);
+
+    // vineyard house
     setMapModelAddresses(0x4B, &D_BBCD10_2, &D_BC5710);
+
+    // vineyard cellar 1
     setMapModelAddresses(0x4C, &D_BC5710_2, &D_BC9C30);
+    // vineyard cellar 2
     setMapModelAddresses(0x4D, &D_BC9C30_2, &D_BD1C80);
+
+    // road spring-winter
     setMapModelAddresses(0x4E, &D_BD1C80_2, &D_BDBD50);
     setMapModelAddresses(0x4F, &D_BDBD50_2, &D_BE5E20);
     setMapModelAddresses(0x50, &D_BE5E20_2, &D_BEFEF0);
     setMapModelAddresses(0x51, &D_BEFEF0_2, &D_BF9FC0);
+
+    // farm spring-winter
     setMapModelAddresses(0x52, &D_BF9FC0_2, &D_C13C40);
     setMapModelAddresses(0x53, &D_C13C40_2, &D_C2D8C0);
     setMapModelAddresses(0x54, &D_C2D8C0_2, &D_C47540);
     setMapModelAddresses(0x55, &D_C47540_2, &D_C609F0);
+
+    // greenhouse
     setMapModelAddresses(0x56, &D_C609F0_2, &D_C64D60);
+
+    // house
     setMapModelAddresses(0x57, &D_C64D60_2, &D_C72FB0);
+
+    // barn
     setMapModelAddresses(0x58, &D_C72FB0_2, &D_C7DE40);
+
+    // coop
     setMapModelAddresses(0x59, &D_C7DE40_2, &D_C840E0);
+
+    // kitchen
     setMapModelAddresses(0x5A, &D_C840E0_2, &D_C8D5C0);
+
+    // bathroom
     setMapModelAddresses(0x5B, &D_C8D5C0_2, &D_C951A0);
     
     func_8003BA44(0, 0, MODEL_DATA_BANK);
@@ -810,13 +911,13 @@ void func_80053088(void) {
     nuPiReadRom(ptr3, (void*)0x8030A000, ptr4 - ptr3);
     nuPiReadRom(ptr5, (void*)0x8030A400, ptr6 - ptr5);
 
-    func_8003F80C(0, 0x76, &dialogueWindowTexture_ROM_START, &dialogueWindowTexture_ROM_END, &dialogueWindowPalette_ROM_START, &dialogueWindowPalette_ROM_END, 0x80238800, 0x8023B100, 0x8023B200, 0x8023B300, 0, 0, 1, -24.0f, 0, 0);
-    func_8003F80C(1, 0x76, &dialogueWindowTexture_ROM_START, &dialogueWindowTexture_ROM_END, &dialogueWindowPalette_ROM_START, &dialogueWindowPalette_ROM_END, 0x80238800, 0x8023B100, 0x8023B200, 0x8023B300, 0, 0, 0, 0, 0, 0);
-    func_8003F80C(2, 0x77, &dialogueWindowTexture_ROM_START, &dialogueWindowTexture_ROM_END, &dialogueWindowPalette_ROM_START, &dialogueWindowPalette_ROM_END, 0x80238800, 0x8023B100, 0x8023B200, 0x8023B300, 0, 1, 0, 0, 0, 0);
+    func_8003F80C(0, 0x76, &dialogueWindowTexture_ROM_START, &dialogueWindowTexture_ROM_END, &dialogueWindowIndex_ROM_START, &dialogueWindowIndex_ROM_END, 0x80238800, 0x8023B100, 0x8023B200, 0x8023B300, 0, 0, 1, -24.0f, 0, 0);
+    func_8003F80C(1, 0x76, &dialogueWindowTexture_ROM_START, &dialogueWindowTexture_ROM_END, &dialogueWindowIndex_ROM_START, &dialogueWindowIndex_ROM_END, 0x80238800, 0x8023B100, 0x8023B200, 0x8023B300, 0, 0, 0, 0, 0, 0);
+    func_8003F80C(2, 0x77, &dialogueWindowTexture_ROM_START, &dialogueWindowTexture_ROM_END, &dialogueWindowIndex_ROM_START, &dialogueWindowIndex_ROM_END, 0x80238800, 0x8023B100, 0x8023B200, 0x8023B300, 0, 1, 0, 0, 0, 0);
 
-    func_8003F910(0, 0x78, &dialogueIconsTexture_ROM_START, &dialogueIconsTexture_ROM_END, &dialogueIconsPalette_ROM_START, &dialogueIconsPalette_ROM_END, (void* )0x8023B400, (void* )0x8023CC00, (void* )0x8023CE00, 0x8023D200, 0, 4, 0xFE, 106.0f, -15.0f, 0.0f);
-    func_8003F910(1, 0x78, &dialogueIconsTexture_ROM_START, &dialogueIconsTexture_ROM_END, &dialogueIconsPalette_ROM_START, &dialogueIconsPalette_ROM_END, (void* )0x8023B400, (void* )0x8023CC00, (void* )0x8023CE00, 0x8023D200, 0, 0xD, 0xFE, 106.0f, -15.0f, 0.0f);
-    func_8003FA1C(0, 0x75, &characterDialogueIconsTexture_ROM_START, &characterDialogueIconsTexture_ROM_END, &characterDialogueIconsPalette_ROM_START, &characterDialogueIconsPalette_ROM_END, &characterDialogueIconsTable_ROM_START, &characterDialogueIconsTable_ROM_END, (void*)0x8023D300, (void*)0x8023DB00, (void*)0x8023E300, (void*)0x8023EF00, (void*)0x8023FF00, (void*)0x80240000, -139.0f, 1.0f, 0);
+    func_8003F910(0, 0x78, &dialogueIconsTexture_ROM_START, &dialogueIconsTexture_ROM_END, &dialogueIconsIndex_ROM_START, &dialogueIconsIndex_ROM_END, (void* )0x8023B400, (void* )0x8023CC00, (void* )0x8023CE00, 0x8023D200, 0, 4, 0xFE, 106.0f, -15.0f, 0.0f);
+    func_8003F910(1, 0x78, &dialogueIconsTexture_ROM_START, &dialogueIconsTexture_ROM_END, &dialogueIconsIndex_ROM_START, &dialogueIconsIndex_ROM_END, (void* )0x8023B400, (void* )0x8023CC00, (void* )0x8023CE00, 0x8023D200, 0, 0xD, 0xFE, 106.0f, -15.0f, 0.0f);
+    func_8003FA1C(0, 0x75, &characterDialogueIconsTexture_ROM_START, &characterDialogueIconsTexture_ROM_END, &characterdialogueIconsAssetsIndex_ROM_START, &characterdialogueIconsAssetsIndex_ROM_END, &characterDialogueIconsSpritesheetIndex_ROM_START, &characterDialogueIconsSpritesheetIndex_ROM_END, (void*)0x8023D300, (void*)0x8023DB00, (void*)0x8023E300, (void*)0x8023EF00, (void*)0x8023FF00, (void*)0x80240000, -139.0f, 1.0f, 0);
  
     func_8003DBE8(0, 0x8030B000);
     func_8003F54C(0, 24.0f, -64.0f, 352.0f);
@@ -842,9 +943,9 @@ void func_80053088(void) {
 }
 */
 
-// dialogues
 INCLUDE_ASM(const s32, "initialize", func_800535DC);
 
+// dialogues
 // need to add rom address variables to undefined_syms/symbol_addrs
 /*
 void func_800535DC(void) {
@@ -1010,9 +1111,9 @@ void func_80054550(void) {
 
     func_80042FEC(0, 0, 1);
 
-    func_8004318C(0, 0x79, &dialogueIconsTexture_ROM_START, &dialogueIconsTexture_ROM_END, &dialogueIconsPalette_ROM_START, &dialogueIconsPalette_ROM_END, 0x8023B400, 0x8023CC00, 0x8023CE00, 0x8023D200, 0, 3, 0, 8.0f, -16.0f, 0);
-    func_80043260(0, 0x7A, &dialogueIconsTexture_ROM_START, &dialogueIconsTexture_ROM_END, &dialogueIconsPalette_ROM_START, &dialogueIconsPalette_ROM_END, 0x8023B400, 0x8023CC00, 0x8023CE00, 0x8023D200, 0, 0xA, 0xFE, 0, 40.0f, 0);
-    func_80043334(0, 0x7B, &dialogueIconsTexture_ROM_START, &dialogueIconsTexture_ROM_END, &dialogueIconsPalette_ROM_START, &dialogueIconsPalette_ROM_END, 0x8023B400, 0x8023CC00, 0x8023CE00, 0x8023D200, 0, 0xB, 0xFE, 0, -40.0f, 0);
+    func_8004318C(0, 0x79, &dialogueIconsTexture_ROM_START, &dialogueIconsTexture_ROM_END, &dialogueIconsIndex_ROM_START, &dialogueIconsIndex_ROM_END, 0x8023B400, 0x8023CC00, 0x8023CE00, 0x8023D200, 0, 3, 0, 8.0f, -16.0f, 0);
+    func_80043260(0, 0x7A, &dialogueIconsTexture_ROM_START, &dialogueIconsTexture_ROM_END, &dialogueIconsIndex_ROM_START, &dialogueIconsIndex_ROM_END, 0x8023B400, 0x8023CC00, 0x8023CE00, 0x8023D200, 0, 0xA, 0xFE, 0, 40.0f, 0);
+    func_80043334(0, 0x7B, &dialogueIconsTexture_ROM_START, &dialogueIconsTexture_ROM_END, &dialogueIconsIndex_ROM_START, &dialogueIconsIndex_ROM_END, 0x8023B400, 0x8023CC00, 0x8023CE00, 0x8023D200, 0, 0xB, 0xFE, 0, -40.0f, 0);
    
     func_80043148(0, 2, 0, 8);
 
@@ -1020,7 +1121,7 @@ void func_80054550(void) {
  
 INCLUDE_ASM(const s32, "initialize", func_80054734);
 
-// have to add rom address variables to undefined_syms/symbol_addrs
+// have to add assets to splat.yaml
 /* 
 void func_80054734(void) {
     func_80043050(0, 0, 0, &D_E871B0, &D_E871C0, 0x8030C800, &D_E871A0, 0x8030CC00);

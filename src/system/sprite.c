@@ -13,7 +13,7 @@ extern u16 bitmapCounter;
 // extern const char D_8011ED4C[];
 // extern const char D_8011ED50[];
 
-extern Bitmap D_801F7110[MAX_BITMAPS];
+extern Bitmap bitmaps[MAX_BITMAPS];
 extern Gfx D_80215ED0[2][0x880];
 // unused
 extern u16 D_8021E6E6[2][0x80][0x20];
@@ -30,23 +30,23 @@ void initializeBitmaps(void) {
     u16 i, j, k;
 
     for (i = 0; i < MAX_BITMAPS; i++) {
-        D_801F7110[i].flags = 0;
-        D_801F7110[i].unk_54 = 0;
-        D_801F7110[i].spriteNumber = 0;
-        D_801F7110[i].vtxIndex = 0;
-        D_801F7110[i].unk_1C.x = 0;
-        D_801F7110[i].unk_1C.y = 0;
-        D_801F7110[i].unk_1C.z = 0;
-        D_801F7110[i].scaling.x = 1.0f;
-        D_801F7110[i].scaling.y = 1.0f;
-        D_801F7110[i].scaling.z = 1.0f;
-        D_801F7110[i].unk_34.x = 0;
-        D_801F7110[i].unk_34.y = 0;
-        D_801F7110[i].unk_34.z = 0;
-        D_801F7110[i].rgba.r = 255.0f;
-        D_801F7110[i].rgba.g = 255.0f;
-        D_801F7110[i].rgba.b = 255.0f;
-        D_801F7110[i].rgba.a = 255.0f;
+        bitmaps[i].flags = 0;
+        bitmaps[i].unk_54 = 0;
+        bitmaps[i].spriteNumber = 0;
+        bitmaps[i].vtxIndex = 0;
+        bitmaps[i].unk_1C.x = 0;
+        bitmaps[i].unk_1C.y = 0;
+        bitmaps[i].unk_1C.z = 0;
+        bitmaps[i].scaling.x = 1.0f;
+        bitmaps[i].scaling.y = 1.0f;
+        bitmaps[i].scaling.z = 1.0f;
+        bitmaps[i].unk_34.x = 0;
+        bitmaps[i].unk_34.y = 0;
+        bitmaps[i].unk_34.z = 0;
+        bitmaps[i].rgba.r = 255.0f;
+        bitmaps[i].rgba.g = 255.0f;
+        bitmaps[i].rgba.b = 255.0f;
+        bitmaps[i].rgba.a = 255.0f;
     }
 
     for (j = 0; j < 2; j++) {
@@ -70,7 +70,7 @@ void func_80029CC8(void) {
     bitmapCounter = 0;
 
     while (i < MAX_BITMAPS) {
-        D_801F7110[i].flags = 0; 
+        bitmaps[i].flags = 0; 
         i++;
     } 
 }
@@ -85,14 +85,14 @@ u16 func_80029CF4(u8 *timg, u8 *pal, s32 width, s32 height, s32 fmt, s32 size, u
     result = bitmapCounter;  
      
     if (bitmapCounter < MAX_BITMAPS) {
-        D_801F7110[bitmapCounter].timg = timg;
-        D_801F7110[bitmapCounter].pal = pal;
-        D_801F7110[bitmapCounter].width = width;
-        D_801F7110[bitmapCounter].height = height;
-        D_801F7110[bitmapCounter].fmt = fmt;
-        D_801F7110[bitmapCounter].pixelSize = size; 
-        D_801F7110[bitmapCounter].flags = flags | 1;
-        D_801F7110[bitmapCounter].unk_54 = 0;
+        bitmaps[bitmapCounter].timg = timg;
+        bitmaps[bitmapCounter].pal = pal;
+        bitmaps[bitmapCounter].width = width;
+        bitmaps[bitmapCounter].height = height;
+        bitmaps[bitmapCounter].fmt = fmt;
+        bitmaps[bitmapCounter].pixelSize = size; 
+        bitmaps[bitmapCounter].flags = flags | 1;
+        bitmaps[bitmapCounter].unk_54 = 0;
         bitmapCounter++;
     } else { 
         result = 0xFFFF;
@@ -108,10 +108,10 @@ u16 func_80029DAC(void *timg, void *pal, u16 flags) {
     u16 bitmapIndex = bitmapCounter;
     
     if (bitmapCounter < MAX_BITMAPS) {
-        D_801F7110[bitmapCounter].flags = flags | 1;
-        D_801F7110[bitmapCounter].unk_54 = 0;
-        D_801F7110[bitmapCounter].timg = timg;
-        D_801F7110[bitmapCounter].pal = pal;
+        bitmaps[bitmapCounter].flags = flags | 1;
+        bitmaps[bitmapCounter].unk_54 = 0;
+        bitmaps[bitmapCounter].timg = timg;
+        bitmaps[bitmapCounter].pal = pal;
         bitmapCounter++;
     } else {
         bitmapIndex = 0xFFFF;
@@ -132,15 +132,15 @@ bool func_80029E2C(u16 index, u16 arg1, u16 arg2) {
     result = 0;
 
     if (index < MAX_BITMAPS) {
-        if (D_801F7110[index].flags & 1) {
+        if (bitmaps[index].flags & 1) {
 
-            D_801F7110[index].unk_54 &= ~(8 | 0x10 | 0x20 | 0x40);
+            bitmaps[index].unk_54 &= ~(8 | 0x10 | 0x20 | 0x40);
 
             temp1 = arg1 << 3;
-            D_801F7110[index].unk_54 |= temp1;
+            bitmaps[index].unk_54 |= temp1;
 
             temp2 = arg2 << 5;
-            D_801F7110[index].unk_54 |= temp2;
+            bitmaps[index].unk_54 |= temp2;
 
             result = 1;
         }
@@ -158,11 +158,11 @@ bool func_80029EA4(u16 index, u16 arg1) {
     result = 0;
     
     if (index < MAX_BITMAPS) {
-        if (D_801F7110[index].flags & 1) {
+        if (bitmaps[index].flags & 1) {
             result = 1;
-            D_801F7110[index].unk_54 &= ~(0x80 | 0x100);
+            bitmaps[index].unk_54 &= ~(0x80 | 0x100);
             temp = arg1 << 7;
-            D_801F7110[index].unk_54 |= temp;
+            bitmaps[index].unk_54 |= temp;
         }
     }
     return result;
@@ -177,11 +177,11 @@ bool func_80029F14(u16 index, u16 arg1) {
     result = 0;
     
     if (index < MAX_BITMAPS) {
-        if (D_801F7110[index].flags & 1) {
+        if (bitmaps[index].flags & 1) {
             if (arg1) {
-                D_801F7110[index].unk_54 |= 0x200;
+                bitmaps[index].unk_54 |= 0x200;
             } else {
-                D_801F7110[index].unk_54 &= ~0x200;
+                bitmaps[index].unk_54 &= ~0x200;
             }
             result = 1;
         }
@@ -199,16 +199,16 @@ bool func_80029F98(u16 index, u8 arg1, u8 arg2) {
     result = 0;
     
     if (index < MAX_BITMAPS) {
-        if (D_801F7110[index].flags & 1) {
+        if (bitmaps[index].flags & 1) {
     
             if (arg1) {
-                D_801F7110[index].unk_54 |= 1;
+                bitmaps[index].unk_54 |= 1;
             }
             
             result = 1;
             
             if (arg2) {
-               D_801F7110[index].unk_54 |= 2;
+               bitmaps[index].unk_54 |= 2;
             }
         }
     }
@@ -226,11 +226,11 @@ bool func_8002A02C(u16 index, u16 arg1) {
     result = 0;
     
     if (index < MAX_BITMAPS) {
-        if (D_801F7110[index].flags & 1) {
+        if (bitmaps[index].flags & 1) {
             result = 1;
-            D_801F7110[index].unk_54 &= ~(0x400 | 0x1000 | 0x800);
+            bitmaps[index].unk_54 &= ~(0x400 | 0x1000 | 0x800);
             temp = arg1 << 10;
-            D_801F7110[index].unk_54 |= temp;
+            bitmaps[index].unk_54 |= temp;
         }
     }
     
@@ -244,11 +244,11 @@ bool func_8002A09C(u16 index, f32 arg1, f32 arg2, f32 arg3) {
     bool result = 0;
     
     if (index < MAX_BITMAPS) {
-        if (D_801F7110[index].flags & 1) {
+        if (bitmaps[index].flags & 1) {
             result = 1;
-            D_801F7110[index].unk_1C.x = arg1;
-            D_801F7110[index].unk_1C.y = arg2;
-            D_801F7110[index].unk_1C.z = arg3;
+            bitmaps[index].unk_1C.x = arg1;
+            bitmaps[index].unk_1C.y = arg2;
+            bitmaps[index].unk_1C.z = arg3;
         }
     }
     
@@ -262,11 +262,11 @@ bool func_8002A120(u16 index, f32 arg1, f32 arg2, f32 arg3) {
     bool result = 0;
     
     if (index < MAX_BITMAPS) {
-        if (D_801F7110[index].flags & 1) {
+        if (bitmaps[index].flags & 1) {
             result = 1;
-            D_801F7110[index].scaling.x = arg1;
-            D_801F7110[index].scaling.y = arg2;
-            D_801F7110[index].scaling.z = arg3;
+            bitmaps[index].scaling.x = arg1;
+            bitmaps[index].scaling.y = arg2;
+            bitmaps[index].scaling.z = arg3;
         }
     }
     
@@ -280,11 +280,11 @@ bool func_8002A1A4(u16 index, f32 arg1, f32 arg2, f32 arg3) {
 
     
     if (index < MAX_BITMAPS) {
-        if (D_801F7110[index].flags & 1) {
+        if (bitmaps[index].flags & 1) {
             result = 1;
-            D_801F7110[index].unk_34.x = arg1;
-            D_801F7110[index].unk_34.y = arg2;
-            D_801F7110[index].unk_34.z = arg3;
+            bitmaps[index].unk_34.x = arg1;
+            bitmaps[index].unk_34.y = arg2;
+            bitmaps[index].unk_34.z = arg3;
         }
     }
     
@@ -298,12 +298,12 @@ bool func_8002A228(u16 index, u8 r, u8 g, u8 b, u8 a) {
     bool result = 0;
     
     if (index < MAX_BITMAPS) {
-        if (D_801F7110[index].flags & 1) {
+        if (bitmaps[index].flags & 1) {
             result = 1;
-            D_801F7110[index].rgba.r = r;
-            D_801F7110[index].rgba.g = g;
-            D_801F7110[index].rgba.b = b;
-            D_801F7110[index].rgba.a = a;
+            bitmaps[index].rgba.r = r;
+            bitmaps[index].rgba.g = g;
+            bitmaps[index].rgba.b = b;
+            bitmaps[index].rgba.a = a;
         }
     }
     
@@ -317,9 +317,9 @@ bool func_8002A2E0(u16 index, u16 arg1, u16 arg2) {
     bool result = 0;
     
     if (index < MAX_BITMAPS) {
-        if (D_801F7110[index].flags & 1) {
-            D_801F7110[index].unk_50 = arg1;
-            D_801F7110[index].unk_52 = arg2;
+        if (bitmaps[index].flags & 1) {
+            bitmaps[index].unk_50 = arg1;
+            bitmaps[index].unk_52 = arg2;
             result = 1;
         }
     }
@@ -559,17 +559,17 @@ void func_8002AE58(void) {
     
     for (i = 0; i < MAX_BITMAPS; i++) {
         
-        if (D_801F7110[i].flags & 1) {
+        if (bitmaps[i].flags & 1) {
     
-            setBitmapFormat(&D_801F7110[i], D_801F7110[i].timg, D_801F7110[i].pal);
+            setBitmapFormat(&bitmaps[i], bitmaps[i].timg, bitmaps[i].pal);
 
             tempDl = dl;
-            dl = func_8002A66C(tempDl, &D_801F7110[i], spriteNumber);
+            dl = func_8002A66C(tempDl, &bitmaps[i], spriteNumber);
 
-            func_8002ACA4(&D_801F7110[i], tempDl); 
+            func_8002ACA4(&bitmaps[i], tempDl); 
             
-            spriteNumber += D_801F7110[i].vtxIndex;
-            D_801F7110[i].flags &= ~1;
+            spriteNumber += bitmaps[i].vtxIndex;
+            bitmaps[i].flags &= ~1;
             
        }
    }

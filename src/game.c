@@ -144,7 +144,7 @@ static const s16 houseExtensionPrices[6];
 static const s16 houseExtensionLumberCosts[6];
 
 // forward declarations
-extern inline void func_8005AE8C(u16 arg0, u16 arg1, u16 arg2, int arg3, u16 arg4);
+extern inline void showTextBox(u16 arg0, u16 arg1, u16 arg2, int arg3, u16 arg4);
 extern void func_8005B09C(u8);
 extern void func_8005B09C(u8);        
 
@@ -417,9 +417,9 @@ void setSpecialDialogues(void) {
     }
 
     if (gForecast == RAIN) {
-        setSpecialDialogueBit(RAIN_FORECAST);
+        setSpecialDialogueBit(RAIN_FORECAST_DIALOGUE);
     } else {
-        toggleSpecialDialogueBit(RAIN_FORECAST);
+        toggleSpecialDialogueBit(RAIN_FORECAST_DIALOGUE);
     }
 
     if (checkLifeEventBit(HAVE_KITCHEN)) {
@@ -657,10 +657,10 @@ inline int adjustValue(int initial, int value, int max) {
     return adjusted;
 }
 
-//INCLUDE_ASM(const s32, "game", func_8005AE8C);
+//INCLUDE_ASM(const s32, "game", showTextBox);
 
 // show text box
-inline void func_8005AE8C(u16 arg0, u16 arg1, u16 arg2, int arg3, u16 arg4) {
+inline void showTextBox(u16 arg0, u16 arg1, u16 arg2, int arg3, u16 arg4) {
   
     func_8002F6F0();
     func_80046C98();
@@ -688,15 +688,15 @@ inline void func_8005AE8C(u16 arg0, u16 arg1, u16 arg2, int arg3, u16 arg4) {
   
     setMainLoopCallbackFunctionIndex(TEXT);
     
-    controllers[0].unk_1C = 0;
+    controllers[CONTROLLER_1].unk_1C = 0;
 
     setPlayerAction(0, 0);
 }
 
-//INCLUDE_ASM(const s32, "game", func_8005AF94);
+//INCLUDE_ASM(const s32, "game", showDialogueBox);
 
 // show dialogue box
-inline void func_8005AF94(u16 arg0, u16 arg1, u16 arg2, u32 arg3, u16 arg4) {
+inline void showDialogueBox(u16 arg0, u16 arg1, u16 arg2, u32 arg3, u16 arg4) {
     
     func_8002F6F0();
     func_80046C98();
@@ -720,7 +720,7 @@ inline void func_8005AF94(u16 arg0, u16 arg1, u16 arg2, u32 arg3, u16 arg4) {
 
     setMainLoopCallbackFunctionIndex(DIALOGUE);
 
-    controllers[0].unk_1C = 0;
+    controllers[CONTROLLER_1].unk_1C = 0;
     
     setPlayerAction(0, 0);
 
@@ -737,116 +737,116 @@ void func_8005B09C(u8 arg0) {
         default:
             break;
         case 0:
-            func_8005AF94(1, 1, 0, 0, 2);
+            showDialogueBox(1, 1, 0, 0, 2);
             break;
         case 1:
-            func_8005AF94(1, 1, 1, 0, 2);
+            showDialogueBox(1, 1, 1, 0, 2);
             break;    
         case 2:
-            func_8005AF94(0, 0x3D, 0xC, 0x40, 0);
+            showDialogueBox(0, 0x3D, 0xC, 0x40, 0);
             break;         
         case 3:
-            func_8005AF94(0, 0x3D, 0xB, 0x40, 0);
+            showDialogueBox(0, 0x3D, 0xB, 0x40, 0);
             break;          
         case 4:
-            func_8005AF94(0, 0x3D, 0x12, 0x40, 0);
+            showDialogueBox(0, 0x3D, 0x12, 0x40, 0);
             break;       
         case 5:
-            func_8005AF94(0, 0x3D, 0xD, 0x40, 0);
+            showDialogueBox(0, 0x3D, 0xD, 0x40, 0);
             break;        
         case 6:
-            func_8005AF94(0, 0x3D, 0xE, 0x40, 0);
+            showDialogueBox(0, 0x3D, 0xE, 0x40, 0);
             break;      
         case 7:
-            func_8005AF94(0, 0x3D, 0xF, 0x40, 0);
+            showDialogueBox(0, 0x3D, 0xF, 0x40, 0);
             break;      
         case 8:
-            func_8005AF94(0, 0x3E, 7, 0x40, 0);
+            showDialogueBox(0, 0x3E, 7, 0x40, 0);
             break;      
         case 9:
-            func_8005AF94(0, 0x3E, 6, 0x40, 0);
+            showDialogueBox(0, 0x3E, 6, 0x40, 0);
             break;    
         case 10:
-            func_8005AF94(0, 0x3E, 2, 0x40, 0);
+            showDialogueBox(0, 0x3E, 2, 0x40, 0);
             break;  
         case 11:
-            func_8005AF94(0, 0x3E, 0, 0x40, 0);
+            showDialogueBox(0, 0x3E, 0, 0x40, 0);
             break;        
         case 12:
-            func_8005AF94(0, 0x3E, 1, 0x40, 0);
+            showDialogueBox(0, 0x3E, 1, 0x40, 0);
             break;          
         case 13:
             if (gSeason == SPRING || gSeason == WINTER) {
-                func_8005AF94(1, 0x44, 0, 0, 2);
+                showDialogueBox(1, 0x44, 0, 0, 2);
             } else {
-                func_8005AF94(1, 0x44, 10, 0, 2);
+                showDialogueBox(1, 0x44, 10, 0, 2);
             }            
             break;
         case 14:
             if (gSeason == SPRING || gSeason == WINTER) {
-                func_8005AF94(1, 0x44, 1, 0x40, 2);
+                showDialogueBox(1, 0x44, 1, 0x40, 2);
             } else {
-                func_8005AF94(1, 0x44, 0xB, 0, 2);
+                showDialogueBox(1, 0x44, 0xB, 0, 2);
             }
             break;
         case 15:
             if (gSeason == SPRING || gSeason == WINTER) {
-                func_8005AF94(1, 0x44, 2, 0x40, 2);
+                showDialogueBox(1, 0x44, 2, 0x40, 2);
             } else {
-                func_8005AF94(1, 0x44, 0xC, 0, 2);
+                showDialogueBox(1, 0x44, 0xC, 0, 2);
             }
             break; 
         case 16:
             if (gSeason == SPRING || gSeason == WINTER) {
-                func_8005AF94(1, 0x44, 3, 0x40, 2);
+                showDialogueBox(1, 0x44, 3, 0x40, 2);
             } else {
-                func_8005AF94(1, 0x44, 0xD, 0, 2);
+                showDialogueBox(1, 0x44, 0xD, 0, 2);
             }
             break;   
         case 17:
             if (gSeason == SPRING || gSeason == WINTER) {
-                func_8005AF94(1, 0x44, 4, 0x40, 2);
+                showDialogueBox(1, 0x44, 4, 0x40, 2);
             } else {
-                func_8005AF94(1, 0x44, 0xE, 0, 2);
+                showDialogueBox(1, 0x44, 0xE, 0, 2);
             }
             break;     
         case 18:
             if (gSeason == SPRING || gSeason == WINTER) {
-                func_8005AF94(1, 0x44, 5, 0x40, 2);
+                showDialogueBox(1, 0x44, 5, 0x40, 2);
             } else {
-                func_8005AF94(1, 0x44, 0xF, 0, 2);
+                showDialogueBox(1, 0x44, 0xF, 0, 2);
             }
             break;        
         case 19:
             if (gSeason == SPRING || gSeason == WINTER) {
-                func_8005AF94(1, 0x44, 6, 0x40, 2);
+                showDialogueBox(1, 0x44, 6, 0x40, 2);
             } else {
-                func_8005AF94(1, 0x44, 0x10, 0, 2);
+                showDialogueBox(1, 0x44, 0x10, 0, 2);
             }
             break;        
         case 20:
             if (gSeason == SPRING || gSeason == WINTER) {
-                func_8005AF94(1, 0x44, 7, 0x40, 2);
+                showDialogueBox(1, 0x44, 7, 0x40, 2);
             } else {
-                func_8005AF94(1, 0x44, 0x11, 0, 2);
+                showDialogueBox(1, 0x44, 0x11, 0, 2);
             }
             break;       
         case 21:
             if (gSeason == SPRING || gSeason == WINTER) {
-                func_8005AF94(1, 0x44, 8, 0x40, 2);
+                showDialogueBox(1, 0x44, 8, 0x40, 2);
             } else {
-                func_8005AF94(1, 0x44, 0x12, 0, 2);
+                showDialogueBox(1, 0x44, 0x12, 0, 2);
             }
             break;       
         case 22:
             if (gSeason == SPRING || gSeason == WINTER) {
-                func_8005AF94(1, 0x44, 9, 0x40, 2);
+                showDialogueBox(1, 0x44, 9, 0x40, 2);
             } else {
-                func_8005AF94(1, 0x44, 0x13, 0, 2);
+                showDialogueBox(1, 0x44, 0x13, 0, 2);
             }
             break;     
         case 23:
-            func_8005AF94(1, 1, 0x15, 0, 2);
+            showDialogueBox(1, 1, 0x15, 0, 2);
             break;    
     }
 
@@ -1041,8 +1041,8 @@ void func_8005CBF0(void) {
             gItemBeingHeld = 0xFF;
         }
          
-        func_8003F910(0, 0x78, &dialogueIconsTexture_ROM_START, &dialogueIconsTexture_ROM_END, &dialogueIconsPalette_ROM_START, &dialogueIconsPalette_ROM_END, (void*)DIALOGUE_ICONS_TEXTURES_VADDR, (void*)0x8023CC00, (void*)0x8023CE00, (void*)0x8023D200, 0, 4, 0xFE, 106.0f, -15.0f, 0);
-        func_8003F910(1, 0x78, &dialogueIconsTexture_ROM_START, &dialogueIconsTexture_ROM_END, &dialogueIconsPalette_ROM_START, &dialogueIconsPalette_ROM_END, (void*)DIALOGUE_ICONS_TEXTURES_VADDR, (void*)0x8023CC00, (void*)0x8023CE00, (void*)0x8023D200, 0, 0xD, 0xFE, 106.0f, -15.0f, 0);
+        func_8003F910(0, 0x78, &dialogueIconsTexture_ROM_START, &dialogueIconsTexture_ROM_END, &dialogueIconsIndex_ROM_START, &dialogueIconsIndex_ROM_END, (void*)DIALOGUE_ICONS_TEXTURES_VADDR, (void*)0x8023CC00, (void*)0x8023CE00, (void*)0x8023D200, 0, 4, 0xFE, 106.0f, -15.0f, 0);
+        func_8003F910(1, 0x78, &dialogueIconsTexture_ROM_START, &dialogueIconsTexture_ROM_END, &dialogueIconsIndex_ROM_START, &dialogueIconsIndex_ROM_END, (void*)DIALOGUE_ICONS_TEXTURES_VADDR, (void*)0x8023CC00, (void*)0x8023CE00, (void*)0x8023D200, 0, 0xD, 0xFE, 106.0f, -15.0f, 0);
        
         func_8005CDCC();
         
@@ -1398,7 +1398,7 @@ void func_8005D2B0() {
                         func_8005B09C(1);
                         break;
                     case 1:                                 
-                        func_8005AF94(1, 1, 2, 0x80, 2);
+                        showDialogueBox(1, 1, 2, 0x80, 2);
                         break;
                     case 2:                                 
                         setMainLoopCallbackFunctionIndex(0x19);
@@ -1452,7 +1452,7 @@ void func_8005D2B0() {
                         func_8005B09C(6);
                         break;
                     case 1:                                
-                        func_8005AE8C(0, 6, 0x55, 0, 0);
+                        showTextBox(0, 6, 0x55, 0, 0);
                         setDailyEventBit(2);
                         setDailyEventBit(5);
                         break;
@@ -1557,7 +1557,7 @@ void func_8005D2B0() {
                         setMainLoopCallbackFunctionIndex(1);
                         break;    
                     case 3:                                 
-                        func_8005AE8C(0, 4, 31, 0, 0);
+                        showTextBox(0, 4, 31, 0, 0);
                         break; 
                     }
                 
@@ -1578,7 +1578,7 @@ void func_8005D2B0() {
                         setMainLoopCallbackFunctionIndex(1);
                         break;    
                     case 3:
-                        func_8005AE8C(0, 4, 20, 0, 0);
+                        showTextBox(0, 4, 20, 0, 0);
                         break;
                     }
                 
@@ -1599,7 +1599,7 @@ void func_8005D2B0() {
                         setMainLoopCallbackFunctionIndex(1);
                         break;    
                     case 3:
-                        func_8005AE8C(0, 4, 20, 0, 0);
+                        showTextBox(0, 4, 20, 0, 0);
                         break;
                     }
                 
@@ -1610,13 +1610,13 @@ void func_8005D2B0() {
                     if (gPlayer.action1 == 0x1E || temp == 3) {
                         switch (temp) {             
                             case 0:                         
-                                func_8005AE8C(1, 1, 0, 0, 0);
+                                showTextBox(1, 1, 0, 0, 0);
                                 break;
                             case 1:                         
-                                func_8005AE8C(1, 1, 1, 0, 0);
+                                showTextBox(1, 1, 1, 0, 0);
                                 break;
                             case 2:                         
-                                func_8005AE8C(1, 1, 2, 0, 0);
+                                showTextBox(1, 1, 2, 0, 0);
                                 break;
                             case 3:
                                 D_801C3E40[0].struct5.flags &= ~0x40;
@@ -1639,13 +1639,13 @@ void func_8005D2B0() {
                 if (gPlayer.action1 == 0x1E || temp == 3) {
                     switch (temp) {                 
                         case 0:                             
-                            func_8005AE8C(1, 1, 3, 0, 0);
+                            showTextBox(1, 1, 3, 0, 0);
                             break;
                         case 1:                             
-                            func_8005AE8C(1, 1, 4, 0, 0);
+                            showTextBox(1, 1, 4, 0, 0);
                             break;     
                         case 2:                             
-                            func_8005AE8C(1, 1, 5, 0, 0);
+                            showTextBox(1, 1, 5, 0, 0);
                             break;
                         case 3:
                             D_801C3E40[0].struct5.flags &= ~0x40;
@@ -1670,13 +1670,13 @@ void func_8005D2B0() {
                     if (gPlayer.action1 == 0x1E || temp == 3) {
                         switch (temp) {            
                             case 0:                        
-                                func_8005AE8C(1, 1, 9, 0, 0);
+                                showTextBox(1, 1, 9, 0, 0);
                                 break;
                             case 1:                        
-                                func_8005AE8C(1, 1, 10, 0, 0);
+                                showTextBox(1, 1, 10, 0, 0);
                                 break;
                             case 2:                        
-                                func_8005AE8C(1, 1, 11, 0, 0);
+                                showTextBox(1, 1, 11, 0, 0);
                                 break;
                             case 3:
                                 D_801C3E40[0].struct5.flags &= ~0x40;
@@ -1700,13 +1700,13 @@ void func_8005D2B0() {
                 if (gPlayer.action1 == 0x1E || temp == 3) {
                     switch (temp) {                
                         case 0:                             
-                            func_8005AE8C(1, 1, 6, 0, 0);
+                            showTextBox(1, 1, 6, 0, 0);
                             break;
                         case 1:                             
-                            func_8005AE8C(1, 1, 7, 0, 0);
+                            showTextBox(1, 1, 7, 0, 0);
                             break;
                         case 2:                             
-                            func_8005AE8C(1, 1, 8, 0, 0);
+                            showTextBox(1, 1, 8, 0, 0);
                             break;
                         case 3:
                             D_801C3E40[0].struct5.flags &= ~0x40;
@@ -1732,13 +1732,13 @@ void func_8005D2B0() {
                 if (gPlayer.action1 == 0x1E || temp == 3) {
                     switch (temp) {             
                         case 0:                         
-                            func_8005AE8C(1, 1, 12, 0, 0);
+                            showTextBox(1, 1, 12, 0, 0);
                             break;
                         case 1:                         
-                            func_8005AE8C(1, 1, 13, 0, 0);
+                            showTextBox(1, 1, 13, 0, 0);
                             break;
                         case 2:                         
-                            func_8005AE8C(1, 1, 14, 0, 0);
+                            showTextBox(1, 1, 14, 0, 0);
                             break;
                         case 3:
                             D_801C3E40[0].struct5.flags &= ~0x40;
@@ -1761,13 +1761,13 @@ void func_8005D2B0() {
             if (gPlayer.action1 == 0x1E || temp == 3) {
                 switch (temp) {                         
                     case 0:                             
-                        func_8005AE8C(1, 1, 15, 0, 0);
+                        showTextBox(1, 1, 15, 0, 0);
                         break;
                     case 1:                             
-                        func_8005AE8C(1, 1, 16, 0, 0);
+                        showTextBox(1, 1, 16, 0, 0);
                         break;
                     case 2:                             
-                        func_8005AE8C(1, 1, 17, 0, 0);
+                        showTextBox(1, 1, 17, 0, 0);
                         break;
                     case 3:
                         D_801C3E40[0].struct5.flags &= ~0x40;
@@ -1792,13 +1792,13 @@ void func_8005D2B0() {
                 if (gPlayer.action1 == 0x1E || temp == 3) {
                     switch (temp) {             
                         case 0:                         
-                            func_8005AE8C(1, 1, 18, 0, 0);
+                            showTextBox(1, 1, 18, 0, 0);
                             break;
                         case 1:                         
-                            func_8005AE8C(1, 1, 19, 0, 0);
+                            showTextBox(1, 1, 19, 0, 0);
                             break;
                         case 2:                         
-                            func_8005AE8C(1, 1, 20, 0, 0);
+                            showTextBox(1, 1, 20, 0, 0);
                             break;                        
                         case 3:
                             D_801C3E40[0].struct5.flags &= ~0x40;
@@ -1821,13 +1821,13 @@ void func_8005D2B0() {
             if (gPlayer.action1 == 0x1E || temp == 3) {
                 switch (temp) {                 
                     case 0:                             
-                        func_8005AE8C(1, 1, 21, 0, 0);
+                        showTextBox(1, 1, 21, 0, 0);
                         break;
                     case 1:                             
-                        func_8005AE8C(1, 1, 22, 0, 0);
+                        showTextBox(1, 1, 22, 0, 0);
                         break;
                     case 2:                             
-                        func_8005AE8C(1, 1, 23, 0, 0);
+                        showTextBox(1, 1, 23, 0, 0);
                         break;
                     case 3:
                         D_801C3E40[0].struct5.flags &= ~0x40;
@@ -1851,16 +1851,16 @@ void func_8005D2B0() {
                 if (gPlayer.action1 == 0x1E || temp == 4) {
                     switch (temp) {            
                         case 0:                         
-                            func_8005AE8C(1, 1, 25, 0, 0);
+                            showTextBox(1, 1, 25, 0, 0);
                             break;
                         case 1:                         
-                            func_8005AE8C(1, 1, 26, 0, 0);
+                            showTextBox(1, 1, 26, 0, 0);
                             break;
                         case 2:                         
-                            func_8005AE8C(1, 1, 27, 0, 0);
+                            showTextBox(1, 1, 27, 0, 0);
                             break;
                         case 3:                         
-                            func_8005AE8C(1, 1, 24, 0, 0);
+                            showTextBox(1, 1, 24, 0, 0);
                             break;
                         case 4:
                             D_801C3E40[0].struct5.flags &= ~0x40;
@@ -1883,16 +1883,16 @@ void func_8005D2B0() {
             if (gPlayer.action1 == 0x1E || temp == 4) {
                 switch (temp) {                
                     case 0:                             
-                        func_8005AE8C(1, 1, 28, 0, 0);
+                        showTextBox(1, 1, 28, 0, 0);
                         break;
                     case 1:                             
-                        func_8005AE8C(1, 1, 29, 0, 0);
+                        showTextBox(1, 1, 29, 0, 0);
                         break;
                     case 2:                             
-                        func_8005AE8C(1, 1, 30, 0, 0);
+                        showTextBox(1, 1, 30, 0, 0);
                         break;
                     case 3:                             
-                        func_8005AE8C(1, 1, 31, 0, 0);
+                        showTextBox(1, 1, 31, 0, 0);
                         break;                       
                     case 4:        
                         D_801C3E40[0].struct5.flags &= ~0x40;
@@ -1916,16 +1916,16 @@ void func_8005D2B0() {
                 if (gPlayer.action1 == 0x1E || temp == 4) {
                     switch (temp) {             
                         case 0:                         
-                            func_8005AE8C(1, 1, 32, 0, 0);
+                            showTextBox(1, 1, 32, 0, 0);
                             break;
                         case 1:                         
-                            func_8005AE8C(1, 1, 33, 0, 0);
+                            showTextBox(1, 1, 33, 0, 0);
                             break;
                         case 2:                         
-                            func_8005AE8C(1, 1, 34, 0, 0);
+                            showTextBox(1, 1, 34, 0, 0);
                             break;
                         case 3:
-                            func_8005AE8C(1, 1, 35, 0, 0);
+                            showTextBox(1, 1, 35, 0, 0);
                             break;
                         case 4:
                             D_801C3E40[0].struct5.flags &= ~0x40;
@@ -1949,16 +1949,16 @@ void func_8005D2B0() {
             if (gPlayer.action1 == 0x1E || temp == 4) {
                 switch (temp) {                 
                     case 0:                             
-                        func_8005AE8C(1, 1, 36, 0, 0);
+                        showTextBox(1, 1, 36, 0, 0);
                         break;
                     case 1:                             
-                        func_8005AE8C(1, 1, 37, 0, 0);
+                        showTextBox(1, 1, 37, 0, 0);
                         break;
                     case 2:                             
-                        func_8005AE8C(1, 1, 38, 0, 0);
+                        showTextBox(1, 1, 38, 0, 0);
                         break;
                     case 3:
-                        func_8005AE8C(1, 1, 39, 0, 0);
+                        showTextBox(1, 1, 39, 0, 0);
                         break;
                     case 4:
                         D_801C3E40[0].struct5.flags &= ~0x40;
@@ -1982,16 +1982,16 @@ void func_8005D2B0() {
                 if (gPlayer.action1 == 0x1E || temp == 4) {
                     switch (temp) {             
                         case 0:                         
-                            func_8005AE8C(1, 1, 40, 0, 0);
+                            showTextBox(1, 1, 40, 0, 0);
                             break;
                         case 1:                         
-                            func_8005AE8C(1, 1, 41, 0, 0);
+                            showTextBox(1, 1, 41, 0, 0);
                             break;
                         case 2:                         
-                            func_8005AE8C(1, 1, 42, 0, 0);
+                            showTextBox(1, 1, 42, 0, 0);
                             break;
                         case 3:
-                            func_8005AE8C(1, 1, 43, 0, 0);
+                            showTextBox(1, 1, 43, 0, 0);
                             break;
                         case 4:
                             D_801C3E40[0].struct5.flags &= ~0x40;
@@ -2014,16 +2014,16 @@ void func_8005D2B0() {
             if (gPlayer.action1 == 0x1E || temp == 4) {
                 switch (temp) {                 
                     case 0:                             
-                        func_8005AE8C(1, 1, 44, 0, 0);
+                        showTextBox(1, 1, 44, 0, 0);
                         break;
                     case 1:                             
-                        func_8005AE8C(1, 1, 45, 0, 0);
+                        showTextBox(1, 1, 45, 0, 0);
                         break;
                     case 2:                             
-                        func_8005AE8C(1, 1, 46, 0, 0);
+                        showTextBox(1, 1, 46, 0, 0);
                         break;
                     case 3:
-                        func_8005AE8C(1, 1, 47, 0, 0);
+                        showTextBox(1, 1, 47, 0, 0);
                         break;
                     case 4:
                         D_801C3E40[0].struct5.flags &= ~0x40;
@@ -2047,16 +2047,16 @@ void func_8005D2B0() {
                 if (gPlayer.action1 == 0x1E || temp == 4) {
                     switch (temp) {             
                         case 0:                         
-                            func_8005AE8C(1, 1, 48, 0, 0);
+                            showTextBox(1, 1, 48, 0, 0);
                             break;
                         case 1:                         
-                            func_8005AE8C(1, 1, 49, 0, 0);
+                            showTextBox(1, 1, 49, 0, 0);
                             break;
                         case 2:                         
-                            func_8005AE8C(1, 1, 50, 0, 0);
+                            showTextBox(1, 1, 50, 0, 0);
                             break;
                         case 3:
-                            func_8005AE8C(1, 1, 51, 0, 0);
+                            showTextBox(1, 1, 51, 0, 0);
                             break;
                         case 4:
                             D_801C3E40[0].struct5.flags &= ~0x40;
@@ -2079,16 +2079,16 @@ void func_8005D2B0() {
             if (gPlayer.action1 == 0x1E || temp == 4) {
                 switch (temp) {                 
                     case 0:                             
-                        func_8005AE8C(1, 1, 52, 0, 0);
+                        showTextBox(1, 1, 52, 0, 0);
                         break;
                     case 1:                             
-                        func_8005AE8C(1, 1, 53, 0, 0);
+                        showTextBox(1, 1, 53, 0, 0);
                         break;
                     case 2:                             
-                        func_8005AE8C(1, 1, 54, 0, 0);
+                        showTextBox(1, 1, 54, 0, 0);
                         break;
                     case 3:   
-                        func_8005AE8C(1, 1, 55, 0, 0);
+                        showTextBox(1, 1, 55, 0, 0);
                         break;
                     case 4:
                         D_801C3E40[0].struct5.flags &= ~0x40;
@@ -2112,16 +2112,16 @@ void func_8005D2B0() {
                 if (gPlayer.action1 == 0x1E || temp == 4) {
                     switch (temp) {             
                         case 0:                         
-                            func_8005AE8C(1, 1, 56, 0, 0);
+                            showTextBox(1, 1, 56, 0, 0);
                             break;
                         case 1:                         
-                            func_8005AE8C(1, 1, 57, 0, 0);
+                            showTextBox(1, 1, 57, 0, 0);
                             break;
                         case 2:                         
-                            func_8005AE8C(1, 1, 58, 0, 0);
+                            showTextBox(1, 1, 58, 0, 0);
                             break;
                         case 3:
-                            func_8005AE8C(1, 1, 59, 0, 0);
+                            showTextBox(1, 1, 59, 0, 0);
                             break;
                         case 4:
                             D_801C3E40[0].struct5.flags &= ~0x40;
@@ -2145,16 +2145,16 @@ void func_8005D2B0() {
             if (gPlayer.action1 == 0x1E || temp == 4) {
                 switch (temp) {                 
                     case 0:                             
-                        func_8005AE8C(1, 1, 60, 0, 0);
+                        showTextBox(1, 1, 60, 0, 0);
                         break;
                     case 1:                             
-                        func_8005AE8C(1, 1, 61, 0, 0);
+                        showTextBox(1, 1, 61, 0, 0);
                         break;
                     case 2:                             
-                        func_8005AE8C(1, 1, 62, 0, 0);
+                        showTextBox(1, 1, 62, 0, 0);
                         break;
                     case 3:
-                        func_8005AE8C(1, 1, 63, 0, 0);
+                        showTextBox(1, 1, 63, 0, 0);
                         break;
                     case 4:
                         D_801C3E40[0].struct5.flags &= ~0x40;
@@ -2178,16 +2178,16 @@ void func_8005D2B0() {
                 if (gPlayer.action1 == 0x1E || temp == 4) {
                     switch (temp) {             
                         case 0:                         
-                            func_8005AE8C(1, 1, 64, 0, 0);
+                            showTextBox(1, 1, 64, 0, 0);
                             break;
                         case 1:                         
-                            func_8005AE8C(1, 1, 65, 0, 0);
+                            showTextBox(1, 1, 65, 0, 0);
                             break;
                         case 2:                         
-                            func_8005AE8C(1, 1, 66, 0, 0);
+                            showTextBox(1, 1, 66, 0, 0);
                             break;
                         case 3:
-                            func_8005AE8C(1, 1, 67, 0, 0);
+                            showTextBox(1, 1, 67, 0, 0);
                             break;
                         case 4:
                             D_801C3E40[0].struct5.flags &= ~0x40;
@@ -2210,16 +2210,16 @@ void func_8005D2B0() {
             if (gPlayer.action1 == 0x1E || temp == 4) {
                 switch (temp) {                 
                     case 0:                             
-                        func_8005AE8C(1, 1, 68, 0, 0);
+                        showTextBox(1, 1, 68, 0, 0);
                         break;
                     case 1:                             
-                        func_8005AE8C(1, 1, 69, 0, 0);
+                        showTextBox(1, 1, 69, 0, 0);
                         break;
                     case 2:                             
-                        func_8005AE8C(1, 1, 70, 0, 0);
+                        showTextBox(1, 1, 70, 0, 0);
                         break;
                     case 3:
-                        func_8005AE8C(1, 1, 71, 0, 0);
+                        showTextBox(1, 1, 71, 0, 0);
                         break;
                     case 4:
                         D_801C3E40[0].struct5.flags &= ~0x40;
@@ -2360,9 +2360,9 @@ void func_80060624(void) {
             }
             
             if (checkLifeEventBit(0x5A)) {
-                gPlayer.fatigue[0] += adjustValue(gPlayer.fatigue[0], -((30 - tempTime) * 3), 100);
+                gPlayer.fatigue.counter += adjustValue(gPlayer.fatigue.counter, -((30 - tempTime) * 3), 100);
             } else {
-                gPlayer.fatigue[0] += adjustValue(gPlayer.fatigue[0], -((30 - tempTime) * 2), 100);
+                gPlayer.fatigue.counter += adjustValue(gPlayer.fatigue.counter, -((30 - tempTime) * 2), 100);
             }
         }
         

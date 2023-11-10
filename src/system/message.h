@@ -5,15 +5,9 @@
 #include "audio.h"
 
 #define MAX_DIALOGUE_BOXES 6
+#define MAX_DIALOGUE_BANKS 73
 
 #define DIALOGUE_ICONS_TEXTURES_VADDR 0x8023B400
-
-extern u32 fontTexture_ROM_START;
-extern u32 fontTexture_ROM_END;
-extern u32 fontPalette1_ROM_START;
-extern u32 fontPalette1_ROM_END;
-extern u32 fontPalette2_ROM_START;
-extern u32 fontPalette2_ROM_END;
 
 // 1 - 0xA0 = Japanese characters
 
@@ -76,11 +70,12 @@ typedef struct {
 } GameVariableReference;
 
 // count: 0x49
+// 0x80183200
 typedef struct {
-    void *indexMap;
-    void *indexEnd;
-    void *vaddr;
-    void *scriptRomAddress;
+    void *romIndexStart;
+    void *romIndexEnd;
+    void *textBufferVaddr;
+    void *romTextStart;
 } DialogueInfo;
 
 typedef struct {
@@ -155,7 +150,8 @@ extern bool func_8003DD14(u16);
 extern void func_8003DDF8(u32, u32, u32, u32);     
 extern bool func_8003E77C(u16, u8, u8, u8, u8);                   
 extern bool func_8003EA1C(u16, u8, u8, u8, u8, s32);       
-extern bool func_8003F30C(u8, void*, void*, void*, void*); 
+extern bool func_8003F130(u16);  
+extern bool func_8003F30C(u16 dialogueIndex, u32 romIndexStart, u32 romIndexEnd, u32 romTextStart, u32 textBufferVaddr) ; 
 extern bool func_8003F0DC();  
 extern bool func_8003F360(u16, s16, u8);                           
 extern bool func_8003F464(u16, u8, u8, s32, s32);                   
@@ -173,10 +169,13 @@ extern void func_80042634();
 extern void func_80045CB0();
 
 extern DialogueBox dialogueBoxes[MAX_DIALOGUE_BOXES];
+extern DialogueInfo D_80183200[MAX_DIALOGUE_BANKS];
 
-extern void *dialogueIconsTextureStart;
-extern void *dialogueIconsTextureEnd;
-extern void *dialogueIconsPaletteStart;
-extern void *dialogueIconsPaletteEnd;
+extern u32 fontTexture_ROM_START;
+extern u32 fontTexture_ROM_END;
+extern u32 fontPalette1_ROM_START;
+extern u32 fontPalette1_ROM_END;
+extern u32 fontPalette2_ROM_START;
+extern u32 fontPalette2_ROM_END;
 
 #endif

@@ -169,7 +169,7 @@ u8 func_80075374(u8 npcIndex, int arg1) {
         func_80030054(npcInfoArray[npcIndex].spriteIndex, 1);
         func_8002FF38(npcInfoArray[npcIndex].spriteIndex, 0);
     
-        func_8002F684(npcInfoArray[npcIndex].spriteIndex, (npcInfoArray[npcIndex].direction + 8 - func_8003C1A4(0)) % 8);
+        setSpriteDirection(npcInfoArray[npcIndex].spriteIndex, (npcInfoArray[npcIndex].direction + 8 - func_8003C1A4(0)) % 8);
         func_8002FD80(npcInfoArray[npcIndex].spriteIndex, npcInfoArray[npcIndex].currentCoordinates.x, npcInfoArray[npcIndex].currentCoordinates.y, npcInfoArray[npcIndex].currentCoordinates.z);
     
         if (npcInfoArray[npcIndex].flags & 8) {
@@ -1460,11 +1460,11 @@ bool func_80085D48(int index, u16 arg1) {
     if (npcInfoArray[index].flags & 4) {
         // check if girl and load heart icon
         if ((index < 5) && (index >= (result = 0))) {
-            func_8003F910(0, 0x78, &dialogueIconsTexture_ROM_START, &dialogueIconsTexture_ROM_END, &dialogueIconsPalette_ROM_START, &dialogueIconsPalette_ROM_END, (void*)DIALOGUE_ICONS_TEXTURES_VADDR, (void*)0x8023CC00, (void*)0x8023CE00, (void*)0x8023D200, 0, (npcAffection[index] / 52) + 5, 0xFE, 106.0f, -15.0f, 0);
-            func_8003F910(1, 0x78, &dialogueIconsTexture_ROM_START, &dialogueIconsTexture_ROM_END, &dialogueIconsPalette_ROM_START, &dialogueIconsPalette_ROM_END, (void*)DIALOGUE_ICONS_TEXTURES_VADDR, (void*)0x8023CC00, (void*)0x8023CE00, (void*)0x8023D200, 0, (npcAffection[index] / 52) + 5, 0xFE, 106.0f, -15.0f, 0);
+            func_8003F910(0, 0x78, &dialogueIconsTexture_ROM_START, &dialogueIconsTexture_ROM_END, &dialogueIconsIndex_ROM_START, &dialogueIconsIndex_ROM_END, (void*)DIALOGUE_ICONS_TEXTURES_VADDR, (void*)0x8023CC00, (void*)0x8023CE00, (void*)0x8023D200, 0, (npcAffection[index] / 52) + 5, 0xFE, 106.0f, -15.0f, 0);
+            func_8003F910(1, 0x78, &dialogueIconsTexture_ROM_START, &dialogueIconsTexture_ROM_END, &dialogueIconsIndex_ROM_START, &dialogueIconsIndex_ROM_END, (void*)DIALOGUE_ICONS_TEXTURES_VADDR, (void*)0x8023CC00, (void*)0x8023CE00, (void*)0x8023D200, 0, (npcAffection[index] / 52) + 5, 0xFE, 106.0f, -15.0f, 0);
         }
         // get dialogue index
-        func_8005AF94(0, D_80114960[arr[7]], arg1, 0, 0);
+        showDialogueBox(0, D_80114960[arr[7]], arg1, 0, 0);
         result = 1;
     }
     
