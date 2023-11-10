@@ -523,12 +523,12 @@ u8 checkFatigueLevel(void) {
 
     u8 temp;
      
-    if (gPlayer.fatigue[0] == 100) {
+    if (gPlayer.fatigue.counter == 100) {
         temp = 3;
-    } else if (gPlayer.fatigue[0] >= 75) {
+    } else if (gPlayer.fatigue.counter >= 75) {
         return 2;
     }  else {
-        return (gPlayer.fatigue[0] < 50) == 0;  
+        return (gPlayer.fatigue.counter < 50) == 0;  
     }
 
     return temp;
@@ -609,7 +609,7 @@ void func_80068120(void) {
 
         if (gPlayer.action3 == 0) {
             gPlayer.currentStamina += adjustValue(gPlayer.currentStamina, func_800D5B00(gPlayer.unk_2C), gMaximumStamina);
-            gPlayer.fatigue[0] += adjustValue(gPlayer.fatigue[0], -func_800D5B18(gPlayer.unk_2C), 100);
+            gPlayer.fatigue.counter += adjustValue(gPlayer.fatigue.counter, -func_800D5B18(gPlayer.unk_2C), 100);
         }
 
         if (gPlayer.action3 == 0x1E) {
@@ -822,7 +822,7 @@ void func_80069830(void) {
                 toggleDailyEventBit(6);
 
                 if (!checkDailyEventBit(0x33)) {
-                    gPlayer.fatigue[0] += adjustValue(gPlayer.fatigue[0], -10, 100);
+                    gPlayer.fatigue.counter += adjustValue(gPlayer.fatigue.counter, -10, 100);
                 }
 
                 setDailyEventBit(0x33);
@@ -860,7 +860,7 @@ void func_80069CC4(void) {
     if (gPlayer.action4 == 0) {
         if (gPlayer.action3 == 0) {
             gPlayer.currentStamina += adjustValue(gPlayer.currentStamina, func_800D5B00(gPlayer.unk_2C), gMaximumStamina);
-            gPlayer.fatigue[0] += adjustValue(gPlayer.fatigue[0], -func_800D5B18(gPlayer.unk_2C), 0x64);
+            gPlayer.fatigue.counter += adjustValue(gPlayer.fatigue.counter, -func_800D5B18(gPlayer.unk_2C), 0x64);
         }
         
         if (gPlayer.action3 == 0x1E) {
@@ -1024,7 +1024,7 @@ void func_8006AA9C(void) {
         
         if (gPlayer.action4 == 0) {
             
-            switch (gPlayer.fatigue[1]) {       
+            switch (gPlayer.fatigue.level) {       
                 case 1:
                     func_8002F2FC(0, 0x1D0);
                     break;
@@ -1055,7 +1055,7 @@ void func_8006AB90(void) {
     if (func_8002FECC(0) || gPlayer.action4 == 0) {
         
         if (gPlayer.action4 == 0) {
-            switch (gPlayer.fatigue[2]) {                   
+            switch (gPlayer.fatigue.unk_2) {                   
                 case 1:
                     func_8002F2FC(0, 0x299);
                     break;

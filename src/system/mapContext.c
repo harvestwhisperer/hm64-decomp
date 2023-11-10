@@ -146,7 +146,7 @@ bool func_8003BB14(u16 index, u16 mapIndex) {
     
     if (index == 0 && (gMapModelContext[index].flags & 1)) {
         
-        // dma
+        // dma map data
         func_8003BC50(0, mapIndex);
         
         // set vec3fs on mapStruct8

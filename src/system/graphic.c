@@ -187,33 +187,88 @@ volatile u8 func_80026CEC(s32 arg0, s32 arg1) {
 
 //INCLUDE_ASM(const s32, "system/graphic", setBitmapFormat);
 
-void setBitmapFormat(Bitmap *sprite, u16 *timg, u16 *palette) {
+// 16-bit endian swap
+static inline u16 getWidth(u16* timg) {
     
     u16 temp1;
-    u16 temp2;
-    int temp3;
+    
+    u32 temp2;
+    u32 temp3;
+
+    // skip header
+    temp2 = temp1 = timg[2];
+    
+    temp3 = (temp1 & 0xFF) << 8;
+    temp2 >>= 8;
+    
+    temp1 = temp2 | temp3;
+
+    return temp1;
+
+    // return (temp2 | temp3) also matches
+
+    // should just be
+    /*
+    u32 temp1;
+    u32 temp2;
+    
+    temp1 = (*(timg+2) & 0xFF) << 8;
+    
+    temp2 = *(timg+2) >> 8;
+
+    return (temp2 | temp1);
+    */
+    
+}
+
+// 16-bit endian swap
+static inline u16 getHeight(u16* timg) {
+
+    u16 temp1;
+    
+    u32 temp2;
+    u32 temp3;
+
+    // skip header + width
+    temp2 = temp1 = timg[3];
+    
+    temp3 = (temp1 & 0xFF) << 8;
+    temp2 >>= 8;
+    
+    temp1 = temp2 | temp3;
+
+    return temp1;
+
+    // return (temp2 | temp3) also matches
+    
+    // should just be
+    /*
+    u32 temp1;
+    u32 temp2;
+    
+    temp1 = (*(timg+3) & 0xFF) << 8;
+    
+    temp2 = *(timg+3) >> 8;
+
+    return (temp2 | temp1);
+    */
+    
+}
+
+void setBitmapFormat(Bitmap *sprite, u16 *timg, u16 *palette) {
+    
     u32 padding[10];
 
     func_80026F30(sprite, palette);
     
-    // skip header and size
+    // skip header and size bytes
     sprite->timg = timg + 4;
     
-    // bytes 4-8 = width and height (16 bit)
-    temp1 = *(timg+2);
-    temp3 = temp1;
-    sprite->width = (u8)temp1 << 8;
+    // bytes 4-8 = width and height (16 bit) (byte swapped)
+    sprite->width = getWidth(timg);  
+    sprite->height = getHeight(timg);
     
-    temp3 >>= 8;
-    temp1 = temp3 | sprite->width;
-    sprite->width = temp1;  
-     
-    temp1 = *(timg+3);
-    sprite->height = (u8)temp1 << 8;
-    temp2 = (temp1 >> 8) | sprite->height;
-    sprite->height = temp2;
-    
-    // get pixel size from bit
+    // get pixel size from bit 5 in header (bit one when swapped)
     switch (*(timg + 1) >> 4 & 0xF) {
         case 0:
           sprite->fmt = G_IM_FMT_CI;
@@ -231,16 +286,15 @@ void setBitmapFormat(Bitmap *sprite, u16 *timg, u16 *palette) {
 
 void func_80026F30(Bitmap* sprite, u16* palette) {
 
-    // probably a stack struct
     u32 padding[5];
     
     // skip header
     sprite->pal = palette + 2;
 
+    // get pixel size from bit 5 in header (bit one when swapped)
     switch ((*(palette + 1) >> 4) & 0xF) {                           
         case 0:
             sprite->fmt = G_IM_FMT_CI;
-            // SDK docs say to use this pixel size only with G_IM_FMT_I
             sprite->pixelSize = G_IM_SIZ_8b;
             return;
         case 1:
@@ -487,23 +541,46 @@ f32 func_80028820(u8 arg0) {
 //INCLUDE_ASM(const s32, "system/graphic", func_80028888);
 
 // get ptr to ci texture from index
+// used by map
+u8* func_80028888(u16 spriteIndex, u32* textureIndex) {
+    return (u8*)textureIndex + textureIndex[spriteIndex];
+}
+
+// also matches
+/*
 void *func_80028888(u16 arg0, u32 *arg1) {
   void *res = arg1;
   return res + *(arg1 + arg0);
 }
+*/
 
 //INCLUDE_ASM(const s32, "system/graphic", func_800288A0);
 
-void *func_800288A0(u16 arg0, u32 *arg1) {
-  void *res = arg1;
-  return res + *(arg1 + arg0);
+// get ptr to palette
+// used by map
+// should return u16*?
+u8 *func_800288A0(u16 index, u32 *paletteIndex) {
+  return (u8*)paletteIndex + paletteIndex[index];
 }
 
 //INCLUDE_ASM(const s32, "system/graphic", func_800288B8);
 
+// returns palette pointer from sprite-to-palette mapping table
+u8* func_800288B8(u16 spriteIndex, u32* paletteIndex, u8* spriteToPaletteIndex) {
+    
+    u8* arr = spriteToPaletteIndex + 4;
+    u16 i = arr[spriteIndex];
+    
+    return (u8*)paletteIndex + paletteIndex[i]; 
+
+}
+
+// alternate
+/*
 u8* func_800288B8(u16 arg0, u32 *arg1, u8 *arg2) {
     return (u8*)arg1 + *(arg1 + *(arg0 + arg2 + 4));
 }
+*/
 
 //INCLUDE_ASM(const s32, "system/graphic", initRcp);
 

@@ -271,15 +271,16 @@ typedef struct {
 } UnknownDialogueStruct1;
 
 // D_801C3E6C
+// ci4 format
 typedef struct {
-	void* unk_0;
-	void* unk_4;
-	void* unk_8;
-	void* unk_C;
-	void* unk_10; // 0x7C
-	void* unk_14;
-    void* unk_18;
-	void* unk_1C;
+	void* romTextureStart;
+	void* romTextureEnd;
+	void* romAssetIndexStart;
+	void* romAssetIndexEnd;
+	void* vaddrSpritesheet; // 0x7C
+	void* vaddrPalette;
+    void* vaddrUnknownAssetSheet;
+	void* vaddrUnknownAsset2;
 	u32 unk_20; // 0x8C
 	Vec3f unk_24;
 	u16 unk_30; // 0x9C // spriteIndex
@@ -297,8 +298,8 @@ typedef struct {
 	u16 unk_10; // 0xF28, message struct index
 	u16 unk_12;
 	u16 unk_14;
-	u8 unk_16;
-	u8 unk_17;
+	u8 unk_16; // pink overlay max rows
+	u8 unk_17; // pink overlay current column
 	u8 unk_18;
     u16 flags;
 } UnknownDialogueStruct3;
@@ -315,18 +316,18 @@ typedef struct {
 } Dialogue;
 
 typedef struct {
-	void *romPtr1;
-	void *romPtr2;
-	void *romPtr3;
-	void *romPtr4;
-	void *romPtr5;
-	void *romPtr6;
-	void *vaddr1;
-	void *vaddr2;
-	void *vaddr3;
-	void *vaddr4;
-	void *vaddr5;
-	void *vaddr6;
+	void *romTextureStart;
+	void *romTextureEnd;
+	void *romAssetIndexStart;
+	void *romAssetIndexEnd;
+	void *romSpritesheetIndexStart;
+	void *romSpritesheetIndexEnd;
+	void *vaddrTexture;
+	void *vaddrTexture2; // index + palettes
+	void *vaddrPalette;
+	void *vaddrUnknownAsset;
+	void *vaddrUnknownAsset2;
+	void *vaddrSpritesheetIndex;
 	Vec3f unk_30;
 	u16 unk_3C;
 	u16 unk_3E;
@@ -350,7 +351,8 @@ extern u8 func_80043A88();
 extern bool func_80043AD8(u16);
 extern u8 func_80043C6C(u16);
 
-extern DialogueIcon D_801806D0;
+// character avatars
+extern DialogueIcon dialogueIcons[1];
 
 extern Dialogue D_801C3E40[1];
 extern Conversation D_80205760[69];

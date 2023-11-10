@@ -1156,7 +1156,7 @@ void func_800D67FC(u8 index) {
             break;
     }
 
-    func_8005AE8C(1, 6, temp, 0, 2);
+    showTextBox(1, 6, temp, 0, 2);
 }
 
 // alternate for study
@@ -1178,7 +1178,7 @@ void func_800D67FC(u8 index) {
 //     temp2 = D_80118000[index];
     
 // func_end:
-//     func_8005AE8C(1, 6, temp2, 0, 2);
+//     showTextBox(1, 6, temp2, 0, 2);
 // }
 
 // jumptable: 801226D8, 0xFDAD8

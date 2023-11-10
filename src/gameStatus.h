@@ -76,7 +76,7 @@
 
 /* special dialogue bit indices */
 #define HAVE_HOUSE_EXTENSION 0x12
-#define RAIN_FORECAST 0x13
+#define RAIN_FORECAST_DIALOGUE 0x13
 #define HAVE_GOLD_PENDANT 0x17
 #define HAVE_HORSE_DIALOGUE 0x27
 #define MARIA_HARRIS_BABY_DIALOGUE 0x32

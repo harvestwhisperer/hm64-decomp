@@ -79,8 +79,8 @@
 #define MAX_KEY_ITEMS 24 
 
 typedef struct {
-    u8 fatigueCounter;
-    u8 fatigueLevel;
+    u8 counter;
+    u8 level;
     u8 unk_2;
     u8 unk_3;
 } Fatigue;
@@ -116,7 +116,7 @@ typedef struct {
 	u8 unk_6E; // 0x6E
 	u8 unk_6F; // 0x6F
 	u8 unk_70; // collision object id? 
-	u8 fatigue[4]; // 71
+	Fatigue fatigue; // 71
     u16 flags; // 0x78
 } Player;
 

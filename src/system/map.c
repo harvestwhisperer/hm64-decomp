@@ -557,7 +557,7 @@ bool func_80035004(u16 mapIndex, u16 arg1, u8 arg2, u8 arg3) {
 //INCLUDE_ASM(const s32, "system/map", func_80035054);
 
 // used for maps with foragable items
-bool func_80035054(u16 mapIndex, u16 bitmapIndex, u16 arg2, f32 arg3, f32 arg4, f32 arg5) {
+bool func_80035054(u16 mapIndex, u16 bitmapIndex, u16 spriteIndex, f32 x, f32 y, f32 z) {
 
     bool result = 0;
 
@@ -565,11 +565,11 @@ bool func_80035054(u16 mapIndex, u16 bitmapIndex, u16 arg2, f32 arg3, f32 arg4, 
     
         if (bitmapIndex) {
             
-            setBitmapFormat(&mainMap[mapIndex].mapBitmaps[bitmapIndex], func_80028888(arg2, mainMap[mapIndex].mapStruct6.vaddr1), func_800288B8(arg2, mainMap[mapIndex].mapStruct6.vaddr2, mainMap[mapIndex].mapStruct6.vaddr3));
+            setBitmapFormat(&mainMap[mapIndex].mapBitmaps[bitmapIndex], func_80028888(spriteIndex, mainMap[mapIndex].mapStruct6.textureIndex), func_800288B8(spriteIndex, mainMap[mapIndex].mapStruct6.paletteIndex, mainMap[mapIndex].mapStruct6.spriteToPaletteIndex));
              
-            mainMap[mapIndex].mapBitmaps[bitmapIndex].unk_1C.x = arg3;
-            mainMap[mapIndex].mapBitmaps[bitmapIndex].unk_1C.y = arg4;
-            mainMap[mapIndex].mapBitmaps[bitmapIndex].unk_1C.z = arg5;
+            mainMap[mapIndex].mapBitmaps[bitmapIndex].unk_1C.x = x;
+            mainMap[mapIndex].mapBitmaps[bitmapIndex].unk_1C.y = y;
+            mainMap[mapIndex].mapBitmaps[bitmapIndex].unk_1C.z = z;
             
             result = 1;
         }    
@@ -807,6 +807,7 @@ INCLUDE_ASM(const s32, "system/map", func_800372F0);
 u8* func_80037350(UnknownVertexStruct* arg0, u8* arg1) {
 
     // arg1 = &*(arg1+4);
+    // skip header
     arg1 = &arg1[4];
     
     arg0->arr2[0] = *arg1;
@@ -1102,7 +1103,7 @@ void func_8003851C(MainMap* arg0) {
 
 //INCLUDE_ASM(const s32, "system/map", func_80038630);
 
-// decompress vec3fs
+// might not be decompression per se, but byteswapped s16s converted to floats
 void func_80038630(Decompressed* arg0, Compressed* arg1) {
 
     u32 padding[8];
@@ -1121,7 +1122,7 @@ void func_800386C0(UnknownMapStruct3* arg0, u8* arg1) {
     arg0->unk_3 = arg1[1];
 }
 
-// arg1 = ptr from mainMap.unk_C = ptr to compressed vec3fs
+// arg1 = ptr from mainMap.unk_C = ptr to byteswapped shorts for vec3f conversion
 #ifdef PERMUTER
 u8* func_800386D4(u16 arg0, u8* arg1) {
 
@@ -1587,7 +1588,7 @@ void func_8003A1BC(void) {
 
 //INCLUDE_ASM(const s32, "system/map", func_8003AC14);
 
-inline void func_8003AC14(Gfx* dl, UnknownMapStruct9* arg1) {
+inline void func_8003AC14(Gfx* dl, MapBitmap* arg1) {
     
     // gsDPSetCombineMode(G_CC_MODULATEIDECALA, G_CC_MODULATEIDECALA)
     // gsDPSetRenderMode(G_RM_TEX_EDGE, G_RM_TEX_EDGE2)
@@ -1618,7 +1619,7 @@ Gfx* func_8003ACA8(Gfx* arg0, MainMap* arg1, MapBitmap* arg2, u16 vtxIndex) {
 
     Gfx dl[2];
       
-    func_800276AC((Vtx*)&D_80165500[gDisplayContextIndex][vtxIndex], arg2->height, arg2->width, arg2->width, 0, 0,
+    func_800276AC((Vtx*)&D_80165500[gDisplayContextIndex][vtxIndex], arg2->width, arg2->height, arg2->height, 0, 0,
         0, 0, 0, 0x150, arg1->mapStruct8.groundRgba.r, arg1->mapStruct8.groundRgba.g, arg1->mapStruct8.groundRgba.b,
         arg1->mapStruct8.groundRgba.a);
  

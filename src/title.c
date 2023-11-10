@@ -51,9 +51,9 @@ extern u32 titleSpritesTexture_ROM_END;
 extern u32 titleSpritesIndex_ROM_START;
 extern u32 titleSpritesIndex_ROM_END;
 
-//INCLUDE_ASM(const s32, "title", func_800DE3C0);
+//INCLUDE_ASM(const s32, "title", initializeTitleScreen);
 
-void func_800DE3C0(u8 arg0) {
+void initializeTitleScreen(u8 arg0) {
     
     titleScreenContext.rowHighlighted = 0;
     titleScreenContext.dogAnimationIndex = 0;

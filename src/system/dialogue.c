@@ -140,14 +140,14 @@ bool func_8004318C(u16 arg0, u16 arg1, void* arg2, void* arg3, void* arg4, void*
 
         result = 1;
 
-        D_801C3E40[arg0].struct2.unk_0 = arg2;
-        D_801C3E40[arg0].struct2.unk_4 = arg3;
-        D_801C3E40[arg0].struct2.unk_8 = arg4;
-        D_801C3E40[arg0].struct2.unk_C = arg5;
-        D_801C3E40[arg0].struct2.unk_10 = arg6;
-        D_801C3E40[arg0].struct2.unk_14 = arg7;
-        D_801C3E40[arg0].struct2.unk_18 = arg8;
-        D_801C3E40[arg0].struct2.unk_1C = arg9;
+        D_801C3E40[arg0].struct2.romTextureStart = arg2;
+        D_801C3E40[arg0].struct2.romTextureEnd = arg3;
+        D_801C3E40[arg0].struct2.romAssetIndexStart = arg4;
+        D_801C3E40[arg0].struct2.romAssetIndexEnd = arg5;
+        D_801C3E40[arg0].struct2.vaddrSpritesheet = arg6;
+        D_801C3E40[arg0].struct2.vaddrPalette = arg7;
+        D_801C3E40[arg0].struct2.vaddrUnknownAssetSheet = arg8;
+        D_801C3E40[arg0].struct2.vaddrUnknownAsset2 = arg9;
         D_801C3E40[arg0].struct2.unk_20 = argA;
  
         D_801C3E40[arg0].struct2.unk_30 = arg1;
@@ -175,15 +175,15 @@ bool func_80043260(u16 arg0, u16 arg1, void* arg2, void* arg3, void* arg4, void*
         
         result = 1;
 
-        D_801C3E40[arg0].struct3.unk_0 = arg2;
-        D_801C3E40[arg0].struct3.unk_4 = arg3; 
-        D_801C3E40[arg0].struct3.unk_8 = arg4;
-        D_801C3E40[arg0].struct3.unk_C = arg5;
+        D_801C3E40[arg0].struct3.romTextureStart = arg2;
+        D_801C3E40[arg0].struct3.romTextureEnd = arg3; 
+        D_801C3E40[arg0].struct3.romAssetIndexStart = arg4;
+        D_801C3E40[arg0].struct3.romAssetIndexEnd = arg5;
 
-        D_801C3E40[arg0].struct3.unk_10 = arg6;
-        D_801C3E40[arg0].struct3.unk_14 = arg7;
-        D_801C3E40[arg0].struct3.unk_18 = arg8;
-        D_801C3E40[arg0].struct3.unk_1C = arg9;
+        D_801C3E40[arg0].struct3.vaddrSpritesheet = arg6;
+        D_801C3E40[arg0].struct3.vaddrPalette = arg7;
+        D_801C3E40[arg0].struct3.vaddrUnknownAssetSheet = arg8;
+        D_801C3E40[arg0].struct3.vaddrUnknownAsset2 = arg9;
 
         D_801C3E40[arg0].struct3.unk_20 = argA;
 
@@ -211,15 +211,15 @@ bool func_80043334(u16 arg0, u16 arg1, void* arg2, void* arg3, void* arg4, void*
 
         result = 1;
         
-        D_801C3E40[arg0].struct4.unk_0 = arg2;
-        D_801C3E40[arg0].struct4.unk_4 = arg3; 
-        D_801C3E40[arg0].struct4.unk_8 = arg4;
-        D_801C3E40[arg0].struct4.unk_C = arg5;
+        D_801C3E40[arg0].struct4.romTextureStart = arg2;
+        D_801C3E40[arg0].struct4.romTextureEnd = arg3; 
+        D_801C3E40[arg0].struct4.romAssetIndexStart = arg4;
+        D_801C3E40[arg0].struct4.romAssetIndexEnd = arg5;
 
-        D_801C3E40[arg0].struct4.unk_10 = arg6;
-        D_801C3E40[arg0].struct4.unk_14 = arg7;
-        D_801C3E40[arg0].struct4.unk_18 = arg8;
-        D_801C3E40[arg0].struct4.unk_1C = arg9;
+        D_801C3E40[arg0].struct4.vaddrSpritesheet = arg6;
+        D_801C3E40[arg0].struct4.vaddrPalette = arg7;
+        D_801C3E40[arg0].struct4.vaddrUnknownAssetSheet = arg8;
+        D_801C3E40[arg0].struct4.vaddrUnknownAsset2 = arg9;
 
         D_801C3E40[arg0].struct4.unk_20 = argA;
 
@@ -270,17 +270,17 @@ bool func_80043430(u16 index, u16 arg1, u16 arg2, u16 arg3) {
     if (index == 0 && D_801C3E40[index].struct5.flags & 1) {
 
         func_8002B138(D_801C3E40[index].struct2.unk_30, 
-            D_801C3E40[index].struct2.unk_0, 
-            D_801C3E40[index].struct2.unk_4, 
-            D_801C3E40[index].struct2.unk_8, 
-            D_801C3E40[index].struct2.unk_C, 
+            D_801C3E40[index].struct2.romTextureStart, 
+            D_801C3E40[index].struct2.romTextureEnd, 
+            D_801C3E40[index].struct2.romAssetIndexStart, 
+            D_801C3E40[index].struct2.romAssetIndexEnd, 
             0, 
             0,  
-            D_801C3E40[index].struct2.unk_10,
+            D_801C3E40[index].struct2.vaddrSpritesheet,
             0,
-            D_801C3E40[index].struct2.unk_14,
-            D_801C3E40[index].struct2.unk_18,
-            D_801C3E40[index].struct2.unk_1C,
+            D_801C3E40[index].struct2.vaddrPalette,
+            D_801C3E40[index].struct2.vaddrUnknownAssetSheet,
+            D_801C3E40[index].struct2.vaddrUnknownAsset2,
             D_801C3E40[index].struct2.unk_20,
             0,
             0);
@@ -294,17 +294,17 @@ bool func_80043430(u16 index, u16 arg1, u16 arg2, u16 arg3) {
         func_8002C7EC(D_801C3E40[index].struct2.unk_30, 3);
 
         func_8002B138(D_801C3E40[index].struct3.unk_30, 
-            D_801C3E40[index].struct3.unk_0, 
-            D_801C3E40[index].struct3.unk_4, 
-            D_801C3E40[index].struct3.unk_8, 
-            D_801C3E40[index].struct3.unk_C, 
+            D_801C3E40[index].struct3.romTextureStart, 
+            D_801C3E40[index].struct3.romTextureEnd,  
+            D_801C3E40[index].struct3.romAssetIndexStart, 
+            D_801C3E40[index].struct3.romAssetIndexEnd, 
             0, 
             0,  
-            D_801C3E40[index].struct3.unk_10,
+            D_801C3E40[index].struct3.vaddrSpritesheet,
             0,
-            D_801C3E40[index].struct3.unk_14,
-            D_801C3E40[index].struct3.unk_18,
-            D_801C3E40[index].struct3.unk_1C,
+            D_801C3E40[index].struct3.vaddrPalette,
+            D_801C3E40[index].struct3.vaddrUnknownAssetSheet,
+            D_801C3E40[index].struct3.vaddrUnknownAsset2,
             D_801C3E40[index].struct3.unk_20,
             0,
             0);
@@ -318,17 +318,17 @@ bool func_80043430(u16 index, u16 arg1, u16 arg2, u16 arg3) {
         func_8002C7EC(D_801C3E40[index].struct3.unk_30, 3);
 
         func_8002B138(D_801C3E40[index].struct4.unk_30, 
-            D_801C3E40[index].struct4.unk_0, 
-            D_801C3E40[index].struct4.unk_4, 
-            D_801C3E40[index].struct4.unk_8, 
-            D_801C3E40[index].struct4.unk_C, 
+            D_801C3E40[index].struct4.romTextureStart, 
+            D_801C3E40[index].struct4.romTextureEnd, 
+            D_801C3E40[index].struct4.romAssetIndexStart, 
+            D_801C3E40[index].struct4.romAssetIndexEnd, 
             0, 
             0,  
-            D_801C3E40[index].struct4.unk_10,
+            D_801C3E40[index].struct4.vaddrSpritesheet,
             0,
-            D_801C3E40[index].struct4.unk_14,
-            D_801C3E40[index].struct4.unk_18,
-            D_801C3E40[index].struct4.unk_1C,
+            D_801C3E40[index].struct4.vaddrPalette,
+            D_801C3E40[index].struct4.vaddrUnknownAssetSheet,
+            D_801C3E40[index].struct4.vaddrUnknownAsset2,
             D_801C3E40[index].struct4.unk_20,
             0,
             0);
