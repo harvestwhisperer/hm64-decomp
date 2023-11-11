@@ -28,7 +28,7 @@ typedef struct {
 	void *unknownAssetPtr; // 0x4 // compressed/unaligned
 	u32 *spriteSheetIndexPtr; // 0x8
 	u32 *paletteIndexPtr; // 0xC
-	void *unknownAsset2Ptr; // 0x10 // sprite to palette mapping
+	u8 *spriteToPaletteMappingPtr; // 0x10 // sprite to palette mapping
 	void *texturePtr; // 0x14
 	void *texture2Ptr; // 0x18
 	void *romTexturePtr; // 0x1C
