@@ -9,6 +9,10 @@
 *.elf
 *.d
 *.a
+*.png
+*.ci
+*.pal
+assets/
 asm/
 bin/
 build/

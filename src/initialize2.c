@@ -48,6 +48,7 @@ void mainGameLoopCallback(void) {
         // handle button input and player animation
         func_8006623C();
         setNpcAnimations();
+        // animal updater
         func_80087CD4();
         // player animation
         func_8006A2E8();

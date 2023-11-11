@@ -113,9 +113,9 @@ typedef struct {
 // D_80141C98
 // map object or tile sprite info
 typedef struct {
-    void *textureIndex; // 0x98
-    void *paletteIndex; // 0x9C
-    void *spriteToPaletteIndex; // 0xA0
+    u32 *textureIndex; // 0x98
+    u32 *paletteIndex; // 0x9C
+    u8 *spriteToPaletteIndex; // 0xA0
     u8 unk_10; // 0xA4
     u8 unk_11; // 0xA5
     u8 unk_12; // 0xA6

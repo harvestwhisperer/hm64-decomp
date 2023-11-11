@@ -68,6 +68,7 @@ clean:
 	@rm -rf build
 	@rm -rf asm
 	@rm -rf bin
+	@rm -f assets
 	@rm -f $(LD_SCRIPT)
 	@rm -f $(BASENAME).elf
 	@rm -f $(BASENAME).map
@@ -91,6 +92,9 @@ setup: clean split
 rebuild: clean-artifacts check
 
 rerun: clean split check
+
+extract: 
+	@cd tools && python3 ./extract.py
 
 build:
 	@mkdir $@

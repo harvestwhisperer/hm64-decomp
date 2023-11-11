@@ -566,8 +566,8 @@ bool func_80035054(u16 mapIndex, u16 bitmapIndex, u16 spriteIndex, f32 x, f32 y,
         if (bitmapIndex) {
             
             setBitmapFormat(&mainMap[mapIndex].mapBitmaps[bitmapIndex], func_80028888(spriteIndex, mainMap[mapIndex].mapStruct6.textureIndex), func_800288B8(spriteIndex, mainMap[mapIndex].mapStruct6.paletteIndex, mainMap[mapIndex].mapStruct6.spriteToPaletteIndex));
-             
-            mainMap[mapIndex].mapBitmaps[bitmapIndex].unk_1C.x = x;
+              
+            mainMap[mapIndex].mapBitmaps[bitmapIndex].unk_1C.x = x; 
             mainMap[mapIndex].mapBitmaps[bitmapIndex].unk_1C.y = y;
             mainMap[mapIndex].mapBitmaps[bitmapIndex].unk_1C.z = z;
             
