@@ -203,17 +203,9 @@ typedef struct {
 	Vtx vertices[1]; // varying size
 } Model;
 
-// 80255000
-typedef struct {
-	u32 unk_0;
-	u32 offsets[10];
-	u32 padding;
-	// Assets of varying size
-} LevelModel;
-
 // 802055D8
 typedef struct {
-	LevelModel *modelData;
+	void *modelData; // 80255000
 	Vec3f unk_4;
 	Vec3f unk_10;
 	Vec3f unk_1C;

@@ -23,7 +23,6 @@ options:
   # extensions_path: tools/splat_ext
   libultra_symbols: True
   gfx_ucode: f3dex2
-  disassemble_all: True
 
 segments:
   - name: header
@@ -521,13 +520,14 @@ segments:
   #   palette2:
   #   ...
   #   unknown index
-  #   unknown data, varying size
+  #   unknown data, varying size (probably animation indices into spritesheet)
   #   sprite to palettes mapping table u8[] --> table[spritesheetEntry] --> paletteIndex
   #   assets index
+  #     offset for spritesheet (i.e., 0)
   #     offset for palette section
-  #     offset for unknown section
-  #     offset for unknown section3
-  #     end of assets/start of assets index
+  #     offset for unknown section (probably animation indices)
+  #     sprite to palettes mapping array
+  #     end of assets/start of spritesheet index
   #   spritesheet index
   #     offset1
   #     offset2
@@ -536,22 +536,23 @@ segments:
     type: data
     start: 0x159330
     vram: 0x80180290
-    subsegments: 
-      - [ 0x159330, bin, header]
-      - [ 0x159338, ci8, player-1, 32, 46]
-      - [ 0x1598F8, bin] 
-      - [ 0x159900, bin, "sprites/player/2", 40, 64]
-      - [ 0x15A300, bin, "sprites/player/3"]
-    # - [ 0x15A308, ci8, player-texture3, 48, 60]
-      - [ 0x15AE48, bin] # more textures
-      - [ 0x2C5F10, bin] # palette index
-      - [ 0x2C5FC0, bin, paletteHeader]
-      - [ 0x2C5FC4, palette, player-1]
-      - [ 0x2C61C4, bin] # = 0xFFFF (end of asset flag)
-      - [ 0x2C63D0, bin]
-      - [ 0x2C63D4, bin]
-      - [ 0x2C65D8, bin]
-      - [ 0x2D0280, bin, spriteToPaletteTable]
+    # using custom extract script instead
+    # subsegments: 
+    #   - [ 0x159330, bin, header]
+    #   - [ 0x159338, ci8, player-1, 32, 46]
+    #   - [ 0x1598F8, bin] 
+    #   - [ 0x159900, bin, "sprites/player/2", 40, 64]
+    #   - [ 0x15A300, bin, "sprites/player/3"]
+    #   - [ 0x15A308, ci8, player-texture3, 48, 60]
+    #   - [ 0x15AE48, bin] # more textures
+    #   - [ 0x2C5F10, bin] # palette index
+    #   - [ 0x2C5FC0, bin, paletteHeader]
+    #   - [ 0x2C5FC4, palette, player-1]
+    #   - [ 0x2C61C4, bin] # = 0xFFFF (end of asset flag)
+    #   - [ 0x2C63D0, bin]
+    #   - [ 0x2C63D4, bin]
+    #   - [ 0x2C65D8, bin]
+    #   - [ 0x2D0280, bin, spriteToPaletteTable]
 
   - name: playerAssetsIndex
     type: bin
@@ -668,7 +669,7 @@ segments:
   #   unknown asset
   #     index
   #     asset
-  #   unknown asset2
+  #   sprite to palette map
   - name: objectSprites
     type: bin
     start: 0xC951A0
@@ -845,69 +846,69 @@ segments:
   - name: audio
     type: bin
     start: 0xFD8510
-    files:
-    - [0xFD8510, bin, "snd01.bin"]
-    - [0xFDAD00, bin, "snd02.bin"]
-    - [0xFDD6C0, bin, "snd03.bin"]
-    - [0xFDFB50, bin, "snd04.bin"]
-    - [0xFE12F0, bin, "snd05.bin"]
-    - [0xFE27B0, bin, "snd06.bin"]
-    - [0xFE4D20, bin, "snd07.bin"]
-    - [0xFE5E50, bin, "snd08.bin"]
-    - [0xFE6E60, bin, "snd09.bin"]
-    - [0xFE7E00, bin, "snd10.bin"]
-    - [0xFE9040, bin, "snd11.bin"]
-    - [0xFEAB70, bin, "snd12.bin"]
-    - [0xFEB8F0, bin, "snd13.bin"]
-    - [0xFED5F0, bin, "snd14.bin"]
-    - [0xFEEA40, bin, "snd15.bin"]
-    - [0xFEF9F0, bin, "snd16.bin"]
-    - [0xFF1CD0, bin, "snd17.bin"]
-    - [0xFF3760, bin, "snd18.bin"]
-    - [0xFF4160, bin, "snd19.bin"]
-    - [0xFF4750, bin, "snd20.bin"]
-    - [0xFF6300, bin, "snd21.bin"]
-    - [0xFF6ED0, bin, "snd22.bin"]
-    - [0xFF7D80, bin, "snd23.bin"]
-    - [0xFF9370, bin, "snd24.bin"]
-    - [0xFF95A0, bin, "snd25.bin"]
-    - [0xFF9840, bin, "snd26.bin"]
-    - [0xFF99F0, bin, "snd27.bin"]
-    - [0xFF9BC0, bin, "snd28.bin"]
-    - [0xFF9DC0, bin, "snd29.bin"]
-    - [0xFF9F40, bin, "snd30.bin"]
-    - [0xFFA7B0, bin, "snd31.bin"]
-    - [0xFFA950, bin, "snd32.bin"]
-    - [0xFFAF80, bin, "snd33.bin"]
-    - [0xFFB090, bin, "snd34.bin"]
-    - [0xFFB700, bin, "snd35.bin"]
-    - [0xFFC530, bin, "snd36.bin"]
-    - [0xFFC9F0, bin, "snd37.bin"]
-    - [0xFFCC40, bin, "snd38.bin"]
-    - [0xFFCE10, bin, "snd39.bin"]
-    - [0xFFD490, bin, "snd40.bin"]
-    - [0xFFD680, bin, "snd41.bin"]
-    - [0xFFD820, bin, "snd42.bin"]
-    - [0xFFD920, bin, "snd43.bin"]
-    - [0xFFDA30, bin, "snd44.bin"]
-    - [0xFFDBA0, bin, "snd45.bin"]
-    - [0xFFDCF0, bin, "snd46.bin"]
-    - [0xFFDEF0, bin, "snd47.bin"]
-    - [0xFFE520, bin, "snd48.bin"]
-    - [0xFFE620, bin, "snd49.bin"]
-    - [0xFFE720, bin, "snd50.bin"]
-    - [0xFFE820, bin, "snd51.bin"]
-    - [0xFFE920, bin, "snd52.bin"]
-    - [0xFFEA30, bin, "snd53.bin"]
-    - [0xFFEB30, bin, "snd54.bin"]
-    - [0xFFEC30, bin, "snd55.bin"]
-    - [0xFFEE40, bin, "snd56.bin"]
-    - [0xFFEF50, bin, "snd57.bin"]
-    - [0xFFF070, bin, "snd58.bin"]
-    - [0xFFF180, bin, "snd59.bin"]
-    - [0xFFF350, bin, "snd60.bin"]
-    - [0xFFF470, bin, "snd61.bin"]
-    - [0xFFF580, bin, "snd62.bin"]
+    subsegments:
+    - [0xFD8510, bin, "audio/midi/01.bin"]
+    - [0xFDAD00, bin, "audio/midi/02.bin"]
+    - [0xFDD6C0, bin, "audio/midi/03.bin"]
+    - [0xFDFB50, bin, "audio/midi/04.bin"]
+    - [0xFE12F0, bin, "audio/midi/05.bin"]
+    - [0xFE27B0, bin, "audio/midi/06.bin"]
+    - [0xFE4D20, bin, "audio/midi/07.bin"]
+    - [0xFE5E50, bin, "audio/midi/08.bin"]
+    - [0xFE6E60, bin, "audio/midi/09.bin"]
+    - [0xFE7E00, bin, "audio/midi/10.bin"]
+    - [0xFE9040, bin, "audio/midi/11.bin"]
+    - [0xFEAB70, bin, "audio/midi/12.bin"]
+    - [0xFEB8F0, bin, "audio/midi/13.bin"]
+    - [0xFED5F0, bin, "audio/midi/14.bin"]
+    - [0xFEEA40, bin, "audio/midi/15.bin"]
+    - [0xFEF9F0, bin, "audio/midi/16.bin"]
+    - [0xFF1CD0, bin, "audio/midi/17.bin"]
+    - [0xFF3760, bin, "audio/midi/18.bin"]
+    - [0xFF4160, bin, "audio/midi/19.bin"]
+    - [0xFF4750, bin, "audio/midi/20.bin"]
+    - [0xFF6300, bin, "audio/midi/21.bin"]
+    - [0xFF6ED0, bin, "audio/midi/22.bin"]
+    - [0xFF7D80, bin, "audio/midi/23.bin"]
+    - [0xFF9370, bin, "audio/midi/24.bin"]
+    - [0xFF95A0, bin, "audio/midi/25.bin"]
+    - [0xFF9840, bin, "audio/midi/26.bin"]
+    - [0xFF99F0, bin, "audio/midi/27.bin"]
+    - [0xFF9BC0, bin, "audio/midi/28.bin"]
+    - [0xFF9DC0, bin, "audio/midi/29.bin"]
+    - [0xFF9F40, bin, "audio/midi/30.bin"]
+    - [0xFFA7B0, bin, "audio/midi/31.bin"]
+    - [0xFFA950, bin, "audio/midi/32.bin"]
+    - [0xFFAF80, bin, "audio/midi/33.bin"]
+    - [0xFFB090, bin, "audio/midi/34.bin"]
+    - [0xFFB700, bin, "audio/midi/35.bin"]
+    - [0xFFC530, bin, "audio/midi/36.bin"]
+    - [0xFFC9F0, bin, "audio/midi/37.bin"]
+    - [0xFFCC40, bin, "audio/midi/38.bin"]
+    - [0xFFCE10, bin, "audio/midi/39.bin"]
+    - [0xFFD490, bin, "audio/midi/40.bin"]
+    - [0xFFD680, bin, "audio/midi/41.bin"]
+    - [0xFFD820, bin, "audio/midi/42.bin"]
+    - [0xFFD920, bin, "audio/midi/43.bin"]
+    - [0xFFDA30, bin, "audio/midi/44.bin"]
+    - [0xFFDBA0, bin, "audio/midi/45.bin"]
+    - [0xFFDCF0, bin, "audio/midi/46.bin"]
+    - [0xFFDEF0, bin, "audio/midi/47.bin"]
+    - [0xFFE520, bin, "audio/midi/48.bin"]
+    - [0xFFE620, bin, "audio/midi/49.bin"]
+    - [0xFFE720, bin, "audio/midi/50.bin"]
+    - [0xFFE820, bin, "audio/midi/51.bin"]
+    - [0xFFE920, bin, "audio/midi/52.bin"]
+    - [0xFFEA30, bin, "audio/midi/53.bin"]
+    - [0xFFEB30, bin, "audio/midi/54.bin"]
+    - [0xFFEC30, bin, "audio/midi/55.bin"]
+    - [0xFFEE40, bin, "audio/midi/56.bin"]
+    - [0xFFEF50, bin, "audio/midi/57.bin"]
+    - [0xFFF070, bin, "audio/midi/58.bin"]
+    - [0xFFF180, bin, "audio/midi/59.bin"]
+    - [0xFFF350, bin, "audio/midi/60.bin"]
+    - [0xFFF470, bin, "audio/midi/61.bin"]
+    - [0xFFF580, bin, "audio/midi/62.bin"]
 
   - name: padding
     type: bin

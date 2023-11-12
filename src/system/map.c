@@ -536,8 +536,50 @@ bool func_80034E64(u16 mapIndex, u8 arg1) {
     return result;
     
 }
-INCLUDE_ASM(const s32, "system/map", func_80034EF0);
-  
+
+//INCLUDE_ASM(const s32, "system/map", func_80034EF0);
+
+// load and set texture for map spawnable sprite
+bool func_80034EF0(u16 mapIndex, u8 arg1, u8 arg2, u32* textureIndex, u32* paletteIndex, u8* spriteToPaletteIndex, u32 romTextureStart, u32 arg7, u32 romAssetIndexStart, u32 romAssetIndexEnd, u8 argA) {
+
+    bool result = 0;
+    
+    u32 assetIndex[8];
+
+    u32 offset1;
+    u32 offset2;
+    u32 offset3;
+    u32 offset4;
+    u32 offset5;
+
+    if (mapIndex == 0 && (mainMap[mapIndex].mapStruct9.flags & 1)) {
+        
+        mainMap[mapIndex].mapStruct6.textureIndex = textureIndex;
+        mainMap[mapIndex].mapStruct6.paletteIndex = paletteIndex;
+        mainMap[mapIndex].mapStruct6.spriteToPaletteIndex = spriteToPaletteIndex;
+
+        mainMap[mapIndex].mapStruct6.unk_10 = arg1;
+        mainMap[mapIndex].mapStruct6.unk_11 = arg2;
+        mainMap[mapIndex].mapStruct6.unk_12 = argA;
+        
+        nuPiReadRom(romAssetIndexStart, assetIndex, romAssetIndexEnd - romAssetIndexStart);
+        
+        offset1 = assetIndex[0];
+        offset2 = assetIndex[1];
+        offset3 = assetIndex[2];
+        offset4 = assetIndex[3];
+        offset5 = assetIndex[4];
+        
+        nuPiReadRom(romTextureStart + offset1, mainMap[mapIndex].mapStruct6.textureIndex, offset2 - offset1);
+        nuPiReadRom(romTextureStart + offset2, mainMap[mapIndex].mapStruct6.paletteIndex, offset3 - offset2);
+        nuPiReadRom(romTextureStart + offset4, mainMap[mapIndex].mapStruct6.spriteToPaletteIndex, offset5 - offset4);
+        
+        result = 1;
+    }
+
+    return result;
+}
+
 //INCLUDE_ASM(const s32, "system/map", func_80035004);
 
 bool func_80035004(u16 mapIndex, u16 arg1, u8 arg2, u8 arg3) {

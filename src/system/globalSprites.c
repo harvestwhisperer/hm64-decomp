@@ -5,9 +5,9 @@
 
 // forward declarations
 u8 func_8002B8E0(u16, u8, void*);
+bool func_8002C6F8(u16, u16);
+void func_8002CC84(SpriteAnimation*, u32*);             \
 u8* func_8002CD34(u16 arg0, void* arg1);
-
-void func_8002CC84(u16*, u32*);             \
 u16* func_8002CD4C(u16, u16*);   
 
 // bss
@@ -54,11 +54,159 @@ void initializeGlobalSprites(void) {
 }
 
 // wrapper for nuPiReadRom
-INCLUDE_ASM(const s32, "system/globalSprites", func_8002B138);
+//INCLUDE_ASM(const s32, "system/globalSprites", func_8002B138);
 
-INCLUDE_ASM(const s32, "system/globalSprites", func_8002B36C);
+bool func_8002B138(u16 index, u32 romTextureStart, u32 romTextureEnd, u32 romAssetIndexStart, u32 romAssetIndexEnd, 
+    u32 romSpritesheetIndexStart, u32 romSpritesheetIndexEnd, void* texture1Vaddr, void* texture2Vaddr, void* paletteVaddr, void* animationVaddr, 
+    void* spriteToPaletteVaddr, void* spritesheetIndexVaddr, u8 assetType, u8 argE) {
 
-INCLUDE_ASM(const s32, "system/globalSprites", func_8002B50C);
+    u32 assetIndex[8];
+    bool result = 0;
+    
+    u32 offset1;
+    u32 offset2;
+    u32 offset3;
+    u32 offset4;
+    u32 offset5;
+
+    if (index < MAX_ACTIVE_SPRITES) {
+        
+        if (!(globalSprites[index].flags2 & 1)) { 
+            
+            nuPiReadRom(romAssetIndexStart, assetIndex, romAssetIndexEnd - romAssetIndexStart);
+
+            // spritesheet
+            offset1 = assetIndex[0];
+            // palette
+            offset2 = assetIndex[1];
+            // animation
+            offset3 = assetIndex[2];
+            // sprite to palette
+            offset4 = assetIndex[3];
+            // end
+            offset5 = assetIndex[4];
+        
+            // has separate spritesheet index
+            if (assetType & 1) {
+
+                nuPiReadRom(romTextureStart + offset2, paletteVaddr, offset3 - offset2);
+                nuPiReadRom(romTextureStart + offset3, animationVaddr, offset4 - offset3);
+                nuPiReadRom(romTextureStart + offset4, spriteToPaletteVaddr, offset5 - offset4);
+                nuPiReadRom(romSpritesheetIndexStart, spritesheetIndexVaddr, romSpritesheetIndexEnd - romSpritesheetIndexStart);
+
+                func_8002B50C(index, animationVaddr, spritesheetIndexVaddr, paletteVaddr, spriteToPaletteVaddr, romTextureStart, texture1Vaddr, texture2Vaddr);
+
+            // spritesheet index in spritesheet
+            } else {
+
+                nuPiReadRom(romTextureStart + offset1, texture1Vaddr, offset2 - offset1);
+                nuPiReadRom(romTextureStart + offset2, paletteVaddr, offset3 - offset2);
+                nuPiReadRom(romTextureStart + offset3, animationVaddr, offset4 - offset3);
+                nuPiReadRom(romTextureStart + offset4, spriteToPaletteVaddr, offset5 - offset4);
+                
+                func_8002B36C(index, animationVaddr, texture1Vaddr, paletteVaddr, spriteToPaletteVaddr);
+
+            }
+
+            if (!argE) {
+                globalSprites[index].flags2 |= 0x200;
+            }
+
+            globalSprites[index].flags2 |= 0x40;
+
+            result = 1;
+        }
+    
+    }
+
+
+    return result;
+
+}
+
+//INCLUDE_ASM(const s32, "system/globalSprites", func_8002B36C);
+
+bool func_8002B36C(u16 index, u32* unknownAssetIndexPtr, u32* spritesheetIndexPtr, u32* paletteIndexPtr, u8* spriteToPaletteMappingPtr) {
+
+    bool result = 0;
+
+    if (index < MAX_ACTIVE_SPRITES) {
+
+        if (!(globalSprites[index].flags2 & 1)) {
+
+            globalSprites[index].unknownAssetIndexPtr = unknownAssetIndexPtr;
+            globalSprites[index].spritesheetIndexPtr = spritesheetIndexPtr;
+            globalSprites[index].paletteIndexPtr = paletteIndexPtr;
+            globalSprites[index].spriteToPaletteMappingPtr = spriteToPaletteMappingPtr;
+            globalSprites[index].texturePtr = (void*)0;
+            globalSprites[index].texture2Ptr = (void*)0;
+            globalSprites[index].romTexturePtr = (void*)0;
+
+            globalSprites[index].flags2 = 1;
+            globalSprites[index].flags1 = 0;
+
+            globalSprites[index].unk_94 = 0;
+            globalSprites[index].unk_92 = 0;
+
+            func_8002BD0C(index, 0.0f, 0.0f, 0.0f);
+            func_8002BD90(index, 1.0f, 1.0f, 1.0f);
+            func_8002BE14(index, 0.0f, 0.0f, 0.0f);
+            func_8002C85C(index, 0xFF, 0xFF, 0xFF, 0xFF);
+            func_8002C680(index, 2, 2);
+            func_8002C6F8(index, 2);
+            func_8002C7EC(index, 3);
+            
+            result = 1;
+            
+        }
+    }
+ 
+    return result;
+
+}
+
+//INCLUDE_ASM(const s32, "system/globalSprites", func_8002B50C);
+
+bool func_8002B50C(u16 index, u32* unknownAssetIndexPtr, u32* spritesheetIndexPtr, u32* paletteIndexPtr, u8* spriteToPaletteMappingPtr, u32 romTexturePtr, u8* texturePtr, u8* texture2Ptr) {
+    
+    bool result = 0;
+
+    if (index < MAX_ACTIVE_SPRITES) {
+
+        if (!(globalSprites[index].flags2 & 1)) {
+
+            // animation index
+            globalSprites[index].unknownAssetIndexPtr = unknownAssetIndexPtr;
+            globalSprites[index].spritesheetIndexPtr = spritesheetIndexPtr;
+            globalSprites[index].paletteIndexPtr = paletteIndexPtr;
+            globalSprites[index].spriteToPaletteMappingPtr = spriteToPaletteMappingPtr;
+            globalSprites[index].texturePtr = texturePtr;
+            globalSprites[index].texture2Ptr = texture2Ptr;
+            globalSprites[index].romTexturePtr = romTexturePtr;
+
+            globalSprites[index].flags2 = 5;
+            globalSprites[index].flags1 = 0;
+
+            globalSprites[index].unk_94 = 0;
+            globalSprites[index].unk_92 = 0;
+
+            func_8002BD0C(index, 0, 0, 0);
+            func_8002BD90(index, 1.0f, 1.0f, 1.0f);
+            func_8002BE14(index, 0, 0, 0);
+            func_8002C85C(index, 0xFF, 0xFF, 0xFF, 0xFF);
+            func_8002C680(index, 2, 2);
+            func_8002C6F8(index, 2);
+            func_8002C7EC(index, 3);
+            
+            result = 1;
+            
+        }
+    }
+ 
+    return result;
+    
+}
+
 
 //INCLUDE_ASM(const s32, "system/globalSprites", func_8002B6B8);
 
@@ -652,7 +800,23 @@ bool func_8002CB88(u16 index, u16 arg1) {
 
 }
 
-INCLUDE_ASM(const s32, "system/globalSprites", func_8002CBF8);
+//INCLUDE_ASM(const s32, "system/globalSprites", func_8002CBF8);
+
+bool func_8002CBF8(u16 index) {
+
+    bool result;
+
+    result = 0;
+    
+    if (index < MAX_ACTIVE_SPRITES) {
+        if (globalSprites[index].flags2 & 1) {
+            result = (globalSprites[index].flags2 >> 10) & 1;
+        }
+    }
+
+    return result;
+    
+}
 
 //INCLUDE_ASM(const s32, "system/globalSprites", func_8002CC44);
 
@@ -672,7 +836,7 @@ bool func_8002CC44(u16 index) {
 // arg1 = ptr to unknown asset (byte swapped u16)
 // 16 bit swap
 #ifdef PERMUTER
-void func_8002CC84(u16* arg0, u16* arg1) {
+void func_8002CC84(SpriteAnimation* arg0, u16* arg1) {
 
     u16 arr[2];
     
@@ -690,7 +854,33 @@ void func_8002CC84(u16* arg0, u16* arg1) {
 INCLUDE_ASM(const s32, "system/globalSprites", func_8002CC84);
 #endif
 
+#ifdef PERMUTER
+void func_8002CCA8(SpriteAnimation* arg0, u16* arg1) {
+
+    u32 arr[2];
+
+    u32 temp;
+    u32 temp1;
+    u32 temp2;
+    u32 temp3;
+
+    temp = *arg1;
+    temp1 = (*arg1 << 8);
+    temp >>= 8;
+    temp3 |= temp;
+    temp3 |= temp1;
+    
+    arg0->animation = temp3;
+
+    temp1 = *(arg1+1);
+
+    arg0->unk_2 = temp1 >> 8;
+    arg0->unk_3 = temp1;
+    
+}
+#else
 INCLUDE_ASM(const s32, "system/globalSprites", func_8002CCA8);
+#endif
 
 INCLUDE_ASM(const s32, "system/globalSprites", func_8002CCDC);
 
@@ -698,7 +888,7 @@ INCLUDE_ASM(const s32, "system/globalSprites", func_8002CCDC);
 
 // unknown sprite asset index lookup
 u8* func_8002CD34(u16 arg0, void* arg1) {
-
+ 
     u32 *arr = (u32*)arg1;
     
     return (u8*)(arg1 + arr[arg0]);
@@ -717,6 +907,19 @@ INCLUDE_ASM(const s32, "system/globalSprites", func_8002CD4C);
 //INCLUDE_ASM(const s32, "system/globalSprites", func_8002CDB4);
 
 // unused or inline
+Gfx* func_8002CDB4(u16 arg0, Gfx* arg1) {
+    
+    u32 i;
+    
+    for (i = 0; (u16)i < arg0; i++) {
+        arg1++;
+    }
+
+    return arg1;
+}
+
+// alternate
+/*
 u32 func_8002CDB4(u16 arg0, u32 arg1) {
     
     u16 i = 0;
@@ -732,8 +935,9 @@ u32 func_8002CDB4(u16 arg0, u32 arg1) {
     
     return arg1;
 }
+*/
 
-// also matches
+// alternate
 /*
 u32 func_8002CDB4(u16 arg0, u32 arg1) {
     
