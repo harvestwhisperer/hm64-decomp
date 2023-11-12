@@ -111,14 +111,17 @@ typedef struct {
 } UnknownMapStruct5;
 
 // D_80141C98
-// map object or tile sprite info
+// map spawnable sprites
+// loads textures at 0xD8B1D0
 typedef struct {
     u32 *textureIndex; // 0x98
     u32 *paletteIndex; // 0x9C
     u8 *spriteToPaletteIndex; // 0xA0
+    // sprite indices
     u8 unk_10; // 0xA4
     u8 unk_11; // 0xA5
     u8 unk_12; // 0xA6
+    // map grid for sprite mapping
     u16 arr[0x40]; // 0xA8
     u16 arr2[0x40]; // 0x40E8
 } UnknownMapStruct6;
@@ -225,7 +228,7 @@ extern bool func_80034C40(u16 arg0, u8 arg1, u16 arg2, u16 arg3, f32 arg4, f32 a
 extern bool func_80034D64(u16 arg0, u8 arg1, u16 arg2, u16 arg3);
 extern bool func_80034DC8(u16, u8, u16);
 extern bool func_80034E64(u16, u8);     
-extern bool func_80034EF0(u16, u8, u8, void*, void*, void*, void*, void*, void*, void*, u8); 
+extern bool func_80034EF0(u16 mapIndex, u8 arg1, u8 arg2, u32* arg3, u32* arg4, u8* arg5, u32 arg6, u32 arg7, u32 arg8, u32 arg9, u8 argA);
 extern bool func_80035004(u16 arg0, u16 arg1, u8 arg2, u8 arg3); 
 extern bool func_80035054(u16 mapIndex, u16 bitmapIndex, u16 arg2, f32 arg3, f32 arg4, f32 arg5);
 extern f32 func_80035150(u16, f32, f32);      

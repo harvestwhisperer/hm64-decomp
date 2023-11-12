@@ -68,7 +68,7 @@ clean:
 	@rm -rf build
 	@rm -rf asm
 	@rm -rf bin
-	@rm -f assets
+	@rm -rf assets
 	@rm -f $(LD_SCRIPT)
 	@rm -f $(BASENAME).elf
 	@rm -f $(BASENAME).map

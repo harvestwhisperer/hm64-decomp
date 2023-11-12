@@ -22,19 +22,25 @@ typedef struct {
 	u16 animationIndexPlusOne;
 } Animation;
 
+typedef struct {
+	u16 animation; // or'd indices
+	u8 unk_2; // lower bits
+	u8 unk_3; // upper bits
+} SpriteAnimation;
+
 // 0x801FD630
 typedef struct {	
 	u32 *unknownAssetIndexPtr; // 0x0
-	void *unknownAssetPtr; // 0x4 // compressed/unaligned
-	u32 *spriteSheetIndexPtr; // 0x8
+	void *unknownAssetPtr; // 0x4 // byteswapped
+	u32 *spritesheetIndexPtr; // 0x8
 	u32 *paletteIndexPtr; // 0xC
 	u8 *spriteToPaletteMappingPtr; // 0x10 // sprite to palette mapping
-	void *texturePtr; // 0x14
-	void *texture2Ptr; // 0x18
+	u8 *texturePtr; // 0x14
+	u8 *texture2Ptr; // 0x18
 	void *romTexturePtr; // 0x1C
 	void *unknownAsset3Ptr; // 0x20 // set from unknownAssetPtr
 	void *unknownAsset4Ptr; // 0x24 // func_8002CDE8
-	u16 animation; // 0x28
+	SpriteAnimation animation; // 0x28
 	Vec3f shrink; // 0x2C
 	Vec3f scale; // 0x38
 	Vec3f unk_44;
@@ -195,7 +201,9 @@ extern bool setSpriteAnimation(u16 index, u16 arg1);
 
 /* globalSprites.c */
 extern void initializeGlobalSprites(void); 
-extern void func_8002B138(u16, void*, void*, void*, void*, void*, void*, void*, void*, void*, void*, void*, void*, void*, u8); 
+extern bool func_8002B138(u16 index, u32 romTextureStart, u32 romTextureEnd, u32 romAssetIndexStart, u32 romAssetIndexEnd, u32 romSpritesheetIndexStart, u32 romSpritesheetIndexEnd, void* texture1Vaddr, void* texture2Vaddr, void* paletteVaddr, void* animationVaddr, void* spriteToPaletteVaddr, void* spritesheetIndexVaddr, u8 assetType, u8 argE);
+extern bool func_8002B36C(u16 index, u32* unknownAssetIndexPtr, u32* spritesheetIndexPtr, u32* paletteIndexPtr, u8* spriteToPaletteMappingPtr);
+extern bool func_8002B50C(u16 index, u32* unknownAssetIndexPtr, u32* spritesheetIndexPtr, u32* paletteIndexPtr, u8* spriteToPaletteMappingPtr, u32 romTexturePtr, u8* texturePtr, u8* texture2Ptr);
 extern bool func_8002B6B8(u16 index);
 extern void func_8002B710(void);
 extern bool func_8002B80C(u16 index, u16 offset, u8 arg2);
