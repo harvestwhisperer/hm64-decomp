@@ -139,9 +139,9 @@ u8 func_800ACEF8(u16 mapIndex) {
 
 //INCLUDE_ASM(const s32, "levelInteractions", func_800ACFE8);
 
-bool func_800ACFE8(u16 mapIndex) {
+u8 func_800ACFE8(u16 mapIndex) {
 
-    bool result = 0;
+    u8 result = 0;
     u8 temp;
     
     if (mapIndex == FARM) {
@@ -174,6 +174,7 @@ u8 checkWineBarrelInteraction(u16 mapIndex) {
 
 //INCLUDE_ASM(const s32, "levelInteractions", func_800AD0C4);
 
+// fishing
 u8 func_800AD0C4(u16 mapIndex) {
 
     u8 result = 0;
@@ -634,9 +635,9 @@ u8 func_800AD8D0(u16 mapIndex, u8 arg1) {
 //INCLUDE_ASM(const s32, "levelInteractions", func_800ADCDC);
 
 // house
-bool func_800ADCDC(u16 mapIndex, u8 arg1) {
+u8 func_800ADCDC(u16 mapIndex, u8 arg1) {
 
-    bool result = 0;
+    u8 result = 0;
     
     switch (arg1) {
         case 1:
@@ -740,9 +741,9 @@ INCLUDE_ASM(const s32, "levelInteractions", func_800AE00C);
 //INCLUDE_ASM(const s32, "levelInteractions", func_800AEB54);
 
 // coop
-bool func_800AEB54(u16 mapIndex, u8 arg1) {
+u8 func_800AEB54(u16 mapIndex, u8 arg1) {
 
-    bool result = 0;
+    u8 result = 0;
 
     switch (arg1) {
         
@@ -823,9 +824,9 @@ bool func_800AEB54(u16 mapIndex, u8 arg1) {
 //INCLUDE_ASM(const s32, "levelInteractions", func_800AED60);
 
 // kitchen
-bool func_800AED60(u16 mapIndex, u8 arg1) {
+u8 func_800AED60(u16 mapIndex, u8 arg1) {
 
-    bool result = 0;
+    u8 result = 0;
 
     switch (arg1) {
         case 1:
@@ -873,9 +874,9 @@ bool func_800AED60(u16 mapIndex, u8 arg1) {
 //INCLUDE_ASM(const s32, "levelInteractions", func_800AEE8C);
 
 // bathroom
-bool func_800AEE8C(u16 mapIndex, u8 arg1) {
+u8 func_800AEE8C(u16 mapIndex, u8 arg1) {
 
-    bool result = 0;
+    u8 result = 0;
 
     switch (arg1) {
 
@@ -929,9 +930,9 @@ bool func_800AEE8C(u16 mapIndex, u8 arg1) {
 //INCLUDE_ASM(const s32, "levelInteractions", func_800AF060);
 
 // greenhouse
-bool func_800AF060(u16 arg0, u8 arg1) {
+u8 func_800AF060(u16 arg0, u8 arg1) {
 
-    bool result = 0;
+    u8 result = 0;
 
     if (arg1 == 1) {
         if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
@@ -971,9 +972,9 @@ INCLUDE_ASM(const s32, "levelInteractions", func_800AFA7C);
 
 //INCLUDE_ASM(const s32, "levelInteractions", func_800AFCD0);
 
-bool func_800AFCD0(u16 mapIndex, u8 arg1) {
+u8 func_800AFCD0(u16 mapIndex, u8 arg1) {
 
-    bool result = 0;
+    u8 result = 0;
 
     if (arg1 == 1) {
         if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
@@ -990,14 +991,63 @@ bool func_800AFCD0(u16 mapIndex, u8 arg1) {
 INCLUDE_ASM(const s32, "levelInteractions", func_800AFD20);
 
 // jtbl_80121960
-INCLUDE_ASM(const s32, "levelInteractions", func_800AFF9C);
+//INCLUDE_ASM(const s32, "levelInteractions", func_800AFF9C);
+
+u8 func_800AFF9C(u16 arg0, u8 arg1) {
+
+    u8 result = 0;
+    
+    switch (arg1) {
+        case 1:
+            if (!checkDailyEventBit(0x2D)) {
+                result = 1;
+                setEntrance(0x37);
+            }
+            break;
+        case 17:
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) {
+                if (gPlayer.unk_2C == 0) {
+                    if (func_800DDDFC(0x25)) {
+                        func_800DC9FC(0x25);
+                    }
+                    result = 2;
+                }
+            }
+            break;
+        case 18:
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) {
+                if (gPlayer.unk_2C == 0) {
+                    if (func_800DDDFC(0x26)) {
+                        func_800DC9FC(0x26);
+                    }
+                    if (func_800DDDFC(0x27)) {
+                        func_800DC9FC(0x27);
+                    }
+                    result = 2;
+                }
+            }
+            break;
+        case 16:
+        case 19:
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) {
+                showTextBox(0, 6, 0xCA, 0, 0);
+                result = 1;
+            }
+            break;
+        default:
+            break;
+    }
+
+    return result;
+    
+}
 
 //INCLUDE_ASM(const s32, "levelInteractions", func_800B00E0);
 
 // church
-bool func_800B00E0(u16 mapIndex, u8 arg1) {
+u8 func_800B00E0(u16 mapIndex, u8 arg1) {
 
-    bool result = 0;
+    u8 result = 0;
 
     switch (arg1) {
         case 1:
@@ -1033,9 +1083,9 @@ bool func_800B00E0(u16 mapIndex, u8 arg1) {
 //INCLUDE_ASM(const s32, "levelInteractions", func_800B01EC);
 
 // tavern
-bool func_800B01EC(u16 arg0, u8 arg1) {
+u8 func_800B01EC(u16 arg0, u8 arg1) {
 
-    bool result = 0;
+    u8 result = 0;
 
     switch (arg1) {
         case 1:
@@ -1098,9 +1148,9 @@ INCLUDE_ASM(const s32, "levelInteractions", func_800B0714);
 //INCLUDE_ASM(const s32, "levelInteractions", func_800B0A64);
 
 // midwife
-bool func_800B0A64(u16 mapIndex, u8 arg1) {
+u8 func_800B0A64(u16 mapIndex, u8 arg1) {
 
-    bool result = 0;
+    u8 result = 0;
 
     switch (arg1) {
         case 1:
@@ -1126,9 +1176,9 @@ INCLUDE_ASM(const s32, "levelInteractions", func_800B0AFC);
 
 //INCLUDE_ASM(const s32, "levelInteractions", func_800B0C48);
 
-bool func_800B0C48(u16 mapIndex, u8 arg1) {
+u8 func_800B0C48(u16 mapIndex, u8 arg1) {
 
-   bool result = 0;
+   u8 result = 0;
 
     if (arg1 == 1) {
         if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
@@ -1147,9 +1197,9 @@ INCLUDE_ASM(const s32, "levelInteractions", func_800B0C98);
 //INCLUDE_ASM(const s32, "levelInteractions", func_800B0FB8);
 
 // potion shop bedroom
-bool func_800B0FB8(u16 mapIndex, u8 arg1) {
+u8 func_800B0FB8(u16 mapIndex, u8 arg1) {
 
-    bool result = 0;
+    u8 result = 0;
     int temp;
 
     switch (arg1) {
@@ -1188,9 +1238,9 @@ INCLUDE_ASM(const s32, "levelInteractions", func_800B106C);
 //INCLUDE_ASM(const s32, "levelInteractions", func_800B1438);
 
 // mountain 1
-bool func_800B1438(u16 mapIndex, u8 arg1) {
+u8 func_800B1438(u16 mapIndex, u8 arg1) {
 
-    bool result = 0;
+    u8 result = 0;
 
     switch (arg1) {
         case 1:
@@ -1232,9 +1282,9 @@ INCLUDE_ASM(const s32, "levelInteractions", func_800B1808);
 //INCLUDE_ASM(const s32, "levelInteractions", func_800B1994);
 
 // moon mountain
-bool func_800B1994(u16 mapIndex, u8 arg1) {
+u8 func_800B1994(u16 mapIndex, u8 arg1) {
 
-    bool result = 0;
+    u8 result = 0;
 
     switch (arg1) {
 
@@ -1277,9 +1327,9 @@ INCLUDE_ASM(const s32, "levelInteractions", func_800B1AC4);
 
 //INCLUDE_ASM(const s32, "levelInteractions", handleCarpenterHutInteractions);
 
-bool handleCarpenterHutInteractions(u16 mapIndex, u8 arg1) {
+u8 handleCarpenterHutInteractions(u16 mapIndex, u8 arg1) {
 
-    bool result = 0;
+    u8 result = 0;
     
     switch (arg1) {
         case 1:
@@ -1315,9 +1365,9 @@ bool handleCarpenterHutInteractions(u16 mapIndex, u8 arg1) {
 
 //INCLUDE_ASM(const s32, "levelInteractions", handleDumplingHouseExit);
 
-bool handleDumplingHouseExit(u16 mapIndex, u8 arg1) {
+u8 handleDumplingHouseExit(u16 mapIndex, u8 arg1) {
 
-    bool result = 0;
+    u8 result = 0;
 
     if (arg1 == 1) {
         if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
@@ -1331,9 +1381,9 @@ bool handleDumplingHouseExit(u16 mapIndex, u8 arg1) {
 
 //INCLUDE_ASM(const s32, "levelInteractions", func_800B1DBC);
 
-bool func_800B1DBC(u16 mapIndex, u8 arg1) {
+u8 func_800B1DBC(u16 mapIndex, u8 arg1) {
 
-    bool result = 0;
+    u8 result = 0;
 
     switch (arg1) {
 
@@ -1372,9 +1422,9 @@ bool func_800B1DBC(u16 mapIndex, u8 arg1) {
 //INCLUDE_ASM(const s32, "levelInteractions", func_800B1EE4);
 
 // harvest sprite cave
-bool func_800B1EE4(u16 mapIndex, u8 arg1) {
+u8 func_800B1EE4(u16 mapIndex, u8 arg1) {
 
-    bool result = 0;
+    u8 result = 0;
 
     switch (arg1) {
 
@@ -1427,9 +1477,9 @@ bool func_800B1EE4(u16 mapIndex, u8 arg1) {
 //INCLUDE_ASM(const s32, "levelInteractions", func_800B2078);
 
 // mine
-bool func_800B2078(u16 mapIndex, u8 arg1) {
+u8 func_800B2078(u16 mapIndex, u8 arg1) {
 
-    bool result = 0;
+    u8 result = 0;
 
     if (arg1 == 1) {
         if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
@@ -1444,9 +1494,9 @@ bool func_800B2078(u16 mapIndex, u8 arg1) {
 //INCLUDE_ASM(const s32, "levelInteractions", func_800B20C8);
 
 // pond
-bool func_800B20C8(u16 mapIndex, u8 arg1) {
+u8 func_800B20C8(u16 mapIndex, u8 arg1) {
     
-    bool result = 0;
+    u8 result = 0;
 
     if (arg1 == 1) {
         if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) { 
@@ -1464,9 +1514,9 @@ INCLUDE_ASM(const s32, "levelInteractions", func_800B2118);
 //INCLUDE_ASM(const s32, "levelInteractions", func_800B2264);
 
 // vineyard house
-bool func_800B2264(u16 mapIndex, u8 arg1) {
+u8 func_800B2264(u16 mapIndex, u8 arg1) {
 
-    bool result = 0;
+    u8 result = 0;
 
     switch (arg1) {
         case 1:
@@ -1494,9 +1544,9 @@ bool func_800B2264(u16 mapIndex, u8 arg1) {
 
 //INCLUDE_ASM(const s32, "levelInteractions", func_800B2340);
 
-bool func_800B2340(u16 mapIndex, u8 arg1) {
+u8 func_800B2340(u16 mapIndex, u8 arg1) {
 
-    bool result = 0;    
+    u8 result = 0;    
     
     if (arg1 == 1) {
         if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
@@ -1514,9 +1564,9 @@ bool func_800B2340(u16 mapIndex, u8 arg1) {
 //INCLUDE_ASM(const s32, "levelInteractions", func_800B23A4);
 
 // vineyard cellar
-bool func_800B23A4(u16 mapIndex, u8 arg1) {
+u8 func_800B23A4(u16 mapIndex, u8 arg1) {
 
-    bool result = 0;
+    u8 result = 0;
     
     switch (arg1) {
         case 1:
@@ -1555,9 +1605,9 @@ bool func_800B23A4(u16 mapIndex, u8 arg1) {
 //INCLUDE_ASM(const s32, "levelInteractions", func_800B24D4);
 
 // vineyard cellar basement
-bool func_800B24D4(u16 mapIndex, u8 arg1) {
+u8 func_800B24D4(u16 mapIndex, u8 arg1) {
 
-    bool result = 0; 
+    u8 result = 0; 
 
     switch (arg1) {
         case 1:
@@ -1580,9 +1630,9 @@ bool func_800B24D4(u16 mapIndex, u8 arg1) {
 //INCLUDE_ASM(const s32, "levelInteractions", func_800B256C);
 
 // race track
-bool func_800B256C(u16 mapIndex, u8 arg1) {
+u8 func_800B256C(u16 mapIndex, u8 arg1) {
 
-    bool result = 0; 
+    u8 result = 0; 
     
     switch (arg1) {
         case 1:
@@ -1612,9 +1662,9 @@ INCLUDE_ASM(const s32, "levelInteractions", func_800B2604);
 //INCLUDE_ASM(const s32, "levelInteractions", func_800B27CC);
 
 // ranch house
-bool func_800B27CC(u16 mapIndex, u8 collisionIndex) {
+u8 func_800B27CC(u16 mapIndex, u8 collisionIndex) {
 
-    bool result = 0;
+    u8 result = 0;
 
     switch (collisionIndex) {
         case 1: 
@@ -1649,9 +1699,9 @@ bool func_800B27CC(u16 mapIndex, u8 collisionIndex) {
 // jtbl_80121C30
 //INCLUDE_ASM(const s32, "levelInteractions", handleRanchStoreExits);
 
-bool handleRanchStoreExits(u16 mapIndex, u8 collisionIndex) {
+u8 handleRanchStoreExits(u16 mapIndex, u8 collisionIndex) {
 
-    bool result = 0;
+    u8 result = 0;
     
     switch (collisionIndex) {
         // exit
@@ -1745,9 +1795,9 @@ bool handleRanchStoreExits(u16 mapIndex, u8 collisionIndex) {
 //INCLUDE_ASM(const s32, "levelInteractions", func_800B2B90);
 
 // ann room
-bool func_800B2B90(u16 mapIndex, u8 arg1) {
+u8 func_800B2B90(u16 mapIndex, u8 arg1) {
 
-    bool result = 0; 
+    u8 result = 0; 
 
     switch (arg1) {
         case 1:
@@ -1771,9 +1821,9 @@ bool func_800B2B90(u16 mapIndex, u8 arg1) {
 //INCLUDE_ASM(const s32, "levelInteractions", func_800B2C28);
 
 // ranch barn
-bool func_800B2C28(u16 mapIndex, u8 arg1) {
+u8 func_800B2C28(u16 mapIndex, u8 arg1) {
 
-    bool result = 0;    
+    u8 result = 0;    
 
     if (arg1 == 1) {
         if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
@@ -1789,9 +1839,9 @@ bool func_800B2C28(u16 mapIndex, u8 arg1) {
 //INCLUDE_ASM(const s32, "levelInteractions", func_800B2C78);
 
 // beach
-bool func_800B2C78(u16 mapIndex, u8 arg1) {
+u8 func_800B2C78(u16 mapIndex, u8 arg1) {
 
-    bool result = 0;    
+    u8 result = 0;    
     
     switch (arg1) {
         case 1:

@@ -28,6 +28,14 @@ typedef struct {
 	u8 unk_3; // upper bits
 } SpriteAnimation;
 
+typedef struct {
+    u16 unk_0;
+    u8 unk_2;
+    u8 unk_3;
+    u32 unk_4;
+    u32 unk_8;
+} UnknownAnimation;
+
 // 0x801FD630
 typedef struct {	
 	u32 *unknownAssetIndexPtr; // 0x0
@@ -129,7 +137,7 @@ typedef struct {
 	Vec4f rgba; // 40
     s16 unk_50;
 	u16 unk_52;
-	u16 unk_54; // flags for microcodes
+	u16 unk_54; // flags for microcodes, vertex type, pixel density
 	u16 flags; //56
 } Bitmap;
 
@@ -190,7 +198,7 @@ extern void func_80033058(void);
 extern bool func_8003019C(u16, u8);                            
 extern bool func_80030240(u16, u8);                            
 extern bool func_800302E4(u16, u8);         
-extern u16 func_800305CC(u16 index, f32 arg1, f32 arg2, u16 arg3, u16 arg4);
+extern u16 func_800305CC(u16 index, f32 arg1, f32 arg2, u16 arg3);
 extern bool func_800309B4(u16, f32, f32);     
 extern u16 func_80030BA0(u16* ptr, u16 offset);  
 extern Vec3f* func_800315A0(Vec3f*, u16 index);    

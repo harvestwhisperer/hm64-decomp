@@ -3,6 +3,8 @@
 
 #include "common.h"
 
+#define MAIN_MAP_INDEX 0
+
 typedef struct {
     void *timg;
     void *pal;
@@ -63,7 +65,7 @@ typedef struct {
     u8 unk_8; // 0x6C
     u8 unk_9; // 0x6D
     // counters for indexing into 8025503C
-    u8 unk_A; // 0x6E // related to data from mainMap.unk_8, possibly collisions/interactables
+    u8 unk_A; // 0x6E // related to data from mainMap.unk_4 and unk_8, possibly collisions/interactables
     u8 unk_B; // 0x6F
 } UnknownMapStruct1;
 
@@ -232,16 +234,18 @@ extern bool func_80034EF0(u16 mapIndex, u8 arg1, u8 arg2, u32* arg3, u32* arg4, 
 extern bool func_80035004(u16 arg0, u16 arg1, u8 arg2, u8 arg3); 
 extern bool func_80035054(u16 mapIndex, u16 bitmapIndex, u16 arg2, f32 arg3, f32 arg4, f32 arg5);
 extern f32 func_80035150(u16, f32, f32);      
+extern Vec3f* func_800359C8(Vec3f* arg0, MainMap* arg1, f32 arg2, f32 arg3);
 extern u8 func_80036318(u16, f32, f32);
 extern Vec3f* func_80036610(Vec3f*, u16, f32, f32);   
 extern bool func_80036A84(u16);      
 extern void func_80036C08(u32);                                 
 extern void func_80036FA0(u16); 
+extern bool func_80038810(u16 mapIndex);
 extern bool func_80038900(u16 mapIndex, u16 arg1, u16 arg2, u16 arg3, u16 arg4); 
 extern bool func_80038990(u16, u16, u8);       
 extern bool func_80038B58(u16, u16, u8, u8);   
 extern void func_8003A1BC(void);
-Vec3f* func_800359C8(Vec3f* arg0, MainMap* arg1, f32 arg2, f32 arg3);
+extern Vec3f* func_8003AF58(Vec3f*, u16, u8, u8); 
 
 extern MainMap mainMap[1];
 

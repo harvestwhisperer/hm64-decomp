@@ -63,6 +63,7 @@ u16 func_8009C054(u16 mapIndex) {
     
     u16 result = 0xFFFF;
     
+    // can't use array/struct here as required by func_80056030
     if (!(gCutsceneFlags & 1)) {
         
         gCutsceneFlags &= ~2;

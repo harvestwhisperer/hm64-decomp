@@ -103,6 +103,7 @@ for asset_addresses in addresses_list:
 
     elif len(asset_addresses) == 4:
         palette_index_base = spritesheet_index_base + asset_index[1]
+        # palette_index_base = sprite_base + spritesheed_index[-1]
     else:
         break
 

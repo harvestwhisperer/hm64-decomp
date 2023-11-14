@@ -14,13 +14,16 @@
 #include "gameStatus.h"
 #include "itemHandlers.h"
 #include "level.h"
+#include "levelInteractions.h"
 #include "mainproc.h"
 #include "mapObjects.h"
 #include "npc.h"
 #include "shop.h"
  
 // forward declaration
-u8 func_80067A24(u8);                               
+u8 func_80067A24(u8);                 
+void func_8006C628(u16, u16);
+
 
 // consumable tool counters (seeds, feed)
 extern u8 D_802373A8;
@@ -29,9 +32,16 @@ extern u16 D_80237410;
 // part of player struct, but necessary for matching right now
 extern u16 D_801890C8;
 
-// possible bss
 extern u8 gMaximumStamina;
+// power nut bits
+extern u32 D_80215EB8;
+
+// possible bss
 extern u8 gToolchestSlots[];   
+extern u8 D_8018A724;
+extern u8 D_801A8B5C;
+// fishing rod use; part of D_80189828?
+extern u32 D_80189838;
 
 // data
 extern Vec3f playerDefaultStartingCoordinates[];
@@ -41,18 +51,34 @@ extern u8 playerDefaultStartingDirections[];
 // rodata
 extern s8 D_8011F3F0[12];
 extern s8 D_8011F3FC[12]; 
- 
+extern u8 D_8011F5D4[];
+
 
 static inline void resetAction() {
     gPlayer.action3 = 0;
-    gPlayer.action4 = 0;
+    gPlayer.animationState = 0;
     gPlayer.action1 = 0;
     gPlayer.action2 = 0;
 }
 
+// shouldn't be necessary
 static inline void resetAction2() {
     gPlayer.action3 = 0;
-    gPlayer.action4 = 0;
+    gPlayer.animationState = 0;
+}
+
+static inline void setAction(u8 arg0, u8 arg1, u8 arg2, u8 arg3) {
+    gPlayer.action1 = arg0;
+    gPlayer.action3 = arg1;
+    gPlayer.animationState = arg2;
+    gPlayer.action2 = arg3;
+}
+
+static inline void setAction2(u8 arg0, u8 arg1) {
+    gPlayer.action1 = arg0;
+    gPlayer.action2 = arg1;
+    gPlayer.action3 = 0;
+    gPlayer.animationState = 0;
 }
 
 //INCLUDE_ASM(const s32, "player", setupPlayerSprite);
@@ -74,9 +100,10 @@ void setupPlayerSprite(u16 arg0, u8 resetPlayer) {
         gPlayer.direction = playerDefaultStartingDirections[arg0];
     }
 
-    setSpriteDirection(PLAYER, (gPlayer.direction + 8 - func_8003C1A4(0)) % 8);
+    setSpriteDirection(PLAYER, (gPlayer.direction + 8 - func_8003C1A4(MAIN_MAP_INDEX)) % 8);
     func_8002FD80(PLAYER, gPlayer.startingCoordinates.x, gPlayer.startingCoordinates.y, gPlayer.startingCoordinates.z);
 
+    // tool use
     D_80189828.unk_3 = 0;
     D_80189828.unk_4 = 0;
     D_80189828.unk_6 = 0;
@@ -86,7 +113,62 @@ void setupPlayerSprite(u16 arg0, u8 resetPlayer) {
 
 }
 
-INCLUDE_ASM(const s32, "player", func_80065AA0);
+//INCLUDE_ASM(const s32, "player", func_80065AA0);
+
+void func_80065AA0(void) {
+
+    if (gPlayer.unk_2C) {
+        
+        switch (gPlayer.unk_2C) {
+
+            case 0x58 ... 0x6F:
+            case 0xBA ... 0xC9:
+            case 0x7B ... 0xB2:
+                gPlayer.unk_2D = func_800D5308(0, 2, gPlayer.unk_2C, 4, 8);
+                break;
+            default:
+                gPlayer.unk_2D = func_800D5308(0, 2, gPlayer.unk_2C, 0, 8);
+                break;
+            
+        }
+        
+        func_800D5688(0, 0, 14.0f, 20.0f);
+        
+    } else {
+        gItemBeingHeld = 0xFF;
+        func_800D5548(gPlayer.unk_2D);
+    }
+    
+}
+
+// m2c decomp of ranged switch:
+/*
+        if ((s32) D_8018908C < 0xB3) {
+            if ((s32) D_8018908C < 0x7B) {
+                var_v0 = (s32) D_8018908C < 0x58;
+                if ((s32) D_8018908C < 0x70) {
+                    goto block_6;
+                }
+                goto block_8;
+            }
+            goto block_7;
+        }
+        var_v0 = (s32) D_8018908C < 0xBA;
+        if ((s32) D_8018908C < 0xCA) {
+block_6:
+            if (var_v0 == 0) {
+block_7:
+                var_a3 = 4;
+            } else {
+                goto block_9;
+            }
+        } else {
+block_8:
+block_9:
+            var_a3 = 0;
+        }
+        D_8018908D = func_800D5308(0, 2, D_8018908C, var_a3, 8);
+*/
 
 //INCLUDE_ASM(const s32, "player", addItemToRucksack);
 
@@ -300,7 +382,7 @@ void setPlayerAction(u16 arg0, u16 arg1) {
 
     if (arg0 != 0xFF) {
         gPlayer.action3 = 0;
-        gPlayer.action4 = 0;
+        gPlayer.animationState = 0;
         gPlayer.action1 = arg0;
     }
 
@@ -452,7 +534,7 @@ void func_80066F98(void) {
 
     setDailyEventBit(0x5C);
  
-    setSpriteDirection(PLAYER, (horseInfo.direction + 8 - func_8003C1A4(0)) % 8);
+    setSpriteDirection(PLAYER, (horseInfo.direction + 8 - func_8003C1A4(MAIN_MAP_INDEX)) % 8);
     
 }
 
@@ -472,7 +554,7 @@ void func_80067034(void) {
 
             if (func_80031830(0, 0x20, (i + func_8003C1A4(D_801FD610)) % 8) == 0) {
 
-                func_80031904(&vec1, 0, 0x20, (i + func_8003C1A4(0)) % 8);
+                func_80031904(&vec1, 0, 0x20, (i + func_8003C1A4(MAIN_MAP_INDEX)) % 8);
                 
                 temp = func_800DB1BC(vec1.x, vec1.z);
                 
@@ -493,7 +575,7 @@ void func_80067034(void) {
             
             horseInfo.coordinates = vec2;
             
-            horseInfo.direction = (renderedSprites[PLAYER].direction + func_8003C1A4(0)) % 8;
+            horseInfo.direction = (renderedSprites[PLAYER].direction + func_8003C1A4(MAIN_MAP_INDEX)) % 8;
             horseInfo.location = gBaseMapIndex;
             horseInfo.flags &= ~0x8;            
             gPlayer.flags &= -2;
@@ -505,9 +587,9 @@ void func_80067034(void) {
 
             gPlayer.action1 = 0xE;
             gPlayer.action3 = 0;
-            gPlayer.action4 = 0;
+            gPlayer.animationState = 0;
             gPlayer.action2 = 0x10;
-            gPlayer.action4 = 0;
+            gPlayer.animationState = 0;
             gPlayer.action3 = 0;
 
         }
@@ -561,7 +643,7 @@ void func_80067EE0(void) {
     if (gPlayer.action3 == 3) {
         func_800D55E4(gPlayer.unk_2D, 0xE);
         gPlayer.unk_2C = 0;
-        gPlayer.action4 += 1;
+        gPlayer.animationState += 1;
     }
 
     gPlayer.action3 += 1;
@@ -573,16 +655,16 @@ INCLUDE_ASM(const s32, "player", func_80067F50);
 
 void func_8006807C(void) {
 
-    if (func_8002FECC(0)) {
+    if (func_8002FECC(PLAYER)) {
      
-        if (!gPlayer.action4) {
+        if (gPlayer.animationState == 0) {
             func_800D55E4(gPlayer.unk_2D, 9);
             gPlayer.unk_2C = 0;
             setAudio(0x24);
         }
 
-        if (gPlayer.action4 != 1 || (gPlayer.action3++, gPlayer.action3 == 2)) {
-            gPlayer.action4++;
+        if (gPlayer.animationState != 1 || (gPlayer.action3++, gPlayer.action3 == 2)) {
+            gPlayer.animationState++;
         }
     }   
 }
@@ -593,19 +675,19 @@ void func_8006807C(void) {
 // putting down action
 void func_80068120(void) {
 
-    if (gPlayer.action4 == 2) {
+    if (gPlayer.animationState == 2) {
 
         if (gPlayer.action3 == 0xA) {
             func_800D55E4(gPlayer.unk_2D, 1);
             gPlayer.unk_2C = 0;
-            gPlayer.action4++;
+            gPlayer.animationState++;
             setAudio(0x25); 
         }
 
         gPlayer.action3++;
     }
 
-    if (gPlayer.action4 == 0) {
+    if (gPlayer.animationState == 0) {
 
         if (gPlayer.action3 == 0) {
             gPlayer.currentStamina += adjustValue(gPlayer.currentStamina, func_800D5B00(gPlayer.unk_2C), gMaximumStamina);
@@ -613,7 +695,7 @@ void func_80068120(void) {
         }
 
         if (gPlayer.action3 == 0x1E) {
-            gPlayer.action4++;
+            gPlayer.animationState++;
         }
 
         gPlayer.action3++;
@@ -624,25 +706,25 @@ void func_80068120(void) {
 
 void func_80068258(void) {
 
-    if (gPlayer.action4 == 0) {
+    if (gPlayer.animationState == 0) {
         func_8002FD80(0, -140.0f, 0.0f, -152.0f);
         func_8003019C(0, 0);
         func_80030054(0, 0);
         func_8002FF38(0, 0);
-        gPlayer.action4 += 1;
-        func_80034DC8(0, 0, 7);
+        gPlayer.animationState += 1;
+        func_80034DC8(MAIN_MAP_INDEX, 0, 7);
     }
 
-    if (gPlayer.action4 == 3) {
-        func_80034DC8(0, 0, 8);
+    if (gPlayer.animationState == 3) {
+        func_80034DC8(MAIN_MAP_INDEX, 0, 8);
     }
 }
 
 //INCLUDE_ASM(const s32, "player", func_800682F8);
 
 void func_800682F8(void) {
-    if (func_8004D35C(0, -1) && gPlayer.action4 < 4) {
-        gPlayer.action4 = 4;
+    if (func_8004D35C(CONTROLLER_1, 0xFFFFFFFF) && gPlayer.animationState < 4) {
+        gPlayer.animationState = 4;
     }
 }
 
@@ -652,30 +734,30 @@ INCLUDE_ASM(const s32, "player", func_80068340);
 
 void func_80068410(void) {
 
-    if (gPlayer.action4 == 0) {
+    if (gPlayer.animationState == 0) {
         if (gPlayer.action3 == 4) {
             if (func_800DCAA0(gPlayer.unk_6B)) {
                 func_800D55E4(gPlayer.unk_2D, 7);
             }
-            gPlayer.action4++;
+            gPlayer.animationState++;
         }
         gPlayer.action3++;
     }
     
-    if (gPlayer.action4 == 2) {
+    if (gPlayer.animationState == 2) {
         if (func_800DCAA0(gPlayer.unk_6B)) {
             func_800D55E4(gPlayer.unk_2D, 1);
         }
         func_800DC7BC(gPlayer.unk_6B);
-        gPlayer.action4 = 5;
+        gPlayer.animationState = 5;
     }
     
-    if (gPlayer.action4 == 3) {
+    if (gPlayer.animationState == 3) {
         if (func_800DCAA0(gPlayer.unk_6B)) {
             func_800D55E4(gPlayer.unk_2D, 1);
         }
         func_800DC9C0(gPlayer.unk_6B);
-        gPlayer.action4 = 5;
+        gPlayer.animationState = 5;
     }
 }
 
@@ -694,7 +776,7 @@ void func_80068920(void) {
     if (gPlayer.action3 == 3) {
         func_800D55E4(gPlayer.unk_2D, 0x12);
         gPlayer.unk_2C = 0;
-        gPlayer.action4++;
+        gPlayer.animationState++;
     }
 
     gPlayer.action3++;
@@ -707,7 +789,7 @@ void func_80068990(void) {
     if (gPlayer.action3 == 3) {
         func_800D55E4(gPlayer.unk_2D, 0x14);
         gPlayer.unk_2C = 0;
-        gPlayer.action4++;
+        gPlayer.animationState++;
     }
 
     gPlayer.action3++;
@@ -734,7 +816,7 @@ void func_80069830(void) {
     Vec3f vec;
     Vec3f vec2;
 
-    switch (gPlayer.action4) {
+    switch (gPlayer.animationState) {
 
         case 0:
 
@@ -745,10 +827,10 @@ void func_80069830(void) {
             func_80038990(PLAYER, 1, 0);
             gPlayer.direction = 4;
             gPlayer.unk_6F = 0x12;
-            gPlayer.action4++;
+            gPlayer.animationState++;
             func_80028520(&vec, 4.0f, 4, 0);
             gPlayer.currentCoordinates = vec;
-            setSpriteDirection(PLAYER, (gPlayer.direction + 8 - func_8003C1A4(0)) % 8);
+            setSpriteDirection(PLAYER, (gPlayer.direction + 8 - func_8003C1A4(MAIN_MAP_INDEX)) % 8);
             gPlayer.action2 = 2;
             break;
 
@@ -757,13 +839,14 @@ void func_80069830(void) {
             if (gPlayer.unk_6F == 0) {
                 func_80038990(PLAYER, 0, 0);
                 gPlayer.direction = 5;
+                // to-do: replace with static inline
                 gPlayer.action1 = 0xC;
                 gPlayer.currentCoordinates.x = 0;
                 gPlayer.currentCoordinates.y = 0;
                 gPlayer.currentCoordinates.z = 0;
                 gPlayer.action3 = 0;
                 D_801890C8 = 0;
-                gPlayer.action4 = 0;
+                gPlayer.animationState = 0;
                 gPlayer.action2 = 0xE;
                 gPlayer.flags |= 0x10;
             } else {
@@ -775,6 +858,7 @@ void func_80069830(void) {
 
             if (gPlayer.action3 == 0x3C) {
                 gPlayer.direction = 1;
+                // replace with single static inline
                 gPlayer.action1 = 0xC;
                 resetAction2();
                 gPlayer.action2 = 0xE;
@@ -788,15 +872,23 @@ void func_80069830(void) {
         case 3:
 
             if (gPlayer.unk_6F == 0) {
+                
                 func_80038990(PLAYER, 1, 0);
+                
                 setAudio(0x32);
+                
                 gPlayer.direction = 0;
                 gPlayer.unk_6F = 0x12;
+                
                 func_80028520(&vec2, 4.0f, 0, 0);
+                
                 gPlayer.currentCoordinates = vec2;
-                setSpriteDirection(PLAYER, (gPlayer.direction + 8 - func_8003C1A4(0)) % 8);
+                
+                setSpriteDirection(PLAYER, (gPlayer.direction + 8 - func_8003C1A4(MAIN_MAP_INDEX)) % 8);
+                
                 gPlayer.action2 = 2;
-                gPlayer.action4++;
+                gPlayer.animationState++;
+
             } else {
                 gPlayer.unk_6F--;
             }
@@ -857,7 +949,7 @@ void func_80069C90(void) {
 
 void func_80069CC4(void) {
 
-    if (gPlayer.action4 == 0) {
+    if (gPlayer.animationState == 0) {
         if (gPlayer.action3 == 0) {
             gPlayer.currentStamina += adjustValue(gPlayer.currentStamina, func_800D5B00(gPlayer.unk_2C), gMaximumStamina);
             gPlayer.fatigue.counter += adjustValue(gPlayer.fatigue.counter, -func_800D5B18(gPlayer.unk_2C), 0x64);
@@ -865,7 +957,7 @@ void func_80069CC4(void) {
         
         if (gPlayer.action3 == 0x1E) {
             func_800D55E4(gPlayer.unk_2D, 1);
-            gPlayer.action4++;
+            gPlayer.animationState++;
         }
         
         gPlayer.action3++;
@@ -878,22 +970,22 @@ void func_80069DA8(void) {}
 
 void func_80069DB0(void) {
 
-    if (gPlayer.action4 == 2) {
+    if (gPlayer.animationState == 2) {
 
         if (!getRandomNumberInRange(0, 400)) {
-            gPlayer.action4 = 3;
+            gPlayer.animationState = 3;
         }
     }
     
-    if (gPlayer.action4 && func_8004D3A4(CONTROLLER_1, BUTTON_B)) {
+    if (gPlayer.animationState && func_8004D3A4(CONTROLLER_1, BUTTON_B)) {
 
-        switch (gPlayer.action4) {
+        switch (gPlayer.animationState) {
             
             case 3 ... 5:
-                gPlayer.action4 = 6;
+                gPlayer.animationState = 6;
                 break;
             default:
-                gPlayer.action4 = 8;
+                gPlayer.animationState = 8;
                 break;
         }
     }
@@ -913,11 +1005,9 @@ void func_8006A2E0(void) {}
 
 INCLUDE_ASM(const s32, "player", func_8006A2E8);
 
+// probably not necessary
 static inline handleStopHolding() {
-    gPlayer.action3 = 0;
-    gPlayer.action4 = 0;
-    gPlayer.action1 = 0;
-    gPlayer.action2 = 0;
+    resetAction();
     gItemBeingHeld = 0xFF;
 }
 
@@ -925,11 +1015,11 @@ static inline handleStopHolding() {
 
 void func_8006A714(void) {
     
-    if (func_8002FECC(0) || gPlayer.action4 == 0) {
+    if (func_8002FECC(PLAYER) || gPlayer.animationState == 0) {
         
-        if (gPlayer.action4 == 0) {
+        if (gPlayer.animationState == 0) {
             setSpriteAnimation(PLAYER, 0x1A5);
-            gPlayer.action4++;
+            gPlayer.animationState++;
             return;
         }
         
@@ -941,7 +1031,7 @@ void func_8006A714(void) {
 
 static inline updateAnimation(u16 animation) {
     
-     if (gPlayer.action4 == 0) {
+     if (gPlayer.animationState == 0) {
         setSpriteAnimation(PLAYER, animation);
         func_800D55E4(gPlayer.unk_2D, 0xD);
         return;
@@ -952,7 +1042,7 @@ static inline updateAnimation(u16 animation) {
 
 void func_8006A7B0(void) {
     
-    if (func_8002FECC(0) || gPlayer.action4 == 0) {
+    if (func_8002FECC(PLAYER) || gPlayer.animationState == 0) {
        updateAnimation(0x1A5);
     }
 }
@@ -960,8 +1050,8 @@ void func_8006A7B0(void) {
 //INCLUDE_ASM(const s32, "player", func_8006A848);
 
 void func_8006A848(void) {
-    if (func_8002FECC(0) || gPlayer.action4 == 0) {
-        if (gPlayer.action4 == 0) {
+    if (func_8002FECC(PLAYER) || gPlayer.animationState == 0) {
+        if (gPlayer.animationState == 0) {
             setSpriteAnimation(PLAYER, 0x1AD);
             return;
         }
@@ -973,8 +1063,8 @@ void func_8006A848(void) {
 
 void func_8006A8C4(void) {
     
-    if (func_8002FECC(0) || gPlayer.action4 == 0) {
-        switch (gPlayer.action4) {                       
+    if (func_8002FECC(PLAYER) || gPlayer.animationState == 0) {
+        switch (gPlayer.animationState) {                       
             case 0:
                 setSpriteAnimation(PLAYER, 0x1B7);
                 func_800D55E4(gPlayer.unk_2D, 8);
@@ -996,18 +1086,18 @@ void func_8006A8C4(void) {
 
 void func_8006A9A8(void) {
     
-    if (func_8002FECC(0) || gPlayer.action4 == 0) {
-        switch (gPlayer.action4) {       
+    if (func_8002FECC(PLAYER) || gPlayer.animationState == 0) {
+        switch (gPlayer.animationState) {       
             case 0:
                 setSpriteAnimation(PLAYER, 0x18);
                 return;
             case 1:
                 func_800D55E4(gPlayer.unk_2D, 0xA);
                 gPlayer.action3 = 0;
-                gPlayer.action4++;
+                gPlayer.animationState++;
                 return;
             case 2:
-                func_8002F2FC(0, 0x1B5);
+                func_8002F2FC(PLAYER, 0x1B5);
                 return;
             default:
                 handleStopHolding();
@@ -1020,26 +1110,26 @@ void func_8006A9A8(void) {
 
 void func_8006AA9C(void) {
 
-    if (func_8002FECC(0) || gPlayer.action4 == 0) {
+    if (func_8002FECC(PLAYER) || gPlayer.animationState == 0) {
         
-        if (gPlayer.action4 == 0) {
+        if (gPlayer.animationState == 0) {
             
             switch (gPlayer.fatigue.level) {       
                 case 1:
-                    func_8002F2FC(0, 0x1D0);
+                    func_8002F2FC(PLAYER, 0x1D0);
                     break;
                 case 2:
-                    func_8002F2FC(0, 0x1D1);
+                    func_8002F2FC(PLAYER, 0x1D1);
                     break;
                 case 3:
-                    func_8002F2FC(0, 0x1D2);
+                    func_8002F2FC(PLAYER, 0x1D2);
                     break;
                 case 4:
-                    func_8002F2FC(0, 0x1D3);
+                    func_8002F2FC(PLAYER, 0x1D3);
                     break;
             }
     
-            gPlayer.action4++;
+            gPlayer.animationState++;
             return;
         }
 
@@ -1052,21 +1142,21 @@ void func_8006AA9C(void) {
 
 void func_8006AB90(void) {
 
-    if (func_8002FECC(0) || gPlayer.action4 == 0) {
+    if (func_8002FECC(PLAYER) || gPlayer.animationState == 0) {
         
-        if (gPlayer.action4 == 0) {
+        if (gPlayer.animationState == 0) {
             switch (gPlayer.fatigue.unk_2) {                   
                 case 1:
-                    func_8002F2FC(0, 0x299);
+                    func_8002F2FC(PLAYER, 0x299);
                     break;
                 case 2:
-                    func_8002F2FC(0, 0x29A);
+                    func_8002F2FC(PLAYER, 0x29A);
                     break;
                 case 3:
                     break;
                 }
             
-            gPlayer.action4++;
+            gPlayer.animationState++;
             return;
         }
         
@@ -1078,14 +1168,14 @@ void func_8006AB90(void) {
 
 void func_8006AC4C(void) {
 
-    if (func_8002FECC(0) || gPlayer.action4 == 0) {
+    if (func_8002FECC(PLAYER) || gPlayer.animationState == 0) {
 
-        switch (gPlayer.action4) {         
+        switch (gPlayer.animationState) {         
 
             case 1:
 
-                func_8002F2FC(0, 0x1D4);
-                gPlayer.action4++;
+                func_8002F2FC(PLAYER, 0x1D4);
+                gPlayer.animationState++;
 
                 if (checkLifeEventBit(MARRIED) && (19 < gHour && gHour < 22)) {
                     switch (gWife) {
@@ -1110,21 +1200,21 @@ void func_8006AC4C(void) {
                 break;
 
             case 2:
-                func_8002F2FC(0, 0x1D5);
-                gPlayer.action4++;
+                func_8002F2FC(PLAYER, 0x1D5);
+                gPlayer.animationState++;
                 break;
 
             case 3:
-                func_8002F2FC(0, 0x1D6);
-                gPlayer.action4++;
+                func_8002F2FC(PLAYER, 0x1D6);
+                gPlayer.animationState++;
                 break;             
 
             default:
-                if (gPlayer.action4 >= 10) {
+                if (gPlayer.animationState >= 10) {
                     func_8005C940(8, 0xD);
                     return;
                 }
-                gPlayer.action4++;
+                gPlayer.animationState++;
                 break;
          }
     }
@@ -1135,28 +1225,28 @@ void func_8006AC4C(void) {
 // napping/idle animation
 void func_8006ADF4(void) {
 
-    if (func_8002FECC(0) || gPlayer.action4 == 0) {
+    if (func_8002FECC(PLAYER) || gPlayer.animationState == 0) {
 
-        switch (gPlayer.action4) { 
+        switch (gPlayer.animationState) { 
             case 0:
-                func_8002F2FC(0, 0x1E0);
-                gPlayer.action4++;
+                func_8002F2FC(PLAYER, 0x1E0);
+                gPlayer.animationState++;
                 break;
             case 1:
-                func_8002F2FC(0, 0x1E1);
-                gPlayer.action4++;
+                func_8002F2FC(PLAYER, 0x1E1);
+                gPlayer.animationState++;
                 break;
             case 2:
                 // counter until napping animation
                 D_802226E0++;
                 if (D_802226E0 == 1800) {
-                    func_8002F2FC(0, 0x1E2);
-                    gPlayer.action4++;
+                    func_8002F2FC(PLAYER, 0x1E2);
+                    gPlayer.animationState++;
                 }
                 break;
             case 4:
-                func_8002F2FC(0, 0x1E3);
-                gPlayer.action4++;
+                func_8002F2FC(PLAYER, 0x1E3);
+                gPlayer.animationState++;
                 break;
             default:
                 resetAction();
@@ -1172,22 +1262,22 @@ void func_8006ADF4(void) {
 
 void func_8006AEEC(void) {
     
-    if (func_8002FECC(0) || gPlayer.action4 == 0) {
+    if (func_8002FECC(PLAYER) || gPlayer.animationState == 0) {
 
-        switch (gPlayer.action4) { 
+        switch (gPlayer.animationState) { 
             case 0:
                 setSpriteAnimation(PLAYER, 0x1B7);
                 break;
             case 1:
                 setSpriteAnimation(PLAYER, 0x1BF);
-                gPlayer.action4++;
+                gPlayer.animationState++;
                 break;
             case 3:
                 setSpriteAnimation(PLAYER, 0x1BF);
                 break;            
             case 4:
                 setSpriteAnimation(PLAYER, 0x1B7);
-                gPlayer.action4++;
+                gPlayer.animationState++;
                 break;           
             default:
                 resetAction();
@@ -1199,9 +1289,9 @@ void func_8006AEEC(void) {
 
 void func_8006AFE4(void) {
     
-    if (func_8002FECC(0) || gPlayer.action4 == 0) {
+    if (func_8002FECC(PLAYER) || gPlayer.animationState == 0) {
 
-        switch (gPlayer.action4) {  
+        switch (gPlayer.animationState) {  
             case 0:
                 if (!func_800DCAA0(gPlayer.unk_6B)) {
                     setSpriteAnimation(PLAYER, 0);
@@ -1263,16 +1353,203 @@ INCLUDE_ASM(const s32, "player", func_8006BAAC);
 INCLUDE_ASM(const s32, "player", func_8006BBC4);
 
 // fishing handler
-INCLUDE_ASM(const s32, "player", func_8006BC84);
+// 99%
+
+void func_8006BC84(void) {
+
+    Vec3f vec;
+    u16 temp;
+    s32 temp2;
+    int max;
+
+    if (func_8002FECC(PLAYER) || gPlayer.animationState == 0) {
+        
+        switch (gPlayer.animationState) {
+            
+            case 0:
+                
+                setSpriteAnimation(PLAYER, 0x182);
+                gPlayer.animationState++;
+                break;
+            
+            case 1:
+                
+                if (func_800AD0C4(gBaseMapIndex)) {
+                
+                    func_80065F94(&vec, 2.0f, 8);
+                    func_8003AF58(&vec, 0, vec.x, vec.z);
+
+                    switch (gPlayer.fatigue.unk_3) {
+                        case 0:
+                            vec.y = 36.0f;
+                            break;
+                        case 1:
+                            vec.y = 4.0f;
+                            break;
+                        case 2:
+                            vec.y = 4.0f;
+                            break;
+                        case 3:
+                            vec.y = 128.0f;
+                            break;
+                    }
+
+                    func_800CFB38(0, 0x9D, vec.x, vec.y, vec.z);
+                    setAudio(0x28);
+                    setSpriteAnimation(PLAYER, 0x17A);
+                    gPlayer.animationState = 2;
+                
+                } else {
+                    gPlayer.animationState = 8;
+                }
+                
+                break;
+            
+            case 3:
+                func_800CFD78(0, 0x9E);
+                setSpriteAnimation(PLAYER, 0x18A);
+                gPlayer.animationState = 4;
+                break;
+            
+            case 4:
+                gPlayer.animationState = 5;
+                break;
+            
+            case 5:
+                gPlayer.animationState = 1;
+                break;
+            
+            // catch fish
+            case 7:
+
+                // ?
+                temp2 = gPlayer.fatigue.unk_3;
+                max = 4;
+
+                if (gPlayer.fatigue.unk_3 == 0) {
+                    temp = 1;
+                } else if (0 <= temp2 && gPlayer.fatigue.unk_3 < max) {
+                    temp = 2;
+                }
+                
+                // randomize fish type
+                switch (getRandomNumberInRange(0, temp)) {
+                    case 0:
+                        gPlayer.unk_2C = 0x25;
+                        break;
+                    case 1:
+                        gPlayer.unk_2C = 0x26;
+                        break;
+                    case 2:
+                        gPlayer.unk_2C = 0x27;
+                        break;                    
+                }
+
+                gPlayer.animationState = 9;
+
+                gHappiness += adjustValue(gHappiness, 1, 255);
+
+                // get power nut 
+                if (gPlayer.fatigue.unk_3 == 3 && !(D_80215EB8 & 4) && !getRandomNumberInRange(0, 0x32)) {
+                    gPlayer.unk_2C = 0x57;
+                    setAction(6, 0, 0, 8);
+                    D_80215EB8 |= 4;
+                    gMaximumStamina += adjustValue(gMaximumStamina, 15, 250);
+                    gHappiness += adjustValue(gHappiness, 4, 255);
+                }
+
+                // fish caught total
+                D_80189838 += adjustValue(D_80189838, 1, 999);
+                func_80065AA0();
+                
+                break;
+            
+            case 6:
+            case 8:
+                func_800CFDA0(0);
+                setSpriteAnimation(PLAYER, 0x192);
+                gPlayer.animationState++;
+                break;
+              
+            default:            
+                resetAction();
+            case 2:
+                break;
+        }
+    }
+
+    if (func_80031380(0)) {
+        setAudio(0xB);
+    }
+    
+}
+
+//INCLUDE_ASM(const s32, "player", func_8006BC84);
+
 
 void func_8006C12C(void) {}
 
 void func_8006C134(void) {}
 
-INCLUDE_ASM(const s32, "player", func_8006C13C);
+//INCLUDE_ASM(const s32, "player", func_8006C13C);
 
+// climbing trees
+void func_8006C13C(void) {
+
+    if (func_8002FECC(PLAYER) || gPlayer.animationState == 0 || gPlayer.animationState == 2) {
+        switch (gPlayer.animationState) {
+            case 1:
+                setSpriteAnimation(PLAYER, 0x29B);
+                break;
+            case 0:
+            case 2:
+                setSpriteAnimation(PLAYER, 0x30);
+                break;
+        }
+    }
+    
+}
+
+// array indexing is off
+#ifdef PERMUTER
+void func_8006C1DC(void) {
+
+    UnknownPlayerData data;
+    u8 *ptr;
+
+    data = *(UnknownPlayerData*)D_8011F5D4;
+    ptr = (u8*)&data;
+    
+    if (func_8002FECC(PLAYER) || gPlayer.animationState == 0) {
+        switch (gPlayer.animationState) {
+            case 0:
+                func_8002F2FC(PLAYER, 0x171);
+                gPlayer.animationState = 1;
+                gPlayer.unk_2C = *(&ptr[D_801A8B5C+D_8018A724*3]-3);
+                gPlayer.unk_2D = func_800D5308(0, 0x15, gPlayer.unk_2C, 0, 8);
+                break;
+            case 1:
+                gPlayer.animationState = 2;
+                break;
+            case 2:
+                gPlayer.animationState = 3;
+                setAudio(0x5A);
+                setMainLoopCallbackFunctionIndex(0xB);
+                func_80059334();
+                break;
+            default:
+                func_800D55E4(gPlayer.unk_2D, 1);
+                gPlayer.unk_2C = 0;
+                resetAction();
+                break;
+        }
+    }
+}
+#else
 INCLUDE_ASM(const s32, "player", func_8006C1DC);
+#endif
 
+// u8 array, probably 2d
 INCLUDE_RODATA(const s32, "player", D_8011F5D4);
 
 INCLUDE_ASM(const s32, "player", func_8006C384);
@@ -1289,7 +1566,26 @@ INCLUDE_ASM(const s32, "player", func_8006CDF8);
 
 INCLUDE_ASM(const s32, "player", func_8006CE6C);
 
-INCLUDE_ASM(const s32, "player", func_8006CEE0);
+//INCLUDE_ASM(const s32, "player", func_8006CEE0);
+
+void func_8006CEE0(void) {
+
+    switch (gPlayer.staminaLevelForCurrentToolUse) {
+        
+        case 0:
+            func_8006C628(0xE0, 0xF8);
+            break;      
+        case 1:
+            func_8006C628(0xE8, 0x100);
+            break;
+        case 2:
+            func_8006C628(0xF0, 0x108);
+            break;        
+        default:
+            break;
+    }
+    
+}
 
 INCLUDE_ASM(const s32, "player", func_8006CF54);
 
@@ -1323,16 +1619,16 @@ INCLUDE_ASM(const s32, "player", func_8006DE8C);
 
 void func_8006DFB0(void) {
 
-    switch (gPlayer.action4) {
+    switch (gPlayer.animationState) {
         case 0:
-            func_8002F2FC(0, 0);
+            func_8002F2FC(PLAYER, 0);
             return;
         case 1:
-            func_8002F2FC(0, 0x148);
+            func_8002F2FC(PLAYER, 0x148);
             break;
         case 2:
             func_800CF850();
-            gPlayer.action4++;
+            gPlayer.animationState++;
             break;
         case 3:            
             if (!D_80189828.unk_E) {
@@ -1357,7 +1653,7 @@ void func_8006DFB0(void) {
 
 void func_8006E0D4(void) {
 
-    switch (gPlayer.action4) {
+    switch (gPlayer.animationState) {
         case 0:
             setSpriteAnimation(PLAYER, 0);
             break;
@@ -1366,7 +1662,7 @@ void func_8006E0D4(void) {
             break;
         case 2:
             func_800CF850();
-            gPlayer.action4++;
+            gPlayer.animationState++;
             break;
         case 3:
             if (!D_80189828.unk_E) {
@@ -1395,7 +1691,7 @@ void func_8006E208(void) {}
 void func_8006E210(void) {
     gPlayer.action1 = 0x16;
     gPlayer.action3 = 0;
-    gPlayer.action4 = 0;
+    gPlayer.animationState = 0;
     gPlayer.action2 = 0x17;
 }
 
@@ -1404,7 +1700,7 @@ void func_8006E210(void) {
 
 void func_8006E240(void) {
 
-    switch (gPlayer.action4) {                           
+    switch (gPlayer.animationState) {                           
         case 0:
             setSpriteAnimation(PLAYER, 0);
             func_80099DE8();
@@ -1414,7 +1710,7 @@ void func_8006E240(void) {
             break;
         case 2:
             func_800CF850();
-            gPlayer.action4++;
+            gPlayer.animationState++;
             break;
         case 3:
             if (!D_80189828.unk_E) {
@@ -1436,7 +1732,103 @@ INCLUDE_ASM(const s32, "player", func_8006E348);
 
 INCLUDE_ASM(const s32, "player", func_8006E450);
 
-INCLUDE_ASM(const s32, "player", func_8006E574);
+//INCLUDE_ASM(const s32, "player", func_8006E574);
+
+void func_8006E574(void) {
+
+    switch (gPlayer.animationState) {
+        case 0:
+            setSpriteAnimation(PLAYER, 0);
+            func_800305CC(0, 0, 8.0f, 0.0f);
+            func_80085C94();
+            break;
+        case 1:
+            setSpriteAnimation(PLAYER, 0x234);
+            break;
+        case 2:
+            func_800CF850();
+            gPlayer.animationState++;
+            break;
+        case 3:
+            if (D_80189828.unk_E == 0 && !func_80067A24(0)) {
+                resetAction();
+            }
+            break;
+        default:
+            break;
+    }
+    
+}
 
 // jtbl_8011F6F0
-INCLUDE_ASM(const s32, "player", func_8006E678);
+//INCLUDE_ASM(const s32, "player", func_8006E678);
+
+void func_8006E678(void) {
+
+    switch (gPlayer.animationState) {
+
+        case 0:
+
+            if (gPlayer.bottleContents == 0) {
+                
+                setSpriteAnimation(PLAYER, 0);
+                func_80099DE8();
+                
+            } else {
+
+                setAction2(0x14, 0x15);
+                
+                switch (gPlayer.bottleContents) {
+                    case 1:
+                        gPlayer.unk_2C = 0x71;
+                        break;
+                    case 2:
+                        gPlayer.unk_2C = 0x72;
+                        break;
+                    case 3:
+                        gPlayer.unk_2C = 0x73;
+                        break;
+                    case 4:
+                        gPlayer.unk_2C = 0x74;
+                        break;
+                    case 5:
+                        gPlayer.unk_2C = 0x75;
+                        break;
+                    case 6:
+                        gPlayer.unk_2C = 0x76;
+                        break;
+                    case 7:
+                        gPlayer.unk_2C = 0x77;
+                        break;
+                    case 0:
+                    default:
+                        break;
+                    
+                }
+                
+                func_80065AA0();
+                gPlayer.bottleContents = 0;       
+
+            }
+            
+            break;
+
+        case 1:
+            setSpriteAnimation(PLAYER, 0x272);
+            break;
+
+        case 2:
+            func_800CF850();
+            gPlayer.animationState++;
+            break;
+
+        case 3:
+            if (D_80189828.unk_E == 0 && !func_80067A24(0)) {
+                resetAction();
+            }    
+            break;
+
+        default:
+            break;
+    }
+}

@@ -109,7 +109,7 @@ typedef struct {
 	u16 action1; // 0x64
 	u16 action2; // 0x66
 	u16 action3; // 0x68
-	u8 action4; // 0x6A // animation state
+	u8 animationState; // 0x6A // animation state
 	u8 unk_6B; // 0x6B
 	u8 unk_6C; // 0x6C
 	u8 direction; // 0x6D
@@ -119,6 +119,24 @@ typedef struct {
 	Fatigue fatigue; // 71
     u16 flags; // 0x78
 } Player;
+
+typedef struct {
+    u8 unk_0;
+    u8 unk_1;
+    u8 unk_2;
+    u8 unk_3;
+    u8 unk_4;
+    u8 unk_5;
+    u8 unk_6;
+    u8 unk_7;
+    u8 unk_8;
+    u8 unk_9;
+    u8 unk_10;
+    u8 unk_11;
+    u8 unk_12;
+    u8 unk_13;
+    u8 unk_14;
+} UnknownPlayerData;
 
 extern void setupPlayerSprite(u16 arg0, u8 resetPlayer);
 

@@ -5,8 +5,8 @@
 #include "system/controller.h"
 #include "system/cutscene.h"
 #include "system/map.h"
-#include "system/sprite.h"
 #include "system/mapContext.h"
+#include "system/sprite.h"
 
 #include "animals.h"
 #include "game.h"
@@ -113,11 +113,33 @@ u8 getToolLevel(u8 tool) {
 
 INCLUDE_ASM(const s32, "itemHandlers", func_800CF8F8);
 
-INCLUDE_ASM(const s32, "itemHandlers", func_800CFB38);
+//INCLUDE_ASM(const s32, "itemHandlers", func_800CFB38);
 
-INCLUDE_ASM(const s32, "itemHandlers", func_800CFD78);
+void func_800CFB38(u8 arg0, u8 arg1, f32 arg2, f32 arg3, f32 arg4) {
 
-INCLUDE_ASM(const s32, "itemHandlers", func_800CFDA0);
+    func_8002E284(arg0 + 0x27, 0x5D, 1);
+    func_8002FF38(arg0 + 0x27, 0);
+    func_8002ECD4(arg0 + 0x27, 0xFFFF, 0xFF);
+    func_8003019C(arg0 + 0x27, 0);
+    func_80030054(arg0 + 0x27, 0);
+    func_8002FD80(arg0 + 0x27, arg2, arg3, arg4);
+
+    func_8002F014(arg0 + 0x27, mainMap[0].mapStruct8.groundRgba.r, mainMap[0].mapStruct8.groundRgba.g, mainMap[0].mapStruct8.groundRgba.b, mainMap[0].mapStruct8.groundRgba.a);
+    func_8002F2FC(arg0 + 0x27, arg1);
+    
+}
+
+//INCLUDE_ASM(const s32, "itemHandlers", func_800CFD78);
+
+void func_800CFD78(u8 arg0, u8 arg1) {
+    func_8002F2FC(arg0 + 0x27, arg1);
+}
+
+//INCLUDE_ASM(const s32, "itemHandlers", func_800CFDA0);
+
+void func_800CFDA0(u8 arg0) {
+    func_8002FA2C(arg0 + 0x27);
+}
 
 INCLUDE_ASM(const s32, "itemHandlers", func_800CFDC4);
 
@@ -312,7 +334,7 @@ void func_800D373C(void) {
 
     Vec3f vec;
 
-    temp1 = (renderedSprites[PLAYER].direction + func_8003C1A4(0)) % 8;
+    temp1 = (renderedSprites[PLAYER].direction + func_8003C1A4(MAIN_MAP_INDEX)) % 8;
     
     if (temp1 < 5) {
         temp2 = D_80117180[D_80189828.unk_2];
@@ -354,7 +376,7 @@ void func_800D3958(void) {
 
     Vec3f vec;
 
-    temp1 = (renderedSprites[PLAYER].direction + func_8003C1A4(0)) % 8;
+    temp1 = (renderedSprites[PLAYER].direction + func_8003C1A4(MAIN_MAP_INDEX)) % 8;
     
     if (temp1 < 5) {
         temp2 = D_80117180[D_80189828.unk_2];
@@ -397,7 +419,7 @@ void func_800D3B74(void) {
 
     Vec3f vec;
 
-    temp1 = (renderedSprites[PLAYER].direction + func_8003C1A4(0)) % 8;
+    temp1 = (renderedSprites[PLAYER].direction + func_8003C1A4(MAIN_MAP_INDEX)) % 8;
     
     if (temp1 < 5) {
         temp2 = D_80117180[D_80189828.unk_2];
@@ -440,7 +462,7 @@ void func_800D3D90(void) {
 
     Vec3f vec;
 
-    temp1 = (renderedSprites[PLAYER].direction + func_8003C1A4(0)) % 8;
+    temp1 = (renderedSprites[PLAYER].direction + func_8003C1A4(MAIN_MAP_INDEX)) % 8;
     
     if (temp1 < 5) {
         temp2 = D_80117180[D_80189828.unk_2];
@@ -483,7 +505,7 @@ void func_800D3FAC(void) {
 
     Vec3f vec;
 
-    temp1 = (renderedSprites[PLAYER].direction + func_8003C1A4(0)) % 8;
+    temp1 = (renderedSprites[PLAYER].direction + func_8003C1A4(MAIN_MAP_INDEX)) % 8;
     
     if (temp1 < 5) {
         temp2 = D_80117180[D_80189828.unk_2];
@@ -526,7 +548,7 @@ void func_800D41C8(void) {
 
     Vec3f vec;
 
-    temp1 = (renderedSprites[PLAYER].direction + func_8003C1A4(0)) % 8;
+    temp1 = (renderedSprites[PLAYER].direction + func_8003C1A4(MAIN_MAP_INDEX)) % 8;
     
     if (temp1 < 5) {
         temp2 = D_80117180[D_80189828.unk_2];
@@ -569,7 +591,7 @@ void func_800D43E4(void) {
 
     Vec3f vec;
 
-    temp1 = (renderedSprites[PLAYER].direction + func_8003C1A4(0)) % 8;
+    temp1 = (renderedSprites[PLAYER].direction + func_8003C1A4(MAIN_MAP_INDEX)) % 8;
     
     if (temp1 < 5) {
         temp2 = D_80117180[D_80189828.unk_2];
@@ -612,7 +634,7 @@ void func_800D45F4(void) {
 
     Vec3f vec;
 
-    temp1 = (renderedSprites[PLAYER].direction + func_8003C1A4(0)) % 8;
+    temp1 = (renderedSprites[PLAYER].direction + func_8003C1A4(MAIN_MAP_INDEX)) % 8;
     
     if (temp1 < 5) {
         temp2 = D_80117180[D_80189828.unk_2];
@@ -656,7 +678,7 @@ void func_800D4814(void) {
 
     Vec3f vec;
 
-    temp1 = (renderedSprites[PLAYER].direction + func_8003C1A4(0)) % 8;
+    temp1 = (renderedSprites[PLAYER].direction + func_8003C1A4(MAIN_MAP_INDEX)) % 8;
     
     if (temp1 < 5) {
         temp2 = D_80117180[D_80189828.unk_2];
@@ -700,7 +722,7 @@ void func_800D4A34(void) {
 
     Vec3f vec;
 
-    temp1 = (renderedSprites[PLAYER].direction + func_8003C1A4(0)) % 8;
+    temp1 = (renderedSprites[PLAYER].direction + func_8003C1A4(MAIN_MAP_INDEX)) % 8;
     
     if (temp1 < 5) {
         temp2 = D_80117180[D_80189828.unk_2];
@@ -798,7 +820,7 @@ void func_800D4D68(void) {
 
     Vec3f vec;
 
-    temp1 = (renderedSprites[PLAYER].direction + func_8003C1A4(0)) % 8;
+    temp1 = (renderedSprites[PLAYER].direction + func_8003C1A4(MAIN_MAP_INDEX)) % 8;
     
     if (temp1 < 5) {
         temp2 = D_80117180[D_80189828.unk_2];
@@ -1079,7 +1101,7 @@ void func_800D5628(u8 index, f32 arg1, f32 arg2, f32 arg3) {
 
 //INCLUDE_ASM(const s32, "itemHandlers", func_800D5688);
 
-void func_800D5688(u8 index, u32 arg1, u32 arg2, u32 arg3) {
+void func_800D5688(u8 index, f32 arg1, f32 arg2, f32 arg3) {
 
     D_80204DF8[index].unk_18.x = arg1;
     D_80204DF8[index].unk_18.y = arg2;
@@ -1237,7 +1259,7 @@ void func_800D6868(u8 index) {
 //INCLUDE_ASM(const s32, "itemHandlers", func_800D6B28);
 
 void func_800D6B28(void) {
-    func_80034DC8(0, 0, 0x13);
+    func_80034DC8(MAIN_MAP_INDEX, 0, 0x13);
     // put food in dog bowl
     setDailyEventBit(0x43);
 }

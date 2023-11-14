@@ -205,15 +205,14 @@ typedef struct {
 
 // 802055D8
 typedef struct {
-	void *modelData; // 80255000
+	u32 *modelDataIndex; // 80255000
 	Vec3f unk_4;
 	Vec3f unk_10;
 	Vec3f unk_1C;
 	Vec3f unk_28;
 	Vec3f unk_34; 
 	u16 mapIndex;
-	u8 unk_42;
-	u8 unk_43;
+	u16 unk_42;
 	u8 unk_44;
 	u8 unk_45;
 	u8 unk_46;
@@ -229,22 +228,21 @@ typedef struct {
 } MapContextAddresses;
 
 extern void initializeMapContext();      
-extern bool func_8003BA44(u16 index, u16 mapIndex, void *levelMap);
+extern bool func_8003BA44(u16 index, u16 mapIndex, u32 *levelMap);
 extern bool func_8003BB14(u16 arg0, u16 mapIndex); 
-extern void func_8003BC50(u8, u16);   
+extern bool func_8003BC50(u16, u16);   
 extern bool func_8003BD60(u16);                      
 extern bool func_8003BDA4(u16, f32, f32, f32);  
 extern bool func_8003BE0C(u16 arg0, f32 arg1, f32 arg2, f32 arg3);
 extern bool func_8003BE98(u16, u8, u8, u8, u8);
 extern bool func_8003BF7C(u16, u8, u8, u8, u8, s16);
 extern bool func_8003C084(u16, u8);    
-extern bool func_8003C6E4();
+extern void func_8003C6E4(void);
 extern bool func_8003C1A4(u16);
 extern bool func_8003C1E0(u16 arg0, f32 arg1, f32 arg2, f32 arg3, u8 arg4, u8 arg5);
 extern bool func_8003C504(u16);     
 extern bool func_8003C5C0(u16, u8, u8);
 
-extern u16 gMapModelContextFlags;
 extern LevelMapContext gMapModelContext[1];
 
 #endif

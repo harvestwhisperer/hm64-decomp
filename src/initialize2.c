@@ -31,6 +31,8 @@ s16 D_80182D8C;
 s16 D_8018A062;
 s16 D_80237A20; 
 
+extern u32 gCutsceneFlagsHack[2];
+
 //INCLUDE_ASM(const s32, "initialize2", mainGameLoopCallback);
 
 void mainGameLoopCallback(void) {
@@ -57,12 +59,11 @@ void mainGameLoopCallback(void) {
 
     // set additional info if needed for cutscene
     func_800A8F74();
-    // check c right pressed during frame
-    func_8004D380(0, 1);
-    // check c down pressed during frame
-    func_8004D380(0, 4);
-    // check z pressed during frame
-    func_8004D380(0, 0x2000);
+
+    // check buttons pressed in frame
+    func_8004D380(CONTROLLER_1, BUTTON_C_RIGHT);
+    func_8004D380(CONTROLLER_1, BUTTON_C_DOWN);
+    func_8004D380(CONTROLLER_1, BUTTON_Z);
 }
 
 //INCLUDE_ASM(const s32, "initialize2", func_80055F08);
@@ -103,20 +104,20 @@ inline void func_80055F08(u16 cutsceneIndex, u16 entranceIndex, u8 arg2) {
 
 }
 
-// fix with switch statements
-#ifdef PERMUTER
+//INCLUDE_ASM(const s32, "initialize2", func_80056030);
+
 void func_80056030(u8 arg0) {
-    
-    u16 var_a0;
-    u8 temp_s0;
+
+    u8 mapIndex;
+    u8 temp = 0;
 
     D_801891D4 = 0;
-    cutsceneIndex = 0;
-    gCutsceneFlags = 0;
+    gCutsceneIndex = 0;
+    gCutsceneFlagsHack[1] = 0;    
     
     toggleDailyEventBit(0x28);
     toggleDailyEventBit(0x4B);
-    
+
     func_8005CDCC();
     func_80065F5C();
     func_800879C8();
@@ -131,110 +132,82 @@ void func_80056030(u8 arg0) {
     if (!checkDailyEventBit(0x2F)) {
         func_800A7DFC();
     }
-    
+
     setDailyEventBit(0x2F);
     
-    temp_s0 = func_80074C38(gEntranceIndex);
-    
+    mapIndex = func_80074C38(gEntranceIndex);
     func_8006E840(gEntranceIndex);
-    
-    var_a0 = 0;
 
-    if ((temp_s0 == 0x52) || (temp_s0 == 0x58) || (temp_s0 == 0x59)) goto block_end;
+    if ((mapIndex == FARM || mapIndex == BARN) == 0 && mapIndex != COOP) {
 
-    
-    if (cutsceneIndex == 0x41A) goto block_32;
+        switch (gCutsceneIndex) {
 
-    if (cutsceneIndex < 0x41B) {
-        
-        if (cutsceneIndex < 0x386) {
-        
-            if (cutsceneIndex < 0x384 && cutsceneIndex != 0x258) {
-                if ((cutsceneIndex > 0x257) && (cutsceneIndex < 0x355) && (cutsceneIndex > 0x351)) {
-                    var_a0 = 2;
-                    goto block_end;    
+            case SQUARE_FIREWORKS:
+            case SOWING_FESTIVAL_POTION_SHOP_DEALER ... SOWING_FESTIVAL_HARRIS:
+            case HORSE_RACE_SQUARE ... HORSE_RACE_STARTING_ANNOUNCEMENT:
+            case FLOWER_FESTIVAL:
+            case VEGETABLE_FESTIVAL_SQUARE:
+            case FIREFLY_FESTIVAL:
+            case HARVEST_FESTIVAL:
+            case SEA_FESTIVAL:
+            case EGG_FESTIVAL:
+            case DOG_RACE_SQUARE ... DOG_RACE_AFTER_RACE:
+            // spirit festival
+            case 0x546 ... 0x548:
+            case NEW_YEAR_FESTIVAL:
+                func_800563D0(2);
+                break;            
+            default:
+                switch (gCutsceneIndex) {
+                    case COW_FESTIVAL:
+                        func_800563D0(3);
+                        break;
+                    case HARVEST_FESTIVAL:
+                    case SEA_FESTIVAL:
+                    default:
+                        func_800563D0(1);
+                        break;
                 }
-            }
-        
-            goto block_34;
+                break;
         }
         
-        if (cutsceneIndex != 0x3B6) {
-            if (cutsceneIndex == 0x3E9) {
-                
-                goto block_end;    
-            }
-        }
-
-block_32:
-        var_a0 = 2;
-        goto block_end;
+    } else {
+        func_800563D0(0);
     }
 
-    if (cutsceneIndex < 0x516) {
-        if (cutsceneIndex > 0x513 || cutsceneIndex == 0x4b0) {
-            
-            goto block_end;
-        }
-        if (cutsceneIndex < 0x4B1) {
-            if (cutsceneIndex == 0x44C) {
-                var_a0 = 2;
-                goto block_end;
-            }
-        }
-        
-        goto block_end;
-    }
-
-    if (cutsceneIndex >= 0x546) {
-        var_a0 = 2;
-        if (cutsceneIndex >= 0x549) {
-            if (cutsceneIndex == 0x578) {
-                var_a0 = 2;
-                goto block_end;
-            }
-            goto block_34;
-        }
-    }
-
-block_34:
-    var_a0 = 1;
-
-block_end:
-    
-    func_800563D0(var_a0);
-    
-    if (checkDailyEventBit(0x54) != 0) {
-        if (checkDailyEventBit(0x53) != 0) {
+   if (checkDailyEventBit(0x54)) {
+        if (checkDailyEventBit(0x53)) {
             setPlayerAction(6, 8);
-            D_8018908C = 0x50;
+            gPlayer.unk_2C = 0x50;
         } else {
             setPlayerAction(0, 0);
-            D_8018908C = 0;
+            gPlayer.unk_2C = 0;
         }
-        if (!(gCutsceneFlags & 1) && (func_8009B5E0())) {
+        if (!(gCutsceneFlagsHack[1] & 1) && func_8009B5E0()) {
             setAudio(0x3F);
         }
     }
-
+    
     toggleDailyEventBit(0x53);
     toggleDailyEventBit(0x54);
     
     setupPlayerSprite(gEntranceIndex, arg0);
+    
     func_80065AA0();
     func_800D5290();
-    
+
+    // this should be just gCutsceneFlags, but need array/struct loading here, which breaks the match when used in other functions that reference gCutsceneFlags
     if (arg0 != 2) {
-        if (!(gCutsceneFlags & 6)) {
-            if (checkDailyEventBit(0x4D) == 0) {
+        if (!(gCutsceneFlagsHack[1] & 6)) {
+            if (!checkDailyEventBit(0x4D)) {
                 func_80088D54();
             }
-            if (!(gCutsceneFlags & 6)) {
+            if (!(gCutsceneFlagsHack[1] & 6)) {
                 func_8005AAE4();
                 func_800758B8();
             }
         }
-        if (!(gCutsceneFlags & 4)) {
+        if (!(gCutsceneFlagsHack[1] & 4)) {
             func_800876D0();
         }
     }
@@ -245,14 +218,13 @@ block_end:
     func_8002F7C8(0, 0, 0, 0);
     func_8003BE98(0, 0, 0, 0, 0);
     
-    D_80180718 = 0;
-    D_8018071C = 0;
-    D_80180720 = 0;
-    D_80180724 = 0;
+    D_80180718.r = 0;
+    D_80180718.g = 0;
+    D_80180718.b = 0;
+    D_80180718.a = 0;
+    
 }
-#else
-INCLUDE_ASM(const s32, "initialize2", func_80056030);
-#endif
+
 
 //INCLUDE_ASM(const s32, "initialize2", func_800563D0);
 

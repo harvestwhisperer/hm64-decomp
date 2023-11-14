@@ -105,8 +105,7 @@ typedef struct {
     void *unk_48;
     Vec3f unk_4C;
     void *unk_58;
-    /* sfx struct */
-    void *unk_5C;
+    void *unk_5C; // palette ptr? func_80042014
     u8 unk_60;
     u8 unk_61;
     u16 unk_62;

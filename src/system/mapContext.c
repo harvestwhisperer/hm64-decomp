@@ -18,7 +18,7 @@ extern LevelMapContext gMapModelContext[1];
 extern MapContextAddresses gMapModelAddresses[0x60];
 
 // forward declarations
-void func_8003C8D4(u8*); 
+void func_8003C8D4(u32*); 
  
 static const f32 D_8011EDE0[];
                     
@@ -95,7 +95,7 @@ bool setMapModelAddresses(u16 index, void *start, void *end) {
 
 //INCLUDE_ASM(const s32, "system/mapContext", func_8003BA44);
 
-bool func_8003BA44(u16 index, u16 mapIndex, void *modelData) {
+bool func_8003BA44(u16 index, u16 mapIndex, u32 *modelDataIndex) {
     
     bool result;
 
@@ -107,7 +107,7 @@ bool func_8003BA44(u16 index, u16 mapIndex, void *modelData) {
         
         gMapModelContext[index].mapIndex = mapIndex;
         
-        gMapModelContext[index].modelData = modelData;
+        gMapModelContext[index].modelDataIndex = modelDataIndex;
         
         gMapModelContext[index].flags = 1;
 
@@ -168,7 +168,67 @@ bool func_8003BB14(u16 index, u16 mapIndex) {
     return result;
 }
 
-INCLUDE_ASM(const s32, "system/mapContext", func_8003BC50);
+// probably another function
+static inline u8* getAddress(u32 offsets[], u32 i) {
+    return (u8*)offsets + offsets[i];
+}
+
+//INCLUDE_ASM(const s32, "system/mapContext", func_8003BC50);
+
+bool func_8003BC50(u16 mainMapIndex, u16 levelMapIndex) {
+
+    bool result = 0;
+    
+    u32 *offset1;
+    u32 *offset2;
+    u32 *offset3;
+    u32 *offset4;
+    u32 *offset5;
+    u32 *offset6;
+    u32 *offset7;
+    u32 *offset8;
+    u32 *offset9;
+    u32 *offset10; 
+ 
+    if (mainMapIndex == 0 && gMapModelContext[mainMapIndex].flags & 1) {
+        
+        gMapModelContext[mainMapIndex].unk_42 = levelMapIndex;
+        
+        nuPiReadRom(gMapModelAddresses[levelMapIndex].romStart, gMapModelContext[mainMapIndex].modelDataIndex, gMapModelAddresses[levelMapIndex].romEnd - gMapModelAddresses[levelMapIndex].romStart);
+ 
+        offset1 = getAddress(gMapModelContext[mainMapIndex].modelDataIndex, 0);
+        offset2 = getAddress(gMapModelContext[mainMapIndex].modelDataIndex, 1);
+        offset3 = getAddress(gMapModelContext[mainMapIndex].modelDataIndex, 2);
+        offset4 = getAddress(gMapModelContext[mainMapIndex].modelDataIndex, 3);
+        offset5 = getAddress(gMapModelContext[mainMapIndex].modelDataIndex, 4);
+        offset6 = getAddress(gMapModelContext[mainMapIndex].modelDataIndex, 5);
+        offset7 = getAddress(gMapModelContext[mainMapIndex].modelDataIndex, 6);
+        offset8 = getAddress(gMapModelContext[mainMapIndex].modelDataIndex, 7);
+        offset9 = getAddress(gMapModelContext[mainMapIndex].modelDataIndex, 8);
+        offset10 = getAddress(gMapModelContext[mainMapIndex].modelDataIndex, 9);
+        
+        gMapModelContext[mainMapIndex].flags |= 2;
+                
+        func_80033A90(gMapModelContext[mainMapIndex].mapIndex, 
+            offset1, 
+            offset2, 
+            offset3, 
+            offset4, 
+            offset5, 
+            offset6, 
+            offset7, 
+            offset8, 
+            offset9, 
+            offset10
+            );
+        
+        result = 1;
+    
+    }
+
+    return result;
+    
+}
 
 //INCLUDE_ASM(const s32, "system/mapContext", func_8003BD60);
 
@@ -316,7 +376,7 @@ bool func_8003C1E0(u16 index, f32 arg1, f32 arg2, f32 arg3, u8 arg4, u8 arg5) {
         gMapModelContext[index].unk_4.y = arg2;
         gMapModelContext[index].unk_4.z = arg3;
 
-        func_8003C8D4(&gMapModelContext[index].modelData);
+        func_8003C8D4(&gMapModelContext[index].modelDataIndex);
 
         result = 1;
     }
@@ -452,7 +512,32 @@ void func_8003C570(void) {
 
 INCLUDE_ASM(const s32, "system/mapContext", func_8003C5C0);
 
-INCLUDE_ASM(const s32, "system/mapContext", func_8003C6E4);
+//INCLUDE_ASM(const s32, "system/mapContext", func_8003C6E4);
+
+void func_8003C6E4(void) {
+
+    u16 i;
+
+    for (i = 0; i < 1; i++) {
+
+        if ((gMapModelContext[i].flags & 1) && (gMapModelContext[i].flags & 4)) {
+            
+            func_80038810(gMapModelContext[i].mapIndex);
+            func_8003C8D4(&gMapModelContext[i].modelDataIndex);
+            
+            if (gMapModelContext[i].flags & 0x18) {
+                func_8003CB3C(i);
+            }
+
+            D_802373F8.r = mainMap[gMapModelContext[i].mapIndex].mapStruct8.groundRgba.r;
+            D_802373F8.g = mainMap[gMapModelContext[i].mapIndex].mapStruct8.groundRgba.g;
+            D_802373F8.b = mainMap[gMapModelContext[i].mapIndex].mapStruct8.groundRgba.b;
+            D_802373F8.a = mainMap[gMapModelContext[i].mapIndex].mapStruct8.groundRgba.a;
+        }
+        
+    }
+    
+}
 
 INCLUDE_ASM(const s32, "system/mapContext", func_8003C8D4);
 

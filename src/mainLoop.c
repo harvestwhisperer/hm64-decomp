@@ -390,7 +390,6 @@ void func_800264CC(int arg0) {
 
 //INCLUDE_ASM(const s32, "mainLoop", gfxBufferSwap);
 
-// buffer swap
 void gfxBufferSwap(void *gfxTask) {
     currentGfxTaskPtr = gfxTask;
     nuGfxSwapCfb(gfxTask);
@@ -398,7 +397,7 @@ void gfxBufferSwap(void *gfxTask) {
 }
 
 // static inline?
-// why is a library function apparently in this file? (maybe a manual copy?)
+// manual copy of library func?
 s32 osAfterPreNMI(void) {
     return __osSpSetPc(0);
 }

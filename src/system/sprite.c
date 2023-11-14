@@ -518,7 +518,133 @@ INCLUDE_RODATA(const s32, "system/sprite", D_8011ED34);
 
 // uses D_8021E6E0[2][]
 // Gfx* func_8002A66C(Gfx* arg0, Bitmap* arg1, u16 arg2)
+
+// bitmap to vertices
+#ifdef PERMUTER
+Gfx* func_8002A66C(Gfx* dl, Bitmap* sprite, u16 arg2) {
+
+    u16 vtxIndex;
+    
+    u32 textureDimensions;
+    u16 textureOffset;
+    volatile u16 textureWidth;
+    u16 textureHeight[1];
+    u16 textureSize;
+    u16 remainingSize;
+
+    Gfx tempDl[2];
+
+    sprite->spriteNumber = arg2;
+
+    dl = func_8002A410(dl, (sprite->unk_54 >> 10) & 7);
+
+    // gsSPTexture(qu016(0.5), qu016(0.5), 0, G_TX_RENDERTILE, G_ON)
+    *dl = D_8011ED00[0];
+    dl++;
+
+    if (sprite->flags & 4) {
+        // gsDPSetTextureFilter(G_TF_BILERP)
+        *dl = D_8011ED00[1];
+        dl++;
+    } else {
+        // gsDPSetTextureFilter(G_TF_POINT)
+        *dl = D_8011ED00[2];
+        dl++;
+    }
+
+    switch (sprite->pixelSize) {
+        case G_IM_SIZ_4b:
+            textureWidth = ((u32)sprite->width + ((u32)sprite->width >> 0x1F)) >> 1;
+            textureHeight[0] = 4096 / sprite->width;
+            break;
+        case G_IM_SIZ_8b:
+            textureWidth = sprite->width;
+            textureHeight[0] = 2048 / textureWidth;
+            break;
+        default:
+        case G_IM_SIZ_16b:
+            textureWidth = sprite->width * 2;
+            textureHeight[0] = 2048 / sprite->width;
+            break;
+        case G_IM_SIZ_32b:
+            textureWidth = sprite->width * 4;
+            textureHeight[0] = 2048 / sprite->width;
+            break;
+    }
+
+    remainingSize = sprite->height;
+
+    textureOffset = 0;
+    textureDimensions = 0;
+    vtxIndex = 0;
+    
+    do {
+        
+        textureSize = remainingSize;
+
+        if (textureSize > textureHeight[0]) {
+            textureSize = textureHeight[0];
+        }
+        
+        func_800276AC((Vtx*)&D_8021E6E0[gDisplayContextIndex][sprite->spriteNumber+vtxIndex], 
+            sprite->width, 
+            sprite->height, 
+            textureSize, 
+            textureOffset, 
+            sprite->unk_54&1,
+            sprite->unk_54&2, 
+            sprite->unk_50, 
+            sprite->unk_52,
+            sprite->unk_54, 
+            sprite->rgba.r, 
+            sprite->rgba.g, 
+            sprite->rgba.b,
+            sprite->rgba.a);
+
+        // load texture tile
+        dl = func_80026F88(dl, sprite, textureDimensions, textureSize);
+
+        gSPVertex(&tempDl[0], (Vtx*)&D_8021E6E0[gDisplayContextIndex][sprite->spriteNumber + vtxIndex], 4, 0);
+
+        *(tempDl-1) = *(tempDl);
+        *dl = *(tempDl-1);
+        dl++;
+        
+       if (sprite->unk_54 & 0x200) {
+            // gsSP2Triangles(0, 1, 2, 0, 0, 2, 3, 0)
+            *dl = D_8011ED00[3];
+            dl++;
+        } else {
+            // gsSP2Triangles(0, 2, 1, 0, 0, 3, 2, 0)
+            *dl = D_8011ED00[4];
+            dl++;
+        }
+        
+        remainingSize -= textureSize;
+        textureOffset += textureSize;
+        vtxIndex++;
+        
+        textureDimensions += textureSize * *(&textureWidth+11);
+        
+        // gsDPPipeSync()
+        *dl = D_8011ED00[5];        
+        dl++;
+        
+    } while (remainingSize);
+
+    // gsSPEndDisplayList()
+    *dl = D_8011ED00[6];
+
+    sprite->vtxIndex = vtxIndex;
+
+    dl++;
+
+    return dl;
+    
+}
+#else
 INCLUDE_ASM(const s32, "system/sprite", func_8002A66C);
+#endif
 
 //INCLUDE_ASM(const s32, "system/sprite", func_8002ACA4);
 

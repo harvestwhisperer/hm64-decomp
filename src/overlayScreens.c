@@ -1039,7 +1039,7 @@ bool func_800CF498(u8 arg0) {
     switch (arg0) {
 
         case 0:
-            if (checkLifeEventBit(0x17)) {
+            if (checkLifeEventBit(HAVE_TABLECLOTH)) {
                 result = 1;
             }
             break;
@@ -1056,7 +1056,7 @@ bool func_800CF498(u8 arg0) {
              }
             break;
         case 3:
-             if (!checkHaveTool(0x1D)) {
+             if (!checkHaveTool(EMPTY_BOTTLE)) {
                  result = 1;
              }
             break;

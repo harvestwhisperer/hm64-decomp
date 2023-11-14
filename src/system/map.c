@@ -526,9 +526,13 @@ bool func_80034E64(u16 mapIndex, u8 arg1) {
     bool result = 0; 
 
     if (mapIndex == 0 && (mainMap[mapIndex].mapStruct9.flags & 1)) { 
+
         if (mainMap[mapIndex].mapStruct4[arg1].flags & 2) {
+        
             func_8002B6B8(mainMap[mapIndex].mapStruct4[arg1].spriteIndex);
+        
             mainMap[mapIndex].mapStruct4[arg1].flags = 0;
+        
             result = 1;
         }
     }
@@ -1682,7 +1686,31 @@ Gfx* func_8003ACA8(Gfx* arg0, MainMap* arg1, MapBitmap* arg2, u16 vtxIndex) {
     
 }
 
-INCLUDE_ASM(const s32, "system/map", func_8003AF58);
+//INCLUDE_ASM(const s32, "system/map", func_8003AF58);
+
+Vec3f* func_8003AF58(Vec3f* arg0, u16 arg1, u8 arg2, u8 arg3) {
+
+    Vec3f vec;
+
+    f32 temp1;
+    f32 temp2;
+
+    // these two statements have to be on the same line to match lmao (otherwise compiler inserts a nop)
+    temp1 = mainMap[arg1].mapStruct1.unk_8; vec.x = ((arg2 *  temp1) - mainMap[arg1].mapStruct9.unk_0) + (mainMap[arg1].mapStruct1.unk_8 / 2);
+
+    temp2 = mainMap[arg1].mapStruct1.unk_9; vec.z = ((arg3 * temp2) - mainMap[arg1].mapStruct9.unk_4) + (mainMap[arg1].mapStruct1.unk_9 / 2);
+    
+    vec.y = func_80035150(0, vec.x, vec.z);
+    
+    if (arg2 < mainMap[arg1].mapStruct6.unk_10 || arg3 < mainMap[arg1].mapStruct6.unk_11 || arg2 >= mainMap[arg1].mapStruct6.unk_10 + 0x14 || arg3 >= mainMap[arg1].mapStruct6.unk_11 + 0x18) {
+        vec.y = 65535.0f;
+    }
+    
+    *arg0 = vec;
+
+    return arg0;
+    
+}
 
 //INCLUDE_ASM(const s32, "system/map", func_8003B100);
 

@@ -69,8 +69,6 @@ extern Vec3f previousWorldRotationAngles;
 extern Vec3f currentWorldRotationAngles;
 extern f32 D_80170450;
 extern f32 D_80170454;
-// sprite vertices
-extern Vtx D_8021E6E0[2][0x80][4];
 // nu idle statck
 extern u64 *D_80126520;
 
@@ -330,8 +328,8 @@ Gfx* func_80026F88(Gfx* dl, Bitmap* sprite, u32 offset, u16 height) {
     return dl++;
 }
 
-// param1 = Mtx*
-// param1: 8021E6E0 + sizeof(Mtx) * offset = + 0x40 * n
+// param1 = Vtx, 8021E6E0
+// vtx adjustments
 INCLUDE_ASM(const s32, "system/graphic", func_800276AC);
 
 // unused
@@ -418,13 +416,114 @@ void func_80027950(f32 arg0, f32 arg1, f32 arg2, Vec3f* arg3, f32 arg4, f32 arg5
 INCLUDE_ASM(const s32, "system/graphic", func_80027950);
 #endif
 
+// unused
+#ifdef PERMUTER
+void func_80027B74(s32 arg0, f32 arg1, f32 arg2, Vec3f* arg3, f32 arg4, f32 arg5, f32 arg7, f32 arg8) {
+    
+    f32 temp_f2;
+
+    temp_f2 = (arg2 * arg8) - (arg0 * arg5);
+    arg3->x = ((arg2 * arg5) + (arg0 * arg8));
+    arg3->z = ((temp_f2 * arg7) + (arg1 * arg4));
+    arg3->y = ((-temp_f2 * arg4) + (arg1 * arg7));
+}
+#else
 INCLUDE_ASM(const s32, "system/graphic", func_80027B74);
+#endif
 
-INCLUDE_ASM(const s32, "system/graphic", func_80027BFC);
+//INCLUDE_ASM(const s32, "system/graphic", func_80027BFC);
 
-INCLUDE_ASM(const s32, "system/graphic", func_80027DC0);
+inline Coordinates* func_80027BFC(Coordinates* arg0, f32 arg1, f32 arg2, f32 arg3, f32 arg4, f32 arg5, f32 arg6, f32 arg7, f32 arg8, f32 arg9) {
+    
+    Coordinates vec;
+    f32 temp_f12;
+    f32 temp_f14;
+    f32 temp_f20;
+    f32 temp_f20_2;
+    f32 temp_f22;
+    f32 temp_f22_2;
+    f32 temp_f24;
+    f32 temp_f24_2;
+    f32 var_f0;
+    
+    temp_f14 = (arg2 * (arg6 - arg9)) + (arg5 * (arg9 - arg3));
+    temp_f24 = temp_f14 + (arg8 * (arg3 - arg6));
+    temp_f22_2 = temp_f24;
+    
+    temp_f22 = ((arg3 * (arg4 - arg7)) + (arg6 * (arg7 - arg1))) + (arg9 * (arg1 - arg4));
+    temp_f20 = ((arg1 * (arg5 - arg8)) + (arg4 * (arg8 - arg2))) + (arg7 * (arg2 - arg5));
+    temp_f12 = ((temp_f24 * temp_f24) + (temp_f22 * temp_f22)) + (temp_f20 * temp_f20);
+    
+    var_f0 = sqrtf(temp_f12);
+    
+    if (var_f0 == 0) {
+        
+        vec.x = 0.0f;
+        vec.y = 0.0f;
+        vec.z = 0.0f;
+        vec.w = 0.0f;
+        
+    } else {
+        
+        temp_f22_2 /= var_f0;
+        temp_f22 /= var_f0;
+        temp_f20 /= var_f0;
+        
+        vec.x = temp_f22_2;
+        vec.y = temp_f22;
+        vec.z = temp_f20;
+        vec.w = -(((temp_f22_2 * arg1) + (temp_f22 * arg2)) + (temp_f20 * arg3));
+    }
+    
+    *arg0 = vec;
+    return arg0;
+}
 
+//INCLUDE_ASM(const s32, "system/graphic", func_80027DC0);
+
+f32 func_80027DC0(f32 arg0, f32 arg1, Coordinates vec) {
+
+    f32 result;
+    
+    result = 0.0f;
+    
+    if (vec.y != 0.0f) {
+        result = ( (-(vec.x*arg0) - (vec.z * arg1)) - vec.w) / vec.y;
+    }
+    
+
+    return result;
+}
+
+#ifdef PERMUTER
+u8 func_80027E10(Coordinates arg0, f32 arg1, f32 arg2, f32 arg3, f32 arg4, f32 arg5, f32 arg6, f32 arg7, f32 arg8, f32 arg9) {
+
+    u8 count = 0;
+
+    func_80027BFC(&arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9);
+
+    if (arg0.x >= 0.0f) {
+        count = 1;
+    }
+
+    func_80027BFC(&arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9);
+
+    if (arg0.x >= 0.0f) {
+        count++;
+    }
+
+    func_80027BFC(&arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9);
+
+    if (arg0.x >= 0.0f) {
+        count++;
+    }
+
+    return count / 3;
+    
+}
+#else
 INCLUDE_ASM(const s32, "system/graphic", func_80027E10);
+#endif
 
 #ifdef PERMUTER
 f32 func_800284E8(f32 arg0, f32 arg1, f32 arg2, f32 arg3, f32 arg4, f32 arg5, f32 arg6) {

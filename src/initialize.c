@@ -89,9 +89,9 @@ void func_8004E160(void) {
     initializeWaveTable(0);
 }
 
-// initialize bss game variables
 //INCLUDE_ASM(const s32, "initialize", initializeGameVariables);
 
+// initialize bss game variables
 void initializeGameVariables(void) {
 
     u8 i, j, k;
@@ -126,9 +126,9 @@ void initializeGameVariables(void) {
     
     dailyShippingBinValue = 0;
     
-    gWeather = 1;
-    gForecast = 1;
-    gNextSeason = 1;
+    gWeather = SUNNY;
+    gForecast = SUNNY;
+    gNextSeason = SPRING;
 
     D_80205230.unk_6 = 0;
     D_80205230.unk_2 = 0;
@@ -174,7 +174,7 @@ void initializeGameVariables(void) {
     gPlayer.action1 = 0;
     gPlayer.action2 = 0;
     gPlayer.action3 = 0;
-    gPlayer.action4 = 0;
+    gPlayer.animationState = 0;
     gPlayer.fatigue.unk_3 = 0;
     gPlayer.flags = 0;
     gPlayer.unk_60 = 0.0f;
@@ -245,7 +245,7 @@ void initializeGameVariables(void) {
     D_80189828.unk_C = 0;
     D_80189828.unk_E = 0;
 
-    for (i = 0; i < 0x30; i++) {
+    for (i = 0; i < TOTAL_NPCS; i++) {
         npcInfoArray[i].spriteIndex = 0;
         npcInfoArray[i].unk_1A = 0;
         npcInfoArray[i].unk_1B = 0;
@@ -259,7 +259,7 @@ void initializeGameVariables(void) {
         npcInfoArray[i].location = 0;
     }
 
-    for (i = 0; i < 0x30; i++) {
+    for (i = 0; i < TOTAL_NPCS; i++) {
         npcAffection[i] = 0;
     }
 
@@ -689,7 +689,7 @@ INCLUDE_ASM(const s32, "initialize", func_8004F768);
 
 INCLUDE_ASM(const s32, "initialize", func_800527D4);
 
-// have to add symbols to undefined_syms/symbol_addrs
+// have to add linker symbols
 /*
 void func_800527D4(void) {
     
@@ -946,7 +946,7 @@ void func_80053088(void) {
 INCLUDE_ASM(const s32, "initialize", func_800535DC);
 
 // dialogues
-// need to add rom address variables to undefined_syms/symbol_addrs
+// need to add linker symbols
 /*
 void func_800535DC(void) {
     func_8003F30C(0, &D_E13920, &D_E13990, &D_E13800_2, 0x8030A800);
