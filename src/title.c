@@ -385,7 +385,7 @@ void titleScreenMainLoopCallback(void) {
 
             }
 
-            if (func_8004D380(0, 0x1000) && !set) {
+            if (func_8004D380(CONTROLLER_1, BUTTON_START) && !set) {
 
                 func_8002BAD8(0x46);
                 func_8002B80C(0x46, 4, 0xFF);
@@ -450,19 +450,21 @@ void titleScreenMainLoopCallback(void) {
         
         case 3:
 
-            if (func_8004D3C8(0, 0x10000)) {        
+            if (func_8004D3C8(CONTROLLER_1, BUTTON_STICK_UP)) {        
 
                 if (!set) {
+
                     if (D_80126571 != 1) {
                         func_8002BD0C(0x45, -56.0f, -52.0f, 56.0f);
                         D_80126571 = 1;
                         setAudio(2);
                     }
+
                     set = 1;
                 }
             }
             
-            if (func_8004D3C8(0, 0x100000)) {
+            if (func_8004D3C8(CONTROLLER_1, 0x100000)) {
 
                 if (!set) {
                     if (D_80126571) {
@@ -475,7 +477,7 @@ void titleScreenMainLoopCallback(void) {
                 }
             }
             
-            if (func_8004D380(0, 0x9000) && !set) {
+            if (func_8004D380(CONTROLLER_1, BUTTON_A | BUTTON_START) && !set) {
                 
                 if (!D_80126571) {
                     func_8002BAD8(0x47);
@@ -555,6 +557,7 @@ void titleScreenMainLoopCallback(void) {
                 func_8002B6B8(0x5B);
                 
                 // row index
+                // should be struct
                 if (D_80126571 == 0) {
                     // load select game screen
                     func_800E1380(FALSE);

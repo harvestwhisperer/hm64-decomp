@@ -263,7 +263,7 @@ void func_8008C208(void) {
             
         }
         
-        setSpriteDirection(dogInfo.spriteIndex, (dogInfo.unk_18 + 8 - func_8003C1A4(0)) % 8);
+        setSpriteDirection(dogInfo.spriteIndex, (dogInfo.unk_18 + 8 - func_8003C1A4(MAIN_MAP_INDEX)) % 8);
         func_80028520(&vec, dogInfo.unk_19, dogInfo.unk_18, 0);
         func_8002FE10(dogInfo.spriteIndex, vec.x, vec.y, vec.z, dogInfo.unk_19);
     } 
@@ -330,7 +330,7 @@ void func_80093B80(void) {
             horseInfo.flags &= ~(0x20 | 0x80);
         }
         
-        setSpriteDirection(horseInfo.unk_14, (horseInfo.direction + 8 - func_8003C1A4(0)) % 8);
+        setSpriteDirection(horseInfo.unk_14, (horseInfo.direction + 8 - func_8003C1A4(MAIN_MAP_INDEX)) % 8);
         func_80028520(&vec, horseInfo.unk_19, horseInfo.direction, 0);
         func_8002FE10(horseInfo.unk_14, vec.x,vec.y, vec.z, horseInfo.unk_19);
 

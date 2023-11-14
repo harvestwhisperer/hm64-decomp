@@ -216,7 +216,7 @@ void func_800DAC70(u8 arg0, u8 arg1, u8 arg2, u8 arg3) {
             temp2 = 0;
         }
         
-        func_80035004(0, temp2, arg2, arg3);
+        func_80035004(MAIN_MAP_INDEX, temp2, arg2, arg3);
         func_80036FA0(0);
         func_80036C08(0);
     }

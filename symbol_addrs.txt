@@ -1143,6 +1143,7 @@ specialDialogueBits = 0x8016F8B0;
 recipesBits = 0x8016FAFC;
 horseInfo = 0x8016FDD0;
 harvestKingName = 0x8016FDF4;
+gCutsceneFlagsHack = 0x8016FDFC;
 gCutsceneFlags = 0x8016FE00;
 mailboxBits = 0x8016FFEC;
 shadowSpritesInfo = 0x8016FFF8;
@@ -1183,7 +1184,7 @@ mainLoopCallbacksTable = 0x80188F70;
 
 albumBits = 0x80189058;
 
-gPlayer = 0x80189060;
+gPlayer = 0x80189060; 
 belongingsSlots = 0x80189084;
 keyItemSlots = 0x8018908E;
 gBabyAge = 0x80189134;

@@ -23,7 +23,7 @@ options:
   # extensions_path: tools/splat_ext
   libultra_symbols: True
   gfx_ucode: f3dex2
-
+  
 segments:
   - name: header
     type: header

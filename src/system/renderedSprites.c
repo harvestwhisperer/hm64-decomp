@@ -276,7 +276,7 @@ bool func_8002EEA4(u16 arg0) {
 
     bool result = 0;
 
-    if (!arg0 && gMapModelContextFlags & 1 && gMapModelContextFlags & 2) {
+    if (arg0 == 0 && gMapModelContext[arg0].flags & 1 && gMapModelContext[arg0].flags & 2) {
         D_801FD610 = arg0;
         result = 1;
     }
@@ -908,7 +908,7 @@ INCLUDE_ASM(const s32, "system/renderedSprites", func_800303D4);
 
 //INCLUDE_ASM(const s32, "system/renderedSprites", func_800305CC);
 
-u16 func_800305CC(u16 index, f32 arg1, f32 arg2, u16 arg3, u16 arg4) {
+u16 func_800305CC(u16 index, f32 arg1, f32 arg2, u16 arg3) {
 
     u16 result = 0;
     u32 temp;
@@ -1108,7 +1108,7 @@ bool func_80031830(u16 index, u32 arg1, u8 arg2) {
     temp4 = renderedSprites[index].startingCoordinates.y - 24.0f;
     
     func_80031904(&vec, index, arg1, arg2);
-    temp2 = func_80035150(0, vec.x, vec.z);
+    temp2 = func_80035150(MAIN_MAP_INDEX, vec.x, vec.z);
 
     check2 = 1;
     

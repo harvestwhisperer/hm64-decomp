@@ -29,6 +29,13 @@ typedef struct {
 } Camera;
 
 typedef struct {
+	f32 x;
+	f32 y;
+	f32 z;
+	f32 w;
+} Coordinates;
+
+typedef struct {
     u32 padding[4];
     u8 unk_10;
     u8 unk_11;
@@ -62,5 +69,8 @@ extern void func_80028EF8(f32 x, f32 y, f32 z);
 
 extern void drawFrame(void);  
 extern void graphicsInit();  
+
+// sprite vertices
+extern Vtx D_8021E6E0[2][0x80][4];
 
 #endif

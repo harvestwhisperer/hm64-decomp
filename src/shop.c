@@ -48,7 +48,7 @@ void func_800DC7BC(u8 index) {
     func_8002C85C(D_801194A0[index] + 0x62, 0xFF, 0xFF, 0xFF, 0xFF);
     func_8002C914(D_801194A0[index] + 0x62, 0xFF, 0xFF, 0xFF, 0xFF);
 
-    func_80034C40(0, D_801194A0[index], D_801194A0[index] + 0x62, func_80030BA0(&D_8011BA10, func_800D5A88(D_80118FD0[index])), D_80119040[index].x, D_80119040[index].y, D_80119040[index].z, 0xFF, 0xFF, 0, 0);
+    func_80034C40(MAIN_MAP_INDEX, D_801194A0[index], D_801194A0[index] + 0x62, func_80030BA0(&D_8011BA10, func_800D5A88(D_80118FD0[index])), D_80119040[index].x, D_80119040[index].y, D_80119040[index].z, 0xFF, 0xFF, 0, 0);
 }
 
 //INCLUDE_ASM(const s32, "shop", func_800DC9C0);
@@ -56,7 +56,7 @@ void func_800DC7BC(u8 index) {
 void func_800DC9C0(u8 index) {
 
     if (D_801194A0[index] != 0xFF) {
-        func_80034E64(0, D_801194A0[index]);
+        func_80034E64(MAIN_MAP_INDEX, D_801194A0[index]);
     }
 }
 
@@ -72,7 +72,7 @@ void func_800DC9FC(u8 arg0) {
         setAudio(0x24);
 
         if (D_801194A0[arg0] != 0xFF) {
-            func_80034E64(0, D_801194A0[arg0]);
+            func_80034E64(MAIN_MAP_INDEX, D_801194A0[arg0]);
         }
     }
 

@@ -6,7 +6,7 @@
 // forward declarations
 u8 func_8002B8E0(u16, u8, void*);
 bool func_8002C6F8(u16, u16);
-void func_8002CC84(SpriteAnimation*, u32*);             \
+void func_8002CC84(SpriteAnimation*, u32*);             
 u8* func_8002CD34(u16 arg0, void* arg1);
 u16* func_8002CD4C(u16, u16*);   
 
@@ -825,6 +825,7 @@ bool func_8002CC44(u16 index) {
     bool result = 0;
 
     if (index < MAX_ACTIVE_SPRITES) {
+        // flag 0x40
         result = (globalSprites[index].flags2 >> 6) & 1;
     }
 
@@ -833,7 +834,7 @@ bool func_8002CC44(u16 index) {
 }
 
 // arg0 = ptr to animation index on sprite struct
-// arg1 = ptr to unknown asset (byte swapped u16)
+// arg1 = ptr to unknown asset (byteswapped u16)
 // 16 bit swap
 #ifdef PERMUTER
 void func_8002CC84(SpriteAnimation* arg0, u16* arg1) {
@@ -855,7 +856,7 @@ INCLUDE_ASM(const s32, "system/globalSprites", func_8002CC84);
 #endif
 
 #ifdef PERMUTER
-void func_8002CCA8(SpriteAnimation* arg0, u16* arg1) {
+inline void func_8002CCA8(SpriteAnimation* arg0, u16* arg1) {
 
     u32 arr[2];
 
@@ -882,7 +883,50 @@ void func_8002CCA8(SpriteAnimation* arg0, u16* arg1) {
 INCLUDE_ASM(const s32, "system/globalSprites", func_8002CCA8);
 #endif
 
+#ifdef PERMUTER
+void func_8002CCDC(UnknownAnimation* arg0, u16* arg1) {
+
+    u32 temp;
+    u32 temp2;
+    u32 temp3;
+    UnknownAnimation struc[2];
+
+    temp = arg1[0];
+    
+    arg0->unk_2 = 0;
+    
+
+    temp2 = (temp & 0xFF) << 8;
+    temp3 = temp >> 8;
+    
+    temp = temp2 | temp3;
+    
+    arg0->unk_0 = temp;
+
+    
+    temp = arg1[2];
+
+    temp2 = (temp & 0xFF) << 8;
+    temp3 = temp >> 8;
+    
+    temp = temp2 | temp3;
+    
+    arg0->unk_4 = temp;
+    
+
+    temp = arg1[3];
+
+    temp2 = temp << 8;
+    temp3 = temp >> 8;
+    
+    temp = temp2 | temp3;
+    
+    arg0->unk_6 = temp;
+    
+}
+#else
 INCLUDE_ASM(const s32, "system/globalSprites", func_8002CCDC);
+#endif
 
 //INCLUDE_ASM(const s32, "system/globalSprites", func_8002CD34);
 
@@ -902,7 +946,56 @@ u8* func_8002CD34(u16 arg0, void* arg1) {
 }
 */
 
-INCLUDE_ASM(const s32, "system/globalSprites", func_8002CD4C);
+//INCLUDE_ASM(const s32, "system/globalSprites", func_8002CD4C);
+
+// no clue; probably uses static inlines
+u16* func_8002CD4C(u16 arg0, u16* arg1) {
+    
+    u16 i;
+
+    u32 temp;
+    u32 temp2;
+    u32 temp3;
+    u8 temp4;
+    
+    UnknownAnimation unk;
+    
+    i = 0;
+    
+    if (arg0) {
+        
+        do {
+            
+            temp2 = arg1[0] << 8;
+            temp3 = arg1[0] >> 8;
+            
+            temp = temp2 | temp3;
+            
+            unk.unk_0 = temp;
+
+
+            // ?
+
+            temp2 = arg1[1];
+            temp = temp2;
+            temp2 = temp;
+            
+            temp2 = temp >> 8;
+            temp4 = temp >> 8;
+            
+            unk.unk_2 = temp4;
+            unk.unk_3 = temp;
+              
+            arg1 += 2;
+            arg1 += unk.unk_0 * 4;
+            
+            i++;
+            
+        } while (i < arg0);
+    }
+    
+    return arg1;
+}
 
 //INCLUDE_ASM(const s32, "system/globalSprites", func_8002CDB4);
 

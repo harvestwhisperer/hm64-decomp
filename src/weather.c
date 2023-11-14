@@ -32,14 +32,12 @@ void func_800DC360(void) {
 
         for (i = 0; i < 10; i++) {
         
-            // sprite funcs
             func_8002B138(i+0x6B, &rainTexture_ROM_START, &rainTexture_ROM_END, &rainIndex_ROM_START, &rainIndex_ROM_END, 0, 0, (void*)RAIN_TEXTURE_VADDR, NULL, 0x802A5DC0, 0x802A5EC0, 0x802A5FC0, 0, 0, 1);
             func_8002BD90(i+0x6B, 1.0f, 1.0f, 1.0f);
             func_8002C7EC(i+0x6B, 4);
             func_8002C914(i+0x6B, 0xFF, 0xFF, 0xFF, 0xFF);
 
-            // map
-            func_80034D64(0, i+3, i+0x6B, check);
+            func_80034D64(MAIN_MAP_INDEX, i+3, i+0x6B, check);
         }
     }
 }

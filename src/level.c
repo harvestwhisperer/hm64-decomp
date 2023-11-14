@@ -221,53 +221,53 @@ void func_8006EC58(u16 mapIndex) {
         case FARM:
             D_801FD624 = 0xE;
             D_801C3F35 = 0xB;
-            func_80034EF0(0, 0xE, 0xB, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &groundObjectsTexture_ROM_START, &groundObjectsTexture_ROM_END, &groundObjectsIndex_ROM_START, &groundObjectsIndex_ROM_END, 0x60); 
+            func_80034EF0(MAIN_MAP_INDEX, 0xE, 0xB, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &groundObjectsTexture_ROM_START, &groundObjectsTexture_ROM_END, &groundObjectsIndex_ROM_START, &groundObjectsIndex_ROM_END, 0x60); 
             break;
         case GREENHOUSE:
             D_801FD624 = 1;
             D_801C3F35 = 1;
-            func_80034EF0(0, 1, 1, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &groundObjectsTexture_ROM_START, &groundObjectsTexture_ROM_END, &groundObjectsIndex_ROM_START, &groundObjectsIndex_ROM_END, 2); 
+            func_80034EF0(MAIN_MAP_INDEX, 1, 1, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &groundObjectsTexture_ROM_START, &groundObjectsTexture_ROM_END, &groundObjectsIndex_ROM_START, &groundObjectsIndex_ROM_END, 2); 
             break;            
         case MOUNTAIN_1:
             D_801FD624 = 5;
             D_801C3F35 = 0;
-            func_80034EF0(0, 5, 0, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &groundObjectsTexture_ROM_START, &groundObjectsTexture_ROM_END, &groundObjectsIndex_ROM_START, &groundObjectsIndex_ROM_END, 0); 
+            func_80034EF0(MAIN_MAP_INDEX, 5, 0, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &groundObjectsTexture_ROM_START, &groundObjectsTexture_ROM_END, &groundObjectsIndex_ROM_START, &groundObjectsIndex_ROM_END, 0); 
             break;    
         case MOUNTAIN_2:
             D_801FD624 = 3;
             D_801C3F35 = 5;
-            func_80034EF0(0, 3, 5, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &groundObjectsTexture_ROM_START, &groundObjectsTexture_ROM_END, &groundObjectsIndex_ROM_START, &groundObjectsIndex_ROM_END, 0); 
+            func_80034EF0(MAIN_MAP_INDEX, 3, 5, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &groundObjectsTexture_ROM_START, &groundObjectsTexture_ROM_END, &groundObjectsIndex_ROM_START, &groundObjectsIndex_ROM_END, 0); 
             break;  
         case TOP_OF_MOUNTAIN_1:
             D_801FD624 = 5;
             D_801C3F35 = 0;
-            func_80034EF0(0, 5, 0, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &groundObjectsTexture_ROM_START, &groundObjectsTexture_ROM_END, &groundObjectsIndex_ROM_START, &groundObjectsIndex_ROM_END, 0); 
+            func_80034EF0(MAIN_MAP_INDEX, 5, 0, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &groundObjectsTexture_ROM_START, &groundObjectsTexture_ROM_END, &groundObjectsIndex_ROM_START, &groundObjectsIndex_ROM_END, 0); 
             break;  
         case MOON_MOUNTAIN:
             D_801FD624 = 5;
             D_801C3F35 = 0;
-            func_80034EF0(0, 5, 0, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &groundObjectsTexture_ROM_START, &groundObjectsTexture_ROM_END, &groundObjectsIndex_ROM_START, &groundObjectsIndex_ROM_END, 0); 
+            func_80034EF0(MAIN_MAP_INDEX, 5, 0, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &groundObjectsTexture_ROM_START, &groundObjectsTexture_ROM_END, &groundObjectsIndex_ROM_START, &groundObjectsIndex_ROM_END, 0); 
             break;                            
         case POND:
             D_801FD624 = 5;
             D_801C3F35 = 0;
-            func_80034EF0(0, 5, 0, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &groundObjectsTexture_ROM_START, &groundObjectsTexture_ROM_END, &groundObjectsIndex_ROM_START, &groundObjectsIndex_ROM_END, 0); 
+            func_80034EF0(MAIN_MAP_INDEX, 5, 0, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &groundObjectsTexture_ROM_START, &groundObjectsTexture_ROM_END, &groundObjectsIndex_ROM_START, &groundObjectsIndex_ROM_END, 0); 
             break;          
         case CAVE:
             D_801FD624 = 0;
             D_801C3F35 = 0;
-            func_80034EF0(0, 0, 0, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &groundObjectsTexture_ROM_START, &groundObjectsTexture_ROM_END, &groundObjectsIndex_ROM_START, &groundObjectsIndex_ROM_END, 0); 
+            func_80034EF0(MAIN_MAP_INDEX, 0, 0, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &groundObjectsTexture_ROM_START, &groundObjectsTexture_ROM_END, &groundObjectsIndex_ROM_START, &groundObjectsIndex_ROM_END, 0); 
             break;    
         case MINE:                                      
         case MINE_2:        
             D_801FD624 = 2;
             D_801C3F35 = 2;
-            func_80034EF0(0, 2, 2, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &groundObjectsTexture_ROM_START, &groundObjectsTexture_ROM_END, &groundObjectsIndex_ROM_START, &groundObjectsIndex_ROM_END, 0); 
+            func_80034EF0(MAIN_MAP_INDEX, 2, 2, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &groundObjectsTexture_ROM_START, &groundObjectsTexture_ROM_END, &groundObjectsIndex_ROM_START, &groundObjectsIndex_ROM_END, 0); 
             break;    
         case RANCH:
             D_801FD624 = 0x10;
             D_801C3F35 = 0xA;
-            func_80034EF0(0, 0x10, 0xA, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &groundObjectsTexture_ROM_START, &groundObjectsTexture_ROM_END, &groundObjectsIndex_ROM_START, &groundObjectsIndex_ROM_END, 0); 
+            func_80034EF0(MAIN_MAP_INDEX, 0x10, 0xA, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &groundObjectsTexture_ROM_START, &groundObjectsTexture_ROM_END, &groundObjectsIndex_ROM_START, &groundObjectsIndex_ROM_END, 0); 
             break;   
     }
 
@@ -287,78 +287,78 @@ void func_8006EC58(u16 mapIndex) {
             
             switch (gSeason) {                      
                 case 1:                                    
-                    func_80035054(0, 2, 3, 0, 8.0f, 0);
+                    func_80035054(MAIN_MAP_INDEX, 2, 3, 0, 8.0f, 0);
                     break;
                 case 2:                      
-                    func_80035054(0, 2, 0x26, 0, 8.0f, 0);
+                    func_80035054(MAIN_MAP_INDEX, 2, 0x26, 0, 8.0f, 0);
                     break;
                 case 3:                                    
-                    func_80035054(0, 2, 0x29, 0, 8.0f, 0);
+                    func_80035054(MAIN_MAP_INDEX, 2, 0x29, 0, 8.0f, 0);
                     break;
             }
             
             if (gSeason == WINTER) {
-                func_80035054(0, 1, 0x1F, 0, 8.0f, 0);
-                func_80035054(0, 3, 0x21, 0, 8.0f, 0);
-                func_80035054(0, 4, 0x24, 0, 8.0f, 0);
-                func_80035054(0, 0x2C, 0x20, 16.0f, 8.0f, 16.0f);
-                func_80035054(0, 0x2D, 0x25, 16.0f, 8.0f, 16.0f);
+                func_80035054(MAIN_MAP_INDEX, 1, 0x1F, 0, 8.0f, 0);
+                func_80035054(MAIN_MAP_INDEX, 3, 0x21, 0, 8.0f, 0);
+                func_80035054(MAIN_MAP_INDEX, 4, 0x24, 0, 8.0f, 0);
+                func_80035054(MAIN_MAP_INDEX, 0x2C, 0x20, 16.0f, 8.0f, 16.0f);
+                func_80035054(MAIN_MAP_INDEX, 0x2D, 0x25, 16.0f, 8.0f, 16.0f);
             } else {
-                func_80035054(0, 1, 0, 0, 8.0f, 0);
-                func_80035054(0, 3, 0x1D, 0, 8.0f, 0);
-                func_80035054(0, 4, 0x1E, 0, 8.0f, 0);
-                func_80035054(0, 0x2C, 8, 16.0f, 8.0f, 16.0f);
-                func_80035054(0, 0x2D, 0x19, 16.0f, 8.0f, 16.0f);
+                func_80035054(MAIN_MAP_INDEX, 1, 0, 0, 8.0f, 0);
+                func_80035054(MAIN_MAP_INDEX, 3, 0x1D, 0, 8.0f, 0);
+                func_80035054(MAIN_MAP_INDEX, 4, 0x1E, 0, 8.0f, 0);
+                func_80035054(MAIN_MAP_INDEX, 0x2C, 8, 16.0f, 8.0f, 16.0f);
+                func_80035054(MAIN_MAP_INDEX, 0x2D, 0x19, 16.0f, 8.0f, 16.0f);
             }
             
-            func_80035054(0, 5, 0x22, 0, 8.0f, 0);
-            func_80035054(0, 6, 0x23, 0, 8.0f, 0);
-            func_80035054(0, 7, 7, 0, 8.0f, 0);
-            func_80035054(0, 8, 0x27, 0, 8.0f, 0);
-            func_80035054(0, 9, 0x28, 0, 8.0f, 0);
-            func_80035054(0, 0xA, 9, 0, 8.0f, 0);
-            func_80035054(0, 0xB, 0x3F, 0, 8.0f, 0);
-            func_80035054(0, 0xC, 0x40, 0, 8.0f, 0);
-            func_80035054(0, 0xD, 0x41, 0, 8.0f, 0);
-            func_80035054(0, 0xE, 0xD, 0, 8.0f, 0);
-            func_80035054(0, 0xF, 1, 0, 8.0f, 0);
-            func_80035054(0, 0x10, 0x2C, 0, 8.0f, 0);
-            func_80035054(0, 0x11, 0x2D, 0, 8.0f, 0);
-            func_80035054(0, 0x12, 0xA, 0, 8.0f, 0);
-            func_80035054(0, 0x13, 2, 0, 8.0f, 0);
-            func_80035054(0, 0x14, 4, 0, 8.0f, 0);
-            func_80035054(0, 0x15, 5, 0, 8.0f, 0);
-            func_80035054(0, 0x16, 6, 0, 8.0f, 0);
-            func_80035054(0, 0x17, 0x31, 0, 8.0f, 0);
-            func_80035054(0, 0x18, 0x32, 0, 8.0f, 0);
-            func_80035054(0, 0x19, 0x33, 0, 8.0f, 0);
-            func_80035054(0, 0x1A, 0x34, 0, 8.0f, 0);
-            func_80035054(0, 0x1B, 0xB, 0, 8.0f, 0);
-            func_80035054(0, 0x1C, 0x39, 0, 8.0f, 0);
-            func_80035054(0, 0x1D, 0x3A, 0, 8.0f, 0);
-            func_80035054(0, 0x1E, 0x3B, 0, 8.0f, 0);
-            func_80035054(0, 0x1F, 0x3C, 0, 8.0f, 0);
-            func_80035054(0, 0x20, 0xC, 0, 8.0f, 0);
-            func_80035054(0, 0x21, 0xE, 0, 8.0f, 0);
-            func_80035054(0, 0x22, 0xF, 0, 8.0f, 0);
-            func_80035054(0, 0x23, 0x10, 0, 8.0f, 0);
-            func_80035054(0, 0x24, 0x11, 0, 8.0f, 0);
-            func_80035054(0, 0x25, 0x12, 0, 8.0f, 0);
-            func_80035054(0, 0x26, 0x13, 0, 8.0f, 0);
-            func_80035054(0, 0x27, 0x14, 0, 8.0f, 0);
-            func_80035054(0, 0x28, 0x15, 0, 8.0f, 0);
-            func_80035054(0, 0x29, 0x16, -8.0f, 8.0f, -8.0f);
-            func_80035054(0, 0x2A, 0x17, -8.0f, 8.0f, -8.0f);
-            func_80035054(0, 0x2B, 0x18, -8.0f, 8.0f, -8.0f);
-            func_80035054(0, 0x30, 0x2A, 0, 8.0f, 0);
-            func_80035054(0, 0x31, 0x2B, 0, 8.0f, 0);
-            func_80035054(0, 0x32, 0x2E, 0, 8.0f, 0);
-            func_80035054(0, 0x33, 0x2F, 0, 8.0f, 0);
-            func_80035054(0, 0x34, 0x30, 0, 8.0f, 0);
-            func_80035054(0, 0x35, 0x35, 0, 8.0f, 0);
-            func_80035054(0, 0x36, 0x36, 0, 8.0f, 0);
-            func_80035054(0, 0x37, 0x37, 0, 8.0f, 0);
-            func_80035054(0, 0x38, 0x38, 0, 8.0f, 0);
+            func_80035054(MAIN_MAP_INDEX, 5, 0x22, 0, 8.0f, 0);
+            func_80035054(MAIN_MAP_INDEX, 6, 0x23, 0, 8.0f, 0);
+            func_80035054(MAIN_MAP_INDEX, 7, 7, 0, 8.0f, 0);
+            func_80035054(MAIN_MAP_INDEX, 8, 0x27, 0, 8.0f, 0);
+            func_80035054(MAIN_MAP_INDEX, 9, 0x28, 0, 8.0f, 0);
+            func_80035054(MAIN_MAP_INDEX, 0xA, 9, 0, 8.0f, 0);
+            func_80035054(MAIN_MAP_INDEX, 0xB, 0x3F, 0, 8.0f, 0);
+            func_80035054(MAIN_MAP_INDEX, 0xC, 0x40, 0, 8.0f, 0);
+            func_80035054(MAIN_MAP_INDEX, 0xD, 0x41, 0, 8.0f, 0);
+            func_80035054(MAIN_MAP_INDEX, 0xE, 0xD, 0, 8.0f, 0);
+            func_80035054(MAIN_MAP_INDEX, 0xF, 1, 0, 8.0f, 0);
+            func_80035054(MAIN_MAP_INDEX, 0x10, 0x2C, 0, 8.0f, 0);
+            func_80035054(MAIN_MAP_INDEX, 0x11, 0x2D, 0, 8.0f, 0);
+            func_80035054(MAIN_MAP_INDEX, 0x12, 0xA, 0, 8.0f, 0);
+            func_80035054(MAIN_MAP_INDEX, 0x13, 2, 0, 8.0f, 0);
+            func_80035054(MAIN_MAP_INDEX, 0x14, 4, 0, 8.0f, 0);
+            func_80035054(MAIN_MAP_INDEX, 0x15, 5, 0, 8.0f, 0);
+            func_80035054(MAIN_MAP_INDEX, 0x16, 6, 0, 8.0f, 0);
+            func_80035054(MAIN_MAP_INDEX, 0x17, 0x31, 0, 8.0f, 0);
+            func_80035054(MAIN_MAP_INDEX, 0x18, 0x32, 0, 8.0f, 0);
+            func_80035054(MAIN_MAP_INDEX, 0x19, 0x33, 0, 8.0f, 0);
+            func_80035054(MAIN_MAP_INDEX, 0x1A, 0x34, 0, 8.0f, 0);
+            func_80035054(MAIN_MAP_INDEX, 0x1B, 0xB, 0, 8.0f, 0);
+            func_80035054(MAIN_MAP_INDEX, 0x1C, 0x39, 0, 8.0f, 0);
+            func_80035054(MAIN_MAP_INDEX, 0x1D, 0x3A, 0, 8.0f, 0);
+            func_80035054(MAIN_MAP_INDEX, 0x1E, 0x3B, 0, 8.0f, 0);
+            func_80035054(MAIN_MAP_INDEX, 0x1F, 0x3C, 0, 8.0f, 0);
+            func_80035054(MAIN_MAP_INDEX, 0x20, 0xC, 0, 8.0f, 0);
+            func_80035054(MAIN_MAP_INDEX, 0x21, 0xE, 0, 8.0f, 0);
+            func_80035054(MAIN_MAP_INDEX, 0x22, 0xF, 0, 8.0f, 0);
+            func_80035054(MAIN_MAP_INDEX, 0x23, 0x10, 0, 8.0f, 0);
+            func_80035054(MAIN_MAP_INDEX, 0x24, 0x11, 0, 8.0f, 0);
+            func_80035054(MAIN_MAP_INDEX, 0x25, 0x12, 0, 8.0f, 0);
+            func_80035054(MAIN_MAP_INDEX, 0x26, 0x13, 0, 8.0f, 0);
+            func_80035054(MAIN_MAP_INDEX, 0x27, 0x14, 0, 8.0f, 0);
+            func_80035054(MAIN_MAP_INDEX, 0x28, 0x15, 0, 8.0f, 0);
+            func_80035054(MAIN_MAP_INDEX, 0x29, 0x16, -8.0f, 8.0f, -8.0f);
+            func_80035054(MAIN_MAP_INDEX, 0x2A, 0x17, -8.0f, 8.0f, -8.0f);
+            func_80035054(MAIN_MAP_INDEX, 0x2B, 0x18, -8.0f, 8.0f, -8.0f);
+            func_80035054(MAIN_MAP_INDEX, 0x30, 0x2A, 0, 8.0f, 0);
+            func_80035054(MAIN_MAP_INDEX, 0x31, 0x2B, 0, 8.0f, 0);
+            func_80035054(MAIN_MAP_INDEX, 0x32, 0x2E, 0, 8.0f, 0);
+            func_80035054(MAIN_MAP_INDEX, 0x33, 0x2F, 0, 8.0f, 0);
+            func_80035054(MAIN_MAP_INDEX, 0x34, 0x30, 0, 8.0f, 0);
+            func_80035054(MAIN_MAP_INDEX, 0x35, 0x35, 0, 8.0f, 0);
+            func_80035054(MAIN_MAP_INDEX, 0x36, 0x36, 0, 8.0f, 0);
+            func_80035054(MAIN_MAP_INDEX, 0x37, 0x37, 0, 8.0f, 0);
+            func_80035054(MAIN_MAP_INDEX, 0x38, 0x38, 0, 8.0f, 0);
 
             break;
         
@@ -390,7 +390,7 @@ void func_80073244(u8 itemIndex) {
     func_8002C85C(itemIndex +  0x62, 0xFF, 0xFF, 0xFF, 0xFF);
     func_8002C914(itemIndex +  0x62, 0xFF, 0xFF, 0xFF, 0xFF);
 
-    func_80034C40(0, itemIndex, itemIndex + 0x62, 0xC, arr[itemIndex].x, arr[itemIndex].y, arr[itemIndex].z, 0xFF, 0xFF, 0, 0);
+    func_80034C40(MAIN_MAP_INDEX, itemIndex, itemIndex + 0x62, 0xC, arr[itemIndex].x, arr[itemIndex].y, arr[itemIndex].z, 0xFF, 0xFF, 0, 0);
     
 }
 
@@ -415,7 +415,7 @@ void func_8007341C(u8 itemIndex) {
     func_8002C85C(itemIndex + 0x62, 0xFF, 0xFF, 0xFF, 0xFF);
     func_8002C914(itemIndex + 0x62, 0xFF, 0xFF, 0xFF, 0xFF);
 
-    func_80034C40(0, itemIndex, itemIndex + 0x62, 0xB, arr[itemIndex].x, arr[itemIndex].y, arr[itemIndex].z, 0xFF, 0xFF, 0, 0);
+    func_80034C40(MAIN_MAP_INDEX, itemIndex, itemIndex + 0x62, 0xB, arr[itemIndex].x, arr[itemIndex].y, arr[itemIndex].z, 0xFF, 0xFF, 0, 0);
 }
 
 // alternate
@@ -442,7 +442,7 @@ void func_8007341C(u8 arg0) {
     func_8002C85C(arg0 + 0x62, 0xFF, 0xFF, 0xFF, 0xFF);
     func_8002C914(arg0 + 0x62, 0xFF, 0xFF, 0xFF, 0xFF);
 
-    func_80034C40(0, arg0, arg0 + 0x62, 0xB, arr[arg0].x, arr[arg0].y, arr[arg0].z, 0xFF, 0xFF, 0, 0);
+    func_80034C40(MAIN_MAP_INDEX, arg0, arg0 + 0x62, 0xB, arr[arg0].x, arr[arg0].y, arr[arg0].z, 0xFF, 0xFF, 0, 0);
 }
 */
 

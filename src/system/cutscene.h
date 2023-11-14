@@ -77,6 +77,7 @@ typedef union {
     CutsceneButtonCheck buttonCheck;
 } CutsceneContext;
 
+// 0x801808B0
 typedef struct {
     // CutsceneContext *cutscenePointer;
     void *cutscenePointer;
@@ -106,7 +107,9 @@ typedef struct {
     u16 flags; // 0x6C
 } CutsceneMap;
 
+// can't get a consistent match across files for this variable; some functions need array/struct loading, which breaks the match in other functions
 extern u32 gCutsceneFlags;
+extern u32 cutsceneFlagsHack[2];
 
 extern void initializeCutsceneMaps(void);
 extern void mainLoopCutsceneHandler(void);
