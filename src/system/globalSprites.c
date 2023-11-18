@@ -5,7 +5,6 @@
 
 // forward declarations
 u8 func_8002B8E0(u16, u8, void*);
-bool func_8002C6F8(u16, u16);
 void func_8002CC84(SpriteAnimation*, u32*);             
 u8* func_8002CD34(u16 arg0, void* arg1);
 u16* func_8002CD4C(u16, u16*);   
@@ -24,7 +23,7 @@ void initializeGlobalSprites(void) {
         globalSprites[i].flags2 = 0;
         globalSprites[i].flags1 = 0;
         
-        globalSprites[i].unk_94 = 0;
+        globalSprites[i].paletteIndex = 0;
         globalSprites[i].unk_90 = 0;
         globalSprites[i].unk_92 = 0;
         globalSprites[i].unk_91 = 0;
@@ -57,8 +56,8 @@ void initializeGlobalSprites(void) {
 //INCLUDE_ASM(const s32, "system/globalSprites", func_8002B138);
 
 bool func_8002B138(u16 index, u32 romTextureStart, u32 romTextureEnd, u32 romAssetIndexStart, u32 romAssetIndexEnd, 
-    u32 romSpritesheetIndexStart, u32 romSpritesheetIndexEnd, void* texture1Vaddr, void* texture2Vaddr, void* paletteVaddr, void* animationVaddr, 
-    void* spriteToPaletteVaddr, void* spritesheetIndexVaddr, u8 assetType, u8 argE) {
+    u32 romSpritesheetIndexStart, u32 romSpritesheetIndexEnd, u8* texture1Vaddr, u8* texture2Vaddr, u16* paletteVaddr, u16* animationVaddr, 
+    u8* spriteToPaletteVaddr, u32* spritesheetIndexVaddr, u8 assetType, u8 argE) {
 
     u32 assetIndex[8];
     bool result = 0;
@@ -145,7 +144,7 @@ bool func_8002B36C(u16 index, u32* unknownAssetIndexPtr, u32* spritesheetIndexPt
             globalSprites[index].flags2 = 1;
             globalSprites[index].flags1 = 0;
 
-            globalSprites[index].unk_94 = 0;
+            globalSprites[index].paletteIndex = 0;
             globalSprites[index].unk_92 = 0;
 
             func_8002BD0C(index, 0.0f, 0.0f, 0.0f);
@@ -187,7 +186,7 @@ bool func_8002B50C(u16 index, u32* unknownAssetIndexPtr, u32* spritesheetIndexPt
             globalSprites[index].flags2 = 5;
             globalSprites[index].flags1 = 0;
 
-            globalSprites[index].unk_94 = 0;
+            globalSprites[index].paletteIndex = 0;
             globalSprites[index].unk_92 = 0;
 
             func_8002BD0C(index, 0, 0, 0);
@@ -400,7 +399,7 @@ bool func_8002BCC8(u16 index) {
     if (index < MAX_ACTIVE_SPRITES) {
 
         if (globalSprites[index].flags2 & 1) {
-            result = globalSprites[index].flags2 & 0x40;;
+            result = globalSprites[index].flags2 & 0x40;
         }
     }
     
@@ -784,13 +783,13 @@ u8 func_8002CB24(u16 index, u8 flag) {
 
 //INCLUDE_ASM(const s32, "system/globalSprites", func_8002CB88);
 
-bool func_8002CB88(u16 index, u16 arg1) {
+bool func_8002CB88(u16 index, u16 paletteIndex) {
 
     bool result = 0;
 
     if (index < MAX_ACTIVE_SPRITES) {
         if (globalSprites[index].flags2 & 1) {
-            globalSprites[index].unk_94 = arg1;
+            globalSprites[index].paletteIndex = paletteIndex;
             globalSprites[index].flags2 |= 0x100;
             result = 1;
         }

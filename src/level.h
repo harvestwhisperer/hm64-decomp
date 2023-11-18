@@ -37,6 +37,7 @@
 #define MAYOR_HOUSE 0x3E
 #define POTION_SHOP_BEDROOM 0x3F
 #define POTION_SHOP 0x40
+#define UNUSED_MAP 0x41
 #define HARVEST_SPRITE_CAVE 0x42
 #define CAVE 0x43
 #define MINE 0x44
@@ -81,7 +82,7 @@ extern void setLevelAudio(u16, u8, u8);
 extern Vec4f* func_8006EB94(Vec4f*, u16);      
 extern void func_80073244(u8); 
 extern u8 func_80074C38(u8);
-extern s32 func_80074C50(u8);    
+extern u16 func_80074C50(u16);    
 
 extern void setLevelGraphicsData(u16);        
 extern u8 getLevelFlags(u16);    

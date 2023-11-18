@@ -11,7 +11,7 @@
 #include "npc.h"
 
 // bss
-extern CharacterSprite characterSprites[MAX_NPC_SPRITES];
+extern CharacterSprite characterSprites[MAX_CHARACTER_SPRITES];
 extern RenderedSprite renderedSprites[MAX_RENDERED_SPRITES];
 extern Shadow shadowSpritesInfo[3];
 
@@ -61,7 +61,7 @@ bool func_8002DDDC(u16 npcIndex, void* arg1, void* arg2, void* arg3, void* arg4,
 
     bool result = 0;
 
-    if (npcIndex < MAX_NPC_SPRITES) {
+    if (npcIndex < MAX_CHARACTER_SPRITES) {
 
         if (!(characterSprites[npcIndex].flags & 1)) {
             
@@ -272,12 +272,12 @@ bool func_8002EDF0(u16 index, s16 arg1, s16 arg2, s16 arg3) {
 
 //INCLUDE_ASM(const s32, "system/renderedSprites", func_8002EEA4);
 
-bool func_8002EEA4(u16 arg0) {
+bool func_8002EEA4(u16 mapIndex) {
 
     bool result = 0;
 
-    if (arg0 == 0 && gMapModelContext[arg0].flags & 1 && gMapModelContext[arg0].flags & 2) {
-        D_801FD610 = arg0;
+    if (mapIndex == 0 && gMapModelContext[mapIndex].flags & 1 && gMapModelContext[mapIndex].flags & 2) {
+        gMainMapIndex = mapIndex;
         result = 1;
     }
 
@@ -310,6 +310,7 @@ bool func_8002F014(u16 index, u8 arg1, u8 arg2, u8 arg3, u8 arg4) {
     bool result = 0;
 
     if (index < MAX_RENDERED_SPRITES) {
+        
         if ((renderedSprites[index].flags & 1) && (renderedSprites[index].flags & 4)) {
             
             func_8002C914(renderedSprites[index].globalSpriteIndex, arg1, arg2, arg3, arg4);
@@ -758,7 +759,7 @@ u16 setSpriteCollisionBuffers(u16 spriteIndex, u8 xValue, u8 yValue) {
     
     u16 result = 0;
     
-    if (spriteIndex < MAX_NPC_SPRITES) {
+    if (spriteIndex < MAX_CHARACTER_SPRITES) {
         if (characterSprites[spriteIndex].flags & 1) {
             characterSprites[spriteIndex].collisionBufferX = xValue;
             characterSprites[spriteIndex].collisionBufferY = yValue;
@@ -775,7 +776,7 @@ bool func_8002FFF4(u16 npcIndex, u8 arg1, u8 arg2) {
 
     bool result = 0;
 
-    if (npcIndex < MAX_NPC_SPRITES) {
+    if (npcIndex < MAX_CHARACTER_SPRITES) {
         if (characterSprites[npcIndex].flags & 1) {
             result = 1;
             characterSprites[npcIndex].unk_1C = arg1;
@@ -928,13 +929,15 @@ u16 func_800305CC(u16 index, f32 arg1, f32 arg2, u16 arg3) {
                 vec1.y = 0;
                 vec1.z = arg2;
 
+                // angles/degrees
                 vec3.x = 0;
-                vec3.y = func_80028820((renderedSprites[index].direction + func_8003C1A4(D_801FD610)) % 8);
+                vec3.y = func_80028820((renderedSprites[index].direction + func_8003C1A4(gMainMapIndex)) % 8);
                 vec3.z = 0;
 
+                // do 3D rotation
                 func_80027950(vec1, &vec2, vec3);
 
-                for (i = 0; i < 0x31; i++) {
+                for (i = 0; i < MAX_RENDERED_SPRITES; i++) {
 
                     if (i != index && !(renderedSprites[i].flags & 0x200)) {
                         
@@ -989,7 +992,7 @@ bool func_800308E0(u16 spriteIndex, f32 arg1, f32 arg2) {
     if (spriteIndex < MAX_RENDERED_SPRITES) {
 
         if (renderedSprites[spriteIndex].flags & 1 && !(renderedSprites[spriteIndex].flags & 0x40)) {
-            result = func_80036318(gMapModelContext[D_801FD610].mapIndex, renderedSprites[spriteIndex].startingCoordinates.x + arg1, renderedSprites[spriteIndex].startingCoordinates.z + arg2);
+            result = func_80036318(gMapModelContext[gMainMapIndex].mapIndex, renderedSprites[spriteIndex].startingCoordinates.x + arg1, renderedSprites[spriteIndex].startingCoordinates.z + arg2);
         }
 
     }
@@ -1058,7 +1061,7 @@ Vec3f* func_800315A0(Vec3f* arg0, u16 index) {
     
     if (index < MAX_RENDERED_SPRITES) {
         if ((renderedSprites[index].flags & 1) && !(renderedSprites[index].flags & 0x40) && !(renderedSprites[index].flags & 0x100)) {
-            func_80036610(&vec, gMapModelContext[D_801FD610].mapIndex, renderedSprites[index].startingCoordinates.x, renderedSprites[index].startingCoordinates.z);
+            func_80036610(&vec, gMapModelContext[gMainMapIndex].mapIndex, renderedSprites[index].startingCoordinates.x, renderedSprites[index].startingCoordinates.z);
         } 
     }
 
@@ -1080,7 +1083,7 @@ Vec3f* func_800315A0(Vec3f* arg0, u16 index) {
     
 //     if (index < MAX_RENDERED_SPRITES) {
 //         if ((renderedSprites[index].flags & 1) && !(renderedSprites[index].flags & 0x40) && !(renderedSprites[index].flags & 0x100)) {
-//             func_80036610(&vec, gMapModelContext[D_801FD610].mapIndex, renderedSprites[index].startingCoordinates.x, renderedSprites[index].startingCoordinates.z);
+//             func_80036610(&vec, gMapModelContext[gMainMapIndex].mapIndex, renderedSprites[index].startingCoordinates.x, renderedSprites[index].startingCoordinates.z);
 //         } 
 //     }
  
@@ -1146,6 +1149,7 @@ Vec3f* func_80031904(Vec3f* vec, u16 index, s16 arg2, u8 arg3) {
     vec3.y = func_80028820(arg3 % 8);
     vec3.z = 0;
 
+    // do 3D rotation
     func_80027950(vec1, &vec2, vec3);
 
     vec1.x = renderedSprites[index].startingCoordinates.x + vec2.x;

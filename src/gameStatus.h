@@ -7,6 +7,7 @@
 #define DAILY_SHIPMENT 0
 #define CARPENTER_ESTIMATE 9
 #define CARPENTER_FINISHED 0xB
+// 0xD = something to do with carrying
 #define SUCCESSFUL_PROPOSAL 0x14
 #define FARM_MORNING_VISIT 0x17
 #define STORES_CLOSED_FOR_FESTIVAL 0x2D

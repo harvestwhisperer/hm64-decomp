@@ -5,7 +5,7 @@
 
 #include "system/map.h"
 
-extern u8 D_80118700[0xDA][4];
+extern u8 D_80118700[0xDA][5];
 
 // shared
 extern u8 D_801C3F35;
@@ -193,37 +193,41 @@ INCLUDE_ASM(const s32, "mapObjects", func_800DA9A8);
 // jtbl_80122C30
 INCLUDE_ASM(const s32, "mapObjects", func_800DAA90);
 
-#ifdef PERMUTER
+//INCLUDE_ASM(const s32, "mapObjects", func_800DAC70);
+
 void func_800DAC70(u8 arg0, u8 arg1, u8 arg2, u8 arg3) {
-    u32 temp;
-    u32 temp2;
-    u32 temp3;
+    
+    u8 temp;
+    u8 temp2;
     
     if (func_800DAA90(arg0, arg1, arg2, arg3)) {
         
-        temp3 = D_80118700[arg1][0]; 
-        temp = D_80118700[arg1][1];
-        temp2 = temp;
+        temp2 = D_80118700[arg1][1];
         
-        if (temp3 != 0xFF) {
-            func_80038B58(0, temp3, D_801FD624 + arg2, D_801C3F35 + arg3);
+        if (D_80118700[arg1][0] != 0xFF) {
+            func_80038B58(0, D_80118700[arg1][0], D_801FD624 + arg2, D_801C3F35 + arg3);
+        }
+        
+        temp = 0;
+        
+        switch (temp2) {
+            default:
+                func_80035004(0, temp2, arg2, arg3);
+                break;
+
+            case 0xFF:
+                func_80035004(0, 0xFFFF, arg2, arg3);
+                break;
+
+            case 0:
+                func_80035004(0, 0, arg2, arg3);
+                break;
         }
 
-        if (temp3 == 0xFF) {
-            temp2 = 0xffff;
-        }
-        if (temp3 == 0) {
-            temp2 = 0;
-        }
-        
-        func_80035004(MAIN_MAP_INDEX, temp2, arg2, arg3);
         func_80036FA0(0);
-        func_80036C08(0);
+        func_80036C08(temp);
     }
-} 
-#else
-INCLUDE_ASM(const s32, "mapObjects", func_800DAC70);
-#endif
+}
 
 INCLUDE_ASM(const s32, "mapObjects", func_800DAD74);
 

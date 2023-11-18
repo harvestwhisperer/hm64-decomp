@@ -83,6 +83,7 @@ typedef struct {
     u8 level;
     u8 unk_2;
     u8 unk_3;
+    u8 unk_4;
 } Fatigue;
 
 // 80189060
@@ -97,7 +98,7 @@ typedef struct {
     u8 bottleContents; // 0x1E
     u8 toolLevels[5];
     u8 belongingsSlots[8];
-    u8 unk_2C;
+    u8 heldItem;
     u8 unk_2D;
     u8 keyItemSlots[24];
     u8 unk_46;

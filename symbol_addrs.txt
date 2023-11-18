@@ -1246,6 +1246,7 @@ houseExtensionConstructionCounter = 0x801FC151;
 renderedSprites = 0x801FC160;
 
 gGold = 0x801FD60C;
+gMainMapIndex = 0x801FD610;
 karenKaiBabyAge = 0x801FD618;
 gNextSeason = 0x801FD620;
 gCurrentSongIndex = 0x801FD622;

@@ -45,23 +45,42 @@ extern u8 D_80181B10;
 extern u8 D_801C4216;
 extern u16 D_80237410;
 
-// data
+// data 
 extern Addresses cutsceneMapAddresses[];
 // cutscene vaddrs
 extern void *D_80114C70[];
 extern void *D_80114D30[];
+// cutscene map asset index
 extern u16 D_80114DF0[];
 extern u8 D_80113580[0x18][0x14];
 
 
-INCLUDE_ASM(const s32, "setCutscenes", func_8009BF90);
+//INCLUDE_ASM(const s32, "setCutscenes", func_8009BF90);
+
+void func_8009BF90(u16 arg0) {
+
+    nuPiReadRom(cutsceneMapAddresses[arg0].romAddrStart, D_80114D30[arg0], cutsceneMapAddresses[arg0].romAddrEnd - cutsceneMapAddresses[arg0].romAddrStart);
+
+    D_801891D4 = 0;
+
+    func_800469A8(D_80114DF0[arg0], D_80114C70[arg0]);
+    
+    func_8002F730();
+    
+    D_8018981C = arg0;
+
+    gCutsceneFlags |= 1;
+
+    toggleDailyEventBit(0x53);
+    
+}
 
 // jtbl_80120EC0
 //INCLUDE_ASM(const s32, "setCutscenes", func_8009C054);
 
 u16 func_8009C054(u16 mapIndex) {
     
-    u16 result = 0xFFFF;
+    u16 offset = 0xFFFF;
     
     // can't use array/struct here as required by func_80056030
     if (!(gCutsceneFlags & 1)) {
@@ -70,103 +89,106 @@ u16 func_8009C054(u16 mapIndex) {
 
         switch (mapIndex) {
             case FARM:
-                result = setFarmCutscenes();
+                offset = setFarmCutscenes();
                 break;
             case MOUNTAIN_1:
-                result = setMountain1Cutscenes();
+                offset = setMountain1Cutscenes();
                 break;
             case MOUNTAIN_2:
-                result = func_800A1C04();
+                offset = func_800A1C04();
                 break;
             case TOP_OF_MOUNTAIN_1:
-                result = func_800A2250();
+                offset = func_800A2250();
                 break;
             case MOON_MOUNTAIN:
-                result = setMoonMountainCutscenes();
+                offset = setMoonMountainCutscenes();
                 break;
             case POND:
-                result = setSpringCutscenes();
+                offset = setSpringCutscenes();
                 break;
             case HARVEST_SPRITE_CAVE:
-                result = setHarvestSpriteCaveCutscenes();
+                offset = setHarvestSpriteCaveCutscenes();
                 break;
             case CAVE:
-                result = setCaveCutscenes();
+                offset = setCaveCutscenes();
                 break;
             case HOUSE:
-                result = func_800A29B0();
+                offset = func_800A29B0();
                 break;
             case KITCHEN:
-                result = func_800A2FA8();
+                offset = func_800A2FA8();
                 break;
             case RANCH:
-                result = func_800A3F04();
+                offset = func_800A3F04();
                 break;
             case RANCH_STORE:
-                result = setRanchStoreCutscenes();
+                offset = setRanchStoreCutscenes();
                 break;
             case VINEYARD:
-                result = func_800A4878();
+                offset = func_800A4878();
                 break;
             case VINEYARD_HOUSE:
-                result = setVineyardHouseCutscenes();
+                offset = setVineyardHouseCutscenes();
                 break;
             case VINEYARD_CELLAR:
-                result = setVineyardCellarCutscenes();
+                offset = setVineyardCellarCutscenes();
                 break;
             case VILLAGE_1:
-                result = func_800A4E50();
+                offset = func_800A4E50();
                 break;
             case VILLAGE_2:
-                result = func_800A5314();
+                offset = func_800A5314();
                 break;
             case RICK_STORE:
-                result = setRickStoreCutscenes();
+                offset = setRickStoreCutscenes();
                 break;
             case FLOWER_SHOP:
-                result = setFlowerShopCutscenes();
+                offset = setFlowerShopCutscenes();
                 break;
             case BAKERY:
-                result = func_800A5F48();
+                offset = func_800A5F48();
                 break;
             case MAYOR_HOUSE:
-                result = func_800A6440();
+                offset = func_800A6440();
                 break;
             case LIBRARY:
-                result = func_800A6634();
+                offset = func_800A6634();
                 break;
             case CHURCH:
-                result = setChurchCutscenes();
+                offset = setChurchCutscenes();
                 break;
             case TAVERN:
-                result = func_800A68C0();
+                offset = func_800A68C0();
                 break;
             case SQUARE:
-                result = func_800A6A14();
+                offset = func_800A6A14();
                 break;
             case RACE_TRACK:
-                result = func_800A6EE4();
+                offset = func_800A6EE4();
                 break;
             case BEACH:
-                result = setBeachCutscenes();
+                offset = setBeachCutscenes();
                 break;
             case ROAD:
-                result = setRoadCutscenes();
+                offset = setRoadCutscenes();
                 break;
             default:
                 break;
             }
         
-        if (result != 0xFFFF) {
+        // static inline
+        if (offset != 0xFFFF) {
 
-            nuPiReadRom(cutsceneMapAddresses[result].romAddrStart, D_80114D30[result], cutsceneMapAddresses[result].romAddrEnd - cutsceneMapAddresses[result].romAddrStart);
+            nuPiReadRom(cutsceneMapAddresses[offset].romAddrStart, D_80114D30[offset], cutsceneMapAddresses[offset].romAddrEnd - cutsceneMapAddresses[offset].romAddrStart);
             
             D_801891D4 = 0;
             
-            func_800469A8(D_80114DF0[result], D_80114C70[result]);
+            // initialize cutsceneMap object
+            func_800469A8(D_80114DF0[offset], D_80114C70[offset]);
+            // toggle flags on all sprites
             func_8002F730();
             
-            D_8018981C = result;
+            D_8018981C = offset;
             
             gCutsceneFlags |= 1;
             
@@ -174,7 +196,7 @@ u16 func_8009C054(u16 mapIndex) {
         }
     }
     
-    return result;
+    return offset;
 }
 
 // jtbl_80121030
@@ -2177,13 +2199,21 @@ u16 func_800A7AE8(u8 arg0) {
             }
         }
         
+        // static inline
         if (index != 0xFFFF) {
+
             nuPiReadRom(cutsceneMapAddresses[index].romAddrStart, D_80114D30[index], cutsceneMapAddresses[index].romAddrEnd - cutsceneMapAddresses[index].romAddrStart);
+            
             D_801891D4 = 0;
+            
+            // initialize cutsceneMap object
             func_800469A8(D_80114DF0[index], D_80114C70[index]);
             func_8002F730();
+            
             D_8018981C = index;
+            
             gCutsceneFlags |= 1;
+            
             toggleDailyEventBit(0x53);
         }
     }

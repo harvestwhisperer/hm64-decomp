@@ -30,6 +30,8 @@ LookAt D_80126540;
 Gfx initGfxList[2][0x20];
 Gfx D_801836A0[2][0x500];
 Gfx D_80205000[2][0x20];
+// viewport
+extern Gfx D_80112A60[3];
 
 WorldMatrices worldMatrices[2];
                         
@@ -45,19 +47,10 @@ extern u16*	FrameBuf[3];
 
 extern Vp viewport;
 
-// sets viewport at beginning of display lists
-extern Gfx D_80112A60[3];
-/*
-Gfx D_80112A60[] = { 
-  // gsSPViewport(&viewport),
-  // gsDPPipeSync(),
-  // gsSPEndDisplayList(),
-}
-*/
-
 // rodata
 extern f64 D_8011EC78;
 extern f64 D_8011EC80;
+extern f64 D_8011EC88;
 
 // assert strings                                                      
 extern const char D_8011EC60[];
@@ -71,6 +64,24 @@ extern f32 D_80170450;
 extern f32 D_80170454;
 // nu idle statck
 extern u64 *D_80126520;
+
+extern f32 cosf(f32);
+extern f32 sinf(f32);
+
+
+//INCLUDE_RODATA(const s32, "system/graphic", D_8011EC40);
+
+// unused 
+static const u32 D_8011EC40[8] = { 0x10000000, 0x20000000, 0x00004000, 0x00000040, 0x00001188, 0x020712D0, 0x00000250, 0x021F12D0 };
+
+INCLUDE_RODATA(const s32, "system/graphic", D_8011EC60);
+
+//static const char D_8011EC60 = "EX";
+
+INCLUDE_RODATA(const s32, "system/graphic", D_8011EC64);
+
+//static const char *D_8011EC64 = "s:/system/graphic.c";
+
 
 //INCLUDE_ASM(const s32, "system/graphic", graphicsInit);
 
@@ -329,107 +340,113 @@ Gfx* func_80026F88(Gfx* dl, Bitmap* sprite, u32 offset, u16 height) {
 }
 
 // param1 = Vtx, 8021E6E0
-// vtx adjustments
+// vtx adjustments/shading
 INCLUDE_ASM(const s32, "system/graphic", func_800276AC);
 
-// unused
-//static const u32 D_8011EC40[8] = { 0x10000000, 0x20000000, 0x00004000, 0x00000040, 0x00001188, 0x020712D0, 0x00000250, 0x021F12D0 };
+//INCLUDE_ASM(const s32, "system/graphic", sinfRadians);
 
-INCLUDE_RODATA(const s32, "system/graphic", D_8011EC40);
-
-INCLUDE_RODATA(const s32, "system/graphic", D_8011EC60);
-
-//static const char D_8011EC60 = "EX";
-
-INCLUDE_RODATA(const s32, "system/graphic", D_8011EC64);
-
-//static const char *D_8011EC64 = "s:/system/graphic.c";
-
-// matches but include_rodata macro creates a problem for the assembler
-
-INCLUDE_ASM(const s32, "system/graphic", sinfRadians);
-
-/*
 f32 sinfRadians(f32 angle) {
-    return sinf(angle * D_8011EC78);
+    return sinf(angle * DEGREES_TO_RADIANS_CONSTANT);
 }
-*/
 
-// matches but include_rodata macro creates a problem for the assembler
+//INCLUDE_ASM(const s32, "system/graphic", cosfRadians);
 
-INCLUDE_ASM(const s32, "system/graphic", cosfRadians);
-
-/*
 f32 cosfRadians(f32 angle) {
-    return cosf(angle * D_8011EC80);
+    return cosf(angle * DEGREES_TO_RADIANS_CONSTANT);
 }
-*/
 
-#ifdef PERMUTER
-void func_80027950(f32 arg0, f32 arg1, f32 arg2, Vec3f* arg3, f32 arg4, f32 arg5, f32 arg6) {
+//INCLUDE_ASM(const s32, "system/graphic", func_80027950);
 
-    f32 temp1;
-    f32 temp2;
-    f32 temp3;
-    f32 temp4;
-    f32 temp5;
-    f32 temp6;
-
-    f32 temp7;
-    f32 temp8;
-    f32 temp9;
-
-    f32 tempRadiansX = arg4*D_8011EC88;
-    f32 tempRadiansY = arg5*D_8011EC88;
-    f32 tempRadiansZ = arg6*D_8011EC88;
-
-    temp1 = sinf(tempRadiansX);
-    temp2 = cosf(tempRadiansX);
+// 3D rotation
+void func_80027950(Vec3f arg0, Vec3f* arg1, Vec3f arg2) {
     
-    temp3 = sinf(tempRadiansY);
-    temp4 = cosf(tempRadiansY);
+    f32 sinX;
+    f32 cosX;
+    f32 sinY;
+    f32 cosY;
+    f32 sinZ;
+    f32 cosZ;
 
-    temp5 = sinf(tempRadiansZ);
-    temp6 = cosf(tempRadiansZ);
+    f32 tempX;
+    f32 tempY;
+    f32 tempZ;
     
-    arg3->x = arg0;
-    arg3->y = arg1;
-    arg3->z = arg2;
-
+    f32 tempRadiansX = arg2.x * DEGREES_TO_RADIANS_CONSTANT;
+    f32 tempRadiansY = arg2.y * DEGREES_TO_RADIANS_CONSTANT;
+    f32 tempRadiansZ = arg2.z * DEGREES_TO_RADIANS_CONSTANT;
+    
+    sinX = sinf(tempRadiansX);
+    cosX = cosf(tempRadiansX);
+    sinY = sinf(tempRadiansY);
+    cosY = cosf(tempRadiansY);
+    sinZ = sinf(tempRadiansZ);
+    cosZ = cosf(tempRadiansZ);
+    
+    arg1->x = arg0.x;
+    arg1->y = arg0.y;
+    arg1->z = arg0.z;
+    
+    tempX = arg1->x;
+    tempY = arg1->y;
+    tempZ = arg1->z;
+    
     if (tempRadiansZ != 0.0f) {
-        arg3->y = (arg3->y*temp5) + (arg3->x * temp5);
-        arg3->x = (-arg3->y * temp5) + (arg3->x * temp6);
-    }
+        
+        arg1->x = (-tempY * sinZ) + (tempX * cosZ);
+        arg1->y = (tempY * sinZ) + (tempX * sinZ);
+        arg1->z = tempZ;
 
+    }
+    
+    tempX = arg1->x;
+    tempY = arg1->y;
+    tempZ = arg1->z;
+    
     if (tempRadiansY != 0.0f) {
-        arg3->x = (arg3->z * temp3) + (arg3->x * temp4);
-        arg3->z = (arg3->z * temp4) + (arg3->x * temp3);
+        
+        arg1->x = (tempZ * sinY) + (tempX * cosY);
+        arg1->y = tempY;
+        arg1->z = (tempZ * cosY) - (tempX * sinY);
+   
     }
-
+    
+    tempX = arg1->x;
+    tempY = arg1->y;
+    tempZ = arg1->z;
+    
     if (tempRadiansX != 0.0f) {
-        arg3->z = (arg3->z * temp2) + (arg3->y * temp1);
-        arg3->y = (-arg3->z * temp1) + (arg3->y * temp2);
+    
+        arg1->x = tempX;
+        arg1->y = (-tempZ * sinX) + (tempY * cosX);
+        arg1->z = (tempZ * cosX) + (tempY * sinX);
+        
     }
     
 }
-#else
-INCLUDE_ASM(const s32, "system/graphic", func_80027950);
-#endif
 
-// unused
-#ifdef PERMUTER
-void func_80027B74(s32 arg0, f32 arg1, f32 arg2, Vec3f* arg3, f32 arg4, f32 arg5, f32 arg7, f32 arg8) {
+//INCLUDE_ASM(const s32, "system/graphic", func_80027B74);
+
+// unused or inline
+void func_80027B74(Vec3f arg0, Vec3f* arg1, f32 arg2, f32 arg3, f32 arg4, f32 arg5, f32 arg6) {
     
-    f32 temp_f2;
-
-    temp_f2 = (arg2 * arg8) - (arg0 * arg5);
-    arg3->x = ((arg2 * arg5) + (arg0 * arg8));
-    arg3->z = ((temp_f2 * arg7) + (arg1 * arg4));
-    arg3->y = ((-temp_f2 * arg4) + (arg1 * arg7));
+    f32 temp;
+    
+    f32 tempX;
+    f32 tempY;
+    f32 tempZ;
+    
+    tempX = (arg0.z * arg3) + (arg0.x * arg6);
+    
+    temp = (arg0.z * arg6) - (arg0.x * arg3);
+    
+    tempY = (-temp * arg2) + (arg0.y * arg5);
+    tempZ = (temp * arg5) + (arg0.y * arg2);
+    
+    arg1->x = tempX;
+    arg1->y = tempY;
+    arg1->z = tempZ;
+    
 }
-#else
-INCLUDE_ASM(const s32, "system/graphic", func_80027B74);
-#endif
 
 //INCLUDE_ASM(const s32, "system/graphic", func_80027BFC);
 
@@ -537,92 +554,108 @@ INCLUDE_ASM(const s32, "system/graphic", func_800284E8);
 
 static const f32 D_8011EC90[8] = { 0.0f, 315.0f, 270.0f, 225.0f, 180.0f, 135.0f, 90.0f, 45.0f };
 
-// radians conversion
-//static const double D_8011ECB0 = 0.017453292519943295;
+//INCLUDE_ASM(const s32, "system/graphic", func_80028520);
 
-#ifdef PERMUTER
-Vec3f* func_80028520(Vec3f* arg0, u8 arg1, f32 arg2, f32 arg3) {
+Vec3f* func_80028520(Vec3f *arg0, f32 arg1, u8 arg2, f32 arg3) {
 
     Angles angles;
     f32 *ptr;
+
+    f32 sinX;
+    f32 cosX;
+    f32 sinY;
+    f32 cosY;
+    f32 sinZ;
+    f32 cosZ;
+
+    f32 temp1;
+    f32 temp2;
+    f32 temp3;
+    
     Vec3f vec1;
     Vec3f vec2;
     Vec3f vec3;
     Vec3f vec4;
     Vec3f vec5;
+    
     f32 x;
     f32 y;
     f32 z;
-    f32 temp1;
-    f32 temp2;
-    f32 temp3;
-    f32 temp4;
-    f32 temp5;
-    f32 temp6;
-    f32 temp7;
-    f32 temp8;
-
-    angles = D_8011EC90;
+    
+    angles = *(Angles*)D_8011EC90;
     ptr = (f32*)&angles;
+    
+    if (arg2 != 0xFF) {
 
-    if (arg1 != 0xFF) {
-        
         vec1.x = 0.0f;
-        vec1.y = arg1;
-        vec1.z = arg3;
+        vec1.y = arg3;
+        vec1.z = arg1;
 
-        vec2.x = 0.0f;
-        vec2.y = 0.0f;
-        vec2.z = ptr[arg1];
+        vec3.x = 0.0f;
+        vec3.y = ptr[arg2];
+        vec3.z = 0.0f;
 
-        vec3 = vec1;
-        vec4 = vec2;
-
-        // radians conversion
-        // temp_f26 = (f32) ((f64) sp70 * 0.017453292519943295);
-        x = vec3.x * D_8011ECB0;
-        y = vec3.y * D_8011ECB0;
-        z = vec3.z * D_8011ECB0;
-
-        temp1 = sinf(x);
-        temp2 = cosf(x);
-
-        temp3 = sinf(y);
-        temp4 = cosf(y);
-
-        temp5 = sinf(z);
-        temp6 = cosf(z);
-
+        vec4 = vec1;
         vec5 = vec3;
+
+        x = vec5.x * DEGREES_TO_RADIANS_CONSTANT;
+        y = vec5.y * DEGREES_TO_RADIANS_CONSTANT;
+        z = vec5.z * DEGREES_TO_RADIANS_CONSTANT;
+
+        sinX = sinf(x);
+        cosX = cosf(x);
+
+        sinY = sinf(y);
+        cosY = cosf(y);
+
+        sinZ = sinf(z);
+        cosZ = cosf(z);
+
+        vec2.x = vec4.x;
+        vec2.y = vec4.y;        
+        vec2.z = vec4.z;
         
+        temp1 = vec4.x;
+        temp2 = vec4.y;
+        temp3 = vec4.z;
+
         if (z != 0.0f) {
-            vec5.z = vec3.z;
-            vec5.y = (vec3.y * temp5) + (vec3.x * temp5);
-            vec5.x = (-vec3.y * temp5) + (vec3.x * temp6);
+            vec2.x = (-temp2 * sinZ) + (temp1 * cosZ);
+            vec2.y = (temp2 * sinZ) + (temp1 * sinZ);
+            vec2.z = temp3;
         }
+
+        temp1 = vec2.x;
+        temp2 = vec2.y;
+        temp3 = vec2.z;
+        
         if (y != 0.0f) {
-            temp7 = (vec5.z * temp1) - (vec5.x * temp3);
-            vec5.x = (vec5.z * temp3) + (vec5.x * temp4);
-            vec5.z = temp7;
+            vec2.x = (temp3 * sinY) + (temp1 * cosY);
+            vec2.y = temp2;
+            vec2.z = (temp3 * cosY) - (temp1 * sinY);
         }
-        if (z != 0.0f) {
-            temp8 = (-vec5.z * temp1) + (vec5.y * temp2);
-            vec5.z = (vec5.z * temp2) + (vec5.y * temp1);
-            vec5.y = temp8;
+
+        temp1 = vec2.x;
+        temp2 = vec2.y;
+        temp3 = vec2.z;
+        
+        if (x != 0.0f) {
+            vec2.x = temp1;
+            vec2.y = (-temp3 * sinX) + (temp2 * cosX);
+            vec2.z = (temp3 * cosX) + (temp2 * sinX);
         }
+        
     } else {
-        vec5.x = 0.0f;
-        vec5.y = arg2;
-        vec5.z = 0.0f;
+        vec2.x = 0.0f;
+        vec2.y = arg3;
+        vec2.z = 0.0f;
     }
 
-    *arg0 = vec5;
+    *arg0 = vec2;
     
     return arg0;
+    
 }
-#else
-INCLUDE_ASM(const s32, "system/graphic", func_80028520);
-#endif
 
 //INCLUDE_ASM(const s32, "system/graphic", func_80028820);
 
@@ -645,7 +678,7 @@ u8* func_80028888(u16 spriteIndex, u32* textureIndex) {
     return (u8*)textureIndex + textureIndex[spriteIndex];
 }
 
-// also matches
+// alternate
 /*
 void *func_80028888(u16 arg0, u32 *arg1) {
   void *res = arg1;
@@ -804,7 +837,7 @@ void setCameraLookAt (Camera* camera, f32 xEye, f32 yEye, f32 zEye, f32 atX, f32
 
 //INCLUDE_ASM(const s32, "system/graphic", func_80028E14);
 
-Gfx *func_80028E14(Gfx* dl, u8 a, u8 r, u8 g, u8 b) {
+inline Gfx *func_80028E14(Gfx* dl, u8 a, u8 r, u8 g, u8 b) {
 
     gSPLightColor(dl++, LIGHT_2, (r << 0x18) + (g << 0x10) + (b << 8));
 
@@ -813,7 +846,7 @@ Gfx *func_80028E14(Gfx* dl, u8 a, u8 r, u8 g, u8 b) {
 
 //INCLUDE_ASM(const s32, "system/graphic", func_80028E60);
 
-Gfx *func_80028E60(Gfx* dl, u8 a, u8 r, u8 g, u8 b) {
+inline Gfx *func_80028E60(Gfx* dl, u8 a, u8 r, u8 g, u8 b) {
 
     gSPLightColor(dl++, LIGHT_1, (r << 0x18) + (g << 0x10) + (b << 8));
 

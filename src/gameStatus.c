@@ -168,7 +168,7 @@ void func_80063D38(void) {
         
     }
 }
-
+ 
 //INCLUDE_ASM(const s32, "gameStatus", func_80063E18);
 
 // wife crates eggs

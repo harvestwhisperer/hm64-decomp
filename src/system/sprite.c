@@ -103,7 +103,7 @@ u16 func_80029CF4(u8 *timg, u8 *pal, s32 width, s32 height, s32 fmt, s32 size, u
 
 //INCLUDE_ASM(const s32, "system/sprite", func_80029DAC);
 
-u16 func_80029DAC(void *timg, void *pal, u16 flags) {
+u16 func_80029DAC(u8 *timg, u16 *pal, u16 flags) {
 
     u16 bitmapIndex = bitmapCounter;
     
@@ -276,9 +276,9 @@ bool func_8002A120(u16 index, f32 arg1, f32 arg2, f32 arg3) {
 //INCLUDE_ASM(const s32, "system/sprite", func_8002A1A4);
 
 bool func_8002A1A4(u16 index, f32 arg1, f32 arg2, f32 arg3) {
+
     bool result = 0;
 
-    
     if (index < MAX_BITMAPS) {
         if (bitmaps[index].flags & 1) {
             result = 1;
@@ -307,7 +307,7 @@ bool func_8002A228(u16 index, u8 r, u8 g, u8 b, u8 a) {
         }
     }
     
-    return result;
+    return result; 
 }
 
 //INCLUDE_ASM(const s32, "system/sprite", func_8002A2E0);
@@ -329,11 +329,13 @@ bool func_8002A2E0(u16 index, u16 arg1, u16 arg2) {
 
 //INCLUDE_ASM(const s32, "system/sprite", func_8002A340);
 
-u8 *func_8002A340(u16 index, u32 *start, u8 *timg, u8 *romAddr) {
+u8 *func_8002A340(u16 index, u32 *spritesheetIndex, u8 *timg, u8 *romAddr) {
 
-    int offset = *(start + index);
+    u32 offset = spritesheetIndex[index];
 
-    setSpriteAddresses(romAddr + offset, timg, func_8002A3A0(index, start));
+    // func_8002A3A0 = get texture length
+    // timg = vaddr
+    setSpriteAddresses(romAddr + offset, timg, func_8002A3A0(index, spritesheetIndex));
 
     return timg;
 
@@ -341,20 +343,21 @@ u8 *func_8002A340(u16 index, u32 *start, u8 *timg, u8 *romAddr) {
 
 //INCLUDE_ASM(const s32, "system/sprite", func_8002A3A0);
 
+// check if next sprite has same address (some sprites are reused with different palettes)
 // get length of texture segment
-u32 func_8002A3A0(u16 arg0, u32 arg1[]) {
+u32 func_8002A3A0(u16 spriteIndex, u32 spritesheetIndex[]) {
 
-    u16 counter = arg0+1;
+    u16 counter = spriteIndex+1;
     
-    if (arg1[counter] == arg1[arg0]) {
+    if (spritesheetIndex[counter] == spritesheetIndex[spriteIndex]) {
         
-        while (arg1[counter] == arg1[arg0]) {
+        while (spritesheetIndex[counter] == spritesheetIndex[spriteIndex]) {
             counter++;
         } 
         
     }
     
-    return arg1[counter] - arg1[arg0];
+    return spritesheetIndex[counter] - spritesheetIndex[spriteIndex];
 }
 
 // graphics render modes enum

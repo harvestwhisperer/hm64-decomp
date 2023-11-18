@@ -92,6 +92,7 @@ void func_8004E160(void) {
 //INCLUDE_ASM(const s32, "initialize", initializeGameVariables);
 
 // initialize bss game variables
+// probably uses static inlines for each group
 void initializeGameVariables(void) {
 
     u8 i, j, k;
@@ -211,7 +212,7 @@ void initializeGameVariables(void) {
     gPlayer.belongingsSlots[6] = 0;
     gPlayer.belongingsSlots[7] = 0;
 
-    gPlayer.unk_2C = 0;
+    gPlayer.heldItem = 0;
 
     gPlayer.keyItemSlots[0] = 0;
     gPlayer.keyItemSlots[1] = 0;
@@ -825,7 +826,7 @@ void func_800527D4(void) {
     // potion shop
     setMapModelAddresses(0x40, &D_B60990_2, &D_B64E30);
 
-    // empty
+    // empty, referenced in func_80074C50
     setMapModelAddresses(0x41, &D_B64E30_2, &D_B64E40);
     
     // sprite cave

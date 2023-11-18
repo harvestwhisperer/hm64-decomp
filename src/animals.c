@@ -319,10 +319,10 @@ void func_80093B80(void) {
         if (func_8002FECC(horseInfo.unk_14) || horseInfo.flags & 0x20) {
             
             switch (horseInfo.grown) {
-                case 0:
+                case FALSE:
                     func_8009427C();
                     break;                    
-                case 1:
+                case TRUE:
                     func_80093CE0();
                     break;
             }
@@ -332,7 +332,7 @@ void func_80093B80(void) {
         
         setSpriteDirection(horseInfo.unk_14, (horseInfo.direction + 8 - func_8003C1A4(MAIN_MAP_INDEX)) % 8);
         func_80028520(&vec, horseInfo.unk_19, horseInfo.direction, 0);
-        func_8002FE10(horseInfo.unk_14, vec.x,vec.y, vec.z, horseInfo.unk_19);
+        func_8002FE10(horseInfo.unk_14, vec.x, vec.y, vec.z, horseInfo.unk_19);
 
     } 
 }
