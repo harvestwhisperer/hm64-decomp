@@ -1035,9 +1035,9 @@ void func_8005CBF0(void) {
     
     if (func_80043A88()) {
         
-        if (!(func_800D5A6C(gPlayer.unk_2C) & 0xD80)) {
+        if (!(func_800D5A6C(gPlayer.heldItem) & 0xD80)) {
             func_800D55E4(gPlayer.unk_2D, 1);
-            gPlayer.unk_2C = 0;
+            gPlayer.heldItem = 0;
             gItemBeingHeld = 0xFF;
         }
          
@@ -1627,7 +1627,7 @@ void func_8005D2B0() {
                             }
                         
                         func_800D55E4(gPlayer.unk_2D, 1);
-                        gPlayer.unk_2C = 0;
+                        gPlayer.heldItem = 0;
                         break;
                     }
                     
@@ -1656,7 +1656,7 @@ void func_8005D2B0() {
                         }
                     
                     func_800D55E4(gPlayer.unk_2D, 1);
-                    gPlayer.unk_2C = 0;
+                    gPlayer.heldItem = 0;
                     break;
                     
                 }
@@ -1687,7 +1687,7 @@ void func_8005D2B0() {
                             }
                         
                         func_800D55E4(gPlayer.unk_2D, 1);
-                        gPlayer.unk_2C = 0;
+                        gPlayer.heldItem = 0;
                         break;
                         
                     }
@@ -1717,7 +1717,7 @@ void func_8005D2B0() {
                     }
                 
                     func_800D55E4(gPlayer.unk_2D, 1);
-                    gPlayer.unk_2C = 0;
+                    gPlayer.heldItem = 0;
                     break;
                     
                 }
@@ -1749,7 +1749,7 @@ void func_8005D2B0() {
                         }
                     
                     func_800D55E4(gPlayer.unk_2D, 1);
-                    gPlayer.unk_2C = 0;
+                    gPlayer.heldItem = 0;
                     break;
                 }
                 
@@ -1778,7 +1778,7 @@ void func_8005D2B0() {
                     }
                 
                 func_800D55E4(gPlayer.unk_2D, 1);
-                gPlayer.unk_2C = 0;
+                gPlayer.heldItem = 0;
                 break;
                 
             }
@@ -1809,7 +1809,7 @@ void func_8005D2B0() {
                         }
                     
                         func_800D55E4(gPlayer.unk_2D, 1);
-                        gPlayer.unk_2C = 0;
+                        gPlayer.heldItem = 0;
                         break;
                     }
                 
@@ -1838,7 +1838,7 @@ void func_8005D2B0() {
                     }
                 
                     func_800D55E4(gPlayer.unk_2D, 1);
-                    gPlayer.unk_2C = 0;
+                    gPlayer.heldItem = 0;
                     break;
                 }
             
@@ -1871,7 +1871,7 @@ void func_8005D2B0() {
                         }
                     
                     func_800D55E4(gPlayer.unk_2D, 1);
-                    gPlayer.unk_2C = 0;
+                    gPlayer.heldItem = 0;
                     break;
                 }
                 
@@ -1903,7 +1903,7 @@ void func_8005D2B0() {
                     }
             
                     func_800D55E4(gPlayer.unk_2D, 1);
-                    gPlayer.unk_2C = 0;
+                    gPlayer.heldItem = 0;
                     break;
                 }
         
@@ -1937,7 +1937,7 @@ void func_8005D2B0() {
                         }
                     
                         func_800D55E4(gPlayer.unk_2D, 1);
-                        gPlayer.unk_2C = 0;
+                        gPlayer.heldItem = 0;
                         break;
                     }
                 
@@ -1969,7 +1969,7 @@ void func_8005D2B0() {
                     }
                 
                     func_800D55E4(gPlayer.unk_2D, 1);
-                    gPlayer.unk_2C = 0;
+                    gPlayer.heldItem = 0;
                     break;
                 }
             
@@ -2002,7 +2002,7 @@ void func_8005D2B0() {
                         }
                     
                         func_800D55E4(gPlayer.unk_2D, 1);
-                        gPlayer.unk_2C = 0;
+                        gPlayer.heldItem = 0;
                         break;
                     }
                 
@@ -2034,7 +2034,7 @@ void func_8005D2B0() {
                     }
                 
                     func_800D55E4(gPlayer.unk_2D, 1);
-                    gPlayer.unk_2C = 0;
+                    gPlayer.heldItem = 0;
                     break;
                 }
             
@@ -2067,7 +2067,7 @@ void func_8005D2B0() {
                         }
                     
                         func_800D55E4(gPlayer.unk_2D, 1);
-                        gPlayer.unk_2C = 0;
+                        gPlayer.heldItem = 0;
                         break;
                     }
                 
@@ -2099,7 +2099,7 @@ void func_8005D2B0() {
                     }
                 
                 func_800D55E4(gPlayer.unk_2D, 1);
-                gPlayer.unk_2C = 0;
+                gPlayer.heldItem = 0;
                 break;
             }
             
@@ -2132,7 +2132,7 @@ void func_8005D2B0() {
                         }
                 
                     func_800D55E4(gPlayer.unk_2D, 1);
-                    gPlayer.unk_2C = 0;
+                    gPlayer.heldItem = 0;
                     break;
                 
                 }
@@ -2165,7 +2165,7 @@ void func_8005D2B0() {
                     }
                 
                     func_800D55E4(gPlayer.unk_2D, 1);
-                    gPlayer.unk_2C = 0;
+                    gPlayer.heldItem = 0;
                     break;
                 }
             
@@ -2198,7 +2198,7 @@ void func_8005D2B0() {
                         }
                     
                         func_800D55E4(gPlayer.unk_2D, 1);
-                        gPlayer.unk_2C = 0;
+                        gPlayer.heldItem = 0;
                         break;
                     }
                 
@@ -2230,7 +2230,7 @@ void func_8005D2B0() {
                     }
                 
                 func_800D55E4(gPlayer.unk_2D, 1);
-                gPlayer.unk_2C = 0;
+                gPlayer.heldItem = 0;
                 break;
                 
             }
@@ -2249,7 +2249,8 @@ void func_8005D2B0() {
                     setMainLoopCallbackFunctionIndex(13);
                     break;
                 
-                case 1:                                 
+                case 1:                    
+                    // load intro             
                     func_80055F08_2(0x5AA, 0x61, 1);
                     break;
                 }
@@ -2655,11 +2656,11 @@ u8 func_80060EC8(f32 arg0, f32 arg1, f32 arg2, f32 arg3) {
 
 void func_800610DC(void) {
     
-    if (gPlayer.unk_2C) {
+    if (gPlayer.heldItem) {
         
         func_800D5548(gPlayer.unk_2D);
 
-        switch (gPlayer.unk_2C) {
+        switch (gPlayer.heldItem) {
             case 0x60 ... 0x6F:
                 func_80088C1C(0xFF, gPlayer.unk_6C);
                 break;
@@ -2670,7 +2671,7 @@ void func_800610DC(void) {
                 break;
         }
         
-        gPlayer.unk_2C = 0;
+        gPlayer.heldItem = 0;
         gItemBeingHeld = 0xFF;
     }
 }

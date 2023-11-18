@@ -275,7 +275,7 @@ bool func_80043430(u16 index, u16 arg1, u16 arg2, u16 arg3) {
             D_801C3E40[index].struct2.romAssetIndexStart, 
             D_801C3E40[index].struct2.romAssetIndexEnd, 
             0, 
-            0,  
+            0,   
             D_801C3E40[index].struct2.vaddrSpritesheet,
             0,
             D_801C3E40[index].struct2.vaddrPalette,

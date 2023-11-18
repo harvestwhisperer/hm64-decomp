@@ -400,7 +400,7 @@ bool func_800AD1D0(u16 mapIndex) {
         if (!(gPlayer.flags & 1)) {
             
             temp2 = func_80074C50(gEntranceIndex);
-        
+         
             if (gEntranceIndex == 0x5F) {
                 if (!checkLifeEventBit(MARRIED)) {
                     if (gSeason == WINTER) {
@@ -422,9 +422,11 @@ bool func_800AD1D0(u16 mapIndex) {
             }
     
             if (temp2 == 0xFFFF) {
+
                 if (D_80126560 != 0xFF) {
                     func_80038990(0, D_80126560, 0);
                 }
+                
                 func_8005C940(8, 2);
                 return set;
                 
@@ -554,10 +556,10 @@ u8 func_800AD8D0(u16 mapIndex, u8 arg1) {
         
         case 17:
             if (func_8004D380(CONTROLLER_1, BUTTON_A)) {
-                if (gPlayer.unk_2C == 0) {
+                if (gPlayer.heldItem == 0) {
                     if (!(gPlayer.flags & 1)) {
                         if (gLumber != 0) {
-                            gPlayer.unk_2C = 3;
+                            gPlayer.heldItem = 3;
                             setPlayerAction(4, 6);
                             gLumber += adjustValue(gLumber, -1, 0x3E7);
                             result = 2;
@@ -669,7 +671,7 @@ u8 func_800ADCDC(u16 mapIndex, u8 arg1) {
             }
             break;
         case 0x10:
-            if (func_8004D380(CONTROLLER_1, BUTTON_A) && gPlayer.unk_2C == 0 && checkLifeEventBit(MAYOR_TOUR) && !checkDailyEventBit(0x15)) {
+            if (func_8004D380(CONTROLLER_1, BUTTON_A) && gPlayer.heldItem == 0 && checkLifeEventBit(MAYOR_TOUR) && !checkDailyEventBit(0x15)) {
                 func_8005B09C(0);
                 result = 1; 
             }
@@ -707,10 +709,10 @@ u8 func_800ADCDC(u16 mapIndex, u8 arg1) {
             }
             break;
         case 0x16:
-            if (func_8004D380(CONTROLLER_1, BUTTON_A) && gPlayer.unk_2C == 0) {
+            if (func_8004D380(CONTROLLER_1, BUTTON_A) && gPlayer.heldItem == 0) {
                 if (checkDailyEventBit(0x16)) {
                     if (gBabyAge < 30) {
-                        gPlayer.unk_2C = 0xBA;             
+                        gPlayer.heldItem = 0xBA;             
                         func_8002FA2C(npcInfoArray[BABY].spriteIndex);
                         npcInfoArray[BABY].flags &= ~4;
                         setPlayerAction(4, 6);
@@ -898,7 +900,7 @@ u8 func_800AEE8C(u16 mapIndex, u8 arg1) {
         case 0x10:
 
             if (func_8004D380(CONTROLLER_1, BUTTON_A)) {
-                if (gPlayer.unk_2C == 0 && renderedSprites[PLAYER].startingCoordinates.z >= -44.0f && renderedSprites[PLAYER].startingCoordinates.z < -36.0f) {
+                if (gPlayer.heldItem == 0 && renderedSprites[PLAYER].startingCoordinates.z >= -44.0f && renderedSprites[PLAYER].startingCoordinates.z < -36.0f) {
                     setDailyEventBit(6);
                     setPlayerAction(0x11, 0);
                     D_80126561 = 0x32;
@@ -911,7 +913,7 @@ u8 func_800AEE8C(u16 mapIndex, u8 arg1) {
         case 0x11:
 
             if (func_8004D380(CONTROLLER_1, BUTTON_A)) {
-                if (gPlayer.unk_2C == 0 && renderedSprites[PLAYER].startingCoordinates.x >= 42.0f && renderedSprites[PLAYER].startingCoordinates.x < 50.0f) {
+                if (gPlayer.heldItem == 0 && renderedSprites[PLAYER].startingCoordinates.x >= 42.0f && renderedSprites[PLAYER].startingCoordinates.x < 50.0f) {
                     setDailyEventBit(6);
                     setPlayerAction(0x10, 0);
                     gHappiness += adjustValue(gHappiness, 2, 0xFF);
@@ -1006,7 +1008,7 @@ u8 func_800AFF9C(u16 arg0, u8 arg1) {
             break;
         case 17:
             if (func_8004D380(CONTROLLER_1, BUTTON_A)) {
-                if (gPlayer.unk_2C == 0) {
+                if (gPlayer.heldItem == 0) {
                     if (func_800DDDFC(0x25)) {
                         func_800DC9FC(0x25);
                     }
@@ -1016,7 +1018,7 @@ u8 func_800AFF9C(u16 arg0, u8 arg1) {
             break;
         case 18:
             if (func_8004D380(CONTROLLER_1, BUTTON_A)) {
-                if (gPlayer.unk_2C == 0) {
+                if (gPlayer.heldItem == 0) {
                     if (func_800DDDFC(0x26)) {
                         func_800DC9FC(0x26);
                     }
@@ -1102,7 +1104,7 @@ u8 func_800B01EC(u16 arg0, u8 arg1) {
             break;
         case 18:
             if (func_8004D380(CONTROLLER_1, BUTTON_A)) {            
-                if (gPlayer.unk_2C == 0) {
+                if (gPlayer.heldItem == 0) {
                     func_8005B09C(4);
                     result = 1;
                 }  
@@ -1641,7 +1643,7 @@ u8 func_800B256C(u16 mapIndex, u8 arg1) {
             break;
         case 16:
             if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
-                if (gPlayer.unk_2C == 0) {
+                if (gPlayer.heldItem == 0) {
                     if (checkDailyEventBit(0x41)) {
                         func_8005B09C(0xB);
                     } else {
@@ -1743,7 +1745,7 @@ u8 handleRanchStoreExits(u16 mapIndex, u8 collisionIndex) {
             break;
         case 17:
             if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
-                if (gPlayer.unk_2C == 0) {
+                if (gPlayer.heldItem == 0) {
                     if (func_800DDDFC(0x1A)) {
                         func_800DC9FC(0x1A);
                     }
@@ -1753,7 +1755,7 @@ u8 handleRanchStoreExits(u16 mapIndex, u8 collisionIndex) {
             break;
         case 18:
             if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
-                if (gPlayer.unk_2C == 0) {
+                if (gPlayer.heldItem == 0) {
                     if (func_800DDDFC(0x1D)) {
                         func_800DC9FC(0x1D);
                     }
@@ -1763,7 +1765,7 @@ u8 handleRanchStoreExits(u16 mapIndex, u8 collisionIndex) {
             break;
         case 19:
             if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
-                if (gPlayer.unk_2C == 0) {
+                if (gPlayer.heldItem == 0) {
                      if (func_800DDDFC(0x1B)) {
                         func_800DC9FC(0x1B);
                     }
@@ -1773,7 +1775,7 @@ u8 handleRanchStoreExits(u16 mapIndex, u8 collisionIndex) {
             break;
         case 20:
             if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
-                if (gPlayer.unk_2C == 0) {
+                if (gPlayer.heldItem == 0) {
                      if (func_800DDDFC(0x1C)) {
                         func_800DC9FC(0x1C);
                     }

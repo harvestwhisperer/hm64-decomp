@@ -95,7 +95,9 @@ inline void func_80055F08(u16 cutsceneIndex, u16 entranceIndex, u8 arg2) {
     // trigger cutscene and load cutscene assets
     loadCutscene(0);
     
+    // set up map/level
     func_8006E840(gEntranceIndex);
+ 
     setupPlayerSprite(gEntranceIndex, 0);
 
     func_8006A2E8();
@@ -178,10 +180,10 @@ void func_80056030(u8 arg0) {
    if (checkDailyEventBit(0x54)) {
         if (checkDailyEventBit(0x53)) {
             setPlayerAction(6, 8);
-            gPlayer.unk_2C = 0x50;
+            gPlayer.heldItem = 0x50;
         } else {
             setPlayerAction(0, 0);
-            gPlayer.unk_2C = 0;
+            gPlayer.heldItem = 0;
         }
         if (!(gCutsceneFlagsHack[1] & 1) && func_8009B5E0()) {
             setAudio(0x3F);

@@ -137,6 +137,7 @@ INCLUDE_ASM(const s32, "system/map", func_80033A90);
 
 //INCLUDE_ASM(const s32, "system/map", func_80034090);
 
+// turn off active sprite flags for map objects
 bool func_80034090(u16 mapIndex) {
 
     u8 i;
@@ -687,6 +688,7 @@ bool func_80035DA4(MainMap *map, u8 arg1, u8 arg2) {
 
 INCLUDE_ASM(const s32, "system/map", func_80035EE0);
 
+// mapStruct1, vertices for map additions (house extensions, hot springs, etc.)
 INCLUDE_ASM(const s32, "system/map", func_800360BC);
 
 // returns index for interactable object/exit from rodata array per level
@@ -1059,8 +1061,9 @@ inline Gfx* func_80037DF0(Gfx* dl, MainMap* arg1, u16 arg2) {
     
     return dl;
     
-}
+} 
 
+// vertex coloring
 INCLUDE_ASM(const s32, "system/map", func_80037F08);
 
 //INCLUDE_ASM(const s32, "system/map", func_800383B0);
@@ -1230,11 +1233,15 @@ void func_80038728(u8 arg0[], u8* arg1, u16 arg2) {
 
 //INCLUDE_ASM(const s32, "system/map", func_800387E0);
 
-u8* func_800387E0(u16 arg0, void* arg1) {
-    return (u8*)(arg1 + *(u32*)(arg1 + arg0*4));
+u32* func_800387E0(u16 arg0, u32* arg1) {
+    return (u8*)arg1 + arg1[arg0];
 }
 
-INCLUDE_ASM(const s32, "system/map", func_800387F8);
+//INCLUDE_ASM(const s32, "system/map", func_800387F8);
+
+u32* func_800387F8(u16 arg0, u32* arg1) {
+    return (u8*)arg1 + arg1[arg0];
+}
 
 //INCLUDE_ASM(const s32, "system/map", func_80038810);
 
@@ -1383,6 +1390,7 @@ bool func_80038A2C(u16 mapIndex, u16 arg1, u8 arg2, u8 arg3) {
 
 //INCLUDE_ASM(const s32, "system/map", func_80038AE0);
 
+// load map additions (house extensions, hot springs, etc.)
 bool func_80038AE0(u16 mapIndex, u16 arg1) {
 
     bool result = 0;

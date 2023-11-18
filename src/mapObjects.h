@@ -55,7 +55,7 @@ extern u8 func_800DA8B8(u8);
 extern u8 func_800DA918(u8);                 
 extern u16 func_800DA948(u8);
 extern u8 func_800DA978(u8 index);     
-extern void func_800DAA90(u8, u8, u8, u8); 
+extern u8 func_800DAA90(u8, u8, u8, u8); 
 extern void func_800DAC70(u8, u8, u8, u8);
 extern f32* func_800DAD74(u8, f32, u8);    
 extern u8 func_800DAF58(f32, u8);  

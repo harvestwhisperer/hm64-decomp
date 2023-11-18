@@ -18,7 +18,7 @@ extern LevelMapContext gMapModelContext[1];
 extern MapContextAddresses gMapModelAddresses[0x60];
 
 // forward declarations
-void func_8003C8D4(u32*); 
+void func_8003C8D4(LevelMapContext*); 
  
 static const f32 D_8011EDE0[];
                     
@@ -376,7 +376,7 @@ bool func_8003C1E0(u16 index, f32 arg1, f32 arg2, f32 arg3, u8 arg4, u8 arg5) {
         gMapModelContext[index].unk_4.y = arg2;
         gMapModelContext[index].unk_4.z = arg3;
 
-        func_8003C8D4(&gMapModelContext[index].modelDataIndex);
+        func_8003C8D4(&gMapModelContext[index]);
 
         result = 1;
     }
@@ -510,7 +510,67 @@ void func_8003C570(void) {
     
 }
 
-INCLUDE_ASM(const s32, "system/mapContext", func_8003C5C0);
+//INCLUDE_ASM(const s32, "system/mapContext", func_8003C5C0);
+
+bool func_8003C5C0(u16 index, u8 arg1, u8 arg2) {
+
+    bool result = 0;
+    u16 indexTemp;
+
+    if (index == 0 && (gMapModelContext[index].flags & 1) && (gMapModelContext[index].flags & 4)) { 
+
+        // fixes regswap issue
+        indexTemp = index;
+
+        if (!(gMapModelContext[index].flags & 0x18) && arg2 != gMapModelContext[index].rotation) {
+            
+            if (arg1 == 0xFF) {
+
+                if (gMapModelContext[index].rotation < 4) {
+
+                    if ((gMapModelContext[index].rotation + 4) >= arg2 && arg2 >= gMapModelContext[index].rotation) {
+                        gMapModelContext[index].flags |= 0x10;
+                    } else {
+                        gMapModelContext[indexTemp].flags |= 8;
+                    }
+                    
+                } else {
+
+                    if (arg2 < gMapModelContext[index].rotation) {
+
+                        if ((gMapModelContext[index].rotation - 4) >= arg2) { 
+                            gMapModelContext[index].flags |= 0x10;
+                        } else {
+                            gMapModelContext[index].flags |= 8;
+                        }
+                        
+                    } else {
+                        gMapModelContext[index].flags |= 0x10;
+                    }
+                    
+                }
+                
+            } else {
+                if (!arg1) {
+                    gMapModelContext[index].flags |= 8;
+                } else {
+                    gMapModelContext[index].flags |= 0x10;
+                }
+            }
+
+            result = 1;
+            
+            gMapModelContext[indexTemp].unk_47 = arg2;
+            gMapModelContext[indexTemp].unk_46 = 0;
+            
+        }
+
+    }
+
+    return result;
+    
+}
+
 
 //INCLUDE_ASM(const s32, "system/mapContext", func_8003C6E4);
 
@@ -523,7 +583,7 @@ void func_8003C6E4(void) {
         if ((gMapModelContext[i].flags & 1) && (gMapModelContext[i].flags & 4)) {
             
             func_80038810(gMapModelContext[i].mapIndex);
-            func_8003C8D4(&gMapModelContext[i].modelDataIndex);
+            func_8003C8D4(&gMapModelContext[i]);
             
             if (gMapModelContext[i].flags & 0x18) {
                 func_8003CB3C(i);
@@ -539,7 +599,43 @@ void func_8003C6E4(void) {
     
 }
 
-INCLUDE_ASM(const s32, "system/mapContext", func_8003C8D4);
+//INCLUDE_ASM(const s32, "system/mapContext", func_8003C8D4);
+
+void func_8003C8D4(LevelMapContext* mapContext) {
+    
+    f32 x;
+    f32 y;
+    f32 z;
+    
+    u8 param1;
+    u8 param2;
+    
+    f32 param3;
+    f32 param4;
+    
+    f32 temp1;
+    f32 temp2;
+    
+    x = mapContext->unk_4.x + ((mainMap[mapContext->mapIndex].mapStruct1.unk_A * mainMap[mapContext->mapIndex].mapStruct1.unk_8) / 2);
+    param1 = x / mainMap[mapContext->mapIndex].mapStruct1.unk_8;
+    
+    z = mapContext->unk_4.z + ((mainMap[mapContext->mapIndex].mapStruct1.unk_B * mainMap[mapContext->mapIndex].mapStruct1.unk_9) / 2);
+    
+    temp1 = param1 * mainMap[mapContext->mapIndex].mapStruct1.unk_8;
+    
+    param3 = x - temp1;
+    
+    y = mapContext->unk_4.y;
+    
+    param2 = z / mainMap[mapContext->mapIndex].mapStruct1.unk_9;
+
+    temp2 = param2 * mainMap[mapContext->mapIndex].mapStruct1.unk_9;
+
+    param4 = z - temp2;
+    
+    func_800343FC(mapContext->mapIndex, param1, param2, mapContext->unk_44, mapContext->unk_45, param3, y, param4, 1);
+
+}
 
 //INCLUDE_ASM(const s32, "system/mapContext", func_8003CB3C);
 

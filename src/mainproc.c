@@ -23,7 +23,6 @@ volatile u8 D_801C3BEC;
 volatile u8 D_801C3F34;
 volatile u8 D_801C3F71;
 volatile u8 D_801C4215;
-u16 D_801FD610;
 volatile u8 D_80204B38;
 volatile u8 D_80205208;
 volatile u32 D_802226E8;
@@ -31,10 +30,12 @@ volatile u8 D_802226E2;
 volatile u8 D_80222730;
 volatile u8 D_802373F1;
 volatile u8 D_80237A04;
-volatile u8 frameCount;
+
+u16 gMainMapIndex;
 
 volatile u32 gDisplayContextIndex;
 volatile u8 gfxTaskNo;
+volatile u8 frameCount;
 
 volatile u32 D_801C3B68[4];
 volatile u8 D_801C3F34;
@@ -154,7 +155,7 @@ void func_80025F04(void) {
     gDisplayContextIndex = 0;
     
     D_80204B38 = 0;
-    D_801FD610 = 0;
+    gMainMapIndex = 0;
     
     for (i = 0; i < MAIN_LOOP_CALLBACK_FUNCTION_TABLE_SIZE; i++) {
         mainLoopCallbacksTable[i] = 0;

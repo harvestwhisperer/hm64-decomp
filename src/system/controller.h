@@ -31,6 +31,7 @@ typedef struct {
     u8 u_stick_y;
 } Sticks;
 
+// 0x8013D440
 typedef struct {
     NUContPakFile pak;
     Sticks sticks;

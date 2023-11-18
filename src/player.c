@@ -117,17 +117,17 @@ void setupPlayerSprite(u16 arg0, u8 resetPlayer) {
 
 void func_80065AA0(void) {
 
-    if (gPlayer.unk_2C) {
+    if (gPlayer.heldItem) {
         
-        switch (gPlayer.unk_2C) {
+        switch (gPlayer.heldItem) {
 
             case 0x58 ... 0x6F:
             case 0xBA ... 0xC9:
             case 0x7B ... 0xB2:
-                gPlayer.unk_2D = func_800D5308(0, 2, gPlayer.unk_2C, 4, 8);
+                gPlayer.unk_2D = func_800D5308(0, 2, gPlayer.heldItem, 4, 8);
                 break;
             default:
-                gPlayer.unk_2D = func_800D5308(0, 2, gPlayer.unk_2C, 0, 8);
+                gPlayer.unk_2D = func_800D5308(0, 2, gPlayer.heldItem, 0, 8);
                 break;
             
         }
@@ -360,13 +360,13 @@ Vec3f* func_80065F94(Vec3f *arg0, f32 arg1, u8 arg2) {
 
     if (vec.y != MAX_UNSIGNED_SHORT) {
 
-        vec.x += ptr[(renderedSprites[PLAYER].direction + func_8003C1A4(D_801FD610)) % 8] * arg1;
-        vec.z += ptr2[(renderedSprites[PLAYER].direction + func_8003C1A4(D_801FD610)) % 8] * arg1;
+        vec.x += ptr[(renderedSprites[PLAYER].direction + func_8003C1A4(gMainMapIndex)) % 8] * arg1;
+        vec.z += ptr2[(renderedSprites[PLAYER].direction + func_8003C1A4(gMainMapIndex)) % 8] * arg1;
 
         if (arg2 != 8) {
             
-            vec.x += ptr[((renderedSprites[PLAYER].direction + func_8003C1A4(D_801FD610)+ arg2) % 8)];
-            vec.z += ptr2[((renderedSprites[PLAYER].direction + func_8003C1A4(D_801FD610) + arg2) % 8)];
+            vec.x += ptr[((renderedSprites[PLAYER].direction + func_8003C1A4(gMainMapIndex)+ arg2) % 8)];
+            vec.z += ptr2[((renderedSprites[PLAYER].direction + func_8003C1A4(gMainMapIndex) + arg2) % 8)];
             
         }
     }
@@ -550,9 +550,9 @@ void func_80067034(void) {
     
     while (i < 8 && !set) {
     
-        if (func_80031830(0, 8, (i + func_8003C1A4(D_801FD610)) % 8) == 0) {
+        if (func_80031830(0, 8, (i + func_8003C1A4(gMainMapIndex)) % 8) == 0) {
 
-            if (func_80031830(0, 0x20, (i + func_8003C1A4(D_801FD610)) % 8) == 0) {
+            if (func_80031830(0, 0x20, (i + func_8003C1A4(gMainMapIndex)) % 8) == 0) {
 
                 func_80031904(&vec1, 0, 0x20, (i + func_8003C1A4(MAIN_MAP_INDEX)) % 8);
                 
@@ -630,8 +630,8 @@ void func_80067E5C(void) {
     if (!(*(s32*)&gPlayer.action3 & ~0xFF)) {
         setAudio(0x26);
         func_800D5548(gPlayer.unk_2D);
-        func_800D5390(1, 3, gPlayer.unk_2C, 0, 8);
-        gPlayer.unk_2C = 0;
+        func_800D5390(1, 3, gPlayer.heldItem, 0, 8);
+        gPlayer.heldItem = 0;
         gPlayer.action3 = 1;
     }
 }
@@ -642,7 +642,7 @@ void func_80067EE0(void) {
 
     if (gPlayer.action3 == 3) {
         func_800D55E4(gPlayer.unk_2D, 0xE);
-        gPlayer.unk_2C = 0;
+        gPlayer.heldItem = 0;
         gPlayer.animationState += 1;
     }
 
@@ -659,7 +659,7 @@ void func_8006807C(void) {
      
         if (gPlayer.animationState == 0) {
             func_800D55E4(gPlayer.unk_2D, 9);
-            gPlayer.unk_2C = 0;
+            gPlayer.heldItem = 0;
             setAudio(0x24);
         }
 
@@ -679,7 +679,7 @@ void func_80068120(void) {
 
         if (gPlayer.action3 == 0xA) {
             func_800D55E4(gPlayer.unk_2D, 1);
-            gPlayer.unk_2C = 0;
+            gPlayer.heldItem = 0;
             gPlayer.animationState++;
             setAudio(0x25); 
         }
@@ -690,8 +690,8 @@ void func_80068120(void) {
     if (gPlayer.animationState == 0) {
 
         if (gPlayer.action3 == 0) {
-            gPlayer.currentStamina += adjustValue(gPlayer.currentStamina, func_800D5B00(gPlayer.unk_2C), gMaximumStamina);
-            gPlayer.fatigue.counter += adjustValue(gPlayer.fatigue.counter, -func_800D5B18(gPlayer.unk_2C), 100);
+            gPlayer.currentStamina += adjustValue(gPlayer.currentStamina, func_800D5B00(gPlayer.heldItem), gMaximumStamina);
+            gPlayer.fatigue.counter += adjustValue(gPlayer.fatigue.counter, -func_800D5B18(gPlayer.heldItem), 100);
         }
 
         if (gPlayer.action3 == 0x1E) {
@@ -775,7 +775,7 @@ void func_80068920(void) {
  
     if (gPlayer.action3 == 3) {
         func_800D55E4(gPlayer.unk_2D, 0x12);
-        gPlayer.unk_2C = 0;
+        gPlayer.heldItem = 0;
         gPlayer.animationState++;
     }
 
@@ -788,7 +788,7 @@ void func_80068990(void) {
 
     if (gPlayer.action3 == 3) {
         func_800D55E4(gPlayer.unk_2D, 0x14);
-        gPlayer.unk_2C = 0;
+        gPlayer.heldItem = 0;
         gPlayer.animationState++;
     }
 
@@ -951,8 +951,8 @@ void func_80069CC4(void) {
 
     if (gPlayer.animationState == 0) {
         if (gPlayer.action3 == 0) {
-            gPlayer.currentStamina += adjustValue(gPlayer.currentStamina, func_800D5B00(gPlayer.unk_2C), gMaximumStamina);
-            gPlayer.fatigue.counter += adjustValue(gPlayer.fatigue.counter, -func_800D5B18(gPlayer.unk_2C), 0x64);
+            gPlayer.currentStamina += adjustValue(gPlayer.currentStamina, func_800D5B00(gPlayer.heldItem), gMaximumStamina);
+            gPlayer.fatigue.counter += adjustValue(gPlayer.fatigue.counter, -func_800D5B18(gPlayer.heldItem), 0x64);
         }
         
         if (gPlayer.action3 == 0x1E) {
@@ -995,15 +995,239 @@ void func_80069E54(void) {}
 
 void func_80069E5C(void) {}
 
-void func_80069E64(void) {}
+void func_80069E64(void) {} 
 
 void func_80069E6C(void) {}
 
 INCLUDE_ASM(const s32, "player", func_80069E74);
 
-void func_8006A2E0(void) {}
+void func_8006A2E0(void) {} 
+ 
+//INCLUDE_ASM(const s32, "player", func_8006A2E8);
 
-INCLUDE_ASM(const s32, "player", func_8006A2E8);
+void func_8006A2E8(void) {
+
+    switch (gPlayer.action2) {
+        
+        case 0:
+            
+            if (!gPlayer.heldItem && !checkDailyEventBit(0xD)) {
+                
+                if ((gPlayer.flags & 1)) {
+                    setSpriteAnimation(0, 0x204);    
+                } else {
+                    if (gPlayer.flags & 4) {
+                         setSpriteAnimation(0, 0x244);
+                    } else {
+                        if (gPlayer.flags & 0x20) {
+                            setSpriteAnimation(0, 0x244);
+                        } else {
+                            setSpriteAnimation(0, 0);
+                        }
+                    }   
+                }
+                
+            } else {
+                setSpriteAnimation(0, 0x18);
+            }
+            
+            if (!(gPlayer.flags & 1)) {
+
+                // set napping animation
+                if (D_802226E0 == 1200) {
+                    gPlayer.action1 = 9;
+                    gPlayer.action3 = 0;
+                    gPlayer.animationState = 0;
+                    gPlayer.action2 = 0xB;
+                } else {
+                    D_802226E0++;
+                }
+
+            }
+
+            break;
+        
+        default:
+            break;
+        
+        case 1:
+            
+            if (!gPlayer.heldItem && !checkDailyEventBit(0xD)) {
+                if (gPlayer.flags & 1) {
+                   setSpriteAnimation(0, 0x20C);
+                } else {
+                    setSpriteAnimation(0, 8);
+                }
+            } else {
+                setSpriteAnimation(0, 0x20);
+            }
+            
+            D_802226E0 = 0;
+            break;
+        
+        case 2:
+            
+            if (!gPlayer.heldItem && !checkDailyEventBit(0xD)) {
+
+                if (gPlayer.flags & 1) { 
+                    if (func_80031380(0)) {
+                        setAudio(9);
+                    }
+                    setSpriteAnimation(0, 0x214);
+
+                } else {
+                    if (func_80031380(0)) {
+                        setAudio(5);
+                    }
+                    setSpriteAnimation(0, 0x10);
+                }
+
+            } else {
+
+                if (func_80031380(0)) {
+                    setAudio(5);
+                }
+
+                setSpriteAnimation(0, 0x28);
+            }
+
+            D_802226E0 = 0;
+            break;
+        
+        case 3:
+            func_8006C384();
+            D_802226E0 = 0;
+            break;
+        case 4:
+            func_8006A714();
+            D_802226E0 = 0;
+            break;
+        case 5:
+            func_8006A7B0();
+            D_802226E0 = 0;
+            break;
+        case 6:
+            func_8006A848();
+            D_802226E0 = 0;
+            break;
+        case 7:
+            func_8006A8C4();
+            D_802226E0 = 0;
+            break;
+        case 8:
+            func_8006A9A8();
+            D_802226E0 = 0;
+            break;
+        case 9:
+            func_8006AA9C();
+            D_802226E0 = 0;
+            break;
+        case 10:
+            func_8006AC4C();
+            D_802226E0 = 0;
+            break;
+        case 11:
+            func_8006ADF4();
+            break;
+        case 12:
+            func_8006AEEC();
+            D_802226E0 = 0;
+            break;
+        case 13:
+            func_8006AFE4();
+            D_802226E0 = 0;
+            break;
+        case 14:
+            func_8006B104();
+            D_802226E0 = 0;
+            break;
+        case 15:
+            func_8006B8BC();
+            D_802226E0 = 0;
+            break;
+        case 16:
+            func_8006B910();
+            D_802226E0 = 0;
+            break;
+        case 17:
+            func_8006B964();
+            D_802226E0 = 0;
+            break;
+        case 18:
+            func_8006B96C();
+            D_802226E0 = 0;
+            break;
+        case 30:
+            func_8006B974();
+            D_802226E0 = 0;
+            break;
+        case 19:
+            func_8006B97C();
+            D_802226E0 = 0;
+            break;
+        case 20:
+            func_8006BA14();
+            D_802226E0 = 0;
+            break;
+        case 21:
+            func_8006BAAC();
+            D_802226E0 = 0;
+            break;
+        case 22:
+            func_8006BBC4();
+            D_802226E0 = 0;
+            break;
+        case 23:
+            func_8006BC84();
+            D_802226E0 = 0;
+            break;
+        case 24:
+            func_8006C12C();
+            D_802226E0 = 0;
+            break;
+        case 25:
+            func_8006C134();
+            D_802226E0 = 0;
+            break;
+        case 26:
+            func_8006AB90();
+            D_802226E0 = 0;
+            break;
+        case 27:
+            func_8006C13C();
+            D_802226E0 = 0;
+            break;
+        case 28:
+            func_8006C1DC();
+            D_802226E0 = 0;
+            break;
+        case 29:
+            func_8006B4D4();
+            D_802226E0 = 0;
+            break;
+        case 31:
+            func_8006B4DC();
+            D_802226E0 = 0;
+            break;
+        case 32:
+            func_8006B584();
+            D_802226E0 = 0;
+            break;
+        case 33:
+            func_8006B61C();
+            D_802226E0 = 0;
+            break;
+        case 34:
+            func_8006B6EC();
+            D_802226E0 = 0;
+            break;
+        case 35:
+            func_8006B77C();
+            D_802226E0 = 0;
+            break;
+    }
+    
+}
 
 // probably not necessary
 static inline handleStopHolding() {
@@ -1435,13 +1659,13 @@ void func_8006BC84(void) {
                 // randomize fish type
                 switch (getRandomNumberInRange(0, temp)) {
                     case 0:
-                        gPlayer.unk_2C = 0x25;
+                        gPlayer.heldItem = 0x25;
                         break;
                     case 1:
-                        gPlayer.unk_2C = 0x26;
+                        gPlayer.heldItem = 0x26;
                         break;
                     case 2:
-                        gPlayer.unk_2C = 0x27;
+                        gPlayer.heldItem = 0x27;
                         break;                    
                 }
 
@@ -1451,7 +1675,7 @@ void func_8006BC84(void) {
 
                 // get power nut 
                 if (gPlayer.fatigue.unk_3 == 3 && !(D_80215EB8 & 4) && !getRandomNumberInRange(0, 0x32)) {
-                    gPlayer.unk_2C = 0x57;
+                    gPlayer.heldItem = 0x57;
                     setAction(6, 0, 0, 8);
                     D_80215EB8 |= 4;
                     gMaximumStamina += adjustValue(gMaximumStamina, 15, 250);
@@ -1525,8 +1749,8 @@ void func_8006C1DC(void) {
             case 0:
                 func_8002F2FC(PLAYER, 0x171);
                 gPlayer.animationState = 1;
-                gPlayer.unk_2C = *(&ptr[D_801A8B5C+D_8018A724*3]-3);
-                gPlayer.unk_2D = func_800D5308(0, 0x15, gPlayer.unk_2C, 0, 8);
+                gPlayer.heldItem = *(&ptr[D_801A8B5C+D_8018A724*3]-3);
+                gPlayer.unk_2D = func_800D5308(0, 0x15, gPlayer.heldItem, 0, 8);
                 break;
             case 1:
                 gPlayer.animationState = 2;
@@ -1539,7 +1763,7 @@ void func_8006C1DC(void) {
                 break;
             default:
                 func_800D55E4(gPlayer.unk_2D, 1);
-                gPlayer.unk_2C = 0;
+                gPlayer.heldItem = 0;
                 resetAction();
                 break;
         }
@@ -1780,25 +2004,25 @@ void func_8006E678(void) {
                 
                 switch (gPlayer.bottleContents) {
                     case 1:
-                        gPlayer.unk_2C = 0x71;
+                        gPlayer.heldItem = 0x71;
                         break;
                     case 2:
-                        gPlayer.unk_2C = 0x72;
+                        gPlayer.heldItem = 0x72;
                         break;
                     case 3:
-                        gPlayer.unk_2C = 0x73;
+                        gPlayer.heldItem = 0x73;
                         break;
                     case 4:
-                        gPlayer.unk_2C = 0x74;
+                        gPlayer.heldItem = 0x74;
                         break;
                     case 5:
-                        gPlayer.unk_2C = 0x75;
+                        gPlayer.heldItem = 0x75;
                         break;
                     case 6:
-                        gPlayer.unk_2C = 0x76;
+                        gPlayer.heldItem = 0x76;
                         break;
                     case 7:
-                        gPlayer.unk_2C = 0x77;
+                        gPlayer.heldItem = 0x77;
                         break;
                     case 0:
                     default:

@@ -23,7 +23,8 @@ options:
   # extensions_path: tools/splat_ext
   libultra_symbols: True
   gfx_ucode: f3dex2
-  
+  disassemble_all: True
+
 segments:
   - name: header
     type: header
@@ -179,6 +180,8 @@ segments:
       - [ 0xD9050, hasm, lib/os/libultra/gu/cosf]
       - [ 0xD9520, c, lib/os/libultra/gu/lookat]
       - [ 0xD98B0, c, lib/os/libultra/gu/mtxutil]
+    # might be a file split because of extra no ops
+    # - [ 0xD9DB0, c, lib/os/libultra/gu/]
       - [ 0xD9B30, c, lib/os/libultra/gu/ortho]
       - [ 0xD9D90, c, lib/os/libultra/gu/perspective]
       - [ 0xDA130, c, lib/os/libultra/gu/rotate]

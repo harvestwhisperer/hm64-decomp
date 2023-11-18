@@ -25,8 +25,8 @@ typedef union {
 } Vec;
 
 typedef struct {
-    void *romAddrStart;
-    void *romAddrEnd;
+    u32 romAddrStart;
+    u32 romAddrEnd;
 } Addresses;
 
 typedef struct {

@@ -12,7 +12,7 @@ extern volatile u8 D_801C3F34;
 extern volatile u8 D_801C3F71;
 extern volatile u8 D_801C4215;
 extern volatile u8 D_801D6230;
-extern u16 D_801FD610;
+extern u16 gMainMapIndex;
 extern volatile u8 D_80204B38;
 extern volatile u8 D_80205208;
 extern volatile u32 D_802226E8;

@@ -8,7 +8,7 @@
 #define MAX_RENDERED_SPRITES 49
 #define MAX_ACTIVE_SPRITES 192
 #define MAX_SHADOW_SPRITES 3
-#define MAX_NPC_SPRITES 102
+#define MAX_CHARACTER_SPRITES 102
 #define MAX_BITMAPS 176
 
 #define NEED_DMA 1
@@ -59,7 +59,7 @@ typedef struct {
 	u8 unk_90; // counter for operation with unknownAssetPtr
 	u8 unk_91;
 	u8 unk_92; // audio
-    u16 unk_94;
+    u16 paletteIndex;
 	u8 animationCounter1;
     u8 animationCounter2;
 	u16 flags1;
@@ -123,7 +123,7 @@ typedef struct {
 
 // 0x801F7110
 typedef struct {
-	void *timg; // 00
+	u8 *timg; // 00
 	u16 *pal;  // 04
 	s32 width;  // 08 
 	s32 height; // 0C
@@ -171,7 +171,7 @@ typedef struct {
 extern void initializeNpcSpriteStructs(void);
 extern bool func_8002DEE8(u16, u16, u16, void*, void*, void*, void*, void*, void*);
 extern bool func_8002E284(u16, u16, u8);      
-extern bool func_8002EDF0(u16 index, s16 arg1, s16 arg2, s16 arg3);
+extern bool func_8002EDF0(u16 index, s16, s16, s16);
 extern bool func_8002EEA4(u16 arg0);     
 extern bool func_8002F014(u16, u8, u8, u8, u8);        
 extern bool func_8002ECD4(u16, u16, u16);             
@@ -182,7 +182,7 @@ extern void func_8002F6F0();
 extern void func_8002F730();               
 extern void func_8002F770(s16); 
 extern void func_8002F7C8(u8, u8, u8, u8);               
-extern void func_8002F8F0(u8 r, u8 g, u8 b, u8 a, s16 arg4);
+extern void func_8002F8F0(u8 r, u8 g, u8 b, u8 a, s16);
 extern bool func_8002FA2C(u16);      
 extern bool func_8002FD80(u16, f32, f32, f32);   
 extern void func_8002FB3C();
@@ -190,7 +190,7 @@ extern bool func_8002FCB4(u16, u8);
 extern bool func_8002FD24(u16 index);
 extern bool func_8002FE10(u16, f32, f32, f32, f32);           
 extern bool func_8002FECC(u16); 
-extern bool func_8002ED80(u16 index, s16 arg1);
+extern bool func_8002ED80(u16 index, s16);
 extern bool func_8002FF38(u16, u16);
 extern bool func_80030054(u16, u8);                                                   
 extern bool func_80030388(u16 index);                   
@@ -198,23 +198,23 @@ extern void func_80033058(void);
 extern bool func_8003019C(u16, u8);                            
 extern bool func_80030240(u16, u8);                            
 extern bool func_800302E4(u16, u8);         
-extern u16 func_800305CC(u16 index, f32 arg1, f32 arg2, u16 arg3);
+extern u16 func_800305CC(u16 index, f32, f32, u16);
 extern bool func_800309B4(u16, f32, f32);     
 extern u16 func_80030BA0(u16* ptr, u16 offset);  
 extern Vec3f* func_800315A0(Vec3f*, u16 index);    
 extern bool func_80031380(u16);   
 extern bool func_80031830(u16, u32, u8);        
-extern Vec3f* func_80031904(Vec3f* vec, u16 index, s16 arg2, u8 arg3);
-extern bool setSpriteAnimation(u16 index, u16 arg1);
+extern Vec3f* func_80031904(Vec3f* vec, u16 index, s16, u8);
+extern bool setSpriteAnimation(u16 index, u16);
 
 /* globalSprites.c */
 extern void initializeGlobalSprites(void); 
-extern bool func_8002B138(u16 index, u32 romTextureStart, u32 romTextureEnd, u32 romAssetIndexStart, u32 romAssetIndexEnd, u32 romSpritesheetIndexStart, u32 romSpritesheetIndexEnd, void* texture1Vaddr, void* texture2Vaddr, void* paletteVaddr, void* animationVaddr, void* spriteToPaletteVaddr, void* spritesheetIndexVaddr, u8 assetType, u8 argE);
+extern bool func_8002B138(u16 index, u32 romTextureStart, u32 romTextureEnd, u32 romAssetIndexStart, u32 romAssetIndexEnd, u32 romSpritesheetIndexStart, u32 romSpritesheetIndexEnd, u8* texture1Vaddr, u8* texture2Vaddr, u16* paletteVaddr, u16* animationVaddr, u8* spriteToPaletteVaddr, u32* spritesheetIndexVaddr, u8 assetType, u8 argE);
 extern bool func_8002B36C(u16 index, u32* unknownAssetIndexPtr, u32* spritesheetIndexPtr, u32* paletteIndexPtr, u8* spriteToPaletteMappingPtr);
 extern bool func_8002B50C(u16 index, u32* unknownAssetIndexPtr, u32* spritesheetIndexPtr, u32* paletteIndexPtr, u8* spriteToPaletteMappingPtr, u32 romTexturePtr, u8* texturePtr, u8* texture2Ptr);
 extern bool func_8002B6B8(u16 index);
 extern void func_8002B710(void);
-extern bool func_8002B80C(u16 index, u16 offset, u8 arg2);
+extern bool func_8002B80C(u16 index, u16 offset, u8);
 extern bool func_8002BAD8(u16);   
 extern bool func_8002BB30(u16);
 extern bool func_8002BB88(u16); 
@@ -224,7 +224,9 @@ extern bool func_8002BE98(u16, f32, f32, f32);
 extern bool func_8002BE14(u16, f32, f32, f32);                        
 extern bool func_8002C1C0(u16 index, u8 r, u8 g, u8 b, u8 a, s16 arg5);
 extern bool func_8002C52C(u16, u8, s16);
-extern bool func_8002C680(u16 index, u16 arg1, u16 arg2);
+extern bool func_8002C680(u16 index, u16, u16);
+extern bool func_8002C6F8(u16, u16);
+extern bool func_8002C768(u16, u16);
 extern bool func_8002C7EC(u16, u16);                              
 extern bool func_8002C85C(u16 index, u8 r, u8 g, u8 b, u8 a);
 extern bool func_8002C914(u16, u8, u8, u8, u8);
@@ -243,9 +245,22 @@ extern void dmaSprites();
 
 /* sprite.c */
 extern void initializeBitmaps(void);
+extern u16 func_80029DAC(u8 *timg, u16 *pal, u16 flags);
+extern bool func_80029E2C(u16 index, u16, u16);  
+extern bool func_80029EA4(u16 index, u16);
+extern bool func_80029F14(u16 index, u16);
+extern bool func_80029F98(u16 index, u8, u8);
+extern bool func_8002A02C(u16 index, u16);
+extern bool func_8002A09C(u16 index, f32, f32, f32);
+extern bool func_8002A120(u16 index, f32, f32, f32);
+extern bool func_8002A1A4(u16 index, f32, f32, f32);
+extern bool func_8002A228(u16 index, u8 r, u8 g, u8 b, u8 a);
+extern bool func_8002A2E0(u16 index, u16, u16);
+extern u8 *func_8002A340(u16 index, u32 *start, u8 *timg, u8 *romAddr);
+extern u32 func_8002A3A0(u16 arg0, u32 arg1[]);
 extern void func_8002AE58(void);
 
-
+extern CharacterSprite characterSprites[MAX_CHARACTER_SPRITES];
 extern RenderedSprite renderedSprites[MAX_RENDERED_SPRITES];
 extern Sprite globalSprites[MAX_ACTIVE_SPRITES];
 
