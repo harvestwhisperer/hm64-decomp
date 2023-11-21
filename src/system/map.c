@@ -1451,12 +1451,12 @@ static inline u8 handleRgba(u16 i) {
 
     u8 count = 0;
     
-    if (mainMap[i].mapStruct8.groundRgba.r < mainMap[i].mapStruct8.rgba.r) {
+    if (mainMap[i].mapStruct8.groundRgba.r < mainMap[i].mapStruct8.defaultRgba.r) {
                 
         mainMap[i].mapStruct8.groundRgba.r += mainMap[i].mapStruct8.unk_60.r; 
         
-        if (mainMap[i].mapStruct8.rgba.r <= mainMap[i].mapStruct8.groundRgba.r) {
-            mainMap[i].mapStruct8.groundRgba.r = mainMap[i].mapStruct8.rgba.r;
+        if (mainMap[i].mapStruct8.defaultRgba.r <= mainMap[i].mapStruct8.groundRgba.r) {
+            mainMap[i].mapStruct8.groundRgba.r = mainMap[i].mapStruct8.defaultRgba.r;
         } else {
             count = 1;
         } 
@@ -1474,12 +1474,12 @@ static inline u8 handleRgba(u16 i) {
         
     }
 
-    if (mainMap[i].mapStruct8.groundRgba.g < mainMap[i].mapStruct8.rgba.g) {
+    if (mainMap[i].mapStruct8.groundRgba.g < mainMap[i].mapStruct8.defaultRgba.g) {
         
         mainMap[i].mapStruct8.groundRgba.g += mainMap[i].mapStruct8.unk_60.g; 
         
-        if (mainMap[i].mapStruct8.rgba.g <= mainMap[i].mapStruct8.groundRgba.g) {
-            mainMap[i].mapStruct8.groundRgba.g = mainMap[i].mapStruct8.rgba.g;
+        if (mainMap[i].mapStruct8.defaultRgba.g <= mainMap[i].mapStruct8.groundRgba.g) {
+            mainMap[i].mapStruct8.groundRgba.g = mainMap[i].mapStruct8.defaultRgba.g;
         } else {
             count += 1;
         } 
@@ -1497,12 +1497,12 @@ static inline u8 handleRgba(u16 i) {
         
     }
 
-    if (mainMap[i].mapStruct8.groundRgba.b < mainMap[i].mapStruct8.rgba.b) {
+    if (mainMap[i].mapStruct8.groundRgba.b < mainMap[i].mapStruct8.defaultRgba.b) {
         
         mainMap[i].mapStruct8.groundRgba.b += mainMap[i].mapStruct8.unk_60.b; 
         
-        if (mainMap[i].mapStruct8.rgba.b <= mainMap[i].mapStruct8.groundRgba.b) {
-            mainMap[i].mapStruct8.groundRgba.b = mainMap[i].mapStruct8.rgba.b;
+        if (mainMap[i].mapStruct8.defaultRgba.b <= mainMap[i].mapStruct8.groundRgba.b) {
+            mainMap[i].mapStruct8.groundRgba.b = mainMap[i].mapStruct8.defaultRgba.b;
         } else {
             count += 1;
         } 
@@ -1520,12 +1520,12 @@ static inline u8 handleRgba(u16 i) {
         
     }
 
-    if (mainMap[i].mapStruct8.groundRgba.a < mainMap[i].mapStruct8.rgba.a) {
+    if (mainMap[i].mapStruct8.groundRgba.a < mainMap[i].mapStruct8.defaultRgba.a) {
         
         mainMap[i].mapStruct8.groundRgba.a += mainMap[i].mapStruct8.unk_60.a; 
         
-        if (mainMap[i].mapStruct8.rgba.a <= mainMap[i].mapStruct8.groundRgba.a) {
-            mainMap[i].mapStruct8.groundRgba.a = mainMap[i].mapStruct8.rgba.a;
+        if (mainMap[i].mapStruct8.defaultRgba.a <= mainMap[i].mapStruct8.groundRgba.a) {
+            mainMap[i].mapStruct8.groundRgba.a = mainMap[i].mapStruct8.defaultRgba.a;
         } else {
             count += 1;
         } 
@@ -1562,11 +1562,9 @@ static inline void handleRotation(u16 i) {
     
 }
 
-INCLUDE_ASM(const s32, "system/map", func_8003A1BC);
+//INCLUDE_ASM(const s32, "system/map", func_8003A1BC);
 
 // main loop function
-// need to keep debugging why not matching in build
-/*
 void func_8003A1BC(void) {
 
     u16 height = 0;
@@ -1638,7 +1636,6 @@ void func_8003A1BC(void) {
     }
 
 }
-*/
 
 //INCLUDE_ASM(const s32, "system/map", func_8003AC14);
 
@@ -1674,7 +1671,7 @@ Gfx* func_8003ACA8(Gfx* arg0, MainMap* arg1, MapBitmap* arg2, u16 vtxIndex) {
     Gfx dl[2];
       
     func_800276AC((Vtx*)&D_80165500[gDisplayContextIndex][vtxIndex], arg2->width, arg2->height, arg2->height, 0, 0,
-        0, 0, 0, 0x150, arg1->mapStruct8.groundRgba.r, arg1->mapStruct8.groundRgba.g, arg1->mapStruct8.groundRgba.b,
+        0, 0, 0, (0x10 | 0x40 | 0x100), arg1->mapStruct8.groundRgba.r, arg1->mapStruct8.groundRgba.g, arg1->mapStruct8.groundRgba.b,
         arg1->mapStruct8.groundRgba.a);
  
     gSPVertex(&dl[1], &D_80165500[gDisplayContextIndex][vtxIndex][0], 4, 0);

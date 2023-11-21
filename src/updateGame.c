@@ -41,14 +41,21 @@ void func_800D7C20(void) {
     }
     
     if (gHour == 6) {
+        
         if (!checkDailyEventBit(0xE)) {
+
             setPlayerAction(0xFE, 0);
             // stop audio and set callback for loading
             func_8005C940(1, 0xE);
+            
         }
+
     } else {
+        
         toggleDailyEventBit(0xE);
+
         if (D_801891D4 >= 0) {
+            // do global lighting
             func_8005C07C(1, 0);
         }
     }

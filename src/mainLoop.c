@@ -91,93 +91,13 @@ void mainLoop(void) {
             D_80205208 = 0; 
             D_80237A04 = D_801C3BEC;
               
-            getRandomNumber();
+            rand();
             
         }
     
         nuGfxDisplayOff();
     }
 }
-
-// alternate with int return
-/*
-int mainLoop(void) {
-
-  // int res
-    
-    D_80205208 = 0;
-    D_801594E4 = 1;
-    
-    func_80026284();
-    // toggle flags
-    func_8004DEC8();
-    
-    D_80182BA0 = 1;
-    D_8020564C = 0;
-
-    while (TRUE) {
-      
-        nuGfxDisplayOn();
-          
-        while (D_801594E4 & 1) {
-            
-            while (!D_80205208);
-            
-            if (!D_8020564C) { 
-              
-              D_80182BA0 = 1;
-              
-              mainLoopCallbacksTable[mainLoopCallbackCurrentIndex](); 
-
-              D_8020564C = D_80182BA0; 
-            } 
-            
-            D_8020564C -= 1;    
-            res = D_8020564C;
-            
-            // reset tile flags
-            func_80029CC8();
-
-            mainLoopAudioHandler(); 
-            
-            resetSpriteCounter();
-            // cutscenes 
-            mainLoopCutsceneHandler(); 
-            // sprite graphics, collisions
-            func_80033058(); 
-            // tiling
-            func_8003C6E4(); 
-            // map graphics/display lists
-            func_8003A1BC();
-            // pause screen sprites
-            func_800467F8(); 
-            // sprite lighting adjustments
-            func_8002D3D4(); 
-            // load object sprites with nuPiReadRom
-            dmaSprites(); 
-            // sprite.c: sprite microcode, texturing
-            func_8002AE58(); 
-            // message.c
-            func_80042634(); 
-            // handle dialogue box close
-            func_80045CB0(); 
-            // no op/shelved code
-            func_800293B8(); 
-
-            D_80205208 = 0; 
-            D_80237A04 = D_801C3BEC;
-              
-            getRandomNumber();
-            // res = getRandomNumber(); also matches
-            
-        }
-    
-        nuGfxDisplayOff();
-    }
-
-    return res;
-}
-*/
 
 //INCLUDE_ASM(const s32, "registerMainLoopCallbacks", registerMainLoopCallback);
 

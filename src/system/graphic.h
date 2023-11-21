@@ -59,7 +59,7 @@ extern f32 sinfRadians(f32);
 extern f32 cosfRadians(f32);
 extern void setBitmapFormat(Bitmap *sprite, u16 *arg1, u16 *arg2);
 extern Gfx* func_80026F88(Gfx* dl, Bitmap* arg1, u32 arg2, u16 arg3);
-extern void func_800276AC(Vtx*, u16 width, u16 height, u16 textureSize, u16, u16, u16, s16, s16, u16, u8, u8, u8, u8);
+extern void func_800276AC(Vtx*, u16 width, u16 height, u16 textureSize, u16, u16, u16, s16, s16, u16, u8 r, u8 g, u8 b, u8 a);
 extern void func_80027950(Vec3f, Vec3f*, Vec3f);
 extern Vec3f* func_80028520(Vec3f *arg0, f32 arg1, u8 arg2, f32 arg3);        
 extern u8* func_80028888(u16 arg0, u32* arg1);                   

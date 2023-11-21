@@ -19,7 +19,7 @@
 
 typedef struct {
 	u16 animationIndex;
-	u16 animationIndexPlusOne;
+	u16 nextAnimationIndex;
 } Animation;
 
 typedef struct {
@@ -86,8 +86,8 @@ typedef struct {
 	u16 unk_1E; /* 0x1E */
 	u8 collisionBufferX; /* 0x20 */
 	u8 collisionBufferY; /* 0x21 */
-	u8 flag; /* 0x22 */
-	u16 flags; /* 0x24 */
+	u8 shadowSpriteIndex; /* 0x22 */
+	u16 flags; /* 0x24 */ // bit 2 = asset type
 } CharacterSprite;
 
 // 0x801FC160
@@ -171,11 +171,13 @@ typedef struct {
 extern void initializeNpcSpriteStructs(void);
 extern bool func_8002DEE8(u16, u16, u16, void*, void*, void*, void*, void*, void*);
 extern bool func_8002E284(u16, u16, u8);      
+extern bool func_8002EC18(u16 index, u32 arg1, u32 arg2, u32 arg3, u32 arg4, u32* arg5, u16* arg6, u16* arg7, u16* arg8, u16 arg9, u8 argA);           
 extern bool func_8002EDF0(u16 index, s16, s16, s16);
 extern bool func_8002EEA4(u16 arg0);     
 extern bool func_8002F014(u16, u8, u8, u8, u8);        
 extern bool func_8002ECD4(u16, u16, u16);             
 extern bool func_8002F114(u16, u8);
+extern bool func_8002F1E0(u16 index, u8 r, u8 g, u8 b, u8 a, s16 arg5);
 extern bool func_8002F2FC(u16, u16); 
 extern bool setSpriteDirection(u16, u8);                    
 extern void func_8002F6F0();    
@@ -193,7 +195,7 @@ extern bool func_8002FECC(u16);
 extern bool func_8002ED80(u16 index, s16);
 extern bool func_8002FF38(u16, u16);
 extern bool func_80030054(u16, u8);                                                   
-extern bool func_80030388(u16 index);                   
+extern bool func_80030388(u16 index);        
 extern void func_80033058(void);                           
 extern bool func_8003019C(u16, u8);                            
 extern bool func_80030240(u16, u8);                            

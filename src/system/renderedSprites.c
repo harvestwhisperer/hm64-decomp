@@ -29,7 +29,7 @@ void initializeNpcSpriteStructs(void) {
         renderedSprites[i].flags = 0;
         renderedSprites[i].globalSpriteIndex = 0;
         renderedSprites[i].anim.animationIndex = 0;
-        renderedSprites[i].anim.animationIndexPlusOne = 0xFFFF;
+        renderedSprites[i].anim.nextAnimationIndex = 0xFFFF;
         renderedSprites[i].direction = 0;
         renderedSprites[i].unk_58 = 0xFFFF;
         renderedSprites[i].unk_5A = 0;
@@ -71,7 +71,7 @@ bool func_8002DDDC(u16 npcIndex, void* arg1, void* arg2, void* arg3, void* arg4,
             characterSprites[npcIndex].romAssetIndexEnd = arg4;
             characterSprites[npcIndex].romSpritesheetIndexStart = arg5;
             characterSprites[npcIndex].romSpritesheetIndexEnd = arg6;
-            characterSprites[npcIndex].flag = arg8;
+            characterSprites[npcIndex].shadowSpriteIndex= arg8;
             characterSprites[npcIndex].vaddr = arg9;
 
             characterSprites[npcIndex].collisionBufferX = 0;
@@ -143,7 +143,7 @@ bool func_8002E108(u16 index) {
 
         func_8002B6B8(renderedSprites[index].globalSpriteIndex);
         
-        if (characterSprites[renderedSprites[index].characterIndex].flag != 0xFF) {
+        if (characterSprites[renderedSprites[index].characterIndex].shadowSpriteIndex != 0xFF) {
             func_8002B6B8(renderedSprites[index].spriteOffset);
         }
         
@@ -170,7 +170,7 @@ void func_8002E1B8(void) {
         
             func_8002B6B8(renderedSprites[i].globalSpriteIndex);
             
-            if (characterSprites[renderedSprites[i].characterIndex].flag != 0xFF) {
+            if (characterSprites[renderedSprites[i].characterIndex].shadowSpriteIndex != 0xFF) {
                 func_8002B6B8(renderedSprites[i].spriteOffset);
             } 
         }
@@ -180,11 +180,113 @@ void func_8002E1B8(void) {
     }
 }
 
-INCLUDE_ASM(const s32, "system/renderedSprites", func_8002E284);
+//INCLUDE_ASM(const s32, "system/renderedSprites", func_8002E284);
+
+bool func_8002E284(u16 index, u16 characterIndex, u8 flag) {
+
+    bool result = 0;
+    
+    if (index < MAX_RENDERED_SPRITES) {
+        
+        if (renderedSprites[index].flags & 1) {
+
+            renderedSprites[index].characterIndex = characterIndex;
+            renderedSprites[index].flag = flag;
+
+            if (characterSprites[renderedSprites[index].characterIndex].flags & 2) {
+
+                func_8002B138(renderedSprites[index].globalSpriteIndex, 
+                    characterSprites[renderedSprites[index].characterIndex].romTextureStart, 
+                    characterSprites[renderedSprites[index].characterIndex].romTextureEnd, 
+                    characterSprites[renderedSprites[index].characterIndex].romAssetIndexStart, 
+                    characterSprites[renderedSprites[index].characterIndex].romAssetIndexEnd, 
+                    characterSprites[renderedSprites[index].characterIndex].romSpritesheetIndexStart, 
+                    characterSprites[renderedSprites[index].characterIndex].romSpritesheetIndexEnd, 
+                    renderedSprites[index].vaddrTexture1,
+                    renderedSprites[index].vaddrTexture2,
+                    renderedSprites[index].vaddrPalette,
+                    renderedSprites[index].vaddrUnknownAsset,
+                    renderedSprites[index].vaddrTextureToPaletteLookup,
+                    renderedSprites[index].vaddrSpritesheetIndex,
+                    1,
+                    renderedSprites[index].flag                    
+                    );
+                
+            } else {
+                
+                func_8002B138(renderedSprites[index].globalSpriteIndex, 
+                    characterSprites[renderedSprites[index].characterIndex].romTextureStart, 
+                    characterSprites[renderedSprites[index].characterIndex].romTextureEnd, 
+                    characterSprites[renderedSprites[index].characterIndex].romAssetIndexStart, 
+                    characterSprites[renderedSprites[index].characterIndex].romAssetIndexEnd, 
+                    characterSprites[renderedSprites[index].characterIndex].romSpritesheetIndexStart, 
+                    characterSprites[renderedSprites[index].characterIndex].romSpritesheetIndexEnd, 
+                    renderedSprites[index].vaddrTexture1,
+                    0,
+                    renderedSprites[index].vaddrPalette,
+                    renderedSprites[index].vaddrUnknownAsset,
+                    renderedSprites[index].vaddrTextureToPaletteLookup,
+                    0,
+                    characterSprites[renderedSprites[index].characterIndex].flags & 2 == 1,
+                    renderedSprites[index].flag                    
+                    );
+                
+            }
+
+            if (characterSprites[renderedSprites[index].characterIndex].shadowSpriteIndex != 0xFF) {
+                
+                func_8002B138(renderedSprites[index].spriteOffset, 
+                    shadowSpritesInfo[characterSprites[renderedSprites[index].characterIndex].shadowSpriteIndex].romTextureStart, 
+                    shadowSpritesInfo[characterSprites[renderedSprites[index].characterIndex].shadowSpriteIndex].romTextureEnd, 
+                    shadowSpritesInfo[characterSprites[renderedSprites[index].characterIndex].shadowSpriteIndex].romAssetIndexStart, 
+                    shadowSpritesInfo[characterSprites[renderedSprites[index].characterIndex].shadowSpriteIndex].romAssetIndexEnd, 
+                    0, 
+                    0, 
+                    shadowSpritesInfo[characterSprites[renderedSprites[index].characterIndex].shadowSpriteIndex].vaddrSpritesheet, 
+                    0, 
+                    shadowSpritesInfo[characterSprites[renderedSprites[index].characterIndex].shadowSpriteIndex].vaddrPalette, 
+                    shadowSpritesInfo[characterSprites[renderedSprites[index].characterIndex].shadowSpriteIndex].vaddrUnknownAssetSheet, 
+                    shadowSpritesInfo[characterSprites[renderedSprites[index].characterIndex].shadowSpriteIndex].vaddrUnknownAsset2, 
+                    0, 
+                    0, 
+                    renderedSprites[index].flag
+                    );
+
+                func_8002C7EC(renderedSprites[index].spriteOffset, 2);
+            
+            }
+
+            renderedSprites[index].anim.nextAnimationIndex = 0xFFFF;
+            renderedSprites[index].flags |= 4;
+
+            func_8002CB24(renderedSprites[index].globalSpriteIndex, 1);
+            func_8002FE10(index, 0.0f, 0.0f, 0.0f, 0.0f);
+
+            func_8002F014(index, D_802373F8.r, D_802373F8.g, D_802373F8.b, D_802373F8.a);
+
+            if (!(func_80036A84(gMapModelContext[gMainMapIndex].mapIndex))) {
+
+                func_8002F1E0(index, 
+                    mainMap[gMapModelContext[gMainMapIndex].mapIndex].mapStruct8.defaultRgba.r, 
+                    mainMap[gMapModelContext[gMainMapIndex].mapIndex].mapStruct8.defaultRgba.g, 
+                    mainMap[gMapModelContext[gMainMapIndex].mapIndex].mapStruct8.defaultRgba.b, 
+                    mainMap[gMapModelContext[gMainMapIndex].mapIndex].mapStruct8.defaultRgba.a, 
+                    mainMap[gMapModelContext[gMainMapIndex].mapIndex].mapStruct9.unk_8);
+                
+            }
+            
+            result = 1;
+            
+        }
+    }
+
+    return result;
+    
+}
 
 //INCLUDE_ASM(const s32, "system/renderedSprites", func_8002EC18);
 
-bool func_8002EC18(u16 index, u32 arg1, void *arg2, void *arg3, void *arg4, void *arg5, s32 arg6, s32 arg7, s32 arg8, u16 arg9, u8 argA) {
+bool func_8002EC18(u16 index, u32 arg1, u32 arg2, u32 arg3, u32 arg4, u32* arg5, u16* arg6, u16* arg7, u16* arg8, u16 arg9, u8 argA) {
 
     bool result = 0;
     
@@ -315,7 +417,7 @@ bool func_8002F014(u16 index, u8 arg1, u8 arg2, u8 arg3, u8 arg4) {
             
             func_8002C914(renderedSprites[index].globalSpriteIndex, arg1, arg2, arg3, arg4);
             
-            if (characterSprites[renderedSprites[index].characterIndex].flag != 0xFF) {
+            if (characterSprites[renderedSprites[index].characterIndex].shadowSpriteIndex != 0xFF) {
 
                 func_8002C914(renderedSprites[index].spriteOffset, arg1, arg2, arg3, 0x60);
             }
@@ -330,16 +432,16 @@ bool func_8002F014(u16 index, u8 arg1, u8 arg2, u8 arg3, u8 arg4) {
 
 //INCLUDE_ASM(const s32, "system/renderedSprites", func_8002F114);
 
-bool func_8002F114(u16 index, u8 arg1) {
+bool func_8002F114(u16 index, u8 shadowSpriteIndex) {
 
     bool result = 0;
 
     if (index < MAX_RENDERED_SPRITES) {
         if ((renderedSprites[index].flags & 1) && (renderedSprites[index].flags & 4)) {
             
-            characterSprites[renderedSprites[index].characterIndex].flag = arg1;
+            characterSprites[renderedSprites[index].characterIndex].shadowSpriteIndex = shadowSpriteIndex;
 
-            if (characterSprites[renderedSprites[index].characterIndex].flag == 0xFF) {
+            if (characterSprites[renderedSprites[index].characterIndex].shadowSpriteIndex == 0xFF) {
 
                 func_8002BAD8(renderedSprites[index].spriteOffset);
 
@@ -353,7 +455,29 @@ bool func_8002F114(u16 index, u8 arg1) {
     
 }
 
-INCLUDE_ASM(const s32, "system/renderedSprites", func_8002F1E0);
+//INCLUDE_ASM(const s32, "system/renderedSprites", func_8002F1E0);
+
+bool func_8002F1E0(u16 index, u8 r, u8 g, u8 b, u8 a, s16 arg5) {
+
+    bool result = 0;
+    
+    if (index < MAX_RENDERED_SPRITES) {
+        
+        if ((renderedSprites[index].flags & 1) && (renderedSprites[index].flags & 4)) {
+
+            func_8002C1C0(renderedSprites[index].globalSpriteIndex, r, g, b, a, arg5);
+
+            if (characterSprites[renderedSprites[index].characterIndex].shadowSpriteIndex != 0xFF) {
+                func_8002C1C0(renderedSprites[index].spriteOffset, r, g, b, 0x60, arg5);
+            }
+            
+            result = 1;
+        }
+    }
+
+    return result;
+
+}
 
 //INCLUDE_ASM(const s32, "system/renderedSprites", func_8002F2FC);
 
@@ -519,7 +643,7 @@ void func_8002F7C8(u8 r, u8 g, u8 b, u8 a) {
         if (renderedSprites[i].flags & 1 && renderedSprites[i].flags & 8) {
             if (i < MAX_RENDERED_SPRITES && renderedSprites[i].flags & 4) {
                 func_8002C914(renderedSprites[i].globalSpriteIndex, r, g, b, a);
-                if (characterSprites[renderedSprites[i].characterIndex].flag != 0xFF) {
+                if (characterSprites[renderedSprites[i].characterIndex].shadowSpriteIndex != 0xFF) {
                     func_8002C914(renderedSprites[i].spriteOffset, r, g, b, 0x60);
                 }
             }
@@ -537,7 +661,7 @@ void func_8002F8F0(u8 r, u8 g, u8 b, u8 a, s16 arg4) {
         if (renderedSprites[i].flags & 1 && renderedSprites[i].flags & 8) {
             if (i < MAX_RENDERED_SPRITES && renderedSprites[i].flags & 4) {
                 func_8002C1C0(renderedSprites[i].globalSpriteIndex, r, g, b, a, arg4);
-                if (characterSprites[renderedSprites[i].characterIndex].flag != 0xFF) {
+                if (characterSprites[renderedSprites[i].characterIndex].shadowSpriteIndex != 0xFF) {
                     func_8002C1C0(renderedSprites[i].spriteOffset, r, g, b, 0x60, arg4);
                 }
             }
@@ -555,7 +679,7 @@ bool func_8002FA2C(u16 index) {
         if (renderedSprites[index].flags & 1 && renderedSprites[index].flags & 8) {
             renderedSprites[index].flags &= ~( 0x8 | 0x2000);
             func_8002B6B8(renderedSprites[index].globalSpriteIndex);
-            if (characterSprites[renderedSprites[index].characterIndex].flag != 0xFF) {
+            if (characterSprites[renderedSprites[index].characterIndex].shadowSpriteIndex != 0xFF) {
                 func_8002B6B8(renderedSprites[index].spriteOffset);
             }
             result = 1;

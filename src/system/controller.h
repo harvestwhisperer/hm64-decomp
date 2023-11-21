@@ -36,9 +36,9 @@ typedef struct {
     NUContPakFile pak;
     Sticks sticks;
     u32 button;
-    u32 unk_18;
-    u32 unk_1C;
-    u32 unk_20;
+    u32 buttonHeld;
+    u32 buttonPressed;
+    u32 buttonReleased;
     u32 unk_24;
     u32 unk_28;
     u8 unk_2C[0x18];

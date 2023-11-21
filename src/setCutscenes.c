@@ -47,8 +47,9 @@ extern u16 D_80237410;
 
 // data 
 extern Addresses cutsceneMapAddresses[];
-// cutscene vaddrs
+// cutscene master object vaddr
 extern void *D_80114C70[];
+// entire cutscene map vaddr
 extern void *D_80114D30[];
 // cutscene map asset index
 extern u16 D_80114DF0[];
@@ -57,12 +58,14 @@ extern u8 D_80113580[0x18][0x14];
 
 //INCLUDE_ASM(const s32, "setCutscenes", func_8009BF90);
 
-void func_8009BF90(u16 arg0) {
+// sets master cutscene map object
+inline void func_8009BF90(u16 arg0) {
 
     nuPiReadRom(cutsceneMapAddresses[arg0].romAddrStart, D_80114D30[arg0], cutsceneMapAddresses[arg0].romAddrEnd - cutsceneMapAddresses[arg0].romAddrStart);
 
     D_801891D4 = 0;
 
+    // param 1 = 0, 20, 21, or 22
     func_800469A8(D_80114DF0[arg0], D_80114C70[arg0]);
     
     func_8002F730();
@@ -176,23 +179,10 @@ u16 func_8009C054(u16 mapIndex) {
                 break;
             }
         
-        // static inline
         if (offset != 0xFFFF) {
 
-            nuPiReadRom(cutsceneMapAddresses[offset].romAddrStart, D_80114D30[offset], cutsceneMapAddresses[offset].romAddrEnd - cutsceneMapAddresses[offset].romAddrStart);
-            
-            D_801891D4 = 0;
-            
-            // initialize cutsceneMap object
-            func_800469A8(D_80114DF0[offset], D_80114C70[offset]);
-            // toggle flags on all sprites
-            func_8002F730();
-            
-            D_8018981C = offset;
-            
-            gCutsceneFlags |= 1;
-            
-            toggleDailyEventBit(0x53);
+            func_8009BF90(offset);
+
         }
     }
     

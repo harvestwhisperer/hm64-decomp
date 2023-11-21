@@ -25,9 +25,9 @@ void controllerInit(void) {
     for (i = 0; i < NU_CONT_MAXCONTROLLERS; i++) {
         
         controllers[i].button = 0;
-        controllers[i].unk_18 = 0;
-        controllers[i].unk_1C = 0;
-        controllers[i].unk_20 = 0;
+        controllers[i].buttonHeld = 0;
+        controllers[i].buttonPressed = 0;
+        controllers[i].buttonReleased = 0;
         controllers[i].unk_24 = 0;
         controllers[i].unk_28 = 0;
         
@@ -41,9 +41,9 @@ void controllerInit(void) {
         }
 
         D_8018A738[i].button = 0;
-        D_8018A738[i].unk_18 = 0;
-        D_8018A738[i].unk_1C = 0;
-        D_8018A738[i].unk_20 = 0;
+        D_8018A738[i].buttonHeld = 0;
+        D_8018A738[i].buttonPressed = 0;
+        D_8018A738[i].buttonReleased = 0;
         D_8018A738[i].unk_24 = 0;
         D_8018A738[i].unk_28 = 0;
         
@@ -65,71 +65,72 @@ void controllerInit(void) {
 
 #ifdef PERMUTER
 void func_8004CF68(void) {
-
-    u8 i, j;
+    
+    u8 i;
+    u8 j;
     
     nuContDataGetExAll(contData);
-
+    
     for (i = 0; i < 4; i++) {
-
-        if (!D_80181B90[i].errno) {
         
-            if ((frameCount % D_802226E2) == 0) {            
+        if (!D_80181B90[i].errno) {
+            
+            if ((frameCount % D_802226E2) == 0) {
                 
-                D_8013D450[i].stick_x = contData[i].stick_x;
-                D_8013D450[i].stick_y = contData[i].stick_y;
-                D_8013D450[i].button = contData[i].button;
+                controllers[i].sticks.s_stick_x = contData[i].stick_x;
+                controllers[i].sticks.s_stick_y = contData[i].stick_y;
+                
+                controllers[i].button = contData[i].button;
                 
                 func_8004D47C(i);
-
-                D_8013D450[i].unk_C = (D_8013D450[i].button ^ D_8013D450[i].unk_8) & D_8013D450[i].button;
-                D_8013D450[i].unk_10 = (D_8013D450[i].button ^ D_8013D450[i].unk_8) & D_8013D450[i].unk_8;
-                D_8013D450[i].unk_8 = D_8013D450[i].button;
-
-                j = 0;
-
-                while (1) {
+                
+                controllers[i].buttonPressed = (controllers[i].button ^ controllers[i].buttonHeld) & controllers[i].button;
+                controllers[i].buttonReleased =  (controllers[i].button ^ controllers[i].buttonHeld) & controllers[i].buttonHeld;
+                controllers[i].buttonHeld = controllers[i].button;
+                
+                for (j = 0; j < 24; j++) {
                     
-                    if (((D_8013D450[i].button >> j) & 1)) {
-                        if ((D_8013D450[i].unk_18 >> j) & 1) {
-                            if (D_80182FBA < D_8013D450[i].unk_1C[j]) {
-                                D_8013D450[i].unk_14 = D_8013D450[i].unk_14 | (D_8013D450[i].unk_18 >> j) << j;
-                                D_8013D450[i].unk_1C[j] = 0;
-                                goto inner_loop_end;
-                            }
+                    if ((controllers[i].button >> j) & 1) {
+                        
+                        if ((controllers[i].unk_28 >> j) & 1) {
                             
-                            D_8013D450[i].unk_14 &= ~(1 << (j & 0x1F));
-                            
-                        } else {
-                            if (D_801FADB0 < D_8013D450[i].unk_1C[j]) {
-                                D_8013D450[i].unk_14 = (D_8013D450[i].unk_14  | ((D_8013D450[i].button >> j) & 1) << j);
-                                D_8013D450[i].unk_18 = D_8013D450[i].unk_18 | ((D_8013D450[i].button >> j) & 1) << j;
-                                D_8013D450[i].unk_1C[j] = 0;
+                            if (controllers[i].unk_2C[j] > D_80182FBA) {
+                                controllers[i].unk_24 |= ((controllers[i].button >> j) & 1) << j;
+                                controllers[i].unk_2C[j] = 0;
                             } else {
-                                D_8013D450[i].unk_14 = D_8013D450[i].unk_C; 
+                                controllers[i].unk_24 &= ~(1 << j);
                             }
+                            
+                        } else if (controllers[i].unk_2C[j] > D_801FADB0) {
+                            controllers[i].unk_24 |= ((controllers[i].button >> j) & 1) << j;
+                            controllers[i].unk_28 |= ((controllers[i].button >> j) & 1) << j;
+                            controllers[i].unk_2C[j] = 0;
+                        } else {
+                            controllers[i].unk_24 = controllers[i].buttonPressed;
                         }
-
-                        D_8013D450[i].unk_1C[j]++;
+                        
+                        controllers[i].unk_2C[j]++;
                         
                     } else {
-                        D_8013D450[i].unk_1C[j] = 0;
-                        D_8013D450[i].unk_14 &= ~(1 << (j & 0x1F));
-                        D_8013D450[i].unk_18 &= ~(1 << (j & 0x1F));
+                        controllers[i].unk_2C[j] = 0;
+                        controllers[i].unk_24 &= ~(1 << j);
+                        controllers[i].unk_28 &= ~(1 << j);
                     }
-inner_loop_end:
-                    if (j > 24) break;
                 }
-                
+
             } else {
-                D_8018A748[i].button = contData[i].button;
-                D_8018A748[i].unk_8 = (contData[i].button ^ D_8018A748[i].unk_C) & contData[i].button;
-                D_8018A748[i].unk_10 = (D_8018A748[i].button ^ D_8018A748[i].unk_8) & D_8018A748[i].unk_8; 
-                D_8018A748[i].unk_8 = D_8018A748[i].button;
-                D_8018A748[i].stick_x = contData[i].stick_x;
-                D_8018A748[i].stick_y = contData[i].stick_y;
+
+                D_8018A738[i].button = contData[i].button & 0xFFFF;
+                D_8018A738[i].buttonPressed = (D_8018A738[i].button ^ D_8018A738[i].buttonHeld) & D_8018A738[i].button;
+                
+                D_8018A738[i].buttonReleased = (D_8018A738[i].button ^ D_8018A738[i].buttonHeld) & D_8018A738[i].buttonHeld;
+                
+                D_8018A738[i].buttonHeld = D_8018A738[i].button;
+                
+                D_8018A738[i].sticks.s_stick_x = contData[i].stick_x;
+                D_8018A738[i].sticks.s_stick_y = contData[i].stick_y;
+                
             }
-            
         }
     }
 }
@@ -146,13 +147,13 @@ u32 func_8004D35C(u8 contIndex, u32 buttonPattern) {
 //INCLUDE_ASM(const s32, "system/controller", func_8004D380);
 
 u32 func_8004D380(u8 contIndex, u32 buttonPattern) {
-    return controllers[contIndex].unk_1C & buttonPattern;
+    return controllers[contIndex].buttonPressed & buttonPattern;
 }
 
 //INCLUDE_ASM(const s32, "system/controller", func_8004D3A4);
 
 u32 func_8004D3A4(u8 contIndex, u32 buttonPattern) {
-    return controllers[contIndex].unk_20 & buttonPattern;
+    return controllers[contIndex].buttonReleased & buttonPattern;
 }
 
 //INCLUDE_ASM(const s32, "system/controller", func_8004D3C8);
