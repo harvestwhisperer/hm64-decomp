@@ -41,11 +41,12 @@ CPPFLAGS := -I. -I include -I src -I src/system -I include/libmus
 DEBUG_FLAGS := -g2
 OPTFLAGS := -O2
 LIBULTRA_OPTFLAGS := -O1
+LIBKMC_OPTFLAGS := -O1
 NU_OPTFLAGS := -O2
 
 LD_MAP := $(BASENAME).map
 
-LDFLAGS := -T symbol_addrs.txt -T undefined_funcs.txt -T undefined_syms.txt -T undefined_funcs_auto.txt -T undefined_syms_auto.txt -T $(LD_SCRIPT) -Map $(LD_MAP) --no-check-sections
+LDFLAGS := -T undefined_funcs.txt -T undefined_syms.txt -T undefined_funcs_auto.txt -T undefined_syms_auto.txt -T $(LD_SCRIPT) -Map $(LD_MAP) --no-check-sections
 
 ifeq ($(VERBOSE),0)
 V := @
@@ -113,6 +114,10 @@ $(BUILD_DIR)/src/lib/nusys-1/%.c.o : src/lib/nusys-1/%.c build
 $(BUILD_DIR)/src/lib/os/libultra/%.c.o : src/lib/os/libultra/%.c build
 	$(dir_guard)
 	$(V)export COMPILER_PATH=$(KMC_PATH) && $(CC) -B $(KMC_PATH) $(LIBULTRA_OPTFLAGS) $(CFLAGS) $(CPPFLAGS) -c -o $@ $< 
+
+$(BUILD_DIR)/src/lib/libkmc/%.c.o : src/lib/libkmc/%.c build
+	$(dir_guard)
+	$(V)export COMPILER_PATH=$(KMC_PATH) && $(CC) -B $(KMC_PATH) $(LIBKMC_OPTFLAGS) $(CFLAGS) $(CPPFLAGS) -c -o $@ $< 
 
 $(BUILD_DIR)/%.s.o : %.s build
 	$(dir_guard)

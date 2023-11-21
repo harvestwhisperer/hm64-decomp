@@ -56,7 +56,8 @@ n_reverb_text_0800 = 0x800FAE30;
 _n_saveBuffer = 0x800FAE68;
 n_reverb_text_0918 = 0x800FAF48;
 _n_filterBuffer = 0x800FAF80;
-osProfileFlush = 0x800FC150;
+nuContDataClose = 0x800FC150;
+nuContDataOpen = 0x800FC178;
 nuPiInit = 0x800FD5B0;
 nuPiReadRom = 0x800FD5E0;
 sqrtf = 0x800FDC40;
@@ -1074,7 +1075,8 @@ MusHandlePan = 0x800F558C;
 MusHandleSetFreqOffset = 0x800F5664;
 MusBankInitialize = 0x800F595C;
 
-getRandomNumber = 0x80110410;
+rand = 0x80110410;
+__muldi3 = 0x80110454;
 
 cutsceneCallbacksTable = 0x801133D0;
 
@@ -1118,6 +1120,9 @@ freeRamromQ = 0x80137360;
 freeRamromBuf = 0x80137378;
 piEventQueue = 0x80137380;
 
+sRandNext = 0x8013CDF0;
+sRand = 0x80110444;
+
 specialDialogueBitsPointer = 0x8013CE00;
 gameVariables = 0x8013CE08;
 
@@ -1127,7 +1132,7 @@ controllers = 0x8013D440;
 gSongVolume = 0x8013D5E4;
 
 nuAuHeap = 0x8013D5C8;
-mainMap = 0x8013DC40;
+mainMap = 0x8013DC40; // size 0x1A628
 
 gDayOfMonth = 0x80158260;
 
@@ -1191,6 +1196,8 @@ gBabyAge = 0x80189134;
 gBabyName = 0x8018981E;
 dailyEventBits = 0x80189140;
 
+nuContData = 0x80189840;
+
 pauseScreenSprites = 0x80189A50;
 gLumber = 0x80189E50;
 
@@ -1215,7 +1222,7 @@ gVoteForFlowerFestivalGoddess = 0x801C3F7E;
 
 gTotalGoldenMilkShipped = 0x801C3F88;
 
-npcAffection = 0x801C3F90;
+npcAffection = 0x801C3F90; // size:0x30
 
 contPattern = 0x801D6ED0;
 

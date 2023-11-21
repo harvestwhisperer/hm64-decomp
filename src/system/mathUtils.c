@@ -1,7 +1,8 @@
 #include "common.h"
+#include "gcc/stdlib.h"
 
-// library func
-extern u16 getRandomNumber(void);
+// libmkc
+extern int rand(void);
 
 //INCLUDE_ASM(const s32, "system/utility", func_80026850);
 
@@ -23,12 +24,12 @@ u16 getRandomNumberInRange(u16 min, u16 max) {
     
     int temp;
 
-    getRandomNumber();
+    rand();
 
-    temp = getRandomNumber() * (max - min + 1);
+    temp = (u16)rand() * (max - min + 1);
     
     if (temp < 0) {
-        temp += 0x7FFF;
+        temp += RAND_MAX;
     }
     
     return (min + (temp >> 0xF));

@@ -1,5 +1,5 @@
 #include "common.h"
-
+#include "player.h"
 
 // player_commands.c
 

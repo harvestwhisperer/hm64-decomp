@@ -114,7 +114,7 @@ bool func_80046A58(u16 index, void* cutscenePointer) {
 
 //INCLUDE_ASM(const s32, "system/cutscene", func_80046AB0);
 
-// toggle flags
+// toggle flags at end of cutscene work
 bool func_80046AB0(u16 index) {
 
     bool result = 0;
@@ -261,7 +261,7 @@ void mainLoopCutsceneHandler(void) {
         
         if (cutsceneMaps[i].flags & 1 && !(cutsceneMaps[i].flags & 0x20)) {
             
-            if (cutsceneMaps[i].flags & 8) {
+            if (cutsceneMaps[i].flags & CHARACTER_SPRITE_ASSET) {
                 
                 cutsceneMaps[i].coordinates.x = renderedSprites[cutsceneMaps[i].spriteIndex].startingCoordinates.x;
                 cutsceneMaps[i].coordinates.y = renderedSprites[cutsceneMaps[i].spriteIndex].startingCoordinates.y;
@@ -275,7 +275,7 @@ void mainLoopCutsceneHandler(void) {
                 }
             }
             
-            if (cutsceneMaps[i].flags & 0x10) {
+            if (cutsceneMaps[i].flags & MAP_ASSET) {
                 cutsceneMaps[i].coordinates.x = gMapModelContext[cutsceneMaps[i].spriteIndex].unk_4.x;
                 cutsceneMaps[i].coordinates.y = gMapModelContext[cutsceneMaps[i].spriteIndex].unk_4.y;
                 cutsceneMaps[i].coordinates.z = gMapModelContext[cutsceneMaps[i].spriteIndex].unk_4.z;
@@ -311,7 +311,7 @@ skip_callback:
             }
             
             // sprite handling
-            if (cutsceneMaps[i].flags & 0x10) {
+            if (cutsceneMaps[i].flags & MAP_ASSET) {
                 func_80047E34(i);
             }
             
@@ -319,7 +319,7 @@ skip_callback:
                 func_800471B0(i);
             }
 
-            if (cutsceneMaps[i].flags & 8) {
+            if (cutsceneMaps[i].flags & CHARACTER_SPRITE_ASSET) {
                 func_80047640(i);
             }
         }
@@ -376,6 +376,7 @@ void func_80047E34(u16 index) {
 
 //INCLUDE_ASM(const s32, "system/cutscene", func_80047E94);
 
+// function index 0
 void func_80047E94(u16 index) {
     
     short offset;
@@ -394,6 +395,7 @@ void func_80047E94(u16 index) {
 
 //INCLUDE_ASM(const s32, "system/cutscene", func_80047F20);
 
+// function index 1
 void func_80047F20(u16 index) {
 
     u32 offset;
@@ -446,6 +448,7 @@ void func_80047F20(u16 index) {
 
 //INCLUDE_ASM(const s32, "system/cutscene", func_80047F90);
 
+// function index 2
 void func_80047F90(u16 index) {
 
     cutsceneMaps[index].cutscenePointer += 2;
@@ -463,12 +466,12 @@ void func_80047F90(u16 index) {
     cutsceneMaps[index].cutscenePointer += 2;
 
     // tiles
-    if (cutsceneMaps[index].flags & 0x10) {
+    if (cutsceneMaps[index].flags & MAP_ASSET) {
         func_8003BDA4(cutsceneMaps[index].spriteIndex, cutsceneMaps[index].coordinates.x, cutsceneMaps[index].coordinates.y, cutsceneMaps[index].coordinates.z);
     }
 
     // set sprite coordinates
-    if (cutsceneMaps[index].flags & 0x8) {
+    if (cutsceneMaps[index].flags & CHARACTER_SPRITE_ASSET) {
         func_8002FD80(cutsceneMaps[index].spriteIndex, cutsceneMaps[index].coordinates.x, cutsceneMaps[index].coordinates.y, cutsceneMaps[index].coordinates.z);
     }
 }
@@ -487,8 +490,11 @@ void func_80048258(u16 index) {
 
 //INCLUDE_ASM(const s32, "system/cutscene", func_800482B8);
 
+// function index 5
+// cutscene object finish
 void func_800482B8(u16 index) {
 
+    // set done
     cutsceneMaps[index].unk_66 = 1;
     // update flags on asset
     func_80046AB0(index);
@@ -497,13 +503,13 @@ void func_800482B8(u16 index) {
 
 //INCLUDE_ASM(const s32, "system/cutscene", func_800482F8);
 
-void func_800482F8(u16 arg0) {
+void func_800482F8(u16 index) {
 
-    cutsceneMaps[arg0].cutscenePointer += 2;
+    cutsceneMaps[index].cutscenePointer += 2;
 
-    cutsceneMaps[arg0].unk_8 = cutsceneMaps[arg0].cutscenePointer+2;
+    cutsceneMaps[index].unk_8 = cutsceneMaps[index].cutscenePointer+2;
 
-    cutsceneMaps[arg0].cutscenePointer += *(s16*)cutsceneMaps[arg0].cutscenePointer;
+    cutsceneMaps[index].cutscenePointer += *(s16*)cutsceneMaps[index].cutscenePointer;
     
 }
 
@@ -534,19 +540,19 @@ void func_8004838C(u16 index) {
 
 //INCLUDE_ASM(const s32, "system/cutscene", func_80048430);
 
-void func_80048430(u16 arg0) {
+void func_80048430(u16 index) {
 
-    CutsceneButtonCheck* ptr = cutsceneMaps[arg0].cutscenePointer;
+    CutsceneButtonCheck* ptr = cutsceneMaps[index].cutscenePointer;
 
-    cutsceneMaps[arg0].cutscenePointer += 2;
+    cutsceneMaps[index].cutscenePointer += 2;
 
-    if (controllers[ptr->controllerIndex].unk_1C & ptr->buttonMask) {
-        cutsceneMaps[arg0].cutscenePointer += 6;
-        cutsceneMaps[arg0].unk_8 = cutsceneMaps[arg0].cutscenePointer + 4;
-        cutsceneMaps[arg0].cutscenePointer += *(short*)cutsceneMaps[arg0].cutscenePointer; 
+    if (controllers[ptr->controllerIndex].buttonPressed & ptr->buttonMask) {
+        cutsceneMaps[index].cutscenePointer += 6;
+        cutsceneMaps[index].unk_8 = cutsceneMaps[index].cutscenePointer + 4;
+        cutsceneMaps[index].cutscenePointer += *(short*)cutsceneMaps[index].cutscenePointer; 
         
     } else {
-        cutsceneMaps[arg0].cutscenePointer += 0xA;
+        cutsceneMaps[index].cutscenePointer += 0xA;
     }
 }
 
@@ -570,9 +576,67 @@ void func_800484D4(u16 index) {
     
 }
 
-INCLUDE_ASM(const s32, "system/cutscene", func_80048578);
+//INCLUDE_ASM(const s32, "system/cutscene", func_80048578);
 
-INCLUDE_ASM(const s32, "system/cutscene", func_800485EC);
+// function index 0xB
+// sets child cutscene map objects
+void func_80048578(u16 index) {
+
+    CutsceneAssetInfo* ptr = (CutsceneAssetInfo*)cutsceneMaps[index].cutscenePointer;
+
+    u16 assetIndex;
+    int offset;
+    u32 ptr2;
+    
+    cutsceneMaps[index].cutscenePointer += 2;
+
+    assetIndex = ptr->assetIndex;
+    
+    cutsceneMaps[index].cutscenePointer += 2;
+    
+    offset = ptr->offset;
+    ptr2 = cutsceneMaps[index].cutscenePointer;
+
+    cutsceneMaps[index].cutscenePointer += 4;
+
+    ptr2 += offset;
+    
+    func_800469A8(assetIndex, ptr2);
+    
+}
+
+//INCLUDE_ASM(const s32, "system/cutscene", func_800485EC);
+
+void func_800485EC(u16 index) {
+
+    CutsceneAssetInfo* ptr = (CutsceneAssetInfo*)cutsceneMaps[index].cutscenePointer;
+    u16 assetIndex;
+    u32 offset;
+    u32 ptr2;
+
+    cutsceneMaps[index].cutscenePointer += 2;
+
+    assetIndex = ptr->assetIndex;
+
+    cutsceneMaps[index].cutscenePointer += 2; 
+
+    ptr2 = cutsceneMaps[index].cutscenePointer;
+
+    offset = ptr->offset;
+
+    cutsceneMaps[index].cutscenePointer += 4;
+
+    ptr2 += offset;
+    
+    if (assetIndex < MAX_CUTSCENE_ASSETS) {
+        
+        if (cutsceneMaps[assetIndex].flags & 1) {
+            cutsceneMaps[assetIndex].unk_66 = 0;
+            cutsceneMaps[assetIndex].cutscenePointer = ptr2;
+        }
+    }
+    
+}
 
 //INCLUDE_ASM(const s32, "system/cutscene", func_80048694);
 
@@ -594,6 +658,7 @@ void func_80048694(u16 index) {
 
 //INCLUDE_ASM(const s32, "system/cutscene", func_800486F4);
 
+// function index 0xE
 void func_800486F4(u16 index) {
 
     u32 romTextureStart;
@@ -809,7 +874,7 @@ void func_800488CC(u16 index) {
 
     cutsceneMaps[index].cutscenePointer += 2;
 
-    if (cutsceneMaps[index].cameraFlags & 0x10) {
+    if (cutsceneMaps[index].cameraFlags & MAP_ASSET) {
         setSpriteAnimation(cutsceneMaps[index].spriteIndex, cutsceneMaps[index].unk_26);
     } else {
         setSpriteAnimation(cutsceneMaps[index].spriteIndex, cutsceneMaps[index].unk_20);
@@ -876,18 +941,159 @@ void func_80048B90(u16 index) {
     
 }
 
-INCLUDE_ASM(const s32, "system/cutscene", func_80048BEC);
+//INCLUDE_ASM(const s32, "system/cutscene", func_80048BEC);
 
-INCLUDE_ASM(const s32, "system/cutscene", func_80048C48);
+void func_80048BEC(u16 index) {
+
+    CutsceneUnknownInfo2* ptr = (CutsceneUnknownInfo2*)cutsceneMaps[index].cutscenePointer;
+
+    u16 unk_2;
+    u16* unk_4;
+    
+    cutsceneMaps[index].cutscenePointer += 2;
+
+    unk_2 = ptr->unk_2;
+
+    cutsceneMaps[index].cutscenePointer += 2;
+
+    unk_4 = ptr->unk_4;
+
+    cutsceneMaps[index].cutscenePointer += 4;
+    
+    *unk_4 = unk_2;
+    
+}
+
+//INCLUDE_ASM(const s32, "system/cutscene", func_80048C48);
+
+void func_80048C48(u16 index) {
+
+    CutsceneUnknownInfo6* ptr = (CutsceneUnknownInfo6*)cutsceneMaps[index].cutscenePointer;
+
+    u32 unk_4;
+    u32* unk_8;
+
+    cutsceneMaps[index].cutscenePointer += 4;
+
+    unk_4 = ptr->unk_4;
+
+    cutsceneMaps[index].cutscenePointer += 4;
+
+    unk_8 = ptr->unk_8;
+
+    cutsceneMaps[index].cutscenePointer += 4;
+
+    *unk_8 = unk_4;
+    
+}
 
 INCLUDE_ASM(const s32, "system/cutscene", func_80048CA4);
 
-INCLUDE_ASM(const s32, "system/cutscene", func_80048DA8);
 
-INCLUDE_ASM(const s32, "system/cutscene", func_80048E98);
+//INCLUDE_ASM(const s32, "system/cutscene", func_80048DA8);
 
-// set bit on cutscene flags
-INCLUDE_ASM(const s32, "system/cutscene", func_80048F88);
+// checks cutscene index until current cutscene index
+void func_80048DA8(u16 index) {
+    
+    u16* cutsceneIndexPtr;
+    u16 cutsceneIndex1;
+    u16 cutsceneIndex2;
+
+    CutsceneIndexCheck* ptr = (CutsceneIndexCheck*)cutsceneMaps[index].cutscenePointer;
+
+    cutsceneMaps[index].cutscenePointer += 2;
+    
+    cutsceneIndex1 = ptr->cutsceneIndex1;
+
+    cutsceneMaps[index].cutscenePointer += 2;
+
+    cutsceneIndex2 = ptr->cutsceneIndex2;
+
+    cutsceneMaps[index].cutscenePointer += 4;    
+
+    cutsceneIndexPtr = ptr->cutsceneIndexPtr;
+
+    cutsceneMaps[index].cutscenePointer += 4;    
+
+    if (*cutsceneIndexPtr < cutsceneIndex1) {
+        goto func_end;  
+    } 
+    
+    if (cutsceneIndex2 >= *cutsceneIndexPtr) {
+        cutsceneMaps[index].unk_8 = cutsceneMaps[index].cutscenePointer + 4;
+        cutsceneMaps[index].cutscenePointer += *(s16*)cutsceneMaps[index].cutscenePointer;
+        return;
+    }
+    
+func_end:
+    cutsceneMaps[index].cutscenePointer += 4;
+        
+}
+
+//INCLUDE_ASM(const s32, "system/cutscene", func_80048E98);
+
+void func_80048E98(u16 index) {
+
+    CutsceneUnknownInfo3* ptr = (CutsceneUnknownInfo3*)cutsceneMaps[index].cutscenePointer;
+    u32 ptr2;
+
+    u16 unk_2;
+    u32 unk_4;
+    u32 unk_8;
+    u32* unk_C;
+
+    cutsceneMaps[index].cutscenePointer += 2;
+
+    unk_2 = ptr->unk_2;
+
+    cutsceneMaps[index].cutscenePointer += 2;
+
+    unk_4 = ptr->unk_4;
+
+    cutsceneMaps[index].cutscenePointer += 4;
+
+    unk_8 = ptr->unk_8;
+
+    cutsceneMaps[index].cutscenePointer += 4;
+
+    unk_C = ptr->unk_C;
+
+    cutsceneMaps[index].cutscenePointer += 4;
+ 
+    if (*unk_C >= unk_4 && unk_8 >= *unk_C) {
+
+        cutsceneMaps[index].unk_8 = cutsceneMaps[index].cutscenePointer + 4;
+        cutsceneMaps[index].cutscenePointer += *(s16*)cutsceneMaps[index].cutscenePointer;
+        
+    } else {
+        cutsceneMaps[index].cutscenePointer += 4;
+    }
+
+}
+
+//INCLUDE_ASM(const s32, "system/cutscene", func_80048F88);
+
+// index 0x17
+void func_80048F88(u16 index) {
+
+    CutsceneMapFlagUpdate* ptr = (CutsceneMapFlagUpdate*)cutsceneMaps[index].cutscenePointer;
+    
+    u16 flag;
+    s32* cutsceneFlagPointer;
+
+    cutsceneMaps[index].cutscenePointer += 2;
+
+    flag = ptr->flag;
+
+    cutsceneMaps[index].cutscenePointer += 2;
+
+    cutsceneFlagPointer = ptr->cutsceneFlagPointer;
+
+    cutsceneMaps[index].cutscenePointer += 4;
+
+    *cutsceneFlagPointer |= 1 << flag;
+
+}
 
 // toggle bit
 INCLUDE_ASM(const s32, "system/cutscene", func_80048FF4);
@@ -898,6 +1104,8 @@ INCLUDE_ASM(const s32, "system/cutscene", func_8004910C);
 
 //INCLUDE_ASM(const s32, "system/cutscene", func_80049228);
 
+// function index 0x1D
+// set up cutscene object as map asset
 void func_80049228(u16 index) {
 
     CutsceneMapInfo *ptr = cutsceneMaps[index].cutscenePointer;
@@ -912,7 +1120,7 @@ void func_80049228(u16 index) {
     func_8003BD60(cutsceneMaps[index].spriteIndex);
     func_8002EEA4(cutsceneMaps[index].spriteIndex);
 
-    cutsceneMaps[index].flags |= 0x10;
+    cutsceneMaps[index].flags |= MAP_ASSET;
     
 } 
 
@@ -963,6 +1171,7 @@ void func_8004A000(u16 index) {
 
 //INCLUDE_ASM(const s32, "system/cutscene", func_8004A0A8);
 
+// set flags on all active sprites, rendered and global
 void func_8004A0A8(u16 index) {
 
     cutsceneMaps[index].cutscenePointer += 4;
@@ -978,17 +1187,89 @@ void func_8004A0F4(u16 index) {
     cutsceneMaps[index].cutscenePointer += 4;
 
     func_8002F730(index);
+
 }
 
 INCLUDE_ASM(const s32, "system/cutscene", func_8004A140);
 
 INCLUDE_ASM(const s32, "system/cutscene", func_8004A1DC);
 
-INCLUDE_ASM(const s32, "system/cutscene", func_8004A234);
+//INCLUDE_ASM(const s32, "system/cutscene", func_8004A234);
 
-INCLUDE_ASM(const s32, "system/cutscene", func_8004A320);
+void func_8004A234(u16 index) {
 
-INCLUDE_ASM(const s32, "system/cutscene", func_8004A38C);
+    CutsceneSpriteInfo4* ptr = (CutsceneSpriteInfo4*)cutsceneMaps[index].cutscenePointer;
+    
+    u16 spriteIndex;
+    u16 characterIndex;
+    u16 flag;
+
+    cutsceneMaps[index].cutscenePointer += 2;
+
+    spriteIndex = ptr->spriteIndex;
+
+    cutsceneMaps[index].cutscenePointer += 2;
+
+    characterIndex = ptr->characterIndex;
+    
+    cutsceneMaps[index].cutscenePointer += 2;
+
+    flag = ptr->flag;
+    
+    cutsceneMaps[index].cutscenePointer += 2;
+
+    func_8002E284(spriteIndex, characterIndex, flag);
+    func_8002ECD4(spriteIndex, 0xFFFF, 0xFF);
+    func_8002EDF0(spriteIndex, 0, 0, 0);
+    func_8003019C(spriteIndex, 1);
+    func_80030054(spriteIndex, 1);
+    func_80030240(spriteIndex, 1);
+    func_800302E4(spriteIndex, 1);
+    
+}
+
+//INCLUDE_ASM(const s32, "system/cutscene", func_8004A320);
+
+void func_8004A320(u16 index) {
+
+    CutsceneSpriteInfo2* ptr = (CutsceneSpriteInfo2*)cutsceneMaps[index].cutscenePointer;
+
+    u16 flag;
+
+    cutsceneMaps[index].cutscenePointer +=  2;
+
+    flag = ptr->flag;
+
+    cutsceneMaps[index].cutscenePointer += 2;
+
+    func_8002FCB4(cutsceneMaps[index].spriteIndex, flag);
+
+}
+
+//INCLUDE_ASM(const s32, "system/cutscene", func_8004A38C);
+
+void func_8004A38C(u16 index) {
+
+    CutsceneMapModelContextInfo* ptr = (CutsceneMapModelContextInfo*)cutsceneMaps[index].cutscenePointer;
+    
+    u16 mapModelContextIndex;
+    u16 mapIndex;
+
+    cutsceneMaps[index].cutscenePointer += 2;
+
+    mapModelContextIndex = ptr->mapModelContextIndex;
+
+    cutsceneMaps[index].cutscenePointer += 2;
+
+    mapIndex = ptr->mainMapIndex;
+
+    cutsceneMaps[index].cutscenePointer += 4;
+
+    // set Vec3fs on mapStruct8
+    func_8003BB14(mapModelContextIndex, mapIndex);
+
+}
+
 
 INCLUDE_ASM(const s32, "system/cutscene", func_8004A400);
 
@@ -1010,7 +1291,43 @@ INCLUDE_ASM(const s32, "system/cutscene", func_8004B050);
 
 INCLUDE_ASM(const s32, "system/cutscene", func_8004B09C);
 
-INCLUDE_ASM(const s32, "system/cutscene", func_8004B0E8);
+//INCLUDE_ASM(const s32, "system/cutscene", func_8004B0E8);
+
+// index 0x3C
+void func_8004B0E8(u16 index) {
+
+    cutsceneMaps[index].cutscenePointer += 2;
+    
+    if (cutsceneMaps[index].flags & 2) {
+
+        if (func_8002CBF8(cutsceneMaps[index].spriteIndex)) {
+            cutsceneMaps[index].cutscenePointer += 2;
+        } else {
+            cutsceneMaps[index].unk_66 = 1;
+            cutsceneMaps[index].cutscenePointer -= 2; 
+        }
+        
+    }
+
+    if (cutsceneMaps[index].flags & 8) {
+        if (func_8002CBF8(renderedSprites[cutsceneMaps[index].spriteIndex].globalSpriteIndex)) {
+            cutsceneMaps[index].cutscenePointer += 2;
+        } else {
+            cutsceneMaps[index].unk_66 = 1;
+            cutsceneMaps[index].cutscenePointer -= 2; 
+        }
+    }
+
+    if (cutsceneMaps[index].flags & 0x10) {
+        if (func_80036A84(gMapModelContext[cutsceneMaps[index].spriteIndex].mapIndex)) {
+            cutsceneMaps[index].cutscenePointer += 2;
+        } else {
+            cutsceneMaps[index].unk_66 = 1;
+            cutsceneMaps[index].cutscenePointer -= 2; 
+        }
+    }
+    
+}
 
 INCLUDE_ASM(const s32, "system/cutscene", func_8004B2FC);
 
@@ -1059,24 +1376,24 @@ INCLUDE_ASM(const s32, "system/cutscene", func_8004BD6C);
 
 //INCLUDE_ASM(const s32, "system/cutscene", func_8004BE14);
 
-void func_8004BE14(u16 arg0) {
+void func_8004BE14(u16 index) {
 
     u16 spriteIndex;
     u16 flags;
     
-    CutsceneCharacterSpriteInfo* ptr = (CutsceneCharacterSpriteInfo*)cutsceneMaps[arg0].cutscenePointer;
+    CutsceneCharacterSpriteInfo* ptr = (CutsceneCharacterSpriteInfo*)cutsceneMaps[index].cutscenePointer;
 
-    cutsceneMaps[arg0].cutscenePointer += 2;
+    cutsceneMaps[index].cutscenePointer += 2;
     
     spriteIndex = ptr->spriteIndex;
     
-    cutsceneMaps[arg0].cutscenePointer += 2;
+    cutsceneMaps[index].cutscenePointer += 2;
     
     flags = ptr->flags;
     
-    cutsceneMaps[arg0].cutscenePointer += 4;
+    cutsceneMaps[index].cutscenePointer += 4;
 
-    characterSprites[spriteIndex].flag = flags;
+    characterSprites[spriteIndex].shadowSpriteIndex = flags;
 
 }
 
@@ -1088,31 +1405,95 @@ INCLUDE_ASM(const s32, "system/cutscene", func_8004C048);
 
 //INCLUDE_ASM(const s32, "system/cutscene", func_8004C0D0);
 
-void func_8004C0D0(u16 arg0) {
+void func_8004C0D0(u16 index) {
 
     u16 structIndex;
     u16 flag;
     
-    CutsceneMapStruct7Info* ptr = (CutsceneMapStruct7Info*)cutsceneMaps[arg0].cutscenePointer;
+    CutsceneMapStruct7Info* ptr = (CutsceneMapStruct7Info*)cutsceneMaps[index].cutscenePointer;
 
-    cutsceneMaps[arg0].cutscenePointer += 2;
+    cutsceneMaps[index].cutscenePointer += 2;
     
     structIndex = ptr->structIndex;
     
-    cutsceneMaps[arg0].cutscenePointer += 2;
+    cutsceneMaps[index].cutscenePointer += 2;
     
     flag = ptr->flag;
     
-    cutsceneMaps[arg0].cutscenePointer += 4;
+    cutsceneMaps[index].cutscenePointer += 4;
 
     // initialize mapStruct7
     func_80038990(0, structIndex, flag);
 
 }
 
-INCLUDE_ASM(const s32, "system/cutscene", func_8004C148);
+//INCLUDE_ASM(const s32, "system/cutscene", func_8004C148);
 
-INCLUDE_ASM(const s32, "system/cutscene", func_8004C258);
+void func_8004C148(u16 index) {
+
+    CutsceneUnknownInfo4* ptr= (CutsceneUnknownInfo4*)cutsceneMaps[index].cutscenePointer;
+
+    u16 unk_2;
+    u16 unk_4;
+    u16 temp;
+
+    cutsceneMaps[index].cutscenePointer += 2;
+
+    unk_2 = ptr->unk_2;
+
+    cutsceneMaps[index].cutscenePointer += 2;
+
+    unk_4 = ptr->unk_4;
+    
+    cutsceneMaps[index].cutscenePointer += 2;
+
+    temp = getRandomNumberInRange(0, 100);
+
+    if ((temp < unk_2)^ 1 && (unk_4 < temp)^1) {
+
+        cutsceneMaps[index].unk_8 = cutsceneMaps[index].cutscenePointer + 4;
+        cutsceneMaps[index].cutscenePointer += *(s16*)cutsceneMaps[index].cutscenePointer;
+        
+    } else {
+        cutsceneMaps[index].cutscenePointer += 2;
+    }
+
+}
+
+//INCLUDE_ASM(const s32, "system/cutscene", func_8004C258);
+
+void func_8004C258(u16 index) {
+
+    CutsceneUnknownInfo5* ptr = (CutsceneUnknownInfo5*)cutsceneMaps[index].cutscenePointer;
+    
+    u16* unk_4;
+    u16* unk_8;
+    u32 unk_C;
+
+    cutsceneMaps[index].cutscenePointer += 4;
+
+    unk_4 = ptr->unk_4;
+
+    cutsceneMaps[index].cutscenePointer += 4;
+
+    unk_8 = ptr->unk_8;
+
+    cutsceneMaps[index].cutscenePointer += 4;
+
+    unk_C = ptr->unk_C;
+
+    cutsceneMaps[index].cutscenePointer += 4;
+
+    if (*unk_4 >= *unk_8 && unk_C >= *unk_4) {
+
+        cutsceneMaps[index].unk_8 = cutsceneMaps[index].cutscenePointer + 4;
+        cutsceneMaps[index].cutscenePointer += *(s16*)cutsceneMaps[index].cutscenePointer;
+        
+    } else {
+        cutsceneMaps[index].cutscenePointer += 4;
+    }
+
+}
 
 //INCLUDE_ASM(const s32, "system/cutscene", func_8004C34C);
 
@@ -1251,25 +1632,25 @@ void func_8004C6CC(u16 index) {
 }
 
 /*
-void func_8004C6CC(u16 arg0) {
+void func_8004C6CC(u16 index) {
  
     u16 index;
     u8 *songStart;
     u8 *songEnd;
 
-    cutsceneMaps[arg0].cutscenePointer += 2;
+    cutsceneMaps[index].cutscenePointer += 2;
 
-    index = *(short*)cutsceneMaps[arg0].cutscenePointer;
+    index = *(short*)cutsceneMaps[index].cutscenePointer;
     
-    cutsceneMaps[arg0].cutscenePointer += 2;
+    cutsceneMaps[index].cutscenePointer += 2;
     
-    songStart = *(u8**)cutsceneMaps[arg0].cutscenePointer;
+    songStart = *(u8**)cutsceneMaps[index].cutscenePointer;
     
-    cutsceneMaps[arg0].cutscenePointer += 4;
+    cutsceneMaps[index].cutscenePointer += 4;
     
-    songEnd = *(u8**)cutsceneMaps[arg0].cutscenePointer;
+    songEnd = *(u8**)cutsceneMaps[index].cutscenePointer;
     
-    cutsceneMaps[arg0].cutscenePointer += 4;    
+    cutsceneMaps[index].cutscenePointer += 4;    
 
     setSong(index, songStart, songEnd);
     setSongVolumes(index, 0, 0);
@@ -1447,6 +1828,7 @@ void func_8004CA80(u16 index) {
 
 //INCLUDE_ASM(const s32, "system/cutscene", func_8004CB1C);
 
+// function index 0x5E
 void func_8004CB1C(u16 index) {
 
     CutsceneSpriteInfo2* ptr = (CutsceneSpriteInfo2*)cutsceneMaps[index].cutscenePointer;

@@ -688,7 +688,7 @@ inline void showTextBox(u16 arg0, u16 arg1, u16 arg2, int arg3, u16 arg4) {
   
     setMainLoopCallbackFunctionIndex(TEXT);
     
-    controllers[CONTROLLER_1].unk_1C = 0;
+    controllers[CONTROLLER_1].buttonPressed = 0;
 
     setPlayerAction(0, 0);
 }
@@ -720,7 +720,7 @@ inline void showDialogueBox(u16 arg0, u16 arg1, u16 arg2, u32 arg3, u16 arg4) {
 
     setMainLoopCallbackFunctionIndex(DIALOGUE);
 
-    controllers[CONTROLLER_1].unk_1C = 0;
+    controllers[CONTROLLER_1].buttonPressed = 0;
     
     setPlayerAction(0, 0);
 

@@ -203,7 +203,7 @@ typedef struct {
 	Vtx vertices[1]; // varying size
 } Model;
 
-// 802055D8
+// 0x802055D8
 typedef struct {
 	u32 *modelDataIndex; // 80255000
 	Vec3f unk_4;
@@ -244,5 +244,7 @@ extern bool func_8003C504(u16);
 extern bool func_8003C5C0(u16, u8, u8);
 
 extern LevelMapContext gMapModelContext[1];
+
+extern Vec4f D_802373F8;
 
 #endif
