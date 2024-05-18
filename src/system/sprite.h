@@ -75,7 +75,7 @@ typedef struct {
 
 // 0x801584F0
 typedef struct {
-	void *vaddr; /* 0x00 */ // offset indices; data from 80119750-8011BCA0, related to animation
+	u16 *vaddr; /* 0x00 */ // offset indices; data from 80119750-8011BCA0, related to animation
 	void *romTextureStart; /* 0x04 */
 	void *romTextureEnd; /* 0x08 */
 	void *romAssetIndexStart; /* 0x0C */
@@ -179,7 +179,7 @@ extern bool func_8002ECD4(u16, u16, u16);
 extern bool func_8002F114(u16, u8);
 extern bool func_8002F1E0(u16 index, u8 r, u8 g, u8 b, u8 a, s16 arg5);
 extern bool func_8002F2FC(u16, u16); 
-extern bool setSpriteDirection(u16, u8);                    
+extern bool setSpriteDirection(u16, u8);   
 extern void func_8002F6F0();    
 extern void func_8002F730();               
 extern void func_8002F770(s16); 
@@ -203,6 +203,7 @@ extern bool func_800302E4(u16, u8);
 extern u16 func_800305CC(u16 index, f32, f32, u16);
 extern bool func_800309B4(u16, f32, f32);     
 extern u16 func_80030BA0(u16* ptr, u16 offset);  
+extern Vec3f* func_80030EAC(Vec3f*, u16, f32, f32);                  
 extern Vec3f* func_800315A0(Vec3f*, u16 index);    
 extern bool func_80031380(u16);   
 extern bool func_80031830(u16, u32, u8);        

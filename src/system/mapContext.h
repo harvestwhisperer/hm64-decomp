@@ -211,8 +211,8 @@ typedef struct {
 	Vec3f unk_1C;
 	Vec3f unk_28;
 	Vec3f unk_34; 
+	u16 mainMapIndex;
 	u16 mapIndex;
-	u16 unk_42;
 	u8 unk_44;
 	u8 unk_45;
 	u8 unk_46;

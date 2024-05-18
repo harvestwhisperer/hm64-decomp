@@ -16,8 +16,9 @@ extern RenderedSprite renderedSprites[MAX_RENDERED_SPRITES];
 extern Shadow shadowSpritesInfo[3];
 
 // forward declaration
-void func_800326C0(u16);
+Vec3f* func_800313FC(Vec3f*, u16, f32, f32);  
 u8 func_80031ED0(RenderedSprite*, u16, f32, f32, u16, u16);
+void func_800326C0(u16);
 
 //INCLUDE_ASM(const s32, "system/renderedSprites", initializeNpcSpriteStructs);
 
@@ -94,7 +95,51 @@ bool func_8002DDDC(u16 npcIndex, void* arg1, void* arg2, void* arg3, void* arg4,
     return result;
 }
 
-INCLUDE_ASM(const s32, "system/renderedSprites", func_8002DEE8);
+//INCLUDE_ASM(const s32, "system/renderedSprites", func_8002DEE8);
+
+bool func_8002DEE8(u16 spriteIndex, u16 globalSpriteIndex, u16 spriteOffset, void* vaddrTexture1, void* vaddrTexture2, 
+    void* vaddrPalette, void* vaddrUnknownAsset, void* vaddrTextureToPaletteLookup, void* vaddrSpritesheetIndex) {
+
+    bool set = 0;
+    
+    if (spriteIndex < MAX_RENDERED_SPRITES) {
+
+        if (!(renderedSprites[spriteIndex].flags & 1)) {
+
+            renderedSprites[spriteIndex].flags = 1;
+
+            renderedSprites[spriteIndex].globalSpriteIndex = globalSpriteIndex;
+            renderedSprites[spriteIndex].spriteOffset = spriteOffset;
+
+            renderedSprites[spriteIndex].vaddrTexture1 = vaddrTexture1;
+            renderedSprites[spriteIndex].vaddrTexture2 = vaddrTexture2;
+            renderedSprites[spriteIndex].vaddrPalette = vaddrPalette;
+            renderedSprites[spriteIndex].vaddrUnknownAsset = vaddrUnknownAsset;
+            renderedSprites[spriteIndex].vaddrSpritesheetIndex = vaddrSpritesheetIndex;
+            renderedSprites[spriteIndex].vaddrTextureToPaletteLookup = vaddrTextureToPaletteLookup;
+
+            renderedSprites[spriteIndex].startingCoordinates.x = 0;
+            renderedSprites[spriteIndex].startingCoordinates.y = 0;
+            renderedSprites[spriteIndex].startingCoordinates.z = 0;
+
+            renderedSprites[spriteIndex].currentCoordinates.x = 0;
+            renderedSprites[spriteIndex].currentCoordinates.y = 0;
+            renderedSprites[spriteIndex].currentCoordinates.z = 0;
+
+            renderedSprites[spriteIndex].unk_4C = 0;
+
+            renderedSprites[spriteIndex].unk_58 = 0xFFFF;
+
+            renderedSprites[spriteIndex].unk_64 = 0;
+        
+            set = 1;
+            
+        }
+    }
+
+    return set;
+    
+}
 
 //INCLUDE_ASM(const s32, "system/renderedSprites", func_8002E024);
 
@@ -264,14 +309,14 @@ bool func_8002E284(u16 index, u16 characterIndex, u8 flag) {
 
             func_8002F014(index, D_802373F8.r, D_802373F8.g, D_802373F8.b, D_802373F8.a);
 
-            if (!(func_80036A84(gMapModelContext[gMainMapIndex].mapIndex))) {
-
+            if (!(func_80036A84(gMapModelContext[gMainMapIndex].mainMapIndex))) {
+ 
                 func_8002F1E0(index, 
-                    mainMap[gMapModelContext[gMainMapIndex].mapIndex].mapStruct8.defaultRgba.r, 
-                    mainMap[gMapModelContext[gMainMapIndex].mapIndex].mapStruct8.defaultRgba.g, 
-                    mainMap[gMapModelContext[gMainMapIndex].mapIndex].mapStruct8.defaultRgba.b, 
-                    mainMap[gMapModelContext[gMainMapIndex].mapIndex].mapStruct8.defaultRgba.a, 
-                    mainMap[gMapModelContext[gMainMapIndex].mapIndex].mapStruct9.unk_8);
+                    mainMap[gMapModelContext[gMainMapIndex].mainMapIndex].mapStruct8.defaultRgba.r, 
+                    mainMap[gMapModelContext[gMainMapIndex].mainMapIndex].mapStruct8.defaultRgba.g, 
+                    mainMap[gMapModelContext[gMainMapIndex].mainMapIndex].mapStruct8.defaultRgba.b, 
+                    mainMap[gMapModelContext[gMainMapIndex].mainMapIndex].mapStruct8.defaultRgba.a, 
+                    mainMap[gMapModelContext[gMainMapIndex].mainMapIndex].mapStruct9.unk_8);
                 
             }
             
@@ -386,7 +431,24 @@ bool func_8002EEA4(u16 mapIndex) {
     return result;
 }
 
-INCLUDE_ASM(const s32, "system/renderedSprites", func_8002EEE4);
+//INCLUDE_ASM(const s32, "system/renderedSprites", func_8002EEE4);
+
+bool func_8002EEE4(u16 spriteIndex, f32 arg1, f32 arg2, f32 arg3) {
+
+    bool set = 0;
+
+    if (spriteIndex < MAX_RENDERED_SPRITES) {
+
+        if ((renderedSprites[spriteIndex].flags & 1) && (renderedSprites[spriteIndex].flags & 4)) {
+            func_8002BD0C(renderedSprites[spriteIndex].globalSpriteIndex, arg1, arg2, arg3);
+            set = 1;
+        }
+        
+    }
+    
+    return set;
+
+}
 
 //INCLUDE_ASM(const s32, "system/renderedSprites", func_8002EF7C);
 
@@ -1116,7 +1178,7 @@ bool func_800308E0(u16 spriteIndex, f32 arg1, f32 arg2) {
     if (spriteIndex < MAX_RENDERED_SPRITES) {
 
         if (renderedSprites[spriteIndex].flags & 1 && !(renderedSprites[spriteIndex].flags & 0x40)) {
-            result = func_80036318(gMapModelContext[gMainMapIndex].mapIndex, renderedSprites[spriteIndex].startingCoordinates.x + arg1, renderedSprites[spriteIndex].startingCoordinates.z + arg2);
+            result = func_80036318(gMapModelContext[gMainMapIndex].mainMapIndex, renderedSprites[spriteIndex].startingCoordinates.x + arg1, renderedSprites[spriteIndex].startingCoordinates.z + arg2);
         }
 
     }
@@ -1125,29 +1187,246 @@ bool func_800308E0(u16 spriteIndex, f32 arg1, f32 arg2) {
     
 }
 
-INCLUDE_ASM(const s32, "system/renderedSprites", func_800309B4);
+//INCLUDE_ASM(const s32, "system/renderedSprites", func_800309B4);
 
-INCLUDE_ASM(const s32, "system/renderedSprites", func_80030B24);
+u8 func_800309B4(u16 spriteIndex, f32 arg1, f32 arg2) {
+    
+    Vec3f vec1;
+    Vec3f vec2;
+    Vec3f vec3;
+
+    bool result = 0;
+
+    if ((spriteIndex < MAX_RENDERED_SPRITES)) {
+
+        if ((renderedSprites[spriteIndex].flags & 1)) {
+            
+            if (!(renderedSprites[spriteIndex].flags & 0x40) && !(renderedSprites[spriteIndex].flags & 0x100)) {
+
+                vec1.x = arg1;
+                vec1.y = 0;
+                vec1.z = arg2;
+
+                vec3.x = 0;
+                vec3.y = func_80028820((renderedSprites[spriteIndex].direction + func_8003C1A4(gMainMapIndex)) % 8);
+                vec3.z = 0;
+                
+                func_80027950(vec1, &vec2, vec3);
+
+                result = func_80036318(gMapModelContext[gMainMapIndex].mainMapIndex, renderedSprites[spriteIndex].startingCoordinates.x + vec2.x, renderedSprites[spriteIndex].startingCoordinates.z + vec2.z);
+                
+            }
+        }
+        
+    } 
+    
+    return result;
+    
+}
+
+//INCLUDE_ASM(const s32, "system/renderedSprites", func_80030B24);
+
+// unused
+u16 func_80030B24(u16 spriteIndex, u16 offset) {
+
+    u16 index = 0xFFFF;
+
+    if (spriteIndex < MAX_RENDERED_SPRITES) {
+        if (renderedSprites[spriteIndex].flags & 1) {
+            index = characterSprites[renderedSprites[spriteIndex].characterIndex].vaddr[offset] & 0x1FFF;
+        }
+    }
+    
+    return index;
+    
+}
 
 //INCLUDE_ASM(const s32, "system/renderedSprites", func_80030BA0);
 
-u16 func_80030BA0(u16* ptr, u16 offset) {
-    return *(ptr + offset) & 0x1FFF;
+u16 func_80030BA0(u16* vaddr, u16 offset) {
+    return vaddr[offset] & 0x1FFF;
 }
 
-INCLUDE_ASM(const s32, "system/renderedSprites", func_80030BB8);
+//INCLUDE_ASM(const s32, "system/renderedSprites", func_80030BB8);
 
-INCLUDE_ASM(const s32, "system/renderedSprites", func_80030C34);
+// unused
+u16 func_80030BB8(u16 spriteIndex, u16 offset) {
 
-INCLUDE_ASM(const s32, "system/renderedSprites", func_80030CB0);
+    u16 index = 0xFFFF;
 
-INCLUDE_ASM(const s32, "system/renderedSprites", func_80030DB0);
+    if (spriteIndex < MAX_RENDERED_SPRITES) {
+        if (renderedSprites[spriteIndex].flags & 1) {
+            index = characterSprites[renderedSprites[spriteIndex].characterIndex].vaddr[offset] & 0x6000;
+        }
+    }
+    
+    return index;
+    
+}
 
-INCLUDE_ASM(const s32, "system/renderedSprites", func_80030EAC);
+//INCLUDE_ASM(const s32, "system/renderedSprites", func_80030C34);
 
-INCLUDE_ASM(const s32, "system/renderedSprites", func_80031050);
+// unused
+u16 func_80030C34(u16 spriteIndex, u16 offset) {
 
-INCLUDE_ASM(const s32, "system/renderedSprites", func_800311E0);
+    u16 index = 0xFFFF;
+
+    if (spriteIndex < MAX_RENDERED_SPRITES) {
+        if (renderedSprites[spriteIndex].flags & 1) {
+            index = characterSprites[renderedSprites[spriteIndex].characterIndex].vaddr[offset] & 0x8000;
+        }
+    }
+    
+    return index;
+    
+}
+
+//INCLUDE_ASM(const s32, "system/renderedSprites", func_80030CB0);
+
+// unused
+u16 func_80030CB0(u16 spriteIndex, f32 arg1, f32 arg2) {
+
+    Vec3f padding[4];
+    
+    Vec3f vec;
+
+    u16 index = 0xFFFF;
+
+    if (spriteIndex < MAX_RENDERED_SPRITES) {
+        
+        if ((renderedSprites[spriteIndex].flags & 1) && !(renderedSprites[spriteIndex].flags & 0x40) && !(renderedSprites[spriteIndex].flags & 0x100)) {
+            
+            func_80030EAC(&vec, spriteIndex, arg1, arg2);
+
+            if (vec.y != 65535.0f) {
+                index = func_80036880(gMapModelContext[gMainMapIndex].mainMapIndex, vec.x, vec.z);
+            }
+            
+        }
+    }
+    
+    return index;
+
+}
+
+//INCLUDE_ASM(const s32, "system/renderedSprites", func_80030DB0);
+
+bool func_80030DB0(u16 spriteIndex, f32 arg1, f32 arg2, u16 arg3) {
+
+    Vec3f padding[4];
+    Vec3f vec;
+    
+    if ((spriteIndex < MAX_RENDERED_SPRITES) && (renderedSprites[spriteIndex].flags & 1) && !(renderedSprites[spriteIndex].flags & 0x40) && !(renderedSprites[spriteIndex].flags & 0x100)) {
+            
+        func_80030EAC(&vec, spriteIndex, arg1, arg2);
+        
+        if (vec.y != 65535.0f) {
+            func_80036980(gMapModelContext[gMainMapIndex].mainMapIndex, arg3, vec.x, vec.z);
+        }
+        
+    }
+    
+    return 0;
+
+}
+
+//INCLUDE_ASM(const s32, "system/renderedSprites", func_80030EAC);
+
+Vec3f* func_80030EAC(Vec3f* arg0, u16 spriteIndex, f32 arg2, f32 arg3) {
+
+    Vec3f vec;
+    Vec3f vec2;
+    Vec3f vec3;
+    Vec3f vec4;
+
+    vec4.x = 0.0f;
+    vec4.y = 65535.0f;
+    vec4.z = 0.0f;
+
+    if (spriteIndex < MAX_RENDERED_SPRITES) {
+
+        if ((renderedSprites[spriteIndex].flags & 1) && !(renderedSprites[spriteIndex].flags & 0x40) && !(renderedSprites[spriteIndex].flags & 0x100)) {
+
+            vec.x = arg2;
+            vec.y = 0;
+            vec.z = arg3;
+
+            vec3.x = 0;
+            vec3.y = func_80028820((renderedSprites[spriteIndex].direction + func_8003C1A4(gMainMapIndex)) % 8);
+            vec3.z = 0;
+
+            func_80027950(vec, &vec2, vec3);
+
+            func_800366F4(&vec4, gMapModelContext[gMainMapIndex].mainMapIndex, renderedSprites[spriteIndex].startingCoordinates.x + vec2.x, renderedSprites[spriteIndex].startingCoordinates.z + vec2.z);
+            
+        }
+        
+    }
+
+    *arg0 = vec4;
+    
+    return arg0;
+    
+}
+
+
+//INCLUDE_ASM(const s32, "system/renderedSprites", func_80031050);
+
+u16 func_80031050(u16 spriteIndex, f32 arg1, f32 arg2) {
+
+    Vec3f vec;
+    Vec3f vec2;
+    Vec3f vec3;
+    Vec3f vec4;
+    
+    u16 index = 0xFFFF;
+
+    if (spriteIndex < MAX_RENDERED_SPRITES) {
+
+        if ((renderedSprites[spriteIndex].flags & 1) && !(renderedSprites[spriteIndex].flags & 0x40) && !(renderedSprites[spriteIndex].flags & 0x100)) {
+
+            func_800313FC(&vec4, spriteIndex, arg1, arg2);
+
+            if (vec4.y != 65535.0f) {   
+                index = func_80037254(gMapModelContext[gMainMapIndex].mainMapIndex, vec4.x, vec4.z);
+            }
+        }
+    
+    }
+
+    return index;
+    
+}
+
+//INCLUDE_ASM(const s32, "system/renderedSprites", func_800311E0);
+
+bool func_800311E0(u16 spriteIndex, f32 arg1, f32 arg2, u16 arg3) {
+
+    Vec3f padding[4];
+    
+    Vec3f vec;
+    
+    bool set = 0;
+
+     if (spriteIndex < MAX_RENDERED_SPRITES) {
+        
+        if ((renderedSprites[spriteIndex].flags & 1) && !(renderedSprites[spriteIndex].flags & 0x40) && !(renderedSprites[spriteIndex].flags & 0x100)) {
+
+            func_800313FC(&vec, spriteIndex, arg1, arg2);
+
+            if (vec.y != 65535.0f) {
+
+                func_80038A2C(gMapModelContext[gMainMapIndex].mainMapIndex, arg3, vec.x, vec.z);
+                set = 1;
+            }
+            
+            
+        }
+     }
+    
+    return set;
+    
+}
 
 // get audio related flag from sprite
 //INCLUDE_ASM(const s32, "system/renderedSprites", func_80031380);
@@ -1168,7 +1447,44 @@ bool func_80031380(u16 spriteIndex) {
 
 }
 
-INCLUDE_ASM(const s32, "system/renderedSprites", func_800313FC);
+//INCLUDE_ASM(const s32, "system/renderedSprites", func_800313FC);
+
+Vec3f* func_800313FC(Vec3f* arg0, u16 spriteIndex, f32 arg2, f32 arg3) {
+
+    Vec3f vec;
+    Vec3f vec2;
+    Vec3f vec3;
+    Vec3f vec4;
+
+    vec4.x = 0.0f;
+    vec4.y = 65535.0f;
+    vec4.z = 0.0f;
+
+    if (spriteIndex < MAX_RENDERED_SPRITES) {
+
+        if ((renderedSprites[spriteIndex].flags & 1) && !(renderedSprites[spriteIndex].flags & 0x40) && !(renderedSprites[spriteIndex].flags & 0x100)) {
+
+            vec.x = arg2;
+            vec.y = 0;
+            vec.z = arg3;
+
+            vec3.x = 0;
+            vec3.y = func_80028820((renderedSprites[spriteIndex].direction + func_8003C1A4(gMainMapIndex)) % 8);
+            vec3.z = 0;
+
+            func_80027950(vec, &vec2, vec3);
+
+            func_80036610(&vec4, gMapModelContext[gMainMapIndex].mainMapIndex, renderedSprites[spriteIndex].startingCoordinates.x + vec2.x, renderedSprites[spriteIndex].startingCoordinates.z + vec2.z);
+            
+        }
+        
+    }
+
+    *arg0 = vec4;
+    
+    return arg0;
+    
+}
 
 //INCLUDE_ASM(const s32, "system/renderedSprites", func_800315A0);
 
@@ -1185,7 +1501,7 @@ Vec3f* func_800315A0(Vec3f* arg0, u16 index) {
     
     if (index < MAX_RENDERED_SPRITES) {
         if ((renderedSprites[index].flags & 1) && !(renderedSprites[index].flags & 0x40) && !(renderedSprites[index].flags & 0x100)) {
-            func_80036610(&vec, gMapModelContext[gMainMapIndex].mapIndex, renderedSprites[index].startingCoordinates.x, renderedSprites[index].startingCoordinates.z);
+            func_80036610(&vec, gMapModelContext[gMainMapIndex].mainMapIndex, renderedSprites[index].startingCoordinates.x, renderedSprites[index].startingCoordinates.z);
         } 
     }
 
@@ -1207,14 +1523,52 @@ Vec3f* func_800315A0(Vec3f* arg0, u16 index) {
     
 //     if (index < MAX_RENDERED_SPRITES) {
 //         if ((renderedSprites[index].flags & 1) && !(renderedSprites[index].flags & 0x40) && !(renderedSprites[index].flags & 0x100)) {
-//             func_80036610(&vec, gMapModelContext[gMainMapIndex].mapIndex, renderedSprites[index].startingCoordinates.x, renderedSprites[index].startingCoordinates.z);
+//             func_80036610(&vec, gMapModelContext[gMainMapIndex].mainMapIndex, renderedSprites[index].startingCoordinates.x, renderedSprites[index].startingCoordinates.z);
 //         } 
 //     }
  
 //     return vec;
 // }
 
-INCLUDE_ASM(const s32, "system/renderedSprites", func_8003168C);
+//INCLUDE_ASM(const s32, "system/renderedSprites", func_8003168C);
+
+Vec3f* func_8003168C(Vec3f* arg0, u16 spriteIndex, f32 arg2, f32 arg3) {
+
+    Vec3f vec;
+    Vec3f vec2;
+    Vec3f vec3;
+    Vec3f vec4;
+
+    vec4.x = 0.0f;
+    vec4.y = 65535.0f;
+    vec4.z = 0.0f;
+
+    if (spriteIndex < MAX_RENDERED_SPRITES) {
+
+        if ((renderedSprites[spriteIndex].flags & 1) && !(renderedSprites[spriteIndex].flags & 0x40) && !(renderedSprites[spriteIndex].flags & 0x100)) {
+
+            vec.x = arg2;
+            vec.y = 0;
+            vec.z = arg3;
+
+            vec3.x = 0;
+            vec3.y = func_80028820((renderedSprites[spriteIndex].direction + func_8003C1A4(gMainMapIndex)) % 8);
+            vec3.z = 0;
+
+            func_80027950(vec, &vec2, vec3);
+            func_80036610(&vec4, gMapModelContext[gMainMapIndex].mainMapIndex, renderedSprites[spriteIndex].startingCoordinates.x, renderedSprites[spriteIndex].startingCoordinates.z);
+            
+            vec4.x += vec2.x;
+            vec4.z += vec2.z;
+        }
+        
+    }
+
+    *arg0 = vec4;
+    
+    return arg0;
+    
+}
 
 //INCLUDE_ASM(const s32, "system/renderedSprites", func_80031830);
 
@@ -1296,4 +1650,5 @@ INCLUDE_ASM(const s32, "system/renderedSprites", func_80032330);
 
 INCLUDE_ASM(const s32, "system/renderedSprites", func_800326C0);
 
+// main loop function
 INCLUDE_ASM(const s32, "system/renderedSprites", func_80033058);

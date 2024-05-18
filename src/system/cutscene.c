@@ -127,12 +127,12 @@ bool func_80046AB0(u16 index) {
         }
 
         // global sprite flags
-        if (cutsceneMaps[index].flags & 8) {
+        if (cutsceneMaps[index].flags & CHARACTER_SPRITE_ASSET) {
             func_8002FA2C(cutsceneMaps[index].spriteIndex);
         }
 
         // tiles/map
-        if (cutsceneMaps[index].flags & 0x10) {
+        if (cutsceneMaps[index].flags & MAP_ASSET) {
             func_8003C504(cutsceneMaps[index].spriteIndex);
         }
         
@@ -1319,7 +1319,7 @@ void func_8004B0E8(u16 index) {
     }
 
     if (cutsceneMaps[index].flags & 0x10) {
-        if (func_80036A84(gMapModelContext[cutsceneMaps[index].spriteIndex].mapIndex)) {
+        if (func_80036A84(gMapModelContext[cutsceneMaps[index].spriteIndex].mainMapIndex)) {
             cutsceneMaps[index].cutscenePointer += 2;
         } else {
             cutsceneMaps[index].unk_66 = 1;
