@@ -57,7 +57,7 @@ void mainGameLoopCallback(void) {
 
     }
 
-    // set additional info if needed for cutscene
+    // set additional info if needed for cutscene/end cutscene
     func_800A8F74();
 
     // check buttons pressed in frame

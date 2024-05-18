@@ -20,9 +20,10 @@ options:
   symbol_addrs_path: symbol_addrs.txt
   generated_c_preamble: "#include \"common.h\"\n"
   migrate_rodata_to_functions: true
-  # extensions_path: tools/splat_ext
   libultra_symbols: True
   gfx_ucode: f3dex2
+  # disassemble_all: true
+  # extensions_path: tools/splat_ext
   
 segments:
   - name: header

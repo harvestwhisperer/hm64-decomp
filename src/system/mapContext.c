@@ -45,7 +45,7 @@ void initializeMapContext(void) {
         
         gMapModelContext[i].flags = 0;
         
-        gMapModelContext[i].mapIndex = 0;
+        gMapModelContext[i].mainMapIndex = 0;
         
         gMapModelContext[i].unk_4.x = 0;
         gMapModelContext[i].unk_4.y = 0;
@@ -105,7 +105,7 @@ bool func_8003BA44(u16 index, u16 mapIndex, u32 *modelDataIndex) {
         
         result = 1;
         
-        gMapModelContext[index].mapIndex = mapIndex;
+        gMapModelContext[index].mainMapIndex = mapIndex;
         
         gMapModelContext[index].modelDataIndex = modelDataIndex;
         
@@ -150,16 +150,16 @@ bool func_8003BB14(u16 index, u16 mapIndex) {
         func_8003BC50(0, mapIndex);
         
         // set vec3fs on mapStruct8
-        func_8003423C(gMapModelContext[index].mapIndex, 0.0f, 0.0f, 0.0f);
-        func_80034298(gMapModelContext[index].mapIndex, 1.0f, 1.0f, 1.0f);
-        func_800342F4(gMapModelContext[index].mapIndex, 45.0f, 0.0f, 0.0f);
+        func_8003423C(gMapModelContext[index].mainMapIndex, 0.0f, 0.0f, 0.0f);
+        func_80034298(gMapModelContext[index].mainMapIndex, 1.0f, 1.0f, 1.0f);
+        func_800342F4(gMapModelContext[index].mainMapIndex, 45.0f, 0.0f, 0.0f);
         
         gMapModelContext[index].rotation = 0;
         
         func_8003BDA4(0, 0.0f, 0.0f, 0.0f);
         func_8003C084(0, 0);
         func_8003C1E0(0, 0.0f, 0.0f, 0.0f, 0, 0);
-        func_80034350(gMapModelContext[index].mapIndex, 0, 0, 0, 0);
+        func_80034350(gMapModelContext[index].mainMapIndex, 0, 0, 0, 0);
         
         result = 1; 
 
@@ -192,7 +192,7 @@ bool func_8003BC50(u16 mainMapIndex, u16 levelMapIndex) {
  
     if (mainMapIndex == 0 && gMapModelContext[mainMapIndex].flags & 1) {
         
-        gMapModelContext[mainMapIndex].unk_42 = levelMapIndex;
+        gMapModelContext[mainMapIndex].mapIndex = levelMapIndex;
         
         nuPiReadRom(gMapModelAddresses[levelMapIndex].romStart, gMapModelContext[mainMapIndex].modelDataIndex, gMapModelAddresses[levelMapIndex].romEnd - gMapModelAddresses[levelMapIndex].romStart);
  
@@ -209,7 +209,7 @@ bool func_8003BC50(u16 mainMapIndex, u16 levelMapIndex) {
         
         gMapModelContext[mainMapIndex].flags |= 2;
                 
-        func_80033A90(gMapModelContext[mainMapIndex].mapIndex, 
+        func_80033A90(gMapModelContext[mainMapIndex].mainMapIndex, 
             offset1, 
             offset2, 
             offset3, 
@@ -284,7 +284,7 @@ bool func_8003BE98(u16 index, u8 r, u8 g, u8 b, u8 a) {
     bool result = 0;
     
     if (index == 0 &&  (gMapModelContext[index].flags & 1) && (gMapModelContext[index].flags & 2)) {
-        func_80034350(gMapModelContext[index].mapIndex, r, g, b, a);
+        func_80034350(gMapModelContext[index].mainMapIndex, r, g, b, a);
         D_802373F8.r = r;
         D_802373F8.g = g;
         D_802373F8.b = b;
@@ -302,7 +302,7 @@ bool func_8003BF7C(u16 index, u8 r, u8 g, u8 b, u8 a, s16 arg5) {
     bool result = 0;
     
     if (index == 0 &&  (gMapModelContext[index].flags & 1) && (gMapModelContext[index].flags & 2)) {
-        func_80034738(gMapModelContext[index].mapIndex, r, g, b, a, arg5);
+        func_80034738(gMapModelContext[index].mainMapIndex, r, g, b, a, arg5);
         D_8013D248.r = r;
         D_8013D248.g = g;
         D_8013D248.b = b;
@@ -336,7 +336,7 @@ bool func_8003C084(u16 index, u8 arg1) {
             gMapModelContext[index].rotation = arg1;
             tempf = ptr[arg1];
         
-            func_800342F4(gMapModelContext[index].mapIndex, 45.0f, tempf, 0);
+            func_800342F4(gMapModelContext[index].mainMapIndex, 45.0f, tempf, 0);
             func_80028EB8(45.0f, tempf, 0);
          
             result = 1;
@@ -469,7 +469,7 @@ bool func_8003C4B0(u16 index) {
     bool result = 0;
 
     if (index == 0 && (gMapModelContext[index].flags & 1)) {
-        func_80034090(gMapModelContext[index].mapIndex);
+        func_80034090(gMapModelContext[index].mainMapIndex);
         result = 1;
         gMapModelContext[index].flags = 0;
     }
@@ -485,7 +485,7 @@ bool func_8003C504(u16 index) {
     bool result = 0;
 
     if (index == 0 && (gMapModelContext[index].flags & 1) && (gMapModelContext[index].flags & 4)) {
-        func_80034090(gMapModelContext[index].mapIndex);
+        func_80034090(gMapModelContext[index].mainMapIndex);
         result = 1;
         gMapModelContext[index].flags &= ~(2 | 4);
     }
@@ -582,17 +582,17 @@ void func_8003C6E4(void) {
 
         if ((gMapModelContext[i].flags & 1) && (gMapModelContext[i].flags & 4)) {
             
-            func_80038810(gMapModelContext[i].mapIndex);
+            func_80038810(gMapModelContext[i].mainMapIndex);
             func_8003C8D4(&gMapModelContext[i]);
             
             if (gMapModelContext[i].flags & 0x18) {
                 func_8003CB3C(i);
             }
 
-            D_802373F8.r = mainMap[gMapModelContext[i].mapIndex].mapStruct8.groundRgba.r;
-            D_802373F8.g = mainMap[gMapModelContext[i].mapIndex].mapStruct8.groundRgba.g;
-            D_802373F8.b = mainMap[gMapModelContext[i].mapIndex].mapStruct8.groundRgba.b;
-            D_802373F8.a = mainMap[gMapModelContext[i].mapIndex].mapStruct8.groundRgba.a;
+            D_802373F8.r = mainMap[gMapModelContext[i].mainMapIndex].mapStruct8.groundRgba.r;
+            D_802373F8.g = mainMap[gMapModelContext[i].mainMapIndex].mapStruct8.groundRgba.g;
+            D_802373F8.b = mainMap[gMapModelContext[i].mainMapIndex].mapStruct8.groundRgba.b;
+            D_802373F8.a = mainMap[gMapModelContext[i].mainMapIndex].mapStruct8.groundRgba.a;
         }
         
     }
@@ -616,24 +616,24 @@ void func_8003C8D4(LevelMapContext* mapContext) {
     f32 temp1;
     f32 temp2;
     
-    x = mapContext->unk_4.x + ((mainMap[mapContext->mapIndex].mapStruct1.unk_A * mainMap[mapContext->mapIndex].mapStruct1.unk_8) / 2);
-    param1 = x / mainMap[mapContext->mapIndex].mapStruct1.unk_8;
+    x = mapContext->unk_4.x + ((mainMap[mapContext->mainMapIndex].mapStruct1.unk_A * mainMap[mapContext->mainMapIndex].mapStruct1.unk_8) / 2);
+    param1 = x / mainMap[mapContext->mainMapIndex].mapStruct1.unk_8;
     
-    z = mapContext->unk_4.z + ((mainMap[mapContext->mapIndex].mapStruct1.unk_B * mainMap[mapContext->mapIndex].mapStruct1.unk_9) / 2);
+    z = mapContext->unk_4.z + ((mainMap[mapContext->mainMapIndex].mapStruct1.unk_B * mainMap[mapContext->mainMapIndex].mapStruct1.unk_9) / 2);
     
-    temp1 = param1 * mainMap[mapContext->mapIndex].mapStruct1.unk_8;
+    temp1 = param1 * mainMap[mapContext->mainMapIndex].mapStruct1.unk_8;
     
     param3 = x - temp1;
     
     y = mapContext->unk_4.y;
     
-    param2 = z / mainMap[mapContext->mapIndex].mapStruct1.unk_9;
+    param2 = z / mainMap[mapContext->mainMapIndex].mapStruct1.unk_9;
 
-    temp2 = param2 * mainMap[mapContext->mapIndex].mapStruct1.unk_9;
+    temp2 = param2 * mainMap[mapContext->mainMapIndex].mapStruct1.unk_9;
 
     param4 = z - temp2;
     
-    func_800343FC(mapContext->mapIndex, param1, param2, mapContext->unk_44, mapContext->unk_45, param3, y, param4, 1);
+    func_800343FC(mapContext->mainMapIndex, param1, param2, mapContext->unk_44, mapContext->unk_45, param3, y, param4, 1);
 
 }
 
@@ -642,10 +642,10 @@ void func_8003C8D4(LevelMapContext* mapContext) {
 void func_8003CB3C(u16 index) {
 
     if (gMapModelContext[index].flags & 8) {
-        func_800345E8(gMapModelContext[index].mapIndex, 0, -1.0f, 0);
+        func_800345E8(gMapModelContext[index].mainMapIndex, 0, -1.0f, 0);
         func_80028EF8(0, -1.0f, 0);
     } else {
-        func_800345E8(gMapModelContext[index].mapIndex, 0, 1.0f, 0);
+        func_800345E8(gMapModelContext[index].mainMapIndex, 0, 1.0f, 0);
         func_80028EF8(0, 1.0f, 0);
     }
 
