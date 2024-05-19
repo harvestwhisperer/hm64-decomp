@@ -7,10 +7,20 @@
 #define MAX_CHICKENS 12
 #define MAX_FARM_ANIMALS 8
 
+#define CHICK 1
+#define ADULT_CHICKEN 2
+
+#define CALF 1
+#define ADULT_COW 2
+#define INFANT_SHEEP 4
+#define ADULT_SHEEP 5
+#define SHEARED_SHEEP 6
+
+// 0x801C3BF0
 typedef struct {
 	u8 name[6];
 	Vec3f coordinates;
-	u16 unk_14;
+	u16 spriteIndex;
 	u8 location;
 	u8 unk_17;
 	u8 unk_18;
@@ -24,14 +34,13 @@ typedef struct {
 	u16 flags;
 } Chicken;
 
+// 0x80170280
 typedef struct {
 	u8 affection;
 	u8 name[6];
-	u32 unk_8;
-	u32 unk_C;
-	u32 unk_10;
+	Vec3f coordinates;
 	u32 unk_14;
-	u16 unk_18;
+	u16 spriteIndex;
 	u8 location;
 	u8 unk_1B;
 	u8 unk_1C;
@@ -41,7 +50,7 @@ typedef struct {
 	u8 condition;
 	u8 age;
 	u8 conditionCounter;
-	u8 existence;
+	u8 unk_23;
 	u8 unk_24;
 	u8 unk_25;
 	u8 unk_26;
@@ -53,6 +62,7 @@ typedef struct {
 	u16 flags;
 } FarmAnimal;
 
+// 0x801886B0
 typedef struct {
 	u8 affection; // 00
 	u8 name[6]; // 01-07
@@ -68,11 +78,12 @@ typedef struct {
 	u16 flags; // 1E
 } Dog;
 
+// 0x8016FDD0
 typedef struct {
 	u8 affection; // 00
 	u8 name[6]; // 01
 	Vec3f coordinates; // 08 
-	u16 unk_14; // 14
+	u16 spriteIndex; // 14
 	u8 location; // 16
 	u8 unk_17; // 17
 	u8 direction; // 18
@@ -95,12 +106,12 @@ typedef struct {
     u8 unk_5; 
 } AnimalLocations;
 
-// D_8016FB08
+// 0x8016FB08
 typedef struct {
     u32 unk_0; // 08
     u32 unk_4; // 0C
     u32 unk_8; // 10
-    u16 unk_C; // 14
+    u16 spriteIndex; // 14
     u8 unk_E; // 16, 0xB1E
     u8 unk_F; // 17
     u8 unk_10; // 18
@@ -164,7 +175,7 @@ extern void setHorseLocation(u8);
 
 extern UnknownAnimalStruct D_8016FB08[];
 extern Chicken gChickens[MAX_CHICKENS];
-extern FarmAnimal gFarmAnimals[];
+extern FarmAnimal gFarmAnimals[MAX_FARM_ANIMALS];
 extern u8 D_8016FBCC[1];
 extern u8 D_801886D4[6];
 // dead animal name for funeral

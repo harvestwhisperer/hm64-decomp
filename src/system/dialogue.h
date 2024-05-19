@@ -315,6 +315,7 @@ typedef struct {
 	UnknownDialogueStruct3 struct5; // 0x801C3F18
 } Dialogue;
 
+// 0x801806D0
 typedef struct {
 	void *romTextureStart;
 	void *romTextureEnd;

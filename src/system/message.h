@@ -94,6 +94,12 @@ typedef struct {
 	u16 unk_34;
 } DialogueSprite;
 
+typedef struct {
+    u16 unk_0;
+    u16 unk_2;
+    u16 unk_4;
+} DialogueBoxVolume;
+
 // 0x80188B70
 typedef struct {
     void *unk_0;
@@ -109,11 +115,13 @@ typedef struct {
     u8 unk_60;
     u8 unk_61;
     u16 unk_62;
-    u16 unk_64;
+    u16 unk_64; // passed as Volume struct
     u16 frameCounter; // 0x66
-    u16 unk_68;
-    u16 unk_6A;
-    Volume volume; // 0x6C
+    u16 unk_68; // counter
+    DialogueBoxVolume volume; // 0x6A
+    u32 unk_70;
+    u32 unk_74;
+    u32 unk_78;
     u16 unk_7C;
     u16 unk_7E;
     u16 unk_80;
@@ -124,7 +132,8 @@ typedef struct {
     u32 unk_8C;
     u8 unk_90;
     u8 unk_91;
-    u16 unk_92;
+    u8 unk_92;
+    u8 unk_93;
     u8 buttonSfxCounter; // 0x94
     u8 flag; // 0x95
     u8 margins; // 0x96
@@ -144,7 +153,7 @@ typedef struct {
 } DialogueBox;
 
 extern void func_8003D970();  
-extern bool func_8003DBE8(u16, s32);     
+extern bool func_8003DBE8(u16 dialogueBoxIndex, void* arg1);
 extern bool func_8003DD14(u16);                      
 extern void func_8003DDF8(u32, u32, u32, u32);     
 extern bool func_8003E77C(u16, u8, u8, u8, u8);        

@@ -526,7 +526,7 @@ INCLUDE_ASM(const s32, "player", func_800664C8);
 
 void func_80066F98(void) {
 
-    func_8002FA2C(horseInfo.unk_14);
+    func_8002FA2C(horseInfo.spriteIndex);
 
     horseInfo.flags &= ~4;
     horseInfo.flags |= 8;

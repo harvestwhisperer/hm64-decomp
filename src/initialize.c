@@ -56,6 +56,236 @@ extern u8 D_8020563B[4];
 extern u8 D_80237380[6];
 extern u8 D_80237418[3];
 
+extern u32 ranchSpringMap_ROM_START;
+extern u32 ranchSpringMap_ROM_END;
+extern u32 ranchSummerMap_ROM_START;
+extern u32 ranchSummerMap_ROM_END;
+extern u32 ranchFallMap_ROM_START;
+extern u32 ranchFallMap_ROM_END;
+extern u32 ranchWinterMap_ROM_START;
+extern u32 ranchWinterMap_ROM_END;
+extern u32 annsRoomMap_ROM_START;
+extern u32 annsRoomMap_ROM_END;
+extern u32 ranchBarnMap_ROM_START;
+extern u32 ranchBarnMap_ROM_END;
+extern u32 ranchStoreMap_ROM_START;
+extern u32 ranchStoreMap_ROM_END;
+extern u32 ranchHouseMap_ROM_START;
+extern u32 ranchHouseMap_ROM_END;
+
+extern u32 emptyMap1_ROM_START;
+extern u32 emptyMap1_ROM_END;
+
+extern u32 beachSpringMap_ROM_START;
+extern u32 beachSpringMap_ROM_END;
+extern u32 beachSummerMap_ROM_START;
+extern u32 beachSummerMap_ROM_END;
+extern u32 beachFallMap_ROM_START;
+extern u32 beachFallMap_ROM_END;
+extern u32 beachWinterMap_ROM_START;
+extern u32 beachWinterMap_ROM_END;
+
+extern u32 raceTrackSpringMap_ROM_START;
+extern u32 raceTrackSpringMap_ROM_END;
+extern u32 raceTrackSummerMap_ROM_START;
+extern u32 raceTrackSummerMap_ROM_END;
+extern u32 raceTrackFallMap_ROM_START;
+extern u32 raceTrackFallMap_ROM_END;
+extern u32 raceTrackWinterMap_ROM_START;
+extern u32 raceTrackWinterMap_ROM_END;
+
+extern u32 mountain1SpringMap_ROM_START;
+extern u32 mountain1SpringMap_ROM_END;
+extern u32 mountain1SummerMap_ROM_START;
+extern u32 mountain1SummerMap_ROM_END;
+extern u32 mountain1FallMap_ROM_START;
+extern u32 mountain1FallMap_ROM_END;
+extern u32 mountain1WinterMap_ROM_START;
+extern u32 mountain1WinterMap_ROM_END;
+
+extern u32 mountain2SpringMap_ROM_START;
+extern u32 mountain2SpringMap_ROM_END;
+extern u32 mountain2SummerMap_ROM_START;
+extern u32 mountain2SummerMap_ROM_END;
+extern u32 mountain2FallMap_ROM_START;
+extern u32 mountain2FallMap_ROM_END;
+extern u32 mountain2WinterMap_ROM_START;
+extern u32 mountain2WinterMap_ROM_END;
+
+extern u32 topOfMountain1SpringMap_ROM_START;
+extern u32 topOfMountain1SpringMap_ROM_END;
+extern u32 topOfMountain1SummerMap_ROM_START;
+extern u32 topOfMountain1SummerMap_ROM_END;
+extern u32 topOfMountain1FallMap_ROM_START;
+extern u32 topOfMountain1FallMap_ROM_END;
+extern u32 topOfMountain1WinterMap_ROM_START;
+extern u32 topOfMountain1WinterMap_ROM_END;
+
+extern u32 moonMountainSpringMap_ROM_START;
+extern u32 moonMountainSpringMap_ROM_END;
+extern u32 moonMountainSummerMap_ROM_START;
+extern u32 moonMountainSummerMap_ROM_END;
+extern u32 moonMountainFallMap_ROM_START;
+extern u32 moonMountainFallMap_ROM_END;
+extern u32 moonMountainWinterMap_ROM_START;
+extern u32 moonMountainWinterMap_ROM_END;
+
+extern u32 carpentersHutMap_ROM_START;
+extern u32 carpentersHutMap_ROM_END;
+
+extern u32 dumplingHouseMap_ROM_START;
+extern u32 dumplingHouseMap_ROM_END;
+
+extern u32 springSpringMap_ROM_START;
+extern u32 springSpringMap_ROM_END;
+extern u32 springSummerMap_ROM_START;
+extern u32 springSummerMap_ROM_END;
+extern u32 springFallMap_ROM_START;
+extern u32 springFallMap_ROM_END;
+extern u32 springWinterMap_ROM_START;
+extern u32 springWinterMap_ROM_END;
+
+extern u32 ellisRoomMap_ROM_START;
+extern u32 ellisRoomMap_ROM_END;
+
+extern u32 bakeryMap_ROM_START;
+extern u32 bakeryMap_ROM_END;
+
+extern u32 village1SpringMap_ROM_START;
+extern u32 village1SpringMap_ROM_END;
+extern u32 village1SummerMap_ROM_START;
+extern u32 village1SummerMap_ROM_END;
+extern u32 village1FallMap_ROM_START;
+extern u32 village1FallMap_ROM_END;
+extern u32 village1WinterMap_ROM_START;
+extern u32 village1WinterMap_ROM_END;
+
+extern u32 village2SpringMap_ROM_START;
+extern u32 village2SpringMap_ROM_END;
+extern u32 village2SummerMap_ROM_START;
+extern u32 village2SummerMap_ROM_END;
+extern u32 village2FallMap_ROM_START;
+extern u32 village2FallMap_ROM_END;
+extern u32 village2WinterMap_ROM_START;
+extern u32 village2WinterMap_ROM_END;
+
+extern u32 popurisRoomMap_ROM_START;
+extern u32 popurisRoomMap_ROM_END;
+
+extern u32 flowerShopMap_ROM_START;
+extern u32 flowerShopMap_ROM_END;
+
+extern u32 churchMap_ROM_START;
+extern u32 churchMap_ROM_END;
+
+extern u32 souvenirShopMap_ROM_START;
+extern u32 souvenirShopMap_ROM_END;
+
+extern u32 squareSpringMap_ROM_START;
+extern u32 squareSpringMap_ROM_END;
+extern u32 squareSummerMap_ROM_START;
+extern u32 squareSummerMap_ROM_END;
+extern u32 squareFallMap_ROM_START;
+extern u32 squareFallMap_ROM_END;
+extern u32 squareWinterMap_ROM_START;
+extern u32 squareWinterMap_ROM_END;
+
+extern u32 ricksShopMap_ROM_START;
+extern u32 ricksShopMap_ROM_END;
+
+extern u32 midwifesHouseMap_ROM_START;
+extern u32 midwifesHouseMap_ROM_END;
+
+extern u32 tavernMap_ROM_START;
+extern u32 tavernMap_ROM_END;
+
+extern u32 libraryMap_ROM_START;
+extern u32 libraryMap_ROM_END;
+
+extern u32 mariasRoomMap_ROM_START;
+extern u32 mariasRoomMap_ROM_END;
+
+extern u32 mayorsHouseMap_ROM_START;
+extern u32 mayorsHouseMap_ROM_END;
+
+extern u32 potionShopBackroomMap_ROM_START;
+extern u32 potionShopBackroomMap_ROM_END;
+
+extern u32 potionShopMap_ROM_START;
+extern u32 potionShopMap_ROM_END;
+
+extern u32 emptyMap2_ROM_START;
+extern u32 emptyMap2_ROM_END;
+
+extern u32 spriteCaveMap_ROM_START;
+extern u32 spriteCaveMap_ROM_END;
+
+extern u32 caveMap_ROM_START;
+extern u32 caveMap_ROM_END;
+
+extern u32 emptyMineMap_ROM_START;
+extern u32 emptyMineMap_ROM_END;
+
+extern u32 mineMap_ROM_START;
+extern u32 mineMap_ROM_END;
+
+extern u32 karensRoomMap_ROM_START;
+extern u32 karensRoomMap_ROM_END;
+
+extern u32 vineyardSpringMap_ROM_START;
+extern u32 vineyardSpringMap_ROM_END;
+extern u32 vineyardSummerMap_ROM_START;
+extern u32 vineyardSummerMap_ROM_END;
+extern u32 vineyardFallMap_ROM_START;
+extern u32 vineyardFallMap_ROM_END;
+extern u32 vineyardWinterMap_ROM_START;
+extern u32 vineyardWinterMap_ROM_END;
+
+extern u32 vineyardHouseMap_ROM_START;
+extern u32 vineyardHouseMap_ROM_END;
+
+extern u32 vineyardCellar1Map_ROM_START;
+extern u32 vineyardCellar1Map_ROM_END;
+
+extern u32 vineyardCellar2Map_ROM_START;
+extern u32 vineyardCellar2Map_ROM_END;
+
+extern u32 roadSpringMap_ROM_START;
+extern u32 roadSpringMap_ROM_END;
+extern u32 roadSummerMap_ROM_START;
+extern u32 roadSummerMap_ROM_END;
+extern u32 roadFallMap_ROM_START;
+extern u32 roadFallMap_ROM_END;
+extern u32 roadWinterMap_ROM_START;
+extern u32 roadWinterMap_ROM_END;
+
+extern u32 farmSpringMap_ROM_START;
+extern u32 farmSpringMap_ROM_END;
+extern u32 farmSummerMap_ROM_START;
+extern u32 farmSummerMap_ROM_END;
+extern u32 farmFallMap_ROM_START;
+extern u32 farmFallMap_ROM_END;
+extern u32 farmWinterMap_ROM_START;
+extern u32 farmWinterMap_ROM_END;
+
+extern u32 greenhouseMap_ROM_START;
+extern u32 greenhouseMap_ROM_END;
+
+extern u32 houseMap_ROM_START;
+extern u32 houseMap_ROM_END;
+
+extern u32 barnMap_ROM_START;
+extern u32 barnMap_ROM_END;
+
+extern u32 coopMap_ROM_START;
+extern u32 coopMap_ROM_END;
+
+extern u32 kitchenMap_ROM_START;
+extern u32 kitchenMap_ROM_END;
+
+extern u32 bathroomMap_ROM_START;
+extern u32 bathroomMap_ROM_END;
+
 // forward declaration
 bool func_80054734(void);
 
@@ -78,7 +308,7 @@ void func_8004E160(void) {
     
     registerMainLoopCallbacks();
     func_8004F768();
-    func_800527D4();
+    loadMapAddresses();
     func_80053088();
     func_80054550();
     func_8002F7C8(0, 0, 0, 0);
@@ -343,9 +573,9 @@ void initializeGameVariables(void) {
         gFarmAnimals[i].age = 0;
         gFarmAnimals[i].conditionCounter = 0;
          
-        gFarmAnimals[i].unk_8 = 0;
-        gFarmAnimals[i].unk_C = 0;
-        gFarmAnimals[i].unk_10 = 0;
+        gFarmAnimals[i].coordinates.x = 0;
+        gFarmAnimals[i].coordinates.y = 0;
+        gFarmAnimals[i].coordinates.z = 0;
          
         gFarmAnimals[i].flags = 0;
          
@@ -356,8 +586,7 @@ void initializeGameVariables(void) {
         gFarmAnimals[i].name[4] = 0;
         gFarmAnimals[i].name[5] = 0;
           
-        gFarmAnimals[i].existence = 0xFF;
-         
+        gFarmAnimals[i].unk_23 = 0xFF;
         gFarmAnimals[i].unk_24 = 0xFF;
         gFarmAnimals[i].unk_25 = 0xFF;
         gFarmAnimals[i].unk_26 = 0xFF;
@@ -688,208 +917,147 @@ void registerMainLoopCallbacks(void) {
 // sprites
 INCLUDE_ASM(const s32, "initialize", func_8004F768);
 
-INCLUDE_ASM(const s32, "initialize", func_800527D4);
+//INCLUDE_ASM(const s32, "initialize", loadMapAddresses);
 
-// have to add linker symbols
-/*
-void func_800527D4(void) {
+void loadMapAddresses(void) {
     
-    // ranch spring-winter
-    setMapModelAddresses(0, &D_800530, &D_80D9D0);
-    setMapModelAddresses(1, &D_80D9D0_2, &D_81AE30);
-    setMapModelAddresses(2, &D_81AE30_2, &D_828FC0);
-    setMapModelAddresses(3, &D_828FC0_2, &D_836420);
+    setMapModelAddresses(0, &ranchSpringMap_ROM_START, &ranchSpringMap_ROM_END);
+    setMapModelAddresses(1, &ranchSummerMap_ROM_START, &ranchSummerMap_ROM_END);
+    setMapModelAddresses(2, &ranchFallMap_ROM_START, &ranchFallMap_ROM_END);
+    setMapModelAddresses(3, &ranchWinterMap_ROM_START, &ranchWinterMap_ROM_END);
 
-    // ann's room
-    setMapModelAddresses(4, &D_836420_2, &D_83DC90);
+    setMapModelAddresses(4, &annsRoomMap_ROM_START, &annsRoomMap_ROM_END);
 
-    // ranch barn
-    setMapModelAddresses(5, &D_83DC90_2, &D_849700);
+    setMapModelAddresses(5, &ranchBarnMap_ROM_START, &ranchBarnMap_ROM_END);
+    setMapModelAddresses(6, &ranchStoreMap_ROM_START, &ranchStoreMap_ROM_END);
+    setMapModelAddresses(7, &ranchHouseMap_ROM_START, &ranchHouseMap_ROM_END);
 
-    // ranch store
-    setMapModelAddresses(6, &D_849700_2, &D_84F100);
-
-    // ranch house
-    setMapModelAddresses(7, &D_84F100_2, &D_856B80);
-
-    // empty
-    setMapModelAddresses(8, &D_856B80_2, &D_856B90);
+    setMapModelAddresses(8, &emptyMap1_ROM_START, &emptyMap1_ROM_END);
     
-    // beach spring-winter
-    setMapModelAddresses(9, &D_856B90_2, &D_85EE70);
-    setMapModelAddresses(0xA, &D_85EE70_2, &D_867150);
-    setMapModelAddresses(0xB, &D_867150_2, &D_86F430);
-    setMapModelAddresses(0xC, &D_86F430_2, &D_877710);
+    setMapModelAddresses(9, &beachSpringMap_ROM_START, &beachSpringMap_ROM_END);
+    setMapModelAddresses(0xA, &beachSummerMap_ROM_START, &beachSummerMap_ROM_END);
+    setMapModelAddresses(0xB, &beachFallMap_ROM_START, &beachFallMap_ROM_END);
+    setMapModelAddresses(0xC, &beachWinterMap_ROM_START, &beachWinterMap_ROM_END);
 
-    // race track spring, autumn, and winter
-    setMapModelAddresses(0xD, &D_877710_2, &D_87F510);
-    
+    setMapModelAddresses(0xD, &raceTrackSpringMap_ROM_START, &raceTrackSpringMap_ROM_END);
     // no race track summer: 0xE
     // empty 4 words in rom
+    setMapModelAddresses(0xF, &raceTrackFallMap_ROM_START, &raceTrackFallMap_ROM_END);
+    setMapModelAddresses(0x10, &raceTrackWinterMap_ROM_START, &raceTrackWinterMap_ROM_END);
 
-    setMapModelAddresses(0xF, &D_87F520_2, &D_887320);
-    setMapModelAddresses(0x10, &D_887320_2, &D_88F120);
+    setMapModelAddresses(0x11, &mountain1SpringMap_ROM_START, &mountain1SpringMap_ROM_END);
+    setMapModelAddresses(0x12, &mountain1SummerMap_ROM_START, &mountain1SummerMap_ROM_END);
+    setMapModelAddresses(0x13, &mountain1FallMap_ROM_START, &mountain1FallMap_ROM_END);
+    setMapModelAddresses(0x14, &mountain1WinterMap_ROM_START, &mountain1WinterMap_ROM_END);
 
-    // mountain 1 spring-winter 
-    setMapModelAddresses(0x11, &D_88F120_2, &D_8A6C20);
-    setMapModelAddresses(0x12, &D_8A6C20_2, &D_8BE720);
-    setMapModelAddresses(0x13, &D_8BE720_2, &D_8D6220);
-    setMapModelAddresses(0x14, &D_8D6220_2, &D_8ED8E0);
+    setMapModelAddresses(0x15, &mountain2SpringMap_ROM_START, &mountain2SpringMap_ROM_END);
+    setMapModelAddresses(0x16, &mountain2SummerMap_ROM_START, &mountain2SummerMap_ROM_END);
+    setMapModelAddresses(0x17, &mountain2FallMap_ROM_START, &mountain2FallMap_ROM_END);
+    setMapModelAddresses(0x18, &mountain2WinterMap_ROM_START, &mountain2WinterMap_ROM_END);
 
-    // mountain 2 spring-winter 
-    setMapModelAddresses(0x15, &D_8ED8E0_2, &D_905980);
-    setMapModelAddresses(0x16, &D_905980_2, &D_91D8A0);
-    setMapModelAddresses(0x17, &D_91D8A0_2, &D_9357C0);
-    setMapModelAddresses(0x18, &D_9357C0_2, &D_94D6E0);
+    setMapModelAddresses(0x19, &topOfMountain1SpringMap_ROM_START, &topOfMountain1SpringMap_ROM_END);
+    setMapModelAddresses(0x1A, &topOfMountain1SummerMap_ROM_START, &topOfMountain1SummerMap_ROM_END);
+    setMapModelAddresses(0x1B, &topOfMountain1FallMap_ROM_START, &topOfMountain1FallMap_ROM_END);
+    setMapModelAddresses(0x1C, &topOfMountain1WinterMap_ROM_START, &topOfMountain1WinterMap_ROM_END);
 
-    top of mountain 1 spring-winter
-    setMapModelAddresses(0x19, &D_94D6E0_2, &D_961BD0);
-    setMapModelAddresses(0x1A, &D_961BD0_2, &D_975E50);
-    setMapModelAddresses(0x1B, &D_975E50_2, &D_98A0D0);
-    setMapModelAddresses(0x1C, &D_98A0D0_2, &D_99F9C0);
+    setMapModelAddresses(0x1D, &moonMountainSpringMap_ROM_START, &moonMountainSpringMap_ROM_END);
+    setMapModelAddresses(0x1E, &moonMountainSummerMap_ROM_START, &moonMountainSummerMap_ROM_END);
+    setMapModelAddresses(0x1F, &moonMountainFallMap_ROM_START, &moonMountainFallMap_ROM_END);
+    setMapModelAddresses(0x20, &moonMountainWinterMap_ROM_START, &moonMountainWinterMap_ROM_END);
+
+    setMapModelAddresses(0x21, &carpentersHutMap_ROM_START, &carpentersHutMap_ROM_END);
     
-    // moon mountain spring-winter
-    setMapModelAddresses(0x1D, &D_99F9C0_2, &D_9B4530);
-    setMapModelAddresses(0x1E, &D_9B4530_2, &D_9C90A0);
-    setMapModelAddresses(0x1F, &D_9C90A0_2, &D_9DDC10);
-    setMapModelAddresses(0x20, &D_9DDC10_2, &D_9F2780);
+    setMapModelAddresses(0x22, &dumplingHouseMap_ROM_START, &dumplingHouseMap_ROM_END);
 
-    // carpenter's
-    setMapModelAddresses(0x21, &D_9F2780_2, &D_9FAA80);
+    setMapModelAddresses(0x23, &springSpringMap_ROM_START, &springSpringMap_ROM_END);
+    setMapModelAddresses(0x24, &springSummerMap_ROM_START, &springSummerMap_ROM_END);
+    setMapModelAddresses(0x25, &springFallMap_ROM_START, &springFallMap_ROM_END);
+    setMapModelAddresses(0x26, &springWinterMap_ROM_START, &springWinterMap_ROM_END);
+
+    setMapModelAddresses(0x27, &ellisRoomMap_ROM_START, &ellisRoomMap_ROM_END);
+
+    setMapModelAddresses(0x28, &bakeryMap_ROM_START, &bakeryMap_ROM_END);
+
+    setMapModelAddresses(0x29, &village1SpringMap_ROM_START, &village1SpringMap_ROM_END);
+    setMapModelAddresses(0x2A, &village1SummerMap_ROM_START, &village1SummerMap_ROM_END);
+    setMapModelAddresses(0x2B, &village1FallMap_ROM_START, &village1FallMap_ROM_END);
+    setMapModelAddresses(0x2C, &village1WinterMap_ROM_START, &village1WinterMap_ROM_END);
+
+    setMapModelAddresses(0x2D, &village2SpringMap_ROM_START, &village2SpringMap_ROM_END);
+    setMapModelAddresses(0x2E, &village2SummerMap_ROM_START, &village2SummerMap_ROM_END);
+    setMapModelAddresses(0x2F, &village2FallMap_ROM_START, &village2FallMap_ROM_END);
+    setMapModelAddresses(0x30, &village2WinterMap_ROM_START, &village2WinterMap_ROM_END);
+
+    setMapModelAddresses(0x31, &popurisRoomMap_ROM_START, &popurisRoomMap_ROM_END);
+
+    setMapModelAddresses(0x32, &flowerShopMap_ROM_START, &flowerShopMap_ROM_END);
+
+    setMapModelAddresses(0x33, &churchMap_ROM_START, &churchMap_ROM_END);
+
+    setMapModelAddresses(0x34, &souvenirShopMap_ROM_START, &souvenirShopMap_ROM_END);
+
+    setMapModelAddresses(0x35, &squareSpringMap_ROM_START, &squareSpringMap_ROM_END);
+    setMapModelAddresses(0x36, &squareSummerMap_ROM_START, &squareSummerMap_ROM_END);
+    setMapModelAddresses(0x37, &squareFallMap_ROM_START, &squareFallMap_ROM_END);
+    setMapModelAddresses(0x38, &squareWinterMap_ROM_START, &squareWinterMap_ROM_END);
+
+    setMapModelAddresses(0x39, &ricksShopMap_ROM_START, &ricksShopMap_ROM_END);
+
+    setMapModelAddresses(0x3A, &midwifesHouseMap_ROM_START, &midwifesHouseMap_ROM_END);
     
-    // dumpling house
-    setMapModelAddresses(0x22, &D_9FAA80_2, &D_A04C80);
-
-    // spring spring-winter
-    setMapModelAddresses(0x23, &D_A04C80_2, &D_A0CEC0);
-    setMapModelAddresses(0x24, &D_A0CEC0_2, &D_A14F10);
-    setMapModelAddresses(0x25, &D_A14F10_2, &D_A1CF60);
-    setMapModelAddresses(0x26, &D_A1CF60_2, &D_A24FB0);
-
-    // elli's room
-    setMapModelAddresses(0x27, &D_A24FB0_2, &D_A2C350);
-
-    // bakery
-    setMapModelAddresses(0x28, &D_A2C350_2, &D_A33460);
-
-    // village 1 spring-winter
-    setMapModelAddresses(0x29, &D_A33460_2, &D_A4C640);
-    setMapModelAddresses(0x2A, &D_A4C640_2, &D_A65820);
-    setMapModelAddresses(0x2B, &D_A65820_2, &D_A7F2B0);
-    setMapModelAddresses(0x2C, &D_A7F2B0_2, &D_A98210);
-
-    // village 2 spring-winter
-    setMapModelAddresses(0x2D, &D_A98210_2, &D_AAC2C0);
-    setMapModelAddresses(0x2E, &D_AAC2C0_2, &D_AC0370);
-    setMapModelAddresses(0x2F, &D_AC0370_2, &D_AD4420);
-    setMapModelAddresses(0x30, &D_AD4420_2, &D_AE84D0);
-
-    // popuri's room
-    setMapModelAddresses(0x31, &D_AE84D0_2, &D_AEF920);
-
-    // flower shop
-    setMapModelAddresses(0x32, &D_AEF920_2, &D_AF4F00);
-
-    // church
-    setMapModelAddresses(0x33, &D_AF4F00_2, &D_AFAAC0);
-
-    // souvenir shop
-    setMapModelAddresses(0x34, &D_AFAAC0_2, &D_AFF110);
-
-    // square spring-winter
-    setMapModelAddresses(0x35, &D_AFF110_2, &D_B0E3C0);
-    setMapModelAddresses(0x36, &D_B0E3C0_2, &D_B1D460);
-    setMapModelAddresses(0x37, &D_B1D460_2, &D_B2C500);
-    setMapModelAddresses(0x38, &D_B2C500_2, &D_B38990);
-
-    // rick's
-    setMapModelAddresses(0x39, &D_B38990_2, &D_B3CE10);
-
-    // midwife's
-    setMapModelAddresses(0x3A, &D_B3CE10_2, &D_B41CC0);
+    setMapModelAddresses(0x3B, &tavernMap_ROM_START, &tavernMap_ROM_END);
     
-    // tavern
-    setMapModelAddresses(0x3B, &D_B41CC0_2, &D_B4A9C0);
+    setMapModelAddresses(0x3C, &libraryMap_ROM_START, &libraryMap_ROM_END);
+
+    setMapModelAddresses(0x3D, &mariasRoomMap_ROM_START, &mariasRoomMap_ROM_END);
     
-    // library
-    setMapModelAddresses(0x3C, &D_B4A9C0_2, &D_B4E440);
+    setMapModelAddresses(0x3E, &mayorsHouseMap_ROM_START, &mayorsHouseMap_ROM_END);
+
+    setMapModelAddresses(0x3F, &potionShopBackroomMap_ROM_START, &potionShopBackroomMap_ROM_END);
+    setMapModelAddresses(0x40, &potionShopMap_ROM_START, &potionShopMap_ROM_END);
+
+    // empty, referenced in func_80074C50 
+    setMapModelAddresses(0x41, &emptyMap2_ROM_START, &emptyMap2_ROM_END);
     
-    // maria's room
-    setMapModelAddresses(0x3D, &D_B4E440_2, &D_B543D0);
+    setMapModelAddresses(0x42, &spriteCaveMap_ROM_START, &spriteCaveMap_ROM_END);
+    setMapModelAddresses(0x43, &caveMap_ROM_START, &caveMap_ROM_END);    
+    setMapModelAddresses(0x44, &emptyMineMap_ROM_START, &emptyMineMap_ROM_END);
+    setMapModelAddresses(0x45, &mineMap_ROM_START, &mineMap_ROM_END);
+
+    setMapModelAddresses(0x46, &karensRoomMap_ROM_START, &karensRoomMap_ROM_END);
+
+    setMapModelAddresses(0x47, &vineyardSpringMap_ROM_START, &vineyardSpringMap_ROM_END);
+    setMapModelAddresses(0x48, &vineyardSummerMap_ROM_START, &vineyardSummerMap_ROM_END);
+    setMapModelAddresses(0x49, &vineyardFallMap_ROM_START, &vineyardFallMap_ROM_END);
+    setMapModelAddresses(0x4A, &vineyardWinterMap_ROM_START, &vineyardWinterMap_ROM_END);
+
+    setMapModelAddresses(0x4B, &vineyardHouseMap_ROM_START, &vineyardHouseMap_ROM_END);
+
+    setMapModelAddresses(0x4C, &vineyardCellar1Map_ROM_START, &vineyardCellar1Map_ROM_END);
+    setMapModelAddresses(0x4D, &vineyardCellar2Map_ROM_START, &vineyardCellar2Map_ROM_END);
+
+    setMapModelAddresses(0x4E, &roadSpringMap_ROM_START, &roadSpringMap_ROM_END);
+    setMapModelAddresses(0x4F, &roadSummerMap_ROM_START, &roadSummerMap_ROM_END);
+    setMapModelAddresses(0x50, &roadFallMap_ROM_START, &roadFallMap_ROM_END);
+    setMapModelAddresses(0x51, &roadWinterMap_ROM_START, &roadWinterMap_ROM_END);
+
+    setMapModelAddresses(0x52, &farmSpringMap_ROM_START, &farmSpringMap_ROM_END);
+    setMapModelAddresses(0x53, &farmSummerMap_ROM_START, &farmSummerMap_ROM_END);
+    setMapModelAddresses(0x54, &farmFallMap_ROM_START, &farmFallMap_ROM_END);
+    setMapModelAddresses(0x55, &farmWinterMap_ROM_START, &farmWinterMap_ROM_END);
+
+    setMapModelAddresses(0x56, &greenhouseMap_ROM_START, &greenhouseMap_ROM_END);
     
-    // mayor's house
-    setMapModelAddresses(0x3E, &D_B543D0_2, &D_B5B0B0);
+    setMapModelAddresses(0x57, &houseMap_ROM_START, &houseMap_ROM_END);
 
-    // potion shop back
-    setMapModelAddresses(0x3F, &D_B5B0B0_2, &D_B60990);
-
-    // potion shop
-    setMapModelAddresses(0x40, &D_B60990_2, &D_B64E30);
-
-    // empty, referenced in func_80074C50
-    setMapModelAddresses(0x41, &D_B64E30_2, &D_B64E40);
+    setMapModelAddresses(0x58, &barnMap_ROM_START, &barnMap_ROM_END);
+    setMapModelAddresses(0x59, &coopMap_ROM_START, &coopMap_ROM_END);
     
-    // sprite cave
-    setMapModelAddresses(0x42, &D_B64E40_2, &D_B6AAC0);
-
-    // cave
-    setMapModelAddresses(0x43, &D_B6AAC0_2, &D_B6E700);
-    
-    // empty (mine)
-    setMapModelAddresses(0x44, &D_B6E700_2, &D_B6E710);
-    // mine 2
-    setMapModelAddresses(0x45, &D_B6E710_2, &D_B6FB70);
-
-    // karen's room
-    setMapModelAddresses(0x46, &D_B6FB70_2, &D_B7AFB0);
-
-    // vineyard spring-winter
-    setMapModelAddresses(0x47, &D_B7AFB0_2, &D_B8B840);
-    setMapModelAddresses(0x48, &D_B8B840_2, &D_B9C0D0);
-    setMapModelAddresses(0x49, &D_B9C0D0_2, &D_BAC960);
-    setMapModelAddresses(0x4A, &D_BAC960_2, &D_BBCD10);
-
-    // vineyard house
-    setMapModelAddresses(0x4B, &D_BBCD10_2, &D_BC5710);
-
-    // vineyard cellar 1
-    setMapModelAddresses(0x4C, &D_BC5710_2, &D_BC9C30);
-    // vineyard cellar 2
-    setMapModelAddresses(0x4D, &D_BC9C30_2, &D_BD1C80);
-
-    // road spring-winter
-    setMapModelAddresses(0x4E, &D_BD1C80_2, &D_BDBD50);
-    setMapModelAddresses(0x4F, &D_BDBD50_2, &D_BE5E20);
-    setMapModelAddresses(0x50, &D_BE5E20_2, &D_BEFEF0);
-    setMapModelAddresses(0x51, &D_BEFEF0_2, &D_BF9FC0);
-
-    // farm spring-winter
-    setMapModelAddresses(0x52, &D_BF9FC0_2, &D_C13C40);
-    setMapModelAddresses(0x53, &D_C13C40_2, &D_C2D8C0);
-    setMapModelAddresses(0x54, &D_C2D8C0_2, &D_C47540);
-    setMapModelAddresses(0x55, &D_C47540_2, &D_C609F0);
-
-    // greenhouse
-    setMapModelAddresses(0x56, &D_C609F0_2, &D_C64D60);
-
-    // house
-    setMapModelAddresses(0x57, &D_C64D60_2, &D_C72FB0);
-
-    // barn
-    setMapModelAddresses(0x58, &D_C72FB0_2, &D_C7DE40);
-
-    // coop
-    setMapModelAddresses(0x59, &D_C7DE40_2, &D_C840E0);
-
-    // kitchen
-    setMapModelAddresses(0x5A, &D_C840E0_2, &D_C8D5C0);
-
-    // bathroom
-    setMapModelAddresses(0x5B, &D_C8D5C0_2, &D_C951A0);
+    setMapModelAddresses(0x5A, &kitchenMap_ROM_START, &kitchenMap_ROM_END);
+    setMapModelAddresses(0x5B, &bathroomMap_ROM_START, &bathroomMap_ROM_END);
     
     func_8003BA44(0, 0, MODEL_DATA_BANK);
 }
-*/
 
 INCLUDE_ASM(const s32, "initialize", func_80053088);
 

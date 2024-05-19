@@ -1487,10 +1487,10 @@ void func_8005D2B0() {
 
                         switch (D_801C4216) {
                             case 4:
-                                func_80088104(D_801FC155);
+                                initializeChicken(D_801FC155);
                                 break;
                             case 2 ... 3:
-                                func_80088810(D_801FC155);
+                                initializeFarmAnimal(D_801FC155);
                                 break;
                         }
                         

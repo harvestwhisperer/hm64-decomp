@@ -2,6 +2,8 @@
 
 #include "system/dialogue.h"
 #include "system/message.h"
+#include "system/sprite.h"
+#include "system/volume.h"
 
 // bss
 extern u16 D_80204BF0[];
@@ -9,13 +11,119 @@ DialogueBox dialogueBoxes[MAX_DIALOGUE_BOXES];
 extern GameVariableReference D_80189E58[64];
 
 // forward delcarations
-extern bool func_8003FDB0(u16);      
-extern void func_80040628(u16, u8); 
-extern u16 func_80041850(u16);
+void func_8003F024(u16, u8, u8, u8, u8);
+bool func_8003FDB0(u16);      
+void func_80040628(u16, u8); 
+u16 func_80041850(u16);
 
-INCLUDE_ASM(const s32, "system/message", func_8003D970);
+//INCLUDE_ASM(const s32, "system/message", func_8003D970);
 
-INCLUDE_ASM(const s32, "system/message", func_8003DBE8);
+void func_8003D970(void) {
+
+    u16 i = 0;
+
+    for (i = 0; i < MAX_DIALOGUE_BOXES; i++) {
+
+        dialogueBoxes[i].flags = 0;
+        
+        dialogueBoxes[i].unk_7E = 0;
+        
+        dialogueBoxes[i].unk_90 = 0;
+        dialogueBoxes[i].unk_91 = 0;
+        
+        dialogueBoxes[i].unk_7C = 0;
+
+        dialogueBoxes[i].buttonSfxCounter = 0;
+        dialogueBoxes[i].flag = 0;
+        dialogueBoxes[i].margins = 0;
+        dialogueBoxes[i].maxLinesInBox = 0;
+
+        dialogueBoxes[i].currentLine = 0;
+        dialogueBoxes[i].unk_9C = 0;
+
+        dialogueBoxes[i].unk_70 = 0xFF;
+        dialogueBoxes[i].unk_74 = 0xFF;
+        dialogueBoxes[i].unk_78 = 0xFF;
+
+        dialogueBoxes[i].unk_80 = 0;
+        dialogueBoxes[i].unk_82 = 0;
+        dialogueBoxes[i].unk_84 = 0;
+        dialogueBoxes[i].unk_86 = 0;
+        dialogueBoxes[i].unk_88 = 0;
+
+        dialogueBoxes[i].unk_60 = 0;
+        dialogueBoxes[i].unk_61 = 0;
+
+        dialogueBoxes[i].unk_4C.x = 0;
+        dialogueBoxes[i].unk_4C.y = 0;
+        dialogueBoxes[i].unk_4C.z = 0;
+
+        dialogueBoxes[i].unk_92 = 0;
+        dialogueBoxes[i].unk_93 = 0;
+
+        dialogueBoxes[i].unk_14.r = 255.0f;
+        dialogueBoxes[i].unk_14.g = 255.0f;
+        dialogueBoxes[i].unk_14.b = 255.0f;
+        dialogueBoxes[i].unk_14.a = 255.0f;
+
+        dialogueBoxes[i].unk_24.r = 255.0f;
+        dialogueBoxes[i].unk_24.g = 255.0f;
+        dialogueBoxes[i].unk_24.b = 255.0f;
+        dialogueBoxes[i].unk_24.a = 255.0f;
+       
+        func_800267A4((Volume*)&dialogueBoxes[i].unk_64, 0, 0);
+        func_800267A4((Volume*)&dialogueBoxes[i].volume, 0, 0);
+         
+        dialogueBoxes[i].unk_9D = 0;
+        
+    }
+
+    for (i = 0; i < 3; i++) {
+        
+    }
+
+    func_8003FD74();
+    
+}
+
+//INCLUDE_ASM(const s32, "system/message", func_8003DBE8);
+
+bool func_8003DBE8(u16 dialogueBoxIndex, void* arg1) {
+ 
+    bool set = 0;
+    
+    if (dialogueBoxIndex < 6) {
+
+        if (!(dialogueBoxes[dialogueBoxIndex].flags & 1)) {
+
+            dialogueBoxes[dialogueBoxIndex].unk_90 = 0;
+            dialogueBoxes[dialogueBoxIndex].unk_91 = 0;
+
+            dialogueBoxes[dialogueBoxIndex].buttonSfxCounter = 0;
+            dialogueBoxes[dialogueBoxIndex].flag = 0;
+            dialogueBoxes[dialogueBoxIndex].margins = 0;
+            dialogueBoxes[dialogueBoxIndex].maxLinesInBox = 0;
+
+            dialogueBoxes[dialogueBoxIndex].unk_70 = 0xFF;
+            dialogueBoxes[dialogueBoxIndex].unk_74 = 0xFF;
+            dialogueBoxes[dialogueBoxIndex].unk_78 = 0xFF;
+
+            dialogueBoxes[dialogueBoxIndex].unk_0 = arg1;
+            
+            dialogueBoxes[dialogueBoxIndex].flags = 1;
+
+            func_800267A4((Volume*)&dialogueBoxes[dialogueBoxIndex].volume, 0, 0);
+            func_8003F024(dialogueBoxIndex, 0xFF, 0xFF, 0xFF, 0xFF);
+            
+            set = 1;        
+
+        }
+        
+    }
+    
+    return set;
+    
+}
 
 INCLUDE_ASM(const s32, "system/message", func_8003DD14);
 
@@ -209,7 +317,7 @@ void func_8003FD74(void) {
     }
     
 }
-
+ 
 INCLUDE_ASM(const s32, "system/message", func_8003FDB0);
 
 INCLUDE_ASM(const s32, "system/message", func_8003FE9C);
@@ -219,7 +327,7 @@ INCLUDE_ASM(const s32, "system/message", func_8003FFF4);
 INCLUDE_ASM(const s32, "system/message", func_80040140);
 
 //INCLUDE_ASM(const s32, "system/message", func_800401C8);
-
+ 
 u8 func_800401C8(u16 index) {
 
     u8 result = 0;
