@@ -573,9 +573,9 @@ void initializeGameVariables(void) {
         gFarmAnimals[i].age = 0;
         gFarmAnimals[i].conditionCounter = 0;
          
-        gFarmAnimals[i].unk_8 = 0;
-        gFarmAnimals[i].unk_C = 0;
-        gFarmAnimals[i].unk_10 = 0;
+        gFarmAnimals[i].coordinates.x = 0;
+        gFarmAnimals[i].coordinates.y = 0;
+        gFarmAnimals[i].coordinates.z = 0;
          
         gFarmAnimals[i].flags = 0;
          
@@ -586,8 +586,7 @@ void initializeGameVariables(void) {
         gFarmAnimals[i].name[4] = 0;
         gFarmAnimals[i].name[5] = 0;
           
-        gFarmAnimals[i].existence = 0xFF;
-         
+        gFarmAnimals[i].unk_23 = 0xFF;
         gFarmAnimals[i].unk_24 = 0xFF;
         gFarmAnimals[i].unk_25 = 0xFF;
         gFarmAnimals[i].unk_26 = 0xFF;

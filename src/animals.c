@@ -6,6 +6,7 @@
 #include "system/sprite.h"
 #include "system/mapContext.h"
 
+#include "game.h"
 #include "level.h"
 
 // bss
@@ -14,6 +15,7 @@ extern FarmAnimal gFarmAnimals[];
 extern u8 D_801886D4[6];
 extern Dog dogInfo;
 extern Horse horseInfo;
+extern UnknownAnimalStruct D_8016FB08[];
 
 extern u8 D_8016F898;
 extern u8 D_8016FAF8;
@@ -24,17 +26,41 @@ extern u8 D_80189054;
 extern u8 D_8018908C;
 extern u8 D_801C3F46;
 extern u8 D_801FC155;
+ 
+// data
+// chicken starting coordianates
+extern Vec3f D_801149C0[];
+// farm animal starting coordinates
+extern Vec3f D_80114A50[];
+extern Vec3f D_80114AB0;
+extern u16 D_80114ABC[];
+extern u16 D_80114AC4[];
+extern u16 D_80114ACC[];
+extern u16 D_80114AD4[];
+extern u16 D_80114ADC[];
+extern u16 D_80114AE2[];
+extern u16 D_80114AE8[];
 
 // forward declarations
+void func_800861A4(u8, u8, u8, u8, u8);               
 void func_80086458(u8, s8); 
 void func_80088718(u8); 
+void func_8008B1B8();                                  
+void func_8008B2E8(u8);                               
+void func_8008B55C(u8);                               
+void func_8008B9AC();                                  
+void func_8008BAF0(u8, u8); 
 void func_8008C208();                                  
 void func_8008CF94(u8);                               
 void func_8008DAA0(u8);                               
 void func_80093B80();                                  
 void func_80093CE0();                                 
 void func_8009476C(u8);     
-void func_8009427C();                       
+void func_8009427C();       
+void func_8008A5F0();
+void func_8008A650(u8);                               
+void func_8008A9E8(u8);                               
+void func_8008B150();       
 
 
 INCLUDE_ASM(const s32, "animals", func_80085F70);
@@ -75,15 +101,135 @@ void adjustHorseAffection(s8 arg0) {
 // jtbl_80120320
 INCLUDE_ASM(const s32, "animals", func_80086458);
 
-INCLUDE_ASM(const s32, "animals", func_8008662C);
+//INCLUDE_ASM(const s32, "animals", func_8008662C);
 
-INCLUDE_ASM(const s32, "animals", func_800866E0);
+u16 func_8008662C(u8 animalIndex, u8 arg1, u16 arg2) {
+
+    u16 res = arg2;
+    
+    if (!gFarmAnimals[animalIndex].goldenMilk) {
+
+        res = D_80114AD4[arg1];
+        
+    } else {
+
+        if (gFarmAnimals[animalIndex].affection <= 150) {
+            res = D_80114ABC[arg1];
+        }
+
+        // something wrong here
+        if ((u8)(u16)(gFarmAnimals[animalIndex].affection + 105) < 70) {
+            res = D_80114AC4[arg1];
+        }
+
+        if (gFarmAnimals[animalIndex].affection >= 221) {
+            res = D_80114ACC[arg1];
+        }
+        
+    }
+
+    return res;
+
+}
+
+//INCLUDE_ASM(const s32, "animals", func_800866E0);
+
+u16 func_800866E0(u8 animalIndex, u8 arg1) {
+
+    u16 res;
+
+    if (gFarmAnimals[animalIndex].affection < 100) {
+        res = D_80114ADC[arg1];
+    }
+
+    if ((u8)(u16)(gFarmAnimals[animalIndex].affection - 100) < 100) {
+        res = D_80114AE2[arg1];
+    }
+
+    if (gFarmAnimals[animalIndex].affection >= 200) {
+        res = D_80114AE8[arg1];
+    }
+    
+    return res;
+    
+}
 
 INCLUDE_ASM(const s32, "animals", func_80086764);
 
-INCLUDE_ASM(const s32, "animals", func_800876D0);
+//INCLUDE_ASM(const s32, "animals", func_800876D0);
 
-INCLUDE_ASM(const s32, "animals", func_8008779C);
+void func_800876D0(void) {
+
+    u8 i;
+
+    if (!checkLifeEventBit(0x52) || !checkDailyEventBit(0x42)) {
+        func_8008B1B8();
+    }
+
+    for (i = 0; i < MAX_CHICKENS; i++) {
+        func_8008B2E8(i);
+    }
+
+    for (i = 0; i < MAX_FARM_ANIMALS; i++) {
+        func_8008B55C(i);
+    }
+
+    if (!checkLifeEventBit(0x51) || !checkDailyEventBit(0x41)) {
+        func_8008B9AC();
+    }
+
+    for (i = 0; i < 7; i++) {
+        func_8008BAF0(i, 0);
+    }
+    
+}
+
+//INCLUDE_ASM(const s32, "animals", func_8008779C);
+
+void func_8008779C(void) {
+
+    u8 i;
+
+    if (dogInfo.flags & 4) {
+        if (renderedSprites[dogInfo.spriteIndex].flags & 8) {
+            func_8002FA2C(dogInfo.spriteIndex);
+        }
+    }
+
+    for (i = 0; i < MAX_CHICKENS; i++) {
+
+        if (gChickens[i].flags & 4) {
+
+            if (renderedSprites[gChickens[i].spriteIndex].flags & 8) {
+                func_8002FA2C(gChickens[i].spriteIndex);
+            }
+
+        }
+    }
+
+    for (i = 0; i < MAX_FARM_ANIMALS; i++) {
+        if (gFarmAnimals[i].flags & 4) {
+            if (renderedSprites[gFarmAnimals[i].spriteIndex].flags & 8) {
+                func_8002FA2C(gFarmAnimals[i].spriteIndex);
+            }
+        }
+    }
+
+    if (horseInfo.flags & 4) {
+        if (renderedSprites[horseInfo.spriteIndex].flags & 8) {
+            func_8002FA2C(horseInfo.spriteIndex);
+        }
+    }
+
+    for (i = 0; i < 7; i++) {
+        if (D_8016FB08[i].flags & 4) {
+            if (renderedSprites[D_8016FB08[i].spriteIndex].flags & 8) {
+                func_8002FA2C(D_8016FB08[i].spriteIndex);
+            }
+        }
+    }
+    
+}
 
 INCLUDE_ASM(const s32, "animals", func_800879C8);
 
@@ -111,23 +257,215 @@ void func_80087CD4(void) {
     
 }
 
-INCLUDE_ASM(const s32, "animals", func_80087D5C);
+//INCLUDE_ASM(const s32, "animals", func_80087D5C);
 
-INCLUDE_ASM(const s32, "animals", func_80087DEC);
+void func_80087D5C(void) {
+
+    u8 i;
+
+    for (i = 0; i < MAX_CHICKENS; i++) {
+        gChickens[i].flags |= 0x10;
+    }
+
+    for (i = 0; i < MAX_FARM_ANIMALS; i++) {
+        gFarmAnimals[i].flags |= 0x18;
+    }
+    
+}
+
+//INCLUDE_ASM(const s32, "animals", func_80087DEC);
+
+void func_80087DEC(void) {
+
+    u8 i;
+    
+    func_8008A5F0();
+
+    dogInfo.flags &= ~(0x40 | 0x80);
+
+    for (i = 6; i < MAX_CHICKENS; i++) {
+        if (!(gChickens[i].flags & 0x20)) {
+            gChickens[i].flags = 0;
+        }
+    }
+
+    for (i = 0; i < MAX_CHICKENS; i++) {
+        func_8008A650(i);
+        gChickens[i].flags &= ~(0x10 | 0x80);
+    }
+
+    for (i = 0; i < MAX_FARM_ANIMALS; i++) { 
+        func_8008A9E8(i);
+        gFarmAnimals[i].flags &= ~(8 | 0x10 | 0x20 | 0x40 | 0x80 | 0x100 | 0x1000 | 0x4000);
+    }
+
+    func_8008B150();
+
+    horseInfo.flags &= ~(0x100 | 0x200 | 0x400 | 0x800);
+
+}
+
 
 INCLUDE_ASM(const s32, "animals", func_80087F28);
 
-INCLUDE_ASM(const s32, "animals", func_80088104);
+//INCLUDE_ASM(const s32, "animals", initializeChicken);
 
-INCLUDE_ASM(const s32, "animals", func_8008820C);
+void initializeChicken(u8 chickenIndex) {
+
+    gChickens[chickenIndex].location = 0;
+    
+    gChickens[chickenIndex].unk_17 = 0;
+    gChickens[chickenIndex].unk_18 = 0;
+    gChickens[chickenIndex].unk_19 = 0;
+    gChickens[chickenIndex].unk_1A = 0;
+    gChickens[chickenIndex].unk_1B = 0;
+
+    gChickens[chickenIndex].type = 0;
+    gChickens[chickenIndex].condition = 0;
+    gChickens[chickenIndex].unk_1E = 0;
+    gChickens[chickenIndex].starvedCounter = 0;
+
+    gChickens[chickenIndex].coordinates.x = 0;
+    gChickens[chickenIndex].coordinates.y = 0;
+    gChickens[chickenIndex].coordinates.z = 0;
+    
+    gChickens[chickenIndex].flags = 0;
+    
+    gChickens[chickenIndex].name[0] = 0;
+    gChickens[chickenIndex].name[1] = 0;
+    gChickens[chickenIndex].name[2] = 0;
+    gChickens[chickenIndex].name[3] = 0;
+    gChickens[chickenIndex].name[4] = 0;
+    gChickens[chickenIndex].name[5] = 0;
+    
+}
+
+//INCLUDE_ASM(const s32, "animals", func_8008820C);
+
+u8 initializeNewFarmAnimal(u8 arg0, u8 arg1) {
+
+    u32 padding[4];
+
+    u8 index = 0xFF;
+    u8 i = 0;
+
+    // find free farm animal slot
+    do {
+
+        if (!(gFarmAnimals[i].flags & 1)) {
+            index = i;
+        }
+
+        i++;
+        
+    } while (i < MAX_FARM_ANIMALS && index == 0xFF);
+
+    if (index != 0xFF) {
+        
+        func_800861A4(2, index, arg0, 0, 0);
+        func_80088718(index);
+
+        gFarmAnimals[index].birthdaySeason = gSeason;
+        gFarmAnimals[index].flags = 1;
+        gFarmAnimals[index].birthdayDayOfMonth = gDayOfMonth;
+        gFarmAnimals[index].goldenMilk = 0xFF;
+        gFarmAnimals[index].affection = 0;
+
+        if (arg0 == 0) {
+
+            gFarmAnimals[index].unk_23 = gFarmAnimals[arg1].name[0];
+            gFarmAnimals[index].unk_24 = gFarmAnimals[arg1].name[1];
+            gFarmAnimals[index].unk_25 = gFarmAnimals[arg1].name[2];
+            gFarmAnimals[index].unk_26 = gFarmAnimals[arg1].name[3];
+            gFarmAnimals[index].unk_27 = gFarmAnimals[arg1].name[4];
+            gFarmAnimals[index].unk_28 = gFarmAnimals[arg1].name[5];
+            
+        } else {
+
+            gFarmAnimals[index].unk_23 = 0xF6;
+            gFarmAnimals[index].unk_24 = 0xF6;
+            gFarmAnimals[index].unk_25 = 0xF6;
+            gFarmAnimals[index].unk_26 = 0xF6;
+            gFarmAnimals[index].unk_27 = 0xF6;
+            gFarmAnimals[index].unk_28 = 0xF6;
+            
+        }
+        
+    }
+
+    return index;
+    
+}
 
 INCLUDE_ASM(const s32, "animals", func_8008841C);
 
-INCLUDE_ASM(const s32, "animals", func_800886D0);
+//INCLUDE_ASM(const s32, "animals", func_800886D0);
 
-INCLUDE_ASM(const s32, "animals", func_80088718);
+void func_800886D0(void) {
+    initializeFarmAnimal(D_8016FAF8);
+    initializeFarmAnimal(D_801C3F46);
+    initializeFarmAnimal(D_8016F898);
+}
 
-INCLUDE_ASM(const s32, "animals", func_80088810);
+//INCLUDE_ASM(const s32, "animals", func_80088718);
+
+// set farm animal locations
+void func_80088718(u8 animalIndex) {
+
+    gFarmAnimals[animalIndex].location = BARN;
+
+    if (gFarmAnimals[animalIndex].type == 3) {
+        
+        gFarmAnimals[animalIndex].coordinates.x = D_80114AB0.x;
+        gFarmAnimals[animalIndex].coordinates.y = D_80114AB0.y;
+        gFarmAnimals[animalIndex].coordinates.z = D_80114AB0.z;
+        gFarmAnimals[animalIndex].unk_1C = 4;
+
+    } else {
+
+        gFarmAnimals[animalIndex].coordinates.x = D_80114A50[animalIndex].x;
+        gFarmAnimals[animalIndex].coordinates.y = D_80114A50[animalIndex].y;
+        gFarmAnimals[animalIndex].coordinates.z = D_80114A50[animalIndex].z;
+        
+        if (animalIndex >= 4) {
+            gFarmAnimals[animalIndex].unk_1C = 6;
+        } else {
+            gFarmAnimals[animalIndex].unk_1C = 2;
+        }
+    }
+}
+
+//INCLUDE_ASM(const s32, "animals", initializeFarmAnimal);
+
+void initializeFarmAnimal(u8 animalIndex) {
+
+    gFarmAnimals[animalIndex].location = 0;
+    
+    gFarmAnimals[animalIndex].unk_1B = 0;
+    gFarmAnimals[animalIndex].unk_1C = 0;
+    gFarmAnimals[animalIndex].unk_14 = 0;
+    gFarmAnimals[animalIndex].unk_1D = 0;
+    gFarmAnimals[animalIndex].unk_1E = 0;
+    
+    gFarmAnimals[animalIndex].type = 0;
+    gFarmAnimals[animalIndex].condition = 0;
+    gFarmAnimals[animalIndex].age = 0;
+    gFarmAnimals[animalIndex].conditionCounter = 0;
+
+    gFarmAnimals[animalIndex].coordinates.x = 0;
+    gFarmAnimals[animalIndex].coordinates.y = 0;
+    gFarmAnimals[animalIndex].coordinates.z = 0;
+
+    gFarmAnimals[animalIndex].flags = 0;
+    
+    gFarmAnimals[animalIndex].name[0] = 0;
+    gFarmAnimals[animalIndex].name[1] = 0;
+    gFarmAnimals[animalIndex].name[2] = 0;
+    gFarmAnimals[animalIndex].name[3] = 0;
+    gFarmAnimals[animalIndex].name[4] = 0;
+    gFarmAnimals[animalIndex].name[5] = 0;
+    
+}
 
 //INCLUDE_ASM(const s32, "animals", initializeDog);
 
@@ -213,13 +551,38 @@ void setHorseLocation(u8 mapIndex) {
 
 void func_80088BB0(u8 mapIndex, u8 animalIndex) {
 
-    if (gFarmAnimals[animalIndex].flags & 1 && (mapIndex == 0xFF ||  gFarmAnimals[animalIndex].location == mapIndex)) {
+    if ((gFarmAnimals[animalIndex].flags & 1) && (mapIndex == 0xFF ||  gFarmAnimals[animalIndex].location == mapIndex)) {
         func_80088718(animalIndex);
     }
     
 }
 
-INCLUDE_ASM(const s32, "animals", func_80088C1C);
+//INCLUDE_ASM(const s32, "animals", func_80088C1C);
+
+void func_80088C1C(u8 mapIndex, u8 chickenIndex) {
+
+    if ((gChickens[chickenIndex].flags & 1) && (mapIndex == 0xFF || gChickens[chickenIndex].location == mapIndex)) {
+
+        gChickens[chickenIndex].location = COOP;
+
+        if (gChickens[chickenIndex].flags & 0x20) {
+
+            gChickens[chickenIndex].coordinates.x = 96.0f;
+            gChickens[chickenIndex].coordinates.y = 0;
+            gChickens[chickenIndex].coordinates.z = -144.0f;
+            
+        } else {
+
+            gChickens[chickenIndex].coordinates.x = D_801149C0[chickenIndex].x;
+            gChickens[chickenIndex].coordinates.y = D_801149C0[chickenIndex].y;
+            gChickens[chickenIndex].coordinates.z = D_801149C0[chickenIndex].z;
+            
+        }
+
+        gChickens[chickenIndex].flags &= ~8;
+        
+    }
+}
 
 INCLUDE_ASM(const s32, "animals", func_80088D54);
 
@@ -316,7 +679,7 @@ void func_80093B80(void) {
 
     if ((horseInfo.flags & 1) && (horseInfo.flags & 4)) {
 
-        if (func_8002FECC(horseInfo.unk_14) || horseInfo.flags & 0x20) {
+        if (func_8002FECC(horseInfo.spriteIndex) || horseInfo.flags & 0x20) {
             
             switch (horseInfo.grown) {
                 case FALSE:
@@ -330,9 +693,9 @@ void func_80093B80(void) {
             horseInfo.flags &= ~(0x20 | 0x80);
         }
         
-        setSpriteDirection(horseInfo.unk_14, (horseInfo.direction + 8 - func_8003C1A4(MAIN_MAP_INDEX)) % 8);
+        setSpriteDirection(horseInfo.spriteIndex, (horseInfo.direction + 8 - func_8003C1A4(MAIN_MAP_INDEX)) % 8);
         func_80028520(&vec, horseInfo.unk_19, horseInfo.direction, 0);
-        func_8002FE10(horseInfo.unk_14, vec.x, vec.y, vec.z, horseInfo.unk_19);
+        func_8002FE10(horseInfo.spriteIndex, vec.x, vec.y, vec.z, horseInfo.unk_19);
 
     } 
 }

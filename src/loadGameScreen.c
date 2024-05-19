@@ -217,7 +217,7 @@ void func_800E1998(void) {
 void func_800E1A94(void) {
 
     if (D_801D62BF == 0) {
-        if (D_801D62B8 & 1) {
+        if (D_801D62B8 & 1) { 
             func_8003DD14(0);
             func_8003DBE8(0, (void*)0x8030B000);
             func_8003F54C(0, 16.0f, 52.0f, 0);

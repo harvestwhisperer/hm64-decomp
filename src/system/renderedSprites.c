@@ -1091,7 +1091,51 @@ bool func_80030388(u16 index) {
     return result;
 }
 
-INCLUDE_ASM(const s32, "system/renderedSprites", func_800303D4);
+//INCLUDE_ASM(const s32, "system/renderedSprites", func_800303D4);
+
+u16 func_800303D4(u16 spriteIndex, f32 arg1, f32 arg2, u16 arg3, u16 arg4) {
+
+    u32 padding[4];
+    
+    u16 i;
+    u16 index = 0;
+    
+    if (spriteIndex < MAX_RENDERED_SPRITES) {
+
+        if (renderedSprites[spriteIndex].flags & 1 && !(renderedSprites[spriteIndex].flags & 0x40)) {
+
+            for (i = 0; i < arg4; i++) {
+                
+                if (i != spriteIndex) {
+                    
+                    if (!(renderedSprites[i].flags & 0x4000)) {
+
+                        index = func_80031ED0(&renderedSprites[spriteIndex], i, arg1, arg2, characterSprites[renderedSprites[spriteIndex].characterIndex].unk_1C, characterSprites[renderedSprites[spriteIndex].characterIndex].unk_1E);
+                        
+                        if (index) {
+
+                            renderedSprites[i].unk_58 = spriteIndex;
+                            renderedSprites[i].unk_5A = arg3;
+                            renderedSprites[spriteIndex].collision = i;
+                            
+                            i = MAX_RENDERED_SPRITES;
+                            
+                        } else {
+
+                            renderedSprites[i].unk_58 = 0xFFFF;
+                            renderedSprites[i].unk_5A = 0;
+                            renderedSprites[spriteIndex].collision = 0xFFFF;
+                            
+                        }
+                    }
+                }
+            }   
+        }
+    }
+    
+    return index;
+    
+}
 
 //INCLUDE_ASM(const s32, "system/renderedSprites", func_800305CC);
 
