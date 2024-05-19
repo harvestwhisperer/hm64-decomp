@@ -633,32 +633,367 @@ segments:
     type: bin
     start: 0x80D9D0
 
-  - name: maps
+  - name: ranchFallMap
     type: bin
     start: 0x81AE30
 
-  # - name: beachMap
-  #   type: bin
-  #   start: 0x85ECF0
-  #   vaddr: 0x8025D160
+  - name: ranchWinterMap
+    type: bin
+    start: 0x828FC0
 
-  - name: mountain2Map
+  - name: annsRoomMap
+    type: bin
+    start: 0x836420
+
+  - name: ranchBarnMap
+    type: bin
+    start: 0x83DC90
+
+  - name: ranchStoreMap
+    type: bin
+    start: 0x849700
+
+  - name: ranchHouseMap
+    type: bin
+    start: 0x84F100
+
+  - name: emptyMap1
+    type: bin
+    start: 0x856B80
+
+  - name: beachSpringMap
+    type: bin
+    start: 0x856B90
+  
+  - name: beachSummerMap
+    type: bin
+    start: 0x85EE70
+
+  - name: beachFallMap
+    type: bin
+    start: 0x867150
+
+  - name: beachWinterMap
+    type: bin
+    start: 0x86F430
+
+  - name: raceTrackSpringMap
+    type: bin
+    start: 0x877710
+
+  # empty
+  - name: raceTrackSummerMap
+    type: bin
+    start: 0x87F510
+
+  - name: raceTrackFallMap
+    type: bin
+    start: 0x87F520
+
+  - name: raceTrackWinterMap
+    type: bin
+    start: 0x887320
+
+  - name: mountain1SpringMap
+    type: bin
+    start: 0x88F120
+
+  - name: mountain1SummerMap
+    type: bin
+    start: 0x8A6C20
+
+  - name: mountain1FallMap
+    type: bin
+    start: 0x8BE720
+
+  - name: mountain1WinterMap
+    type: bin
+    start: 0x8D6220
+
+  - name: mountain2SpringMap
     type: bin
     start: 0x8ED8E0
 
-  # - name: mountain1Map
-  #   type: bin
-  #   vaddr: 0x8026CAF0
+  - name: mountain2SummerMap
+    type: bin
+    start: 0x905980
 
- # - name: farmMap
- #   type: bin
- #   start: 0xC13908
- #   vaddr: 0x8026E948
+  - name: mountain2FallMap
+    type: bin
+    start: 0x91D8A0
 
-  # - name: houseMap
-  #   type: bin
-  #   start: 0xC64F00
-  #   vaddr: 802554D8
+  - name: mountain2WinterMap
+    type: bin
+    start: 0x9357C0
+
+  - name: topOfMountain1SpringMap
+    type: bin
+    start: 0x94D6E0
+
+  - name: topOfMountain1SummerMap
+    type: bin
+    start: 0x961BD0
+
+  - name: topOfMountain1FallMap
+    type: bin
+    start: 0x975E50
+
+  - name: topOfMountain1WinterMap
+    type: bin
+    start: 0x98A0D0
+
+  - name: moonMountainSpringMap
+    type: bin
+    start: 0x99F9C0
+
+  - name: moonMountainSummerMap
+    type: bin
+    start: 0x9B4530
+
+  - name: moonMountainFallMap
+    type: bin
+    start: 0x9C90A0
+
+  - name: moonMountainWinterMap
+    type: bin
+    start: 0x9DDC10
+
+  - name: carpentersHutMap
+    type: bin
+    start: 0x9F2780
+
+  - name: dumplingHouseMap
+    type: bin
+    start: 0x9FAA80
+
+  - name: springSpringMap
+    type: bin
+    start: 0xA04C80
+
+  - name: springSummerMap
+    type: bin
+    start: 0xA0CEC0
+
+  - name: springFallMap
+    type: bin
+    start: 0xA14F10
+
+  - name: springWinterMap
+    type: bin
+    start: 0xA1CF60
+
+  - name: ellisRoomMap
+    type: bin
+    start: 0xA24FB0
+
+  - name: bakeryMap
+    type: bin
+    start: 0xA2C350
+
+  - name: village1SpringMap
+    type: bin
+    start: 0xA33460
+
+  - name: village1SummerMap
+    type: bin
+    start: 0xA4C640
+
+  - name: village1FallMap
+    type: bin
+    start: 0xA65820
+
+  - name: village1WinterMap
+    type: bin
+    start: 0xA7F2B0
+
+  - name: village2SpringMap
+    type: bin
+    start: 0xA98210
+
+  - name: village2SummerMap
+    type: bin
+    start: 0xAAC2C0
+
+  - name: village2FallMap
+    type: bin
+    start: 0xAC0370
+
+  - name: village2WinterMap
+    type: bin
+    start: 0xAD4420
+
+  - name: popurisRoomMap
+    type: bin
+    start: 0xAE84D0
+
+  - name: flowerShopMap
+    type: bin
+    start: 0xAEF920
+
+  - name: churchMap
+    type: bin
+    start: 0xAF4F00
+
+  - name: souvenirShopMap
+    type: bin
+    start: 0xAFAAC0 
+
+  - name: squareSpringMap
+    type: bin
+    start: 0xAFF110
+
+  - name: squareSummerMap
+    type: bin
+    start: 0xB0E3C0
+
+  - name: squareFallMap
+    type: bin
+    start: 0xB1D460
+
+  - name: squareWinterMap
+    type: bin
+    start: 0xB2C500
+
+  - name: ricksShopMap
+    type: bin
+    start: 0xB38990
+
+  - name: midwifesHouseMap
+    type: bin
+    start: 0xB3CE10
+
+  - name: tavernMap
+    type: bin
+    start: 0xB41CC0
+
+  - name: libraryMap
+    type: bin
+    start: 0xB4A9C0
+
+  - name: mariasRoomMap
+    type: bin
+    start: 0xB4E440
+
+  - name: mayorsHouseMap
+    type: bin
+    start: 0xB543D0
+
+  - name: potionShopBackroomMap
+    type: bin
+    start: 0xB5B0B0
+
+  - name: potionShopMap
+    type: bin
+    start: 0xB60990
+
+  # referenced in func_80074C50
+  - name: emptyMap2
+    type: bin
+    start: 0xB64E30
+
+  - name: spriteCaveMap
+    type: bin
+    start: 0xB64E40
+
+  - name: caveMap
+    type: bin
+    start: 0xB6AAC0
+
+  - name: emptyMineMap
+    type: bin
+    start: 0xB6E700
+
+  - name: mineMap
+    type: bin
+    start: 0xB6E710
+
+  - name: karensRoomMap
+    type: bin
+    start: 0xB6FB70
+
+  - name: vineyardSpringMap
+    type: bin
+    start: 0xB7AFB0
+
+  - name: vineyardSummerMap
+    type: bin
+    start: 0xB8B840
+
+  - name: vineyardFallMap
+    type: bin
+    start: 0xB9C0D0
+
+  - name: vineyardWinterMap
+    type: bin
+    start: 0xBAC960
+
+  - name: vineyardHouseMap
+    type: bin
+    start: 0xBBCD10
+
+  - name: vineyardCellar1Map
+    type: bin
+    start: 0xBC5710
+
+  - name: vineyardCellar2Map
+    type: bin
+    start: 0xBC9C30
+
+  - name: roadSpringMap
+    type: bin
+    start: 0xBD1C80
+
+  - name: roadSummerMap
+    type: bin
+    start: 0xBDBD50
+
+  - name: roadFallMap
+    type: bin
+    start: 0xBE5E20
+
+  - name: roadWinterMap
+    type: bin
+    start: 0xBEFEF0
+
+  - name: farmSpringMap
+    type: bin
+    start: 0xBF9FC0
+
+  - name: farmSummerMap
+    type: bin
+    start: 0xC13C40
+
+  - name: farmFallMap
+    type: bin
+    start: 0xC2D8C0
+
+  - name: farmWinterMap
+    type: bin
+    start: 0xC47540
+
+  - name: greenhouseMap
+    type: bin
+    start: 0xC609F0
+
+  - name: houseMap
+    type: bin
+    start: 0xC64D60
+
+  - name: barnMap
+    type: bin
+    start: 0xC72FB0
+
+  - name: coopMap
+    type: bin
+    start: 0xC7DE40
+
+  - name: kitchenMap
+    type: bin
+    start: 0xC840E0
+
+  - name: bathroomMap
+    type: bin
+    start: 0xC8D5C0
 
   # ci4 format
   #   spritesheet
