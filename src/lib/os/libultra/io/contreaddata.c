@@ -1,4 +1,7 @@
 #include "common.h"
+
+
+#include "common.h"
 #include "controller.h"
 
 extern OSPifRam D_80170400;
@@ -24,4 +27,4 @@ void osContGetReadData(OSContPad* data) {
     }
 }
 
-INCLUDE_ASM(const s32, "lib/os/libultra/io/contreaddata", contreaddata_text_0124);
+INCLUDE_ASM(const s32, "lib/os/libultra/io/contreaddata", func_80103B44);

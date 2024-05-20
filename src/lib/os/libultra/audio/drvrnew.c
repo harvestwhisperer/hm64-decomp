@@ -5,12 +5,6 @@ INCLUDE_ASM(const s32, "lib/os/libultra/audio/drvrnew", init_lpfilter);
 
 INCLUDE_ASM(const s32, "lib/os/libultra/audio/drvrnew", alFxNew);
 
-INCLUDE_ASM(const s32, "lib/os/libultra/audio/drvrnew", drvrnew_text_017C);
-
-INCLUDE_ASM(const s32, "lib/os/libultra/audio/drvrnew", drvrnew_text_03DC);
-
-INCLUDE_ASM(const s32, "lib/os/libultra/audio/drvrnew", drvrnew_text_04F4);
-
 INCLUDE_ASM(const s32, "lib/os/libultra/audio/drvrnew", alEnvmixerNew);
 
 INCLUDE_ASM(const s32, "lib/os/libultra/audio/drvrnew", alLoadNew);
