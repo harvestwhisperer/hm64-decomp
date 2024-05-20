@@ -2,5 +2,3 @@
 
 
 INCLUDE_ASM(const s32, "lib/os/libultra/io/epirawread", osEPiRawReadIo);
-
-INCLUDE_ASM(const s32, "lib/os/libultra/io/epirawread", epirawread_text_011C);

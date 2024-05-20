@@ -3,11 +3,7 @@
 
 INCLUDE_ASM(const s32, "lib/os/libultra/io/pimgr", osCreatePiManager);
 
-INCLUDE_ASM(const s32, "lib/os/libultra/io/pimgr", pimgr_text_01CC);
-
-INCLUDE_ASM(const s32, "lib/os/libultra/io/pimgr", pimgr_text_0234);
-
-INCLUDE_ASM(const s32, "lib/os/libultra/io/pimgr", func_80105590);
+INCLUDE_ASM(const s32, "lib/os/libultra/io/pimgr", func_801054CC);
 
 INCLUDE_RODATA(const s32, "lib/os/libultra/io/pimgr", pimgr_data_0000);
 

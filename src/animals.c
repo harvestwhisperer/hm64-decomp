@@ -268,7 +268,7 @@ void func_80087D5C(void) {
     }
 
     for (i = 0; i < MAX_FARM_ANIMALS; i++) {
-        gFarmAnimals[i].flags |= 0x18;
+        gFarmAnimals[i].flags |= (8 | 0x10);
     }
     
 }

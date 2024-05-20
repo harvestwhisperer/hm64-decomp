@@ -1,5 +1,5 @@
 #include "common.h"
-#include "player.h"
+
 
 // player_commands.c
 
@@ -62,8 +62,6 @@ INCLUDE_ASM(const s32, "lib/libmus/libsrc/player_commands", func_800F4184);
 INCLUDE_ASM(const s32, "lib/libmus/libsrc/player_commands", func_800F41D0);
 
 INCLUDE_ASM(const s32, "lib/libmus/libsrc/player_commands", Fstereo);
-
-INCLUDE_ASM(const s32, "lib/libmus/libsrc/player_commands", player_text_1164);
 
 INCLUDE_ASM(const s32, "lib/libmus/libsrc/player_commands", func_800F424C);
 

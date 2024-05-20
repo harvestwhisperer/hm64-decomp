@@ -3,8 +3,6 @@
 
 INCLUDE_ASM(const s32, "lib/os/libultra/io/vi", __osViInit);
 
-INCLUDE_ASM(const s32, "lib/os/libultra/io/vi", vi_text_0094);
-
 INCLUDE_RODATA(const s32, "lib/os/libultra/io/vi", vi_data_0000);
 
 INCLUDE_RODATA(const s32, "lib/os/libultra/io/vi", vi_data_0004);
