@@ -25,7 +25,57 @@ u8 D_80126560;
 u8 D_80126561;
 u8 D_80189826; 
 u8 D_801C3E2C;
-                                                                 
+
+// forward declarations
+bool func_800AD8D0(u16, u8);
+bool func_800ADCDC(u16, u8);
+bool func_800AE00C(u16, u8);
+bool func_800AEB54(u16, u8);
+bool func_800AED60(u16, u8);
+bool func_800AEE8C(u16, u8);
+bool func_800AF060(u16, u8);
+bool func_800AF0B0(u16, u8);
+bool func_800AF494(u16, u8);
+bool func_800AFA2C(u16, u8);
+bool func_800AFA7C(u16, u8);
+bool func_800AFCD0(u16, u8);
+bool func_800AFD20(u16, u8);
+bool func_800AFF9C(u16, u8);
+bool func_800B00E0(u16, u8);
+bool func_800B01EC(u16, u8);
+bool func_800B0378(u16, u8);
+bool func_800B0714(u16, u8);
+bool func_800B0A64(u16, u8);
+bool func_800B0AFC(u16, u8);
+bool func_800B0C48(u16, u8);
+bool func_800B0C98(u16, u8);
+bool func_800B0FB8(u16, u8);
+bool func_800B106C(u16, u8);
+bool func_800B1438(u16, u8);
+bool func_800B1540(u16, u8);
+bool func_800B1808(u16, u8);
+bool func_800B1994(u16, u8);
+bool func_800B1AC4(u16, u8);
+bool handleCarpenterHutInteractions(u16, u8);
+bool handleDumplingHouseExit(u16, u8);
+bool func_800B1DBC(u16, u8);
+bool func_800B20C8(u16, u8);
+bool func_800B2118(u16, u8);
+bool func_800B2264(u16, u8);
+bool func_800B2340(u16, u8);
+bool func_800B23A4(u16, u8);
+bool func_800B24D4(u16, u8);
+bool func_800B256C(u16, u8);
+bool func_800B2604(u16, u8);
+bool func_800B27CC(u16, u8);
+bool handleRanchStoreExits(u16, u8);
+bool func_800B2B90(u16, u8);
+bool func_800B2C28(u16, u8);
+bool func_800B2C78(u16, u8);
+bool func_800B1EE4(u16, u8);
+bool func_800B2078(u16, u8);
+
+                                                                  
 //INCLUDE_ASM(const s32, "levelInteractions", func_800ACD70);
 
 u8 func_800ACD70(u16 mapIndex) {

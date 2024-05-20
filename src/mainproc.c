@@ -12,7 +12,7 @@
 
 #include "gameStart.h"
 #include "mainproc.h"
-#include "mainLoop.h"                                                 
+#include "mainLoop.h"                        
 
 // bss
 volatile u16 D_801594E4;
@@ -47,6 +47,11 @@ volatile u16 mainLoopCallbackCurrentIndex;
 
 // internal variable
 volatile u8 D_80237408;
+
+// forward declarations
+void initializeEngine(void);
+void func_80025F04(void);
+
 
 //INCLUDE_ASM(const s32, "mainproc", func_80025D90);
 

@@ -28,9 +28,15 @@ extern u8 D_801D62BB;
 extern u8 D_801D62BF;
 extern u8 D_801D62BC;
 extern u8 D_801D62BF;
-
+ 
 // shared
 extern u8 gGlobalSeasonName[6];
+
+// foward declarations
+void func_800E16D0(u8 arg0, u8 arg1);
+void func_800E1998(void);
+void func_800E1A94(void);
+void func_800E3358(u8 arg0, u8 arg1, u8 arg2);
 
 //INCLUDE_ASM(const s32, "loadGameScreen", func_800E1380);
 
