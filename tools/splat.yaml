@@ -16,7 +16,7 @@ options:
   asm_inc_header: ".include \"macro.inc\"\n.set noat\n.set noreorder\n"
   asm_function_macro: glabel
   asm_data_macro: dlabel
-  asm_emit_size_directive: false
+  asm_emit_size_directive: true
   symbol_addrs_path: symbol_addrs.txt
   generated_c_preamble: "#include \"common.h\"\n"
   migrate_rodata_to_functions: true
@@ -536,7 +536,7 @@ segments:
   #     offset2
   #     etc.
   - name: playerTexture
-    type: data
+    type: bin
     start: 0x159330
     vram: 0x80180290
     # using custom extract script instead

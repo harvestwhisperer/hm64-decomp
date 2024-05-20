@@ -44,7 +44,7 @@ extern u8 D_8016FE6F;
 extern u8 D_80181B10;
 extern u8 D_801C4216;
 extern u16 D_80237410;
-
+ 
 // data 
 extern Addresses cutsceneMapAddresses[];
 // cutscene master object vaddr

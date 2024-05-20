@@ -28,7 +28,7 @@ extern u8 gBaseMapIndex;
 extern u8 gMapWithSeasonIndex;
 // rotation
 extern u8 D_8021E6D0;
-
+ 
 extern u32 homeItemsTexture_ROM_START;
 extern u32 homeItemsTexture_ROM_END;
 extern u32 homeItemsAssetsIndex_ROM_START;
@@ -71,6 +71,7 @@ extern u8 D_8011FB28[];
 extern Vec D_8011FB70[];
 
 // forward declaration
+void func_8006EC58(u16 mapIndex);
 void func_8007341C(u8 itemIndex);
 
 //INCLUDE_ASM(const s32, "level", setEntrance);
@@ -963,8 +964,8 @@ void func_80073244(u8 itemIndex) {
 
     Vec3f arr[6];
 
-    MemoryRead_32 *ptr = arr;
-    MemoryRead_32 *ptr2 = D_8011FB28;
+    MemoryRead_32 *ptr = (MemoryRead_32*)arr;
+    MemoryRead_32 *ptr2 = (MemoryRead_32*)D_8011FB28;
 
     do {
         *(Aligned32*)ptr++ = *(Aligned32*)ptr2++;

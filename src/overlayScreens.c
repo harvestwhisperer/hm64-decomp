@@ -29,7 +29,7 @@ extern u8 D_801FB6F8;
 extern u8 D_801FB6F9;
 extern u8 D_801FB6FA;
 extern u8 D_801FB6FB;
-
+ 
 // shared
 extern u8 D_801C3F70;
 extern u8 D_80205636;
@@ -56,7 +56,13 @@ extern void *D_D3DCC0;
 extern void *D_D3DCC0_2;
 extern void *D_D3DCE0;
 
-
+// forward declarations
+void func_800B4160(void);
+void func_800C81C8(void);
+void func_800C7DF8(void);
+void func_800C7E18(void);
+void func_800C7E58(void);
+void func_800C7E38(void);
 
 
 // rodata
@@ -85,6 +91,7 @@ void func_800B2CE0(void) {
     func_800C7E18();
     func_800C7E58();
     func_800C7E38();
+
     func_8002B6B8(0x82);
     func_8002B6B8(0x83);
     func_8002B6B8(0x84);

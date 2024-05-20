@@ -22,7 +22,13 @@ void (*mainLoopCallbacksTable[MAIN_LOOP_CALLBACK_FUNCTION_TABLE_SIZE])();
 volatile u16 D_80182BA0;
 volatile u16 D_8020564C;
 void *currentGfxTaskPtr;
- 
+
+// forward declarations
+void func_80026284(void);
+void func_800263B0(int pendingGfx);
+void func_800264CC(int arg0);
+
+  
 //INCLUDE_ASM(s32, "mainLoop", mainLoop)
 
 void mainLoop(void) {
@@ -126,7 +132,7 @@ u32 setMainLoopCallbackFunctionIndex(u16 index) {
     
     if (index < MAIN_LOOP_CALLBACK_FUNCTION_TABLE_SIZE) {
 
-        temp = mainLoopCallbacksTable;
+        temp = (volatile int*)mainLoopCallbacksTable;
       
         if (temp[index]) {
             mainLoopCallbackCurrentIndex = index;
@@ -328,7 +334,7 @@ void gfxPreNMICallback(void) {
     
     volatile int *callbackTablePtr;
     
-    callbackTablePtr = &mainLoopCallbacksTable;
+    callbackTablePtr = (volatile int*)&mainLoopCallbacksTable;
     
     if (*callbackTablePtr) {
         mainLoopCallbackCurrentIndex = 0;
