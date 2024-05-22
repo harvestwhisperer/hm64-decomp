@@ -108,11 +108,9 @@ typedef struct {
 
 // 0x8016FB08
 typedef struct {
-    u32 unk_0; // 08
-    u32 unk_4; // 0C
-    u32 unk_8; // 10
+    Vec3f unk_0; // 08
     u16 spriteIndex; // 14
-    u8 unk_E; // 16, 0xB1E
+    u8 mapIndex; // 16
     u8 unk_F; // 17
     u8 unk_10; // 18
     u8 unk_11; // 19

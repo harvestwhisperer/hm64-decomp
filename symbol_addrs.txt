@@ -1021,6 +1021,8 @@ npcInfoArray = 0x801FB9D0;
 
 houseExtensionConstructionCounter = 0x801FC151;
 
+namingScreenContext = 0x8016FBD0;
+
 renderedSprites = 0x801FC160;
 
 gGold = 0x801FD60C;

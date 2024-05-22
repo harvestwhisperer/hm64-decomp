@@ -601,18 +601,18 @@ void initializeGameVariables(void) {
 
     for (i = 0; i < 7; i++) {
         D_8016FB08[i].unk_15 = 0;
-        D_8016FB08[i].unk_E = 0;
+        D_8016FB08[i].mapIndex = 0;
         D_8016FB08[i].unk_F = 0;
         D_8016FB08[i].unk_10 = 0;
         D_8016FB08[i].unk_11 = 0;
         D_8016FB08[i].unk_13 = 0;
         D_8016FB08[i].unk_14 = 0;
-        D_8016FB08[i].unk_0 = 0;
-        D_8016FB08[i].unk_4 = 0;
-        D_8016FB08[i].unk_8 = 0;
+        D_8016FB08[i].unk_0.x = 0;
+        D_8016FB08[i].unk_0.y = 0;
+        D_8016FB08[i].unk_0.z = 0;
         D_8016FB08[i].flags = 0;
     }
-
+ 
     for (i = 0; i < 10; i++) {
         D_80204DF8[i].unk_0.x = 0;
         D_80204DF8[i].unk_0.y = 0;
@@ -1371,8 +1371,9 @@ void func_80054734(void) {
 */
 
 
-//INCLUDE_ASM(const s32, "initialize", setGameVariables);
+//INCLUDE_ASM(const s32, "initialize
 
+// variables referenced in dialogues
 void setGameVariables(void) {
 
     // alcohol tolerance is first lol
