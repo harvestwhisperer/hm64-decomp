@@ -1,12 +1,12 @@
 #include "common.h"
 
+#include "namingScreen.h"
+
 #include "system/sprite.h"
 
+
 // bss
-// struct
-extern u8 D_8016FBD7;
-extern f32 D_8016FBD8;
-extern f32 D_8016FBDC;
+NamingScreenContext namingScreenContext;
 
 INCLUDE_ASM(const s32, "namingScreen", func_800ED8A0);
 
@@ -22,15 +22,98 @@ INCLUDE_ASM(const s32, "namingScreen", func_800EFBEC);
 
 INCLUDE_ASM(const s32, "namingScreen", func_800EFCF8);
 
-INCLUDE_ASM(const s32, "namingScreen", func_800EFE84);
+//INCLUDE_ASM(const s32, "namingScreen", func_800EFE84);
+
+void func_800EFE84(void) {
+
+    namingScreenContext.coordinates.y -= 16.0f;
+    namingScreenContext.coordinates.w -= 16.0f;
+    
+    namingScreenContext.unk_19 += 1;
+    
+    if (namingScreenContext.unk_19 >= 6) {
+        
+        namingScreenContext.unk_19 = 0;
+
+        namingScreenContext.coordinates.y = 16.0f;
+        namingScreenContext.coordinates.w = 26.0f;
+
+        if (namingScreenContext.unk_18 >= 10) {
+
+            namingScreenContext.unk_18 = namingScreenContext.unk_1A;
+
+            namingScreenContext.coordinates.x = (namingScreenContext.unk_18 * 16.0f);
+            namingScreenContext.coordinates.x += -126.0f;
+            namingScreenContext.coordinates.x += 6.0f;
+            
+            namingScreenContext.coordinates.z = (namingScreenContext.unk_18 * 16.0f);
+            namingScreenContext.coordinates.z += -116.0f;
+            namingScreenContext.coordinates.z += 6.0f;
+
+            func_8002BAD8(0x82);
+            func_8002B80C(0x82, 2, 0);
+            func_8002BAD8(0x91);
+            func_8002B80C(0x91, 2, 0);
+            func_8002CB88(0x91, 3);
+            
+        }
+        
+    }
+
+    func_800F0320();
+    
+}
 
 INCLUDE_ASM(const s32, "namingScreen", func_800EFFDC);
 
-INCLUDE_ASM(const s32, "namingScreen", func_800F009C);
+//INCLUDE_ASM(const s32, "namingScreen", func_800F009C);
+
+void func_800F009C(void) {
+
+    s32 i = 0x80;
+
+    while (i < 0x92) {
+        func_8002B6B8(i);
+        i++;
+    } 
+    
+}
+
+// alternate
+/*
+void func_800F009C(void) {
+
+    s32 i;
+
+    for (i = 0x80; i < 0x92; i++) {
+        func_8002B6B8(i);
+    } 
+    
+}
+*/
 
 INCLUDE_ASM(const s32, "namingScreen", func_800F00D8);
 
-INCLUDE_ASM(const s32, "namingScreen", func_800F0320);
+//INCLUDE_ASM(const s32, "namingScreen", func_800F0320);
+
+void func_800F0320(void) {
+    
+    if ((namingScreenContext.unk_19 == 5) && (namingScreenContext.unk_18 >= 10)) {
+        
+        namingScreenContext.unk_1A = namingScreenContext.unk_18;
+        
+        namingScreenContext.unk_18 = 12;
+        namingScreenContext.coordinates.x = 100.0f;
+        namingScreenContext.coordinates.y = -95.0f;
+        
+        func_8002BAD8(0x82);
+        func_8002BAD8(0x91);
+        func_8002B80C(0x91, 2, 1);
+        func_8002CB88(0x91, 4);
+        
+    }
+}
+
 
 // check button pressed
 INCLUDE_ASM(const s32, "namingScreen", func_800F03C4);
@@ -47,21 +130,21 @@ void func_800F121C(void) {
     u16 temp1;
     u16 temp2;
 
-    temp1 = D_8016FBD7;
+    temp1 = namingScreenContext.unk_7;
     
     func_8002CB88(temp1 + 0x83, 0);
     
-    if (D_8016FBDC == 52.0f) {
-        D_8016FBDC -= 48.0f;
+    if (namingScreenContext.coordinates.y == 52.0f) {
+        namingScreenContext.coordinates.y -= 48.0f;
         temp2 = temp1 + 2;
     } else {
         temp2 = temp1 - 2;
-        D_8016FBDC += 48.0f;
+        namingScreenContext.coordinates.y += 48.0f;
     }
     
     func_8002CB88(temp2 + 0x83, temp2 + 1);
     
-    D_8016FBD7 = temp2;
+    namingScreenContext.unk_7 = temp2;
 
 }
 
@@ -73,19 +156,19 @@ void func_800F12C4(void) {
     u16 temp1;
     u16 temp2;
 
-    temp1 = D_8016FBD7;
+    temp1 = namingScreenContext.unk_7;
     
     func_8002CB88(temp1 + 0x83, 0);
     
-    if (D_8016FBD8 == -128.0f) {
-        D_8016FBD8 += 144.0f;
+    if (namingScreenContext.coordinates.x == -128.0f) {
+        namingScreenContext.coordinates.x += 144.0f;
         temp2 = temp1 + 1;
     } else {
         temp2 = temp1 - 1;
-        D_8016FBD8 -= 144.0f;
+        namingScreenContext.coordinates.x -= 144.0f;
     }
  
     func_8002CB88(temp2 + 0x83, temp2+1);
-    D_8016FBD7 = temp2;
+    namingScreenContext.unk_7 = temp2;
 
 }
