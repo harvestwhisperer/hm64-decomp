@@ -15,6 +15,7 @@
 #include "itemHandlers.h"
 #include "level.h"
 #include "levelInteractions.h"
+#include "mainLoop.h"
 #include "mainproc.h"
 #include "mapObjects.h"
 #include "npc.h"
@@ -258,7 +259,7 @@ u8 removeTool(u8 tool) {
 
 //INCLUDE_ASM(const s32, "player", acquireKeyItem);
 
-u8 acquireKeyItem(u8 item) {
+inline u8 acquireKeyItem(u8 item) {
 
     u8 i;
     u8 found = 0xFF;
@@ -601,24 +602,45 @@ INCLUDE_ASM(const s32, "player", func_80067950);
 
 //INCLUDE_ASM(const s32, "player", checkFatigueLevel);
 
-u8 checkFatigueLevel(void) {
+inline u8 checkFatigueLevel(void) {
 
-    u8 temp;
+    u8 result;
      
     if (gPlayer.fatigue.counter == 100) {
-        temp = 3;
+        result = 3;
     } else if (gPlayer.fatigue.counter >= 75) {
-        return 2;
+        result = 2;
     }  else {
-        return (gPlayer.fatigue.counter < 50) == 0;  
+        result = (gPlayer.fatigue.counter < 50) == 0;  
     }
 
-    return temp;
+    return result;
+
 }
 
 INCLUDE_ASM(const s32, "player", func_80067A24);
 
-INCLUDE_ASM(const s32, "player", func_80067B38);
+//INCLUDE_ASM(const s32, "player", func_80067B38);
+
+bool func_80067B38(void) {
+
+    bool set = 0;
+    
+    u32 fatigue = checkFatigueLevel();
+
+    if (fatigue != 0 && fatigue != gPlayer.fatigue.unk_2) {
+        
+        set = 1;
+
+        setAction(0x19, 0, 0, 0x1A);
+
+        gPlayer.fatigue.unk_2 = fatigue;
+        
+    }
+
+    return set;
+
+}
 
 INCLUDE_ASM(const s32, "player", func_80067BC4);
 
@@ -626,7 +648,7 @@ INCLUDE_ASM(const s32, "player", func_80067BC4);
 
 void func_80067E5C(void) {
 
-    // ?
+    // ??
     if (!(*(s32*)&gPlayer.action3 & ~0xFF)) {
         setAudio(0x26);
         func_800D5548(gPlayer.unk_2D);
@@ -643,10 +665,10 @@ void func_80067EE0(void) {
     if (gPlayer.action3 == 3) {
         func_800D55E4(gPlayer.unk_2D, 0xE);
         gPlayer.heldItem = 0;
-        gPlayer.animationState += 1;
+        gPlayer.animationState++;
     }
 
-    gPlayer.action3 += 1;
+    gPlayer.action3++;
 }
 
 INCLUDE_ASM(const s32, "player", func_80067F50);
@@ -711,7 +733,7 @@ void func_80068258(void) {
         func_8003019C(0, 0);
         func_80030054(0, 0);
         func_8002FF38(0, 0);
-        gPlayer.animationState += 1;
+        gPlayer.animationState++;
         func_80034DC8(MAIN_MAP_INDEX, 0, 7);
     }
 
@@ -797,13 +819,83 @@ void func_80068990(void) {
 
 void func_80068A00(void) {}
 
-INCLUDE_ASM(const s32, "player", func_80068A08);
+//INCLUDE_ASM(const s32, "player", func_80068A08);
+
+void func_80068A08(void) {
+
+    if (gPlayer.animationState == 0) {
+        
+        if (gPlayer.action3 == 0) {
+            gPlayer.unk_2D = func_800D5308(0, 2, gPlayer.heldItem, 0, 8);
+        }
+        
+        if (gPlayer.action3 >= 0x1E) {
+            gPlayer.animationState = 1;
+        } else {
+            gPlayer.action3++;
+        }
+    }
+
+}
 
 INCLUDE_ASM(const s32, "player", func_80068A98);
 
 INCLUDE_ASM(const s32, "player", func_80068C8C);
 
-INCLUDE_ASM(const s32, "player", func_80068DFC);
+//INCLUDE_ASM(const s32, "player", func_80068DFC);
+
+void func_80068DFC(void) {
+
+    Vec3f vec;
+
+    switch (gPlayer.animationState) {
+        
+        case 0:
+
+            gPlayer.action2 = 0;
+            gPlayer.animationState++;
+            
+            break;
+        
+        case 1:
+
+            gPlayer.action2 = 1;
+            gPlayer.direction = gPlayer.unk_6E;
+
+            setSpriteDirection(PLAYER, (gPlayer.direction + 8 - func_8003C1A4(MAIN_MAP_INDEX)) % 8);
+
+            func_80028520(&vec, 1.0f, gPlayer.direction, 0);
+
+            gPlayer.currentCoordinates = vec;
+
+            gPlayer.animationState++;
+            
+            break;
+        
+        case 2:
+                
+            if (gPlayer.unk_6F == 0) {
+                
+                gPlayer.animationState++;
+                
+                gPlayer.currentCoordinates.x = 0.0f;
+                gPlayer.currentCoordinates.y = 0.0f;
+                gPlayer.currentCoordinates.z = 0.0f;
+
+            } else {
+                gPlayer.unk_6F--;
+            }
+            
+            break;
+        
+        case 3:
+            resetAction();
+            break;
+    }
+
+    func_8002FE10(0, gPlayer.currentCoordinates.x, 0.0f, gPlayer.currentCoordinates.z, 1.0f);
+   
+}
 
 INCLUDE_ASM(const s32, "player", func_80068FB0);
 
@@ -932,7 +1024,7 @@ void func_80069830(void) {
 //INCLUDE_ASM(const s32, "player", func_80069C5C);
 
 void func_80069C5C(void) {
-    if (func_80031380(0)) {
+    if (func_80031380(PLAYER)) {
         setAudio(0xA);
     }
 }
@@ -940,7 +1032,7 @@ void func_80069C5C(void) {
 //INCLUDE_ASM(const s32, "player", func_80069C90);
 
 void func_80069C90(void) {
-    if (func_80031380(0)) {
+    if (func_80031380(PLAYER)) {
         setAudio(0xA);
     }
 }
@@ -1548,19 +1640,153 @@ INCLUDE_ASM(const s32, "player", func_8006B104);
 
 void func_8006B4D4(void) {}
 
-INCLUDE_ASM(const s32, "player", func_8006B4DC);
+//INCLUDE_ASM(const s32, "player", func_8006B4DC);
 
-INCLUDE_ASM(const s32, "player", func_8006B584);
+void func_8006B4DC(void) {
 
-INCLUDE_ASM(const s32, "player", func_8006B61C);
+    if (func_8002FECC(PLAYER) || (gPlayer.animationState == 0)) {
+        
+        if (gPlayer.animationState == 0) {
+            
+            func_8002F2FC(0, 0x1DB);
+            
+            gPlayer.animationState = 1;
+            gPlayer.heldItem = 0xCA;
+            gPlayer.unk_2D = func_800D5308(0, 0x10, 0xCA, 0, 8);
+            
+        } else {
+            
+            setMainLoopCallbackFunctionIndex(PINK_OVERLAY_TEXT);
+        
+        }
+    }    
+}
 
-INCLUDE_ASM(const s32, "player", func_8006B6EC);
+//INCLUDE_ASM(const s32, "player", func_8006B584);
 
-INCLUDE_ASM(const s32, "player", func_8006B77C);
+void func_8006B584(void) {
+    
+    if ((func_8002FECC(PLAYER)) || (gPlayer.animationState == 0)) {
+        
+        if (gPlayer.animationState == 0) {
+            
+            setSpriteAnimation(PLAYER, 0x1B7);
+            func_800D55E4(gPlayer.unk_2D, 0x11);
+            
+        } else {
+            
+            resetAction();
+            gItemBeingHeld = 0xFF;
+            
+        }
+    }
+}
 
-INCLUDE_ASM(const s32, "player", func_8006B8BC);
+//INCLUDE_ASM(const s32, "player", func_8006B61C);
 
-INCLUDE_ASM(const s32, "player", func_8006B910);
+void func_8006B61C(void) {
+
+    if ((func_8002FECC(PLAYER)) || (gPlayer.animationState == 0)) {
+        
+        if (gPlayer.animationState == 0) {
+            
+            setSpriteAnimation(PLAYER, 0x1A5);
+            func_800D55E4(gPlayer.unk_2D, 0xD);
+            
+        } else {
+
+            setSpriteAnimation(PLAYER, 0);
+            gItemBeingHeld = 0xFF;
+
+            if (!checkDailyEventBit(0x45) && !checkDailyEventBit(0x47) && !checkDailyEventBit(0x48)) {
+    
+                resetAction();
+            }
+
+        }
+    }
+}
+
+//INCLUDE_ASM(const s32, "player", func_8006B6EC);
+
+void func_8006B6EC(void) {
+
+    if ((func_8002FECC(PLAYER)) || (gPlayer.animationState == 0)) {
+
+        if (gPlayer.animationState == 0) {
+            func_8002F2FC(PLAYER, 0x2B3);
+            gPlayer.animationState++;
+        } else {
+            resetAction();
+        }
+        
+    }
+}
+
+//INCLUDE_ASM(const s32, "player", func_8006B77C);
+
+void func_8006B77C(void) {
+
+    if ((func_8002FECC(PLAYER)) || (gPlayer.animationState == 0)) {
+
+        switch (gPlayer.animationState) {
+
+            case 0:
+                
+                setSpriteAnimation(PLAYER, 0x18);
+                break;
+            
+            case 1:
+                
+                setSpriteAnimation(PLAYER, 0x26A);
+                func_800D55E4(gPlayer.unk_2D, 1);
+                gPlayer.animationState++;
+                break;
+            
+            default:
+                
+                if (gPlayer.heldItem == 0xDA) {
+                    
+                    acquireKeyItem(4);
+                    setSpecialDialogueBit(0xB8);
+                    
+                }
+    
+                gPlayer.heldItem = 0;
+                
+                resetAction();
+                    
+                gItemBeingHeld = 0xFF;
+    
+        }
+    }
+}
+
+//INCLUDE_ASM(const s32, "player", func_8006B8BC);
+
+void func_8006B8BC(void) {
+
+    if ((func_8002FECC(PLAYER)) || (gPlayer.animationState == 0)) {
+        
+        if (gPlayer.animationState == 0) {
+             setSpriteAnimation(0U, 0x21C);
+        }
+    }
+    
+}
+
+//INCLUDE_ASM(const s32, "player", func_8006B910);
+
+void func_8006B910(void) {
+
+    if ((func_8002FECC(PLAYER)) || (gPlayer.animationState == 0)) {
+        
+        if (gPlayer.animationState == 0) {
+             setSpriteAnimation(0U, 0x25C);
+        }
+    }
+    
+}
 
 void func_8006B964(void) {}
 
@@ -1568,17 +1794,101 @@ void func_8006B96C(void) {}
 
 void func_8006B974(void) {}
 
-INCLUDE_ASM(const s32, "player", func_8006B97C);
+//INCLUDE_ASM(const s32, "player", func_8006B97C);
 
-INCLUDE_ASM(const s32, "player", func_8006BA14);
+void func_8006B97C(void) {
+    
+    if ((func_8002FECC(PLAYER)) || (gPlayer.animationState == 0)) {
 
-INCLUDE_ASM(const s32, "player", func_8006BAAC);
+        if (gPlayer.animationState == 0) {
+            setSpriteAnimation(PLAYER, 0x19D);
+            gPlayer.animationState++;
+        } else {
+            resetAction();
+            // animals.c
+            func_8009B11C();
+        }
+    }
 
-INCLUDE_ASM(const s32, "player", func_8006BBC4);
+}
+
+
+//INCLUDE_ASM(const s32, "player", func_8006BA14);
+
+void func_8006BA14(void) {
+    
+    if ((func_8002FECC(PLAYER)) || (gPlayer.animationState == 0)) {
+
+        if (gPlayer.animationState == 0) {
+            setSpriteAnimation(PLAYER, 0x19D);
+            gPlayer.animationState++;
+        } else {
+            resetAction();
+            // animals.c
+            func_8009B1BC();
+        }
+    }
+
+}
+
+//INCLUDE_ASM(const s32, "player", func_8006BAAC);
+
+void func_8006BAAC(void) {
+
+    if ((func_8002FECC(PLAYER)) || (gPlayer.animationState == 0)) {
+
+        switch (gPlayer.animationState) {
+
+            case 0:
+                
+                setSpriteAnimation(PLAYER, 0x18);
+                break;
+            
+            case 1:
+
+                if (func_800D5A6C(gPlayer.heldItem) & 0x4000) {
+                    func_8002F2FC(0, 0x2B3);
+                    gAlcoholTolerance += adjustValue(gAlcoholTolerance, 1, 0xFF);
+                } else {
+                    func_8002F2FC(0, 0x1B6);
+                }
+                
+                gPlayer.heldItem = 0;
+                gPlayer.animationState++;
+                break;
+            
+            default:
+                resetAction();
+                gItemBeingHeld = 0xFF;
+                break;
+            
+        }
+    }
+}
+
+//INCLUDE_ASM(const s32, "player", func_8006BBC4);
+
+void func_8006BBC4(void) {
+    
+    if ((func_8002FECC(PLAYER)) || (gPlayer.animationState == 0)) {
+        
+        if (gPlayer.animationState == 0) {
+            
+            setSpriteAnimation(0, 0x26A);
+            func_800D55E4(gPlayer.unk_2D, 1);
+            gPlayer.heldItem = 0;
+            gPlayer.animationState++;
+            setAudio(0x24);
+            
+        } else {
+            resetAction();
+            gItemBeingHeld = 0xFF;
+        }
+        
+    }
+}
 
 // fishing handler
-// 99%
-
 void func_8006BC84(void) {
 
     Vec3f vec;

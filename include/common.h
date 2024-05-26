@@ -11,12 +11,14 @@
 
 typedef u8 bool;
 
-// signature from ultra64.h not getting picked up by sprite.c
+// signature from ultra64.h; not getting picked up by sprite.c
 void __assert(const char* exp, const char* filename, int line);     
 
 #define TRUE 1
 #define FALSE 0
 
 #define MAX_UNSIGNED_SHORT 65535
+
+#define NAME_LENGTH 6
 
 #endif

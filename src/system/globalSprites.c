@@ -231,7 +231,6 @@ INCLUDE_ASM(const s32, "system/globalSprites", func_8002B7A0);
 
 bool func_8002B80C(u16 spriteIndex, u16 offset, u8 arg2) {
 
-    u32 *ptr;
     bool result = 0;
     
     if (spriteIndex < MAX_ACTIVE_SPRITES) {

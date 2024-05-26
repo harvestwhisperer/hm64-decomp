@@ -3549,26 +3549,14 @@ void setLetters(void) {
 // D_8011F25C
 //INCLUDE_ASM(const s32, "game", func_80063A2C);
 
-u16 func_80063A2C(u8 arg0) {
+u16 func_80063A2C(u8 index) {
 
     u16 arr[80];
     
-    MemoryRead_32 *ptr;
-    MemoryRead_32 *ptr2 = D_8011F25C;
-    
-    ptr = arr;
+    readMemory(D_8011F25C, arr, 0xA0);
 
-    if (((u32)arr | (u32)D_8011F25C) % 4) {
-        do {
-            *(Unaligned32*)ptr++ = *(Unaligned32*)ptr2++;
-        } while (ptr2 != (D_8011F25C + 0xA));        
-    } else {
-        do {
-            *(Aligned32*)ptr++ = *(Aligned32*)ptr2++;
-        } while (ptr2 != (D_8011F25C + 0xA));       
-    }
+    return arr[index];
 
-    return arr[arg0];
 }
 
 /* rodata */

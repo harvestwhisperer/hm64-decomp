@@ -28,6 +28,9 @@
 #define DIALOGUE_BEEP 87
 #define RUMBLE 89
 
+#define SFX_VOLUME 128
+#define SONG_VOLUME 128
+
 typedef struct {
     u8 *currentSongRomAddrStart;
     u8 *currentSongRomAddrEnd;

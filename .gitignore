@@ -18,4 +18,6 @@ bin/
 build/
 tools/gcc-2.7.2
 .vscode
+undefined_syms_auto.txt
+undefined_funcs_auto.txt
 Zone.Identifier

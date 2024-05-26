@@ -5,14 +5,14 @@
 typedef struct {
     u8* name;
     u16 unk_4;
-    u8 unk_6;
+    u8 unk_6; // mode/name to enter
     u8 unk_7;
     Vec4f_Coordinates coordinates;
     s8 unk_18;
     s8 unk_19;
     s8 unk_1A;
     u16 unk_1C;
-    u16 unk_1E;
+    u16 flags;
 } NamingScreenContext;
 
 extern u32 namingScreenTexture_ROM_START;

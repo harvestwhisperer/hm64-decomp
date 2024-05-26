@@ -321,7 +321,7 @@ void initializeTitleScreen(u8 arg0) {
     
     // set audio
     func_800ACB04(TITLE_THEME);
-    setSongWithVolume(TITLE_THEME, 0x80);
+    setSongWithVolume(TITLE_THEME, SONG_VOLUME);
 }
 
 //INCLUDE_ASM(const s32, "title", loadDogTitleSprite);
@@ -350,6 +350,7 @@ void titleScreenMainLoopCallback(void) {
 
             // should be struct; maybe static inline
             D_8012657C++;
+            
             if (D_8012657C == 500) {
 
                 func_8002C1C0(0x42, 0, 0, 0, 0, 8);
@@ -378,6 +379,7 @@ void titleScreenMainLoopCallback(void) {
                 func_8002C1C0(0x59, 0, 0, 0, 0, 8);
                 func_8002C1C0(0x5A, 0, 0, 0, 0, 8);
                 func_8002C1C0(0x5B, 0, 0, 0, 0, 8);
+
                 setSongWithDefaultSpeed(1);
 
                 set = 1;
