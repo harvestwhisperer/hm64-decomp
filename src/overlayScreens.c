@@ -208,6 +208,7 @@ static inline inline_func() {
 //INCLUDE_ASM(const s32, "overlayScreens", func_800B3BD8);
 
 // money sprites
+// add linker symbols
 void func_800B3BD8(void) {
 
     u32 temp = gGold;

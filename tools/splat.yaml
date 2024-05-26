@@ -1020,9 +1020,26 @@ segments:
     type: bin
     start: 0xCC9330
 
-  - name: miscTextures
+  - name: emptyTexture
     type: bin
     start: 0xCC9350
+
+  - name: emptyTextureIndex
+    type: bin
+    start: 0xCC9370
+
+  - name: landscapeBackgroundTexture
+    type: bin
+    start: 0xCC9390
+
+  - name: landscapeBackgroundIndex
+    type: bin
+    start: 0xCCB980
+
+  # backgrounds
+  - name: miscTextures
+    type: bin
+    start: 0xCCB9A0
 
   - name: dialogueWindowTexture
     type: bin

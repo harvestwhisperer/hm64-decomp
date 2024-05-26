@@ -961,8 +961,6 @@ mainLoopCallbacksTable = 0x80188F70;
 albumBits = 0x80189058;
 
 gPlayer = 0x80189060; 
-belongingsSlots = 0x80189084;
-keyItemSlots = 0x8018908E;
 gBabyAge = 0x80189134;
 gBabyName = 0x8018981E;
 dailyEventBits = 0x80189140;

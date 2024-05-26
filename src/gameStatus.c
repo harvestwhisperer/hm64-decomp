@@ -216,6 +216,7 @@ void func_80063F3C(void) {
 //INCLUDE_ASM(const s32, "gameStatus", func_80064048);
 
 void func_80064048(void) {
+
     u8 i;
 
     for (i = 0; i < MAX_CHICKENS; i++) {
@@ -224,6 +225,7 @@ void func_80064048(void) {
             gChickens[i].flags |= 0x10;
         }
     }
+    
 }
 
 INCLUDE_ASM(const s32, "gameStatus", func_80064114);

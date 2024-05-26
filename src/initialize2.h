@@ -8,6 +8,7 @@ extern void func_80056030(u8);
 extern void func_80059300(void);
 extern void func_80059334();    
 extern void func_800563D0(u8);
+extern void func_80059368(void);
 extern void func_800593EC();   
 
 extern void startNewDay(void);

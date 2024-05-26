@@ -287,114 +287,39 @@ extern u32 bathroomMap_ROM_START;
 extern u32 bathroomMap_ROM_END;
 
 // forward declaration
+void func_80054550(void);
 bool func_80054734(void);
+void initializeGameVariables(void);
+void loadMapAddresses(void);
+void registerMainLoopCallbacks(void);
+void setGameVariables(void);
 
 
-//INCLUDE_ASM(const s32, "initialize", func_8004E160);
-
-void func_8004E160(void) {
-    
-    volatile musConfig c;
-    
-    c.fxs = sfxList;
-    c.priority = musPriorityList;
-    
-    initializeAudio(&c);
-
-    // initialize all bss variables and structs
-    initializeGameVariables();
-
-    gCurrentGameIndex = 0; 
-    
-    registerMainLoopCallbacks();
-    func_8004F768();
-    loadMapAddresses();
-    func_80053088();
-    func_80054550();
-    func_8002F7C8(0, 0, 0, 0);
-    func_8003BE98(0, 0, 0, 0, 0);
-
-    setMainLoopCallbackFunctionIndex(MAIN_GAME);
-    
-    initializeWaveTable(0);
-}
-
-//INCLUDE_ASM(const s32, "initialize", initializeGameVariables);
-
-// initialize bss game variables
-// probably uses static inlines for each group
-void initializeGameVariables(void) {
-
-    u8 i, j, k;
-    
-    MemoryRead_32 *ptr;
-    MemoryRead_32 *ptr2;
-
-    gBaseMapIndex = 0xFF;
-    gCurrentSongIndex = 0xFF;
-    
-    gSongVolume = 128;
-    
-    previousMapIndex = 0xFF;
-    gEntranceIndex = 0xFF;
-    previousEntranceIndex = 0xFF;
-    
-    D_801C3F50 = 0;
-    
-    gWife = 0xFF;
-
-    resetGlobalLighting();
-
+static inline void setStartingTime() {
     gYear = 1;
-    gDayOfWeek = WEDNESDAY;
-    gSeason = SPRING;
+    gDayOfWeek = 3;
+    gSeason = 1;
     gDayOfMonth = 3;
     gHour = 6;
     gMinutes = 0;
     gSeconds = 0;
+}
+
+static inline void initializeTV() {
+
+    tvContext.channelIndex = 0;
+    tvContext.mode = 0;
+    tvContext.varietyShowEpisodeCounters[0] = 1;
+    tvContext.varietyShowEpisodeCounters[1] = 1;
+    tvContext.varietyShowEpisodeCounters[2] = 0;
+    tvContext.varietyShowEpisodeCounters[3] = 0;
+    tvContext.varietyShowEpisodeCounters[4] = 0;
+    tvContext.varietyShowEpisodeCounters[5] = 0;
+    tvContext.varietyShowEpisodeCounters[6] = 0;
     
-    gGold = 300;
-    
-    dailyShippingBinValue = 0;
-    
-    gWeather = SUNNY;
-    gForecast = SUNNY;
-    gNextSeason = SPRING;
+} 
 
-    D_80205230.unk_6 = 0;
-    D_80205230.unk_2 = 0;
-    D_80205230.unk_4 = 0;
-
-    D_8018981C = 0xFFFF;
-    gItemBeingHeld = 0xFF;
-
-    gCutsceneFlags = 0;
-
-    gMaximumStamina = 100;
-    gPlayer.currentStamina = 100;
-
-    gHarvestKing = 6;
-    gHarvestCoinFinder = 0xFF;
-    gFlowerFestivalGoddess = 0xFF;
-    D_80189054 = 0xFF;
-    gVoteForFlowerFestivalGoddess = 0xFF;
-    D_801FD621 = 0;
-    D_801FC150 = 0;
-    
-    D_80237412 = 0;
-
-    gHappiness = 0;
-
-    blueMistFlowerPlot = 0;
-
-    D_8016F8F4 = 0;
-
-    D_8013DC2E = 0;
-
-    D_802373F0 = 0;
-    D_80181B10 = 0;
-
-    D_802226E0 = 0;
+static inline void initializePlayer() {
 
     gPlayer.fatigue.counter = 0;
     gPlayer.fatigue.level = 0;
@@ -465,6 +390,186 @@ void initializeGameVariables(void) {
     gPlayer.keyItemSlots[18] = 0;
     gPlayer.keyItemSlots[19] = 0;
     gPlayer.keyItemSlots[20] = 0;
+
+}
+
+static inline void setInitialSpecialDialogueBits() {
+
+    setSpecialDialogueBit(0);
+    setSpecialDialogueBit(0xBC);
+    setSpecialDialogueBit(0xBD);
+    setSpecialDialogueBit(0xBE);
+    setSpecialDialogueBit(0xBF);
+    setSpecialDialogueBit(0xC0);
+    setSpecialDialogueBit(0xC1);
+    setSpecialDialogueBit(0xC2);
+    setSpecialDialogueBit(0xC3);
+    setSpecialDialogueBit(0xC4);
+    setSpecialDialogueBit(0xC5);
+    setSpecialDialogueBit(0xC6);
+    setSpecialDialogueBit(0xC7);
+    setSpecialDialogueBit(0xC8);
+    setSpecialDialogueBit(0xC9);
+    setSpecialDialogueBit(0xCA);
+    setSpecialDialogueBit(0xCB);
+    setSpecialDialogueBit(0xCC);
+    setSpecialDialogueBit(0xCD);
+    setSpecialDialogueBit(0xCE);
+    setSpecialDialogueBit(0xCF);
+    setSpecialDialogueBit(0xD0);
+    setSpecialDialogueBit(0xD1);
+    setSpecialDialogueBit(0xD2);
+    setSpecialDialogueBit(0xD3);
+    setSpecialDialogueBit(0xD4);
+    setSpecialDialogueBit(0xD5);
+    setSpecialDialogueBit(0xD6);
+    setSpecialDialogueBit(0xD7);
+    setSpecialDialogueBit(0xDF);
+    setSpecialDialogueBit(0xD8);
+    setSpecialDialogueBit(0xD9);
+    setSpecialDialogueBit(0xDA);
+    setSpecialDialogueBit(0xDB);
+    setSpecialDialogueBit(0xDC);
+    setSpecialDialogueBit(0xDD);
+    setSpecialDialogueBit(0xDE);
+    setSpecialDialogueBit(0xDF);
+    setSpecialDialogueBit(0xE0);
+
+}
+
+static inline void initializeToolchestSlots() {
+
+    gToolchestSlots[0] = 0;
+    gToolchestSlots[1] = 0;
+    gToolchestSlots[2] = 0;
+    gToolchestSlots[3] = 0;
+    gToolchestSlots[4] = 0;
+    gToolchestSlots[5] = 0;
+    gToolchestSlots[6] = 0;
+    gToolchestSlots[7] = 0;
+    gToolchestSlots[8] = 0;
+    gToolchestSlots[9] = 0;
+    gToolchestSlots[10] = 0;
+    gToolchestSlots[11] = 0;
+    gToolchestSlots[12] = 0;
+    gToolchestSlots[13] = 0;
+    gToolchestSlots[14] = 0;
+    gToolchestSlots[15] = 0;
+    gToolchestSlots[16] = 0;
+    gToolchestSlots[17] = 0;
+    gToolchestSlots[18] = 0;
+    gToolchestSlots[19] = 0;
+    gToolchestSlots[20] = 0;
+    gToolchestSlots[21] = 0;    
+    gToolchestSlots[22] = 0;
+    gToolchestSlots[23] = 0;
+    gToolchestSlots[24] = 0;
+    gToolchestSlots[25] = 0;
+    gToolchestSlots[26] = 0;
+    gToolchestSlots[27] = 0;
+       
+}
+
+
+//INCLUDE_ASM(const s32, "initialize", func_8004E160);
+
+void func_8004E160(void) {
+    
+    volatile musConfig c;
+    
+    c.fxs = sfxList;
+    c.priority = musPriorityList;
+    
+    initializeAudio(&c);
+
+    // initialize all bss variables and structs
+    initializeGameVariables();
+
+    gCurrentGameIndex = 0; 
+    
+    registerMainLoopCallbacks();
+    func_8004F768();
+    loadMapAddresses();
+    func_80053088();
+    func_80054550();
+    func_8002F7C8(0, 0, 0, 0);
+    func_8003BE98(0, 0, 0, 0, 0);
+
+    setMainLoopCallbackFunctionIndex(MAIN_GAME);
+    
+    initializeWaveTable(0);
+
+}
+
+//INCLUDE_ASM(const s32, "initialize", initializeGameVariables);
+
+// initialize bss game variables
+// probably uses static inlines for each group
+void initializeGameVariables(void) {
+
+    u8 i, j, k;
+
+    gBaseMapIndex = 0xFF;
+    gCurrentSongIndex = 0xFF;
+    
+    gSongVolume = 128;
+    
+    previousMapIndex = 0xFF;
+    gEntranceIndex = 0xFF;
+    previousEntranceIndex = 0xFF;
+    
+    D_801C3F50 = 0;
+    
+    gWife = 0xFF;
+
+    resetGlobalLighting();
+
+    setStartingTime();
+    
+    gGold = 300;
+    
+    dailyShippingBinValue = 0;
+    
+    gWeather = SUNNY;
+    gForecast = SUNNY;
+    gNextSeason = SPRING;
+
+    D_80205230.unk_6 = 0;
+    D_80205230.unk_2 = 0;
+    D_80205230.unk_4 = 0;
+
+    D_8018981C = 0xFFFF;
+    gItemBeingHeld = 0xFF;
+
+    gCutsceneFlags = 0;
+
+    gMaximumStamina = 100;
+    gPlayer.currentStamina = 100;
+
+    gHarvestKing = 6;
+    gHarvestCoinFinder = 0xFF;
+    gFlowerFestivalGoddess = 0xFF;
+    D_80189054 = 0xFF;
+    gVoteForFlowerFestivalGoddess = 0xFF;
+    D_801FD621 = 0;
+    D_801FC150 = 0;
+    
+    D_80237412 = 0;
+
+    gHappiness = 0;
+
+    blueMistFlowerPlot = 0;
+
+    D_8016F8F4 = 0;
+
+    D_8013DC2E = 0;
+
+    D_802373F0 = 0;
+    D_80181B10 = 0;
+
+    D_802226E0 = 0;
+
+    initializePlayer();
     
     D_80189828.unk_0 = 0;
     D_80189828.unk_2 = 0;
@@ -534,6 +639,7 @@ void initializeGameVariables(void) {
     horseInfo.flags = 0;
 
     for (i = 0; i < MAX_CHICKENS; i++) {
+
         gChickens[i].location = 0;
         gChickens[i].unk_17 = 0;
         gChickens[i].unk_18 = 0;
@@ -556,6 +662,7 @@ void initializeGameVariables(void) {
         gChickens[i].name[3] = 0xFF;
         gChickens[i].name[4] = 0xFF;
         gChickens[i].name[5] = 0xFF;
+
     }
 
      for (i = 0; i < MAX_FARM_ANIMALS; i++) {
@@ -639,15 +746,7 @@ void initializeGameVariables(void) {
     D_801FB6F3 = 0;
     D_801FB6F6 = 0;
 
-    tvContext.channelIndex = 0;
-    tvContext.mode = 0;
-    tvContext.varietyShowEpisodeCounters[0] = 1;
-    tvContext.varietyShowEpisodeCounters[1] = 1;
-    tvContext.varietyShowEpisodeCounters[2] = 0;
-    tvContext.varietyShowEpisodeCounters[3] = 0;
-    tvContext.varietyShowEpisodeCounters[4] = 0;
-    tvContext.varietyShowEpisodeCounters[5] = 0;
-    tvContext.varietyShowEpisodeCounters[6] = 0;
+    initializeTV();
 
     D_801FC154 = 0;
     D_80204DF4 = 0;
@@ -665,34 +764,7 @@ void initializeGameVariables(void) {
     D_80180714 = 0;
     D_80237410 = 0;
 
-    gToolchestSlots[0] = 0;
-    gToolchestSlots[1] = 0;
-    gToolchestSlots[2] = 0;
-    gToolchestSlots[3] = 0;
-    gToolchestSlots[4] = 0;
-    gToolchestSlots[5] = 0;
-    gToolchestSlots[6] = 0;
-    gToolchestSlots[7] = 0;
-    gToolchestSlots[8] = 0;
-    gToolchestSlots[9] = 0;
-    gToolchestSlots[10] = 0;
-    gToolchestSlots[11] = 0;
-    gToolchestSlots[12] = 0;
-    gToolchestSlots[13] = 0;
-    gToolchestSlots[14] = 0;
-    gToolchestSlots[15] = 0;
-    gToolchestSlots[16] = 0;
-    gToolchestSlots[17] = 0;
-    gToolchestSlots[18] = 0;
-    gToolchestSlots[19] = 0;
-    gToolchestSlots[20] = 0;
-    gToolchestSlots[21] = 0;    
-    gToolchestSlots[22] = 0;
-    gToolchestSlots[23] = 0;
-    gToolchestSlots[24] = 0;
-    gToolchestSlots[25] = 0;
-    gToolchestSlots[26] = 0;
-    gToolchestSlots[27] = 0;    
+    initializeToolchestSlots();
 
     D_80237420[0] = 0;
     D_80237420[1] = 0;
@@ -782,71 +854,11 @@ void initializeGameVariables(void) {
         specialDialogueBits[i] = 0;
     }    
 
-    setSpecialDialogueBit(0);
-    setSpecialDialogueBit(0xBC);
-    setSpecialDialogueBit(0xBD);
-    setSpecialDialogueBit(0xBE);
-    setSpecialDialogueBit(0xBF);
-    setSpecialDialogueBit(0xC0);
-    setSpecialDialogueBit(0xC1);
-    setSpecialDialogueBit(0xC2);
-    setSpecialDialogueBit(0xC3);
-    setSpecialDialogueBit(0xC4);
-    setSpecialDialogueBit(0xC5);
-    setSpecialDialogueBit(0xC6);
-    setSpecialDialogueBit(0xC7);
-    setSpecialDialogueBit(0xC8);
-    setSpecialDialogueBit(0xC9);
-    setSpecialDialogueBit(0xCA);
-    setSpecialDialogueBit(0xCB);
-    setSpecialDialogueBit(0xCC);
-    setSpecialDialogueBit(0xCD);
-    setSpecialDialogueBit(0xCE);
-    setSpecialDialogueBit(0xCF);
-    setSpecialDialogueBit(0xD0);
-    setSpecialDialogueBit(0xD1);
-    setSpecialDialogueBit(0xD2);
-    setSpecialDialogueBit(0xD3);
-    setSpecialDialogueBit(0xD4);
-    setSpecialDialogueBit(0xD5);
-    setSpecialDialogueBit(0xD6);
-    setSpecialDialogueBit(0xD7);
-    setSpecialDialogueBit(0xDF);
-    setSpecialDialogueBit(0xD8);
-    setSpecialDialogueBit(0xD9);
-    setSpecialDialogueBit(0xDA);
-    setSpecialDialogueBit(0xDB);
-    setSpecialDialogueBit(0xDC);
-    setSpecialDialogueBit(0xDD);
-    setSpecialDialogueBit(0xDE);
-    setSpecialDialogueBit(0xDF);
-    setSpecialDialogueBit(0xE0);
+    setInitialSpecialDialogueBits();
     
-    ptr = &farmFieldTiles;
-    ptr2 = D_80113580;
+    readMemory((u32)D_80113580, (u32)farmFieldTiles, 0x1E0);
 
-    if (((u32)D_80113580 | (u32)farmFieldTiles) % 4) { 
-        do {
-            *(Unaligned32*)ptr++ = *(Unaligned32*)ptr2++;
-        } while (ptr2 != (D_80113580 + 0x18));        
-    } else {
-        do {
-            *(Aligned32*)ptr++ = *(Aligned32*)ptr2++;
-        } while (ptr2 != (D_80113580 + 0x18));       
-    }
-
-    ptr = &D_80182BA8;
-    ptr2 = &D_80113760;
-
-    if (((u32)D_80113760 | (u32)D_80182BA8) % 4) { 
-        do {
-            *(Unaligned32*)ptr++ = *(Unaligned32*)ptr2++;
-        } while (ptr2 != (D_80113760 + 0x14));        
-    } else {
-        do {
-            *(Aligned32*)ptr++ = *(Aligned32*)ptr2++;
-        } while (ptr2 != (D_80113760 + 0x14));       
-    }
+    readMemory((u32)D_80113760, (u32)D_80182BA8, 0x1E0);
         
     albumBits |= 1;
 }
@@ -855,62 +867,62 @@ void initializeGameVariables(void) {
 
 void registerMainLoopCallbacks(void) {
 
-    registerMainLoopCallback(MAIN_GAME, &mainGameLoopCallback);
-    registerMainLoopCallback(MAP_LOAD, &func_8005D0BC);
-    registerMainLoopCallback(3, &func_80060490);
-    registerMainLoopCallback(4, &func_8005C00C);
-    registerMainLoopCallback(LEVEL_LOAD_1, &func_8005CA64);
-    registerMainLoopCallback(LEVEL_LOAD_2, &func_8005CAA8);
-    registerMainLoopCallback(OVERLAY_SCREEN_LOAD, &func_8005CB50);
-    registerMainLoopCallback(ROTATING, &func_8005CBA4);
-    registerMainLoopCallback(DIALOGUE, &func_8005CBF0);
-    registerMainLoopCallback(TEXT, &func_8005CEFC);
-    registerMainLoopCallback(0xB, &func_8005CF4C);
-    registerMainLoopCallback(PINK_OVERLAY_TEXT, &func_8005D2B0);
-    registerMainLoopCallback(END_OF_DAY_1, &func_80060624);
-    registerMainLoopCallback(END_OF_FESTIVAL_DAY_1, &func_800604B0);
-    registerMainLoopCallback(END_OF_FESTIVAL_DAY_2, &func_800605F0);
-    registerMainLoopCallback(END_OF_DAY_2, &func_80060838);
-    registerMainLoopCallback(0xF, &func_80060454);
-    registerMainLoopCallback(TV, &tvMainLoopCallback);
-    registerMainLoopCallback(SHOP_DIALOGUE, &func_800DCAB8);
-    registerMainLoopCallback(PAUSE_SCREEN_LOAD, &func_800B881C);
-    registerMainLoopCallback(TOOLBOX_LOAD, &func_800BADD0);
-    registerMainLoopCallback(FREEZER_LOAD, &func_800BCA9C);
-    registerMainLoopCallback(CABINET_LOAD, &func_800BE808);
-    registerMainLoopCallback(HOME_EXTENSIONS_SELECT_LOAD, &func_800B82AC);
-    registerMainLoopCallback(ESTIMATE_LOAD, &func_800B8018);
-    registerMainLoopCallback(0x1A, &func_800B815C);
-    registerMainLoopCallback(0x1B, &func_800B83F0);
-    registerMainLoopCallback(0x1C, &func_800B8554);
-    registerMainLoopCallback(0x1D, &func_800B86B8);
-    registerMainLoopCallback(0x1E, &func_800C8424);
-    registerMainLoopCallback(0x1F, &func_800C88F4);
-    registerMainLoopCallback(HORSE_RACE_RESULTS_LOAD, &func_800CC518);
-    registerMainLoopCallback(HORSE_RACE_GIFTS_LOAD, &func_800CD928);
-    registerMainLoopCallback(LOTTERY_LOAD, &func_800CE930);
-    registerMainLoopCallback(PAUSE_SCREEN, &func_800B9D3C);
-    registerMainLoopCallback(TOOLBOX, &func_800BBEC0);
-    registerMainLoopCallback(FREEZER, &func_800BDB24);
-    registerMainLoopCallback(CABINET, &func_800BF990);
-    registerMainLoopCallback(HOME_EXTENSIONS_SELECT, &func_800C1124);
-    registerMainLoopCallback(ESTIMATE, &func_800C224C);
-    registerMainLoopCallback(KITCHEN_PICTURE, &func_800C2B8C);
-    registerMainLoopCallback(CALENDAR, &func_800C3D20);
-    registerMainLoopCallback(RECIPE_BOOK, &func_800C53C0);
-    registerMainLoopCallback(ALBUM, &func_800C7058);
-    registerMainLoopCallback(0x2D, &func_800C8784);
-    registerMainLoopCallback(HORSE_RACE_BETTING, &func_800CA808);
-    registerMainLoopCallback(HORSE_RACE_RESULTS, &func_800CD750);
-    registerMainLoopCallback(HORSE_RACE_GIFTS, &func_800CE068);
-    registerMainLoopCallback(LOTTERY_2, &func_800CEDF0);
-    registerMainLoopCallback(TITLE_SCREEN, &titleScreenMainLoopCallback);
-    registerMainLoopCallback(NAMING_SCREEN, &func_8005CF94);
-    registerMainLoopCallback(0x34, &func_800ED974);
-    registerMainLoopCallback(SELECT_GAME, &func_800E1FAC);
-    registerMainLoopCallback(ESTIMATE_SCREEN, &func_800E8F08);
-    registerMainLoopCallback(0x37, &func_800657B4);
-    registerMainLoopCallback(0x38, &func_800657C4);
+    registerMainLoopCallback(MAIN_GAME, mainGameLoopCallback);
+    registerMainLoopCallback(MAP_LOAD, func_8005D0BC);
+    registerMainLoopCallback(3, func_80060490);
+    registerMainLoopCallback(4, func_8005C00C);
+    registerMainLoopCallback(LEVEL_LOAD_1, func_8005CA64);
+    registerMainLoopCallback(LEVEL_LOAD_2, func_8005CAA8);
+    registerMainLoopCallback(OVERLAY_SCREEN_LOAD, func_8005CB50);
+    registerMainLoopCallback(ROTATING, func_8005CBA4);
+    registerMainLoopCallback(DIALOGUE, func_8005CBF0);
+    registerMainLoopCallback(TEXT, func_8005CEFC);
+    registerMainLoopCallback(0xB, func_8005CF4C);
+    registerMainLoopCallback(PINK_OVERLAY_TEXT, func_8005D2B0);
+    registerMainLoopCallback(END_OF_DAY_1, func_80060624);
+    registerMainLoopCallback(END_OF_FESTIVAL_DAY_1, func_800604B0);
+    registerMainLoopCallback(END_OF_FESTIVAL_DAY_2, func_800605F0);
+    registerMainLoopCallback(END_OF_DAY_2, func_80060838);
+    registerMainLoopCallback(0xF, func_80060454);
+    registerMainLoopCallback(TV, tvMainLoopCallback);
+    registerMainLoopCallback(SHOP_DIALOGUE, func_800DCAB8);
+    registerMainLoopCallback(PAUSE_SCREEN_LOAD, func_800B881C);
+    registerMainLoopCallback(TOOLBOX_LOAD, func_800BADD0);
+    registerMainLoopCallback(FREEZER_LOAD, func_800BCA9C);
+    registerMainLoopCallback(CABINET_LOAD, func_800BE808);
+    registerMainLoopCallback(HOME_EXTENSIONS_SELECT_LOAD, func_800B82AC);
+    registerMainLoopCallback(ESTIMATE_LOAD, func_800B8018);
+    registerMainLoopCallback(0x1A, func_800B815C);
+    registerMainLoopCallback(0x1B, func_800B83F0);
+    registerMainLoopCallback(0x1C, func_800B8554);
+    registerMainLoopCallback(0x1D, func_800B86B8);
+    registerMainLoopCallback(0x1E, func_800C8424);
+    registerMainLoopCallback(0x1F, func_800C88F4);
+    registerMainLoopCallback(HORSE_RACE_RESULTS_LOAD, func_800CC518);
+    registerMainLoopCallback(HORSE_RACE_GIFTS_LOAD, func_800CD928);
+    registerMainLoopCallback(LOTTERY_LOAD, func_800CE930);
+    registerMainLoopCallback(PAUSE_SCREEN, func_800B9D3C);
+    registerMainLoopCallback(TOOLBOX, func_800BBEC0);
+    registerMainLoopCallback(FREEZER, func_800BDB24);
+    registerMainLoopCallback(CABINET, func_800BF990);
+    registerMainLoopCallback(HOME_EXTENSIONS_SELECT, func_800C1124);
+    registerMainLoopCallback(ESTIMATE, func_800C224C);
+    registerMainLoopCallback(KITCHEN_PICTURE, func_800C2B8C);
+    registerMainLoopCallback(CALENDAR, func_800C3D20);
+    registerMainLoopCallback(RECIPE_BOOK, func_800C53C0);
+    registerMainLoopCallback(ALBUM, func_800C7058);
+    registerMainLoopCallback(0x2D, func_800C8784);
+    registerMainLoopCallback(HORSE_RACE_BETTING, func_800CA808);
+    registerMainLoopCallback(HORSE_RACE_RESULTS, func_800CD750);
+    registerMainLoopCallback(HORSE_RACE_GIFTS, func_800CE068);
+    registerMainLoopCallback(LOTTERY_2, func_800CEDF0);
+    registerMainLoopCallback(TITLE_SCREEN, titleScreenMainLoopCallback);
+    registerMainLoopCallback(NAMING_SCREEN, func_8005CF94);
+    registerMainLoopCallback(0x34, func_800ED974);
+    registerMainLoopCallback(SELECT_GAME, func_800E1FAC);
+    registerMainLoopCallback(ESTIMATE_SCREEN, func_800E8F08);
+    registerMainLoopCallback(0x37, func_800657B4);
+    registerMainLoopCallback(0x38, func_800657C4);
     
 }
 

@@ -5,11 +5,13 @@
 #include "system/audio.h"
 
 #define TITLE_THEME 1
+#define NAMING_SCREEN_THEME 8
 #define RAIN_SFX 32
 #define TYPHOON_SFX 34
 
 void initializeWaveTable(u16 waveTableIndex);
 void func_800ACB04(u16 songIndex);
+void func_800ACB8C(u16 songIndex);
 void setSongWithDefaultSpeed(u16 songIndex);
 u8 checkDefaultSongChannelOpen(u16 songIndex);
 void setSongWithVolume(u16 songIndex, u32 arg1);

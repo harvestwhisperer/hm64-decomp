@@ -3,6 +3,7 @@
 #include "animals.h"
 
 #include "system/graphic.h"
+#include "system/mathUtils.h"
 #include "system/sprite.h"
 #include "system/mapContext.h"
 
@@ -22,6 +23,7 @@ extern u8 D_8016FAF8;
 extern u16 D_8016FDF0;
 extern u8 D_8016FFE8;
 extern u8 D_80170464;
+extern u8 D_801886CC;
 extern u8 D_80189054;
 extern u8 D_8018908C;
 extern u8 D_801C3F46;
@@ -470,6 +472,7 @@ void initializeFarmAnimal(u8 animalIndex) {
 //INCLUDE_ASM(const s32, "animals", initializeDog);
 
 void initializeDog(void) {
+
     dogInfo.location = FARM;
     dogInfo.coordinates.y = 0;
     dogInfo.unk_17 = 0;
@@ -481,6 +484,7 @@ void initializeDog(void) {
     dogInfo.flags = 1;
     dogInfo.coordinates.x = -432.0f;
     dogInfo.coordinates.z = 96.0f;
+    
 }
 
 //INCLUDE_ASM(const s32, "animals", initializeHorse);
@@ -787,7 +791,23 @@ INCLUDE_ASM(const s32, "animals", func_8009B11C);
 
 INCLUDE_ASM(const s32, "animals", func_8009B1BC);
 
-INCLUDE_ASM(const s32, "animals", func_8009B25C);
+//INCLUDE_ASM(const s32, "animals", func_8009B25C);
+
+void func_8009B25C(void) {
+
+    u8 i;
+
+    for (i = 0; i < MAX_FARM_ANIMALS; i++) {
+
+        if (gFarmAnimals[i].flags & 4) {
+            gFarmAnimals[i].flags |= (0x200 | 0x2000);
+            gFarmAnimals[i].unk_1B = 0;
+        }
+        
+    }
+    
+}
+
 
 INCLUDE_ASM(const s32, "animals", func_8009B2BC);
 
@@ -831,11 +851,29 @@ void func_8009BB70(void) {
 
 INCLUDE_ASM(const s32, "animals", func_8009BBAC);
 
-INCLUDE_ASM(const s32, "animals", func_8009BC44);
+//INCLUDE_ASM(const s32, "animals", func_8009BC44);
 
-INCLUDE_ASM(const s32, "animals", func_8009BC54);
+u8 func_8009BC44(void) {
+    return D_801886CC;
+}
 
-INCLUDE_ASM(const s32, "animals", func_8009BC64);
+//INCLUDE_ASM(const s32, "animals", func_8009BC54);
+
+u8 func_8009BC54(void) {
+    return horseInfo.unk_1E;
+}
+
+//INCLUDE_ASM(const s32, "animals", func_8009BC64);
+
+void func_8009BC64(void) {
+
+    u8 i;
+
+    for (i = 0; i < 7; i++) {
+        D_8016FB08[i].unk_16 = getRandomNumberInRange(0, 3);
+    }
+    
+}
 
 // jtbl_80120EA8
 INCLUDE_ASM(const s32, "animals", func_8009BCC4);
