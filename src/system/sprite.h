@@ -15,6 +15,7 @@
 
 #define OBJECT_SPRITE_BANK_1_START 0x802EB800
 
+// TODO: add sprite indices
 #define DOG_TITLE_SPRITE 0x44
 
 typedef struct {

@@ -31,6 +31,7 @@ s16 D_80182D8C;
 s16 D_8018A062;
 s16 D_80237A20; 
 
+// FIXME:
 extern u32 gCutsceneFlagsHack[2];
 
 //INCLUDE_ASM(const s32, "initialize2", mainGameLoopCallback);
@@ -114,6 +115,7 @@ void func_80056030(u8 arg0) {
 
     D_801891D4 = 0;
     gCutsceneIndex = 0;
+    // FIXME: 
     gCutsceneFlagsHack[1] = 0;    
     
     toggleDailyEventBit(0x28);
@@ -184,6 +186,7 @@ void func_80056030(u8 arg0) {
             setPlayerAction(0, 0);
             gPlayer.heldItem = 0;
         }
+        // FIXME:
         if (!(gCutsceneFlagsHack[1] & 1) && func_8009B5E0()) {
             setAudio(0x3F);
         }

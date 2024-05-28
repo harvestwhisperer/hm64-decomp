@@ -3,6 +3,7 @@
 
 #include "common.h"
 
+// TODO: finish adding these
 /* main loop callback function indices */
 #define MAIN_GAME 1
 #define MAP_LOAD 2

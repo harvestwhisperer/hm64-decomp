@@ -3,6 +3,7 @@
 
 #include "common.h"
 
+// TODO: finish adding map objects
 /* field tiles */
 #define UNTILLED 1
 #define TILLED 2	
@@ -11,7 +12,7 @@
 #define WEED 5
 #define LOG 6
 #define BROKEN_LOG 7
-// to-do: add crops
+// TODO: add crops
 #define BOULDER 0xC4
 #define STUMP 0xC8
 #define CORN_RIPE 0x83
@@ -22,11 +23,12 @@
 #define GRASS_GROWN 0x8E
 #define GRASS_CUT 0x8F
 #define MOONDROP_PLANTED 0x90
-// to-do: add foragables
+// TODO: add foragables
 
 #define FIELD_WIDTH 24
 #define FIELD_HEIGHT 20
 
+// TODO: label these appropriate
 // object maps for levels
 // top of mountain 1
 extern u8 D_8013D258[FIELD_WIDTH][FIELD_HEIGHT];
@@ -72,7 +74,5 @@ extern u16 countPinkCatMintFlowersFarm(void);
 extern u16 countPinkCatMintFlowersGreenhouse(void);  
 
 extern u8 blueMistFlowerPlot;
-
-extern u8 farmFieldTiles[FIELD_WIDTH][FIELD_HEIGHT];
 
 #endif

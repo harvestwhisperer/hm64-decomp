@@ -30,7 +30,7 @@ void func_8006C628(u16, u16);
 extern u8 D_802373A8;
 extern u16 D_80237410;
 
-// part of player struct, but necessary for matching right now
+// FIXME: part of player struct, but necessary for matching right now
 extern u16 D_801890C8;
 
 extern u8 gMaximumStamina;
@@ -142,7 +142,7 @@ void func_80065AA0(void) {
     
 }
 
-// m2c decomp of ranged switch:
+// m2c decomp of ranged switch for reference:
 /*
         if ((s32) D_8018908C < 0xB3) {
             if ((s32) D_8018908C < 0x7B) {

@@ -26,7 +26,7 @@ int rand(void) {
 }
 */
 
-// has an extra nop that's not generated when compiled: likely an unaligned file split
+// FIXME: has an extra nop that's not generated when compiled: likely an unaligned file split
 // 80110444
 INCLUDE_ASM(const s32, "lib/libkmc/rand", sRand);
 

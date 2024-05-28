@@ -10,6 +10,7 @@
 #define ARE_MARRIED checkLifeEventBit(MARRIED)
 #define NOT_MARRIED !checkLifeEventBit(MARRIED)
 
+// TODO: finish adding these
 /* cutscene indices */
 /* farm cutscenes */
 #define KENT_FARM_SOWING_FESITVAL 0x64

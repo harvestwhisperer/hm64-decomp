@@ -13,6 +13,7 @@ extern void tvMainLoopCallback(void);
 #define STATIC_CHANNEL 3
 #define VARIETY_CHANNEL 3
 
+// TODO: finish adding these
 // content
 #define BLUE_SCREEN 0
 #define SUNNY_FORECAST 1

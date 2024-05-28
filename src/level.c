@@ -51,7 +51,7 @@ extern u8 D_801142E0[4][4];
 extern u8 D_801144C0[4][8];
 
 // exit to map indices
-// probably shouldn't be volatile, but need it for matching func_80074C50
+// FIXME: probably shouldn't be volatile, but need it for matching func_80074C50
 extern volatile u8 D_801147C0[];
 
 /*
@@ -1055,7 +1055,7 @@ INCLUDE_RODATA(const s32, "level", D_8011FB70);
 INCLUDE_ASM(const s32, "level", func_800735FC);
 
 // map struct 7
-// matches but have to match preceding rodata
+// TODO: matches but have to match preceding rodata
 /*
 void func_800735FC(u16 levelIndex) {
 

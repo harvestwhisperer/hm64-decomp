@@ -584,6 +584,7 @@ segments:
     type: bin
     start: 0x630EE0
 
+# TODO: finish separating out sprites
   - name: miscSprites
     type: bin
     start: 0x631400
@@ -1070,6 +1071,7 @@ segments:
     type: bin
     start: 0xD49B80
 
+  # TODO: finish separating textures
   - name: miscTextures2
     type: bin
     start: 0xD49BA0

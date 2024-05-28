@@ -24,6 +24,8 @@
 #define BUTTON_STICK_LEFT    0x00040000
 #define BUTTON_STICK_RIGHT   0x00080000
 
+// TODO: find what 0x200000, 0x400000, 0x800000, and 0x100000 are
+
 typedef struct {
     s8 s_stick_x;
     s8 s_stick_y;
