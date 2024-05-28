@@ -127,6 +127,7 @@ bool func_8003DBE8(u16 dialogueBoxIndex, void* arg1) {
 
 INCLUDE_ASM(const s32, "system/message", func_8003DD14);
 
+// DMA dialogues
 INCLUDE_ASM(const s32, "system/message", func_8003DDF8);
 
 INCLUDE_ASM(const s32, "system/message", func_8003E77C);

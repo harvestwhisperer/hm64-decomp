@@ -122,6 +122,7 @@ Gfx* func_800293C0(Gfx* dl, WorldMatrices* arg1) {
     f32 rotatedY;
     f32 tempZ;
     
+    // FIXME: shouldn't be necessary
     u32 padding[11];
 
     gDPPipeSync(dl++);

@@ -732,7 +732,6 @@ checkSpecialDialogueBit = 0x80065210;
 toggleReadLetterBit = 0x80065270;
 checkMailRead = 0x800652A8;
 setMail = 0x800652D4;
-
 getSumNpcAffection = 0x80065774;
 setupPlayerSprite = 0x800657D0;
 addItemToRucksack = 0x80065B74;
@@ -908,7 +907,7 @@ mainMap = 0x8013DC40; // size 0x1A628
 gDayOfMonth = 0x80158260;
 
 spriteAddresses = 0x80158268;
-
+mariaHarrisPregnancyCounter = 0x8016FAD8;
 characterSprites = 0x801584F0;
 gTotalGrassTiles = 0x801654F0;
 farmFieldTiles = 0x8016F500;
@@ -927,6 +926,7 @@ shadowSpritesInfo = 0x8016FFF8;
 previousWorldRotationAngles = 0x8013D5D8;
 initGfxList = 0x80170068;
 karenPregnancyCounter = 0x8017026F;
+elliJeffNewlywedCounter= 0x8017027E;
 gMinutes = 0x8017027F;
 gFarmAnimals = 0x80170280;
 gCurrentSeasonName = 0x80170445;
@@ -934,7 +934,7 @@ currentWorldRotationAngles = 0x8017044C;
 gBaseMapIndex = 0x80170458;
 
 tvContext = 0x80170270;
-annAndCliffNewlywedCounter = 0x80170444;
+annCliffNewlywedCounter = 0x80170444;
 
 dialogueIcons = 0x801806D0;
 
@@ -948,12 +948,12 @@ gWifeConceptionCounter = 0x80182FB9;
 
 contData = 0x801831B8;
 gToolchestSlots = 0x801831D8;
+popuriGrayNewlyWedCounter = 0x801886A0;
 dogInfo = 0x801886B0;
 
 dialogueBoxes = 0x80188B70;
 
 __cursor = 0x801886DC;
-
 gMapModelAddresses = 0x801886F0;
 
 mainLoopCallbacksTable = 0x80188F70;
@@ -962,6 +962,7 @@ albumBits = 0x80189058;
 
 gPlayer = 0x80189060; 
 gBabyAge = 0x80189134;
+popuriGrayPregnancyCounter = 0x801891C4;
 gBabyName = 0x8018981E;
 dailyEventBits = 0x80189140;
 
@@ -1015,6 +1016,7 @@ mountainConstructionWorkDays = 0x801FB68C;
 
 gSfx = 0x801FB690;
 
+mariaHarrisNewlywedCounter = 0X801FB9A4;
 npcInfoArray = 0x801FB9D0;
 
 houseExtensionConstructionCounter = 0x801FC151;
@@ -1041,13 +1043,14 @@ gSumGirlsWithHighAffection = 0x80204FB0;
 gHarvestKing = 0x80204FF8;
 
 gCurrentGameIndex = 0x80205200;
+mariaHarrisBabyAge = 0x80205201;
 gfxTaskNo = 0x8020520A;
 gForecast = 0x80205238;
 gWifePregnancyCounter = 0x802055D0;
 karenKaiNewlywedCounter = 0x802055D1;
 gMapModelContext = 0x802055D8;
-gMapModelContextFlags = 0x80205622;
 gNamingScreenIndex = 0x80205624;
+elliJeffPregnancyCounter = 0x8020562C;
 gDisplayContextIndex = 0x80205630;
 frameCount = 0x80205634;
 gMapWithSeasonIndex = 0x80205635;

@@ -119,7 +119,7 @@ u16 func_8008662C(u8 animalIndex, u8 arg1, u16 arg2) {
             res = D_80114ABC[arg1];
         }
 
-        // something wrong here
+        // FIXME: something wrong here
         if ((u8)(u16)(gFarmAnimals[animalIndex].affection + 105) < 70) {
             res = D_80114AC4[arg1];
         }
@@ -346,6 +346,7 @@ void initializeChicken(u8 chickenIndex) {
 
 u8 initializeNewFarmAnimal(u8 arg0, u8 arg1) {
 
+    // FIXME: shouldn't be necessary
     u32 padding[4];
 
     u8 index = 0xFF;

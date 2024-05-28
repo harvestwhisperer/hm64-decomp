@@ -343,7 +343,7 @@ void func_800D373C(void) {
         temp2 = D_8011718C[D_80189828.unk_2];
     }
     
-    func_80065F94(&vec, 0.0, temp2);
+    func_80065F94(&vec, 0.0f, temp2);
  
     if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && vec.y != MAX_UNSIGNED_SHORT) {
         if (gSeason == SPRING || gBaseMapIndex == GREENHOUSE) {
@@ -385,7 +385,7 @@ void func_800D3958(void) {
         temp2 = D_8011718C[D_80189828.unk_2];
     }
 
-    func_80065F94(&vec, 0.0, temp2);
+    func_80065F94(&vec, 0.0f, temp2);
  
     if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && vec.y != MAX_UNSIGNED_SHORT) {
         if (gSeason == SPRING || gBaseMapIndex == GREENHOUSE) {
@@ -428,7 +428,7 @@ void func_800D3B74(void) {
         temp2 = D_8011718C[D_80189828.unk_2];
     }
     
-    func_80065F94(&vec, 0.0, temp2);
+    func_80065F94(&vec, 0.0f, temp2);
  
     if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && vec.y != MAX_UNSIGNED_SHORT) {
         if (gSeason == SPRING || gBaseMapIndex == GREENHOUSE) {
@@ -471,7 +471,7 @@ void func_800D3D90(void) {
         temp2 = D_8011718C[D_80189828.unk_2];
     }
     
-    func_80065F94(&vec, 0.0, temp2);
+    func_80065F94(&vec, 0.0f, temp2);
  
     if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && vec.y != MAX_UNSIGNED_SHORT) {
         if (gSeason == SUMMER || gBaseMapIndex == GREENHOUSE) {
@@ -514,7 +514,7 @@ void func_800D3FAC(void) {
         temp2 = D_8011718C[D_80189828.unk_2];
     }
     
-    func_80065F94(&vec, 0.0, temp2);
+    func_80065F94(&vec, 0.0f, temp2);
  
     if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && vec.y != MAX_UNSIGNED_SHORT) {
         if (gSeason == SUMMER || gBaseMapIndex == GREENHOUSE) {
@@ -557,7 +557,7 @@ void func_800D41C8(void) {
         temp2 = D_8011718C[D_80189828.unk_2];
     }
 
-    func_80065F94(&vec, 0.0, temp2);
+    func_80065F94(&vec, 0.0f, temp2);
  
     if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && vec.y != MAX_UNSIGNED_SHORT) {
         if (gSeason == AUTUMN || gBaseMapIndex == GREENHOUSE) {
@@ -600,7 +600,7 @@ void func_800D43E4(void) {
         temp2 = D_8011718C[D_80189828.unk_2];
     }
 
-    func_80065F94(&vec, 0.0, temp2);
+    func_80065F94(&vec, 0.0f, temp2);
 
     if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && vec.y != MAX_UNSIGNED_SHORT) {
 
@@ -643,7 +643,7 @@ void func_800D45F4(void) {
         temp2 = D_8011718C[D_80189828.unk_2];
     }
     
-    func_80065F94(&vec, 0.0, temp2);
+    func_80065F94(&vec, 0.0f, temp2);
  
     if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && vec.y != MAX_UNSIGNED_SHORT) {
         
@@ -687,7 +687,7 @@ void func_800D4814(void) {
         temp2 = D_8011718C[D_80189828.unk_2];
     }
     
-    func_80065F94(&vec, 0.0, temp2);
+    func_80065F94(&vec, 0.0f, temp2);
  
     if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && vec.y != MAX_UNSIGNED_SHORT) {
 
@@ -731,7 +731,7 @@ void func_800D4A34(void) {
         temp2 = D_8011718C[D_80189828.unk_2];
     }
     
-    func_80065F94(&vec, 0.0, temp2);
+    func_80065F94(&vec, 0.0f, temp2);
  
     if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && vec.y != MAX_UNSIGNED_SHORT) {
         func_800DAC70(gBaseMapIndex, 0xB2, (u8)vec.x - D_801FD624, (u8)vec.z - D_801C3F35);
@@ -829,7 +829,7 @@ void func_800D4D68(void) {
         temp2 = D_8011718C[D_80189828.unk_2];
     }
     
-    func_80065F94(&vec, 0.0, temp2);
+    func_80065F94(&vec, 0.0f, temp2);
  
     if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && vec.y != MAX_UNSIGNED_SHORT) {
         if (gBaseMapIndex == FARM) {

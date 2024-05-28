@@ -131,7 +131,7 @@ typedef struct {
 	s32 pixelSize; // 14
 	u16 spriteNumber; // 18
 	u16 vtxIndex; // 1A
-	Vec3f unk_1C; // set from decompressed level Vec3fs
+	Vec3f unk_1C; // set from byteswapped level Vec3fs from binary data
 	Vec3f scaling; // 28
 	Vec3f unk_34; // 34 // angles
 	Vec4f rgba; // 40
@@ -140,6 +140,14 @@ typedef struct {
 	u16 unk_54; // flags for microcodes, vertex type, pixel density
 	u16 flags; //56
 } Bitmap;
+
+typedef struct {
+	u16 header;
+	u16 flags;
+	u16 width;
+	u16 height;
+	u8* texture;
+} Texture;
 
 // 0x8016FFF8
 // ci4 asset layout

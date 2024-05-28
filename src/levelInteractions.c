@@ -1252,6 +1252,8 @@ INCLUDE_ASM(const s32, "levelInteractions", func_800B0C98);
 u8 func_800B0FB8(u16 mapIndex, u8 arg1) {
 
     u8 result = 0;
+    
+    // FIXME: shouldn't be necessary
     int temp;
 
     switch (arg1) {
@@ -1269,8 +1271,8 @@ u8 func_800B0FB8(u16 mapIndex, u8 arg1) {
 
             if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
 
+                // FIXME: should be 0 < gSeason && gSeason < 5?
                 // if (((s32) gSeason < 5) && (gSeason != 0)) 
-                // should be 0 < gSeason && gSeason < 5?
                 if (gSeason < temp && gSeason) {
                     showTextBox(1, 6, 0xD0, 0, 2);
                 }
@@ -1909,5 +1911,6 @@ u8 func_800B2C78(u16 mapIndex, u8 arg1) {
     return result;
 }
 
+// FIXME:
 // hack to get this rodata to align along 10 bytes
 static const padding[2] = { 0, 0 };

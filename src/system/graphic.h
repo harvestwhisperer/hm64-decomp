@@ -57,7 +57,7 @@ typedef struct {
 
 extern f32 sinfRadians(f32);
 extern f32 cosfRadians(f32);
-extern void setBitmapFormat(Bitmap *sprite, u16 *arg1, u16 *arg2);
+void setBitmapFormat(Bitmap *sprite, Texture *timg, u16 *palette);
 extern Gfx* func_80026F88(Gfx* dl, Bitmap* arg1, u32 arg2, u16 arg3);
 extern void func_800276AC(Vtx*, u16 width, u16 height, u16 textureSize, u16, u16, u16, s16, s16, u16, u8 r, u8 g, u8 b, u8 a);
 extern void func_80027950(Vec3f, Vec3f*, Vec3f);
