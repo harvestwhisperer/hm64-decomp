@@ -348,7 +348,7 @@ void titleScreenMainLoopCallback(void) {
 
         case 0:
 
-            // should be struct; maybe static inline
+            // FIXME: should be struct; maybe static inline
             D_8012657C++;
             
             if (D_8012657C == 500) {
@@ -404,7 +404,7 @@ void titleScreenMainLoopCallback(void) {
         
         case 1:
 
-            // should be struct member
+            // FIXME: should be struct member
             if (D_80126574 < 0x40) {
 
                 func_8002BE98(0x46, 5.0f, 0.0f, 0.0f);
@@ -559,7 +559,7 @@ void titleScreenMainLoopCallback(void) {
                 func_8002B6B8(0x5B);
                 
                 // row index
-                // should be struct
+                // FIXME: should be struct
                 if (D_80126571 == 0) {
                     // load select game screen
                     func_800E1380(FALSE);

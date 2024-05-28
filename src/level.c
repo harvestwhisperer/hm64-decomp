@@ -1461,7 +1461,7 @@ u16 func_80074C50(u16 exitIndex) {
 
     u16 index = 0xFFFF;
 
-    // no idea
+    // FIXME: no idea
     u32 temp = D_801147C0[exitIndex];
     u8 temp2 = temp;
 

@@ -62,7 +62,7 @@ static inline void resetAction() {
     gPlayer.action2 = 0;
 }
 
-// shouldn't be necessary
+// FIXME: shouldn't be necessary
 static inline void resetAction2() {
     gPlayer.action3 = 0;
     gPlayer.animationState = 0;

@@ -24,7 +24,7 @@ extern u8 gHouseExtensionSelection;
 
 void func_800598E0(void) {
 
-    // FIX: shouldn't be necessary
+    // FIXME: shouldn't be necessary
     u32 tempSeason;
 
     resetDailyBits();
@@ -137,6 +137,7 @@ void func_800598E0(void) {
         toggleLifeEventBit(0x92);
     }
 
+    // FIXME
     tempSeason = gSeason;
     
     if (gYear == 1) {

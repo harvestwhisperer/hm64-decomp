@@ -111,7 +111,6 @@ inline void func_80055F08(u16 cutsceneIndex, u16 entranceIndex, u8 arg2) {
 void func_80056030(u8 arg0) {
 
     u8 mapIndex;
-    u8 temp = 0;
 
     D_801891D4 = 0;
     gCutsceneIndex = 0;
@@ -198,7 +197,7 @@ void func_80056030(u8 arg0) {
     func_80065AA0();
     func_800D5290();
 
-    // this should be just gCutsceneFlags, but need array/struct loading here, which breaks the match when used in other functions that reference gCutsceneFlags
+    // FIXME: this should be just gCutsceneFlags, but need array/struct loading here, which breaks the match when used in other functions that reference gCutsceneFlags
     if (arg0 != 2) {
         if (!(gCutsceneFlagsHack[1] & 6)) {
             if (!checkDailyEventBit(0x4D)) {

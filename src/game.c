@@ -1201,7 +1201,7 @@ void func_8005D0BC(void) {
         
         set = 1;
         
-        // should be inline adjustValue call
+        // FIXME: should be inline adjustValue call
 
         checkOverflow = gHappiness;
         checkOverflow += 2;
@@ -1236,7 +1236,7 @@ void func_8005D0BC(void) {
         set = 1;
         
 
-        // should be inline adjustValue call
+        // FIXME: should be inline adjustValue call
 
         checkOverflow = gHappiness;
         checkOverflow += 20;

@@ -10,7 +10,7 @@
 #define RDP_DONE_MSG	668
 #define PRE_NMI_MSG	    669
 
-// need to fix this
+// FIXME: uncomment
 // static u64	nuScStack[NU_SC_STACK_SIZE/8];
 // static u64	nuScAudioStack[NU_SC_STACK_SIZE/8];
 // static u64	nuScGraphicsStack[NU_SC_STACK_SIZE/8];

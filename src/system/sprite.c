@@ -704,6 +704,7 @@ void func_8002AE58(void) {
    }
     
     if (dl - D_80215ED0[gDisplayContextIndex] >= 0x880) {
+        // FIXME: get string literals working
         __assert(D_8011ED4C, D_8011ED50, 820);
         //__assert("EX", "s:/system/sprite.c", 820);
     }

@@ -589,7 +589,7 @@ void func_800EFBEC(void) {
         }
     } else {
         namingScreenContext.coordinates.x = -126.0f;
-        // should be member access; maybe from static inline scope
+        // FIXME: should be member access; maybe from static inline scope
         D_8016FBE0 = -116.0f;
     }
 
