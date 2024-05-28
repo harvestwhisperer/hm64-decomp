@@ -520,7 +520,7 @@ bool func_8003C5C0(u16 index, u8 arg1, u8 arg2) {
 
     if (index == 0 && (gMapModelContext[index].flags & 1) && (gMapModelContext[index].flags & 4)) { 
 
-        // fixes regswap issue
+        // FIXME: this fixes regswap issue
         indexTemp = index;
 
         if (!(gMapModelContext[index].flags & 0x18) && arg2 != gMapModelContext[index].rotation) {

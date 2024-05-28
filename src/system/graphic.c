@@ -137,6 +137,7 @@ volatile u8 startGfxTask(void) {
     gSPEndDisplayList(dl++);
 
     if (dl - initGfxList[gDisplayContextIndex] > GFX_GLIST_LEN) {
+        // FIXME: get string literals working
         __assert(&D_8011EC60, &D_8011EC64, 288);
     }
     
@@ -159,6 +160,7 @@ volatile u8 func_80026BE0(void) {
     gSPEndDisplayList(dl++);
 
     if (dl - D_80205000[gDisplayContextIndex] >= 32) {
+        // FIXME: get string literals working
         __assert(&D_8011EC60, &D_8011EC64, 319);
     }
 
@@ -184,6 +186,7 @@ volatile u8 func_80026CEC(s32 arg0, s32 arg1) {
     gSPEndDisplayList(dl++);
     
     if (dl - D_801836A0[gDisplayContextIndex] >= 0x500) {
+        // FIXME: get string literals working
         __assert(&D_8011EC60, &D_8011EC64, 0x166);
     }
 
@@ -196,7 +199,7 @@ volatile u8 func_80026CEC(s32 arg0, s32 arg1) {
 //INCLUDE_ASM(const s32, "system/graphic", setBitmapFormat);
 
 // 16-bit endian swap
-// FIX: something wrong, but matches
+// FIXME: something wrong, but matches
 static inline u16 swap(u16 halfword) {
 
     // FIXME: shouldn't be necessary/probably a union
@@ -294,7 +297,7 @@ void setBitmapFormat(Bitmap *sprite, u16 *timg, u16 *palette) {
 
 void func_80026F30(Bitmap* sprite, u16* palette) {
 
-    // FIX: shouldn't be necessary
+    // FIXME: shouldn't be necessary
     u32 padding[5];
     
     // skip header

@@ -23,7 +23,7 @@ extern u32 albumBits;
 void toggleSpecialDialogueBit(u16);
 
 
-// should be inline adjustValue from game.c ... have to mess with linker options
+// FIXME: should be inline adjustValue from game.c ... have to mess with linker options
 static inline int adjustValue2(int initial, int value, int max) {
 
     int temp;
@@ -44,7 +44,7 @@ static inline int adjustValue2(int initial, int value, int max) {
     return adjusted;
 }
 
-// should be adjustValue() call
+// FIXME: should be adjustValue() call
 static inline void handleAddShipment(s32 amount) {
 
     int temp;

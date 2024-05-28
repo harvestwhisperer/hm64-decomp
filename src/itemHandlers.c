@@ -647,7 +647,7 @@ void func_800D45F4(void) {
  
     if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && vec.y != MAX_UNSIGNED_SHORT) {
         
-        // should be range
+        // FIXME: should be range
         if ((gSeason - 1 < 2U) || gBaseMapIndex == GREENHOUSE) {
             temp3 = 0x90; 
         } else {
@@ -691,7 +691,7 @@ void func_800D4814(void) {
  
     if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && vec.y != MAX_UNSIGNED_SHORT) {
 
-        // should be range
+        // FIXME: should be range
         if ((gSeason - 1 < 2U) || gBaseMapIndex == GREENHOUSE) {
             temp3 = 0x9F; 
         } else {

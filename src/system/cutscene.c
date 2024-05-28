@@ -686,7 +686,7 @@ void func_800486F4(u16 index) {
     
     cutsceneMaps[index].cutscenePointer += 2;
 
-    // shoulde be the same struct
+    // FIXME: shoulde be the same struct
     ptr2 = (CutsceneSpriteAddressInfo*)cutsceneMaps[index].cutscenePointer;
 
     assetType = ptr2->assetType;

@@ -156,6 +156,7 @@ void func_800752C0(void) {
 
 u8 func_80075374(u8 npcIndex, int arg1) {
 
+    // FIXME: doesn't seem right
     int temp = arg1;
 
     if ((npcInfoArray[npcIndex].flags & 1) && npcInfoArray[npcIndex].levelIndex == gBaseMapIndex) {
@@ -1031,7 +1032,7 @@ void func_80083550(void) {
 
                 case 3:
 
-                    // should be inline function
+                    // FIXME: should be inline function
                     if (npcInfoArray[GOTZ].unk_21 == 0 ) {
 
                         npcInfoArray[GOTZ].unk_20 = 0;
@@ -1102,7 +1103,7 @@ void func_8008374C(void) {
 
                 case 3:
 
-                    // should be inline function
+                    // FIXME: should be inline function
                     if (npcInfoArray[SASHA].unk_21 == 0 ) {
 
                         npcInfoArray[SASHA].unk_20 = 0;
@@ -1189,7 +1190,7 @@ void func_80083A40(void) {
 
                 case 2:
 
-                    // should be inline function
+                    // FIXME: should be inline function
                     if (npcInfoArray[KENT].unk_21 == 0) {
                         
                         npcInfoArray[KENT].unk_20 = 0;
