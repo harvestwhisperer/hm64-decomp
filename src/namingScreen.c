@@ -75,7 +75,6 @@ void func_800ED974(void) {
     s32 i;
     s32 temp = (D_8016FBD0.flags & 0x60) >> 5;
     s32 temp2;
-    u32 unset;
 
     if (D_80202E8A & 0x400) {
         
@@ -281,7 +280,7 @@ void func_800ED974(void) {
                     return;
                  
              }
-             
+
         } else {
              
             if (D_8016FBD0.flags & 0x1000) {

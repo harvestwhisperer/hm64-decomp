@@ -21,9 +21,9 @@ Gfx* func_80037BC4(Gfx*, MainMap*, u16, u16);
 s16 func_80037F08(Gfx*, MainMap*, UnknownMapStruct5*);  
 Gfx* func_800383B0(Gfx* arg0, MainMap* arg1, u16 arg2, f32 arg3, f32 arg4, f32 arg5);
 void func_8003851C(MainMap*);         
-void func_80038630(Decompressed* arg0, Compressed* arg1);                        
+void func_80038630(DecompressedVec3f* arg0, CompressedVec3f* arg1);                        
 void func_800386C0(UnknownMapStruct3* arg0, u8* arg1); 
-Compressed* func_800386D4(u16 arg0, u8* arg1);     
+CompressedVec3f* func_800386D4(u16 arg0, u8* arg1);     
 void func_80038BC4(MainMap*);                             
 void func_800393E0(MainMap*);                             
 void func_80039990(MainMap*);                             
@@ -39,7 +39,7 @@ extern u16 D_80142868;
 
 extern f32 D_8013D550;
 extern f32 D_80170460;
-extern Decompressed D_80181BA0[];
+extern DecompressedVec3f D_80181BA0[];
 extern u8 D_801FB5CB;
 extern u8 D_801FB700;
 extern f32 D_801FB5D4;
@@ -1077,12 +1077,14 @@ Gfx* func_800383B0(Gfx* arg0, MainMap* map, u16 vtxIndex, f32 arg3, f32 arg4, f3
     Gfx* dl;
     Gfx dl2;
 
+    // FIXME: shouldn't be necessary
     // ??
     f32 temp;
     u32 padding[2];
 
     temp = arg4;
 
+    // FIXME: unnecessary cast + dereference
     // ??
     count = func_80037668(map, vtxIndex, arg3, *(f32*)&arg4, arg5);
 
@@ -1152,9 +1154,10 @@ void func_8003851C(MainMap* arg0) {
 
 //INCLUDE_ASM(const s32, "system/map", func_80038630);
 
-// might not be decompression per se, but byteswapped s16s converted to floats
-void func_80038630(Decompressed* arg0, Compressed* arg1) {
+// Byteswapped s16s converted to floats
+void func_80038630(DecompressedVec3f* arg0, CompressedVec3f* arg1) {
 
+    // FIXME: shouldn't be necessary/likely a union for byte-swapping
     u32 padding[8];
     
     arg0->flags = arg1->flags;
@@ -1573,6 +1576,7 @@ void func_8003A1BC(void) {
     Gfx *dl = D_801A8B60[gDisplayContextIndex];
     Gfx *tempDl;
     
+    // FIXME: shoudn't be necessary
     u32 padding[4];
     
     for (i = 0; i < 1; i++) {

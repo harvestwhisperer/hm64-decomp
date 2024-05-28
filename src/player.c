@@ -648,6 +648,7 @@ INCLUDE_ASM(const s32, "player", func_80067BC4);
 
 void func_80067E5C(void) {
 
+    // FIXME: strange cast + dereference
     // ??
     if (!(*(s32*)&gPlayer.action3 & ~0xFF)) {
         setAudio(0x26);

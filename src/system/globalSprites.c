@@ -946,7 +946,7 @@ u8* func_8002CD34(u16 arg0, void* arg1) {
 
 //INCLUDE_ASM(const s32, "system/globalSprites", func_8002CD4C);
 
-// no clue; probably uses static inlines
+// FIXME: probably uses static inlines; this could be an inline function used by graphic.c too
 u16* func_8002CD4C(u16 arg0, u16* arg1) {
     
     u16 i;
@@ -964,6 +964,7 @@ u16* func_8002CD4C(u16 arg0, u16* arg1) {
         
         do {
             
+            // FIXME: use swap inline
             temp2 = arg1[0] << 8;
             temp3 = arg1[0] >> 8;
             
@@ -972,8 +973,7 @@ u16* func_8002CD4C(u16 arg0, u16* arg1) {
             unk.unk_0 = temp;
 
 
-            // ?
-
+            // FIXME: use swap inline?
             temp2 = arg1[1];
             temp = temp2;
             temp2 = temp;
@@ -1002,6 +1002,7 @@ Gfx* func_8002CDB4(u16 arg0, Gfx* arg1) {
     
     u32 i;
     
+    // FIXME: typecasting i doesn't seem right
     for (i = 0; (u16)i < arg0; i++) {
         arg1++;
     }

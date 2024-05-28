@@ -377,12 +377,13 @@ void func_800B5DA8(void) {
 
 void func_800B5FC4(u8 arg0, u8 arg1, u8 arg2) {
 
+    // FIXME: shouldn't be necessary
     u8 temp;
 
     if (arg0 != 0) {
         
         if (arg0 != 1) {
-            // something wrong here
+            // FIXME: something wrong here
             temp = 0xB2;
             return;
         }
@@ -691,9 +692,45 @@ INCLUDE_ASM(const s32, "overlayScreens", func_800C0688);
 // house extension selection
 INCLUDE_ASM(const s32, "overlayScreens", func_800C0714);
 
-INCLUDE_ASM(const s32, "overlayScreens", func_800C0F24);
+//INCLUDE_ASM(const s32, "overlayScreens", func_800C0F24);
 
-INCLUDE_ASM(const s32, "overlayScreens", func_800C101C);
+void func_800C0F24(void) {
+    func_8002C52C(0x89, 0xFF, 0x18);
+    func_8002C52C(0x8C, 0xFF, 0x18);
+    func_8002C52C(0x8D, 0xFF, 0x18);
+    func_8002C52C(0x8B, 0xFF, 0x18);
+    func_8002C52C(0x8A, 0xFF, 0x18);
+    func_8002C52C(0x8E, 0xFF, 0x18);
+    func_8002C52C(0x81, 0xFF, 0x18);
+    func_8002C52C(0x82, 0xFF, 0x18);
+    func_8002C52C(0x83, 0xFF, 0x18);
+    func_8002C52C(0x84, 0xFF, 0x18);
+    func_8002C52C(0x85, 0xFF, 0x18);
+    func_8002C52C(0x86, 0xFF, 0x18);
+    func_8002C52C(0x87, 0xFF, 0x18);
+    func_8002C52C(0x88, 0xFF, 0x18);
+}
+
+//INCLUDE_ASM(const s32, "overlayScreens", func_800C101C);
+
+void func_800C101C(void) {
+    func_8002C52C(0x89, 0, 0x18);
+    func_8002C52C(0x8C, 0, 0x18);
+    func_8002C52C(0x8D, 0, 0x18);
+    func_8002C52C(0x8B, 0, 0x18);
+    func_8002C52C(0x8A, 0, 0x18);
+    func_8002C52C(0x8E, 0, 0x18);
+    func_8002C52C(0x81, 0, 0x18);
+    func_8002C52C(0x82, 0, 0x18);
+    func_8002C52C(0x83, 0, 0x18);
+    func_8002C52C(0x84, 0, 0x18);
+    func_8002C52C(0x85, 0, 0x18);
+    func_8002C52C(0x86, 0, 0x18);
+    func_8002C52C(0x87, 0, 0x18);
+    func_8002C52C(0x88, 0, 0x18);
+    func_80046120(0);
+    func_80046120(1);
+}
 
 //INCLUDE_RODATA(const s32, "overlayScreens", D_80121D74);
 

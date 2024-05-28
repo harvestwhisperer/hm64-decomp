@@ -58,4 +58,7 @@ extern u32 D_801FB5D0;
 extern u32 D_801FB6FC;
 extern u32 D_80237414;
 
+extern u8 D_801C3F35;
+extern u8 D_801FD624;
+
 #endif

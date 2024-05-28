@@ -1095,6 +1095,7 @@ bool func_80030388(u16 index) {
 
 u16 func_800303D4(u16 spriteIndex, f32 arg1, f32 arg2, u16 arg3, u16 arg4) {
 
+    // FIXME: shouldn't be necessary
     u32 padding[4];
     
     u16 i;
@@ -1330,6 +1331,7 @@ u16 func_80030C34(u16 spriteIndex, u16 offset) {
 // unused
 u16 func_80030CB0(u16 spriteIndex, f32 arg1, f32 arg2) {
 
+    // FIXME: shouldn't be necessary
     Vec3f padding[4];
     
     Vec3f vec;
@@ -1357,6 +1359,7 @@ u16 func_80030CB0(u16 spriteIndex, f32 arg1, f32 arg2) {
 
 bool func_80030DB0(u16 spriteIndex, f32 arg1, f32 arg2, u16 arg3) {
 
+    // FIXME: shouldn't be necessary
     Vec3f padding[4];
     Vec3f vec;
     
@@ -1446,6 +1449,7 @@ u16 func_80031050(u16 spriteIndex, f32 arg1, f32 arg2) {
 
 bool func_800311E0(u16 spriteIndex, f32 arg1, f32 arg2, u16 arg3) {
 
+    // FIXME: shouldn't be necessary
     Vec3f padding[4];
     
     Vec3f vec;
@@ -1534,8 +1538,8 @@ Vec3f* func_800313FC(Vec3f* arg0, u16 spriteIndex, f32 arg2, f32 arg3) {
 
 Vec3f* func_800315A0(Vec3f* arg0, u16 index) {
 
-    // likely a struct
-    int padding[11];
+    // FIXME: shouldn't be necessary
+    u32 padding[11];
     
     Vec3f vec;
 

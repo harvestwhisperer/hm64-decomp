@@ -350,6 +350,7 @@ bool func_8003C084(u16 index, u8 arg1) {
 
 u8 func_8003C1A4(u16 index) {
 
+    // FIXME: shouldn't be necessary
     u32 padding[3];
     
     u8 result = 0;

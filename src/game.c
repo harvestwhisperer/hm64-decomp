@@ -89,15 +89,19 @@ extern u8 D_801C3F37;
 extern u8 D_801FC150;
 extern u8 D_801FC15C;
 extern u8 D_801FD621;
-extern u8 D_80205201;
-extern u8 D_8020562C;
 extern u8 D_80237412;  
 
+extern u8 mariaHarrisPregnancyCounter;
+extern u8 mariaHarrisBabyAge;
+extern u8 popuriGrayNewlyWedCounter;
+extern u8 popuriGrayPregnancyCounter;
+extern u8 elliJeffNewlywedCounter;
+extern u8 elliJeffPregnancyCounter;
 extern u8 karenKaiBabyAge;
 extern u8 karenKaiNewlywedCounter;
 extern u8 karenPregnancyCounter;
 extern u8 annCliffBabyAge;
-extern u8 annAndCliffNewlywedCounter;
+extern u8 annCliffNewlywedCounter;
 extern u8 annPregnancyCounter;
 
 extern u8 D_801C4216;
@@ -107,12 +111,7 @@ extern MainLoopCallbackInfo D_80205230;
 // unused
 extern u16 D_801FB686;   
 
-// shared: likely bss
-extern u8 D_8016FAD8;
-extern u8 D_8017027E;
-extern u8 D_801886A0;
-extern u8 D_801891C4;
-extern u8 D_801FB9A4;
+extern u8 mariaHarrisNewlywedCounter;
 
 //extern u16 D_801C3F32;
 extern u8 D_801C4216;
@@ -222,13 +221,13 @@ not_married:
 
     if (checkLifeEventBit(MARIA_HARRIS_MARRIED)) {
 
-        D_801FB9A4 += adjustValue(D_801FB9A4, 1, 120);
+        mariaHarrisNewlywedCounter += adjustValue(mariaHarrisNewlywedCounter, 1, 120);
 
-        if (checkLifeEventBit(MARIA_HARRIS_BABY) && D_80205201 < 120) {
-            D_80205201++;
+        if (checkLifeEventBit(MARIA_HARRIS_BABY) && mariaHarrisBabyAge < 120) {
+            mariaHarrisBabyAge++;
         }
 
-        if (!checkLifeEventBit(MARIA_HARRIS_BABY) && checkLifeEventBit(MARIA_PREGNANT) && D_8016FAD8 >= 60) {
+        if (!checkLifeEventBit(MARIA_HARRIS_BABY) && checkLifeEventBit(MARIA_PREGNANT) && mariaHarrisPregnancyCounter >= 60) {
             toggleLifeEventBit(MARIA_PREGNANT);
             setLifeEventBit(MARIA_HARRIS_BABY);
             setSpecialDialogueBit(MARIA_HARRIS_BABY_DIALOGUE);
@@ -236,25 +235,25 @@ not_married:
         }
 
         if (!checkLifeEventBit(MARIA_HARRIS_BABY) && checkLifeEventBit(MARIA_PREGNANT)) {
-            D_8016FAD8++;
+            mariaHarrisPregnancyCounter++;
         }
 
-        if (!checkLifeEventBit(MARIA_HARRIS_BABY) && !checkLifeEventBit(MARIA_PREGNANT) && D_801C3F96 >= 250 && D_801FB9A4 >= 30) {
+        if (!checkLifeEventBit(MARIA_HARRIS_BABY) && !checkLifeEventBit(MARIA_PREGNANT) && npcAffection[HARRIS] >= 250 && mariaHarrisNewlywedCounter >= 30) {
             setLifeEventBit(MARIA_PREGNANT);
-            D_8016FAD8 = 0;
+            mariaHarrisPregnancyCounter = 0;
             setSpecialDialogueBit(MARIA_PREGNANT_DIALOGUE);
         }
     }
 
      if (checkLifeEventBit(POPURI_GRAY_MARRIED)) {
 
-        D_801886A0 += adjustValue(D_801886A0, 1, 120);
+        popuriGrayNewlyWedCounter += adjustValue(popuriGrayNewlyWedCounter, 1, 120);
 
         if (checkLifeEventBit(POPURI_GRAY_BABY) && D_801C3F36 < 120) {
             D_801C3F36++;
         }
 
-        if (!checkLifeEventBit(POPURI_GRAY_BABY) && checkLifeEventBit(POPURI_PREGNANT) && D_801891C4 >= 60) {
+        if (!checkLifeEventBit(POPURI_GRAY_BABY) && checkLifeEventBit(POPURI_PREGNANT) && popuriGrayPregnancyCounter >= 60) {
             toggleLifeEventBit(POPURI_PREGNANT);
             setLifeEventBit(POPURI_GRAY_BABY);
             setSpecialDialogueBit(POPURI_GRAY_BABY_DIALOGUE);
@@ -262,25 +261,25 @@ not_married:
         }
 
         if (!checkLifeEventBit(POPURI_GRAY_BABY) && checkLifeEventBit(POPURI_PREGNANT)) {
-            D_801891C4++;
+            popuriGrayPregnancyCounter++;
         }
 
-        if (!checkLifeEventBit(POPURI_GRAY_BABY) && !checkLifeEventBit(POPURI_PREGNANT) && D_801C3F97 >= 250 && D_801886A0 >= 30) {
+        if (!checkLifeEventBit(POPURI_GRAY_BABY) && !checkLifeEventBit(POPURI_PREGNANT) && npcAffection[GRAY] >= 250 && popuriGrayNewlyWedCounter >= 30) {
             setLifeEventBit(POPURI_PREGNANT);
-            D_801891C4 = 0;
+            popuriGrayPregnancyCounter = 0;
             setSpecialDialogueBit(0x38);
         }
     }
 
     if (checkLifeEventBit(ELLI_JEFF_MARRIED)) {
 
-        D_8017027E += adjustValue(D_8017027E, 1, 120);
+        elliJeffNewlywedCounter += adjustValue(elliJeffNewlywedCounter, 1, 120);
 
         if (checkLifeEventBit(ELLI_JEFF_BABY) && D_801FC15C < 120) {
             D_801FC15C++;
         }
 
-        if (!checkLifeEventBit(ELLI_JEFF_BABY) && checkLifeEventBit(ELLI_PREGNANT) && D_8020562C >= 60) {
+        if (!checkLifeEventBit(ELLI_JEFF_BABY) && checkLifeEventBit(ELLI_PREGNANT) && elliJeffPregnancyCounter >= 60) {
             toggleLifeEventBit(ELLI_PREGNANT);
             setLifeEventBit(ELLI_JEFF_BABY);
             setSpecialDialogueBit(ELLI_JEFF_BABY_DIALOGUE);
@@ -288,19 +287,19 @@ not_married:
         }
 
         if (!checkLifeEventBit(ELLI_JEFF_BABY) && checkLifeEventBit(ELLI_PREGNANT)) {
-            D_8020562C++;
+            elliJeffPregnancyCounter++;
         }
 
-        if (!checkLifeEventBit(ELLI_JEFF_BABY) && !checkLifeEventBit(ELLI_PREGNANT) && D_801C3F98 >= 250 && D_8017027E >= 30) {
+        if (!checkLifeEventBit(ELLI_JEFF_BABY) && !checkLifeEventBit(ELLI_PREGNANT) && npcAffection[JEFF] >= 250 && elliJeffNewlywedCounter >= 30) {
             setLifeEventBit(ELLI_PREGNANT);
-            D_8020562C = 0;
+            elliJeffPregnancyCounter = 0;
             setSpecialDialogueBit(ELLI_PREGNANT_DIALOGUE);
         }
     }
 
     if (checkLifeEventBit(ANN_CLIFF_MARRIED)) {
 
-        annAndCliffNewlywedCounter += adjustValue(annAndCliffNewlywedCounter, 1, 120);
+        annCliffNewlywedCounter += adjustValue(annCliffNewlywedCounter, 1, 120);
 
         if (checkLifeEventBit(ANN_CLIFF_BABY) && annCliffBabyAge < 120) {
             annCliffBabyAge++;
@@ -317,7 +316,7 @@ not_married:
             annPregnancyCounter++;
         }
 
-        if (!checkLifeEventBit(ANN_CLIFF_BABY) && !checkLifeEventBit(ANN_PREGNANT) && npcAffection[CLIFF] >= 250 && annAndCliffNewlywedCounter >= 30) {
+        if (!checkLifeEventBit(ANN_CLIFF_BABY) && !checkLifeEventBit(ANN_PREGNANT) && npcAffection[CLIFF] >= 250 && annCliffNewlywedCounter >= 30) {
             setLifeEventBit(ANN_PREGNANT);
             annPregnancyCounter = 0;
             setSpecialDialogueBit(ANN_PREGNANT_DIALOGUE);
@@ -691,6 +690,7 @@ inline void showTextBox(u16 arg0, u16 arg1, u16 arg2, int arg3, u16 arg4) {
     controllers[CONTROLLER_1].buttonPressed = 0;
 
     setPlayerAction(0, 0);
+    
 }
 
 //INCLUDE_ASM(const s32, "game", showDialogueBox);
@@ -1416,17 +1416,20 @@ void func_8005D2B0() {
             // diary
             case 1:
                 switch (temp) {
-                        // write in diary/save game
+                     
+                    // write in diary/save game
                     case 0:                                 
                         setMainLoopCallbackFunctionIndex(1);
                         setPlayerAction(8, 10);
                         setDailyEventBit(7);
                         break;
-                        // don't write
+                        
+                    // don't write
                     case 1:                                 
                         setMainLoopCallbackFunctionIndex(1);
                         setPlayerAction(8, 10);
                         break;
+
                     case 2:
                         setMainLoopCallbackFunctionIndex(1);
                         break;

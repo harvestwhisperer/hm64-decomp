@@ -24,6 +24,7 @@ extern u8 gHouseExtensionSelection;
 
 void func_800598E0(void) {
 
+    // FIX: shouldn't be necessary
     u32 tempSeason;
 
     resetDailyBits();

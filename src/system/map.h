@@ -16,7 +16,7 @@ typedef struct {
 typedef struct {
     f32 x, y, z; // Vec3f
     u8 flags;
-} Decompressed;
+} DecompressedVec3f;
 
 typedef struct {
     u8 flags;
@@ -26,7 +26,7 @@ typedef struct {
     u8 part4;
     u8 part5;
     u8 part6;
-} Compressed;
+} CompressedVec3f;
 
 typedef struct {
     u16 unk_0;
@@ -88,7 +88,7 @@ typedef struct {
 typedef struct {
     u16 unk_0; // counter
     u8 unk_2; // related to bitmap scale for traversing timg
-    u8 unk_3; // counter for compressed/decompressed Vec3fs
+    u8 unk_3; // counter for byteswapped Vec3fs
 } UnknownMapStruct3;
 
 // D_80141A18
@@ -213,7 +213,7 @@ typedef struct  {
     u32 padding8[0x318F];
     UnknownMapStruct8 mapStruct8; // 0x1A464
     u32 padding9[0x50]; // 0x1A4C8
-    // 0x80157A68, 0x19e28 = related to decompressed Vec3f scaling
+    // 0x80157A68, 0x19e28 = related to byteswapped Vec3f scaling
     UnknownMapStruct9 mapStruct9; // 0x1A608
     u32 padding10;
 } MainMap;

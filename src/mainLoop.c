@@ -63,7 +63,7 @@ void mainLoop(void) {
             } 
             
             D_8020564C -= 1;    
-            // ?
+            // FIXME: ?
             D_8020564C;
             
             // reset bitmap flags
@@ -244,7 +244,8 @@ u8 gfxRetraceCallback(int arg0) {
     
     frameCount++;
     D_801C3BEC++;
-    // why?
+
+    // FIXME: unnecessary assignment
     temp = D_801C3F71++;
     
     return D_801C3F71;
@@ -279,7 +280,7 @@ void func_800263B0(int pendingGfx) {
         drawFrame();
 
         D_8016FB04 += 1;
-        // ?
+        // FIXME: unnecessary assignment
         temp = D_8016FB04;
         D_801C3F71 = 0;
         
@@ -308,7 +309,7 @@ void func_800264CC(int arg0) {
           D_80205208 = 1;
           D_801C3BEC = 0;
           D_801C3F34 += 1;
-          // ?
+          // FIXME: ?
           D_801C3F34;  
         }
     }
@@ -322,7 +323,7 @@ void gfxBufferSwap(void *gfxTask) {
     D_801D6230 = D_801C3F71;
 }
 
-// static inline?
+// FIXME: static inline?
 // manual copy of library func?
 s32 osAfterPreNMI(void) {
     return __osSpSetPc(0);
@@ -349,7 +350,7 @@ void gfxPreNMICallback(void) {
     
     osViSetYScale(1.0f);
     
-    // static inline osAfterPreNMI call?  
+    // FIXME: maybe should be static inline osAfterPreNMI call?  
     while (__osSpSetPc(0));
     
     while (TRUE);

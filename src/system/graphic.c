@@ -8,7 +8,6 @@
 #include "mainproc.h"
 
 // forward declarations
-
 void func_80026F30(Bitmap* arg0, u16* arg1);
 Gfx *func_80028A64(Gfx*, Camera*, WorldMatrices*);
 volatile u8 func_80026BE0();      
@@ -197,73 +196,71 @@ volatile u8 func_80026CEC(s32 arg0, s32 arg1) {
 //INCLUDE_ASM(const s32, "system/graphic", setBitmapFormat);
 
 // 16-bit endian swap
+// FIX: something wrong, but matches
+static inline u16 swap(u16 halfword) {
+
+    // FIXME: shouldn't be necessary/probably a union
+    u32 padding[9];
+    
+    u16 swapped;
+    
+    u32 upper;
+    u32 lower;
+    
+    lower = halfword;
+    
+    upper = (halfword & 0xFF) << 8;
+    
+    lower = halfword >> 8;
+    
+    swapped = lower | upper;
+    
+    return swapped;
+    
+}
+
+// breaks match for some reason
+/*
 static inline u16 getWidth(u16* timg) {
     
-    u16 temp1;
-    
-    u32 temp2;
-    u32 temp3;
+    return swap(timg[2]);
 
-    // skip header
-    temp2 = temp1 = timg[2];
-    
-    temp3 = (temp1 & 0xFF) << 8;
-    temp2 >>= 8;
-    
-    temp1 = temp2 | temp3;
-
-    return temp1;
-
-    // return (temp2 | temp3) also matches
-
-    // should just be
-    /*
-    u32 temp1;
-    u32 temp2;
-    
-    temp1 = (*(timg+2) & 0xFF) << 8;
-    
-    temp2 = *(timg+2) >> 8;
-
-    return (temp2 | temp1);
-    */
-    
 }
 
-// 16-bit endian swap
 static inline u16 getHeight(u16* timg) {
 
-    u16 temp1;
-    
-    u32 temp2;
-    u32 temp3;
-
-    // skip header + width
-    temp2 = temp1 = timg[3];
-    
-    temp3 = (temp1 & 0xFF) << 8;
-    temp2 >>= 8;
-    
-    temp1 = temp2 | temp3;
-
-    return temp1;
-
-    // return (temp2 | temp3) also matches
-    
-    // should just be
-    /*
-    u32 temp1;
-    u32 temp2;
-    
-    temp1 = (*(timg+3) & 0xFF) << 8;
-    
-    temp2 = *(timg+3) >> 8;
-
-    return (temp2 | temp1);
-    */
+    return swap(timg[3]);
     
 }
+*/
 
+void setBitmapFormat(Bitmap *sprite, Texture *timg, u16 *palette) {
+    
+    func_80026F30(sprite, palette);
+    
+    // skip header and size bytes
+    sprite->timg = &timg->texture;
+    
+    // bytes 4-8 = width and height (16 bit) (byte swapped)
+    sprite->width = swap(timg->width);  
+    sprite->height = swap(timg->height);
+    
+    // get pixel size from bit 5 in header (bit one when swapped)
+    switch ((timg->flags >> 4) & 0xF) {
+        case 0:
+          sprite->fmt = G_IM_FMT_CI;
+          sprite->pixelSize = G_IM_SIZ_8b;
+          break;
+        
+        case 1:
+          sprite->fmt = G_IM_FMT_CI;
+          sprite->pixelSize = G_IM_SIZ_4b; 
+          break;
+    }
+}
+
+// alternate with timg as array
+/*
 void setBitmapFormat(Bitmap *sprite, u16 *timg, u16 *palette) {
     
     u32 padding[10];
@@ -291,10 +288,13 @@ void setBitmapFormat(Bitmap *sprite, u16 *timg, u16 *palette) {
     }
 }
 
+*/
+
 //INCLUDE_ASM(const s32, "system/graphic", func_80026F30);
 
 void func_80026F30(Bitmap* sprite, u16* palette) {
 
+    // FIX: shouldn't be necessary
     u32 padding[5];
     
     // skip header
@@ -690,7 +690,7 @@ void *func_80028888(u16 arg0, u32 *arg1) {
 
 // get ptr to palette
 // used by map
-// should return u16*?
+// FIXME: should return u16*?
 u8 *func_800288A0(u16 index, u32 *paletteIndex) {
   return (u8*)paletteIndex + paletteIndex[index];
 }

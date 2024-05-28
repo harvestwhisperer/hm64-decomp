@@ -378,7 +378,7 @@ inline void setStartMovingDefault(u8 npcIndex) {
 
 //INCLUDE_ASM(const s32, "npc", func_80075EBC);
 
-// should be inline?
+// FIXME: should be inline?
 void func_80075EBC(u8 index) {
     
     u16 temp;
@@ -803,7 +803,7 @@ void func_8007DF14(void) {
     npcInfoArray[DOUG].unk_24 = 0;
     npcInfoArray[DOUG].unk_25 = 8;
 
-    // something off here
+    // FIXME: something off here
     if (temp >= SUNDAY && (temp < THURSDAY || temp < 7 && (temp2 = temp) >= FRIDAY) && (7 < gHour && gHour < 17)) {
         npcInfoArray[DOUG].levelIndex = RANCH_STORE;
         npcInfoArray[DOUG].startingCoordinates.y = 0;
@@ -1511,8 +1511,6 @@ INCLUDE_ASM(const s32, "npc", func_800856E4);
 
 INCLUDE_ASM(const s32, "npc", func_800857DC);
 
-
-
 INCLUDE_ASM(const s32, "npc", func_800858D4);
 
 //INCLUDE_ASM(const s32, "npc", func_80085C94);
@@ -1525,6 +1523,7 @@ bool func_80085C94(void) {
     D_801C3E18 = 0xFF;
 
     while (i < TOTAL_NPCS && !found) {
+
         if (npcInfoArray[i].flags & 4) {
             if (!renderedSprites[npcInfoArray[i].spriteIndex].unk_58) {
                 found = 1;
@@ -1534,6 +1533,7 @@ bool func_80085C94(void) {
         }  
 
         i++;
+
     } 
     
     return found;
@@ -1546,7 +1546,7 @@ bool func_80085D48(int index, u16 arg1) {
     bool result;
     
     int temp;
-    // something very wrong here... maybe a struct?
+    // FIXME: likely a struct?
     u8 arr[8];
     
     arr[7] = index;
@@ -1556,12 +1556,15 @@ bool func_80085D48(int index, u16 arg1) {
     result = 0;
     
     if (npcInfoArray[index].flags & 4) {
+
+        // FIXME: 
         // check if girl and load heart icon
         if ((index < 5) && (index >= (result = 0))) {
             func_8003F910(0, 0x78, &dialogueIconsTexture_ROM_START, &dialogueIconsTexture_ROM_END, &dialogueIconsIndex_ROM_START, &dialogueIconsIndex_ROM_END, (void*)DIALOGUE_ICONS_TEXTURES_VADDR, (void*)0x8023CC00, (void*)0x8023CE00, (void*)0x8023D200, 0, (npcAffection[index] / 52) + 5, 0xFE, 106.0f, -15.0f, 0);
             func_8003F910(1, 0x78, &dialogueIconsTexture_ROM_START, &dialogueIconsTexture_ROM_END, &dialogueIconsIndex_ROM_START, &dialogueIconsIndex_ROM_END, (void*)DIALOGUE_ICONS_TEXTURES_VADDR, (void*)0x8023CC00, (void*)0x8023CE00, (void*)0x8023D200, 0, (npcAffection[index] / 52) + 5, 0xFE, 106.0f, -15.0f, 0);
         }
         // get dialogue index
+
         showDialogueBox(0, D_80114960[arr[7]], arg1, 0, 0);
         result = 1;
     }
