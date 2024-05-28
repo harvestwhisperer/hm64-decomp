@@ -3,7 +3,6 @@
 
 #include "common.h"
 
-
 #define MAX_DIALOGUE_BOXES 6
 #define MAX_DIALOGUE_BANKS 73
 

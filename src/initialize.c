@@ -504,7 +504,7 @@ void func_8004E160(void) {
 //INCLUDE_ASM(const s32, "initialize", initializeGameVariables);
 
 // initialize bss game variables
-// probably uses static inlines for each group
+// TODO: there might be some static inlines for each group being initialized
 void initializeGameVariables(void) {
 
     u8 i, j, k;
@@ -1073,7 +1073,7 @@ void loadMapAddresses(void) {
 
 INCLUDE_ASM(const s32, "initialize", func_80053088);
 
-// rodata issue
+// FIXME: rodata issue
 /*
 void func_80053088(void) {
 
@@ -1127,7 +1127,7 @@ void func_80053088(void) {
 INCLUDE_ASM(const s32, "initialize", func_800535DC);
 
 // dialogues
-// need to add linker symbols
+// TODO: need to add linker symbols
 /*
 void func_800535DC(void) {
     func_8003F30C(0, &D_E13920, &D_E13990, &D_E13800_2, 0x8030A800);
@@ -1302,7 +1302,7 @@ void func_80054550(void) {
  
 INCLUDE_ASM(const s32, "initialize", func_80054734);
 
-// have to add assets to splat.yaml
+// TODO: have to add linker symbols
 /* 
 void func_80054734(void) {
     func_80043050(0, 0, 0, &D_E871B0, &D_E871C0, 0x8030C800, &D_E871A0, 0x8030CC00);
@@ -1385,6 +1385,7 @@ void func_80054734(void) {
 
 //INCLUDE_ASM(const s32, "initialize
 
+// TODO: rename to dialogue variables?
 // variables referenced in dialogues
 void setGameVariables(void) {
 

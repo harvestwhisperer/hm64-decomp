@@ -57,6 +57,7 @@
 #define KITCHEN 0x5A
 #define BATHROOM 0x5B
 
+// TODO: finish adding these
 /* entrances/exits */
 #define HOUSE_EXIT 0
 #define BATHROOM_TO_KITCHEN 0xB
@@ -73,6 +74,7 @@
 #define ANN_ROOM_ENTER 0x4D
 #define FLOWER_SHOP_ENTRANCE 0x57
 
+// TODO: finish adding these
 /* map flags */
 #define INDOORS 1
 #define OUTDOORS 2

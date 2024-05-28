@@ -92,7 +92,7 @@
 
 #define DEMO_CUTSCENE_1 0x5DC
 #define DEMO_CUTSCENE_2 0x5DD
-// 0x5DE
+// TODO: 0x5DE missing?
 #define DEMO_CUTSCENE_3 0x5DF
 
 u16 func_8009C054(u16 mapIndex);
@@ -102,7 +102,7 @@ extern u16 func_800A87C4();
 extern void func_800A8F74();   
 extern void loadCutscene(u32);  
 
-// maybe game.c
+// maybe game.c bss
 extern u16 gCutsceneIndex;
 
 extern u8 D_80113580[0x18][0x14];

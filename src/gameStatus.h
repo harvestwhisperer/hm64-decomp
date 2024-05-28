@@ -144,7 +144,7 @@ extern u32 specialDialogueBits[0x10];
 extern u32 recipesBits[1];
 extern u32 readMailBits[];
 extern u32 mailboxBits[];
-// should be array [1]?
+// FIXME: maybe should be array [1]?
 extern u32 albumBits;
 
 extern u8 D_80113760[0x14][0x18];
