@@ -1,15 +1,15 @@
 #ifndef _GRAPHIC_H_
 #define _GRAPHIC_H_
 
+#include "common.h"
+#include "system/map.h"
+#include "system/sprite.h"
+
 #define SCREEN_WD 320
 #define SCREEN_HT 240
 #define GFX_GLIST_LEN 31
 
 #define DEGREES_TO_RADIANS_CONSTANT 0.0174532925199432955
-
-#include "common.h"
-#include "system/map.h"
-#include "system/sprite.h"
 
 typedef struct {
 	Mtx projection;

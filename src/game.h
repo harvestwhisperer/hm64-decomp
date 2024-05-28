@@ -116,6 +116,7 @@ extern u32 gTotalCropsShipped;
 extern u32 gTotalEggsShipped;
 extern u32 gTotalGoldenMilkShipped;
 
+// TODO: label
 // fish caught total
 extern u32 D_80189838;
 
@@ -157,6 +158,7 @@ extern u8 gWifeName[6];
 extern u8 gBabyName[6];
 extern u8 harvestKingName[6];
 
+// TODO: label
 // season married in
 extern u8 D_80183690;
 // day of month married on

@@ -7,7 +7,9 @@ extern u16 calculateFieldScore();
 extern u16 calculateGrassScore();                         
 extern u32 calculateHouseExtensionScore();    
 extern u16 calculateNPCAffectionScore();               
-extern u32 calculateShippingScore();                      
+extern u32 calculateShippingScore();           
+
+// TODO: add labels
 
 // field score
 extern u16 D_8013D438;
