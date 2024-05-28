@@ -3,6 +3,7 @@
 
 #include "common.h"
 
+// TODO: finish adding map indices
 /* map indices */
 #define RANCH 0
 #define ANN_ROOM 4

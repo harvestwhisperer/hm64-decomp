@@ -3,6 +3,7 @@
 
 #include "common.h"
 
+// TODO: finish adding these
 /* daily event bit indices */
 #define DAILY_SHIPMENT 0
 #define CARPENTER_ESTIMATE 9
@@ -15,6 +16,7 @@
 #define FESTIVAL 0x4D
 #define FESTIVAL_2 0x4E
 
+// TODO: finish adding these
 /* life event bit indices */
 #define MARRIED 0
 #define HAVE_BABY 1
@@ -75,6 +77,7 @@
 #define WIFE_LEFT 0xD9
 // 0x4d = sprites taking care of animals during typhoon
 
+// TODO: finish adding these
 /* special dialogue bit indices */
 #define HAVE_HOUSE_EXTENSION 0x12
 #define RAIN_FORECAST_DIALOGUE 0x13

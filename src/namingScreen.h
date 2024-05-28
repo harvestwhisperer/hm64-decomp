@@ -1,6 +1,8 @@
 #ifndef _NAMING_SCREEN_H_
 #define _NAMING_SCREEN_H_
 
+#include "common.h"
+
 // 0x8016FBD0
 typedef struct {
     u8* name;

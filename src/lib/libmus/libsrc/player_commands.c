@@ -88,6 +88,7 @@ INCLUDE_ASM(const s32, "lib/libmus/libsrc/player_commands", func_800F47C0);
 INCLUDE_ASM(const s32, "lib/libmus/libsrc/player_commands", func_800F4840);
 
 
+// FIXME: split this somehow
 // player_api.c
 
 INCLUDE_ASM(const s32, "lib/libmus/libsrc/player_commands", MusInitialize);

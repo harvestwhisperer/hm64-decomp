@@ -10,6 +10,7 @@
 #define CHICK 1
 #define ADULT_CHICKEN 2
 
+// TODO: finish adding animal types
 #define CALF 1
 #define ADULT_COW 2
 #define INFANT_SHEEP 4
@@ -106,6 +107,7 @@ typedef struct {
     u8 unk_5; 
 } AnimalLocations;
 
+// TODO: research what this is
 // 0x8016FB08
 typedef struct {
     Vec3f unk_0; // 08

@@ -11,23 +11,6 @@
 #define TOTAL_SONGS 64
 #define TOTAL_SFX 128
 
-#define CLOSE 1
-#define MOVE_CURSOR 2
-#define STORE_ITEM 4
-#define SELECT 7
-#define WHISTLE 10
-#define SICKLE_SFX 11
-#define AX_SFX 17
-#define SEEDS 29
-#define MILKER_SFX 30
-#define ROOSTER 63
-#define CHICKEN_CLUCK 64
-#define BIRD_CHIRP 66
-#define CAT_MEOW 67
-#define BIRD_CHIRP_2 70
-#define DIALOGUE_BEEP 87
-#define RUMBLE 89
-
 #define SFX_VOLUME 128
 #define SONG_VOLUME 128
 

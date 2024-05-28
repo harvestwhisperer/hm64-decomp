@@ -403,7 +403,7 @@ INCLUDE_RODATA(const s32, "system/sprite", D_8011ECE4);
 
 INCLUDE_ASM(const s32, "system/sprite", func_8002A410);
 
-// matches but rodata issue
+// TODO: matches but rodata issue
 /*
 inline Gfx* func_8002A410(Gfx* dl, u16 arg1) {
 

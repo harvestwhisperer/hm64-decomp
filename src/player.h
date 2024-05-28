@@ -58,9 +58,11 @@
 #define FLOWER_BATH_CRYSTALS 20
 #define STAMINA_CARROT 21
 
+// TODO: finish adding items
 /* item indices */
 #define TOMATO 0x10
 
+// TODO: finish adding actions
 /* actions */
 #define TOOL_USE 1
 #define THROWING 2

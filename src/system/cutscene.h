@@ -5,6 +5,7 @@
 
 #define MAX_CUTSCENE_ASSETS 42
 
+// TODO: figure out and add flag macros
 #define ACTIVE 1
 #define CHARACTER_SPRITE_ASSET 8
 #define MAP_ASSET 0x10

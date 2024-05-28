@@ -16,7 +16,7 @@
 
 // bss
 NamingScreenContext namingScreenContext;
-// part of namingScreenContext, but needed for match 
+// FIXME: part of namingScreenContext, but needed for match 
 f32 D_8016FBE0;
 u16 D_8016FBEE;
 
@@ -68,7 +68,7 @@ void func_800ED8A0(u8* arg0, u8 arg1) {
 // main loop callback
 INCLUDE_ASM(const s32, "namingScreen", func_800ED974);
 
-// matches when loadCutscene signature is loadCutscene(void) and not loadCutscene(u32)
+// FIXME: matches when loadCutscene signature is loadCutscene(void) and not loadCutscene(u32)
 /*
 void func_800ED974(void) {
 
@@ -825,7 +825,7 @@ void func_800F03C4(void) {
         namingScreenContext.flags &= ~(0x80);
     }
 
-    if (func_8004D3C8(CONTROLLER_1, 0x40000)) {
+    if (func_8004D3C8(CONTROLLER_1, BUTTON_STICK_LEFT)) {
         set = 1;
         func_800EFADC();
         setSfx(3);

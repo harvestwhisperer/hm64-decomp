@@ -2,13 +2,14 @@
 #define _MESSAGE_H_
 
 #include "common.h"
-#include "audio.h"
+
 
 #define MAX_DIALOGUE_BOXES 6
 #define MAX_DIALOGUE_BANKS 73
 
 #define DIALOGUE_ICONS_TEXTURES_VADDR 0x8023B400
 
+// TODO: add japanese characters
 // 1 - 0xA0 = Japanese characters
 
 #define char_A 0xA1
@@ -51,6 +52,7 @@
 #define char_y 0xD3
 #define char_z 0xD4
 
+// TODO: finish adding
 // 0xD5-0xDF = numbers
 // 0xDF-0xFF = symbols
 
