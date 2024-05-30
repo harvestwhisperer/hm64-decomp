@@ -5,6 +5,7 @@
 #include "system/message.h"
 
 #include "game.h"
+#include "itemHandlers.h"
 #include "mainLoop.h"
 #include "overlayScreens.h"
 #include "player.h"
@@ -13,8 +14,11 @@
 // forward declaration
 u8 func_800E4424(u8, u8);                 
  
+// bss?
+// turnips shipped
+extern u32 D_801654F4;
+
 // bss
-u32 D_801654F4;
 extern LoadGameScreenInfo D_801D6238;
 extern u8 D_8030E000[16];
 

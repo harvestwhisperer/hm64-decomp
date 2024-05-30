@@ -107,7 +107,6 @@ typedef struct {
     u8 unk_5; 
 } AnimalLocations;
 
-// TODO: research what this is
 // 0x8016FB08
 typedef struct {
     Vec3f unk_0; // 08
@@ -123,7 +122,7 @@ typedef struct {
     u8 unk_16; // 1E
     u8 unk_17; // 1F
     u16 flags; // 20
-} UnknownAnimalStruct;
+} ChickenEgg;
 
 extern bool func_80086764();    
 extern void func_800876D0();     
@@ -175,26 +174,32 @@ extern void setAnimalLocations(u8);
 extern void setDogLocation(u8);        
 extern void setHorseLocation(u8);     
 
-extern UnknownAnimalStruct D_8016FB08[];
+extern ChickenEgg gChickenEggs[];
 extern Chicken gChickens[MAX_CHICKENS];
 extern FarmAnimal gFarmAnimals[MAX_FARM_ANIMALS];
 extern u8 D_8016FBCC[1];
 extern u8 D_801886D4[6];
+// TODO: label
 // dead animal name for funeral
 extern u8 D_8018985C[6];
 extern Dog dogInfo;
 extern Horse horseInfo;
 
+// watched cow stalls
 extern u8 D_8016F898;
 extern u8 D_8016FAF8;
+extern u8 D_801C3F46;
+
 extern u16 D_8016FDF0;
 extern u8 D_8016FFE8;
+// newest farm animal index?
 extern u8 D_80170464;
+// cow festival stall
 extern u8 D_80189054;
-extern u8 D_801C3F46;
 extern u8 D_801FC155;
 
 // dead animal count
+// TODO: label
 extern u16 D_8013DC2E;
 
 #endif

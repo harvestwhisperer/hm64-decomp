@@ -411,7 +411,7 @@ void func_8006F938(u16 levelIndex) {
 
             break;
 
-        case 0x57:
+        case HOUSE:
             
             func_8002B138(0x62, &D_D86D90, &D_D8B140, &D_D8B140_2, &D_D8B160, &D_D8B160_2, &D_D8B1D0, (void*)0x802E4000, (void*)0x802E4D00, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
             func_8002BD90(0x62, 2.0f, 2.0f, 1.0f);
@@ -441,6 +441,7 @@ void func_8006F938(u16 levelIndex) {
                 
             }
             
+            // clock
             if (checkLifeEventBit(0x58)) {
                 
                 func_8002B138(0x65, &D_D86D90, &D_D8B140, &D_D8B140_2, &D_D8B160, &D_D8B160_2, &D_D8B1D0, (void*)0x802E8600, (void*)0x802E8880, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
@@ -448,7 +449,8 @@ void func_8006F938(u16 levelIndex) {
                 func_8002C7EC(0x65, 3);
                 func_8002C85C(0x65, 0xFF, 0xFF, 0xFF, 0xFF);
                 func_8002C914(0x65, 0xFF, 0xFF, 0xFF, 0xFF);
-                
+
+                // cabinet
                 if (checkLifeEventBit(0x16)) {
                     func_80034C40(0, 3, 0x65, 0x12, -192.0f, 64.0f, 104.0f, 0xFF, 0xFF, 0, 0);
                 } else {
@@ -468,6 +470,7 @@ void func_8006F938(u16 levelIndex) {
                 
             }
             
+            // vase
             if (checkLifeEventBit(8)) {
                 
                 func_8002B138(0x67, &D_D86D90, &D_D8B140, &D_D8B140_2, &D_D8B160, &D_D8B160_2, &D_D8B1D0, (void*)0x802E9000, (void*)0x802E9280, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
@@ -481,8 +484,9 @@ void func_8006F938(u16 levelIndex) {
             
             break;
 
-        case 0x5A:
+        case KITCHEN:
             
+            // table cloth
             if (checkLifeEventBit(0x5C)) {
                 
                 func_8002B138(0x62, &D_D86D90, &D_D8B140, &D_D8B140_2, &D_D8B160, &D_D8B160_2, &D_D8B1D0, (void*)0x802E7C00, (void*)0x802E7E80, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);

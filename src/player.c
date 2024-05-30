@@ -25,9 +25,9 @@
 u8 func_80067A24(u8);                 
 void func_8006C628(u16, u16);
 
-
 // consumable tool counters (seeds, feed)
 extern u8 D_802373A8;
+// chicken feed counter
 extern u16 D_80237410;
 
 // FIXME: part of player struct, but necessary for matching right now
@@ -545,7 +545,7 @@ void func_80067034(void) {
 
     Vec3f vec1;
     Vec3f vec2;
-    u8 i; // not initialied: likely a bug
+    u8 i; // not initialied; likely a bug
     u8 set = 0;
     int temp;
     
@@ -582,6 +582,7 @@ void func_80067034(void) {
             gPlayer.flags &= -2;
             
             toggleDailyEventBit(0x5C);
+            // initialize animal locations
             func_8008B9AC();
            
             renderedSprites[PLAYER].direction = i;

@@ -104,8 +104,6 @@ extern u8 annCliffBabyAge;
 extern u8 annCliffNewlywedCounter;
 extern u8 annPregnancyCounter;
 
-extern u8 D_801C4216;
-
 extern MainLoopCallbackInfo D_80205230;
 
 // unused
@@ -114,9 +112,11 @@ extern u16 D_801FB686;
 extern u8 mariaHarrisNewlywedCounter;
 
 //extern u16 D_801C3F32;
+// TODO: identify this
 extern u8 D_801C4216;
 extern u16 D_801886D2;
 extern u8 D_80189054;
+// animal price?
 extern u32 D_801890E0;
 
 // data
@@ -857,6 +857,7 @@ void func_8005B09C(u8 arg0) {
 
 void func_8005C00C(void) {
     
+    // FIXME: this is a 32-bit flag; does a range make sense?
     if (D_801891D4 < 0) {
         setMainLoopCallbackFunctionIndex(MAIN_GAME);
         return;
@@ -1189,6 +1190,7 @@ void func_8005D0BC(void) {
     
     set = 0;
     
+    // chicken born
     if (gBaseMapIndex == COOP && checkLifeEventBit(3)) {
         
         gNamingScreenIndex = 7;
@@ -1224,6 +1226,7 @@ void func_8005D0BC(void) {
 
     }
     
+    // farm animal
     if (gBaseMapIndex == BARN && checkLifeEventBit(4)) {
         
         gNamingScreenIndex = 5;
@@ -1521,6 +1524,7 @@ void func_8005D2B0() {
                         toggleDailyEventBit(0x1D);
                         setDailyEventBit(0x1E);
                         setDailyEventBit(0x20);
+                        // cow festival
                         D_80189054 = D_801FC155;
                         break;
                         
@@ -2346,6 +2350,7 @@ void func_80060624(void) {
         setEntrance(MIDDLE_OF_HOUSE);
         func_80056030(2);
         
+        // dream cutscenes
         if (func_800A87C4()) {
             setMainLoopCallbackFunctionIndex(3);
             return;
@@ -2363,6 +2368,7 @@ void func_80060624(void) {
                 tempTime += 24;
             }
             
+            // TODO: check if cushion
             if (checkLifeEventBit(0x5A)) {
                 gPlayer.fatigue.counter += adjustValue(gPlayer.fatigue.counter, -((30 - tempTime) * 3), 100);
             } else {
@@ -3247,6 +3253,7 @@ u8 handleHouseConstruction(u8 day) {
 // func_8006252C
 //INCLUDE_ASM(const s32, "game", setLetters);
 
+// TODO: label bits/use flags
 void setLetters(void) {
 
     if (!checkMailRead(0) && (!checkLifeEventBit(MARRIED) || gWife != MARIA) && npcAffection[MARIA] >= 120 && gSeason == SPRING && !getRandomNumberInRange(0, 10)) {

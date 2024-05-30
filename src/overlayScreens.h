@@ -11,11 +11,17 @@ extern void func_800B4238(u8);
 extern void func_800B42E0(void);    
 extern void func_800B59AC(void);  
 extern void func_800B5BD4(void);
+extern void func_800CB0C4(void);
+extern void func_800CB8F0(void);
 extern void func_800CC17C(void); 
 
 extern u8 D_801890E8[31];
 // calendar
+// TODO: label
 extern u8 D_80189108[5][7];
+// refrigerator/freezer
+// TODO: label
+// FIXME: should be 2D array with [4][8]
 extern u8 D_80237420[31];
 
 extern u32 checkerboardBackgroundTexture_ROM_START;

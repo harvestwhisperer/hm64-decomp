@@ -8,25 +8,33 @@
 #include "system/mapContext.h"
 
 #include "game.h"
+#include "gameStatus.h"
 #include "level.h"
 
 // bss
-extern Chicken gChickens[MAX_CHICKENS];
-extern FarmAnimal gFarmAnimals[];
-extern u8 D_801886D4[6];
-extern Dog dogInfo;
-extern Horse horseInfo;
-extern UnknownAnimalStruct D_8016FB08[];
+Chicken gChickens[MAX_CHICKENS];
+ChickenEgg gChickenEggs[];
+FarmAnimal gFarmAnimals[];
+u8 D_801886D4[6];
+Dog dogInfo;
+Horse horseInfo;
 
-extern u8 D_8016F898;
-extern u8 D_8016FAF8;
+// TODO: label
+// watched cow stall #3
+u8 D_8016F898;
+// watched cow stall #1
+u8 D_8016FAF8;
+// watched cow stall #2
+u8 D_801C3F46;
+
 extern u16 D_8016FDF0;
 extern u8 D_8016FFE8;
+// newest chicken index?
 extern u8 D_80170464;
 extern u8 D_801886CC;
 extern u8 D_80189054;
 extern u8 D_8018908C;
-extern u8 D_801C3F46;
+// newest animal index (generic)?
 extern u8 D_801FC155;
  
 // data
@@ -160,10 +168,12 @@ INCLUDE_ASM(const s32, "animals", func_80086764);
 
 //INCLUDE_ASM(const s32, "animals", func_800876D0);
 
+// initialize animal locations on farm
 void func_800876D0(void) {
 
     u8 i;
 
+    // check dog/horse race
     if (!checkLifeEventBit(0x52) || !checkDailyEventBit(0x42)) {
         func_8008B1B8();
     }
@@ -176,6 +186,7 @@ void func_800876D0(void) {
         func_8008B55C(i);
     }
 
+    // check dog/horse race
     if (!checkLifeEventBit(0x51) || !checkDailyEventBit(0x41)) {
         func_8008B9AC();
     }
@@ -224,9 +235,9 @@ void func_8008779C(void) {
     }
 
     for (i = 0; i < 7; i++) {
-        if (D_8016FB08[i].flags & 4) {
-            if (renderedSprites[D_8016FB08[i].spriteIndex].flags & 8) {
-                func_8002FA2C(D_8016FB08[i].spriteIndex);
+        if (gChickenEggs[i].flags & 4) {
+            if (renderedSprites[gChickenEggs[i].spriteIndex].flags & 8) {
+                func_8002FA2C(gChickenEggs[i].spriteIndex);
             }
         }
     }
@@ -404,6 +415,7 @@ INCLUDE_ASM(const s32, "animals", func_8008841C);
 
 //INCLUDE_ASM(const s32, "animals", func_800886D0);
 
+// initialize watched cows from Doug
 void func_800886D0(void) {
     initializeFarmAnimal(D_8016FAF8);
     initializeFarmAnimal(D_801C3F46);
@@ -871,7 +883,7 @@ void func_8009BC64(void) {
     u8 i;
 
     for (i = 0; i < 7; i++) {
-        D_8016FB08[i].unk_16 = getRandomNumberInRange(0, 3);
+        gChickenEggs[i].unk_16 = getRandomNumberInRange(0, 3);
     }
     
 }

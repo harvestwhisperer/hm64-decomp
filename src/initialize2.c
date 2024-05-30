@@ -558,6 +558,7 @@ void startNewDay(void) {
         }
     }
     
+    // dog/horse race
     if (checkLifeEventBit(0x51) && checkDailyEventBit(0x41)) {
         toggleLifeEventBit(0x51);
     }
@@ -600,6 +601,7 @@ void startNewDay(void) {
     setForecast();
     
     if (checkLifeEventBit(0x7E)) {
+        // unused code?
         checkLifeEventBit(0x7F);
     }
     

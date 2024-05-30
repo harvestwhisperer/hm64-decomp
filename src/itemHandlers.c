@@ -36,6 +36,7 @@ extern u8 D_801C3F35;
 extern u8 D_801FD624;
 
 // load game screen
+// strawberries shipped
 extern u32 D_801806C0;
 extern u32 D_80188F60;
 extern u32 D_801C3F80;

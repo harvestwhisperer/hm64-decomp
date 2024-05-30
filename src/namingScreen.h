@@ -3,6 +3,9 @@
 
 #include "common.h"
 
+#define FARM_ANIMAL_NAME_SCREEN 5
+#define CHICKEN_NAME_SCREEN 7
+
 // 0x8016FBD0
 typedef struct {
     u8* name;

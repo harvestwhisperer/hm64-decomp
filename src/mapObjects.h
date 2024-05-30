@@ -28,7 +28,7 @@
 #define FIELD_WIDTH 24
 #define FIELD_HEIGHT 20
 
-// TODO: label these appropriate
+// TODO: label these appropriately
 // object maps for levels
 // top of mountain 1
 extern u8 D_8013D258[FIELD_WIDTH][FIELD_HEIGHT];
