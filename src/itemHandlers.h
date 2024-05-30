@@ -52,11 +52,21 @@ extern void func_800D7010();
 extern ToolStatus D_80204DF8[10];
 extern ToolUse D_80189828;
 
+// TODO: label
+// tomatoes shipped
 extern u32 D_80188F60;
+// cabbages shipped
 extern u32 D_801C3F80;
+// corn shipped
 extern u32 D_801FB5D0;
+// turnips shipped
+extern u32 D_801654F4;
+// eggplants shipped
 extern u32 D_801FB6FC;
+// potatoes shipped
 extern u32 D_80237414;
+// strawberries shipped
+extern u32 D_801806C0;
 
 extern u8 D_801C3F35;
 extern u8 D_801FD624;

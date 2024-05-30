@@ -6,6 +6,7 @@
 #define SUNNY 1
 #define RAIN 2
 #define SNOW 3
+// 4 = unused rain
 #define TYPHOON 5
 
 #define RAIN_TEXTURE_VADDR 0x802A5AC0

@@ -143,6 +143,9 @@ extern u8 gHarvestCoinFinder;
 extern u8 gHarvestKing;
 extern u8 gVoteForFlowerFestivalGoddess;
 
+extern u8 babyBirthdaySeason;
+extern u8 babyBirthdayDate;
+
 extern u8 houseExtensionConstructionCounter;
 
 // only used by load.c and initialize.c 

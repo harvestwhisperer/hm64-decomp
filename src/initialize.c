@@ -39,6 +39,8 @@ extern u8 D_80189A48;
 extern u8 D_801C3B64;
 extern u8 D_801C4214;
 
+extern void* D_8011BD18;
+
 // unused strings
 extern u8 D_801594E0[3];
 extern u8 D_801594E6[3];
@@ -560,12 +562,12 @@ void initializeGameVariables(void) {
 
     blueMistFlowerPlot = 0;
 
-    D_8016F8F4 = 0;
+    gSickDays = 0;
 
     D_8013DC2E = 0;
 
-    D_802373F0 = 0;
-    D_80181B10 = 0;
+    flowerShopPoints = 0;
+    bakeryCardPoints = 0;
 
     D_802226E0 = 0;
 
@@ -707,17 +709,17 @@ void initializeGameVariables(void) {
     }
 
     for (i = 0; i < 7; i++) {
-        D_8016FB08[i].unk_15 = 0;
-        D_8016FB08[i].mapIndex = 0;
-        D_8016FB08[i].unk_F = 0;
-        D_8016FB08[i].unk_10 = 0;
-        D_8016FB08[i].unk_11 = 0;
-        D_8016FB08[i].unk_13 = 0;
-        D_8016FB08[i].unk_14 = 0;
-        D_8016FB08[i].unk_0.x = 0;
-        D_8016FB08[i].unk_0.y = 0;
-        D_8016FB08[i].unk_0.z = 0;
-        D_8016FB08[i].flags = 0;
+        gChickenEggs[i].unk_15 = 0;
+        gChickenEggs[i].mapIndex = 0;
+        gChickenEggs[i].unk_F = 0;
+        gChickenEggs[i].unk_10 = 0;
+        gChickenEggs[i].unk_11 = 0;
+        gChickenEggs[i].unk_13 = 0;
+        gChickenEggs[i].unk_14 = 0;
+        gChickenEggs[i].unk_0.x = 0;
+        gChickenEggs[i].unk_0.y = 0;
+        gChickenEggs[i].unk_0.z = 0;
+        gChickenEggs[i].flags = 0;
     }
  
     for (i = 0; i < 10; i++) {
@@ -766,6 +768,7 @@ void initializeGameVariables(void) {
 
     initializeToolchestSlots();
 
+    // freezer pages 1-4
     D_80237420[0] = 0;
     D_80237420[1] = 0;
     D_80237420[2] = 0;

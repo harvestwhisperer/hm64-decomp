@@ -60,6 +60,7 @@
 // TODO: finish adding these
 /* entrances/exits */
 #define HOUSE_EXIT 0
+// 10 sick day
 #define BATHROOM_TO_KITCHEN 0xB
 #define MIDDLE_OF_HOUSE 0xC
 #define ROAD_FROM_VILLAGE_1 0x17

@@ -4,14 +4,31 @@
 #include "common.h"
 #include "game.h"
 
+#define MARRIED_TO_MARIA checkLifeEventBit(MARRIED) && gWife == MARIA
 #define MARRIED_TO_POPURI checkLifeEventBit(MARRIED) && gWife == POPURI
+#define MARRIED_TO_ELLI checkLifeEventBit(MARRIED) && gWife == ELLI
 #define MARRIED_TO_ANN checkLifeEventBit(MARRIED) && gWife == ANN
 #define MARRIED_TO_KAREN checkLifeEventBit(MARRIED) && gWife == KAREN
+// TODO: clean up usage/make consistent
 #define ARE_MARRIED checkLifeEventBit(MARRIED)
 #define NOT_MARRIED !checkLifeEventBit(MARRIED)
 
 // TODO: finish adding these
 /* cutscene indices */
+/* house cutscenes */
+// #define KENT_VISIT_PLAYER_SICK 0
+#define MARIA_VISIT_PLAYER_SICK 3
+#define MARIA_BIRTH 4
+#define POPURI_BIRTH 0xB
+#define ELLI_BIRTH 0x12
+#define ANN_BIRTH 0x19
+#define KAREN_BIRTH 0x20
+#define MARIA_LEAVES_MARRIAGE 0x2E
+#define POPURI_LEAVES_MARRIAGE 0x2F
+#define ELLI_LEAVES_MARRIAGE 0x30
+#define ANN_LEAVES_MARRIAGE 0x31
+#define KAREN_LEAVES_MARRIAGE 0x32
+// #define SICK_DAY_DEFAULT 0x33
 /* farm cutscenes */
 #define KENT_FARM_SOWING_FESITVAL 0x64
 #define KENT_FARM_THANKSGIVING_FESTIVAL 0x67
@@ -55,11 +72,23 @@
 
 #define MOUNTAIN_FIREWORKS 0x130
 #define ELLI_SPRAINED_ANKLE 0x157
+#define MARIA_WEDDING 0x190
+#define POPURI_WEDDING 0x191
+#define ELLI_WEDDING 0x192
+#define ANN_WEDDING 0x193
+#define KAREN_WEDDING 0x194
 #define ANN_AND_RICK 0x1A6
 #define STARRY_NIGHT_FESTIVAL 0x1AC 
 #define CHURCH_NEW_YEARS 0x1B3
 #define POPURI_SICK 0x1B9
+#define THANKSGIVING_MAYOR_HOUSE 0x209
+#define MARIA_SPRAINED_ANKLE 0x20D
+// 0x20F library cutscenes
+#define MARIA_SICK 0x212
+#define MARIA_REPAIR_MARRIAGE 0x213
 #define SQUARE_FIREWORKS 0x258
+#define ANN_SICK_VISIT_CUTSCENE 0x29A
+#define ANN_REPAIR_MARRIAGE 0x29B
 #define KAREN_YELLOW_HEART_EVENT_1 0x2C1
 #define KAREN_YELLOW_HEART_EVENT_4 0x2C4
 #define KAREN_SICK 0x2C7
@@ -109,7 +138,6 @@ extern u8 D_80113580[0x18][0x14];
 
 // flags
 extern s32 D_801891D4;
-extern u16 D_8013DC2E;
 extern u16 D_8018981C;
 
 #endif

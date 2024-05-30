@@ -10,17 +10,25 @@
 #define CARPENTER_FINISHED 0xB
 // 0xD = something to do with carrying
 #define SUCCESSFUL_PROPOSAL 0x14
+// 0x18 = thanksgiving mayor house
 #define FARM_MORNING_VISIT 0x17
 #define STORES_CLOSED_FOR_FESTIVAL 0x2D
 #define FESTIVAL_DAY 0x30
 #define FESTIVAL 0x4D
 #define FESTIVAL_2 0x4E
+// sick/sprained ankle
+#define MARIA_ABSENT 0x56
 
-// TODO: finish adding these
+// TODO: confirm and finish adding these
 /* life event bit indices */
 #define MARRIED 0
 #define HAVE_BABY 1
+// #define BLUE_MIST 2
+// #define CHICKEN_BORN 3
+// #define FARM_ANIMAL_BORN 4
 #define HAVE_HORSE 5
+// #define GIVE_RICK_RARE_METAL 6
+#define HAVE_VASE 8
 #define HOUSE_EXTENSION_CONSTRUCTION 0xD
 #define ENGAGED 0xF
 #define HAVE_KITCHEN 0x10
@@ -59,29 +67,48 @@
 #define PAINTING_FROM_MARIA 0x3F
 #define BASIL_IN_TOWN 0x40
 #define CLIFF_ARRIVED 0x41
+// #define SMASHED_POND_BOULDER 0x46
+// #define HAVE_TURTLE 0x47
 #define BRIDGE_COMPLETED 0x48
 #define HOT_SPRINGS_COMPLETED 0x4C
+// 0x4D have more than 2 animals
+// #define ENTERED_HORSE_RACE 0x51
+// #define ENTERED_DOG_RACE 0x52
+// #define HAVE_STUFFED_HORSE 0x58
+// #define HAVE_CUSHION 0x5A
 #define WON_CALENDAR_STICKERS_FROM_RAFFLE 0x5B
 #define PUPPIES 0x69
 #define MARIA_FARM_GIFT_1 0x6D
 #define MARIA_FARM_GIFT_2 0x6E
 #define POPURI_FARM_GIFT_1 0x70
 #define POPURI_FARM_GIFT_2 0x71
+// 0x9C karen pink heart event/beach cutscene
+// 0x9D kai beach cutscene
+// #define CARPENTER_WINTER_CUTSCENE 0xAC
 #define ANN_RICK_CUTSCENE 0xB0
+// FIXME: make labels consistent (girls visit player vs. player visits girl cutscenes vs. cutscene index vs. bit flags)
 #define POPURI_SICK_CUTSCENE 0xB4
+#define MARIA_SICK_CUTSCENE 0xBB
+#define MARIA_SPRAINED_ANKLE_CUTSCENE 0xBC
 #define ANN_SICK_VISIT 0xC2
+// 0xC3-C6 vineyard cutscenes
 #define KAREN_SICK_VISIT 0xC7
 #define KAREN_YELLOW_HEART_EVENT_CUTSCENE 0xC8
+#define KAREN_AND_ELLI_BEACH_CUTSCENE 0xCB
 #define SHADY_SALESMAN_MARIA_CUTSCENE 0xCE
 #define ANN_SPRAINED_ANKLE_CUTSCENE 0xCF
 #define WIFE_LEFT 0xD9
-// 0x4d = sprites taking care of animals during typhoon
+// 0x4D = sprites taking care of animals during typhoon
 
 // TODO: finish adding these
 /* special dialogue bit indices */
+// 3 = wedding or newlywed
+// 0xB-F = rivals' weddings
 #define HAVE_HOUSE_EXTENSION 0x12
 #define RAIN_FORECAST_DIALOGUE 0x13
 #define HAVE_GOLD_PENDANT 0x17
+#define MARRIED_TO_KAREN_DIALOGUE 0x21
+#define MARRIED_TO_ANN_DIALOGUE 0x26
 #define HAVE_HORSE_DIALOGUE 0x27
 #define MARIA_HARRIS_BABY_DIALOGUE 0x32
 #define POPURI_GRAY_BABY_DIALOGUE 0x33
@@ -94,11 +121,16 @@
 #define ANN_PREGNANT_DIALOGUE 0x3A
 #define KAREN_PREGNANT_DIALOGUE 0x3B
 #define ELLI_FINISH_GRIEVING 0x43
+#define MARRIED_TO_MARIA_DIALOGUE 0x7D
 #define MARIA_BIRTHDAY 0x7E
 #define POPURI_BIRTHDAY 0x7F
 #define ELLI_BIRTHDAY 0x80
 #define ANN_BIRTHDAY 0x81
 #define KAREN_BIRTHDAY 0x82
+// could be newlywed dialogue bit
+#define GOT_MARRIED_DIALOGUE 0x83
+#define MARRIED_TO_POPURI_DIALOGUE 0x8C
+#define MARRIED_TO_ELLI_DIALOGUE 0x8D
 #define PLAYER_HARVEST_KING 0x142
 #define THANKSGIVING 0x145
 #define NEW_YEARS_EVE 0x146
@@ -108,6 +140,8 @@
 #define WIFE_PREGNANT_ELLI 0x14E
 #define WIFE_PREGNANT_ANN 0x14F
 #define WIFE_PREGNANT_KAREN 0x150
+
+// TODO: add mail bits
 
 extern u32 checkDailyEventBit(u16 bitIndex);
 extern void setDailyEventBit(u16 bitIndex);

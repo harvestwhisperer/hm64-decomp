@@ -14,9 +14,7 @@ extern u8 D_8023740C[6];
 // buy/don't buy animal
 extern u8 D_8023740F;
 
-// flower shop card points
-extern u8 D_802373F0;
-// bakery card points
-extern u8 D_80181B10;
+extern u8 flowerShopPoints;
+extern u8 bakeryCardPoints;
 
 #endif

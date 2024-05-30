@@ -168,6 +168,7 @@ extern u8 gPlayerBirthdaySeason;
 
 extern u8 gToolchestSlots[];
 
+// TODO: labels
 // seed counters
 // turnip
 extern u8 D_801FC154;
@@ -194,11 +195,11 @@ extern u8 D_802373A8;
 
 // watering can uses
 extern u8 D_8016FBCD;
+// chicken feed
 extern u16 D_80237410;
 
 // counter until napping animation
 extern u16 D_802226E0;
-// sick days count
-extern u16 D_8016F8F4;
+extern u16 gSickDays;
 
 #endif
