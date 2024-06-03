@@ -1,6 +1,6 @@
 #include "common.h"
 
-// > version 1.0, but < version 3
+// version 2.00
 
 INCLUDE_ASM(const s32, "lib/libmus/libsrc/player", __MusIntMain);
 
