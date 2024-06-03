@@ -109,9 +109,7 @@ segments:
       - [ 0xCDB40, c, lib/nusys-1/nuaustlsndplayerplay]
       - [ 0xCDB80, c, lib/nusys-1/nuauprenmifuncset]
       - [ 0xCDBC0, c, lib/nusys-1/nuauprenmiproc]
-      # nuaudma.c + nuaumgr.c; not 10 bytes aligned
-      - [ 0xCDC20, c, lib/nusys-1/nuaumisc] # nuadma
-      #- [ 0xCDFCC, c, lib/nusys-1/nuaumgr]
+      - [ 0xCDC20, c, lib/nusys-1/nuaumgr]
       # player_commandsc + player_api.c; not 10 bytes aligned
       - [ 0xCE620, c, lib/libmus/libsrc/player_commands]
       # - [ 0xCFC84, c, lib/libmus/libsrc/player_api]
@@ -139,7 +137,7 @@ segments:
       - [ 0xD6540, c, lib/nusys-1/nusched]
       - [ 0xD6D10, c, lib/nusys-1/nugfxthread]
       - [ 0xD6E60, c, lib/nusys-1/nugfxtaskmgr]
-      #  possible split
+      #  possible split, but doesn't seem like it
       # - [0xD6420, c]
       - [ 0xD7250, c, lib/nusys-1/nugfxfuncset]
       - [ 0xD7290, c, lib/nusys-1/nugfxprenmifuncset]
@@ -197,7 +195,7 @@ segments:
       - [ 0xDAD60, c, lib/os/libultra/setthreadpri]
       - [ 0xDAE30, c, lib/os/libultra/startthread]
       - [ 0xDAF50, c, lib/os/libultra/stopthread]
-      # rodata issue with exceptasm referencing __osFaultedThread
+      # FIXME: should be c, but rodata issue with exceptasm referencing __osFaultedThread
       - [ 0xDB010, asm, lib/os/libultra/thread]
       - [ 0xDB050, c, lib/os/libultra/virtualtophysical]
       - [ 0xDB0B0, c, lib/os/libultra/assert]
@@ -226,7 +224,7 @@ segments:
       - [ 0xDBC90, c, lib/os/libultra/io/epilinkhandle] 
       - [ 0xDBCE0, c, lib/libc/bcopy]
       - [ 0xDC000, c, lib/libc/bzero]
-        # contains osSyncPrintf; maybe change file or path
+        # TODO: contains osSyncPrintf; maybe change file or path
       - [ 0xDC0A0, c, lib/libkmc/syncPrintf]
       - [ 0xDC3F0, c, lib/os/libultra/audio/drvrnew]
       - [ 0xDCC20, c, lib/os/libultra/audio/env]
@@ -294,7 +292,7 @@ segments:
       - [ 0xE49B0, c, lib/os/libultra/io/piacs]
       - [ 0xE4AA0, c, lib/os/libultra/rmon/rmonsio]
       - [ 0xE4C50, c, lib/os/libultra/bcmp]
-      # rodata issue
+      # FIXME: should be c, but rodata issue
       - [ 0xE4D60, asm, lib/os/libultra/printf]
       - [ 0xE5790, c, lib/os/libultra/io/contpfs]
       - [ 0xE6220, c, lib/os/libultra/io/contramread]
@@ -330,9 +328,8 @@ segments:
       - [ 0xEACB0, c, lib/os/libultra/rmon/rmonbreak]
       - [ 0xEB650, hasm, ldiv]
       - [ 0xEB810, c, lib/libkmc/rand] # unaligned file splits
-      # - [ 0xEB854, c, lib/libkmc/_muldi3] 
-      # - [ 0xEB888, c, lib/libkmc/]
-      # - [ 0xEB984, c, lib/libkmc/]
+      # FIXME:
+      # - [ 0xEB854, hasm, lib/libkmc/_muldi3] 
       - [ 0xEBA50, hasm, lib/gcc/dividi3]
       - [ 0xEBBC0, hasm, lib/gcc/udivid3]
       - [ 0xEBBE0, hasm, lib/gcc/umoddi3]
@@ -369,7 +366,7 @@ segments:
       - [ 0xF7BF0, data, lib/nusys-1/nupakmenu/displayterm]
       - [ 0xF7C20, data, lib/nusys-1/nupakmenuloadfont]
       - [ 0xF7C50, data, lib/nusys-1/nuaustlinit] # nuausynconfig
-      - [ 0xF7CA0, data, lib/nusys-1/nuaumisc] # nuaumisc
+      - [ 0xF7CA0, data, lib/nusys-1/nuaumgr]
       - [ 0xF7CB0, data, lib/nusys-1/nuauprenmifuncset] 
       - [ 0xF7CC0, data, lib/libmus/libsrc/player]
       - [ 0xF7D70, data, lib/libmus/n_sl]
@@ -413,8 +410,8 @@ segments:
       - [ 0xF9870, .rodata, lib/os/libultra/rmon/rmoncmd] 
       - [ 0xF9950, .rodata, lib/os/libultra/rmon/rmonmain]
       - [ 0xF9960, rodata] # _litob
-      - [ 0xF9990, .rodata, lib/nusys-1/nuaumisc]
-      - [ 0xF9C40, rodata ] # referenced by nu gfx ucode
+      - [ 0xF9990, .rodata, lib/nusys-1/nuaumgr] # n_aspMainDataStart
+      - [ 0xF9C40, rodata] # referenced by nu gfx ucode
       # game rodata
       - [ 0xFA040, .rodata, system/graphic]
       - [ 0xFA0C0, .rodata, system/sprite] 

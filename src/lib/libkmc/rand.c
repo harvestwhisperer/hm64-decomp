@@ -13,7 +13,7 @@ int rand() {
 
 }
 
-// alternate
+// alternate for reference
 /*
 int rand(void) {
     
@@ -26,7 +26,6 @@ int rand(void) {
 }
 */
 
-// FIXME: has an extra nop that's not generated when compiled: likely an unaligned file split
 // 80110444
 INCLUDE_ASM(const s32, "lib/libkmc/rand", sRand);
 
@@ -35,7 +34,7 @@ INCLUDE_ASM(const s32, "lib/libkmc/rand", sRand);
 // } 
  
 
-// file splits
+// FIXME: should be a file split here, but unaligned
 
 // hasm
 // mmuldi3.s
