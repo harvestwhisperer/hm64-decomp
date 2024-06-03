@@ -22,7 +22,7 @@ options:
   migrate_rodata_to_functions: true
   libultra_symbols: True
   gfx_ucode: f3dex2
-  # disassemble_all: true
+  disassemble_all: true
   # extensions_path: tools/splat_ext
   
 segments:
@@ -112,7 +112,7 @@ segments:
       # nuaudma.c + nuaumgr.c; not 10 bytes aligned
       - [ 0xCDC20, c, lib/nusys-1/nuaumisc] # nuadma
       #- [ 0xCDFCC, c, lib/nusys-1/nuaumgr]
-      # player_commandsc + player_api.c; not 10 bytes aligneds
+      # player_commandsc + player_api.c; not 10 bytes aligned
       - [ 0xCE620, c, lib/libmus/libsrc/player_commands]
       # - [ 0xCFC84, c, lib/libmus/libsrc/player_api]
       - [ 0xD1000, c, lib/libmus/libsrc/player]
@@ -130,12 +130,12 @@ segments:
       - [ 0xD41A0, c, lib/os/libultra/libnaudio/n_auxbus]
       - [ 0xD4240, c, lib/os/libultra/libnaudio/n_drvrnew]
       - [ 0xD4760, c, lib/os/libultra/libnaudio/n_env]
-      - [ 0xD5130, c, lib/os/libultra/libnaudio/load]
+      - [ 0xD5130, c, lib/os/libultra/libnaudio/n_adpcm]
       - [ 0xD5850, c, lib/os/libultra/libnaudio/n_resample]
       - [ 0xD5A30, c, lib/os/libultra/libnaudio/n_reverb]
-      - [ 0xD6420, c, lib/os/libultra/libnaudio/n_unknown]
+      - [ 0xD6420, c, lib/os/libultra/libnaudio/n_alSavePul]
       - [ 0xD6470, c, lib/os/libultra/libnaudio/n_synallocfx]
-      - [ 0xD64C0, c, lib/os/libultra/libnaudio/unknown_libnaudio]
+      - [ 0xD64C0, c, lib/os/libultra/libnaudio/n_alMainBusPull]
       - [ 0xD6540, c, lib/nusys-1/nusched]
       - [ 0xD6D10, c, lib/nusys-1/nugfxthread]
       - [ 0xD6E60, c, lib/nusys-1/nugfxtaskmgr]
@@ -180,10 +180,8 @@ segments:
       - [ 0xD9050, hasm, lib/os/libultra/gu/cosf]
       - [ 0xD9520, c, lib/os/libultra/gu/lookat]
       - [ 0xD98B0, c, lib/os/libultra/gu/mtxutil]
-    # might be a file split because of extra no ops
-    # - [ 0xD9DB0, c, lib/os/libultra/gu/]
       - [ 0xD9B30, c, lib/os/libultra/gu/ortho]
-      - [ 0xD9D90, c, lib/os/libultra/gu/perspective]
+      - [ 0xD9DB0, c, lib/os/libultra/gu/perspective]
       - [ 0xDA130, c, lib/os/libultra/gu/rotate]
       - [ 0xDA450, c, lib/os/libultra/gu/scale]
       - [ 0xDA530, c, lib/os/libultra/gu/sins]
@@ -244,8 +242,8 @@ segments:
       - [ 0xDF9E0, c, lib/os/libultra/io/pfsfilestate]
       - [ 0xDFB70, c, lib/os/libultra/io/pfsfreeblocks]
       - [ 0xDFC80, c, lib/os/libultra/io/pfsinitpak]
-      - [ 0xDFF50, c, lib/os/libultra/io/unknown_pfs] 
-      - [ 0xE0050, c, lib/os/libultra/io/unknown_pfs2]
+      - [ 0xDFF50, c, lib/os/libultra/io/pfsnumfiles] 
+      - [ 0xE0050, c, lib/os/libultra/io/pfsreadwritefile]
       - [ 0xE0490, c, lib/os/libultra/io/pfsrepairid]
       - [ 0xE04F0, c, lib/os/libultra/io/pfssearchfile]
       - [ 0xE0690, c, lib/os/libultra/io/pfsselectbank]
@@ -254,7 +252,6 @@ segments:
       - [ 0xE0A80, c, lib/os/libultra/io/sirawdma]
       - [ 0xE0B30, c, lib/os/libultra/io/sprawdma]
       - [ 0xE0BC0, c, lib/os/libultra/io/vimgr]
-      - [ 0xE0D60, c, lib/os/libultra/io/vi_unknown]
       - [ 0xE0F00, c, lib/os/libultra/io/visetspecial]
       - [ 0xE1070, c, lib/os/libultra/io/viswapcontext]
       - [ 0xE1380, hasm, lib/os/libultra/exceptasm]
@@ -307,7 +304,7 @@ segments:
       - [ 0xE6AF0, c, lib/os/libultra/io/epirawstartdma]
       - [ 0xE6CE0, c, lib/os/libultra/io/epirawread]
       - [ 0xE6E50, c, lib/os/libultra/io/epirawwrite]
-      - [ 0xE6FC0, c, lib/os/libultra/io/ospfschecker]
+      - [ 0xE6FC0, c, lib/os/libultra/io/pfschecker]
       - [ 0xE76E0, c, lib/os/libultra/io/pfsgetstatus]
       - [ 0xE78F0, c, lib/os/libultra/io/sirawread]
       - [ 0xE7940, c, lib/os/libultra/io/sirawwrite]
@@ -333,6 +330,9 @@ segments:
       - [ 0xEACB0, c, lib/os/libultra/rmon/rmonbreak]
       - [ 0xEB650, hasm, ldiv]
       - [ 0xEB810, c, lib/libkmc/rand] # unaligned file splits
+      # - [ 0xEB854, c, lib/libkmc/_muldi3] 
+      # - [ 0xEB888, c, lib/libkmc/]
+      # - [ 0xEB984, c, lib/libkmc/]
       - [ 0xEBA50, hasm, lib/gcc/dividi3]
       - [ 0xEBBC0, hasm, lib/gcc/udivid3]
       - [ 0xEBBE0, hasm, lib/gcc/umoddi3]

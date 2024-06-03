@@ -1,6 +1,5 @@
 #include "common.h"
 
-
 INCLUDE_ASM(const s32, "lib/os/libultra/audio/drvrnew", init_lpfilter);
 
 INCLUDE_ASM(const s32, "lib/os/libultra/audio/drvrnew", alFxNew);

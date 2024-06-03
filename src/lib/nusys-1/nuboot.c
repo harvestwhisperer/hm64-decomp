@@ -20,7 +20,7 @@ extern void mainproc(void *arg);
 
 static void nuBoot(void) {
     osInitialize();
-    // (IdleStack + NU_IDLE_STACK_SIZE/8)
+    // FIXME: (IdleStack + NU_IDLE_STACK_SIZE/8)
     osCreateThread(&idleThread, NU_IDLE_THREAD_ID, &idle, (void*)NULL, &D_80126520, NU_MAIN_THREAD_PRI);
     osStartThread(&idleThread);
 }
@@ -34,7 +34,7 @@ static void idle(void *arg) {
     nuPiInit();
     nuScCreateScheduler(OS_VI_NTSC_LAN1, 1);
     osViSetSpecialFeatures(OS_VI_GAMMA_OFF | OS_VI_GAMMA_DITHER_OFF | OS_VI_DIVOT_ON | OS_VI_DITHER_FILTER_ON);
-    // (nuMainStack + NU_MAIN_STACK_SIZE/sizeof(u64))
+    // FIXME: &D_801C6220 should be (nuMainStack + NU_MAIN_STACK_SIZE/sizeof(u64))
     osCreateThread(&mainThread, NU_MAIN_THREAD_ID, &mainproc, (void*)NULL, &D_801C6220, NU_MAIN_THREAD_PRI);
     osStartThread(&mainThread);
     osSetThreadPri(&idleThread, 0);

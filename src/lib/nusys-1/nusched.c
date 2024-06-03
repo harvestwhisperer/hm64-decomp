@@ -82,20 +82,26 @@ void nuScCreateScheduler(u8 videoMode, u8 numFields) {
 
 }
 
+// nuScGetAudioMQ
 INCLUDE_ASM(const s32, "lib/nusys-1/nusched", func_800FB354);
 
+// nuScGetGfxMQ
 INCLUDE_ASM(const s32, "lib/nusys-1/nusched", func_800FB360);
 
 INCLUDE_ASM(const s32, "lib/nusys-1/nusched", nuScEventHandler);
 
+// nuScAddClient
 INCLUDE_ASM(const s32, "lib/nusys-1/nusched", func_800FB428);
 
+// nuScRemoveClient
 INCLUDE_ASM(const s32, "lib/nusys-1/nusched", func_800FB48C);
 
+// nuScEventBroadcast
 INCLUDE_ASM(const s32, "lib/nusys-1/nusched", func_800FB524);
 
 INCLUDE_ASM(const s32, "lib/nusys-1/nusched", nuScExecuteAudio);
 
 INCLUDE_ASM(const s32, "lib/nusys-1/nusched", nuScExecuteGraphics);
 
+// nuScWaitTaskReady
 INCLUDE_ASM(const s32, "lib/nusys-1/nusched", func_800FB800);

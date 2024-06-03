@@ -1,9 +1,8 @@
 #include "common.h"
 
-
 INCLUDE_ASM(const s32, "lib/os/libultra/rmon/rmonbreak", __rmonSetBreak);
 
-INCLUDE_ASM(const s32, "lib/os/libultra/rmon/rmonbreak", func_8010FA28);
+INCLUDE_ASM(const s32, "lib/os/libultra/rmon/rmonbreak", _rmonListBreak);
 
 INCLUDE_ASM(const s32, "lib/os/libultra/rmon/rmonbreak", __rmonClearBreak);
 

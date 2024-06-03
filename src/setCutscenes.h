@@ -16,6 +16,7 @@
 // TODO: finish adding these
 /* cutscene indices */
 /* house cutscenes */
+// = 0 different farm cutscenes with sub-indices: house construction, kent visit
 // #define KENT_VISIT_PLAYER_SICK 0
 #define MARIA_VISIT_PLAYER_SICK 3
 #define MARIA_BIRTH 4

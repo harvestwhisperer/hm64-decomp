@@ -69,11 +69,14 @@
 #define DUMPLING_HOUSE_EXIT 0x26
 #define RANCH_FROM_RANCH_STORE 0x2B
 #define RANCH_FROM_RANCH_HOUSE 0x2C
+// 0x32 square from church (wedding)
+// 0x3E evaluation
 #define MINE_EXIT 0x47
 #define SPRING_ENTER 0x48
 #define CARPERNTER_HUT_ENTER 0x49
 #define ANN_ROOM_ENTER 0x4D
 #define FLOWER_SHOP_ENTRANCE 0x57
+// #0x6F farm entrance
 
 // TODO: finish adding these
 /* map flags */
