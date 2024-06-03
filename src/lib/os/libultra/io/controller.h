@@ -4,7 +4,7 @@
 #include "PR/os_internal.h"
 #include "PR/rcp.h"
 
-//should go somewhere else but
+// FIXME: should go somewhere else
 #define ARRLEN(x) ((s32)(sizeof(x) / sizeof(x[0])))
 #define CHNL_ERR(format) (((format).rxsize & CHNL_ERR_MASK) >> 4)
 

@@ -7,13 +7,19 @@
 /* daily event bit indices */
 #define DAILY_SHIPMENT 0
 #define CARPENTER_ESTIMATE 9
+#define HOUSE_EXTENSION_WORK 0xA
 #define CARPENTER_FINISHED 0xB
+#define END_OF_DAILY_HOUSE_EXTENSION_WORK 0xC
 // 0xD = something to do with carrying
+// 0xE = not 6 am
+// 0x11 = music started?
 #define SUCCESSFUL_PROPOSAL 0x14
 // 0x18 = thanksgiving mayor house
 #define FARM_MORNING_VISIT 0x17
+// 0x1D/1E --> fall farm animals
 #define STORES_CLOSED_FOR_FESTIVAL 0x2D
 #define FESTIVAL_DAY 0x30
+// 0x4B level audio set?; set by func_800AC21C
 #define FESTIVAL 0x4D
 #define FESTIVAL_2 0x4E
 // sick/sprained ankle

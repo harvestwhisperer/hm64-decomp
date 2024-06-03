@@ -1,9 +1,8 @@
 #include "common.h"
 
+INCLUDE_ASM(const s32, "lib/os/libultra/libnaudio/n_reverb", n_alFxPull);
 
-INCLUDE_ASM(const s32, "lib/os/libultra/libnaudio/n_reverb", func_800FA630);
-
-INCLUDE_ASM(const s32, "lib/os/libultra/libnaudio/n_reverb", func_800FA940);
+INCLUDE_ASM(const s32, "lib/os/libultra/libnaudio/n_reverb", n_alFixParamHdl);
 
 INCLUDE_ASM(const s32, "lib/os/libultra/libnaudio/n_reverb", _n_loadOutputBuffer);
 

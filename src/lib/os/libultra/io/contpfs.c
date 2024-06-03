@@ -1,11 +1,10 @@
 #include "common.h"
 
-
 INCLUDE_ASM(const s32, "lib/os/libultra/io/contpfs", __osSumcalc);
 
 INCLUDE_ASM(const s32, "lib/os/libultra/io/contpfs", __osIdCheckSum);
 
-INCLUDE_ASM(const s32, "lib/os/libultra/io/contpfs", func_8010A408);
+INCLUDE_ASM(const s32, "lib/os/libultra/io/contpfs", __osRepairPackId);
 
 INCLUDE_ASM(const s32, "lib/os/libultra/io/contpfs", __osCheckPackId);
 

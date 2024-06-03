@@ -34,9 +34,15 @@ INCLUDE_ASM(const s32, "lib/libkmc/rand", sRand);
 //     sRandNext = seed; 
 // } 
  
+
+// file splits
+
 // hasm
+// mmuldi3.s
 INCLUDE_ASM(const s32, "lib/libkmc/rand", __muldi3);
 
+// part of mmuldi3.s: div64_64
 INCLUDE_ASM(const s32, "lib/libkmc/rand", func_80110488);
 
+// part of mmuldi3.s: div64_32
 INCLUDE_ASM(const s32, "lib/libkmc/rand", func_80110584);
