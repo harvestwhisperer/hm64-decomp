@@ -22,7 +22,7 @@ options:
   migrate_rodata_to_functions: true
   libultra_symbols: True
   gfx_ucode: f3dex2
-  disassemble_all: true
+  # disassemble_all: true
   # extensions_path: tools/splat_ext
   
 segments:
