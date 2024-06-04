@@ -1449,7 +1449,7 @@ void func_8004C148(u16 index) {
 
     temp = getRandomNumberInRange(0, 100);
 
-    if ((temp < unk_2)^ 1 && (unk_4 < temp)^1) {
+    if ((temp < unk_2) ^ 1 && (unk_4 < temp) ^ 1) {
 
         cutsceneMaps[index].unk_8 = cutsceneMaps[index].cutscenePointer + 4;
         cutsceneMaps[index].cutscenePointer += *(s16*)cutsceneMaps[index].cutscenePointer;

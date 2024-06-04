@@ -29,17 +29,17 @@ extern u8 gMapWithSeasonIndex;
 // rotation
 extern u8 D_8021E6D0;
  
-extern u32 homeItemsTexture_ROM_START;
-extern u32 homeItemsTexture_ROM_END;
-extern u32 homeItemsAssetsIndex_ROM_START;
-extern u32 homeItemsAssetsIndex_ROM_END;
-extern u32 homeItemsSpritesheetIndex_ROM_START;
-extern u32 homeItemsSpritesheetIndex_ROM_END;
+extern u32 _homeItemsTextureSegmentRomStart;
+extern u32 _homeItemsTextureSegmentRomEnd;
+extern u32 _homeItemsAssetsIndexSegmentRomStart;
+extern u32 _homeItemsAssetsIndexSegmentRomEnd;
+extern u32 _homeItemsSpritesheetIndexSegmentRomStart;
+extern u32 _homeItemsSpritesheetIndexSegmentRomEnd;
 
-extern u32 groundObjectsTexture_ROM_START;
-extern u32 groundObjectsTexture_ROM_END;
-extern u32 groundObjectsIndex_ROM_START;
-extern u32 groundObjectsIndex_ROM_END;
+extern u32 _groundObjectsTextureSegmentRomStart;
+extern u32 _groundObjectsTextureSegmentRomEnd;
+extern u32 _groundObjectsIndexSegmentRomStart;
+extern u32 _groundObjectsIndexSegmentRomEnd;
 
 // rodata
 extern u8 levelFlags[];
@@ -227,53 +227,53 @@ void func_8006EC58(u16 mapIndex) {
         case FARM:
             D_801FD624 = 0xE;
             D_801C3F35 = 0xB;
-            func_80034EF0(MAIN_MAP_INDEX, 0xE, 0xB, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &groundObjectsTexture_ROM_START, &groundObjectsTexture_ROM_END, &groundObjectsIndex_ROM_START, &groundObjectsIndex_ROM_END, 0x60); 
+            func_80034EF0(MAIN_MAP_INDEX, 0xE, 0xB, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &_groundObjectsTextureSegmentRomStart, &_groundObjectsTextureSegmentRomEnd, &_groundObjectsIndexSegmentRomStart, &_groundObjectsIndexSegmentRomEnd, 0x60); 
             break;
         case GREENHOUSE:
             D_801FD624 = 1;
             D_801C3F35 = 1;
-            func_80034EF0(MAIN_MAP_INDEX, 1, 1, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &groundObjectsTexture_ROM_START, &groundObjectsTexture_ROM_END, &groundObjectsIndex_ROM_START, &groundObjectsIndex_ROM_END, 2); 
+            func_80034EF0(MAIN_MAP_INDEX, 1, 1, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &_groundObjectsTextureSegmentRomStart, &_groundObjectsTextureSegmentRomEnd, &_groundObjectsIndexSegmentRomStart, &_groundObjectsIndexSegmentRomEnd, 2); 
             break;            
         case MOUNTAIN_1:
             D_801FD624 = 5;
             D_801C3F35 = 0;
-            func_80034EF0(MAIN_MAP_INDEX, 5, 0, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &groundObjectsTexture_ROM_START, &groundObjectsTexture_ROM_END, &groundObjectsIndex_ROM_START, &groundObjectsIndex_ROM_END, 0); 
+            func_80034EF0(MAIN_MAP_INDEX, 5, 0, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &_groundObjectsTextureSegmentRomStart, &_groundObjectsTextureSegmentRomEnd, &_groundObjectsIndexSegmentRomStart, &_groundObjectsIndexSegmentRomEnd, 0); 
             break;    
         case MOUNTAIN_2:
             D_801FD624 = 3;
             D_801C3F35 = 5;
-            func_80034EF0(MAIN_MAP_INDEX, 3, 5, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &groundObjectsTexture_ROM_START, &groundObjectsTexture_ROM_END, &groundObjectsIndex_ROM_START, &groundObjectsIndex_ROM_END, 0); 
+            func_80034EF0(MAIN_MAP_INDEX, 3, 5, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &_groundObjectsTextureSegmentRomStart, &_groundObjectsTextureSegmentRomEnd, &_groundObjectsIndexSegmentRomStart, &_groundObjectsIndexSegmentRomEnd, 0); 
             break;  
         case TOP_OF_MOUNTAIN_1:
             D_801FD624 = 5;
             D_801C3F35 = 0;
-            func_80034EF0(MAIN_MAP_INDEX, 5, 0, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &groundObjectsTexture_ROM_START, &groundObjectsTexture_ROM_END, &groundObjectsIndex_ROM_START, &groundObjectsIndex_ROM_END, 0); 
+            func_80034EF0(MAIN_MAP_INDEX, 5, 0, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &_groundObjectsTextureSegmentRomStart, &_groundObjectsTextureSegmentRomEnd, &_groundObjectsIndexSegmentRomStart, &_groundObjectsIndexSegmentRomEnd, 0); 
             break;  
         case MOON_MOUNTAIN:
             D_801FD624 = 5;
             D_801C3F35 = 0;
-            func_80034EF0(MAIN_MAP_INDEX, 5, 0, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &groundObjectsTexture_ROM_START, &groundObjectsTexture_ROM_END, &groundObjectsIndex_ROM_START, &groundObjectsIndex_ROM_END, 0); 
+            func_80034EF0(MAIN_MAP_INDEX, 5, 0, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &_groundObjectsTextureSegmentRomStart, &_groundObjectsTextureSegmentRomEnd, &_groundObjectsIndexSegmentRomStart, &_groundObjectsIndexSegmentRomEnd, 0); 
             break;                            
         case POND:
             D_801FD624 = 5;
             D_801C3F35 = 0;
-            func_80034EF0(MAIN_MAP_INDEX, 5, 0, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &groundObjectsTexture_ROM_START, &groundObjectsTexture_ROM_END, &groundObjectsIndex_ROM_START, &groundObjectsIndex_ROM_END, 0); 
+            func_80034EF0(MAIN_MAP_INDEX, 5, 0, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &_groundObjectsTextureSegmentRomStart, &_groundObjectsTextureSegmentRomEnd, &_groundObjectsIndexSegmentRomStart, &_groundObjectsIndexSegmentRomEnd, 0); 
             break;          
         case CAVE:
             D_801FD624 = 0;
             D_801C3F35 = 0;
-            func_80034EF0(MAIN_MAP_INDEX, 0, 0, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &groundObjectsTexture_ROM_START, &groundObjectsTexture_ROM_END, &groundObjectsIndex_ROM_START, &groundObjectsIndex_ROM_END, 0); 
+            func_80034EF0(MAIN_MAP_INDEX, 0, 0, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &_groundObjectsTextureSegmentRomStart, &_groundObjectsTextureSegmentRomEnd, &_groundObjectsIndexSegmentRomStart, &_groundObjectsIndexSegmentRomEnd, 0); 
             break;    
         case MINE:                                      
         case MINE_2:        
             D_801FD624 = 2;
             D_801C3F35 = 2;
-            func_80034EF0(MAIN_MAP_INDEX, 2, 2, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &groundObjectsTexture_ROM_START, &groundObjectsTexture_ROM_END, &groundObjectsIndex_ROM_START, &groundObjectsIndex_ROM_END, 0); 
+            func_80034EF0(MAIN_MAP_INDEX, 2, 2, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &_groundObjectsTextureSegmentRomStart, &_groundObjectsTextureSegmentRomEnd, &_groundObjectsIndexSegmentRomStart, &_groundObjectsIndexSegmentRomEnd, 0); 
             break;    
         case RANCH:
             D_801FD624 = 0x10;
             D_801C3F35 = 0xA;
-            func_80034EF0(MAIN_MAP_INDEX, 0x10, 0xA, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &groundObjectsTexture_ROM_START, &groundObjectsTexture_ROM_END, &groundObjectsIndex_ROM_START, &groundObjectsIndex_ROM_END, 0); 
+            func_80034EF0(MAIN_MAP_INDEX, 0x10, 0xA, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &_groundObjectsTextureSegmentRomStart, &_groundObjectsTextureSegmentRomEnd, &_groundObjectsIndexSegmentRomStart, &_groundObjectsIndexSegmentRomEnd, 0); 
             break;   
     }
 
@@ -387,7 +387,7 @@ void func_8006F938(u16 levelIndex) {
 
         case 0x52:
             
-            func_8002B138(0x62, &D_D86D90, &D_D8B140, &D_D8B140_2, &D_D8B160, &D_D8B160_2, &D_D8B1D0, (void*)0x802E4000, (void*)0x802E4D00, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
+            func_8002B138(0x62, &_D_D86D90, &_D_D8B140, &_D_D8B140_2, &_D_D8B160, &_D_D8B160_2, &_D_D8B1D0, (void*)0x802E4000, (void*)0x802E4D00, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
             func_8002BD90(0x62, 1.0f, 1.0f, 1.0f);
             func_8002C7EC(0x62, 3);
             func_8002C85C(0x62, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -399,7 +399,7 @@ void func_8006F938(u16 levelIndex) {
                 func_80034C40(0, 0, 0x62, 0xF, -464.0f, 96.0f, 112.0f, 0xFF, 0xFF, 0, 0);
             }
             
-            func_8002B138(0x63, &D_CAD500, &D_CAD5E0, &D_CAD5E0_2, &D_CAD600, &D_CAD600_2, &D_CAD610, (void*)0x802E7C00, (void*)0x802E8900, (void*)0x802E9600, (void*)0x802E9700, (void*)0x802E9800, (void*)0x802E9900, 1,1);
+            func_8002B138(0x63, &_D_CAD500, &_D_CAD5E0, &_D_CAD5E0_2, &_D_CAD600, &_D_CAD600_2, &_D_CAD610, (void*)0x802E7C00, (void*)0x802E8900, (void*)0x802E9600, (void*)0x802E9700, (void*)0x802E9800, (void*)0x802E9900, 1,1);
             func_8002BD90(0x63, 6.0f, 1.0f, 6.0f);
             func_8002C6F8(0x63, 3);
             func_8002C768(0x63, 0x200);
@@ -413,7 +413,7 @@ void func_8006F938(u16 levelIndex) {
 
         case HOUSE:
             
-            func_8002B138(0x62, &D_D86D90, &D_D8B140, &D_D8B140_2, &D_D8B160, &D_D8B160_2, &D_D8B1D0, (void*)0x802E4000, (void*)0x802E4D00, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
+            func_8002B138(0x62, &_D_D86D90, &_D_D8B140, &_D_D8B140_2, &_D_D8B160, &_D_D8B160_2, &_D_D8B1D0, (void*)0x802E4000, (void*)0x802E4D00, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
             func_8002BD90(0x62, 2.0f, 2.0f, 1.0f);
             func_8002C7EC(0x62, 3);
             func_8002C85C(0x62, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -422,7 +422,7 @@ void func_8006F938(u16 levelIndex) {
             
             if (checkLifeEventBit(0x46)) {
                 
-                func_8002B138(0x63, &D_D86D90, &D_D8B140, &D_D8B140_2, &D_D8B160, &D_D8B160_2, &D_D8B1D0, (void*)0x802E7C00, (void*)0x802E7E80, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
+                func_8002B138(0x63, &_D_D86D90, &_D_D8B140, &_D_D8B140_2, &_D_D8B160, &_D_D8B160_2, &_D_D8B1D0, (void*)0x802E7C00, (void*)0x802E7E80, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
                 func_8002BD90(0x63, 1.0f, 1.0f, 1.0f);
                 func_8002C7EC(0x63, 3);
                 func_8002C85C(0x63, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -432,7 +432,7 @@ void func_8006F938(u16 levelIndex) {
             
             if (checkLifeEventBit(0x47)) {
                 
-                func_8002B138(0x64, &D_D86D90, &D_D8B140, &D_D8B140_2, &D_D8B160, &D_D8B160_2, &D_D8B1D0, (void*)0x802E8100, (void*)0x802E8380, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
+                func_8002B138(0x64, &_D_D86D90, &_D_D8B140, &_D_D8B140_2, &_D_D8B160, &_D_D8B160_2, &_D_D8B1D0, (void*)0x802E8100, (void*)0x802E8380, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
                 func_8002BD90(0x64, 1.0f, 1.0f, 1.0f);
                 func_8002C7EC(0x64, 3);
                 func_8002C85C(0x64, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -444,7 +444,7 @@ void func_8006F938(u16 levelIndex) {
             // clock
             if (checkLifeEventBit(0x58)) {
                 
-                func_8002B138(0x65, &D_D86D90, &D_D8B140, &D_D8B140_2, &D_D8B160, &D_D8B160_2, &D_D8B1D0, (void*)0x802E8600, (void*)0x802E8880, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
+                func_8002B138(0x65, &_D_D86D90, &_D_D8B140, &_D_D8B140_2, &_D_D8B160, &_D_D8B160_2, &_D_D8B1D0, (void*)0x802E8600, (void*)0x802E8880, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
                 func_8002BD90(0x65, 1.0f, 1.0f, 1.0f);
                 func_8002C7EC(0x65, 3);
                 func_8002C85C(0x65, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -461,7 +461,7 @@ void func_8006F938(u16 levelIndex) {
             
             if (checkLifeEventBit(0x5A)) {
                 
-                func_8002B138(0x66, &D_D86D90, &D_D8B140, &D_D8B140_2, &D_D8B160, &D_D8B160_2, &D_D8B1D0, (void*)0x802E8B00, (void*)0x802E8D80, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
+                func_8002B138(0x66, &_D_D86D90, &_D_D8B140, &_D_D8B140_2, &_D_D8B160, &_D_D8B160_2, &_D_D8B1D0, (void*)0x802E8B00, (void*)0x802E8D80, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
                 func_8002BD90(0x66, 1.0f, 1.0f, 1.0f);
                 func_8002C7EC(0x66, 3);
                 func_8002C85C(0x66, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -473,7 +473,7 @@ void func_8006F938(u16 levelIndex) {
             // vase
             if (checkLifeEventBit(8)) {
                 
-                func_8002B138(0x67, &D_D86D90, &D_D8B140, &D_D8B140_2, &D_D8B160, &D_D8B160_2, &D_D8B1D0, (void*)0x802E9000, (void*)0x802E9280, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
+                func_8002B138(0x67, &_D_D86D90, &_D_D8B140, &_D_D8B140_2, &_D_D8B160, &_D_D8B160_2, &_D_D8B1D0, (void*)0x802E9000, (void*)0x802E9280, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
                 func_8002BD90(0x67, 1.0f, 1.0f, 1.0f);
                 func_8002C7EC(0x67, 3);
                 func_8002C85C(0x67, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -489,7 +489,7 @@ void func_8006F938(u16 levelIndex) {
             // table cloth
             if (checkLifeEventBit(0x5C)) {
                 
-                func_8002B138(0x62, &D_D86D90, &D_D8B140, &D_D8B140_2, &D_D8B160, &D_D8B160_2, &D_D8B1D0, (void*)0x802E7C00, (void*)0x802E7E80, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
+                func_8002B138(0x62, &_D_D86D90, &_D_D8B140, &_D_D8B140_2, &_D_D8B160, &_D_D8B160_2, &_D_D8B1D0, (void*)0x802E7C00, (void*)0x802E7E80, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
                 func_8002BD90(0x62, 1.0f, 1.0f, 1.0f);
                 func_8002C7EC(0x62, 3);
                 func_8002C85C(0x62, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -502,7 +502,7 @@ void func_8006F938(u16 levelIndex) {
         
          case 0x11:
 
-            func_8002B138(0x62, &D_C9D680, &D_CA0DB0, &D_CA0DB0_2, &D_CA0DD0, &D_CA0DD0_2, &D_CA0DF0, (void*)0x802E4000, (void*)0x802E4D00, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
+            func_8002B138(0x62, &_D_C9D680, &_D_CA0DB0, &_D_CA0DB0_2, &_D_CA0DD0, &_D_CA0DD0_2, &_D_CA0DF0, (void*)0x802E4000, (void*)0x802E4D00, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
             func_8002BD90(0x62, 3.8f, 1.0f, 6.0f);
             func_8002C6F8(0x62, 3);
             func_8002C768(0x62, 0x200);
@@ -511,7 +511,7 @@ void func_8006F938(u16 levelIndex) {
             func_8002C914(0x62, 0xFF, 0xFF, 0xFF, 0xFF);
             func_80034C40(0, 0, 0x62, 0, -288.0f, 0.0f, -140.0f, 0x5A, 0xFE, 0, 0);
              
-            func_8002B138(0x63, &D_C9D680, &D_CA0DB0, &D_CA0DB0_2, &D_CA0DD0, &D_CA0DD0_2, &D_CA0DF0, (void*)0x802E5A00, (void*)0x802E6700, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
+            func_8002B138(0x63, &_D_C9D680, &_D_CA0DB0, &_D_CA0DB0_2, &_D_CA0DD0, &_D_CA0DD0_2, &_D_CA0DF0, (void*)0x802E5A00, (void*)0x802E6700, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
             func_8002BD90(0x63, 6.0f, 1.0f, 6.0f);
             func_8002C6F8(0x63, 3);
             func_8002C768(0x63, 0x200);
@@ -520,7 +520,7 @@ void func_8006F938(u16 levelIndex) {
             func_8002C914(0x63, 0xFF, 0xFF, 0xFF, 0xFF);
             func_80034C40(0, 1, 0x63, 0, -224.0f, 0.0f, 320.0f, 0, 0xFE, 0, 0);
              
-            func_8002B138(0x64, &D_C9D680, &D_CA0DB0, &D_CA0DB0_2, &D_CA0DD0, &D_CA0DD0_2, &D_CA0DF0, (void*)0x802E7C00, (void*)0x802E8900, (void*)0x802E9600, (void*)0x802E9700, (void*)0x802E9800, (void*)0x802E9900, 1, 1);
+            func_8002B138(0x64, &_D_C9D680, &_D_CA0DB0, &_D_CA0DB0_2, &_D_CA0DD0, &_D_CA0DD0_2, &_D_CA0DF0, (void*)0x802E7C00, (void*)0x802E8900, (void*)0x802E9600, (void*)0x802E9700, (void*)0x802E9800, (void*)0x802E9900, 1, 1);
             func_8002BD90(0x64, 6.0f, 1.0f, 6.0f);
             func_8002C6F8(0x64, 3);
             func_8002C768(0x64, 0x200);
@@ -531,7 +531,7 @@ void func_8006F938(u16 levelIndex) {
              
             if (!checkLifeEventBit(0x45)) {
                 
-                func_8002B138(0x65, &D_CA0DF0_2, &D_CA3F60, &D_CA3F60_2, &D_CA3F80, &D_CA3F80_2, &D_CA3FA0_2, (void*)0x802E9A00, (void*)0x802EA700, (void*)0x802EB400, (void*)0x802EB500, (void*)0x802EB600, (void*)0x802EB700, 1, 1);
+                func_8002B138(0x65, &_D_CA0DF0_2, &_D_CA3F60, &_D_CA3F60_2, &_D_CA3F80, &_D_CA3F80_2, &_D_CA3FA0_2, (void*)0x802E9A00, (void*)0x802EA700, (void*)0x802EB400, (void*)0x802EB500, (void*)0x802EB600, (void*)0x802EB700, 1, 1);
                 func_8002BD90(0x65, 1.0f, 1.0f, 1.0f);
                 func_8002C7EC(0x65, 3);
                 func_8002C85C(0x65, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -548,7 +548,7 @@ void func_8006F938(u16 levelIndex) {
 
         case 0x15:
 
-            func_8002B138(0x62, &D_C9D680, &D_CA0DB0, &D_CA0DB0_2, &D_CA0DD0, &D_CA0DD0_2, &D_CA0DF0, (void*)0x802E4000, (void*)0x802E4D00, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
+            func_8002B138(0x62, &_D_C9D680, &_D_CA0DB0, &_D_CA0DB0_2, &_D_CA0DD0, &_D_CA0DD0_2, &_D_CA0DF0, (void*)0x802E4000, (void*)0x802E4D00, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
             func_8002BD90(0x62, 6.0f, 1.0f, 6.0f);
             func_8002C6F8(0x62, 3);
             func_8002C768(0x62, 0x200);
@@ -557,7 +557,7 @@ void func_8006F938(u16 levelIndex) {
             func_8002C914(0x62, 0xFF, 0xFF, 0xFF, 0xFF);
             func_80034C40(0, 0, 0x62, 0, 224.0f, 0, -254.0f, 0x5A, 0xFE, 0, 0);
             
-            func_8002B138(0x63, &D_C9D680, &D_CA0DB0, &D_CA0DB0_2, &D_CA0DD0, &D_CA0DD0_2, &D_CA0DF0, (void*)0x802E5A00, (void*)0x802E6700, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
+            func_8002B138(0x63, &_D_C9D680, &_D_CA0DB0, &_D_CA0DB0_2, &_D_CA0DD0, &_D_CA0DD0_2, &_D_CA0DF0, (void*)0x802E5A00, (void*)0x802E6700, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
             func_8002BD90(0x63, 6.0f, 1.0f, 6.0f);
             func_8002C6F8(0x63, 3);
             func_8002C768(0x63, 0x200);
@@ -569,9 +569,9 @@ void func_8006F938(u16 levelIndex) {
             if (checkLifeEventBit(0x48)) {
                 
                 if (gSeason != WINTER) {
-                    func_8002B138(0x64, &D_CA3FA0, &D_CA4AF0, &D_CA4AF0_2, &D_CA4B10, &D_CA4B10_2, &D_CA4B30_2, (void*)0x802E7C00, (void*)0x802E8280, (void*)0x802EB400, (void*)0x802EB500, (void*)0x802EB600, (void*)0x802EB700, 1, 1);
+                    func_8002B138(0x64, &_D_CA3FA0, &_D_CA4AF0, &_D_CA4AF0_2, &_D_CA4B10, &_D_CA4B10_2, &_D_CA4B30_2, (void*)0x802E7C00, (void*)0x802E8280, (void*)0x802EB400, (void*)0x802EB500, (void*)0x802EB600, (void*)0x802EB700, 1, 1);
                 } else {
-                    func_8002B138(0x64, &D_CA4B30, &D_CA4FE0, &D_CA4FE0_2, &D_CA5000, &D_CA5000_2, &D_CA5010, (void*)0x802E7C00, (void*)0x802E8280, (void*)0x802EB400, (void*)0x802EB500, (void*)0x802EB600, (void*)0x802EB700, 1, 1);
+                    func_8002B138(0x64, &_D_CA4B30, &_D_CA4FE0, &_D_CA4FE0_2, &_D_CA5000, &_D_CA5000_2, &_D_CA5010, (void*)0x802E7C00, (void*)0x802E8280, (void*)0x802EB400, (void*)0x802EB500, (void*)0x802EB600, (void*)0x802EB700, 1, 1);
                 }
 
                 func_8002BD90(0x64, 1.0f, 1.0f, 1.0f);
@@ -581,9 +581,9 @@ void func_8006F938(u16 levelIndex) {
                 func_80034C40(0, 2, 0x64, 0, 96.0f, 224.0f, -448.0f, 0xFF, 0, 0, 0);
 
                 if (gSeason != WINTER) {
-                    func_8002B138(0x65, &D_CA3FA0, &D_CA4AF0, &D_CA4AF0_2, &D_CA4B10, &D_CA4B10_2, &D_CA4B30_2, (void*)0x802E8900, (void*)0x802E8F80, (void*)0x802EB400, (void*)0x802EB500, (void*)0x802EB600, (void*)0x802EB700, 1, 1);
+                    func_8002B138(0x65, &_D_CA3FA0, &_D_CA4AF0, &_D_CA4AF0_2, &_D_CA4B10, &_D_CA4B10_2, &_D_CA4B30_2, (void*)0x802E8900, (void*)0x802E8F80, (void*)0x802EB400, (void*)0x802EB500, (void*)0x802EB600, (void*)0x802EB700, 1, 1);
                 } else {
-                    func_8002B138(0x65, &D_CA4B30, &D_CA4FE0, &D_CA4FE0_2, &D_CA5000, &D_CA5000_2, &D_CA5010, (void*)0x802E8900, (void*)0x802E8F80, (void*)0x802EB400, (void*)0x802EB500, (void*)0x802EB600, (void*)0x802EB700, 1, 1);
+                    func_8002B138(0x65, &_D_CA4B30, &_D_CA4FE0, &_D_CA4FE0_2, &_D_CA5000, &_D_CA5000_2, &_D_CA5010, (void*)0x802E8900, (void*)0x802E8F80, (void*)0x802EB400, (void*)0x802EB500, (void*)0x802EB600, (void*)0x802EB700, 1, 1);
                 }
 
                 func_8002BD90(0x65, 1.0f, 1.0f, 1.0f);
@@ -593,9 +593,9 @@ void func_8006F938(u16 levelIndex) {
                 func_80034C40(0, 3, 0x65, 0, 96.0f, 224.0f, -376, 0xFF, 0, 0, 0);
 
                 if (gSeason != WINTER) {
-                    func_8002B138(0x66, &D_CA3FA0, &D_CA4AF0, &D_CA4AF0_2, &D_CA4B10, &D_CA4B10_2, &D_CA4B30_2, (void*)0x802E9A00, (void*)0x802EA080, (void*)0x802EB400, (void*)0x802EB500, (void*)0x802EB600, (void*)0x802EB700, 1, 1);
+                    func_8002B138(0x66, &_D_CA3FA0, &_D_CA4AF0, &_D_CA4AF0_2, &_D_CA4B10, &_D_CA4B10_2, &_D_CA4B30_2, (void*)0x802E9A00, (void*)0x802EA080, (void*)0x802EB400, (void*)0x802EB500, (void*)0x802EB600, (void*)0x802EB700, 1, 1);
                 } else {
-                    func_8002B138(0x66, &D_CA4B30, &D_CA4FE0, &D_CA4FE0_2, &D_CA5000, &D_CA5000_2, &D_CA5010, (void*)0x802E9A00, (void*)0x802EA080, (void*)0x802EB400, (void*)0x802EB500, (void*)0x802EB600, (void*)0x802EB700, 1, 1);
+                    func_8002B138(0x66, &_D_CA4B30, &_D_CA4FE0, &_D_CA4FE0_2, &_D_CA5000, &_D_CA5000_2, &_D_CA5010, (void*)0x802E9A00, (void*)0x802EA080, (void*)0x802EB400, (void*)0x802EB500, (void*)0x802EB600, (void*)0x802EB700, 1, 1);
                 }
 
                 func_8002BD90(0x66, 1.0f, 1.0f, 1.0f);
@@ -605,9 +605,9 @@ void func_8006F938(u16 levelIndex) {
                 func_80034C40(0, 4, 0x66, 0, 304.0f, 224.0f, -432.0f, 0xFF, 0, 0, 0);
 
                 if (gSeason != WINTER) {
-                    func_8002B138(0x67, &D_CA3FA0, &D_CA4AF0, &D_CA4AF0_2, &D_CA4B10, &D_CA4B10_2, &D_CA4B30_2, (void*)0x802EA700, (void*)0x802EAD80, (void*)0x802EB400, (void*)0x802EB500, (void*)0x802EB600, (void*)0x802EB700, 1, 1);
+                    func_8002B138(0x67, &_D_CA3FA0, &_D_CA4AF0, &_D_CA4AF0_2, &_D_CA4B10, &_D_CA4B10_2, &_D_CA4B30_2, (void*)0x802EA700, (void*)0x802EAD80, (void*)0x802EB400, (void*)0x802EB500, (void*)0x802EB600, (void*)0x802EB700, 1, 1);
                 } else {
-                    func_8002B138(0x67, &D_CA4B30, &D_CA4FE0, &D_CA4FE0_2, &D_CA5000, &D_CA5000_2, &D_CA5010, (void*)0x802EA700, (void*)0x802EAD80, (void*)0x802EB400, (void*)0x802EB500, (void*)0x802EB600, (void*)0x802EB700, 1, 1);
+                    func_8002B138(0x67, &_D_CA4B30, &_D_CA4FE0, &_D_CA4FE0_2, &_D_CA5000, &_D_CA5000_2, &_D_CA5010, (void*)0x802EA700, (void*)0x802EAD80, (void*)0x802EB400, (void*)0x802EB500, (void*)0x802EB600, (void*)0x802EB700, 1, 1);
                 }
 
                 func_8002BD90(0x67, 1.0f, 1.0f, 1.0f);
@@ -624,7 +624,7 @@ void func_8006F938(u16 levelIndex) {
             
             if (checkLifeEventBit(0x48)) {
                 
-                func_8002B138(0x62, &D_CA5040, &D_CA5430, &D_CA5430_2, &D_CA5450, &D_CA5450_2, &D_CA5460_2, (void*)0x802E4000, (void*)0x802E4400, (void*)0x802E4800, (void*)0x802E4900, (void*)0x802E4A00, (void*)0x802E4B00, 1, 1);
+                func_8002B138(0x62, &_D_CA5040, &_D_CA5430, &_D_CA5430_2, &_D_CA5450, &_D_CA5450_2, &_D_CA5460_2, (void*)0x802E4000, (void*)0x802E4400, (void*)0x802E4800, (void*)0x802E4900, (void*)0x802E4A00, (void*)0x802E4B00, 1, 1);
                 func_8002BD90(0x62, 6.0f, 1.0f, 6.0f);
                 func_8002C6F8(0x62, 3);
                 func_8002C768(0x62, 0x200);
@@ -634,9 +634,9 @@ void func_8006F938(u16 levelIndex) {
                 func_80034C40(0, 0, 0x62, 0, 0, 216.0f, -128.0f, 0, 0xFE, 0, 0);
 
                 if (gSeason != WINTER) {
-                    func_8002B138(0x64, &D_CA3FA0, &D_CA4AF0, &D_CA4AF0_2, &D_CA4B10, &D_CA4B10_2, &D_CA4B30_2, (void*)0x802E7C00, (void*)0x802E8280, (void*)0x802EB400, (void*)0x802EB500, (void*)0x802EB600, (void*)0x802EB700, 1, 1);
+                    func_8002B138(0x64, &_D_CA3FA0, &_D_CA4AF0, &_D_CA4AF0_2, &_D_CA4B10, &_D_CA4B10_2, &_D_CA4B30_2, (void*)0x802E7C00, (void*)0x802E8280, (void*)0x802EB400, (void*)0x802EB500, (void*)0x802EB600, (void*)0x802EB700, 1, 1);
                 } else {
-                    func_8002B138(0x64, &D_CA4B30, &D_CA4FE0, &D_CA4FE0_2, &D_CA5000, &D_CA5000_2, &D_CA5010, (void*)0x802E7C00, (void*)0x802E8280, (void*)0x802EB400, (void*)0x802EB500, (void*)0x802EB600, (void*)0x802EB700, 1, 1);
+                    func_8002B138(0x64, &_D_CA4B30, &_D_CA4FE0, &_D_CA4FE0_2, &_D_CA5000, &_D_CA5000_2, &_D_CA5010, (void*)0x802E7C00, (void*)0x802E8280, (void*)0x802EB400, (void*)0x802EB500, (void*)0x802EB600, (void*)0x802EB700, 1, 1);
                 }
 
                 func_8002BD90(0x64, 1.0f, 1.0f, 1.0f);
@@ -646,9 +646,9 @@ void func_8006F938(u16 levelIndex) {
                 func_80034C40(0, 2, 0x64, 0, -192.0f, 228.0f, 4.0f, 0xFF, 0, 0, 0);
 
                 if (gSeason != WINTER) {
-                    func_8002B138(0x65, &D_CA3FA0, &D_CA4AF0, &D_CA4AF0_2, &D_CA4B10, &D_CA4B10_2, &D_CA4B30_2, (void*)0x802E8900, (void*)0x802E8F80, (void*)0x802EB400, (void*)0x802EB500, (void*)0x802EB600, (void*)0x802EB700, 1, 1);
+                    func_8002B138(0x65, &_D_CA3FA0, &_D_CA4AF0, &_D_CA4AF0_2, &_D_CA4B10, &_D_CA4B10_2, &_D_CA4B30_2, (void*)0x802E8900, (void*)0x802E8F80, (void*)0x802EB400, (void*)0x802EB500, (void*)0x802EB600, (void*)0x802EB700, 1, 1);
                 } else {
-                    func_8002B138(0x65, &D_CA4B30, &D_CA4FE0, &D_CA4FE0_2, &D_CA5000, &D_CA5000_2, &D_CA5010, (void*)0x802E8900, (void*)0x802E8F80, (void*)0x802EB400, (void*)0x802EB500, (void*)0x802EB600, (void*)0x802EB700, 1, 1);
+                    func_8002B138(0x65, &_D_CA4B30, &_D_CA4FE0, &_D_CA4FE0_2, &_D_CA5000, &_D_CA5000_2, &_D_CA5010, (void*)0x802E8900, (void*)0x802E8F80, (void*)0x802EB400, (void*)0x802EB500, (void*)0x802EB600, (void*)0x802EB700, 1, 1);
                 }
                 
                 func_8002BD90(0x65, 1.0f, 1.0f, 1.0f);
@@ -658,9 +658,9 @@ void func_8006F938(u16 levelIndex) {
                 func_80034C40(0, 3, 0x65, 0, -192.0f, 224.0f, 64.0f, 0xFF, 0, 0, 0);
 
                 if (gSeason != WINTER) {
-                    func_8002B138(0x66, &D_CA3FA0, &D_CA4AF0, &D_CA4AF0_2, &D_CA4B10, &D_CA4B10_2, &D_CA4B30_2, (void*)0x802E9A00, (void*)0x802EA080, (void*)0x802EB400, (void*)0x802EB500, (void*)0x802EB600, (void*)0x802EB700, 1, 1);
+                    func_8002B138(0x66, &_D_CA3FA0, &_D_CA4AF0, &_D_CA4AF0_2, &_D_CA4B10, &_D_CA4B10_2, &_D_CA4B30_2, (void*)0x802E9A00, (void*)0x802EA080, (void*)0x802EB400, (void*)0x802EB500, (void*)0x802EB600, (void*)0x802EB700, 1, 1);
                 } else {
-                    func_8002B138(0x66, &D_CA4B30, &D_CA4FE0, &D_CA4FE0_2, &D_CA5000, &D_CA5000_2, &D_CA5010, (void*)0x802E9A00, (void*)0x802EA080, (void*)0x802EB400, (void*)0x802EB500, (void*)0x802EB600, (void*)0x802EB700, 1, 1);
+                    func_8002B138(0x66, &_D_CA4B30, &_D_CA4FE0, &_D_CA4FE0_2, &_D_CA5000, &_D_CA5000_2, &_D_CA5010, (void*)0x802E9A00, (void*)0x802EA080, (void*)0x802EB400, (void*)0x802EB500, (void*)0x802EB600, (void*)0x802EB700, 1, 1);
                 }
                 
                 func_8002BD90(0x66, 1.0f, 1.0f, 1.0f);
@@ -670,9 +670,9 @@ void func_8006F938(u16 levelIndex) {
                 func_80034C40(0, 4, 0x66, 0, -408.0f, 224.0f, -16.0f, 0xFF, 0, 0, 0);
 
                 if (gSeason != WINTER) {
-                    func_8002B138(0x67, &D_CA3FA0, &D_CA4AF0, &D_CA4AF0_2, &D_CA4B10, &D_CA4B10_2, &D_CA4B30_2, (void*)0x802EA700, (void*)0x802EAD80, (void*)0x802EB400, (void*)0x802EB500, (void*)0x802EB600, (void*)0x802EB700, 1, 1);
+                    func_8002B138(0x67, &_D_CA3FA0, &_D_CA4AF0, &_D_CA4AF0_2, &_D_CA4B10, &_D_CA4B10_2, &_D_CA4B30_2, (void*)0x802EA700, (void*)0x802EAD80, (void*)0x802EB400, (void*)0x802EB500, (void*)0x802EB600, (void*)0x802EB700, 1, 1);
                 } else {
-                    func_8002B138(0x67, &D_CA4B30, &D_CA4FE0, &D_CA4FE0_2, &D_CA5000, &D_CA5000_2, &D_CA5010, (void*)0x802EA700, (void*)0x802EAD80, (void*)0x802EB400, (void*)0x802EB500, (void*)0x802EB600, (void*)0x802EB700, 1, 1);
+                    func_8002B138(0x67, &_D_CA4B30, &_D_CA4FE0, &_D_CA4FE0_2, &_D_CA5000, &_D_CA5000_2, &_D_CA5010, (void*)0x802EA700, (void*)0x802EAD80, (void*)0x802EB400, (void*)0x802EB500, (void*)0x802EB600, (void*)0x802EB700, 1, 1);
                 }
                 
                 func_8002BD90(0x67, 1.0f, 1.0f, 1.0f);
@@ -684,7 +684,7 @@ void func_8006F938(u16 levelIndex) {
                 
             } else {
                 
-                func_8002B138(0x62, &D_CA3FA0, &D_CA4AF0, &D_CA4AF0_2, &D_CA4B10, &D_CA4B10_2, &D_CA4B30_2, (void*)0x802E4000, (void*)0x802E4D00, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
+                func_8002B138(0x62, &_D_CA3FA0, &_D_CA4AF0, &_D_CA4AF0_2, &_D_CA4B10, &_D_CA4B10_2, &_D_CA4B30_2, (void*)0x802E4000, (void*)0x802E4D00, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
                 func_8002BD90(0x62, 1.0f, 1.0f, 1.0f);
                 func_8002C7EC(0x62, 3);
                 func_8002C85C(0x62, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -695,7 +695,7 @@ void func_8006F938(u16 levelIndex) {
             
             if (checkLifeEventBit(0x4C)) {
             
-                func_8002B138(0x63, &D_CA5460, &D_CA7500, &D_CA7500_2, &D_CA7520, &D_CA7520_2, &D_CA7540, (void*)0x802E4C00, (void*)0x802E5800, (void*)0x802E6400, (void*)0x802E6500, (void*)0x802E6600, (void*)0x802E6700, 1, 1);
+                func_8002B138(0x63, &_D_CA5460, &_D_CA7500, &_D_CA7500_2, &_D_CA7520, &_D_CA7520_2, &_D_CA7540, (void*)0x802E4C00, (void*)0x802E5800, (void*)0x802E6400, (void*)0x802E6500, (void*)0x802E6600, (void*)0x802E6700, 1, 1);
                 func_8002BD90(0x63, 2.0f, 2.0f, 1.0f);
                 func_8002C7EC(0x63, 2);
                 func_8002C85C(0x63, 0xFF, 0xFF, 0xFF, 0x60);
@@ -708,7 +708,7 @@ void func_8006F938(u16 levelIndex) {
 
         case 0x23:
             
-            func_8002B138(0x62, &D_CA7540, &D_CA87D0, &D_CA87D0_2, &D_CA87F0, &D_CA87F0_2, &D_CA8800, (void*)0x802E4000, (void*)0x802E4D00, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
+            func_8002B138(0x62, &_D_CA7540, &_D_CA87D0, &_D_CA87D0_2, &_D_CA87F0, &_D_CA87F0_2, &_D_CA8800, (void*)0x802E4000, (void*)0x802E4D00, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
             func_8002BD90(0x62, 6.0f, 1.0f, 6.0f);
             func_8002C6F8(0x62, 3);
             func_8002C768(0x62, 0x200);
@@ -721,7 +721,7 @@ void func_8006F938(u16 levelIndex) {
 
         case 9:
             
-            func_8002B138(0x62, &D_C951A0, &D_C9D640, &D_C9D640_2, &D_C9D660, &D_C9D660_2, &D_C9D680, (void*)0x802E4000, (void*)0x802E6400, (void*)0x802E8800, (void*)0x802E8900, (void*)0x802E8A00, (void*)0x802E8B00, 1, 1);
+            func_8002B138(0x62, &_D_C951A0, &_D_C9D640, &_D_C9D640_2, &_D_C9D660, &_D_C9D660_2, &_D_C9D680, (void*)0x802E4000, (void*)0x802E6400, (void*)0x802E8800, (void*)0x802E8900, (void*)0x802E8A00, (void*)0x802E8B00, 1, 1);
             func_8002BD90(0x62, 6.0f, 1.0f, 5.4f);
             func_8002C6F8(0x62, 3);
             func_8002C768(0x62, 0x200);
@@ -734,7 +734,7 @@ void func_8006F938(u16 levelIndex) {
 
         case 0x2D:
             
-            func_8002B138(0x62, &D_CAA080, &D_CAB010, &D_CAB010_2, &D_CAB030, &D_CAB030_2, &D_CAB040, (void*)0x802E4000, (void*)0x802E4000, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
+            func_8002B138(0x62, &_D_CAA080, &_D_CAB010, &_D_CAB010_2, &_D_CAB030, &_D_CAB030_2, &_D_CAB040, (void*)0x802E4000, (void*)0x802E4000, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
             func_8002BD90(0x62, 6.0f, 1.0f, 6.0f);
             func_8002C6F8(0x62, 3);
             func_8002C768(0x62, 0x200);
@@ -747,7 +747,7 @@ void func_8006F938(u16 levelIndex) {
         
         case 0x35:
             
-            func_8002B138(0x62, &D_CA90D0, &D_CAA040, &D_CAA040_2, &D_CAA060, &D_CAA060_2, &D_CAA080_2, (void*)0x802E7C00, (void*)0x802E7C00, (void*)0x802E9600, (void*)0x802E9700, (void*)0x802E9800, (void*)0x802E9900, 1, 1);
+            func_8002B138(0x62, &_D_CA90D0, &_D_CAA040, &_D_CAA040_2, &_D_CAA060, &_D_CAA060_2, &_D_CAA080_2, (void*)0x802E7C00, (void*)0x802E7C00, (void*)0x802E9600, (void*)0x802E9700, (void*)0x802E9800, (void*)0x802E9900, 1, 1);
             func_8002BD90(0x62, 5.0f, 1.0f, 5.0f);
             func_8002C6F8(0x62, 3);
             func_8002C768(0x62, 0x200);
@@ -759,7 +759,7 @@ void func_8006F938(u16 levelIndex) {
             if (gSeason == 1) {
                 
                 if (18 < gDayOfMonth && gDayOfMonth < 23) {
-                    func_8002B138(0x63, &D_D86D90, &D_D8B140, &D_D8B140_2, &D_D8B160, &D_D8B160_2, &D_D8B1D0, (void*)0x802E4000, (void*)0x802E4D00, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
+                    func_8002B138(0x63, &_D_D86D90, &_D_D8B140, &_D_D8B140_2, &_D_D8B160, &_D_D8B160_2, &_D_D8B1D0, (void*)0x802E4000, (void*)0x802E4D00, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
                     func_8002BD90(0x63, 1.0f, 1.0f, 1.0f);
                     func_8002C7EC(0x63, 3);
                     func_8002C85C(0x63, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -771,7 +771,7 @@ void func_8006F938(u16 levelIndex) {
                     
                    for (j = 4; j < 12; j++) {
 
-                        func_8002B138(j + 0x63, &D_CA8800, &D_CA90A0, &D_CA90A0_2, &D_CA90C0, &D_CA90C0_2, &D_CA90D0_2, (void*)0x802E4000, 0, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, 0, 0, 1);
+                        func_8002B138(j + 0x63, &_D_CA8800, &_D_CA90A0, &_D_CA90A0_2, &_D_CA90C0, &_D_CA90C0_2, &_D_CA90D0_2, (void*)0x802E4000, 0, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, 0, 0, 1);
                         func_8002BD90(j + 0x63, 1.0f, 1.0f, 1.0f);
                         func_8002C7EC(j + 0x63, 3);
                         func_8002C85C(j + 0x63, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -807,7 +807,7 @@ void func_8006F938(u16 levelIndex) {
 
        case 0x5B:
            
-            func_8002B138(0x62, &D_CAB0D0, &D_CAB310, &D_CAB310_2, &D_CAB330, &D_CAB330_2, &D_CAB340, (void*)0x802E4000, (void*)0x802E4D00, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
+            func_8002B138(0x62, &_D_CAB0D0, &_D_CAB310, &_D_CAB310_2, &_D_CAB330, &_D_CAB330_2, &_D_CAB340, (void*)0x802E4000, (void*)0x802E4D00, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
             func_8002BD90(0x62, 6.0f, 1.0f, 6.0f);
             func_8002C6F8(0x62, 3);
             func_8002C768(0x62, 0x200);
@@ -815,7 +815,7 @@ void func_8006F938(u16 levelIndex) {
             func_8002C85C(0x62, 0xFF, 0xFF, 0xFF, 0x80);
             func_8002C914(0x62, 0xFF, 0xFF, 0xFF, 0xFF);
             func_80034C40(0, 0, 0x62, 0, -128.0f, 8.0f, -128.0f, 0, 0xFE, 0, 0);
-            func_8002B138(0x63, &D_CA5460, &D_CA7500, &D_CA7500_2, &D_CA7520, &D_CA7520_2, &D_CA7540_2, (void*)0x802E7C00, (void*)0x802E8900, (void*)0x802E9600, (void*)0x802E9700, (void*)0x802E9800, (void*)0x802E9900, 1, 1);
+            func_8002B138(0x63, &_D_CA5460, &_D_CA7500, &_D_CA7500_2, &_D_CA7520, &_D_CA7520_2, &_D_CA7540_2, (void*)0x802E7C00, (void*)0x802E8900, (void*)0x802E9600, (void*)0x802E9700, (void*)0x802E9800, (void*)0x802E9900, 1, 1);
             func_8002BD90(0x63, 1.6f, 1.6f, 1.0f);
             func_8002C7EC(0x63, 2);
             func_8002C85C(0x63, 0xFF, 0xFF, 0xFF, 0x60);
@@ -944,7 +944,7 @@ void func_8006F938(u16 levelIndex) {
 
         case 0x47:
             
-            func_8002B138(0x62, &D_CAB340, &D_CAD490, &D_CAD490_2, &D_CAD4B0, &D_CAD4B0_2, &D_CAD4D0, (void*)0x802E4000, (void*)0x802E4D00, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
+            func_8002B138(0x62, &_D_CAB340, &_D_CAD490, &_D_CAD490_2, &_D_CAD4B0, &_D_CAD4B0_2, &_D_CAD4D0, (void*)0x802E4000, (void*)0x802E4D00, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
             func_8002BD90(0x62, 2.0f, 2.0f, 1.0f);
             func_8002C7EC(0x62, 3);
             func_8002C85C(0x62, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -977,7 +977,7 @@ void func_80073244(u8 itemIndex) {
 
     *(Vec2f*)ptr = *(Vec2f*)ptr2;
 
-    func_8002B138(itemIndex +  0x62, &homeItemsTexture_ROM_START, &homeItemsTexture_ROM_END, &homeItemsAssetsIndex_ROM_START, &homeItemsAssetsIndex_ROM_END, &homeItemsSpritesheetIndex_ROM_START, &homeItemsSpritesheetIndex_ROM_END, (void*)0x802E4000, (void*)0x802E4D00, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
+    func_8002B138(itemIndex +  0x62, &_homeItemsTextureSegmentRomStart, &_homeItemsTextureSegmentRomEnd, &_homeItemsAssetsIndexSegmentRomStart, &_homeItemsAssetsIndexSegmentRomEnd, &_homeItemsSpritesheetIndexSegmentRomStart, &_homeItemsSpritesheetIndexSegmentRomEnd, (void*)0x802E4000, (void*)0x802E4D00, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
     func_8002BD90(itemIndex +  0x62, 1.0f, 1.0f, 1.0f);
     func_8002C7EC(itemIndex +  0x62, 3);
     func_8002C85C(itemIndex +  0x62, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -1002,7 +1002,7 @@ void func_8007341C(u8 itemIndex) {
 
     *(Vec3f*)ptr = *(Vec3f*)ptr2;
 
-    func_8002B138(itemIndex + 0x62, &homeItemsTexture_ROM_START, &homeItemsTexture_ROM_END, &homeItemsAssetsIndex_ROM_START, &homeItemsAssetsIndex_ROM_END, &homeItemsSpritesheetIndex_ROM_START, &homeItemsSpritesheetIndex_ROM_END, (void* )0x802E4000, (void* )0x802E4D00, (void* )0x802E7400, (void* )0x802E7700, (void* )0x802E7A00, (void* )0x802E7B00, (void* )1, (u8) (void* )1);
+    func_8002B138(itemIndex + 0x62, &_homeItemsTextureSegmentRomStart, &_homeItemsTextureSegmentRomEnd, &_homeItemsAssetsIndexSegmentRomStart, &_homeItemsAssetsIndexSegmentRomEnd, &_homeItemsSpritesheetIndexSegmentRomStart, &_homeItemsSpritesheetIndexSegmentRomEnd, (void* )0x802E4000, (void* )0x802E4D00, (void* )0x802E7400, (void* )0x802E7700, (void* )0x802E7A00, (void* )0x802E7B00, (void* )1, (u8) (void* )1);
     func_8002BD90(itemIndex + 0x62, 1.0f, 1.0f, 1.0f);
     func_8002C7EC(itemIndex + 0x62, 3);
     func_8002C85C(itemIndex + 0x62, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -1029,7 +1029,7 @@ void func_8007341C(u8 arg0) {
 
     *(Vec3f*)ptr = *(Vec3f*)ptr2;
 
-    func_8002B138(arg0 + 0x62, &homeItemsTexture_ROM_START, &homeItemsTexture_ROM_END, &homeItemsAssetsIndex_ROM_START, &homeItemsAssetsIndex_ROM_END, &homeItemsSpritesheetIndex_ROM_START, &homeItemsSpritesheetIndex_ROM_END, (void* )0x802E4000, (void* )0x802E4D00, (void* )0x802E7400, (void* )0x802E7700, (void* )0x802E7A00, (void* )0x802E7B00, (void* )1, (u8) (void* )1);
+    func_8002B138(arg0 + 0x62, &_homeItemsTextureSegmentRomStart, &_homeItemsTextureSegmentRomEnd, &_homeItemsAssetsIndexSegmentRomStart, &_homeItemsAssetsIndexSegmentRomEnd, &_homeItemsSpritesheetIndexSegmentRomStart, &_homeItemsSpritesheetIndexSegmentRomEnd, (void* )0x802E4000, (void* )0x802E4D00, (void* )0x802E7400, (void* )0x802E7700, (void* )0x802E7A00, (void* )0x802E7B00, (void* )1, (u8) (void* )1);
     func_8002BD90(arg0 + 0x62, 1.0f, 1.0f, 1.0f);
     func_8002C7EC(arg0 + 0x62, 3);
     func_8002C85C(arg0 + 0x62, 0xFF, 0xFF, 0xFF, 0xFF);

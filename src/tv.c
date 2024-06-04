@@ -22,12 +22,12 @@ void func_800D8540();
 
 TVContext tvContext;
 
-extern u32 tvContentTexture_ROM_START;
-extern u32 tvContentTexture_ROM_END;
-extern u32 tvContentAssetsIndex_ROM_START;
-extern u32 tvContentAssetsIndex_ROM_END;
-extern u32 tvContentSpritesheetIndex_ROM_START;
-extern u32 tvContentSpritesheetIndex_ROM_END;
+extern u32 _tvContentTextureSegmentRomStart;
+extern u32 _tvContentTextureSegmentRomEnd;
+extern u32 _tvContentAssetsIndexSegmentRomStart;
+extern u32 _tvContentAssetsIndexSegmentRomEnd;
+extern u32 _tvContentSpritesheetIndexSegmentRomStart;
+extern u32 _tvContentSpritesheetIndexSegmentRomEnd;
 
 //INCLUDE_ASM(const s32, "tv", func_800D8540);
 
@@ -39,7 +39,7 @@ void func_800D8540(void) {
     
     func_80034E64(MAIN_MAP_INDEX, 9);
 
-    func_8002B138(0x6A, &tvContentTexture_ROM_START, &tvContentTexture_ROM_END, &tvContentAssetsIndex_ROM_START, &tvContentAssetsIndex_ROM_END, &tvContentSpritesheetIndex_ROM_START, &tvContentSpritesheetIndex_ROM_END, (void*)OBJECT_SPRITE_BANK_1_START, 0x802EC800, 0x802ED800, 0x802EDB00, 0x802EDE00, 0x802EDF00, 1, 1);
+    func_8002B138(0x6A, &_tvContentTextureSegmentRomStart, &_tvContentTextureSegmentRomEnd, &_tvContentAssetsIndexSegmentRomStart, &_tvContentAssetsIndexSegmentRomEnd, &_tvContentSpritesheetIndexSegmentRomStart, &_tvContentSpritesheetIndexSegmentRomEnd, (void*)OBJECT_SPRITE_BANK_1_START, 0x802EC800, 0x802ED800, 0x802EDB00, 0x802EDE00, 0x802EDF00, 1, 1);
     
     func_8002BD90(0x6A, 2.0f, 2.0f, 1.0f);
     func_8002BE14(0x6A, 45.0f, -45.0f, 0.0f);

@@ -14,6 +14,3 @@ INCLUDE_ASM(const s32, "lib/nusys-1/nuaumgr", nuAuMgrInit);
 
 // nuAuMgr
 INCLUDE_ASM(const s32, "lib/nusys-1/nuaumgr", func_800F2E44);
-
-// n_aspMainDataStart?
-INCLUDE_RODATA(const s32, "lib/nusys-1/nuaumgr", D_8011E590);

@@ -58,235 +58,235 @@ extern u8 D_8020563B[4];
 extern u8 D_80237380[6];
 extern u8 D_80237418[3];
 
-extern u32 ranchSpringMap_ROM_START;
-extern u32 ranchSpringMap_ROM_END;
-extern u32 ranchSummerMap_ROM_START;
-extern u32 ranchSummerMap_ROM_END;
-extern u32 ranchFallMap_ROM_START;
-extern u32 ranchFallMap_ROM_END;
-extern u32 ranchWinterMap_ROM_START;
-extern u32 ranchWinterMap_ROM_END;
-extern u32 annsRoomMap_ROM_START;
-extern u32 annsRoomMap_ROM_END;
-extern u32 ranchBarnMap_ROM_START;
-extern u32 ranchBarnMap_ROM_END;
-extern u32 ranchStoreMap_ROM_START;
-extern u32 ranchStoreMap_ROM_END;
-extern u32 ranchHouseMap_ROM_START;
-extern u32 ranchHouseMap_ROM_END;
+extern u32 _ranchSpringMapSegmentRomStart;
+extern u32 _ranchSpringMapSegmentRomEnd;
+extern u32 _ranchSummerMapSegmentRomStart;
+extern u32 _ranchSummerMapSegmentRomEnd;
+extern u32 _ranchFallMapSegmentRomStart;
+extern u32 _ranchFallMapSegmentRomEnd;
+extern u32 _ranchWinterMapSegmentRomStart;
+extern u32 _ranchWinterMapSegmentRomEnd;
+extern u32 _annsRoomMapSegmentRomStart;
+extern u32 _annsRoomMapSegmentRomEnd;
+extern u32 _ranchBarnMapSegmentRomStart;
+extern u32 _ranchBarnMapSegmentRomEnd;
+extern u32 _ranchStoreMapSegmentRomStart;
+extern u32 _ranchStoreMapSegmentRomEnd;
+extern u32 _ranchHouseMapSegmentRomStart;
+extern u32 _ranchHouseMapSegmentRomEnd;
 
-extern u32 emptyMap1_ROM_START;
-extern u32 emptyMap1_ROM_END;
+extern u32 _emptyMap1SegmentRomStart;
+extern u32 _emptyMap1SegmentRomEnd;
 
-extern u32 beachSpringMap_ROM_START;
-extern u32 beachSpringMap_ROM_END;
-extern u32 beachSummerMap_ROM_START;
-extern u32 beachSummerMap_ROM_END;
-extern u32 beachFallMap_ROM_START;
-extern u32 beachFallMap_ROM_END;
-extern u32 beachWinterMap_ROM_START;
-extern u32 beachWinterMap_ROM_END;
+extern u32 _beachSpringMapSegmentRomStart;
+extern u32 _beachSpringMapSegmentRomEnd;
+extern u32 _beachSummerMapSegmentRomStart;
+extern u32 _beachSummerMapSegmentRomEnd;
+extern u32 _beachFallMapSegmentRomStart;
+extern u32 _beachFallMapSegmentRomEnd;
+extern u32 _beachWinterMapSegmentRomStart;
+extern u32 _beachWinterMapSegmentRomEnd;
 
-extern u32 raceTrackSpringMap_ROM_START;
-extern u32 raceTrackSpringMap_ROM_END;
-extern u32 raceTrackSummerMap_ROM_START;
-extern u32 raceTrackSummerMap_ROM_END;
-extern u32 raceTrackFallMap_ROM_START;
-extern u32 raceTrackFallMap_ROM_END;
-extern u32 raceTrackWinterMap_ROM_START;
-extern u32 raceTrackWinterMap_ROM_END;
+extern u32 _raceTrackSpringMapSegmentRomStart;
+extern u32 _raceTrackSpringMapSegmentRomEnd;
+extern u32 _raceTrackSummerMapSegmentRomStart;
+extern u32 _raceTrackSummerMapSegmentRomEnd;
+extern u32 _raceTrackFallMapSegmentRomStart;
+extern u32 _raceTrackFallMapSegmentRomEnd;
+extern u32 _raceTrackWinterMapSegmentRomStart;
+extern u32 _raceTrackWinterMapSegmentRomEnd;
 
-extern u32 mountain1SpringMap_ROM_START;
-extern u32 mountain1SpringMap_ROM_END;
-extern u32 mountain1SummerMap_ROM_START;
-extern u32 mountain1SummerMap_ROM_END;
-extern u32 mountain1FallMap_ROM_START;
-extern u32 mountain1FallMap_ROM_END;
-extern u32 mountain1WinterMap_ROM_START;
-extern u32 mountain1WinterMap_ROM_END;
+extern u32 _mountain1SpringMapSegmentRomStart;
+extern u32 _mountain1SpringMapSegmentRomEnd;
+extern u32 _mountain1SummerMapSegmentRomStart;
+extern u32 _mountain1SummerMapSegmentRomEnd;
+extern u32 _mountain1FallMapSegmentRomStart;
+extern u32 _mountain1FallMapSegmentRomEnd;
+extern u32 _mountain1WinterMapSegmentRomStart;
+extern u32 _mountain1WinterMapSegmentRomEnd;
 
-extern u32 mountain2SpringMap_ROM_START;
-extern u32 mountain2SpringMap_ROM_END;
-extern u32 mountain2SummerMap_ROM_START;
-extern u32 mountain2SummerMap_ROM_END;
-extern u32 mountain2FallMap_ROM_START;
-extern u32 mountain2FallMap_ROM_END;
-extern u32 mountain2WinterMap_ROM_START;
-extern u32 mountain2WinterMap_ROM_END;
+extern u32 _mountain2SpringMapSegmentRomStart;
+extern u32 _mountain2SpringMapSegmentRomEnd;
+extern u32 _mountain2SummerMapSegmentRomStart;
+extern u32 _mountain2SummerMapSegmentRomEnd;
+extern u32 _mountain2FallMapSegmentRomStart;
+extern u32 _mountain2FallMapSegmentRomEnd;
+extern u32 _mountain2WinterMapSegmentRomStart;
+extern u32 _mountain2WinterMapSegmentRomEnd;
 
-extern u32 topOfMountain1SpringMap_ROM_START;
-extern u32 topOfMountain1SpringMap_ROM_END;
-extern u32 topOfMountain1SummerMap_ROM_START;
-extern u32 topOfMountain1SummerMap_ROM_END;
-extern u32 topOfMountain1FallMap_ROM_START;
-extern u32 topOfMountain1FallMap_ROM_END;
-extern u32 topOfMountain1WinterMap_ROM_START;
-extern u32 topOfMountain1WinterMap_ROM_END;
+extern u32 _topOfMountain1SpringMapSegmentRomStart;
+extern u32 _topOfMountain1SpringMapSegmentRomEnd;
+extern u32 _topOfMountain1SummerMapSegmentRomStart;
+extern u32 _topOfMountain1SummerMapSegmentRomEnd;
+extern u32 _topOfMountain1FallMapSegmentRomStart;
+extern u32 _topOfMountain1FallMapSegmentRomEnd;
+extern u32 _topOfMountain1WinterMapSegmentRomStart;
+extern u32 _topOfMountain1WinterMapSegmentRomEnd;
 
-extern u32 moonMountainSpringMap_ROM_START;
-extern u32 moonMountainSpringMap_ROM_END;
-extern u32 moonMountainSummerMap_ROM_START;
-extern u32 moonMountainSummerMap_ROM_END;
-extern u32 moonMountainFallMap_ROM_START;
-extern u32 moonMountainFallMap_ROM_END;
-extern u32 moonMountainWinterMap_ROM_START;
-extern u32 moonMountainWinterMap_ROM_END;
+extern u32 _moonMountainSpringMapSegmentRomStart;
+extern u32 _moonMountainSpringMapSegmentRomEnd;
+extern u32 _moonMountainSummerMapSegmentRomStart;
+extern u32 _moonMountainSummerMapSegmentRomEnd;
+extern u32 _moonMountainFallMapSegmentRomStart;
+extern u32 _moonMountainFallMapSegmentRomEnd;
+extern u32 _moonMountainWinterMapSegmentRomStart;
+extern u32 _moonMountainWinterMapSegmentRomEnd;
 
-extern u32 carpentersHutMap_ROM_START;
-extern u32 carpentersHutMap_ROM_END;
+extern u32 _carpentersHutMapSegmentRomStart;
+extern u32 _carpentersHutMapSegmentRomEnd;
 
-extern u32 dumplingHouseMap_ROM_START;
-extern u32 dumplingHouseMap_ROM_END;
+extern u32 _dumplingHouseMapSegmentRomStart;
+extern u32 _dumplingHouseMapSegmentRomEnd;
 
-extern u32 springSpringMap_ROM_START;
-extern u32 springSpringMap_ROM_END;
-extern u32 springSummerMap_ROM_START;
-extern u32 springSummerMap_ROM_END;
-extern u32 springFallMap_ROM_START;
-extern u32 springFallMap_ROM_END;
-extern u32 springWinterMap_ROM_START;
-extern u32 springWinterMap_ROM_END;
+extern u32 _springSpringMapSegmentRomStart;
+extern u32 _springSpringMapSegmentRomEnd;
+extern u32 _springSummerMapSegmentRomStart;
+extern u32 _springSummerMapSegmentRomEnd;
+extern u32 _springFallMapSegmentRomStart;
+extern u32 _springFallMapSegmentRomEnd;
+extern u32 _springWinterMapSegmentRomStart;
+extern u32 _springWinterMapSegmentRomEnd;
 
-extern u32 ellisRoomMap_ROM_START;
-extern u32 ellisRoomMap_ROM_END;
+extern u32 _ellisRoomMapSegmentRomStart;
+extern u32 _ellisRoomMapSegmentRomEnd;
 
-extern u32 bakeryMap_ROM_START;
-extern u32 bakeryMap_ROM_END;
+extern u32 _bakeryMapSegmentRomStart;
+extern u32 _bakeryMapSegmentRomEnd;
 
-extern u32 village1SpringMap_ROM_START;
-extern u32 village1SpringMap_ROM_END;
-extern u32 village1SummerMap_ROM_START;
-extern u32 village1SummerMap_ROM_END;
-extern u32 village1FallMap_ROM_START;
-extern u32 village1FallMap_ROM_END;
-extern u32 village1WinterMap_ROM_START;
-extern u32 village1WinterMap_ROM_END;
+extern u32 _village1SpringMapSegmentRomStart;
+extern u32 _village1SpringMapSegmentRomEnd;
+extern u32 _village1SummerMapSegmentRomStart;
+extern u32 _village1SummerMapSegmentRomEnd;
+extern u32 _village1FallMapSegmentRomStart;
+extern u32 _village1FallMapSegmentRomEnd;
+extern u32 _village1WinterMapSegmentRomStart;
+extern u32 _village1WinterMapSegmentRomEnd;
 
-extern u32 village2SpringMap_ROM_START;
-extern u32 village2SpringMap_ROM_END;
-extern u32 village2SummerMap_ROM_START;
-extern u32 village2SummerMap_ROM_END;
-extern u32 village2FallMap_ROM_START;
-extern u32 village2FallMap_ROM_END;
-extern u32 village2WinterMap_ROM_START;
-extern u32 village2WinterMap_ROM_END;
+extern u32 _village2SpringMapSegmentRomStart;
+extern u32 _village2SpringMapSegmentRomEnd;
+extern u32 _village2SummerMapSegmentRomStart;
+extern u32 _village2SummerMapSegmentRomEnd;
+extern u32 _village2FallMapSegmentRomStart;
+extern u32 _village2FallMapSegmentRomEnd;
+extern u32 _village2WinterMapSegmentRomStart;
+extern u32 _village2WinterMapSegmentRomEnd;
 
-extern u32 popurisRoomMap_ROM_START;
-extern u32 popurisRoomMap_ROM_END;
+extern u32 _popurisRoomMapSegmentRomStart;
+extern u32 _popurisRoomMapSegmentRomEnd;
 
-extern u32 flowerShopMap_ROM_START;
-extern u32 flowerShopMap_ROM_END;
+extern u32 _flowerShopMapSegmentRomStart;
+extern u32 _flowerShopMapSegmentRomEnd;
 
-extern u32 churchMap_ROM_START;
-extern u32 churchMap_ROM_END;
+extern u32 _churchMapSegmentRomStart;
+extern u32 _churchMapSegmentRomEnd;
 
-extern u32 souvenirShopMap_ROM_START;
-extern u32 souvenirShopMap_ROM_END;
+extern u32 _souvenirShopMapSegmentRomStart;
+extern u32 _souvenirShopMapSegmentRomEnd;
 
-extern u32 squareSpringMap_ROM_START;
-extern u32 squareSpringMap_ROM_END;
-extern u32 squareSummerMap_ROM_START;
-extern u32 squareSummerMap_ROM_END;
-extern u32 squareFallMap_ROM_START;
-extern u32 squareFallMap_ROM_END;
-extern u32 squareWinterMap_ROM_START;
-extern u32 squareWinterMap_ROM_END;
+extern u32 _squareSpringMapSegmentRomStart;
+extern u32 _squareSpringMapSegmentRomEnd;
+extern u32 _squareSummerMapSegmentRomStart;
+extern u32 _squareSummerMapSegmentRomEnd;
+extern u32 _squareFallMapSegmentRomStart;
+extern u32 _squareFallMapSegmentRomEnd;
+extern u32 _squareWinterMapSegmentRomStart;
+extern u32 _squareWinterMapSegmentRomEnd;
 
-extern u32 ricksShopMap_ROM_START;
-extern u32 ricksShopMap_ROM_END;
+extern u32 _ricksShopMapSegmentRomStart;
+extern u32 _ricksShopMapSegmentRomEnd;
 
-extern u32 midwifesHouseMap_ROM_START;
-extern u32 midwifesHouseMap_ROM_END;
+extern u32 _midwifesHouseMapSegmentRomStart;
+extern u32 _midwifesHouseMapSegmentRomEnd;
 
-extern u32 tavernMap_ROM_START;
-extern u32 tavernMap_ROM_END;
+extern u32 _tavernMapSegmentRomStart;
+extern u32 _tavernMapSegmentRomEnd;
 
-extern u32 libraryMap_ROM_START;
-extern u32 libraryMap_ROM_END;
+extern u32 _libraryMapSegmentRomStart;
+extern u32 _libraryMapSegmentRomEnd;
 
-extern u32 mariasRoomMap_ROM_START;
-extern u32 mariasRoomMap_ROM_END;
+extern u32 _mariasRoomMapSegmentRomStart;
+extern u32 _mariasRoomMapSegmentRomEnd;
 
-extern u32 mayorsHouseMap_ROM_START;
-extern u32 mayorsHouseMap_ROM_END;
+extern u32 _mayorsHouseMapSegmentRomStart;
+extern u32 _mayorsHouseMapSegmentRomEnd;
 
-extern u32 potionShopBackroomMap_ROM_START;
-extern u32 potionShopBackroomMap_ROM_END;
+extern u32 _potionShopBackroomMapSegmentRomStart;
+extern u32 _potionShopBackroomMapSegmentRomEnd;
 
-extern u32 potionShopMap_ROM_START;
-extern u32 potionShopMap_ROM_END;
+extern u32 _potionShopMapSegmentRomStart;
+extern u32 _potionShopMapSegmentRomEnd;
 
-extern u32 emptyMap2_ROM_START;
-extern u32 emptyMap2_ROM_END;
+extern u32 _emptyMap2SegmentRomStart;
+extern u32 _emptyMap2SegmentRomEnd;
 
-extern u32 spriteCaveMap_ROM_START;
-extern u32 spriteCaveMap_ROM_END;
+extern u32 _spriteCaveMapSegmentRomStart;
+extern u32 _spriteCaveMapSegmentRomEnd;
 
-extern u32 caveMap_ROM_START;
-extern u32 caveMap_ROM_END;
+extern u32 _caveMapSegmentRomStart;
+extern u32 _caveMapSegmentRomEnd;
 
-extern u32 emptyMineMap_ROM_START;
-extern u32 emptyMineMap_ROM_END;
+extern u32 _emptyMineMapSegmentRomStart;
+extern u32 _emptyMineMapSegmentRomEnd;
 
-extern u32 mineMap_ROM_START;
-extern u32 mineMap_ROM_END;
+extern u32 _mineMapSegmentRomStart;
+extern u32 _mineMapSegmentRomEnd;
 
-extern u32 karensRoomMap_ROM_START;
-extern u32 karensRoomMap_ROM_END;
+extern u32 _karensRoomMapSegmentRomStart;
+extern u32 _karensRoomMapSegmentRomEnd;
 
-extern u32 vineyardSpringMap_ROM_START;
-extern u32 vineyardSpringMap_ROM_END;
-extern u32 vineyardSummerMap_ROM_START;
-extern u32 vineyardSummerMap_ROM_END;
-extern u32 vineyardFallMap_ROM_START;
-extern u32 vineyardFallMap_ROM_END;
-extern u32 vineyardWinterMap_ROM_START;
-extern u32 vineyardWinterMap_ROM_END;
+extern u32 _vineyardSpringMapSegmentRomStart;
+extern u32 _vineyardSpringMapSegmentRomEnd;
+extern u32 _vineyardSummerMapSegmentRomStart;
+extern u32 _vineyardSummerMapSegmentRomEnd;
+extern u32 _vineyardFallMapSegmentRomStart;
+extern u32 _vineyardFallMapSegmentRomEnd;
+extern u32 _vineyardWinterMapSegmentRomStart;
+extern u32 _vineyardWinterMapSegmentRomEnd;
 
-extern u32 vineyardHouseMap_ROM_START;
-extern u32 vineyardHouseMap_ROM_END;
+extern u32 _vineyardHouseMapSegmentRomStart;
+extern u32 _vineyardHouseMapSegmentRomEnd;
 
-extern u32 vineyardCellar1Map_ROM_START;
-extern u32 vineyardCellar1Map_ROM_END;
+extern u32 _vineyardCellar1MapSegmentRomStart;
+extern u32 _vineyardCellar1MapSegmentRomEnd;
 
-extern u32 vineyardCellar2Map_ROM_START;
-extern u32 vineyardCellar2Map_ROM_END;
+extern u32 _vineyardCellar2MapSegmentRomStart;
+extern u32 _vineyardCellar2MapSegmentRomEnd;
 
-extern u32 roadSpringMap_ROM_START;
-extern u32 roadSpringMap_ROM_END;
-extern u32 roadSummerMap_ROM_START;
-extern u32 roadSummerMap_ROM_END;
-extern u32 roadFallMap_ROM_START;
-extern u32 roadFallMap_ROM_END;
-extern u32 roadWinterMap_ROM_START;
-extern u32 roadWinterMap_ROM_END;
+extern u32 _roadSpringMapSegmentRomStart;
+extern u32 _roadSpringMapSegmentRomEnd;
+extern u32 _roadSummerMapSegmentRomStart;
+extern u32 _roadSummerMapSegmentRomEnd;
+extern u32 _roadFallMapSegmentRomStart;
+extern u32 _roadFallMapSegmentRomEnd;
+extern u32 _roadWinterMapSegmentRomStart;
+extern u32 _roadWinterMapSegmentRomEnd;
 
-extern u32 farmSpringMap_ROM_START;
-extern u32 farmSpringMap_ROM_END;
-extern u32 farmSummerMap_ROM_START;
-extern u32 farmSummerMap_ROM_END;
-extern u32 farmFallMap_ROM_START;
-extern u32 farmFallMap_ROM_END;
-extern u32 farmWinterMap_ROM_START;
-extern u32 farmWinterMap_ROM_END;
+extern u32 _farmSpringMapSegmentRomStart;
+extern u32 _farmSpringMapSegmentRomEnd;
+extern u32 _farmSummerMapSegmentRomStart;
+extern u32 _farmSummerMapSegmentRomEnd;
+extern u32 _farmFallMapSegmentRomStart;
+extern u32 _farmFallMapSegmentRomEnd;
+extern u32 _farmWinterMapSegmentRomStart;
+extern u32 _farmWinterMapSegmentRomEnd;
 
-extern u32 greenhouseMap_ROM_START;
-extern u32 greenhouseMap_ROM_END;
+extern u32 _greenhouseMapSegmentRomStart;
+extern u32 _greenhouseMapSegmentRomEnd;
 
-extern u32 houseMap_ROM_START;
-extern u32 houseMap_ROM_END;
+extern u32 _houseMapSegmentRomStart;
+extern u32 _houseMapSegmentRomEnd;
 
-extern u32 barnMap_ROM_START;
-extern u32 barnMap_ROM_END;
+extern u32 _barnMapSegmentRomStart;
+extern u32 _barnMapSegmentRomEnd;
 
-extern u32 coopMap_ROM_START;
-extern u32 coopMap_ROM_END;
+extern u32 _coopMapSegmentRomStart;
+extern u32 _coopMapSegmentRomEnd;
 
-extern u32 kitchenMap_ROM_START;
-extern u32 kitchenMap_ROM_END;
+extern u32 _kitchenMapSegmentRomStart;
+extern u32 _kitchenMapSegmentRomEnd;
 
-extern u32 bathroomMap_ROM_START;
-extern u32 bathroomMap_ROM_END;
+extern u32 _bathroomMapSegmentRomStart;
+extern u32 _bathroomMapSegmentRomEnd;
 
 // forward declaration
 void func_80054550(void);
@@ -936,140 +936,140 @@ INCLUDE_ASM(const s32, "initialize", func_8004F768);
 
 void loadMapAddresses(void) {
     
-    setMapModelAddresses(0, &ranchSpringMap_ROM_START, &ranchSpringMap_ROM_END);
-    setMapModelAddresses(1, &ranchSummerMap_ROM_START, &ranchSummerMap_ROM_END);
-    setMapModelAddresses(2, &ranchFallMap_ROM_START, &ranchFallMap_ROM_END);
-    setMapModelAddresses(3, &ranchWinterMap_ROM_START, &ranchWinterMap_ROM_END);
+    setMapModelAddresses(0, &_ranchSpringMapSegmentRomStart, &_ranchSpringMapSegmentRomEnd);
+    setMapModelAddresses(1, &_ranchSummerMapSegmentRomStart, &_ranchSummerMapSegmentRomEnd);
+    setMapModelAddresses(2, &_ranchFallMapSegmentRomStart, &_ranchFallMapSegmentRomEnd);
+    setMapModelAddresses(3, &_ranchWinterMapSegmentRomStart, &_ranchWinterMapSegmentRomEnd);
 
-    setMapModelAddresses(4, &annsRoomMap_ROM_START, &annsRoomMap_ROM_END);
+    setMapModelAddresses(4, &_annsRoomMapSegmentRomStart, &_annsRoomMapSegmentRomEnd);
 
-    setMapModelAddresses(5, &ranchBarnMap_ROM_START, &ranchBarnMap_ROM_END);
-    setMapModelAddresses(6, &ranchStoreMap_ROM_START, &ranchStoreMap_ROM_END);
-    setMapModelAddresses(7, &ranchHouseMap_ROM_START, &ranchHouseMap_ROM_END);
+    setMapModelAddresses(5, &_ranchBarnMapSegmentRomStart, &_ranchBarnMapSegmentRomEnd);
+    setMapModelAddresses(6, &_ranchStoreMapSegmentRomStart, &_ranchStoreMapSegmentRomEnd);
+    setMapModelAddresses(7, &_ranchHouseMapSegmentRomStart, &_ranchHouseMapSegmentRomEnd);
 
-    setMapModelAddresses(8, &emptyMap1_ROM_START, &emptyMap1_ROM_END);
+    setMapModelAddresses(8, &_emptyMap1SegmentRomStart, &_emptyMap1SegmentRomEnd);
     
-    setMapModelAddresses(9, &beachSpringMap_ROM_START, &beachSpringMap_ROM_END);
-    setMapModelAddresses(0xA, &beachSummerMap_ROM_START, &beachSummerMap_ROM_END);
-    setMapModelAddresses(0xB, &beachFallMap_ROM_START, &beachFallMap_ROM_END);
-    setMapModelAddresses(0xC, &beachWinterMap_ROM_START, &beachWinterMap_ROM_END);
+    setMapModelAddresses(9, &_beachSpringMapSegmentRomStart, &_beachSpringMapSegmentRomEnd);
+    setMapModelAddresses(0xA, &_beachSummerMapSegmentRomStart, &_beachSummerMapSegmentRomEnd);
+    setMapModelAddresses(0xB, &_beachFallMapSegmentRomStart, &_beachFallMapSegmentRomEnd);
+    setMapModelAddresses(0xC, &_beachWinterMapSegmentRomStart, &_beachWinterMapSegmentRomEnd);
 
-    setMapModelAddresses(0xD, &raceTrackSpringMap_ROM_START, &raceTrackSpringMap_ROM_END);
+    setMapModelAddresses(0xD, &_raceTrackSpringMapSegmentRomStart, &_raceTrackSpringMapSegmentRomEnd);
     // no race track summer: 0xE
     // empty 4 words in rom
-    setMapModelAddresses(0xF, &raceTrackFallMap_ROM_START, &raceTrackFallMap_ROM_END);
-    setMapModelAddresses(0x10, &raceTrackWinterMap_ROM_START, &raceTrackWinterMap_ROM_END);
+    setMapModelAddresses(0xF, &_raceTrackFallMapSegmentRomStart, &_raceTrackFallMapSegmentRomEnd);
+    setMapModelAddresses(0x10, &_raceTrackWinterMapSegmentRomStart, &_raceTrackWinterMapSegmentRomEnd);
 
-    setMapModelAddresses(0x11, &mountain1SpringMap_ROM_START, &mountain1SpringMap_ROM_END);
-    setMapModelAddresses(0x12, &mountain1SummerMap_ROM_START, &mountain1SummerMap_ROM_END);
-    setMapModelAddresses(0x13, &mountain1FallMap_ROM_START, &mountain1FallMap_ROM_END);
-    setMapModelAddresses(0x14, &mountain1WinterMap_ROM_START, &mountain1WinterMap_ROM_END);
+    setMapModelAddresses(0x11, &_mountain1SpringMapSegmentRomStart, &_mountain1SpringMapSegmentRomEnd);
+    setMapModelAddresses(0x12, &_mountain1SummerMapSegmentRomStart, &_mountain1SummerMapSegmentRomEnd);
+    setMapModelAddresses(0x13, &_mountain1FallMapSegmentRomStart, &_mountain1FallMapSegmentRomEnd);
+    setMapModelAddresses(0x14, &_mountain1WinterMapSegmentRomStart, &_mountain1WinterMapSegmentRomEnd);
 
-    setMapModelAddresses(0x15, &mountain2SpringMap_ROM_START, &mountain2SpringMap_ROM_END);
-    setMapModelAddresses(0x16, &mountain2SummerMap_ROM_START, &mountain2SummerMap_ROM_END);
-    setMapModelAddresses(0x17, &mountain2FallMap_ROM_START, &mountain2FallMap_ROM_END);
-    setMapModelAddresses(0x18, &mountain2WinterMap_ROM_START, &mountain2WinterMap_ROM_END);
+    setMapModelAddresses(0x15, &_mountain2SpringMapSegmentRomStart, &_mountain2SpringMapSegmentRomEnd);
+    setMapModelAddresses(0x16, &_mountain2SummerMapSegmentRomStart, &_mountain2SummerMapSegmentRomEnd);
+    setMapModelAddresses(0x17, &_mountain2FallMapSegmentRomStart, &_mountain2FallMapSegmentRomEnd);
+    setMapModelAddresses(0x18, &_mountain2WinterMapSegmentRomStart, &_mountain2WinterMapSegmentRomEnd);
 
-    setMapModelAddresses(0x19, &topOfMountain1SpringMap_ROM_START, &topOfMountain1SpringMap_ROM_END);
-    setMapModelAddresses(0x1A, &topOfMountain1SummerMap_ROM_START, &topOfMountain1SummerMap_ROM_END);
-    setMapModelAddresses(0x1B, &topOfMountain1FallMap_ROM_START, &topOfMountain1FallMap_ROM_END);
-    setMapModelAddresses(0x1C, &topOfMountain1WinterMap_ROM_START, &topOfMountain1WinterMap_ROM_END);
+    setMapModelAddresses(0x19, &_topOfMountain1SpringMapSegmentRomStart, &_topOfMountain1SpringMapSegmentRomEnd);
+    setMapModelAddresses(0x1A, &_topOfMountain1SummerMapSegmentRomStart, &_topOfMountain1SummerMapSegmentRomEnd);
+    setMapModelAddresses(0x1B, &_topOfMountain1FallMapSegmentRomStart, &_topOfMountain1FallMapSegmentRomEnd);
+    setMapModelAddresses(0x1C, &_topOfMountain1WinterMapSegmentRomStart, &_topOfMountain1WinterMapSegmentRomEnd);
 
-    setMapModelAddresses(0x1D, &moonMountainSpringMap_ROM_START, &moonMountainSpringMap_ROM_END);
-    setMapModelAddresses(0x1E, &moonMountainSummerMap_ROM_START, &moonMountainSummerMap_ROM_END);
-    setMapModelAddresses(0x1F, &moonMountainFallMap_ROM_START, &moonMountainFallMap_ROM_END);
-    setMapModelAddresses(0x20, &moonMountainWinterMap_ROM_START, &moonMountainWinterMap_ROM_END);
+    setMapModelAddresses(0x1D, &_moonMountainSpringMapSegmentRomStart, &_moonMountainSpringMapSegmentRomEnd);
+    setMapModelAddresses(0x1E, &_moonMountainSummerMapSegmentRomStart, &_moonMountainSummerMapSegmentRomEnd);
+    setMapModelAddresses(0x1F, &_moonMountainFallMapSegmentRomStart, &_moonMountainFallMapSegmentRomEnd);
+    setMapModelAddresses(0x20, &_moonMountainWinterMapSegmentRomStart, &_moonMountainWinterMapSegmentRomEnd);
 
-    setMapModelAddresses(0x21, &carpentersHutMap_ROM_START, &carpentersHutMap_ROM_END);
+    setMapModelAddresses(0x21, &_carpentersHutMapSegmentRomStart, &_carpentersHutMapSegmentRomEnd);
     
-    setMapModelAddresses(0x22, &dumplingHouseMap_ROM_START, &dumplingHouseMap_ROM_END);
+    setMapModelAddresses(0x22, &_dumplingHouseMapSegmentRomStart, &_dumplingHouseMapSegmentRomEnd);
 
-    setMapModelAddresses(0x23, &springSpringMap_ROM_START, &springSpringMap_ROM_END);
-    setMapModelAddresses(0x24, &springSummerMap_ROM_START, &springSummerMap_ROM_END);
-    setMapModelAddresses(0x25, &springFallMap_ROM_START, &springFallMap_ROM_END);
-    setMapModelAddresses(0x26, &springWinterMap_ROM_START, &springWinterMap_ROM_END);
+    setMapModelAddresses(0x23, &_springSpringMapSegmentRomStart, &_springSpringMapSegmentRomEnd);
+    setMapModelAddresses(0x24, &_springSummerMapSegmentRomStart, &_springSummerMapSegmentRomEnd);
+    setMapModelAddresses(0x25, &_springFallMapSegmentRomStart, &_springFallMapSegmentRomEnd);
+    setMapModelAddresses(0x26, &_springWinterMapSegmentRomStart, &_springWinterMapSegmentRomEnd);
 
-    setMapModelAddresses(0x27, &ellisRoomMap_ROM_START, &ellisRoomMap_ROM_END);
+    setMapModelAddresses(0x27, &_ellisRoomMapSegmentRomStart, &_ellisRoomMapSegmentRomEnd);
 
-    setMapModelAddresses(0x28, &bakeryMap_ROM_START, &bakeryMap_ROM_END);
+    setMapModelAddresses(0x28, &_bakeryMapSegmentRomStart, &_bakeryMapSegmentRomEnd);
 
-    setMapModelAddresses(0x29, &village1SpringMap_ROM_START, &village1SpringMap_ROM_END);
-    setMapModelAddresses(0x2A, &village1SummerMap_ROM_START, &village1SummerMap_ROM_END);
-    setMapModelAddresses(0x2B, &village1FallMap_ROM_START, &village1FallMap_ROM_END);
-    setMapModelAddresses(0x2C, &village1WinterMap_ROM_START, &village1WinterMap_ROM_END);
+    setMapModelAddresses(0x29, &_village1SpringMapSegmentRomStart, &_village1SpringMapSegmentRomEnd);
+    setMapModelAddresses(0x2A, &_village1SummerMapSegmentRomStart, &_village1SummerMapSegmentRomEnd);
+    setMapModelAddresses(0x2B, &_village1FallMapSegmentRomStart, &_village1FallMapSegmentRomEnd);
+    setMapModelAddresses(0x2C, &_village1WinterMapSegmentRomStart, &_village1WinterMapSegmentRomEnd);
 
-    setMapModelAddresses(0x2D, &village2SpringMap_ROM_START, &village2SpringMap_ROM_END);
-    setMapModelAddresses(0x2E, &village2SummerMap_ROM_START, &village2SummerMap_ROM_END);
-    setMapModelAddresses(0x2F, &village2FallMap_ROM_START, &village2FallMap_ROM_END);
-    setMapModelAddresses(0x30, &village2WinterMap_ROM_START, &village2WinterMap_ROM_END);
+    setMapModelAddresses(0x2D, &_village2SpringMapSegmentRomStart, &_village2SpringMapSegmentRomEnd);
+    setMapModelAddresses(0x2E, &_village2SummerMapSegmentRomStart, &_village2SummerMapSegmentRomEnd);
+    setMapModelAddresses(0x2F, &_village2FallMapSegmentRomStart, &_village2FallMapSegmentRomEnd);
+    setMapModelAddresses(0x30, &_village2WinterMapSegmentRomStart, &_village2WinterMapSegmentRomEnd);
 
-    setMapModelAddresses(0x31, &popurisRoomMap_ROM_START, &popurisRoomMap_ROM_END);
+    setMapModelAddresses(0x31, &_popurisRoomMapSegmentRomStart, &_popurisRoomMapSegmentRomEnd);
 
-    setMapModelAddresses(0x32, &flowerShopMap_ROM_START, &flowerShopMap_ROM_END);
+    setMapModelAddresses(0x32, &_flowerShopMapSegmentRomStart, &_flowerShopMapSegmentRomEnd);
 
-    setMapModelAddresses(0x33, &churchMap_ROM_START, &churchMap_ROM_END);
+    setMapModelAddresses(0x33, &_churchMapSegmentRomStart, &_churchMapSegmentRomEnd);
 
-    setMapModelAddresses(0x34, &souvenirShopMap_ROM_START, &souvenirShopMap_ROM_END);
+    setMapModelAddresses(0x34, &_souvenirShopMapSegmentRomStart, &_souvenirShopMapSegmentRomEnd);
 
-    setMapModelAddresses(0x35, &squareSpringMap_ROM_START, &squareSpringMap_ROM_END);
-    setMapModelAddresses(0x36, &squareSummerMap_ROM_START, &squareSummerMap_ROM_END);
-    setMapModelAddresses(0x37, &squareFallMap_ROM_START, &squareFallMap_ROM_END);
-    setMapModelAddresses(0x38, &squareWinterMap_ROM_START, &squareWinterMap_ROM_END);
+    setMapModelAddresses(0x35, &_squareSpringMapSegmentRomStart, &_squareSpringMapSegmentRomEnd);
+    setMapModelAddresses(0x36, &_squareSummerMapSegmentRomStart, &_squareSummerMapSegmentRomEnd);
+    setMapModelAddresses(0x37, &_squareFallMapSegmentRomStart, &_squareFallMapSegmentRomEnd);
+    setMapModelAddresses(0x38, &_squareWinterMapSegmentRomStart, &_squareWinterMapSegmentRomEnd);
 
-    setMapModelAddresses(0x39, &ricksShopMap_ROM_START, &ricksShopMap_ROM_END);
+    setMapModelAddresses(0x39, &_ricksShopMapSegmentRomStart, &_ricksShopMapSegmentRomEnd);
 
-    setMapModelAddresses(0x3A, &midwifesHouseMap_ROM_START, &midwifesHouseMap_ROM_END);
+    setMapModelAddresses(0x3A, &_midwifesHouseMapSegmentRomStart, &_midwifesHouseMapSegmentRomEnd);
     
-    setMapModelAddresses(0x3B, &tavernMap_ROM_START, &tavernMap_ROM_END);
+    setMapModelAddresses(0x3B, &_tavernMapSegmentRomStart, &_tavernMapSegmentRomEnd);
     
-    setMapModelAddresses(0x3C, &libraryMap_ROM_START, &libraryMap_ROM_END);
+    setMapModelAddresses(0x3C, &_libraryMapSegmentRomStart, &_libraryMapSegmentRomEnd);
 
-    setMapModelAddresses(0x3D, &mariasRoomMap_ROM_START, &mariasRoomMap_ROM_END);
+    setMapModelAddresses(0x3D, &_mariasRoomMapSegmentRomStart, &_mariasRoomMapSegmentRomEnd);
     
-    setMapModelAddresses(0x3E, &mayorsHouseMap_ROM_START, &mayorsHouseMap_ROM_END);
+    setMapModelAddresses(0x3E, &_mayorsHouseMapSegmentRomStart, &_mayorsHouseMapSegmentRomEnd);
 
-    setMapModelAddresses(0x3F, &potionShopBackroomMap_ROM_START, &potionShopBackroomMap_ROM_END);
-    setMapModelAddresses(0x40, &potionShopMap_ROM_START, &potionShopMap_ROM_END);
+    setMapModelAddresses(0x3F, &_potionShopBackroomMapSegmentRomStart, &_potionShopBackroomMapSegmentRomEnd);
+    setMapModelAddresses(0x40, &_potionShopMapSegmentRomStart, &_potionShopMapSegmentRomEnd);
 
     // empty, referenced in func_80074C50 
-    setMapModelAddresses(0x41, &emptyMap2_ROM_START, &emptyMap2_ROM_END);
+    setMapModelAddresses(0x41, &_emptyMap2SegmentRomStart, &_emptyMap2SegmentRomEnd);
     
-    setMapModelAddresses(0x42, &spriteCaveMap_ROM_START, &spriteCaveMap_ROM_END);
-    setMapModelAddresses(0x43, &caveMap_ROM_START, &caveMap_ROM_END);    
-    setMapModelAddresses(0x44, &emptyMineMap_ROM_START, &emptyMineMap_ROM_END);
-    setMapModelAddresses(0x45, &mineMap_ROM_START, &mineMap_ROM_END);
+    setMapModelAddresses(0x42, &_spriteCaveMapSegmentRomStart, &_spriteCaveMapSegmentRomEnd);
+    setMapModelAddresses(0x43, &_caveMapSegmentRomStart, &_caveMapSegmentRomEnd);    
+    setMapModelAddresses(0x44, &_emptyMineMapSegmentRomStart, &_emptyMineMapSegmentRomEnd);
+    setMapModelAddresses(0x45, &_mineMapSegmentRomStart, &_mineMapSegmentRomEnd);
 
-    setMapModelAddresses(0x46, &karensRoomMap_ROM_START, &karensRoomMap_ROM_END);
+    setMapModelAddresses(0x46, &_karensRoomMapSegmentRomStart, &_karensRoomMapSegmentRomEnd);
 
-    setMapModelAddresses(0x47, &vineyardSpringMap_ROM_START, &vineyardSpringMap_ROM_END);
-    setMapModelAddresses(0x48, &vineyardSummerMap_ROM_START, &vineyardSummerMap_ROM_END);
-    setMapModelAddresses(0x49, &vineyardFallMap_ROM_START, &vineyardFallMap_ROM_END);
-    setMapModelAddresses(0x4A, &vineyardWinterMap_ROM_START, &vineyardWinterMap_ROM_END);
+    setMapModelAddresses(0x47, &_vineyardSpringMapSegmentRomStart, &_vineyardSpringMapSegmentRomEnd);
+    setMapModelAddresses(0x48, &_vineyardSummerMapSegmentRomStart, &_vineyardSummerMapSegmentRomEnd);
+    setMapModelAddresses(0x49, &_vineyardFallMapSegmentRomStart, &_vineyardFallMapSegmentRomEnd);
+    setMapModelAddresses(0x4A, &_vineyardWinterMapSegmentRomStart, &_vineyardWinterMapSegmentRomEnd);
 
-    setMapModelAddresses(0x4B, &vineyardHouseMap_ROM_START, &vineyardHouseMap_ROM_END);
+    setMapModelAddresses(0x4B, &_vineyardHouseMapSegmentRomStart, &_vineyardHouseMapSegmentRomEnd);
 
-    setMapModelAddresses(0x4C, &vineyardCellar1Map_ROM_START, &vineyardCellar1Map_ROM_END);
-    setMapModelAddresses(0x4D, &vineyardCellar2Map_ROM_START, &vineyardCellar2Map_ROM_END);
+    setMapModelAddresses(0x4C, &_vineyardCellar1MapSegmentRomStart, &_vineyardCellar1MapSegmentRomEnd);
+    setMapModelAddresses(0x4D, &_vineyardCellar2MapSegmentRomStart, &_vineyardCellar2MapSegmentRomEnd);
 
-    setMapModelAddresses(0x4E, &roadSpringMap_ROM_START, &roadSpringMap_ROM_END);
-    setMapModelAddresses(0x4F, &roadSummerMap_ROM_START, &roadSummerMap_ROM_END);
-    setMapModelAddresses(0x50, &roadFallMap_ROM_START, &roadFallMap_ROM_END);
-    setMapModelAddresses(0x51, &roadWinterMap_ROM_START, &roadWinterMap_ROM_END);
+    setMapModelAddresses(0x4E, &_roadSpringMapSegmentRomStart, &_roadSpringMapSegmentRomEnd);
+    setMapModelAddresses(0x4F, &_roadSummerMapSegmentRomStart, &_roadSummerMapSegmentRomEnd);
+    setMapModelAddresses(0x50, &_roadFallMapSegmentRomStart, &_roadFallMapSegmentRomEnd);
+    setMapModelAddresses(0x51, &_roadWinterMapSegmentRomStart, &_roadWinterMapSegmentRomEnd);
 
-    setMapModelAddresses(0x52, &farmSpringMap_ROM_START, &farmSpringMap_ROM_END);
-    setMapModelAddresses(0x53, &farmSummerMap_ROM_START, &farmSummerMap_ROM_END);
-    setMapModelAddresses(0x54, &farmFallMap_ROM_START, &farmFallMap_ROM_END);
-    setMapModelAddresses(0x55, &farmWinterMap_ROM_START, &farmWinterMap_ROM_END);
+    setMapModelAddresses(0x52, &_farmSpringMapSegmentRomStart, &_farmSpringMapSegmentRomEnd);
+    setMapModelAddresses(0x53, &_farmSummerMapSegmentRomStart, &_farmSummerMapSegmentRomEnd);
+    setMapModelAddresses(0x54, &_farmFallMapSegmentRomStart, &_farmFallMapSegmentRomEnd);
+    setMapModelAddresses(0x55, &_farmWinterMapSegmentRomStart, &_farmWinterMapSegmentRomEnd);
 
-    setMapModelAddresses(0x56, &greenhouseMap_ROM_START, &greenhouseMap_ROM_END);
+    setMapModelAddresses(0x56, &_greenhouseMapSegmentRomStart, &_greenhouseMapSegmentRomEnd);
     
-    setMapModelAddresses(0x57, &houseMap_ROM_START, &houseMap_ROM_END);
+    setMapModelAddresses(0x57, &_houseMapSegmentRomStart, &_houseMapSegmentRomEnd);
 
-    setMapModelAddresses(0x58, &barnMap_ROM_START, &barnMap_ROM_END);
-    setMapModelAddresses(0x59, &coopMap_ROM_START, &coopMap_ROM_END);
+    setMapModelAddresses(0x58, &_barnMapSegmentRomStart, &_barnMapSegmentRomEnd);
+    setMapModelAddresses(0x59, &_coopMapSegmentRomStart, &_coopMapSegmentRomEnd);
     
-    setMapModelAddresses(0x5A, &kitchenMap_ROM_START, &kitchenMap_ROM_END);
-    setMapModelAddresses(0x5B, &bathroomMap_ROM_START, &bathroomMap_ROM_END);
+    setMapModelAddresses(0x5A, &_kitchenMapSegmentRomStart, &_kitchenMapSegmentRomEnd);
+    setMapModelAddresses(0x5B, &_bathroomMapSegmentRomStart, &_bathroomMapSegmentRomEnd);
     
     func_8003BA44(0, 0, MODEL_DATA_BANK);
 }
@@ -1080,12 +1080,12 @@ INCLUDE_ASM(const s32, "initialize", func_80053088);
 /*
 void func_80053088(void) {
 
-    u32 ptr = &fontTexture_ROM_START;
-    u32 ptr2 = &fontTexture_ROM_END;
-    u32 ptr3 = &fontPalette1_ROM_START;
-    u32 ptr4 = &fontPalette1_ROM_END;
-    u32 ptr5 = &fontPalette2_ROM_START;
-    u32 ptr6 = &fontPalette2_ROM_END;
+    u32 ptr = &_fontTextureSegmentRomStart;
+    u32 ptr2 = &_fontTextureSegmentRomEnd;
+    u32 ptr3 = &_fontPalette1SegmentRomStart;
+    u32 ptr4 = &_fontPalette1SegmentRomEnd;
+    u32 ptr5 = &_fontPalette2SegmentRomStart;
+    u32 ptr6 = &_fontPalette2SegmentRomEnd;
 
     func_800535DC();
     func_80054180();
@@ -1095,13 +1095,13 @@ void func_80053088(void) {
     nuPiReadRom(ptr3, (void*)0x8030A000, ptr4 - ptr3);
     nuPiReadRom(ptr5, (void*)0x8030A400, ptr6 - ptr5);
 
-    func_8003F80C(0, 0x76, &dialogueWindowTexture_ROM_START, &dialogueWindowTexture_ROM_END, &dialogueWindowIndex_ROM_START, &dialogueWindowIndex_ROM_END, 0x80238800, 0x8023B100, 0x8023B200, 0x8023B300, 0, 0, 1, -24.0f, 0, 0);
-    func_8003F80C(1, 0x76, &dialogueWindowTexture_ROM_START, &dialogueWindowTexture_ROM_END, &dialogueWindowIndex_ROM_START, &dialogueWindowIndex_ROM_END, 0x80238800, 0x8023B100, 0x8023B200, 0x8023B300, 0, 0, 0, 0, 0, 0);
-    func_8003F80C(2, 0x77, &dialogueWindowTexture_ROM_START, &dialogueWindowTexture_ROM_END, &dialogueWindowIndex_ROM_START, &dialogueWindowIndex_ROM_END, 0x80238800, 0x8023B100, 0x8023B200, 0x8023B300, 0, 1, 0, 0, 0, 0);
+    func_8003F80C(0, 0x76, &_dialogueWindowTextureSegmentRomStart, &_dialogueWindowTextureSegmentRomEnd, &_dialogueWindowIndexSegmentRomStart, &_dialogueWindowIndexSegmentRomEnd, 0x80238800, 0x8023B100, 0x8023B200, 0x8023B300, 0, 0, 1, -24.0f, 0, 0);
+    func_8003F80C(1, 0x76, &_dialogueWindowTextureSegmentRomStart, &_dialogueWindowTextureSegmentRomEnd, &_dialogueWindowIndexSegmentRomStart, &_dialogueWindowIndexSegmentRomEnd, 0x80238800, 0x8023B100, 0x8023B200, 0x8023B300, 0, 0, 0, 0, 0, 0);
+    func_8003F80C(2, 0x77, &_dialogueWindowTextureSegmentRomStart, &_dialogueWindowTextureSegmentRomEnd, &_dialogueWindowIndexSegmentRomStart, &_dialogueWindowIndexSegmentRomEnd, 0x80238800, 0x8023B100, 0x8023B200, 0x8023B300, 0, 1, 0, 0, 0, 0);
 
-    func_8003F910(0, 0x78, &dialogueIconsTexture_ROM_START, &dialogueIconsTexture_ROM_END, &dialogueIconsIndex_ROM_START, &dialogueIconsIndex_ROM_END, (void* )0x8023B400, (void* )0x8023CC00, (void* )0x8023CE00, 0x8023D200, 0, 4, 0xFE, 106.0f, -15.0f, 0.0f);
-    func_8003F910(1, 0x78, &dialogueIconsTexture_ROM_START, &dialogueIconsTexture_ROM_END, &dialogueIconsIndex_ROM_START, &dialogueIconsIndex_ROM_END, (void* )0x8023B400, (void* )0x8023CC00, (void* )0x8023CE00, 0x8023D200, 0, 0xD, 0xFE, 106.0f, -15.0f, 0.0f);
-    func_8003FA1C(0, 0x75, &characterDialogueIconsTexture_ROM_START, &characterDialogueIconsTexture_ROM_END, &characterdialogueIconsAssetsIndex_ROM_START, &characterdialogueIconsAssetsIndex_ROM_END, &characterDialogueIconsSpritesheetIndex_ROM_START, &characterDialogueIconsSpritesheetIndex_ROM_END, (void*)0x8023D300, (void*)0x8023DB00, (void*)0x8023E300, (void*)0x8023EF00, (void*)0x8023FF00, (void*)0x80240000, -139.0f, 1.0f, 0);
+    func_8003F910(0, 0x78, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsIndexSegmentRomStart, &_dialogueIconsIndexSegmentRomEnd, (void* )0x8023B400, (void* )0x8023CC00, (void* )0x8023CE00, 0x8023D200, 0, 4, 0xFE, 106.0f, -15.0f, 0.0f);
+    func_8003F910(1, 0x78, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsIndexSegmentRomStart, &_dialogueIconsIndexSegmentRomEnd, (void* )0x8023B400, (void* )0x8023CC00, (void* )0x8023CE00, 0x8023D200, 0, 0xD, 0xFE, 106.0f, -15.0f, 0.0f);
+    func_8003FA1C(0, 0x75, &_characterDialogueIconsTextureSegmentRomStart, &_characterDialogueIconsTextureSegmentRomEnd, &_characterdialogueIconsAssetsIndexSegmentRomStart, &_characterdialogueIconsAssetsIndexSegmentRomEnd, &_characterDialogueIconsSpritesheetIndexSegmentRomStart, &_characterDialogueIconsSpritesheetIndexSegmentRomEnd, (void*)0x8023D300, (void*)0x8023DB00, (void*)0x8023E300, (void*)0x8023EF00, (void*)0x8023FF00, (void*)0x80240000, -139.0f, 1.0f, 0);
  
     func_8003DBE8(0, 0x8030B000);
     func_8003F54C(0, 24.0f, -64.0f, 352.0f);
@@ -1133,88 +1133,88 @@ INCLUDE_ASM(const s32, "initialize", func_800535DC);
 // TODO: need to add linker symbols
 /*
 void func_800535DC(void) {
-    func_8003F30C(0, &D_E13920, &D_E13990, &D_E13800_2, 0x8030A800);
-    func_8003F30C(1, &D_E13C30, &D_E13C60, &D_E13990_2, 0x8030A800);
-    func_8003F30C(2, &D_E167C0, &D_E16A90, &D_E13C60_2, 0x8030A800);
-    func_8003F30C(3, &D_E19F60, &D_E19FF0, &D_E16A90_2, 0x8030A800);
-    func_8003F30C(4, &D_E1B3A0, &D_E1B4E0, &D_E19FF0_2, 0x8030A800);
-    func_8003F30C(5, &D_E1C8C0, &D_E1C9C0, &D_E1B4E0_2, 0x8030A800);
-    func_8003F30C(6, &D_E21150, &D_E21700, &D_E1C9C0_2, 0x8030A800);
-    func_8003F30C(7, &D_E218A0, &D_E218D0, &D_E21700_2, 0x8030A800);
-    func_8003F30C(8, &D_E24E20, &D_E24F60, &D_E218D0_2, 0x8030A800);
-    func_8003F30C(9, &D_E24F70, &D_E24F80, &D_E24F60_2, 0x8030A800);
-    func_8003F30C(0xA, &D_E25170, &D_E251D0, &D_E24F80_2, 0x8030A800);
-    func_8003F30C(0x15, &D_E3C700, &D_E3C9A0, &D_E39610_2, 0x8030A800);
-    func_8003F30C(0x14, &D_E39360, &D_E39610, &D_E36150_2, 0x8030A800);
-    func_8003F30C(0xB, &D_E28460, &D_E28720, &D_E251D0_2, 0x8030A800);
-    func_8003F30C(0x17, &D_E40B90, &D_E40E50, &D_E3D6D0_2, 0x8030A800);
-    func_8003F30C(0xD, &D_E2D080, &D_E2D330, &D_E2A380_2, 0x8030A800);
-    func_8003F30C(0x44, &D_E84910, &D_E84990, &D_E84760_2, 0x8030A800);
-    func_8003F30C(0x13, &D_E36000, &D_E36150, &D_E34790_2, 0x8030A800);
-    func_8003F30C(0x19, &D_E42D50, &D_E42E60, &D_E42100_2, 0x8030A800);
-    func_8003F30C(0x11, &D_E33020, &D_E33190, &D_E31010_2, 0x8030A800);
-    func_8003F30C(0x10, &D_E30ED0, &D_E31010, &D_E2F730_2, 0x8030A800);
-    func_8003F30C(0xC, &D_E2A230, &D_E2A380, &D_E28720_2, 0x8030A800);
-    func_8003F30C(0x21, &D_E4B6E0, &D_E4B7D0, &D_E4A2D0_2, 0x8030A800);
-    func_8003F30C(0x27, &D_E51A00, &D_E51AE0, &D_E50600_2, 0x8030A800);
-    func_8003F30C(0x1B, &D_E45130, &D_E45200, &D_E43F60_2, 0x8030A800);
-    func_8003F30C(0x1A, &D_E43E80, &D_E43F60, &D_E42E60_2, 0x8030A800);
-    func_8003F30C(0x28, &D_E52740, &D_E527E0, &D_E51AE0_2, 0x8030A800);
-    func_8003F30C(0x18, &D_E42010, &D_E42100, &D_E40E50_2, 0x8030A800);
-    func_8003F30C(0xE, &D_E2E500, &D_E2E600, &D_E2D330_2, 0x8030A800);
-    func_8003F30C(0xF, &D_E2F650, &D_E2F730, &D_E2E600_2, 0x8030A800);
-    func_8003F30C(0x26, &D_E50520, &D_E50600, &D_E4F3F0_2, 0x8030A800);
-    func_8003F30C(0x12, &D_E34650, &D_E34790, &D_E33190_2, 0x8030A800);
-    func_8003F30C(0x29, &D_E53450, &D_E53540, &D_E527E0_2, 0x8030A800);
-    func_8003F30C(0x2A, &D_E54C60, &D_E54D60, &D_E53540_2, 0x8030A800);
-    func_8003F30C(0x16, &D_E3D600, &D_E3D6D0, &D_E3C9A0_2, 0x8030A800);
-    func_8003F30C(0x23, &D_E4E230, &D_E4E320, &D_E4C9B0_2, 0x8030A800);
-    func_8003F30C(0x2B, &D_E55AE0, &D_E55BA0, &D_E54D60_2, 0x8030A800);
-    func_8003F30C(0x1D, &D_E47140, &D_E471E0, &D_E46280_2, 0x8030A800);
-    func_8003F30C(0x2C, &D_E569C0, &D_E56A80, &D_E55BA0_2, 0x8030A800);
-    func_8003F30C(0x1C, &D_E461C0, &D_E46280, &D_E45200_2, 0x8030A800);
-    func_8003F30C(0x22, &D_E4C8D0, &D_E4C9B0, &D_E4B7D0_2, 0x8030A800);
-    func_8003F30C(0x1F, &D_E49480, &D_E49540, &D_E48720_2, 0x8030A800);
-    func_8003F30C(0x1F, &D_E49480, &D_E49540, &D_E48720_2, 0x8030A800);
-    func_8003F30C(0x20, &D_E4A230, &D_E4A2D0, &D_E49540_2, 0x8030A800);
-    func_8003F30C(0x1E, &D_E485D0, &D_E48720, &D_E471E0_2, 0x8030A800);
-    func_8003F30C(0x1E, &D_E485D0, &D_E48720, &D_E471E0_2, 0x8030A800);
-    func_8003F30C(0x1E, &D_E485D0, &D_E48720, &D_E471E0_2, 0x8030A800);
-    func_8003F30C(0x24, &D_E4EC70, &D_E4ED10, &D_E4E320_2, 0x8030A800);
-    func_8003F30C(0x25, &D_E4F370, &D_E4F3F0, &D_E4ED10_2, 0x8030A800);
-    func_8003F30C(0x45, &D_E84F50, &D_E84FD0, &D_E84990_2, 0x8030A800);
-    func_8003F30C(0x45, &D_E84F50, &D_E84FD0, &D_E84990_2, 0x8030A800);
-    func_8003F30C(0x46, &D_E85730, &D_E857A0, &D_E84FD0_2, 0x8030A800);
-    func_8003F30C(0x47, &D_E84910, &D_E84990, &D_E84760_2, 0x8030A800);
-    func_8003F30C(0x47, &D_E84910, &D_E84990, &D_E84760_2, 0x8030A800);
-    func_8003F30C(0x47, &D_E84910, &D_E84990, &D_E84760_2, 0x8030A800);
-    func_8003F30C(0x47, &D_E84910, &D_E84990, &D_E84760_2, 0x8030A800);
-    func_8003F30C(0x47, &D_E84910, &D_E84990, &D_E84760_2, 0x8030A800);
-    func_8003F30C(0x46, &D_E85730, &D_E857A0, &D_E84FD0_2, 0x8030A800);
-    func_8003F30C(0x3F, &D_E7C7B0, &D_E7D1E0, &D_E73110_2, 0x8030A800);
-    func_8003F30C(0x40, &D_E81660, &D_E81F50, &D_E7D1E0_2, 0x8030A800);
-    func_8003F30C(0x2D, &D_E58010, &D_E58160, &D_E56A80_2, 0x8030A800);
-    func_8003F30C(0x35, &D_E64680, &D_E64AF0, &D_E60170_2, 0x8030A800);
-    func_8003F30C(0x3B, &D_E6F1E0, &D_E6F5C0, &D_E6AFE0_2, 0x8030A800);
-    func_8003F30C(0x3C, &D_E714D0, &D_E71690, &D_E6F5C0_2, 0x8030A800);
-    func_8003F30C(0x3D, &D_E72680, &D_E72780, &D_E71690_2, 0x8030A800);
-    func_8003F30C(0x3E, &D_E73070, &D_E73110, &D_E72780_2, 0x8030A800);
-    func_8003F30C(0x42, &D_E83880, &D_E83960, &D_E82C40_2, 0x8030A800);
-    func_8003F30C(0x36, &D_E66260, &D_E663F0, &D_E64AF0_2, 0x8030A800);
-    func_8003F30C(0x3A, &D_E6ADC0, &D_E6AFE0, &D_E68BF0_2, 0x8030A800);
-    func_8003F30C(0x30, &D_E5A6D0, &D_E5A8C0, &D_E588D0_2, 0x8030A800);
-    func_8003F30C(0x43, &D_E84690, &D_E84760, &D_E83960_2, 0x8030A800);
-    func_8003F30C(0x2F, &D_E58880, &D_E588D0, &D_E583F0_2, 0x8030A800);
-    func_8003F30C(0x33, &D_E5F220, &D_E5F300, &D_E5E340_2, 0x8030A800);
-    func_8003F30C(0x31, &D_E5D240, &D_E5D4C0, &D_E5A8C0_2, 0x8030A800);
-    func_8003F30C(0x32, &D_E5E270, &D_E5E340, &D_E5D4C0_2, 0x8030A800);
-    func_8003F30C(0x37, &D_E677B0, &D_E678E0, &D_E663F0_2, 0x8030A800);
-    func_8003F30C(0x41, &D_E82B30, &D_E82C40, &D_E81F50_2, 0x8030A800);
-    func_8003F30C(0x34, &D_E60080, &D_E60170, &D_E5F300_2, 0x8030A800);
-    func_8003F30C(0x39, &D_E68BA0, &D_E68BF0, &D_E68700_2, 0x8030A800);
-    func_8003F30C(0x38, &D_E68620, &D_E68700, &D_E678E0_2, 0x8030A800);
-    func_8003F30C(0x2E, &D_E583C0, &D_E583F0, &D_E58160_2, 0x8030A800);
-    func_8003F30C(0x48, &D_E87080, &D_E871A0, &D_E857A0_2, 0x8030A800);
+    func_8003F30C(0, &_D_E13920, &_D_E13990, &_D_E13800_2, 0x8030A800);
+    func_8003F30C(1, &_D_E13C30, &_D_E13C60, &_D_E13990_2, 0x8030A800);
+    func_8003F30C(2, &_D_E167C0, &_D_E16A90, &_D_E13C60_2, 0x8030A800);
+    func_8003F30C(3, &_D_E19F60, &_D_E19FF0, &_D_E16A90_2, 0x8030A800);
+    func_8003F30C(4, &_D_E1B3A0, &_D_E1B4E0, &_D_E19FF0_2, 0x8030A800);
+    func_8003F30C(5, &_D_E1C8C0, &_D_E1C9C0, &_D_E1B4E0_2, 0x8030A800);
+    func_8003F30C(6, &_D_E21150, &_D_E21700, &_D_E1C9C0_2, 0x8030A800);
+    func_8003F30C(7, &_D_E218A0, &_D_E218D0, &_D_E21700_2, 0x8030A800);
+    func_8003F30C(8, &_D_E24E20, &_D_E24F60, &_D_E218D0_2, 0x8030A800);
+    func_8003F30C(9, &_D_E24F70, &_D_E24F80, &_D_E24F60_2, 0x8030A800);
+    func_8003F30C(0xA, &_D_E25170, &_D_E251D0, &_D_E24F80_2, 0x8030A800);
+    func_8003F30C(0x15, &_D_E3C700, &_D_E3C9A0, &_D_E39610_2, 0x8030A800);
+    func_8003F30C(0x14, &_D_E39360, &_D_E39610, &_D_E36150_2, 0x8030A800);
+    func_8003F30C(0xB, &_D_E28460, &_D_E28720, &_D_E251D0_2, 0x8030A800);
+    func_8003F30C(0x17, &_D_E40B90, &_D_E40E50, &_D_E3D6D0_2, 0x8030A800);
+    func_8003F30C(0xD, &_D_E2D080, &_D_E2D330, &_D_E2A380_2, 0x8030A800);
+    func_8003F30C(0x44, &_D_E84910, &_D_E84990, &_D_E84760_2, 0x8030A800);
+    func_8003F30C(0x13, &_D_E36000, &_D_E36150, &_D_E34790_2, 0x8030A800);
+    func_8003F30C(0x19, &_D_E42D50, &_D_E42E60, &_D_E42100_2, 0x8030A800);
+    func_8003F30C(0x11, &_D_E33020, &_D_E33190, &_D_E31010_2, 0x8030A800);
+    func_8003F30C(0x10, &_D_E30ED0, &_D_E31010, &_D_E2F730_2, 0x8030A800);
+    func_8003F30C(0xC, &_D_E2A230, &_D_E2A380, &_D_E28720_2, 0x8030A800);
+    func_8003F30C(0x21, &_D_E4B6E0, &_D_E4B7D0, &_D_E4A2D0_2, 0x8030A800);
+    func_8003F30C(0x27, &_D_E51A00, &_D_E51AE0, &_D_E50600_2, 0x8030A800);
+    func_8003F30C(0x1B, &_D_E45130, &_D_E45200, &_D_E43F60_2, 0x8030A800);
+    func_8003F30C(0x1A, &_D_E43E80, &_D_E43F60, &_D_E42E60_2, 0x8030A800);
+    func_8003F30C(0x28, &_D_E52740, &_D_E527E0, &_D_E51AE0_2, 0x8030A800);
+    func_8003F30C(0x18, &_D_E42010, &_D_E42100, &_D_E40E50_2, 0x8030A800);
+    func_8003F30C(0xE, &_D_E2E500, &_D_E2E600, &_D_E2D330_2, 0x8030A800);
+    func_8003F30C(0xF, &_D_E2F650, &_D_E2F730, &_D_E2E600_2, 0x8030A800);
+    func_8003F30C(0x26, &_D_E50520, &_D_E50600, &_D_E4F3F0_2, 0x8030A800);
+    func_8003F30C(0x12, &_D_E34650, &_D_E34790, &_D_E33190_2, 0x8030A800);
+    func_8003F30C(0x29, &_D_E53450, &_D_E53540, &_D_E527E0_2, 0x8030A800);
+    func_8003F30C(0x2A, &_D_E54C60, &_D_E54D60, &_D_E53540_2, 0x8030A800);
+    func_8003F30C(0x16, &_D_E3D600, &_D_E3D6D0, &_D_E3C9A0_2, 0x8030A800);
+    func_8003F30C(0x23, &_D_E4E230, &_D_E4E320, &_D_E4C9B0_2, 0x8030A800);
+    func_8003F30C(0x2B, &_D_E55AE0, &_D_E55BA0, &_D_E54D60_2, 0x8030A800);
+    func_8003F30C(0x1D, &_D_E47140, &_D_E471E0, &_D_E46280_2, 0x8030A800);
+    func_8003F30C(0x2C, &_D_E569C0, &_D_E56A80, &_D_E55BA0_2, 0x8030A800);
+    func_8003F30C(0x1C, &_D_E461C0, &_D_E46280, &_D_E45200_2, 0x8030A800);
+    func_8003F30C(0x22, &_D_E4C8D0, &_D_E4C9B0, &_D_E4B7D0_2, 0x8030A800);
+    func_8003F30C(0x1F, &_D_E49480, &_D_E49540, &_D_E48720_2, 0x8030A800);
+    func_8003F30C(0x1F, &_D_E49480, &_D_E49540, &_D_E48720_2, 0x8030A800);
+    func_8003F30C(0x20, &_D_E4A230, &_D_E4A2D0, &_D_E49540_2, 0x8030A800);
+    func_8003F30C(0x1E, &_D_E485D0, &_D_E48720, &_D_E471E0_2, 0x8030A800);
+    func_8003F30C(0x1E, &_D_E485D0, &_D_E48720, &_D_E471E0_2, 0x8030A800);
+    func_8003F30C(0x1E, &_D_E485D0, &_D_E48720, &_D_E471E0_2, 0x8030A800);
+    func_8003F30C(0x24, &_D_E4EC70, &_D_E4ED10, &_D_E4E320_2, 0x8030A800);
+    func_8003F30C(0x25, &_D_E4F370, &_D_E4F3F0, &_D_E4ED10_2, 0x8030A800);
+    func_8003F30C(0x45, &_D_E84F50, &_D_E84FD0, &_D_E84990_2, 0x8030A800);
+    func_8003F30C(0x45, &_D_E84F50, &_D_E84FD0, &_D_E84990_2, 0x8030A800);
+    func_8003F30C(0x46, &_D_E85730, &_D_E857A0, &_D_E84FD0_2, 0x8030A800);
+    func_8003F30C(0x47, &_D_E84910, &_D_E84990, &_D_E84760_2, 0x8030A800);
+    func_8003F30C(0x47, &_D_E84910, &_D_E84990, &_D_E84760_2, 0x8030A800);
+    func_8003F30C(0x47, &_D_E84910, &_D_E84990, &_D_E84760_2, 0x8030A800);
+    func_8003F30C(0x47, &_D_E84910, &_D_E84990, &_D_E84760_2, 0x8030A800);
+    func_8003F30C(0x47, &_D_E84910, &_D_E84990, &_D_E84760_2, 0x8030A800);
+    func_8003F30C(0x46, &_D_E85730, &_D_E857A0, &_D_E84FD0_2, 0x8030A800);
+    func_8003F30C(0x3F, &_D_E7C7B0, &_D_E7D1E0, &_D_E73110_2, 0x8030A800);
+    func_8003F30C(0x40, &_D_E81660, &_D_E81F50, &_D_E7D1E0_2, 0x8030A800);
+    func_8003F30C(0x2D, &_D_E58010, &_D_E58160, &_D_E56A80_2, 0x8030A800);
+    func_8003F30C(0x35, &_D_E64680, &_D_E64AF0, &_D_E60170_2, 0x8030A800);
+    func_8003F30C(0x3B, &_D_E6F1E0, &_D_E6F5C0, &_D_E6AFE0_2, 0x8030A800);
+    func_8003F30C(0x3C, &_D_E714D0, &_D_E71690, &_D_E6F5C0_2, 0x8030A800);
+    func_8003F30C(0x3D, &_D_E72680, &_D_E72780, &_D_E71690_2, 0x8030A800);
+    func_8003F30C(0x3E, &_D_E73070, &_D_E73110, &_D_E72780_2, 0x8030A800);
+    func_8003F30C(0x42, &_D_E83880, &_D_E83960, &_D_E82C40_2, 0x8030A800);
+    func_8003F30C(0x36, &_D_E66260, &_D_E663F0, &_D_E64AF0_2, 0x8030A800);
+    func_8003F30C(0x3A, &_D_E6ADC0, &_D_E6AFE0, &_D_E68BF0_2, 0x8030A800);
+    func_8003F30C(0x30, &_D_E5A6D0, &_D_E5A8C0, &_D_E588D0_2, 0x8030A800);
+    func_8003F30C(0x43, &_D_E84690, &_D_E84760, &_D_E83960_2, 0x8030A800);
+    func_8003F30C(0x2F, &_D_E58880, &_D_E588D0, &_D_E583F0_2, 0x8030A800);
+    func_8003F30C(0x33, &_D_E5F220, &_D_E5F300, &_D_E5E340_2, 0x8030A800);
+    func_8003F30C(0x31, &_D_E5D240, &_D_E5D4C0, &_D_E5A8C0_2, 0x8030A800);
+    func_8003F30C(0x32, &_D_E5E270, &_D_E5E340, &_D_E5D4C0_2, 0x8030A800);
+    func_8003F30C(0x37, &_D_E677B0, &_D_E678E0, &_D_E663F0_2, 0x8030A800);
+    func_8003F30C(0x41, &_D_E82B30, &_D_E82C40, &_D_E81F50_2, 0x8030A800);
+    func_8003F30C(0x34, &_D_E60080, &_D_E60170, &_D_E5F300_2, 0x8030A800);
+    func_8003F30C(0x39, &_D_E68BA0, &_D_E68BF0, &_D_E68700_2, 0x8030A800);
+    func_8003F30C(0x38, &_D_E68620, &_D_E68700, &_D_E678E0_2, 0x8030A800);
+    func_8003F30C(0x2E, &_D_E583C0, &_D_E583F0, &_D_E58160_2, 0x8030A800);
+    func_8003F30C(0x48, &_D_E87080, &_D_E871A0, &_D_E857A0_2, 0x8030A800);
 }
 */
 
@@ -1295,9 +1295,9 @@ void func_80054550(void) {
 
     func_80042FEC(0, 0, 1);
 
-    func_8004318C(0, 0x79, &dialogueIconsTexture_ROM_START, &dialogueIconsTexture_ROM_END, &dialogueIconsIndex_ROM_START, &dialogueIconsIndex_ROM_END, 0x8023B400, 0x8023CC00, 0x8023CE00, 0x8023D200, 0, 3, 0, 8.0f, -16.0f, 0);
-    func_80043260(0, 0x7A, &dialogueIconsTexture_ROM_START, &dialogueIconsTexture_ROM_END, &dialogueIconsIndex_ROM_START, &dialogueIconsIndex_ROM_END, 0x8023B400, 0x8023CC00, 0x8023CE00, 0x8023D200, 0, 0xA, 0xFE, 0, 40.0f, 0);
-    func_80043334(0, 0x7B, &dialogueIconsTexture_ROM_START, &dialogueIconsTexture_ROM_END, &dialogueIconsIndex_ROM_START, &dialogueIconsIndex_ROM_END, 0x8023B400, 0x8023CC00, 0x8023CE00, 0x8023D200, 0, 0xB, 0xFE, 0, -40.0f, 0);
+    func_8004318C(0, 0x79, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsIndexSegmentRomStart, &_dialogueIconsIndexSegmentRomEnd, 0x8023B400, 0x8023CC00, 0x8023CE00, 0x8023D200, 0, 3, 0, 8.0f, -16.0f, 0);
+    func_80043260(0, 0x7A, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsIndexSegmentRomStart, &_dialogueIconsIndexSegmentRomEnd, 0x8023B400, 0x8023CC00, 0x8023CE00, 0x8023D200, 0, 0xA, 0xFE, 0, 40.0f, 0);
+    func_80043334(0, 0x7B, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsIndexSegmentRomStart, &_dialogueIconsIndexSegmentRomEnd, 0x8023B400, 0x8023CC00, 0x8023CE00, 0x8023D200, 0, 0xB, 0xFE, 0, -40.0f, 0);
    
     func_80043148(0, 2, 0, 8);
 
@@ -1308,80 +1308,80 @@ INCLUDE_ASM(const s32, "initialize", func_80054734);
 // TODO: have to add linker symbols
 /* 
 void func_80054734(void) {
-    func_80043050(0, 0, 0, &D_E871B0, &D_E871C0, 0x8030C800, &D_E871A0, 0x8030CC00);
-    func_80043050(1, 2, 2, &D_E872C0, &D_E87320, 0x8030C800, &D_E871C0_2, 0x8030CC00);
-    func_80043050(0x3D, 6, 6, &D_E92800, &D_E928B0, 0x8030C800, &D_E92640_2, 0x8030CC00);
-    func_80043050(0x3E, 4, 4, &D_E92910, &D_E92950, 0x8030C800, &D_E928B0_2, 0x8030CC00);
-    func_80043050(0x44, 1, 1, &D_E92F90, &D_E92FF0, 0x8030C800, &D_E92EF0_2, 0x8030CC00);
-    func_80043050(9, 0x15, 0x15, &D_E8AE00, &D_E8AF30, 0x8030C800, &D_E8A590_2, 0x8030CC00);
-    func_80043050(8, 0x14, 0x14, &D_E8A460, &D_E8A590, 0x8030C800, &D_E89C00_2, 0x8030CC00);
-    func_80043050(2, 0xB, 0xB, &D_E87BB0, &D_E87CE0, 0x8030C800, &D_E87320_2, 0x8030CC00);
-    func_80043050(0xA, 0x17, 0x17, &D_E8B7A0, &D_E8B8F0, 0x8030C800, &D_E8AF30_2, 0x8030CC00);
-    func_80043050(4, 0xD, 0xD, &D_E88B20, &D_E88C60, 0x8030C800, &D_E88240_2, 0x8030CC00);
-    func_80043050(0x3F, 0x44, 0x44, &D_E92B40, &D_E92B90, 0x8030C800, &D_E92950_2, 0x8030CC00);
-    func_80043050(7, 0x13, 0x13, &D_E89B60, &D_E89C00, 0x8030C800, &D_E896B0_2, 0x8030CC00);
-    func_80043050(0xB, 0x19, 0x19, &D_E8BCE0, &D_E8BD80, 0x8030C800, &D_E8B8F0_2, 0x8030CC00);
-    func_80043050(6, 0x11, 0x11, &D_E89600, &D_E896B0, 0x8030C800, &D_E89120_2, 0x8030CC00);
-    func_80043050(5, 0x10, 0x10, &D_E89070, &D_E89120, 0x8030C800, &D_E88C60_2, 0x8030CC00);
-    func_80043050(3, 0xC, 0xC, &D_E88190, &D_E88240, 0x8030C800, &D_E87CE0_2, 0x8030CC00);
-    func_80043050(0x1F, 0x21, 0x21, &D_E90000, &D_E90080, 0x8030C800, &D_E8FD00_2, 0x8030CC00);
-    func_80043050(0x24, 0x27, 0x27, &D_E91210, &D_E91290, 0x8030C800, &D_E90E40_2, 0x8030CC00);
-    func_80043050(0x14, 0x1B, 0x1B, &D_E8DDF0, &D_E8DE60, 0x8030C800, &D_E8DB00_2, 0x8030CC00);
-    func_80043050(0x13, 0x1A, 0x1A, &D_E8DA90, &D_E8DB00, 0x8030C800, &D_E8D830_2, 0x8030CC00);
-    func_80043050(0xC, 0x28, 0x28, &D_E8C000, &D_E8C070, 0x8030C800, &D_E8BD80_2, 0x8030CC00);
-    func_80043050(0x12, 0x18, 0x18, &D_E8D7B0, &D_E8D830, 0x8030C800, &D_E8D470_2, 0x8030CC00);
-    func_80043050(0xD, 0xE, 0xE, &D_E8C400, &D_E8C480, 0x8030C800, &D_E8C070_2, 0x8030CC00);
-    func_80043050(0xE, 0xF, 0xF, &D_E8C750, &D_E8C7D0, 0x8030C800, &D_E8C480_2, 0x8030CC00);
-    func_80043050(0x26, 0x26, 0x26, &D_E917E0, &D_E91860, 0x8030C800, &D_E91520_2, 0x8030CC00);
-    func_80043050(0xF, 0x12, 0x12, &D_E8CBA0, &D_E8CC40, 0x8030C800, &D_E8C7D0_2, 0x8030CC00);
-    func_80043050(0x11, 0x29, 0x29, &D_E8D3F0, &D_E8D470, 0x8030C800, &D_E8D010_2, 0x8030CC00);
-    func_80043050(0x16, 0x2A, 0x2A, &D_E8E490, &D_E8E520, 0x8030C800, &D_E8E160_2, 0x8030CC00);
-    func_80043050(0x10, 0x16, 0x16, &D_E8CF90, &D_E8D010, 0x8030C800, &D_E8CC40_2, 0x8030CC00);
-    func_80043050(0x21, 0x23, 0x23, &D_E90810, &D_E90890, 0x8030C800, &D_E90460_2, 0x8030CC00);
-    func_80043050(0x25, 0x2B, 0x2B, &D_E914C0, &D_E91520, 0x8030C800, &D_E91290_2, 0x8030CC00);
-    func_80043050(0x18, 0x1D, 0x1D, &D_E8EAC0, &D_E8EB30, 0x8030C800, &D_E8E7F0_2, 0x8030CC00);
-    func_80043050(0x15, 0x2C, 0x2C, &D_E8E0E0, &D_E8E160, 0x8030C800, &D_E8DE60_2, 0x8030CC00);
-    func_80043050(0x17, 0x1C, 0x1C, &D_E8E780, &D_E8E7F0, 0x8030C800, &D_E8E520_2, 0x8030CC00);
-    func_80043050(0x20, 0x22, 0x22, &D_E903D0, &D_E90460, 0x8030C800, &D_E90080_2, 0x8030CC00);
-    func_80043050(0x1C, 0x1F, 0x1F, &D_E8F7A0, &D_E8F810, 0x8030C800, &D_E8F5C0_2, 0x8030CC00);
-    func_80043050(0x1D, 0x1F, 0x1F, &D_E8FA00, &D_E8FA70, 0x8030C800, &D_E8F810_2, 0x8030CC00);
-    func_80043050(0x1E, 0x20, 0x20, &D_E8FC90, &D_E8FD00, 0x8030C800, &D_E8FA70_2, 0x8030CC00);
-    func_80043050(0x19, 0x1E, 0x1E, &D_E8EE50, &D_E8EEC0, 0x8030C800, &D_E8EB30_2, 0x8030CC00);
-    func_80043050(0x1A, 0x1E, 0x1E, &D_E8F1E0, &D_E8F250, 0x8030C800, &D_E8EEC0_2, 0x8030CC00);
-    func_80043050(0x1B, 0x1E, 0x1E, &D_E8F550, &D_E8F5C0, 0x8030C800, &D_E8F250_2, 0x8030CC00);
-    func_80043050(0x22, 0x24, 0x24, &D_E90B00, &D_E90B70, 0x8030C800, &D_E90890_2, 0x8030CC00);
-    func_80043050(0x23, 0x25, 0x25, &D_E90DD0, &D_E90E40, 0x8030C800, &D_E90B70_2, 0x8030CC00);
-    func_80043050(0x40, 0x45, 0x45, &D_E92C50, &D_E92C70, 0x8030C800, &D_E92B90_2, 0x8030CC00);
-    func_80043050(0x41, 0x45, 0x45, &D_E92DB0, &D_E92DE0, 0x8030C800, &D_E92C70_2, 0x8030CC00);
-    func_80043050(0x42, 0x46, 0x46, &D_E92E90, &D_E92EC0, 0x8030C800, &D_E92DE0_2, 0x8030CC00);
-    func_80043050(0x43, 0x47, 0x47, &D_E92EE0, &D_E92EF0, 0x8030C800, &D_E92EC0_2, 0x8030CC00);
-    func_80043050(0x43, 0x47, 0x47, &D_E92EE0, &D_E92EF0, 0x8030C800, &D_E92EC0_2, 0x8030CC00);
-    func_80043050(0x43, 0x47, 0x47, &D_E92EE0, &D_E92EF0, 0x8030C800, &D_E92EC0_2, 0x8030CC00);
-    func_80043050(0x43, 0x47, 0x47, &D_E92EE0, &D_E92EF0, 0x8030C800, &D_E92EC0_2, 0x8030CC00);
-    func_80043050(0x43, 0x47, 0x47, &D_E92EE0, &D_E92EF0, 0x8030C800, &D_E92EC0_2, 0x8030CC00);
-    func_80043050(0x45, 0x46, 0x46, &D_E93060, &D_E93080, 0x8030C800, &D_E92FF0_2, 0x8030CC00);
-    func_80043050(0x35, 0x3F, 0x3F, &D_E92180, &D_E92220, 0x8030C800, &D_E92040_2, 0x8030CC00);
-    func_80043050(0x36, 0x40, 0x40, &D_E922E0, &D_E92370, 0x8030C800, &D_E92220_2, 0x8030CC00);
-    func_80043050(0x27, 0x2D, 0x2D, &D_E918A0, &D_E918D0, 0x8030C800, &D_E91860_2, 0x8030CC00);
-    func_80043050(0x2F, 0x35, 0x35, &D_E91CE0, &D_E91D30, 0x8030C800, &D_E91C20_2, 0x8030CC00);
-    func_80043050(0x38, 0x3B, 0x3B, &D_E924A0, &D_E92520, 0x8030C800, &D_E92390_2, 0x8030CC00);
-    func_80043050(0x39, 0x3C, 0x3C, &D_E92550, &D_E92570, 0x8030C800, &D_E92520_2, 0x8030CC00);
-    func_80043050(0x33, 0x3D, 0x3D, &D_E91FF0, &D_E92010, 0x8030C800, &D_E91FB0_2, 0x8030CC00);
-    func_80043050(0x34, 0x3E, 0x3E, &D_E92030, &D_E92040, 0x8030C800, &D_E92010_2, 0x8030CC00);
-    func_80043050(0x3C, 0x42, 0x42, &D_E92630, &D_E92640, 0x8030C800, &D_E92610_2, 0x8030CC00);
-    func_80043050(0x30, 0x36, 0x36, &D_E91DC0, &D_E91E00, 0x8030C800, &D_E91D30_2, 0x8030CC00);
-    func_80043050(0x32, 0x3A, 0x3A, &D_E91F90, &D_E91FB0, 0x8030C800, &D_E91F60_2, 0x8030CC00);
-    func_80043050(0x29, 0x30, 0x30, &D_E91970, &D_E919A0, 0x8030C800, &D_E91920_2, 0x8030CC00);
-    func_80043050(0x2E, 0x43, 0x43, &D_E91BF0, &D_E91C20, 0x8030C800, &D_E91BA0_2, 0x8030CC00);
-    func_80043050(0x28, 0x2F, 0x2F, &D_E91900, &D_E91920, 0x8030C800, &D_E918D0_2, 0x8030CC00);
-    func_80043050(0x2C, 0x33, 0x33, &D_E91B50, &D_E91B80, 0x8030C800, &D_E91AE0_2, 0x8030CC00);
-    func_80043050(0x2A, 0x31, 0x31, &D_E91A50, &D_E91AB0, 0x8030C800, &D_E919A0_2, 0x8030CC00);
-    func_80043050(0x2B, 0x32, 0x32, &D_E91AD0, &D_E91AE0, 0x8030C800, &D_E91AB0_2, 0x8030CC00);
-    func_80043050(0x31, 0x37, 0x37, &D_E91EF0, &D_E91F60, 0x8030C800, &D_E91E00_2, 0x8030CC00);
-    func_80043050(0x37, 0x41, 0x41, &D_E92380, &D_E92390, 0x8030C800, &D_E92370_2, 0x8030CC00);
-    func_80043050(0x2D, 0x34, 0x34, &D_E91B90, &D_E91BA0, 0x8030C800, &D_E91B80_2, 0x8030CC00);
-    func_80043050(0x3B, 0x38, 0x38, &D_E92600, &D_E92610, 0x8030C800, &D_E925F0_2, 0x8030CC00);
-    func_80043050(0x3A, 0xA, 0xA, &D_E925B0, &D_E925F0, 0x8030C800, &D_E92570_2, 0x8030CC00);
+    func_80043050(0, 0, 0, &_D_E871B0, &_D_E871C0, 0x8030C800, &_D_E871A0, 0x8030CC00);
+    func_80043050(1, 2, 2, &_D_E872C0, &_D_E87320, 0x8030C800, &_D_E871C0_2, 0x8030CC00);
+    func_80043050(0x3D, 6, 6, &_D_E92800, &_D_E928B0, 0x8030C800, &_D_E92640_2, 0x8030CC00);
+    func_80043050(0x3E, 4, 4, &_D_E92910, &_D_E92950, 0x8030C800, &_D_E928B0_2, 0x8030CC00);
+    func_80043050(0x44, 1, 1, &_D_E92F90, &_D_E92FF0, 0x8030C800, &_D_E92EF0_2, 0x8030CC00);
+    func_80043050(9, 0x15, 0x15, &_D_E8AE00, &_D_E8AF30, 0x8030C800, &_D_E8A590_2, 0x8030CC00);
+    func_80043050(8, 0x14, 0x14, &_D_E8A460, &_D_E8A590, 0x8030C800, &_D_E89C00_2, 0x8030CC00);
+    func_80043050(2, 0xB, 0xB, &_D_E87BB0, &_D_E87CE0, 0x8030C800, &_D_E87320_2, 0x8030CC00);
+    func_80043050(0xA, 0x17, 0x17, &_D_E8B7A0, &_D_E8B8F0, 0x8030C800, &_D_E8AF30_2, 0x8030CC00);
+    func_80043050(4, 0xD, 0xD, &_D_E88B20, &_D_E88C60, 0x8030C800, &_D_E88240_2, 0x8030CC00);
+    func_80043050(0x3F, 0x44, 0x44, &_D_E92B40, &_D_E92B90, 0x8030C800, &_D_E92950_2, 0x8030CC00);
+    func_80043050(7, 0x13, 0x13, &_D_E89B60, &_D_E89C00, 0x8030C800, &_D_E896B0_2, 0x8030CC00);
+    func_80043050(0xB, 0x19, 0x19, &_D_E8BCE0, &_D_E8BD80, 0x8030C800, &_D_E8B8F0_2, 0x8030CC00);
+    func_80043050(6, 0x11, 0x11, &_D_E89600, &_D_E896B0, 0x8030C800, &_D_E89120_2, 0x8030CC00);
+    func_80043050(5, 0x10, 0x10, &_D_E89070, &_D_E89120, 0x8030C800, &_D_E88C60_2, 0x8030CC00);
+    func_80043050(3, 0xC, 0xC, &_D_E88190, &_D_E88240, 0x8030C800, &_D_E87CE0_2, 0x8030CC00);
+    func_80043050(0x1F, 0x21, 0x21, &_D_E90000, &_D_E90080, 0x8030C800, &_D_E8FD00_2, 0x8030CC00);
+    func_80043050(0x24, 0x27, 0x27, &_D_E91210, &_D_E91290, 0x8030C800, &_D_E90E40_2, 0x8030CC00);
+    func_80043050(0x14, 0x1B, 0x1B, &_D_E8DDF0, &_D_E8DE60, 0x8030C800, &_D_E8DB00_2, 0x8030CC00);
+    func_80043050(0x13, 0x1A, 0x1A, &_D_E8DA90, &_D_E8DB00, 0x8030C800, &_D_E8D830_2, 0x8030CC00);
+    func_80043050(0xC, 0x28, 0x28, &_D_E8C000, &_D_E8C070, 0x8030C800, &_D_E8BD80_2, 0x8030CC00);
+    func_80043050(0x12, 0x18, 0x18, &_D_E8D7B0, &_D_E8D830, 0x8030C800, &_D_E8D470_2, 0x8030CC00);
+    func_80043050(0xD, 0xE, 0xE, &_D_E8C400, &_D_E8C480, 0x8030C800, &_D_E8C070_2, 0x8030CC00);
+    func_80043050(0xE, 0xF, 0xF, &_D_E8C750, &_D_E8C7D0, 0x8030C800, &_D_E8C480_2, 0x8030CC00);
+    func_80043050(0x26, 0x26, 0x26, &_D_E917E0, &_D_E91860, 0x8030C800, &_D_E91520_2, 0x8030CC00);
+    func_80043050(0xF, 0x12, 0x12, &_D_E8CBA0, &_D_E8CC40, 0x8030C800, &_D_E8C7D0_2, 0x8030CC00);
+    func_80043050(0x11, 0x29, 0x29, &_D_E8D3F0, &_D_E8D470, 0x8030C800, &_D_E8D010_2, 0x8030CC00);
+    func_80043050(0x16, 0x2A, 0x2A, &_D_E8E490, &_D_E8E520, 0x8030C800, &_D_E8E160_2, 0x8030CC00);
+    func_80043050(0x10, 0x16, 0x16, &_D_E8CF90, &_D_E8D010, 0x8030C800, &_D_E8CC40_2, 0x8030CC00);
+    func_80043050(0x21, 0x23, 0x23, &_D_E90810, &_D_E90890, 0x8030C800, &_D_E90460_2, 0x8030CC00);
+    func_80043050(0x25, 0x2B, 0x2B, &_D_E914C0, &_D_E91520, 0x8030C800, &_D_E91290_2, 0x8030CC00);
+    func_80043050(0x18, 0x1D, 0x1D, &_D_E8EAC0, &_D_E8EB30, 0x8030C800, &_D_E8E7F0_2, 0x8030CC00);
+    func_80043050(0x15, 0x2C, 0x2C, &_D_E8E0E0, &_D_E8E160, 0x8030C800, &_D_E8DE60_2, 0x8030CC00);
+    func_80043050(0x17, 0x1C, 0x1C, &_D_E8E780, &_D_E8E7F0, 0x8030C800, &_D_E8E520_2, 0x8030CC00);
+    func_80043050(0x20, 0x22, 0x22, &_D_E903D0, &_D_E90460, 0x8030C800, &_D_E90080_2, 0x8030CC00);
+    func_80043050(0x1C, 0x1F, 0x1F, &_D_E8F7A0, &_D_E8F810, 0x8030C800, &_D_E8F5C0_2, 0x8030CC00);
+    func_80043050(0x1D, 0x1F, 0x1F, &_D_E8FA00, &_D_E8FA70, 0x8030C800, &_D_E8F810_2, 0x8030CC00);
+    func_80043050(0x1E, 0x20, 0x20, &_D_E8FC90, &_D_E8FD00, 0x8030C800, &_D_E8FA70_2, 0x8030CC00);
+    func_80043050(0x19, 0x1E, 0x1E, &_D_E8EE50, &_D_E8EEC0, 0x8030C800, &_D_E8EB30_2, 0x8030CC00);
+    func_80043050(0x1A, 0x1E, 0x1E, &_D_E8F1E0, &_D_E8F250, 0x8030C800, &_D_E8EEC0_2, 0x8030CC00);
+    func_80043050(0x1B, 0x1E, 0x1E, &_D_E8F550, &_D_E8F5C0, 0x8030C800, &_D_E8F250_2, 0x8030CC00);
+    func_80043050(0x22, 0x24, 0x24, &_D_E90B00, &_D_E90B70, 0x8030C800, &_D_E90890_2, 0x8030CC00);
+    func_80043050(0x23, 0x25, 0x25, &_D_E90DD0, &_D_E90E40, 0x8030C800, &_D_E90B70_2, 0x8030CC00);
+    func_80043050(0x40, 0x45, 0x45, &_D_E92C50, &_D_E92C70, 0x8030C800, &_D_E92B90_2, 0x8030CC00);
+    func_80043050(0x41, 0x45, 0x45, &_D_E92DB0, &_D_E92DE0, 0x8030C800, &_D_E92C70_2, 0x8030CC00);
+    func_80043050(0x42, 0x46, 0x46, &_D_E92E90, &_D_E92EC0, 0x8030C800, &_D_E92DE0_2, 0x8030CC00);
+    func_80043050(0x43, 0x47, 0x47, &_D_E92EE0, &_D_E92EF0, 0x8030C800, &_D_E92EC0_2, 0x8030CC00);
+    func_80043050(0x43, 0x47, 0x47, &_D_E92EE0, &_D_E92EF0, 0x8030C800, &_D_E92EC0_2, 0x8030CC00);
+    func_80043050(0x43, 0x47, 0x47, &_D_E92EE0, &_D_E92EF0, 0x8030C800, &_D_E92EC0_2, 0x8030CC00);
+    func_80043050(0x43, 0x47, 0x47, &_D_E92EE0, &_D_E92EF0, 0x8030C800, &_D_E92EC0_2, 0x8030CC00);
+    func_80043050(0x43, 0x47, 0x47, &_D_E92EE0, &_D_E92EF0, 0x8030C800, &_D_E92EC0_2, 0x8030CC00);
+    func_80043050(0x45, 0x46, 0x46, &_D_E93060, &_D_E93080, 0x8030C800, &_D_E92FF0_2, 0x8030CC00);
+    func_80043050(0x35, 0x3F, 0x3F, &_D_E92180, &_D_E92220, 0x8030C800, &_D_E92040_2, 0x8030CC00);
+    func_80043050(0x36, 0x40, 0x40, &_D_E922E0, &_D_E92370, 0x8030C800, &_D_E92220_2, 0x8030CC00);
+    func_80043050(0x27, 0x2D, 0x2D, &_D_E918A0, &_D_E918D0, 0x8030C800, &_D_E91860_2, 0x8030CC00);
+    func_80043050(0x2F, 0x35, 0x35, &_D_E91CE0, &_D_E91D30, 0x8030C800, &_D_E91C20_2, 0x8030CC00);
+    func_80043050(0x38, 0x3B, 0x3B, &_D_E924A0, &_D_E92520, 0x8030C800, &_D_E92390_2, 0x8030CC00);
+    func_80043050(0x39, 0x3C, 0x3C, &_D_E92550, &_D_E92570, 0x8030C800, &_D_E92520_2, 0x8030CC00);
+    func_80043050(0x33, 0x3D, 0x3D, &_D_E91FF0, &_D_E92010, 0x8030C800, &_D_E91FB0_2, 0x8030CC00);
+    func_80043050(0x34, 0x3E, 0x3E, &_D_E92030, &_D_E92040, 0x8030C800, &_D_E92010_2, 0x8030CC00);
+    func_80043050(0x3C, 0x42, 0x42, &_D_E92630, &_D_E92640, 0x8030C800, &_D_E92610_2, 0x8030CC00);
+    func_80043050(0x30, 0x36, 0x36, &_D_E91DC0, &_D_E91E00, 0x8030C800, &_D_E91D30_2, 0x8030CC00);
+    func_80043050(0x32, 0x3A, 0x3A, &_D_E91F90, &_D_E91FB0, 0x8030C800, &_D_E91F60_2, 0x8030CC00);
+    func_80043050(0x29, 0x30, 0x30, &_D_E91970, &_D_E919A0, 0x8030C800, &_D_E91920_2, 0x8030CC00);
+    func_80043050(0x2E, 0x43, 0x43, &_D_E91BF0, &_D_E91C20, 0x8030C800, &_D_E91BA0_2, 0x8030CC00);
+    func_80043050(0x28, 0x2F, 0x2F, &_D_E91900, &_D_E91920, 0x8030C800, &_D_E918D0_2, 0x8030CC00);
+    func_80043050(0x2C, 0x33, 0x33, &_D_E91B50, &_D_E91B80, 0x8030C800, &_D_E91AE0_2, 0x8030CC00);
+    func_80043050(0x2A, 0x31, 0x31, &_D_E91A50, &_D_E91AB0, 0x8030C800, &_D_E919A0_2, 0x8030CC00);
+    func_80043050(0x2B, 0x32, 0x32, &_D_E91AD0, &_D_E91AE0, 0x8030C800, &_D_E91AB0_2, 0x8030CC00);
+    func_80043050(0x31, 0x37, 0x37, &_D_E91EF0, &_D_E91F60, 0x8030C800, &_D_E91E00_2, 0x8030CC00);
+    func_80043050(0x37, 0x41, 0x41, &_D_E92380, &_D_E92390, 0x8030C800, &_D_E92370_2, 0x8030CC00);
+    func_80043050(0x2D, 0x34, 0x34, &_D_E91B90, &_D_E91BA0, 0x8030C800, &_D_E91B80_2, 0x8030CC00);
+    func_80043050(0x3B, 0x38, 0x38, &_D_E92600, &_D_E92610, 0x8030C800, &_D_E925F0_2, 0x8030CC00);
+    func_80043050(0x3A, 0xA, 0xA, &_D_E925B0, &_D_E925F0, 0x8030C800, &_D_E92570_2, 0x8030CC00);
 }
 */
 

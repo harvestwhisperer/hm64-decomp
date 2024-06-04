@@ -181,11 +181,11 @@ extern void func_80045CB0();
 extern DialogueBox dialogueBoxes[MAX_DIALOGUE_BOXES];
 extern DialogueInfo D_80183200[MAX_DIALOGUE_BANKS];
 
-extern u32 fontTexture_ROM_START;
-extern u32 fontTexture_ROM_END;
-extern u32 fontPalette1_ROM_START;
-extern u32 fontPalette1_ROM_END;
-extern u32 fontPalette2_ROM_START;
-extern u32 fontPalette2_ROM_END;
+extern u32 _fontTextureSegmentRomStart;
+extern u32 _fontTextureSegmentRomEnd;
+extern u32 _fontPalette1SegmentRomStart;
+extern u32 _fontPalette1SegmentRomEnd;
+extern u32 _fontPalette2SegmentRomStart;
+extern u32 _fontPalette2SegmentRomEnd;
 
 #endif
