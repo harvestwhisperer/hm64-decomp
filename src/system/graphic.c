@@ -70,9 +70,6 @@ extern f32 sinf(f32);
 
 //INCLUDE_RODATA(const s32, "system/graphic", D_8011EC40);
 
-// unused 
-static const u32 D_8011EC40[8] = { 0x10000000, 0x20000000, 0x00004000, 0x00000040, 0x00001188, 0x020712D0, 0x00000250, 0x021F12D0 };
-
 INCLUDE_RODATA(const s32, "system/graphic", D_8011EC60);
 
 //static const char D_8011EC60 = "EX";

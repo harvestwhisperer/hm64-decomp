@@ -19,6 +19,7 @@ options:
   asm_emit_size_directive: true
   symbol_addrs_path: symbol_addrs.txt
   generated_c_preamble: "#include \"common.h\"\n"
+  segment_symbols_style: makerom
   migrate_rodata_to_functions: true
   libultra_symbols: True
   gfx_ucode: f3dex2
@@ -334,9 +335,9 @@ segments:
       - [ 0xEBBC0, hasm, lib/gcc/udivid3]
       - [ 0xEBBE0, hasm, lib/gcc/umoddi3]
       # end of functions/text
-      - [ 0xEBC20, bin, lib/os/libultra/rspbootTextStart]
-      - [ 0xEBCF0, bin, lib/os/libultra/n_aspMainTextStart]
-      - [ 0xEBE10, data] # unused?
+      - [ 0xEBC20, bin, ucode/rspboot_text]
+      - [ 0xEBCF0, bin, ucode/n_aspMain_text]
+      - [ 0xEC950, bin, ucode/gspF3DEX2.fifo_text]
       - [ 0xECAB0, data, lib/os/libultra/audio/sl]
       - [ 0xECAC0, data] # unused?
       - [ 0xEDD00, data, viewport]
@@ -410,10 +411,11 @@ segments:
       - [ 0xF9870, .rodata, lib/os/libultra/rmon/rmoncmd] 
       - [ 0xF9950, .rodata, lib/os/libultra/rmon/rmonmain]
       - [ 0xF9960, rodata] # _litob
-      - [ 0xF9990, .rodata, lib/nusys-1/nuaumgr] # n_aspMainDataStart
-      - [ 0xF9C40, rodata] # referenced by nu gfx ucode
+      # should be bin
+      - [ 0xF9990, rodata, lib/ucode/n_aspMain_data]
+      - [ 0xF9C40, rodata, lib/ucode/gspF3DEX2.fifo_data]
       # game rodata
-      - [ 0xFA040, .rodata, system/graphic]
+      - [ 0xFA060, .rodata, system/graphic]
       - [ 0xFA0C0, .rodata, system/sprite] 
       - [ 0xFA168, .rodata, system/map]
       - [ 0xFA1E0, .rodata, system/mapContext]
@@ -470,35 +472,36 @@ segments:
 
   - name: cutsceneMaps
     type: bin
+    dir: cutscenes
     start: 0xFF5C0
     follows_vram: main
     files:
-      - [0xFF5C0, bin, cutsceneMap1]
-      - [0x100180, bin, cutsceneMap2]
-      - [0x109920, bin, cutsceneMap3]
-      - [0x10EA80, bin, cutsceneMap4]
-      - [0x10F980, bin, cutsceneMap5]
-      - [0x115310, bin, cutsceneMap6]
-      - [0x1175F0, bin, cutsceneMap7]
-      - [0x118D70, bin, cutsceneMap8]
-      - [0x120910, bin, cutsceneMap9]
-      - [0x123CE0, bin, cutsceneMap10]
-      - [0x125200, bin, cutsceneMap11]
-      - [0x129760, bin, cutsceneMap12]
-      - [0x12FE90, bin, cutsceneMap13]
-      - [0x134510, bin, cutsceneMap14]
-      - [0x135F40, bin, cutsceneMap15]
-      - [0x136930, bin, cutsceneMap16]
-      - [0x1385E0, bin, cutsceneMap17]
-      - [0x139840, bin, cutsceneMap18]
-      - [0x13AFC0, bin, cutsceneMap19]
-      - [0x13D470, bin, cutsceneMap20]
-      - [0x13FAC0, bin, cutsceneMap21]
-      - [0x1485B0, bin, cutsceneMap22]
-      - [0x149CC0, bin, cutsceneMap23]
-      - [0x14B8F0, bin, cutsceneMap24]
-      - [0x150120, bin, cutsceneMap25]
-      - [0x1510B0, bin, cutsceneMap26]
+      - [0xFF5C0, bin, "cutscenes/cutsceneMap1"]
+      - [0x100180, bin, "cutscenes/cutsceneMap2"]
+      - [0x109920, bin, "cutscenes/cutsceneMap3"]
+      - [0x10EA80, bin, "cutscenes/cutsceneMap4"]
+      - [0x10F980, bin, "cutscenes/cutsceneMap5"]
+      - [0x115310, bin, "cutscenes/cutsceneMap6"]
+      - [0x1175F0, bin, "cutscenes/cutsceneMap7"]
+      - [0x118D70, bin, "cutscenes/cutsceneMap8"]
+      - [0x120910, bin, "cutscenes/cutsceneMap9"]
+      - [0x123CE0, bin, "cutscenes/cutsceneMap10"]
+      - [0x125200, bin, "cutscenes/cutsceneMap11"]
+      - [0x129760, bin, "cutscenes/cutsceneMap12"]
+      - [0x12FE90, bin, "cutscenes/cutsceneMap13"]
+      - [0x134510, bin, "cutscenes/cutsceneMap14"]
+      - [0x135F40, bin, "cutscenes/cutsceneMap15"]
+      - [0x136930, bin, "cutscenes/cutsceneMap16"]
+      - [0x1385E0, bin, "cutscenes/cutsceneMap17"]
+      - [0x139840, bin, "cutscenes/cutsceneMap18"]
+      - [0x13AFC0, bin, "cutscenes/cutsceneMap19"]
+      - [0x13D470, bin, "cutscenes/cutsceneMap20"]
+      - [0x13FAC0, bin, "cutscenes/cutsceneMap21"]
+      - [0x1485B0, bin, "cutscenes/cutsceneMap22"]
+      - [0x149CC0, bin, "cutscenes/cutsceneMap23"]
+      - [0x14B8F0, bin, "cutscenes/cutsceneMap24"]
+      - [0x150120, bin, "cutscenes/cutsceneMap25"]
+      - [0x1510B0, bin, "cutscenes/cutsceneMap26"]
 
   # ci8 spritesheet format:
   #   sprite1:
@@ -534,56 +537,46 @@ segments:
   #     etc.
   - name: playerTexture
     type: bin
+    dir: sprites/player
     start: 0x159330
     vram: 0x80180290
-    # using custom extract script instead
-    # subsegments: 
-    #   - [ 0x159330, bin, header]
-    #   - [ 0x159338, ci8, player-1, 32, 46]
-    #   - [ 0x1598F8, bin] 
-    #   - [ 0x159900, bin, "sprites/player/2", 40, 64]
-    #   - [ 0x15A300, bin, "sprites/player/3"]
-    #   - [ 0x15A308, ci8, player-texture3, 48, 60]
-    #   - [ 0x15AE48, bin] # more textures
-    #   - [ 0x2C5F10, bin] # palette index
-    #   - [ 0x2C5FC0, bin, paletteHeader]
-    #   - [ 0x2C5FC4, palette, player-1]
-    #   - [ 0x2C61C4, bin] # = 0xFFFF (end of asset flag)
-    #   - [ 0x2C63D0, bin]
-    #   - [ 0x2C63D4, bin]
-    #   - [ 0x2C65D8, bin]
-    #   - [ 0x2D0280, bin, spriteToPaletteTable]
 
   - name: playerAssetsIndex
     type: bin
+    dir: sprites/player
     start: 0x2D0660
     vram: 0x802F75C0
-    subsegments:
-
+    
   - name: playerSpritesheetIndex
     type: bin
+    dir: sprites/player
     start: 0x2D0680
 
   # split up individual assets
   - name: npcSprites
     type: bin
+    dir: sprites/npc
     start: 0x2D15E0
 
   - name: dogTitleTexture
     type: bin
+    dir: sprites/title
     start: 0x60EC20
 
   - name: dogTitleAssetsIndex
     type: bin
+    dir: sprites/title
     start: 0x630EC0
 
   - name: dogTitleSpritesheetIndex
     type: bin
+    dir: sprites/title
     start: 0x630EE0
 
 # TODO: finish separating out sprites
   - name: miscSprites
     type: bin
+    dir: sprites/misc
     start: 0x631400
   
   # map format: 
@@ -625,372 +618,464 @@ segments:
   #   padding/end, 8 bytes
   - name: ranchSpringMap
     type: bin
+    dir: maps/ranch
     start: 0x800530
 
   - name: ranchSummerMap
     type: bin
+    dir: maps/ranch
     start: 0x80D9D0
 
   - name: ranchFallMap
     type: bin
+    dir: maps/ranch
     start: 0x81AE30
 
   - name: ranchWinterMap
     type: bin
+    dir: maps/ranch
     start: 0x828FC0
 
   - name: annsRoomMap
     type: bin
+    dir: maps/ranch
     start: 0x836420
 
   - name: ranchBarnMap
     type: bin
+    dir: maps/ranch
     start: 0x83DC90
 
   - name: ranchStoreMap
     type: bin
+    dir: maps/ranch
     start: 0x849700
 
   - name: ranchHouseMap
     type: bin
+    dir: maps/ranch
     start: 0x84F100
 
   - name: emptyMap1
     type: bin
+    dir: maps/unknown
     start: 0x856B80
 
   - name: beachSpringMap
     type: bin
+    dir: maps/beach
     start: 0x856B90
   
   - name: beachSummerMap
     type: bin
+    dir: maps/beach
     start: 0x85EE70
 
   - name: beachFallMap
     type: bin
+    dir: maps/beach
     start: 0x867150
 
   - name: beachWinterMap
     type: bin
+    dir: maps/beach
     start: 0x86F430
 
   - name: raceTrackSpringMap
     type: bin
+    dir: maps/race-track
     start: 0x877710
 
   # empty
   - name: raceTrackSummerMap
     type: bin
+    dir: maps/race-track
     start: 0x87F510
 
   - name: raceTrackFallMap
     type: bin
+    dir: maps/race-track
     start: 0x87F520
 
   - name: raceTrackWinterMap
     type: bin
+    dir: maps/race-track
     start: 0x887320
 
   - name: mountain1SpringMap
     type: bin
+    dir: maps/mountain/mountain-1
     start: 0x88F120
 
   - name: mountain1SummerMap
     type: bin
+    dir: maps/mountain/mountain-1
     start: 0x8A6C20
 
   - name: mountain1FallMap
     type: bin
+    dir: maps/mountain/mountain-1
     start: 0x8BE720
 
   - name: mountain1WinterMap
     type: bin
+    dir: maps/mountain/mountain-1
     start: 0x8D6220
 
   - name: mountain2SpringMap
     type: bin
+    dir: maps/mountain/mountain-2
     start: 0x8ED8E0
 
   - name: mountain2SummerMap
     type: bin
+    dir: maps/mountain/mountain-2
     start: 0x905980
 
   - name: mountain2FallMap
     type: bin
+    dir: maps/mountain/mountain-2
     start: 0x91D8A0
 
   - name: mountain2WinterMap
     type: bin
+    dir: maps/mountain/mountain-2
     start: 0x9357C0
 
   - name: topOfMountain1SpringMap
     type: bin
+    dir: maps/mountain/top-of-mountain-1
     start: 0x94D6E0
 
   - name: topOfMountain1SummerMap
     type: bin
+    dir: maps/mountain/top-of-mountain-1
     start: 0x961BD0
 
   - name: topOfMountain1FallMap
     type: bin
+    dir: maps/mountain/top-of-mountain-1
     start: 0x975E50
 
   - name: topOfMountain1WinterMap
     type: bin
+    dir: maps/mountain/top-of-mountain-1
     start: 0x98A0D0
 
   - name: moonMountainSpringMap
     type: bin
+    dir: maps/mountain/moon-mountain
     start: 0x99F9C0
 
   - name: moonMountainSummerMap
     type: bin
+    dir: maps/mountain/moon-mountain
     start: 0x9B4530
 
   - name: moonMountainFallMap
     type: bin
+    dir: maps/mountain/moon-mountain
     start: 0x9C90A0
 
   - name: moonMountainWinterMap
     type: bin
+    dir: maps/mountain/moon-mountain
     start: 0x9DDC10
 
   - name: carpentersHutMap
     type: bin
+    dir: maps/carpenter-hut
     start: 0x9F2780
 
   - name: dumplingHouseMap
     type: bin
+    dir: maps/dumpling-house
     start: 0x9FAA80
 
   - name: springSpringMap
     type: bin
+    dir: maps/spring
     start: 0xA04C80
 
   - name: springSummerMap
     type: bin
+    dir: maps/spring
     start: 0xA0CEC0
 
   - name: springFallMap
     type: bin
+    dir: maps/spring
     start: 0xA14F10
 
   - name: springWinterMap
     type: bin
+    dir: maps/spring
     start: 0xA1CF60
 
   - name: ellisRoomMap
     type: bin
+    dir: maps/bakery
     start: 0xA24FB0
 
   - name: bakeryMap
     type: bin
+    dir: maps/bakery
     start: 0xA2C350
 
   - name: village1SpringMap
     type: bin
+    dir: maps/village/village-1
     start: 0xA33460
 
   - name: village1SummerMap
     type: bin
+    dir: maps/village/village-1
     start: 0xA4C640
 
   - name: village1FallMap
     type: bin
+    dir: maps/village/village-1
     start: 0xA65820
 
   - name: village1WinterMap
     type: bin
+    dir: maps/village/village-1
     start: 0xA7F2B0
 
   - name: village2SpringMap
     type: bin
+    dir: maps/village/village-2
     start: 0xA98210
 
   - name: village2SummerMap
     type: bin
+    dir: maps/village/village-2
     start: 0xAAC2C0
 
   - name: village2FallMap
     type: bin
+    dir: maps/village/village-2
     start: 0xAC0370
 
   - name: village2WinterMap
     type: bin
+    dir: maps/village/village-2
     start: 0xAD4420
 
   - name: popurisRoomMap
     type: bin
+    dir: maps/flower-shop
     start: 0xAE84D0
 
   - name: flowerShopMap
     type: bin
+    dir: maps/flower-shop
     start: 0xAEF920
 
   - name: churchMap
     type: bin
+    dir: maps/church
     start: 0xAF4F00
 
   - name: souvenirShopMap
     type: bin
+    dir: maps/souvenir-shop
     start: 0xAFAAC0 
 
   - name: squareSpringMap
     type: bin
+    dir: maps/square
     start: 0xAFF110
 
   - name: squareSummerMap
     type: bin
+    dir: maps/square
     start: 0xB0E3C0
 
   - name: squareFallMap
     type: bin
+    dir: maps/square
     start: 0xB1D460
 
   - name: squareWinterMap
     type: bin
+    dir: maps/square
     start: 0xB2C500
 
   - name: ricksShopMap
     type: bin
+    dir: maps/rick-shop
     start: 0xB38990
 
   - name: midwifesHouseMap
     type: bin
+    dir: maps/midwife
     start: 0xB3CE10
 
   - name: tavernMap
     type: bin
+    dir: maps/tavern
     start: 0xB41CC0
 
   - name: libraryMap
     type: bin
+    dir: maps/library
     start: 0xB4A9C0
 
   - name: mariasRoomMap
     type: bin
+    dir: maps/mayors-house
     start: 0xB4E440
 
   - name: mayorsHouseMap
     type: bin
+    dir: maps/mayors-house
     start: 0xB543D0
 
   - name: potionShopBackroomMap
     type: bin
+    dir: maps/potion-shop
     start: 0xB5B0B0
 
   - name: potionShopMap
     type: bin
+    dir: maps/potion-shop
     start: 0xB60990
 
   # referenced in func_80074C50
   - name: emptyMap2
     type: bin
+    dir: maps/unknown
     start: 0xB64E30
 
   - name: spriteCaveMap
     type: bin
+    dir: maps/cave
     start: 0xB64E40
 
   - name: caveMap
     type: bin
+    dir: maps/cave
     start: 0xB6AAC0
 
   - name: emptyMineMap
     type: bin
+    dir: maps/mine
     start: 0xB6E700
 
   - name: mineMap
     type: bin
+    dir: maps/mine
     start: 0xB6E710
 
   - name: karensRoomMap
     type: bin
+    dir: maps/vineyard
     start: 0xB6FB70
 
   - name: vineyardSpringMap
     type: bin
+    dir: maps/vineyard
     start: 0xB7AFB0
 
   - name: vineyardSummerMap
     type: bin
+    dir: maps/vineyard
     start: 0xB8B840
 
   - name: vineyardFallMap
     type: bin
+    dir: maps/vineyard
     start: 0xB9C0D0
 
   - name: vineyardWinterMap
     type: bin
+    dir: maps/vineyard
     start: 0xBAC960
 
   - name: vineyardHouseMap
     type: bin
+    dir: maps/vineyard
     start: 0xBBCD10
 
   - name: vineyardCellar1Map
     type: bin
+    dir: maps/vineyard
     start: 0xBC5710
 
   - name: vineyardCellar2Map
     type: bin
+    dir: maps/vineyard
     start: 0xBC9C30
 
   - name: roadSpringMap
     type: bin
+    dir: maps/road
     start: 0xBD1C80
 
   - name: roadSummerMap
     type: bin
+    dir: maps/road
     start: 0xBDBD50
 
   - name: roadFallMap
     type: bin
+    dir: maps/road
     start: 0xBE5E20
 
   - name: roadWinterMap
     type: bin
+    dir: maps/road
     start: 0xBEFEF0
 
   - name: farmSpringMap
     type: bin
+    dir: maps/farm
     start: 0xBF9FC0
 
   - name: farmSummerMap
     type: bin
+    dir: maps/farm
     start: 0xC13C40
 
   - name: farmFallMap
     type: bin
+    dir: maps/farm
     start: 0xC2D8C0
 
   - name: farmWinterMap
     type: bin
+    dir: maps/farm
     start: 0xC47540
 
   - name: greenhouseMap
     type: bin
+    dir: maps/greenhouse
     start: 0xC609F0
 
   - name: houseMap
     type: bin
+    dir: maps/house
     start: 0xC64D60
 
   - name: barnMap
     type: bin
+    dir: maps/farm
     start: 0xC72FB0
 
   - name: coopMap
     type: bin
+    dir: maps/farm
     start: 0xC7DE40
 
   - name: kitchenMap
     type: bin
+    dir: maps/house
     start: 0xC840E0
 
   - name: bathroomMap
     type: bin
+    dir: maps/house
     start: 0xC8D5C0
 
   # ci4 format
@@ -1008,129 +1093,160 @@ segments:
   #   sprite to palette map
   - name: objectSprites
     type: bin
+    dir: sprites/objects
     start: 0xC951A0
 
   - name: checkerboardBackgroundTexture
     type: bin
+    dir: sprites/background
     start: 0xCC6D40
 
   - name: checkerboardBackgroundIndex
     type: bin
+    dir: sprites/background
     start: 0xCC9330
 
   - name: emptyTexture
     type: bin
+    dir: sprites/background
     start: 0xCC9350
 
   - name: emptyTextureIndex
     type: bin
+    dir: sprites/background
     start: 0xCC9370
 
   - name: landscapeBackgroundTexture
     type: bin
+    dir: sprites/background
     start: 0xCC9390
 
   - name: landscapeBackgroundIndex
     type: bin
+    dir: sprites/background
     start: 0xCCB980
 
   # backgrounds
   - name: miscTextures
     type: bin
+    dir: sprites/background
     start: 0xCCB9A0
 
   - name: dialogueWindowTexture
     type: bin
+    dir: sprites/dialogue-box
     start: 0xD1B500
 
   - name: dialogueWindowIndex
     type: bin
+    dir: sprites/dialogue-box
     start: 0xD1DDE0
 
   - name: namingScreenTexture
     type: bin
+    dir: sprites/naming-screen
     start: 0xD1DE00
 
   - name: namingScreenIndex
     type: bin
+    dir: sprites/naming-screen
     start: 0xD2D600
 
   # estimate/evaluation screen
   - name: miscTexture2
     type: bin
+    dir: sprites/misc
     start: 0xD2D620
 
   - name: dialogueIconsTexture
     type: bin
+    dir: sprites/dialogue-icons
     start: 0xD47F00
 
   - name: dialogueIconsIndex
     type: bin
+    dir: sprites/dialogue-icons
     start: 0xD49B80
 
   # TODO: finish separating textures
   - name: miscTextures2
     type: bin
+    dir: sprites/misc
     start: 0xD49BA0
 
   - name: tvContentTexture
     type: bin
+    dir: sprites/tv
     start: 0xD49BA0
 
   - name: tvContentAssetsIndex
     type: bin
+    dir: sprites/tv
     start: 0xD4D9F0
 
   - name: tvContentSpritesheetIndex
     type: bin
+    dir: sprites/tv
     start: 0xD4DA10
 
   - name: miscTextures3
     type: bin
+    dir: sprites/misc
     start: 0xD4DAB0
 
   - name: holdableItemsTexture
     type: bin
+    dir: sprites/objects
     start: 0xD52670
 
   - name: holdableItemsAssetsIndex
     type: bin
+    dir: sprites/objects
     start: 0xD82FD0
 
   - name: holdableItemsSpritesheetIndex
     type: bin
+    dir: sprites/objects
     start: 0xD82FF0
 
   - name: miscTextures4
     type: bin
+    dir: sprites/misc
     start: 0xD835A0
 
   - name: homeItemsTexture
     type: bin
+    dir: sprites/objects
     start: 0xD86D90
 
   - name: homeItemsAssetsIndex
     type: bin
+    dir: sprites/objects
     start: 0xD8B140
 
   - name: homeItemsSpritesheetIndex
     type: bin
+    dir: sprites/objects
     start: 0xD8B160
 
   - name: groundObjectsTexture
     type: bin
+    dir: sprites/objects
     start: 0xD8B1D0
 
   - name: groundObjectsIndex
     type: bin
+    dir: sprites/objects
     start: 0xD92950
 
   - name: rainTexture
     type: bin
+    dir: sprites/weather
     start: 0xD92970
 
   - name: rainIndex
     type: bin
+    dir: sprites/weather
     start: 0xD92D50
 
   # ci4 (same as ci8 layout)
@@ -1140,23 +1256,28 @@ segments:
   #     texture
   - name: characterDialogueIconsTexture
     type: bin
+    dir: sprites/dialogue-icons
     start: 0xD92D70
 
   - name: characterdialogueIconsAssetsIndex
     type: bin
+    dir: sprites/dialogue-icons
     start: 0xDB9EA0
 
   - name: characterDialogueIconsSpritesheetIndex
     type: bin
+    dir: sprites/dialogue-icons
     start: 0xDB9EC0
 
   # ci4
   - name: titleSpritesTexture
     type: bin
+    dir: sprites/title
     start: 0xDBA100
 
   - name: titleSpritesIndex
     type: bin
+    dir: sprites/title
     start: 0xDD38F0
 
   - name: miscTextures6
@@ -1166,39 +1287,48 @@ segments:
   # 16x11200, i2
   - name: fontTexture
     type: bin
+    dir: sprites/font
     start: 0xE08870
 
   - name: fontPalette1
     type: bin
+    dir: sprites/font
     start: 0xE13770
 
   - name: fontPalette2
     type: bin
+    dir: sprites/font
     start: 0xE137A0
 
   - name: fontPalette3
     type: bin
+    dir: sprites/font
     start: 0xE137D0
 
   - name: dialogues
     type: bin
+    dir: dialogue
     start: 0xE13800
     
   # related to dialogues/conversations
   - name: unknown
     type: bin
+    dir: dialogue
     start: 0xE871C0
     
   - name: ptr_table
     type: bin
+    dir: audio
     start: 0xE93080
 
   - name: wbk
+    dir: audio
     type: bin
     start: 0xE99910
 
   - name: sequences
     type: bin
+    dir: audio/midi
     start: 0xFD8510
     subsegments:
     - [0xFD8510, bin, "audio/midi/01.seq"]

@@ -1561,8 +1561,8 @@ bool func_80085D48(int index, u16 arg1) {
         // FIXME: 
         // check if girl and load heart icon
         if ((index < 5) && (index >= (result = 0))) {
-            func_8003F910(0, 0x78, &dialogueIconsTexture_ROM_START, &dialogueIconsTexture_ROM_END, &dialogueIconsIndex_ROM_START, &dialogueIconsIndex_ROM_END, (void*)DIALOGUE_ICONS_TEXTURES_VADDR, (void*)0x8023CC00, (void*)0x8023CE00, (void*)0x8023D200, 0, (npcAffection[index] / 52) + 5, 0xFE, 106.0f, -15.0f, 0);
-            func_8003F910(1, 0x78, &dialogueIconsTexture_ROM_START, &dialogueIconsTexture_ROM_END, &dialogueIconsIndex_ROM_START, &dialogueIconsIndex_ROM_END, (void*)DIALOGUE_ICONS_TEXTURES_VADDR, (void*)0x8023CC00, (void*)0x8023CE00, (void*)0x8023D200, 0, (npcAffection[index] / 52) + 5, 0xFE, 106.0f, -15.0f, 0);
+            func_8003F910(0, 0x78, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsIndexSegmentRomStart, &_dialogueIconsIndexSegmentRomEnd, (void*)DIALOGUE_ICONS_TEXTURES_VADDR, (void*)0x8023CC00, (void*)0x8023CE00, (void*)0x8023D200, 0, (npcAffection[index] / 52) + 5, 0xFE, 106.0f, -15.0f, 0);
+            func_8003F910(1, 0x78, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsIndexSegmentRomStart, &_dialogueIconsIndexSegmentRomEnd, (void*)DIALOGUE_ICONS_TEXTURES_VADDR, (void*)0x8023CC00, (void*)0x8023CE00, (void*)0x8023D200, 0, (npcAffection[index] / 52) + 5, 0xFE, 106.0f, -15.0f, 0);
         }
         // get dialogue index
 

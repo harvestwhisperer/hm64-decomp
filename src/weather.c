@@ -11,10 +11,10 @@ extern u8 gWeather;
 // data
 extern u8 D_80118B50[5][4];
 
-extern u32 rainTexture_ROM_START;
-extern u32 rainTexture_ROM_END;
-extern u32 rainIndex_ROM_START;
-extern u32 rainIndex_ROM_END;
+extern u32 _rainTextureSegmentRomStart;
+extern u32 _rainTextureSegmentRomEnd;
+extern u32 _rainIndexSegmentRomStart;
+extern u32 _rainIndexSegmentRomEnd;
 
 //INCLUDE_ASM(const s32, "weather", func_800DC360);
 
@@ -32,7 +32,7 @@ void func_800DC360(void) {
 
         for (i = 0; i < 10; i++) {
         
-            func_8002B138(i+0x6B, &rainTexture_ROM_START, &rainTexture_ROM_END, &rainIndex_ROM_START, &rainIndex_ROM_END, 0, 0, (void*)RAIN_TEXTURE_VADDR, NULL, 0x802A5DC0, 0x802A5EC0, 0x802A5FC0, 0, 0, 1);
+            func_8002B138(i+0x6B, &_rainTextureSegmentRomStart, &_rainTextureSegmentRomEnd, &_rainIndexSegmentRomStart, &_rainIndexSegmentRomEnd, 0, 0, (void*)RAIN_TEXTURE_VADDR, NULL, 0x802A5DC0, 0x802A5EC0, 0x802A5FC0, 0, 0, 1);
             func_8002BD90(i+0x6B, 1.0f, 1.0f, 1.0f);
             func_8002C7EC(i+0x6B, 4);
             func_8002C914(i+0x6B, 0xFF, 0xFF, 0xFF, 0xFF);

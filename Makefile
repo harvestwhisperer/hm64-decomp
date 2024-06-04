@@ -7,13 +7,11 @@ VERBOSE := 0
 PERMUTER ?= 0
 
 SRC_DIRS := src
-ASM_DIRS := asm asm/lib asm/data asm/nonmatchings $(wildcard asm/nonmatchings/**) $(wildcard asm/lib/**)
 BIN_DIRS := bin
 
 BUILD_DIR := build
 TOOLS_DIR := tools
 
-S_FILES = $(foreach dir, $(ASM_DIRS), $(wildcard $(dir)/*.s))
 C_FILES = $(foreach dir, $(SRC_DIRS), $(wildcard $(dir)/*.c))
 BIN_FILES=$(foreach dir, $(BIN_DIRS), $(wildcard $(dir)/*.bin))
 
@@ -99,8 +97,6 @@ extract:
 
 build:
 	@mkdir $@
-
-# $(LD_SCRIPT): split
 
 # need to pass -B <dir> to gcc to prevent it from fetching system default cc1
 $(BUILD_DIR)/src/%.c.o: src/%.c

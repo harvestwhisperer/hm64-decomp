@@ -3,22 +3,22 @@
 
 #include "common.h"
 
-extern u32 dialogueIconsTexture_ROM_START;
-extern u32 dialogueIconsTexture_ROM_END;
-extern u32 dialogueIconsIndex_ROM_START;
-extern u32 dialogueIconsIndex_ROM_END;
+extern u32 _dialogueIconsTextureSegmentRomStart;
+extern u32 _dialogueIconsTextureSegmentRomEnd;
+extern u32 _dialogueIconsIndexSegmentRomStart;
+extern u32 _dialogueIconsIndexSegmentRomEnd;
 
-extern u32 characterDialogueIconsTexture_ROM_START;
-extern u32 characterDialogueIconsTexture_ROM_END;
-extern u32 characterdialogueIconsAssetsIndex_ROM_START;
-extern u32 characterdialogueIconsAssetsIndex_ROM_END;
-extern u32 characterDialogueIconsSpritesheetIndex_ROM_START;
-extern u32 characterDialogueIconsSpritesheetIndex_ROM_END;
+extern u32 _characterDialogueIconsTextureSegmentRomStart;
+extern u32 _characterDialogueIconsTextureSegmentRomEnd;
+extern u32 _characterdialogueIconsAssetsIndexSegmentRomStart;
+extern u32 _characterdialogueIconsAssetsIndexSegmentRomEnd;
+extern u32 _characterDialogueIconsSpritesheetIndexSegmentRomStart;
+extern u32 _characterDialogueIconsSpritesheetIndexSegmentRomEnd;
 
-extern u32 dialogueWindowTexture_ROM_START;
-extern u32 dialogueWindowTexture_ROM_END;
-extern u32 dialogueWindowIndex_ROM_START;
-extern u32 dialogueWindowIndex_ROM_END;
+extern u32 _dialogueWindowTextureSegmentRomStart;
+extern u32 _dialogueWindowTextureSegmentRomEnd;
+extern u32 _dialogueWindowIndexSegmentRomStart;
+extern u32 _dialogueWindowIndexSegmentRomEnd;
 
 // 0x80205760
 typedef struct {
