@@ -792,7 +792,7 @@ acquireKeyItem = 0x80065DCC;
 removeKeyItem = 0x80065E24;
 checkHaveTool = 0x80065E80;
 checkHaveKeyItem = 0x80065F10;
-setPlayerAction = 0x800661FC; 
+setPlayerAction = 0x800661FC;
 checkFatigueLevel = 0x800679EC;
 setEntrance = 0x8006E820;
 setLevelGraphicsData = 0x8006E9B8;
@@ -910,7 +910,7 @@ waveTableAddresses = 0x801162F0;
 songRomAddresses = 0x801162FC;
 sfxRomAddresses = 0x801164FC;
 audioTypeTable = 0x801168FC;
-volumesTable = 0x80116A7C; 
+volumesTable = 0x80116A7C;
 
 itemFlags = 0x80118380;
 weatherLightingAdjustments = 0x80118B50;
@@ -956,7 +956,7 @@ controllers = 0x8013D440;
 gSongVolume = 0x8013D5E4;
 
 nuAuHeap = 0x8013D5C8;
-mainMap = 0x8013DC40; // size 0x1A628
+mainMap = 0x8013DC40;	// size 0x1A628
 
 gDayOfMonth = 0x80158260;
 
@@ -982,7 +982,7 @@ shadowSpritesInfo = 0x8016FFF8;
 previousWorldRotationAngles = 0x8013D5D8;
 initGfxList = 0x80170068;
 karenPregnancyCounter = 0x8017026F;
-elliJeffNewlywedCounter= 0x8017027E;
+elliJeffNewlywedCounter = 0x8017027E;
 gMinutes = 0x8017027F;
 gFarmAnimals = 0x80170280;
 gCurrentSeasonName = 0x80170445;
@@ -1017,7 +1017,7 @@ mainLoopCallbacksTable = 0x80188F70;
 
 albumBits = 0x80189058;
 
-gPlayer = 0x80189060; 
+gPlayer = 0x80189060;
 gBabyAge = 0x80189134;
 popuriGrayPregnancyCounter = 0x801891C4;
 gBabyName = 0x8018981E;
@@ -1051,7 +1051,7 @@ gVoteForFlowerFestivalGoddess = 0x801C3F7E;
 babyBirthdayDate = 0x801C3F84;
 gTotalGoldenMilkShipped = 0x801C3F88;
 
-npcAffection = 0x801C3F90; // size:0x30
+npcAffection = 0x801C3F90;	// size:0x30
 
 contPattern = 0x801D6ED0;
 
@@ -1125,7 +1125,7 @@ gHouseExtensionSelection = 0x8021E6D1;
 gFarmName = 0x8021E6D2;
 gElliGrievingCounter = 0x80215EC0;
 
-gEntranceIndex = 0x802231C0; 
+gEntranceIndex = 0x802231C0;
 nusched = 0x80222B40;
 
 dailyShippingBinValue = 0x80237388;
