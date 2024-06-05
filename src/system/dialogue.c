@@ -30,7 +30,7 @@ void func_80042F60(void) {
 
     for (i = 0; i < 1; i++) {
         D_801C3E40[i].struct5.unk_C = 0;
-        D_801C3E40[i].struct5.unk_E = 0;
+        D_801C3E40[i].struct5.conversationIndex = 0;
         D_801C3E40[i].struct5.unk_10 = 0;
         D_801C3E40[i].struct5.unk_0 = 0xFF;
         D_801C3E40[i].struct5.unk_4 = 0xFF;
@@ -262,7 +262,7 @@ inline int func_80043408(int initial, int value, int max) {
 
 //INCLUDE_ASM(const s32, "system/dialogue", func_80043430);
 
-bool func_80043430(u16 index, u16 arg1, u16 arg2, u16 arg3) {
+bool func_80043430(u16 index, u16 conversationIndex, u16 arg2, u16 arg3) {
 
     bool result = 0;
     u32 temp;
@@ -342,16 +342,16 @@ bool func_80043430(u16 index, u16 arg1, u16 arg2, u16 arg3) {
         func_8002C7EC(D_801C3E40[index].struct4.unk_30, 3);
         
         D_801C3E40[index].struct1.unk_12 = 0xFF;
-        D_801C3E40[index].struct5.unk_E = arg1;
+        D_801C3E40[index].struct5.conversationIndex = conversationIndex;
         D_801C3E40[index].struct5.unk_C = arg2;
 
-        nuPiReadRom(D_80205760[arg1].romStart, D_80205760[arg1].vaddr, D_80205760[arg1].romEnd - D_80205760[arg1].romStart);
+        nuPiReadRom(D_80205760[conversationIndex].romStart, D_80205760[conversationIndex].vaddr, D_80205760[conversationIndex].romEnd - D_80205760[conversationIndex].romStart);
 
         temp = func_80043C98(0, D_801C3E40[index].struct5.unk_C);
 
-        nuPiReadRom(temp, D_80205760[D_801C3E40[index].struct5.unk_E].vaddrIndex, func_80043C98(0, D_801C3E40[index].struct5.unk_C + 1) - temp);
+        nuPiReadRom(temp, D_80205760[D_801C3E40[index].struct5.conversationIndex].vaddrIndex, func_80043C98(0, D_801C3E40[index].struct5.unk_C + 1) - temp);
 
-        D_801C3E40[index].unk_D4 = D_80205760[D_801C3E40[index].struct5.unk_E].vaddrIndex;
+        D_801C3E40[index].unk_D4 = D_80205760[D_801C3E40[index].struct5.conversationIndex].vaddrIndex;
         
         D_801C3E40[index].struct5.unk_16 = 0;
         D_801C3E40[index].struct5.unk_17 = 0;
@@ -467,9 +467,9 @@ u32 func_80043C98(u16 arg0, u16 arg1) {
 
     u32 ptr;
 
-    ptr = D_80205760[D_801C3E40[arg0].struct5.unk_E].romIndex;
+    ptr = D_80205760[D_801C3E40[arg0].struct5.conversationIndex].romIndex;
     
-    return ptr + D_80205760[D_801C3E40[arg0].struct5.unk_E].vaddr[arg1];
+    return ptr + D_80205760[D_801C3E40[arg0].struct5.conversationIndex].vaddr[arg1];
     
 }
 

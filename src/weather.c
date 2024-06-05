@@ -6,10 +6,17 @@
 #include "system/sprite.h"
 
 // likely bss
-extern u8 gWeather;
+u8 gWeather;
 
 // data
-extern u8 D_80118B50[5][4];
+// lighting adjustments
+u8 weatherLightingAdjustments[5][4] = { 
+    { 0xFF, 0xFF, 0xFF, 0xFF }, // sunny
+    { 0xB0, 0xB0, 0xC0, 0xB0 }, // rain
+    { 0xFF, 0xFF, 0xFF, 0xFF }, // rain alternate
+    { 0xB0, 0xB0, 0xC0, 0xB0 }, // snow
+    { 0xFF, 0xFF, 0xFF, 0xFF } // typhoon
+};
 
 extern u32 _rainTextureSegmentRomStart;
 extern u32 _rainTextureSegmentRomEnd;
@@ -88,10 +95,10 @@ Vec4f setWeatherLighting(u8 weather) {
 
     Vec4f vec;
     
-    vec.r = D_80118B50[weather - 1][0];
-    vec.g = D_80118B50[weather - 1][1];
-    vec.b = D_80118B50[weather - 1][2];
-    vec.a = D_80118B50[weather - 1][3];
+    vec.r = weatherLightingAdjustments[weather - 1][0];
+    vec.g = weatherLightingAdjustments[weather - 1][1];
+    vec.b = weatherLightingAdjustments[weather - 1][2];
+    vec.a = weatherLightingAdjustments[weather - 1][3];
         
     return vec;
 }

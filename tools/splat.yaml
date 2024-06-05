@@ -23,6 +23,7 @@ options:
   migrate_rodata_to_functions: true
   libultra_symbols: True
   gfx_ucode: f3dex2
+  # ld_symbol_header_path: include/ld_symbols.h
   # disassemble_all: true
   # extensions_path: tools/splat_ext
   
@@ -96,7 +97,6 @@ segments:
       - [ 0xB7760, c, weather]
       - [ 0xB7B50, c, shop]
       - [ 0xB97C0, c, title]
-      # might not be separate file
       - [ 0xBC780, c, loadGameScreen]
       - [ 0xC8CA0, c, namingScreen]
       # start of libraries
@@ -335,30 +335,28 @@ segments:
       - [ 0xEBBC0, hasm, lib/gcc/udivid3]
       - [ 0xEBBE0, hasm, lib/gcc/umoddi3]
       # end of functions/text
-      - [ 0xEBC20, bin, ucode/rspboot_text]
+      - [ 0xEBC20, bin, ucode/rspboot]
       - [ 0xEBCF0, bin, ucode/n_aspMain_text]
       - [ 0xEC950, bin, ucode/gspF3DEX2.fifo_text]
-      - [ 0xECAB0, data, lib/os/libultra/audio/sl]
-      - [ 0xECAC0, data] # unused?
-      - [ 0xEDD00, data, viewport]
-      - [ 0xEDD10, data, viewportInitDL]
+      - [ 0xECAB0, data, unknownData]
+      - [ 0xECAC0, data, unknownData2] # unused?
+      - [ 0xEDD00, data, system/staticGfx]
       - [ 0xEE110, data, system/map]
       - [ 0xEE7B0, data, system/pauseScreen]
-      - [ 0xEE7D0, data, system/cutscene] # cutscene function pointer table
-      - [ 0xEE980, data, setCutscene]
-      - [ 0xEEB60, data, gameStatus]
-      - [ 0xEED40, data, mapObjects]
+      - [ 0xEE7D0, .data, system/cutscene] # cutscene function pointer table
+      - [ 0xEE980, data, fieldTileMaps]
       - [ 0xEEF20, data, game]
       - [ 0xEF050, data, player] # default starting coordinates
       - [ 0xEF680, data, level]
       - [ 0xEFD00, data, npc]
       - [ 0xEFDC0, data, animals]
       - [ 0xEFEF0, data, setCutscenes]
+      - [ 0xF0250, data, cutsceneFieldTileMaps]
       - [ 0xF16F0, data, gameAudio] # wave table
       - [ 0xF2080, data, overlayScreens]
       - [ 0xF2580, data, itemHandlers]
       - [ 0xF3B00, data] # mapObjects
-      - [ 0xF3F50, data, weather]
+      - [ 0xF3F50, .data, weather]
       - [ 0xF3F70, data, shop]
       - [ 0xF4B40, data, loadGameScreen] # packinsoft farm string
       - [ 0xF4B50, data, initialize]
@@ -455,14 +453,15 @@ segments:
       - [ 0xFEFD8, rodata, lib/os/libultra/gu/sinf]
       - [ 0xFF030, rodata] # setintmask and exceptasm
       - [ 0xFF0B0, .rodata, lib/os/libultra/assert]
-      - [ 0xFF0D0, rodata, lib/unknown]
+      - [ 0xFF0D0, rodata, lib/os/libultra/audio/unknown_drvrnew] # maybe false positive symbol detection?
       - [ 0xFF110, rodata] # lib/os/libultra/audio/env  
       - [ 0xFF200, .rodata, lib/os/libultra/audio/reverb]
       - [ 0xFF250, .rodata, lib/os/libultra/audio/synthesizer]
       - [ 0xFF270, .rodata, lib/os/libultra/io/aisetfreq] # lib/os/libultra/io/aisetfreq
       - [ 0xFF280, .rodata, lib/os/libultra/io/viswapcontext]
       - [ 0xFF290, rodata] # lib/os/libultra/exceptasm
-      - [ 0xFF300, rodata] # used by sin and cos; identified as __libm_qnan_f
+      - [ 0xFF300, hasm, lib/os/libultra/gu/libm_vals]
+      - [ 0xFF300, .rodata, lib/os/libultra/gu/libm_vals]
       - [ 0xFF310, rodata, lib/os/libultra/libnaudio/n_resample]
       - [ 0xFF340, rodata, lib/os/libultra/printf] 
       - [ 0xFF4B8, .rodata, lib/os/libultra/io/devmgr]

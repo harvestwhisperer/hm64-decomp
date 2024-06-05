@@ -115,6 +115,11 @@ $(BUILD_DIR)/src/lib/libkmc/%.c.o : src/lib/libkmc/%.c build
 	$(dir_guard)
 	$(V)export COMPILER_PATH=$(KMC_PATH) && $(CC) -B $(KMC_PATH) $(LIBKMC_OPTFLAGS) $(CFLAGS) $(CPPFLAGS) -c -o $@ $< 
 
+# for hasm OS functions
+$(BUILD_DIR)/asm/lib/os/libultra/gu/%.s.o : src/lib/os/libultra/gu/%.s build
+	$(dir_guard)
+	$(V)$(AS) $(ASFLAGS) -o $@ $<
+
 $(BUILD_DIR)/%.s.o : %.s build
 	$(dir_guard)
 	$(V)$(AS) $(ASFLAGS) -o $@ $<

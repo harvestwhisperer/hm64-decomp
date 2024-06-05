@@ -653,6 +653,7 @@ nuContPakCodeSet = 0x800FCBF0;
 nuContPakFileReadWrite = 0x800FCC40;
 nuContPakFileNum = 0x800FCF30;
 
+vp = 0x80112900;
 nugfx_ucode = 0x80112910;
 FrameBuf = 0x80112918;
 
@@ -912,6 +913,7 @@ audioTypeTable = 0x801168FC;
 volumesTable = 0x80116A7C; 
 
 itemFlags = 0x80118380;
+weatherLightingAdjustments = 0x80118B50;
 
 sfxList = 0x8011C340;
 musPriorityList = 0x8011C4E0;

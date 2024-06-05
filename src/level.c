@@ -26,7 +26,7 @@ extern u8 previousEntranceIndex;
 extern u8 gEntranceIndex;
 extern u8 gBaseMapIndex;
 extern u8 gMapWithSeasonIndex;
-// rotation
+// global rotation
 extern u8 D_8021E6D0;
  
 extern u32 _homeItemsTextureSegmentRomStart;
@@ -41,13 +41,18 @@ extern u32 _groundObjectsTextureSegmentRomEnd;
 extern u32 _groundObjectsIndexSegmentRomStart;
 extern u32 _groundObjectsIndexSegmentRomEnd;
 
-// rodata
+// data
 extern u8 levelFlags[];
-// map indices for level interactions
-extern u8 D_80114280[];
-// Vec4 u8s
-extern u8 D_801142E0[4][4];
+
+// rotations for map model context struct
+// all 7
+extern u8 D_80114280[95];
+
+// global lighting defaults based on map index
+extern u8 D_801142E0[95][4];
+
 // song indices for level
+// indices are incorrect; should be [numMaps][4]
 extern u8 D_801144C0[4][8];
 
 // exit to map indices
@@ -196,18 +201,19 @@ void setLevelAudio(u16 mapIndex, u8 season, u8 hour) {
 
 //INCLUDE_ASM(const s32, "level", func_8006EB94);
 
-Vec4f* func_8006EB94(Vec4f* arg0, u16 arg1) {
+// param1 = globalLighting
+Vec4f* func_8006EB94(Vec4f* rgba, u16 mapIndex) {
 
     Vec4f vec;
 
-    vec.r = D_801142E0[arg1][0];
-    vec.g = D_801142E0[arg1][1];
-    vec.b = D_801142E0[arg1][2];
-    vec.a = D_801142E0[arg1][3];
+    vec.r = D_801142E0[mapIndex][0];
+    vec.g = D_801142E0[mapIndex][1];
+    vec.b = D_801142E0[mapIndex][2];
+    vec.a = D_801142E0[mapIndex][3];
 
-    *arg0 = vec;
+    *rgba = vec;
     
-    return arg0;
+    return rgba;
     
 }
 

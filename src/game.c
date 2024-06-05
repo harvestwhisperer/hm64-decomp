@@ -120,18 +120,25 @@ extern u8 D_80189054;
 extern u32 D_801890E0;
 
 // data
-extern u8 D_80113B20[];
-extern u8 D_80113B38[];
-extern u8 D_80113B50[];
-extern u8 D_80113B68[];
-extern u8 D_80113B80[];
-extern u8 D_80113B98[];
-extern u8 D_80113BB0[];
-extern u8 D_80113BC8[];
-extern u8 D_80113BE0[];
-extern u8 D_80113BF8[];
-extern u8 D_80113C10[];
-extern u8 D_80113C28[];
+// lighting values based on hour
+// sunny, weather type 4, typhoon
+extern u8 D_80113B20[24]; // r
+extern u8 D_80113B38[24]; // g
+extern u8 D_80113B50[24]; // b
+extern u8 D_80113B68[24]; // a
+
+// rain
+extern u8 D_80113B80[24]; // r
+extern u8 D_80113B98[24]; // g
+extern u8 D_80113BB0[24]; // b
+extern u8 D_80113BC8[24]; // a
+
+// snow
+extern u8 D_80113BE0[24]; // r
+extern u8 D_80113BF8[24]; // g
+extern u8 D_80113C10[24]; // b
+extern u8 D_80113C28[24]; // a
+
 
 // rodata
 extern u8 houseConstructionDays[6];

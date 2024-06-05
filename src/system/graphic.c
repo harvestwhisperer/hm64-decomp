@@ -112,13 +112,17 @@ void graphicsInit(void) {
 //INCLUDE_ASM(const s32, "system/graphic", drawFrame);
 
 void drawFrame(void) {
+
     gfxTaskNo = 0;
+
     startGfxTask();
     // set world and view matrices
     func_80026CEC();
     // draw
     func_80026BE0();
+
     gDisplayContextIndex ^= 1;
+
 }
 
 //INCLUDE_ASM(const s32, "system/graphic", startGfxTask);
@@ -164,6 +168,7 @@ volatile u8 func_80026BE0(void) {
     nuGfxTaskStart(D_80205000[gDisplayContextIndex], (s32)(dl - D_80205000[gDisplayContextIndex]) * sizeof(Gfx), NU_GFX_UCODE_F3DEX2, NU_SC_SWAPBUFFER);
     
     gfxTaskNo += 1;
+
     return gfxTaskNo;
 }
 
@@ -190,6 +195,7 @@ volatile u8 func_80026CEC(s32 arg0, s32 arg1) {
     nuGfxTaskStart(D_801836A0[gDisplayContextIndex], (s32)(dl - D_801836A0[gDisplayContextIndex]) * sizeof(Gfx), NU_GFX_UCODE_F3DEX2, NU_SC_NOSWAPBUFFER);
     
     gfxTaskNo += 1;
+    
     return gfxTaskNo;
 }
 

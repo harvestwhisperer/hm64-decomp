@@ -46,8 +46,10 @@ extern u32 D_80189838;
 
 // data
 extern Vec3f playerDefaultStartingCoordinates[];
+// = { -352.0f, 0.0f, -16.0f }
+
 // data
-extern u8 playerDefaultStartingDirections[];
+extern u8 playerDefaultStartingDirections[73];
 
 // rodata
 extern s8 D_8011F3F0[12];
