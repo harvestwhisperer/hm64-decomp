@@ -22,3 +22,4 @@ undefined_syms_auto.txt
 undefined_funcs_auto.txt
 Zone.Identifier
 !/src/lib/os/libultra/gu/*.s
+/.vs
