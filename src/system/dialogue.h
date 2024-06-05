@@ -76,7 +76,7 @@ typedef struct {
 	u32 unk_4;
 	u32 unk_8;
 	u16 unk_C;
-	u16 unk_E; // 0xF26 // index into conversation
+	u16 conversationIndex; // 0xF26 // index into conversation
 	u16 unk_10; // 0xF28, message struct index
 	u16 unk_12;
 	u16 unk_14;
