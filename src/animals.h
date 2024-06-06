@@ -5,6 +5,7 @@
 #include "system/sprite.h"
 
 #define MAX_CHICKENS 12
+#define MAX_CHICKEN_EGGS 7
 #define MAX_FARM_ANIMALS 8
 
 #define CHICK 1
@@ -174,7 +175,7 @@ extern void setAnimalLocations(u8);
 extern void setDogLocation(u8);        
 extern void setHorseLocation(u8);     
 
-extern ChickenEgg gChickenEggs[];
+extern ChickenEgg gChickenEggs[MAX_CHICKEN_EGGS];
 extern Chicken gChickens[MAX_CHICKENS];
 extern FarmAnimal gFarmAnimals[MAX_FARM_ANIMALS];
 extern u8 D_8016FBCC[1];

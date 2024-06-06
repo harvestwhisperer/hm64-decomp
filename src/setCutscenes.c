@@ -61,7 +61,13 @@ extern u8 D_8016FE6F;
 // bakery points
 extern u8 bakeryCardPoints;
 extern u8 D_801C4216;
+// chicken feed count
 extern u16 D_80237410;
+
+// evaluation fish caught score
+extern u16 D_801D62C4;
+// evaluation: animals
+extern u8 D_801D62C6;
  
 // data 
 extern Addresses cutsceneMapAddresses[];

@@ -12,6 +12,7 @@
 #include "player.h"
 
 // bss
+// struct
 extern u16 D_8023740A;
 
 // rodata
@@ -27,6 +28,7 @@ extern u16 D_8011BA10[];
 
 //INCLUDE_ASM(const s32, "shop", func_800DC750);
 
+// FIXME: use struct
 void func_800DC750(u8 arg0) {
     
     D_8023740C[1] = D_801195B8[arg0];
@@ -36,6 +38,7 @@ void func_800DC750(u8 arg0) {
     D_8023740C[3] = 0;
     
     setMainLoopCallbackFunctionIndex(SHOP_DIALOGUE);
+
 }
 
 //INCLUDE_ASM(const s32, "shop", func_800DC7BC);
@@ -49,6 +52,7 @@ void func_800DC7BC(u8 index) {
     func_8002C914(D_801194A0[index] + 0x62, 0xFF, 0xFF, 0xFF, 0xFF);
 
     func_80034C40(MAIN_MAP_INDEX, D_801194A0[index], D_801194A0[index] + 0x62, func_80030BA0(&D_8011BA10, func_800D5A88(D_80118FD0[index])), D_80119040[index].x, D_80119040[index].y, D_80119040[index].z, 0xFF, 0xFF, 0, 0);
+
 }
 
 //INCLUDE_ASM(const s32, "shop", func_800DC9C0);
@@ -77,6 +81,7 @@ void func_800DC9FC(u8 arg0) {
     }
 
     setPlayerAction(0xB, 0xD);
+    
 }
 
 //INCLUDE_ASM(const s32, "shop", func_800DCAA0);
