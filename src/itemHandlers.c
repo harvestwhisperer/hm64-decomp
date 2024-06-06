@@ -849,19 +849,33 @@ void func_800D4D68(void) {
     }
 }
 
-INCLUDE_RODATA(const s32, "itemHandlers", D_80122340);
+//INCLUDE_RODATA(const s32, "itemHandlers", D_80122340);
 
-INCLUDE_RODATA(const s32, "itemHandlers", D_80122344);
+const u8 D_80122340[4] = { 0x02, 0x08, 0x06, 0x00 };
 
-INCLUDE_RODATA(const s32, "itemHandlers", D_80122348);
+//INCLUDE_RODATA(const s32, "itemHandlers", D_80122344);
 
-INCLUDE_RODATA(const s32, "itemHandlers", D_8012234C);
+const u8 D_80122344[4] = { 0x06, 0x08, 0x02, 0x00 };
 
-INCLUDE_RODATA(const s32, "itemHandlers", D_80122350);
+//INCLUDE_RODATA(const s32, "itemHandlers", D_80122348);
 
-INCLUDE_RODATA(const s32, "itemHandlers", D_8012235C);
+const u8 D_80122348[4] = { 0x03, 0x08, 0x05, 0x00 };
 
-INCLUDE_RODATA(const s32, "itemHandlers", D_80122368);
+//INCLUDE_RODATA(const s32, "itemHandlers", D_8012234C);
+
+const u8 D_8012234C[4] = { 0x05, 0x08, 0x03, 0x00 };
+
+//INCLUDE_RODATA(const s32, "itemHandlers", D_80122350);
+
+const u8 D_80122350[12] = { 0x08, 0x00, 0x07, 0x06, 0x05, 0x04, 0x03, 0x02, 0x01, 0x00, 0x00, 0x00 };
+
+//INCLUDE_RODATA(const s32, "itemHandlers", D_8012235C);
+
+const u8 D_8012235C[12] = { 0x08, 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x00, 0x00, 0x00 };
+
+//INCLUDE_RODATA(const s32, "itemHandlers", D_80122368);
+
+const u8 D_80122368[12] = { 0x03, 0x04, 0x05, 0x02, 0x08, 0x06, 0x01, 0x00, 0x07, 0x00, 0x00, 0x00 };
 
 //INCLUDE_RODATA(const s32, "itemHandlers", D_80122374);
 
