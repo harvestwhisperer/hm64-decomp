@@ -522,6 +522,8 @@ xldtob_rodata_0060 = 0x80124150;
 rmonbrk_rodata_0000 = 0x80124160;
 lookat_rodata_0008 = 0x801276F4;
 lookat_rodata_0018 = 0x80127714;
+auCmdList_ptr = 0x80128730; // size:0x8
+auTask = 0x80128738; // size:0xB0
 PiMesgQ = 0x801337F0;
 PiMesgBuf = 0x80133808;
 sptask_bss_0000 = 0x80135AA0;
@@ -607,8 +609,8 @@ rmonRdbReadBuf = 0x801FADC0;
 __osContLastCmd = 0x801FB5CC;
 __osEepromTimerMsg = 0x801FB688;
 __osRdb_IP6_CurSend = 0x801FB9C8;
-dev_global_struct = 0x801FBBA5;
-rdb_slave_data_0018 = 0x801FBBA6;
+// dev_global_struct = 0x801FBBA5;
+// rdb_slave_data_0018 = 0x801FBBA6;
 __osTimerCounter = 0x801FD614;
 __osProfileListEnd = 0x8020520C;
 __osProfTimerQ = 0x80205218;
@@ -619,10 +621,10 @@ __osEventStateTab = 0x80215E00;
 __osRdb_IP6_Data = 0x8021E6D8;
 __osEepromTimerQ = 0x802231C8;
 __rmonRcpAtBreak = 0x802373AA;
-__rmonMQ = 0x802373B0;
+__rmonMQ = 0x802373B0; // size:0x18
 __osRdb_IP6_Ct = 0x802373EC;
 __osSiAccessQueue = 0x80237440;
-__osProfFlushMQ = 0x80237A08;
+nuContDataMutexQ = 0x80237A08;
 
 nuGfxCfbNum = 0x8011CC40;
 nuGfxSwapCfbFunc = 0x8011CC44;
@@ -659,6 +661,8 @@ FrameBuf = 0x80112918;
 
 playerDefaultStartingCoordinates = 0x80113C50;
 playerDefaultStartingDirections = 0x801141A8;
+
+D_801142E0 = 0x801142E0; // size:0x380
 
 gWifeName = 0x801C3F51;
 
@@ -737,7 +741,7 @@ setSfxFrequency = 0x8003D7C0;
 setSfxPan = 0x8003D8A0;
 stopSfx = 0x8003D948;
 
-initializeDialogueVariable = 0x800430DC;
+setGameVariable = 0x800430DC;
 initializeCutsceneMaps = 0x80046860;
 
 mainLoopCutsceneHandler = 0x80046D78;
@@ -750,7 +754,7 @@ startGame = 0x8004DFAC;
 initializeGameVariables = 0x8004E210;
 registerMainLoopCallbacks = 0x8004F3D0;
 
-initializeDialogueVariables = 0x80055768;
+setGameVariables = 0x80055768;
 mainGameLoopCallback = 0x80055E20;
 startNewDay = 0x80059428;
 setSpecialDialogues = 0x8005A708;
@@ -901,7 +905,7 @@ __MusIntMain = 0x800F5C00;
 rand = 0x80110410;
 __muldi3 = 0x80110454;
 
-cutsceneCallbacksTable = 0x801133D0;
+cutsceneCallbacksTable = 0x801133D0; // size:0x62
 
 levelFlags = 0x80114460;
 cutsceneMapAddresses = 0x80114AF0;
@@ -932,7 +936,7 @@ houseConstructionDays = 0x8011F240;
 lifeEventHouseConstructionBits = 0x8011F248;
 animalLocationsHouseConstruction = 0x8011F254;
 
-titleScreenContext = 0x80126570;
+titleScreenContext = 0x80126570; // size:0x10
 
 nuScStack = 0x8012A430;
 nuScAudioStack = 0x8012C430;
@@ -948,29 +952,29 @@ sRandNext = 0x8013CDF0;
 sRand = 0x80110444;
 
 specialDialogueBitsPointer = 0x8013CE00;
-gameVariables = 0x8013CE08;
+gameVariables = 0x8013CE08; // size:0x3C0
 
-lifeEventBits = 0x8013D1C8;
-controllers = 0x8013D440;
+lifeEventBits = 0x8013D1C8; // size:0x80
+controllers = 0x8013D440; // size:0x110
 
 gSongVolume = 0x8013D5E4;
 
 nuAuHeap = 0x8013D5C8;
-mainMap = 0x8013DC40; // size 0x1A628
+mainMap = 0x8013DC40; // size:0x1A620
 
 gDayOfMonth = 0x80158260;
 
 spriteAddresses = 0x80158268;
-characterSprites = 0x801584F0;
+characterSprites = 0x801584F0; // size:0xFF0
 mariaHarrisPregnancyCounter = 0x8016FAD8;
 gTotalGrassTiles = 0x801654F0;
 farmFieldTiles = 0x8016F500;
 annCliffBabyAge = 0x8016F6E3;
 previousMapIndex = 0x8016F899;
-globalLightingRgba = 0x8016F8A0;
-specialDialogueBits = 0x8016F8B0;
+globalLightingRgba = 0x8016F8A0; //size:0x10
+specialDialogueBits = 0x8016F8B0; // size:0x40
 gSickDays = 0x8016F8F4;
-recipesBits = 0x8016FAFC;
+recipesBits = 0x8016FAFC; // size:0x4
 gChickenEggs = 0x8016FB08;
 horseInfo = 0x8016FDD0;
 harvestKingName = 0x8016FDF4;
@@ -979,12 +983,12 @@ gCutsceneFlags = 0x8016FE00;
 mailboxBits = 0x8016FFEC;
 shadowSpritesInfo = 0x8016FFF8;
 
-previousWorldRotationAngles = 0x8013D5D8;
+previousWorldRotationAngles = 0x8013D5D8; // size:0xC
 initGfxList = 0x80170068;
 karenPregnancyCounter = 0x8017026F;
 elliJeffNewlywedCounter= 0x8017027E;
 gMinutes = 0x8017027F;
-gFarmAnimals = 0x80170280;
+gFarmAnimals = 0x80170280; // size:0x180
 gCurrentSeasonName = 0x80170445;
 currentWorldRotationAngles = 0x8017044C;
 gBaseMapIndex = 0x80170458;
@@ -1017,11 +1021,11 @@ mainLoopCallbacksTable = 0x80188F70;
 
 albumBits = 0x80189058;
 
-gPlayer = 0x80189060; 
+gPlayer = 0x80189060; // size:0x78
 gBabyAge = 0x80189134;
 popuriGrayPregnancyCounter = 0x801891C4;
-gBabyName = 0x8018981E;
-dailyEventBits = 0x80189140;
+gBabyName = 0x8018981E; // size:0x6
+dailyEventBits = 0x80189140; // size:0x80
 
 nuContData = 0x80189840;
 
@@ -1038,7 +1042,7 @@ currentGfxTaskPtr = 0x801C3E14;
 bitmapCounter = 0x801C3E2A;
 gCutsceneIndex = 0x801C3B66;
 
-gChickens = 0x801C3BF0;
+gChickens = 0x801C3BF0; // size:0x1B0
 
 previousEntranceIndex = 0x801C3E20;
 
@@ -1063,7 +1067,7 @@ gYear = 0x801F6F30;
 
 gCamera = 0x801F6F38;
 
-bitmaps = 0x801F7110;
+bitmaps = 0x801F7110; // size:0x3C80
 
 gDayOfWeek = 0x801FAD90;
 
@@ -1078,20 +1082,20 @@ mountainConstructionWorkDays = 0x801FB68C;
 gSfx = 0x801FB690;
 
 mariaHarrisNewlywedCounter = 0X801FB9A4;
-npcInfoArray = 0x801FB9D0;
+npcInfoArray = 0x801FB9D0; // size:0x780
 
 houseExtensionConstructionCounter = 0x801FC151;
 
-namingScreenContext = 0x8016FBD0;
+namingScreenContext = 0x8016FBD0; // size:0x20
 
-renderedSprites = 0x801FC160;
+renderedSprites = 0x801FC160; // size:0x14AC
 
 gGold = 0x801FD60C;
 gMainMapIndex = 0x801FD610;
 karenKaiBabyAge = 0x801FD618;
 gNextSeason = 0x801FD620;
 gCurrentSongIndex = 0x801FD622;
-globalSprites = 0x801FD630;
+globalSprites = 0x801FD630; // size:0x7500
 mus_init_bank = 0x80204B30;
 nuAuSeqBank_ptr = 0x80204B34;
 
@@ -1109,7 +1113,7 @@ gfxTaskNo = 0x8020520A;
 gForecast = 0x80205238;
 gWifePregnancyCounter = 0x802055D0;
 karenKaiNewlywedCounter = 0x802055D1;
-gMapModelContext = 0x802055D8;
+gMapModelContext = 0x802055D8; // size:0x4C
 gNamingScreenIndex = 0x80205624;
 elliJeffPregnancyCounter = 0x8020562C;
 gDisplayContextIndex = 0x80205630;
@@ -1138,10 +1142,19 @@ flowerShopPoints = 0x802373F0;
 gHarvestCoinFinder = 0x80237409;
 gWife = 0x802373E9;
 
-worldMatrices = 0x80237460;
+worldMatrices = 0x80237460; // size:0x5A0
 
 NU_AU_HEAP_ADDR = 0x8030F800;
 
 setup_rspstate = 0x80112A38;
 setup_rdpstate = 0x80112A10;
 rdpstateinit_dl = 0x80112928;
+
+gControllers = 0x8018A738; // size:0x110
+
+nuContNum = 0x801D62C8;
+nuYieldBuf = 0x801D62D0;
+
+D_8020563B = 0x8020563B; // size:0x4
+D_80237420 = 0x80237420; // size:0x20
+D_8030E000 = 0x8030E000; // size:0x10

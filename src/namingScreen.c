@@ -15,10 +15,10 @@
 #include "player.h"
 
 // bss
-NamingScreenContext namingScreenContext;
+extern NamingScreenContext namingScreenContext;
 // FIXME: part of namingScreenContext, but needed for match 
-f32 D_8016FBE0;
-u16 D_8016FBEE;
+extern f32 D_8016FBE0;
+extern u16 D_8016FBEE;
 
 // forward declarations
 void func_800EE678(void);
