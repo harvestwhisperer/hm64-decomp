@@ -78,7 +78,7 @@ NUContData contData[NU_CONT_MAXCONTROLLERS];
 OSContStatus D_80181B90[NU_CONT_MAXCONTROLLERS];
 
 extern Controller controllers[NU_CONT_MAXCONTROLLERS];
-extern Controller D_8018A738[NU_CONT_MAXCONTROLLERS];
+extern Controller gControllers[NU_CONT_MAXCONTROLLERS];
 
 extern u8 contPattern;
 
