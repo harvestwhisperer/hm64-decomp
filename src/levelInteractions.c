@@ -21,8 +21,9 @@
 
 // bss
 // struct
-u8 D_80126560;
-u8 D_80126561;
+u8 D_80126560; // mapStruct7 index
+u8 D_80126561; // sfx index
+
 u8 D_80189826; 
 u8 D_801C3E2C;
 

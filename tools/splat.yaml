@@ -51,6 +51,7 @@ segments:
     type: code
     start: 0x1050
     vram: 0x80025C50
+    bss_size: 0x113870
     subalign: 8
     follows_vram: entry
     subsegments:
@@ -468,6 +469,7 @@ segments:
       - [ 0xFF4D8, .rodata, lib/os/libultra/rmon/rmonmem]
       - [ 0xFF4F0, .rodata, lib/os/libultra/libc/ldtob]
       - [ 0xFF560, .rodata, lib/os/libultra/rmon/rmonbreak]
+      - { start: 0xFF5C0, type: bss, vram: 0x801241C0 }
 
   - name: cutsceneMaps
     type: bin

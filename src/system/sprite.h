@@ -57,7 +57,7 @@ typedef struct {
 	Vec4f rgbaCurrent; // 0x60
 	Vec4f rgbaDefault; // 0x70
 	Vec4f normalized; // 0x80
-	u8 unk_90; // counter for operation with unknownAssetPtr
+	u8 unk_90; // counter for operation with unknownAssetPtr; num animations to swap
 	u8 unk_91;
 	u8 unk_92; // audio
     u16 paletteIndex;

@@ -947,6 +947,7 @@ u8* func_8002CD34(u16 arg0, void* arg1) {
 //INCLUDE_ASM(const s32, "system/globalSprites", func_8002CD4C);
 
 // FIXME: probably uses inlines; this could be an inline function used by graphic.c too
+// iterates through array of byteswapped shorts and swaps and increments ptr
 u16* func_8002CD4C(u16 arg0, u16* arg1) {
     
     u16 i;
@@ -960,7 +961,7 @@ u16* func_8002CD4C(u16 arg0, u16* arg1) {
     
     i = 0;
     
-    if (arg0) {
+    if (arg0 != 0) {
         
         do {
             
