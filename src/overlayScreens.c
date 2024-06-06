@@ -12,9 +12,8 @@
 #include "mainLoop.h"
 #include "player.h"
 #include "shop.h"
+#include "tv.h"
 
-extern u8 D_80170275;
- 
 // bss
 // struct
 // cell index
@@ -174,7 +173,8 @@ void func_800B3A60(void) {
     func_8002BAD8(0x84);
     func_8002BAD8(0x85);
     
-    switch (D_80170275) {       
+    switch (tvContext.channelIndex) {  
+
         case 0:
             func_8002B80C(0x82, 0, 2);
             func_8002B80C(0x83, 0, 3);
@@ -200,8 +200,10 @@ void func_800B3A60(void) {
             func_8002B80C(0x85, 0, 8);
             break;
         }
+
 }
 
+// FIXME: probably not right
 static inline inline_func() {
     func_8002BD0C(0x8E, 0, 0, 256.0f);
 }
@@ -209,7 +211,7 @@ static inline inline_func() {
 //INCLUDE_ASM(const s32, "overlayScreens", func_800B3BD8);
 
 // money sprites
-// add linker symbols
+// TODO: add linker symbols
 void func_800B3BD8(void) {
 
     u32 temp = gGold;
@@ -257,12 +259,14 @@ void func_800B3BD8(void) {
     func_8002CB24(0x87, 1);
     func_8002C914(0x87, 0xFF, 0xFF, 0xFF, 0xFF);
     func_800B4160();
+
 }
 
 //INCLUDE_ASM(const s32, "overlayScreens", func_800B4160);
 
 void func_800B4160(void) {
 
+    // shop struct
     if (!D_8023740F) {
         func_8002BAD8(0x82);
         func_8002BAD8(0x83);
@@ -1065,11 +1069,11 @@ void func_800CF3C4(u8 arg0) {
             break;
         case 3:
             func_80065BCC(0x12);
-            D_80205636 += adjustValue(D_80205636, 1, 0x14);
+            D_80205636 += adjustValue(D_80205636, 1, 20);
             break;
         case 4:
             func_80065BCC(0x11);
-            D_801C3F70 += adjustValue(D_801C3F70, 1, 0x14);
+            D_801C3F70 += adjustValue(D_801C3F70, 1, 20);
         default:
             break;
     }

@@ -120,7 +120,7 @@ typedef struct {
 	Vec4f unk_48;
 } DialogueIcon;
 
-extern bool setGameVariable(u16 index, void *address, u8 numSet, s32 max);
+extern bool initializeDialogueVariable(u16 index, void *address, u8 numSet, s32 max);
 extern void func_80042F60();   
 extern bool func_80042FEC(u16, u16, u16);
 extern bool func_80043050(u16, u16, u16, void*, void*, void*, void*, void*);

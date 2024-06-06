@@ -1216,31 +1216,31 @@ void func_800D6868(u8 index) {
     switch (index) {
         case 13:
             D_801654F4 += adjustValue(D_801654F4, 1, MAX_ITEM_SHIPPING_VALUE);
-            gTotalCropsShipped += adjustValue(gTotalCropsShipped,1, MAX_TOTAL_CROPS_SHIPPED);
+            gTotalCropsShipped += adjustValue(gTotalCropsShipped, 1, MAX_TOTAL_CROPS_SHIPPED);
             break;
         case 14:
             D_80237414 += adjustValue(D_80237414, 1, MAX_ITEM_SHIPPING_VALUE);
-            gTotalCropsShipped += adjustValue(gTotalCropsShipped,1, MAX_TOTAL_CROPS_SHIPPED);
+            gTotalCropsShipped += adjustValue(gTotalCropsShipped, 1, MAX_TOTAL_CROPS_SHIPPED);
             break;
         case 18:
             D_801FB6FC += adjustValue(D_801FB6FC, 1, MAX_ITEM_SHIPPING_VALUE);
-            gTotalCropsShipped += adjustValue(gTotalCropsShipped,1, MAX_TOTAL_CROPS_SHIPPED);
+            gTotalCropsShipped += adjustValue(gTotalCropsShipped, 1, MAX_TOTAL_CROPS_SHIPPED);
             break;
         case 15:
             D_801C3F80 += adjustValue(D_801C3F80, 1, MAX_ITEM_SHIPPING_VALUE);
-            gTotalCropsShipped += adjustValue(gTotalCropsShipped,1, MAX_TOTAL_CROPS_SHIPPED);
+            gTotalCropsShipped += adjustValue(gTotalCropsShipped, 1, MAX_TOTAL_CROPS_SHIPPED);
             break;
         case 19:
             D_801806C0 += adjustValue(D_801806C0, 1, MAX_ITEM_SHIPPING_VALUE);
-            gTotalCropsShipped += adjustValue(gTotalCropsShipped,1, MAX_TOTAL_CROPS_SHIPPED);
+            gTotalCropsShipped += adjustValue(gTotalCropsShipped, 1, MAX_TOTAL_CROPS_SHIPPED);
             break;
         case 16:
             D_80188F60 += adjustValue(D_80188F60, 1, MAX_ITEM_SHIPPING_VALUE);
-            gTotalCropsShipped += adjustValue(gTotalCropsShipped,1, MAX_TOTAL_CROPS_SHIPPED);
+            gTotalCropsShipped += adjustValue(gTotalCropsShipped, 1, MAX_TOTAL_CROPS_SHIPPED);
             break;
         case 17:
             D_801FB5D0 += adjustValue(D_801FB5D0, 1, MAX_ITEM_SHIPPING_VALUE);
-            gTotalCropsShipped += adjustValue(gTotalCropsShipped,1, MAX_TOTAL_CROPS_SHIPPED);
+            gTotalCropsShipped += adjustValue(gTotalCropsShipped, 1, MAX_TOTAL_CROPS_SHIPPED);
             break;
         case 21:
         case 22:
