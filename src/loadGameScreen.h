@@ -29,7 +29,7 @@ typedef struct {
     u8 showControllerPakScreen; /* 0x87 */
     u8 unk_88;
     u8 action; // move/delete /* 0x89 */
-} LoadGameScreenInfo;
+} LoadGameScreenContext;
 
 void func_800E1380(u8);            
 extern void func_800E53E8(u8);    

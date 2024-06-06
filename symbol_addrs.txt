@@ -737,7 +737,7 @@ setSfxFrequency = 0x8003D7C0;
 setSfxPan = 0x8003D8A0;
 stopSfx = 0x8003D948;
 
-setGameVariable = 0x800430DC;
+initializeDialogueVariable = 0x800430DC;
 initializeCutsceneMaps = 0x80046860;
 
 mainLoopCutsceneHandler = 0x80046D78;
@@ -750,7 +750,7 @@ startGame = 0x8004DFAC;
 initializeGameVariables = 0x8004E210;
 registerMainLoopCallbacks = 0x8004F3D0;
 
-setGameVariables = 0x80055768;
+initializeDialogueVariables = 0x80055768;
 mainGameLoopCallback = 0x80055E20;
 startNewDay = 0x80059428;
 setSpecialDialogues = 0x8005A708;
@@ -1052,6 +1052,8 @@ babyBirthdayDate = 0x801C3F84;
 gTotalGoldenMilkShipped = 0x801C3F88;
 
 npcAffection = 0x801C3F90; // size:0x30
+
+loadGameScreenContext = 0x801D6238; // size:0x90
 
 contPattern = 0x801D6ED0;
 

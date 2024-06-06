@@ -67,6 +67,7 @@ typedef struct {
     u16 flags2;
 } Sprite;
 
+// info for DMA
 typedef struct {
 	void *romAddr;
 	void *vaddr;
@@ -74,6 +75,7 @@ typedef struct {
 	u16 flags;
 } SpriteInfo;
 
+// animated sprites
 // 0x801584F0
 typedef struct {
 	u16 *vaddr; /* 0x00 */ // offset indices; data from 80119750-8011BCA0, related to animation
@@ -91,6 +93,7 @@ typedef struct {
 	u16 flags; /* 0x24 */ // bit 2 = asset type
 } CharacterSprite;
 
+// abstract sprite structitmap
 // 0x801FC160
 typedef struct {
 	void *vaddrTexture1; // 00
@@ -106,7 +109,7 @@ typedef struct {
 	Vec3f currentCoordinates; // 34-40
 	Vec3f unk_3C; // 40-4C
 	f32 unk_4C;
-	u16 characterIndex; // 0x50
+	u16 characterIndex; // 0x50 // characterSprites index?
 	u16 globalSpriteIndex;
 	Animation anim; // 0x54-0x58
 	u16 unk_58; 

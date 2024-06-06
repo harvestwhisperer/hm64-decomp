@@ -19,19 +19,10 @@ u8 func_800E4424(u8, u8);
 extern u32 D_801654F4;
 
 // bss
-extern LoadGameScreenInfo D_801D6238;
-extern u8 D_8030E000[16];
+extern LoadGameScreenContext loadGameScreenContext;
 
-// struct
-extern u8 D_801D624C;
-extern u8 D_801D6261;
-extern u8 D_801D62B8;
-extern u8 D_801D62B9;
-extern u8 D_801D62BA;
-extern u8 D_801D62BB;
-extern u8 D_801D62BF;
-extern u8 D_801D62BC;
-extern u8 D_801D62BF;
+// sram memory
+extern u8 D_8030E000[16];
  
 // shared
 extern u8 gGlobalSeasonName[6];
@@ -47,84 +38,84 @@ void func_800E3358(u8 arg0, u8 arg1, u8 arg2);
 void func_800E1380(u8 controllerPakEnabled) {
     
     if (!controllerPakEnabled) {
-        D_801D6238.showControllerPakScreen = 0;
-        D_801D6238.actionColumnHighlighted = 0;
-        D_801D6238.action = 0;
-        D_801D6238.diaryHighlighted = 0;
+        loadGameScreenContext.showControllerPakScreen = 0;
+        loadGameScreenContext.actionColumnHighlighted = 0;
+        loadGameScreenContext.action = 0;
+        loadGameScreenContext.diaryHighlighted = 0;
     } else {
-        D_801D6238.action = 11;
+        loadGameScreenContext.action = 11;
     }
     
-    D_801D6238.unk_2A[0] = 0x45;
-    D_801D6238.unk_2A[1] = 0x39;
-    D_801D6238.unk_2A[2] = 0x4E;
-    D_801D6238.unk_2A[3] = 0x59;
-    D_801D6238.unk_2A[4] = 0x57;
-    D_801D6238.unk_2A[5] = 0x45;
+    loadGameScreenContext.unk_2A[0] = 0x45;
+    loadGameScreenContext.unk_2A[1] = 0x39;
+    loadGameScreenContext.unk_2A[2] = 0x4E;
+    loadGameScreenContext.unk_2A[3] = 0x59;
+    loadGameScreenContext.unk_2A[4] = 0x57;
+    loadGameScreenContext.unk_2A[5] = 0x45;
     
-    D_801D6238.unk_0[0] = 0x48;
-    D_801D6238.unk_0[1] = 0x41;
-    D_801D6238.unk_0[2] = 0x52;
-    D_801D6238.unk_0[3] = 0x56;
-    D_801D6238.unk_0[4] = 0x45;
-    D_801D6238.unk_0[5] = 0x53;
-    D_801D6238.unk_0[6] = 0x54;
-    D_801D6238.unk_0[7] = 0x4D;
-    D_801D6238.unk_0[8] = 0x4F;
-    D_801D6238.unk_0[9] = 0x4F;
-    D_801D6238.unk_0[10] = 0x4E;
-    D_801D6238.unk_0[11] = 0;
-    D_801D6238.unk_0[12] = 0;
-    D_801D6238.unk_0[13] = 0;
-    D_801D6238.unk_0[14] = 0;
-    D_801D6238.unk_0[15] = 0;
-    D_801D6238.unk_0[16] = 0x41;
-    D_801D6238.unk_0[17] = 0;
-    D_801D6238.unk_0[18] = 0;
-    D_801D6238.unk_0[19] = 0;
+    loadGameScreenContext.unk_0[0] = 0x48;
+    loadGameScreenContext.unk_0[1] = 0x41;
+    loadGameScreenContext.unk_0[2] = 0x52;
+    loadGameScreenContext.unk_0[3] = 0x56;
+    loadGameScreenContext.unk_0[4] = 0x45;
+    loadGameScreenContext.unk_0[5] = 0x53;
+    loadGameScreenContext.unk_0[6] = 0x54;
+    loadGameScreenContext.unk_0[7] = 0x4D;
+    loadGameScreenContext.unk_0[8] = 0x4F;
+    loadGameScreenContext.unk_0[9] = 0x4F;
+    loadGameScreenContext.unk_0[10] = 0x4E;
+    loadGameScreenContext.unk_0[11] = 0;
+    loadGameScreenContext.unk_0[12] = 0;
+    loadGameScreenContext.unk_0[13] = 0;
+    loadGameScreenContext.unk_0[14] = 0;
+    loadGameScreenContext.unk_0[15] = 0;
+    loadGameScreenContext.unk_0[16] = 0x41;
+    loadGameScreenContext.unk_0[17] = 0;
+    loadGameScreenContext.unk_0[18] = 0;
+    loadGameScreenContext.unk_0[19] = 0;
     
-    D_801D6238.unk_15[0] = 0x48;
-    D_801D6238.unk_15[1] = 0x41;
-    D_801D6238.unk_15[2] = 0x52;
-    D_801D6238.unk_15[3] = 0x56;
-    D_801D6238.unk_15[4] = 0x45;
-    D_801D6238.unk_15[5] = 0x53;
-    D_801D6238.unk_15[6] = 0x54;
-    D_801D6238.unk_15[7] = 0x4D;
-    D_801D6238.unk_15[8] = 0x4F;
-    D_801D6238.unk_15[9] = 0x4F;
-    D_801D6238.unk_15[10] = 0x4E;
-    D_801D6238.unk_15[11] = 0;
-    D_801D6238.unk_15[12] = 0;
-    D_801D6238.unk_15[13] = 0;
-    D_801D6238.unk_15[14] = 0;
-    D_801D6238.unk_15[15] = 0;
-    D_801D6238.unk_15[16] = 0x42;
-    D_801D6238.unk_15[17] = 0;
-    D_801D6238.unk_15[18] = 0;
-    D_801D6238.unk_15[19] = 0;
+    loadGameScreenContext.unk_15[0] = 0x48;
+    loadGameScreenContext.unk_15[1] = 0x41;
+    loadGameScreenContext.unk_15[2] = 0x52;
+    loadGameScreenContext.unk_15[3] = 0x56;
+    loadGameScreenContext.unk_15[4] = 0x45;
+    loadGameScreenContext.unk_15[5] = 0x53;
+    loadGameScreenContext.unk_15[6] = 0x54;
+    loadGameScreenContext.unk_15[7] = 0x4D;
+    loadGameScreenContext.unk_15[8] = 0x4F;
+    loadGameScreenContext.unk_15[9] = 0x4F;
+    loadGameScreenContext.unk_15[10] = 0x4E;
+    loadGameScreenContext.unk_15[11] = 0;
+    loadGameScreenContext.unk_15[12] = 0;
+    loadGameScreenContext.unk_15[13] = 0;
+    loadGameScreenContext.unk_15[14] = 0;
+    loadGameScreenContext.unk_15[15] = 0;
+    loadGameScreenContext.unk_15[16] = 0x42;
+    loadGameScreenContext.unk_15[17] = 0;
+    loadGameScreenContext.unk_15[18] = 0;
+    loadGameScreenContext.unk_15[19] = 0;
     
-    func_8003FBA0(0, D_801D6238.playerNames[0], 6);
-    func_8003FBA0(1, D_801D6238.dateNumbers[0], 2);
-    func_8003FBA0(2, D_801D6238.seasonNames[0], 6);
-    func_8003FBA0(3, D_801D6238.dateEndings[0], 2);
+    func_8003FBA0(0, loadGameScreenContext.playerNames[0], 6);
+    func_8003FBA0(1, loadGameScreenContext.dateNumbers[0], 2);
+    func_8003FBA0(2, loadGameScreenContext.seasonNames[0], 6);
+    func_8003FBA0(3, loadGameScreenContext.dateEndings[0], 2);
     
-    func_8003FBA0(4, D_801D6238.playerNames[1], 6);
-    func_8003FBA0(5, D_801D6238.dateNumbers[1], 2);
-    func_8003FBA0(6, D_801D6238.seasonNames[1], 6);
-    func_8003FBA0(7, D_801D6238.dateEndings[1], 2);
+    func_8003FBA0(4, loadGameScreenContext.playerNames[1], 6);
+    func_8003FBA0(5, loadGameScreenContext.dateNumbers[1], 2);
+    func_8003FBA0(6, loadGameScreenContext.seasonNames[1], 6);
+    func_8003FBA0(7, loadGameScreenContext.dateEndings[1], 2);
     
-    func_8003FBA0(8, D_801D6238.playerNames[2], 6);
-    func_8003FBA0(9, D_801D6238.dateNumbers[2], 2);
-    func_8003FBA0(10, D_801D6238.seasonNames[2], 6);
-    func_8003FBA0(11, D_801D6238.dateEndings[2], 2);
+    func_8003FBA0(8, loadGameScreenContext.playerNames[2], 6);
+    func_8003FBA0(9, loadGameScreenContext.dateNumbers[2], 2);
+    func_8003FBA0(10, loadGameScreenContext.seasonNames[2], 6);
+    func_8003FBA0(11, loadGameScreenContext.dateEndings[2], 2);
     
-    func_8003FBA0(0xC, D_801D6238.playerNames[3], 6);
-    func_8003FBA0(0xD, D_801D6238.dateNumbers[3], 2);
-    func_8003FBA0(0xE, D_801D6238.seasonNames[3], 6);
-    func_8003FBA0(0xF, D_801D6238.dateEndings[3], 2);
+    func_8003FBA0(0xC, loadGameScreenContext.playerNames[3], 6);
+    func_8003FBA0(0xD, loadGameScreenContext.dateNumbers[3], 2);
+    func_8003FBA0(0xE, loadGameScreenContext.seasonNames[3], 6);
+    func_8003FBA0(0xF, loadGameScreenContext.dateEndings[3], 2);
     
-    func_800E16D0(1, D_801D6238.diaryHighlighted);
+    func_800E16D0(1, loadGameScreenContext.diaryHighlighted);
     
     setMainLoopCallbackFunctionIndex(SELECT_GAME);
 }
@@ -135,7 +126,7 @@ INCLUDE_ASM(const s32, "loadGameScreen", func_800E16A0);
 
 void func_800E16D0(u8 arg0, u8 arg1) {
 
-    D_801D62BC = arg1;
+    loadGameScreenContext.diaryHighlighted = arg1;
     
     func_800E1998();
     func_800B42E0();
@@ -146,7 +137,7 @@ void func_800E16D0(u8 arg0, u8 arg1) {
         func_800B5BD4();
     }
     
-    if (D_801D62BF == 0) {
+    if (loadGameScreenContext.showControllerPakScreen == 0) {
         
         if (arg0) {
             func_8003E77C(0, 0, 0, 0, 0);
@@ -183,38 +174,37 @@ void func_800E16D0(u8 arg0, u8 arg1) {
     func_8003E77C(1, 0, 0, 0, 0);
     func_8003E77C(0, 0xFF, 0xFF, 0xFF, 0xFF);
     func_8003E77C(1, 0xFF, 0xFF, 0xFF, 0xFF);
+
 }
+
 
 //INCLUDE_ASM(const s32, "loadGameScreen", func_800E1998);
 
 void func_800E1998(void) {
 
     func_800E16A0();
-    
-    if (D_801D62BF == 0) {
 
+    if (loadGameScreenContext.showControllerPakScreen == 0) {
         func_800E3358(0, 0, 0);
         func_800E3358(1, 0, 0);
         func_800E3358(2, 0, 0);
         func_800E3358(3, 0, 0);
-
     } else {
-
-        if (D_801D624C & 2) {
+        if (loadGameScreenContext.unk_14 & 2) {
             func_800E3358(0, 1, 0);
-        } else if (D_801D624C & 1) {
+        } else if (loadGameScreenContext.unk_14 & 1) {
             func_800E3358(0, 1, 1);
         } else {
             func_800E3358(0, 1, 2);
         }
-        
-        if (D_801D6261 & 2) {
+
+        if (loadGameScreenContext.unk_29 & 2) {
             func_800E3358(1, 1, 0);
         } else {
-            if (D_801D6261 & 1) {
+            if (loadGameScreenContext.unk_29 & 1) {
                 func_800E3358(1, 1, 1);
             } else {
-                func_800E3358(1, 1, 2);
+                func_800E3358(1, 1, 2);   
             }
         }
     }
@@ -226,8 +216,8 @@ void func_800E1998(void) {
 
 void func_800E1A94(void) {
 
-    if (D_801D62BF == 0) {
-        if (D_801D62B8 & 1) { 
+    if (loadGameScreenContext.showControllerPakScreen == 0) {
+        if (loadGameScreenContext.fontLoadingFlags[0] & 1) { 
             func_8003DD14(0);
             func_8003DBE8(0, (void*)0x8030B000);
             func_8003F54C(0, 16.0f, 52.0f, 0);
@@ -242,7 +232,7 @@ void func_800E1A94(void) {
             func_8003FB4C(0, 1);
             func_8003DDF8(0, 0, 1, 0x80000);
         }
-        if (D_801D62B9 & 1) {
+        if (loadGameScreenContext.fontLoadingFlags[1] & 1) {
             func_8003DD14(1);
             func_8003DBE8(1, (void*)0x8030B400);
             func_8003F54C(1, 16.0f, 8.0f, 0);
@@ -255,7 +245,7 @@ void func_800E1A94(void) {
             func_8003FB4C(1, 1);
             func_8003DDF8(1, 0, 2, 0x80000);
         }
-        if (D_801D62BA & 1) {
+        if (loadGameScreenContext.fontLoadingFlags[2] & 1) {
             func_8003DD14(2);
             func_8003DBE8(2, (void*)0x8030B800);
             func_8003F54C(2, 16.0f, -36.0f, 0);
@@ -268,7 +258,7 @@ void func_800E1A94(void) {
             func_8003FB4C(2, 1);
             func_8003DDF8(2, 0, 3, 0x80000);
         }
-        if (D_801D62BB & 1) {
+        if (loadGameScreenContext.fontLoadingFlags[3] & 1) {
             func_8003DD14(3);
             func_8003DBE8(3, (void*)0x8030BC00);
             func_8003F54C(3, 16.0f, -80.0f, 0);
@@ -282,7 +272,7 @@ void func_800E1A94(void) {
             func_8003DDF8(3, 0, 4, 0x80000);
         }
     } else {
-        if (D_801D62B8 & 1) {
+        if (loadGameScreenContext.fontLoadingFlags[0] & 1) {
             func_8003DD14(0);
             func_8003DBE8(0, (void*)0x8030B000);
             func_8003F54C(0, 16.0f, 52.0f, 0);
@@ -295,7 +285,7 @@ void func_800E1A94(void) {
             func_8003FB4C(0, 1);
             func_8003DDF8(0, 0, 1, 0x80000);
         }
-        if (D_801D62B9 & 1) {
+        if (loadGameScreenContext.fontLoadingFlags[1] & 1) {
             func_8003DD14(1);
             func_8003DBE8(1, (void*)0x8030B400);
             func_8003F54C(1, 16.0f, 8.0f, 0);
@@ -325,29 +315,29 @@ void func_800E3358(u8 arg0, u8 arg1, u8 arg2) {
             
                 setGlobalSeasonName(gSeason);
                 
-                D_801D6238.seasonNames[arg0][0] = gGlobalSeasonName[0];
-                D_801D6238.seasonNames[arg0][1] = gGlobalSeasonName[1];
-                D_801D6238.seasonNames[arg0][2] = gGlobalSeasonName[2];
-                D_801D6238.seasonNames[arg0][3] = gGlobalSeasonName[3];
-                D_801D6238.seasonNames[arg0][4] = gGlobalSeasonName[4];
-                D_801D6238.seasonNames[arg0][5] = gGlobalSeasonName[5];
+                loadGameScreenContext.seasonNames[arg0][0] = gGlobalSeasonName[0];
+                loadGameScreenContext.seasonNames[arg0][1] = gGlobalSeasonName[1];
+                loadGameScreenContext.seasonNames[arg0][2] = gGlobalSeasonName[2];
+                loadGameScreenContext.seasonNames[arg0][3] = gGlobalSeasonName[3];
+                loadGameScreenContext.seasonNames[arg0][4] = gGlobalSeasonName[4];
+                loadGameScreenContext.seasonNames[arg0][5] = gGlobalSeasonName[5];
         
                 switch (gYear) {
                     case 1:
-                        D_801D6238.dateEndings[arg0][0] = 0xCD;
-                        D_801D6238.dateEndings[arg0][1] = 0xCE;
+                        loadGameScreenContext.dateEndings[arg0][0] = 0xCD;
+                        loadGameScreenContext.dateEndings[arg0][1] = 0xCE;
                         break;
                     case 2:
-                        D_801D6238.dateEndings[arg0][0] = 0xC8;
-                        D_801D6238.dateEndings[arg0][1] = 0xBE;
+                        loadGameScreenContext.dateEndings[arg0][0] = 0xC8;
+                        loadGameScreenContext.dateEndings[arg0][1] = 0xBE;
                         break;
                     case 3:
-                        D_801D6238.dateEndings[arg0][0] = 0xCC;
-                        D_801D6238.dateEndings[arg0][1] = 0xBE;
+                        loadGameScreenContext.dateEndings[arg0][0] = 0xCC;
+                        loadGameScreenContext.dateEndings[arg0][1] = 0xBE;
                         break;
                     default:
-                        D_801D6238.dateEndings[arg0][0] = 0xCE;
-                        D_801D6238.dateEndings[arg0][1] = 0xC2;
+                        loadGameScreenContext.dateEndings[arg0][0] = 0xCE;
+                        loadGameScreenContext.dateEndings[arg0][1] = 0xC2;
                         break;
                 }
 
@@ -368,91 +358,91 @@ void func_800E3358(u8 arg0, u8 arg1, u8 arg2) {
                         break;
                 }
                 
-                D_801D6238.playerNames[arg0][0] = gPlayer.name[0];
-                D_801D6238.playerNames[arg0][1] = gPlayer.name[1];
-                D_801D6238.playerNames[arg0][2] = gPlayer.name[2];
-                D_801D6238.playerNames[arg0][3] = gPlayer.name[3];
-                D_801D6238.playerNames[arg0][4] = gPlayer.name[4];
-                D_801D6238.playerNames[arg0][5] = gPlayer.name[5];
+                loadGameScreenContext.playerNames[arg0][0] = gPlayer.name[0];
+                loadGameScreenContext.playerNames[arg0][1] = gPlayer.name[1];
+                loadGameScreenContext.playerNames[arg0][2] = gPlayer.name[2];
+                loadGameScreenContext.playerNames[arg0][3] = gPlayer.name[3];
+                loadGameScreenContext.playerNames[arg0][4] = gPlayer.name[4];
+                loadGameScreenContext.playerNames[arg0][5] = gPlayer.name[5];
     
-                D_801D6238.fontLoadingFlags[arg0] = 3;
+                loadGameScreenContext.fontLoadingFlags[arg0] = 3;
 
             } else {
                 
-                D_801D6238.playerNames[arg0][0] = 0xF6;
-                D_801D6238.playerNames[arg0][1] = 0xF6;
-                D_801D6238.playerNames[arg0][2] = 0xF6;
-                D_801D6238.playerNames[arg0][3] = 0xF6;
-                D_801D6238.playerNames[arg0][4] = 0xF6;
-                D_801D6238.playerNames[arg0][5] = 0xF6;
+                loadGameScreenContext.playerNames[arg0][0] = 0xF6;
+                loadGameScreenContext.playerNames[arg0][1] = 0xF6;
+                loadGameScreenContext.playerNames[arg0][2] = 0xF6;
+                loadGameScreenContext.playerNames[arg0][3] = 0xF6;
+                loadGameScreenContext.playerNames[arg0][4] = 0xF6;
+                loadGameScreenContext.playerNames[arg0][5] = 0xF6;
                 
-                D_801D6238.dateNumbers[arg0][0] = 0xF6;
-                D_801D6238.dateNumbers[arg0][1] = 0xF6;
+                loadGameScreenContext.dateNumbers[arg0][0] = 0xF6;
+                loadGameScreenContext.dateNumbers[arg0][1] = 0xF6;
 
-                D_801D6238.seasonNames[arg0][0] = 0xF6;
-                D_801D6238.seasonNames[arg0][1] = 0xF6;
-                D_801D6238.seasonNames[arg0][2] = 0xF6;
-                D_801D6238.seasonNames[arg0][3] = 0xF6;
-                D_801D6238.seasonNames[arg0][4] = 0xF6;
-                D_801D6238.seasonNames[arg0][5] = 0xF6;
+                loadGameScreenContext.seasonNames[arg0][0] = 0xF6;
+                loadGameScreenContext.seasonNames[arg0][1] = 0xF6;
+                loadGameScreenContext.seasonNames[arg0][2] = 0xF6;
+                loadGameScreenContext.seasonNames[arg0][3] = 0xF6;
+                loadGameScreenContext.seasonNames[arg0][4] = 0xF6;
+                loadGameScreenContext.seasonNames[arg0][5] = 0xF6;
                     
-                D_801D6238.dateEndings[arg0][0] = 0xF6;
-                D_801D6238.dateEndings[arg0][1] = 0xF6;     
+                loadGameScreenContext.dateEndings[arg0][0] = 0xF6;
+                loadGameScreenContext.dateEndings[arg0][1] = 0xF6;     
                 
-                D_801D6238.fontLoadingFlags[arg0] = 1;
+                loadGameScreenContext.fontLoadingFlags[arg0] = 1;
             }
 
             break;
         
         case 1:
                    
-            D_801D6238.playerNames[arg0][0] = 0xF6;
-            D_801D6238.playerNames[arg0][1] = 0xF6;
-            D_801D6238.playerNames[arg0][2] = 0xF6;
-            D_801D6238.playerNames[arg0][3] = 0xF6;
-            D_801D6238.playerNames[arg0][4] = 0xF6;
-            D_801D6238.playerNames[arg0][5] = 0xF6;
+            loadGameScreenContext.playerNames[arg0][0] = 0xF6;
+            loadGameScreenContext.playerNames[arg0][1] = 0xF6;
+            loadGameScreenContext.playerNames[arg0][2] = 0xF6;
+            loadGameScreenContext.playerNames[arg0][3] = 0xF6;
+            loadGameScreenContext.playerNames[arg0][4] = 0xF6;
+            loadGameScreenContext.playerNames[arg0][5] = 0xF6;
             
-            D_801D6238.dateNumbers[arg0][0] = 0xF6;
-            D_801D6238.dateNumbers[arg0][1] = 0xF6;
+            loadGameScreenContext.dateNumbers[arg0][0] = 0xF6;
+            loadGameScreenContext.dateNumbers[arg0][1] = 0xF6;
             
-            D_801D6238.seasonNames[arg0][0] = 0xF6;
-            D_801D6238.seasonNames[arg0][1] = 0xF6;
-            D_801D6238.seasonNames[arg0][2] = 0xF6;
-            D_801D6238.seasonNames[arg0][3] = 0xF6;
-            D_801D6238.seasonNames[arg0][4] = 0xF6;
-            D_801D6238.seasonNames[arg0][5] = 0xF6;
+            loadGameScreenContext.seasonNames[arg0][0] = 0xF6;
+            loadGameScreenContext.seasonNames[arg0][1] = 0xF6;
+            loadGameScreenContext.seasonNames[arg0][2] = 0xF6;
+            loadGameScreenContext.seasonNames[arg0][3] = 0xF6;
+            loadGameScreenContext.seasonNames[arg0][4] = 0xF6;
+            loadGameScreenContext.seasonNames[arg0][5] = 0xF6;
             
-            D_801D6238.dateEndings[arg0][0] = 0xF6;
-            D_801D6238.dateEndings[arg0][1] = 0xF6;
+            loadGameScreenContext.dateEndings[arg0][0] = 0xF6;
+            loadGameScreenContext.dateEndings[arg0][1] = 0xF6;
             
-            D_801D6238.fontLoadingFlags[arg0] = 1;
+            loadGameScreenContext.fontLoadingFlags[arg0] = 1;
             
             break;
         
         case 2:
             
-            D_801D6238.playerNames[arg0][0] = 0xEE;
-            D_801D6238.playerNames[arg0][1] = 0xEE;
-            D_801D6238.playerNames[arg0][2] = 0xEE;
-            D_801D6238.playerNames[arg0][3] = 0xEE;
-            D_801D6238.playerNames[arg0][4] = 0xEE;
-            D_801D6238.playerNames[arg0][5] = 0xEE;
+            loadGameScreenContext.playerNames[arg0][0] = 0xEE;
+            loadGameScreenContext.playerNames[arg0][1] = 0xEE;
+            loadGameScreenContext.playerNames[arg0][2] = 0xEE;
+            loadGameScreenContext.playerNames[arg0][3] = 0xEE;
+            loadGameScreenContext.playerNames[arg0][4] = 0xEE;
+            loadGameScreenContext.playerNames[arg0][5] = 0xEE;
             
-            D_801D6238.dateNumbers[arg0][0] = 0xEE;
-            D_801D6238.dateNumbers[arg0][1] = 0xEE;
+            loadGameScreenContext.dateNumbers[arg0][0] = 0xEE;
+            loadGameScreenContext.dateNumbers[arg0][1] = 0xEE;
 
-            D_801D6238.seasonNames[arg0][0] = 0xEE;
-            D_801D6238.seasonNames[arg0][1] = 0xEE;
-            D_801D6238.seasonNames[arg0][2] = 0xEE;
-            D_801D6238.seasonNames[arg0][3] = 0xEE;
-            D_801D6238.seasonNames[arg0][4] = 0xEE;
-            D_801D6238.seasonNames[arg0][5] = 0xEE;
+            loadGameScreenContext.seasonNames[arg0][0] = 0xEE;
+            loadGameScreenContext.seasonNames[arg0][1] = 0xEE;
+            loadGameScreenContext.seasonNames[arg0][2] = 0xEE;
+            loadGameScreenContext.seasonNames[arg0][3] = 0xEE;
+            loadGameScreenContext.seasonNames[arg0][4] = 0xEE;
+            loadGameScreenContext.seasonNames[arg0][5] = 0xEE;
             
-            D_801D6238.dateEndings[arg0][0] = 0xEE;
-            D_801D6238.dateEndings[arg0][1] = 0xEE;
+            loadGameScreenContext.dateEndings[arg0][0] = 0xEE;
+            loadGameScreenContext.dateEndings[arg0][1] = 0xEE;
             
-            D_801D6238.fontLoadingFlags[arg0] = 0;
+            loadGameScreenContext.fontLoadingFlags[arg0] = 0;
 
             break;       
     }
