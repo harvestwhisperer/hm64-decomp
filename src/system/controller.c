@@ -13,6 +13,8 @@ void func_8004D47C(u8);
 extern u16 D_80182FBA;
 extern u16 D_801FADB0;
 
+//Controller gControllers[NU_CONT_MAXCONTROLLERS];
+
 // likely bss (or gameStatus.c)
 extern u8 contPattern;
 
@@ -40,20 +42,20 @@ void controllerInit(void) {
             controllers[i].unk_2C[j] = 0;
         }
 
-        D_8018A738[i].button = 0;
-        D_8018A738[i].buttonHeld = 0;
-        D_8018A738[i].buttonPressed = 0;
-        D_8018A738[i].buttonReleased = 0;
-        D_8018A738[i].unk_24 = 0;
-        D_8018A738[i].unk_28 = 0;
+        gControllers[i].button = 0;
+        gControllers[i].buttonHeld = 0;
+        gControllers[i].buttonPressed = 0;
+        gControllers[i].buttonReleased = 0;
+        gControllers[i].unk_24 = 0;
+        gControllers[i].unk_28 = 0;
         
-        D_8018A738[i].sticks.s_stick_x = 0;
-        D_8018A738[i].sticks.s_stick_y = 0;
-        D_8018A738[i].sticks.u_stick_x = 0;
-        D_8018A738[i].sticks.u_stick_y = 0;
+        gControllers[i].sticks.s_stick_x = 0;
+        gControllers[i].sticks.s_stick_y = 0;
+        gControllers[i].sticks.u_stick_x = 0;
+        gControllers[i].sticks.u_stick_y = 0;
 
         for (j = 0; j < 24; j++) {
-            D_8018A738[i].unk_2C[j] = 0;
+            gControllers[i].unk_2C[j] = 0;
         }
     }
     
@@ -120,15 +122,15 @@ void func_8004CF68(void) {
 
             } else {
 
-                D_8018A738[i].button = contData[i].button & 0xFFFF;
-                D_8018A738[i].buttonPressed = (D_8018A738[i].button ^ D_8018A738[i].buttonHeld) & D_8018A738[i].button;
+                gControllers[i].button = contData[i].button & 0xFFFF;
+                gControllers[i].buttonPressed = (gControllers[i].button ^ gControllers[i].buttonHeld) & gControllers[i].button;
                 
-                D_8018A738[i].buttonReleased = (D_8018A738[i].button ^ D_8018A738[i].buttonHeld) & D_8018A738[i].buttonHeld;
+                gControllers[i].buttonReleased = (gControllers[i].button ^ gControllers[i].buttonHeld) & gControllers[i].buttonHeld;
                 
-                D_8018A738[i].buttonHeld = D_8018A738[i].button;
+                gControllers[i].buttonHeld = gControllers[i].button;
                 
-                D_8018A738[i].sticks.s_stick_x = contData[i].stick_x;
-                D_8018A738[i].sticks.s_stick_y = contData[i].stick_y;
+                gControllers[i].sticks.s_stick_x = contData[i].stick_x;
+                gControllers[i].sticks.s_stick_y = contData[i].stick_y;
                 
             }
         }
