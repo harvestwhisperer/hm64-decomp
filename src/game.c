@@ -144,7 +144,7 @@ extern u8 D_80113C28[24]; // a
 extern u8 houseConstructionDays[6];
 extern u16 lifeEventHouseConstructionBits[6];
 extern u8 animalLocationsHouseConstruction[6];
-extern MemoryRead_32 D_8011F25C[];
+extern u16 D_8011F25C[80];
 
 static const s16 houseExtensionPrices[6];     
 static const s16 houseExtensionLumberCosts[6];
@@ -3563,7 +3563,6 @@ void setLetters(void) {
     }
 }
 
-// D_8011F25C
 //INCLUDE_ASM(const s32, "game", func_80063A2C);
 
 u16 func_80063A2C(u8 index) {
@@ -3600,26 +3599,13 @@ static const u16 lifeEventHouseConstructionBits[6] = { 0x10, 0x11, 0x12, 0x13, 0
 
 static const u8 animalLocationsHouseConstruction[6] = { 0x52, 0x52, 0x57, 0x52, 0x52, 0x57 };
 
-INCLUDE_RODATA(const s32, "game", D_8011F25C);
+//INCLUDE_RODATA(const s32, "game", D_8011F25C);
 
-/*
-static const u16 D_8011F25C[75] = { 
-     0, 1, 2, 3, 4, 5, 
-     8, 9, 10, 11, 12, 
-     13, 14, 15, 16, 17, 
-     18, 19, 20, 21, 22, 
-     23, 24, 25, 26, 27, 
-     28, 29, 30, 31, 32,
-     33, 34, 35, 36, 36, 
-     36, 36, 36, 36, 36,
-     36, 36, 36, 36, 36, 
-     36, 36, 36, 36, 38, 
-     39, 39, 39, 39, 39, 
-     40, 41, 42, 43, 44,
-     45, 46, 47, 47, 48, 
-     49, 50, 51, 52, 53,
-     54, 55, 58, 59, 0, 
-     0x0000 0000, 0x0000 0000 
-};
-*/
-
+static const u16 D_8011F25C[80] = {	0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09,
+                                    0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F, 0x10, 0x11, 0x12, 0x13,
+                                    0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x1A, 0x1B, 0x1C, 0x1D,
+                                    0x1E, 0x1F, 0x20, 0x21, 0x22, 0x23, 0x24, 0x24, 0x24, 0x24,
+                                    0x24, 0x24, 0x24, 0x24, 0x24, 0x24, 0x24, 0x24, 0x24, 0x24,
+                                    0x24, 0x24, 0x26, 0x27, 0x27, 0x27, 0x27, 0x27, 0x28, 0x29,
+                                    0x2A, 0x2B, 0x2C, 0x2D, 0x2E, 0x2F, 0x2F, 0x30, 0x31, 0x32,
+                                    0x33, 0x34, 0x35, 0x36, 0x37, 0x38, 0x39, 0x00, 0x00, 0x00 };
