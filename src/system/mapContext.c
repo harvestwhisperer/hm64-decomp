@@ -11,11 +11,12 @@
 extern Vec4f D_8013D248;
 extern Vec4f D_802373F8;
 
+// struct
 // flags
 extern s16 D_8017045A;
 
 extern LevelMapContext gMapModelContext[1];
-extern MapContextAddresses gMapModelAddresses[0x60];
+extern MapContextAddresses gMapModelAddresses[96];
 
 // forward declarations
 void func_8003C8D4(LevelMapContext*); 
@@ -41,7 +42,7 @@ void initializeMapContext(void) {
     // flags
     D_8017045A = 0;
     
-    for (i = 0; i < 1; i++) {
+    for (i = 0; i < MAX_MAPS; i++) {
         
         gMapModelContext[i].flags = 0;
         
@@ -302,13 +303,18 @@ bool func_8003BF7C(u16 index, u8 r, u8 g, u8 b, u8 a, s16 arg5) {
     bool result = 0;
     
     if (index == 0 &&  (gMapModelContext[index].flags & 1) && (gMapModelContext[index].flags & 2)) {
+
         func_80034738(gMapModelContext[index].mainMapIndex, r, g, b, a, arg5);
+
         D_8013D248.r = r;
         D_8013D248.g = g;
         D_8013D248.b = b;
         D_8013D248.a = a;
+        
         D_8017045A = arg5;
+        
         result = 1;
+
     }
     
     return result;
@@ -579,7 +585,7 @@ void func_8003C6E4(void) {
 
     u16 i;
 
-    for (i = 0; i < 1; i++) {
+    for (i = 0; i < MAX_MAPS; i++) {
 
         if ((gMapModelContext[i].flags & 1) && (gMapModelContext[i].flags & 4)) {
             

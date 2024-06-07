@@ -6,6 +6,8 @@
 #define FARM_ANIMAL_NAME_SCREEN 5
 #define CHICKEN_NAME_SCREEN 7
 
+#define NAME_LENGTH 6
+
 // 0x8016FBD0
 typedef struct {
     u8* name;

@@ -448,7 +448,7 @@ void setSpecialDialogues(void) {
     if (gSeason == WINTER && gDayOfMonth == 27) {
 
         if (gHarvestKing == PLAYER) {
-            setSpecialDialogueBit(PLAYER_HARVEST_KING);
+            setSpecialDialogueBit(PLAYER_HARVEST_KING_DIALOGUE);
         }
 
         toggleSpecialDialogueBit(0x138);
@@ -469,7 +469,7 @@ void setSpecialDialogues(void) {
         D_80237412 = 0;
 
     } else {
-        toggleSpecialDialogueBit(PLAYER_HARVEST_KING);
+        toggleSpecialDialogueBit(PLAYER_HARVEST_KING_DIALOGUE);
     }
 
     if (gSeason == WINTER && gDayOfMonth == 10) {
@@ -873,10 +873,12 @@ void func_8005C00C(void) {
     if (!checkDailyEventBit(0x4B)) {
         // set audio settings for level
         setLevelAudio(gBaseMapIndex, gSeason, gHour);
+        //setLevelAudio(currentMapContext.currentMapIndex, gSeason, gHour);
     }
      
     // set lighting for level based on weather
     func_8005C07C(8, 1);
+
 }
 
 // jtbl_8011EFF8
@@ -1075,8 +1077,8 @@ void func_8005CDCC(void) {
 
     setRecipes();
     
-    if (checkSpecialDialogueBit(0x22) && !checkHaveKeyItem(6)) {
-        acquireKeyItem(6);
+    if (checkSpecialDialogueBit(0x22) && !checkHaveKeyItem(DOOR_TO_HEAVEN)) {
+        acquireKeyItem(DOOR_TO_HEAVEN);
     }
     
     if (checkSpecialDialogueBit(0xB0)) {
@@ -1101,10 +1103,11 @@ void func_8005CDCC(void) {
     }
     
     if (checkSpecialDialogueBit(0x20)) {
-        setLifeEventBit(7);
+        setLifeEventBit(GAVE_BLUE_ROCK_TO_SAIBARA);
     }
+
     if (checkSpecialDialogueBit(0x84)) {
-        setLifeEventBit(6);
+        setLifeEventBit(GIVE_RICK_RARE_METAL);
     }
 }
 
@@ -2694,6 +2697,7 @@ void func_800610DC(void) {
 
 //INCLUDE_ASM(const s32, "game", func_80061178);
 
+// check if girl is ready to get married for blue feather to appear
 bool func_80061178(void) {
     
     bool result;
@@ -3022,9 +3026,6 @@ static inline void setUnknown(u8 value) {
 
 
 void func_80061A88(void) {
-
-    u8 temp;
-    u8 temp2;
     
     if (checkSpecialDialogueBit(0x138)) {
         
@@ -3098,7 +3099,7 @@ void func_80061A88(void) {
     } 
     
     if (D_801C3F37 >= 3) {
-        toggleSpecialDialogueBit(0x142);
+        toggleSpecialDialogueBit(PLAYER_HARVEST_KING_DIALOGUE);
     }
 }
 

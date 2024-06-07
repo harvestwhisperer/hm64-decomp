@@ -213,7 +213,7 @@ void handleToolUse(void) {
         case BLUE_MIST_SEEDS:
             func_800D4A34();
             break;
-        case BIRD_FEED:
+        case CHICKEN_FEED:
             func_800D4C28();
             break;
         case BALL:

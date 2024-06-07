@@ -4,6 +4,7 @@
 #include "common.h"
 
 #define MAIN_MAP_INDEX 0
+#define MAX_MAPS 1
 
 typedef struct {
     void *timg;

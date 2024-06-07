@@ -98,7 +98,7 @@ bool func_8003DBE8(u16 dialogueBoxIndex, void* arg1) {
 
             dialogueBoxes[dialogueBoxIndex].unk_90 = 0;
             dialogueBoxes[dialogueBoxIndex].unk_91 = 0;
-
+ 
             dialogueBoxes[dialogueBoxIndex].buttonSfxCounter = 0;
             dialogueBoxes[dialogueBoxIndex].flag = 0;
             dialogueBoxes[dialogueBoxIndex].margins = 0;

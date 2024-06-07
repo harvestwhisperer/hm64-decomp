@@ -31,7 +31,7 @@ extern u16 D_8016FDF0;
 extern u8 D_8016FFE8;
 // newest chicken index?
 extern u8 D_80170464;
-extern u8 D_801886CC;
+
 extern u8 D_80189054;
 extern u8 D_8018908C;
 // newest animal index (generic)?
@@ -864,11 +864,12 @@ void func_8009BB70(void) {
 
 INCLUDE_ASM(const s32, "animals", func_8009BBAC);
 
-//INCLUDE_ASM(const s32, "animals", func_8009BC44);
+INCLUDE_ASM(const s32, "animals", func_8009BC44);
 
-u8 func_8009BC44(void) {
-    return D_801886CC;
-}
+// FIXME: use dialogue box struct
+// u8 func_8009BC44(void) {
+//     return D_801886CC;
+// }
 
 //INCLUDE_ASM(const s32, "animals", func_8009BC54);
 
