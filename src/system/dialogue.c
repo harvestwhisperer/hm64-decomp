@@ -86,9 +86,9 @@ bool func_80043050(u16 arg0, u16 arg1, u16 arg2, void* arg3, void* arg4, void* a
     return result;
 }
 
-//INCLUDE_ASM(const s32, "system/dialogue", setGameVariable);
+//INCLUDE_ASM(const s32, "system/dialogue", setDialogueVariable);
 
-bool setGameVariable(u16 index, void *address, u8 numSet, s32 max) {
+bool setDialogueVariable(u16 index, void *address, u8 numSet, s32 max) {
 
     bool result = 0;
 

@@ -50,6 +50,6 @@ static inline void readMemory(u32 addr1, u32 addr2, u32 size) {
 
 }
 
-void func_8004DD7C(void *dramAddr, void *devAddr, u32 size);
+extern void func_8004DD7C(void *dramAddr, void *devAddr, u32 size);
 
 #endif

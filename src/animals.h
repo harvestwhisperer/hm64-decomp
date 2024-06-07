@@ -153,6 +153,7 @@ extern void func_8009B11C();
 extern void func_8009B1BC(void);
 extern void func_8009B25C();     
 extern u8 func_8009B2BC(u8);  
+extern u8 func_8009B320();
 extern u8 func_8009B374();
 extern u8 func_8009B3DC();  
 extern u8 func_8009B464();                                
@@ -202,5 +203,8 @@ extern u8 D_801FC155;
 // dead animal count
 // TODO: label
 extern u16 D_8013DC2E;
+
+// purchased animal type
+extern u8 D_801C4216;
 
 #endif

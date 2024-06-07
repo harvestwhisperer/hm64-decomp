@@ -69,7 +69,7 @@ void func_800337D0(void) {
     D_801FB700 = 0;
     D_801FB5CB = 0;
     
-    for (i = 0; i < 1; i++) {
+    for (i = 0; i < MAX_MAPS; i++) {
         
         mainMap[i].mapStruct9.flags = 0;
         mainMap[i].mapStruct9.unk_A = 0;
@@ -1579,7 +1579,7 @@ void func_8003A1BC(void) {
     // FIXME: shoudn't be necessary
     u32 padding[4];
     
-    for (i = 0; i < 1; i++) {
+    for (i = 0; i < MAX_MAPS; i++) {
 
         if ((mainMap[i].mapStruct9.flags & 1) && (mainMap[i].mapStruct9.flags & 2)) {
             

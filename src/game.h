@@ -8,6 +8,11 @@
 #define MAX_ANIMAL_ITEM_SHIPPED 9999
 #define MAX_TOTAL_CROPS_SHIPPED 99999
 #define MAX_TOTAL_SHIPPING 999999
+#define MAX_SEEDS 0x14
+#define MAX_CHICKEN_FEED 999
+#define MAX_BLUE_MIST_SEEDS 1
+#define MAX_FLOWER_SHOP_POINTS 100
+#define MAX_BAKERY_CARD_POINTS 100
 #define MAX_AFFECTION 0xFF
 #define TOTAL_GAME_VARIABLES 80
 
@@ -98,6 +103,7 @@ extern void func_8005C07C(s16 arg0, u16 arg1);
 extern void func_8005C940(u16, u16 callbackIndex); 
 extern void func_8005CA2C(u16, u16);   
 extern void func_8005CDCC(); 
+extern bool func_80061178(void);
 extern void func_80061690(void);
 extern u8 func_800616CC(u8);  
 extern u16 func_80063A2C(u8);

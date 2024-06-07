@@ -118,6 +118,7 @@ void setupPlayerSprite(u16 arg0, u8 resetPlayer) {
 
 //INCLUDE_ASM(const s32, "player", func_80065AA0);
 
+// handle eating/drinking
 void func_80065AA0(void) {
 
     if (gPlayer.heldItem) {
@@ -2207,7 +2208,7 @@ void func_8006E0D4(void) {
                 if (!func_80067A24(0)) {
                     resetAction();
                 }
-                D_80237410 += adjustValue(D_80237410, -1, 0x3E7);
+                D_80237410 += adjustValue(D_80237410, -1, 999);
                 if (!D_80237410) {
                     gPlayer.currentTool = 0;
                 }

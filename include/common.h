@@ -19,6 +19,4 @@ void __assert(const char* exp, const char* filename, int line);
 
 #define MAX_UNSIGNED_SHORT 65535
 
-#define NAME_LENGTH 6
-
 #endif

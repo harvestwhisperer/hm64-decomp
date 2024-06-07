@@ -38,6 +38,13 @@ typedef struct {
     u16 flags;
 } MapContextAddresses;
 
+// 0x8017044C
+typedef struct {
+	Vec3f currentWorldRotation;
+	u8 currentMapIndex; // D_80170458/gBaseMapIndex
+	u16 flags; // D_8017045A
+} CurrentMapContext;
+
 extern void initializeMapContext();      
 extern bool func_8003BA44(u16 index, u16 mapIndex, u32 *levelMap);
 extern bool func_8003BB14(u16 arg0, u16 mapIndex); 
@@ -55,6 +62,7 @@ extern bool func_8003C504(u16);
 extern bool func_8003C5C0(u16, u8, u8);
 
 extern LevelMapContext gMapModelContext[1];
+//extern CurrentMapContext currentMapContext;
 
 extern Vec4f D_802373F8;
 

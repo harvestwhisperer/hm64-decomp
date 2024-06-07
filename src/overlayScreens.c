@@ -267,7 +267,7 @@ void func_800B3BD8(void) {
 void func_800B4160(void) {
 
     // shop struct
-    if (!D_8023740F) {
+    if (!shopContext.unk_5) {
         func_8002BAD8(0x82);
         func_8002BAD8(0x83);
         func_8002BAD8(0x84);
@@ -292,13 +292,13 @@ void func_800B4238(u8 arg0) {
     
     func_8002B80C(0x87, 9, 0xFE);
     
-    if (D_8023740C[0] && D_8023740C[0] < arg0) {
+    if (shopContext.quantity != 0 && shopContext.quantity < arg0) {
         func_8002B80C(0x85, 3, 0);
     } else {
         func_8002BAD8(0x85);
     }
     
-    if (D_8023740C[0] >= 2 && arg0 >= D_8023740C[0]) {
+    if (shopContext.quantity >= 2 && arg0 >= shopContext.quantity) {
         func_8002B80C(0x86, 4, 0);
         return;
     }

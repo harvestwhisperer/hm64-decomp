@@ -462,7 +462,9 @@ void func_80059368(void) {
 
     // load current map
     func_8003BC50(0, gMapWithSeasonIndex);
+    
     setLevelGraphicsData(gBaseMapIndex);
+    //setLevelGraphicsData(currentMapContext.currentMapIndex);
     
     setPlayerAction(0xFE, 0);
     func_8006623C();

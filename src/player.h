@@ -25,7 +25,7 @@
 #define MOON_DROP_SEEDS 17
 #define PINK_CAT_MINT_SEEDS 18
 #define BLUE_MIST_SEEDS 19
-#define BIRD_FEED 20
+#define CHICKEN_FEED 20
 #define BALL 21
 #define FEEDING_BOTTLE 22
 #define FISHING_POLE 24
@@ -35,7 +35,7 @@
 #define BLUE_FEATHER 28
 #define EMPTY_BOTTLE 29
 
-/* special items */
+/* key/special items */
 #define OCARINA 1
 #define FLOWER_SHOP_CARD 2
 #define BAKERY_CARD 3
@@ -60,7 +60,14 @@
 
 // TODO: finish adding items
 /* item indices */
+#define CAKE 7
+#define PIE 8
+#define COOKIES 9
 #define TOMATO 0x10
+#define COTTON_CANDY 0x29
+#define FRIED_OCTUPUS 0x2A
+#define ROASTED_CORN 0x2B
+#define BOTTLE_WITH_WINE 0x72
 
 // TODO: finish adding actions
 /* actions */
@@ -73,6 +80,9 @@
 #define WHISTLING 19
 #define DRINKING 20
 #define CASTING_FISHING_ROD 22
+
+/* bottle contents */
+#define EMPTY 0
 
 #define TOTAL_ITEMS 67
 #define MAX_RUCKSACK_SLOTS 9
