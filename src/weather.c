@@ -3,7 +3,11 @@
 #include "weather.h"
 
 #include "system/map.h"
+#include "system/mathUtils.h"
 #include "system/sprite.h"
+
+#include "game.h"
+#include "gameStatus.h"
 
 // bss
 extern u8 gWeather;
@@ -21,6 +25,9 @@ extern u32 _rainTextureSegmentRomStart;
 extern u32 _rainTextureSegmentRomEnd;
 extern u32 _rainIndexSegmentRomStart;
 extern u32 _rainIndexSegmentRomEnd;
+
+static const u8 D_80123438[4][5];
+static const u8 D_8012344C[4][5];
 
 //INCLUDE_ASM(const s32, "weather", func_800DC360);
 
@@ -48,46 +55,43 @@ void func_800DC360(void) {
     }
 }
 
-#ifdef PERMUTER
+//INCLUDE_ASM(const s32, "weather", setForecast);
+
 void setForecast(void) {
-
+    
     u8 i;
-    u8 j;
-    u8 temp;
+    u8 currentScore;
+    u8 score;
     
-    u8 *ptr1;
-    u8 *ptr2;
-    
-    UnknownStruct struct1;
-    UnknownStruct struct2;
+    u8 buffer[4][5];
+    u8 buffer2[4][5];
 
-    // this is memcpy
-    ptr1 = (u8*)D_80123438;
-    struct1 = *(UnknownStruct*)ptr1;
-    ptr2 = (u8*)D_8012344C;
-    struct2 =* (UnknownStruct*)ptr2;
+    memcpy(buffer, D_80123438, 20);
+    memcpy(buffer2, D_8012344C, 20);
     
-    temp = getRandomNumberInRange(1, 100);
+    score = getRandomNumberInRange(1, 100);
     
+    currentScore = 0;
     i = 0;
-    j = 0;
-    
-    while (i < 5 && j < temp) {
+
+    do {
+        
         if (checkLifeEventBit(0x44) || checkLifeEventBit(0x46)) {
-            j += ptr2[gNextSeason*5 + i];
+            
+           currentScore += buffer2[gSeasonTomorrow-1][i];
+
         } else {
-            j += ptr1[gNextSeason*5 + i-5];
+
+            currentScore += buffer[gSeasonTomorrow-1][i];
         }
-        j+=i;
+        
         i++;
-    } 
+        
+    } while (i < 5 && currentScore < score);
     
     gForecast = i;
-    
+
 }
-#else
-INCLUDE_ASM(const s32, "weather", setForecast);
-#endif
 
 //INCLUDE_ASM(const s32, "weather", setWeatherLighting);
 
@@ -101,8 +105,27 @@ Vec4f setWeatherLighting(u8 weather) {
     vec.a = weatherLightingAdjustments[weather - 1][3];
         
     return vec;
+
 }
 
-INCLUDE_RODATA(const s32, "weather", D_80123438);
+//INCLUDE_RODATA(const s32, "weather", D_80123438);
 
-INCLUDE_RODATA(const s32, "weather", D_8012344C);
+// weights for weather types depending on season for forecasting
+// percents out of 100
+// i.e., sunny will be 85% of the forecasts in spring
+static const u8 D_80123438[4][5] = { 
+                            { 85, 15, 0, 0, 0 },
+							{ 85, 10, 0, 0, 5 },
+							{ 85, 15, 0, 0, 0 },
+							{ 70, 0, 30, 0, 0 } 
+                            };
+
+//INCLUDE_RODATA(const s32, "weather", D_8012344C);
+
+// alternate weights; weather vane? or every other year?
+static const u8 D_8012344C[4][5] = { 
+                        { 85, 15, 0, 0, 0 },
+                        { 85, 13, 0, 0, 2 },
+                        { 85, 15, 0, 0, 0 },
+                        { 70, 0, 30, 0, 0 } 
+                        };
