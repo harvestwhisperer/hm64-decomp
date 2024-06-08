@@ -883,7 +883,7 @@ void func_8009BC64(void) {
 
     u8 i;
 
-    for (i = 0; i < 7; i++) {
+    for (i = 0; i < MAX_CHICKEN_EGGS; i++) {
         gChickenEggs[i].unk_16 = getRandomNumberInRange(0, 3);
     }
     

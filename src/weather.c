@@ -5,12 +5,11 @@
 #include "system/map.h"
 #include "system/sprite.h"
 
-// likely bss
-u8 gWeather;
+// bss
+extern u8 gWeather;
 
 // data
-// lighting adjustments
-u8 weatherLightingAdjustments[5][4] = { 
+extern u8 weatherLightingAdjustments[5][4] = { 
     { 0xFF, 0xFF, 0xFF, 0xFF }, // sunny
     { 0xB0, 0xB0, 0xC0, 0xB0 }, // rain
     { 0xFF, 0xFF, 0xFF, 0xFF }, // rain alternate

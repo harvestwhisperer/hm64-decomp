@@ -2899,6 +2899,7 @@ void func_80061690(void) {
 
 //INCLUDE_ASM(const s32, "game", func_800616CC);
 
+// FIXME: needs refactoring
 u8 func_800616CC(u8 houseExtensionIndex) {
     
     int goldCost;
@@ -2906,10 +2907,10 @@ u8 func_800616CC(u8 houseExtensionIndex) {
     int temp1;
     int temp2;
     
-    s16 *arr;
+    s16 *arr; 
     
-    UnknownStruct costStruct = *(UnknownStruct*)houseExtensionPrices;
-    UnknownStruct lumberStruct = *(UnknownStruct*)houseExtensionLumberCosts;
+    CostData costStruct = *(CostData*)houseExtensionPrices;
+    CostData lumberStruct = *(CostData*)houseExtensionLumberCosts;
     
     arr = (s16*)(&costStruct);
     lumberCost = arr[houseExtensionIndex + 8];

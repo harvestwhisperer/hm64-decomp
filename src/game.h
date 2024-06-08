@@ -67,14 +67,10 @@ typedef struct {
     u16 unk_A;
 } Bits;
 
+// cost data
 typedef struct {
-    s16 unk_0;
-    s16 unk_2;
-    s16 unk_4;
-    s16 unk_6;
-    s16 unk_8;
-    s16 unk_A;
-} UnknownStruct;
+    s16 unk_0[6];
+} CostData;
 
 extern inline int adjustValue(int initial, int value, int max);
 

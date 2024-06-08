@@ -536,6 +536,9 @@ segments:
   #     offset1
   #     offset2
   #     etc.
+
+  # animated/character sprites
+
   - name: playerTexture
     type: bin
     dir: sprites/player
@@ -579,6 +582,9 @@ segments:
     type: bin
     dir: sprites/misc
     start: 0x631400
+
+
+  # maps
   
   # map format: 
   #   main index
@@ -1079,6 +1085,244 @@ segments:
     dir: maps/house
     start: 0xC8D5C0
 
+  
+  # map textures
+
+  - name: wavesTexture
+    type: bin
+    dir: sprites/map/beach
+    start: 0xC951A0
+  
+  - name: wavesAssetsIndex
+    type: bin
+    dir: sprites/map/beach
+    start: 0xC9D640
+
+  - name: wavesSpritesheetIndex
+    type: bin
+    dir: sprites/map/beach
+    start: 0xC9D660
+
+  - name: waterTilesTexture
+    type: bin
+    dir: sprites/map/beach
+    start: 0xC9D680
+
+  - name: waterTilesAssetsIndex
+    type: bin
+    dir: sprites/map/beach
+    start: 0xCA0DB0
+
+  - name: waterTilesSpritesheetIndex
+    type: bin
+    dir: sprites/map/beach
+    start: 0xCA0DD0
+
+  - name: boulderTexture
+    type: bin
+    dir: sprites/objects
+    start: 0xCA0DF0
+
+  - name: boulderAssetsIndex
+    type: bin
+    dir: sprites/map/beach
+    start: 0xCA3F60
+
+  - name: boulderSpritesheetIndex
+    type: bin
+    dir: sprites/map/beach
+    start: 0xCA3F80
+
+  - name: bridgeTexture
+    type: bin
+    dir: sprites/objects
+    start: 0xCA3FA0
+
+  - name: bridgeAssetsIndex
+    type: bin
+    dir: sprites/map/mountain
+    start: 0xCA4AF0
+
+  - name: bridgeSpritesheetIndex
+    type: bin
+    dir: sprites/map/mountain
+    start: 0xCA4B10
+
+  - name: stonePillarTexture
+    type: bin
+    dir: sprites/map/mountain
+    start: 0xCA4B30
+
+  - name: stonePillarAssetsIndex
+    type: bin
+    dir: sprites/map/mountain
+    start: 0xCA4FE0
+
+  - name: stonePillarSpritesheetIndex
+    type: bin
+    dir: sprites/map/mountain
+    start: 0xCA5000
+
+  - name: emptyMountainSpriteTexture
+    type: bin
+    dir: sprites/map/unknown
+    start: 0xCA5010
+
+  - name: emptyMountainSpriteIndex
+    type: bin
+    dir: sprites/map/unknown
+    start: 0xCA5030
+
+  - name: mountainPathTilesTexture
+    type: bin
+    dir: sprites/map/mountain
+    start: 0xCA5040
+
+  - name: mountainPathTilesAssetsIndex
+    type: bin
+    dir: sprites/map/mountain
+    start: 0xCA5430
+
+  - name: mountainPathTilesSpritesheetIndex
+    type: bin
+    dir: sprites/map/mountain
+    start: 0xCA5450
+
+  - name: steamTexture
+    type: bin
+    dir: sprites/map/misc
+    start: 0xCA5460
+
+  - name: steamAssetsIndex
+    type: bin
+    dir: sprites/map/misc
+    start: 0xCA7500
+
+  - name: steamSpritesheetIndex
+    type: bin
+    dir: sprites/map/misc
+    start: 0xCA7520
+
+  - name: pondWaterTexture
+    type: bin
+    dir: sprites/maps/pond
+    start: 0xCA7540
+
+  - name: pondWaterAssetsIndex
+    type: bin
+    dir: sprites/maps/pond
+    start: 0xCA87D0
+
+  - name: pondWaterSpritesheetIndex
+    type: bin
+    dir: sprites/maps/pond
+    start: 0xCA87F0
+
+  - name: festivalFlowersTexture
+    type: bin
+    dir: sprites/maps/square
+    start: 0xCA8800
+
+  - name: festivalFlowersAssetsIndex
+    type: bin
+    dir: sprites/maps/square
+    start: 0xCA90A0
+
+  - name: festivalFlowersSpritesheetIndex
+    type: bin
+    dir: sprites/maps/square
+    start: 0xCA90C0
+
+  - name: squareFountainTexture
+    type: bin
+    dir: sprites/maps/square
+    start: 0xCA90D0
+
+  - name: squareFountainAssetsIndex
+    type: bin
+    dir: sprites/maps/square
+    start: 0xCAA040
+
+  - name: squareFountainSpritesheetIndex
+    type: bin
+    dir: sprites/maps/square
+    start: 0xCAA060
+
+  - name: village2WaterTexture
+    type: bin
+    dir: sprites/maps/square
+    start: 0xCAA080
+
+  - name: village2WaterAssetsIndex
+    type: bin
+    dir: sprites/maps/square
+    start: 0xCAB010
+
+  - name: village2WaterSpritesheetIndex
+    type: bin
+    dir: sprites/maps/square
+    start: 0xCAB030
+
+  - name: miscMapSprites
+    type: bin
+    dir: sprites/objects
+    start: 0xCAB040
+
+  - name: stoneTexture
+    type: bin
+    dir: sprites/maps/bathroom
+    start: 0xCAB0D0
+
+  - name: stoneAssetsIndex
+    type: bin
+    dir: sprites/maps/bathroom
+    start: 0xCAB310
+
+  - name: stoneSpritesheetIndex
+    type: bin
+    dir: sprites/maps/bathroom
+    start: 0xCAB330
+
+  - name: vineyardTreeTexture
+    type: bin
+    dir: sprites/maps/vineyard
+    start: 0xCAB340
+
+  - name: vineyardTreeAssetsIndex
+    type: bin
+    dir: sprites/maps/vineyard
+    start: 0xCAD490
+
+  - name: vineyardTreeSpritesheetIndex
+    type: bin
+    dir: sprites/maps/vineyard
+    start: 0xCAD4B0
+
+  - name: emptyMapTexture
+    type: bin
+    dir: sprites/maps/unknown
+    start: 0xCAD4D0
+
+  - name: emptyMapAssetsIndex
+    type: bin
+    dir: sprites/maps/unknown
+    start: 0xCAD4F0 
+
+  - name: farmPondTexture
+    type: bin
+    dir: sprites/maps/house
+    start: 0xCAD500
+
+  - name: farmPondAssetsIndex
+    type: bin
+    dir: sprites/objects
+    start: 0xCAD5E0
+
+  - name: farmPondSpritesheetIndex
+    type: bin
+    dir: sprites/objects
+    start: 0xCAD600
+
   # ci4 format
   #   spritesheet
   #     index
@@ -1092,10 +1336,31 @@ segments:
   #     index
   #     asset
   #   sprite to palette map
-  - name: objectSprites
+  - name: funeralSpritesTexture
     type: bin
-    dir: sprites/objects
-    start: 0xC951A0
+    dir: sprites/cutscenes/funeral
+    start: 0xCAD610
+
+  - name: funeralSpritesIndex
+    type: bin
+    dir: sprites/cutscenes/funeral
+    start: 0xCB4D10
+
+  - name: moonMountainBackgroundTexture
+    type: bin
+    dir: sprites/background
+    start: 0xCB4D30
+
+  - name: moonMountainBackgroundIndex
+    type: bin
+    dir: sprites/background
+    start: 0xCB9920
+
+  # TODO: finish adding
+  - name: miscOverlayScreenCI4Sprites
+    type: bin
+    dir: sprites/overlayScreens
+    start: 0xCB9940
 
   - name: checkerboardBackgroundTexture
     type: bin

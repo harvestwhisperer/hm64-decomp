@@ -35,15 +35,7 @@ typedef struct {
 } Addresses;
 
 typedef struct {
-    s8 unk_0;
-    s8 unk_2;
-    s8 unk_4;
-    s8 unk_6;
-    s8 unk_8;
-    s8 unk_A;
-    s8 unk_C;
-    s8 unk_E;
-    s8 unk_F;
-} UnknownStruct4;
+    s8 unk_0[9];
+} CoordinateOffsetData;
 
 #endif

@@ -346,16 +346,16 @@ void func_80065F5C(void) {
 //INCLUDE_ASM(const s32, "player", func_80065F94);
 
 Vec3f* func_80065F94(Vec3f *arg0, f32 arg1, u8 arg2) {
-    
+     
     Vec3f vec;
-    UnknownStruct4 struct1;
-    UnknownStruct4 struct2;
+    CoordinateOffsetData struct1;
+    CoordinateOffsetData struct2;
 
     s8 *ptr;
     s8 *ptr2;
 
-    struct1 = *(UnknownStruct4*)D_8011F3F0;
-    struct2 = *(UnknownStruct4*)D_8011F3FC;
+    struct1 = *(CoordinateOffsetData*)D_8011F3F0;
+    struct2 = *(CoordinateOffsetData*)D_8011F3FC;
     
     ptr = (s8*)&struct1;
     ptr2 = (s8*)&struct2;

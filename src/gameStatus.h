@@ -78,6 +78,7 @@
 #define BASIL_IN_TOWN 0x40
 #define CLIFF_ARRIVED 0x41
 #define HAVE_OCARINA 0x43
+// #define 0x45 = mountain boulder
 // #define SMASHED_POND_BOULDER 0x46
 // #define HAVE_TURTLE 0x47
 #define BRIDGE_COMPLETED 0x48
