@@ -3,6 +3,8 @@
 
 #include "common.h"
 
+#include "system/mapContext.h"
+
 #define MAIN_MAP_INDEX 0
 #define MAX_MAPS 1
 
@@ -93,15 +95,15 @@ typedef struct {
 } UnknownMapStruct3;
 
 // D_80141A18
-// objects
+// map objects sprite info
 typedef struct {
-    Vec3f unk_0; // 0xA18
+    Vec3f coordinates; // 0xA18, coordinates
     u16 spriteIndex; // 0xA24
     u16 unk_E; // 0xA26
     u8 unk_10; // 0xA28
     u8 unk_11; // 0xA29
     volatile u8 flags; // 0xA2A
-} UnknownMapStruct4;
+} MapObject;
 
 // 80141B64
 typedef struct {
@@ -117,22 +119,22 @@ typedef struct {
 // map spawnable sprites
 // loads textures at 0xD8B1D0
 typedef struct {
-    u32 *textureIndex; // 0x98
-    u32 *paletteIndex; // 0x9C
-    u8 *spriteToPaletteIndex; // 0xA0
+    u32 *textureIndex; // 0xC98
+    u32 *paletteIndex; // 0xC9C
+    u8 *spriteToPaletteIndex; // 0xCA0
     // sprite indices
-    u8 unk_10; // 0xA4
-    u8 unk_11; // 0xA5
-    u8 unk_12; // 0xA6
+    u8 unk_10; // 0xCA4
+    u8 unk_11; // 0xCA5
+    u8 unk_12; // 0xCA6
     // map grid for sprite mapping
-    u16 arr[0x40]; // 0xA8
-    u16 arr2[0x40]; // 0x40E8
-} UnknownMapStruct6;
+    u16 arr[0x40]; // 0xCA8
+    u16 arr2[3][0x1E0]; // 0xD28
+} GroundObjects;
 
 // D_80142868
 // map additions
 typedef struct {
-    u16 arr1[16];
+    u16 arr1[16]; // 0x80142868
     u16 arr2[16]; // 0x80142888
     u16 unk_40; // 0x801428A8
     u16 unk_42; // 0x801428AA
@@ -191,20 +193,18 @@ typedef struct  {
     void *unk_14; // index + tile palette
     void *unk_18; // index + ci sprites
     void *unk_1C; // index + palette
-    void *unk_20; // param 2 of func_800388A4
-    UnknownMapStruct1 mapStruct1; // 0x24, vertex/mesh info
+    void *unk_20; // param 2 of func_800388A4, 0x8013DC60
+    UnknownMapStruct1 mapStruct1; // 0x24, vertex/mesh info, 0x8013DC64
     MapVtx vtxs[1024]; // 0x30 // map model vertices
-    u16 unk_arr[0x50]; // 0x3030
+    u16 unkArr[0x50]; // 0x3030, corresponds to D_80204B48
     u16 unk_30D0;
-    u16 unk_30D2;
-    u32 padding2[0x31E];
+    u16 unk_30D2[0x63C];
     UnknownMapStruct2 mapStruct2; // 0x3D4C
     UnknownMapStruct3 mapStruct3[0x10]; // 0x3D98 // related to tile bitmaps/compressed vecs
-    UnknownMapStruct4 mapStruct4[12]; // 0x3DD8 // objects
+    MapObject mapObjects[12]; // 0x3DD8
     u32 padding4[0x14];
     UnknownMapStruct5 mapStruct5[0x10];
-    UnknownMapStruct6 mapStruct6; // 0x4058;
-    u32 padding6[0x2B0]; // 0x4168, 0x80141DA8
+    GroundObjects groundObjects; // 0x4058;
     // 0x44A8 / 0x801420E8: array
     UnknownMapStruct7 mapStruct7[0x20]; // 0x4C28 
     MapBitmap mapBitmaps[0x38]; // 0x5528
@@ -221,7 +221,7 @@ typedef struct  {
 
 
 extern void func_800337D0(void);    
-extern bool func_80033A90(u16, u16*, void*, void*, void *, void*, void*, void*, void*, void*, void*);
+extern bool func_80033A90(u16 mapIndex, LevelMapContext* arg1, void* arg2, void* arg3, void* arg4, void* arg5, void* arg6, void* arg7, void* arg8, void* arg9, void *argA);
 extern bool func_80034090(u16 mapIndex);  
 extern bool func_8003423C(u16, f32, f32, f32);
 extern bool func_80034298(u16, f32, f32, f32);   
@@ -230,7 +230,7 @@ extern bool func_80034350(u16 arg0, u8 arg1, u8 arg2, u8 arg3, u8 arg4);
 extern bool func_800343FC(u16 mapIndex, u8 arg1, u8 arg2, u8 arg3, u8 arg4, f32 arg5, f32 arg6, f32 arg7, u8 arg8);
 extern bool func_800345E8(u16 mapIndex, f32 arg1, f32 arg2, f32 arg3);
 extern bool func_80034738(u16 mapIndex, u8 r, u8 g, u8 b, u8 a, s16 arg5);
-extern bool func_80034C40(u16 arg0, u8 arg1, u16 arg2, u16 arg3, f32 arg4, f32 arg5, f32 arg6, u8 arg7, u8 arg8, u8 arg9, u8 argA);
+extern bool func_80034C40(u16 mapIndex, u8 index, u16 spriteIndex, u16 arg3, f32 arg4, f32 arg5, f32 arg6, u8 arg7, u8 arg8, u8 arg9, u8 argA);
 extern bool func_80034D64(u16 arg0, u8 arg1, u16 arg2, u16 arg3);
 extern bool func_80034DC8(u16, u8, u16);
 extern bool func_80034E64(u16, u8);     
@@ -243,8 +243,8 @@ extern Vec3f* func_800359C8(Vec3f* arg0, MainMap* arg1, f32 arg2, f32 arg3);
 extern u8 func_80036318(u16, f32, f32);
 extern Vec3f* func_80036610(Vec3f*, u16, f32, f32);   
 extern Vec3f* func_800366F4(Vec3f* arg0, u16 mapIndex, f32 arg2, f32 arg3);
-extern u16 func_80036880(u32, f32, f32);  
-extern void func_80036980(u16, u16, f32, f32);
+extern u16 func_80036880(u16, f32, f32);  
+extern bool func_80036980(u16, u16, f32, f32);
 extern bool func_80036A84(u16);      
 extern void func_80036C08(u16);                                 
 extern void func_80036FA0(u16); 

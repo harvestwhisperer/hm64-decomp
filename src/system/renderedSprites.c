@@ -1357,6 +1357,8 @@ u16 func_80030CB0(u16 spriteIndex, f32 arg1, f32 arg2) {
 
 //INCLUDE_ASM(const s32, "system/renderedSprites", func_80030DB0);
 
+// unused
+// map ground objects
 bool func_80030DB0(u16 spriteIndex, f32 arg1, f32 arg2, u16 arg3) {
 
     // FIXME: shouldn't be necessary
