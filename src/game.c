@@ -2899,48 +2899,35 @@ void func_80061690(void) {
 
 //INCLUDE_ASM(const s32, "game", func_800616CC);
 
-// FIXME: needs refactoring
 u8 func_800616CC(u8 houseExtensionIndex) {
-    
-    int goldCost;
-    int lumberCost;
-    int temp1;
-    int temp2;
-    
-    s16 *arr; 
-    
-    CostData costStruct = *(CostData*)houseExtensionPrices;
-    CostData lumberStruct = *(CostData*)houseExtensionLumberCosts;
-    
-    arr = (s16*)(&costStruct);
-    lumberCost = arr[houseExtensionIndex + 8];
-    
-    temp1 = adjustValue(gLumber, lumberCost, 999);
 
-    if (temp1 == lumberCost) {    
-          
-        goldCost = arr[houseExtensionIndex];
-        temp2 = adjustValue(gGold, goldCost, 999999);
+    s16 prices[6];
+    s16 lumberCosts[6];
 
-        temp1 = 1;
+    memcpy(prices, houseExtensionPrices, 12);
+    memcpy(lumberCosts, houseExtensionLumberCosts, 12);
+
+    if (adjustValue(gLumber, lumberCosts[houseExtensionIndex], MAX_LUMBER) == lumberCosts[houseExtensionIndex]) {
         
-        if (temp2 == goldCost) {
+        if (adjustValue(gGold, prices[houseExtensionIndex], MAX_GOLD) == prices[houseExtensionIndex]) {
 
-            gLumber += adjustValue(gLumber, lumberCost, 999);
-            gGold += adjustValue(gGold, arr[houseExtensionIndex], 999999);
+            gLumber += adjustValue(gLumber, lumberCosts[houseExtensionIndex], MAX_LUMBER);
+            gGold += adjustValue(gGold, prices[houseExtensionIndex], MAX_GOLD);
 
             houseExtensionConstructionCounter = 0;
-            setDailyEventBit(9);
-                
-            return 0; 
             
+            setDailyEventBit(9);
+            
+            return 0;
+
+        } else {
+            return 1;
         }
-        
-        return temp1;
-        
     }
-    
+
+
     return 2;
+    
 }
 
 // func_80061860
@@ -3220,6 +3207,47 @@ void setRecipes(void) {
 
 u8 handleHouseConstruction(u8 day) {
 
+    u8 result;
+    
+    u8 buffer1[6];
+    u16 buffer2[8];
+    u8 buffer3[6];
+
+    memcpy(buffer1, houseConstructionDays, 6);
+    memcpy(buffer2, lifeEventHouseConstructionBits, 12);
+    memcpy(buffer3, animalLocationsHouseConstruction, 6);
+
+    result = 0;
+
+    if (checkLifeEventBit(HOUSE_EXTENSION_CONSTRUCTION)) {
+
+        if (houseExtensionConstructionCounter >= buffer1[day]) {
+
+            toggleLifeEventBit(HOUSE_EXTENSION_CONSTRUCTION);
+            setDailyEventBit(CARPENTER_FINISHED);
+            setLifeEventBit(buffer2[day]);
+
+            if (day == 3) {
+                toggleLifeEventBit(0xD7);
+            }
+
+            setAnimalLocations(buffer3[day]);
+            result = 1;
+            
+            result = 1;
+            
+        }
+        
+    }
+
+    return result;
+
+}
+
+// alternate without memcpy
+/*
+u8 handleHouseConstruction(u8 day) {
+
     u8 *dayArrayPtr;
     u8 *animalLocationsArrayPtr;
     
@@ -3258,6 +3286,7 @@ u8 handleHouseConstruction(u8 day) {
     
     return result;
 }
+*/
 
 // func_8006252C
 //INCLUDE_ASM(const s32, "game", setLetters);

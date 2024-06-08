@@ -44,17 +44,6 @@ typedef struct {
     u8 unk_12;
 } UnknownGraphicsStruct;
 
-typedef struct {
-    f32 angle1;
-    f32 angle2;
-    f32 angle3;
-    f32 angle4;
-    f32 angle5;
-    f32 angle6;
-    f32 angle7;
-    f32 angle8;
-} Angles;
-
 extern f32 sinfRadians(f32);
 extern f32 cosfRadians(f32);
 void setBitmapFormat(Bitmap *sprite, Texture *timg, u16 *palette);

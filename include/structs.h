@@ -34,8 +34,4 @@ typedef struct {
     u32 romAddrEnd;
 } Addresses;
 
-typedef struct {
-    s8 unk_0[9];
-} CoordinateOffsetData;
-
 #endif

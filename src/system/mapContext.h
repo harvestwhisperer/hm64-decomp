@@ -62,6 +62,8 @@ extern bool func_8003C504(u16);
 extern bool func_8003C5C0(u16, u8, u8);
 
 extern LevelMapContext gMapModelContext[1];
+
+// 0x8017044C
 //extern CurrentMapContext currentMapContext;
 
 extern Vec4f D_802373F8;

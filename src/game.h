@@ -4,6 +4,7 @@
 #include "common.h"
 
 #define MAX_GOLD 999999
+#define MAX_LUMBER 999
 #define MAX_ITEM_SHIPPING_VALUE 999
 #define MAX_ANIMAL_ITEM_SHIPPED 9999
 #define MAX_TOTAL_CROPS_SHIPPED 99999
@@ -48,29 +49,6 @@ typedef struct {
 	u32 maxValue;
 	u8 set;
 } GameVariable;
-
-typedef struct {
-    u8 unk_0;
-    u8 unk_1;
-    u8 unk_2;
-    u8 unk_3;
-    u8 unk_4;
-    u8 unk_5; 
-} Days;
-
-typedef struct {
-    u16 unk_0;
-    u16 unk_2;
-    u16 unk_4;
-    u16 unk_6;
-    u16 unk_8;
-    u16 unk_A;
-} Bits;
-
-// cost data
-typedef struct {
-    s16 unk_0[6];
-} CostData;
 
 extern inline int adjustValue(int initial, int value, int max);
 

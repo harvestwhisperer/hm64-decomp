@@ -242,7 +242,8 @@ void setLevelGraphicsData(u16 mapIndex) {
     
     func_80036C08(MAIN_MAP_INDEX);
 
-    func_80036FA0(0);
+    func_80036FA0(MAIN_MAP_INDEX);
+
 }
  
 //INCLUDE_ASM(const s32, "level", setLevelAudio);
@@ -270,7 +271,7 @@ void setLevelAudio(u16 mapIndex, u8 season, u8 hour) {
         
     } else {
 
-        if (hour >= 6 || gBaseMapIndex == 9) {
+        if (hour >= 6 || gBaseMapIndex == BEACH) {
             
             offset = 0;
             
@@ -1088,11 +1089,11 @@ void func_80073244(u8 itemIndex) {
 
     *(Vec2f*)ptr = *(Vec2f*)ptr2;
 
-    func_8002B138(itemIndex +  0x62, &_homeItemsTextureSegmentRomStart, &_homeItemsTextureSegmentRomEnd, &_homeItemsAssetsIndexSegmentRomStart, &_homeItemsAssetsIndexSegmentRomEnd, &_homeItemsSpritesheetIndexSegmentRomStart, &_homeItemsSpritesheetIndexSegmentRomEnd, (void*)0x802E4000, (void*)0x802E4D00, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
-    func_8002BD90(itemIndex +  0x62, 1.0f, 1.0f, 1.0f);
-    func_8002C7EC(itemIndex +  0x62, 3);
-    func_8002C85C(itemIndex +  0x62, 0xFF, 0xFF, 0xFF, 0xFF);
-    func_8002C914(itemIndex +  0x62, 0xFF, 0xFF, 0xFF, 0xFF);
+    func_8002B138(itemIndex + 0x62, &_homeItemsTextureSegmentRomStart, &_homeItemsTextureSegmentRomEnd, &_homeItemsAssetsIndexSegmentRomStart, &_homeItemsAssetsIndexSegmentRomEnd, &_homeItemsSpritesheetIndexSegmentRomStart, &_homeItemsSpritesheetIndexSegmentRomEnd, (void*)0x802E4000, (void*)0x802E4D00, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
+    func_8002BD90(itemIndex + 0x62, 1.0f, 1.0f, 1.0f);
+    func_8002C7EC(itemIndex + 0x62, 3);
+    func_8002C85C(itemIndex + 0x62, 0xFF, 0xFF, 0xFF, 0xFF);
+    func_8002C914(itemIndex + 0x62, 0xFF, 0xFF, 0xFF, 0xFF);
 
     func_80034C40(MAIN_MAP_INDEX, itemIndex, itemIndex + 0x62, 0xC, arr[itemIndex].x, arr[itemIndex].y, arr[itemIndex].z, 0xFF, 0xFF, 0, 0);
     

@@ -61,6 +61,7 @@ void setForecast(void) {
     UnknownStruct struct1;
     UnknownStruct struct2;
 
+    // this is memcpy
     ptr1 = (u8*)D_80123438;
     struct1 = *(UnknownStruct*)ptr1;
     ptr2 = (u8*)D_8012344C;
@@ -102,7 +103,6 @@ Vec4f setWeatherLighting(u8 weather) {
     return vec;
 }
 
-// static const u8 D_80123438[20];
 INCLUDE_RODATA(const s32, "weather", D_80123438);
 
 INCLUDE_RODATA(const s32, "weather", D_8012344C);
