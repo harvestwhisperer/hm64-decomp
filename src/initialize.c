@@ -534,7 +534,7 @@ void initializeGameVariables(void) {
     
     gWeather = SUNNY;
     gForecast = SUNNY;
-    gNextSeason = SPRING;
+    gSeasonTomorrow = SPRING;
 
     D_80205230.unk_6 = 0;
     D_80205230.unk_2 = 0;

@@ -22,7 +22,7 @@ extern u8 gMinutes;
 extern u8 gDayOfWeek;
 extern u8 gDayOfMonth;
 extern u8 gSeason;
-extern u8 gNextSeason;
+extern u8 gSeasonTomorrow;
 extern u8 gYear;
 
 extern u8 gCurrentSeasonName[6];
@@ -134,14 +134,14 @@ void updateClock(u8 incrementSeconds) {
         gYear = 99;
     }
     
-    gNextSeason = gSeason;
+    gSeasonTomorrow = gSeason;
     
     if ((gDayOfMonth + 1) >= 31) {
-        gNextSeason = gSeason + 1;
+        gSeasonTomorrow = gSeason + 1;
     }
     
-    if (gNextSeason >= 5) {
-        gNextSeason = SPRING;
+    if (gSeasonTomorrow >= 5) {
+        gSeasonTomorrow = SPRING;
     }
 }
 

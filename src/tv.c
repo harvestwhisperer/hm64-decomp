@@ -239,7 +239,7 @@ void func_800D897C(void) {
             tvContext.dialogueIndex = 0xFF;
             break;
         case SUNNY_FORECAST:
-            switch (gNextSeason) {                      
+            switch (gSeasonTomorrow) {                      
                 default:                                    
                     break;
                 case SPRING:                                     
@@ -257,7 +257,7 @@ void func_800D897C(void) {
                 }
             break;
         case RAIN_FORECAST:
-             switch (gNextSeason) {                      
+             switch (gSeasonTomorrow) {                      
                 default:                                    
                     break;
                 case SPRING:                                     

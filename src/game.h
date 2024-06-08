@@ -108,7 +108,7 @@ extern u8 gMinutes;
 extern u8 gDayOfWeek;
 extern u8 gDayOfMonth;
 extern u8 gSeason;
-extern u8 gNextSeason;
+extern u8 gSeasonTomorrow;
 extern u8 gYear;
 
 extern u8 gWife;
