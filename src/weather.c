@@ -114,18 +114,18 @@ Vec4f setWeatherLighting(u8 weather) {
 // percents out of 100
 // i.e., sunny will be 85% of the forecasts in spring
 static const u8 D_80123438[4][5] = { 
-                            { 85, 15, 0, 0, 0 },
-							{ 85, 10, 0, 0, 5 },
-							{ 85, 15, 0, 0, 0 },
-							{ 70, 0, 30, 0, 0 } 
-                            };
+            { 85, 15, 0, 0, 0 },
+            { 85, 10, 0, 0, 5 },
+            { 85, 15, 0, 0, 0 },
+            { 70, 0, 30, 0, 0 } 
+            };
 
 //INCLUDE_RODATA(const s32, "weather", D_8012344C);
 
 // alternate weights; weather vane? or every other year?
 static const u8 D_8012344C[4][5] = { 
-                        { 85, 15, 0, 0, 0 },
-                        { 85, 13, 0, 0, 2 },
-                        { 85, 15, 0, 0, 0 },
-                        { 70, 0, 30, 0, 0 } 
-                        };
+            { 85, 15, 0, 0, 0 },
+            { 85, 13, 0, 0, 2 },
+            { 85, 15, 0, 0, 0 },
+            { 70, 0, 30, 0, 0 } 
+            };
