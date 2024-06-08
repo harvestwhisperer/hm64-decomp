@@ -346,6 +346,39 @@ void func_80065F5C(void) {
 //INCLUDE_ASM(const s32, "player", func_80065F94);
 
 Vec3f* func_80065F94(Vec3f *arg0, f32 arg1, u8 arg2) {
+    
+    Vec3f vec;
+
+    s8 buffer[10];
+    s8 buffer2[10];
+
+    memcpy(buffer, D_8011F3F0, 9);
+    memcpy(buffer2, D_8011F3FC, 9);
+    
+    func_800315A0(&vec, 0);
+
+    if (vec.y != MAX_UNSIGNED_SHORT) {
+
+        vec.x += buffer[(renderedSprites[PLAYER].direction + func_8003C1A4(gMainMapIndex)) % 8] * arg1;
+        vec.z += buffer2[(renderedSprites[PLAYER].direction + func_8003C1A4(gMainMapIndex)) % 8] * arg1;
+
+        if (arg2 != 8) {
+            
+            vec.x += buffer[((renderedSprites[PLAYER].direction + func_8003C1A4(gMainMapIndex)+ arg2) % 8)];
+            vec.z += buffer2[((renderedSprites[PLAYER].direction + func_8003C1A4(gMainMapIndex) + arg2) % 8)];
+            
+        }
+    }
+
+    *arg0 = vec;
+    
+    return arg0;
+    
+}
+
+// alternate without memcpy
+/*
+Vec3f* func_80065F94(Vec3f *arg0, f32 arg1, u8 arg2) {
      
     Vec3f vec;
     CoordinateOffsetData struct1;
@@ -362,7 +395,7 @@ Vec3f* func_80065F94(Vec3f *arg0, f32 arg1, u8 arg2) {
 
     func_800315A0(&vec, 0);
 
-    if (vec.y != MAX_UNSIGNED_SHORT) {
+    if (vec.y != MAX_UNSIGNED_SHORT) {D_8011F3F0
 
         vec.x += ptr[(renderedSprites[PLAYER].direction + func_8003C1A4(gMainMapIndex)) % 8] * arg1;
         vec.z += ptr2[(renderedSprites[PLAYER].direction + func_8003C1A4(gMainMapIndex)) % 8] * arg1;
@@ -379,6 +412,7 @@ Vec3f* func_80065F94(Vec3f *arg0, f32 arg1, u8 arg2) {
     
     return arg0;
 }
+*/
 
 //INCLUDE_ASM(const s32, "player", setPlayerAction);
 

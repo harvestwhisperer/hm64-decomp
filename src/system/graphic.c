@@ -564,8 +564,7 @@ static const f32 D_8011EC90[8] = { 0.0f, 315.0f, 270.0f, 225.0f, 180.0f, 135.0f,
 
 Vec3f* func_80028520(Vec3f *arg0, f32 arg1, u8 arg2, f32 arg3) {
 
-    Angles angles;
-    f32 *ptr;
+    f32 buffer[8];
 
     f32 sinX;
     f32 cosX;
@@ -587,9 +586,8 @@ Vec3f* func_80028520(Vec3f *arg0, f32 arg1, u8 arg2, f32 arg3) {
     f32 x;
     f32 y;
     f32 z;
-    
-    angles = *(Angles*)D_8011EC90;
-    ptr = (f32*)&angles;
+
+    memcpy(buffer, D_8011EC90, 32);
     
     if (arg2 != 0xFF) {
 
@@ -598,7 +596,7 @@ Vec3f* func_80028520(Vec3f *arg0, f32 arg1, u8 arg2, f32 arg3) {
         vec1.z = arg1;
 
         vec3.x = 0.0f;
-        vec3.y = ptr[arg2];
+        vec3.y = buffer[arg2];
         vec3.z = 0.0f;
 
         vec4 = vec1;
@@ -666,14 +664,13 @@ Vec3f* func_80028520(Vec3f *arg0, f32 arg1, u8 arg2, f32 arg3) {
 //INCLUDE_ASM(const s32, "system/graphic", func_80028820);
 
 f32 func_80028820(u8 arg0) {
-    
-    Angles angles;
-    f32 *ptr;
-    
-    angles = *(Angles*)D_8011EC90;
-    ptr = (f32*)&angles;
 
-    return ptr[arg0];
+    f32 buffer[8];
+
+    memcpy(buffer, D_8011EC90, 32);
+    
+    return buffer[arg0];
+
 }
  
 //INCLUDE_ASM(const s32, "system/graphic", func_80028888);

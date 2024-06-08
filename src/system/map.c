@@ -751,7 +751,7 @@ bool func_80035914(u16 mapIndex, f32 arg1, f32 arg2) {
         func_800366F4(&vec, 0, arg1, arg2);
 
         if (vec.y != MAX_UNSIGNED_SHORT) {
-            result = func_80036880(0, vec.x, vec.z) != 0;
+            result = func_80036880(MAIN_MAP_INDEX, vec.x, vec.z) != 0;
         }
 
     }
@@ -1496,7 +1496,7 @@ bool func_80038810(u16 mapIndex) {
     if (mapIndex == MAIN_MAP_INDEX && (mainMap[mapIndex].mapStruct9.flags & 1)) {
         if (!(mainMap[mapIndex].mapStruct9.flags & 2)) {
             mainMap[mapIndex].mapStruct9.flags |= 2;
-            func_80036FA0(0);
+            func_80036FA0(MAIN_MAP_INDEX);
         }
     }
 
@@ -1641,7 +1641,7 @@ bool func_80038AE0(u16 mapIndex, u16 arg1) {
 
     if (mapIndex == MAIN_MAP_INDEX && mainMap[mapIndex].mapStruct9.flags & 1) {
 
-        func_800360BC(0, mainMap[mapIndex].mapStruct7[arg1].arr1[0], mainMap[mapIndex].mapStruct7[arg1].unk_44, mainMap[mapIndex].mapStruct7[arg1].unk_45, 0);
+        func_800360BC(MAIN_MAP_INDEX, mainMap[mapIndex].mapStruct7[arg1].arr1[0], mainMap[mapIndex].mapStruct7[arg1].unk_44, mainMap[mapIndex].mapStruct7[arg1].unk_45, 0);
         
         result = 1;
 
@@ -2020,7 +2020,7 @@ Vec3f* func_8003AF58(Vec3f* arg0, u16 arg1, u8 arg2, u8 arg3) {
 
     temp2 = mainMap[arg1].mapStruct1.unk_9; vec.z = ((arg3 * temp2) - mainMap[arg1].mapStruct9.unk_4) + (mainMap[arg1].mapStruct1.unk_9 / 2);
     
-    vec.y = func_80035150(0, vec.x, vec.z);
+    vec.y = func_80035150(MAIN_MAP_INDEX, vec.x, vec.z);
     
     if (arg2 < mainMap[arg1].groundObjects.unk_10 || arg3 < mainMap[arg1].groundObjects.unk_11 || arg2 >= mainMap[arg1].groundObjects.unk_10 + 0x14 || arg3 >= mainMap[arg1].groundObjects.unk_11 + 0x18) {
         vec.y = 65535.0f;
