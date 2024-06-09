@@ -273,7 +273,7 @@ u8 func_80075374(u8 npcIndex, int arg1) {
         func_8002FF38(npcInfoArray[npcIndex].spriteIndex, 0);
     
         setSpriteDirection(npcInfoArray[npcIndex].spriteIndex, (npcInfoArray[npcIndex].direction + 8 - func_8003C1A4(MAIN_MAP_INDEX)) % 8);
-        func_8002FD80(npcInfoArray[npcIndex].spriteIndex, npcInfoArray[npcIndex].currentCoordinates.x, npcInfoArray[npcIndex].currentCoordinates.y, npcInfoArray[npcIndex].currentCoordinates.z);
+        setSpriteStartingCoordinates(npcInfoArray[npcIndex].spriteIndex, npcInfoArray[npcIndex].currentCoordinates.x, npcInfoArray[npcIndex].currentCoordinates.y, npcInfoArray[npcIndex].currentCoordinates.z);
     
         if (npcInfoArray[npcIndex].flags & 8) {
             switch (npcIndex) {                   

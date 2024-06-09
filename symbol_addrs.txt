@@ -364,6 +364,7 @@ n_aspMainTextStart = 0x801108F0;
 setup_rspstate = 0x80112A38;
 setup_rdpstate = 0x80112A10;
 rdpstateinit_dl = 0x80112928;
+viewportDL = 0x80112A60;
 
 // lib data
 
@@ -706,6 +707,8 @@ D_801142E0 = 0x801142E0; // size:0x180
 
 // bss
 
+demoCutsceneIndex = 0x801C3F50;
+
 gWifeName = 0x801C3F51;
 
 nuGfxUcode = 0x801C3F74;
@@ -739,6 +742,7 @@ getAbsoluteValue = 0x80026850;
 graphicsInit = 0x800268F0;
 drawFrame = 0x80026A98;
 startGfxTask = 0x80026AE4;
+doViewportGfxTask = 0x80026BE0;
 setBitmapFormat = 0x80026E78;
 sinfRadians = 0x800278F0;
 cosfRadians = 0x80027920;
@@ -758,10 +762,23 @@ initializeWorldGraphics = 0x80029170;
 resetSpriteCounter = 0x80029284;
 initializeBitmaps = 0x80029B30;
 initializeGlobalSprites = 0x8002AFE0;
+setSpriteShrinkFactor = 0x8002BD0C;
+setSpriteScale = 0x8002BD90;
+setSpriteDefaultRGBA = 0x8002C85C;
 initializeNpcSpriteStructs = 0x8002DC70;
 setSpriteAnimation = 0x8002F3F0;
 setSpriteDirection = 0x8002F684;
 setSpriteCollisionBuffers = 0x8002FF9C;
+adjustSpriteShrinkFactor = 0x8002BE98;
+setSpriteStartingCoordinates = 0x8002FD80;
+
+setMapTranslation = 0x8003423C;
+setMapRotation = 0x800342F4;
+setMapScale = 0x80034298;
+setMapRGBA = 0x80034350;
+adjustMapTranslation = 0x800344E8;
+adjustMapRotation = 0x800345E8;
+adjustMapRGBA = 0x80034668;
 
 initializeMapContext = 0x8003B870;
 setMapModelAddresses = 0x8003B9DC;
@@ -798,6 +815,7 @@ mainGameLoopCallback = 0x80055E20;
 startNewDay = 0x80059428;
 setSpecialDialogues = 0x8005A708;
 resetDailyBits = 0x8005ABBC;
+recruitSpiritFestivalAssistants = 0x80061A88;
 adjustValue = 0x8005AE64;
 
 showTextBox = 0x8005AE8C;
@@ -814,6 +832,7 @@ setRecipes = 0x80062084;
 handleHouseConstruction = 0x800623E4;
 setLetters = 0x8006252C;
 handleWifeMorningHelp = 0x80063AF0;
+
 setAlbumPicture = 0x80065404;
 setDailyEventBit = 0x80065074;
 toggleDailyEventBit = 0x800650A8;
@@ -828,13 +847,16 @@ toggleReadLetterBit = 0x80065270;
 checkMailRead = 0x800652A8;
 setMail = 0x800652D4;
 getSumNpcAffection = 0x80065774;
+
 setupPlayerSprite = 0x800657D0;
+handleEatingAndDrinking = 0x80065AA0;
 addItemToRucksack = 0x80065B74;
 removeTool = 0x80065D18;
 acquireKeyItem = 0x80065DCC;
 removeKeyItem = 0x80065E24;
 checkHaveTool = 0x80065E80;
 checkHaveKeyItem = 0x80065F10;
+handleFishingRodUse = 0x8006BC84;
 setPlayerAction = 0x800661FC; 
 checkFatigueLevel = 0x800679EC;
 setEntrance = 0x8006E820;
@@ -914,6 +936,7 @@ initializeTitleScreen = 0x800DE3C0;
 loadDogTitleSprite = 0x800DFF64;
 
 titleScreenMainLoopCallback = 0x800E00A4;
+updateGrassAnimation = 0x800E0FEC;
 
 
 // data
@@ -951,6 +974,7 @@ __muldi3 = 0x80110454;
 cutsceneCallbacksTable = 0x801133D0; // size:0x62
 
 levelFlags = 0x80114460;
+levelToMusicMappings = 0x801144C0;
 cutsceneMapAddresses = 0x80114AF0;
 
 waveTableAddresses = 0x801162F0;
@@ -1074,9 +1098,11 @@ albumBits = 0x80189058;
 
 gPlayer = 0x80189060; // size:0x78
 gBabyAge = 0x80189134;
+dailyEventBits = 0x80189140; // size:0x80
 popuriGrayPregnancyCounter = 0x801891C4;
 gBabyName = 0x8018981E; // size:0x6
-dailyEventBits = 0x80189140; // size:0x80
+toolUse = 0x80189828; // size:0x14
+totalFishCaught = 0x80189838;
 
 nuContData = 0x80189840;
 gLumber = 0x80189E50;
@@ -1096,6 +1122,7 @@ bitmapCounter = 0x801C3E2A;
 gCutsceneIndex = 0x801C3B66;
 gChickens = 0x801C3BF0; // size:0x1B0
 previousEntranceIndex = 0x801C3E20;
+numberOfSpiritFestivalAssistantsRecruited = 0x801C3F37;
 readMailBits = 0x801C3F38;
 gFlowerFestivalGoddess = 0x801C3F44;
 blueMistFlowerPlot = 0x801C3F45;
@@ -1131,6 +1158,7 @@ gSfx = 0x801FB690;
 mariaHarrisNewlywedCounter = 0X801FB9A4;
 npcInfoArray = 0x801FB9D0; // size:0x780
 
+spiritFestivalAssistant2 = 0x801FC150;
 houseExtensionConstructionCounter = 0x801FC151;
 renderedSprites = 0x801FC160; // size:0x14AC
 
@@ -1138,6 +1166,7 @@ gGold = 0x801FD60C;
 gMainMapIndex = 0x801FD610;
 karenKaiBabyAge = 0x801FD618;
 gSeasonTomorrow = 0x801FD620;
+spiritFestivalAssistant1 = 0x801FD621;
 gCurrentSongIndex = 0x801FD622;
 globalSprites = 0x801FD630; // size:0x7500
 mus_init_bank = 0x80204B30;
@@ -1173,6 +1202,7 @@ gSeconds = 0x80215DF2;
 gTotalCropsShipped = 0x80215DFC;
 gHouseExtensionSelection = 0x8021E6D1;
 gFarmName = 0x8021E6D2;
+powerNutBits = 0x80215EB8;
 gElliGrievingCounter = 0x80215EC0;
 
 gEntranceIndex = 0x802231C0; 
@@ -1184,6 +1214,7 @@ gWeather = 0x802373A9;
 gItemBeingHeld = 0x802373C8;
 flowerShopPoints = 0x802373F0;
 gHarvestCoinFinder = 0x80237409;
+spiritFestivalAssistant3 = 0x80237412;
 shopContext = 0x8023740A; // size:0x6
 gWife = 0x802373E9;
 

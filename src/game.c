@@ -25,6 +25,7 @@
 #include "player.h"
 #include "setCutscenes.h"
 #include "shop.h"
+#include "spriteIndices.h"
 #include "updateGame.h"
 #include "weather.h"
 
@@ -85,11 +86,11 @@ extern u8 D_801C3F97;
 extern u8 D_801C3F98;
 extern u8 D_801C3F99;
 
-extern u8 D_801C3F37;
-extern u8 D_801FC150;
+extern u8 numberOfSpiritFestivalAssistantsRecruited;
+extern u8 spiritFestivalAssistant2;
 extern u8 D_801FC15C;
-extern u8 D_801FD621;
-extern u8 D_80237412;  
+extern u8 spiritFestivalAssistant1;
+extern u8 spiritFestivalAssistant3;  
 
 extern u8 mariaHarrisPregnancyCounter;
 extern u8 mariaHarrisBabyAge;
@@ -448,28 +449,27 @@ void setSpecialDialogues(void) {
     if (gSeason == WINTER && gDayOfMonth == 27) {
 
         if (gHarvestKing == PLAYER) {
-            setSpecialDialogueBit(PLAYER_HARVEST_KING_DIALOGUE);
+            setSpecialDialogueBit(PLAYER_HARVEST_KING_SPIRIT_FESTIVAL_ASSISTANTS);
         }
 
-        toggleSpecialDialogueBit(0x138);
-        toggleSpecialDialogueBit(0x139);
-        toggleSpecialDialogueBit(0x13A);
-        toggleSpecialDialogueBit(0x13B);
-        toggleSpecialDialogueBit(0x13C);
-        toggleSpecialDialogueBit(0x13D);
-        toggleSpecialDialogueBit(0x13E);
-        toggleSpecialDialogueBit(0x13F);
-        toggleSpecialDialogueBit(0x140);
-        toggleSpecialDialogueBit(0x141);
+        toggleSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_MARIA);
+        toggleSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_POPURI);
+        toggleSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_ELLI);
+        toggleSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_ANN);
+        toggleSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_KAREN);
+        toggleSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_HARRIS);
+        toggleSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_GRAY);
+        toggleSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_JEFF);
+        toggleSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_CLIFF);
+        toggleSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_KAI);
 
-        // spirit festival assistants
-        D_801C3F37 = 0;
-        D_801FD621 = 0;
-        D_801FC150 = 0;
-        D_80237412 = 0;
+        numberOfSpiritFestivalAssistantsRecruited = 0;
+        spiritFestivalAssistant1 = 0;
+        spiritFestivalAssistant2 = 0;
+        spiritFestivalAssistant3 = 0;
 
     } else {
-        toggleSpecialDialogueBit(PLAYER_HARVEST_KING_DIALOGUE);
+        toggleSpecialDialogueBit(PLAYER_HARVEST_KING_SPIRIT_FESTIVAL_ASSISTANTS);
     }
 
     if (gSeason == WINTER && gDayOfMonth == 10) {
@@ -670,7 +670,7 @@ inline void showTextBox(u16 arg0, u16 arg1, u16 arg2, int arg3, u16 arg4) {
   
     func_8002F6F0();
     func_80046C98();
-    func_8002FCB4(0, 0);
+    func_8002FCB4(PLAYER, 0);
     
     switch (arg0) {
         
@@ -707,7 +707,7 @@ inline void showDialogueBox(u16 arg0, u16 arg1, u16 arg2, u32 arg3, u16 arg4) {
     
     func_8002F6F0();
     func_80046C98();
-    func_8002FCB4(0, 0);
+    func_8002FCB4(PLAYER, 0);
 
     switch (arg0) {
         case 0:
@@ -968,7 +968,7 @@ inline void func_8005C940(u16 arg0, u16 arg1) {
         setMainLoopCallbackFunctionIndex(LEVEL_LOAD_2);
         func_8002F6F0();
         func_80046C98();
-        func_8002FCB4(0, 0);
+        func_8002FCB4(PLAYER, 0);
     }
 }
 
@@ -1033,7 +1033,7 @@ void func_8005CBA4(void) {
     if (!(gMapModelContext[0].flags & (0x8 | 0x10))) {
         func_8002F730();
         func_80046CF4();
-        func_8002FCB4(0, 1);
+        func_8002FCB4(PLAYER, 1);
         setMainLoopCallbackFunctionIndex(1);
     }
 
@@ -1041,11 +1041,13 @@ void func_8005CBA4(void) {
 
 //INCLUDE_ASM(const s32, "game", func_8005CBF0);
 
+// main loop callback for finishing dialogue
 void func_8005CBF0(void) {
     
+    // check flag on dialogue box struct
     if (func_80043A88()) {
         
-        if (!(func_800D5A6C(gPlayer.heldItem) & 0xD80)) {
+        if (!(func_800D5A6C(gPlayer.heldItem) & (0x80 | 0x100 | 0x400 | 0x800))) {
             func_800D55E4(gPlayer.unk_2D, 1);
             gPlayer.heldItem = 0;
             gItemBeingHeld = 0xFF;
@@ -1054,18 +1056,21 @@ void func_8005CBF0(void) {
         func_8003F910(0, 0x78, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsIndexSegmentRomStart, &_dialogueIconsIndexSegmentRomEnd, (void*)DIALOGUE_ICONS_TEXTURES_VADDR, (void*)0x8023CC00, (void*)0x8023CE00, (void*)0x8023D200, 0, 4, 0xFE, 106.0f, -15.0f, 0);
         func_8003F910(1, 0x78, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsIndexSegmentRomStart, &_dialogueIconsIndexSegmentRomEnd, (void*)DIALOGUE_ICONS_TEXTURES_VADDR, (void*)0x8023CC00, (void*)0x8023CE00, (void*)0x8023D200, 0, 0xD, 0xFE, 106.0f, -15.0f, 0);
        
+       // update stuff after closing dialogue
         func_8005CDCC();
         
         setMainLoopCallbackFunctionIndex(MAIN_GAME);
         
         func_8002F730();
         func_80046CF4();
-        func_8002FCB4(0, 1);
+        func_8002FCB4(PLAYER, 1);
+
     }
 }
 
 //INCLUDE_ASM(const s32, "game", func_8005CDCC);
 
+// update stuff after closing dialogue
 void func_8005CDCC(void) {
     
     npcAffection[HARVEST_SPRITE_2] = npcAffection[HARVEST_SPRITE_1];
@@ -1073,7 +1078,8 @@ void func_8005CDCC(void) {
     
     toggleSpecialDialogueBit(0x135);
 
-    func_80061A88();
+    // recruit spirit assistants
+    recruitSpiritFestivalAssistants();
 
     setRecipes();
     
@@ -1122,7 +1128,7 @@ void func_8005CEFC(void) {
         // reset bits on flags in structs
         func_8002F730();
         func_80046CF4();
-        func_8002FCB4(0, 1);
+        func_8002FCB4(PLAYER, 1);
     }
 }
 
@@ -1134,7 +1140,7 @@ void func_8005CF4C(void) {
         setMainLoopCallbackFunctionIndex(MAIN_GAME);
         func_8002F730();
         func_80046CF4();
-        func_8002FCB4(0, 1);
+        func_8002FCB4(PLAYER, 1);
     }
 }
 
@@ -1145,11 +1151,13 @@ void func_8005CF94(void) {
     
     u8* namePtr;
 
+    // same as func_800593EC from initialize2.c
     func_8002FB3C();
     func_80046C98();
-    func_8002FCB4(0, 0);
-    func_8003C504(0);
+    func_8002FCB4(PLAYER, 0);
+    func_8003C504(MAIN_MAP_INDEX);
     
+
     // naming screen index
     switch (gNamingScreenIndex) {
         case 0:
@@ -1339,7 +1347,10 @@ static inline void inline3() {
 static inline void func_80055F08_2(u16 cutsceneIndex, u16 entranceIndex, u8 arg2) {
     
     func_8002E1B8();
+
+    // reset all sprite flags
     func_8002B710();
+    
     func_8003D970();
     initializeCutsceneMaps();
     func_80053088();
@@ -1399,7 +1410,7 @@ void func_8005D2B0() {
         
         func_8002F730();
         func_80046CF4();
-        func_8002FCB4(0, 1);
+        func_8002FCB4(PLAYER, 1);
 
         temp = func_80043C6C(0);
 
@@ -2988,106 +2999,106 @@ u8 getBacholeretteWithHighestAffection(u8 affectionLevel) {
 
 //INCLUDE_ASM(const s32, "game", func_80061A1C);
 
-inline void func_80061A1C(u8 arg0, u8 arg1) {
-    switch (arg0) {                   
+inline void func_80061A1C(u8 numberOfSpiritFestivalAssistants, u8 npcIndex) {
+    switch (numberOfSpiritFestivalAssistants) {                   
         case 1:
-            D_801FD621 = arg1;
+            spiritFestivalAssistant1 = npcIndex;
             break;
         case 2:
-            D_801FC150 = arg1;
+            spiritFestivalAssistant2 = npcIndex;
             break;
         case 3:
-            D_80237412 = arg1;
+            spiritFestivalAssistant3 = npcIndex;
             break;
     }
 }
 
-static inline void setUnknown(u8 value) {
+static inline void setSpiritFestivalAssistant(u8 npcIndex) {
     
-    D_801C3F37++;
+    numberOfSpiritFestivalAssistantsRecruited++;
 
-    func_80061A1C(D_801C3F37, value);
+    func_80061A1C(numberOfSpiritFestivalAssistantsRecruited, npcIndex);
 
 }
 
-//INCLUDE_ASM(const s32, "game", func_80061A88);
+//INCLUDE_ASM(const s32, "game", recruitSpiritFestivalAssistants);
 
-
-void func_80061A88(void) {
+void recruitSpiritFestivalAssistants(void) {
     
-    if (checkSpecialDialogueBit(0x138)) {
+    if (checkSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_MARIA)) {
         
-        toggleSpecialDialogueBit(0x138);
+        toggleSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_MARIA);
         
-        setUnknown(1);
+        setSpiritFestivalAssistant(MARIA+1);
         
     }
     
-    if (checkSpecialDialogueBit(0x139)) {
+    if (checkSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_POPURI)) {
         
-        toggleSpecialDialogueBit(0x139);
+        toggleSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_POPURI);
         
-        setUnknown(3);
+        setSpiritFestivalAssistant(ELLI+1);
     }
 
-    if (checkSpecialDialogueBit(0x13A)) {
+    if (checkSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_ELLI)) {
         
-        toggleSpecialDialogueBit(0x13A);
+        toggleSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_ELLI);
         
-        setUnknown(2);
-    }
-    
-    if (checkSpecialDialogueBit(0x13B)) {
-        
-        toggleSpecialDialogueBit(0x13B);
-        
-        setUnknown(4);
+        setSpiritFestivalAssistant(POPURI+1);
     }
     
-   if (checkSpecialDialogueBit(0x13C)) {
+    if (checkSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_ANN)) {
         
-        toggleSpecialDialogueBit(0x13C);
+        toggleSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_ANN);
+        
+        setSpiritFestivalAssistant(ANN+1);
+    }
+    
+   if (checkSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_KAREN)) {
+        
+        toggleSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_KAREN);
        
-        setUnknown(5);
+        setSpiritFestivalAssistant(KAREN+1);
     } 
 
-   if (checkSpecialDialogueBit(0x13D)) {
+   if (checkSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_HARRIS)) {
         
-        toggleSpecialDialogueBit(0x13D);
+        toggleSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_HARRIS);
        
-        setUnknown(6);
+        setSpiritFestivalAssistant(HARRIS);
     }
 
-   if (checkSpecialDialogueBit(0x13E)) {
+   if (checkSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_GRAY)) {
         
-        toggleSpecialDialogueBit(0x13E);
+        toggleSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_GRAY);
        
-        setUnknown(7);
+        setSpiritFestivalAssistant(GRAY);
     } 
 
-   if (checkSpecialDialogueBit(0x13F)) {
+   if (checkSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_JEFF)) {
         
-        toggleSpecialDialogueBit(0x13F);
+        toggleSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_JEFF);
        
-        setUnknown(8);
+        setSpiritFestivalAssistant(JEFF);
     } 
 
-   if (checkSpecialDialogueBit(0x140)) {
+   if (checkSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_CLIFF)) {
         
-        toggleSpecialDialogueBit(0x140);
+        toggleSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_CLIFF);
        
-        setUnknown(9);
+        setSpiritFestivalAssistant(CLIFF);
     } 
 
-   if (checkSpecialDialogueBit(0x141)) {
+   if (checkSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_KAI)) {
         
-        toggleSpecialDialogueBit(0x141);
+        toggleSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_KAI);
        
-        setUnknown(10);
+        setSpiritFestivalAssistant(KAI);
+
     } 
     
-    if (D_801C3F37 >= 3) {
-        toggleSpecialDialogueBit(PLAYER_HARVEST_KING_DIALOGUE);
+    if (numberOfSpiritFestivalAssistantsRecruited >= 3) {
+        toggleSpecialDialogueBit(PLAYER_HARVEST_KING_SPIRIT_FESTIVAL_ASSISTANTS);
     }
 }
 

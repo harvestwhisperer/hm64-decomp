@@ -83,13 +83,14 @@ typedef struct {
 	u8 unk_16; // pink overlay max rows
 	u8 unk_17; // pink overlay current column
 	u8 unk_18;
-    u16 flags;
+    u16 flags; // 0x4 = dialogue finished/closing
 } UnknownDialogueStruct3;
 
 // 0x801C3E40
 typedef struct {
 	UnknownDialogueStruct1 struct1;
 	u32 padding[4];  // 0x801C3E5C
+	// i.e., one for character avatar, button icon, etc.
 	DialogueSpriteInfo struct2; // 0x801C3E6C
 	DialogueSpriteInfo struct3; // 0x801C3EA4
 	DialogueSpriteInfo struct4;

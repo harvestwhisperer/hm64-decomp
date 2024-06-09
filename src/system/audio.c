@@ -355,7 +355,7 @@ bool setSfxVolume(u32 sfxIndex, s32 volume) {
 
 INCLUDE_ASM(const s32, "system/audio", setSfxFrequency);
 
-// not matching with rodata declarations
+// FIXME: not matching with rodata declarations
 /*
 bool setSfxFrequency(u32 sfxIndex, s32 frequency) {
 

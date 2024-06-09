@@ -20,6 +20,7 @@
 #include "mapObjects.h"
 #include "npc.h"
 #include "shop.h"
+#include "spriteIndices.h"
  
 // forward declaration
 u8 func_80067A24(u8);                 
@@ -34,15 +35,14 @@ extern u16 D_80237410;
 extern u16 D_801890C8;
 
 extern u8 gMaximumStamina;
-// power nut bits
-extern u32 D_80215EB8;
+extern u32 powerNutBits;
 
 // possible bss
 extern u8 gToolchestSlots[];   
 extern u8 D_8018A724;
 extern u8 D_801A8B5C;
-// fishing rod use; part of D_80189828?
-extern u32 D_80189838;
+
+extern u32 totalFishCaught;
 
 // data
 extern Vec3f playerDefaultStartingCoordinates[];
@@ -104,22 +104,22 @@ void setupPlayerSprite(u16 arg0, u8 resetPlayer) {
     }
 
     setSpriteDirection(PLAYER, (gPlayer.direction + 8 - func_8003C1A4(MAIN_MAP_INDEX)) % 8);
-    func_8002FD80(PLAYER, gPlayer.startingCoordinates.x, gPlayer.startingCoordinates.y, gPlayer.startingCoordinates.z);
+    setSpriteStartingCoordinates(PLAYER, gPlayer.startingCoordinates.x, gPlayer.startingCoordinates.y, gPlayer.startingCoordinates.z);
 
     // tool use
-    D_80189828.unk_3 = 0;
-    D_80189828.unk_4 = 0;
-    D_80189828.unk_6 = 0;
-    D_80189828.unk_8 = 0;
-    D_80189828.unk_A = 0;
-    D_80189828.unk_C = 0;
+    toolUse.unk_3 = 0;
+    toolUse.unk_4 = 0;
+    toolUse.unk_6 = 0;
+    toolUse.unk_8 = 0;
+    toolUse.unk_A = 0;
+    toolUse.unk_C = 0;
 
 }
 
-//INCLUDE_ASM(const s32, "player", func_80065AA0);
+//INCLUDE_ASM(const s32, "player", handleEatingAndDrinking);
 
 // handle eating/drinking
-void func_80065AA0(void) {
+void handleEatingAndDrinking(void) {
 
     if (gPlayer.heldItem) {
         
@@ -768,7 +768,7 @@ void func_80068120(void) {
 void func_80068258(void) {
 
     if (gPlayer.animationState == 0) {
-        func_8002FD80(0, -140.0f, 0.0f, -152.0f);
+        setSpriteStartingCoordinates(0, -140.0f, 0.0f, -152.0f);
         func_8003019C(0, 0);
         func_80030054(0, 0);
         func_8002FF38(0, 0);
@@ -1309,7 +1309,7 @@ void func_8006A2E8(void) {
             D_802226E0 = 0;
             break;
         case 23:
-            func_8006BC84();
+            handleFishingRodUse();
             D_802226E0 = 0;
             break;
         case 24:
@@ -1927,8 +1927,10 @@ void func_8006BBC4(void) {
     }
 }
 
+//INCLUDE_ASM(const s32, "player", handleFishingRodUse);
+
 // fishing handler
-void func_8006BC84(void) {
+void handleFishingRodUse(void) {
 
     Vec3f vec;
     u16 temp;
@@ -2008,32 +2010,38 @@ void func_8006BC84(void) {
                 // randomize fish type
                 switch (getRandomNumberInRange(0, temp)) {
                     case 0:
-                        gPlayer.heldItem = 0x25;
+                        gPlayer.heldItem = SMALL_FISH;
                         break;
                     case 1:
-                        gPlayer.heldItem = 0x26;
+                        gPlayer.heldItem = MEDIUM_FISH;
                         break;
                     case 2:
-                        gPlayer.heldItem = 0x27;
+                        gPlayer.heldItem = LARGE_FISH;
                         break;                    
                 }
 
                 gPlayer.animationState = 9;
 
-                gHappiness += adjustValue(gHappiness, 1, 255);
+                gHappiness += adjustValue(gHappiness, 1, MAX_HAPPINESS);
 
                 // get power nut 
-                if (gPlayer.fatigue.unk_3 == 3 && !(D_80215EB8 & 4) && !getRandomNumberInRange(0, 0x32)) {
-                    gPlayer.heldItem = 0x57;
+                if (gPlayer.fatigue.unk_3 == 3 && !(powerNutBits & FISHING_POWER_NUT) && !getRandomNumberInRange(0, 50)) {
+                    
+                    gPlayer.heldItem = POWER_NUT;
+
                     setAction(6, 0, 0, 8);
-                    D_80215EB8 |= 4;
-                    gMaximumStamina += adjustValue(gMaximumStamina, 15, 250);
-                    gHappiness += adjustValue(gHappiness, 4, 255);
+                    
+                    powerNutBits |= FISHING_POWER_NUT;
+                    
+                    gMaximumStamina += adjustValue(gMaximumStamina, 15, MAX_STAMINA);
+                    gHappiness += adjustValue(gHappiness, 4, MAX_HAPPINESS);
+
+
                 }
 
-                // fish caught total
-                D_80189838 += adjustValue(D_80189838, 1, 999);
-                func_80065AA0();
+                totalFishCaught += adjustValue(totalFishCaught, 1, MAX_FISH_CAUGHT);
+
+                handleEatingAndDrinking();
                 
                 break;
             
@@ -2056,9 +2064,6 @@ void func_8006BC84(void) {
     }
     
 }
-
-//INCLUDE_ASM(const s32, "player", func_8006BC84);
-
 
 void func_8006C12C(void) {}
 
@@ -2204,7 +2209,7 @@ void func_8006DFB0(void) {
             gPlayer.animationState++;
             break;
         case 3:            
-            if (!D_80189828.unk_E) {
+            if (!toolUse.unk_E) {
                 if (!func_80067A24(0)) {
                     resetAction();
                 }
@@ -2238,7 +2243,7 @@ void func_8006E0D4(void) {
             gPlayer.animationState++;
             break;
         case 3:
-            if (!D_80189828.unk_E) {
+            if (!toolUse.unk_E) {
                 if (!func_80067A24(0)) {
                     resetAction();
                 }
@@ -2286,7 +2291,7 @@ void func_8006E240(void) {
             gPlayer.animationState++;
             break;
         case 3:
-            if (!D_80189828.unk_E) {
+            if (!toolUse.unk_E) {
                 if (!func_80067A24(0)) {
                     resetAction();
                 }
@@ -2323,7 +2328,7 @@ void func_8006E574(void) {
             gPlayer.animationState++;
             break;
         case 3:
-            if (D_80189828.unk_E == 0 && !func_80067A24(0)) {
+            if (toolUse.unk_E == 0 && !func_80067A24(0)) {
                 resetAction();
             }
             break;
@@ -2356,7 +2361,7 @@ void func_8006E678(void) {
                         gPlayer.heldItem = 0x71;
                         break;
                     case 2:
-                        gPlayer.heldItem = 0x72;
+                        gPlayer.heldItem = BOTTLE_WITH_WINE;
                         break;
                     case 3:
                         gPlayer.heldItem = 0x73;
@@ -2379,7 +2384,8 @@ void func_8006E678(void) {
                     
                 }
                 
-                func_80065AA0();
+                handleEatingAndDrinking();
+
                 gPlayer.bottleContents = 0;       
 
             }
@@ -2396,7 +2402,7 @@ void func_8006E678(void) {
             break;
 
         case 3:
-            if (D_80189828.unk_E == 0 && !func_80067A24(0)) {
+            if (toolUse.unk_E == 0 && !func_80067A24(0)) {
                 resetAction();
             }    
             break;

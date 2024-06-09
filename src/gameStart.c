@@ -8,6 +8,7 @@
 #include "gameStatus.h"
 #include "initialize.h"
 #include "initialize2.h"
+#include "itemHandlers.h"
 #include "level.h"
 #include "load.h"
 #include "mainLoop.h"

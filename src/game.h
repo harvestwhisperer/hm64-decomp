@@ -9,12 +9,13 @@
 #define MAX_ANIMAL_ITEM_SHIPPED 9999
 #define MAX_TOTAL_CROPS_SHIPPED 99999
 #define MAX_TOTAL_SHIPPING 999999
-#define MAX_SEEDS 0x14
+#define MAX_FISH_CAUGHT 999
+#define MAX_SEEDS 20
 #define MAX_CHICKEN_FEED 999
 #define MAX_BLUE_MIST_SEEDS 1
 #define MAX_FLOWER_SHOP_POINTS 100
 #define MAX_BAKERY_CARD_POINTS 100
-#define MAX_AFFECTION 0xFF
+#define MAX_AFFECTION 255
 #define TOTAL_GAME_VARIABLES 80
 
 #define SPRING 1
@@ -96,9 +97,7 @@ extern u32 gTotalCropsShipped;
 extern u32 gTotalEggsShipped;
 extern u32 gTotalGoldenMilkShipped;
 
-// TODO: label
-// fish caught total
-extern u32 D_80189838;
+extern u32 totalFishCaught;
 
 extern u8 gItemBeingHeld;
 
@@ -132,9 +131,9 @@ extern u8 houseExtensionConstructionCounter;
 extern u16 gTotalGrassTiles;
 extern u16 gTotalPinkCatMintFlowersGrowing;
 
-extern u8 D_801FC150;
-extern u8 D_801FD621;
-extern u8 D_80237412;  
+extern u8 spiritFestivalAssistant2;
+extern u8 spiritFestivalAssistant1;
+extern u8 spiritFestivalAssistant3;  
 
 extern u8 gFarmName[6];
 extern u8 gWifeName[6];

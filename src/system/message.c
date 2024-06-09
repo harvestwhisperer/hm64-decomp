@@ -6,7 +6,7 @@
 #include "system/volume.h"
 
 // bss
-extern u16 D_80204BF0[];
+extern u16 D_80204BF0[0x100];
 DialogueBox dialogueBoxes[MAX_DIALOGUE_BOXES];
 extern GameVariableReference D_80189E58[64];
 

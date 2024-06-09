@@ -10,11 +10,13 @@
 #include "evaluation.h"
 #include "game.h"
 #include "gameStatus.h"
+#include "itemHandlers.h"
 #include "mapObjects.h"
 #include "level.h"
 #include "npc.h"
 #include "overlayScreens.h"
 #include "player.h"
+#include "spriteIndices.h"
 #include "weather.h"
                                   
 // forward declarations
@@ -2590,7 +2592,7 @@ u16 func_800A7DFC(void) {
             D_801C3E1C = gTotalCropsShipped + gTotalGoldenMilkShipped + gTotalEggsShipped;
             
             // fish caught
-            D_801D62C4 = D_80189838; 
+            D_801D62C4 = totalFishCaught; 
             
             D_8017026E = calculateHouseExtensionScore();
             D_80205638 = calculateGrassScore();

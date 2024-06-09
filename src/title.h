@@ -14,14 +14,14 @@ typedef struct {
     u8 rowHighlighted;
     u8 dogAnimationIndex;
     u8 padding;
-    u16 unk_4; // counter
+    u16 unk_4; // counter for grass animations
     u16 dogIdleCounter;
     f32 centerCoordinate;
     u32 frameCounter;
 } TitleContext;
 
 // demo cutscenes index
-extern u8 D_801C3F50;
+extern u8 demoCutsceneIndex;
 
 extern void titleScreenMainLoopCallback();
 

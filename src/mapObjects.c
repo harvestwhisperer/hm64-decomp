@@ -283,57 +283,58 @@ u8 func_800DA9A8(u8 mapIndex, u8 heightIndex, u8 widthIndex) {
     u8 result;
     
     switch (mapIndex) {
-        case 0x1:
-        case 0x2:
-        case 0x3:
+
+        case RANCH_SUMMER:
+        case RANCH_AUTUMN:
+        case RANCH_WINTER:
         case ANN_ROOM:
         case RANCH_BARN:
         case RANCH_STORE:
         case RANCH_HOUSE:
-        case 0x8:
-        case BEACH:
-        case 0xA:
-        case 0xB:
-        case 0xC:
-        case RACE_TRACK:
-        case 0xE:
-        case 0xF:
-        case 0x10:
+        case EMPTY_MAP_1:
+        case BEACH_SPRING:
+        case BEACH_SUMMER:
+        case BEACH_AUTUMN:
+        case BEACH_WINTER:
+        case RACE_TRACK_SPRING:
+        case RACE_TRACK_SUMMER:
+        case RACE_TRACK_AUTUMN:
+        case RACE_TRACK_WINTER:
         case MOUNTAIN_1_SUMMER:
-        case 0x13:
-        case 0x14:
-        case 0x16:
-        case 0x17:
-        case 0x18:
-        case 0x1A:
-        case 0x1B:
-        case 0x1C:
-        case 0x1E:
-        case 0x1F:
-        case 0x20:
-        case 0x21:
+        case MOUNTAIN_1_AUTUMN:
+        case MOUNTAIN_1_WINTER:
+        case MOUNTAIN_2_SUMMER:
+        case MOUNTAIN_2_AUTUMN:
+        case MOUNTAIN_2_WINTER:
+        case TOP_OF_MOUNTAIN_1_SUMMER:
+        case TOP_OF_MOUNTAIN_1_AUTUMN:
+        case TOP_OF_MOUNTAIN_1_WINTER:
+        case MOON_MOUNTAIN_SUMMER:
+        case MOON_MOUNTAIN_AUTUMN:
+        case MOON_MOUNTAIN_WINTER:
+        case CARPENTER_HUT:
         case DUMPLING_HOUSE:
-        case 0x24:
-        case 0x25:
-        case 0x26:
-        case 0x27:
-        case 0x28:
-        case VILLAGE_1:
-        case 0x2A:
-        case 0x2B:
-        case 0x2C:
-        case VILLAGE_2:
-        case 0x2E:
-        case 0x2F:
-        case 0x30:
+        case POND_SUMMER:
+        case POND_AUTUMN:
+        case POND_WINTER:
+        case ELLI_ROOM:
+        case BAKERY:
+        case VILLAGE_1_SPRING:
+        case VILLAGE_1_SUMMER:
+        case VILLAGE_1_AUTUMN:
+        case VILLAGE_1_WINTER:
+        case VILLAGE_2_SPRING:
+        case VILLAGE_2_SUMMER:
+        case VILLAGE_2_AUTUMN:
+        case VILLAGE_2_WINTER:
         case POPURI_ROOM:
         case FLOWER_SHOP:
         case CHURCH:
         case SOUVENIR_SHOP:
-        case SQUARE:
-        case 0x36:
-        case 0x37:
-        case 0x38:
+        case SQUARE_SPRING:
+        case SQUARE_SUMMER:
+        case SQUARE_AUTUMN:
+        case SQUARE_WINTER:
         case RICK_STORE:
         case MIDWIFE_HOUSE:
         case TAVERN:
@@ -342,24 +343,25 @@ u8 func_800DA9A8(u8 mapIndex, u8 heightIndex, u8 widthIndex) {
         case MAYOR_HOUSE:
         case POTION_SHOP_BEDROOM:
         case POTION_SHOP:
-        case UNUSED_MAP:
+        case EMPTY_MAP_2:
         case HARVEST_SPRITE_CAVE:
         case KAREN_ROOM:
-        case VINEYARD:
-        case 0x48:
-        case 0x49:
-        case 0x4A:
+        case VINEYARD_SPRING:
+        case VINEYARD_SUMMER:
+        case VINEYARD_AUTUMN:
+        case VINEYARD_WINTER:
         case VINEYARD_HOUSE:
         case VINEYARD_CELLAR:
         case VINEYARD_CELLAR_BASEMENT:
-        case ROAD:
-        case 0x4F:
-        case 0x50:
-        case 0x51:
-        case 0x53:
-        case 0x54:
-        case 0x55:
+        case ROAD_SPRING:
+        case ROAD_SUMMER:
+        case ROAD_AUTUMN:
+        case ROAD_WINTER:
+        case FARM_SUMMER:
+        case FARM_AUTUMN:
+        case FARM_WINTER:
             break;
+            
         case FARM:
             result = farmFieldTiles[widthIndex][heightIndex];
             break;

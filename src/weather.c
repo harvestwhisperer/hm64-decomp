@@ -31,26 +31,30 @@ static const u8 D_8012344C[4][5];
 
 //INCLUDE_ASM(const s32, "weather", func_800DC360);
 
+// load rain/snow sprites
 void func_800DC360(void) {
     
     u8 i;
     
-    u16 check = ((gWeather == RAIN || gWeather == 4) == FALSE) ? 0xFF : 0;
+    u16 type = ((gWeather == RAIN || gWeather == 4) == FALSE) ? 0xFF : 0;
 
     if (gWeather == SNOW) {
-        check = 1;
+        type = 1;
     }
     
-    if (check != 0xFF) {
+    if (type != 0xFF) {
 
         for (i = 0; i < 10; i++) {
         
             func_8002B138(i+0x6B, &_rainTextureSegmentRomStart, &_rainTextureSegmentRomEnd, &_rainIndexSegmentRomStart, &_rainIndexSegmentRomEnd, 0, 0, (void*)RAIN_TEXTURE_VADDR, NULL, 0x802A5DC0, 0x802A5EC0, 0x802A5FC0, 0, 0, 1);
-            func_8002BD90(i+0x6B, 1.0f, 1.0f, 1.0f);
+            setSpriteScale(i+0x6B, 1.0f, 1.0f, 1.0f);
             func_8002C7EC(i+0x6B, 4);
+            // rgba
             func_8002C914(i+0x6B, 0xFF, 0xFF, 0xFF, 0xFF);
 
-            func_80034D64(MAIN_MAP_INDEX, i+3, i+0x6B, check);
+            // set weather sprite info on map struct
+            func_80034D64(MAIN_MAP_INDEX, i+3, i+0x6B, type);
+
         }
     }
 }

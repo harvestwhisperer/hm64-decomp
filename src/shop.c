@@ -83,11 +83,12 @@ void func_800DC750(u8 storeItemIndex) {
 void func_800DC7BC(u8 index) {
     
     func_8002B138(D_801194A0[index] + 0x62, &_holdableItemsTextureSegmentRomStart, &_holdableItemsTextureSegmentRomEnd, &_holdableItemsAssetsIndexSegmentRomStart, &_holdableItemsAssetsIndexSegmentRomEnd, &_holdableItemsSpritesheetIndexSegmentRomStart, &_holdableItemsSpritesheetIndexSegmentRomEnd, D_801192E0[index][0], D_801192E0[index][1], 0x8028DD50, 0x80290550, 0x80293A50, 0x80293C50, 1, 1);
-    func_8002BD90(D_801194A0[index] + 0x62, 1.0f, 1.0f, 1.0f);
+    setSpriteScale(D_801194A0[index] + 0x62, 1.0f, 1.0f, 1.0f);
     func_8002C7EC(D_801194A0[index] + 0x62, 3);
-    func_8002C85C(D_801194A0[index] + 0x62, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteDefaultRGBA(D_801194A0[index] + 0x62, 0xFF, 0xFF, 0xFF, 0xFF);
     func_8002C914(D_801194A0[index] + 0x62, 0xFF, 0xFF, 0xFF, 0xFF);
 
+    // set map object
     func_80034C40(MAIN_MAP_INDEX, D_801194A0[index], D_801194A0[index] + 0x62, func_80030BA0(&D_8011BA10, func_800D5A88(D_80118FD0[index])), D_80119040[index].x, D_80119040[index].y, D_80119040[index].z, 0xFF, 0xFF, 0, 0);
 
 }
@@ -564,7 +565,7 @@ u8 handlePurchase(u16 storeItemIndex, s32 quantity) {
 
                 gPlayer.heldItem = CAKE;
 
-                func_80065AA0();
+                handleEatingAndDrinking();
 
                 if (!checkLifeEventBit(HAVE_BAKEY_CARD)) {
                     
@@ -589,7 +590,7 @@ u8 handlePurchase(u16 storeItemIndex, s32 quantity) {
             case 0xC:
 
                 gPlayer.heldItem = 8;
-                func_80065AA0();
+                handleEatingAndDrinking();
 
                 if (!checkLifeEventBit(HAVE_BAKEY_CARD)) {
                     
@@ -612,35 +613,35 @@ u8 handlePurchase(u16 storeItemIndex, s32 quantity) {
             case 0xD:
                 
                 gPlayer.heldItem = COOKIES;
-                func_80065AA0();
+                handleEatingAndDrinking();
                 temp = 0;
                 break;
             
             case 0xE:
 
                 gPlayer.heldItem = CAKE;
-                func_80065AA0();
+                handleEatingAndDrinking();
                 temp = 0;
                 break;
 
             case 0xF:
 
                 gPlayer.heldItem = PIE;
-                func_80065AA0();
+                handleEatingAndDrinking();
                 temp = 0;
                 break;
 
             case 0x10:
 
                 gPlayer.heldItem = 0x78;
-                func_80065AA0();
+                handleEatingAndDrinking();
                 temp = 0;
                 break;
 
             case 0x11:
 
                 gPlayer.heldItem = 0x71;
-                func_80065AA0();
+                handleEatingAndDrinking();
                 temp = 0;
                 break;
 
@@ -833,91 +834,91 @@ u8 handlePurchase(u16 storeItemIndex, s32 quantity) {
             case 0x28:
             
                 gPlayer.heldItem = BOTTLE_WITH_WINE;
-                func_80065AA0();
+                handleEatingAndDrinking();
                 temp = 0;
                 break;
             
             case 0x29:
                         
                 gPlayer.heldItem = 0x79;
-                func_80065AA0();
+                handleEatingAndDrinking();
                 temp = 0;
                 break;
             
             case 0x2A:
                                     
                 gPlayer.heldItem = 0x7A;
-                func_80065AA0();
+                handleEatingAndDrinking();
                 temp = 0;
                 break;
             
             case 0x2B:
                                     
                 gPlayer.heldItem = 0x76;
-                func_80065AA0();
+                handleEatingAndDrinking();
                 temp = 0;
                 break;
             
             case 0x2C:
 
                 gPlayer.heldItem = 0x71;
-                func_80065AA0();
+                handleEatingAndDrinking();
                 temp = 0;
                 break;
             
             case 0x2D:
 
                 gPlayer.heldItem = 0x78;
-                func_80065AA0();
+                handleEatingAndDrinking();
                 temp = 0;
                 break;
             
             case 0x2E:
           
                 gPlayer.heldItem = 0x76;
-                func_80065AA0();
+                handleEatingAndDrinking();
                 temp = 0;
                 break;
             
             case 0x2F:
             
                 gPlayer.heldItem = 0x78;
-                func_80065AA0();
+                handleEatingAndDrinking();
                 temp = 0;
                 break;
             
             case 0x30:
                       
                 gPlayer.heldItem = 0x76;
-                func_80065AA0();
+                handleEatingAndDrinking();
                 temp = 0;
                 break;
             
             case 0x31:
 
                 gPlayer.heldItem = COOKIES;
-                func_80065AA0();
+                handleEatingAndDrinking();
                 temp = 0;
                 break;
             
             case 0x32:
 
                 gPlayer.heldItem = COTTON_CANDY;
-                func_80065AA0();
+                handleEatingAndDrinking();
                 temp = 0;
                 break;
             
             case 0x33:
 
                 gPlayer.heldItem = FRIED_OCTUPUS;
-                func_80065AA0();
+                handleEatingAndDrinking();
                 temp = 0;
                 break;
             
             case 0x34:
 
                 gPlayer.heldItem = ROASTED_CORN;
-                func_80065AA0();
+                handleEatingAndDrinking();
                 temp = 0;
                 break;
             

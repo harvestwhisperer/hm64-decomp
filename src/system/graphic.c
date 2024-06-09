@@ -10,7 +10,7 @@
 // forward declarations
 void func_80026F30(Bitmap* arg0, u16* arg1);
 Gfx *func_80028A64(Gfx*, Camera*, WorldMatrices*);
-volatile u8 func_80026BE0();      
+volatile u8 doViewportGfxTask();      
 void func_80028EB8(f32, f32, f32);            
 
 Gfx* clearFramebuffer(Gfx* dl);                  
@@ -29,8 +29,7 @@ LookAt D_80126540;
 Gfx initGfxList[2][0x20];
 Gfx D_801836A0[2][0x500];
 Gfx D_80205000[2][0x20];
-// viewport
-extern Gfx D_80112A60[3];
+extern Gfx viewportDL[3];
 
 WorldMatrices worldMatrices[2];
                         
@@ -119,7 +118,7 @@ void drawFrame(void) {
     // set world and view matrices
     func_80026CEC();
     // draw
-    func_80026BE0();
+    doViewportGfxTask();
 
     gDisplayContextIndex ^= 1;
 
@@ -149,14 +148,13 @@ volatile u8 startGfxTask(void) {
     return gfxTaskNo;
 }
 
-//INCLUDE_ASM(const s32, "system/graphic", func_80026BE0);
+//INCLUDE_ASM(const s32, "system/graphic", doViewportGfxTask);
 
-volatile u8 func_80026BE0(void) {
+volatile u8 doViewportGfxTask(void) {
 
     Gfx *dl = D_80205000[gDisplayContextIndex];
     
-    // set viewport
-    gSPDisplayList(dl++, OS_K0_TO_PHYSICAL(&D_80112A60));
+    gSPDisplayList(dl++, OS_K0_TO_PHYSICAL(&viewportDL));
     gDPFullSync(dl++);
     gSPEndDisplayList(dl++);
 
@@ -178,8 +176,7 @@ volatile u8 func_80026CEC(s32 arg0, s32 arg1) {
 
     Gfx *dl = D_801836A0[gDisplayContextIndex];
     
-    // set viewport
-    gSPDisplayList(dl++, OS_K0_TO_PHYSICAL(&D_80112A60));
+    gSPDisplayList(dl++, OS_K0_TO_PHYSICAL(&viewportDL));
     
     dl = func_80028A64(dl++, &gCamera, &worldMatrices[gDisplayContextIndex]);
     dl = func_800293C0(dl++, &worldMatrices[gDisplayContextIndex]);

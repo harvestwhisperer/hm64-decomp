@@ -21,6 +21,7 @@ extern MapContextAddresses gMapModelAddresses[96];
 // forward declarations
 void func_8003C8D4(LevelMapContext*); 
  
+// y rotations for maps
 static const f32 D_8011EDE0[];
                     
 //INCLUDE_ASM(const s32, "system/mapContext", initializeMapContext);
@@ -150,21 +151,20 @@ bool func_8003BB14(u16 index, u16 mapIndex) {
         // dma map data
         func_8003BC50(MAIN_MAP_INDEX, mapIndex);
         
-        // set vec3fs on mapStruct8
-        func_8003423C(gMapModelContext[index].mainMapIndex, 0.0f, 0.0f, 0.0f);
-        func_80034298(gMapModelContext[index].mainMapIndex, 1.0f, 1.0f, 1.0f);
-        func_800342F4(gMapModelContext[index].mainMapIndex, 45.0f, 0.0f, 0.0f);
+        setMapTranslation(gMapModelContext[index].mainMapIndex, 0.0f, 0.0f, 0.0f);
+        setMapScale(gMapModelContext[index].mainMapIndex, 1.0f, 1.0f, 1.0f);
+        setMapRotation(gMapModelContext[index].mainMapIndex, 45.0f, 0.0f, 0.0f);
         
         gMapModelContext[index].rotation = 0;
         
         func_8003BDA4(MAIN_MAP_INDEX, 0.0f, 0.0f, 0.0f);
         func_8003C084(MAIN_MAP_INDEX, 0);
         func_8003C1E0(MAIN_MAP_INDEX, 0.0f, 0.0f, 0.0f, 0, 0);
-        func_80034350(gMapModelContext[index].mainMapIndex, 0, 0, 0, 0);
+        setMapRGBA(gMapModelContext[index].mainMapIndex, 0, 0, 0, 0);
         
         result = 1; 
 
-    }
+    } 
 
     return result;
 }
@@ -285,7 +285,7 @@ bool func_8003BE98(u16 mapIndex, u8 r, u8 g, u8 b, u8 a) {
     bool result = 0;
     
     if (mapIndex == MAIN_MAP_INDEX && (gMapModelContext[mapIndex].flags & 1) && (gMapModelContext[mapIndex].flags & 2)) {
-        func_80034350(gMapModelContext[mapIndex].mainMapIndex, r, g, b, a);
+        setMapRGBA(gMapModelContext[mapIndex].mainMapIndex, r, g, b, a);
         D_802373F8.r = r;
         D_802373F8.g = g;
         D_802373F8.b = b;
@@ -322,7 +322,7 @@ bool func_8003BF7C(u16 mapIndex, u8 r, u8 g, u8 b, u8 a, s16 arg5) {
 
 //INCLUDE_ASM(const s32, "system/mapContext", func_8003C084);
 
-bool func_8003C084(u16 mapIndex, u8 arg1) {
+bool func_8003C084(u16 mapIndex, u8 rotationIndex) {
     
     bool result;
 
@@ -338,10 +338,10 @@ bool func_8003C084(u16 mapIndex, u8 arg1) {
 
         if (!(gMapModelContext[mapIndex].flags & 0x18)) {
         
-            gMapModelContext[mapIndex].rotation = arg1;
-            tempf = buffer[arg1];
+            gMapModelContext[mapIndex].rotation = rotationIndex;
+            tempf = buffer[rotationIndex];
         
-            func_800342F4(gMapModelContext[mapIndex].mainMapIndex, 45.0f, tempf, 0);
+            setMapRotation(gMapModelContext[mapIndex].mainMapIndex, 45.0f, tempf, 0);
             func_80028EB8(45.0f, tempf, 0);
          
             result = 1;
@@ -596,10 +596,10 @@ void func_8003C6E4(void) {
                 func_8003CB3C(i);
             }
 
-            D_802373F8.r = mainMap[gMapModelContext[i].mainMapIndex].mapStruct8.groundRgba.r;
-            D_802373F8.g = mainMap[gMapModelContext[i].mainMapIndex].mapStruct8.groundRgba.g;
-            D_802373F8.b = mainMap[gMapModelContext[i].mainMapIndex].mapStruct8.groundRgba.b;
-            D_802373F8.a = mainMap[gMapModelContext[i].mainMapIndex].mapStruct8.groundRgba.a;
+            D_802373F8.r = mainMap[gMapModelContext[i].mainMapIndex].mapFloats.groundRgba.r;
+            D_802373F8.g = mainMap[gMapModelContext[i].mainMapIndex].mapFloats.groundRgba.g;
+            D_802373F8.b = mainMap[gMapModelContext[i].mainMapIndex].mapFloats.groundRgba.b;
+            D_802373F8.a = mainMap[gMapModelContext[i].mainMapIndex].mapFloats.groundRgba.a;
         }
         
     }
@@ -649,10 +649,10 @@ void func_8003C8D4(LevelMapContext* mapContext) {
 void func_8003CB3C(u16 mapIndex) {
 
     if (gMapModelContext[mapIndex].flags & 8) {
-        func_800345E8(gMapModelContext[mapIndex].mainMapIndex, 0, -1.0f, 0);
+        adjustMapRotation(gMapModelContext[mapIndex].mainMapIndex, 0, -1.0f, 0);
         func_80028EF8(0, -1.0f, 0);
     } else {
-        func_800345E8(gMapModelContext[mapIndex].mainMapIndex, 0, 1.0f, 0);
+        adjustMapRotation(gMapModelContext[mapIndex].mainMapIndex, 0, 1.0f, 0);
         func_80028EF8(0, 1.0f, 0);
     }
 
@@ -689,4 +689,5 @@ void func_8003CB3C(u16 mapIndex) {
 
 //INCLUDE_RODATA(const s32, "system/mapContext", D_8011EDE0);
 
+// y rotation values
 static const f32 D_8011EDE0[] = { 0, 45.0f, 90.0f, 135.0f, 180.0f, 225.0f, 270.0f, 315.0f };

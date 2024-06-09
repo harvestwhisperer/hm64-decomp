@@ -24,7 +24,7 @@ options:
   libultra_symbols: True
   gfx_ucode: f3dex2
   # ld_symbol_header_path: include/ld_symbols.h
-  # disassemble_all: true
+  disassemble_all: true
   # extensions_path: tools/splat_ext
   
 segments:
@@ -1398,6 +1398,21 @@ segments:
     dir: sprites/background
     start: 0xCCB9A0
 
+  - name: namingScreenTexture1
+    type: bin
+    dir: sprites/namingScreen
+    start: 0xCDAEB0
+
+  - name: namingScreenIndex1
+    type: bin
+    dir: sprites/namingScreen
+    start: 0xCDE2C0
+
+  - name: miscTextures2
+    type: bin
+    dir: sprites/background
+    start: 0xCDE2E0
+
   - name: dialogueWindowTexture
     type: bin
     dir: sprites/dialogue-box
@@ -1408,12 +1423,12 @@ segments:
     dir: sprites/dialogue-box
     start: 0xD1DDE0
 
-  - name: namingScreenTexture
+  - name: namingScreenTexture2
     type: bin
     dir: sprites/naming-screen
     start: 0xD1DE00
 
-  - name: namingScreenIndex
+  - name: namingScreenIndex2
     type: bin
     dir: sprites/naming-screen
     start: 0xD2D600
@@ -1435,7 +1450,7 @@ segments:
     start: 0xD49B80
 
   # TODO: finish separating textures
-  - name: miscTextures2
+  - name: miscTextures3
     type: bin
     dir: sprites/misc
     start: 0xD49BA0
@@ -1455,7 +1470,7 @@ segments:
     dir: sprites/tv
     start: 0xD4DA10
 
-  - name: miscTextures3
+  - name: miscTextures4
     type: bin
     dir: sprites/misc
     start: 0xD4DAB0
@@ -1475,7 +1490,7 @@ segments:
     dir: sprites/objects
     start: 0xD82FF0
 
-  - name: miscTextures4
+  - name: miscTextures5
     type: bin
     dir: sprites/misc
     start: 0xD835A0

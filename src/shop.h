@@ -3,12 +3,11 @@
 
 #include "common.h"
 
-extern void func_800DC750(u8);
-extern void func_800DC7BC(u8);                            
-extern void func_800DC9C0(u8);
-extern void func_800DC9FC(u8);    
-extern u8 func_800DCAA0(u8 index);
-extern u8 func_800DDDFC(u16);
+/* shop item indices */
+// 0x13-0x19 rick's
+// 0x1A-1C = tavern
+#define WINE_SHOP_ITEM 0x28
+#define WATER_SHOP_ITEM 0x2C
 
 // D_8023740A
 typedef struct {
@@ -18,6 +17,13 @@ typedef struct {
     u8 storeItemIndex;
     u8 unk_5; // buy/don't buy
 } ShopContext;
+
+extern void func_800DC750(u8);
+extern void func_800DC7BC(u8);                            
+extern void func_800DC9C0(u8);
+extern void func_800DC9FC(u8);    
+extern u8 func_800DCAA0(u8 index);
+extern u8 func_800DDDFC(u16);
 
 extern ShopContext shopContext;
 

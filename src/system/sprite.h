@@ -15,9 +15,6 @@
 
 #define OBJECT_SPRITE_BANK_1_START 0x802EB800
 
-// TODO: add sprite indices
-#define DOG_TITLE_SPRITE 0x44
-
 typedef struct {
 	u16 animationIndex;
 	u16 nextAnimationIndex;
@@ -52,7 +49,7 @@ typedef struct {
 	SpriteAnimation animation; // 0x28
 	Vec3f shrink; // 0x2C
 	Vec3f scale; // 0x38
-	Vec3f unk_44;
+	Vec3f angles;
     Vec4f rgba; // 0x50 
 	Vec4f rgbaCurrent; // 0x60
 	Vec4f rgbaDefault; // 0x70
@@ -116,7 +113,7 @@ typedef struct {
 	u16	unk_5A;
 	u16 collision; // 0x5C
 	u16 unk_5E;
-	u16 spriteOffset; // 0x60;
+	u16 shadowSpriteIndex; // 0x60;
 	u16 unk_62;
 	u16 unk_64;
 	u8 unk_66;
@@ -198,7 +195,7 @@ extern void func_8002F770(s16);
 extern void func_8002F7C8(u8, u8, u8, u8);               
 extern void func_8002F8F0(u8 r, u8 g, u8 b, u8 a, s16);
 extern bool func_8002FA2C(u16);      
-extern bool func_8002FD80(u16, f32, f32, f32);   
+extern bool setSpriteStartingCoordinates(u16, f32, f32, f32);   
 extern void func_8002FB3C();
 extern bool func_8002FCB4(u16, u8);  
 extern bool func_8002FD24(u16 index);
@@ -233,9 +230,9 @@ extern bool func_8002B80C(u16 index, u16 offset, u8);
 extern bool func_8002BAD8(u16);   
 extern bool func_8002BB30(u16);
 extern bool func_8002BB88(u16); 
-extern bool func_8002BD0C(u16 index, f32 x, f32 y, f32 z);  
-extern bool func_8002BD90(u16, f32, f32, f32);                                                                                                        
-extern bool func_8002BE98(u16, f32, f32, f32);    
+extern bool setSpriteShrinkFactor(u16 index, f32 x, f32 y, f32 z);  
+extern bool setSpriteScale(u16, f32, f32, f32);                                                                                                        
+extern bool adjustSpriteShrinkFactor(u16, f32, f32, f32);    
 extern bool func_8002BE14(u16, f32, f32, f32);                        
 extern bool func_8002C1C0(u16 index, u8 r, u8 g, u8 b, u8 a, s16 arg5);
 extern bool func_8002C52C(u16, u8, s16);
@@ -243,7 +240,7 @@ extern bool func_8002C680(u16 index, u16, u16);
 extern bool func_8002C6F8(u16, u16);
 extern bool func_8002C768(u16, u16);
 extern bool func_8002C7EC(u16, u16);                              
-extern bool func_8002C85C(u16 index, u8 r, u8 g, u8 b, u8 a);
+extern bool setSpriteDefaultRGBA(u16 index, u8 r, u8 g, u8 b, u8 a);
 extern bool func_8002C914(u16, u8, u8, u8, u8);
 extern bool func_8002CAA8(u16, u8);  
 extern bool func_8002CB24(u16, u8);     
