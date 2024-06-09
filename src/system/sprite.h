@@ -5,7 +5,7 @@
 
 #define MAX_SPRITES 192
 #define MAX_SPRITE_INFO 40
-#define MAX_RENDERED_SPRITES 49
+#define MAX_ANIMATED_SPRITES 49
 #define MAX_ACTIVE_SPRITES 192
 #define MAX_SHADOW_SPRITES 3
 #define MAX_CHARACTER_SPRITES 102
@@ -90,7 +90,8 @@ typedef struct {
 	u16 flags; /* 0x24 */ // bit 2 = asset type
 } CharacterSprite;
 
-// abstract sprite structitmap
+// abstract sprite struct
+// probably AnimatedSprite
 // 0x801FC160
 typedef struct {
 	void *vaddrTexture1; // 00
@@ -120,7 +121,7 @@ typedef struct {
 	u8 direction;  // 0x67
 	u8 flag; // 0x68
 	u16 flags; // 0x6A
-} RenderedSprite;
+} AnimatedSprite;
 
 // 0x801F7110
 typedef struct {
@@ -176,7 +177,7 @@ typedef struct {
 } UnknownStruct5;
 
 
-/* renderedSprites.c */
+/* animatedSprites.c */
 extern void initializeNpcSpriteStructs(void);
 extern bool func_8002DEE8(u16, u16, u16, void*, void*, void*, void*, void*, void*);
 extern bool func_8002E284(u16, u16, u8);      
@@ -273,7 +274,7 @@ extern u32 func_8002A3A0(u16 arg0, u32 arg1[]);
 extern void func_8002AE58(void);
 
 extern CharacterSprite characterSprites[MAX_CHARACTER_SPRITES];
-extern RenderedSprite renderedSprites[MAX_RENDERED_SPRITES];
+extern AnimatedSprite animatedSprites[MAX_ANIMATED_SPRITES];
 extern Sprite globalSprites[MAX_ACTIVE_SPRITES];
 
 #endif

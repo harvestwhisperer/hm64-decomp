@@ -464,11 +464,11 @@ void mainLoopCutsceneHandler(void) {
             
             if (cutsceneMaps[i].flags & CHARACTER_SPRITE_ASSET) {
                 
-                cutsceneMaps[i].coordinates.x = renderedSprites[cutsceneMaps[i].spriteIndex].startingCoordinates.x;
-                cutsceneMaps[i].coordinates.y = renderedSprites[cutsceneMaps[i].spriteIndex].startingCoordinates.y;
-                cutsceneMaps[i].coordinates.z = renderedSprites[cutsceneMaps[i].spriteIndex].startingCoordinates.z;
+                cutsceneMaps[i].coordinates.x = animatedSprites[cutsceneMaps[i].spriteIndex].startingCoordinates.x;
+                cutsceneMaps[i].coordinates.y = animatedSprites[cutsceneMaps[i].spriteIndex].startingCoordinates.y;
+                cutsceneMaps[i].coordinates.z = animatedSprites[cutsceneMaps[i].spriteIndex].startingCoordinates.z;
                 
-                if (cutsceneMaps[i].unk_1C != 0xFFFF && renderedSprites[cutsceneMaps[i].spriteIndex].unk_58 == cutsceneMaps[i].unk_1C && cutsceneMaps[i].unk_1E == renderedSprites[cutsceneMaps[i].spriteIndex].unk_5A) {
+                if (cutsceneMaps[i].unk_1C != 0xFFFF && animatedSprites[cutsceneMaps[i].spriteIndex].unk_58 == cutsceneMaps[i].unk_1C && cutsceneMaps[i].unk_1E == animatedSprites[cutsceneMaps[i].spriteIndex].unk_5A) {
                     cutsceneMaps[i].unk_1C = 0xFFFF;
                     cutsceneMaps[i].unk_66 = 0;
                     cutsceneMaps[i].cutscenePointer = cutsceneMaps[i].unk_18;
@@ -1367,7 +1367,7 @@ void func_8004A000(u16 index) {
     
     cutsceneMaps[index].cutscenePointer += 2;
     
-    setSpriteDirection(cutsceneMaps[index].spriteIndex, (renderedSprites[spriteIndex].direction + 4)  % 8);
+    setSpriteDirection(cutsceneMaps[index].spriteIndex, (animatedSprites[spriteIndex].direction + 4)  % 8);
 }
 
 //INCLUDE_ASM(const s32, "system/cutscene", func_8004A0A8);
@@ -1510,7 +1510,7 @@ void func_8004B0E8(u16 index) {
     }
 
     if (cutsceneMaps[index].flags & 8) {
-        if (func_8002CBF8(renderedSprites[cutsceneMaps[index].spriteIndex].globalSpriteIndex)) {
+        if (func_8002CBF8(animatedSprites[cutsceneMaps[index].spriteIndex].globalSpriteIndex)) {
             cutsceneMaps[index].cutscenePointer += 2;
         } else {
             cutsceneMaps[index].unk_66 = 1;

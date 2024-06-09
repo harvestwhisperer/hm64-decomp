@@ -56,7 +56,7 @@ typedef struct {
 	u16 action3; // 0x68
 	u8 animationState; // 0x6A // animation state
 	u8 unk_6B; // 0x6B
-	u8 unk_6C; // 0x6C
+	u8 unk_6C; // 0x6C // held chicken index
 	u8 direction; // 0x6D
 	u8 unk_6E; // 0x6E
 	u8 unk_6F; // 0x6F

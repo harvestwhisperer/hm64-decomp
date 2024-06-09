@@ -66,6 +66,7 @@ typedef struct {
 } npcInfo;
 
 extern void func_800752C0();  
+extern u8 func_80075374(u8 npcIndex, int arg1);
 extern void func_80075A18(); 
 extern void func_800758B8();                                  
 extern void func_80075910();  
@@ -77,7 +78,7 @@ extern void setNPCSpawningLocations();
 extern u8 npcAffection[TOTAL_NPCS];
 extern npcInfo npcInfoArray[];
 
-extern u8 D_801C3E18;
+extern u8 npcTalkingTo;
 
 
 #endif

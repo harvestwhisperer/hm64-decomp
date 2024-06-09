@@ -1126,6 +1126,7 @@ void func_8007341C(u8 itemIndex) {
     func_8002C914(itemIndex + 0x62, 0xFF, 0xFF, 0xFF, 0xFF);
 
     func_80034C40(MAIN_MAP_INDEX, itemIndex, itemIndex + 0x62, 0xB, arr[itemIndex].x, arr[itemIndex].y, arr[itemIndex].z, 0xFF, 0xFF, 0, 0);
+
 }
 
 // alternate

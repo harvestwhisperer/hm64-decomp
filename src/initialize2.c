@@ -42,9 +42,9 @@ extern u32 gCutsceneFlagsHack[2];
 void mainGameLoopCallback(void) {
     
     // for debugging?
-    D_8018A062 = (s16)renderedSprites[PLAYER].startingCoordinates.x;
-    D_80237A20 = (s16)renderedSprites[PLAYER].startingCoordinates.y;
-    D_80182D8C = (s16)renderedSprites[PLAYER].startingCoordinates.z;
+    D_8018A062 = (s16)animatedSprites[PLAYER].startingCoordinates.x;
+    D_80237A20 = (s16)animatedSprites[PLAYER].startingCoordinates.y;
+    D_80182D8C = (s16)animatedSprites[PLAYER].startingCoordinates.z;
     
     // check sprite flags
     if (func_8002FD24(PLAYER) && !(func_80030388(PLAYER))) {

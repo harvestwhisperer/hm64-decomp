@@ -25,7 +25,7 @@ typedef struct {
 	u16 spriteIndex;
 	u8 location;
 	u8 unk_17;
-	u8 unk_18;
+	u8 direction;
 	u8 unk_19;
 	u8 unk_1A;
 	u8 unk_1B;
@@ -72,7 +72,7 @@ typedef struct {
 	u16 spriteIndex; // 14
 	u8 location; // 16
 	u8 unk_17; // 17
-	u8 unk_18; // 18
+	u8 direction; // 18
 	u8 unk_19; // 19
 	u8 unk_1A; // 1A
 	u8 unk_1B; // 1B
@@ -131,11 +131,16 @@ extern void func_800879C8();
 extern void func_80087CD4();    
 extern void func_80087D5C();   
 extern void func_80087DEC();                   
+extern u8 func_80087F28(u8, u8);
 extern void func_8008841C();    
 extern void func_800886D0();  
-extern void func_80088C1C(u8, u8);                
-extern void func_80088D54();                                  
+extern void func_80088C1C(u8, u8);      
+extern u8 func_8008A4A8(u8, u8, f32, f32, f32);
+extern void func_8008B1B8();          
+extern void func_8008B2E8(u8);                                   
 extern void func_8008B9AC();                                  
+extern void func_8008BAF0(u8, u8); 
+extern void func_80088D54();  
 extern void func_80099DE8();  
 extern void func_80099EEC(); 
 extern void func_80099FF0();

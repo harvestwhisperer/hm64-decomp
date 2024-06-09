@@ -617,7 +617,6 @@ __Dom2SpeedParam = 0x8017064F;
 __osProfileList = 0x801706BC;
 __osViIntrCount = 0x80182D88;
 __osRdb_Read_Data_Ct = 0x80188F64;
-player_bss_0048 = 0x801891C8;
 __osRdb_IP6_Size = 0x80189818;
 __osMaxControllers = 0x8018A058;
 __osCurrentTime = 0x8018A08C;
@@ -1045,7 +1044,7 @@ globalLightingRgba = 0x8016F8A0; //size:0x10
 specialDialogueBits = 0x8016F8B0; // size:0x40
 gSickDays = 0x8016F8F4;
 recipesBits = 0x8016FAFC; // size:0x4
-gChickenEggs = 0x8016FB08;
+gChickenEggs = 0x8016FB08; // size:0xC4
 namingScreenContext = 0x8016FBD0; // size:0x20
 horseInfo = 0x8016FDD0;
 harvestKingName = 0x8016FDF4;
@@ -1074,6 +1073,8 @@ dialogueIcons = 0x801806D0;
 
 cutsceneMaps = 0x801808B0;
 
+contStatus = 0x80181B90; // size:0x10
+
 nuContDataLockKey = 0x80181B14;
 bakeryCardPoints = 0x80181B10;
 SramHandle = 0x80181B18;
@@ -1081,7 +1082,7 @@ gSeason = 0x80182DB1;
 gHappiness = 0x80182FB8;
 gWifeConceptionCounter = 0x80182FB9;
 
-contData = 0x801831B8;
+contData = 0x801831B8; // size:0x20
 gToolchestSlots = 0x801831D8;
 popuriGrayNewlyWedCounter = 0x801886A0;
 dogInfo = 0x801886B0; // size:0x20
@@ -1107,6 +1108,9 @@ totalFishCaught = 0x80189838;
 nuContData = 0x80189840;
 gLumber = 0x80189E50;
 
+D_80183200 = 0x80183200; // size:0x124
+D_80189E58 = 0x80189E58; // size:0x200
+
 pauseScreenSprites = 0x80189A50; // size:0x400
 
 gControllers = 0x8018A738; // size:0x110
@@ -1118,6 +1122,9 @@ babyBirthdaySeason = 0x8018A060;
 spriteCounter = 0x8018A05A;
 
 currentGfxTaskPtr = 0x801C3E14;
+
+npcTalkingTo = 0x801C3E18;
+
 bitmapCounter = 0x801C3E2A;
 gCutsceneIndex = 0x801C3B66;
 gChickens = 0x801C3BF0; // size:0x1B0
@@ -1160,7 +1167,7 @@ npcInfoArray = 0x801FB9D0; // size:0x780
 
 spiritFestivalAssistant2 = 0x801FC150;
 houseExtensionConstructionCounter = 0x801FC151;
-renderedSprites = 0x801FC160; // size:0x14AC
+animatedSprites = 0x801FC160; // size:0x14AC
 
 gGold = 0x801FD60C;
 gMainMapIndex = 0x801FD610;
@@ -1177,6 +1184,8 @@ gPlayerBirthdaySeason = 0x80204BEA;
 gGlobalSeasonName = 0x80204FB1;
 
 gSumGirlsWithHighAffection = 0x80204FB0;
+
+itemInfo = 0x80204DF8; // size:0x1B8
 
 gHarvestKing = 0x80204FF8;
 

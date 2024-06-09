@@ -39,6 +39,8 @@ extern u8 D_80189A48;
 extern u8 D_801C3B64;
 extern u8 D_801C4214;
 
+// todo: relocate
+// character sprite data
 extern void* D_8011BD18;
 
 // unused strings
@@ -606,7 +608,7 @@ void initializeGameVariables(void) {
     dogInfo.coordinates.z = 0;
     dogInfo.location = 0x52;
     dogInfo.unk_17 = 0;
-    dogInfo.unk_18 = 0;
+    dogInfo.direction = 0;
     dogInfo.unk_19 = 0;
     dogInfo.unk_1A = 0;
     dogInfo.unk_1B = 0;
@@ -644,7 +646,7 @@ void initializeGameVariables(void) {
 
         gChickens[i].location = 0;
         gChickens[i].unk_17 = 0;
-        gChickens[i].unk_18 = 0;
+        gChickens[i].direction = 0;
         gChickens[i].unk_19 = 0;
         gChickens[i].unk_1A = 0;
         gChickens[i].unk_1B = 0;
@@ -709,6 +711,7 @@ void initializeGameVariables(void) {
     }
 
     for (i = 0; i < MAX_CHICKEN_EGGS; i++) {
+
         gChickenEggs[i].unk_15 = 0;
         gChickenEggs[i].mapIndex = 0;
         gChickenEggs[i].unk_F = 0;
@@ -720,27 +723,32 @@ void initializeGameVariables(void) {
         gChickenEggs[i].unk_0.y = 0;
         gChickenEggs[i].unk_0.z = 0;
         gChickenEggs[i].flags = 0;
+
     }
- 
+
+   // func_800D51B0 from itemHandlers.c 
+
     for (i = 0; i < 10; i++) {
-        D_80204DF8[i].unk_0.x = 0;
-        D_80204DF8[i].unk_0.y = 0;
-        D_80204DF8[i].unk_0.z = 0;
+
+        itemInfo[i].unk_0.x = 0;
+        itemInfo[i].unk_0.y = 0;
+        itemInfo[i].unk_0.z = 0;
         
-        D_80204DF8[i].unk_C = 0;
-        D_80204DF8[i].unk_10 = 0;
-        D_80204DF8[i].unk_14 = 0;
+        itemInfo[i].unk_C.x = 0;
+        itemInfo[i].unk_C.y = 0;
+        itemInfo[i].unk_C.z = 0;
         
-        D_80204DF8[i].unk_18.x = 0;
-        D_80204DF8[i].unk_18.y = 0;
-        D_80204DF8[i].unk_18.z = 0;
+        itemInfo[i].unk_18.x = 0;
+        itemInfo[i].unk_18.y = 0;
+        itemInfo[i].unk_18.z = 0;
         
-        D_80204DF8[i].unk_24 = 0;
-        D_80204DF8[i].unk_26 = 0;
-        D_80204DF8[i].unk_28 = 0;
+        itemInfo[i].unk_24 = 0;
+        itemInfo[i].unk_26 = 0;
+        itemInfo[i].unk_28 = 0;
         
-        D_80204DF8[i].unk_2A = 0;
-        D_80204DF8[i].flags = 0;
+        itemInfo[i].unk_2A = 0;
+        itemInfo[i].flags = 0;
+
     }
     
     D_801FB6F0 = 0;

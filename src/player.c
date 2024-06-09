@@ -52,9 +52,79 @@ extern Vec3f playerDefaultStartingCoordinates[];
 extern u8 playerDefaultStartingDirections[73];
 
 // rodata
-extern s8 D_8011F3F0[12];
-extern s8 D_8011F3FC[12]; 
-extern u8 D_8011F5D4[];
+extern const s8 D_8011F3F0[12];
+extern const s8 D_8011F3FC[12]; 
+extern const u8 D_8011F5D4[];
+
+// forward declarations
+void func_80067BC4(void);
+void func_80067E5C(void);
+void func_80067EE0(void);
+void func_80067F50(void);
+void func_8006807C(void);
+void func_80068120(void);
+void func_80068258(void);
+void func_800682F8(void);
+void func_80068340(void);
+void func_80068410(void);
+void func_80068558(void);
+void func_80068A98(void);
+void func_80068C8C(void);
+void func_80068DFC(void);
+void func_80068FB0(void);
+void func_800692E4(void);
+void func_80069830(void);
+void func_80069C5C(void);
+void func_80069C90(void);
+void func_80069CC4(void);
+void func_80069DA8(void);
+void func_80069DB0(void);
+void func_80069E54(void);
+void func_80069E5C(void);
+void func_80069E64(void);
+void func_80069E6C(void);
+void func_80069E74(void);
+void func_8006A2E0(void);
+void func_80068738(void);
+void func_80068918(void);
+void func_80068920(void);
+void func_80068990(void);
+void func_80068A00(void);
+void func_80068A08(void);
+void func_8006A714(void);
+void func_8006C384(void);
+void func_8006A7B0(void);
+void func_8006A848(void);
+void func_8006A8C4(void);
+void func_8006A9A8(void);
+void func_8006AA9C(void);
+void func_8006AEEC(void);
+void func_8006AFE4(void);
+void func_8006B104(void);
+void func_8006B8BC(void);
+void func_8006B910(void);
+void func_8006B964(void);
+void func_8006B96C(void);
+void func_8006B974(void);
+void func_8006B97C(void);
+void func_8006BA14(void);
+void func_8006BAAC(void);
+void func_8006BBC4(void);
+void handleFishingRodUse(void);
+void func_8006C12C(void);
+void func_8006C134(void);
+void func_8006AB90(void);
+void func_8006C13C(void);
+void func_8006C1DC(void);
+void func_8006ADF4(void);
+void func_8006B4D4(void);
+void func_8006B4DC(void);
+void func_8006B584(void);
+void func_8006B61C(void);
+void func_8006B6EC(void);
+void func_8006B77C(void);
+void func_8006AC4C(void);
+
 
 
 static inline void resetAction() {
@@ -115,7 +185,7 @@ void setupPlayerSprite(u16 arg0, u8 resetPlayer) {
     toolUse.unk_C = 0;
 
 }
-
+  
 //INCLUDE_ASM(const s32, "player", handleEatingAndDrinking);
 
 // handle eating/drinking
@@ -338,9 +408,9 @@ bool checkHaveKeyItem(u8 item) {
 //INCLUDE_ASM(const s32, "player", func_80065F5C);
 
 void func_80065F5C(void) {
-    gPlayer.startingCoordinates.x = renderedSprites[PLAYER].startingCoordinates.x;
-    gPlayer.startingCoordinates.y = renderedSprites[PLAYER].startingCoordinates.y;
-    gPlayer.startingCoordinates.z = renderedSprites[PLAYER].startingCoordinates.z;
+    gPlayer.startingCoordinates.x = animatedSprites[PLAYER].startingCoordinates.x;
+    gPlayer.startingCoordinates.y = animatedSprites[PLAYER].startingCoordinates.y;
+    gPlayer.startingCoordinates.z = animatedSprites[PLAYER].startingCoordinates.z;
 }
 
 //INCLUDE_ASM(const s32, "player", func_80065F94);
@@ -359,13 +429,13 @@ Vec3f* func_80065F94(Vec3f *arg0, f32 arg1, u8 arg2) {
 
     if (vec.y != MAX_UNSIGNED_SHORT) {
 
-        vec.x += buffer[(renderedSprites[PLAYER].direction + func_8003C1A4(gMainMapIndex)) % 8] * arg1;
-        vec.z += buffer2[(renderedSprites[PLAYER].direction + func_8003C1A4(gMainMapIndex)) % 8] * arg1;
+        vec.x += buffer[(animatedSprites[PLAYER].direction + func_8003C1A4(gMainMapIndex)) % 8] * arg1;
+        vec.z += buffer2[(animatedSprites[PLAYER].direction + func_8003C1A4(gMainMapIndex)) % 8] * arg1;
 
         if (arg2 != 8) {
             
-            vec.x += buffer[((renderedSprites[PLAYER].direction + func_8003C1A4(gMainMapIndex)+ arg2) % 8)];
-            vec.z += buffer2[((renderedSprites[PLAYER].direction + func_8003C1A4(gMainMapIndex) + arg2) % 8)];
+            vec.x += buffer[((animatedSprites[PLAYER].direction + func_8003C1A4(gMainMapIndex)+ arg2) % 8)];
+            vec.z += buffer2[((animatedSprites[PLAYER].direction + func_8003C1A4(gMainMapIndex) + arg2) % 8)];
             
         }
     }
@@ -397,13 +467,13 @@ Vec3f* func_80065F94(Vec3f *arg0, f32 arg1, u8 arg2) {
 
     if (vec.y != MAX_UNSIGNED_SHORT) {D_8011F3F0
 
-        vec.x += ptr[(renderedSprites[PLAYER].direction + func_8003C1A4(gMainMapIndex)) % 8] * arg1;
-        vec.z += ptr2[(renderedSprites[PLAYER].direction + func_8003C1A4(gMainMapIndex)) % 8] * arg1;
+        vec.x += ptr[(animatedSprites[PLAYER].direction + func_8003C1A4(gMainMapIndex)) % 8] * arg1;
+        vec.z += ptr2[(animatedSprites[PLAYER].direction + func_8003C1A4(gMainMapIndex)) % 8] * arg1;
 
         if (arg2 != 8) {
             
-            vec.x += ptr[((renderedSprites[PLAYER].direction + func_8003C1A4(gMainMapIndex)+ arg2) % 8)];
-            vec.z += ptr2[((renderedSprites[PLAYER].direction + func_8003C1A4(gMainMapIndex) + arg2) % 8)];
+            vec.x += ptr[((animatedSprites[PLAYER].direction + func_8003C1A4(gMainMapIndex)+ arg2) % 8)];
+            vec.z += ptr2[((animatedSprites[PLAYER].direction + func_8003C1A4(gMainMapIndex) + arg2) % 8)];
             
         }
     }
@@ -613,7 +683,7 @@ void func_80067034(void) {
             
             horseInfo.coordinates = vec2;
             
-            horseInfo.direction = (renderedSprites[PLAYER].direction + func_8003C1A4(MAIN_MAP_INDEX)) % 8;
+            horseInfo.direction = (animatedSprites[PLAYER].direction + func_8003C1A4(MAIN_MAP_INDEX)) % 8;
             horseInfo.location = gBaseMapIndex;
             horseInfo.flags &= ~0x8;            
             gPlayer.flags &= -2;
@@ -622,7 +692,7 @@ void func_80067034(void) {
             // initialize animal locations
             func_8008B9AC();
            
-            renderedSprites[PLAYER].direction = i;
+            animatedSprites[PLAYER].direction = i;
 
             gPlayer.action1 = 0xE;
             gPlayer.action3 = 0;

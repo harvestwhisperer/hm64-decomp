@@ -193,7 +193,6 @@ extern void func_80064814(void);
 // recipes
 extern u8 func_80065518(void);
 extern u8 func_8006536C();
-// might be s32 return value
 extern s32 getSumNpcAffection(void);
 
 extern u32 dailyEventBits[0x20];
@@ -202,7 +201,6 @@ extern u32 specialDialogueBits[0x10];
 extern u32 recipesBits[1];
 extern u32 readMailBits[];
 extern u32 mailboxBits[];
-// FIXME: maybe should be array [1]?
 extern u32 albumBits;
 
 extern u8 D_80113760[0x14][0x18];

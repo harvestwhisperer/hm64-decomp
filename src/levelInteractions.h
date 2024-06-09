@@ -3,6 +3,7 @@
 
 #include "common.h"
 
+extern u8 func_800ACDF4(u16 mapIndex);
 extern bool checkWineBarrelInteraction(u8);
 extern bool func_800ACE50(u8);
 extern bool func_800ACFE8(u8);   

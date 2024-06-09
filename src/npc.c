@@ -17,7 +17,7 @@
 // bss
 npcInfo npcInfoArray[0x30];
 
-u8 D_801C3E18;
+u8 npcTalkingTo;
 u16 D_801FBE2E;  
 u16 D_801FBFBE;
 u16 D_801FBFE6;
@@ -341,9 +341,9 @@ void func_80075910(void) {
     for (i = 0; i < TOTAL_NPCS; i++) {
         if (npcInfoArray[i].flags & 1) {
             if (npcInfoArray[i].levelIndex == gBaseMapIndex) {
-                npcInfoArray[i].currentCoordinates.x = renderedSprites[npcInfoArray[i].spriteIndex].startingCoordinates.x;
-                npcInfoArray[i].currentCoordinates.y = renderedSprites[npcInfoArray[i].spriteIndex].startingCoordinates.y;
-                npcInfoArray[i].currentCoordinates.z = renderedSprites[npcInfoArray[i].spriteIndex].startingCoordinates.z; 
+                npcInfoArray[i].currentCoordinates.x = animatedSprites[npcInfoArray[i].spriteIndex].startingCoordinates.x;
+                npcInfoArray[i].currentCoordinates.y = animatedSprites[npcInfoArray[i].spriteIndex].startingCoordinates.y;
+                npcInfoArray[i].currentCoordinates.z = animatedSprites[npcInfoArray[i].spriteIndex].startingCoordinates.z; 
             }
             
         }
@@ -1525,15 +1525,15 @@ bool func_80085C94(void) {
     bool found = 0;
     u8 i = 0;
     
-    D_801C3E18 = 0xFF;
+    npcTalkingTo = 0xFF;
 
     while (i < TOTAL_NPCS && !found) {
 
         if (npcInfoArray[i].flags & 4) {
-            if (!renderedSprites[npcInfoArray[i].spriteIndex].unk_58) {
+            if (!animatedSprites[npcInfoArray[i].spriteIndex].unk_58) {
                 found = 1;
                 npcInfoArray[i].movingFlag = 0x20;
-                D_801C3E18 = i;
+                npcTalkingTo = i;
             }
         }  
 
