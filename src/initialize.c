@@ -17,7 +17,7 @@
 #include "gameStatus.h"
 #include "initialize2.h"
 #include "itemHandlers.h"
-#include "level.h"
+#include "level.h" 
 #include "loadGameScreen.h"
 #include "mainLoop.h"
 #include "mapObjects.h"
@@ -520,7 +520,7 @@ void initializeGameVariables(void) {
     gEntranceIndex = 0xFF;
     previousEntranceIndex = 0xFF;
     
-    D_801C3F50 = 0;
+    demoCutsceneIndex = 0;
     
     gWife = 0xFF;
 
@@ -553,10 +553,10 @@ void initializeGameVariables(void) {
     gFlowerFestivalGoddess = 0xFF;
     D_80189054 = 0xFF;
     gVoteForFlowerFestivalGoddess = 0xFF;
-    D_801FD621 = 0;
-    D_801FC150 = 0;
+    spiritFestivalAssistant1 = 0;
+    spiritFestivalAssistant2 = 0;
     
-    D_80237412 = 0;
+    spiritFestivalAssistant3 = 0;
 
     gHappiness = 0;
 
@@ -573,15 +573,15 @@ void initializeGameVariables(void) {
 
     initializePlayer();
     
-    D_80189828.unk_0 = 0;
-    D_80189828.unk_2 = 0;
-    D_80189828.unk_3 = 0;
-    D_80189828.unk_4 = 0;
-    D_80189828.unk_6 = 0;
-    D_80189828.unk_8 = 0;
-    D_80189828.unk_A = 0;
-    D_80189828.unk_C = 0;
-    D_80189828.unk_E = 0;
+    toolUse.unk_0 = 0;
+    toolUse.unk_2 = 0;
+    toolUse.unk_3 = 0;
+    toolUse.unk_4 = 0;
+    toolUse.unk_6 = 0;
+    toolUse.unk_8 = 0;
+    toolUse.unk_A = 0;
+    toolUse.unk_C = 0;
+    toolUse.unk_E = 0;
 
     for (i = 0; i < TOTAL_NPCS; i++) {
         npcInfoArray[i].spriteIndex = 0;
@@ -708,7 +708,7 @@ void initializeGameVariables(void) {
         gFarmAnimals[i].goldenMilk = 0xFF;
     }
 
-    for (i = 0; i < 7; i++) {
+    for (i = 0; i < MAX_CHICKEN_EGGS; i++) {
         gChickenEggs[i].unk_15 = 0;
         gChickenEggs[i].mapIndex = 0;
         gChickenEggs[i].unk_F = 0;
@@ -842,7 +842,10 @@ void initializeGameVariables(void) {
     }
 
     recipesBits[0] = 0;
+
+    // unused
     D_8016FB00 = 0;
+
     albumBits = 0;
 
     for (i = 0; i < 0x20; i++) {
@@ -864,6 +867,7 @@ void initializeGameVariables(void) {
     readMemory((u32)D_80113760, (u32)D_80182BA8, 0x1E0);
         
     albumBits |= 1;
+
 }
 
 //INCLUDE_ASM(const s32, "initialize", registerMainLoopCallbacks);
@@ -936,142 +940,143 @@ INCLUDE_ASM(const s32, "initialize", func_8004F768);
 
 void loadMapAddresses(void) {
     
-    setMapModelAddresses(0, &_ranchSpringMapSegmentRomStart, &_ranchSpringMapSegmentRomEnd);
-    setMapModelAddresses(1, &_ranchSummerMapSegmentRomStart, &_ranchSummerMapSegmentRomEnd);
-    setMapModelAddresses(2, &_ranchFallMapSegmentRomStart, &_ranchFallMapSegmentRomEnd);
-    setMapModelAddresses(3, &_ranchWinterMapSegmentRomStart, &_ranchWinterMapSegmentRomEnd);
+    setMapModelAddresses(RANCH_SPRING, &_ranchSpringMapSegmentRomStart, &_ranchSpringMapSegmentRomEnd);
+    setMapModelAddresses(RANCH_SUMMER, &_ranchSummerMapSegmentRomStart, &_ranchSummerMapSegmentRomEnd);
+    setMapModelAddresses(RANCH_AUTUMN, &_ranchFallMapSegmentRomStart, &_ranchFallMapSegmentRomEnd);
+    setMapModelAddresses(RANCH_WINTER, &_ranchWinterMapSegmentRomStart, &_ranchWinterMapSegmentRomEnd);
+ 
+    setMapModelAddresses(ANN_ROOM, &_annsRoomMapSegmentRomStart, &_annsRoomMapSegmentRomEnd);
 
-    setMapModelAddresses(4, &_annsRoomMapSegmentRomStart, &_annsRoomMapSegmentRomEnd);
+    setMapModelAddresses(RANCH_BARN, &_ranchBarnMapSegmentRomStart, &_ranchBarnMapSegmentRomEnd);
+    setMapModelAddresses(RANCH_STORE, &_ranchStoreMapSegmentRomStart, &_ranchStoreMapSegmentRomEnd);
+    setMapModelAddresses(RANCH_HOUSE, &_ranchHouseMapSegmentRomStart, &_ranchHouseMapSegmentRomEnd);
 
-    setMapModelAddresses(5, &_ranchBarnMapSegmentRomStart, &_ranchBarnMapSegmentRomEnd);
-    setMapModelAddresses(6, &_ranchStoreMapSegmentRomStart, &_ranchStoreMapSegmentRomEnd);
-    setMapModelAddresses(7, &_ranchHouseMapSegmentRomStart, &_ranchHouseMapSegmentRomEnd);
-
-    setMapModelAddresses(8, &_emptyMap1SegmentRomStart, &_emptyMap1SegmentRomEnd);
+    setMapModelAddresses(EMPTY_MAP_1, &_emptyMap1SegmentRomStart, &_emptyMap1SegmentRomEnd);
     
-    setMapModelAddresses(9, &_beachSpringMapSegmentRomStart, &_beachSpringMapSegmentRomEnd);
-    setMapModelAddresses(0xA, &_beachSummerMapSegmentRomStart, &_beachSummerMapSegmentRomEnd);
-    setMapModelAddresses(0xB, &_beachFallMapSegmentRomStart, &_beachFallMapSegmentRomEnd);
-    setMapModelAddresses(0xC, &_beachWinterMapSegmentRomStart, &_beachWinterMapSegmentRomEnd);
+    setMapModelAddresses(BEACH_SPRING, &_beachSpringMapSegmentRomStart, &_beachSpringMapSegmentRomEnd);
+    setMapModelAddresses(BEACH_SUMMER, &_beachSummerMapSegmentRomStart, &_beachSummerMapSegmentRomEnd);
+    setMapModelAddresses(BEACH_AUTUMN, &_beachFallMapSegmentRomStart, &_beachFallMapSegmentRomEnd);
+    setMapModelAddresses(BEACH_WINTER, &_beachWinterMapSegmentRomStart, &_beachWinterMapSegmentRomEnd);
 
-    setMapModelAddresses(0xD, &_raceTrackSpringMapSegmentRomStart, &_raceTrackSpringMapSegmentRomEnd);
+    setMapModelAddresses(RACE_TRACK_SPRING, &_raceTrackSpringMapSegmentRomStart, &_raceTrackSpringMapSegmentRomEnd);
     // no race track summer: 0xE
     // empty 4 words in rom
-    setMapModelAddresses(0xF, &_raceTrackFallMapSegmentRomStart, &_raceTrackFallMapSegmentRomEnd);
-    setMapModelAddresses(0x10, &_raceTrackWinterMapSegmentRomStart, &_raceTrackWinterMapSegmentRomEnd);
+    setMapModelAddresses(RACE_TRACK_AUTUMN, &_raceTrackFallMapSegmentRomStart, &_raceTrackFallMapSegmentRomEnd);
+    setMapModelAddresses(RACE_TRACK_WINTER, &_raceTrackWinterMapSegmentRomStart, &_raceTrackWinterMapSegmentRomEnd);
 
-    setMapModelAddresses(0x11, &_mountain1SpringMapSegmentRomStart, &_mountain1SpringMapSegmentRomEnd);
-    setMapModelAddresses(0x12, &_mountain1SummerMapSegmentRomStart, &_mountain1SummerMapSegmentRomEnd);
-    setMapModelAddresses(0x13, &_mountain1FallMapSegmentRomStart, &_mountain1FallMapSegmentRomEnd);
-    setMapModelAddresses(0x14, &_mountain1WinterMapSegmentRomStart, &_mountain1WinterMapSegmentRomEnd);
+    setMapModelAddresses(MOUNTAIN_1_SPRING, &_mountain1SpringMapSegmentRomStart, &_mountain1SpringMapSegmentRomEnd);
+    setMapModelAddresses(MOUNTAIN_1_SUMMER, &_mountain1SummerMapSegmentRomStart, &_mountain1SummerMapSegmentRomEnd);
+    setMapModelAddresses(MOUNTAIN_1_AUTUMN, &_mountain1FallMapSegmentRomStart, &_mountain1FallMapSegmentRomEnd);
+    setMapModelAddresses(MOUNTAIN_1_WINTER, &_mountain1WinterMapSegmentRomStart, &_mountain1WinterMapSegmentRomEnd);
 
-    setMapModelAddresses(0x15, &_mountain2SpringMapSegmentRomStart, &_mountain2SpringMapSegmentRomEnd);
-    setMapModelAddresses(0x16, &_mountain2SummerMapSegmentRomStart, &_mountain2SummerMapSegmentRomEnd);
-    setMapModelAddresses(0x17, &_mountain2FallMapSegmentRomStart, &_mountain2FallMapSegmentRomEnd);
-    setMapModelAddresses(0x18, &_mountain2WinterMapSegmentRomStart, &_mountain2WinterMapSegmentRomEnd);
+    setMapModelAddresses(MOUNTAIN_2_SPRING, &_mountain2SpringMapSegmentRomStart, &_mountain2SpringMapSegmentRomEnd);
+    setMapModelAddresses(MOUNTAIN_2_SUMMER, &_mountain2SummerMapSegmentRomStart, &_mountain2SummerMapSegmentRomEnd);
+    setMapModelAddresses(MOUNTAIN_2_AUTUMN, &_mountain2FallMapSegmentRomStart, &_mountain2FallMapSegmentRomEnd);
+    setMapModelAddresses(MOUNTAIN_2_WINTER, &_mountain2WinterMapSegmentRomStart, &_mountain2WinterMapSegmentRomEnd);
 
-    setMapModelAddresses(0x19, &_topOfMountain1SpringMapSegmentRomStart, &_topOfMountain1SpringMapSegmentRomEnd);
-    setMapModelAddresses(0x1A, &_topOfMountain1SummerMapSegmentRomStart, &_topOfMountain1SummerMapSegmentRomEnd);
-    setMapModelAddresses(0x1B, &_topOfMountain1FallMapSegmentRomStart, &_topOfMountain1FallMapSegmentRomEnd);
-    setMapModelAddresses(0x1C, &_topOfMountain1WinterMapSegmentRomStart, &_topOfMountain1WinterMapSegmentRomEnd);
+    setMapModelAddresses(TOP_OF_MOUNTAIN_1_SPRING, &_topOfMountain1SpringMapSegmentRomStart, &_topOfMountain1SpringMapSegmentRomEnd);
+    setMapModelAddresses(TOP_OF_MOUNTAIN_1_SUMMER, &_topOfMountain1SummerMapSegmentRomStart, &_topOfMountain1SummerMapSegmentRomEnd);
+    setMapModelAddresses(TOP_OF_MOUNTAIN_1_AUTUMN, &_topOfMountain1FallMapSegmentRomStart, &_topOfMountain1FallMapSegmentRomEnd);
+    setMapModelAddresses(TOP_OF_MOUNTAIN_1_WINTER, &_topOfMountain1WinterMapSegmentRomStart, &_topOfMountain1WinterMapSegmentRomEnd);
 
-    setMapModelAddresses(0x1D, &_moonMountainSpringMapSegmentRomStart, &_moonMountainSpringMapSegmentRomEnd);
-    setMapModelAddresses(0x1E, &_moonMountainSummerMapSegmentRomStart, &_moonMountainSummerMapSegmentRomEnd);
-    setMapModelAddresses(0x1F, &_moonMountainFallMapSegmentRomStart, &_moonMountainFallMapSegmentRomEnd);
-    setMapModelAddresses(0x20, &_moonMountainWinterMapSegmentRomStart, &_moonMountainWinterMapSegmentRomEnd);
+    setMapModelAddresses(MOON_MOUNTAIN_SPRING, &_moonMountainSpringMapSegmentRomStart, &_moonMountainSpringMapSegmentRomEnd);
+    setMapModelAddresses(MOON_MOUNTAIN_SUMMER, &_moonMountainSummerMapSegmentRomStart, &_moonMountainSummerMapSegmentRomEnd);
+    setMapModelAddresses(MOON_MOUNTAIN_AUTUMN, &_moonMountainFallMapSegmentRomStart, &_moonMountainFallMapSegmentRomEnd);
+    setMapModelAddresses(MOON_MOUNTAIN_WINTER, &_moonMountainWinterMapSegmentRomStart, &_moonMountainWinterMapSegmentRomEnd);
 
-    setMapModelAddresses(0x21, &_carpentersHutMapSegmentRomStart, &_carpentersHutMapSegmentRomEnd);
+    setMapModelAddresses(CARPENTER_HUT, &_carpentersHutMapSegmentRomStart, &_carpentersHutMapSegmentRomEnd);
     
-    setMapModelAddresses(0x22, &_dumplingHouseMapSegmentRomStart, &_dumplingHouseMapSegmentRomEnd);
+    setMapModelAddresses(DUMPLING_HOUSE, &_dumplingHouseMapSegmentRomStart, &_dumplingHouseMapSegmentRomEnd);
 
-    setMapModelAddresses(0x23, &_springSpringMapSegmentRomStart, &_springSpringMapSegmentRomEnd);
-    setMapModelAddresses(0x24, &_springSummerMapSegmentRomStart, &_springSummerMapSegmentRomEnd);
-    setMapModelAddresses(0x25, &_springFallMapSegmentRomStart, &_springFallMapSegmentRomEnd);
-    setMapModelAddresses(0x26, &_springWinterMapSegmentRomStart, &_springWinterMapSegmentRomEnd);
+    setMapModelAddresses(POND_SPRING, &_springSpringMapSegmentRomStart, &_springSpringMapSegmentRomEnd);
+    setMapModelAddresses(POND_SUMMER, &_springSummerMapSegmentRomStart, &_springSummerMapSegmentRomEnd);
+    setMapModelAddresses(POND_AUTUMN, &_springFallMapSegmentRomStart, &_springFallMapSegmentRomEnd);
+    setMapModelAddresses(POND_WINTER, &_springWinterMapSegmentRomStart, &_springWinterMapSegmentRomEnd);
 
-    setMapModelAddresses(0x27, &_ellisRoomMapSegmentRomStart, &_ellisRoomMapSegmentRomEnd);
+    setMapModelAddresses(ELLI_ROOM, &_ellisRoomMapSegmentRomStart, &_ellisRoomMapSegmentRomEnd);
 
-    setMapModelAddresses(0x28, &_bakeryMapSegmentRomStart, &_bakeryMapSegmentRomEnd);
+    setMapModelAddresses(BAKERY, &_bakeryMapSegmentRomStart, &_bakeryMapSegmentRomEnd);
 
-    setMapModelAddresses(0x29, &_village1SpringMapSegmentRomStart, &_village1SpringMapSegmentRomEnd);
-    setMapModelAddresses(0x2A, &_village1SummerMapSegmentRomStart, &_village1SummerMapSegmentRomEnd);
-    setMapModelAddresses(0x2B, &_village1FallMapSegmentRomStart, &_village1FallMapSegmentRomEnd);
-    setMapModelAddresses(0x2C, &_village1WinterMapSegmentRomStart, &_village1WinterMapSegmentRomEnd);
+    setMapModelAddresses(VILLAGE_1_SPRING, &_village1SpringMapSegmentRomStart, &_village1SpringMapSegmentRomEnd);
+    setMapModelAddresses(VILLAGE_1_SUMMER, &_village1SummerMapSegmentRomStart, &_village1SummerMapSegmentRomEnd);
+    setMapModelAddresses(VILLAGE_1_AUTUMN, &_village1FallMapSegmentRomStart, &_village1FallMapSegmentRomEnd);
+    setMapModelAddresses(VILLAGE_1_WINTER, &_village1WinterMapSegmentRomStart, &_village1WinterMapSegmentRomEnd);
 
-    setMapModelAddresses(0x2D, &_village2SpringMapSegmentRomStart, &_village2SpringMapSegmentRomEnd);
-    setMapModelAddresses(0x2E, &_village2SummerMapSegmentRomStart, &_village2SummerMapSegmentRomEnd);
-    setMapModelAddresses(0x2F, &_village2FallMapSegmentRomStart, &_village2FallMapSegmentRomEnd);
-    setMapModelAddresses(0x30, &_village2WinterMapSegmentRomStart, &_village2WinterMapSegmentRomEnd);
+    setMapModelAddresses(VILLAGE_2_SPRING, &_village2SpringMapSegmentRomStart, &_village2SpringMapSegmentRomEnd);
+    setMapModelAddresses(VILLAGE_2_SUMMER, &_village2SummerMapSegmentRomStart, &_village2SummerMapSegmentRomEnd);
+    setMapModelAddresses(VILLAGE_2_AUTUMN, &_village2FallMapSegmentRomStart, &_village2FallMapSegmentRomEnd);
+    setMapModelAddresses(VILLAGE_2_WINTER, &_village2WinterMapSegmentRomStart, &_village2WinterMapSegmentRomEnd);
 
-    setMapModelAddresses(0x31, &_popurisRoomMapSegmentRomStart, &_popurisRoomMapSegmentRomEnd);
+    setMapModelAddresses(POPURI_ROOM, &_popurisRoomMapSegmentRomStart, &_popurisRoomMapSegmentRomEnd);
 
-    setMapModelAddresses(0x32, &_flowerShopMapSegmentRomStart, &_flowerShopMapSegmentRomEnd);
+    setMapModelAddresses(FLOWER_SHOP, &_flowerShopMapSegmentRomStart, &_flowerShopMapSegmentRomEnd);
 
-    setMapModelAddresses(0x33, &_churchMapSegmentRomStart, &_churchMapSegmentRomEnd);
+    setMapModelAddresses(CHURCH, &_churchMapSegmentRomStart, &_churchMapSegmentRomEnd);
 
-    setMapModelAddresses(0x34, &_souvenirShopMapSegmentRomStart, &_souvenirShopMapSegmentRomEnd);
+    setMapModelAddresses(SOUVENIR_SHOP, &_souvenirShopMapSegmentRomStart, &_souvenirShopMapSegmentRomEnd);
 
-    setMapModelAddresses(0x35, &_squareSpringMapSegmentRomStart, &_squareSpringMapSegmentRomEnd);
-    setMapModelAddresses(0x36, &_squareSummerMapSegmentRomStart, &_squareSummerMapSegmentRomEnd);
-    setMapModelAddresses(0x37, &_squareFallMapSegmentRomStart, &_squareFallMapSegmentRomEnd);
-    setMapModelAddresses(0x38, &_squareWinterMapSegmentRomStart, &_squareWinterMapSegmentRomEnd);
+    setMapModelAddresses(SQUARE_SPRING, &_squareSpringMapSegmentRomStart, &_squareSpringMapSegmentRomEnd);
+    setMapModelAddresses(SQUARE_SUMMER, &_squareSummerMapSegmentRomStart, &_squareSummerMapSegmentRomEnd);
+    setMapModelAddresses(SQUARE_AUTUMN, &_squareFallMapSegmentRomStart, &_squareFallMapSegmentRomEnd);
+    setMapModelAddresses(SQUARE_WINTER, &_squareWinterMapSegmentRomStart, &_squareWinterMapSegmentRomEnd);
 
-    setMapModelAddresses(0x39, &_ricksShopMapSegmentRomStart, &_ricksShopMapSegmentRomEnd);
+    setMapModelAddresses(RICK_STORE, &_ricksShopMapSegmentRomStart, &_ricksShopMapSegmentRomEnd);
 
-    setMapModelAddresses(0x3A, &_midwifesHouseMapSegmentRomStart, &_midwifesHouseMapSegmentRomEnd);
+    setMapModelAddresses(MIDWIFE_HOUSE, &_midwifesHouseMapSegmentRomStart, &_midwifesHouseMapSegmentRomEnd);
     
-    setMapModelAddresses(0x3B, &_tavernMapSegmentRomStart, &_tavernMapSegmentRomEnd);
+    setMapModelAddresses(TAVERN, &_tavernMapSegmentRomStart, &_tavernMapSegmentRomEnd);
     
-    setMapModelAddresses(0x3C, &_libraryMapSegmentRomStart, &_libraryMapSegmentRomEnd);
+    setMapModelAddresses(LIBRARY, &_libraryMapSegmentRomStart, &_libraryMapSegmentRomEnd);
 
-    setMapModelAddresses(0x3D, &_mariasRoomMapSegmentRomStart, &_mariasRoomMapSegmentRomEnd);
+    setMapModelAddresses(MARIA_ROOM, &_mariasRoomMapSegmentRomStart, &_mariasRoomMapSegmentRomEnd);
     
-    setMapModelAddresses(0x3E, &_mayorsHouseMapSegmentRomStart, &_mayorsHouseMapSegmentRomEnd);
+    setMapModelAddresses(MAYOR_HOUSE, &_mayorsHouseMapSegmentRomStart, &_mayorsHouseMapSegmentRomEnd);
 
-    setMapModelAddresses(0x3F, &_potionShopBackroomMapSegmentRomStart, &_potionShopBackroomMapSegmentRomEnd);
-    setMapModelAddresses(0x40, &_potionShopMapSegmentRomStart, &_potionShopMapSegmentRomEnd);
+    setMapModelAddresses(POTION_SHOP_BEDROOM, &_potionShopBackroomMapSegmentRomStart, &_potionShopBackroomMapSegmentRomEnd);
+    setMapModelAddresses(POTION_SHOP, &_potionShopMapSegmentRomStart, &_potionShopMapSegmentRomEnd);
 
     // empty, referenced in func_80074C50 
-    setMapModelAddresses(0x41, &_emptyMap2SegmentRomStart, &_emptyMap2SegmentRomEnd);
+    setMapModelAddresses(EMPTY_MAP_2, &_emptyMap2SegmentRomStart, &_emptyMap2SegmentRomEnd);
     
-    setMapModelAddresses(0x42, &_spriteCaveMapSegmentRomStart, &_spriteCaveMapSegmentRomEnd);
-    setMapModelAddresses(0x43, &_caveMapSegmentRomStart, &_caveMapSegmentRomEnd);    
-    setMapModelAddresses(0x44, &_emptyMineMapSegmentRomStart, &_emptyMineMapSegmentRomEnd);
-    setMapModelAddresses(0x45, &_mineMapSegmentRomStart, &_mineMapSegmentRomEnd);
+    setMapModelAddresses(HARVEST_SPRITE_CAVE, &_spriteCaveMapSegmentRomStart, &_spriteCaveMapSegmentRomEnd);
+    setMapModelAddresses(CAVE, &_caveMapSegmentRomStart, &_caveMapSegmentRomEnd);    
+    setMapModelAddresses(MINE, &_emptyMineMapSegmentRomStart, &_emptyMineMapSegmentRomEnd);
+    setMapModelAddresses(MINE_2, &_mineMapSegmentRomStart, &_mineMapSegmentRomEnd);
 
-    setMapModelAddresses(0x46, &_karensRoomMapSegmentRomStart, &_karensRoomMapSegmentRomEnd);
+    setMapModelAddresses(KAREN_ROOM, &_karensRoomMapSegmentRomStart, &_karensRoomMapSegmentRomEnd);
 
-    setMapModelAddresses(0x47, &_vineyardSpringMapSegmentRomStart, &_vineyardSpringMapSegmentRomEnd);
-    setMapModelAddresses(0x48, &_vineyardSummerMapSegmentRomStart, &_vineyardSummerMapSegmentRomEnd);
-    setMapModelAddresses(0x49, &_vineyardFallMapSegmentRomStart, &_vineyardFallMapSegmentRomEnd);
-    setMapModelAddresses(0x4A, &_vineyardWinterMapSegmentRomStart, &_vineyardWinterMapSegmentRomEnd);
+    setMapModelAddresses(VINEYARD_SPRING, &_vineyardSpringMapSegmentRomStart, &_vineyardSpringMapSegmentRomEnd);
+    setMapModelAddresses(VINEYARD_SUMMER, &_vineyardSummerMapSegmentRomStart, &_vineyardSummerMapSegmentRomEnd);
+    setMapModelAddresses(VINEYARD_AUTUMN, &_vineyardFallMapSegmentRomStart, &_vineyardFallMapSegmentRomEnd);
+    setMapModelAddresses(VINEYARD_WINTER, &_vineyardWinterMapSegmentRomStart, &_vineyardWinterMapSegmentRomEnd);
 
-    setMapModelAddresses(0x4B, &_vineyardHouseMapSegmentRomStart, &_vineyardHouseMapSegmentRomEnd);
+    setMapModelAddresses(VINEYARD_HOUSE, &_vineyardHouseMapSegmentRomStart, &_vineyardHouseMapSegmentRomEnd);
 
-    setMapModelAddresses(0x4C, &_vineyardCellar1MapSegmentRomStart, &_vineyardCellar1MapSegmentRomEnd);
-    setMapModelAddresses(0x4D, &_vineyardCellar2MapSegmentRomStart, &_vineyardCellar2MapSegmentRomEnd);
+    setMapModelAddresses(VINEYARD_CELLAR, &_vineyardCellar1MapSegmentRomStart, &_vineyardCellar1MapSegmentRomEnd);
+    setMapModelAddresses(VINEYARD_CELLAR_BASEMENT, &_vineyardCellar2MapSegmentRomStart, &_vineyardCellar2MapSegmentRomEnd);
 
-    setMapModelAddresses(0x4E, &_roadSpringMapSegmentRomStart, &_roadSpringMapSegmentRomEnd);
-    setMapModelAddresses(0x4F, &_roadSummerMapSegmentRomStart, &_roadSummerMapSegmentRomEnd);
-    setMapModelAddresses(0x50, &_roadFallMapSegmentRomStart, &_roadFallMapSegmentRomEnd);
-    setMapModelAddresses(0x51, &_roadWinterMapSegmentRomStart, &_roadWinterMapSegmentRomEnd);
+    setMapModelAddresses(ROAD_SPRING, &_roadSpringMapSegmentRomStart, &_roadSpringMapSegmentRomEnd);
+    setMapModelAddresses(ROAD_SUMMER, &_roadSummerMapSegmentRomStart, &_roadSummerMapSegmentRomEnd);
+    setMapModelAddresses(ROAD_AUTUMN, &_roadFallMapSegmentRomStart, &_roadFallMapSegmentRomEnd);
+    setMapModelAddresses(ROAD_WINTER, &_roadWinterMapSegmentRomStart, &_roadWinterMapSegmentRomEnd);
 
-    setMapModelAddresses(0x52, &_farmSpringMapSegmentRomStart, &_farmSpringMapSegmentRomEnd);
-    setMapModelAddresses(0x53, &_farmSummerMapSegmentRomStart, &_farmSummerMapSegmentRomEnd);
-    setMapModelAddresses(0x54, &_farmFallMapSegmentRomStart, &_farmFallMapSegmentRomEnd);
-    setMapModelAddresses(0x55, &_farmWinterMapSegmentRomStart, &_farmWinterMapSegmentRomEnd);
+    setMapModelAddresses(FARM_SPRING, &_farmSpringMapSegmentRomStart, &_farmSpringMapSegmentRomEnd);
+    setMapModelAddresses(FARM_SUMMER, &_farmSummerMapSegmentRomStart, &_farmSummerMapSegmentRomEnd);
+    setMapModelAddresses(FARM_AUTUMN, &_farmFallMapSegmentRomStart, &_farmFallMapSegmentRomEnd);
+    setMapModelAddresses(FARM_WINTER, &_farmWinterMapSegmentRomStart, &_farmWinterMapSegmentRomEnd);
 
-    setMapModelAddresses(0x56, &_greenhouseMapSegmentRomStart, &_greenhouseMapSegmentRomEnd);
+    setMapModelAddresses(GREENHOUSE, &_greenhouseMapSegmentRomStart, &_greenhouseMapSegmentRomEnd);
     
-    setMapModelAddresses(0x57, &_houseMapSegmentRomStart, &_houseMapSegmentRomEnd);
+    setMapModelAddresses(HOUSE, &_houseMapSegmentRomStart, &_houseMapSegmentRomEnd);
 
-    setMapModelAddresses(0x58, &_barnMapSegmentRomStart, &_barnMapSegmentRomEnd);
-    setMapModelAddresses(0x59, &_coopMapSegmentRomStart, &_coopMapSegmentRomEnd);
+    setMapModelAddresses(BARN, &_barnMapSegmentRomStart, &_barnMapSegmentRomEnd);
+    setMapModelAddresses(COOP, &_coopMapSegmentRomStart, &_coopMapSegmentRomEnd);
     
-    setMapModelAddresses(0x5A, &_kitchenMapSegmentRomStart, &_kitchenMapSegmentRomEnd);
-    setMapModelAddresses(0x5B, &_bathroomMapSegmentRomStart, &_bathroomMapSegmentRomEnd);
+    setMapModelAddresses(KITCHEN, &_kitchenMapSegmentRomStart, &_kitchenMapSegmentRomEnd);
+    setMapModelAddresses(BATHROOM, &_bathroomMapSegmentRomStart, &_bathroomMapSegmentRomEnd);
     
-    func_8003BA44(0, 0, MODEL_DATA_BANK);
+    func_8003BA44(MAIN_MAP_INDEX, 0, MODEL_DATA_BANK);
+
 }
 
 INCLUDE_ASM(const s32, "initialize", func_80053088);

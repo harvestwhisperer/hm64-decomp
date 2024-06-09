@@ -9,6 +9,7 @@
 #include "game.h"
 #include "gameStatus.h"
 #include "initialize2.h"
+#include "itemHandlers.h"
 #include "mainLoop.h"
 #include "player.h"
 #include "shop.h"
@@ -205,7 +206,7 @@ void func_800B3A60(void) {
 
 // FIXME: probably not right
 static inline inline_func() {
-    func_8002BD0C(0x8E, 0, 0, 256.0f);
+    setSpriteShrinkFactor(0x8E, 0, 0, 256.0f);
 }
 
 //INCLUDE_ASM(const s32, "overlayScreens", func_800B3BD8);
@@ -229,13 +230,13 @@ void func_800B3BD8(void) {
     func_8002CAA8(0x8E, 0xFF);
     
     func_8002B138(0x82, &D_D3BFE0, &D_D3DCC0, &D_D3DCC0_2, &D_D3DCE0, 0, 0, 0x802E0EC0, 0, 0x802E27C0, 0x802E28C0, 0x802E2BC0, 0, 0, 0);
-    func_8002BD0C(0x82, -96.0f, 64.0f, 256.0f);
+    setSpriteShrinkFactor(0x82, -96.0f, 64.0f, 256.0f);
     func_8002CB24(0x82, 1);
     func_8002C914(0x82, 0xFF, 0xFF, 0xFF, 0xFF);
     func_8002B80C(0x82, 0, 0);
     
     func_8002B138(0x83, &D_D3BFE0, &D_D3DCC0, &D_D3DCC0_2, &D_D3DCE0, 0, 0, 0x802E0EC0, 0, 0x802E27C0, 0x802E28C0, 0x802E2BC0, 0, 0, 0);
-    func_8002BD0C(0x83, -56.0f, 64.0f, 256.0f);
+    setSpriteShrinkFactor(0x83, -56.0f, 64.0f, 256.0f);
     func_8002CB24(0x83, 1);
     func_8002C914(0x83, 0xFF, 0xFF, 0xFF, 0xFF);
     func_8002B80C(0x83, 1, 0);
@@ -245,17 +246,17 @@ void func_800B3BD8(void) {
     func_8002C914(0x84, 0xFF, 0xFF, 0xFF, 0xFF);
     
     func_8002B138(0x85, &D_D3BFE0, &D_D3DCC0, &D_D3DCC0_2, &D_D3DCE0, 0, 0, 0x802E0EC0, 0, 0x802E27C0, 0x802E28C0, 0x802E2BC0, 0, 0, 0);
-    func_8002BD0C(0x85, -12.0f, 13.0f, 256.0f);
+    setSpriteShrinkFactor(0x85, -12.0f, 13.0f, 256.0f);
     func_8002CB24(0x85, 1);
     func_8002C914(0x85, 0xFF, 0xFF, 0xFF, 0xFF);
     
     func_8002B138(0x86, &D_D3BFE0, &D_D3DCC0, &D_D3DCC0_2, &D_D3DCE0, 0, 0, 0x802E0EC0, 0, 0x802E27C0, 0x802E28C0, 0x802E2BC0, 0, 0, 0);
-    func_8002BD0C(0x86, -12.0f, 13.0f, 256.0f);
+    setSpriteShrinkFactor(0x86, -12.0f, 13.0f, 256.0f);
     func_8002CB24(0x86, 1);
     func_8002C914(0x86, 0xFF, 0xFF, 0xFF, 0xFF);
     
     func_8002B138(0x87, &D_D3BFE0, &D_D3DCC0, &D_D3DCC0_2, &D_D3DCE0, 0, 0, 0x802E0EC0, 0, 0x802E27C0, 0x802E28C0, 0x802E2BC0, 0, 0, 0);
-    func_8002BD0C(0x87, -16.0f, 11.0f, 224.0f);
+    setSpriteShrinkFactor(0x87, -16.0f, 11.0f, 224.0f);
     func_8002CB24(0x87, 1);
     func_8002C914(0x87, 0xFF, 0xFF, 0xFF, 0xFF);
     func_800B4160();
@@ -271,7 +272,7 @@ void func_800B4160(void) {
         func_8002BAD8(0x82);
         func_8002BAD8(0x83);
         func_8002BAD8(0x84);
-        func_8002BD0C(0x84, -96.0f, 64.0f, 256.0f);
+        setSpriteShrinkFactor(0x84, -96.0f, 64.0f, 256.0f);
         func_8002B80C(0x82, 7, 0xFE);
         func_8002B80C(0x83, 1, 0);
         func_8002B80C(0x84, 5, 0);
@@ -279,7 +280,7 @@ void func_800B4160(void) {
         func_8002BAD8(0x82);
         func_8002BAD8(0x83);
         func_8002BAD8(0x84);
-        func_8002BD0C(0x84, -56.0f, 64.0f, 256.0f);
+        setSpriteShrinkFactor(0x84, -56.0f, 64.0f, 256.0f);
         func_8002B80C(0x82, 0, 0);
         func_8002B80C(0x83, 8, 0xFE);
         func_8002B80C(0x84, 6, 0);
@@ -396,11 +397,11 @@ void func_800B5FC4(u8 arg0, u8 arg1, u8 arg2) {
     } else {
         
         if (arg1 != 0xFF) {
-            func_8002BD0C(0x79, D_80116D80[arg1], D_80116D90[arg1], 32.0f);
+            setSpriteShrinkFactor(0x79, D_80116D80[arg1], D_80116D90[arg1], 32.0f);
         }
 
         if (arg2 != 0xFF) {
-            func_8002BD0C(0x79, D_80116DA0[arg2], D_80116DB0[arg2], 32.0f);
+            setSpriteShrinkFactor(0x79, D_80116DA0[arg2], D_80116DB0[arg2], 32.0f);
         }
         
         func_8002B80C(0x79, 3, 0);
@@ -408,11 +409,11 @@ void func_800B5FC4(u8 arg0, u8 arg1, u8 arg2) {
     }
     
     if (arg1 != 0xFF) {
-        func_8002BD0C(0xB2, D_80116D80[arg1], D_80116D90[arg1], 32.0f);
+        setSpriteShrinkFactor(0xB2, D_80116D80[arg1], D_80116D90[arg1], 32.0f);
     }
 
     if (arg2 != 0xFF) {
-        func_8002BD0C(0xB2, arg2, arg2, 32.0f);
+        setSpriteShrinkFactor(0xB2, arg2, arg2, 32.0f);
     }
     
     // can't remove this without messing up control flow
@@ -440,7 +441,7 @@ INCLUDE_ASM(const s32, "overlayScreens", func_800B7E28);
 void func_800B7F6C(u8 arg0) {
 
     if (arg0 != 0xFF) {
-        func_8002BD0C(0x79, D_80116DC0[arg0], D_80116DD4[arg0], 32.0f);
+        setSpriteShrinkFactor(0x79, D_80116DC0[arg0], D_80116DD4[arg0], 32.0f);
     }
 
     func_8002B80C(0x79, 3, 0);
@@ -466,12 +467,13 @@ void func_800B8018(void) {
     
     func_800593EC();
     func_8002B138(0x80, &_checkerboardBackgroundTextureSegmentRomStart, &_checkerboardBackgroundTextureSegmentRomEnd, &_checkerboardBackgroundIndexSegmentRomStart, &_checkerboardBackgroundIndexSegmentRomEnd, 0, 0, 0x802DE5C0, 0, 0x802E0BC0, 0x802E0CC0, 0x802E0DC0, 0, 0, 0);
-    func_8002BD0C(0x80, 0, 0, 0);
-    func_8002BD90(0x80, 2.0f, 2.0f, 1.0f);
+    setSpriteShrinkFactor(0x80, 0, 0, 0);
+    setSpriteScale(0x80, 2.0f, 2.0f, 1.0f);
     func_8002CB24(0x80, 1);
     func_8002C914(0x80, 0xFF, 0xFF, 0xFF, 0xFF);
     func_8002B80C(0x80, 0, 0); 
      
+    // FIXME: likely a struct/array
     D_801FB6F0 = 0;
     D_801FB6F1 = 0;
     D_801FB6F2 = 0;
@@ -488,8 +490,8 @@ void func_800B815C(void) {
 
     func_800593EC();
     func_8002B138(0x80, &_checkerboardBackgroundTextureSegmentRomStart, &_checkerboardBackgroundTextureSegmentRomEnd, &_checkerboardBackgroundIndexSegmentRomStart, &_checkerboardBackgroundIndexSegmentRomEnd, NULL, NULL, (void*)0x802DE5C0, NULL, (void*)0x802E0BC0, (void*)0x802E0CC0, (void*)0x802E0DC0, NULL, NULL, 0);
-    func_8002BD0C(0x80, 0.0f, 0.0f, 0.0f);
-    func_8002BD90(0x80, 2.0f, 2.0f, 1.0f);
+    setSpriteShrinkFactor(0x80, 0.0f, 0.0f, 0.0f);
+    setSpriteScale(0x80, 2.0f, 2.0f, 1.0f);
     func_8002CB24(0x80, 1);
     func_8002C914(0x80, 0xFF, 0xFF, 0xFF, 0xFF);
     func_8002B80C(0x80, 0, 0);
@@ -511,8 +513,8 @@ void func_800B82AC(void) {
 
     func_800593EC();
     func_8002B138(0x80, &_checkerboardBackgroundTextureSegmentRomStart, &_checkerboardBackgroundTextureSegmentRomEnd, &_checkerboardBackgroundIndexSegmentRomStart, &_checkerboardBackgroundIndexSegmentRomEnd, NULL, NULL, (void*)0x802DE5C0, NULL, (void*)0x802E0BC0, (void*)0x802E0CC0, (void*)0x802E0DC0, NULL, NULL, 0);
-    func_8002BD0C(0x80, 0.0f, 0.0f, 0.0f);
-    func_8002BD90(0x80, 2.0f, 2.0f, 1.0f);
+    setSpriteShrinkFactor(0x80, 0.0f, 0.0f, 0.0f);
+    setSpriteScale(0x80, 2.0f, 2.0f, 1.0f);
     func_8002CB24(0x80, 1);
     func_8002C914(0x80, 0xFF, 0xFF, 0xFF, 0xFF);
     func_8002B80C(0x80, 0, 0);
@@ -534,8 +536,8 @@ void func_800B83F0(void) {
 
     func_800593EC();
     func_8002B138(0x80, &_checkerboardBackgroundTextureSegmentRomStart, &_checkerboardBackgroundTextureSegmentRomEnd, &_checkerboardBackgroundIndexSegmentRomStart, &_checkerboardBackgroundIndexSegmentRomEnd, NULL, NULL, (void*)0x802DE5C0, NULL, (void*)0x802E0BC0, (void*)0x802E0CC0, (void*)0x802E0DC0, NULL, NULL, 0);
-    func_8002BD0C(0x80, 0.0f, 0.0f, 0.0f);
-    func_8002BD90(0x80, 2.0f, 2.0f, 1.0f);
+    setSpriteShrinkFactor(0x80, 0.0f, 0.0f, 0.0f);
+    setSpriteScale(0x80, 2.0f, 2.0f, 1.0f);
     func_8002CB24(0x80, 1);
     func_8002C914(0x80, 0xFF, 0xFF, 0xFF, 0xFF);
     func_8002B80C(0x80, 0, 0);
@@ -560,8 +562,8 @@ void func_800B8554(void) {
     
     func_800593EC();
     func_8002B138(0x80, &_checkerboardBackgroundTextureSegmentRomStart, &_checkerboardBackgroundTextureSegmentRomEnd, &_checkerboardBackgroundIndexSegmentRomStart, &_checkerboardBackgroundIndexSegmentRomEnd, NULL, NULL, (void*)0x802DE5C0, NULL, (void*)0x802E0BC0, (void*)0x802E0CC0, (void*)0x802E0DC0, NULL, NULL, 0);
-    func_8002BD0C(0x80, 0.0f, 0.0f, 0.0f);
-    func_8002BD90(0x80, 2.0f, 2.0f, 1.0f);
+    setSpriteShrinkFactor(0x80, 0.0f, 0.0f, 0.0f);
+    setSpriteScale(0x80, 2.0f, 2.0f, 1.0f);
     func_8002CB24(0x80, 1);
     func_8002C914(0x80, 0xFF, 0xFF, 0xFF, 0xFF);
     func_8002B80C(0x80, 0, 0);

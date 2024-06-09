@@ -40,7 +40,7 @@ extern u32 _holdableItemsSpritesheetIndexSegmentRomEnd;
 extern u16 D_80180714;
 
 // bss
-// struct
+// FIXME: convert to struct or array
 // cell index
 extern u8 D_801FB6F0;
 // previous cell index

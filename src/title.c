@@ -12,11 +12,12 @@
 #include "initialize2.h"     
 #include "loadGameScreen.h"      
 #include "mainLoop.h" 
-#include "setCutscenes.h"                     
+#include "setCutscenes.h"         
+#include "spriteIndices.h"            
      
 // forward declarations
 void func_800E0ED4();                                  
-void func_800E0FEC();                                  
+void updateGrassAnimation();                                  
 void func_800E10E8();                                  
 
 // bss
@@ -44,229 +45,229 @@ void initializeTitleScreen(u8 arg0) {
     titleScreenContext.dogIdleCounter = 0;
     titleScreenContext.centerCoordinate = -160.0f;
     
-    func_8002B138(0x42, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesIndexSegmentRomStart, &_titleSpritesIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
-    func_8002BD0C(0x42, 0.0f, 64.0f, 64.0f);
-    func_8002BD90(0x42, 1.0f, 1.0f, 1.0f);
-    func_8002BE14(0x42, 0.0f, 0.0f, 0.0f);
-    func_8002C7EC(0x42, 3);
-    func_8002C914(0x42, 0xFF, 0xFF, 0xFF, 0xFF);
-    func_8002CB24(0x42, 1);
-    func_8002B80C(0x42, 0, 0xFE);
+    func_8002B138(HARVEST_MOON_64_LOGO, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesIndexSegmentRomStart, &_titleSpritesIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
+    setSpriteShrinkFactor(HARVEST_MOON_64_LOGO, 0.0f, 64.0f, 64.0f);
+    setSpriteScale(HARVEST_MOON_64_LOGO, 1.0f, 1.0f, 1.0f);
+    func_8002BE14(HARVEST_MOON_64_LOGO, 0.0f, 0.0f, 0.0f);
+    func_8002C7EC(HARVEST_MOON_64_LOGO, 3);
+    func_8002C914(HARVEST_MOON_64_LOGO, 0xFF, 0xFF, 0xFF, 0xFF);
+    func_8002CB24(HARVEST_MOON_64_LOGO, 1);
+    func_8002B80C(HARVEST_MOON_64_LOGO, 0, 0xFE);
     
-    func_8002B138(0x43, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesIndexSegmentRomStart, &_titleSpritesIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
-    func_8002BD0C(0x43, 0.0f, -96.0f, 64.0f);
-    func_8002BD90(0x43, 1.0f, 1.0f, 1.0f);
-    func_8002BE14(0x43, 0.0f, 0.0f, 0.0f);
-    func_8002C7EC(0x43, 3);
-    func_8002C914(0x43, 0xFF, 0xFF, 0xFF, 0xFF);
-    func_8002B80C(0x43, 1, 0xFE);
+    func_8002B138(MARVCOME_VICTOR_COPYRIGHT_INFO, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesIndexSegmentRomStart, &_titleSpritesIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
+    setSpriteShrinkFactor(MARVCOME_VICTOR_COPYRIGHT_INFO, 0.0f, -96.0f, 64.0f);
+    setSpriteScale(MARVCOME_VICTOR_COPYRIGHT_INFO, 1.0f, 1.0f, 1.0f);
+    func_8002BE14(MARVCOME_VICTOR_COPYRIGHT_INFO, 0.0f, 0.0f, 0.0f);
+    func_8002C7EC(MARVCOME_VICTOR_COPYRIGHT_INFO, 3);
+    func_8002C914(MARVCOME_VICTOR_COPYRIGHT_INFO, 0xFF, 0xFF, 0xFF, 0xFF);
+    func_8002B80C(MARVCOME_VICTOR_COPYRIGHT_INFO, 1, 0xFE);
     
-    func_8002B138(0x46, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesIndexSegmentRomStart, &_titleSpritesIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
-    func_8002BD0C(0x46, titleScreenContext.centerCoordinate + 160.0f, -16.0f, 48.0f);
-    func_8002BD90(0x46, 1.0f, 1.0f, 1.0f);
-    func_8002BE14(0x46, 0.0f, 0.0f, 0.0f);
-    func_8002C7EC(0x46, 3);
-    func_8002C914(0x46, 0xFF, 0xFF, 0xFF, 0xFF);
-    func_8002CB24(0x46, 1);
-    func_8002B80C(0x46, 3, 0xFE);
+    func_8002B138(PUSH_THE_START_SIGN_1, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesIndexSegmentRomStart, &_titleSpritesIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
+    setSpriteShrinkFactor(PUSH_THE_START_SIGN_1, titleScreenContext.centerCoordinate + 160.0f, -16.0f, 48.0f);
+    setSpriteScale(PUSH_THE_START_SIGN_1, 1.0f, 1.0f, 1.0f);
+    func_8002BE14(PUSH_THE_START_SIGN_1, 0.0f, 0.0f, 0.0f);
+    func_8002C7EC(PUSH_THE_START_SIGN_1, 3);
+    func_8002C914(PUSH_THE_START_SIGN_1, 0xFF, 0xFF, 0xFF, 0xFF);
+    func_8002CB24(PUSH_THE_START_SIGN_1, 1);
+    func_8002B80C(PUSH_THE_START_SIGN_1, 3, 0xFE);
     
-    func_8002B138(0x47, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesIndexSegmentRomStart, &_titleSpritesIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
-    func_8002BD0C(0x47, titleScreenContext.centerCoordinate - 160.0f, -12.0f, 48.0f);
-    func_8002BD90(0x47, 1.0f, 1.0f, 1.0f);
-    func_8002BE14(0x47, 0.0f, 0.0f, 0.0f);
-    func_8002C7EC(0x47, 3);
-    func_8002C914(0x47, 0xFF, 0xFF, 0xFF, 0xFF);
-    func_8002CB24(0x47, 1);
-    func_8002B80C(0x47, 5, 0xFE);
+    func_8002B138(HOW_TO_PLAY_SIGN, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesIndexSegmentRomStart, &_titleSpritesIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
+    setSpriteShrinkFactor(HOW_TO_PLAY_SIGN, titleScreenContext.centerCoordinate - 160.0f, -12.0f, 48.0f);
+    setSpriteScale(HOW_TO_PLAY_SIGN, 1.0f, 1.0f, 1.0f);
+    func_8002BE14(HOW_TO_PLAY_SIGN, 0.0f, 0.0f, 0.0f);
+    func_8002C7EC(HOW_TO_PLAY_SIGN, 3);
+    func_8002C914(HOW_TO_PLAY_SIGN, 0xFF, 0xFF, 0xFF, 0xFF);
+    func_8002CB24(HOW_TO_PLAY_SIGN, 1);
+    func_8002B80C(HOW_TO_PLAY_SIGN, 5, 0xFE);
+
+    func_8002B138(DIRT_ROAD, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesIndexSegmentRomStart, &_titleSpritesIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
+    setSpriteShrinkFactor(DIRT_ROAD, titleScreenContext.centerCoordinate - 160.0f, -44.0f, 48.0f);
+    setSpriteScale(DIRT_ROAD, 1.0f, 1.0f, 1.0f);
+    func_8002BE14(DIRT_ROAD, 0.0f, 0.0f, 0.0f);
+    func_8002C7EC(DIRT_ROAD, 3);
+    func_8002C914(DIRT_ROAD, 0xFF, 0xFF, 0xFF, 0xFF);
+    func_8002CB24(DIRT_ROAD, 1);
+    func_8002B80C(DIRT_ROAD, 7, 0xFE);
+
+    func_8002B138(SIGN_POST_1, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesIndexSegmentRomStart, &_titleSpritesIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
+    setSpriteShrinkFactor(SIGN_POST_1, titleScreenContext.centerCoordinate + 160.0f, -32.0f, 40.0f);
+    setSpriteScale(SIGN_POST_1, 1.0f, 1.0f, 1.0f);
+    func_8002BE14(SIGN_POST_1, 0.0f, 0.0f, 0.0f);
+    func_8002C7EC(SIGN_POST_1, 3);
+    func_8002C914(SIGN_POST_1, 0xFF, 0xFF, 0xFF, 0xFF);
+    func_8002CB24(SIGN_POST_1, 1);
+    func_8002B80C(SIGN_POST_1, 2, 0xFE);
+
+    func_8002B138(SIGN_POST_2, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesIndexSegmentRomStart, &_titleSpritesIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
+    setSpriteShrinkFactor(SIGN_POST_2, titleScreenContext.centerCoordinate - 192.0f, -32.0f, 40.0f);
+    setSpriteScale(SIGN_POST_2, 1.0f, 1.0f, 1.0f);
+    func_8002BE14(SIGN_POST_2, 0.0f, 0.0f, 0.0f);
+    func_8002C7EC(SIGN_POST_2, 3);
+    func_8002C914(SIGN_POST_2, 0xFF, 0xFF, 0xFF, 0xFF);
+    func_8002CB24(SIGN_POST_2, 1);
+    func_8002B80C(SIGN_POST_2, 2, 0xFE);
+
+    func_8002B138(SIGN_POST_3, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesIndexSegmentRomStart, &_titleSpritesIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
+    setSpriteShrinkFactor(SIGN_POST_3, titleScreenContext.centerCoordinate - 128.0f, -32.0f, 40.0f);
+    setSpriteScale(SIGN_POST_3, 1.0f, 1.0f, 1.0f);
+    func_8002BE14(SIGN_POST_3, 0.0f, 0.0f, 0.0f);
+    func_8002C7EC(SIGN_POST_3, 3);
+    func_8002C914(SIGN_POST_3, 0xFF, 0xFF, 0xFF, 0xFF);
+    func_8002CB24(SIGN_POST_3, 1);
+    func_8002B80C(SIGN_POST_3, 2, 0xFE);
+
+    func_8002B138(CLOUD_1_1, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesIndexSegmentRomStart, &_titleSpritesIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
+    setSpriteShrinkFactor(CLOUD_1_1, titleScreenContext.centerCoordinate + 160.0f, 0.0f, 56.0f);
+    setSpriteScale(CLOUD_1_1, 1.0f, 1.0f, 1.0f);
+    func_8002BE14(CLOUD_1_1, 0.0f, 0.0f, 0.0f);
+    func_8002C7EC(CLOUD_1_1, 3);
+    func_8002C914(CLOUD_1_1, 0xFF, 0xFF, 0xFF, 0xFF);
+    func_8002CB24(CLOUD_1_1, 1);
+    func_8002B80C(CLOUD_1_1, 9, 0xFE);
+
+    func_8002B138(CLOUD_1_2, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesIndexSegmentRomStart, &_titleSpritesIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
+    setSpriteShrinkFactor(CLOUD_1_2, titleScreenContext.centerCoordinate - 160.0f, 0.0f, 56.0f);
+    setSpriteScale(CLOUD_1_2, 1.0f, 1.0f, 1.0f);
+    func_8002BE14(CLOUD_1_2, 0.0f, 0.0f, 0.0f);
+    func_8002C7EC(CLOUD_1_2, 3);
+    func_8002C914(CLOUD_1_2, 0xFF, 0xFF, 0xFF, 0xFF);
+    func_8002CB24(CLOUD_1_2, 1);
+    func_8002B80C(CLOUD_1_2, 9, 0xFE);
     
-    func_8002B138(0x48, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesIndexSegmentRomStart, &_titleSpritesIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
-    func_8002BD0C(0x48, titleScreenContext.centerCoordinate - 160.0f, -44.0f, 48.0f);
-    func_8002BD90(0x48, 1.0f, 1.0f, 1.0f);
-    func_8002BE14(0x48, 0.0f, 0.0f, 0.0f);
-    func_8002C7EC(0x48, 3);
-    func_8002C914(0x48, 0xFF, 0xFF, 0xFF, 0xFF);
-    func_8002CB24(0x48, 1);
-    func_8002B80C(0x48, 7, 0xFE);
+    func_8002B138(CLOUD_2_1, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesIndexSegmentRomStart, &_titleSpritesIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
+    setSpriteShrinkFactor(CLOUD_2_1, titleScreenContext.centerCoordinate + 160.0f, 64.0f, 64.0f);
+    setSpriteScale(CLOUD_2_1, 1.0f, 1.0f, 1.0f);
+    func_8002BE14(CLOUD_2_1, 0.0f, 0.0f, 0.0f);
+    func_8002C7EC(CLOUD_2_1, 3);
+    func_8002C914(CLOUD_2_1, 0xFF, 0xFF, 0xFF, 0xFF);
+    func_8002CB24(CLOUD_2_1, 1);
+    func_8002B80C(CLOUD_2_1, 0x10, 0xFE);
     
-    func_8002B138(0x49, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesIndexSegmentRomStart, &_titleSpritesIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
-    func_8002BD0C(0x49, titleScreenContext.centerCoordinate + 160.0f, -32.0f, 40.0f);
-    func_8002BD90(0x49, 1.0f, 1.0f, 1.0f);
-    func_8002BE14(0x49, 0.0f, 0.0f, 0.0f);
-    func_8002C7EC(0x49, 3);
-    func_8002C914(0x49, 0xFF, 0xFF, 0xFF, 0xFF);
-    func_8002CB24(0x49, 1);
-    func_8002B80C(0x49, 2, 0xFE);
+    func_8002B138(CLOUD_3_1, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesIndexSegmentRomStart, &_titleSpritesIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
+    setSpriteShrinkFactor(CLOUD_3_1, titleScreenContext.centerCoordinate + 32.0f, 96.0f, 64.0f);
+    setSpriteScale(CLOUD_3_1, 1.0f, 1.0f, 1.0f);
+    func_8002BE14(CLOUD_3_1, 0.0f, 0.0f, 0.0f);
+    func_8002C7EC(CLOUD_3_1, 3);
+    func_8002C914(CLOUD_3_1, 0xFF, 0xFF, 0xFF, 0xFF);
+    func_8002CB24(CLOUD_3_1, 1);
+    func_8002B80C(CLOUD_3_1, 0x11, 0xFE);
     
-    func_8002B138(0x4A, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesIndexSegmentRomStart, &_titleSpritesIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
-    func_8002BD0C(0x4A, titleScreenContext.centerCoordinate - 192.0f, -32.0f, 40.0f);
-    func_8002BD90(0x4A, 1.0f, 1.0f, 1.0f);
-    func_8002BE14(0x4A, 0.0f, 0.0f, 0.0f);
-    func_8002C7EC(0x4A, 3);
-    func_8002C914(0x4A, 0xFF, 0xFF, 0xFF, 0xFF);
-    func_8002CB24(0x4A, 1);
-    func_8002B80C(0x4A, 2, 0xFE);
+    func_8002B138(LICENSED_BY_NINTENDO_1, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesIndexSegmentRomStart, &_titleSpritesIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
+    setSpriteShrinkFactor(LICENSED_BY_NINTENDO_1, titleScreenContext.centerCoordinate + 224.0f, 80.0f, 64.0f);
+    setSpriteScale(LICENSED_BY_NINTENDO_1, 1.0f, 1.0f, 1.0f);
+    func_8002BE14(LICENSED_BY_NINTENDO_1, 0.0f, 0.0f, 0.0f);
+    func_8002C7EC(LICENSED_BY_NINTENDO_1, 3);
+    func_8002C914(LICENSED_BY_NINTENDO_1, 0xFF, 0xFF, 0xFF, 0xFF);
+    func_8002CB24(LICENSED_BY_NINTENDO_1, 1);
+    func_8002B80C(LICENSED_BY_NINTENDO_1, 0x12, 0xFE);
     
-    func_8002B138(0x4B, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesIndexSegmentRomStart, &_titleSpritesIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
-    func_8002BD0C(0x4B, titleScreenContext.centerCoordinate - 128.0f, -32.0f, 40.0f);
-    func_8002BD90(0x4B, 1.0f, 1.0f, 1.0f);
-    func_8002BE14(0x4B, 0.0f, 0.0f, 0.0f);
-    func_8002C7EC(0x4B, 3);
-    func_8002C914(0x4B, 0xFF, 0xFF, 0xFF, 0xFF);
-    func_8002CB24(0x4B, 1);
-    func_8002B80C(0x4B, 2, 0xFE);
+    func_8002B138(LICENSED_BY_NINTENDO_2, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesIndexSegmentRomStart, &_titleSpritesIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
+    setSpriteShrinkFactor(LICENSED_BY_NINTENDO_2, titleScreenContext.centerCoordinate - 64.0f, 72.0f, 64.0f);
+    setSpriteScale(LICENSED_BY_NINTENDO_2, 1.0f, 1.0f, 1.0f);
+    func_8002BE14(LICENSED_BY_NINTENDO_2, 0.0f, 0.0f, 0.0f);
+    func_8002C7EC(LICENSED_BY_NINTENDO_2, 3);
+    func_8002C914(LICENSED_BY_NINTENDO_2, 0xFF, 0xFF, 0xFF, 0xFF);
+    func_8002CB24(LICENSED_BY_NINTENDO_2, 1);
+    func_8002B80C(LICENSED_BY_NINTENDO_2, 0x12, 0xFE);
+
+    func_8002B138(CLOUD_3_2, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesIndexSegmentRomStart, &_titleSpritesIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
+    setSpriteShrinkFactor(CLOUD_3_2, titleScreenContext.centerCoordinate - 192.0f, 108.0f, 64.0f);
+    setSpriteScale(CLOUD_3_2, 1.0f, 1.0f, 1.0f);
+    func_8002BE14(CLOUD_3_2, 0.0f, 0.0f, 0.0f);
+    func_8002C7EC(CLOUD_3_2, 3);
+    func_8002C914(CLOUD_3_2, 0xFF, 0xFF, 0xFF, 0xFF);
+    func_8002CB24(CLOUD_3_2, 1);
+    func_8002B80C(CLOUD_3_2, 0x11, 0xFE);
+
+    func_8002B138(CLOUD_2_2, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesIndexSegmentRomStart, &_titleSpritesIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
+    setSpriteShrinkFactor(CLOUD_2_2, titleScreenContext.centerCoordinate - 288.0f, 88.0f, 64.0f);
+    setSpriteScale(CLOUD_2_2, 1.0f, 1.0f, 1.0f);
+    func_8002BE14(CLOUD_2_2, 0.0f, 0.0f, 0.0f);
+    func_8002C7EC(CLOUD_2_2, 3);
+    func_8002C914(CLOUD_2_2, 0xFF, 0xFF, 0xFF, 0xFF);
+    func_8002CB24(CLOUD_2_2, 1);
+    func_8002B80C(CLOUD_2_2, 0x10, 0xFE);
     
-    func_8002B138(0x54, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesIndexSegmentRomStart, &_titleSpritesIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
-    func_8002BD0C(0x54, titleScreenContext.centerCoordinate + 160.0f, 0.0f, 56.0f);
-    func_8002BD90(0x54, 1.0f, 1.0f, 1.0f);
-    func_8002BE14(0x54, 0.0f, 0.0f, 0.0f);
-    func_8002C7EC(0x54, 3);
-    func_8002C914(0x54, 0xFF, 0xFF, 0xFF, 0xFF);
-    func_8002CB24(0x54, 1);
-    func_8002B80C(0x54, 9, 0xFE);
+    func_8002B138(FAR_GRASS_1_1, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesIndexSegmentRomStart, &_titleSpritesIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
+    setSpriteShrinkFactor(FAR_GRASS_1_1, titleScreenContext.centerCoordinate + 160.0f, 0.0f, 8.0f);
+    setSpriteScale(FAR_GRASS_1_1, 1.0f, 1.0f, 1.0f);
+    func_8002BE14(FAR_GRASS_1_1, 0.0f, 0.0f, 0.0f);
+    func_8002C7EC(FAR_GRASS_1_1, 3);
+    func_8002C914(FAR_GRASS_1_1, 0xFF, 0xFF, 0xFF, 0xFF);
+    func_8002CB24(FAR_GRASS_1_1, 1);
+    func_8002B80C(FAR_GRASS_1_1, 0xA, 0xFE);
+
+    func_8002B138(FAR_GRASS_1_2, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesIndexSegmentRomStart, &_titleSpritesIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
+    setSpriteShrinkFactor(FAR_GRASS_1_2, titleScreenContext.centerCoordinate - 160.0f, 0.0f, 8.0f);
+    setSpriteScale(FAR_GRASS_1_2, 1.0f, 1.0f, 1.0f);
+    func_8002BE14(FAR_GRASS_1_2, 0.0f, 0.0f, 0.0f);
+    func_8002C7EC(FAR_GRASS_1_2, 3);
+    func_8002C914(FAR_GRASS_1_2, 0xFF, 0xFF, 0xFF, 0xFF);
+    func_8002CB24(FAR_GRASS_1_2, 1);
+    func_8002B80C(FAR_GRASS_1_2, 0xA, 0xFE);
     
-    func_8002B138(0x55, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesIndexSegmentRomStart, &_titleSpritesIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
-    func_8002BD0C(0x55, titleScreenContext.centerCoordinate - 160.0f, 0.0f, 56.0f);
-    func_8002BD90(0x55, 1.0f, 1.0f, 1.0f);
-    func_8002BE14(0x55, 0.0f, 0.0f, 0.0f);
-    func_8002C7EC(0x55, 3);
-    func_8002C914(0x55, 0xFF, 0xFF, 0xFF, 0xFF);
-    func_8002CB24(0x55, 1);
-    func_8002B80C(0x55, 9, 0xFE);
+    func_8002B138(FAR_GRASS_2_1, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesIndexSegmentRomStart, &_titleSpritesIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
+    setSpriteShrinkFactor(FAR_GRASS_2_1, titleScreenContext.centerCoordinate + 160.0f, 0.0f, 16.0f);
+    setSpriteScale(FAR_GRASS_2_1, 1.0f, 1.0f, 1.0f);
+    func_8002BE14(FAR_GRASS_2_1, 0.0f, 0.0f, 0.0f);
+    func_8002C7EC(FAR_GRASS_2_1, 3);
+    func_8002C914(FAR_GRASS_2_1, 0xFF, 0xFF, 0xFF, 0xFF);
+    func_8002CB24(FAR_GRASS_2_1, 1);
+    func_8002B80C(FAR_GRASS_2_1, 0xB, 0xFE);
+
+    func_8002B138(FAR_GRASS_3_1, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesIndexSegmentRomStart, &_titleSpritesIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
+    setSpriteShrinkFactor(FAR_GRASS_3_1, titleScreenContext.centerCoordinate + 160.0f, 0.0f, 24.0f);
+    setSpriteScale(FAR_GRASS_3_1, 1.0f, 1.0f, 1.0f);
+    func_8002BE14(FAR_GRASS_3_1, 0.0f, 0.0f, 0.0f);
+    func_8002C7EC(FAR_GRASS_3_1, 3);
+    func_8002C914(FAR_GRASS_3_1, 0xFF, 0xFF, 0xFF, 0xFF);
+    func_8002CB24(FAR_GRASS_3_1, 1);
+    func_8002B80C(FAR_GRASS_3_1, 0xC, 0xFE);
+
+    func_8002B138(FRONT_GRASS_2_1, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesIndexSegmentRomStart, &_titleSpritesIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
+    setSpriteShrinkFactor(FRONT_GRASS_2_1, titleScreenContext.centerCoordinate + 160.0f, 0.0f, 32.0f);
+    setSpriteScale(FRONT_GRASS_2_1, 1.0f, 1.0f, 1.0f);
+    func_8002BE14(FRONT_GRASS_2_1, 0.0f, 0.0f, 0.0f);
+    func_8002C7EC(FRONT_GRASS_2_1, 3);
+    func_8002C914(FRONT_GRASS_2_1, 0xFF, 0xFF, 0xFF, 0xFF);
+    func_8002CB24(FRONT_GRASS_2_1, 1);
+    func_8002B80C(FRONT_GRASS_2_1, 0xE, 0xFE);
     
-    func_8002B138(0x56, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesIndexSegmentRomStart, &_titleSpritesIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
-    func_8002BD0C(0x56, titleScreenContext.centerCoordinate + 160.0f, 64.0f, 64.0f);
-    func_8002BD90(0x56, 1.0f, 1.0f, 1.0f);
-    func_8002BE14(0x56, 0.0f, 0.0f, 0.0f);
-    func_8002C7EC(0x56, 3);
-    func_8002C914(0x56, 0xFF, 0xFF, 0xFF, 0xFF);
-    func_8002CB24(0x56, 1);
-    func_8002B80C(0x56, 0x10, 0xFE);
+    func_8002B138(BACK_GRASS_2, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesIndexSegmentRomStart, &_titleSpritesIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
+    setSpriteShrinkFactor(BACK_GRASS_2, titleScreenContext.centerCoordinate - 160.0f, 0.0f, 16.0f);
+    setSpriteScale(BACK_GRASS_2, 1.0f, 1.0f, 1.0f);
+    func_8002BE14(BACK_GRASS_2, 0.0f, 0.0f, 0.0f);
+    func_8002C7EC(BACK_GRASS_2, 3);
+    func_8002C914(BACK_GRASS_2, 0xFF, 0xFF, 0xFF, 0xFF);
+    func_8002CB24(BACK_GRASS_2, 1);
+    func_8002B80C(BACK_GRASS_2, 0xB, 0xFE);
     
-    func_8002B138(0x57, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesIndexSegmentRomStart, &_titleSpritesIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
-    func_8002BD0C(0x57, titleScreenContext.centerCoordinate + 32.0f, 96.0f, 64.0f);
-    func_8002BD90(0x57, 1.0f, 1.0f, 1.0f);
-    func_8002BE14(0x57, 0.0f, 0.0f, 0.0f);
-    func_8002C7EC(0x57, 3);
-    func_8002C914(0x57, 0xFF, 0xFF, 0xFF, 0xFF);
-    func_8002CB24(0x57, 1);
-    func_8002B80C(0x57, 0x11, 0xFE);
+    func_8002B138(BACK_GRASS_3_2, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesIndexSegmentRomStart, &_titleSpritesIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
+    setSpriteShrinkFactor(BACK_GRASS_3_2, titleScreenContext.centerCoordinate - 160.0f, 0.0f, 24.0f);
+    setSpriteScale(BACK_GRASS_3_2, 1.0f, 1.0f, 1.0f);
+    func_8002BE14(BACK_GRASS_3_2, 0.0f, 0.0f, 0.0f);
+    func_8002C7EC(BACK_GRASS_3_2, 3);
+    func_8002C914(BACK_GRASS_3_2, 0xFF, 0xFF, 0xFF, 0xFF);
+    func_8002CB24(BACK_GRASS_3_2, 1);
+    func_8002B80C(BACK_GRASS_3_2, 0xC, 0xFE);
     
-    func_8002B138(0x58, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesIndexSegmentRomStart, &_titleSpritesIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
-    func_8002BD0C(0x58, titleScreenContext.centerCoordinate + 224.0f, 80.0f, 64.0f);
-    func_8002BD90(0x58, 1.0f, 1.0f, 1.0f);
-    func_8002BE14(0x58, 0.0f, 0.0f, 0.0f);
-    func_8002C7EC(0x58, 3);
-    func_8002C914(0x58, 0xFF, 0xFF, 0xFF, 0xFF);
-    func_8002CB24(0x58, 1);
-    func_8002B80C(0x58, 0x12, 0xFE);
+    func_8002B138(FRONT_GRASS_2_2, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesIndexSegmentRomStart, &_titleSpritesIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
+    setSpriteShrinkFactor(FRONT_GRASS_2_2, titleScreenContext.centerCoordinate - 160.0f, 0.0f, 32.0f);
+    setSpriteScale(FRONT_GRASS_2_2, 1.0f, 1.0f, 1.0f);
+    func_8002BE14(FRONT_GRASS_2_2, 0.0f, 0.0f, 0.0f);
+    func_8002C7EC(FRONT_GRASS_2_2, 3);
+    func_8002C914(FRONT_GRASS_2_2, 0xFF, 0xFF, 0xFF, 0xFF);
+    func_8002CB24(FRONT_GRASS_2_2, 1);
+    func_8002B80C(FRONT_GRASS_2_2, 0xE, 0xFE);
     
-    func_8002B138(0x59, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesIndexSegmentRomStart, &_titleSpritesIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
-    func_8002BD0C(0x59, titleScreenContext.centerCoordinate - 64.0f, 72.0f, 64.0f);
-    func_8002BD90(0x59, 1.0f, 1.0f, 1.0f);
-    func_8002BE14(0x59, 0.0f, 0.0f, 0.0f);
-    func_8002C7EC(0x59, 3);
-    func_8002C914(0x59, 0xFF, 0xFF, 0xFF, 0xFF);
-    func_8002CB24(0x59, 1);
-    func_8002B80C(0x59, 0x12, 0xFE);
-    
-    func_8002B138(0x5A, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesIndexSegmentRomStart, &_titleSpritesIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
-    func_8002BD0C(0x5A, titleScreenContext.centerCoordinate - 192.0f, 108.0f, 64.0f);
-    func_8002BD90(0x5A, 1.0f, 1.0f, 1.0f);
-    func_8002BE14(0x5A, 0.0f, 0.0f, 0.0f);
-    func_8002C7EC(0x5A, 3);
-    func_8002C914(0x5A, 0xFF, 0xFF, 0xFF, 0xFF);
-    func_8002CB24(0x5A, 1);
-    func_8002B80C(0x5A, 0x11, 0xFE);
-    
-    func_8002B138(0x5B, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesIndexSegmentRomStart, &_titleSpritesIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
-    func_8002BD0C(0x5B, titleScreenContext.centerCoordinate - 288.0f, 88.0f, 64.0f);
-    func_8002BD90(0x5B, 1.0f, 1.0f, 1.0f);
-    func_8002BE14(0x5B, 0.0f, 0.0f, 0.0f);
-    func_8002C7EC(0x5B, 3);
-    func_8002C914(0x5B, 0xFF, 0xFF, 0xFF, 0xFF);
-    func_8002CB24(0x5B, 1);
-    func_8002B80C(0x5B, 0x10, 0xFE);
-    
-    func_8002B138(0x52, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesIndexSegmentRomStart, &_titleSpritesIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
-    func_8002BD0C(0x52, titleScreenContext.centerCoordinate + 160.0f, 0.0f, 8.0f);
-    func_8002BD90(0x52, 1.0f, 1.0f, 1.0f);
-    func_8002BE14(0x52, 0.0f, 0.0f, 0.0f);
-    func_8002C7EC(0x52, 3);
-    func_8002C914(0x52, 0xFF, 0xFF, 0xFF, 0xFF);
-    func_8002CB24(0x52, 1);
-    func_8002B80C(0x52, 0xA, 0xFE);
-    
-    func_8002B138(0x53, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesIndexSegmentRomStart, &_titleSpritesIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
-    func_8002BD0C(0x53, titleScreenContext.centerCoordinate - 160.0f, 0.0f, 8.0f);
-    func_8002BD90(0x53, 1.0f, 1.0f, 1.0f);
-    func_8002BE14(0x53, 0.0f, 0.0f, 0.0f);
-    func_8002C7EC(0x53, 3);
-    func_8002C914(0x53, 0xFF, 0xFF, 0xFF, 0xFF);
-    func_8002CB24(0x53, 1);
-    func_8002B80C(0x53, 0xA, 0xFE);
-    
-    func_8002B138(0x4E, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesIndexSegmentRomStart, &_titleSpritesIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
-    func_8002BD0C(0x4E, titleScreenContext.centerCoordinate + 160.0f, 0.0f, 16.0f);
-    func_8002BD90(0x4E, 1.0f, 1.0f, 1.0f);
-    func_8002BE14(0x4E, 0.0f, 0.0f, 0.0f);
-    func_8002C7EC(0x4E, 3);
-    func_8002C914(0x4E, 0xFF, 0xFF, 0xFF, 0xFF);
-    func_8002CB24(0x4E, 1);
-    func_8002B80C(0x4E, 0xB, 0xFE);
-    
-    func_8002B138(0x4D, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesIndexSegmentRomStart, &_titleSpritesIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
-    func_8002BD0C(0x4D, titleScreenContext.centerCoordinate + 160.0f, 0.0f, 24.0f);
-    func_8002BD90(0x4D, 1.0f, 1.0f, 1.0f);
-    func_8002BE14(0x4D, 0.0f, 0.0f, 0.0f);
-    func_8002C7EC(0x4D, 3);
-    func_8002C914(0x4D, 0xFF, 0xFF, 0xFF, 0xFF);
-    func_8002CB24(0x4D, 1);
-    func_8002B80C(0x4D, 0xC, 0xFE);
-    
-    func_8002B138(0x4C, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesIndexSegmentRomStart, &_titleSpritesIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
-    func_8002BD0C(0x4C, titleScreenContext.centerCoordinate + 160.0f, 0.0f, 32.0f);
-    func_8002BD90(0x4C, 1.0f, 1.0f, 1.0f);
-    func_8002BE14(0x4C, 0.0f, 0.0f, 0.0f);
-    func_8002C7EC(0x4C, 3);
-    func_8002C914(0x4C, 0xFF, 0xFF, 0xFF, 0xFF);
-    func_8002CB24(0x4C, 1);
-    func_8002B80C(0x4C, 0xE, 0xFE);
-    
-    func_8002B138(0x51, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesIndexSegmentRomStart, &_titleSpritesIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
-    func_8002BD0C(0x51, titleScreenContext.centerCoordinate - 160.0f, 0.0f, 16.0f);
-    func_8002BD90(0x51, 1.0f, 1.0f, 1.0f);
-    func_8002BE14(0x51, 0.0f, 0.0f, 0.0f);
-    func_8002C7EC(0x51, 3);
-    func_8002C914(0x51, 0xFF, 0xFF, 0xFF, 0xFF);
-    func_8002CB24(0x51, 1);
-    func_8002B80C(0x51, 0xB, 0xFE);
-    
-    func_8002B138(0x50, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesIndexSegmentRomStart, &_titleSpritesIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
-    func_8002BD0C(0x50, titleScreenContext.centerCoordinate - 160.0f, 0.0f, 24.0f);
-    func_8002BD90(0x50, 1.0f, 1.0f, 1.0f);
-    func_8002BE14(0x50, 0.0f, 0.0f, 0.0f);
-    func_8002C7EC(0x50, 3);
-    func_8002C914(0x50, 0xFF, 0xFF, 0xFF, 0xFF);
-    func_8002CB24(0x50, 1);
-    func_8002B80C(0x50, 0xC, 0xFE);
-    
-    func_8002B138(0x4F, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesIndexSegmentRomStart, &_titleSpritesIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
-    func_8002BD0C(0x4F, titleScreenContext.centerCoordinate - 160.0f, 0.0f, 32.0f);
-    func_8002BD90(0x4F, 1.0f, 1.0f, 1.0f);
-    func_8002BE14(0x4F, 0.0f, 0.0f, 0.0f);
-    func_8002C7EC(0x4F, 3);
-    func_8002C914(0x4F, 0xFF, 0xFF, 0xFF, 0xFF);
-    func_8002CB24(0x4F, 1);
-    func_8002B80C(0x4F, 0xE, 0xFE);
-    
-    func_8002B138(0x45, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsIndexSegmentRomStart, &_dialogueIconsIndexSegmentRomEnd, NULL, NULL, (void*)0x8023B400, NULL, (void*)0x8023CC00, (void*)0x8023CE00, (void*)0x8023D200, NULL, NULL, 0);
-    func_8002BD0C(0x45, -54.0f, -24.0f, 56.0f);
-    func_8002BD90(0x45, 1.0f, 1.0f, 1.0f);
-    func_8002BE14(0x45, 0.0f, 0.0f, 0.0f);
-    func_8002C7EC(0x45, 3);
-    func_8002C914(0x45, 0xFF, 0xFF, 0xFF, 0xFF);
-    func_8002CB24(0x45, 1);
-    func_8002B80C(0x45, 3, 0xFE);
+    func_8002B138(PUSH_THE_START_SIGN_2, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsIndexSegmentRomStart, &_dialogueIconsIndexSegmentRomEnd, NULL, NULL, (void*)0x8023B400, NULL, (void*)0x8023CC00, (void*)0x8023CE00, (void*)0x8023D200, NULL, NULL, 0);
+    setSpriteShrinkFactor(PUSH_THE_START_SIGN_2, -54.0f, -24.0f, 56.0f);
+    setSpriteScale(PUSH_THE_START_SIGN_2, 1.0f, 1.0f, 1.0f);
+    func_8002BE14(PUSH_THE_START_SIGN_2, 0.0f, 0.0f, 0.0f);
+    func_8002C7EC(PUSH_THE_START_SIGN_2, 3);
+    func_8002C914(PUSH_THE_START_SIGN_2, 0xFF, 0xFF, 0xFF, 0xFF);
+    func_8002CB24(PUSH_THE_START_SIGN_2, 1);
+    func_8002B80C(PUSH_THE_START_SIGN_2, 3, 0xFE);
     
     setMainLoopCallbackFunctionIndex(TITLE_SCREEN);
     
@@ -274,28 +275,28 @@ void initializeTitleScreen(u8 arg0) {
 
         titleScreenContext.mode = 2;
 
-        func_8002BE98(0x46, 320.0f, 0.0f, 0.0f);
-        func_8002BE98(0x47, 320.0f, 0.0f, 0.0f);
-        func_8002BE98(0x48, 320.0f, 0.0f, 0.0f);
-        func_8002BE98(0x49, 320.0f, 0.0f, 0.0f);
-        func_8002BE98(0x4A, 320.0f, 0.0f, 0.0f);
-        func_8002BE98(0x4B, 320.0f, 0.0f, 0.0f);
-        func_8002BE98(0x52, 320.0f, 0.0f, 0.0f);
-        func_8002BE98(0x53, 320.0f, 0.0f, 0.0f);
-        func_8002BE98(0x4E, 128.0f, 0.0f, 0.0f);
-        func_8002BE98(0x4D, 192.0f, 0.0f, 0.0f);
-        func_8002BE98(0x4C, 256.0f, 0.0f, 0.0f);
-        func_8002BE98(0x51, 128.0f, 0.0f, 0.0f);
-        func_8002BE98(0x50, 192.0f, 0.0f, 0.0f);
-        func_8002BE98(0x4F, 256.0f, 0.0f, 0.0f);
-        func_8002BE98(0x54, 64.0f, 0.0f, 0.0f);
-        func_8002BE98(0x55, 64.0f, 0.0f, 0.0f);
-        func_8002BE98(0x56, 64.0f, 0.0f, 0.0f);
-        func_8002BE98(0x57, 64.0f, 0.0f, 0.0f);
-        func_8002BE98(0x58, 64.0f, 0.0f, 0.0f);
-        func_8002BE98(0x59, 64.0f, 0.0f, 0.0f);
-        func_8002BE98(0x5A, 64.0f, 0.0f, 0.0f);
-        func_8002BE98(0x5B, 64.0f, 0.0f, 0.0f);
+        adjustSpriteShrinkFactor(PUSH_THE_START_SIGN_1, 320.0f, 0.0f, 0.0f);
+        adjustSpriteShrinkFactor(HOW_TO_PLAY_SIGN, 320.0f, 0.0f, 0.0f);
+        adjustSpriteShrinkFactor(DIRT_ROAD, 320.0f, 0.0f, 0.0f);
+        adjustSpriteShrinkFactor(SIGN_POST_1, 320.0f, 0.0f, 0.0f);
+        adjustSpriteShrinkFactor(SIGN_POST_2, 320.0f, 0.0f, 0.0f);
+        adjustSpriteShrinkFactor(SIGN_POST_3, 320.0f, 0.0f, 0.0f);
+        adjustSpriteShrinkFactor(FAR_GRASS_1_1, 320.0f, 0.0f, 0.0f);
+        adjustSpriteShrinkFactor(FAR_GRASS_1_2, 320.0f, 0.0f, 0.0f);
+        adjustSpriteShrinkFactor(FAR_GRASS_2_1, 128.0f, 0.0f, 0.0f);
+        adjustSpriteShrinkFactor(FAR_GRASS_3_1, 192.0f, 0.0f, 0.0f);
+        adjustSpriteShrinkFactor(FRONT_GRASS_2_1, 256.0f, 0.0f, 0.0f);
+        adjustSpriteShrinkFactor(BACK_GRASS_2, 128.0f, 0.0f, 0.0f);
+        adjustSpriteShrinkFactor(BACK_GRASS_3_2, 192.0f, 0.0f, 0.0f);
+        adjustSpriteShrinkFactor(FRONT_GRASS_2_2, 256.0f, 0.0f, 0.0f);
+        adjustSpriteShrinkFactor(CLOUD_1_1, 64.0f, 0.0f, 0.0f);
+        adjustSpriteShrinkFactor(CLOUD_1_2, 64.0f, 0.0f, 0.0f);
+        adjustSpriteShrinkFactor(CLOUD_2_1, 64.0f, 0.0f, 0.0f);
+        adjustSpriteShrinkFactor(CLOUD_3_1, 64.0f, 0.0f, 0.0f);
+        adjustSpriteShrinkFactor(LICENSED_BY_NINTENDO_1, 64.0f, 0.0f, 0.0f);
+        adjustSpriteShrinkFactor(LICENSED_BY_NINTENDO_2, 64.0f, 0.0f, 0.0f);
+        adjustSpriteShrinkFactor(CLOUD_3_2, 64.0f, 0.0f, 0.0f);
+        adjustSpriteShrinkFactor(CLOUD_2_2, 64.0f, 0.0f, 0.0f);
 
     } else {
 
@@ -316,8 +317,8 @@ void initializeTitleScreen(u8 arg0) {
 
 void loadDogTitleSprite(void) {
     func_8002B138(DOG_TITLE_SPRITE, &_dogTitleTextureSegmentRomStart, &_dogTitleTextureSegmentRomEnd, &_dogTitleAssetsIndexSegmentRomStart, &_dogTitleAssetsIndexSegmentRomEnd, &_dogTitleSpritesheetIndexSegmentRomStart, &_dogTitleSpritesheetIndexSegmentRomEnd, (void*)0x80240B00, (void*)0x80243B00, (void*)0x80246B00, (void*)0x8024AB00, (void*)0x80252300, (void*)0x80252B00, 1, 0);
-    func_8002BD0C(DOG_TITLE_SPRITE, 64.0f, -80.0f, 56.0f);
-    func_8002BD90(DOG_TITLE_SPRITE, 1.0f, 1.0f, 1.0f);
+    setSpriteShrinkFactor(DOG_TITLE_SPRITE, 64.0f, -80.0f, 56.0f);
+    setSpriteScale(DOG_TITLE_SPRITE, 1.0f, 1.0f, 1.0f);
     func_8002BE14(DOG_TITLE_SPRITE, 0, 0, 0);
     func_8002C7EC(DOG_TITLE_SPRITE, 3);
     func_8002C914(DOG_TITLE_SPRITE, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -338,41 +339,43 @@ static inline void setNewMode(u8 mode) {
 }
 
 static inline void resetSpriteFlags() {
-    func_8002B6B8(0x42);
-    func_8002B6B8(0x43);
+
+    func_8002B6B8(HARVEST_MOON_64_LOGO);
+    func_8002B6B8(MARVCOME_VICTOR_COPYRIGHT_INFO);
     func_8002B6B8(DOG_TITLE_SPRITE);
-    func_8002B6B8(0x45);
-    func_8002B6B8(0x46);
-    func_8002B6B8(0x47);
-    func_8002B6B8(0x48);
-    func_8002B6B8(0x49);
-    func_8002B6B8(0x4A);
-    func_8002B6B8(0x4B);
-    func_8002B6B8(0x4C);
-    func_8002B6B8(0x4D);
-    func_8002B6B8(0x4E);
-    func_8002B6B8(0x4F);
-    func_8002B6B8(0x50);
-    func_8002B6B8(0x51);
-    func_8002B6B8(0x52);
-    func_8002B6B8(0x53);
-    func_8002B6B8(0x54);
-    func_8002B6B8(0x55);
-    func_8002B6B8(0x56);
-    func_8002B6B8(0x57);
-    func_8002B6B8(0x58);
-    func_8002B6B8(0x59);
-    func_8002B6B8(0x5A);
-    func_8002B6B8(0x5B);
+    func_8002B6B8(PUSH_THE_START_SIGN_2);
+    func_8002B6B8(PUSH_THE_START_SIGN_1);
+    func_8002B6B8(HOW_TO_PLAY_SIGN);
+    func_8002B6B8(DIRT_ROAD);
+    func_8002B6B8(SIGN_POST_1);
+    func_8002B6B8(SIGN_POST_2);
+    func_8002B6B8(SIGN_POST_3);
+    func_8002B6B8(FRONT_GRASS_2_1);
+    func_8002B6B8(FAR_GRASS_3_1);
+    func_8002B6B8(FAR_GRASS_2_1);
+    func_8002B6B8(FRONT_GRASS_2_2);
+    func_8002B6B8(BACK_GRASS_3_2);
+    func_8002B6B8(BACK_GRASS_2);
+    func_8002B6B8(FAR_GRASS_1_1);
+    func_8002B6B8(FAR_GRASS_1_2);
+    func_8002B6B8(CLOUD_1_1);
+    func_8002B6B8(CLOUD_1_2);
+    func_8002B6B8(CLOUD_2_1);
+    func_8002B6B8(CLOUD_3_1);
+    func_8002B6B8(LICENSED_BY_NINTENDO_1);
+    func_8002B6B8(LICENSED_BY_NINTENDO_2);
+    func_8002B6B8(CLOUD_3_2);
+    func_8002B6B8(CLOUD_2_2);
+
 }
 
 // TODO: label properly
 static inline bool inline1() {
 
     if (titleScreenContext.rowHighlighted != 1) {
-        func_8002BD0C(0x45, -56.0f, -52.0f, 56.0f);
+        setSpriteShrinkFactor(PUSH_THE_START_SIGN_2, -56.0f, -52.0f, 56.0f);
         titleScreenContext.rowHighlighted = 1;
-        setAudio(2);
+        setAudio(MOVE_CURSOR);
     }
 
    return 1;
@@ -383,9 +386,9 @@ static inline bool inline1() {
 static inline bool inline2() {
 
     if (titleScreenContext.rowHighlighted != 0) {
-        func_8002BD0C(0x45, -56.0f, -20.0f, 56.0f);
+        setSpriteShrinkFactor(PUSH_THE_START_SIGN_2, -56.0f, -20.0f, 56.0f);
         titleScreenContext.rowHighlighted = 0;
-        setAudio(2);
+        setAudio(MOVE_CURSOR);
     }
 
     return 1;
@@ -397,32 +400,32 @@ static inline bool handleFrameIncrement() {
     
     if (titleScreenContext.frameCounter == 500) {
 
-        func_8002C1C0(0x42, 0, 0, 0, 0, 8);
-        func_8002C1C0(0x43, 0, 0, 0, 0, 8);
+        func_8002C1C0(HARVEST_MOON_64_LOGO, 0, 0, 0, 0, 8);
+        func_8002C1C0(MARVCOME_VICTOR_COPYRIGHT_INFO, 0, 0, 0, 0, 8);
         func_8002C1C0(DOG_TITLE_SPRITE, 0, 0, 0, 0, 8);
-        func_8002C1C0(0x45, 0, 0, 0, 0, 8);
-        func_8002C1C0(0x46, 0, 0, 0, 0, 8);
-        func_8002C1C0(0x47, 0, 0, 0, 0, 8);
-        func_8002C1C0(0x48, 0, 0, 0, 0, 8);
-        func_8002C1C0(0x49, 0, 0, 0, 0, 8);
-        func_8002C1C0(0x4A, 0, 0, 0, 0, 8);
-        func_8002C1C0(0x4B, 0, 0, 0, 0, 8);
-        func_8002C1C0(0x4C, 0, 0, 0, 0, 8);
-        func_8002C1C0(0x4D, 0, 0, 0, 0, 8);
-        func_8002C1C0(0x4E, 0, 0, 0, 0, 8);
-        func_8002C1C0(0x4F, 0, 0, 0, 0, 8);
-        func_8002C1C0(0x50, 0, 0, 0, 0, 8);
-        func_8002C1C0(0x51, 0, 0, 0, 0, 8);
-        func_8002C1C0(0x52, 0, 0, 0, 0, 8);
-        func_8002C1C0(0x53, 0, 0, 0, 0, 8);
-        func_8002C1C0(0x54, 0, 0, 0, 0, 8);
-        func_8002C1C0(0x55, 0, 0, 0, 0, 8);
-        func_8002C1C0(0x56, 0, 0, 0, 0, 8);
-        func_8002C1C0(0x57, 0, 0, 0, 0, 8);
-        func_8002C1C0(0x58, 0, 0, 0, 0, 8);
-        func_8002C1C0(0x59, 0, 0, 0, 0, 8);
-        func_8002C1C0(0x5A, 0, 0, 0, 0, 8);
-        func_8002C1C0(0x5B, 0, 0, 0, 0, 8);
+        func_8002C1C0(PUSH_THE_START_SIGN_2, 0, 0, 0, 0, 8);
+        func_8002C1C0(PUSH_THE_START_SIGN_1, 0, 0, 0, 0, 8);
+        func_8002C1C0(HOW_TO_PLAY_SIGN, 0, 0, 0, 0, 8);
+        func_8002C1C0(DIRT_ROAD, 0, 0, 0, 0, 8);
+        func_8002C1C0(SIGN_POST_1, 0, 0, 0, 0, 8);
+        func_8002C1C0(SIGN_POST_2, 0, 0, 0, 0, 8);
+        func_8002C1C0(SIGN_POST_3, 0, 0, 0, 0, 8);
+        func_8002C1C0(FRONT_GRASS_2_1, 0, 0, 0, 0, 8);
+        func_8002C1C0(FAR_GRASS_3_1, 0, 0, 0, 0, 8);
+        func_8002C1C0(FAR_GRASS_2_1, 0, 0, 0, 0, 8);
+        func_8002C1C0(FRONT_GRASS_2_2, 0, 0, 0, 0, 8);
+        func_8002C1C0(BACK_GRASS_3_2, 0, 0, 0, 0, 8);
+        func_8002C1C0(BACK_GRASS_2, 0, 0, 0, 0, 8);
+        func_8002C1C0(FAR_GRASS_1_1, 0, 0, 0, 0, 8);
+        func_8002C1C0(FAR_GRASS_1_2, 0, 0, 0, 0, 8);
+        func_8002C1C0(CLOUD_1_1, 0, 0, 0, 0, 8);
+        func_8002C1C0(CLOUD_1_2, 0, 0, 0, 0, 8);
+        func_8002C1C0(CLOUD_2_1, 0, 0, 0, 0, 8);
+        func_8002C1C0(CLOUD_3_1, 0, 0, 0, 0, 8);
+        func_8002C1C0(LICENSED_BY_NINTENDO_1, 0, 0, 0, 0, 8);
+        func_8002C1C0(LICENSED_BY_NINTENDO_2, 0, 0, 0, 0, 8);
+        func_8002C1C0(CLOUD_3_2, 0, 0, 0, 0, 8);
+        func_8002C1C0(CLOUD_2_2, 0, 0, 0, 0, 8);
 
         setSongWithDefaultSpeed(TITLE_THEME);
 
@@ -452,10 +455,10 @@ void titleScreenMainLoopCallback(void) {
 
                 if (!set) {
                     
-                    func_8002BAD8(0x46);
-                    func_8002B80C(0x46, 4, 0xFF);
+                    func_8002BAD8(PUSH_THE_START_SIGN_1);
+                    func_8002B80C(PUSH_THE_START_SIGN_1, 4, 0xFF);
                     func_8002BAD8(DOG_TITLE_SPRITE);
-                    func_8002BAD8(0x45);
+                    func_8002BAD8(PUSH_THE_START_SIGN_2);
                     func_8002B80C(DOG_TITLE_SPRITE, 8, 0xFE);
     
                     titleScreenContext.mode = 1;
@@ -469,30 +472,31 @@ void titleScreenMainLoopCallback(void) {
         case 1:
 
             // static inline?
-            if (titleScreenContext.unk_4 < 0x40) {
+            if (titleScreenContext.unk_4 < 64) {
 
-                func_8002BE98(0x46, 5.0f, 0.0f, 0.0f);
-                func_8002BE98(0x47, 5.0f, 0, 0);
-                func_8002BE98(0x48, 5.0f, 0, 0);
-                func_8002BE98(0x49, 5.0f, 0, 0);
-                func_8002BE98(0x4A, 5.0f, 0, 0);
-                func_8002BE98(0x4B, 5.0f, 0, 0);
-                func_8002BE98(0x52, 5.0f, 0, 0);
-                func_8002BE98(0x53, 5.0f, 0, 0);
-                func_8002BE98(0x4E, 2.0f, 0, 0);
-                func_8002BE98(0x4D, 3.0f, 0, 0);
-                func_8002BE98(0x4C, 5.0f, 0, 0);
-                func_8002BE98(0x51, 2.0f, 0, 0);
-                func_8002BE98(0x50, 3.0f, 0, 0);
-                func_8002BE98(0x4F, 5.0f, 0, 0);
-                func_8002BE98(0x54, 1.0f, 0, 0);
-                func_8002BE98(0x55, 1.0f, 0, 0);
-                func_8002BE98(0x56, 1.0f, 0, 0);
-                func_8002BE98(0x57, 1.0f, 0, 0);
-                func_8002BE98(0x58, 1.0f, 0, 0);
-                func_8002BE98(0x59, 1.0f, 0, 0);
-                func_8002BE98(0x5A, 1.0f, 0, 0);
-                func_8002BE98(0x5B, 1.0f, 0, 0);
+                // shrink grass sprites
+                adjustSpriteShrinkFactor(PUSH_THE_START_SIGN_1, 5.0f, 0.0f, 0.0f);
+                adjustSpriteShrinkFactor(HOW_TO_PLAY_SIGN, 5.0f, 0, 0);
+                adjustSpriteShrinkFactor(DIRT_ROAD, 5.0f, 0, 0);
+                adjustSpriteShrinkFactor(SIGN_POST_1, 5.0f, 0, 0);
+                adjustSpriteShrinkFactor(SIGN_POST_2, 5.0f, 0, 0);
+                adjustSpriteShrinkFactor(SIGN_POST_3, 5.0f, 0, 0);
+                adjustSpriteShrinkFactor(FAR_GRASS_1_1, 5.0f, 0, 0);
+                adjustSpriteShrinkFactor(FAR_GRASS_1_2, 5.0f, 0, 0);
+                adjustSpriteShrinkFactor(FAR_GRASS_2_1, 2.0f, 0, 0);
+                adjustSpriteShrinkFactor(FAR_GRASS_3_1, 3.0f, 0, 0);
+                adjustSpriteShrinkFactor(FRONT_GRASS_2_1, 5.0f, 0, 0);
+                adjustSpriteShrinkFactor(BACK_GRASS_2, 2.0f, 0, 0);
+                adjustSpriteShrinkFactor(BACK_GRASS_3_2, 3.0f, 0, 0);
+                adjustSpriteShrinkFactor(FRONT_GRASS_2_2, 5.0f, 0, 0);
+                adjustSpriteShrinkFactor(CLOUD_1_1, 1.0f, 0, 0);
+                adjustSpriteShrinkFactor(CLOUD_1_2, 1.0f, 0, 0);
+                adjustSpriteShrinkFactor(CLOUD_2_1, 1.0f, 0, 0);
+                adjustSpriteShrinkFactor(CLOUD_3_1, 1.0f, 0, 0);
+                adjustSpriteShrinkFactor(LICENSED_BY_NINTENDO_1, 1.0f, 0, 0);
+                adjustSpriteShrinkFactor(LICENSED_BY_NINTENDO_2, 1.0f, 0, 0);
+                adjustSpriteShrinkFactor(CLOUD_3_2, 1.0f, 0, 0);
+                adjustSpriteShrinkFactor(CLOUD_2_2, 1.0f, 0, 0);
 
             } else {
                 setNewMode(2);
@@ -507,8 +511,8 @@ void titleScreenMainLoopCallback(void) {
 
             func_8002BAD8(DOG_TITLE_SPRITE);
             func_8002B80C(DOG_TITLE_SPRITE, 0x1D, 0xFE);
-            func_8002BD0C(0x45, -56.0f, -20.0f, 56.0f);
-            func_8002B80C(0x45, 3, 0xFE);
+            setSpriteShrinkFactor(PUSH_THE_START_SIGN_2, -56.0f, -20.0f, 56.0f);
+            func_8002B80C(PUSH_THE_START_SIGN_2, 3, 0xFE);
             
             titleScreenContext.mode = 3;
             titleScreenContext.rowHighlighted = 0;
@@ -535,40 +539,40 @@ void titleScreenMainLoopCallback(void) {
 
                 if (!set) {
                     
-                    if (!titleScreenContext.rowHighlighted) {
-                        func_8002BAD8(0x47);
-                        func_8002B80C(0x47, 6, 0xFF);
+                    if (titleScreenContext.rowHighlighted == 0) {
+                        func_8002BAD8(HOW_TO_PLAY_SIGN);
+                        func_8002B80C(HOW_TO_PLAY_SIGN, 6, 0xFF);
                     } else {
-                        func_8002BAD8(0x48);
-                        func_8002B80C(0x48, 8, 0xFF);
+                        func_8002BAD8(DIRT_ROAD);
+                        func_8002B80C(DIRT_ROAD, 8, 0xFF);
                     }
                       
-                    func_8002C1C0(0x42, 0, 0, 0, 0, 8);
-                    func_8002C1C0(0x43, 0, 0, 0, 0, 8);
+                    func_8002C1C0(HARVEST_MOON_64_LOGO, 0, 0, 0, 0, 8);
+                    func_8002C1C0(MARVCOME_VICTOR_COPYRIGHT_INFO, 0, 0, 0, 0, 8);
                     func_8002C1C0(DOG_TITLE_SPRITE, 0, 0, 0, 0, 8);
-                    func_8002C1C0(0x45, 0, 0, 0, 0, 8);
-                    func_8002C1C0(0x46, 0, 0, 0, 0, 8);
-                    func_8002C1C0(0x47, 0, 0, 0, 0, 8);
-                    func_8002C1C0(0x48, 0, 0, 0, 0, 8);
-                    func_8002C1C0(0x49, 0, 0, 0, 0, 8);
-                    func_8002C1C0(0x4A, 0, 0, 0, 0, 8);
-                    func_8002C1C0(0x4B, 0, 0, 0, 0, 8);
-                    func_8002C1C0(0x4C, 0, 0, 0, 0, 8);
-                    func_8002C1C0(0x4D, 0, 0, 0, 0, 8);
-                    func_8002C1C0(0x4E, 0, 0, 0, 0, 8);
-                    func_8002C1C0(0x4F, 0, 0, 0, 0, 8);
-                    func_8002C1C0(0x50, 0, 0, 0, 0, 8);
-                    func_8002C1C0(0x51, 0, 0, 0, 0, 8);
-                    func_8002C1C0(0x52, 0, 0, 0, 0, 8);
-                    func_8002C1C0(0x53, 0, 0, 0, 0, 8);
-                    func_8002C1C0(0x54, 0, 0, 0, 0, 8);
-                    func_8002C1C0(0x55, 0, 0, 0, 0, 8);
-                    func_8002C1C0(0x56, 0, 0, 0, 0, 8);
-                    func_8002C1C0(0x57, 0, 0, 0, 0, 8);
-                    func_8002C1C0(0x58, 0, 0, 0, 0, 8);
-                    func_8002C1C0(0x59, 0, 0, 0, 0, 8);
-                    func_8002C1C0(0x5A, 0, 0, 0, 0, 8);
-                    func_8002C1C0(0x5B, 0, 0, 0, 0, 8);
+                    func_8002C1C0(PUSH_THE_START_SIGN_2, 0, 0, 0, 0, 8);
+                    func_8002C1C0(PUSH_THE_START_SIGN_1, 0, 0, 0, 0, 8);
+                    func_8002C1C0(HOW_TO_PLAY_SIGN, 0, 0, 0, 0, 8);
+                    func_8002C1C0(DIRT_ROAD, 0, 0, 0, 0, 8);
+                    func_8002C1C0(SIGN_POST_1, 0, 0, 0, 0, 8);
+                    func_8002C1C0(SIGN_POST_2, 0, 0, 0, 0, 8);
+                    func_8002C1C0(SIGN_POST_3, 0, 0, 0, 0, 8);
+                    func_8002C1C0(FRONT_GRASS_2_1, 0, 0, 0, 0, 8);
+                    func_8002C1C0(FAR_GRASS_3_1, 0, 0, 0, 0, 8);
+                    func_8002C1C0(FAR_GRASS_2_1, 0, 0, 0, 0, 8);
+                    func_8002C1C0(FRONT_GRASS_2_2, 0, 0, 0, 0, 8);
+                    func_8002C1C0(BACK_GRASS_3_2, 0, 0, 0, 0, 8);
+                    func_8002C1C0(BACK_GRASS_2, 0, 0, 0, 0, 8);
+                    func_8002C1C0(FAR_GRASS_1_1, 0, 0, 0, 0, 8);
+                    func_8002C1C0(FAR_GRASS_1_2, 0, 0, 0, 0, 8);
+                    func_8002C1C0(CLOUD_1_1, 0, 0, 0, 0, 8);
+                    func_8002C1C0(CLOUD_1_2, 0, 0, 0, 0, 8);
+                    func_8002C1C0(CLOUD_2_1, 0, 0, 0, 0, 8);
+                    func_8002C1C0(CLOUD_3_1, 0, 0, 0, 0, 8);
+                    func_8002C1C0(LICENSED_BY_NINTENDO_1, 0, 0, 0, 0, 8);
+                    func_8002C1C0(LICENSED_BY_NINTENDO_2, 0, 0, 0, 0, 8);
+                    func_8002C1C0(CLOUD_3_2, 0, 0, 0, 0, 8);
+                    func_8002C1C0(CLOUD_2_2, 0, 0, 0, 0, 8);
     
                     titleScreenContext.mode = 4;
     
@@ -582,10 +586,11 @@ void titleScreenMainLoopCallback(void) {
 
             break;
 
+        // leaving title screen
         case 4:
             
             // check sprite flag
-            if (func_8002CBF8(0x42)) {
+            if (func_8002CBF8(HARVEST_MOON_64_LOGO)) {
 
                 resetSpriteFlags();
                 
@@ -602,12 +607,11 @@ void titleScreenMainLoopCallback(void) {
 
         case 5:
             
-            if (func_8002CBF8(0x42) && checkDefaultSongChannelOpen(TITLE_THEME)) {
+            if (func_8002CBF8(HARVEST_MOON_64_LOGO) && checkDefaultSongChannelOpen(TITLE_THEME)) {
                 
                 resetSpriteFlags();
  
-                // demo cutscene index
-                switch (D_801C3F50) {
+                switch (demoCutsceneIndex) {
                     case 0:
                         func_80055F08(DEMO_CUTSCENE_1, 0, 1);
                         break;
@@ -621,16 +625,17 @@ void titleScreenMainLoopCallback(void) {
                         break;
                 }
 
-                D_801C3F50++;
+                demoCutsceneIndex++;
 
-                if (D_801C3F50 > 2) {
-                    D_801C3F50 = 0;
+                if (demoCutsceneIndex > 2) {
+                    demoCutsceneIndex = 0;
                 }   
             }
         }  
             
-    func_800E0FEC();
+    updateGrassAnimation();
     func_800E10E8();
+
 }
 
 static inline void handleUpdateDogAnimation() {
@@ -737,29 +742,39 @@ void func_800E0ED4(void) {
     }
 }
 */
-//INCLUDE_ASM(const s32, "title", func_800E0FEC);
+//INCLUDE_ASM(const s32, "title", updateGrassAnimation);
 
-void func_800E0FEC(void) {
+// update grass
+void updateGrassAnimation(void) {
 
-    if (func_8002CC44(0x4D)) {
+    // check flag 0x40
+    if (func_8002CC44(FAR_GRASS_3_1)) {
+        
         if (getRandomNumberInRange(0, 1)) {
-            func_8002BAD8(0x4D);
-            func_8002BAD8(0x4C);
-            func_8002BAD8(0x50);
-            func_8002BAD8(0x4F);
-            func_8002B80C(0x4D, 0xC, 0xFE);
-            func_8002B80C(0x4C, 0xE, 0xFE);
-            func_8002B80C(0x50, 0xC, 0xFE);
-            func_8002B80C(0x4F, 0xE, 0xFE);
+            
+            // toggle bit 2
+            func_8002BAD8(FAR_GRASS_3_1);
+            func_8002BAD8(FRONT_GRASS_2_1);
+            func_8002BAD8(BACK_GRASS_3_2);
+            func_8002BAD8(FRONT_GRASS_2_2);
+
+            // update animation
+            func_8002B80C(FAR_GRASS_3_1, 0xC, 0xFE);
+            func_8002B80C(FRONT_GRASS_2_1, 0xE, 0xFE);
+            func_8002B80C(BACK_GRASS_3_2, 0xC, 0xFE);
+            func_8002B80C(FRONT_GRASS_2_2, 0xE, 0xFE);
+
         } else {
-            func_8002BAD8(0x4D);
-            func_8002BAD8(0x4C);
-            func_8002BAD8(0x50);
-            func_8002BAD8(0x4F);
-            func_8002B80C(0x4D, 0xD, 0xFE);
-            func_8002B80C(0x4C, 0xF, 0xFE);
-            func_8002B80C(0x50, 0xD, 0xFE);
-            func_8002B80C(0x4F, 0xF, 0xFE);
+            
+            func_8002BAD8(FAR_GRASS_3_1);
+            func_8002BAD8(FRONT_GRASS_2_1);
+            func_8002BAD8(BACK_GRASS_3_2);
+            func_8002BAD8(FRONT_GRASS_2_2);
+
+            func_8002B80C(FAR_GRASS_3_1, 0xD, 0xFE);
+            func_8002B80C(FRONT_GRASS_2_1, 0xF, 0xFE);
+            func_8002B80C(BACK_GRASS_3_2, 0xD, 0xFE);
+            func_8002B80C(FRONT_GRASS_2_2, 0xF, 0xFE);
         }
     }
 
@@ -767,32 +782,33 @@ void func_800E0FEC(void) {
 
 //INCLUDE_ASM(const s32, "title", func_800E10E8);
 
+// adjust shrink of overlaying sprites
 void func_800E10E8(void) {
     
-    if (globalSprites[0x56].shrink.x > 320.0f) {
-        func_8002BD0C(0x56, titleScreenContext.centerCoordinate - 320.0f, 64.0f, 64.0f);
+    if (globalSprites[CLOUD_2_1].shrink.x > 320.0f) {
+        setSpriteShrinkFactor(CLOUD_2_1, titleScreenContext.centerCoordinate - 320.0f, 64.0f, 64.0f);
     }
-    if (globalSprites[0x57].shrink.x > 320.0f) {
-        func_8002BD0C(0x57, titleScreenContext.centerCoordinate - 320.0f, 96.0f, 64.0f);
+    if (globalSprites[CLOUD_3_1].shrink.x > 320.0f) {
+        setSpriteShrinkFactor(CLOUD_3_1, titleScreenContext.centerCoordinate - 320.0f, 96.0f, 64.0f);
     }
-    if (globalSprites[0x58].shrink.x > 320.0f) {
-        func_8002BD0C(0x58, titleScreenContext.centerCoordinate - 320.0f, 80.0f, 64.0f);
+    if (globalSprites[LICENSED_BY_NINTENDO_1].shrink.x > 320.0f) {
+        setSpriteShrinkFactor(LICENSED_BY_NINTENDO_1, titleScreenContext.centerCoordinate - 320.0f, 80.0f, 64.0f);
     }
-    if (globalSprites[0x59].shrink.x > 320.0f) {
-        func_8002BD0C(0x59, titleScreenContext.centerCoordinate - 320.0f, 72.0f, 64.0f);
+    if (globalSprites[LICENSED_BY_NINTENDO_2].shrink.x > 320.0f) {
+        setSpriteShrinkFactor(LICENSED_BY_NINTENDO_2, titleScreenContext.centerCoordinate - 320.0f, 72.0f, 64.0f);
     }
-    if (globalSprites[0x5A].shrink.x > 320.0f) {
-        func_8002BD0C(0x5A, titleScreenContext.centerCoordinate - 320.0f, 108.0f, 64.0f);
+    if (globalSprites[CLOUD_3_2].shrink.x > 320.0f) {
+        setSpriteShrinkFactor(CLOUD_3_2, titleScreenContext.centerCoordinate - 320.0f, 108.0f, 64.0f);
     }
-    if (globalSprites[0x5B].shrink.x > 320.0f) {
-        func_8002BD0C(0x5B, titleScreenContext.centerCoordinate - 320.0f, 88.0f, 64.0f);
+    if (globalSprites[CLOUD_2_2].shrink.x > 320.0f) {
+        setSpriteShrinkFactor(CLOUD_2_2, titleScreenContext.centerCoordinate - 320.0f, 88.0f, 64.0f);
     }
     
-    func_8002BE98(0x56, 0.2f, 0.0f, 0.0f);
-    func_8002BE98(0x57, 0.1f, 0.0f, 0.0f);
-    func_8002BE98(0x58, 0.3f, 0.0f, 0.0f);
-    func_8002BE98(0x59, 0.4f, 0.0f, 0.0f);
-    func_8002BE98(0x5A, 0.1f, 0.0f, 0.0f);
-    func_8002BE98(0x5B, 0.2f, 0.0f, 0.0f);
+    adjustSpriteShrinkFactor(CLOUD_2_1, 0.2f, 0.0f, 0.0f);
+    adjustSpriteShrinkFactor(CLOUD_3_1, 0.1f, 0.0f, 0.0f);
+    adjustSpriteShrinkFactor(LICENSED_BY_NINTENDO_1, 0.3f, 0.0f, 0.0f);
+    adjustSpriteShrinkFactor(LICENSED_BY_NINTENDO_2, 0.4f, 0.0f, 0.0f);
+    adjustSpriteShrinkFactor(CLOUD_3_2, 0.1f, 0.0f, 0.0f);
+    adjustSpriteShrinkFactor(CLOUD_2_2, 0.2f, 0.0f, 0.0f);
     
 }

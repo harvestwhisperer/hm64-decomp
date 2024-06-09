@@ -2,6 +2,7 @@
 #define _SET_CUTSCENES_H_
 
 #include "common.h"
+
 #include "game.h"
 
 #define MARRIED_TO_MARIA checkLifeEventBit(MARRIED) && gWife == MARIA

@@ -36,9 +36,9 @@ void initializeGlobalSprites(void) {
         globalSprites[i].scale.y = 1.0f;
         globalSprites[i].scale.z = 1.0f;
 
-        globalSprites[i].unk_44.x = 0;
-        globalSprites[i].unk_44.y = 0;
-        globalSprites[i].unk_44.z = 0;
+        globalSprites[i].angles.x = 0;
+        globalSprites[i].angles.y = 0;
+        globalSprites[i].angles.z = 0;
         
         globalSprites[i].rgbaCurrent.r = 0;
         globalSprites[i].rgbaCurrent.g = 0;
@@ -49,6 +49,7 @@ void initializeGlobalSprites(void) {
         globalSprites[i].rgbaDefault.g = 0;
         globalSprites[i].rgbaDefault.b = 0;
         globalSprites[i].rgbaDefault.a = 0;
+
     }
 }
 
@@ -147,10 +148,10 @@ bool func_8002B36C(u16 index, u32* unknownAssetIndexPtr, u32* spritesheetIndexPt
             globalSprites[index].paletteIndex = 0;
             globalSprites[index].unk_92 = 0;
 
-            func_8002BD0C(index, 0.0f, 0.0f, 0.0f);
-            func_8002BD90(index, 1.0f, 1.0f, 1.0f);
+            setSpriteShrinkFactor(index, 0.0f, 0.0f, 0.0f);
+            setSpriteScale(index, 1.0f, 1.0f, 1.0f);
             func_8002BE14(index, 0.0f, 0.0f, 0.0f);
-            func_8002C85C(index, 0xFF, 0xFF, 0xFF, 0xFF);
+            setSpriteDefaultRGBA(index, 0xFF, 0xFF, 0xFF, 0xFF);
             func_8002C680(index, 2, 2);
             func_8002C6F8(index, 2);
             func_8002C7EC(index, 3);
@@ -189,10 +190,10 @@ bool func_8002B50C(u16 index, u32* unknownAssetIndexPtr, u32* spritesheetIndexPt
             globalSprites[index].paletteIndex = 0;
             globalSprites[index].unk_92 = 0;
 
-            func_8002BD0C(index, 0, 0, 0);
-            func_8002BD90(index, 1.0f, 1.0f, 1.0f);
+            setSpriteShrinkFactor(index, 0, 0, 0);
+            setSpriteScale(index, 1.0f, 1.0f, 1.0f);
             func_8002BE14(index, 0, 0, 0);
-            func_8002C85C(index, 0xFF, 0xFF, 0xFF, 0xFF);
+            setSpriteDefaultRGBA(index, 0xFF, 0xFF, 0xFF, 0xFF);
             func_8002C680(index, 2, 2);
             func_8002C6F8(index, 2);
             func_8002C7EC(index, 3);
@@ -223,9 +224,45 @@ bool func_8002B6B8(u16 index) {
     return result; 
 }
 
-INCLUDE_ASM(const s32, "system/globalSprites", func_8002B710);
+//INCLUDE_ASM(const s32, "system/globalSprites", func_8002B710);
 
-INCLUDE_ASM(const s32, "system/globalSprites", func_8002B7A0);
+void func_8002B710(void) {
+
+    u16 i;
+
+    for (i = 0; i < MAX_ACTIVE_SPRITES; i++) {
+
+            if ((globalSprites[i].flags2 & 1) && (globalSprites[i].flags2 & 2)) {
+
+                // FIXME: probably inline
+                if (i < MAX_ACTIVE_SPRITES) {
+                    
+                    globalSprites[i].flags2 &= ~(1 | 2);
+
+                }
+
+            }
+
+            globalSprites[i].flags2 = 0;
+        
+    }
+}
+
+//INCLUDE_ASM(const s32, "system/globalSprites", func_8002B7A0);
+
+// possibly inline, otherwise unused
+u8 func_8002B7A0(u16 spriteIndex, u8 arg1) {
+
+    u8 result;
+
+    result = func_8002B8E0(spriteIndex, arg1, globalSprites[spriteIndex].unknownAssetIndexPtr);
+
+    globalSprites[spriteIndex].animationCounter1 = 0xFF;
+    globalSprites[spriteIndex].animationCounter2 = 0xFF;
+
+    return result;
+    
+}
 
 //INCLUDE_ASM(const s32, "system/globalSprites", func_8002B80C);
 
@@ -406,9 +443,9 @@ bool func_8002BCC8(u16 index) {
 
 }
 
-//INCLUDE_ASM(const s32, "system/globalSprites", func_8002BD0C);
+//INCLUDE_ASM(const s32, "system/globalSprites", setSpriteShrinkFactor);
 
-bool func_8002BD0C(u16 index, f32 x, f32 y, f32 z) {
+bool setSpriteShrinkFactor(u16 index, f32 x, f32 y, f32 z) {
 
     bool result = 0;
 
@@ -426,9 +463,9 @@ bool func_8002BD0C(u16 index, f32 x, f32 y, f32 z) {
     return result;
 }
 
-//INCLUDE_ASM(const s32, "system/globalSprites", func_8002BD90);
+//INCLUDE_ASM(const s32, "system/globalSprites", setSpriteScale);
 
-bool func_8002BD90(u16 index, f32 x, f32 y, f32 z) {
+bool setSpriteScale(u16 index, f32 x, f32 y, f32 z) {
 
     bool result = 0;
 
@@ -458,9 +495,9 @@ bool func_8002BE14(u16 index, f32 x, f32 y, f32 z) {
 
         if (globalSprites[index].flags2 & 1) {
 
-            globalSprites[index].unk_44.x = x;
-            globalSprites[index].unk_44.y = y;
-            globalSprites[index].unk_44.z = z;
+            globalSprites[index].angles.x = x;
+            globalSprites[index].angles.y = y;
+            globalSprites[index].angles.z = z;
 
             result = 1;
         }
@@ -470,9 +507,9 @@ bool func_8002BE14(u16 index, f32 x, f32 y, f32 z) {
     
 }
 
-//INCLUDE_ASM(const s32, "system/globalSprites", func_8002BE98);
+//INCLUDE_ASM(const s32, "system/globalSprites", adjustSpriteShrinkFactor);
 
-bool func_8002BE98(u16 index, f32 x, f32 y, f32 z) {
+bool adjustSpriteShrinkFactor(u16 index, f32 x, f32 y, f32 z) {
 
     bool result = 0;
     
@@ -505,9 +542,9 @@ bool func_8002C000(u16 index, f32 x, f32 y, f32 z) {
         
         if (globalSprites[index].flags2 & 1) {
 
-            globalSprites[index].unk_44.x += x;
-            globalSprites[index].unk_44.y += y;
-            globalSprites[index].unk_44.z += z;
+            globalSprites[index].angles.x += x;
+            globalSprites[index].angles.y += y;
+            globalSprites[index].angles.z += z;
                 
             result = 1;
             
@@ -543,6 +580,7 @@ bool func_8002C0B4(u16 index, s8 r, s8 g, s8 b, s8 a) {
 //INCLUDE_ASM(const s32, "system/globalSprites", func_8002C1C0);
 
 // update sprite rgba
+// fade out on screen transitions
 bool func_8002C1C0(u16 index, u8 r, u8 g, u8 b, u8 a, s16 arg5) {
 
     bool result;
@@ -692,9 +730,9 @@ u8 func_8002C7EC(u16 index, u16 arg1) {
     return result;
 }
 
-//INCLUDE_ASM(const s32, "system/globalSprites", func_8002C85C);
+//INCLUDE_ASM(const s32, "system/globalSprites", setSpriteDefaultRGBA);
 
-bool func_8002C85C(u16 index, u8 r, u8 g, u8 b, u8 a) {
+bool setSpriteDefaultRGBA(u16 index, u8 r, u8 g, u8 b, u8 a) {
 
     bool result = 0;
 
@@ -707,6 +745,7 @@ bool func_8002C85C(u16 index, u8 r, u8 g, u8 b, u8 a) {
             globalSprites[index].rgba.a = a;
         }
     }
+
     return result;
 }
 

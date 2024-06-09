@@ -311,8 +311,8 @@ bool func_80046650(u16 spriteIndex, u8 arg1, u8 arg2) {
             tempIndex = pauseScreenSprites[spriteIndex].unk_38 + arg2; 
             
             // adjust Vec3fs
-            func_8002BD0C(tempIndex, pauseScreenSprites[spriteIndex].unk_28.x - pauseScreenSprites[spriteIndex].unk_27 * arg2, pauseScreenSprites[spriteIndex].unk_28.y, pauseScreenSprites[spriteIndex].unk_28.z);
-            func_8002BD90(tempIndex, 1.0f, 1.0f, 1.0f);
+            setSpriteShrinkFactor(tempIndex, pauseScreenSprites[spriteIndex].unk_28.x - pauseScreenSprites[spriteIndex].unk_27 * arg2, pauseScreenSprites[spriteIndex].unk_28.y, pauseScreenSprites[spriteIndex].unk_28.z);
+            setSpriteScale(tempIndex, 1.0f, 1.0f, 1.0f);
             func_8002BE14(tempIndex, 0, 0, 0);
             
             func_8002C680(tempIndex, 2, 2);

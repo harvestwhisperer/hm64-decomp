@@ -97,7 +97,7 @@ bool func_8002DDDC(u16 npcIndex, void* arg1, void* arg2, void* arg3, void* arg4,
 
 //INCLUDE_ASM(const s32, "system/renderedSprites", func_8002DEE8);
 
-bool func_8002DEE8(u16 spriteIndex, u16 globalSpriteIndex, u16 spriteOffset, void* vaddrTexture1, void* vaddrTexture2, 
+bool func_8002DEE8(u16 spriteIndex, u16 globalSpriteIndex, u16 shadowSpriteIndex, void* vaddrTexture1, void* vaddrTexture2, 
     void* vaddrPalette, void* vaddrUnknownAsset, void* vaddrTextureToPaletteLookup, void* vaddrSpritesheetIndex) {
 
     bool set = 0;
@@ -109,7 +109,7 @@ bool func_8002DEE8(u16 spriteIndex, u16 globalSpriteIndex, u16 spriteOffset, voi
             renderedSprites[spriteIndex].flags = 1;
 
             renderedSprites[spriteIndex].globalSpriteIndex = globalSpriteIndex;
-            renderedSprites[spriteIndex].spriteOffset = spriteOffset;
+            renderedSprites[spriteIndex].shadowSpriteIndex = shadowSpriteIndex;
 
             renderedSprites[spriteIndex].vaddrTexture1 = vaddrTexture1;
             renderedSprites[spriteIndex].vaddrTexture2 = vaddrTexture2;
@@ -189,7 +189,7 @@ bool func_8002E108(u16 index) {
         func_8002B6B8(renderedSprites[index].globalSpriteIndex);
         
         if (characterSprites[renderedSprites[index].characterIndex].shadowSpriteIndex != 0xFF) {
-            func_8002B6B8(renderedSprites[index].spriteOffset);
+            func_8002B6B8(renderedSprites[index].shadowSpriteIndex);
         }
         
         result = 1;
@@ -215,8 +215,9 @@ void func_8002E1B8(void) {
         
             func_8002B6B8(renderedSprites[i].globalSpriteIndex);
             
+            // toggle flag on shadow sprite
             if (characterSprites[renderedSprites[i].characterIndex].shadowSpriteIndex != 0xFF) {
-                func_8002B6B8(renderedSprites[i].spriteOffset);
+                func_8002B6B8(renderedSprites[i].shadowSpriteIndex);
             } 
         }
         
@@ -280,7 +281,7 @@ bool func_8002E284(u16 index, u16 characterIndex, u8 flag) {
 
             if (characterSprites[renderedSprites[index].characterIndex].shadowSpriteIndex != 0xFF) {
                 
-                func_8002B138(renderedSprites[index].spriteOffset, 
+                func_8002B138(renderedSprites[index].shadowSpriteIndex, 
                     shadowSpritesInfo[characterSprites[renderedSprites[index].characterIndex].shadowSpriteIndex].romTextureStart, 
                     shadowSpritesInfo[characterSprites[renderedSprites[index].characterIndex].shadowSpriteIndex].romTextureEnd, 
                     shadowSpritesInfo[characterSprites[renderedSprites[index].characterIndex].shadowSpriteIndex].romAssetIndexStart, 
@@ -297,7 +298,7 @@ bool func_8002E284(u16 index, u16 characterIndex, u8 flag) {
                     renderedSprites[index].flag
                     );
 
-                func_8002C7EC(renderedSprites[index].spriteOffset, 2);
+                func_8002C7EC(renderedSprites[index].shadowSpriteIndex, 2);
             
             }
 
@@ -312,10 +313,10 @@ bool func_8002E284(u16 index, u16 characterIndex, u8 flag) {
             if (!(func_80036A84(gMapModelContext[gMainMapIndex].mainMapIndex))) {
  
                 func_8002F1E0(index, 
-                    mainMap[gMapModelContext[gMainMapIndex].mainMapIndex].mapStruct8.defaultRgba.r, 
-                    mainMap[gMapModelContext[gMainMapIndex].mainMapIndex].mapStruct8.defaultRgba.g, 
-                    mainMap[gMapModelContext[gMainMapIndex].mainMapIndex].mapStruct8.defaultRgba.b, 
-                    mainMap[gMapModelContext[gMainMapIndex].mainMapIndex].mapStruct8.defaultRgba.a, 
+                    mainMap[gMapModelContext[gMainMapIndex].mainMapIndex].mapFloats.defaultRgba.r, 
+                    mainMap[gMapModelContext[gMainMapIndex].mainMapIndex].mapFloats.defaultRgba.g, 
+                    mainMap[gMapModelContext[gMainMapIndex].mainMapIndex].mapFloats.defaultRgba.b, 
+                    mainMap[gMapModelContext[gMainMapIndex].mainMapIndex].mapFloats.defaultRgba.a, 
                     mainMap[gMapModelContext[gMainMapIndex].mainMapIndex].mapStruct9.unk_8);
                 
             }
@@ -440,7 +441,7 @@ bool func_8002EEE4(u16 spriteIndex, f32 arg1, f32 arg2, f32 arg3) {
     if (spriteIndex < MAX_RENDERED_SPRITES) {
 
         if ((renderedSprites[spriteIndex].flags & 1) && (renderedSprites[spriteIndex].flags & 4)) {
-            func_8002BD0C(renderedSprites[spriteIndex].globalSpriteIndex, arg1, arg2, arg3);
+            setSpriteShrinkFactor(renderedSprites[spriteIndex].globalSpriteIndex, arg1, arg2, arg3);
             set = 1;
         }
         
@@ -458,7 +459,7 @@ bool func_8002EF7C(u16 index, f32 arg1, f32 arg2, f32 arg3) {
 
     if (index < MAX_RENDERED_SPRITES) {
         if ((renderedSprites[index].flags & 1) && (renderedSprites[index].flags & 4)) {
-            func_8002BE98(renderedSprites[index].globalSpriteIndex, arg1, arg2, arg3);
+            adjustSpriteShrinkFactor(renderedSprites[index].globalSpriteIndex, arg1, arg2, arg3);
             result = 1;
         }
     }
@@ -481,7 +482,8 @@ bool func_8002F014(u16 index, u8 arg1, u8 arg2, u8 arg3, u8 arg4) {
             
             if (characterSprites[renderedSprites[index].characterIndex].shadowSpriteIndex != 0xFF) {
 
-                func_8002C914(renderedSprites[index].spriteOffset, arg1, arg2, arg3, 0x60);
+                func_8002C914(renderedSprites[index].shadowSpriteIndex, arg1, arg2, arg3, 0x60);
+                
             }
 
             result = 1;
@@ -505,7 +507,7 @@ bool func_8002F114(u16 index, u8 shadowSpriteIndex) {
 
             if (characterSprites[renderedSprites[index].characterIndex].shadowSpriteIndex == 0xFF) {
 
-                func_8002BAD8(renderedSprites[index].spriteOffset);
+                func_8002BAD8(renderedSprites[index].shadowSpriteIndex);
 
             }
 
@@ -530,7 +532,7 @@ bool func_8002F1E0(u16 index, u8 r, u8 g, u8 b, u8 a, s16 arg5) {
             func_8002C1C0(renderedSprites[index].globalSpriteIndex, r, g, b, a, arg5);
 
             if (characterSprites[renderedSprites[index].characterIndex].shadowSpriteIndex != 0xFF) {
-                func_8002C1C0(renderedSprites[index].spriteOffset, r, g, b, 0x60, arg5);
+                func_8002C1C0(renderedSprites[index].shadowSpriteIndex, r, g, b, 0x60, arg5);
             }
             
             result = 1;
@@ -706,7 +708,7 @@ void func_8002F7C8(u8 r, u8 g, u8 b, u8 a) {
             if (i < MAX_RENDERED_SPRITES && renderedSprites[i].flags & 4) {
                 func_8002C914(renderedSprites[i].globalSpriteIndex, r, g, b, a);
                 if (characterSprites[renderedSprites[i].characterIndex].shadowSpriteIndex != 0xFF) {
-                    func_8002C914(renderedSprites[i].spriteOffset, r, g, b, 0x60);
+                    func_8002C914(renderedSprites[i].shadowSpriteIndex, r, g, b, 0x60);
                 }
             }
         }
@@ -724,7 +726,7 @@ void func_8002F8F0(u8 r, u8 g, u8 b, u8 a, s16 arg4) {
             if (i < MAX_RENDERED_SPRITES && renderedSprites[i].flags & 4) {
                 func_8002C1C0(renderedSprites[i].globalSpriteIndex, r, g, b, a, arg4);
                 if (characterSprites[renderedSprites[i].characterIndex].shadowSpriteIndex != 0xFF) {
-                    func_8002C1C0(renderedSprites[i].spriteOffset, r, g, b, 0x60, arg4);
+                    func_8002C1C0(renderedSprites[i].shadowSpriteIndex, r, g, b, 0x60, arg4);
                 }
             }
         }
@@ -742,7 +744,7 @@ bool func_8002FA2C(u16 index) {
             renderedSprites[index].flags &= ~( 0x8 | 0x2000);
             func_8002B6B8(renderedSprites[index].globalSpriteIndex);
             if (characterSprites[renderedSprites[index].characterIndex].shadowSpriteIndex != 0xFF) {
-                func_8002B6B8(renderedSprites[index].spriteOffset);
+                func_8002B6B8(renderedSprites[index].shadowSpriteIndex);
             }
             result = 1;
         }
@@ -860,9 +862,9 @@ bool func_8002FD24(u16 index) {
     return result;
 }
 
-//INCLUDE_ASM(const s32, "system/renderedSprites", func_8002FD80);
+//INCLUDE_ASM(const s32, "system/renderedSprites", setSpriteStartingCoordinates);
 
-bool func_8002FD80(u16 spriteIndex, f32 x, f32 y, f32 z) {
+bool setSpriteStartingCoordinates(u16 spriteIndex, f32 x, f32 y, f32 z) {
 
     bool result = 0;
     

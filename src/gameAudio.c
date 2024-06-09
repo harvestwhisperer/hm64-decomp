@@ -11,6 +11,7 @@ extern SongInfo gSongs[4];
 // rodata: 0xF16F0 
 extern WaveTableInfo waveTableAddresses[1];
 extern u8 *songRomAddresses[0x40][2];
+// TODO: convert to array of Address structs
 extern u8 *sfxRomAddresses[0x80][2];
 extern s32 volumesTable[];
 // rodata: 0xF1CFC

@@ -5,7 +5,6 @@
 
 #include "system/mapContext.h"
 
-#define MAIN_MAP_INDEX 0
 #define MAX_MAPS 1
 
 typedef struct {
@@ -99,7 +98,7 @@ typedef struct {
 typedef struct {
     Vec3f coordinates; // 0xA18, coordinates
     u16 spriteIndex; // 0xA24
-    u16 unk_E; // 0xA26
+    u16 unk_E; // 0xA26 // likely offset into shared spritesheet
     u8 unk_10; // 0xA28
     u8 unk_11; // 0xA29
     volatile u8 flags; // 0xA2A
@@ -113,7 +112,7 @@ typedef struct {
     u16 spriteIndex;
     u16 unk_E;
     u8 flags;
-} UnknownMapStruct5;
+} WeatherSprite;
 
 // D_80141C98
 // map spawnable sprites
@@ -134,8 +133,8 @@ typedef struct {
 // D_80142868
 // map additions
 typedef struct {
-    u16 arr1[16]; // 0x80142868
-    u16 arr2[16]; // 0x80142888
+    u16 arr1[0x10]; // 0x80142868
+    u16 arr2[0x10]; // 0x80142888
     u16 unk_40; // 0x801428A8
     u16 unk_42; // 0x801428AA
     u8 unk_44; // 0x801428AC
@@ -159,14 +158,14 @@ typedef struct {
 
 // D_801580A4
 typedef struct {
-    Vec3f unk_0; // 0xA4
-    Vec3f unk_C; // 0xB0
-    Vec3f angles; // 0xBC
+    Vec3f translation; // 0xA4
+    Vec3f scale; // 0xB0
+    Vec3f rotation; // 0xBC
     Vec4f rgba; // 0xC8
     Vec4f groundRgba; // 0xD8
     Vec4f defaultRgba; // 0xE8
     Vec4f unk_60; // 0xF8
-} UnknownMapStruct8;
+} MapFloats;
 
 // 0x1A608
 // D_80158248
@@ -179,7 +178,7 @@ typedef struct {
     u16 height; // 0x56
     u8 unk_10; // 0x58 // set from *mainMap.unk_c
     u8 unk_11; // counter // 0x59
-    u16 flags; // 0x5A
+    u16 flags; // 0x5A , 0x8 = RGBA
 } UnknownMapStruct9;
 
 // 0x8013DC40
@@ -198,12 +197,12 @@ typedef struct  {
     MapVtx vtxs[1024]; // 0x30 // map model vertices
     u16 unkArr[0x50]; // 0x3030, corresponds to D_80204B48
     u16 unk_30D0;
-    u16 unk_30D2[0x63C];
+    u16 unk_30D2[0x63C]; // more vertices
     UnknownMapStruct2 mapStruct2; // 0x3D4C
     UnknownMapStruct3 mapStruct3[0x10]; // 0x3D98 // related to tile bitmaps/compressed vecs
-    MapObject mapObjects[12]; // 0x3DD8
+    MapObject mapObjects[0xC]; // 0x3DD8
     u32 padding4[0x14];
-    UnknownMapStruct5 mapStruct5[0x10];
+    WeatherSprite weatherSprites[0x10];
     GroundObjects groundObjects; // 0x4058;
     // 0x44A8 / 0x801420E8: array
     UnknownMapStruct7 mapStruct7[0x20]; // 0x4C28 
@@ -212,7 +211,7 @@ typedef struct  {
     // might be bigger
     Gfx displayLists[0x1000]; // 0x5E28
     u32 padding8[0x318F];
-    UnknownMapStruct8 mapStruct8; // 0x1A464
+    MapFloats mapFloats; // 0x1A464
     u32 padding9[0x50]; // 0x1A4C8
     // 0x80157A68, 0x19e28 = related to byteswapped Vec3f scaling
     UnknownMapStruct9 mapStruct9; // 0x1A608
@@ -223,12 +222,13 @@ typedef struct  {
 extern void func_800337D0(void);    
 extern bool func_80033A90(u16 mapIndex, LevelMapContext* arg1, void* arg2, void* arg3, void* arg4, void* arg5, void* arg6, void* arg7, void* arg8, void* arg9, void *argA);
 extern bool func_80034090(u16 mapIndex);  
-extern bool func_8003423C(u16, f32, f32, f32);
+extern bool setMapTranslation(u16, f32, f32, f32);
 extern bool func_80034298(u16, f32, f32, f32);   
-extern bool func_800342F4(u16, f32, f32, f32);     
-extern bool func_80034350(u16 arg0, u8 arg1, u8 arg2, u8 arg3, u8 arg4);
+extern bool setMapScale(u16 mapIndex, f32 arg1, f32 arg2, f32 arg3);
+extern bool setMapRotation(u16, f32, f32, f32);     
+extern bool setMapRGBA(u16 arg0, u8 arg1, u8 arg2, u8 arg3, u8 arg4);
 extern bool func_800343FC(u16 mapIndex, u8 arg1, u8 arg2, u8 arg3, u8 arg4, f32 arg5, f32 arg6, f32 arg7, u8 arg8);
-extern bool func_800345E8(u16 mapIndex, f32 arg1, f32 arg2, f32 arg3);
+extern bool adjustMapRotation(u16 mapIndex, f32 arg1, f32 arg2, f32 arg3);
 extern bool func_80034738(u16 mapIndex, u8 r, u8 g, u8 b, u8 a, s16 arg5);
 extern bool func_80034C40(u16 mapIndex, u8 index, u16 spriteIndex, u16 arg3, f32 arg4, f32 arg5, f32 arg6, u8 arg7, u8 arg8, u8 arg9, u8 argA);
 extern bool func_80034D64(u16 arg0, u8 arg1, u16 arg2, u16 arg3);

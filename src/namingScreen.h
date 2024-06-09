@@ -22,8 +22,8 @@ typedef struct {
     u16 flags;
 } NamingScreenContext;
 
-extern u32 _namingScreenTextureSegmentRomStart;
-extern u32 _namingScreenTextureSegmentRomEnd;
+extern u32 _namingScreenTexture1SegmentRomStart;
+extern u32 _namingScreenTexture1SegmentRomEnd;
 
 extern u8 gNamingScreenIndex;
 extern NamingScreenContext namingScreenContext;

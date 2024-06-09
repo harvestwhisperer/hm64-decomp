@@ -5,6 +5,7 @@
 #include "system/audio.h"
 #include "system/controller.h"
 #include "system/cutscene.h"
+#include "system/map.h"
 #include "system/mathUtils.h"
 #include "system/message.h"
 #include "system/sprite.h"
@@ -15,6 +16,7 @@
 #include "gameAudio.h"
 #include "gameStatus.h"
 #include "initialize.h"
+#include "itemHandlers.h"
 #include "level.h"
 #include "load.h"
 #include "loadGameScreen.h"
@@ -23,6 +25,7 @@
 #include "overlayScreens.h"
 #include "player.h"
 #include "setCutscenes.h"
+#include "spriteIndices.h"
 #include "weather.h"    
       
 // bss
@@ -65,6 +68,7 @@ void mainGameLoopCallback(void) {
     func_8004D380(CONTROLLER_1, BUTTON_C_RIGHT);
     func_8004D380(CONTROLLER_1, BUTTON_C_DOWN);
     func_8004D380(CONTROLLER_1, BUTTON_Z);
+    
 }
 
 //INCLUDE_ASM(const s32, "initialize2", func_80055F08);
@@ -114,7 +118,9 @@ void func_80056030(u8 arg0) {
     u8 mapIndex;
 
     D_801891D4 = 0;
+
     gCutsceneIndex = 0;
+    
     // FIXME: 
     gCutsceneFlagsHack[1] = 0;    
     
@@ -179,13 +185,15 @@ void func_80056030(u8 arg0) {
     }
 
    if (checkDailyEventBit(0x54)) {
+
         if (checkDailyEventBit(0x53)) {
             setPlayerAction(6, 8);
-            gPlayer.heldItem = 0x50;
+            gPlayer.heldItem = RICE_CAKE;
         } else {
             setPlayerAction(0, 0);
             gPlayer.heldItem = 0;
         }
+
         // FIXME:
         if (!(gCutsceneFlagsHack[1] & 1) && func_8009B5E0()) {
             setAudio(0x3F);
@@ -197,7 +205,7 @@ void func_80056030(u8 arg0) {
     
     setupPlayerSprite(gEntranceIndex, arg0);
     
-    func_80065AA0();
+    handleEatingAndDrinking();
     func_800D5290();
 
     // FIXME: this should be just gCutsceneFlags, but need array/struct loading here, which breaks the match when used in other functions that reference gCutsceneFlags
@@ -439,7 +447,7 @@ void func_800563D0(u8 arg0) {
 void func_80059300(void) {
     func_8002F730();
     func_80046CF4();
-    func_8002FCB4(0, 1);
+    func_8002FCB4(PLAYER, 1);
 }
 
 //INCLUDE_ASM(const s32, "initialize2", func_80059334);
@@ -447,7 +455,7 @@ void func_80059300(void) {
 void func_80059334(void) {
     func_8002F6F0();
     func_80046C98();
-    func_8002FCB4(0, 0);
+    func_8002FCB4(PLAYER, 0);
 }
  
 //INCLUDE_ASM(const s32, "initialize2", func_80059368);
@@ -457,8 +465,8 @@ void func_80059368(void) {
 
     func_8002FB7C();
     func_80046CF4();
-    func_8002FCB4(0, 1);
-    func_80065AA0();
+    func_8002FCB4(PLAYER, 1);
+    handleEatingAndDrinking();
 
     // load current map
     func_8003BC50(0, gMapWithSeasonIndex);
@@ -476,11 +484,12 @@ void func_80059368(void) {
 
 //INCLUDE_ASM(const s32, "initialize2", func_800593EC);
 
+// inline used by func_8005CF94
 void func_800593EC(void) {
     func_8002FB3C();
     func_80046C98();
-    func_8002FCB4(0, 0);
-    func_8003C504(0);
+    func_8002FCB4(PLAYER, 0);
+    func_8003C504(MAIN_MAP_INDEX);
 }
 
 //INCLUDE_ASM(const s32, "initialize2", startNewDay);

@@ -18,6 +18,7 @@
 #include "mapObjects.h"
 #include "npc.h"
 #include "player.h"
+#include "spriteIndices.h"
 
 // data
 extern u16 itemFlags[];
@@ -44,7 +45,7 @@ extern u32 D_801FB5D0;
 extern u32 D_801FB6FC;
 extern u32 D_80237414;
 
-extern ToolUse D_80189828;
+extern ToolUse toolUse;
 
 // bss
 extern ToolStatus D_80204DF8[10];
@@ -85,9 +86,9 @@ u8 func_800D67E4(u8);
 //INCLUDE_ASM(const s32, "itemHandlers", func_800CF850);
 
 void func_800CF850(void) {
-    D_80189828.unk_0 = 0;
-    D_80189828.unk_2 = 0;
-    D_80189828.unk_E = 2;
+    toolUse.unk_0 = 0;
+    toolUse.unk_2 = 0;
+    toolUse.unk_E = 2;
 }
 
 // jtbl_801222B0
@@ -112,34 +113,53 @@ u8 getToolLevel(u8 tool) {
 
 }
 
-INCLUDE_ASM(const s32, "itemHandlers", func_800CF8F8);
+//INCLUDE_ASM(const s32, "itemHandlers", func_800CF8F8);
+
+void func_800CF8F8(u8 baseSpriteIndex, u8 arg1, f32 arg2, f32 arg3, f32 arg4) {
+
+    func_8002E284(baseSpriteIndex + 0x27, 0x60, 1);
+    func_8002FF38(baseSpriteIndex + 0x27, 0);
+    func_8002ECD4(baseSpriteIndex + 0x27, 0xFFFF, 0xFF);
+    func_8003019C(baseSpriteIndex + 0x27, 0);
+    func_80030054(baseSpriteIndex + 0x27, 0);
+    setSpriteStartingCoordinates(baseSpriteIndex + 0x27, arg2, arg3, arg4);
+
+    func_8002F014(baseSpriteIndex + 0x27, mainMap[MAIN_MAP_INDEX].mapFloats.groundRgba.r, mainMap[MAIN_MAP_INDEX].mapFloats.groundRgba.g, mainMap[MAIN_MAP_INDEX].mapFloats.groundRgba.b, mainMap[MAIN_MAP_INDEX].mapFloats.groundRgba.a);
+    
+    func_8002F2FC(baseSpriteIndex + 0x27, arg1);
+    
+}
 
 //INCLUDE_ASM(const s32, "itemHandlers", func_800CFB38);
 
-void func_800CFB38(u8 arg0, u8 arg1, f32 arg2, f32 arg3, f32 arg4) {
+void func_800CFB38(u8 spriteIndexOffset, u8 animationIndex, f32 x, f32 y, f32 z) {
 
-    func_8002E284(arg0 + 0x27, 0x5D, 1);
-    func_8002FF38(arg0 + 0x27, 0);
-    func_8002ECD4(arg0 + 0x27, 0xFFFF, 0xFF);
-    func_8003019C(arg0 + 0x27, 0);
-    func_80030054(arg0 + 0x27, 0);
-    func_8002FD80(arg0 + 0x27, arg2, arg3, arg4);
+    // flags
+    func_8002E284(spriteIndexOffset + 0x27, 0x5D, 1);
+    func_8002FF38(spriteIndexOffset + 0x27, 0);
+    func_8002ECD4(spriteIndexOffset + 0x27, 0xFFFF, 0xFF);
+    func_8003019C(spriteIndexOffset + 0x27, 0);
+    func_80030054(spriteIndexOffset + 0x27, 0);
 
-    func_8002F014(arg0 + 0x27, mainMap[0].mapStruct8.groundRgba.r, mainMap[0].mapStruct8.groundRgba.g, mainMap[0].mapStruct8.groundRgba.b, mainMap[0].mapStruct8.groundRgba.a);
-    func_8002F2FC(arg0 + 0x27, arg1);
+    setSpriteStartingCoordinates(spriteIndexOffset + 0x27, x, y, z);
+
+    // rgba
+    func_8002F014(spriteIndexOffset + 0x27, mainMap[0].mapFloats.groundRgba.r, mainMap[0].mapFloats.groundRgba.g, mainMap[0].mapFloats.groundRgba.b, mainMap[0].mapFloats.groundRgba.a);
+    // flags
+    func_8002F2FC(spriteIndexOffset + 0x27, animationIndex);
     
 }
 
 //INCLUDE_ASM(const s32, "itemHandlers", func_800CFD78);
 
-void func_800CFD78(u8 arg0, u8 arg1) {
-    func_8002F2FC(arg0 + 0x27, arg1);
+void func_800CFD78(u8 spriteIndexOffset, u8 arg1) {
+    func_8002F2FC(spriteIndexOffset + 0x27, arg1);
 }
 
 //INCLUDE_ASM(const s32, "itemHandlers", func_800CFDA0);
 
-void func_800CFDA0(u8 arg0) {
-    func_8002FA2C(arg0 + 0x27);
+void func_800CFDA0(u8 spriteIndexOffset) {
+    func_8002FA2C(spriteIndexOffset + 0x27);
 }
 
 INCLUDE_ASM(const s32, "itemHandlers", func_800CFDC4);
@@ -252,8 +272,8 @@ void handleToolUse(void) {
 
 void func_800D0318(void) {
 
-    if (D_80189828.unk_E) {
-        switch (D_80189828.unk_E) {        
+    if (toolUse.unk_E) {
+        switch (toolUse.unk_E) {        
             case 2:
                 handleToolUse();
             case 3:
@@ -268,7 +288,7 @@ void func_800D0318(void) {
 // alternate for studying
 // void func_800D0318(void) {
 
-//     int temp = D_80189828.unk_E; 
+//     int temp = toolUse.unk_E; 
 
 //     if (temp) {
 //         if (temp != 3) {
@@ -296,7 +316,7 @@ INCLUDE_ASM(const s32, "itemHandlers", func_800D304C);
 // milker
 void func_800D3694(void) {
     func_8009A53C();
-    D_80189828.unk_E = 0;
+    toolUse.unk_E = 0;
 }
 
 //INCLUDE_ASM(const s32, "itemHandlers", func_800D36BC);
@@ -304,7 +324,7 @@ void func_800D3694(void) {
 // cow bell
 void func_800D36BC(void) {
     func_8009B25C();
-    D_80189828.unk_E = 0;
+    toolUse.unk_E = 0;
 }
 
 //INCLUDE_ASM(const s32, "itemHandlers", func_800D36E4);
@@ -313,7 +333,7 @@ void func_800D36BC(void) {
 void func_800D36E4(void) {
     func_8009A17C();
     func_8009A2D0();
-    D_80189828.unk_E = 0;
+    toolUse.unk_E = 0;
 }
 
 //INCLUDE_ASM(const s32, "itemHandlers", func_800D3714);
@@ -321,7 +341,7 @@ void func_800D36E4(void) {
 // clippers
 void func_800D3714(void) {
     func_8009AAC8();
-    D_80189828.unk_E = 0;
+    toolUse.unk_E = 0;
 }
 
 //INCLUDE_ASM(const s32, "itemHandlers", func_800D373C);
@@ -338,10 +358,10 @@ void func_800D373C(void) {
     temp1 = (renderedSprites[PLAYER].direction + func_8003C1A4(MAIN_MAP_INDEX)) % 8;
     
     if (temp1 < 5) {
-        temp2 = D_80117180[D_80189828.unk_2];
+        temp2 = D_80117180[toolUse.unk_2];
     }
     else {
-        temp2 = D_8011718C[D_80189828.unk_2];
+        temp2 = D_8011718C[toolUse.unk_2];
     }
     
     func_80065F94(&vec, 0.0f, temp2);
@@ -356,14 +376,14 @@ void func_800D373C(void) {
         func_800DAC70(gBaseMapIndex, temp3, (u8)vec.x - D_801FD624, (u8)vec.z - D_801C3F35);
     }
     
-    if (!D_80189828.unk_2) {
+    if (!toolUse.unk_2) {
         setAudio(0x1D);
     }
     
-    D_80189828.unk_2 += 1;
+    toolUse.unk_2 += 1;
     
-    if (D_80189828.unk_2 == 9) {
-        D_80189828.unk_E = 0;
+    if (toolUse.unk_2 == 9) {
+        toolUse.unk_E = 0;
     }
 }
 
@@ -380,10 +400,10 @@ void func_800D3958(void) {
     temp1 = (renderedSprites[PLAYER].direction + func_8003C1A4(MAIN_MAP_INDEX)) % 8;
     
     if (temp1 < 5) {
-        temp2 = D_80117180[D_80189828.unk_2];
+        temp2 = D_80117180[toolUse.unk_2];
     }
     else {
-        temp2 = D_8011718C[D_80189828.unk_2];
+        temp2 = D_8011718C[toolUse.unk_2];
     }
 
     func_80065F94(&vec, 0.0f, temp2);
@@ -398,14 +418,14 @@ void func_800D3958(void) {
         func_800DAC70(gBaseMapIndex, temp3, (u8)vec.x - D_801FD624, (u8)vec.z - D_801C3F35);
     }
     
-    if (!D_80189828.unk_2) {
+    if (!toolUse.unk_2) {
         setAudio(0x1D);
     }
     
-    D_80189828.unk_2 += 1;
+    toolUse.unk_2 += 1;
     
-    if (D_80189828.unk_2 == 9) {
-        D_80189828.unk_E = 0;
+    if (toolUse.unk_2 == 9) {
+        toolUse.unk_E = 0;
     }
 }
 
@@ -423,10 +443,10 @@ void func_800D3B74(void) {
     temp1 = (renderedSprites[PLAYER].direction + func_8003C1A4(MAIN_MAP_INDEX)) % 8;
     
     if (temp1 < 5) {
-        temp2 = D_80117180[D_80189828.unk_2];
+        temp2 = D_80117180[toolUse.unk_2];
     }
     else {
-        temp2 = D_8011718C[D_80189828.unk_2];
+        temp2 = D_8011718C[toolUse.unk_2];
     }
     
     func_80065F94(&vec, 0.0f, temp2);
@@ -441,14 +461,14 @@ void func_800D3B74(void) {
         func_800DAC70(gBaseMapIndex, temp3, (u8)vec.x - D_801FD624, (u8)vec.z - D_801C3F35);
     }
     
-    if (!D_80189828.unk_2) {
+    if (!toolUse.unk_2) {
         setAudio(0x1D);
     }
     
-    D_80189828.unk_2 += 1;
+    toolUse.unk_2 += 1;
     
-    if (D_80189828.unk_2 == 9) {
-        D_80189828.unk_E = 0;
+    if (toolUse.unk_2 == 9) {
+        toolUse.unk_E = 0;
     }
 }
 
@@ -466,10 +486,10 @@ void func_800D3D90(void) {
     temp1 = (renderedSprites[PLAYER].direction + func_8003C1A4(MAIN_MAP_INDEX)) % 8;
     
     if (temp1 < 5) {
-        temp2 = D_80117180[D_80189828.unk_2];
+        temp2 = D_80117180[toolUse.unk_2];
     }
     else {
-        temp2 = D_8011718C[D_80189828.unk_2];
+        temp2 = D_8011718C[toolUse.unk_2];
     }
     
     func_80065F94(&vec, 0.0f, temp2);
@@ -484,14 +504,14 @@ void func_800D3D90(void) {
         func_800DAC70(gBaseMapIndex, temp3, (u8)vec.x - D_801FD624, (u8)vec.z - D_801C3F35);
     }
     
-    if (!D_80189828.unk_2) {
+    if (!toolUse.unk_2) {
         setAudio(0x1D);
     }
     
-    D_80189828.unk_2 += 1;
+    toolUse.unk_2 += 1;
     
-    if (D_80189828.unk_2 == 9) {
-        D_80189828.unk_E = 0;
+    if (toolUse.unk_2 == 9) {
+        toolUse.unk_E = 0;
     }
 }
 
@@ -509,10 +529,10 @@ void func_800D3FAC(void) {
     temp1 = (renderedSprites[PLAYER].direction + func_8003C1A4(MAIN_MAP_INDEX)) % 8;
     
     if (temp1 < 5) {
-        temp2 = D_80117180[D_80189828.unk_2];
+        temp2 = D_80117180[toolUse.unk_2];
     }
     else {
-        temp2 = D_8011718C[D_80189828.unk_2];
+        temp2 = D_8011718C[toolUse.unk_2];
     }
     
     func_80065F94(&vec, 0.0f, temp2);
@@ -527,14 +547,14 @@ void func_800D3FAC(void) {
         func_800DAC70(gBaseMapIndex, temp3, (u8)vec.x - D_801FD624, (u8)vec.z - D_801C3F35);
     }
     
-    if (!D_80189828.unk_2) {
+    if (!toolUse.unk_2) {
         setAudio(0x1D);
     }
     
-    D_80189828.unk_2 += 1;
+    toolUse.unk_2 += 1;
     
-    if (D_80189828.unk_2 == 9) {
-        D_80189828.unk_E = 0;
+    if (toolUse.unk_2 == 9) {
+        toolUse.unk_E = 0;
     }
 }
 
@@ -552,10 +572,10 @@ void func_800D41C8(void) {
     temp1 = (renderedSprites[PLAYER].direction + func_8003C1A4(MAIN_MAP_INDEX)) % 8;
     
     if (temp1 < 5) {
-        temp2 = D_80117180[D_80189828.unk_2];
+        temp2 = D_80117180[toolUse.unk_2];
     }
     else {
-        temp2 = D_8011718C[D_80189828.unk_2];
+        temp2 = D_8011718C[toolUse.unk_2];
     }
 
     func_80065F94(&vec, 0.0f, temp2);
@@ -570,14 +590,14 @@ void func_800D41C8(void) {
         func_800DAC70(gBaseMapIndex, temp3, (u8)vec.x - D_801FD624, (u8)vec.z - D_801C3F35);
     }
     
-    if (!D_80189828.unk_2) {
+    if (!toolUse.unk_2) {
         setAudio(0x1D);
     }
     
-    D_80189828.unk_2 += 1;
+    toolUse.unk_2 += 1;
     
-    if (D_80189828.unk_2 == 9) {
-        D_80189828.unk_E = 0;
+    if (toolUse.unk_2 == 9) {
+        toolUse.unk_E = 0;
     }
 }
 
@@ -595,10 +615,10 @@ void func_800D43E4(void) {
     temp1 = (renderedSprites[PLAYER].direction + func_8003C1A4(MAIN_MAP_INDEX)) % 8;
     
     if (temp1 < 5) {
-        temp2 = D_80117180[D_80189828.unk_2];
+        temp2 = D_80117180[toolUse.unk_2];
     }
     else {
-        temp2 = D_8011718C[D_80189828.unk_2];
+        temp2 = D_8011718C[toolUse.unk_2];
     }
 
     func_80065F94(&vec, 0.0f, temp2);
@@ -613,14 +633,14 @@ void func_800D43E4(void) {
         func_800DAC70(gBaseMapIndex, tempFlags, (u8)vec.x - D_801FD624, (u8)vec.z - D_801C3F35);
     }
 
-    if (!D_80189828.unk_2) {
+    if (!toolUse.unk_2) {
         setAudio(0x1D);
     }
 
-    D_80189828.unk_2 += 1;
+    toolUse.unk_2 += 1;
     
-    if (D_80189828.unk_2 == 9) {
-        D_80189828.unk_E = 0;
+    if (toolUse.unk_2 == 9) {
+        toolUse.unk_E = 0;
     }
 }
 
@@ -638,10 +658,10 @@ void func_800D45F4(void) {
     temp1 = (renderedSprites[PLAYER].direction + func_8003C1A4(MAIN_MAP_INDEX)) % 8;
     
     if (temp1 < 5) {
-        temp2 = D_80117180[D_80189828.unk_2];
+        temp2 = D_80117180[toolUse.unk_2];
     }
     else {
-        temp2 = D_8011718C[D_80189828.unk_2];
+        temp2 = D_8011718C[toolUse.unk_2];
     }
     
     func_80065F94(&vec, 0.0f, temp2);
@@ -658,14 +678,14 @@ void func_800D45F4(void) {
         func_800DAC70(gBaseMapIndex, temp3, (u8)vec.x - D_801FD624, (u8)vec.z - D_801C3F35);
     }
     
-    if (!D_80189828.unk_2) {
+    if (!toolUse.unk_2) {
         setAudio(0x1D);
     }
     
-    D_80189828.unk_2 += 1;
+    toolUse.unk_2 += 1;
     
-    if (D_80189828.unk_2 == 9) {
-        D_80189828.unk_E = 0;
+    if (toolUse.unk_2 == 9) {
+        toolUse.unk_E = 0;
     }
 }
 
@@ -682,10 +702,10 @@ void func_800D4814(void) {
     temp1 = (renderedSprites[PLAYER].direction + func_8003C1A4(MAIN_MAP_INDEX)) % 8;
     
     if (temp1 < 5) {
-        temp2 = D_80117180[D_80189828.unk_2];
+        temp2 = D_80117180[toolUse.unk_2];
     }
     else {
-        temp2 = D_8011718C[D_80189828.unk_2];
+        temp2 = D_8011718C[toolUse.unk_2];
     }
     
     func_80065F94(&vec, 0.0f, temp2);
@@ -702,14 +722,14 @@ void func_800D4814(void) {
         func_800DAC70(gBaseMapIndex, temp3, (u8)vec.x - D_801FD624, (u8)vec.z - D_801C3F35);
     }
     
-    if (!D_80189828.unk_2) {
+    if (!toolUse.unk_2) {
         setAudio(0x1D);
     }
     
-    D_80189828.unk_2++;
+    toolUse.unk_2++;
     
-    if (D_80189828.unk_2 == 9) {
-        D_80189828.unk_E = 0;
+    if (toolUse.unk_2 == 9) {
+        toolUse.unk_E = 0;
     }
 }
 
@@ -726,10 +746,10 @@ void func_800D4A34(void) {
     temp1 = (renderedSprites[PLAYER].direction + func_8003C1A4(MAIN_MAP_INDEX)) % 8;
     
     if (temp1 < 5) {
-        temp2 = D_80117180[D_80189828.unk_2];
+        temp2 = D_80117180[toolUse.unk_2];
     }
     else {
-        temp2 = D_8011718C[D_80189828.unk_2];
+        temp2 = D_8011718C[toolUse.unk_2];
     }
     
     func_80065F94(&vec, 0.0f, temp2);
@@ -738,14 +758,14 @@ void func_800D4A34(void) {
         func_800DAC70(gBaseMapIndex, 0xB2, (u8)vec.x - D_801FD624, (u8)vec.z - D_801C3F35);
     }
     
-    if (!D_80189828.unk_2) {
+    if (!toolUse.unk_2) {
         setAudio(0x1D);
     }
     
-    D_80189828.unk_2 += 1;
+    toolUse.unk_2 += 1;
     
-    if (D_80189828.unk_2 == 9) {
-        D_80189828.unk_E = 0;
+    if (toolUse.unk_2 == 9) {
+        toolUse.unk_E = 0;
     }
 }
 
@@ -763,7 +783,7 @@ void func_800D4C28(void) {
         gChickens[chicken - 0x13].flags |= 0x10;
     }
     
-    D_80189828.unk_E = 0;  
+    toolUse.unk_E = 0;  
 }
 
 // ball
@@ -779,7 +799,7 @@ void func_800D4CB8(void) {}
 
 // fishing pole
 void func_800D4CC0(void) {
-    D_80189828.unk_E = 0;
+    toolUse.unk_E = 0;
 }
 
 //INCLUDE_ASM(const s32, "itemHandlers", func_800D4CD0);
@@ -793,7 +813,7 @@ void func_800D4CD0(void) {
         toggleDailyEventBit(0x14);
     }
 
-    D_80189828.unk_E = 0;
+    toolUse.unk_E = 0;
 }
 
 //INCLUDE_ASM(const s32, "itemHandlers", func_800D4D1C);
@@ -807,7 +827,7 @@ void func_800D4D1C(void) {
         toggleDailyEventBit(0x14);
     }
 
-    D_80189828.unk_E = 0;
+    toolUse.unk_E = 0;
 }
 
 //INCLUDE_ASM(const s32, "itemHandlers", func_800D4D68);
@@ -824,10 +844,10 @@ void func_800D4D68(void) {
     temp1 = (renderedSprites[PLAYER].direction + func_8003C1A4(MAIN_MAP_INDEX)) % 8;
     
     if (temp1 < 5) {
-        temp2 = D_80117180[D_80189828.unk_2];
+        temp2 = D_80117180[toolUse.unk_2];
     }
     else {
-        temp2 = D_8011718C[D_80189828.unk_2];
+        temp2 = D_8011718C[toolUse.unk_2];
     }
     
     func_80065F94(&vec, 0.0f, temp2);
@@ -838,14 +858,14 @@ void func_800D4D68(void) {
         }
     }
     
-    if (!D_80189828.unk_2) {
+    if (!toolUse.unk_2) {
         setAudio(0x1D);
     }
     
-    D_80189828.unk_2 += 1;
+    toolUse.unk_2 += 1;
     
-    if (D_80189828.unk_2 == 9) {
-        D_80189828.unk_E = 0;
+    if (toolUse.unk_2 == 9) {
+        toolUse.unk_E = 0;
     }
 }
 
@@ -933,7 +953,7 @@ void handleBlueFeatherUse(void) {
     }
     
 func_end:
-        D_80189828.unk_E = 0;
+        toolUse.unk_E = 0;
 }
 
 //INCLUDE_ASM(const s32, "itemHandlers", func_800D5130);
@@ -949,7 +969,7 @@ void func_800D5130(void) {
         func_8009A97C();
     }
 
-    D_80189828.unk_E = 0;
+    toolUse.unk_E = 0;
 }
 
 //INCLUDE_ASM(const s32, "itemHandlers", func_800D51B0);
@@ -1180,6 +1200,7 @@ void func_800D67FC(u8 index) {
     }
 
     showTextBox(1, 6, temp, 0, 2);
+
 }
 
 // alternate for study
@@ -1255,23 +1276,30 @@ void func_800D6868(u8 index) {
     }
 
     func_8009A398();
+
 }
 
 //INCLUDE_ASM(const s32, "itemHandlers", func_800D6B28);
 
+// put food in dog bowl
 void func_800D6B28(void) {
+
     func_80034DC8(MAIN_MAP_INDEX, 0, 0x13);
-    // put food in dog bowl
-    setDailyEventBit(0x43);
+
+    setDailyEventBit(FED_DOG);
+
 }
 
 //INCLUDE_ASM(const s32, "itemHandlers", func_800D6B58);
 
-static inline void setVec3(u8 index, float x, float y, float z) {
+static inline void setVec3f(u8 index, float x, float y, float z) {
+
     D_80204DF8[index].unk_0.x = x;
     D_80204DF8[index].unk_0.y = y;
     D_80204DF8[index].unk_0.z = z;
+    
     D_80204DF8[index].flags |= 2;
+
 }
 
 void func_800D6B58(u8 arg0, u8 index) {
@@ -1299,7 +1327,7 @@ void func_800D6B58(u8 arg0, u8 index) {
         temp2 = temp - 0x1B;
         
         if (temp2 < 2 || temp == 0x1D) {
-            setVec3(index, 288.0f, 80.0f, -404.0f);
+            setVec3f(index, 288.0f, 80.0f, -404.0f);
             func_8002F2FC(index + 0x27, 0xE9);
         } 
     }
@@ -1309,7 +1337,7 @@ void func_800D6B58(u8 arg0, u8 index) {
         temp = func_800309B4(0, 0.0f, 40.0f);
         
         if (temp == 0x10 || temp == 0x14) {
-            setVec3(index, 160.0f, 64.0f, -128.0f);
+            setVec3f(index, 160.0f, 64.0f, -128.0f);
             func_8002F2FC(index + 0x27, 0xE9);
         }
         
@@ -1328,7 +1356,7 @@ void func_800D6B58(u8 arg0, u8 index) {
         temp = func_800309B4(0, 0.0f, 32.0f);
         
         if (temp == 0x10) {
-            setVec3(index, -16.0f, 80.0f, -224.0f);
+            setVec3f(index, -16.0f, 80.0f, -224.0f);
             func_8002F2FC(index + 0x27, 0xE9);
         }
         

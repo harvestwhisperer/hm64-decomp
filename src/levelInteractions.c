@@ -17,6 +17,7 @@
 #include "npc.h"
 #include "player.h"
 #include "shop.h"
+#include "spriteIndices.h"
 #include "weather.h"
 
 // bss
@@ -672,7 +673,7 @@ u8 func_800AD8D0(u16 mapIndex, u8 arg1) {
                     showTextBox(1, 6, 0xA7, 0, 2);
                     acquireKeyItem(TREASURE_MAP);
                     result = 1;
-                    D_80189828.unk_F = 0;
+                    toolUse.unk_F = 0;
                 }
             }
 

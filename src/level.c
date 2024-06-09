@@ -15,7 +15,8 @@
 #include "mapObjects.h"   
 #include "npc.h"
 #include "setCutscenes.h"        
-#include "shop.h"                                                             
+#include "shop.h"            
+#include "spriteIndices.h"                                                 
 #include "weather.h"      
 
 // offsets into combined textures
@@ -151,8 +152,9 @@ extern u8 D_80114280[95];
 extern u8 D_801142E0[95][4];
 
 // song indices for level
-// indices are incorrect; should be [numMaps][4]
-extern u8 D_801144C0[4][8];
+// I feel this should be [0x60][2][4]
+// [mapIndex][day or night][season-1]
+extern u8 levelToMusicMappings[TOTAL_MAPS][8];
 
 // exit to map indices
 // FIXME: probably shouldn't be volatile, but need it for matching func_80074C50
@@ -191,7 +193,7 @@ void setEntrance(u16 index) {
 void func_8006E840(u16 entranceIndex) {
 
     if (gBaseMapIndex != 0xFF) {
-        func_8003C504(0);
+        func_8003C504(MAIN_MAP_INDEX);
     }
 
     previousMapIndex = gBaseMapIndex;
@@ -223,7 +225,7 @@ void func_8006E840(u16 entranceIndex) {
 
 void setLevelGraphicsData(u16 mapIndex) {
 
-    func_8003BD60(0);
+    func_8003BD60(MAIN_MAP_INDEX);
     
     func_8006EC58(mapIndex);
     func_800735FC(mapIndex);
@@ -250,7 +252,7 @@ void setLevelGraphicsData(u16 mapIndex) {
 
 void setLevelAudio(u16 mapIndex, u8 season, u8 hour) {
 
-    u32 offset;
+    u32 nightOffset;
     
     gCurrentSongIndex = 0xFF;
 
@@ -273,11 +275,11 @@ void setLevelAudio(u16 mapIndex, u8 season, u8 hour) {
 
         if (hour >= 6 || gBaseMapIndex == BEACH) {
             
-            offset = 0;
+            nightOffset = 0;
             
             if (17 < hour &&  hour < 24) {
 
-                offset = 4;
+                nightOffset = 4;
 
                 if (!(getLevelFlags(mapIndex) & 0x10)) {
                     gSongVolume = 128;
@@ -289,7 +291,10 @@ void setLevelAudio(u16 mapIndex, u8 season, u8 hour) {
                 gSongVolume = 128;
              }
             
-            gCurrentSongIndex = D_801144C0[mapIndex][offset+(season-1)];
+            // probably should be:
+            // if night --> nightOffset = 1
+            // gCurrentSongIndex = levelToMusicMappings[mapIndex][nightOffset][season-1];
+            gCurrentSongIndex = levelToMusicMappings[mapIndex][nightOffset+(season-1)];
         }   
         
     }
@@ -493,9 +498,9 @@ void func_8006F938(u16 levelIndex) {
         case FARM:
             
             func_8002B138(0x62, &_homeItemsTextureSegmentRomStart, &_homeItemsTextureSegmentRomEnd, &_homeItemsAssetsIndexSegmentRomStart, &_homeItemsAssetsIndexSegmentRomEnd, &_homeItemsSpritesheetIndexSegmentRomStart, &_homeItemsSpritesheetIndexSegmentRomEnd, (void*)0x802E4000, (void*)0x802E4D00, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
-            func_8002BD90(0x62, 1.0f, 1.0f, 1.0f);
+            setSpriteScale(0x62, 1.0f, 1.0f, 1.0f);
             func_8002C7EC(0x62, 3);
-            func_8002C85C(0x62, 0xFF, 0xFF, 0xFF, 0xFF);
+            setSpriteDefaultRGBA(0x62, 0xFF, 0xFF, 0xFF, 0xFF);
             func_8002C914(0x62, 0xFF, 0xFF, 0xFF, 0xFF);
             
             if (checkDailyEventBit(0x43)) {
@@ -505,11 +510,11 @@ void func_8006F938(u16 levelIndex) {
             }
             
             func_8002B138(0x63, &_farmPondTextureSegmentRomStart, &_farmPondTextureSegmentRomEnd, &_farmPondAssetsIndexSegmentRomStart, &_farmPondAssetsIndexSegmentRomEnd, &_farmPondSpritesheetIndexSegmentRomStart, &_farmPondSpritesheetIndexSegmentRomEnd, (void*)0x802E7C00, (void*)0x802E8900, (void*)0x802E9600, (void*)0x802E9700, (void*)0x802E9800, (void*)0x802E9900, 1,1);
-            func_8002BD90(0x63, 6.0f, 1.0f, 6.0f);
+            setSpriteScale(0x63, 6.0f, 1.0f, 6.0f);
             func_8002C6F8(0x63, 3);
             func_8002C768(0x63, 0x200);
             func_8002C7EC(0x63, 2);
-            func_8002C85C(0x63, 0xFF, 0xFF, 0xFF, 0x80);
+            setSpriteDefaultRGBA(0x63, 0xFF, 0xFF, 0xFF, 0x80);
             func_8002C914(0x63, 0xFF, 0xFF, 0xFF, 0xFF);
             
             func_80034C40(MAIN_MAP_INDEX, 1, 0x63, 0, 304.f, 64.0f, -384.0f, 0, 0xFE, 0, 0);
@@ -519,18 +524,18 @@ void func_8006F938(u16 levelIndex) {
         case HOUSE:
             
             func_8002B138(0x62, &_homeItemsTextureSegmentRomStart, &_homeItemsTextureSegmentRomEnd, &_homeItemsAssetsIndexSegmentRomStart, &_homeItemsAssetsIndexSegmentRomEnd, &_homeItemsSpritesheetIndexSegmentRomStart, &_homeItemsSpritesheetIndexSegmentRomEnd, (void*)0x802E4000, (void*)0x802E4D00, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
-            func_8002BD90(0x62, 2.0f, 2.0f, 1.0f);
+            setSpriteScale(0x62, 2.0f, 2.0f, 1.0f);
             func_8002C7EC(0x62, 3);
-            func_8002C85C(0x62, 0xFF, 0xFF, 0xFF, 0xFF);
+            setSpriteDefaultRGBA(0x62, 0xFF, 0xFF, 0xFF, 0xFF);
             func_8002C914(0x62, 0xFF, 0xFF, 0xFF, 0xFF);
             func_80034C40(MAIN_MAP_INDEX, 0, 0x62, 6, -160.0f, 32.0f, -112.0f, 0xFF, 0xFF, 0, 0);
             
             if (checkLifeEventBit(0x46)) {
                 
                 func_8002B138(0x63, &_homeItemsTextureSegmentRomStart, &_homeItemsTextureSegmentRomEnd, &_homeItemsAssetsIndexSegmentRomStart, &_homeItemsAssetsIndexSegmentRomEnd, &_homeItemsSpritesheetIndexSegmentRomStart, &_homeItemsSpritesheetIndexSegmentRomEnd, (void*)0x802E7C00, (void*)0x802E7E80, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
-                func_8002BD90(0x63, 1.0f, 1.0f, 1.0f);
+                setSpriteScale(0x63, 1.0f, 1.0f, 1.0f);
                 func_8002C7EC(0x63, 3);
-                func_8002C85C(0x63, 0xFF, 0xFF, 0xFF, 0xFF);
+                setSpriteDefaultRGBA(0x63, 0xFF, 0xFF, 0xFF, 0xFF);
                 func_8002C914(0x63, 0xFF, 0xFF, 0xFF, 0xFF);
                 func_80034C40(MAIN_MAP_INDEX, 1, 0x63, 0x10, 8.0f, 72.0f, -168.0f, 0xFF, 0xFF, 0, 0);
             }
@@ -538,9 +543,9 @@ void func_8006F938(u16 levelIndex) {
             if (checkLifeEventBit(0x47)) {
                 
                 func_8002B138(0x64, &_homeItemsTextureSegmentRomStart, &_homeItemsTextureSegmentRomEnd, &_homeItemsAssetsIndexSegmentRomStart, &_homeItemsAssetsIndexSegmentRomEnd, &_homeItemsSpritesheetIndexSegmentRomStart, &_homeItemsSpritesheetIndexSegmentRomEnd, (void*)0x802E8100, (void*)0x802E8380, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
-                func_8002BD90(0x64, 1.0f, 1.0f, 1.0f);
+                setSpriteScale(0x64, 1.0f, 1.0f, 1.0f);
                 func_8002C7EC(0x64, 3);
-                func_8002C85C(0x64, 0xFF, 0xFF, 0xFF, 0xFF);
+                setSpriteDefaultRGBA(0x64, 0xFF, 0xFF, 0xFF, 0xFF);
                 func_8002C914(0x64, 0xFF, 0xFF, 0xFF, 0xFF);
                 func_80034C40(MAIN_MAP_INDEX, 2, 0x64, 9, 104.0f, 0, 24.0f, 0xFF, 0xFF, 0, 0);
                 
@@ -550,9 +555,9 @@ void func_8006F938(u16 levelIndex) {
             if (checkLifeEventBit(0x58)) {
                 
                 func_8002B138(0x65, &_homeItemsTextureSegmentRomStart, &_homeItemsTextureSegmentRomEnd, &_homeItemsAssetsIndexSegmentRomStart, &_homeItemsAssetsIndexSegmentRomEnd, &_homeItemsSpritesheetIndexSegmentRomStart, &_homeItemsSpritesheetIndexSegmentRomEnd, (void*)0x802E8600, (void*)0x802E8880, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
-                func_8002BD90(0x65, 1.0f, 1.0f, 1.0f);
+                setSpriteScale(0x65, 1.0f, 1.0f, 1.0f);
                 func_8002C7EC(0x65, 3);
-                func_8002C85C(0x65, 0xFF, 0xFF, 0xFF, 0xFF);
+                setSpriteDefaultRGBA(0x65, 0xFF, 0xFF, 0xFF, 0xFF);
                 func_8002C914(0x65, 0xFF, 0xFF, 0xFF, 0xFF);
 
                 // cabinet
@@ -567,9 +572,9 @@ void func_8006F938(u16 levelIndex) {
             if (checkLifeEventBit(0x5A)) {
                 
                 func_8002B138(0x66, &_homeItemsTextureSegmentRomStart, &_homeItemsTextureSegmentRomEnd, &_homeItemsAssetsIndexSegmentRomStart, &_homeItemsAssetsIndexSegmentRomEnd, &_homeItemsSpritesheetIndexSegmentRomStart, &_homeItemsSpritesheetIndexSegmentRomEnd, (void*)0x802E8B00, (void*)0x802E8D80, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
-                func_8002BD90(0x66, 1.0f, 1.0f, 1.0f);
+                setSpriteScale(0x66, 1.0f, 1.0f, 1.0f);
                 func_8002C7EC(0x66, 3);
-                func_8002C85C(0x66, 0xFF, 0xFF, 0xFF, 0xFF);
+                setSpriteDefaultRGBA(0x66, 0xFF, 0xFF, 0xFF, 0xFF);
                 func_8002C914(0x66, 0xFF, 0xFF, 0xFF, 0xFF);
                 func_80034C40(MAIN_MAP_INDEX, 4, 0x66, 0x11, -176.0f, 24.0f, -160.0f, 0xFF, 0xFF, 0, 0);
                 
@@ -579,9 +584,9 @@ void func_8006F938(u16 levelIndex) {
             if (checkLifeEventBit(8)) {
                 
                 func_8002B138(0x67, &_homeItemsTextureSegmentRomStart, &_homeItemsTextureSegmentRomEnd, &_homeItemsAssetsIndexSegmentRomStart, &_homeItemsAssetsIndexSegmentRomEnd, &_homeItemsSpritesheetIndexSegmentRomStart, &_homeItemsSpritesheetIndexSegmentRomEnd, (void*)0x802E9000, (void*)0x802E9280, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
-                func_8002BD90(0x67, 1.0f, 1.0f, 1.0f);
+                setSpriteScale(0x67, 1.0f, 1.0f, 1.0f);
                 func_8002C7EC(0x67, 3);
-                func_8002C85C(0x67, 0xFF, 0xFF, 0xFF, 0xFF);
+                setSpriteDefaultRGBA(0x67, 0xFF, 0xFF, 0xFF, 0xFF);
                 func_8002C914(0x67, 0xFF, 0xFF, 0xFF, 0xFF);
                 func_80034C40(MAIN_MAP_INDEX, 5, 0x67, 4, -40.0f, 8.0f, 8.0f, 0xFF, 0xFF, 0, 0);
             
@@ -595,9 +600,9 @@ void func_8006F938(u16 levelIndex) {
             if (checkLifeEventBit(0x5C)) {
                 
                 func_8002B138(0x62, &_homeItemsTextureSegmentRomStart, &_homeItemsTextureSegmentRomEnd, &_homeItemsAssetsIndexSegmentRomStart, &_homeItemsAssetsIndexSegmentRomEnd, &_homeItemsSpritesheetIndexSegmentRomStart, &_homeItemsSpritesheetIndexSegmentRomEnd, (void*)0x802E7C00, (void*)0x802E7E80, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
-                func_8002BD90(0x62, 1.0f, 1.0f, 1.0f);
+                setSpriteScale(0x62, 1.0f, 1.0f, 1.0f);
                 func_8002C7EC(0x62, 3);
-                func_8002C85C(0x62, 0xFF, 0xFF, 0xFF, 0xFF);
+                setSpriteDefaultRGBA(0x62, 0xFF, 0xFF, 0xFF, 0xFF);
                 func_8002C914(0x62, 0xFF, 0xFF, 0xFF, 0xFF);
                 func_80034C40(MAIN_MAP_INDEX, 0, 0x62, 10, -48.f, 16.0f, -80.0f, 0xFF, 0xFF, 0, 0);
         		
@@ -608,38 +613,38 @@ void func_8006F938(u16 levelIndex) {
          case MOUNTAIN_1:
 
             func_8002B138(0x62, &_waterTilesTextureSegmentRomStart, &_waterTilesTextureSegmentRomEnd, &_waterTilesAssetsIndexSegmentRomStart, &_waterTilesAssetsIndexSegmentRomEnd, &_waterTilesSpritesheetIndexSegmentRomStart, &_waterTilesSpritesheetIndexSegmentRomEnd, (void*)0x802E4000, (void*)0x802E4D00, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
-            func_8002BD90(0x62, 3.8f, 1.0f, 6.0f);
+            setSpriteScale(0x62, 3.8f, 1.0f, 6.0f);
             func_8002C6F8(0x62, 3);
             func_8002C768(0x62, 0x200);
             func_8002C7EC(0x62, 2);
-            func_8002C85C(0x62, 0xFF, 0xFF, 0xFF, 0x80);
+            setSpriteDefaultRGBA(0x62, 0xFF, 0xFF, 0xFF, 0x80);
             func_8002C914(0x62, 0xFF, 0xFF, 0xFF, 0xFF);
             func_80034C40(MAIN_MAP_INDEX, 0, 0x62, 0, -288.0f, 0.0f, -140.0f, 0x5A, 0xFE, 0, 0);
              
             func_8002B138(0x63, &_waterTilesTextureSegmentRomStart, &_waterTilesTextureSegmentRomEnd, &_waterTilesAssetsIndexSegmentRomStart, &_waterTilesAssetsIndexSegmentRomEnd, &_waterTilesSpritesheetIndexSegmentRomStart, &_waterTilesSpritesheetIndexSegmentRomEnd, (void*)0x802E5A00, (void*)0x802E6700, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
-            func_8002BD90(0x63, 6.0f, 1.0f, 6.0f);
+            setSpriteScale(0x63, 6.0f, 1.0f, 6.0f);
             func_8002C6F8(0x63, 3);
             func_8002C768(0x63, 0x200);
             func_8002C7EC(0x63, 2);
-            func_8002C85C(0x63, 0xFF, 0xFF, 0xFF, 0x80);
+            setSpriteDefaultRGBA(0x63, 0xFF, 0xFF, 0xFF, 0x80);
             func_8002C914(0x63, 0xFF, 0xFF, 0xFF, 0xFF);
             func_80034C40(MAIN_MAP_INDEX, 1, 0x63, 0, -224.0f, 0.0f, 320.0f, 0, 0xFE, 0, 0);
              
             func_8002B138(0x64, &_waterTilesTextureSegmentRomStart, &_waterTilesTextureSegmentRomEnd, &_waterTilesAssetsIndexSegmentRomStart, &_waterTilesAssetsIndexSegmentRomEnd, &_waterTilesSpritesheetIndexSegmentRomStart, &_waterTilesSpritesheetIndexSegmentRomEnd, (void*)0x802E7C00, (void*)0x802E8900, (void*)0x802E9600, (void*)0x802E9700, (void*)0x802E9800, (void*)0x802E9900, 1, 1);
-            func_8002BD90(0x64, 6.0f, 1.0f, 6.0f);
+            setSpriteScale(0x64, 6.0f, 1.0f, 6.0f);
             func_8002C6F8(0x64, 3);
             func_8002C768(0x64, 0x200);
             func_8002C7EC(0x64, 2);
-            func_8002C85C(0x64, 0xFF, 0xFF, 0xFF, 0x80);
+            setSpriteDefaultRGBA(0x64, 0xFF, 0xFF, 0xFF, 0x80);
             func_8002C914(0x64, 0xFF, 0xFF, 0xFF, 0xFF);
             func_80034C40(MAIN_MAP_INDEX, 2, 0x64, 1, 160.0f, 32.0f, -160.0f, 0, 0xFE, 0, 0);
              
             if (!checkLifeEventBit(0x45)) {
                 
                 func_8002B138(0x65, &_boulderTextureSegmentRomStart, &_boulderTextureSegmentRomEnd, &_boulderAssetsIndexSegmentRomStart, &_boulderAssetsIndexSegmentRomEnd, &_boulderSpritesheetIndexSegmentRomStart, &_boulderSpritesheetIndexSegmentRomEnd, (void*)0x802E9A00, (void*)0x802EA700, (void*)0x802EB400, (void*)0x802EB500, (void*)0x802EB600, (void*)0x802EB700, 1, 1);
-                func_8002BD90(0x65, 1.0f, 1.0f, 1.0f);
+                setSpriteScale(0x65, 1.0f, 1.0f, 1.0f);
                 func_8002C7EC(0x65, 3);
-                func_8002C85C(0x65, 0xFF, 0xFF, 0xFF, 0xFF);
+                setSpriteDefaultRGBA(0x65, 0xFF, 0xFF, 0xFF, 0xFF);
                 func_8002C914(0x65, 0xFF, 0xFF, 0xFF, 0xFF);
 
                 if (gSeason == WINTER) {
@@ -654,21 +659,21 @@ void func_8006F938(u16 levelIndex) {
         case MOUNTAIN_2:
 
             func_8002B138(0x62, &_waterTilesTextureSegmentRomStart, &_waterTilesTextureSegmentRomEnd, &_waterTilesAssetsIndexSegmentRomStart, &_waterTilesAssetsIndexSegmentRomEnd, &_waterTilesSpritesheetIndexSegmentRomStart, &_waterTilesSpritesheetIndexSegmentRomEnd, (void*)0x802E4000, (void*)0x802E4D00, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
-            func_8002BD90(0x62, 6.0f, 1.0f, 6.0f);
+            setSpriteScale(0x62, 6.0f, 1.0f, 6.0f);
             func_8002C6F8(0x62, 3);
             func_8002C768(0x62, 0x200);
             func_8002C7EC(0x62, 2);
-            func_8002C85C(0x62, 0xFF, 0xFF, 0xFF, 0x80);
+            setSpriteDefaultRGBA(0x62, 0xFF, 0xFF, 0xFF, 0x80);
             func_8002C914(0x62, 0xFF, 0xFF, 0xFF, 0xFF);
 
             func_80034C40(MAIN_MAP_INDEX, 0, 0x62, 0, 224.0f, 0, -254.0f, 0x5A, 0xFE, 0, 0);
             
             func_8002B138(0x63, &_waterTilesTextureSegmentRomStart, &_waterTilesTextureSegmentRomEnd, &_waterTilesAssetsIndexSegmentRomStart, &_waterTilesAssetsIndexSegmentRomEnd, &_waterTilesSpritesheetIndexSegmentRomStart, &_waterTilesSpritesheetIndexSegmentRomEnd, (void*)0x802E5A00, (void*)0x802E6700, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
-            func_8002BD90(0x63, 6.0f, 1.0f, 6.0f);
+            setSpriteScale(0x63, 6.0f, 1.0f, 6.0f);
             func_8002C6F8(0x63, 3);
             func_8002C768(0x63, 0x200);
             func_8002C7EC(0x63, 2);
-            func_8002C85C(0x63, 0xFF, 0xFF, 0xFF, 0x80);
+            setSpriteDefaultRGBA(0x63, 0xFF, 0xFF, 0xFF, 0x80);
             func_8002C914(0x63, 0xFF, 0xFF, 0xFF, 0xFF);
             
             func_80034C40(MAIN_MAP_INDEX, 1, 0x63, 0, 192.0f, 0, 416.0f, 0, 0xFE, 0, 0);
@@ -682,9 +687,9 @@ void func_8006F938(u16 levelIndex) {
                     func_8002B138(0x64, &_stonePillarTextureSegmentRomStart, &_stonePillarTextureSegmentRomEnd, &_stonePillarAssetsIndexSegmentRomStart, &_stonePillarAssetsIndexSegmentRomEnd, &_stonePillarSpritesheetIndexSegmentRomStart, &_stonePillarSpritesheetIndexSegmentRomEnd, (void*)0x802E7C00, (void*)0x802E8280, (void*)0x802EB400, (void*)0x802EB500, (void*)0x802EB600, (void*)0x802EB700, 1, 1);
                 }
 
-                func_8002BD90(0x64, 1.0f, 1.0f, 1.0f);
+                setSpriteScale(0x64, 1.0f, 1.0f, 1.0f);
                 func_8002C7EC(0x64, 3);
-                func_8002C85C(0x64, 0xFF, 0xFF, 0xFF, 0xFF);
+                setSpriteDefaultRGBA(0x64, 0xFF, 0xFF, 0xFF, 0xFF);
                 func_8002C914(0x64, 0xFF, 0xFF, 0xFF, 0xFF);
 
                 func_80034C40(MAIN_MAP_INDEX, 2, 0x64, 0, 96.0f, 224.0f, -448.0f, 0xFF, 0, 0, 0);
@@ -695,9 +700,9 @@ void func_8006F938(u16 levelIndex) {
                     func_8002B138(0x65, &_stonePillarTextureSegmentRomStart, &_stonePillarTextureSegmentRomEnd, &_stonePillarAssetsIndexSegmentRomStart, &_stonePillarAssetsIndexSegmentRomEnd, &_stonePillarSpritesheetIndexSegmentRomStart, &_stonePillarSpritesheetIndexSegmentRomEnd, (void*)0x802E8900, (void*)0x802E8F80, (void*)0x802EB400, (void*)0x802EB500, (void*)0x802EB600, (void*)0x802EB700, 1, 1);
                 }
 
-                func_8002BD90(0x65, 1.0f, 1.0f, 1.0f);
+                setSpriteScale(0x65, 1.0f, 1.0f, 1.0f);
                 func_8002C7EC(0x65, 3);
-                func_8002C85C(0x65, 0xFF, 0xFF, 0xFF, 0xFF);
+                setSpriteDefaultRGBA(0x65, 0xFF, 0xFF, 0xFF, 0xFF);
                 func_8002C914(0x65, 0xFF, 0xFF, 0xFF, 0xFF);
                 func_80034C40(MAIN_MAP_INDEX, 3, 0x65, 0, 96.0f, 224.0f, -376, 0xFF, 0, 0, 0);
 
@@ -707,9 +712,9 @@ void func_8006F938(u16 levelIndex) {
                     func_8002B138(0x66, &_stonePillarTextureSegmentRomStart, &_stonePillarTextureSegmentRomEnd, &_stonePillarAssetsIndexSegmentRomStart, &_stonePillarAssetsIndexSegmentRomEnd, &_stonePillarSpritesheetIndexSegmentRomStart, &_stonePillarSpritesheetIndexSegmentRomEnd, (void*)0x802E9A00, (void*)0x802EA080, (void*)0x802EB400, (void*)0x802EB500, (void*)0x802EB600, (void*)0x802EB700, 1, 1);
                 }
 
-                func_8002BD90(0x66, 1.0f, 1.0f, 1.0f);
+                setSpriteScale(0x66, 1.0f, 1.0f, 1.0f);
                 func_8002C7EC(0x66, 3);
-                func_8002C85C(0x66, 0xFF, 0xFF, 0xFF, 0xFF);
+                setSpriteDefaultRGBA(0x66, 0xFF, 0xFF, 0xFF, 0xFF);
                 func_8002C914(0x66, 0xFF, 0xFF, 0xFF, 0xFF);
                 func_80034C40(MAIN_MAP_INDEX, 4, 0x66, 0, 304.0f, 224.0f, -432.0f, 0xFF, 0, 0, 0);
 
@@ -719,9 +724,9 @@ void func_8006F938(u16 levelIndex) {
                     func_8002B138(0x67, &_stonePillarTextureSegmentRomStart, &_stonePillarTextureSegmentRomEnd, &_stonePillarAssetsIndexSegmentRomStart, &_stonePillarAssetsIndexSegmentRomEnd, &_stonePillarSpritesheetIndexSegmentRomStart, &_stonePillarSpritesheetIndexSegmentRomEnd, (void*)0x802EA700, (void*)0x802EAD80, (void*)0x802EB400, (void*)0x802EB500, (void*)0x802EB600, (void*)0x802EB700, 1, 1);
                 }
 
-                func_8002BD90(0x67, 1.0f, 1.0f, 1.0f);
+                setSpriteScale(0x67, 1.0f, 1.0f, 1.0f);
                 func_8002C7EC(0x67, 3);
-                func_8002C85C(0x67, 0xFF, 0xFF, 0xFF, 0xFF);
+                setSpriteDefaultRGBA(0x67, 0xFF, 0xFF, 0xFF, 0xFF);
                 func_8002C914(0x67, 0xFF, 0xFF, 0xFF, 0xFF);
                 func_80034C40(MAIN_MAP_INDEX, 5, 0x67, 0, 304.0f, 224.0f, -368.0f, 0xFF, 0, 0, 0);
                 
@@ -734,11 +739,11 @@ void func_8006F938(u16 levelIndex) {
             if (checkLifeEventBit(0x48)) {
 
                 func_8002B138(0x62, &_mountainPathTilesTextureSegmentRomStart, &_mountainPathTilesTextureSegmentRomEnd, &_mountainPathTilesAssetsIndexSegmentRomStart, &_mountainPathTilesAssetsIndexSegmentRomEnd, &_mountainPathTilesSpritesheetIndexSegmentRomStart, &_mountainPathTilesSpritesheetIndexSegmentRomEnd, (void*)0x802E4000, (void*)0x802E4400, (void*)0x802E4800, (void*)0x802E4900, (void*)0x802E4A00, (void*)0x802E4B00, 1, 1);
-                func_8002BD90(0x62, 6.0f, 1.0f, 6.0f);
+                setSpriteScale(0x62, 6.0f, 1.0f, 6.0f);
                 func_8002C6F8(0x62, 3);
                 func_8002C768(0x62, 0x200);
                 func_8002C7EC(0x62, 2);
-                func_8002C85C(0x62, 0xFF, 0xFF, 0xFF, 0x80);
+                setSpriteDefaultRGBA(0x62, 0xFF, 0xFF, 0xFF, 0x80);
                 func_8002C914(0x62, 0xFF, 0xFF, 0xFF, 0xFF);
                 func_80034C40(MAIN_MAP_INDEX, 0, 0x62, 0, 0, 216.0f, -128.0f, 0, 0xFE, 0, 0);
 
@@ -748,9 +753,9 @@ void func_8006F938(u16 levelIndex) {
                     func_8002B138(0x64, &_stonePillarTextureSegmentRomStart, &_stonePillarTextureSegmentRomEnd, &_stonePillarAssetsIndexSegmentRomStart, &_stonePillarAssetsIndexSegmentRomEnd, &_stonePillarSpritesheetIndexSegmentRomStart, &_stonePillarSpritesheetIndexSegmentRomEnd, (void*)0x802E7C00, (void*)0x802E8280, (void*)0x802EB400, (void*)0x802EB500, (void*)0x802EB600, (void*)0x802EB700, 1, 1);
                 }
 
-                func_8002BD90(0x64, 1.0f, 1.0f, 1.0f);
+                setSpriteScale(0x64, 1.0f, 1.0f, 1.0f);
                 func_8002C7EC(0x64, 3);
-                func_8002C85C(0x64, 0xFF, 0xFF, 0xFF, 0xFF);
+                setSpriteDefaultRGBA(0x64, 0xFF, 0xFF, 0xFF, 0xFF);
                 func_8002C914(0x64, 0xFF, 0xFF, 0xFF, 0xFF);
                 func_80034C40(MAIN_MAP_INDEX, 2, 0x64, 0, -192.0f, 228.0f, 4.0f, 0xFF, 0, 0, 0);
 
@@ -760,9 +765,9 @@ void func_8006F938(u16 levelIndex) {
                     func_8002B138(0x65, &_stonePillarTextureSegmentRomStart, &_stonePillarTextureSegmentRomEnd, &_stonePillarAssetsIndexSegmentRomStart, &_stonePillarAssetsIndexSegmentRomEnd, &_stonePillarSpritesheetIndexSegmentRomStart, &_stonePillarSpritesheetIndexSegmentRomEnd, (void*)0x802E8900, (void*)0x802E8F80, (void*)0x802EB400, (void*)0x802EB500, (void*)0x802EB600, (void*)0x802EB700, 1, 1);
                 }
                 
-                func_8002BD90(0x65, 1.0f, 1.0f, 1.0f);
+                setSpriteScale(0x65, 1.0f, 1.0f, 1.0f);
                 func_8002C7EC(0x65, 3);
-                func_8002C85C(0x65, 0xFF, 0xFF, 0xFF, 0xFF);
+                setSpriteDefaultRGBA(0x65, 0xFF, 0xFF, 0xFF, 0xFF);
                 func_8002C914(0x65, 0xFF, 0xFF, 0xFF, 0xFF);
                 func_80034C40(MAIN_MAP_INDEX, 3, 0x65, 0, -192.0f, 224.0f, 64.0f, 0xFF, 0, 0, 0);
 
@@ -772,9 +777,9 @@ void func_8006F938(u16 levelIndex) {
                     func_8002B138(0x66, &_stonePillarTextureSegmentRomStart, &_stonePillarTextureSegmentRomEnd, &_stonePillarAssetsIndexSegmentRomStart, &_stonePillarAssetsIndexSegmentRomEnd, &_stonePillarSpritesheetIndexSegmentRomStart, &_stonePillarSpritesheetIndexSegmentRomEnd, (void*)0x802E9A00, (void*)0x802EA080, (void*)0x802EB400, (void*)0x802EB500, (void*)0x802EB600, (void*)0x802EB700, 1, 1);
                 }
                 
-                func_8002BD90(0x66, 1.0f, 1.0f, 1.0f);
+                setSpriteScale(0x66, 1.0f, 1.0f, 1.0f);
                 func_8002C7EC(0x66, 3);
-                func_8002C85C(0x66, 0xFF, 0xFF, 0xFF, 0xFF);
+                setSpriteDefaultRGBA(0x66, 0xFF, 0xFF, 0xFF, 0xFF);
                 func_8002C914(0x66, 0xFF, 0xFF, 0xFF, 0xFF);
                 func_80034C40(MAIN_MAP_INDEX, 4, 0x66, 0, -408.0f, 224.0f, -16.0f, 0xFF, 0, 0, 0);
 
@@ -784,18 +789,18 @@ void func_8006F938(u16 levelIndex) {
                     func_8002B138(0x67, &_stonePillarTextureSegmentRomStart, &_stonePillarTextureSegmentRomEnd, &_stonePillarAssetsIndexSegmentRomStart, &_stonePillarAssetsIndexSegmentRomEnd, &_stonePillarSpritesheetIndexSegmentRomStart, &_stonePillarSpritesheetIndexSegmentRomEnd, (void*)0x802EA700, (void*)0x802EAD80, (void*)0x802EB400, (void*)0x802EB500, (void*)0x802EB600, (void*)0x802EB700, 1, 1);
                 }
                 
-                func_8002BD90(0x67, 1.0f, 1.0f, 1.0f);
+                setSpriteScale(0x67, 1.0f, 1.0f, 1.0f);
                 func_8002C7EC(0x67, 3);
-                func_8002C85C(0x67, 0xFF, 0xFF, 0xFF, 0xFF);
+                setSpriteDefaultRGBA(0x67, 0xFF, 0xFF, 0xFF, 0xFF);
                 func_8002C914(0x67, 0xFF, 0xFF, 0xFF, 0xFF);
                 func_80034C40(MAIN_MAP_INDEX, 5, 0x67, 0, -408.0f, 224.0f, 48.0f, 0xFF, 0, 0, 0);
                 
             } else {
                 
                 func_8002B138(0x62, &_bridgeTextureSegmentRomStart, &_bridgeTextureSegmentRomEnd, &_bridgeAssetsIndexSegmentRomStart, &_bridgeAssetsIndexSegmentRomEnd, &_bridgeSpritesheetIndexSegmentRomStart, &_bridgeSpritesheetIndexSegmentRomEnd, (void*)0x802E4000, (void*)0x802E4D00, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
-                func_8002BD90(0x62, 1.0f, 1.0f, 1.0f);
+                setSpriteScale(0x62, 1.0f, 1.0f, 1.0f);
                 func_8002C7EC(0x62, 3);
-                func_8002C85C(0x62, 0xFF, 0xFF, 0xFF, 0xFF);
+                setSpriteDefaultRGBA(0x62, 0xFF, 0xFF, 0xFF, 0xFF);
                 func_8002C914(0x62, 0xFF, 0xFF, 0xFF, 0xFF);
                 func_80034C40(MAIN_MAP_INDEX, 0, 0x62, 3, -160.0f, 224.0f, 8.0f, 0xFF, 0, 0, 0);
                 
@@ -804,9 +809,9 @@ void func_8006F938(u16 levelIndex) {
             if (checkLifeEventBit(HOT_SPRINGS_COMPLETED)) {
 
                 func_8002B138(0x63, &_steamTextureSegmentRomStart, &_steamTextureSegmentRomEnd, &_steamAssetsIndexSegmentRomStart, &_steamAssetsIndexSegmentRomEnd, &_steamSpritesheetIndexSegmentRomStart, &_steamSpritesheetIndexSegmentRomEnd, (void*)0x802E4C00, (void*)0x802E5800, (void*)0x802E6400, (void*)0x802E6500, (void*)0x802E6600, (void*)0x802E6700, 1, 1);
-                func_8002BD90(0x63, 2.0f, 2.0f, 1.0f);
+                setSpriteScale(0x63, 2.0f, 2.0f, 1.0f);
                 func_8002C7EC(0x63, 2);
-                func_8002C85C(0x63, 0xFF, 0xFF, 0xFF, 0x60);
+                setSpriteDefaultRGBA(0x63, 0xFF, 0xFF, 0xFF, 0x60);
                 func_8002C914(0x63, 0xFF, 0xFF, 0xFF, 0xFF);
                 func_80034C40(MAIN_MAP_INDEX, 1, 0x63, 0, 0.0f, 256.0f, -136.0f, 0xFF, 0xFE, 0, 0);
 
@@ -817,11 +822,11 @@ void func_8006F938(u16 levelIndex) {
         case POND:
             
             func_8002B138(0x62, &_pondWaterTextureSegmentRomStart, &_pondWaterTextureSegmentRomEnd, &_pondWaterAssetsIndexSegmentRomStart, &_pondWaterAssetsIndexSegmentRomEnd, &_pondWaterSpritesheetIndexSegmentRomStart, &_pondWaterSpritesheetIndexSegmentRomEnd, (void*)0x802E4000, (void*)0x802E4D00, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
-            func_8002BD90(0x62, 6.0f, 1.0f, 6.0f);
+            setSpriteScale(0x62, 6.0f, 1.0f, 6.0f);
             func_8002C6F8(0x62, 3);
             func_8002C768(0x62, 0x200);
             func_8002C7EC(0x62, 2);
-            func_8002C85C(0x62, 0xFF, 0xFF, 0xFF, 0x80);
+            setSpriteDefaultRGBA(0x62, 0xFF, 0xFF, 0xFF, 0x80);
             func_8002C914(0x62, 0xFF, 0xFF, 0xFF, 0xFF);
             func_80034C40(MAIN_MAP_INDEX, 0, 0x62, 0, 0.0f, 64.0f, -96.0f, 0x5A, 0xFE, 0, 0);
 
@@ -830,11 +835,11 @@ void func_8006F938(u16 levelIndex) {
         case BEACH:
 
             func_8002B138(0x62, &_wavesTextureSegmentRomStart, &_wavesTextureSegmentRomEnd, &_wavesAssetsIndexSegmentRomStart, &_wavesAssetsIndexSegmentRomEnd, &_wavesSpritesheetIndexSegmentRomStart, &_wavesSpritesheetIndexSegmentRomEnd, (void*)0x802E4000, (void*)0x802E6400, (void*)0x802E8800, (void*)0x802E8900, (void*)0x802E8A00, (void*)0x802E8B00, 1, 1);
-            func_8002BD90(0x62, 6.0f, 1.0f, 5.4f);
+            setSpriteScale(0x62, 6.0f, 1.0f, 5.4f);
             func_8002C6F8(0x62, 3);
             func_8002C768(0x62, 0x200);
             func_8002C7EC(0x62, 2);
-            func_8002C85C(0x62, 0xFF, 0xFF, 0xFF, 0x80);
+            setSpriteDefaultRGBA(0x62, 0xFF, 0xFF, 0xFF, 0x80);
             func_8002C914(0x62, 0xFF, 0xFF, 0xFF, 0xFF);
             func_80034C40(MAIN_MAP_INDEX, 0, 0x62, 0, 304.f, 112.0f, -10.0f, 0, 0xFE, 0, 1);
             
@@ -843,11 +848,11 @@ void func_8006F938(u16 levelIndex) {
         case VILLAGE_2:
 
             func_8002B138(0x62, &_village2WaterTextureSegmentRomStart, &_village2WaterTextureSegmentRomEnd, &_village2WaterAssetsIndexSegmentRomStart, &_village2WaterAssetsIndexSegmentRomEnd, &_village2WaterSpritesheetIndexSegmentRomStart, &_village2WaterSpritesheetIndexSegmentRomEnd, (void*)0x802E4000, (void*)0x802E4000, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
-            func_8002BD90(0x62, 6.0f, 1.0f, 6.0f);
+            setSpriteScale(0x62, 6.0f, 1.0f, 6.0f);
             func_8002C6F8(0x62, 3);
             func_8002C768(0x62, 0x200);
             func_8002C7EC(0x62, 2);
-            func_8002C85C(0x62, 0xFF, 0xFF, 0xFF, 0x80);
+            setSpriteDefaultRGBA(0x62, 0xFF, 0xFF, 0xFF, 0x80);
             func_8002C914(0x62, 0xFF, 0xFF, 0xFF, 0xFF);
             func_80034C40(MAIN_MAP_INDEX, 0, 0x62, 0, -40.0f, 64.0f, -208.0f, 0, 0xFE, 0, 0);    
 
@@ -856,11 +861,11 @@ void func_8006F938(u16 levelIndex) {
         case SQUARE:
 
             func_8002B138(0x62, &_squareFountainTextureSegmentRomStart, &_squareFountainTextureSegmentRomEnd, &_squareFountainAssetsIndexSegmentRomStart, &_squareFountainAssetsIndexSegmentRomEnd, &_squareFountainSpritesheetIndexSegmentRomStart, &_squareFountainSpritesheetIndexSegmentRomEnd, (void*)0x802E7C00, (void*)0x802E7C00, (void*)0x802E9600, (void*)0x802E9700, (void*)0x802E9800, (void*)0x802E9900, 1, 1);
-            func_8002BD90(0x62, 5.0f, 1.0f, 5.0f);
+            setSpriteScale(0x62, 5.0f, 1.0f, 5.0f);
             func_8002C6F8(0x62, 3);
             func_8002C768(0x62, 0x200);
             func_8002C7EC(0x62, 2);
-            func_8002C85C(0x62, 0xFF, 0xFF, 0xFF, 0x80);
+            setSpriteDefaultRGBA(0x62, 0xFF, 0xFF, 0xFF, 0x80);
             func_8002C914(0x62, 0xFF, 0xFF, 0xFF, 0xFF);
             func_80034C40(MAIN_MAP_INDEX, 0, 0x62, 0, -256.0f, 104.f, -24.0f, 0, 0xFE, 0, 0);
             
@@ -868,9 +873,9 @@ void func_8006F938(u16 levelIndex) {
                 
                 if (18 < gDayOfMonth && gDayOfMonth < 23) {
                     func_8002B138(0x63, &_homeItemsTextureSegmentRomStart, &_homeItemsTextureSegmentRomEnd, &_homeItemsAssetsIndexSegmentRomStart, &_homeItemsAssetsIndexSegmentRomEnd, &_homeItemsSpritesheetIndexSegmentRomStart, &_homeItemsSpritesheetIndexSegmentRomEnd, (void*)0x802E4000, (void*)0x802E4D00, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
-                    func_8002BD90(0x63, 1.0f, 1.0f, 1.0f);
+                    setSpriteScale(0x63, 1.0f, 1.0f, 1.0f);
                     func_8002C7EC(0x63, 3);
-                    func_8002C85C(0x63, 0xFF, 0xFF, 0xFF, 0xFF);
+                    setSpriteDefaultRGBA(0x63, 0xFF, 0xFF, 0xFF, 0xFF);
                     func_8002C914(0x63, 0xFF, 0xFF, 0xFF, 0xFF);
                     func_80034C40(MAIN_MAP_INDEX, 1, 0x63, 0xD, 80.0f, 128.0f, 208.0f, 0xFF, 0xFF, 0, 0);
                 }
@@ -881,9 +886,9 @@ void func_8006F938(u16 levelIndex) {
                    for (j = 4; j < 12; j++) {
                     
                         func_8002B138(j + 0x63, &_festivalFlowersTextureSegmentRomStart, &_festivalFlowersTextureSegmentRomEnd, &_festivalFlowersAssetsIndexSegmentRomStart, &_festivalFlowersAssetsIndexSegmentRomEnd, &_festivalFlowersSpritesheetIndexSegmentRomStart, &_festivalFlowersSpritesheetIndexSegmentRomEnd, (void*)0x802E4000, 0, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, 0, 0, 1);
-                        func_8002BD90(j + 0x63, 1.0f, 1.0f, 1.0f);
+                        setSpriteScale(j + 0x63, 1.0f, 1.0f, 1.0f);
                         func_8002C7EC(j + 0x63, 3);
-                        func_8002C85C(j + 0x63, 0xFF, 0xFF, 0xFF, 0xFF);
+                        setSpriteDefaultRGBA(j + 0x63, 0xFF, 0xFF, 0xFF, 0xFF);
                         func_8002C914(j + 0x63, 0xFF, 0xFF, 0xFF, 0xFF);
                         
                     } 
@@ -918,19 +923,19 @@ void func_8006F938(u16 levelIndex) {
 
        
             func_8002B138(0x62, &_stoneTextureSegmentRomStart, &_stoneTextureSegmentRomEnd, &_stoneAssetsIndexSegmentRomStart, &_stoneAssetsIndexSegmentRomEnd, &_stoneSpritesheetIndexSegmentRomStart, &_stoneSpritesheetIndexSegmentRomEnd, (void*)0x802E4000, (void*)0x802E4D00, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
-            func_8002BD90(0x62, 6.0f, 1.0f, 6.0f);
+            setSpriteScale(0x62, 6.0f, 1.0f, 6.0f);
             func_8002C6F8(0x62, 3);
             func_8002C768(0x62, 0x200);
             func_8002C7EC(0x62, 2);
-            func_8002C85C(0x62, 0xFF, 0xFF, 0xFF, 0x80);
+            setSpriteDefaultRGBA(0x62, 0xFF, 0xFF, 0xFF, 0x80);
             func_8002C914(0x62, 0xFF, 0xFF, 0xFF, 0xFF);
 
             func_80034C40(MAIN_MAP_INDEX, 0, 0x62, 0, -128.0f, 8.0f, -128.0f, 0, 0xFE, 0, 0);
 
             func_8002B138(0x63, &_steamTextureSegmentRomStart, &_steamTextureSegmentRomEnd, &_steamAssetsIndexSegmentRomStart, &_steamAssetsIndexSegmentRomEnd, &_steamSpritesheetIndexSegmentRomStart, &_steamSpritesheetIndexSegmentRomEnd, (void*)0x802E7C00, (void*)0x802E8900, (void*)0x802E9600, (void*)0x802E9700, (void*)0x802E9800, (void*)0x802E9900, 1, 1);
-            func_8002BD90(0x63, 1.6f, 1.6f, 1.0f);
+            setSpriteScale(0x63, 1.6f, 1.6f, 1.0f);
             func_8002C7EC(0x63, 2);
-            func_8002C85C(0x63, 0xFF, 0xFF, 0xFF, 0x60);
+            setSpriteDefaultRGBA(0x63, 0xFF, 0xFF, 0xFF, 0x60);
             func_8002C914(0x63, 0xFF, 0xFF, 0xFF, 0xFF);
 
             func_80034C40(MAIN_MAP_INDEX, 1, 0x63, 0, -64.0f, 64.0f, -80.0f, 0xFF, 0xFE, 0, 0);
@@ -1058,9 +1063,9 @@ void func_8006F938(u16 levelIndex) {
         case VINEYARD:
             
             func_8002B138(0x62, &_vineyardTreeTextureSegmentRomStart, &_vineyardTreeTextureSegmentRomEnd, &_vineyardTreeAssetsIndexSegmentRomStart, &_vineyardTreeAssetsIndexSegmentRomEnd, &_vineyardTreeSpritesheetIndexSegmentRomStart, &_vineyardTreeSpritesheetIndexSegmentRomEnd, (void*)0x802E4000, (void*)0x802E4D00, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
-            func_8002BD90(0x62, 2.0f, 2.0f, 1.0f);
+            setSpriteScale(0x62, 2.0f, 2.0f, 1.0f);
             func_8002C7EC(0x62, 3);
-            func_8002C85C(0x62, 0xFF, 0xFF, 0xFF, 0xFF);
+            setSpriteDefaultRGBA(0x62, 0xFF, 0xFF, 0xFF, 0xFF);
             func_8002C914(0x62, 0xFF, 0xFF, 0xFF, 0xFF);
             
             if (checkSpecialDialogueBit(0x14B)) {
@@ -1090,9 +1095,9 @@ void func_80073244(u8 itemIndex) {
     *(Vec2f*)ptr = *(Vec2f*)ptr2;
 
     func_8002B138(itemIndex + 0x62, &_homeItemsTextureSegmentRomStart, &_homeItemsTextureSegmentRomEnd, &_homeItemsAssetsIndexSegmentRomStart, &_homeItemsAssetsIndexSegmentRomEnd, &_homeItemsSpritesheetIndexSegmentRomStart, &_homeItemsSpritesheetIndexSegmentRomEnd, (void*)0x802E4000, (void*)0x802E4D00, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
-    func_8002BD90(itemIndex + 0x62, 1.0f, 1.0f, 1.0f);
+    setSpriteScale(itemIndex + 0x62, 1.0f, 1.0f, 1.0f);
     func_8002C7EC(itemIndex + 0x62, 3);
-    func_8002C85C(itemIndex + 0x62, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteDefaultRGBA(itemIndex + 0x62, 0xFF, 0xFF, 0xFF, 0xFF);
     func_8002C914(itemIndex + 0x62, 0xFF, 0xFF, 0xFF, 0xFF);
 
     func_80034C40(MAIN_MAP_INDEX, itemIndex, itemIndex + 0x62, 0xC, arr[itemIndex].x, arr[itemIndex].y, arr[itemIndex].z, 0xFF, 0xFF, 0, 0);
@@ -1115,9 +1120,9 @@ void func_8007341C(u8 itemIndex) {
     *(Vec3f*)ptr = *(Vec3f*)ptr2;
 
     func_8002B138(itemIndex + 0x62, &_homeItemsTextureSegmentRomStart, &_homeItemsTextureSegmentRomEnd, &_homeItemsAssetsIndexSegmentRomStart, &_homeItemsAssetsIndexSegmentRomEnd, &_homeItemsSpritesheetIndexSegmentRomStart, &_homeItemsSpritesheetIndexSegmentRomEnd, (void* )0x802E4000, (void* )0x802E4D00, (void* )0x802E7400, (void* )0x802E7700, (void* )0x802E7A00, (void* )0x802E7B00, (void* )1, (u8) (void* )1);
-    func_8002BD90(itemIndex + 0x62, 1.0f, 1.0f, 1.0f);
+    setSpriteScale(itemIndex + 0x62, 1.0f, 1.0f, 1.0f);
     func_8002C7EC(itemIndex + 0x62, 3);
-    func_8002C85C(itemIndex + 0x62, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteDefaultRGBA(itemIndex + 0x62, 0xFF, 0xFF, 0xFF, 0xFF);
     func_8002C914(itemIndex + 0x62, 0xFF, 0xFF, 0xFF, 0xFF);
 
     func_80034C40(MAIN_MAP_INDEX, itemIndex, itemIndex + 0x62, 0xB, arr[itemIndex].x, arr[itemIndex].y, arr[itemIndex].z, 0xFF, 0xFF, 0, 0);
@@ -1142,9 +1147,9 @@ void func_8007341C(u8 arg0) {
     *(Vec3f*)ptr = *(Vec3f*)ptr2;
 
     func_8002B138(arg0 + 0x62, &_homeItemsTextureSegmentRomStart, &_homeItemsTextureSegmentRomEnd, &_homeItemsAssetsIndexSegmentRomStart, &_homeItemsAssetsIndexSegmentRomEnd, &_homeItemsSpritesheetIndexSegmentRomStart, &_homeItemsSpritesheetIndexSegmentRomEnd, (void* )0x802E4000, (void* )0x802E4D00, (void* )0x802E7400, (void* )0x802E7700, (void* )0x802E7A00, (void* )0x802E7B00, (void* )1, (u8) (void* )1);
-    func_8002BD90(arg0 + 0x62, 1.0f, 1.0f, 1.0f);
+    setSpriteScale(arg0 + 0x62, 1.0f, 1.0f, 1.0f);
     func_8002C7EC(arg0 + 0x62, 3);
-    func_8002C85C(arg0 + 0x62, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteDefaultRGBA(arg0 + 0x62, 0xFF, 0xFF, 0xFF, 0xFF);
     func_8002C914(arg0 + 0x62, 0xFF, 0xFF, 0xFF, 0xFF);
 
     func_80034C40(MAIN_MAP_INDEX, arg0, arg0 + 0x62, 0xB, arr[arg0].x, arr[arg0].y, arr[arg0].z, 0xFF, 0xFF, 0, 0);

@@ -16,12 +16,12 @@ Vec3f* func_800366F4(Vec3f*, u16, f32, f32);
 u16 func_80036880(u16, f32, f32);  
 void func_80036AB4(MainMap*); 
 void func_800372F0(UnknownMapStruct1*, LevelMapContext*);                 
-u8* func_800374C0(UnknownMapStruct5*, u8*);
+u8* func_800374C0(WeatherSprite*, u8*);
 u8* func_80037614(MapVtx* arg0, VtxInfo* arg1);    
 u16* func_80037650(u16 arg0, void *arg1);
 u32 func_80037668(MainMap*, u16, f32, f32, f32);
 Gfx* func_80037BC4(Gfx*, MainMap*, u16, u16);
-s16 func_80037F08(Gfx*, MainMap*, UnknownMapStruct5*);  
+s16 func_80037F08(Gfx*, MainMap*, WeatherSprite*);  
 Gfx* func_800383B0(Gfx* arg0, MainMap* arg1, u16 arg2, f32 arg3, f32 arg4, f32 arg5);
 void func_8003851C(MainMap*);  
 void func_80038630(DecompressedVec3f* arg0, CompressedVec3f* arg1);                        
@@ -47,6 +47,7 @@ extern f32 D_80170460;
 extern DecompressedVec3f D_80181BA0[];
 extern u8 D_801FB5CB;
 extern f32 D_801FB5D4;
+// counter for updating shrink factor
 extern u8 D_801FB700;
 extern f32 D_801FB5D4;
 extern f32 D_802226EC;
@@ -85,22 +86,22 @@ void func_800337D0(void) {
         mainMap[i].mapStruct9.unk_C = 0;
         mainMap[i].mapStruct9.height = 0;
 
-        mainMap[i].mapStruct8.unk_0.x = 0;
-        mainMap[i].mapStruct8.unk_0.y = 0;
-        mainMap[i].mapStruct8.unk_0.z = 0;
+        mainMap[i].mapFloats.translation.x = 0;
+        mainMap[i].mapFloats.translation.y = 0;
+        mainMap[i].mapFloats.translation.z = 0;
  
-        mainMap[i].mapStruct8.unk_C.x = 1.0f;
-        mainMap[i].mapStruct8.unk_C.y = 1.0f;
-        mainMap[i].mapStruct8.unk_C.z = 1.0f;
+        mainMap[i].mapFloats.scale.x = 1.0f;
+        mainMap[i].mapFloats.scale.y = 1.0f;
+        mainMap[i].mapFloats.scale.z = 1.0f;
  
-        mainMap[i].mapStruct8.angles.x = 0;
-        mainMap[i].mapStruct8.angles.y = 0;
-        mainMap[i].mapStruct8.angles.z = 0;
+        mainMap[i].mapFloats.rotation.x = 0;
+        mainMap[i].mapFloats.rotation.y = 0;
+        mainMap[i].mapFloats.rotation.z = 0;
 
-        mainMap[i].mapStruct8.groundRgba.r = 255.0f;
-        mainMap[i].mapStruct8.groundRgba.g = 255.0f;
-        mainMap[i].mapStruct8.groundRgba.b = 255.0f;
-        mainMap[i].mapStruct8.groundRgba.a = 255.0f;
+        mainMap[i].mapFloats.groundRgba.r = 255.0f;
+        mainMap[i].mapFloats.groundRgba.g = 255.0f;
+        mainMap[i].mapFloats.groundRgba.b = 255.0f;
+        mainMap[i].mapFloats.groundRgba.a = 255.0f;
 
         mainMap[i].mapStruct2.unk_48 = 0;
         mainMap[i].mapStruct2.unk_49 = 0;
@@ -191,8 +192,8 @@ bool func_80033A90(u16 mapIndex, LevelMapContext* arg1, void* arg2, void* arg3, 
             mainMap[mapIndex].groundObjects.arr[i] = 0xFFFF;
         }
 
-        for (i = 0; i < 16; i++) {
-            mainMap[mapIndex].mapStruct5[i].flags = 0;
+        for (i = 0; i < 0x10; i++) {
+            mainMap[mapIndex].weatherSprites[i].flags = 0;
         }
 
         for (p = 0; p < 0x1E0; p++) {
@@ -201,9 +202,9 @@ bool func_80033A90(u16 mapIndex, LevelMapContext* arg1, void* arg2, void* arg3, 
             mainMap[mapIndex].groundObjects.arr2[2][p] = 0;
         }
 
-        for (i = 0; i < 32; i++) {
+        for (i = 0; i < 0x20; i++) {
 
-            for (j = 0; j < 16; j++) {
+            for (j = 0; j < 0x10; j++) {
                 mainMap[mapIndex].mapStruct7[i].arr1[j] = 0xFFFF;
                 mainMap[mapIndex].mapStruct7[i].arr2[j] = 0;
             }
@@ -266,11 +267,11 @@ bool func_80034090(u16 mapIndex) {
         
         for (i = 0; i < 0x10; i++) { 
             
-            if (mainMap[mapIndex].mapStruct5[i].flags & 1) {
-                func_8002B6B8(mainMap[mapIndex].mapStruct5[i].spriteIndex);
+            if (mainMap[mapIndex].weatherSprites[i].flags & 1) {
+                func_8002B6B8(mainMap[mapIndex].weatherSprites[i].spriteIndex);
             }
 
-            mainMap[mapIndex].mapStruct5[i].flags = 0;
+            mainMap[mapIndex].weatherSprites[i].flags = 0;
         }
         
         mainMap[mapIndex].mapStruct9.flags = 0;
@@ -281,17 +282,17 @@ bool func_80034090(u16 mapIndex) {
     return result;
 }
 
-//INCLUDE_ASM(const s32, "system/map", func_8003423C);
+//INCLUDE_ASM(const s32, "system/map", setMapTranslation);
 
-bool func_8003423C(u16 mapIndex, f32 arg1, f32 arg2, f32 arg3) {
+bool setMapTranslation(u16 mapIndex, f32 arg1, f32 arg2, f32 arg3) {
 
     bool result = 0;
     
     if (mapIndex == MAIN_MAP_INDEX && (mainMap[mapIndex].mapStruct9.flags & 1)) {
         result = 1;
-        mainMap[mapIndex].mapStruct8.unk_0.x = arg1;
-        mainMap[mapIndex].mapStruct8.unk_0.y = arg2;
-        mainMap[mapIndex].mapStruct8.unk_0.z = arg3;
+        mainMap[mapIndex].mapFloats.translation.x = arg1;
+        mainMap[mapIndex].mapFloats.translation.y = arg2;
+        mainMap[mapIndex].mapFloats.translation.z = arg3;
     }
     
     return result;
@@ -299,39 +300,39 @@ bool func_8003423C(u16 mapIndex, f32 arg1, f32 arg2, f32 arg3) {
 
 //INCLUDE_ASM(const s32, "system/map", func_80034298);
 
-bool func_80034298(u16 mapIndex, f32 arg1, f32 arg2, f32 arg3) {
+bool setMapScale(u16 mapIndex, f32 arg1, f32 arg2, f32 arg3) {
 
     bool result = 0;
     
     if (mapIndex == MAIN_MAP_INDEX && (mainMap[mapIndex].mapStruct9.flags & 1)) {
         result = 1;
-        mainMap[mapIndex].mapStruct8.unk_C.x = arg1;
-        mainMap[mapIndex].mapStruct8.unk_C.y = arg2;
-        mainMap[mapIndex].mapStruct8.unk_C.z = arg3;
+        mainMap[mapIndex].mapFloats.scale.x = arg1;
+        mainMap[mapIndex].mapFloats.scale.y = arg2;
+        mainMap[mapIndex].mapFloats.scale.z = arg3;
     }
     
     return result;
 }
 
-//INCLUDE_ASM(const s32, "system/map", func_800342F4);
+//INCLUDE_ASM(const s32, "system/map", setMapRotation);
 
-bool func_800342F4(u16 mapIndex, f32 arg1, f32 arg2, f32 arg3) {
+bool setMapRotation(u16 mapIndex, f32 arg1, f32 arg2, f32 arg3) {
 
     bool result = 0;
     
     if (mapIndex == MAIN_MAP_INDEX && (mainMap[mapIndex].mapStruct9.flags & 1)) {
         result = 1;
-        mainMap[mapIndex].mapStruct8.angles.x = arg1;
-        mainMap[mapIndex].mapStruct8.angles.y = arg2;
-        mainMap[mapIndex].mapStruct8.angles.z = arg3;
+        mainMap[mapIndex].mapFloats.rotation.x = arg1;
+        mainMap[mapIndex].mapFloats.rotation.y = arg2;
+        mainMap[mapIndex].mapFloats.rotation.z = arg3;
     }
     
     return result;
 }
 
-//INCLUDE_ASM(const s32, "system/map", func_80034350);
+//INCLUDE_ASM(const s32, "system/map", setMapRGBA);
 
-bool func_80034350(u16 mapIndex, u8 arg1, u8 arg2, u8 arg3, u8 arg4) {
+bool setMapRGBA(u16 mapIndex, u8 arg1, u8 arg2, u8 arg3, u8 arg4) {
     
     bool result = 0;
     
@@ -339,15 +340,15 @@ bool func_80034350(u16 mapIndex, u8 arg1, u8 arg2, u8 arg3, u8 arg4) {
         
         result = 1; 
 
-        mainMap[mapIndex].mapStruct8.groundRgba.r = arg1;
-        mainMap[mapIndex].mapStruct8.groundRgba.g = arg2;
-        mainMap[mapIndex].mapStruct8.groundRgba.b = arg3;
-        mainMap[mapIndex].mapStruct8.groundRgba.a = arg4;
+        mainMap[mapIndex].mapFloats.groundRgba.r = arg1;
+        mainMap[mapIndex].mapFloats.groundRgba.g = arg2;
+        mainMap[mapIndex].mapFloats.groundRgba.b = arg3;
+        mainMap[mapIndex].mapFloats.groundRgba.a = arg4;
         
-        mainMap[mapIndex].mapStruct8.defaultRgba.r = arg1;
-        mainMap[mapIndex].mapStruct8.defaultRgba.g = arg2;
-        mainMap[mapIndex].mapStruct8.defaultRgba.b = arg3;
-        mainMap[mapIndex].mapStruct8.defaultRgba.a = arg4;
+        mainMap[mapIndex].mapFloats.defaultRgba.r = arg1;
+        mainMap[mapIndex].mapFloats.defaultRgba.g = arg2;
+        mainMap[mapIndex].mapFloats.defaultRgba.b = arg3;
+        mainMap[mapIndex].mapFloats.defaultRgba.a = arg4;
     
     }
     
@@ -386,17 +387,17 @@ bool func_800343FC(u16 mapIndex, u8 arg1, u8 arg2, u8 arg3, u8 arg4, f32 arg5, f
     
 }
 
-//INCLUDE_ASM(const s32, "system/map", func_800344E8);
+//INCLUDE_ASM(const s32, "system/map", adjustMapTranslation);
 
-bool func_800344E8(u16 mapIndex, f32 arg1, f32 arg2, f32 arg3) {
+bool adjustMapTranslation(u16 mapIndex, f32 arg1, f32 arg2, f32 arg3) {
 
     bool result = 0;
     
     if (mapIndex == MAIN_MAP_INDEX && (mainMap[mapIndex].mapStruct9.flags & 1)) {
         result = 1;
-        mainMap[mapIndex].mapStruct8.unk_0.x += arg1;
-        mainMap[mapIndex].mapStruct8.unk_0.y += arg2;
-        mainMap[mapIndex].mapStruct8.unk_0.z += arg3;
+        mainMap[mapIndex].mapFloats.translation.x += arg1;
+        mainMap[mapIndex].mapFloats.translation.y += arg2;
+        mainMap[mapIndex].mapFloats.translation.z += arg3;
     }
     
     return result;
@@ -410,42 +411,42 @@ bool func_80034568(u16 mapIndex, f32 arg1, f32 arg2, f32 arg3) {
     
     if (mapIndex == MAIN_MAP_INDEX && (mainMap[mapIndex].mapStruct9.flags & 1)) {
         result = 1;
-        mainMap[mapIndex].mapStruct8.unk_C.x += arg1;
-        mainMap[mapIndex].mapStruct8.unk_C.y += arg2;
-        mainMap[mapIndex].mapStruct8.unk_C.z += arg3;
+        mainMap[mapIndex].mapFloats.scale.x += arg1;
+        mainMap[mapIndex].mapFloats.scale.y += arg2;
+        mainMap[mapIndex].mapFloats.scale.z += arg3;
     }
     
     return result;
 }
 
-//INCLUDE_ASM(const s32, "system/map", func_800345E8);
+//INCLUDE_ASM(const s32, "system/map", adjustMapRotation);
 
-bool func_800345E8(u16 mapIndex, f32 arg1, f32 arg2, f32 arg3) {
+bool adjustMapRotation(u16 mapIndex, f32 arg1, f32 arg2, f32 arg3) {
 
     bool result = 0;
     
     if (mapIndex == MAIN_MAP_INDEX && (mainMap[mapIndex].mapStruct9.flags & 1)) {
         result = 1;
-        mainMap[mapIndex].mapStruct8.angles.x += arg1;
-        mainMap[mapIndex].mapStruct8.angles.y += arg2;
-        mainMap[mapIndex].mapStruct8.angles.z += arg3;
+        mainMap[mapIndex].mapFloats.rotation.x += arg1;
+        mainMap[mapIndex].mapFloats.rotation.y += arg2;
+        mainMap[mapIndex].mapFloats.rotation.z += arg3;
     }
     
     return result;
 }
 
-//INCLUDE_ASM(const s32, "system/map", func_80034668);
+//INCLUDE_ASM(const s32, "system/map", adjustMapRGBA);
 
-bool func_80034668(u16 mapIndex, s8 arg1, s8 arg2, s8 arg3, s8 arg4) {
+bool adjustMapRGBA(u16 mapIndex, s8 arg1, s8 arg2, s8 arg3, s8 arg4) {
 
     bool result = 0;
     
     if (mapIndex == MAIN_MAP_INDEX && (mainMap[mapIndex].mapStruct9.flags & 1)) {
         result = 1;
-        mainMap[mapIndex].mapStruct8.groundRgba.r += arg1;
-        mainMap[mapIndex].mapStruct8.groundRgba.g += arg2;
-        mainMap[mapIndex].mapStruct8.groundRgba.b += arg3;
-        mainMap[mapIndex].mapStruct8.groundRgba.a += arg4;
+        mainMap[mapIndex].mapFloats.groundRgba.r += arg1;
+        mainMap[mapIndex].mapFloats.groundRgba.g += arg2;
+        mainMap[mapIndex].mapFloats.groundRgba.b += arg3;
+        mainMap[mapIndex].mapFloats.groundRgba.a += arg4;
     }
     
     return result;
@@ -465,46 +466,46 @@ bool func_80034738(u16 mapIndex, u8 r, u8 g, u8 b, u8 a, s16 arg5) {
 
     if (mapIndex == MAIN_MAP_INDEX && (mainMap[mapIndex].mapStruct9.flags & 1)) {
 
-        mainMap[mapIndex].mapStruct8.defaultRgba.r = r;
-        mainMap[mapIndex].mapStruct8.defaultRgba.g = g;
-        mainMap[mapIndex].mapStruct8.defaultRgba.b = b;
-        mainMap[mapIndex].mapStruct8.defaultRgba.a = a;
+        mainMap[mapIndex].mapFloats.defaultRgba.r = r;
+        mainMap[mapIndex].mapFloats.defaultRgba.g = g;
+        mainMap[mapIndex].mapFloats.defaultRgba.b = b;
+        mainMap[mapIndex].mapFloats.defaultRgba.a = a;
 
         mainMap[mapIndex].mapStruct9.unk_8 = temp;
 
         mainMap[mapIndex].mapStruct9.flags &= ~8;
 
-        if (mainMap[mapIndex].mapStruct8.defaultRgba.r < mainMap[mapIndex].mapStruct8.groundRgba.r) {
-            tempFloat = mainMap[mapIndex].mapStruct8.groundRgba.r - mainMap[mapIndex].mapStruct8.defaultRgba.r;
+        if (mainMap[mapIndex].mapFloats.defaultRgba.r < mainMap[mapIndex].mapFloats.groundRgba.r) {
+            tempFloat = mainMap[mapIndex].mapFloats.groundRgba.r - mainMap[mapIndex].mapFloats.defaultRgba.r;
         } else {
-            tempFloat = mainMap[mapIndex].mapStruct8.defaultRgba.r - mainMap[mapIndex].mapStruct8.groundRgba.r;
+            tempFloat = mainMap[mapIndex].mapFloats.defaultRgba.r - mainMap[mapIndex].mapFloats.groundRgba.r;
         }
 
-        mainMap[mapIndex].mapStruct8.unk_60.r = (tempFloat * temp) / 255.0f;
+        mainMap[mapIndex].mapFloats.unk_60.r = (tempFloat * temp) / 255.0f;
         
-        if (mainMap[mapIndex].mapStruct8.defaultRgba.g < mainMap[mapIndex].mapStruct8.groundRgba.g) {
-            tempFloat = mainMap[mapIndex].mapStruct8.groundRgba.g - mainMap[mapIndex].mapStruct8.defaultRgba.g;
+        if (mainMap[mapIndex].mapFloats.defaultRgba.g < mainMap[mapIndex].mapFloats.groundRgba.g) {
+            tempFloat = mainMap[mapIndex].mapFloats.groundRgba.g - mainMap[mapIndex].mapFloats.defaultRgba.g;
         } else {
-            tempFloat = mainMap[mapIndex].mapStruct8.defaultRgba.g - mainMap[mapIndex].mapStruct8.groundRgba.g;
+            tempFloat = mainMap[mapIndex].mapFloats.defaultRgba.g - mainMap[mapIndex].mapFloats.groundRgba.g;
         }
 
-        mainMap[mapIndex].mapStruct8.unk_60.g = (tempFloat * temp) / 255.0f;
+        mainMap[mapIndex].mapFloats.unk_60.g = (tempFloat * temp) / 255.0f;
 
-        if (mainMap[mapIndex].mapStruct8.defaultRgba.b < mainMap[mapIndex].mapStruct8.groundRgba.b) {
-            tempFloat = mainMap[mapIndex].mapStruct8.groundRgba.b - mainMap[mapIndex].mapStruct8.defaultRgba.b;
+        if (mainMap[mapIndex].mapFloats.defaultRgba.b < mainMap[mapIndex].mapFloats.groundRgba.b) {
+            tempFloat = mainMap[mapIndex].mapFloats.groundRgba.b - mainMap[mapIndex].mapFloats.defaultRgba.b;
         } else {
-            tempFloat = mainMap[mapIndex].mapStruct8.defaultRgba.b - mainMap[mapIndex].mapStruct8.groundRgba.b;
+            tempFloat = mainMap[mapIndex].mapFloats.defaultRgba.b - mainMap[mapIndex].mapFloats.groundRgba.b;
         }
 
-        mainMap[mapIndex].mapStruct8.unk_60.b = (tempFloat * temp) / 255.0f;
+        mainMap[mapIndex].mapFloats.unk_60.b = (tempFloat * temp) / 255.0f;
         
-        if (mainMap[mapIndex].mapStruct8.defaultRgba.a < mainMap[mapIndex].mapStruct8.groundRgba.a) {
-            tempFloat = mainMap[mapIndex].mapStruct8.groundRgba.a - mainMap[mapIndex].mapStruct8.defaultRgba.a;
+        if (mainMap[mapIndex].mapFloats.defaultRgba.a < mainMap[mapIndex].mapFloats.groundRgba.a) {
+            tempFloat = mainMap[mapIndex].mapFloats.groundRgba.a - mainMap[mapIndex].mapFloats.defaultRgba.a;
         } else {
-            tempFloat = mainMap[mapIndex].mapStruct8.defaultRgba.a - mainMap[mapIndex].mapStruct8.groundRgba.a;
+            tempFloat = mainMap[mapIndex].mapFloats.defaultRgba.a - mainMap[mapIndex].mapFloats.groundRgba.a;
         }
 
-        mainMap[mapIndex].mapStruct8.unk_60.a = (tempFloat * temp) / 255.0f;
+        mainMap[mapIndex].mapFloats.unk_60.a = (tempFloat * temp) / 255.0f;
 
         result = 1;
     }
@@ -600,9 +601,9 @@ bool func_80034D64(u16 mapIndex, u8 index, u16 spriteIndex, u16 arg3) {
     bool result = 0;
  
     if (mapIndex == MAIN_MAP_INDEX && (mainMap[mapIndex].mapStruct9.flags & 1)) {
-        mainMap[mapIndex].mapStruct5[index].spriteIndex = spriteIndex;
-        mainMap[mapIndex].mapStruct5[index].unk_E = arg3;
-        mainMap[mapIndex].mapStruct5[index].flags = 1;
+        mainMap[mapIndex].weatherSprites[index].spriteIndex = spriteIndex;
+        mainMap[mapIndex].weatherSprites[index].unk_E = arg3;
+        mainMap[mapIndex].weatherSprites[index].flags = 1;
         result = 1;
     }
 
@@ -761,13 +762,13 @@ bool func_80035914(u16 mapIndex, f32 arg1, f32 arg2) {
  
 //INCLUDE_ASM(const s32, "system/map", func_800359C8);
 
-Vec3f* func_800359C8(Vec3f* arg0, MainMap* arg1, f32 arg2, f32 arg3) {
+Vec3f* func_800359C8(Vec3f* arg0, MainMap* map, f32 arg2, f32 arg3) {
     
     Vec3f vec;
 
-    vec.x = (arg2 + arg1->mapStruct9.unk_0) / arg1->mapStruct1.unk_8;
+    vec.x = (arg2 + map->mapStruct9.unk_0) / map->mapStruct1.unk_8;
     vec.y = 0;
-    vec.z = (arg3 + arg1->mapStruct9.unk_4) / arg1->mapStruct1.unk_9;
+    vec.z = (arg3 + map->mapStruct9.unk_4) / map->mapStruct1.unk_9;
 
     *arg0 = vec;
     
@@ -1020,7 +1021,7 @@ void func_80036AB4(MainMap* map) {
     u16 count;
     u8* ptr;
     u16 temp;
-    UnknownMapStruct5 mapStructs[32]; 
+    WeatherSprite weatherSprites[32]; 
 
     count = 0;
     i = 0;
@@ -1036,20 +1037,20 @@ void func_80036AB4(MainMap* map) {
             
             while (1) {
 
-                ptr =  func_800374C0(&mapStructs[j], ptr);
+                ptr =  func_800374C0(&weatherSprites[j], ptr);
     
-                if (mapStructs[j].flags & 0x80) {
+                if (weatherSprites[j].flags & 0x80) {
                     map->vtxs[i].flags |= 0x80;
                 }
 
-                if (mapStructs[j++].flags & 0x10) {
+                if (weatherSprites[j++].flags & 0x10) {
                     break;
                 } 
 
             } 
 
             map->vtxs[i].currentVtxIndex = count;
-            temp = func_80037F08(&map->displayLists[count], map, mapStructs);
+            temp = func_80037F08(&map->displayLists[count], map, weatherSprites);
 
             count += temp;
             map->vtxs[i].vtxCount = temp;
@@ -1236,10 +1237,10 @@ u32 func_80037668(MainMap* map, u16 vtxIndex, f32 arg2, f32 arg3, f32 arg4) {
             D_80223380[gDisplayContextIndex][count2].v.ob[2] = *vtx + arg4;
             vtx++;
 
-            D_80223380[gDisplayContextIndex][count2].v.cn[0] = map->mapStruct8.groundRgba.r;
-            D_80223380[gDisplayContextIndex][count2].v.cn[1] = map->mapStruct8.groundRgba.g;
-            D_80223380[gDisplayContextIndex][count2].v.cn[2] = map->mapStruct8.groundRgba.b;
-            D_80223380[gDisplayContextIndex][count2].v.cn[3] = map->mapStruct8.groundRgba.a;
+            D_80223380[gDisplayContextIndex][count2].v.cn[0] = map->mapFloats.groundRgba.r;
+            D_80223380[gDisplayContextIndex][count2].v.cn[1] = map->mapFloats.groundRgba.g;
+            D_80223380[gDisplayContextIndex][count2].v.cn[2] = map->mapFloats.groundRgba.b;
+            D_80223380[gDisplayContextIndex][count2].v.cn[3] = map->mapFloats.groundRgba.a;
             
             count2++;
             count++;
@@ -1253,11 +1254,11 @@ u32 func_80037668(MainMap* map, u16 vtxIndex, f32 arg2, f32 arg3, f32 arg4) {
 
 //INCLUDE_ASM(const s32, "system/map", func_8003797C);
 
-Gfx* func_8003797C(Gfx* dl, MainMap* arg1, u8 arg2) {
+Gfx* func_8003797C(Gfx* dl, MainMap* map, u8 arg2) {
 
     Tile bitmap;
 
-    setBitmapFormat((Bitmap*)&bitmap, func_80028888(arg2, arg1->unk_10), func_800288A0(arg2, arg1->unk_14));
+    setBitmapFormat((Bitmap*)&bitmap, func_80028888(arg2, map->unk_10), func_800288A0(arg2, map->unk_14));
 
     gDPLoadTextureTile_4b(dl++, bitmap.timg, bitmap.fmt, bitmap.width, bitmap.height, 0, 0, bitmap.width - 1, bitmap.height - 1, 0, G_TX_NOMIRROR | G_TX_WRAP, G_TX_NOMIRROR | G_TX_WRAP, G_TX_NOMASK, G_TX_NOMASK, G_TX_NOLOD, G_TX_NOLOD);
     gDPLoadTLUT_pal16(dl++, 0, bitmap.pal);
@@ -1265,17 +1266,20 @@ Gfx* func_8003797C(Gfx* dl, MainMap* arg1, u8 arg2) {
     return dl++;
 }
 
+// uses gSPVertex
 INCLUDE_ASM(const s32, "system/map", func_80037BC4);
 
 //INCLUDE_ASM(const s32, "system/map", func_80037DF0);
 
-inline Gfx* func_80037DF0(Gfx* dl, MainMap* arg1, u16 arg2) {
+inline Gfx* func_80037DF0(Gfx* dl, MainMap* map, u16 arg2) {
 
     u8 i;
     u16 temp;
     
-    arg1->mapStruct9.unk_A = 0;
-    arg1->mapStruct9.unk_C = arg2;
+    // width
+    map->mapStruct9.unk_A = 0;
+    // height
+    map->mapStruct9.unk_C = arg2;
 
     *dl = D_8011ED68[0]; 
     dl++;
@@ -1286,17 +1290,17 @@ inline Gfx* func_80037DF0(Gfx* dl, MainMap* arg1, u16 arg2) {
 
     for (i = 0; i < 0x51; i++) {
   
-        temp = arg1->unkArr[i];
+        temp = map->unkArr[i];
         
         if (temp != 0xFFFF) {
-            dl = func_80037BC4(dl, arg1, temp, i);
+            dl = func_80037BC4(dl, map, temp, i);
         }
 
     } 
 
     *dl = D_8011ED68[3];
 
-    arg1->mapStruct9.height = arg1->mapStruct9.unk_A;
+    map->mapStruct9.height = map->mapStruct9.unk_A;
 
     dl++;
     
@@ -1349,7 +1353,7 @@ void func_80038514(void) {}
 
 //INCLUDE_ASM(const s32, "system/map", func_8003851C);
 
-void func_8003851C(MainMap* arg0) {
+void func_8003851C(MainMap* map) {
 
     u16 i, j;
     u8 temp;
@@ -1359,36 +1363,36 @@ void func_8003851C(MainMap* arg0) {
     count = 0;
     i = 0;
     
-    temp = *(arg0->unk_C+4);
-    arg0->mapStruct9.unk_10 = temp;
+    temp = *(map->unk_C+4);
+    map->mapStruct9.unk_10 = temp;
     
     if (temp) {
         
         do {
 
-            ptr = arg0->unk_C+4;
+            ptr = map->unk_C+4;
 
             ptr = func_800386D4(i, ptr);
 
-            func_800386C0(&arg0->mapStruct3[i].unk_0, ptr);
+            func_800386C0(&map->mapStruct3[i].unk_0, ptr);
 
-            arg0->mapStruct3[i].unk_0 = count;
+            map->mapStruct3[i].unk_0 = count;
             j = 0;
             
             ptr += 2;
             
-            if (arg0->mapStruct3[i].unk_3) {
+            if (map->mapStruct3[i].unk_3) {
                 do {
                     func_80038630(&D_80181BA0[count], ptr);
                     ptr += 7;
                     count++;
                     j++;
-                }  while (j < arg0->mapStruct3[i].unk_3);
+                }  while (j < map->mapStruct3[i].unk_3);
             }
             
             i++;
             
-        } while (i < arg0->mapStruct9.unk_10);
+        } while (i < map->mapStruct9.unk_10);
     }
     
 }
@@ -1679,13 +1683,13 @@ void func_80039E20(u16 arg0, Gfx* arg1) {
 
     u16 temp = func_8002929C(arg1, 0x28);
     
-    func_800292EC(temp, mainMap[arg0].mapStruct8.unk_0.x + mainMap[arg0].mapStruct2.unk_3C.x, 
-        mainMap[arg0].mapStruct8.unk_0.y + mainMap[arg0].mapStruct2.unk_3C.y, 
-        mainMap[arg0].mapStruct8.unk_0.z + mainMap[arg0].mapStruct2.unk_3C.z);
+    func_800292EC(temp, mainMap[arg0].mapFloats.translation.x + mainMap[arg0].mapStruct2.unk_3C.x, 
+        mainMap[arg0].mapFloats.translation.y + mainMap[arg0].mapStruct2.unk_3C.y, 
+        mainMap[arg0].mapFloats.translation.z + mainMap[arg0].mapStruct2.unk_3C.z);
 
-    func_80029330(temp, mainMap[arg0].mapStruct8.unk_C.x, mainMap[arg0].mapStruct8.unk_C.y, mainMap[arg0].mapStruct8.unk_C.z);
+    func_80029330(temp, mainMap[arg0].mapFloats.scale.x, mainMap[arg0].mapFloats.scale.y, mainMap[arg0].mapFloats.scale.z);
     
-    func_80029374(temp, mainMap[arg0].mapStruct8.angles.x, mainMap[arg0].mapStruct8.angles.y, mainMap[arg0].mapStruct8.angles.z);
+    func_80029374(temp, mainMap[arg0].mapFloats.rotation.x, mainMap[arg0].mapFloats.rotation.y, mainMap[arg0].mapFloats.rotation.z);
 }
 
 //INCLUDE_ASM(const s32, "system/map", func_80039F58);
@@ -1761,92 +1765,92 @@ static inline u8 handleRgba(u16 i) {
 
     u8 count = 0;
     
-    if (mainMap[i].mapStruct8.groundRgba.r < mainMap[i].mapStruct8.defaultRgba.r) {
+    if (mainMap[i].mapFloats.groundRgba.r < mainMap[i].mapFloats.defaultRgba.r) {
                 
-        mainMap[i].mapStruct8.groundRgba.r += mainMap[i].mapStruct8.unk_60.r; 
+        mainMap[i].mapFloats.groundRgba.r += mainMap[i].mapFloats.unk_60.r; 
         
-        if (mainMap[i].mapStruct8.defaultRgba.r <= mainMap[i].mapStruct8.groundRgba.r) {
-            mainMap[i].mapStruct8.groundRgba.r = mainMap[i].mapStruct8.defaultRgba.r;
+        if (mainMap[i].mapFloats.defaultRgba.r <= mainMap[i].mapFloats.groundRgba.r) {
+            mainMap[i].mapFloats.groundRgba.r = mainMap[i].mapFloats.defaultRgba.r;
         } else {
             count = 1;
         } 
     }
 
-    if (mainMap[i].mapStruct8.groundRgba.r > mainMap[i].mapStruct8.defaultRgba.r) {
+    if (mainMap[i].mapFloats.groundRgba.r > mainMap[i].mapFloats.defaultRgba.r) {
         
-        mainMap[i].mapStruct8.groundRgba.r -= mainMap[i].mapStruct8.unk_60.r;
+        mainMap[i].mapFloats.groundRgba.r -= mainMap[i].mapFloats.unk_60.r;
 
-        if (mainMap[i].mapStruct8.groundRgba.r <= mainMap[i].mapStruct8.defaultRgba.r) {
-            mainMap[i].mapStruct8.groundRgba.r = mainMap[i].mapStruct8.defaultRgba.r;
+        if (mainMap[i].mapFloats.groundRgba.r <= mainMap[i].mapFloats.defaultRgba.r) {
+            mainMap[i].mapFloats.groundRgba.r = mainMap[i].mapFloats.defaultRgba.r;
         } else {
             count += 1;
         } 
         
     }
 
-    if (mainMap[i].mapStruct8.groundRgba.g < mainMap[i].mapStruct8.defaultRgba.g) {
+    if (mainMap[i].mapFloats.groundRgba.g < mainMap[i].mapFloats.defaultRgba.g) {
         
-        mainMap[i].mapStruct8.groundRgba.g += mainMap[i].mapStruct8.unk_60.g; 
+        mainMap[i].mapFloats.groundRgba.g += mainMap[i].mapFloats.unk_60.g; 
         
-        if (mainMap[i].mapStruct8.defaultRgba.g <= mainMap[i].mapStruct8.groundRgba.g) {
-            mainMap[i].mapStruct8.groundRgba.g = mainMap[i].mapStruct8.defaultRgba.g;
+        if (mainMap[i].mapFloats.defaultRgba.g <= mainMap[i].mapFloats.groundRgba.g) {
+            mainMap[i].mapFloats.groundRgba.g = mainMap[i].mapFloats.defaultRgba.g;
         } else {
             count += 1;
         } 
     }
 
-    if (mainMap[i].mapStruct8.groundRgba.g > mainMap[i].mapStruct8.defaultRgba.g) {
+    if (mainMap[i].mapFloats.groundRgba.g > mainMap[i].mapFloats.defaultRgba.g) {
         
-        mainMap[i].mapStruct8.groundRgba.g -= mainMap[i].mapStruct8.unk_60.g;
+        mainMap[i].mapFloats.groundRgba.g -= mainMap[i].mapFloats.unk_60.g;
 
-        if (mainMap[i].mapStruct8.groundRgba.g <= mainMap[i].mapStruct8.defaultRgba.g) {
-            mainMap[i].mapStruct8.groundRgba.g = mainMap[i].mapStruct8.defaultRgba.g;
-        } else {
-            count += 1;
-        } 
-        
-    }
-
-    if (mainMap[i].mapStruct8.groundRgba.b < mainMap[i].mapStruct8.defaultRgba.b) {
-        
-        mainMap[i].mapStruct8.groundRgba.b += mainMap[i].mapStruct8.unk_60.b; 
-        
-        if (mainMap[i].mapStruct8.defaultRgba.b <= mainMap[i].mapStruct8.groundRgba.b) {
-            mainMap[i].mapStruct8.groundRgba.b = mainMap[i].mapStruct8.defaultRgba.b;
-        } else {
-            count += 1;
-        } 
-    }
-
-    if (mainMap[i].mapStruct8.groundRgba.b > mainMap[i].mapStruct8.defaultRgba.b) {
-        
-        mainMap[i].mapStruct8.groundRgba.b -= mainMap[i].mapStruct8.unk_60.b;
-
-        if (mainMap[i].mapStruct8.groundRgba.b <= mainMap[i].mapStruct8.defaultRgba.b) {
-            mainMap[i].mapStruct8.groundRgba.b = mainMap[i].mapStruct8.defaultRgba.b;
+        if (mainMap[i].mapFloats.groundRgba.g <= mainMap[i].mapFloats.defaultRgba.g) {
+            mainMap[i].mapFloats.groundRgba.g = mainMap[i].mapFloats.defaultRgba.g;
         } else {
             count += 1;
         } 
         
     }
 
-    if (mainMap[i].mapStruct8.groundRgba.a < mainMap[i].mapStruct8.defaultRgba.a) {
+    if (mainMap[i].mapFloats.groundRgba.b < mainMap[i].mapFloats.defaultRgba.b) {
         
-        mainMap[i].mapStruct8.groundRgba.a += mainMap[i].mapStruct8.unk_60.a; 
+        mainMap[i].mapFloats.groundRgba.b += mainMap[i].mapFloats.unk_60.b; 
         
-        if (mainMap[i].mapStruct8.defaultRgba.a <= mainMap[i].mapStruct8.groundRgba.a) {
-            mainMap[i].mapStruct8.groundRgba.a = mainMap[i].mapStruct8.defaultRgba.a;
+        if (mainMap[i].mapFloats.defaultRgba.b <= mainMap[i].mapFloats.groundRgba.b) {
+            mainMap[i].mapFloats.groundRgba.b = mainMap[i].mapFloats.defaultRgba.b;
         } else {
             count += 1;
         } 
     }
 
-    if (mainMap[i].mapStruct8.groundRgba.a > mainMap[i].mapStruct8.defaultRgba.a) {
+    if (mainMap[i].mapFloats.groundRgba.b > mainMap[i].mapFloats.defaultRgba.b) {
         
-        mainMap[i].mapStruct8.groundRgba.a -= mainMap[i].mapStruct8.unk_60.a;
+        mainMap[i].mapFloats.groundRgba.b -= mainMap[i].mapFloats.unk_60.b;
 
-        if (mainMap[i].mapStruct8.groundRgba.a <= mainMap[i].mapStruct8.defaultRgba.a) {
-            mainMap[i].mapStruct8.groundRgba.a = mainMap[i].mapStruct8.defaultRgba.a;
+        if (mainMap[i].mapFloats.groundRgba.b <= mainMap[i].mapFloats.defaultRgba.b) {
+            mainMap[i].mapFloats.groundRgba.b = mainMap[i].mapFloats.defaultRgba.b;
+        } else {
+            count += 1;
+        } 
+        
+    }
+
+    if (mainMap[i].mapFloats.groundRgba.a < mainMap[i].mapFloats.defaultRgba.a) {
+        
+        mainMap[i].mapFloats.groundRgba.a += mainMap[i].mapFloats.unk_60.a; 
+        
+        if (mainMap[i].mapFloats.defaultRgba.a <= mainMap[i].mapFloats.groundRgba.a) {
+            mainMap[i].mapFloats.groundRgba.a = mainMap[i].mapFloats.defaultRgba.a;
+        } else {
+            count += 1;
+        } 
+    }
+
+    if (mainMap[i].mapFloats.groundRgba.a > mainMap[i].mapFloats.defaultRgba.a) {
+        
+        mainMap[i].mapFloats.groundRgba.a -= mainMap[i].mapFloats.unk_60.a;
+
+        if (mainMap[i].mapFloats.groundRgba.a <= mainMap[i].mapFloats.defaultRgba.a) {
+            mainMap[i].mapFloats.groundRgba.a = mainMap[i].mapFloats.defaultRgba.a;
         } else {
             count += 1;
         } 
@@ -1899,28 +1903,28 @@ void func_8003A1BC(void) {
                 mainMap[i].mapStruct9.flags &= ~8;
             }
 
-            if (mainMap[i].mapStruct8.angles.x < 0) {
-                mainMap[i].mapStruct8.angles.x += 360.0f;
+            if (mainMap[i].mapFloats.rotation.x < 0) {
+                mainMap[i].mapFloats.rotation.x += 360.0f;
             }
 
-            if (mainMap[i].mapStruct8.angles.x >= 360.0f) {
-                mainMap[i].mapStruct8.angles.x -= 360.0f;
+            if (mainMap[i].mapFloats.rotation.x >= 360.0f) {
+                mainMap[i].mapFloats.rotation.x -= 360.0f;
             }
             
-            if (mainMap[i].mapStruct8.angles.y < 0) {
-                mainMap[i].mapStruct8.angles.y += 360.0f;
+            if (mainMap[i].mapFloats.rotation.y < 0) {
+                mainMap[i].mapFloats.rotation.y += 360.0f;
             }
 
-            if (mainMap[i].mapStruct8.angles.y >= 360.0f) {
-                mainMap[i].mapStruct8.angles.y -= 360.0f;
+            if (mainMap[i].mapFloats.rotation.y >= 360.0f) {
+                mainMap[i].mapFloats.rotation.y -= 360.0f;
             }
 
-            if (mainMap[i].mapStruct8.angles.z < 0) {
-                mainMap[i].mapStruct8.angles.z += 360.0f;
+            if (mainMap[i].mapFloats.rotation.z < 0) {
+                mainMap[i].mapFloats.rotation.z += 360.0f;
             }
 
-            if (mainMap[i].mapStruct8.angles.z >= 360.0f) {
-                mainMap[i].mapStruct8.angles.z -= 360.0f;
+            if (mainMap[i].mapFloats.rotation.z >= 360.0f) {
+                mainMap[i].mapFloats.rotation.z -= 360.0f;
             }
 
             handleRotation(i);
@@ -1981,13 +1985,13 @@ inline void func_8003AC14(Gfx* dl, MapBitmap* arg1) {
 //      size 0x40
 //INCLUDE_ASM(const s32, "system/map", func_8003ACA8);
 
-Gfx* func_8003ACA8(Gfx* arg0, MainMap* arg1, MapBitmap* arg2, u16 vtxIndex) {
+Gfx* func_8003ACA8(Gfx* arg0, MainMap* map, MapBitmap* arg2, u16 vtxIndex) {
 
     Gfx dl[2];
       
     func_800276AC((Vtx*)&D_80165500[gDisplayContextIndex][vtxIndex], arg2->width, arg2->height, arg2->height, 0, 0,
-        0, 0, 0, (0x10 | 0x40 | 0x100), arg1->mapStruct8.groundRgba.r, arg1->mapStruct8.groundRgba.g, arg1->mapStruct8.groundRgba.b,
-        arg1->mapStruct8.groundRgba.a);
+        0, 0, 0, (0x10 | 0x40 | 0x100), map->mapFloats.groundRgba.r, map->mapFloats.groundRgba.g, map->mapFloats.groundRgba.b,
+        map->mapFloats.groundRgba.a);
  
     gSPVertex(&dl[1], &D_80165500[gDisplayContextIndex][vtxIndex][0], 4, 0);
 

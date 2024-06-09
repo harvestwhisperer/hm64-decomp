@@ -285,8 +285,8 @@ bool func_80043430(u16 index, u16 conversationIndex, u16 arg2, u16 arg3) {
             0,
             0);
  
-        func_8002BD0C(D_801C3E40[index].struct2.unk_30, 0.0f, 0.0f, 0.0f);
-        func_8002BD90(D_801C3E40[index].struct2.unk_30, 1.0f, 1.0f, 1.0f);
+        setSpriteShrinkFactor(D_801C3E40[index].struct2.unk_30, 0.0f, 0.0f, 0.0f);
+        setSpriteScale(D_801C3E40[index].struct2.unk_30, 1.0f, 1.0f, 1.0f);
         func_8002BE14(D_801C3E40[index].struct2.unk_30, 0.0f, 0.0f, 0.0f);
         func_8002CB24(D_801C3E40[index].struct2.unk_30, 1);
         func_8002C914(D_801C3E40[index].struct2.unk_30, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -309,8 +309,8 @@ bool func_80043430(u16 index, u16 conversationIndex, u16 arg2, u16 arg3) {
             0,
             0);
 
-        func_8002BD0C(D_801C3E40[index].struct3.unk_30, 0.0f, 0.0f, 0.0f);
-        func_8002BD90(D_801C3E40[index].struct3.unk_30, 1.0f, 1.0f, 1.0f);
+        setSpriteShrinkFactor(D_801C3E40[index].struct3.unk_30, 0.0f, 0.0f, 0.0f);
+        setSpriteScale(D_801C3E40[index].struct3.unk_30, 1.0f, 1.0f, 1.0f);
         func_8002BE14(D_801C3E40[index].struct3.unk_30, 0.0f, 0.0f, 0.0f);
         func_8002CB24(D_801C3E40[index].struct3.unk_30, 1);
         func_8002C914(D_801C3E40[index].struct3.unk_30, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -333,8 +333,8 @@ bool func_80043430(u16 index, u16 conversationIndex, u16 arg2, u16 arg3) {
             0,
             0);
 
-        func_8002BD0C(D_801C3E40[index].struct4.unk_30, 0.0f, 0.0f, 0.0f);
-        func_8002BD90(D_801C3E40[index].struct4.unk_30, 1.0f, 1.0f, 1.0f);
+        setSpriteShrinkFactor(D_801C3E40[index].struct4.unk_30, 0.0f, 0.0f, 0.0f);
+        setSpriteScale(D_801C3E40[index].struct4.unk_30, 1.0f, 1.0f, 1.0f);
         func_8002BE14(D_801C3E40[index].struct4.unk_30, 0.0f, 0.0f, 0.0f);
         func_8002CB24(D_801C3E40[index].struct4.unk_30, 1);
         func_8002C914(D_801C3E40[index].struct4.unk_30, 0xFF, 0xFF, 0xFF, 0xFF);

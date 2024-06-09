@@ -673,7 +673,7 @@ void func_80047F90(u16 index) {
 
     // set sprite coordinates
     if (cutsceneMaps[index].flags & CHARACTER_SPRITE_ASSET) {
-        func_8002FD80(cutsceneMaps[index].spriteIndex, cutsceneMaps[index].coordinates.x, cutsceneMaps[index].coordinates.y, cutsceneMaps[index].coordinates.z);
+        setSpriteStartingCoordinates(cutsceneMaps[index].spriteIndex, cutsceneMaps[index].coordinates.x, cutsceneMaps[index].coordinates.y, cutsceneMaps[index].coordinates.z);
     }
 }
 
@@ -1465,8 +1465,7 @@ void func_8004A38C(u16 index) {
     mapIndex = ptr->mainMapIndex;
 
     cutsceneMaps[index].cutscenePointer += 4;
-
-    // set Vec3fs on mapStruct8
+    
     func_8003BB14(mapModelContextIndex, mapIndex);
 
 }

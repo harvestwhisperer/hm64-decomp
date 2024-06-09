@@ -6,6 +6,7 @@
 
 #define MAX_MODELS 96
 #define MODEL_DATA_BANK 0x80255000
+#define MAIN_MAP_INDEX 0
 
 typedef struct {
 	u16 header1;

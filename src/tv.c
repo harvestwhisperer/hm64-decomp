@@ -41,12 +41,12 @@ void func_800D8540(void) {
 
     func_8002B138(0x6A, &_tvContentTextureSegmentRomStart, &_tvContentTextureSegmentRomEnd, &_tvContentAssetsIndexSegmentRomStart, &_tvContentAssetsIndexSegmentRomEnd, &_tvContentSpritesheetIndexSegmentRomStart, &_tvContentSpritesheetIndexSegmentRomEnd, (void*)OBJECT_SPRITE_BANK_1_START, 0x802EC800, 0x802ED800, 0x802EDB00, 0x802EDE00, 0x802EDF00, 1, 1);
     
-    func_8002BD90(0x6A, 2.0f, 2.0f, 1.0f);
+    setSpriteScale(0x6A, 2.0f, 2.0f, 1.0f);
     func_8002BE14(0x6A, 45.0f, -45.0f, 0.0f);
     func_8002C7EC(0x6A, 3);
     func_8002C914(0x6A, 0xFF, 0xFF, 0xFF, 0xFF);
 
-    // set map struct 4
+    // set map object
     func_80034C40(MAIN_MAP_INDEX, 9, 0x6A, tvContext.pictureIndex, -12.0f, 36.0f, -154.0f, 0xFF, 0xFE, 0, 0);
 
     tvContext.mode = 0;

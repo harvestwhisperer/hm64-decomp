@@ -3,71 +3,11 @@
 
 #include "common.h"
 
-#define PLAYER 0
-
-/* tools */
-#define SICKLE 1
-#define HOE 2
-#define AX 3
-#define HAMMER 4
-#define WATERING_CAN 5
-#define MILKER 6
-#define BELL 7
-#define BRUSH 8
-#define CLIPPERS 9
-#define TURNIP_SEEDS 10
-#define POTATO_SEEDS 11
-#define CABBAGE_SEEDS 12
-#define TOMATO_SEEDS 13
-#define CORN_SEEDS 14
-#define EGGPLANT_SEEDS 15
-#define STRAWBERRY_SEEDS 16
-#define MOON_DROP_SEEDS 17
-#define PINK_CAT_MINT_SEEDS 18
-#define BLUE_MIST_SEEDS 19
-#define CHICKEN_FEED 20
-#define BALL 21
-#define FEEDING_BOTTLE 22
-#define FISHING_POLE 24
-#define MIRACLE_POTION 25
-#define COW_MEDICINE 26
-#define GRASS_SEEDS 27
-#define BLUE_FEATHER 28
-#define EMPTY_BOTTLE 29
-
-/* key/special items */
-#define OCARINA 1
-#define FLOWER_SHOP_CARD 2
-#define BAKERY_CARD 3
-#define BROKEN_MUSIC_BOX 4
-#define FIXED_MUSIC_BOX 5
-#define DOOR_TO_HEAVEN 6
-#define WEATHER_VANE 7
-#define GOLD_PENDANT 8
-#define LIBRARY_BOOK 9
-#define TREASURE_MAP 10
-#define MARBLES 11
-#define GOODLUCK_CHARM 12
-#define MEDAL_BAG 13
-#define HORSE_RACE_TICKET 14
-#define DOG_RACE_TICKET 15
-#define POTPURRI 16
-#define EMBROIDERED_HANDKERCHIEF 17
-#define HAND_KNIT_SOCKS 18
-#define LUCKY_BRACELET 19
-#define FLOWER_BATH_CRYSTALS 20
-#define STAMINA_CARROT 21
-
-// TODO: finish adding items
-/* item indices */
-#define CAKE 7
-#define PIE 8
-#define COOKIES 9
-#define TOMATO 0x10
-#define COTTON_CANDY 0x29
-#define FRIED_OCTUPUS 0x2A
-#define ROASTED_CORN 0x2B
-#define BOTTLE_WITH_WINE 0x72
+#define MAX_RUCKSACK_SLOTS 9
+#define MAX_TOOL_SLOTS_RUCKSACK 9
+#define MAX_TOOLCHEST_SLOTS 8 * 4
+#define MAX_HAPPINESS 255
+#define MAX_STAMINA 250
 
 // TODO: finish adding actions
 /* actions */
@@ -81,14 +21,6 @@
 #define DRINKING 20
 #define CASTING_FISHING_ROD 22
 
-/* bottle contents */
-#define EMPTY 0
-
-#define TOTAL_ITEMS 67
-#define MAX_RUCKSACK_SLOTS 9
-#define MAX_TOOL_SLOTS_RUCKSACK 9
-#define MAX_TOOLCHEST_SLOTS 0x20
-#define MAX_KEY_ITEMS 24 
 
 typedef struct {
     u8 counter;
@@ -153,7 +85,7 @@ typedef struct {
 
 extern void setupPlayerSprite(u16 arg0, u8 resetPlayer);
 
-extern void func_80065AA0();
+extern void handleEatingAndDrinking();
 extern u8 func_80065BCC(u8 tool);
 extern void func_80065F5C();   
 extern Vec3f* func_80065F94(Vec3f *arg0, f32 arg1, u8 arg2);
