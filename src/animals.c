@@ -204,7 +204,7 @@ void func_8008779C(void) {
     u8 i;
 
     if (dogInfo.flags & 4) {
-        if (renderedSprites[dogInfo.spriteIndex].flags & 8) {
+        if (animatedSprites[dogInfo.spriteIndex].flags & 8) {
             func_8002FA2C(dogInfo.spriteIndex);
         }
     }
@@ -213,7 +213,7 @@ void func_8008779C(void) {
 
         if (gChickens[i].flags & 4) {
 
-            if (renderedSprites[gChickens[i].spriteIndex].flags & 8) {
+            if (animatedSprites[gChickens[i].spriteIndex].flags & 8) {
                 func_8002FA2C(gChickens[i].spriteIndex);
             }
 
@@ -222,21 +222,21 @@ void func_8008779C(void) {
 
     for (i = 0; i < MAX_FARM_ANIMALS; i++) {
         if (gFarmAnimals[i].flags & 4) {
-            if (renderedSprites[gFarmAnimals[i].spriteIndex].flags & 8) {
+            if (animatedSprites[gFarmAnimals[i].spriteIndex].flags & 8) {
                 func_8002FA2C(gFarmAnimals[i].spriteIndex);
             }
         }
     }
 
     if (horseInfo.flags & 4) {
-        if (renderedSprites[horseInfo.spriteIndex].flags & 8) {
+        if (animatedSprites[horseInfo.spriteIndex].flags & 8) {
             func_8002FA2C(horseInfo.spriteIndex);
         }
     }
 
     for (i = 0; i < 7; i++) {
         if (gChickenEggs[i].flags & 4) {
-            if (renderedSprites[gChickenEggs[i].spriteIndex].flags & 8) {
+            if (animatedSprites[gChickenEggs[i].spriteIndex].flags & 8) {
                 func_8002FA2C(gChickenEggs[i].spriteIndex);
             }
         }
@@ -318,7 +318,6 @@ void func_80087DEC(void) {
 
 }
 
-
 INCLUDE_ASM(const s32, "animals", func_80087F28);
 
 //INCLUDE_ASM(const s32, "animals", initializeChicken);
@@ -328,7 +327,7 @@ void initializeChicken(u8 chickenIndex) {
     gChickens[chickenIndex].location = 0;
     
     gChickens[chickenIndex].unk_17 = 0;
-    gChickens[chickenIndex].unk_18 = 0;
+    gChickens[chickenIndex].direction = 0;
     gChickens[chickenIndex].unk_19 = 0;
     gChickens[chickenIndex].unk_1A = 0;
     gChickens[chickenIndex].unk_1B = 0;
@@ -489,7 +488,7 @@ void initializeDog(void) {
     dogInfo.location = FARM;
     dogInfo.coordinates.y = 0;
     dogInfo.unk_17 = 0;
-    dogInfo.unk_18 = 0;
+    dogInfo.direction = 0;
     dogInfo.affection = 0; 
     dogInfo.unk_19 = 0;
     dogInfo.unk_1A = 0;
@@ -544,7 +543,7 @@ void setDogLocation(u8 mapIndex) {
     if (dogInfo.flags & 1 && (mapIndex == 0xFF || dogInfo.location == mapIndex)) {
         dogInfo.location = FARM;
         dogInfo.coordinates.y = 0.0f;
-        dogInfo.unk_18 = 0;
+        dogInfo.direction = 0;
         dogInfo.flags &= ~0x8;
         dogInfo.coordinates.x = -432.0f;
         dogInfo.coordinates.z = 96.0f;
@@ -643,8 +642,8 @@ void func_8008C208(void) {
             
         }
         
-        setSpriteDirection(dogInfo.spriteIndex, (dogInfo.unk_18 + 8 - func_8003C1A4(MAIN_MAP_INDEX)) % 8);
-        func_80028520(&vec, dogInfo.unk_19, dogInfo.unk_18, 0);
+        setSpriteDirection(dogInfo.spriteIndex, (dogInfo.direction + 8 - func_8003C1A4(MAIN_MAP_INDEX)) % 8);
+        func_80028520(&vec, dogInfo.unk_19, dogInfo.direction, 0);
         func_8002FE10(dogInfo.spriteIndex, vec.x, vec.y, vec.z, dogInfo.unk_19);
     } 
     

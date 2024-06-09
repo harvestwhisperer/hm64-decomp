@@ -260,8 +260,8 @@ typedef struct {
     void *unk_8; // return ptr
     Vec3f unk_C;
     u32 unk_18; // sets cutscenePointer
-    u16 unk_1C; // sprite info, renderedSprites.unk_58
-    u16 unk_1E; // sprite info,  renderedSprites.unk_5A
+    u16 unk_1C; // sprite info, animatedSprites.unk_58
+    u16 unk_1E; // sprite info,  animatedSprites.unk_5A
     u16 unk_20; // sprite animation
     u16 unk_22; // sprite animation
     u16 unk_24; // sprite animation

@@ -61,9 +61,9 @@
 
 // TODO: finish adding items
 /* item indices */
-#define WEED 1
+#define WEED_ITEM_INDEX 1
 #define ROCK 2
-#define LOG 3
+#define LOG_ITEM_INDEX 3
 #define MOONDROP_FLOWER 4
 #define PINK_CAT_MINT_FLOWER 5  
 // 6
@@ -109,7 +109,7 @@
 #define MOONLIGHT_STONE 0x31
 #define PONTANA_ROOT 0x32
 #define FODDER 0x39
-#define SEEDS 0x40
+#define SEEDS_ITEM_INDEX 0x40
 #define MEDICINE 0x48
 #define SHEARS_ITEM_INDEX 0x49
 #define RICE_CAKE 0x50
@@ -117,10 +117,11 @@
 #define EGGS 0x52
 #define POWER_NUT 0x57
 #define DOG_ITEM_INDEX 0x59
-#define CHICK 0x65
+#define CHICK_ITEM_INDEX 0x65
 #define BOTTLE_WITH_WINE 0x72
 #define PUPPY 0x80
 #define CAT 0x89
+#define SQUIRREL 0x9A
 #define MONKEY 0xA5
 #define DOG_2_ITEM_INDEX 0xB0
 #define INSECT 0xB7
@@ -137,19 +138,17 @@
 /* power nut bits */
 #define FISHING_POWER_NUT 4
 
-
+// 0x80204DF8
 typedef struct {
-    Vec3f unk_0;
-    u32 unk_C;
-    u32 unk_10;
-    u32 unk_14;
-    Vec3f unk_18;
-    u16 unk_24;
-    u16 unk_26;
-    u16 unk_28;
-    u8 unk_2A;
-    u8 flags;
-} ToolStatus;
+    Vec3f unk_0; // 0xDF8
+    Vec3f unk_C;  // DFC
+    Vec3f unk_18; // 0xE10
+    u16 unk_24; // 0xE1C
+    u16 unk_26; // 0xE1E
+    u16 unk_28; // 0xE20 = animation flagss
+    u8 unk_2A; // 0xE22
+    u8 flags; // 0xE23
+} ItemContext;
 
 // 0x80189828
 typedef struct {
@@ -186,7 +185,7 @@ extern bool func_800D5B30();
 extern void func_800D67FC(u8 index);
 extern void func_800D7010();  
 
-extern ToolStatus D_80204DF8[10];
+extern ItemContext itemInfo[10];
 extern ToolUse toolUse;
 
 // TODO: label

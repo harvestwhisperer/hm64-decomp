@@ -188,4 +188,7 @@ extern u32 _fontPalette1SegmentRomEnd;
 extern u32 _fontPalette2SegmentRomStart;
 extern u32 _fontPalette2SegmentRomEnd;
 
+// pointer to character sprite data: D_8011BD18
+extern void* D_801891C8;
+
 #endif

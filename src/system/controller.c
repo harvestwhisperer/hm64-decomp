@@ -65,17 +65,18 @@ void controllerInit(void) {
     contPattern = nuContInit();
 }
 
-#ifdef PERMUTER
+//INCLUDE_ASM(const s32, "system/controller", func_8004CF68);
+
+// this requires button on NUContData struct to be volatile
 void func_8004CF68(void) {
     
-    u8 i;
-    u8 j;
+    u8 i, j;
     
     nuContDataGetExAll(contData);
     
-    for (i = 0; i < 4; i++) {
+    for (i = 0; i < NU_CONT_MAXCONTROLLERS; i++) {
         
-        if (!D_80181B90[i].errno) {
+        if (!contStatus[i].errno) {
             
             if ((frameCount % D_802226E2) == 0) {
                 
@@ -136,9 +137,7 @@ void func_8004CF68(void) {
         }
     }
 }
-#else
-INCLUDE_ASM(const s32, "system/controller", func_8004CF68);
-#endif
+
 
 //INCLUDE_ASM(const s32, "system/controller", func_8004D35C);
 

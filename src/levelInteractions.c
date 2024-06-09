@@ -952,7 +952,7 @@ u8 func_800AEE8C(u16 mapIndex, u8 arg1) {
         case 0x10:
 
             if (func_8004D380(CONTROLLER_1, BUTTON_A)) {
-                if (gPlayer.heldItem == 0 && renderedSprites[PLAYER].startingCoordinates.z >= -44.0f && renderedSprites[PLAYER].startingCoordinates.z < -36.0f) {
+                if (gPlayer.heldItem == 0 && animatedSprites[PLAYER].startingCoordinates.z >= -44.0f && animatedSprites[PLAYER].startingCoordinates.z < -36.0f) {
                     setDailyEventBit(6);
                     setPlayerAction(0x11, 0);
                     D_80126561 = 0x32;
@@ -965,7 +965,7 @@ u8 func_800AEE8C(u16 mapIndex, u8 arg1) {
         case 0x11:
 
             if (func_8004D380(CONTROLLER_1, BUTTON_A)) {
-                if (gPlayer.heldItem == 0 && renderedSprites[PLAYER].startingCoordinates.x >= 42.0f && renderedSprites[PLAYER].startingCoordinates.x < 50.0f) {
+                if (gPlayer.heldItem == 0 && animatedSprites[PLAYER].startingCoordinates.x >= 42.0f && animatedSprites[PLAYER].startingCoordinates.x < 50.0f) {
                     setDailyEventBit(6);
                     setPlayerAction(0x10, 0);
                     gHappiness += adjustValue(gHappiness, 2, 0xFF);

@@ -283,11 +283,45 @@ bool func_8003FA1C(u16 index, u16 arg1, u32 romTextureStart, u32 romTextureEnd,
     
 }
 
-INCLUDE_ASM(const s32, "system/message", func_8003FAE8);
+//INCLUDE_ASM(const s32, "system/message", func_8003FAE8);
 
-INCLUDE_ASM(const s32, "system/message", func_8003FAF8);
+void func_8003FAE8(void* arg0) {
+    D_801891C8 = arg0;
+}
 
-INCLUDE_ASM(const s32, "system/message", func_8003FB4C);
+//INCLUDE_ASM(const s32, "system/message", func_8003FAF8);
+
+bool func_8003FAF8(u16 index, u16 arg1) {
+
+    u8 result = 0;
+
+    if (index < MAX_DIALOGUE_BOXES) {
+        if (dialogueBoxes[index].flags & 1 ) {
+            dialogueBoxes[index].unk_86 = arg1;
+            result = 1;
+        }
+    }
+
+    return result;
+    
+}
+
+//INCLUDE_ASM(const s32, "system/message", func_8003FB4C);
+
+bool func_8003FB4C(u16 index, u16 arg1) {
+    u8 result = 0;
+
+    if (index < MAX_DIALOGUE_BOXES) {
+        if (dialogueBoxes[index].flags & 1 ) {
+            dialogueBoxes[index].unk_84 = arg1;
+            result = 1;
+        }
+    }
+
+    return result;
+    
+}
+
 
 //INCLUDE_ASM(const s32, "system/message", func_8003FBA0);
 
@@ -367,6 +401,7 @@ INCLUDE_ASM(const s32, "system/message", func_80041B28);
 // dialogue box rendering/printing
 INCLUDE_ASM(const s32, "system/message", func_80041B80);
 
+// display lists, gsDPSetScissor
 INCLUDE_ASM(const s32, "system/message", func_80041CD8);
 
 // param 1: 0x80159510 + 0x10 * offset
@@ -406,4 +441,5 @@ INCLUDE_RODATA(const s32, "system/message", D_8011EEC0);
 
 INCLUDE_RODATA(const s32, "system/message", D_8011EEC4);
 
+// main loop function
 INCLUDE_ASM(const s32, "system/message", func_80042634);

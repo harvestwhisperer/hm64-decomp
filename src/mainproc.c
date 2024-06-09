@@ -15,38 +15,38 @@
 #include "mainLoop.h"                        
 
 // bss
-volatile u16 D_801594E4;
-volatile u8 D_8016FB04;
-volatile u8 D_8013DC30;
-volatile u8 D_8016FB04;
-volatile u8 D_801C3BEC;
-volatile u8 D_801C3F34;
-volatile u8 D_801C3F71;
-volatile u8 D_801C4215;
-volatile u8 D_80204B38;
-volatile u8 D_80205208;
-volatile u32 D_802226E8;
-volatile u8 D_802226E2;
-volatile u8 D_80222730;
-volatile u8 D_802373F1;
-volatile u8 D_80237A04;
+extern volatile u16 D_801594E4;
+extern volatile u8 D_8016FB04;
+extern volatile u8 D_8013DC30;
+extern volatile u8 D_8016FB04;
+extern volatile u8 D_801C3BEC;
+extern volatile u8 D_801C3F34;
+extern volatile u8 D_801C3F71;
+extern volatile u8 D_801C4215;
+extern volatile u8 D_80204B38;
+extern volatile u8 D_80205208;
+extern volatile u32 D_802226E8;
+extern volatile u8 D_802226E2;
+extern volatile u8 D_80222730;
+extern volatile u8 D_802373F1;
+extern volatile u8 D_80237A04;
 
-u16 gMainMapIndex;
+extern u16 gMainMapIndex;
 
-volatile u32 gDisplayContextIndex;
-volatile u8 gfxTaskNo;
-volatile u8 frameCount;
+extern volatile u32 gDisplayContextIndex;
+extern volatile u8 gfxTaskNo;
+extern volatile u8 frameCount;
 
-volatile u32 D_801C3B68[4];
-volatile u8 D_801C3F34;
-volatile u8 D_801C3F71;
-volatile u8 D_801D6230;
+extern volatile u32 D_801C3B68[4];
+extern volatile u8 D_801C3F34;
+extern volatile u8 D_801C3F71;
+extern volatile u8 D_801D6230;
 
 // shared
-volatile u16 mainLoopCallbackCurrentIndex;
+extern volatile u16 mainLoopCallbackCurrentIndex;
 
 // internal variable
-volatile u8 D_80237408;
+extern volatile u8 D_80237408;
 
 // forward declarations
 void initializeEngine(void);
@@ -125,6 +125,7 @@ void initializeEngine(void) {
     setMainLoopCallbackFunctionIndex(0);
 
     nuGfxFuncSet((NUGfxFunc)gfxRetraceCallback);
+
 }
 
 //INCLUDE_ASM(const s32, "mainproc", func_80025F04);

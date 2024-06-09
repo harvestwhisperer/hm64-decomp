@@ -36,10 +36,12 @@ void mainLoop(void) {
     D_80205208 = 0;
     D_801594E4 = 1;
     
+    // wait for frames?
     func_80026284();
     // toggle flags
     func_8004DEC8();
     
+    // could be inline func_80026230
     D_80182BA0 = 1;
     D_8020564C = 0;
 
@@ -53,6 +55,7 @@ void mainLoop(void) {
             
             if (!D_8020564C) { 
               
+              // could be inline func_80026230
               D_80182BA0 = 1;
               
               // handle specific logic depending on game mode/screen
@@ -159,18 +162,19 @@ void func_80026220(void) {
 
 //INCLUDE_ASM(const s32, "registerMainLoopCallbacks", func_80026230);
 
-// unused
+// unused or inline
 // n64sym identified this as fbSetBg
 void func_80026230(u16 arg0) {
     // identified as FB_BGCOLOR
     D_80182BA0 = arg0;
+
 }
 
 void noOpCallback(void) {}
 
 //INCLUDE_ASM(const s32, "mainLoop", func_80026248);
 
-// unused
+// unused or inline
 void func_80026248(u16 arg0) {
 
   u16 counter = 1;
@@ -197,19 +201,24 @@ void func_80026284(void) {
     
     goto loop_end;
     
+    // after frame count exceeds 60 and before gfx retrace callback is called again
     while (!(D_801594E4 & 2)) {
+
+        // TODO: replace with inline func_80026248
 
         counter = 1;
 
         do {
 
           D_80205208 = 0;
+          
           while (!D_80205208);
           check = counter;
           counter++;
           check = check == 0;
 
         } while (check);
+
 loop_end:     
     }
 
@@ -258,7 +267,7 @@ void func_800263B0(int pendingGfx) {
 
   u8 temp;
     
-  if (!(frameCount % D_802373F1)) {
+  if ((frameCount % D_802373F1) == 0) {
       
     if (frameCount > 59) {
 
@@ -280,7 +289,7 @@ void func_800263B0(int pendingGfx) {
         drawFrame();
 
         D_8016FB04 += 1;
-        // FIXME: unnecessary assignment
+        // FIXME: unnecessary assignment, might be return value
         temp = D_8016FB04;
         D_801C3F71 = 0;
         
@@ -294,14 +303,17 @@ void func_800263B0(int pendingGfx) {
 
 void func_800264CC(int arg0) {
     
-    if (!(frameCount % D_802226E2)) {
+    if ((frameCount % D_802226E2) == 0) {
         
         if (frameCount > 59) {
+
           D_8013DC30 = D_801C3F34;
           D_801C3F34 = 0;
+
           if (D_8013DC30 < (60 / D_802226E2)) {
             D_80222730 = 1;
           }
+
         }
       
         if (!D_80205208) {
@@ -309,8 +321,9 @@ void func_800264CC(int arg0) {
           D_80205208 = 1;
           D_801C3BEC = 0;
           D_801C3F34 += 1;
-          // FIXME: ?
+          // FIXME: ? might be return value
           D_801C3F34;  
+
         }
     }
 }

@@ -117,7 +117,6 @@ void drawFrame(void) {
     startGfxTask();
     // set world and view matrices
     func_80026CEC();
-    // draw
     doViewportGfxTask();
 
     gDisplayContextIndex ^= 1;

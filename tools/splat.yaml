@@ -24,7 +24,7 @@ options:
   libultra_symbols: True
   gfx_ucode: f3dex2
   # ld_symbol_header_path: include/ld_symbols.h
-  disassemble_all: true
+  # disassemble_all: true
   # extensions_path: tools/splat_ext
   
 segments:
@@ -65,7 +65,7 @@ segments:
       - [ 0x4570, c, system/worldGraphics]
       - [ 0x4F30, c, system/sprite]
       - [ 0x63E0, c, system/globalSprites] 
-      - [ 0x9070, c, system/renderedSprites]
+      - [ 0x9070, c, system/animatedSprites]
       - [ 0xEBD0, c, system/map]
       - [ 0x16C70, c, system/mapContext]
       - [ 0x181C0, c, system/audio]

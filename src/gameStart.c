@@ -71,6 +71,7 @@ void startGame(void) {
 //INCLUDE_ASM(const s32, "gameStart", func_8004DFF8);
 
 // unused function: probably for sandboxing during development
+// not in JP version
 void func_8004DFF8(void) {
     
     setLifeEventBit(HAVE_HORSE);

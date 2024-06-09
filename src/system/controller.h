@@ -46,6 +46,14 @@ typedef struct {
     u8 unk_2C[0x18];
 } Controller;
 
+// need to make button volatile to match func_8004CF6
+typedef struct {
+    volatile u16	button;		/* A,B,C,Z,L,R,START,PAD ,button 	*/
+    s8	stick_x;		/* real-use range  -61 <= stick X <= 61 */
+    s8	stick_y;		/* real-use range  -63 <= stick Y <= 63 */
+    u8	errno;		/* error*/
+    u16	trigger;		/* Trigger data of the button */
+} NUContDataPatch;
 
 extern void controllerInit(void);
 extern void func_8004CF68(void);
@@ -73,9 +81,8 @@ extern u32 func_8004DA48(u8 contIndex, u8* noteName, u8* extName, s32 offset, s3
 extern u32 func_8004DAF4(u8 contIndex, u8 *noteName, u8 *extName);
 
 
-NUContData contData[NU_CONT_MAXCONTROLLERS];
-// nu
-OSContStatus D_80181B90[NU_CONT_MAXCONTROLLERS];
+extern NUContDataPatch contData[NU_CONT_MAXCONTROLLERS];
+extern OSContStatus contStatus[NU_CONT_MAXCONTROLLERS];
 
 extern Controller controllers[NU_CONT_MAXCONTROLLERS];
 extern Controller gControllers[NU_CONT_MAXCONTROLLERS];
