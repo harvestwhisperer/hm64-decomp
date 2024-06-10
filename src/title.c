@@ -53,7 +53,7 @@ void initializeTitleScreen(u8 arg0) {
     func_8002C914(HARVEST_MOON_64_LOGO, 0xFF, 0xFF, 0xFF, 0xFF);
     func_8002CB24(HARVEST_MOON_64_LOGO, 1);
     func_8002B80C(HARVEST_MOON_64_LOGO, 0, 0xFE);
-    
+     
     func_8002B138(MARVCOME_VICTOR_COPYRIGHT_INFO, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesIndexSegmentRomStart, &_titleSpritesIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURES_VADDR_END, (void*)TITLE_SCREEN_PALETTE_VADDR_START, (void*)TITLE_SCREEN_PALETTE_VADDR_END, NULL, NULL, 0);
     setSpriteShrinkFactor(MARVCOME_VICTOR_COPYRIGHT_INFO, 0.0f, -96.0f, 64.0f);
     setSpriteScale(MARVCOME_VICTOR_COPYRIGHT_INFO, 1.0f, 1.0f, 1.0f);

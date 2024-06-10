@@ -15,20 +15,22 @@
 #include "mainLoop.h"                        
 
 // bss
-extern volatile u16 D_801594E4;
-extern volatile u8 D_8016FB04;
+extern volatile u16 unknownFlag;
+extern volatile u8 drawnFrameCount;
 extern volatile u8 D_8013DC30;
-extern volatile u8 D_8016FB04;
-extern volatile u8 D_801C3BEC;
-extern volatile u8 D_801C3F34;
-extern volatile u8 D_801C3F71;
+extern volatile u8 drawnFrameCount;
+extern volatile u8 retraceCount;
+extern volatile u8 loopStepsPerCycle;
+extern volatile u8 framebufferCount;
 extern volatile u8 D_801C4215;
 extern volatile u8 D_80204B38;
-extern volatile u8 D_80205208;
-extern volatile u32 D_802226E8;
+extern volatile u8 stepMainLoop;
+extern volatile u32 pendingGfxNum;
 extern volatile u8 D_802226E2;
 extern volatile u8 D_80222730;
-extern volatile u8 D_802373F1;
+
+// per 60; 1 = 60 fps
+extern volatile u8 frameRate;
 extern volatile u8 D_80237A04;
 
 extern u16 gMainMapIndex;
@@ -38,9 +40,9 @@ extern volatile u8 gfxTaskNo;
 extern volatile u8 frameCount;
 
 extern volatile u32 D_801C3B68[4];
-extern volatile u8 D_801C3F34;
-extern volatile u8 D_801C3F71;
-extern volatile u8 D_801D6230;
+extern volatile u8 loopStepsPerCycle;
+extern volatile u8 framebufferCount;
+extern volatile u8 currentFramebufferIndex;
 
 // shared
 extern volatile u16 mainLoopCallbackCurrentIndex;
@@ -134,23 +136,23 @@ void func_80025F04(void) {
     
     u8 i;
     
-    D_80205208 = 0;
-    D_801594E4 = 0;
+    stepMainLoop = 0;
+    unknownFlag = 0;
     mainLoopCallbackCurrentIndex = 0;
 
     frameCount = 0;
 
-    D_8016FB04 = 0;
-    D_801C3F71 = 0;
-    D_801D6230 = 0;
-    D_801C3F34 = 0;
-    D_801C3BEC = 0;
+    drawnFrameCount = 0;
+    framebufferCount = 0;
+    currentFramebufferIndex = 0;
+    loopStepsPerCycle = 0;
+    retraceCount = 0;
     D_80237A04 = 0;
 
     gfxTaskNo = 0xFF;
 
     D_80237408 = 0;
-    D_802373F1 = 1;
+    frameRate = 1;
     D_802226E2 = 1;
     
     D_801C3B68[0] = 0;

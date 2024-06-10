@@ -310,6 +310,7 @@ INCLUDE_ASM(const s32, "loadGameScreen", func_800E3300);
 void func_800E3358(u8 arg0, u8 arg1, u8 arg2) {
 
     switch (arg2) {
+
         case 0:
             if (func_800E4424(arg0, arg1)) {
             
@@ -502,7 +503,8 @@ void func_800EA2A4(u8 arg0) {
     D_8030E000[14] = 0;
     D_8030E000[15] = 0;
 
-    func_8004DD7C(((arg0  << 8) + 0x4000) | 0x08000000, 0x8030E000, 0x10);
+    func_8004DD7C(((arg0 * 0x100) + 0x4000) | 0x08000000, 0x8030E000, 0x10);
+
 } 
 
 INCLUDE_ASM(const s32, "loadGameScreen", func_800EA360);

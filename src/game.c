@@ -81,16 +81,17 @@ extern u32 gTotalEggsShipped;
 extern u32 gTotalGoldenMilkShipped;
 
 extern u8 D_801C3F36;
+
 extern u8 D_801C3F96;
 extern u8 D_801C3F97;
 extern u8 D_801C3F98;
 extern u8 D_801C3F99;
 
 extern u8 numberOfSpiritFestivalAssistantsRecruited;
-extern u8 spiritFestivalAssistant2;
-extern u8 D_801FC15C;
 extern u8 spiritFestivalAssistant1;
+extern u8 spiritFestivalAssistant2;
 extern u8 spiritFestivalAssistant3;  
+extern u8 D_801FC15C;
 
 extern u8 mariaHarrisPregnancyCounter;
 extern u8 mariaHarrisBabyAge;
