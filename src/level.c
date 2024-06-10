@@ -227,13 +227,14 @@ void setLevelGraphicsData(u16 mapIndex) {
 
     func_8003BD60(MAIN_MAP_INDEX);
     
+    // set ground object sprites on map struct
     func_8006EC58(mapIndex);
     func_800735FC(mapIndex);
 
-    // load map object sprites
+    // load and setup map object sprites
     func_8006F938(mapIndex); 
 
-    func_800746B4(mapIndex);
+    setAdditionalMapAdditionsForLevel(mapIndex);
 
     func_800D9600(gBaseMapIndex);
     
@@ -1425,10 +1426,9 @@ void func_800735FC(u16 levelIndex) {
 }
 */
 
-//INCLUDE_ASM(const s32, "level", func_800746B4);
+//INCLUDE_ASM(const s32, "level", setAdditionalMapAdditionsForLevel);
 
-// load map additions based on level index
-void func_800746B4(u16 mapIndex) {
+void setAdditionalMapAdditionsForLevel(u16 mapIndex) {
     
     switch (mapIndex) {
         

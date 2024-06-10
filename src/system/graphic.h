@@ -54,7 +54,7 @@ extern Vec3f* func_80028520(Vec3f *arg0, f32 arg1, u8 arg2, f32 arg3);
 extern u8* func_80028888(u16 arg0, u32* arg1);                   
 extern u8 *func_800288A0(u16 arg0, u32 *arg1);
 extern u8* func_800288B8(u16 arg0, u32 *arg1, u8 *arg2);
-extern f32 func_80028820(u8 arg0);    
+extern f32 getSpriteYValueFromDirection(u8 arg0);    
 extern void func_80028EB8(f32 x, f32 y, f32 z);
 extern void func_80028EF8(f32 x, f32 y, f32 z);
 

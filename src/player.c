@@ -173,7 +173,7 @@ void setupPlayerSprite(u16 arg0, u8 resetPlayer) {
         gPlayer.direction = playerDefaultStartingDirections[arg0];
     }
 
-    setSpriteDirection(PLAYER, (gPlayer.direction + 8 - func_8003C1A4(MAIN_MAP_INDEX)) % 8);
+    setSpriteDirection(PLAYER, (gPlayer.direction + 8 - getCurrentMapRotation(MAIN_MAP_INDEX)) % 8);
     setSpriteStartingCoordinates(PLAYER, gPlayer.startingCoordinates.x, gPlayer.startingCoordinates.y, gPlayer.startingCoordinates.z);
 
     // tool use
@@ -429,13 +429,13 @@ Vec3f* func_80065F94(Vec3f *arg0, f32 arg1, u8 arg2) {
 
     if (vec.y != MAX_UNSIGNED_SHORT) {
 
-        vec.x += buffer[(animatedSprites[PLAYER].direction + func_8003C1A4(gMainMapIndex)) % 8] * arg1;
-        vec.z += buffer2[(animatedSprites[PLAYER].direction + func_8003C1A4(gMainMapIndex)) % 8] * arg1;
+        vec.x += buffer[(animatedSprites[PLAYER].direction + getCurrentMapRotation(gMainMapIndex)) % 8] * arg1;
+        vec.z += buffer2[(animatedSprites[PLAYER].direction + getCurrentMapRotation(gMainMapIndex)) % 8] * arg1;
 
         if (arg2 != 8) {
             
-            vec.x += buffer[((animatedSprites[PLAYER].direction + func_8003C1A4(gMainMapIndex)+ arg2) % 8)];
-            vec.z += buffer2[((animatedSprites[PLAYER].direction + func_8003C1A4(gMainMapIndex) + arg2) % 8)];
+            vec.x += buffer[((animatedSprites[PLAYER].direction + getCurrentMapRotation(gMainMapIndex)+ arg2) % 8)];
+            vec.z += buffer2[((animatedSprites[PLAYER].direction + getCurrentMapRotation(gMainMapIndex) + arg2) % 8)];
             
         }
     }
@@ -467,13 +467,13 @@ Vec3f* func_80065F94(Vec3f *arg0, f32 arg1, u8 arg2) {
 
     if (vec.y != MAX_UNSIGNED_SHORT) {D_8011F3F0
 
-        vec.x += ptr[(animatedSprites[PLAYER].direction + func_8003C1A4(gMainMapIndex)) % 8] * arg1;
-        vec.z += ptr2[(animatedSprites[PLAYER].direction + func_8003C1A4(gMainMapIndex)) % 8] * arg1;
+        vec.x += ptr[(animatedSprites[PLAYER].direction + getCurrentMapRotation(gMainMapIndex)) % 8] * arg1;
+        vec.z += ptr2[(animatedSprites[PLAYER].direction + getCurrentMapRotation(gMainMapIndex)) % 8] * arg1;
 
         if (arg2 != 8) {
             
-            vec.x += ptr[((animatedSprites[PLAYER].direction + func_8003C1A4(gMainMapIndex)+ arg2) % 8)];
-            vec.z += ptr2[((animatedSprites[PLAYER].direction + func_8003C1A4(gMainMapIndex) + arg2) % 8)];
+            vec.x += ptr[((animatedSprites[PLAYER].direction + getCurrentMapRotation(gMainMapIndex)+ arg2) % 8)];
+            vec.z += ptr2[((animatedSprites[PLAYER].direction + getCurrentMapRotation(gMainMapIndex) + arg2) % 8)];
             
         }
     }
@@ -642,7 +642,7 @@ void func_80066F98(void) {
 
     setDailyEventBit(0x5C);
  
-    setSpriteDirection(PLAYER, (horseInfo.direction + 8 - func_8003C1A4(MAIN_MAP_INDEX)) % 8);
+    setSpriteDirection(PLAYER, (horseInfo.direction + 8 - getCurrentMapRotation(MAIN_MAP_INDEX)) % 8);
     
 }
 
@@ -658,11 +658,11 @@ void func_80067034(void) {
     
     while (i < 8 && !set) {
     
-        if (func_80031830(0, 8, (i + func_8003C1A4(gMainMapIndex)) % 8) == 0) {
+        if (func_80031830(0, 8, (i + getCurrentMapRotation(gMainMapIndex)) % 8) == 0) {
 
-            if (func_80031830(0, 0x20, (i + func_8003C1A4(gMainMapIndex)) % 8) == 0) {
+            if (func_80031830(0, 0x20, (i + getCurrentMapRotation(gMainMapIndex)) % 8) == 0) {
 
-                func_80031904(&vec1, 0, 0x20, (i + func_8003C1A4(MAIN_MAP_INDEX)) % 8);
+                func_80031904(&vec1, 0, 0x20, (i + getCurrentMapRotation(MAIN_MAP_INDEX)) % 8);
                 
                 temp = func_800DB1BC(vec1.x, vec1.z);
                 
@@ -683,7 +683,7 @@ void func_80067034(void) {
             
             horseInfo.coordinates = vec2;
             
-            horseInfo.direction = (animatedSprites[PLAYER].direction + func_8003C1A4(MAIN_MAP_INDEX)) % 8;
+            horseInfo.direction = (animatedSprites[PLAYER].direction + getCurrentMapRotation(MAIN_MAP_INDEX)) % 8;
             horseInfo.location = gBaseMapIndex;
             horseInfo.flags &= ~0x8;            
             gPlayer.flags &= -2;
@@ -971,7 +971,7 @@ void func_80068DFC(void) {
             gPlayer.action2 = 1;
             gPlayer.direction = gPlayer.unk_6E;
 
-            setSpriteDirection(PLAYER, (gPlayer.direction + 8 - func_8003C1A4(MAIN_MAP_INDEX)) % 8);
+            setSpriteDirection(PLAYER, (gPlayer.direction + 8 - getCurrentMapRotation(MAIN_MAP_INDEX)) % 8);
 
             func_80028520(&vec, 1.0f, gPlayer.direction, 0);
 
@@ -1031,7 +1031,7 @@ void func_80069830(void) {
             gPlayer.animationState++;
             func_80028520(&vec, 4.0f, 4, 0);
             gPlayer.currentCoordinates = vec;
-            setSpriteDirection(PLAYER, (gPlayer.direction + 8 - func_8003C1A4(MAIN_MAP_INDEX)) % 8);
+            setSpriteDirection(PLAYER, (gPlayer.direction + 8 - getCurrentMapRotation(MAIN_MAP_INDEX)) % 8);
             gPlayer.action2 = 2;
             break;
 
@@ -1085,7 +1085,7 @@ void func_80069830(void) {
                 
                 gPlayer.currentCoordinates = vec2;
                 
-                setSpriteDirection(PLAYER, (gPlayer.direction + 8 - func_8003C1A4(MAIN_MAP_INDEX)) % 8);
+                setSpriteDirection(PLAYER, (gPlayer.direction + 8 - getCurrentMapRotation(MAIN_MAP_INDEX)) % 8);
                 
                 gPlayer.action2 = 2;
                 gPlayer.animationState++;

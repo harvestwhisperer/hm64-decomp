@@ -24,7 +24,7 @@ extern ShopContext shopContext;
 // offset to dialogue
 extern u16 D_801FB9CC;
 
-// rodata
+// data
 extern u16 D_80118B70[];
 extern u16 D_80118C50[];
 extern u16 D_80118CC0[];
@@ -45,7 +45,7 @@ extern u8 D_80119580[];
 extern u8 D_801195B8[];
 extern u8 D_801195F0[];
 extern u8 D_80119628[];
-// player animations table
+// player animations table when interacting with shop items
 extern Animation D_80119660[56];
 extern u8 D_801194A0[];
 extern u16 D_8011BA10[];
@@ -408,21 +408,21 @@ void func_800DCAB8(void) {
 
 u8 handlePurchase(u16 storeItemIndex, s32 quantity) {
 
-    u8 res = 0;
+    u8 result = 0;
     u8 temp;
 
     if (gGold >= quantity*D_80118EF0[storeItemIndex]) {
         
-        res = 1;
+        result = 1;
         
         switch (storeItemIndex) {
             
             case 0:
 
-                res = 3;
+                result = 3;
                 
                 if ((D_801FC154 + quantity) < MAX_SEEDS + 1) {
-                    res = func_80065BCC(TURNIP_SEEDS);
+                    result = func_80065BCC(TURNIP_SEEDS);
                     D_801FC154 += adjustValue(D_801FC154, quantity, MAX_SEEDS);
                 }
                 
@@ -431,10 +431,10 @@ u8 handlePurchase(u16 storeItemIndex, s32 quantity) {
             
             case 1:
 
-                res = 3;
+                result = 3;
                 
                 if ((D_80204DF4 + quantity) < MAX_SEEDS + 1) {
-                    res = func_80065BCC(POTATO_SEEDS);
+                    result = func_80065BCC(POTATO_SEEDS);
                     D_80204DF4 += adjustValue(D_80204DF4, quantity, MAX_SEEDS);
                 }
                 
@@ -442,10 +442,10 @@ u8 handlePurchase(u16 storeItemIndex, s32 quantity) {
             
             case 2:
 
-                res = 3;
+                result = 3;
                 
                 if ((D_8018A725 + quantity) < MAX_SEEDS + 1) {
-                    res = func_80065BCC(CABBAGE_SEEDS);
+                    result = func_80065BCC(CABBAGE_SEEDS);
                     D_8018A725 += adjustValue(D_8018A725, quantity, MAX_SEEDS);
                 }
                 
@@ -453,10 +453,10 @@ u8 handlePurchase(u16 storeItemIndex, s32 quantity) {
 
             case 3:
 
-                res = 3;
+                result = 3;
                 
                 if ((D_801C3E28 + quantity) < MAX_SEEDS + 1) {
-                    res = func_80065BCC(GRASS_SEEDS);
+                    result = func_80065BCC(GRASS_SEEDS);
                     D_801C3E28 += adjustValue(D_801C3E28, quantity, MAX_SEEDS);
                 }
                 
@@ -464,10 +464,10 @@ u8 handlePurchase(u16 storeItemIndex, s32 quantity) {
 
             case 4:
                 
-                res = 3;
+                result = 3;
                 
                 if ((D_8013DC2C + quantity) < MAX_SEEDS + 1) {
-                    res = func_80065BCC(TOMATO_SEEDS);
+                    result = func_80065BCC(TOMATO_SEEDS);
                     D_8013DC2C += adjustValue(D_8013DC2C, quantity, MAX_SEEDS);
                 }
                 
@@ -475,10 +475,10 @@ u8 handlePurchase(u16 storeItemIndex, s32 quantity) {
 
             case 5:
 
-                res = 3;
+                result = 3;
                 
                 if ((D_801FAD91 + quantity) < MAX_SEEDS + 1) {
-                    res = func_80065BCC(CORN_SEEDS);
+                    result = func_80065BCC(CORN_SEEDS);
                     D_801FAD91 += adjustValue(D_801FAD91, quantity, MAX_SEEDS);
                 }
 
@@ -486,10 +486,10 @@ u8 handlePurchase(u16 storeItemIndex, s32 quantity) {
             
             case 6:
 
-                res = 3;
+                result = 3;
                 
                 if ((D_80237458 + quantity) < MAX_SEEDS + 1) {
-                    res = func_80065BCC(EGGPLANT_SEEDS);
+                    result = func_80065BCC(EGGPLANT_SEEDS);
                     D_80237458 += adjustValue(D_80237458, quantity, MAX_SEEDS);
                 }
                 
@@ -497,10 +497,10 @@ u8 handlePurchase(u16 storeItemIndex, s32 quantity) {
             
             case 7:
                 
-                res = 3;
+                result = 3;
                 
                 if ((D_802373E8 + quantity) < MAX_SEEDS + 1) {
-                    res = func_80065BCC(STRAWBERRY_SEEDS);
+                    result = func_80065BCC(STRAWBERRY_SEEDS);
                     D_802373E8 += adjustValue(D_802373E8, quantity, MAX_SEEDS);
                 }
                 
@@ -508,11 +508,11 @@ u8 handlePurchase(u16 storeItemIndex, s32 quantity) {
             
             case 8:
                 
-                res = 3;
+                result = 3;
                 
                 if ((D_801C3F70 + quantity) < MAX_SEEDS + 1) {
                     
-                    res = func_80065BCC(MOON_DROP_SEEDS);
+                    result = func_80065BCC(MOON_DROP_SEEDS);
                     D_801C3F70 += adjustValue(D_801C3F70, quantity, MAX_SEEDS);
 
                     if (!checkLifeEventBit(HAVE_FLOWER_SHOP_GIFT_CARD)) {
@@ -521,7 +521,7 @@ u8 handlePurchase(u16 storeItemIndex, s32 quantity) {
                         D_801FB9CC = 0x24;
                         setLifeEventBit(HAVE_FLOWER_SHOP_GIFT_CARD);
                         flowerShopPoints += adjustValue(flowerShopPoints, quantity, MAX_FLOWER_SHOP_POINTS);
-                        res = 4;
+                        result = 4;
                         
                     } else {
                         
@@ -534,11 +534,11 @@ u8 handlePurchase(u16 storeItemIndex, s32 quantity) {
             
             case 0xA:
 
-                res = 3;
+                result = 3;
                 
                 if ((D_802373A8 + quantity) < MAX_BLUE_MIST_SEEDS + 1) {
                     
-                    res = func_80065BCC(BLUE_MIST_SEEDS);
+                    result = func_80065BCC(BLUE_MIST_SEEDS);
                     D_802373A8 += adjustValue(D_802373A8, quantity, MAX_BLUE_MIST_SEEDS);
 
                     if (!checkLifeEventBit(HAVE_FLOWER_SHOP_GIFT_CARD)) {
@@ -547,7 +547,7 @@ u8 handlePurchase(u16 storeItemIndex, s32 quantity) {
                         D_801FB9CC = 0x24;
                         setLifeEventBit(HAVE_FLOWER_SHOP_GIFT_CARD);
                         flowerShopPoints += adjustValue(flowerShopPoints, quantity, MAX_FLOWER_SHOP_POINTS);
-                        res = 4;
+                        result = 4;
                         
                     } else {
                         
@@ -577,7 +577,7 @@ u8 handlePurchase(u16 storeItemIndex, s32 quantity) {
                     
                     bakeryCardPoints += adjustValue(bakeryCardPoints, quantity, MAX_BAKERY_CARD_POINTS);
 
-                    res = 4;
+                    result = 4;
                     
                 } else {
                     
@@ -602,7 +602,7 @@ u8 handlePurchase(u16 storeItemIndex, s32 quantity) {
                     
                     bakeryCardPoints += adjustValue(bakeryCardPoints, quantity, MAX_BAKERY_CARD_POINTS);
 
-                    res = 4;
+                    result = 4;
                     
                 } else {
                     bakeryCardPoints += adjustValue(bakeryCardPoints, quantity, MAX_BAKERY_CARD_POINTS);
@@ -647,28 +647,28 @@ u8 handlePurchase(u16 storeItemIndex, s32 quantity) {
 
             case 0x13:
 
-                res = func_80065BCC(MILKER);            
+                result = func_80065BCC(MILKER);            
                 break;
             
             case 0x14:
 
-                res = func_80065BCC(BRUSH);               
+                result = func_80065BCC(BRUSH);               
                 break;
             
             case 0x15:
                 
-                res = func_80065BCC(CLIPPERS);              
+                result = func_80065BCC(CLIPPERS);              
                 break;
             
             case 0x16:
                             
-                res = func_80065BCC(BLUE_FEATHER);                
+                result = func_80065BCC(BLUE_FEATHER);                
                 break;
             
             case 0x17:
 
                 setLifeEventBit(HAVE_RUG);
-                res = 1;
+                result = 1;
                 temp = 0;
                 break;
 
@@ -677,7 +677,7 @@ u8 handlePurchase(u16 storeItemIndex, s32 quantity) {
                 setLifeEventBit(HAVE_CABINET);
                 // ??
                 setAnimalLocations(HOUSE);
-                res = 1;
+                result = 1;
                 temp = 0;
                 break;
 
@@ -687,17 +687,17 @@ u8 handlePurchase(u16 storeItemIndex, s32 quantity) {
                 setLifeEventBit(0x19);
                 // ??
                 setAnimalLocations(FARM);
-                res = 1;
+                result = 1;
                 temp = 0;
                 
                 break;
             
             case 0x1A:
 
-                res = 3;
+                result = 3;
 
                 if ((D_80237410 + quantity) < MAX_CHICKEN_FEED + 1) {
-                    res = func_80065BCC(CHICKEN_FEED);
+                    result = func_80065BCC(CHICKEN_FEED);
                     D_80237410 += adjustValue(D_80237410, quantity, MAX_CHICKEN_FEED);
                 }
 
@@ -705,21 +705,21 @@ u8 handlePurchase(u16 storeItemIndex, s32 quantity) {
 
             case 0x1B:
                 
-                res = func_80065BCC(MIRACLE_POTION);
+                result = func_80065BCC(MIRACLE_POTION);
                 break;
             
             case 0x1C:
 
-                res = func_80065BCC(COW_MEDICINE);            
+                result = func_80065BCC(COW_MEDICINE);            
                 break;
             
             case 0x1D:
 
                 if ((D_80180714 + quantity) < 999 + 1) {
                     D_80180714 += adjustValue(D_80180714, quantity, 999);
-                    res = 2;
+                    result = 2;
                 } else {
-                    res = 3;
+                    result = 3;
                 }
 
                 break;
@@ -729,7 +729,7 @@ u8 handlePurchase(u16 storeItemIndex, s32 quantity) {
                 // check animal count
                 if (func_8009B564() != 6) { 
 
-                    res = 1;
+                    result = 1;
                     
                     setDailyEventBit(1);
                     setDailyEventBit(5);
@@ -738,7 +738,7 @@ u8 handlePurchase(u16 storeItemIndex, s32 quantity) {
                     
                 } else {
                     
-                    res = 3;
+                    result = 3;
                     
                 }
 
@@ -748,13 +748,13 @@ u8 handlePurchase(u16 storeItemIndex, s32 quantity) {
 
                 if (func_8009B374() != 8) {
                 
-                    res = 1;
+                    result = 1;
                     
                     if (!checkLifeEventBit(HAVE_BELL)) {
                         
                         func_80065BCC(BELL);
                         D_801FB9CC = 0x53;
-                        res = 4;
+                        result = 4;
                         setLifeEventBit(HAVE_BELL);
                         
                     }
@@ -765,7 +765,7 @@ u8 handlePurchase(u16 storeItemIndex, s32 quantity) {
                     
                 } else {
                     
-                    res = 3;
+                    result = 3;
                     
                 }
 
@@ -775,13 +775,13 @@ u8 handlePurchase(u16 storeItemIndex, s32 quantity) {
 
                 if (func_8009B374() != 8) {
 
-                    res = 1;
+                    result = 1;
                     
                     if (!checkLifeEventBit(HAVE_BELL)) {
 
                         func_80065BCC(BELL);
                         D_801FB9CC = 0x53;
-                        res = 4;
+                        result = 4;
                         setLifeEventBit(HAVE_BELL);
                         
                     }
@@ -791,7 +791,7 @@ u8 handlePurchase(u16 storeItemIndex, s32 quantity) {
                     D_801C4216 = 2;
                     
                 } else {
-                    res = 3;
+                    result = 3;
                 }
 
                 break;
@@ -799,21 +799,21 @@ u8 handlePurchase(u16 storeItemIndex, s32 quantity) {
             case 0x22:
 
                 gPlayer.bottleContents = 3;
-                res = 1;
+                result = 1;
                 
                 break;
 
             case 0x23:
                 
                 gPlayer.bottleContents = 4;
-                res = 1;
+                result = 1;
                 
                 break;
 
             case 0x24:
                 
                 gPlayer.bottleContents = 5;
-                res = 1;
+                result = 1;
                 
                 break;
 
@@ -821,7 +821,7 @@ u8 handlePurchase(u16 storeItemIndex, s32 quantity) {
 
                 acquireKeyItem(OCARINA);
                 setLifeEventBit(HAVE_OCARINA);
-                res = 1;
+                result = 1;
                 temp = 0;
                 
                 break;
@@ -926,7 +926,7 @@ u8 handlePurchase(u16 storeItemIndex, s32 quantity) {
 
                 if ((D_80205636 + quantity) < 20 + 1) {
                     
-                    res = func_80065BCC(PINK_CAT_MINT_SEEDS);
+                    result = func_80065BCC(PINK_CAT_MINT_SEEDS);
                     D_80205636 += adjustValue(D_80205636, quantity, 20);
 
                     if (checkLifeEventBit(HAVE_FLOWER_SHOP_GIFT_CARD)) {
@@ -934,7 +934,7 @@ u8 handlePurchase(u16 storeItemIndex, s32 quantity) {
                     }
                     
                 } else {
-                    res = 3;
+                    result = 3;
                 }
 
                 break;
@@ -942,7 +942,7 @@ u8 handlePurchase(u16 storeItemIndex, s32 quantity) {
             case 0x36:
             case 0x37:
                 
-                res =  func_80065BCC(EMPTY_BOTTLE);           
+                result =  func_80065BCC(EMPTY_BOTTLE);           
                 break;
 
             default:
@@ -951,17 +951,17 @@ u8 handlePurchase(u16 storeItemIndex, s32 quantity) {
         }
 
         // FIXME: shouldn't be necessary
-        temp = res - 1;
+        temp = result - 1;
 
         // should be:        
-        // if (0 < res && res < 3 || res == 4) {
-        if (temp < 2 || res == 4) {
+        // if (0 < result && result < 3 || result == 4) {
+        if (temp < 2 || result == 4) {
             gGold += adjustValue(gGold, (-quantity * D_80118EF0[storeItemIndex]), MAX_GOLD);
         }
 
     }
     
-    return res;
+    return result;
     
 }
 
@@ -1197,7 +1197,7 @@ bool func_800DDDFC(u16 itemIndex) {
         case 0x22:
 
             if (gYear == 1 && !(gSeason < SUMMER) || !(gYear < 2)) {
-                if (checkHaveTool(EMPTY_BOTTLE) == 1) {
+                if (checkHaveTool(EMPTY_BOTTLE) == TRUE) {
                     if (gPlayer.bottleContents == EMPTY) {
                         result = 1;
                     } else {
@@ -1213,7 +1213,7 @@ bool func_800DDDFC(u16 itemIndex) {
         case 0x23:
 
             if (gYear == 1 && !(gSeason < AUTUMN) || !(gYear < 2)) {
-                if (checkHaveTool(EMPTY_BOTTLE) == 1) {
+                if (checkHaveTool(EMPTY_BOTTLE) == TRUE) {
                     if (gPlayer.bottleContents == EMPTY) {
                         result = 1;
                     } else {
@@ -1230,7 +1230,7 @@ bool func_800DDDFC(u16 itemIndex) {
 
             if (checkLifeEventBit(9)) {
                 
-                if (checkHaveTool(EMPTY_BOTTLE) == 1) {
+                if (checkHaveTool(EMPTY_BOTTLE) == TRUE) {
                     
                     if (gPlayer.bottleContents == EMPTY) {
                         result = 1;

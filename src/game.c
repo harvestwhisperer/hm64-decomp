@@ -42,7 +42,9 @@ extern u8 gSeason;
 extern u8 gSeasonTomorrow;
 extern u8 gYear;
 
+// dialogue icon
 extern Vec4f D_80180718;
+
 extern Vec4f globalLightingRgba;
 
 extern u8 gHarvestKing;
@@ -1338,7 +1340,7 @@ static inline void inline2(u8 arg0, u8 arg1, u8 arg2, u8 arg3, u8 arg4, u8 arg5)
 }
 
 static inline void inline3() {                 
-    D_801C3E40[0].struct5.flags &= ~0x40;
+    dialogues[0].struct5.flags &= ~0x40;
     func_80043AD8(0);
     setPlayerAction(0, 0);
     setMainLoopCallbackFunctionIndex(1);
@@ -1407,7 +1409,7 @@ void func_8005D2B0() {
 
     u8 temp;
 
-    if (D_801C3E40[0].struct5.flags & 4) {
+    if (dialogues[0].struct5.flags & 4) {
         
         func_8002F730();
         func_80046CF4();
@@ -1503,7 +1505,7 @@ void func_8005D2B0() {
                         gGold += adjustValue(gGold, D_801890E0, 999999);
                         
                         D_801890E0 = 0;                        
-                        D_801C3E40[0].struct5.flags &= ~0x40;
+                        dialogues[0].struct5.flags &= ~0x40;
                         
                         func_80043AD8(0);
                         setEntrance(9);
@@ -1525,7 +1527,7 @@ void func_8005D2B0() {
                         break;
                     
                     case 1:                                 
-                        D_801C3E40[0].struct5.flags &= ~0x40;
+                        dialogues[0].struct5.flags &= ~0x40;
                         func_80043AD8(0);
                         setMainLoopCallbackFunctionIndex(1);
                         break;
@@ -1537,7 +1539,7 @@ void func_8005D2B0() {
                 switch (temp) {                    
                     case 0:                                 
                         
-                        D_801C3E40[0].struct5.flags &= ~0x40;
+                        dialogues[0].struct5.flags &= ~0x40;
                         func_80043AD8(0);
                         setEntrance(9);
 
@@ -1551,7 +1553,7 @@ void func_8005D2B0() {
                         break;
                         
                     case 1:                                 
-                        D_801C3E40[0].struct5.flags &= ~0x40;
+                        dialogues[0].struct5.flags &= ~0x40;
                         func_80043AD8(0);
                         setMainLoopCallbackFunctionIndex(1);
                         break;
@@ -1566,7 +1568,7 @@ void func_8005D2B0() {
                     gVoteForFlowerFestivalGoddess = temp;
                 }
                 
-                D_801C3E40[0].struct5.flags &= ~0x40;
+                dialogues[0].struct5.flags &= ~0x40;
                 func_80043AD8(0);
                 setMainLoopCallbackFunctionIndex(1);
                 break;
@@ -1648,7 +1650,7 @@ void func_8005D2B0() {
                                 showTextBox(1, 1, 2, 0, 0);
                                 break;
                             case 3:
-                                D_801C3E40[0].struct5.flags &= ~0x40;
+                                dialogues[0].struct5.flags &= ~0x40;
                                 func_80043AD8(0);
                                 setPlayerAction(0, 0);
                                 setMainLoopCallbackFunctionIndex(1);
@@ -1677,7 +1679,7 @@ void func_8005D2B0() {
                             showTextBox(1, 1, 5, 0, 0);
                             break;
                         case 3:
-                            D_801C3E40[0].struct5.flags &= ~0x40;
+                            dialogues[0].struct5.flags &= ~0x40;
                             func_80043AD8(0);
                             setPlayerAction(0, 0);
                             setMainLoopCallbackFunctionIndex(1);
@@ -1708,7 +1710,7 @@ void func_8005D2B0() {
                                 showTextBox(1, 1, 11, 0, 0);
                                 break;
                             case 3:
-                                D_801C3E40[0].struct5.flags &= ~0x40;
+                                dialogues[0].struct5.flags &= ~0x40;
                                 func_80043AD8(0);
                                 setPlayerAction(0, 0);
                                 setMainLoopCallbackFunctionIndex(1);
@@ -1738,7 +1740,7 @@ void func_8005D2B0() {
                             showTextBox(1, 1, 8, 0, 0);
                             break;
                         case 3:
-                            D_801C3E40[0].struct5.flags &= ~0x40;
+                            dialogues[0].struct5.flags &= ~0x40;
                             func_80043AD8(0);
                             setPlayerAction(0, 0);
                             setMainLoopCallbackFunctionIndex(1);
@@ -1770,7 +1772,7 @@ void func_8005D2B0() {
                             showTextBox(1, 1, 14, 0, 0);
                             break;
                         case 3:
-                            D_801C3E40[0].struct5.flags &= ~0x40;
+                            dialogues[0].struct5.flags &= ~0x40;
                             func_80043AD8(0);
                             setPlayerAction(0, 0);
                             setMainLoopCallbackFunctionIndex(1);
@@ -1799,7 +1801,7 @@ void func_8005D2B0() {
                         showTextBox(1, 1, 17, 0, 0);
                         break;
                     case 3:
-                        D_801C3E40[0].struct5.flags &= ~0x40;
+                        dialogues[0].struct5.flags &= ~0x40;
                         func_80043AD8(0);
                         setPlayerAction(0, 0);
                         setMainLoopCallbackFunctionIndex(1);
@@ -1830,7 +1832,7 @@ void func_8005D2B0() {
                             showTextBox(1, 1, 20, 0, 0);
                             break;                        
                         case 3:
-                            D_801C3E40[0].struct5.flags &= ~0x40;
+                            dialogues[0].struct5.flags &= ~0x40;
                             func_80043AD8(0);
                             setPlayerAction(0, 0);
                             setMainLoopCallbackFunctionIndex(1);
@@ -1859,7 +1861,7 @@ void func_8005D2B0() {
                         showTextBox(1, 1, 23, 0, 0);
                         break;
                     case 3:
-                        D_801C3E40[0].struct5.flags &= ~0x40;
+                        dialogues[0].struct5.flags &= ~0x40;
                         func_80043AD8(0);
                         setPlayerAction(0, 0);
                         setMainLoopCallbackFunctionIndex(1);
@@ -1892,7 +1894,7 @@ void func_8005D2B0() {
                             showTextBox(1, 1, 24, 0, 0);
                             break;
                         case 4:
-                            D_801C3E40[0].struct5.flags &= ~0x40;
+                            dialogues[0].struct5.flags &= ~0x40;
                             func_80043AD8(0);
                             setPlayerAction(0, 0);
                             setMainLoopCallbackFunctionIndex(1);
@@ -1924,7 +1926,7 @@ void func_8005D2B0() {
                         showTextBox(1, 1, 31, 0, 0);
                         break;                       
                     case 4:        
-                        D_801C3E40[0].struct5.flags &= ~0x40;
+                        dialogues[0].struct5.flags &= ~0x40;
                         func_80043AD8(0);
                         setPlayerAction(0, 0);
                         setMainLoopCallbackFunctionIndex(1);
@@ -1957,7 +1959,7 @@ void func_8005D2B0() {
                             showTextBox(1, 1, 35, 0, 0);
                             break;
                         case 4:
-                            D_801C3E40[0].struct5.flags &= ~0x40;
+                            dialogues[0].struct5.flags &= ~0x40;
                             func_80043AD8(0);
                             setPlayerAction(0, 0);
                             setMainLoopCallbackFunctionIndex(1);
@@ -1990,7 +1992,7 @@ void func_8005D2B0() {
                         showTextBox(1, 1, 39, 0, 0);
                         break;
                     case 4:
-                        D_801C3E40[0].struct5.flags &= ~0x40;
+                        dialogues[0].struct5.flags &= ~0x40;
                         func_80043AD8(0);
                         setPlayerAction(0, 0);
                         setMainLoopCallbackFunctionIndex(1);
@@ -2023,7 +2025,7 @@ void func_8005D2B0() {
                             showTextBox(1, 1, 43, 0, 0);
                             break;
                         case 4:
-                            D_801C3E40[0].struct5.flags &= ~0x40;
+                            dialogues[0].struct5.flags &= ~0x40;
                             func_80043AD8(0);
                             setPlayerAction(0, 0);
                             setMainLoopCallbackFunctionIndex(1);
@@ -2055,7 +2057,7 @@ void func_8005D2B0() {
                         showTextBox(1, 1, 47, 0, 0);
                         break;
                     case 4:
-                        D_801C3E40[0].struct5.flags &= ~0x40;
+                        dialogues[0].struct5.flags &= ~0x40;
                         func_80043AD8(0);
                         setPlayerAction(0, 0);
                         setMainLoopCallbackFunctionIndex(1);
@@ -2088,7 +2090,7 @@ void func_8005D2B0() {
                             showTextBox(1, 1, 51, 0, 0);
                             break;
                         case 4:
-                            D_801C3E40[0].struct5.flags &= ~0x40;
+                            dialogues[0].struct5.flags &= ~0x40;
                             func_80043AD8(0);
                             setPlayerAction(0, 0);
                             setMainLoopCallbackFunctionIndex(1);
@@ -2120,7 +2122,7 @@ void func_8005D2B0() {
                         showTextBox(1, 1, 55, 0, 0);
                         break;
                     case 4:
-                        D_801C3E40[0].struct5.flags &= ~0x40;
+                        dialogues[0].struct5.flags &= ~0x40;
                         func_80043AD8(0);
                         setPlayerAction(0, 0);
                         setMainLoopCallbackFunctionIndex(1);
@@ -2153,7 +2155,7 @@ void func_8005D2B0() {
                             showTextBox(1, 1, 59, 0, 0);
                             break;
                         case 4:
-                            D_801C3E40[0].struct5.flags &= ~0x40;
+                            dialogues[0].struct5.flags &= ~0x40;
                             func_80043AD8(0);
                             setPlayerAction(0, 0);
                             setMainLoopCallbackFunctionIndex(1);
@@ -2186,7 +2188,7 @@ void func_8005D2B0() {
                         showTextBox(1, 1, 63, 0, 0);
                         break;
                     case 4:
-                        D_801C3E40[0].struct5.flags &= ~0x40;
+                        dialogues[0].struct5.flags &= ~0x40;
                         func_80043AD8(0);
                         setPlayerAction(0, 0);
                         setMainLoopCallbackFunctionIndex(1);
@@ -2219,7 +2221,7 @@ void func_8005D2B0() {
                             showTextBox(1, 1, 67, 0, 0);
                             break;
                         case 4:
-                            D_801C3E40[0].struct5.flags &= ~0x40;
+                            dialogues[0].struct5.flags &= ~0x40;
                             func_80043AD8(0);
                             setPlayerAction(0, 0);
                             setMainLoopCallbackFunctionIndex(1);
@@ -2251,7 +2253,7 @@ void func_8005D2B0() {
                         showTextBox(1, 1, 71, 0, 0);
                         break;
                     case 4:
-                        D_801C3E40[0].struct5.flags &= ~0x40;
+                        dialogues[0].struct5.flags &= ~0x40;
                         func_80043AD8(0);
                         setPlayerAction(0, 0);
                         setMainLoopCallbackFunctionIndex(1);

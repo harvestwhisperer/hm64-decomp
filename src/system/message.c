@@ -142,7 +142,24 @@ INCLUDE_ASM(const s32, "system/message", func_8003EFD8);
 
 INCLUDE_ASM(const s32, "system/message", func_8003F024);
 
-INCLUDE_ASM(const s32, "system/message", func_8003F0DC);
+//INCLUDE_ASM(const s32, "system/message", func_8003F0DC);
+
+bool func_8003F0DC(void) {
+
+    u16 i;
+    bool result = 0;
+
+    for (i = 0; i < MAX_DIALOGUE_BOXES; i++) {
+
+        if (dialogueBoxes[i].flags & 4) {
+            result = 1;
+        }
+        
+    }
+
+    return result;
+    
+}
 
 INCLUDE_ASM(const s32, "system/message", func_8003F130);
 
@@ -249,7 +266,7 @@ bool func_8003FA1C(u16 index, u16 arg1, u32 romTextureStart, u32 romTextureEnd,
     u32 vaddrTexture, u32 vaddrTexture2, 
     u32 vaddrPalette, u32 vaddrUnknownAsset, 
     u32 vaddrUnknownAsset2, u32 vaddrSpritesheetIndex, 
-    f32 argE, f32 argF, f32 arg10) {
+    f32 x, f32 y, f32 z) {
 
     bool result = 0;
 
@@ -271,9 +288,9 @@ bool func_8003FA1C(u16 index, u16 arg1, u32 romTextureStart, u32 romTextureEnd,
 
         dialogueIcons[index].unk_3C = arg1;
 
-        dialogueIcons[index].unk_30.x = argE;
-        dialogueIcons[index].unk_30.y = argF;
-        dialogueIcons[index].unk_30.z = arg10;
+        dialogueIcons[index].unk_30.x = x;
+        dialogueIcons[index].unk_30.y = y;
+        dialogueIcons[index].unk_30.z = z;
 
         result = 1;
         

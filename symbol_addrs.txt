@@ -746,6 +746,7 @@ setBitmapFormat = 0x80026E78;
 sinfRadians = 0x800278F0;
 cosfRadians = 0x80027920;
 initRcp = 0x800288D8;
+getSpriteYValueFromDirection = 0x80028820;
 clearFramebuffer = 0x80028920;
 setCameraOrthographicValues = 0x80028D94;
 setCameraPerspectiveValues = 0x80028DBC;
@@ -781,6 +782,10 @@ adjustMapRGBA = 0x80034668;
 
 initializeMapContext = 0x8003B870;
 setMapModelAddresses = 0x8003B9DC;
+
+setupMapModel = 0x8003BA44;
+
+getCurrentMapRotation = 0x8003C1A4;
 
 initializeAudio = 0x8003CDC0;
 mainLoopAudioHandler = 0x8003CF38;
@@ -862,6 +867,9 @@ setEntrance = 0x8006E820;
 setLevelGraphicsData = 0x8006E9B8;
 setLevelAudio = 0x8006EA44;
 getLevelFlags = 0x8006EC40;
+
+setAdditionalMapAdditionsForLevel = 0x800746B4;
+
 setNPCSpawningLocations = 0x80076B54;
 setEllenLocation = 0x8007DDF0;
 setNpcAnimations = 0x80081B00;
@@ -996,6 +1004,8 @@ osViModeTable = 0x8011D050;
 minSfxFrequency = 0x8011EE00;
 maxSfxFrequency = 0x8011EE08;
 
+directionsToYValues = 0x8011EC90;
+
 houseExtensionPrices = 0x8011F228;
 houseExtensionLumberCosts = 0x8011F234;
 houseConstructionDays = 0x8011F240;
@@ -1075,7 +1085,7 @@ gBaseMapIndex = 0x80170458;
 tvContext = 0x80170270;
 annCliffNewlywedCounter = 0x80170444;
 
-dialogueIcons = 0x801806D0;
+dialogueIcons = 0x801806D0; // size:0x40
 
 cutsceneMaps = 0x801808B0;
 
@@ -1108,7 +1118,7 @@ gBabyAge = 0x80189134;
 dailyEventBits = 0x80189140; // size:0x80
 popuriGrayPregnancyCounter = 0x801891C4;
 gBabyName = 0x8018981E; // size:0x6
-toolUse = 0x80189828; // size:0x14
+toolUse = 0x80189828; // size:0x10
 totalFishCaught = 0x80189838;
 
 nuContData = 0x80189840;
@@ -1127,15 +1137,15 @@ annPregnancyCounter = 0x8018A059;
 babyBirthdaySeason = 0x8018A060;
 spriteCounter = 0x8018A05A;
 
-currentGfxTaskPtr = 0x801C3E14;
-
-npcTalkingTo = 0x801C3E18;
-
-bitmapCounter = 0x801C3E2A;
 gCutsceneIndex = 0x801C3B66;
 retraceCount = 0x801C3BEC;
 gChickens = 0x801C3BF0; // size:0x1B0
+
+currentGfxTaskPtr = 0x801C3E14;
+npcTalkingTo = 0x801C3E18;
+bitmapCounter = 0x801C3E2A;
 previousEntranceIndex = 0x801C3E20;
+dialogues = 0x801C3E40; // size:0xF4
 
 loopStepsPerCycle = 0x801C3F34;
 numberOfSpiritFestivalAssistantsRecruited = 0x801C3F37;
@@ -1226,10 +1236,11 @@ gFarmName = 0x8021E6D2;
 powerNutBits = 0x80215EB8;
 gElliGrievingCounter = 0x80215EC0;
 
-gEntranceIndex = 0x802231C0; 
-
 pendingGfxNum = 0x802226E8;
 nusched = 0x80222B40;
+
+gEntranceIndex = 0x802231C0; 
+mapVertices = 0x80223380; // size:0x14000
 
 dailyShippingBinValue = 0x80237388;
 

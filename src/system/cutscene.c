@@ -1607,14 +1607,14 @@ INCLUDE_ASM(const s32, "system/cutscene", func_8004C048);
 
 void func_8004C0D0(u16 index) {
 
-    u16 structIndex;
+    u16 mapAdditionIndex;
     u16 flag;
     
-    CutsceneMapStruct7Info* ptr = (CutsceneMapStruct7Info*)cutsceneMaps[index].cutscenePointer;
+    CutsceneMapMapAdditionsInfo* ptr = (CutsceneMapMapAdditionsInfo*)cutsceneMaps[index].cutscenePointer;
 
     cutsceneMaps[index].cutscenePointer += 2;
     
-    structIndex = ptr->structIndex;
+    mapAdditionIndex = ptr->mapAdditionIndex;
     
     cutsceneMaps[index].cutscenePointer += 2;
     
@@ -1622,8 +1622,8 @@ void func_8004C0D0(u16 index) {
     
     cutsceneMaps[index].cutscenePointer += 4;
 
-    // initialize mapStruct7
-    func_80038990(0, structIndex, flag);
+    // initialize mapAdditions struct
+    func_80038990(0, mapAdditionIndex, flag);
 
 }
 

@@ -350,15 +350,15 @@ void func_800D3714(void) {
 // turnip seeds
 void func_800D373C(void) {
 
-    u8 temp1;
+    u8 direction;
     u8 temp2;
     u8 temp3;
 
     Vec3f vec;
 
-    temp1 = (animatedSprites[PLAYER].direction + func_8003C1A4(MAIN_MAP_INDEX)) % 8;
+    direction = (animatedSprites[PLAYER].direction + getCurrentMapRotation(MAIN_MAP_INDEX)) % 8;
     
-    if (temp1 < 5) {
+    if (direction < 5) {
         temp2 = D_80117180[toolUse.unk_2];
     }
     else {
@@ -392,15 +392,15 @@ void func_800D373C(void) {
 
 void func_800D3958(void) {
 
-    u8 temp1;
+    u8 direction;
     u8 temp2;
     u8 temp3;
 
     Vec3f vec;
 
-    temp1 = (animatedSprites[PLAYER].direction + func_8003C1A4(MAIN_MAP_INDEX)) % 8;
+    direction = (animatedSprites[PLAYER].direction + getCurrentMapRotation(MAIN_MAP_INDEX)) % 8;
     
-    if (temp1 < 5) {
+    if (direction < 5) {
         temp2 = D_80117180[toolUse.unk_2];
     }
     else {
@@ -435,15 +435,15 @@ void func_800D3958(void) {
 // cabbage seeds
 void func_800D3B74(void) {
  
-    u8 temp1;
+    u8 direction;
     u8 temp2;
     u8 temp3;
 
     Vec3f vec;
 
-    temp1 = (animatedSprites[PLAYER].direction + func_8003C1A4(MAIN_MAP_INDEX)) % 8;
+    direction = (animatedSprites[PLAYER].direction + getCurrentMapRotation(MAIN_MAP_INDEX)) % 8;
     
-    if (temp1 < 5) {
+    if (direction < 5) {
         temp2 = D_80117180[toolUse.unk_2];
     }
     else {
@@ -478,15 +478,15 @@ void func_800D3B74(void) {
 // tomato seeds
 void func_800D3D90(void) {
 
-    u8 temp1;
+    u8 direction;
     u8 temp2;
     u8 temp3;
 
     Vec3f vec;
 
-    temp1 = (animatedSprites[PLAYER].direction + func_8003C1A4(MAIN_MAP_INDEX)) % 8;
+    direction = (animatedSprites[PLAYER].direction + getCurrentMapRotation(MAIN_MAP_INDEX)) % 8;
     
-    if (temp1 < 5) {
+    if (direction < 5) {
         temp2 = D_80117180[toolUse.unk_2];
     }
     else {
@@ -521,15 +521,15 @@ void func_800D3D90(void) {
 // corn seeds
 void func_800D3FAC(void) {
 
-    u8 temp1;
+    u8 direction;
     u8 temp2;
     u8 temp3;
 
     Vec3f vec;
 
-    temp1 = (animatedSprites[PLAYER].direction + func_8003C1A4(MAIN_MAP_INDEX)) % 8;
+    direction = (animatedSprites[PLAYER].direction + getCurrentMapRotation(MAIN_MAP_INDEX)) % 8;
     
-    if (temp1 < 5) {
+    if (direction < 5) {
         temp2 = D_80117180[toolUse.unk_2];
     }
     else {
@@ -564,15 +564,15 @@ void func_800D3FAC(void) {
 // eggplant seeds
 void func_800D41C8(void) {
 
-    u8 temp1;
+    u8 direction;
     u8 temp2;
     u8 temp3;
 
     Vec3f vec;
 
-    temp1 = (animatedSprites[PLAYER].direction + func_8003C1A4(MAIN_MAP_INDEX)) % 8;
+    direction = (animatedSprites[PLAYER].direction + getCurrentMapRotation(MAIN_MAP_INDEX)) % 8;
     
-    if (temp1 < 5) {
+    if (direction < 5) {
         temp2 = D_80117180[toolUse.unk_2];
     }
     else {
@@ -607,15 +607,15 @@ void func_800D41C8(void) {
 // strawberry seeds
 void func_800D43E4(void) {
     
-    u8 temp1;
+    u8 direction;
     u8 temp2;
     u8 tempFlags;
 
     Vec3f vec;
 
-    temp1 = (animatedSprites[PLAYER].direction + func_8003C1A4(MAIN_MAP_INDEX)) % 8;
+    direction = (animatedSprites[PLAYER].direction + getCurrentMapRotation(MAIN_MAP_INDEX)) % 8;
     
-    if (temp1 < 5) {
+    if (direction < 5) {
         temp2 = D_80117180[toolUse.unk_2];
     }
     else {
@@ -650,15 +650,15 @@ void func_800D43E4(void) {
 // moon drop seeds
 void func_800D45F4(void) {
 
-    u8 temp1;
+    u8 direction;
     u8 temp2;
     u8 temp3;
 
     Vec3f vec;
 
-    temp1 = (animatedSprites[PLAYER].direction + func_8003C1A4(MAIN_MAP_INDEX)) % 8;
+    direction = (animatedSprites[PLAYER].direction + getCurrentMapRotation(MAIN_MAP_INDEX)) % 8;
     
-    if (temp1 < 5) {
+    if (direction < 5) {
         temp2 = D_80117180[toolUse.unk_2];
     }
     else {
@@ -694,15 +694,15 @@ void func_800D45F4(void) {
 
 void func_800D4814(void) {
 
-    u8 temp1;
+    u8 direction;
     u8 temp2;
     u8 temp3;
 
     Vec3f vec;
 
-    temp1 = (animatedSprites[PLAYER].direction + func_8003C1A4(MAIN_MAP_INDEX)) % 8;
+    direction = (animatedSprites[PLAYER].direction + getCurrentMapRotation(MAIN_MAP_INDEX)) % 8;
     
-    if (temp1 < 5) {
+    if (direction < 5) {
         temp2 = D_80117180[toolUse.unk_2];
     }
     else {
@@ -738,15 +738,15 @@ void func_800D4814(void) {
 
 void func_800D4A34(void) {
 
-    u8 temp1;
+    u8 direction;
     u8 temp2;
     u8 temp3;
 
     Vec3f vec;
 
-    temp1 = (animatedSprites[PLAYER].direction + func_8003C1A4(MAIN_MAP_INDEX)) % 8;
+    direction = (animatedSprites[PLAYER].direction + getCurrentMapRotation(MAIN_MAP_INDEX)) % 8;
     
-    if (temp1 < 5) {
+    if (direction < 5) {
         temp2 = D_80117180[toolUse.unk_2];
     }
     else {
@@ -836,15 +836,15 @@ void func_800D4D1C(void) {
 // grass seeds
 void func_800D4D68(void) {
 
-    u8 temp1;
+    u8 direction;
     u8 temp2;
     u8 temp3;
 
     Vec3f vec;
 
-    temp1 = (animatedSprites[PLAYER].direction + func_8003C1A4(MAIN_MAP_INDEX)) % 8;
+    direction = (animatedSprites[PLAYER].direction + getCurrentMapRotation(MAIN_MAP_INDEX)) % 8;
     
-    if (temp1 < 5) {
+    if (direction < 5) {
         temp2 = D_80117180[toolUse.unk_2];
     }
     else {

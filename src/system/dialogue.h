@@ -3,6 +3,8 @@
 
 #include "common.h"
 
+#define MAX_DIALOGUES 1
+
 extern u32 _dialogueIconsTextureSegmentRomStart;
 extern u32 _dialogueIconsTextureSegmentRomEnd;
 extern u32 _dialogueIconsIndexSegmentRomStart;
@@ -114,11 +116,6 @@ typedef struct {
 	void *vaddrSpritesheetIndex;
 	Vec3f unk_30;
 	u16 unk_3C;
-	u16 unk_3E;
-	u32 unk_40;
-	u16 unk_44;
-    u16 unk_46;
-	Vec4f unk_48;
 } DialogueIcon;
 
 extern bool initializeDialogueVariable(u16 index, void *address, u8 numSet, s32 max);
@@ -138,7 +135,7 @@ extern u8 func_80043C6C(u16);
 // character avatars
 extern DialogueIcon dialogueIcons[1];
 
-extern Dialogue D_801C3E40[1];
+extern Dialogue dialogues[1];
 extern Conversation D_80205760[69];
 
 #endif

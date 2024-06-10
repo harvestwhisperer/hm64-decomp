@@ -37,8 +37,6 @@ extern u32 _holdableItemsAssetsIndexSegmentRomEnd;
 extern u32 _holdableItemsSpritesheetIndexSegmentRomStart;
 extern u32 _holdableItemsSpritesheetIndexSegmentRomEnd;
 
-extern u16 D_80180714;
-
 // bss
 // FIXME: convert to struct or array
 // cell index

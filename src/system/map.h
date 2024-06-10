@@ -64,8 +64,8 @@ typedef struct {
     Vtx *ptr; // 0x64 // 0x8025503C
     u16 unk_4; // 0x68, used in looking up index of map object interacted with
     u16 unk_6; // 0x6A // loop counter for vertex info objects
-    u8 unk_8; // 0x6C
-    u8 unk_9; // 0x6D
+    u8 unk_8; // 0x6C // conversion of sprite coordinates x, used as divisor
+    u8 unk_9; // 0x6D // conversion of sprite coordinates z, used as divisor
     // counters for indexing into 8025503C
     u8 unk_A; // 0x6E // related to data from mainMap.unk_4 and unk_8, possibly collisions/interactables
     u8 unk_B; // 0x6F
@@ -122,8 +122,8 @@ typedef struct {
     u32 *paletteIndex; // 0xC9C
     u8 *spriteToPaletteIndex; // 0xCA0
     // sprite indices
-    u8 unk_10; // 0xCA4
-    u8 unk_11; // 0xCA5
+    u8 unk_10; // 0xCA4 // x size of map, same as D_801FD624
+    u8 unk_11; // 0xCA5 // z size of map, same as D_801C3F35
     u8 unk_12; // 0xCA6
     // map grid for sprite mapping
     u16 arr[0x40]; // 0xCA8
@@ -131,16 +131,16 @@ typedef struct {
 } GroundObjects;
 
 // D_80142868
-// map additions
+// extra geometry rendered on top of scene
 typedef struct {
     u16 arr1[0x10]; // 0x80142868
     u16 arr2[0x10]; // 0x80142888
     u16 unk_40; // 0x801428A8
     u16 unk_42; // 0x801428AA
-    u8 unk_44; // 0x801428AC
-    u8 unk_45; // 0x801428AD
+    u8 unk_44; // 0x801428AC set from sprite vec.x, size
+    u8 unk_45; // 0x801428AD set from sprite vec.z, size
     u16 flags; // 0x801428AE
-} UnknownMapStruct7;
+} MapAdditions;
 
 // 0x5528
 // D_80143168
@@ -170,8 +170,8 @@ typedef struct {
 // 0x1A608
 // D_80158248
 typedef struct {
-    f32 unk_0; // 0x48
-    f32 unk_4; // 0x4C
+    f32 unk_0; // 0x48 // x value
+    f32 unk_4; // 0x4C // z value
     u16 unk_8; // 0x50
     u16 unk_A; // 0x52 // vertex count or part of map size
     u16 unk_C; // 0x54 // vertex count or part of map size
@@ -205,7 +205,7 @@ typedef struct  {
     WeatherSprite weatherSprites[0x10];
     GroundObjects groundObjects; // 0x4058;
     // 0x44A8 / 0x801420E8: array
-    UnknownMapStruct7 mapStruct7[0x20]; // 0x4C28 
+    MapAdditions mapAdditions[0x20]; // 0x4C28 // non-interactable map additions?
     MapBitmap mapBitmaps[0x38]; // 0x5528
     u32 padding7[0x48]; // 0x5D08
     // might be bigger

@@ -356,7 +356,7 @@ segments:
       - [ 0xF16F0, data, gameAudio] # wave table
       - [ 0xF2080, data, overlayScreens]
       - [ 0xF2580, data, itemHandlers]
-      - [ 0xF3B00, data] # mapObjects
+      - [ 0xF3B00, data, mapObjects] # mapObjects
       - [ 0xF3F50, .data, weather]
       - [ 0xF3F70, data, shop]
       - [ 0xF4B40, data, loadGameScreen] # packinsoft farm string
