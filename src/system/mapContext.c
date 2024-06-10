@@ -95,9 +95,9 @@ bool setMapModelAddresses(u16 mapIndex, void *start, void *end) {
     return result;
 }
 
-//INCLUDE_ASM(const s32, "system/mapContext", func_8003BA44);
+//INCLUDE_ASM(const s32, "system/mapContext", setupMapModel);
 
-bool func_8003BA44(u16 index, u16 mapIndex, u32 *modelDataIndex) {
+bool setupMapModel(u16 index, u16 mapIndex, u32 *modelDataIndex) {
     
     bool result;
 
@@ -169,7 +169,6 @@ bool func_8003BB14(u16 index, u16 mapIndex) {
     return result;
 }
 
-// probably another function
 static inline u8* getAddress(u32 offsets[], u32 i) {
     return (u8*)offsets + offsets[i];
 }
@@ -352,9 +351,9 @@ bool func_8003C084(u16 mapIndex, u8 rotationIndex) {
     
 }
 
-//INCLUDE_ASM(const s32, "system/mapContext", func_8003C1A4);
+//INCLUDE_ASM(const s32, "system/mapContext", getCurrentMapRotation);
 
-u8 func_8003C1A4(u16 mapIndex) {
+u8 getCurrentMapRotation(u16 mapIndex) {
 
     // FIXME: shouldn't be necessary
     u32 padding[3];

@@ -108,9 +108,9 @@ typedef struct {
 
 typedef struct {
     u16 functionIndex;
-    u16 structIndex;
+    u16 mapAdditionIndex;
     u16 flag;
-} CutsceneMapStruct7Info;
+} CutsceneMapMapAdditionsInfo;
 
 typedef struct {
     u16 functionIndex;

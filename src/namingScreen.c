@@ -318,7 +318,7 @@ void func_800ED974(void) {
                 return;
             }
                  
-            if (D_801C3E40[0].struct5.flags & 4) {
+            if (dialogues[0].struct5.flags & 4) {
                 
                     switch (temp) {   
     
@@ -332,7 +332,7 @@ void func_800ED974(void) {
     
                         case 2:
                             
-                            if (D_801C3E40[0].struct5.unk_17 == 0) {
+                            if (dialogues[0].struct5.unk_17 == 0) {
                                 
                                 namingScreenContext.flags |= 0x800;
                                 
@@ -360,7 +360,7 @@ void func_800ED974(void) {
     
                         case 3:
     
-                            if (D_801C3E40[0].struct5.unk_17 == 0) {
+                            if (dialogues[0].struct5.unk_17 == 0) {
                                 
                                 namingScreenContext.flags |= 0x800;
 

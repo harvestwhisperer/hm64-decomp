@@ -1085,7 +1085,7 @@ void loadMapAddresses(void) {
     setMapModelAddresses(KITCHEN, &_kitchenMapSegmentRomStart, &_kitchenMapSegmentRomEnd);
     setMapModelAddresses(BATHROOM, &_bathroomMapSegmentRomStart, &_bathroomMapSegmentRomEnd);
     
-    func_8003BA44(MAIN_MAP_INDEX, 0, MODEL_DATA_BANK);
+    setupMapModel(MAIN_MAP_INDEX, 0, MODEL_DATA_BANK);
 
 }
 

@@ -17,7 +17,7 @@ typedef struct {
 
 // 0x802055D8
 typedef struct {
-	u32 *modelDataIndex; // 80255000
+	u32 *modelDataIndex; // vaddr = 0x80255000
 	Vec3f unk_4;
 	Vec3f unk_10;
 	Vec3f unk_1C;
@@ -57,7 +57,7 @@ extern bool func_8003BE98(u16, u8, u8, u8, u8);
 extern bool func_8003BF7C(u16, u8, u8, u8, u8, s16);
 extern bool func_8003C084(u16, u8);    
 extern void func_8003C6E4(void);
-extern bool func_8003C1A4(u16);
+extern bool getCurrentMapRotation(u16);
 extern bool func_8003C1E0(u16 arg0, f32 arg1, f32 arg2, f32 arg3, u8 arg4, u8 arg5);
 extern bool func_8003C504(u16);     
 extern bool func_8003C5C0(u16, u8, u8);

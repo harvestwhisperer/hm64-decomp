@@ -29,13 +29,13 @@ void func_80042F60(void) {
     u16 i;
 
     for (i = 0; i < 1; i++) {
-        D_801C3E40[i].struct5.unk_C = 0;
-        D_801C3E40[i].struct5.conversationIndex = 0;
-        D_801C3E40[i].struct5.unk_10 = 0;
-        D_801C3E40[i].struct5.unk_0 = 0xFF;
-        D_801C3E40[i].struct5.unk_4 = 0xFF;
-        D_801C3E40[i].struct5.unk_8 = 0xFF;
-        D_801C3E40[i].struct5.flags = 0;
+        dialogues[i].struct5.unk_C = 0;
+        dialogues[i].struct5.conversationIndex = 0;
+        dialogues[i].struct5.unk_10 = 0;
+        dialogues[i].struct5.unk_0 = 0xFF;
+        dialogues[i].struct5.unk_4 = 0xFF;
+        dialogues[i].struct5.unk_8 = 0xFF;
+        dialogues[i].struct5.flags = 0;
     }
 } 
 
@@ -45,15 +45,15 @@ bool func_80042FEC(u16 arg0, u16 arg1, u16 arg2) {
 
     bool result = 0;
 
-    if (arg0 == 0 && !(D_801C3E40[arg0].struct5.flags & 1)) {
+    if (arg0 == 0 && !(dialogues[arg0].struct5.flags & 1)) {
 
-        D_801C3E40[arg0].struct5.unk_0 = 0xFF;
-        D_801C3E40[arg0].struct5.unk_4 = 0xFF;
-        D_801C3E40[arg0].struct5.unk_8 = 0xFF;
-        D_801C3E40[arg0].struct5.unk_10 = arg1;
-        D_801C3E40[arg0].struct5.unk_12 = arg2;
+        dialogues[arg0].struct5.unk_0 = 0xFF;
+        dialogues[arg0].struct5.unk_4 = 0xFF;
+        dialogues[arg0].struct5.unk_8 = 0xFF;
+        dialogues[arg0].struct5.unk_10 = arg1;
+        dialogues[arg0].struct5.unk_12 = arg2;
 
-        D_801C3E40[arg0].struct5.flags = 1;
+        dialogues[arg0].struct5.flags = 1;
         
         result = 1;
         
@@ -119,11 +119,11 @@ bool func_80043148(u16 arg0, u32 arg1, u32 arg2, u32 arg3) {
 
     bool result = 0;
 
-    if (arg0 == 0 && D_801C3E40[arg0].struct5.flags & 1) {
+    if (arg0 == 0 && dialogues[arg0].struct5.flags & 1) {
         result = 1;
-        D_801C3E40[arg0].struct5.unk_0 = arg1;
-        D_801C3E40[arg0].struct5.unk_4 = arg2;
-        D_801C3E40[arg0].struct5.unk_8 = arg3;
+        dialogues[arg0].struct5.unk_0 = arg1;
+        dialogues[arg0].struct5.unk_4 = arg2;
+        dialogues[arg0].struct5.unk_8 = arg3;
     }
     
     return result;
@@ -136,27 +136,27 @@ bool func_8004318C(u16 arg0, u16 arg1, void* arg2, void* arg3, void* arg4, void*
 
     bool result = 0;
 
-    if (arg0 == 0 && (D_801C3E40[arg0].struct5.flags & 1)) {
+    if (arg0 == 0 && (dialogues[arg0].struct5.flags & 1)) {
 
         result = 1;
 
-        D_801C3E40[arg0].struct2.romTextureStart = arg2;
-        D_801C3E40[arg0].struct2.romTextureEnd = arg3;
-        D_801C3E40[arg0].struct2.romAssetIndexStart = arg4;
-        D_801C3E40[arg0].struct2.romAssetIndexEnd = arg5;
-        D_801C3E40[arg0].struct2.vaddrSpritesheet = arg6;
-        D_801C3E40[arg0].struct2.vaddrPalette = arg7;
-        D_801C3E40[arg0].struct2.vaddrUnknownAssetSheet = arg8;
-        D_801C3E40[arg0].struct2.vaddrUnknownAsset2 = arg9;
-        D_801C3E40[arg0].struct2.unk_20 = argA;
+        dialogues[arg0].struct2.romTextureStart = arg2;
+        dialogues[arg0].struct2.romTextureEnd = arg3;
+        dialogues[arg0].struct2.romAssetIndexStart = arg4;
+        dialogues[arg0].struct2.romAssetIndexEnd = arg5;
+        dialogues[arg0].struct2.vaddrSpritesheet = arg6;
+        dialogues[arg0].struct2.vaddrPalette = arg7;
+        dialogues[arg0].struct2.vaddrUnknownAssetSheet = arg8;
+        dialogues[arg0].struct2.vaddrUnknownAsset2 = arg9;
+        dialogues[arg0].struct2.unk_20 = argA;
  
-        D_801C3E40[arg0].struct2.unk_30 = arg1;
-        D_801C3E40[arg0].struct2.unk_32 = argB;
-        D_801C3E40[arg0].struct2.unk_34 = argC;
+        dialogues[arg0].struct2.unk_30 = arg1;
+        dialogues[arg0].struct2.unk_32 = argB;
+        dialogues[arg0].struct2.unk_34 = argC;
 
-        D_801C3E40[arg0].struct2.unk_24.x = argD;
-        D_801C3E40[arg0].struct2.unk_24.y = argE;
-        D_801C3E40[arg0].struct2.unk_24.z = argF;
+        dialogues[arg0].struct2.unk_24.x = argD;
+        dialogues[arg0].struct2.unk_24.y = argE;
+        dialogues[arg0].struct2.unk_24.z = argF;
         
         
     }
@@ -171,29 +171,29 @@ bool func_80043260(u16 arg0, u16 arg1, void* arg2, void* arg3, void* arg4, void*
 
     bool result = 0;
 
-    if (arg0 == 0 && (D_801C3E40[arg0].struct5.flags & 1)) {
+    if (arg0 == 0 && (dialogues[arg0].struct5.flags & 1)) {
         
         result = 1;
 
-        D_801C3E40[arg0].struct3.romTextureStart = arg2;
-        D_801C3E40[arg0].struct3.romTextureEnd = arg3; 
-        D_801C3E40[arg0].struct3.romAssetIndexStart = arg4;
-        D_801C3E40[arg0].struct3.romAssetIndexEnd = arg5;
+        dialogues[arg0].struct3.romTextureStart = arg2;
+        dialogues[arg0].struct3.romTextureEnd = arg3; 
+        dialogues[arg0].struct3.romAssetIndexStart = arg4;
+        dialogues[arg0].struct3.romAssetIndexEnd = arg5;
 
-        D_801C3E40[arg0].struct3.vaddrSpritesheet = arg6;
-        D_801C3E40[arg0].struct3.vaddrPalette = arg7;
-        D_801C3E40[arg0].struct3.vaddrUnknownAssetSheet = arg8;
-        D_801C3E40[arg0].struct3.vaddrUnknownAsset2 = arg9;
+        dialogues[arg0].struct3.vaddrSpritesheet = arg6;
+        dialogues[arg0].struct3.vaddrPalette = arg7;
+        dialogues[arg0].struct3.vaddrUnknownAssetSheet = arg8;
+        dialogues[arg0].struct3.vaddrUnknownAsset2 = arg9;
 
-        D_801C3E40[arg0].struct3.unk_20 = argA;
+        dialogues[arg0].struct3.unk_20 = argA;
 
-        D_801C3E40[arg0].struct3.unk_30 = arg1;
-        D_801C3E40[arg0].struct3.unk_32 = argB;
-        D_801C3E40[arg0].struct3.unk_34 = argC;
+        dialogues[arg0].struct3.unk_30 = arg1;
+        dialogues[arg0].struct3.unk_32 = argB;
+        dialogues[arg0].struct3.unk_34 = argC;
 
-        D_801C3E40[arg0].struct3.unk_24.x = argD;
-        D_801C3E40[arg0].struct3.unk_24.y = argE;
-        D_801C3E40[arg0].struct3.unk_24.z = argF;
+        dialogues[arg0].struct3.unk_24.x = argD;
+        dialogues[arg0].struct3.unk_24.y = argE;
+        dialogues[arg0].struct3.unk_24.z = argF;
         
     }
 
@@ -207,29 +207,29 @@ bool func_80043334(u16 arg0, u16 arg1, void* arg2, void* arg3, void* arg4, void*
 
     bool result = 0;
 
-    if (arg0 == 0 && (D_801C3E40[arg0].struct5.flags & 1)) {
+    if (arg0 == 0 && (dialogues[arg0].struct5.flags & 1)) {
 
         result = 1;
         
-        D_801C3E40[arg0].struct4.romTextureStart = arg2;
-        D_801C3E40[arg0].struct4.romTextureEnd = arg3; 
-        D_801C3E40[arg0].struct4.romAssetIndexStart = arg4;
-        D_801C3E40[arg0].struct4.romAssetIndexEnd = arg5;
+        dialogues[arg0].struct4.romTextureStart = arg2;
+        dialogues[arg0].struct4.romTextureEnd = arg3; 
+        dialogues[arg0].struct4.romAssetIndexStart = arg4;
+        dialogues[arg0].struct4.romAssetIndexEnd = arg5;
 
-        D_801C3E40[arg0].struct4.vaddrSpritesheet = arg6;
-        D_801C3E40[arg0].struct4.vaddrPalette = arg7;
-        D_801C3E40[arg0].struct4.vaddrUnknownAssetSheet = arg8;
-        D_801C3E40[arg0].struct4.vaddrUnknownAsset2 = arg9;
+        dialogues[arg0].struct4.vaddrSpritesheet = arg6;
+        dialogues[arg0].struct4.vaddrPalette = arg7;
+        dialogues[arg0].struct4.vaddrUnknownAssetSheet = arg8;
+        dialogues[arg0].struct4.vaddrUnknownAsset2 = arg9;
 
-        D_801C3E40[arg0].struct4.unk_20 = argA;
+        dialogues[arg0].struct4.unk_20 = argA;
 
-        D_801C3E40[arg0].struct4.unk_30 = arg1;
-        D_801C3E40[arg0].struct4.unk_32 = argB;
-        D_801C3E40[arg0].struct4.unk_34 = argC;
+        dialogues[arg0].struct4.unk_30 = arg1;
+        dialogues[arg0].struct4.unk_32 = argB;
+        dialogues[arg0].struct4.unk_34 = argC;
 
-        D_801C3E40[arg0].struct4.unk_24.x = argD;
-        D_801C3E40[arg0].struct4.unk_24.y = argE;
-        D_801C3E40[arg0].struct4.unk_24.z = argF;
+        dialogues[arg0].struct4.unk_24.x = argD;
+        dialogues[arg0].struct4.unk_24.y = argE;
+        dialogues[arg0].struct4.unk_24.z = argF;
         
     }
     
@@ -267,126 +267,126 @@ bool func_80043430(u16 index, u16 conversationIndex, u16 arg2, u16 arg3) {
     bool result = 0;
     u32 temp;
 
-    if (index == 0 && D_801C3E40[index].struct5.flags & 1) {
+    if (index == 0 && dialogues[index].struct5.flags & 1) {
 
-        func_8002B138(D_801C3E40[index].struct2.unk_30, 
-            D_801C3E40[index].struct2.romTextureStart, 
-            D_801C3E40[index].struct2.romTextureEnd, 
-            D_801C3E40[index].struct2.romAssetIndexStart, 
-            D_801C3E40[index].struct2.romAssetIndexEnd, 
+        func_8002B138(dialogues[index].struct2.unk_30, 
+            dialogues[index].struct2.romTextureStart, 
+            dialogues[index].struct2.romTextureEnd, 
+            dialogues[index].struct2.romAssetIndexStart, 
+            dialogues[index].struct2.romAssetIndexEnd, 
             0, 
             0,   
-            D_801C3E40[index].struct2.vaddrSpritesheet,
+            dialogues[index].struct2.vaddrSpritesheet,
             0,
-            D_801C3E40[index].struct2.vaddrPalette,
-            D_801C3E40[index].struct2.vaddrUnknownAssetSheet,
-            D_801C3E40[index].struct2.vaddrUnknownAsset2,
-            D_801C3E40[index].struct2.unk_20,
+            dialogues[index].struct2.vaddrPalette,
+            dialogues[index].struct2.vaddrUnknownAssetSheet,
+            dialogues[index].struct2.vaddrUnknownAsset2,
+            dialogues[index].struct2.unk_20,
             0,
             0);
  
-        setSpriteShrinkFactor(D_801C3E40[index].struct2.unk_30, 0.0f, 0.0f, 0.0f);
-        setSpriteScale(D_801C3E40[index].struct2.unk_30, 1.0f, 1.0f, 1.0f);
-        func_8002BE14(D_801C3E40[index].struct2.unk_30, 0.0f, 0.0f, 0.0f);
-        func_8002CB24(D_801C3E40[index].struct2.unk_30, 1);
-        func_8002C914(D_801C3E40[index].struct2.unk_30, 0xFF, 0xFF, 0xFF, 0xFF);
-        func_8002C680(D_801C3E40[index].struct2.unk_30, 2, 2);
-        func_8002C7EC(D_801C3E40[index].struct2.unk_30, 3);
+        setSpriteShrinkFactor(dialogues[index].struct2.unk_30, 0.0f, 0.0f, 0.0f);
+        setSpriteScale(dialogues[index].struct2.unk_30, 1.0f, 1.0f, 1.0f);
+        func_8002BE14(dialogues[index].struct2.unk_30, 0.0f, 0.0f, 0.0f);
+        func_8002CB24(dialogues[index].struct2.unk_30, 1);
+        func_8002C914(dialogues[index].struct2.unk_30, 0xFF, 0xFF, 0xFF, 0xFF);
+        func_8002C680(dialogues[index].struct2.unk_30, 2, 2);
+        func_8002C7EC(dialogues[index].struct2.unk_30, 3);
 
-        func_8002B138(D_801C3E40[index].struct3.unk_30, 
-            D_801C3E40[index].struct3.romTextureStart, 
-            D_801C3E40[index].struct3.romTextureEnd,  
-            D_801C3E40[index].struct3.romAssetIndexStart, 
-            D_801C3E40[index].struct3.romAssetIndexEnd, 
+        func_8002B138(dialogues[index].struct3.unk_30, 
+            dialogues[index].struct3.romTextureStart, 
+            dialogues[index].struct3.romTextureEnd,  
+            dialogues[index].struct3.romAssetIndexStart, 
+            dialogues[index].struct3.romAssetIndexEnd, 
             0, 
             0,  
-            D_801C3E40[index].struct3.vaddrSpritesheet,
+            dialogues[index].struct3.vaddrSpritesheet,
             0,
-            D_801C3E40[index].struct3.vaddrPalette,
-            D_801C3E40[index].struct3.vaddrUnknownAssetSheet,
-            D_801C3E40[index].struct3.vaddrUnknownAsset2,
-            D_801C3E40[index].struct3.unk_20,
+            dialogues[index].struct3.vaddrPalette,
+            dialogues[index].struct3.vaddrUnknownAssetSheet,
+            dialogues[index].struct3.vaddrUnknownAsset2,
+            dialogues[index].struct3.unk_20,
             0,
             0);
 
-        setSpriteShrinkFactor(D_801C3E40[index].struct3.unk_30, 0.0f, 0.0f, 0.0f);
-        setSpriteScale(D_801C3E40[index].struct3.unk_30, 1.0f, 1.0f, 1.0f);
-        func_8002BE14(D_801C3E40[index].struct3.unk_30, 0.0f, 0.0f, 0.0f);
-        func_8002CB24(D_801C3E40[index].struct3.unk_30, 1);
-        func_8002C914(D_801C3E40[index].struct3.unk_30, 0xFF, 0xFF, 0xFF, 0xFF);
-        func_8002C680(D_801C3E40[index].struct3.unk_30, 2, 2);
-        func_8002C7EC(D_801C3E40[index].struct3.unk_30, 3);
+        setSpriteShrinkFactor(dialogues[index].struct3.unk_30, 0.0f, 0.0f, 0.0f);
+        setSpriteScale(dialogues[index].struct3.unk_30, 1.0f, 1.0f, 1.0f);
+        func_8002BE14(dialogues[index].struct3.unk_30, 0.0f, 0.0f, 0.0f);
+        func_8002CB24(dialogues[index].struct3.unk_30, 1);
+        func_8002C914(dialogues[index].struct3.unk_30, 0xFF, 0xFF, 0xFF, 0xFF);
+        func_8002C680(dialogues[index].struct3.unk_30, 2, 2);
+        func_8002C7EC(dialogues[index].struct3.unk_30, 3);
 
-        func_8002B138(D_801C3E40[index].struct4.unk_30, 
-            D_801C3E40[index].struct4.romTextureStart, 
-            D_801C3E40[index].struct4.romTextureEnd, 
-            D_801C3E40[index].struct4.romAssetIndexStart, 
-            D_801C3E40[index].struct4.romAssetIndexEnd, 
+        func_8002B138(dialogues[index].struct4.unk_30, 
+            dialogues[index].struct4.romTextureStart, 
+            dialogues[index].struct4.romTextureEnd, 
+            dialogues[index].struct4.romAssetIndexStart, 
+            dialogues[index].struct4.romAssetIndexEnd, 
             0, 
             0,  
-            D_801C3E40[index].struct4.vaddrSpritesheet,
+            dialogues[index].struct4.vaddrSpritesheet,
             0,
-            D_801C3E40[index].struct4.vaddrPalette,
-            D_801C3E40[index].struct4.vaddrUnknownAssetSheet,
-            D_801C3E40[index].struct4.vaddrUnknownAsset2,
-            D_801C3E40[index].struct4.unk_20,
+            dialogues[index].struct4.vaddrPalette,
+            dialogues[index].struct4.vaddrUnknownAssetSheet,
+            dialogues[index].struct4.vaddrUnknownAsset2,
+            dialogues[index].struct4.unk_20,
             0,
             0);
 
-        setSpriteShrinkFactor(D_801C3E40[index].struct4.unk_30, 0.0f, 0.0f, 0.0f);
-        setSpriteScale(D_801C3E40[index].struct4.unk_30, 1.0f, 1.0f, 1.0f);
-        func_8002BE14(D_801C3E40[index].struct4.unk_30, 0.0f, 0.0f, 0.0f);
-        func_8002CB24(D_801C3E40[index].struct4.unk_30, 1);
-        func_8002C914(D_801C3E40[index].struct4.unk_30, 0xFF, 0xFF, 0xFF, 0xFF);
-        func_8002C680(D_801C3E40[index].struct4.unk_30, 2, 2);
-        func_8002C7EC(D_801C3E40[index].struct4.unk_30, 3);
+        setSpriteShrinkFactor(dialogues[index].struct4.unk_30, 0.0f, 0.0f, 0.0f);
+        setSpriteScale(dialogues[index].struct4.unk_30, 1.0f, 1.0f, 1.0f);
+        func_8002BE14(dialogues[index].struct4.unk_30, 0.0f, 0.0f, 0.0f);
+        func_8002CB24(dialogues[index].struct4.unk_30, 1);
+        func_8002C914(dialogues[index].struct4.unk_30, 0xFF, 0xFF, 0xFF, 0xFF);
+        func_8002C680(dialogues[index].struct4.unk_30, 2, 2);
+        func_8002C7EC(dialogues[index].struct4.unk_30, 3);
         
-        D_801C3E40[index].struct1.unk_12 = 0xFF;
-        D_801C3E40[index].struct5.conversationIndex = conversationIndex;
-        D_801C3E40[index].struct5.unk_C = arg2;
+        dialogues[index].struct1.unk_12 = 0xFF;
+        dialogues[index].struct5.conversationIndex = conversationIndex;
+        dialogues[index].struct5.unk_C = arg2;
 
         nuPiReadRom(D_80205760[conversationIndex].romStart, D_80205760[conversationIndex].vaddr, D_80205760[conversationIndex].romEnd - D_80205760[conversationIndex].romStart);
 
-        temp = func_80043C98(0, D_801C3E40[index].struct5.unk_C);
+        temp = func_80043C98(0, dialogues[index].struct5.unk_C);
 
-        nuPiReadRom(temp, D_80205760[D_801C3E40[index].struct5.conversationIndex].vaddrIndex, func_80043C98(0, D_801C3E40[index].struct5.unk_C + 1) - temp);
+        nuPiReadRom(temp, D_80205760[dialogues[index].struct5.conversationIndex].vaddrIndex, func_80043C98(0, dialogues[index].struct5.unk_C + 1) - temp);
 
-        D_801C3E40[index].unk_D4 = D_80205760[D_801C3E40[index].struct5.conversationIndex].vaddrIndex;
+        dialogues[index].unk_D4 = D_80205760[dialogues[index].struct5.conversationIndex].vaddrIndex;
         
-        D_801C3E40[index].struct5.unk_16 = 0;
-        D_801C3E40[index].struct5.unk_17 = 0;
+        dialogues[index].struct5.unk_16 = 0;
+        dialogues[index].struct5.unk_17 = 0;
 
-        D_801C3E40[index].struct1.unk_0 = 0;
-        D_801C3E40[index].struct1.unk_2 = 0;
-        D_801C3E40[index].struct1.unk_4 = 0;
-        D_801C3E40[index].struct1.unk_6 = 0;
-        D_801C3E40[index].struct1.unk_8 = 0;
-        D_801C3E40[index].struct1.unk_A = 0;
-        D_801C3E40[index].struct1.unk_C = 0;
-        D_801C3E40[index].struct1.unk_E = 0;
-        D_801C3E40[index].struct1.unk_10 = 0;
+        dialogues[index].struct1.unk_0 = 0;
+        dialogues[index].struct1.unk_2 = 0;
+        dialogues[index].struct1.unk_4 = 0;
+        dialogues[index].struct1.unk_6 = 0;
+        dialogues[index].struct1.unk_8 = 0;
+        dialogues[index].struct1.unk_A = 0;
+        dialogues[index].struct1.unk_C = 0;
+        dialogues[index].struct1.unk_E = 0;
+        dialogues[index].struct1.unk_10 = 0;
         
-        D_801C3E40[index].struct1.unk_13 = 0;
-        D_801C3E40[index].struct1.unk_14 = 0;
-        D_801C3E40[index].struct1.unk_15 = 0;
-        D_801C3E40[index].struct1.unk_16 = 0;
-        D_801C3E40[index].struct1.unk_17 = 0;
-        D_801C3E40[index].struct1.unk_18 = 0;
+        dialogues[index].struct1.unk_13 = 0;
+        dialogues[index].struct1.unk_14 = 0;
+        dialogues[index].struct1.unk_15 = 0;
+        dialogues[index].struct1.unk_16 = 0;
+        dialogues[index].struct1.unk_17 = 0;
+        dialogues[index].struct1.unk_18 = 0;
 
         
-        D_801C3E40[index].struct5.flags &= ~4;
-        D_801C3E40[index].struct5.flags |= 2;
+        dialogues[index].struct5.flags &= ~4;
+        dialogues[index].struct5.flags |= 2;
 
         if (arg3 == 0x40) {
-            D_801C3E40[index].struct5.flags |= (2 | 0x40);
+            dialogues[index].struct5.flags |= (2 | 0x40);
         }  else {
-            D_801C3E40[index].struct5.flags &= ~(0x40);
+            dialogues[index].struct5.flags &= ~(0x40);
         }
 
         if (arg3 == 0x80) {
-            D_801C3E40[index].struct5.flags |= 0x80;
+            dialogues[index].struct5.flags |= 0x80;
         } else {
-            D_801C3E40[index].struct5.flags &= ~0x80;
+            dialogues[index].struct5.flags &= ~0x80;
         }
 
 
@@ -406,7 +406,7 @@ bool func_80043A88(void) {
     u8 result = 0;
 
     for (i = 0; i < 1; i++) {
-        if (D_801C3E40[i].struct5.flags & 4) {
+        if (dialogues[i].struct5.flags & 4) {
             result = 1;
         }
     }
@@ -421,16 +421,16 @@ bool func_80043AD8(u16 index) {
 
     bool result = 0;
 
-    if (index == 0 && D_801C3E40[index].struct5.flags & 1) {
+    if (index == 0 && dialogues[index].struct5.flags & 1) {
 
-        if (!(D_801C3E40[index].struct5.flags & 0x40)) {
-            dialogueBoxes[D_801C3E40[index].struct5.unk_10].flags &= ~0x8000;
+        if (!(dialogues[index].struct5.flags & 0x40)) {
+            dialogueBoxes[dialogues[index].struct5.unk_10].flags &= ~0x8000;
         }
 
-        func_8003F130(D_801C3E40[index].struct5.unk_10);
+        func_8003F130(dialogues[index].struct5.unk_10);
         func_80043B84(0);
         
-        D_801C3E40[index].struct5.flags = 5;
+        dialogues[index].struct5.flags = 5;
         
         result = 1;
     }
@@ -443,22 +443,22 @@ bool func_80043AD8(u16 index) {
 
 void func_80043B84(u16 arg0) {
 
-    dialogueBoxes[D_801C3E40[arg0].struct5.unk_12].flags &= ~0x8000;
+    dialogueBoxes[dialogues[arg0].struct5.unk_12].flags &= ~0x8000;
     
-    func_8003F130(D_801C3E40[arg0].struct5.unk_12);
+    func_8003F130(dialogues[arg0].struct5.unk_12);
     
-    func_8002BAD8(D_801C3E40[arg0].struct2.unk_30);
-    func_8002BAD8(D_801C3E40[arg0].struct3.unk_30);
-    func_8002BAD8(D_801C3E40[arg0].struct4.unk_30);
+    func_8002BAD8(dialogues[arg0].struct2.unk_30);
+    func_8002BAD8(dialogues[arg0].struct3.unk_30);
+    func_8002BAD8(dialogues[arg0].struct4.unk_30);
     
-    D_801C3E40[arg0].struct5.flags &= ~0x20;
+    dialogues[arg0].struct5.flags &= ~0x20;
     
 }
 
 //INCLUDE_ASM(const s32, "system/dialogue", func_80043C6C);
 
 u8 func_80043C6C(u16 arg0) {
-    return D_801C3E40[arg0].struct5.unk_17;
+    return dialogues[arg0].struct5.unk_17;
 }
 
 //INCLUDE_ASM(const s32, "system/dialogue", func_80043C98);
@@ -467,9 +467,9 @@ u32 func_80043C98(u16 arg0, u16 arg1) {
 
     u32 ptr;
 
-    ptr = D_80205760[D_801C3E40[arg0].struct5.conversationIndex].romIndex;
+    ptr = D_80205760[dialogues[arg0].struct5.conversationIndex].romIndex;
     
-    return ptr + D_80205760[D_801C3E40[arg0].struct5.conversationIndex].vaddr[arg1];
+    return ptr + D_80205760[dialogues[arg0].struct5.conversationIndex].vaddr[arg1];
     
 }
 
@@ -558,22 +558,22 @@ void func_80045CB0(void) {
     u16 i;
     u8 set;
 
-    for (i = 0; i < 1; i++) {
+    for (i = 0; i < MAX_DIALOGUES; i++) {
         
-        if (D_801C3E40[i].struct5.flags & 1 && D_801C3E40[i].struct5.flags & 2) {
+        if (dialogues[i].struct5.flags & 1 && dialogues[i].struct5.flags & 2) {
             
             set = 0;
             
-            if (D_801C3E40[i].struct5.flags & 0x10) {
+            if (dialogues[i].struct5.flags & 0x10) {
                 
-                if (dialogueBoxes[D_801C3E40[i].struct5.unk_10].flags & 4 || dialogueBoxes[D_801C3E40[i].struct5.unk_10].flags & 0x20000) {
-                    D_801C3E40[i].struct5.flags &= ~0x10;
+                if (dialogueBoxes[dialogues[i].struct5.unk_10].flags & 4 || dialogueBoxes[dialogues[i].struct5.unk_10].flags & 0x20000) {
+                    dialogues[i].struct5.flags &= ~0x10;
                 }
                 
                 set = 1;
             }
             
-            if (D_801C3E40[i].struct5.flags & 0x20) {
+            if (dialogues[i].struct5.flags & 0x20) {
                 func_80044D78(i);
                 set = 1;
             }

@@ -1144,13 +1144,14 @@ u16 func_800303D4(u16 spriteIndex, f32 arg1, f32 arg2, u16 arg3, u16 arg4) {
 
 u16 func_800305CC(u16 index, f32 arg1, f32 arg2, u16 arg3) {
 
+    Vec3f vec1;
+    Vec3f vec2;
+    Vec3f vec3;
+    
     u16 result = 0;
     u32 temp;
     u16 i = 0;
     u8 set = 0;
-    Vec3f vec1;
-    Vec3f vec2;
-    Vec3f vec3;
 
     if (index < MAX_ANIMATED_SPRITES) {
         
@@ -1162,9 +1163,8 @@ u16 func_800305CC(u16 index, f32 arg1, f32 arg2, u16 arg3) {
                 vec1.y = 0;
                 vec1.z = arg2;
 
-                // angles/degrees
                 vec3.x = 0;
-                vec3.y = func_80028820((animatedSprites[index].direction + func_8003C1A4(gMainMapIndex)) % 8);
+                vec3.y = getSpriteYValueFromDirection((animatedSprites[index].direction + getCurrentMapRotation(gMainMapIndex)) % 8);
                 vec3.z = 0;
 
                 // do 3D rotation
@@ -1179,16 +1179,21 @@ u16 func_800305CC(u16 index, f32 arg1, f32 arg2, u16 arg3) {
                             result |= temp;
                             
                             if (func_8004D380(CONTROLLER_1, arg3) || !arg3) {
+
                                 if (!set) {
+
                                     animatedSprites[i].unk_58 = index;
                                     animatedSprites[i].unk_5A = arg3;
+
                                     if (!(animatedSprites[i].flags & 0x4000)) {
                                         animatedSprites[index].collision = i;    
                                     } else {
                                         animatedSprites[index].collision = 0xFFFF;
                                     }
+
                                     animatedSprites[i].unk_5E = 0xFFFF;
                                     set = 1;
+                                    
                                     continue;
                                 }
                             }
@@ -1255,7 +1260,7 @@ u8 func_800309B4(u16 spriteIndex, f32 arg1, f32 arg2) {
                 vec1.z = arg2;
 
                 vec3.x = 0;
-                vec3.y = func_80028820((animatedSprites[spriteIndex].direction + func_8003C1A4(gMainMapIndex)) % 8);
+                vec3.y = getSpriteYValueFromDirection((animatedSprites[spriteIndex].direction + getCurrentMapRotation(gMainMapIndex)) % 8);
                 vec3.z = 0;
                 
                 func_80027950(vec1, &vec2, vec3);
@@ -1403,7 +1408,7 @@ Vec3f* func_80030EAC(Vec3f* arg0, u16 spriteIndex, f32 arg2, f32 arg3) {
             vec.z = arg3;
 
             vec3.x = 0;
-            vec3.y = func_80028820((animatedSprites[spriteIndex].direction + func_8003C1A4(gMainMapIndex)) % 8);
+            vec3.y = getSpriteYValueFromDirection((animatedSprites[spriteIndex].direction + getCurrentMapRotation(gMainMapIndex)) % 8);
             vec3.z = 0;
 
             func_80027950(vec, &vec2, vec3);
@@ -1451,6 +1456,7 @@ u16 func_80031050(u16 spriteIndex, f32 arg1, f32 arg2) {
 
 //INCLUDE_ASM(const s32, "system/animatedSprites", func_800311E0);
 
+// unused
 bool func_800311E0(u16 spriteIndex, f32 arg1, f32 arg2, u16 arg3) {
 
     // FIXME: shouldn't be necessary
@@ -1468,10 +1474,11 @@ bool func_800311E0(u16 spriteIndex, f32 arg1, f32 arg2, u16 arg3) {
 
             if (vec.y != 65535.0f) {
 
+                // set map additions
                 func_80038A2C(gMapModelContext[gMainMapIndex].mainMapIndex, arg3, vec.x, vec.z);
                 set = 1;
+
             }
-            
             
         }
      }
@@ -1501,6 +1508,7 @@ bool func_80031380(u16 spriteIndex) {
 
 //INCLUDE_ASM(const s32, "system/animatedSprites", func_800313FC);
 
+// convert sprite coordinates
 Vec3f* func_800313FC(Vec3f* arg0, u16 spriteIndex, f32 arg2, f32 arg3) {
 
     Vec3f vec;
@@ -1521,7 +1529,7 @@ Vec3f* func_800313FC(Vec3f* arg0, u16 spriteIndex, f32 arg2, f32 arg3) {
             vec.z = arg3;
 
             vec3.x = 0;
-            vec3.y = func_80028820((animatedSprites[spriteIndex].direction + func_8003C1A4(gMainMapIndex)) % 8);
+            vec3.y = getSpriteYValueFromDirection((animatedSprites[spriteIndex].direction + getCurrentMapRotation(gMainMapIndex)) % 8);
             vec3.z = 0;
 
             func_80027950(vec, &vec2, vec3);
@@ -1604,7 +1612,7 @@ Vec3f* func_8003168C(Vec3f* arg0, u16 spriteIndex, f32 arg2, f32 arg3) {
             vec.z = arg3;
 
             vec3.x = 0;
-            vec3.y = func_80028820((animatedSprites[spriteIndex].direction + func_8003C1A4(gMainMapIndex)) % 8);
+            vec3.y = getSpriteYValueFromDirection((animatedSprites[spriteIndex].direction + getCurrentMapRotation(gMainMapIndex)) % 8);
             vec3.z = 0;
 
             func_80027950(vec, &vec2, vec3);
@@ -1676,7 +1684,7 @@ Vec3f* func_80031904(Vec3f* vec, u16 index, s16 arg2, u8 arg3) {
     vec1.z = arg2;
 
     vec3.x = 0;
-    vec3.y = func_80028820(arg3 % 8);
+    vec3.y = getSpriteYValueFromDirection(arg3 % 8);
     vec3.z = 0;
 
     // do 3D rotation

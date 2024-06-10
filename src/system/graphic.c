@@ -552,9 +552,9 @@ f32 func_800284E8(f32 arg0, f32 arg1, f32 arg2, f32 arg3, f32 arg4, f32 arg5, f3
 INCLUDE_ASM(const s32, "system/graphic", func_800284E8);
 #endif
 
-//INCLUDE_RODATA(const s32, "system/graphic", D_8011EC90);
+//INCLUDE_RODATA(const s32, "system/graphic", directionsToYValues);
 
-static const f32 D_8011EC90[8] = { 0.0f, 315.0f, 270.0f, 225.0f, 180.0f, 135.0f, 90.0f, 45.0f };
+static const f32 directionsToYValues[8] = { 0.0f, 315.0f, 270.0f, 225.0f, 180.0f, 135.0f, 90.0f, 45.0f };
 
 //INCLUDE_ASM(const s32, "system/graphic", func_80028520);
 
@@ -583,7 +583,7 @@ Vec3f* func_80028520(Vec3f *arg0, f32 arg1, u8 arg2, f32 arg3) {
     f32 y;
     f32 z;
 
-    memcpy(buffer, D_8011EC90, 32);
+    memcpy(buffer, directionsToYValues, 32);
     
     if (arg2 != 0xFF) {
 
@@ -657,15 +657,16 @@ Vec3f* func_80028520(Vec3f *arg0, f32 arg1, u8 arg2, f32 arg3) {
     
 }
 
-//INCLUDE_ASM(const s32, "system/graphic", func_80028820);
+//INCLUDE_ASM(const s32, "system/graphic", getSpriteYValueFromDirection);
 
-f32 func_80028820(u8 arg0) {
+// get y value for sprite based on direction
+f32 getSpriteYValueFromDirection(u8 direction) {
 
     f32 buffer[8];
 
-    memcpy(buffer, D_8011EC90, 32);
+    memcpy(buffer, directionsToYValues, 32);
     
-    return buffer[arg0];
+    return buffer[direction];
 
 }
  

@@ -2,7 +2,7 @@
 #include "nusys.h"
 
 // FIXME: doesn't match when setting .data in splat.yaml
-// nugfx_ucode initialization + dispaly lists are wrong
+// nugfx_ucode initialization + display lists are wrong
 
 #define SCREEN_WD	320
 #define SCREEN_HT	240

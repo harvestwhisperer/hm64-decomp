@@ -22,7 +22,7 @@
 
 // bss
 // struct
-u8 D_80126560; // mapStruct7 index
+u8 D_80126560; // mapAdditions index
 u8 D_80126561; // sfx index
 
 u8 D_80189826; 
@@ -654,7 +654,7 @@ u8 func_800AD8D0(u16 mapIndex, u8 arg1) {
 
         case 20:
             if (func_8004D380(CONTROLLER_1, BUTTON_A)) {
-                func_8003FBD8(0x17, dialogueIcons[0].unk_44, 0);
+                func_8003FBD8(0x17, D_80180714, 0);
                 showTextBox(1, 6, 0xA2, 0, 2);
                 result = 1;
             }
