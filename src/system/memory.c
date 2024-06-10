@@ -28,6 +28,7 @@ inline OSPiHandle* sramInit(void) {
     osEPiLinkHandle(&SramHandle);
 
     return (&SramHandle);
+
 }
 
 //INCLUDE_ASM(const s32, "system/memory", func_8004DC48);
@@ -55,7 +56,7 @@ void func_8004DC48(void* devAddr, void* dramAddr, u32 size) {
 
 //INCLUDE_ASM(const s32, "system/memory", func_8004DD7C);
 
-void func_8004DD7C(void *dramAddr, void *devAddr, u32 size) {
+void func_8004DD7C(void *devAddr, void *dramAddr, u32 size) {
 
     OSPiHandle *handle = sramInit();
     OSIoMesg osIoMesg; 
@@ -63,12 +64,12 @@ void func_8004DD7C(void *dramAddr, void *devAddr, u32 size) {
     OSMesg mesg;
 
     osCreateMesgQueue(&queue, &mesg, 1);
-    osWritebackDCache(devAddr, size);
+    osWritebackDCache(dramAddr, size);
 
     osIoMesg.hdr.pri = 0;
     osIoMesg.hdr.retQueue = &queue;
-    osIoMesg.dramAddr = devAddr;
-    osIoMesg.devAddr = dramAddr;
+    osIoMesg.dramAddr = dramAddr;
+    osIoMesg.devAddr = devAddr;
     osIoMesg.size = size;
     
     osEPiStartDma(handle, &osIoMesg, OS_WRITE);

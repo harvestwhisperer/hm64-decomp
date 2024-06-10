@@ -117,9 +117,9 @@ extern u8 gBabyAge;
 
 extern u8 gElliGrievingCounter;
 
-extern u8 gFlowerFestivalGoddess;
-extern u8 gHarvestCoinFinder;
 extern u8 gHarvestKing;
+extern u8 gHarvestCoinFinder;
+extern u8 gFlowerFestivalGoddess;
 extern u8 gVoteForFlowerFestivalGoddess;
 
 extern u8 babyBirthdaySeason;
@@ -139,6 +139,27 @@ extern u8 gFarmName[6];
 extern u8 gWifeName[6];
 extern u8 gBabyName[6];
 extern u8 harvestKingName[6];
+
+extern u8 gHappiness;
+
+extern u8 mariaHarrisPregnancyCounter;
+extern u8 mariaHarrisBabyAge;
+extern u8 popuriGrayNewlyWedCounter;
+extern u8 popuriGrayPregnancyCounter;
+extern u8 elliJeffNewlywedCounter;
+extern u8 elliJeffPregnancyCounter;
+extern u8 karenKaiBabyAge;
+extern u8 karenKaiNewlywedCounter;
+extern u8 karenPregnancyCounter;
+extern u8 annCliffBabyAge;
+extern u8 annCliffNewlywedCounter;
+extern u8 annPregnancyCounter;
+
+extern u8 numberOfSpiritFestivalAssistantsRecruited;
+extern u8 spiritFestivalAssistant1;
+extern u8 spiritFestivalAssistant2;
+extern u8 spiritFestivalAssistant3;  
+extern u8 D_801FC15C;
 
 // TODO: label
 // season married in

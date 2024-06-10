@@ -1035,6 +1035,9 @@ mainMap = 0x8013DC40; // size:0x1A620
 gDayOfMonth = 0x80158260;
 spriteAddresses = 0x80158268;
 characterSprites = 0x801584F0; // size:0xFF0
+
+unknownFlag = 0x801594E4;
+
 mariaHarrisPregnancyCounter = 0x8016FAD8;
 gTotalGrassTiles = 0x801654F0;
 farmFieldTiles = 0x8016F500;
@@ -1044,6 +1047,9 @@ globalLightingRgba = 0x8016F8A0; //size:0x10
 specialDialogueBits = 0x8016F8B0; // size:0x40
 gSickDays = 0x8016F8F4;
 recipesBits = 0x8016FAFC; // size:0x4
+
+drawnFrameCount = 0x8016FB04;
+
 gChickenEggs = 0x8016FB08; // size:0xC4
 namingScreenContext = 0x8016FBD0; // size:0x20
 horseInfo = 0x8016FDD0;
@@ -1127,12 +1133,16 @@ npcTalkingTo = 0x801C3E18;
 
 bitmapCounter = 0x801C3E2A;
 gCutsceneIndex = 0x801C3B66;
+retraceCount = 0x801C3BEC;
 gChickens = 0x801C3BF0; // size:0x1B0
 previousEntranceIndex = 0x801C3E20;
+
+loopStepsPerCycle = 0x801C3F34;
 numberOfSpiritFestivalAssistantsRecruited = 0x801C3F37;
 readMailBits = 0x801C3F38;
 gFlowerFestivalGoddess = 0x801C3F44;
 blueMistFlowerPlot = 0x801C3F45;
+framebufferCount = 0x801C3F71;
 gTotalPinkCatMintFlowersGrowing = 0x801C3F7C;
 gVoteForFlowerFestivalGoddess = 0x801C3F7E;
 babyBirthdayDate = 0x801C3F84;
@@ -1140,6 +1150,7 @@ gTotalGoldenMilkShipped = 0x801C3F88;
 
 npcAffection = 0x801C3F90; // size:0x30
 
+currentFramebufferIndex = 0x801D6230;
 loadGameScreenContext = 0x801D6238; // size:0x90
 
 nuContNum = 0x801D62C8;
@@ -1190,6 +1201,7 @@ itemInfo = 0x80204DF8; // size:0x1B8
 gHarvestKing = 0x80204FF8;
 
 gCurrentGameIndex = 0x80205200;
+stepMainLoop = 0x80205208;
 mariaHarrisBabyAge = 0x80205201;
 gfxTaskNo = 0x8020520A;
 gForecast = 0x80205238;
@@ -1215,6 +1227,8 @@ powerNutBits = 0x80215EB8;
 gElliGrievingCounter = 0x80215EC0;
 
 gEntranceIndex = 0x802231C0; 
+
+pendingGfxNum = 0x802226E8;
 nusched = 0x80222B40;
 
 dailyShippingBinValue = 0x80237388;
@@ -1222,15 +1236,15 @@ dailyShippingBinValue = 0x80237388;
 gWeather = 0x802373A9;
 gItemBeingHeld = 0x802373C8;
 flowerShopPoints = 0x802373F0;
+
+frameRate = 0x802373F1;
+
 gHarvestCoinFinder = 0x80237409;
 spiritFestivalAssistant3 = 0x80237412;
 shopContext = 0x8023740A; // size:0x6
 gWife = 0x802373E9;
 
 worldMatrices = 0x80237460; // size:0x5A0
-
-NU_AU_HEAP_ADDR = 0x8030F800;
-
 
 // unlabeled
 
@@ -1240,4 +1254,3 @@ D_80119660 = 0x80119660; // size:0xE0
 D_80180718 = 0x80180718; // size:0x10
 D_8020563B = 0x8020563B; // size:0x4
 D_80237420 = 0x80237420; // size:0x20
-D_8030E000 = 0x8030E000; // size:0x10

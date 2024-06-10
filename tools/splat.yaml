@@ -24,7 +24,7 @@ options:
   libultra_symbols: True
   gfx_ucode: f3dex2
   # ld_symbol_header_path: include/ld_symbols.h
-  # disassemble_all: true
+  disassemble_all: true
   # extensions_path: tools/splat_ext
   
 segments:
@@ -471,11 +471,29 @@ segments:
       - [ 0xFF560, .rodata, lib/os/libultra/rmon/rmonbreak]
       - { start: 0xFF5C0, type: bss, vram: 0x801241C0 }
 
+  - name: sramBuffer
+    type: code
+    start: 0xFF5C0
+    bss_size: 0x1000
+    vram: 0x8030D000
+    subsegments:
+      - [ 0xFF5C0, c, overlays/sramBuffer]
+      - { start:  0xFF5C0, type: .bss, vram: 0x8030D000, name: overlays/sramBuffer }
+
+  - name: gamePakBuffer
+    type: code
+    start: 0xFF5C0
+    bss_size: 0x100
+    vram: 0x8030E000
+    subsegments:
+      - [ 0xFF5C0, c, overlays/gamePakBuffer]
+      - { start:  0xFF5C0, type: .bss, vram: 0x8030E000, name: overlays/gamePakBuffer }
+
   - name: cutsceneMaps
     type: bin
     dir: cutscenes
     start: 0xFF5C0
-    follows_vram: main
+    follows_vram: gamePakBuffer
     files:
       - [0xFF5C0, bin, "cutscenes/cutsceneMap1"]
       - [0x100180, bin, "cutscenes/cutsceneMap2"]

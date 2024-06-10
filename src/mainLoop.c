@@ -26,18 +26,19 @@ void *currentGfxTaskPtr;
 // forward declarations
 void func_80026284(void);
 void func_800263B0(int pendingGfx);
-void func_800264CC(int arg0);
+void func_800264CC(int pendingGfx);
 
   
 //INCLUDE_ASM(s32, "mainLoop", mainLoop)
 
 void mainLoop(void) {
 
-    D_80205208 = 0;
-    D_801594E4 = 1;
+    stepMainLoop = FALSE;
+    unknownFlag = 1;
     
-    // wait for frames?
+    // wait 60 frames until unknownFlag |= 2
     func_80026284();
+
     // toggle flags
     func_8004DEC8();
     
@@ -49,13 +50,12 @@ void mainLoop(void) {
       
         nuGfxDisplayOn();
           
-        while (D_801594E4 & 1) {
+        while (unknownFlag & 1) {
             
-            while (!D_80205208);
+            while (stepMainLoop == FALSE);
             
             if (!D_8020564C) { 
               
-              // could be inline func_80026230
               D_80182BA0 = 1;
               
               // handle specific logic depending on game mode/screen
@@ -73,7 +73,9 @@ void mainLoop(void) {
             func_80029CC8();
 
             mainLoopAudioHandler(); 
+            
             resetSpriteCounter();
+
             mainLoopCutsceneHandler(); 
 
             // sprite graphics, collisions
@@ -86,9 +88,9 @@ void mainLoop(void) {
             func_800467F8(); 
             // sprite lighting adjustments
             func_8002D3D4(); 
-            // load object sprites with nuPiReadRom
+            // load sprites with nuPiReadRom
             dmaSprites(); 
-            // sprite.c: sprite microcode, texturing
+            // sprite microcode, texturing
             func_8002AE58(); 
             // message.c
             func_80042634(); 
@@ -97,9 +99,12 @@ void mainLoop(void) {
             // no op/shelved code
             func_800293B8(); 
 
-            D_80205208 = 0; 
-            D_80237A04 = D_801C3BEC;
+            stepMainLoop = FALSE; 
+
+            // unused
+            D_80237A04 = retraceCount;
               
+            // update RNG seed
             rand();
             
         }
@@ -162,31 +167,32 @@ void func_80026220(void) {
 
 //INCLUDE_ASM(const s32, "registerMainLoopCallbacks", func_80026230);
 
-// unused or inline
-// n64sym identified this as fbSetBg
-void func_80026230(u16 arg0) {
-    // identified as FB_BGCOLOR
-    D_80182BA0 = arg0;
-
+// unused
+void func_80026230(u16 num) {
+    D_80182BA0 = num;
 }
 
 void noOpCallback(void) {}
 
 //INCLUDE_ASM(const s32, "mainLoop", func_80026248);
 
-// unused or inline
-void func_80026248(u16 arg0) {
+inline void func_80026248(u16 count) {
 
   u16 counter = 1;
   u16 currentCount;
 
-  if (arg0) {
+  if (count != 0) {
+    
     do {
-      D_80205208 = 0;
-      while (!D_80205208);
+      
+      stepMainLoop = FALSE;
+      
+      while (stepMainLoop == FALSE);
+
       currentCount = counter;
       counter++;
-    } while (currentCount < arg0);
+
+    } while (currentCount < count);
   }
 
 }
@@ -196,30 +202,15 @@ void func_80026248(u16 arg0) {
 // start up before main loop
 void func_80026284(void) {
 
-    u16 counter;
-    u16 check;
-    
     goto loop_end;
     
-    // after frame count exceeds 60 and before gfx retrace callback is called again
-    while (!(D_801594E4 & 2)) {
+    // first 60 frames
+    while (!(unknownFlag & 2)) {
 
-        // TODO: replace with inline func_80026248
-
-        counter = 1;
-
-        do {
-
-          D_80205208 = 0;
-          
-          while (!D_80205208);
-          check = counter;
-          counter++;
-          check = check == 0;
-
-        } while (check);
+        func_80026248(1);
 
 loop_end:     
+
     }
 
 }
@@ -230,34 +221,36 @@ loop_end:
 //INCLUDE_ASM(const s32, "mainLoop", gfxRetraceCallback);
 
 // NUGfxFunc
-u8 gfxRetraceCallback(int arg0) {
+u8 gfxRetraceCallback(int pendingGfx) {
   
     u8 temp;
     
-    D_802226E8 = arg0;
-    D_801594E4 &= ~2;
+    pendingGfxNum = pendingGfx;
+
+    unknownFlag &= ~2;
     
     // controller
     func_8004CF68();
-    // checks pending gfx and calls gfx wrapper
-    func_800263B0(arg0);
-    func_800264CC(arg0);
+
+    func_800263B0(pendingGfx);
+    func_800264CC(pendingGfx);
     
     if (frameCount > 59) {
         frameCount = 0;
-        D_801594E4 |= 2;
+        unknownFlag |= 2;
     }
     
     // no op
     func_8004DF00();
     
     frameCount++;
-    D_801C3BEC++;
+    retraceCount++;
 
+    // reset to 0 when pendingGfx < 3
     // FIXME: unnecessary assignment
-    temp = D_801C3F71++;
+    temp = framebufferCount++;
     
-    return D_801C3F71;
+    return framebufferCount;
     
 }
 
@@ -267,31 +260,34 @@ void func_800263B0(int pendingGfx) {
 
   u8 temp;
     
-  if ((frameCount % D_802373F1) == 0) {
+  if ((frameCount % frameRate) == 0) {
       
     if (frameCount > 59) {
 
-      D_801C4215 = D_8016FB04;
-      D_8016FB04 = 0;
+      D_801C4215 = drawnFrameCount;
+      drawnFrameCount = 0;
 
-      if (D_801C4215 < (60 / D_802373F1)) {
+      // < hz
+      if (D_801C4215 < (60 / frameRate)) {
+        // unused
         D_80222730 = 2;
       }
 
     }
       
-    if (pendingGfx < 3) {
+    if (pendingGfx < 3) { 
 
-      temp = D_80205208;
+      temp = stepMainLoop;
 
-      if (!temp) {
+      if (temp == FALSE) {
         
         drawFrame();
 
-        D_8016FB04 += 1;
+        drawnFrameCount += 1;
         // FIXME: unnecessary assignment, might be return value
-        temp = D_8016FB04;
-        D_801C3F71 = 0;
+        temp = drawnFrameCount;
+
+        framebufferCount = 0;
         
       }
     }
@@ -301,43 +297,50 @@ void func_800263B0(int pendingGfx) {
 
 //INCLUDE_ASM(const s32, "mainLoop", func_800264CC);
 
-void func_800264CC(int arg0) {
+void func_800264CC(int pendingGfx) {
     
     if ((frameCount % D_802226E2) == 0) {
         
         if (frameCount > 59) {
 
-          D_8013DC30 = D_801C3F34;
-          D_801C3F34 = 0;
+          D_8013DC30 = loopStepsPerCycle;
+          loopStepsPerCycle = 0;
 
+          // < hz
           if (D_8013DC30 < (60 / D_802226E2)) {
+            // unused
             D_80222730 = 1;
           }
 
         }
       
-        if (!D_80205208) {
+        if (stepMainLoop == FALSE) {
 
-          D_80205208 = 1;
-          D_801C3BEC = 0;
-          D_801C3F34 += 1;
+          stepMainLoop = TRUE;
+
+          retraceCount = 0;
+          loopStepsPerCycle += 1;
           // FIXME: ? might be return value
-          D_801C3F34;  
+          loopStepsPerCycle;  
 
         }
     }
+    
 }
 
 //INCLUDE_ASM(const s32, "mainLoop", gfxBufferSwap);
 
 void gfxBufferSwap(void *gfxTask) {
+    
     currentGfxTaskPtr = gfxTask;
     nuGfxSwapCfb(gfxTask);
-    D_801D6230 = D_801C3F71;
+    
+    // unused
+    currentFramebufferIndex = framebufferCount;
+    
 }
 
-// FIXME: static inline?
-// manual copy of library func?
+// manual copy of library func
 s32 osAfterPreNMI(void) {
     return __osSpSetPc(0);
 }
@@ -363,7 +366,6 @@ void gfxPreNMICallback(void) {
     
     osViSetYScale(1.0f);
     
-    // FIXME: maybe should be static inline osAfterPreNMI call?  
     while (__osSpSetPc(0));
     
     while (TRUE);
