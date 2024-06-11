@@ -117,12 +117,12 @@ void mainLoop(void) {
 
 bool registerMainLoopCallback(u16 index, void *(func)()) {
 
-    bool result = 0;
+    bool result = FALSE;
 
     if (index < MAIN_LOOP_CALLBACK_FUNCTION_TABLE_SIZE) {
         if (mainLoopCallbacksTable[index] == NULL) {
             mainLoopCallbacksTable[index] = func;
-            result = 1;
+            result = TRUE;
         }
     }
 
@@ -134,7 +134,7 @@ bool registerMainLoopCallback(u16 index, void *(func)()) {
 
 u32 setMainLoopCallbackFunctionIndex(u16 index) {
     
-    u32 result = 0;
+    u32 result = FALSE;
 
     volatile int *temp;
     
@@ -144,7 +144,7 @@ u32 setMainLoopCallbackFunctionIndex(u16 index) {
       
         if (temp[index]) {
             mainLoopCallbackCurrentIndex = index;
-            result = 1;
+            result = TRUE;
         }
     } 
     

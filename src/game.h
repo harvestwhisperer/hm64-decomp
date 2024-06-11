@@ -48,7 +48,7 @@ typedef struct {
 typedef struct {
 	void *address;
 	u32 maxValue;
-	u8 set;
+	bool set;
 } GameVariable;
 
 extern inline int adjustValue(int initial, int value, int max);

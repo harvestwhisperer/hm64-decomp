@@ -25,12 +25,12 @@ void func_800266C0(u32 arg0[], s16 *arg1, s16 *arg2, s16 arg3, s16 arg4) {
 
 //INCLUDE_ASM(const s32, "system/audioUtils", func_800266F8);
 
-u32 func_800266F8(Volume* volumePtr) {
+bool func_800266F8(Volume* volumePtr) {
 
-    u32 result;
+    bool result;
     s32 temp;
 
-    result = 0;
+    result = FALSE;
     
     temp = func_800267B4(volumePtr);
 
@@ -40,7 +40,7 @@ u32 func_800266F8(Volume* volumePtr) {
             volumePtr->unk_0 = 0;
             volumePtr->mainVolume = volumePtr->maxVolume;
         } else {
-            result = 1;
+            result = TRUE;
             
         }
     }
@@ -51,7 +51,7 @@ u32 func_800266F8(Volume* volumePtr) {
             volumePtr->unk_0 = 0;
             volumePtr->mainVolume = volumePtr->maxVolume;
         } else {
-            result = 1;
+            result = TRUE;
         }
     }
 

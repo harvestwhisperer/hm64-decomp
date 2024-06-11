@@ -1196,7 +1196,7 @@ void func_8005CF94(void) {
 
 void func_8005D0BC(void) {
     
-    u8 set;
+    bool set;
     int checkOverflow;
     s16 maxHappiness;
     u8 happinessIncrease;
@@ -1209,7 +1209,7 @@ void func_8005D0BC(void) {
 
     func_80056030(1);
     
-    set = 0;
+    set = FALSE;
     
     // chicken born
     if (gBaseMapIndex == COOP && checkLifeEventBit(3)) {
@@ -1222,7 +1222,7 @@ void func_8005D0BC(void) {
         toggleLifeEventBit(3);
         setLifeEventBit(0x38);
         
-        set = 1;
+        set = TRUE;
         
         // FIXME: should be inline adjustValue call
 
@@ -1257,7 +1257,7 @@ void func_8005D0BC(void) {
         setMainLoopCallbackFunctionIndex(NAMING_SCREEN);
         toggleLifeEventBit(4);
             
-        set = 1;
+        set = TRUE;
         
 
         // FIXME: should be inline adjustValue call
@@ -2599,13 +2599,13 @@ void setFestivalDailyBits(void) {
 
 bool func_80060DC0(void) {
 
-    bool result = 0;
+    bool result = FALSE;
 
     if (!checkLifeEventBit(0x4E) && gSeason > AUTUMN && (5 < gDayOfMonth && gDayOfMonth < 10)) {
 
         if (!getRandomNumberInRange(0, 2) || gDayOfMonth == 9) {
             setLifeEventBit(0x4E);
-            result = 1;
+            result = TRUE;
             func_80064CF0();
         }
     }
@@ -2629,9 +2629,10 @@ void handleDailyShipment(void) {
 // has to be compiler generated code
 u8 func_80060EC8(f32 arg0, f32 arg1, f32 arg2, f32 arg3) {
    
+    u8 result;
+    
     s32 temp_s0;
     s32 temp_v0;
-    u8 result;
     u32 temp_a2;
 
     temp_s0 = getAbsoluteValue((s32)(s16)(arg2 - arg0));
@@ -2650,7 +2651,9 @@ u8 func_80060EC8(f32 arg0, f32 arg1, f32 arg2, f32 arg3) {
             }
             
         } else if ((s16) temp_s0 <= (s16) temp_v0) {
+
             result = (-(((s32) ((s16) temp_v0 + ((u32) (temp_v0 << 0x10) >> 0x1F)) >> 1) < (s16) temp_s0) & 5) | 4;
+
         } else {
             do {
                 result = 5;
@@ -2663,16 +2666,22 @@ u8 func_80060EC8(f32 arg0, f32 arg1, f32 arg2, f32 arg3) {
     } else if (arg1 <= arg3) {
         
         if ((s16)temp_s0 <= (s16)temp_v0) {
+
             result = ((s32) ((s16) temp_v0 + ((u32) (temp_v0 << 0x10) >> 0x1F)) >> 1) < (s16) temp_s0;
+            
         } else {
+
             result = 1;
+
             if (((s32) ((s16) temp_s0 + ((u32) (temp_s0 << 0x10) >> 0x1F)) >> 1) >= (s16) temp_v0) {
                 result = 2;
             }
         }
         
     } else if ((s16) temp_s0 <= (s16) temp_v0) {
+
         result = 3;
+
         if (((s32) ((s16) temp_v0 + ((u32) (temp_v0 << 0x10) >> 0x1F)) >> 1) >= (s16) temp_s0) {
             result = 4;
         }
@@ -2719,19 +2728,19 @@ bool func_80061178(void) {
     result = npcAffection[MARIA] >= 220;
     
     if (npcAffection[POPURI] >= 220) {
-        result = 1;
+        result = TRUE;
     }
     
     if (npcAffection[ELLI] >= 220) {
-        result = 1;
+        result = TRUE;
     }
 
     if (npcAffection[ANN] >= 220) {
-        result = 1;
+        result = TRUE;
     }
 
     if (npcAffection[KAREN] >= 220) {
-        result = 1;
+        result = TRUE;
     }
     
     return result;
@@ -3246,9 +3255,8 @@ u8 handleHouseConstruction(u8 day) {
             }
 
             setAnimalLocations(buffer3[day]);
-            result = 1;
-            
-            result = 1;
+
+            result = TRUE;
             
         }
         
@@ -3293,7 +3301,7 @@ u8 handleHouseConstruction(u8 day) {
             }
             
             setAnimalLocations(animalLocationsArrayPtr[day]);
-            result = 1;
+            result = TRUE;
             
         }
     }

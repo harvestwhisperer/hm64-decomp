@@ -266,13 +266,11 @@ void initializeCutsceneMaps(void) {
 
 bool func_800469A8(u16 index, void *cutscenePointer) {
 
-    bool result = 0;
+    bool result = FALSE;
     
     if (index < MAX_CUTSCENE_ASSETS) {
 
         if (!(cutsceneMaps[index].flags & ACTIVE)) {
-            
-            result = 1;
             
             cutsceneMaps[index].cutscenePointer = cutscenePointer;
             
@@ -288,6 +286,8 @@ bool func_800469A8(u16 index, void *cutscenePointer) {
 
             cutsceneMaps[index].flags = 1;
             
+            result = TRUE;
+            
         }
     }
 
@@ -299,18 +299,22 @@ bool func_800469A8(u16 index, void *cutscenePointer) {
 
 bool func_80046A58(u16 index, void* cutscenePointer) {
     
-    bool result = 0;
+    bool result = FALSE;
 
     if (index < MAX_CUTSCENE_ASSETS) {
         
         if (cutsceneMaps[index].flags & ACTIVE) {
-            result = 1;
+            
             cutsceneMaps[index].unk_66 = 0;
             cutsceneMaps[index].cutscenePointer = cutscenePointer;
+            
+            result = TRUE;
+
         }
     }
 
     return result;
+
 }
 
 //INCLUDE_ASM(const s32, "system/cutscene", func_80046AB0);
@@ -318,13 +322,13 @@ bool func_80046A58(u16 index, void* cutscenePointer) {
 // toggle flags at end of cutscene work
 bool func_80046AB0(u16 index) {
 
-    bool result = 0;
+    bool result = FALSE;
 
     if (index < MAX_CUTSCENE_ASSETS && (cutsceneMaps[index].flags & ACTIVE)) {
 
         // global sprite flags
         if (cutsceneMaps[index].flags & 2) {
-            func_8002B6B8(cutsceneMaps[index].spriteIndex);
+            deactivateSprite(cutsceneMaps[index].spriteIndex);
         }
 
         // global sprite flags
@@ -337,7 +341,8 @@ bool func_80046AB0(u16 index) {
             func_8003C504(cutsceneMaps[index].spriteIndex);
         }
         
-        result = 1;
+        result = TRUE;
+
     }
 
     cutsceneMaps[index].unk_1C = 0xFFFF;
@@ -364,11 +369,11 @@ void func_80046BB8(void) {
 
 bool func_80046BF8(u16 index) {
 
-    bool result = 0;
+    bool result = FALSE;
     
     if (index < MAX_CUTSCENE_ASSETS && (cutsceneMaps[index].flags & ACTIVE)) {
         cutsceneMaps[index].flags |= 0x20;
-        result = 1;
+        result = TRUE;
     }
 
     return result;
@@ -379,11 +384,11 @@ bool func_80046BF8(u16 index) {
 
 bool func_80046C48(u16 index) {
 
-    bool result = 0;
+    bool result = FALSE;
     
     if (index < MAX_CUTSCENE_ASSETS && (cutsceneMaps[index].flags & ACTIVE)) {
         cutsceneMaps[index].flags &= ~0x20;
-        result = 1;
+        result = TRUE;
     }
 
     return result;

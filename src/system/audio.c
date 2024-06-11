@@ -119,7 +119,7 @@ void setSongBank(u8 *pBankStart, u8 *pBankEnd, u8 *wBankStart) {
 
 bool setSong(u16 songIndex, u8 *songAddrStart, u8 *songAddrEnd) {
     
-    bool result = 0;
+    bool result = FALSE;
     
     if (songIndex < MAX_ACTIVE_SONGS) {
 
@@ -128,13 +128,13 @@ bool setSong(u16 songIndex, u8 *songAddrStart, u8 *songAddrEnd) {
             // set volumes
             func_800266C0(&gSongs[songIndex].volumes, 0, 0, 0, 0);
 
-            result = 1;
-
             gSongs[songIndex].unk_1C = 128;
             gSongs[songIndex].unk_20 = 128;
             gSongs[songIndex].currentSongRomAddrStart = songAddrStart;
             gSongs[songIndex].currentSongRomAddrEnd = songAddrEnd;
             gSongs[songIndex].flags = 3;
+
+            result = TRUE;
             
         }
     } 
@@ -146,13 +146,17 @@ bool setSong(u16 songIndex, u8 *songAddrStart, u8 *songAddrEnd) {
 
 bool setSongSpeed(u16 index, u32 speed) {
 
-    bool result = 0;
+    bool result = FALSE;
 
     if (index < MAX_ACTIVE_SONGS) {
+        
         if (gSongs[index].flags & 1) {
-            result = 1;
+            
             gSongs[index].speed = speed;
             gSongs[index].flags |= 4;
+            
+            result = TRUE;
+
         }
     }
     
@@ -163,14 +167,17 @@ bool setSongSpeed(u16 index, u32 speed) {
 
 bool stopSong(u16 songIndex) {
 
-    bool result = 0;
+    bool result = FALSE;
 
     if (songIndex < MAX_ACTIVE_SONGS) {
     
         if (gSongs[songIndex].flags & 1) {
+            
             MusHandleStop(gSongs[songIndex].handle, 0);
-            result = 1;
             gSongs[songIndex].flags = 0;
+            
+            result = TRUE;
+
         }
 
     }
@@ -182,7 +189,7 @@ bool stopSong(u16 songIndex) {
 
 bool setSongVolumes(u16 index, s32 maxVolume, s16 arg2) {
     
-    bool result = 0;
+    bool result = FALSE;
     
     if (index < MAX_ACTIVE_SONGS) {
         
@@ -200,7 +207,8 @@ bool setSongVolumes(u16 index, s32 maxVolume, s16 arg2) {
             // set volume substruct
             func_800267A4(&gSongs[index].volumes, arg2, maxVolume);
             
-            result = 1;
+            result = TRUE;
+
         }
     }
 
@@ -211,7 +219,7 @@ bool setSongVolumes(u16 index, s32 maxVolume, s16 arg2) {
 
 bool func_8003D4E4(u16 songIndex, s32 arg1) {
     
-    bool result = 0;
+    bool result = FALSE;
 
     if (songIndex < MAX_ACTIVE_SONGS) {
         
@@ -223,7 +231,7 @@ bool func_8003D4E4(u16 songIndex, s32 arg1) {
                  gSongs[songIndex].unk_1C = 0;
             }
         
-            result = 1;
+            result = TRUE;
         
             if (gSongs[songIndex].unk_1C >= 257) {
                  gSongs[songIndex].unk_1C = 256;
@@ -239,7 +247,7 @@ bool func_8003D4E4(u16 songIndex, s32 arg1) {
 
 bool func_8003D570(u16 songIndex, s32 arg1) {
     
-    bool result = 0;
+    bool result = FALSE;
 
     if (songIndex < MAX_ACTIVE_SONGS) {
         
@@ -250,12 +258,12 @@ bool func_8003D570(u16 songIndex, s32 arg1) {
             if (arg1 < 0) {
                  gSongs[songIndex].unk_20 = 0;
             }
-
-            result = 1;
             
             if (gSongs[songIndex].unk_20 >= 257) {
                  gSongs[songIndex].unk_20 = 256;
             }
+
+            result = TRUE;
         }
     }
 
@@ -274,7 +282,7 @@ bool setSfx(u32 sfxIndex) {
 
     u16 i = 0;
 
-    bool result = 0;
+    bool result = FALSE;
 
     u32 current;
 
@@ -291,7 +299,7 @@ bool setSfx(u32 sfxIndex) {
             gSfx[current].pan = 128;
             gSfx[current].flags = 3;
 
-            result = 1;
+            result = TRUE;
 
         } else {
             i++;
@@ -309,13 +317,18 @@ bool setSfx(u32 sfxIndex) {
 bool func_8003D6A8(u32 sfxIndex) {
     
     u16 i = 0;
-    bool result = 0;
+    bool result = FALSE;
     
     for (i = 0; i < MAX_ACTIVE_SFX; i++) {
+
         if (gSfx[i].flags & 1) {
+
             if (gSfx[i].sfxIndex == sfxIndex) {
+
                 gSfx[i].flags |= 4;
-                result = 1;
+
+                result = TRUE;
+
             }
         }
     }
@@ -330,7 +343,7 @@ bool setSfxVolume(u32 sfxIndex, s32 volume) {
     bool result;
     u16 i = 0;
     
-    result = 0;
+    result = FALSE;
     
     for (i = 0; i < MAX_ACTIVE_SFX; i++) {
         
@@ -342,11 +355,12 @@ bool setSfxVolume(u32 sfxIndex, s32 volume) {
                 gSfx[i].volume = 0;
             }
             
-            result = 1;
-            
             if (gSfx[i].volume > MAX_VOLUME) {
                 gSfx[i].volume = MAX_VOLUME;
             }
+            
+            result = TRUE;
+
         }
     }
 
@@ -369,7 +383,7 @@ bool setSfxFrequency(u32 sfxIndex, s32 frequency) {
 //  FA208 8011EE08 4018000000000000 .double 6
 
     u16 i = 0;
-    bool result = 0;
+    bool result = FALSE;
 
     for (i = 0; i < MAX_ACTIVE_SFX; i++) {
 
@@ -379,7 +393,7 @@ bool setSfxFrequency(u32 sfxIndex, s32 frequency) {
                 if (frequency < minSfxFrequency) {
                     gSfx[i].frequency = -6;
                 }
-                result = 1;
+                result = TRUE;
                 if (gSfx[i].frequency > maxSfxFrequency) {
                     gSfx[i].frequency = 6;
                 }
@@ -397,7 +411,7 @@ bool setSfxFrequency(u32 sfxIndex, s32 frequency) {
 bool setSfxPan(u32 sfxIndex, s32 arg1) {
 
     u16 i = 0;
-    bool result = 0;
+    bool result = FALSE;
 
     for (i = 0; i < MAX_ACTIVE_SFX; i++) {
 
@@ -411,7 +425,7 @@ bool setSfxPan(u32 sfxIndex, s32 arg1) {
                     gSfx[i].pan = 0;
                 }
                 
-                result = 1;
+                result = TRUE;
                 
                 if (gSfx[i].pan >= 257) {
                     gSfx[i].pan = 256;

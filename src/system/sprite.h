@@ -54,14 +54,14 @@ typedef struct {
 	Vec4f rgbaCurrent; // 0x60
 	Vec4f rgbaDefault; // 0x70
 	Vec4f normalized; // 0x80
-	u8 unk_90; // counter for operation with unknownAssetPtr; num animations to swap
+	u8 unk_90; // 0x801FD6C0 counter for operation with unknownAssetPtr; num animations to swap
 	u8 unk_91;
-	u8 unk_92; // audio
-    u16 paletteIndex;
-	u8 animationCounter1;
-    u8 animationCounter2;
-	u16 flags1;
-    u16 flags2;
+	u8 unk_92; // audio, 801FD6C2
+    u16 paletteIndex; // 0x801FD6C4
+	u8 animationCounter1; // 0x801FD6C6
+    u8 animationCounter2; // 0x801FD6C7
+	u16 flags1; // 0xC8
+    u16 flags2; // 0xCA, 0x2 = read from unknownAsset3Ptr and do 16 bit swap, 0x400 = gradual rgba done
 } Sprite;
 
 // info for DMA
@@ -225,7 +225,7 @@ extern void initializeGlobalSprites(void);
 extern bool func_8002B138(u16 index, u32 romTextureStart, u32 romTextureEnd, u32 romAssetIndexStart, u32 romAssetIndexEnd, u32 romSpritesheetIndexStart, u32 romSpritesheetIndexEnd, u8* texture1Vaddr, u8* texture2Vaddr, u16* paletteVaddr, u16* animationVaddr, u8* spriteToPaletteVaddr, u32* spritesheetIndexVaddr, u8 assetType, u8 argE);
 extern bool func_8002B36C(u16 index, u32* unknownAssetIndexPtr, u32* spritesheetIndexPtr, u32* paletteIndexPtr, u8* spriteToPaletteMappingPtr);
 extern bool func_8002B50C(u16 index, u32* unknownAssetIndexPtr, u32* spritesheetIndexPtr, u32* paletteIndexPtr, u8* spriteToPaletteMappingPtr, u32 romTexturePtr, u8* texturePtr, u8* texture2Ptr);
-extern bool func_8002B6B8(u16 index);
+extern bool deactivateSprite(u16 index);
 extern void func_8002B710(void);
 extern bool func_8002B80C(u16 index, u16 offset, u8);
 extern bool func_8002BAD8(u16);   
@@ -253,7 +253,7 @@ extern void func_8002E1B8(void);
 
 /* spriteAddresses.c */
 extern void resetSpriteAddressesFlags(void);
-u16 setSpriteAddresses(u8 *romAddr, u8 *vaddr, u32 length);
+extern bool setSpriteAddresses(u8 *romAddr, u8 *vaddr, u32 length);
 extern void dmaSprites();
 
 /* sprite.c */

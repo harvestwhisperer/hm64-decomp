@@ -93,39 +93,43 @@ void func_800B2CE0(void) {
     func_800C7E58();
     func_800C7E38();
 
-    func_8002B6B8(0x82);
-    func_8002B6B8(0x83);
-    func_8002B6B8(0x84);
-    func_8002B6B8(0x85);
-    func_8002B6B8(0x86);
-    func_8002B6B8(0x87);
-    func_8002B6B8(0x88);
-    func_8002B6B8(0x81);
+    deactivateSprite(0x82);
+    deactivateSprite(0x83);
+    deactivateSprite(0x84);
+    deactivateSprite(0x85);
+    deactivateSprite(0x86);
+    deactivateSprite(0x87);
+    deactivateSprite(0x88);
+    deactivateSprite(0x81);
     func_8002BAD8(0x79);
-    func_8002B6B8(0x89);
-    func_8002B6B8(0x8C);
-    func_8002B6B8(0x8D);
-    func_8002B6B8(0x8B);
-    func_8002B6B8(0x8A);
+
+    deactivateSprite(0x89);
+    deactivateSprite(0x8C);
+    deactivateSprite(0x8D);
+    deactivateSprite(0x8B);
+    deactivateSprite(0x8A);
     func_80046120(0);
-    func_8002B6B8(0x8E);
+
+    deactivateSprite(0x8E);
     func_80046120(1);
-    func_8002B6B8(0x86);
-    func_8002B6B8(0x82);
-    func_8002B6B8(0x83);
-    func_8002B6B8(0x84);
-    func_8002B6B8(0x85);
-    func_8002B6B8(0xB9);
-    func_8002B6B8(0xBA);
-    func_8002B6B8(0xBB);
-    func_8002B6B8(0xBC);
-    func_8002B6B8(0xBD);
-    func_8002B6B8(0xBE);
-    func_8002B6B8(0x82);
-    func_8002B6B8(0x83);
-    func_8002B6B8(0x84);
-    func_8002B6B8(0x85);
-    func_8002B6B8(0x86);
+    
+    deactivateSprite(0x86);
+    deactivateSprite(0x82);
+    deactivateSprite(0x83);
+    deactivateSprite(0x84);
+    deactivateSprite(0x85);
+    deactivateSprite(0xB9);
+    deactivateSprite(0xBA);
+    deactivateSprite(0xBB);
+    deactivateSprite(0xBC);
+    deactivateSprite(0xBD);
+    deactivateSprite(0xBE);
+    deactivateSprite(0x82);
+    deactivateSprite(0x83);
+    deactivateSprite(0x84);
+    deactivateSprite(0x85);
+    deactivateSprite(0x86);
+    
     func_80046120(0);
     func_80046120(2);
     func_80046120(3);
@@ -147,15 +151,15 @@ void func_800B2CE0(void) {
     func_80046120(0xE);
 
     for (i = 0; i < 0x28; i++) {
-        func_8002B6B8(i + 0xA3);
+        deactivateSprite(i + 0xA3);
     }
 
     for (j = 0; j < 0x1E; j++) {
-        func_8002B6B8(j + 0x8F);
+        deactivateSprite(j + 0x8F);
     }
 
     for (k = 0; k < 0xA; k++) {
-        func_8002B6B8(k + 0xAD);
+        deactivateSprite(k + 0xAD);
     }
 }
 
@@ -974,17 +978,17 @@ void func_800CE7A8(u8 arg0) {
 
 bool func_800CE828(u8 arg0) {
 
-    bool result = 0;
+    bool result = FALSE;
 
     switch (arg0) {
         case 0:
             if (checkLifeEventBit(0x57)) {
-                result = 1;
+                result = TRUE;
             }
             break;
         case 1:
             if (checkLifeEventBit(0x59)) {
-                result = 1;
+                result = TRUE;
             }
             break;
         case 2:
@@ -1027,7 +1031,7 @@ INCLUDE_ASM(const s32, "overlayScreens", func_800CEDF0);
 
 bool func_800CF34C(u8 arg0) {
 
-    bool result = 0;
+    bool result = FALSE;
     
     switch (arg0) {
         case 3:
@@ -1035,17 +1039,17 @@ bool func_800CF34C(u8 arg0) {
             break;
         case 0:
             if (checkLifeEventBit(0x5A)) {
-                result = 1;
+                result = TRUE;
             }
             break;
         case 1:
             if (checkHaveKeyItem(FLOWER_BATH_CRYSTALS)) {
-                result = 1;
+                result = TRUE;
             }
             break;
         case 2:
             if (checkLifeEventBit(0x5B)) {
-                result = 1;
+                result = TRUE;
             }
             break;
     }
@@ -1086,30 +1090,30 @@ void func_800CF3C4(u8 arg0) {
 
 bool func_800CF498(u8 arg0) {
 
-    bool result = 0;
+    bool result = FALSE;
     
     switch (arg0) {
 
         case 0:
             if (checkLifeEventBit(HAVE_TABLECLOTH)) {
-                result = 1;
+                result = TRUE;
             }
             break;
  
         case 1:
              if (checkLifeEventBit(0x5C)) {
-                 result = 1;
+                 result = TRUE;
              }
             break;
         
         case 2:
              if (checkLifeEventBit(0x5D)) {
-                 result = 1;
+                 result = TRUE;
              }
             break;
         case 3:
              if (!checkHaveTool(EMPTY_BOTTLE)) {
-                 result = 1;
+                 result = TRUE;
              }
             break;
         case 4:

@@ -126,6 +126,8 @@
 // TODO: 0x5DE missing?
 #define DEMO_CUTSCENE_3 0x5DF
 
+#define HOW_TO_PLAY_CUTSCENE 0x640
+
 u16 func_8009C054(u16 mapIndex);
 extern u16 func_800A7AE8(u8);  
 extern u16 func_800A7DFC();        

@@ -28,7 +28,7 @@ typedef struct {
 	u8 unk_44;
 	u8 unk_45;
 	u8 unk_46;
-	u8 unk_47;
+	u8 unk_47; // previous rotation
 	u8 rotation;
 	u16 flags;
 } LevelMapContext;

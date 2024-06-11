@@ -55,16 +55,16 @@ void func_800ACB8C(u16 songIndex) {
 //INCLUDE_ASM(const s32, "gameAudio", checkDefaultSongChannelOpen);
 
 // check if first song is open/not set
-u8 checkDefaultSongChannelOpen(u16 songIndex) {
+bool checkDefaultSongChannelOpen(u16 songIndex) {
     
-    u8 result = 0;
+    u8 result = FALSE;
     
     if (songIndex < TOTAL_SONGS) {
         result = gSongs[0].flags == 0;
     }
 
     if (songIndex == 0xFF) {
-        result = 1;
+        result = TRUE;
     }
     
     return result;

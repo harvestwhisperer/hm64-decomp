@@ -38,9 +38,6 @@ void func_80039F58(u16);
 
 // bss
 extern MainMap mainMap[1];
- 
-// inner struct member
-extern u16 D_80142868;
 
 extern f32 D_8013D550;
 extern f32 D_80170460;
@@ -149,12 +146,13 @@ void func_800337D0(void) {
 bool func_80033A90(u16 mapIndex, LevelMapContext* arg1, void* arg2, void* arg3, void* arg4, void* arg5, void* arg6, void* arg7, void* arg8, void* arg9, void *argA) {
 
     bool result;
+
     u16 i, k, l, m, n, o, p, q, j, r;
 
     u8 temp1;
     u8 temp2;
 
-    result = 0;
+    result = FALSE;
 
     if (mapIndex == 0 && !(mainMap[mapIndex].mapStruct9.flags & 1)) {
         
@@ -235,7 +233,7 @@ bool func_80033A90(u16 mapIndex, LevelMapContext* arg1, void* arg2, void* arg3, 
             D_8018A090[r] = r / mainMap[mapIndex].mapStruct1.unk_A;
         }
         
-        result = 1;
+        result = TRUE;
         
     }
 
@@ -248,8 +246,9 @@ bool func_80033A90(u16 mapIndex, LevelMapContext* arg1, void* arg2, void* arg3, 
 // turn off active sprite flags for map objects
 bool func_80034090(u16 mapIndex) {
 
+    bool result = FALSE;
+
     u8 i;
-    bool result = 0;
 
     if (mapIndex == MAIN_MAP_INDEX && (mainMap[mapIndex].mapStruct9.flags & 1)) {
         
@@ -259,7 +258,7 @@ bool func_80034090(u16 mapIndex) {
         for (i = 0; i < 0x10; i++) {
             
             if (mainMap[mapIndex].mapObjects[i].flags & 1) {
-                func_8002B6B8(mainMap[mapIndex].mapObjects[i].spriteIndex);
+                deactivateSprite(mainMap[mapIndex].mapObjects[i].spriteIndex);
             }
             
             mainMap[mapIndex].mapObjects[i].flags = 0;
@@ -268,14 +267,15 @@ bool func_80034090(u16 mapIndex) {
         for (i = 0; i < 0x10; i++) { 
             
             if (mainMap[mapIndex].weatherSprites[i].flags & 1) {
-                func_8002B6B8(mainMap[mapIndex].weatherSprites[i].spriteIndex);
+                deactivateSprite(mainMap[mapIndex].weatherSprites[i].spriteIndex);
             }
 
             mainMap[mapIndex].weatherSprites[i].flags = 0;
         }
         
         mainMap[mapIndex].mapStruct9.flags = 0;
-        result = 1;
+
+        result = TRUE;
         
     }
 
@@ -286,13 +286,16 @@ bool func_80034090(u16 mapIndex) {
 
 bool setMapTranslation(u16 mapIndex, f32 arg1, f32 arg2, f32 arg3) {
 
-    bool result = 0;
+    bool result = FALSE;
     
     if (mapIndex == MAIN_MAP_INDEX && (mainMap[mapIndex].mapStruct9.flags & 1)) {
-        result = 1;
+
         mainMap[mapIndex].mapFloats.translation.x = arg1;
         mainMap[mapIndex].mapFloats.translation.y = arg2;
         mainMap[mapIndex].mapFloats.translation.z = arg3;
+
+        result = TRUE;
+
     }
     
     return result;
@@ -302,13 +305,16 @@ bool setMapTranslation(u16 mapIndex, f32 arg1, f32 arg2, f32 arg3) {
 
 bool setMapScale(u16 mapIndex, f32 arg1, f32 arg2, f32 arg3) {
 
-    bool result = 0;
+    bool result = FALSE;
     
     if (mapIndex == MAIN_MAP_INDEX && (mainMap[mapIndex].mapStruct9.flags & 1)) {
-        result = 1;
+        
         mainMap[mapIndex].mapFloats.scale.x = arg1;
         mainMap[mapIndex].mapFloats.scale.y = arg2;
         mainMap[mapIndex].mapFloats.scale.z = arg3;
+        
+        result = TRUE;
+
     }
     
     return result;
@@ -318,13 +324,16 @@ bool setMapScale(u16 mapIndex, f32 arg1, f32 arg2, f32 arg3) {
 
 bool setMapRotation(u16 mapIndex, f32 arg1, f32 arg2, f32 arg3) {
 
-    bool result = 0;
+    bool result = FALSE;
     
     if (mapIndex == MAIN_MAP_INDEX && (mainMap[mapIndex].mapStruct9.flags & 1)) {
-        result = 1;
+        
         mainMap[mapIndex].mapFloats.rotation.x = arg1;
         mainMap[mapIndex].mapFloats.rotation.y = arg2;
         mainMap[mapIndex].mapFloats.rotation.z = arg3;
+        
+        result = TRUE;
+
     }
     
     return result;
@@ -334,11 +343,10 @@ bool setMapRotation(u16 mapIndex, f32 arg1, f32 arg2, f32 arg3) {
 
 bool setMapRGBA(u16 mapIndex, u8 arg1, u8 arg2, u8 arg3, u8 arg4) {
     
-    bool result = 0;
+    bool result = FALSE;
     
     if (mapIndex == MAIN_MAP_INDEX && (mainMap[mapIndex].mapStruct9.flags & 1)) {
         
-        result = 1; 
 
         mainMap[mapIndex].mapFloats.groundRgba.r = arg1;
         mainMap[mapIndex].mapFloats.groundRgba.g = arg2;
@@ -350,6 +358,8 @@ bool setMapRGBA(u16 mapIndex, u8 arg1, u8 arg2, u8 arg3, u8 arg4) {
         mainMap[mapIndex].mapFloats.defaultRgba.b = arg3;
         mainMap[mapIndex].mapFloats.defaultRgba.a = arg4;
     
+        result = TRUE; 
+
     }
     
     return result;
@@ -359,7 +369,7 @@ bool setMapRGBA(u16 mapIndex, u8 arg1, u8 arg2, u8 arg3, u8 arg4) {
 
 bool func_800343FC(u16 mapIndex, u8 arg1, u8 arg2, u8 arg3, u8 arg4, f32 arg5, f32 arg6, f32 arg7, u8 arg8) {
 
-    bool result = 0;
+    bool result = FALSE;
 
     if (mapIndex == MAIN_MAP_INDEX && (mainMap[mapIndex].mapStruct9.flags & 1)) {
 
@@ -380,7 +390,8 @@ bool func_800343FC(u16 mapIndex, u8 arg1, u8 arg2, u8 arg3, u8 arg4, f32 arg5, f
 
         func_80035A58(&mainMap[mapIndex].mapStruct2);
         
-        result = 1;
+        result = TRUE;
+
     }
     
     return result;
@@ -391,13 +402,16 @@ bool func_800343FC(u16 mapIndex, u8 arg1, u8 arg2, u8 arg3, u8 arg4, f32 arg5, f
 
 bool adjustMapTranslation(u16 mapIndex, f32 arg1, f32 arg2, f32 arg3) {
 
-    bool result = 0;
+    bool result = FALSE;
     
     if (mapIndex == MAIN_MAP_INDEX && (mainMap[mapIndex].mapStruct9.flags & 1)) {
-        result = 1;
+        
         mainMap[mapIndex].mapFloats.translation.x += arg1;
         mainMap[mapIndex].mapFloats.translation.y += arg2;
         mainMap[mapIndex].mapFloats.translation.z += arg3;
+        
+        result = TRUE;
+
     }
     
     return result;
@@ -407,13 +421,16 @@ bool adjustMapTranslation(u16 mapIndex, f32 arg1, f32 arg2, f32 arg3) {
 
 bool func_80034568(u16 mapIndex, f32 arg1, f32 arg2, f32 arg3) {
 
-    bool result = 0;
+    bool result = FALSE;
     
     if (mapIndex == MAIN_MAP_INDEX && (mainMap[mapIndex].mapStruct9.flags & 1)) {
-        result = 1;
+        
         mainMap[mapIndex].mapFloats.scale.x += arg1;
         mainMap[mapIndex].mapFloats.scale.y += arg2;
         mainMap[mapIndex].mapFloats.scale.z += arg3;
+        
+        result = TRUE;
+
     }
     
     return result;
@@ -423,13 +440,16 @@ bool func_80034568(u16 mapIndex, f32 arg1, f32 arg2, f32 arg3) {
 
 bool adjustMapRotation(u16 mapIndex, f32 arg1, f32 arg2, f32 arg3) {
 
-    bool result = 0;
+    bool result = FALSE;
     
     if (mapIndex == MAIN_MAP_INDEX && (mainMap[mapIndex].mapStruct9.flags & 1)) {
-        result = 1;
+        
         mainMap[mapIndex].mapFloats.rotation.x += arg1;
         mainMap[mapIndex].mapFloats.rotation.y += arg2;
         mainMap[mapIndex].mapFloats.rotation.z += arg3;
+        
+        result = TRUE;
+
     }
     
     return result;
@@ -439,14 +459,17 @@ bool adjustMapRotation(u16 mapIndex, f32 arg1, f32 arg2, f32 arg3) {
 
 bool adjustMapRGBA(u16 mapIndex, s8 arg1, s8 arg2, s8 arg3, s8 arg4) {
 
-    bool result = 0;
+    bool result = FALSE;
     
     if (mapIndex == MAIN_MAP_INDEX && (mainMap[mapIndex].mapStruct9.flags & 1)) {
-        result = 1;
+        
         mainMap[mapIndex].mapFloats.groundRgba.r += arg1;
         mainMap[mapIndex].mapFloats.groundRgba.g += arg2;
         mainMap[mapIndex].mapFloats.groundRgba.b += arg3;
         mainMap[mapIndex].mapFloats.groundRgba.a += arg4;
+        
+        result = TRUE;
+
     }
     
     return result;
@@ -462,7 +485,7 @@ bool func_80034738(u16 mapIndex, u8 r, u8 g, u8 b, u8 a, s16 arg5) {
 
     s16 temp = getAbsoluteValue(arg5);
 
-    result = 0;
+    result = FALSE;
 
     if (mapIndex == MAIN_MAP_INDEX && (mainMap[mapIndex].mapStruct9.flags & 1)) {
 
@@ -507,7 +530,8 @@ bool func_80034738(u16 mapIndex, u8 r, u8 g, u8 b, u8 a, s16 arg5) {
 
         mainMap[mapIndex].mapFloats.unk_60.a = (tempFloat * temp) / 255.0f;
 
-        result = 1;
+        result = TRUE;
+
     }
 
     return result;
@@ -518,7 +542,7 @@ bool func_80034738(u16 mapIndex, u8 r, u8 g, u8 b, u8 a, s16 arg5) {
 
 bool func_80034A6C(u16 mapIndex, s8 arg1, s8 arg2, s8 arg3, u8 arg4, f32 arg5, f32 arg6, f32 arg7) {
 
-    bool result = 0; 
+    bool result = FALSE; 
 
     if (mapIndex == MAIN_MAP_INDEX && (mainMap[mapIndex].mapStruct9.flags & 1)) { 
 
@@ -549,7 +573,7 @@ bool func_80034A6C(u16 mapIndex, s8 arg1, s8 arg2, s8 arg3, u8 arg4, f32 arg5, f
         mainMap[mapIndex].mapStruct2.unk_24.x += arg1;
         mainMap[mapIndex].mapStruct2.unk_24.z += arg2;
         
-        result = 1;
+        result = TRUE;
     
     }
 
@@ -562,7 +586,7 @@ bool func_80034A6C(u16 mapIndex, s8 arg1, s8 arg2, s8 arg3, u8 arg4, f32 arg5, f
 // map object sprites, holdable items, overlay sprites
 bool func_80034C40(u16 mapIndex, u8 index, u16 spriteIndex, u16 arg3, f32 arg4, f32 arg5, f32 arg6, u8 arg7, u8 arg8, u8 arg9, u8 argA) {
 
-    bool result = 0; 
+    bool result = FALSE; 
 
     if (mapIndex == MAIN_MAP_INDEX && (mainMap[mapIndex].mapStruct9.flags & 1)) {
          
@@ -586,7 +610,7 @@ bool func_80034C40(u16 mapIndex, u8 index, u16 spriteIndex, u16 arg3, f32 arg4, 
             mainMap[mapIndex].mapObjects[index].flags |= 8;
         }
 
-        result = 1;
+        result = TRUE;
         
         mainMap[mapIndex].mapStruct9.unk_11++;
     }
@@ -598,13 +622,16 @@ bool func_80034C40(u16 mapIndex, u8 index, u16 spriteIndex, u16 arg3, f32 arg4, 
 
 bool func_80034D64(u16 mapIndex, u8 index, u16 spriteIndex, u16 arg3) {
 
-    bool result = 0;
+    bool result = FALSE;
  
     if (mapIndex == MAIN_MAP_INDEX && (mainMap[mapIndex].mapStruct9.flags & 1)) {
+
         mainMap[mapIndex].weatherSprites[index].spriteIndex = spriteIndex;
         mainMap[mapIndex].weatherSprites[index].unk_E = arg3;
         mainMap[mapIndex].weatherSprites[index].flags = 1;
-        result = 1;
+
+        result = TRUE;
+
     }
 
     return result; 
@@ -615,7 +642,7 @@ bool func_80034D64(u16 mapIndex, u8 index, u16 spriteIndex, u16 arg3) {
 
 bool func_80034DC8(u16 mapIndex, u8 index, u16 arg2) {
 
-    bool result = 0; 
+    bool result = FALSE; 
 
     if (mapIndex == MAIN_MAP_INDEX && (mainMap[mapIndex].mapStruct9.flags & 1)) { 
         
@@ -624,28 +651,30 @@ bool func_80034DC8(u16 mapIndex, u8 index, u16 arg2) {
         mainMap[mapIndex].mapObjects[index].unk_E = arg2;
         mainMap[mapIndex].mapObjects[index].flags &= ~2;
 
-        result = 1;
+        result = TRUE;
+
     }
 
     return result;
     
 }
 
-//INCLUDE_ASM(const s32, "system/map", func_80034E64);
+//INCLUDE_ASM(const s32, "system/map", deactivateMapObject);
 
-bool func_80034E64(u16 mapIndex, u8 index) {
+bool deactivateMapObject(u16 mapIndex, u8 index) {
 
-    bool result = 0; 
+    bool result = FALSE; 
 
     if (mapIndex == MAIN_MAP_INDEX && (mainMap[mapIndex].mapStruct9.flags & 1)) { 
 
         if (mainMap[mapIndex].mapObjects[index].flags & 2) {
         
-            func_8002B6B8(mainMap[mapIndex].mapObjects[index].spriteIndex);
+            deactivateSprite(mainMap[mapIndex].mapObjects[index].spriteIndex);
         
             mainMap[mapIndex].mapObjects[index].flags = 0;
         
-            result = 1;
+            result = TRUE;
+
         }
     }
 
@@ -659,7 +688,7 @@ bool func_80034E64(u16 mapIndex, u8 index) {
 // called by level.c
 bool func_80034EF0(u16 mapIndex, u8 arg1, u8 arg2, u32* textureIndex, u32* paletteIndex, u8* spriteToPaletteIndex, u32 romTextureStart, u32 arg7, u32 romAssetIndexStart, u32 romAssetIndexEnd, u8 argA) {
 
-    bool result = 0;
+    bool result = FALSE;
     
     u32 assetIndex[8];
 
@@ -694,7 +723,8 @@ bool func_80034EF0(u16 mapIndex, u8 arg1, u8 arg2, u32* textureIndex, u32* palet
         nuPiReadRom(romTextureStart + offset2, mainMap[mapIndex].groundObjects.paletteIndex, offset3 - offset2);
         nuPiReadRom(romTextureStart + offset4, mainMap[mapIndex].groundObjects.spriteToPaletteIndex, offset5 - offset4);
         
-        result = 1;
+        result = TRUE;
+
     }
 
     return result;
@@ -704,11 +734,13 @@ bool func_80034EF0(u16 mapIndex, u8 arg1, u8 arg2, u32* textureIndex, u32* palet
 
 bool func_80035004(u16 mapIndex, u16 arg1, u8 arg2, u8 arg3) {
     
-    bool result = 0;
+    bool result = FALSE;
     
     if (mapIndex == MAIN_MAP_INDEX && (mainMap[mapIndex].mapStruct9.flags & 1)) {
+
         mainMap[mapIndex].groundObjects.arr2[0][arg3*0x14 + arg2] = arg1;
-        result = 1;
+        result = TRUE;
+
     }
 
     return result;
@@ -720,7 +752,7 @@ bool func_80035004(u16 mapIndex, u16 arg1, u8 arg2, u8 arg3) {
 // used for maps with foragable items
 bool func_80035054(u16 mapIndex, u16 bitmapIndex, u16 spriteIndex, f32 x, f32 y, f32 z) {
 
-    bool result = 0;
+    bool result = FALSE;
 
     if (mapIndex == MAIN_MAP_INDEX && (mainMap[mapIndex].mapStruct9.flags & 1)) {
     
@@ -732,7 +764,8 @@ bool func_80035054(u16 mapIndex, u16 bitmapIndex, u16 spriteIndex, f32 x, f32 y,
             mainMap[mapIndex].mapBitmaps[bitmapIndex].unk_1C.y = y;
             mainMap[mapIndex].mapBitmaps[bitmapIndex].unk_1C.z = z;
             
-            result = 1;
+            result = TRUE;
+
         }    
     }
     
@@ -749,13 +782,13 @@ bool func_80035914(u16 mapIndex, f32 arg1, f32 arg2) {
 
     Vec3f vec;
     
-    bool result = 0;
+    bool result = FALSE;
 
     if (mapIndex == MAIN_MAP_INDEX && (mainMap[mapIndex].mapStruct9.flags & 1)) {
 
         func_800366F4(&vec, 0, arg1, arg2);
 
-        if (vec.y != MAX_UNSIGNED_SHORT) {
+        if (vec.y != 65535.0f) {
             result = func_80036880(MAIN_MAP_INDEX, vec.x, vec.z) != 0;
         }
 
@@ -781,6 +814,7 @@ Vec3f* func_800359C8(Vec3f* arg0, MainMap* map, f32 arg2, f32 arg3) {
 
 //INCLUDE_ASM(const s32, "system/map", func_80035A58);
 
+// 3D rotations
 void func_80035A58(UnknownMapStruct2* arg0) {
 
     Vec3f padding[3];
@@ -845,13 +879,13 @@ void func_80035A58(UnknownMapStruct2* arg0) {
 
 bool func_80035DA4(MainMap *map, u8 arg1, u8 arg2) {
     
-  bool result = 0;
+  bool result = FALSE;
 
   if (-1.0f <= (((map->mapStruct2.unk_0.z * (map->mapStruct2.unk_C.x - arg1)) + (map->mapStruct2.unk_C.z * (arg1 - map->mapStruct2.unk_0.x))) + (arg2 * D_802226EC))) {
     if (-1.0f <= (((map->mapStruct2.unk_C.z * (map->mapStruct2.unk_18.x - arg1)) + (map->mapStruct2.unk_18.z * (arg1 - map->mapStruct2.unk_C.x))) + (arg2 * D_80170460))) {
       if (-1.0f <= (((map->mapStruct2.unk_18.z * (map->mapStruct2.unk_24.x - arg1)) + (map->mapStruct2.unk_24.z * (arg1 - map->mapStruct2.unk_18.x))) + (arg2 * D_8013D550))) {
         if (-1.0f <= (((map->mapStruct2.unk_24.z * (map->mapStruct2.unk_0.x - arg1)) + (map->mapStruct2.unk_0.z * (arg1 - map->mapStruct2.unk_24.x))) + (arg2 * D_801FB5D4))) {
-          result = 1;
+          result = TRUE;
         }
       }
     }
@@ -880,7 +914,7 @@ bool func_80036490(u16 mapIndex, u8 arg1, f32 arg2, f32 arg3) {
 
     u8 *ptr;
     
-    bool result = 0;
+    bool result = FALSE;
 
     if (mapIndex == MAIN_MAP_INDEX && mainMap[mapIndex].mapStruct9.flags & 1) {
 
@@ -894,7 +928,7 @@ bool func_80036490(u16 mapIndex, u8 arg1, f32 arg2, f32 arg3) {
         
         ptr[(mainMap[mapIndex].mapStruct1.unk_A * (u8)vec1.z) + (u8)vec1.x] = arg1;
 
-        result = 1;
+        result = TRUE;
         
     }
 
@@ -915,7 +949,7 @@ Vec3f *func_80036610(Vec3f *arg0, u16 mapIndex, f32 arg2, f32 arg3) {
 
     vec.x = 0.0f;
     vec.z = 0.0f;
-    vec.y = MAX_UNSIGNED_SHORT;
+    vec.y = 65535.0f;
 
     if (mapIndex == MAIN_MAP_INDEX && (mainMap[mapIndex].mapStruct9.flags & 1)) {
         
@@ -988,12 +1022,12 @@ bool func_80036980(u16 mapIndex, u16 arg1, f32 arg2, f32 arg3) {
     
     u32 padding[4];
 
-    bool result = 0;
+    bool result = FALSE;
     
     if (mapIndex == MAIN_MAP_INDEX && mainMap[mapIndex].mapStruct9.flags & 1) {
 
         mainMap[mapIndex].groundObjects.arr2[0][(u8)arg3*0x14+(u8)arg2] = arg1;    
-        result = 1;
+        result = TRUE;
         
     }
 
@@ -1006,7 +1040,7 @@ bool func_80036980(u16 mapIndex, u16 arg1, f32 arg2, f32 arg3) {
 // check bit 3 on mapStruct9 flags
 bool func_80036A84(u16 mapIndex) {
 
-    bool result = 0;
+    bool result = FALSE;
      
     if (mapIndex == MAIN_MAP_INDEX && (mainMap[mapIndex].mapStruct9.flags & 1)) {
         result = (mainMap[mapIndex].mapStruct9.flags >> 3) & 1;
@@ -1483,7 +1517,7 @@ void func_80038728(u8 arg0[], u8* arg1, u16 arg2) {
     arg0[18] = arr[18];
     
 }
-
+ 
 //INCLUDE_ASM(const s32, "system/map", func_800387E0);
 
 u32* func_800387E0(u16 arg0, u32* arg1) {
@@ -1522,7 +1556,7 @@ bool func_8003886C(u16 mapIndex) {
 
     if (mapIndex == MAIN_MAP_INDEX && (mainMap[mapIndex].mapStruct9.flags & 1)) {
         mainMap[mapIndex].mapStruct9.flags &= ~2;
-        result = 1;
+        result = TRUE;
     }
     
     return result;
@@ -1577,14 +1611,14 @@ u8* func_800388A4(u16 arg0, u8 *arg1) {
 // called by func_800735FC
 bool func_80038900(u16 mapIndex, u16 arg1, u16 arg2, u16 arg3, u16 arg4) {
 
-    bool result = 0;
+    bool result = FALSE;
 
     if (mapIndex == MAIN_MAP_INDEX && mainMap[mapIndex].mapStruct9.flags & 1) {
         if (arg1 < 0x20 && !(mainMap[mapIndex].mapAdditions[arg1].flags & 1)) {
             if (arg2 < 0x10) {
                 mainMap[mapIndex].mapAdditions[arg1].arr1[arg2] = arg3;
                 mainMap[mapIndex].mapAdditions[arg1].arr2[arg2] = arg4;
-                result = 1;
+                result = TRUE;
             }
         }
     }
@@ -1597,7 +1631,7 @@ bool func_80038900(u16 mapIndex, u16 arg1, u16 arg2, u16 arg3, u16 arg4) {
 
 bool func_80038990(u16 mapIndex, u16 mapAdditionIndex, u8 arg2) {
 
-    bool result = 0;
+    bool result = FALSE;
 
     if (mapIndex == MAIN_MAP_INDEX && mainMap[mapIndex].mapStruct9.flags & 1 && mapAdditionIndex < 0x20) {
 
@@ -1607,7 +1641,7 @@ bool func_80038990(u16 mapIndex, u16 mapAdditionIndex, u8 arg2) {
             mainMap[mapIndex].mapAdditions[mapAdditionIndex].unk_40 = 0;
             mainMap[mapIndex].mapAdditions[mapAdditionIndex].unk_42 = 0;
 
-            result = 1;
+            result = TRUE;
 
             if (arg2) {
                 mainMap[mapIndex].mapAdditions[mapAdditionIndex].flags = 1 | 4;
@@ -1623,7 +1657,7 @@ bool func_80038990(u16 mapIndex, u16 mapAdditionIndex, u8 arg2) {
 
 bool func_80038A2C(u16 mapIndex, u16 mapAdditionIndex, u8 arg2, u8 arg3) {
 
-    bool result = 0;
+    bool result = FALSE;
 
     if (mapIndex == MAIN_MAP_INDEX && mainMap[mapIndex].mapStruct9.flags & 1 && mapAdditionIndex < 0x20) {
 
@@ -1637,7 +1671,8 @@ bool func_80038A2C(u16 mapIndex, u16 mapAdditionIndex, u8 arg2, u8 arg3) {
 
             mainMap[mapIndex].mapAdditions[mapAdditionIndex].flags |= 3;
             
-            result = 1;
+            result = TRUE;
+
         }
         
     }
@@ -1651,13 +1686,13 @@ bool func_80038A2C(u16 mapIndex, u16 mapAdditionIndex, u8 arg2, u8 arg3) {
 // load map additions (house extensions, hot springs, etc.)
 bool func_80038AE0(u16 mapIndex, u16 mapAdditionIndex) {
 
-    bool result = 0;
+    bool result = FALSE;
 
     if (mapIndex == MAIN_MAP_INDEX && mainMap[mapIndex].mapStruct9.flags & 1) {
 
         func_800360BC(MAIN_MAP_INDEX, mainMap[mapIndex].mapAdditions[mapAdditionIndex].arr1[0], mainMap[mapIndex].mapAdditions[mapAdditionIndex].unk_44, mainMap[mapIndex].mapAdditions[mapAdditionIndex].unk_45, 0);
         
-        result = 1;
+        result = TRUE;
 
     }
     
@@ -1673,7 +1708,7 @@ bool func_80038B58(u16 mapIndex, u16 mapAdditionIndex, u8 arg2, u8 arg3) {
 
     if (mapIndex == MAIN_MAP_INDEX && (mainMap[mapIndex].mapStruct9.flags & 1)) {
         func_800360BC(MAIN_MAP_INDEX, mainMap[mapIndex].mapAdditions[mapAdditionIndex].arr1[0], arg2 , arg3, 2);
-        result = 1;
+        result = TRUE;
     }
     
     return result;
@@ -1707,7 +1742,7 @@ void func_80039E20(u16 arg0, Gfx* arg1) {
 void func_80039F58(u16 mapIndex) {
 
     bool found = 0;
-    bool set = 0;
+    bool set = FALSE;
     u16 i = 0;
 
     do {
@@ -1716,7 +1751,7 @@ void func_80039F58(u16 mapIndex) {
         
             do {
 
-                if (!mainMap[mapIndex].mapAdditions[i].unk_40) { 
+                if (mainMap[mapIndex].mapAdditions[i].unk_40 == 0) { 
 
                     if (mainMap[mapIndex].mapAdditions[i].arr1[mainMap[mapIndex].mapAdditions[i].unk_42] != 0xFFFF) {
  
@@ -1745,15 +1780,15 @@ void func_80039F58(u16 mapIndex) {
                     mainMap[mapIndex].mapAdditions[i].unk_42++;
                     
                     if (mainMap[mapIndex].mapAdditions[i].unk_42 == 16) {
-                        set = 1;
                         mainMap[mapIndex].mapAdditions[i].flags &= ~1;
+                        set = TRUE;
                     } 
 
                     mainMap[mapIndex].mapAdditions[i].unk_40 = 0;
                      
                 } else {
                     mainMap[mapIndex].mapAdditions[i].unk_40++;
-                    set = 1;
+                    set = TRUE;
                     
                 }
                 
@@ -1990,9 +2025,7 @@ inline void func_8003AC14(Gfx* dl, MapBitmap* arg1) {
 // param1: Gfx* 8020DE78
 // param2: MainMap*
 // param3: mapBitmap*, 8014318C
-// param4 = offset into vertex bank
-// Vertex bank: D_80165500[]
-//      size 0x40
+// param4 = offset into map vertex array
 //INCLUDE_ASM(const s32, "system/map", func_8003ACA8);
 
 Gfx* func_8003ACA8(Gfx* arg0, MainMap* map, MapBitmap* arg2, u16 vtxIndex) {

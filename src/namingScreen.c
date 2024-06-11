@@ -710,7 +710,7 @@ void func_800F009C(void) {
     s32 i = 0x80;
 
     while (i < 0x92) {
-        func_8002B6B8(i);
+        deactivateSprite(i);
         i++;
     } 
     
@@ -723,7 +723,7 @@ void func_800F009C(void) {
     s32 i;
 
     for (i = 0x80; i < 0x92; i++) {
-        func_8002B6B8(i);
+        deactivateSprite(i);
     } 
     
 }
@@ -837,7 +837,7 @@ void func_800F0320(void) {
 
 void func_800F03C4(void) {
 
-    bool set = 0;
+    bool set = FALSE;
     s32 temp;
 
     if (namingScreenContext.flags & 0x80) {
@@ -848,7 +848,7 @@ void func_800F03C4(void) {
     }
 
     if (func_8004D3C8(CONTROLLER_1, BUTTON_STICK_LEFT)) {
-        set = 1;
+        set = TRUE;
         func_800EFADC();
         setSfx(3);
         setSfxVolume(3, SFX_VOLUME);
@@ -856,7 +856,7 @@ void func_800F03C4(void) {
 
     if (!set) {
         if (func_8004D3C8(CONTROLLER_1, 0x400000)) {
-            set = 1;
+            set = TRUE;
             func_800EFBEC();
             setSfx(3);
             setSfxVolume(3, SFX_VOLUME);
@@ -865,7 +865,7 @@ void func_800F03C4(void) {
 
     if (!set) {
         if (func_8004D3C8(CONTROLLER_1, BUTTON_STICK_UP)) {
-            set = 1;
+            set = TRUE;
             func_800EFE84();
             setSfx(3);
             setSfxVolume(3, SFX_VOLUME);
@@ -876,7 +876,7 @@ void func_800F03C4(void) {
 
       if (func_8004D3C8(CONTROLLER_1, 0x100000)) {
           func_800EFCF8();
-          set = 1;
+          set = TRUE;
           setSfx(3);
           setSfxVolume(3, SFX_VOLUME);
       }
@@ -886,7 +886,7 @@ void func_800F03C4(void) {
         
         if (func_8004D380(CONTROLLER_1, BUTTON_A)) {
         
-            set = 1;
+            set = TRUE;
             setSfx(1);
             setSfxVolume(CLOSE, SFX_VOLUME);
             
@@ -900,7 +900,7 @@ void func_800F03C4(void) {
             
             if (func_8004D380(CONTROLLER_1, BUTTON_B)) {
     
-                set = 1;
+                set = TRUE;
                 setSfx(1);
                 setSfxVolume(CLOSE, SFX_VOLUME);
                 
@@ -1036,11 +1036,11 @@ void func_800F06D8(void) {
 
 void func_800F0F84(void) {
 
-    bool set = 0;
+    bool set = FALSE;
 
     if (func_8004D3C8(CONTROLLER_1, BUTTON_STICK_UP) || func_8004D3C8(CONTROLLER_1, 0x100000)) {
         
-        set = 1;
+        set = TRUE;
         
         func_800F121C();
         
@@ -1053,7 +1053,7 @@ void func_800F0F84(void) {
 
         if (func_8004D3C8(CONTROLLER_1, BUTTON_STICK_LEFT) || func_8004D3C8(CONTROLLER_1, 0x400000)) {
             
-            set = 1;
+            set = TRUE;
             
             func_800F12C4();
 
@@ -1067,7 +1067,7 @@ void func_800F0F84(void) {
 
         if (func_8004D3C8(CONTROLLER_1, 0x200000) || func_8004D3C8(CONTROLLER_1, BUTTON_STICK_RIGHT) || func_8004D3C8(CONTROLLER_1, 0x800000) || func_8004D3C8(CONTROLLER_1, BUTTON_STICK_DOWN)) {
             
-            set = 1;
+            set = TRUE;
             
             func_800F121C();
             func_800F12C4();

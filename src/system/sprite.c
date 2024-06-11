@@ -10,12 +10,9 @@
 // bss
 extern u16 bitmapCounter;
 
-// extern const char D_8011ED4C[];
-// extern const char D_8011ED50[];
-
 extern Bitmap bitmaps[MAX_BITMAPS];
 extern Gfx D_80215ED0[2][0x880];
-// unused
+// initialized to 0, but unused?
 extern u16 D_8021E6E6[2][0x80][0x20];
                
 // forward declarations
@@ -59,6 +56,7 @@ void initializeBitmaps(void) {
     }
     
     bitmapCounter = 0;
+
 }
 
 //INCLUDE_ASM(const s32, "system/sprite", func_80029CC8);
@@ -73,6 +71,7 @@ void func_80029CC8(void) {
         bitmaps[i].flags = 0; 
         i++;
     } 
+
 }
 
 //INCLUDE_ASM(const s32, "system/sprite", func_80029CF4);
@@ -99,6 +98,7 @@ u16 func_80029CF4(u8 *timg, u8 *pal, s32 width, s32 height, s32 fmt, s32 size, u
     }
     
     return result;
+
 }
 
 //INCLUDE_ASM(const s32, "system/sprite", func_80029DAC);
@@ -125,13 +125,13 @@ u16 func_80029DAC(u8 *timg, u16 *pal, u16 flags) {
 
 bool func_80029E2C(u16 index, u16 arg1, u16 arg2) {
     
-    bool result;
+    bool result = FALSE;
+
     u32 temp1;
     u32 temp2;
 
-    result = 0;
-
     if (index < MAX_BITMAPS) {
+
         if (bitmaps[index].flags & 1) {
 
             bitmaps[index].unk_54 &= ~(8 | 0x10 | 0x20 | 0x40);
@@ -142,61 +142,69 @@ bool func_80029E2C(u16 index, u16 arg1, u16 arg2) {
             temp2 = arg2 << 5;
             bitmaps[index].unk_54 |= temp2;
 
-            result = 1;
+            result = TRUE;
+
         }
     }
     
     return result;
+
 }
 
 //INCLUDE_ASM(const s32, "system/sprite", func_80029EA4);
 
 bool func_80029EA4(u16 index, u16 arg1) {
     
-    bool result;
+    bool result = FALSE;
     int temp;
-    result = 0;
     
     if (index < MAX_BITMAPS) {
+
         if (bitmaps[index].flags & 1) {
-            result = 1;
+            
             bitmaps[index].unk_54 &= ~(0x80 | 0x100);
             temp = arg1 << 7;
             bitmaps[index].unk_54 |= temp;
+            
+            result = TRUE;
+
         }
     }
+
     return result;
+
 }
 
 //INCLUDE_ASM(const s32, "system/sprite", func_80029F14);
 
 bool func_80029F14(u16 index, u16 arg1) {
 
-    bool result;
-    
-    result = 0;
+    bool result = FALSE;
     
     if (index < MAX_BITMAPS) {
+        
         if (bitmaps[index].flags & 1) {
+            
             if (arg1) {
                 bitmaps[index].unk_54 |= 0x200;
             } else {
                 bitmaps[index].unk_54 &= ~0x200;
             }
-            result = 1;
+            
+            result = TRUE;
+
         }
     }
 
     return result;
+
 }
 
 //INCLUDE_ASM(const s32, "system/sprite", func_80029F98);
 
 bool func_80029F98(u16 index, u8 arg1, u8 arg2) {
     
-    bool result;
-    
-    result = 0;
+    bool result = FALSE;
     
     if (index < MAX_BITMAPS) {
         if (bitmaps[index].flags & 1) {
@@ -205,32 +213,35 @@ bool func_80029F98(u16 index, u8 arg1, u8 arg2) {
                 bitmaps[index].unk_54 |= 1;
             }
             
-            result = 1;
-            
             if (arg2) {
                bitmaps[index].unk_54 |= 2;
             }
+            
+            result = TRUE;
+
         }
     }
     
     return result;
+    
 }
 
 //INCLUDE_ASM(const s32, "system/sprite", func_8002A02C);
 
 bool func_8002A02C(u16 index, u16 arg1) {
 
-    bool result;
+    bool result = FALSE;
     int temp;
-    
-    result = 0;
     
     if (index < MAX_BITMAPS) {
         if (bitmaps[index].flags & 1) {
-            result = 1;
+            
             bitmaps[index].unk_54 &= ~(0x400 | 0x1000 | 0x800);
             temp = arg1 << 10;
             bitmaps[index].unk_54 |= temp;
+            
+            result = TRUE;
+
         }
     }
     
@@ -241,69 +252,88 @@ bool func_8002A02C(u16 index, u16 arg1) {
 
 bool func_8002A09C(u16 index, f32 arg1, f32 arg2, f32 arg3) {
     
-    bool result = 0;
+    bool result = FALSE;
     
     if (index < MAX_BITMAPS) {
+        
         if (bitmaps[index].flags & 1) {
-            result = 1;
+            
             bitmaps[index].unk_1C.x = arg1;
             bitmaps[index].unk_1C.y = arg2;
             bitmaps[index].unk_1C.z = arg3;
+            
+            result = TRUE;
+
         }
     }
     
     return result;
+
 }
 
 //INCLUDE_ASM(const s32, "system/sprite", func_8002A120);
 
 bool func_8002A120(u16 index, f32 arg1, f32 arg2, f32 arg3) {
     
-    bool result = 0;
+    bool result = FALSE;
     
     if (index < MAX_BITMAPS) {
+        
         if (bitmaps[index].flags & 1) {
-            result = 1;
+            
             bitmaps[index].scaling.x = arg1;
             bitmaps[index].scaling.y = arg2;
             bitmaps[index].scaling.z = arg3;
+            
+            result = TRUE;
+
         }
     }
     
     return result;
+
 }
 
 //INCLUDE_ASM(const s32, "system/sprite", func_8002A1A4);
 
 bool func_8002A1A4(u16 index, f32 arg1, f32 arg2, f32 arg3) {
 
-    bool result = 0;
+    bool result = FALSE;
 
     if (index < MAX_BITMAPS) {
+        
         if (bitmaps[index].flags & 1) {
-            result = 1;
+            
             bitmaps[index].unk_34.x = arg1;
             bitmaps[index].unk_34.y = arg2;
             bitmaps[index].unk_34.z = arg3;
+            
+            result = TRUE;
+
         }
     }
     
     return result;
+
 }
 
 //INCLUDE_ASM(const s32, "system/sprite", func_8002A228);
 
 bool func_8002A228(u16 index, u8 r, u8 g, u8 b, u8 a) {
     
-    bool result = 0;
+    bool result = FALSE;
     
     if (index < MAX_BITMAPS) {
+        
         if (bitmaps[index].flags & 1) {
-            result = 1;
+            
             bitmaps[index].rgba.r = r;
             bitmaps[index].rgba.g = g;
             bitmaps[index].rgba.b = b;
             bitmaps[index].rgba.a = a;
+            
+            result = TRUE;
+
         }
     }
     
@@ -314,17 +344,22 @@ bool func_8002A228(u16 index, u8 r, u8 g, u8 b, u8 a) {
 
 bool func_8002A2E0(u16 index, u16 arg1, u16 arg2) {
 
-    bool result = 0;
+    bool result = FALSE;
     
     if (index < MAX_BITMAPS) {
+        
         if (bitmaps[index].flags & 1) {
+            
             bitmaps[index].unk_50 = arg1;
             bitmaps[index].unk_52 = arg2;
-            result = 1;
+            
+            result = TRUE;
+
         }
     }
     
     return result;
+    
 }
 
 //INCLUDE_ASM(const s32, "system/sprite", func_8002A340);
@@ -519,9 +554,6 @@ INCLUDE_RODATA(const s32, "system/sprite", D_8011ED30);
 
 INCLUDE_RODATA(const s32, "system/sprite", D_8011ED34);
 
-// uses D_8021E6E0[2][]
-// Gfx* func_8002A66C(Gfx* arg0, Bitmap* arg1, u16 arg2)
-
 // bitmap to vertices
 #ifdef PERMUTER
 Gfx* func_8002A66C(Gfx* dl, Bitmap* sprite, u16 arg2) {
@@ -589,7 +621,7 @@ Gfx* func_8002A66C(Gfx* dl, Bitmap* sprite, u16 arg2) {
             textureSize = textureHeight[0];
         }
         
-        func_800276AC((Vtx*)&D_8021E6E0[gDisplayContextIndex][sprite->spriteNumber+vtxIndex], 
+        func_800276AC((Vtx*)&bitmapVertices[gDisplayContextIndex][sprite->spriteNumber+vtxIndex], 
             sprite->width, 
             sprite->height, 
             textureSize, 
@@ -607,7 +639,8 @@ Gfx* func_8002A66C(Gfx* dl, Bitmap* sprite, u16 arg2) {
         // load texture tile
         dl = func_80026F88(dl, sprite, textureDimensions, textureSize);
 
-        gSPVertex(&tempDl[0], (Vtx*)&D_8021E6E0[gDisplayContextIndex][sprite->spriteNumber + vtxIndex], 4, 0);
+        // should be gSPVertex(&tempDl[0], &bitmapVertices[gDisplayContextIndex][sprite->spriteNumber][vtxIndex], 4, 0);
+        gSPVertex(&tempDl[0], (Vtx*)&bitmapVertices[gDisplayContextIndex][sprite->spriteNumber + vtxIndex], 4, 0);
 
         *(tempDl-1) = *(tempDl);
         *dl = *(tempDl-1);
@@ -662,8 +695,8 @@ void func_8002ACA4(Bitmap* sprite, Gfx *dl) {
     func_8002A530(&vec, sprite);
 
     // update worldGraphics struct
-    spriteIndex = func_8002929C(dl, (sprite->flags & 0x78) | 0x80);
-    
+    spriteIndex = func_8002929C(dl, (sprite->flags & (0x8 | 0x10 | 0x20 | 0x40)) | 0x80);
+
     func_800292EC(spriteIndex, vec.x, vec.y, vec.z);
     func_80029330(spriteIndex, sprite->scaling.x, sprite->scaling.y, sprite->scaling.z);
     func_80029374(spriteIndex, sprite->unk_34.x, sprite->unk_34.y, sprite->unk_34.z);

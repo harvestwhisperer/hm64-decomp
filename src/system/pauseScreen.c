@@ -35,13 +35,13 @@ void func_80045DE0(void) {
 
 bool func_80045E20(u16 index, u16 arg1, void *arg2, void *arg3, void *arg4, void *arg5, void *arg6, void *arg7, void *arg8, void *arg9, void *argA, u16 argB, u8 argC, f32 argD, f32 argE, f32 argF, u8 arg10) {
     
-    bool result = 0;
+    bool result = FALSE;
     
     if (index < MAX_PAUSE_SCREEN_SPRITES) {
 
         if (!(pauseScreenSprites[index].flags & 1)) {
         
-            result = 1;
+            result = TRUE;
         
             pauseScreenSprites[index].romSpritesheetStart = arg2;
             pauseScreenSprites[index].romSpritesheetEnd = arg3;
@@ -71,7 +71,7 @@ bool func_80045E20(u16 index, u16 arg1, void *arg2, void *arg3, void *arg4, void
 
 bool func_80045F5C(u16 index, u32 arg1, u8 arg2, u16 flag) {
     
-    bool result = 0;
+    bool result = FALSE;
     u8 count;
     u8 check;
     
@@ -110,7 +110,7 @@ bool func_80045F5C(u16 index, u32 arg1, u8 arg2, u16 flag) {
             
             func_800461D8(index, 0xFF, 0xFF, 0xFF, 0xFF);
             
-            result = 1;
+            result = TRUE;
             
             if (flag == 3) {
                 pauseScreenSprites[index].flags |= 4;
@@ -126,7 +126,7 @@ bool func_80045F5C(u16 index, u32 arg1, u8 arg2, u16 flag) {
 
 bool func_80046120(u16 index) {
     
-    bool result = 0;
+    bool result = FALSE;
     
     u8 i;
     u16 check;
@@ -138,13 +138,13 @@ bool func_80046120(u16 index) {
             i = pauseScreenSprites[index].count;
 
             do {
-                func_8002B6B8(pauseScreenSprites[index].unk_38+i);
+                deactivateSprite(pauseScreenSprites[index].unk_38+i);
                 check = i--;
             } while (check);
         
             pauseScreenSprites[index].flags = 0;
         
-            result = 1;
+            result = TRUE;
         }
     }
     
@@ -156,7 +156,7 @@ bool func_80046120(u16 index) {
 bool func_800461D8(u16 spriteIndex, u8 arg1, u8 arg2, u8 arg3, u8 arg4) {
 
     u8 count = 0;
-    u8 result = 0;
+    bool result = FALSE;
 
     if (spriteIndex < MAX_PAUSE_SCREEN_SPRITES) {
 
@@ -169,7 +169,7 @@ bool func_800461D8(u16 spriteIndex, u8 arg1, u8 arg2, u8 arg3, u8 arg4) {
                 func_8002C914(pauseScreenSprites[spriteIndex].unk_38 + count, arg1, arg2, arg3, arg4);
             } while (count--);
 
-            result = 1;
+            result = TRUE;
         }
     }
     
@@ -182,7 +182,7 @@ bool func_800461D8(u16 spriteIndex, u8 arg1, u8 arg2, u8 arg3, u8 arg4) {
 bool func_800462B4(u16 spriteIndex, u8 arg1) {
 
     u8 count = 0;
-    u8 result = 0;
+    bool result = FALSE;
 
     if (spriteIndex < MAX_PAUSE_SCREEN_SPRITES) {
         
@@ -194,7 +194,7 @@ bool func_800462B4(u16 spriteIndex, u8 arg1) {
                 func_8002CAA8(pauseScreenSprites[spriteIndex].unk_38 + count, arg1);
             } while (count--);
 
-            result = 1;
+            result = TRUE;
         }
     }
     
@@ -206,7 +206,7 @@ bool func_800462B4(u16 spriteIndex, u8 arg1) {
 bool func_8004635C(u16 spriteIndex, u8 arg1, u8 arg2, u8 arg3, u8 arg4, u16 arg5) {
 
     u8 count = 0;
-    u8 result = 0;
+    bool result = FALSE;
 
     if (spriteIndex < MAX_PAUSE_SCREEN_SPRITES) {
 
@@ -218,7 +218,7 @@ bool func_8004635C(u16 spriteIndex, u8 arg1, u8 arg2, u8 arg3, u8 arg4, u16 arg5
                 func_8002C1C0(pauseScreenSprites[spriteIndex].unk_38 + count, arg1, arg2, arg3, arg4, arg5);
             } while (count--);
 
-            result = 1;
+            result = TRUE;
         }
     }
     
@@ -231,7 +231,7 @@ bool func_8004635C(u16 spriteIndex, u8 arg1, u8 arg2, u8 arg3, u8 arg4, u16 arg5
 bool func_8004644C(u16 spriteIndex, u8 arg1, s16 arg2) {
 
     u8 count = 0;
-    u8 result = 0;
+    bool result = FALSE;
 
     if (spriteIndex < MAX_PAUSE_SCREEN_SPRITES) {
 
@@ -243,7 +243,7 @@ bool func_8004644C(u16 spriteIndex, u8 arg1, s16 arg2) {
                 func_8002C52C(pauseScreenSprites[spriteIndex].unk_38 + count, arg1, arg2);
             } while (count--);
 
-            result = 1;
+            result = TRUE;
         }
     }
     
@@ -256,7 +256,9 @@ bool func_80046504(u16 spriteIndex) {
 
     u8 count = 0;
     u8 found = 0;
-    u8 result = 0;
+
+    bool result = FALSE;
+
     u32 value;
     u32 check;
 
@@ -287,8 +289,9 @@ bool func_80046504(u16 spriteIndex) {
                 }
                 
             } while (count--);
-            
-            result = 1;
+
+            result = TRUE;
+
         }
     }
 
@@ -300,7 +303,7 @@ bool func_80046504(u16 spriteIndex) {
 
 bool func_80046650(u16 spriteIndex, u8 arg1, u8 arg2) {
 
-    u8 result = 0;
+    bool result = FALSE;
     u16 tempIndex;
     
     if (spriteIndex < MAX_PAUSE_SCREEN_SPRITES) {
@@ -326,7 +329,7 @@ bool func_80046650(u16 spriteIndex, u8 arg1, u8 arg2) {
             // animation
             func_8002B80C(tempIndex, pauseScreenSprites[spriteIndex].specialItemPages, pauseScreenSprites[spriteIndex].unk_26 + arg1);
             
-            result = 1;
+            result = TRUE;
         }
     }
 

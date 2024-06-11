@@ -41,21 +41,21 @@ void func_80042F60(void) {
 
 //INCLUDE_ASM(const s32, "system/dialogue", func_80042FEC);
 
-bool func_80042FEC(u16 arg0, u16 arg1, u16 arg2) {
+bool func_80042FEC(u16 index, u16 arg1, u16 arg2) {
 
-    bool result = 0;
+    bool result = FALSE;
 
-    if (arg0 == 0 && !(dialogues[arg0].struct5.flags & 1)) {
+    if (index == 0 && !(dialogues[index].struct5.flags & 1)) {
 
-        dialogues[arg0].struct5.unk_0 = 0xFF;
-        dialogues[arg0].struct5.unk_4 = 0xFF;
-        dialogues[arg0].struct5.unk_8 = 0xFF;
-        dialogues[arg0].struct5.unk_10 = arg1;
-        dialogues[arg0].struct5.unk_12 = arg2;
+        dialogues[index].struct5.unk_0 = 0xFF;
+        dialogues[index].struct5.unk_4 = 0xFF;
+        dialogues[index].struct5.unk_8 = 0xFF;
+        dialogues[index].struct5.unk_10 = arg1;
+        dialogues[index].struct5.unk_12 = arg2;
 
-        dialogues[arg0].struct5.flags = 1;
+        dialogues[index].struct5.flags = 1;
         
-        result = 1;
+        result = TRUE;
         
     }
     
@@ -65,22 +65,22 @@ bool func_80042FEC(u16 arg0, u16 arg1, u16 arg2) {
 
 //INCLUDE_ASM(const s32, "system/dialogue", func_80043050);
 
-bool func_80043050(u16 arg0, u16 arg1, u16 arg2, void* arg3, void* arg4, void* arg5, void* arg6, void* arg7) {
+bool func_80043050(u16 index, u16 arg1, u16 arg2, void* arg3, void* arg4, void* arg5, void* arg6, void* arg7) {
 
-    bool result = 0;
+    bool result = FALSE;
     
-    if (arg0 < 0x46) {
+    if (index < 0x46) {
 
-        result = 1;
+        D_80205760[index].unk_14 = arg1;
+        D_80205760[index].unk_16 = arg2;
+        D_80205760[index].romStart = arg3;
+        D_80205760[index].romEnd = arg4;
+        D_80205760[index].vaddr = arg5;
+        D_80205760[index].romIndex = arg6;
+        D_80205760[index].vaddrIndex = arg7;
         
-        D_80205760[arg0].unk_14 = arg1;
-        D_80205760[arg0].unk_16 = arg2;
-        D_80205760[arg0].romStart = arg3;
-        D_80205760[arg0].romEnd = arg4;
-        D_80205760[arg0].vaddr = arg5;
-        D_80205760[arg0].romIndex = arg6;
-        D_80205760[arg0].vaddrIndex = arg7;
-        
+        result = TRUE;
+
     } 
     
     return result;
@@ -90,15 +90,18 @@ bool func_80043050(u16 arg0, u16 arg1, u16 arg2, void* arg3, void* arg4, void* a
 
 bool setDialogueVariable(u16 index, void *address, u8 numSet, s32 max) {
 
-    bool result = 0;
+    bool result = FALSE;
 
     if (index < TOTAL_GAME_VARIABLES) {
 
         if (numSet < 5) {
+
             gameVariables[index].address = address;
             gameVariables[index].set = numSet;
             gameVariables[index].maxValue = max;
-            result = 1;
+
+            result = TRUE;
+
         }
 
     }
@@ -115,15 +118,18 @@ bool func_80043138(u32* arg0) {
 
 //INCLUDE_ASM(const s32, "system/dialogue", func_80043148);
 
-bool func_80043148(u16 arg0, u32 arg1, u32 arg2, u32 arg3) {
+bool func_80043148(u16 index, u32 arg1, u32 arg2, u32 arg3) {
 
-    bool result = 0;
+    bool result = FALSE;
 
-    if (arg0 == 0 && dialogues[arg0].struct5.flags & 1) {
-        result = 1;
-        dialogues[arg0].struct5.unk_0 = arg1;
-        dialogues[arg0].struct5.unk_4 = arg2;
-        dialogues[arg0].struct5.unk_8 = arg3;
+    if (index == 0 && dialogues[index].struct5.flags & 1) {
+        
+        dialogues[index].struct5.unk_0 = arg1;
+        dialogues[index].struct5.unk_4 = arg2;
+        dialogues[index].struct5.unk_8 = arg3;
+        
+        result = TRUE;
+
     }
     
     return result;
@@ -132,32 +138,31 @@ bool func_80043148(u16 arg0, u32 arg1, u32 arg2, u32 arg3) {
 
 //INCLUDE_ASM(const s32, "system/dialogue", func_8004318C);
 
-bool func_8004318C(u16 arg0, u16 arg1, void* arg2, void* arg3, void* arg4, void* arg5, void* arg6, void* arg7, void* arg8, void* arg9, void* argA, u16 argB, u8 argC, f32 argD, f32 argE, f32 argF) {
+bool func_8004318C(u16 index, u16 arg1, void* arg2, void* arg3, void* arg4, void* arg5, void* arg6, void* arg7, void* arg8, void* arg9, void* argA, u16 argB, u8 argC, f32 argD, f32 argE, f32 argF) {
 
-    bool result = 0;
+    bool result = FALSE;
 
-    if (arg0 == 0 && (dialogues[arg0].struct5.flags & 1)) {
+    if (index == 0 && (dialogues[index].struct5.flags & 1)) {
 
-        result = 1;
-
-        dialogues[arg0].struct2.romTextureStart = arg2;
-        dialogues[arg0].struct2.romTextureEnd = arg3;
-        dialogues[arg0].struct2.romAssetIndexStart = arg4;
-        dialogues[arg0].struct2.romAssetIndexEnd = arg5;
-        dialogues[arg0].struct2.vaddrSpritesheet = arg6;
-        dialogues[arg0].struct2.vaddrPalette = arg7;
-        dialogues[arg0].struct2.vaddrUnknownAssetSheet = arg8;
-        dialogues[arg0].struct2.vaddrUnknownAsset2 = arg9;
-        dialogues[arg0].struct2.unk_20 = argA;
+        dialogues[index].struct2.romTextureStart = arg2;
+        dialogues[index].struct2.romTextureEnd = arg3;
+        dialogues[index].struct2.romAssetIndexStart = arg4;
+        dialogues[index].struct2.romAssetIndexEnd = arg5;
+        dialogues[index].struct2.vaddrSpritesheet = arg6;
+        dialogues[index].struct2.vaddrPalette = arg7;
+        dialogues[index].struct2.vaddrUnknownAssetSheet = arg8;
+        dialogues[index].struct2.vaddrUnknownAsset2 = arg9;
+        dialogues[index].struct2.unk_20 = argA;
  
-        dialogues[arg0].struct2.unk_30 = arg1;
-        dialogues[arg0].struct2.unk_32 = argB;
-        dialogues[arg0].struct2.unk_34 = argC;
+        dialogues[index].struct2.unk_30 = arg1;
+        dialogues[index].struct2.unk_32 = argB;
+        dialogues[index].struct2.unk_34 = argC;
 
-        dialogues[arg0].struct2.unk_24.x = argD;
-        dialogues[arg0].struct2.unk_24.y = argE;
-        dialogues[arg0].struct2.unk_24.z = argF;
+        dialogues[index].struct2.unk_24.x = argD;
+        dialogues[index].struct2.unk_24.y = argE;
+        dialogues[index].struct2.unk_24.z = argF;
         
+        result = TRUE;
         
     }
     
@@ -167,34 +172,34 @@ bool func_8004318C(u16 arg0, u16 arg1, void* arg2, void* arg3, void* arg4, void*
 
 //INCLUDE_ASM(const s32, "system/dialogue", func_80043260);
 
-bool func_80043260(u16 arg0, u16 arg1, void* arg2, void* arg3, void* arg4, void* arg5, void* arg6, void* arg7, void* arg8, void* arg9, void* argA, u16 argB, u8 argC, f32 argD, f32 argE, f32 argF) {
+bool func_80043260(u16 index, u16 arg1, void* arg2, void* arg3, void* arg4, void* arg5, void* arg6, void* arg7, void* arg8, void* arg9, void* argA, u16 argB, u8 argC, f32 argD, f32 argE, f32 argF) {
 
-    bool result = 0;
+    bool result = FALSE;
 
-    if (arg0 == 0 && (dialogues[arg0].struct5.flags & 1)) {
+    if (index == 0 && (dialogues[index].struct5.flags & 1)) {
         
-        result = 1;
+        dialogues[index].struct3.romTextureStart = arg2;
+        dialogues[index].struct3.romTextureEnd = arg3; 
+        dialogues[index].struct3.romAssetIndexStart = arg4;
+        dialogues[index].struct3.romAssetIndexEnd = arg5;
 
-        dialogues[arg0].struct3.romTextureStart = arg2;
-        dialogues[arg0].struct3.romTextureEnd = arg3; 
-        dialogues[arg0].struct3.romAssetIndexStart = arg4;
-        dialogues[arg0].struct3.romAssetIndexEnd = arg5;
+        dialogues[index].struct3.vaddrSpritesheet = arg6;
+        dialogues[index].struct3.vaddrPalette = arg7;
+        dialogues[index].struct3.vaddrUnknownAssetSheet = arg8;
+        dialogues[index].struct3.vaddrUnknownAsset2 = arg9;
 
-        dialogues[arg0].struct3.vaddrSpritesheet = arg6;
-        dialogues[arg0].struct3.vaddrPalette = arg7;
-        dialogues[arg0].struct3.vaddrUnknownAssetSheet = arg8;
-        dialogues[arg0].struct3.vaddrUnknownAsset2 = arg9;
+        dialogues[index].struct3.unk_20 = argA;
 
-        dialogues[arg0].struct3.unk_20 = argA;
+        dialogues[index].struct3.unk_30 = arg1;
+        dialogues[index].struct3.unk_32 = argB;
+        dialogues[index].struct3.unk_34 = argC;
 
-        dialogues[arg0].struct3.unk_30 = arg1;
-        dialogues[arg0].struct3.unk_32 = argB;
-        dialogues[arg0].struct3.unk_34 = argC;
-
-        dialogues[arg0].struct3.unk_24.x = argD;
-        dialogues[arg0].struct3.unk_24.y = argE;
-        dialogues[arg0].struct3.unk_24.z = argF;
+        dialogues[index].struct3.unk_24.x = argD;
+        dialogues[index].struct3.unk_24.y = argE;
+        dialogues[index].struct3.unk_24.z = argF;
         
+        result = TRUE;
+
     }
 
     return result;
@@ -203,34 +208,34 @@ bool func_80043260(u16 arg0, u16 arg1, void* arg2, void* arg3, void* arg4, void*
 
 //INCLUDE_ASM(const s32, "system/dialogue", func_80043334);
 
-bool func_80043334(u16 arg0, u16 arg1, void* arg2, void* arg3, void* arg4, void* arg5, void* arg6, void* arg7, void* arg8, void* arg9, void* argA, u16 argB, u8 argC, f32 argD, f32 argE, f32 argF) {
+bool func_80043334(u16 index, u16 arg1, void* arg2, void* arg3, void* arg4, void* arg5, void* arg6, void* arg7, void* arg8, void* arg9, void* argA, u16 argB, u8 argC, f32 argD, f32 argE, f32 argF) {
 
-    bool result = 0;
+    bool result = FALSE;
 
-    if (arg0 == 0 && (dialogues[arg0].struct5.flags & 1)) {
-
-        result = 1;
+    if (index == 0 && (dialogues[index].struct5.flags & 1)) {
         
-        dialogues[arg0].struct4.romTextureStart = arg2;
-        dialogues[arg0].struct4.romTextureEnd = arg3; 
-        dialogues[arg0].struct4.romAssetIndexStart = arg4;
-        dialogues[arg0].struct4.romAssetIndexEnd = arg5;
+        dialogues[index].struct4.romTextureStart = arg2;
+        dialogues[index].struct4.romTextureEnd = arg3; 
+        dialogues[index].struct4.romAssetIndexStart = arg4;
+        dialogues[index].struct4.romAssetIndexEnd = arg5;
 
-        dialogues[arg0].struct4.vaddrSpritesheet = arg6;
-        dialogues[arg0].struct4.vaddrPalette = arg7;
-        dialogues[arg0].struct4.vaddrUnknownAssetSheet = arg8;
-        dialogues[arg0].struct4.vaddrUnknownAsset2 = arg9;
+        dialogues[index].struct4.vaddrSpritesheet = arg6;
+        dialogues[index].struct4.vaddrPalette = arg7;
+        dialogues[index].struct4.vaddrUnknownAssetSheet = arg8;
+        dialogues[index].struct4.vaddrUnknownAsset2 = arg9;
 
-        dialogues[arg0].struct4.unk_20 = argA;
+        dialogues[index].struct4.unk_20 = argA;
 
-        dialogues[arg0].struct4.unk_30 = arg1;
-        dialogues[arg0].struct4.unk_32 = argB;
-        dialogues[arg0].struct4.unk_34 = argC;
+        dialogues[index].struct4.unk_30 = arg1;
+        dialogues[index].struct4.unk_32 = argB;
+        dialogues[index].struct4.unk_34 = argC;
 
-        dialogues[arg0].struct4.unk_24.x = argD;
-        dialogues[arg0].struct4.unk_24.y = argE;
-        dialogues[arg0].struct4.unk_24.z = argF;
+        dialogues[index].struct4.unk_24.x = argD;
+        dialogues[index].struct4.unk_24.y = argE;
+        dialogues[index].struct4.unk_24.z = argF;
         
+        result = TRUE;
+
     }
     
     return result;
@@ -264,7 +269,7 @@ inline int func_80043408(int initial, int value, int max) {
 
 bool func_80043430(u16 index, u16 conversationIndex, u16 arg2, u16 arg3) {
 
-    bool result = 0;
+    bool result = FALSE;
     u32 temp;
 
     if (index == 0 && dialogues[index].struct5.flags & 1) {
@@ -389,8 +394,7 @@ bool func_80043430(u16 index, u16 conversationIndex, u16 arg2, u16 arg3) {
             dialogues[index].struct5.flags &= ~0x80;
         }
 
-
-        result = 1;
+        result = TRUE;
 
     }
 
@@ -402,12 +406,12 @@ bool func_80043430(u16 index, u16 conversationIndex, u16 arg2, u16 arg3) {
 
 bool func_80043A88(void) {
 
+    bool result = FALSE;
     u16 i;
-    u8 result = 0;
 
     for (i = 0; i < 1; i++) {
         if (dialogues[i].struct5.flags & 4) {
-            result = 1;
+            result = TRUE;
         }
     }
 
@@ -419,7 +423,7 @@ bool func_80043A88(void) {
 
 bool func_80043AD8(u16 index) {
 
-    bool result = 0;
+    bool result = FALSE;
 
     if (index == 0 && dialogues[index].struct5.flags & 1) {
 
@@ -432,7 +436,8 @@ bool func_80043AD8(u16 index) {
         
         dialogues[index].struct5.flags = 5;
         
-        result = 1;
+        result = TRUE;
+
     }
 
     return result;
@@ -441,51 +446,51 @@ bool func_80043AD8(u16 index) {
 
 //INCLUDE_ASM(const s32, "system/dialogue", func_80043B84);
 
-void func_80043B84(u16 arg0) {
+void func_80043B84(u16 index) {
 
-    dialogueBoxes[dialogues[arg0].struct5.unk_12].flags &= ~0x8000;
+    dialogueBoxes[dialogues[index].struct5.unk_12].flags &= ~0x8000;
     
-    func_8003F130(dialogues[arg0].struct5.unk_12);
+    func_8003F130(dialogues[index].struct5.unk_12);
     
-    func_8002BAD8(dialogues[arg0].struct2.unk_30);
-    func_8002BAD8(dialogues[arg0].struct3.unk_30);
-    func_8002BAD8(dialogues[arg0].struct4.unk_30);
+    func_8002BAD8(dialogues[index].struct2.unk_30);
+    func_8002BAD8(dialogues[index].struct3.unk_30);
+    func_8002BAD8(dialogues[index].struct4.unk_30);
     
-    dialogues[arg0].struct5.flags &= ~0x20;
+    dialogues[index].struct5.flags &= ~0x20;
     
 }
 
 //INCLUDE_ASM(const s32, "system/dialogue", func_80043C6C);
 
-u8 func_80043C6C(u16 arg0) {
-    return dialogues[arg0].struct5.unk_17;
+u8 func_80043C6C(u16 index) {
+    return dialogues[index].struct5.unk_17;
 }
 
 //INCLUDE_ASM(const s32, "system/dialogue", func_80043C98);
 
-u32 func_80043C98(u16 arg0, u16 arg1) {
+u32 func_80043C98(u16 index, u16 arg1) {
 
     u32 ptr;
 
-    ptr = D_80205760[dialogues[arg0].struct5.conversationIndex].romIndex;
+    ptr = D_80205760[dialogues[index].struct5.conversationIndex].romIndex;
     
-    return ptr + D_80205760[dialogues[arg0].struct5.conversationIndex].vaddr[arg1];
+    return ptr + D_80205760[dialogues[index].struct5.conversationIndex].vaddr[arg1];
     
 }
 
 //INCLUDE_ASM(const s32, "system/dialogue", func_80043CF8);
 
-void func_80043CF8(u16 arg0, u16 arg1) {
+void func_80043CF8(u16 index, u16 arg1) {
 
-    switch (gameVariables[arg0].set) {
+    switch (gameVariables[index].set) {
         case 1:
-            *(u8*)gameVariables[arg0].address = arg1;
+            *(u8*)gameVariables[index].address = arg1;
             break;
         case 2:
-            *(u16*)gameVariables[arg0].address = arg1;
+            *(u16*)gameVariables[index].address = arg1;
             break;
         case 4:
-            *(u32*)gameVariables[arg0].address = arg1;
+            *(u32*)gameVariables[index].address = arg1;
             break;
     }
     
@@ -493,17 +498,17 @@ void func_80043CF8(u16 arg0, u16 arg1) {
 
 //INCLUDE_ASM(const s32, "system/dialogue", func_80043D8C);
 
-u32 func_80043D8C(u16 arg0, u32 arg1) {
+u32 func_80043D8C(u16 index, u32 arg1) {
 
-    switch (gameVariables[arg0].set) {
+    switch (gameVariables[index].set) {
         case 1:
-            arg1 = *(u8*)gameVariables[arg0].address;
+            arg1 = *(u8*)gameVariables[index].address;
             break;
         case 2:
-            arg1 = *(u16*)gameVariables[arg0].address;
+            arg1 = *(u16*)gameVariables[index].address;
             break;
         case 4:
-            arg1 = *(u32*)gameVariables[arg0].address;
+            arg1 = *(u32*)gameVariables[index].address;
             break;
     }
 
@@ -556,13 +561,13 @@ INCLUDE_ASM(const s32, "system/dialogue", func_80045260);
 void func_80045CB0(void) {
 
     u16 i;
-    u8 set;
+    bool set;
 
     for (i = 0; i < MAX_DIALOGUES; i++) {
         
         if (dialogues[i].struct5.flags & 1 && dialogues[i].struct5.flags & 2) {
             
-            set = 0;
+            set = FALSE;
             
             if (dialogues[i].struct5.flags & 0x10) {
                 
@@ -570,12 +575,12 @@ void func_80045CB0(void) {
                     dialogues[i].struct5.flags &= ~0x10;
                 }
                 
-                set = 1;
+                set = TRUE;
             }
             
             if (dialogues[i].struct5.flags & 0x20) {
                 func_80044D78(i);
-                set = 1;
+                set = TRUE;
             }
             
             if (!set) {

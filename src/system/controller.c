@@ -274,11 +274,12 @@ INCLUDE_ASM(const s32, "system/controller", func_8004D47C);
 
 //INCLUDE_ASM(const s32, "system/controller", func_8004D788);
 
-u8 func_8004D788(u8 contIndex) {
+bool func_8004D788(u8 contIndex) {
+    
+    bool result;
+    u32 error;
     
     u8 temp;
-    u8 result;
-    u32 error;
     
     nuContPakOpen(&controllers[contIndex].pak, contIndex);
     
@@ -290,7 +291,7 @@ u8 func_8004D788(u8 contIndex) {
         
         temp = controllers[contIndex].pak.error == 2;
 
-        result = 0;
+        result = FALSE;
         
         if (controllers[contIndex].pak.error == 10)  {
             nuContDataRead(&controllers[contIndex].pak);
@@ -301,7 +302,7 @@ u8 func_8004D788(u8 contIndex) {
         
         if (temp) {
             if (func_8004D788(contIndex)) {
-                result = 1;
+                result = TRUE;
             }
         }
     }

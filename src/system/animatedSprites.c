@@ -60,7 +60,7 @@ void initializeNpcSpriteStructs(void) {
 
 bool func_8002DDDC(u16 npcIndex, void* arg1, void* arg2, void* arg3, void* arg4, void* arg5, void* arg6, u8 arg7, u8 arg8, void* arg9) {
 
-    bool result = 0;
+    bool result = FALSE;
 
     if (npcIndex < MAX_CHARACTER_SPRITES) {
 
@@ -87,7 +87,7 @@ bool func_8002DDDC(u16 npcIndex, void* arg1, void* arg2, void* arg3, void* arg4,
                 characterSprites[npcIndex].flags = 3;
             }
             
-            result = 1;
+            result = TRUE;
             
         }
     }
@@ -100,7 +100,7 @@ bool func_8002DDDC(u16 npcIndex, void* arg1, void* arg2, void* arg3, void* arg4,
 bool func_8002DEE8(u16 spriteIndex, u16 globalSpriteIndex, u16 shadowSpriteIndex, void* vaddrTexture1, void* vaddrTexture2, 
     void* vaddrPalette, void* vaddrUnknownAsset, void* vaddrTextureToPaletteLookup, void* vaddrSpritesheetIndex) {
 
-    bool set = 0;
+    bool set = FALSE;
     
     if (spriteIndex < MAX_ANIMATED_SPRITES) {
 
@@ -132,7 +132,7 @@ bool func_8002DEE8(u16 spriteIndex, u16 globalSpriteIndex, u16 shadowSpriteIndex
 
             animatedSprites[spriteIndex].unk_64 = 0;
         
-            set = 1;
+            set = TRUE;
             
         }
     }
@@ -145,11 +145,11 @@ bool func_8002DEE8(u16 spriteIndex, u16 globalSpriteIndex, u16 shadowSpriteIndex
 
 bool func_8002E024(u16 index, void* arg1, void* arg2, void* arg3, void* arg4) {
 
-    bool result = 0;
+    bool result = FALSE;
     
     if (index < MAX_ANIMATED_SPRITES) {
         
-        result = 1;
+        result = TRUE;
         
         animatedSprites[index].vaddrSpritesheetIndex = arg4;
         
@@ -180,19 +180,19 @@ bool func_8002E024(u16 index, void* arg1, void* arg2, void* arg3, void* arg4) {
 
 bool func_8002E108(u16 index) {
 
-    bool result = 0;
+    bool result = FALSE;
     
     if (index < MAX_ANIMATED_SPRITES) {
         
         animatedSprites[index].flags = 0;
 
-        func_8002B6B8(animatedSprites[index].globalSpriteIndex);
+        deactivateSprite(animatedSprites[index].globalSpriteIndex);
         
         if (characterSprites[animatedSprites[index].characterIndex].shadowSpriteIndex != 0xFF) {
-            func_8002B6B8(animatedSprites[index].shadowSpriteIndex);
+            deactivateSprite(animatedSprites[index].shadowSpriteIndex);
         }
         
-        result = 1;
+        result = TRUE;
     }
 
     return result;
@@ -213,11 +213,11 @@ void func_8002E1B8(void) {
 
             animatedSprites[i].flags = 0;
         
-            func_8002B6B8(animatedSprites[i].globalSpriteIndex);
+            deactivateSprite(animatedSprites[i].globalSpriteIndex);
             
             // toggle flag on shadow sprite
             if (characterSprites[animatedSprites[i].characterIndex].shadowSpriteIndex != 0xFF) {
-                func_8002B6B8(animatedSprites[i].shadowSpriteIndex);
+                deactivateSprite(animatedSprites[i].shadowSpriteIndex);
             } 
         }
         
@@ -230,7 +230,7 @@ void func_8002E1B8(void) {
 
 bool func_8002E284(u16 index, u16 characterIndex, u8 flag) {
 
-    bool result = 0;
+    bool result = FALSE;
     
     if (index < MAX_ANIMATED_SPRITES) {
         
@@ -321,7 +321,7 @@ bool func_8002E284(u16 index, u16 characterIndex, u8 flag) {
                 
             }
             
-            result = 1;
+            result = TRUE;
             
         }
     }
@@ -334,10 +334,10 @@ bool func_8002E284(u16 index, u16 characterIndex, u8 flag) {
 
 bool func_8002EC18(u16 index, u32 arg1, u32 arg2, u32 arg3, u32 arg4, u32* arg5, u16* arg6, u16* arg7, u16* arg8, u16 arg9, u8 argA) {
 
-    bool result = 0;
+    bool result = FALSE;
     
     if (index < MAX_SHADOW_SPRITES) {
-        result = 1;
+        result = TRUE;
         shadowSpritesInfo[index].romTextureStart = arg1;
         shadowSpritesInfo[index].romTextureEnd = arg2;
         shadowSpritesInfo[index].romAssetIndexStart = arg3;
@@ -359,7 +359,7 @@ bool func_8002EC18(u16 index, u32 arg1, u32 arg2, u32 arg3, u32 arg4, u32* arg5,
 // double check
 bool func_8002ECD4(u16 index, u16 arg1, u16 arg2) {
 
-    bool result = 0;
+    bool result = FALSE;
 
     if (index < MAX_ANIMATED_SPRITES) {
 
@@ -375,7 +375,7 @@ bool func_8002ECD4(u16 index, u16 arg1, u16 arg2) {
                 animatedSprites[index].flags &= ~0x40;
             }
 
-            result = 1;
+            result = TRUE;
         }
     }
      
@@ -386,11 +386,11 @@ bool func_8002ECD4(u16 index, u16 arg1, u16 arg2) {
 
 bool func_8002ED80(u16 index, s16 arg1) {
     
-    bool result = 0;
+    bool result = FALSE;
 
     if (index < MAX_ANIMATED_SPRITES) {
         if (animatedSprites[index].flags & 1) {
-            result = 1;
+            result = TRUE;
             animatedSprites[index].unk_62 = arg1;
             animatedSprites[index].flags |= 0x2000;
         }
@@ -403,11 +403,11 @@ bool func_8002ED80(u16 index, s16 arg1) {
 
 bool func_8002EDF0(u16 index, s16 arg1, s16 arg2, s16 arg3) {
 
-    bool result = 0;
+    bool result = FALSE;
 
     if (index < MAX_ANIMATED_SPRITES) {
         if ((animatedSprites[index].flags & 1) && (animatedSprites[index].flags & 4)) {
-            result = 1;
+            result = TRUE;
             animatedSprites[index].unk_18.x = arg1;
             animatedSprites[index].unk_18.y = arg2;
             animatedSprites[index].unk_18.z = arg3;
@@ -422,11 +422,11 @@ bool func_8002EDF0(u16 index, s16 arg1, s16 arg2, s16 arg3) {
 
 bool func_8002EEA4(u16 mapIndex) {
 
-    bool result = 0;
+    bool result = FALSE;
 
     if (mapIndex == 0 && gMapModelContext[mapIndex].flags & 1 && gMapModelContext[mapIndex].flags & 2) {
         gMainMapIndex = mapIndex;
-        result = 1;
+        result = TRUE;
     }
 
     return result;
@@ -436,13 +436,13 @@ bool func_8002EEA4(u16 mapIndex) {
 
 bool func_8002EEE4(u16 spriteIndex, f32 arg1, f32 arg2, f32 arg3) {
 
-    bool set = 0;
+    bool set = FALSE;
 
     if (spriteIndex < MAX_ANIMATED_SPRITES) {
 
         if ((animatedSprites[spriteIndex].flags & 1) && (animatedSprites[spriteIndex].flags & 4)) {
             setSpriteShrinkFactor(animatedSprites[spriteIndex].globalSpriteIndex, arg1, arg2, arg3);
-            set = 1;
+            set = TRUE;
         }
         
     }
@@ -455,12 +455,12 @@ bool func_8002EEE4(u16 spriteIndex, f32 arg1, f32 arg2, f32 arg3) {
 
 bool func_8002EF7C(u16 index, f32 arg1, f32 arg2, f32 arg3) {
 
-    bool result = 0;
+    bool result = FALSE;
 
     if (index < MAX_ANIMATED_SPRITES) {
         if ((animatedSprites[index].flags & 1) && (animatedSprites[index].flags & 4)) {
             adjustSpriteShrinkFactor(animatedSprites[index].globalSpriteIndex, arg1, arg2, arg3);
-            result = 1;
+            result = TRUE;
         }
     }
     
@@ -472,7 +472,7 @@ bool func_8002EF7C(u16 index, f32 arg1, f32 arg2, f32 arg3) {
 
 bool func_8002F014(u16 index, u8 arg1, u8 arg2, u8 arg3, u8 arg4) {
 
-    bool result = 0;
+    bool result = FALSE;
 
     if (index < MAX_ANIMATED_SPRITES) {
         
@@ -486,7 +486,7 @@ bool func_8002F014(u16 index, u8 arg1, u8 arg2, u8 arg3, u8 arg4) {
                 
             }
 
-            result = 1;
+            result = TRUE;
         }
     }
     
@@ -498,7 +498,7 @@ bool func_8002F014(u16 index, u8 arg1, u8 arg2, u8 arg3, u8 arg4) {
 
 bool func_8002F114(u16 index, u8 shadowSpriteIndex) {
 
-    bool result = 0;
+    bool result = FALSE;
 
     if (index < MAX_ANIMATED_SPRITES) {
         if ((animatedSprites[index].flags & 1) && (animatedSprites[index].flags & 4)) {
@@ -511,7 +511,7 @@ bool func_8002F114(u16 index, u8 shadowSpriteIndex) {
 
             }
 
-            result = 1;
+            result = TRUE;
         }
     }
     
@@ -523,7 +523,7 @@ bool func_8002F114(u16 index, u8 shadowSpriteIndex) {
 
 bool func_8002F1E0(u16 index, u8 r, u8 g, u8 b, u8 a, s16 arg5) {
 
-    bool result = 0;
+    bool result = FALSE;
     
     if (index < MAX_ANIMATED_SPRITES) {
         
@@ -535,7 +535,7 @@ bool func_8002F1E0(u16 index, u8 r, u8 g, u8 b, u8 a, s16 arg5) {
                 func_8002C1C0(animatedSprites[index].shadowSpriteIndex, r, g, b, 0x60, arg5);
             }
             
-            result = 1;
+            result = TRUE;
         }
     }
 
@@ -547,7 +547,7 @@ bool func_8002F1E0(u16 index, u8 r, u8 g, u8 b, u8 a, s16 arg5) {
 
 bool func_8002F2FC(u16 index, u16 arg1) {
 
-    bool result = 0;
+    bool result = FALSE;
 
     if (index < MAX_ANIMATED_SPRITES) {
         
@@ -561,7 +561,7 @@ bool func_8002F2FC(u16 index, u16 arg1) {
             globalSprites[animatedSprites[index].globalSpriteIndex].flags2 &= ~0x40;
             globalSprites[animatedSprites[index].globalSpriteIndex].unk_92 = 0;
             
-            result = 1;
+            result = TRUE;
             
         }
     }
@@ -572,16 +572,16 @@ bool func_8002F2FC(u16 index, u16 arg1) {
 
 //INCLUDE_ASM(const s32, "system/animatedSprites", setSpriteAnimation);
 
-u8 setSpriteAnimation(u16 index, u16 arg1) {
+bool setSpriteAnimation(u16 index, u16 arg1) {
     
-    bool result = 0;
+    bool result = FALSE;
 
     if (index < MAX_ANIMATED_SPRITES) {
         if ((animatedSprites[index].flags & 1) && (animatedSprites[index].flags & 4) && !(animatedSprites[index].flags & 0x1000)) {     
                 animatedSprites[index].anim.animationIndex = arg1;
                 animatedSprites[index].flags |= 0x18;
                 globalSprites[animatedSprites[index].globalSpriteIndex].flags2 &= ~0x40;
-                result = 1;
+                result = TRUE;
                 globalSprites[animatedSprites[index].globalSpriteIndex].unk_92 = 0;
         }
     }
@@ -594,7 +594,7 @@ u8 setSpriteAnimation(u16 index, u16 arg1) {
 
 bool func_8002F4E0(u16 index) {
 
-    bool result = 0;
+    bool result = FALSE;
 
     if (index < MAX_ANIMATED_SPRITES) {
 
@@ -606,7 +606,7 @@ bool func_8002F4E0(u16 index) {
  
             animatedSprites[index].flags &= ~0x1000;
 
-            result = 1;
+            result = TRUE;
         } 
     }
     
@@ -618,7 +618,7 @@ bool func_8002F4E0(u16 index) {
 
 bool func_8002F594(u16 index) {
 
-    bool result = 0;
+    bool result = FALSE;
     u16 temp;
 
     if (index < MAX_ANIMATED_SPRITES) {
@@ -631,7 +631,7 @@ bool func_8002F594(u16 index) {
                 animatedSprites[index].flags |= 0x1000;
                 func_8002FA2C(index);
                 animatedSprites[index].flags |= temp;
-                result = 1;
+                result = TRUE;
         
             } else {
                 animatedSprites[index].flags &= ~0x1000;
@@ -647,7 +647,7 @@ bool func_8002F594(u16 index) {
 
 bool setSpriteDirection(u16 index, u8 direction) {
 
-    bool result = 0;
+    bool result = FALSE;
 
     if (index < MAX_ANIMATED_SPRITES) {
 
@@ -655,7 +655,7 @@ bool setSpriteDirection(u16 index, u8 direction) {
         
             animatedSprites[index].direction = direction;
 
-            result = 1;
+            result = TRUE;
         } 
     }
     
@@ -737,16 +737,16 @@ void func_8002F8F0(u8 r, u8 g, u8 b, u8 a, s16 arg4) {
 
 bool func_8002FA2C(u16 index) {
 
-    bool result = 0;
+    bool result = FALSE;
 
     if (index < MAX_ANIMATED_SPRITES) {
         if (animatedSprites[index].flags & 1 && animatedSprites[index].flags & 8) {
             animatedSprites[index].flags &= ~( 0x8 | 0x2000);
-            func_8002B6B8(animatedSprites[index].globalSpriteIndex);
+            deactivateSprite(animatedSprites[index].globalSpriteIndex);
             if (characterSprites[animatedSprites[index].characterIndex].shadowSpriteIndex != 0xFF) {
-                func_8002B6B8(animatedSprites[index].shadowSpriteIndex);
+                deactivateSprite(animatedSprites[index].shadowSpriteIndex);
             }
-            result = 1;
+            result = TRUE;
         }
     }
 
@@ -792,13 +792,13 @@ void func_8002FB7C(void) {
 
 bool func_8002FBBC(u16 index) {
 
-    bool result = 0;
+    bool result = FALSE;
     
     if (index < MAX_ANIMATED_SPRITES) {
         if (animatedSprites[index].flags & 1) {
             animatedSprites[index].flags |= 0x40;
             func_8002BB88(animatedSprites[index].globalSpriteIndex);
-            result = 1;
+            result = TRUE;
         }
     }
 
@@ -810,14 +810,14 @@ bool func_8002FBBC(u16 index) {
 
 bool func_8002FC38(u16 index) {
     
-    bool result = 0;
+    bool result = FALSE;
     u16 temp;
 
     if (index < MAX_ANIMATED_SPRITES) {
         if (animatedSprites[index].flags & 1) {
             animatedSprites[index].flags &= ~0x40;
             func_8002BB30(animatedSprites[index].globalSpriteIndex);
-            result = 1;
+            result = TRUE;
         }
     }
 
@@ -828,7 +828,7 @@ bool func_8002FC38(u16 index) {
 
 bool func_8002FCB4(u16 index, u8 flag) {
     
-    bool result = 0;
+    bool result = FALSE;
 
     if (index < MAX_ANIMATED_SPRITES) {
         if ((animatedSprites[index].flags & 1) && (animatedSprites[index].flags & 8)) {
@@ -839,7 +839,7 @@ bool func_8002FCB4(u16 index, u8 flag) {
                 animatedSprites[index].flags |= 0x100;
             }
 
-            result = 1;
+            result = TRUE;
 
         }
     }
@@ -850,7 +850,7 @@ bool func_8002FCB4(u16 index, u8 flag) {
 
 bool func_8002FD24(u16 index) {
     
-    bool result = 0;
+    bool result = FALSE;
     u16 temp;
 
     if (index < MAX_ANIMATED_SPRITES) {
@@ -866,11 +866,11 @@ bool func_8002FD24(u16 index) {
 
 bool setSpriteStartingCoordinates(u16 spriteIndex, f32 x, f32 y, f32 z) {
 
-    bool result = 0;
+    bool result = FALSE;
     
     if (spriteIndex < MAX_ANIMATED_SPRITES) {
         if ((animatedSprites[spriteIndex].flags & 1) && !(animatedSprites[spriteIndex].flags & 0x1000)) {
-            result = 1;
+            result = TRUE;
             animatedSprites[spriteIndex].startingCoordinates.x = x;
             animatedSprites[spriteIndex].startingCoordinates.y = y;
             animatedSprites[spriteIndex].startingCoordinates.z = z;
@@ -885,11 +885,11 @@ bool setSpriteStartingCoordinates(u16 spriteIndex, f32 x, f32 y, f32 z) {
 
 bool func_8002FE10(u16 spriteIndex, f32 x, f32 y, f32 z, f32 arg4) {
 
-    bool result = 0;
+    bool result = FALSE;
     
     if (spriteIndex < MAX_ANIMATED_SPRITES) {
         if ((animatedSprites[spriteIndex].flags & 1) && (animatedSprites[spriteIndex].flags & 8) && !(animatedSprites[spriteIndex].flags & 0x1000)) {
-            result = 1;
+            result = TRUE;
             animatedSprites[spriteIndex].currentCoordinates.x = x;
             animatedSprites[spriteIndex].currentCoordinates.y = y;
             animatedSprites[spriteIndex].currentCoordinates.z = z;
@@ -905,7 +905,7 @@ bool func_8002FE10(u16 spriteIndex, f32 x, f32 y, f32 z, f32 arg4) {
 
 bool func_8002FECC(u16 index) {
 
-    bool result = 0;
+    bool result = FALSE;
     
     if (index < MAX_ANIMATED_SPRITES) {
         if (animatedSprites[index].flags & 1) {
@@ -921,7 +921,7 @@ bool func_8002FECC(u16 index) {
 
 bool func_8002FF38(u16 spriteIndex, u16 flag) {
 
-    bool result = 0;
+    bool result = FALSE;
 
     if (spriteIndex < MAX_ANIMATED_SPRITES) {
         if (animatedSprites[spriteIndex].flags & 1) { 
@@ -932,7 +932,7 @@ bool func_8002FF38(u16 spriteIndex, u16 flag) {
                 animatedSprites[spriteIndex].flags &= ~0x20;
             }
 
-            result = 1;
+            result = TRUE;
 
         }
     }
@@ -943,15 +943,15 @@ bool func_8002FF38(u16 spriteIndex, u16 flag) {
 
 //INCLUDE_ASM(const s32, "system/animatedSprites", setSpriteCollisionBuffers);
 
-u16 setSpriteCollisionBuffers(u16 spriteIndex, u8 xValue, u8 yValue) {
+bool setSpriteCollisionBuffers(u16 spriteIndex, u8 xValue, u8 yValue) {
     
-    u16 result = 0;
+    bool result = FALSE;
     
     if (spriteIndex < MAX_CHARACTER_SPRITES) {
         if (characterSprites[spriteIndex].flags & 1) {
             characterSprites[spriteIndex].collisionBufferX = xValue;
             characterSprites[spriteIndex].collisionBufferY = yValue;
-            result = 1;
+            result = TRUE;
         }
     }
     
@@ -962,11 +962,11 @@ u16 setSpriteCollisionBuffers(u16 spriteIndex, u8 xValue, u8 yValue) {
 
 bool func_8002FFF4(u16 npcIndex, u8 arg1, u8 arg2) {
 
-    bool result = 0;
+    bool result = FALSE;
 
     if (npcIndex < MAX_CHARACTER_SPRITES) {
         if (characterSprites[npcIndex].flags & 1) {
-            result = 1;
+            result = TRUE;
             characterSprites[npcIndex].unk_1C = arg1;
             characterSprites[npcIndex].unk_1E = arg2;
         }
@@ -981,15 +981,15 @@ bool func_8002FFF4(u16 npcIndex, u8 arg1, u8 arg2) {
 
 bool func_80030054(u16 index, u8 flag) {
 
-    bool result = 0;
+    bool result = FALSE;
 
     if (flag == 1) {
         animatedSprites[index].flags &= ~0x80;
-        result = 1;
+        result = TRUE;
     } else {
         if (index < MAX_ANIMATED_SPRITES && animatedSprites[index].flags & 1) {
             animatedSprites[index].flags |= 0x80;
-            result = 1;
+            result = TRUE;
         }
     }
 
@@ -1001,15 +1001,15 @@ bool func_80030054(u16 index, u8 flag) {
 
 bool func_800300F8(u16 index, u8 flag) {
 
-    bool result = 0;
+    bool result = FALSE;
 
     if (flag == 1) {
         animatedSprites[index].flags &= ~0x8000;
-        result = 1;
+        result = TRUE;
     } else {
         if (index < MAX_ANIMATED_SPRITES && animatedSprites[index].flags & 1) {
             animatedSprites[index].flags |= 0x8000;
-            result = 1;
+            result = TRUE;
         }
     }
 
@@ -1021,15 +1021,15 @@ bool func_800300F8(u16 index, u8 flag) {
 
 bool func_8003019C(u16 index, u8 flag) {
 
-    bool result = 0;
+    bool result = FALSE;
 
     if (flag == 1) {
         animatedSprites[index].flags &= ~0x400;
-        result = 1;
+        result = TRUE;
     } else {
         if (index < MAX_ANIMATED_SPRITES && animatedSprites[index].flags & 1) {
             animatedSprites[index].flags |= 0x400;
-            result = 1;
+            result = TRUE;
         }
     }
 
@@ -1041,15 +1041,15 @@ bool func_8003019C(u16 index, u8 flag) {
 
 bool func_80030240(u16 index, u8 flag) {
 
-    bool result = 0;
+    bool result = FALSE;
 
     if (flag == 1) {
         animatedSprites[index].flags &= ~0x4000;
-        result = 1;
+        result = TRUE;
     } else {
         if (index < MAX_ANIMATED_SPRITES && animatedSprites[index].flags & 1) {
             animatedSprites[index].flags |= 0x4000;
-            result = 1;
+            result = TRUE;
         }
     }
 
@@ -1061,15 +1061,15 @@ bool func_80030240(u16 index, u8 flag) {
 
 bool func_800302E4(u16 index, u8 flag) {
 
-    bool result = 0;
+    bool result = FALSE;
 
     if (flag == 1) {
         animatedSprites[index].flags &= ~2;
-        result = 1;
+        result = TRUE;
     } else {
         if (index < MAX_ANIMATED_SPRITES && animatedSprites[index].flags & 1) {
             animatedSprites[index].flags |= 2;
-            result = 1;
+            result = TRUE;
         }
     }
 
@@ -1081,7 +1081,7 @@ bool func_800302E4(u16 index, u8 flag) {
 
 bool func_80030388(u16 index) {
 
-    bool result = 0;
+    bool result = FALSE;
 
     if (index < MAX_ANIMATED_SPRITES) {
         
@@ -1151,7 +1151,7 @@ u16 func_800305CC(u16 index, f32 arg1, f32 arg2, u16 arg3) {
     u16 result = 0;
     u32 temp;
     u16 i = 0;
-    u8 set = 0;
+    bool set = FALSE;
 
     if (index < MAX_ANIMATED_SPRITES) {
         
@@ -1192,7 +1192,7 @@ u16 func_800305CC(u16 index, f32 arg1, f32 arg2, u16 arg3) {
                                     }
 
                                     animatedSprites[i].unk_5E = 0xFFFF;
-                                    set = 1;
+                                    set = TRUE;
                                     
                                     continue;
                                 }
@@ -1225,7 +1225,7 @@ u16 func_800305CC(u16 index, f32 arg1, f32 arg2, u16 arg3) {
 
 bool func_800308E0(u16 spriteIndex, f32 arg1, f32 arg2) {
     
-    bool result = 0; 
+    bool result = FALSE; 
 
     if (spriteIndex < MAX_ANIMATED_SPRITES) {
 
@@ -1241,13 +1241,13 @@ bool func_800308E0(u16 spriteIndex, f32 arg1, f32 arg2) {
 
 //INCLUDE_ASM(const s32, "system/animatedSprites", func_800309B4);
 
-u8 func_800309B4(u16 spriteIndex, f32 arg1, f32 arg2) {
+bool func_800309B4(u16 spriteIndex, f32 arg1, f32 arg2) {
     
     Vec3f vec1;
     Vec3f vec2;
     Vec3f vec3;
 
-    bool result = 0;
+    bool result = FALSE;
 
     if ((spriteIndex < MAX_ANIMATED_SPRITES)) {
 
@@ -1464,7 +1464,7 @@ bool func_800311E0(u16 spriteIndex, f32 arg1, f32 arg2, u16 arg3) {
     
     Vec3f vec;
     
-    bool set = 0;
+    bool set = FALSE;
 
      if (spriteIndex < MAX_ANIMATED_SPRITES) {
         
@@ -1476,7 +1476,7 @@ bool func_800311E0(u16 spriteIndex, f32 arg1, f32 arg2, u16 arg3) {
 
                 // set map additions
                 func_80038A2C(gMapModelContext[gMainMapIndex].mainMapIndex, arg3, vec.x, vec.z);
-                set = 1;
+                set = TRUE;
 
             }
             
@@ -1492,7 +1492,7 @@ bool func_800311E0(u16 spriteIndex, f32 arg1, f32 arg2, u16 arg3) {
 
 bool func_80031380(u16 spriteIndex) {
     
-    bool result = 0; 
+    bool result = FALSE; 
 
     if (spriteIndex < MAX_ANIMATED_SPRITES) {
 
@@ -1557,7 +1557,7 @@ Vec3f* func_800315A0(Vec3f* arg0, u16 index) {
 
     vec.x = 0;
     vec.z = 0;
-    vec.y = MAX_UNSIGNED_SHORT;
+    vec.y = 65535.0f;
     
     if (index < MAX_ANIMATED_SPRITES) {
         if ((animatedSprites[index].flags & 1) && !(animatedSprites[index].flags & 0x40) && !(animatedSprites[index].flags & 0x100)) {
@@ -1641,7 +1641,7 @@ bool func_80031830(u16 index, u32 arg1, u8 arg2) {
     f32 temp3;
     f32 temp4;
     
-    bool result = 0;
+    bool result = FALSE;
     u8 check1;
     u8 check2;
     
@@ -1664,7 +1664,7 @@ bool func_80031830(u16 index, u32 arg1, u8 arg2) {
     }
 
     if (check1 || check2) {
-        result = 1;
+        result = TRUE;
     }
     
     return result;

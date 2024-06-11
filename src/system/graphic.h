@@ -44,6 +44,7 @@ typedef struct {
     u8 unk_12;
 } UnknownGraphicsStruct;
 
+extern void graphicsInit();
 extern f32 sinfRadians(f32);
 extern f32 cosfRadians(f32);
 void setBitmapFormat(Bitmap *sprite, Texture *timg, u16 *palette);
@@ -55,13 +56,10 @@ extern u8* func_80028888(u16 arg0, u32* arg1);
 extern u8 *func_800288A0(u16 arg0, u32 *arg1);
 extern u8* func_800288B8(u16 arg0, u32 *arg1, u8 *arg2);
 extern f32 getSpriteYValueFromDirection(u8 arg0);    
-extern void func_80028EB8(f32 x, f32 y, f32 z);
+extern void setInitialWorldRotationAngles(f32 x, f32 y, f32 z);
 extern void func_80028EF8(f32 x, f32 y, f32 z);
-
 extern void drawFrame(void);  
-extern void graphicsInit();  
 
-// sprite vertices
-extern Vtx D_8021E6E0[2][0x80][4];
+extern Vtx bitmapVertices[2][0x80][4];
 
 #endif
