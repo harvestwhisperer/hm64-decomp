@@ -37,7 +37,7 @@ void func_800D8540(void) {
     func_800D897C();
     func_800D9298();
     
-    func_80034E64(MAIN_MAP_INDEX, 9);
+    deactivateMapObject(MAIN_MAP_INDEX, 9);
 
     func_8002B138(0x6A, &_tvContentTextureSegmentRomStart, &_tvContentTextureSegmentRomEnd, &_tvContentAssetsIndexSegmentRomStart, &_tvContentAssetsIndexSegmentRomEnd, &_tvContentSpritesheetIndexSegmentRomStart, &_tvContentSpritesheetIndexSegmentRomEnd, (void*)OBJECT_SPRITE_BANK_1_START, 0x802EC800, 0x802ED800, 0x802EDB00, 0x802EDE00, 0x802EDF00, 1, 1);
     
@@ -631,23 +631,38 @@ void func_800D9298(void) {
             break;
     }
 }
- 
+
+// might be do {} while (0) macro
+static inline bool changeChannel(u8 channelIndex) {
+
+    tvContext.channelIndex = channelIndex;
+    func_800B3A60();
+    func_800D8540();
+    setAudio(TV_OFF);
+    return 1;
+
+}
+
 //INCLUDE_ASM(const s32, "tv", tvMainLoopCallback);
 
 void tvMainLoopCallback(void) {
 
-    u8 set = 0;
+    bool set = FALSE;
 
     switch (tvContext.mode) {
 
         case TV_MODE_LOAD:
 
             if (tvContext.dialogueIndex != 0xFF) {
+                
+                // set up dialogue box
                 func_8003F54C(0, 0, -64.0f, 352.0f);
                 func_8003F690(0, 1, 0, 0);
                 func_8003F360(0, ~(1 | 2), 0);
                 func_8003DDF8(0, 8, tvContext.dialogueIndex, 0);
+
                 tvContext.mode++;
+
             } else {                
                 tvContext.mode = TV_MODE_WATCHING;
             }
@@ -666,55 +681,39 @@ void tvMainLoopCallback(void) {
         case TV_MODE_WATCHING:
 
             if (func_8004D380(CONTROLLER_1, BUTTON_C_UP)) {
-                tvContext.channelIndex = 0;
-                set = 1;
-                func_800B3A60();
-                func_800D8540();
-                setAudio(0x2F);
+                set = changeChannel(0);
             }
 
             if (func_8004D380(CONTROLLER_1, BUTTON_C_RIGHT)) {
-                // probably needs a static inline call
+                // FIXME: changeChannel might be a do {} while(0) macro
                 do {} while (0);
                 if (!set) {
-                    tvContext.channelIndex = 1;
-                    func_800B3A60();
-                    set = 1;
-                    func_800D8540();
-                    setAudio(0x2F);
+                    set = changeChannel(1);
                 }
             }
 
             if (func_8004D380(CONTROLLER_1, BUTTON_C_DOWN)) {
                 if (!set) {
-                    tvContext.channelIndex = 2;
-                    set = 1;
-                    func_800B3A60();
-                    func_800D8540();
-                    setAudio(0x2F);
+                   set = changeChannel(2);
                 }
             }
 
             if (func_8004D380(CONTROLLER_1, BUTTON_C_LEFT)) {
                 if (!set) {
-                    tvContext.channelIndex = 3;
-                    set = 1;
-                    func_800B3A60();
-                    func_800D8540();
-                    setAudio(0x2F);
+                    set = changeChannel(3);
                 }
             }
 
+            // turn off tv
             if (func_8004D380(CONTROLLER_1, BUTTON_B)) {
                 if (!set) {
-                    func_80034E64(MAIN_MAP_INDEX, 9);
+                    deactivateMapObject(MAIN_MAP_INDEX, 9);
                     func_800B2CE0();
-                    setMainLoopCallbackFunctionIndex(1);
-                    setAudio(0x2F);
+                    setMainLoopCallbackFunctionIndex(MAIN_GAME);
+                    setAudio(TV_OFF);
                 }
             }
 
-            break;
+         break;
     }
-    
 }

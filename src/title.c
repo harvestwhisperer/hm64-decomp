@@ -307,7 +307,6 @@ void initializeTitleScreen(u8 arg0) {
     
     loadDogTitleSprite();
     
-    // set audio
     func_800ACB04(TITLE_THEME);
     setSongWithVolume(TITLE_THEME, SONG_VOLUME);
 
@@ -340,32 +339,32 @@ static inline void setNewMode(u8 mode) {
 
 static inline void resetSpriteFlags() {
 
-    func_8002B6B8(HARVEST_MOON_64_LOGO);
-    func_8002B6B8(MARVCOME_VICTOR_COPYRIGHT_INFO);
-    func_8002B6B8(DOG_TITLE_SPRITE);
-    func_8002B6B8(PUSH_THE_START_SIGN_2);
-    func_8002B6B8(PUSH_THE_START_SIGN_1);
-    func_8002B6B8(HOW_TO_PLAY_SIGN);
-    func_8002B6B8(DIRT_ROAD);
-    func_8002B6B8(SIGN_POST_1);
-    func_8002B6B8(SIGN_POST_2);
-    func_8002B6B8(SIGN_POST_3);
-    func_8002B6B8(FRONT_GRASS_2_1);
-    func_8002B6B8(FAR_GRASS_3_1);
-    func_8002B6B8(FAR_GRASS_2_1);
-    func_8002B6B8(FRONT_GRASS_2_2);
-    func_8002B6B8(BACK_GRASS_3_2);
-    func_8002B6B8(BACK_GRASS_2);
-    func_8002B6B8(FAR_GRASS_1_1);
-    func_8002B6B8(FAR_GRASS_1_2);
-    func_8002B6B8(CLOUD_1_1);
-    func_8002B6B8(CLOUD_1_2);
-    func_8002B6B8(CLOUD_2_1);
-    func_8002B6B8(CLOUD_3_1);
-    func_8002B6B8(LICENSED_BY_NINTENDO_1);
-    func_8002B6B8(LICENSED_BY_NINTENDO_2);
-    func_8002B6B8(CLOUD_3_2);
-    func_8002B6B8(CLOUD_2_2);
+    deactivateSprite(HARVEST_MOON_64_LOGO);
+    deactivateSprite(MARVCOME_VICTOR_COPYRIGHT_INFO);
+    deactivateSprite(DOG_TITLE_SPRITE);
+    deactivateSprite(PUSH_THE_START_SIGN_2);
+    deactivateSprite(PUSH_THE_START_SIGN_1);
+    deactivateSprite(HOW_TO_PLAY_SIGN);
+    deactivateSprite(DIRT_ROAD);
+    deactivateSprite(SIGN_POST_1);
+    deactivateSprite(SIGN_POST_2);
+    deactivateSprite(SIGN_POST_3);
+    deactivateSprite(FRONT_GRASS_2_1);
+    deactivateSprite(FAR_GRASS_3_1);
+    deactivateSprite(FAR_GRASS_2_1);
+    deactivateSprite(FRONT_GRASS_2_2);
+    deactivateSprite(BACK_GRASS_3_2);
+    deactivateSprite(BACK_GRASS_2);
+    deactivateSprite(FAR_GRASS_1_1);
+    deactivateSprite(FAR_GRASS_1_2);
+    deactivateSprite(CLOUD_1_1);
+    deactivateSprite(CLOUD_1_2);
+    deactivateSprite(CLOUD_2_1);
+    deactivateSprite(CLOUD_3_1);
+    deactivateSprite(LICENSED_BY_NINTENDO_1);
+    deactivateSprite(LICENSED_BY_NINTENDO_2);
+    deactivateSprite(CLOUD_3_2);
+    deactivateSprite(CLOUD_2_2);
 
 }
 
@@ -392,6 +391,7 @@ static inline bool inline2() {
     }
 
     return 1;
+
 }
 
 static inline bool handleFrameIncrement() {
@@ -443,7 +443,7 @@ static inline bool handleFrameIncrement() {
 // main loop callback
 void titleScreenMainLoopCallback(void) {
 
-    u8 set = 0;
+    bool set = FALSE;
     
     switch (titleScreenContext.mode) {
 
@@ -463,6 +463,7 @@ void titleScreenMainLoopCallback(void) {
     
                     titleScreenContext.mode = 1;
                     setAudio(0);
+
                 }
             }
 
@@ -474,7 +475,6 @@ void titleScreenMainLoopCallback(void) {
             // static inline?
             if (titleScreenContext.unk_4 < 64) {
 
-                // shrink grass sprites
                 adjustSpriteShrinkFactor(PUSH_THE_START_SIGN_1, 5.0f, 0.0f, 0.0f);
                 adjustSpriteShrinkFactor(HOW_TO_PLAY_SIGN, 5.0f, 0, 0);
                 adjustSpriteShrinkFactor(DIRT_ROAD, 5.0f, 0, 0);
@@ -598,8 +598,7 @@ void titleScreenMainLoopCallback(void) {
                     // load select game screen
                     func_800E1380(FALSE);
                 } else {
-                    // how to play screen
-                    func_80055F08(0x640, 0, 0);
+                    func_80055F08(HOW_TO_PLAY_CUTSCENE, 0, 0);
                 }
             }
 
@@ -777,7 +776,6 @@ void updateGrassAnimation(void) {
             func_8002B80C(FRONT_GRASS_2_2, 0xF, 0xFE);
         }
     }
-
 }
 
 //INCLUDE_ASM(const s32, "title", func_800E10E8);

@@ -356,7 +356,7 @@ segments:
       - [ 0xF16F0, data, gameAudio] # wave table
       - [ 0xF2080, data, overlayScreens]
       - [ 0xF2580, data, itemHandlers]
-      - [ 0xF3B00, data, mapObjects] # mapObjects
+      - [ 0xF3B00, data, mapObjects]
       - [ 0xF3F50, .data, weather]
       - [ 0xF3F70, data, shop]
       - [ 0xF4B40, data, loadGameScreen] # packinsoft farm string
@@ -1411,7 +1411,7 @@ segments:
     start: 0xCCB980
 
   # backgrounds
-  - name: miscTextures
+  - name: miscTextures1
     type: bin
     dir: sprites/background
     start: 0xCCB9A0
@@ -1452,10 +1452,25 @@ segments:
     start: 0xD2D600
 
   # estimate/evaluation screen
-  - name: miscTexture2
+  - name: miscTextures3
     type: bin
     dir: sprites/misc
     start: 0xD2D620
+
+  - name: shopIconsTexture
+    type: bin
+    dir: sprites/shop
+    start: 0xD3BFE0
+
+  - name: shopIconsIndex
+    type: bin
+    dir: sprites/shop
+    start: 0xD3DCC0
+
+  - name: miscTextures4
+    type: bin
+    dir: sprites/misc
+    start: 0xD3DCE0
 
   - name: dialogueIconsTexture
     type: bin
@@ -1468,7 +1483,7 @@ segments:
     start: 0xD49B80
 
   # TODO: finish separating textures
-  - name: miscTextures3
+  - name: miscTextures5
     type: bin
     dir: sprites/misc
     start: 0xD49BA0
@@ -1488,7 +1503,7 @@ segments:
     dir: sprites/tv
     start: 0xD4DA10
 
-  - name: miscTextures4
+  - name: miscTextures6
     type: bin
     dir: sprites/misc
     start: 0xD4DAB0
@@ -1508,7 +1523,7 @@ segments:
     dir: sprites/objects
     start: 0xD82FF0
 
-  - name: miscTextures5
+  - name: miscTextures7
     type: bin
     dir: sprites/misc
     start: 0xD835A0
@@ -1579,7 +1594,7 @@ segments:
     dir: sprites/title
     start: 0xDD38F0
 
-  - name: miscTextures6
+  - name: miscTextures8
     type: bin
     start: 0xDD3910
 

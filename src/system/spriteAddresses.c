@@ -5,7 +5,7 @@
 // bss
 extern SpriteInfo spriteAddresses[MAX_SPRITE_INFO];
 
-extern u16 D_801FADB2;
+extern u16 spritesToLoadCounter;
 
 
 //INCLUDE_ASM(const s32, "system/spriteAddresses", resetSpriteAddressesFlags);
@@ -18,23 +18,29 @@ void resetSpriteAddressesFlags(void) {
         spriteAddresses[i].flags = 0;
     }
     
-    D_801FADB2 = 0;
+    spritesToLoadCounter= 0;
+
 }
 
 //INCLUDE_ASM(const s32, "system/spriteAddresses", setSpriteAddresses);
 
-u16 setSpriteAddresses(u8 *romAddr, u8 *vaddr, u32 length) {
+bool setSpriteAddresses(u8 *romAddr, u8 *vaddr, u32 length) {
     
-    u16 result = 0;
+    bool result = FALSE;
 
-    if (D_801FADB2 < MAX_SPRITE_INFO) {
-        if (!(spriteAddresses[D_801FADB2].flags & 1)) {
-            spriteAddresses[D_801FADB2].romAddr = romAddr;
-            spriteAddresses[D_801FADB2].vaddr = vaddr;
-            spriteAddresses[D_801FADB2].length = length;
-            spriteAddresses[D_801FADB2].flags = 1;
-            D_801FADB2++;
-            result = 1;
+    if (spritesToLoadCounter< MAX_SPRITE_INFO) {
+        
+        if (!(spriteAddresses[spritesToLoadCounter].flags & 1)) {
+            
+            spriteAddresses[spritesToLoadCounter].romAddr = romAddr;
+            spriteAddresses[spritesToLoadCounter].vaddr = vaddr;
+            spriteAddresses[spritesToLoadCounter].length = length;
+            spriteAddresses[spritesToLoadCounter].flags = 1;
+            
+            spritesToLoadCounter++;
+
+            result = TRUE;
+        
         }
     }
     
@@ -55,5 +61,6 @@ void dmaSprites(void) {
         }
     }
 
-    D_801FADB2 = 0;
+    spritesToLoadCounter= 0;
+
 }

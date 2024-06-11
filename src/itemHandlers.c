@@ -367,7 +367,7 @@ void func_800D373C(void) {
     
     func_80065F94(&vec, 0.0f, temp2);
  
-    if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && vec.y != MAX_UNSIGNED_SHORT) {
+    if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && vec.y != 65535.0f) {
         if (gSeason == SPRING || gBaseMapIndex == GREENHOUSE) {
           temp3 = 8;
         } else {
@@ -409,7 +409,7 @@ void func_800D3958(void) {
 
     func_80065F94(&vec, 0.0f, temp2);
  
-    if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && vec.y != MAX_UNSIGNED_SHORT) {
+    if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && vec.y != 65535.0f) {
         if (gSeason == SPRING || gBaseMapIndex == GREENHOUSE) {
           temp3 = 0x13;
         } else {
@@ -452,7 +452,7 @@ void func_800D3B74(void) {
     
     func_80065F94(&vec, 0.0f, temp2);
  
-    if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && vec.y != MAX_UNSIGNED_SHORT) {
+    if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && vec.y != 65535.0f) {
         if (gSeason == SPRING || gBaseMapIndex == GREENHOUSE) {
           temp3 = 0x33;
         } else {
@@ -495,7 +495,7 @@ void func_800D3D90(void) {
     
     func_80065F94(&vec, 0.0f, temp2);
  
-    if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && vec.y != MAX_UNSIGNED_SHORT) {
+    if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && vec.y != 65535.0f) {
         if (gSeason == SUMMER || gBaseMapIndex == GREENHOUSE) {
           temp3 = 0x53;
         } else {
@@ -538,7 +538,7 @@ void func_800D3FAC(void) {
     
     func_80065F94(&vec, 0.0f, temp2);
  
-    if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && vec.y != MAX_UNSIGNED_SHORT) {
+    if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && vec.y != 65535.0f) {
         if (gSeason == SUMMER || gBaseMapIndex == GREENHOUSE) {
           temp3 = 0x68;
         } else {
@@ -581,7 +581,7 @@ void func_800D41C8(void) {
 
     func_80065F94(&vec, 0.0f, temp2);
  
-    if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && vec.y != MAX_UNSIGNED_SHORT) {
+    if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && vec.y != 65535.0f) {
         if (gSeason == AUTUMN || gBaseMapIndex == GREENHOUSE) {
           temp3 = 0x22;
         } else {
@@ -624,7 +624,7 @@ void func_800D43E4(void) {
 
     func_80065F94(&vec, 0.0f, temp2);
 
-    if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && vec.y != MAX_UNSIGNED_SHORT) {
+    if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && vec.y != 65535.0f) {
 
         // leaving for reference
         //tempFlags = ((-(gBaseMapIndex != 0x56) & ~0x28) | 0x44);
@@ -667,7 +667,7 @@ void func_800D45F4(void) {
     
     func_80065F94(&vec, 0.0f, temp2);
  
-    if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && vec.y != MAX_UNSIGNED_SHORT) {
+    if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && vec.y != 65535.0f) {
         
         // FIXME: should be range
         if ((gSeason - 1 < 2U) || gBaseMapIndex == GREENHOUSE) {
@@ -711,7 +711,7 @@ void func_800D4814(void) {
     
     func_80065F94(&vec, 0.0f, temp2);
  
-    if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && vec.y != MAX_UNSIGNED_SHORT) {
+    if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && vec.y != 65535.0f) {
 
         // FIXME: should be range
         if ((gSeason - 1 < 2U) || gBaseMapIndex == GREENHOUSE) {
@@ -755,7 +755,7 @@ void func_800D4A34(void) {
     
     func_80065F94(&vec, 0.0f, temp2);
  
-    if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && vec.y != MAX_UNSIGNED_SHORT) {
+    if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && vec.y != 65535.0f) {
         func_800DAC70(gBaseMapIndex, 0xB2, (u8)vec.x - D_801FD624, (u8)vec.z - D_801C3F35);
     }
     
@@ -853,7 +853,7 @@ void func_800D4D68(void) {
     
     func_80065F94(&vec, 0.0f, temp2);
  
-    if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && vec.y != MAX_UNSIGNED_SHORT) {
+    if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && vec.y != 65535.0f) {
         if (gBaseMapIndex == FARM) {
             func_800DAC70(FARM, 0x85, (u8)vec.x - D_801FD624, (u8)vec.z - D_801C3F35);    
         }

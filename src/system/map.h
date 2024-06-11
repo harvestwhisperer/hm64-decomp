@@ -136,7 +136,7 @@ typedef struct {
     u16 arr1[0x10]; // 0x80142868
     u16 arr2[0x10]; // 0x80142888
     u16 unk_40; // 0x801428A8
-    u16 unk_42; // 0x801428AA
+    u16 unk_42; // 0x801428AA, current index into arr1
     u8 unk_44; // 0x801428AC set from sprite vec.x, size
     u8 unk_45; // 0x801428AD set from sprite vec.z, size
     u16 flags; // 0x801428AE
@@ -184,6 +184,7 @@ typedef struct {
 // 0x8013DC40
 typedef struct  {
     // ptrs set from offset array at 80255000
+    // could be substruct of pointers to binary data loaded from MapModelContext object
     void *unk_0; // ptr to array of offsets + vertex info structs
     u8 *unk_4; // u8 array used for float calculations
     u8 **unk_8; // seems like grid to tile mapping, used in looking up index of map object interacted with
@@ -195,27 +196,26 @@ typedef struct  {
     void *unk_20; // param 2 of func_800388A4, 0x8013DC60
     UnknownMapStruct1 mapStruct1; // 0x24, vertex/mesh info, 0x8013DC64
     MapVtx vtxs[1024]; // 0x30 // map model vertices
-    u16 unkArr[0x50]; // 0x3030, corresponds to D_80204B48
+    u16 unkArr[80]; // 0x3030, corresponds to D_80204B48
     u16 unk_30D0;
     u16 unk_30D2[0x63C]; // more vertices
     UnknownMapStruct2 mapStruct2; // 0x3D4C
-    UnknownMapStruct3 mapStruct3[0x10]; // 0x3D98 // related to tile bitmaps/compressed vecs
-    MapObject mapObjects[0xC]; // 0x3DD8
-    u32 padding4[0x14];
-    WeatherSprite weatherSprites[0x10];
+    UnknownMapStruct3 mapStruct3[16]; // 0x3D98 // related to tile bitmaps/compressed vecs
+    MapObject mapObjects[12]; // 0x3DD8
+    u32 padding4[20];
+    WeatherSprite weatherSprites[16];
     GroundObjects groundObjects; // 0x4058;
     // 0x44A8 / 0x801420E8: array
-    MapAdditions mapAdditions[0x20]; // 0x4C28 // non-interactable map additions?
-    MapBitmap mapBitmaps[0x38]; // 0x5528
+    MapAdditions mapAdditions[32]; // 0x4C28 // non-interactable map additions?
+    MapBitmap mapBitmaps[56]; // 0x5528
     u32 padding7[0x48]; // 0x5D08
-    // might be bigger
+    // display lists array might be bigger
     Gfx displayLists[0x1000]; // 0x5E28
     u32 padding8[0x318F];
     MapFloats mapFloats; // 0x1A464
-    u32 padding9[0x50]; // 0x1A4C8
+    u32 padding9[0x50]; // 0x1A4C8, general/base map reference values
     // 0x80157A68, 0x19e28 = related to byteswapped Vec3f scaling
     UnknownMapStruct9 mapStruct9; // 0x1A608
-    u32 padding10;
 } MainMap;
 
 
@@ -233,7 +233,7 @@ extern bool func_80034738(u16 mapIndex, u8 r, u8 g, u8 b, u8 a, s16 arg5);
 extern bool func_80034C40(u16 mapIndex, u8 index, u16 spriteIndex, u16 arg3, f32 arg4, f32 arg5, f32 arg6, u8 arg7, u8 arg8, u8 arg9, u8 argA);
 extern bool func_80034D64(u16 arg0, u8 arg1, u16 arg2, u16 arg3);
 extern bool func_80034DC8(u16, u8, u16);
-extern bool func_80034E64(u16, u8);     
+extern bool deactivateMapObject(u16, u8);     
 extern bool func_80034EF0(u16 mapIndex, u8 arg1, u8 arg2, u32* arg3, u32* arg4, u8* arg5, u32 arg6, u32 arg7, u32 arg8, u32 arg9, u8 argA);
 extern bool func_80035004(u16 arg0, u16 arg1, u8 arg2, u8 arg3); 
 extern bool func_80035054(u16 mapIndex, u16 bitmapIndex, u16 arg2, f32 arg3, f32 arg4, f32 arg5);

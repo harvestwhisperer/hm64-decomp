@@ -11,7 +11,7 @@
 void func_80026F30(Bitmap* arg0, u16* arg1);
 Gfx *func_80028A64(Gfx*, Camera*, WorldMatrices*);
 volatile u8 doViewportGfxTask();      
-void func_80028EB8(f32, f32, f32);            
+void setInitialWorldRotationAngles(f32, f32, f32);            
 
 Gfx* clearFramebuffer(Gfx* dl);                  
 Gfx* initRcp(Gfx*);                               
@@ -104,7 +104,7 @@ void graphicsInit(void) {
         worldMatrices[i].rotation.z = 0.0f;
     }
 
-    func_80028EB8(45.0f, 315.0f, 0.0f);  
+    setInitialWorldRotationAngles(45.0f, 315.0f, 0.0f);  
     
 }
 
@@ -544,6 +544,7 @@ u8 func_80027E10(Coordinates arg0, f32 arg1, f32 arg2, f32 arg3, f32 arg4, f32 a
 INCLUDE_ASM(const s32, "system/graphic", func_80027E10);
 #endif
 
+// dot product?
 #ifdef PERMUTER
 f32 func_800284E8(f32 arg0, f32 arg1, f32 arg2, f32 arg3, f32 arg4, f32 arg5, f32 arg6) {
     return (arg3 * arg0) + (arg4 * arg1) + (arg5 * arg2) + arg6;
@@ -673,7 +674,6 @@ f32 getSpriteYValueFromDirection(u8 direction) {
 //INCLUDE_ASM(const s32, "system/graphic", func_80028888);
 
 // get ptr to ci texture from index
-// used by map
 u8* func_80028888(u16 spriteIndex, u32* textureIndex) {
     return (u8*)textureIndex + textureIndex[spriteIndex];
 }
@@ -689,7 +689,6 @@ void *func_80028888(u16 arg0, u32 *arg1) {
 //INCLUDE_ASM(const s32, "system/graphic", func_800288A0);
 
 // get ptr to palette
-// used by map
 // FIXME: should return u16*?
 u8 *func_800288A0(u16 index, u32 *paletteIndex) {
   return (u8*)paletteIndex + paletteIndex[index];
@@ -743,6 +742,7 @@ Gfx* clearFramebuffer(Gfx* dl) {
     gDPPipeSync(dl++);
     
     return dl++;
+
 }
 
 //INCLUDE_ASM(const s32, "system/graphic", func_80028A64);
@@ -861,9 +861,9 @@ void func_80028EA8(UnknownGraphicsStruct* arg0, u8 arg1, u8 arg2, u8 arg3) {
     arg0->unk_12 = arg3;
 }
 
-//INCLUDE_ASM(const s32, "system/graphic", func_80028EB8);
+//INCLUDE_ASM(const s32, "system/graphic", setInitialWorldRotationAngles);
 
-void func_80028EB8(f32 x, f32 y, f32 z) {
+void setInitialWorldRotationAngles(f32 x, f32 y, f32 z) {
     
     currentWorldRotationAngles.x = x;
     currentWorldRotationAngles.y = y;

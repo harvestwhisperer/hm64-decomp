@@ -90,7 +90,7 @@ void func_8003D970(void) {
 
 bool func_8003DBE8(u16 dialogueBoxIndex, void* arg1) {
  
-    bool set = 0;
+    bool set = FALSE;
     
     if (dialogueBoxIndex < 6) {
 
@@ -115,7 +115,7 @@ bool func_8003DBE8(u16 dialogueBoxIndex, void* arg1) {
             func_800267A4((Volume*)&dialogueBoxes[dialogueBoxIndex].volume, 0, 0);
             func_8003F024(dialogueBoxIndex, 0xFF, 0xFF, 0xFF, 0xFF);
             
-            set = 1;        
+            set = TRUE;        
 
         }
         
@@ -147,12 +147,12 @@ INCLUDE_ASM(const s32, "system/message", func_8003F024);
 bool func_8003F0DC(void) {
 
     u16 i;
-    bool result = 0;
+    bool result = FALSE;
 
     for (i = 0; i < MAX_DIALOGUE_BOXES; i++) {
 
         if (dialogueBoxes[i].flags & 4) {
-            result = 1;
+            result = TRUE;
         }
         
     }
@@ -169,7 +169,7 @@ INCLUDE_ASM(const s32, "system/message", func_8003F28C);
 
 bool func_8003F30C(u16 dialogueIndex, u32 romIndexStart, u32 romIndexEnd, u32 romTextStart, u32 textBufferVaddr) {
 
-    bool result = 0;
+    bool result = FALSE;
 
     if (dialogueIndex < MAX_DIALOGUE_BANKS) {
 
@@ -178,7 +178,7 @@ bool func_8003F30C(u16 dialogueIndex, u32 romIndexStart, u32 romIndexEnd, u32 ro
         D_80183200[dialogueIndex].textBufferVaddr = textBufferVaddr;
         D_80183200[dialogueIndex].romTextStart = romTextStart;
         
-        result = 1;
+        result = TRUE;
         
     }
     
@@ -196,14 +196,17 @@ INCLUDE_ASM(const s32, "system/message", func_8003F4E0);
 
 bool func_8003F54C(u16 index, f32 x, f32 y, f32 z) {
 
-    bool result = 0;
+    bool result = FALSE;
 
     if (index < MAX_DIALOGUE_BOXES) {
         if (dialogueBoxes[index].flags & 1) {
-            result = 1;
+            
             dialogueBoxes[index].unk_4C.x = x;
             dialogueBoxes[index].unk_4C.y = y;
             dialogueBoxes[index].unk_4C.z = z;
+            
+            result = TRUE;
+
         }
     }
 
@@ -218,7 +221,7 @@ INCLUDE_ASM(const s32, "system/message", func_8003F630);
 
 bool func_8003F690(u16 index, u8 arg1, u8 arg2, u8 arg3) {
 
-    bool result = 0;
+    bool result = FALSE;
     
     if (index < MAX_DIALOGUE_BOXES) {
 
@@ -246,7 +249,7 @@ bool func_8003F690(u16 index, u8 arg1, u8 arg2, u8 arg3) {
                 dialogueBoxes[index].flags &= ~0x10000;
             }
 
-            result = 1;
+            result = TRUE;
         }
     }
 
@@ -268,7 +271,7 @@ bool func_8003FA1C(u16 index, u16 arg1, u32 romTextureStart, u32 romTextureEnd,
     u32 vaddrUnknownAsset2, u32 vaddrSpritesheetIndex, 
     f32 x, f32 y, f32 z) {
 
-    bool result = 0;
+    bool result = FALSE;
 
     if (index == 0) {
         
@@ -292,7 +295,7 @@ bool func_8003FA1C(u16 index, u16 arg1, u32 romTextureStart, u32 romTextureEnd,
         dialogueIcons[index].unk_30.y = y;
         dialogueIcons[index].unk_30.z = z;
 
-        result = 1;
+        result = TRUE;
         
     }
     
@@ -310,12 +313,12 @@ void func_8003FAE8(void* arg0) {
 
 bool func_8003FAF8(u16 index, u16 arg1) {
 
-    u8 result = 0;
+    bool result = FALSE;
 
     if (index < MAX_DIALOGUE_BOXES) {
         if (dialogueBoxes[index].flags & 1 ) {
             dialogueBoxes[index].unk_86 = arg1;
-            result = 1;
+            result = TRUE;
         }
     }
 
@@ -326,12 +329,17 @@ bool func_8003FAF8(u16 index, u16 arg1) {
 //INCLUDE_ASM(const s32, "system/message", func_8003FB4C);
 
 bool func_8003FB4C(u16 index, u16 arg1) {
-    u8 result = 0;
+
+    u8 result = FALSE;
 
     if (index < MAX_DIALOGUE_BOXES) {
+
         if (dialogueBoxes[index].flags & 1 ) {
+
             dialogueBoxes[index].unk_84 = arg1;
-            result = 1;
+
+            result = TRUE;
+
         }
     }
 
@@ -344,12 +352,15 @@ bool func_8003FB4C(u16 index, u16 arg1) {
 
 bool func_8003FBA0(u16 arg0, u8* arg1, s8 arg2) {
 
-    bool result = 0;
+    bool result = FALSE;
 
     if (arg0 < 0x40) {
-        result = 1;
+        
         D_80189E58[arg0].unk_0 = arg1;
         D_80189E58[arg0].unk_4 = arg2;
+
+        result = TRUE;
+
     }
     
     return result;
@@ -382,15 +393,16 @@ INCLUDE_ASM(const s32, "system/message", func_80040140);
  
 u8 func_800401C8(u16 index) {
 
-    u8 result = 0;
+    u8 count = 0;
 
     if (index < MAX_DIALOGUE_BOXES) {
         if (dialogueBoxes[index].flags & 1 && dialogueBoxes[index].flags & 2) {
-            result = dialogueBoxes[index].buttonSfxCounter != 0;
+            count = dialogueBoxes[index].buttonSfxCounter != 0;
         }
     }
 
-    return result;
+    return count;
+    
 }
 
 INCLUDE_ASM(const s32, "system/message", func_8004022C);

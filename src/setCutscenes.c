@@ -221,7 +221,7 @@ u16 func_8009C054(u16 mapIndex) {
 // arg0 = cutscene type; 0 = show up while working; 1 = morning/show up on map entry
 u16 func_8009C324(u8 arg0) {
 
-    bool set = 0;
+    bool set = FALSE;
     u16 result = 0xFFFF;
     u8 tempGirl;
     
@@ -230,7 +230,7 @@ u16 func_8009C324(u8 arg0) {
         gCutsceneIndex = MAYOR_VILLAGE_TOUR;
         gCutsceneFlags |= 2;
         loadCutscene(arg0);
-        set = 1;
+        set = TRUE;
     }
 
     if (gEntranceIndex != 0x6F) {
@@ -240,7 +240,7 @@ u16 func_8009C324(u8 arg0) {
                 setDailyEventBit(FARM_MORNING_VISIT);
                 gCutsceneIndex = 0xDF;
                 loadCutscene(arg0);
-                set = 1;
+                set = TRUE;
             }
         }
 
@@ -249,7 +249,7 @@ u16 func_8009C324(u8 arg0) {
                 setDailyEventBit(FARM_MORNING_VISIT);
                 gCutsceneIndex = 0xDE;
                 loadCutscene(arg0);
-                set = 1;
+                set = TRUE;
             }
         }
 
@@ -258,7 +258,7 @@ u16 func_8009C324(u8 arg0) {
                 setDailyEventBit(FARM_MORNING_VISIT);
                 gCutsceneIndex = DOUG_FARM_HORSE_RACE;
                 loadCutscene(arg0);
-                set = 1;
+                set = TRUE;
             }
         }
 
@@ -267,7 +267,7 @@ u16 func_8009C324(u8 arg0) {
                 setDailyEventBit(FARM_MORNING_VISIT);
                 gCutsceneIndex = 0x7E;
                 loadCutscene(arg0);
-                set = 1;
+                set = TRUE;
             }
         }
 
@@ -276,7 +276,7 @@ u16 func_8009C324(u8 arg0) {
                 setDailyEventBit(FARM_MORNING_VISIT);
                 gCutsceneIndex = DOUG_FARM_DOG_RACE;
                 loadCutscene(arg0);
-                set = 1;
+                set = TRUE;
             }
         }
 
@@ -296,7 +296,7 @@ u16 func_8009C324(u8 arg0) {
                 }
                 
                 loadCutscene(arg0);
-                set = 1;
+                set = TRUE;
             }
         }
 
@@ -312,7 +312,7 @@ u16 func_8009C324(u8 arg0) {
                 }
                 
                 loadCutscene(arg0);
-                set = 1;
+                set = TRUE;
             }
         }
 
@@ -327,7 +327,7 @@ u16 func_8009C324(u8 arg0) {
                 }
                 
                 loadCutscene(arg0);
-                set = 1;
+                set = TRUE;
             }
         }
 
@@ -336,7 +336,7 @@ u16 func_8009C324(u8 arg0) {
                 setDailyEventBit(FARM_MORNING_VISIT);
                 gCutsceneIndex = MAYOR_FARM_HORSE_RACE;
                 loadCutscene(arg0);
-                set = 1;
+                set = TRUE;
             }
         }
 
@@ -345,7 +345,7 @@ u16 func_8009C324(u8 arg0) {
                 setDailyEventBit(FARM_MORNING_VISIT);
                 gCutsceneIndex = MAYOR_FARM_FIREFLY_FESTIVAL;
                 loadCutscene(arg0);
-                set = 1;
+                set = TRUE;
             }
         }
 
@@ -354,7 +354,7 @@ u16 func_8009C324(u8 arg0) {
                 setDailyEventBit(FARM_MORNING_VISIT);
                 gCutsceneIndex = MAYOR_FARM_SEA_FESTIVAL;
                 loadCutscene(arg0);
-                set = 1;
+                set = TRUE;
             }
         }
 
@@ -363,7 +363,7 @@ u16 func_8009C324(u8 arg0) {
                 setDailyEventBit(FARM_MORNING_VISIT);
                 gCutsceneIndex = MAYOR_FARM_HARVEST_FESTIVAL;
                 loadCutscene(arg0);
-                set = 1;
+                set = TRUE;
             }
         }
 
@@ -372,7 +372,7 @@ u16 func_8009C324(u8 arg0) {
                 setDailyEventBit(FARM_MORNING_VISIT);
                 gCutsceneIndex = MAYOR_FARM_EGG_FESTIVAL;
                 loadCutscene(arg0);
-                set = 1;
+                set = TRUE;
             }
         }
 
@@ -388,7 +388,7 @@ u16 func_8009C324(u8 arg0) {
                 }
                 
                 loadCutscene(arg0);
-                set = 1;
+                set = TRUE;
             }
         }
 
@@ -397,7 +397,7 @@ u16 func_8009C324(u8 arg0) {
                 setDailyEventBit(FARM_MORNING_VISIT);
                 gCutsceneIndex = BASIL_FARM_FLOWER_FESTIVAL;
                 loadCutscene(arg0);
-                set = 1;
+                set = TRUE;
             }
         }
 
@@ -406,7 +406,7 @@ u16 func_8009C324(u8 arg0) {
                 setDailyEventBit(FARM_MORNING_VISIT);
                 gCutsceneIndex = BASIL_FARM_VEGETABLE_FESTIVAL;
                 loadCutscene(arg0);
-                set = 1;
+                set = TRUE;
             }
         }
 
@@ -415,7 +415,7 @@ u16 func_8009C324(u8 arg0) {
                 setDailyEventBit(0x19);
                 gCutsceneIndex = 0x9C;
                 loadCutscene(arg0);
-                set = 1;
+                set = TRUE;
             }
         }
 
@@ -424,7 +424,7 @@ u16 func_8009C324(u8 arg0) {
                 setDailyEventBit(0x1A);
                 gCutsceneIndex = 0xA8;
                 loadCutscene(arg0);
-                set = 1;
+                set = TRUE;
             }
         }
 
@@ -433,7 +433,7 @@ u16 func_8009C324(u8 arg0) {
                 setDailyEventBit(0x1B);
                 gCutsceneIndex = 0xB3;
                 loadCutscene(arg0);
-                set = 1;
+                set = TRUE;
             }
         }
 
@@ -442,7 +442,7 @@ u16 func_8009C324(u8 arg0) {
                 setDailyEventBit(0x18);
                 gCutsceneIndex = MARIA_FIREWORKS_INVITATION;
                 loadCutscene(arg0);
-                set = 1;
+                set = TRUE;
             }            
         }
         
@@ -451,7 +451,7 @@ u16 func_8009C324(u8 arg0) {
                 setDailyEventBit(0x19);
                 gCutsceneIndex = POPURI_FIREWORKS_INVITATION;
                 loadCutscene(arg0);
-                set = 1;
+                set = TRUE;
             }            
         }
 
@@ -460,7 +460,7 @@ u16 func_8009C324(u8 arg0) {
                 setDailyEventBit(0x1A);
                 gCutsceneIndex = ELLI_FIREWORKS_INVITATION;
                 loadCutscene(arg0);
-                set = 1;
+                set = TRUE;
             }            
         }
 
@@ -469,7 +469,7 @@ u16 func_8009C324(u8 arg0) {
                 setDailyEventBit(0x1B);
                 gCutsceneIndex = ANN_FIREWORKS_INVITATION;
                 loadCutscene(arg0);
-                set = 1;
+                set = TRUE;
             }            
         }
 
@@ -478,7 +478,7 @@ u16 func_8009C324(u8 arg0) {
                 setDailyEventBit(0x1C);
                 gCutsceneIndex = KAREN_FIREWORKS_INVITATION;
                 loadCutscene(arg0);
-                set = 1;
+                set = TRUE;
             }            
         }
         
@@ -487,7 +487,7 @@ u16 func_8009C324(u8 arg0) {
                 setDailyEventBit(0x18);
                 gCutsceneIndex = MARIA_THANKSGIVING_GIFT;
                 loadCutscene(arg0);
-                set = 1;
+                set = TRUE;
             }            
         }        
 
@@ -496,7 +496,7 @@ u16 func_8009C324(u8 arg0) {
                 setDailyEventBit(0x19);
                 gCutsceneIndex = POPURI_THANKSGIVING_GIFT;
                 loadCutscene(arg0);
-                set = 1;
+                set = TRUE;
             }            
         }        
 
@@ -505,7 +505,7 @@ u16 func_8009C324(u8 arg0) {
                 setDailyEventBit(0x1A);
                 gCutsceneIndex = ELLI_THANKSGIVING_GIFT;
                 loadCutscene(arg0);
-                set = 1;
+                set = TRUE;
             }            
         }        
 
@@ -514,7 +514,7 @@ u16 func_8009C324(u8 arg0) {
                 setDailyEventBit(0x1B);
                 gCutsceneIndex = ANN_THANKSGIVING_GIFT;
                 loadCutscene(arg0);
-                set = 1;
+                set = TRUE;
             }            
         }    
 
@@ -523,7 +523,7 @@ u16 func_8009C324(u8 arg0) {
                 setDailyEventBit(0x1C);
                 gCutsceneIndex = KAREN_THANKSGIVING_GIFT;
                 loadCutscene(arg0);
-                set = 1;
+                set = TRUE;
             }            
         }       
 
@@ -532,7 +532,7 @@ u16 func_8009C324(u8 arg0) {
                 setDailyEventBit(0x18);
                 gCutsceneIndex = 0x95;
                 loadCutscene(arg0);
-                set = 1;
+                set = TRUE;
             }            
         }        
 
@@ -541,7 +541,7 @@ u16 func_8009C324(u8 arg0) {
                 setDailyEventBit(0x19);
                 gCutsceneIndex = 0xA0;
                 loadCutscene(arg0);
-                set = 1;
+                set = TRUE;
             }            
         }        
 
@@ -550,7 +550,7 @@ u16 func_8009C324(u8 arg0) {
                 setDailyEventBit(0x1A);
                 gCutsceneIndex = 0xAC;
                 loadCutscene(arg0);
-                set = 1;
+                set = TRUE;
             }            
         }       
 
@@ -559,7 +559,7 @@ u16 func_8009C324(u8 arg0) {
                 setDailyEventBit(0x1B);
                 gCutsceneIndex = 0xB7;
                 loadCutscene(arg0);
-                set = 1;
+                set = TRUE;
             }            
         }       
 
@@ -568,7 +568,7 @@ u16 func_8009C324(u8 arg0) {
                 setDailyEventBit(0x1C);
                 gCutsceneIndex = 0xC4;
                 loadCutscene(arg0);
-                set = 1;
+                set = TRUE;
             }            
         }       
 
@@ -597,7 +597,7 @@ u16 func_8009C324(u8 arg0) {
                                 
                                 gCutsceneFlags |= 2;
                                 loadCutscene(arg0);
-                                set = 1;
+                                set = TRUE;
                             }
 
                             break;
@@ -615,7 +615,7 @@ u16 func_8009C324(u8 arg0) {
                                 
                                 gCutsceneFlags |= 2;
                                 loadCutscene(arg0);
-                                set = 1;                                
+                                set = TRUE;                                
                             }
 
                             break;
@@ -633,7 +633,7 @@ u16 func_8009C324(u8 arg0) {
                                 
                                 gCutsceneFlags |= 2;
                                 loadCutscene(arg0);
-                                set = 1;                                
+                                set = TRUE;                                
                             }
 
                             break;
@@ -651,7 +651,7 @@ u16 func_8009C324(u8 arg0) {
                                 
                                 gCutsceneFlags |= 2;
                                 loadCutscene(arg0);
-                                set = 1;                                
+                                set = TRUE;                                
                             }
 
                             break;   
@@ -669,7 +669,7 @@ u16 func_8009C324(u8 arg0) {
                                 
                                 gCutsceneFlags |= 2;
                                 loadCutscene(arg0);
-                                set = 1;                                
+                                set = TRUE;                                
                             }
 
                             break;
@@ -698,7 +698,7 @@ u16 func_8009C324(u8 arg0) {
                 }
                 
                 loadCutscene(arg0);
-                set = 1;
+                set = TRUE;
             }            
         }
 
@@ -708,7 +708,7 @@ u16 func_8009C324(u8 arg0) {
                 setLifeEventBit(BASIL_GONE);      
                 gCutsceneIndex = BASIL_LEAVING;
                 loadCutscene(arg0);
-                set = 1;
+                set = TRUE;
             }
         }
 
@@ -717,7 +717,7 @@ u16 func_8009C324(u8 arg0) {
                 setLifeEventBit(CLIFF_ARRIVED);      
                 gCutsceneIndex = CLIFF_INTRO;
                 loadCutscene(arg0);      
-                set = 1;
+                set = TRUE;
             }
         } 
 
@@ -730,7 +730,7 @@ u16 func_8009C324(u8 arg0) {
                     setLifeEventBit(0x2D);
                     gCutsceneIndex = 0xD5;
                     loadCutscene(arg0);
-                    set = 1;                    
+                    set = TRUE;                    
                 }
                 
                 if (npcAffection[CLIFF] < 51 && !checkLifeEventBit(ANN_CLIFF_MARRIED)) {              
@@ -738,7 +738,7 @@ u16 func_8009C324(u8 arg0) {
                     setLifeEventBit(0x2D);
                     gCutsceneIndex = CLIFF_LEAVING_DEFAULT;
                     loadCutscene(arg0);
-                    set = 1;                                
+                    set = TRUE;                                
                 } 
             }
         }
@@ -748,7 +748,7 @@ u16 func_8009C324(u8 arg0) {
                 setLifeEventBit(0x33);
                 gCutsceneIndex = 0x69;
                 loadCutscene(arg0);
-                set = 1;                               
+                set = TRUE;                               
             }
         }
         
@@ -757,7 +757,7 @@ u16 func_8009C324(u8 arg0) {
                 setLifeEventBit(0x35);
                 gCutsceneIndex = 0x6A;
                 loadCutscene(arg0);
-                set = 1;                               
+                set = TRUE;                               
             }
         }
         
@@ -773,7 +773,7 @@ u16 func_8009C324(u8 arg0) {
                 }
                 
                 loadCutscene(arg0);
-                set = 1;                               
+                set = TRUE;                               
             }
         }
         
@@ -782,7 +782,7 @@ u16 func_8009C324(u8 arg0) {
                 setLifeEventBit(0x39);
                 gCutsceneIndex = 0x6F;
                 loadCutscene(arg0);
-                set = 1;                               
+                set = TRUE;                               
             }
         }            
         
@@ -791,7 +791,7 @@ u16 func_8009C324(u8 arg0) {
                 setLifeEventBit(0x3B);
                 gCutsceneIndex = 0x6D;
                 loadCutscene(arg0);
-                set = 1;                               
+                set = TRUE;                               
             }
         }     
 
@@ -800,7 +800,7 @@ u16 func_8009C324(u8 arg0) {
                 setLifeEventBit(0x3D);
                 gCutsceneIndex = 0x6E;
                 loadCutscene(arg0);
-                set = 1;                               
+                set = TRUE;                               
             }
         }     
 
@@ -812,7 +812,7 @@ u16 func_8009C324(u8 arg0) {
                     setDailyEventBit(FARM_MORNING_VISIT);
                     gCutsceneIndex = 0xE3;
                     loadCutscene(arg0);
-                    set = 1;                               
+                    set = TRUE;                               
                 }
             }
         }    
@@ -825,7 +825,7 @@ u16 func_8009C324(u8 arg0) {
                     setDailyEventBit(FARM_MORNING_VISIT);
                     gCutsceneIndex = 0xDD;
                     loadCutscene(arg0);
-                    set = 1;                               
+                    set = TRUE;                               
                 }
             }
         }    
@@ -835,7 +835,7 @@ u16 func_8009C324(u8 arg0) {
                 setLifeEventBit(0x8E);
                 gCutsceneIndex = DOUG_FARM_FAVOR;
                 loadCutscene(arg0);
-                set = 1;    
+                set = TRUE;    
             }
         }
         
@@ -844,7 +844,7 @@ u16 func_8009C324(u8 arg0) {
                 setLifeEventBit(0x8F);
                 gCutsceneIndex = DOUG_DROPPING_OFF_COWS;
                 loadCutscene(arg0);
-                set = 1;    
+                set = TRUE;    
             }
         }
         
@@ -853,7 +853,7 @@ u16 func_8009C324(u8 arg0) {
                 toggleLifeEventBit(0x94);
                 gCutsceneIndex = MISS_MANA_PICKUP_COWS;
                 loadCutscene(arg0);
-                set = 1;    
+                set = TRUE;    
             }
         }      
 
@@ -862,7 +862,7 @@ u16 func_8009C324(u8 arg0) {
                 setLifeEventBit(0x68);
                 gCutsceneIndex = 0x70;
                 loadCutscene(arg0);
-                set = 1;    
+                set = TRUE;    
             }
         }
         
@@ -871,7 +871,7 @@ u16 func_8009C324(u8 arg0) {
                 setLifeEventBit(PUPPIES);
                 gCutsceneIndex = KENT_AND_STU_FARM_PUPPIES;
                 loadCutscene(arg0);
-                set = 1;    
+                set = TRUE;    
             }
         }
         
@@ -880,7 +880,7 @@ u16 func_8009C324(u8 arg0) {
                 setLifeEventBit(0x6A);
                 gCutsceneIndex = 0x72;
                 loadCutscene(arg0);
-                set = 1;    
+                set = TRUE;    
             }
         }        
         
@@ -889,7 +889,7 @@ u16 func_8009C324(u8 arg0) {
                 setLifeEventBit(0x6B);
                 gCutsceneIndex = 0x73;
                 loadCutscene(arg0);
-                set = 1;    
+                set = TRUE;    
             }
         }        
 
@@ -898,7 +898,7 @@ u16 func_8009C324(u8 arg0) {
                 setLifeEventBit(0x6C);
                 gCutsceneIndex = 0x74;
                 loadCutscene(arg0);
-                set = 1;    
+                set = TRUE;    
             }
         }      
 
@@ -907,7 +907,7 @@ u16 func_8009C324(u8 arg0) {
                 setLifeEventBit(0x6D);
                 gCutsceneIndex = MARIA_FARM_GIFT_CHOCOLATE;
                 loadCutscene(arg0);
-                set = 1;    
+                set = TRUE;    
             }
         }               
         
@@ -916,7 +916,7 @@ u16 func_8009C324(u8 arg0) {
                 setLifeEventBit(0x6E);
                 gCutsceneIndex = MARIA_FARM_GIFT_RICE_BALLS;
                 loadCutscene(arg0);
-                set = 1;                               
+                set = TRUE;                               
             }
         }     
 
@@ -925,7 +925,7 @@ u16 func_8009C324(u8 arg0) {
                 setLifeEventBit(0x6F);
                 gCutsceneIndex = 0x93;
                 loadCutscene(arg0);
-                set = 1;                               
+                set = TRUE;                               
             }
         }     
         
@@ -934,7 +934,7 @@ u16 func_8009C324(u8 arg0) {
                 setLifeEventBit(0x70);
                 gCutsceneIndex = POPURI_FARM_GIFT_TEA;
                 loadCutscene(arg0);
-                set = 1;                               
+                set = TRUE;                               
             }
         }          
         
@@ -943,7 +943,7 @@ u16 func_8009C324(u8 arg0) {
                 setLifeEventBit(0x71);
                 gCutsceneIndex = POPURI_FARM_GIFT_COOKIES;
                 loadCutscene(arg0);
-                set = 1;                               
+                set = TRUE;                               
             }
         }          
         if (!set) {
@@ -954,7 +954,7 @@ u16 func_8009C324(u8 arg0) {
                 setLifeEventBit(0x72);
                 gCutsceneIndex = 0x9E;
                 loadCutscene(arg0);
-                set = 1;           
+                set = TRUE;           
                 
             }
         } 
@@ -964,7 +964,7 @@ u16 func_8009C324(u8 arg0) {
                 setLifeEventBit(0x73);
                 gCutsceneIndex = 0xA5;
                 loadCutscene(arg0);
-                set = 1;                      
+                set = TRUE;                      
             }
         }
         
@@ -973,7 +973,7 @@ u16 func_8009C324(u8 arg0) {
                 setLifeEventBit(0x74);
                 gCutsceneIndex = 0xA6;
                 loadCutscene(arg0);
-                set = 1;                      
+                set = TRUE;                      
             }
         }
         
@@ -982,7 +982,7 @@ u16 func_8009C324(u8 arg0) {
                 setLifeEventBit(0x75);
                 gCutsceneIndex = 0xA9;
                 loadCutscene(arg0);
-                set = 1;                      
+                set = TRUE;                      
             }
         }      
 
@@ -991,7 +991,7 @@ u16 func_8009C324(u8 arg0) {
                 setLifeEventBit(0x76);
                 gCutsceneIndex = 0xAA;
                 loadCutscene(arg0);
-                set = 1;                      
+                set = TRUE;                      
             }
         }  
 
@@ -1000,7 +1000,7 @@ u16 func_8009C324(u8 arg0) {
                 setLifeEventBit(0x77);
                 gCutsceneIndex = 0xB1;
                 loadCutscene(arg0);
-                set = 1;                      
+                set = TRUE;                      
             }
         }  
 
@@ -1009,7 +1009,7 @@ u16 func_8009C324(u8 arg0) {
                 setLifeEventBit(0x78);
                 gCutsceneIndex = 0xB2;
                 loadCutscene(arg0);
-                set = 1;                      
+                set = TRUE;                      
             }
         }  
         
@@ -1018,7 +1018,7 @@ u16 func_8009C324(u8 arg0) {
                 setLifeEventBit(0x79);
                 gCutsceneIndex = 0xB5;
                 loadCutscene(arg0);
-                set = 1;                      
+                set = TRUE;                      
             }
         }  
 
@@ -1027,7 +1027,7 @@ u16 func_8009C324(u8 arg0) {
                 setLifeEventBit(0x7A);
                 gCutsceneIndex = 0xBC;
                 loadCutscene(arg0);
-                set = 1;                      
+                set = TRUE;                      
             }
         }  
 
@@ -1036,7 +1036,7 @@ u16 func_8009C324(u8 arg0) {
                 setLifeEventBit(0x7B);
                 gCutsceneIndex = 0xBD;
                 loadCutscene(arg0);
-                set = 1;                      
+                set = TRUE;                      
             }
         }  
 
@@ -1045,7 +1045,7 @@ u16 func_8009C324(u8 arg0) {
                 setLifeEventBit(0x7C);
                 gCutsceneIndex = 0xBE;
                 loadCutscene(arg0);
-                set = 1;                      
+                set = TRUE;                      
             }
         }  
         
@@ -1054,7 +1054,7 @@ u16 func_8009C324(u8 arg0) {
                 setLifeEventBit(0x7D);
                 gCutsceneIndex = 0xBF;
                 loadCutscene(arg0);
-                set = 1;                      
+                set = TRUE;                      
             }
         }  
         
@@ -1063,7 +1063,7 @@ u16 func_8009C324(u8 arg0) {
                 setLifeEventBit(0x7E);
                 gCutsceneIndex = 0xC1;
                 loadCutscene(arg0);
-                set = 1;                      
+                set = TRUE;                      
             }
         }  
         
@@ -1089,7 +1089,7 @@ u16 func_8009C324(u8 arg0) {
                 }
 
                 loadCutscene(arg0);
-                set = 1;                      
+                set = TRUE;                      
             }
         }          
 
@@ -1098,7 +1098,7 @@ u16 func_8009C324(u8 arg0) {
                 setLifeEventBit(0x80);
                 gCutsceneIndex = 0xCC;
                 loadCutscene(arg0);
-                set = 1;                      
+                set = TRUE;                      
             }
         }       
         
@@ -1107,7 +1107,7 @@ u16 func_8009C324(u8 arg0) {
                 setLifeEventBit(0x81);
                 gCutsceneIndex = 0xD2;
                 loadCutscene(arg0);
-                set = 1;                      
+                set = TRUE;                      
             }
         }       
         
@@ -1116,7 +1116,7 @@ u16 func_8009C324(u8 arg0) {
                 setLifeEventBit(0x83);
                 gCutsceneIndex = 0xDA;
                 loadCutscene(arg0);
-                set = 1;                      
+                set = TRUE;                      
             }
         }    
 
@@ -1125,7 +1125,7 @@ u16 func_8009C324(u8 arg0) {
                 setLifeEventBit(0x84);
                 gCutsceneIndex = 0xDC;
                 loadCutscene(arg0);
-                set = 1;                             
+                set = TRUE;                             
             }
         }
         
@@ -1134,7 +1134,7 @@ u16 func_8009C324(u8 arg0) {
                 setLifeEventBit(0x85);
                 gCutsceneIndex = 0xE0;
                 loadCutscene(arg0);
-                set = 1;                             
+                set = TRUE;                             
             }
         }
 
@@ -1143,7 +1143,7 @@ u16 func_8009C324(u8 arg0) {
                 setLifeEventBit(0x86);
                 gCutsceneIndex = 0xE1;
                 loadCutscene(arg0);
-                set = 1;                             
+                set = TRUE;                             
             }
         }
         
@@ -1152,7 +1152,7 @@ u16 func_8009C324(u8 arg0) {
                 setLifeEventBit(0x87);
                 gCutsceneIndex = 0xE4;
                 loadCutscene(arg0);
-                set = 1;                             
+                set = TRUE;                             
             }
         }
 
@@ -1161,7 +1161,7 @@ u16 func_8009C324(u8 arg0) {
                 setLifeEventBit(0x88);
                 gCutsceneIndex = 0xE6;
                 loadCutscene(arg0);
-                set = 1;                             
+                set = TRUE;                             
             }
         }
         
@@ -1170,7 +1170,7 @@ u16 func_8009C324(u8 arg0) {
                 setLifeEventBit(0x89);
                 gCutsceneIndex = 0xE7;
                 loadCutscene(arg0);
-                set = 1;                             
+                set = TRUE;                             
             }
         }
         
@@ -1179,7 +1179,7 @@ u16 func_8009C324(u8 arg0) {
                 setLifeEventBit(0x8A);
                 gCutsceneIndex = 0xE8;
                 loadCutscene(arg0);
-                set = 1;                             
+                set = TRUE;                             
             }
         }
         
@@ -1188,7 +1188,7 @@ u16 func_8009C324(u8 arg0) {
                 setLifeEventBit(0x8B);
                 gCutsceneIndex = 0xE9;
                 loadCutscene(arg0);
-                set = 1;                             
+                set = TRUE;                             
             }
         }
         
@@ -1197,7 +1197,7 @@ u16 func_8009C324(u8 arg0) {
                 setLifeEventBit(0x8C);
                 gCutsceneIndex = 0xEA;
                 loadCutscene(arg0);
-                set = 1;                             
+                set = TRUE;                             
             }
         }
 
@@ -1206,7 +1206,7 @@ u16 func_8009C324(u8 arg0) {
                 setLifeEventBit(0x8D);
                 gCutsceneIndex = 0xEC;
                 loadCutscene(arg0);
-                set = 1;                             
+                set = TRUE;                             
             }
         }        
 
@@ -1215,7 +1215,7 @@ u16 func_8009C324(u8 arg0) {
                 toggleLifeEventBit(0x90);
                 gCutsceneIndex = 0x81;
                 loadCutscene(arg0);
-                set = 1;                             
+                set = TRUE;                             
             }
         }       
         
@@ -1224,7 +1224,7 @@ u16 func_8009C324(u8 arg0) {
                 toggleLifeEventBit(0x91);
                 gCutsceneIndex = 0x82;
                 loadCutscene(arg0);
-                set = 1;                             
+                set = TRUE;                             
             }
         }          
 
@@ -1233,7 +1233,7 @@ u16 func_8009C324(u8 arg0) {
                 toggleLifeEventBit(0x92);
                 gCutsceneIndex = 0x8B;
                 loadCutscene(arg0);
-                set = 1;                             
+                set = TRUE;                             
             }
         }       
         
@@ -1244,7 +1244,7 @@ u16 func_8009C324(u8 arg0) {
                 setSpecialDialogueBit(0x24);
                 gCutsceneIndex = 0xDB;
                 loadCutscene(arg0);
-                set = 1;                             
+                set = TRUE;                             
             }
         }      
         
@@ -1253,7 +1253,7 @@ u16 func_8009C324(u8 arg0) {
                 setDailyEventBit(0x51);
                 gCutsceneIndex = 0xC9;
                 loadCutscene(arg0);
-                set = 1;                             
+                set = TRUE;                             
             }
         } 
 
@@ -1262,7 +1262,7 @@ u16 func_8009C324(u8 arg0) {
                 setDailyEventBit(0x51);
                 gCutsceneIndex = 0xCA;
                 loadCutscene(arg0);
-                set = 1;                             
+                set = TRUE;                             
             }
         }    
         
@@ -1271,7 +1271,7 @@ u16 func_8009C324(u8 arg0) {
                 setDailyEventBit(0x51);
                 gCutsceneIndex = 0xCD;
                 loadCutscene(arg0);
-                set = 1;                             
+                set = TRUE;                             
             }
         }    
 
@@ -1280,7 +1280,7 @@ u16 func_8009C324(u8 arg0) {
                 setDailyEventBit(0x51);
                 gCutsceneIndex = 0xCF;
                 loadCutscene(arg0);
-                set = 1;                             
+                set = TRUE;                             
             }
         }    
         
@@ -1289,7 +1289,7 @@ u16 func_8009C324(u8 arg0) {
             setDailyEventBit(0x51);
             gCutsceneIndex = 0xD3;
             loadCutscene(arg0);
-            set = 1;                             
+            set = TRUE;                             
         }
     }        
         
@@ -1298,7 +1298,7 @@ u16 func_8009C324(u8 arg0) {
                 setDailyEventBit(0x51);
                 gCutsceneIndex = 0xD8;
                 loadCutscene(arg0);
-                set = 1;                             
+                set = TRUE;                             
             }
         }      
             
@@ -1308,7 +1308,7 @@ u16 func_8009C324(u8 arg0) {
                 gCutsceneIndex = 0xEF;
                 loadCutscene(arg0);
                 gCutsceneFlags |= 2;
-                set = 1;                             
+                set = TRUE;                             
             }
         }
             
@@ -1318,7 +1318,7 @@ u16 func_8009C324(u8 arg0) {
                 gCutsceneIndex = 0xF0;
                 loadCutscene(arg0);
                 gCutsceneFlags |= 2;
-                set = 1;                             
+                set = TRUE;                             
             }
         }
             
@@ -1328,7 +1328,7 @@ u16 func_8009C324(u8 arg0) {
                 gCutsceneIndex = 0xF1;
                 loadCutscene(arg0);
                 gCutsceneFlags |= 2;
-                set = 1;                             
+                set = TRUE;                             
             }
         }
             
@@ -1338,7 +1338,7 @@ u16 func_8009C324(u8 arg0) {
                 gCutsceneIndex = 0xF2;
                 loadCutscene(arg0);
                 gCutsceneFlags |= 2;
-                set = 1;                             
+                set = TRUE;                             
             }
         }
             
@@ -1348,7 +1348,7 @@ u16 func_8009C324(u8 arg0) {
                 gCutsceneIndex = 0xF3;
                 loadCutscene(arg0);
                 gCutsceneFlags |= 2;
-                set = 1;                             
+                set = TRUE;                             
             }
         }
     
@@ -1358,7 +1358,7 @@ u16 func_8009C324(u8 arg0) {
                 gCutsceneIndex = 0xF4;
                 loadCutscene(arg0);
                 gCutsceneFlags |= 2;
-                set = 1;                             
+                set = TRUE;                             
             }
         }
     
@@ -1368,7 +1368,7 @@ u16 func_8009C324(u8 arg0) {
                 gCutsceneIndex = 0xF5;
                 loadCutscene(arg0);
                 gCutsceneFlags |= 2;
-                set = 1;                             
+                set = TRUE;                             
             }
         }
     
@@ -1378,7 +1378,7 @@ u16 func_8009C324(u8 arg0) {
                 gCutsceneIndex = 0xF6;
                 loadCutscene(arg0);
                 gCutsceneFlags |= 2;
-                set = 1;                             
+                set = TRUE;                             
             }
         }
     
@@ -1388,7 +1388,7 @@ u16 func_8009C324(u8 arg0) {
                 gCutsceneIndex = 0xF7;
                 loadCutscene(arg0);
                 gCutsceneFlags |= 2;
-                set = 1;                             
+                set = TRUE;                             
             }
         }
     
@@ -1398,7 +1398,7 @@ u16 func_8009C324(u8 arg0) {
                 gCutsceneIndex = 0xF8;
                 loadCutscene(arg0);
                 gCutsceneFlags |= 2;
-                set = 1;                             
+                set = TRUE;                             
             }
         }
     
@@ -1408,7 +1408,7 @@ u16 func_8009C324(u8 arg0) {
                 gCutsceneIndex = 0x96;
                 loadCutscene(arg0);
                 gCutsceneFlags |= 2;
-                set = 1;                             
+                set = TRUE;                             
             }
         }
             
@@ -1418,7 +1418,7 @@ u16 func_8009C324(u8 arg0) {
                 gCutsceneIndex = 0xA1;
                 loadCutscene(arg0);
                 gCutsceneFlags |= 2;
-                set = 1;                             
+                set = TRUE;                             
             }
         }
     
@@ -1428,7 +1428,7 @@ u16 func_8009C324(u8 arg0) {
                 gCutsceneIndex = 0xAD;
                 loadCutscene(arg0);
                 gCutsceneFlags |= 2;
-                set = 1;                             
+                set = TRUE;                             
             }
         }
     
@@ -1438,7 +1438,7 @@ u16 func_8009C324(u8 arg0) {
                 gCutsceneIndex = 0xB8;
                 loadCutscene(arg0);
                 gCutsceneFlags |= 2;
-                set = 1;                             
+                set = TRUE;                             
             }
         }
     
@@ -1448,7 +1448,7 @@ u16 func_8009C324(u8 arg0) {
                 gCutsceneIndex = 0xC5;
                 loadCutscene(arg0);
                 gCutsceneFlags |= 2;
-                set = 1;                             
+                set = TRUE;                             
             }
         }
             
@@ -1458,7 +1458,7 @@ u16 func_8009C324(u8 arg0) {
                 gCutsceneIndex = 0x97;
                 loadCutscene(arg0);
                 gCutsceneFlags |= 2;
-                set = 1;                             
+                set = TRUE;                             
             }
         }       
     
@@ -1468,7 +1468,7 @@ u16 func_8009C324(u8 arg0) {
                 gCutsceneIndex = 0xA2;
                 loadCutscene(arg0);
                 gCutsceneFlags |= 2;
-                set = 1;                             
+                set = TRUE;                             
             }
         }      
     
@@ -1478,7 +1478,7 @@ u16 func_8009C324(u8 arg0) {
                 gCutsceneIndex = 0xAE;
                 loadCutscene(arg0);
                 gCutsceneFlags |= 2;
-                set = 1;                             
+                set = TRUE;                             
             }
         }        
             
@@ -1488,7 +1488,7 @@ u16 func_8009C324(u8 arg0) {
                 gCutsceneIndex = 0xB9;
                 loadCutscene(arg0);
                 gCutsceneFlags |= 2;
-                set = 1;                             
+                set = TRUE;                             
             }
         }     
             
@@ -1498,7 +1498,7 @@ u16 func_8009C324(u8 arg0) {
                 gCutsceneIndex = 0xC6;
                 loadCutscene(arg0);
                 gCutsceneFlags |= 2;
-                set = 1;                             
+                set = TRUE;                             
             }
         }       
 
@@ -1513,20 +1513,20 @@ u16 func_8009C324(u8 arg0) {
 u16 setFarmCutscenes(void) {
 
     u16 index = 0xFFFF;
-    bool set = 0;
+    bool set = FALSE;
     u8 tempHappiness;
 
     if (checkDailyEventBit(0x52)) { 
         gCutsceneIndex = 0x101;
         gCutsceneFlags |= 2;
         loadCutscene(0);
-        set = 1;
+        set = TRUE;
     }
     
     if (!set) {
         if (checkDailyEventBit(1)) {
             index = 1;
-            set = 1;
+            set = TRUE;
             gCutsceneIndex = 0;
             gCutsceneFlags |= 2;
         }
@@ -1544,7 +1544,7 @@ u16 setFarmCutscenes(void) {
             
             gCutsceneFlags |= 2;
             index = 2;
-            set = 1;
+            set = TRUE;
         }
     }
 
@@ -1568,7 +1568,7 @@ u16 setFarmCutscenes(void) {
                     break;
             }
             index = 3;
-            set = 1;
+            set = TRUE;
             gCutsceneFlags |= 2;
         }
     }
@@ -1576,7 +1576,7 @@ u16 setFarmCutscenes(void) {
     if (!set) {
         if (checkDailyEventBit(0x1D) && !checkDailyEventBit(0x1E)) {
             index = 0x21;
-            set = 1;
+            set = TRUE;
             gCutsceneIndex = 1;
             gCutsceneFlags |= 2;
         }
@@ -1585,7 +1585,7 @@ u16 setFarmCutscenes(void) {
     if (!set) {
         if (checkDailyEventBit(0x20)) {
             index = 0x22;
-            set = 1;
+            set = TRUE;
             gCutsceneIndex = 1;
             gCutsceneFlags |= 2;
         }
@@ -1596,7 +1596,7 @@ u16 setFarmCutscenes(void) {
             gCutsceneIndex = func_800616CC(gHouseExtensionSelection);
             gCutsceneFlags |= 2;
             index = 4;
-            set = 1;
+            set = TRUE;
         }
     }
 
@@ -1604,7 +1604,7 @@ u16 setFarmCutscenes(void) {
         if (checkLifeEventBit(0xD) && checkDailyEventBit(0xA) && !checkDailyEventBit(0xC)) {
             gCutsceneIndex = 1;
             index = 5;
-            set = 1;
+            set = TRUE;
         }
     }
 
@@ -1612,7 +1612,7 @@ u16 setFarmCutscenes(void) {
         if (checkDailyEventBit(0xB)) {
             gCutsceneIndex = 0;
             index = 6;
-            set = 1;
+            set = TRUE;
         }
     }
 
@@ -1627,7 +1627,7 @@ u16 setFarmCutscenes(void) {
 
 u16 setMountain1Cutscenes(void) {
 
-    bool set = 0;
+    bool set = FALSE;
     u16 index = 0xFFFF;
 
     if (!checkLifeEventBit(0x48) && gSeason == AUTUMN && (22 < gDayOfMonth && gDayOfMonth < 28) && (5 < gHour && gHour < 15)) {
@@ -1639,7 +1639,7 @@ u16 setMountain1Cutscenes(void) {
             gCutsceneFlags |= (2 | 4);
         }
         loadCutscene(0);
-        set = 1;
+        set = TRUE;
     }
 
     if (!set) {
@@ -1652,7 +1652,7 @@ u16 setMountain1Cutscenes(void) {
                 gCutsceneFlags |= (2 | 4);
             }
             loadCutscene(0);
-            set = 1;  
+            set = TRUE;  
         }
     }
 
@@ -1661,7 +1661,7 @@ u16 setMountain1Cutscenes(void) {
             setDailyEventBit(0x21);
             gCutsceneIndex = 0x13E;
             loadCutscene(0);
-            set = 1;
+            set = TRUE;
         }
     }
 
@@ -1672,7 +1672,7 @@ u16 setMountain1Cutscenes(void) {
             gCutsceneIndex = 0x134;
             gCutsceneFlags |= (2 | 4);
             loadCutscene(0);
-            set = 1;
+            set = TRUE;
         }
     }
 
@@ -1683,7 +1683,7 @@ u16 setMountain1Cutscenes(void) {
             gCutsceneIndex = 0x136;
             gCutsceneFlags |= (2 | 4);
             loadCutscene(0);
-            set = 1;
+            set = TRUE;
         }
     }
 
@@ -1694,7 +1694,7 @@ u16 setMountain1Cutscenes(void) {
             gCutsceneIndex = 0x13A;
             gCutsceneFlags |= (2 | 4);
             loadCutscene(0);
-            set = 1;
+            set = TRUE;
         }
     }
 
@@ -1720,7 +1720,7 @@ INCLUDE_ASM(const s32, "setCutscenes", func_800A1C04);
 // TODO: label; top of mountain 1
 u16 func_800A2250(void) {
 
-    bool set = 0;
+    bool set = FALSE;
     u16 index = 0xFFFF;
 
     if (!checkLifeEventBit(0xA8) && checkLifeEventBit(0x4C) && npcAffection[POPURI] >= 150 && npcAffection[JEFF] >= 120 && gWeather == SUNNY && gSeason >= AUTUMN && DAYTIME && (!checkLifeEventBit(MARRIED) || gWife != POPURI) && (!checkLifeEventBit(MARRIED) || gWife != ELLI) && !checkLifeEventBit(POPURI_GRAY_MARRIED) && !checkLifeEventBit(ELLI_JEFF_MARRIED)) {
@@ -1728,7 +1728,7 @@ u16 func_800A2250(void) {
         gCutsceneIndex = 0x138;
         gCutsceneFlags |= (2 | 4);
         loadCutscene(0);
-        set = 1;
+        set = TRUE;
     }
 
     if (!set) {
@@ -1737,7 +1737,7 @@ u16 func_800A2250(void) {
             gCutsceneIndex = 0x153;
             gCutsceneFlags |= (2 | 4);
             loadCutscene(0);
-            set = 1;
+            set = TRUE;
         }
     }
 
@@ -1759,14 +1759,14 @@ u16 func_800A2250(void) {
 // mountain 2
 u16 setMoonMountainCutscenes(void) {
 
-    bool set = 0;
+    bool set = FALSE;
     u16 index = 0xFFFF;
 
     if (gSeason == SUMMER && gDayOfMonth == 1 && NIGHTTIME && NOT_MARRIED && !checkLifeEventBit(POPURI_GRAY_MARRIED)) {
         gCutsceneIndex = MOUNTAIN_FIREWORKS;
         loadCutscene(0);
         gCutsceneFlags |= (2 | 4);
-        set = 1;
+        set = TRUE;
     }
     
     if (!set) {
@@ -1784,7 +1784,7 @@ u16 setMoonMountainCutscenes(void) {
 
 u16 setSpringCutscenes(void) {
 
-    bool set = 0;
+    bool set = FALSE;
     u16 index = 0xFFFF;
 
     if (!checkLifeEventBit(0x9F) && blueMistFlowerPlot >= 0xC2 && gSeason < AUTUMN && DAYTIME) {
@@ -1793,7 +1793,7 @@ u16 setSpringCutscenes(void) {
         gCutsceneIndex = 0x13B;
         gCutsceneFlags |= (2 | 4);
         loadCutscene(0);
-        set = 1;
+        set = TRUE;
     }
 
     if (!set) {
@@ -1803,7 +1803,7 @@ u16 setSpringCutscenes(void) {
             gCutsceneIndex = 0x13C;
             gCutsceneFlags |= (2 | 4);
             loadCutscene(0);
-            set = 1;
+            set = TRUE;
         }
     }
 
@@ -1858,7 +1858,7 @@ u16 setCaveCutscenes(void) {
 u16 func_800A29B0(void) {
 
     u16 index = 0xFFFF;
-    bool set = 0;
+    bool set = FALSE;
 
     if (checkLifeEventBit(MARRIED) && !checkLifeEventBit(HAVE_BABY) && checkLifeEventBit(WIFE_PREGNANT) && gWifePregnancyCounter >= 60) {
 
@@ -1894,7 +1894,7 @@ u16 func_800A29B0(void) {
         }
         
         loadCutscene(0);
-        set = 1;
+        set = TRUE;
         gCutsceneFlags |= 2;
         
     }
@@ -1903,7 +1903,7 @@ u16 func_800A29B0(void) {
         if (checkLifeEventBit(0x60) && !checkLifeEventBit(0x61) && !checkLifeEventBit(MARRIED) && npcAffection[KENT] >= 160 && !checkLifeEventBit(MARRIED)) {
             gCutsceneIndex = 1;
             loadCutscene(0);
-            set = 1;
+            set = TRUE;
         }
     }
 
@@ -1911,7 +1911,7 @@ u16 func_800A29B0(void) {
         if (!checkLifeEventBit(0x62) && npcAffection[CLIFF] >= 30 && gWeather == SUNNY && DAYTIME && (!checkLifeEventBit(MARRIED) || gWife != ANN) && !checkLifeEventBit(ANN_CLIFF_MARRIED)) {
             gCutsceneIndex = 0x26;
             loadCutscene(0);
-            set = 1;
+            set = TRUE;
         }
     }
 
@@ -1922,7 +1922,7 @@ u16 func_800A29B0(void) {
             gCutsceneIndex = MARIA_LEAVES_MARRIAGE;
             loadCutscene(0);
             gCutsceneFlags |= 2;
-            set = 1;
+            set = TRUE;
         }
     }
 
@@ -1933,7 +1933,7 @@ u16 func_800A29B0(void) {
             gCutsceneIndex = POPURI_LEAVES_MARRIAGE;
             loadCutscene(0);
             gCutsceneFlags |= 2;
-            set = 1;
+            set = TRUE;
         }
     }
 
@@ -1944,7 +1944,7 @@ u16 func_800A29B0(void) {
             gCutsceneIndex = ELLI_LEAVES_MARRIAGE;
             loadCutscene(0);
             gCutsceneFlags |= 2;
-            set = 1;
+            set = TRUE;
         }
     }
 
@@ -1955,7 +1955,7 @@ u16 func_800A29B0(void) {
             gCutsceneIndex = ANN_LEAVES_MARRIAGE;
             loadCutscene(0);
             gCutsceneFlags |= 2;
-            set = 1;
+            set = TRUE;
         }
     }
 
@@ -1966,7 +1966,7 @@ u16 func_800A29B0(void) {
             gCutsceneIndex = KAREN_LEAVES_MARRIAGE;
             loadCutscene(0);
             gCutsceneFlags |= 2;
-            set = 1;
+            set = TRUE;
         }
     }
     
@@ -2009,14 +2009,14 @@ u16 setRanchStoreCutscenes(void) {
 u16 func_800A4878(void) {
 
     u16 index = 0xFFFF;
-    bool set = 0;
+    bool set = FALSE;
 
     if (!checkLifeEventBit(0xC3) && DAYTIME && (!checkLifeEventBit(MARRIED) || gWife != 4) && !checkLifeEventBit(KAREN_KAI_MARRIED)) {
         setLifeEventBit(0xC3);
         gCutsceneIndex = 0x2BC;
         gCutsceneFlags |= (2 | 4);
         loadCutscene(0);
-        set = 1;
+        set = TRUE;
     }
 
     if (!set) {
@@ -2026,7 +2026,7 @@ u16 func_800A4878(void) {
             gCutsceneIndex = 0x2BD;
             gCutsceneFlags |= (2 | 4);
             loadCutscene(0);
-            set = 1;
+            set = TRUE;
         }
     }
 
@@ -2036,7 +2036,7 @@ u16 func_800A4878(void) {
             gCutsceneIndex = 0x2BE;
             gCutsceneFlags |= (2 | 4);
             loadCutscene(0);
-            set = 1;
+            set = TRUE;
         }
     }
 
@@ -2083,7 +2083,7 @@ u16 setVineyardCellarCutscenes(void) {
     bool set;
     u16 index = 0xFFFF;
 
-    set = 0;
+    set = FALSE;
     
     if (!checkLifeEventBit(KAREN_YELLOW_HEART_EVENT_CUTSCENE) && checkLifeEventBit(0x67) && DAYTIME && NOT_MARRIED && !checkLifeEventBit(KAREN_KAI_MARRIED) && previousMapIndex == VINEYARD) {
                
@@ -2095,7 +2095,7 @@ u16 setVineyardCellarCutscenes(void) {
 
         loadCutscene(0);
 
-        set = 1;
+        set = TRUE;
 
     }
     
@@ -2164,12 +2164,12 @@ INCLUDE_ASM(const s32, "setCutscenes", func_800A5F48);
 u16 func_800A6440(void) {
 
     u16 index = 0xFFFF;
-    bool set = 0;
+    bool set = FALSE;
 
     if (!checkDailyEventBit(0x18) && gSeason == WINTER && gDayOfMonth == 10 && (5 < gHour && gHour < 18) && !checkLifeEventBit(MARRIED)) {
         setDailyEventBit(0x18);
         gCutsceneIndex = THANKSGIVING_MAYOR_HOUSE;
-        set = 1;
+        set = TRUE;
         loadCutscene(0);
         gCutsceneFlags |= (2 | 4);
     }
@@ -2178,7 +2178,7 @@ u16 func_800A6440(void) {
         setLifeEventBit(MARIA_SICK_CUTSCENE);
         setDailyEventBit(MARIA_ABSENT);
         gCutsceneIndex = MARIA_SICK;
-        set = 1;
+        set = TRUE;
         loadCutscene(0);
         gCutsceneFlags |= (2 | 4);
     }
@@ -2199,13 +2199,13 @@ u16 func_800A6440(void) {
 u16 func_800A6634(void) {
 
     u16 index = 0xFFFF;
-    bool set = 0;
+    bool set = FALSE;
 
     if (!checkLifeEventBit(MARIA_SPRAINED_ANKLE_CUTSCENE) && !checkDailyEventBit(FESTIVAL_DAY) && npcAffection[MARIA] >= 180 && (8 < gHour && gHour < 17) && !checkLifeEventBit(MARRIED) && !checkLifeEventBit(MARIA_HARRIS_MARRIED)) {
         setLifeEventBit(MARIA_SPRAINED_ANKLE_CUTSCENE);
         setDailyEventBit(MARIA_ABSENT);
         gCutsceneIndex = MARIA_SPRAINED_ANKLE;
-        set = 1;
+        set = TRUE;
         loadCutscene(0);
         gCutsceneFlags |= (2 | 4);
     }
@@ -2227,13 +2227,13 @@ u16 func_800A6634(void) {
 
 u16 setChurchCutscenes(void) {
 
-    bool set = 0;
+    bool set = FALSE;
     u16 index = 0xFFFF;
 
     if (gSeason == WINTER && gDayOfMonth == 24 && NIGHTTIME && NOT_MARRIED) {     
         gCutsceneIndex = STARRY_NIGHT_FESTIVAL;
         loadCutscene(0);
-        set = 1;
+        set = TRUE;
         gCutsceneFlags |= (2 | 4);
     } 
     
@@ -2258,14 +2258,14 @@ INCLUDE_ASM(const s32, "setCutscenes", func_800A6A14);
 u16 func_800A6EE4(void) {
 
     u16 index = 0xFFFF;
-    bool set = 0;
+    bool set = FALSE;
 
     if (checkDailyEventBit(0x40) && checkDailyEventBit(0x41)) {
         func_800CB0C4();
         toggleDailyEventBit(0x40);
         gCutsceneIndex = HORSE_RACE_STARTING_ANNOUNCEMENT;
         loadCutscene(0);
-        set = 1;
+        set = TRUE;
         gCutsceneFlags |= (2 | 4);
     }
 
@@ -2275,7 +2275,7 @@ u16 func_800A6EE4(void) {
             toggleDailyEventBit(0x40);
             gCutsceneIndex = DOG_RACE_AFTER_RACE;
             loadCutscene(0);
-            set = 1;
+            set = TRUE;
             gCutsceneFlags |= (2 | 4);
         }
     }
@@ -2285,7 +2285,7 @@ u16 func_800A6EE4(void) {
             func_800CB0C4();
             gCutsceneIndex = HORSE_RACE_STARTING_ANNOUNCEMENT;
             loadCutscene(0);
-            set = 1;
+            set = TRUE;
             gCutsceneFlags |= (2 | 4);
         }
     }
@@ -2295,7 +2295,7 @@ u16 func_800A6EE4(void) {
             func_800CB0C4();
             gCutsceneIndex = HORSE_RACE_STARTING_ANNOUNCEMENT;
             loadCutscene(0);
-            set = 1;
+            set = TRUE;
             gCutsceneFlags |= (2 | 4);
         }
     }
@@ -2305,7 +2305,7 @@ u16 func_800A6EE4(void) {
             func_800CB8F0();
             gCutsceneIndex = DOG_RACE_AFTER_RACE;
             loadCutscene(0);
-            set = 1;
+            set = TRUE;
             gCutsceneFlags |= (2 | 4);
         }
     }
@@ -2318,13 +2318,13 @@ u16 func_800A6EE4(void) {
 
 u16 setBeachCutscenes(void) {
     
-    bool set = 0;
+    bool set = FALSE;
     u16 index = 0xFFFF;
 
     if (gSeason == SUMMER && gDayOfMonth == 17 && NIGHTTIME) {
         gCutsceneIndex = FIREFLY_FESTIVAL;
         loadCutscene(0);
-        set = 1;
+        set = TRUE;
         gCutsceneFlags |= (2 | 4);
     }
 
@@ -2332,7 +2332,7 @@ u16 setBeachCutscenes(void) {
         if (gSeason == SUMMER && gDayOfMonth == 24 && DAYTIME) {
             gCutsceneIndex = SEA_FESTIVAL;
             loadCutscene(0);
-            set = 1;
+            set = TRUE;
             gCutsceneFlags |= (2 | 4);
         }
     }
@@ -2341,7 +2341,7 @@ u16 setBeachCutscenes(void) {
         if (gSeason == SUMMER && gDayOfMonth == 1 && NIGHTTIME && NOT_MARRIED && !checkLifeEventBit(KAREN_KAI_MARRIED)) {
             gCutsceneIndex = BEACH_FIREWORKS;
             loadCutscene(0);
-            set = 1;
+            set = TRUE;
             gCutsceneFlags |= (2 | 4);
         }
     }
@@ -2352,7 +2352,7 @@ u16 setBeachCutscenes(void) {
             gCutsceneIndex = 0x2F1;
             loadCutscene(0);
             gCutsceneFlags |= (2 | 4);
-            set = 1;
+            set = TRUE;
         }
     }
 
@@ -2361,7 +2361,7 @@ u16 setBeachCutscenes(void) {
             gCutsceneIndex = 0x2F4;
             loadCutscene(0);
             gCutsceneFlags |= (2 | 4);
-            set = 1;
+            set = TRUE;
         }
     }
     
@@ -2373,7 +2373,7 @@ u16 setBeachCutscenes(void) {
             gCutsceneIndex = 0x2F0;
             gCutsceneFlags |= (2 | 4);
             loadCutscene(0);
-            set = 1;
+            set = TRUE;
         }
     }
 
@@ -2383,7 +2383,7 @@ u16 setBeachCutscenes(void) {
             gCutsceneIndex = KAREN_AND_ELLI;
             gCutsceneFlags |= (2 | 4);
             loadCutscene(0);
-            set = 1;
+            set = TRUE;
         }
     }
 
@@ -2393,7 +2393,7 @@ u16 setBeachCutscenes(void) {
             gCutsceneIndex = KAREN_PINK_HEART_EVENT;
             gCutsceneFlags |= (2 | 4);
             loadCutscene(0);     
-            set = 1;
+            set = TRUE;
         }
     }
 
@@ -2413,7 +2413,7 @@ u16 setBeachCutscenes(void) {
 
 u16 setRoadCutscenes(void) {
     
-    bool set = 0;
+    bool set = FALSE;
     u16 index = 0xFFFF;
 
     if (!checkLifeEventBit(0xCC) && npcAffection[CLIFF] >= 200 && gSeason == WINTER && DAYTIME && (!checkLifeEventBit(MARRIED) || gWife != ANN) && !checkLifeEventBit(ANN_CLIFF_MARRIED) && previousMapIndex == 0x52) {
@@ -2421,7 +2421,7 @@ u16 setRoadCutscenes(void) {
         gCutsceneIndex = 0x320;
         gCutsceneFlags |= (2 | 4);
         loadCutscene(0);
-        set = 1;
+        set = TRUE;
     }
 
     if (!set) {
@@ -2430,7 +2430,7 @@ u16 setRoadCutscenes(void) {
             gCutsceneIndex = 0x321;
             gCutsceneFlags |= (2 | 4);
             loadCutscene(0);
-            set = 1;
+            set = TRUE;
         }    
     }
 
@@ -2442,7 +2442,7 @@ u16 setRoadCutscenes(void) {
                 gCutsceneIndex = SHADY_SALESMAN_AND_MARIA_1;
                 gCutsceneFlags |= (2 | 4);
                 loadCutscene(0);
-                set = 1;
+                set = TRUE;
             }
 
             if (previousMapIndex == VILLAGE_2) {
@@ -2450,7 +2450,7 @@ u16 setRoadCutscenes(void) {
                 gCutsceneIndex = SHADY_SALESMAN_AND_MARIA_2;
                 gCutsceneFlags |= (2 | 4);
                 loadCutscene(0);
-                set = 1;
+                set = TRUE;
             }
         }
     }
@@ -2475,7 +2475,7 @@ u16 setRoadCutscenes(void) {
 u16 func_800A7AE8(u8 arg0) {
 
     u16 index = 0xFFFF;
-    bool set = 0;
+    bool set = FALSE;
     
     if (!(gCutsceneFlags & 1)) {
         
@@ -2493,7 +2493,7 @@ u16 func_800A7AE8(u8 arg0) {
 
             if (gBaseMapIndex == FARM) {
                 index = 0;
-                set = 1;
+                set = TRUE;
             }       
 
         }
@@ -2509,7 +2509,7 @@ u16 func_800A7AE8(u8 arg0) {
                     if (gBaseMapIndex == FARM) {
                         gCutsceneIndex = 0;
                         index = 5;
-                        set = 1;
+                        set = TRUE;
                     }
                 
                 }
@@ -2530,7 +2530,7 @@ u16 func_800A7AE8(u8 arg0) {
                 
                 if (gBaseMapIndex == FARM) {
                     index = 0x21;
-                    set = 1;
+                    set = TRUE;
                     gCutsceneFlags |= 2;
                 }
                 
@@ -2567,7 +2567,7 @@ u16 func_800A7AE8(u8 arg0) {
 // cutscenes on wake up: evaluation, wedding, rivals' weddings, animal funeral, sick days
 u16 func_800A7DFC(void) {
 
-    bool set = 0;
+    bool set = FALSE;
     u16 result = 0xFFFF;
     u8 temp;
 
@@ -2578,7 +2578,7 @@ u16 func_800A7DFC(void) {
         // evaluation
         if (gYear == 3 && gSeason == SUMMER && gDayOfMonth == 1) {
             
-            set = 1;
+            set = TRUE;
             
             D_801C3B62 = calculateNPCAffectionScore();
             
@@ -2656,7 +2656,7 @@ u16 func_800A7DFC(void) {
             
             setEntrance(0x32);
             loadCutscene(0);
-            set = 1;
+            set = TRUE;
             gCutsceneFlags |= (2 | 4);
 
         }
@@ -2671,7 +2671,7 @@ u16 func_800A7DFC(void) {
                 gCutsceneIndex = 0xCB;
                 setEntrance(0);
                 loadCutscene(0);
-                set = 1;
+                set = TRUE;
                 gCutsceneFlags |= (2 | 4);
                 
             }
@@ -2683,7 +2683,7 @@ u16 func_800A7DFC(void) {
                 gCutsceneIndex = 0xCE;
                 setEntrance(0);
                 loadCutscene(0);
-                set = 1;
+                set = TRUE;
                 gCutsceneFlags |= (2 | 4);
 
             }
@@ -2695,7 +2695,7 @@ u16 func_800A7DFC(void) {
                 gCutsceneIndex = 0xD0;
                 setEntrance(0);
                 loadCutscene(0);
-                set = 1;
+                set = TRUE;
                 gCutsceneFlags |= (2 | 4);
 
             }
@@ -2707,7 +2707,7 @@ u16 func_800A7DFC(void) {
                 gCutsceneIndex = 0xD6;
                 setEntrance(0);
                 loadCutscene(0);
-                set = 1;
+                set = TRUE;
                 gCutsceneFlags |= (2 | 4);
 
             }
@@ -2719,7 +2719,7 @@ u16 func_800A7DFC(void) {
                 gCutsceneIndex = 0xD9;
                 setEntrance(0);
                 loadCutscene(0);
-                set = 1;
+                set = TRUE;
                 gCutsceneFlags |= (2 | 4);
 
             }
@@ -2735,7 +2735,7 @@ u16 func_800A7DFC(void) {
             gCutsceneIndex = 0x20B;
             loadCutscene(0);
             gCutsceneFlags |= (2 | 4);
-            set = 1;
+            set = TRUE;
             D_8013DC2E += adjustValue(D_8013DC2E, 1, 999);
 
         }

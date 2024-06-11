@@ -81,11 +81,11 @@ void initializeMapContext(void) {
 
 bool setMapModelAddresses(u16 mapIndex, void *start, void *end) {
     
-    bool result = 0;
+    bool result = FALSE;
     
     if (mapIndex < MAX_MODELS) {
         if (!(gMapModelAddresses[mapIndex].flags & 1)) {
-            result = 1;
+            result = TRUE;
             gMapModelAddresses[mapIndex].romStart = start;
             gMapModelAddresses[mapIndex].romEnd = end;
             gMapModelAddresses[mapIndex].flags = 1;
@@ -101,11 +101,11 @@ bool setupMapModel(u16 index, u16 mapIndex, u32 *modelDataIndex) {
     
     bool result;
 
-    result = 0;
+    result = FALSE;
     
     if (index == MAIN_MAP_INDEX && !(gMapModelContext[index].flags & 1)) {
         
-        result = 1;
+        result = TRUE;
         
         gMapModelContext[index].mainMapIndex = mapIndex;
         
@@ -144,7 +144,7 @@ bool setupMapModel(u16 index, u16 mapIndex, u32 *modelDataIndex) {
 // map loading function
 bool func_8003BB14(u16 index, u16 mapIndex) {
 
-    bool result = 0;
+    bool result = FALSE;
     
     if (index == MAIN_MAP_INDEX && (gMapModelContext[index].flags & 1)) {
         
@@ -162,7 +162,7 @@ bool func_8003BB14(u16 index, u16 mapIndex) {
         func_8003C1E0(MAIN_MAP_INDEX, 0.0f, 0.0f, 0.0f, 0, 0);
         setMapRGBA(gMapModelContext[index].mainMapIndex, 0, 0, 0, 0);
         
-        result = 1; 
+        result = TRUE; 
 
     } 
 
@@ -177,7 +177,7 @@ static inline u8* getAddress(u32 offsets[], u32 i) {
 
 bool func_8003BC50(u16 mainMapIndex, u16 levelMapIndex) {
 
-    bool result = 0;
+    bool result = FALSE;
     
     u32 *offset1;
     u32 *offset2;
@@ -222,7 +222,7 @@ bool func_8003BC50(u16 mainMapIndex, u16 levelMapIndex) {
             offset10
             );
         
-        result = 1;
+        result = TRUE;
     
     }
 
@@ -234,11 +234,11 @@ bool func_8003BC50(u16 mainMapIndex, u16 levelMapIndex) {
 
 bool func_8003BD60(u16 mapIndex) {
     
-    bool result = 0;
+    bool result = FALSE;
     
     if (mapIndex == MAIN_MAP_INDEX && (gMapModelContext[mapIndex].flags & 1) && (gMapModelContext[mapIndex].flags & 2)) {
         gMapModelContext[mapIndex].flags |= 4;
-        result = 1;
+        result = TRUE;
     }
     
     return result;
@@ -246,15 +246,15 @@ bool func_8003BD60(u16 mapIndex) {
 
 //INCLUDE_ASM(const s32, "system/mapContext", func_8003BDA4);
 
-bool func_8003BDA4(u16 mapIndex, f32 arg1, f32 arg2, f32 arg3) {
+bool func_8003BDA4(u16 mapIndex, f32 x, f32 y, f32 z) {
     
-    bool result = 0;
+    bool result = FALSE;
     
     if (mapIndex == MAIN_MAP_INDEX && (gMapModelContext[mapIndex].flags & 1) && (gMapModelContext[mapIndex].flags & 2)) {
-        result = 1;
-        gMapModelContext[mapIndex].unk_4.x = arg1;
-        gMapModelContext[mapIndex].unk_4.y = arg2;
-        gMapModelContext[mapIndex].unk_4.z = arg3;
+        result = TRUE;
+        gMapModelContext[mapIndex].unk_4.x = x;
+        gMapModelContext[mapIndex].unk_4.y = y;
+        gMapModelContext[mapIndex].unk_4.z = z;
     }
     
     return result;
@@ -263,15 +263,15 @@ bool func_8003BDA4(u16 mapIndex, f32 arg1, f32 arg2, f32 arg3) {
 
 //INCLUDE_ASM(const s32, "system/mapContext", func_8003BE0C);
 
-bool func_8003BE0C(u16 mapIndex, f32 arg1, f32 arg2, f32 arg3) {
+bool func_8003BE0C(u16 mapIndex, f32 x, f32 y, f32 z) {
     
-    bool result = 0;
+    bool result = FALSE;
     
     if (mapIndex == MAIN_MAP_INDEX && (gMapModelContext[mapIndex].flags & 1) && (gMapModelContext[mapIndex].flags & 2)) {
-        result = 1;
-        gMapModelContext[mapIndex].unk_4.x += arg1;
-        gMapModelContext[mapIndex].unk_4.y += arg2;
-        gMapModelContext[mapIndex].unk_4.z += arg3;
+        result = TRUE;
+        gMapModelContext[mapIndex].unk_4.x += x;
+        gMapModelContext[mapIndex].unk_4.y += y;
+        gMapModelContext[mapIndex].unk_4.z += z;
     }
     
     return result;
@@ -281,7 +281,7 @@ bool func_8003BE0C(u16 mapIndex, f32 arg1, f32 arg2, f32 arg3) {
 
 bool func_8003BE98(u16 mapIndex, u8 r, u8 g, u8 b, u8 a) {
     
-    bool result = 0;
+    bool result = FALSE;
     
     if (mapIndex == MAIN_MAP_INDEX && (gMapModelContext[mapIndex].flags & 1) && (gMapModelContext[mapIndex].flags & 2)) {
         setMapRGBA(gMapModelContext[mapIndex].mainMapIndex, r, g, b, a);
@@ -289,7 +289,7 @@ bool func_8003BE98(u16 mapIndex, u8 r, u8 g, u8 b, u8 a) {
         D_802373F8.g = g;
         D_802373F8.b = b;
         D_802373F8.a = a;
-        result = 1;
+        result = TRUE;
     }
     
     return result;
@@ -299,7 +299,7 @@ bool func_8003BE98(u16 mapIndex, u8 r, u8 g, u8 b, u8 a) {
 
 bool func_8003BF7C(u16 mapIndex, u8 r, u8 g, u8 b, u8 a, s16 arg5) {
     
-    bool result = 0;
+    bool result = FALSE;
     
     if (mapIndex == MAIN_MAP_INDEX && (gMapModelContext[mapIndex].flags & 1) && (gMapModelContext[mapIndex].flags & 2)) {
 
@@ -312,7 +312,7 @@ bool func_8003BF7C(u16 mapIndex, u8 r, u8 g, u8 b, u8 a, s16 arg5) {
         
         D_8017045A = arg5;
         
-        result = 1;
+        result = TRUE;
 
     }
     
@@ -331,19 +331,20 @@ bool func_8003C084(u16 mapIndex, u8 rotationIndex) {
     
     memcpy(buffer, D_8011EDE0, 32);
 
-    result = 0;
+    result = FALSE;
 
     if (mapIndex == MAIN_MAP_INDEX && gMapModelContext[mapIndex].flags & 1 && gMapModelContext[mapIndex].flags & 2) {
 
-        if (!(gMapModelContext[mapIndex].flags & 0x18)) {
+        if (!(gMapModelContext[mapIndex].flags & (0x8 | 0x10))) {
         
             gMapModelContext[mapIndex].rotation = rotationIndex;
             tempf = buffer[rotationIndex];
         
             setMapRotation(gMapModelContext[mapIndex].mainMapIndex, 45.0f, tempf, 0);
-            func_80028EB8(45.0f, tempf, 0);
+            setInitialWorldRotationAngles(45.0f, tempf, 0);
          
-            result = 1;
+            result = TRUE;
+
         }
     }
 
@@ -358,33 +359,35 @@ u8 getCurrentMapRotation(u16 mapIndex) {
     // FIXME: shouldn't be necessary
     u32 padding[3];
     
-    u8 result = 0;
+    u8 rotation = 0;
 
     if (mapIndex == MAIN_MAP_INDEX && (gMapModelContext[mapIndex].flags & 1)) {
-        result = gMapModelContext[mapIndex].rotation;
+        rotation = gMapModelContext[mapIndex].rotation;
     }
 
-    return result;
+    return rotation;
+    
 }
 
 //INCLUDE_ASM(const s32, "system/mapContext", func_8003C1E0);
 
-bool func_8003C1E0(u16 mapIndex, f32 arg1, f32 arg2, f32 arg3, u8 arg4, u8 arg5) {
+bool func_8003C1E0(u16 mapIndex, f32 x, f32 y, f32 z, u8 arg4, u8 arg5) {
 
-    bool result = 0;
+    bool result = FALSE;
 
     if (mapIndex == MAIN_MAP_INDEX && (gMapModelContext[mapIndex].flags & 1) && (gMapModelContext[mapIndex].flags & 2)) {
         
         gMapModelContext[mapIndex].unk_44 = arg4;
         gMapModelContext[mapIndex].unk_45 = arg5;
 
-        gMapModelContext[mapIndex].unk_4.x = arg1;
-        gMapModelContext[mapIndex].unk_4.y = arg2;
-        gMapModelContext[mapIndex].unk_4.z = arg3;
+        gMapModelContext[mapIndex].unk_4.x = x;
+        gMapModelContext[mapIndex].unk_4.y = y;
+        gMapModelContext[mapIndex].unk_4.z = z;
 
         func_8003C8D4(&gMapModelContext[mapIndex]);
 
-        result = 1;
+        result = TRUE;
+
     }
     
     return result;
@@ -395,7 +398,7 @@ bool func_8003C1E0(u16 mapIndex, f32 arg1, f32 arg2, f32 arg3, u8 arg4, u8 arg5)
 
 bool func_8003C280(u16 mapIndex, f32 arg1, f32 arg2, f32 arg3, f32 arg4, f32 arg5, f32 arg6, f32 arg7, f32 arg8) {
 
-    bool result = 0;
+    bool result = FALSE;
     
     if (mapIndex == MAIN_MAP_INDEX && (gMapModelContext[mapIndex].flags & 1)) {
 
@@ -411,7 +414,7 @@ bool func_8003C280(u16 mapIndex, f32 arg1, f32 arg2, f32 arg3, f32 arg4, f32 arg
         gMapModelContext[mapIndex].unk_34.x = arg7;
         gMapModelContext[mapIndex].unk_34.z = arg8;
         
-        result = 1;
+        result = TRUE;
     }
 
     return result;
@@ -472,11 +475,11 @@ label:
 
 bool func_8003C4B0(u16 mapIndex) {
 
-    bool result = 0;
+    bool result = FALSE;
 
     if (mapIndex == MAIN_MAP_INDEX && (gMapModelContext[mapIndex].flags & 1)) {
         func_80034090(gMapModelContext[mapIndex].mainMapIndex);
-        result = 1;
+        result = TRUE;
         gMapModelContext[mapIndex].flags = 0;
     }
 
@@ -488,11 +491,11 @@ bool func_8003C4B0(u16 mapIndex) {
 
 bool func_8003C504(u16 mapIndex) {
 
-    bool result = 0;
+    bool result = FALSE;
 
     if (mapIndex == MAIN_MAP_INDEX && (gMapModelContext[mapIndex].flags & 1) && (gMapModelContext[mapIndex].flags & 4)) {
         func_80034090(gMapModelContext[mapIndex].mainMapIndex);
-        result = 1;
+        result = TRUE;
         gMapModelContext[mapIndex].flags &= ~(2 | 4);
     }
 
@@ -518,9 +521,9 @@ void func_8003C570(void) {
 
 //INCLUDE_ASM(const s32, "system/mapContext", func_8003C5C0);
 
-bool func_8003C5C0(u16 mapIndex, u8 arg1, u8 arg2) {
+bool func_8003C5C0(u16 mapIndex, u8 arg1, u8 rotation) {
 
-    bool result = 0;
+    bool result = FALSE;
     u16 indexTemp;
 
     if (mapIndex == MAIN_MAP_INDEX && (gMapModelContext[mapIndex].flags & 1) && (gMapModelContext[mapIndex].flags & 4)) { 
@@ -528,13 +531,13 @@ bool func_8003C5C0(u16 mapIndex, u8 arg1, u8 arg2) {
         // FIXME: this fixes regswap issue
         indexTemp = mapIndex;
 
-        if (!(gMapModelContext[mapIndex].flags & 0x18) && arg2 != gMapModelContext[mapIndex].rotation) {
+        if (!(gMapModelContext[mapIndex].flags & (0x8 | 0x10)) && rotation != gMapModelContext[mapIndex].rotation) {
             
             if (arg1 == 0xFF) {
 
                 if (gMapModelContext[mapIndex].rotation < 4) {
 
-                    if ((gMapModelContext[mapIndex].rotation + 4) >= arg2 && arg2 >= gMapModelContext[mapIndex].rotation) {
+                    if ((gMapModelContext[mapIndex].rotation + 4) >= rotation && rotation >= gMapModelContext[mapIndex].rotation) {
                         gMapModelContext[mapIndex].flags |= 0x10;
                     } else {
                         gMapModelContext[indexTemp].flags |= 8;
@@ -542,9 +545,9 @@ bool func_8003C5C0(u16 mapIndex, u8 arg1, u8 arg2) {
                     
                 } else {
 
-                    if (arg2 < gMapModelContext[mapIndex].rotation) {
+                    if (rotation < gMapModelContext[mapIndex].rotation) {
 
-                        if ((gMapModelContext[mapIndex].rotation - 4) >= arg2) { 
+                        if ((gMapModelContext[mapIndex].rotation - 4) >= rotation) { 
                             gMapModelContext[mapIndex].flags |= 0x10;
                         } else {
                             gMapModelContext[mapIndex].flags |= 8;
@@ -564,9 +567,9 @@ bool func_8003C5C0(u16 mapIndex, u8 arg1, u8 arg2) {
                 }
             }
 
-            result = 1;
+            result = TRUE;
             
-            gMapModelContext[indexTemp].unk_47 = arg2;
+            gMapModelContext[indexTemp].unk_47 = rotation;
             gMapModelContext[indexTemp].unk_46 = 0;
             
         }

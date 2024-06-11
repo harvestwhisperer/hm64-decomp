@@ -403,18 +403,18 @@ u8 func_800DA9A8(u8 mapIndex, u8 heightIndex, u8 widthIndex) {
 
 bool func_800DAA90(u8 mapIndex, u8 arg1, u8 heightIndex, u8 widthIndex) {
 
-    u8 set = 0;
+    bool set = FALSE;
 
     switch (mapIndex) {
 
         case FARM:
             farmFieldTiles[widthIndex][heightIndex] = arg1;
-            set = 1;
+            set = TRUE;
             break;
 
         case GREENHOUSE:
             D_80182BA8[widthIndex][heightIndex] = arg1;
-            set = 1;
+            set = TRUE;
             break;
 
         case MOUNTAIN_1:
@@ -423,7 +423,7 @@ bool func_800DAA90(u8 mapIndex, u8 arg1, u8 heightIndex, u8 widthIndex) {
             } else {
                 D_80182FD8[widthIndex][heightIndex] = 0;
             }
-            set = 1;
+            set = TRUE;
             break;
 
         case MOUNTAIN_2:
@@ -432,7 +432,7 @@ bool func_800DAA90(u8 mapIndex, u8 arg1, u8 heightIndex, u8 widthIndex) {
             } else {
                 D_80189868[widthIndex][heightIndex] = 0;
             }
-            set = 1;
+            set = TRUE;
             break;
 
         case TOP_OF_MOUNTAIN_1:
@@ -441,7 +441,7 @@ bool func_800DAA90(u8 mapIndex, u8 arg1, u8 heightIndex, u8 widthIndex) {
             } else {
                D_8013D258[widthIndex][heightIndex] = 0;
             }
-            set = 1;
+            set = TRUE;
             break;
 
         case MOON_MOUNTAIN:
@@ -450,7 +450,7 @@ bool func_800DAA90(u8 mapIndex, u8 arg1, u8 heightIndex, u8 widthIndex) {
             } else {
                 D_8016FBF0[widthIndex][heightIndex] = 0;
             }
-            set = 1;
+            set = TRUE;
             break;
 
         case POND:
@@ -459,7 +459,7 @@ bool func_800DAA90(u8 mapIndex, u8 arg1, u8 heightIndex, u8 widthIndex) {
             } else {
                 D_8016FE08[widthIndex][heightIndex] = 0;
             }
-            set = 1;
+            set = TRUE;
             break;
         
         case CAVE:
@@ -468,13 +468,13 @@ bool func_800DAA90(u8 mapIndex, u8 arg1, u8 heightIndex, u8 widthIndex) {
             } else {
                 D_8016F8F8[widthIndex][heightIndex] = 0;
             }
-            set = 1;
+            set = TRUE;
             break;
 
         case MINE:
         case MINE_2:
             D_80170468[widthIndex][heightIndex] = arg1;
-            set = 1;
+            set = TRUE;
             break;
 
         case RANCH:
@@ -483,7 +483,7 @@ bool func_800DAA90(u8 mapIndex, u8 arg1, u8 heightIndex, u8 widthIndex) {
             } else {
                 D_801C3FC0[widthIndex][heightIndex] = 0;
             }
-            set = 1;
+            set = TRUE;
             break;
         
         

@@ -4,7 +4,7 @@
 #include "system/mathUtils.h"
 
 // forward declarations
-u8 func_8002B8E0(u16, u8, void*);
+bool func_8002B8E0(u16, u8, void*);
 void func_8002CC84(SpriteAnimation*, u32*);             
 u8* func_8002CD34(u16 arg0, void* arg1);
 u16* func_8002CD4C(u16, u16*);   
@@ -61,7 +61,7 @@ bool func_8002B138(u16 index, u32 romTextureStart, u32 romTextureEnd, u32 romAss
     u8* spriteToPaletteVaddr, u32* spritesheetIndexVaddr, u8 assetType, u8 argE) {
 
     u32 assetIndex[8];
-    bool result = 0;
+    bool result = FALSE;
     
     u32 offset1;
     u32 offset2;
@@ -114,7 +114,8 @@ bool func_8002B138(u16 index, u32 romTextureStart, u32 romTextureEnd, u32 romAss
 
             globalSprites[index].flags2 |= 0x40;
 
-            result = 1;
+            result = TRUE;
+
         }
     
     }
@@ -128,7 +129,7 @@ bool func_8002B138(u16 index, u32 romTextureStart, u32 romTextureEnd, u32 romAss
 
 bool func_8002B36C(u16 index, u32* unknownAssetIndexPtr, u32* spritesheetIndexPtr, u32* paletteIndexPtr, u8* spriteToPaletteMappingPtr) {
 
-    bool result = 0;
+    bool result = FALSE;
 
     if (index < MAX_ACTIVE_SPRITES) {
 
@@ -156,7 +157,7 @@ bool func_8002B36C(u16 index, u32* unknownAssetIndexPtr, u32* spritesheetIndexPt
             func_8002C6F8(index, 2);
             func_8002C7EC(index, 3);
             
-            result = 1;
+            result = TRUE;
             
         }
     }
@@ -169,7 +170,7 @@ bool func_8002B36C(u16 index, u32* unknownAssetIndexPtr, u32* spritesheetIndexPt
 
 bool func_8002B50C(u16 index, u32* unknownAssetIndexPtr, u32* spritesheetIndexPtr, u32* paletteIndexPtr, u8* spriteToPaletteMappingPtr, u32 romTexturePtr, u8* texturePtr, u8* texture2Ptr) {
     
-    bool result = 0;
+    bool result = FALSE;
 
     if (index < MAX_ACTIVE_SPRITES) {
 
@@ -198,7 +199,7 @@ bool func_8002B50C(u16 index, u32* unknownAssetIndexPtr, u32* spritesheetIndexPt
             func_8002C6F8(index, 2);
             func_8002C7EC(index, 3);
             
-            result = 1;
+            result = TRUE;
             
         }
     }
@@ -207,17 +208,16 @@ bool func_8002B50C(u16 index, u32* unknownAssetIndexPtr, u32* spritesheetIndexPt
     
 }
 
+//INCLUDE_ASM(const s32, "system/globalSprites", deactivateSprite);
 
-//INCLUDE_ASM(const s32, "system/globalSprites", func_8002B6B8);
+bool deactivateSprite(u16 index) {
 
-bool func_8002B6B8(u16 index) {
-
-    bool result = 0;
+    bool result = FALSE;
 
     if (index < MAX_ACTIVE_SPRITES) {
         if (globalSprites[index].flags2 & 1) {
             globalSprites[index].flags2 &= ~(1 | 2);
-            result = 1;
+            result = TRUE;
         }        
     }
 
@@ -251,9 +251,9 @@ void func_8002B710(void) {
 //INCLUDE_ASM(const s32, "system/globalSprites", func_8002B7A0);
 
 // possibly inline, otherwise unused
-u8 func_8002B7A0(u16 spriteIndex, u8 arg1) {
+bool func_8002B7A0(u16 spriteIndex, u8 arg1) {
 
-    u8 result;
+    bool result;
 
     result = func_8002B8E0(spriteIndex, arg1, globalSprites[spriteIndex].unknownAssetIndexPtr);
 
@@ -268,7 +268,7 @@ u8 func_8002B7A0(u16 spriteIndex, u8 arg1) {
 
 bool func_8002B80C(u16 spriteIndex, u16 offset, u8 arg2) {
 
-    bool result = 0;
+    bool result = FALSE;
     
     if (spriteIndex < MAX_ACTIVE_SPRITES) {
 
@@ -286,14 +286,15 @@ bool func_8002B80C(u16 spriteIndex, u16 offset, u8 arg2) {
         }
     }
 
-    return result;   
+    return result;
+    
 }
 
 //INCLUDE_ASM(const s32, "system/globalSprites", func_8002B8E0);
 
 bool func_8002B8E0(u16 index, u8 arg1, void* arg2) {
 
-    bool result = 0;
+    bool result = FALSE;
     u16 *temp;
     
     if (index < MAX_ACTIVE_SPRITES && globalSprites[index].flags2 & 1 && !(globalSprites[index].flags2 & 2)) {
@@ -334,7 +335,7 @@ bool func_8002B8E0(u16 index, u8 arg1, void* arg2) {
         globalSprites[index].unknownAsset3Ptr = temp;
         globalSprites[index].unknownAsset4Ptr = temp + 2;
 
-        result = 1;
+        result = TRUE;
         
     }
 
@@ -346,13 +347,13 @@ bool func_8002B8E0(u16 index, u8 arg1, void* arg2) {
 
 bool func_8002BAD8(u16 index) {
 
-    bool result = 0;
+    bool result = FALSE;
 
     if (index < MAX_ACTIVE_SPRITES) {
 
         if (globalSprites[index].flags2 & 1) {
             globalSprites[index].flags2 &= ~2;
-            result = 1;
+            result = TRUE;
         }
     }
     
@@ -364,13 +365,13 @@ bool func_8002BAD8(u16 index) {
 
 bool func_8002BB30(u16 index) {
 
-    bool result = 0;
+    bool result = FALSE;
 
     if (index < MAX_ACTIVE_SPRITES) {
 
         if (globalSprites[index].flags2 & 1) {
             globalSprites[index].flags2 &= ~0x20;
-            result = 1;
+            result = TRUE;
         }
     }
     
@@ -382,13 +383,13 @@ bool func_8002BB30(u16 index) {
 
 bool func_8002BB88(u16 index) {
 
-    bool result = 0;
+    bool result = FALSE;
 
     if (index < MAX_ACTIVE_SPRITES) {
 
         if (globalSprites[index].flags2 & 1) {
             globalSprites[index].flags2 |= 0x20;
-            result = 1;
+            result = TRUE;
         }
     }
     
@@ -400,7 +401,7 @@ bool func_8002BB88(u16 index) {
 
 bool func_8002BBE0(u16 index, u8 arg1, u8 arg2) {
 
-    bool result = 0;
+    bool result = FALSE;
     
     if (index < MAX_ACTIVE_SPRITES) {
 
@@ -418,7 +419,8 @@ bool func_8002BBE0(u16 index, u8 arg1, u8 arg2) {
                 globalSprites[index].flags1 &= ~2;
             }
             
-            result = 1;
+            result = TRUE;
+
         }
     }
 
@@ -430,7 +432,7 @@ bool func_8002BBE0(u16 index, u8 arg1, u8 arg2) {
 
 bool func_8002BCC8(u16 index) {
 
-    bool result = 0;
+    bool result = FALSE;
 
     if (index < MAX_ACTIVE_SPRITES) {
 
@@ -447,7 +449,7 @@ bool func_8002BCC8(u16 index) {
 
 bool setSpriteShrinkFactor(u16 index, f32 x, f32 y, f32 z) {
 
-    bool result = 0;
+    bool result = FALSE;
 
     if (index < MAX_ACTIVE_SPRITES) {
 
@@ -457,17 +459,20 @@ bool setSpriteShrinkFactor(u16 index, f32 x, f32 y, f32 z) {
             globalSprites[index].shrink.y = y;
             globalSprites[index].shrink.z = z;
 
-            result = 1;
+            result = TRUE;
+
         }
     }
+
     return result;
+
 }
 
 //INCLUDE_ASM(const s32, "system/globalSprites", setSpriteScale);
 
 bool setSpriteScale(u16 index, f32 x, f32 y, f32 z) {
 
-    bool result = 0;
+    bool result = FALSE;
 
     if (index < MAX_ACTIVE_SPRITES) {
 
@@ -477,7 +482,8 @@ bool setSpriteScale(u16 index, f32 x, f32 y, f32 z) {
             globalSprites[index].scale.y = y;
             globalSprites[index].scale.z = z;
             
-            result = 1;
+            result = TRUE;
+
         }
     }
     
@@ -489,7 +495,7 @@ bool setSpriteScale(u16 index, f32 x, f32 y, f32 z) {
 
 bool func_8002BE14(u16 index, f32 x, f32 y, f32 z) {
 
-    bool result = 0;
+    bool result = FALSE;
 
     if (index < MAX_ACTIVE_SPRITES) {
 
@@ -499,7 +505,8 @@ bool func_8002BE14(u16 index, f32 x, f32 y, f32 z) {
             globalSprites[index].angles.y = y;
             globalSprites[index].angles.z = z;
 
-            result = 1;
+            result = TRUE;
+
         }
     }
     
@@ -511,7 +518,7 @@ bool func_8002BE14(u16 index, f32 x, f32 y, f32 z) {
 
 bool adjustSpriteShrinkFactor(u16 index, f32 x, f32 y, f32 z) {
 
-    bool result = 0;
+    bool result = FALSE;
     
     if (index < MAX_ACTIVE_SPRITES) {
         
@@ -521,12 +528,13 @@ bool adjustSpriteShrinkFactor(u16 index, f32 x, f32 y, f32 z) {
             globalSprites[index].shrink.y += y;
             globalSprites[index].shrink.z += z;
                 
-            result = 1;
+            result = TRUE;
             
         }   
     }
     
     return result;
+
 }
 
 // rgba
@@ -536,7 +544,7 @@ INCLUDE_ASM(const s32, "system/globalSprites", func_8002BF4C);
 
 bool func_8002C000(u16 index, f32 x, f32 y, f32 z) {
 
-    bool result = 0;
+    bool result = FALSE;
     
     if (index < MAX_ACTIVE_SPRITES) {
         
@@ -546,19 +554,20 @@ bool func_8002C000(u16 index, f32 x, f32 y, f32 z) {
             globalSprites[index].angles.y += y;
             globalSprites[index].angles.z += z;
                 
-            result = 1;
+            result = TRUE;
             
         }   
     }
     
     return result;
+
 }
 
 //INCLUDE_ASM(const s32, "system/globalSprites", func_8002C0B4);
 
 bool func_8002C0B4(u16 index, s8 r, s8 g, s8 b, s8 a) {
 
-    bool result = 0;
+    bool result = FALSE;
     
     if (index < MAX_ACTIVE_SPRITES) {
 
@@ -569,12 +578,13 @@ bool func_8002C0B4(u16 index, s8 r, s8 g, s8 b, s8 a) {
             globalSprites[index].rgbaCurrent.b += b;
             globalSprites[index].rgbaCurrent.a += a;
             
-            result = 1;
+            result = TRUE;
             
         }   
     }
     
     return result;
+
 }
 
 //INCLUDE_ASM(const s32, "system/globalSprites", func_8002C1C0);
@@ -633,12 +643,13 @@ bool func_8002C1C0(u16 index, u8 r, u8 g, u8 b, u8 a, s16 arg5) {
 
             globalSprites[index].normalized.a = (tempFloat * temp) / globalSprites[index].rgba.a;
             
-            result = 1;
+            result = TRUE;
             
         }
     }
     
     return result;
+
 }
 
 //INCLUDE_ASM(const s32, "system/globalSprites", func_8002C52C);
@@ -651,7 +662,7 @@ bool func_8002C52C(u16 index, u8 arg1, s16 arg2) {
     f32 tempF;
     s16 temp = getAbsoluteValue(arg2);
 
-    result = 0;
+    result = FALSE;
 
     if (index < MAX_ACTIVE_SPRITES) {
 
@@ -669,7 +680,8 @@ bool func_8002C52C(u16 index, u8 arg1, s16 arg2) {
 
             globalSprites[index].normalized.a = (tempF * temp) / globalSprites[index].rgba.a;
             
-            result = 1;
+            result = TRUE;
+
         }
     }
     
@@ -681,7 +693,7 @@ bool func_8002C52C(u16 index, u8 arg1, s16 arg2) {
 
 bool func_8002C680(u16 index, u16 arg1, u16 arg2) {
 
-    bool result = 0;
+    bool result = FALSE;
     int temp;
 
     if (index < MAX_ACTIVE_SPRITES) {
@@ -695,7 +707,7 @@ bool func_8002C680(u16 index, u16 arg1, u16 arg2) {
             temp = arg2 << 5;
             globalSprites[index].flags1 |= temp;
             
-            result = 1;
+            result = TRUE;
             
         } 
     }
@@ -710,10 +722,11 @@ INCLUDE_ASM(const s32, "system/globalSprites", func_8002C768);
 
 //INCLUDE_ASM(const s32, "system/globalSprites", func_8002C7EC);
 
-u8 func_8002C7EC(u16 index, u16 arg1) {
+bool func_8002C7EC(u16 index, u16 arg1) {
     
     int temp;
-    u8 result = 0;
+
+    u8 result = FALSE;
     
     if (index < MAX_ACTIVE_SPRITES) {
         
@@ -723,43 +736,50 @@ u8 func_8002C7EC(u16 index, u16 arg1) {
             temp = arg1 << 10;
             globalSprites[index].flags1 |= temp;
             
-            result = 1;
+            result = TRUE;
+
         }
     }
     
     return result;
+
 }
 
 //INCLUDE_ASM(const s32, "system/globalSprites", setSpriteDefaultRGBA);
 
 bool setSpriteDefaultRGBA(u16 index, u8 r, u8 g, u8 b, u8 a) {
 
-    bool result = 0;
+    bool result = FALSE;
 
     if (index < MAX_ACTIVE_SPRITES) {
+        
         if (globalSprites[index].flags2 & 1) {
-            result = 1;
+            
             globalSprites[index].rgba.r = r;
             globalSprites[index].rgba.g = g;
             globalSprites[index].rgba.b = b;
             globalSprites[index].rgba.a = a;
+            
+            result = TRUE;
+
         }
     }
 
     return result;
+
 }
 
 //INCLUDE_ASM(const s32, "system/globalSprites", func_8002C914);
 
-u8 func_8002C914(u16 index, u8 r, u8 g, u8 b, u8 a) {
+bool func_8002C914(u16 index, u8 r, u8 g, u8 b, u8 a) {
 
-    u8 result = 0;
+    bool result = FALSE;
     
     if (index < MAX_ACTIVE_SPRITES) {
         
         if (globalSprites[index].flags2 & 1) {        
 
-            result = 1;
+            result = TRUE;
             
             globalSprites[index].rgbaCurrent.r = (globalSprites[index].rgba.r * r) / 255.0f;
             globalSprites[index].rgbaCurrent.g = (globalSprites[index].rgba.g * g) / 255.0f;
@@ -770,6 +790,7 @@ u8 func_8002C914(u16 index, u8 r, u8 g, u8 b, u8 a) {
             globalSprites[index].rgbaDefault.g = (globalSprites[index].rgba.g * g) / 255.0f;
             globalSprites[index].rgbaDefault.b = (globalSprites[index].rgba.b * b) / 255.0f;
             globalSprites[index].rgbaDefault.a = (globalSprites[index].rgba.a * a) / 255.0f;
+
         }
     }
     
@@ -781,7 +802,7 @@ u8 func_8002C914(u16 index, u8 r, u8 g, u8 b, u8 a) {
 
 bool func_8002CAA8(u16 index, u8 a) {
     
-    bool result = 0;
+    bool result = FALSE;
 
     if (index < MAX_ACTIVE_SPRITES) {
 
@@ -791,7 +812,8 @@ bool func_8002CAA8(u16 index, u8 a) {
             globalSprites[index].rgbaCurrent.a = a;
             globalSprites[index].rgbaDefault.a = a;
             
-            result = 1;
+            result = TRUE;
+
         }
     }
     
@@ -801,18 +823,21 @@ bool func_8002CAA8(u16 index, u8 a) {
 
 //INCLUDE_ASM(const s32, "system/globalSprites", func_8002CB24);
 
-u8 func_8002CB24(u16 index, u8 flag) {
+bool func_8002CB24(u16 index, u8 flag) {
 
-    u8 result = 0;
+    u8 result = FALSE;
 
     if (index < MAX_ACTIVE_SPRITES) {
+        
         if (globalSprites[index].flags2 & 1) {
             if (flag == TRUE) {
                 globalSprites[index].flags2 |= 0x80;
             } else {
                 globalSprites[index].flags2 &= ~0x80;
             }
-            result = 1;
+
+            result = TRUE;
+
         }
     }
     
@@ -823,13 +848,17 @@ u8 func_8002CB24(u16 index, u8 flag) {
 
 bool func_8002CB88(u16 index, u16 paletteIndex) {
 
-    bool result = 0;
+    bool result = FALSE;
 
     if (index < MAX_ACTIVE_SPRITES) {
+
         if (globalSprites[index].flags2 & 1) {
+
             globalSprites[index].paletteIndex = paletteIndex;
             globalSprites[index].flags2 |= 0x100;
-            result = 1;
+
+            result = TRUE;
+
         }
     }
 
@@ -843,7 +872,7 @@ bool func_8002CBF8(u16 index) {
 
     bool result;
 
-    result = 0;
+    result = FALSE;
     
     if (index < MAX_ACTIVE_SPRITES) {
         if (globalSprites[index].flags2 & 1) {
@@ -859,7 +888,7 @@ bool func_8002CBF8(u16 index) {
 
 bool func_8002CC44(u16 index) {
 
-    bool result = 0;
+    bool result = FALSE;
 
     if (index < MAX_ACTIVE_SPRITES) {
         // flag 0x40
@@ -967,6 +996,7 @@ INCLUDE_ASM(const s32, "system/globalSprites", func_8002CCDC);
 
 //INCLUDE_ASM(const s32, "system/globalSprites", func_8002CD34);
 
+// TODO: see if void* type is necessary
 // unknown sprite asset index lookup
 u8* func_8002CD34(u16 arg0, void* arg1) {
  
@@ -1092,4 +1122,5 @@ u32 func_8002CDB4(u16 arg0, u32 arg1) {
 INCLUDE_ASM(const s32, "system/globalSprites", func_8002CDE8);
 
 // loop through all sprites and update (rgba, animation)
+// main loop function
 INCLUDE_ASM(const s32, "system/globalSprites", func_8002D3D4);

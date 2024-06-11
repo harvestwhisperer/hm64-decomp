@@ -1558,7 +1558,7 @@ bool func_80085D48(int index, u16 arg1) {
     index = temp;
     index = arr[7];
     
-    result = 0;
+    result = FALSE;
     
     if (npcInfoArray[index].flags & 4) {
 
@@ -1571,7 +1571,8 @@ bool func_80085D48(int index, u16 arg1) {
 
         // D_80114960 = conversation indices
         showDialogueBox(0, D_80114960[arr[7]], arg1, 0, 0);
-        result = 1;
+        result = TRUE;
+        
     }
     
   return result;

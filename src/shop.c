@@ -18,6 +18,7 @@
 #include "overlayScreens.h"
 #include "player.h"
 #include "setCutscenes.h"
+#include "spriteIndices.h"
 
 // bss
 extern ShopContext shopContext;
@@ -33,7 +34,7 @@ extern u16 D_80118DA0[];
 extern u16 D_80118BE0[];
 extern u16 D_80118E10[];
 extern u16 D_80118E80[];
-extern u16 D_80118EF0[];
+extern u16 prices[];
 extern u16 D_80118F60[];
 extern u16 D_80118FD0[];
 extern Vec3f D_80119040[];
@@ -50,12 +51,10 @@ extern Animation D_80119660[56];
 extern u8 D_801194A0[];
 extern u16 D_8011BA10[];
 
-
-// TODO: add linker symbols
-extern void *D_D3BFE0;
-extern void *D_D3DCC0;
-extern void *D_D3DCC0_2;
-extern void *D_D3DCE0;
+extern u32 _shopIconsTextureSegmentRomStart;
+extern u32 _shopIconsTextureSegmentRomEnd;
+extern u32 _shopIconsIndexSegmentRomStart;
+extern u32 _shopIconsIndexSegmentRomEnd;
 
 // forward declarations
 u8 handlePurchase(u16 storeItemIndex, s32 quantity);
@@ -98,7 +97,7 @@ void func_800DC7BC(u8 index) {
 void func_800DC9C0(u8 index) {
 
     if (D_801194A0[index] != 0xFF) {
-        func_80034E64(MAIN_MAP_INDEX, D_801194A0[index]);
+        deactivateMapObject(MAIN_MAP_INDEX, D_801194A0[index]);
     }
 }
 
@@ -114,7 +113,7 @@ void func_800DC9FC(u8 arg0) {
         setAudio(0x24);
 
         if (D_801194A0[arg0] != 0xFF) {
-            func_80034E64(MAIN_MAP_INDEX, D_801194A0[arg0]);
+            deactivateMapObject(MAIN_MAP_INDEX, D_801194A0[arg0]);
         }
     }
 
@@ -133,7 +132,7 @@ u8 func_800DCAA0(u8 index) {
 
 void func_800DCAB8(void) {
 
-    bool set = 0;
+    bool set = FALSE;
     u8 temp;
     u8 *temp2;
     u8 index;
@@ -163,13 +162,13 @@ void func_800DCAB8(void) {
                 func_800B3BD8();
 
                 if (D_80118F60[shopContext.storeItemIndex] >= 2) {
-                    func_80045E20(0, 0x8F, &D_D3BFE0, &D_D3DCC0, &D_D3DCC0_2, &D_D3DCE0, (void*)0x802E0EC0, (void* )0x802E27C0, (void* )0x802E28C0, (void* )0x802E2BC0, 0, 2, 0, -16.0f, 64.0f, 256.0f, 0xA);
+                    func_80045E20(0, 0x8F, &_shopIconsTextureSegmentRomStart, &_shopIconsTextureSegmentRomEnd, &_shopIconsIndexSegmentRomStart, &_shopIconsIndexSegmentRomEnd, (void*)SHOP_ICONS_TEXTURE_VADDR_START, (void*)SHOP_ICONS_TEXTURE_VADDR_END, (void* )SHOP_ICONS_INDEX_VADDR_START, (void* )SHOP_ICONS_INDEX_VADDR_END, 0, 2, 0, -16.0f, 64.0f, 256.0f, 0xA);
                     func_80045F5C(0, shopContext.quantity, 1, 3);
                     func_800B4238(D_80118F60[shopContext.storeItemIndex]);
                 }
                 
                 func_8003F360(0, -4, 2);
-                func_8003FBD8(0x12, shopContext.quantity * D_80118EF0[shopContext.storeItemIndex], 0);
+                func_8003FBD8(0x12, shopContext.quantity * prices[shopContext.storeItemIndex], 0);
                 func_8003F54C(0, 24.0f, -64.0f, 352.0f);
                 func_8003F690(0, 0, 0, 0);
                 func_8003DDF8(0, D_80118E80[shopContext.storeItemIndex], D_80118BE0[shopContext.storeItemIndex], 0x80000);
@@ -184,25 +183,33 @@ void func_800DCAB8(void) {
             if (func_8004D3C8(CONTROLLER_1, 0x40000)) {
 
                 if (!set) {
+                    
                     if (shopContext.unk_5) {
                         setAudio(2);
                     }
+                    
                     shopContext.unk_5 = 0;
+                    
                     func_800B4160();
-                    set = 1;
+                    set = TRUE;
+
                 }
             }
             
-            if (func_8004D3C8(CONTROLLER_1, 0x400000) && !set) {
+            if (func_8004D3C8(CONTROLLER_1, 0x400000)) {
+
+                if (!set) {
+
+                    if (shopContext.unk_5 == 0) {
+                        setAudio(2);
+                    }
+                    
+                    shopContext.unk_5 = 1;
+                    
+                    func_800B4160();
+                    set = TRUE;
                 
-                if (shopContext.unk_5 == 0) {
-                    setAudio(2);
                 }
-                
-                shopContext.unk_5 = 1;
-                
-                func_800B4160();
-                set = 1;
                 
             }
             
@@ -211,16 +218,21 @@ void func_800DCAB8(void) {
                 if (!set) {
 
                     if (shopContext.quantity< D_80118F60[shopContext.storeItemIndex]) {
+                    
                         shopContext.quantity++;
+                    
                         func_80045F5C(0, shopContext.quantity, 1, 3);
-                        func_8003FBD8(0x12, shopContext.quantity * D_80118EF0[shopContext.storeItemIndex], 0);
+                        func_8003FBD8(0x12, shopContext.quantity * prices[shopContext.storeItemIndex], 0);
+                    
                         if (D_80118F60[shopContext.storeItemIndex] >= 2) {
                             func_800B4238(D_80118F60[shopContext.storeItemIndex]);
                             setAudio(2);                           
                         }
+                        
                     }
 
-                    set = 1;       
+                    set = TRUE;       
+
                 }
 
             }
@@ -230,17 +242,17 @@ void func_800DCAB8(void) {
                 if (!set) {
 
                     if (shopContext.quantity< 2) {
-                        set = 1;
+                        set = TRUE;
                     } else {
                         shopContext.quantity--;
                         func_80045F5C(0, shopContext.quantity, 1, 3);
-                        func_8003FBD8(0x12, shopContext.quantity * D_80118EF0[shopContext.storeItemIndex], 0);
+                        func_8003FBD8(0x12, shopContext.quantity * prices[shopContext.storeItemIndex], 0);
                         if (D_80118F60[shopContext.storeItemIndex] >= 2) {
                             func_800B4238(D_80118F60[shopContext.storeItemIndex]);
                             setAudio(2);
                         }
                     }
-                    set = 1;  
+                    set = TRUE;  
 
                 }
 
@@ -255,9 +267,9 @@ void func_800DCAB8(void) {
                     func_8002BAD8(0x82);
                     func_8002BAD8(0x83);
                     func_8002BAD8(0x84);
-                    func_8002B6B8(0x85);
-                    func_8002B6B8(0x86);
-                    func_8002B6B8(0x87);
+                    deactivateSprite(0x85);
+                    deactivateSprite(0x86);
+                    deactivateSprite(0x87);
                     
                     if (shopContext.unk_5 == 0) {
                         shopContext.unk_3 = 3;
@@ -267,7 +279,7 @@ void func_800DCAB8(void) {
                         setAudio(1);
                     }
                     
-                    set = 1;
+                    set = TRUE;
 
                 }
                 
@@ -279,12 +291,12 @@ void func_800DCAB8(void) {
                     
                     func_80046120(0);
 
-                    func_8002B6B8(0x82);
-                    func_8002B6B8(0x83);
-                    func_8002B6B8(0x84);
-                    func_8002B6B8(0x85);
-                    func_8002B6B8(0x86);
-                    func_8002B6B8(0x87);
+                    deactivateSprite(0x82);
+                    deactivateSprite(0x83);
+                    deactivateSprite(0x84);
+                    deactivateSprite(0x85);
+                    deactivateSprite(0x86);
+                    deactivateSprite(0x87);
                     
                     shopContext.unk_5 = 1;
                     shopContext.unk_3 = 4;
@@ -411,7 +423,7 @@ u8 handlePurchase(u16 storeItemIndex, s32 quantity) {
     u8 result = 0;
     u8 temp;
 
-    if (gGold >= quantity*D_80118EF0[storeItemIndex]) {
+    if (gGold >= quantity*prices[storeItemIndex]) {
         
         result = 1;
         
@@ -956,7 +968,7 @@ u8 handlePurchase(u16 storeItemIndex, s32 quantity) {
         // should be:        
         // if (0 < result && result < 3 || result == 4) {
         if (temp < 2 || result == 4) {
-            gGold += adjustValue(gGold, (-quantity * D_80118EF0[storeItemIndex]), MAX_GOLD);
+            gGold += adjustValue(gGold, (-quantity * prices[storeItemIndex]), MAX_GOLD);
         }
 
     }
@@ -971,7 +983,7 @@ u8 handlePurchase(u16 storeItemIndex, s32 quantity) {
 // check if should be selling items
 bool func_800DDDFC(u16 itemIndex) {
 
-    bool result = 0;
+    bool result = FALSE;
     
     switch (itemIndex) {
         

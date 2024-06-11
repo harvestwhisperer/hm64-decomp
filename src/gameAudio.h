@@ -58,6 +58,7 @@
 #define MILKER_SFX 30
 #define RAIN_SFX 32
 #define TYPHOON_SFX 34
+#define TV_OFF 47
 // 0x3F set by func_80056030
 #define ROOSTER 63
 #define CHICKEN_CLUCK 64

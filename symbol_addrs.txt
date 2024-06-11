@@ -746,6 +746,7 @@ setBitmapFormat = 0x80026E78;
 sinfRadians = 0x800278F0;
 cosfRadians = 0x80027920;
 initRcp = 0x800288D8;
+setInitialWorldRotationAngles = 0x80028EB;
 getSpriteYValueFromDirection = 0x80028820;
 clearFramebuffer = 0x80028920;
 setCameraOrthographicValues = 0x80028D94;
@@ -762,14 +763,15 @@ initializeWorldGraphics = 0x80029170;
 resetSpriteCounter = 0x80029284;
 initializeBitmaps = 0x80029B30;
 initializeGlobalSprites = 0x8002AFE0;
+deactivateSprite = 0x8002B6B8;
 setSpriteShrinkFactor = 0x8002BD0C;
 setSpriteScale = 0x8002BD90;
+adjustSpriteShrinkFactor = 0x8002BE98;
 setSpriteDefaultRGBA = 0x8002C85C;
 initializeNpcSpriteStructs = 0x8002DC70;
 setSpriteAnimation = 0x8002F3F0;
 setSpriteDirection = 0x8002F684;
 setSpriteCollisionBuffers = 0x8002FF9C;
-adjustSpriteShrinkFactor = 0x8002BE98;
 setSpriteStartingCoordinates = 0x8002FD80;
 
 setMapTranslation = 0x8003423C;
@@ -779,6 +781,7 @@ setMapRGBA = 0x80034350;
 adjustMapTranslation = 0x800344E8;
 adjustMapRotation = 0x800345E8;
 adjustMapRGBA = 0x80034668;
+deactivateMapObject = 0x80034E64;
 
 initializeMapContext = 0x8003B870;
 setMapModelAddresses = 0x8003B9DC;
@@ -993,6 +996,8 @@ volumesTable = 0x80116A7C;
 itemFlags = 0x80118380;
 weatherLightingAdjustments = 0x80118B50;
 
+prices = 0x80118EF0;
+
 sfxList = 0x8011C340;
 musPriorityList = 0x8011C4E0;
 auSynConfig = 0x8011C850;
@@ -1177,6 +1182,7 @@ gCamera = 0x801F6F38;
 bitmaps = 0x801F7110; // size:0x3C80
 
 gDayOfWeek = 0x801FAD90;
+spritesToLoadCounter = 0x801FADB2;
 
 nuGfxTaskSpool = 0x801FB5C0;
 gHour = 0x801FB5CA;
@@ -1233,6 +1239,7 @@ gSeconds = 0x80215DF2;
 gTotalCropsShipped = 0x80215DFC;
 gHouseExtensionSelection = 0x8021E6D1;
 gFarmName = 0x8021E6D2;
+bitmapVertices = 0x8021E6E0;
 powerNutBits = 0x80215EB8;
 gElliGrievingCounter = 0x80215EC0;
 
