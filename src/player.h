@@ -11,6 +11,7 @@
 
 // TODO: finish adding actions
 /* actions */
+#define STANDING 0
 #define TOOL_USE 1
 #define THROWING 2
 #define PICKING_UP 4
@@ -20,7 +21,6 @@
 #define WHISTLING 19
 #define DRINKING 20
 #define CASTING_FISHING_ROD 22
-
 
 typedef struct {
     u8 counter;
@@ -55,7 +55,7 @@ typedef struct {
 	u16 action2; // 0x66
 	u16 action3; // 0x68
 	u8 animationState; // 0x6A // animation state
-	u8 unk_6B; // 0x6B
+	u8 unk_6B; // 0x6B // store item
 	u8 unk_6C; // 0x6C // held chicken index
 	u8 direction; // 0x6D
 	u8 unk_6E; // 0x6E
@@ -138,10 +138,10 @@ extern u8 D_802373A8;
 // watering can uses
 extern u8 D_8016FBCD;
 // chicken feed
-extern u16 D_80237410;
+extern u16 chickenFeedQuantity;
 
 // counter until napping animation
-extern u16 D_802226E0;
+extern u16 playerIdleCounter;
 extern u16 gSickDays;
 
 #endif

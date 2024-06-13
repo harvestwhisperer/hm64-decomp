@@ -145,7 +145,7 @@ void func_800CFB38(u8 spriteIndexOffset, u8 animationIndex, f32 x, f32 y, f32 z)
     setSpriteStartingCoordinates(spriteIndexOffset + 0x27, x, y, z);
 
     // rgba
-    func_8002F014(spriteIndexOffset + 0x27, mainMap[0].mapFloats.groundRgba.r, mainMap[0].mapFloats.groundRgba.g, mainMap[0].mapFloats.groundRgba.b, mainMap[0].mapFloats.groundRgba.a);
+    func_8002F014(spriteIndexOffset + 0x27, mainMap[MAIN_MAP_INDEX].mapFloats.groundRgba.r, mainMap[MAIN_MAP_INDEX].mapFloats.groundRgba.g, mainMap[MAIN_MAP_INDEX].mapFloats.groundRgba.b, mainMap[MAIN_MAP_INDEX].mapFloats.groundRgba.a);
     // flags
     func_8002F2FC(spriteIndexOffset + 0x27, animationIndex);
     
@@ -1039,12 +1039,12 @@ u8 func_800D5308(u8 index, u8 arg1, u32 arg2, s32 arg3, s32 arg4) {
 
 u8 func_800D5390(u8 index, u8 arg1, u32 arg2, u16 arg3, u8 arg4) {
     
-    u8 found = 0;
+    u8 found = FALSE;
     int tempBit = 1;
     
     while (index < 10 && !found) {
         if (!(itemInfo[index].flags & 1)) {
-          found = 1;
+          found = TRUE;
         }
         else {
           index++;
@@ -1070,11 +1070,11 @@ u8 func_800D5390(u8 index, u8 arg1, u32 arg2, u16 arg3, u8 arg4) {
 
 u8 func_800D5488(u8 index, u8 arg1, u32 arg2, u16 arg3, u8 arg4) {
     
-    u8 found = 0;
+    u8 found = FALSE;
     
     while (index < 10 && !found) {
         if (!(itemInfo[index].flags & 1)) {
-          found = 1;
+          found = TRUE;
         }
         else {
           index++;
@@ -1086,8 +1086,7 @@ u8 func_800D5488(u8 index, u8 arg1, u32 arg2, u16 arg3, u8 arg4) {
         itemInfo[index].unk_28 = arg2;
         itemInfo[index].flags = arg3 | (arg4 | 1);
         itemInfo[index].unk_26 = 0;
-    }
-    else {
+    } else {
         index = 0xff;
     }
     
@@ -1118,6 +1117,7 @@ void func_800D55E4(u8 index, u8 arg1) {
     if (itemInfo[index].flags & 1) {
         itemInfo[index].unk_2A = arg1;
     }
+    
 }
 
 //INCLUDE_ASM(const s32, "itemHandlers", func_800D5628);

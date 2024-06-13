@@ -141,8 +141,7 @@ bool setupMapModel(u16 index, u16 mapIndex, u32 *modelDataIndex) {
     return result;
 }
 
-// map loading function
-bool func_8003BB14(u16 index, u16 mapIndex) {
+bool loadMap(u16 index, u16 mapIndex) {
 
     bool result = FALSE;
     
@@ -167,6 +166,7 @@ bool func_8003BB14(u16 index, u16 mapIndex) {
     } 
 
     return result;
+
 }
 
 static inline u8* getAddress(u32 offsets[], u32 i) {
@@ -242,6 +242,7 @@ bool func_8003BD60(u16 mapIndex) {
     }
     
     return result;
+
 }
 
 //INCLUDE_ASM(const s32, "system/mapContext", func_8003BDA4);
@@ -251,13 +252,17 @@ bool func_8003BDA4(u16 mapIndex, f32 x, f32 y, f32 z) {
     bool result = FALSE;
     
     if (mapIndex == MAIN_MAP_INDEX && (gMapModelContext[mapIndex].flags & 1) && (gMapModelContext[mapIndex].flags & 2)) {
-        result = TRUE;
+        
         gMapModelContext[mapIndex].unk_4.x = x;
         gMapModelContext[mapIndex].unk_4.y = y;
         gMapModelContext[mapIndex].unk_4.z = z;
+        
+        result = TRUE;
+
     }
     
     return result;
+
 }
 
 
@@ -268,13 +273,17 @@ bool func_8003BE0C(u16 mapIndex, f32 x, f32 y, f32 z) {
     bool result = FALSE;
     
     if (mapIndex == MAIN_MAP_INDEX && (gMapModelContext[mapIndex].flags & 1) && (gMapModelContext[mapIndex].flags & 2)) {
-        result = TRUE;
+    
         gMapModelContext[mapIndex].unk_4.x += x;
         gMapModelContext[mapIndex].unk_4.y += y;
         gMapModelContext[mapIndex].unk_4.z += z;
+
+        result = TRUE;
+    
     }
     
     return result;
+
 }
 
 //INCLUDE_ASM(const s32, "system/mapContext", func_8003BE98);
@@ -284,15 +293,20 @@ bool func_8003BE98(u16 mapIndex, u8 r, u8 g, u8 b, u8 a) {
     bool result = FALSE;
     
     if (mapIndex == MAIN_MAP_INDEX && (gMapModelContext[mapIndex].flags & 1) && (gMapModelContext[mapIndex].flags & 2)) {
+    
         setMapRGBA(gMapModelContext[mapIndex].mainMapIndex, r, g, b, a);
+    
         D_802373F8.r = r;
         D_802373F8.g = g;
         D_802373F8.b = b;
         D_802373F8.a = a;
+
         result = TRUE;
+    
     }
     
     return result;
+
 }
 
 //INCLUDE_ASM(const s32, "system/mapContext", func_8003BF7C);
@@ -317,6 +331,7 @@ bool func_8003BF7C(u16 mapIndex, u8 r, u8 g, u8 b, u8 a, s16 arg5) {
     }
     
     return result;
+
 }
 
 //INCLUDE_ASM(const s32, "system/mapContext", func_8003C084);
@@ -423,15 +438,15 @@ bool func_8003C280(u16 mapIndex, f32 arg1, f32 arg2, f32 arg3, f32 arg4, f32 arg
 
 //INCLUDE_ASM(const s32, "system/mapContext", func_8003C318);
 
-f32 func_8003C318(u16 mapIndex, f32 arg1) {
+f32 func_8003C318(u16 mapIndex, f32 x) {
 
     f32 result = 0.0f;
 
     if (mapIndex == MAIN_MAP_INDEX && (gMapModelContext[mapIndex].flags & 1)) { 
 
-        if (gMapModelContext[mapIndex].unk_10.x < arg1 && gMapModelContext[mapIndex].unk_34.x < arg1) {
+        if (gMapModelContext[mapIndex].unk_10.x < x && gMapModelContext[mapIndex].unk_34.x < x) {
             
-            if (!(arg1 < gMapModelContext[mapIndex].unk_1C.x) || !(arg1 < gMapModelContext[mapIndex].unk_28.x)) {
+            if (!(x < gMapModelContext[mapIndex].unk_1C.x) || !(x < gMapModelContext[mapIndex].unk_28.x)) {
                 result = gMapModelContext[mapIndex].unk_1C.x;
             } 
             
@@ -441,23 +456,24 @@ f32 func_8003C318(u16 mapIndex, f32 arg1) {
     }
     
     return result;
-}
 
+}
 
 //INCLUDE_ASM(const s32, "system/mapContext", func_8003C3E4);
 
 // get z value
-f32 func_8003C3E4(u16 mapIndex, f32 arg1) {
+f32 func_8003C3E4(u16 mapIndex, f32 z) {
 
     f32 result = 0.0f;
     
     if (mapIndex == MAIN_MAP_INDEX && gMapModelContext[mapIndex].flags & 1) {
 
-        if (arg1 < gMapModelContext[mapIndex].unk_10.z && arg1 < gMapModelContext[mapIndex].unk_1C.z) {
+        if (z < gMapModelContext[mapIndex].unk_10.z && z < gMapModelContext[mapIndex].unk_1C.z) {
 
-            if (!(arg1 > gMapModelContext[mapIndex].unk_28.z)) {
+            if (!(z > gMapModelContext[mapIndex].unk_28.z)) {
+                // FIXME: probably not a goto
                 goto label;
-            } else if (!(arg1 > gMapModelContext[mapIndex].unk_34.z)) {
+            } else if (!(z > gMapModelContext[mapIndex].unk_34.z)) {
 label:
                 result = gMapModelContext[mapIndex].unk_28.z;
             }
@@ -479,13 +495,13 @@ bool func_8003C4B0(u16 mapIndex) {
 
     if (mapIndex == MAIN_MAP_INDEX && (gMapModelContext[mapIndex].flags & 1)) {
         func_80034090(gMapModelContext[mapIndex].mainMapIndex);
-        result = TRUE;
         gMapModelContext[mapIndex].flags = 0;
+        result = TRUE;
     }
 
     return result;
-}
 
+}
 
 //INCLUDE_ASM(const s32, "system/mapContext", func_8003C504);
 
@@ -495,8 +511,8 @@ bool func_8003C504(u16 mapIndex) {
 
     if (mapIndex == MAIN_MAP_INDEX && (gMapModelContext[mapIndex].flags & 1) && (gMapModelContext[mapIndex].flags & 4)) {
         func_80034090(gMapModelContext[mapIndex].mainMapIndex);
-        result = TRUE;
         gMapModelContext[mapIndex].flags &= ~(2 | 4);
+        result = TRUE;
     }
 
     return result;
@@ -580,7 +596,6 @@ bool func_8003C5C0(u16 mapIndex, u8 arg1, u8 rotation) {
     
 }
 
-
 //INCLUDE_ASM(const s32, "system/mapContext", func_8003C6E4);
 
 void func_8003C6E4(void) {
@@ -594,7 +609,7 @@ void func_8003C6E4(void) {
             func_80038810(gMapModelContext[i].mainMapIndex);
             func_8003C8D4(&gMapModelContext[i]);
             
-            if (gMapModelContext[i].flags & 0x18) {
+            if (gMapModelContext[i].flags & (0x8 | 0x10)) {
                 func_8003CB3C(i);
             }
 
@@ -602,10 +617,9 @@ void func_8003C6E4(void) {
             D_802373F8.g = mainMap[gMapModelContext[i].mainMapIndex].mapFloats.groundRgba.g;
             D_802373F8.b = mainMap[gMapModelContext[i].mainMapIndex].mapFloats.groundRgba.b;
             D_802373F8.a = mainMap[gMapModelContext[i].mainMapIndex].mapFloats.groundRgba.a;
-        }
         
+        }   
     }
-    
 }
 
 //INCLUDE_ASM(const s32, "system/mapContext", func_8003C8D4);

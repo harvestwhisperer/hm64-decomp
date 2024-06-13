@@ -29,7 +29,7 @@ void func_8006C628(u16, u16);
 // consumable tool counters (seeds, feed)
 extern u8 D_802373A8;
 // chicken feed counter
-extern u16 D_80237410;
+extern u16 chickenFeedQuantity;
 
 // FIXME: part of player struct, but necessary for matching right now
 extern u16 D_801890C8;
@@ -393,12 +393,12 @@ bool checkHaveTool(u8 tool) {
 bool checkHaveKeyItem(u8 item) {
 
     u8 i;
-    bool found = 0;
+    bool found = FALSE;
     
     for (i = 0; i < MAX_KEY_ITEMS && !found; i++) {
 
         if (gPlayer.keyItemSlots[i] == item) {
-            found = 1;
+            found = TRUE;
         }
     }
 
@@ -879,7 +879,7 @@ void func_80068410(void) {
         if (func_800DCAA0(gPlayer.unk_6B)) {
             func_800D55E4(gPlayer.unk_2D, 1);
         }
-        func_800DC7BC(gPlayer.unk_6B);
+        loadShopItemSprite(gPlayer.unk_6B);
         gPlayer.animationState = 5;
     }
     
@@ -1215,33 +1215,32 @@ void func_8006A2E8(void) {
             if (!gPlayer.heldItem && !checkDailyEventBit(0xD)) {
                 
                 if ((gPlayer.flags & 1)) {
-                    setSpriteAnimation(0, 0x204);    
+                    setSpriteAnimation(PLAYER, 0x204);    
                 } else {
                     if (gPlayer.flags & 4) {
-                         setSpriteAnimation(0, 0x244);
+                         setSpriteAnimation(PLAYER, 0x244);
                     } else {
                         if (gPlayer.flags & 0x20) {
-                            setSpriteAnimation(0, 0x244);
+                            setSpriteAnimation(PLAYER, 0x244);
                         } else {
-                            setSpriteAnimation(0, 0);
+                            setSpriteAnimation(PLAYER, 0);
                         }
                     }   
                 }
                 
             } else {
-                setSpriteAnimation(0, 0x18);
+                setSpriteAnimation(PLAYER, 0x18);
             }
             
             if (!(gPlayer.flags & 1)) {
 
-                // set napping animation
-                if (D_802226E0 == 1200) {
+                if (playerIdleCounter == 1200) {
                     gPlayer.action1 = 9;
                     gPlayer.action3 = 0;
                     gPlayer.animationState = 0;
                     gPlayer.action2 = 0xB;
                 } else {
-                    D_802226E0++;
+                    playerIdleCounter++;
                 }
 
             }
@@ -1255,15 +1254,15 @@ void func_8006A2E8(void) {
             
             if (!gPlayer.heldItem && !checkDailyEventBit(0xD)) {
                 if (gPlayer.flags & 1) {
-                   setSpriteAnimation(0, 0x20C);
+                   setSpriteAnimation(PLAYER, 0x20C);
                 } else {
-                    setSpriteAnimation(0, 8);
+                    setSpriteAnimation(PLAYER, 8);
                 }
             } else {
-                setSpriteAnimation(0, 0x20);
+                setSpriteAnimation(PLAYER, 0x20);
             }
             
-            D_802226E0 = 0;
+            playerIdleCounter = 0;
             break;
         
         case 2:
@@ -1274,13 +1273,13 @@ void func_8006A2E8(void) {
                     if (func_80031380(PLAYER)) {
                         setAudio(9);
                     }
-                    setSpriteAnimation(0, 0x214);
+                    setSpriteAnimation(PLAYER, 0x214);
 
                 } else {
                     if (func_80031380(PLAYER)) {
                         setAudio(5);
                     }
-                    setSpriteAnimation(0, 0x10);
+                    setSpriteAnimation(PLAYER, 0x10);
                 }
 
             } else {
@@ -1289,142 +1288,142 @@ void func_8006A2E8(void) {
                     setAudio(5);
                 }
 
-                setSpriteAnimation(0, 0x28);
+                setSpriteAnimation(PLAYER, 0x28);
             }
 
-            D_802226E0 = 0;
+            playerIdleCounter = 0;
             break;
         
         case 3:
             func_8006C384();
-            D_802226E0 = 0;
+            playerIdleCounter = 0;
             break;
         case 4:
             func_8006A714();
-            D_802226E0 = 0;
+            playerIdleCounter = 0;
             break;
         case 5:
             func_8006A7B0();
-            D_802226E0 = 0;
+            playerIdleCounter = 0;
             break;
         case 6:
             func_8006A848();
-            D_802226E0 = 0;
+            playerIdleCounter = 0;
             break;
         case 7:
             func_8006A8C4();
-            D_802226E0 = 0;
+            playerIdleCounter = 0;
             break;
         case 8:
             func_8006A9A8();
-            D_802226E0 = 0;
+            playerIdleCounter = 0;
             break;
         case 9:
             func_8006AA9C();
-            D_802226E0 = 0;
+            playerIdleCounter = 0;
             break;
         case 10:
             func_8006AC4C();
-            D_802226E0 = 0;
+            playerIdleCounter = 0;
             break;
         case 11:
             func_8006ADF4();
             break;
         case 12:
             func_8006AEEC();
-            D_802226E0 = 0;
+            playerIdleCounter = 0;
             break;
         case 13:
             func_8006AFE4();
-            D_802226E0 = 0;
+            playerIdleCounter = 0;
             break;
         case 14:
             func_8006B104();
-            D_802226E0 = 0;
+            playerIdleCounter = 0;
             break;
         case 15:
             func_8006B8BC();
-            D_802226E0 = 0;
+            playerIdleCounter = 0;
             break;
         case 16:
             func_8006B910();
-            D_802226E0 = 0;
+            playerIdleCounter = 0;
             break;
         case 17:
             func_8006B964();
-            D_802226E0 = 0;
+            playerIdleCounter = 0;
             break;
         case 18:
             func_8006B96C();
-            D_802226E0 = 0;
+            playerIdleCounter = 0;
             break;
         case 30:
             func_8006B974();
-            D_802226E0 = 0;
+            playerIdleCounter = 0;
             break;
         case 19:
             func_8006B97C();
-            D_802226E0 = 0;
+            playerIdleCounter = 0;
             break;
         case 20:
             func_8006BA14();
-            D_802226E0 = 0;
+            playerIdleCounter = 0;
             break;
         case 21:
             func_8006BAAC();
-            D_802226E0 = 0;
+            playerIdleCounter = 0;
             break;
         case 22:
             func_8006BBC4();
-            D_802226E0 = 0;
+            playerIdleCounter = 0;
             break;
         case 23:
             handleFishingRodUse();
-            D_802226E0 = 0;
+            playerIdleCounter = 0;
             break;
         case 24:
             func_8006C12C();
-            D_802226E0 = 0;
+            playerIdleCounter = 0;
             break;
         case 25:
             func_8006C134();
-            D_802226E0 = 0;
+            playerIdleCounter = 0;
             break;
         case 26:
             func_8006AB90();
-            D_802226E0 = 0;
+            playerIdleCounter = 0;
             break;
         case 27:
             func_8006C13C();
-            D_802226E0 = 0;
+            playerIdleCounter = 0;
             break;
         case 28:
             func_8006C1DC();
-            D_802226E0 = 0;
+            playerIdleCounter = 0;
             break;
         case 29:
             func_8006B4D4();
-            D_802226E0 = 0;
+            playerIdleCounter = 0;
             break;
         case 31:
             func_8006B4DC();
-            D_802226E0 = 0;
+            playerIdleCounter = 0;
             break;
         case 32:
             func_8006B584();
-            D_802226E0 = 0;
+            playerIdleCounter = 0;
             break;
         case 33:
             func_8006B61C();
-            D_802226E0 = 0;
+            playerIdleCounter = 0;
             break;
         case 34:
             func_8006B6EC();
-            D_802226E0 = 0;
+            playerIdleCounter = 0;
             break;
         case 35:
             func_8006B77C();
-            D_802226E0 = 0;
+            playerIdleCounter = 0;
             break;
     }
     
@@ -1680,9 +1679,8 @@ void func_8006ADF4(void) {
                 gPlayer.animationState++;
                 break;
             case 2:
-                // counter until napping animation
-                D_802226E0++;
-                if (D_802226E0 == 1800) {
+                playerIdleCounter++;
+                if (playerIdleCounter == 1800) {
                     func_8002F2FC(PLAYER, 0x1E2);
                     gPlayer.animationState++;
                 }
@@ -1693,7 +1691,7 @@ void func_8006ADF4(void) {
                 break;
             default:
                 resetAction();
-                D_802226E0 = 0;
+                playerIdleCounter = 0;
                 break;
             case 3:
                 break;
@@ -1737,12 +1735,13 @@ void func_8006AFE4(void) {
         switch (gPlayer.animationState) {  
             case 0:
                 if (!func_800DCAA0(gPlayer.unk_6B)) {
-                    setSpriteAnimation(PLAYER, 0);
+                    setSpriteAnimation(PLAYER, STANDING);
                     break;
                 }
                 setSpriteAnimation(PLAYER, 0x1AD);
                 break;
             case 1:
+                // shop.c
                 func_800DC750(gPlayer.unk_6B);
                 gPlayer.action3 = 0;
                 func_80059334();
@@ -1775,7 +1774,7 @@ void func_8006B4DC(void) {
         
         if (gPlayer.animationState == 0) {
             
-            func_8002F2FC(0, 0x1DB);
+            func_8002F2FC(PLAYER, 0x1DB);
             
             gPlayer.animationState = 1;
             gPlayer.heldItem = 0xCA;
@@ -1822,11 +1821,10 @@ void func_8006B61C(void) {
             
         } else {
 
-            setSpriteAnimation(PLAYER, 0);
+            setSpriteAnimation(PLAYER, STANDING);
             gItemBeingHeld = 0xFF;
 
             if (!checkDailyEventBit(0x45) && !checkDailyEventBit(0x47) && !checkDailyEventBit(0x48)) {
-    
                 resetAction();
             }
 
@@ -1874,8 +1872,8 @@ void func_8006B77C(void) {
                 
                 if (gPlayer.heldItem == 0xDA) {
                     
-                    acquireKeyItem(4);
-                    setSpecialDialogueBit(0xB8);
+                    acquireKeyItem(BROKEN_MUSIC_BOX);
+                    setSpecialDialogueBit(HAVE_BROKEN_MUSIC_BOX_DIALOGUE);
                     
                 }
     
@@ -1896,7 +1894,7 @@ void func_8006B8BC(void) {
     if ((func_8002FECC(PLAYER)) || (gPlayer.animationState == 0)) {
         
         if (gPlayer.animationState == 0) {
-             setSpriteAnimation(0U, 0x21C);
+             setSpriteAnimation(PLAYER, 0x21C);
         }
     }
     
@@ -1909,7 +1907,7 @@ void func_8006B910(void) {
     if ((func_8002FECC(PLAYER)) || (gPlayer.animationState == 0)) {
         
         if (gPlayer.animationState == 0) {
-             setSpriteAnimation(0U, 0x25C);
+             setSpriteAnimation(PLAYER, 0x25C);
         }
     }
     
@@ -1974,10 +1972,10 @@ void func_8006BAAC(void) {
             case 1:
 
                 if (func_800D5A6C(gPlayer.heldItem) & 0x4000) {
-                    func_8002F2FC(0, 0x2B3);
+                    func_8002F2FC(PLAYER, 0x2B3);
                     gAlcoholTolerance += adjustValue(gAlcoholTolerance, 1, 0xFF);
                 } else {
-                    func_8002F2FC(0, 0x1B6);
+                    func_8002F2FC(PLAYER, 0x1B6);
                 }
                 
                 gPlayer.heldItem = 0;
@@ -2001,7 +1999,7 @@ void func_8006BBC4(void) {
         
         if (gPlayer.animationState == 0) {
             
-            setSpriteAnimation(0, 0x26A);
+            setSpriteAnimation(PLAYER, 0x26A);
             func_800D55E4(gPlayer.unk_2D, 1);
             gPlayer.heldItem = 0;
             gPlayer.animationState++;
@@ -2321,7 +2319,7 @@ void func_8006E0D4(void) {
 
     switch (gPlayer.animationState) {
         case 0:
-            setSpriteAnimation(PLAYER, 0);
+            setSpriteAnimation(PLAYER, STANDING);
             break;
         case 1:
             setSpriteAnimation(PLAYER, 0x169);
@@ -2335,8 +2333,8 @@ void func_8006E0D4(void) {
                 if (!func_80067A24(0)) {
                     resetAction();
                 }
-                D_80237410 += adjustValue(D_80237410, -1, 999);
-                if (!D_80237410) {
+                chickenFeedQuantity += adjustValue(chickenFeedQuantity, -1, 999);
+                if (!chickenFeedQuantity) {
                     gPlayer.currentTool = 0;
                 }
             }
@@ -2368,7 +2366,7 @@ void func_8006E240(void) {
 
     switch (gPlayer.animationState) {                           
         case 0:
-            setSpriteAnimation(PLAYER, 0);
+            setSpriteAnimation(PLAYER, STANDING);
             func_80099DE8();
             break;
         case 1:
@@ -2404,7 +2402,7 @@ void func_8006E574(void) {
 
     switch (gPlayer.animationState) {
         case 0:
-            setSpriteAnimation(PLAYER, 0);
+            setSpriteAnimation(PLAYER, STANDING);
             func_800305CC(PLAYER, 0.0f, 8.0f, 0);
             func_80085C94();
             break;
@@ -2437,7 +2435,7 @@ void func_8006E678(void) {
 
             if (gPlayer.bottleContents == 0) {
                 
-                setSpriteAnimation(PLAYER, 0);
+                setSpriteAnimation(PLAYER, STANDING);
                 func_80099DE8();
                 
             } else {

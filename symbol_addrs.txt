@@ -766,6 +766,7 @@ initializeGlobalSprites = 0x8002AFE0;
 deactivateSprite = 0x8002B6B8;
 setSpriteShrinkFactor = 0x8002BD0C;
 setSpriteScale = 0x8002BD90;
+deactivateSprites = 0x8002E1B8;
 adjustSpriteShrinkFactor = 0x8002BE98;
 setSpriteDefaultRGBA = 0x8002C85C;
 initializeNpcSpriteStructs = 0x8002DC70;
@@ -780,11 +781,14 @@ setMapScale = 0x80034298;
 setMapRGBA = 0x80034350;
 adjustMapTranslation = 0x800344E8;
 adjustMapRotation = 0x800345E8;
+adjustMapScale = 0x80034568;
 adjustMapRGBA = 0x80034668;
+setMapObject = 0x80034C40;
 deactivateMapObject = 0x80034E64;
 
 initializeMapContext = 0x8003B870;
 setMapModelAddresses = 0x8003B9DC;
+loadMap = 0x8003BB14;
 
 setupMapModel = 0x8003BA44;
 
@@ -805,6 +809,7 @@ setSfxPan = 0x8003D8A0;
 stopSfx = 0x8003D948;
 
 setDialogueVariable = 0x800430DC;
+setSpecialDialogueBitsPointer = 0x80043138;
 
 initializeCutsceneMaps = 0x80046860;
 mainLoopCutsceneHandler = 0x80046D78;
@@ -886,6 +891,7 @@ initializeHorse = 0x80088998;
 setAnimalLocations = 0x80088A28;
 setDogLocation = 0x80088AAC;
 setHorseLocation = 0x80088B34;
+setFarmAnimalLocation = 0x80088718;
 
 setFarmCutscenes = 0x800A1364;
 setMountain1Cutscenes = 0x800A16D4;
@@ -910,7 +916,9 @@ calculateFieldScore = 0x800AC95C;
 calculateShippingScore = 0x800AC9CC;
 
 initializeWaveTable = 0x800ACAB0;
-setSongWithVolume = 0x800ACBEC;
+setCurrentSong = 0x800ACB04;
+stopCurrentSong = 0x800ACB8C;
+setSongVolume = 0x800ACBEC;
 setSongWithDefaultSpeed = 0x800ACB5C;
 setAudio = 0x800ACC50;
 checkDefaultSongChannelOpen = 0x800ACBB8;
@@ -941,12 +949,20 @@ countPinkCatMintFlowersFarm = 0x800DC0F8;
 countPinkCatMintFlowersGreenhouse = 0x800DC170;
 setForecast = 0x800DC4F0;
 setWeatherLighting = 0x800DC694;
+
+checkShopItemShouldBeDisplayed = 0x800DDDFC;
+loadShopItemSprite = 0x800DC7BC;
 handlePurchase = 0x800DD44C;
 initializeTitleScreen = 0x800DE3C0;
 loadDogTitleSprite = 0x800DFF64;
 
 titleScreenMainLoopCallback = 0x800E00A4;
 updateGrassAnimation = 0x800E0FEC;
+
+initializeNamingScreen = 0x800ED8A0;
+loadNameSelectionSprites = 0x800EE678;
+deactivateNamingScreenSprites = 0x800F009C;
+loadSeasonSelectionSprites = 0x800F06D8;
 
 
 // data
@@ -986,6 +1002,8 @@ cutsceneCallbacksTable = 0x801133D0; // size:0x62
 levelFlags = 0x80114460;
 levelToMusicMappings = 0x801144C0;
 cutsceneMapAddresses = 0x80114AF0;
+
+farmAnimalStartingCoordinates = 0x80114A50; // size:0x60
 
 waveTableAddresses = 0x801162F0;
 songRomAddresses = 0x801162FC;
@@ -1091,6 +1109,7 @@ tvContext = 0x80170270;
 annCliffNewlywedCounter = 0x80170444;
 
 dialogueIcons = 0x801806D0; // size:0x40
+unknownRGBA = 0x80180718; // size:0x10
 
 cutsceneMaps = 0x801808B0;
 
@@ -1220,6 +1239,7 @@ gCurrentGameIndex = 0x80205200;
 stepMainLoop = 0x80205208;
 mariaHarrisBabyAge = 0x80205201;
 gfxTaskNo = 0x8020520A;
+gameLoopContext = 0x80205230;
 gForecast = 0x80205238;
 gWifePregnancyCounter = 0x802055D0;
 karenKaiNewlywedCounter = 0x802055D1;
@@ -1231,8 +1251,9 @@ frameCount = 0x80205634;
 gMapWithSeasonIndex = 0x80205635;
 gMaximumStamina = 0x8020563F;
 gAverageFarmAnimalAffection = 0x8020563A;
-
 mainLoopCallbackCurrentIndex = 0x8020564A;
+
+dialogueAddresses = 0x80205760; // size:0x690
 
 gSeconds = 0x80215DF2;
 
@@ -1243,6 +1264,7 @@ bitmapVertices = 0x8021E6E0;
 powerNutBits = 0x80215EB8;
 gElliGrievingCounter = 0x80215EC0;
 
+playerIdleCounter = 0x802226E0;
 pendingGfxNum = 0x802226E8;
 nusched = 0x80222B40;
 
@@ -1250,6 +1272,7 @@ gEntranceIndex = 0x802231C0;
 mapVertices = 0x80223380; // size:0x14000
 
 dailyShippingBinValue = 0x80237388;
+chickenFeedQuantity = 0x80237410;
 
 gWeather = 0x802373A9;
 gItemBeingHeld = 0x802373C8;
@@ -1269,6 +1292,5 @@ worldMatrices = 0x80237460; // size:0x5A0
 D_80119040 = 0x80119040; // size:0x2A0
 D_80119628 = 0x80119628; // size:0x38
 D_80119660 = 0x80119660; // size:0xE0
-D_80180718 = 0x80180718; // size:0x10
 D_8020563B = 0x8020563B; // size:0x4
 D_80237420 = 0x80237420; // size:0x20

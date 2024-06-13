@@ -6,8 +6,6 @@
 #define MAX_DIALOGUE_BOXES 6
 #define MAX_DIALOGUE_BANKS 73
 
-#define DIALOGUE_ICONS_TEXTURES_VADDR 0x8023B400
-
 // TODO: add japanese characters
 // 1 - 0xA0 = Japanese characters
 

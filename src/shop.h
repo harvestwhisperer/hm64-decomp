@@ -18,12 +18,12 @@ typedef struct {
     u8 unk_5; // buy/don't buy
 } ShopContext;
 
-extern void func_800DC750(u8);
-extern void func_800DC7BC(u8);                            
+extern void func_800DC750(u8 storeItemIndex);
+extern void loadShopItemSprite(u8);                            
 extern void func_800DC9C0(u8);
 extern void func_800DC9FC(u8);    
 extern u8 func_800DCAA0(u8 index);
-extern u8 func_800DDDFC(u16);
+extern u8 checkShopItemShouldBeDisplayed(u16);
 
 extern ShopContext shopContext;
 

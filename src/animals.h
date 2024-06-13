@@ -14,6 +14,7 @@
 // TODO: finish adding animal types
 #define CALF 1
 #define ADULT_COW 2
+#define UNUSED_ANIMAL_TYPE 3
 #define INFANT_SHEEP 4
 #define ADULT_SHEEP 5
 #define SHEARED_SHEEP 6

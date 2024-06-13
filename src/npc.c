@@ -12,6 +12,7 @@
 #include "game.h"
 #include "gameStatus.h"
 #include "level.h"
+#include "spriteIndices.h"
 #include "weather.h"
 
 // bss
@@ -1522,7 +1523,7 @@ INCLUDE_ASM(const s32, "npc", func_800858D4);
 
 bool func_80085C94(void) {
 
-    bool found = 0;
+    bool found = FALSE;
     u8 i = 0;
     
     npcTalkingTo = 0xFF;
@@ -1531,9 +1532,9 @@ bool func_80085C94(void) {
 
         if (npcInfoArray[i].flags & 4) {
             if (!animatedSprites[npcInfoArray[i].spriteIndex].unk_58) {
-                found = 1;
                 npcInfoArray[i].movingFlag = 0x20;
                 npcTalkingTo = i;
+                found = TRUE;
             }
         }  
 
@@ -1565,8 +1566,8 @@ bool func_80085D48(int index, u16 arg1) {
         // FIXME: 
         // check if girl and load heart icon
         if ((index < 5) && (index >= (result = 0))) {
-            func_8003F910(0, 0x78, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsIndexSegmentRomStart, &_dialogueIconsIndexSegmentRomEnd, (void*)DIALOGUE_ICONS_TEXTURES_VADDR, (void*)0x8023CC00, (void*)0x8023CE00, (void*)0x8023D200, 0, (npcAffection[index] / 52) + 5, 0xFE, 106.0f, -15.0f, 0);
-            func_8003F910(1, 0x78, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsIndexSegmentRomStart, &_dialogueIconsIndexSegmentRomEnd, (void*)DIALOGUE_ICONS_TEXTURES_VADDR, (void*)0x8023CC00, (void*)0x8023CE00, (void*)0x8023D200, 0, (npcAffection[index] / 52) + 5, 0xFE, 106.0f, -15.0f, 0);
+            func_8003F910(0, 0x78, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsIndexSegmentRomStart, &_dialogueIconsIndexSegmentRomEnd, (void*)DIALOGUE_ICONS_TEXTURES_VADDR_START, (void*)DIALOGUE_ICONS_TEXTURES_VADDR_END, (void*)DIALOGUE_ICONS_INDEX_VADDR_START, (void*)DIALOGUE_ICONS_INDEX_VADDR_END, 0, (npcAffection[index] / 52) + 5, 0xFE, 106.0f, -15.0f, 0);
+            func_8003F910(1, 0x78, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsIndexSegmentRomStart, &_dialogueIconsIndexSegmentRomEnd, (void*)DIALOGUE_ICONS_TEXTURES_VADDR_START, (void*)DIALOGUE_ICONS_TEXTURES_VADDR_END, (void*)DIALOGUE_ICONS_INDEX_VADDR_START, (void*)DIALOGUE_ICONS_INDEX_VADDR_END, 0, (npcAffection[index] / 52) + 5, 0xFE, 106.0f, -15.0f, 0);
         }
 
         // D_80114960 = conversation indices

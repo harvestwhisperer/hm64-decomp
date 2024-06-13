@@ -7,6 +7,12 @@
 
 #define MAX_MAPS 1
 
+/* flags */
+#define MAP_ACTIVE 1
+
+#define OBJECT_ACTIVE 1
+#define SPRITE_ACTIVE 1
+
 typedef struct {
     void *timg;
     void *pal;
@@ -177,7 +183,7 @@ typedef struct {
     u16 unk_C; // 0x54 // vertex count or part of map size
     u16 height; // 0x56
     u8 unk_10; // 0x58 // set from *mainMap.unk_c
-    u8 unk_11; // counter // 0x59
+    u8 mapObjectCount; // 0x59
     u16 flags; // 0x5A , 0x8 = RGBA
 } UnknownMapStruct9;
 
@@ -230,7 +236,7 @@ extern bool setMapRGBA(u16 arg0, u8 arg1, u8 arg2, u8 arg3, u8 arg4);
 extern bool func_800343FC(u16 mapIndex, u8 arg1, u8 arg2, u8 arg3, u8 arg4, f32 arg5, f32 arg6, f32 arg7, u8 arg8);
 extern bool adjustMapRotation(u16 mapIndex, f32 arg1, f32 arg2, f32 arg3);
 extern bool func_80034738(u16 mapIndex, u8 r, u8 g, u8 b, u8 a, s16 arg5);
-extern bool func_80034C40(u16 mapIndex, u8 index, u16 spriteIndex, u16 arg3, f32 arg4, f32 arg5, f32 arg6, u8 arg7, u8 arg8, u8 arg9, u8 argA);
+extern bool setMapObject(u16 mapIndex, u8 index, u16 spriteIndex, u16 arg3, f32 arg4, f32 arg5, f32 arg6, u8 arg7, u8 arg8, u8 arg9, u8 argA);
 extern bool func_80034D64(u16 arg0, u8 arg1, u16 arg2, u16 arg3);
 extern bool func_80034DC8(u16, u8, u16);
 extern bool deactivateMapObject(u16, u8);     

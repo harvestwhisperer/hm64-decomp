@@ -12,6 +12,7 @@
 #define END_OF_DAILY_HOUSE_EXTENSION_WORK 0xC
 // 0xD = something to do with carrying
 // 0xE = not 6 am
+// 0xF and 0x10 = night time
 // 0x11 = music started?
 #define SUCCESSFUL_PROPOSAL 0x14
 // 0x18 = thanksgiving mayor house
@@ -145,6 +146,7 @@
 #define GOT_MARRIED_DIALOGUE 0x83
 #define MARRIED_TO_POPURI_DIALOGUE 0x8C
 #define MARRIED_TO_ELLI_DIALOGUE 0x8D
+#define HAVE_BROKEN_MUSIC_BOX_DIALOGUE 0xB8
 #define SPIRIT_FESTIVAL_RECRUITING_MARIA 0x138
 #define SPIRIT_FESTIVAL_RECRUITING_POPURI 0x139
 #define SPIRIT_FESTIVAL_RECRUITING_ELLI 0x13A

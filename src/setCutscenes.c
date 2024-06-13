@@ -64,7 +64,7 @@ extern u8 D_8016FE6F;
 extern u8 bakeryCardPoints;
 extern u8 D_801C4216;
 // chicken feed count
-extern u16 D_80237410;
+extern u16 chickenFeedQuantity;
 
 // evaluation fish caught score
 extern u16 D_801D62C4;
@@ -1130,7 +1130,7 @@ u16 func_8009C324(u8 arg0) {
         }
         
         if (!set) {
-            if (!checkLifeEventBit(0x85) && (5 < gHour && gHour < 12) && func_8009B564() >= 5 && D_80237410 < 990) {
+            if (!checkLifeEventBit(0x85) && (5 < gHour && gHour < 12) && func_8009B564() >= 5 && chickenFeedQuantity < 990) {
                 setLifeEventBit(0x85);
                 gCutsceneIndex = 0xE0;
                 loadCutscene(arg0);
@@ -1139,7 +1139,7 @@ u16 func_8009C324(u8 arg0) {
         }
 
         if (!set) {
-            if (!checkLifeEventBit(0x86) && (gSeason && gSeason < 4) && (5 < gHour && gHour < 12) && gTotalCropsShipped >= 900 && D_80237410 < 990) {
+            if (!checkLifeEventBit(0x86) && (gSeason && gSeason < 4) && (5 < gHour && gHour < 12) && gTotalCropsShipped >= 900 && chickenFeedQuantity < 990) {
                 setLifeEventBit(0x86);
                 gCutsceneIndex = 0xE1;
                 loadCutscene(arg0);

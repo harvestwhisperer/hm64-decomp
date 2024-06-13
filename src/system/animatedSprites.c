@@ -198,9 +198,9 @@ bool func_8002E108(u16 index) {
     return result;
 }
 
-//INCLUDE_ASM(const s32, "system/animatedSprites", func_8002E1B8);
+//INCLUDE_ASM(const s32, "system/animatedSprites", deactivateSprite);
  
-void func_8002E1B8(void) {
+void deactivateSprites(void) {
 
     u16 i = 0;
     u16 temp;
@@ -622,6 +622,7 @@ bool func_8002F594(u16 index) {
     u16 temp;
 
     if (index < MAX_ANIMATED_SPRITES) {
+
         if ((animatedSprites[index].flags & 1) && (animatedSprites[index].flags & 4)) {
             
             if (animatedSprites[index].flags & 8) {
@@ -636,6 +637,7 @@ bool func_8002F594(u16 index) {
             } else {
                 animatedSprites[index].flags &= ~0x1000;
             }
+
         }
     }
     
@@ -708,7 +710,7 @@ void func_8002F7C8(u8 r, u8 g, u8 b, u8 a) {
             if (i < MAX_ANIMATED_SPRITES && animatedSprites[i].flags & 4) {
                 func_8002C914(animatedSprites[i].globalSpriteIndex, r, g, b, a);
                 if (characterSprites[animatedSprites[i].characterIndex].shadowSpriteIndex != 0xFF) {
-                    func_8002C914(animatedSprites[i].shadowSpriteIndex, r, g, b, 0x60);
+                    func_8002C914(animatedSprites[i].shadowSpriteIndex, r, g, b, SHADOW_ALPHA);
                 }
             }
         }
@@ -722,12 +724,17 @@ void func_8002F8F0(u8 r, u8 g, u8 b, u8 a, s16 arg4) {
     u16 i;
 
     for (i = 0; i < MAX_ANIMATED_SPRITES; i++) {
+
         if (animatedSprites[i].flags & 1 && animatedSprites[i].flags & 8) {
+        
             if (i < MAX_ANIMATED_SPRITES && animatedSprites[i].flags & 4) {
+        
                 func_8002C1C0(animatedSprites[i].globalSpriteIndex, r, g, b, a, arg4);
+        
                 if (characterSprites[animatedSprites[i].characterIndex].shadowSpriteIndex != 0xFF) {
                     func_8002C1C0(animatedSprites[i].shadowSpriteIndex, r, g, b, 0x60, arg4);
                 }
+        
             }
         }
     }
@@ -740,17 +747,23 @@ bool func_8002FA2C(u16 index) {
     bool result = FALSE;
 
     if (index < MAX_ANIMATED_SPRITES) {
+
         if (animatedSprites[index].flags & 1 && animatedSprites[index].flags & 8) {
+            
             animatedSprites[index].flags &= ~( 0x8 | 0x2000);
             deactivateSprite(animatedSprites[index].globalSpriteIndex);
+            
             if (characterSprites[animatedSprites[index].characterIndex].shadowSpriteIndex != 0xFF) {
                 deactivateSprite(animatedSprites[index].shadowSpriteIndex);
             }
+
             result = TRUE;
+
         }
     }
 
     return result;
+
 }
 
 //INCLUDE_ASM(const s32, "system/animatedSprites", func_8002FAFC);
@@ -831,6 +844,7 @@ bool func_8002FCB4(u16 index, u8 flag) {
     bool result = FALSE;
 
     if (index < MAX_ANIMATED_SPRITES) {
+
         if ((animatedSprites[index].flags & 1) && (animatedSprites[index].flags & 8)) {
 
             if (flag) {
@@ -843,7 +857,9 @@ bool func_8002FCB4(u16 index, u8 flag) {
 
         }
     }
+
     return result;
+    
 }
 
 //INCLUDE_ASM(const s32, "system/animatedSprites", func_8002FD24);
@@ -859,7 +875,9 @@ bool func_8002FD24(u16 index) {
             result = !temp;
         }
     }
+
     return result;
+
 }
 
 //INCLUDE_ASM(const s32, "system/animatedSprites", setSpriteStartingCoordinates);
@@ -870,10 +888,13 @@ bool setSpriteStartingCoordinates(u16 spriteIndex, f32 x, f32 y, f32 z) {
     
     if (spriteIndex < MAX_ANIMATED_SPRITES) {
         if ((animatedSprites[spriteIndex].flags & 1) && !(animatedSprites[spriteIndex].flags & 0x1000)) {
-            result = TRUE;
+            
             animatedSprites[spriteIndex].startingCoordinates.x = x;
             animatedSprites[spriteIndex].startingCoordinates.y = y;
             animatedSprites[spriteIndex].startingCoordinates.z = z;
+            
+            result = TRUE;
+
         }
     }
 
@@ -889,11 +910,14 @@ bool func_8002FE10(u16 spriteIndex, f32 x, f32 y, f32 z, f32 arg4) {
     
     if (spriteIndex < MAX_ANIMATED_SPRITES) {
         if ((animatedSprites[spriteIndex].flags & 1) && (animatedSprites[spriteIndex].flags & 8) && !(animatedSprites[spriteIndex].flags & 0x1000)) {
-            result = TRUE;
+            
             animatedSprites[spriteIndex].currentCoordinates.x = x;
             animatedSprites[spriteIndex].currentCoordinates.y = y;
             animatedSprites[spriteIndex].currentCoordinates.z = z;
             animatedSprites[spriteIndex].unk_4C = arg4 / 2.0f;
+            
+            result = TRUE;
+
         }
     }
 
@@ -966,9 +990,9 @@ bool func_8002FFF4(u16 npcIndex, u8 arg1, u8 arg2) {
 
     if (npcIndex < MAX_CHARACTER_SPRITES) {
         if (characterSprites[npcIndex].flags & 1) {
-            result = TRUE;
             characterSprites[npcIndex].unk_1C = arg1;
             characterSprites[npcIndex].unk_1E = arg2;
+            result = TRUE;
         }
     }
 

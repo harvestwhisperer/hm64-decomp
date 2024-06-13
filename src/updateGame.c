@@ -70,7 +70,7 @@ void func_800D7C20(void) {
         } else if (!(checkDailyEventBit(0x10)) && gCurrentSongIndex != 0xFF && checkDefaultSongChannelOpen(gCurrentSongIndex)) {
 
             setLevelAudio(gBaseMapIndex, gSeason, gHour);
-            setSongWithVolume(gCurrentSongIndex, gSongVolume);
+            setSongVolume(gCurrentSongIndex, gSongVolume);
  
             setDailyEventBit(0x10);
 

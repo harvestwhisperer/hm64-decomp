@@ -58,7 +58,7 @@ void initializeGlobalSprites(void) {
 
 bool func_8002B138(u16 index, u32 romTextureStart, u32 romTextureEnd, u32 romAssetIndexStart, u32 romAssetIndexEnd, 
     u32 romSpritesheetIndexStart, u32 romSpritesheetIndexEnd, u8* texture1Vaddr, u8* texture2Vaddr, u16* paletteVaddr, u16* animationVaddr, 
-    u8* spriteToPaletteVaddr, u32* spritesheetIndexVaddr, u8 assetType, u8 argE) {
+    u8* spriteToPaletteVaddr, u32* spritesheetIndexVaddr, u8 assetType, u8 flag) {
 
     u32 assetIndex[8];
     bool result = FALSE;
@@ -108,7 +108,7 @@ bool func_8002B138(u16 index, u32 romTextureStart, u32 romTextureEnd, u32 romAss
 
             }
 
-            if (!argE) {
+            if (!flag) {
                 globalSprites[index].flags2 |= 0x200;
             }
 
@@ -119,7 +119,6 @@ bool func_8002B138(u16 index, u32 romTextureStart, u32 romTextureEnd, u32 romAss
         }
     
     }
-
 
     return result;
 
@@ -168,36 +167,36 @@ bool func_8002B36C(u16 index, u32* unknownAssetIndexPtr, u32* spritesheetIndexPt
 
 //INCLUDE_ASM(const s32, "system/globalSprites", func_8002B50C);
 
-bool func_8002B50C(u16 index, u32* unknownAssetIndexPtr, u32* spritesheetIndexPtr, u32* paletteIndexPtr, u8* spriteToPaletteMappingPtr, u32 romTexturePtr, u8* texturePtr, u8* texture2Ptr) {
+bool func_8002B50C(u16 spriteIndex, u32* unknownAssetIndexPtr, u32* spritesheetIndexPtr, u32* paletteIndexPtr, u8* spriteToPaletteMappingPtr, u32 romTexturePtr, u8* texturePtr, u8* texture2Ptr) {
     
     bool result = FALSE;
 
-    if (index < MAX_ACTIVE_SPRITES) {
+    if (spriteIndex < MAX_ACTIVE_SPRITES) {
 
-        if (!(globalSprites[index].flags2 & 1)) {
+        if (!(globalSprites[spriteIndex].flags2 & 1)) {
 
             // animation index
-            globalSprites[index].unknownAssetIndexPtr = unknownAssetIndexPtr;
-            globalSprites[index].spritesheetIndexPtr = spritesheetIndexPtr;
-            globalSprites[index].paletteIndexPtr = paletteIndexPtr;
-            globalSprites[index].spriteToPaletteMappingPtr = spriteToPaletteMappingPtr;
-            globalSprites[index].texturePtr = texturePtr;
-            globalSprites[index].texture2Ptr = texture2Ptr;
-            globalSprites[index].romTexturePtr = romTexturePtr;
+            globalSprites[spriteIndex].unknownAssetIndexPtr = unknownAssetIndexPtr;
+            globalSprites[spriteIndex].spritesheetIndexPtr = spritesheetIndexPtr;
+            globalSprites[spriteIndex].paletteIndexPtr = paletteIndexPtr;
+            globalSprites[spriteIndex].spriteToPaletteMappingPtr = spriteToPaletteMappingPtr;
+            globalSprites[spriteIndex].texturePtr = texturePtr;
+            globalSprites[spriteIndex].texture2Ptr = texture2Ptr;
+            globalSprites[spriteIndex].romTexturePtr = romTexturePtr;
 
-            globalSprites[index].flags2 = 5;
-            globalSprites[index].flags1 = 0;
+            globalSprites[spriteIndex].flags2 = 5;
+            globalSprites[spriteIndex].flags1 = 0;
 
-            globalSprites[index].paletteIndex = 0;
-            globalSprites[index].unk_92 = 0;
+            globalSprites[spriteIndex].paletteIndex = 0;
+            globalSprites[spriteIndex].unk_92 = 0;
 
-            setSpriteShrinkFactor(index, 0, 0, 0);
-            setSpriteScale(index, 1.0f, 1.0f, 1.0f);
-            func_8002BE14(index, 0, 0, 0);
-            setSpriteDefaultRGBA(index, 0xFF, 0xFF, 0xFF, 0xFF);
-            func_8002C680(index, 2, 2);
-            func_8002C6F8(index, 2);
-            func_8002C7EC(index, 3);
+            setSpriteShrinkFactor(spriteIndex, 0, 0, 0);
+            setSpriteScale(spriteIndex, 1.0f, 1.0f, 1.0f);
+            func_8002BE14(spriteIndex, 0, 0, 0);
+            setSpriteDefaultRGBA(spriteIndex, 0xFF, 0xFF, 0xFF, 0xFF);
+            func_8002C680(spriteIndex, 2, 2);
+            func_8002C6F8(spriteIndex, 2);
+            func_8002C7EC(spriteIndex, 3);
             
             result = TRUE;
             
@@ -210,13 +209,13 @@ bool func_8002B50C(u16 index, u32* unknownAssetIndexPtr, u32* spritesheetIndexPt
 
 //INCLUDE_ASM(const s32, "system/globalSprites", deactivateSprite);
 
-bool deactivateSprite(u16 index) {
+bool deactivateSprite(u16 spriteIndex) {
 
     bool result = FALSE;
 
-    if (index < MAX_ACTIVE_SPRITES) {
-        if (globalSprites[index].flags2 & 1) {
-            globalSprites[index].flags2 &= ~(1 | 2);
+    if (spriteIndex < MAX_ACTIVE_SPRITES) {
+        if (globalSprites[spriteIndex].flags2 & 1) {
+            globalSprites[spriteIndex].flags2 &= ~(1 | 2);
             result = TRUE;
         }        
     }
@@ -292,48 +291,48 @@ bool func_8002B80C(u16 spriteIndex, u16 offset, u8 arg2) {
 
 //INCLUDE_ASM(const s32, "system/globalSprites", func_8002B8E0);
 
-bool func_8002B8E0(u16 index, u8 arg1, void* arg2) {
+bool func_8002B8E0(u16 spriteIndex, u8 arg1, void* arg2) {
 
     bool result = FALSE;
     u16 *temp;
     
-    if (index < MAX_ACTIVE_SPRITES && globalSprites[index].flags2 & 1 && !(globalSprites[index].flags2 & 2)) {
+    if (spriteIndex < MAX_ACTIVE_SPRITES && globalSprites[spriteIndex].flags2 & 1 && !(globalSprites[spriteIndex].flags2 & 2)) {
 
-        globalSprites[index].unknownAssetPtr = arg2;
+        globalSprites[spriteIndex].unknownAssetPtr = arg2;
 
-        globalSprites[index].unk_91 = 0;
-        globalSprites[index].unk_92 = 0;
+        globalSprites[spriteIndex].unk_91 = 0;
+        globalSprites[spriteIndex].unk_92 = 0;
 
-        globalSprites[index].flags2 &= ~0x40;
-        globalSprites[index].flags2 |= 2;
+        globalSprites[spriteIndex].flags2 &= ~0x40;
+        globalSprites[spriteIndex].flags2 |= 2;
 
         switch (arg1) {
             case 0xFF:
-                globalSprites[index].unk_90 = 0;
-                globalSprites[index].flags2 &= ~0x10;
-                globalSprites[index].flags2 |= 8;
+                globalSprites[spriteIndex].unk_90 = 0;
+                globalSprites[spriteIndex].flags2 &= ~0x10;
+                globalSprites[spriteIndex].flags2 |= 8;
                 break;
             case 0xFE:
-                globalSprites[index].unk_90 = 0;
-                globalSprites[index].flags2 |= 8 | 0x10;
+                globalSprites[spriteIndex].unk_90 = 0;
+                globalSprites[spriteIndex].flags2 |= 8 | 0x10;
                 break;
             case 0xFD:
-                globalSprites[index].unk_90 = 0;
-                globalSprites[index].flags2 |= 8 | 0x800;
+                globalSprites[spriteIndex].unk_90 = 0;
+                globalSprites[spriteIndex].flags2 |= 8 | 0x800;
                 break;
             default:
-                globalSprites[index].unk_90 = arg1;
-                globalSprites[index].flags2 &= ~(8 | 0x10);
+                globalSprites[spriteIndex].unk_90 = arg1;
+                globalSprites[spriteIndex].flags2 &= ~(8 | 0x10);
                 break;
         }
 
         // update animation from byteswapped table
-        func_8002CC84(&globalSprites[index].animation, globalSprites[index].unknownAssetPtr);
+        func_8002CC84(&globalSprites[spriteIndex].animation, globalSprites[spriteIndex].unknownAssetPtr);
 
-        temp = func_8002CD4C(globalSprites[index].unk_90, globalSprites[index].unknownAssetPtr+8);
+        temp = func_8002CD4C(globalSprites[spriteIndex].unk_90, globalSprites[spriteIndex].unknownAssetPtr+8);
         
-        globalSprites[index].unknownAsset3Ptr = temp;
-        globalSprites[index].unknownAsset4Ptr = temp + 2;
+        globalSprites[spriteIndex].unknownAsset3Ptr = temp;
+        globalSprites[spriteIndex].unknownAsset4Ptr = temp + 2;
 
         result = TRUE;
         

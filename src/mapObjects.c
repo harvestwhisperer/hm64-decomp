@@ -790,9 +790,8 @@ u16 countPinkCatMintFlowersGreenhouse(void) {
 
 void func_800DC1E8(void) {
 
-    u8 i;
-    u8 j;
-    bool found = 0;
+    bool found = FALSE;
+    u8 i, j;
 
     u8 temp;
 
@@ -835,7 +834,8 @@ void func_800DC1E8(void) {
                     
                 }
                 
-                found = 1;
+                found = TRUE;
+                
             }
         }
     }

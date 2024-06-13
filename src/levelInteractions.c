@@ -1061,7 +1061,7 @@ bool func_800AFF9C(u16 arg0, u8 arg1) {
         case 17:
             if (func_8004D380(CONTROLLER_1, BUTTON_A)) {
                 if (gPlayer.heldItem == 0) {
-                    if (func_800DDDFC(0x25)) {
+                    if (checkShopItemShouldBeDisplayed(0x25)) {
                         func_800DC9FC(0x25);
                     }
                     result = 2;
@@ -1071,10 +1071,10 @@ bool func_800AFF9C(u16 arg0, u8 arg1) {
         case 18:
             if (func_8004D380(CONTROLLER_1, BUTTON_A)) {
                 if (gPlayer.heldItem == 0) {
-                    if (func_800DDDFC(0x26)) {
+                    if (checkShopItemShouldBeDisplayed(0x26)) {
                         func_800DC9FC(0x26);
                     }
-                    if (func_800DDDFC(0x27)) {
+                    if (checkShopItemShouldBeDisplayed(0x27)) {
                         func_800DC9FC(0x27);
                     }
                     result = 2;
@@ -1635,7 +1635,7 @@ bool func_800B23A4(u16 mapIndex, u8 arg1) {
              if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) { 
                  if (5 < gPlayer.direction && gPlayer.direction < 8 || gPlayer.direction == 5) {
                     result = TRUE;
-                    setEntrance(0x55U);
+                    setEntrance(0x55);
                  }
              }
             break;     
@@ -1800,7 +1800,7 @@ u8 handleRanchStoreExits(u16 mapIndex, u8 collisionIndex) {
         case 17:
             if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
                 if (gPlayer.heldItem == 0) {
-                    if (func_800DDDFC(0x1A)) {
+                    if (checkShopItemShouldBeDisplayed(0x1A)) {
                         func_800DC9FC(0x1A);
                     }
                     result = 2;
@@ -1810,7 +1810,7 @@ u8 handleRanchStoreExits(u16 mapIndex, u8 collisionIndex) {
         case 18:
             if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
                 if (gPlayer.heldItem == 0) {
-                    if (func_800DDDFC(0x1D)) {
+                    if (checkShopItemShouldBeDisplayed(0x1D)) {
                         func_800DC9FC(0x1D);
                     }
                     result = 2;
@@ -1820,7 +1820,7 @@ u8 handleRanchStoreExits(u16 mapIndex, u8 collisionIndex) {
         case 19:
             if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
                 if (gPlayer.heldItem == 0) {
-                     if (func_800DDDFC(0x1B)) {
+                     if (checkShopItemShouldBeDisplayed(0x1B)) {
                         func_800DC9FC(0x1B);
                     }
                     result = 2;
@@ -1830,7 +1830,7 @@ u8 handleRanchStoreExits(u16 mapIndex, u8 collisionIndex) {
         case 20:
             if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
                 if (gPlayer.heldItem == 0) {
-                     if (func_800DDDFC(0x1C)) {
+                     if (checkShopItemShouldBeDisplayed(0x1C)) {
                         func_800DC9FC(0x1C);
                     }
                     result = 2;
