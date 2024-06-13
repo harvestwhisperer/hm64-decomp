@@ -41,7 +41,7 @@ extern u8 D_801FC155;
 // chicken starting coordianates
 extern Vec3f D_801149C0[];
 // farm animal starting coordinates
-extern Vec3f D_80114A50[];
+extern Vec3f farmAnimalStartingCoordinates[];
 extern Vec3f D_80114AB0;
 extern u16 D_80114ABC[];
 extern u16 D_80114AC4[];
@@ -54,7 +54,7 @@ extern u16 D_80114AE8[];
 // forward declarations
 void func_800861A4(u8, u8, u8, u8, u8);               
 void func_80086458(u8, s8); 
-void func_80088718(u8); 
+void setFarmAnimalLocation(u8); 
 void func_8008B1B8();                                  
 void func_8008B2E8(u8);                               
 void func_8008B55C(u8);                               
@@ -376,7 +376,7 @@ u8 initializeNewFarmAnimal(u8 arg0, u8 arg1) {
     if (index != 0xFF) {
         
         func_800861A4(2, index, arg0, 0, 0);
-        func_80088718(index);
+        setFarmAnimalLocation(index);
 
         gFarmAnimals[index].birthdaySeason = gSeason;
         gFarmAnimals[index].flags = 1;
@@ -421,14 +421,14 @@ void func_800886D0(void) {
     initializeFarmAnimal(D_8016F898);
 }
 
-//INCLUDE_ASM(const s32, "animals", func_80088718);
+//INCLUDE_ASM(const s32, "animals", setFarmAnimalLocation);
 
 // set farm animal locations
-void func_80088718(u8 animalIndex) {
+void setFarmAnimalLocation(u8 animalIndex) {
 
     gFarmAnimals[animalIndex].location = BARN;
 
-    if (gFarmAnimals[animalIndex].type == 3) {
+    if (gFarmAnimals[animalIndex].type == UNUSED_ANIMAL_TYPE) {
         
         gFarmAnimals[animalIndex].coordinates.x = D_80114AB0.x;
         gFarmAnimals[animalIndex].coordinates.y = D_80114AB0.y;
@@ -437,9 +437,9 @@ void func_80088718(u8 animalIndex) {
 
     } else {
 
-        gFarmAnimals[animalIndex].coordinates.x = D_80114A50[animalIndex].x;
-        gFarmAnimals[animalIndex].coordinates.y = D_80114A50[animalIndex].y;
-        gFarmAnimals[animalIndex].coordinates.z = D_80114A50[animalIndex].z;
+        gFarmAnimals[animalIndex].coordinates.x = farmAnimalStartingCoordinates[animalIndex].x;
+        gFarmAnimals[animalIndex].coordinates.y = farmAnimalStartingCoordinates[animalIndex].y;
+        gFarmAnimals[animalIndex].coordinates.z = farmAnimalStartingCoordinates[animalIndex].z;
         
         if (animalIndex >= 4) {
             gFarmAnimals[animalIndex].unk_1C = 6;
@@ -568,7 +568,7 @@ void setHorseLocation(u8 mapIndex) {
 void func_80088BB0(u8 mapIndex, u8 animalIndex) {
 
     if ((gFarmAnimals[animalIndex].flags & 1) && (mapIndex == 0xFF ||  gFarmAnimals[animalIndex].location == mapIndex)) {
-        func_80088718(animalIndex);
+        setFarmAnimalLocation(animalIndex);
     }
     
 }

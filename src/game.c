@@ -42,9 +42,6 @@ extern u8 gSeason;
 extern u8 gSeasonTomorrow;
 extern u8 gYear;
 
-// dialogue icon
-extern Vec4f D_80180718;
-
 extern Vec4f globalLightingRgba;
 
 extern u8 gHarvestKing;
@@ -108,7 +105,7 @@ extern u8 annCliffBabyAge;
 extern u8 annCliffNewlywedCounter;
 extern u8 annPregnancyCounter;
 
-extern MainLoopCallbackInfo D_80205230;
+extern MainLoopCallbackInfo gameLoopContext;
 
 // unused
 extern u16 D_801FB686;   
@@ -125,6 +122,7 @@ extern u32 D_801890E0;
 
 // data
 // lighting values based on hour
+// FIXME: probably should be D_80113B20[4][24] or struct { r[24]; g[24]; b[24]; a[24]; }
 // sunny, weather type 4, typhoon
 extern u8 D_80113B20[24]; // r
 extern u8 D_80113B38[24]; // g
@@ -741,7 +739,7 @@ inline void showDialogueBox(u16 arg0, u16 arg1, u16 arg2, u32 arg3, u16 arg4) {
 // jumptable: jbtl_8011EF98, 0xFA398
 void func_8005B09C(u8 arg0) {
 
-    D_80205230.unk_6 = arg0;
+    gameLoopContext.unk_6 = arg0;
 
     switch (arg0) {
         default:
@@ -930,22 +928,22 @@ void func_8005C07C(s16 arg0, u16 arg1) {
         func_8002F7C8(globalLightingRgba.r, globalLightingRgba.g, globalLightingRgba.b, globalLightingRgba.a);
         func_8003BE98(0, globalLightingRgba.r, globalLightingRgba.g, globalLightingRgba.b, globalLightingRgba.a);
         
-    } else if (globalLightingRgba.r != D_80180718.r || globalLightingRgba.g != D_80180718.g || globalLightingRgba.b != D_80180718.b || globalLightingRgba.a != D_80180718.a) {
+    } else if (globalLightingRgba.r != unknownRGBA.r || globalLightingRgba.g != unknownRGBA.g || globalLightingRgba.b != unknownRGBA.b || globalLightingRgba.a != unknownRGBA.a) {
         
         func_8002F8F0(globalLightingRgba.r, globalLightingRgba.g, globalLightingRgba.b, globalLightingRgba.a, arg0);
         func_8003BF7C(0, globalLightingRgba.r, globalLightingRgba.g, globalLightingRgba.b, globalLightingRgba.a, arg0);
         
         if (!checkDailyEventBit(0x4B)) {
-            setSongWithVolume(gCurrentSongIndex, gSongVolume);
+            setSongVolume(gCurrentSongIndex, gSongVolume);
         }
     }
 
-    D_80180718.r = globalLightingRgba.r;
-    D_80180718.g = globalLightingRgba.g;
-    D_80180718.b = globalLightingRgba.b;
-    D_80180718.a = globalLightingRgba.a;
+    unknownRGBA.r = globalLightingRgba.r;
+    unknownRGBA.g = globalLightingRgba.g;
+    unknownRGBA.b = globalLightingRgba.b;
+    unknownRGBA.a = globalLightingRgba.a;
 
-    D_80205230.unk_0 = arg1;
+    gameLoopContext.callbackIndex = arg1;
     
     if (arg1) {
         setMainLoopCallbackFunctionIndex(5);
@@ -963,24 +961,25 @@ inline void func_8005C940(u16 arg0, u16 arg1) {
        
     setSongWithDefaultSpeed(gCurrentSongIndex);
     
-    D_80205230.unk_0 = arg1;
+    gameLoopContext.callbackIndex = arg1;
 
     resetGlobalLighting();
     
-    if (D_80205230.unk_0) {
+    if (gameLoopContext.callbackIndex) {
         setMainLoopCallbackFunctionIndex(LEVEL_LOAD_2);
         func_8002F6F0();
         func_80046C98();
         func_8002FCB4(PLAYER, 0);
     }
+
 }
 
 //INCLUDE_ASM(const s32, "game", func_8005CA2C);
 
 void func_8005CA2C(u16 arg0, u16 arg1) {
-    D_80205230.unk_4 = arg0;
-    D_80205230.unk_2 = 0;
-    D_80205230.unk_0 = arg1;
+    gameLoopContext.unk_4 = arg0;
+    gameLoopContext.unk_2 = 0;
+    gameLoopContext.callbackIndex = arg1;
     setMainLoopCallbackFunctionIndex(OVERLAY_SCREEN_LOAD);
 }
 
@@ -990,9 +989,10 @@ void func_8005CA64(void) {
 
     func_800A8F74();
 
-    if (func_80036A84(0)) {
-        setMainLoopCallbackFunctionIndex(D_80205230.unk_0);
+    if (func_80036A84(MAIN_MAP_INDEX)) {
+        setMainLoopCallbackFunctionIndex(gameLoopContext.callbackIndex);
     }
+
 }
 
 //INCLUDE_ASM(const s32, "game", func_8005CAA8);
@@ -1001,7 +1001,7 @@ void func_8005CAA8(void) {
 
     func_800A8F74();
 
-    if (func_80036A84(0) && checkDefaultSongChannelOpen(gCurrentSongIndex)) {
+    if (func_80036A84(MAIN_MAP_INDEX) && checkDefaultSongChannelOpen(gCurrentSongIndex)) {
 
         func_8002F7C8(0, 0, 0, 0);
         func_8003BE98(0, 0, 0, 0, 0);
@@ -1013,7 +1013,8 @@ void func_8005CAA8(void) {
 
         gCutsceneFlags = 0;
 
-        setMainLoopCallbackFunctionIndex(D_80205230.unk_0);
+        setMainLoopCallbackFunctionIndex(gameLoopContext.callbackIndex);
+
     }
 }
 
@@ -1021,19 +1022,18 @@ void func_8005CAA8(void) {
 
 void func_8005CB50(void) {
 
-    if (D_80205230.unk_2 >= D_80205230.unk_4) {
-        setMainLoopCallbackFunctionIndex(D_80205230.unk_0);
-        return;
+    if (gameLoopContext.unk_2 >= gameLoopContext.unk_4) {
+        setMainLoopCallbackFunctionIndex(gameLoopContext.callbackIndex);
+    } else {
+        gameLoopContext.unk_2++;
     }
-
-    D_80205230.unk_2++;
 }
 
 //INCLUDE_ASM(const s32, "game", func_8005CBA4);
 
 void func_8005CBA4(void) {
 
-    if (!(gMapModelContext[0].flags & (0x8 | 0x10))) {
+    if (!(gMapModelContext[MAIN_MAP_INDEX].flags & (0x8 | 0x10))) {
         func_8002F730();
         func_80046CF4();
         func_8002FCB4(PLAYER, 1);
@@ -1056,10 +1056,10 @@ void func_8005CBF0(void) {
             gItemBeingHeld = 0xFF;
         }
          
-        func_8003F910(0, 0x78, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsIndexSegmentRomStart, &_dialogueIconsIndexSegmentRomEnd, (void*)DIALOGUE_ICONS_TEXTURES_VADDR, (void*)0x8023CC00, (void*)0x8023CE00, (void*)0x8023D200, 0, 4, 0xFE, 106.0f, -15.0f, 0);
-        func_8003F910(1, 0x78, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsIndexSegmentRomStart, &_dialogueIconsIndexSegmentRomEnd, (void*)DIALOGUE_ICONS_TEXTURES_VADDR, (void*)0x8023CC00, (void*)0x8023CE00, (void*)0x8023D200, 0, 0xD, 0xFE, 106.0f, -15.0f, 0);
+        func_8003F910(0, 0x78, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsIndexSegmentRomStart, &_dialogueIconsIndexSegmentRomEnd, (void*)DIALOGUE_ICONS_TEXTURES_VADDR_START, (void*)DIALOGUE_ICONS_TEXTURES_VADDR_END, (void*)DIALOGUE_ICONS_INDEX_VADDR_START, (void*)DIALOGUE_ICONS_INDEX_VADDR_END, 0, 4, 0xFE, 106.0f, -15.0f, 0);
+        func_8003F910(1, 0x78, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsIndexSegmentRomStart, &_dialogueIconsIndexSegmentRomEnd, (void*)DIALOGUE_ICONS_TEXTURES_VADDR_START, (void*)DIALOGUE_ICONS_TEXTURES_VADDR_END, (void*)DIALOGUE_ICONS_INDEX_VADDR_START, (void*)DIALOGUE_ICONS_INDEX_VADDR_END, 0, 0xD, 0xFE, 106.0f, -15.0f, 0);
        
-       // update stuff after closing dialogue
+        // update stuff after closing dialogue 
         func_8005CDCC();
         
         setMainLoopCallbackFunctionIndex(MAIN_GAME);
@@ -1081,7 +1081,6 @@ void func_8005CDCC(void) {
     
     toggleSpecialDialogueBit(0x135);
 
-    // recruit spirit assistants
     recruitSpiritFestivalAssistants();
 
     setRecipes();
@@ -1160,7 +1159,6 @@ void func_8005CF94(void) {
     func_8002FCB4(PLAYER, 0);
     func_8003C504(MAIN_MAP_INDEX);
     
-
     // naming screen index
     switch (gNamingScreenIndex) {
         case 0:
@@ -1189,7 +1187,8 @@ void func_8005CF94(void) {
             break;
         }
     
-    func_800ED8A0(namePtr, gNamingScreenIndex);
+    initializeNamingScreen(namePtr, gNamingScreenIndex);
+
 }
 
 //INCLUDE_ASM(const s32, "game", func_8005D0BC);
@@ -1283,7 +1282,7 @@ void func_8005D0BC(void) {
     
     }
     
-    if (gHour >= 18U) {
+    if (gHour >= 18) {
         setDailyEventBit(0xF);
         setDailyEventBit(0x10);
     }
@@ -1349,7 +1348,7 @@ static inline void inline3() {
 // from initialize2.c
 static inline void func_80055F08_2(u16 cutsceneIndex, u16 entranceIndex, u8 arg2) {
     
-    func_8002E1B8();
+    deactivateSprites();
 
     // reset all sprite flags
     func_8002B710();
@@ -1417,7 +1416,7 @@ void func_8005D2B0() {
 
         temp = func_80043C6C(0);
 
-        switch (D_80205230.unk_6) {
+        switch (gameLoopContext.unk_6) {
 
             case 0:                                     
                 switch (temp) {                      
@@ -2296,7 +2295,7 @@ void func_8005D2B0() {
 
 void func_80060454(void) {
     if (checkAllSfxInactive()) {
-        setMainLoopCallbackFunctionIndex(D_80205230.unk_0);
+        setMainLoopCallbackFunctionIndex(gameLoopContext.callbackIndex);
     }
 }
 
@@ -2311,7 +2310,7 @@ void func_80060490(void) {
 
 void func_800604B0(void) {
 
-    if (func_80036A84(0) || !(mainMap[0].mapStruct9.flags & 1)) {
+    if (func_80036A84(MAIN_MAP_INDEX) || !(mainMap[MAIN_MAP_INDEX].mapStruct9.flags & 1)) {
         
         func_8003F54C(0, 0, -64.0f, 352.0f);
         func_8003F690(0, 1, 0, 0);
@@ -2337,6 +2336,7 @@ void func_800604B0(void) {
         }
         
         setMainLoopCallbackFunctionIndex(END_OF_FESTIVAL_DAY_2);
+
     }
 }
 
@@ -2360,14 +2360,14 @@ void func_80060624(void) {
     int tempStamina;
     u8 tempTime;
 
-    if (func_80036A84(0) || !(mainMap[0].mapStruct9.flags & 1)) {
+    if (func_80036A84(MAIN_MAP_INDEX) || !(mainMap[MAIN_MAP_INDEX].mapStruct9.flags & 1)) {
         
         func_800610DC();
         
         if (func_80060DC0()) {
             setAudio(0x59);
             setMainLoopCallbackFunctionIndex(0xF);
-            D_80205230.unk_0 = 0xD;
+            gameLoopContext.callbackIndex = 0xD;
             return;
         }
         
@@ -2417,6 +2417,7 @@ void func_80060624(void) {
         
         setDailyEventBit(0x53);
         setDailyEventBit(0x54);
+
     }
 }
 
@@ -2424,8 +2425,7 @@ void func_80060624(void) {
  
 void func_80060838(void) {
     
-    // check map flags
-    if (func_80036A84(0) || !(mainMap[0].mapStruct9.flags & 1)) {
+    if (func_80036A84(MAIN_MAP_INDEX) || !(mainMap[MAIN_MAP_INDEX].mapStruct9.flags & 1)) {
 
         func_800610DC();
 
@@ -2438,6 +2438,7 @@ void func_80060838(void) {
             setHorseLocation(0xFF);
             
             horseInfo.flags &= ~0x8;
+            
         }
 
         if (func_80060DC0()) {
@@ -2448,9 +2449,10 @@ void func_80060838(void) {
             setMainLoopCallbackFunctionIndex(0xF);
 
             // last loading screen callback index?
-            D_80205230.unk_0 = 0xD;
+            gameLoopContext.callbackIndex = 0xD;
 
             return;
+
         }
 
         setEntrance(MIDDLE_OF_HOUSE);
@@ -2477,6 +2479,7 @@ void func_80060838(void) {
 
         setDailyEventBit(0x53);
         setDailyEventBit(0x54);
+
     }
 }
 
@@ -2611,6 +2614,7 @@ bool func_80060DC0(void) {
     }
     
     return result;
+
 }
 
 //INCLUDE_ASM(const s32, "game", handleDailyShipment);
@@ -2716,6 +2720,7 @@ void func_800610DC(void) {
         gPlayer.heldItem = 0;
         gItemBeingHeld = 0xFF;
     }
+
 }
 
 //INCLUDE_ASM(const s32, "game", func_80061178);
@@ -2744,6 +2749,7 @@ bool func_80061178(void) {
     }
     
     return result;
+
 }
 
 // func_800611E0
@@ -2948,7 +2954,6 @@ u8 func_800616CC(u8 houseExtensionIndex) {
         }
     }
 
-
     return 2;
     
 }
@@ -2969,8 +2974,9 @@ void setFlowerFestivalGoddess(void) {
     gFlowerFestivalGoddess = temp;
     
     if (checkLifeEventBit(0x2F) && gFlowerFestivalGoddess == KAREN) {
-        gFlowerFestivalGoddess = 0;
+        gFlowerFestivalGoddess = MARIA;
     }
+
 }
 
 // func_800618EC
@@ -3112,6 +3118,7 @@ void recruitSpiritFestivalAssistants(void) {
     if (numberOfSpiritFestivalAssistantsRecruited >= 3) {
         toggleSpecialDialogueBit(PLAYER_HARVEST_KING_SPIRIT_FESTIVAL_ASSISTANTS);
     }
+
 }
 
 //INCLUDE_ASM(const s32, "game", setRecipes);
@@ -3223,6 +3230,7 @@ void setRecipes(void) {
     if (checkSpecialDialogueBit(0x71)) {
         addRecipe(0x22);
     }
+
 }
 
 // func_800623E4
@@ -3240,7 +3248,7 @@ u8 handleHouseConstruction(u8 day) {
     memcpy(buffer2, lifeEventHouseConstructionBits, 12);
     memcpy(buffer3, animalLocationsHouseConstruction, 6);
 
-    result = 0;
+    result = FALSE;
 
     if (checkLifeEventBit(HOUSE_EXTENSION_CONSTRUCTION)) {
 
@@ -3614,6 +3622,7 @@ void setLetters(void) {
     if (!checkMailRead(0x4C) && gYear >= 3 && gSeason == SPRING && gDayOfMonth == 3) {
         setMail(0x4C);
     }
+
 }
 
 // D_8011F25C

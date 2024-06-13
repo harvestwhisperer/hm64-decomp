@@ -48,7 +48,7 @@ typedef struct {
 
 extern void initializeMapContext();      
 extern bool func_8003BA44(u16 index, u16 mapIndex, u32 *levelMap);
-extern bool func_8003BB14(u16 arg0, u16 mapIndex); 
+extern bool loadMap(u16 arg0, u16 mapIndex); 
 extern bool func_8003BC50(u16, u16);   
 extern bool func_8003BD60(u16);                      
 extern bool func_8003BDA4(u16, f32, f32, f32);  
@@ -67,6 +67,7 @@ extern LevelMapContext gMapModelContext[1];
 // 0x8017044C
 //extern CurrentMapContext currentMapContext;
 
+// used by sprites
 extern Vec4f D_802373F8;
 
 #endif

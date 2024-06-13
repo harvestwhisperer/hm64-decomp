@@ -13,7 +13,9 @@
 #include "gameAudio.h"
 #include "initialize2.h"
 #include "level.h"
+#include "npc.h"
 #include "player.h"
+#include "spriteIndices.h"
 
 extern u16 D_80202E8A;
 
@@ -42,22 +44,22 @@ extern u16 D_8016FBEE;
 extern u16 D_80202E8A;
 
 // forward declarations
-void func_800EE678(void);
+void loadNameSelectionSprites(void);
 bool func_800EF578(void);
 void func_800EFADC(void);
 void func_800EFBEC(void);                                  
 void func_800EFCF8(void);                                  
 void func_800EFE84(void);   
-void func_800F009C(void);
+void deactivateNamingScreenSprites(void);
 void func_800F00D8(void);
 void func_800F0320(void);
-void func_800F06D8(void);
+void loadSeasonSelectionSprites(void);
 void func_800F0F84(void);
 
 
-//INCLUDE_ASM(const s32, "namingScreen", func_800ED8A0);
+//INCLUDE_ASM(const s32, "namingScreen", initializeNamingScreen);
 
-void func_800ED8A0(u8* arg0, u8 arg1) {
+inline void initializeNamingScreen(u8* arg0, u8 arg1) {
 
     s32 i = 0;
     
@@ -70,17 +72,18 @@ void func_800ED8A0(u8* arg0, u8 arg1) {
         namingScreenContext.name[i] = 0xFF;
     } 
 
-    func_800EE678();
+    loadNameSelectionSprites();
+
+    // dialogue boxes
     func_8003F54C(0, 0, -64.0f, 352.0f);
     func_8003F360(0, -4, 0);
     func_8003F690(0, 1, 0, 0);
     
     namingScreenContext.unk_4 = arg1;
     
-    func_800ACB8C(8);
-    func_800ACB04(8);
-    
-    setSongWithVolume(NAMING_SCREEN_THEME, SONG_VOLUME);
+    stopCurrentSong(NAMING_SCREEN_THEME);
+    setCurrentSong(NAMING_SCREEN_THEME);
+    setSongVolume(NAMING_SCREEN_THEME, SONG_VOLUME);
     
     setMainLoopCallbackFunctionIndex(0x34);
     
@@ -99,9 +102,12 @@ void func_800ED974(void) {
         
         if (namingScreenContext.flags & 0x100) {
 
-            func_800F009C();
+            deactivateNamingScreenSprites();
+
+            // dialogue box
             func_8003DD14(3);
-            func_800F06D8();
+
+            loadSeasonSelectionSprites();
             
             namingScreenContext.flags &= ~(0x100);
 
@@ -113,24 +119,30 @@ void func_800ED974(void) {
 
             temp2 = namingScreenContext.unk_7;
 
-            func_800F009C();
+            deactivateNamingScreenSprites();
             
             func_8002B138(0x80, &_namingScreenTexture1SegmentRomStart, &_namingScreenTexture1SegmentRomEnd, &_namingScreenIndex1SegmentRomStart, &_namingScreenIndex1SegmentRomEnd, NULL, NULL, (void* )0x80263E00, NULL, (void* )0x80266E00, (void* )0x80267100, (void* )0x80267200, NULL, NULL, 0);
             func_8002B138(0x84, &_namingScreenTexture1SegmentRomStart, &_namingScreenTexture1SegmentRomEnd, &_namingScreenIndex1SegmentRomStart, &_namingScreenIndex1SegmentRomEnd, NULL, NULL, (void* )0x80263E00, NULL, (void* )0x80266E00, (void* )0x80267100, (void* )0x80267200, NULL, NULL, 0);
-            func_8002B138(0x90, &_landscapeBackgroundTextureSegmentRomStart, &_landscapeBackgroundTextureSegmentRomEnd, &_landscapeBackgroundIndexSegmentRomStart, &_landscapeBackgroundIndexSegmentRomEnd, NULL, NULL, (void* )0x8026AB00, NULL, (void* )0x8026DB00, (void* )0x8026DC00, (void* )0x8026DD00, NULL, NULL, 0);
+            func_8002B138(LANDSCAPE_BACKGROUND, &_landscapeBackgroundTextureSegmentRomStart, &_landscapeBackgroundTextureSegmentRomEnd, &_landscapeBackgroundIndexSegmentRomStart, &_landscapeBackgroundIndexSegmentRomEnd, NULL, NULL, (void* )0x8026AB00, NULL, (void* )0x8026DB00, (void* )0x8026DC00, (void* )0x8026DD00, NULL, NULL, 0);
             
-            func_8002CB24(0x90, 1);
-            setSpriteScale(0x90, 2.0f, 2.0f, 1.0f);
+            // set flag 0x80
+            func_8002CB24(LANDSCAPE_BACKGROUND, 1);
+            setSpriteScale(LANDSCAPE_BACKGROUND, 2.0f, 2.0f, 1.0f);
 
+            // animation
             func_8002B80C(0x80, 1, 0);
             func_8002B80C(0x84, 2, 0);
-            func_8002B80C(0x90, 0, 0);
+            func_8002B80C(LANDSCAPE_BACKGROUND, 0, 0);
+            
+            // rgba
             func_8002C914(0x80, 0, 0, 0, 0);
             func_8002C914(0x84, 0, 0, 0, 0);
-            func_8002C914(0x90, 0, 0, 0, 0);
+            func_8002C914(LANDSCAPE_BACKGROUND, 0, 0, 0, 0);
+            
+            // rgba
             func_8002C1C0(0x80, 0xFF, 0xFF, 0xFF, 0xFF, 8);
             func_8002C1C0(0x84, 0xFF, 0xFF, 0xFF, 0xFF, 8);
-            func_8002C1C0(0x90, 0xFF, 0xFF, 0xFF, 0xFF, 8);
+            func_8002C1C0(LANDSCAPE_BACKGROUND, 0xFF, 0xFF, 0xFF, 0xFF, 8);
 
             namingScreenContext.unk_4 = 10;
             namingScreenContext.flags &= ~(0x20 | 0x40);
@@ -165,10 +177,10 @@ void func_800ED974(void) {
 
         if (namingScreenContext.flags & 0x400) {
             
-            func_800F009C();
+            deactivateNamingScreenSprites();
             func_8003DD14(3);
             func_8003DD14(4);
-            func_800EE678();
+            loadNameSelectionSprites();
             
             namingScreenContext.unk_4 = 12;
             namingScreenContext.flags &= ~(0x400);
@@ -180,7 +192,7 @@ void func_800ED974(void) {
          if (namingScreenContext.flags & 0x800) {
 
             func_8003FBA0(0, gPlayer.name, 6);
-            func_800F009C();
+            deactivateNamingScreenSprites();
             func_8003DD14(3);
             func_8003DD14(4);
             func_8003F690(0, 0, 0, 0);
@@ -190,56 +202,14 @@ void func_800ED974(void) {
                  
                  case 0:
 
-                     namingScreenContext.unk_6 = 1;
-                     namingScreenContext.unk_7 = 0;
-
-                     namingScreenContext.name = gFarmName;
-
-                     for (i = 0; i < 6; i++) {
-                         namingScreenContext.name[i] = 0xFF;
-                     }
-
-                    func_800EE678();
-                     
-                    func_8003F54C(0, 0, -64.0f, 352.0f);
-                    func_8003F360(0, -4, 0);
-                    func_8003F690(0, 1, 0, 0);
-
-                    namingScreenContext.unk_4 = 1;
-                     
-                    func_800ACB8C(8);
-                    func_800ACB04(8);
-                     
-                    setSongWithVolume(NAMING_SCREEN_THEME, 128);
-                    setMainLoopCallbackFunctionIndex(0x34);
+                    initializeNamingScreen(gFarmName, 1);
                      
                     return;
                  
                  case 1:
-                     
-                    namingScreenContext.unk_6 = 2;
-                    namingScreenContext.unk_7 = 0;
 
-                    namingScreenContext.name = dogInfo.name;
-                    
-                    for (i = 0; i < 6; i++) {
-                        namingScreenContext.name[i] = 0xFF;
-                    }
-                    
-                    func_800EE678();
-                    
-                    func_8003F54C(0, 0, -64.0f, 352.0f);
-                    func_8003F360(0, -4, 0);
-                    func_8003F690(0, 1, 0, 0);
-                    
-                    namingScreenContext.unk_4 = 2;
-                    
-                    func_800ACB8C(8);
-                    func_800ACB04(8);
-                    
-                    setSongWithVolume(NAMING_SCREEN_THEME, 128);
-                    setMainLoopCallbackFunctionIndex(0x34);
-                    
+                    initializeNamingScreen(dogInfo.name, 2);
+                     
                     return;
                  
                  case 2:
@@ -265,23 +235,23 @@ void func_800ED974(void) {
                     setLevelAudio(gBaseMapIndex, gSeason, gHour);
                      
                     switch (gWife) {                   
-                        case 0:                            
+                        case MARIA:                            
                             gCutsceneIndex = 5;
                             toggleSpecialDialogueBit(0x37);
                             break;
-                        case 1:                            
+                        case POPURI:                            
                             gCutsceneIndex = 0xC;
                             toggleSpecialDialogueBit(0x38);
                             break;
-                        case 2:                            
+                        case ELLI:                            
                             gCutsceneIndex = 0x13;
                             toggleSpecialDialogueBit(0x39);
                             break;
-                        case 3:                            
+                        case ANN:                            
                             gCutsceneIndex = 0x1A;
                             toggleSpecialDialogueBit(0x3A);
                             break;
-                        case 4:                            
+                        case KAREN:                            
                             gCutsceneIndex = 0x21;
                             toggleSpecialDialogueBit(0x3B);
                             break;
@@ -340,7 +310,7 @@ void func_800ED974(void) {
                                 func_8003EA1C(4, 0, 0, 0, 0, 8);
                                 func_8002C1C0(0x80, 0, 0, 0, 0, 8);
                                 func_8002C1C0(0x84, 0, 0, 0, 0, 8);
-                                func_8002C1C0(0x90, 0, 0, 0, 0, 8);
+                                func_8002C1C0(LANDSCAPE_BACKGROUND, 0, 0, 0, 0, 8);
                                 
                                 gPlayerBirthdaySeason = namingScreenContext.unk_7 + 1;
 
@@ -354,7 +324,7 @@ void func_800ED974(void) {
                             func_8003EA1C(4, 0, 0, 0, 0, 8);
                             func_8002C1C0(0x80, 0, 0, 0, 0, 8);
                             func_8002C1C0(0x84, 0, 0, 0, 0, 8);
-                            func_8002C1C0(0x90, 0, 0, 0, 0, 8);
+                            func_8002C1C0(LANDSCAPE_BACKGROUND, 0, 0, 0, 0, 8);
                             
                             return;
     
@@ -370,7 +340,7 @@ void func_800ED974(void) {
                                 func_8002C1C0(0x81, 0, 0, 0, 0, 8);
                                 func_8002C1C0(0x82, 0, 0, 0, 0, 8);
                                 func_8002C1C0(0x8F, 0, 0, 0, 0, 8);
-                                func_8002C1C0(0x90, 0, 0, 0, 0, 8);
+                                func_8002C1C0(LANDSCAPE_BACKGROUND, 0, 0, 0, 0, 8);
                                 func_8002C1C0(0x83, 0, 0, 0, 0, 8);
                                 func_8002C1C0(0x84, 0, 0, 0, 0, 8);
                                 func_8002C1C0(0x85, 0, 0, 0, 0, 8);
@@ -409,11 +379,11 @@ void func_800ED974(void) {
     }
 }
 
-INCLUDE_ASM(const s32, "namingScreen", func_800EE678);
+INCLUDE_ASM(const s32, "namingScreen", loadNameSelectionSprites);
 
 // need to add linker symbols
 /*
-void func_800EE678(void) {
+void loadNameSelectionSprites(void) {
 
     s32 i = 0;
 
@@ -432,13 +402,13 @@ void func_800EE678(void) {
     func_8002B138(0x8D, &D_D1DE00, &D_D2D600, &D_D2D600_2, &D_D2D620, NULL, NULL, (void* )0x80253B00, NULL, (void* )0x80263B00, (void* )0x80263C00, (void* )0x80263D00, NULL, NULL, 0);
     func_8002B138(0x8E, &D_D1DE00, &D_D2D600, &D_D2D600_2, &D_D2D620, NULL, NULL, (void* )0x80253B00, NULL, (void* )0x80263B00, (void* )0x80263C00, (void* )0x80263D00, NULL, NULL, 0);
     func_8002B138(0x8F, &D_D1DE00, &D_D2D600, &D_D2D600_2, &D_D2D620, NULL, NULL, (void* )0x80253B00, NULL, (void* )0x80263B00, (void* )0x80263C00, (void* )0x80263D00, NULL, NULL, 0);
-    func_8002B138(0x90, &D_CC9390, &D_CCB980, &D_CCB980_2, &D_CCB9A0, NULL, NULL, (void* )0x8026AB00, NULL, (void* )0x8026DB00, (void* )0x8026DC00, (void* )0x8026DD00, NULL, NULL, 0);
+    func_8002B138(LANDSCAPE_BACKGROUND, &D_CC9390, &D_CCB980, &D_CCB980_2, &D_CCB9A0, NULL, NULL, (void* )0x8026AB00, NULL, (void* )0x8026DB00, (void* )0x8026DC00, (void* )0x8026DD00, NULL, NULL, 0);
     func_8002B138(0x91, &D_D47F00, &D_D49B80, &D_D49B80_2, &D_D49BA0, NULL, NULL, (void* )0x8023B400, NULL, (void* )0x8023CC00, (void* )0x8023CE00, (void* )0x8023D200, NULL, NULL, 0);
     
     func_8002CB24(0x8F, 1);
-    func_8002CB24(0x90, 1);
+    func_8002CB24(LANDSCAPE_BACKGROUND, 1);
 
-    setSpriteScale(0x90, 2.0f, 2.0f, 1.0f);
+    setSpriteScale(LANDSCAPE_BACKGROUND, 2.0f, 2.0f, 1.0f);
     
     setSpriteShrinkFactor(0x80, 0.0f, 0.0f, -1.0f);
     setSpriteShrinkFactor(0x81, 0.0f, -1.0f, 10.0f);
@@ -461,7 +431,7 @@ void func_800EE678(void) {
     func_8002B80C(0x81, 1, 2);
     func_8002B80C(0x82, 2, 0);
     func_8002B80C(0x8F, 0, 0);
-    func_8002B80C(0x90, 0, 0);
+    func_8002B80C(LANDSCAPE_BACKGROUND, 0, 0);
     func_8002B80C(0x83, 2, 0);
     func_8002B80C(0x84, 2, 0);
     func_8002B80C(0x85, 2, 0);
@@ -480,7 +450,7 @@ void func_800EE678(void) {
     func_8002C914(0x81, 0, 0, 0, 0);
     func_8002C914(0x82, 0, 0, 0, 0);
     func_8002C914(0x8F, 0, 0, 0, 0);
-    func_8002C914(0x90, 0, 0, 0, 0);
+    func_8002C914(LANDSCAPE_BACKGROUND, 0, 0, 0, 0);
     func_8002C914(0x83, 0, 0, 0, 0);
     func_8002C914(0x84, 0, 0, 0, 0);
     func_8002C914(0x85, 0, 0, 0, 0);
@@ -499,7 +469,7 @@ void func_800EE678(void) {
     func_8002C1C0(0x81, 0xFF, 0xFF, 0xFF, 0xFF, 8);
     func_8002C1C0(0x82, 0xFF, 0xFF, 0xFF, 0xFF, 8);
     func_8002C1C0(0x8F, 0xFF, 0xFF, 0xFF, 0xFF, 8);
-    func_8002C1C0(0x90, 0xFF, 0xFF, 0xFF, 0xFF, 8);
+    func_8002C1C0(LANDSCAPE_BACKGROUND, 0xFF, 0xFF, 0xFF, 0xFF, 8);
     func_8002C1C0(0x83, 0xFF, 0xFF, 0xFF, 0xFF, 8);
     func_8002C1C0(0x84, 0xFF, 0xFF, 0xFF, 0xFF, 8);
     func_8002C1C0(0x85, 0xFF, 0xFF, 0xFF, 0xFF, 8);
@@ -703,9 +673,9 @@ void func_800EFE84(void) {
 
 INCLUDE_ASM(const s32, "namingScreen", func_800EFFDC);
 
-//INCLUDE_ASM(const s32, "namingScreen", func_800F009C);
+//INCLUDE_ASM(const s32, "namingScreen", deactivateNamingScreenSprites);
 
-void func_800F009C(void) {
+void deactivateNamingScreenSprites(void) {
 
     s32 i = 0x80;
 
@@ -718,7 +688,7 @@ void func_800F009C(void) {
 
 // alternate
 /*
-void func_800F009C(void) {
+void deactivateNamingScreenSprites(void) {
 
     s32 i;
 
@@ -953,11 +923,11 @@ void func_800F03C4(void) {
 }
 
 
-INCLUDE_ASM(const s32, "namingScreen", func_800F06D8);
+INCLUDE_ASM(const s32, "namingScreen", loadSeasonSelectionSprites);
 
 // need to add linker symbols
 /*
-void func_800F06D8(void) {
+void loadSeasonSelectionSprites(void) {
 
     func_8002B138(0x80, &D_D47F00, &D_D49B80, &D_D49B80_2, &D_D49BA0, 0, 0, 0x8023B400, 0, 0x8023CC00, 0x8023CE00, 0x8023D200, 0, 0, 0);
     func_8002B138(0x83, &D_CDE2E0, &D_CED610, &D_CED610_2, &D_CED630, 0, 0, 0x80267300, 0, 0x8026A300, 0x8026A700, 0x8026AA00, 0, 0, 0);
@@ -968,7 +938,7 @@ void func_800F06D8(void) {
     func_8002B138(0x8A, &D_CDAEB0, &D_CDE2C0, &D_CDE2C0_2, &D_CDE2E0_2, 0, 0, 0x80263E00, 0, 0x80266E00, 0x80267100, 0x80267200, 0, 0, 0);
     func_8002B138(0x8B, &D_CDAEB0, &D_CDE2C0, &D_CDE2C0_2, &D_CDE2E0_2, 0, 0, 0x80263E00, 0, 0x80266E00, 0x80267100, 0x80267200, 0, 0, 0);
     func_8002B138(0x8C, &D_CDAEB0, &D_CDE2C0, &D_CDE2C0_2, &D_CDE2E0_2, 0, 0, 0x80263E00, 0, 0x80266E00, 0x80267100, 0x80267200, 0, 0, 0);
-    func_8002B138(0x90, &D_CC9390, &D_CCB980, &D_CCB980_2, &D_CCB9A0, 0, 0, 0x8026AB00, 0, 0x8026DB00, 0x8026DC00, 0x8026DD00, 0, 0, 0);
+    func_8002B138(LANDSCAPE_BACKGROUND, &D_CC9390, &D_CCB980, &D_CCB980_2, &D_CCB9A0, 0, 0, 0x8026AB00, 0, 0x8026DB00, 0x8026DC00, 0x8026DD00, 0, 0, 0);
     
     setSpriteShrinkFactor(0x80, 0, 0, -1.0f);
     
@@ -988,8 +958,8 @@ void func_800F06D8(void) {
     func_8002CB88(0x8A, 2);
     func_8002CB88(0x8B, 3);
     func_8002CB88(0x8C, 4);
-    func_8002CB24(0x90, 1);
-    setSpriteScale(0x90, 2.0f, 2.0f, 1.0f);
+    func_8002CB24(LANDSCAPE_BACKGROUND, 1);
+    setSpriteScale(LANDSCAPE_BACKGROUND, 2.0f, 2.0f, 1.0f);
     func_8002B80C(0x80, 3, 0);
     func_8002B80C(0x83, 4, 0);
     func_8002B80C(0x84, 4, 1);
@@ -999,7 +969,7 @@ void func_800F06D8(void) {
     func_8002B80C(0x8A, 0, 1);
     func_8002B80C(0x8B, 0, 2);
     func_8002B80C(0x8C, 0, 3);
-    func_8002B80C(0x90, 0, 0);
+    func_8002B80C(LANDSCAPE_BACKGROUND, 0, 0);
     func_8002C914(0x80, 0, 0, 0, 0);
     func_8002C914(0x83, 0, 0, 0, 0);
     func_8002C914(0x84, 0, 0, 0, 0);
@@ -1009,7 +979,7 @@ void func_800F06D8(void) {
     func_8002C914(0x8A, 0, 0, 0, 0);
     func_8002C914(0x8B, 0, 0, 0, 0);
     func_8002C914(0x8C, 0, 0, 0, 0);
-    func_8002C914(0x90, 0, 0, 0, 0);
+    func_8002C914(LANDSCAPE_BACKGROUND, 0, 0, 0, 0);
 
     func_8002C1C0(0x80, 0xFF, 0xFF, 0xFF, 0xFF, 8);
     func_8002C1C0(0x83, 0xFF, 0xFF, 0xFF, 0xFF, 8);
@@ -1020,7 +990,7 @@ void func_800F06D8(void) {
     func_8002C1C0(0x8A, 0xFF, 0xFF, 0xFF, 0xFF, 8);
     func_8002C1C0(0x8B, 0xFF, 0xFF, 0xFF, 0xFF, 8);
     func_8002C1C0(0x8C, 0xFF, 0xFF, 0xFF, 0xFF, 8);
-    func_8002C1C0(0x90, 0xFF, 0xFF, 0xFF, 0xFF, 8);
+    func_8002C1C0(LANDSCAPE_BACKGROUND, 0xFF, 0xFF, 0xFF, 0xFF, 8);
     
     namingScreenContext.unk_7 = 0;
     namingScreenContext.unk_4 = 9;
@@ -1095,12 +1065,12 @@ void func_800F0F84(void) {
             func_8002C1C0(0x8A, 0, 0, 0, 0, 8);
             func_8002C1C0(0x8B, 0, 0, 0, 0, 8);
             func_8002C1C0(0x8C, 0, 0, 0, 0, 8);
-            func_8002C1C0(0x90, 0, 0, 0, 0, 8);
+            func_8002C1C0(LANDSCAPE_BACKGROUND, 0, 0, 0, 0, 8);
 
             namingScreenContext.flags |= 0x200;
+
         }
     }
-
     
     setSpriteShrinkFactor(0x80, namingScreenContext.coordinates.x, namingScreenContext.coordinates.y, 20.0f);
     

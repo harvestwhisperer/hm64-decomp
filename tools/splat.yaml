@@ -1426,10 +1426,20 @@ segments:
     dir: sprites/namingScreen
     start: 0xCDE2C0
 
-  - name: miscTextures2
+  - name: calendarTexture
     type: bin
     dir: sprites/background
     start: 0xCDE2E0
+
+  - name: calendarIndex
+    type: bin
+    dir: sprites/background
+    start: 0xCED610
+
+  - name: miscTextures2
+    type: bin
+    dir: sprites/background
+    start: 0xCED630
 
   - name: dialogueWindowTexture
     type: bin

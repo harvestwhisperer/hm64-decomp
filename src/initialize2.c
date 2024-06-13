@@ -77,7 +77,7 @@ void mainGameLoopCallback(void) {
 // inline, used by game.c
 inline void func_80055F08(u16 cutsceneIndex, u16 entranceIndex, u8 arg2) {
     
-    func_8002E1B8();
+    deactivateSprites();
     func_8002B710();
     func_8003D970();
     initializeCutsceneMaps();
@@ -131,7 +131,7 @@ void func_80056030(u8 arg0) {
     func_80065F5C();
     func_800879C8();
     func_80075910();
-    func_8002E1B8();
+    deactivateSprites();
     func_8002B710();
     initializeCutsceneMaps();
     func_800752C0();
@@ -208,8 +208,8 @@ void func_80056030(u8 arg0) {
     handleEatingAndDrinking();
     func_800D5290();
 
-    // FIXME: this should be just gCutsceneFlags, but need array/struct loading here, which breaks the match when used in other functions that reference gCutsceneFlags
     if (arg0 != 2) {
+        // FIXME: this should be just gCutsceneFlags, but need array/struct loading here, which breaks the match when used in other functions that reference gCutsceneFlags
         if (!(gCutsceneFlagsHack[1] & 6)) {
             if (!checkDailyEventBit(0x4D)) {
                 func_80088D54();
@@ -230,10 +230,10 @@ void func_80056030(u8 arg0) {
     func_8002F7C8(0, 0, 0, 0);
     func_8003BE98(0, 0, 0, 0, 0);
     
-    D_80180718.r = 0;
-    D_80180718.g = 0;
-    D_80180718.b = 0;
-    D_80180718.a = 0;
+    unknownRGBA.r = 0;
+    unknownRGBA.g = 0;
+    unknownRGBA.b = 0;
+    unknownRGBA.a = 0;
     
 }
 

@@ -59,7 +59,6 @@ extern void stopSfx(void);
 extern u16 gCurrentSongIndex;
 extern s32 gSongVolume;
 
-// might be gameAudio.c
 extern Sfx gSfx[4];
 extern SongInfo gSongs[4];
 

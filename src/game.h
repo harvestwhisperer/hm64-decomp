@@ -3,6 +3,8 @@
 
 #include "common.h"
 
+#include "system/dialogue.h"
+
 #define MAX_GOLD 999999
 #define MAX_LUMBER 999
 #define MAX_ITEM_SHIPPING_VALUE 999
@@ -17,6 +19,7 @@
 #define MAX_BAKERY_CARD_POINTS 100
 #define MAX_AFFECTION 255
 #define TOTAL_GAME_VARIABLES 80
+#define MAX_ALCOHOL_TOLERANCE 255
 
 #define SPRING 1
 #define SUMMER 2
@@ -38,7 +41,7 @@
 #define EGG_VALUE 50
 
 typedef struct {
-    u16 unk_0;
+    u16 callbackIndex;
     u16 unk_2;
     u16 unk_4;
     u8 unk_6;
@@ -83,10 +86,9 @@ extern void func_80061690(void);
 extern u8 func_800616CC(u8);  
 extern u16 func_80063A2C(u8);
 
-extern MainLoopCallbackInfo D_80205230;
+extern MainLoopCallbackInfo gameLoopContext;
 
 extern Vec4f D_8016F8A0;
-extern Vec4f D_80180718;
 extern Vec4f globalLightingRgba;
 
 extern u32 gGold;
@@ -174,10 +176,10 @@ static inline void resetGlobalLighting() {
     globalLightingRgba.a = 0;
 
     // dialogue icon struct
-    D_80180718.r = 0;
-    D_80180718.g = 0;
-    D_80180718.b = 0;
-    D_80180718.a = 0;
+    unknownRGBA.r = 0;
+    unknownRGBA.g = 0;
+    unknownRGBA.b = 0;
+    unknownRGBA.a = 0;
 }
 
 #endif

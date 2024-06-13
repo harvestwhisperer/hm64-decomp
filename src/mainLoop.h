@@ -50,6 +50,7 @@
 #define LOTTERY_2 0x31
 #define TITLE_SCREEN 0x32
 #define NAMING_SCREEN 0x33
+// 0x34 naming screen 2
 #define SELECT_GAME 0x35
 #define ESTIMATE_SCREEN 0x36
 // 0x37 unknown

@@ -4,6 +4,7 @@
 #include "common.h"
 
 #define MAX_DIALOGUES 1
+#define TOTAL_CONVERSATION_BANKS 70
 
 extern u32 _dialogueIconsTextureSegmentRomStart;
 extern u32 _dialogueIconsTextureSegmentRomEnd;
@@ -31,7 +32,7 @@ typedef struct {
     u32* vaddrIndex;
     u16 unk_14;
     u16 unk_16;
-} Conversation;
+} DialogueAddressInfo;
 
 // D_801C3E40
 typedef struct {
@@ -63,13 +64,13 @@ typedef struct {
 	void* romAssetIndexEnd;
 	void* vaddrSpritesheet; // 0x7C
 	void* vaddrPalette;
-    void* vaddrUnknownAssetSheet;
-	void* vaddrUnknownAsset2;
-	u32 unk_20; // 0x8C
-	Vec3f unk_24;
-	u16 unk_30; // 0x9C // spriteIndex
-	u16 unk_32; // 0x98
-	u8 unk_34; // 0xA0
+    void* vaddrAnimation;
+	void* vaddrSpriteToPalette;
+	void* vaddrSpritesheetIndex; // 0x8C
+	Vec3f coordinates;
+	u16 spriteIndex; // 0x9C // spriteIndex
+	u16 spriteOffset; // 0x98
+	u8 flag; // 0xA0
 } DialogueSpriteInfo;
 
 // 0x801C3F18
@@ -78,7 +79,7 @@ typedef struct {
 	u32 unk_4;
 	u32 unk_8;
 	u16 unk_C;
-	u16 conversationIndex; // 0xF26 // index into conversation
+	u16 dialogueIndex; // 0xF26 // index into conversation
 	u16 unk_10; // 0xF28, message struct index
 	u16 unk_12;
 	u16 unk_14;
@@ -122,7 +123,7 @@ extern bool initializeDialogueVariable(u16 index, void *address, u8 numSet, s32 
 extern void func_80042F60();   
 extern bool func_80042FEC(u16, u16, u16);
 extern bool func_80043050(u16, u16, u16, void*, void*, void*, void*, void*);
-extern bool func_80043138(u32[]);
+extern bool setSpecialDialogueBitsPointer(u32[]);
 extern bool func_80043148(u16, u32, u32, u32);
 extern bool func_8004318C(u16 arg0, u16 arg1, void* arg2, void* arg3, void* arg4, void* arg5, void* arg6, void* arg7, void* arg8, void* arg9, void* argA, u16 argB, u8 argC, f32 argD, f32 argE, f32 argF);
 extern bool func_80043260(u16 arg0, u16 arg1, void* arg2, void* arg3, void* arg4, void* arg5, void* arg6, void* arg7, void* arg8, void* arg9, void* argA, u16 argB, u8 argC, f32 argD, f32 argE, f32 argF);
@@ -135,7 +136,9 @@ extern u8 func_80043C6C(u16);
 // character avatars
 extern DialogueIcon dialogueIcons[1];
 
+extern Vec4f unknownRGBA;
+
 extern Dialogue dialogues[1];
-extern Conversation D_80205760[69];
+extern DialogueAddressInfo dialogueAddresses[69];
 
 #endif

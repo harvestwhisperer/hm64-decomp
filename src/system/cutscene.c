@@ -1471,7 +1471,7 @@ void func_8004A38C(u16 index) {
 
     cutsceneMaps[index].cutscenePointer += 4;
     
-    func_8003BB14(mapModelContextIndex, mapIndex);
+    loadMap(mapModelContextIndex, mapIndex);
 
 }
 

@@ -28,6 +28,6 @@ extern u32 _namingScreenTexture1SegmentRomEnd;
 extern u8 gNamingScreenIndex;
 extern NamingScreenContext namingScreenContext;
 
-void func_800ED8A0(u8*, u8);
+inline void initializeNamingScreen(u8*, u8);
 
 #endif

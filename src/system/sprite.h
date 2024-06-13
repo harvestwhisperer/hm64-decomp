@@ -13,7 +13,7 @@
 
 #define NEED_DMA 1
 
-#define OBJECT_SPRITE_BANK_1_START 0x802EB800
+#define SHADOW_ALPHA 96
 
 typedef struct {
 	u16 animationIndex;
@@ -249,7 +249,7 @@ extern bool func_8002CB88(u16, u16);
 extern bool func_8002CBF8(u16);   
 extern bool func_8002CC44(u16);
 extern void func_8002D3D4(void);
-extern void func_8002E1B8(void);
+extern void deactivateSprites(void);
 
 /* spriteAddresses.c */
 extern void resetSpriteAddressesFlags(void);

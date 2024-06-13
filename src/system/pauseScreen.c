@@ -255,7 +255,7 @@ bool func_8004644C(u16 spriteIndex, u8 arg1, s16 arg2) {
 bool func_80046504(u16 spriteIndex) {
 
     u8 count = 0;
-    u8 found = 0;
+    u8 found = FALSE;
 
     bool result = FALSE;
 
@@ -279,7 +279,7 @@ bool func_80046504(u16 spriteIndex) {
 
                 if (check) {
                     func_80046650(spriteIndex, check, count);
-                    found = 1;
+                    found = TRUE;
                 } else if (!found) {
                     if (count == 0) {
                         func_80046650(spriteIndex, 0, count);

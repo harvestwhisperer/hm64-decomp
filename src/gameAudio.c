@@ -25,15 +25,16 @@ void initializeWaveTable(u16 waveTableIndex) {
     setSongBank(waveTableAddresses[waveTableIndex].pbk_addr, waveTableAddresses[waveTableIndex].pbk_end, waveTableAddresses[waveTableIndex].wbk_addr);
 }
 
-//INCLUDE_ASM(const s32, "gameAudio", func_800ACB04);
+//INCLUDE_ASM(const s32, "gameAudio", setCurrentSong);
 
-void func_800ACB04(u16 songIndex) {
+void setCurrentSong(u16 songIndex) {
 
     if (songIndex < TOTAL_SONGS) {
         setSong(0, songRomAddresses[songIndex][0], songRomAddresses[songIndex][1]);
     }
     
     setSongVolumes(0, 0, 0);
+
 }
 
 //INCLUDE_ASM(const s32, "gameAudio", setSongWithDefaultSpeed);
@@ -44,9 +45,9 @@ void setSongWithDefaultSpeed(u16 songIndex) {
     }
 }
 
-//INCLUDE_ASM(const s32, "gameAudio", func_800ACB8C);
+//INCLUDE_ASM(const s32, "gameAudio", stopCurrentSong);
 
-void func_800ACB8C(u16 songIndex) {
+void stopCurrentSong(u16 songIndex) {
     if (songIndex  < TOTAL_SONGS) {
         stopSong(0);
     }
@@ -70,10 +71,9 @@ bool checkDefaultSongChannelOpen(u16 songIndex) {
     return result;
 }
 
+//INCLUDE_ASM(const s32, "gameAudio", setSongVolume);
 
-//INCLUDE_ASM(const s32, "gameAudio", setSongWithVolume);
-
-void setSongWithVolume(u16 songIndex, u32 arg1) {
+void setSongVolume(u16 songIndex, u32 arg1) {
     if (songIndex < TOTAL_SONGS) {
         setSongVolumes(0, arg1, 32);
     }
@@ -94,13 +94,16 @@ void setAudio(u16 index) {
   if (index < TOTAL_SFX) {
       
     if (audioTypeTable[index] == SFX) {
+      
       setSfx(index + 1);
       setSfxVolume(index + 1, volumesTable[index]);
-      return;
+
+    } else {
+
+        setSong(audioTypeTable[index], sfxRomAddresses[index][0], sfxRomAddresses[index][1]);
+        setSongVolumes(audioTypeTable[index], volumesTable[index], volumesTable[index]);
+    
     }
-      
-    setSong(audioTypeTable[index], sfxRomAddresses[index][0], sfxRomAddresses[index][1]);
-    setSongVolumes(audioTypeTable[index], volumesTable[index], volumesTable[index]);
   }
 }
 
@@ -121,5 +124,5 @@ u8 checkAllSfxInactive(void) {
     }
     
     return count == 4;
-}
 
+}

@@ -540,10 +540,11 @@ void initializeGameVariables(void) {
     gForecast = SUNNY;
     gSeasonTomorrow = SPRING;
 
-    D_80205230.unk_6 = 0;
-    D_80205230.unk_2 = 0;
-    D_80205230.unk_4 = 0;
+    gameLoopContext.unk_6 = 0;
+    gameLoopContext.unk_2 = 0;
+    gameLoopContext.unk_4 = 0;
 
+    // cutscene location
     D_8018981C = 0xFFFF;
     gItemBeingHeld = 0xFF;
 
@@ -573,7 +574,7 @@ void initializeGameVariables(void) {
     flowerShopPoints = 0;
     bakeryCardPoints = 0;
 
-    D_802226E0 = 0;
+    playerIdleCounter = 0;
 
     initializePlayer();
     
@@ -774,7 +775,7 @@ void initializeGameVariables(void) {
     D_8016FBCD = 0;
     gLumber = 0;
     D_80180714 = 0;
-    D_80237410 = 0;
+    chickenFeedQuantity = 0;
 
     initializeToolchestSlots();
 
@@ -1114,8 +1115,8 @@ void func_80053088(void) {
     func_8003F80C(1, 0x76, &_dialogueWindowTextureSegmentRomStart, &_dialogueWindowTextureSegmentRomEnd, &_dialogueWindowIndexSegmentRomStart, &_dialogueWindowIndexSegmentRomEnd, 0x80238800, 0x8023B100, 0x8023B200, 0x8023B300, 0, 0, 0, 0, 0, 0);
     func_8003F80C(2, 0x77, &_dialogueWindowTextureSegmentRomStart, &_dialogueWindowTextureSegmentRomEnd, &_dialogueWindowIndexSegmentRomStart, &_dialogueWindowIndexSegmentRomEnd, 0x80238800, 0x8023B100, 0x8023B200, 0x8023B300, 0, 1, 0, 0, 0, 0);
 
-    func_8003F910(0, 0x78, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsIndexSegmentRomStart, &_dialogueIconsIndexSegmentRomEnd, (void* )DIALOGUE_ICONS_TEXTURES_VADDR_START, (void* )DIALOGUE_ICONS_TEXTURES_VADDR_END, (void* )DIALOGUE_ICONS_PALETTE_VADDR_START, DIALOGUE_ICONS_PALETTE_VADDR_END, 0, 4, 0xFE, 106.0f, -15.0f, 0.0f);
-    func_8003F910(1, 0x78, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsIndexSegmentRomStart, &_dialogueIconsIndexSegmentRomEnd, (void* )DIALOGUE_ICONS_TEXTURES_VADDR_START, (void* )DIALOGUE_ICONS_TEXTURES_VADDR_END, (void* )DIALOGUE_ICONS_PALETTE_VADDR_START, DIALOGUE_ICONS_PALETTE_VADDR_END, 0, 0xD, 0xFE, 106.0f, -15.0f, 0.0f);
+    func_8003F910(0, 0x78, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsIndexSegmentRomStart, &_dialogueIconsIndexSegmentRomEnd, (void* )DIALOGUE_ICONS_TEXTURES_VADDR_START, (void* )DIALOGUE_ICONS_TEXTURES_VADDR_END, (void* )DIALOGUE_ICONS_INDEX_VADDR_START, DIALOGUE_ICONS_INDEX_VADDR_END, 0, 4, 0xFE, 106.0f, -15.0f, 0.0f);
+    func_8003F910(1, 0x78, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsIndexSegmentRomStart, &_dialogueIconsIndexSegmentRomEnd, (void* )DIALOGUE_ICONS_TEXTURES_VADDR_START, (void* )DIALOGUE_ICONS_TEXTURES_VADDR_END, (void* )DIALOGUE_ICONS_INDEX_VADDR_START, DIALOGUE_ICONS_INDEX_VADDR_END, 0, 0xD, 0xFE, 106.0f, -15.0f, 0.0f);
     func_8003FA1C(0, 0x75, &_characterDialogueIconsTextureSegmentRomStart, &_characterDialogueIconsTextureSegmentRomEnd, &_characterdialogueIconsAssetsIndexSegmentRomStart, &_characterdialogueIconsAssetsIndexSegmentRomEnd, &_characterDialogueIconsSpritesheetIndexSegmentRomStart, &_characterDialogueIconsSpritesheetIndexSegmentRomEnd, (void*)0x8023D300, (void*)0x8023DB00, (void*)0x8023E300, (void*)0x8023EF00, (void*)0x8023FF00, (void*)0x80240000, -139.0f, 1.0f, 0);
  
     func_8003DBE8(0, 0x8030B000);
@@ -1300,19 +1301,20 @@ void func_80054180(void) {
 
 //INCLUDE_ASM(const s32, "initialize", func_80054550);
 
+// initialize dialogue structs
 void func_80054550(void) {
 
     func_80054734();
 
     initializeDialogueVariables();
 
-    func_80043138(specialDialogueBits);
+    setSpecialDialogueBitsPointer(specialDialogueBits);
 
     func_80042FEC(0, 0, 1);
 
-    func_8004318C(0, DIALOGUE_ICONS_1, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsIndexSegmentRomStart, &_dialogueIconsIndexSegmentRomEnd, DIALOGUE_ICONS_TEXTURES_VADDR_START, DIALOGUE_ICONS_TEXTURES_VADDR_END, DIALOGUE_ICONS_PALETTE_VADDR_START, DIALOGUE_ICONS_PALETTE_VADDR_END, 0, 3, 0, 8.0f, -16.0f, 0);
-    func_80043260(0, DIALOGUE_ICONS_2, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsIndexSegmentRomStart, &_dialogueIconsIndexSegmentRomEnd, DIALOGUE_ICONS_TEXTURES_VADDR_START, DIALOGUE_ICONS_TEXTURES_VADDR_END, DIALOGUE_ICONS_PALETTE_VADDR_START, DIALOGUE_ICONS_PALETTE_VADDR_END, 0, 0xA, 0xFE, 0, 40.0f, 0);
-    func_80043334(0, DIALOGUE_ICONS_3, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsIndexSegmentRomStart, &_dialogueIconsIndexSegmentRomEnd, DIALOGUE_ICONS_TEXTURES_VADDR_START, DIALOGUE_ICONS_TEXTURES_VADDR_END, DIALOGUE_ICONS_PALETTE_VADDR_START, DIALOGUE_ICONS_PALETTE_VADDR_END, 0, 0xB, 0xFE, 0, -40.0f, 0);
+    func_8004318C(0, DIALOGUE_ICONS_1, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsIndexSegmentRomStart, &_dialogueIconsIndexSegmentRomEnd, DIALOGUE_ICONS_TEXTURES_VADDR_START, DIALOGUE_ICONS_TEXTURES_VADDR_END, DIALOGUE_ICONS_INDEX_VADDR_START, DIALOGUE_ICONS_INDEX_VADDR_END, NULL, 3, 0, 8.0f, -16.0f, 0);
+    func_80043260(0, DIALOGUE_ICONS_2, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsIndexSegmentRomStart, &_dialogueIconsIndexSegmentRomEnd, DIALOGUE_ICONS_TEXTURES_VADDR_START, DIALOGUE_ICONS_TEXTURES_VADDR_END, DIALOGUE_ICONS_INDEX_VADDR_START, DIALOGUE_ICONS_INDEX_VADDR_END, NULL, 0xA, 0xFE, 0, 40.0f, 0);
+    func_80043334(0, DIALOGUE_ICONS_3, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsIndexSegmentRomStart, &_dialogueIconsIndexSegmentRomEnd, DIALOGUE_ICONS_TEXTURES_VADDR_START, DIALOGUE_ICONS_TEXTURES_VADDR_END, DIALOGUE_ICONS_INDEX_VADDR_START, DIALOGUE_ICONS_INDEX_VADDR_END, NULL, 0xB, 0xFE, 0, -40.0f, 0);
    
     func_80043148(0, 2, 0, 8);
 
@@ -1320,6 +1322,7 @@ void func_80054550(void) {
  
 INCLUDE_ASM(const s32, "initialize", func_80054734);
 
+// dialogues
 // TODO: have to add linker symbols
 /* 
 void func_80054734(void) {
@@ -1408,7 +1411,7 @@ void func_80054734(void) {
 void initializeDialogueVariables(void) {
 
     // alcohol tolerance is first lol
-    initializeDialogueVariable(0, &gAlcoholTolerance, 1, 0xFF);
+    initializeDialogueVariable(0, &gAlcoholTolerance, 1, MAX_ALCOHOL_TOLERANCE );
 
     initializeDialogueVariable(1, &gSeason, 1, 4);
     initializeDialogueVariable(2, &gHour, 1, 23);
@@ -1451,7 +1454,7 @@ void initializeDialogueVariables(void) {
     initializeDialogueVariable(0x25, &npcAffection[BABY], 1, MAX_AFFECTION);
 
     // sum of girls' affection
-    initializeDialogueVariable(0x26, &D_80215DF0, 2, 1275);
+    initializeDialogueVariable(0x26, &D_80215DF0, 2, MAX_AFFECTION * 5);
 
     initializeDialogueVariable(0x27, &gDayOfMonth, 1, 30);
 
@@ -1461,12 +1464,12 @@ void initializeDialogueVariables(void) {
     initializeDialogueVariable(0x2A, &gTotalPinkCatMintFlowersGrowing, 2, 1000);
 
     // crops shipped
-    initializeDialogueVariable(0x2B, &D_801654F4, 4, 999);
-    initializeDialogueVariable(0x2C, &D_80237414, 4, 999);
-    initializeDialogueVariable(0x2D, &D_801C3F80, 4, 999);
-    initializeDialogueVariable(0x2E, &D_80188F60, 4, 999);
-    initializeDialogueVariable(0x2F, &D_801FB5D0, 4, 999);
-    initializeDialogueVariable(0x30, &D_801FB6FC, 4, 999);
+    initializeDialogueVariable(0x2B, &D_801654F4, 4, MAX_ITEM_SHIPPING_VALUE);
+    initializeDialogueVariable(0x2C, &D_80237414, 4, MAX_ITEM_SHIPPING_VALUE);
+    initializeDialogueVariable(0x2D, &D_801C3F80, 4, MAX_ITEM_SHIPPING_VALUE);
+    initializeDialogueVariable(0x2E, &D_80188F60, 4, MAX_ITEM_SHIPPING_VALUE);
+    initializeDialogueVariable(0x2F, &D_801FB5D0, 4, MAX_ITEM_SHIPPING_VALUE);
+    initializeDialogueVariable(0x30, &D_801FB6FC, 4, MAX_ITEM_SHIPPING_VALUE);
 
     initializeDialogueVariable(0x31, &npcAffection[DOUG], 1, MAX_AFFECTION);
     initializeDialogueVariable(0x32, &npcAffection[GOTZ], 1, MAX_AFFECTION);
@@ -1482,28 +1485,35 @@ void initializeDialogueVariables(void) {
 
     initializeDialogueVariable(0x39, &gElliGrievingCounter, 1, 30);
 
-    // set for each possible wife
     initializeDialogueVariable(0x3A, &gBabyAge, 1, 120);
     initializeDialogueVariable(0x3B, &gWifeConceptionCounter, 1, 120);
     initializeDialogueVariable(0x3C, &gWifeConceptionCounter, 1, 120);
     initializeDialogueVariable(0x3D, &gBabyAge, 1, 120);
+    
     // unused
     initializeDialogueVariable(0x3E, &D_801890D8, 1, 30);
+    
     initializeDialogueVariable(0x3F, &gBabyAge, 1, 120);
+    
     // unused
     initializeDialogueVariable(0x40, &D_801C4214, 1, 30);
+    
     initializeDialogueVariable(0x41, &gBabyAge, 1, 120);
     initializeDialogueVariable(0x42, &gBabyAge, 1, 120);
+    
     // unsued
     initializeDialogueVariable(0x43, &D_80189A48, 1, 30);
     // unused
     initializeDialogueVariable(0x44, &D_80180712, 1, 30);
+
     initializeDialogueVariable(0x45, &gWifePregnancyCounter, 1, 60);
     initializeDialogueVariable(0x46, &gWifePregnancyCounter, 1, 60);
+    
     // unused
-    initializeDialogueVariable(0x47, &D_8017044B, 1, 0xFF);
+    initializeDialogueVariable(0x47, &D_8017044B, 1, 255);
     // unused
-    initializeDialogueVariable(0x48, &D_801C3B64, 1, 0xFF);
+    initializeDialogueVariable(0x48, &D_801C3B64, 1, 255);
+
     initializeDialogueVariable(0x49, &gWifePregnancyCounter, 1, 60);
     initializeDialogueVariable(0x4A, &gWifePregnancyCounter, 1, 60);
     initializeDialogueVariable(0x4B, &gWifePregnancyCounter, 1, 60);

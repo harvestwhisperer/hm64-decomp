@@ -48,6 +48,7 @@ extern u8 D_801195F0[];
 extern u8 D_80119628[];
 // player animations table when interacting with shop items
 extern Animation D_80119660[56];
+// sprite index offsets for shop items
 extern u8 D_801194A0[];
 extern u16 D_8011BA10[];
 
@@ -77,9 +78,9 @@ void func_800DC750(u8 storeItemIndex) {
 
 }
 
-//INCLUDE_ASM(const s32, "shop", func_800DC7BC);
+//INCLUDE_ASM(const s32, "shop", loadShopItemSprite);
 
-void func_800DC7BC(u8 index) {
+void loadShopItemSprite(u8 index) {
     
     func_8002B138(D_801194A0[index] + 0x62, &_holdableItemsTextureSegmentRomStart, &_holdableItemsTextureSegmentRomEnd, &_holdableItemsAssetsIndexSegmentRomStart, &_holdableItemsAssetsIndexSegmentRomEnd, &_holdableItemsSpritesheetIndexSegmentRomStart, &_holdableItemsSpritesheetIndexSegmentRomEnd, D_801192E0[index][0], D_801192E0[index][1], 0x8028DD50, 0x80290550, 0x80293A50, 0x80293C50, 1, 1);
     setSpriteScale(D_801194A0[index] + 0x62, 1.0f, 1.0f, 1.0f);
@@ -87,8 +88,7 @@ void func_800DC7BC(u8 index) {
     setSpriteDefaultRGBA(D_801194A0[index] + 0x62, 0xFF, 0xFF, 0xFF, 0xFF);
     func_8002C914(D_801194A0[index] + 0x62, 0xFF, 0xFF, 0xFF, 0xFF);
 
-    // set map object
-    func_80034C40(MAIN_MAP_INDEX, D_801194A0[index], D_801194A0[index] + 0x62, func_80030BA0(&D_8011BA10, func_800D5A88(D_80118FD0[index])), D_80119040[index].x, D_80119040[index].y, D_80119040[index].z, 0xFF, 0xFF, 0, 0);
+    setMapObject(MAIN_MAP_INDEX, D_801194A0[index], D_801194A0[index] + 0x62, func_80030BA0(&D_8011BA10, func_800D5A88(D_80118FD0[index])), D_80119040[index].x, D_80119040[index].y, D_80119040[index].z, 0xFF, 0xFF, 0, 0);
 
 }
 
@@ -708,9 +708,9 @@ u8 handlePurchase(u16 storeItemIndex, s32 quantity) {
 
                 result = 3;
 
-                if ((D_80237410 + quantity) < MAX_CHICKEN_FEED + 1) {
+                if ((chickenFeedQuantity + quantity) < MAX_CHICKEN_FEED + 1) {
                     result = func_80065BCC(CHICKEN_FEED);
-                    D_80237410 += adjustValue(D_80237410, quantity, MAX_CHICKEN_FEED);
+                    chickenFeedQuantity += adjustValue(chickenFeedQuantity, quantity, MAX_CHICKEN_FEED);
                 }
 
                 break;
@@ -978,10 +978,10 @@ u8 handlePurchase(u16 storeItemIndex, s32 quantity) {
 }
 
 // jtbl_80123578
-//INCLUDE_ASM(const s32, "shop", func_800DDDFC);
+//INCLUDE_ASM(const s32, "shop", checkShopItemShouldBeDisplayed);
 
 // check if should be selling items
-bool func_800DDDFC(u16 itemIndex) {
+bool checkShopItemShouldBeDisplayed(u16 itemIndex) {
 
     bool result = FALSE;
     
