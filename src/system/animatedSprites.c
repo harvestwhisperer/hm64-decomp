@@ -58,7 +58,7 @@ void initializeNpcSpriteStructs(void) {
 
 //INCLUDE_ASM(const s32, "system/animatedSprites", func_8002DDDC);
 
-bool func_8002DDDC(u16 npcIndex, void* arg1, void* arg2, void* arg3, void* arg4, void* arg5, void* arg6, u8 arg7, u8 arg8, void* arg9) {
+bool func_8002DDDC(u16 npcIndex, void* arg1, void* arg2, void* arg3, void* arg4, void* arg5, void* arg6, u8 arg7, u8 arg8, u16* arg9) {
 
     bool result = FALSE;
 
@@ -73,7 +73,7 @@ bool func_8002DDDC(u16 npcIndex, void* arg1, void* arg2, void* arg3, void* arg4,
             characterSprites[npcIndex].romSpritesheetIndexStart = arg5;
             characterSprites[npcIndex].romSpritesheetIndexEnd = arg6;
             characterSprites[npcIndex].shadowSpriteIndex= arg8;
-            characterSprites[npcIndex].vaddr = arg9;
+            characterSprites[npcIndex].spriteData = arg9;
 
             characterSprites[npcIndex].collisionBufferX = 0;
             characterSprites[npcIndex].collisionBufferY = 0;
@@ -1309,7 +1309,7 @@ u16 func_80030B24(u16 spriteIndex, u16 offset) {
 
     if (spriteIndex < MAX_ANIMATED_SPRITES) {
         if (animatedSprites[spriteIndex].flags & 1) {
-            index = characterSprites[animatedSprites[spriteIndex].characterIndex].vaddr[offset] & 0x1FFF;
+            index = characterSprites[animatedSprites[spriteIndex].characterIndex].spriteData[offset] & 0x1FFF;
         }
     }
     
@@ -1332,7 +1332,7 @@ u16 func_80030BB8(u16 spriteIndex, u16 offset) {
 
     if (spriteIndex < MAX_ANIMATED_SPRITES) {
         if (animatedSprites[spriteIndex].flags & 1) {
-            index = characterSprites[animatedSprites[spriteIndex].characterIndex].vaddr[offset] & 0x6000;
+            index = characterSprites[animatedSprites[spriteIndex].characterIndex].spriteData[offset] & 0x6000;
         }
     }
     
@@ -1349,7 +1349,7 @@ u16 func_80030C34(u16 spriteIndex, u16 offset) {
 
     if (spriteIndex < MAX_ANIMATED_SPRITES) {
         if (animatedSprites[spriteIndex].flags & 1) {
-            index = characterSprites[animatedSprites[spriteIndex].characterIndex].vaddr[offset] & 0x8000;
+            index = characterSprites[animatedSprites[spriteIndex].characterIndex].spriteData[offset] & 0x8000;
         }
     }
     

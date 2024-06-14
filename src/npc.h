@@ -80,5 +80,4 @@ extern npcInfo npcInfoArray[];
 
 extern u8 npcTalkingTo;
 
-
 #endif

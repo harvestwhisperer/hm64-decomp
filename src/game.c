@@ -1056,8 +1056,8 @@ void func_8005CBF0(void) {
             gItemBeingHeld = 0xFF;
         }
          
-        func_8003F910(0, 0x78, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsIndexSegmentRomStart, &_dialogueIconsIndexSegmentRomEnd, (void*)DIALOGUE_ICONS_TEXTURES_VADDR_START, (void*)DIALOGUE_ICONS_TEXTURES_VADDR_END, (void*)DIALOGUE_ICONS_INDEX_VADDR_START, (void*)DIALOGUE_ICONS_INDEX_VADDR_END, 0, 4, 0xFE, 106.0f, -15.0f, 0);
-        func_8003F910(1, 0x78, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsIndexSegmentRomStart, &_dialogueIconsIndexSegmentRomEnd, (void*)DIALOGUE_ICONS_TEXTURES_VADDR_START, (void*)DIALOGUE_ICONS_TEXTURES_VADDR_END, (void*)DIALOGUE_ICONS_INDEX_VADDR_START, (void*)DIALOGUE_ICONS_INDEX_VADDR_END, 0, 0xD, 0xFE, 106.0f, -15.0f, 0);
+        func_8003F910(0, 0x78, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsIndexSegmentRomStart, &_dialogueIconsIndexSegmentRomEnd, (void*)DIALOGUE_ICONS_TEXTURE_VADDR_START, (void*)DIALOGUE_ICONS_TEXTURE_VADDR_END, (void*)DIALOGUE_ICONS_INDEX_VADDR_START, (void*)DIALOGUE_ICONS_INDEX_VADDR_END, 0, 4, 0xFE, 106.0f, -15.0f, 0);
+        func_8003F910(1, 0x78, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsIndexSegmentRomStart, &_dialogueIconsIndexSegmentRomEnd, (void*)DIALOGUE_ICONS_TEXTURE_VADDR_START, (void*)DIALOGUE_ICONS_TEXTURE_VADDR_END, (void*)DIALOGUE_ICONS_INDEX_VADDR_START, (void*)DIALOGUE_ICONS_INDEX_VADDR_END, 0, 0xD, 0xFE, 106.0f, -15.0f, 0);
        
         // update stuff after closing dialogue 
         func_8005CDCC();

@@ -62,7 +62,7 @@ typedef struct {
 	u8 unk_6F; // 0x6F
 	u8 unk_70; // collision object id? 
 	Fatigue fatigue; // 71
-    u16 flags; // 0x78
+    u16 flags; // 0x76
 } Player;
 
 typedef struct {

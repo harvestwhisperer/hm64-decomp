@@ -60,6 +60,4 @@ extern void setInitialWorldRotationAngles(f32 x, f32 y, f32 z);
 extern void func_80028EF8(f32 x, f32 y, f32 z);
 extern void drawFrame(void);  
 
-extern Vtx bitmapVertices[2][0x80][4];
-
 #endif

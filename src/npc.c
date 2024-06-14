@@ -12,6 +12,7 @@
 #include "game.h"
 #include "gameStatus.h"
 #include "level.h"
+#include "player.h"
 #include "spriteIndices.h"
 #include "weather.h"
 
@@ -568,7 +569,7 @@ u8 func_80076CF4(void) {
 
     u8 result = 0;
 
-    if (checkLifeEventBit(0) && checkLifeEventBit(1)) {
+    if (checkLifeEventBit(MARRIED) && checkLifeEventBit(HAVE_BABY)) {
 
         if (gBabyAge < 30) {
             if (5 < gHour && gHour < 20) {
@@ -581,7 +582,7 @@ u8 func_80076CF4(void) {
             }  
         } else {
             if (5 < gHour && gHour < 20) {
-                // -(120 < DAT_80189134) & 6U | 4;
+                // reference: -(120 < gBabyAge) & 6U | 4;
                 result = (gBabyAge < 120) ? 4 : 6;
             } else {
                 result = 5;
@@ -595,6 +596,7 @@ u8 func_80076CF4(void) {
 
 // jtbl_80120188
 INCLUDE_ASM(const s32, "npc", func_80076DCC);
+
 
 
 /* set starting locations */
@@ -961,6 +963,9 @@ void setNpcAnimations(void) {
     func_800856E4();
     func_800857DC();
 }
+
+
+/* animations */
 
 INCLUDE_ASM(const s32, "npc", func_80081C90);
 
@@ -1517,7 +1522,104 @@ INCLUDE_ASM(const s32, "npc", func_800856E4);
 
 INCLUDE_ASM(const s32, "npc", func_800857DC);
 
-INCLUDE_ASM(const s32, "npc", func_800858D4);
+
+
+
+//INCLUDE_ASM(const s32, "npc", func_800858D4);
+
+static inline bool checkNotHoldingItem() {
+    return gPlayer.heldItem != 0;
+}
+
+// FIXME: totally cursed
+u8 func_800858D4(void) {
+    
+    u8 result = 0;
+    u8 i = 0;
+    
+    s32 i2;
+    u16 temp;
+
+    // ??
+    u8 *ptr2 = &gPlayer.heldItem;
+    u8 *ptr = npcAffection + 5;
+
+    do {
+
+        // ???
+        ptr = npcAffection+5;
+        
+        if (npcInfoArray[i].flags & 4) {
+            
+            if (!animatedSprites[npcInfoArray[i].spriteIndex].unk_58 && animatedSprites[npcInfoArray[i].spriteIndex].unk_5A == 0x8000) {
+
+                if (i == BABY && gBabyAge < 120) {
+                                 
+                    // should be gPlayer.heldItem == 0
+                    if (*ptr2 == 0) {
+         
+                        // should be !(gPlayer.flags & 1)
+                        if (!(*(u16*)(ptr2+0x4A) & 1)) {
+
+                            if (gBabyAge >= 30) {
+                                *ptr2 = 0xC2;
+                            } else {
+                                *ptr2 = 0xBA;  
+                            }
+
+                            if (!checkDailyEventBit(HELD_BABY)) {
+                                *ptr += adjustValue(*ptr, 2, MAX_AFFECTION);
+                                setDailyEventBit(HELD_BABY);
+                            }
+                            
+                            func_8002FA2C(npcInfoArray[i].spriteIndex);
+                         
+                            result = 2;
+                            npcInfoArray[i].flags &= ~4;
+                           
+                        } 
+                        
+                        temp = 0xFFFF;
+                        
+                    } else {
+                        temp = 1;
+                    } 
+                                 
+                } else {
+                    temp = checkNotHoldingItem();
+                }
+   
+                if (temp != 0xFFFF) {
+
+                    // ?? switch statement?
+                    i2 = i;
+
+                    if (i2 < 5) {
+
+                        if (!(i2 < 0)) {
+
+                            func_8003F910(0, 0x78, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsIndexSegmentRomStart, &_dialogueIconsIndexSegmentRomEnd, (void*)DIALOGUE_ICONS_TEXTURE_VADDR_START, (void*)DIALOGUE_ICONS_TEXTURE_VADDR_END, (void*)DIALOGUE_ICONS_INDEX_VADDR_START, DIALOGUE_ICONS_INDEX_VADDR_END, 0, (npcAffection[i] / 52) + 5, 0xFE, 106.0f, -15.0f, 0.0f);
+                            func_8003F910(1, 0x78, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsIndexSegmentRomStart, &_dialogueIconsIndexSegmentRomEnd, (void*)DIALOGUE_ICONS_TEXTURE_VADDR_START, (void*)DIALOGUE_ICONS_TEXTURE_VADDR_END, (void*)DIALOGUE_ICONS_INDEX_VADDR_START, DIALOGUE_ICONS_INDEX_VADDR_END, 0, (npcAffection[i] / 52) + 5, 0xFE, 106.0f, -15.0f, 0.0f);
+                       
+                        }
+                        
+                    }
+                    
+                    showDialogueBox(0, D_80114960[i], temp, 0, 0);
+                    result = 1;
+                    npcInfoArray[i].movingFlag = 0x10;
+                    
+                }
+            }    
+        }
+        
+        i++;
+            
+    } while (i < TOTAL_NPCS && result == 0);
+
+    return result;
+    
+}
 
 //INCLUDE_ASM(const s32, "npc", func_80085C94);
 
@@ -1543,6 +1645,7 @@ bool func_80085C94(void) {
     } 
     
     return found;
+
 }
 
 //INCLUDE_ASM(const s32, "npc", func_80085D48);
@@ -1566,8 +1669,8 @@ bool func_80085D48(int index, u16 arg1) {
         // FIXME: 
         // check if girl and load heart icon
         if ((index < 5) && (index >= (result = 0))) {
-            func_8003F910(0, 0x78, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsIndexSegmentRomStart, &_dialogueIconsIndexSegmentRomEnd, (void*)DIALOGUE_ICONS_TEXTURES_VADDR_START, (void*)DIALOGUE_ICONS_TEXTURES_VADDR_END, (void*)DIALOGUE_ICONS_INDEX_VADDR_START, (void*)DIALOGUE_ICONS_INDEX_VADDR_END, 0, (npcAffection[index] / 52) + 5, 0xFE, 106.0f, -15.0f, 0);
-            func_8003F910(1, 0x78, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsIndexSegmentRomStart, &_dialogueIconsIndexSegmentRomEnd, (void*)DIALOGUE_ICONS_TEXTURES_VADDR_START, (void*)DIALOGUE_ICONS_TEXTURES_VADDR_END, (void*)DIALOGUE_ICONS_INDEX_VADDR_START, (void*)DIALOGUE_ICONS_INDEX_VADDR_END, 0, (npcAffection[index] / 52) + 5, 0xFE, 106.0f, -15.0f, 0);
+            func_8003F910(0, 0x78, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsIndexSegmentRomStart, &_dialogueIconsIndexSegmentRomEnd, (void*)DIALOGUE_ICONS_TEXTURE_VADDR_START, (void*)DIALOGUE_ICONS_TEXTURE_VADDR_END, (void*)DIALOGUE_ICONS_INDEX_VADDR_START, (void*)DIALOGUE_ICONS_INDEX_VADDR_END, 0, (npcAffection[index] / 52) + 5, 0xFE, 106.0f, -15.0f, 0);
+            func_8003F910(1, 0x78, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsIndexSegmentRomStart, &_dialogueIconsIndexSegmentRomEnd, (void*)DIALOGUE_ICONS_TEXTURE_VADDR_START, (void*)DIALOGUE_ICONS_TEXTURE_VADDR_END, (void*)DIALOGUE_ICONS_INDEX_VADDR_START, (void*)DIALOGUE_ICONS_INDEX_VADDR_END, 0, (npcAffection[index] / 52) + 5, 0xFE, 106.0f, -15.0f, 0);
         }
 
         // D_80114960 = conversation indices

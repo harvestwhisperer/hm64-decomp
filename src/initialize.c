@@ -1104,7 +1104,7 @@ void func_80053088(void) {
     u32 ptr6 = &_fontPalette2SegmentRomEnd;
 
     func_800535DC();
-    func_80054180();
+    initializeNameStrings();
     func_8003FAE8(&D_8011BD18);
 
     nuPiReadRom(ptr, (void*)0x802FF000, ptr2 - ptr);
@@ -1114,9 +1114,9 @@ void func_80053088(void) {
     func_8003F80C(0, 0x76, &_dialogueWindowTextureSegmentRomStart, &_dialogueWindowTextureSegmentRomEnd, &_dialogueWindowIndexSegmentRomStart, &_dialogueWindowIndexSegmentRomEnd, 0x80238800, 0x8023B100, 0x8023B200, 0x8023B300, 0, 0, 1, -24.0f, 0, 0);
     func_8003F80C(1, 0x76, &_dialogueWindowTextureSegmentRomStart, &_dialogueWindowTextureSegmentRomEnd, &_dialogueWindowIndexSegmentRomStart, &_dialogueWindowIndexSegmentRomEnd, 0x80238800, 0x8023B100, 0x8023B200, 0x8023B300, 0, 0, 0, 0, 0, 0);
     func_8003F80C(2, 0x77, &_dialogueWindowTextureSegmentRomStart, &_dialogueWindowTextureSegmentRomEnd, &_dialogueWindowIndexSegmentRomStart, &_dialogueWindowIndexSegmentRomEnd, 0x80238800, 0x8023B100, 0x8023B200, 0x8023B300, 0, 1, 0, 0, 0, 0);
-
-    func_8003F910(0, 0x78, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsIndexSegmentRomStart, &_dialogueIconsIndexSegmentRomEnd, (void* )DIALOGUE_ICONS_TEXTURES_VADDR_START, (void* )DIALOGUE_ICONS_TEXTURES_VADDR_END, (void* )DIALOGUE_ICONS_INDEX_VADDR_START, DIALOGUE_ICONS_INDEX_VADDR_END, 0, 4, 0xFE, 106.0f, -15.0f, 0.0f);
-    func_8003F910(1, 0x78, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsIndexSegmentRomStart, &_dialogueIconsIndexSegmentRomEnd, (void* )DIALOGUE_ICONS_TEXTURES_VADDR_START, (void* )DIALOGUE_ICONS_TEXTURES_VADDR_END, (void* )DIALOGUE_ICONS_INDEX_VADDR_START, DIALOGUE_ICONS_INDEX_VADDR_END, 0, 0xD, 0xFE, 106.0f, -15.0f, 0.0f);
+  
+    func_8003F910(0, 0x78, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsIndexSegmentRomStart, &_dialogueIconsIndexSegmentRomEnd, (void* )DIALOGUE_ICONS_TEXTURE_VADDR_START, (void* )DIALOGUE_ICONS_TEXTURE_VADDR_END, (void* )DIALOGUE_ICONS_INDEX_VADDR_START, DIALOGUE_ICONS_INDEX_VADDR_END, 0, 4, 0xFE, 106.0f, -15.0f, 0.0f);
+    func_8003F910(1, 0x78, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsIndexSegmentRomStart, &_dialogueIconsIndexSegmentRomEnd, (void* )DIALOGUE_ICONS_TEXTURE_VADDR_START, (void* )DIALOGUE_ICONS_TEXTURE_VADDR_END, (void* )DIALOGUE_ICONS_INDEX_VADDR_START, DIALOGUE_ICONS_INDEX_VADDR_END, 0, 0xD, 0xFE, 106.0f, -15.0f, 0.0f);
     func_8003FA1C(0, 0x75, &_characterDialogueIconsTextureSegmentRomStart, &_characterDialogueIconsTextureSegmentRomEnd, &_characterdialogueIconsAssetsIndexSegmentRomStart, &_characterdialogueIconsAssetsIndexSegmentRomEnd, &_characterDialogueIconsSpritesheetIndexSegmentRomStart, &_characterDialogueIconsSpritesheetIndexSegmentRomEnd, (void*)0x8023D300, (void*)0x8023DB00, (void*)0x8023E300, (void*)0x8023EF00, (void*)0x8023FF00, (void*)0x80240000, -139.0f, 1.0f, 0);
  
     func_8003DBE8(0, 0x8030B000);
@@ -1234,9 +1234,9 @@ void func_800535DC(void) {
 }
 */
 
-//INCLUDE_ASM(const s32, "initialize", func_80054180);
+//INCLUDE_ASM(const s32, "initialize", initializeNameStrings);
 
-void func_80054180(void) {
+void initializeNameStrings(void) {
     
     func_8003FBA0(0, gPlayer.name, 6);
     func_8003FBA0(1, gFarmName, 6);
@@ -1312,9 +1312,9 @@ void func_80054550(void) {
 
     func_80042FEC(0, 0, 1);
 
-    func_8004318C(0, DIALOGUE_ICONS_1, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsIndexSegmentRomStart, &_dialogueIconsIndexSegmentRomEnd, DIALOGUE_ICONS_TEXTURES_VADDR_START, DIALOGUE_ICONS_TEXTURES_VADDR_END, DIALOGUE_ICONS_INDEX_VADDR_START, DIALOGUE_ICONS_INDEX_VADDR_END, NULL, 3, 0, 8.0f, -16.0f, 0);
-    func_80043260(0, DIALOGUE_ICONS_2, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsIndexSegmentRomStart, &_dialogueIconsIndexSegmentRomEnd, DIALOGUE_ICONS_TEXTURES_VADDR_START, DIALOGUE_ICONS_TEXTURES_VADDR_END, DIALOGUE_ICONS_INDEX_VADDR_START, DIALOGUE_ICONS_INDEX_VADDR_END, NULL, 0xA, 0xFE, 0, 40.0f, 0);
-    func_80043334(0, DIALOGUE_ICONS_3, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsIndexSegmentRomStart, &_dialogueIconsIndexSegmentRomEnd, DIALOGUE_ICONS_TEXTURES_VADDR_START, DIALOGUE_ICONS_TEXTURES_VADDR_END, DIALOGUE_ICONS_INDEX_VADDR_START, DIALOGUE_ICONS_INDEX_VADDR_END, NULL, 0xB, 0xFE, 0, -40.0f, 0);
+    func_8004318C(0, DIALOGUE_ICONS_1, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsIndexSegmentRomStart, &_dialogueIconsIndexSegmentRomEnd, DIALOGUE_ICONS_TEXTURE_VADDR_START, DIALOGUE_ICONS_TEXTURE_VADDR_END, DIALOGUE_ICONS_INDEX_VADDR_START, DIALOGUE_ICONS_INDEX_VADDR_END, NULL, 3, 0, 8.0f, -16.0f, 0);
+    func_80043260(0, DIALOGUE_ICONS_2, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsIndexSegmentRomStart, &_dialogueIconsIndexSegmentRomEnd, DIALOGUE_ICONS_TEXTURE_VADDR_START, DIALOGUE_ICONS_TEXTURE_VADDR_END, DIALOGUE_ICONS_INDEX_VADDR_START, DIALOGUE_ICONS_INDEX_VADDR_END, NULL, 0xA, 0xFE, 0, 40.0f, 0);
+    func_80043334(0, DIALOGUE_ICONS_3, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsIndexSegmentRomStart, &_dialogueIconsIndexSegmentRomEnd, DIALOGUE_ICONS_TEXTURE_VADDR_START, DIALOGUE_ICONS_TEXTURE_VADDR_END, DIALOGUE_ICONS_INDEX_VADDR_START, DIALOGUE_ICONS_INDEX_VADDR_END, NULL, 0xB, 0xFE, 0, -40.0f, 0);
    
     func_80043148(0, 2, 0, 8);
 

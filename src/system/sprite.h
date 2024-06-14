@@ -75,7 +75,7 @@ typedef struct {
 // animated sprites
 // 0x801584F0
 typedef struct {
-	u16 *vaddr; /* 0x00 */ // offset indices; data from 80119750-8011BCA0, related to animation
+	u16 *spriteData; /* 0x00 */ // data from 80119750-8011BCA0, related to animation
 	void *romTextureStart; /* 0x04 */
 	void *romTextureEnd; /* 0x08 */
 	void *romAssetIndexStart; /* 0x0C */
@@ -139,7 +139,7 @@ typedef struct {
 	Vec4f rgba; // 40
     s16 unk_50;
 	u16 unk_52;
-	u16 unk_54; // flags for microcodes, vertex type, pixel density
+	u16 unk_54; // flags for microcodes, vertex type, pixel density, triangles
 	u16 flags; //56
 } Bitmap;
 
@@ -179,6 +179,7 @@ typedef struct {
 
 /* animatedSprites.c */
 extern void initializeNpcSpriteStructs(void);
+extern bool func_8002DDDC(u16 npcIndex, void* arg1, void* arg2, void* arg3, void* arg4, void* arg5, void* arg6, u8 arg7, u8 arg8, u16* arg9);
 extern bool func_8002DEE8(u16, u16, u16, void*, void*, void*, void*, void*, void*);
 extern bool func_8002E284(u16, u16, u8);      
 extern bool func_8002EC18(u16 index, u32 arg1, u32 arg2, u32 arg3, u32 arg4, u32* arg5, u16* arg6, u16* arg7, u16* arg8, u16 arg9, u8 argA);           
@@ -204,6 +205,8 @@ extern bool func_8002FE10(u16, f32, f32, f32, f32);
 extern bool func_8002FECC(u16); 
 extern bool func_8002ED80(u16 index, s16);
 extern bool func_8002FF38(u16, u16);
+extern bool setSpriteCollisionBuffers(u16 spriteIndex, u8 xValue, u8 yValue);
+extern bool func_8002FFF4(u16 npcIndex, u8 arg1, u8 arg2);
 extern bool func_80030054(u16, u8);                                                   
 extern bool func_80030388(u16 index);        
 extern void func_80033058(void);                           

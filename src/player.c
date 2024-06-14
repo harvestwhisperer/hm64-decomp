@@ -226,7 +226,7 @@ void handleEatingAndDrinking(void) {
                 goto block_8;
             }
             goto block_7;
-        }
+        }   
         var_v0 = (s32) D_8018908C < 0xBA;
         if ((s32) D_8018908C < 0xCA) {
 block_6:
