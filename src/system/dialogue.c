@@ -27,7 +27,7 @@ extern void func_80045260(u16);
 void func_80042F60(void) {
 
     u16 i;
-
+ 
     for (i = 0; i < 1; i++) {
         dialogues[i].struct5.unk_C = 0;
         dialogues[i].struct5.dialogueIndex = 0;
@@ -139,24 +139,24 @@ bool func_80043148(u16 index, u32 arg1, u32 arg2, u32 arg3) {
 
 //INCLUDE_ASM(const s32, "system/dialogue", func_8004318C);
 
-bool func_8004318C(u16 index, u16 spriteIndex, void* romTextureStart, void* romTextureEnd, void* romAssetIndexStart, void* romAssetIndexEnd, 
-    void* vaddrSpritesheet, void* vaddrPalette, void* vaddrAnimation, void* vaddrSpriteToPalette, void* vaddSpritesheetIndex, 
+bool func_8004318C(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextureEnd, u32 romIndexStart, u32 romIndexEnd, 
+    u32 vaddrTextureStart, u32 vaddrTextureEnd, u32 vaddrIndexStart, u32 vaddrIndexEnd, u32 argA, 
     u16 spriteOffset, u8 flag, f32 x, f32 y, f32 z) {
 
     bool result = FALSE;
 
     if (index == 0 && (dialogues[index].struct5.flags & 1)) {
-
+  
         dialogues[index].struct2.romTextureStart = romTextureStart;
         dialogues[index].struct2.romTextureEnd = romTextureEnd;
-        dialogues[index].struct2.romAssetIndexStart = romAssetIndexStart;
-        dialogues[index].struct2.romAssetIndexEnd = romAssetIndexEnd;
-
-        dialogues[index].struct2.vaddrSpritesheet = vaddrSpritesheet;
-        dialogues[index].struct2.vaddrPalette = vaddrPalette;
-        dialogues[index].struct2.vaddrAnimation = vaddrAnimation;
-        dialogues[index].struct2.vaddrSpriteToPalette = vaddrSpriteToPalette;
-        dialogues[index].struct2.vaddrSpritesheetIndex = vaddSpritesheetIndex;
+        dialogues[index].struct2.romIndexStart = romIndexStart;
+        dialogues[index].struct2.romIndexEnd = romIndexEnd;
+  
+        dialogues[index].struct2.vaddrTextureStart = vaddrTextureStart;
+        dialogues[index].struct2.vaddrTextureEnd = vaddrTextureEnd;
+        dialogues[index].struct2.vaddrIndexStart = vaddrIndexStart;
+        dialogues[index].struct2.vaddrIndexEnd = vaddrIndexEnd;
+        dialogues[index].struct2.unk_20 = argA;
  
         dialogues[index].struct2.spriteIndex = spriteIndex;
         dialogues[index].struct2.spriteOffset = spriteOffset;
@@ -176,25 +176,25 @@ bool func_8004318C(u16 index, u16 spriteIndex, void* romTextureStart, void* romT
 
 //INCLUDE_ASM(const s32, "system/dialogue", func_80043260);
 
-bool func_80043260(u16 index, u16 spriteIndex, void* romTextureStart, void* romTextureEnd, void* romAssetIndexStart, void* romAssetIndexEnd, 
-    void* vaddrSpritesheet, void* vaddrPalette, void* vaddrAnimation, void* vaddrSpriteToPalette, void* vaddSpritesheetIndex, 
+bool func_80043260(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextureEnd, u32 romIndexStart, u32 romIndexEnd, 
+    u32 vaddrTextureStart, u32 vaddrTextureEnd, u32 vaddrIndexStart, u32 vaddrIndexEnd, u32 argA, 
     u16 spriteOffset, u8 flag, f32 x, f32 y, f32 z) {
 
     bool result = FALSE;
 
     if (index == 0 && (dialogues[index].struct5.flags & 1)) {
-        
+  
         dialogues[index].struct3.romTextureStart = romTextureStart;
-        dialogues[index].struct3.romTextureEnd = romTextureEnd; 
-        dialogues[index].struct3.romAssetIndexStart = romAssetIndexStart;
-        dialogues[index].struct3.romAssetIndexEnd = romAssetIndexEnd;
-
-        dialogues[index].struct3.vaddrSpritesheet = vaddrSpritesheet;
-        dialogues[index].struct3.vaddrPalette = vaddrPalette;
-        dialogues[index].struct3.vaddrAnimation = vaddrAnimation;
-        dialogues[index].struct3.vaddrSpriteToPalette = vaddrSpriteToPalette;
-        dialogues[index].struct3.vaddrSpritesheetIndex = vaddSpritesheetIndex;
-
+        dialogues[index].struct3.romTextureEnd = romTextureEnd;
+        dialogues[index].struct3.romIndexStart = romIndexStart;
+        dialogues[index].struct3.romIndexEnd = romIndexEnd;
+  
+        dialogues[index].struct3.vaddrTextureStart = vaddrTextureStart;
+        dialogues[index].struct3.vaddrTextureEnd = vaddrTextureEnd;
+        dialogues[index].struct3.vaddrIndexStart = vaddrIndexStart;
+        dialogues[index].struct3.vaddrIndexEnd = vaddrIndexEnd;
+        dialogues[index].struct3.unk_20 = argA;
+ 
         dialogues[index].struct3.spriteIndex = spriteIndex;
         dialogues[index].struct3.spriteOffset = spriteOffset;
         dialogues[index].struct3.flag = flag;
@@ -204,17 +204,17 @@ bool func_80043260(u16 index, u16 spriteIndex, void* romTextureStart, void* romT
         dialogues[index].struct3.coordinates.z = z;
         
         result = TRUE;
-
+        
     }
-
+    
     return result;
     
 }
 
 //INCLUDE_ASM(const s32, "system/dialogue", func_80043334);
-
-bool func_80043334(u16 index, u16 spriteIndex, void* romTextureStart, void* romTextureEnd, void* romAssetIndexStart, void* romAssetIndexEnd, 
-    void* vaddrSpritesheet, void* vaddrPalette, void* vaddrAnimation, void* vaddrSpriteToPalette, void* vaddSpritesheetIndex, 
+ 
+bool func_80043334(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextureEnd, u32 romIndexStart, u32 romIndexEnd, 
+    u32 vaddrTextureStart, u32 vaddrTextureEnd, u32 vaddrIndexStart, u32 vaddrIndexEnd, u32 argA, 
     u16 spriteOffset, u8 flag, f32 x, f32 y, f32 z) {
 
     bool result = FALSE;
@@ -222,16 +222,16 @@ bool func_80043334(u16 index, u16 spriteIndex, void* romTextureStart, void* romT
     if (index == 0 && (dialogues[index].struct5.flags & 1)) {
         
         dialogues[index].struct4.romTextureStart = romTextureStart;
-        dialogues[index].struct4.romTextureEnd = romTextureEnd; 
-        dialogues[index].struct4.romAssetIndexStart = romAssetIndexStart;
-        dialogues[index].struct4.romAssetIndexEnd = romAssetIndexEnd;
-
-        dialogues[index].struct4.vaddrSpritesheet = vaddrSpritesheet;
-        dialogues[index].struct4.vaddrPalette = vaddrPalette;
-        dialogues[index].struct4.vaddrAnimation = vaddrAnimation;
-        dialogues[index].struct4.vaddrSpriteToPalette = vaddrSpriteToPalette;
-        dialogues[index].struct4.vaddrSpritesheetIndex = vaddSpritesheetIndex;
-
+        dialogues[index].struct4.romTextureEnd = romTextureEnd;
+        dialogues[index].struct4.romIndexStart = romIndexStart;
+        dialogues[index].struct4.romIndexEnd = romIndexEnd;
+  
+        dialogues[index].struct4.vaddrTextureStart = vaddrTextureStart;
+        dialogues[index].struct4.vaddrTextureEnd = vaddrTextureEnd;
+        dialogues[index].struct4.vaddrIndexStart = vaddrIndexStart;
+        dialogues[index].struct4.vaddrIndexEnd = vaddrIndexEnd;
+        dialogues[index].struct4.unk_20 = argA;
+ 
         dialogues[index].struct4.spriteIndex = spriteIndex;
         dialogues[index].struct4.spriteOffset = spriteOffset;
         dialogues[index].struct4.flag = flag;
@@ -239,6 +239,8 @@ bool func_80043334(u16 index, u16 spriteIndex, void* romTextureStart, void* romT
         dialogues[index].struct4.coordinates.x = x;
         dialogues[index].struct4.coordinates.y = y;
         dialogues[index].struct4.coordinates.z = z;
+        
+        result = TRUE;
         
         result = TRUE;
 
@@ -283,16 +285,16 @@ bool func_80043430(u16 index, u16 dialogueIndex, u16 arg2, u16 arg3) {
         func_8002B138(dialogues[index].struct2.spriteIndex, 
             dialogues[index].struct2.romTextureStart, 
             dialogues[index].struct2.romTextureEnd, 
-            dialogues[index].struct2.romAssetIndexStart, 
-            dialogues[index].struct2.romAssetIndexEnd, 
+            dialogues[index].struct2.romIndexStart, 
+            dialogues[index].struct2.romIndexEnd, 
             NULL, 
             NULL,   
-            dialogues[index].struct2.vaddrSpritesheet,
+            dialogues[index].struct2.vaddrTextureStart,
             NULL,
-            dialogues[index].struct2.vaddrPalette,
-            dialogues[index].struct2.vaddrAnimation,
-            dialogues[index].struct2.vaddrSpriteToPalette,
-            dialogues[index].struct2.vaddrSpritesheetIndex,
+            dialogues[index].struct2.vaddrTextureEnd,
+            dialogues[index].struct2.vaddrIndexStart,
+            dialogues[index].struct2.vaddrIndexEnd,
+            dialogues[index].struct2.unk_20,
             0,
             0);
  
@@ -307,16 +309,16 @@ bool func_80043430(u16 index, u16 dialogueIndex, u16 arg2, u16 arg3) {
         func_8002B138(dialogues[index].struct3.spriteIndex, 
             dialogues[index].struct3.romTextureStart, 
             dialogues[index].struct3.romTextureEnd,  
-            dialogues[index].struct3.romAssetIndexStart, 
-            dialogues[index].struct3.romAssetIndexEnd, 
+            dialogues[index].struct3.romIndexStart, 
+            dialogues[index].struct3.romIndexEnd, 
             NULL, 
             NULL,  
-            dialogues[index].struct3.vaddrSpritesheet,
+            dialogues[index].struct3.vaddrTextureStart,
             NULL,
-            dialogues[index].struct3.vaddrPalette,
-            dialogues[index].struct3.vaddrAnimation,
-            dialogues[index].struct3.vaddrSpriteToPalette,
-            dialogues[index].struct3.vaddrSpritesheetIndex,
+            dialogues[index].struct3.vaddrTextureEnd,
+            dialogues[index].struct3.vaddrIndexStart,
+            dialogues[index].struct3.vaddrIndexEnd,
+            dialogues[index].struct3.unk_20,
             0,
             0);
 
@@ -331,16 +333,16 @@ bool func_80043430(u16 index, u16 dialogueIndex, u16 arg2, u16 arg3) {
         func_8002B138(dialogues[index].struct4.spriteIndex, 
             dialogues[index].struct4.romTextureStart, 
             dialogues[index].struct4.romTextureEnd, 
-            dialogues[index].struct4.romAssetIndexStart, 
-            dialogues[index].struct4.romAssetIndexEnd, 
+            dialogues[index].struct4.romIndexStart, 
+            dialogues[index].struct4.romIndexEnd, 
             NULL, 
             NULL,  
-            dialogues[index].struct4.vaddrSpritesheet,
+            dialogues[index].struct4.vaddrTextureStart,
             NULL,
-            dialogues[index].struct4.vaddrPalette,
-            dialogues[index].struct4.vaddrAnimation,
-            dialogues[index].struct4.vaddrSpriteToPalette,
-            dialogues[index].struct4.vaddrSpritesheetIndex,
+            dialogues[index].struct4.vaddrTextureEnd,
+            dialogues[index].struct4.vaddrIndexStart,
+            dialogues[index].struct4.vaddrIndexEnd,
+            dialogues[index].struct4.unk_20,
             0,
             0);
 
@@ -383,7 +385,6 @@ bool func_80043430(u16 index, u16 dialogueIndex, u16 arg2, u16 arg3) {
         dialogues[index].struct1.unk_16 = 0;
         dialogues[index].struct1.unk_17 = 0;
         dialogues[index].struct1.unk_18 = 0;
-
         
         dialogues[index].struct5.flags &= ~4;
         dialogues[index].struct5.flags |= 2;

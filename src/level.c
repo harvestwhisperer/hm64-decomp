@@ -1155,6 +1155,7 @@ void func_8007341C(u8 arg0) {
     func_8002C914(arg0 + MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
 
     setMapObject(MAIN_MAP_INDEX, arg0, arg0 + MAP_OBJECT_1, 0xB, arr[arg0].x, arr[arg0].y, arr[arg0].z, 0xFF, 0xFF, 0, 0);
+    
 }
 */
 
@@ -1897,4 +1898,5 @@ u16 func_80074C50(u16 exitIndex) {
     }
 
     return index;
+
 }

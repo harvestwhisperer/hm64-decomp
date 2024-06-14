@@ -332,6 +332,7 @@ void func_800758B8(void) {
     
     // handle all npc animations
     setNpcAnimations();
+
 }
 
 //INCLUDE_ASM(const s32, "npc", func_80075910);
@@ -432,6 +433,7 @@ void func_80075EBC(u8 index) {
     }
     
     npcInfoArray[index].flags |= 2;
+
 }
 
 //INCLUDE_ASM(const s32, "npc", func_80076080);
@@ -445,6 +447,7 @@ inline void func_80076080(u8 index, u8 arg1) {
     setSpriteAnimation(npcInfoArray[index].spriteIndex, arg1);
 
     npcInfoArray[index].flags |= 2;
+    
 }
 
 //INCLUDE_ASM(const s32, "npc", func_80076108);
@@ -677,6 +680,7 @@ DEFAULT:
             }
     
             break;
+
     }
     
     npcInfoArray[LILLIA].movingFlag = npcInfoArray[LILLIA].unk_1E;
@@ -797,6 +801,7 @@ void setEllenLocation(void) {
     }
     
     npcInfoArray[ELLEN].movingFlag = npcInfoArray[ELLEN].unk_1E;
+
 }
 
 //INCLUDE_ASM(const s32, "npc", func_8007DF14);
@@ -1680,4 +1685,5 @@ bool func_80085D48(int index, u16 arg1) {
     }
     
   return result;
+
 }

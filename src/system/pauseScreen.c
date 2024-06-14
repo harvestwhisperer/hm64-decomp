@@ -5,15 +5,10 @@
 #include "system/sprite.h"
 
 // bss
-// struct/array?
-extern u16 D_80189A88;
-extern u8 D_80189A8A;
-extern u16 D_80189A8C;
+extern PauseScreenSprite pauseScreenSprites[MAX_PAUSE_SCREEN_SPRITES];
 
 // data
 extern u32 D_801133B0[];
-
-extern PauseScreenSprite pauseScreenSprites[MAX_PAUSE_SCREEN_SPRITES];
 
 // forward declaration
 bool func_80046504(u16 spriteIndex);
@@ -26,7 +21,7 @@ void func_80045DE0(void) {
     u16 i;
 
     for (i = 0; i < MAX_PAUSE_SCREEN_SPRITES; i++) {
-        pauseScreenSprites[i].unk_38 = 0;
+        pauseScreenSprites[i].spriteIndex = 0;
         pauseScreenSprites[i].flags = 0;
     }
 }
@@ -54,17 +49,18 @@ bool func_80045E20(u16 index, u16 arg1, void *arg2, void *arg3, void *arg4, void
             pauseScreenSprites[index].unk_20 = argA;
             pauseScreenSprites[index].specialItemPages = argB;
             pauseScreenSprites[index].unk_26 = argC;
-            pauseScreenSprites[index].unk_28.x = argD;
-            pauseScreenSprites[index].unk_28.y = argE;
-            pauseScreenSprites[index].unk_28.z = argF;
+            pauseScreenSprites[index].coordinates.x = argD;
+            pauseScreenSprites[index].coordinates.y = argE;
+            pauseScreenSprites[index].coordinates.z = argF;
             pauseScreenSprites[index].unk_27 = arg10;
-            pauseScreenSprites[index].unk_38 = arg1;
+            pauseScreenSprites[index].spriteIndex = arg1;
             pauseScreenSprites[index].flags = 1;
 
         }
     }
     
     return result;
+
 }
 
 //INCLUDE_ASM(const s32, "system/pauseScreen", func_80045F5C);
@@ -88,7 +84,7 @@ bool func_80045F5C(u16 index, u32 arg1, u8 arg2, u16 flag) {
             
             do {
                 
-                func_8002B138(pauseScreenSprites[index].unk_38 + count, 
+                func_8002B138(pauseScreenSprites[index].spriteIndex + count, 
                     pauseScreenSprites[index].romSpritesheetStart, 
                     pauseScreenSprites[index].romSpritesheetEnd, 
                     pauseScreenSprites[index].romAssetIndexStart, 
@@ -138,7 +134,7 @@ bool func_80046120(u16 index) {
             i = pauseScreenSprites[index].count;
 
             do {
-                deactivateSprite(pauseScreenSprites[index].unk_38+i);
+                deactivateSprite(pauseScreenSprites[index].spriteIndex+i);
                 check = i--;
             } while (check);
         
@@ -166,7 +162,7 @@ bool func_800461D8(u16 spriteIndex, u8 arg1, u8 arg2, u8 arg3, u8 arg4) {
 
             do {
                 // set rgba
-                func_8002C914(pauseScreenSprites[spriteIndex].unk_38 + count, arg1, arg2, arg3, arg4);
+                func_8002C914(pauseScreenSprites[spriteIndex].spriteIndex + count, arg1, arg2, arg3, arg4);
             } while (count--);
 
             result = TRUE;
@@ -191,7 +187,7 @@ bool func_800462B4(u16 spriteIndex, u8 arg1) {
             count = pauseScreenSprites[spriteIndex].count;
 
             do {
-                func_8002CAA8(pauseScreenSprites[spriteIndex].unk_38 + count, arg1);
+                func_8002CAA8(pauseScreenSprites[spriteIndex].spriteIndex + count, arg1);
             } while (count--);
 
             result = TRUE;
@@ -215,7 +211,7 @@ bool func_8004635C(u16 spriteIndex, u8 arg1, u8 arg2, u8 arg3, u8 arg4, u16 arg5
             count = pauseScreenSprites[spriteIndex].count;
 
             do {
-                func_8002C1C0(pauseScreenSprites[spriteIndex].unk_38 + count, arg1, arg2, arg3, arg4, arg5);
+                func_8002C1C0(pauseScreenSprites[spriteIndex].spriteIndex + count, arg1, arg2, arg3, arg4, arg5);
             } while (count--);
 
             result = TRUE;
@@ -240,7 +236,7 @@ bool func_8004644C(u16 spriteIndex, u8 arg1, s16 arg2) {
             count = pauseScreenSprites[spriteIndex].count;
 
             do {
-                func_8002C52C(pauseScreenSprites[spriteIndex].unk_38 + count, arg1, arg2);
+                func_8002C52C(pauseScreenSprites[spriteIndex].spriteIndex + count, arg1, arg2);
             } while (count--);
 
             result = TRUE;
@@ -271,7 +267,7 @@ bool func_80046504(u16 spriteIndex) {
             
             do {
 
-                func_8002BAD8(pauseScreenSprites[spriteIndex].unk_38 + count);
+                func_8002BAD8(pauseScreenSprites[spriteIndex].spriteIndex + count);
 
                 check = value / D_801133B0[count];
 
@@ -311,10 +307,10 @@ bool func_80046650(u16 spriteIndex, u8 arg1, u8 arg2) {
         if (pauseScreenSprites[spriteIndex].flags & 1) {
 
             // global sprite index
-            tempIndex = pauseScreenSprites[spriteIndex].unk_38 + arg2; 
+            tempIndex = pauseScreenSprites[spriteIndex].spriteIndex + arg2; 
             
             // adjust Vec3fs
-            setSpriteShrinkFactor(tempIndex, pauseScreenSprites[spriteIndex].unk_28.x - pauseScreenSprites[spriteIndex].unk_27 * arg2, pauseScreenSprites[spriteIndex].unk_28.y, pauseScreenSprites[spriteIndex].unk_28.z);
+            setSpriteShrinkFactor(tempIndex, pauseScreenSprites[spriteIndex].coordinates.x - pauseScreenSprites[spriteIndex].unk_27 * arg2, pauseScreenSprites[spriteIndex].coordinates.y, pauseScreenSprites[spriteIndex].coordinates.z);
             setSpriteScale(tempIndex, 1.0f, 1.0f, 1.0f);
             func_8002BE14(tempIndex, 0, 0, 0);
             

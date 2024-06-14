@@ -53,45 +53,55 @@
 // 0xD5-0xDF = numbers
 // 0xDF-0xFF = symbols
 
-// 80180790
 typedef struct {
-	u32 unk_0; 
-	u32 unk_4;
-	u32 unk_8;
-	u16 unk_C; 
-	u16 unk_E; 
-	u16 unk_10; 
-} UnknownMessageStruct;
-
-typedef struct {
-    u8* unk_0;
-    u8 unk_4;
+    u8* ptr;
+    u8 length;
 } GameVariableReference;
 
 // count: 0x49
 // 0x80183200
 typedef struct {
-    void *romIndexStart;
-    void *romIndexEnd;
-    void *textBufferVaddr;
-    void *romTextStart;
+    u32 romIndexStart;
+    u32 romIndexEnd;
+    u32 textBufferVaddr;
+    u32 romTextStart;
 } DialogueInfo;
 
+// D_801806D0
 typedef struct {
-	void *romPtr1;
-	void *romPtr2;
-	void *romPtr3;
-	void *romPtr4;
-	void *vaddr1;
-	void *vaddr2;
-	void *vaddr3;
-	void *vaddr4;
-	void *unk_20;
-	Vec3f unk_24;
-	u16 unk_30;
-	u16 unk_32;
-	u16 unk_34;
-} DialogueSprite;
+	u32 romTextureStart;
+	u32 romTextureEnd;
+	u32 romAssetIndexStart;
+	u32 romAssetIndexEnd;
+	u32 romSpritesheetIndexStart;
+	u32 romSpritesheetIndexEnd;
+	u32 vaddrTexture;
+	u32 vaddrSpritesheet;
+	u32 vaddrPalette;
+	u32 vaddrAnimation;
+	u32 vaddrSpriteToPalette;
+	u32 vaddrSpritesheetIndex;
+	Vec3f coordinates;
+	u16 spriteIndex;
+    u16 spriteOffset;
+    u8 flag;
+} DialogueSpriteType1;
+
+typedef struct {
+    u32 romTextureStart;
+    u32 romTextureEnd;
+    u32 romIndexStart;
+    u32 romIndexEnd;
+    u32 vaddrTextureStart;
+    u32 vaddrTextureEnd;
+    u32 vaddrIndexStart;
+    u32 vaddrIndexEnd;
+    u32 unk_20;
+    Vec3f coordinates;
+    u16 spriteIndex;
+    u16 spriteOffset; // set from npc affection for hearts for overlayIcons
+    u8 flag; // 0x8013D58C
+} DialogueSpriteType2;
 
 typedef struct {
     u16 unk_0;
@@ -172,12 +182,19 @@ extern bool func_8003FAF8(u16, u16);
 extern bool func_8003FB4C(u16, u16);                      
 extern bool func_8003FBA0(u16, u8*, s8);  
 extern void func_8003FBD8(u8, u32, u8);    
-extern bool func_8003F910(u8, u16, void*, void*, void*, void*, void*, void*, void*, u32, u32, u16, u16, f32, f32, f32); 
+extern bool func_8003F910(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextureEnd, u32 romIndexStart, u32 romIndexEnd, u32 vaddrTextureStart, u32 vaddrTextureEnd, u32 vaddrIndexStart, u32 vaddrIndexEnd, u32 argA, u16 offset, u8 flag, f32 x, f32 y, f32 z);
 extern void func_80042634();
 extern void func_80045CB0();
 
 extern DialogueBox dialogueBoxes[MAX_DIALOGUE_BOXES];
-extern DialogueInfo D_80183200[MAX_DIALOGUE_BANKS];
+extern DialogueInfo dialogueInfo[MAX_DIALOGUE_BANKS];
+
+// D_801806D0
+extern DialogueSpriteType1 characterAvatars[1];
+// D_80180728-D_801807A4
+extern DialogueSpriteType2 dialogueWindow[];
+// D_8013D558
+extern DialogueSpriteType2 overlayIcons[2];
 
 extern u32 _fontTextureSegmentRomStart;
 extern u32 _fontTextureSegmentRomEnd;

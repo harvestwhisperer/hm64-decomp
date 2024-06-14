@@ -1118,6 +1118,7 @@ u32 func_8002CDB4(u16 arg0, u32 arg1) {
 }
 */
 
+// sprites to bitmaps
 INCLUDE_ASM(const s32, "system/globalSprites", func_8002CDE8);
 
 // loop through all sprites and update (rgba, animation)
