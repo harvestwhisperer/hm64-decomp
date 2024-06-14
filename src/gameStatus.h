@@ -25,6 +25,7 @@
 #define FESTIVAL 0x4D
 #define FESTIVAL_2 0x4E
 // sick/sprained ankle
+#define HELD_BABY 0x55
 #define MARIA_ABSENT 0x56
 
 // TODO: confirm and finish adding these

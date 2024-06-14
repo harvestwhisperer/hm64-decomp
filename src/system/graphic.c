@@ -167,6 +167,7 @@ volatile u8 doViewportGfxTask(void) {
     gfxTaskNo += 1;
 
     return gfxTaskNo;
+    
 }
 
 //INCLUDE_ASM(const s32, "system/graphic", func_80026CEC);
@@ -193,6 +194,7 @@ volatile u8 func_80026CEC(s32 arg0, s32 arg1) {
     gfxTaskNo += 1;
     
     return gfxTaskNo;
+
 }
 
 //INCLUDE_ASM(const s32, "system/graphic", setBitmapFormat);
@@ -339,6 +341,7 @@ Gfx* func_80026F88(Gfx* dl, Bitmap* sprite, u32 offset, u16 height) {
     }
 
     return dl++;
+    
 }
 
 // param1 = Vtx, 8021E6E0

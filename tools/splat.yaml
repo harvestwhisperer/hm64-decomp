@@ -24,7 +24,7 @@ options:
   libultra_symbols: True
   gfx_ucode: f3dex2
   # ld_symbol_header_path: include/ld_symbols.h
-  disassemble_all: true
+  # disassemble_all: true
   # extensions_path: tools/splat_ext
   
 segments:
@@ -574,11 +574,806 @@ segments:
     dir: sprites/player
     start: 0x2D0680
 
-  # split up individual assets
-  - name: npcSprites
+  - name: mariaTexture
+    type: bin
+    dir: sprites/npc/maria
+    start: 0x2D15E0
+
+  - name: mariaAssetsIndex
+    type: bin
+    dir: sprites/npc/maria
+    start: 0x3016C0
+    
+  - name: mariaSpritesheetIndex
+    type: bin
+    dir: sprites/npc/maria
+    start: 0x3016E0
+
+  - name: popuriTexture
+    type: bin
+    dir: sprites/npc/popuri
+    start: 0x301930
+
+  - name: popuriAssetsIndex
+    type: bin
+    dir: sprites/npc/popuri
+    start: 0x339490
+    
+  - name: popuriSpritesheetIndex
+    type: bin
+    dir: sprites/npc/popuri
+    start: 0x3394B0
+
+  - name: elliTexture
+    type: bin
+    dir: sprites/npc/elli
+    start: 0x3396E0
+
+  - name: elliAssetsIndex
+    type: bin
+    dir: sprites/npc/elli
+    start: 0x366970
+    
+  - name: elliSpritesheetIndex
+    type: bin
+    dir: sprites/npc/elli
+    start: 0x366990
+
+  - name: annTexture
+    type: bin
+    dir: sprites/npc/ann
+    start: 0x366BB0
+
+  - name: annAssetsIndex
+    type: bin
+    dir: sprites/npc/ann
+    start: 0x39BC60
+    
+  - name: annSpritesheetIndex
+    type: bin
+    dir: sprites/npc/ann
+    start: 0x39BC80
+
+  - name: karenTexture
+    type: bin
+    dir: sprites/npc/karen
+    start: 0x39BEC0
+
+  - name: karenAssetsIndex
+    type: bin
+    dir: sprites/npc/karen
+    start: 0x3D1860
+    
+  - name: karenSpritesheetIndex
+    type: bin
+    dir: sprites/npc/karen
+    start: 0x3D1880
+
+  - name: babyTexture
+    type: bin
+    dir: sprites/npc/baby
+    start: 0x3D1AE0
+
+  - name: babyAssetsIndex
+    type: bin
+    dir: sprites/npc/baby
+    start: 0x3EE430
+    
+  - name: babySpritesheetIndex
+    type: bin
+    dir: sprites/npc/baby
+    start: 0x3EE450
+
+  - name: harrisTexture
+    type: bin
+    dir: sprites/npc/harris
+    start: 0x3EE670
+
+  - name: harrisAssetsIndex
+    type: bin
+    dir: sprites/npc/harris
+    start: 0x40D3F0
+    
+  - name: harrisSpritesheetIndex
+    type: bin
+    dir: sprites/npc/harris
+    start: 0x40D410
+  
+  - name: grayTexture
+    type: bin
+    dir: sprites/npc/gray
+    start: 0x40D550
+
+  - name: grayAssetsIndex
+    type: bin
+    dir: sprites/npc/gray
+    start: 0x42A8D0
+    
+  - name: graySpritesheetIndex
+    type: bin
+    dir: sprites/npc/gray
+    start: 0x42A8F0
+
+  - name: jeffTexture
+    type: bin
+    dir: sprites/npc/jeff
+    start: 0x42AA40
+
+  - name: jeffAssetsIndex
+    type: bin
+    dir: sprites/npc/jeff
+    start: 0x443840
+    
+  - name: jeffSpritesheetIndex
+    type: bin
+    dir: sprites/npc/jeff
+    start: 0x443860
+
+  - name: cliffTexture
+    type: bin
+    dir: sprites/npc/cliff
+    start: 0x443990
+
+  - name: cliffAssetsIndex
+    type: bin
+    dir: sprites/npc/cliff
+    start: 0x45D230
+    
+  - name: cliffSpritesheetIndex
+    type: bin
+    dir: sprites/npc/cliff
+    start: 0x45D250
+
+  - name: kaiTexture
+    type: bin
+    dir: sprites/npc/kai
+    start: 0x45D380
+
+  - name: kaiAssetsIndex
+    type: bin
+    dir: sprites/npc/kai
+    start: 0x4772B0
+    
+  - name: kaiSpritesheetIndex
+    type: bin
+    dir: sprites/npc/kai
+    start: 0x4772D0
+
+  - name: mayorTexture
+    type: bin
+    dir: sprites/npc/mayor
+    start: 0x477410
+
+  - name: mayorAssetsIndex
+    type: bin
+    dir: sprites/npc/mayor
+    start: 0x483D20
+    
+  - name: mayorSpritesheetIndex
+    type: bin
+    dir: sprites/npc/mayor
+    start: 0x483D40
+
+  - name: mayorWifeTexture
+    type: bin
+    dir: sprites/npc/mayorWife
+    start: 0x483E80
+
+  - name: mayorWifeAssetsIndex
+    type: bin
+    dir: sprites/npc/mayorWife
+    start: 0x48B570
+    
+  - name: mayorWifeSpritesheetIndex
+    type: bin
+    dir: sprites/npc/mayorWife
+    start: 0x48B590
+
+  - name: liliaTexture
+    type: bin
+    dir: sprites/npc/lilia
+    start: 0x48B620
+
+  - name: liliaAssetsIndex
+    type: bin
+    dir: sprites/npc/lilia
+    start: 0x4919B0
+    
+  - name: liliaSpritesheetIndex
+    type: bin
+    dir: sprites/npc/lilia
+    start: 0x4919D0
+
+  - name: basilTexture
+    type: bin
+    dir: sprites/npc/basil
+    start: 0x491A40
+
+  - name: basilAssetsIndex
+    type: bin
+    dir: sprites/npc/basil
+    start: 0x49EDA0
+    
+  - name: basilSpritesheetIndex
+    type: bin
+    dir: sprites/npc/basil
+    start: 0x49EDC0
+
+  - name: ellenTexture
+    type: bin
+    dir: sprites/npc/ellen
+    start: 0x49EEF0
+
+  - name: ellenAssetsIndex
+    type: bin
+    dir: sprites/npc/ellen
+    start: 0x4A5D20
+    
+  - name: ellenSpritesheetIndex
+    type: bin
+    dir: sprites/npc/ellen
+    start: 0x4A5D40
+
+  - name: dougTexture
+    type: bin
+    dir: sprites/npc/doug
+    start: 0x4A5D70
+
+  - name: dougAssetsIndex
+    type: bin
+    dir: sprites/npc/doug
+    start: 0x4B1260
+    
+  - name: dougSpritesheetIndex
+    type: bin
+    dir: sprites/npc/doug
+    start: 0x4B1280
+
+  - name: gotzTexture
+    type: bin
+    dir: sprites/npc/gotz
+    start: 0x4B13C0
+
+  - name: gotzAssetsIndex
+    type: bin
+    dir: sprites/npc/gotz
+    start: 0x4BC390
+    
+  - name: gotzSpritesheetIndex
+    type: bin
+    dir: sprites/npc/gotz
+    start: 0x4BC3B0
+
+  - name: sashaTexture
+    type: bin
+    dir: sprites/npc/sasha
+    start: 0x4BC4A0
+
+  - name: sashaAssetsIndex
+    type: bin
+    dir: sprites/npc/sasha
+    start: 0x4C3220
+    
+  - name: sashaSpritesheetIndex
+    type: bin
+    dir: sprites/npc/sasha
+    start: 0x4C3240
+
+  - name: potionShopDealerTexture
+    type: bin
+    dir: sprites/npc/potionShopDealer
+    start: 0x4C32C0
+
+  - name: potionShopDealerAssetsIndex
+    type: bin
+    dir: sprites/npc/potionShopDealer
+    start: 0x4CD740
+    
+  - name: potionShopDealerSpritesheetIndex
+    type: bin
+    dir: sprites/npc/potionShopDealer
+    start: 0x4CD760
+
+  - name: kentTexture
+    type: bin
+    dir: sprites/npc/kent
+    start: 0x4CD890
+
+  - name: kentAssetsIndex
+    type: bin
+    dir: sprites/npc/kent
+    start: 0x4DEF80
+    
+  - name: kentSpritesheetIndex
+    type: bin
+    dir: sprites/npc/kent
+    start: 0x4DEFA0
+
+  - name: stuTexture
+    type: bin
+    dir: sprites/npc/stu
+    start: 0x4DF110
+
+  - name: stuAssetsIndex
+    type: bin
+    dir: sprites/npc/stu
+    start: 0x4E85D0
+    
+  - name: stuSpritesheetIndex
+    type: bin
+    dir: sprites/npc/stu
+    start: 0x4E85F0
+
+  - name: midwifeTexture
+    type: bin
+    dir: sprites/npc/midwife
+    start: 0x4E86B0
+
+  - name: midwifeAssetsIndex
+    type: bin
+    dir: sprites/npc/midwife
+    start: 0x4EFE00
+    
+  - name: midwifeSpritesheetIndex
+    type: bin
+    dir: sprites/npc/midwife
+    start: 0x4EFE20
+
+  - name: mayTexture
+    type: bin
+    dir: sprites/npc/may
+    start: 0x4EFEB0
+
+  - name: mayAssetsIndex
+    type: bin
+    dir: sprites/npc/may
+    start: 0x4F47F0
+    
+  - name: maySpritesheetIndex
+    type: bin
+    dir: sprites/npc/may
+    start: 0x4F4810
+
+  - name: rickTexture
+    type: bin
+    dir: sprites/npc/rick
+    start: 0x4F4890
+
+  - name: rickAssetsIndex
+    type: bin
+    dir: sprites/npc/rick
+    start: 0x4FBFF0
+    
+  - name: rickSpritesheetIndex
+    type: bin
+    dir: sprites/npc/rick
+    start: 0x4FC010
+
+  - name: pastorTexture
+    type: bin
+    dir: sprites/npc/pastor
+    start: 0x4FC140
+
+  - name: pastorAssetsIndex
+    type: bin
+    dir: sprites/npc/pastor
+    start: 0x503AB0
+    
+  - name: pastorSpritesheetIndex
+    type: bin
+    dir: sprites/npc/pastor
+    start: 0x503AD0
+
+  - name: shipperTexture
+    type: bin
+    dir: sprites/npc/shipper
+    start: 0x503BC0
+
+  - name: shipperAssetsIndex
+    type: bin
+    dir: sprites/npc/shipper
+    start: 0x518B00
+    
+  - name: shipperSpritesheetIndex
+    type: bin
+    dir: sprites/npc/shipper
+    start: 0x518B20
+
+  - name: saibaraTexture
+    type: bin
+    dir: sprites/npc/saibara
+    start: 0x518BB0
+
+  - name: saibaraAssetsIndex
+    type: bin
+    dir: sprites/npc/saibara
+    start: 0x520D00
+    
+  - name: saibaraSpritesheetIndex
+    type: bin
+    dir: sprites/npc/saibara
+    start: 0x520D20
+
+  - name: dukeTexture
+    type: bin
+    dir: sprites/npc/duke
+    start: 0x520DB0
+
+  - name: dukeAssetsIndex
+    type: bin
+    dir: sprites/npc/duke
+    start: 0x5249E0
+    
+  - name: dukeSpritesheetIndex
+    type: bin
+    dir: sprites/npc/duke
+    start: 0x524A00
+
+  - name: gregTexture
+    type: bin
+    dir: sprites/npc/greg
+    start: 0x524AE0
+
+  - name: gregAssetsIndex
+    type: bin
+    dir: sprites/npc/greg
+    start: 0x52F260
+    
+  - name: gregSpritesheetIndex
+    type: bin
+    dir: sprites/npc/greg
+    start: 0x52F280
+
+  - name: assistantCarpenterTexture
+    type: bin
+    dir: sprites/npc/assistantCarpenter
+    start: 0x52F370
+
+  - name: assistantCarpenterAssetsIndex
+    type: bin
+    dir: sprites/npc/assistantCarpenter
+    start: 0x5488A0
+    
+  - name: assistantCarpenterSpritesheetIndex
+    type: bin
+    dir: sprites/npc/assistantCarpenter
+    start: 0x5488C0
+
+  - name: masterCarpenterTexture
+    type: bin
+    dir: sprites/npc/masterCarpenter
+    start: 0x5489C0
+
+  - name: masterCarpenterAssetsIndex
+    type: bin
+    dir: sprites/npc/masterCarpenter
+    start: 0x555460
+    
+  - name: masterCarpenterSpritesheetIndex
+    type: bin
+    dir: sprites/npc/masterCarpenter
+    start: 0x555480
+
+  - name: harvestSpriteTexture
+    type: bin
+    dir: sprites/npc/harvestSprite
+    start: 0x555570
+
+  - name: harvestSpriteAssetsIndex
+    type: bin
+    dir: sprites/npc/harvestSprite
+    start: 0x55A640
+    
+  - name: harvestSpriteSpritesheetIndex
+    type: bin
+    dir: sprites/npc/harvestSprite
+    start: 0x55A660
+
+  - name: barleyTexture
+    type: bin
+    dir: sprites/npc/barley
+    start: 0x55A730
+
+  - name: barleyAssetsIndex
+    type: bin
+    dir: sprites/npc/barley
+    start: 0x560330
+    
+  - name: barleySpritesheetIndex
+    type: bin
+    dir: sprites/npc/barley
+    start: 0x560350
+
+  - name: sydneyTexture
+    type: bin
+    dir: sprites/npc/sydney
+    start: 0x5603D0
+
+  - name: sydneyAssetsIndex
+    type: bin
+    dir: sprites/npc/sydney
+    start: 0x5665C0
+    
+  - name: sydneySpritesheetIndex
+    type: bin
+    dir: sprites/npc/sydney
+    start: 0x5665E0
+
+  - name: entomologistTexture
+    type: bin
+    dir: sprites/npc/entomologist
+    start: 0x566630
+
+  - name: entomologistAssetsIndex
+    type: bin
+    dir: sprites/npc/entomologist
+    start: 0x56ED20
+    
+  - name: entomologistSpritesheetIndex
+    type: bin
+    dir: sprites/npc/entomologist
+    start: 0x56ED40
+
+  - name: gourmetJudgeTexture
+    type: bin
+    dir: sprites/npc/gourmetJudge
+    start: 0x56EE30
+
+  - name: gourmetJudgeAssetsIndex
+    type: bin
+    dir: sprites/npc/gourmetJudge
+    start: 0x578CD0
+    
+  - name: gourmetJudgeSpritesheetIndex
+    type: bin
+    dir: sprites/npc/gourmetJudge
+    start: 0x578CF0
+
+  - name: photographerTexture
+    type: bin
+    dir: sprites/npc/photographer
+    start: 0x578D60
+
+  - name: photographerAssetsIndex
+    type: bin
+    dir: sprites/npc/photographer
+    start: 0x583C30
+
+  - name: photographerSpritesheetIndex
+    type: bin
+    dir: sprites/npc/photographer
+    start: 0x583C50
+
+  - name: shadySalesmanTexture
+    type: bin
+    dir: sprites/npc/shadySalesman
+    start: 0x583D40
+
+  - name: shadySalesmanAssetsIndex
+    type: bin
+    dir: sprites/npc/shadySalesman
+    start: 0x593730
+    
+  - name: shadySalesmanSpritesheetIndex
+    type: bin
+    dir: sprites/npc/shadySalesman
+    start: 0x593750
+
+  - name: mrsManaSonTexture
+    type: bin
+    dir: sprites/npc/mrsManaSon
+    start: 0x593840
+
+  - name: mrsManaSonAssetsIndex
+    type: bin
+    dir: sprites/npc/mrsManaSon
+    start: 0x597040
+    
+  - name: mrsManaSonSpritesheetIndex
+    type: bin
+    dir: sprites/npc/mrsManaSon
+    start: 0x597060
+
+  - name: mrsManaTexture
+    type: bin
+    dir: sprites/npc/mrsMana
+    start: 0x5970C0
+
+  - name: mrsManaAssetsIndex
+    type: bin
+    dir: sprites/npc/mrsMana
+    start: 0x59CD00
+    
+  - name: mrsManaSpritesheetIndex
+    type: bin
+    dir: sprites/npc/mrsMana
+    start: 0x59CD20
+
+  - name: oldManTexture
+    type: bin
+    dir: sprites/npc/oldMan
+    start: 0x59CD90
+
+  - name: oldManAssetsIndex
+    type: bin
+    dir: sprites/npc/oldMan
+    start: 0x5A2580
+    
+  - name: oldManSpritesheetIndex
+    type: bin
+    dir: sprites/npc/oldMan
+    start: 0x5A25A0
+
+  - name: oldWomanTexture
+    type: bin
+    dir: sprites/npc/oldWoman
+    start: 0x5A26A0
+
+  - name: oldWomanAssetsIndex
+    type: bin
+    dir: sprites/npc/oldWoman
+    start: 0x5A7910
+    
+  - name: oldWomanSpritesheetIndex
+    type: bin
+    dir: sprites/npc/oldWoman
+    start: 0x5A7930
+
+  - name: touristCoupleManTexture
+    type: bin
+    dir: sprites/npc/touristCoupleMan
+    start: 0x5A7A10
+
+  - name: touristCoupleManAssetsIndex
+    type: bin
+    dir: sprites/npc/touristCoupleMan
+    start: 0x5AE6A0
+    
+  - name: touristCoupleManSpritesheetIndex
+    type: bin
+    dir: sprites/npc/touristCoupleMan
+    start: 0x5AE6C0
+
+  - name: touristCoupleWomanTexture
+    type: bin
+    dir: sprites/npc/touristCoupleWoman
+    start: 0x5AE7B0
+
+  - name: touristCoupleWomanAssetsIndex
+    type: bin
+    dir: sprites/npc/touristCoupleWoman
+    start: 0x5B3AA0
+    
+  - name: touristCoupleWomanSpritesheetIndex
+    type: bin
+    dir: sprites/npc/touristCoupleWoman
+    start: 0x5B3AC0
+
+  - name: festivalGirl1Texture
+    type: bin
+    dir: sprites/npc/festivalGirl1
+    start: 0x5B3BC0
+
+  - name: festivalGirl1AssetsIndex
+    type: bin
+    dir: sprites/npc/festivalGirl1
+    start: 0x5BA0C0
+    
+  - name: festivalGirl1SpritesheetIndex
+    type: bin
+    dir: sprites/npc/festivalGirl1
+    start: 0x5BA0E0
+
+  - name: festivalGirl2Texture
+    type: bin
+    dir: sprites/npc/festivalGirl2
+    start: 0x5BA1D0
+
+  - name: festivalGirl2AssetsIndex
+    type: bin
+    dir: sprites/npc/festivalGirl2
+    start: 0x5C04E0
+    
+  - name: festivalGirl2SpritesheetIndex
+    type: bin
+    dir: sprites/npc/festivalGirl2
+    start: 0x5C0500
+
+  - name: festivalGirl3Texture
+    type: bin
+    dir: sprites/npc/festivalGirl3
+    start: 0x5C0630
+
+  - name: festivalGirl3AssetsIndex
+    type: bin
+    dir: sprites/npc/festivalGirl3
+    start: 0x5C7F70
+    
+  - name: festivalGirl3SpritesheetIndex
+    type: bin
+    dir: sprites/npc/festivalGirl3
+    start: 0x5C7F90
+
+  - name: harvestGoddessTexture
+    type: bin
+    dir: sprites/npc/harvestGoddess
+    start: 0x5C8110
+
+  - name: harvestGoddessAssetsIndex
+    type: bin
+    dir: sprites/npc/harvestGoddess
+    start: 0x5CB4D0
+    
+  - name: harvestGoddessSpritesheetIndex
+    type: bin
+    dir: sprites/npc/harvestGoddess
+    start: 0x5CB4F0
+
+  - name: spiritFestivalOcarinaPerformerTexture
+    type: bin
+    dir: sprites/npc/spiritFestivalOcarinaPerformer
+    start: 0x5CB520
+
+  - name: spiritFestivalOcarinaPerformerAssetsIndex
+    type: bin
+    dir: sprites/npc/spiritFestivalOcarinaPerformer
+    start: 0x5CE500
+
+  - name: spiritFestivalOcarinaPerformerSpritesheetIndex
+    type: bin
+    dir: sprites/npc/spiritFestivalOcarinaPerformer
+    start: 0x5CE520
+
+  - name: kappaTexture
+    type: bin
+    dir: sprites/npc/kappa
+    start: 0x5CE540
+
+  - name: kappaAssetsIndex
+    type: bin
+    dir: sprites/npc/kappa
+    start: 0x5CF260
+
+  - name: kappaSpritesheetIndex
+    type: bin
+    dir: sprites/npc/kappa
+    start: 0x5CF280
+
+  - name: princessTexture
+    type: bin
+    dir: sprites/npc/princess
+    start: 0x5CF2A0
+
+  - name: princessAssetsIndex
+    type: bin
+    dir: sprites/npc/princess
+    start: 0x5D1130
+
+  - name: princessSpritesheetIndex
+    type: bin
+    dir: sprites/npc/princess
+    start: 0x5D1150
+
+  - name: emptySpriteTexture
     type: bin
     dir: sprites/npc
-    start: 0x2D15E0
+    start: 0x5D11A0
+
+  - name: emptySpriteAssetsIndex
+    type: bin
+    dir: sprites/npc
+    start: 0x5D11B0
+
+  - name: emptySpriteSpritesheetIndex
+    type: bin
+    dir: sprites/npc
+    start: 0x5D11C0
+
+  # split up individual assets
+  - name: animalSprites
+    type: bin
+    dir: sprites/animals
+    start: 0x5D11D0
 
   - name: dogTitleTexture
     type: bin
@@ -601,6 +1396,125 @@ segments:
     dir: sprites/misc
     start: 0x631400
 
+  - name: dadTexture
+    type: bin
+    dir: sprites/npc
+    start: 0x7A0C90
+
+  - name: dadAssetsIndex
+    type: bin
+    dir: sprites/npc
+    start: 0x7A5F30	
+    
+  - name: dadSpritesheetIndex
+    type: bin
+    dir: sprites/npc
+    start: 0x7A5F50
+    
+  - name: animalSprites2
+    type: bin
+    dir: sprites/animals
+    start: 0x7A6040
+
+  - name: harrisMariaBabyTexture
+    type: bin
+    dir: sprites/npc/harrisMariaBaby
+    start: 0x7F4D10
+
+  - name: harrisMariaBabyAssetsIndex
+    type: bin
+    dir: sprites/npc/harrisMariaBaby
+    start: 0x7F65D0
+
+  - name: harrisMariaBabySpritesheetIndex
+    type: bin
+    dir: sprites/npc/harrisMariaBaby
+    start: 0x7F65F0
+
+  - name: grayPopuriBabyTexture
+    type: bin
+    dir: sprites/npc/grayPopuriBaby
+    start: 0x7F6610
+
+  - name: grayPopuriBabyAssetsIndex
+    type: bin
+    dir: sprites/npc/grayPopuriBaby
+    start: 0x7F8120
+
+  - name: grayPopuriBabySpritesheetIndex
+    type: bin
+    dir: sprites/npc/grayPopuriBaby
+    start: 0x7F8140
+
+  - name: jeffElliBabyTexture
+    type: bin
+    dir: sprites/npc/jeffElliBaby
+    start: 0x7F8160
+
+  - name: jeffElliBabyAssetsIndex
+    type: bin
+    dir: sprites/npc/jeffElliBaby
+    start: 0x7F99F0
+
+  - name: jeffElliBabySpritesheetIndex
+    type: bin
+    dir: sprites/npc/jeffElliBaby
+    start: 0x7F9A10
+
+  - name: cliffAnnBabyTexture
+    type: bin
+    dir: sprites/npc/cliffAnnBaby
+    start: 0x7F9A30
+
+  - name: cliffAnnBabyAssetsIndex
+    type: bin
+    dir: sprites/npc/cliffAnnBaby
+    start: 0x7FB2C0
+
+  - name: cliffAnnBabySpritesheetIndex
+    type: bin
+    dir: sprites/npc/cliffAnnBaby
+    start: 0x7FB2E0
+
+  - name: kaiKarenBabyTexture
+    type: bin
+    dir: sprites/npc/kaiKarenBaby
+    start: 0x7FB300
+
+  - name: kaiKarenBabyAssetsIndex
+    type: bin
+    dir: sprites/npc/kaiKarenBaby
+    start: 0x7FCCD0
+
+  - name: kaiKarenBabySpritesheetIndex
+    type: bin
+    dir: sprites/npc/kaiKarenBaby
+    start: 0x7FCCF0
+
+  - name: shadowsTexture
+    type: bin
+    dir: sprites/shadows
+    start: 0x7FCD10	
+
+  - name: shadowsIndex
+    type: bin
+    dir: sprites/shadows
+    start: 0x7FD1E0
+
+  - name: expressionBubblesTexture
+    type: bin
+    dir: sprites/expression-bubbles
+    start: 0x7FD200
+
+  - name: expressionBubblesAssetsIndex
+    type: bin
+    dir: sprites/expression-bubbles
+    start: 0x800430
+
+  - name: expressionBubblesSpritesheetIndex
+    type: bin
+    dir: sprites/expression-bubbles
+    start: 0x800450
 
   # maps
   
@@ -1492,12 +2406,6 @@ segments:
     dir: sprites/dialogue-icons
     start: 0xD49B80
 
-  # TODO: finish separating textures
-  - name: miscTextures5
-    type: bin
-    dir: sprites/misc
-    start: 0xD49BA0
-
   - name: tvContentTexture
     type: bin
     dir: sprites/tv
@@ -1533,10 +2441,20 @@ segments:
     dir: sprites/objects
     start: 0xD82FF0
 
-  - name: miscTextures7
+  - name: sowingFestivalTexture
     type: bin
-    dir: sprites/misc
+    dir: sprites/festivals
     start: 0xD835A0
+    
+  - name: sowingFestivalAssetsIndex
+    type: bin
+    dir: sprites/festivals
+    start: 0xD86D40
+
+  - name: sowingFestivalSpritesheetIndex
+    type: bin
+    dir: sprites/festivals
+    start: 0xD86D60
 
   - name: homeItemsTexture
     type: bin

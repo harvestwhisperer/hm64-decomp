@@ -822,6 +822,7 @@ startGame = 0x8004DFAC;
 initializeGameVariables = 0x8004E210;
 registerMainLoopCallbacks = 0x8004F3D0;
 
+initializeNameStrings = 0x80054180;
 setGameVariables = 0x80055768;
 mainGameLoopCallback = 0x80055E20;
 startNewDay = 0x80059428;
@@ -1258,11 +1259,12 @@ dialogueAddresses = 0x80205760; // size:0x690
 gSeconds = 0x80215DF2;
 
 gTotalCropsShipped = 0x80215DFC;
-gHouseExtensionSelection = 0x8021E6D1;
 gFarmName = 0x8021E6D2;
-bitmapVertices = 0x8021E6E0;
 powerNutBits = 0x80215EB8;
 gElliGrievingCounter = 0x80215EC0;
+
+gHouseExtensionSelection = 0x8021E6D1;
+bitmapVertices = 0x8021E6E0; // size:0x400
 
 playerIdleCounter = 0x802226E0;
 pendingGfxNum = 0x802226E8;
@@ -1294,3 +1296,17 @@ D_80119628 = 0x80119628; // size:0x38
 D_80119660 = 0x80119660; // size:0xE0
 D_8020563B = 0x8020563B; // size:0x4
 D_80237420 = 0x80237420; // size:0x20
+
+D_8011ECC0 = 0x8011ECC0; // size:0x8 
+D_8011ECC8 = 0x8011ECC8; // size:0x8
+D_8011ECD0 = 0x8011ECD0; // size:0x8
+D_8011ECD8 = 0x8011ECD8; // size:0x8 
+D_8011ECE0 = 0x8011ECE0; // size:0x8
+
+D_8011ED00 = 0x8011ED00; // size:0x8
+D_8011ED08 = 0x8011ED08; // size:0x8
+D_8011ED10 = 0x8011ED10; // size:0x8
+D_8011ED18 = 0x8011ED18; // size:0x8
+D_8011ED20 = 0x8011ED20; // size:0x8
+D_8011ED28 = 0x8011ED28; // size:0x8
+D_8011ED30 = 0x8011ED30; // size:0x8

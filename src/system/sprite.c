@@ -12,8 +12,7 @@ extern u16 bitmapCounter;
 
 extern Bitmap bitmaps[MAX_BITMAPS];
 extern Gfx D_80215ED0[2][0x880];
-// initialized to 0, but unused?
-extern u16 D_8021E6E6[2][0x80][0x20];
+extern Vtx bitmapVertices[2][0x80][4];
                
 // forward declarations
 Gfx* func_8002A66C(Gfx*, Bitmap*, u16);             
@@ -48,10 +47,10 @@ void initializeBitmaps(void) {
 
     for (j = 0; j < 2; j++) {
         for (k = 0; k < 0x80; k++) {
-            D_8021E6E6[j][k][0] = 0;
-            D_8021E6E6[j][k][8] = 0;
-            D_8021E6E6[j][k][16] = 0;
-            D_8021E6E6[j][k][24] = 0;
+            bitmapVertices[j][k][0].v.flag = 0;
+            bitmapVertices[j][k][1].v.flag = 0;
+            bitmapVertices[j][k][2].v.flag = 0;
+            bitmapVertices[j][k][3].v.flag = 0;
         }
     }
     
@@ -338,6 +337,7 @@ bool func_8002A228(u16 index, u8 r, u8 g, u8 b, u8 a) {
     }
     
     return result; 
+
 }
 
 //INCLUDE_ASM(const s32, "system/sprite", func_8002A2E0);
@@ -369,7 +369,6 @@ u8 *func_8002A340(u16 index, u32 *spritesheetIndex, u8 *timg, u8 *romAddr) {
     u32 offset = spritesheetIndex[index];
 
     // func_8002A3A0 = get texture length
-    // timg = vaddr
     setSpriteAddresses(romAddr + offset, timg, func_8002A3A0(index, spritesheetIndex));
 
     return timg;
@@ -393,56 +392,30 @@ u32 func_8002A3A0(u16 spriteIndex, u32 spritesheetIndex[]) {
     }
     
     return spritesheetIndex[counter] - spritesheetIndex[spriteIndex];
+    
 }
 
-// graphics render modes enum
+static const Gfx D_8011ECC0 = gsDPSetCombineMode(G_CC_MODULATEIA, G_CC_MODULATEIA);
+static const Gfx D_8011ECC8 = gsDPSetRenderMode(G_RM_AA_ZB_XLU_SURF, G_RM_AA_ZB_XLU_SURF2);
+static const Gfx D_8011ECD0 = gsDPSetCombineMode(G_CC_MODULATEIDECALA, G_CC_MODULATEIDECALA);
+static const Gfx D_8011ECD8 = gsDPSetRenderMode(G_RM_AA_ZB_TEX_EDGE, G_RM_AA_ZB_TEX_EDGE2);
+static const Gfx D_8011ECE0 = gsDPSetRenderMode(G_RM_AA_TEX_EDGE, G_RM_AA_TEX_EDGE2);
 
-// have to match functions to fix asm referencing each array element as its own variable
-// func_8002A66C and func_8002A410
-/*
-static const Gfx D_8011ECC0[] = {
+// INCLUDE_RODATA(const s32, "system/sprite", D_8011ECC0);
 
-    gsDPSetCombineMode(G_CC_MODULATEIA, G_CC_MODULATEIA),
-    gsDPSetRenderMode(G_RM_AA_ZB_XLU_SURF, G_RM_AA_ZB_XLU_SURF2),
-    gsDPSetCombineMode(G_CC_MODULATEIDECALA, G_CC_MODULATEIDECALA),
-    gsDPSetRenderMode(G_RM_AA_ZB_TEX_EDGE, G_RM_AA_ZB_TEX_EDGE2),
-    gsDPSetRenderMode(G_RM_AA_TEX_EDGE, G_RM_AA_TEX_EDGE2),
+// INCLUDE_RODATA(const s32, "system/sprite", D_8011ECC8);
 
-};
-*/
+// INCLUDE_RODATA(const s32, "system/sprite", D_8011ECD0);
 
-INCLUDE_RODATA(const s32, "system/sprite", D_8011ECC0);
+// INCLUDE_RODATA(const s32, "system/sprite", D_8011ECD8);
 
-INCLUDE_RODATA(const s32, "system/sprite", D_8011ECC4);
+// INCLUDE_RODATA(const s32, "system/sprite", D_8011ECE0);
 
+//INCLUDE_ASM(const s32, "system/sprite", func_8002A410);
 
-INCLUDE_RODATA(const s32, "system/sprite", D_8011ECC8);
+inline Gfx* func_8002A410(Gfx* dl, u16 flag) {
 
-INCLUDE_RODATA(const s32, "system/sprite", D_8011ECCC);
-
-
-INCLUDE_RODATA(const s32, "system/sprite", D_8011ECD0);
-
-INCLUDE_RODATA(const s32, "system/sprite", D_8011ECD4);
-
-
-INCLUDE_RODATA(const s32, "system/sprite", D_8011ECD8);
-
-INCLUDE_RODATA(const s32, "system/sprite", D_8011ECDC);
-
-
-INCLUDE_RODATA(const s32, "system/sprite", D_8011ECE0);
-
-INCLUDE_RODATA(const s32, "system/sprite", D_8011ECE4);
-
-
-INCLUDE_ASM(const s32, "system/sprite", func_8002A410);
-
-// TODO: matches but rodata issue
-/*
-inline Gfx* func_8002A410(Gfx* dl, u16 arg1) {
-
-    switch (arg1) {
+    switch (flag) {
         case 0:
             break;
         case 1:
@@ -450,28 +423,28 @@ inline Gfx* func_8002A410(Gfx* dl, u16 arg1) {
             gDPSetRenderMode(dl++, G_RM_AA_ZB_OPA_SURF, G_RM_NOOP2);
             break;
         case 2:
-            *dl = D_8011ECC0[0];
+            *dl = D_8011ECC0;
             dl++;
-            *dl = D_8011ECC0[1];
+            *dl = D_8011ECC8;
             dl++;
             break;
         case 3:
-            *dl = D_8011ECC0[2];
+            *dl = D_8011ECD0;
             dl++;
-            *dl = D_8011ECC0[3];
+            *dl = D_8011ECD8;
             dl++;
             break;
         case 4:
-            *dl = D_8011ECC0[2];
+            *dl = D_8011ECD0;
             dl++;
-            *dl = D_8011ECC0[4];
+            *dl = D_8011ECE0;
             dl++;
             break;
     }
     
     return dl++;
+
 }
-*/
 
 //INCLUDE_ASM(const s32, "system/sprite", func_8002A530);
 
@@ -508,103 +481,104 @@ inline void func_8002A530(Vec3f* arg0, Bitmap* arg1) {
     if (((arg1->unk_54 >> 5) & 3) == 3) {
         arg0->y = arg1->unk_1C.y - scaledHeight;
     }
+
 }
 
+static const Gfx D_8011ED00 = gsSPTexture(0x8000, 0x8000, 0, G_TX_RENDERTILE, G_ON);
 
-// func_8002A66C
-/*
-static const Gfx D_8011ED00[] = {
+//INCLUDE_RODATA(const s32, "system/sprite", D_8011ED00);
 
-    gsSPTexture(qu016(0.5), qu016(0.5), 0, G_TX_RENDERTILE, G_ON),
-    gsDPSetTextureFilter(G_TF_BILERP),
-    gsDPSetTextureFilter(G_TF_POINT),
-    gsSP2Triangles(0, 2, 1, 0, 0, 3, 2, 0),
-    gsSP2Triangles(0, 1, 2, 0, 0, 2, 3, 0),
-    gsDPPipeSync(),
-    gsSPEndDisplayList()
+static const Gfx D_8011ED08 = gsDPSetTextureFilter(G_TF_BILERP);
 
-};
-*/
+//INCLUDE_RODATA(const s32, "system/sprite", D_8011ED08);
 
-INCLUDE_RODATA(const s32, "system/sprite", D_8011ED00);
+static const Gfx D_8011ED10 = gsDPSetTextureFilter(G_TF_POINT);
 
-INCLUDE_RODATA(const s32, "system/sprite", D_8011ED04);
+//INCLUDE_RODATA(const s32, "system/sprite", D_8011ED10);
 
-INCLUDE_RODATA(const s32, "system/sprite", D_8011ED08);
+static const Gfx D_8011ED18 = gsSP2Triangles(0, 2, 1, 0, 0, 3, 2, 0);
 
-INCLUDE_RODATA(const s32, "system/sprite", D_8011ED0C);
+//INCLUDE_RODATA(const s32, "system/sprite", D_8011ED18);
 
-INCLUDE_RODATA(const s32, "system/sprite", D_8011ED10);
+static const Gfx D_8011ED20 = gsSP2Triangles(0, 1, 2, 0, 0, 2, 3, 0);
 
-INCLUDE_RODATA(const s32, "system/sprite", D_8011ED14);
+//INCLUDE_RODATA(const s32, "system/sprite", D_8011ED20);
 
-INCLUDE_RODATA(const s32, "system/sprite", D_8011ED18);
+static const Gfx D_8011ED28 = gsDPPipeSync();
 
-INCLUDE_RODATA(const s32, "system/sprite", D_8011ED1C);
+//INCLUDE_RODATA(const s32, "system/sprite", D_8011ED28);
 
-INCLUDE_RODATA(const s32, "system/sprite", D_8011ED20);
+static const Gfx D_8011ED30 = gsSPEndDisplayList();
 
-INCLUDE_RODATA(const s32, "system/sprite", D_8011ED24);
+//INCLUDE_RODATA(const s32, "system/sprite", D_8011ED30);
 
-INCLUDE_RODATA(const s32, "system/sprite", D_8011ED28);
+typedef struct {
 
-INCLUDE_RODATA(const s32, "system/sprite", D_8011ED2C);
+    u16 padding2[3];
+    u16 textureWidth;
 
-INCLUDE_RODATA(const s32, "system/sprite", D_8011ED30);
-
-INCLUDE_RODATA(const s32, "system/sprite", D_8011ED34);
+} func_8002A66C_unknown_struct;
 
 // bitmap to vertices
+// 99.95%
 #ifdef PERMUTER
 Gfx* func_8002A66C(Gfx* dl, Bitmap* sprite, u16 arg2) {
 
     u16 vtxIndex;
-    
     u32 textureDimensions;
     u16 textureOffset;
-    volatile u16 textureWidth;
-    u16 textureHeight[1];
+    u16 textureHeight;
     u16 textureSize;
     u16 remainingSize;
 
     Gfx tempDl[2];
 
+    func_8002A66C_unknown_struct unknownStruct;
+
+    u32 tempSize;
+    
     sprite->spriteNumber = arg2;
 
-    dl = func_8002A410(dl, (sprite->unk_54 >> 10) & 7);
+    dl = func_8002A410(dl, (sprite->unk_54 >> 10) & (1 | 2 | 4));
 
-    // gsSPTexture(qu016(0.5), qu016(0.5), 0, G_TX_RENDERTILE, G_ON)
-    *dl = D_8011ED00[0];
+    *dl = D_8011ED00;
     dl++;
 
     if (sprite->flags & 4) {
         // gsDPSetTextureFilter(G_TF_BILERP)
-        *dl = D_8011ED00[1];
+        *dl = D_8011ED08;
         dl++;
     } else {
         // gsDPSetTextureFilter(G_TF_POINT)
-        *dl = D_8011ED00[2];
+        *dl = D_8011ED10;
         dl++;
     }
 
+    // totally cursed
     switch (sprite->pixelSize) {
+
         case G_IM_SIZ_4b:
-            textureWidth = ((u32)sprite->width + ((u32)sprite->width >> 0x1F)) >> 1;
-            textureHeight[0] = 4096 / sprite->width;
+            textureHeight = 4096 / sprite->width;
+            unknownStruct.textureWidth = ((((u32) sprite->width) >> 0x1F) + tempSize) / 2;
+            //unknownStruct.textureWidth = (tempSize + ((u32)(sprite->width) >> 0x1F)) / 2;
             break;
+
         case G_IM_SIZ_8b:
-            textureWidth = sprite->width;
-            textureHeight[0] = 2048 / textureWidth;
+            textureHeight = 2048 / sprite->width;
+            tempSize = sprite->width;
+            unknownStruct.textureWidth = tempSize;
             break;
-        default:
+
         case G_IM_SIZ_16b:
-            textureWidth = sprite->width * 2;
-            textureHeight[0] = 2048 / sprite->width;
+            textureHeight = 2048 / sprite->width;
+            unknownStruct.textureWidth = tempSize*2;
             break;
+
         case G_IM_SIZ_32b:
-            textureWidth = sprite->width * 4;
-            textureHeight[0] = 2048 / sprite->width;
+            textureHeight = 2048 / sprite->width;
+            unknownStruct.textureWidth = tempSize*4;
             break;
+        
     }
 
     remainingSize = sprite->height;
@@ -612,64 +586,64 @@ Gfx* func_8002A66C(Gfx* dl, Bitmap* sprite, u16 arg2) {
     textureOffset = 0;
     textureDimensions = 0;
     vtxIndex = 0;
-    
+
     do {
-        
+
         textureSize = remainingSize;
 
-        if (textureSize > textureHeight[0]) {
-            textureSize = textureHeight[0];
+        if (textureSize > textureHeight) {
+            textureSize = textureHeight;
         }
-        
-        func_800276AC((Vtx*)&bitmapVertices[gDisplayContextIndex][sprite->spriteNumber+vtxIndex], 
-            sprite->width, 
-            sprite->height, 
-            textureSize, 
-            textureOffset, 
-            sprite->unk_54&1,
-            sprite->unk_54&2, 
-            sprite->unk_50, 
+
+        func_800276AC(
+            (Vtx*)&bitmapVertices[gDisplayContextIndex][sprite->spriteNumber + vtxIndex],
+            sprite->width,
+            sprite->height,
+            textureSize,
+            textureOffset,
+            sprite->unk_54 & 1,
+            sprite->unk_54 & 2,
+            sprite->unk_50,
             sprite->unk_52,
-            sprite->unk_54, 
-            sprite->rgba.r, 
-            sprite->rgba.g, 
+            sprite->unk_54,
+            sprite->rgba.r,
+            sprite->rgba.g,
             sprite->rgba.b,
-            sprite->rgba.a);
+            sprite->rgba.a
+        );
 
         // load texture tile
         dl = func_80026F88(dl, sprite, textureDimensions, textureSize);
 
-        // should be gSPVertex(&tempDl[0], &bitmapVertices[gDisplayContextIndex][sprite->spriteNumber][vtxIndex], 4, 0);
-        gSPVertex(&tempDl[0], (Vtx*)&bitmapVertices[gDisplayContextIndex][sprite->spriteNumber + vtxIndex], 4, 0);
+        gSPVertex(&tempDl[1], (Vtx*)&bitmapVertices[gDisplayContextIndex][sprite->spriteNumber + vtxIndex][0], 4, 0);
 
-        *(tempDl-1) = *(tempDl);
-        *dl = *(tempDl-1);
-        dl++;
+        *(tempDl) = *(tempDl+1);
+        *dl = *(tempDl);
         
-       if (sprite->unk_54 & 0x200) {
+        dl++;
+
+        if (sprite->unk_54 & 0x200) {
             // gsSP2Triangles(0, 1, 2, 0, 0, 2, 3, 0)
-            *dl = D_8011ED00[3];
+            *dl = D_8011ED18;
             dl++;
         } else {
             // gsSP2Triangles(0, 2, 1, 0, 0, 3, 2, 0)
-            *dl = D_8011ED00[4];
+            *dl = D_8011ED20;
             dl++;
         }
-        
+
         remainingSize -= textureSize;
         textureOffset += textureSize;
         vtxIndex++;
-        
-        textureDimensions += textureSize * *(&textureWidth+11);
-        
-        // gsDPPipeSync()
-        *dl = D_8011ED00[5];        
+
+        textureDimensions += textureSize * unknownStruct.textureWidth;
+
+        *dl = D_8011ED28;
         dl++;
-        
+
     } while (remainingSize);
 
-    // gsSPEndDisplayList()
-    *dl = D_8011ED00[6];
+    *dl = D_8011ED30;
 
     sprite->vtxIndex = vtxIndex;
 
@@ -678,6 +652,7 @@ Gfx* func_8002A66C(Gfx* dl, Bitmap* sprite, u16 arg2) {
     return dl;
     
 }
+
 #else
 INCLUDE_ASM(const s32, "system/sprite", func_8002A66C);
 #endif
