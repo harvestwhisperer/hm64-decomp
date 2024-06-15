@@ -85,18 +85,22 @@ void func_8004CF68(void) {
                 
                 controllers[i].button = contData[i].button;
                 
+                // update sticks
                 func_8004D47C(i);
                 
                 controllers[i].buttonPressed = (controllers[i].button ^ controllers[i].buttonHeld) & controllers[i].button;
                 controllers[i].buttonReleased =  (controllers[i].button ^ controllers[i].buttonHeld) & controllers[i].buttonHeld;
                 controllers[i].buttonHeld = controllers[i].button;
                 
+                // loop through controller bits
                 for (j = 0; j < 24; j++) {
                     
+                    // if bit set
                     if ((controllers[i].button >> j) & 1) {
                         
                         if ((controllers[i].unk_28 >> j) & 1) {
                             
+                            // > 4
                             if (controllers[i].unk_2C[j] > D_80182FBA) {
                                 controllers[i].unk_24 |= ((controllers[i].button >> j) & 1) << j;
                                 controllers[i].unk_2C[j] = 0;
@@ -104,6 +108,7 @@ void func_8004CF68(void) {
                                 controllers[i].unk_24 &= ~(1 << j);
                             }
                             
+                            // > 16
                         } else if (controllers[i].unk_2C[j] > D_801FADB0) {
                             controllers[i].unk_24 |= ((controllers[i].button >> j) & 1) << j;
                             controllers[i].unk_28 |= ((controllers[i].button >> j) & 1) << j;
@@ -112,6 +117,7 @@ void func_8004CF68(void) {
                             controllers[i].unk_24 = controllers[i].buttonPressed;
                         }
                         
+                        // increment bit counter
                         controllers[i].unk_2C[j]++;
                         
                     } else {

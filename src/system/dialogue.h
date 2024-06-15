@@ -3,6 +3,9 @@
 
 #include "common.h"
 
+#include "system/message.h"
+
+
 #define MAX_DIALOGUES 1
 #define TOTAL_CONVERSATION_BANKS 70
 
@@ -11,12 +14,12 @@ extern u32 _dialogueIconsTextureSegmentRomEnd;
 extern u32 _dialogueIconsIndexSegmentRomStart;
 extern u32 _dialogueIconsIndexSegmentRomEnd;
 
-extern u32 _characterDialogueIconsTextureSegmentRomStart;
-extern u32 _characterDialogueIconsTextureSegmentRomEnd;
-extern u32 _characterdialogueIconsAssetsIndexSegmentRomStart;
-extern u32 _characterdialogueIconsAssetsIndexSegmentRomEnd;
-extern u32 _characterDialogueIconsSpritesheetIndexSegmentRomStart;
-extern u32 _characterDialogueIconsSpritesheetIndexSegmentRomEnd;
+extern u32 _charactercharacterAvatarsTextureSegmentRomStart;
+extern u32 _charactercharacterAvatarsTextureSegmentRomEnd;
+extern u32 _charactercharacterAvatarsAssetsIndexSegmentRomStart;
+extern u32 _charactercharacterAvatarsAssetsIndexSegmentRomEnd;
+extern u32 _charactercharacterAvatarsSpritesheetIndexSegmentRomStart;
+extern u32 _charactercharacterAvatarsSpritesheetIndexSegmentRomEnd;
 
 extern u32 _dialogueWindowTextureSegmentRomStart;
 extern u32 _dialogueWindowTextureSegmentRomEnd;
@@ -55,24 +58,6 @@ typedef struct {
     u16 flags;
 } UnknownDialogueStruct1;
 
-// D_801C3E6C
-// ci4 format
-typedef struct {
-	void* romTextureStart;
-	void* romTextureEnd;
-	void* romAssetIndexStart;
-	void* romAssetIndexEnd;
-	void* vaddrSpritesheet; // 0x7C
-	void* vaddrPalette;
-    void* vaddrAnimation;
-	void* vaddrSpriteToPalette;
-	void* vaddrSpritesheetIndex; // 0x8C
-	Vec3f coordinates;
-	u16 spriteIndex; // 0x9C // spriteIndex
-	u16 spriteOffset; // 0x98
-	u8 flag; // 0xA0
-} DialogueSpriteInfo;
-
 // 0x801C3F18
 typedef struct {
 	u32 unk_0;
@@ -87,37 +72,19 @@ typedef struct {
 	u8 unk_17; // pink overlay current column
 	u8 unk_18;
     u16 flags; // 0x4 = dialogue finished/closing
-} UnknownDialogueStruct3;
+} UnknownDialogueStruct2;
 
 // 0x801C3E40
 typedef struct {
 	UnknownDialogueStruct1 struct1;
 	u32 padding[4];  // 0x801C3E5C
-	// i.e., one for character avatar, button icon, etc.
-	DialogueSpriteInfo struct2; // 0x801C3E6C
-	DialogueSpriteInfo struct3; // 0x801C3EA4
-	DialogueSpriteInfo struct4;
+	// one for character avatar, button icon, etc.
+	DialogueSpriteType2 struct2; // 0x801C3E6C
+	DialogueSpriteType2 struct3; // 0x801C3EA4
+	DialogueSpriteType2 struct4; // 0x801C3EDC
 	u32 unk_D4; // 0x801C3F14
-	UnknownDialogueStruct3 struct5; // 0x801C3F18
+	UnknownDialogueStruct2 struct5; // 0x801C3F18
 } Dialogue;
-
-// 0x801806D0
-typedef struct {
-	void *romTextureStart;
-	void *romTextureEnd;
-	void *romAssetIndexStart;
-	void *romAssetIndexEnd;
-	void *romSpritesheetIndexStart;
-	void *romSpritesheetIndexEnd;
-	void *vaddrTexture;
-	void *vaddrTexture2; // index + palettes
-	void *vaddrPalette;
-	void *vaddrUnknownAsset;
-	void *vaddrUnknownAsset2;
-	void *vaddrSpritesheetIndex;
-	Vec3f unk_30;
-	u16 unk_3C;
-} DialogueIcon;
 
 extern bool initializeDialogueVariable(u16 index, void *address, u8 numSet, s32 max);
 extern void func_80042F60();   
@@ -125,18 +92,13 @@ extern bool func_80042FEC(u16, u16, u16);
 extern bool func_80043050(u16, u16, u16, void*, void*, void*, void*, void*);
 extern bool setSpecialDialogueBitsPointer(u32[]);
 extern bool func_80043148(u16, u32, u32, u32);
-extern bool func_8004318C(u16 arg0, u16 arg1, void* arg2, void* arg3, void* arg4, void* arg5, void* arg6, void* arg7, void* arg8, void* arg9, void* argA, u16 argB, u8 argC, f32 argD, f32 argE, f32 argF);
-extern bool func_80043260(u16 arg0, u16 arg1, void* arg2, void* arg3, void* arg4, void* arg5, void* arg6, void* arg7, void* arg8, void* arg9, void* argA, u16 argB, u8 argC, f32 argD, f32 argE, f32 argF);
-extern bool func_80043334(u16 arg0, u16 arg1, void* arg2, void* arg3, void* arg4, void* arg5, void* arg6, void* arg7, void* arg8, void* arg9, void* argA, u16 argB, u8 argC, f32 argD, f32 argE, f32 argF);
+extern bool func_8004318C(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextureEnd, u32 romIndexStart, u32 romIndexEnd, u32 vaddrTextureStart, u32 vaddrTextureEnd, u32 vaddrIndexStart, u32 vaddrIndexEnd, u32 argA, u16 spriteOffset, u8 flag, f32 x, f32 y, f32 z);
+extern bool func_80043260(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextureEnd, u32 romIndexStart, u32 romIndexEnd, u32 vaddrTextureStart, u32 vaddrTextureEnd, u32 vaddrIndexStart, u32 vaddrIndexEnd, u32 argA, u16 spriteOffset, u8 flag, f32 x, f32 y, f32 z);
+extern bool func_80043334(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextureEnd, u32 romIndexStart, u32 romIndexEnd, u32 vaddrTextureStart, u32 vaddrTextureEnd, u32 vaddrIndexStart, u32 vaddrIndexEnd, u32 argA, u16 spriteOffset, u8 flag, f32 x, f32 y, f32 z);
 extern bool func_80043430(u16, u16, u16, u16);
 extern u8 func_80043A88();  
 extern bool func_80043AD8(u16);
 extern u8 func_80043C6C(u16);
-
-// character avatars
-extern DialogueIcon dialogueIcons[1];
-
-extern Vec4f unknownRGBA;
 
 extern Dialogue dialogues[1];
 extern DialogueAddressInfo dialogueAddresses[69];

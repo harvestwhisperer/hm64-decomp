@@ -169,7 +169,10 @@ extern u8 D_80183690;
 // day of month married on
 extern u8 D_801C6220;
 
+extern Vec4f unknownRGBA;
+
 static inline void resetGlobalLighting() {
+
     globalLightingRgba.r = 0;
     globalLightingRgba.g = 0;
     globalLightingRgba.b = 0;
@@ -180,6 +183,7 @@ static inline void resetGlobalLighting() {
     unknownRGBA.g = 0;
     unknownRGBA.b = 0;
     unknownRGBA.a = 0;
+
 }
 
 #endif

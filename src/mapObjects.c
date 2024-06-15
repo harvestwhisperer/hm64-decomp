@@ -396,6 +396,7 @@ u8 func_800DA9A8(u8 mapIndex, u8 heightIndex, u8 widthIndex) {
         }
     
     return result;
+    
 }
 
 // jtbl_80122C30

@@ -19,9 +19,9 @@ typedef struct {
     u16 specialItemPages;
     u8 unk_26;
     u8 unk_27;
-    Vec3f unk_28;
+    Vec3f coordinates;
     u32 value;
-    u16 unk_38;
+    u16 spriteIndex;
     u8 count;
     u8 unk_3B;
     u16 flags;

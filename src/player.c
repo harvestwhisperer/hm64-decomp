@@ -756,8 +756,7 @@ INCLUDE_ASM(const s32, "player", func_80067BC4);
 
 void func_80067E5C(void) {
 
-    // FIXME: strange cast + dereference
-    // ??
+    // FIXME: ??
     if (!(*(s32*)&gPlayer.action3 & ~0xFF)) {
         setAudio(0x26);
         func_800D5548(gPlayer.unk_2D);
@@ -765,6 +764,7 @@ void func_80067E5C(void) {
         gPlayer.heldItem = 0;
         gPlayer.action3 = 1;
     }
+
 }
 
 //INCLUDE_ASM(const s32, "player", func_80067EE0);
@@ -778,6 +778,7 @@ void func_80067EE0(void) {
     }
 
     gPlayer.action3++;
+
 }
 
 INCLUDE_ASM(const s32, "player", func_80067F50);
@@ -798,6 +799,7 @@ void func_8006807C(void) {
             gPlayer.animationState++;
         }
     }   
+
 }
 
 
@@ -830,7 +832,9 @@ void func_80068120(void) {
         }
 
         gPlayer.action3++;
+
     }
+
 }
 
 //INCLUDE_ASM(const s32, "player", func_80068258);
@@ -849,6 +853,7 @@ void func_80068258(void) {
     if (gPlayer.animationState == 3) {
         func_80034DC8(MAIN_MAP_INDEX, 0, 8);
     }
+
 }
 
 //INCLUDE_ASM(const s32, "player", func_800682F8);
@@ -890,6 +895,7 @@ void func_80068410(void) {
         func_800DC9C0(gPlayer.unk_6B);
         gPlayer.animationState = 5;
     }
+
 }
 
 // D_8011F498
@@ -924,6 +930,7 @@ void func_80068990(void) {
     }
 
     gPlayer.action3++;
+
 }
 
 void func_80068A00(void) {}
@@ -1128,6 +1135,7 @@ void func_80069830(void) {
     }
 
     func_8002FE10(PLAYER, gPlayer.currentCoordinates.x, 0.0f, gPlayer.currentCoordinates.z, 1.0f);
+
 }
 
 //INCLUDE_ASM(const s32, "player", func_80069C5C);
@@ -1162,6 +1170,7 @@ void func_80069CC4(void) {
         }
         
         gPlayer.action3++;
+        
     }
 }
 

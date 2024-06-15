@@ -8,7 +8,7 @@
 // bss
 extern u16 D_80204BF0[0x100];
 DialogueBox dialogueBoxes[MAX_DIALOGUE_BOXES];
-extern GameVariableReference D_80189E58[64];
+extern GameVariableReference gameVariableStrings[64];
 
 // forward delcarations
 void func_8003F024(u16, u8, u8, u8, u8);
@@ -173,10 +173,10 @@ bool func_8003F30C(u16 dialogueIndex, u32 romIndexStart, u32 romIndexEnd, u32 ro
 
     if (dialogueIndex < MAX_DIALOGUE_BANKS) {
 
-        D_80183200[dialogueIndex].romIndexStart = romIndexStart;
-        D_80183200[dialogueIndex].romIndexEnd = romIndexEnd;
-        D_80183200[dialogueIndex].textBufferVaddr = textBufferVaddr;
-        D_80183200[dialogueIndex].romTextStart = romTextStart;
+        dialogueInfo[dialogueIndex].romIndexStart = romIndexStart;
+        dialogueInfo[dialogueIndex].romIndexEnd = romIndexEnd;
+        dialogueInfo[dialogueIndex].textBufferVaddr = textBufferVaddr;
+        dialogueInfo[dialogueIndex].romTextStart = romTextStart;
         
         result = TRUE;
         
@@ -259,7 +259,44 @@ bool func_8003F690(u16 index, u8 arg1, u8 arg2, u8 arg3) {
 
 INCLUDE_ASM(const s32, "system/message", func_8003F80C);
 
-INCLUDE_ASM(const s32, "system/message", func_8003F910);
+//INCLUDE_ASM(const s32, "system/message", func_8003F910);
+
+bool func_8003F910(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextureEnd, u32 romIndexStart, u32 romIndexEnd, 
+    u32 vaddrTextureStart, u32 vaddrTextureEnd, u32 vaddrIndexStart, u32 vaddrIndexEnd, 
+    u32 argA, u16 offset, u8 flag, f32 x, f32 y, f32 z) {
+
+    bool result = 0;
+    
+    if (index < 2) {
+
+        overlayIcons[index].romTextureStart = romTextureStart;
+        overlayIcons[index].romTextureEnd = romTextureEnd;
+        overlayIcons[index].romIndexStart = romIndexStart;
+        overlayIcons[index].romIndexEnd = romIndexEnd;
+
+        overlayIcons[index].vaddrTextureStart = vaddrTextureStart;
+        overlayIcons[index].vaddrTextureEnd = vaddrTextureEnd;
+        overlayIcons[index].vaddrIndexStart = vaddrIndexStart;
+        overlayIcons[index].vaddrIndexEnd = vaddrIndexEnd;
+
+        overlayIcons[index].unk_20 = argA;
+        overlayIcons[index].spriteIndex = spriteIndex;
+
+        overlayIcons[index].spriteOffset = offset;
+        
+        overlayIcons[index].flag = flag;
+
+        overlayIcons[index].coordinates.x = x;
+        overlayIcons[index].coordinates.y = y;
+        overlayIcons[index].coordinates.z = z;
+        
+        result = 1;
+        
+    }
+
+    return result;
+    
+}
 
 //INCLUDE_ASM(const s32, "system/message", func_8003FA1C);
 
@@ -272,28 +309,28 @@ bool func_8003FA1C(u16 index, u16 arg1, u32 romTextureStart, u32 romTextureEnd,
     f32 x, f32 y, f32 z) {
 
     bool result = FALSE;
-
+\
     if (index == 0) {
         
-        dialogueIcons[index].romTextureStart = romTextureStart;
-        dialogueIcons[index].romTextureEnd = romTextureEnd;
-        dialogueIcons[index].romAssetIndexStart = romAssetIndexStart;
-        dialogueIcons[index].romAssetIndexEnd = romAssetIndexEnd;
-        dialogueIcons[index].romSpritesheetIndexStart = romSpritesheetIndexStart;
-        dialogueIcons[index].romSpritesheetIndexEnd = romSpritesheetIndexEnd;
+        characterAvatars[index].romTextureStart = romTextureStart;
+        characterAvatars[index].romTextureEnd = romTextureEnd;
+        characterAvatars[index].romAssetIndexStart = romAssetIndexStart;
+        characterAvatars[index].romAssetIndexEnd = romAssetIndexEnd;
+        characterAvatars[index].romSpritesheetIndexStart = romSpritesheetIndexStart;
+        characterAvatars[index].romSpritesheetIndexEnd = romSpritesheetIndexEnd;
+ 
+        characterAvatars[index].vaddrTexture = vaddrTexture;
+        characterAvatars[index].vaddrSpritesheet = vaddrTexture2;
+        characterAvatars[index].vaddrPalette = vaddrPalette;
+        characterAvatars[index].vaddrAnimation = vaddrUnknownAsset;
+        characterAvatars[index].vaddrSpriteToPalette = vaddrUnknownAsset2;
+        characterAvatars[index].vaddrSpritesheetIndex = vaddrSpritesheetIndex;
 
-        dialogueIcons[index].vaddrTexture = vaddrTexture;
-        dialogueIcons[index].vaddrTexture2 = vaddrTexture2;
-        dialogueIcons[index].vaddrPalette = vaddrPalette;
-        dialogueIcons[index].vaddrUnknownAsset = vaddrUnknownAsset;
-        dialogueIcons[index].vaddrUnknownAsset2 = vaddrUnknownAsset2;
-        dialogueIcons[index].vaddrSpritesheetIndex = vaddrSpritesheetIndex;
+        characterAvatars[index].spriteIndex = arg1;
 
-        dialogueIcons[index].unk_3C = arg1;
-
-        dialogueIcons[index].unk_30.x = x;
-        dialogueIcons[index].unk_30.y = y;
-        dialogueIcons[index].unk_30.z = z;
+        characterAvatars[index].coordinates.x = x;
+        characterAvatars[index].coordinates.y = y;
+        characterAvatars[index].coordinates.z = z;
 
         result = TRUE;
         
@@ -350,14 +387,14 @@ bool func_8003FB4C(u16 index, u16 arg1) {
 
 //INCLUDE_ASM(const s32, "system/message", func_8003FBA0);
 
-bool func_8003FBA0(u16 arg0, u8* arg1, s8 arg2) {
+bool func_8003FBA0(u16 arg0, u8* ptr, s8 length) {
 
     bool result = FALSE;
 
     if (arg0 < 0x40) {
         
-        D_80189E58[arg0].unk_0 = arg1;
-        D_80189E58[arg0].unk_4 = arg2;
+        gameVariableStrings[arg0].ptr = ptr;
+        gameVariableStrings[arg0].length = length;
 
         result = TRUE;
 

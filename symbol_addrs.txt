@@ -1061,6 +1061,8 @@ lifeEventBits = 0x8013D1C8; // size:0x80
 
 controllers = 0x8013D440; // size:0x110
 
+overlayIcons = 0x8013D558; // size:0x70
+
 nuAuHeap = 0x8013D5C8;
 gSongVolume = 0x8013D5E4;
 
@@ -1109,7 +1111,7 @@ gBaseMapIndex = 0x80170458;
 tvContext = 0x80170270;
 annCliffNewlywedCounter = 0x80170444;
 
-dialogueIcons = 0x801806D0; // size:0x40
+characterAvatars = 0x801806D0; // size:0x40
 unknownRGBA = 0x80180718; // size:0x10
 
 cutsceneMaps = 0x801808B0;
@@ -1149,8 +1151,8 @@ totalFishCaught = 0x80189838;
 nuContData = 0x80189840;
 gLumber = 0x80189E50;
 
-D_80183200 = 0x80183200; // size:0x124
-D_80189E58 = 0x80189E58; // size:0x200
+dialogueInfo = 0x80183200; // size:0x124
+gameVariableStrings = 0x80189E58; // size:0x200
 
 pauseScreenSprites = 0x80189A50; // size:0x400
 
@@ -1240,7 +1242,7 @@ gCurrentGameIndex = 0x80205200;
 stepMainLoop = 0x80205208;
 mariaHarrisBabyAge = 0x80205201;
 gfxTaskNo = 0x8020520A;
-gameLoopContext = 0x80205230;
+gameLoopContext = 0x80205230; // size:0x8
 gForecast = 0x80205238;
 gWifePregnancyCounter = 0x802055D0;
 karenKaiNewlywedCounter = 0x802055D1;
