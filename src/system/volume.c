@@ -3,8 +3,7 @@
 #include "system/audio.h"
 
 // forward declaration
-void func_800267A4(Volume* volumePtr, s16 arg1, s16 arg2);
-s16 func_800267B4(Volume* volumePtr);       
+void func_800267A4(Volume* volumePtr, s16 arg1, s16 arg2);     
 
 //INCLUDE_ASM(const s32, "system/audioUtils", func_800266C0);
 

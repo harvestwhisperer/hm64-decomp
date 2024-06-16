@@ -140,7 +140,7 @@ bool func_80043148(u16 index, u32 arg1, u32 arg2, u32 arg3) {
 //INCLUDE_ASM(const s32, "system/dialogue", func_8004318C);
 
 bool func_8004318C(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextureEnd, u32 romIndexStart, u32 romIndexEnd, 
-    u32 vaddrTextureStart, u32 vaddrTextureEnd, u32 vaddrIndexStart, u32 vaddrIndexEnd, u32 argA, 
+    void* vaddrTextureStart, void* vaddrTextureEnd, void* vaddrIndexStart, void* vaddrIndexEnd, u32 argA, 
     u16 spriteOffset, u8 flag, f32 x, f32 y, f32 z) {
 
     bool result = FALSE;
@@ -177,7 +177,7 @@ bool func_8004318C(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextu
 //INCLUDE_ASM(const s32, "system/dialogue", func_80043260);
 
 bool func_80043260(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextureEnd, u32 romIndexStart, u32 romIndexEnd, 
-    u32 vaddrTextureStart, u32 vaddrTextureEnd, u32 vaddrIndexStart, u32 vaddrIndexEnd, u32 argA, 
+    void* vaddrTextureStart, void* vaddrTextureEnd, void* vaddrIndexStart, void* vaddrIndexEnd, u32 argA, 
     u16 spriteOffset, u8 flag, f32 x, f32 y, f32 z) {
 
     bool result = FALSE;
@@ -214,7 +214,7 @@ bool func_80043260(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextu
 //INCLUDE_ASM(const s32, "system/dialogue", func_80043334);
  
 bool func_80043334(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextureEnd, u32 romIndexStart, u32 romIndexEnd, 
-    u32 vaddrTextureStart, u32 vaddrTextureEnd, u32 vaddrIndexStart, u32 vaddrIndexEnd, u32 argA, 
+    void* vaddrTextureStart, void* vaddrTextureEnd, void* vaddrIndexStart, void* vaddrIndexEnd, u32 argA, 
     u16 spriteOffset, u8 flag, f32 x, f32 y, f32 z) {
 
     bool result = FALSE;

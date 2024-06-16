@@ -28,8 +28,8 @@ extern u32 _dialogueWindowIndexSegmentRomEnd;
 
 // 0x80205760
 typedef struct {
-    void* romStart;
-    void* romEnd;
+    u32 romStart;
+    u32 romEnd;
     u32* vaddr;
     u32* romIndex;
     u32* vaddrIndex;
@@ -92,9 +92,9 @@ extern bool func_80042FEC(u16, u16, u16);
 extern bool func_80043050(u16, u16, u16, void*, void*, void*, void*, void*);
 extern bool setSpecialDialogueBitsPointer(u32[]);
 extern bool func_80043148(u16, u32, u32, u32);
-extern bool func_8004318C(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextureEnd, u32 romIndexStart, u32 romIndexEnd, u32 vaddrTextureStart, u32 vaddrTextureEnd, u32 vaddrIndexStart, u32 vaddrIndexEnd, u32 argA, u16 spriteOffset, u8 flag, f32 x, f32 y, f32 z);
-extern bool func_80043260(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextureEnd, u32 romIndexStart, u32 romIndexEnd, u32 vaddrTextureStart, u32 vaddrTextureEnd, u32 vaddrIndexStart, u32 vaddrIndexEnd, u32 argA, u16 spriteOffset, u8 flag, f32 x, f32 y, f32 z);
-extern bool func_80043334(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextureEnd, u32 romIndexStart, u32 romIndexEnd, u32 vaddrTextureStart, u32 vaddrTextureEnd, u32 vaddrIndexStart, u32 vaddrIndexEnd, u32 argA, u16 spriteOffset, u8 flag, f32 x, f32 y, f32 z);
+extern bool func_8004318C(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextureEnd, u32 romIndexStart, u32 romIndexEnd, void* vaddrTextureStart, void* vaddrTextureEnd, void* vaddrIndexStart, void* vaddrIndexEnd, u32 argA, u16 spriteOffset, u8 flag, f32 x, f32 y, f32 z);
+extern bool func_80043260(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextureEnd, u32 romIndexStart, u32 romIndexEnd, void* vaddrTextureStart, void* vaddrTextureEnd, void* vaddrIndexStart, void* vaddrIndexEnd, u32 argA, u16 spriteOffset, u8 flag, f32 x, f32 y, f32 z);
+extern bool func_80043334(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextureEnd, u32 romIndexStart, u32 romIndexEnd, void* vaddrTextureStart, void* vaddrTextureEnd, void* vaddrIndexStart, void* vaddrIndexEnd, u32 argA, u16 spriteOffset, u8 flag, f32 x, f32 y, f32 z);
 extern bool func_80043430(u16, u16, u16, u16);
 extern u8 func_80043A88();  
 extern bool func_80043AD8(u16);
