@@ -1253,17 +1253,27 @@ void initializeNameStrings(void) {
     func_8003FBA0(0xB, gFarmAnimals[6].name, 6);
     func_8003FBA0(0xC, gFarmAnimals[7].name, 6);
     
+    // unused
     func_8003FBA0(0xE, D_80237380, 6);
     
     func_8003FBA0(0xF, gWifeName, 6);
     
+    // unused
     func_8003FBA0(0x10, D_801FB5C4, 6);
     func_8003FBA0(0x11, D_801594E0, 3);
     func_8003FBA0(0x12, D_801A8B50, 8);
+
+    // animal name
     func_8003FBA0(0x13, D_8018985C, 6);
+
     func_8003FBA0(0x14, gCurrentSeasonName, 6);
+    
+    // unused
     func_8003FBA0(0x15, D_801FC152, 2);
+
     func_8003FBA0(0x16, gWifeName, 6);
+    
+    // unused
     func_8003FBA0(0x17, D_80205210, 3);
     func_8003FBA0(0x18, D_80237418, 3);
     
@@ -1274,8 +1284,12 @@ void initializeNameStrings(void) {
     func_8003FBA0(0x1D, gChickens[4].name, 6);
     func_8003FBA0(0x1E, gChickens[5].name, 6);
     
+    // unsued
     func_8003FBA0(0x1F, D_8020563B, 4);
+
     func_8003FBA0(0x20, harvestKingName, 6);
+
+    // unused
     func_8003FBA0(0x21, D_801806C8, 2);
     func_8003FBA0(0x22, D_80170268, 6);
     func_8003FBA0(0x23, D_801FC156, 6);
@@ -1285,6 +1299,7 @@ void initializeNameStrings(void) {
     func_8003FBA0(0x30, D_801594E6, 3);
     func_8003FBA0(0x31, D_8016F6E0, 3);
     
+    // unused
     func_8003FBA0(0x32, D_80182D90[0], 3);
     func_8003FBA0(0x33, D_80182D90[1], 3);
     func_8003FBA0(0x34, D_80182D90[2], 3);

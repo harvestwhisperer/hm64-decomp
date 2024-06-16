@@ -1965,6 +1965,7 @@ static inline u8 handleRgba(u16 i) {
     }
 
     return count;
+    
 }
 
 static inline void handleRotation(u16 i) {

@@ -1114,6 +1114,8 @@ annCliffNewlywedCounter = 0x80170444;
 characterAvatars = 0x801806D0; // size:0x40
 unknownRGBA = 0x80180718; // size:0x10
 
+dialogueWindows = 0x80180728; // size:0x180
+
 cutsceneMaps = 0x801808B0;
 
 contStatus = 0x80181B90; // size:0x10
@@ -1312,3 +1314,11 @@ D_8011ED18 = 0x8011ED18; // size:0x8
 D_8011ED20 = 0x8011ED20; // size:0x8
 D_8011ED28 = 0x8011ED28; // size:0x8
 D_8011ED30 = 0x8011ED30; // size:0x8
+D_8011EE98 = 0x8011EE98; // size:0x8
+D_8011EEA0 = 0x8011EEA0; // size:0x8
+D_8011EEA8 = 0x8011EEA8; // size:0x8
+D_8011EEB0 = 0x8011EEB0; // size:0x8
+D_8011EEB8 = 0x8011EEB8; // size:0x8
+D_8011EEC0 = 0x8011EEC0; // size:0x8
+
+D_80204BF0 = 0x80204BF0; // size:0x200

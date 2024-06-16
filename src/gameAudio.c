@@ -8,11 +8,10 @@
 extern Sfx gSfx[4];
 extern SongInfo gSongs[4];
 
-// rodata: 0xF16F0 
+// rodata
 extern WaveTableInfo waveTableAddresses[1];
-extern u8 *songRomAddresses[0x40][2];
-// TODO: convert to array of Address structs
-extern u8 *sfxRomAddresses[0x80][2];
+extern Addresses songRomAddresses[0x40];
+extern Addresses sfxRomAddresses[0x80];
 extern s32 volumesTable[];
 // rodata: 0xF1CFC
 // size 0x60 or 0x180? 0x60 set elements, but takes up 0x180 bytes in rodata
@@ -30,7 +29,7 @@ void initializeWaveTable(u16 waveTableIndex) {
 void setCurrentSong(u16 songIndex) {
 
     if (songIndex < TOTAL_SONGS) {
-        setSong(0, songRomAddresses[songIndex][0], songRomAddresses[songIndex][1]);
+        setSong(0, (u8*)songRomAddresses[songIndex].romAddrStart, (u8*)songRomAddresses[songIndex].romAddrEnd);
     }
     
     setSongVolumes(0, 0, 0);
@@ -89,6 +88,7 @@ void func_800ACC1C(u16 songIndex) {
 
 //INCLUDE_ASM(const s32, "gameAudio", setAudio);
 
+// only used for sfx
 void setAudio(u16 index) {
     
   if (index < TOTAL_SFX) {
@@ -100,7 +100,8 @@ void setAudio(u16 index) {
 
     } else {
 
-        setSong(audioTypeTable[index], sfxRomAddresses[index][0], sfxRomAddresses[index][1]);
+        // FIXME: for sfx used as background music?
+        setSong(audioTypeTable[index], (u8*)sfxRomAddresses[index].romAddrStart, (u8*)sfxRomAddresses[index].romAddrEnd);
         setSongVolumes(audioTypeTable[index], volumesTable[index], volumesTable[index]);
     
     }

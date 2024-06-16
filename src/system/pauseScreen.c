@@ -28,32 +28,41 @@ void func_80045DE0(void) {
 
 //INCLUDE_ASM(const s32, "system/pauseScreen", func_80045E20);
 
-bool func_80045E20(u16 index, u16 arg1, void *arg2, void *arg3, void *arg4, void *arg5, void *arg6, void *arg7, void *arg8, void *arg9, void *argA, u16 argB, u8 argC, f32 argD, f32 argE, f32 argF, u8 arg10) {
+bool func_80045E20(u16 index, u16 spriteIndex, u32 romSpritesheetStart, u32 romSpritesheetEnd, u32 romAssetIndexStart, u32 romAssetIndexEnd, 
+    void *vaddrSpritesheet, void *vaddrPalette, void *vaddrUnknownAssetSheet, void *vaddrUnknownAsset2, 
+    u32 argA, u16 argB, u8 argC, f32 x, f32 y, f32 z, u8 arg10) {
     
     bool result = FALSE;
-    
+                    
     if (index < MAX_PAUSE_SCREEN_SPRITES) {
 
         if (!(pauseScreenSprites[index].flags & 1)) {
         
             result = TRUE;
         
-            pauseScreenSprites[index].romSpritesheetStart = arg2;
-            pauseScreenSprites[index].romSpritesheetEnd = arg3;
-            pauseScreenSprites[index].romAssetIndexStart = arg4;
-            pauseScreenSprites[index].romAssetIndexEnd = arg5;
-            pauseScreenSprites[index].vaddrSpritesheet = arg6;
-            pauseScreenSprites[index].vaddrPalette = arg7;
-            pauseScreenSprites[index].vaddrUnknownAssetSheet = arg8;
-            pauseScreenSprites[index].vaddrUnknownAsset2 = arg9;
+            pauseScreenSprites[index].romSpritesheetStart = romSpritesheetStart;
+            pauseScreenSprites[index].romSpritesheetEnd = romSpritesheetEnd;
+            pauseScreenSprites[index].romAssetIndexStart = romAssetIndexStart;
+            pauseScreenSprites[index].romAssetIndexEnd = romAssetIndexEnd;
+
+            pauseScreenSprites[index].vaddrSpritesheet = vaddrSpritesheet;
+            pauseScreenSprites[index].vaddrPalette = vaddrPalette;
+            pauseScreenSprites[index].vaddrUnknownAssetSheet = vaddrUnknownAssetSheet;
+            pauseScreenSprites[index].vaddrUnknownAsset2 = vaddrUnknownAsset2;
+
             pauseScreenSprites[index].unk_20 = argA;
+            
             pauseScreenSprites[index].specialItemPages = argB;
+            
             pauseScreenSprites[index].unk_26 = argC;
-            pauseScreenSprites[index].coordinates.x = argD;
-            pauseScreenSprites[index].coordinates.y = argE;
-            pauseScreenSprites[index].coordinates.z = argF;
+            
+            pauseScreenSprites[index].coordinates.x = x;
+            pauseScreenSprites[index].coordinates.y = y;
+            pauseScreenSprites[index].coordinates.z = z;
+            
             pauseScreenSprites[index].unk_27 = arg10;
-            pauseScreenSprites[index].spriteIndex = arg1;
+            
+            pauseScreenSprites[index].spriteIndex = spriteIndex;
             pauseScreenSprites[index].flags = 1;
 
         }

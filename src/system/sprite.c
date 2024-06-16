@@ -519,7 +519,6 @@ typedef struct {
 
 } func_8002A66C_unknown_struct;
 
-// bitmap to vertices
 // 99.95%
 #ifdef PERMUTER
 Gfx* func_8002A66C(Gfx* dl, Bitmap* sprite, u16 arg2) {
@@ -652,7 +651,6 @@ Gfx* func_8002A66C(Gfx* dl, Bitmap* sprite, u16 arg2) {
     return dl;
     
 }
-
 #else
 INCLUDE_ASM(const s32, "system/sprite", func_8002A66C);
 #endif
