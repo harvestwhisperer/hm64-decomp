@@ -57,12 +57,16 @@ extern Gfx D_801A8B60[2][6912];
 extern Vtx mapVertices[2][2560];
 
 // rodata
-extern Gfx D_8011ED68[4];
-extern Gfx D_8011ED88[5];
-extern Gfx D_8011EDC8[3];
-extern Gfx D_8011ED80;
-extern Gfx D_8011EDA8;
-extern Gfx D_8011EDD8;
+extern const Gfx D_8011ED68;
+extern const Gfx D_8011ED70;
+extern const Gfx D_8011ED78;
+extern const Gfx D_8011ED88;
+extern const Gfx D_8011EDC8;
+extern const Gfx D_8011ED80;
+extern const Gfx D_8011ED90;
+extern const Gfx D_8011EDA8;
+extern const Gfx D_8011EDD0;
+extern const Gfx D_8011EDD8;
 
 extern const char D_8011EDB0[];
 extern const char D_8011EDB4[];
@@ -786,7 +790,60 @@ bool func_80035054(u16 mapIndex, u16 bitmapIndex, u16 spriteIndex, f32 x, f32 y,
 
 INCLUDE_ASM(const s32, "system/map", func_80035150);
 
-INCLUDE_ASM(const s32, "system/map", func_8003544C);
+//INCLUDE_ASM(const s32, "system/map", func_8003544C);
+
+Vec3f *func_8003544C(Vec3f *arg0, u8 *arg1, f32 arg2, f32 arg3, u8 arg4) {
+  
+    Coordinates coordinates;
+
+    u32 padding[6];
+    u8 arr[16];
+
+    Vec3f coordinates2;
+
+    f32 temp_f0;
+    f32 temp_f0_2;
+
+    coordinates2.x = 0.0f;
+    coordinates2.y = 0.0f;
+    coordinates2.z = 0.0f;
+
+    func_80027BFC(&coordinates, arg1[1], arg1[2], arg1[3], arg1[4], arg1[5], arg1[6], arg1[7], arg1[8], arg1[9]);
+
+    temp_f0 = func_80027DC0(arg2, arg3, coordinates);
+    temp_f0_2 = temp_f0;
+
+    if (func_80027E10(arg2, temp_f0_2, arg3, arg1[1], arg1[2], arg1[3], arg1[4], arg1[5], arg1[6], arg1[7], arg1[8], arg1[9])) {
+
+        if (temp_f0 != 0.0f) {
+            coordinates2.y = temp_f0;
+        } else {
+            coordinates2.y = arg4;            
+        }
+
+    } else {
+
+        func_80027BFC(&coordinates, arg1[0xA], arg1[0xB], arg1[0xC], arg1[0xD], arg1[0xE], arg1[0xF], arg1[0x10], arg1[0x11], arg1[0x12]);
+        
+        temp_f0_2 = func_80027DC0(arg2, arg3, coordinates);
+        
+        if (func_80027E10(arg2, temp_f0_2, arg3, arg1[0xA], arg1[0xB], arg1[0xC], arg1[0xD], arg1[0xE], arg1[0xF], arg1[0x10], arg1[0x11], arg1[0x12])) {
+            if (temp_f0_2 != 0.0f) {
+                coordinates2.y = temp_f0_2;
+            } else {
+                coordinates2.y = arg4;
+            }
+        } else if (func_800284E8(arg2, temp_f0_2, arg3, coordinates) < 0.0f) {
+            coordinates2.y = arg1[0];
+        } else {
+            coordinates2.y = arg4;
+        }
+    }
+
+    *arg0 = coordinates2;
+    return arg0;
+
+}
 
 //INCLUDE_ASM(const s32, "system/map", func_80035914);
 
@@ -807,6 +864,7 @@ bool func_80035914(u16 mapIndex, f32 arg1, f32 arg2) {
     }
     
     return result;
+
 }
  
 //INCLUDE_ASM(const s32, "system/map", func_800359C8);
@@ -822,6 +880,7 @@ Vec3f* func_800359C8(Vec3f* arg0, MainMap* map, f32 arg2, f32 arg3) {
     *arg0 = vec;
     
     return arg0;
+    
 }
 
 //INCLUDE_ASM(const s32, "system/map", func_80035A58);
@@ -904,6 +963,7 @@ bool func_80035DA4(MainMap *map, u8 arg1, u8 arg2) {
   }
     
   return result;
+
 }
 
 // unused or inline
@@ -1334,12 +1394,9 @@ inline Gfx* func_80037DF0(Gfx* dl, MainMap* map, u16 arg2) {
     // height
     map->mapStruct9.unk_C = arg2;
 
-    *dl = D_8011ED68[0]; 
-    dl++;
-    *dl = D_8011ED68[1]; 
-    dl++;
-    *dl = D_8011ED68[2]; 
-    dl++;
+    *dl++ = D_8011ED68; 
+    *dl++ = D_8011ED70; 
+    *dl++ = D_8011ED78; 
 
     for (i = 0; i < 0x51; i++) {
   
@@ -1351,11 +1408,9 @@ inline Gfx* func_80037DF0(Gfx* dl, MainMap* map, u16 arg2) {
 
     } 
 
-    *dl = D_8011ED68[3];
+    *dl++ = D_8011ED80;
 
     map->mapStruct9.height = map->mapStruct9.unk_A;
-
-    dl++;
     
     return dl;
     
@@ -1366,14 +1421,14 @@ INCLUDE_ASM(const s32, "system/map", func_80037F08);
 
 //INCLUDE_ASM(const s32, "system/map", func_800383B0);
 
-Gfx* func_800383B0(Gfx* arg0, MainMap* map, u16 vtxIndex, f32 arg3, f32 arg4, f32 arg5) {
+Gfx* func_800383B0(Gfx* dl, MainMap* map, u16 vtxIndex, f32 arg3, f32 arg4, f32 arg5) {
 
     u16 i;
     
     u32 count;
     
-    Gfx* dl;
-    Gfx dl2;
+    Gfx* tempDl;
+    Gfx tempDl2;
 
     // FIXME: shouldn't be necessary
     // ??
@@ -1386,21 +1441,21 @@ Gfx* func_800383B0(Gfx* arg0, MainMap* map, u16 vtxIndex, f32 arg3, f32 arg4, f3
     // ??
     count = func_80037668(map, vtxIndex, arg3, *(f32*)&arg4, arg5);
 
-    gSPVertex(&dl2 + 1, &mapVertices[gDisplayContextIndex][map->mapStruct9.unk_C + map->mapStruct9.unk_A], map->vtxs[vtxIndex].count, 0);
+    gSPVertex(&tempDl2 + 1, &mapVertices[gDisplayContextIndex][map->mapStruct9.unk_C + map->mapStruct9.unk_A], map->vtxs[vtxIndex].count, 0);
 
     // FIXME:
-    dl2 = *(&dl2 + 1);
-    *arg0++ = dl2;
+    tempDl2 = *(&tempDl2 + 1);
+    *dl++ = tempDl2;
     
     map->mapStruct9.unk_A += count;
 
-    dl = &map->displayLists[map->vtxs[vtxIndex].currentVtxIndex];
+    tempDl = &map->displayLists[map->vtxs[vtxIndex].currentVtxIndex];
     
     for (i = 0; i < map->vtxs[vtxIndex].vtxCount; i++) {
-        *arg0++ = *dl++;
+        *dl++ = *tempDl++;
     }
 
-    return arg0++;
+    return dl++;
     
 }
 
@@ -2067,19 +2122,15 @@ void func_8003A1BC(void) {
 
 inline void func_8003AC14(Gfx* dl, MapBitmap* arg1) {
     
-    // gsDPSetCombineMode(G_CC_MODULATEIDECALA, G_CC_MODULATEIDECALA)
-    // gsDPSetRenderMode(G_RM_TEX_EDGE, G_RM_TEX_EDGE2)
-    // gsSPTexture(qu016(0.5), qu016(0.5), 0, G_TX_RENDERTILE, G_ON)
-    // gsDPSetCombineMode(G_CC_MODULATEIA, G_CC_MODULATEIA)
      
-    *dl = D_8011ED88[1];
-    dl++;
-    *dl = D_8011EDC8[0];
-    dl++;
-    *dl = D_8011EDC8[1];
-    dl++;
-    *dl = D_8011ED68[2];
-    dl++;
+    // gsDPSetCombineMode(G_CC_MODULATEIDECALA, G_CC_MODULATEIDECALA)
+    *dl++ = D_8011ED90;
+    // gsDPSetRenderMode(G_RM_TEX_EDGE, G_RM_TEX_EDGE2)
+    *dl++ = D_8011EDC8;
+    // gsSPTexture(0x8000, 0x8000, 0, G_TX_RENDERTILE, G_ON)
+    *dl++ = D_8011EDD0;
+    // gsDPSetCombineMode(G_CC_MODULATEIA, G_CC_MODULATEIA)
+    *dl++ = D_8011ED78;
 
     func_80026F88(dl++, (Bitmap*)arg1, 0, arg1->height);
     
@@ -2091,28 +2142,24 @@ inline void func_8003AC14(Gfx* dl, MapBitmap* arg1) {
 // param4 = offset into map vertex array
 //INCLUDE_ASM(const s32, "system/map", func_8003ACA8);
 
-Gfx* func_8003ACA8(Gfx* arg0, MainMap* map, MapBitmap* arg2, u16 vtxIndex) {
+Gfx* func_8003ACA8(Gfx* dl, MainMap* map, MapBitmap* arg2, u16 vtxIndex) {
 
-    Gfx dl[2];
+    Gfx tempDl[2];
       
     func_800276AC((Vtx*)&D_80165500[gDisplayContextIndex][vtxIndex], arg2->width, arg2->height, arg2->height, 0, 0,
         0, 0, 0, (0x10 | 0x40 | 0x100), map->mapFloats.groundRgba.r, map->mapFloats.groundRgba.g, map->mapFloats.groundRgba.b,
         map->mapFloats.groundRgba.a);
  
-    gSPVertex(&dl[1], &D_80165500[gDisplayContextIndex][vtxIndex][0], 4, 0);
+    gSPVertex(&tempDl[1], &D_80165500[gDisplayContextIndex][vtxIndex][0], 4, 0);
 
-    *dl = *(dl+1);
-    *arg0 = *dl;
+    *tempDl = *(tempDl+1);
+    *dl++ = *tempDl;
     
-    arg0++;
-    *arg0 = D_8011EDD8;
-    arg0++;
-    *arg0 = D_8011EDA8;
-    arg0++;
-    *arg0 = D_8011ED80;
-    arg0++;
+    *dl++ = D_8011EDD8;
+    *dl++ = D_8011EDA8;
+    *dl++ = D_8011ED80;
     
-    return arg0++;
+    return dl++;
     
 }
 
@@ -2163,112 +2210,59 @@ void func_8003B100(MainMap* map, f32 arg1, f32 arg2, f32 arg3, f32 arg4, f32 arg
 // check if map with spawnable items and append to display lists
 INCLUDE_ASM(const s32, "system/map", func_8003B1BC);
 
+static const Gfx D_8011ED68 = gsDPSetCombineMode(G_CC_MODULATEIA, G_CC_MODULATEIA);
 
-// have to remove all references to D_8011ED6C, D_8011ED74, etc. before using
+//INCLUDE_RODATA(const s32, "system/map", D_8011ED68);
 
-// static const Gfx D_8011ED68[4] = {
+static const Gfx D_8011ED70 = gsDPSetRenderMode(G_RM_RA_ZB_OPA_SURF, G_RM_RA_ZB_OPA_SURF2);
 
-//     gsDPSetCombineMode(G_CC_MODULATEIA, G_CC_MODULATEIA),
-//     gsDPSetRenderMode(G_RM_RA_ZB_OPA_SURF, G_RM_RA_ZB_OPA_SURF2),
-//     gsDPSetTextureFilter(G_TF_BILERP),
-//     gsSPEndDisplayList()
+//INCLUDE_RODATA(const s32, "system/map", D_8011ED70);
 
-// };
+static const Gfx D_8011ED78 = gsDPSetTextureFilter(G_TF_BILERP);
 
-// gsDPSetCombineMode(G_CC_MODULATEIA, G_CC_MODULATEIA)
+//INCLUDE_RODATA(const s32, "system/map", D_8011ED78);
 
-INCLUDE_RODATA(const s32, "system/map", D_8011ED68);
+static const Gfx D_8011ED80 = gsSPEndDisplayList();
 
-INCLUDE_RODATA(const s32, "system/map", D_8011ED6C);
+//INCLUDE_RODATA(const s32, "system/map", D_8011ED80);
 
-// gsDPSetRenderMode(G_RM_RA_ZB_OPA_SURF, G_RM_RA_ZB_OPA_SURF2)
+static const Gfx D_8011ED88 = gsSPTexture(0, 0, 0, G_TX_RENDERTILE, G_ON);
 
-INCLUDE_RODATA(const s32, "system/map", D_8011ED70);
+//INCLUDE_RODATA(const s32, "system/map", D_8011ED88);
 
-INCLUDE_RODATA(const s32, "system/map", D_8011ED74);
+static const Gfx D_8011ED90 = gsDPSetCombineMode(G_CC_MODULATEIDECALA, G_CC_MODULATEIDECALA);
 
-// gsDPSetTextureFilter(G_TF_BILERP)
+//INCLUDE_RODATA(const s32, "system/map", D_8011ED90);
 
-INCLUDE_RODATA(const s32, "system/map", D_8011ED78);
+static const Gfx D_8011ED98 = gsSPTexture(0, 0, 0, G_TX_RENDERTILE, G_OFF);
 
-INCLUDE_RODATA(const s32, "system/map", D_8011ED7C);
+//INCLUDE_RODATA(const s32, "system/map", D_8011ED98);
 
-// gsSPEndDisplayList()
+static const Gfx D_8011EDA0 = gsDPSetCombineLERP(PRIMITIVE, 0, SHADE, 0, PRIMITIVE, 0, SHADE, 0, PRIMITIVE, 0, SHADE, 0, PRIMITIVE, 0, SHADE, 0);
 
-INCLUDE_RODATA(const s32, "system/map", D_8011ED80);
+//INCLUDE_RODATA(const s32, "system/map", D_8011EDA0);
 
-INCLUDE_RODATA(const s32, "system/map", D_8011ED84);
+static const Gfx D_8011EDA8 = gsDPPipeSync();
 
+//INCLUDE_RODATA(const s32, "system/map", D_8011EDA8);
 
-// static const Gfx D_8011ED88[5] = {
+//INCLUDE_RODATA(const s32, "system/map", D_8011EDB0);
 
-//     gsSPTexture(0, 0, 0, G_TX_RENDERTILE, G_ON),
-//     gsDPSetCombineMode(G_CC_MODULATEIDECALA, G_CC_MODULATEIDECALA),
-//     gsSPTexture(0, 0, 0, G_TX_RENDERTILE, G_OFF),
-//     gsDPSetCombineLERP(PRIMITIVE, 0, SHADE, 0, PRIMITIVE, 0, SHADE, 0, PRIMITIVE, 0, SHADE, 0, PRIMITIVE, 0, SHADE, 0),
-//     gsDPPipeSync()
+//INCLUDE_RODATA(const s32, "system/map", D_8011EDB4);
 
-// };
+static const char D_8011EDB0[] = "EX";
+static const char D_8011EDB4[] = "s:/system/map.c";
 
-// gsSPTexture(0, 0, 0, G_TX_RENDERTILE, G_ON),
+static const Gfx D_8011EDC8 = gsDPSetRenderMode(G_RM_TEX_EDGE, G_RM_TEX_EDGE2);
 
-INCLUDE_RODATA(const s32, "system/map", D_8011ED88);
+//INCLUDE_RODATA(const s32, "system/map", D_8011EDC8);
 
-INCLUDE_RODATA(const s32, "system/map", D_8011ED8C);
+static const Gfx D_8011EDD0 = gsSPTexture(0x8000, 0x8000, 0, G_TX_RENDERTILE, G_ON);
 
-// gsDPSetCombineMode(G_CC_MODULATEIDECALA, G_CC_MODULATEIDECALA)
+//INCLUDE_RODATA(const s32, "system/map", D_8011EDD0);
 
-INCLUDE_RODATA(const s32, "system/map", D_8011ED90);
+static const Gfx D_8011EDD8 = gsSP2Triangles(0, 1, 2, 0, 0, 2, 3, 0);
 
-INCLUDE_RODATA(const s32, "system/map", D_8011ED94);
-
-// gsSPTexture(0, 0, 0, G_TX_RENDERTILE, G_OFF)
-
-INCLUDE_RODATA(const s32, "system/map", D_8011ED98);
-
-INCLUDE_RODATA(const s32, "system/map", D_8011ED9C);
-
-// gsDPSetCombineMode
-// gsDPSetCombineLERP(PRIMITIVE, 0, SHADE, 0, PRIMITIVE, 0, SHADE, 0, PRIMITIVE, 0, SHADE, 0, PRIMITIVE, 0, SHADE, 0)
-
-INCLUDE_RODATA(const s32, "system/map", D_8011EDA0);
-
-INCLUDE_RODATA(const s32, "system/map", D_8011EDA4);
-
-// gsDPPipeSync()
-
-INCLUDE_RODATA(const s32, "system/map", D_8011EDA8);
-
-INCLUDE_RODATA(const s32, "system/map", D_8011EDAC);
+//INCLUDE_RODATA(const s32, "system/map", D_8011EDD8);
 
 
-INCLUDE_RODATA(const s32, "system/map", D_8011EDB0);
-
-INCLUDE_RODATA(const s32, "system/map", D_8011EDB4);
-
-
-// static const Gfx D_8011EDC8[3] = {
-
-//     gsDPSetRenderMode(G_RM_TEX_EDGE, G_RM_TEX_EDGE2),
-//     gsSPTexture(qu016(0.5), qu016(0.5), 0, G_TX_RENDERTILE, G_ON),
-//     gsSP2Triangles(0, 1, 2, 0, 0, 2, 3, 0)
-
-// };
-
-// gsDPSetRenderMode(G_RM_TEX_EDGE, G_RM_TEX_EDGE2)
-
-INCLUDE_RODATA(const s32, "system/map", D_8011EDC8);
-
-INCLUDE_RODATA(const s32, "system/map", D_8011EDCC);
-
-// gsSPTexture(qu016(0.5), qu016(0.5), 0, G_TX_RENDERTILE, G_ON)
-
-INCLUDE_RODATA(const s32, "system/map", D_8011EDD0);
-
-INCLUDE_RODATA(const s32, "system/map", D_8011EDD4);
-
-// gsSP2Triangles(0, 1, 2, 0, 0, 2, 3, 0)
-
-INCLUDE_RODATA(const s32, "system/map", D_8011EDD8);
-
-INCLUDE_RODATA(const s32, "system/map", D_8011EDDC);

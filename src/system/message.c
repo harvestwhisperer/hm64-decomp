@@ -13,10 +13,10 @@ extern GameVariableString gameVariableStrings[64];
 // rodata
 extern u32 D_8011EE10[8];
 extern u8 D_8011EE30[16];
-extern u8 D_8011EE90[16];
+extern u8 D_8011EE90[8];
 
 // forward delcarations
-void func_8003F024(u16, u8, u8, u8, u8);
+bool func_8003F024(u16 index, u8 arg1, u8 arg2, u8 arg3, u8 arg4);
 bool func_8003FDB0(u16);      
 void func_80040628(u16, u8); 
 u32 func_80041850(u16 index);
@@ -130,22 +130,154 @@ bool func_8003DBE8(u16 dialogueBoxIndex, u8* textBufferAddr) {
     
 }
 
-INCLUDE_ASM(const s32, "system/message", func_8003DD14);
+//INCLUDE_ASM(const s32, "system/message", func_8003DD14);
+
+bool func_8003DD14(u16 index) {
+
+    bool result = FALSE;
+    
+    if (index < MAX_DIALOGUE_BOXES) {
+
+        if (dialogueBoxes[index].flags & 1) {
+            
+            dialogueBoxes[index].flags &= ~1;
+            
+            if (dialogueBoxes[index].flags & 0x200) {
+                func_8002BAD8(dialogueWindows[dialogueBoxes[index].unk_98].spriteIndex);
+            }
+            
+            if (dialogueBoxes[index].flags & 0x10000) {
+                func_8002BAD8(characterAvatars[dialogueBoxes[index].unk_9A].spriteIndex);
+            }
+            
+            result = TRUE;
+
+        }
+        
+    }
+
+    return result;
+    
+}
 
 // DMA dialogues
 INCLUDE_ASM(const s32, "system/message", func_8003DDF8);
 
-INCLUDE_ASM(const s32, "system/message", func_8003E77C);
+//INCLUDE_ASM(const s32, "system/message", func_8003E77C);
 
+bool func_8003E77C(u16 index, u8 arg1, u8 arg2, u8 arg3, u8 arg4) {
+
+    bool result = FALSE;
+    
+    if (index < MAX_DIALOGUE_BOXES) { 
+
+        if (dialogueBoxes[index].flags & 1) {
+            
+            dialogueBoxes[index].unk_14.r = (dialogueBoxes[index].unk_4.r * arg1) / 255.0f;
+            dialogueBoxes[index].unk_14.g = (dialogueBoxes[index].unk_4.g * arg2) / 255.0f;
+            dialogueBoxes[index].unk_14.b = (dialogueBoxes[index].unk_4.b * arg3) / 255.0f;
+            dialogueBoxes[index].unk_14.a = (dialogueBoxes[index].unk_4.a * arg4) / 255.0f;
+    
+            dialogueBoxes[index].unk_24.r = (dialogueBoxes[index].unk_4.r * arg1) / 255.0f;
+            dialogueBoxes[index].unk_24.g = (dialogueBoxes[index].unk_4.g * arg2) / 255.0f;
+            dialogueBoxes[index].unk_24.b = (dialogueBoxes[index].unk_4.b * arg3) / 255.0f;
+            dialogueBoxes[index].unk_24.a = (dialogueBoxes[index].unk_4.a * arg4) / 255.0f;
+    
+            result = TRUE;
+     
+        }
+        
+    }
+
+    return result;
+    
+}
+
+// rgba
 INCLUDE_ASM(const s32, "system/message", func_8003E910);
 
 INCLUDE_ASM(const s32, "system/message", func_8003EA1C);
 
-INCLUDE_ASM(const s32, "system/message", func_8003EE7C);
- 
-INCLUDE_ASM(const s32, "system/message", func_8003EFD8);
+//INCLUDE_ASM(const s32, "system/message", func_8003EE7C);
 
-INCLUDE_ASM(const s32, "system/message", func_8003F024);
+bool func_8003EE7C(u16 index, u8 arg1, s16 arg2) {
+
+    bool result;
+    s16 temp;
+    f32 tempF;
+
+    temp = getAbsoluteValue(arg2);
+
+    result = FALSE;
+    
+    if (index < MAX_DIALOGUE_BOXES) {
+
+        if (dialogueBoxes[index].flags & 1) {
+
+            dialogueBoxes[index].unk_24.a = (dialogueBoxes[index].unk_4.a * arg1) / 255.0f;
+
+            dialogueBoxes[index].flags &= ~(0x200000);
+
+            if (dialogueBoxes[index].unk_24.a < dialogueBoxes[index].unk_14.a) {
+                tempF = dialogueBoxes[index].unk_14.a - dialogueBoxes[index].unk_24.a;
+            } else {
+                tempF = dialogueBoxes[index].unk_24.a - dialogueBoxes[index].unk_14.a;
+            }
+
+            dialogueBoxes[index].unk_34[3] = (tempF * temp) / dialogueBoxes[index].unk_4.a;
+
+            result = TRUE;
+            
+        }
+        
+    }
+
+    return result;
+    
+}
+
+//INCLUDE_ASM(const s32, "system/message", func_8003EFD8);
+
+bool func_8003EFD8(u16 index) {
+
+    bool result = FALSE;
+
+    if (index < MAX_DIALOGUE_BOXES) {
+
+        if (dialogueBoxes[index].flags & 1) {
+            result = (dialogueBoxes[index].flags >> 0x15) & 1;
+        }
+        
+    }
+
+    return result;
+    
+}
+
+//INCLUDE_ASM(const s32, "system/message", func_8003F024);
+
+bool func_8003F024(u16 index, u8 arg1, u8 arg2, u8 arg3, u8 arg4) {
+
+    bool result = FALSE;
+    
+    if (index < MAX_DIALOGUE_BOXES) {
+
+        if (dialogueBoxes[index].flags & 1) {
+
+            dialogueBoxes[index].unk_4.r = arg1;
+            dialogueBoxes[index].unk_4.g = arg2;
+            dialogueBoxes[index].unk_4.b = arg3;
+            dialogueBoxes[index].unk_4.a = arg4;
+
+            result = TRUE;
+            
+        }
+        
+    }
+
+    return result;
+    
+}
 
 //INCLUDE_ASM(const s32, "system/message", func_8003F0DC);
 
@@ -193,7 +325,30 @@ bool func_8003F30C(u16 dialogueIndex, u32 romIndexStart, u32 romIndexEnd, u32 ro
 
 INCLUDE_ASM(const s32, "system/message", func_8003F360);
 
-INCLUDE_ASM(const s32, "system/message", func_8003F464);
+//INCLUDE_ASM(const s32, "system/message", func_8003F464);
+
+bool func_8003F464(u16 index, u8 arg1, u8 arg2, u8* fontTexturePtr, u16* fontPalettePtr) {
+    
+    u8 result = FALSE;
+    
+    if (index < MAX_DIALOGUE_BOXES) {
+        
+        if (dialogueBoxes[index].flags & 1) {
+            
+            dialogueBoxes[index].unk_60 = arg1;
+            dialogueBoxes[index].unk_61 = arg2;
+            dialogueBoxes[index].fontTexturePtr = fontTexturePtr;
+            dialogueBoxes[index].fontPalettePtr = fontPalettePtr;
+            
+            result = TRUE;
+            
+        }
+    }
+    
+    return result;
+    
+}
+
 
 INCLUDE_ASM(const s32, "system/message", func_8003F4E0);
 
@@ -218,9 +373,49 @@ bool func_8003F54C(u16 index, f32 x, f32 y, f32 z) {
     return result;
 }
 
-INCLUDE_ASM(const s32, "system/message", func_8003F5D0);
+//INCLUDE_ASM(const s32, "system/message", func_8003F5D0);
 
-INCLUDE_ASM(const s32, "system/message", func_8003F630);
+bool func_8003F5D0(u16 index, u8 arg1, u8 arg2) {
+
+    bool result = FALSE;
+    
+    if (index < MAX_DIALOGUE_BOXES) {
+
+        if (dialogueBoxes[index].flags & 1) {
+
+            dialogueBoxes[index].unk_92 = arg1;
+            dialogueBoxes[index].unk_93 = arg2;
+            
+            result = TRUE;
+            
+        }
+    }
+    
+    return result;
+
+}
+
+//INCLUDE_ASM(const s32, "system/message", func_8003F630);
+
+bool func_8003F630(u16 index, u8 arg1, u8 arg2) {
+
+    bool result = FALSE;
+    
+    if (index < MAX_DIALOGUE_BOXES) {
+
+        if (dialogueBoxes[index].flags & 1) {
+
+            dialogueBoxes[index].currentLine = arg1;
+            dialogueBoxes[index].unk_9C = arg2;
+            
+            result = TRUE;
+            
+        }
+    }
+    
+    return result;
+    
+}
 
 //INCLUDE_ASM(const s32, "system/message", func_8003F690);
 
@@ -232,11 +427,11 @@ bool func_8003F690(u16 index, u8 arg1, u8 arg2, u8 arg3) {
 
         if (dialogueBoxes[index].flags & 1) { 
             
-            dialogueBoxes[index].currentLineFromTop = arg1;
+            dialogueBoxes[index].unk_98 = arg1;
             dialogueBoxes[index].maxLinesInText = arg2;
-            dialogueBoxes[index].charPerLineCount = arg3;
+            dialogueBoxes[index].unk_9A = arg3;
 
-            if (dialogueBoxes[index].currentLineFromTop != 0xFF) {
+            if (dialogueBoxes[index].unk_98 != 0xFF) {
                 dialogueBoxes[index].flags |= 0x200;
             } else {
                 dialogueBoxes[index].flags &= ~0x200;
@@ -248,7 +443,7 @@ bool func_8003F690(u16 index, u8 arg1, u8 arg2, u8 arg3) {
                 dialogueBoxes[index].flags &= ~0x400;
             }
 
-            if (dialogueBoxes[index].charPerLineCount != 0xFF) {
+            if (dialogueBoxes[index].unk_9A != 0xFF) {
                 dialogueBoxes[index].flags |= 0x10000;
             } else {
                 dialogueBoxes[index].flags &= ~0x10000;
@@ -358,7 +553,7 @@ bool func_8003FA1C(u16 index, u16 arg1, u32 romTextureStart, u32 romTextureEnd,
         characterAvatars[index].romAssetIndexEnd = romAssetIndexEnd;
         characterAvatars[index].romSpritesheetIndexStart = romSpritesheetIndexStart;
         characterAvatars[index].romSpritesheetIndexEnd = romSpritesheetIndexEnd;
- 
+  
         characterAvatars[index].vaddrTexture = vaddrTexture;
         characterAvatars[index].vaddrSpritesheet = vaddrTexture2;
         characterAvatars[index].vaddrPalette = vaddrPalette;
@@ -703,7 +898,7 @@ void func_80040318(u16 index) {
         dialogueBoxes[index].maxLinesInBox--;
         
     }
-    
+
 }
 
 static const u32 D_8011EE10[8] = { 1, 10, 100, 1000, 10000, 100000, 1000000, 10000000 };
@@ -961,7 +1156,9 @@ INCLUDE_ASM(const s32, "system/message", func_80042014);
 
 INCLUDE_ASM(const s32, "system/message", func_800423F0);
 
-INCLUDE_RODATA(const s32, "system/message", D_8011EE90);
+static const u8 D_8011EE90[8] = { 0x80, 0x40, 0x20, 0x10, 8, 4, 2, 1, 0 };
+
+//INCLUDE_RODATA(const s32, "system/message", D_8011EE90);
 
 static const Gfx D_8011EE98 = gsDPSetCombineMode(G_CC_MODULATEIDECALA, G_CC_MODULATEIDECALA);
 

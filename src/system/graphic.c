@@ -69,14 +69,13 @@ extern f32 sinf(f32);
 
 //INCLUDE_RODATA(const s32, "system/graphic", D_8011EC40);
 
-INCLUDE_RODATA(const s32, "system/graphic", D_8011EC60);
+//INCLUDE_RODATA(const s32, "system/graphic", D_8011EC60);
 
-//static const char D_8011EC60 = "EX";
+static const char D_8011EC60[] = "EX";
 
-INCLUDE_RODATA(const s32, "system/graphic", D_8011EC64);
+//INCLUDE_RODATA(const s32, "system/graphic", D_8011EC64);
 
-//static const char *D_8011EC64 = "s:/system/graphic.c";
-
+static const char D_8011EC64[] = "s:/system/graphic.c";
 
 //INCLUDE_ASM(const s32, "system/graphic", graphicsInit);
 
@@ -455,7 +454,7 @@ void func_80027B74(Vec3f arg0, Vec3f* arg1, f32 arg2, f32 arg3, f32 arg4, f32 ar
 
 //INCLUDE_ASM(const s32, "system/graphic", func_80027BFC);
 
-inline Coordinates* func_80027BFC(Coordinates* arg0, f32 arg1, f32 arg2, f32 arg3, f32 arg4, f32 arg5, f32 arg6, f32 arg7, f32 arg8, f32 arg9) {
+Coordinates* func_80027BFC(Coordinates* arg0, f32 arg1, f32 arg2, f32 arg3, f32 arg4, f32 arg5, f32 arg6, f32 arg7, f32 arg8, f32 arg9) {
     
     Coordinates vec;
     f32 temp_f12;
@@ -495,10 +494,61 @@ inline Coordinates* func_80027BFC(Coordinates* arg0, f32 arg1, f32 arg2, f32 arg
         vec.y = temp_f22;
         vec.z = temp_f20;
         vec.w = -(((temp_f22_2 * arg1) + (temp_f22 * arg2)) + (temp_f20 * arg3));
+
     }
     
     *arg0 = vec;
     return arg0;
+
+}
+
+// need different return type to match func_80027E10
+static inline Coordinates func_80027BFC_static_inline(Coordinates* arg0, f32 arg1, f32 arg2, f32 arg3, f32 arg4, f32 arg5, f32 arg6, f32 arg7, f32 arg8, f32 arg9) {
+
+    Coordinates vec;
+
+    f32 temp_f12;
+    f32 temp_f14;
+    f32 temp_f20;
+    f32 temp_f20_2;
+    f32 temp_f22;
+    f32 temp_f22_2;
+    f32 temp_f24;
+    f32 temp_f24_2;
+    f32 var_f0;
+
+    temp_f14 = (arg2 * (arg6 - arg9)) + (arg5 * (arg9 - arg3));
+    temp_f24 = temp_f14 + (arg8 * (arg3 - arg6));
+    temp_f22_2 = temp_f24;
+
+    temp_f22 = ((arg3 * (arg4 - arg7)) + (arg6 * (arg7 - arg1))) + (arg9 * (arg1 - arg4));
+    temp_f20 = ((arg1 * (arg5 - arg8)) + (arg4 * (arg8 - arg2))) + (arg7 * (arg2 - arg5));
+    temp_f12 = ((temp_f24 * temp_f24) + (temp_f22 * temp_f22)) + (temp_f20 * temp_f20);
+
+    var_f0 = sqrtf(temp_f12);
+
+    if (var_f0 == 0) {
+
+        vec.x = 0.0f;
+        vec.y = 0.0f;
+        vec.z = 0.0f;
+        vec.w = 0.0f;
+
+    } else {
+
+        temp_f22_2 /= var_f0;
+        temp_f22 /= var_f0;
+        temp_f20 /= var_f0;
+
+        vec.x = temp_f22_2;
+        vec.y = temp_f22;
+        vec.z = temp_f20;
+        vec.w = -(((temp_f22_2 * arg1) + (temp_f22 * arg2)) + (temp_f20 * arg3));
+
+    }
+
+    return vec;
+    
 }
 
 //INCLUDE_ASM(const s32, "system/graphic", func_80027DC0);
@@ -517,44 +567,60 @@ f32 func_80027DC0(f32 arg0, f32 arg1, Coordinates vec) {
     return result;
 }
 
-#ifdef PERMUTER
-u8 func_80027E10(Coordinates arg0, f32 arg1, f32 arg2, f32 arg3, f32 arg4, f32 arg5, f32 arg6, f32 arg7, f32 arg8, f32 arg9) {
+//INCLUDE_ASM(const s32, "system/graphic", func_80027E10);
 
+u8 func_80027E10(f32 arg0, f32 arg1, f32 arg2, f32 arg3, f32 arg4, f32 arg5, f32 arg6, f32 arg7, f32 arg8, f32 arg9, f32 argA, f32 argB) {
+
+    Coordinates coordinates;
+    
     u8 count = 0;
-
-    func_80027BFC(&arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9);
-
-    if (arg0.x >= 0.0f) {
-        count = 1;
-    }
-
-    func_80027BFC(&arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9);
-
-    if (arg0.x >= 0.0f) {
+    
+    coordinates = func_80027BFC_static_inline(&coordinates, arg3, arg4, arg5, arg6, arg7, arg8, arg0, arg1, arg2);
+    
+    if (coordinates.y >= 0.0f) {
         count++;
     }
+    
+    coordinates = func_80027BFC_static_inline(&coordinates, arg6, arg7, arg8, arg9, argA, argB, arg0, arg1, arg2);
 
-    func_80027BFC(&arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9);
-
-    if (arg0.x >= 0.0f) {
+    if (coordinates.y >= 0.0f) {
         count++;
     }
-
-    return count / 3;
+    
+    coordinates = func_80027BFC_static_inline(&coordinates, arg9, argA, argB, arg3, arg4, arg5, arg0, arg1, arg2);
+    
+    if (coordinates.y >= 0.0f) {
+        count++;
+    }
+    
+    count = count / 3;
+    
+    return count;
     
 }
-#else
-INCLUDE_ASM(const s32, "system/graphic", func_80027E10);
-#endif
+
+//INCLUDE_ASM(const s32, "system/graphic", func_800284E8);
 
 // dot product?
-#ifdef PERMUTER
-f32 func_800284E8(f32 arg0, f32 arg1, f32 arg2, f32 arg3, f32 arg4, f32 arg5, f32 arg6) {
-    return (arg3 * arg0) + (arg4 * arg1) + (arg5 * arg2) + arg6;
+f32 func_800284E8(f32 arg0, f32 arg1, f32 arg2, Coordinates coordinates) {
+    
+    f32 x = coordinates.x * arg0;
+    f32 y = coordinates.y * arg1;
+    f32 z = coordinates.z * arg2;
+    f32 w = coordinates.w * 1;
+  
+    return x + y + z + w;
+    
 }
-#else
-INCLUDE_ASM(const s32, "system/graphic", func_800284E8);
-#endif
+
+// alternate
+/*
+f32 func_800284E8(f32 arg0, f32 arg1, f32 arg2, Coordinates coordinates) {
+    f32 temp = coordinates.x * arg0;
+  
+    return (temp) + (coordinates.y * arg1) + (coordinates.z * arg2) + coordinates.w;    
+}
+*/
 
 //INCLUDE_RODATA(const s32, "system/graphic", directionsToYValues);
 
