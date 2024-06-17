@@ -343,9 +343,125 @@ Gfx* func_80026F88(Gfx* dl, Bitmap* sprite, u32 offset, u16 height) {
     
 }
 
-// param1 = Vtx, 8021E6E0
-// vtx adjustments/shading
-INCLUDE_ASM(const s32, "system/graphic", func_800276AC);
+//INCLUDE_ASM(const s32, "system/graphic", func_800276AC);
+
+void func_800276AC(Vtx vtxs[], u16 width, u16 height, u16 textureSize, u16 arg4, u16 arg5, u16 arg6, u16 arg7, s16 arg8, u16 arg9, u8 r, u8 g, u8 b, u8 a) {
+    
+    u8 coordinate1;
+    u8 coordinate2;
+    u8 coordinate3;
+    
+    u16 temp;
+    u16 temp2;
+    u16 temp3;
+    u16 temp4;
+
+    switch ((arg9 >> 7) & 3) {
+        case 2:
+            coordinate1 = 0;
+            coordinate3 = 1;
+            coordinate2 = 2;
+            break;
+
+        case 3:
+            coordinate1 = 0;
+            coordinate3 = 2;
+            coordinate2 = 1;
+            break;
+
+        case 0:
+
+        case 1:
+
+        default:
+            break;
+    }
+
+    temp = height >> 1;
+    temp3 = width >> 1;
+    
+    if (arg5) {
+        vtxs[0].v.tc[0] = width << 6;
+        vtxs[3].v.tc[0] = width << 6;
+        
+        vtxs[1].v.tc[0] = 0;
+        vtxs[2].v.tc[0] = 0;
+        
+        vtxs[0].v.ob[coordinate1] = -temp3 - arg7;
+        vtxs[3].v.ob[coordinate1] = -temp3 - arg7;
+        
+        vtxs[2].v.ob[coordinate1] = vtxs[1].v.ob[coordinate1] = vtxs[0].v.ob[coordinate1] + width;
+        
+    } else {
+        
+        vtxs[1].v.tc[0] = width << 6;
+        vtxs[2].v.tc[0] = width << 6;
+        
+        vtxs[0].v.tc[0] = 0;
+        vtxs[3].v.tc[0] = 0;
+        
+        vtxs[0].v.ob[coordinate1] = arg7 - temp3;
+        vtxs[3].v.ob[coordinate1] = arg7 - temp3;
+        
+        vtxs[2].v.ob[coordinate1] = vtxs[1].v.ob[coordinate1] = vtxs[0].v.ob[coordinate1] + width;  
+        
+    }
+    
+    vtxs[2].v.tc[1] = textureSize << 6;
+    vtxs[3].v.tc[1] = textureSize << 6;
+    
+    vtxs[0].v.tc[1] = 0;
+    vtxs[1].v.tc[1] = 0;
+    
+    switch ((arg9 >> 5) & 3) {
+        case 2:
+            vtxs[0].v.ob[coordinate3] = (temp - arg4) - arg8;
+            vtxs[1].v.ob[coordinate3] = (temp - arg4) - arg8;
+            vtxs[3].v.ob[coordinate3] = vtxs[2].v.ob[coordinate3] = temp2 = vtxs[0].v.ob[coordinate3] - textureSize;
+            break;
+
+        case 1:
+            vtxs[0].v.ob[coordinate3] = arg4 - arg8;
+            vtxs[1].v.ob[coordinate3] = arg4 - arg8;
+            vtxs[3].v.ob[coordinate3] = vtxs[2].v.ob[coordinate3] = temp4 = vtxs[0].v.ob[coordinate3] - textureSize;
+            break;
+
+        case 3:
+            vtxs[0].v.ob[coordinate3] = (height - arg4) - arg8;
+            vtxs[1].v.ob[coordinate3] = (height - arg4) - arg8;
+            vtxs[3].v.ob[coordinate3] = vtxs[2].v.ob[coordinate3] = temp2 = vtxs[0].v.ob[coordinate3] - textureSize;
+            break;
+
+        default:
+            break;
+    }
+
+    vtxs[0].v.ob[coordinate2] = 0;
+    vtxs[1].v.ob[coordinate2] = 0;
+    vtxs[2].v.ob[coordinate2] = 0;
+    vtxs[3].v.ob[coordinate2] = 0;
+
+    vtxs[0].v.cn[0] = r;
+    vtxs[0].v.cn[1] = g;
+    vtxs[0].v.cn[2] = b;
+    vtxs[0].v.cn[3] = a;
+    
+    vtxs[1].v.cn[0] = r;
+    vtxs[1].v.cn[1] = g;
+    vtxs[1].v.cn[2] = b;
+    vtxs[1].v.cn[3] = a;
+
+    vtxs[2].v.cn[0] = r;
+    vtxs[2].v.cn[1] = g;
+    vtxs[2].v.cn[2] = b;
+    vtxs[2].v.cn[3] = a;
+    
+    vtxs[3].v.cn[0] = r;
+    vtxs[3].v.cn[1] = g;
+    vtxs[3].v.cn[2] = b;
+    vtxs[3].v.cn[3] = a;
+    
+}
 
 //INCLUDE_ASM(const s32, "system/graphic", sinfRadians);
 
