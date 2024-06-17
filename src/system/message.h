@@ -106,6 +106,24 @@ typedef struct {
 
 typedef struct {
     u32 romTextureStart;
+	u32 romTextureEnd;
+	u32 romAssetIndexStart;
+	u32 romAssetIndexEnd;
+	u32 romSpritesheetIndexStart;
+	u32 romSpritesheetIndexEnd;
+	void* vaddrTexture;
+	void* vaddrSpritesheet;
+	void* vaddrPalette;
+	void* vaddrAnimation;
+	void* vaddrSpriteToPalette;
+	void* vaddrSpritesheetIndex;
+	Vec3f coordinates;
+	u16 spriteIndex;
+} CharacterAvatar;
+
+// D_80180728
+typedef struct {
+    u32 romTextureStart;
     u32 romTextureEnd;
     u32 romIndexStart;
     u32 romIndexEnd;
@@ -118,7 +136,7 @@ typedef struct {
     Vec3f coordinates;
     u16 spriteIndex;
     u16 spriteOffset; // set from npc affection for hearts for overlayIcons
-    u8 flag; // 0x8013D58C
+    u8 flag;
     u32 padding;
 } DialogueWindow;
 
@@ -134,14 +152,14 @@ typedef struct {
     Vec4f unk_4;
     Vec4f unk_14;
     Vec4f unk_24;
-    u32 unk_34[4];
+    f32 unk_34[4];
     void *unk_44;
     void *unk_48;
     Vec3f unk_4C;
-    void *unk_58;
-    void *unk_5C; // palette ptr? func_80042014
-    u8 unk_60;
-    u8 unk_61;
+    u8 *fontTexturePtr;
+    u16 *fontPalettePtr; // palette ptr? func_80042014
+    u8 unk_60; // font related, always 0xE
+    u8 unk_61; // font related, always 0xE
     u16 unk_62;
     u16 unk_64; // passed as Volume struct
     u16 frameCounter; // 0x66
@@ -166,9 +184,9 @@ typedef struct {
     u8 flag; // 0x95
     u8 margins; // 0x96
     u8 maxLinesInBox; // 0x97
-    u8 currentLineFromTop; // 0x98
+    u8 unk_98; // 0x98, seems like currentLineFromTop, but also index into dialogue window struct
     u8 maxLinesInText; // 0x99
-    u8 charPerLineCount; // 0x9A
+    u8 unk_9A; // 0x9A, seems like charPerLineCount, but also index to character avatar struct
     u8 currentLine; // 0x9B
     u8 unk_9C;
     u8 unk_9D;
@@ -191,7 +209,7 @@ extern bool func_8003F130(u16);
 extern bool func_8003F30C(u16 dialogueIndex, u32 romIndexStart, u32 romIndexEnd, u32 romTextStart, u32 textBufferVaddr) ; 
 extern bool func_8003F0DC();  
 extern bool func_8003F360(u16, s16, u8);                           
-extern bool func_8003F464(u16, u8, u8, s32, s32);                   
+extern bool func_8003F464(u16 index, u8 arg1, u8 arg2, u8* fontTexturePtr, u16* fontPalettePtr);             
 extern bool func_8003F4E0(u16, u32, u32, u32);        
 extern bool func_8003F54C(u16, f32, f32, f32);                        
 extern bool func_8003F5D0(u16, u8, u8);                           
@@ -210,7 +228,7 @@ extern DialogueBox dialogueBoxes[MAX_DIALOGUE_BOXES];
 extern DialogueInfo dialogueInfo[MAX_DIALOGUE_BANKS];
 
 // D_801806D0
-extern DialogueSpriteType1 characterAvatars[1];
+extern CharacterAvatar characterAvatars[1];
 // D_80180728
 extern DialogueWindow dialogueWindows[3];
 // D_8013D558

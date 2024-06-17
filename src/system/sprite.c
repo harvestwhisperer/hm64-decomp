@@ -423,22 +423,16 @@ inline Gfx* func_8002A410(Gfx* dl, u16 flag) {
             gDPSetRenderMode(dl++, G_RM_AA_ZB_OPA_SURF, G_RM_NOOP2);
             break;
         case 2:
-            *dl = D_8011ECC0;
-            dl++;
-            *dl = D_8011ECC8;
-            dl++;
+            *dl++ = D_8011ECC0;
+            *dl++ = D_8011ECC8;
             break;
         case 3:
-            *dl = D_8011ECD0;
-            dl++;
-            *dl = D_8011ECD8;
-            dl++;
+            *dl++ = D_8011ECD0;
+            *dl++ = D_8011ECD8;
             break;
         case 4:
-            *dl = D_8011ECD0;
-            dl++;
-            *dl = D_8011ECE0;
-            dl++;
+            *dl++ = D_8011ECD0;
+            *dl++ = D_8011ECE0;
             break;
     }
     
@@ -540,17 +534,14 @@ Gfx* func_8002A66C(Gfx* dl, Bitmap* sprite, u16 arg2) {
 
     dl = func_8002A410(dl, (sprite->unk_54 >> 10) & (1 | 2 | 4));
 
-    *dl = D_8011ED00;
-    dl++;
-
+    *dl++ = D_8011ED00;
+    
     if (sprite->flags & 4) {
         // gsDPSetTextureFilter(G_TF_BILERP)
-        *dl = D_8011ED08;
-        dl++;
+        *dl++ = D_8011ED08;
     } else {
         // gsDPSetTextureFilter(G_TF_POINT)
-        *dl = D_8011ED10;
-        dl++;
+        *dl++ = D_8011ED10;
     }
 
     // totally cursed
@@ -617,18 +608,14 @@ Gfx* func_8002A66C(Gfx* dl, Bitmap* sprite, u16 arg2) {
         gSPVertex(&tempDl[1], (Vtx*)&bitmapVertices[gDisplayContextIndex][sprite->spriteNumber + vtxIndex][0], 4, 0);
 
         *(tempDl) = *(tempDl+1);
-        *dl = *(tempDl);
-        
-        dl++;
+        *dl++ = *(tempDl);
 
         if (sprite->unk_54 & 0x200) {
             // gsSP2Triangles(0, 1, 2, 0, 0, 2, 3, 0)
-            *dl = D_8011ED18;
-            dl++;
+            *dl++ = D_8011ED18;
         } else {
             // gsSP2Triangles(0, 2, 1, 0, 0, 3, 2, 0)
-            *dl = D_8011ED20;
-            dl++;
+            *dl++ = D_8011ED20;
         }
 
         remainingSize -= textureSize;
@@ -637,16 +624,13 @@ Gfx* func_8002A66C(Gfx* dl, Bitmap* sprite, u16 arg2) {
 
         textureDimensions += textureSize * unknownStruct.textureWidth;
 
-        *dl = D_8011ED28;
-        dl++;
+        *dl++ = D_8011ED28;
 
     } while (remainingSize);
 
-    *dl = D_8011ED30;
+    *dl++ = D_8011ED30;
 
     sprite->vtxIndex = vtxIndex;
-
-    dl++;
 
     return dl;
     
@@ -714,4 +698,5 @@ void func_8002AE58(void) {
         __assert(D_8011ED4C, D_8011ED50, 820);
         //__assert("EX", "s:/system/sprite.c", 820);
     }
+
 }
