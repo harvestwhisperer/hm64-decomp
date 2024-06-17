@@ -1148,7 +1148,41 @@ u32 func_80041B28(u16 index, u16 offset) {
 INCLUDE_ASM(const s32, "system/message", func_80041B80);
 
 // display lists, gsDPSetScissor
+#ifdef PERMUTER
+Gfx* func_80041CD8(Gfx* dl, DialogueBox* dialogueBox) {
+
+    f32 ulx, uly;
+    
+    Gfx tempDl;
+
+    *dl = D_8011EE98;
+    dl++;
+
+    *dl = D_8011EEA0;
+    dl++;
+
+    ulx = dialogueBox->unk_60 >> 1;
+
+    ulx = (((dialogueBox->unk_4C.x + 160.0f) - ulx) - ((dialogueBox->unk_92* dialogueBox->unk_60) >> 1) + ulx) - ((dialogueBox->unk_92* dialogueBox->currentLine) >> 1);
+
+    uly = dialogueBox->unk_61 >> 1;
+    
+    uly = ((((120.0f - dialogueBox->unk_4C.y) - uly) - ((dialogueBox->unk_93 * dialogueBox->unk_61) >> 1)) + uly) - ((dialogueBox->unk_93 * dialogueBox->unk_9C) >> 1);
+
+    gDPSetScissor(&tempDl, G_SC_NON_INTERLACE, ulx, uly, 
+        ulx + (dialogueBox->unk_92 * dialogueBox->unk_60) + (dialogueBox->unk_92 * dialogueBox->currentLine), 
+        uly + (dialogueBox->unk_93 * dialogueBox->unk_61) + (dialogueBox->unk_93 * dialogueBox->unk_9C));
+
+    *dl++ = tempDl;
+
+    *dl++ = D_8011EEA8;
+
+    return dl++;
+    
+}
+#else
 INCLUDE_ASM(const s32, "system/message", func_80041CD8);
+#endif
 
 // param 1: 0x80159510 + 0x10 * offset
 // Gfx* func_80042014(Gfx*, DialogueBox*, u16);

@@ -2142,12 +2142,23 @@ inline void func_8003AC14(Gfx* dl, MapBitmap* arg1) {
 // param4 = offset into map vertex array
 //INCLUDE_ASM(const s32, "system/map", func_8003ACA8);
 
-Gfx* func_8003ACA8(Gfx* dl, MainMap* map, MapBitmap* arg2, u16 vtxIndex) {
+Gfx* func_8003ACA8(Gfx* dl, MainMap* map, MapBitmap* bitmap, u16 vtxIndex) {
 
     Gfx tempDl[2];
       
-    func_800276AC((Vtx*)&D_80165500[gDisplayContextIndex][vtxIndex], arg2->width, arg2->height, arg2->height, 0, 0,
-        0, 0, 0, (0x10 | 0x40 | 0x100), map->mapFloats.groundRgba.r, map->mapFloats.groundRgba.g, map->mapFloats.groundRgba.b,
+    func_800276AC((Vtx*)&D_80165500[gDisplayContextIndex][vtxIndex], 
+        bitmap->width, 
+        bitmap->height, 
+        bitmap->height, 
+        0, 
+        0,
+        0, 
+        0, 
+        0, 
+        (0x10 | 0x40 | 0x100), 
+        map->mapFloats.groundRgba.r, 
+        map->mapFloats.groundRgba.g, 
+        map->mapFloats.groundRgba.b,
         map->mapFloats.groundRgba.a);
  
     gSPVertex(&tempDl[1], &D_80165500[gDisplayContextIndex][vtxIndex][0], 4, 0);
