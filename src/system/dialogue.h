@@ -61,7 +61,7 @@ typedef struct {
 // 0x801C3F18
 typedef struct {
 	u32 unk_0;
-	u32 unk_4;
+	u32 unk_4; // sfx index
 	u32 unk_8;
 	u16 unk_C;
 	u16 dialogueIndex; // 0xF26 // index into conversation
@@ -71,6 +71,7 @@ typedef struct {
 	u8 unk_16; // pink overlay max rows
 	u8 unk_17; // pink overlay current column
 	u8 unk_18;
+	u8 unk_19;
     u16 flags; // 0x4 = dialogue finished/closing
 } UnknownDialogueStruct2;
 

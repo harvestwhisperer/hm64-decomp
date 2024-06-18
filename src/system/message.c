@@ -256,7 +256,7 @@ bool func_8003EFD8(u16 index) {
 
 //INCLUDE_ASM(const s32, "system/message", func_8003F024);
 
-bool func_8003F024(u16 index, u8 arg1, u8 arg2, u8 arg3, u8 arg4) {
+bool func_8003F024(u16 index, u8 r, u8 g, u8 b, u8 a) {
 
     bool result = FALSE;
     
@@ -264,10 +264,10 @@ bool func_8003F024(u16 index, u8 arg1, u8 arg2, u8 arg3, u8 arg4) {
 
         if (dialogueBoxes[index].flags & 1) {
 
-            dialogueBoxes[index].unk_4.r = arg1;
-            dialogueBoxes[index].unk_4.g = arg2;
-            dialogueBoxes[index].unk_4.b = arg3;
-            dialogueBoxes[index].unk_4.a = arg4;
+            dialogueBoxes[index].unk_4.r = r;
+            dialogueBoxes[index].unk_4.g = g;
+            dialogueBoxes[index].unk_4.b = b;
+            dialogueBoxes[index].unk_4.a = a;
 
             result = TRUE;
             
@@ -371,6 +371,7 @@ bool func_8003F54C(u16 index, f32 x, f32 y, f32 z) {
     }
 
     return result;
+
 }
 
 //INCLUDE_ASM(const s32, "system/message", func_8003F5D0);
@@ -1155,11 +1156,9 @@ Gfx* func_80041CD8(Gfx* dl, DialogueBox* dialogueBox) {
     
     Gfx tempDl;
 
-    *dl = D_8011EE98;
-    dl++;
+    *dl++ = D_8011EE98;
 
-    *dl = D_8011EEA0;
-    dl++;
+    *dl++ = D_8011EEA0;
 
     ulx = dialogueBox->unk_60 >> 1;
 

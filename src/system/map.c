@@ -801,8 +801,7 @@ Vec3f *func_8003544C(Vec3f *arg0, u8 *arg1, f32 arg2, f32 arg3, u8 arg4) {
 
     Vec3f coordinates2;
 
-    f32 temp_f0;
-    f32 temp_f0_2;
+    f32 tempF;
 
     coordinates2.x = 0.0f;
     coordinates2.y = 0.0f;
@@ -810,13 +809,12 @@ Vec3f *func_8003544C(Vec3f *arg0, u8 *arg1, f32 arg2, f32 arg3, u8 arg4) {
 
     func_80027BFC(&coordinates, arg1[1], arg1[2], arg1[3], arg1[4], arg1[5], arg1[6], arg1[7], arg1[8], arg1[9]);
 
-    temp_f0 = func_80027DC0(arg2, arg3, coordinates);
-    temp_f0_2 = temp_f0;
+    tempF = func_80027DC0(arg2, arg3, coordinates);
 
-    if (func_80027E10(arg2, temp_f0_2, arg3, arg1[1], arg1[2], arg1[3], arg1[4], arg1[5], arg1[6], arg1[7], arg1[8], arg1[9])) {
+    if (func_80027E10(arg2, tempF, arg3, arg1[1], arg1[2], arg1[3], arg1[4], arg1[5], arg1[6], arg1[7], arg1[8], arg1[9])) {
 
-        if (temp_f0 != 0.0f) {
-            coordinates2.y = temp_f0;
+        if (tempF != 0.0f) {
+            coordinates2.y = tempF;
         } else {
             coordinates2.y = arg4;            
         }
@@ -825,15 +823,15 @@ Vec3f *func_8003544C(Vec3f *arg0, u8 *arg1, f32 arg2, f32 arg3, u8 arg4) {
 
         func_80027BFC(&coordinates, arg1[0xA], arg1[0xB], arg1[0xC], arg1[0xD], arg1[0xE], arg1[0xF], arg1[0x10], arg1[0x11], arg1[0x12]);
         
-        temp_f0_2 = func_80027DC0(arg2, arg3, coordinates);
+        tempF = func_80027DC0(arg2, arg3, coordinates);
         
-        if (func_80027E10(arg2, temp_f0_2, arg3, arg1[0xA], arg1[0xB], arg1[0xC], arg1[0xD], arg1[0xE], arg1[0xF], arg1[0x10], arg1[0x11], arg1[0x12])) {
-            if (temp_f0_2 != 0.0f) {
-                coordinates2.y = temp_f0_2;
+        if (func_80027E10(arg2, tempF, arg3, arg1[0xA], arg1[0xB], arg1[0xC], arg1[0xD], arg1[0xE], arg1[0xF], arg1[0x10], arg1[0x11], arg1[0x12])) {
+            if (tempF != 0.0f) {
+                coordinates2.y = tempF;
             } else {
                 coordinates2.y = arg4;
             }
-        } else if (func_800284E8(arg2, temp_f0_2, arg3, coordinates) < 0.0f) {
+        } else if (func_800284E8(arg2, tempF, arg3, coordinates) < 0.0f) {
             coordinates2.y = arg1[0];
         } else {
             coordinates2.y = arg4;
@@ -2136,10 +2134,6 @@ inline void func_8003AC14(Gfx* dl, MapBitmap* arg1) {
     
 }
  
-// param1: Gfx* 8020DE78
-// param2: MainMap*
-// param3: mapBitmap*, 8014318C
-// param4 = offset into map vertex array
 //INCLUDE_ASM(const s32, "system/map", func_8003ACA8);
 
 Gfx* func_8003ACA8(Gfx* dl, MainMap* map, MapBitmap* bitmap, u16 vtxIndex) {

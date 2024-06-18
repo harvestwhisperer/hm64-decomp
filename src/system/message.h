@@ -100,7 +100,7 @@ typedef struct {
     u32 unk_20;
     Vec3f coordinates;
     u16 spriteIndex;
-    u16 spriteOffset; // set from npc affection for hearts for overlayIcons
+    u16 spriteOffset;
     u8 flag; // 0x8013D58C
 } DialogueSpriteType2;
 
@@ -135,7 +135,7 @@ typedef struct {
     u32 unused[0x11];
     Vec3f coordinates;
     u16 spriteIndex;
-    u16 spriteOffset; // set from npc affection for hearts for overlayIcons
+    u16 spriteOffset;
     u8 flag;
     u32 padding;
 } DialogueWindow;
@@ -155,7 +155,7 @@ typedef struct {
     f32 unk_34[4];
     void *unk_44;
     void *unk_48;
-    Vec3f unk_4C;
+    Vec3f unk_4C; // shrink factor
     u8 *fontTexturePtr;
     u16 *fontPalettePtr; // palette ptr? func_80042014
     u8 unk_60; // font related, always 0xE
@@ -216,13 +216,16 @@ extern bool func_8003F5D0(u16, u8, u8);
 extern bool func_8003F630(u16, u8, u8);                           
 extern bool func_8003F690(u16, u8, u8, u8);    
 extern bool func_8003F80C(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextureEnd, u32 romIndexStart, u32 romIndexEnd, void* vaddrTextureStart, void* vaddrTextureEnd, void* vaddrIndexStart, void* vaddrIndexEnd, u32 argA, u16 spriteOffset, u8 flag, f32 x, f32 y, f32 z);                    
+extern bool func_8003F910(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextureEnd, u32 romIndexStart, u32 romIndexEnd, void* vaddrTextureStart, void* vaddrTextureEnd, void* vaddrIndexStart, void* vaddrIndexEnd, u32 argA, u16 offset, u8 flag, f32 x, f32 y, f32 z);
 extern bool func_8003FAF8(u16, u16);                              
 extern bool func_8003FB4C(u16, u16);                      
 extern bool func_8003FBA0(u16, u8*, s8);  
-u8 func_8003FBD8(u16 index, u32 arg1, u8 arg2);
-extern bool func_8003F910(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextureEnd, u32 romIndexStart, u32 romIndexEnd, void* vaddrTextureStart, void* vaddrTextureEnd, void* vaddrIndexStart, void* vaddrIndexEnd, u32 argA, u16 offset, u8 flag, f32 x, f32 y, f32 z);
+extern u8 func_8003FBD8(u16 index, u32 arg1, u8 arg2);
+extern bool func_8003FE9C(u16 index);
+extern bool func_8003FFF4(u16 index);
 extern void func_80042634();
 extern void func_80045CB0();
+
 
 extern DialogueBox dialogueBoxes[MAX_DIALOGUE_BOXES];
 extern DialogueInfo dialogueInfo[MAX_DIALOGUE_BANKS];

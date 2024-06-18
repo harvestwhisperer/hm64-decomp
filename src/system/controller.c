@@ -12,11 +12,9 @@ void func_8004D47C(u8);
 // bss
 extern u16 D_80182FBA;
 extern u16 D_801FADB0;
-
-//Controller gControllers[NU_CONT_MAXCONTROLLERS];
-
-// likely bss (or gameStatus.c)
+// used by gameStatus.c
 extern u8 contPattern;
+
 
 //INCLUDE_ASM(const s32, "system/controller", controllerInit);
 
@@ -63,6 +61,7 @@ void controllerInit(void) {
     D_801FADB0 = 0x10;
 
     contPattern = nuContInit();
+    
 }
 
 //INCLUDE_ASM(const s32, "system/controller", func_8004CF68);
@@ -193,22 +192,24 @@ u8 func_8004D458(u8 contIndex) {
     return controllers[contIndex].sticks.u_stick_y;
 }
 
-#ifdef PERMUTER
+//INCLUDE_ASM(const s32, "system/controller", func_8004D47C);
+
 void func_8004D47C(u8 controllerIndex) {
 
     volatile Sticks sticks;
-    u8 temp4;
 
     sticks.s_stick_x = controllers[controllerIndex].sticks.s_stick_x;
     sticks.s_stick_y = controllers[controllerIndex].sticks.s_stick_y;
 
-    sticks.u_stick_x = getAbsoluteValue((s32)sticks.s_stick_x) / 10;
-    sticks.u_stick_y = getAbsoluteValue((s32)sticks.s_stick_y) / 10;
+    sticks.u_stick_x = (s16)(getAbsoluteValue((s32)sticks.s_stick_x)) / 10;
+    sticks.u_stick_y = (s16)(getAbsoluteValue((s32)sticks.s_stick_y)) / 10;
     
     controllers[controllerIndex].sticks.u_stick_x = 0;
 
     if (sticks.u_stick_x < 3 && sticks.u_stick_y < 3) {
+        
         controllers[controllerIndex].sticks.u_stick_x = 0xFF;
+        
     } else {
         
         if (sticks.u_stick_x > sticks.u_stick_y) {
@@ -236,7 +237,7 @@ void func_8004D47C(u8 controllerIndex) {
     
             }
             
-            temp4 = sticks.u_stick_x;
+            controllers[controllerIndex].sticks.u_stick_y = sticks.u_stick_x;
             
         } else {
 
@@ -245,38 +246,35 @@ void func_8004D47C(u8 controllerIndex) {
             if ((sticks.u_stick_y >> 1) < controllers[controllerIndex].sticks.u_stick_y) {
                 if ((sticks.s_stick_y << 0x18) < 0) {
                     controllers[controllerIndex].sticks.u_stick_x = 0;
-                    goto label;
-                } else if ((sticks.s_stick_x << 0x18) < 0) {
-                    if ((sticks.s_stick_y << 0x18) < 0) {
-                        controllers[controllerIndex].sticks.u_stick_x = 1;
-                    } else {
-                        controllers[controllerIndex].sticks.u_stick_x = 3;
-                    }
                 } else {
-                    if ((sticks.s_stick_y << 0x18) < 0) { 
-                        controllers[controllerIndex].sticks.u_stick_x = 7;
-                    } else {
-                        controllers[controllerIndex].sticks.u_stick_x = 5;
-                    }
+                    controllers[controllerIndex].sticks.u_stick_x = 4;
+                } 
+            } else if ((sticks.s_stick_x << 0x18) < 0) {
+                if ((sticks.s_stick_y << 0x18) < 0) {
+                    controllers[controllerIndex].sticks.u_stick_x = 1;
+                } else {
+                    controllers[controllerIndex].sticks.u_stick_x = 3;
+                }
+            } else {
+                if ((sticks.s_stick_y << 0x18) < 0) { 
+                    controllers[controllerIndex].sticks.u_stick_x = 7;
+                } else {
+                    controllers[controllerIndex].sticks.u_stick_x = 5;
                 }
             }
+    
+            controllers[controllerIndex].sticks.u_stick_y = sticks.u_stick_y;
             
         }
-
-label:
-        controllers[controllerIndex].sticks.u_stick_y = sticks.u_stick_y;
-    }
+     }
     
     if (controllers[controllerIndex].sticks.u_stick_y >= 7) {
         controllers[controllerIndex].sticks.u_stick_y = 6;
     }
     
-    controllers[controllerIndex].button |= 1U << controllers[controllerIndex].sticks.u_stick_x; 
+    controllers[controllerIndex].button |= (0x10000 << (controllers[controllerIndex].sticks.u_stick_x)); 
    
 }
-#else
-INCLUDE_ASM(const s32, "system/controller", func_8004D47C);
-#endif
 
 //INCLUDE_ASM(const s32, "system/controller", func_8004D788);
 

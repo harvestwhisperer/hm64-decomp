@@ -486,7 +486,7 @@ void initializeFarmAnimal(u8 animalIndex) {
 void initializeDog(void) {
 
     dogInfo.location = FARM;
-    dogInfo.coordinates.y = 0;
+    dogInfo.coordinates.y = 0.0f;
     dogInfo.unk_17 = 0;
     dogInfo.direction = 0;
     dogInfo.affection = 0; 
@@ -502,8 +502,9 @@ void initializeDog(void) {
 //INCLUDE_ASM(const s32, "animals", initializeHorse);
 
 void initializeHorse(void) {
+    
     horseInfo.location = FARM;
-    horseInfo.coordinates.y = 0;
+    horseInfo.coordinates.y = 0.0f;
     horseInfo.unk_17 = 0;
     horseInfo.direction = 0;
     horseInfo.unk_19 = 0;
@@ -515,6 +516,7 @@ void initializeHorse(void) {
     horseInfo.flags = 1;
     horseInfo.coordinates.x = -240.0f;
     horseInfo.coordinates.z = -384.0f;
+
 }
 
 //INCLUDE_ASM(const s32, "animals", setAnimalLocations);
@@ -643,7 +645,7 @@ void func_8008C208(void) {
         }
         
         setSpriteDirection(dogInfo.spriteIndex, (dogInfo.direction + 8 - getCurrentMapRotation(MAIN_MAP_INDEX)) % 8);
-        func_80028520(&vec, dogInfo.unk_19, dogInfo.direction, 0);
+        func_80028520(&vec, dogInfo.unk_19, dogInfo.direction, 0.0f);
         func_8002FE10(dogInfo.spriteIndex, vec.x, vec.y, vec.z, dogInfo.unk_19);
     } 
     
@@ -710,7 +712,7 @@ void func_80093B80(void) {
         }
         
         setSpriteDirection(horseInfo.spriteIndex, (horseInfo.direction + 8 - getCurrentMapRotation(MAIN_MAP_INDEX)) % 8);
-        func_80028520(&vec, horseInfo.unk_19, horseInfo.direction, 0);
+        func_80028520(&vec, horseInfo.unk_19, horseInfo.direction, 0.0f);
         func_8002FE10(horseInfo.spriteIndex, vec.x, vec.y, vec.z, horseInfo.unk_19);
 
     } 

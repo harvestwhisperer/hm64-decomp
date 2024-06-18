@@ -115,9 +115,7 @@ Gfx* func_800293C0(Gfx* dl, WorldMatrices* arg1) {
     f32 cosXPrevious;
     f32 cosYPrevious;
     
-    f32 x;
-    f32 y;
-    f32 z;
+    f32 x, y, z;
     f32 rotatedX;
     f32 rotatedY;
     f32 tempZ;
@@ -242,4 +240,5 @@ Gfx* func_800293C0(Gfx* dl, WorldMatrices* arg1) {
     }
     
     return dl++;
+    
 }

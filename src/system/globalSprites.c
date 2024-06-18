@@ -53,9 +53,9 @@ void initializeGlobalSprites(void) {
     }
 }
 
-// wrapper for nuPiReadRom
 //INCLUDE_ASM(const s32, "system/globalSprites", func_8002B138);
 
+// wrapper for nuPiReadRom
 bool func_8002B138(u16 index, u32 romTextureStart, u32 romTextureEnd, u32 romAssetIndexStart, u32 romAssetIndexEnd, 
     u32 romSpritesheetIndexStart, u32 romSpritesheetIndexEnd, u8* texture1Vaddr, u8* texture2Vaddr, u16* paletteVaddr, u16* animationVaddr, 
     u8* spriteToPaletteVaddr, u32* spritesheetIndexVaddr, u8 assetType, u8 flag) {
@@ -536,8 +536,29 @@ bool adjustSpriteShrinkFactor(u16 index, f32 x, f32 y, f32 z) {
 
 }
 
-// rgba
-INCLUDE_ASM(const s32, "system/globalSprites", func_8002BF4C);
+//INCLUDE_ASM(const s32, "system/globalSprites", adjustSpriteScale);
+
+// unused
+bool adjustSpriteScale(u16 index, f32 x, f32 y, f32 z) {
+
+    bool result = FALSE;
+    
+    if (index < MAX_ACTIVE_SPRITES) {
+
+        if (globalSprites[index].flags2 & 1) {
+
+            globalSprites[index].scale.x += x;
+            globalSprites[index].scale.y += y;
+            globalSprites[index].scale.z += z;
+            
+            result = TRUE;
+
+        }
+    }
+
+    return result;
+    
+}
 
 //INCLUDE_ASM(const s32, "system/globalSprites", func_8002C000);
 
@@ -715,9 +736,56 @@ bool func_8002C680(u16 index, u16 arg1, u16 arg2) {
 
 }
 
-INCLUDE_ASM(const s32, "system/globalSprites", func_8002C6F8);
+//INCLUDE_ASM(const s32, "system/globalSprites", func_8002C6F8);
 
-INCLUDE_ASM(const s32, "system/globalSprites", func_8002C768);
+bool func_8002C6F8(u16 index, u16 arg1) {
+    
+    int temp;
+
+    bool result = FALSE;
+    
+    if (index < MAX_ACTIVE_SPRITES) {
+        
+        if (globalSprites[index].flags2 & 1) {
+            
+            globalSprites[index].flags1 &= ~(0x80 | 0x100);
+            temp = arg1 << 7;
+            globalSprites[index].flags1 |= temp;
+            
+            result = TRUE;
+
+        }
+    }
+    
+    return result;
+
+}
+
+//INCLUDE_ASM(const s32, "system/globalSprites", func_8002C768);
+
+bool func_8002C768(u16 index, u16 arg1) {
+
+    bool result = FALSE;
+    
+    if (index < MAX_ACTIVE_SPRITES) {
+        
+        if (globalSprites[index].flags2 & 1) {
+
+            if (arg1) {
+                globalSprites[index].flags1 |= 0x200;
+            } else {
+                globalSprites[index].flags1 &= ~0x200;
+            }
+
+
+            result = TRUE;
+
+        }
+    }
+    
+    return result;
+    
+}
 
 //INCLUDE_ASM(const s32, "system/globalSprites", func_8002C7EC);
 
@@ -725,7 +793,7 @@ bool func_8002C7EC(u16 index, u16 arg1) {
     
     int temp;
 
-    u8 result = FALSE;
+    bool result = FALSE;
     
     if (index < MAX_ACTIVE_SPRITES) {
         
@@ -824,7 +892,7 @@ bool func_8002CAA8(u16 index, u8 a) {
 
 bool func_8002CB24(u16 index, u8 flag) {
 
-    u8 result = FALSE;
+    bool result = FALSE;
 
     if (index < MAX_ACTIVE_SPRITES) {
         
@@ -1062,6 +1130,7 @@ u16* func_8002CD4C(u16 arg0, u16* arg1) {
     }
     
     return arg1;
+
 }
 
 //INCLUDE_ASM(const s32, "system/globalSprites", func_8002CDB4);
