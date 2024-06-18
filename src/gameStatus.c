@@ -92,10 +92,10 @@ void handleWifeMorningHelp(void) {
                 if (temp) {
                     // weeding
                     func_80063D38();
-                    break;
+                } else {
+                    // eggs
+                    func_80063E18();
                 }
-                // eggs
-                func_80063E18();
             } 
             break;
 
@@ -104,9 +104,9 @@ void handleWifeMorningHelp(void) {
             if (!getRandomNumberInRange(0,  (5 - npcAffection[POPURI] / 50))) {
                 if (temp) {
                     func_80063F3C();
-                    break;
+                } else {
+                    func_80063E18();
                 }
-                func_80063E18();
             } 
             break;
 
@@ -115,9 +115,9 @@ void handleWifeMorningHelp(void) {
             if (!getRandomNumberInRange(0,  (5 - npcAffection[ELLI] / 50))) {
                 if (temp) {
                     func_80064048();
-                    break;
+                } else {
+                    func_80063E18();
                 }
-                func_80063E18();
             } 
             break;       
 
@@ -127,8 +127,9 @@ void handleWifeMorningHelp(void) {
                 if (temp) {
                     func_80064048();
                     break;
+                } else {
+                    func_80063E18();
                 }
-                func_80063E18();
             } 
             break;
 
@@ -303,7 +304,7 @@ u32 checkSpecialDialogueBit(u16 bitIndex) {
 
 void func_8006523C(u16 bitIndex) {
     u32 temp = bitIndex;
-    return readMailBits[temp >> 5] |= (1 << (temp & 0x1F));
+    readMailBits[temp >> 5] |= (1 << (temp & 0x1F));
 }
 
 //INCLUDE_ASM(const s32, "gameStatus", toggleReadLetterBit);
@@ -331,7 +332,7 @@ void setMail(u16 bitIndex) {
 
 void func_80065308(u16 bitIndex) {
     u32 temp = bitIndex;
-    return mailboxBits[temp >> 5] &= ~(1 << (temp & 0x1F));
+    mailboxBits[temp >> 5] &= ~(1 << (temp & 0x1F));
 }
 
 //INCLUDE_ASM(const s32, "gameStatus", func_80065340);
@@ -343,25 +344,27 @@ u32 func_80065340(u16 bitIndex) {
 
 #ifdef PERMUTER
 u8 func_8006536C(void) {
-
+    
     u8 result = 0xFF;
     u8 i;
     u32 temp;
+    u32 temp1, temp2, temp3;
 
     for (i = 0; i < 0x50 && result == 0xFF; i++) {
 
         temp = i;
 
-        if (mailboxBits[temp >> 5] & 1 << (temp & 0x1F)) {
-            
-            mailboxBits[temp] &= ~(1 << (temp & 0x1F));
-            readMailBits[temp >> 5] |= 1 << (temp & 0x1F);
-            
-            result = i;
-        }
+        temp1 = temp >> 5;
+        temp2 = 1 << (temp & 0x1F);
 
-        i++;
-        
+        if (mailboxBits[temp1] & temp2) {
+            
+            mailboxBits[temp1] &= ~mailboxBits[temp2];
+            readMailBits[temp1] |= temp2;
+                
+            result = i;
+            
+        }         
     } 
     
     return result;

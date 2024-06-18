@@ -118,6 +118,7 @@ void func_800E1380(u8 controllerPakEnabled) {
     func_800E16D0(1, loadGameScreenContext.diaryHighlighted);
     
     setMainLoopCallbackFunctionIndex(SELECT_GAME);
+    
 }
 
 INCLUDE_ASM(const s32, "loadGameScreen", func_800E16A0);

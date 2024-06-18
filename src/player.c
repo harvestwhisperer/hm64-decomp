@@ -980,7 +980,7 @@ void func_80068DFC(void) {
 
             setSpriteDirection(PLAYER, (gPlayer.direction + 8 - getCurrentMapRotation(MAIN_MAP_INDEX)) % 8);
 
-            func_80028520(&vec, 1.0f, gPlayer.direction, 0);
+            func_80028520(&vec, 1.0f, gPlayer.direction, 0.0f);
 
             gPlayer.currentCoordinates = vec;
 
@@ -1036,7 +1036,7 @@ void func_80069830(void) {
             gPlayer.direction = 4;
             gPlayer.unk_6F = 0x12;
             gPlayer.animationState++;
-            func_80028520(&vec, 4.0f, 4, 0);
+            func_80028520(&vec, 4.0f, 4, 0.0f);
             gPlayer.currentCoordinates = vec;
             setSpriteDirection(PLAYER, (gPlayer.direction + 8 - getCurrentMapRotation(MAIN_MAP_INDEX)) % 8);
             gPlayer.action2 = 2;
@@ -1088,7 +1088,7 @@ void func_80069830(void) {
                 gPlayer.direction = 0;
                 gPlayer.unk_6F = 0x12;
                 
-                func_80028520(&vec2, 4.0f, 0, 0);
+                func_80028520(&vec2, 4.0f, 0, 0.0f);
                 
                 gPlayer.currentCoordinates = vec2;
                 

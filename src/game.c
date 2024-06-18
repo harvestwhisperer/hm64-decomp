@@ -1136,14 +1136,19 @@ void func_8005CEFC(void) {
 
 //INCLUDE_ASM(const s32, "game", func_8005CF4C);
 
+// unused main loop callback functions
+// ends cutscene
 void func_8005CF4C(void) {
 
+    // unused variable
     if (D_801FB686 == 0) {
         setMainLoopCallbackFunctionIndex(MAIN_GAME);
         func_8002F730();
+        // cutscene map flags
         func_80046CF4();
         func_8002FCB4(PLAYER, 1);
     }
+
 }
 
 // jtbl_8011F010, 0xFA410

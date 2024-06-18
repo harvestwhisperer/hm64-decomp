@@ -5,8 +5,8 @@
 #include "gameAudio.h"
 
 // rodata
-extern f64 minSfxFrequency;
-extern f64 maxSfxFrequency;
+#define MIN_SFX_FREQUENCY (double)-6
+#define MAX_SFX_FREQUENCY (double)6
 
 //INCLUDE_ASM(const s32, "system/audio", initializeAudio);
 
@@ -140,6 +140,7 @@ bool setSong(u16 songIndex, u8 *songAddrStart, u8 *songAddrEnd) {
     } 
 
     return result;
+
 }
 
 //INCLUDE_ASM(const s32, "system/audio", setSongSpeed);
@@ -161,6 +162,7 @@ bool setSongSpeed(u16 index, u32 speed) {
     }
     
     return result;
+
 }
 
 //INCLUDE_ASM(const s32, "system/audio", stopSong);
@@ -183,6 +185,7 @@ bool stopSong(u16 songIndex) {
     }
     
     return result;
+
 }
 
 //INCLUDE_ASM(const s32, "system/audio", setSongVolumes);
@@ -213,6 +216,7 @@ bool setSongVolumes(u16 index, s32 maxVolume, s16 arg2) {
     }
 
     return result;
+
 }
 
 //INCLUDE_ASM(const s32, "system/audio", func_8003D4E4);
@@ -268,6 +272,7 @@ bool func_8003D570(u16 songIndex, s32 arg1) {
     }
 
     return result;
+
 }
 
 //INCLUDE_ASM(const s32, "system/audio", stopMusic);
@@ -334,6 +339,7 @@ bool func_8003D6A8(u32 sfxIndex) {
     }
     
     return result;
+
 }
 
 //INCLUDE_ASM(const s32, "system/audio", setSfxVolume);
@@ -364,23 +370,13 @@ bool setSfxVolume(u32 sfxIndex, s32 volume) {
         }
     }
 
-    return result;    
+    return result;
+
 }
 
-INCLUDE_ASM(const s32, "system/audio", setSfxFrequency);
+//INCLUDE_ASM(const s32, "system/audio", setSfxFrequency);
 
-// FIXME: not matching with rodata declarations
-/*
 bool setSfxFrequency(u32 sfxIndex, s32 frequency) {
-
-    static const double minSfxFrequency = -6;
-    static const double maxSfxFrequency = 6;
-
-//     dlabel minSfxFrequency
-//  FA200 8011EE00 C018000000000000 .double -6
-
-// dlabel maxSfxFrequency
-//  FA208 8011EE08 4018000000000000 .double 6
 
     u16 i = 0;
     bool result = FALSE;
@@ -388,23 +384,29 @@ bool setSfxFrequency(u32 sfxIndex, s32 frequency) {
     for (i = 0; i < MAX_ACTIVE_SFX; i++) {
 
         if (gSfx[i].flags & 1) {
+
             if (gSfx[i].sfxIndex == sfxIndex) {
+
                 gSfx[i].frequency = frequency;
-                if (frequency < minSfxFrequency) {
+
+                if (frequency < MIN_SFX_FREQUENCY) {
                     gSfx[i].frequency = -6;
                 }
-                result = TRUE;
-                if (gSfx[i].frequency > maxSfxFrequency) {
+
+
+                if (gSfx[i].frequency > MAX_SFX_FREQUENCY) {
                     gSfx[i].frequency = 6;
                 }
+
+                result = TRUE;
+
             }
         }
-        
     }
     
     return result;
+
 }
-*/
 
 //INCLUDE_ASM(const s32, "system/audio", setSfxPan);
 
@@ -435,6 +437,7 @@ bool setSfxPan(u32 sfxIndex, s32 arg1) {
     }
 
     return result;
+
 }
 
 //INCLUDE_ASM(const s32, "system/audio", stopSoundEffect);

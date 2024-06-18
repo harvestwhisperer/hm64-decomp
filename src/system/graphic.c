@@ -260,6 +260,7 @@ void setBitmapFormat(Bitmap *sprite, Texture *timg, u16 *palette) {
           sprite->pixelSize = G_IM_SIZ_4b; 
           break;
     }
+
 }
 
 // alternate with timg as array
@@ -345,6 +346,7 @@ Gfx* func_80026F88(Gfx* dl, Bitmap* sprite, u32 offset, u16 height) {
 
 //INCLUDE_ASM(const s32, "system/graphic", func_800276AC);
 
+// sprite vertices/texture coordinates
 void func_800276AC(Vtx vtxs[], u16 width, u16 height, u16 textureSize, u16 arg4, u16 arg5, u16 arg6, u16 arg7, s16 arg8, u16 arg9, u8 r, u8 g, u8 b, u8 a) {
     
     u8 coordinate1;
@@ -359,20 +361,18 @@ void func_800276AC(Vtx vtxs[], u16 width, u16 height, u16 textureSize, u16 arg4,
     switch ((arg9 >> 7) & 3) {
         case 2:
             coordinate1 = 0;
-            coordinate3 = 1;
-            coordinate2 = 2;
+            coordinate2 = 1;
+            coordinate3 = 2;
             break;
 
         case 3:
             coordinate1 = 0;
-            coordinate3 = 2;
-            coordinate2 = 1;
+            coordinate2 = 2;
+            coordinate3 = 1;
             break;
 
         case 0:
-
         case 1:
-
         default:
             break;
     }
@@ -381,6 +381,7 @@ void func_800276AC(Vtx vtxs[], u16 width, u16 height, u16 textureSize, u16 arg4,
     temp3 = width >> 1;
     
     if (arg5) {
+
         vtxs[0].v.tc[0] = width << 6;
         vtxs[3].v.tc[0] = width << 6;
         
@@ -415,31 +416,32 @@ void func_800276AC(Vtx vtxs[], u16 width, u16 height, u16 textureSize, u16 arg4,
     
     switch ((arg9 >> 5) & 3) {
         case 2:
-            vtxs[0].v.ob[coordinate3] = (temp - arg4) - arg8;
-            vtxs[1].v.ob[coordinate3] = (temp - arg4) - arg8;
-            vtxs[3].v.ob[coordinate3] = vtxs[2].v.ob[coordinate3] = temp2 = vtxs[0].v.ob[coordinate3] - textureSize;
+            vtxs[0].v.ob[coordinate2] = (temp - arg4) - arg8;
+            vtxs[1].v.ob[coordinate2] = (temp - arg4) - arg8;
+            vtxs[3].v.ob[coordinate2] = vtxs[2].v.ob[coordinate2] = temp2 = vtxs[0].v.ob[coordinate2] - textureSize;
             break;
 
         case 1:
-            vtxs[0].v.ob[coordinate3] = arg4 - arg8;
-            vtxs[1].v.ob[coordinate3] = arg4 - arg8;
-            vtxs[3].v.ob[coordinate3] = vtxs[2].v.ob[coordinate3] = temp4 = vtxs[0].v.ob[coordinate3] - textureSize;
+            vtxs[0].v.ob[coordinate2] = arg4 - arg8;
+            vtxs[1].v.ob[coordinate2] = arg4 - arg8;
+            vtxs[3].v.ob[coordinate2] = vtxs[2].v.ob[coordinate2] = temp4 = vtxs[0].v.ob[coordinate2] - textureSize;
             break;
 
         case 3:
-            vtxs[0].v.ob[coordinate3] = (height - arg4) - arg8;
-            vtxs[1].v.ob[coordinate3] = (height - arg4) - arg8;
-            vtxs[3].v.ob[coordinate3] = vtxs[2].v.ob[coordinate3] = temp2 = vtxs[0].v.ob[coordinate3] - textureSize;
+            vtxs[0].v.ob[coordinate2] = (height - arg4) - arg8;
+            vtxs[1].v.ob[coordinate2] = (height - arg4) - arg8;
+            vtxs[3].v.ob[coordinate2] = vtxs[2].v.ob[coordinate2] = temp2 = vtxs[0].v.ob[coordinate2] - textureSize;
             break;
 
         default:
             break;
+
     }
 
-    vtxs[0].v.ob[coordinate2] = 0;
-    vtxs[1].v.ob[coordinate2] = 0;
-    vtxs[2].v.ob[coordinate2] = 0;
-    vtxs[3].v.ob[coordinate2] = 0;
+    vtxs[0].v.ob[coordinate3] = 0;
+    vtxs[1].v.ob[coordinate3] = 0;
+    vtxs[2].v.ob[coordinate3] = 0;
+    vtxs[3].v.ob[coordinate3] = 0;
 
     vtxs[0].v.cn[0] = r;
     vtxs[0].v.cn[1] = g;
@@ -478,6 +480,7 @@ f32 cosfRadians(f32 angle) {
 //INCLUDE_ASM(const s32, "system/graphic", func_80027950);
 
 // 3D rotation
+// sprites
 void func_80027950(Vec3f arg0, Vec3f* arg1, Vec3f arg2) {
     
     f32 sinX;
@@ -570,6 +573,7 @@ void func_80027B74(Vec3f arg0, Vec3f* arg1, f32 arg2, f32 arg3, f32 arg4, f32 ar
 
 //INCLUDE_ASM(const s32, "system/graphic", func_80027BFC);
 
+// only used by map
 Coordinates* func_80027BFC(Coordinates* arg0, f32 arg1, f32 arg2, f32 arg3, f32 arg4, f32 arg5, f32 arg6, f32 arg7, f32 arg8, f32 arg9) {
     
     Coordinates vec;
@@ -669,6 +673,7 @@ static inline Coordinates func_80027BFC_static_inline(Coordinates* arg0, f32 arg
 
 //INCLUDE_ASM(const s32, "system/graphic", func_80027DC0);
 
+// only used by map
 f32 func_80027DC0(f32 arg0, f32 arg1, Coordinates vec) {
 
     f32 result;
@@ -685,6 +690,7 @@ f32 func_80027DC0(f32 arg0, f32 arg1, Coordinates vec) {
 
 //INCLUDE_ASM(const s32, "system/graphic", func_80027E10);
 
+// only used by map
 u8 func_80027E10(f32 arg0, f32 arg1, f32 arg2, f32 arg3, f32 arg4, f32 arg5, f32 arg6, f32 arg7, f32 arg8, f32 arg9, f32 argA, f32 argB) {
 
     Coordinates coordinates;
@@ -709,7 +715,7 @@ u8 func_80027E10(f32 arg0, f32 arg1, f32 arg2, f32 arg3, f32 arg4, f32 arg5, f32
         count++;
     }
     
-    count = count / 3;
+    count /= 3;
     
     return count;
     
@@ -907,6 +913,7 @@ Gfx* initRcp(Gfx* dl) {
     gSPDisplayList(dl++, OS_K0_TO_PHYSICAL(setup_rdpstate));
 
     return dl++;
+
 }
 
 //INCLUDE_ASM(const s32, "system/graphic", clearFramebuffer);
@@ -916,7 +923,7 @@ Gfx* clearFramebuffer(Gfx* dl) {
     gDPSetDepthImage(dl++, OS_K0_TO_PHYSICAL(nuGfxZBuffer));
     gDPPipeSync(dl++);
     gDPSetCycleType(dl++, G_CYC_FILL);
-    gDPSetColorImage(dl++, G_IM_FMT_RGBA, G_IM_SIZ_16b,SCREEN_WD, OS_K0_TO_PHYSICAL(nuGfxZBuffer));
+    gDPSetColorImage(dl++, G_IM_FMT_RGBA, G_IM_SIZ_16b, SCREEN_WD, OS_K0_TO_PHYSICAL(nuGfxZBuffer));
     gDPSetFillColor(dl++,(GPACK_ZDZ(G_MAXFBZ,0) << 16 | GPACK_ZDZ(G_MAXFBZ,0)));
     gDPFillRectangle(dl++, 0, 0, SCREEN_WD-1, SCREEN_HT-1);
     gDPPipeSync(dl++);
@@ -955,6 +962,7 @@ Gfx* func_80028A64(Gfx* dl, Camera* camera, WorldMatrices* matrices) {
     gSPMatrix(dl++, &matrices->viewing, G_MTX_NOPUSH | G_MTX_MUL | G_MTX_PROJECTION);
 
     return dl++;
+
 }
 
 //INCLUDE_ASM(const s32, "system/graphic", func_80028C00);
@@ -989,57 +997,70 @@ Gfx* func_80028C00(Gfx* dl, Camera* camera) {
 //INCLUDE_ASM(const s32, "system/graphic", setCameraOrthographicValues);
 
 void setCameraOrthographicValues(Camera* camera, f32 l, f32 r, f32 t, f32 b, f32 n, f32 f) {
+    
     camera->l = l;
     camera->r = r;
     camera->t = t;
     camera->b = b;
     camera->n = n;
     camera->f = f;
+
 }
 
 //INCLUDE_ASM(const s32, "system/graphic", setCameraPerspectiveValues);
 
 void setCameraPerspectiveValues(Camera* camera, f32 fov, f32 aspect, f32 near, f32 far) {
+
     camera->fov = fov;
     camera->aspect = aspect;
     camera->near = near;
     camera->far = far;
+
 }
 
 //INCLUDE_ASM(const s32, "system/graphic", setCameraLookAt);
 
-void setCameraLookAt (Camera* camera, f32 xEye, f32 yEye, f32 zEye, f32 atX, f32 atY, f32 atZ, f32 upX, f32 upY, f32 upZ) {
+void setCameraLookAt(Camera* camera, f32 xEye, f32 yEye, f32 zEye, f32 atX, f32 atY, f32 atZ, f32 upX, f32 upY, f32 upZ) {
+
     camera->eye.x = xEye;
     camera->eye.y = yEye;
     camera->eye.z = zEye;
+
     camera->at.x = atX;
     camera->at.y = atY;
     camera->at.z = atZ;
+    
     camera->up.x = upX;
     camera->up.y = upY;
     camera->up.z = upZ;
+
 }
 
 //INCLUDE_ASM(const s32, "system/graphic", func_80028E14);
 
+// unused
 inline Gfx *func_80028E14(Gfx* dl, u8 a, u8 r, u8 g, u8 b) {
 
     gSPLightColor(dl++, LIGHT_2, (r << 0x18) + (g << 0x10) + (b << 8));
 
     return dl++;
+
 }
 
 //INCLUDE_ASM(const s32, "system/graphic", func_80028E60);
 
+// unused
 inline Gfx *func_80028E60(Gfx* dl, u8 a, u8 r, u8 g, u8 b) {
 
     gSPLightColor(dl++, LIGHT_1, (r << 0x18) + (g << 0x10) + (b << 8));
 
     return dl++;
+
 }
 
 //INCLUDE_ASM(const s32, "system/graphic", func_80028EA8);
 
+// unused
 void func_80028EA8(UnknownGraphicsStruct* arg0, u8 arg1, u8 arg2, u8 arg3) {
     arg0->unk_10 = arg1;
     arg0->unk_11 = arg2;
@@ -1063,6 +1084,7 @@ void setInitialWorldRotationAngles(f32 x, f32 y, f32 z) {
 
 //INCLUDE_ASM(const s32, "system/graphic", func_80028EF8);
 
+// mapContext.c --> increments/decrements 6 by 1
 void func_80028EF8(f32 x, f32 y, f32 z) {
     currentWorldRotationAngles.x += x;
     currentWorldRotationAngles.y += y;

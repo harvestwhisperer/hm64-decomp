@@ -1,5 +1,6 @@
 #include "common.h"
 
+#include "system/controller.h" 
 #include "system/dialogue.h"
 #include "system/message.h"
 #include "system/sprite.h"
@@ -19,6 +20,8 @@ extern u32* specialDialogueBitsPointer;
 // forward declarations
 extern u32 func_80043C98(u16, u16);
 extern void func_80043B84(u16);
+extern void func_800449C4(u16 index);
+extern void func_80044BF4(u16 index);
 extern void func_80044D78(u16);
 extern void func_80045260(u16);
 
@@ -553,13 +556,158 @@ u32 func_80043E94(u16 bitIndex) {
 
 INCLUDE_ASM(const s32, "system/dialogue", func_80043EC8);
 
+#ifdef PERMUTER
+void func_80044684(u16 index) {
+
+    f32 temp1, temp2;
+
+    temp1 = -(dialogueBoxes[dialogues[index].struct5.unk_12].unk_92 * dialogueBoxes[dialogues[index].struct5.unk_12].unk_60) - (dialogueBoxes[dialogues[index].struct5.unk_12].unk_92 * dialogueBoxes[dialogues[index].struct5.unk_12].currentLine) - dialogues[index].struct2.coordinates.x;
+    temp2 = (dialogueBoxes[dialogues[index].struct5.unk_12].unk_93 * dialogueBoxes[dialogues[index].struct5.unk_12].unk_61) + (dialogueBoxes[dialogues[index].struct5.unk_12].unk_93 * dialogueBoxes[dialogues[index].struct5.unk_12].unk_9C) - dialogues[index].struct2.coordinates.y;    
+
+    setSpriteScale(dialogueWindows[dialogueBoxes[dialogues[index].struct5.unk_12].unk_98].spriteIndex, dialogueBoxes[dialogues[index].struct5.unk_12].unk_A0 * 0.5f, dialogueBoxes[dialogues[index].struct5.unk_12].unk_93 * 0.6f, 1.0f);
+    
+    func_8002C7EC(dialogueWindows[dialogueBoxes[dialogues[index].struct5.unk_12].unk_98].spriteIndex, 3);
+    func_8002C914(dialogueWindows[dialogueBoxes[dialogues[index].struct5.unk_12].unk_98].spriteIndex, 255, 255, 255, 192);
+    func_8002CB24(dialogueWindows[dialogueBoxes[dialogues[index].struct5.unk_12].unk_98].spriteIndex, 1);
+
+    func_8002B80C(dialogues[index].struct2.spriteIndex, dialogues[index].struct2.spriteOffset, dialogues[index].struct2.flag);
+    setSpriteShrinkFactor(dialogues[index].struct2.spriteIndex, dialogueBoxes[dialogues[index].struct5.unk_12].unk_4C.x + temp1, dialogueBoxes[dialogues[index].struct5.unk_12].unk_4C.y + temp2, dialogueBoxes[dialogues[index].struct5.unk_12].unk_4C.z);
+
+}
+#else
 INCLUDE_ASM(const s32, "system/dialogue", func_80044684);
+#endif
 
-INCLUDE_ASM(const s32, "system/dialogue", func_800449C4);
+//INCLUDE_ASM(const s32, "system/dialogue", func_800449C4);
 
-INCLUDE_ASM(const s32, "system/dialogue", func_80044BF4);
+void func_800449C4(u16 index) {
 
-INCLUDE_ASM(const s32, "system/dialogue", func_80044D78);
+    f32 tempX = dialogues[index].struct3.coordinates.x;
+    f32 tempY = dialogues[index].struct3.coordinates.y;
+
+    setSpriteScale(dialogueWindows[dialogueBoxes[dialogues[index].struct5.unk_12].unk_98].spriteIndex, dialogueBoxes[dialogues[index].struct5.unk_12].unk_A0 * 0.5f, dialogueBoxes[dialogues[index].struct5.unk_12].unk_93 * 0.6f, 1.0f);
+    
+    // flags
+    func_8002C7EC(dialogueWindows[dialogueBoxes[dialogues[index].struct5.unk_12].unk_98].spriteIndex, 3);
+    func_8002CB24(dialogueWindows[dialogueBoxes[dialogues[index].struct5.unk_12].unk_98].spriteIndex, 1);
+
+    // animation
+    func_8002B80C(dialogues[index].struct3.spriteIndex, dialogues[index].struct3.spriteOffset, dialogues[index].struct3.flag);
+    setSpriteShrinkFactor(dialogues[index].struct3.spriteIndex, dialogueBoxes[dialogues[index].struct5.unk_12].unk_4C.x + tempX, dialogueBoxes[dialogues[index].struct5.unk_12].unk_4C.y + tempY, dialogueBoxes[dialogues[index].struct5.unk_12].unk_4C.z);
+
+}
+
+//INCLUDE_ASM(const s32, "system/dialogue", func_80044BF4);
+
+void func_80044BF4(u16 index) {
+ 
+    f32 tempX = dialogues[index].struct4.coordinates.x;
+    f32 tempY = dialogues[index].struct4.coordinates.y;
+
+    // flags
+    func_8002C7EC(dialogueWindows[dialogueBoxes[dialogues[index].struct5.unk_12].unk_98].spriteIndex, 3);
+    func_8002CB24(dialogueWindows[dialogueBoxes[dialogues[index].struct5.unk_12].unk_98].spriteIndex, 1);
+
+    // animation
+    func_8002B80C(dialogues[index].struct4.spriteIndex, dialogues[index].struct4.spriteOffset, dialogues[index].struct4.flag);
+    setSpriteShrinkFactor(dialogues[index].struct4.spriteIndex, dialogueBoxes[dialogues[index].struct5.unk_12].unk_4C.x + tempX, dialogueBoxes[dialogues[index].struct5.unk_12].unk_4C.y + tempY, dialogueBoxes[dialogues[index].struct5.unk_12].unk_4C.z);
+
+}
+
+//INCLUDE_ASM(const s32, "system/dialogue", func_80044D78);
+
+void func_80044D78(u16 index) {
+
+    bool set = FALSE;
+
+    if (!(dialogueBoxes[dialogues[index].struct5.unk_12].flags & (0x40 | 0x80))) { 
+
+        if (func_8004D3C8(CONTROLLER_1, BUTTON_STICK_UP)) {
+
+            if (dialogues[index].struct5.unk_17 < (dialogues[index].struct5.unk_16 - 1)) {
+
+                dialogues[index].struct5.unk_17++;
+
+                if (dialogues[index].struct5.unk_18 != dialogueBoxes[dialogues[index].struct5.unk_12].unk_93 - 1) {
+                    dialogues[index].struct5.unk_18++;
+                    adjustSpriteShrinkFactor(dialogues[index].struct2.spriteIndex, 0.0f, -dialogueBoxes[dialogues[index].struct5.unk_12].unk_61 - dialogueBoxes[dialogues[index].struct5.unk_12].unk_9C, 0.0f);
+                } else {
+                    func_8003FE9C(dialogues[index].struct5.unk_12);
+                    dialogues[index].struct5.unk_19++;
+                }
+
+                if (dialogues[index].struct5.unk_0 != 0xFF) {
+                    setSfx(dialogues[index].struct5.unk_0 + 1);
+                    setSfxVolume(dialogues[index].struct5.unk_0 + 1, 0x80);
+                }
+                
+                set = TRUE;
+                
+            }
+        }
+
+        if (func_8004D3C8(CONTROLLER_1, 0x100000)) {
+
+            if (!set) {
+
+                if (dialogues[index].struct5.unk_17) {
+
+                    dialogues[index].struct5.unk_17--;
+                    
+                    if (dialogues[index].struct5.unk_18) {
+                        dialogues[index].struct5.unk_18--;
+                        adjustSpriteShrinkFactor(dialogues[index].struct2.spriteIndex, 0.0f, dialogueBoxes[dialogues[index].struct5.unk_12].unk_61 + dialogueBoxes[dialogues[index].struct5.unk_12].unk_9C, 0.0f);
+                    } else {
+                        func_8003FFF4(dialogues[index].struct5.unk_12);
+                        dialogues[index].struct5.unk_19--;
+                    }
+
+                    if (dialogues[index].struct5.unk_0 != 0xFF) {
+                        setSfx(dialogues[index].struct5.unk_0 + 1);
+                        setSfxVolume(dialogues[index].struct5.unk_0 + 1, 0x80);
+                        
+                    }
+                    
+                    set = TRUE;
+                
+                }
+            }
+        }
+
+        if (dialogues[index].struct5.unk_16 > dialogueBoxes[dialogues[index].struct5.unk_12].unk_93) { 
+
+            if (dialogueBoxes[dialogues[index].struct5.unk_12].unk_93 < (dialogues[index].struct5.unk_16 - dialogues[index].struct5.unk_19)) {
+                func_80044BF4(index);
+            } else {
+                func_8002BAD8(dialogues[index].struct4.spriteIndex);
+            }
+
+            if (dialogues[index].struct5.unk_19) {
+                func_800449C4(index);
+            } else {
+                func_8002BAD8(dialogues[index].struct3.spriteIndex);
+            }
+
+        }
+
+        if (func_8004D380(CONTROLLER_1, BUTTON_A)) {
+
+            if (!set) {
+                
+                func_80043B84(index);
+                dialogues[index].struct1.unk_12 = 0xFF;
+                
+                if (dialogues[index].struct5.unk_4 != 0xFF) {
+                    setSfx(dialogues[index].struct5.unk_4 + 1);
+                    setSfxVolume(dialogues[index].struct5.unk_4 + 1, 0x80);
+                    set = TRUE;
+                }
+                
+            }
+        }
+    }
+   
+}
 
 INCLUDE_ASM(const s32, "system/dialogue", func_80045260);
 
@@ -583,6 +731,7 @@ void func_80045CB0(void) {
                 }
                 
                 set = TRUE;
+
             }
             
             if (dialogues[i].struct5.flags & 0x20) {
