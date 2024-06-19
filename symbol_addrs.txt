@@ -1202,7 +1202,7 @@ mus_default_bank = 0x801D6F28;
 
 gYear = 0x801F6F30;
 
-gCamera = 0x801F6F38;
+gCamera = 0x801F6F38; // size:0xD0
 
 bitmaps = 0x801F7110; // size:0x3C80
 
@@ -1335,4 +1335,5 @@ D_8011EDC8 = 0x8011EDC8; // size:0x8
 D_8011EDD0 = 0x8011EDD0; // size:0x8
 D_8011EDD8 = 0x8011EDD8; // size:0x8
 
+D_80181BA0 = 0x80181BA0; // size:0x4A3 
 D_80204BF0 = 0x80204BF0; // size:0x200

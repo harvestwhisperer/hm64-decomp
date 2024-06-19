@@ -2077,9 +2077,9 @@ void func_8004CC3C(u16 index) {
     
     cutsceneMaps[index].cutscenePointer += 2;
     
-    func_80035004(0, value, index1, index2);
+    func_80035004(MAIN_MAP_INDEX, value, index1, index2);
     
-    func_80036FA0(0);
+    func_80036FA0(MAIN_MAP_INDEX);
     
 }
 

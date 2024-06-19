@@ -917,6 +917,7 @@ void func_80068920(void) {
     }
 
     gPlayer.action3++;
+    
 }
 
 //INCLUDE_ASM(const s32, "player", func_80068990);
