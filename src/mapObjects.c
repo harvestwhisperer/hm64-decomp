@@ -513,15 +513,15 @@ void func_800DAC70(u8 arg0, u8 arg1, u8 arg2, u8 arg3) {
         
         switch (temp2) {
             default:
-                func_80035004(0, temp2, arg2, arg3);
+                func_80035004(MAIN_MAP_INDEX, temp2, arg2, arg3);
                 break;
 
             case 0xFF:
-                func_80035004(0, 0xFFFF, arg2, arg3);
+                func_80035004(MAIN_MAP_INDEX, 0xFFFF, arg2, arg3);
                 break;
 
             case 0:
-                func_80035004(0, 0, arg2, arg3);
+                func_80035004(MAIN_MAP_INDEX, 0, arg2, arg3);
                 break;
         }
 
@@ -563,13 +563,13 @@ void func_800DAD74(u8 arg0, f32 arg1, u8 arg2) {
 
             switch (temp3) {
                 default: 
-                    func_80035004(0, temp3, temp4, temp5);
+                    func_80035004(MAIN_MAP_INDEX, temp3, temp4, temp5);
                     break;
                 case 0xFF:
-                    func_80035004(0, 0xFFFF, temp4, temp5);
+                    func_80035004(MAIN_MAP_INDEX, 0xFFFF, temp4, temp5);
                     break;
                 case 0:
-                    func_80035004(0, 0, temp4, temp5);
+                    func_80035004(MAIN_MAP_INDEX, 0, temp4, temp5);
                     break;
             }
             
@@ -820,13 +820,13 @@ void func_800DC1E8(void) {
 
                     switch (temp) {
                         default:
-                            func_80035004(0, temp, j, i);
+                            func_80035004(MAIN_MAP_INDEX, temp, j, i);
                             break;
                         case 0xFF:
-                            func_80035004(0, 0xFFFF, j, i);
+                            func_80035004(MAIN_MAP_INDEX, 0xFFFF, j, i);
                             break;
                         case 0:
-                            func_80035004(0, 0, j, i);
+                            func_80035004(MAIN_MAP_INDEX, 0, j, i);
                             break;
                     }
 

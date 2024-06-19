@@ -671,6 +671,7 @@ void func_800EFE84(void) {
     
 }
 
+// unused or inline
 INCLUDE_ASM(const s32, "namingScreen", func_800EFFDC);
 
 //INCLUDE_ASM(const s32, "namingScreen", deactivateNamingScreenSprites);

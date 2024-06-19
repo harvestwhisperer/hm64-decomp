@@ -30,6 +30,7 @@ typedef struct {
 	u8 perspectiveMode;
 } Camera;
 
+// likely quaternion
 typedef struct {
 	f32 x;
 	f32 y;

@@ -183,7 +183,7 @@ bool func_80033A90(u16 mapIndex, LevelMapContext* arg1, void* arg2, void* arg3, 
         }
 
         for (l = 0; l < 0x100; l++) {
-            D_80181BAC[l][0] = 0;
+            D_80181BA0[l].flags = 0;
         }
 
         for (i = 0; i < 16; i++) {
@@ -1827,6 +1827,7 @@ bool func_80038B58(u16 mapIndex, u16 mapAdditionIndex, u8 arg2, u8 arg3) {
     }
     
     return result;
+    
 }
 
 INCLUDE_ASM(const s32, "system/map", func_80038BC4);
@@ -2120,7 +2121,6 @@ void func_8003A1BC(void) {
 
 inline void func_8003AC14(Gfx* dl, MapBitmap* arg1) {
     
-     
     // gsDPSetCombineMode(G_CC_MODULATEIDECALA, G_CC_MODULATEIDECALA)
     *dl++ = D_8011ED90;
     // gsDPSetRenderMode(G_RM_TEX_EDGE, G_RM_TEX_EDGE2)

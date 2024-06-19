@@ -201,8 +201,8 @@ void func_8004D47C(u8 controllerIndex) {
     sticks.s_stick_x = controllers[controllerIndex].sticks.s_stick_x;
     sticks.s_stick_y = controllers[controllerIndex].sticks.s_stick_y;
 
-    sticks.u_stick_x = (s16)(getAbsoluteValue((s32)sticks.s_stick_x)) / 10;
-    sticks.u_stick_y = (s16)(getAbsoluteValue((s32)sticks.s_stick_y)) / 10;
+    sticks.u_stick_x = (s16)(getAbsoluteValue(sticks.s_stick_x)) / 10;
+    sticks.u_stick_y = (s16)(getAbsoluteValue(sticks.s_stick_y)) / 10;
     
     controllers[controllerIndex].sticks.u_stick_x = 0;
 
@@ -283,7 +283,7 @@ bool func_8004D788(u8 contIndex) {
     bool result;
     u32 error;
     
-    u8 temp;
+    bool temp;
     
     nuContPakOpen(&controllers[contIndex].pak, contIndex);
     
@@ -300,7 +300,7 @@ bool func_8004D788(u8 contIndex) {
         if (controllers[contIndex].pak.error == 10)  {
             nuContDataRead(&controllers[contIndex].pak);
             if (controllers[contIndex].pak.error == error) {
-                temp = 1;
+                temp = TRUE;
             }
         }
         
@@ -312,6 +312,7 @@ bool func_8004D788(u8 contIndex) {
     }
     
     return result;
+    
 }
 
 //INCLUDE_ASM(const s32, "system/controller", func_8004D87C);
@@ -353,6 +354,7 @@ u32 func_8004D9AC(u8 contIndex, u8 *noteName, u8 *extName, s32 offset, s32 size,
     }
     
     return 0;
+
 }
 
 //INCLUDE_ASM(const s32, "system/controller", func_8004DA48);
@@ -367,6 +369,7 @@ u32 func_8004DA48(u8 contIndex, u8* noteName, u8* extName, s32 offset, s32 size,
     }
 
     return 0;
+
 }
 
 //INCLUDE_ASM(const s32, "system/controller", func_8004DAF4);
@@ -381,4 +384,5 @@ u32 func_8004DAF4(u8 contIndex, u8 *noteName, u8 *extName) {
     }
     
     return 0;
+
 }
