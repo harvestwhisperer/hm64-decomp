@@ -1346,4 +1346,7 @@ extern u32 _touristCoupleWomanTextureSegmentRomEnd;
 extern u32 _touristCoupleWomanTextureSegmentRomStart;
 extern u32 _touristCoupleWomanTextureSegmentStart;
 
+extern u32 _namingScreenTexture1SegmentRomStart;
+extern u32 _namingScreenTexture1SegmentRomEnd;
+
 #endif

@@ -824,7 +824,7 @@ initializeGameVariables = 0x8004E210;
 registerMainLoopCallbacks = 0x8004F3D0;
 
 initializeNameStrings = 0x80054180;
-setGameVariables = 0x80055768;
+initializeDialogueVariables = 0x80055768;
 mainGameLoopCallback = 0x80055E20;
 startNewDay = 0x80059428;
 setSpecialDialogues = 0x8005A708;
@@ -1056,7 +1056,7 @@ sRandNext = 0x8013CDF0;
 sRand = 0x80110444;
 
 specialDialogueBitsPointer = 0x8013CE00;
-gameVariables = 0x8013CE08; // size:0x3C0
+dialogueVariables = 0x8013CE08; // size:0x3C0
 
 lifeEventBits = 0x8013D1C8; // size:0x80
 
@@ -1337,3 +1337,7 @@ D_8011EDD8 = 0x8011EDD8; // size:0x8
 
 D_80181BA0 = 0x80181BA0; // size:0x4A3 
 D_80204BF0 = 0x80204BF0; // size:0x200
+D_8011C680 = 0x8011C680; // size:0x60
+D_8011C6D0 = 0x8011C6D0; // size:0x5C
+D_8011C72C = 0x8011C72C; // size:0x5C
+D_8011C788 = 0x8011C788; // size:0x68

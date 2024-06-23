@@ -1426,111 +1426,111 @@ void func_80054734(void) {
 void initializeDialogueVariables(void) {
 
     // alcohol tolerance is first lol
-    initializeDialogueVariable(0, &gAlcoholTolerance, 1, MAX_ALCOHOL_TOLERANCE );
+    setDialogueVariable(0, &gAlcoholTolerance, 1, MAX_ALCOHOL_TOLERANCE );
 
-    initializeDialogueVariable(1, &gSeason, 1, 4);
-    initializeDialogueVariable(2, &gHour, 1, 23);
-    initializeDialogueVariable(3, &gWeather, 1, 5);
-    initializeDialogueVariable(4, &gDayOfWeek, 1, 6);
-    initializeDialogueVariable(5, &gYear, 1, 99);
+    setDialogueVariable(1, &gSeason, 1, 4);
+    setDialogueVariable(2, &gHour, 1, 23);
+    setDialogueVariable(3, &gWeather, 1, 5);
+    setDialogueVariable(4, &gDayOfWeek, 1, 6);
+    setDialogueVariable(5, &gYear, 1, 99);
     
-    initializeDialogueVariable(6, &gItemBeingHeld, 1, TOTAL_ITEMS);
+    setDialogueVariable(6, &gItemBeingHeld, 1, TOTAL_ITEMS);
 
-    initializeDialogueVariable(7, &npcAffection[MARIA], 1, MAX_AFFECTION);
-    initializeDialogueVariable(8, &npcAffection[POPURI], 1, MAX_AFFECTION);
-    initializeDialogueVariable(9, &npcAffection[ELLI], 1, MAX_AFFECTION);
-    initializeDialogueVariable(0xA, &npcAffection[ANN], 1, MAX_AFFECTION);
-    initializeDialogueVariable(0xB, &npcAffection[KAREN], 1, MAX_AFFECTION);
-    initializeDialogueVariable(0xC, &npcAffection[HARRIS], 1, MAX_AFFECTION);
-    initializeDialogueVariable(0xD, &npcAffection[GRAY], 1, MAX_AFFECTION);
-    initializeDialogueVariable(0xE, &npcAffection[JEFF], 1, MAX_AFFECTION);
-    initializeDialogueVariable(0xF, &npcAffection[CLIFF], 1, MAX_AFFECTION);
-    initializeDialogueVariable(0x10, &npcAffection[KAI], 1, MAX_AFFECTION);
-    initializeDialogueVariable(0x11, &npcAffection[MAYOR], 1, MAX_AFFECTION);
-    initializeDialogueVariable(0x12, &npcAffection[MAYOR_WIFE], 1, MAX_AFFECTION);
-    initializeDialogueVariable(0x13, &npcAffection[LILLIA], 1, MAX_AFFECTION);
-    initializeDialogueVariable(0x14, &npcAffection[BASIL], 1, MAX_AFFECTION);
-    initializeDialogueVariable(0x15, &npcAffection[ELLEN], 1, MAX_AFFECTION);
-    initializeDialogueVariable(0x16, &npcAffection[PASTOR], 1, MAX_AFFECTION);
-    initializeDialogueVariable(0x17, &npcAffection[RICK], 1, MAX_AFFECTION);
-    initializeDialogueVariable(0x18, &npcAffection[SAIBARA], 1, MAX_AFFECTION);
-    initializeDialogueVariable(0x19, &npcAffection[POTION_SHOP_DEALER], 1, MAX_AFFECTION);
-    initializeDialogueVariable(0x1A, &npcAffection[KENT], 1, MAX_AFFECTION);
-    initializeDialogueVariable(0x1B, &npcAffection[STU], 1, MAX_AFFECTION);
-    initializeDialogueVariable(0x1C, &npcAffection[MIDWIFE], 1, MAX_AFFECTION);
-    initializeDialogueVariable(0x1D, &npcAffection[MAY], 1, MAX_AFFECTION);
-    initializeDialogueVariable(0x1E, &npcAffection[CARPENTER_1], 1, MAX_AFFECTION);
-    initializeDialogueVariable(0x1F, &npcAffection[CARPENTER_2], 1, MAX_AFFECTION);
-    initializeDialogueVariable(0x20, &npcAffection[MASTER_CARPENTER], 1, MAX_AFFECTION);
-    initializeDialogueVariable(0x21, &npcAffection[HARVEST_SPRITE_1], 1, MAX_AFFECTION);
-    initializeDialogueVariable(0x22, &npcAffection[SYDNEY], 1, MAX_AFFECTION);
-    initializeDialogueVariable(0x23, &npcAffection[BARLEY], 1, MAX_AFFECTION);
-    initializeDialogueVariable(0x24, &npcAffection[GREG], 1, MAX_AFFECTION);
-    initializeDialogueVariable(0x25, &npcAffection[BABY], 1, MAX_AFFECTION);
+    setDialogueVariable(7, &npcAffection[MARIA], 1, MAX_AFFECTION);
+    setDialogueVariable(8, &npcAffection[POPURI], 1, MAX_AFFECTION);
+    setDialogueVariable(9, &npcAffection[ELLI], 1, MAX_AFFECTION);
+    setDialogueVariable(0xA, &npcAffection[ANN], 1, MAX_AFFECTION);
+    setDialogueVariable(0xB, &npcAffection[KAREN], 1, MAX_AFFECTION);
+    setDialogueVariable(0xC, &npcAffection[HARRIS], 1, MAX_AFFECTION);
+    setDialogueVariable(0xD, &npcAffection[GRAY], 1, MAX_AFFECTION);
+    setDialogueVariable(0xE, &npcAffection[JEFF], 1, MAX_AFFECTION);
+    setDialogueVariable(0xF, &npcAffection[CLIFF], 1, MAX_AFFECTION);
+    setDialogueVariable(0x10, &npcAffection[KAI], 1, MAX_AFFECTION);
+    setDialogueVariable(0x11, &npcAffection[MAYOR], 1, MAX_AFFECTION);
+    setDialogueVariable(0x12, &npcAffection[MAYOR_WIFE], 1, MAX_AFFECTION);
+    setDialogueVariable(0x13, &npcAffection[LILLIA], 1, MAX_AFFECTION);
+    setDialogueVariable(0x14, &npcAffection[BASIL], 1, MAX_AFFECTION);
+    setDialogueVariable(0x15, &npcAffection[ELLEN], 1, MAX_AFFECTION);
+    setDialogueVariable(0x16, &npcAffection[PASTOR], 1, MAX_AFFECTION);
+    setDialogueVariable(0x17, &npcAffection[RICK], 1, MAX_AFFECTION);
+    setDialogueVariable(0x18, &npcAffection[SAIBARA], 1, MAX_AFFECTION);
+    setDialogueVariable(0x19, &npcAffection[POTION_SHOP_DEALER], 1, MAX_AFFECTION);
+    setDialogueVariable(0x1A, &npcAffection[KENT], 1, MAX_AFFECTION);
+    setDialogueVariable(0x1B, &npcAffection[STU], 1, MAX_AFFECTION);
+    setDialogueVariable(0x1C, &npcAffection[MIDWIFE], 1, MAX_AFFECTION);
+    setDialogueVariable(0x1D, &npcAffection[MAY], 1, MAX_AFFECTION);
+    setDialogueVariable(0x1E, &npcAffection[CARPENTER_1], 1, MAX_AFFECTION);
+    setDialogueVariable(0x1F, &npcAffection[CARPENTER_2], 1, MAX_AFFECTION);
+    setDialogueVariable(0x20, &npcAffection[MASTER_CARPENTER], 1, MAX_AFFECTION);
+    setDialogueVariable(0x21, &npcAffection[HARVEST_SPRITE_1], 1, MAX_AFFECTION);
+    setDialogueVariable(0x22, &npcAffection[SYDNEY], 1, MAX_AFFECTION);
+    setDialogueVariable(0x23, &npcAffection[BARLEY], 1, MAX_AFFECTION);
+    setDialogueVariable(0x24, &npcAffection[GREG], 1, MAX_AFFECTION);
+    setDialogueVariable(0x25, &npcAffection[BABY], 1, MAX_AFFECTION);
 
     // sum of girls' affection
-    initializeDialogueVariable(0x26, &D_80215DF0, 2, MAX_AFFECTION * 5);
+    setDialogueVariable(0x26, &D_80215DF0, 2, MAX_AFFECTION * 5);
 
-    initializeDialogueVariable(0x27, &gDayOfMonth, 1, 30);
+    setDialogueVariable(0x27, &gDayOfMonth, 1, 30);
 
-    initializeDialogueVariable(0x28, &gGold, 4, MAX_GOLD);
+    setDialogueVariable(0x28, &gGold, 4, MAX_GOLD);
 
-    initializeDialogueVariable(0x29, &gTotalGrassTiles, 2, 1000);
-    initializeDialogueVariable(0x2A, &gTotalPinkCatMintFlowersGrowing, 2, 1000);
+    setDialogueVariable(0x29, &gTotalGrassTiles, 2, 1000);
+    setDialogueVariable(0x2A, &gTotalPinkCatMintFlowersGrowing, 2, 1000);
 
     // crops shipped
-    initializeDialogueVariable(0x2B, &D_801654F4, 4, MAX_ITEM_SHIPPING_VALUE);
-    initializeDialogueVariable(0x2C, &D_80237414, 4, MAX_ITEM_SHIPPING_VALUE);
-    initializeDialogueVariable(0x2D, &D_801C3F80, 4, MAX_ITEM_SHIPPING_VALUE);
-    initializeDialogueVariable(0x2E, &D_80188F60, 4, MAX_ITEM_SHIPPING_VALUE);
-    initializeDialogueVariable(0x2F, &D_801FB5D0, 4, MAX_ITEM_SHIPPING_VALUE);
-    initializeDialogueVariable(0x30, &D_801FB6FC, 4, MAX_ITEM_SHIPPING_VALUE);
+    setDialogueVariable(0x2B, &D_801654F4, 4, MAX_ITEM_SHIPPING_VALUE);
+    setDialogueVariable(0x2C, &D_80237414, 4, MAX_ITEM_SHIPPING_VALUE);
+    setDialogueVariable(0x2D, &D_801C3F80, 4, MAX_ITEM_SHIPPING_VALUE);
+    setDialogueVariable(0x2E, &D_80188F60, 4, MAX_ITEM_SHIPPING_VALUE);
+    setDialogueVariable(0x2F, &D_801FB5D0, 4, MAX_ITEM_SHIPPING_VALUE);
+    setDialogueVariable(0x30, &D_801FB6FC, 4, MAX_ITEM_SHIPPING_VALUE);
 
-    initializeDialogueVariable(0x31, &npcAffection[DOUG], 1, MAX_AFFECTION);
-    initializeDialogueVariable(0x32, &npcAffection[GOTZ], 1, MAX_AFFECTION);
-    initializeDialogueVariable(0x33, &npcAffection[SASHA], 1, MAX_AFFECTION);
-    initializeDialogueVariable(0x34, &npcAffection[SHIPPER], 1, MAX_AFFECTION);
-    initializeDialogueVariable(0x35, &npcAffection[DUKE], 1, MAX_AFFECTION);
+    setDialogueVariable(0x31, &npcAffection[DOUG], 1, MAX_AFFECTION);
+    setDialogueVariable(0x32, &npcAffection[GOTZ], 1, MAX_AFFECTION);
+    setDialogueVariable(0x33, &npcAffection[SASHA], 1, MAX_AFFECTION);
+    setDialogueVariable(0x34, &npcAffection[SHIPPER], 1, MAX_AFFECTION);
+    setDialogueVariable(0x35, &npcAffection[DUKE], 1, MAX_AFFECTION);
 
-    initializeDialogueVariable(0x36, &horseInfo.affection, 1, MAX_AFFECTION);
+    setDialogueVariable(0x36, &horseInfo.affection, 1, MAX_AFFECTION);
     
-    initializeDialogueVariable(0x37, &gFarmAnimals[0].affection, 1, MAX_AFFECTION);
+    setDialogueVariable(0x37, &gFarmAnimals[0].affection, 1, MAX_AFFECTION);
 
-    initializeDialogueVariable(0x38, &dogInfo.affection, 1, MAX_AFFECTION);
+    setDialogueVariable(0x38, &dogInfo.affection, 1, MAX_AFFECTION);
 
-    initializeDialogueVariable(0x39, &gElliGrievingCounter, 1, 30);
+    setDialogueVariable(0x39, &gElliGrievingCounter, 1, 30);
 
-    initializeDialogueVariable(0x3A, &gBabyAge, 1, 120);
-    initializeDialogueVariable(0x3B, &gWifeConceptionCounter, 1, 120);
-    initializeDialogueVariable(0x3C, &gWifeConceptionCounter, 1, 120);
-    initializeDialogueVariable(0x3D, &gBabyAge, 1, 120);
-    
-    // unused
-    initializeDialogueVariable(0x3E, &D_801890D8, 1, 30);
-    
-    initializeDialogueVariable(0x3F, &gBabyAge, 1, 120);
+    setDialogueVariable(0x3A, &gBabyAge, 1, 120);
+    setDialogueVariable(0x3B, &gWifeConceptionCounter, 1, 120);
+    setDialogueVariable(0x3C, &gWifeConceptionCounter, 1, 120);
+    setDialogueVariable(0x3D, &gBabyAge, 1, 120);
     
     // unused
-    initializeDialogueVariable(0x40, &D_801C4214, 1, 30);
+    setDialogueVariable(0x3E, &D_801890D8, 1, 30);
     
-    initializeDialogueVariable(0x41, &gBabyAge, 1, 120);
-    initializeDialogueVariable(0x42, &gBabyAge, 1, 120);
+    setDialogueVariable(0x3F, &gBabyAge, 1, 120);
+    
+    // unused
+    setDialogueVariable(0x40, &D_801C4214, 1, 30);
+    
+    setDialogueVariable(0x41, &gBabyAge, 1, 120);
+    setDialogueVariable(0x42, &gBabyAge, 1, 120);
     
     // unsued
-    initializeDialogueVariable(0x43, &D_80189A48, 1, 30);
+    setDialogueVariable(0x43, &D_80189A48, 1, 30);
     // unused
-    initializeDialogueVariable(0x44, &D_80180712, 1, 30);
+    setDialogueVariable(0x44, &D_80180712, 1, 30);
 
-    initializeDialogueVariable(0x45, &gWifePregnancyCounter, 1, 60);
-    initializeDialogueVariable(0x46, &gWifePregnancyCounter, 1, 60);
+    setDialogueVariable(0x45, &gWifePregnancyCounter, 1, 60);
+    setDialogueVariable(0x46, &gWifePregnancyCounter, 1, 60);
     
     // unused
-    initializeDialogueVariable(0x47, &D_8017044B, 1, 255);
+    setDialogueVariable(0x47, &D_8017044B, 1, 255);
     // unused
-    initializeDialogueVariable(0x48, &D_801C3B64, 1, 255);
+    setDialogueVariable(0x48, &D_801C3B64, 1, 255);
 
-    initializeDialogueVariable(0x49, &gWifePregnancyCounter, 1, 60);
-    initializeDialogueVariable(0x4A, &gWifePregnancyCounter, 1, 60);
-    initializeDialogueVariable(0x4B, &gWifePregnancyCounter, 1, 60);
+    setDialogueVariable(0x49, &gWifePregnancyCounter, 1, 60);
+    setDialogueVariable(0x4A, &gWifePregnancyCounter, 1, 60);
+    setDialogueVariable(0x4B, &gWifePregnancyCounter, 1, 60);
 
 }

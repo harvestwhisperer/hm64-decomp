@@ -1552,17 +1552,17 @@ u16 setFarmCutscenes(void) {
         if (checkDailyEventBit(4)) {
             switch (D_801C4216) {         
                 case 4:
-                    tempHappiness = adjustValue(gHappiness, -5, 0xFF);
+                    tempHappiness = adjustValue(gHappiness, -5, MAX_HAPPINESS);
                     gHappiness += tempHappiness;
                     gCutsceneIndex = 0;
                     break;
                 case 2:
-                    tempHappiness = adjustValue(gHappiness, -10, 0xFF);
+                    tempHappiness = adjustValue(gHappiness, -10, MAX_HAPPINESS);
                     gHappiness += tempHappiness;
                     gCutsceneIndex = 1;
                     break;
                 case 3:
-                    tempHappiness = adjustValue(gHappiness, -10, 0xFF);
+                    tempHappiness = adjustValue(gHappiness, -10, MAX_HAPPINESS);
                     gHappiness += tempHappiness;
                     gCutsceneIndex = 2;
                     break;

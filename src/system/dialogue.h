@@ -46,10 +46,10 @@ typedef struct {
     u16 unk_8;
 	u16 unk_A;
     u16 unk_C;
-	u16 unk_E;
+	s16 unk_E; // amount to increase/decrease dialogue variable
 	u16 unk_10;
     u8 unk_12;
-	u8 unk_13;
+	u8 unk_13; // index into dialogueVariables
 	u8 unk_14;
     u8 unk_15;
 	u8 unk_16;
@@ -66,7 +66,7 @@ typedef struct {
 	u16 unk_C;
 	u16 dialogueIndex; // 0xF26 // index into conversation
 	u16 unk_10; // 0xF28, message struct index
-	u16 unk_12;
+	u16 unk_12; // dialogue box index
 	u16 unk_14;
 	u8 unk_16; // pink overlay max rows
 	u8 unk_17; // pink overlay current column
@@ -87,7 +87,13 @@ typedef struct {
 	UnknownDialogueStruct2 struct5; // 0x801C3F18
 } Dialogue;
 
-extern bool initializeDialogueVariable(u16 index, void *address, u8 numSet, s32 max);
+typedef struct {
+	void *value;
+	u32 maxValue;
+	bool set;
+} DialogueVariable;
+
+extern bool setDialogueVariable(u16 index, void *address, u8 numSet, s32 max);
 extern void func_80042F60();   
 extern bool func_80042FEC(u16, u16, u16);
 extern bool func_80043050(u16, u16, u16, void*, void*, void*, void*, void*);
@@ -101,7 +107,7 @@ extern u8 func_80043A88();
 extern bool func_80043AD8(u16);
 extern u8 func_80043C6C(u16);
 
-extern Dialogue dialogues[1];
+extern Dialogue dialogues[MAX_DIALOGUES];
 extern DialogueAddressInfo dialogueAddresses[69];
 
 #endif
