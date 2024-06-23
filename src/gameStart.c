@@ -38,8 +38,7 @@ void func_8004DF10(void) {
         // set position floats
         func_8003F54C(0, 0, -64.0f, 352.0f);
 
-        // dialogue box flags
-        func_8003F690(0, 1, 0, 0);
+        setDialogueBoxSpriteIndices(0, 1, 0, 0);
 
         // dialogue box flags
         func_8003F360(0, ~(1 | 2), 2);

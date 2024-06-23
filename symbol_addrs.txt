@@ -809,6 +809,8 @@ setSfxFrequency = 0x8003D7C0;
 setSfxPan = 0x8003D8A0;
 stopSfx = 0x8003D948;
 
+setDialogueBoxSpriteIndices = 0x8003F690;
+
 setDialogueVariable = 0x800430DC;
 setSpecialDialogueBitsPointer = 0x80043138;
 

@@ -677,12 +677,12 @@ inline void showTextBox(u16 arg0, u16 arg1, u16 arg2, int arg3, u16 arg4) {
         
         case 0:
           func_8003F54C(0, 24.0f, -64.0f, 352.0f);
-          func_8003F690(0, 0, 0, 0);
+          setDialogueBoxSpriteIndices(0, 0, 0, 0);
           break;
         
         case 1:
           func_8003F54C(0, 0, -64.0f, 352.0f);
-          func_8003F690(0, 1, 0, 0);
+          setDialogueBoxSpriteIndices(0, 1, 0, 0);
           break;
         
         default:
@@ -713,11 +713,11 @@ inline void showDialogueBox(u16 arg0, u16 arg1, u16 arg2, u32 arg3, u16 arg4) {
     switch (arg0) {
         case 0:
             func_8003F54C(0, 24.0f, -64.0f, 352.0f);
-            func_8003F690(0, 0, 0, 0);
+            setDialogueBoxSpriteIndices(0, 0, 0, 0);
             break;
         case 1:
             func_8003F54C(0, 0, -64.0f, 352.0f);
-            func_8003F690(0, 1, 0, 0);
+            setDialogueBoxSpriteIndices(0, 1, 0, 0);
             break;
         default:
             break;
@@ -2318,7 +2318,7 @@ void func_800604B0(void) {
     if (func_80036A84(MAIN_MAP_INDEX) || !(mainMap[MAIN_MAP_INDEX].mapStruct9.flags & 1)) {
         
         func_8003F54C(0, 0, -64.0f, 352.0f);
-        func_8003F690(0, 1, 0, 0);
+        setDialogueBoxSpriteIndices(0, 1, 0, 0);
         func_8003F360(0, ~(1 | 2), 0);
         
         switch (gCutsceneIndex) {

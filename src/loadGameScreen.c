@@ -226,7 +226,7 @@ void func_800E1A94(void) {
             func_8003F630(0, 0, 2);
             func_8003F464(0, 0xE, 0xE, (void*)0x802FF000, (void*)0x8030A000);
             func_8003F360(0, ~(1 | 2), 2);
-            func_8003F690(0, 0xFF, 0, 0);
+            setDialogueBoxSpriteIndices(0, 0xFF, 0, 0);
             func_8003FAF8(0, 0x8000);
             func_8003FB4C(0, 1);
             func_8003DDF8(0, 0, 1, 0x80000);
@@ -239,7 +239,7 @@ void func_800E1A94(void) {
             func_8003F630(1, 0, 2);
             func_8003F464(1, 0xE, 0xE, (void*)0x802FF000, (void*)0x8030A000);
             func_8003F360(1, -4, 2);
-            func_8003F690(1, 0xFF, 0, 0);
+            setDialogueBoxSpriteIndices(1, 0xFF, 0, 0);
             func_8003FAF8(1, 0x8000);
             func_8003FB4C(1, 1);
             func_8003DDF8(1, 0, 2, 0x80000);
@@ -252,7 +252,7 @@ void func_800E1A94(void) {
             func_8003F630(2, 0, 2);
             func_8003F464(2, 0xE, 0xE, (void*)0x802FF000, (void*)0x8030A000);
             func_8003F360(2, -4, 2);
-            func_8003F690(2, 0xFF, 0, 0);
+            setDialogueBoxSpriteIndices(2, 0xFF, 0, 0);
             func_8003FAF8(2, 0x8000);
             func_8003FB4C(2, 1);
             func_8003DDF8(2, 0, 3, 0x80000);
@@ -265,7 +265,7 @@ void func_800E1A94(void) {
             func_8003F630(3, 0, 2);
             func_8003F464(3, 0xE, 0xE, (void*)0x802FF000, (void*)0x8030A000);
             func_8003F360(3, -4, 2);
-            func_8003F690(3, 0xFF, 0, 0);
+            setDialogueBoxSpriteIndices(3, 0xFF, 0, 0);
             func_8003FAF8(3, 0x8000);
             func_8003FB4C(3, 1);
             func_8003DDF8(3, 0, 4, 0x80000);
@@ -279,7 +279,7 @@ void func_800E1A94(void) {
             func_8003F630(0, 0, 2);
             func_8003F464(0, 0xE, 0xE, (void*)0x802FF000, (void*)0x8030A000);
             func_8003F360(0, ~(1 | 2), 2);
-            func_8003F690(0, 0xFF, 0, 0);
+            setDialogueBoxSpriteIndices(0, 0xFF, 0, 0);
             func_8003FAF8(0, 0x8000);
             func_8003FB4C(0, 1);
             func_8003DDF8(0, 0, 1, 0x80000);
@@ -292,7 +292,7 @@ void func_800E1A94(void) {
             func_8003F630(1, 0, 2);
             func_8003F464(1, 0xE, 0xE, (void*)0x802FF000, (void*)0x8030A000);
             func_8003F360(1, -4, 2);
-            func_8003F690(1, 0xFF, 0, 0);
+            setDialogueBoxSpriteIndices(1, 0xFF, 0, 0);
             func_8003FAF8(1, 0x8000);
             func_8003FB4C(1, 1);
             func_8003DDF8(1, 0, 2, 0x80000);

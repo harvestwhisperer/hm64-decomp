@@ -9,6 +9,12 @@
 #define MAX_DIALOGUES 1
 #define TOTAL_CONVERSATION_BANKS 70
 
+#define DIALOGUE_SFX_VOLUME 128
+
+#define UNSIGNED_CHAR 1
+#define UNSIGNED_SHORT 2
+#define UNSIGNED_INT 4
+
 extern u32 _dialogueIconsTextureSegmentRomStart;
 extern u32 _dialogueIconsTextureSegmentRomEnd;
 extern u32 _dialogueIconsIndexSegmentRomStart;
@@ -45,10 +51,10 @@ typedef struct {
     u16 unk_6;	
     u16 unk_8;
 	u16 unk_A;
-    u16 unk_C;
+    u16 specialDialogueBit;
 	s16 unk_E; // amount to increase/decrease dialogue variable
 	u16 unk_10;
-    u8 unk_12;
+    u8 unk_12; // controls how dialogue data is iterated through
 	u8 unk_13; // index into dialogueVariables
 	u8 unk_14;
     u8 unk_15;
@@ -60,14 +66,14 @@ typedef struct {
 
 // 0x801C3F18
 typedef struct {
-	u32 unk_0;
-	u32 unk_4; // sfx index
-	u32 unk_8;
-	u16 unk_C;
-	u16 dialogueIndex; // 0xF26 // index into conversation
-	u16 unk_10; // 0xF28, message struct index
-	u16 unk_12; // dialogue box index
-	u16 unk_14;
+	u32 scrollSfxIndex;
+	u32 closeSfxIndex;
+	u32 unk_8; // another sfx index
+	u16 dialogueIndex;
+	u16 dialogueAddressIndex; // 0xF26
+	u16 dialogueBoxIndex1; // 0xF28
+	u16 dialogueBoxIndex2;
+	u16 unk_14; // sets unk_7E on dialogueBox
 	u8 unk_16; // pink overlay max rows
 	u8 unk_17; // pink overlay current column
 	u8 unk_18;
@@ -78,19 +84,19 @@ typedef struct {
 // 0x801C3E40
 typedef struct {
 	UnknownDialogueStruct1 struct1;
-	u32 padding[4];  // 0x801C3E5C
+	u32 unused[4];  // 0x801C3E5C
 	// one for character avatar, button icon, etc.
 	DialogueSpriteType2 struct2; // 0x801C3E6C
 	DialogueSpriteType2 struct3; // 0x801C3EA4
 	DialogueSpriteType2 struct4; // 0x801C3EDC
-	u32 unk_D4; // 0x801C3F14
+	u32 dialoguePointer; // 0x801C3F14
 	UnknownDialogueStruct2 struct5; // 0x801C3F18
 } Dialogue;
 
 typedef struct {
 	void *value;
 	u32 maxValue;
-	bool set;
+	u8 type;
 } DialogueVariable;
 
 extern bool setDialogueVariable(u16 index, void *address, u8 numSet, s32 max);
