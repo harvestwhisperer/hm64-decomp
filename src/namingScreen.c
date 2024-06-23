@@ -77,7 +77,7 @@ inline void initializeNamingScreen(u8* arg0, u8 arg1) {
     // dialogue boxes
     func_8003F54C(0, 0, -64.0f, 352.0f);
     func_8003F360(0, -4, 0);
-    func_8003F690(0, 1, 0, 0);
+    setDialogueBoxSpriteIndices(0, 1, 0, 0);
     
     namingScreenContext.unk_4 = arg1;
     
@@ -154,7 +154,7 @@ void func_800ED974(void) {
             func_8003F630(3, 0, 2);
             func_8003F464(3, 0xE, 0xE, 0x802FF000, 0x8030A000);
             func_8003F360(3, 1, 1);
-            func_8003F690(3, 0xFF, 0xFF, 0xFF);
+            setDialogueBoxSpriteIndices(3, 0xFF, 0xFF, 0xFF);
             func_8003DDF8(3, 0xA, 0xD, 0x80000);
             func_8003E77C(3, 0, 0, 0, 0);
             func_8003EA1C(3, 0xFF, 0xFF, 0xFF, 0xFF, 8);
@@ -164,7 +164,7 @@ void func_800ED974(void) {
             func_8003F630(4, 0, 2);
             func_8003F464(4, 0xE, 0xE, 0x802FF000, 0x8030A000);
             func_8003F360(4, 1, 1);
-            func_8003F690(4, 0xFF, 0xFF, 0xFF);
+            setDialogueBoxSpriteIndices(4, 0xFF, 0xFF, 0xFF);
             func_8003DDF8(4, 0xA, temp2 + 0xE, 0x80000);
             func_8003E77C(4, 0, 0, 0, 0);
             func_8003EA1C(4, 0xFF, 0xFF, 0xFF, 0xFF, 8);
@@ -195,7 +195,7 @@ void func_800ED974(void) {
             deactivateNamingScreenSprites();
             func_8003DD14(3);
             func_8003DD14(4);
-            func_8003F690(0, 0, 0, 0);
+            setDialogueBoxSpriteIndices(0, 0, 0, 0);
             func_8003F54C(0, 24.0f, -64.0f, 352.0f);
 
              switch (namingScreenContext.unk_6) {
@@ -525,7 +525,7 @@ void loadNameSelectionSprites(void) {
     func_8003F630(3, 2, 2);
     func_8003F464(3, 0xE, 0xE, 0x802FF000, 0x8030A000);
     func_8003F360(3, 1, 1);
-    func_8003F690(3, 0xFF, 0xFF, 0xFF);
+    setDialogueBoxSpriteIndices(3, 0xFF, 0xFF, 0xFF);
     func_8003DDF8(3, 0xA, 0xD, 0x80000);
     func_8003E77C(3, 0, 0, 0, 0);
     func_8003EA1C(3, 0xFF, 0xFF, 0xFF, 0xFF, 8);

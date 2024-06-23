@@ -7,6 +7,14 @@
 #define MAX_DIALOGUE_BANKS 73
 #define MAX_GAME_VARIABLE_STRINGS 64
 
+/* flags */
+#define ACTIVE 1
+#define INITIALIZED 2
+#define HAS_DIALOGUE_WINDOW 0x200
+#define HAS_OVERLAY_ICON 0x400
+#define HAS_CHARACTER_AVATAR 0x10000
+// 0x200000 = need to do rgba
+
 // TODO: add japanese characters
 // 1 - 0xA0 = Japanese characters
 
@@ -157,7 +165,7 @@ typedef struct {
     void *unk_48;
     Vec3f unk_4C; // shrink factor
     u8 *fontTexturePtr;
-    u16 *fontPalettePtr; // palette ptr? func_80042014
+    u16 *fontPalettePtr;
     u8 unk_60; // font related, always 0xE
     u8 unk_61; // font related, always 0xE
     u16 unk_62;
@@ -184,10 +192,10 @@ typedef struct {
     u8 flag; // 0x95
     u8 margins; // 0x96
     u8 maxLinesInBox; // 0x97
-    u8 unk_98; // 0x98, seems like currentLineFromTop, but also index into dialogue window struct
-    u8 maxLinesInText; // 0x99
-    u8 unk_9A; // 0x9A, seems like charPerLineCount, but also index to character avatar struct
-    u8 currentLine; // 0x9B
+    u8 dialogueWindowIndex; // 0x98
+    u8 overlayIconIndex; // 0x99
+    u8 characterAvatarIndex; // 0x9A
+    u8 unk_9B; // 0x9B
     u8 unk_9C;
     u8 unk_9D;
     u8 gameVariableStringPosition;
@@ -201,7 +209,7 @@ typedef struct {
 extern void func_8003D970();  
 extern bool func_8003DBE8(u16 dialogueBoxIndex, u8* textBufferAddr);
 extern bool func_8003DD14(u16);                      
-extern void func_8003DDF8(u16 dialogueBoxIndex, u16, u16, u32 flag);     
+extern bool func_8003DDF8(u16 dialogueBoxIndex, u16, u16, u32 flag);     
 extern bool func_8003E77C(u16, u8, u8, u8, u8);        
 extern bool func_8003EA1C(u16, u8, u8, u8, u8, s32);       
 extern bool func_8003EFD8(u16);           
@@ -214,7 +222,7 @@ extern bool func_8003F4E0(u16, u32, u32, u32);
 extern bool func_8003F54C(u16, f32, f32, f32);                        
 extern bool func_8003F5D0(u16, u8, u8);                           
 extern bool func_8003F630(u16, u8, u8);                           
-extern bool func_8003F690(u16, u8, u8, u8);    
+extern bool setDialogueBoxSpriteIndices(u16, u8, u8, u8);    
 extern bool func_8003F80C(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextureEnd, u32 romIndexStart, u32 romIndexEnd, void* vaddrTextureStart, void* vaddrTextureEnd, void* vaddrIndexStart, void* vaddrIndexEnd, u32 argA, u16 spriteOffset, u8 flag, f32 x, f32 y, f32 z);                    
 extern bool func_8003F910(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextureEnd, u32 romIndexStart, u32 romIndexEnd, void* vaddrTextureStart, void* vaddrTextureEnd, void* vaddrIndexStart, void* vaddrIndexEnd, u32 argA, u16 offset, u8 flag, f32 x, f32 y, f32 z);
 extern bool func_8003FAF8(u16, u16);                              

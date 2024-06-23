@@ -9,6 +9,8 @@
 extern u16 D_80204BF0[0x100];
 extern DialogueBox dialogueBoxes[MAX_DIALOGUE_BOXES];
 extern GameVariableString gameVariableStrings[64];
+extern Vtx D_801C6230[2][0x159];
+// extern u8* D_801706C0[2][];
 
 // rodata
 extern u32 D_8011EE10[8];
@@ -17,9 +19,12 @@ extern u8 D_8011EE90[8];
 
 // forward delcarations
 bool func_8003F024(u16 index, u8 arg1, u8 arg2, u8 arg3, u8 arg4);
+bool func_8003E77C(u16 index, u8 arg1, u8 arg2, u8 arg3, u8 arg4);
 bool func_8003FDB0(u16);      
+u8 func_800403F0(u16 index, u16 arg1);
 void func_80040628(u16, u8); 
 u32 func_80041850(u16 index);
+u32 func_80041B28(u16 index, u16 offset);
 
 //INCLUDE_ASM(const s32, "system/message", func_8003D970);
 
@@ -43,7 +48,7 @@ void func_8003D970(void) {
         dialogueBoxes[i].margins = 0;
         dialogueBoxes[i].maxLinesInBox = 0;
 
-        dialogueBoxes[i].currentLine = 0;
+        dialogueBoxes[i].unk_9B = 0;
         dialogueBoxes[i].unk_9C = 0;
 
         dialogueBoxes[i].unk_70 = 0xFF;
@@ -99,7 +104,7 @@ bool func_8003DBE8(u16 dialogueBoxIndex, u8* textBufferAddr) {
     
     if (dialogueBoxIndex < MAX_DIALOGUE_BOXES) {
 
-        if (!(dialogueBoxes[dialogueBoxIndex].flags & 1)) {
+        if (!(dialogueBoxes[dialogueBoxIndex].flags & ACTIVE)) {
 
             dialogueBoxes[dialogueBoxIndex].unk_90 = 0;
             dialogueBoxes[dialogueBoxIndex].unk_91 = 0;
@@ -138,16 +143,16 @@ bool func_8003DD14(u16 index) {
     
     if (index < MAX_DIALOGUE_BOXES) {
 
-        if (dialogueBoxes[index].flags & 1) {
+        if (dialogueBoxes[index].flags & ACTIVE) {
             
             dialogueBoxes[index].flags &= ~1;
             
-            if (dialogueBoxes[index].flags & 0x200) {
-                func_8002BAD8(dialogueWindows[dialogueBoxes[index].unk_98].spriteIndex);
+            if (dialogueBoxes[index].flags & HAS_DIALOGUE_WINDOW) {
+                func_8002BAD8(dialogueWindows[dialogueBoxes[index].dialogueWindowIndex].spriteIndex);
             }
             
-            if (dialogueBoxes[index].flags & 0x10000) {
-                func_8002BAD8(characterAvatars[dialogueBoxes[index].unk_9A].spriteIndex);
+            if (dialogueBoxes[index].flags & HAS_CHARACTER_AVATAR) {
+                func_8002BAD8(characterAvatars[dialogueBoxes[index].characterAvatarIndex].spriteIndex);
             }
             
             result = TRUE;
@@ -161,7 +166,101 @@ bool func_8003DD14(u16 index) {
 }
 
 // DMA dialogues
-INCLUDE_ASM(const s32, "system/message", func_8003DDF8);
+//INCLUDE_ASM(const s32, "system/message", func_8003DDF8);
+
+bool func_8003DDF8(u16 dialogueBoxIndex, u16 dialogueInfoIndex, u16 arg2, u32 flag) {
+
+    bool result = FALSE;
+    u16 temp;
+    u32 textAddress;
+
+    temp = arg2;
+    
+    if (dialogueBoxIndex < MAX_DIALOGUE_BOXES) {
+        
+        if (dialogueBoxes[dialogueBoxIndex].flags & ACTIVE) {
+
+            dialogueBoxes[dialogueBoxIndex].unk_7E = arg2;
+            dialogueBoxes[dialogueBoxIndex].dialogueInfoIndex = dialogueInfoIndex;
+            
+            nuPiReadRom(dialogueInfo[dialogueInfoIndex].romIndexStart, dialogueInfo[dialogueInfoIndex].index, dialogueInfo[dialogueInfoIndex].romIndexEnd - dialogueInfo[dialogueInfoIndex].romIndexStart);
+
+            textAddress = func_80041B28(dialogueBoxIndex, dialogueBoxes[dialogueBoxIndex].unk_7E);
+            nuPiReadRom(textAddress, dialogueBoxes[dialogueBoxIndex].textBufferBase, func_80041B28(dialogueBoxIndex, dialogueBoxes[dialogueBoxIndex].unk_7E + 1) - textAddress);
+            
+            dialogueBoxes[dialogueBoxIndex].flag = func_800403F0(dialogueBoxIndex, temp);
+            dialogueBoxes[dialogueBoxIndex].unk_90 = 0;
+            dialogueBoxes[dialogueBoxIndex].unk_91 = 0;
+            dialogueBoxes[dialogueBoxIndex].buttonSfxCounter = 0;
+            dialogueBoxes[dialogueBoxIndex].margins = 0;
+            dialogueBoxes[dialogueBoxIndex].maxLinesInBox = 0;
+            dialogueBoxes[dialogueBoxIndex].unk_9D = 0;
+
+            dialogueBoxes[dialogueBoxIndex].currentCharPtr = dialogueBoxes[dialogueBoxIndex].textBufferBase;
+
+            dialogueBoxes[dialogueBoxIndex].flags &= ~4;
+            dialogueBoxes[dialogueBoxIndex].flags &= ~0x4000;
+            dialogueBoxes[dialogueBoxIndex].flags |= INITIALIZED;
+
+            dialogueBoxes[dialogueBoxIndex].flags &= ~0x8000;
+            dialogueBoxes[dialogueBoxIndex].flags &= ~0x40000;
+            dialogueBoxes[dialogueBoxIndex].flags &= ~0x80000;
+            dialogueBoxes[dialogueBoxIndex].flags &= ~0x100000;
+            dialogueBoxes[dialogueBoxIndex].flags &= ~0x20000;
+
+            if (flag == 0x8000) {
+                dialogueBoxes[dialogueBoxIndex].flags |= 0x8000;
+            }
+            
+            if (flag == 0x40000) {
+                dialogueBoxes[dialogueBoxIndex].flags |= flag;
+            }
+
+            if (flag == 0x80000) {
+                dialogueBoxes[dialogueBoxIndex].flags |= flag;
+            }
+
+            if (flag == 0x100000) {
+                dialogueBoxes[dialogueBoxIndex].flags |= flag;
+            }
+
+            if (dialogueBoxes[dialogueBoxIndex].flags & HAS_OVERLAY_ICON) {
+                func_8002B138(overlayIcons[dialogueBoxes[dialogueBoxIndex].overlayIconIndex].spriteIndex, overlayIcons[dialogueBoxes[dialogueBoxIndex].overlayIconIndex].romTextureStart, overlayIcons[dialogueBoxes[dialogueBoxIndex].overlayIconIndex].romTextureEnd, overlayIcons[dialogueBoxes[dialogueBoxIndex].overlayIconIndex].romIndexStart, overlayIcons[dialogueBoxes[dialogueBoxIndex].overlayIconIndex].romIndexEnd, 0, 0, overlayIcons[dialogueBoxes[dialogueBoxIndex].overlayIconIndex].vaddrTextureStart, NULL, overlayIcons[dialogueBoxes[dialogueBoxIndex].overlayIconIndex].vaddrTextureEnd, overlayIcons[dialogueBoxes[dialogueBoxIndex].overlayIconIndex].vaddrIndexStart, overlayIcons[dialogueBoxes[dialogueBoxIndex].overlayIconIndex].vaddrIndexEnd, overlayIcons[dialogueBoxes[dialogueBoxIndex].overlayIconIndex].unk_20, 0, 0);
+                func_8002CB24(overlayIcons[dialogueBoxes[dialogueBoxIndex].overlayIconIndex].spriteIndex, 1);
+                func_8002C914(overlayIcons[dialogueBoxes[dialogueBoxIndex].overlayIconIndex].spriteIndex, 0xFF, 0xFF, 0xFF, 0xFF);
+                func_8002C680(overlayIcons[dialogueBoxes[dialogueBoxIndex].overlayIconIndex].spriteIndex, 2, 2);
+                func_8002C7EC(overlayIcons[dialogueBoxes[dialogueBoxIndex].overlayIconIndex].spriteIndex, 3);
+            }
+
+            if (dialogueBoxes[dialogueBoxIndex].flags & HAS_CHARACTER_AVATAR) {
+                func_8002B138(characterAvatars[dialogueBoxes[dialogueBoxIndex].characterAvatarIndex].spriteIndex, characterAvatars[dialogueBoxes[dialogueBoxIndex].characterAvatarIndex].romTextureStart, characterAvatars[dialogueBoxes[dialogueBoxIndex].characterAvatarIndex].romTextureEnd, characterAvatars[dialogueBoxes[dialogueBoxIndex].characterAvatarIndex].romAssetIndexStart, characterAvatars[dialogueBoxes[dialogueBoxIndex].characterAvatarIndex].romAssetIndexEnd, characterAvatars[dialogueBoxes[dialogueBoxIndex].characterAvatarIndex].romSpritesheetIndexStart, characterAvatars[dialogueBoxes[dialogueBoxIndex].characterAvatarIndex].romSpritesheetIndexEnd, characterAvatars[dialogueBoxes[dialogueBoxIndex].characterAvatarIndex].vaddrTexture, characterAvatars[dialogueBoxes[dialogueBoxIndex].characterAvatarIndex].vaddrSpritesheet, characterAvatars[dialogueBoxes[dialogueBoxIndex].characterAvatarIndex].vaddrPalette, characterAvatars[dialogueBoxes[dialogueBoxIndex].characterAvatarIndex].vaddrAnimation, characterAvatars[dialogueBoxes[dialogueBoxIndex].characterAvatarIndex].vaddrSpriteToPalette, characterAvatars[dialogueBoxes[dialogueBoxIndex].characterAvatarIndex].vaddrSpritesheetIndex, 1, 0);
+                func_8002CB24(characterAvatars[dialogueBoxes[dialogueBoxIndex].characterAvatarIndex].spriteIndex, 1);
+                func_8002C914(characterAvatars[dialogueBoxes[dialogueBoxIndex].characterAvatarIndex].spriteIndex, 0xFF, 0xFF, 0xFF, 0xFF);
+                func_8002C680(characterAvatars[dialogueBoxes[dialogueBoxIndex].characterAvatarIndex].spriteIndex, 2, 2);
+                func_8002C7EC(characterAvatars[dialogueBoxes[dialogueBoxIndex].characterAvatarIndex].spriteIndex, 3);
+            }
+
+            if (dialogueBoxes[dialogueBoxIndex].flags & HAS_DIALOGUE_WINDOW) {
+
+                func_8002B138(dialogueWindows[dialogueBoxes[dialogueBoxIndex].dialogueWindowIndex].spriteIndex, dialogueWindows[dialogueBoxes[dialogueBoxIndex].dialogueWindowIndex].romTextureStart, dialogueWindows[dialogueBoxes[dialogueBoxIndex].dialogueWindowIndex].romTextureEnd, dialogueWindows[dialogueBoxes[dialogueBoxIndex].dialogueWindowIndex].romIndexStart, dialogueWindows[dialogueBoxes[dialogueBoxIndex].dialogueWindowIndex].romIndexEnd, 0, 0, dialogueWindows[dialogueBoxes[dialogueBoxIndex].dialogueWindowIndex].vaddrTextureStart, NULL, dialogueWindows[dialogueBoxes[dialogueBoxIndex].dialogueWindowIndex].vaddrTextureEnd, dialogueWindows[dialogueBoxes[dialogueBoxIndex].dialogueWindowIndex].vaddrIndexStart, dialogueWindows[dialogueBoxes[dialogueBoxIndex].dialogueWindowIndex].vaddrIndexEnd, dialogueWindows[dialogueBoxes[dialogueBoxIndex].dialogueWindowIndex].unk_20, 0, 0);
+                func_8002CB24(dialogueWindows[dialogueBoxes[dialogueBoxIndex].dialogueWindowIndex].spriteIndex, 1);
+                func_8002C914(dialogueWindows[dialogueBoxes[dialogueBoxIndex].dialogueWindowIndex].spriteIndex, 0xFF, 0xFF, 0xFF, 0xFF);
+                func_8002C680(dialogueWindows[dialogueBoxes[dialogueBoxIndex].dialogueWindowIndex].spriteIndex, 2, 2);
+                func_8002C7EC(dialogueWindows[dialogueBoxes[dialogueBoxIndex].dialogueWindowIndex].spriteIndex, 3);
+                func_8002B80C(dialogueWindows[dialogueBoxes[dialogueBoxIndex].dialogueWindowIndex].spriteIndex, dialogueWindows[dialogueBoxes[dialogueBoxIndex].dialogueWindowIndex].spriteOffset, dialogueWindows[dialogueBoxes[dialogueBoxIndex].dialogueWindowIndex].flag);
+                setSpriteShrinkFactor(dialogueWindows[dialogueBoxes[dialogueBoxIndex].dialogueWindowIndex].spriteIndex, dialogueBoxes[dialogueBoxIndex].unk_4C.x + dialogueWindows[dialogueBoxes[dialogueBoxIndex].dialogueWindowIndex].coordinates.x, dialogueBoxes[dialogueBoxIndex].unk_4C.y + dialogueWindows[dialogueBoxes[dialogueBoxIndex].dialogueWindowIndex].coordinates.y, (dialogueBoxes[dialogueBoxIndex].unk_4C.z + dialogueWindows[dialogueBoxes[dialogueBoxIndex].dialogueWindowIndex].coordinates.z) - 2.0f);
+            
+            }
+
+            func_8003E77C(dialogueBoxIndex, 0xFF, 0xFF, 0xFF, 0xFF);
+            result = TRUE;
+            
+        }
+    }
+
+    return result;
+    
+}
 
 //INCLUDE_ASM(const s32, "system/message", func_8003E77C);
 
@@ -171,7 +270,7 @@ bool func_8003E77C(u16 index, u8 arg1, u8 arg2, u8 arg3, u8 arg4) {
     
     if (index < MAX_DIALOGUE_BOXES) { 
 
-        if (dialogueBoxes[index].flags & 1) {
+        if (dialogueBoxes[index].flags & ACTIVE) {
             
             dialogueBoxes[index].unk_14.r = (dialogueBoxes[index].unk_4.r * arg1) / 255.0f;
             dialogueBoxes[index].unk_14.g = (dialogueBoxes[index].unk_4.g * arg2) / 255.0f;
@@ -212,7 +311,7 @@ bool func_8003EE7C(u16 index, u8 arg1, s16 arg2) {
     
     if (index < MAX_DIALOGUE_BOXES) {
 
-        if (dialogueBoxes[index].flags & 1) {
+        if (dialogueBoxes[index].flags & ACTIVE) {
 
             dialogueBoxes[index].unk_24.a = (dialogueBoxes[index].unk_4.a * arg1) / 255.0f;
 
@@ -244,7 +343,7 @@ bool func_8003EFD8(u16 index) {
 
     if (index < MAX_DIALOGUE_BOXES) {
 
-        if (dialogueBoxes[index].flags & 1) {
+        if (dialogueBoxes[index].flags & ACTIVE) {
             result = (dialogueBoxes[index].flags >> 0x15) & 1;
         }
         
@@ -262,7 +361,7 @@ bool func_8003F024(u16 index, u8 r, u8 g, u8 b, u8 a) {
     
     if (index < MAX_DIALOGUE_BOXES) {
 
-        if (dialogueBoxes[index].flags & 1) {
+        if (dialogueBoxes[index].flags & ACTIVE) {
 
             dialogueBoxes[index].unk_4.r = r;
             dialogueBoxes[index].unk_4.g = g;
@@ -333,7 +432,7 @@ bool func_8003F464(u16 index, u8 arg1, u8 arg2, u8* fontTexturePtr, u16* fontPal
     
     if (index < MAX_DIALOGUE_BOXES) {
         
-        if (dialogueBoxes[index].flags & 1) {
+        if (dialogueBoxes[index].flags & ACTIVE) {
             
             dialogueBoxes[index].unk_60 = arg1;
             dialogueBoxes[index].unk_61 = arg2;
@@ -359,7 +458,8 @@ bool func_8003F54C(u16 index, f32 x, f32 y, f32 z) {
     bool result = FALSE;
 
     if (index < MAX_DIALOGUE_BOXES) {
-        if (dialogueBoxes[index].flags & 1) {
+
+        if (dialogueBoxes[index].flags & ACTIVE) {
             
             dialogueBoxes[index].unk_4C.x = x;
             dialogueBoxes[index].unk_4C.y = y;
@@ -368,6 +468,7 @@ bool func_8003F54C(u16 index, f32 x, f32 y, f32 z) {
             result = TRUE;
 
         }
+
     }
 
     return result;
@@ -382,7 +483,7 @@ bool func_8003F5D0(u16 index, u8 arg1, u8 arg2) {
     
     if (index < MAX_DIALOGUE_BOXES) {
 
-        if (dialogueBoxes[index].flags & 1) {
+        if (dialogueBoxes[index].flags & ACTIVE) {
 
             dialogueBoxes[index].unk_92 = arg1;
             dialogueBoxes[index].unk_93 = arg2;
@@ -404,9 +505,9 @@ bool func_8003F630(u16 index, u8 arg1, u8 arg2) {
     
     if (index < MAX_DIALOGUE_BOXES) {
 
-        if (dialogueBoxes[index].flags & 1) {
+        if (dialogueBoxes[index].flags & ACTIVE) {
 
-            dialogueBoxes[index].currentLine = arg1;
+            dialogueBoxes[index].unk_9B = arg1;
             dialogueBoxes[index].unk_9C = arg2;
             
             result = TRUE;
@@ -418,36 +519,36 @@ bool func_8003F630(u16 index, u8 arg1, u8 arg2) {
     
 }
 
-//INCLUDE_ASM(const s32, "system/message", func_8003F690);
+//INCLUDE_ASM(const s32, "system/message", setDialogueBoxSpriteIndices);
 
-bool func_8003F690(u16 index, u8 arg1, u8 arg2, u8 arg3) {
+bool setDialogueBoxSpriteIndices(u16 index, u8 dialogueWindowIndex, u8 overlayIconIndex, u8 characterAvatarIndex) {
 
     bool result = FALSE;
     
     if (index < MAX_DIALOGUE_BOXES) {
 
-        if (dialogueBoxes[index].flags & 1) { 
+        if (dialogueBoxes[index].flags & ACTIVE) { 
             
-            dialogueBoxes[index].unk_98 = arg1;
-            dialogueBoxes[index].maxLinesInText = arg2;
-            dialogueBoxes[index].unk_9A = arg3;
+            dialogueBoxes[index].dialogueWindowIndex = dialogueWindowIndex;
+            dialogueBoxes[index].overlayIconIndex = overlayIconIndex;
+            dialogueBoxes[index].characterAvatarIndex = characterAvatarIndex;
 
-            if (dialogueBoxes[index].unk_98 != 0xFF) {
-                dialogueBoxes[index].flags |= 0x200;
+            if (dialogueBoxes[index].dialogueWindowIndex != 0xFF) {
+                dialogueBoxes[index].flags |= HAS_DIALOGUE_WINDOW;
             } else {
-                dialogueBoxes[index].flags &= ~0x200;
+                dialogueBoxes[index].flags &= ~HAS_DIALOGUE_WINDOW;
             }
 
-            if (dialogueBoxes[index].maxLinesInText != 0xFF) {
-                dialogueBoxes[index].flags |= 0x400;
+            if (dialogueBoxes[index].overlayIconIndex != 0xFF) {
+                dialogueBoxes[index].flags |= HAS_OVERLAY_ICON;
             } else {
-                dialogueBoxes[index].flags &= ~0x400;
+                dialogueBoxes[index].flags &= ~HAS_OVERLAY_ICON;
             }
 
-            if (dialogueBoxes[index].unk_9A != 0xFF) {
-                dialogueBoxes[index].flags |= 0x10000;
+            if (dialogueBoxes[index].characterAvatarIndex != 0xFF) {
+                dialogueBoxes[index].flags |= HAS_CHARACTER_AVATAR;
             } else {
-                dialogueBoxes[index].flags &= ~0x10000;
+                dialogueBoxes[index].flags &= ~HAS_CHARACTER_AVATAR;
             }
 
             result = TRUE;
@@ -545,7 +646,7 @@ bool func_8003FA1C(u16 index, u16 arg1, u32 romTextureStart, u32 romTextureEnd,
     f32 x, f32 y, f32 z) {
 
     bool result = FALSE;
-\
+
     if (index == 0) {
         
         characterAvatars[index].romTextureStart = romTextureStart;
@@ -589,7 +690,7 @@ bool func_8003FAF8(u16 index, u16 arg1) {
     bool result = FALSE;
 
     if (index < MAX_DIALOGUE_BOXES) {
-        if (dialogueBoxes[index].flags & 1 ) {
+        if (dialogueBoxes[index].flags & ACTIVE ) {
             dialogueBoxes[index].unk_86 = arg1;
             result = TRUE;
         }
@@ -607,7 +708,7 @@ bool func_8003FB4C(u16 index, u16 arg1) {
 
     if (index < MAX_DIALOGUE_BOXES) {
 
-        if (dialogueBoxes[index].flags & 1 ) {
+        if (dialogueBoxes[index].flags & ACTIVE ) {
 
             dialogueBoxes[index].unk_84 = arg1;
 
@@ -739,7 +840,7 @@ bool func_8003FDB0(u16 index) {
 
     if (index < MAX_DIALOGUE_BOXES) {
 
-        if (dialogueBoxes[index].flags & 1) {
+        if (dialogueBoxes[index].flags & ACTIVE) {
 
             temp = dialogueBoxes[index].unk_92 * dialogueBoxes[index].unk_93;
 
@@ -772,7 +873,7 @@ bool func_8003FE9C(u16 index) {
 
     if (index < MAX_DIALOGUE_BOXES) { 
 
-        if ((dialogueBoxes[index].flags & 1) && (dialogueBoxes[index].flags & 2) && !(dialogueBoxes[index].flags & (0x40 | 0x80))) {
+        if ((dialogueBoxes[index].flags & ACTIVE) && (dialogueBoxes[index].flags & INITIALIZED) && !(dialogueBoxes[index].flags & (0x40 | 0x80))) {
 
             if (dialogueBoxes[index].flag + 1 != dialogueBoxes[index].buttonSfxCounter + dialogueBoxes[index].unk_93) {
 
@@ -805,7 +906,7 @@ bool func_8003FFF4(u16 index) {
 
     if (index < MAX_DIALOGUE_BOXES) { 
 
-        if ((dialogueBoxes[index].flags & 1) && (dialogueBoxes[index].flags & 2) && !(dialogueBoxes[index].flags & (0x40 | 0x80))) {
+        if ((dialogueBoxes[index].flags & ACTIVE) && (dialogueBoxes[index].flags & INITIALIZED) && !(dialogueBoxes[index].flags & (0x40 | 0x80))) {
 
             if (dialogueBoxes[index].buttonSfxCounter) {
 
@@ -839,7 +940,7 @@ bool func_80040140(u16 index) {
 
     if (index < MAX_DIALOGUE_BOXES) { 
 
-        if ((dialogueBoxes[index].flags & 1) && (dialogueBoxes[index].flags & 2)) {
+        if ((dialogueBoxes[index].flags & ACTIVE) && (dialogueBoxes[index].flags & INITIALIZED)) {
             result = dialogueBoxes[index].flag + 1 != dialogueBoxes[index].buttonSfxCounter + dialogueBoxes[index].unk_93;
         }
         
@@ -856,7 +957,7 @@ u8 func_800401C8(u16 index) {
     u8 count = 0;
 
     if (index < MAX_DIALOGUE_BOXES) {
-        if (dialogueBoxes[index].flags & 1 && dialogueBoxes[index].flags & 2) {
+        if (dialogueBoxes[index].flags & ACTIVE && dialogueBoxes[index].flags & INITIALIZED) {
             count = dialogueBoxes[index].buttonSfxCounter != 0;
         }
     }
@@ -917,7 +1018,7 @@ static const u8 D_8011EE30[16] = {
 
 //INCLUDE_ASM(const s32, "system/message", func_800403F0);
 
-u8 func_800403F0(u16 index) {
+u8 func_800403F0(u16 index, u16 arg1) {
     
     u8 result = 0;
     
@@ -1145,7 +1246,7 @@ u32 func_80041B28(u16 index, u16 offset) {
     
 }
 
-// dialogue box rendering/printing
+// dialogue box rendering/printing, char to font mapping
 INCLUDE_ASM(const s32, "system/message", func_80041B80);
 
 // display lists, gsDPSetScissor

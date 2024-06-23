@@ -142,7 +142,7 @@ void func_800DCAB8(void) {
         case 0:           
             
             func_8003F54C(0, 24.0f, -64.0f, 352.0f);
-            func_8003F690(0, 0, 0, 0);
+            setDialogueBoxSpriteIndices(0, 0, 0, 0);
             func_8003F360(0, -4, 0);
             
             if (D_80119580[shopContext.storeItemIndex] == 0) {
@@ -170,7 +170,7 @@ void func_800DCAB8(void) {
                 func_8003F360(0, -4, 2);
                 func_8003FBD8(0x12, shopContext.quantity * prices[shopContext.storeItemIndex], 0);
                 func_8003F54C(0, 24.0f, -64.0f, 352.0f);
-                func_8003F690(0, 0, 0, 0);
+                setDialogueBoxSpriteIndices(0, 0, 0, 0);
                 func_8003DDF8(0, D_80118E80[shopContext.storeItemIndex], D_80118BE0[shopContext.storeItemIndex], 0x80000);
                 
                 shopContext.unk_3++;         
@@ -314,7 +314,7 @@ void func_800DCAB8(void) {
 
             func_80045F5C(1, gGold, 8, 3);
             func_8003F54C(0, 24.0f, -64.0f, 352.0f);
-            func_8003F690(0, 0, 0, 0);
+            setDialogueBoxSpriteIndices(0, 0, 0, 0);
             func_8003F360(0, -4, 0);
 
             switch (temp) {                        
@@ -363,7 +363,7 @@ void func_800DCAB8(void) {
        case 4:        
 
             func_8003F54C(0, 24.0f, -64.0f, 352.0f);
-            func_8003F690(0, 0, 0, 0);
+            setDialogueBoxSpriteIndices(0, 0, 0, 0);
             func_8003F360(0, -4, 0);
             func_8003DDF8(0, D_80118E80[shopContext.storeItemIndex], D_80118C50[shopContext.storeItemIndex], 0);
             shopContext.unk_3 = 5;

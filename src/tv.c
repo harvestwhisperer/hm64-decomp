@@ -657,7 +657,7 @@ void tvMainLoopCallback(void) {
                 
                 // set up dialogue box
                 func_8003F54C(0, 0, -64.0f, 352.0f);
-                func_8003F690(0, 1, 0, 0);
+                setDialogueBoxSpriteIndices(0, 1, 0, 0);
                 func_8003F360(0, ~(1 | 2), 0);
                 func_8003DDF8(0, 8, tvContext.dialogueIndex, 0);
 
