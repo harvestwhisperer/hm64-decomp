@@ -7,6 +7,8 @@
 #define MAX_DIALOGUE_BANKS 73
 #define MAX_GAME_VARIABLE_STRINGS 64
 
+#define MAIN_DIALOGUE_BOX_INDEX 0
+
 /* flags */
 #define ACTIVE 1
 #define INITIALIZED 2
@@ -209,7 +211,7 @@ typedef struct {
 extern void func_8003D970();  
 extern bool func_8003DBE8(u16 dialogueBoxIndex, u8* textBufferAddr);
 extern bool func_8003DD14(u16);                      
-extern bool func_8003DDF8(u16 dialogueBoxIndex, u16, u16, u32 flag);     
+extern bool initializeDialogueBox(u16 dialogueBoxIndex, u16, u16, u32 flag);     
 extern bool func_8003E77C(u16, u8, u8, u8, u8);        
 extern bool func_8003EA1C(u16, u8, u8, u8, u8, s32);       
 extern bool func_8003EFD8(u16);           

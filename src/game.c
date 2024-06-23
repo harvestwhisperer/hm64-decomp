@@ -667,7 +667,7 @@ inline int adjustValue(int initial, int value, int max) {
 //INCLUDE_ASM(const s32, "game", showTextBox);
 
 // show text box
-inline void showTextBox(u16 arg0, u16 arg1, u16 arg2, int arg3, u16 arg4) {
+inline void showTextBox(u16 arg0, u16 dialogueInfoIndex, u16 arg2, int arg3, u16 arg4) {
   
     func_8002F6F0();
     func_80046C98();
@@ -691,7 +691,7 @@ inline void showTextBox(u16 arg0, u16 arg1, u16 arg2, int arg3, u16 arg4) {
 
     func_8003F360(0, ~(1 | 2), arg4);
   
-    func_8003DDF8(0, arg1, arg2, arg3);
+    initializeDialogueBox(MAIN_DIALOGUE_BOX_INDEX, dialogueInfoIndex, arg2, arg3);
   
     setMainLoopCallbackFunctionIndex(TEXT);
     
@@ -2313,30 +2313,31 @@ void func_80060490(void) {
 
 //INCLUDE_ASM(const s32, "game", func_800604B0);
 
+// show end of festival day dialogue box 
 void func_800604B0(void) {
 
     if (func_80036A84(MAIN_MAP_INDEX) || !(mainMap[MAIN_MAP_INDEX].mapStruct9.flags & 1)) {
         
-        func_8003F54C(0, 0, -64.0f, 352.0f);
-        setDialogueBoxSpriteIndices(0, 1, 0, 0);
-        func_8003F360(0, ~(1 | 2), 0);
+        func_8003F54C(MAIN_DIALOGUE_BOX_INDEX, 0, -64.0f, 352.0f);
+        setDialogueBoxSpriteIndices(MAIN_DIALOGUE_BOX_INDEX, 1, 0, 0);
+        func_8003F360(MAIN_DIALOGUE_BOX_INDEX, ~(1 | 2), 0);
         
         switch (gCutsceneIndex) {
             case 0x81 ... 0x82:
             case 0x8B:              
             case 0x195 ... 0x199:
-                func_8003DDF8(0, 4, 0x4D, 0);
+                initializeDialogueBox(MAIN_DIALOGUE_BOX_INDEX, 4, 0x4D, 0);
                 break;
-            case 0x44C:
-            case 0x4E2:
-            case 0x578:
-                func_8003DDF8(0, 4, 0x4A, 0);
+            case SEA_FESTIVAL:
+            case EGG_FESTIVAL:
+            case NEW_YEAR_FESTIVAL:
+                initializeDialogueBox(MAIN_DIALOGUE_BOX_INDEX, 4, 0x4A, 0);
                 break;
             case 0x1A0:
-                func_8003DDF8(0, 4, 0x4C, 0);
+                initializeDialogueBox(MAIN_DIALOGUE_BOX_INDEX, 4, 0x4C, 0);
                 break;
             default:
-                func_8003DDF8(0, 4, 0x4B, 0);
+                initializeDialogueBox(MAIN_DIALOGUE_BOX_INDEX, 4, 0x4B, 0);
                 break;
         }
         

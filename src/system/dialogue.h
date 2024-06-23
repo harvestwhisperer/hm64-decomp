@@ -15,6 +15,10 @@
 #define UNSIGNED_SHORT 2
 #define UNSIGNED_INT 4
 
+/* flags */
+#define ACTIVE 1
+#define INITIALIZED 2
+
 extern u32 _dialogueIconsTextureSegmentRomStart;
 extern u32 _dialogueIconsTextureSegmentRomEnd;
 extern u32 _dialogueIconsIndexSegmentRomStart;
@@ -50,12 +54,12 @@ typedef struct {
 	u16 unk_4;
     u16 unk_6;	
     u16 unk_8;
-	u16 unk_A;
+	u16 dialogueVariableValue;
     u16 specialDialogueBit;
-	s16 unk_E; // amount to increase/decrease dialogue variable
+	s16 updatedDialogueVariableAdjustment; // amount to increase/decrease dialogue variable
 	u16 unk_10;
     u8 unk_12; // controls how dialogue data is iterated through
-	u8 unk_13; // index into dialogueVariables
+	u8 dialogueVariablesIndex;
 	u8 unk_14;
     u8 unk_15;
 	u8 unk_16;

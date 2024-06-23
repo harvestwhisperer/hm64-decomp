@@ -809,10 +809,16 @@ setSfxFrequency = 0x8003D7C0;
 setSfxPan = 0x8003D8A0;
 stopSfx = 0x8003D948;
 
+initializeDialogueBox = 0x8003DDF8;
 setDialogueBoxSpriteIndices = 0x8003F690;
 
 setDialogueVariable = 0x800430DC;
+setDialogueVariable_inline = 0x80043CF8;
+getDialogueVariableValue = 0x80043D8C;
 setSpecialDialogueBitsPointer = 0x80043138;
+setSpecialDialogueBitFromPointer = 0x80043E28;
+toggleSpecialDialogueBitFromPointer = 0x80043E5C;
+checkSpecialDialogueBitFromPointer = 0x80043E94;
 
 initializeCutsceneMaps = 0x80046860;
 mainLoopCutsceneHandler = 0x80046D78;
