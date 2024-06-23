@@ -47,13 +47,6 @@ typedef struct {
     u8 unk_6;
 } MainLoopCallbackInfo;
 
-// might be dialogue.h
-typedef struct {
-	void *address;
-	u32 maxValue;
-	bool set;
-} GameVariable;
-
 extern inline int adjustValue(int initial, int value, int max);
 
 void resetDailyBits();

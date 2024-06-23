@@ -121,6 +121,4 @@ nuBoot = 0x80025C50;
 
 nusched = 0x80222B40;
 
-initializeDialogueVariable = 0x800430DC;
-
 gControllers = 0x8018A738;
