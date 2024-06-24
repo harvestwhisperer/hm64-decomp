@@ -713,9 +713,13 @@ gWifeName = 0x801C3F51;
 nuGfxUcode = 0x801C3F74;
 nuGfxCfb = 0x80215EBC;
 
-idleThread = 0x801241C0;
-mainThread = 0x80124370;
-nuIdleFunc = 0x801FD628;
+idleThread  = 0x801241C0; // size:0x1B0
+mainThread  = 0x80124370; // size:0x1B0
+IdleStack   = 0x80124520; // size:0x2000
+
+nuMainStack = 0x801C4220; // size:0x2000
+
+nuIdleFunc  = 0x801FD628;
 
 
 // funcs
