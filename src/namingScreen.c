@@ -155,7 +155,7 @@ void func_800ED974(void) {
             func_8003F464(3, 0xE, 0xE, 0x802FF000, 0x8030A000);
             func_8003F360(3, 1, 1);
             setDialogueBoxSpriteIndices(3, 0xFF, 0xFF, 0xFF);
-            func_8003DDF8(3, 0xA, 0xD, 0x80000);
+            initializeDialogueBox(3, 0xA, 0xD, 0x80000);
             func_8003E77C(3, 0, 0, 0, 0);
             func_8003EA1C(3, 0xFF, 0xFF, 0xFF, 0xFF, 8);
             func_8003DBE8(4, (void*)0x8030BC00);
@@ -165,7 +165,7 @@ void func_800ED974(void) {
             func_8003F464(4, 0xE, 0xE, 0x802FF000, 0x8030A000);
             func_8003F360(4, 1, 1);
             setDialogueBoxSpriteIndices(4, 0xFF, 0xFF, 0xFF);
-            func_8003DDF8(4, 0xA, temp2 + 0xE, 0x80000);
+            initializeDialogueBox(4, 0xA, temp2 + 0xE, 0x80000);
             func_8003E77C(4, 0, 0, 0, 0);
             func_8003EA1C(4, 0xFF, 0xFF, 0xFF, 0xFF, 8);
             
@@ -526,7 +526,7 @@ void loadNameSelectionSprites(void) {
     func_8003F464(3, 0xE, 0xE, 0x802FF000, 0x8030A000);
     func_8003F360(3, 1, 1);
     setDialogueBoxSpriteIndices(3, 0xFF, 0xFF, 0xFF);
-    func_8003DDF8(3, 0xA, 0xD, 0x80000);
+    initializeDialogueBox(3, 0xA, 0xD, 0x80000);
     func_8003E77C(3, 0, 0, 0, 0);
     func_8003EA1C(3, 0xFF, 0xFF, 0xFF, 0xFF, 8);
     

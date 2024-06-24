@@ -49,7 +49,7 @@ bool func_80042FEC(u16 index, u16 arg1, u16 arg2) {
 
     bool result = FALSE;
  
-    if (index == 0 && !(dialogues[index].struct5.flags & 1)) {
+    if (index == 0 && !(dialogues[index].struct5.flags & ACTIVE)) {
 
         dialogues[index].struct5.scrollSfxIndex = 0xFF;
         dialogues[index].struct5.closeSfxIndex = 0xFF;
@@ -127,7 +127,7 @@ bool func_80043148(u16 index, u32 scrollSfxIndex, u32 closeSfxIndex, u32 arg3) {
 
     bool result = FALSE;
 
-    if (index == 0 && dialogues[index].struct5.flags & 1) {
+    if (index == 0 && dialogues[index].struct5.flags & ACTIVE) {
         
         dialogues[index].struct5.scrollSfxIndex = scrollSfxIndex;
         dialogues[index].struct5.closeSfxIndex = closeSfxIndex;
@@ -149,7 +149,7 @@ bool func_8004318C(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextu
 
     bool result = FALSE;
 
-    if (index == 0 && (dialogues[index].struct5.flags & 1)) {
+    if (index == 0 && (dialogues[index].struct5.flags & ACTIVE)) {
   
         dialogues[index].struct2.romTextureStart = romTextureStart;
         dialogues[index].struct2.romTextureEnd = romTextureEnd;
@@ -186,7 +186,7 @@ bool func_80043260(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextu
 
     bool result = FALSE;
 
-    if (index == 0 && (dialogues[index].struct5.flags & 1)) {
+    if (index == 0 && (dialogues[index].struct5.flags & ACTIVE)) {
   
         dialogues[index].struct3.romTextureStart = romTextureStart;
         dialogues[index].struct3.romTextureEnd = romTextureEnd;
@@ -223,7 +223,7 @@ bool func_80043334(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextu
 
     bool result = FALSE;
 
-    if (index == 0 && (dialogues[index].struct5.flags & 1)) {
+    if (index == 0 && (dialogues[index].struct5.flags & ACTIVE)) {
         
         dialogues[index].struct4.romTextureStart = romTextureStart;
         dialogues[index].struct4.romTextureEnd = romTextureEnd;
@@ -284,7 +284,7 @@ bool func_80043430(u16 index, u16 dialogueAddressIndex, u16 dialogueIndex, u16 a
     bool result = FALSE;
     u32 temp;
 
-    if (index == 0 && dialogues[index].struct5.flags & 1) {
+    if (index == 0 && dialogues[index].struct5.flags & ACTIVE) {
 
         func_8002B138(dialogues[index].struct2.spriteIndex, 
             dialogues[index].struct2.romTextureStart, 
@@ -378,12 +378,12 @@ bool func_80043430(u16 index, u16 dialogueAddressIndex, u16 dialogueIndex, u16 a
         dialogues[index].struct1.unk_4 = 0;
         dialogues[index].struct1.unk_6 = 0;
         dialogues[index].struct1.unk_8 = 0;
-        dialogues[index].struct1.unk_A = 0;
+        dialogues[index].struct1.dialogueVariableValue = 0;
         dialogues[index].struct1.specialDialogueBit = 0;
-        dialogues[index].struct1.unk_E = 0;
+        dialogues[index].struct1.updatedDialogueVariableAdjustment = 0;
         dialogues[index].struct1.unk_10 = 0;
         
-        dialogues[index].struct1.unk_13 = 0;
+        dialogues[index].struct1.dialogueVariablesIndex = 0;
         dialogues[index].struct1.unk_14 = 0;
         dialogues[index].struct1.unk_15 = 0;
         dialogues[index].struct1.unk_16 = 0;
@@ -391,10 +391,10 @@ bool func_80043430(u16 index, u16 dialogueAddressIndex, u16 dialogueIndex, u16 a
         dialogues[index].struct1.unk_18 = 0;
         
         dialogues[index].struct5.flags &= ~4;
-        dialogues[index].struct5.flags |= 2;
+        dialogues[index].struct5.flags |= INITIALIZED;
 
         if (arg3 == 0x40) {
-            dialogues[index].struct5.flags |= (2 | 0x40);
+            dialogues[index].struct5.flags |= (INITIALIZED | 0x40);
         }  else {
             dialogues[index].struct5.flags &= ~(0x40);
         }
@@ -436,7 +436,7 @@ bool func_80043AD8(u16 index) {
 
     bool result = FALSE;
 
-    if (index == 0 && dialogues[index].struct5.flags & 1) {
+    if (index == 0 && dialogues[index].struct5.flags & ACTIVE) {
 
         if (!(dialogues[index].struct5.flags & 0x40)) {
             dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex1].flags &= ~0x8000;
@@ -479,37 +479,35 @@ u8 func_80043C6C(u16 index) {
 
 //INCLUDE_ASM(const s32, "system/dialogue", func_80043C98);
 
-u32 func_80043C98(u16 index, u16 arg1) {
+u32 func_80043C98(u16 index, u16 textIndex) {
 
-    u32 ptr;
-
-    ptr = dialogueAddresses[dialogues[index].struct5.dialogueAddressIndex].romIndex;
+    u32 ptr = dialogueAddresses[dialogues[index].struct5.dialogueAddressIndex].romIndex;
     
-    return ptr + dialogueAddresses[dialogues[index].struct5.dialogueAddressIndex].vaddr[arg1];
+    return ptr + dialogueAddresses[dialogues[index].struct5.dialogueAddressIndex].vaddr[textIndex];
     
 }
 
-//INCLUDE_ASM(const s32, "system/dialogue", func_80043CF8);
+//INCLUDE_ASM(const s32, "system/dialogue", setDialogueVariable_inline);
 
-inline void func_80043CF8(u16 index, u16 arg1) {
+inline void setDialogueVariable_inline(u16 index, u16 value) {
 
     switch (dialogueVariables[index].type) {
         case UNSIGNED_CHAR:
-            *(u8*)dialogueVariables[index].value = arg1;
+            *(u8*)dialogueVariables[index].value = value;
             break;
         case UNSIGNED_SHORT:
-            *(u16*)dialogueVariables[index].value = arg1;
+            *(u16*)dialogueVariables[index].value = value;
             break;
         case UNSIGNED_INT:
-            *(u32*)dialogueVariables[index].value = arg1;
+            *(u32*)dialogueVariables[index].value = value;
             break;
     }
     
 }
  
-//INCLUDE_ASM(const s32, "system/dialogue", func_80043D8C);
+//INCLUDE_ASM(const s32, "system/dialogue", getDialogueVariableValue);
 
-inline u32 func_80043D8C(u16 index) {
+inline u32 getDialogueVariableValue(u16 index) {
 
     u32 value;
     
@@ -529,27 +527,27 @@ inline u32 func_80043D8C(u16 index) {
 
 }
 
-//INCLUDE_ASM(const s32, "system/dialogue", func_80043E28);
+//INCLUDE_ASM(const s32, "system/dialogue", setSpecialDialogueBitFromPointer);
 
-inline void func_80043E28(u16 bitIndex) {
+inline void setSpecialDialogueBitFromPointer(u16 bitIndex) {
 
     u32 temp = bitIndex;
     specialDialogueBitsPointer[temp >> 5] |= 1 << (temp & 0x1F);
     
 }
 
-//INCLUDE_ASM(const s32, "system/dialogue", func_80043E5C);
+//INCLUDE_ASM(const s32, "system/dialogue", toggleSpecialDialogueBitFromPointer);
 
-inline void func_80043E5C(u16 bitIndex) {
+inline void toggleSpecialDialogueBitFromPointer(u16 bitIndex) {
 
     u32 temp = bitIndex;
     specialDialogueBitsPointer[temp >> 5] &= ~(1 << (temp & 0x1F));
 
 }
 
-//INCLUDE_ASM(const s32, "system/dialogue", func_80043E94);
+//INCLUDE_ASM(const s32, "system/dialogue", checkSpecialDialogueBitFromPointer);
 
-inline u32 func_80043E94(u16 bitIndex) {
+inline u32 checkSpecialDialogueBitFromPointer(u16 bitIndex) {
     
     u32 temp = bitIndex;
     
@@ -740,9 +738,9 @@ void func_80045260(u16 index) {
         
             case 0:
                 if (dialogues[index].struct5.flags & 0x80) {
-                    func_8003DDF8(dialogues[index].struct5.dialogueBoxIndex1, dialogueAddresses[dialogues[index].struct5.dialogueAddressIndex].unk_14, dialogues[index].struct1.unk_0, 0);
+                    initializeDialogueBox(dialogues[index].struct5.dialogueBoxIndex1, dialogueAddresses[dialogues[index].struct5.dialogueAddressIndex].unk_14, dialogues[index].struct1.unk_0, 0);
                 } else {
-                    func_8003DDF8(dialogues[index].struct5.dialogueBoxIndex1, dialogueAddresses[dialogues[index].struct5.dialogueAddressIndex].unk_14, dialogues[index].struct1.unk_0, 0x8000);
+                    initializeDialogueBox(dialogues[index].struct5.dialogueBoxIndex1, dialogueAddresses[dialogues[index].struct5.dialogueAddressIndex].unk_14, dialogues[index].struct1.unk_0, 0x8000);
                 }
                 
                 set = TRUE;
@@ -753,7 +751,7 @@ void func_80045260(u16 index) {
 
             case 1:
                 
-                temp = func_80043D8C(dialogues[index].struct1.unk_13);
+                temp = getDialogueVariableValue(dialogues[index].struct1.dialogueVariablesIndex);
                 
                 if ((temp >= dialogues[index].struct1.unk_4) && (dialogues[index].struct1.unk_6 >= temp)) {
                 
@@ -762,9 +760,9 @@ void func_80045260(u16 index) {
                     if (temp2 != 0xFFFF) {
 
                         if (dialogues[index].struct5.flags & 0x80) {
-                            func_8003DDF8(dialogues[index].struct5.dialogueBoxIndex1, dialogueAddresses[dialogues[index].struct5.dialogueAddressIndex].unk_14, temp2, 0);
+                            initializeDialogueBox(dialogues[index].struct5.dialogueBoxIndex1, dialogueAddresses[dialogues[index].struct5.dialogueAddressIndex].unk_14, temp2, 0);
                         } else {
-                            func_8003DDF8(dialogues[index].struct5.dialogueBoxIndex1, dialogueAddresses[dialogues[index].struct5.dialogueAddressIndex].unk_14, temp2, 0x8000);
+                            initializeDialogueBox(dialogues[index].struct5.dialogueBoxIndex1, dialogueAddresses[dialogues[index].struct5.dialogueAddressIndex].unk_14, temp2, 0x8000);
                         }
                         
                         set = TRUE;
@@ -793,11 +791,11 @@ void func_80045260(u16 index) {
 
                 /*
 
-                temp4 = (u16)func_80043D8C(dialogues[index].struct1.unk_13);
+                temp4 = (u16)getDialogueVariableValue(dialogues[index].struct1.dialogueVariablesIndex);
 
-                temp4 += adjustValue_dialogue_c(temp4, dialogues[index].struct1.unk_E, dialogueVariables[dialogues[index].struct1.unk_13].maxValue);
+                temp4 += adjustValue_dialogue_c(temp4, dialogues[index].struct1.updatedDialogueVariableAdjustment, dialogueVariables[dialogues[index].struct1.dialogueVariablesIndex].maxValue);
                 
-                func_80043CF8(dialogues[index].struct1.unk_13, temp4);
+                setDialogueVariable_inline(dialogues[index].struct1.dialogueVariablesIndex, temp4);
                 
                 dialogues[index].struct1.unk_12 = 0xFF;
                 
@@ -805,12 +803,12 @@ void func_80045260(u16 index) {
 
                 */
 
-                temp4 = func_80043D8C(dialogues[index].struct1.unk_13);
+                temp4 = getDialogueVariableValue(dialogues[index].struct1.dialogueVariablesIndex);
 
                 // FIXME: should be inline adjustValue call
 
-                max = dialogueVariables[dialogues[index].struct1.unk_13].maxValue;
-                adjusted = dialogues[index].struct1.unk_E;
+                max = dialogueVariables[dialogues[index].struct1.dialogueVariablesIndex].maxValue;
+                adjusted = dialogues[index].struct1.updatedDialogueVariableAdjustment;
                 
                 temp5 = (u16)temp4;
                 temp5 += adjusted;
@@ -825,9 +823,9 @@ void func_80045260(u16 index) {
                 
                 max = temp4 + adjusted;
                 
-                // FIXME: should be inline func_80043CF8 call
+                // FIXME: should be inline setDialogueVariable_inline call
 
-                tempIndex = dialogues[index].struct1.unk_13;
+                tempIndex = dialogues[index].struct1.dialogueVariablesIndex;
                 
                 switch (dialogueVariables[tempIndex].type) {
                     case UNSIGNED_CHAR:
@@ -848,22 +846,22 @@ void func_80045260(u16 index) {
                 break;
 
             case 3:
-                func_80043CF8(dialogues[index].struct1.unk_13, dialogues[index].struct1.unk_A);
+                setDialogueVariable_inline(dialogues[index].struct1.dialogueVariablesIndex, dialogues[index].struct1.dialogueVariableValue);
                 dialogues[index].struct1.unk_12 = 0xFF;
                 break;
 
             case 4:
                 
-                if (func_80043E94(dialogues[index].struct1.specialDialogueBit)) {
+                if (checkSpecialDialogueBitFromPointer(dialogues[index].struct1.specialDialogueBit)) {
                     
                     temp2 = dialogues[index].struct1.unk_0;
                 
                     if (temp2 != 0xFFFF) {
                         
                         if (dialogues[index].struct5.flags & 0x80) {
-                            func_8003DDF8(dialogues[index].struct5.dialogueBoxIndex1, dialogueAddresses[dialogues[index].struct5.dialogueAddressIndex].unk_14, temp2, 0);
+                            initializeDialogueBox(dialogues[index].struct5.dialogueBoxIndex1, dialogueAddresses[dialogues[index].struct5.dialogueAddressIndex].unk_14, temp2, 0);
                         } else {
-                            func_8003DDF8(dialogues[index].struct5.dialogueBoxIndex1, dialogueAddresses[dialogues[index].struct5.dialogueAddressIndex].unk_14, temp2, 0x8000);
+                            initializeDialogueBox(dialogues[index].struct5.dialogueBoxIndex1, dialogueAddresses[dialogues[index].struct5.dialogueAddressIndex].unk_14, temp2, 0x8000);
                         }
                         
                         set = TRUE;
@@ -887,12 +885,12 @@ void func_80045260(u16 index) {
                 break;
 
             case 5:
-                func_80043E28(dialogues[index].struct1.specialDialogueBit);
+                setSpecialDialogueBitFromPointer(dialogues[index].struct1.specialDialogueBit);
                 dialogues[index].struct1.unk_12 = 0xFF;
                 break;
 
             case 6:
-                func_80043E5C(dialogues[index].struct1.specialDialogueBit);
+                toggleSpecialDialogueBitFromPointer(dialogues[index].struct1.specialDialogueBit);
                 dialogues[index].struct1.unk_12 = 0xFF;
                 break;
 
@@ -906,9 +904,9 @@ void func_80045260(u16 index) {
                     
                     if (temp2 != 0xFFFF) {
                         if (dialogues[index].struct5.flags & 0x80) {
-                            func_8003DDF8(dialogues[index].struct5.dialogueBoxIndex1, dialogueAddresses[dialogues[index].struct5.dialogueAddressIndex].unk_14, temp2, 0);
+                            initializeDialogueBox(dialogues[index].struct5.dialogueBoxIndex1, dialogueAddresses[dialogues[index].struct5.dialogueAddressIndex].unk_14, temp2, 0);
                         } else {
-                            func_8003DDF8(dialogues[index].struct5.dialogueBoxIndex1, dialogueAddresses[dialogues[index].struct5.dialogueAddressIndex].unk_14, temp2, 0x8000);
+                            initializeDialogueBox(dialogues[index].struct5.dialogueBoxIndex1, dialogueAddresses[dialogues[index].struct5.dialogueAddressIndex].unk_14, temp2, 0x8000);
                         }
                         
                         set = TRUE;
@@ -945,7 +943,7 @@ void func_80045260(u16 index) {
                 dialogues[index].struct5.unk_14 = dialogues[index].struct1.unk_10;
                 dialogues[index].struct5.flags |= 0x20;
                 
-                func_8003DDF8(dialogues[index].struct5.dialogueBoxIndex2, dialogueAddresses[dialogues[index].struct5.dialogueAddressIndex].unk_16, dialogues[index].struct5.unk_14, 0);
+                initializeDialogueBox(dialogues[index].struct5.dialogueBoxIndex2, dialogueAddresses[dialogues[index].struct5.dialogueAddressIndex].unk_16, dialogues[index].struct5.unk_14, 0);
                 
                 temp2 = dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].unk_A1;
                 
@@ -1001,7 +999,7 @@ void func_80045CB0(void) {
 
     for (i = 0; i < MAX_DIALOGUES; i++) {
         
-        if (dialogues[i].struct5.flags & 1 && dialogues[i].struct5.flags & 2) {
+        if ((dialogues[i].struct5.flags & ACTIVE) && (dialogues[i].struct5.flags & INITIALIZED)) {
             
             set = FALSE;
             

@@ -44,7 +44,7 @@ void func_8004DF10(void) {
         func_8003F360(0, ~(1 | 2), 2);
 
         // load "no controller" dialogue
-        func_8003DDF8(0, 0, 0x19, 0x80000);
+        initializeDialogueBox(MAIN_DIALOGUE_BOX_INDEX, 0, 0x19, 0x80000);
 
     }
 }

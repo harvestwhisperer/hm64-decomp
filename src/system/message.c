@@ -165,10 +165,9 @@ bool func_8003DD14(u16 index) {
     
 }
 
-// DMA dialogues
-//INCLUDE_ASM(const s32, "system/message", func_8003DDF8);
+//INCLUDE_ASM(const s32, "system/message", initializeDialogueBox);
 
-bool func_8003DDF8(u16 dialogueBoxIndex, u16 dialogueInfoIndex, u16 arg2, u32 flag) {
+bool initializeDialogueBox(u16 dialogueBoxIndex, u16 dialogueInfoIndex, u16 arg2, u32 flag) {
 
     bool result = FALSE;
     u16 temp;
@@ -253,6 +252,7 @@ bool func_8003DDF8(u16 dialogueBoxIndex, u16 dialogueInfoIndex, u16 arg2, u32 fl
             }
 
             func_8003E77C(dialogueBoxIndex, 0xFF, 0xFF, 0xFF, 0xFF);
+
             result = TRUE;
             
         }
