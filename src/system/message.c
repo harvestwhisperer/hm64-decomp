@@ -1321,7 +1321,6 @@ void func_80041B80(u16 arg0, DialogueBoxFont* fontContext, u8 arg2[]) {
     
 }
 
-// display lists, gsDPSetScissor
 #ifdef PERMUTER
 Gfx* func_80041CD8(Gfx* dl, DialogueBox* dialogueBox) {
 
