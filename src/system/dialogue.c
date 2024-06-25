@@ -2,6 +2,7 @@
 
 #include "system/controller.h" 
 #include "system/dialogue.h"
+#include "system/mathUtils.h"
 #include "system/message.h"
 #include "system/sprite.h"
 
@@ -88,6 +89,7 @@ bool func_80043050(u16 index, u16 arg1, u16 arg2, void* arg3, void* arg4, void* 
     } 
     
     return result;
+
 }
 
 //INCLUDE_ASM(const s32, "system/dialogue", setDialogueVariable);
@@ -555,15 +557,112 @@ inline u32 checkSpecialDialogueBitFromPointer(u16 bitIndex) {
 
 }
 
+static inline u32 swap(u16 index) {
+
+    u8* ptr;
+    u8 temp;
+    u32 temp2;
+
+    ptr = dialogues[index].dialoguePointer++; 
+    
+    temp = *ptr++;
+    
+    dialogues[index].dialoguePointer += 1;
+    
+    temp2 = *(ptr) << 8;
+    
+    return temp | temp2;  
+    
+}
+
+#ifdef PERMUTER
+void func_80043EC8(u16 index) {
+
+    u32 padding[0x12];
+
+    dialogues[index].struct1.unk_12 = *(u8*)dialogues[index].dialoguePointer++;
+
+    switch (dialogues[index].struct1.unk_12) {
+        
+        case 0:
+            dialogues[index].struct1.unk_0 = swap(index);  
+            break;
+        
+        case 1:
+            dialogues[index].struct1.unk_13 = (*(u8*)dialogues[index].dialoguePointer++);  
+            dialogues[index].struct1.unk_4 = swap(index);
+            dialogues[index].struct1.unk_6 = swap(index);        
+            dialogues[index].struct1.unk_0 = swap(index);
+            dialogues[index].struct1.unk_2 = swap(index);  
+            
+            break;
+        
+        case 2:
+            
+            dialogues[index].struct1.unk_13 = (*(u8*)dialogues[index].dialoguePointer++);
+            dialogues[index].struct1.unk_E = swap(index);  
+            break;
+        
+        case 3:
+            
+            dialogues[index].struct1.unk_13 = (*(u8*)dialogues[index].dialoguePointer++);  
+            dialogues[index].struct1.unk_A = swap(index);  
+            break;
+        
+        case 4:
+            
+            dialogues[index].struct1.unk_C = swap(index);
+            dialogues[index].struct1.unk_0 = swap(index);  
+            dialogues[index].struct1.unk_2 = swap(index);  
+            break;
+        
+        case 5:
+            dialogues[index].struct1.unk_C = swap(index);                
+            break;
+
+        case 6:
+            dialogues[index].struct1.unk_C = swap(index);
+            break;
+        case 7:
+ 
+            dialogues[index].struct1.unk_14 = swap(index);
+            dialogues[index].struct1.unk_15 = swap(index);
+            dialogues[index].struct1.unk_0 = swap(index);
+            dialogues[index].struct1.unk_2 = swap(index);  
+            dialogues[index].struct1.unk_8 = getRandomNumberInRange(0, 99);  
+            break;
+
+        case 8:
+            dialogues[index].struct1.unk_2 = swap(index);  
+            break;
+        
+        case 10:
+            dialogues[index].struct1.unk_10 = swap(index);
+            dialogues[index].struct1.unk_17 = swap(index);     
+            break;
+    
+        case 11:
+            dialogues[index].struct1.unk_18 = swap(index);
+            dialogues[index].struct1.unk_2 = swap(index);     
+            break;
+
+        case 12:
+            break;
+    
+    }
+    
+}
+#else
 INCLUDE_ASM(const s32, "system/dialogue", func_80043EC8);
+#endif
 
 #ifdef PERMUTER
 void func_80044684(u16 index) {
 
     f32 temp1, temp2;
 
-    temp1 = -(dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].unk_92 * dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].unk_60) - (dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].unk_92 * dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].currentLine) - dialogues[index].struct2.coordinates.x;
-    temp2 = (dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].unk_93 * dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].unk_61) + (dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].unk_93 * dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].unk_9C) - dialogues[index].struct2.coordinates.y;    
+    temp1 = -(dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].unk_92 * dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].fontContext.unk_60) - (dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].unk_92 * dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].unk_9B) - dialogues[index].struct2.coordinates.x;
+    temp2 = (dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].unk_93 * dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].fontContext.unk_61) + (dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].unk_93 * dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].unk_9C) - dialogues[index].struct2.coordinates.y;    
 
     setSpriteScale(dialogueWindows[dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].dialogueWindowIndex].spriteIndex, dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].unk_A0 * 0.5f, dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].unk_93 * 0.6f, 1.0f);
     
@@ -572,7 +671,7 @@ void func_80044684(u16 index) {
     func_8002CB24(dialogueWindows[dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].dialogueWindowIndex].spriteIndex, 1);
 
     func_8002B80C(dialogues[index].struct2.spriteIndex, dialogues[index].struct2.spriteOffset, dialogues[index].struct2.flag);
-    setSpriteShrinkFactor(dialogues[index].struct2.spriteIndex, dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].unk_4C.x + temp1, dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].unk_4C.y + temp2, dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].unk_4C.z);
+    setSpriteShrinkFactor(dialogues[index].struct2.spriteIndex, dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].shrink.x + temp1, dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].shrink.y + temp2, dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].shrink.z);
 
 }
 #else
@@ -594,7 +693,7 @@ void func_800449C4(u16 index) {
 
     // animation
     func_8002B80C(dialogues[index].struct3.spriteIndex, dialogues[index].struct3.spriteOffset, dialogues[index].struct3.flag);
-    setSpriteShrinkFactor(dialogues[index].struct3.spriteIndex, dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].unk_4C.x + tempX, dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].unk_4C.y + tempY, dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].unk_4C.z);
+    setSpriteShrinkFactor(dialogues[index].struct3.spriteIndex, dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].shrink.x + tempX, dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].shrink.y + tempY, dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].shrink.z);
 
 }
 
@@ -611,7 +710,7 @@ void func_80044BF4(u16 index) {
 
     // animation
     func_8002B80C(dialogues[index].struct4.spriteIndex, dialogues[index].struct4.spriteOffset, dialogues[index].struct4.flag);
-    setSpriteShrinkFactor(dialogues[index].struct4.spriteIndex, dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].unk_4C.x + tempX, dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].unk_4C.y + tempY, dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].unk_4C.z);
+    setSpriteShrinkFactor(dialogues[index].struct4.spriteIndex, dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].shrink.x + tempX, dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].shrink.y + tempY, dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].shrink.z);
 
 }
 
@@ -631,7 +730,7 @@ void func_80044D78(u16 index) {
 
                 if (dialogues[index].struct5.unk_18 != dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].unk_93 - 1) {
                     dialogues[index].struct5.unk_18++;
-                    adjustSpriteShrinkFactor(dialogues[index].struct2.spriteIndex, 0.0f, -dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].unk_61 - dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].unk_9C, 0.0f);
+                    adjustSpriteShrinkFactor(dialogues[index].struct2.spriteIndex, 0.0f, -dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].fontContext.unk_61 - dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].unk_9C, 0.0f);
                 } else {
                     func_8003FE9C(dialogues[index].struct5.dialogueBoxIndex2);
                     dialogues[index].struct5.unk_19++;
@@ -657,7 +756,7 @@ void func_80044D78(u16 index) {
                     
                     if (dialogues[index].struct5.unk_18) {
                         dialogues[index].struct5.unk_18--;
-                        adjustSpriteShrinkFactor(dialogues[index].struct2.spriteIndex, 0.0f, dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].unk_61 + dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].unk_9C, 0.0f);
+                        adjustSpriteShrinkFactor(dialogues[index].struct2.spriteIndex, 0.0f, dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].fontContext.unk_61 + dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].unk_9C, 0.0f);
                     } else {
                         func_8003FFF4(dialogues[index].struct5.dialogueBoxIndex2);
                         dialogues[index].struct5.unk_19--;

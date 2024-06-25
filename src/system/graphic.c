@@ -8,9 +8,9 @@
 #include "mainproc.h"
 
 // forward declarations
-void func_80026F30(Bitmap* arg0, u16* arg1);
+void func_80026F30(Bitmap* sprite, u16* palette);
 Gfx *func_80028A64(Gfx*, Camera*, WorldMatrices*);
-volatile u8 doViewportGfxTask();      
+volatile u8 doViewportGfxTask(void);      
 void setInitialWorldRotationAngles(f32, f32, f32);            
 
 Gfx* clearFramebuffer(Gfx* dl);                  
@@ -30,8 +30,6 @@ Gfx initGfxList[2][0x20];
 Gfx D_801836A0[2][0x500];
 Gfx D_80205000[2][0x20];
 extern Gfx viewportDL[3];
-
-WorldMatrices worldMatrices[2];
                         
 // data, possibly external
 extern Gfx setup_rdpstate[];

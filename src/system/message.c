@@ -6,16 +6,20 @@
 #include "system/volume.h"
 
 // bss
-extern u16 D_80204BF0[0x100];
+extern u16 D_80204BF0[256];
 extern DialogueBox dialogueBoxes[MAX_DIALOGUE_BOXES];
 extern GameVariableString gameVariableStrings[64];
-extern Vtx D_801C6230[2][0x159];
-// extern u8* D_801706C0[2][];
+extern Vtx D_801C6230[2][2048][4];
+// byteswapped font texture buffer
+extern FontData D_801706C0[2][256];
 
 // rodata
 extern u32 D_8011EE10[8];
 extern u8 D_8011EE30[16];
 extern u8 D_8011EE90[8];
+extern Gfx D_8011EEB0;
+extern Gfx D_8011EEB8;
+extern Gfx D_8011EEC0;
 
 // forward delcarations
 bool func_8003F024(u16 index, u8 arg1, u8 arg2, u8 arg3, u8 arg4);
@@ -25,6 +29,7 @@ u8 func_800403F0(u16 index, u16 arg1);
 void func_80040628(u16, u8); 
 u32 func_80041850(u16 index);
 u32 func_80041B28(u16 index, u16 offset);
+void func_80041B80(u16, DialogueBoxFont*, u8*);
 
 //INCLUDE_ASM(const s32, "system/message", func_8003D970);
 
@@ -61,12 +66,12 @@ void func_8003D970(void) {
         dialogueBoxes[i].unk_86 = 0;
         dialogueBoxes[i].dialogueInfoIndex = 0;
 
-        dialogueBoxes[i].unk_60 = 0;
-        dialogueBoxes[i].unk_61 = 0;
+        dialogueBoxes[i].fontContext.unk_60 = 0;
+        dialogueBoxes[i].fontContext.unk_61 = 0;
 
-        dialogueBoxes[i].unk_4C.x = 0;
-        dialogueBoxes[i].unk_4C.y = 0;
-        dialogueBoxes[i].unk_4C.z = 0;
+        dialogueBoxes[i].shrink.x = 0;
+        dialogueBoxes[i].shrink.y = 0;
+        dialogueBoxes[i].shrink.z = 0;
 
         dialogueBoxes[i].unk_92 = 0;
         dialogueBoxes[i].unk_93 = 0;
@@ -247,7 +252,7 @@ bool initializeDialogueBox(u16 dialogueBoxIndex, u16 dialogueInfoIndex, u16 arg2
                 func_8002C680(dialogueWindows[dialogueBoxes[dialogueBoxIndex].dialogueWindowIndex].spriteIndex, 2, 2);
                 func_8002C7EC(dialogueWindows[dialogueBoxes[dialogueBoxIndex].dialogueWindowIndex].spriteIndex, 3);
                 func_8002B80C(dialogueWindows[dialogueBoxes[dialogueBoxIndex].dialogueWindowIndex].spriteIndex, dialogueWindows[dialogueBoxes[dialogueBoxIndex].dialogueWindowIndex].spriteOffset, dialogueWindows[dialogueBoxes[dialogueBoxIndex].dialogueWindowIndex].flag);
-                setSpriteShrinkFactor(dialogueWindows[dialogueBoxes[dialogueBoxIndex].dialogueWindowIndex].spriteIndex, dialogueBoxes[dialogueBoxIndex].unk_4C.x + dialogueWindows[dialogueBoxes[dialogueBoxIndex].dialogueWindowIndex].coordinates.x, dialogueBoxes[dialogueBoxIndex].unk_4C.y + dialogueWindows[dialogueBoxes[dialogueBoxIndex].dialogueWindowIndex].coordinates.y, (dialogueBoxes[dialogueBoxIndex].unk_4C.z + dialogueWindows[dialogueBoxes[dialogueBoxIndex].dialogueWindowIndex].coordinates.z) - 2.0f);
+                setSpriteShrinkFactor(dialogueWindows[dialogueBoxes[dialogueBoxIndex].dialogueWindowIndex].spriteIndex, dialogueBoxes[dialogueBoxIndex].shrink.x + dialogueWindows[dialogueBoxes[dialogueBoxIndex].dialogueWindowIndex].coordinates.x, dialogueBoxes[dialogueBoxIndex].shrink.y + dialogueWindows[dialogueBoxes[dialogueBoxIndex].dialogueWindowIndex].coordinates.y, (dialogueBoxes[dialogueBoxIndex].shrink.z + dialogueWindows[dialogueBoxes[dialogueBoxIndex].dialogueWindowIndex].coordinates.z) - 2.0f);
             
             }
 
@@ -434,11 +439,11 @@ bool func_8003F464(u16 index, u8 arg1, u8 arg2, u8* fontTexturePtr, u16* fontPal
         
         if (dialogueBoxes[index].flags & ACTIVE) {
             
-            dialogueBoxes[index].unk_60 = arg1;
-            dialogueBoxes[index].unk_61 = arg2;
-            dialogueBoxes[index].fontTexturePtr = fontTexturePtr;
-            dialogueBoxes[index].fontPalettePtr = fontPalettePtr;
-            
+            dialogueBoxes[index].fontContext.unk_60 = arg1;
+            dialogueBoxes[index].fontContext.unk_61 = arg2;
+            dialogueBoxes[index].fontContext.fontTexturePtr = fontTexturePtr;
+            dialogueBoxes[index].fontContext.fontPalettePtr = fontPalettePtr;
+             
             result = TRUE;
             
         }
@@ -461,9 +466,9 @@ bool func_8003F54C(u16 index, f32 x, f32 y, f32 z) {
 
         if (dialogueBoxes[index].flags & ACTIVE) {
             
-            dialogueBoxes[index].unk_4C.x = x;
-            dialogueBoxes[index].unk_4C.y = y;
-            dialogueBoxes[index].unk_4C.z = z;
+            dialogueBoxes[index].shrink.x = x;
+            dialogueBoxes[index].shrink.y = y;
+            dialogueBoxes[index].shrink.z = z;
             
             result = TRUE;
 
@@ -972,7 +977,7 @@ void func_8004022C(u16 index) {
 
     func_800267B4((Volume*)&dialogueBoxes[index].volume);
 
-    if ((u16)func_80026844((Volume*)&dialogueBoxes[index].volume) >= dialogueBoxes[index].unk_61 + dialogueBoxes[index].unk_9C) {
+    if ((u16)func_80026844((Volume*)&dialogueBoxes[index].volume) >= dialogueBoxes[index].fontContext.unk_61 + dialogueBoxes[index].unk_9C) {
 
         dialogueBoxes[index].flags &= ~0x40;
          
@@ -991,7 +996,7 @@ void func_80040318(u16 index) {
 
     func_800267B4((Volume*)&dialogueBoxes[index].volume);
 
-    if ((u16)func_80026844((Volume*)&dialogueBoxes[index].volume) >= dialogueBoxes[index].unk_61 + dialogueBoxes[index].unk_9C) {
+    if ((u16)func_80026844((Volume*)&dialogueBoxes[index].volume) >= dialogueBoxes[index].fontContext.unk_61 + dialogueBoxes[index].unk_9C) {
 
         dialogueBoxes[index].flags &= ~0x80;
         
@@ -1246,8 +1251,75 @@ u32 func_80041B28(u16 index, u16 offset) {
     
 }
 
-// dialogue box rendering/printing, char to font mapping
-INCLUDE_ASM(const s32, "system/message", func_80041B80);
+static inline void swapTop(u8* source, u8* dest) {
+
+    u8 temp;
+    
+    // 0xC0 = 1100 0000
+    // 0x30 = 0011 0000
+
+    temp = ((*source) & 0xC0) >> 2;
+    *dest = temp;
+    *dest |= ((*source) & 0x30) >> 4;
+    
+}
+
+static inline void swapBottom(u8* source, u8* dest) {
+
+    u8 temp;
+
+    // 0xC = 1100
+    // 0x3 = 0011
+
+    temp = ((*source) & 0xC) << 2;
+    *dest = temp;
+    *dest |= *source & 3;
+    
+}
+
+//INCLUDE_ASM(const s32, "system/message", func_80041B80);
+
+void func_80041B80(u16 arg0, DialogueBoxFont* fontContext, u8 arg2[]) {
+
+    u8 i;
+
+    u8 *arr;
+    u8 *ptr;
+
+    arr = (fontContext->fontTexturePtr+3);
+    arr = &arr[arg0*0x40];
+    
+    ptr = arg2; 
+    
+    i = 0;
+    
+    if (fontContext->unk_60) {
+
+        do {
+
+            swapTop(arr, ptr);
+            swapBottom(arr, ++ptr);
+            arr--;
+
+            swapTop(arr, ++ptr);
+            swapBottom(arr, ++ptr);
+            arr--;
+
+            swapTop(arr, ++ptr);
+            swapBottom(arr, ++ptr);
+            arr--;
+
+            swapTop(arr, ++ptr);
+            
+            arr += 7;
+            ptr++;
+            
+            i++;
+            
+        } while (i < fontContext->unk_60);
+    }
+    
+}
 
 // display lists, gsDPSetScissor
 #ifdef PERMUTER
@@ -1261,17 +1333,17 @@ Gfx* func_80041CD8(Gfx* dl, DialogueBox* dialogueBox) {
 
     *dl++ = D_8011EEA0;
 
-    ulx = dialogueBox->unk_60 >> 1;
+    ulx = dialogueBox->fontContext.unk_60 >> 1;
 
-    ulx = (((dialogueBox->unk_4C.x + 160.0f) - ulx) - ((dialogueBox->unk_92* dialogueBox->unk_60) >> 1) + ulx) - ((dialogueBox->unk_92* dialogueBox->currentLine) >> 1);
+    ulx = (((dialogueBox->shrink.x + 160.0f) - ulx) - ((dialogueBox->unk_92* dialogueBox->fontContext.unk_60) >> 1) + ulx) - ((dialogueBox->unk_92* dialogueBox->currentLine) >> 1);
 
-    uly = dialogueBox->unk_61 >> 1;
+    uly = dialogueBox->fontContext.unk_61 >> 1;
     
-    uly = ((((120.0f - dialogueBox->unk_4C.y) - uly) - ((dialogueBox->unk_93 * dialogueBox->unk_61) >> 1)) + uly) - ((dialogueBox->unk_93 * dialogueBox->unk_9C) >> 1);
+    uly = ((((120.0f - dialogueBox->shrink.y) - uly) - ((dialogueBox->unk_93 * dialogueBox->fontContext.unk_61) >> 1)) + uly) - ((dialogueBox->unk_93 * dialogueBox->unk_9C) >> 1);
 
     gDPSetScissor(&tempDl, G_SC_NON_INTERLACE, ulx, uly, 
-        ulx + (dialogueBox->unk_92 * dialogueBox->unk_60) + (dialogueBox->unk_92 * dialogueBox->currentLine), 
-        uly + (dialogueBox->unk_93 * dialogueBox->unk_61) + (dialogueBox->unk_93 * dialogueBox->unk_9C));
+        ulx + (dialogueBox->unk_92 * dialogueBox->fontContext.unk_60) + (dialogueBox->unk_92 * dialogueBox->currentLine), 
+        uly + (dialogueBox->unk_93 * dialogueBox->fontContext.unk_61) + (dialogueBox->unk_93 * dialogueBox->unk_9C));
 
     *dl++ = tempDl;
 
@@ -1284,9 +1356,102 @@ Gfx* func_80041CD8(Gfx* dl, DialogueBox* dialogueBox) {
 INCLUDE_ASM(const s32, "system/message", func_80041CD8);
 #endif
 
-// param 1: 0x80159510 + 0x10 * offset
-// Gfx* func_80042014(Gfx*, DialogueBox*, u16);
+#ifdef PERMUTER
+Gfx* func_80042014(Gfx* dl, DialogueBox* dialogueBox, s32 arg2) {
+
+    u32 count1;
+    u16 count2;
+    
+    u32 temp;
+    u16 temp2;
+    u16 temp3;
+    u32 tempFlags;
+
+    FontBitmap sprite;
+    Gfx tempDl[2];
+
+    temp = dialogueBox->unk_92;
+    
+    count2 = 0;
+    count1 = 0;
+
+    if (dialogueBox->unk_92) {
+
+        arg2 &= 0xFF;
+        temp3 = arg2;
+
+        do {
+
+            count1 &= 0xFF;
+            temp *= temp3;
+            temp += count1;
+            temp2 = (dialogueBox->unk_80 + temp);
+            
+            func_80041B80(
+                D_80204BF0[dialogueBox->unk_80+temp2], 
+                &dialogueBox->fontContext.fontTexturePtr, 
+                D_801706C0[gDisplayContextIndex][dialogueBox->unk_80+temp2].timg
+            );
+
+            if (dialogueBox->flags & 2) {
+
+                tempFlags = (0x10 | 0x40 | 0x100 | 0x400);
+                
+                func_800276AC(&D_801C6230[gDisplayContextIndex][dialogueBox->unk_80+temp2][0], 
+                    dialogueBox->fontContext.unk_60,
+                    dialogueBox->fontContext.unk_61,
+                    dialogueBox->fontContext.unk_61,
+                    0,
+                    0,
+                    0,
+                    (s16)((dialogueBox->fontContext.unk_60 + dialogueBox->unk_9B)*count1) >> 1, 
+                    0, 
+                    tempFlags, 
+                    dialogueBox->unk_14.r, 
+                    dialogueBox->unk_14.g, 
+                    dialogueBox->unk_14.b, 
+                    dialogueBox->unk_14.a
+                );
+                
+                sprite.timg = D_801706C0[gDisplayContextIndex][dialogueBox->unk_80 + temp2].timg;
+                
+                func_80026F30((Bitmap*)&sprite, dialogueBox->fontContext.fontPalettePtr);
+
+                sprite.width = dialogueBox->fontContext.unk_60;
+                sprite.height = dialogueBox->fontContext.unk_61;
+                sprite.fmt = 2;
+                sprite.pixelSize = 0;
+
+                dl = func_80026F88(dl, (Bitmap*)&sprite, 0, sprite.height);
+
+                gSPVertex(&tempDl[1], &D_801C6230[gDisplayContextIndex][dialogueBox->unk_80+temp2][0], 4, 0);
+
+                *tempDl = *(tempDl+1);
+                *dl++ = *tempDl;
+                
+                *dl++ = D_8011EEB0;
+                *dl++ = D_8011EEB8;
+                
+            }
+            
+            count2++;
+            count1++;
+            
+        } while ((u8)count1 < dialogueBox->unk_92);
+
+    }
+
+    *dl++ = D_8011EEB8;
+    *dl++ = D_8011EEC0;
+
+    dialogueBox->unk_82 += count2;
+    
+    return dl++;
+    
+}
+#else
 INCLUDE_ASM(const s32, "system/message", func_80042014);
+#endif
 
 INCLUDE_ASM(const s32, "system/message", func_800423F0);
 
