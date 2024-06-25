@@ -65,6 +65,20 @@
 // 0xDF-0xFF = symbols
 
 typedef struct {
+    u8 timg[6];
+    u32 pad[30];
+} FontData;
+
+typedef struct {
+	u8 *timg;
+	u16 *pal;
+	s32 width; 
+	s32 height;
+	u32 fmt;
+	s32 pixelSize;
+} FontBitmap;
+
+typedef struct {
     u8* ptr;
     u8 length;
 } GameVariableString;
@@ -156,6 +170,14 @@ typedef struct {
     u16 unk_4;
 } DialogueBoxVolume;
 
+// 0x80188BC8
+typedef struct {
+    u8 *fontTexturePtr;
+    u16 *fontPalettePtr;
+    u8 unk_60;
+    u8 unk_61;
+} DialogueBoxFont;
+
 // 0x80188B70
 typedef struct {
     u8 *textBufferBase;
@@ -165,12 +187,8 @@ typedef struct {
     f32 unk_34[4];
     void *unk_44;
     void *unk_48;
-    Vec3f unk_4C; // shrink factor
-    u8 *fontTexturePtr;
-    u16 *fontPalettePtr;
-    u8 unk_60; // font related, always 0xE
-    u8 unk_61; // font related, always 0xE
-    u16 unk_62;
+    Vec3f shrink;
+    DialogueBoxFont fontContext; // 0x58
     u16 unk_64; // passed as Volume struct
     u16 frameCounter; // 0x66
     u16 unk_68; // counter

@@ -2142,7 +2142,7 @@ Gfx* func_8003ACA8(Gfx* dl, MainMap* map, MapBitmap* bitmap, u16 vtxIndex) {
       
     func_800276AC((Vtx*)&D_80165500[gDisplayContextIndex][vtxIndex], 
         bitmap->width, 
-        bitmap->height, 
+        bitmap->height,
         bitmap->height, 
         0, 
         0,
