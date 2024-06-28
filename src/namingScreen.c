@@ -139,7 +139,6 @@ void func_800ED974(void) {
             func_8002C914(0x84, 0, 0, 0, 0);
             func_8002C914(LANDSCAPE_BACKGROUND, 0, 0, 0, 0);
             
-            // rgba
             updateSpriteRGBA(0x80, 0xFF, 0xFF, 0xFF, 0xFF, 8);
             updateSpriteRGBA(0x84, 0xFF, 0xFF, 0xFF, 0xFF, 8);
             updateSpriteRGBA(LANDSCAPE_BACKGROUND, 0xFF, 0xFF, 0xFF, 0xFF, 8);

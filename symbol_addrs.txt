@@ -1234,7 +1234,7 @@ gHour = 0x801FB5CA;
 gSongs = 0x801FB5D8; // size:0x70
 mountainConstructionWorkDays = 0x801FB68C;
 gSfx = 0x801FB690; // size:0x60
-overlayScreenTable = 0x801FB6F0;
+overlayScreenTable = 0x801FB6F0; /// size:0xB
 mariaHarrisNewlywedCounter = 0X801FB9A4;
 npcInfoArray = 0x801FB9D0; // size:0x780
 
