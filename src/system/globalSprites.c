@@ -53,10 +53,9 @@ void initializeGlobalSprites(void) {
     }
 }
 
-//INCLUDE_ASM(const s32, "system/globalSprites", func_8002B138);
+//INCLUDE_ASM(const s32, "system/globalSprites", dmaSprite);
 
-// wrapper for nuPiReadRom
-bool func_8002B138(u16 index, u32 romTextureStart, u32 romTextureEnd, u32 romAssetIndexStart, u32 romAssetIndexEnd, 
+bool dmaSprite(u16 index, u32 romTextureStart, u32 romTextureEnd, u32 romAssetIndexStart, u32 romAssetIndexEnd, 
     u32 romSpritesheetIndexStart, u32 romSpritesheetIndexEnd, u8* texture1Vaddr, u8* texture2Vaddr, u16* paletteVaddr, u16* animationVaddr, 
     u8* spriteToPaletteVaddr, u32* spritesheetIndexVaddr, u8 assetType, u8 flag) {
 
@@ -71,7 +70,7 @@ bool func_8002B138(u16 index, u32 romTextureStart, u32 romTextureEnd, u32 romAss
 
     if (index < MAX_ACTIVE_SPRITES) {
         
-        if (!(globalSprites[index].flags2 & 1)) { 
+        if (!(globalSprites[index].flags2 & ACTIVE)) { 
             
             nuPiReadRom(romAssetIndexStart, assetIndex, romAssetIndexEnd - romAssetIndexStart);
 
@@ -132,7 +131,7 @@ bool func_8002B36C(u16 index, u32* unknownAssetIndexPtr, u32* spritesheetIndexPt
 
     if (index < MAX_ACTIVE_SPRITES) {
 
-        if (!(globalSprites[index].flags2 & 1)) {
+        if (!(globalSprites[index].flags2 & ACTIVE)) {
 
             globalSprites[index].unknownAssetIndexPtr = unknownAssetIndexPtr;
             globalSprites[index].spritesheetIndexPtr = spritesheetIndexPtr;
@@ -173,7 +172,7 @@ bool func_8002B50C(u16 spriteIndex, u32* unknownAssetIndexPtr, u32* spritesheetI
 
     if (spriteIndex < MAX_ACTIVE_SPRITES) {
 
-        if (!(globalSprites[spriteIndex].flags2 & 1)) {
+        if (!(globalSprites[spriteIndex].flags2 & ACTIVE)) {
 
             // animation index
             globalSprites[spriteIndex].unknownAssetIndexPtr = unknownAssetIndexPtr;
@@ -214,8 +213,8 @@ bool deactivateSprite(u16 spriteIndex) {
     bool result = FALSE;
 
     if (spriteIndex < MAX_ACTIVE_SPRITES) {
-        if (globalSprites[spriteIndex].flags2 & 1) {
-            globalSprites[spriteIndex].flags2 &= ~(1 | 2);
+        if (globalSprites[spriteIndex].flags2 & ACTIVE) {
+            globalSprites[spriteIndex].flags2 &= ~(ACTIVE | 2);
             result = TRUE;
         }        
     }
@@ -223,20 +222,20 @@ bool deactivateSprite(u16 spriteIndex) {
     return result; 
 }
 
-//INCLUDE_ASM(const s32, "system/globalSprites", func_8002B710);
+//INCLUDE_ASM(const s32, "system/globalSprites", deactivateGlobalSprites);
 
-void func_8002B710(void) {
+void deactivateGlobalSprites(void) {
 
     u16 i;
 
     for (i = 0; i < MAX_ACTIVE_SPRITES; i++) {
 
-            if ((globalSprites[i].flags2 & 1) && (globalSprites[i].flags2 & 2)) {
+            if ((globalSprites[i].flags2 & ACTIVE) && (globalSprites[i].flags2 & 2)) {
 
                 // FIXME: probably inline
                 if (i < MAX_ACTIVE_SPRITES) {
                     
-                    globalSprites[i].flags2 &= ~(1 | 2);
+                    globalSprites[i].flags2 &= ~(ACTIVE | 2);
 
                 }
 
@@ -271,7 +270,7 @@ bool func_8002B80C(u16 spriteIndex, u16 offset, u8 arg2) {
     
     if (spriteIndex < MAX_ACTIVE_SPRITES) {
 
-        if (globalSprites[spriteIndex].flags2 & 1) {
+        if (globalSprites[spriteIndex].flags2 & ACTIVE) {
             
             if (globalSprites[spriteIndex].unknownAssetIndexPtr[offset] != globalSprites[spriteIndex].unknownAssetIndexPtr[offset+1]) {
 
@@ -296,7 +295,7 @@ bool func_8002B8E0(u16 spriteIndex, u8 arg1, void* arg2) {
     bool result = FALSE;
     u16 *temp;
     
-    if (spriteIndex < MAX_ACTIVE_SPRITES && globalSprites[spriteIndex].flags2 & 1 && !(globalSprites[spriteIndex].flags2 & 2)) {
+    if ((spriteIndex < MAX_ACTIVE_SPRITES) && (globalSprites[spriteIndex].flags2 & ACTIVE) && !(globalSprites[spriteIndex].flags2 & 2)) {
 
         globalSprites[spriteIndex].unknownAssetPtr = arg2;
 
@@ -350,7 +349,7 @@ bool func_8002BAD8(u16 index) {
 
     if (index < MAX_ACTIVE_SPRITES) {
 
-        if (globalSprites[index].flags2 & 1) {
+        if (globalSprites[index].flags2 & ACTIVE) {
             globalSprites[index].flags2 &= ~2;
             result = TRUE;
         }
@@ -368,7 +367,7 @@ bool func_8002BB30(u16 index) {
 
     if (index < MAX_ACTIVE_SPRITES) {
 
-        if (globalSprites[index].flags2 & 1) {
+        if (globalSprites[index].flags2 & ACTIVE) {
             globalSprites[index].flags2 &= ~0x20;
             result = TRUE;
         }
@@ -386,7 +385,7 @@ bool func_8002BB88(u16 index) {
 
     if (index < MAX_ACTIVE_SPRITES) {
 
-        if (globalSprites[index].flags2 & 1) {
+        if (globalSprites[index].flags2 & ACTIVE) {
             globalSprites[index].flags2 |= 0x20;
             result = TRUE;
         }
@@ -404,12 +403,12 @@ bool func_8002BBE0(u16 index, u8 arg1, u8 arg2) {
     
     if (index < MAX_ACTIVE_SPRITES) {
 
-        if (globalSprites[index].flags2 & 1) {
+        if (globalSprites[index].flags2 & ACTIVE) {
 
             if (arg1) {
-                globalSprites[index].flags1 |= 1;
+                globalSprites[index].flags1 |= ACTIVE;
             } else {
-                globalSprites[index].flags1 &= ~1;
+                globalSprites[index].flags1 &= ~ACTIVE;
             }
 
             if (arg2) {
@@ -435,7 +434,7 @@ bool func_8002BCC8(u16 index) {
 
     if (index < MAX_ACTIVE_SPRITES) {
 
-        if (globalSprites[index].flags2 & 1) {
+        if (globalSprites[index].flags2 & ACTIVE) {
             result = globalSprites[index].flags2 & 0x40;
         }
     }
@@ -452,7 +451,7 @@ bool setSpriteShrinkFactor(u16 index, f32 x, f32 y, f32 z) {
 
     if (index < MAX_ACTIVE_SPRITES) {
 
-        if (globalSprites[index].flags2 & 1) {
+        if (globalSprites[index].flags2 & ACTIVE) {
 
             globalSprites[index].shrink.x = x;
             globalSprites[index].shrink.y = y;
@@ -475,7 +474,7 @@ bool setSpriteScale(u16 index, f32 x, f32 y, f32 z) {
 
     if (index < MAX_ACTIVE_SPRITES) {
 
-        if (globalSprites[index].flags2 & 1) {
+        if (globalSprites[index].flags2 & ACTIVE) {
 
             globalSprites[index].scale.x = x;
             globalSprites[index].scale.y = y;
@@ -498,7 +497,7 @@ bool func_8002BE14(u16 index, f32 x, f32 y, f32 z) {
 
     if (index < MAX_ACTIVE_SPRITES) {
 
-        if (globalSprites[index].flags2 & 1) {
+        if (globalSprites[index].flags2 & ACTIVE) {
 
             globalSprites[index].angles.x = x;
             globalSprites[index].angles.y = y;
@@ -521,7 +520,7 @@ bool adjustSpriteShrinkFactor(u16 index, f32 x, f32 y, f32 z) {
     
     if (index < MAX_ACTIVE_SPRITES) {
         
-        if (globalSprites[index].flags2 & 1) {
+        if (globalSprites[index].flags2 & ACTIVE) {
 
             globalSprites[index].shrink.x += x;
             globalSprites[index].shrink.y += y;
@@ -545,7 +544,7 @@ bool adjustSpriteScale(u16 index, f32 x, f32 y, f32 z) {
     
     if (index < MAX_ACTIVE_SPRITES) {
 
-        if (globalSprites[index].flags2 & 1) {
+        if (globalSprites[index].flags2 & ACTIVE) {
 
             globalSprites[index].scale.x += x;
             globalSprites[index].scale.y += y;
@@ -568,7 +567,7 @@ bool func_8002C000(u16 index, f32 x, f32 y, f32 z) {
     
     if (index < MAX_ACTIVE_SPRITES) {
         
-        if (globalSprites[index].flags2 & 1) {
+        if (globalSprites[index].flags2 & ACTIVE) {
 
             globalSprites[index].angles.x += x;
             globalSprites[index].angles.y += y;
@@ -591,7 +590,7 @@ bool func_8002C0B4(u16 index, s8 r, s8 g, s8 b, s8 a) {
     
     if (index < MAX_ACTIVE_SPRITES) {
 
-        if (globalSprites[index].flags2 & 1) {
+        if (globalSprites[index].flags2 & ACTIVE) {
 
             globalSprites[index].rgbaCurrent.r += r;
             globalSprites[index].rgbaCurrent.g += g;
@@ -622,7 +621,7 @@ bool func_8002C1C0(u16 index, u8 r, u8 g, u8 b, u8 a, s16 arg5) {
     
     if (index < MAX_ACTIVE_SPRITES) {
         
-        if (globalSprites[index].flags2 & 1) {
+        if (globalSprites[index].flags2 & ACTIVE) {
  
             globalSprites[index].rgbaDefault.r = (globalSprites[index].rgba.r * r) / 255.0f;
             globalSprites[index].rgbaDefault.g = (globalSprites[index].rgba.g * g) / 255.0f;
@@ -686,7 +685,7 @@ bool func_8002C52C(u16 index, u8 arg1, s16 arg2) {
 
     if (index < MAX_ACTIVE_SPRITES) {
 
-        if (globalSprites[index].flags2 & 1) {
+        if (globalSprites[index].flags2 & ACTIVE) {
 
             globalSprites[index].rgbaDefault.a = (globalSprites[index].rgba.a * arg1) / 255.0f;
 
@@ -718,7 +717,7 @@ bool func_8002C680(u16 index, u16 arg1, u16 arg2) {
 
     if (index < MAX_ACTIVE_SPRITES) {
 
-        if (globalSprites[index].flags2 & 1) { 
+        if (globalSprites[index].flags2 & ACTIVE) { 
             
             globalSprites[index].flags1 &= ~( 8 | 0x10 | 0x20 | 0x40);
             
@@ -746,7 +745,7 @@ bool func_8002C6F8(u16 index, u16 arg1) {
     
     if (index < MAX_ACTIVE_SPRITES) {
         
-        if (globalSprites[index].flags2 & 1) {
+        if (globalSprites[index].flags2 & ACTIVE) {
             
             globalSprites[index].flags1 &= ~(0x80 | 0x100);
             temp = arg1 << 7;
@@ -769,7 +768,7 @@ bool func_8002C768(u16 index, u16 arg1) {
     
     if (index < MAX_ACTIVE_SPRITES) {
         
-        if (globalSprites[index].flags2 & 1) {
+        if (globalSprites[index].flags2 & ACTIVE) {
 
             if (arg1) {
                 globalSprites[index].flags1 |= 0x200;
@@ -797,7 +796,7 @@ bool func_8002C7EC(u16 index, u16 arg1) {
     
     if (index < MAX_ACTIVE_SPRITES) {
         
-        if (globalSprites[index].flags2 & 1) {
+        if (globalSprites[index].flags2 & ACTIVE) {
             
             globalSprites[index].flags1 &= ~(0x400 | 0x800 | 0x1000);
             temp = arg1 << 10;
@@ -820,7 +819,7 @@ bool setSpriteDefaultRGBA(u16 index, u8 r, u8 g, u8 b, u8 a) {
 
     if (index < MAX_ACTIVE_SPRITES) {
         
-        if (globalSprites[index].flags2 & 1) {
+        if (globalSprites[index].flags2 & ACTIVE) {
             
             globalSprites[index].rgba.r = r;
             globalSprites[index].rgba.g = g;
@@ -844,7 +843,7 @@ bool func_8002C914(u16 index, u8 r, u8 g, u8 b, u8 a) {
     
     if (index < MAX_ACTIVE_SPRITES) {
         
-        if (globalSprites[index].flags2 & 1) {        
+        if (globalSprites[index].flags2 & ACTIVE) {        
 
             result = TRUE;
             
@@ -873,7 +872,7 @@ bool func_8002CAA8(u16 index, u8 a) {
 
     if (index < MAX_ACTIVE_SPRITES) {
 
-        if (globalSprites[index].flags2 & 1) {
+        if (globalSprites[index].flags2 & ACTIVE) {
 
             globalSprites[index].rgba.a = a;
             globalSprites[index].rgbaCurrent.a = a;
@@ -896,7 +895,7 @@ bool func_8002CB24(u16 index, u8 flag) {
 
     if (index < MAX_ACTIVE_SPRITES) {
         
-        if (globalSprites[index].flags2 & 1) {
+        if (globalSprites[index].flags2 & ACTIVE) {
             if (flag == TRUE) {
                 globalSprites[index].flags2 |= 0x80;
             } else {
@@ -919,7 +918,7 @@ bool func_8002CB88(u16 index, u16 paletteIndex) {
 
     if (index < MAX_ACTIVE_SPRITES) {
 
-        if (globalSprites[index].flags2 & 1) {
+        if (globalSprites[index].flags2 & ACTIVE) {
 
             globalSprites[index].paletteIndex = paletteIndex;
             globalSprites[index].flags2 |= 0x100;
@@ -942,7 +941,7 @@ bool func_8002CBF8(u16 index) {
     result = FALSE;
     
     if (index < MAX_ACTIVE_SPRITES) {
-        if (globalSprites[index].flags2 & 1) {
+        if (globalSprites[index].flags2 & ACTIVE) {
             result = (globalSprites[index].flags2 >> 10) & 1;
         }
     }

@@ -947,7 +947,7 @@ void func_800486F4(u16 index) {
 
     cutsceneMaps[index].cutscenePointer += 4;
 
-    func_8002B138(cutsceneMaps[index].spriteIndex, romTextureStart, romTextureEnd, romAssetIndexStart, 
+    dmaSprite(cutsceneMaps[index].spriteIndex, romTextureStart, romTextureEnd, romAssetIndexStart, 
         romAssetIndexEnd, romSpritesheetIndexStart, romSpritesheetIndexEnd, texture1Vaddr, texture2Vaddr, 
         paletteVaddr, animationVaddr, spriteToPaletteVaddr, spritesheetIndexVaddr, assetType, 0);
    
@@ -1034,7 +1034,7 @@ void func_800486F4(u16 index) {
 
     cutsceneMaps[index].cutscenePointer += 4;
     
-    func_8002B138(cutsceneMaps[index].spriteIndex, romTextureStart, romTextureEnd, romAssetIndexStart, 
+    dmaSprite(cutsceneMaps[index].spriteIndex, romTextureStart, romTextureEnd, romAssetIndexStart, 
         romAssetIndexEnd, romSpritesheetIndexStart, romSpritesheetIndexEnd, texture1Vaddr, texture2Vaddr, 
         paletteVaddr, animationVaddr, spriteToPaletteVaddr, spritesheetIndexVaddr, assetType, 0);
    

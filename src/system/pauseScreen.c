@@ -93,7 +93,7 @@ bool func_80045F5C(u16 index, u32 arg1, u8 arg2, u16 flag) {
             
             do {
                 
-                func_8002B138(pauseScreenSprites[index].spriteIndex + count, 
+                dmaSprite(pauseScreenSprites[index].spriteIndex + count, 
                     pauseScreenSprites[index].romSpritesheetStart, 
                     pauseScreenSprites[index].romSpritesheetEnd, 
                     pauseScreenSprites[index].romAssetIndexStart, 

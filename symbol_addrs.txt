@@ -763,6 +763,8 @@ initializeWorldGraphics = 0x80029170;
 resetSpriteCounter = 0x80029284;
 initializeBitmaps = 0x80029B30;
 initializeGlobalSprites = 0x8002AFE0;
+deactivateGlobalSprites = 0x8002B710;
+dmaSprite = 0x8002B138;
 deactivateSprite = 0x8002B6B8;
 adjustSpriteScale = 0x8002BF4C;
 setSpriteShrinkFactor = 0x8002BD0C;
@@ -812,6 +814,7 @@ stopSfx = 0x8003D948;
 initializeDialogueBox = 0x8003DDF8;
 setDialogueBoxSpriteIndices = 0x8003F690;
 
+setDialogueMapAddressInfo = 0x80043050;
 setDialogueVariable = 0x800430DC;
 setDialogueVariable_inline = 0x80043CF8;
 getDialogueVariableValue = 0x80043D8C;
@@ -1267,7 +1270,7 @@ gMaximumStamina = 0x8020563F;
 gAverageFarmAnimalAffection = 0x8020563A;
 mainLoopCallbackCurrentIndex = 0x8020564A;
 
-dialogueAddresses = 0x80205760; // size:0x690
+dialogueMapAddresses = 0x80205760; // size:0x690
 
 gSeconds = 0x80215DF2;
 

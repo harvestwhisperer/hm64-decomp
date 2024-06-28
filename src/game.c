@@ -1356,7 +1356,7 @@ static inline void func_80055F08_2(u16 cutsceneIndex, u16 entranceIndex, u8 arg2
     deactivateSprites();
 
     // reset all sprite flags
-    func_8002B710();
+    deactivateGlobalSprites();
     
     func_8003D970();
     initializeCutsceneMaps();

@@ -2551,13 +2551,12 @@ segments:
     type: bin
     dir: dialogue
     start: 0xE13800
-    
-  # related to dialogues/conversations
-  - name: unknown
+
+  - name: dialogueMaps
     type: bin
     dir: dialogue
     start: 0xE871C0
-    
+
   - name: ptr_table
     type: bin
     dir: audio

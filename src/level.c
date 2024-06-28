@@ -499,7 +499,7 @@ void func_8006F938(u16 levelIndex) {
 
         case FARM:
             
-            func_8002B138(MAP_OBJECT_1, &_homeItemsTextureSegmentRomStart, &_homeItemsTextureSegmentRomEnd, &_homeItemsAssetsIndexSegmentRomStart, &_homeItemsAssetsIndexSegmentRomEnd, &_homeItemsSpritesheetIndexSegmentRomStart, &_homeItemsSpritesheetIndexSegmentRomEnd, (void*)0x802E4000, (void*)0x802E4D00, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
+            dmaSprite(MAP_OBJECT_1, &_homeItemsTextureSegmentRomStart, &_homeItemsTextureSegmentRomEnd, &_homeItemsAssetsIndexSegmentRomStart, &_homeItemsAssetsIndexSegmentRomEnd, &_homeItemsSpritesheetIndexSegmentRomStart, &_homeItemsSpritesheetIndexSegmentRomEnd, (void*)0x802E4000, (void*)0x802E4D00, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
             setSpriteScale(MAP_OBJECT_1, 1.0f, 1.0f, 1.0f);
             func_8002C7EC(MAP_OBJECT_1, 3);
             setSpriteDefaultRGBA(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -511,7 +511,7 @@ void func_8006F938(u16 levelIndex) {
                 setMapObject(MAIN_MAP_INDEX, 0, MAP_OBJECT_1, 0xF, -464.0f, 96.0f, 112.0f, 0xFF, 0xFF, 0, 0);
             }
             
-            func_8002B138(MAP_OBJECT_2, &_farmPondTextureSegmentRomStart, &_farmPondTextureSegmentRomEnd, &_farmPondAssetsIndexSegmentRomStart, &_farmPondAssetsIndexSegmentRomEnd, &_farmPondSpritesheetIndexSegmentRomStart, &_farmPondSpritesheetIndexSegmentRomEnd, (void*)0x802E7C00, (void*)0x802E8900, (void*)0x802E9600, (void*)0x802E9700, (void*)0x802E9800, (void*)0x802E9900, 1,1);
+            dmaSprite(MAP_OBJECT_2, &_farmPondTextureSegmentRomStart, &_farmPondTextureSegmentRomEnd, &_farmPondAssetsIndexSegmentRomStart, &_farmPondAssetsIndexSegmentRomEnd, &_farmPondSpritesheetIndexSegmentRomStart, &_farmPondSpritesheetIndexSegmentRomEnd, (void*)0x802E7C00, (void*)0x802E8900, (void*)0x802E9600, (void*)0x802E9700, (void*)0x802E9800, (void*)0x802E9900, 1,1);
             setSpriteScale(MAP_OBJECT_2, 6.0f, 1.0f, 6.0f);
             func_8002C6F8(MAP_OBJECT_2, 3);
             func_8002C768(MAP_OBJECT_2, 0x200);
@@ -525,7 +525,7 @@ void func_8006F938(u16 levelIndex) {
 
         case HOUSE:
             
-            func_8002B138(MAP_OBJECT_1, &_homeItemsTextureSegmentRomStart, &_homeItemsTextureSegmentRomEnd, &_homeItemsAssetsIndexSegmentRomStart, &_homeItemsAssetsIndexSegmentRomEnd, &_homeItemsSpritesheetIndexSegmentRomStart, &_homeItemsSpritesheetIndexSegmentRomEnd, (void*)0x802E4000, (void*)0x802E4D00, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
+            dmaSprite(MAP_OBJECT_1, &_homeItemsTextureSegmentRomStart, &_homeItemsTextureSegmentRomEnd, &_homeItemsAssetsIndexSegmentRomStart, &_homeItemsAssetsIndexSegmentRomEnd, &_homeItemsSpritesheetIndexSegmentRomStart, &_homeItemsSpritesheetIndexSegmentRomEnd, (void*)0x802E4000, (void*)0x802E4D00, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
             setSpriteScale(MAP_OBJECT_1, 2.0f, 2.0f, 1.0f);
             func_8002C7EC(MAP_OBJECT_1, 3);
             setSpriteDefaultRGBA(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -534,7 +534,7 @@ void func_8006F938(u16 levelIndex) {
             
             if (checkLifeEventBit(0x46)) {
                 
-                func_8002B138(MAP_OBJECT_2, &_homeItemsTextureSegmentRomStart, &_homeItemsTextureSegmentRomEnd, &_homeItemsAssetsIndexSegmentRomStart, &_homeItemsAssetsIndexSegmentRomEnd, &_homeItemsSpritesheetIndexSegmentRomStart, &_homeItemsSpritesheetIndexSegmentRomEnd, (void*)0x802E7C00, (void*)0x802E7E80, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
+                dmaSprite(MAP_OBJECT_2, &_homeItemsTextureSegmentRomStart, &_homeItemsTextureSegmentRomEnd, &_homeItemsAssetsIndexSegmentRomStart, &_homeItemsAssetsIndexSegmentRomEnd, &_homeItemsSpritesheetIndexSegmentRomStart, &_homeItemsSpritesheetIndexSegmentRomEnd, (void*)0x802E7C00, (void*)0x802E7E80, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
                 setSpriteScale(MAP_OBJECT_2, 1.0f, 1.0f, 1.0f);
                 func_8002C7EC(MAP_OBJECT_2, 3);
                 setSpriteDefaultRGBA(MAP_OBJECT_2, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -544,7 +544,7 @@ void func_8006F938(u16 levelIndex) {
             
             if (checkLifeEventBit(0x47)) {
                 
-                func_8002B138(MAP_OBJECT_3, &_homeItemsTextureSegmentRomStart, &_homeItemsTextureSegmentRomEnd, &_homeItemsAssetsIndexSegmentRomStart, &_homeItemsAssetsIndexSegmentRomEnd, &_homeItemsSpritesheetIndexSegmentRomStart, &_homeItemsSpritesheetIndexSegmentRomEnd, (void*)0x802E8100, (void*)0x802E8380, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
+                dmaSprite(MAP_OBJECT_3, &_homeItemsTextureSegmentRomStart, &_homeItemsTextureSegmentRomEnd, &_homeItemsAssetsIndexSegmentRomStart, &_homeItemsAssetsIndexSegmentRomEnd, &_homeItemsSpritesheetIndexSegmentRomStart, &_homeItemsSpritesheetIndexSegmentRomEnd, (void*)0x802E8100, (void*)0x802E8380, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
                 setSpriteScale(MAP_OBJECT_3, 1.0f, 1.0f, 1.0f);
                 func_8002C7EC(MAP_OBJECT_3, 3);
                 setSpriteDefaultRGBA(MAP_OBJECT_3, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -556,7 +556,7 @@ void func_8006F938(u16 levelIndex) {
             // clock
             if (checkLifeEventBit(0x58)) {
                 
-                func_8002B138(MAP_OBJECT_4, &_homeItemsTextureSegmentRomStart, &_homeItemsTextureSegmentRomEnd, &_homeItemsAssetsIndexSegmentRomStart, &_homeItemsAssetsIndexSegmentRomEnd, &_homeItemsSpritesheetIndexSegmentRomStart, &_homeItemsSpritesheetIndexSegmentRomEnd, (void*)0x802E8600, (void*)0x802E8880, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
+                dmaSprite(MAP_OBJECT_4, &_homeItemsTextureSegmentRomStart, &_homeItemsTextureSegmentRomEnd, &_homeItemsAssetsIndexSegmentRomStart, &_homeItemsAssetsIndexSegmentRomEnd, &_homeItemsSpritesheetIndexSegmentRomStart, &_homeItemsSpritesheetIndexSegmentRomEnd, (void*)0x802E8600, (void*)0x802E8880, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
                 setSpriteScale(MAP_OBJECT_4, 1.0f, 1.0f, 1.0f);
                 func_8002C7EC(MAP_OBJECT_4, 3);
                 setSpriteDefaultRGBA(MAP_OBJECT_4, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -573,7 +573,7 @@ void func_8006F938(u16 levelIndex) {
             
             if (checkLifeEventBit(0x5A)) {
                 
-                func_8002B138(MAP_OBJECT_5, &_homeItemsTextureSegmentRomStart, &_homeItemsTextureSegmentRomEnd, &_homeItemsAssetsIndexSegmentRomStart, &_homeItemsAssetsIndexSegmentRomEnd, &_homeItemsSpritesheetIndexSegmentRomStart, &_homeItemsSpritesheetIndexSegmentRomEnd, (void*)0x802E8B00, (void*)0x802E8D80, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
+                dmaSprite(MAP_OBJECT_5, &_homeItemsTextureSegmentRomStart, &_homeItemsTextureSegmentRomEnd, &_homeItemsAssetsIndexSegmentRomStart, &_homeItemsAssetsIndexSegmentRomEnd, &_homeItemsSpritesheetIndexSegmentRomStart, &_homeItemsSpritesheetIndexSegmentRomEnd, (void*)0x802E8B00, (void*)0x802E8D80, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
                 setSpriteScale(MAP_OBJECT_5, 1.0f, 1.0f, 1.0f);
                 func_8002C7EC(MAP_OBJECT_5, 3);
                 setSpriteDefaultRGBA(MAP_OBJECT_5, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -585,7 +585,7 @@ void func_8006F938(u16 levelIndex) {
             // vase
             if (checkLifeEventBit(8)) {
                 
-                func_8002B138(MAP_OBJECT_6, &_homeItemsTextureSegmentRomStart, &_homeItemsTextureSegmentRomEnd, &_homeItemsAssetsIndexSegmentRomStart, &_homeItemsAssetsIndexSegmentRomEnd, &_homeItemsSpritesheetIndexSegmentRomStart, &_homeItemsSpritesheetIndexSegmentRomEnd, (void*)0x802E9000, (void*)0x802E9280, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
+                dmaSprite(MAP_OBJECT_6, &_homeItemsTextureSegmentRomStart, &_homeItemsTextureSegmentRomEnd, &_homeItemsAssetsIndexSegmentRomStart, &_homeItemsAssetsIndexSegmentRomEnd, &_homeItemsSpritesheetIndexSegmentRomStart, &_homeItemsSpritesheetIndexSegmentRomEnd, (void*)0x802E9000, (void*)0x802E9280, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
                 setSpriteScale(MAP_OBJECT_6, 1.0f, 1.0f, 1.0f);
                 func_8002C7EC(MAP_OBJECT_6, 3);
                 setSpriteDefaultRGBA(MAP_OBJECT_6, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -601,7 +601,7 @@ void func_8006F938(u16 levelIndex) {
             // table cloth
             if (checkLifeEventBit(0x5C)) {
                 
-                func_8002B138(MAP_OBJECT_1, &_homeItemsTextureSegmentRomStart, &_homeItemsTextureSegmentRomEnd, &_homeItemsAssetsIndexSegmentRomStart, &_homeItemsAssetsIndexSegmentRomEnd, &_homeItemsSpritesheetIndexSegmentRomStart, &_homeItemsSpritesheetIndexSegmentRomEnd, (void*)0x802E7C00, (void*)0x802E7E80, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
+                dmaSprite(MAP_OBJECT_1, &_homeItemsTextureSegmentRomStart, &_homeItemsTextureSegmentRomEnd, &_homeItemsAssetsIndexSegmentRomStart, &_homeItemsAssetsIndexSegmentRomEnd, &_homeItemsSpritesheetIndexSegmentRomStart, &_homeItemsSpritesheetIndexSegmentRomEnd, (void*)0x802E7C00, (void*)0x802E7E80, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
                 setSpriteScale(MAP_OBJECT_1, 1.0f, 1.0f, 1.0f);
                 func_8002C7EC(MAP_OBJECT_1, 3);
                 setSpriteDefaultRGBA(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -614,7 +614,7 @@ void func_8006F938(u16 levelIndex) {
         
          case MOUNTAIN_1:
 
-            func_8002B138(MAP_OBJECT_1, &_waterTilesTextureSegmentRomStart, &_waterTilesTextureSegmentRomEnd, &_waterTilesAssetsIndexSegmentRomStart, &_waterTilesAssetsIndexSegmentRomEnd, &_waterTilesSpritesheetIndexSegmentRomStart, &_waterTilesSpritesheetIndexSegmentRomEnd, (void*)0x802E4000, (void*)0x802E4D00, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
+            dmaSprite(MAP_OBJECT_1, &_waterTilesTextureSegmentRomStart, &_waterTilesTextureSegmentRomEnd, &_waterTilesAssetsIndexSegmentRomStart, &_waterTilesAssetsIndexSegmentRomEnd, &_waterTilesSpritesheetIndexSegmentRomStart, &_waterTilesSpritesheetIndexSegmentRomEnd, (void*)0x802E4000, (void*)0x802E4D00, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
             setSpriteScale(MAP_OBJECT_1, 3.8f, 1.0f, 6.0f);
             func_8002C6F8(MAP_OBJECT_1, 3);
             func_8002C768(MAP_OBJECT_1, 0x200);
@@ -623,7 +623,7 @@ void func_8006F938(u16 levelIndex) {
             func_8002C914(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
             setMapObject(MAIN_MAP_INDEX, 0, MAP_OBJECT_1, 0, -288.0f, 0.0f, -140.0f, 0x5A, 0xFE, 0, 0);
              
-            func_8002B138(MAP_OBJECT_2, &_waterTilesTextureSegmentRomStart, &_waterTilesTextureSegmentRomEnd, &_waterTilesAssetsIndexSegmentRomStart, &_waterTilesAssetsIndexSegmentRomEnd, &_waterTilesSpritesheetIndexSegmentRomStart, &_waterTilesSpritesheetIndexSegmentRomEnd, (void*)0x802E5A00, (void*)0x802E6700, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
+            dmaSprite(MAP_OBJECT_2, &_waterTilesTextureSegmentRomStart, &_waterTilesTextureSegmentRomEnd, &_waterTilesAssetsIndexSegmentRomStart, &_waterTilesAssetsIndexSegmentRomEnd, &_waterTilesSpritesheetIndexSegmentRomStart, &_waterTilesSpritesheetIndexSegmentRomEnd, (void*)0x802E5A00, (void*)0x802E6700, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
             setSpriteScale(MAP_OBJECT_2, 6.0f, 1.0f, 6.0f);
             func_8002C6F8(MAP_OBJECT_2, 3);
             func_8002C768(MAP_OBJECT_2, 0x200);
@@ -632,7 +632,7 @@ void func_8006F938(u16 levelIndex) {
             func_8002C914(MAP_OBJECT_2, 0xFF, 0xFF, 0xFF, 0xFF);
             setMapObject(MAIN_MAP_INDEX, 1, MAP_OBJECT_2, 0, -224.0f, 0.0f, 320.0f, 0, 0xFE, 0, 0);
              
-            func_8002B138(MAP_OBJECT_3, &_waterTilesTextureSegmentRomStart, &_waterTilesTextureSegmentRomEnd, &_waterTilesAssetsIndexSegmentRomStart, &_waterTilesAssetsIndexSegmentRomEnd, &_waterTilesSpritesheetIndexSegmentRomStart, &_waterTilesSpritesheetIndexSegmentRomEnd, (void*)0x802E7C00, (void*)0x802E8900, (void*)0x802E9600, (void*)0x802E9700, (void*)0x802E9800, (void*)0x802E9900, 1, 1);
+            dmaSprite(MAP_OBJECT_3, &_waterTilesTextureSegmentRomStart, &_waterTilesTextureSegmentRomEnd, &_waterTilesAssetsIndexSegmentRomStart, &_waterTilesAssetsIndexSegmentRomEnd, &_waterTilesSpritesheetIndexSegmentRomStart, &_waterTilesSpritesheetIndexSegmentRomEnd, (void*)0x802E7C00, (void*)0x802E8900, (void*)0x802E9600, (void*)0x802E9700, (void*)0x802E9800, (void*)0x802E9900, 1, 1);
             setSpriteScale(MAP_OBJECT_3, 6.0f, 1.0f, 6.0f);
             func_8002C6F8(MAP_OBJECT_3, 3);
             func_8002C768(MAP_OBJECT_3, 0x200);
@@ -643,7 +643,7 @@ void func_8006F938(u16 levelIndex) {
              
             if (!checkLifeEventBit(0x45)) {
                 
-                func_8002B138(MAP_OBJECT_4, &_boulderTextureSegmentRomStart, &_boulderTextureSegmentRomEnd, &_boulderAssetsIndexSegmentRomStart, &_boulderAssetsIndexSegmentRomEnd, &_boulderSpritesheetIndexSegmentRomStart, &_boulderSpritesheetIndexSegmentRomEnd, (void*)0x802E9A00, (void*)0x802EA700, (void*)0x802EB400, (void*)0x802EB500, (void*)0x802EB600, (void*)0x802EB700, 1, 1);
+                dmaSprite(MAP_OBJECT_4, &_boulderTextureSegmentRomStart, &_boulderTextureSegmentRomEnd, &_boulderAssetsIndexSegmentRomStart, &_boulderAssetsIndexSegmentRomEnd, &_boulderSpritesheetIndexSegmentRomStart, &_boulderSpritesheetIndexSegmentRomEnd, (void*)0x802E9A00, (void*)0x802EA700, (void*)0x802EB400, (void*)0x802EB500, (void*)0x802EB600, (void*)0x802EB700, 1, 1);
                 setSpriteScale(MAP_OBJECT_4, 1.0f, 1.0f, 1.0f);
                 func_8002C7EC(MAP_OBJECT_4, 3);
                 setSpriteDefaultRGBA(MAP_OBJECT_4, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -660,7 +660,7 @@ void func_8006F938(u16 levelIndex) {
 
         case MOUNTAIN_2:
 
-            func_8002B138(MAP_OBJECT_1, &_waterTilesTextureSegmentRomStart, &_waterTilesTextureSegmentRomEnd, &_waterTilesAssetsIndexSegmentRomStart, &_waterTilesAssetsIndexSegmentRomEnd, &_waterTilesSpritesheetIndexSegmentRomStart, &_waterTilesSpritesheetIndexSegmentRomEnd, (void*)0x802E4000, (void*)0x802E4D00, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
+            dmaSprite(MAP_OBJECT_1, &_waterTilesTextureSegmentRomStart, &_waterTilesTextureSegmentRomEnd, &_waterTilesAssetsIndexSegmentRomStart, &_waterTilesAssetsIndexSegmentRomEnd, &_waterTilesSpritesheetIndexSegmentRomStart, &_waterTilesSpritesheetIndexSegmentRomEnd, (void*)0x802E4000, (void*)0x802E4D00, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
             setSpriteScale(MAP_OBJECT_1, 6.0f, 1.0f, 6.0f);
             func_8002C6F8(MAP_OBJECT_1, 3);
             func_8002C768(MAP_OBJECT_1, 0x200);
@@ -670,7 +670,7 @@ void func_8006F938(u16 levelIndex) {
 
             setMapObject(MAIN_MAP_INDEX, 0, MAP_OBJECT_1, 0, 224.0f, 0, -254.0f, 0x5A, 0xFE, 0, 0);
             
-            func_8002B138(MAP_OBJECT_2, &_waterTilesTextureSegmentRomStart, &_waterTilesTextureSegmentRomEnd, &_waterTilesAssetsIndexSegmentRomStart, &_waterTilesAssetsIndexSegmentRomEnd, &_waterTilesSpritesheetIndexSegmentRomStart, &_waterTilesSpritesheetIndexSegmentRomEnd, (void*)0x802E5A00, (void*)0x802E6700, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
+            dmaSprite(MAP_OBJECT_2, &_waterTilesTextureSegmentRomStart, &_waterTilesTextureSegmentRomEnd, &_waterTilesAssetsIndexSegmentRomStart, &_waterTilesAssetsIndexSegmentRomEnd, &_waterTilesSpritesheetIndexSegmentRomStart, &_waterTilesSpritesheetIndexSegmentRomEnd, (void*)0x802E5A00, (void*)0x802E6700, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
             setSpriteScale(MAP_OBJECT_2, 6.0f, 1.0f, 6.0f);
             func_8002C6F8(MAP_OBJECT_2, 3);
             func_8002C768(MAP_OBJECT_2, 0x200);
@@ -684,9 +684,9 @@ void func_8006F938(u16 levelIndex) {
 
 
                 if (gSeason != WINTER) {
-                    func_8002B138(MAP_OBJECT_3, &_bridgeTextureSegmentRomStart, &_bridgeTextureSegmentRomEnd, &_bridgeAssetsIndexSegmentRomStart, &_bridgeAssetsIndexSegmentRomEnd, &_bridgeSpritesheetIndexSegmentRomStart, &_bridgeSpritesheetIndexSegmentRomEnd, (void*)0x802E7C00, (void*)0x802E8280, (void*)0x802EB400, (void*)0x802EB500, (void*)0x802EB600, (void*)0x802EB700, 1, 1);
+                    dmaSprite(MAP_OBJECT_3, &_bridgeTextureSegmentRomStart, &_bridgeTextureSegmentRomEnd, &_bridgeAssetsIndexSegmentRomStart, &_bridgeAssetsIndexSegmentRomEnd, &_bridgeSpritesheetIndexSegmentRomStart, &_bridgeSpritesheetIndexSegmentRomEnd, (void*)0x802E7C00, (void*)0x802E8280, (void*)0x802EB400, (void*)0x802EB500, (void*)0x802EB600, (void*)0x802EB700, 1, 1);
                 } else {
-                    func_8002B138(MAP_OBJECT_3, &_stonePillarTextureSegmentRomStart, &_stonePillarTextureSegmentRomEnd, &_stonePillarAssetsIndexSegmentRomStart, &_stonePillarAssetsIndexSegmentRomEnd, &_stonePillarSpritesheetIndexSegmentRomStart, &_stonePillarSpritesheetIndexSegmentRomEnd, (void*)0x802E7C00, (void*)0x802E8280, (void*)0x802EB400, (void*)0x802EB500, (void*)0x802EB600, (void*)0x802EB700, 1, 1);
+                    dmaSprite(MAP_OBJECT_3, &_stonePillarTextureSegmentRomStart, &_stonePillarTextureSegmentRomEnd, &_stonePillarAssetsIndexSegmentRomStart, &_stonePillarAssetsIndexSegmentRomEnd, &_stonePillarSpritesheetIndexSegmentRomStart, &_stonePillarSpritesheetIndexSegmentRomEnd, (void*)0x802E7C00, (void*)0x802E8280, (void*)0x802EB400, (void*)0x802EB500, (void*)0x802EB600, (void*)0x802EB700, 1, 1);
                 }
 
                 setSpriteScale(MAP_OBJECT_3, 1.0f, 1.0f, 1.0f);
@@ -697,9 +697,9 @@ void func_8006F938(u16 levelIndex) {
                 setMapObject(MAIN_MAP_INDEX, 2, MAP_OBJECT_3, 0, 96.0f, 224.0f, -448.0f, 0xFF, 0, 0, 0);
 
                 if (gSeason != WINTER) {
-                    func_8002B138(MAP_OBJECT_4, &_bridgeTextureSegmentRomStart, &_bridgeTextureSegmentRomEnd, &_bridgeAssetsIndexSegmentRomStart, &_bridgeAssetsIndexSegmentRomEnd, &_bridgeSpritesheetIndexSegmentRomStart, &_bridgeSpritesheetIndexSegmentRomEnd, (void*)0x802E8900, (void*)0x802E8F80, (void*)0x802EB400, (void*)0x802EB500, (void*)0x802EB600, (void*)0x802EB700, 1, 1);
+                    dmaSprite(MAP_OBJECT_4, &_bridgeTextureSegmentRomStart, &_bridgeTextureSegmentRomEnd, &_bridgeAssetsIndexSegmentRomStart, &_bridgeAssetsIndexSegmentRomEnd, &_bridgeSpritesheetIndexSegmentRomStart, &_bridgeSpritesheetIndexSegmentRomEnd, (void*)0x802E8900, (void*)0x802E8F80, (void*)0x802EB400, (void*)0x802EB500, (void*)0x802EB600, (void*)0x802EB700, 1, 1);
                 } else {
-                    func_8002B138(MAP_OBJECT_4, &_stonePillarTextureSegmentRomStart, &_stonePillarTextureSegmentRomEnd, &_stonePillarAssetsIndexSegmentRomStart, &_stonePillarAssetsIndexSegmentRomEnd, &_stonePillarSpritesheetIndexSegmentRomStart, &_stonePillarSpritesheetIndexSegmentRomEnd, (void*)0x802E8900, (void*)0x802E8F80, (void*)0x802EB400, (void*)0x802EB500, (void*)0x802EB600, (void*)0x802EB700, 1, 1);
+                    dmaSprite(MAP_OBJECT_4, &_stonePillarTextureSegmentRomStart, &_stonePillarTextureSegmentRomEnd, &_stonePillarAssetsIndexSegmentRomStart, &_stonePillarAssetsIndexSegmentRomEnd, &_stonePillarSpritesheetIndexSegmentRomStart, &_stonePillarSpritesheetIndexSegmentRomEnd, (void*)0x802E8900, (void*)0x802E8F80, (void*)0x802EB400, (void*)0x802EB500, (void*)0x802EB600, (void*)0x802EB700, 1, 1);
                 }
 
                 setSpriteScale(MAP_OBJECT_4, 1.0f, 1.0f, 1.0f);
@@ -709,9 +709,9 @@ void func_8006F938(u16 levelIndex) {
                 setMapObject(MAIN_MAP_INDEX, 3, MAP_OBJECT_4, 0, 96.0f, 224.0f, -376, 0xFF, 0, 0, 0);
 
                 if (gSeason != WINTER) {
-                    func_8002B138(MAP_OBJECT_5, &_bridgeTextureSegmentRomStart, &_bridgeTextureSegmentRomEnd, &_bridgeAssetsIndexSegmentRomStart, &_bridgeAssetsIndexSegmentRomEnd, &_bridgeSpritesheetIndexSegmentRomStart, &_bridgeSpritesheetIndexSegmentRomEnd, (void*)0x802E9A00, (void*)0x802EA080, (void*)0x802EB400, (void*)0x802EB500, (void*)0x802EB600, (void*)0x802EB700, 1, 1);
+                    dmaSprite(MAP_OBJECT_5, &_bridgeTextureSegmentRomStart, &_bridgeTextureSegmentRomEnd, &_bridgeAssetsIndexSegmentRomStart, &_bridgeAssetsIndexSegmentRomEnd, &_bridgeSpritesheetIndexSegmentRomStart, &_bridgeSpritesheetIndexSegmentRomEnd, (void*)0x802E9A00, (void*)0x802EA080, (void*)0x802EB400, (void*)0x802EB500, (void*)0x802EB600, (void*)0x802EB700, 1, 1);
                 } else {
-                    func_8002B138(MAP_OBJECT_5, &_stonePillarTextureSegmentRomStart, &_stonePillarTextureSegmentRomEnd, &_stonePillarAssetsIndexSegmentRomStart, &_stonePillarAssetsIndexSegmentRomEnd, &_stonePillarSpritesheetIndexSegmentRomStart, &_stonePillarSpritesheetIndexSegmentRomEnd, (void*)0x802E9A00, (void*)0x802EA080, (void*)0x802EB400, (void*)0x802EB500, (void*)0x802EB600, (void*)0x802EB700, 1, 1);
+                    dmaSprite(MAP_OBJECT_5, &_stonePillarTextureSegmentRomStart, &_stonePillarTextureSegmentRomEnd, &_stonePillarAssetsIndexSegmentRomStart, &_stonePillarAssetsIndexSegmentRomEnd, &_stonePillarSpritesheetIndexSegmentRomStart, &_stonePillarSpritesheetIndexSegmentRomEnd, (void*)0x802E9A00, (void*)0x802EA080, (void*)0x802EB400, (void*)0x802EB500, (void*)0x802EB600, (void*)0x802EB700, 1, 1);
                 }
 
                 setSpriteScale(MAP_OBJECT_5, 1.0f, 1.0f, 1.0f);
@@ -721,9 +721,9 @@ void func_8006F938(u16 levelIndex) {
                 setMapObject(MAIN_MAP_INDEX, 4, MAP_OBJECT_5, 0, 304.0f, 224.0f, -432.0f, 0xFF, 0, 0, 0);
 
                 if (gSeason != WINTER) {
-                    func_8002B138(MAP_OBJECT_6, &_bridgeTextureSegmentRomStart, &_bridgeTextureSegmentRomEnd, &_bridgeAssetsIndexSegmentRomStart, &_bridgeAssetsIndexSegmentRomEnd, &_bridgeSpritesheetIndexSegmentRomStart, &_bridgeSpritesheetIndexSegmentRomEnd, (void*)0x802EA700, (void*)0x802EAD80, (void*)0x802EB400, (void*)0x802EB500, (void*)0x802EB600, (void*)0x802EB700, 1, 1);
+                    dmaSprite(MAP_OBJECT_6, &_bridgeTextureSegmentRomStart, &_bridgeTextureSegmentRomEnd, &_bridgeAssetsIndexSegmentRomStart, &_bridgeAssetsIndexSegmentRomEnd, &_bridgeSpritesheetIndexSegmentRomStart, &_bridgeSpritesheetIndexSegmentRomEnd, (void*)0x802EA700, (void*)0x802EAD80, (void*)0x802EB400, (void*)0x802EB500, (void*)0x802EB600, (void*)0x802EB700, 1, 1);
                 } else {
-                    func_8002B138(MAP_OBJECT_6, &_stonePillarTextureSegmentRomStart, &_stonePillarTextureSegmentRomEnd, &_stonePillarAssetsIndexSegmentRomStart, &_stonePillarAssetsIndexSegmentRomEnd, &_stonePillarSpritesheetIndexSegmentRomStart, &_stonePillarSpritesheetIndexSegmentRomEnd, (void*)0x802EA700, (void*)0x802EAD80, (void*)0x802EB400, (void*)0x802EB500, (void*)0x802EB600, (void*)0x802EB700, 1, 1);
+                    dmaSprite(MAP_OBJECT_6, &_stonePillarTextureSegmentRomStart, &_stonePillarTextureSegmentRomEnd, &_stonePillarAssetsIndexSegmentRomStart, &_stonePillarAssetsIndexSegmentRomEnd, &_stonePillarSpritesheetIndexSegmentRomStart, &_stonePillarSpritesheetIndexSegmentRomEnd, (void*)0x802EA700, (void*)0x802EAD80, (void*)0x802EB400, (void*)0x802EB500, (void*)0x802EB600, (void*)0x802EB700, 1, 1);
                 }
 
                 setSpriteScale(MAP_OBJECT_6, 1.0f, 1.0f, 1.0f);
@@ -740,7 +740,7 @@ void func_8006F938(u16 levelIndex) {
             
             if (checkLifeEventBit(0x48)) {
 
-                func_8002B138(MAP_OBJECT_1, &_mountainPathTilesTextureSegmentRomStart, &_mountainPathTilesTextureSegmentRomEnd, &_mountainPathTilesAssetsIndexSegmentRomStart, &_mountainPathTilesAssetsIndexSegmentRomEnd, &_mountainPathTilesSpritesheetIndexSegmentRomStart, &_mountainPathTilesSpritesheetIndexSegmentRomEnd, (void*)0x802E4000, (void*)0x802E4400, (void*)0x802E4800, (void*)0x802E4900, (void*)0x802E4A00, (void*)0x802E4B00, 1, 1);
+                dmaSprite(MAP_OBJECT_1, &_mountainPathTilesTextureSegmentRomStart, &_mountainPathTilesTextureSegmentRomEnd, &_mountainPathTilesAssetsIndexSegmentRomStart, &_mountainPathTilesAssetsIndexSegmentRomEnd, &_mountainPathTilesSpritesheetIndexSegmentRomStart, &_mountainPathTilesSpritesheetIndexSegmentRomEnd, (void*)0x802E4000, (void*)0x802E4400, (void*)0x802E4800, (void*)0x802E4900, (void*)0x802E4A00, (void*)0x802E4B00, 1, 1);
                 setSpriteScale(MAP_OBJECT_1, 6.0f, 1.0f, 6.0f);
                 func_8002C6F8(MAP_OBJECT_1, 3);
                 func_8002C768(MAP_OBJECT_1, 0x200);
@@ -750,9 +750,9 @@ void func_8006F938(u16 levelIndex) {
                 setMapObject(MAIN_MAP_INDEX, 0, MAP_OBJECT_1, 0, 0, 216.0f, -128.0f, 0, 0xFE, 0, 0);
 
                 if (gSeason != WINTER) {
-                    func_8002B138(MAP_OBJECT_3, &_bridgeTextureSegmentRomStart, &_bridgeTextureSegmentRomEnd, &_bridgeAssetsIndexSegmentRomStart, &_bridgeAssetsIndexSegmentRomEnd, &_bridgeSpritesheetIndexSegmentRomStart, &_bridgeSpritesheetIndexSegmentRomEnd, (void*)0x802E7C00, (void*)0x802E8280, (void*)0x802EB400, (void*)0x802EB500, (void*)0x802EB600, (void*)0x802EB700, 1, 1);
+                    dmaSprite(MAP_OBJECT_3, &_bridgeTextureSegmentRomStart, &_bridgeTextureSegmentRomEnd, &_bridgeAssetsIndexSegmentRomStart, &_bridgeAssetsIndexSegmentRomEnd, &_bridgeSpritesheetIndexSegmentRomStart, &_bridgeSpritesheetIndexSegmentRomEnd, (void*)0x802E7C00, (void*)0x802E8280, (void*)0x802EB400, (void*)0x802EB500, (void*)0x802EB600, (void*)0x802EB700, 1, 1);
                 } else {
-                    func_8002B138(MAP_OBJECT_3, &_stonePillarTextureSegmentRomStart, &_stonePillarTextureSegmentRomEnd, &_stonePillarAssetsIndexSegmentRomStart, &_stonePillarAssetsIndexSegmentRomEnd, &_stonePillarSpritesheetIndexSegmentRomStart, &_stonePillarSpritesheetIndexSegmentRomEnd, (void*)0x802E7C00, (void*)0x802E8280, (void*)0x802EB400, (void*)0x802EB500, (void*)0x802EB600, (void*)0x802EB700, 1, 1);
+                    dmaSprite(MAP_OBJECT_3, &_stonePillarTextureSegmentRomStart, &_stonePillarTextureSegmentRomEnd, &_stonePillarAssetsIndexSegmentRomStart, &_stonePillarAssetsIndexSegmentRomEnd, &_stonePillarSpritesheetIndexSegmentRomStart, &_stonePillarSpritesheetIndexSegmentRomEnd, (void*)0x802E7C00, (void*)0x802E8280, (void*)0x802EB400, (void*)0x802EB500, (void*)0x802EB600, (void*)0x802EB700, 1, 1);
                 }
 
                 setSpriteScale(MAP_OBJECT_3, 1.0f, 1.0f, 1.0f);
@@ -762,9 +762,9 @@ void func_8006F938(u16 levelIndex) {
                 setMapObject(MAIN_MAP_INDEX, 2, MAP_OBJECT_3, 0, -192.0f, 228.0f, 4.0f, 0xFF, 0, 0, 0);
 
                 if (gSeason != WINTER) {
-                    func_8002B138(MAP_OBJECT_4, &_bridgeTextureSegmentRomStart, &_bridgeTextureSegmentRomEnd, &_bridgeAssetsIndexSegmentRomStart, &_bridgeAssetsIndexSegmentRomEnd, &_bridgeSpritesheetIndexSegmentRomStart, &_bridgeSpritesheetIndexSegmentRomEnd, (void*)0x802E8900, (void*)0x802E8F80, (void*)0x802EB400, (void*)0x802EB500, (void*)0x802EB600, (void*)0x802EB700, 1, 1);
+                    dmaSprite(MAP_OBJECT_4, &_bridgeTextureSegmentRomStart, &_bridgeTextureSegmentRomEnd, &_bridgeAssetsIndexSegmentRomStart, &_bridgeAssetsIndexSegmentRomEnd, &_bridgeSpritesheetIndexSegmentRomStart, &_bridgeSpritesheetIndexSegmentRomEnd, (void*)0x802E8900, (void*)0x802E8F80, (void*)0x802EB400, (void*)0x802EB500, (void*)0x802EB600, (void*)0x802EB700, 1, 1);
                 } else {
-                    func_8002B138(MAP_OBJECT_4, &_stonePillarTextureSegmentRomStart, &_stonePillarTextureSegmentRomEnd, &_stonePillarAssetsIndexSegmentRomStart, &_stonePillarAssetsIndexSegmentRomEnd, &_stonePillarSpritesheetIndexSegmentRomStart, &_stonePillarSpritesheetIndexSegmentRomEnd, (void*)0x802E8900, (void*)0x802E8F80, (void*)0x802EB400, (void*)0x802EB500, (void*)0x802EB600, (void*)0x802EB700, 1, 1);
+                    dmaSprite(MAP_OBJECT_4, &_stonePillarTextureSegmentRomStart, &_stonePillarTextureSegmentRomEnd, &_stonePillarAssetsIndexSegmentRomStart, &_stonePillarAssetsIndexSegmentRomEnd, &_stonePillarSpritesheetIndexSegmentRomStart, &_stonePillarSpritesheetIndexSegmentRomEnd, (void*)0x802E8900, (void*)0x802E8F80, (void*)0x802EB400, (void*)0x802EB500, (void*)0x802EB600, (void*)0x802EB700, 1, 1);
                 }
                 
                 setSpriteScale(MAP_OBJECT_4, 1.0f, 1.0f, 1.0f);
@@ -774,9 +774,9 @@ void func_8006F938(u16 levelIndex) {
                 setMapObject(MAIN_MAP_INDEX, 3, MAP_OBJECT_4, 0, -192.0f, 224.0f, 64.0f, 0xFF, 0, 0, 0);
 
                 if (gSeason != WINTER) {
-                    func_8002B138(MAP_OBJECT_5, &_bridgeTextureSegmentRomStart, &_bridgeTextureSegmentRomEnd, &_bridgeAssetsIndexSegmentRomStart, &_bridgeAssetsIndexSegmentRomEnd, &_bridgeSpritesheetIndexSegmentRomStart, &_bridgeSpritesheetIndexSegmentRomEnd, (void*)0x802E9A00, (void*)0x802EA080, (void*)0x802EB400, (void*)0x802EB500, (void*)0x802EB600, (void*)0x802EB700, 1, 1);
+                    dmaSprite(MAP_OBJECT_5, &_bridgeTextureSegmentRomStart, &_bridgeTextureSegmentRomEnd, &_bridgeAssetsIndexSegmentRomStart, &_bridgeAssetsIndexSegmentRomEnd, &_bridgeSpritesheetIndexSegmentRomStart, &_bridgeSpritesheetIndexSegmentRomEnd, (void*)0x802E9A00, (void*)0x802EA080, (void*)0x802EB400, (void*)0x802EB500, (void*)0x802EB600, (void*)0x802EB700, 1, 1);
                 } else {
-                    func_8002B138(MAP_OBJECT_5, &_stonePillarTextureSegmentRomStart, &_stonePillarTextureSegmentRomEnd, &_stonePillarAssetsIndexSegmentRomStart, &_stonePillarAssetsIndexSegmentRomEnd, &_stonePillarSpritesheetIndexSegmentRomStart, &_stonePillarSpritesheetIndexSegmentRomEnd, (void*)0x802E9A00, (void*)0x802EA080, (void*)0x802EB400, (void*)0x802EB500, (void*)0x802EB600, (void*)0x802EB700, 1, 1);
+                    dmaSprite(MAP_OBJECT_5, &_stonePillarTextureSegmentRomStart, &_stonePillarTextureSegmentRomEnd, &_stonePillarAssetsIndexSegmentRomStart, &_stonePillarAssetsIndexSegmentRomEnd, &_stonePillarSpritesheetIndexSegmentRomStart, &_stonePillarSpritesheetIndexSegmentRomEnd, (void*)0x802E9A00, (void*)0x802EA080, (void*)0x802EB400, (void*)0x802EB500, (void*)0x802EB600, (void*)0x802EB700, 1, 1);
                 }
                 
                 setSpriteScale(MAP_OBJECT_5, 1.0f, 1.0f, 1.0f);
@@ -786,9 +786,9 @@ void func_8006F938(u16 levelIndex) {
                 setMapObject(MAIN_MAP_INDEX, 4, MAP_OBJECT_5, 0, -408.0f, 224.0f, -16.0f, 0xFF, 0, 0, 0);
 
                 if (gSeason != WINTER) {
-                    func_8002B138(MAP_OBJECT_6, &_bridgeTextureSegmentRomStart, &_bridgeTextureSegmentRomEnd, &_bridgeAssetsIndexSegmentRomStart, &_bridgeAssetsIndexSegmentRomEnd, &_bridgeSpritesheetIndexSegmentRomStart, &_bridgeSpritesheetIndexSegmentRomEnd, (void*)0x802EA700, (void*)0x802EAD80, (void*)0x802EB400, (void*)0x802EB500, (void*)0x802EB600, (void*)0x802EB700, 1, 1);
+                    dmaSprite(MAP_OBJECT_6, &_bridgeTextureSegmentRomStart, &_bridgeTextureSegmentRomEnd, &_bridgeAssetsIndexSegmentRomStart, &_bridgeAssetsIndexSegmentRomEnd, &_bridgeSpritesheetIndexSegmentRomStart, &_bridgeSpritesheetIndexSegmentRomEnd, (void*)0x802EA700, (void*)0x802EAD80, (void*)0x802EB400, (void*)0x802EB500, (void*)0x802EB600, (void*)0x802EB700, 1, 1);
                 } else {
-                    func_8002B138(MAP_OBJECT_6, &_stonePillarTextureSegmentRomStart, &_stonePillarTextureSegmentRomEnd, &_stonePillarAssetsIndexSegmentRomStart, &_stonePillarAssetsIndexSegmentRomEnd, &_stonePillarSpritesheetIndexSegmentRomStart, &_stonePillarSpritesheetIndexSegmentRomEnd, (void*)0x802EA700, (void*)0x802EAD80, (void*)0x802EB400, (void*)0x802EB500, (void*)0x802EB600, (void*)0x802EB700, 1, 1);
+                    dmaSprite(MAP_OBJECT_6, &_stonePillarTextureSegmentRomStart, &_stonePillarTextureSegmentRomEnd, &_stonePillarAssetsIndexSegmentRomStart, &_stonePillarAssetsIndexSegmentRomEnd, &_stonePillarSpritesheetIndexSegmentRomStart, &_stonePillarSpritesheetIndexSegmentRomEnd, (void*)0x802EA700, (void*)0x802EAD80, (void*)0x802EB400, (void*)0x802EB500, (void*)0x802EB600, (void*)0x802EB700, 1, 1);
                 }
                 
                 setSpriteScale(MAP_OBJECT_6, 1.0f, 1.0f, 1.0f);
@@ -799,7 +799,7 @@ void func_8006F938(u16 levelIndex) {
                 
             } else {
                 
-                func_8002B138(MAP_OBJECT_1, &_bridgeTextureSegmentRomStart, &_bridgeTextureSegmentRomEnd, &_bridgeAssetsIndexSegmentRomStart, &_bridgeAssetsIndexSegmentRomEnd, &_bridgeSpritesheetIndexSegmentRomStart, &_bridgeSpritesheetIndexSegmentRomEnd, (void*)0x802E4000, (void*)0x802E4D00, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
+                dmaSprite(MAP_OBJECT_1, &_bridgeTextureSegmentRomStart, &_bridgeTextureSegmentRomEnd, &_bridgeAssetsIndexSegmentRomStart, &_bridgeAssetsIndexSegmentRomEnd, &_bridgeSpritesheetIndexSegmentRomStart, &_bridgeSpritesheetIndexSegmentRomEnd, (void*)0x802E4000, (void*)0x802E4D00, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
                 setSpriteScale(MAP_OBJECT_1, 1.0f, 1.0f, 1.0f);
                 func_8002C7EC(MAP_OBJECT_1, 3);
                 setSpriteDefaultRGBA(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -810,7 +810,7 @@ void func_8006F938(u16 levelIndex) {
             
             if (checkLifeEventBit(HOT_SPRINGS_COMPLETED)) {
 
-                func_8002B138(MAP_OBJECT_2, &_steamTextureSegmentRomStart, &_steamTextureSegmentRomEnd, &_steamAssetsIndexSegmentRomStart, &_steamAssetsIndexSegmentRomEnd, &_steamSpritesheetIndexSegmentRomStart, &_steamSpritesheetIndexSegmentRomEnd, (void*)0x802E4C00, (void*)0x802E5800, (void*)0x802E6400, (void*)0x802E6500, (void*)0x802E6600, (void*)0x802E6700, 1, 1);
+                dmaSprite(MAP_OBJECT_2, &_steamTextureSegmentRomStart, &_steamTextureSegmentRomEnd, &_steamAssetsIndexSegmentRomStart, &_steamAssetsIndexSegmentRomEnd, &_steamSpritesheetIndexSegmentRomStart, &_steamSpritesheetIndexSegmentRomEnd, (void*)0x802E4C00, (void*)0x802E5800, (void*)0x802E6400, (void*)0x802E6500, (void*)0x802E6600, (void*)0x802E6700, 1, 1);
                 setSpriteScale(MAP_OBJECT_2, 2.0f, 2.0f, 1.0f);
                 func_8002C7EC(MAP_OBJECT_2, 2);
                 setSpriteDefaultRGBA(MAP_OBJECT_2, 0xFF, 0xFF, 0xFF, 0x60);
@@ -823,7 +823,7 @@ void func_8006F938(u16 levelIndex) {
 
         case POND:
             
-            func_8002B138(MAP_OBJECT_1, &_pondWaterTextureSegmentRomStart, &_pondWaterTextureSegmentRomEnd, &_pondWaterAssetsIndexSegmentRomStart, &_pondWaterAssetsIndexSegmentRomEnd, &_pondWaterSpritesheetIndexSegmentRomStart, &_pondWaterSpritesheetIndexSegmentRomEnd, (void*)0x802E4000, (void*)0x802E4D00, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
+            dmaSprite(MAP_OBJECT_1, &_pondWaterTextureSegmentRomStart, &_pondWaterTextureSegmentRomEnd, &_pondWaterAssetsIndexSegmentRomStart, &_pondWaterAssetsIndexSegmentRomEnd, &_pondWaterSpritesheetIndexSegmentRomStart, &_pondWaterSpritesheetIndexSegmentRomEnd, (void*)0x802E4000, (void*)0x802E4D00, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
             setSpriteScale(MAP_OBJECT_1, 6.0f, 1.0f, 6.0f);
             func_8002C6F8(MAP_OBJECT_1, 3);
             func_8002C768(MAP_OBJECT_1, 0x200);
@@ -836,7 +836,7 @@ void func_8006F938(u16 levelIndex) {
 
         case BEACH:
 
-            func_8002B138(MAP_OBJECT_1, &_wavesTextureSegmentRomStart, &_wavesTextureSegmentRomEnd, &_wavesAssetsIndexSegmentRomStart, &_wavesAssetsIndexSegmentRomEnd, &_wavesSpritesheetIndexSegmentRomStart, &_wavesSpritesheetIndexSegmentRomEnd, (void*)0x802E4000, (void*)0x802E6400, (void*)0x802E8800, (void*)0x802E8900, (void*)0x802E8A00, (void*)0x802E8B00, 1, 1);
+            dmaSprite(MAP_OBJECT_1, &_wavesTextureSegmentRomStart, &_wavesTextureSegmentRomEnd, &_wavesAssetsIndexSegmentRomStart, &_wavesAssetsIndexSegmentRomEnd, &_wavesSpritesheetIndexSegmentRomStart, &_wavesSpritesheetIndexSegmentRomEnd, (void*)0x802E4000, (void*)0x802E6400, (void*)0x802E8800, (void*)0x802E8900, (void*)0x802E8A00, (void*)0x802E8B00, 1, 1);
             setSpriteScale(MAP_OBJECT_1, 6.0f, 1.0f, 5.4f);
             func_8002C6F8(MAP_OBJECT_1, 3);
             func_8002C768(MAP_OBJECT_1, 0x200);
@@ -849,7 +849,7 @@ void func_8006F938(u16 levelIndex) {
 
         case VILLAGE_2:
 
-            func_8002B138(MAP_OBJECT_1, &_village2WaterTextureSegmentRomStart, &_village2WaterTextureSegmentRomEnd, &_village2WaterAssetsIndexSegmentRomStart, &_village2WaterAssetsIndexSegmentRomEnd, &_village2WaterSpritesheetIndexSegmentRomStart, &_village2WaterSpritesheetIndexSegmentRomEnd, (void*)0x802E4000, (void*)0x802E4000, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
+            dmaSprite(MAP_OBJECT_1, &_village2WaterTextureSegmentRomStart, &_village2WaterTextureSegmentRomEnd, &_village2WaterAssetsIndexSegmentRomStart, &_village2WaterAssetsIndexSegmentRomEnd, &_village2WaterSpritesheetIndexSegmentRomStart, &_village2WaterSpritesheetIndexSegmentRomEnd, (void*)0x802E4000, (void*)0x802E4000, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
             setSpriteScale(MAP_OBJECT_1, 6.0f, 1.0f, 6.0f);
             func_8002C6F8(MAP_OBJECT_1, 3);
             func_8002C768(MAP_OBJECT_1, 0x200);
@@ -862,7 +862,7 @@ void func_8006F938(u16 levelIndex) {
         
         case SQUARE:
 
-            func_8002B138(MAP_OBJECT_1, &_squareFountainTextureSegmentRomStart, &_squareFountainTextureSegmentRomEnd, &_squareFountainAssetsIndexSegmentRomStart, &_squareFountainAssetsIndexSegmentRomEnd, &_squareFountainSpritesheetIndexSegmentRomStart, &_squareFountainSpritesheetIndexSegmentRomEnd, (void*)0x802E7C00, (void*)0x802E7C00, (void*)0x802E9600, (void*)0x802E9700, (void*)0x802E9800, (void*)0x802E9900, 1, 1);
+            dmaSprite(MAP_OBJECT_1, &_squareFountainTextureSegmentRomStart, &_squareFountainTextureSegmentRomEnd, &_squareFountainAssetsIndexSegmentRomStart, &_squareFountainAssetsIndexSegmentRomEnd, &_squareFountainSpritesheetIndexSegmentRomStart, &_squareFountainSpritesheetIndexSegmentRomEnd, (void*)0x802E7C00, (void*)0x802E7C00, (void*)0x802E9600, (void*)0x802E9700, (void*)0x802E9800, (void*)0x802E9900, 1, 1);
             setSpriteScale(MAP_OBJECT_1, 5.0f, 1.0f, 5.0f);
             func_8002C6F8(MAP_OBJECT_1, 3);
             func_8002C768(MAP_OBJECT_1, 0x200);
@@ -874,7 +874,7 @@ void func_8006F938(u16 levelIndex) {
             if (gSeason == SPRING) {
                 
                 if (18 < gDayOfMonth && gDayOfMonth < 23) {
-                    func_8002B138(MAP_OBJECT_2, &_homeItemsTextureSegmentRomStart, &_homeItemsTextureSegmentRomEnd, &_homeItemsAssetsIndexSegmentRomStart, &_homeItemsAssetsIndexSegmentRomEnd, &_homeItemsSpritesheetIndexSegmentRomStart, &_homeItemsSpritesheetIndexSegmentRomEnd, (void*)0x802E4000, (void*)0x802E4D00, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
+                    dmaSprite(MAP_OBJECT_2, &_homeItemsTextureSegmentRomStart, &_homeItemsTextureSegmentRomEnd, &_homeItemsAssetsIndexSegmentRomStart, &_homeItemsAssetsIndexSegmentRomEnd, &_homeItemsSpritesheetIndexSegmentRomStart, &_homeItemsSpritesheetIndexSegmentRomEnd, (void*)0x802E4000, (void*)0x802E4D00, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
                     setSpriteScale(MAP_OBJECT_2, 1.0f, 1.0f, 1.0f);
                     func_8002C7EC(MAP_OBJECT_2, 3);
                     setSpriteDefaultRGBA(MAP_OBJECT_2, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -887,7 +887,7 @@ void func_8006F938(u16 levelIndex) {
                     
                    for (j = 4; j < 12; j++) {
                     
-                        func_8002B138(j + MAP_OBJECT_2, &_festivalFlowersTextureSegmentRomStart, &_festivalFlowersTextureSegmentRomEnd, &_festivalFlowersAssetsIndexSegmentRomStart, &_festivalFlowersAssetsIndexSegmentRomEnd, &_festivalFlowersSpritesheetIndexSegmentRomStart, &_festivalFlowersSpritesheetIndexSegmentRomEnd, (void*)0x802E4000, 0, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, 0, 0, 1);
+                        dmaSprite(j + MAP_OBJECT_2, &_festivalFlowersTextureSegmentRomStart, &_festivalFlowersTextureSegmentRomEnd, &_festivalFlowersAssetsIndexSegmentRomStart, &_festivalFlowersAssetsIndexSegmentRomEnd, &_festivalFlowersSpritesheetIndexSegmentRomStart, &_festivalFlowersSpritesheetIndexSegmentRomEnd, (void*)0x802E4000, 0, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, 0, 0, 1);
                         setSpriteScale(j + MAP_OBJECT_2, 1.0f, 1.0f, 1.0f);
                         func_8002C7EC(j + MAP_OBJECT_2, 3);
                         setSpriteDefaultRGBA(j + MAP_OBJECT_2, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -923,7 +923,7 @@ void func_8006F938(u16 levelIndex) {
        case BATHROOM:
 
        
-            func_8002B138(MAP_OBJECT_1, &_stoneTextureSegmentRomStart, &_stoneTextureSegmentRomEnd, &_stoneAssetsIndexSegmentRomStart, &_stoneAssetsIndexSegmentRomEnd, &_stoneSpritesheetIndexSegmentRomStart, &_stoneSpritesheetIndexSegmentRomEnd, (void*)0x802E4000, (void*)0x802E4D00, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
+            dmaSprite(MAP_OBJECT_1, &_stoneTextureSegmentRomStart, &_stoneTextureSegmentRomEnd, &_stoneAssetsIndexSegmentRomStart, &_stoneAssetsIndexSegmentRomEnd, &_stoneSpritesheetIndexSegmentRomStart, &_stoneSpritesheetIndexSegmentRomEnd, (void*)0x802E4000, (void*)0x802E4D00, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
             setSpriteScale(MAP_OBJECT_1, 6.0f, 1.0f, 6.0f);
             func_8002C6F8(MAP_OBJECT_1, 3);
             func_8002C768(MAP_OBJECT_1, 0x200);
@@ -933,7 +933,7 @@ void func_8006F938(u16 levelIndex) {
 
             setMapObject(MAIN_MAP_INDEX, 0, MAP_OBJECT_1, 0, -128.0f, 8.0f, -128.0f, 0, 0xFE, 0, 0);
 
-            func_8002B138(MAP_OBJECT_2, &_steamTextureSegmentRomStart, &_steamTextureSegmentRomEnd, &_steamAssetsIndexSegmentRomStart, &_steamAssetsIndexSegmentRomEnd, &_steamSpritesheetIndexSegmentRomStart, &_steamSpritesheetIndexSegmentRomEnd, (void*)0x802E7C00, (void*)0x802E8900, (void*)0x802E9600, (void*)0x802E9700, (void*)0x802E9800, (void*)0x802E9900, 1, 1);
+            dmaSprite(MAP_OBJECT_2, &_steamTextureSegmentRomStart, &_steamTextureSegmentRomEnd, &_steamAssetsIndexSegmentRomStart, &_steamAssetsIndexSegmentRomEnd, &_steamSpritesheetIndexSegmentRomStart, &_steamSpritesheetIndexSegmentRomEnd, (void*)0x802E7C00, (void*)0x802E8900, (void*)0x802E9600, (void*)0x802E9700, (void*)0x802E9800, (void*)0x802E9900, 1, 1);
             setSpriteScale(MAP_OBJECT_2, 1.6f, 1.6f, 1.0f);
             func_8002C7EC(MAP_OBJECT_2, 2);
             setSpriteDefaultRGBA(MAP_OBJECT_2, 0xFF, 0xFF, 0xFF, 0x60);
@@ -1063,7 +1063,7 @@ void func_8006F938(u16 levelIndex) {
 
         case VINEYARD:
             
-            func_8002B138(MAP_OBJECT_1, &_vineyardTreeTextureSegmentRomStart, &_vineyardTreeTextureSegmentRomEnd, &_vineyardTreeAssetsIndexSegmentRomStart, &_vineyardTreeAssetsIndexSegmentRomEnd, &_vineyardTreeSpritesheetIndexSegmentRomStart, &_vineyardTreeSpritesheetIndexSegmentRomEnd, (void*)0x802E4000, (void*)0x802E4D00, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
+            dmaSprite(MAP_OBJECT_1, &_vineyardTreeTextureSegmentRomStart, &_vineyardTreeTextureSegmentRomEnd, &_vineyardTreeAssetsIndexSegmentRomStart, &_vineyardTreeAssetsIndexSegmentRomEnd, &_vineyardTreeSpritesheetIndexSegmentRomStart, &_vineyardTreeSpritesheetIndexSegmentRomEnd, (void*)0x802E4000, (void*)0x802E4D00, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
             setSpriteScale(MAP_OBJECT_1, 2.0f, 2.0f, 1.0f);
             func_8002C7EC(MAP_OBJECT_1, 3);
             setSpriteDefaultRGBA(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -1095,7 +1095,7 @@ void func_80073244(u8 itemIndex) {
 
     *(Vec2f*)ptr = *(Vec2f*)ptr2;
 
-    func_8002B138(itemIndex + MAP_OBJECT_1, &_homeItemsTextureSegmentRomStart, &_homeItemsTextureSegmentRomEnd, &_homeItemsAssetsIndexSegmentRomStart, &_homeItemsAssetsIndexSegmentRomEnd, &_homeItemsSpritesheetIndexSegmentRomStart, &_homeItemsSpritesheetIndexSegmentRomEnd, (void*)0x802E4000, (void*)0x802E4D00, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
+    dmaSprite(itemIndex + MAP_OBJECT_1, &_homeItemsTextureSegmentRomStart, &_homeItemsTextureSegmentRomEnd, &_homeItemsAssetsIndexSegmentRomStart, &_homeItemsAssetsIndexSegmentRomEnd, &_homeItemsSpritesheetIndexSegmentRomStart, &_homeItemsSpritesheetIndexSegmentRomEnd, (void*)0x802E4000, (void*)0x802E4D00, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
     setSpriteScale(itemIndex + MAP_OBJECT_1, 1.0f, 1.0f, 1.0f);
     func_8002C7EC(itemIndex + MAP_OBJECT_1, 3);
     setSpriteDefaultRGBA(itemIndex + MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -1120,7 +1120,7 @@ void func_8007341C(u8 itemIndex) {
 
     *(Vec3f*)ptr = *(Vec3f*)ptr2;
 
-    func_8002B138(itemIndex + MAP_OBJECT_1, &_homeItemsTextureSegmentRomStart, &_homeItemsTextureSegmentRomEnd, &_homeItemsAssetsIndexSegmentRomStart, &_homeItemsAssetsIndexSegmentRomEnd, &_homeItemsSpritesheetIndexSegmentRomStart, &_homeItemsSpritesheetIndexSegmentRomEnd, (void* )0x802E4000, (void* )0x802E4D00, (void* )0x802E7400, (void* )0x802E7700, (void* )0x802E7A00, (void* )0x802E7B00, (void* )1, (u8) (void* )1);
+    dmaSprite(itemIndex + MAP_OBJECT_1, &_homeItemsTextureSegmentRomStart, &_homeItemsTextureSegmentRomEnd, &_homeItemsAssetsIndexSegmentRomStart, &_homeItemsAssetsIndexSegmentRomEnd, &_homeItemsSpritesheetIndexSegmentRomStart, &_homeItemsSpritesheetIndexSegmentRomEnd, (void* )0x802E4000, (void* )0x802E4D00, (void* )0x802E7400, (void* )0x802E7700, (void* )0x802E7A00, (void* )0x802E7B00, (void* )1, (u8) (void* )1);
     setSpriteScale(itemIndex + MAP_OBJECT_1, 1.0f, 1.0f, 1.0f);
     func_8002C7EC(itemIndex + MAP_OBJECT_1, 3);
     setSpriteDefaultRGBA(itemIndex + MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -1148,7 +1148,7 @@ void func_8007341C(u8 arg0) {
 
     *(Vec3f*)ptr = *(Vec3f*)ptr2;
 
-    func_8002B138(arg0 + MAP_OBJECT_1, &_homeItemsTextureSegmentRomStart, &_homeItemsTextureSegmentRomEnd, &_homeItemsAssetsIndexSegmentRomStart, &_homeItemsAssetsIndexSegmentRomEnd, &_homeItemsSpritesheetIndexSegmentRomStart, &_homeItemsSpritesheetIndexSegmentRomEnd, (void* )0x802E4000, (void* )0x802E4D00, (void* )0x802E7400, (void* )0x802E7700, (void* )0x802E7A00, (void* )0x802E7B00, (void* )1, (u8) (void* )1);
+    dmaSprite(arg0 + MAP_OBJECT_1, &_homeItemsTextureSegmentRomStart, &_homeItemsTextureSegmentRomEnd, &_homeItemsAssetsIndexSegmentRomStart, &_homeItemsAssetsIndexSegmentRomEnd, &_homeItemsSpritesheetIndexSegmentRomStart, &_homeItemsSpritesheetIndexSegmentRomEnd, (void* )0x802E4000, (void* )0x802E4D00, (void* )0x802E7400, (void* )0x802E7700, (void* )0x802E7A00, (void* )0x802E7B00, (void* )1, (u8) (void* )1);
     setSpriteScale(arg0 + MAP_OBJECT_1, 1.0f, 1.0f, 1.0f);
     func_8002C7EC(arg0 + MAP_OBJECT_1, 3);
     setSpriteDefaultRGBA(arg0 + MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);

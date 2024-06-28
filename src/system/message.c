@@ -41,7 +41,7 @@ void func_8003D970(void) {
 
         dialogueBoxes[i].flags = 0;
         
-        dialogueBoxes[i].unk_7E = 0;
+        dialogueBoxes[i].dialogueIndex = 0;
         
         dialogueBoxes[i].unk_90 = 0;
         dialogueBoxes[i].unk_91 = 0;
@@ -172,27 +172,28 @@ bool func_8003DD14(u16 index) {
 
 //INCLUDE_ASM(const s32, "system/message", initializeDialogueBox);
 
-bool initializeDialogueBox(u16 dialogueBoxIndex, u16 dialogueInfoIndex, u16 arg2, u32 flag) {
+bool initializeDialogueBox(u16 dialogueBoxIndex, u16 dialogueInfoIndex, u16 dialogueIndex, u32 flag) {
 
     bool result = FALSE;
-    u16 temp;
+
+    u16 tempDialogueIndex;
     u32 textAddress;
 
-    temp = arg2;
+    tempDialogueIndex = dialogueIndex;
     
     if (dialogueBoxIndex < MAX_DIALOGUE_BOXES) {
         
         if (dialogueBoxes[dialogueBoxIndex].flags & ACTIVE) {
 
-            dialogueBoxes[dialogueBoxIndex].unk_7E = arg2;
+            dialogueBoxes[dialogueBoxIndex].dialogueIndex = dialogueIndex;
             dialogueBoxes[dialogueBoxIndex].dialogueInfoIndex = dialogueInfoIndex;
             
             nuPiReadRom(dialogueInfo[dialogueInfoIndex].romIndexStart, dialogueInfo[dialogueInfoIndex].index, dialogueInfo[dialogueInfoIndex].romIndexEnd - dialogueInfo[dialogueInfoIndex].romIndexStart);
 
-            textAddress = func_80041B28(dialogueBoxIndex, dialogueBoxes[dialogueBoxIndex].unk_7E);
-            nuPiReadRom(textAddress, dialogueBoxes[dialogueBoxIndex].textBufferBase, func_80041B28(dialogueBoxIndex, dialogueBoxes[dialogueBoxIndex].unk_7E + 1) - textAddress);
+            textAddress = func_80041B28(dialogueBoxIndex, dialogueBoxes[dialogueBoxIndex].dialogueIndex);
+            nuPiReadRom(textAddress, dialogueBoxes[dialogueBoxIndex].textBufferBase, func_80041B28(dialogueBoxIndex, dialogueBoxes[dialogueBoxIndex].dialogueIndex + 1) - textAddress);
             
-            dialogueBoxes[dialogueBoxIndex].flag = func_800403F0(dialogueBoxIndex, temp);
+            dialogueBoxes[dialogueBoxIndex].flag = func_800403F0(dialogueBoxIndex, tempDialogueIndex);
             dialogueBoxes[dialogueBoxIndex].unk_90 = 0;
             dialogueBoxes[dialogueBoxIndex].unk_91 = 0;
             dialogueBoxes[dialogueBoxIndex].buttonSfxCounter = 0;
@@ -229,16 +230,16 @@ bool initializeDialogueBox(u16 dialogueBoxIndex, u16 dialogueInfoIndex, u16 arg2
             }
 
             if (dialogueBoxes[dialogueBoxIndex].flags & HAS_OVERLAY_ICON) {
-                func_8002B138(overlayIcons[dialogueBoxes[dialogueBoxIndex].overlayIconIndex].spriteIndex, overlayIcons[dialogueBoxes[dialogueBoxIndex].overlayIconIndex].romTextureStart, overlayIcons[dialogueBoxes[dialogueBoxIndex].overlayIconIndex].romTextureEnd, overlayIcons[dialogueBoxes[dialogueBoxIndex].overlayIconIndex].romIndexStart, overlayIcons[dialogueBoxes[dialogueBoxIndex].overlayIconIndex].romIndexEnd, 0, 0, overlayIcons[dialogueBoxes[dialogueBoxIndex].overlayIconIndex].vaddrTextureStart, NULL, overlayIcons[dialogueBoxes[dialogueBoxIndex].overlayIconIndex].vaddrTextureEnd, overlayIcons[dialogueBoxes[dialogueBoxIndex].overlayIconIndex].vaddrIndexStart, overlayIcons[dialogueBoxes[dialogueBoxIndex].overlayIconIndex].vaddrIndexEnd, overlayIcons[dialogueBoxes[dialogueBoxIndex].overlayIconIndex].unk_20, 0, 0);
-                func_8002CB24(overlayIcons[dialogueBoxes[dialogueBoxIndex].overlayIconIndex].spriteIndex, 1);
+                dmaSprite(overlayIcons[dialogueBoxes[dialogueBoxIndex].overlayIconIndex].spriteIndex, overlayIcons[dialogueBoxes[dialogueBoxIndex].overlayIconIndex].romTextureStart, overlayIcons[dialogueBoxes[dialogueBoxIndex].overlayIconIndex].romTextureEnd, overlayIcons[dialogueBoxes[dialogueBoxIndex].overlayIconIndex].romIndexStart, overlayIcons[dialogueBoxes[dialogueBoxIndex].overlayIconIndex].romIndexEnd, 0, 0, overlayIcons[dialogueBoxes[dialogueBoxIndex].overlayIconIndex].vaddrTextureStart, NULL, overlayIcons[dialogueBoxes[dialogueBoxIndex].overlayIconIndex].vaddrTextureEnd, overlayIcons[dialogueBoxes[dialogueBoxIndex].overlayIconIndex].vaddrIndexStart, overlayIcons[dialogueBoxes[dialogueBoxIndex].overlayIconIndex].vaddrIndexEnd, overlayIcons[dialogueBoxes[dialogueBoxIndex].overlayIconIndex].unk_20, 0, 0);
+                func_8002CB24(overlayIcons[dialogueBoxes[dialogueBoxIndex].overlayIconIndex].spriteIndex, TRUE);
                 func_8002C914(overlayIcons[dialogueBoxes[dialogueBoxIndex].overlayIconIndex].spriteIndex, 0xFF, 0xFF, 0xFF, 0xFF);
                 func_8002C680(overlayIcons[dialogueBoxes[dialogueBoxIndex].overlayIconIndex].spriteIndex, 2, 2);
                 func_8002C7EC(overlayIcons[dialogueBoxes[dialogueBoxIndex].overlayIconIndex].spriteIndex, 3);
             }
 
             if (dialogueBoxes[dialogueBoxIndex].flags & HAS_CHARACTER_AVATAR) {
-                func_8002B138(characterAvatars[dialogueBoxes[dialogueBoxIndex].characterAvatarIndex].spriteIndex, characterAvatars[dialogueBoxes[dialogueBoxIndex].characterAvatarIndex].romTextureStart, characterAvatars[dialogueBoxes[dialogueBoxIndex].characterAvatarIndex].romTextureEnd, characterAvatars[dialogueBoxes[dialogueBoxIndex].characterAvatarIndex].romAssetIndexStart, characterAvatars[dialogueBoxes[dialogueBoxIndex].characterAvatarIndex].romAssetIndexEnd, characterAvatars[dialogueBoxes[dialogueBoxIndex].characterAvatarIndex].romSpritesheetIndexStart, characterAvatars[dialogueBoxes[dialogueBoxIndex].characterAvatarIndex].romSpritesheetIndexEnd, characterAvatars[dialogueBoxes[dialogueBoxIndex].characterAvatarIndex].vaddrTexture, characterAvatars[dialogueBoxes[dialogueBoxIndex].characterAvatarIndex].vaddrSpritesheet, characterAvatars[dialogueBoxes[dialogueBoxIndex].characterAvatarIndex].vaddrPalette, characterAvatars[dialogueBoxes[dialogueBoxIndex].characterAvatarIndex].vaddrAnimation, characterAvatars[dialogueBoxes[dialogueBoxIndex].characterAvatarIndex].vaddrSpriteToPalette, characterAvatars[dialogueBoxes[dialogueBoxIndex].characterAvatarIndex].vaddrSpritesheetIndex, 1, 0);
-                func_8002CB24(characterAvatars[dialogueBoxes[dialogueBoxIndex].characterAvatarIndex].spriteIndex, 1);
+                dmaSprite(characterAvatars[dialogueBoxes[dialogueBoxIndex].characterAvatarIndex].spriteIndex, characterAvatars[dialogueBoxes[dialogueBoxIndex].characterAvatarIndex].romTextureStart, characterAvatars[dialogueBoxes[dialogueBoxIndex].characterAvatarIndex].romTextureEnd, characterAvatars[dialogueBoxes[dialogueBoxIndex].characterAvatarIndex].romAssetIndexStart, characterAvatars[dialogueBoxes[dialogueBoxIndex].characterAvatarIndex].romAssetIndexEnd, characterAvatars[dialogueBoxes[dialogueBoxIndex].characterAvatarIndex].romSpritesheetIndexStart, characterAvatars[dialogueBoxes[dialogueBoxIndex].characterAvatarIndex].romSpritesheetIndexEnd, characterAvatars[dialogueBoxes[dialogueBoxIndex].characterAvatarIndex].vaddrTexture, characterAvatars[dialogueBoxes[dialogueBoxIndex].characterAvatarIndex].vaddrSpritesheet, characterAvatars[dialogueBoxes[dialogueBoxIndex].characterAvatarIndex].vaddrPalette, characterAvatars[dialogueBoxes[dialogueBoxIndex].characterAvatarIndex].vaddrAnimation, characterAvatars[dialogueBoxes[dialogueBoxIndex].characterAvatarIndex].vaddrSpriteToPalette, characterAvatars[dialogueBoxes[dialogueBoxIndex].characterAvatarIndex].vaddrSpritesheetIndex, 1, 0);
+                func_8002CB24(characterAvatars[dialogueBoxes[dialogueBoxIndex].characterAvatarIndex].spriteIndex, TRUE);
                 func_8002C914(characterAvatars[dialogueBoxes[dialogueBoxIndex].characterAvatarIndex].spriteIndex, 0xFF, 0xFF, 0xFF, 0xFF);
                 func_8002C680(characterAvatars[dialogueBoxes[dialogueBoxIndex].characterAvatarIndex].spriteIndex, 2, 2);
                 func_8002C7EC(characterAvatars[dialogueBoxes[dialogueBoxIndex].characterAvatarIndex].spriteIndex, 3);
@@ -246,8 +247,8 @@ bool initializeDialogueBox(u16 dialogueBoxIndex, u16 dialogueInfoIndex, u16 arg2
 
             if (dialogueBoxes[dialogueBoxIndex].flags & HAS_DIALOGUE_WINDOW) {
 
-                func_8002B138(dialogueWindows[dialogueBoxes[dialogueBoxIndex].dialogueWindowIndex].spriteIndex, dialogueWindows[dialogueBoxes[dialogueBoxIndex].dialogueWindowIndex].romTextureStart, dialogueWindows[dialogueBoxes[dialogueBoxIndex].dialogueWindowIndex].romTextureEnd, dialogueWindows[dialogueBoxes[dialogueBoxIndex].dialogueWindowIndex].romIndexStart, dialogueWindows[dialogueBoxes[dialogueBoxIndex].dialogueWindowIndex].romIndexEnd, 0, 0, dialogueWindows[dialogueBoxes[dialogueBoxIndex].dialogueWindowIndex].vaddrTextureStart, NULL, dialogueWindows[dialogueBoxes[dialogueBoxIndex].dialogueWindowIndex].vaddrTextureEnd, dialogueWindows[dialogueBoxes[dialogueBoxIndex].dialogueWindowIndex].vaddrIndexStart, dialogueWindows[dialogueBoxes[dialogueBoxIndex].dialogueWindowIndex].vaddrIndexEnd, dialogueWindows[dialogueBoxes[dialogueBoxIndex].dialogueWindowIndex].unk_20, 0, 0);
-                func_8002CB24(dialogueWindows[dialogueBoxes[dialogueBoxIndex].dialogueWindowIndex].spriteIndex, 1);
+                dmaSprite(dialogueWindows[dialogueBoxes[dialogueBoxIndex].dialogueWindowIndex].spriteIndex, dialogueWindows[dialogueBoxes[dialogueBoxIndex].dialogueWindowIndex].romTextureStart, dialogueWindows[dialogueBoxes[dialogueBoxIndex].dialogueWindowIndex].romTextureEnd, dialogueWindows[dialogueBoxes[dialogueBoxIndex].dialogueWindowIndex].romIndexStart, dialogueWindows[dialogueBoxes[dialogueBoxIndex].dialogueWindowIndex].romIndexEnd, 0, 0, dialogueWindows[dialogueBoxes[dialogueBoxIndex].dialogueWindowIndex].vaddrTextureStart, NULL, dialogueWindows[dialogueBoxes[dialogueBoxIndex].dialogueWindowIndex].vaddrTextureEnd, dialogueWindows[dialogueBoxes[dialogueBoxIndex].dialogueWindowIndex].vaddrIndexStart, dialogueWindows[dialogueBoxes[dialogueBoxIndex].dialogueWindowIndex].vaddrIndexEnd, dialogueWindows[dialogueBoxes[dialogueBoxIndex].dialogueWindowIndex].unk_20, 0, 0);
+                func_8002CB24(dialogueWindows[dialogueBoxes[dialogueBoxIndex].dialogueWindowIndex].spriteIndex, TRUE);
                 func_8002C914(dialogueWindows[dialogueBoxes[dialogueBoxIndex].dialogueWindowIndex].spriteIndex, 0xFF, 0xFF, 0xFF, 0xFF);
                 func_8002C680(dialogueWindows[dialogueBoxes[dialogueBoxIndex].dialogueWindowIndex].spriteIndex, 2, 2);
                 func_8002C7EC(dialogueWindows[dialogueBoxes[dialogueBoxIndex].dialogueWindowIndex].spriteIndex, 3);

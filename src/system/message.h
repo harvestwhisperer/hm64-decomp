@@ -197,7 +197,7 @@ typedef struct {
     u32 unk_74;
     u32 unk_78;
     u16 unk_7C;
-    u16 unk_7E;
+    u16 dialogueIndex;
     u16 unk_80;
     u16 unk_82;
     u16 unk_84;

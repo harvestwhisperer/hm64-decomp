@@ -46,7 +46,7 @@ void func_800DC360(void) {
 
         for (i = 0; i < 10; i++) {
         
-            func_8002B138(i+0x6B, &_rainTextureSegmentRomStart, &_rainTextureSegmentRomEnd, &_rainIndexSegmentRomStart, &_rainIndexSegmentRomEnd, 0, 0, (void*)RAIN_TEXTURE_VADDR, NULL, 0x802A5DC0, 0x802A5EC0, 0x802A5FC0, 0, 0, 1);
+            dmaSprite(i+0x6B, &_rainTextureSegmentRomStart, &_rainTextureSegmentRomEnd, &_rainIndexSegmentRomStart, &_rainIndexSegmentRomEnd, 0, 0, (void*)RAIN_TEXTURE_VADDR, NULL, 0x802A5DC0, 0x802A5EC0, 0x802A5FC0, 0, 0, 1);
             setSpriteScale(i+0x6B, 1.0f, 1.0f, 1.0f);
             func_8002C7EC(i+0x6B, 4);
             // rgba
