@@ -36,7 +36,7 @@ extern void tvMainLoopCallback(void);
 
 // D_80170270
 typedef struct {
-    u16 dialogueIndex; // probably dialogue index
+    u16 dialogueIndex;
     u8 contentIndex;
     u8 pictureIndex;
     u8 mode;

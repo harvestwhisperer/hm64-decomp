@@ -407,9 +407,9 @@ INCLUDE_ASM(const s32, "system/message", func_8003F130);
 
 INCLUDE_ASM(const s32, "system/message", func_8003F28C);
 
-//INCLUDE_ASM(const s32, "system/message", func_8003F30C);
+//INCLUDE_ASM(const s32, "system/message", setDialogueInfo);
 
-bool func_8003F30C(u16 dialogueIndex, u32 romIndexStart, u32 romIndexEnd, u32 romTextStart, u32 index) {
+bool setDialogueInfo(u16 dialogueIndex, u32 romIndexStart, u32 romIndexEnd, u32 romTextStart, u32 index) {
 
     bool result = FALSE;
 

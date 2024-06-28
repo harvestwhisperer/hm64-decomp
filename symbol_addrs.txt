@@ -813,7 +813,7 @@ stopSfx = 0x8003D948;
 
 initializeDialogueBox = 0x8003DDF8;
 setDialogueBoxSpriteIndices = 0x8003F690;
-
+setDialogueInfo = 0x8003F30C;
 setDialogueMapAddressInfo = 0x80043050;
 setDialogueVariable = 0x800430DC;
 setDialogueVariable_inline = 0x80043CF8;

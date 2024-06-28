@@ -1354,8 +1354,7 @@ static inline void inline3() {
 static inline void func_80055F08_2(u16 cutsceneIndex, u16 entranceIndex, u8 arg2) {
     
     deactivateSprites();
-
-    // reset all sprite flags
+    
     deactivateGlobalSprites();
     
     func_8003D970();

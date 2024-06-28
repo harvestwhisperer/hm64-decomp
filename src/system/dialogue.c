@@ -285,7 +285,7 @@ bool func_80043430(u16 index, u16 dialogueMapAddressesIndex, u16 dialogueIndex, 
 
     bool result = FALSE;
 
-    u32 temp;
+    u32 romAddr;
 
     if (index == 0 && dialogues[index].struct5.flags & ACTIVE) {
 
@@ -367,9 +367,9 @@ bool func_80043430(u16 index, u16 dialogueMapAddressesIndex, u16 dialogueIndex, 
 
         nuPiReadRom(dialogueMapAddresses[dialogueMapAddressesIndex].romStart, dialogueMapAddresses[dialogueMapAddressesIndex].vaddr, dialogueMapAddresses[dialogueMapAddressesIndex].romEnd - dialogueMapAddresses[dialogueMapAddressesIndex].romStart);
 
-        temp = func_80043C98(0, dialogues[index].struct5.dialogueIndex);
+        romAddr = func_80043C98(0, dialogues[index].struct5.dialogueIndex);
 
-        nuPiReadRom(temp, dialogueMapAddresses[dialogues[index].struct5.dialogueMapAddressesIndex].vaddrIndex, func_80043C98(0, dialogues[index].struct5.dialogueIndex + 1) - temp);
+        nuPiReadRom(romAddr, dialogueMapAddresses[dialogues[index].struct5.dialogueMapAddressesIndex].vaddrIndex, func_80043C98(0, dialogues[index].struct5.dialogueIndex + 1) - romAddr);
 
         dialogues[index].dialoguePointer = dialogueMapAddresses[dialogues[index].struct5.dialogueMapAddressesIndex].vaddrIndex;
         
@@ -848,7 +848,7 @@ void func_80045260(u16 index) {
                 }
                 
                 set = TRUE;
-                
+
                 dialogues[index].struct1.unk_12 = 0xFF;
                 dialogues[index].struct5.flags |= 0x10;
                 
