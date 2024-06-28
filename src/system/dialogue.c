@@ -281,7 +281,7 @@ inline int func_80043408(int initial, int value, int max) {
 
 //INCLUDE_ASM(const s32, "system/dialogue", func_80043430);
 
-bool func_80043430(u16 index, u16 dialogueMapAddressesIndex, u16 dialogueIndex, u16 flags) {
+bool func_80043430(u16 index, u16 dialogueMapAddressesIndex, u16 dialogueIndex, u16 flag) {
 
     bool result = FALSE;
 
@@ -396,13 +396,13 @@ bool func_80043430(u16 index, u16 dialogueMapAddressesIndex, u16 dialogueIndex, 
         dialogues[index].struct5.flags &= ~4;
         dialogues[index].struct5.flags |= INITIALIZED;
 
-        if (flags == 0x40) {
+        if (flag == 0x40) {
             dialogues[index].struct5.flags |= (INITIALIZED | 0x40);
         }  else {
             dialogues[index].struct5.flags &= ~(0x40);
         }
 
-        if (flags == 0x80) {
+        if (flag == 0x80) {
             dialogues[index].struct5.flags |= 0x80;
         } else {
             dialogues[index].struct5.flags &= ~0x80;
