@@ -772,6 +772,9 @@ setSpriteScale = 0x8002BD90;
 deactivateSprites = 0x8002E1B8;
 adjustSpriteShrinkFactor = 0x8002BE98;
 setSpriteDefaultRGBA = 0x8002C85C;
+setSpriteAlpha = 0x8002CAA8;
+updateSpriteRGBA = 0x8002C1C0;
+updateSpriteAlpha = 0x8002C52C;
 initializeNpcSpriteStructs = 0x8002DC70;
 setSpriteAnimation = 0x8002F3F0;
 setSpriteDirection = 0x8002F684;
@@ -822,6 +825,11 @@ setSpecialDialogueBitsPointer = 0x80043138;
 setSpecialDialogueBitFromPointer = 0x80043E28;
 toggleSpecialDialogueBitFromPointer = 0x80043E5C;
 checkSpecialDialogueBitFromPointer = 0x80043E94;
+
+dmaPauseScreenSprites = 0x80045F5C;
+setPauseScreenSpritesRGBA = 0x800461D8;
+setPauseScreenSpritesAlpha = 0x800462B4;
+deactivatePauseScreenSprites = 0x80046120;
 
 initializeCutsceneMaps = 0x80046860;
 mainLoopCutsceneHandler = 0x80046D78;
@@ -944,6 +952,7 @@ handleDumplingHouseExit = 0x800B1D6C;
 handleRanchStoreExits = 0x800B28D8;
 
 addRecipe = 0x800C77B8;
+toggleRecipe = 0x800C77EC;
 checkRecipe = 0x800C7824;
 
 getToolLevel = 0x800CF874;
@@ -1120,7 +1129,7 @@ gCurrentSeasonName = 0x80170445; // size:0x6
 currentWorldRotationAngles = 0x8017044C;
 gBaseMapIndex = 0x80170458;
 
-tvContext = 0x80170270;
+tvContext = 0x80170270; // size:0xE
 annCliffNewlywedCounter = 0x80170444;
 
 characterAvatars = 0x801806D0; // size:0x40
@@ -1225,6 +1234,7 @@ gHour = 0x801FB5CA;
 gSongs = 0x801FB5D8; // size:0x70
 mountainConstructionWorkDays = 0x801FB68C;
 gSfx = 0x801FB690; // size:0x60
+overlayScreenTable = 0x801FB6F0; /// size:0xB
 mariaHarrisNewlywedCounter = 0X801FB9A4;
 npcInfoArray = 0x801FB9D0; // size:0x780
 
