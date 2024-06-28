@@ -11,7 +11,11 @@
 #define MAX_CHARACTER_SPRITES 102
 #define MAX_BITMAPS 176
 
+/* spriteAddresses flags */
 #define NEED_DMA 1
+
+/* flags */
+#define ACTIVE 1
 
 #define SHADOW_ALPHA 96
 
@@ -225,11 +229,11 @@ extern bool setSpriteAnimation(u16 index, u16);
 
 /* globalSprites.c */
 extern void initializeGlobalSprites(void); 
-extern bool func_8002B138(u16 index, u32 romTextureStart, u32 romTextureEnd, u32 romAssetIndexStart, u32 romAssetIndexEnd, u32 romSpritesheetIndexStart, u32 romSpritesheetIndexEnd, u8* texture1Vaddr, u8* texture2Vaddr, u16* paletteVaddr, u16* animationVaddr, u8* spriteToPaletteVaddr, u32* spritesheetIndexVaddr, u8 assetType, u8 argE);
+extern bool dmaSprite(u16 index, u32 romTextureStart, u32 romTextureEnd, u32 romAssetIndexStart, u32 romAssetIndexEnd, u32 romSpritesheetIndexStart, u32 romSpritesheetIndexEnd, u8* texture1Vaddr, u8* texture2Vaddr, u16* paletteVaddr, u16* animationVaddr, u8* spriteToPaletteVaddr, u32* spritesheetIndexVaddr, u8 assetType, u8 argE);
 extern bool func_8002B36C(u16 index, u32* unknownAssetIndexPtr, u32* spritesheetIndexPtr, u32* paletteIndexPtr, u8* spriteToPaletteMappingPtr);
 extern bool func_8002B50C(u16 index, u32* unknownAssetIndexPtr, u32* spritesheetIndexPtr, u32* paletteIndexPtr, u8* spriteToPaletteMappingPtr, u32 romTexturePtr, u8* texturePtr, u8* texture2Ptr);
 extern bool deactivateSprite(u16 index);
-extern void func_8002B710(void);
+extern void deactivateGlobalSprites(void);
 extern bool func_8002B80C(u16 index, u16 offset, u8);
 extern bool func_8002BAD8(u16);   
 extern bool func_8002BB30(u16);

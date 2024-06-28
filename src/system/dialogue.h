@@ -45,14 +45,14 @@ typedef struct {
     u32* vaddrIndex;
     u16 unk_14;
     u16 unk_16;
-} DialogueAddressInfo;
+} DialogueMapAddressInfo;
 
 // D_801C3E40
 typedef struct {
-	u16 unk_0;
-	u16 unk_2;
-	u16 unk_4;
-    u16 unk_6;	
+	u16 unk_0; // dialogue index
+	u16 unk_2; // dialogue index
+	u16 unk_4; // dialogue variable value
+    u16 unk_6; // dialogue variable value
     u16 unk_8;
 	u16 dialogueVariableValue;
     u16 specialDialogueBit;
@@ -74,7 +74,7 @@ typedef struct {
 	u32 closeSfxIndex;
 	u32 unk_8; // another sfx index
 	u16 dialogueIndex;
-	u16 dialogueAddressIndex; // 0xF26
+	u16 dialogueMapAddressesIndex; // 0xF26
 	u16 dialogueBoxIndex1; // 0xF28
 	u16 dialogueBoxIndex2;
 	u16 unk_14; // sets unk_7E on dialogueBox
@@ -106,18 +106,18 @@ typedef struct {
 extern bool setDialogueVariable(u16 index, void *address, u8 numSet, s32 max);
 extern void func_80042F60();   
 extern bool func_80042FEC(u16, u16, u16);
-extern bool func_80043050(u16, u16, u16, void*, void*, void*, void*, void*);
+extern bool setDialogueMapAddressInfo(u16 index, u16 arg1, u16 arg2, u32 romStart, u32 romEnd, void* vaddr, u32 romIndex, void* vaddrIndex);
 extern bool setSpecialDialogueBitsPointer(u32[]);
 extern bool func_80043148(u16, u32, u32, u32);
 extern bool func_8004318C(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextureEnd, u32 romIndexStart, u32 romIndexEnd, void* vaddrTextureStart, void* vaddrTextureEnd, void* vaddrIndexStart, void* vaddrIndexEnd, u32 argA, u16 spriteOffset, u8 flag, f32 x, f32 y, f32 z);
 extern bool func_80043260(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextureEnd, u32 romIndexStart, u32 romIndexEnd, void* vaddrTextureStart, void* vaddrTextureEnd, void* vaddrIndexStart, void* vaddrIndexEnd, u32 argA, u16 spriteOffset, u8 flag, f32 x, f32 y, f32 z);
 extern bool func_80043334(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextureEnd, u32 romIndexStart, u32 romIndexEnd, void* vaddrTextureStart, void* vaddrTextureEnd, void* vaddrIndexStart, void* vaddrIndexEnd, u32 argA, u16 spriteOffset, u8 flag, f32 x, f32 y, f32 z);
-extern bool func_80043430(u16, u16, u16, u16);
+extern bool func_80043430(u16 dialogueIndex, u16, u16, u16);
 extern u8 func_80043A88();  
 extern bool func_80043AD8(u16);
 extern u8 func_80043C6C(u16);
 
 extern Dialogue dialogues[MAX_DIALOGUES];
-extern DialogueAddressInfo dialogueAddresses[69];
+extern DialogueMapAddressInfo dialogueMapAddresses[69];
 
 #endif

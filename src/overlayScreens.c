@@ -221,7 +221,7 @@ void func_800B3BD8(void) {
 
     u32 temp = gGold;
 
-    func_8002B138(0x8E, &D_CFE610, &D_CFF6F0, &D_CFF6F0_2, &D_CFF710, 0, 0, 0x80253B00, 0, 0x80254A00, 0x80254E00, 0x80254F00, 0, 0, 0);
+    dmaSprite(0x8E, &D_CFE610, &D_CFF6F0, &D_CFF6F0_2, &D_CFF710, 0, 0, 0x80253B00, 0, 0x80254A00, 0x80254E00, 0x80254F00, 0, 0, 0);
     inline_func();
     func_8002CB24(0x8E, 1);
     func_8002C914(0x8E, 0xFF, 0xFF, 0xFF, 0);
@@ -233,33 +233,33 @@ void func_800B3BD8(void) {
     func_800461D8(1, 0xFF, 0xFF, 0xFF, 0xFF);
     func_8002CAA8(0x8E, 0xFF);
     
-    func_8002B138(0x82, &D_D3BFE0, &D_D3DCC0, &D_D3DCC0_2, &D_D3DCE0, 0, 0, 0x802E0EC0, 0, 0x802E27C0, 0x802E28C0, 0x802E2BC0, 0, 0, 0);
+    dmaSprite(0x82, &D_D3BFE0, &D_D3DCC0, &D_D3DCC0_2, &D_D3DCE0, 0, 0, 0x802E0EC0, 0, 0x802E27C0, 0x802E28C0, 0x802E2BC0, 0, 0, 0);
     setSpriteShrinkFactor(0x82, -96.0f, 64.0f, 256.0f);
     func_8002CB24(0x82, 1);
     func_8002C914(0x82, 0xFF, 0xFF, 0xFF, 0xFF);
     func_8002B80C(0x82, 0, 0);
     
-    func_8002B138(0x83, &D_D3BFE0, &D_D3DCC0, &D_D3DCC0_2, &D_D3DCE0, 0, 0, 0x802E0EC0, 0, 0x802E27C0, 0x802E28C0, 0x802E2BC0, 0, 0, 0);
+    dmaSprite(0x83, &D_D3BFE0, &D_D3DCC0, &D_D3DCC0_2, &D_D3DCE0, 0, 0, 0x802E0EC0, 0, 0x802E27C0, 0x802E28C0, 0x802E2BC0, 0, 0, 0);
     setSpriteShrinkFactor(0x83, -56.0f, 64.0f, 256.0f);
     func_8002CB24(0x83, 1);
     func_8002C914(0x83, 0xFF, 0xFF, 0xFF, 0xFF);
     func_8002B80C(0x83, 1, 0);
     
-    func_8002B138(0x84, &D_D3BFE0, &D_D3DCC0, &D_D3DCC0_2, &D_D3DCE0, 0, 0, 0x802E0EC0, 0, 0x802E27C0, 0x802E28C0, 0x802E2BC0, 0, 0, 0);
+    dmaSprite(0x84, &D_D3BFE0, &D_D3DCC0, &D_D3DCC0_2, &D_D3DCE0, 0, 0, 0x802E0EC0, 0, 0x802E27C0, 0x802E28C0, 0x802E2BC0, 0, 0, 0);
     func_8002CB24(0x84, 1);
     func_8002C914(0x84, 0xFF, 0xFF, 0xFF, 0xFF);
     
-    func_8002B138(0x85, &D_D3BFE0, &D_D3DCC0, &D_D3DCC0_2, &D_D3DCE0, 0, 0, 0x802E0EC0, 0, 0x802E27C0, 0x802E28C0, 0x802E2BC0, 0, 0, 0);
+    dmaSprite(0x85, &D_D3BFE0, &D_D3DCC0, &D_D3DCC0_2, &D_D3DCE0, 0, 0, 0x802E0EC0, 0, 0x802E27C0, 0x802E28C0, 0x802E2BC0, 0, 0, 0);
     setSpriteShrinkFactor(0x85, -12.0f, 13.0f, 256.0f);
     func_8002CB24(0x85, 1);
     func_8002C914(0x85, 0xFF, 0xFF, 0xFF, 0xFF);
     
-    func_8002B138(0x86, &D_D3BFE0, &D_D3DCC0, &D_D3DCC0_2, &D_D3DCE0, 0, 0, 0x802E0EC0, 0, 0x802E27C0, 0x802E28C0, 0x802E2BC0, 0, 0, 0);
+    dmaSprite(0x86, &D_D3BFE0, &D_D3DCC0, &D_D3DCC0_2, &D_D3DCE0, 0, 0, 0x802E0EC0, 0, 0x802E27C0, 0x802E28C0, 0x802E2BC0, 0, 0, 0);
     setSpriteShrinkFactor(0x86, -12.0f, 13.0f, 256.0f);
     func_8002CB24(0x86, 1);
     func_8002C914(0x86, 0xFF, 0xFF, 0xFF, 0xFF);
     
-    func_8002B138(0x87, &D_D3BFE0, &D_D3DCC0, &D_D3DCC0_2, &D_D3DCE0, 0, 0, 0x802E0EC0, 0, 0x802E27C0, 0x802E28C0, 0x802E2BC0, 0, 0, 0);
+    dmaSprite(0x87, &D_D3BFE0, &D_D3DCC0, &D_D3DCC0_2, &D_D3DCE0, 0, 0, 0x802E0EC0, 0, 0x802E27C0, 0x802E28C0, 0x802E2BC0, 0, 0, 0);
     setSpriteShrinkFactor(0x87, -16.0f, 11.0f, 224.0f);
     func_8002CB24(0x87, 1);
     func_8002C914(0x87, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -470,7 +470,7 @@ void func_800B7FC8(u8 arg0, u8 arg1) {
 void func_800B8018(void) {
     
     func_800593EC();
-    func_8002B138(0x80, &_checkerboardBackgroundTextureSegmentRomStart, &_checkerboardBackgroundTextureSegmentRomEnd, &_checkerboardBackgroundIndexSegmentRomStart, &_checkerboardBackgroundIndexSegmentRomEnd, 0, 0, 0x802DE5C0, 0, 0x802E0BC0, 0x802E0CC0, 0x802E0DC0, 0, 0, 0);
+    dmaSprite(0x80, &_checkerboardBackgroundTextureSegmentRomStart, &_checkerboardBackgroundTextureSegmentRomEnd, &_checkerboardBackgroundIndexSegmentRomStart, &_checkerboardBackgroundIndexSegmentRomEnd, 0, 0, 0x802DE5C0, 0, 0x802E0BC0, 0x802E0CC0, 0x802E0DC0, 0, 0, 0);
     setSpriteShrinkFactor(0x80, 0, 0, 0);
     setSpriteScale(0x80, 2.0f, 2.0f, 1.0f);
     func_8002CB24(0x80, 1);
@@ -493,7 +493,7 @@ void func_800B8018(void) {
 void func_800B815C(void) {
 
     func_800593EC();
-    func_8002B138(0x80, &_checkerboardBackgroundTextureSegmentRomStart, &_checkerboardBackgroundTextureSegmentRomEnd, &_checkerboardBackgroundIndexSegmentRomStart, &_checkerboardBackgroundIndexSegmentRomEnd, NULL, NULL, (void*)0x802DE5C0, NULL, (void*)0x802E0BC0, (void*)0x802E0CC0, (void*)0x802E0DC0, NULL, NULL, 0);
+    dmaSprite(0x80, &_checkerboardBackgroundTextureSegmentRomStart, &_checkerboardBackgroundTextureSegmentRomEnd, &_checkerboardBackgroundIndexSegmentRomStart, &_checkerboardBackgroundIndexSegmentRomEnd, NULL, NULL, (void*)0x802DE5C0, NULL, (void*)0x802E0BC0, (void*)0x802E0CC0, (void*)0x802E0DC0, NULL, NULL, 0);
     setSpriteShrinkFactor(0x80, 0.0f, 0.0f, 0.0f);
     setSpriteScale(0x80, 2.0f, 2.0f, 1.0f);
     func_8002CB24(0x80, 1);
@@ -516,7 +516,7 @@ void func_800B815C(void) {
 void func_800B82AC(void) {
 
     func_800593EC();
-    func_8002B138(0x80, &_checkerboardBackgroundTextureSegmentRomStart, &_checkerboardBackgroundTextureSegmentRomEnd, &_checkerboardBackgroundIndexSegmentRomStart, &_checkerboardBackgroundIndexSegmentRomEnd, NULL, NULL, (void*)0x802DE5C0, NULL, (void*)0x802E0BC0, (void*)0x802E0CC0, (void*)0x802E0DC0, NULL, NULL, 0);
+    dmaSprite(0x80, &_checkerboardBackgroundTextureSegmentRomStart, &_checkerboardBackgroundTextureSegmentRomEnd, &_checkerboardBackgroundIndexSegmentRomStart, &_checkerboardBackgroundIndexSegmentRomEnd, NULL, NULL, (void*)0x802DE5C0, NULL, (void*)0x802E0BC0, (void*)0x802E0CC0, (void*)0x802E0DC0, NULL, NULL, 0);
     setSpriteShrinkFactor(0x80, 0.0f, 0.0f, 0.0f);
     setSpriteScale(0x80, 2.0f, 2.0f, 1.0f);
     func_8002CB24(0x80, 1);
@@ -539,7 +539,7 @@ void func_800B82AC(void) {
 void func_800B83F0(void) {
 
     func_800593EC();
-    func_8002B138(0x80, &_checkerboardBackgroundTextureSegmentRomStart, &_checkerboardBackgroundTextureSegmentRomEnd, &_checkerboardBackgroundIndexSegmentRomStart, &_checkerboardBackgroundIndexSegmentRomEnd, NULL, NULL, (void*)0x802DE5C0, NULL, (void*)0x802E0BC0, (void*)0x802E0CC0, (void*)0x802E0DC0, NULL, NULL, 0);
+    dmaSprite(0x80, &_checkerboardBackgroundTextureSegmentRomStart, &_checkerboardBackgroundTextureSegmentRomEnd, &_checkerboardBackgroundIndexSegmentRomStart, &_checkerboardBackgroundIndexSegmentRomEnd, NULL, NULL, (void*)0x802DE5C0, NULL, (void*)0x802E0BC0, (void*)0x802E0CC0, (void*)0x802E0DC0, NULL, NULL, 0);
     setSpriteShrinkFactor(0x80, 0.0f, 0.0f, 0.0f);
     setSpriteScale(0x80, 2.0f, 2.0f, 1.0f);
     func_8002CB24(0x80, 1);
@@ -565,7 +565,7 @@ void func_800B83F0(void) {
 void func_800B8554(void) {
     
     func_800593EC();
-    func_8002B138(0x80, &_checkerboardBackgroundTextureSegmentRomStart, &_checkerboardBackgroundTextureSegmentRomEnd, &_checkerboardBackgroundIndexSegmentRomStart, &_checkerboardBackgroundIndexSegmentRomEnd, NULL, NULL, (void*)0x802DE5C0, NULL, (void*)0x802E0BC0, (void*)0x802E0CC0, (void*)0x802E0DC0, NULL, NULL, 0);
+    dmaSprite(0x80, &_checkerboardBackgroundTextureSegmentRomStart, &_checkerboardBackgroundTextureSegmentRomEnd, &_checkerboardBackgroundIndexSegmentRomStart, &_checkerboardBackgroundIndexSegmentRomEnd, NULL, NULL, (void*)0x802DE5C0, NULL, (void*)0x802E0BC0, (void*)0x802E0CC0, (void*)0x802E0DC0, NULL, NULL, 0);
     setSpriteShrinkFactor(0x80, 0.0f, 0.0f, 0.0f);
     setSpriteScale(0x80, 2.0f, 2.0f, 1.0f);
     func_8002CB24(0x80, 1);

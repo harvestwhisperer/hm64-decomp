@@ -197,7 +197,7 @@ typedef struct {
     u32 unk_74;
     u32 unk_78;
     u16 unk_7C;
-    u16 unk_7E;
+    u16 dialogueIndex;
     u16 unk_80;
     u16 unk_82;
     u16 unk_84;
@@ -234,7 +234,7 @@ extern bool func_8003E77C(u16, u8, u8, u8, u8);
 extern bool func_8003EA1C(u16, u8, u8, u8, u8, s32);       
 extern bool func_8003EFD8(u16);           
 extern bool func_8003F130(u16);  
-extern bool func_8003F30C(u16 dialogueIndex, u32 romIndexStart, u32 romIndexEnd, u32 romTextStart, u32 textBufferVaddr) ; 
+extern bool setDialogueInfo(u16 dialogueIndex, u32 romIndexStart, u32 romIndexEnd, u32 romTextStart, u32 textBufferVaddr) ; 
 extern bool func_8003F0DC();  
 extern bool func_8003F360(u16, s16, u8);                           
 extern bool func_8003F464(u16 index, u8 arg1, u8 arg2, u8* fontTexturePtr, u16* fontPalettePtr);             

@@ -78,7 +78,7 @@ void mainGameLoopCallback(void) {
 inline void func_80055F08(u16 cutsceneIndex, u16 entranceIndex, u8 arg2) {
     
     deactivateSprites();
-    func_8002B710();
+    deactivateGlobalSprites();
     func_8003D970();
     initializeCutsceneMaps();
     func_80053088();
@@ -132,7 +132,7 @@ void func_80056030(u8 arg0) {
     func_800879C8();
     func_80075910();
     deactivateSprites();
-    func_8002B710();
+    deactivateGlobalSprites();
     initializeCutsceneMaps();
     func_800752C0();
     func_80085F70();

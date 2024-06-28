@@ -82,7 +82,7 @@ void func_800DC750(u8 storeItemIndex) {
 
 void loadShopItemSprite(u8 index) {
     
-    func_8002B138(D_801194A0[index] + 0x62, &_holdableItemsTextureSegmentRomStart, &_holdableItemsTextureSegmentRomEnd, &_holdableItemsAssetsIndexSegmentRomStart, &_holdableItemsAssetsIndexSegmentRomEnd, &_holdableItemsSpritesheetIndexSegmentRomStart, &_holdableItemsSpritesheetIndexSegmentRomEnd, D_801192E0[index][0], D_801192E0[index][1], 0x8028DD50, 0x80290550, 0x80293A50, 0x80293C50, 1, 1);
+    dmaSprite(D_801194A0[index] + 0x62, &_holdableItemsTextureSegmentRomStart, &_holdableItemsTextureSegmentRomEnd, &_holdableItemsAssetsIndexSegmentRomStart, &_holdableItemsAssetsIndexSegmentRomEnd, &_holdableItemsSpritesheetIndexSegmentRomStart, &_holdableItemsSpritesheetIndexSegmentRomEnd, D_801192E0[index][0], D_801192E0[index][1], 0x8028DD50, 0x80290550, 0x80293A50, 0x80293C50, 1, 1);
     setSpriteScale(D_801194A0[index] + 0x62, 1.0f, 1.0f, 1.0f);
     func_8002C7EC(D_801194A0[index] + 0x62, 3);
     setSpriteDefaultRGBA(D_801194A0[index] + 0x62, 0xFF, 0xFF, 0xFF, 0xFF);

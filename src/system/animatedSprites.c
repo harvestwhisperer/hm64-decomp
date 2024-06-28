@@ -241,7 +241,7 @@ bool func_8002E284(u16 index, u16 characterIndex, u8 flag) {
 
             if (characterSprites[animatedSprites[index].characterIndex].flags & 2) {
 
-                func_8002B138(animatedSprites[index].globalSpriteIndex, 
+                dmaSprite(animatedSprites[index].globalSpriteIndex, 
                     characterSprites[animatedSprites[index].characterIndex].romTextureStart, 
                     characterSprites[animatedSprites[index].characterIndex].romTextureEnd, 
                     characterSprites[animatedSprites[index].characterIndex].romAssetIndexStart, 
@@ -260,7 +260,7 @@ bool func_8002E284(u16 index, u16 characterIndex, u8 flag) {
                 
             } else {
                 
-                func_8002B138(animatedSprites[index].globalSpriteIndex, 
+                dmaSprite(animatedSprites[index].globalSpriteIndex, 
                     characterSprites[animatedSprites[index].characterIndex].romTextureStart, 
                     characterSprites[animatedSprites[index].characterIndex].romTextureEnd, 
                     characterSprites[animatedSprites[index].characterIndex].romAssetIndexStart, 
@@ -281,7 +281,7 @@ bool func_8002E284(u16 index, u16 characterIndex, u8 flag) {
 
             if (characterSprites[animatedSprites[index].characterIndex].shadowSpriteIndex != 0xFF) {
                 
-                func_8002B138(animatedSprites[index].shadowSpriteIndex, 
+                dmaSprite(animatedSprites[index].shadowSpriteIndex, 
                     shadowSpritesInfo[characterSprites[animatedSprites[index].characterIndex].shadowSpriteIndex].romTextureStart, 
                     shadowSpritesInfo[characterSprites[animatedSprites[index].characterIndex].shadowSpriteIndex].romTextureEnd, 
                     shadowSpritesInfo[characterSprites[animatedSprites[index].characterIndex].shadowSpriteIndex].romAssetIndexStart, 
