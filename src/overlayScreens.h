@@ -37,19 +37,22 @@ extern u32 _holdableItemsAssetsIndexSegmentRomEnd;
 extern u32 _holdableItemsSpritesheetIndexSegmentRomStart;
 extern u32 _holdableItemsSpritesheetIndexSegmentRomEnd;
 
-// bss
-// FIXME: convert to struct or array
-// cell index
-extern u8 D_801FB6F0;
-// previous cell index
-extern u8 D_801FB6F1;
-// page number
-extern u8 D_801FB6F2;
-extern u8 D_801FB6F3;
-extern u8 D_801FB6F6;
-extern u8 D_801FB6F8;
-extern u8 D_801FB6F9;
-extern u8 D_801FB6FA;
-extern u8 D_801FB6FB;
+typedef struct {
+    u8 cellIndex;
+    u8 previousCellIndex;
+    u8 pageNumber;
+    u8 unk_3;
+    u8 unk_4;
+    u8 unk_5;
+    u8 unk_6;
+    u8 unk_7;
+    u8 unk_8;
+    u8 unk_9;
+    u8 unk_A;
+    u8 unk_B;
+} OverlayScreenTable;
+
+// pause screen rucksack
+extern OverlayScreenTable overlayScreenTable;
 
 #endif

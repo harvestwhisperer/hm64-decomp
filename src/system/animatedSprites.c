@@ -529,10 +529,10 @@ bool func_8002F1E0(u16 index, u8 r, u8 g, u8 b, u8 a, s16 arg5) {
         
         if ((animatedSprites[index].flags & 1) && (animatedSprites[index].flags & 4)) {
 
-            func_8002C1C0(animatedSprites[index].globalSpriteIndex, r, g, b, a, arg5);
+            updateSpriteRGBA(animatedSprites[index].globalSpriteIndex, r, g, b, a, arg5);
 
             if (characterSprites[animatedSprites[index].characterIndex].shadowSpriteIndex != 0xFF) {
-                func_8002C1C0(animatedSprites[index].shadowSpriteIndex, r, g, b, 0x60, arg5);
+                updateSpriteRGBA(animatedSprites[index].shadowSpriteIndex, r, g, b, 0x60, arg5);
             }
             
             result = TRUE;
@@ -729,10 +729,10 @@ void func_8002F8F0(u8 r, u8 g, u8 b, u8 a, s16 arg4) {
         
             if (i < MAX_ANIMATED_SPRITES && animatedSprites[i].flags & 4) {
         
-                func_8002C1C0(animatedSprites[i].globalSpriteIndex, r, g, b, a, arg4);
+                updateSpriteRGBA(animatedSprites[i].globalSpriteIndex, r, g, b, a, arg4);
         
                 if (characterSprites[animatedSprites[i].characterIndex].shadowSpriteIndex != 0xFF) {
-                    func_8002C1C0(animatedSprites[i].shadowSpriteIndex, r, g, b, 0x60, arg4);
+                    updateSpriteRGBA(animatedSprites[i].shadowSpriteIndex, r, g, b, 0x60, arg4);
                 }
         
             }

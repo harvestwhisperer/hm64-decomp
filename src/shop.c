@@ -163,7 +163,7 @@ void func_800DCAB8(void) {
 
                 if (D_80118F60[shopContext.storeItemIndex] >= 2) {
                     func_80045E20(0, 0x8F, &_shopIconsTextureSegmentRomStart, &_shopIconsTextureSegmentRomEnd, &_shopIconsIndexSegmentRomStart, &_shopIconsIndexSegmentRomEnd, (void*)SHOP_ICONS_TEXTURE_VADDR_START, (void*)SHOP_ICONS_TEXTURE_VADDR_END, (void* )SHOP_ICONS_INDEX_VADDR_START, (void* )SHOP_ICONS_INDEX_VADDR_END, 0, 2, 0, -16.0f, 64.0f, 256.0f, 0xA);
-                    func_80045F5C(0, shopContext.quantity, 1, 3);
+                    dmaPauseScreenSprites(0, shopContext.quantity, 1, 3);
                     func_800B4238(D_80118F60[shopContext.storeItemIndex]);
                 }
                 
@@ -221,7 +221,7 @@ void func_800DCAB8(void) {
                     
                         shopContext.quantity++;
                     
-                        func_80045F5C(0, shopContext.quantity, 1, 3);
+                        dmaPauseScreenSprites(0, shopContext.quantity, 1, 3);
                         func_8003FBD8(0x12, shopContext.quantity * prices[shopContext.storeItemIndex], 0);
                     
                         if (D_80118F60[shopContext.storeItemIndex] >= 2) {
@@ -245,7 +245,7 @@ void func_800DCAB8(void) {
                         set = TRUE;
                     } else {
                         shopContext.quantity--;
-                        func_80045F5C(0, shopContext.quantity, 1, 3);
+                        dmaPauseScreenSprites(0, shopContext.quantity, 1, 3);
                         func_8003FBD8(0x12, shopContext.quantity * prices[shopContext.storeItemIndex], 0);
                         if (D_80118F60[shopContext.storeItemIndex] >= 2) {
                             func_800B4238(D_80118F60[shopContext.storeItemIndex]);
@@ -262,7 +262,7 @@ void func_800DCAB8(void) {
 
                 if (!set) {
 
-                    func_80046120(0);
+                    deactivatePauseScreenSprites(0);
 
                     func_8002BAD8(0x82);
                     func_8002BAD8(0x83);
@@ -289,7 +289,7 @@ void func_800DCAB8(void) {
 
                 if (!set) {
                     
-                    func_80046120(0);
+                    deactivatePauseScreenSprites(0);
 
                     deactivateSprite(0x82);
                     deactivateSprite(0x83);
@@ -312,7 +312,7 @@ void func_800DCAB8(void) {
 
             temp = handlePurchase(shopContext.storeItemIndex, shopContext.quantity);
 
-            func_80045F5C(1, gGold, 8, 3);
+            dmaPauseScreenSprites(1, gGold, 8, 3);
             func_8003F54C(0, 24.0f, -64.0f, 352.0f);
             setDialogueBoxSpriteIndices(0, 0, 0, 0);
             func_8003F360(0, -4, 0);

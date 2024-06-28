@@ -402,32 +402,32 @@ static inline bool handleFrameIncrement() {
     
     if (titleScreenContext.frameCounter == 500) {
 
-        func_8002C1C0(HARVEST_MOON_64_LOGO, 0, 0, 0, 0, 8);
-        func_8002C1C0(MARVCOME_VICTOR_COPYRIGHT_INFO, 0, 0, 0, 0, 8);
-        func_8002C1C0(DOG_TITLE_SPRITE, 0, 0, 0, 0, 8);
-        func_8002C1C0(PUSH_THE_START_SIGN_2, 0, 0, 0, 0, 8);
-        func_8002C1C0(PUSH_THE_START_SIGN_1, 0, 0, 0, 0, 8);
-        func_8002C1C0(HOW_TO_PLAY_SIGN, 0, 0, 0, 0, 8);
-        func_8002C1C0(DIRT_ROAD, 0, 0, 0, 0, 8);
-        func_8002C1C0(SIGN_POST_1, 0, 0, 0, 0, 8);
-        func_8002C1C0(SIGN_POST_2, 0, 0, 0, 0, 8);
-        func_8002C1C0(SIGN_POST_3, 0, 0, 0, 0, 8);
-        func_8002C1C0(FRONT_GRASS_2_1, 0, 0, 0, 0, 8);
-        func_8002C1C0(FAR_GRASS_3_1, 0, 0, 0, 0, 8);
-        func_8002C1C0(FAR_GRASS_2_1, 0, 0, 0, 0, 8);
-        func_8002C1C0(FRONT_GRASS_2_2, 0, 0, 0, 0, 8);
-        func_8002C1C0(BACK_GRASS_3_2, 0, 0, 0, 0, 8);
-        func_8002C1C0(BACK_GRASS_2, 0, 0, 0, 0, 8);
-        func_8002C1C0(FAR_GRASS_1_1, 0, 0, 0, 0, 8);
-        func_8002C1C0(FAR_GRASS_1_2, 0, 0, 0, 0, 8);
-        func_8002C1C0(CLOUD_1_1, 0, 0, 0, 0, 8);
-        func_8002C1C0(CLOUD_1_2, 0, 0, 0, 0, 8);
-        func_8002C1C0(CLOUD_2_1, 0, 0, 0, 0, 8);
-        func_8002C1C0(CLOUD_3_1, 0, 0, 0, 0, 8);
-        func_8002C1C0(LICENSED_BY_NINTENDO_1, 0, 0, 0, 0, 8);
-        func_8002C1C0(LICENSED_BY_NINTENDO_2, 0, 0, 0, 0, 8);
-        func_8002C1C0(CLOUD_3_2, 0, 0, 0, 0, 8);
-        func_8002C1C0(CLOUD_2_2, 0, 0, 0, 0, 8);
+        updateSpriteRGBA(HARVEST_MOON_64_LOGO, 0, 0, 0, 0, 8);
+        updateSpriteRGBA(MARVCOME_VICTOR_COPYRIGHT_INFO, 0, 0, 0, 0, 8);
+        updateSpriteRGBA(DOG_TITLE_SPRITE, 0, 0, 0, 0, 8);
+        updateSpriteRGBA(PUSH_THE_START_SIGN_2, 0, 0, 0, 0, 8);
+        updateSpriteRGBA(PUSH_THE_START_SIGN_1, 0, 0, 0, 0, 8);
+        updateSpriteRGBA(HOW_TO_PLAY_SIGN, 0, 0, 0, 0, 8);
+        updateSpriteRGBA(DIRT_ROAD, 0, 0, 0, 0, 8);
+        updateSpriteRGBA(SIGN_POST_1, 0, 0, 0, 0, 8);
+        updateSpriteRGBA(SIGN_POST_2, 0, 0, 0, 0, 8);
+        updateSpriteRGBA(SIGN_POST_3, 0, 0, 0, 0, 8);
+        updateSpriteRGBA(FRONT_GRASS_2_1, 0, 0, 0, 0, 8);
+        updateSpriteRGBA(FAR_GRASS_3_1, 0, 0, 0, 0, 8);
+        updateSpriteRGBA(FAR_GRASS_2_1, 0, 0, 0, 0, 8);
+        updateSpriteRGBA(FRONT_GRASS_2_2, 0, 0, 0, 0, 8);
+        updateSpriteRGBA(BACK_GRASS_3_2, 0, 0, 0, 0, 8);
+        updateSpriteRGBA(BACK_GRASS_2, 0, 0, 0, 0, 8);
+        updateSpriteRGBA(FAR_GRASS_1_1, 0, 0, 0, 0, 8);
+        updateSpriteRGBA(FAR_GRASS_1_2, 0, 0, 0, 0, 8);
+        updateSpriteRGBA(CLOUD_1_1, 0, 0, 0, 0, 8);
+        updateSpriteRGBA(CLOUD_1_2, 0, 0, 0, 0, 8);
+        updateSpriteRGBA(CLOUD_2_1, 0, 0, 0, 0, 8);
+        updateSpriteRGBA(CLOUD_3_1, 0, 0, 0, 0, 8);
+        updateSpriteRGBA(LICENSED_BY_NINTENDO_1, 0, 0, 0, 0, 8);
+        updateSpriteRGBA(LICENSED_BY_NINTENDO_2, 0, 0, 0, 0, 8);
+        updateSpriteRGBA(CLOUD_3_2, 0, 0, 0, 0, 8);
+        updateSpriteRGBA(CLOUD_2_2, 0, 0, 0, 0, 8);
 
         setSongWithDefaultSpeed(TITLE_THEME);
 
@@ -549,32 +549,32 @@ void titleScreenMainLoopCallback(void) {
                         func_8002B80C(DIRT_ROAD, 8, 0xFF);
                     }
                       
-                    func_8002C1C0(HARVEST_MOON_64_LOGO, 0, 0, 0, 0, 8);
-                    func_8002C1C0(MARVCOME_VICTOR_COPYRIGHT_INFO, 0, 0, 0, 0, 8);
-                    func_8002C1C0(DOG_TITLE_SPRITE, 0, 0, 0, 0, 8);
-                    func_8002C1C0(PUSH_THE_START_SIGN_2, 0, 0, 0, 0, 8);
-                    func_8002C1C0(PUSH_THE_START_SIGN_1, 0, 0, 0, 0, 8);
-                    func_8002C1C0(HOW_TO_PLAY_SIGN, 0, 0, 0, 0, 8);
-                    func_8002C1C0(DIRT_ROAD, 0, 0, 0, 0, 8);
-                    func_8002C1C0(SIGN_POST_1, 0, 0, 0, 0, 8);
-                    func_8002C1C0(SIGN_POST_2, 0, 0, 0, 0, 8);
-                    func_8002C1C0(SIGN_POST_3, 0, 0, 0, 0, 8);
-                    func_8002C1C0(FRONT_GRASS_2_1, 0, 0, 0, 0, 8);
-                    func_8002C1C0(FAR_GRASS_3_1, 0, 0, 0, 0, 8);
-                    func_8002C1C0(FAR_GRASS_2_1, 0, 0, 0, 0, 8);
-                    func_8002C1C0(FRONT_GRASS_2_2, 0, 0, 0, 0, 8);
-                    func_8002C1C0(BACK_GRASS_3_2, 0, 0, 0, 0, 8);
-                    func_8002C1C0(BACK_GRASS_2, 0, 0, 0, 0, 8);
-                    func_8002C1C0(FAR_GRASS_1_1, 0, 0, 0, 0, 8);
-                    func_8002C1C0(FAR_GRASS_1_2, 0, 0, 0, 0, 8);
-                    func_8002C1C0(CLOUD_1_1, 0, 0, 0, 0, 8);
-                    func_8002C1C0(CLOUD_1_2, 0, 0, 0, 0, 8);
-                    func_8002C1C0(CLOUD_2_1, 0, 0, 0, 0, 8);
-                    func_8002C1C0(CLOUD_3_1, 0, 0, 0, 0, 8);
-                    func_8002C1C0(LICENSED_BY_NINTENDO_1, 0, 0, 0, 0, 8);
-                    func_8002C1C0(LICENSED_BY_NINTENDO_2, 0, 0, 0, 0, 8);
-                    func_8002C1C0(CLOUD_3_2, 0, 0, 0, 0, 8);
-                    func_8002C1C0(CLOUD_2_2, 0, 0, 0, 0, 8);
+                    updateSpriteRGBA(HARVEST_MOON_64_LOGO, 0, 0, 0, 0, 8);
+                    updateSpriteRGBA(MARVCOME_VICTOR_COPYRIGHT_INFO, 0, 0, 0, 0, 8);
+                    updateSpriteRGBA(DOG_TITLE_SPRITE, 0, 0, 0, 0, 8);
+                    updateSpriteRGBA(PUSH_THE_START_SIGN_2, 0, 0, 0, 0, 8);
+                    updateSpriteRGBA(PUSH_THE_START_SIGN_1, 0, 0, 0, 0, 8);
+                    updateSpriteRGBA(HOW_TO_PLAY_SIGN, 0, 0, 0, 0, 8);
+                    updateSpriteRGBA(DIRT_ROAD, 0, 0, 0, 0, 8);
+                    updateSpriteRGBA(SIGN_POST_1, 0, 0, 0, 0, 8);
+                    updateSpriteRGBA(SIGN_POST_2, 0, 0, 0, 0, 8);
+                    updateSpriteRGBA(SIGN_POST_3, 0, 0, 0, 0, 8);
+                    updateSpriteRGBA(FRONT_GRASS_2_1, 0, 0, 0, 0, 8);
+                    updateSpriteRGBA(FAR_GRASS_3_1, 0, 0, 0, 0, 8);
+                    updateSpriteRGBA(FAR_GRASS_2_1, 0, 0, 0, 0, 8);
+                    updateSpriteRGBA(FRONT_GRASS_2_2, 0, 0, 0, 0, 8);
+                    updateSpriteRGBA(BACK_GRASS_3_2, 0, 0, 0, 0, 8);
+                    updateSpriteRGBA(BACK_GRASS_2, 0, 0, 0, 0, 8);
+                    updateSpriteRGBA(FAR_GRASS_1_1, 0, 0, 0, 0, 8);
+                    updateSpriteRGBA(FAR_GRASS_1_2, 0, 0, 0, 0, 8);
+                    updateSpriteRGBA(CLOUD_1_1, 0, 0, 0, 0, 8);
+                    updateSpriteRGBA(CLOUD_1_2, 0, 0, 0, 0, 8);
+                    updateSpriteRGBA(CLOUD_2_1, 0, 0, 0, 0, 8);
+                    updateSpriteRGBA(CLOUD_3_1, 0, 0, 0, 0, 8);
+                    updateSpriteRGBA(LICENSED_BY_NINTENDO_1, 0, 0, 0, 0, 8);
+                    updateSpriteRGBA(LICENSED_BY_NINTENDO_2, 0, 0, 0, 0, 8);
+                    updateSpriteRGBA(CLOUD_3_2, 0, 0, 0, 0, 8);
+                    updateSpriteRGBA(CLOUD_2_2, 0, 0, 0, 0, 8);
     
                     titleScreenContext.mode = 4;
     

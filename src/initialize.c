@@ -754,10 +754,10 @@ void initializeGameVariables(void) {
 
     }
     
-    D_801FB6F0 = 0;
-    D_801FB6F1 = 0;
-    D_801FB6F3 = 0;
-    D_801FB6F6 = 0;
+    overlayScreenTable.cellIndex = 0;
+    overlayScreenTable.previousCellIndex = 0;
+    overlayScreenTable.unk_3 = 0;
+    overlayScreenTable.unk_6 = 0;
 
     initializeTV();
 

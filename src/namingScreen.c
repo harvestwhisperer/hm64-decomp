@@ -140,9 +140,9 @@ void func_800ED974(void) {
             func_8002C914(LANDSCAPE_BACKGROUND, 0, 0, 0, 0);
             
             // rgba
-            func_8002C1C0(0x80, 0xFF, 0xFF, 0xFF, 0xFF, 8);
-            func_8002C1C0(0x84, 0xFF, 0xFF, 0xFF, 0xFF, 8);
-            func_8002C1C0(LANDSCAPE_BACKGROUND, 0xFF, 0xFF, 0xFF, 0xFF, 8);
+            updateSpriteRGBA(0x80, 0xFF, 0xFF, 0xFF, 0xFF, 8);
+            updateSpriteRGBA(0x84, 0xFF, 0xFF, 0xFF, 0xFF, 8);
+            updateSpriteRGBA(LANDSCAPE_BACKGROUND, 0xFF, 0xFF, 0xFF, 0xFF, 8);
 
             namingScreenContext.unk_4 = 10;
             namingScreenContext.flags &= ~(0x20 | 0x40);
@@ -308,9 +308,9 @@ void func_800ED974(void) {
                                 
                                 func_8003EA1C(3, 0, 0, 0, 0, 8);
                                 func_8003EA1C(4, 0, 0, 0, 0, 8);
-                                func_8002C1C0(0x80, 0, 0, 0, 0, 8);
-                                func_8002C1C0(0x84, 0, 0, 0, 0, 8);
-                                func_8002C1C0(LANDSCAPE_BACKGROUND, 0, 0, 0, 0, 8);
+                                updateSpriteRGBA(0x80, 0, 0, 0, 0, 8);
+                                updateSpriteRGBA(0x84, 0, 0, 0, 0, 8);
+                                updateSpriteRGBA(LANDSCAPE_BACKGROUND, 0, 0, 0, 0, 8);
                                 
                                 gPlayerBirthdaySeason = namingScreenContext.unk_7 + 1;
 
@@ -322,9 +322,9 @@ void func_800ED974(void) {
                             
                             func_8003EA1C(3, 0, 0, 0, 0, 8);
                             func_8003EA1C(4, 0, 0, 0, 0, 8);
-                            func_8002C1C0(0x80, 0, 0, 0, 0, 8);
-                            func_8002C1C0(0x84, 0, 0, 0, 0, 8);
-                            func_8002C1C0(LANDSCAPE_BACKGROUND, 0, 0, 0, 0, 8);
+                            updateSpriteRGBA(0x80, 0, 0, 0, 0, 8);
+                            updateSpriteRGBA(0x84, 0, 0, 0, 0, 8);
+                            updateSpriteRGBA(LANDSCAPE_BACKGROUND, 0, 0, 0, 0, 8);
                             
                             return;
     
@@ -336,24 +336,24 @@ void func_800ED974(void) {
 
                                 func_8003EA1C(3, 0, 0, 0, 0, 8);
                                 
-                                func_8002C1C0(0x80, 0, 0, 0, 0, 8);
-                                func_8002C1C0(0x81, 0, 0, 0, 0, 8);
-                                func_8002C1C0(0x82, 0, 0, 0, 0, 8);
-                                func_8002C1C0(0x8F, 0, 0, 0, 0, 8);
-                                func_8002C1C0(LANDSCAPE_BACKGROUND, 0, 0, 0, 0, 8);
-                                func_8002C1C0(0x83, 0, 0, 0, 0, 8);
-                                func_8002C1C0(0x84, 0, 0, 0, 0, 8);
-                                func_8002C1C0(0x85, 0, 0, 0, 0, 8);
-                                func_8002C1C0(0x86, 0, 0, 0, 0, 8);
-                                func_8002C1C0(0x87, 0, 0, 0, 0, 8);
-                                func_8002C1C0(0x88, 0, 0, 0, 0, 8);
-                                func_8002C1C0(0x89, 0, 0, 0, 0, 8);
-                                func_8002C1C0(0x8A, 0, 0, 0, 0, 8);
-                                func_8002C1C0(0x8B, 0, 0, 0, 0, 8);
-                                func_8002C1C0(0x8C, 0, 0, 0, 0, 8);
-                                func_8002C1C0(0x8D, 0, 0, 0, 0, 8);
-                                func_8002C1C0(0x8E, 0, 0, 0, 0, 8);
-                                func_8002C1C0(0x91, 0, 0, 0, 0, 8);
+                                updateSpriteRGBA(0x80, 0, 0, 0, 0, 8);
+                                updateSpriteRGBA(0x81, 0, 0, 0, 0, 8);
+                                updateSpriteRGBA(0x82, 0, 0, 0, 0, 8);
+                                updateSpriteRGBA(0x8F, 0, 0, 0, 0, 8);
+                                updateSpriteRGBA(LANDSCAPE_BACKGROUND, 0, 0, 0, 0, 8);
+                                updateSpriteRGBA(0x83, 0, 0, 0, 0, 8);
+                                updateSpriteRGBA(0x84, 0, 0, 0, 0, 8);
+                                updateSpriteRGBA(0x85, 0, 0, 0, 0, 8);
+                                updateSpriteRGBA(0x86, 0, 0, 0, 0, 8);
+                                updateSpriteRGBA(0x87, 0, 0, 0, 0, 8);
+                                updateSpriteRGBA(0x88, 0, 0, 0, 0, 8);
+                                updateSpriteRGBA(0x89, 0, 0, 0, 0, 8);
+                                updateSpriteRGBA(0x8A, 0, 0, 0, 0, 8);
+                                updateSpriteRGBA(0x8B, 0, 0, 0, 0, 8);
+                                updateSpriteRGBA(0x8C, 0, 0, 0, 0, 8);
+                                updateSpriteRGBA(0x8D, 0, 0, 0, 0, 8);
+                                updateSpriteRGBA(0x8E, 0, 0, 0, 0, 8);
+                                updateSpriteRGBA(0x91, 0, 0, 0, 0, 8);
     
                                 if (namingScreenContext.unk_6 != 1) {
                                     
@@ -465,24 +465,24 @@ void loadNameSelectionSprites(void) {
     func_8002C914(0x8E, 0, 0, 0, 0);
     func_8002C914(0x91, 0, 0, 0, 0);
     
-    func_8002C1C0(0x80, 0xFF, 0xFF, 0xFF, 0xFF, 8);
-    func_8002C1C0(0x81, 0xFF, 0xFF, 0xFF, 0xFF, 8);
-    func_8002C1C0(0x82, 0xFF, 0xFF, 0xFF, 0xFF, 8);
-    func_8002C1C0(0x8F, 0xFF, 0xFF, 0xFF, 0xFF, 8);
-    func_8002C1C0(LANDSCAPE_BACKGROUND, 0xFF, 0xFF, 0xFF, 0xFF, 8);
-    func_8002C1C0(0x83, 0xFF, 0xFF, 0xFF, 0xFF, 8);
-    func_8002C1C0(0x84, 0xFF, 0xFF, 0xFF, 0xFF, 8);
-    func_8002C1C0(0x85, 0xFF, 0xFF, 0xFF, 0xFF, 8);
-    func_8002C1C0(0x86, 0xFF, 0xFF, 0xFF, 0xFF, 8);
-    func_8002C1C0(0x87, 0xFF, 0xFF, 0xFF, 0xFF, 8);
-    func_8002C1C0(0x88, 0xFF, 0xFF, 0xFF, 0xFF, 8);
-    func_8002C1C0(0x89, 0xFF, 0xFF, 0xFF, 0xFF, 8);
-    func_8002C1C0(0x8A, 0xFF, 0xFF, 0xFF, 0xFF, 8);
-    func_8002C1C0(0x8B, 0xFF, 0xFF, 0xFF, 0xFF, 8);
-    func_8002C1C0(0x8C, 0xFF, 0xFF, 0xFF, 0xFF, 8);
-    func_8002C1C0(0x8D, 0xFF, 0xFF, 0xFF, 0xFF, 8);
-    func_8002C1C0(0x8E, 0xFF, 0xFF, 0xFF, 0xFF, 8);
-    func_8002C1C0(0x91, 0xFF, 0xFF, 0xFF, 0xFF, 8);
+    updateSpriteRGBA(0x80, 0xFF, 0xFF, 0xFF, 0xFF, 8);
+    updateSpriteRGBA(0x81, 0xFF, 0xFF, 0xFF, 0xFF, 8);
+    updateSpriteRGBA(0x82, 0xFF, 0xFF, 0xFF, 0xFF, 8);
+    updateSpriteRGBA(0x8F, 0xFF, 0xFF, 0xFF, 0xFF, 8);
+    updateSpriteRGBA(LANDSCAPE_BACKGROUND, 0xFF, 0xFF, 0xFF, 0xFF, 8);
+    updateSpriteRGBA(0x83, 0xFF, 0xFF, 0xFF, 0xFF, 8);
+    updateSpriteRGBA(0x84, 0xFF, 0xFF, 0xFF, 0xFF, 8);
+    updateSpriteRGBA(0x85, 0xFF, 0xFF, 0xFF, 0xFF, 8);
+    updateSpriteRGBA(0x86, 0xFF, 0xFF, 0xFF, 0xFF, 8);
+    updateSpriteRGBA(0x87, 0xFF, 0xFF, 0xFF, 0xFF, 8);
+    updateSpriteRGBA(0x88, 0xFF, 0xFF, 0xFF, 0xFF, 8);
+    updateSpriteRGBA(0x89, 0xFF, 0xFF, 0xFF, 0xFF, 8);
+    updateSpriteRGBA(0x8A, 0xFF, 0xFF, 0xFF, 0xFF, 8);
+    updateSpriteRGBA(0x8B, 0xFF, 0xFF, 0xFF, 0xFF, 8);
+    updateSpriteRGBA(0x8C, 0xFF, 0xFF, 0xFF, 0xFF, 8);
+    updateSpriteRGBA(0x8D, 0xFF, 0xFF, 0xFF, 0xFF, 8);
+    updateSpriteRGBA(0x8E, 0xFF, 0xFF, 0xFF, 0xFF, 8);
+    updateSpriteRGBA(0x91, 0xFF, 0xFF, 0xFF, 0xFF, 8);
 
     namingScreenContext.unk_19 = 0;
     namingScreenContext.unk_18 = 0;
@@ -982,16 +982,16 @@ void loadSeasonSelectionSprites(void) {
     func_8002C914(0x8C, 0, 0, 0, 0);
     func_8002C914(LANDSCAPE_BACKGROUND, 0, 0, 0, 0);
 
-    func_8002C1C0(0x80, 0xFF, 0xFF, 0xFF, 0xFF, 8);
-    func_8002C1C0(0x83, 0xFF, 0xFF, 0xFF, 0xFF, 8);
-    func_8002C1C0(0x84, 0xFF, 0xFF, 0xFF, 0xFF, 8);
-    func_8002C1C0(0x85, 0xFF, 0xFF, 0xFF, 0xFF, 8);
-    func_8002C1C0(0x86, 0xFF, 0xFF, 0xFF, 0xFF, 8);
-    func_8002C1C0(0x89, 0xFF, 0xFF, 0xFF, 0xFF, 8);
-    func_8002C1C0(0x8A, 0xFF, 0xFF, 0xFF, 0xFF, 8);
-    func_8002C1C0(0x8B, 0xFF, 0xFF, 0xFF, 0xFF, 8);
-    func_8002C1C0(0x8C, 0xFF, 0xFF, 0xFF, 0xFF, 8);
-    func_8002C1C0(LANDSCAPE_BACKGROUND, 0xFF, 0xFF, 0xFF, 0xFF, 8);
+    updateSpriteRGBA(0x80, 0xFF, 0xFF, 0xFF, 0xFF, 8);
+    updateSpriteRGBA(0x83, 0xFF, 0xFF, 0xFF, 0xFF, 8);
+    updateSpriteRGBA(0x84, 0xFF, 0xFF, 0xFF, 0xFF, 8);
+    updateSpriteRGBA(0x85, 0xFF, 0xFF, 0xFF, 0xFF, 8);
+    updateSpriteRGBA(0x86, 0xFF, 0xFF, 0xFF, 0xFF, 8);
+    updateSpriteRGBA(0x89, 0xFF, 0xFF, 0xFF, 0xFF, 8);
+    updateSpriteRGBA(0x8A, 0xFF, 0xFF, 0xFF, 0xFF, 8);
+    updateSpriteRGBA(0x8B, 0xFF, 0xFF, 0xFF, 0xFF, 8);
+    updateSpriteRGBA(0x8C, 0xFF, 0xFF, 0xFF, 0xFF, 8);
+    updateSpriteRGBA(LANDSCAPE_BACKGROUND, 0xFF, 0xFF, 0xFF, 0xFF, 8);
     
     namingScreenContext.unk_7 = 0;
     namingScreenContext.unk_4 = 9;
@@ -1057,16 +1057,16 @@ void func_800F0F84(void) {
             setSfx(1);
             setSfxVolume(CLOSE, SFX_VOLUME);
 
-            func_8002C1C0(0x80, 0, 0, 0, 0, 8);
-            func_8002C1C0(0x83, 0, 0, 0, 0, 8);
-            func_8002C1C0(0x84, 0, 0, 0, 0, 8);
-            func_8002C1C0(0x85, 0, 0, 0, 0, 8);
-            func_8002C1C0(0x86, 0, 0, 0, 0, 8);
-            func_8002C1C0(0x89, 0, 0, 0, 0, 8);
-            func_8002C1C0(0x8A, 0, 0, 0, 0, 8);
-            func_8002C1C0(0x8B, 0, 0, 0, 0, 8);
-            func_8002C1C0(0x8C, 0, 0, 0, 0, 8);
-            func_8002C1C0(LANDSCAPE_BACKGROUND, 0, 0, 0, 0, 8);
+            updateSpriteRGBA(0x80, 0, 0, 0, 0, 8);
+            updateSpriteRGBA(0x83, 0, 0, 0, 0, 8);
+            updateSpriteRGBA(0x84, 0, 0, 0, 0, 8);
+            updateSpriteRGBA(0x85, 0, 0, 0, 0, 8);
+            updateSpriteRGBA(0x86, 0, 0, 0, 0, 8);
+            updateSpriteRGBA(0x89, 0, 0, 0, 0, 8);
+            updateSpriteRGBA(0x8A, 0, 0, 0, 0, 8);
+            updateSpriteRGBA(0x8B, 0, 0, 0, 0, 8);
+            updateSpriteRGBA(0x8C, 0, 0, 0, 0, 8);
+            updateSpriteRGBA(LANDSCAPE_BACKGROUND, 0, 0, 0, 0, 8);
 
             namingScreenContext.flags |= 0x200;
 

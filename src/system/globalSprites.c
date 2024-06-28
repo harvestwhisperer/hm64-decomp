@@ -606,15 +606,15 @@ bool func_8002C0B4(u16 index, s8 r, s8 g, s8 b, s8 a) {
 
 }
 
-//INCLUDE_ASM(const s32, "system/globalSprites", func_8002C1C0);
+//INCLUDE_ASM(const s32, "system/globalSprites", updateSpriteRGBA);
 
 // update sprite rgba
 // fade out on screen transitions
-bool func_8002C1C0(u16 index, u8 r, u8 g, u8 b, u8 a, s16 arg5) {
+bool updateSpriteRGBA(u16 index, u8 r, u8 g, u8 b, u8 a, s16 rate) {
 
     bool result;
     
-    s16 temp = getAbsoluteValue(arg5);
+    s16 absValueRate = getAbsoluteValue(rate);
     f32 tempFloat;
     
     result = 0;
@@ -636,7 +636,7 @@ bool func_8002C1C0(u16 index, u8 r, u8 g, u8 b, u8 a, s16 arg5) {
                 tempFloat = globalSprites[index].rgbaDefault.r - globalSprites[index].rgbaCurrent.r;
             }
 
-            globalSprites[index].normalized.r = (tempFloat * temp) / globalSprites[index].rgba.r;
+            globalSprites[index].normalized.r = (tempFloat * absValueRate) / globalSprites[index].rgba.r;
 
             if (globalSprites[index].rgbaDefault.g < globalSprites[index].rgbaCurrent.g) {
                 tempFloat = globalSprites[index].rgbaCurrent.g - globalSprites[index].rgbaDefault.g;
@@ -644,7 +644,7 @@ bool func_8002C1C0(u16 index, u8 r, u8 g, u8 b, u8 a, s16 arg5) {
                 tempFloat = globalSprites[index].rgbaDefault.g - globalSprites[index].rgbaCurrent.g;
             }
 
-            globalSprites[index].normalized.g = (tempFloat * temp) / globalSprites[index].rgba.g;
+            globalSprites[index].normalized.g = (tempFloat * absValueRate) / globalSprites[index].rgba.g;
 
             if (globalSprites[index].rgbaDefault.b < globalSprites[index].rgbaCurrent.b) {
                 tempFloat = globalSprites[index].rgbaCurrent.b - globalSprites[index].rgbaDefault.b;
@@ -652,7 +652,7 @@ bool func_8002C1C0(u16 index, u8 r, u8 g, u8 b, u8 a, s16 arg5) {
                 tempFloat = globalSprites[index].rgbaDefault.b - globalSprites[index].rgbaCurrent.b;
             }
 
-            globalSprites[index].normalized.b = (tempFloat * temp) / globalSprites[index].rgba.b;
+            globalSprites[index].normalized.b = (tempFloat * absValueRate) / globalSprites[index].rgba.b;
 
             if (globalSprites[index].rgbaDefault.a < globalSprites[index].rgbaCurrent.a) {
                 tempFloat = globalSprites[index].rgbaCurrent.a - globalSprites[index].rgbaDefault.a;
@@ -660,7 +660,7 @@ bool func_8002C1C0(u16 index, u8 r, u8 g, u8 b, u8 a, s16 arg5) {
                 tempFloat = globalSprites[index].rgbaDefault.a - globalSprites[index].rgbaCurrent.a;
             }
 
-            globalSprites[index].normalized.a = (tempFloat * temp) / globalSprites[index].rgba.a;
+            globalSprites[index].normalized.a = (tempFloat * absValueRate) / globalSprites[index].rgba.a;
             
             result = TRUE;
             
@@ -671,15 +671,14 @@ bool func_8002C1C0(u16 index, u8 r, u8 g, u8 b, u8 a, s16 arg5) {
 
 }
 
-//INCLUDE_ASM(const s32, "system/globalSprites", func_8002C52C);
+//INCLUDE_ASM(const s32, "system/globalSprites", updateSpriteAlpha);
 
-// update alpha
-bool func_8002C52C(u16 index, u8 arg1, s16 arg2) {
+bool updateSpriteAlpha(u16 index, u8 arg1, s16 rate) {
 
     bool result;
 
     f32 tempF;
-    s16 temp = getAbsoluteValue(arg2);
+    s16 absValueRate = getAbsoluteValue(rate);
 
     result = FALSE;
 
@@ -697,7 +696,7 @@ bool func_8002C52C(u16 index, u8 arg1, s16 arg2) {
                 tempF = globalSprites[index].rgbaDefault.a - globalSprites[index].rgbaCurrent.a;
             }
 
-            globalSprites[index].normalized.a = (tempF * temp) / globalSprites[index].rgba.a;
+            globalSprites[index].normalized.a = (tempF * absValueRate) / globalSprites[index].rgba.a;
             
             result = TRUE;
 
@@ -864,9 +863,9 @@ bool func_8002C914(u16 index, u8 r, u8 g, u8 b, u8 a) {
 }
 
 
-//INCLUDE_ASM(const s32, "system/globalSprites", func_8002CAA8);
+//INCLUDE_ASM(const s32, "system/globalSprites", setSpriteAlpha);
 
-bool func_8002CAA8(u16 index, u8 a) {
+bool setSpriteAlpha(u16 index, u8 a) {
     
     bool result = FALSE;
 

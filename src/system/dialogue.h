@@ -89,10 +89,9 @@ typedef struct {
 typedef struct {
 	UnknownDialogueStruct1 struct1;
 	u32 unused[4];  // 0x801C3E5C
-	// one for character avatar, button icon, etc.
-	DialogueSpriteType2 struct2; // 0x801C3E6C
-	DialogueSpriteType2 struct3; // 0x801C3EA4
-	DialogueSpriteType2 struct4; // 0x801C3EDC
+	DialogueSpriteType2 dialogueButtonIcon1; // 0x801C3E6C
+	DialogueSpriteType2 dialogueButtonIcon2; // 0x801C3EA4
+	DialogueSpriteType2 dialogueButtonIcon3; // 0x801C3EDC
 	u32 dialoguePointer; // 0x801C3F14
 	UnknownDialogueStruct2 struct5; // 0x801C3F18
 } Dialogue;

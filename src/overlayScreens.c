@@ -16,21 +16,9 @@
 #include "tv.h"
 
 // bss
-// struct
-// cell index
-extern u8 D_801FB6F0;
-// previous cell index
-extern u8 D_801FB6F1;
-// page number
-extern u8 D_801FB6F2;
-extern u8 D_801FB6F3;
-extern u8 D_801FB6F6;
-extern u8 D_801FB6F8;
-extern u8 D_801FB6F9;
-extern u8 D_801FB6FA;
-extern u8 D_801FB6FB;
+extern OverlayScreenTable overlayScreenTable;
  
-// shared
+// shared bss
 extern u8 D_801C3F70;
 extern u8 D_80205636;
 
@@ -108,10 +96,10 @@ void func_800B2CE0(void) {
     deactivateSprite(0x8D);
     deactivateSprite(0x8B);
     deactivateSprite(0x8A);
-    func_80046120(0);
+    deactivatePauseScreenSprites(0);
 
     deactivateSprite(0x8E);
-    func_80046120(1);
+    deactivatePauseScreenSprites(1);
     
     deactivateSprite(0x86);
     deactivateSprite(0x82);
@@ -130,25 +118,25 @@ void func_800B2CE0(void) {
     deactivateSprite(0x85);
     deactivateSprite(0x86);
     
-    func_80046120(0);
-    func_80046120(2);
-    func_80046120(3);
-    func_80046120(4);
-    func_80046120(5);
-    func_80046120(6);
-    func_80046120(2);
-    func_80046120(3);
-    func_80046120(4);
-    func_80046120(5);
-    func_80046120(6);
-    func_80046120(7);
-    func_80046120(8);
-    func_80046120(9);
-    func_80046120(0xA);
-    func_80046120(0xB);
-    func_80046120(0xC);
-    func_80046120(0xD);
-    func_80046120(0xE);
+    deactivatePauseScreenSprites(0);
+    deactivatePauseScreenSprites(2);
+    deactivatePauseScreenSprites(3);
+    deactivatePauseScreenSprites(4);
+    deactivatePauseScreenSprites(5);
+    deactivatePauseScreenSprites(6);
+    deactivatePauseScreenSprites(2);
+    deactivatePauseScreenSprites(3);
+    deactivatePauseScreenSprites(4);
+    deactivatePauseScreenSprites(5);
+    deactivatePauseScreenSprites(6);
+    deactivatePauseScreenSprites(7);
+    deactivatePauseScreenSprites(8);
+    deactivatePauseScreenSprites(9);
+    deactivatePauseScreenSprites(0xA);
+    deactivatePauseScreenSprites(0xB);
+    deactivatePauseScreenSprites(0xC);
+    deactivatePauseScreenSprites(0xD);
+    deactivatePauseScreenSprites(0xE);
 
     for (i = 0; i < 0x28; i++) {
         deactivateSprite(i + 0xA3);
@@ -229,9 +217,9 @@ void func_800B3BD8(void) {
     func_8002B80C(0x8E, 0, 0);
     
     func_80045E20(1, 0x91, &D_CFE610_2, &D_CFF6F0_3, &D_CFF6F0_4, &D_CFF710, 0x80253B00, 0x80254A00, 0x80254E00, 0x80254F00, 0, 1, 0, 0, 0, 320.0f, 0xA);
-    func_80045F5C(1, temp, 5, 3);
-    func_800461D8(1, 0xFF, 0xFF, 0xFF, 0xFF);
-    func_8002CAA8(0x8E, 0xFF);
+    dmaPauseScreenSprites(1, temp, 5, 3);
+    setPauseScreenSpritesRGBA(1, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteAlpha(0x8E, 0xFF);
     
     dmaSprite(0x82, &D_D3BFE0, &D_D3DCC0, &D_D3DCC0_2, &D_D3DCE0, 0, 0, 0x802E0EC0, 0, 0x802E27C0, 0x802E28C0, 0x802E2BC0, 0, 0, 0);
     setSpriteShrinkFactor(0x82, -96.0f, 64.0f, 256.0f);
@@ -317,24 +305,24 @@ INCLUDE_ASM(const s32, "overlayScreens", func_800B42E0);
 
 // adjust sprite colors
 void func_800B59AC(void) {
-    func_8002C1C0(0x80, 0xFF, 0xFF, 0xFF, 0xFF, 0x18);
-    func_8002C1C0(0x82, 0xFF, 0xFF, 0xFF, 0xFF, 0x18);
-    func_8002C1C0(0x83, 0xFF, 0xFF, 0xFF, 0xFF, 0x18);
-    func_8002C1C0(0x84, 0xFF, 0xFF, 0xFF, 0xFF, 0x18);
-    func_8002C1C0(0xA3, 0xFF, 0xFF, 0xFF, 0xFF, 0x18);
-    func_8002C1C0(0xA4, 0xFF, 0xFF, 0xFF, 0xFF, 0x18);
-    func_8002C1C0(0xA5, 0xFF, 0xFF, 0xFF, 0xFF, 0x18);
-    func_8002C1C0(0xA6, 0xFF, 0xFF, 0xFF, 0xFF, 0x18);
-    func_8002C1C0(0xA7, 0xFF, 0xFF, 0xFF, 0xFF, 0x18);
-    func_8002C1C0(0xA8, 0xFF, 0xFF, 0xFF, 0xFF, 0x18);
-    func_8002C1C0(0xA9, 0xFF, 0xFF, 0xFF, 0xFF, 0x18);
-    func_8002C1C0(0xAA, 0xFF, 0xFF, 0xFF, 0xFF, 0x18);
-    func_8002C1C0(0x85, 0xFF, 0xFF, 0xFF, 0xFF, 0x18);
-    func_8002C1C0(0x86, 0xFF, 0xFF, 0xFF, 0xFF, 0x18);
-    func_8002C1C0(0x87, 0xFF, 0xFF, 0xFF, 0xFF, 0x18);
-    func_8002C1C0(0x88, 0xFF, 0xFF, 0xFF, 0xFF, 0x18);
-    func_8002C1C0(0xAB, 0xFF, 0xFF, 0xFF, 0xFF, 0x18);
-    func_8002C1C0(0xAD, 0xFF, 0xFF, 0xFF, 0xFF, 0x18);
+    updateSpriteRGBA(0x80, 0xFF, 0xFF, 0xFF, 0xFF, 24);
+    updateSpriteRGBA(0x82, 0xFF, 0xFF, 0xFF, 0xFF, 24);
+    updateSpriteRGBA(0x83, 0xFF, 0xFF, 0xFF, 0xFF, 24);
+    updateSpriteRGBA(0x84, 0xFF, 0xFF, 0xFF, 0xFF, 24);
+    updateSpriteRGBA(0xA3, 0xFF, 0xFF, 0xFF, 0xFF, 24);
+    updateSpriteRGBA(0xA4, 0xFF, 0xFF, 0xFF, 0xFF, 24);
+    updateSpriteRGBA(0xA5, 0xFF, 0xFF, 0xFF, 0xFF, 24);
+    updateSpriteRGBA(0xA6, 0xFF, 0xFF, 0xFF, 0xFF, 24);
+    updateSpriteRGBA(0xA7, 0xFF, 0xFF, 0xFF, 0xFF, 24);
+    updateSpriteRGBA(0xA8, 0xFF, 0xFF, 0xFF, 0xFF, 24);
+    updateSpriteRGBA(0xA9, 0xFF, 0xFF, 0xFF, 0xFF, 24);
+    updateSpriteRGBA(0xAA, 0xFF, 0xFF, 0xFF, 0xFF, 24);
+    updateSpriteRGBA(0x85, 0xFF, 0xFF, 0xFF, 0xFF, 24);
+    updateSpriteRGBA(0x86, 0xFF, 0xFF, 0xFF, 0xFF, 24);
+    updateSpriteRGBA(0x87, 0xFF, 0xFF, 0xFF, 0xFF, 24);
+    updateSpriteRGBA(0x88, 0xFF, 0xFF, 0xFF, 0xFF, 24);
+    updateSpriteRGBA(0xAB, 0xFF, 0xFF, 0xFF, 0xFF, 24);
+    updateSpriteRGBA(0xAD, 0xFF, 0xFF, 0xFF, 0xFF, 24);
 }
 
 //INCLUDE_ASM(const s32, "overlayScreens", func_800B5BD4);
@@ -363,24 +351,24 @@ void func_800B5BD4(void) {
 //INCLUDE_ASM(const s32, "overlayScreens", func_800B5DA8);
 
 void func_800B5DA8(void) {
-    func_8002C1C0(0x80, 0, 0, 0, 0, 0x18);
-    func_8002C1C0(0x82, 0, 0, 0, 0, 0x18);
-    func_8002C1C0(0x83, 0, 0, 0, 0, 0x18);
-    func_8002C1C0(0x84, 0, 0, 0, 0, 0x18);
-    func_8002C1C0(0xA3, 0, 0, 0, 0, 0x18);
-    func_8002C1C0(0xA4, 0, 0, 0, 0, 0x18);
-    func_8002C1C0(0xA5, 0, 0, 0, 0, 0x18);
-    func_8002C1C0(0xA6, 0, 0, 0, 0, 0x18);
-    func_8002C1C0(0xA7, 0, 0, 0, 0, 0x18);
-    func_8002C1C0(0xA8, 0, 0, 0, 0, 0x18);
-    func_8002C1C0(0xA9, 0, 0, 0, 0, 0x18);
-    func_8002C1C0(0xAA, 0, 0, 0, 0, 0x18);
-    func_8002C1C0(0x85, 0, 0, 0, 0, 0x18);
-    func_8002C1C0(0x86, 0, 0, 0, 0, 0x18);
-    func_8002C1C0(0x87, 0, 0, 0, 0, 0x18);
-    func_8002C1C0(0x88, 0, 0, 0, 0, 0x18);
-    func_8002C1C0(0xAB, 0, 0, 0, 0, 0x18);
-    func_8002C1C0(0xAD, 0, 0, 0, 0, 0x18);
+    updateSpriteRGBA(0x80, 0, 0, 0, 0, 24);
+    updateSpriteRGBA(0x82, 0, 0, 0, 0, 24);
+    updateSpriteRGBA(0x83, 0, 0, 0, 0, 24);
+    updateSpriteRGBA(0x84, 0, 0, 0, 0, 24);
+    updateSpriteRGBA(0xA3, 0, 0, 0, 0, 24);
+    updateSpriteRGBA(0xA4, 0, 0, 0, 0, 24);
+    updateSpriteRGBA(0xA5, 0, 0, 0, 0, 24);
+    updateSpriteRGBA(0xA6, 0, 0, 0, 0, 24);
+    updateSpriteRGBA(0xA7, 0, 0, 0, 0, 24);
+    updateSpriteRGBA(0xA8, 0, 0, 0, 0, 24);
+    updateSpriteRGBA(0xA9, 0, 0, 0, 0, 24);
+    updateSpriteRGBA(0xAA, 0, 0, 0, 0, 24);
+    updateSpriteRGBA(0x85, 0, 0, 0, 0, 24);
+    updateSpriteRGBA(0x86, 0, 0, 0, 0, 24);
+    updateSpriteRGBA(0x87, 0, 0, 0, 0, 24);
+    updateSpriteRGBA(0x88, 0, 0, 0, 0, 24);
+    updateSpriteRGBA(0xAB, 0, 0, 0, 0, 24);
+    updateSpriteRGBA(0xAD, 0, 0, 0, 0, 24);
 }
 
 //INCLUDE_ASM(const s32, "overlayScreens", func_800B5FC4);
@@ -434,11 +422,56 @@ INCLUDE_ASM(const s32, "overlayScreens", func_800B6674);
 
 INCLUDE_ASM(const s32, "overlayScreens", func_800B7070);
 
-INCLUDE_ASM(const s32, "overlayScreens", func_800B7B34);
+//INCLUDE_ASM(const s32, "overlayScreens", func_800B7B34);
 
-INCLUDE_ASM(const s32, "overlayScreens", func_800B7CB4);
+void func_800B7B34(void) {
+    updateSpriteRGBA(0x80, 0xFF, 0xFF, 0xFF, 0xFF, 24);
+    updateSpriteRGBA(0x82, 0xFF, 0xFF, 0xFF, 0xFF, 24);
+    updateSpriteRGBA(0x83, 0xFF, 0xFF, 0xFF, 0xFF, 24);
+    updateSpriteRGBA(0x84, 0xFF, 0xFF, 0xFF, 0xFF, 24);
+    updateSpriteRGBA(0x85, 0xFF, 0xFF, 0xFF, 0xFF, 24);
+    updateSpriteRGBA(0x86, 0xFF, 0xFF, 0xFF, 0xFF, 24);
+    updateSpriteRGBA(0x87, 0xFF, 0xFF, 0xFF, 0xFF, 24);
+    updateSpriteRGBA(0xAE, 0xFF, 0xFF, 0xFF, 0xFF, 24);
+    updateSpriteRGBA(0xAF, 0xFF, 0xFF, 0xFF, 0xFF, 24);
+    updateSpriteRGBA(0xB0, 0xFF, 0xFF, 0xFF, 0xFF, 24);
+    updateSpriteRGBA(0xB1, 0xFF, 0xFF, 0xFF, 0xFF, 24);
+    updateSpriteRGBA(0xB2, 0xFF, 0xFF, 0xFF, 0xFF, 24);
+}
 
-INCLUDE_ASM(const s32, "overlayScreens", func_800B7E28);
+//INCLUDE_ASM(const s32, "overlayScreens", func_800B7CB4);
+
+void func_800B7CB4(void) {
+    updateSpriteRGBA(0x80, 0, 0, 0, 0, 24);
+    updateSpriteRGBA(0x82, 0, 0, 0, 0, 24);
+    updateSpriteRGBA(0x83, 0, 0, 0, 0, 24);
+    updateSpriteRGBA(0x84, 0, 0, 0, 0, 24);
+    updateSpriteRGBA(0x85, 0, 0, 0, 0, 24);
+    updateSpriteRGBA(0x86, 0, 0, 0, 0, 24);
+    updateSpriteRGBA(0x87, 0, 0, 0, 0, 24);
+    updateSpriteRGBA(0xAE, 0, 0, 0, 0, 24);
+    updateSpriteRGBA(0xAF, 0, 0, 0, 0, 24);
+    updateSpriteRGBA(0xB0, 0, 0, 0, 0, 24);
+    updateSpriteRGBA(0xB1, 0, 0, 0, 0, 24);
+    updateSpriteRGBA(0xB2, 0, 0, 0, 0, 24);
+}
+
+//INCLUDE_ASM(const s32, "overlayScreens", func_800B7E28);
+
+void func_800B7E28(void) {
+    func_8002C914(0x80, 0xFF, 0xFF, 0xFF, 0xFF);
+    func_8002C914(0x82, 0xFF, 0xFF, 0xFF, 0xFF);
+    func_8002C914(0x83, 0xFF, 0xFF, 0xFF, 0xFF);
+    func_8002C914(0x84, 0xFF, 0xFF, 0xFF, 0xFF);
+    func_8002C914(0x85, 0xFF, 0xFF, 0xFF, 0xFF);
+    func_8002C914(0x86, 0xFF, 0xFF, 0xFF, 0xFF);
+    func_8002C914(0x87, 0xFF, 0xFF, 0xFF, 0xFF);
+    func_8002C914(0xAE, 0xFF, 0xFF, 0xFF, 0xFF);
+    func_8002C914(0xAF, 0xFF, 0xFF, 0xFF, 0xFF);
+    func_8002C914(0xB0, 0xFF, 0xFF, 0xFF, 0xFF);
+    func_8002C914(0xB1, 0xFF, 0xFF, 0xFF, 0xFF);
+    func_8002C914(0xB2, 0xFF, 0xFF, 0xFF, 0xFF);
+}
 
 //INCLUDE_ASM(const s32, "overlayScreens", func_800B7F6C);
 
@@ -464,12 +497,23 @@ void func_800B7FC8(u8 arg0, u8 arg1) {
     }
 }
 
+static inline void initializeOverlayScreenTable(void) {
+
+    overlayScreenTable.cellIndex = 0;
+    overlayScreenTable.previousCellIndex = 0;
+    overlayScreenTable.pageNumber = 0;
+    overlayScreenTable.unk_3 = 0xFF;
+    overlayScreenTable.unk_6 = 0;
+
+}
+
 //INCLUDE_ASM(const s32, "overlayScreens", func_800B8018);
 
 // estimate/evaluation screen
 void func_800B8018(void) {
     
     func_800593EC();
+
     dmaSprite(0x80, &_checkerboardBackgroundTextureSegmentRomStart, &_checkerboardBackgroundTextureSegmentRomEnd, &_checkerboardBackgroundIndexSegmentRomStart, &_checkerboardBackgroundIndexSegmentRomEnd, 0, 0, 0x802DE5C0, 0, 0x802E0BC0, 0x802E0CC0, 0x802E0DC0, 0, 0, 0);
     setSpriteShrinkFactor(0x80, 0, 0, 0);
     setSpriteScale(0x80, 2.0f, 2.0f, 1.0f);
@@ -477,14 +521,10 @@ void func_800B8018(void) {
     func_8002C914(0x80, 0xFF, 0xFF, 0xFF, 0xFF);
     func_8002B80C(0x80, 0, 0); 
      
-    // FIXME: likely a struct/array
-    D_801FB6F0 = 0;
-    D_801FB6F1 = 0;
-    D_801FB6F2 = 0;
-    D_801FB6F3 = 0xFF;
-    D_801FB6F6 = 0;
+    initializeOverlayScreenTable();
     
     setMainLoopCallbackFunctionIndex(ESTIMATE);
+
 }
 
 //INCLUDE_ASM(const s32, "overlayScreens", func_800B815C);
@@ -493,20 +533,22 @@ void func_800B8018(void) {
 void func_800B815C(void) {
 
     func_800593EC();
+
     dmaSprite(0x80, &_checkerboardBackgroundTextureSegmentRomStart, &_checkerboardBackgroundTextureSegmentRomEnd, &_checkerboardBackgroundIndexSegmentRomStart, &_checkerboardBackgroundIndexSegmentRomEnd, NULL, NULL, (void*)0x802DE5C0, NULL, (void*)0x802E0BC0, (void*)0x802E0CC0, (void*)0x802E0DC0, NULL, NULL, 0);
     setSpriteShrinkFactor(0x80, 0.0f, 0.0f, 0.0f);
     setSpriteScale(0x80, 2.0f, 2.0f, 1.0f);
     func_8002CB24(0x80, 1);
     func_8002C914(0x80, 0xFF, 0xFF, 0xFF, 0xFF);
     func_8002B80C(0x80, 0, 0);
-    
-    D_801FB6F0 = func_800C2780(0, 0);
-    D_801FB6F1 = 0;
-    D_801FB6F2 = 0;
-    D_801FB6F3 = 0xFF;
-    D_801FB6F6 = 0;
+
+    overlayScreenTable.cellIndex = func_800C2780(0, 0);
+    overlayScreenTable.previousCellIndex = 0;
+    overlayScreenTable.pageNumber = 0;
+    overlayScreenTable.unk_3 = 0xFF;
+    overlayScreenTable.unk_6 = 0;
     
     setMainLoopCallbackFunctionIndex(KITCHEN_PICTURE);
+
 }
 
 
@@ -522,12 +564,8 @@ void func_800B82AC(void) {
     func_8002CB24(0x80, 1);
     func_8002C914(0x80, 0xFF, 0xFF, 0xFF, 0xFF);
     func_8002B80C(0x80, 0, 0);
-    
-    D_801FB6F0 = 0;
-    D_801FB6F1 = 0;
-    D_801FB6F2 = 0;
-    D_801FB6F3 = 0xFF;
-    D_801FB6F6 = 0;
+
+    initializeOverlayScreenTable();
     
     setMainLoopCallbackFunctionIndex(HOME_EXTENSIONS_SELECT);
 
@@ -546,15 +584,12 @@ void func_800B83F0(void) {
     func_8002C914(0x80, 0xFF, 0xFF, 0xFF, 0xFF);
     func_8002B80C(0x80, 0, 0);
 
-    D_801FB6F0 = 0;
-    D_801FB6F1 = 0;
-    D_801FB6F2 = 0;
-    D_801FB6F3 = 0xFF;
-    D_801FB6F6 = 0;
-    D_801FB6F8 = 0;
-    D_801FB6F9 = 0;
-    D_801FB6FA = 0;
-    D_801FB6FB = 0;
+    initializeOverlayScreenTable();
+
+    overlayScreenTable.unk_8 = 0;
+    overlayScreenTable.unk_9 = 0;
+    overlayScreenTable.unk_A = 0;
+    overlayScreenTable.unk_B = 0;
 
     setMainLoopCallbackFunctionIndex(CALENDAR);
 }
@@ -572,15 +607,12 @@ void func_800B8554(void) {
     func_8002C914(0x80, 0xFF, 0xFF, 0xFF, 0xFF);
     func_8002B80C(0x80, 0, 0);
 
-    D_801FB6F0 = 0;
-    D_801FB6F1 = 0;
-    D_801FB6F2 = 0;
-    D_801FB6F3 = 0xFF;
-    D_801FB6F6 = 0;
-    D_801FB6F8 = 0;
-    D_801FB6F9 = 0;
-    D_801FB6FA = 0;
-    D_801FB6FB = 0;
+    initializeOverlayScreenTable();
+
+    overlayScreenTable.unk_8 = 0;
+    overlayScreenTable.unk_9 = 0;
+    overlayScreenTable.unk_A = 0;
+    overlayScreenTable.unk_B = 0;
 
     setMainLoopCallbackFunctionIndex(RECIPE_BOOK);
 }
@@ -706,41 +738,41 @@ INCLUDE_ASM(const s32, "overlayScreens", func_800C0714);
 //INCLUDE_ASM(const s32, "overlayScreens", func_800C0F24);
 
 void func_800C0F24(void) {
-    func_8002C52C(0x89, 0xFF, 0x18);
-    func_8002C52C(0x8C, 0xFF, 0x18);
-    func_8002C52C(0x8D, 0xFF, 0x18);
-    func_8002C52C(0x8B, 0xFF, 0x18);
-    func_8002C52C(0x8A, 0xFF, 0x18);
-    func_8002C52C(0x8E, 0xFF, 0x18);
-    func_8002C52C(0x81, 0xFF, 0x18);
-    func_8002C52C(0x82, 0xFF, 0x18);
-    func_8002C52C(0x83, 0xFF, 0x18);
-    func_8002C52C(0x84, 0xFF, 0x18);
-    func_8002C52C(0x85, 0xFF, 0x18);
-    func_8002C52C(0x86, 0xFF, 0x18);
-    func_8002C52C(0x87, 0xFF, 0x18);
-    func_8002C52C(0x88, 0xFF, 0x18);
+    updateSpriteAlpha(0x89, 0xFF, 24);
+    updateSpriteAlpha(0x8C, 0xFF, 24);
+    updateSpriteAlpha(0x8D, 0xFF, 24);
+    updateSpriteAlpha(0x8B, 0xFF, 24);
+    updateSpriteAlpha(0x8A, 0xFF, 24);
+    updateSpriteAlpha(0x8E, 0xFF, 24);
+    updateSpriteAlpha(0x81, 0xFF, 24);
+    updateSpriteAlpha(0x82, 0xFF, 24);
+    updateSpriteAlpha(0x83, 0xFF, 24);
+    updateSpriteAlpha(0x84, 0xFF, 24);
+    updateSpriteAlpha(0x85, 0xFF, 24);
+    updateSpriteAlpha(0x86, 0xFF, 24);
+    updateSpriteAlpha(0x87, 0xFF, 24);
+    updateSpriteAlpha(0x88, 0xFF, 24);
 }
 
 //INCLUDE_ASM(const s32, "overlayScreens", func_800C101C);
 
 void func_800C101C(void) {
-    func_8002C52C(0x89, 0, 0x18);
-    func_8002C52C(0x8C, 0, 0x18);
-    func_8002C52C(0x8D, 0, 0x18);
-    func_8002C52C(0x8B, 0, 0x18);
-    func_8002C52C(0x8A, 0, 0x18);
-    func_8002C52C(0x8E, 0, 0x18);
-    func_8002C52C(0x81, 0, 0x18);
-    func_8002C52C(0x82, 0, 0x18);
-    func_8002C52C(0x83, 0, 0x18);
-    func_8002C52C(0x84, 0, 0x18);
-    func_8002C52C(0x85, 0, 0x18);
-    func_8002C52C(0x86, 0, 0x18);
-    func_8002C52C(0x87, 0, 0x18);
-    func_8002C52C(0x88, 0, 0x18);
-    func_80046120(0);
-    func_80046120(1);
+    updateSpriteAlpha(0x89, 0, 24);
+    updateSpriteAlpha(0x8C, 0, 24);
+    updateSpriteAlpha(0x8D, 0, 24);
+    updateSpriteAlpha(0x8B, 0, 24);
+    updateSpriteAlpha(0x8A, 0, 24);
+    updateSpriteAlpha(0x8E, 0, 24);
+    updateSpriteAlpha(0x81, 0, 24);
+    updateSpriteAlpha(0x82, 0, 24);
+    updateSpriteAlpha(0x83, 0, 24);
+    updateSpriteAlpha(0x84, 0, 24);
+    updateSpriteAlpha(0x85, 0, 24);
+    updateSpriteAlpha(0x86, 0, 24);
+    updateSpriteAlpha(0x87, 0, 24);
+    updateSpriteAlpha(0x88, 0, 24);
+    deactivatePauseScreenSprites(0);
+    deactivatePauseScreenSprites(1);
 }
 
 //INCLUDE_RODATA(const s32, "overlayScreens", D_80121D74);
@@ -771,9 +803,54 @@ INCLUDE_ASM(const s32, "overlayScreens", func_800C2660);
 
 INCLUDE_ASM(const s32, "overlayScreens", func_800C2780);
 
-INCLUDE_ASM(const s32, "overlayScreens", func_800C292C);
+//INCLUDE_ASM(const s32, "overlayScreens", func_800C292C);
 
-INCLUDE_ASM(const s32, "overlayScreens", func_800C2A54);
+inline void func_800C292C(void) {
+    updateSpriteAlpha(0x89, 0xFF, 24);
+    updateSpriteAlpha(0x8C, 0xFF, 24);
+    updateSpriteAlpha(0x8D, 0xFF, 24);
+    updateSpriteAlpha(0x8B, 0xFF, 24);
+    updateSpriteAlpha(0x8A, 0xFF, 24);
+    updateSpriteAlpha(0x8E, 0xFF, 24);
+    updateSpriteAlpha(0x82, 0xFF, 24);
+    updateSpriteAlpha(0xA3, 0xFF, 24);
+    updateSpriteAlpha(0xA4, 0xFF, 24);
+    updateSpriteAlpha(0xA5, 0xFF, 24);
+    updateSpriteAlpha(0xA6, 0xFF, 24);
+    updateSpriteAlpha(0xA7, 0xFF, 24);
+    updateSpriteAlpha(0xA8, 0xFF, 24);
+    updateSpriteAlpha(0xA9, 0xFF, 24);
+    updateSpriteAlpha(0xAA, 0xFF, 24);
+    updateSpriteAlpha(0xAB, 0xFF, 24);
+    updateSpriteAlpha(0xAC, 0xFF, 24);
+}
+
+//INCLUDE_ASM(const s32, "overlayScreens", func_800C2A54);
+
+void func_800C2A54(void) {
+
+    updateSpriteAlpha(0x89, 0, 24);
+    updateSpriteAlpha(0x8C, 0, 24);
+    updateSpriteAlpha(0x8D, 0, 24);
+    updateSpriteAlpha(0x8B, 0, 24);
+    updateSpriteAlpha(0x8A, 0, 24);
+    updateSpriteAlpha(0x8E, 0, 24);
+    updateSpriteAlpha(0x82, 0, 24);
+    updateSpriteAlpha(0xA3, 0, 24);
+    updateSpriteAlpha(0xA4, 0, 24);
+    updateSpriteAlpha(0xA5, 0, 24);
+    updateSpriteAlpha(0xA6, 0, 24);
+    updateSpriteAlpha(0xA7, 0, 24);
+    updateSpriteAlpha(0xA8, 0, 24);
+    updateSpriteAlpha(0xA9, 0, 24);
+    updateSpriteAlpha(0xAA, 0, 24);
+    updateSpriteAlpha(0xAB, 0, 24);
+    updateSpriteAlpha(0xAC, 0, 24);
+
+    deactivatePauseScreenSprites(0);
+    deactivatePauseScreenSprites(1);
+
+}
 
 // jtbl_80121DB8
 INCLUDE_ASM(const s32, "overlayScreens", func_800C2B8C);
@@ -795,9 +872,68 @@ INCLUDE_ASM(const s32, "overlayScreens", func_800C4A74);
 
 INCLUDE_ASM(const s32, "overlayScreens", func_800C4E90);
 
-INCLUDE_ASM(const s32, "overlayScreens", func_800C5080);
+//INCLUDE_ASM(const s32, "overlayScreens", func_800C5080);
 
-INCLUDE_ASM(const s32, "overlayScreens", func_800C5218);
+void func_800C5080(void) {
+    updateSpriteAlpha(0x89, 0xFF, 24);
+    updateSpriteAlpha(0x8C, 0xFF, 24);
+    updateSpriteAlpha(0x8D, 0xFF, 24);
+    updateSpriteAlpha(0x8B, 0xFF, 24);
+    updateSpriteAlpha(0x8A, 0xFF, 24);
+    updateSpriteAlpha(0x8E, 0xFF, 24);
+    updateSpriteAlpha(0x81, 0xFF, 24);
+    updateSpriteAlpha(0x82, 0xFF, 24);
+    updateSpriteAlpha(0xA3, 0xFF, 24);
+    updateSpriteAlpha(0xA4, 0xFF, 24);
+    updateSpriteAlpha(0xA5, 0xFF, 24);
+    updateSpriteAlpha(0xA6, 0xFF, 24);
+    updateSpriteAlpha(0xA7, 0xFF, 24);
+    updateSpriteAlpha(0xA8, 0xFF, 24);
+    updateSpriteAlpha(0xA9, 0xFF, 24);
+    updateSpriteAlpha(0xAA, 0xFF, 24);
+    updateSpriteAlpha(0xAB, 0xFF, 24);
+    updateSpriteAlpha(0xAC, 0xFF, 24);
+    updateSpriteAlpha(0xAD, 0xFF, 24);
+    updateSpriteAlpha(0xAE, 0xFF, 24);
+    updateSpriteAlpha(0xAF, 0xFF, 24);
+    updateSpriteAlpha(0xB0, 0xFF, 24);
+    updateSpriteAlpha(0xB1, 0xFF, 24);
+    updateSpriteAlpha(0xB2, 0xFF, 24);
+}
+
+//INCLUDE_ASM(const s32, "overlayScreens", func_800C5218);
+
+void func_800C5218(void) {
+
+    updateSpriteAlpha(0x89, 0, 24);
+    updateSpriteAlpha(0x8C, 0, 24);
+    updateSpriteAlpha(0x8D, 0, 24);
+    updateSpriteAlpha(0x8B, 0, 24);
+    updateSpriteAlpha(0x8A, 0, 24);
+    updateSpriteAlpha(0x8E, 0, 24);
+    updateSpriteAlpha(0x81, 0, 24);
+    updateSpriteAlpha(0x82, 0, 24);
+    updateSpriteAlpha(0xA3, 0, 24);
+    updateSpriteAlpha(0xA4, 0, 24);
+    updateSpriteAlpha(0xA5, 0, 24);
+    updateSpriteAlpha(0xA6, 0, 24);
+    updateSpriteAlpha(0xA7, 0, 24);
+    updateSpriteAlpha(0xA8, 0, 24);
+    updateSpriteAlpha(0xA9, 0, 24);
+    updateSpriteAlpha(0xAA, 0, 24);
+    updateSpriteAlpha(0xAB, 0, 24);
+    updateSpriteAlpha(0xAC, 0, 24);
+    updateSpriteAlpha(0xAD, 0, 24);
+    updateSpriteAlpha(0xAE, 0, 24);
+    updateSpriteAlpha(0xAF, 0, 24);
+    updateSpriteAlpha(0xB0, 0, 24);
+    updateSpriteAlpha(0xB1, 0, 24);
+    updateSpriteAlpha(0xB2, 0, 24);
+
+    deactivatePauseScreenSprites(0);
+    deactivatePauseScreenSprites(1);
+
+}
 
 // jtbl_80121DF0
 INCLUDE_ASM(const s32, "overlayScreens", func_800C53C0);
@@ -808,23 +944,66 @@ INCLUDE_ASM(const s32, "overlayScreens", func_800C5AA4);
 // jtbl_80121E20
 INCLUDE_ASM(const s32, "overlayScreens", func_800C5DA4);
 
-INCLUDE_ASM(const s32, "overlayScreens", func_800C6E98);
+//INCLUDE_ASM(const s32, "overlayScreens", func_800C6E98);
 
-INCLUDE_ASM(const s32, "overlayScreens", func_800C6F70);
+void func_800C6E98(void) {
+    updateSpriteAlpha(0x89, 0xFF, 24);
+    updateSpriteAlpha(0x8C, 0xFF, 24);
+    updateSpriteAlpha(0x8D, 0xFF, 24);
+    updateSpriteAlpha(0x8B, 0xFF, 24);
+    updateSpriteAlpha(0x8A, 0xFF, 24);
+    updateSpriteAlpha(0x8E, 0xFF, 24);
+    updateSpriteAlpha(0x81, 0xFF, 24);
+    updateSpriteAlpha(0x82, 0xFF, 24);
+    updateSpriteAlpha(0x83, 0xFF, 24);
+    updateSpriteAlpha(0x84, 0xFF, 24);
+    updateSpriteAlpha(0x85, 0xFF, 24);
+    updateSpriteAlpha(0x86, 0xFF, 24);
+}
 
-INCLUDE_RODATA(const s32, "overlayScreens", D_80121E34);
+//INCLUDE_ASM(const s32, "overlayScreens", func_800C6F70);
 
-//static const u8 D_80121E34[20] = { 0x15, 0x16, 0x17, 0x18, 0x19, 0x1A, 0x1B, 0x1C, 0x1D, 0x1E, 0x1F, 0x20, 0x21, 0x22, 0x2D, 0x2E, 0, 0, 0, 0 };
+void func_800C6F70(void) {
 
-// static const u32 D_80121E34[4] = { 0x15161718, 0x191A1B1C, 0x1D1E1F20, 0x21222D2E, 0 };
+    updateSpriteAlpha(0x89, 0, 24);
+    updateSpriteAlpha(0x8C, 0, 24);
+    updateSpriteAlpha(0x8D, 0, 24);
+    updateSpriteAlpha(0x8B, 0, 24);
+    updateSpriteAlpha(0x8A, 0, 24);
+    updateSpriteAlpha(0x8E, 0, 24);
+    updateSpriteAlpha(0x81, 0, 24);
+    updateSpriteAlpha(0x82, 0, 24);
+    updateSpriteAlpha(0x83, 0, 24);
+    updateSpriteAlpha(0x84, 0, 24);
+    updateSpriteAlpha(0x85, 0, 24);
+    updateSpriteAlpha(0x86, 0, 24);
+
+    deactivatePauseScreenSprites(0);
+    deactivatePauseScreenSprites(1);
+
+}
+
+//INCLUDE_RODATA(const s32, "overlayScreens", D_80121E34);
+
+static const u8 D_80121E34[20] = { 0x15, 0x16, 0x17, 0x18, 0x19, 0x1A, 0x1B, 0x1C, 0x1D, 0x1E, 0x1F, 0x20, 0x21, 0x22, 0x2D, 0x2E, 0, 0, 0, 0 };
 
 // D_80121E34
 // jtbl_80121E48
 INCLUDE_ASM(const s32, "overlayScreens", func_800C7058);
 
-INCLUDE_ASM(const s32, "overlayScreens", addRecipe);
+//INCLUDE_ASM(const s32, "overlayScreens", addRecipe);
 
-INCLUDE_ASM(const s32, "overlayScreens", func_800C77EC);
+void addRecipe(u16 bitIndex) {
+    u32 temp = bitIndex;
+    recipesBits[temp >> 5] |= 1 << (temp & 0x1F);
+}
+
+//INCLUDE_ASM(const s32, "overlayScreens", toggleRecipe);
+
+void toggleRecipe(u16 bitIndex) {
+    u32 temp = bitIndex;
+    recipesBits[temp >> 5] &= ~(1 << (temp & 0x1F));
+}
 
 //INCLUDE_ASM(const s32, "overlayScreens", checkRecipe);
 
@@ -833,16 +1012,37 @@ u32 checkRecipe(u16 bitIndex) {
     return recipesBits[temp >> 5] & (1 << (temp & 0x1F));
 }
 
+
 // possible split: 0xA2C50
 INCLUDE_ASM(const s32, "overlayScreens", func_800C7850);
 
-INCLUDE_ASM(const s32, "overlayScreens", func_800C7C88);
+//INCLUDE_ASM(const s32, "overlayScreens", func_800C7C88);
 
-INCLUDE_ASM(const s32, "overlayScreens", func_800C7CE4);
+void func_800C7C88(f32 x, f32 y) {
+    func_8002B80C(0x7C, 0xB, 0xFE);
+    setSpriteShrinkFactor(0x7C, x, y, 32.0f);
+}
 
-INCLUDE_ASM(const s32, "overlayScreens", func_800C7D40);
+//INCLUDE_ASM(const s32, "overlayScreens", func_800C7CE4);
 
-INCLUDE_ASM(const s32, "overlayScreens", func_800C7D9C);
+void func_800C7CE4(f32 x, f32 y) {
+    func_8002B80C(0x7D, 0xA, 0xFE);
+    setSpriteShrinkFactor(0x7D, x, y, 32.0f);
+}
+
+//INCLUDE_ASM(const s32, "overlayScreens", func_800C7D40);
+
+void func_800C7D40(f32 x, f32 y) {
+    func_8002B80C(0x7F, 1, 0xFE);
+    setSpriteShrinkFactor(0x7F, x, y, 32.0f);
+}
+
+//INCLUDE_ASM(const s32, "overlayScreens", func_800C7D9C);
+
+void func_800C7D9C(f32 x, f32 y) {
+    func_8002B80C(0x7E, 0xC, 0xFE);
+    setSpriteShrinkFactor(0x7E, x, y, 32.0f);
+}
 
 //INCLUDE_ASM(const s32, "overlayScreens", func_800C7DF8);
 
@@ -870,11 +1070,25 @@ void func_800C7E58(void) {
 
 INCLUDE_ASM(const s32, "overlayScreens", func_800C7E78);
 
-INCLUDE_ASM(const s32, "overlayScreens", func_800C80F0);
+//INCLUDE_ASM(const s32, "overlayScreens", func_800C80F0);
 
-INCLUDE_ASM(const s32, "overlayScreens", func_800C814C);
+void func_800C80F0(f32 x, f32 y) {
+    func_8002B80C(0x7B, 0xB, 0xFE);
+    setSpriteShrinkFactor(0x7B, x, y, 32.0f);
+}
 
-INCLUDE_ASM(const s32, "overlayScreens", func_800C81A8);
+//INCLUDE_ASM(const s32, "overlayScreens", func_800C814C);
+
+void func_800C814C(f32 x, f32 y) {
+    func_8002B80C(0x7A, 0xA, 0xFE);
+    setSpriteShrinkFactor(0x7A, x, y, 32.0f);
+}
+
+//INCLUDE_ASM(const s32, "overlayScreens", func_800C81A8);
+
+void func_800C81A8(void) {
+    func_8002BAD8(0x7B);
+}
 
 //INCLUDE_ASM(const s32, "overlayScreens", func_800C81C8);
 
@@ -921,9 +1135,127 @@ INCLUDE_ASM(const s32, "overlayScreens", func_800CC6F0);
 
 INCLUDE_ASM(const s32, "overlayScreens", func_800CCFC8);
 
-INCLUDE_ASM(const s32, "overlayScreens", func_800CD628);
+// FIXME: matches with --fforce-addr; need to use struct indexing
+/*
+void func_800CCFC8(void) {
 
-INCLUDE_ASM(const s32, "overlayScreens", func_800CD690);
+    func_8003FBA0(0x2A, (D_801C3E06 * 6) + &D_801C3E06 - 0x5A, 6);
+    func_8003FBA0(0x2B, (D_801C3E07 * 6) + &D_801C3E06 - 0x5A, 6);
+    func_8003FBA0(0x2C, (D_801C3E08 * 6) + &D_801C3E06 - 0x5A, 6);
+    func_8003FBA0(0x2D, (D_801C3E09 * 6) + &D_801C3E06 - 0x5A, 6);
+    func_8003FBA0(0x2E, (D_801C3E0A * 6) + &D_801C3E06 - 0x5A, 6);
+    func_8003FBA0(0x2F, (D_801C3E0B * 6) + &D_801C3E06 - 0x5A, 6);
+    
+    func_8003DBE8(0, (u8*)0x8030B000);
+    func_8003F54C(0, -32.0f, 32.0f, 0.0f);
+    func_8003F5D0(0, 0xA, 2);
+    func_8003F630(0, 0, 2);
+    func_8003F464(0, 0xE, 0xE, (u8*)0x802FF000, (u16*)0x8030A000);
+    func_8003F360(0, -4, 2);
+    setDialogueBoxSpriteIndices(0, 0xFF, 0, 0);
+    func_8003FAF8(0, 0x8000);
+    func_8003FB4C(0, 1);
+    initializeDialogueBox(0, 0, 0x12, 0x80000);
+    func_8003E77C(0, 0xFF, 0xFF, 0xFF, 0xFF);
+    
+    func_8003DBE8(1, (u8*)0x8030B400);
+    func_8003F54C(1, -32.0f, 16.0f, 0.0f);
+    func_8003F5D0(1, 0xA, 2);
+    func_8003F630(1, 0, 2);
+    func_8003F464(1, 0xE, 0xE, (u8*)0x802FF000, (u16*)0x8030A000);
+    func_8003F360(1, -4, 2);
+    setDialogueBoxSpriteIndices(1, 0xFF, 0, 0);
+    func_8003FAF8(1, 0x8000);
+    func_8003FB4C(1, 1);
+    initializeDialogueBox(1, 0, 0x13, 0x80000);
+    func_8003E77C(1, 0xFF, 0xFF, 0xFF, 0xFF);
+    
+    func_8003DBE8(2, (u8*)0x8030B800);
+    func_8003F54C(2, -32.0f, 0.0f, 0.0f);
+    func_8003F5D0(2, 0xA, 2);
+    func_8003F630(2, 0, 2);
+    func_8003F464(2, 0xE, 0xE, (u8*)0x802FF000, (u16*)0x8030A000);
+    func_8003F360(2, -4, 2);
+    setDialogueBoxSpriteIndices(2, 0xFF, 0, 0);
+    func_8003FAF8(2, 0x8000);
+    func_8003FB4C(2, 1);
+    initializeDialogueBox(2, 0, 0x14, 0x80000);
+    func_8003E77C(2, 0xFF, 0xFF, 0xFF, 0xFF);
+    
+    func_8003DBE8(3, (u8*)0x8030BC00);
+    func_8003F54C(3, 96.0f, 32.0f, 0.0f);
+    func_8003F5D0(3, 0xA, 2);
+    func_8003F630(3, 0, 2);
+    func_8003F464(3, 0xE, 0xE, (u8*)0x802FF000, (u16*)0x8030A000);
+    func_8003F360(3, -4, 2);
+    setDialogueBoxSpriteIndices(3, 0xFF, 0, 0);
+    func_8003FAF8(3, 0x8000);
+    func_8003FB4C(3, 1);
+    initializeDialogueBox(3, 0, 0x15, 0x80000);
+    func_8003E77C(3, 0xFF, 0xFF, 0xFF, 0xFF);
+    
+    func_8003DBE8(4, (u8*)0x8030C000);
+    func_8003F54C(4, 96.0f, 16.0f, 0.0f);
+    func_8003F5D0(4, 0xA, 2);
+    func_8003F630(4, 0, 2);
+    func_8003F464(4, 0xE, 0xE, (u8*)0x802FF000, (u16*)0x8030A000);
+    func_8003F360(4, -4, 2);
+    setDialogueBoxSpriteIndices(4, 0xFF, 0, 0);
+    func_8003FAF8(4, 0x8000);
+    func_8003FB4C(4, 1);
+    initializeDialogueBox(4, 0, 0x16, 0x80000);
+    func_8003E77C(4, 0xFF, 0xFF, 0xFF, 0xFF);
+    
+    func_8003DBE8(5, (u8*)0x8030C400);
+    func_8003F54C(5, 96.0f, 0.0f, 0.0f);
+    func_8003F5D0(5, 0xA, 2);
+    func_8003F630(5, 0, 2);
+    func_8003F464(5, 0xE, 0xE, (u8*)0x802FF000, (u16*)0x8030A000);
+    func_8003F360(5, -4, 2);
+    setDialogueBoxSpriteIndices(5, 0xFF, 0, 0);
+    func_8003FAF8(5, 0x8000);
+    func_8003FB4C(5, 1);
+    initializeDialogueBox(5, 0, 0x17, 0x80000);
+    func_8003E77C(5, 0xFF, 0xFF, 0xFF, 0xFF);
+    
+}
+*/
+
+//INCLUDE_ASM(const s32, "overlayScreens", func_800CD628);
+
+void func_800CD628(void) {
+    updateSpriteAlpha(0x81, 0xFF, 24);
+    updateSpriteAlpha(0x82, 0xFF, 24);
+    updateSpriteAlpha(0x83, 0xFF, 24);
+    updateSpriteAlpha(0x84, 0xFF, 24);
+    updateSpriteAlpha(0x85, 0xFF, 24);
+}
+
+//INCLUDE_ASM(const s32, "overlayScreens", func_800CD690);
+
+void func_800CD690(void) {
+
+    updateSpriteAlpha(0x81, 0, 24);
+    updateSpriteAlpha(0x82, 0, 24);
+    updateSpriteAlpha(0x83, 0, 24);
+    updateSpriteAlpha(0x84, 0, 24);
+    updateSpriteAlpha(0x85, 0, 24);
+
+    func_8003DD14(0);
+    func_8003DD14(1);
+    func_8003DD14(2);
+    func_8003DD14(3);
+    func_8003DD14(4);
+    func_8003DD14(5);
+
+    deactivatePauseScreenSprites(2);
+    deactivatePauseScreenSprites(3);
+    deactivatePauseScreenSprites(8);
+    deactivatePauseScreenSprites(9);
+
+    func_80053088();
+
+}
 
 INCLUDE_RODATA(const s32, "overlayScreens", D_801220CC);
 
@@ -936,19 +1268,28 @@ INCLUDE_ASM(const s32, "overlayScreens", func_800CD928);
 
 INCLUDE_ASM(const s32, "overlayScreens", func_800CDA6C);
 
-INCLUDE_ASM(const s32, "overlayScreens", func_800CDFB0);
+//INCLUDE_ASM(const s32, "overlayScreens", func_800CDFB0);
+
+void func_800CDFB0(void){
+    updateSpriteAlpha(0x81, 0xFF, 24);
+    updateSpriteAlpha(0x82, 0xFF, 24);
+    updateSpriteAlpha(0x83, 0xFF, 24);
+    updateSpriteAlpha(0x84, 0xFF, 24);
+}
 
 //INCLUDE_ASM(const s32, "overlayScreens", func_800CE008);
 
 void func_800CE008(void) {
-    func_8002C52C(0x81, 0, 0x18);
-    func_8002C52C(0x82, 0, 0x18);
-    func_8002C52C(0x83, 0, 0x18);
-    func_8002C52C(0x84, 0, 0x18);
-    func_80046120(2);
+    updateSpriteAlpha(0x81, 0, 24);
+    updateSpriteAlpha(0x82, 0, 24);
+    updateSpriteAlpha(0x83, 0, 24);
+    updateSpriteAlpha(0x84, 0, 24);
+    deactivatePauseScreenSprites(2);
 }
 
-INCLUDE_RODATA(const s32, "overlayScreens", D_801221CC);
+//INCLUDE_RODATA(const s32, "overlayScreens", D_801221CC);
+
+static const s16 D_801221CC[6] = { 3000, 1000, 500, 0, 0, 0 };
 
 // D_801221CC
 // jtbl_801221D8
@@ -999,7 +1340,25 @@ bool func_800CE828(u8 arg0) {
     
 }
 
-INCLUDE_ASM(const s32, "overlayScreens", func_800CE894);
+//INCLUDE_ASM(const s32, "overlayScreens", func_800CE894);
+
+void func_800CE894(u8 arg0) {
+
+    switch (arg0) {                              
+        case 0:
+            setLifeEventBit(0x57);
+            adjustDogAffection(10);
+            return;
+        case 1:
+            setLifeEventBit(0x59);
+            return;
+        case 2:
+            gLumber += adjustValue(gLumber, 500, MAX_LUMBER);
+            return;
+        }
+    
+}
+
 
 INCLUDE_ASM(const s32, "overlayScreens", func_800CE930);
 
@@ -1008,17 +1367,17 @@ INCLUDE_ASM(const s32, "overlayScreens", func_800CEA74);
 //INCLUDE_ASM(const s32, "overlayScreens", func_800CED60);
 
 void func_800CED60(void) {
-    func_8002C52C(0x81, 0xFF, 0x18);
-    func_8002C52C(0x82, 0xFF, 0x18);
-    func_8002C52C(0x83, 0xFF, 0x18);
+    updateSpriteAlpha(0x81, 0xFF, 24);
+    updateSpriteAlpha(0x82, 0xFF, 24);
+    updateSpriteAlpha(0x83, 0xFF, 24);
 }
 
 //INCLUDE_ASM(const s32, "overlayScreens", func_800CEDA8);
 
 void func_800CEDA8(void) {
-    func_8002C52C(0x81, 0, 0x18);
-    func_8002C52C(0x82, 0, 0x18);
-    func_8002C52C(0x83, 0, 0x18);
+    updateSpriteAlpha(0x81, 0, 24);
+    updateSpriteAlpha(0x82, 0, 24);
+    updateSpriteAlpha(0x83, 0, 24);
 }
 
 // jtbl_80122200
