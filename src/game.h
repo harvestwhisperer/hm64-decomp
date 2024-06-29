@@ -21,6 +21,8 @@
 #define TOTAL_GAME_VARIABLES 80
 #define MAX_ALCOHOL_TOLERANCE 255
 
+#define MARRIAGE_READY_AFFECTION_THRESHOLD 220
+
 #define SPRING 1
 #define SUMMER 2
 #define AUTUMN 3
@@ -156,11 +158,10 @@ extern u8 spiritFestivalAssistant2;
 extern u8 spiritFestivalAssistant3;  
 extern u8 D_801FC15C;
 
-// TODO: label
-// season married in
-extern u8 D_80183690;
-// day of month married on
-extern u8 D_801C6220;
+extern u8 mountainConstructionWorkDays;
+
+extern u8 anniversarySeason;
+extern u8 anniversaryDate;
 
 extern Vec4f unknownRGBA;
 

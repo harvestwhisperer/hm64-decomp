@@ -10,15 +10,15 @@
 #include "weather.h"       
 
 // bss
-u8 mountainConstructionWorkDays;
 // unused scoring variables
-u16 gTotalGrassTiles;
-u16 gTotalPinkCatMintFlowersGrowing;
-u8 gSumGirlsWithHighAffection;
-u8 gAverageFarmAnimalAffection;
+extern u16 gTotalGrassTiles;
+extern u16 gTotalPinkCatMintFlowersGrowing;
+extern u8 gSumGirlsWithHighAffection;
+extern u8 gAverageFarmAnimalAffection;
 
 // shared
 extern u8 gHouseExtensionSelection;
+extern u8 mountainConstructionWorkDays;
 
 //INCLUDE_ASM(const s32, "load", func_800598E0);
 

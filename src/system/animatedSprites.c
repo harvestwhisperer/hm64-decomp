@@ -310,7 +310,7 @@ bool func_8002E284(u16 index, u16 characterIndex, u8 flag) {
 
             func_8002F014(index, D_802373F8.r, D_802373F8.g, D_802373F8.b, D_802373F8.a);
 
-            if (!(func_80036A84(gMapModelContext[gMainMapIndex].mainMapIndex))) {
+            if (!(checkMapRGBADone(gMapModelContext[gMainMapIndex].mainMapIndex))) {
  
                 func_8002F1E0(index, 
                     mainMap[gMapModelContext[gMainMapIndex].mainMapIndex].mapFloats.defaultRgba.r, 
@@ -674,6 +674,7 @@ void func_8002F6F0(void) {
     for (i = 0; i < MAX_ANIMATED_SPRITES; i++) {
         func_8002FBBC(i);
     }
+    
 }
 
 //INCLUDE_ASM(const s32, "system/animatedSprites", func_8002F730);
@@ -685,6 +686,7 @@ void func_8002F730(void) {
     for (i = 0; i < MAX_ANIMATED_SPRITES; i++) {
         func_8002FC38(i);
     }
+    
 }
 
 //INCLUDE_ASM(const s32, "system/animatedSprites", func_8002F770);
@@ -706,15 +708,21 @@ void func_8002F7C8(u8 r, u8 g, u8 b, u8 a) {
     u16 i;
 
     for (i = 0; i < MAX_ANIMATED_SPRITES; i++) {
+
         if (animatedSprites[i].flags & 1 && animatedSprites[i].flags & 8) {
+
             if (i < MAX_ANIMATED_SPRITES && animatedSprites[i].flags & 4) {
+
                 func_8002C914(animatedSprites[i].globalSpriteIndex, r, g, b, a);
+
                 if (characterSprites[animatedSprites[i].characterIndex].shadowSpriteIndex != 0xFF) {
                     func_8002C914(animatedSprites[i].shadowSpriteIndex, r, g, b, SHADOW_ALPHA);
                 }
+
             }
         }
     }
+
 }
 
 //INCLUDE_ASM(const s32, "system/animatedSprites", func_8002F8F0);
@@ -835,6 +843,7 @@ bool func_8002FC38(u16 index) {
     }
 
     return result;
+    
 }
 
 //INCLUDE_ASM(const s32, "system/animatedSprites", func_8002FCB4);
@@ -1265,13 +1274,13 @@ bool func_800308E0(u16 spriteIndex, f32 arg1, f32 arg2) {
 
 //INCLUDE_ASM(const s32, "system/animatedSprites", func_800309B4);
 
-bool func_800309B4(u16 spriteIndex, f32 arg1, f32 arg2) {
+u8 func_800309B4(u16 spriteIndex, f32 arg1, f32 arg2) {
     
     Vec3f vec1;
     Vec3f vec2;
     Vec3f vec3;
 
-    bool result = FALSE;
+    u8 result = 0;
 
     if ((spriteIndex < MAX_ANIMATED_SPRITES)) {
 

@@ -123,8 +123,8 @@ void initializeEngine(void) {
     nuGfxSwapCfbFuncSet(gfxBufferSwap);
     nuGfxPreNMIFuncSet(gfxPreNMICallback);
 
-    registerMainLoopCallback(0, noOpCallback);
-    setMainLoopCallbackFunctionIndex(0);
+    registerMainLoopCallback(NO_OP, noOpCallback);
+    setMainLoopCallbackFunctionIndex(NO_OP);
 
     nuGfxFuncSet((NUGfxFunc)gfxRetraceCallback);
 

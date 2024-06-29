@@ -32,8 +32,7 @@ void func_8004DF10(void) {
 
     } else {
 
-        // set to no op
-        setMainLoopCallbackFunctionIndex(0);
+        setMainLoopCallbackFunctionIndex(NO_OP);
 
         // set position floats
         func_8003F54C(0, 0, -64.0f, 352.0f);

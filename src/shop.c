@@ -374,7 +374,7 @@ void func_800DCAB8(void) {
 
             if (dialogueBoxes[0].flags & 4) {
                 func_800B2CE0();
-                setMainLoopCallbackFunctionIndex(1);
+                setMainLoopCallbackFunctionIndex(MAIN_GAME);
                 setPlayerAction(D_80119660[shopContext.storeItemIndex].animationIndex, D_80119660[shopContext.storeItemIndex].nextAnimationIndex);
                 gPlayer.animationState = D_801195F0[shopContext.storeItemIndex];
                 shopContext.unk_3 = 0xFF;
@@ -387,7 +387,7 @@ void func_800DCAB8(void) {
 
             if (dialogueBoxes[0].flags & 4) {
                 func_800B2CE0();
-                setMainLoopCallbackFunctionIndex(1);
+                setMainLoopCallbackFunctionIndex(MAIN_GAME);
                 setPlayerAction(D_80119660[shopContext.storeItemIndex].animationIndex, D_80119660[shopContext.storeItemIndex].nextAnimationIndex);
                 gPlayer.animationState = 3;
                 shopContext.unk_3 = 0xFF;
@@ -400,7 +400,7 @@ void func_800DCAB8(void) {
 
             if (dialogueBoxes[0].flags & 4) {
                 func_800B2CE0();
-                setMainLoopCallbackFunctionIndex(1);
+                setMainLoopCallbackFunctionIndex(MAIN_GAME);
                 setPlayerAction(D_80119660[shopContext.storeItemIndex].animationIndex, D_80119660[shopContext.storeItemIndex].nextAnimationIndex);
                 gPlayer.animationState = D_80119628[shopContext.storeItemIndex];
                 shopContext.unk_3 = 0xFF;
@@ -727,8 +727,8 @@ u8 handlePurchase(u16 storeItemIndex, s32 quantity) {
             
             case 0x1D:
 
-                if ((D_80180714 + quantity) < 999 + 1) {
-                    D_80180714 += adjustValue(D_80180714, quantity, 999);
+                if ((fodderQuantity + quantity) < 999 + 1) {
+                    fodderQuantity += adjustValue(fodderQuantity, quantity, 999);
                     result = 2;
                 } else {
                     result = 3;

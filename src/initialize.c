@@ -700,12 +700,12 @@ void initializeGameVariables(void) {
         gFarmAnimals[i].name[4] = 0;
         gFarmAnimals[i].name[5] = 0;
           
-        gFarmAnimals[i].unk_23 = 0xFF;
-        gFarmAnimals[i].unk_24 = 0xFF;
-        gFarmAnimals[i].unk_25 = 0xFF;
-        gFarmAnimals[i].unk_26 = 0xFF;
-        gFarmAnimals[i].unk_27 = 0xFF;
-        gFarmAnimals[i].unk_28 = 0xFF;
+        gFarmAnimals[i].unk_23[0] = 0xFF;
+        gFarmAnimals[i].unk_23[1] = 0xFF;
+        gFarmAnimals[i].unk_23[2] = 0xFF;
+        gFarmAnimals[i].unk_23[3] = 0xFF;
+        gFarmAnimals[i].unk_23[4] = 0xFF;
+        gFarmAnimals[i].unk_23[5] = 0xFF;
          
         gFarmAnimals[i].birthdaySeason = 0;
         gFarmAnimals[i].birthdayDayOfMonth = 0;
@@ -774,7 +774,7 @@ void initializeGameVariables(void) {
     D_802373A8 = 0;
     D_8016FBCD = 0;
     gLumber = 0;
-    D_80180714 = 0;
+    fodderQuantity = 0;
     chickenFeedQuantity = 0;
 
     initializeToolchestSlots();
@@ -887,7 +887,8 @@ void registerMainLoopCallbacks(void) {
 
     registerMainLoopCallback(MAIN_GAME, mainGameLoopCallback);
     registerMainLoopCallback(MAP_LOAD, func_8005D0BC);
-    registerMainLoopCallback(3, func_80060490);
+    // cutscene prep
+    registerMainLoopCallback(3, func_80060490); 
     registerMainLoopCallback(4, func_8005C00C);
     registerMainLoopCallback(LEVEL_LOAD_1, func_8005CA64);
     registerMainLoopCallback(LEVEL_LOAD_2, func_8005CAA8);
@@ -901,18 +902,18 @@ void registerMainLoopCallbacks(void) {
     registerMainLoopCallback(END_OF_FESTIVAL_DAY_1, func_800604B0);
     registerMainLoopCallback(END_OF_FESTIVAL_DAY_2, func_800605F0);
     registerMainLoopCallback(END_OF_DAY_2, func_80060838);
-    registerMainLoopCallback(0xF, func_80060454);
+    registerMainLoopCallback(WAIT_AUDIO_FINISH, func_80060454);
     registerMainLoopCallback(TV, tvMainLoopCallback);
-    registerMainLoopCallback(SHOP_DIALOGUE, func_800DCAB8);
+    registerMainLoopCallback(SHOP_DIALOGUE, func_800DCAB8); 
     registerMainLoopCallback(PAUSE_SCREEN_LOAD, func_800B881C);
     registerMainLoopCallback(TOOLBOX_LOAD, func_800BADD0);
     registerMainLoopCallback(FREEZER_LOAD, func_800BCA9C);
     registerMainLoopCallback(CABINET_LOAD, func_800BE808);
     registerMainLoopCallback(HOME_EXTENSIONS_SELECT_LOAD, func_800B82AC);
     registerMainLoopCallback(ESTIMATE_LOAD, func_800B8018);
-    registerMainLoopCallback(0x1A, func_800B815C);
-    registerMainLoopCallback(0x1B, func_800B83F0);
-    registerMainLoopCallback(0x1C, func_800B8554);
+    registerMainLoopCallback(KITCHEN_PICTURE_LOAD, func_800B815C);
+    registerMainLoopCallback(CALENDAR_LOAD, func_800B83F0);
+    registerMainLoopCallback(RECIPE_BOOK_LOAD, func_800B8554);
     registerMainLoopCallback(0x1D, func_800B86B8);
     registerMainLoopCallback(0x1E, func_800C8424);
     registerMainLoopCallback(0x1F, func_800C88F4);

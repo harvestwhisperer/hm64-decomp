@@ -529,7 +529,7 @@ void func_800B8018(void) {
 
 //INCLUDE_ASM(const s32, "overlayScreens", func_800B815C);
 
-// kitchen picture
+// kitchen picture load main loop callback
 void func_800B815C(void) {
 
     func_800593EC();
@@ -573,7 +573,7 @@ void func_800B82AC(void) {
 
 //INCLUDE_ASM(const s32, "overlayScreens", func_800B83F0);
 
-// calendar
+// calendar load main loop callback
 void func_800B83F0(void) {
 
     func_800593EC();
@@ -596,7 +596,7 @@ void func_800B83F0(void) {
 
 //INCLUDE_ASM(const s32, "overlayScreens", func_800B8554);
 
-// recipe book
+// recipe book load main loop callback
 void func_800B8554(void) {
     
     func_800593EC();

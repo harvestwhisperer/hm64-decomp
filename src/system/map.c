@@ -619,7 +619,7 @@ bool setMapObject(u16 mapIndex, u8 index, u16 spriteIndex, u16 arg3, f32 x, f32 
         }
 
         if (argA) {
-            mainMap[mapIndex].mapObjects[index].flags |= 8;
+            mainMap[mapIndex].mapObjects[index].flags |= RGBA_FINISHED;
         }
 
         result = TRUE;
@@ -1023,16 +1023,18 @@ Vec3f *func_80036610(Vec3f *arg0, u16 mapIndex, f32 arg2, f32 arg3) {
 
     if (mapIndex == MAIN_MAP_INDEX && (mainMap[mapIndex].mapStruct9.flags & MAP_ACTIVE)) {
         
-        vec2.y = 0;
         vec2.x = (arg2 + mainMap[mapIndex].mapStruct9.unk_0) / mainMap[mapIndex].mapStruct1.unk_8;
+        vec2.y = 0;
         vec2.z = (arg3 + mainMap[mapIndex].mapStruct9.unk_4) / mainMap[mapIndex].mapStruct1.unk_9;
 
         vec = vec2; 
+
     }
  
     *arg0 = vec;
     
     return arg0;
+
 }
 
 //INCLUDE_ASM(const s32, "system/map", func_800366F4);
@@ -1105,10 +1107,9 @@ bool func_80036980(u16 mapIndex, u16 arg1, f32 arg2, f32 arg3) {
 
 }
 
-//INCLUDE_ASM(const s32, "system/map", func_80036A84);
+//INCLUDE_ASM(const s32, "system/map", checkMapRGBADone);
 
-// check bit 3 on mapStruct9 flags
-bool func_80036A84(u16 mapIndex) {
+bool checkMapRGBADone(u16 mapIndex) {
 
     bool result = FALSE;
      
@@ -1117,17 +1118,18 @@ bool func_80036A84(u16 mapIndex) {
     }
 
     return result;
+
 }
 
 //INCLUDE_ASM(const s32, "system/map", func_80036AB4);
 
 void func_80036AB4(MainMap* map) {
 
-    u16 i;
-    u16 j;
+    u16 i, j;
     u16 count;
     u8* ptr;
     u16 temp;
+
     WeatherSprite weatherSprites[32]; 
 
     count = 0;
@@ -1922,6 +1924,7 @@ void func_80039F58(u16 mapIndex) {
     
 }
 
+// returns 0 when done
 static inline u8 handleRgba(u16 i) {
 
     u8 count = 0;
@@ -2059,10 +2062,10 @@ void func_8003A1BC(void) {
             
             func_80039F58(i);
 
-            if (!handleRgba(i)) {
-                mainMap[i].mapStruct9.flags |= 8;
+            if (handleRgba(i) == 0) {
+                mainMap[i].mapStruct9.flags |= RGBA_FINISHED;
             } else {
-                mainMap[i].mapStruct9.flags &= ~8;
+                mainMap[i].mapStruct9.flags &= ~RGBA_FINISHED;
             }
 
             if (mainMap[i].mapFloats.rotation.x < 0) {

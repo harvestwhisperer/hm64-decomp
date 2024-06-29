@@ -47,10 +47,16 @@
 #define BEACH_AMBIENCE_2 40
 
 // TODO: finish adding sfx
+#define SELECT_1 0
 #define CLOSE 1
 #define MOVE_CURSOR 2
-#define STORE_ITEM 4
-#define SELECT 7
+#define INVALID_BUZZ 3
+// shipping bin
+#define ITEM_PLUCK 4
+// 5 and 6 = gallop
+#define SELECT_2 7
+// pause screen, dialogue box
+#define MENU_OPEN 8
 #define WHISTLE 10
 #define SICKLE_SFX 11
 #define AX_SFX 17
@@ -59,6 +65,7 @@
 #define RAIN_SFX 32
 #define TYPHOON_SFX 34
 #define TV_OFF 47
+#define DOOR_OPEN 50
 // 0x3F set by func_80056030
 #define ROOSTER 63
 #define CHICKEN_CLUCK 64

@@ -208,6 +208,6 @@ extern u32 D_801806C0;
 extern u8 D_801C3F35;
 extern u8 D_801FD624;
 
-extern u16 D_80180714;
+extern u16 fodderQuantity;
 
 #endif
