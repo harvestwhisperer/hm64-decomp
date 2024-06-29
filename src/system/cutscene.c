@@ -402,7 +402,7 @@ void func_80046C98(void) {
     u16 i = 0;
     u16 j;
     
-    // very odd and unnecessary
+    // ??
     for (; ;) {
         j = i;
         if (j < MAX_CUTSCENE_ASSETS) {
@@ -1524,7 +1524,7 @@ void func_8004B0E8(u16 index) {
     }
 
     if (cutsceneMaps[index].flags & 0x10) {
-        if (func_80036A84(gMapModelContext[cutsceneMaps[index].spriteIndex].mainMapIndex)) {
+        if (checkMapRGBADone(gMapModelContext[cutsceneMaps[index].spriteIndex].mainMapIndex)) {
             cutsceneMaps[index].cutscenePointer += 2;
         } else {
             cutsceneMaps[index].unk_66 = 1;

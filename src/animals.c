@@ -386,21 +386,21 @@ u8 initializeNewFarmAnimal(u8 arg0, u8 arg1) {
 
         if (arg0 == 0) {
 
-            gFarmAnimals[index].unk_23 = gFarmAnimals[arg1].name[0];
-            gFarmAnimals[index].unk_24 = gFarmAnimals[arg1].name[1];
-            gFarmAnimals[index].unk_25 = gFarmAnimals[arg1].name[2];
-            gFarmAnimals[index].unk_26 = gFarmAnimals[arg1].name[3];
-            gFarmAnimals[index].unk_27 = gFarmAnimals[arg1].name[4];
-            gFarmAnimals[index].unk_28 = gFarmAnimals[arg1].name[5];
+            gFarmAnimals[index].unk_23[0] = gFarmAnimals[arg1].name[0];
+            gFarmAnimals[index].unk_23[1] = gFarmAnimals[arg1].name[1];
+            gFarmAnimals[index].unk_23[2] = gFarmAnimals[arg1].name[2];
+            gFarmAnimals[index].unk_23[3] = gFarmAnimals[arg1].name[3];
+            gFarmAnimals[index].unk_23[4] = gFarmAnimals[arg1].name[4];
+            gFarmAnimals[index].unk_23[5] = gFarmAnimals[arg1].name[5];
             
         } else {
 
-            gFarmAnimals[index].unk_23 = 0xF6;
-            gFarmAnimals[index].unk_24 = 0xF6;
-            gFarmAnimals[index].unk_25 = 0xF6;
-            gFarmAnimals[index].unk_26 = 0xF6;
-            gFarmAnimals[index].unk_27 = 0xF6;
-            gFarmAnimals[index].unk_28 = 0xF6;
+            gFarmAnimals[index].unk_23[0] = 0xF6;
+            gFarmAnimals[index].unk_23[1] = 0xF6;
+            gFarmAnimals[index].unk_23[2] = 0xF6;
+            gFarmAnimals[index].unk_23[3] = 0xF6;
+            gFarmAnimals[index].unk_23[4] = 0xF6;
+            gFarmAnimals[index].unk_23[5] = 0xF6;
             
         }
         

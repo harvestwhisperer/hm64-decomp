@@ -716,9 +716,7 @@ nuGfxCfb = 0x80215EBC;
 idleThread  = 0x801241C0; // size:0x1B0
 mainThread  = 0x80124370; // size:0x1B0
 IdleStack   = 0x80124520; // size:0x2000
-
 nuMainStack = 0x801C4220; // size:0x2000
-
 nuIdleFunc  = 0x801FD628;
 
 
@@ -795,6 +793,8 @@ adjustMapScale = 0x80034568;
 adjustMapRGBA = 0x80034668;
 setMapObject = 0x80034C40;
 deactivateMapObject = 0x80034E64;
+
+checkMapRGBADone = 0x80036A84;
 
 initializeMapContext = 0x8003B870;
 setMapModelAddresses = 0x8003B9DC;
@@ -1064,6 +1064,7 @@ animalLocationsHouseConstruction = 0x8011F254;
 
 // bss
 
+levelInteractionsInfo = 0x80126560; // size:0x2
 titleScreenContext = 0x80126570; // size:0x10
 
 nuScStack = 0x8012A430;
@@ -1134,9 +1135,11 @@ currentWorldRotationAngles = 0x8017044C;
 gBaseMapIndex = 0x80170458;
 
 tvContext = 0x80170270; // size:0xE
+
 annCliffNewlywedCounter = 0x80170444;
 
 characterAvatars = 0x801806D0; // size:0x40
+fodderQuantity = 0x80180714;
 unknownRGBA = 0x80180718; // size:0x10
 
 dialogueWindows = 0x80180728; // size:0x180
@@ -1153,7 +1156,11 @@ gHappiness = 0x80182FB8;
 gWifeConceptionCounter = 0x80182FB9;
 
 contData = 0x801831B8; // size:0x20
+
 gToolchestSlots = 0x801831D8;
+
+anniversarySeason = 0x80183690;
+
 popuriGrayNewlyWedCounter = 0x801886A0;
 dogInfo = 0x801886B0; // size:0x20
 
@@ -1213,6 +1220,8 @@ babyBirthdayDate = 0x801C3F84;
 gTotalGoldenMilkShipped = 0x801C3F88;
 
 npcAffection = 0x801C3F90; // size:0x30
+
+anniversaryDate = 0x801C6220;
 
 currentFramebufferIndex = 0x801D6230;
 loadGameScreenContext = 0x801D6238; // size:0x90
@@ -1320,6 +1329,11 @@ gWife = 0x802373E9;
 worldMatrices = 0x80237460; // size:0x5A0
 
 // unlabeled
+
+D_8018A850 = 0x8018A850; // size:0x57CC
+
+// unused worldGraphics array
+D_80189135 = 0x80189135; // size:0x9
 
 D_80119040 = 0x80119040; // size:0x2A0
 D_80119628 = 0x80119628; // size:0x38

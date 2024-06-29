@@ -17,6 +17,11 @@
 #define SUCCESSFUL_PROPOSAL 0x14
 // 0x18 = thanksgiving mayor house
 #define FARM_MORNING_VISIT 0x17
+#define MARIA_MARRIAGE_CUTSCENE 0x18
+#define POPURI_MARRIAGE_CUTSCENE 0x19
+#define ELLI_MARRIAGE_CUTSCENE 0x1A
+#define ANN_MARRIAGE_CUTSCENE 0x1B
+#define KAREN_MARRIAGE_CUTSCENE 0x1C
 // 0x1D/1E --> fall farm animals
 #define STORES_CLOSED_FOR_FESTIVAL 0x2D
 #define FESTIVAL_DAY 0x30
@@ -87,6 +92,7 @@
 #define BRIDGE_COMPLETED 0x48
 #define HOT_SPRINGS_COMPLETED 0x4C
 // 0x4D have more than 2 animals
+// 0x4E = earthquake
 // #define ENTERED_HORSE_RACE 0x51
 // #define ENTERED_DOG_RACE 0x52
 // #define HAVE_STUFFED_HORSE 0x58
@@ -101,6 +107,7 @@
 // 0x9D kai beach cutscene
 // #define CARPENTER_WINTER_CUTSCENE 0xAC
 #define ANN_RICK_CUTSCENE 0xB0
+#define KAREN_KAI_TAVERN_CUTSCENE 0xB1
 // FIXME: make labels consistent (girls visit player vs. player visits girl cutscenes vs. cutscene index vs. bit flags)
 #define POPURI_SICK_CUTSCENE 0xB4
 #define MARIA_SICK_CUTSCENE 0xBB
@@ -137,6 +144,7 @@
 #define ANN_PREGNANT_DIALOGUE 0x3A
 #define KAREN_PREGNANT_DIALOGUE 0x3B
 #define ELLI_FINISH_GRIEVING 0x43
+#define KAREN_KAI_TAVERN_CUTSCENE_DIALOGUE 0x72
 #define MARRIED_TO_MARIA_DIALOGUE 0x7D
 #define MARIA_BIRTHDAY 0x7E
 #define POPURI_BIRTHDAY 0x7F

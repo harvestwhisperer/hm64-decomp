@@ -1144,6 +1144,7 @@ Gfx* func_8002CDB4(u16 arg0, Gfx* arg1) {
     }
 
     return arg1;
+    
 }
 
 // alternate

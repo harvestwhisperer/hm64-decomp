@@ -642,7 +642,7 @@ INCLUDE_ASM(const s32, "system/sprite", func_8002A66C);
 //INCLUDE_ASM(const s32, "system/sprite", func_8002ACA4);
 
 // update world graphics from sprite
-void func_8002ACA4(Bitmap* sprite, Gfx *dl) {
+static void func_8002ACA4(Bitmap* sprite, Gfx *dl) {
 
     Vec3f vec;
 

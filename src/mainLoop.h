@@ -5,6 +5,7 @@
 
 // TODO: finish adding these
 /* main loop callback function indices */
+#define NO_OP 0
 #define MAIN_GAME 1
 #define MAP_LOAD 2
 // unsure: DREAM_CUTSCENES 3
@@ -19,7 +20,7 @@
 #define PINK_OVERLAY_TEXT 0xC
 #define END_OF_DAY_1 0xD
 #define END_OF_DAY_2 0xE
-// 0xf unknown
+#define WAIT_AUDIO_FINISH 0xF
 #define END_OF_FESTIVAL_DAY_1 0x10
 #define END_OF_FESTIVAL_DAY_2 0x11
 #define TV 0x12
@@ -30,6 +31,9 @@
 #define CABINET_LOAD 0x17
 #define HOME_EXTENSIONS_SELECT_LOAD 0x18
 #define ESTIMATE_LOAD 0x19
+#define KITCHEN_PICTURE_LOAD 0x1A
+#define CALENDAR_LOAD 0x1B
+#define RECIPE_BOOK_LOAD 0x1C
 #define HORSE_RACE_RESULTS_LOAD 0x20
 #define HORSE_RACE_GIFTS_LOAD 0x21
 #define LOTTERY_LOAD 0x22
@@ -56,7 +60,7 @@
 // 0x37 unknown
 // 0x38 unknown
 
-#define MAIN_LOOP_CALLBACK_FUNCTION_TABLE_SIZE 0x39
+#define MAIN_LOOP_CALLBACK_FUNCTION_TABLE_SIZE 57
 
 extern void mainLoop();
 
@@ -71,5 +75,65 @@ extern void noOpCallback(void);
 
 extern volatile u16 mainLoopCallbackCurrentIndex;
 extern void (*mainLoopCallbacksTable[MAIN_LOOP_CALLBACK_FUNCTION_TABLE_SIZE])();
+
+/*
+noOpCallback 
+mainGameLoopCallback
+func_8005D0BC 
+func_80060490 
+func_8005C00C 
+func_8005CA64 
+func_8005CAA8 
+func_8005CB50 
+func_8005CBA4 
+func_8005CBF0 
+func_8005CEFC 
+func_8005CF4C
+func_8005D2B0 
+func_80060624 
+func_80060838 
+func_80060454 
+tvMainLoopCallback 
+func_800605F0 
+func_800D93CC 
+func_800DCAB8 
+func_800B881C 
+func_800BADD0 
+func_800BCA9C 
+func_800BE808
+func_800B82AC 
+func_800B8018 
+func_800B815C 
+func_800B83F0 
+func_800B8554 
+func_800B86B8 
+func_800C8424 
+func_800C88F4 
+func_800CC518 
+func_800CD928 
+func_800CE930 
+func_800B9D3C
+func_800BBEC0 
+func_800BDB24 
+func_800BF990 
+func_800C1124 
+func_800C224C 
+func_800C2B8C 
+func_800C3D20 
+func_800C53C0 
+func_800C7058 
+func_800C8784 
+func_800CA808 
+func_800CD750
+func_800CE068 
+func_800CEDF0 
+titleScreenMainLoopCallback
+func_8005CF94 
+func_800ED974 
+func_800E1FAC 
+func_800E8F08 
+func_800657B4 
+func_800657C4
+*/
 
 #endif

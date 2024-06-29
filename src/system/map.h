@@ -9,6 +9,7 @@
 
 /* flags */
 #define MAP_ACTIVE 1
+#define RGBA_FINISHED 8
 
 #define OBJECT_ACTIVE 1
 #define SPRITE_ACTIVE 1
@@ -251,7 +252,7 @@ extern Vec3f* func_80036610(Vec3f*, u16, f32, f32);
 extern Vec3f* func_800366F4(Vec3f* arg0, u16 mapIndex, f32 arg2, f32 arg3);
 extern u16 func_80036880(u16, f32, f32);  
 extern bool func_80036980(u16, u16, f32, f32);
-extern bool func_80036A84(u16);      
+extern bool checkMapRGBADone(u16);      
 extern void func_80036C08(u16);                                 
 extern void func_80036FA0(u16 mapIndex); 
 extern u16 func_80037254(u16, u8, u8);

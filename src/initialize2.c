@@ -452,7 +452,7 @@ void func_80059300(void) {
 
 //INCLUDE_ASM(const s32, "initialize2", func_80059334);
 
-void func_80059334(void) {
+void inline func_80059334(void) {
     func_8002F6F0();
     func_80046C98();
     func_8002FCB4(PLAYER, 0);
@@ -484,8 +484,7 @@ void func_80059368(void) {
 
 //INCLUDE_ASM(const s32, "initialize2", func_800593EC);
 
-// inline used by func_8005CF94
-void func_800593EC(void) {
+void inline func_800593EC(void) {
     func_8002FB3C();
     func_80046C98();
     func_8002FCB4(PLAYER, 0);

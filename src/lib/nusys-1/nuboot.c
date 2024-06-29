@@ -3,7 +3,7 @@
 extern OSThread idleThread;
 extern OSThread mainThread;
 
-extern u64		nuMainStack[NU_MAIN_STACK_SIZE / sizeof(u64)];
+extern u64	nuMainStack[NU_MAIN_STACK_SIZE / sizeof(u64)];
 extern u64	IdleStack[NU_IDLE_STACK_SIZE / sizeof(u64)];
 
 void (*nuIdleFunc)(void);

@@ -49,20 +49,15 @@ typedef struct {
 	u8 unk_1C;
 	u8 unk_1D;
 	u8 unk_1E;
-	u8 type;
-	u8 condition;
-	u8 age;
-	u8 conditionCounter;
-	u8 unk_23;
-	u8 unk_24;
-	u8 unk_25;
-	u8 unk_26;
-	u8 unk_27;
-	u8 unk_28;
-	u8 birthdaySeason;
-	u8 birthdayDayOfMonth;
-	u8 goldenMilk;
-	u16 flags;
+	u8 type; // 0x1F
+	u8 condition; // 0x20
+	u8 age; // 0x21
+	u8 conditionCounter; // 0x22
+	u8 unk_23[6]; 
+	u8 birthdaySeason; // 0x29
+	u8 birthdayDayOfMonth; // 0x2A
+	u8 goldenMilk; // 0x2B
+	u16 flags; // 0x2C
 } FarmAnimal;
 
 // 0x801886B0
