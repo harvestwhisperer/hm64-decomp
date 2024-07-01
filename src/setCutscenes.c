@@ -307,7 +307,7 @@ u16 func_8009C324(u8 arg0) {
                 
                 if (func_8009B2BC(2)) {
                     gCutsceneIndex = 0x66;
-                    func_8003FBA0(0xE, gFarmAnimals[func_8009B464()].name, 6);
+                    setGameVariableString(0xE, gFarmAnimals[func_8009B464()].name, 6);
                 } else {
                     gCutsceneIndex = 0x65;
                 }

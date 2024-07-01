@@ -17,10 +17,12 @@
 #include "itemHandlers.h"
 #include "level.h"
 #include "mainLoop.h"
+#include "overlayScreens.h"
 #include "npc.h"
 #include "player.h"
 #include "shop.h"
 #include "spriteIndices.h"
+#include "updateGame.h"
 #include "weather.h"
 
 // bss
@@ -793,7 +795,394 @@ static bool func_800ADCDC(u16 mapIndex, u8 arg1) {
 
 // barn
 // jtbl_80121678
-INCLUDE_ASM(const s32, "levelInteractions", func_800AE00C);
+//INCLUDE_ASM(const s32, "levelInteractions", func_800AE00C);
+
+static u8 func_800AE00C(u16 mapIndex, u8 arg1) {
+
+    u8 result = 0;
+    s32 temp;
+    u16 temp2;
+
+    switch (arg1) {
+        
+        case 1:
+            
+            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+                result = 1;
+                setEntrance(2);
+            }
+            
+            break;
+
+        case 17:
+            
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) {
+                if (gPlayer.heldItem == 0 && fodderQuantity != 0) {
+                        gPlayer.heldItem = FODDER;
+                        setPlayerAction(4, 6);
+                        fodderQuantity += adjustValue((s32) fodderQuantity, -1, 999);
+                        result = 2;
+                }
+            }
+            
+            break;
+
+        case 18:
+            
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) {
+                // unused code    
+            }
+            break;
+
+        case 19:
+            
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) {
+                
+                if (gPlayer.heldItem != FODDER && gFarmAnimals[0].flags & 1) {
+
+                    temp = gFarmAnimals[0].type;
+                    
+                    if (temp >= 0) {
+
+                        if (temp < 4) {
+                            
+                            setGlobalSeasonName(gFarmAnimals[0].birthdaySeason);
+                        
+                            gCurrentSeasonName[0] = gGlobalSeasonName[0];
+                            gCurrentSeasonName[1] = gGlobalSeasonName[1];
+                            gCurrentSeasonName[2] = gGlobalSeasonName[2];
+                            gCurrentSeasonName[3] = gGlobalSeasonName[3];
+                            gCurrentSeasonName[4] = gGlobalSeasonName[4];
+                            gCurrentSeasonName[5] = gGlobalSeasonName[5];
+
+                            func_8003FBD8(0x15, gFarmAnimals[0].birthdayDayOfMonth, 1);
+                            func_8009BA74(0);
+                            setGameVariableString(0x26, gFarmAnimals[0].unk_23, 6);
+                            func_80061690(gFarmAnimals[0].goldenMilk);
+                            showTextBox(1, 6, 0xE5, 0, 2);
+                            
+                        } else if (temp < 7) {
+                            showTextBox(1, 6, 0xED, 0, 2);
+                        }
+                                    
+                    } 
+                    
+                    result = 1;
+
+                }
+            }
+            
+            break;
+
+        case 20:
+
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) {
+                
+                if (gPlayer.heldItem != FODDER && gFarmAnimals[1].flags & 1) {
+
+                    temp = gFarmAnimals[1].type;
+                
+                    if (temp >= 0) {
+
+                        if (temp < 4) {
+                            
+                            setGlobalSeasonName(gFarmAnimals[1].birthdaySeason);
+                        
+                            gCurrentSeasonName[0] = gGlobalSeasonName[0];
+                            gCurrentSeasonName[1] = gGlobalSeasonName[1];
+                            gCurrentSeasonName[2] = gGlobalSeasonName[2];
+                            gCurrentSeasonName[3] = gGlobalSeasonName[3];
+                            gCurrentSeasonName[4] = gGlobalSeasonName[4];
+                            gCurrentSeasonName[5] = gGlobalSeasonName[5];
+                        
+                            func_8003FBD8(0x15, gFarmAnimals[1].birthdayDayOfMonth, 1);
+                            func_8009BA74(1);
+                            setGameVariableString(0x26, gFarmAnimals[1].unk_23, 6);
+                            func_80061690(gFarmAnimals[1].goldenMilk);
+                            showTextBox(1, 6, 0xE6, 0, 2);
+                    
+                        } else if (temp < 7) {
+                            showTextBox(1, 6, 0xEE, 0, 2);
+                        }
+                        
+                    } 
+
+                    result = 1;
+                
+                }
+            }
+            
+            break;
+
+        case 21:
+
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) {
+                
+                if (gPlayer.heldItem != FODDER && gFarmAnimals[2].flags & 1) {
+
+                    temp = gFarmAnimals[2].type;
+                
+                    if (temp >= 0) {
+
+                        if (temp < 4) {
+                            
+                            setGlobalSeasonName(gFarmAnimals[2].birthdaySeason);
+                        
+                            gCurrentSeasonName[0] = gGlobalSeasonName[0];
+                            gCurrentSeasonName[1] = gGlobalSeasonName[1];
+                            gCurrentSeasonName[2] = gGlobalSeasonName[2];
+                            gCurrentSeasonName[3] = gGlobalSeasonName[3];
+                            gCurrentSeasonName[4] = gGlobalSeasonName[4];
+                            gCurrentSeasonName[5] = gGlobalSeasonName[5];
+                        
+                            func_8003FBD8(0x15, gFarmAnimals[2].birthdayDayOfMonth, 1);
+                            func_8009BA74(2);
+                            setGameVariableString(0x26, gFarmAnimals[2].unk_23, 6);
+                            func_80061690(gFarmAnimals[2].goldenMilk);
+                            showTextBox(1, 6, 0xE7, 0, 2);
+                            
+                        } else if (temp < 7) {
+                            showTextBox(1, 6, 0xEF, 0, 2);
+                        }
+
+                    } 
+
+                    result = 1;
+                    
+                }
+            }
+            
+            break;
+
+        case 22:
+
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) {
+                
+                if (gPlayer.heldItem != FODDER && gFarmAnimals[3].flags & 1) {
+
+                    temp = gFarmAnimals[3].type;
+                    
+                        if (temp >= 0) {
+
+                            if (temp < 4) {
+                                
+                                setGlobalSeasonName(gFarmAnimals[3].birthdaySeason);
+                            
+                                gCurrentSeasonName[0] = gGlobalSeasonName[0];
+                                gCurrentSeasonName[1] = gGlobalSeasonName[1];
+                                gCurrentSeasonName[2] = gGlobalSeasonName[2];
+                                gCurrentSeasonName[3] = gGlobalSeasonName[3];
+                                gCurrentSeasonName[4] = gGlobalSeasonName[4];
+                                gCurrentSeasonName[5] = gGlobalSeasonName[5];
+                            
+                                func_8003FBD8(0x15, gFarmAnimals[3].birthdayDayOfMonth, 1);
+                                func_8009BA74(3);
+                                setGameVariableString(0x26, gFarmAnimals[3].unk_23, 6);
+                                func_80061690(gFarmAnimals[3].goldenMilk);
+                                showTextBox(1, 6, 0xE8, 0, 2);
+                                
+                            } else if (temp < 7) {
+                                showTextBox(1, 6, 0xF0, 0, 2);
+                            }
+
+                        } 
+
+                        result = 1;
+        
+                }
+            }
+            
+            break;
+
+        case 23:
+
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) {
+                
+                if (gPlayer.heldItem != FODDER && gFarmAnimals[4].flags & 1) {
+
+                    temp = gFarmAnimals[4].type;
+                    
+                    if (temp >= 0) {
+
+                        if (temp < 4) {
+                            
+                            setGlobalSeasonName(gFarmAnimals[4].birthdaySeason);
+                        
+                            gCurrentSeasonName[0] = gGlobalSeasonName[0];
+                            gCurrentSeasonName[1] = gGlobalSeasonName[1];
+                            gCurrentSeasonName[2] = gGlobalSeasonName[2];
+                            gCurrentSeasonName[3] = gGlobalSeasonName[3];
+                            gCurrentSeasonName[4] = gGlobalSeasonName[4];
+                            gCurrentSeasonName[5] = gGlobalSeasonName[5];
+                        
+                            func_8003FBD8(0x15, gFarmAnimals[4].birthdayDayOfMonth, 1);
+                            func_8009BA74(4);
+                            setGameVariableString(0x26, gFarmAnimals[4].unk_23, 6);
+                            func_80061690(gFarmAnimals[4].goldenMilk);
+                            showTextBox(1, 6, 0xE9, 0, 2);
+                            
+                        } else if (temp < 7) {
+                            showTextBox(1, 6, 0xF1, 0, 2);
+                        }
+                        
+                        
+                    } 
+
+                    result = 1;
+                    
+                }
+            }
+            
+            break;
+
+        case 24:
+
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) {
+                
+                if (gPlayer.heldItem != FODDER && gFarmAnimals[5].flags & 1) {
+
+                    temp = gFarmAnimals[5].type;
+                    
+                    if (temp >= 0) {
+
+                        if (temp < 4) {
+                            
+                            setGlobalSeasonName(gFarmAnimals[5].birthdaySeason);
+                        
+                            gCurrentSeasonName[0] = gGlobalSeasonName[0];
+                            gCurrentSeasonName[1] = gGlobalSeasonName[1];
+                            gCurrentSeasonName[2] = gGlobalSeasonName[2];
+                            gCurrentSeasonName[3] = gGlobalSeasonName[3];
+                            gCurrentSeasonName[4] = gGlobalSeasonName[4];
+                            gCurrentSeasonName[5] = gGlobalSeasonName[5];
+                        
+                            func_8003FBD8(0x15, gFarmAnimals[5].birthdayDayOfMonth, 1);
+                            func_8009BA74(5);
+                            setGameVariableString(0x26, gFarmAnimals[5].unk_23, 6);
+                            func_80061690(gFarmAnimals[5].goldenMilk);
+                            showTextBox(1, 6, 0xEA, 0, 2);
+                            
+                        } else if (temp < 7) {
+                            showTextBox(1, 6, 0xF2, 0, 2);
+                        }
+                        
+                        
+                    } 
+
+                    result = 1;
+                    
+                }
+            }
+            
+            break;
+
+        case 25:
+
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) {
+                
+                if (gPlayer.heldItem != FODDER && gFarmAnimals[6].flags & 1) {
+
+                    temp = gFarmAnimals[6].type;
+                    
+                    if (temp >= 0) {
+
+                        if (temp < 4) {
+                            
+                            setGlobalSeasonName(gFarmAnimals[6].birthdaySeason);
+                        
+                            gCurrentSeasonName[0] = gGlobalSeasonName[0];
+                            gCurrentSeasonName[1] = gGlobalSeasonName[1];
+                            gCurrentSeasonName[2] = gGlobalSeasonName[2];
+                            gCurrentSeasonName[3] = gGlobalSeasonName[3];
+                            gCurrentSeasonName[4] = gGlobalSeasonName[4];
+                            gCurrentSeasonName[5] = gGlobalSeasonName[5];
+                        
+                            func_8003FBD8(0x15, gFarmAnimals[6].birthdayDayOfMonth, 1);
+                            func_8009BA74(6);
+                            setGameVariableString(0x26, gFarmAnimals[6].unk_23, 6);
+                            func_80061690(gFarmAnimals[6].goldenMilk);
+                            showTextBox(1, 6, 0xEB, 0, 2);
+                            
+                        } else if (temp < 7) {
+                            showTextBox(1, 6, 0xF3, 0, 2);
+                        }
+
+                    } 
+
+                    result = 1; 
+
+                }
+            }
+            
+            break;
+
+        case 26:
+
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) {
+                
+                if (gPlayer.heldItem != FODDER && gFarmAnimals[7].flags & 1) {
+
+                    temp = gFarmAnimals[7].type;
+                    
+                    if (temp >= 0) {
+
+                        if (temp < 4) {
+                            
+                            setGlobalSeasonName(gFarmAnimals[7].birthdaySeason);
+                        
+                            gCurrentSeasonName[0] = gGlobalSeasonName[0];
+                            gCurrentSeasonName[1] = gGlobalSeasonName[1];
+                            gCurrentSeasonName[2] = gGlobalSeasonName[2];
+                            gCurrentSeasonName[3] = gGlobalSeasonName[3];
+                            gCurrentSeasonName[4] = gGlobalSeasonName[4];
+                            gCurrentSeasonName[5] = gGlobalSeasonName[5];
+                        
+                            func_8003FBD8(0x15, gFarmAnimals[7].birthdayDayOfMonth, 1);
+                            func_8009BA74(7);
+                            setGameVariableString(0x26, gFarmAnimals[7].unk_23, 6);
+                            func_80061690(gFarmAnimals[7].goldenMilk);
+                            showTextBox(1, 6, 0xEC, 0, 2);
+                            
+                        } else if (temp < 7) {
+                            showTextBox(1, 6, 0xF4, 0, 2);
+                        }
+                            
+                    } 
+
+                    result = 1;
+                    
+                }
+            }
+            
+            break;
+
+        case 27:
+            
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) {
+                func_8003FBD8(0x17, fodderQuantity, 0);
+                showTextBox(1, 6, 0xA8, 0, 2);
+                result = 1;
+            }
+            
+            break;
+        
+        case 28:
+            
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) {
+                showTextBox(1, 6, 0xA9, 0, 2);
+                result = 1;
+            }
+            
+            break;
+
+        default:
+            break;
+        
+    }
+
+    return result;
+    
+}
 
 // jtbl_801216E8
 //INCLUDE_ASM(const s32, "levelInteractions", func_800AEB54);
@@ -942,7 +1331,7 @@ static bool func_800AEE8C(u16 mapIndex, u8 arg1) {
             
             result = TRUE;
             
-            if (checkLifeEventBit(0x10)) {
+            if (checkLifeEventBit(HAVE_KITCHEN)) {
                 setEntrance(0x10);
             } else {            
                 setEntrance(6);
@@ -953,7 +1342,7 @@ static bool func_800AEE8C(u16 mapIndex, u8 arg1) {
         case 2:
             break;
 
-        case 0x10:
+        case 16:
 
             if (func_8004D380(CONTROLLER_1, BUTTON_A)) {
                 if (gPlayer.heldItem == 0 && animatedSprites[PLAYER].startingCoordinates.z >= -44.0f && animatedSprites[PLAYER].startingCoordinates.z < -36.0f) {
@@ -966,7 +1355,7 @@ static bool func_800AEE8C(u16 mapIndex, u8 arg1) {
 
             break;
 
-        case 0x11:
+        case 17:
 
             if (func_8004D380(CONTROLLER_1, BUTTON_A)) {
                 if (gPlayer.heldItem == 0 && animatedSprites[PLAYER].startingCoordinates.x >= 42.0f && animatedSprites[PLAYER].startingCoordinates.x < 50.0f) {
@@ -1004,10 +1393,522 @@ static bool func_800AF060(u16 arg0, u8 arg1) {
 }
 
 // jtbl_801217A0
-INCLUDE_ASM(const s32, "levelInteractions", func_800AF0B0);
+//INCLUDE_ASM(const s32, "levelInteractions", func_800AF0B0);
+
+static bool func_800AF0B0(u16 mapIndex, u8 arg1) {
+
+    bool result = FALSE;
+
+    switch (arg1) {
+        
+        case 1:
+            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+                result = TRUE;
+                setEntrance(0x17);
+            }
+            break;
+        
+        case 2:
+            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+                result = TRUE;
+                setEntrance(0x3F);
+            }
+            break;
+
+        case 3:
+
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
+                
+                if (checkDailyEventBit(0x28) || checkDailyEventBit(FESTIVAL)) { 
+                    showTextBox(1, 6, 0x168, 0, 2);
+                    result = TRUE;
+                } else {
+                    levelInteractionsInfo.mapAdditionsIndex = 0;
+                    result = TRUE;
+                    setEntrance(0x56);
+                }
+                
+                levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN;
+                
+            }
+        
+            break;
+
+        case 4:
+
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
+                
+                if (gPlayer.direction == 4) {
+                    
+                    if (checkDailyEventBit(0x28) || checkDailyEventBit(FESTIVAL)) { 
+                        showTextBox(1, 6, 0x168, 0, 2);
+                        result = TRUE;
+                    } else {
+                        levelInteractionsInfo.mapAdditionsIndex = 1;
+                        result = TRUE;
+                        setEntrance(0x59);
+                    }
+                    
+                    levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN;
+                        
+                }
+                
+            }
+        
+            break;
+
+        case 5:
+
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
+                
+                if (checkDailyEventBit(0x28) || checkDailyEventBit(FESTIVAL)) { 
+                    showTextBox(1, 6, 0x168, 0, 2);
+                    result = TRUE;
+                } else {
+                    levelInteractionsInfo.mapAdditionsIndex = 4;
+                    result = TRUE;
+                    setEntrance(0x5D);
+                }
+                
+                levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN;
+                
+            }
+        
+            break;
+
+        case 6:
+
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
+                
+                if (checkDailyEventBit(0x28) || checkDailyEventBit(FESTIVAL)) { 
+                    showTextBox(1, 6, 0x168, 0, 2);
+                    result = TRUE;
+                } else {
+                    levelInteractionsInfo.mapAdditionsIndex = 3;
+                    result = TRUE;
+                    setEntrance(0x5E);
+                }
+                
+                levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN;
+                
+            }
+        
+            break;
+
+        case 7:
+
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
+                
+                if (checkDailyEventBit(0x28) || checkDailyEventBit(FESTIVAL)) { 
+                    showTextBox(1, 6, 0x168, 0, 2);
+                    result = TRUE;
+                } else {
+                    result = TRUE;
+                    setEntrance(0x5F);
+                }
+                
+                levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN;
+                
+            }
+        
+            break;
+
+        case 8:
+
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
+                
+                if (checkDailyEventBit(0x28) || checkDailyEventBit(FESTIVAL)) { 
+                    showTextBox(1, 6, 0x168, 0, 2);
+                    result = TRUE;
+                } else {
+                    result = TRUE;
+                    setEntrance(0x60);
+                }
+                
+                levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN;
+                
+            }
+        
+            break;
+
+        case 9:
+
+            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+                if (gPlayer.direction == 2) {
+                    result = TRUE;
+                    setEntrance(0x61);
+                }
+            }
+            
+            break;
+
+        case 10:
+            
+            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+                if (gPlayer.direction == 2) {
+                    result = TRUE;
+                    setEntrance(0x63);
+                }
+            }
+            
+            break;
+
+        case 37:
+
+            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+                if (gPlayer.direction == 1) {
+                    result = TRUE;
+                    setEntrance(0x63);
+                }
+            }
+            
+            break;
+
+        case 38:
+
+            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+                if (gPlayer.direction == 3) {
+                    result = TRUE;
+                    setEntrance(0x63);
+                }
+            }
+            
+            break;
+
+        case 39:
+
+            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+                if (gPlayer.direction == 1) {
+                    result = TRUE;
+                    setEntrance(0x61);
+                }
+            }
+            
+            break;
+
+        case 40:
+
+            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+                if (gPlayer.direction == 3) {
+                    result = TRUE;
+                    setEntrance(0x61);
+                }
+            }
+            
+            break;
+
+        case 11:
+            
+            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+                result = TRUE;
+                setEntrance(0x44);
+            }
+            
+            break;
+
+        case 12:
+
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
+
+                if (checkDailyEventBit(0x28) || checkDailyEventBit(FESTIVAL)) {
+                    showTextBox(1, 6, 0x168, 0, 2);
+                    result = TRUE;
+
+                } else {
+                    levelInteractionsInfo.mapAdditionsIndex = 2;
+                    result = TRUE;
+                    setEntrance(0x5B);
+                }
+                
+                levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN;
+                
+            }
+            
+            break;
+        
+    }
+    
+    return result;
+   
+}
 
 // jtbl_80121840
-INCLUDE_ASM(const s32, "levelInteractions", func_800AF494);
+//INCLUDE_ASM(const s32, "levelInteractions", func_800AF494);
+
+static u8 func_800AF494(u16 mapIndex, u8 arg1) {
+
+    u8 result = 0;
+    
+    switch (arg1) {
+
+        case 1:
+
+            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+                result = 1;
+                setEntrance(0x34);
+            }
+            break;
+        
+        case 2:
+            
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
+                
+                if (checkDailyEventBit(0x28) || checkDailyEventBit(FESTIVAL)) { 
+                    showTextBox(1, 6, 0x168, 0, 2);
+                    result = 1;
+                } else {
+                    levelInteractionsInfo.mapAdditionsIndex = 0;
+                    result = 1;
+                    setEntrance(0x58);
+                }
+                
+                levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN;
+                
+            }
+        
+            break;
+
+        case 16:
+
+            if (gPlayer.direction == 4) {
+                
+                if (gSeason == WINTER && (24 < gDayOfMonth && gDayOfMonth < 30)) {
+
+                    if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
+                        if (gPlayer.heldItem == 0) {
+                            if (adjustValue(flowerShopPoints, -10, 100) == -10) {
+                                setMainLoopCallbackFunctionIndex(0x22);
+                                result = 1; 
+                            } else {
+                                showTextBox(0, 4, 0x3E, 0, 0);
+                                result = 1;
+                            }
+                        }
+                        result = 1;
+                    }
+                    
+                } else {
+                    if (func_8004D380(CONTROLLER_1, BUTTON_A)) {
+                        showDialogueBox(0, 0x3D, 0x27, 0x80, 0);
+                        result = 1;
+                    }
+                }
+                
+            }
+
+            break;
+
+        case 17:
+
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) {
+
+                switch (gSeason) {
+                    case SPRING:
+                        showTextBox(1, 6, 0xE, 0, 2);
+                        break;
+                    case SUMMER:
+                        showTextBox(1, 6, 0xF, 0, 2);
+                        break;
+                    case AUTUMN:
+                        showTextBox(1, 6, 0x10, 0, 2);
+                        break;
+                    case WINTER:
+                        showTextBox(1, 6, 0xC9, 0, 2);
+                        break;
+                    
+                }
+
+                result = 1;
+        
+            }
+
+            break;
+
+        case 18:
+
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) {
+
+                switch (gSeason) {
+
+                    case SPRING:
+                        showTextBox(1, 6, 0x11, 0, 2);
+                        break;
+                    case SUMMER:
+                        showTextBox(1, 6, 0x12, 0, 2);
+                        break;
+                    case AUTUMN:
+                        showTextBox(1, 6, 0x13, 0, 2);
+                        break;
+                    case WINTER:
+                        showTextBox(1, 6, 0x14, 0, 2);
+                        break;
+                    
+                }
+
+                result = 1;
+                
+            }
+
+            break;
+
+        case 19:
+
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
+
+                if (gPlayer.heldItem == 0) {
+                    if (checkShopItemShouldBeDisplayed(0)) {
+                        func_800DC9FC(0);
+                    }
+                    result = 2;
+                }
+            
+            }
+
+            break;
+
+        case 20:
+
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
+
+                if (gPlayer.heldItem == 0) {
+                    if (checkShopItemShouldBeDisplayed(1)) {
+                        func_800DC9FC(1);
+                    }
+                    result = 2;
+                }
+            
+            }
+
+            break;
+
+        case 21:
+
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
+
+                if (gPlayer.heldItem == 0) {
+                    if (checkShopItemShouldBeDisplayed(2)) {
+                        func_800DC9FC(2);
+                    }
+                    result = 2;
+                }
+            
+            }
+
+            break;
+
+        case 22:
+
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
+
+                if (gPlayer.heldItem == 0) {
+                    if (checkShopItemShouldBeDisplayed(4)) {
+                        func_800DC9FC(4);
+                    }
+                    result = 2;
+                }
+            
+            }
+
+            break;
+
+        case 23:
+
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
+
+                if (gPlayer.heldItem == 0) {
+                    if (checkShopItemShouldBeDisplayed(5)) {
+                        func_800DC9FC(5);
+                    }
+                    result = 2;
+                }
+            
+            }
+
+            break;
+
+        case 24:
+
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
+
+                if (gPlayer.heldItem == 0) {
+                    if (checkShopItemShouldBeDisplayed(6)) {
+                        func_800DC9FC(6);
+                    }
+                    result = 2;
+                }
+            
+            }
+
+            break;
+
+        case 25:
+
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
+
+                if (gPlayer.heldItem == 0) {
+                    if (checkShopItemShouldBeDisplayed(3)) {
+                        func_800DC9FC(3);
+                    }
+                    result = 2;
+                }
+            
+            }
+
+            break;
+
+        case 26:
+
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
+
+                if (gPlayer.heldItem == 0) {
+                    
+                    if (!checkShopItemShouldBeDisplayed(7)) {
+                        
+                        if (checkShopItemShouldBeDisplayed(8)) {
+                            func_800DC9FC(8);
+                        }
+
+                        result = 2;
+                        
+                    } else {
+                        func_800DC9FC(7);
+                        result = 2;
+                    }
+                    
+                }
+            
+            }
+
+            break;
+
+        case 27:
+
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
+
+                if (gPlayer.heldItem == 0) {
+                    if (checkShopItemShouldBeDisplayed(10)) {
+                        func_800DC9FC(10);
+                    }
+                    result = 2;
+                }
+            
+            }
+
+            break;
+
+        case 30:
+            
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
+                showDialogueBox(0, 0x3D, 0x28, 0x80, 0);
+                result = 1;
+            }
+        
+        
+    }
+
+    return result;
+    
+}
 
 //INCLUDE_ASM(const s32, "levelInteractions", func_800AFA2C);
 
@@ -1027,7 +1928,113 @@ static bool func_800AFA2C(u16 mapIndex, u8 arg1) {
 }
 
 // jtbl_801218B8
-INCLUDE_ASM(const s32, "levelInteractions", func_800AFA7C);
+//INCLUDE_ASM(const s32, "levelInteractions", func_800AFA7C);
+
+static bool func_800AFA7C(u16 mapIndex, u8 arg1) {
+
+    bool result = FALSE;
+
+    switch (arg1) {
+
+        case 1:
+            
+            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+                result = TRUE;
+                setEntrance(0x35);
+            }
+            
+            break;
+
+        case 2:
+
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
+                
+                if (checkDailyEventBit(0x28) || checkDailyEventBit(FESTIVAL)) { 
+                    showTextBox(1, 6, 0x168, 0, 2);
+                    result = TRUE;
+                } else {
+                    levelInteractionsInfo.mapAdditionsIndex = 0;
+                    result = TRUE;
+                    setEntrance(0x5C);
+                }
+                
+                levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN;
+                
+            }
+        
+            break;
+
+        case 3:
+
+            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+                result = TRUE;
+                setEntrance(0x3D);
+            }
+            
+            break;
+
+        case 16:
+
+            if (gPlayer.direction == 4) {
+                
+                if (gSeason == WINTER && (24 < gDayOfMonth && gDayOfMonth < 30)) {
+
+                    if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
+                        if (gPlayer.heldItem == 0) {
+                            if (adjustValue(bakeryCardPoints, -10, 100) == -10) {
+                                setMainLoopCallbackFunctionIndex(0x22);
+                                result = TRUE; 
+                            } else {
+                                showTextBox(0, 4, 0x46, 0, 0);
+                                result = TRUE;
+                            }
+                        }
+                        result = TRUE;
+                    }
+                    
+                } else {
+                    if (func_8004D380(CONTROLLER_1, BUTTON_A)) {
+                        showTextBox(0, 6, 0x43, 0, 0);
+                        result = TRUE;
+                    }
+                }
+                
+            }
+
+            break;
+
+        case 17:
+
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
+                
+                if (gPlayer.direction == 4 && gPlayer.heldItem == 0) {
+                    func_8005B09C(2);
+                    result = TRUE;
+                }
+            
+            }
+
+            break;
+
+        case 18:
+
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
+                
+                if (gPlayer.heldItem == 0) {
+                    func_8005B09C(3);
+                    result = TRUE;
+                }
+            
+            }
+
+            break;
+
+        
+    }
+    
+    return result;
+    
+}
 
 //INCLUDE_ASM(const s32, "levelInteractions", func_800AFCD0);
 
@@ -1047,7 +2054,145 @@ static bool func_800AFCD0(u16 mapIndex, u8 arg1) {
 }
 
 // jtbl_80121900
-INCLUDE_ASM(const s32, "levelInteractions", func_800AFD20);
+//INCLUDE_ASM(const s32, "levelInteractions", func_800AFD20);
+
+static bool func_800AFD20(u16 mapIndex, u8 arg1) {
+
+    bool result = FALSE;
+
+    switch (arg1) {
+
+        case 1:
+        
+            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+                result = 1;
+                setEntrance(0x36);
+            }
+            
+            break;
+
+        case 16:
+            
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
+                
+                if (gPlayer.direction == 4) {
+                        showTextBox(0, 6, 0x44, 0, 0);
+                        result = 1;
+                }
+            
+            }
+
+            break;
+
+        case 17:
+
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
+
+                if (gPlayer.heldItem == 0) {
+                    if (checkShopItemShouldBeDisplayed(0x15)) {
+                        func_800DC9FC(0x15);
+                    }
+                    result = 2;
+                }
+            
+            }
+
+            break;
+
+        case 18:
+            
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
+
+                if (gPlayer.heldItem == 0) {
+                    if (checkShopItemShouldBeDisplayed(0x14)) {
+                        func_800DC9FC(0x14);
+                    }
+                    result = 2;
+                }
+            
+            }
+
+            break;
+
+        case 19:
+
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
+
+                if (gPlayer.heldItem == 0) {
+                    if (checkShopItemShouldBeDisplayed(0x13)) {
+                        func_800DC9FC(0x13);
+                    }
+                    result = 2;
+                }
+            
+            }
+
+            break;
+
+        case 20:
+
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
+
+                if (gPlayer.heldItem == 0) {
+                    if (checkShopItemShouldBeDisplayed(0x16)) {
+                        func_800DC9FC(0x16);
+                    }
+                    result = 2;
+                }
+            
+            }
+
+            break;
+
+        case 21:
+
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
+
+                if (gPlayer.heldItem == 0) {
+                    if (checkShopItemShouldBeDisplayed(0x18)) {
+                        func_800DC9FC(0x18);
+                    }
+                    if (checkShopItemShouldBeDisplayed(0x19)) {
+                        func_800DC9FC(0x19);
+                    }
+                    result = 2;
+                }
+            
+            }
+
+            break;
+
+        case 22:
+
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
+
+                if (gPlayer.heldItem == 0) {
+                    if (checkShopItemShouldBeDisplayed(0x17)) {
+                        func_800DC9FC(0x17);
+                    }
+                    result = 2;
+                }
+            
+            }
+
+            break;
+
+        case 24:
+
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
+
+                showTextBox(0, 6, 0x36, 0, 0);
+                result = 1;
+            
+            }
+
+            break;
+        
+    }
+    
+    return result;
+    
+}
 
 // jtbl_80121960
 //INCLUDE_ASM(const s32, "levelInteractions", func_800AFF9C);
@@ -1057,13 +2202,17 @@ static u8 func_800AFF9C(u16 arg0, u8 arg1) {
     u8 result = 0;
     
     switch (arg1) {
+
         case 1:
+
             if (!checkDailyEventBit(0x2D)) {
                 result = 1;
                 setEntrance(0x37);
             }
             break;
+
         case 17:
+
             if (func_8004D380(CONTROLLER_1, BUTTON_A)) {
                 if (gPlayer.heldItem == 0) {
                     if (checkShopItemShouldBeDisplayed(0x25)) {
@@ -1073,7 +2222,9 @@ static u8 func_800AFF9C(u16 arg0, u8 arg1) {
                 }
             }
             break;
+
         case 18:
+
             if (func_8004D380(CONTROLLER_1, BUTTON_A)) {
                 if (gPlayer.heldItem == 0) {
                     if (checkShopItemShouldBeDisplayed(0x26)) {
@@ -1086,15 +2237,16 @@ static u8 func_800AFF9C(u16 arg0, u8 arg1) {
                 }
             }
             break;
+
         case 16:
         case 19:
+
             if (func_8004D380(CONTROLLER_1, BUTTON_A)) {
                 showTextBox(0, 6, 0xCA, 0, 0);
                 result = 1;
             }
             break;
-        default:
-            break;
+
     }
 
     return result;
@@ -1109,30 +2261,43 @@ static bool func_800B00E0(u16 mapIndex, u8 arg1) {
     bool result = FALSE;
 
     switch (arg1) {
+
         case 1:
+
             if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
                 result = TRUE;
                 setEntrance(0x38);
             }
+
             break;
-        case 0x10:
+
+        case 16:
+
             if (func_8004D380(CONTROLLER_1, BUTTON_A)) {            
                 showTextBox(1, 6, 0xC0, 0, 2);
                 result = TRUE;
-            }            
+            }           
+
             break;
+
         case 17:
+
             if (func_8004D380(CONTROLLER_1, BUTTON_A)) {
                 showTextBox(1, 6, 0xBF, 0, 2);
                 result = TRUE;
             }
+
             break;
+
         case 19:
+
             if (func_8004D380(CONTROLLER_1, BUTTON_A)) {
                 showTextBox(1, 6, 0xD0, 0, 2);
                 result = TRUE;
             }
+
             break;
+
     }
     
     return result;
@@ -1147,51 +2312,63 @@ static bool func_800B01EC(u16 arg0, u8 arg1) {
     bool result = FALSE;
 
     switch (arg1) {
+
         case 1:
+
             if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
                 result = TRUE;
                 setEntrance(0x39);
             }
+
             break;
+
         case 17:
+
             if (func_8004D380(CONTROLLER_1, BUTTON_A)) {
                 showTextBox(0, 6, 0x78, 0, 0);
                 result = TRUE;
             }
+
             break;
+
         case 18:
+
             if (func_8004D380(CONTROLLER_1, BUTTON_A)) {            
                 if (gPlayer.heldItem == 0) {
                     func_8005B09C(4);
                     result = TRUE;
                 }  
             }
+
             break;
+
         case 19:
+
             if (func_8004D380(CONTROLLER_1, BUTTON_A)) {   
+
                 switch (gSeason) {
+
                     case SPRING:
                         showTextBox(1, 6, 0xCB, 0, 2);
-                        result = TRUE;
                         break;
                     case SUMMER:
                         showTextBox(1, 6, 0xCC, 0, 2);
-                        result = TRUE;
                         break;
                     case AUTUMN:
                         showTextBox(1, 6, 0xCD, 0, 2);
-                        result = TRUE;
                         break;
                     case WINTER:
                         showTextBox(1, 6, 0xCE, 0, 2);
-                        result = TRUE;
                         break;      
-                    default:
-                        result = TRUE;
-                        break;
+
                 }
+                
+                result = TRUE;
+
             }
+
             break;
+
     }
     
     return result;
@@ -1199,10 +2376,411 @@ static bool func_800B01EC(u16 arg0, u8 arg1) {
 }
 
 // jtbl_801219B0
-INCLUDE_ASM(const s32, "levelInteractions", func_800B0378);
+//INCLUDE_ASM(const s32, "levelInteractions", func_800B0378);
+
+static bool func_800B0378(u16 mapIndex, u8 arg1) {
+
+    bool result = FALSE;
+
+    switch (arg1) {
+
+        case 1:
+        
+            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+                result = TRUE;
+                setEntrance(0x18);
+            }
+            
+            break;
+
+        case 2:
+            
+            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+                result = TRUE;
+                setEntrance(0x33);
+            }
+            
+            break;
+
+        case 3:
+
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
+                
+                if (checkDailyEventBit(0x28) || checkDailyEventBit(FESTIVAL) || checkDailyEventBit(0x56)) { 
+                    showTextBox(1, 6, 0x168, 0, 2);
+                    result = TRUE;
+                } else {
+                    levelInteractionsInfo.mapAdditionsIndex = 1;
+                    result = TRUE;
+                    setEntrance(0x64);
+                }
+                
+                levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN;
+                
+            }
+        
+            break;
+
+        case 4:
+
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
+                
+                if (checkDailyEventBit(0x28) || checkDailyEventBit(FESTIVAL)) { 
+                    showTextBox(1, 6, 0x168, 0, 2);
+                    result = TRUE;
+                } else {
+                    levelInteractionsInfo.mapAdditionsIndex = 0;
+                    result = TRUE;
+                    setEntrance(0x65);
+                }
+                
+                levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN;
+                
+            }
+        
+            break;
+
+        case 5:
+
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
+                
+                if (checkDailyEventBit(0x28) || checkDailyEventBit(FESTIVAL)) { 
+                    showTextBox(1, 6, 0x168, 0, 2);
+                    result = TRUE;
+                } else {
+                    levelInteractionsInfo.mapAdditionsIndex = 3;
+                    result = TRUE;
+                    setEntrance(0x68);
+                }
+                
+                levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN;
+                
+            }
+        
+            break;
+
+        case 6:
+
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
+                
+                if (checkDailyEventBit(0x28) || checkDailyEventBit(FESTIVAL)) { 
+                    showTextBox(1, 6, 0x168, 0, 2);
+                    result = TRUE;
+                } else {
+                    levelInteractionsInfo.mapAdditionsIndex = 2;
+                    result = TRUE;
+                    setEntrance(0x6B);
+                }
+                
+                levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN;
+                
+            }
+        
+            break;
+        
+        case 7:
+            
+            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+                result = TRUE;
+                setEntrance(0x3C);
+            }
+            
+            break;
+
+        case 16:
+            
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
+
+                showTextBox(1, 6, 0xB8, 0, 2);
+                result = TRUE;
+            
+            }
+
+            break;
+
+        case 17:
+            
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
+
+                showTextBox(1, 6, 0xB5, 0, 2);
+                result = TRUE;
+            
+            }
+
+            break;
+        
+        case 18:
+            
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
+
+                showTextBox(1, 6, 0x160, 0, 2);
+                result = TRUE;
+            
+            }
+
+            break;
+
+        case 19:
+
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
+                
+                if (checkLifeEventBit(0x50)) {
+                    showTextBox(1, 6, 0x15F, 0, 2);
+                    result = TRUE;
+                } else {
+                    showTextBox(1, 6, 0x167, 0, 2);
+                    result = TRUE;
+                }
+            
+            }
+
+            break;
+
+        case 20:
+
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
+
+                showTextBox(1, 6, 0x161, 0, 2);
+                result = TRUE;
+            
+            }
+
+            break;
+
+        case 21:
+
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
+
+                showTextBox(1, 6, 0x161, 0, 2);
+                result = TRUE;
+            
+            }
+
+            break;
+
+        case 22:
+
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
+
+                showTextBox(1, 6, 0x162, 0, 2);
+                result = TRUE;
+            
+            }
+
+            break;
+
+        case 23:
+
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
+
+                showTextBox(1, 6, 0x163, 0, 2);
+                result = TRUE;
+            
+            }
+
+            break;
+        
+        
+    }
+    
+    return result;
+    
+}
 
 // jtbl_80121A10
-INCLUDE_ASM(const s32, "levelInteractions", func_800B0714);
+//INCLUDE_ASM(const s32, "levelInteractions", func_800B0714);
+
+static bool func_800B0714(u16 mapIndex, u8 arg1) {
+
+    bool result = FALSE;
+
+    switch (arg1) {
+
+        case 1:
+
+            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+                result = TRUE;
+                setEntrance(0x40);
+            }
+            
+            break;
+
+        case 16:
+
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) {  
+
+                if (gPlayer.direction == 4) {
+
+                    if (checkLifeEventBit(MARRIED) && gWife == MARIA) {
+                        showTextBox(0, 6, 0xD7, 0, 0);
+                        result = TRUE;
+                    } else {
+                        showTextBox(0, 6, 0xD6, 0, 0);
+                        result = TRUE;
+                    }
+                    
+                    
+                }
+                
+            }
+
+            break;
+
+        case 17:
+
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) {  
+
+                if (gPlayer.heldItem == 0) {
+
+                    showTextBox(1, 1, 0, 0, 2);
+                    result = TRUE;
+                    
+                } 
+                        
+            }
+
+            break;    
+        
+        case 18:
+
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) {  
+
+                if (gPlayer.heldItem == 0) {
+
+                    showTextBox(1, 1, 1, 0, 2);
+                    result = TRUE;
+                    
+                } 
+                        
+            }
+
+            break;          
+
+        case 19:
+
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) {  
+
+                if (gPlayer.heldItem == 0) {
+
+                    showTextBox(1, 1, 2, 0, 2);
+                    result = TRUE;
+                    
+                } 
+                        
+            }
+
+            break;          
+        
+        case 20:
+
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) {  
+
+                if (gPlayer.heldItem == 0) {
+
+                    showTextBox(1, 1, 3, 0, 2);
+                    result = TRUE;
+                    
+                } 
+                        
+            }
+
+            break;          
+        
+        case 21:
+
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) {  
+
+                if (gPlayer.heldItem == 0) {
+
+                    showTextBox(1, 1, 4, 0, 2);
+                    result = TRUE;
+                    
+                } 
+                        
+            }
+
+            break;          
+         
+        case 22:
+
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) {  
+
+                if (gPlayer.heldItem == 0) {
+
+                    showTextBox(1, 1, 5, 0, 2);
+                    result = TRUE;
+                    
+                } 
+                        
+            }
+
+            break;
+        
+        case 23:
+
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) {  
+
+                if (gPlayer.heldItem == 0) {
+
+                    showTextBox(1, 1, 6, 0, 2);
+                    result = TRUE;
+                    
+                } 
+                        
+            }
+
+            break;          
+        
+        case 24:
+
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) {  
+
+                if (gPlayer.heldItem == 0) {
+
+                    showTextBox(1, 1, 7, 0, 2);
+                    result = TRUE;
+                    
+                } 
+                        
+            }
+
+            break;          
+        
+        case 25:
+
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) {
+
+                if (gPlayer.direction == 2 && gPlayer.heldItem == 0) {
+
+                    showTextBox(1, 1, 8, 0, 2);
+                    result = TRUE;
+                    
+                } 
+                        
+            }
+
+            break;   
+        
+        case 26:
+
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) {  
+
+                if (gPlayer.direction == 2 && gPlayer.heldItem == 0) {
+
+                    showTextBox(1, 1, 9, 0, 2);
+                    result = TRUE;
+                    
+                } 
+                        
+            }
+
+            break;          
+        
+    }
+    
+    return result;
+    
+}
 
 //INCLUDE_ASM(const s32, "levelInteractions", func_800B0A64);
 
@@ -1212,26 +2790,93 @@ static bool func_800B0A64(u16 mapIndex, u8 arg1) {
     bool result = FALSE;
 
     switch (arg1) {
+
         case 1:
+
             if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) { 
                 result = TRUE;
                 setEntrance(0x43);
             }
+
             break;
+
         case 16:
+
             if (func_8004D380(CONTROLLER_1, BUTTON_A)) {
                 showTextBox(1, 6, 0xD1, 0, 2);
                 result = TRUE;
             }
-        default:
+
             break;
+
     }
     
     return result;
     
 }
 
-INCLUDE_ASM(const s32, "levelInteractions", func_800B0AFC);
+//INCLUDE_ASM(const s32, "levelInteractions", func_800B0AFC);
+
+static bool func_800B0AFC(u16 mapIndex, u8 arg1) {
+
+    bool result = FALSE;
+
+    switch (arg1) {
+
+        case 1:
+
+            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+                result = TRUE;
+                setEntrance(0x41);
+            }
+            
+            break;
+
+        case 2:
+
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
+                
+                if (checkDailyEventBit(0x28) || checkDailyEventBit(FESTIVAL)) { 
+                    showTextBox(1, 6, 0x168, 0, 2);
+                    result = TRUE;
+                } else {
+                    levelInteractionsInfo.mapAdditionsIndex = 0;
+                    result = TRUE;
+                    setEntrance(0x67);
+                }
+                
+                levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN;
+                
+            }
+        
+            break;
+
+        case 16:
+
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
+
+                switch (gSeason) {
+
+                    case SPRING:
+                    case SUMMER:
+                    case AUTUMN:
+                    case WINTER:
+                        showTextBox(1, 6, 0xCF, 0, 2);
+                        break;
+
+                }
+                
+                result = TRUE; 
+            
+            }
+
+            break;
+
+    }
+    
+    return result;
+    
+}
 
 //INCLUDE_ASM(const s32, "levelInteractions", func_800B0C48);
 
@@ -1239,11 +2884,16 @@ static bool func_800B0C48(u16 mapIndex, u8 arg1) {
 
    bool result = FALSE;
 
-    if (arg1 == 1) {
-        if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
-            result = TRUE;
-            setEntrance(0x66);
-        }
+    switch (arg1) {
+        case 1:
+
+            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+                result = TRUE;
+                setEntrance(0x66);
+            }
+            
+            break;
+
     } 
 
     return result;
@@ -1251,7 +2901,158 @@ static bool func_800B0C48(u16 mapIndex, u8 arg1) {
 }
 
 // jtbl_80121A78
-INCLUDE_ASM(const s32, "levelInteractions", func_800B0C98);
+//INCLUDE_ASM(const s32, "levelInteractions", func_800B0C98);
+
+static u8 func_800B0C98(u16 mapIndex, u8 arg1) {
+
+    bool result = 0;
+
+    switch (arg1) {
+
+        case 1:
+
+            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+                result = 1;
+                setEntrance(0x42);
+            }
+            
+            break;
+        
+        case 2:
+
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
+                
+                if (checkDailyEventBit(0x28) || checkDailyEventBit(FESTIVAL)) { 
+                    showTextBox(1, 6, 0x168, 0, 2);
+                    result = 1;
+                } else {
+                    levelInteractionsInfo.mapAdditionsIndex = 0;
+                    result = 1;
+                    setEntrance(0x6A);
+                }
+                
+                levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN;
+                
+            }
+        
+            break;
+        
+        case 16:
+
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) {  
+
+                if (gPlayer.heldItem == 0) {
+
+                    switch (checkShopItemShouldBeDisplayed(0x22)) {
+
+                        case 0:
+                            showTextBox(0, 6, 0x6C, 0, 0);
+                            result = 1;
+                            break;
+                        case 1:
+                            func_800DC9FC(0x22);
+                            result = 2;
+                            break;
+                        case 2:
+                            showTextBox(0, 6, 0x6F, 0, 0);
+                            result = 1;
+                            break;
+                        case 3:
+                            showTextBox(0, 6, 0x6B, 0, 0);
+                            result = 1;
+                            break;
+                        
+                    }
+                    
+                } 
+                        
+            }
+
+            break;    
+        
+        
+        case 17:
+
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) {  
+
+                if (gPlayer.heldItem == 0) {
+
+                    switch (checkShopItemShouldBeDisplayed(0x23)) {
+
+                        case 0:
+                            showTextBox(0, 6, 0x6C, 0, 0);
+                            result = 1;
+                            break;
+                        case 1:
+                            func_800DC9FC(0x23);
+                            result = 2;
+                            break;
+                        case 2:
+                            showTextBox(0, 6, 0x6F, 0, 0);
+                            result = 1;
+                            break;
+                        case 3:
+                            showTextBox(0, 6, 0x6B, 0, 0);
+                            result = 1;
+                            break;
+                        
+                    }
+                    
+                } 
+                        
+            }
+
+            break;    
+        
+        case 18:
+
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) {  
+
+                if (gPlayer.heldItem == 0) {
+
+                    switch (checkShopItemShouldBeDisplayed(0x24)) {
+
+                        case 0:
+                            showTextBox(0, 6, 0x6C, 0, 0);
+                            result = 1;
+                            break;
+                        case 1:
+                            func_800DC9FC(0x24);
+                            result = 2;
+                            break;
+                        case 2:
+                            showTextBox(0, 6, 0x6F, 0, 0);
+                            result = 1;
+                            break;
+                        case 3:
+                            showTextBox(0, 6, 0x6B, 0, 0);
+                            result = 1;
+                            break;
+                        
+                    }
+                    
+                } 
+                        
+            }
+
+            break;   
+        
+        case 19:
+
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
+
+                showTextBox(0, 6, 0x70, 0, 0);
+                result = 1;
+            
+            }
+
+            break;
+        
+    }
+    
+    return result;
+    
+}
 
 //INCLUDE_ASM(const s32, "levelInteractions", func_800B0FB8);
 
@@ -1259,9 +3060,6 @@ INCLUDE_ASM(const s32, "levelInteractions", func_800B0C98);
 static bool func_800B0FB8(u16 mapIndex, u8 arg1) {
 
     bool result = FALSE;
-    
-    // FIXME: shouldn't be necessary
-    int temp;
 
     switch (arg1) {
 
@@ -1274,27 +3072,215 @@ static bool func_800B0FB8(u16 mapIndex, u8 arg1) {
 
         case 16:
 
-            temp = 5;
-
             if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
 
-                // FIXME: should be 0 < gSeason && gSeason < 5?
-                // if (((s32) gSeason < 5) && (gSeason != 0)) 
-                if (gSeason < temp && gSeason) {
-                    showTextBox(1, 6, 0xD0, 0, 2);
+                switch (gSeason) {
+
+                    case SPRING:
+                    case SUMMER:
+                    case AUTUMN:
+                    case WINTER:
+                        showTextBox(1, 6, 0xD0, 0, 2);
+                        break;
+
                 }
 
                 result = TRUE;
             }
+
             break;
+
     }
     
     return result;
     
 }
 
+// square
 // jtbl_80121AC8
-INCLUDE_ASM(const s32, "levelInteractions", func_800B106C);
+//INCLUDE_ASM(const s32, "levelInteractions", func_800B106C);
+
+// FIXME: lots of unnecessary gotos
+u8 func_800B106C(u16 mapIndex, u8 arg1) {
+
+    u8 result = 0;
+    u8 temp;
+
+    switch (arg1) {
+
+        case 1:
+
+            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+                result = 1;
+                setEntrance(0x3A);
+            }
+            
+            break;
+
+
+        case 2:
+
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) {  
+
+                levelInteractionsInfo.mapAdditionsIndex = 0;
+                levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN;
+                result = 1;
+                setEntrance(0x6C);
+                
+            }
+            
+            break;
+
+        case 3:
+
+            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+                result = 1;
+                setEntrance(0x3B);
+            }
+            
+            break;
+
+        case 16:
+
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) {
+
+                if (gPlayer.heldItem == 0) {
+                    temp = 10;
+label3:
+                    func_8005B09C(temp);
+                    result = 1;
+label4:
+                }
+                
+            }
+
+            break;
+        
+        case 21:
+
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
+
+                if (checkDailyEventBit(0x41)) {
+
+                    if (func_800CE714(0) && func_800CE714(1)) {
+                        
+                        if (func_800CE714(2)) {
+                            goto label2;
+                        } else {
+                            goto label;
+                        }
+                        
+                    } else {
+                        func_80046C98();
+                        setMainLoopCallbackFunctionIndex(0x21);
+                    }
+                    
+                } else if (func_800CE828(0) && func_800CE828(1) && func_800CE828(2)) {
+label2:
+                    showTextBox(0, 4, 0x47, 0, 0);
+                    
+                } else {
+label:
+                    func_80046C98();
+                    setMainLoopCallbackFunctionIndex(0x21);
+                    
+                }
+                
+                result = 1;
+                
+            }
+            
+            break;
+
+        case 22:
+
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) {  
+
+                if (overlayScreenStrings.unk_6B == overlayScreenStrings.unk_6A) {
+                    showTextBox(0, 4, 10, 0, 0);
+                } else if (overlayScreenStrings.unk_6A == 3) {
+                    showTextBox(0, 4, 8, 0, 0);
+                } else if (!overlayScreenStrings.unk_6D[overlayScreenStrings.unk_6A]) {
+                    func_80046C98();
+                    setMainLoopCallbackFunctionIndex(0x1F);
+                } else {
+                    showTextBox(0, 4, 7, 0, 0);
+                }
+                
+                result = 1;
+                
+            }
+            
+            break;
+
+        case 24:
+
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
+
+                if (gPlayer.heldItem == 0) {
+                
+                    if (checkShopItemShouldBeDisplayed(0x35)) {
+                        func_80046C98();
+                        func_800DC9FC(0x35);
+                    }
+                    
+                    result = 2;
+                
+                }
+                
+            }
+            
+            break;
+
+        case 26:
+
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) {
+
+                if (gSeason == SPRING && (18 < gDayOfMonth && gDayOfMonth < 23)) {
+
+                    if (gVoteForFlowerFestivalGoddess == 0xFF) {
+                        temp = 9;
+                        goto label3;
+                    } else {
+                        showTextBox(0, 4, 0x23, 0, 2);
+                        result = 1;
+                        goto label4;
+                    }
+                    
+                }
+
+                if (!checkHaveTool(EMPTY_BOTTLE)) {
+
+                    if (gPlayer.heldItem == 0) {
+                    
+                        if (checkShopItemShouldBeDisplayed(0x36)) {
+                            func_80046C98();
+                            func_800DC9FC(0x36);
+                            goto label5;
+                        }
+                        
+                        if (checkShopItemShouldBeDisplayed(0x37)) {
+                            func_80046C98();   
+                            func_800DC9FC(0x37);
+label5:
+                        }
+                        
+                        result = 2;
+                        
+                    }
+                    
+                } else { 
+                    showTextBox(0, 4, 0x26, 0, 0);
+                }
+            }
+            
+            break;
+        
+    }
+    
+    return result;
+    
+}
 
 //INCLUDE_ASM(const s32, "levelInteractions", func_800B1438);
 
@@ -1304,30 +3290,41 @@ static bool func_800B1438(u16 mapIndex, u8 arg1) {
     bool result = FALSE;
 
     switch (arg1) {
+
         case 1:
+
             if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) { 
                 result = TRUE;
                 setEntrance(0x19);                
             }
             break;
+
         case 2:
+
             if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) { 
                 result = TRUE;
                 setEntrance(0x1D);                
             }
+
             break;
+
         case 3:
+
             if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) { 
                 result = TRUE;
                 setEntrance(0x23);                
             }
             break;
+
         case 19:
+
             if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
                 showTextBox(1, 6, 0xAD, 0, 2);
                 result = TRUE;
             }
+
             break;
+
     }
     
     return result;    
@@ -1335,10 +3332,238 @@ static bool func_800B1438(u16 mapIndex, u8 arg1) {
 }
 
 // jtbl_80121B30
-INCLUDE_ASM(const s32, "levelInteractions", func_800B1540);
+//INCLUDE_ASM(const s32, "levelInteractions", func_800B1540);
+
+static u8 func_800B1540(u16 mapIndex, u8 arg1) {
+
+    u8 result = 0;
+    
+    switch (arg1) {
+        
+        case 1:
+
+            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+                result = 1;
+                setEntrance(0x1B);
+            }
+            
+            break;
+
+    
+        case 2:
+            
+            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+                result = 1;
+                setEntrance(0x45);
+            }
+            
+            break;
+
+        case 3:
+            
+            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+                result = 1;
+                setEntrance(0x48);
+            }
+            
+            break;
+
+        case 4:
+
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
+                
+                if (gPlayer.direction == 4) {
+                    
+                    if (checkDailyEventBit(0x28) || checkDailyEventBit(FESTIVAL)) { 
+                        
+                        showTextBox(1, 6, 0x168, 0, 2);
+                        result = 1;
+                        
+                    } else {
+                        
+                        if (gYear == 1) {
+
+                            if (!(gSeason == AUTUMN && (19 < gDayOfMonth && gDayOfMonth < 28))) {
+                                
+                                if (gSeason == WINTER) {
+                                    if (8 < gDayOfMonth && gDayOfMonth < 17) {
+                                        showTextBox(1, 6, 0x168, 0, 2);
+                                        result = 1;
+                                    } else {
+                                        levelInteractionsInfo.mapAdditionsIndex = 3;
+                                        result = 1;
+                                        setEntrance(0x49);
+                                    }
+                                } else {
+                                    levelInteractionsInfo.mapAdditionsIndex = 3;
+                                    result = 1;
+                                    setEntrance(0x49);
+                                }
+
+                            } else {
+                                showTextBox(1, 6, 0x168, 0, 2);
+                                result = 1;
+                            }
+                            
+                        } else {
+                            levelInteractionsInfo.mapAdditionsIndex = 3;
+                            result = 1;
+                            setEntrance(0x49);
+                        }
+                    }
+                    
+                    levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN;
+                    
+                }
+            
+            }
+
+            break;
+    
+        case 5:
+
+            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+                result = 1;
+                setEntrance(0x25);
+            }
+            
+            break;
+
+    
+        case 6:
+
+            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+                result = 1;
+                setEntrance(0x24);
+            }
+            
+            break;
+
+    
+        case 17:
+
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
+                
+                if (gPlayer.heldItem == 0) {
+
+                    if (func_800309B4(PLAYER, 0.0f, 16.0f) == 0x11) {
+                        setDailyEventBit(6);
+                        setPlayerAction(0x1A, 0x1B);
+                        result = 2;
+                    }
+                    
+                }
+            }
+            
+            break;
+    
+        case 18:
+
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
+                
+                if (gPlayer.direction == 0) {
+                    setDailyEventBit(6);
+                    setPlayerAction(0x1C, 0xE);
+                    result = 2;
+                }
+            
+            }
+
+            break;
+    
+        case 19:
+
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
+
+                showTextBox(1, 6, 0xAF, 0, 2);
+                result = 1;
+            
+            }
+
+            break;
+
+    }
+
+    return result;
+    
+}
 
 // jtbl_80121B80
-INCLUDE_ASM(const s32, "levelInteractions", func_800B1808);
+//INCLUDE_ASM(const s32, "levelInteractions", func_800B1808);
+
+static u8 func_800B1808(u16 mapIndex, u8 arg1) {
+
+    bool result = 0;
+
+    switch (arg1) {
+
+        case 1:
+
+            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+                result = 1;
+                setEntrance(0x1C);
+            }
+            
+            break;
+
+        case 2:
+
+            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+                result = 1;
+                setEntrance(0x22);
+            }
+            
+            break;
+
+        case 17:
+
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
+
+                showTextBox(1, 6, 0xAB, 0, 2);
+                result = 1;
+            
+            }
+
+            break;
+
+        // hot springs
+        case 18:
+
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) {  
+
+                if (!checkDailyEventBit(0x28)) {
+
+                    if (gPlayer.heldItem == 0) {
+                        if (-48.0f <= animatedSprites[PLAYER].startingCoordinates.x && animatedSprites[PLAYER].startingCoordinates.x < -40.0f) {
+                            setDailyEventBit(6);
+                            setPlayerAction(0x1D, 0);
+                            levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN;
+                            result = 2;
+                        }
+                    }
+                    
+                }
+            
+            }
+
+            break;
+        
+        case 20:
+
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
+
+                showTextBox(1, 6, 0xAE, 0, 2);
+                result = 1;
+            
+            }
+
+            break;
+        
+    }
+    
+    return result;
+    
+}
 
 //INCLUDE_ASM(const s32, "levelInteractions", func_800B1994);
 
@@ -1357,6 +3582,7 @@ static bool func_800B1994(u16 mapIndex, u8 arg1) {
             break;
 
         case 2:
+
             if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
                 if (checkDailyEventBit(0x28) || checkDailyEventBit(FESTIVAL)) {
                     showTextBox(1, 6, 0x168, 0, 2);
@@ -1369,14 +3595,18 @@ static bool func_800B1994(u16 mapIndex, u8 arg1) {
                 
                 levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN;
             }
+
             break;        
 
         case 16:
+            
             if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
                 showTextBox(1, 6, 0xB1, 0, 2);
                 result = TRUE;            
             }
+
             break;
+
     }
     
     return result;
@@ -1384,7 +3614,110 @@ static bool func_800B1994(u16 mapIndex, u8 arg1) {
 }
 
 // jtbl_80121BD0
-INCLUDE_ASM(const s32, "levelInteractions", func_800B1AC4);
+//INCLUDE_ASM(const s32, "levelInteractions", func_800B1AC4);
+
+static bool func_800B1AC4(u16 mapIndex, u8 arg1) {
+
+    bool result = FALSE;
+
+    switch (arg1) {
+
+        case 1:
+
+            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+                result = TRUE;
+                setEntrance(0x1);
+            }
+            
+            break;
+
+
+        case 2:
+
+            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+                result = TRUE;
+                setEntrance(0x29);
+            }
+            
+            break;
+
+
+        case 3:
+
+            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+                result = TRUE;
+                setEntrance(0x2E);
+            }
+            
+            break;
+
+        case 4:
+
+            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+                result = TRUE;
+                setEntrance(0x32);
+            }
+            
+            break;
+
+
+        case 5:
+
+            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+                result = TRUE;
+                setEntrance(0x3E);
+            }
+            
+            break;
+
+
+        case 6:
+
+            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+                result = TRUE;
+                setEntrance(0x1A);
+            }
+            
+            break;
+
+        case 16:
+
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
+
+                showTextBox(1, 6, 0xB4, 0, 2);
+                result = TRUE;
+            
+            }
+
+            break;
+
+        case 17:
+
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
+
+                showTextBox(1, 6, 0xB6, 0, 2);
+                result = TRUE;
+            
+            }
+
+            break;
+
+        case 18:
+
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
+
+                showTextBox(1, 6, 0xB7, 0, 2);
+                result = TRUE;
+            
+            }
+
+            break;
+        
+    }
+    
+    return result;
+    
+}
 
 //INCLUDE_ASM(const s32, "levelInteractions", handleCarpenterHutInteractions);
 
@@ -1393,14 +3726,20 @@ static bool handleCarpenterHutInteractions(u16 mapIndex, u8 arg1) {
     bool result = FALSE;
     
     switch (arg1) {
+        
         case 1:
+
             if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
                 result = TRUE;
                 setEntrance(0x20);
             } 
+        
             break;
-        case 0x10:
+
+        case 16:
+
             if (func_8004D380(CONTROLLER_1, BUTTON_A)) {
+
                 if (!checkDailyEventBit(8)) {
                     func_80059334();
                     func_8005CA2C(1, 0x18);
@@ -1409,19 +3748,23 @@ static bool handleCarpenterHutInteractions(u16 mapIndex, u8 arg1) {
                     showTextBox(0, 6, 0x6E, 0, 0);
                     result = TRUE;
                 }     
+            
             }  
+
             break;
-        case 0x11:
+
+        case 17:
+
             if (func_8004D380(CONTROLLER_1, BUTTON_A)) {
                 showTextBox(0, 6, 0x91, 0, 0);
                 result = TRUE;
             }
-            break;
-        default:
+
             break;
     }
 
     return result;
+
 }
 
 //INCLUDE_ASM(const s32, "levelInteractions", handleDumplingHouseExit);
@@ -1430,11 +3773,17 @@ static bool handleDumplingHouseExit(u16 mapIndex, u8 arg1) {
 
     bool result = FALSE;
 
-    if (arg1 == 1) {
-        if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
-            result = TRUE;
-            setEntrance(DUMPLING_HOUSE_EXIT);
-        }
+    switch (arg1) {
+
+        case 1:
+
+            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+                result = TRUE;
+                setEntrance(DUMPLING_HOUSE_EXIT);
+            }
+
+            break;
+
     } 
 
     return result;
@@ -1450,13 +3799,16 @@ static bool func_800B1DBC(u16 mapIndex, u8 arg1) {
     switch (arg1) {
 
         case 1:
+
             if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) { 
                 result = TRUE;
                 setEntrance(0x1E);                
             }
+
             break;
 
         case 2:
+
             if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
                 if (checkDailyEventBit(0x28) || checkDailyEventBit(FESTIVAL)) {
                     showTextBox(1, 6, 0x168, 0, 2);
@@ -1466,14 +3818,17 @@ static bool func_800B1DBC(u16 mapIndex, u8 arg1) {
                     setEntrance(0x6D);
                 }
             }
+
             break;
 
         case 3:
+
             if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
                 showTextBox(1, 6, 0xB2, 0, 2);
                 result = TRUE;
                 levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN;        
             }
+
             break;
     }
     
@@ -1491,13 +3846,16 @@ static bool func_800B1EE4(u16 mapIndex, u8 arg1) {
     switch (arg1) {
 
         case 1:
+
             if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) { 
                 result = TRUE;
                 setEntrance(0x46);                
             }
+
             break;
 
         case 16:
+
             if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
                 if (getRandomNumberInRange(0, 1)) {
                     showTextBox(1, 6, 0x94, 0, 2);
@@ -1507,17 +3865,22 @@ static bool func_800B1EE4(u16 mapIndex, u8 arg1) {
                     result = TRUE;         
                 }
             }
+
             break;
 
         case 17:
+
             if (func_8004D380(CONTROLLER_1, BUTTON_A)) {  
                 showTextBox(1, 6, 0x9D, 0, 2);
                 result = TRUE;
             }
+
             break;
 
         case 18:
+
             if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
+
                 if (checkDailyEventBit(0x28) || checkDailyEventBit(FESTIVAL)) {
                     showTextBox(1, 6, 0x168, 0, 2);
                     result = TRUE;
@@ -1530,6 +3893,9 @@ static bool func_800B1EE4(u16 mapIndex, u8 arg1) {
                 }
                 
             }
+            
+            break;
+
     }
     
     return result;
@@ -1543,11 +3909,17 @@ static bool func_800B2078(u16 mapIndex, u8 arg1) {
 
     bool result = FALSE;
 
-    if (arg1 == 1) {
-        if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
-            result = TRUE;
-            setEntrance(MINE_EXIT);
-        }
+    switch (arg1) {
+        
+        case 1:
+
+            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+                result = TRUE;
+                setEntrance(MINE_EXIT);
+            }
+
+            break;
+
     } 
     
     return result;
@@ -1561,11 +3933,17 @@ static bool func_800B20C8(u16 mapIndex, u8 arg1) {
     
     bool result = FALSE;
 
-    if (arg1 == 1) {
-        if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) { 
-            result = TRUE;
-            setEntrance(0x1F);                
-        }
+    switch (arg1) {
+        
+        case 1:
+
+            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) { 
+                result = TRUE;
+                setEntrance(0x1F);                
+            }
+            
+            break;
+
     }
     
     return result;
@@ -1573,7 +3951,66 @@ static bool func_800B20C8(u16 mapIndex, u8 arg1) {
 }
 
 // vineyard
-INCLUDE_ASM(const s32, "levelInteractions", func_800B2118);
+//INCLUDE_ASM(const s32, "levelInteractions", func_800B2118);
+
+bool func_800B2118(u16 mapIndex, u8 arg1) {
+
+    bool result = FALSE;
+
+    switch (arg1) {
+
+        case 1:
+
+            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+                result = TRUE;
+                setEntrance(0x16);
+            }
+            
+            break;
+
+        case 2:
+
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
+                
+                if (checkDailyEventBit(0x28) || checkDailyEventBit(FESTIVAL)) { 
+                    showTextBox(1, 6, 0x168, 0, 2);
+                    result = TRUE;
+                } else {
+                    levelInteractionsInfo.mapAdditionsIndex = 0;
+                    result = TRUE;
+                    setEntrance(0x51);
+                }
+                
+                levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN;
+                
+            }
+        
+            break;
+
+        case 3:
+
+            if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
+                
+                if (checkDailyEventBit(0x28) || checkDailyEventBit(FESTIVAL)) { 
+                    showTextBox(1, 6, 0x168, 0, 2);
+                    result = TRUE;
+                } else {
+                    levelInteractionsInfo.mapAdditionsIndex = 1;
+                    result = TRUE;
+                    setEntrance(0x53);
+                }
+                
+                levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN;
+                
+            }
+        
+            break;
+        
+    }
+    
+    return result;
+    
+}
 
 //INCLUDE_ASM(const s32, "levelInteractions", func_800B2264);
 
@@ -1583,23 +4020,32 @@ static bool func_800B2264(u16 mapIndex, u8 arg1) {
     bool result = FALSE;
 
     switch (arg1) {
+
         case 1:
+
             if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) { 
                 result = TRUE;
                 setEntrance(0x52);                
             }
+
             break;
+
         case 2:
+
             if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) { 
                 result = TRUE;
                 setEntrance(0x2F);                
             }
+
             break;
+
         case 17:
+
             if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
                 showTextBox(1, 6, 0xCF, 0, 2);
                 result = TRUE;
             }
+
             break;
     }
     
@@ -1613,13 +4059,21 @@ static bool func_800B2340(u16 mapIndex, u8 arg1) {
 
     bool result = FALSE;    
     
-    if (arg1 == 1) {
-        if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
-            if (gPlayer.direction == 6) { 
-                result = TRUE;
-                setEntrance(0x50);
+    switch (arg1) {
+
+        case 1:
+        
+            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+
+                if (gPlayer.direction == 6) { 
+                    result = TRUE;
+                    setEntrance(0x50);
+                }
+
             }
-        }
+
+            break;
+
     }
     
     return result;
@@ -1634,27 +4088,37 @@ static bool func_800B23A4(u16 mapIndex, u8 arg1) {
     bool result = FALSE;
     
     switch (arg1) {
+
         case 1:
+
             if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
                 result = TRUE;
                 setEntrance(0x30);
             }
             break;
+
          case 2:
+
              if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) { 
                  if (5 < gPlayer.direction && gPlayer.direction < 8 || gPlayer.direction == 5) {
                     result = TRUE;
                     setEntrance(0x55);
                  }
              }
+
             break;     
+
         case 16:
+
             if (func_8004D380(CONTROLLER_1, BUTTON_A)) {            
                 showTextBox(1, 6, 0xD2, 0, 2);
                 result = TRUE;
-            }            
+            }          
+
             break;
+
         case 17:
+
             if (func_8004D380(CONTROLLER_1, BUTTON_A)) {
                 showTextBox(1, 6, 0xD3, 0, 2);
                 result = TRUE;
@@ -1675,17 +4139,25 @@ static bool func_800B24D4(u16 mapIndex, u8 arg1) {
     bool result = FALSE; 
 
     switch (arg1) {
+
         case 1:
+            
             if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) { 
                 result = TRUE;
                 setEntrance(0x54);
             }
+
             break;
+
         case 16:
+
             if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
                 showTextBox(1, 6, 0xD4, 0, 2);            
                 result = TRUE;
             }
+
+            break;
+
     }
 
     return result;
@@ -1736,6 +4208,7 @@ bool func_800B2604(u16 mapIndex, u8 arg1) {
                 result = TRUE;
                 setEntrance(0x15);
             }
+
             break;
         
         case 2:
@@ -1744,6 +4217,7 @@ bool func_800B2604(u16 mapIndex, u8 arg1) {
                 result = TRUE;
                 setEntrance(0x28);
             }
+
             break;
         
         case 3:
@@ -1825,29 +4299,41 @@ static bool func_800B27CC(u16 mapIndex, u8 collisionIndex) {
     bool result = FALSE;
 
     switch (collisionIndex) {
+
         case 1: 
+
             if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
                 result = TRUE;
                 setEntrance(RANCH_FROM_RANCH_HOUSE);
             }
+
             break;
+
         case 16:
+
             if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
                 showTextBox(1, 6, 0x95, 0, 2);
                 result = TRUE;
             }
+
             break;
+
         case 17:
+
             if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
                 showTextBox(1, 6, 0x93, 0, 2);
                 result = TRUE;
             }
+
             break;
+
         case 18:
+
             if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
                 showTextBox(1, 6, 0xD0, 0, 2);
                 result = TRUE;
             }
+
             break;
     }
     
@@ -1865,6 +4351,7 @@ static u8 handleRanchStoreExits(u16 mapIndex, u8 collisionIndex) {
 
         // exit
         case 1:
+        
             if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
                 result = 1;
                 setEntrance(RANCH_FROM_RANCH_STORE);
@@ -1873,7 +4360,9 @@ static u8 handleRanchStoreExits(u16 mapIndex, u8 collisionIndex) {
 
         // ann's room
         case 2:
+
             if (func_8004D380(CONTROLLER_1, BUTTON_A)) {
+
                 if (checkDailyEventBit(0x28) || checkDailyEventBit(FESTIVAL)) {
                     showTextBox(1, 6, 0x168, 0, 2);
                     result = 1;
@@ -1882,27 +4371,36 @@ static u8 handleRanchStoreExits(u16 mapIndex, u8 collisionIndex) {
                     result = 1;
                     setEntrance(ANN_ROOM_ENTER);
                 }
+
                 levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN;
             } 
+
             break;
 
         // the following seem like unused items/interactions
         case 16:
+
             if (func_8004D380(CONTROLLER_1, BUTTON_A) && gPlayer.direction == 2) {
+
                     if (!checkDailyEventBit(1) && !checkDailyEventBit(2)) {
+
                          if (checkDailyEventBit(5)) {
                             showTextBox(0, 6, 0x165, 0, 0);
                         } else {
                             func_8005B09C(5);  
                         }
+
                     } else {
                         showTextBox(0, 6, 0x164, 0, 0);
                     }
+
                 result = 1;   
             } 
+
             break;
 
         case 17:
+
             if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
                 if (gPlayer.heldItem == 0) {
                     if (checkShopItemShouldBeDisplayed(0x1A)) {
@@ -1911,9 +4409,11 @@ static u8 handleRanchStoreExits(u16 mapIndex, u8 collisionIndex) {
                     result = 2;
                 }
             }
+
             break;
 
         case 18:
+
             if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
                 if (gPlayer.heldItem == 0) {
                     if (checkShopItemShouldBeDisplayed(0x1D)) {
@@ -1922,9 +4422,11 @@ static u8 handleRanchStoreExits(u16 mapIndex, u8 collisionIndex) {
                     result = 2;
                 }
             }
+
             break;
 
         case 19:
+
             if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
                 if (gPlayer.heldItem == 0) {
                      if (checkShopItemShouldBeDisplayed(0x1B)) {
@@ -1933,9 +4435,11 @@ static u8 handleRanchStoreExits(u16 mapIndex, u8 collisionIndex) {
                     result = 2;
                 }
             }
+
             break;
 
         case 20:
+
             if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
                 if (gPlayer.heldItem == 0) {
                      if (checkShopItemShouldBeDisplayed(0x1C)) {
@@ -1944,14 +4448,18 @@ static u8 handleRanchStoreExits(u16 mapIndex, u8 collisionIndex) {
                     result = 2;
                 }
             }
+
             break;
 
         case 21:
+
             if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
                 showDialogueBox(1, 0x3D, 0x29, 0x80, 2);
                 result = 1;
             }
+
             break;
+
    }
     
     return result;
@@ -1966,18 +4474,25 @@ static bool func_800B2B90(u16 mapIndex, u8 arg1) {
     bool result = FALSE; 
 
     switch (arg1) {
+
         case 1:
+
             if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
                 result = TRUE;
                 setEntrance(0x4C);
             }
+
             break;
+
         case 19:
+
             if (func_8004D380(CONTROLLER_1, BUTTON_A)) { 
                 showTextBox(1, 6, 0xCF, 0, 2);
                 result = TRUE;
             }
+
             break;
+
     }
 
     return result;
@@ -2010,17 +4525,23 @@ static bool func_800B2C78(u16 mapIndex, u8 arg1) {
     bool result = FALSE;    
     
     switch (arg1) {
+
         case 1:
             break;
+
         case 2:
+
             if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
                 result = TRUE;
                 setEntrance(0x2A);
             }
+
             break;
+
     }
     
     return result;
+
 }
 
 // FIXME:

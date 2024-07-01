@@ -470,11 +470,7 @@ f32 func_8003C3E4(u16 mapIndex, f32 z) {
 
         if (z < gMapModelContext[mapIndex].unk_10.z && z < gMapModelContext[mapIndex].unk_1C.z) {
 
-            if (!(z > gMapModelContext[mapIndex].unk_28.z)) {
-                // FIXME: probably not a goto
-                goto label;
-            } else if (!(z > gMapModelContext[mapIndex].unk_34.z)) {
-label:
+            if (!(z > gMapModelContext[mapIndex].unk_28.z) || !(z > gMapModelContext[mapIndex].unk_34.z)) {
                 result = gMapModelContext[mapIndex].unk_28.z;
             }
             

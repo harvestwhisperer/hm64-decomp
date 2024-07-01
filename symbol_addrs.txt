@@ -645,7 +645,6 @@ __rmonMQ = 0x802373B0; // size:0x18
 __osRdb_IP6_Ct = 0x802373EC;
 __osSiAccessQueue = 0x80237440;
 
-
 // nu data
 
 vp = 0x80112900;
@@ -694,31 +693,6 @@ nuGfxRetraceWait = 0x800FBF50;
 nuContDataRead = 0x800FCA50;
 nuContDataGetEx = 0x800FC510;
 nuContPakOpen = 0x800FC910;
-
-
-// data
-
-playerDefaultStartingCoordinates = 0x80113C50;
-playerDefaultStartingDirections = 0x801141A8;
-
-D_801142E0 = 0x801142E0; // size:0x180
-
-
-// bss
-
-demoCutsceneIndex = 0x801C3F50;
-
-gWifeName = 0x801C3F51;
-
-nuGfxUcode = 0x801C3F74;
-nuGfxCfb = 0x80215EBC;
-
-idleThread  = 0x801241C0; // size:0x1B0
-mainThread  = 0x80124370; // size:0x1B0
-IdleStack   = 0x80124520; // size:0x2000
-nuMainStack = 0x801C4220; // size:0x2000
-nuIdleFunc  = 0x801FD628;
-
 
 // funcs
 
@@ -821,6 +795,9 @@ stopSfx = 0x8003D948;
 initializeDialogueBox = 0x8003DDF8;
 setDialogueBoxSpriteIndices = 0x8003F690;
 setDialogueInfo = 0x8003F30C;
+
+setGameVariableString = 0x8003FBA0;
+
 setDialogueMapAddressInfo = 0x80043050;
 setDialogueVariable = 0x800430DC;
 setDialogueVariable_inline = 0x80043CF8;
@@ -990,8 +967,7 @@ loadNameSelectionSprites = 0x800EE678;
 deactivateNamingScreenSprites = 0x800F009C;
 loadSeasonSelectionSprites = 0x800F06D8;
 
-
-// data
+// nu
 
 nuAuStlInit = 0x800F2470;
 nuAuStlBankSet = 0x800F2500;
@@ -1011,6 +987,8 @@ canvas_u8_to_str = 0x800F21F4;
 canvas_putc = 0x800F22FC;
 canvas_puts = 0x800F239C;
 
+// libmus
+
 MusStop = 0x800F5130;
 MusHandleStop = 0x800F5318;
 MusHandleAsk = 0x800F5404;
@@ -1020,12 +998,19 @@ MusHandleSetFreqOffset = 0x800F5664;
 MusBankInitialize = 0x800F595C;
 __MusIntMain = 0x800F5C00;
 
+// libkmc
+
 rand = 0x80110410;
 __muldi3 = 0x80110454;
 
+
+// data
+
+playerDefaultStartingCoordinates = 0x80113C50;
 cutsceneCallbacksTable = 0x801133D0; // size:0x62
 
 levelFlags = 0x80114460;
+playerDefaultStartingDirections = 0x801141A8;
 levelToMusicMappings = 0x801144C0;
 cutsceneMapAddresses = 0x80114AF0;
 
@@ -1063,6 +1048,10 @@ animalLocationsHouseConstruction = 0x8011F254;
 
 
 // bss
+
+idleThread  = 0x801241C0; // size:0x1B0
+mainThread  = 0x80124370; // size:0x1B0
+IdleStack   = 0x80124520; // size:0x2000
 
 levelInteractionsInfo = 0x80126560; // size:0x2
 titleScreenContext = 0x80126570; // size:0x10
@@ -1115,7 +1104,7 @@ drawnFrameCount = 0x8016FB04;
 gChickenEggs = 0x8016FB08; // size:0xC4
 namingScreenContext = 0x8016FBD0; // size:0x20
 horseInfo = 0x8016FDD0;
-harvestKingName = 0x8016FDF4;
+harvestKingName = 0x8016FDF4; // size:0x6
 gCutsceneFlagsHack = 0x8016FDFC;
 gCutsceneFlags = 0x8016FE00;
 mailboxBits = 0x8016FFEC;
@@ -1202,6 +1191,8 @@ gCutsceneIndex = 0x801C3B66;
 retraceCount = 0x801C3BEC;
 gChickens = 0x801C3BF0; // size:0x1B0
 
+overlayScreenStrings = 0x801C3DA0; // size:0x72
+
 currentGfxTaskPtr = 0x801C3E14;
 npcTalkingTo = 0x801C3E18;
 bitmapCounter = 0x801C3E2A;
@@ -1213,13 +1204,17 @@ numberOfSpiritFestivalAssistantsRecruited = 0x801C3F37;
 readMailBits = 0x801C3F38;
 gFlowerFestivalGoddess = 0x801C3F44;
 blueMistFlowerPlot = 0x801C3F45;
+demoCutsceneIndex = 0x801C3F50;
+gWifeName = 0x801C3F51; // size:0x6
 framebufferCount = 0x801C3F71;
+nuGfxUcode = 0x801C3F74;
 gTotalPinkCatMintFlowersGrowing = 0x801C3F7C;
 gVoteForFlowerFestivalGoddess = 0x801C3F7E;
 babyBirthdayDate = 0x801C3F84;
 gTotalGoldenMilkShipped = 0x801C3F88;
-
 npcAffection = 0x801C3F90; // size:0x30
+
+nuMainStack = 0x801C4220; // size:0x2000
 
 anniversaryDate = 0x801C6220;
 
@@ -1261,6 +1256,7 @@ karenKaiBabyAge = 0x801FD618;
 gSeasonTomorrow = 0x801FD620;
 spiritFestivalAssistant1 = 0x801FD621;
 gCurrentSongIndex = 0x801FD622;
+nuIdleFunc  = 0x801FD628;
 globalSprites = 0x801FD630; // size:0x7500
 mus_init_bank = 0x80204B30;
 nuAuSeqBank_ptr = 0x80204B34;
@@ -1296,13 +1292,14 @@ mainLoopCallbackCurrentIndex = 0x8020564A;
 dialogueMapAddresses = 0x80205760; // size:0x690
 
 gSeconds = 0x80215DF2;
-
 gTotalCropsShipped = 0x80215DFC;
-gFarmName = 0x8021E6D2;
 powerNutBits = 0x80215EB8;
+nuGfxCfb = 0x80215EBC;
 gElliGrievingCounter = 0x80215EC0;
 
 gHouseExtensionSelection = 0x8021E6D1;
+gFarmName = 0x8021E6D2; // size:0x6
+
 bitmapVertices = 0x8021E6E0; // size:0x400
 
 playerIdleCounter = 0x802226E0;
@@ -1328,18 +1325,14 @@ gWife = 0x802373E9;
 
 worldMatrices = 0x80237460; // size:0x5A0
 
+
 // unlabeled
 
-D_8018A850 = 0x8018A850; // size:0x57CC
-
-// unused worldGraphics array
-D_80189135 = 0x80189135; // size:0x9
+D_801142E0 = 0x801142E0; // size:0x180
 
 D_80119040 = 0x80119040; // size:0x2A0
 D_80119628 = 0x80119628; // size:0x38
 D_80119660 = 0x80119660; // size:0xE0
-D_8020563B = 0x8020563B; // size:0x4
-D_80237420 = 0x80237420; // size:0x20
 
 D_8011ECC0 = 0x8011ECC0; // size:0x8 
 D_8011ECC8 = 0x8011ECC8; // size:0x8
@@ -1380,3 +1373,10 @@ D_8011C680 = 0x8011C680; // size:0x60
 D_8011C6D0 = 0x8011C6D0; // size:0x5C
 D_8011C72C = 0x8011C72C; // size:0x5C
 D_8011C788 = 0x8011C788; // size:0x68
+
+D_8018A090 = 0x8018A090; // size:0x694
+D_8018A850 = 0x8018A850; // size:0x57CC
+D_80189135 = 0x80189135; // size:0x9
+D_8020563B = 0x8020563B; // size:0x4
+D_80237420 = 0x80237420; // size:0x20
+

@@ -798,6 +798,7 @@ void func_8006807C(void) {
         if (gPlayer.animationState != 1 || (gPlayer.action3++, gPlayer.action3 == 2)) {
             gPlayer.animationState++;
         }
+
     }   
 
 }

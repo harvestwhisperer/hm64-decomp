@@ -77,7 +77,7 @@ extern void func_8005C940(u16, u16 callbackIndex);
 extern void func_8005CA2C(u16, u16);   
 extern void func_8005CDCC(); 
 extern bool func_80061178(void);
-extern void func_80061690(void);
+extern void func_80061690(u8);
 extern u8 func_800616CC(u8);  
 extern u16 func_80063A2C(u8);
 
