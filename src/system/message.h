@@ -247,7 +247,7 @@ extern bool func_8003F80C(u16 index, u16 spriteIndex, u32 romTextureStart, u32 r
 extern bool func_8003F910(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextureEnd, u32 romIndexStart, u32 romIndexEnd, void* vaddrTextureStart, void* vaddrTextureEnd, void* vaddrIndexStart, void* vaddrIndexEnd, u32 argA, u16 offset, u8 flag, f32 x, f32 y, f32 z);
 extern bool func_8003FAF8(u16, u16);                              
 extern bool func_8003FB4C(u16, u16);                      
-extern bool func_8003FBA0(u16, u8*, s8);  
+extern bool setGameVariableString(u16, u8*, s8);  
 extern u8 func_8003FBD8(u16 index, u32 arg1, u8 arg2);
 extern bool func_8003FE9C(u16 index);
 extern bool func_8003FFF4(u16 index);

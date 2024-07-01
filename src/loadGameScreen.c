@@ -95,25 +95,25 @@ void func_800E1380(u8 controllerPakEnabled) {
     loadGameScreenContext.unk_15[18] = 0;
     loadGameScreenContext.unk_15[19] = 0;
     
-    func_8003FBA0(0, loadGameScreenContext.playerNames[0], 6);
-    func_8003FBA0(1, loadGameScreenContext.dateNumbers[0], 2);
-    func_8003FBA0(2, loadGameScreenContext.seasonNames[0], 6);
-    func_8003FBA0(3, loadGameScreenContext.dateEndings[0], 2);
+    setGameVariableString(0, loadGameScreenContext.playerNames[0], 6);
+    setGameVariableString(1, loadGameScreenContext.dateNumbers[0], 2);
+    setGameVariableString(2, loadGameScreenContext.seasonNames[0], 6);
+    setGameVariableString(3, loadGameScreenContext.dateEndings[0], 2);
     
-    func_8003FBA0(4, loadGameScreenContext.playerNames[1], 6);
-    func_8003FBA0(5, loadGameScreenContext.dateNumbers[1], 2);
-    func_8003FBA0(6, loadGameScreenContext.seasonNames[1], 6);
-    func_8003FBA0(7, loadGameScreenContext.dateEndings[1], 2);
+    setGameVariableString(4, loadGameScreenContext.playerNames[1], 6);
+    setGameVariableString(5, loadGameScreenContext.dateNumbers[1], 2);
+    setGameVariableString(6, loadGameScreenContext.seasonNames[1], 6);
+    setGameVariableString(7, loadGameScreenContext.dateEndings[1], 2);
     
-    func_8003FBA0(8, loadGameScreenContext.playerNames[2], 6);
-    func_8003FBA0(9, loadGameScreenContext.dateNumbers[2], 2);
-    func_8003FBA0(10, loadGameScreenContext.seasonNames[2], 6);
-    func_8003FBA0(11, loadGameScreenContext.dateEndings[2], 2);
+    setGameVariableString(8, loadGameScreenContext.playerNames[2], 6);
+    setGameVariableString(9, loadGameScreenContext.dateNumbers[2], 2);
+    setGameVariableString(10, loadGameScreenContext.seasonNames[2], 6);
+    setGameVariableString(11, loadGameScreenContext.dateEndings[2], 2);
     
-    func_8003FBA0(0xC, loadGameScreenContext.playerNames[3], 6);
-    func_8003FBA0(0xD, loadGameScreenContext.dateNumbers[3], 2);
-    func_8003FBA0(0xE, loadGameScreenContext.seasonNames[3], 6);
-    func_8003FBA0(0xF, loadGameScreenContext.dateEndings[3], 2);
+    setGameVariableString(0xC, loadGameScreenContext.playerNames[3], 6);
+    setGameVariableString(0xD, loadGameScreenContext.dateNumbers[3], 2);
+    setGameVariableString(0xE, loadGameScreenContext.seasonNames[3], 6);
+    setGameVariableString(0xF, loadGameScreenContext.dateEndings[3], 2);
     
     func_800E16D0(1, loadGameScreenContext.diaryHighlighted);
     

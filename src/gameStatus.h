@@ -6,6 +6,8 @@
 // TODO: finish adding these
 /* daily event bit indices */
 #define DAILY_SHIPMENT 0
+// hot springs, bath, tree climbing, suspends time
+#define SUSPEND_TIME_DURING_ANIMATION 6
 #define CARPENTER_ESTIMATE 9
 #define HOUSE_EXTENSION_WORK 0xA
 #define CARPENTER_FINISHED 0xB

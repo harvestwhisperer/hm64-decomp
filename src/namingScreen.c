@@ -190,7 +190,7 @@ void func_800ED974(void) {
 
          if (namingScreenContext.flags & 0x800) {
 
-            func_8003FBA0(0, gPlayer.name, 6);
+            setGameVariableString(0, gPlayer.name, 6);
             deactivateNamingScreenSprites();
             func_8003DD14(3);
             func_8003DD14(4);
@@ -515,7 +515,7 @@ void loadNameSelectionSprites(void) {
       
     namingScreenContext.flags |= i << 2;
     
-    func_8003FBA0(0, namingScreenContext.name, 6);
+    setGameVariableString(0, namingScreenContext.name, 6);
     
     func_8003DBE8(3, (void*)0x8030B800);
     func_8003F54C(3, 48.0f, 72.0f, 30.0f);

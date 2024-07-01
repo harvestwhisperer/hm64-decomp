@@ -86,7 +86,7 @@ inline void func_80055F08(u16 cutsceneIndex, u16 entranceIndex, u8 arg2) {
     resetGlobalLighting();
 
     func_8002F7C8(0, 0, 0, 0);
-    func_8003BE98(0, 0, 0, 0, 0);
+    func_8003BE98(MAIN_MAP_INDEX, 0, 0, 0, 0);
 
     gHour = 12;
 
@@ -228,7 +228,7 @@ void func_80056030(u8 arg0) {
     func_800D7010();
     func_800D0318();
     func_8002F7C8(0, 0, 0, 0);
-    func_8003BE98(0, 0, 0, 0, 0);
+    func_8003BE98(MAIN_MAP_INDEX, 0, 0, 0, 0);
     
     unknownRGBA.r = 0;
     unknownRGBA.g = 0;

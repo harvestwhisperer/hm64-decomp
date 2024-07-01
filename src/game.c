@@ -939,7 +939,7 @@ void func_8005C07C(s16 arg0, u16 arg1) {
     if (arg0 == 0) {
         
         func_8002F7C8(globalLightingRgba.r, globalLightingRgba.g, globalLightingRgba.b, globalLightingRgba.a);
-        func_8003BE98(0, globalLightingRgba.r, globalLightingRgba.g, globalLightingRgba.b, globalLightingRgba.a);
+        func_8003BE98(MAIN_MAP_INDEX, globalLightingRgba.r, globalLightingRgba.g, globalLightingRgba.b, globalLightingRgba.a);
         
     } else if (globalLightingRgba.r != unknownRGBA.r || globalLightingRgba.g != unknownRGBA.g || globalLightingRgba.b != unknownRGBA.b || globalLightingRgba.a != unknownRGBA.a) {
         
@@ -1017,7 +1017,7 @@ void func_8005CAA8(void) {
         // animated sprites rgba
         func_8002F7C8(0, 0, 0, 0);
         // map rgba
-        func_8003BE98(0, 0, 0, 0, 0);
+        func_8003BE98(MAIN_MAP_INDEX, 0, 0, 0, 0);
         // reset cutscene structs
         func_80046BB8();
         initializeCutsceneMaps();
@@ -1307,6 +1307,7 @@ void func_8005D0BC(void) {
     if (!set) {
         setMainLoopCallbackFunctionIndex(4);
     }
+
 }
 
 static inline void inline1(u8 arg0, u8 arg1, u8 arg2, u8 arg3, u8 arg4) {
@@ -1376,7 +1377,7 @@ static inline void func_80055F08_2(u16 cutsceneIndex, u16 entranceIndex, u8 arg2
     resetGlobalLighting();
 
     func_8002F7C8(0, 0, 0, 0);
-    func_8003BE98(0, 0, 0, 0, 0);
+    func_8003BE98(MAIN_MAP_INDEX, 0, 0, 0, 0);
 
     gHour = 12;
 
@@ -2189,7 +2190,9 @@ void func_8005D2B0() {
             }
             
             if (gPlayer.action1 == 0x1E || temp == 4) {
-                switch (temp) {                 
+
+                switch (temp) {       
+
                     case 0:                             
                         showTextBox(1, 1, 60, 0, 0);
                         break;
@@ -2208,18 +2211,23 @@ void func_8005D2B0() {
                         setPlayerAction(0, 0);
                         setMainLoopCallbackFunctionIndex(MAIN_GAME);
                         break;
+
                     }
                 
                     func_800D55E4(gPlayer.unk_2D, 1);
                     gPlayer.heldItem = 0;
+
                     break;
+
                 }
             
             setPlayerAction(0x1E, 0x1F);
             setMainLoopCallbackFunctionIndex(MAIN_GAME);
+
             break;
 
-        case 22:                                    
+        case 22:             
+
             if (gSeason == SPRING || gSeason == WINTER) {
                 if (gPlayer.action1 == 0x1E || temp == 4) {
                     switch (temp) {             
@@ -2254,6 +2262,7 @@ void func_8005D2B0() {
                 }
             
             if (gPlayer.action1 == 0x1E || temp == 4) {
+
                 switch (temp) {                 
                     case 0:                             
                         showTextBox(1, 1, 68, 0, 0);
@@ -2285,9 +2294,12 @@ void func_8005D2B0() {
             setMainLoopCallbackFunctionIndex(MAIN_GAME);
             break;
 
-        case 23:                                    
-            switch (temp) {                   
+        case 23:           
+
+            switch (temp) {                
+
                 case 0:                 
+                
                     if (calculateHouseExtensionScore() == 6 && checkLifeEventBit(MARRIED) && npcAffection[gWife] >= 250 && checkLifeEventBit(1) && dogInfo.affection >= 200 && getSumNpcAffection() >= 2500 && func_800DBF90() >= 0x180 && gMaximumStamina >= 0xBE && gHappiness >= 250 && func_8009B5E0() && D_801886D2 >= 10) {          
                         albumBits |= 0x8000;  
                     }
@@ -2295,8 +2307,7 @@ void func_8005D2B0() {
                     setMainLoopCallbackFunctionIndex(END_OF_DAY_1);
                     break;
                 
-                case 1:                    
-                    // load intro             
+                case 1:                      
                     func_80055F08_2(0x5AA, 0x61, 1);
                     break;
                 }
@@ -2936,7 +2947,7 @@ void setHarvestKingName(u8 harvestKing) {
 
 //INCLUDE_ASM(const s32, "game", func_80061690);
 
-void func_80061690(void) {
+void func_80061690(u8 arg0) {
     D_801886D4[0] = 0xF6;
     D_801886D4[1] = 0xF6;
     D_801886D4[2] = 0xF6;

@@ -728,9 +728,9 @@ bool func_8003FB4C(u16 index, u16 arg1) {
 }
 
 
-//INCLUDE_ASM(const s32, "system/message", func_8003FBA0);
+//INCLUDE_ASM(const s32, "system/message", setGameVariableString);
 
-bool func_8003FBA0(u16 index, u8* ptr, s8 length) {
+bool setGameVariableString(u16 index, u8* ptr, s8 length) {
 
     bool result = FALSE;
 

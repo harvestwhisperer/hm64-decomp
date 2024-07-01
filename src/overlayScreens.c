@@ -503,7 +503,7 @@ static inline void initializeOverlayScreenTable(void) {
     overlayScreenTable.previousCellIndex = 0;
     overlayScreenTable.pageNumber = 0;
     overlayScreenTable.unk_3 = 0xFF;
-    overlayScreenTable.unk_6 = 0;
+    overlayScreenTable.subscreen = 0;
 
 }
 
@@ -545,7 +545,7 @@ void func_800B815C(void) {
     overlayScreenTable.previousCellIndex = 0;
     overlayScreenTable.pageNumber = 0;
     overlayScreenTable.unk_3 = 0xFF;
-    overlayScreenTable.unk_6 = 0;
+    overlayScreenTable.subscreen = 0;
     
     setMainLoopCallbackFunctionIndex(KITCHEN_PICTURE);
 
@@ -651,11 +651,38 @@ INCLUDE_ASM(const s32, "overlayScreens", func_800BA9E8);
 
 INCLUDE_ASM(const s32, "overlayScreens", func_800BAAA0);
 
-INCLUDE_ASM(const s32, "overlayScreens", func_800BAC7C);
+//INCLUDE_ASM(const s32, "overlayScreens", func_800BAC7C);
+
+void func_800BAC7C(void) {
+    
+    u8 temp;
+
+    switch (overlayScreenTable.subscreen) {          
+        
+        case TOOL_SLOTS:
+            temp = gPlayer.toolSlots[overlayScreenTable.unk_3];
+            gPlayer.toolSlots[overlayScreenTable.unk_3] = gPlayer.toolSlots[overlayScreenTable.cellIndex];
+            gPlayer.toolSlots[overlayScreenTable.cellIndex] = temp;
+            break;
+        
+        case BELONGINGS:
+            temp = gPlayer.belongingsSlots[overlayScreenTable.unk_3];
+            gPlayer.belongingsSlots[overlayScreenTable.unk_3] = gPlayer.belongingsSlots[overlayScreenTable.cellIndex];
+            gPlayer.belongingsSlots[overlayScreenTable.cellIndex] = temp;
+            break;
+        
+        case KEY_ITEMS:
+            temp = gPlayer.keyItemSlots[overlayScreenTable.unk_4* 8 + overlayScreenTable.unk_3];
+            gPlayer.keyItemSlots[overlayScreenTable.unk_4*8 + overlayScreenTable.unk_3] = gPlayer.keyItemSlots[overlayScreenTable.pageNumber*8 + overlayScreenTable.cellIndex];
+            gPlayer.keyItemSlots[overlayScreenTable.pageNumber*8 + overlayScreenTable.cellIndex] = temp;
+            break;
+
+        }
+    
+}
 
 INCLUDE_ASM(const s32, "overlayScreens", func_800BADD0);
 
-// pause screen
 INCLUDE_ASM(const s32, "overlayScreens", func_800BAF1C);
 
 INCLUDE_ASM(const s32, "overlayScreens", func_800BB590);
@@ -1139,12 +1166,12 @@ INCLUDE_ASM(const s32, "overlayScreens", func_800CCFC8);
 /*
 void func_800CCFC8(void) {
 
-    func_8003FBA0(0x2A, (D_801C3E06 * 6) + &D_801C3E06 - 0x5A, 6);
-    func_8003FBA0(0x2B, (D_801C3E07 * 6) + &D_801C3E06 - 0x5A, 6);
-    func_8003FBA0(0x2C, (D_801C3E08 * 6) + &D_801C3E06 - 0x5A, 6);
-    func_8003FBA0(0x2D, (D_801C3E09 * 6) + &D_801C3E06 - 0x5A, 6);
-    func_8003FBA0(0x2E, (D_801C3E0A * 6) + &D_801C3E06 - 0x5A, 6);
-    func_8003FBA0(0x2F, (D_801C3E0B * 6) + &D_801C3E06 - 0x5A, 6);
+    setGameVariableString(0x2A, (D_801C3E06 * 6) + &D_801C3E06 - 0x5A, 6);
+    setGameVariableString(0x2B, (D_801C3E07 * 6) + &D_801C3E06 - 0x5A, 6);
+    setGameVariableString(0x2C, (D_801C3E08 * 6) + &D_801C3E06 - 0x5A, 6);
+    setGameVariableString(0x2D, (D_801C3E09 * 6) + &D_801C3E06 - 0x5A, 6);
+    setGameVariableString(0x2E, (D_801C3E0A * 6) + &D_801C3E06 - 0x5A, 6);
+    setGameVariableString(0x2F, (D_801C3E0B * 6) + &D_801C3E06 - 0x5A, 6);
     
     func_8003DBE8(0, (u8*)0x8030B000);
     func_8003F54C(0, -32.0f, 32.0f, 0.0f);

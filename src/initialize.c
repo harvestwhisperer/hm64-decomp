@@ -488,7 +488,6 @@ void func_8004E160(void) {
     
     initializeAudio(&c);
 
-    // initialize all bss variables and structs
     initializeGameVariables();
 
     gCurrentGameIndex = 0; 
@@ -499,7 +498,7 @@ void func_8004E160(void) {
     func_80053088();
     func_80054550();
     func_8002F7C8(0, 0, 0, 0);
-    func_8003BE98(0, 0, 0, 0, 0);
+    func_8003BE98(MAIN_MAP_INDEX, 0, 0, 0, 0);
 
     setMainLoopCallbackFunctionIndex(MAIN_GAME);
     
@@ -757,7 +756,7 @@ void initializeGameVariables(void) {
     overlayScreenTable.cellIndex = 0;
     overlayScreenTable.previousCellIndex = 0;
     overlayScreenTable.unk_3 = 0;
-    overlayScreenTable.unk_6 = 0;
+    overlayScreenTable.subscreen = 0;
 
     initializeTV();
 
@@ -1239,79 +1238,79 @@ void func_800535DC(void) {
 
 void initializeNameStrings(void) {
     
-    func_8003FBA0(0, gPlayer.name, 6);
-    func_8003FBA0(1, gFarmName, 6);
-    func_8003FBA0(2, dogInfo.name, 6);
-    func_8003FBA0(3, horseInfo.name, 6);
-    func_8003FBA0(4, gBabyName, 6); 
+    setGameVariableString(0, gPlayer.name, 6);
+    setGameVariableString(1, gFarmName, 6);
+    setGameVariableString(2, dogInfo.name, 6);
+    setGameVariableString(3, horseInfo.name, 6);
+    setGameVariableString(4, gBabyName, 6); 
      
-    func_8003FBA0(5, gFarmAnimals[0].name, 6);
-    func_8003FBA0(6, gFarmAnimals[1].name, 6);
-    func_8003FBA0(7, gFarmAnimals[2].name, 6);
-    func_8003FBA0(8, gFarmAnimals[3].name, 6);
-    func_8003FBA0(9, gFarmAnimals[4].name, 6);
-    func_8003FBA0(0xA, gFarmAnimals[5].name, 6);
-    func_8003FBA0(0xB, gFarmAnimals[6].name, 6);
-    func_8003FBA0(0xC, gFarmAnimals[7].name, 6);
+    setGameVariableString(5, gFarmAnimals[0].name, 6);
+    setGameVariableString(6, gFarmAnimals[1].name, 6);
+    setGameVariableString(7, gFarmAnimals[2].name, 6);
+    setGameVariableString(8, gFarmAnimals[3].name, 6);
+    setGameVariableString(9, gFarmAnimals[4].name, 6);
+    setGameVariableString(0xA, gFarmAnimals[5].name, 6);
+    setGameVariableString(0xB, gFarmAnimals[6].name, 6);
+    setGameVariableString(0xC, gFarmAnimals[7].name, 6);
     
     // unused
-    func_8003FBA0(0xE, D_80237380, 6);
+    setGameVariableString(0xE, D_80237380, 6);
     
-    func_8003FBA0(0xF, gWifeName, 6);
+    setGameVariableString(0xF, gWifeName, 6);
     
     // unused
-    func_8003FBA0(0x10, D_801FB5C4, 6);
-    func_8003FBA0(0x11, D_801594E0, 3);
-    func_8003FBA0(0x12, D_801A8B50, 8);
+    setGameVariableString(0x10, D_801FB5C4, 6);
+    setGameVariableString(0x11, D_801594E0, 3);
+    setGameVariableString(0x12, D_801A8B50, 8);
 
     // animal name
-    func_8003FBA0(0x13, D_8018985C, 6);
+    setGameVariableString(0x13, D_8018985C, 6);
 
-    func_8003FBA0(0x14, gCurrentSeasonName, 6);
+    setGameVariableString(0x14, gCurrentSeasonName, 6);
     
     // unused
-    func_8003FBA0(0x15, D_801FC152, 2);
+    setGameVariableString(0x15, D_801FC152, 2);
 
-    func_8003FBA0(0x16, gWifeName, 6);
+    setGameVariableString(0x16, gWifeName, 6);
     
     // unused
-    func_8003FBA0(0x17, D_80205210, 3);
-    func_8003FBA0(0x18, D_80237418, 3);
+    setGameVariableString(0x17, D_80205210, 3);
+    setGameVariableString(0x18, D_80237418, 3);
     
-    func_8003FBA0(0x19, gChickens[0].name, 6);
-    func_8003FBA0(0x1A, gChickens[1].name, 6);
-    func_8003FBA0(0x1B, gChickens[2].name, 6);
-    func_8003FBA0(0x1C, gChickens[3].name, 6);
-    func_8003FBA0(0x1D, gChickens[4].name, 6);
-    func_8003FBA0(0x1E, gChickens[5].name, 6);
+    setGameVariableString(0x19, gChickens[0].name, 6);
+    setGameVariableString(0x1A, gChickens[1].name, 6);
+    setGameVariableString(0x1B, gChickens[2].name, 6);
+    setGameVariableString(0x1C, gChickens[3].name, 6);
+    setGameVariableString(0x1D, gChickens[4].name, 6);
+    setGameVariableString(0x1E, gChickens[5].name, 6);
     
     // unsued
-    func_8003FBA0(0x1F, D_8020563B, 4);
+    setGameVariableString(0x1F, D_8020563B, 4);
 
-    func_8003FBA0(0x20, harvestKingName, 6);
+    setGameVariableString(0x20, harvestKingName, 6);
 
     // unused
-    func_8003FBA0(0x21, D_801806C8, 2);
-    func_8003FBA0(0x22, D_80170268, 6);
-    func_8003FBA0(0x23, D_801FC156, 6);
-    func_8003FBA0(0x24, D_80204B3C, 6);
-    func_8003FBA0(0x25, D_8016FBCC, 1);
-    func_8003FBA0(0x27, D_801886D4, 6);
-    func_8003FBA0(0x30, D_801594E6, 3);
-    func_8003FBA0(0x31, D_8016F6E0, 3);
-    
+    setGameVariableString(0x21, D_801806C8, 2);
+    setGameVariableString(0x22, D_80170268, 6);
+    setGameVariableString(0x23, D_801FC156, 6);
+    setGameVariableString(0x24, D_80204B3C, 6);
+    setGameVariableString(0x25, D_8016FBCC, 1);
+    setGameVariableString(0x27, D_801886D4, 6);
+
     // unused
-    func_8003FBA0(0x32, D_80182D90[0], 3);
-    func_8003FBA0(0x33, D_80182D90[1], 3);
-    func_8003FBA0(0x34, D_80182D90[2], 3);
-    func_8003FBA0(0x35, D_80182D90[3], 3);
-    func_8003FBA0(0x36, D_80182D90[4], 3);
-    func_8003FBA0(0x37, D_80182D90[5], 3);
-    func_8003FBA0(0x38, D_80182D90[6], 3);
-    func_8003FBA0(0x39, D_80182D90[7], 3);
-    func_8003FBA0(0x3A, D_80182D90[8], 3);
-    func_8003FBA0(0x3B, D_80182D90[9], 3);
-    func_8003FBA0(0x3C, D_80182D90[10], 3);
+    setGameVariableString(0x30, D_801594E6, 3);
+    setGameVariableString(0x31, D_8016F6E0, 3);
+    setGameVariableString(0x32, D_80182D90[0], 3);
+    setGameVariableString(0x33, D_80182D90[1], 3);
+    setGameVariableString(0x34, D_80182D90[2], 3);
+    setGameVariableString(0x35, D_80182D90[3], 3);
+    setGameVariableString(0x36, D_80182D90[4], 3);
+    setGameVariableString(0x37, D_80182D90[5], 3);
+    setGameVariableString(0x38, D_80182D90[6], 3);
+    setGameVariableString(0x39, D_80182D90[7], 3);
+    setGameVariableString(0x3A, D_80182D90[8], 3);
+    setGameVariableString(0x3B, D_80182D90[9], 3);
+    setGameVariableString(0x3C, D_80182D90[10], 3);
     
 }
 
