@@ -1160,18 +1160,16 @@ INCLUDE_ASM(const s32, "overlayScreens", func_800CC518);
 
 INCLUDE_ASM(const s32, "overlayScreens", func_800CC6F0);
 
-INCLUDE_ASM(const s32, "overlayScreens", func_800CCFC8);
+//INCLUDE_ASM(const s32, "overlayScreens", func_800CCFC8);
 
-// FIXME: matches with --fforce-addr; need to use struct indexing
-/*
 void func_800CCFC8(void) {
 
-    setGameVariableString(0x2A, (D_801C3E06 * 6) + &D_801C3E06 - 0x5A, 6);
-    setGameVariableString(0x2B, (D_801C3E07 * 6) + &D_801C3E06 - 0x5A, 6);
-    setGameVariableString(0x2C, (D_801C3E08 * 6) + &D_801C3E06 - 0x5A, 6);
-    setGameVariableString(0x2D, (D_801C3E09 * 6) + &D_801C3E06 - 0x5A, 6);
-    setGameVariableString(0x2E, (D_801C3E0A * 6) + &D_801C3E06 - 0x5A, 6);
-    setGameVariableString(0x2F, (D_801C3E0B * 6) + &D_801C3E06 - 0x5A, 6);
+    setGameVariableString(0x2A, overlayScreenStrings.dialogueVariableStrings[overlayScreenStrings.dialogueVariableIndices[0]], 6);
+    setGameVariableString(0x2B, overlayScreenStrings.dialogueVariableStrings[overlayScreenStrings.dialogueVariableIndices[1]], 6);
+    setGameVariableString(0x2C, overlayScreenStrings.dialogueVariableStrings[overlayScreenStrings.dialogueVariableIndices[2]], 6);
+    setGameVariableString(0x2D, overlayScreenStrings.dialogueVariableStrings[overlayScreenStrings.dialogueVariableIndices[3]], 6);
+    setGameVariableString(0x2E, overlayScreenStrings.dialogueVariableStrings[overlayScreenStrings.dialogueVariableIndices[4]], 6);
+    setGameVariableString(0x2F, overlayScreenStrings.dialogueVariableStrings[overlayScreenStrings.dialogueVariableIndices[5]], 6);
     
     func_8003DBE8(0, (u8*)0x8030B000);
     func_8003F54C(0, -32.0f, 32.0f, 0.0f);
@@ -1246,7 +1244,6 @@ void func_800CCFC8(void) {
     func_8003E77C(5, 0xFF, 0xFF, 0xFF, 0xFF);
     
 }
-*/
 
 //INCLUDE_ASM(const s32, "overlayScreens", func_800CD628);
 

@@ -30,12 +30,7 @@ typedef struct {
     u16 unk_6;
     u16 unk_8;
     u16 unk_A;
-    u8 string1[6]; // dialogue variable 0x2A
-    u8 string2[6]; // dialogue variable 0x2B
-    u8 string3[6]; // dialogue variable 0x2C
-    u8 string4[6]; // dialogue variable 0x2D
-    u8 string5[6]; // dialogue variable 0x2E
-    u8 string6[6]; // dialogue variable 0x2F
+    u8 dialogueVariableStrings[6][6]; // dialogue variable 0x2A-0x2F, 0x801C3DAC
     u8 string7[6];
     u8 string8[6];
     u8 string9[6];
@@ -45,7 +40,7 @@ typedef struct {
     u8 string13[6];
     u8 string14[6];
     u8 string15[6];
-    u8 string16[6];
+    u8 dialogueVariableIndices[6]; // 0x801C3E06
     u8 unk_6A; // 0x801C3E0C, index into string10
     u8 unk_6B; // set from random number
     u8 unk_6C; // set from random number
