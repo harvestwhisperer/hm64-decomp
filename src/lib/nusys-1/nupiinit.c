@@ -1,4 +1,8 @@
-#include "common.h"
+#include <nusys.h>
 
+static OSMesgQueue PiMesgQ;
+static OSMesg PiMesgBuf[NU_PI_MESG_NUM];
 
-INCLUDE_ASM(const s32, "lib/nusys-1/nupiinit", nuPiInit);
+void nuPiInit(void) {
+    osCreatePiManager((OSPri)OS_PRIORITY_PIMGR, &PiMesgQ, PiMesgBuf, NU_PI_MESG_NUM);
+}

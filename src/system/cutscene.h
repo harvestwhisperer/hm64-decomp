@@ -3,17 +3,25 @@
 
 #include "common.h"
 
-#define MAX_CUTSCENE_ASSETS 42
+#define MAX_BYTECODE_EXECUTORS 42
 
 // TODO: figure out and add flag macros
 #define ACTIVE 1
 #define CHARACTER_SPRITE_ASSET 8
 #define MAP_ASSET 0x10
 
+/* general */
+
 typedef struct {
     u16 functionIndex;
-    short offset;
-} CutscenePointersUpdate;
+    u16 assetIndex;
+    short offset; // offset from main cutscene object ptr
+} CutsceneExecutorInitializationCmd;
+
+typedef struct {
+    u16 functionIndex;
+    u16 CutsceneExecutorIndex;
+} CutsceneAssetFlagsCmd;
 
 typedef struct {
     u16 functionIndex;
@@ -21,48 +29,134 @@ typedef struct {
     u32 romAddrStart;
     u32 romAddrEnd;
     void *vaddr;
-} CutsceneDMA;
+} CutsceneDMACmd;
 
 typedef struct {
     u16 functionIndex;
-    u16 paletteIndex;
-} CutscenePaletteInfo;
+    u16 cutsceneIndex1;
+    u16 cutsceneIndex2;
+    u16 unk_6;
+    u16* cutsceneIndexPtr;
+    u16 unk_C;
+    u16 padding;
+} CutsceneIndexCheckCmd;
+
+typedef struct {
+    u16 functionIndex;
+    short offset;
+} CutsceneJumpCmd;
+
+/* audio */
 
 typedef struct {
     u16 functionIndex;
     u16 index;
     u8 *songStart;
     u8 *songEnd;
-} CutsceneSongInfo;
+} CutsceneSongCmd;
 
 typedef struct {
     u16 functionIndex;
     u16 index;
     u16 speed;
-} CutsceneSongSpeedInfo;
+} CutsceneSongSpeedCmd;
 
 typedef struct {
     u16 functionIndex;
     u16 index;
     u16 maxVolume;
     s16 volume;
-} CutsceneSongVolumeInfo;
+} CutsceneSongVolumeCmd;
 
 typedef struct {
     u16 functionIndex;
     u16 index;
     u16 volume;
-} CutsceneSfxVolumeInfo;
+} CutsceneSfxVolumeCmd;
+
+/* controller */
+
+typedef struct {
+    u16 functionIndex;
+    u16 controllerIndex;
+    u32 buttonMask;
+} CutsceneButtonCmd;
+
+/* dialogue */
+
+typedef struct {
+    u16 functionIndex;
+    u16 dialogueBoxIndex;
+} CutsceneDialogueBoxIndexCmd;
+
+typedef struct {
+    u16 functionIndex;
+    u16 dialogueBoxIndex;
+    u8 r;
+    u8 b;
+    u8 g;
+    u8 a;
+    s32 flags;
+} CutsceneDialogueBoxRGBACmd;
+
+/* entity */
 
 typedef struct {
     u16 functionIndex;
     u16 spriteIndex;
-} CutsceneSpriteInfo;
+    u16 flags;
+} CutsceneCharacterSpriteCmd;
+
+/* map */
+
+typedef struct {
+    u16 functionIndex;
+    u16 mapAdditionIndex;
+    u16 flag;
+} CutsceneMapAdditionsCmd;
+
+typedef struct {
+    u16 functionIndex;
+    u16 value;
+    u8 index1;
+    u8 index2;
+} CutsceneMapStruct6Cmd;
 
 typedef struct {
     u16 functionIndex;
     u16 flag;
-} CutsceneSpriteInfo2;
+    s32* cutsceneFlagPointer;
+} CutsceneMapFlagCmd;
+
+/* mapContext */
+
+typedef struct {
+    u16 functionIndex;
+    u16 mapModelContextIndex;
+    u16 mainMapIndex;
+} CutsceneMapModelContextCmd;
+
+typedef struct {
+    u16 functionIndex;
+    u16 index;
+} CutsceneMapModelContextCmd2;
+
+/* sprite */
+
+typedef struct {
+    u16 functionIndex;
+    u16 paletteIndex;
+} CutscenePaletteCmd;
+
+typedef struct {
+    u16 functionIndex;
+    u16 spriteIndex;
+} CutsceneSpriteCmd1;
+
+typedef struct {
+    u16 functionIndex;
+    u16 flag;
+} CutsceneSetBilinearFilteringCmd;
 
 typedef struct {
     u16 functionIndex;
@@ -74,55 +168,16 @@ typedef struct {
     u16 unk_C;
     u16 unk_E;
     u16 unk_10;
-} CutsceneSpriteInfo3;
+} CutsceneSpriteCmd3;
 
 typedef struct {
     u16 functionIndex;
     u16 spriteIndex;
     u16 characterIndex;
     u16 flag;
-} CutsceneSpriteInfo4;
+} CutsceneSpriteCmd4;
 
-typedef struct {
-    u16 functionIndex;
-    u16 index;
-} CutsceneMapInfo;
-
-typedef struct {
-    u16 functionIndex;
-    u16 value;
-    u8 index1;
-    u8 index2;
-} CutsceneMapStruct6Info;
-
-typedef struct {
-    u16 functionIndex;
-    u16 controllerIndex;
-    u32 buttonMask;
-} CutsceneButtonCheck;
-
-typedef struct {
-    u16 functionIndex;
-    u16 cutsceneMapIndex;
-} CutsceneAssetFlagsInfo;
-
-typedef struct {
-    u16 functionIndex;
-    u16 mapAdditionIndex;
-    u16 flag;
-} CutsceneMapMapAdditionsInfo;
-
-typedef struct {
-    u16 functionIndex;
-    u16 mapModelContextIndex;
-    u16 mainMapIndex;
-} CutsceneMapModelContextInfo;
-
-typedef struct {
-    u16 functionIndex;
-    u16 spriteIndex;
-    u16 flags;
-} CutsceneCharacterSpriteInfo;
+/* spriteDMAManager */
 
 typedef struct  {
     // u16 functionIndex;
@@ -141,7 +196,7 @@ typedef struct  {
     u32 animationVaddr;
     u32 spriteToPaletteVaddr;
     u32 spritesheetIndexVaddr;
-} CutsceneSpriteAddressInfo;
+} CutsceneSpriteDMAManagerCmd;
 
 /*
 typedef struct  {
@@ -160,58 +215,23 @@ typedef struct  {
     u32 animationVaddr;
     u32 spriteToPaletteVaddr;
     u32 spritesheetIndexVaddr;
-} CutsceneSpriteAddressInfo;
+} CutsceneSpriteDMAManagerCmd;
 */
 
-typedef struct {
-    u16 functionIndex;
-    u16 dialogueBoxIndex;
-} CutsceneDialogueBoxInfo;
-
-typedef struct {
-    u16 functionIndex;
-    u16 dialogueBoxIndex;
-    u8 r;
-    u8 b;
-    u8 g;
-    u8 a;
-    s32 flags;
-} CutsceneDialogueBoxRGBAInfo;
-
-typedef struct {
-    u16 functionIndex;
-    u16 assetIndex;
-    short offset; // offset from main cutscene object ptr
-} CutsceneAssetInfo;
-
-typedef struct {
-    u16 functionIndex;
-    u16 flag;
-    s32* cutsceneFlagPointer;
-} CutsceneMapFlagUpdate;
-
-typedef struct {
-    u16 functionIndex;
-    u16 cutsceneIndex1;
-    u16 cutsceneIndex2;
-    u16 unk_6;
-    u16* cutsceneIndexPtr;
-    u16 unk_C;
-    u16 padding;
-} CutsceneIndexCheck;
+/* unknown */
 
 typedef struct {
     u8 functionIndex;
     u8 unk_1;
     u8 unk_2;
     u8 nextFunctionIndex;
-} CutsceneUnknownInfo;
+} CutsceneUnknownCmd1;
 
 typedef struct {
     u16 functionIndex;
     u16 unk_2;
     u16* unk_4;
-} CutsceneUnknownInfo2;
+} CutsceneUnknownCmd2;
 
 typedef struct {
     u16 functionIndex;
@@ -219,49 +239,37 @@ typedef struct {
     u32 unk_4;
     u32 unk_8;
     u32* unk_C;
-} CutsceneUnknownInfo3;
+} CutsceneUnknownCmd3;
 
 typedef struct {
     u16 functionIndex;
     u16 unk_2;
     u16 unk_4;
-} CutsceneUnknownInfo4;
+} CutsceneUnknownCmd4;
 
 typedef struct {
     u16 functionIndex;
     u16* unk_4;
     u16* unk_8;
     u32 unk_C;
-} CutsceneUnknownInfo5;
+} CutsceneUnknownCmd5;
 
 typedef struct {
     u16 functionIndex;
     u16 unk_2;
     u32 unk_4;
     u32* unk_8;
-} CutsceneUnknownInfo6;
-
-typedef union {
-    CutscenePointersUpdate pointerUpdate;
-    CutsceneSpriteInfo spriteInfo;
-    CutsceneSongInfo songInfo;
-    CutsceneSongSpeedInfo songSpeed;
-    CutsceneSongVolumeInfo songVolume;
-    CutsceneSfxVolumeInfo sfxVolume;
-    CutsceneMapInfo tileInfo;
-    CutsceneButtonCheck buttonCheck;
-} CutsceneContext;
+} CutsceneUnknownCmd6;
 
 // 0x801808B0
 typedef struct {
-    // CutsceneContext *cutscenePointer;
-    void *cutscenePointer;
+    void *bytecodePtr;
     void *unk_4;
     void *unk_8; // return ptr
     Vec3f unk_C;
     u32 unk_18; // sets cutscenePointer
-    u16 unk_1C; // sprite info, animatedSprites.unk_58
-    u16 unk_1E; // sprite info,  animatedSprites.unk_5A
+    u16 unk_1C; // sprite info, entities.unk_58
+    u16 unk_1E; // sprite info,  entities.unk_5A
     u16 unk_20; // sprite animation
     u16 unk_22; // sprite animation
     u16 unk_24; // sprite animation
@@ -275,20 +283,20 @@ typedef struct {
     Vec3f offsets; // 0x4C
     Vec3f unk_58;
     u16 spriteIndex; // sprite or map context index
-    u16 unk_66; // is asset active, does callback function loop
+    u16 waitFrames; // is asset active, does callback function loop
     u8 unk_68;
     u8 unk_69;
     u8 unk_6A;
     u16 flags; // 0x6C
-} CutsceneMap;
+} CutsceneExecutor;
 
 // can't get a consistent match across files for this variable; some functions need array/struct loading, which breaks the match in other functions
 extern u32 gCutsceneFlags;
 extern u32 cutsceneFlagsHack[2];
 
-extern void initializeCutsceneMaps(void);
-extern void mainLoopCutsceneHandler(void);
-extern bool func_800469A8(u16 index, void *cutsceneMapPointer);
+extern void initializeCutsceneExecutors(void);
+extern void updateCutsceneExecutors(void);
+extern bool spawnCutsceneExecutor(u16 index, void *bytecodePtr);
 extern void func_80046BB8(void);   
 extern void func_80046C98(void);     
 extern void func_80046CF4(void);    

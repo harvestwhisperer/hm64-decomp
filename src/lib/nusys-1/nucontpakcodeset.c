@@ -1,3 +1,6 @@
-#include "common.h"
+#include <nusys.h>
 
-INCLUDE_ASM(const s32, "lib/nusys-1/nucontpakcodeset", nuContPakCodeSet);
+void nuContPakCodeSet(u8* companyCode, u8* gameCode) {
+    bcopy(companyCode, (u8*)&nuContPakCompanyCode, 2);
+    bcopy(gameCode, (u8*)&nuContPakGameCode, 4);
+}

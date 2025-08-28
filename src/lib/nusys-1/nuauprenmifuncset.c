@@ -1,3 +1,12 @@
-#include "common.h"
+#include <nusys.h>
+#include <nualstl_n.h>
 
-INCLUDE_ASM(const s32, "lib/nusys-1/nuauprenmifuncset", nuAuPreFuncSet);
+void nuAuPreNMIFuncSet(NUAuPreNMIFunc func) {
+    
+    OSIntMask	mask;
+    
+    mask = osSetIntMask(OS_IM_NONE);		
+    nuAuPreNMIFunc = func;
+    osSetIntMask(mask);
+
+}

@@ -1,3 +1,16 @@
-#include "common.h"
+#include <nusys.h>
 
-INCLUDE_ASM(const s32, "lib/nusys-1/nucontdatareadstart", nuContDataReadStart);
+void nuContDataReadStart(void) {
+    
+    static NUScMsg	mesg =  NU_CONT_READ_NW_MSG;
+
+    if (nuContCallBack.func == NULL) {
+#ifdef NU_DEBUG    
+	    osSyncPrintf("nuContDataReadStart: no controller manager!!\n");
+#endif
+	    return;
+    }
+
+    osSendMesg(&nuSiMgrMesgQ, (OSMesg*)&mesg, OS_MESG_BLOCK);
+
+}

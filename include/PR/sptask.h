@@ -1,23 +1,3 @@
-/**************************************************************************
- *									  *
- *		 Copyright (C) 1995, Silicon Graphics, Inc.		  *
- *									  *
- *  These coded instructions, statements, and computer programs  contain  *
- *  unpublished  proprietary  information of Silicon Graphics, Inc., and  *
- *  are protected by Federal copyright law.  They  may  not be disclosed  *
- *  to  third  parties  or copied or duplicated in any form, in whole or  *
- *  in part, without the prior written consent of Silicon Graphics, Inc.  *
- *									  *
- **************************************************************************/
-
-/**************************************************************************
- *
- *  $Revision: 1.9 $
- *  $Date: 1998/03/05 06:40:29 $
- *  $Source: /exdisk2/cvs/N64OS/Master/cvsmdev2/PR/include/sptask.h,v $
- *
- **************************************************************************/
-
 #ifndef _SPTASK_H_
 #define	_SPTASK_H_
 
@@ -29,48 +9,6 @@ extern "C" {
 
 #if defined(_LANGUAGE_C) || defined(_LANGUAGE_C_PLUS_PLUS)
 
-/**************************************************************************
- *
- * Type definitions
- *
- */
-
-/*
- * Task List Structure.
- *
- * Things an app might pass to the SP via the task list.
- * Not every task ucode would need/use every field, but
- *
- *	- type (audio, gfx, video, ...)
- *	- flags
- *		- wait for DP to drain before running new task
- *		- SEE BIT DEFINITIONS UNDER "Task Flags field"
- *	- pointer to boot ucode
- *	- size of boot ucode
- *	- pointer to ucode
- *	- size of ucode
- *	- pointer to initial DMEM data
- *	- size of initial DMEM data 
- *	- pointer to DRAM stack
- *	- size of DRAM stack (max)
- *	- pointer to output buffer
- *	- pointer to store output buffer length
- *	- generic data pointer (for display list, etc.)
- *	- generic data length (for display list, etc.)
- *	- pointer to buffer where to store saved DMEM (in yield case)
- *	- size of buffer to store saved DMEM.
- *
- * IMPORTANT!!! Watch alignment issues.
- *
- * IMPORTANT!!! Watch data cache issues.  The RCP may write data into the
- * dram_stack, output_buff, output_buff_size, and the yield_data_ptr areas.
- * These buffers should be cache aligned and use the entire line (16 bytes) to
- * avoid corruption by writebacks by the CPU (cache tearing).
- *
- * IMPORTANT!!! all addresses are virtual addresses. Library does
- * any necessary translation.
- *
- */
 typedef struct {
 	u32	type;
 	u32	flags;

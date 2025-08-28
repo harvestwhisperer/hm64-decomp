@@ -29,8 +29,8 @@ typedef	struct LDIV_T {
 #define _LLDIV_T_DEF
 typedef struct lldiv_t
 {
-    long long quot;
-    long long rem;
+	long long quot;
+	long long rem;
 } lldiv_t;
 #endif
 
@@ -49,30 +49,30 @@ void srand(unsigned);
 int  abs(int);
 long labs(long);
 
-div_t  div(int,int);
-ldiv_t ldiv(long,long);
+div_t  div(int, int);
+ldiv_t ldiv(long, long);
 lldiv_t lldiv(long long, long long);
 
-int  atoi(const char *);
-long atol(const char *);
+int  atoi(const char*);
+long atol(const char*);
 
-long strtol(const char *,char **,int);
-unsigned long strtoul(const char *,char **,int);
+long strtol(const char*, char**, int);
+unsigned long strtoul(const char*, char**, int);
 
-char *itoa(int,char *,int);
-char *ltoa(long,char *,int);
-char *ultoa(unsigned long,char *,int);
+char* itoa(int, char*, int);
+char* ltoa(long, char*, int);
+char* ultoa(unsigned long, char*, int);
 
-double atof(const char *);
-double strtod(const char *,char **);
+double atof(const char*);
+double strtod(const char*, char**);
 
-void qsort(void *,size_t,size_t,int (*)(const void *,const void *));
-void *bsearch(const void *,const void *,size_t,size_t,int (*)(const void *,const void *));
+void qsort(void*, size_t, size_t, int (*)(const void*, const void*));
+void* bsearch(const void*, const void*, size_t, size_t, int (*)(const void*, const void*));
 
-void *malloc(size_t);
-void *calloc(size_t,size_t);
-void *realloc(void *,size_t);
-void free(void *);
+void* malloc(size_t);
+void* calloc(size_t, size_t);
+void* realloc(void*, size_t);
+void free(void*);
 
 void exit(int);
 

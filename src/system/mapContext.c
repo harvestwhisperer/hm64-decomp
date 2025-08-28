@@ -2,10 +2,10 @@
 
 #include "system/mapContext.h"
 
+#include "system/entity.h"
 #include "system/graphic.h"
 #include "system/map.h"
-#include "sprite.h"
-#include "system/worldGraphics.h"
+#include "system/sceneGraph.h"
 
 // bss
 extern Vec4f D_8013D248;
@@ -24,7 +24,7 @@ void func_8003C8D4(LevelMapContext*);
 // y rotations for maps
 static const f32 D_8011EDE0[];
                     
-//INCLUDE_ASM(const s32, "system/mapContext", initializeMapContext);
+//INCLUDE_ASM("asm/nonmatchings/system/mapContext", initializeMapContext);
 
 void initializeMapContext(void) {
     
@@ -77,7 +77,7 @@ void initializeMapContext(void) {
     }
 }
 
-//INCLUDE_ASM(const s32, "system/mapContext", setMapModelAddresses);
+//INCLUDE_ASM("asm/nonmatchings/system/mapContext", setMapModelAddresses);
 
 bool setMapModelAddresses(u16 mapIndex, void *start, void *end) {
     
@@ -95,7 +95,7 @@ bool setMapModelAddresses(u16 mapIndex, void *start, void *end) {
     return result;
 }
 
-//INCLUDE_ASM(const s32, "system/mapContext", setupMapModel);
+//INCLUDE_ASM("asm/nonmatchings/system/mapContext", setupMapModel);
 
 bool setupMapModel(u16 index, u16 mapIndex, u32 *modelDataIndex) {
     
@@ -173,7 +173,7 @@ static inline u8* getAddress(u32 offsets[], u32 i) {
     return (u8*)offsets + offsets[i];
 }
 
-//INCLUDE_ASM(const s32, "system/mapContext", func_8003BC50);
+//INCLUDE_ASM("asm/nonmatchings/system/mapContext", func_8003BC50);
 
 bool func_8003BC50(u16 mainMapIndex, u16 levelMapIndex) {
 
@@ -230,7 +230,7 @@ bool func_8003BC50(u16 mainMapIndex, u16 levelMapIndex) {
     
 }
 
-//INCLUDE_ASM(const s32, "system/mapContext", func_8003BD60);
+//INCLUDE_ASM("asm/nonmatchings/system/mapContext", func_8003BD60);
 
 bool func_8003BD60(u16 mapIndex) {
     
@@ -245,7 +245,7 @@ bool func_8003BD60(u16 mapIndex) {
 
 }
 
-//INCLUDE_ASM(const s32, "system/mapContext", func_8003BDA4);
+//INCLUDE_ASM("asm/nonmatchings/system/mapContext", func_8003BDA4);
 
 bool func_8003BDA4(u16 mapIndex, f32 x, f32 y, f32 z) {
     
@@ -266,7 +266,7 @@ bool func_8003BDA4(u16 mapIndex, f32 x, f32 y, f32 z) {
 }
 
 
-//INCLUDE_ASM(const s32, "system/mapContext", func_8003BE0C);
+//INCLUDE_ASM("asm/nonmatchings/system/mapContext", func_8003BE0C);
 
 bool func_8003BE0C(u16 mapIndex, f32 x, f32 y, f32 z) {
     
@@ -286,7 +286,7 @@ bool func_8003BE0C(u16 mapIndex, f32 x, f32 y, f32 z) {
 
 }
 
-//INCLUDE_ASM(const s32, "system/mapContext", func_8003BE98);
+//INCLUDE_ASM("asm/nonmatchings/system/mapContext", func_8003BE98);
 
 bool func_8003BE98(u16 mapIndex, u8 r, u8 g, u8 b, u8 a) {
     
@@ -309,7 +309,7 @@ bool func_8003BE98(u16 mapIndex, u8 r, u8 g, u8 b, u8 a) {
 
 }
 
-//INCLUDE_ASM(const s32, "system/mapContext", func_8003BF7C);
+//INCLUDE_ASM("asm/nonmatchings/system/mapContext", func_8003BF7C);
 
 bool func_8003BF7C(u16 mapIndex, u8 r, u8 g, u8 b, u8 a, s16 arg5) {
     
@@ -334,7 +334,7 @@ bool func_8003BF7C(u16 mapIndex, u8 r, u8 g, u8 b, u8 a, s16 arg5) {
 
 }
 
-//INCLUDE_ASM(const s32, "system/mapContext", func_8003C084);
+//INCLUDE_ASM("asm/nonmatchings/system/mapContext", func_8003C084);
 
 bool func_8003C084(u16 mapIndex, u8 rotationIndex) {
     
@@ -367,7 +367,7 @@ bool func_8003C084(u16 mapIndex, u8 rotationIndex) {
     
 }
 
-//INCLUDE_ASM(const s32, "system/mapContext", getCurrentMapRotation);
+//INCLUDE_ASM("asm/nonmatchings/system/mapContext", getCurrentMapRotation);
 
 u8 getCurrentMapRotation(u16 mapIndex) {
 
@@ -384,7 +384,7 @@ u8 getCurrentMapRotation(u16 mapIndex) {
     
 }
 
-//INCLUDE_ASM(const s32, "system/mapContext", func_8003C1E0);
+//INCLUDE_ASM("asm/nonmatchings/system/mapContext", func_8003C1E0);
 
 bool func_8003C1E0(u16 mapIndex, f32 x, f32 y, f32 z, u8 arg4, u8 arg5) {
 
@@ -409,7 +409,7 @@ bool func_8003C1E0(u16 mapIndex, f32 x, f32 y, f32 z, u8 arg4, u8 arg5) {
     
 }
 
-//INCLUDE_ASM(const s32, "system/mapContext", func_8003C280);
+//INCLUDE_ASM("asm/nonmatchings/system/mapContext", func_8003C280);
 
 bool func_8003C280(u16 mapIndex, f32 arg1, f32 arg2, f32 arg3, f32 arg4, f32 arg5, f32 arg6, f32 arg7, f32 arg8) {
 
@@ -436,7 +436,7 @@ bool func_8003C280(u16 mapIndex, f32 arg1, f32 arg2, f32 arg3, f32 arg4, f32 arg
     
 }
 
-//INCLUDE_ASM(const s32, "system/mapContext", func_8003C318);
+//INCLUDE_ASM("asm/nonmatchings/system/mapContext", func_8003C318);
 
 f32 func_8003C318(u16 mapIndex, f32 x) {
 
@@ -459,7 +459,7 @@ f32 func_8003C318(u16 mapIndex, f32 x) {
 
 }
 
-//INCLUDE_ASM(const s32, "system/mapContext", func_8003C3E4);
+//INCLUDE_ASM("asm/nonmatchings/system/mapContext", func_8003C3E4);
 
 // get z value
 f32 func_8003C3E4(u16 mapIndex, f32 z) {
@@ -483,7 +483,7 @@ f32 func_8003C3E4(u16 mapIndex, f32 z) {
     
 }
 
-//INCLUDE_ASM(const s32, "system/mapContext", func_8003C4B0);
+//INCLUDE_ASM("asm/nonmatchings/system/mapContext", func_8003C4B0);
 
 bool func_8003C4B0(u16 mapIndex) {
 
@@ -499,7 +499,7 @@ bool func_8003C4B0(u16 mapIndex) {
 
 }
 
-//INCLUDE_ASM(const s32, "system/mapContext", func_8003C504);
+//INCLUDE_ASM("asm/nonmatchings/system/mapContext", func_8003C504);
 
 bool func_8003C504(u16 mapIndex) {
 
@@ -516,7 +516,7 @@ bool func_8003C504(u16 mapIndex) {
 }
 
 
-//INCLUDE_ASM(const s32, "system/mapContext", func_8003C570);
+//INCLUDE_ASM("asm/nonmatchings/system/mapContext", func_8003C570);
 
 void func_8003C570(void) {
 
@@ -531,7 +531,7 @@ void func_8003C570(void) {
     
 }
 
-//INCLUDE_ASM(const s32, "system/mapContext", func_8003C5C0);
+//INCLUDE_ASM("asm/nonmatchings/system/mapContext", func_8003C5C0);
 
 bool func_8003C5C0(u16 mapIndex, u8 arg1, u8 rotation) {
 
@@ -592,9 +592,9 @@ bool func_8003C5C0(u16 mapIndex, u8 arg1, u8 rotation) {
     
 }
 
-//INCLUDE_ASM(const s32, "system/mapContext", func_8003C6E4);
+//INCLUDE_ASM("asm/nonmatchings/system/mapContext", updateMapContext);
 
-void func_8003C6E4(void) {
+void updateMapContext(void) {
 
     u16 i;
 
@@ -618,7 +618,7 @@ void func_8003C6E4(void) {
     }
 }
 
-//INCLUDE_ASM(const s32, "system/mapContext", func_8003C8D4);
+//INCLUDE_ASM("asm/nonmatchings/system/mapContext", func_8003C8D4);
 
 void func_8003C8D4(LevelMapContext* mapContext) {
     
@@ -635,20 +635,20 @@ void func_8003C8D4(LevelMapContext* mapContext) {
     f32 temp1;
     f32 temp2;
     
-    x = mapContext->unk_4.x + ((mainMap[mapContext->mainMapIndex].mapStruct1.unk_A * mainMap[mapContext->mainMapIndex].mapStruct1.unk_8) / 2);
-    param1 = x / mainMap[mapContext->mainMapIndex].mapStruct1.unk_8;
+    x = mapContext->unk_4.x + ((mainMap[mapContext->mainMapIndex].mapStruct1.mapWidth * mainMap[mapContext->mainMapIndex].mapStruct1.scalingFactorX) / 2);
+    param1 = x / mainMap[mapContext->mainMapIndex].mapStruct1.scalingFactorX;
     
-    z = mapContext->unk_4.z + ((mainMap[mapContext->mainMapIndex].mapStruct1.unk_B * mainMap[mapContext->mainMapIndex].mapStruct1.unk_9) / 2);
+    z = mapContext->unk_4.z + ((mainMap[mapContext->mainMapIndex].mapStruct1.mapHeight * mainMap[mapContext->mainMapIndex].mapStruct1.scalingFactorZ) / 2);
     
-    temp1 = param1 * mainMap[mapContext->mainMapIndex].mapStruct1.unk_8;
+    temp1 = param1 * mainMap[mapContext->mainMapIndex].mapStruct1.scalingFactorX;
     
     param3 = x - temp1;
     
     y = mapContext->unk_4.y;
     
-    param2 = z / mainMap[mapContext->mainMapIndex].mapStruct1.unk_9;
+    param2 = z / mainMap[mapContext->mainMapIndex].mapStruct1.scalingFactorZ;
 
-    temp2 = param2 * mainMap[mapContext->mainMapIndex].mapStruct1.unk_9;
+    temp2 = param2 * mainMap[mapContext->mainMapIndex].mapStruct1.scalingFactorZ;
 
     param4 = z - temp2;
     
@@ -656,7 +656,7 @@ void func_8003C8D4(LevelMapContext* mapContext) {
 
 }
 
-//INCLUDE_ASM(const s32, "system/mapContext", func_8003CB3C);
+//INCLUDE_ASM("asm/nonmatchings/system/mapContext", func_8003CB3C);
 
 void func_8003CB3C(u16 mapIndex) {
 
@@ -699,7 +699,7 @@ void func_8003CB3C(u16 mapIndex) {
     }
 }
 
-//INCLUDE_RODATA(const s32, "system/mapContext", D_8011EDE0);
+//INCLUDE_RODATA("asm/nonmatchings/systemmapContext", D_8011EDE0);
 
 // y rotation values
 static const f32 D_8011EDE0[] = { 0, 45.0f, 90.0f, 135.0f, 180.0f, 225.0f, 270.0f, 315.0f };

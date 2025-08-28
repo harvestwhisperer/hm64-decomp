@@ -1,3 +1,6 @@
-#include "common.h"
+#include "PR/os_internal.h"
+#include "PR/rcp.h"
 
-INCLUDE_ASM(const s32, "lib/os/libultra/io/sptaskyield", osSpTaskYield);
+void osSpTaskYield(void) {
+	__osSpSetStatus(SP_SET_YIELD);
+}

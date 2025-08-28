@@ -1,4 +1,12 @@
-#include "common.h"
+#include <nusys.h>
 
+void nuGfxSwapCfbFuncSet(NUGfxSwapCfbFunc func) {
+    
+    OSIntMask mask;
+    
+    mask = osSetIntMask(OS_IM_NONE);
+    nuGfxSwapCfbFunc = func;
+    osSetIntMask(mask);
 
-INCLUDE_ASM(const s32, "lib/nusys-1/nugfxswapcfbfuncset", nuGfxSwapCfbFuncSet);
+}
+

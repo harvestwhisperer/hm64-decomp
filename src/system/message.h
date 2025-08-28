@@ -17,6 +17,9 @@
 #define HAS_CHARACTER_AVATAR 0x10000
 // 0x200000 = need to do rgba
 
+#define INLINE_TEXT 0
+#define STANDALONE 1
+
 // TODO: add japanese characters
 // 1 - 0xA0 = Japanese characters
 
@@ -80,7 +83,7 @@ typedef struct {
 
 typedef struct {
     u8* ptr;
-    u8 length;
+    u8 maxLength;
 } GameVariableString;
 
 // count: 0x49
@@ -251,8 +254,8 @@ extern bool setGameVariableString(u16, u8*, s8);
 extern u8 func_8003FBD8(u16 index, u32 arg1, u8 arg2);
 extern bool func_8003FE9C(u16 index);
 extern bool func_8003FFF4(u16 index);
-extern void func_80042634();
-extern void func_80045CB0();
+extern void updateMessageBox();
+extern void updateDialogues();
 
 
 extern DialogueBox dialogueBoxes[MAX_DIALOGUE_BOXES];

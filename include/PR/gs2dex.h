@@ -5,7 +5,7 @@
 extern "C" {
 #endif
 
-#include "PR/ultratypes.h"
+#include <PR/ultratypes.h>
 
 /*===========================================================================*
  *	Macro

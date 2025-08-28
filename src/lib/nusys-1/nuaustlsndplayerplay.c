@@ -1,5 +1,10 @@
-#include "common.h"
+#include <nusys.h>
+#include <nualstl_n.h>
 
-INCLUDE_ASM(const s32, "lib/nusys-1/nuaustlsndplayerplay", nuAuStlSndPlayerPlay);
+u32 nuAuStlSndPlayerPlay(u32 sndNo) {
+    return( MusStartEffect(sndNo) );
+}
 
-INCLUDE_ASM(const s32, "lib/nusys-1/nuaustlsndplayerplay", nuAuStlSndPlayerPlay2);
+u32 nuAuStlSndPlayerPlay2(u32 sndNo, s32 volume, s32 pan, s32 restartflag, s32 priority) {
+    return( MusStartEffect2(sndNo, volume, pan , restartflag, priority) );
+}

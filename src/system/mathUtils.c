@@ -4,7 +4,7 @@
 // libmkc
 extern int rand(void);
 
-//INCLUDE_ASM(const s32, "system/utility", func_80026850);
+//INCLUDE_ASM("asm/nonmatchings/system/utility", func_80026850);
 
 s32 getAbsoluteValue(s32 number) {
     
@@ -19,7 +19,7 @@ s32 getAbsoluteValue(s32 number) {
 
 }
 
-//INCLUDE_ASM(const s32, "system/mathUtils", getRandomNumberInRange);
+//INCLUDE_ASM("asm/nonmatchings/system/mathUtils", getRandomNumberInRange);
 
 u16 getRandomNumberInRange(u16 min, u16 max) {
     

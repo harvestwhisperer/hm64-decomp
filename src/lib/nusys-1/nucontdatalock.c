@@ -1,7 +1,21 @@
-#include "common.h"
+#include <nusys.h>
 
-// nuContDataLock
-INCLUDE_ASM(const s32, "lib/nusys-1/nucontdatalock", func_800FC440);
+void nuContDataLock(void) {
 
-// nuContDataUnLock
-INCLUDE_ASM(const s32, "lib/nusys-1/nucontdatalock", func_800FC470);
+    OSIntMask	mask;
+
+    mask = osSetIntMask(OS_IM_NONE);
+    nuContDataLockKey = NU_CONT_DATA_LOCK;
+    osSetIntMask(mask);
+
+}
+
+void nuContDataUnLock(void) {
+    
+    OSIntMask	mask;
+    
+    mask = osSetIntMask(OS_IM_NONE);
+    nuContDataLockKey = NU_CONT_DATA_UNLOCK;
+    osSetIntMask(mask);
+
+}    

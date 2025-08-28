@@ -1,3 +1,10 @@
-#include "common.h"
+#include "PR/os_internal.h"
+#include "PRinternal/piint.h"
 
-INCLUDE_ASM(const s32, "lib/os/libultra/io/pigetcmdq", osPiGetCmdQueue);
+OSMesgQueue* osPiGetCmdQueue(void) {
+    if (!__osPiDevMgr.active) {
+        return NULL;
+    } else {
+        return __osPiDevMgr.cmdQueue;
+    }
+}

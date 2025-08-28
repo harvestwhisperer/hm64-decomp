@@ -1,7 +1,25 @@
-#include "common.h"
+#include "macros.h"
+#include "PR/os_internal.h"
 
-INCLUDE_ASM(const s32, "lib/os/libultra/io/piacs", __osPiCreateAccessQueue);
+#define PI_Q_BUF_LEN 1
+u32 __osPiAccessQueueEnabled = 0;
+static OSMesg piAccessBuf[PI_Q_BUF_LEN];
+OSMesgQueue __osPiAccessQueue ALIGNED(8);
 
-INCLUDE_ASM(const s32, "lib/os/libultra/io/piacs", __osPiGetAccess);
+void __osPiCreateAccessQueue(void) {
+    __osPiAccessQueueEnabled = 1;
+    osCreateMesgQueue(&__osPiAccessQueue, piAccessBuf, PI_Q_BUF_LEN);
+    osSendMesg(&__osPiAccessQueue, NULL, OS_MESG_NOBLOCK);
+}
 
-INCLUDE_ASM(const s32, "lib/os/libultra/io/piacs", __osPiRelAccess);
+void __osPiGetAccess(void) {
+    OSMesg dummyMesg;
+    if (!__osPiAccessQueueEnabled) {
+        __osPiCreateAccessQueue();
+    }
+    osRecvMesg(&__osPiAccessQueue, &dummyMesg, OS_MESG_BLOCK);
+}
+
+void __osPiRelAccess(void) {
+    osSendMesg(&__osPiAccessQueue, NULL, OS_MESG_NOBLOCK);
+}

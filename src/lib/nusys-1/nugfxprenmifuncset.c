@@ -1,3 +1,11 @@
-#include "common.h"
+#include <nusys.h>
 
-INCLUDE_ASM(const s32, "lib/nusys-1/nugfxprenmifuncset", nuGfxPreNMIFuncSet);
+void nuGfxPreNMIFuncSet(NUGfxPreNMIFunc func) {
+    
+    OSIntMask mask;
+
+    mask = osSetIntMask(OS_IM_NONE);
+    nuGfxPreNMIFunc = func;
+    osSetIntMask(mask);
+
+}

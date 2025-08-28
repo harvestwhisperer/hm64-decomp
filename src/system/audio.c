@@ -2,13 +2,13 @@
 
 #include "system/audio.h"
 
-#include "gameAudio.h"
+#include "game/gameAudio.h"
 
 // rodata
 #define MIN_SFX_FREQUENCY (double)-6
 #define MAX_SFX_FREQUENCY (double)6
 
-//INCLUDE_ASM(const s32, "system/audio", initializeAudio);
+//INCLUDE_ASM("asm/nonmatchings/system/audio", initializeAudio);
 
 void initializeAudio(musConfig *config) {
 
@@ -45,9 +45,9 @@ void initializeAudio(musConfig *config) {
     
 }
 
-//INCLUDE_ASM(const s32, "system/audio", mainLoopAudioHandler);
+//INCLUDE_ASM("asm/nonmatchings/system/audio", updateAudio);
 
-void mainLoopAudioHandler(void) {
+void updateAudio(void) {
 
     u16 i;
     u16 j;
@@ -96,7 +96,7 @@ void mainLoopAudioHandler(void) {
             }
             
             MusHandleSetFreqOffset(gSfx[j].handle, gSfx[j].frequency);
-            MusHandlePan(gSfx[j].handle, gSfx[j].pan);
+            MusHandleSetPan(gSfx[j].handle, gSfx[j].pan);
             MusHandleSetVolume(gSfx[j].handle, gSfx[j].volume);
             
             gSfx[j].numSfxPlaying = MusHandleAsk(gSfx[j].handle);
@@ -108,14 +108,14 @@ void mainLoopAudioHandler(void) {
     }
 }
 
-//INCLUDE_ASM(const s32, "system/audio", setSongBank);
+//INCLUDE_ASM("asm/nonmatchings/system/audio", setSongBank);
 
 // wrapper for nuAuStlBankSet
 void setSongBank(u8 *pBankStart, u8 *pBankEnd, u8 *wBankStart) {
     nuAuStlBankSet(pBankStart, pBankEnd - pBankStart, wBankStart);
 }
 
-//INCLUDE_ASM(const s32, "system/audio", setSong);
+//INCLUDE_ASM("asm/nonmatchings/system/audio", setSong);
 
 bool setSong(u16 songIndex, u8 *songAddrStart, u8 *songAddrEnd) {
     
@@ -143,7 +143,7 @@ bool setSong(u16 songIndex, u8 *songAddrStart, u8 *songAddrEnd) {
 
 }
 
-//INCLUDE_ASM(const s32, "system/audio", setSongSpeed);
+//INCLUDE_ASM("asm/nonmatchings/system/audio", setSongSpeed);
 
 bool setSongSpeed(u16 index, u32 speed) {
 
@@ -165,7 +165,7 @@ bool setSongSpeed(u16 index, u32 speed) {
 
 }
 
-//INCLUDE_ASM(const s32, "system/audio", stopSong);
+//INCLUDE_ASM("asm/nonmatchings/system/audio", stopSong);
 
 bool stopSong(u16 songIndex) {
 
@@ -188,7 +188,7 @@ bool stopSong(u16 songIndex) {
 
 }
 
-//INCLUDE_ASM(const s32, "system/audio", setSongVolumes);
+//INCLUDE_ASM("asm/nonmatchings/system/audio", setSongVolumes);
 
 bool setSongVolumes(u16 index, s32 maxVolume, s16 arg2) {
     
@@ -219,7 +219,7 @@ bool setSongVolumes(u16 index, s32 maxVolume, s16 arg2) {
 
 }
 
-//INCLUDE_ASM(const s32, "system/audio", func_8003D4E4);
+//INCLUDE_ASM("asm/nonmatchings/system/audio", func_8003D4E4);
 
 bool func_8003D4E4(u16 songIndex, s32 arg1) {
     
@@ -247,7 +247,7 @@ bool func_8003D4E4(u16 songIndex, s32 arg1) {
 
 }
 
-//INCLUDE_ASM(const s32, "system/audio", func_8003D570);
+//INCLUDE_ASM("asm/nonmatchings/system/audio", func_8003D570);
 
 bool func_8003D570(u16 songIndex, s32 arg1) {
     
@@ -275,13 +275,13 @@ bool func_8003D570(u16 songIndex, s32 arg1) {
 
 }
 
-//INCLUDE_ASM(const s32, "system/audio", stopMusic);
+//INCLUDE_ASM("asm/nonmatchings/system/audio", stopMusic);
 
 void stopMusic(int speed) {
     MusStop(MUSFLAG_SONGS, speed);
 }
 
-//INCLUDE_ASM(const s32, "system/audio", setSfx);
+//INCLUDE_ASM("asm/nonmatchings/system/audio", setSfx);
 
 bool setSfx(u32 sfxIndex) {
 
@@ -317,7 +317,7 @@ bool setSfx(u32 sfxIndex) {
 
 }
 
-//INCLUDE_ASM(const s32, "system/audio", func_8003D6A8);
+//INCLUDE_ASM("asm/nonmatchings/system/audio", func_8003D6A8);
 
 bool func_8003D6A8(u32 sfxIndex) {
     
@@ -342,7 +342,7 @@ bool func_8003D6A8(u32 sfxIndex) {
 
 }
 
-//INCLUDE_ASM(const s32, "system/audio", setSfxVolume);
+//INCLUDE_ASM("asm/nonmatchings/system/audio", setSfxVolume);
 
 bool setSfxVolume(u32 sfxIndex, s32 volume) {
 
@@ -374,7 +374,7 @@ bool setSfxVolume(u32 sfxIndex, s32 volume) {
 
 }
 
-//INCLUDE_ASM(const s32, "system/audio", setSfxFrequency);
+//INCLUDE_ASM("asm/nonmatchings/system/audio", setSfxFrequency);
 
 bool setSfxFrequency(u32 sfxIndex, s32 frequency) {
 
@@ -408,7 +408,7 @@ bool setSfxFrequency(u32 sfxIndex, s32 frequency) {
 
 }
 
-//INCLUDE_ASM(const s32, "system/audio", setSfxPan);
+//INCLUDE_ASM("asm/nonmatchings/system/audio", setSfxPan);
 
 bool setSfxPan(u32 sfxIndex, s32 arg1) {
 
@@ -440,7 +440,7 @@ bool setSfxPan(u32 sfxIndex, s32 arg1) {
 
 }
 
-//INCLUDE_ASM(const s32, "system/audio", stopSoundEffect);
+//INCLUDE_ASM("asm/nonmatchings/system/audio", stopSoundEffect);
 
 void stopSfx(void) {
     MusStop(MUSFLAG_EFFECTS, 0);

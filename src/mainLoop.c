@@ -6,12 +6,13 @@
 #include "system/controller.h"
 #include "system/cutscene.h"
 #include "system/flags.h"
+#include "system/globalSprites.h"
 #include "system/graphic.h"
 #include "system/message.h"
 #include "system/pauseScreen.h"
 #include "system/sprite.h"
 #include "system/mapContext.h"
-#include "system/worldGraphics.h"
+#include "system/sceneGraph.h"
 
 #include "mainproc.h"
 
@@ -25,11 +26,11 @@ void *currentGfxTaskPtr;
 
 // forward declarations
 void func_80026284(void);
-void func_800263B0(int pendingGfx);
-void func_800264CC(int pendingGfx);
+void handleGraphicsUpdate(int pendingGfx);
+void updateMainLoopTimer(int pendingGfx);
 
   
-//INCLUDE_ASM(s32, "mainLoop", mainLoop)
+//INCLUDE_ASM("asm/nonmatchings/mainLoop", mainLoop)
 
 void mainLoop(void) {
 
@@ -69,34 +70,21 @@ void mainLoop(void) {
             // FIXME: ?
             D_8020564C;
             
-            // reset bitmap flags
-            func_80029CC8();
-
-            mainLoopAudioHandler(); 
-            
-            resetSpriteCounter();
-
-            mainLoopCutsceneHandler(); 
-
-            // sprite graphics, collisions
-            func_80033058(); 
-            // tiling
-            func_8003C6E4(); 
-            // map graphics/display lists
-            func_8003A1BC();
-            // pause screen sprites
-            func_800467F8(); 
-            // sprite lighting adjustments
-            func_8002D3D4(); 
-            // load sprites with nuPiReadRom
+            resetBitmaps();
+            updateAudio(); 
+            resetSceneNodeCounter();
+            updateCutsceneExecutors();
+            updateEntities();
+            updateMapContext();
+            updateMapGraphics();
+            updatePauseScreenSprites();
+            updateSprites(); 
             dmaSprites(); 
-            // sprite microcode, texturing
-            func_8002AE58(); 
-            // message.c
-            func_80042634(); 
-            // handle dialogue box close
-            func_80045CB0(); 
-            // no op/shelved code
+            updateBitmaps(); 
+            updateMessageBox(); 
+            updateDialogues();
+
+            // no op/shelved/debug code
             func_800293B8(); 
 
             stepMainLoop = FALSE; 
@@ -110,10 +98,11 @@ void mainLoop(void) {
         }
     
         nuGfxDisplayOff();
+        
     }
 }
 
-//INCLUDE_ASM(const s32, "registerMainLoopCallbacks", registerMainLoopCallback);
+//INCLUDE_ASM("asm/nonmatchings/mainLoop", registerMainLoopCallback);
 
 bool registerMainLoopCallback(u16 index, void *(func)()) {
 
@@ -130,7 +119,7 @@ bool registerMainLoopCallback(u16 index, void *(func)()) {
 
 }
 
-//INCLUDE_ASM(const s32, "mainLoop", setMainLoopCallbackFunctionIndex);
+//INCLUDE_ASM("asm/nonmatchings/mainLoop", setMainLoopCallbackFunctionIndex);
 
 u32 setMainLoopCallbackFunctionIndex(u16 index) {
     
@@ -149,23 +138,24 @@ u32 setMainLoopCallbackFunctionIndex(u16 index) {
     } 
     
     return result;
+
 }
 
-//INCLUDE_ASM(const s32, "registerMainLoopCallbacks", func_8002620C);
+//INCLUDE_ASM("asm/nonmatchings/mainLoop", func_8002620C);
 
 // unused
 void func_8002620C(void) {
     D_80204B38 = 1;
 }
 
-//INCLUDE_ASM(const s32, "registerMainLoopCallbacks", func_80026220);
+//INCLUDE_ASM("asm/nonmatchings/mainLoop", func_80026220);
 
 // unused
 void func_80026220(void) {
     D_80204B38 = 0;
 }
 
-//INCLUDE_ASM(const s32, "registerMainLoopCallbacks", func_80026230);
+//INCLUDE_ASM("asm/nonmatchings/mainLoop", func_80026230);
 
 // unused
 void func_80026230(u16 num) {
@@ -174,7 +164,7 @@ void func_80026230(u16 num) {
 
 void noOpCallback(void) {}
 
-//INCLUDE_ASM(const s32, "mainLoop", func_80026248);
+//INCLUDE_ASM("asm/nonmatchings/mainLoop", func_80026248);
 
 inline void func_80026248(u16 count) {
 
@@ -193,11 +183,12 @@ inline void func_80026248(u16 count) {
       counter++;
 
     } while (currentCount < count);
+
   }
 
 }
 
-//INCLUDE_ASM(const s32, "mainLoop", func_80026284);
+//INCLUDE_ASM("asm/nonmatchings/mainLoop", func_80026284);
 
 // start up before main loop
 void func_80026284(void) {
@@ -218,7 +209,7 @@ loop_end:
 
 // gfx retrace funcs
 
-//INCLUDE_ASM(const s32, "mainLoop", gfxRetraceCallback);
+//INCLUDE_ASM("asm/nonmatchings/mainLoop", gfxRetraceCallback);
 
 // NUGfxFunc
 u8 gfxRetraceCallback(int pendingGfx) {
@@ -229,11 +220,10 @@ u8 gfxRetraceCallback(int pendingGfx) {
 
     unknownFlag &= ~2;
     
-    // controller
-    func_8004CF68();
+    readControllerData();
 
-    func_800263B0(pendingGfx);
-    func_800264CC(pendingGfx);
+    handleGraphicsUpdate(pendingGfx);
+    updateMainLoopTimer(pendingGfx);
     
     if (frameCount > 59) {
         frameCount = 0;
@@ -254,9 +244,9 @@ u8 gfxRetraceCallback(int pendingGfx) {
     
 }
 
-//INCLUDE_ASM(const s32, "mainLoop", func_800263B0);
+//INCLUDE_ASM("asm/nonmatchings/mainLoop", handleGraphicsUpdate);
 
-void func_800263B0(int pendingGfx) {
+void handleGraphicsUpdate(int pendingGfx) {
 
   u8 temp;
     
@@ -295,9 +285,9 @@ void func_800263B0(int pendingGfx) {
 
 }
 
-//INCLUDE_ASM(const s32, "mainLoop", func_800264CC);
+//INCLUDE_ASM("asm/nonmatchings/mainLoop", updateMainLoopTimer);
 
-void func_800264CC(int pendingGfx) {
+void updateMainLoopTimer(int pendingGfx) {
     
     if ((frameCount % D_802226E2) == 0) {
         
@@ -328,7 +318,7 @@ void func_800264CC(int pendingGfx) {
     
 }
 
-//INCLUDE_ASM(const s32, "mainLoop", gfxBufferSwap);
+//INCLUDE_ASM("asm/nonmatchings/mainLoop", gfxBufferSwap);
 
 void gfxBufferSwap(void *gfxTask) {
     
@@ -345,7 +335,7 @@ s32 osAfterPreNMI(void) {
     return __osSpSetPc(0);
 }
 
-//INCLUDE_ASM(const s32, "mainLoop", gfxPreNMICallback);
+//INCLUDE_ASM("asm/nonmatchings/mainLoop", gfxPreNMICallback);
 
 void gfxPreNMICallback(void) {
     

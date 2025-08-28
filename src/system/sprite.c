@@ -3,23 +3,24 @@
 #include "system/sprite.h"
 
 #include "system/graphic.h"
-#include "system/worldGraphics.h"
+#include "system/spriteDMAManager.h"
+#include "system/sceneGraph.h"
 
 #include "mainproc.h"
 
 // bss
 extern u16 bitmapCounter;
 
-extern Bitmap bitmaps[MAX_BITMAPS];
-extern Gfx D_80215ED0[2][0x880];
+extern BitmapObject bitmaps[MAX_BITMAPS];
+extern Gfx spriteDisplayList[2][0x880];
 extern Vtx bitmapVertices[2][0x80][4];
                
 // forward declarations
-Gfx* func_8002A66C(Gfx*, Bitmap*, u16);             
-void func_8002ACA4(Bitmap* sprite, Gfx *dl);
+Gfx* func_8002A66C(Gfx*, BitmapObject*, u16);             
+void processBitmapSceneNode(BitmapObject* sprite, Gfx *dl);
 
 
-//INCLUDE_ASM(const s32, "system/sprite", initializeBitmaps);
+//INCLUDE_ASM("asm/nonmatchings/system/sprite", initializeBitmaps);
 
 void initializeBitmaps(void) {
 
@@ -58,9 +59,9 @@ void initializeBitmaps(void) {
 
 }
 
-//INCLUDE_ASM(const s32, "system/sprite", func_80029CC8);
+//INCLUDE_ASM("asm/nonmatchings/system/sprite", resetBitmaps);
 
-void func_80029CC8(void) {
+void resetBitmaps(void) {
 
     int i = 0;
     
@@ -73,7 +74,7 @@ void func_80029CC8(void) {
 
 }
 
-//INCLUDE_ASM(const s32, "system/sprite", func_80029CF4);
+//INCLUDE_ASM("asm/nonmatchings/system/sprite", func_80029CF4);
 
 // unused
 u16 func_80029CF4(u8 *timg, u8 *pal, s32 width, s32 height, s32 fmt, s32 size, u32 arg6, u32 arg7, u16 flags) {
@@ -100,7 +101,7 @@ u16 func_80029CF4(u8 *timg, u8 *pal, s32 width, s32 height, s32 fmt, s32 size, u
 
 }
 
-//INCLUDE_ASM(const s32, "system/sprite", func_80029DAC);
+//INCLUDE_ASM("asm/nonmatchings/system/sprite", func_80029DAC);
 
 u16 func_80029DAC(u8 *timg, u16 *pal, u16 flags) {
 
@@ -120,7 +121,7 @@ u16 func_80029DAC(u8 *timg, u16 *pal, u16 flags) {
     
 }
 
-//INCLUDE_ASM(const s32, "system/sprite", func_80029E2C);
+//INCLUDE_ASM("asm/nonmatchings/system/sprite", func_80029E2C);
 
 bool func_80029E2C(u16 index, u16 arg1, u16 arg2) {
     
@@ -150,7 +151,7 @@ bool func_80029E2C(u16 index, u16 arg1, u16 arg2) {
 
 }
 
-//INCLUDE_ASM(const s32, "system/sprite", func_80029EA4);
+//INCLUDE_ASM("asm/nonmatchings/system/sprite", func_80029EA4);
 
 bool func_80029EA4(u16 index, u16 arg1) {
     
@@ -174,7 +175,7 @@ bool func_80029EA4(u16 index, u16 arg1) {
 
 }
 
-//INCLUDE_ASM(const s32, "system/sprite", func_80029F14);
+//INCLUDE_ASM("asm/nonmatchings/system/sprite", func_80029F14);
 
 bool func_80029F14(u16 index, u16 arg1) {
 
@@ -199,7 +200,7 @@ bool func_80029F14(u16 index, u16 arg1) {
 
 }
 
-//INCLUDE_ASM(const s32, "system/sprite", func_80029F98);
+//INCLUDE_ASM("asm/nonmatchings/system/sprite", func_80029F98);
 
 bool func_80029F98(u16 index, u8 arg1, u8 arg2) {
     
@@ -225,7 +226,7 @@ bool func_80029F98(u16 index, u8 arg1, u8 arg2) {
     
 }
 
-//INCLUDE_ASM(const s32, "system/sprite", func_8002A02C);
+//INCLUDE_ASM("asm/nonmatchings/system/sprite", func_8002A02C);
 
 bool func_8002A02C(u16 index, u16 arg1) {
 
@@ -247,8 +248,9 @@ bool func_8002A02C(u16 index, u16 arg1) {
     return result;
 }
 
-//INCLUDE_ASM(const s32, "system/sprite", func_8002A09C);
+//INCLUDE_ASM("asm/nonmatchings/system/sprite", func_8002A09C);
 
+// set shrink factor
 bool func_8002A09C(u16 index, f32 arg1, f32 arg2, f32 arg3) {
     
     bool result = FALSE;
@@ -270,7 +272,7 @@ bool func_8002A09C(u16 index, f32 arg1, f32 arg2, f32 arg3) {
 
 }
 
-//INCLUDE_ASM(const s32, "system/sprite", func_8002A120);
+//INCLUDE_ASM("asm/nonmatchings/system/sprite", func_8002A120);
 
 bool func_8002A120(u16 index, f32 arg1, f32 arg2, f32 arg3) {
     
@@ -293,7 +295,7 @@ bool func_8002A120(u16 index, f32 arg1, f32 arg2, f32 arg3) {
 
 }
 
-//INCLUDE_ASM(const s32, "system/sprite", func_8002A1A4);
+//INCLUDE_ASM("asm/nonmatchings/system/sprite", func_8002A1A4);
 
 bool func_8002A1A4(u16 index, f32 arg1, f32 arg2, f32 arg3) {
 
@@ -316,7 +318,7 @@ bool func_8002A1A4(u16 index, f32 arg1, f32 arg2, f32 arg3) {
 
 }
 
-//INCLUDE_ASM(const s32, "system/sprite", func_8002A228);
+//INCLUDE_ASM("asm/nonmatchings/system/sprite", func_8002A228);
 
 bool func_8002A228(u16 index, u8 r, u8 g, u8 b, u8 a) {
     
@@ -340,9 +342,9 @@ bool func_8002A228(u16 index, u8 r, u8 g, u8 b, u8 a) {
 
 }
 
-//INCLUDE_ASM(const s32, "system/sprite", func_8002A2E0);
+//INCLUDE_ASM("asm/nonmatchings/system/sprite", func_8002A2E0);
 
-bool func_8002A2E0(u16 index, u16 arg1, u16 arg2) {
+bool func_8002A2E0(u16 index, s16 arg1, s16 arg2) {
 
     bool result = FALSE;
     
@@ -362,20 +364,20 @@ bool func_8002A2E0(u16 index, u16 arg1, u16 arg2) {
     
 }
 
-//INCLUDE_ASM(const s32, "system/sprite", func_8002A340);
+//INCLUDE_ASM("asm/nonmatchings/system/sprite", func_8002A340);
 
 u8 *func_8002A340(u16 index, u32 *spritesheetIndex, u8 *timg, u8 *romAddr) {
 
     u32 offset = spritesheetIndex[index];
 
     // func_8002A3A0 = get texture length
-    setSpriteAddresses(romAddr + offset, timg, func_8002A3A0(index, spritesheetIndex));
+    setSpriteAssetDescriptors(romAddr + offset, timg, func_8002A3A0(index, spritesheetIndex));
 
     return timg;
 
 }
 
-//INCLUDE_ASM(const s32, "system/sprite", func_8002A3A0);
+//INCLUDE_ASM("asm/nonmatchings/system/sprite", func_8002A3A0);
 
 // check if next sprite has same address (some sprites are reused with different palettes)
 // get length of texture segment
@@ -401,17 +403,17 @@ static const Gfx D_8011ECD0 = gsDPSetCombineMode(G_CC_MODULATEIDECALA, G_CC_MODU
 static const Gfx D_8011ECD8 = gsDPSetRenderMode(G_RM_AA_ZB_TEX_EDGE, G_RM_AA_ZB_TEX_EDGE2);
 static const Gfx D_8011ECE0 = gsDPSetRenderMode(G_RM_AA_TEX_EDGE, G_RM_AA_TEX_EDGE2);
 
-// INCLUDE_RODATA(const s32, "system/sprite", D_8011ECC0);
+// INCLUDE_RODATA("asm/nonmatchings/systemsprite", D_8011ECC0);
 
-// INCLUDE_RODATA(const s32, "system/sprite", D_8011ECC8);
+// INCLUDE_RODATA("asm/nonmatchings/systemsprite", D_8011ECC8);
 
-// INCLUDE_RODATA(const s32, "system/sprite", D_8011ECD0);
+// INCLUDE_RODATA("asm/nonmatchings/systemsprite", D_8011ECD0);
 
-// INCLUDE_RODATA(const s32, "system/sprite", D_8011ECD8);
+// INCLUDE_RODATA("asm/nonmatchings/systemsprite", D_8011ECD8);
 
-// INCLUDE_RODATA(const s32, "system/sprite", D_8011ECE0);
+// INCLUDE_RODATA("asm/nonmatchings/systemsprite", D_8011ECE0);
 
-//INCLUDE_ASM(const s32, "system/sprite", func_8002A410);
+//INCLUDE_ASM("asm/nonmatchings/system/sprite", func_8002A410);
 
 inline Gfx* func_8002A410(Gfx* dl, u16 flag) {
 
@@ -440,9 +442,9 @@ inline Gfx* func_8002A410(Gfx* dl, u16 flag) {
 
 }
 
-//INCLUDE_ASM(const s32, "system/sprite", func_8002A530);
+//INCLUDE_ASM("asm/nonmatchings/system/sprite", func_8002A530);
 
-inline void func_8002A530(Vec3f* arg0, Bitmap* arg1) {
+inline void func_8002A530(Vec3f* arg0, BitmapObject* arg1) {
     
     s32 width;
     s32 height;
@@ -463,16 +465,16 @@ inline void func_8002A530(Vec3f* arg0, Bitmap* arg1) {
     scaledWidth = (width / 2) * scaleX;
     scaledHeight  = (height / 2) * scaleY;
 
-    if (((arg1->unk_54 >> 3) & 3) == 1) {
+    if (((arg1->unk_54 >> 3) & (1 | 2)) == 1) {
         arg0->x = arg1->unk_1C.x + scaledWidth;
     }
-    if (((arg1->unk_54 >> 3) & 3) == 3) {
+    if (((arg1->unk_54 >> 3) & (1 | 2)) == 3) {
         arg0->x = arg1->unk_1C.x - scaledWidth;
     }
-    if (((arg1->unk_54 >> 5) & 3) == 1) {
+    if (((arg1->unk_54 >> 5) & (1 | 2)) == 1) {
         arg0->y = arg1->unk_1C.y + scaledHeight;
     }
-    if (((arg1->unk_54 >> 5) & 3) == 3) {
+    if (((arg1->unk_54 >> 5) & (1 | 2)) == 3) {
         arg0->y = arg1->unk_1C.y - scaledHeight;
     }
 
@@ -480,31 +482,31 @@ inline void func_8002A530(Vec3f* arg0, Bitmap* arg1) {
 
 static const Gfx D_8011ED00 = gsSPTexture(0x8000, 0x8000, 0, G_TX_RENDERTILE, G_ON);
 
-//INCLUDE_RODATA(const s32, "system/sprite", D_8011ED00);
+//INCLUDE_RODATA("asm/nonmatchings/systemsprite", D_8011ED00);
 
 static const Gfx D_8011ED08 = gsDPSetTextureFilter(G_TF_BILERP);
 
-//INCLUDE_RODATA(const s32, "system/sprite", D_8011ED08);
+//INCLUDE_RODATA("asm/nonmatchings/systemsprite", D_8011ED08);
 
 static const Gfx D_8011ED10 = gsDPSetTextureFilter(G_TF_POINT);
 
-//INCLUDE_RODATA(const s32, "system/sprite", D_8011ED10);
+//INCLUDE_RODATA("asm/nonmatchings/systemsprite", D_8011ED10);
 
 static const Gfx D_8011ED18 = gsSP2Triangles(0, 2, 1, 0, 0, 3, 2, 0);
 
-//INCLUDE_RODATA(const s32, "system/sprite", D_8011ED18);
+//INCLUDE_RODATA("asm/nonmatchings/systemsprite", D_8011ED18);
 
 static const Gfx D_8011ED20 = gsSP2Triangles(0, 1, 2, 0, 0, 2, 3, 0);
 
-//INCLUDE_RODATA(const s32, "system/sprite", D_8011ED20);
+//INCLUDE_RODATA("asm/nonmatchings/systemsprite", D_8011ED20);
 
 static const Gfx D_8011ED28 = gsDPPipeSync();
 
-//INCLUDE_RODATA(const s32, "system/sprite", D_8011ED28);
+//INCLUDE_RODATA("asm/nonmatchings/systemsprite", D_8011ED28);
 
 static const Gfx D_8011ED30 = gsSPEndDisplayList();
 
-//INCLUDE_RODATA(const s32, "system/sprite", D_8011ED30);
+//INCLUDE_RODATA("asm/nonmatchings/systemsprite", D_8011ED30);
 
 typedef struct {
 
@@ -515,7 +517,7 @@ typedef struct {
 
 // 99.95%
 #ifdef PERMUTER
-Gfx* func_8002A66C(Gfx* dl, Bitmap* sprite, u16 arg2) {
+Gfx* func_8002A66C(Gfx* dl, BitmapObject* sprite, u16 arg2) {
 
     u16 vtxIndex;
     u32 textureDimensions;
@@ -536,7 +538,7 @@ Gfx* func_8002A66C(Gfx* dl, Bitmap* sprite, u16 arg2) {
 
     *dl++ = D_8011ED00;
     
-    if (sprite->flags & 4) {
+    if (sprite->flags & USE_BILINEAR_FILTERING) {
         // gsDPSetTextureFilter(G_TF_BILERP)
         *dl++ = D_8011ED08;
     } else {
@@ -585,8 +587,8 @@ Gfx* func_8002A66C(Gfx* dl, Bitmap* sprite, u16 arg2) {
             textureSize = textureHeight;
         }
 
-        func_800276AC(
-            (Vtx*)&bitmapVertices[gDisplayContextIndex][sprite->spriteNumber + vtxIndex],
+        setupBitmapVertices(
+            (Vtx*)&bitmapVertices[gGraphicsBufferIndex][sprite->spriteNumber + vtxIndex],
             sprite->width,
             sprite->height,
             textureSize,
@@ -602,10 +604,9 @@ Gfx* func_8002A66C(Gfx* dl, Bitmap* sprite, u16 arg2) {
             sprite->rgba.a
         );
 
-        // load texture tile
-        dl = func_80026F88(dl, sprite, textureDimensions, textureSize);
+        dl = loadBitmapTexture(dl, sprite, textureDimensions, textureSize);
 
-        gSPVertex(&tempDl[1], (Vtx*)&bitmapVertices[gDisplayContextIndex][sprite->spriteNumber + vtxIndex][0], 4, 0);
+        gSPVertex(&tempDl[1], (Vtx*)&bitmapVertices[gGraphicsBufferIndex][sprite->spriteNumber + vtxIndex][0], 4, 0);
 
         *(tempDl) = *(tempDl+1);
         *dl++ = *(tempDl);
@@ -636,13 +637,12 @@ Gfx* func_8002A66C(Gfx* dl, Bitmap* sprite, u16 arg2) {
     
 }
 #else
-INCLUDE_ASM(const s32, "system/sprite", func_8002A66C);
+INCLUDE_ASM("asm/nonmatchings/system/sprite", func_8002A66C);
 #endif
 
-//INCLUDE_ASM(const s32, "system/sprite", func_8002ACA4);
+//INCLUDE_ASM("asm/nonmatchings/system/sprite", processBitmapSceneNode);
 
-// update world graphics from sprite
-static void func_8002ACA4(Bitmap* sprite, Gfx *dl) {
+static void processBitmapSceneNode(BitmapObject* sprite, Gfx *dl) {
 
     Vec3f vec;
 
@@ -651,28 +651,28 @@ static void func_8002ACA4(Bitmap* sprite, Gfx *dl) {
     // adjust scaling if needed
     func_8002A530(&vec, sprite);
 
-    // update worldGraphics struct
-    spriteIndex = func_8002929C(dl, (sprite->flags & (0x8 | 0x10 | 0x20 | 0x40)) | 0x80);
+    // update scene node
+    spriteIndex = addSceneNode(dl, (sprite->flags & (0x8 | 0x10 | 0x20 | 0x40)) | 0x80);
 
-    func_800292EC(spriteIndex, vec.x, vec.y, vec.z);
-    func_80029330(spriteIndex, sprite->scaling.x, sprite->scaling.y, sprite->scaling.z);
-    func_80029374(spriteIndex, sprite->unk_34.x, sprite->unk_34.y, sprite->unk_34.z);
+    addSceneNodePosition(spriteIndex, vec.x, vec.y, vec.z);
+    addSceneNodeScaling(spriteIndex, sprite->scaling.x, sprite->scaling.y, sprite->scaling.z);
+    addSceneNodeRotation(spriteIndex, sprite->unk_34.x, sprite->unk_34.y, sprite->unk_34.z);
 
 }
 
-//INCLUDE_ASM(const s32, "system/sprite", func_8002AE58);
+//INCLUDE_ASM("asm/nonmatchings/system/sprite", updateBitmaps);
 
 static const char D_8011ED4C[] = "EX";
 static const char D_8011ED50[] = "s:/system/sprite.c";
 
 // main loop function
-void func_8002AE58(void) {
+void updateBitmaps(void) {
 
     u16 i;
 
     Gfx *tempDl;
 
-    Gfx *dl = D_80215ED0[gDisplayContextIndex];
+    Gfx *dl = spriteDisplayList[gGraphicsBufferIndex];
 
     u16 spriteNumber = 0;
     
@@ -685,7 +685,7 @@ void func_8002AE58(void) {
             tempDl = dl;
             dl = func_8002A66C(tempDl, &bitmaps[i], spriteNumber);
 
-            func_8002ACA4(&bitmaps[i], tempDl); 
+            processBitmapSceneNode(&bitmaps[i], tempDl); 
             
             spriteNumber += bitmaps[i].vtxIndex;
             bitmaps[i].flags &= ~1;
@@ -693,7 +693,7 @@ void func_8002AE58(void) {
        }
    }
     
-    if (dl - D_80215ED0[gDisplayContextIndex] >= 0x880) {
+    if (dl - spriteDisplayList[gGraphicsBufferIndex] >= 0x880) {
         // FIXME: get string literals working
         __assert(D_8011ED4C, D_8011ED50, 820);
         //__assert("EX", "s:/system/sprite.c", 820);

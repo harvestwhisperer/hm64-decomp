@@ -11,7 +11,7 @@
 
 typedef u8 bool;
 
-// FIXM: signature from ultra64.h; not getting picked up by sprite.c
+// FIXME: signature from ultra64.h; not getting picked up by sprite.c
 void __assert(const char* exp, const char* filename, int line);     
 
 #define TRUE 1

@@ -1,3 +1,15 @@
-#include "common.h"
+#include <os_internal.h>
+#include "n_synthInternals.h"
 
-INCLUDE_ASM(const s32, "lib/os/libultra/libnaudio/n_synaddplayer", n_alSynAddPlayer);
+
+void n_alSynAddPlayer(ALPlayer *client)
+{
+    OSIntMask mask = osSetIntMask(OS_IM_NONE);
+
+    client->samplesLeft = n_syn->curSamples;
+    client->next = n_syn->head;
+    n_syn->head   = client;
+
+    osSetIntMask(mask);
+}
+

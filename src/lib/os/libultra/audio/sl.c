@@ -1,11 +1,42 @@
-#include "common.h"
+#include <libaudio.h>
 
-INCLUDE_ASM(const s32, "lib/os/libultra/audio/sl", alInit);
+ALGlobals* alGlobals = 0;
 
-INCLUDE_ASM(const s32, "lib/os/libultra/audio/sl", alClose);
+void alInit(ALGlobals* g, ALSynConfig* c)
+{
+    if (!alGlobals) { /* already initialized? */
+        alGlobals = g;
+        alSynNew(&alGlobals->drvr, c);
+    }
+}
 
-INCLUDE_ASM(const s32, "lib/os/libultra/audio/sl", alLink);
+void alClose(ALGlobals* glob)
+{
+    if (alGlobals) {
+        alSynDelete(&glob->drvr);
+        alGlobals = 0;
+    }
+}
 
-INCLUDE_ASM(const s32, "lib/os/libultra/audio/sl", alUnlink);
+/* might want to make these macros */
+void alLink(ALLink* ln, ALLink* to)
+{
+    ln->next = to->next;
+    ln->prev = to;
+    if (to->next)
+        to->next->prev = ln;
+    to->next = ln;
+}
 
-INCLUDE_RODATA(const s32, "lib/os/libultra/audio/sl", D_8011CD00);
+void alUnlink(ALLink* ln)
+{
+    if (ln->next)
+        ln->next->prev = ln->prev;
+    if (ln->prev)
+        ln->prev->next = ln->next;
+}
+
+
+
+
+

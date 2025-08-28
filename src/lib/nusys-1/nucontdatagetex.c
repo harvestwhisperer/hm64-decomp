@@ -1,3 +1,15 @@
-#include "common.h"
+#include <nusys.h>
 
-INCLUDE_ASM(const s32, "lib/nusys-1/nucontdatagetex", nuContDataGetEx);
+void nuContDataGetEx(NUContData *contdata, u32 padno) {
+    
+    u16	button;
+
+    button = contdata->button;
+    nuContDataClose();	    
+    bcopy(&nuContData[padno], contdata, sizeof(OSContPad));
+
+    
+    contdata->trigger = nuContData[padno].button & (~button);
+    nuContDataOpen();	
+
+}

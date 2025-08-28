@@ -1,3 +1,7 @@
-#include "common.h"
+#include "synthInternals.h"
 
-INCLUDE_ASM(const s32, "lib/os/libultra/audio/syndelete", alSynDelete);
+void alSynDelete(ALSynth* drvr)
+{
+    drvr->head = 0;
+}
+

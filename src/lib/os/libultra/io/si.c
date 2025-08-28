@@ -1,3 +1,16 @@
-#include "common.h"
+#include "PR/os_internal.h"
+#include "PRinternal/siint.h"
 
-INCLUDE_ASM(const s32, "lib/os/libultra/io/si", __osSiDeviceBusy);
+// TODO: this comes from a header
+#ident "$Revision: 1.17 $"
+
+int __osSiDeviceBusy() {
+    register u32 stat = IO_READ(SI_STATUS_REG);
+
+    if (stat & (SI_STATUS_DMA_BUSY | SI_STATUS_RD_BUSY)) {
+        return TRUE;
+    }
+    else {
+        return FALSE;
+    }
+}

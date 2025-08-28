@@ -5,7 +5,6 @@
 
 #include "system/message.h"
 
-
 #define MAX_DIALOGUES 1
 #define TOTAL_CONVERSATION_BANKS 70
 

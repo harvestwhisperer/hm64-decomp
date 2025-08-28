@@ -1,3 +1,8 @@
-#include "common.h"
+#include "PR/rcp.h"
 
-INCLUDE_ASM(const s32, "lib/os/libultra/io/aigetstat", osAiGetStatus);
+// TODO: this comes from a header
+#ident "$Revision: 1.17 $"
+
+u32 osAiGetStatus() {
+	return IO_READ(AI_STATUS_REG);
+}

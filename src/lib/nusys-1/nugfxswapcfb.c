@@ -1,4 +1,10 @@
-#include "common.h"
+#include <nusys.h>
 
+void nuGfxSwapCfb(void* gfxTask) {
+    
+    NUScTask*	gfxTaskPtr;
+    gfxTaskPtr = (NUScTask*)gfxTask;
+    
+    osViSwapBuffer(gfxTaskPtr->framebuffer);
 
-INCLUDE_ASM(const s32, "lib/nusys-1/nugfxswapcfb", nuGfxSwapCfb);
+}

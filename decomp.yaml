@@ -1,0 +1,21 @@
+name: Harvest Moon 64
+repo: https://github.com/harvestwhisperer/hm64-decomp
+platform: n64
+build_system: make
+versions:
+- name: us
+  fullname: US
+  sha1: 90631460f1876a14849df0541d534012b410a34c
+  paths:
+    target: "hm64.z64"
+    build_dir: "build"
+    map: "hm64.map"
+    compiled_target: "hm64.z64"
+    elf: "hm64.elf"
+    expected_dir: "expected"
+    asm: "asm"
+    nonmatchings: "asm/nonmatchings"
+
+tools:
+  decompme:
+    preset: 112

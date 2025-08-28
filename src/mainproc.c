@@ -2,15 +2,18 @@
 
 #include "system/controller.h"
 #include "system/dialogue.h"
+#include "system/entity.h"
 #include "system/flags.h"
+#include "system/globalSprites.h"
 #include "system/graphic.h"
 #include "system/message.h"
 #include "system/pauseScreen.h"
 #include "system/sprite.h"
 #include "system/mapContext.h"
-#include "system/worldGraphics.h"
+#include "system/sceneGraph.h"
 
-#include "gameStart.h"
+#include "game/gameStart.h"
+
 #include "mainproc.h"
 #include "mainLoop.h"                        
 
@@ -35,7 +38,7 @@ extern volatile u8 D_80237A04;
 
 extern u16 gMainMapIndex;
 
-extern volatile u32 gDisplayContextIndex;
+extern volatile u32 gGraphicsBufferIndex;
 extern volatile u8 gfxTaskNo;
 extern volatile u8 frameCount;
 
@@ -55,7 +58,7 @@ void initializeEngine(void);
 void func_80025F04(void);
 
 
-//INCLUDE_ASM(const s32, "mainproc", func_80025D90);
+//INCLUDE_ASM("asm/nonmatchings/mainproc", func_80025D90);
 
 void mainproc(void *arg) {
     
@@ -91,7 +94,7 @@ void mainproc(void *arg) {
 
 }
 
-//INCLUDE_ASM(const s32, "mainproc", initializeEngine);
+//INCLUDE_ASM("asm/nonmatchings/mainproc", initializeEngine);
 
 void initializeEngine(void) {
 
@@ -101,22 +104,22 @@ void initializeEngine(void) {
     controllerInit();
     graphicsInit();
 
-    resetSpriteAddressesFlags();
-    initializeWorldGraphics();
+    resetSpriteAssetDescriptorFlags();
+    
+    initializeSceneNodes();
     initializeBitmaps();
     initializeGlobalSprites();
-    // system/map.c
-    func_800337D0();
+    initializeMap();
     // system/message.c
     func_8003D970();
     // system/dialogue.c
     func_80042F60();
     // system/pauseScreen.c
     func_80045DE0();
-    initializeCutsceneMaps();
+    initializeCutsceneExecutors();
     // system/flags.c
     func_8004DEB0();
-    initializeNpcSpriteStructs();
+    initializeEntities();
     initializeMapContext();
 
     nuGfxSwapCfbFuncSet(NULL);
@@ -130,7 +133,7 @@ void initializeEngine(void) {
 
 }
 
-//INCLUDE_ASM(const s32, "mainproc", func_80025F04);
+//INCLUDE_ASM("asm/nonmatchings/mainproc", func_80025F04);
 
 void func_80025F04(void) {
     
@@ -160,7 +163,7 @@ void func_80025F04(void) {
     D_801C3B68[2] = 0;
     D_801C3B68[3] = 0;
 
-    gDisplayContextIndex = 0;
+    gGraphicsBufferIndex = 0;
     
     D_80204B38 = 0;
     gMainMapIndex = 0;

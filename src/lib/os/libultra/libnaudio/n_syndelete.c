@@ -1,3 +1,7 @@
-#include "common.h"
+#include "n_synthInternals.h"
 
-INCLUDE_ASM(const s32, "lib/os/libultra/libnaudio/n_syndelete", n_alSynDelete);
+void n_alSynDelete(void)
+{
+    n_syn->head = 0;
+}
+
