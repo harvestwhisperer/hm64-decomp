@@ -4,9 +4,9 @@
 #include "system/dialogue.h"
 #include "system/mathUtils.h"
 #include "system/message.h"
-#include "system/sprite.h"
+#include "system/globalSprites.h"
 
-#include "game.h"
+#include "game/game.h"
 
 // bss
 // struct/array
@@ -27,7 +27,7 @@ extern void func_80044BF4(u16 index);
 extern void func_80044D78(u16);
 extern void func_80045260(u16);
 
-//INCLUDE_ASM(const s32, "system/dialogue", func_80042F60);
+//INCLUDE_ASM("asm/nonmatchings/system/dialogue", func_80042F60);
 
 void func_80042F60(void) {
 
@@ -44,7 +44,7 @@ void func_80042F60(void) {
     }
 } 
 
-//INCLUDE_ASM(const s32, "system/dialogue", func_80042FEC);
+//INCLUDE_ASM("asm/nonmatchings/system/dialogue", func_80042FEC);
 
 bool func_80042FEC(u16 index, u16 dialogueBoxIndex1, u16 dialogueBoxIndex2) {
 
@@ -68,7 +68,7 @@ bool func_80042FEC(u16 index, u16 dialogueBoxIndex1, u16 dialogueBoxIndex2) {
     
 }
 
-//INCLUDE_ASM(const s32, "system/dialogue", setdialogueMapAddressInfo);
+//INCLUDE_ASM("asm/nonmatchings/system/dialogue", setdialogueMapAddressInfo);
 
 bool setDialogueMapAddressInfo(u16 index, u16 arg1, u16 arg2, u32 romStart, u32 romEnd, void* vaddr, u32 romIndex, void* vaddrIndex) {
 
@@ -92,7 +92,7 @@ bool setDialogueMapAddressInfo(u16 index, u16 arg1, u16 arg2, u32 romStart, u32 
 
 }
 
-//INCLUDE_ASM(const s32, "system/dialogue", setDialogueVariable);
+//INCLUDE_ASM("asm/nonmatchings/system/dialogue", setDialogueVariable);
 
 bool setDialogueVariable(u16 index, void *value, u8 type, s32 max) {
 
@@ -116,14 +116,14 @@ bool setDialogueVariable(u16 index, void *value, u8 type, s32 max) {
 
 }
 
-//INCLUDE_ASM(const s32, "system/dialogue", setSpecialDialogueBitsPointer);
+//INCLUDE_ASM("asm/nonmatchings/system/dialogue", setSpecialDialogueBitsPointer);
 
 bool setSpecialDialogueBitsPointer(u32* arg0) {
     specialDialogueBitsPointer = arg0;
     return 0;
 }
 
-//INCLUDE_ASM(const s32, "system/dialogue", func_80043148);
+//INCLUDE_ASM("asm/nonmatchings/system/dialogue", func_80043148);
 
 bool func_80043148(u16 index, u32 scrollSfxIndex, u32 closeSfxIndex, u32 arg3) {
 
@@ -143,7 +143,7 @@ bool func_80043148(u16 index, u32 scrollSfxIndex, u32 closeSfxIndex, u32 arg3) {
     
 }
 
-//INCLUDE_ASM(const s32, "system/dialogue", func_8004318C);
+//INCLUDE_ASM("asm/nonmatchings/system/dialogue", func_8004318C);
 
 bool func_8004318C(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextureEnd, u32 romIndexStart, u32 romIndexEnd, 
     void* vaddrTextureStart, void* vaddrTextureEnd, void* vaddrIndexStart, void* vaddrIndexEnd, u32 argA, 
@@ -180,7 +180,7 @@ bool func_8004318C(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextu
     
 }
 
-//INCLUDE_ASM(const s32, "system/dialogue", func_80043260);
+//INCLUDE_ASM("asm/nonmatchings/system/dialogue", func_80043260);
 
 bool func_80043260(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextureEnd, u32 romIndexStart, u32 romIndexEnd, 
     void* vaddrTextureStart, void* vaddrTextureEnd, void* vaddrIndexStart, void* vaddrIndexEnd, u32 argA, 
@@ -217,7 +217,7 @@ bool func_80043260(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextu
     
 }
 
-//INCLUDE_ASM(const s32, "system/dialogue", func_80043334);
+//INCLUDE_ASM("asm/nonmatchings/system/dialogue", func_80043334);
  
 bool func_80043334(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextureEnd, u32 romIndexStart, u32 romIndexEnd, 
     void* vaddrTextureStart, void* vaddrTextureEnd, void* vaddrIndexStart, void* vaddrIndexEnd, u32 argA, 
@@ -256,7 +256,7 @@ bool func_80043334(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextu
     
 }
 
-//INCLUDE_ASM(const s32, "system/dialogue", func_80043408);
+//INCLUDE_ASM("asm/nonmatchings/system/dialogue", func_80043408);
 
 // adjust value
 inline int func_80043408(int initial, int value, int max) {
@@ -279,7 +279,7 @@ inline int func_80043408(int initial, int value, int max) {
     return adjusted;
 }
 
-//INCLUDE_ASM(const s32, "system/dialogue", func_80043430);
+//INCLUDE_ASM("asm/nonmatchings/system/dialogue", func_80043430);
 
 bool func_80043430(u16 index, u16 dialogueMapAddressesIndex, u16 dialogueIndex, u16 flag) {
 
@@ -307,11 +307,11 @@ bool func_80043430(u16 index, u16 dialogueMapAddressesIndex, u16 dialogueIndex, 
  
         setSpriteShrinkFactor(dialogues[index].dialogueButtonIcon1.spriteIndex, 0.0f, 0.0f, 0.0f);
         setSpriteScale(dialogues[index].dialogueButtonIcon1.spriteIndex, 1.0f, 1.0f, 1.0f);
-        func_8002BE14(dialogues[index].dialogueButtonIcon1.spriteIndex, 0.0f, 0.0f, 0.0f);
-        func_8002CB24(dialogues[index].dialogueButtonIcon1.spriteIndex, 1);
-        func_8002C914(dialogues[index].dialogueButtonIcon1.spriteIndex, 0xFF, 0xFF, 0xFF, 0xFF);
+        setSpriteAngles(dialogues[index].dialogueButtonIcon1.spriteIndex, 0.0f, 0.0f, 0.0f);
+        setBilinearFiltering(dialogues[index].dialogueButtonIcon1.spriteIndex, TRUE);
+        setSpriteColor(dialogues[index].dialogueButtonIcon1.spriteIndex, 0xFF, 0xFF, 0xFF, 0xFF);
         func_8002C680(dialogues[index].dialogueButtonIcon1.spriteIndex, 2, 2);
-        func_8002C7EC(dialogues[index].dialogueButtonIcon1.spriteIndex, 3);
+        setSpriteRenderingLayer(dialogues[index].dialogueButtonIcon1.spriteIndex, (1 | 2));
 
         dmaSprite(dialogues[index].dialogueButtonIcon2.spriteIndex, 
             dialogues[index].dialogueButtonIcon2.romTextureStart, 
@@ -331,11 +331,11 @@ bool func_80043430(u16 index, u16 dialogueMapAddressesIndex, u16 dialogueIndex, 
 
         setSpriteShrinkFactor(dialogues[index].dialogueButtonIcon2.spriteIndex, 0.0f, 0.0f, 0.0f);
         setSpriteScale(dialogues[index].dialogueButtonIcon2.spriteIndex, 1.0f, 1.0f, 1.0f);
-        func_8002BE14(dialogues[index].dialogueButtonIcon2.spriteIndex, 0.0f, 0.0f, 0.0f);
-        func_8002CB24(dialogues[index].dialogueButtonIcon2.spriteIndex, 1);
-        func_8002C914(dialogues[index].dialogueButtonIcon2.spriteIndex, 0xFF, 0xFF, 0xFF, 0xFF);
+        setSpriteAngles(dialogues[index].dialogueButtonIcon2.spriteIndex, 0.0f, 0.0f, 0.0f);
+        setBilinearFiltering(dialogues[index].dialogueButtonIcon2.spriteIndex, TRUE);
+        setSpriteColor(dialogues[index].dialogueButtonIcon2.spriteIndex, 0xFF, 0xFF, 0xFF, 0xFF);
         func_8002C680(dialogues[index].dialogueButtonIcon2.spriteIndex, 2, 2);
-        func_8002C7EC(dialogues[index].dialogueButtonIcon2.spriteIndex, 3);
+        setSpriteRenderingLayer(dialogues[index].dialogueButtonIcon2.spriteIndex, (1 | 2));
 
         dmaSprite(dialogues[index].dialogueButtonIcon3.spriteIndex, 
             dialogues[index].dialogueButtonIcon3.romTextureStart, 
@@ -355,11 +355,11 @@ bool func_80043430(u16 index, u16 dialogueMapAddressesIndex, u16 dialogueIndex, 
 
         setSpriteShrinkFactor(dialogues[index].dialogueButtonIcon3.spriteIndex, 0.0f, 0.0f, 0.0f);
         setSpriteScale(dialogues[index].dialogueButtonIcon3.spriteIndex, 1.0f, 1.0f, 1.0f);
-        func_8002BE14(dialogues[index].dialogueButtonIcon3.spriteIndex, 0.0f, 0.0f, 0.0f);
-        func_8002CB24(dialogues[index].dialogueButtonIcon3.spriteIndex, 1);
-        func_8002C914(dialogues[index].dialogueButtonIcon3.spriteIndex, 0xFF, 0xFF, 0xFF, 0xFF);
+        setSpriteAngles(dialogues[index].dialogueButtonIcon3.spriteIndex, 0.0f, 0.0f, 0.0f);
+        setBilinearFiltering(dialogues[index].dialogueButtonIcon3.spriteIndex, TRUE);
+        setSpriteColor(dialogues[index].dialogueButtonIcon3.spriteIndex, 0xFF, 0xFF, 0xFF, 0xFF);
         func_8002C680(dialogues[index].dialogueButtonIcon3.spriteIndex, 2, 2);
-        func_8002C7EC(dialogues[index].dialogueButtonIcon3.spriteIndex, 3);
+        setSpriteRenderingLayer(dialogues[index].dialogueButtonIcon3.spriteIndex, (1 | 2));
         
         dialogues[index].struct1.unk_12 = 0xFF;
         dialogues[index].struct5.dialogueMapAddressesIndex = dialogueMapAddressesIndex;
@@ -416,7 +416,7 @@ bool func_80043430(u16 index, u16 dialogueMapAddressesIndex, u16 dialogueIndex, 
     
 }
 
-//INCLUDE_ASM(const s32, "system/dialogue", func_80043A88);
+//INCLUDE_ASM("asm/nonmatchings/system/dialogue", func_80043A88);
 
 bool func_80043A88(void) {
 
@@ -433,7 +433,7 @@ bool func_80043A88(void) {
     
 }
 
-//INCLUDE_ASM(const s32, "system/dialogue", func_80043AD8);
+//INCLUDE_ASM("asm/nonmatchings/system/dialogue", func_80043AD8);
 
 bool func_80043AD8(u16 index) {
 
@@ -458,7 +458,7 @@ bool func_80043AD8(u16 index) {
     
 }
 
-//INCLUDE_ASM(const s32, "system/dialogue", func_80043B84);
+//INCLUDE_ASM("asm/nonmatchings/system/dialogue", func_80043B84);
 
 void func_80043B84(u16 index) {
 
@@ -466,21 +466,21 @@ void func_80043B84(u16 index) {
     
     func_8003F130(dialogues[index].struct5.dialogueBoxIndex2);
     
-    func_8002BAD8(dialogues[index].dialogueButtonIcon1.spriteIndex);
-    func_8002BAD8(dialogues[index].dialogueButtonIcon2.spriteIndex);
-    func_8002BAD8(dialogues[index].dialogueButtonIcon3.spriteIndex);
+    resetAnimationState(dialogues[index].dialogueButtonIcon1.spriteIndex);
+    resetAnimationState(dialogues[index].dialogueButtonIcon2.spriteIndex);
+    resetAnimationState(dialogues[index].dialogueButtonIcon3.spriteIndex);
     
     dialogues[index].struct5.flags &= ~0x20;
     
 }
 
-//INCLUDE_ASM(const s32, "system/dialogue", func_80043C6C);
+//INCLUDE_ASM("asm/nonmatchings/system/dialogue", func_80043C6C);
 
 u8 func_80043C6C(u16 index) {
     return dialogues[index].struct5.unk_17;
 }
 
-//INCLUDE_ASM(const s32, "system/dialogue", func_80043C98);
+//INCLUDE_ASM("asm/nonmatchings/system/dialogue", func_80043C98);
 
 u32 func_80043C98(u16 index, u16 textIndex) {
 
@@ -490,7 +490,7 @@ u32 func_80043C98(u16 index, u16 textIndex) {
     
 }
 
-//INCLUDE_ASM(const s32, "system/dialogue", setDialogueVariable_inline);
+//INCLUDE_ASM("asm/nonmatchings/system/dialogue", setDialogueVariable_inline);
 
 inline void setDialogueVariable_inline(u16 index, u16 value) {
 
@@ -508,7 +508,7 @@ inline void setDialogueVariable_inline(u16 index, u16 value) {
     
 }
  
-//INCLUDE_ASM(const s32, "system/dialogue", getDialogueVariableValue);
+//INCLUDE_ASM("asm/nonmatchings/system/dialogue", getDialogueVariableValue);
 
 inline u32 getDialogueVariableValue(u16 index) {
 
@@ -530,7 +530,7 @@ inline u32 getDialogueVariableValue(u16 index) {
 
 }
 
-//INCLUDE_ASM(const s32, "system/dialogue", setSpecialDialogueBitFromPointer);
+//INCLUDE_ASM("asm/nonmatchings/system/dialogue", setSpecialDialogueBitFromPointer);
 
 inline void setSpecialDialogueBitFromPointer(u16 bitIndex) {
 
@@ -539,7 +539,7 @@ inline void setSpecialDialogueBitFromPointer(u16 bitIndex) {
     
 }
 
-//INCLUDE_ASM(const s32, "system/dialogue", toggleSpecialDialogueBitFromPointer);
+//INCLUDE_ASM("asm/nonmatchings/system/dialogue", toggleSpecialDialogueBitFromPointer);
 
 inline void toggleSpecialDialogueBitFromPointer(u16 bitIndex) {
 
@@ -548,7 +548,7 @@ inline void toggleSpecialDialogueBitFromPointer(u16 bitIndex) {
 
 }
 
-//INCLUDE_ASM(const s32, "system/dialogue", checkSpecialDialogueBitFromPointer);
+//INCLUDE_ASM("asm/nonmatchings/system/dialogue", checkSpecialDialogueBitFromPointer);
 
 inline u32 checkSpecialDialogueBitFromPointer(u16 bitIndex) {
     
@@ -656,7 +656,7 @@ void func_80043EC8(u16 index) {
     
 }
 #else
-INCLUDE_ASM(const s32, "system/dialogue", func_80043EC8);
+INCLUDE_ASM("asm/nonmatchings/system/dialogue", func_80043EC8);
 #endif
 
 #ifdef PERMUTER
@@ -669,19 +669,19 @@ void func_80044684(u16 index) {
 
     setSpriteScale(dialogueWindows[dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].dialogueWindowIndex].spriteIndex, dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].unk_A0 * 0.5f, dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].unk_93 * 0.6f, 1.0f);
     
-    func_8002C7EC(dialogueWindows[dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].dialogueWindowIndex].spriteIndex, 3);
-    func_8002C914(dialogueWindows[dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].dialogueWindowIndex].spriteIndex, 255, 255, 255, 192);
-    func_8002CB24(dialogueWindows[dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].dialogueWindowIndex].spriteIndex, 1);
+    setSpriteRenderingLayer(dialogueWindows[dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].dialogueWindowIndex].spriteIndex, (1 | 2));
+    setSpriteColor(dialogueWindows[dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].dialogueWindowIndex].spriteIndex, 255, 255, 255, 192);
+    setBilinearFiltering(dialogueWindows[dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].dialogueWindowIndex].spriteIndex, TRUE);
 
-    func_8002B80C(dialogues[index].dialogueButtonIcon1.spriteIndex, dialogues[index].dialogueButtonIcon1.spriteOffset, dialogues[index].dialogueButtonIcon1.flag);
+    startSpriteAnimation(dialogues[index].dialogueButtonIcon1.spriteIndex, dialogues[index].dialogueButtonIcon1.spriteOffset, dialogues[index].dialogueButtonIcon1.flag);
     setSpriteShrinkFactor(dialogues[index].dialogueButtonIcon1.spriteIndex, dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].shrink.x + temp1, dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].shrink.y + temp2, dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].shrink.z);
 
 }
 #else
-INCLUDE_ASM(const s32, "system/dialogue", func_80044684);
+INCLUDE_ASM("asm/nonmatchings/system/dialogue", func_80044684);
 #endif
 
-//INCLUDE_ASM(const s32, "system/dialogue", func_800449C4);
+//INCLUDE_ASM("asm/nonmatchings/system/dialogue", func_800449C4);
 
 void func_800449C4(u16 index) {
 
@@ -691,16 +691,16 @@ void func_800449C4(u16 index) {
     setSpriteScale(dialogueWindows[dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].dialogueWindowIndex].spriteIndex, dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].unk_A0 * 0.5f, dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].unk_93 * 0.6f, 1.0f);
     
     // flags
-    func_8002C7EC(dialogueWindows[dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].dialogueWindowIndex].spriteIndex, 3);
-    func_8002CB24(dialogueWindows[dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].dialogueWindowIndex].spriteIndex, 1);
+    setSpriteRenderingLayer(dialogueWindows[dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].dialogueWindowIndex].spriteIndex, (1 | 2));
+    setBilinearFiltering(dialogueWindows[dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].dialogueWindowIndex].spriteIndex, TRUE);
 
     // animation
-    func_8002B80C(dialogues[index].dialogueButtonIcon2.spriteIndex, dialogues[index].dialogueButtonIcon2.spriteOffset, dialogues[index].dialogueButtonIcon2.flag);
+    startSpriteAnimation(dialogues[index].dialogueButtonIcon2.spriteIndex, dialogues[index].dialogueButtonIcon2.spriteOffset, dialogues[index].dialogueButtonIcon2.flag);
     setSpriteShrinkFactor(dialogues[index].dialogueButtonIcon2.spriteIndex, dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].shrink.x + tempX, dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].shrink.y + tempY, dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].shrink.z);
 
 }
 
-//INCLUDE_ASM(const s32, "system/dialogue", func_80044BF4);
+//INCLUDE_ASM("asm/nonmatchings/system/dialogue", func_80044BF4);
 
 void func_80044BF4(u16 index) {
  
@@ -708,16 +708,16 @@ void func_80044BF4(u16 index) {
     f32 tempY = dialogues[index].dialogueButtonIcon3.coordinates.y;
 
     // flags
-    func_8002C7EC(dialogueWindows[dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].dialogueWindowIndex].spriteIndex, 3);
-    func_8002CB24(dialogueWindows[dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].dialogueWindowIndex].spriteIndex, 1);
+    setSpriteRenderingLayer(dialogueWindows[dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].dialogueWindowIndex].spriteIndex, (1 | 2));
+    setBilinearFiltering(dialogueWindows[dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].dialogueWindowIndex].spriteIndex, 1);
 
     // animation
-    func_8002B80C(dialogues[index].dialogueButtonIcon3.spriteIndex, dialogues[index].dialogueButtonIcon3.spriteOffset, dialogues[index].dialogueButtonIcon3.flag);
+    startSpriteAnimation(dialogues[index].dialogueButtonIcon3.spriteIndex, dialogues[index].dialogueButtonIcon3.spriteOffset, dialogues[index].dialogueButtonIcon3.flag);
     setSpriteShrinkFactor(dialogues[index].dialogueButtonIcon3.spriteIndex, dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].shrink.x + tempX, dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].shrink.y + tempY, dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].shrink.z);
 
 }
 
-//INCLUDE_ASM(const s32, "system/dialogue", func_80044D78);
+//INCLUDE_ASM("asm/nonmatchings/system/dialogue", func_80044D78);
 
 void func_80044D78(u16 index) {
 
@@ -725,7 +725,7 @@ void func_80044D78(u16 index) {
 
     if (!(dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].flags & (0x40 | 0x80))) { 
 
-        if (func_8004D3C8(CONTROLLER_1, BUTTON_STICK_UP)) {
+        if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_UP)) {
 
             if (dialogues[index].struct5.unk_17 < (dialogues[index].struct5.unk_16 - 1)) {
 
@@ -749,7 +749,7 @@ void func_80044D78(u16 index) {
             }
         }
 
-        if (func_8004D3C8(CONTROLLER_1, 0x100000)) {
+        if (checkButtonRepeat(CONTROLLER_1, 0x100000)) {
 
             if (!set) {
 
@@ -782,18 +782,18 @@ void func_80044D78(u16 index) {
             if (dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].unk_93 < (dialogues[index].struct5.unk_16 - dialogues[index].struct5.unk_19)) {
                 func_80044BF4(index);
             } else {
-                func_8002BAD8(dialogues[index].dialogueButtonIcon3.spriteIndex);
+                resetAnimationState(dialogues[index].dialogueButtonIcon3.spriteIndex);
             }
 
             if (dialogues[index].struct5.unk_19) {
                 func_800449C4(index);
             } else {
-                func_8002BAD8(dialogues[index].dialogueButtonIcon2.spriteIndex);
+                resetAnimationState(dialogues[index].dialogueButtonIcon2.spriteIndex);
             }
 
         }
 
-        if (func_8004D380(CONTROLLER_1, BUTTON_A)) {
+        if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
 
             if (!set) {
                 
@@ -812,7 +812,7 @@ void func_80044D78(u16 index) {
    
 }
 
-//INCLUDE_ASM(const s32, "system/dialogue", func_80045260);
+//INCLUDE_ASM("asm/nonmatchings/system/dialogue", func_80045260);
 
 void func_80045260(u16 index) {
     
@@ -1098,9 +1098,9 @@ void func_80045260(u16 index) {
     }
 }
 
-//INCLUDE_ASM(const s32, "system/dialogue", func_80045CB0);
+//INCLUDE_ASM("asm/nonmatchings/system/dialogue", updateDialogues);
 
-void func_80045CB0(void) {
+void updateDialogues(void) {
 
     u16 i;
     bool set;

@@ -11,8 +11,8 @@
 #define MAP_ACTIVE 1
 #define RGBA_FINISHED 8
 
-#define OBJECT_ACTIVE 1
-#define SPRITE_ACTIVE 1
+#define MAP_OBJECT_ACTIVE 1
+#define MAP_SPRITE_ACTIVE 1
 
 typedef struct {
     void *timg;
@@ -68,14 +68,14 @@ typedef struct MapVtx {
 // 8013DC64
 // same layout as MapVtx but looks like members have a different function
 typedef struct {
-    Vtx *ptr; // 0x64 // 0x8025503C
+    u16 *ptr; // 0x64, might 2D array pointer // 0x8025503C
     u16 unk_4; // 0x68, used in looking up index of map object interacted with
     u16 unk_6; // 0x6A // loop counter for vertex info objects
-    u8 unk_8; // 0x6C // conversion of sprite coordinates x, used as divisor
-    u8 unk_9; // 0x6D // conversion of sprite coordinates z, used as divisor
+    u8 scalingFactorX; // 0x6C // conversion of sprite coordinates x, used as divisor; tile size in world units (scaling factor), x
+    u8 scalingFactorZ; // 0x6D // conversion of sprite coordinates z, used as divisor; tile size in world units (scaling factor), z
     // counters for indexing into 8025503C
-    u8 unk_A; // 0x6E // related to data from mainMap.unk_4 and unk_8, possibly collisions/interactables
-    u8 unk_B; // 0x6F
+    u8 mapWidth; // 0x6E // related to data from mainMap.unk_4 and unk_8, possibly collisions/interactables; mapWidth in tiles x
+    u8 mapHeight; // 0x6F, mapHeight in tiles Z
 } UnknownMapStruct1;
 
 // D_8014198C
@@ -179,14 +179,33 @@ typedef struct {
 typedef struct {
     f32 unk_0; // 0x48 // x value
     f32 unk_4; // 0x4C // z value
-    u16 unk_8; // 0x50
+    u16 unk_8; // 0x50, timer for gradual RGBA; likely an s16
     u16 unk_A; // 0x52 // vertex count or part of map size
     u16 unk_C; // 0x54 // vertex count or part of map size
     u16 height; // 0x56
     u8 unk_10; // 0x58 // set from *mainMap.unk_c
     u8 mapObjectCount; // 0x59
     u16 flags; // 0x5A , 0x8 = RGBA
-} UnknownMapStruct9;
+} MapState;
+
+typedef struct {
+      u8 baseHeight;           
+      u8 triangle1[3][3];         
+      u8 triangle2[3][3];
+} TerrainQuad;
+
+typedef struct {
+    u16 header;
+    u16 unk_2;
+    u8 scalingX;
+    u8 scalingY;;
+    u8 mapWidth;
+    u8 mapHeight;
+    u8 unk_8;
+    u8 unk_9;
+    u8 unk_A;
+    u8 unk_B;
+} MapGridInfo;
 
 // 0x8013DC40
 typedef struct  {
@@ -209,22 +228,20 @@ typedef struct  {
     UnknownMapStruct2 mapStruct2; // 0x3D4C
     UnknownMapStruct3 mapStruct3[16]; // 0x3D98 // related to tile bitmaps/compressed vecs
     MapObject mapObjects[12]; // 0x3DD8
-    u32 padding4[20];
+    u32 padding1[20];
     WeatherSprite weatherSprites[16];
     GroundObjects groundObjects; // 0x4058;
     // 0x44A8 / 0x801420E8: array
     MapAdditions mapAdditions[32]; // 0x4C28 // non-interactable map additions?
     MapBitmap mapBitmaps[56]; // 0x5528
-    u32 padding7[0x48]; // 0x5D08
-    // display lists array might be bigger
-    Gfx displayLists[0x1000]; // 0x5E28
-    u32 padding8[0x318F];
+    u32 padding2[0x48]; // 0x5D08
+    Gfx displayLists[0x2800]; // 0x5E28, 0x80143A68
+    u8 visibilityGrid[38][42]; // 0x19E28, might be larger/different dimensions
     MapFloats mapFloats; // 0x1A464
-    u32 padding9[0x50]; // 0x1A4C8, general/base map reference values
+    u32 padding4[0x50]; // 0x1A4C8, general/base map reference values
     // 0x80157A68, 0x19e28 = related to byteswapped Vec3f scaling
-    UnknownMapStruct9 mapStruct9; // 0x1A608
+    MapState mapState; // 0x1A608
 } MainMap;
-
 
 extern void func_800337D0(void);    
 extern bool func_80033A90(u16 mapIndex, LevelMapContext* arg1, void* arg2, void* arg3, void* arg4, void* arg5, void* arg6, void* arg7, void* arg8, void* arg9, void *argA);
@@ -246,7 +263,8 @@ extern bool func_80035004(u16 arg0, u16 arg1, u8 arg2, u8 arg3);
 extern bool func_80035054(u16 mapIndex, u16 bitmapIndex, u16 arg2, f32 arg3, f32 arg4, f32 arg5);
 extern f32 func_80035150(u16 mapIndex, f32, f32);      
 extern bool func_80035914(u16 mapIndex, f32 arg1, f32 arg2);
-extern Vec3f* func_800359C8(Vec3f* arg0, MainMap* arg1, f32 arg2, f32 arg3);
+//extern Vec3f* func_800359C8(Vec3f* arg0, MainMap* arg1, f32 arg2, f32 arg3);
+extern Vec3f func_800359C8(MainMap* arg1, f32 arg2, f32 arg3);
 extern u8 func_80036318(u16, f32, f32);
 extern Vec3f* func_80036610(Vec3f*, u16, f32, f32);   
 extern Vec3f* func_800366F4(Vec3f* arg0, u16 mapIndex, f32 arg2, f32 arg3);
@@ -262,7 +280,7 @@ extern bool func_80038990(u16, u16, u8);
 extern bool func_80038A2C(u16 mapIndex, u16 arg1, u8 arg2, u8 arg3);
 extern bool func_80038AE0(u16 mapIndex, u16 arg1);
 extern bool func_80038B58(u16, u16, u8, u8);   
-extern void func_8003A1BC(void);
+extern void updateMapGraphics(void);
 extern Vec3f* func_8003AF58(Vec3f*, u16, u8, u8); 
 
 extern MainMap mainMap[1];

@@ -1,3 +1,3 @@
 #include "common.h"
 
-INCLUDE_ASM(const s32, "lib/os/libultra/io/contramwrite", __osContRamWrite);
+INCLUDE_ASM("asm/nonmatchings/lib/os/libultra/io/contramwrite", __osContRamWrite);

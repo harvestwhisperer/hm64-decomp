@@ -1,3 +1,5 @@
-#include "common.h"
+#include <nusys.h>
 
-INCLUDE_ASM(const s32, "lib/nusys-1/nucontdatareadwait", nuContDataReadWait);
+void nuContDataReadWait(void) {
+    osRecvMesg(&nuContWaitMesgQ, NULL, OS_MESG_BLOCK);
+}

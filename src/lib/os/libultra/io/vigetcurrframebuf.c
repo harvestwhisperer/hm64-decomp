@@ -1,3 +1,20 @@
-#include "common.h"
+#include "PR/os_internal.h"
+#include "PR/ultraerror.h"
+#include "PRinternal/viint.h"
 
-INCLUDE_ASM(const s32, "lib/os/libultra/io/vigetcurrframebuf", osViGetCurrentFramebuffer);
+void* osViGetCurrentFramebuffer(void) {
+	register u32 saveMask;
+	void* framep;
+
+#ifdef _DEBUG
+	if (!__osViDevMgr.active) {
+		__osError(ERR_OSVIGETCURRENTFRAMEBUFFER, 0);
+		return NULL;
+	}
+#endif
+
+	saveMask = __osDisableInt();
+	framep = __osViCurr->framep;
+	__osRestoreInt(saveMask);
+	return framep;
+}

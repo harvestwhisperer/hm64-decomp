@@ -1,3 +1,27 @@
-#include "common.h"
+#include <os_internal.h>
+#include <ultraerror.h>
+#include "n_synthInternals.h"
 
-INCLUDE_ASM(const s32, "lib/os/libultra/libnaudio/n_synstopvoice", n_alSynStopVoice);
+
+void n_alSynStopVoice(N_ALVoice *v)
+{
+    ALParam  *update;
+    ALFilter *f;
+    
+    if (v->pvoice) {
+        
+        update = __n_allocParam();
+        ALFailIf(update == 0, ERR_ALSYN_NO_UPDATE);
+
+#ifdef SAMPLE_ROUND
+	update->delta  = SAMPLE184( n_syn->paramSamples + v->pvoice->offset);
+#else
+        update->delta  = n_syn->paramSamples + v->pvoice->offset;
+#endif
+        update->type   = AL_FILTER_STOP_VOICE;
+        update->next   = 0;
+
+	n_alEnvmixerParam(v->pvoice, AL_FILTER_ADD_UPDATE, update);        
+    }
+}
+

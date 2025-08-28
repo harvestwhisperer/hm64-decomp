@@ -1,18 +1,98 @@
 #include "common.h"
 
+#include "system/globalSprites.h"
+
+#include "system/memory.h"
 #include "system/sprite.h"
 #include "system/mathUtils.h"
 
 // forward declarations
 bool func_8002B8E0(u16, u8, void*);
-void func_8002CC84(SpriteAnimation*, u32*);             
+void setTotalAnimationFrames(SpriteAnimation*, u16*);             
 u8* func_8002CD34(u16 arg0, void* arg1);
 u16* func_8002CD4C(u16, u16*);   
 
 // bss
-extern Sprite globalSprites[MAX_ACTIVE_SPRITES];
+extern SpriteObject globalSprites[MAX_ACTIVE_SPRITES];
 
-//INCLUDE_ASM(const s32, "system/globalSprites", initializeGlobalSprites);
+typedef union {
+    u8 byte[2];
+    u16 halfword;
+} Swap16;
+
+typedef union {
+    u16 halfword[2];
+    u32 word;
+} Swap32;
+
+static inline u16 swap16(Swap16 halfword) {
+    
+    Swap16 swap;
+    
+    swap.byte[1] = halfword.byte[0];
+    swap.byte[0] = halfword.byte[1];
+    
+    return swap.halfword;
+
+}
+
+// alternate
+// static inline u16 swap16(u16 halfword) {
+    
+//     Swap16 swap;
+    
+//     swap.byte[1] = halfword >> 8;
+//     swap.byte[0] = halfword;
+    
+//     return swap.halfword;
+
+// }
+
+// unsure... not technically a 32 bit swap
+// also used in graphic.c
+static inline u32 swap32(u16 halfword) {
+    
+    Swap32 swap;
+    u16 lower;
+    u16 upper;
+
+    upper = (halfword & 0xFF) << 8;
+    lower = halfword >> 8;
+    
+    swap.word = lower | upper;
+
+    return swap.halfword[0] | swap.halfword[1];
+    
+}
+
+static inline void swapBytes(SpriteAnimation *animation, Swap16 halfword) {
+
+    animation->unk_2 = halfword.byte[0];
+    animation->audioTrigger = halfword.byte[1];
+    
+}
+
+// static inline u16 swap16Alt(u16 halfword) {
+
+//     u32 padding[4];
+    
+//     Swap16 swap;
+    
+//     u32 upper;
+//     u32 lower;
+    
+//     lower = halfword;
+    
+//     upper = (halfword & 0xFF) << 8;
+//     lower = halfword >> 8;
+    
+//     swap.halfword = lower | upper;
+    
+//     return swap.halfword;
+    
+// }
+
+//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", initializeGlobalSprites);
 
 void initializeGlobalSprites(void) {
 
@@ -20,13 +100,13 @@ void initializeGlobalSprites(void) {
 
     for (i = 0; i < MAX_SPRITES; i++) {
         
-        globalSprites[i].flags2 = 0;
-        globalSprites[i].flags1 = 0;
+        globalSprites[i].stateFlags = 0;
+        globalSprites[i].renderingFlags = 0;
         
         globalSprites[i].paletteIndex = 0;
-        globalSprites[i].unk_90 = 0;
-        globalSprites[i].unk_92 = 0;
-        globalSprites[i].unk_91 = 0;
+        globalSprites[i].currentAnimationFrame = 0;
+        globalSprites[i].audioTrigger = FALSE;
+        globalSprites[i].frameTimer = 0;
         
         globalSprites[i].shrink.x = 0;
         globalSprites[i].shrink.y = 0;
@@ -45,15 +125,15 @@ void initializeGlobalSprites(void) {
         globalSprites[i].rgbaCurrent.b = 0;
         globalSprites[i].rgbaCurrent.a = 0;
         
-        globalSprites[i].rgbaDefault.r = 0;
-        globalSprites[i].rgbaDefault.g = 0;
-        globalSprites[i].rgbaDefault.b = 0;
-        globalSprites[i].rgbaDefault.a = 0;
+        globalSprites[i].rgbaTarget.r = 0;
+        globalSprites[i].rgbaTarget.g = 0;
+        globalSprites[i].rgbaTarget.b = 0;
+        globalSprites[i].rgbaTarget.a = 0;
 
     }
 }
 
-//INCLUDE_ASM(const s32, "system/globalSprites", dmaSprite);
+//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", dmaSprite);
 
 bool dmaSprite(u16 index, u32 romTextureStart, u32 romTextureEnd, u32 romAssetIndexStart, u32 romAssetIndexEnd, 
     u32 romSpritesheetIndexStart, u32 romSpritesheetIndexEnd, u8* texture1Vaddr, u8* texture2Vaddr, u16* paletteVaddr, u16* animationVaddr, 
@@ -70,7 +150,7 @@ bool dmaSprite(u16 index, u32 romTextureStart, u32 romTextureEnd, u32 romAssetIn
 
     if (index < MAX_ACTIVE_SPRITES) {
         
-        if (!(globalSprites[index].flags2 & ACTIVE)) { 
+        if (!(globalSprites[index].stateFlags & ACTIVE)) { 
             
             nuPiReadRom(romAssetIndexStart, assetIndex, romAssetIndexEnd - romAssetIndexStart);
 
@@ -108,10 +188,10 @@ bool dmaSprite(u16 index, u32 romTextureStart, u32 romTextureEnd, u32 romAssetIn
             }
 
             if (!flag) {
-                globalSprites[index].flags2 |= 0x200;
+                globalSprites[index].stateFlags |= SPRITE_FLIP_WINDING;
             }
 
-            globalSprites[index].flags2 |= 0x40;
+            globalSprites[index].stateFlags |= ANIMATION_STATE_CHANGED;
 
             result = TRUE;
 
@@ -123,17 +203,17 @@ bool dmaSprite(u16 index, u32 romTextureStart, u32 romTextureEnd, u32 romAssetIn
 
 }
 
-//INCLUDE_ASM(const s32, "system/globalSprites", func_8002B36C);
+//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", func_8002B36C);
 
-bool func_8002B36C(u16 index, u32* unknownAssetIndexPtr, u32* spritesheetIndexPtr, u32* paletteIndexPtr, u8* spriteToPaletteMappingPtr) {
+bool func_8002B36C(u16 index, u32* animationIndexPtr, u32* spritesheetIndexPtr, u32* paletteIndexPtr, u8* spriteToPaletteMappingPtr) {
 
     bool result = FALSE;
 
     if (index < MAX_ACTIVE_SPRITES) {
 
-        if (!(globalSprites[index].flags2 & ACTIVE)) {
+        if (!(globalSprites[index].stateFlags & ACTIVE)) {
 
-            globalSprites[index].unknownAssetIndexPtr = unknownAssetIndexPtr;
+            globalSprites[index].animationIndexPtr = animationIndexPtr;
             globalSprites[index].spritesheetIndexPtr = spritesheetIndexPtr;
             globalSprites[index].paletteIndexPtr = paletteIndexPtr;
             globalSprites[index].spriteToPaletteMappingPtr = spriteToPaletteMappingPtr;
@@ -141,19 +221,19 @@ bool func_8002B36C(u16 index, u32* unknownAssetIndexPtr, u32* spritesheetIndexPt
             globalSprites[index].texture2Ptr = (void*)0;
             globalSprites[index].romTexturePtr = (void*)0;
 
-            globalSprites[index].flags2 = 1;
-            globalSprites[index].flags1 = 0;
+            globalSprites[index].stateFlags = ACTIVE;
+            globalSprites[index].renderingFlags = 0;
 
             globalSprites[index].paletteIndex = 0;
-            globalSprites[index].unk_92 = 0;
+            globalSprites[index].audioTrigger = FALSE;
 
             setSpriteShrinkFactor(index, 0.0f, 0.0f, 0.0f);
             setSpriteScale(index, 1.0f, 1.0f, 1.0f);
-            func_8002BE14(index, 0.0f, 0.0f, 0.0f);
+            setSpriteAngles(index, 0.0f, 0.0f, 0.0f);
             setSpriteDefaultRGBA(index, 0xFF, 0xFF, 0xFF, 0xFF);
             func_8002C680(index, 2, 2);
             func_8002C6F8(index, 2);
-            func_8002C7EC(index, 3);
+            setSpriteRenderingLayer(index, (1 | 2));
             
             result = TRUE;
             
@@ -164,18 +244,17 @@ bool func_8002B36C(u16 index, u32* unknownAssetIndexPtr, u32* spritesheetIndexPt
 
 }
 
-//INCLUDE_ASM(const s32, "system/globalSprites", func_8002B50C);
+//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", func_8002B50C);
 
-bool func_8002B50C(u16 spriteIndex, u32* unknownAssetIndexPtr, u32* spritesheetIndexPtr, u32* paletteIndexPtr, u8* spriteToPaletteMappingPtr, u32 romTexturePtr, u8* texturePtr, u8* texture2Ptr) {
+bool func_8002B50C(u16 spriteIndex, u32* animationIndexPtr, u32* spritesheetIndexPtr, u32* paletteIndexPtr, u8* spriteToPaletteMappingPtr, u32 romTexturePtr, u8* texturePtr, u8* texture2Ptr) {
     
     bool result = FALSE;
 
     if (spriteIndex < MAX_ACTIVE_SPRITES) {
 
-        if (!(globalSprites[spriteIndex].flags2 & ACTIVE)) {
+        if (!(globalSprites[spriteIndex].stateFlags & ACTIVE)) {
 
-            // animation index
-            globalSprites[spriteIndex].unknownAssetIndexPtr = unknownAssetIndexPtr;
+            globalSprites[spriteIndex].animationIndexPtr = animationIndexPtr;
             globalSprites[spriteIndex].spritesheetIndexPtr = spritesheetIndexPtr;
             globalSprites[spriteIndex].paletteIndexPtr = paletteIndexPtr;
             globalSprites[spriteIndex].spriteToPaletteMappingPtr = spriteToPaletteMappingPtr;
@@ -183,19 +262,19 @@ bool func_8002B50C(u16 spriteIndex, u32* unknownAssetIndexPtr, u32* spritesheetI
             globalSprites[spriteIndex].texture2Ptr = texture2Ptr;
             globalSprites[spriteIndex].romTexturePtr = romTexturePtr;
 
-            globalSprites[spriteIndex].flags2 = 5;
-            globalSprites[spriteIndex].flags1 = 0;
+            globalSprites[spriteIndex].stateFlags = (ACTIVE | 4);
+            globalSprites[spriteIndex].renderingFlags = 0;
 
             globalSprites[spriteIndex].paletteIndex = 0;
-            globalSprites[spriteIndex].unk_92 = 0;
+            globalSprites[spriteIndex].audioTrigger = FALSE;
 
             setSpriteShrinkFactor(spriteIndex, 0, 0, 0);
             setSpriteScale(spriteIndex, 1.0f, 1.0f, 1.0f);
-            func_8002BE14(spriteIndex, 0, 0, 0);
+            setSpriteAngles(spriteIndex, 0, 0, 0);
             setSpriteDefaultRGBA(spriteIndex, 0xFF, 0xFF, 0xFF, 0xFF);
             func_8002C680(spriteIndex, 2, 2);
             func_8002C6F8(spriteIndex, 2);
-            func_8002C7EC(spriteIndex, 3);
+            setSpriteRenderingLayer(spriteIndex, (1 | 2));
             
             result = TRUE;
             
@@ -206,15 +285,15 @@ bool func_8002B50C(u16 spriteIndex, u32* unknownAssetIndexPtr, u32* spritesheetI
     
 }
 
-//INCLUDE_ASM(const s32, "system/globalSprites", deactivateSprite);
+//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", deactivateSprite);
 
 bool deactivateSprite(u16 spriteIndex) {
 
     bool result = FALSE;
 
     if (spriteIndex < MAX_ACTIVE_SPRITES) {
-        if (globalSprites[spriteIndex].flags2 & ACTIVE) {
-            globalSprites[spriteIndex].flags2 &= ~(ACTIVE | 2);
+        if (globalSprites[spriteIndex].stateFlags & ACTIVE) {
+            globalSprites[spriteIndex].stateFlags &= ~(ACTIVE | 2);
             result = TRUE;
         }        
     }
@@ -222,7 +301,7 @@ bool deactivateSprite(u16 spriteIndex) {
     return result; 
 }
 
-//INCLUDE_ASM(const s32, "system/globalSprites", deactivateGlobalSprites);
+//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", deactivateGlobalSprites);
 
 void deactivateGlobalSprites(void) {
 
@@ -230,55 +309,55 @@ void deactivateGlobalSprites(void) {
 
     for (i = 0; i < MAX_ACTIVE_SPRITES; i++) {
 
-            if ((globalSprites[i].flags2 & ACTIVE) && (globalSprites[i].flags2 & 2)) {
+            if ((globalSprites[i].stateFlags & ACTIVE) && (globalSprites[i].stateFlags & ANIMATION_HEADER_PROCESSED)) {
 
                 // FIXME: probably inline
                 if (i < MAX_ACTIVE_SPRITES) {
                     
-                    globalSprites[i].flags2 &= ~(ACTIVE | 2);
+                    globalSprites[i].stateFlags &= ~(ACTIVE | 2);
 
                 }
 
             }
 
-            globalSprites[i].flags2 = 0;
+            globalSprites[i].stateFlags = 0;
         
     }
 }
 
-//INCLUDE_ASM(const s32, "system/globalSprites", func_8002B7A0);
+//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", func_8002B7A0);
 
 // possibly inline, otherwise unused
 bool func_8002B7A0(u16 spriteIndex, u8 arg1) {
 
     bool result;
 
-    result = func_8002B8E0(spriteIndex, arg1, globalSprites[spriteIndex].unknownAssetIndexPtr);
+    result = func_8002B8E0(spriteIndex, arg1, globalSprites[spriteIndex].animationIndexPtr);
 
-    globalSprites[spriteIndex].animationCounter1 = 0xFF;
-    globalSprites[spriteIndex].animationCounter2 = 0xFF;
+    globalSprites[spriteIndex].animationCounter[0] = 0xFF;
+    globalSprites[spriteIndex].animationCounter[1] = 0xFF;
 
     return result;
     
 }
 
-//INCLUDE_ASM(const s32, "system/globalSprites", func_8002B80C);
+//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", startSpriteAnimation);
 
-bool func_8002B80C(u16 spriteIndex, u16 offset, u8 arg2) {
+bool startSpriteAnimation(u16 spriteIndex, u16 offset, u8 arg2) {
 
     bool result = FALSE;
     
     if (spriteIndex < MAX_ACTIVE_SPRITES) {
 
-        if (globalSprites[spriteIndex].flags2 & ACTIVE) {
+        if (globalSprites[spriteIndex].stateFlags & ACTIVE) {
             
-            if (globalSprites[spriteIndex].unknownAssetIndexPtr[offset] != globalSprites[spriteIndex].unknownAssetIndexPtr[offset+1]) {
+            if (globalSprites[spriteIndex].animationIndexPtr[offset] != globalSprites[spriteIndex].animationIndexPtr[offset+1]) {
 
-                // func_8002CD34(offset, globalSprites[spriteIndex].unknownAssetIndexPtr) = get address + offset for unknown asset ptr based on sprite index
-                result = func_8002B8E0(spriteIndex, arg2, func_8002CD34(offset, globalSprites[spriteIndex].unknownAssetIndexPtr));
+                // func_8002CD34(offset, globalSprites[spriteIndex].animationIndexPtr) = get address + offset for unknown asset ptr based on sprite index
+                result = func_8002B8E0(spriteIndex, arg2, func_8002CD34(offset, globalSprites[spriteIndex].animationIndexPtr));
                 
-                globalSprites[spriteIndex].animationCounter1 = 0xFF;
-                globalSprites[spriteIndex].animationCounter2 = 0xFF;
+                globalSprites[spriteIndex].animationCounter[0] = 0xFF;
+                globalSprites[spriteIndex].animationCounter[1] = 0xFF;
            
             }
         }
@@ -288,47 +367,47 @@ bool func_8002B80C(u16 spriteIndex, u16 offset, u8 arg2) {
     
 }
 
-//INCLUDE_ASM(const s32, "system/globalSprites", func_8002B8E0);
+//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", func_8002B8E0);
 
-bool func_8002B8E0(u16 spriteIndex, u8 arg1, void* arg2) {
+bool func_8002B8E0(u16 spriteIndex, u8 arg1, void* animationDataPtr) {
 
     bool result = FALSE;
     u16 *temp;
     
-    if ((spriteIndex < MAX_ACTIVE_SPRITES) && (globalSprites[spriteIndex].flags2 & ACTIVE) && !(globalSprites[spriteIndex].flags2 & 2)) {
+    if ((spriteIndex < MAX_ACTIVE_SPRITES) && (globalSprites[spriteIndex].stateFlags & ACTIVE) && !(globalSprites[spriteIndex].stateFlags & ANIMATION_HEADER_PROCESSED)) {
 
-        globalSprites[spriteIndex].unknownAssetPtr = arg2;
+        globalSprites[spriteIndex].animationDataPtr = animationDataPtr;
 
-        globalSprites[spriteIndex].unk_91 = 0;
-        globalSprites[spriteIndex].unk_92 = 0;
+        globalSprites[spriteIndex].frameTimer = 0;
+        globalSprites[spriteIndex].audioTrigger = FALSE;
 
-        globalSprites[spriteIndex].flags2 &= ~0x40;
-        globalSprites[spriteIndex].flags2 |= 2;
+        globalSprites[spriteIndex].stateFlags &= ~ANIMATION_STATE_CHANGED;
+        globalSprites[spriteIndex].stateFlags |= ANIMATION_HEADER_PROCESSED;
 
         switch (arg1) {
             case 0xFF:
-                globalSprites[spriteIndex].unk_90 = 0;
-                globalSprites[spriteIndex].flags2 &= ~0x10;
-                globalSprites[spriteIndex].flags2 |= 8;
+                globalSprites[spriteIndex].currentAnimationFrame = 0;
+                globalSprites[spriteIndex].stateFlags &= ~ANIMATION_LOOPS;
+                globalSprites[spriteIndex].stateFlags |= ANIMATION_PLAYING;
                 break;
             case 0xFE:
-                globalSprites[spriteIndex].unk_90 = 0;
-                globalSprites[spriteIndex].flags2 |= 8 | 0x10;
+                globalSprites[spriteIndex].currentAnimationFrame = 0;
+                globalSprites[spriteIndex].stateFlags |= ANIMATION_PLAYING | ANIMATION_LOOPS;
                 break;
             case 0xFD:
-                globalSprites[spriteIndex].unk_90 = 0;
-                globalSprites[spriteIndex].flags2 |= 8 | 0x800;
+                globalSprites[spriteIndex].currentAnimationFrame = 0;
+                globalSprites[spriteIndex].stateFlags |= ANIMATION_PLAYING | DESTROY_ON_ANIMATION_END;
                 break;
             default:
-                globalSprites[spriteIndex].unk_90 = arg1;
-                globalSprites[spriteIndex].flags2 &= ~(8 | 0x10);
+                globalSprites[spriteIndex].currentAnimationFrame = arg1;
+                globalSprites[spriteIndex].stateFlags &= ~(ANIMATION_PLAYING | ANIMATION_LOOPS);
                 break;
         }
 
         // update animation from byteswapped table
-        func_8002CC84(&globalSprites[spriteIndex].animation, globalSprites[spriteIndex].unknownAssetPtr);
+        setTotalAnimationFrames(&globalSprites[spriteIndex].animation, globalSprites[spriteIndex].animationDataPtr);
 
-        temp = func_8002CD4C(globalSprites[spriteIndex].unk_90, globalSprites[spriteIndex].unknownAssetPtr+8);
+        temp = func_8002CD4C(globalSprites[spriteIndex].currentAnimationFrame, globalSprites[spriteIndex].animationDataPtr+8);
         
         globalSprites[spriteIndex].unknownAsset3Ptr = temp;
         globalSprites[spriteIndex].unknownAsset4Ptr = temp + 2;
@@ -341,16 +420,16 @@ bool func_8002B8E0(u16 spriteIndex, u8 arg1, void* arg2) {
     
 }
 
-//INCLUDE_ASM(const s32, "system/globalSprites", func_8002BAD8);
+//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", resetAnimationState);
 
-bool func_8002BAD8(u16 index) {
+bool resetAnimationState(u16 index) {
 
     bool result = FALSE;
 
     if (index < MAX_ACTIVE_SPRITES) {
 
-        if (globalSprites[index].flags2 & ACTIVE) {
-            globalSprites[index].flags2 &= ~2;
+        if (globalSprites[index].stateFlags & ACTIVE) {
+            globalSprites[index].stateFlags &= ~ANIMATION_HEADER_PROCESSED;
             result = TRUE;
         }
     }
@@ -359,7 +438,7 @@ bool func_8002BAD8(u16 index) {
 
 }
 
-//INCLUDE_ASM(const s32, "system/globalSprites", func_8002BB30);
+//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", func_8002BB30);
 
 bool func_8002BB30(u16 index) {
 
@@ -367,8 +446,8 @@ bool func_8002BB30(u16 index) {
 
     if (index < MAX_ACTIVE_SPRITES) {
 
-        if (globalSprites[index].flags2 & ACTIVE) {
-            globalSprites[index].flags2 &= ~0x20;
+        if (globalSprites[index].stateFlags & ACTIVE) {
+            globalSprites[index].stateFlags &= ~ANIMATION_PAUSED;
             result = TRUE;
         }
     }
@@ -377,7 +456,7 @@ bool func_8002BB30(u16 index) {
 
 }
 
-//INCLUDE_ASM(const s32, "system/globalSprites", func_8002BB88);
+//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", func_8002BB88);
 
 bool func_8002BB88(u16 index) {
 
@@ -385,8 +464,8 @@ bool func_8002BB88(u16 index) {
 
     if (index < MAX_ACTIVE_SPRITES) {
 
-        if (globalSprites[index].flags2 & ACTIVE) {
-            globalSprites[index].flags2 |= 0x20;
+        if (globalSprites[index].stateFlags & ACTIVE) {
+            globalSprites[index].stateFlags |= ANIMATION_PAUSED;
             result = TRUE;
         }
     }
@@ -395,7 +474,7 @@ bool func_8002BB88(u16 index) {
 
 }
 
-//INCLUDE_ASM(const s32, "system/globalSprites", func_8002BBE0);
+//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", func_8002BBE0);
 
 bool func_8002BBE0(u16 index, u8 arg1, u8 arg2) {
 
@@ -403,18 +482,18 @@ bool func_8002BBE0(u16 index, u8 arg1, u8 arg2) {
     
     if (index < MAX_ACTIVE_SPRITES) {
 
-        if (globalSprites[index].flags2 & ACTIVE) {
+        if (globalSprites[index].stateFlags & ACTIVE) {
 
             if (arg1) {
-                globalSprites[index].flags1 |= ACTIVE;
+                globalSprites[index].renderingFlags |= 1;
             } else {
-                globalSprites[index].flags1 &= ~ACTIVE;
+                globalSprites[index].renderingFlags &= ~1;
             }
 
             if (arg2) {
-                globalSprites[index].flags1 |= 2;
+                globalSprites[index].renderingFlags |= 2;
             } else {
-                globalSprites[index].flags1 &= ~2;
+                globalSprites[index].renderingFlags &= ~2;
             }
             
             result = TRUE;
@@ -426,7 +505,7 @@ bool func_8002BBE0(u16 index, u8 arg1, u8 arg2) {
     
 }
 
-//INCLUDE_ASM(const s32, "system/globalSprites", func_8002BCC8);
+//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", func_8002BCC8);
 
 bool func_8002BCC8(u16 index) {
 
@@ -434,8 +513,8 @@ bool func_8002BCC8(u16 index) {
 
     if (index < MAX_ACTIVE_SPRITES) {
 
-        if (globalSprites[index].flags2 & ACTIVE) {
-            result = globalSprites[index].flags2 & 0x40;
+        if (globalSprites[index].stateFlags & ACTIVE) {
+            result = globalSprites[index].stateFlags & ANIMATION_STATE_CHANGED;
         }
     }
     
@@ -443,7 +522,7 @@ bool func_8002BCC8(u16 index) {
 
 }
 
-//INCLUDE_ASM(const s32, "system/globalSprites", setSpriteShrinkFactor);
+//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", setSpriteShrinkFactor);
 
 bool setSpriteShrinkFactor(u16 index, f32 x, f32 y, f32 z) {
 
@@ -451,7 +530,7 @@ bool setSpriteShrinkFactor(u16 index, f32 x, f32 y, f32 z) {
 
     if (index < MAX_ACTIVE_SPRITES) {
 
-        if (globalSprites[index].flags2 & ACTIVE) {
+        if (globalSprites[index].stateFlags & ACTIVE) {
 
             globalSprites[index].shrink.x = x;
             globalSprites[index].shrink.y = y;
@@ -466,7 +545,7 @@ bool setSpriteShrinkFactor(u16 index, f32 x, f32 y, f32 z) {
 
 }
 
-//INCLUDE_ASM(const s32, "system/globalSprites", setSpriteScale);
+//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", setSpriteScale);
 
 bool setSpriteScale(u16 index, f32 x, f32 y, f32 z) {
 
@@ -474,7 +553,7 @@ bool setSpriteScale(u16 index, f32 x, f32 y, f32 z) {
 
     if (index < MAX_ACTIVE_SPRITES) {
 
-        if (globalSprites[index].flags2 & ACTIVE) {
+        if (globalSprites[index].stateFlags & ACTIVE) {
 
             globalSprites[index].scale.x = x;
             globalSprites[index].scale.y = y;
@@ -489,15 +568,15 @@ bool setSpriteScale(u16 index, f32 x, f32 y, f32 z) {
     
 }
 
-//INCLUDE_ASM(const s32, "system/globalSprites", func_8002BE14);
+//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", setSpriteAngles);
 
-bool func_8002BE14(u16 index, f32 x, f32 y, f32 z) {
+bool setSpriteAngles(u16 index, f32 x, f32 y, f32 z) {
 
     bool result = FALSE;
 
     if (index < MAX_ACTIVE_SPRITES) {
 
-        if (globalSprites[index].flags2 & ACTIVE) {
+        if (globalSprites[index].stateFlags & ACTIVE) {
 
             globalSprites[index].angles.x = x;
             globalSprites[index].angles.y = y;
@@ -512,7 +591,7 @@ bool func_8002BE14(u16 index, f32 x, f32 y, f32 z) {
     
 }
 
-//INCLUDE_ASM(const s32, "system/globalSprites", adjustSpriteShrinkFactor);
+//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", adjustSpriteShrinkFactor);
 
 bool adjustSpriteShrinkFactor(u16 index, f32 x, f32 y, f32 z) {
 
@@ -520,7 +599,7 @@ bool adjustSpriteShrinkFactor(u16 index, f32 x, f32 y, f32 z) {
     
     if (index < MAX_ACTIVE_SPRITES) {
         
-        if (globalSprites[index].flags2 & ACTIVE) {
+        if (globalSprites[index].stateFlags & ACTIVE) {
 
             globalSprites[index].shrink.x += x;
             globalSprites[index].shrink.y += y;
@@ -535,7 +614,7 @@ bool adjustSpriteShrinkFactor(u16 index, f32 x, f32 y, f32 z) {
 
 }
 
-//INCLUDE_ASM(const s32, "system/globalSprites", adjustSpriteScale);
+//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", adjustSpriteScale);
 
 // unused
 bool adjustSpriteScale(u16 index, f32 x, f32 y, f32 z) {
@@ -544,7 +623,7 @@ bool adjustSpriteScale(u16 index, f32 x, f32 y, f32 z) {
     
     if (index < MAX_ACTIVE_SPRITES) {
 
-        if (globalSprites[index].flags2 & ACTIVE) {
+        if (globalSprites[index].stateFlags & ACTIVE) {
 
             globalSprites[index].scale.x += x;
             globalSprites[index].scale.y += y;
@@ -559,7 +638,7 @@ bool adjustSpriteScale(u16 index, f32 x, f32 y, f32 z) {
     
 }
 
-//INCLUDE_ASM(const s32, "system/globalSprites", func_8002C000);
+//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", func_8002C000);
 
 bool func_8002C000(u16 index, f32 x, f32 y, f32 z) {
 
@@ -567,7 +646,7 @@ bool func_8002C000(u16 index, f32 x, f32 y, f32 z) {
     
     if (index < MAX_ACTIVE_SPRITES) {
         
-        if (globalSprites[index].flags2 & ACTIVE) {
+        if (globalSprites[index].stateFlags & ACTIVE) {
 
             globalSprites[index].angles.x += x;
             globalSprites[index].angles.y += y;
@@ -582,15 +661,16 @@ bool func_8002C000(u16 index, f32 x, f32 y, f32 z) {
 
 }
 
-//INCLUDE_ASM(const s32, "system/globalSprites", func_8002C0B4);
+//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", func_8002C0B4);
 
+// unused or inline
 bool func_8002C0B4(u16 index, s8 r, s8 g, s8 b, s8 a) {
 
     bool result = FALSE;
     
     if (index < MAX_ACTIVE_SPRITES) {
 
-        if (globalSprites[index].flags2 & ACTIVE) {
+        if (globalSprites[index].stateFlags & ACTIVE) {
 
             globalSprites[index].rgbaCurrent.r += r;
             globalSprites[index].rgbaCurrent.g += g;
@@ -606,7 +686,7 @@ bool func_8002C0B4(u16 index, s8 r, s8 g, s8 b, s8 a) {
 
 }
 
-//INCLUDE_ASM(const s32, "system/globalSprites", updateSpriteRGBA);
+//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", updateSpriteRGBA);
 
 // update sprite rgba
 // fade out on screen transitions
@@ -621,46 +701,46 @@ bool updateSpriteRGBA(u16 index, u8 r, u8 g, u8 b, u8 a, s16 rate) {
     
     if (index < MAX_ACTIVE_SPRITES) {
         
-        if (globalSprites[index].flags2 & ACTIVE) {
+        if (globalSprites[index].stateFlags & ACTIVE) {
  
-            globalSprites[index].rgbaDefault.r = (globalSprites[index].rgba.r * r) / 255.0f;
-            globalSprites[index].rgbaDefault.g = (globalSprites[index].rgba.g * g) / 255.0f;
-            globalSprites[index].rgbaDefault.b = (globalSprites[index].rgba.b * b) / 255.0f;
-            globalSprites[index].rgbaDefault.a = (globalSprites[index].rgba.a * a) / 255.0f;
+            globalSprites[index].rgbaTarget.r = (globalSprites[index].baseRGBA.r * r) / 255.0f;
+            globalSprites[index].rgbaTarget.g = (globalSprites[index].baseRGBA.g * g) / 255.0f;
+            globalSprites[index].rgbaTarget.b = (globalSprites[index].baseRGBA.b * b) / 255.0f;
+            globalSprites[index].rgbaTarget.a = (globalSprites[index].baseRGBA.a * a) / 255.0f;
             
-            globalSprites[index].flags2 &= ~0x400;
+            globalSprites[index].stateFlags &= ~RGBA_IN_PROGRESS;
 
-            if (globalSprites[index].rgbaDefault.r < globalSprites[index].rgbaCurrent.r) {
-                tempFloat = globalSprites[index].rgbaCurrent.r - globalSprites[index].rgbaDefault.r;
+            if (globalSprites[index].rgbaTarget.r < globalSprites[index].rgbaCurrent.r) {
+                tempFloat = globalSprites[index].rgbaCurrent.r - globalSprites[index].rgbaTarget.r;
             } else {
-                tempFloat = globalSprites[index].rgbaDefault.r - globalSprites[index].rgbaCurrent.r;
+                tempFloat = globalSprites[index].rgbaTarget.r - globalSprites[index].rgbaCurrent.r;
             }
 
-            globalSprites[index].normalized.r = (tempFloat * absValueRate) / globalSprites[index].rgba.r;
+            globalSprites[index].rgbaDelta.r = (tempFloat * absValueRate) / globalSprites[index].baseRGBA.r;
 
-            if (globalSprites[index].rgbaDefault.g < globalSprites[index].rgbaCurrent.g) {
-                tempFloat = globalSprites[index].rgbaCurrent.g - globalSprites[index].rgbaDefault.g;
+            if (globalSprites[index].rgbaTarget.g < globalSprites[index].rgbaCurrent.g) {
+                tempFloat = globalSprites[index].rgbaCurrent.g - globalSprites[index].rgbaTarget.g;
             } else {
-                tempFloat = globalSprites[index].rgbaDefault.g - globalSprites[index].rgbaCurrent.g;
+                tempFloat = globalSprites[index].rgbaTarget.g - globalSprites[index].rgbaCurrent.g;
             }
 
-            globalSprites[index].normalized.g = (tempFloat * absValueRate) / globalSprites[index].rgba.g;
+            globalSprites[index].rgbaDelta.g = (tempFloat * absValueRate) / globalSprites[index].baseRGBA.g;
 
-            if (globalSprites[index].rgbaDefault.b < globalSprites[index].rgbaCurrent.b) {
-                tempFloat = globalSprites[index].rgbaCurrent.b - globalSprites[index].rgbaDefault.b;
+            if (globalSprites[index].rgbaTarget.b < globalSprites[index].rgbaCurrent.b) {
+                tempFloat = globalSprites[index].rgbaCurrent.b - globalSprites[index].rgbaTarget.b;
             } else {
-                tempFloat = globalSprites[index].rgbaDefault.b - globalSprites[index].rgbaCurrent.b;
+                tempFloat = globalSprites[index].rgbaTarget.b - globalSprites[index].rgbaCurrent.b;
             }
 
-            globalSprites[index].normalized.b = (tempFloat * absValueRate) / globalSprites[index].rgba.b;
+            globalSprites[index].rgbaDelta.b = (tempFloat * absValueRate) / globalSprites[index].baseRGBA.b;
 
-            if (globalSprites[index].rgbaDefault.a < globalSprites[index].rgbaCurrent.a) {
-                tempFloat = globalSprites[index].rgbaCurrent.a - globalSprites[index].rgbaDefault.a;
+            if (globalSprites[index].rgbaTarget.a < globalSprites[index].rgbaCurrent.a) {
+                tempFloat = globalSprites[index].rgbaCurrent.a - globalSprites[index].rgbaTarget.a;
             } else {
-                tempFloat = globalSprites[index].rgbaDefault.a - globalSprites[index].rgbaCurrent.a;
+                tempFloat = globalSprites[index].rgbaTarget.a - globalSprites[index].rgbaCurrent.a;
             }
 
-            globalSprites[index].normalized.a = (tempFloat * absValueRate) / globalSprites[index].rgba.a;
+            globalSprites[index].rgbaDelta.a = (tempFloat * absValueRate) / globalSprites[index].baseRGBA.a;
             
             result = TRUE;
             
@@ -671,7 +751,7 @@ bool updateSpriteRGBA(u16 index, u8 r, u8 g, u8 b, u8 a, s16 rate) {
 
 }
 
-//INCLUDE_ASM(const s32, "system/globalSprites", updateSpriteAlpha);
+//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", updateSpriteAlpha);
 
 bool updateSpriteAlpha(u16 index, u8 arg1, s16 rate) {
 
@@ -684,19 +764,19 @@ bool updateSpriteAlpha(u16 index, u8 arg1, s16 rate) {
 
     if (index < MAX_ACTIVE_SPRITES) {
 
-        if (globalSprites[index].flags2 & ACTIVE) {
+        if (globalSprites[index].stateFlags & ACTIVE) {
 
-            globalSprites[index].rgbaDefault.a = (globalSprites[index].rgba.a * arg1) / 255.0f;
+            globalSprites[index].rgbaTarget.a = (globalSprites[index].baseRGBA.a * arg1) / 255.0f;
 
-            globalSprites[index].flags2 &= ~0x400;
+            globalSprites[index].stateFlags &= ~RGBA_IN_PROGRESS;
 
-            if (globalSprites[index].rgbaDefault.a < globalSprites[index].rgbaCurrent.a) {
-                tempF = globalSprites[index].rgbaCurrent.a - globalSprites[index].rgbaDefault.a;
+            if (globalSprites[index].rgbaTarget.a < globalSprites[index].rgbaCurrent.a) {
+                tempF = globalSprites[index].rgbaCurrent.a - globalSprites[index].rgbaTarget.a;
             } else {
-                tempF = globalSprites[index].rgbaDefault.a - globalSprites[index].rgbaCurrent.a;
+                tempF = globalSprites[index].rgbaTarget.a - globalSprites[index].rgbaCurrent.a;
             }
 
-            globalSprites[index].normalized.a = (tempF * absValueRate) / globalSprites[index].rgba.a;
+            globalSprites[index].rgbaDelta.a = (tempF * absValueRate) / globalSprites[index].baseRGBA.a;
             
             result = TRUE;
 
@@ -707,23 +787,24 @@ bool updateSpriteAlpha(u16 index, u8 arg1, s16 rate) {
     
 }
 
-//INCLUDE_ASM(const s32, "system/globalSprites", func_8002C680);
+//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", func_8002C680);
 
-bool func_8002C680(u16 index, u16 arg1, u16 arg2) {
+bool func_8002C680(u16 index, u16 arg1, u16 flags) {
 
     bool result = FALSE;
     int temp;
 
     if (index < MAX_ACTIVE_SPRITES) {
 
-        if (globalSprites[index].flags2 & ACTIVE) { 
+        if (globalSprites[index].stateFlags & ACTIVE) { 
             
-            globalSprites[index].flags1 &= ~( 8 | 0x10 | 0x20 | 0x40);
+            globalSprites[index].renderingFlags &= ~( 8 | 0x10 | 0x20 | 0x40);
             
-            globalSprites[index].flags1 |= arg1 * 8;
+            // probably a shift
+            globalSprites[index].renderingFlags |= arg1 * 8;
             
-            temp = arg2 << 5;
-            globalSprites[index].flags1 |= temp;
+            temp = flags << 5;
+            globalSprites[index].renderingFlags |= temp;
             
             result = TRUE;
             
@@ -734,7 +815,7 @@ bool func_8002C680(u16 index, u16 arg1, u16 arg2) {
 
 }
 
-//INCLUDE_ASM(const s32, "system/globalSprites", func_8002C6F8);
+//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", func_8002C6F8);
 
 bool func_8002C6F8(u16 index, u16 arg1) {
     
@@ -744,11 +825,11 @@ bool func_8002C6F8(u16 index, u16 arg1) {
     
     if (index < MAX_ACTIVE_SPRITES) {
         
-        if (globalSprites[index].flags2 & ACTIVE) {
+        if (globalSprites[index].stateFlags & ACTIVE) {
             
-            globalSprites[index].flags1 &= ~(0x80 | 0x100);
+            globalSprites[index].renderingFlags &= ~(0x80 | 0x100);
             temp = arg1 << 7;
-            globalSprites[index].flags1 |= temp;
+            globalSprites[index].renderingFlags |= temp;
             
             result = TRUE;
 
@@ -759,7 +840,7 @@ bool func_8002C6F8(u16 index, u16 arg1) {
 
 }
 
-//INCLUDE_ASM(const s32, "system/globalSprites", func_8002C768);
+//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", func_8002C768);
 
 bool func_8002C768(u16 index, u16 arg1) {
 
@@ -767,12 +848,12 @@ bool func_8002C768(u16 index, u16 arg1) {
     
     if (index < MAX_ACTIVE_SPRITES) {
         
-        if (globalSprites[index].flags2 & ACTIVE) {
+        if (globalSprites[index].stateFlags & ACTIVE) {
 
             if (arg1) {
-                globalSprites[index].flags1 |= 0x200;
+                globalSprites[index].renderingFlags |= 0x200;
             } else {
-                globalSprites[index].flags1 &= ~0x200;
+                globalSprites[index].renderingFlags &= ~0x200;
             }
 
 
@@ -785,9 +866,9 @@ bool func_8002C768(u16 index, u16 arg1) {
     
 }
 
-//INCLUDE_ASM(const s32, "system/globalSprites", func_8002C7EC);
+//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", setSpriteRenderingLayer);
 
-bool func_8002C7EC(u16 index, u16 arg1) {
+bool setSpriteRenderingLayer(u16 index, u16 flags) {
     
     int temp;
 
@@ -795,11 +876,11 @@ bool func_8002C7EC(u16 index, u16 arg1) {
     
     if (index < MAX_ACTIVE_SPRITES) {
         
-        if (globalSprites[index].flags2 & ACTIVE) {
+        if (globalSprites[index].stateFlags & ACTIVE) {
             
-            globalSprites[index].flags1 &= ~(0x400 | 0x800 | 0x1000);
-            temp = arg1 << 10;
-            globalSprites[index].flags1 |= temp;
+            globalSprites[index].renderingFlags &= ~(0x400 | 0x800 | 0x1000);
+            temp = flags << 10;
+            globalSprites[index].renderingFlags |= temp;
             
             result = TRUE;
 
@@ -810,7 +891,7 @@ bool func_8002C7EC(u16 index, u16 arg1) {
 
 }
 
-//INCLUDE_ASM(const s32, "system/globalSprites", setSpriteDefaultRGBA);
+//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", setSpriteDefaultRGBA);
 
 bool setSpriteDefaultRGBA(u16 index, u8 r, u8 g, u8 b, u8 a) {
 
@@ -818,12 +899,12 @@ bool setSpriteDefaultRGBA(u16 index, u8 r, u8 g, u8 b, u8 a) {
 
     if (index < MAX_ACTIVE_SPRITES) {
         
-        if (globalSprites[index].flags2 & ACTIVE) {
+        if (globalSprites[index].stateFlags & ACTIVE) {
             
-            globalSprites[index].rgba.r = r;
-            globalSprites[index].rgba.g = g;
-            globalSprites[index].rgba.b = b;
-            globalSprites[index].rgba.a = a;
+            globalSprites[index].baseRGBA.r = r;
+            globalSprites[index].baseRGBA.g = g;
+            globalSprites[index].baseRGBA.b = b;
+            globalSprites[index].baseRGBA.a = a;
             
             result = TRUE;
 
@@ -834,27 +915,27 @@ bool setSpriteDefaultRGBA(u16 index, u8 r, u8 g, u8 b, u8 a) {
 
 }
 
-//INCLUDE_ASM(const s32, "system/globalSprites", func_8002C914);
+//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", setSpriteColor);
 
-bool func_8002C914(u16 index, u8 r, u8 g, u8 b, u8 a) {
+bool setSpriteColor(u16 index, u8 r, u8 g, u8 b, u8 a) {
 
     bool result = FALSE;
     
     if (index < MAX_ACTIVE_SPRITES) {
         
-        if (globalSprites[index].flags2 & ACTIVE) {        
+        if (globalSprites[index].stateFlags & ACTIVE) {        
 
             result = TRUE;
             
-            globalSprites[index].rgbaCurrent.r = (globalSprites[index].rgba.r * r) / 255.0f;
-            globalSprites[index].rgbaCurrent.g = (globalSprites[index].rgba.g * g) / 255.0f;
-            globalSprites[index].rgbaCurrent.b = (globalSprites[index].rgba.b * b) / 255.0f;
-            globalSprites[index].rgbaCurrent.a = (globalSprites[index].rgba.a * a) / 255.0f;
+            globalSprites[index].rgbaCurrent.r = (globalSprites[index].baseRGBA.r * r) / 255.0f;
+            globalSprites[index].rgbaCurrent.g = (globalSprites[index].baseRGBA.g * g) / 255.0f;
+            globalSprites[index].rgbaCurrent.b = (globalSprites[index].baseRGBA.b * b) / 255.0f;
+            globalSprites[index].rgbaCurrent.a = (globalSprites[index].baseRGBA.a * a) / 255.0f;
 
-            globalSprites[index].rgbaDefault.r = (globalSprites[index].rgba.r * r) / 255.0f;
-            globalSprites[index].rgbaDefault.g = (globalSprites[index].rgba.g * g) / 255.0f;
-            globalSprites[index].rgbaDefault.b = (globalSprites[index].rgba.b * b) / 255.0f;
-            globalSprites[index].rgbaDefault.a = (globalSprites[index].rgba.a * a) / 255.0f;
+            globalSprites[index].rgbaTarget.r = (globalSprites[index].baseRGBA.r * r) / 255.0f;
+            globalSprites[index].rgbaTarget.g = (globalSprites[index].baseRGBA.g * g) / 255.0f;
+            globalSprites[index].rgbaTarget.b = (globalSprites[index].baseRGBA.b * b) / 255.0f;
+            globalSprites[index].rgbaTarget.a = (globalSprites[index].baseRGBA.a * a) / 255.0f;
 
         }
     }
@@ -863,7 +944,7 @@ bool func_8002C914(u16 index, u8 r, u8 g, u8 b, u8 a) {
 }
 
 
-//INCLUDE_ASM(const s32, "system/globalSprites", setSpriteAlpha);
+//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", setSpriteAlpha);
 
 bool setSpriteAlpha(u16 index, u8 a) {
     
@@ -871,11 +952,11 @@ bool setSpriteAlpha(u16 index, u8 a) {
 
     if (index < MAX_ACTIVE_SPRITES) {
 
-        if (globalSprites[index].flags2 & ACTIVE) {
+        if (globalSprites[index].stateFlags & ACTIVE) {
 
-            globalSprites[index].rgba.a = a;
+            globalSprites[index].baseRGBA.a = a;
             globalSprites[index].rgbaCurrent.a = a;
-            globalSprites[index].rgbaDefault.a = a;
+            globalSprites[index].rgbaTarget.a = a;
             
             result = TRUE;
 
@@ -886,19 +967,19 @@ bool setSpriteAlpha(u16 index, u8 a) {
     
 }
 
-//INCLUDE_ASM(const s32, "system/globalSprites", func_8002CB24);
+//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", setBilinearFiltering);
 
-bool func_8002CB24(u16 index, u8 flag) {
+bool setBilinearFiltering(u16 index, bool useBilinearFiltering) {
 
     bool result = FALSE;
 
     if (index < MAX_ACTIVE_SPRITES) {
         
-        if (globalSprites[index].flags2 & ACTIVE) {
-            if (flag == TRUE) {
-                globalSprites[index].flags2 |= 0x80;
+        if (globalSprites[index].stateFlags & ACTIVE) {
+            if (useBilinearFiltering == TRUE) {
+                globalSprites[index].stateFlags |= ENABLE_BILINEAR_FILTERING;
             } else {
-                globalSprites[index].flags2 &= ~0x80;
+                globalSprites[index].stateFlags &= ~ENABLE_BILINEAR_FILTERING;
             }
 
             result = TRUE;
@@ -909,18 +990,18 @@ bool func_8002CB24(u16 index, u8 flag) {
     return result;
 }
 
-//INCLUDE_ASM(const s32, "system/globalSprites", func_8002CB88);
+//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", setSpritePaletteIndex);
 
-bool func_8002CB88(u16 index, u16 paletteIndex) {
+bool setSpritePaletteIndex(u16 index, u16 paletteIndex) {
 
     bool result = FALSE;
 
     if (index < MAX_ACTIVE_SPRITES) {
 
-        if (globalSprites[index].flags2 & ACTIVE) {
+        if (globalSprites[index].stateFlags & ACTIVE) {
 
             globalSprites[index].paletteIndex = paletteIndex;
-            globalSprites[index].flags2 |= 0x100;
+            globalSprites[index].stateFlags |= DIRECT_PALETTE_MODE;
 
             result = TRUE;
 
@@ -931,7 +1012,7 @@ bool func_8002CB88(u16 index, u16 paletteIndex) {
 
 }
 
-//INCLUDE_ASM(const s32, "system/globalSprites", func_8002CBF8);
+//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", func_8002CBF8);
 
 bool func_8002CBF8(u16 index) {
 
@@ -940,8 +1021,8 @@ bool func_8002CBF8(u16 index) {
     result = FALSE;
     
     if (index < MAX_ACTIVE_SPRITES) {
-        if (globalSprites[index].flags2 & ACTIVE) {
-            result = (globalSprites[index].flags2 >> 10) & 1;
+        if (globalSprites[index].stateFlags & ACTIVE) {
+            result = (globalSprites[index].stateFlags >> 10) & 1;
         }
     }
 
@@ -949,117 +1030,45 @@ bool func_8002CBF8(u16 index) {
     
 }
 
-//INCLUDE_ASM(const s32, "system/globalSprites", func_8002CC44);
+//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", checkSpriteAnimationStateChanged);
 
-bool func_8002CC44(u16 index) {
+bool checkSpriteAnimationStateChanged(u16 index) {
 
     bool result = FALSE;
 
     if (index < MAX_ACTIVE_SPRITES) {
-        // flag 0x40
-        result = (globalSprites[index].flags2 >> 6) & 1;
+        // flag 0x40, ANIMATION_STATE_CHANGED
+        result = (globalSprites[index].stateFlags >> 6) & 1;
     }
 
     return result;
     
 }
 
-// arg0 = ptr to animation index on sprite struct
-// arg1 = ptr to unknown asset (byteswapped u16)
-// 16 bit swap
-#ifdef PERMUTER
-void func_8002CC84(SpriteAnimation* arg0, u16* arg1) {
-
-    u16 arr[2];
+void setTotalAnimationFrames(SpriteAnimation *animation, u16 *animationData) {
     
-    u16 temp;
-    u16 temp2;
-    u16 temp3;
-
-    temp = (arg1[2] << 8);
-    temp2 = (arg1[2] >> 8);
-    
-    *arg0 = temp | temp2;
-
-}
-#else
-INCLUDE_ASM(const s32, "system/globalSprites", func_8002CC84);
-#endif
-
-#ifdef PERMUTER
-inline void func_8002CCA8(SpriteAnimation* arg0, u16* arg1) {
-
-    u32 arr[2];
-
-    u32 temp;
-    u32 temp1;
-    u32 temp2;
-    u32 temp3;
-
-    temp = *arg1;
-    temp1 = (*arg1 << 8);
-    temp >>= 8;
-    temp3 |= temp;
-    temp3 |= temp1;
-    
-    arg0->animation = temp3;
-
-    temp1 = *(arg1+1);
-
-    arg0->unk_2 = temp1 >> 8;
-    arg0->unk_3 = temp1;
+    animation->totalFrames = swap16(animationData[2]);
     
 }
-#else
-INCLUDE_ASM(const s32, "system/globalSprites", func_8002CCA8);
-#endif
 
-#ifdef PERMUTER
-void func_8002CCDC(UnknownAnimation* arg0, u16* arg1) {
+inline void func_8002CCA8(SpriteAnimation* animation, u16* animationData) {
 
-    u32 temp;
-    u32 temp2;
-    u32 temp3;
-    UnknownAnimation struc[2];
-
-    temp = arg1[0];
-    
-    arg0->unk_2 = 0;
-    
-
-    temp2 = (temp & 0xFF) << 8;
-    temp3 = temp >> 8;
-    
-    temp = temp2 | temp3;
-    
-    arg0->unk_0 = temp;
-
-    
-    temp = arg1[2];
-
-    temp2 = (temp & 0xFF) << 8;
-    temp3 = temp >> 8;
-    
-    temp = temp2 | temp3;
-    
-    arg0->unk_4 = temp;
-    
-
-    temp = arg1[3];
-
-    temp2 = temp << 8;
-    temp3 = temp >> 8;
-    
-    temp = temp2 | temp3;
-    
-    arg0->unk_6 = temp;
+    animation->totalFrames = swap16(animationData[0]);
+    swapBytes(animation, animationData[1]);
     
 }
-#else
-INCLUDE_ASM(const s32, "system/globalSprites", func_8002CCDC);
-#endif
 
-//INCLUDE_ASM(const s32, "system/globalSprites", func_8002CD34);
+// inline used by func_8002CDE8
+inline void func_8002CCDC(SpriteData* ptr, u16* data) {
+    
+    ptr->spriteIndex = swap32(data[0]);    
+    ptr->unk_2 = 0;
+    ptr->textureIndex = swap32(data[2]);
+    ptr->unk_6 = swap16(data[3]);
+
+}
+
+//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", func_8002CD34);
 
 // TODO: see if void* type is necessary
 // unknown sprite asset index lookup
@@ -1078,20 +1087,21 @@ u8* func_8002CD34(u16 arg0, void* arg1) {
 }
 */
 
-//INCLUDE_ASM(const s32, "system/globalSprites", func_8002CD4C);
+//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", func_8002CD4C);
 
 // FIXME: probably uses inlines; this could be an inline function used by graphic.c too
 // iterates through array of byteswapped shorts and swaps and increments ptr
-u16* func_8002CD4C(u16 arg0, u16* arg1) {
+// arg0 = unk_90, arg1 = animationDataPtr
+inline u16* func_8002CD4C(u16 arg0, u16* arg1) {
     
     u16 i;
+    SpriteAnimation unk;
+    u32 pad[2];
 
     u32 temp;
     u32 temp2;
     u32 temp3;
     u8 temp4;
-    
-    UnknownAnimation unk;
     
     i = 0;
     
@@ -1105,10 +1115,8 @@ u16* func_8002CD4C(u16 arg0, u16* arg1) {
             
             temp = temp2 | temp3;
             
-            unk.unk_0 = temp;
+            unk.totalFrames = temp;
 
-
-            // FIXME: use swap inline?
             temp2 = arg1[1];
             temp = temp2;
             temp2 = temp;
@@ -1117,10 +1125,10 @@ u16* func_8002CD4C(u16 arg0, u16* arg1) {
             temp4 = temp >> 8;
             
             unk.unk_2 = temp4;
-            unk.unk_3 = temp;
+            unk.audioTrigger = temp;
               
             arg1 += 2;
-            arg1 += unk.unk_0 * 4;
+            arg1 += unk.totalFrames * 4;
             
             i++;
             
@@ -1131,16 +1139,14 @@ u16* func_8002CD4C(u16 arg0, u16* arg1) {
 
 }
 
-//INCLUDE_ASM(const s32, "system/globalSprites", func_8002CDB4);
+//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", func_8002CDB4);
 
-// unused or inline
-Gfx* func_8002CDB4(u16 arg0, Gfx* arg1) {
+inline u16* func_8002CDB4(u16 arg0, u16* arg1) {
     
     u32 i;
     
-    // FIXME: typecasting i doesn't seem right
     for (i = 0; (u16)i < arg0; i++) {
-        arg1++;
+        arg1+=4;
     }
 
     return arg1;
@@ -1187,8 +1193,318 @@ u32 func_8002CDB4(u16 arg0, u32 arg1) {
 */
 
 // sprites to bitmaps
-INCLUDE_ASM(const s32, "system/globalSprites", func_8002CDE8);
+// set flags on bitmaps
+// arg1 = stack
+#ifdef PERMUTER
+void func_8002CDE8(u16 spriteIndex, SpriteAnimation* arg1, u8 arg2) {
 
-// loop through all sprites and update (rgba, animation)
-// main loop function
-INCLUDE_ASM(const s32, "system/globalSprites", func_8002D3D4);
+    u16 bitmapIndex;
+    
+    u16 *texturePtr;
+    u16 *palettePtr;
+    
+    f32 shrinkX;
+    f32 shrinkY;
+    f32 shrinkZ;
+    
+    SpriteData data;
+    
+    u16 temp;
+    u32 temp2;
+    u16 temp3;
+    u16 i;
+
+    u32 pad2[4];
+    
+    data.ptr2 = arg1;
+    temp = arg1->animation;
+    
+    data.length = 0;
+    
+    texturePtr = globalSprites[spriteIndex].texturePtrs[gGraphicsBufferIndex];
+
+    if (temp) {
+        
+        i = 0;
+    
+        temp2 = arg2;
+    
+        do {
+            
+            if (temp2) {
+
+                do {
+                    
+                    func_8002CCDC(&data, func_8002CDB4((temp - i) - 1, globalSprites[spriteIndex].unknownAsset4Ptr));
+                    
+                    texturePtr += data.length;
+                    
+                    if (temp2 == 2) {
+                        func_8002A340(data.spriteIndex, globalSprites[spriteIndex].spritesheetIndexPtr, texturePtr, globalSprites[spriteIndex].romTexturePtr);
+                    }
+                    
+                    data.length = func_8002A3A0(data.spriteIndex, globalSprites[spriteIndex].spritesheetIndexPtr);
+                        
+                } while (0);
+                
+            } else {
+
+                do {
+                    
+                    temp3 = ((data.ptr2->animation - i) - 1);
+    
+                    if (temp2 < temp3) {
+                        
+                    }
+    
+                    func_8002CCDC(&data, func_8002CDB4(temp3, globalSprites[spriteIndex].unknownAsset4Ptr));
+    
+                    texturePtr = func_80028888(data.spriteIndex, globalSprites[spriteIndex].spritesheetIndexPtr);
+
+                } while (0);
+               
+            }
+
+            if (globalSprites[spriteIndex].stateFlags & DIRECT_PALETTE_MODE) {
+                palettePtr = func_800288A0(globalSprites[spriteIndex].paletteIndex, globalSprites[spriteIndex].paletteIndexPtr);
+            } else {
+                palettePtr = func_800288B8(data.spriteIndex, globalSprites[spriteIndex].paletteIndexPtr, globalSprites[spriteIndex].spriteToPaletteMappingPtr);
+            }
+
+            shrinkX = globalSprites[spriteIndex].shrink.x;
+            shrinkY = globalSprites[spriteIndex].shrink.y;
+            shrinkZ = globalSprites[spriteIndex].shrink.z;
+
+            if (globalSprites[spriteIndex].stateFlags & SPRITE_FLIP_WINDING) {
+                bitmapIndex = func_80029DAC(texturePtr, palettePtr, (0x8 | 0x10 | 0x20 | 0x40));
+            } else {
+                bitmapIndex = func_80029DAC(texturePtr, palettePtr, (0x8 | 0x10 | 0x30));
+            }
+            
+            func_8002A09C(bitmapIndex, shrinkX, shrinkY, shrinkZ);
+            func_8002A120(bitmapIndex, globalSprites[spriteIndex].scale.x, globalSprites[spriteIndex].scale.y, globalSprites[spriteIndex].scale.z);
+            func_8002A1A4(bitmapIndex, globalSprites[spriteIndex].angles.x, globalSprites[spriteIndex].angles.y, globalSprites[spriteIndex].angles.z);
+
+            func_8002A228(bitmapIndex, globalSprites[spriteIndex].rgbaCurrent.r, globalSprites[spriteIndex].rgbaCurrent.g, globalSprites[spriteIndex].rgbaCurrent.b, globalSprites[spriteIndex].rgbaCurrent.a);
+
+            func_8002A2E0(bitmapIndex, data.textureIndex, data.unk_6);
+            
+            func_80029F98(bitmapIndex, globalSprites[spriteIndex].renderingFlags & 1, globalSprites[spriteIndex].renderingFlags & 2);
+
+            func_80029E2C(bitmapIndex, (globalSprites[spriteIndex].renderingFlags >> 3) & (1 | 3), (globalSprites[spriteIndex].renderingFlags >> 5) & (1 | 3));
+            func_80029EA4(bitmapIndex, (globalSprites[spriteIndex].renderingFlags >> 7) & (1 | 3));
+            func_80029F14(bitmapIndex, globalSprites[spriteIndex].renderingFlags & 0x200);
+            func_8002A02C(bitmapIndex, (globalSprites[spriteIndex].renderingFlags >> 10) & (1 | 2 | 4));
+
+            if (globalSprites[spriteIndex].stateFlags & ENABLE_BILINEAR_FILTERING) {
+                bitmaps[bitmapIndex].flags |= USE_BILINEAR_FILTERING;
+            } else {
+                bitmaps[bitmapIndex].flags &= ~USE_BILINEAR_FILTERING;
+            }
+
+            temp = data.ptr2->animation;
+            i++;
+            
+        } while (i < data.ptr2->animation);
+        
+    }
+    
+}
+#else
+INCLUDE_ASM("asm/nonmatchings/system/globalSprites", func_8002CDE8);
+#endif
+
+#ifdef PERMUTER
+void updateSprites(void) {
+
+    u16 i = 0;
+    u8 check;
+    f32 tempf;
+    u16* ptr;
+    SpriteAnimation animation;
+    
+    u32 pad[4];
+
+    do {
+
+        if (globalSprites[i].stateFlags & 1) {
+        
+            check = 0;
+
+            if (globalSprites[i].rgbaCurrent.r <  globalSprites[i].rgbaTarget.r) {
+                
+                tempf = globalSprites[i].rgbaCurrent.r + globalSprites[i].rgbaDelta.r;
+                globalSprites[i].rgbaCurrent.r = tempf;
+                
+                if (globalSprites[i].rgbaTarget.r <= tempf) {
+                    globalSprites[i].rgbaCurrent.r = globalSprites[i].rgbaTarget.r;
+                } else {
+                    check = 1;
+                }
+            }
+    
+            if (globalSprites[i].rgbaCurrent.r > globalSprites[i].rgbaTarget.r) {
+                
+                tempf = globalSprites[i].rgbaCurrent.r - globalSprites[i].rgbaDelta.r;
+                globalSprites[i].rgbaCurrent.r = tempf;
+                
+                if (globalSprites[i].rgbaTarget.r >= tempf) {
+                    globalSprites[i].rgbaCurrent.r = globalSprites[i].rgbaTarget.r;
+                } else {
+                    check++;
+                }
+            }
+    
+            if (globalSprites[i].rgbaCurrent.g <  globalSprites[i].rgbaTarget.g) {
+                
+                tempf = globalSprites[i].rgbaCurrent.g + globalSprites[i].rgbaDelta.g;
+                globalSprites[i].rgbaCurrent.g = tempf;
+                
+                if ((globalSprites[i].rgbaTarget.g <= tempf)) {
+                    globalSprites[i].rgbaCurrent.g = globalSprites[i].rgbaTarget.g;
+                } else {
+                    check++;
+                }
+            }
+    
+            if (globalSprites[i].rgbaCurrent.g >  globalSprites[i].rgbaTarget.g) {
+                
+                tempf = globalSprites[i].rgbaCurrent.g - globalSprites[i].rgbaDelta.g;
+                globalSprites[i].rgbaCurrent.g = tempf;
+                
+                if (globalSprites[i].rgbaTarget.g >= tempf) {
+                    globalSprites[i].rgbaCurrent.g = globalSprites[i].rgbaTarget.g;
+                } else {
+                    check++;
+                }
+            }
+    
+            if (globalSprites[i].rgbaCurrent.b <  globalSprites[i].rgbaTarget.b) {
+                
+                tempf = globalSprites[i].rgbaCurrent.b + globalSprites[i].rgbaDelta.b;
+                globalSprites[i].rgbaCurrent.b = tempf;
+                
+                if ((globalSprites[i].rgbaTarget.b <= tempf)) {
+                    globalSprites[i].rgbaCurrent.b = globalSprites[i].rgbaTarget.b;
+                } else {
+                    check++;
+                }
+            }
+    
+            if (globalSprites[i].rgbaCurrent.b >  globalSprites[i].rgbaTarget.b) {
+                
+                tempf = globalSprites[i].rgbaCurrent.b - globalSprites[i].rgbaDelta.b;
+                globalSprites[i].rgbaCurrent.b = tempf;
+                
+                if (globalSprites[i].rgbaTarget.b >= tempf) {
+                    globalSprites[i].rgbaCurrent.b = globalSprites[i].rgbaTarget.b;
+                } else {
+                    check++;
+                }
+            }
+    
+            if (globalSprites[i].rgbaCurrent.a <  globalSprites[i].rgbaTarget.a) {
+                
+                tempf = globalSprites[i].rgbaCurrent.a + globalSprites[i].rgbaDelta.a;
+                globalSprites[i].rgbaCurrent.a = tempf;
+                
+                if ((globalSprites[i].rgbaTarget.a <= tempf)) {
+                    globalSprites[i].rgbaCurrent.a = globalSprites[i].rgbaTarget.a;
+                } else {
+                    check++;
+                }
+            }
+    
+            if (globalSprites[i].rgbaCurrent.a >  globalSprites[i].rgbaTarget.a) {
+                
+                tempf = globalSprites[i].rgbaCurrent.a - globalSprites[i].rgbaDelta.a;
+                globalSprites[i].rgbaCurrent.a = tempf;
+                
+                if (globalSprites[i].rgbaTarget.a >= tempf) {
+                    globalSprites[i].rgbaCurrent.a = globalSprites[i].rgbaTarget.a;
+                } else {
+                    check++;
+                }
+            }
+
+            if (check == 0) {
+                globalSprites[i].stateFlags |= RGBA_IN_PROGRESS;
+            }
+
+            globalSprites[i].audioTrigger = FALSE;
+
+            if (globalSprites[i].stateFlags & ANIMATION_HEADER_PROCESSED) { 
+
+                func_8002CCA8(&animation, globalSprites[i].unknownAsset3Ptr);
+
+                if (globalSprites[i].stateFlags & 4) {
+                    
+                    if (globalSprites[i].animationCounter[gGraphicsBufferIndex] != globalSprites[i].currentAnimationFrame) {
+                        func_8002CDE8(i, &animation, 2);
+                    } else {
+                        func_8002CDE8(i, &animation, 1);
+                    }
+
+                    globalSprites[i].animationCounter[gGraphicsBufferIndex] = globalSprites[i].currentAnimationFrame;
+                    
+                } else {
+                    func_8002CDE8(i, &animation, 0);
+                }
+
+                if (!(globalSprites[i].stateFlags & ANIMATION_PAUSED)) {
+                    globalSprites[i].frameTimer += 2; 
+                }
+
+                if (globalSprites[i].frameTimer >= animation.unk_2) {
+
+                    globalSprites[i].audioTrigger = animation.audioTrigger;
+                    globalSprites[i].frameTimer = 0;
+
+                    if (globalSprites[i].stateFlags & ANIMATION_PLAYING) {
+
+                        globalSprites[i].currentAnimationFrame += 1;
+                        
+                        if (globalSprites[i].animation.totalFrames <= globalSprites[i].currentAnimationFrame) {
+
+                            if (globalSprites[i].stateFlags & ANIMATION_LOOPS) {
+                                
+                                globalSprites[i].currentAnimationFrame = 0;
+                                
+                            } else if (globalSprites[i].stateFlags & DESTROY_ON_ANIMATION_END) {
+                                
+                                if (i < MAX_ACTIVE_SPRITES && globalSprites[i].stateFlags & ACTIVE) {
+                                    globalSprites[i].stateFlags &= ~(ACTIVE | ANIMATION_HEADER_PROCESSED); 
+                                }
+                                
+                            } else {
+                                globalSprites[i].currentAnimationFrame -= 2;
+                            }
+
+                            globalSprites[i].stateFlags |= ANIMATION_STATE_CHANGED;
+                            
+                        }
+
+                        ptr = globalSprites[i].animationDataPtr + 8;
+
+                        func_8002CD4C(globalSprites[i].currentAnimationFrame, globalSprites[i].animationDataPtr);
+
+                        globalSprites[i].unknownAsset3Ptr = ptr;
+                        globalSprites[i].unknownAsset4Ptr = ptr + 2;
+                        
+                    } else {
+                        globalSprites[i].stateFlags |= ANIMATION_STATE_CHANGED;
+                    }
+                    
+                }
+
+            }
+        }   
+    
+        i++;
+        
+    } while (i < MAX_ACTIVE_SPRITES);
+        
+} 
+#else
+INCLUDE_ASM("asm/nonmatchings/system/globalSprites", updateSprites);
+#endif

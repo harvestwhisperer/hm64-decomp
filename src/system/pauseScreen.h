@@ -32,6 +32,6 @@ extern bool func_80045E20(u16 index, u16 spriteIndex, u32 romSpritesheetStart, u
 extern bool func_80045F5C(u16 index, u32 arg1, u8 arg2, u16 flag);
 extern bool deactivatePauseScreenSprites(u16 index);
 extern bool setPauseScreenSpritesRGBA(u16 arg0, u8 arg1, u8 arg2, u8 arg3, u8 arg4);
-extern void func_800467F8();
+extern void updatePauseScreenSprites();
 
 #endif

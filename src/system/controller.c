@@ -1,13 +1,14 @@
 #include "common.h"
 
-#include "controller.h"
+#include "system/controller.h"
 
+#include "system/graphic.h"
 #include "system/mathUtils.h"
 
 #include "mainproc.h"
 
 // forward declaration
-void func_8004D47C(u8);                         
+void convertAnalogSticksToDirections(u8);                         
       
 // bss
 extern u16 D_80182FBA;
@@ -16,7 +17,7 @@ extern u16 D_801FADB0;
 extern u8 contPattern;
 
 
-//INCLUDE_ASM(const s32, "system/controller", controllerInit);
+//INCLUDE_ASM("asm/nonmatchings/system/controller", controllerInit);
 
 void controllerInit(void) {
     
@@ -28,8 +29,8 @@ void controllerInit(void) {
         controllers[i].buttonHeld = 0;
         controllers[i].buttonPressed = 0;
         controllers[i].buttonReleased = 0;
-        controllers[i].unk_24 = 0;
-        controllers[i].unk_28 = 0;
+        controllers[i].buttonRepeat = 0;
+        controllers[i].buttonRepeatState = 0;
         
         controllers[i].sticks.s_stick_x = 0;
         controllers[i].sticks.s_stick_y = 0;
@@ -37,15 +38,15 @@ void controllerInit(void) {
         controllers[i].sticks.u_stick_y = 0;
 
         for (j = 0; j < 24; j++) {
-            controllers[i].unk_2C[j] = 0;
+            controllers[i].buttonFrameCounters[j] = 0;
         }
 
         gControllers[i].button = 0;
         gControllers[i].buttonHeld = 0;
         gControllers[i].buttonPressed = 0;
         gControllers[i].buttonReleased = 0;
-        gControllers[i].unk_24 = 0;
-        gControllers[i].unk_28 = 0;
+        gControllers[i].buttonRepeat = 0;
+        gControllers[i].buttonRepeatState = 0;
         
         gControllers[i].sticks.s_stick_x = 0;
         gControllers[i].sticks.s_stick_y = 0;
@@ -53,7 +54,7 @@ void controllerInit(void) {
         gControllers[i].sticks.u_stick_y = 0;
 
         for (j = 0; j < 24; j++) {
-            gControllers[i].unk_2C[j] = 0;
+            gControllers[i].buttonFrameCounters[j] = 0;
         }
     }
     
@@ -64,10 +65,10 @@ void controllerInit(void) {
     
 }
 
-//INCLUDE_ASM(const s32, "system/controller", func_8004CF68);
+//INCLUDE_ASM("asm/nonmatchings/system/controller", readControllerData);
 
 // this requires button on NUContData struct to be volatile
-void func_8004CF68(void) {
+void readControllerData(void) {
     
     u8 i, j;
     
@@ -75,7 +76,7 @@ void func_8004CF68(void) {
     
     for (i = 0; i < NU_CONT_MAXCONTROLLERS; i++) {
         
-        if (!contStatus[i].errno) {
+        if (!nuContStatus[i].errno) {
             
             if ((frameCount % D_802226E2) == 0) {
                 
@@ -84,45 +85,43 @@ void func_8004CF68(void) {
                 
                 controllers[i].button = contData[i].button;
                 
-                // update sticks
-                func_8004D47C(i);
+                convertAnalogSticksToDirections(i);
                 
                 controllers[i].buttonPressed = (controllers[i].button ^ controllers[i].buttonHeld) & controllers[i].button;
                 controllers[i].buttonReleased =  (controllers[i].button ^ controllers[i].buttonHeld) & controllers[i].buttonHeld;
                 controllers[i].buttonHeld = controllers[i].button;
                 
-                // loop through controller bits
                 for (j = 0; j < 24; j++) {
                     
                     // if bit set
                     if ((controllers[i].button >> j) & 1) {
                         
-                        if ((controllers[i].unk_28 >> j) & 1) {
+                        if ((controllers[i].buttonRepeatState >> j) & 1) {
                             
                             // > 4
-                            if (controllers[i].unk_2C[j] > D_80182FBA) {
-                                controllers[i].unk_24 |= ((controllers[i].button >> j) & 1) << j;
-                                controllers[i].unk_2C[j] = 0;
+                            if (controllers[i].buttonFrameCounters[j] > D_80182FBA) {
+                                controllers[i].buttonRepeat |= ((controllers[i].button >> j) & 1) << j;
+                                controllers[i].buttonFrameCounters[j] = 0;
                             } else {
-                                controllers[i].unk_24 &= ~(1 << j);
+                                controllers[i].buttonRepeat &= ~(1 << j);
                             }
                             
                             // > 16
-                        } else if (controllers[i].unk_2C[j] > D_801FADB0) {
-                            controllers[i].unk_24 |= ((controllers[i].button >> j) & 1) << j;
-                            controllers[i].unk_28 |= ((controllers[i].button >> j) & 1) << j;
-                            controllers[i].unk_2C[j] = 0;
+                        } else if (controllers[i].buttonFrameCounters[j] > D_801FADB0) {
+                            controllers[i].buttonRepeat |= ((controllers[i].button >> j) & 1) << j;
+                            controllers[i].buttonRepeatState |= ((controllers[i].button >> j) & 1) << j;
+                            controllers[i].buttonFrameCounters[j] = 0;
                         } else {
-                            controllers[i].unk_24 = controllers[i].buttonPressed;
+                            controllers[i].buttonRepeat = controllers[i].buttonPressed;
                         }
                         
                         // increment bit counter
-                        controllers[i].unk_2C[j]++;
+                        controllers[i].buttonFrameCounters[j]++;
                         
                     } else {
-                        controllers[i].unk_2C[j] = 0;
-                        controllers[i].unk_24 &= ~(1 << j);
-                        controllers[i].unk_28 &= ~(1 << j);
+                        controllers[i].buttonFrameCounters[j] = 0;
+                        controllers[i].buttonRepeat &= ~(1 << j);
+                        controllers[i].buttonRepeatState &= ~(1 << j);
                     }
                 }
 
@@ -144,69 +143,70 @@ void func_8004CF68(void) {
 }
 
 
-//INCLUDE_ASM(const s32, "system/controller", func_8004D35C);
+//INCLUDE_ASM("asm/nonmatchings/system/controller", checkButtonHeld);
 
-u32 func_8004D35C(u8 contIndex, u32 buttonPattern) {
+u32 checkButtonHeld(u8 contIndex, u32 buttonPattern) {
     return controllers[contIndex].button & buttonPattern;
 }
 
-//INCLUDE_ASM(const s32, "system/controller", func_8004D380);
+//INCLUDE_ASM("asm/nonmatchings/system/controller", checkButtonPressed);
 
-u32 func_8004D380(u8 contIndex, u32 buttonPattern) {
+u32 checkButtonPressed(u8 contIndex, u32 buttonPattern) {
     return controllers[contIndex].buttonPressed & buttonPattern;
 }
 
-//INCLUDE_ASM(const s32, "system/controller", func_8004D3A4);
+//INCLUDE_ASM("asm/nonmatchings/system/controller", checkButtonReleased);
 
-u32 func_8004D3A4(u8 contIndex, u32 buttonPattern) {
+u32 checkButtonReleased(u8 contIndex, u32 buttonPattern) {
     return controllers[contIndex].buttonReleased & buttonPattern;
 }
 
-//INCLUDE_ASM(const s32, "system/controller", func_8004D3C8);
+//INCLUDE_ASM("asm/nonmatchings/system/controller", checkButtonRepeat);
 
-u32 func_8004D3C8(u8 contIndex, u32 buttonPattern) {
-    return controllers[contIndex].unk_24 & buttonPattern;
+u32 checkButtonRepeat(u8 contIndex, u32 buttonPattern) {
+    return controllers[contIndex].buttonRepeat & buttonPattern;
 }
 
-//INCLUDE_ASM(const s32, "system/controller", func_8004D3EC);
+//INCLUDE_ASM("asm/nonmatchings/system/controller", GetStickXValueSigned);
 
-s8 func_8004D3EC(u8 contIndex) {
+s8 GetStickXValueSigned(u8 contIndex) {
     return controllers[contIndex].sticks.s_stick_x;
 }
 
-//INCLUDE_ASM(const s32, "system/controller", func_8004D410);
+//INCLUDE_ASM("asm/nonmatchings/system/controller", getStickYValueSigned);
 
-s8 func_8004D410(u8 contIndex) {
+s8 getStickYValueSigned(u8 contIndex) {
     return controllers[contIndex].sticks.s_stick_y;
 }
 
-//INCLUDE_ASM(const s32, "system/controller", func_8004D434);
+//INCLUDE_ASM("asm/nonmatchings/system/controller", getStickXValueUnsigned);
 
-u8 func_8004D434(u8 contIndex) {
+u8 getStickXValueUnsigned(u8 contIndex) {
     return controllers[contIndex].sticks.u_stick_x;
 }
 
-//INCLUDE_ASM(const s32, "system/controller", func_8004D458);
+//INCLUDE_ASM("asm/nonmatchings/system/controller", getStickYValueUnsigned);
 
-u8 func_8004D458(u8 contIndex) {
+u8 getStickYValueUnsigned(u8 contIndex) {
     return controllers[contIndex].sticks.u_stick_y;
 }
 
-//INCLUDE_ASM(const s32, "system/controller", func_8004D47C);
+//INCLUDE_ASM("asm/nonmatchings/system/controller", convertAnalogSticksToDirections);
 
-void func_8004D47C(u8 controllerIndex) {
+void convertAnalogSticksToDirections(u8 controllerIndex) {
 
     volatile Sticks sticks;
 
     sticks.s_stick_x = controllers[controllerIndex].sticks.s_stick_x;
     sticks.s_stick_y = controllers[controllerIndex].sticks.s_stick_y;
 
+    // deadzone
     sticks.u_stick_x = (s16)(getAbsoluteValue(sticks.s_stick_x)) / 10;
     sticks.u_stick_y = (s16)(getAbsoluteValue(sticks.s_stick_y)) / 10;
     
     controllers[controllerIndex].sticks.u_stick_x = 0;
 
-    if (sticks.u_stick_x < 3 && sticks.u_stick_y < 3) {
+    if (sticks.u_stick_x < SOUTHEAST && sticks.u_stick_y < SOUTHEAST) {
         
         controllers[controllerIndex].sticks.u_stick_x = 0xFF;
         
@@ -216,23 +216,23 @@ void func_8004D47C(u8 controllerIndex) {
                     
             controllers[controllerIndex].sticks.u_stick_y = sticks.u_stick_x - sticks.u_stick_y;
             
-            if ((sticks.u_stick_x >> 1) < controllers[controllerIndex].sticks.u_stick_y) {
+            if ((sticks.u_stick_x / 2) < controllers[controllerIndex].sticks.u_stick_y) {
                 if ((sticks.s_stick_x << 0x18) < 0) {
-                    controllers[controllerIndex].sticks.u_stick_x = 2;
+                    controllers[controllerIndex].sticks.u_stick_x = EAST;
                 } else {
-                    controllers[controllerIndex].sticks.u_stick_x = 6;
+                    controllers[controllerIndex].sticks.u_stick_x = WEST;
                 }
             } else if ((sticks.s_stick_y << 0x18) < 0) {
                 if ((sticks.s_stick_x << 0x18) < 0) {
-                    controllers[controllerIndex].sticks.u_stick_x = 1;
+                    controllers[controllerIndex].sticks.u_stick_x = NORTHEAST;
                 } else {
-                    controllers[controllerIndex].sticks.u_stick_x = 7;
+                    controllers[controllerIndex].sticks.u_stick_x = NORTHWEST;
                 }
             } else {
                 if ((sticks.s_stick_x << 0x18) < 0) {
-                    controllers[controllerIndex].sticks.u_stick_x = 3;
+                    controllers[controllerIndex].sticks.u_stick_x = SOUTHEAST;
                 } else {
-                    controllers[controllerIndex].sticks.u_stick_x = 5;
+                    controllers[controllerIndex].sticks.u_stick_x = SOUTHWEST;
                 }
     
             }
@@ -243,23 +243,23 @@ void func_8004D47C(u8 controllerIndex) {
 
             controllers[controllerIndex].sticks.u_stick_y = sticks.u_stick_y - sticks.u_stick_x;
             
-            if ((sticks.u_stick_y >> 1) < controllers[controllerIndex].sticks.u_stick_y) {
+            if ((sticks.u_stick_y / 2) < controllers[controllerIndex].sticks.u_stick_y) {
                 if ((sticks.s_stick_y << 0x18) < 0) {
-                    controllers[controllerIndex].sticks.u_stick_x = 0;
+                    controllers[controllerIndex].sticks.u_stick_x = NORTH;
                 } else {
-                    controllers[controllerIndex].sticks.u_stick_x = 4;
+                    controllers[controllerIndex].sticks.u_stick_x = SOUTH;
                 } 
             } else if ((sticks.s_stick_x << 0x18) < 0) {
                 if ((sticks.s_stick_y << 0x18) < 0) {
-                    controllers[controllerIndex].sticks.u_stick_x = 1;
+                    controllers[controllerIndex].sticks.u_stick_x = NORTHEAST;
                 } else {
-                    controllers[controllerIndex].sticks.u_stick_x = 3;
+                    controllers[controllerIndex].sticks.u_stick_x = SOUTHEAST;
                 }
             } else {
                 if ((sticks.s_stick_y << 0x18) < 0) { 
-                    controllers[controllerIndex].sticks.u_stick_x = 7;
+                    controllers[controllerIndex].sticks.u_stick_x = NORTHWEST;
                 } else {
-                    controllers[controllerIndex].sticks.u_stick_x = 5;
+                    controllers[controllerIndex].sticks.u_stick_x = SOUTHWEST;
                 }
             }
     
@@ -268,15 +268,15 @@ void func_8004D47C(u8 controllerIndex) {
         }
      }
     
-    if (controllers[controllerIndex].sticks.u_stick_y >= 7) {
-        controllers[controllerIndex].sticks.u_stick_y = 6;
+    if (controllers[controllerIndex].sticks.u_stick_y >= MAX_DIRECTIONS) {
+        controllers[controllerIndex].sticks.u_stick_y = WEST;
     }
     
     controllers[controllerIndex].button |= (0x10000 << (controllers[controllerIndex].sticks.u_stick_x)); 
    
 }
 
-//INCLUDE_ASM(const s32, "system/controller", func_8004D788);
+//INCLUDE_ASM("asm/nonmatchings/system/controller", func_8004D788);
 
 bool func_8004D788(u8 contIndex) {
     
@@ -298,7 +298,7 @@ bool func_8004D788(u8 contIndex) {
         result = FALSE;
         
         if (controllers[contIndex].pak.error == 10)  {
-            nuContDataRead(&controllers[contIndex].pak);
+            nuContPakRepairId(&controllers[contIndex].pak);
             if (controllers[contIndex].pak.error == error) {
                 temp = TRUE;
             }
@@ -315,34 +315,34 @@ bool func_8004D788(u8 contIndex) {
     
 }
 
-//INCLUDE_ASM(const s32, "system/controller", func_8004D87C);
+//INCLUDE_ASM("asm/nonmatchings/system/controller", func_8004D87C);
 
 s32 func_8004D87C(u8 contIndex) {
     return nuContPakGetFree(&controllers[contIndex].pak);
 }
 
-//INCLUDE_ASM(const s32, "system/controller", func_8004D8B4);
+//INCLUDE_ASM("asm/nonmatchings/system/controller", func_8004D8B4);
 
 u32 func_8004D8B4(u8 contIndex, s32 *max_files, s32 *used_files) {
     nuContPakFileNum(&controllers[contIndex].pak, max_files, used_files);
     return controllers[contIndex].pak.error == 0;
 }
 
-//INCLUDE_ASM(const s32, "system/controller", func_8004D904);
+//INCLUDE_ASM("asm/nonmatchings/system/controller", func_8004D904);
 
 u32 func_8004D904(u8 contIndex, u8 *companyCode, u8 *gameCode) {
     nuContPakCodeSet(companyCode, gameCode);
     return !controllers[contIndex].pak.error;
 }
 
-//INCLUDE_ASM(const s32, "system/controller", func_8004D954);
+//INCLUDE_ASM("asm/nonmatchings/system/controller", func_8004D954);
 
 u32 func_8004D954(u8 contIndex, u8* noteName, u8 *extName) {
     nuContPakFileOpenJis(&controllers[contIndex].pak, noteName, extName, NU_CONT_PAK_MODE_NOCREATE, 0);
     return !controllers[contIndex].pak.error;
 }
 
-//INCLUDE_ASM(const s32, "system/controller", func_8004D9AC);
+//INCLUDE_ASM("asm/nonmatchings/system/controller", func_8004D9AC);
 
 u32 func_8004D9AC(u8 contIndex, u8 *noteName, u8 *extName, s32 offset, s32 size, s32 buf) {
 
@@ -357,7 +357,7 @@ u32 func_8004D9AC(u8 contIndex, u8 *noteName, u8 *extName, s32 offset, s32 size,
 
 }
 
-//INCLUDE_ASM(const s32, "system/controller", func_8004DA48);
+//INCLUDE_ASM("asm/nonmatchings/system/controller", func_8004DA48);
 
 u32 func_8004DA48(u8 contIndex, u8* noteName, u8* extName, s32 offset, s32 size, u8* buf) {
 
@@ -372,7 +372,7 @@ u32 func_8004DA48(u8 contIndex, u8* noteName, u8* extName, s32 offset, s32 size,
 
 }
 
-//INCLUDE_ASM(const s32, "system/controller", func_8004DAF4);
+//INCLUDE_ASM("asm/nonmatchings/system/controller", func_8004DAF4);
 
 u32 func_8004DAF4(u8 contIndex, u8 *noteName, u8 *extName) {
     

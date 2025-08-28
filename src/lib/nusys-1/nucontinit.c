@@ -1,3 +1,15 @@
-#include "common.h"
+#include <nusys.h>
 
-INCLUDE_ASM(const s32, "lib/nusys-1/nucontinit", nuContInit);
+u8 nuContInit(void) {
+
+    u8 pattern;
+
+    pattern = nuSiMgrInit();
+
+    nuContMgrInit();
+    nuContPakMgrInit();
+    nuContRmbMgrInit();
+
+    return pattern;
+
+}

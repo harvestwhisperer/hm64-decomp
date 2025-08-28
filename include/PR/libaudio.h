@@ -5,8 +5,8 @@
 extern "C" {
 #endif
 
-#include "PR/ultratypes.h"
-#include "PR/mbi.h"
+#include <PR/ultratypes.h>
+#include <PR/mbi.h>
     
 /***********************************************************************
  * misc defines
@@ -29,7 +29,9 @@ extern "C" {
 #	endif /* AUD_PROFILE */
 #endif /* EMULATOR */
 
+#ifndef NULL
 #define NULL 0
+#endif
 
 #define AL_FX_BUFFER_SIZE       8192
 #define AL_FRAME_INIT           -1
@@ -912,3 +914,6 @@ void alParseAbiCL(Acmd *cmdList, u32 nbytes);
 #endif
 
 #endif /* !__LIB_AUDIO__ */
+
+
+

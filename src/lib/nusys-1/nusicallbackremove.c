@@ -1,4 +1,33 @@
-#include "common.h"
+#include <nusys.h>
 
-// nuSiCallBackRemove
-INCLUDE_ASM(const s32, "lib/nusys-1/nusicallbackremove", func_800FD900);
+void nuSiCallBackRemove(NUCallBackList* list) {
+
+    OSIntMask		mask;
+    NUCallBackList*	siCallBackListPtr;
+    NUCallBackList*	forwardPtr;
+
+    siCallBackListPtr = nuSiCallBackList.next;
+    forwardPtr = &nuSiCallBackList;
+
+    while (siCallBackListPtr) {
+
+		if (siCallBackListPtr->func == list->func) {
+			
+			mask = osSetIntMask(OS_IM_NONE);
+			
+			forwardPtr->next = list->next;
+			list->next = NULL;
+			list->func = NULL;
+			
+			osSetIntMask(mask);
+			
+			break;
+
+		}
+		
+		forwardPtr = siCallBackListPtr;
+		siCallBackListPtr = siCallBackListPtr->next;
+
+    }
+
+}

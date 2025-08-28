@@ -1,9 +1,25 @@
-#include "common.h"
+#include "macros.h"
+#include "PR/os_internal.h"
 
-INCLUDE_ASM(const s32, "lib/os/libultra/io/siacs", __osSiCreateAccessQueue);
+#define SI_Q_BUF_LEN 1
+static OSMesg siAccessBuf[SI_Q_BUF_LEN] ALIGNED(8);
+OSMesgQueue __osSiAccessQueue ALIGNED(8);
+u32 __osSiAccessQueueEnabled = 0;
 
-INCLUDE_ASM(const s32, "lib/os/libultra/io/siacs", __osSiGetAccess);
+void __osSiCreateAccessQueue(void) {
+    __osSiAccessQueueEnabled = 1;
+    osCreateMesgQueue(&__osSiAccessQueue, siAccessBuf, SI_Q_BUF_LEN);
+    osSendMesg(&__osSiAccessQueue, NULL, OS_MESG_NOBLOCK);
+}
 
-INCLUDE_ASM(const s32, "lib/os/libultra/io/siacs", __osSiRelAccess);
+void __osSiGetAccess(void) {
+    OSMesg dummyMesg;
+    if (!__osSiAccessQueueEnabled) {
+        __osSiCreateAccessQueue();
+    }
+    osRecvMesg(&__osSiAccessQueue, &dummyMesg, OS_MESG_BLOCK);
+}
 
-INCLUDE_RODATA(const s32, "lib/os/libultra/io/siacs", __osSiAccessQueueEnabled);
+void __osSiRelAccess(void) {
+    osSendMesg(&__osSiAccessQueue, NULL, OS_MESG_NOBLOCK);
+}

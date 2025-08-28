@@ -10,4 +10,5 @@ wget -c "https://github.com/decompals/mips-binutils-2.6/releases/latest/download
 
 sudo chmod -R +x tools/gcc-2.7.2
 
+pip3 install -U -r tools/requirements.txt
 pip3 install -U -r tools/splat/requirements.txt

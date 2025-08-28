@@ -1,3 +1,16 @@
-#include "common.h"
+#include "PR/os_internal.h"
+#include "PR/rcp.h"
 
-INCLUDE_ASM(const s32, "lib/os/libultra/io/ai", __osAiDeviceBusy);
+// TODO: this comes from a header
+#ident "$Revision: 1.17 $"
+
+s32 __osAiDeviceBusy(void) {
+	register s32 status = IO_READ(AI_STATUS_REG);
+
+	if (status & AI_STATUS_FIFO_FULL) {
+		return TRUE;
+	}
+	else {
+		return FALSE;
+	}
+}

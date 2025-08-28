@@ -1,3 +1,3 @@
 #include "common.h"
 
-INCLUDE_ASM(const s32, "lib/os/libultra/io/getactivequeue", __osGetActiveQueue);
+INCLUDE_ASM("lib/os/libultra/io/getactivequeue", __osGetActiveQueue);

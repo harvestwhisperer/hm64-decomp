@@ -11,6 +11,18 @@
 
 #define DEGREES_TO_RADIANS_CONSTANT 0.0174532925199432955
 
+#define NORTH 0
+#define NORTHEAST 1
+#define EAST 2
+#define SOUTHEAST 3
+#define SOUTH 4
+#define SOUTHWEST 5
+#define WEST 6
+#define NORTHWEST 7
+#define MAX_DIRECTIONS 7
+
+#define convertSpriteToMapDirection(spriteDirection, mapIndex) (spriteDirection + 8 - getCurrentMapRotation(mapIndex)) % 8  
+
 typedef struct {
 	Mtx projection;
 	Mtx viewing;
@@ -30,13 +42,12 @@ typedef struct {
 	u8 perspectiveMode;
 } Camera;
 
-// likely quaternion
 typedef struct {
 	f32 x;
 	f32 y;
 	f32 z;
 	f32 w;
-} Coordinates;
+} Plane;
 
 typedef struct {
     u32 padding[4];
@@ -48,16 +59,16 @@ typedef struct {
 extern void graphicsInit();
 extern f32 sinfRadians(f32);
 extern f32 cosfRadians(f32);
-extern void setBitmapFormat(Bitmap *sprite, Texture *timg, u16 *palette);
-extern void func_80026F30(Bitmap* sprite, u16* palette);
-extern Gfx* func_80026F88(Gfx* dl, Bitmap* arg1, u32 arg2, u16 arg3);
-extern void func_800276AC(Vtx vtxs[], u16 width, u16 height, u16 textureSize, u16 arg4, u16 arg5, u16 arg6, u16 arg7, s16 arg8, u16 arg9, u8 r, u8 g, u8 b, u8 a);
-extern void func_80027950(Vec3f, Vec3f*, Vec3f);
-extern Coordinates* func_80027BFC(Coordinates* arg0, f32 arg1, f32 arg2, f32 arg3, f32 arg4, f32 arg5, f32 arg6, f32 arg7, f32 arg8, f32 arg9);
-extern f32 func_80027DC0(f32 arg0, f32 arg1, Coordinates vec);
-extern u8 func_80027E10(f32 arg0, f32 arg1, f32 arg2, f32 arg3, f32 arg4, f32 arg5, f32 arg6, f32 arg7, f32 arg8, f32 arg9, f32 argA, f32 argB);
-extern f32 func_800284E8(f32 arg0, f32 arg1, f32 arg2, Coordinates arg3);
-extern Vec3f* func_80028520(Vec3f *arg0, f32 arg1, u8 arg2, f32 arg3);        
+extern void setBitmapFormat(BitmapObject *sprite, Texture *timg, u16 *palette);
+extern void setBitmapFormatAndSize(BitmapObject* sprite, u16* palette);
+extern Gfx* loadBitmapTexture(Gfx* dl, BitmapObject* arg1, u32 arg2, u16 arg3);
+extern void setupBitmapVertices(Vtx vtxs[], u16 width, u16 height, u16 textureSize, u16 arg4, u16 arg5, u16 arg6, u16 arg7, s16 arg8, u16 arg9, u8 r, u8 g, u8 b, u8 a);
+extern void rotateVector3D(Vec3f inputVec, Vec3f* outputVec, Vec3f rotationAngles);
+inline Plane calculatePlaneEquation(f32 x1, f32 y1, f32 z1, f32 x2, f32 y2, f32 z2, f32 x3, f32 y3, f32 z3);
+extern f32 getHeightFromPlane(f32 arg0, f32 arg1, Plane vec);
+extern u8 isPointInTriangle(f32 pointX, f32 pointY, f32 pointZ, f32 v1x, f32 v1y, f32 v1z, f32 v2x, f32 v2y, f32 v2z, f32 v3x, f32 v3y, f32 v3z);
+extern f32 evaluatePlaneEquation(f32 arg0, f32 arg1, f32 arg2, Plane arg3);
+extern Vec3f* getMovementVectorFromDirection(Vec3f *outputVec, f32 zDisplacement, u8 direction, f32 yOffset);    
 extern u8* func_80028888(u16 arg0, u32* arg1);                   
 extern u8 *func_800288A0(u16 arg0, u32 *arg1);
 extern u8* func_800288B8(u16 arg0, u32 *arg1, u8 *arg2);

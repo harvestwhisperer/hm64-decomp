@@ -1,3 +1,5 @@
-#include "common.h"
+#include <nusys.h>
 
-INCLUDE_ASM(const s32, "lib/nusys-1/nugfxdisplayon", nuGfxDisplayOn);
+void nuGfxDisplayOn(void) {
+    nuGfxDisplay = NU_GFX_DISPLAY_ON;
+}

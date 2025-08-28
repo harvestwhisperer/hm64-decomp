@@ -1,4 +1,21 @@
-#include "common.h"
+#include "n_synthInternals.h"
 
+Acmd *n_alAuxBusPull(s32 sampleOffset, Acmd *p) 
+{
+  Acmd        *ptr = p;
+  N_ALAuxBus   *m = (N_ALAuxBus *)n_syn->auxBus;
+  N_PVoice    **sources = m->sources;
+  s32         i;
 
-INCLUDE_ASM(const s32, "lib/os/libultra/libnaudio/n_auxbus", n_alAuxBusPull);
+#ifndef N_MICRO
+  aClearBuffer(ptr++, AL_AUX_L_OUT, FIXED_SAMPLE<<1);
+  aClearBuffer(ptr++, AL_AUX_R_OUT, FIXED_SAMPLE<<1);
+#else
+  aClearBuffer(ptr++, N_AL_AUX_L_OUT, N_AL_DIVIDED<<1);
+#endif
+
+  for (i = 0; i < m->sourceCount; i++)
+    ptr = n_alEnvmixerPull(sources[i],sampleOffset,ptr);
+  return ptr;
+}
+

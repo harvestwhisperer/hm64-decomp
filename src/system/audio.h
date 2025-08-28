@@ -2,6 +2,7 @@
 #define _AUDIO_H_
 
 #include "common.h"
+
 #include "system/volume.h"
 
 #define SONG 1
@@ -43,7 +44,7 @@ typedef struct {
 } WaveTableInfo;
 
 extern void initializeAudio(musConfig*);      
-extern void mainLoopAudioHandler();
+extern void updateAudio();
 extern bool setSong(u16 songIndex, u8 *songAddrStart, u8 *songAddrEnd);
 extern bool setSongSpeed(u16 index, u32 speed);
 extern bool stopSong(u16 songIndex);

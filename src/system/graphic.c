@@ -3,13 +3,13 @@
 #include "system/graphic.h"
 
 #include "system/sprite.h"
-#include "system/worldGraphics.h"
+#include "system/sceneGraph.h"
 
 #include "mainproc.h"
 
 // forward declarations
-void func_80026F30(Bitmap* sprite, u16* palette);
-Gfx *func_80028A64(Gfx*, Camera*, WorldMatrices*);
+void setBitmapFormatAndSize(BitmapObject* sprite, u16* palette);
+Gfx *setupCameraMatrices(Gfx*, Camera*, SceneMatrices*);
 volatile u8 doViewportGfxTask(void);      
 void setInitialWorldRotationAngles(f32, f32, f32);            
 
@@ -22,12 +22,13 @@ void setCameraOrthographicValues(Camera*, f32, f32, f32, f32, f32, f32);
 void setCameraPerspectiveValues(Camera*, f32, f32, f32, f32);    
 
 // bss
+static LookAt gSPLookAtBufferA;
+static LookAt gSPLookAtBufferB;
+
+// non-contigous bss
 Camera gCamera;
-
-LookAt D_80126540;
-
 Gfx initGfxList[2][0x20];
-Gfx D_801836A0[2][0x500];
+Gfx sceneGraphDisplayList[2][0x500];
 Gfx D_80205000[2][0x20];
 extern Gfx viewportDL[3];
                         
@@ -38,44 +39,23 @@ extern Gfx rdpstateinit_dl[];
 
 // data
 extern NUUcode nugfx_ucode[];
-// nugfxtaskinit data?
 extern u16*	FrameBuf[3];
 
-extern Vp viewport;
-
 // rodata
-extern f64 D_8011EC78;
-extern f64 D_8011EC80;
-extern f64 D_8011EC88;
-
-// assert strings                                                      
-extern const char D_8011EC60[];
-extern const char D_8011EC64[];
+static const char gfxExceptionStr1[] = "EX";
+static const char gfxExceptionStr2[] = "s:/system/graphic.c";
 
 // shared globals
-// also used by mapContext.c, map.c, and worldGraphics.c
+// also used by mapContext.c, map.c, and sceneGraph.c
 extern Vec3f previousWorldRotationAngles;
 extern Vec3f currentWorldRotationAngles;
 extern f32 D_80170450;
 extern f32 D_80170454;
-// nu idle statck
-extern u64 *D_80126520;
-
-extern f32 cosf(f32);
-extern f32 sinf(f32);
 
 
-//INCLUDE_RODATA(const s32, "system/graphic", D_8011EC40);
+//INCLUDE_RODATA("asm/nonmatchings/systemgraphic", D_8011EC40);
 
-//INCLUDE_RODATA(const s32, "system/graphic", D_8011EC60);
-
-static const char D_8011EC60[] = "EX";
-
-//INCLUDE_RODATA(const s32, "system/graphic", D_8011EC64);
-
-static const char D_8011EC64[] = "s:/system/graphic.c";
-
-//INCLUDE_ASM(const s32, "system/graphic", graphicsInit);
+//INCLUDE_ASM("asm/nonmatchings/system/graphic", graphicsInit);
 
 void graphicsInit(void) {
 
@@ -90,76 +70,75 @@ void graphicsInit(void) {
     setCameraLookAt(&gCamera, 0.0f, 0.0f, 400.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.1f, 0.0f);
 
     for (i = 0; i < 2; i++) {
-        worldMatrices[i].translation.x = 0.0f;
-        worldMatrices[i].translation.y = 0.0f;
-        worldMatrices[i].translation.z = 0.0f;
-        worldMatrices[i].scaling.x = 1.0f;
-        worldMatrices[i].scaling.y = 1.0f;
-        worldMatrices[i].scaling.z = 1.0f;
-        worldMatrices[i].rotation.x = 0.0f;
-        worldMatrices[i].rotation.y = 0.0f;
-        worldMatrices[i].rotation.z = 0.0f;
+        sceneMatrices[i].translation.x = 0.0f;
+        sceneMatrices[i].translation.y = 0.0f;
+        sceneMatrices[i].translation.z = 0.0f;
+        sceneMatrices[i].scaling.x = 1.0f;
+        sceneMatrices[i].scaling.y = 1.0f;
+        sceneMatrices[i].scaling.z = 1.0f;
+        sceneMatrices[i].rotation.x = 0.0f;
+        sceneMatrices[i].rotation.y = 0.0f;
+        sceneMatrices[i].rotation.z = 0.0f;
     }
 
     setInitialWorldRotationAngles(45.0f, 315.0f, 0.0f);  
     
 }
 
-//INCLUDE_ASM(const s32, "system/graphic", drawFrame);
+//INCLUDE_ASM("asm/nonmatchings/system/graphic", drawFrame);
 
 void drawFrame(void) {
 
     gfxTaskNo = 0;
 
     startGfxTask();
-    // set world and view matrices
-    func_80026CEC();
+    renderScene();
     doViewportGfxTask();
 
-    gDisplayContextIndex ^= 1;
+    gGraphicsBufferIndex ^= 1;
 
 }
 
-//INCLUDE_ASM(const s32, "system/graphic", startGfxTask);
+//INCLUDE_ASM("asm/nonmatchings/system/graphic", startGfxTask);
 
 volatile u8 startGfxTask(void) {
 
     Gfx *dl;
  
-    dl = initRcp(initGfxList[gDisplayContextIndex]);
+    dl = initRcp(initGfxList[gGraphicsBufferIndex]);
     dl = clearFramebuffer(dl);
 
     gDPFullSync(dl++);
     gSPEndDisplayList(dl++);
 
-    if (dl - initGfxList[gDisplayContextIndex] > GFX_GLIST_LEN) {
+    if (dl - initGfxList[gGraphicsBufferIndex] > GFX_GLIST_LEN) {
         // FIXME: get string literals working
-        __assert(&D_8011EC60, &D_8011EC64, 288);
+        __assert(&gfxExceptionStr1, &gfxExceptionStr2, 288);
     }
     
-    nuGfxTaskStart(initGfxList[gDisplayContextIndex], (s32)(dl - initGfxList[gDisplayContextIndex]) * sizeof(Gfx), NU_GFX_UCODE_F3DEX2, NU_SC_NOSWAPBUFFER);
+    nuGfxTaskStart(initGfxList[gGraphicsBufferIndex], (s32)(dl - initGfxList[gGraphicsBufferIndex]) * sizeof(Gfx), NU_GFX_UCODE_F3DEX, NU_SC_NOSWAPBUFFER);
     
     gfxTaskNo += 1;
     
     return gfxTaskNo;
 }
 
-//INCLUDE_ASM(const s32, "system/graphic", doViewportGfxTask);
+//INCLUDE_ASM("asm/nonmatchings/system/graphic", doViewportGfxTask);
 
 volatile u8 doViewportGfxTask(void) {
 
-    Gfx *dl = D_80205000[gDisplayContextIndex];
+    Gfx *dl = D_80205000[gGraphicsBufferIndex];
     
     gSPDisplayList(dl++, OS_K0_TO_PHYSICAL(&viewportDL));
     gDPFullSync(dl++);
     gSPEndDisplayList(dl++);
 
-    if (dl - D_80205000[gDisplayContextIndex] >= 32) {
+    if (dl - D_80205000[gGraphicsBufferIndex] >= 32) {
         // FIXME: get string literals working
-        __assert(&D_8011EC60, &D_8011EC64, 319);
+        __assert(&gfxExceptionStr1, &gfxExceptionStr2, 319);
     }
 
-    nuGfxTaskStart(D_80205000[gDisplayContextIndex], (s32)(dl - D_80205000[gDisplayContextIndex]) * sizeof(Gfx), NU_GFX_UCODE_F3DEX2, NU_SC_SWAPBUFFER);
+    nuGfxTaskStart(D_80205000[gGraphicsBufferIndex], (s32)(dl - D_80205000[gGraphicsBufferIndex]) * sizeof(Gfx), NU_GFX_UCODE_F3DEX, NU_SC_SWAPBUFFER);
     
     gfxTaskNo += 1;
 
@@ -167,26 +146,26 @@ volatile u8 doViewportGfxTask(void) {
     
 }
 
-//INCLUDE_ASM(const s32, "system/graphic", func_80026CEC);
+//INCLUDE_ASM("asm/nonmatchings/system/graphic", renderScene);
 
-volatile u8 func_80026CEC(s32 arg0, s32 arg1) {
+volatile u8 renderScene(s32 arg0, s32 arg1) {
 
-    Gfx *dl = D_801836A0[gDisplayContextIndex];
+    Gfx *dl = sceneGraphDisplayList[gGraphicsBufferIndex];
     
     gSPDisplayList(dl++, OS_K0_TO_PHYSICAL(&viewportDL));
     
-    dl = func_80028A64(dl++, &gCamera, &worldMatrices[gDisplayContextIndex]);
-    dl = func_800293C0(dl++, &worldMatrices[gDisplayContextIndex]);
+    dl = setupCameraMatrices(dl++, &gCamera, &sceneMatrices[gGraphicsBufferIndex]);
+    dl = renderSceneGraph(dl++, &sceneMatrices[gGraphicsBufferIndex]);
     
     gDPFullSync(dl++);
     gSPEndDisplayList(dl++);
     
-    if (dl - D_801836A0[gDisplayContextIndex] >= 0x500) {
+    if (dl - sceneGraphDisplayList[gGraphicsBufferIndex] >= 0x500) {
         // FIXME: get string literals working
-        __assert(&D_8011EC60, &D_8011EC64, 0x166);
+        __assert(&gfxExceptionStr1, &gfxExceptionStr2, 0x166);
     }
 
-    nuGfxTaskStart(D_801836A0[gDisplayContextIndex], (s32)(dl - D_801836A0[gDisplayContextIndex]) * sizeof(Gfx), NU_GFX_UCODE_F3DEX2, NU_SC_NOSWAPBUFFER);
+    nuGfxTaskStart(sceneGraphDisplayList[gGraphicsBufferIndex], (s32)(dl - sceneGraphDisplayList[gGraphicsBufferIndex]) * sizeof(Gfx), NU_GFX_UCODE_F3DEX, NU_SC_NOSWAPBUFFER);
     
     gfxTaskNo += 1;
     
@@ -194,7 +173,7 @@ volatile u8 func_80026CEC(s32 arg0, s32 arg1) {
 
 }
 
-//INCLUDE_ASM(const s32, "system/graphic", setBitmapFormat);
+//INCLUDE_ASM("asm/nonmatchings/system/graphic", setBitmapFormat);
 
 // 16-bit endian swap
 // FIXME: something wrong, but matches
@@ -220,7 +199,32 @@ static inline u16 swap(u16 halfword) {
     
 }
 
-// breaks match for some reason
+void setBitmapFormat(BitmapObject *sprite, Texture *timg, u16 *palette) {
+    
+    setBitmapFormatAndSize(sprite, palette);
+    
+    // skip header and size bytes
+    sprite->timg = &timg->texture;
+    
+    // bytes 4-8 = width and height (16 bit) (byte swapped)
+    sprite->width = swap(timg->width);  
+    sprite->height = swap(timg->height);
+    
+    // get pixel size from bit 5 in header (bit one when swapped)
+    switch ((timg->flags >> 4) & (1 | 2 | 4 | 8)) {
+        case 0:
+          sprite->fmt = G_IM_FMT_CI;
+          sprite->pixelSize = G_IM_SIZ_8b;
+          break;
+        
+        case 1:
+          sprite->fmt = G_IM_FMT_CI;
+          sprite->pixelSize = G_IM_SIZ_4b; 
+          break;
+    }
+
+}
+
 /*
 static inline u16 getWidth(u16* timg) {
     
@@ -235,39 +239,13 @@ static inline u16 getHeight(u16* timg) {
 }
 */
 
-void setBitmapFormat(Bitmap *sprite, Texture *timg, u16 *palette) {
-    
-    func_80026F30(sprite, palette);
-    
-    // skip header and size bytes
-    sprite->timg = &timg->texture;
-    
-    // bytes 4-8 = width and height (16 bit) (byte swapped)
-    sprite->width = swap(timg->width);  
-    sprite->height = swap(timg->height);
-    
-    // get pixel size from bit 5 in header (bit one when swapped)
-    switch ((timg->flags >> 4) & 0xF) {
-        case 0:
-          sprite->fmt = G_IM_FMT_CI;
-          sprite->pixelSize = G_IM_SIZ_8b;
-          break;
-        
-        case 1:
-          sprite->fmt = G_IM_FMT_CI;
-          sprite->pixelSize = G_IM_SIZ_4b; 
-          break;
-    }
-
-}
-
 // alternate with timg as array
 /*
 void setBitmapFormat(Bitmap *sprite, u16 *timg, u16 *palette) {
     
     u32 padding[10];
 
-    func_80026F30(sprite, palette);
+    setBitmapFormatAndSize(sprite, palette);
     
     // skip header and size bytes
     sprite->timg = timg + 4;
@@ -277,7 +255,7 @@ void setBitmapFormat(Bitmap *sprite, u16 *timg, u16 *palette) {
     sprite->height = getHeight(timg);
     
     // get pixel size from bit 5 in header (bit one when swapped)
-    switch (*(timg + 1) >> 4 & 0xF) {
+    switch (*(timg + 1) >> 4) & (1 | 2 | 4 | 8)) {
         case 0:
           sprite->fmt = G_IM_FMT_CI;
           sprite->pixelSize = G_IM_SIZ_8b;
@@ -292,9 +270,9 @@ void setBitmapFormat(Bitmap *sprite, u16 *timg, u16 *palette) {
 
 */
 
-//INCLUDE_ASM(const s32, "system/graphic", func_80026F30);
+//INCLUDE_ASM("asm/nonmatchings/system/graphic", setBitmapFormatAndSize);
 
-void func_80026F30(Bitmap* sprite, u16* palette) {
+void setBitmapFormatAndSize(BitmapObject* sprite, u16* palette) {
 
     // FIXME: shouldn't be necessary
     u32 padding[5];
@@ -303,7 +281,7 @@ void func_80026F30(Bitmap* sprite, u16* palette) {
     sprite->pal = palette + 2;
 
     // get pixel size from bit 5 in header (bit one when swapped)
-    switch ((*(palette + 1) >> 4) & 0xF) {                           
+    switch ((*(palette + 1) >> 4) & (1 | 2 | 4 | 8)) {                           
         case 0:
             sprite->fmt = G_IM_FMT_CI;
             sprite->pixelSize = G_IM_SIZ_8b;
@@ -315,9 +293,9 @@ void func_80026F30(Bitmap* sprite, u16* palette) {
         }
 }
 
-//INCLUDE_ASM(const s32, "system/graphic", func_80026F88);
+//INCLUDE_ASM("asm/nonmatchings/system/graphic", loadBitmapTexture);
 
-Gfx* func_80026F88(Gfx* dl, Bitmap* sprite, u32 offset, u16 height) {
+Gfx* loadBitmapTexture(Gfx* dl, BitmapObject* sprite, u32 offset, u16 height) {
     
     switch (sprite->pixelSize) {
         case G_IM_SIZ_4b:
@@ -342,21 +320,38 @@ Gfx* func_80026F88(Gfx* dl, Bitmap* sprite, u32 offset, u16 height) {
     
 }
 
-//INCLUDE_ASM(const s32, "system/graphic", func_800276AC);
+//INCLUDE_ASM("asm/nonmatchings/system/graphic", setupBitmapVertices);
 
-// sprite vertices/texture coordinates
-void func_800276AC(Vtx vtxs[], u16 width, u16 height, u16 textureSize, u16 arg4, u16 arg5, u16 arg6, u16 arg7, s16 arg8, u16 arg9, u8 r, u8 g, u8 b, u8 a) {
+/*
+  void setupBitmapVertices(
+      Vtx vtxs[],           // Output vertices
+      u16 width,            // Quad width 
+      u16 height,           // Quad height
+      u16 textureSize,      // Texture height for UV mapping
+      u16 textureOffset,    // Vertical texture offset (used in positioning)
+      u16 flipHorizontal,   // flag for horizontal texture flipping
+      u16 anchorX,          // X-axis anchor/offset point
+      u16 anchorY,          // Y-axis anchor/offset point
+      s16 depthOffset,      // Z-axis depth offset (signed)
+      u16 flags,            // Orientation and alignment flags
+      u8 r, u8 g, u8 b, u8 a  // Color values
+  )
+*/
+
+void setupBitmapVertices(Vtx vtxs[], u16 width, u16 height, u16 textureSize, u16 textureOffset, u16 flipHorizontal, u16 anchorX, u16 anchorY, s16 depthOffset, u16 flags, u8 r, u8 g, u8 b, u8 a) {
     
     u8 coordinate1;
     u8 coordinate2;
     u8 coordinate3;
     
+    u16 centerOffsetY;
     u16 temp;
+    u16 centerOffsetX;
     u16 temp2;
-    u16 temp3;
-    u16 temp4;
 
-    switch ((arg9 >> 7) & 3) {
+    // coordinate mapping
+    switch ((flags >> 7) & (1 | 2)) {
+
         case 2:
             coordinate1 = 0;
             coordinate2 = 1;
@@ -373,12 +368,14 @@ void func_800276AC(Vtx vtxs[], u16 width, u16 height, u16 textureSize, u16 arg4,
         case 1:
         default:
             break;
+
     }
 
-    temp = height >> 1;
-    temp3 = width >> 1;
+    centerOffsetY = height / 2;
+    centerOffsetX = width / 2;
     
-    if (arg5) {
+    // horizontal flip
+    if (flipHorizontal) {
 
         vtxs[0].v.tc[0] = width << 6;
         vtxs[3].v.tc[0] = width << 6;
@@ -386,8 +383,8 @@ void func_800276AC(Vtx vtxs[], u16 width, u16 height, u16 textureSize, u16 arg4,
         vtxs[1].v.tc[0] = 0;
         vtxs[2].v.tc[0] = 0;
         
-        vtxs[0].v.ob[coordinate1] = -temp3 - arg7;
-        vtxs[3].v.ob[coordinate1] = -temp3 - arg7;
+        vtxs[0].v.ob[coordinate1] = -centerOffsetX - anchorY;
+        vtxs[3].v.ob[coordinate1] = -centerOffsetX - anchorY;
         
         vtxs[2].v.ob[coordinate1] = vtxs[1].v.ob[coordinate1] = vtxs[0].v.ob[coordinate1] + width;
         
@@ -399,8 +396,8 @@ void func_800276AC(Vtx vtxs[], u16 width, u16 height, u16 textureSize, u16 arg4,
         vtxs[0].v.tc[0] = 0;
         vtxs[3].v.tc[0] = 0;
         
-        vtxs[0].v.ob[coordinate1] = arg7 - temp3;
-        vtxs[3].v.ob[coordinate1] = arg7 - temp3;
+        vtxs[0].v.ob[coordinate1] = anchorY - centerOffsetX;
+        vtxs[3].v.ob[coordinate1] = anchorY - centerOffsetX;
         
         vtxs[2].v.ob[coordinate1] = vtxs[1].v.ob[coordinate1] = vtxs[0].v.ob[coordinate1] + width;  
         
@@ -412,23 +409,25 @@ void func_800276AC(Vtx vtxs[], u16 width, u16 height, u16 textureSize, u16 arg4,
     vtxs[0].v.tc[1] = 0;
     vtxs[1].v.tc[1] = 0;
     
-    switch ((arg9 >> 5) & 3) {
+    // vertical alignment
+    switch ((flags >> 5) & (1 | 2)) {
+
         case 2:
-            vtxs[0].v.ob[coordinate2] = (temp - arg4) - arg8;
-            vtxs[1].v.ob[coordinate2] = (temp - arg4) - arg8;
-            vtxs[3].v.ob[coordinate2] = vtxs[2].v.ob[coordinate2] = temp2 = vtxs[0].v.ob[coordinate2] - textureSize;
+            vtxs[0].v.ob[coordinate2] = (centerOffsetY - textureOffset) - depthOffset;
+            vtxs[1].v.ob[coordinate2] = (centerOffsetY - textureOffset) - depthOffset;
+            vtxs[3].v.ob[coordinate2] = vtxs[2].v.ob[coordinate2] = temp = vtxs[0].v.ob[coordinate2] - textureSize;
             break;
 
         case 1:
-            vtxs[0].v.ob[coordinate2] = arg4 - arg8;
-            vtxs[1].v.ob[coordinate2] = arg4 - arg8;
-            vtxs[3].v.ob[coordinate2] = vtxs[2].v.ob[coordinate2] = temp4 = vtxs[0].v.ob[coordinate2] - textureSize;
+            vtxs[0].v.ob[coordinate2] = textureOffset - depthOffset;
+            vtxs[1].v.ob[coordinate2] = textureOffset - depthOffset;
+            vtxs[3].v.ob[coordinate2] = vtxs[2].v.ob[coordinate2] = temp2 = vtxs[0].v.ob[coordinate2] - textureSize;
             break;
 
         case 3:
-            vtxs[0].v.ob[coordinate2] = (height - arg4) - arg8;
-            vtxs[1].v.ob[coordinate2] = (height - arg4) - arg8;
-            vtxs[3].v.ob[coordinate2] = vtxs[2].v.ob[coordinate2] = temp2 = vtxs[0].v.ob[coordinate2] - textureSize;
+            vtxs[0].v.ob[coordinate2] = (height - textureOffset) - depthOffset;
+            vtxs[1].v.ob[coordinate2] = (height - textureOffset) - depthOffset;
+            vtxs[3].v.ob[coordinate2] = vtxs[2].v.ob[coordinate2] = temp = vtxs[0].v.ob[coordinate2] - textureSize;
             break;
 
         default:
@@ -463,23 +462,21 @@ void func_800276AC(Vtx vtxs[], u16 width, u16 height, u16 textureSize, u16 arg4,
     
 }
 
-//INCLUDE_ASM(const s32, "system/graphic", sinfRadians);
+//INCLUDE_ASM("asm/nonmatchings/system/graphic", sinfRadians);
 
 f32 sinfRadians(f32 angle) {
     return sinf(angle * DEGREES_TO_RADIANS_CONSTANT);
 }
 
-//INCLUDE_ASM(const s32, "system/graphic", cosfRadians);
+//INCLUDE_ASM("asm/nonmatchings/system/graphic", cosfRadians);
 
 f32 cosfRadians(f32 angle) {
     return cosf(angle * DEGREES_TO_RADIANS_CONSTANT);
 }
 
-//INCLUDE_ASM(const s32, "system/graphic", func_80027950);
+//INCLUDE_ASM("asm/nonmatchings/system/graphic", rotateVector3D);
 
-// 3D rotation
-// sprites
-void func_80027950(Vec3f arg0, Vec3f* arg1, Vec3f arg2) {
+void rotateVector3D(Vec3f inputVec, Vec3f* outputVec, Vec3f rotationAngles) {
     
     f32 sinX;
     f32 cosX;
@@ -492,9 +489,9 @@ void func_80027950(Vec3f arg0, Vec3f* arg1, Vec3f arg2) {
     f32 tempY;
     f32 tempZ;
     
-    f32 tempRadiansX = arg2.x * DEGREES_TO_RADIANS_CONSTANT;
-    f32 tempRadiansY = arg2.y * DEGREES_TO_RADIANS_CONSTANT;
-    f32 tempRadiansZ = arg2.z * DEGREES_TO_RADIANS_CONSTANT;
+    f32 tempRadiansX = rotationAngles.x * DEGREES_TO_RADIANS_CONSTANT;
+    f32 tempRadiansY = rotationAngles.y * DEGREES_TO_RADIANS_CONSTANT;
+    f32 tempRadiansZ = rotationAngles.z * DEGREES_TO_RADIANS_CONSTANT;
     
     sinX = sinf(tempRadiansX);
     cosX = cosf(tempRadiansX);
@@ -503,49 +500,49 @@ void func_80027950(Vec3f arg0, Vec3f* arg1, Vec3f arg2) {
     sinZ = sinf(tempRadiansZ);
     cosZ = cosf(tempRadiansZ);
     
-    arg1->x = arg0.x;
-    arg1->y = arg0.y;
-    arg1->z = arg0.z;
+    outputVec->x = inputVec.x;
+    outputVec->y = inputVec.y;
+    outputVec->z = inputVec.z;
     
-    tempX = arg1->x;
-    tempY = arg1->y;
-    tempZ = arg1->z;
+    tempX = outputVec->x;
+    tempY = outputVec->y;
+    tempZ = outputVec->z;
     
     if (tempRadiansZ != 0.0f) {
         
-        arg1->x = (-tempY * sinZ) + (tempX * cosZ);
-        arg1->y = (tempY * sinZ) + (tempX * sinZ);
-        arg1->z = tempZ;
+        outputVec->x = (-tempY * sinZ) + (tempX * cosZ);
+        outputVec->y = (tempY * sinZ) + (tempX * sinZ);
+        outputVec->z = tempZ;
 
     }
     
-    tempX = arg1->x;
-    tempY = arg1->y;
-    tempZ = arg1->z;
+    tempX = outputVec->x;
+    tempY = outputVec->y;
+    tempZ = outputVec->z;
     
     if (tempRadiansY != 0.0f) {
         
-        arg1->x = (tempZ * sinY) + (tempX * cosY);
-        arg1->y = tempY;
-        arg1->z = (tempZ * cosY) - (tempX * sinY);
+        outputVec->x = (tempZ * sinY) + (tempX * cosY);
+        outputVec->y = tempY;
+        outputVec->z = (tempZ * cosY) - (tempX * sinY);
    
     }
     
-    tempX = arg1->x;
-    tempY = arg1->y;
-    tempZ = arg1->z;
+    tempX = outputVec->x;
+    tempY = outputVec->y;
+    tempZ = outputVec->z;
     
     if (tempRadiansX != 0.0f) {
     
-        arg1->x = tempX;
-        arg1->y = (-tempZ * sinX) + (tempY * cosX);
-        arg1->z = (tempZ * cosX) + (tempY * sinX);
+        outputVec->x = tempX;
+        outputVec->y = (-tempZ * sinX) + (tempY * cosX);
+        outputVec->z = (tempZ * cosX) + (tempY * sinX);
         
     }
     
 }
 
-//INCLUDE_ASM(const s32, "system/graphic", func_80027B74);
+//INCLUDE_ASM("asm/nonmatchings/system/graphic", func_80027B74);
 
 // unused or inline
 void func_80027B74(Vec3f arg0, Vec3f* arg1, f32 arg2, f32 arg3, f32 arg4, f32 arg5, f32 arg6) {
@@ -569,147 +566,95 @@ void func_80027B74(Vec3f arg0, Vec3f* arg1, f32 arg2, f32 arg3, f32 arg4, f32 ar
     
 }
 
-//INCLUDE_ASM(const s32, "system/graphic", func_80027BFC);
+//INCLUDE_ASM("asm/nonmatchings/system/graphic", calculatePlaneEquation);
 
-// only used by map
-Coordinates* func_80027BFC(Coordinates* arg0, f32 arg1, f32 arg2, f32 arg3, f32 arg4, f32 arg5, f32 arg6, f32 arg7, f32 arg8, f32 arg9) {
+inline Plane calculatePlaneEquation( 
+    f32 x1, f32 y1, f32 z1, 
+    f32 x2, f32 y2, f32 z2, 
+    f32 x3, f32 y3, f32 z3) {
     
-    Coordinates vec;
-    f32 temp_f12;
-    f32 temp_f14;
-    f32 temp_f20;
-    f32 temp_f20_2;
-    f32 temp_f22;
-    f32 temp_f22_2;
-    f32 temp_f24;
-    f32 temp_f24_2;
-    f32 var_f0;
+    Plane plane;
+
+    f32 normalX;
+    f32 normalY;
+    f32 normalZ;
     
-    temp_f14 = (arg2 * (arg6 - arg9)) + (arg5 * (arg9 - arg3));
-    temp_f24 = temp_f14 + (arg8 * (arg3 - arg6));
-    temp_f22_2 = temp_f24;
+    f32 magnitude;
     
-    temp_f22 = ((arg3 * (arg4 - arg7)) + (arg6 * (arg7 - arg1))) + (arg9 * (arg1 - arg4));
-    temp_f20 = ((arg1 * (arg5 - arg8)) + (arg4 * (arg8 - arg2))) + (arg7 * (arg2 - arg5));
-    temp_f12 = ((temp_f24 * temp_f24) + (temp_f22 * temp_f22)) + (temp_f20 * temp_f20);
+    // calculate cross product
+    normalX = ((y1 * (z2 - z3)) + (y2 * (z3 - z1))) + (y3 * (z1 - z2));
+    normalY = ((z1 * (x2 - x3)) + (z2 * (x3 - x1))) + (z3 * (x1 - x2));
+    normalZ = ((x1 * (y2 - y3)) + (x2 * (y3 - y1))) + (x3 * (y1 - y2));
     
-    var_f0 = sqrtf(temp_f12);
+    // normalize
+    magnitude = sqrtf((normalX * normalX) + (normalY * normalY) + (normalZ * normalZ));
     
-    if (var_f0 == 0) {
+    if (magnitude == 0) {
         
-        vec.x = 0.0f;
-        vec.y = 0.0f;
-        vec.z = 0.0f;
-        vec.w = 0.0f;
+        plane.x = 0.0f;
+        plane.y = 0.0f;
+        plane.z = 0.0f;
+        plane.w = 0.0f;
         
     } else {
         
-        temp_f22_2 /= var_f0;
-        temp_f22 /= var_f0;
-        temp_f20 /= var_f0;
+        normalX /= magnitude;
+        normalY /= magnitude;
+        normalZ /= magnitude;
         
-        vec.x = temp_f22_2;
-        vec.y = temp_f22;
-        vec.z = temp_f20;
-        vec.w = -(((temp_f22_2 * arg1) + (temp_f22 * arg2)) + (temp_f20 * arg3));
+        // plane distance: w = -(normal.x * point.x + normal.y * point.y + normal.z * point.z)
+        // -(normal · point1)
+        plane.x = normalX;
+        plane.y = normalY;
+        plane.z = normalZ;
+        plane.w = -(((normalX * x1) + (normalY * y1)) + (normalZ * z1));
 
     }
     
-    *arg0 = vec;
-    return arg0;
+    return plane;
 
 }
 
-// need different return type to match func_80027E10
-static inline Coordinates func_80027BFC_static_inline(Coordinates* arg0, f32 arg1, f32 arg2, f32 arg3, f32 arg4, f32 arg5, f32 arg6, f32 arg7, f32 arg8, f32 arg9) {
+//INCLUDE_ASM("asm/nonmatchings/system/graphic", getHeightFromPlane);
 
-    Coordinates vec;
-
-    f32 temp_f12;
-    f32 temp_f14;
-    f32 temp_f20;
-    f32 temp_f20_2;
-    f32 temp_f22;
-    f32 temp_f22_2;
-    f32 temp_f24;
-    f32 temp_f24_2;
-    f32 var_f0;
-
-    temp_f14 = (arg2 * (arg6 - arg9)) + (arg5 * (arg9 - arg3));
-    temp_f24 = temp_f14 + (arg8 * (arg3 - arg6));
-    temp_f22_2 = temp_f24;
-
-    temp_f22 = ((arg3 * (arg4 - arg7)) + (arg6 * (arg7 - arg1))) + (arg9 * (arg1 - arg4));
-    temp_f20 = ((arg1 * (arg5 - arg8)) + (arg4 * (arg8 - arg2))) + (arg7 * (arg2 - arg5));
-    temp_f12 = ((temp_f24 * temp_f24) + (temp_f22 * temp_f22)) + (temp_f20 * temp_f20);
-
-    var_f0 = sqrtf(temp_f12);
-
-    if (var_f0 == 0) {
-
-        vec.x = 0.0f;
-        vec.y = 0.0f;
-        vec.z = 0.0f;
-        vec.w = 0.0f;
-
-    } else {
-
-        temp_f22_2 /= var_f0;
-        temp_f22 /= var_f0;
-        temp_f20 /= var_f0;
-
-        vec.x = temp_f22_2;
-        vec.y = temp_f22;
-        vec.z = temp_f20;
-        vec.w = -(((temp_f22_2 * arg1) + (temp_f22 * arg2)) + (temp_f20 * arg3));
-
-    }
-
-    return vec;
-    
-}
-
-//INCLUDE_ASM(const s32, "system/graphic", func_80027DC0);
-
-// only used by map
-f32 func_80027DC0(f32 arg0, f32 arg1, Coordinates vec) {
+f32 getHeightFromPlane(f32 x, f32 z, Plane planeEquation) {
 
     f32 result;
     
     result = 0.0f;
     
-    if (vec.y != 0.0f) {
-        result = ( (-(vec.x*arg0) - (vec.z * arg1)) - vec.w) / vec.y;
+    if (planeEquation.y != 0.0f) {
+        result = ( (-(planeEquation.x*x) - (planeEquation.z * z)) - planeEquation.w) / planeEquation.y;
     }
     
 
     return result;
+
 }
 
-//INCLUDE_ASM(const s32, "system/graphic", func_80027E10);
+//INCLUDE_ASM("asm/nonmatchings/system/graphic", isPointInTriangle)
 
-// only used by map
-u8 func_80027E10(f32 arg0, f32 arg1, f32 arg2, f32 arg3, f32 arg4, f32 arg5, f32 arg6, f32 arg7, f32 arg8, f32 arg9, f32 argA, f32 argB) {
+u8 isPointInTriangle(f32 pointX, f32 pointY, f32 pointZ, f32 v1x, f32 v1y, f32 v1z, f32 v2x, f32 v2y, f32 v2z, f32 v3x, f32 v3y, f32 v3z) {
 
-    Coordinates coordinates;
+    Plane plane;
     
     u8 count = 0;
     
-    coordinates = func_80027BFC_static_inline(&coordinates, arg3, arg4, arg5, arg6, arg7, arg8, arg0, arg1, arg2);
+    plane = calculatePlaneEquation(v1x, v1y, v1z, v2x, v2y, v2z, pointX, pointY, pointZ);
     
-    if (coordinates.y >= 0.0f) {
+    if (plane.y >= 0.0f) {
         count++;
     }
     
-    coordinates = func_80027BFC_static_inline(&coordinates, arg6, arg7, arg8, arg9, argA, argB, arg0, arg1, arg2);
+    plane = calculatePlaneEquation(v2x, v2y, v2z, v3x, v3y, v3z, pointX, pointY, pointZ);
 
-    if (coordinates.y >= 0.0f) {
+    if (plane.y >= 0.0f) {
         count++;
     }
     
-    coordinates = func_80027BFC_static_inline(&coordinates, arg9, argA, argB, arg3, arg4, arg5, arg0, arg1, arg2);
+    plane = calculatePlaneEquation(v3x, v3y, v3z, v1x, v1y, v1z, pointX, pointY, pointZ);
     
-    if (coordinates.y >= 0.0f) {
+    if (plane.y >= 0.0f) {
         count++;
     }
     
@@ -719,36 +664,44 @@ u8 func_80027E10(f32 arg0, f32 arg1, f32 arg2, f32 arg3, f32 arg4, f32 arg5, f32
     
 }
 
-//INCLUDE_ASM(const s32, "system/graphic", func_800284E8);
+//INCLUDE_ASM("asm/nonmatchings/system/graphic", evaluatePlaneEquation);
 
-// dot product?
-f32 func_800284E8(f32 arg0, f32 arg1, f32 arg2, Coordinates coordinates) {
+f32 evaluatePlaneEquation(f32 x, f32 y, f32 z, Plane plane) {
     
-    f32 x = coordinates.x * arg0;
-    f32 y = coordinates.y * arg1;
-    f32 z = coordinates.z * arg2;
-    f32 w = coordinates.w * 1;
+    f32 ax = plane.x * x;
+    f32 by = plane.y * y;
+    f32 cz = plane.z * z;
+    f32 d = plane.w * 1;
   
-    return x + y + z + w;
+    return ax + by + cz + d;
     
 }
 
 // alternate
 /*
-f32 func_800284E8(f32 arg0, f32 arg1, f32 arg2, Coordinates coordinates) {
+f32 evaluatePlaneEquation(f32 arg0, f32 arg1, f32 arg2, Plane coordinates) {
     f32 temp = coordinates.x * arg0;
   
     return (temp) + (coordinates.y * arg1) + (coordinates.z * arg2) + coordinates.w;    
 }
 */
 
-//INCLUDE_RODATA(const s32, "system/graphic", directionsToYValues);
+//INCLUDE_RODATA("asm/nonmatchings/systemgraphic", directionsToYValues);
 
-static const f32 directionsToYValues[8] = { 0.0f, 315.0f, 270.0f, 225.0f, 180.0f, 135.0f, 90.0f, 45.0f };
+static const f32 directionsToYValues[8] = {
+    0.0f,   // north
+    315.0f, // northeast
+    270.0f, // east
+    225.0f, // southeast 
+    180.0f, // south
+    135.0f, // southwest
+    90.0f,  // west
+    45.0f   // northwest
+};
 
-//INCLUDE_ASM(const s32, "system/graphic", func_80028520);
+//INCLUDE_ASM("asm/nonmatchings/system/graphic", getMovementVectorFromDirection);
 
-Vec3f* func_80028520(Vec3f *arg0, f32 arg1, u8 arg2, f32 arg3) {
+Vec3f* getMovementVectorFromDirection(Vec3f *outputVec, f32 zDisplacement, u8 direction, f32 yOffset) {
 
     f32 buffer[8];
 
@@ -775,14 +728,14 @@ Vec3f* func_80028520(Vec3f *arg0, f32 arg1, u8 arg2, f32 arg3) {
 
     memcpy(buffer, directionsToYValues, 32);
     
-    if (arg2 != 0xFF) {
+    if (direction != 0xFF) {
 
         vec1.x = 0.0f;
-        vec1.y = arg3;
-        vec1.z = arg1;
+        vec1.y = yOffset;
+        vec1.z = zDisplacement;
 
         vec3.x = 0.0f;
-        vec3.y = buffer[arg2];
+        vec3.y = buffer[direction];
         vec3.z = 0.0f;
 
         vec4 = vec1;
@@ -837,17 +790,17 @@ Vec3f* func_80028520(Vec3f *arg0, f32 arg1, u8 arg2, f32 arg3) {
         
     } else {
         vec2.x = 0.0f;
-        vec2.y = arg3;
+        vec2.y = yOffset;
         vec2.z = 0.0f;
     }
 
-    *arg0 = vec2;
+    *outputVec = vec2;
     
-    return arg0;
+    return outputVec;
     
 }
 
-//INCLUDE_ASM(const s32, "system/graphic", getSpriteYValueFromDirection);
+//INCLUDE_ASM("asm/nonmatchings/system/graphic", getSpriteYValueFromDirection);
 
 // get y value for sprite based on direction
 f32 getSpriteYValueFromDirection(u8 direction) {
@@ -860,7 +813,7 @@ f32 getSpriteYValueFromDirection(u8 direction) {
 
 }
  
-//INCLUDE_ASM(const s32, "system/graphic", func_80028888);
+//INCLUDE_ASM("asm/nonmatchings/system/graphic", func_80028888);
 
 // get ptr to ci texture from index
 u8* func_80028888(u16 spriteIndex, u32* textureIndex) {
@@ -875,7 +828,7 @@ void *func_80028888(u16 arg0, u32 *arg1) {
 }
 */
 
-//INCLUDE_ASM(const s32, "system/graphic", func_800288A0);
+//INCLUDE_ASM("asm/nonmatchings/system/graphic", func_800288A0);
 
 // get ptr to palette
 // FIXME: should return u16*?
@@ -883,9 +836,10 @@ u8 *func_800288A0(u16 index, u32 *paletteIndex) {
   return (u8*)paletteIndex + paletteIndex[index];
 }
 
-//INCLUDE_ASM(const s32, "system/graphic", func_800288B8);
+//INCLUDE_ASM("asm/nonmatchings/system/graphic", func_800288B8);
 
 // returns palette pointer from sprite-to-palette mapping table
+// used if global sprite flag 0x100 is set
 u8* func_800288B8(u16 spriteIndex, u32* paletteIndex, u8* spriteToPaletteIndex) {
     
     u8* arr = spriteToPaletteIndex + 4;
@@ -902,7 +856,7 @@ u8* func_800288B8(u16 arg0, u32 *arg1, u8 *arg2) {
 }
 */
 
-//INCLUDE_ASM(const s32, "system/graphic", initRcp);
+//INCLUDE_ASM("asm/nonmatchings/system/graphic", initRcp);
 
 Gfx* initRcp(Gfx* dl) {
     
@@ -914,7 +868,7 @@ Gfx* initRcp(Gfx* dl) {
 
 }
 
-//INCLUDE_ASM(const s32, "system/graphic", clearFramebuffer);
+//INCLUDE_ASM("asm/nonmatchings/system/graphic", clearFramebuffer);
 
 Gfx* clearFramebuffer(Gfx* dl) {
 
@@ -935,9 +889,9 @@ Gfx* clearFramebuffer(Gfx* dl) {
 
 }
 
-//INCLUDE_ASM(const s32, "system/graphic", func_80028A64);
+//INCLUDE_ASM("asm/nonmatchings/system/graphic", setupCameraMatrices);
 
-Gfx* func_80028A64(Gfx* dl, Camera* camera, WorldMatrices* matrices) {
+Gfx* setupCameraMatrices(Gfx* dl, Camera* camera, SceneMatrices* matrices) {
 
     u16 perspNorm;
 
@@ -954,7 +908,7 @@ Gfx* func_80028A64(Gfx* dl, Camera* camera, WorldMatrices* matrices) {
     }
 
     guLookAt(&matrices->viewing, camera->eye.x, camera->eye.y, camera->eye.z, camera->at.x, camera->at.y, camera->at.z, camera->up.x, camera->up.y, camera->up.z);
-    gSPLookAt(dl++, &D_80126520);
+    gSPLookAt(dl++, &gSPLookAtBufferA);
 
     gSPMatrix(dl++, &matrices->projection, G_MTX_NOPUSH | G_MTX_LOAD | G_MTX_PROJECTION);
     gSPMatrix(dl++, &matrices->viewing, G_MTX_NOPUSH | G_MTX_MUL | G_MTX_PROJECTION);
@@ -963,7 +917,7 @@ Gfx* func_80028A64(Gfx* dl, Camera* camera, WorldMatrices* matrices) {
 
 }
 
-//INCLUDE_ASM(const s32, "system/graphic", func_80028C00);
+//INCLUDE_ASM("asm/nonmatchings/system/graphic", func_80028C00);
 
 // unused
 Gfx* func_80028C00(Gfx* dl, Camera* camera) {
@@ -983,7 +937,7 @@ Gfx* func_80028C00(Gfx* dl, Camera* camera) {
     }
 
     guLookAt(&camera->viewing, camera->eye.x, camera->eye.y, camera->eye.z, camera->at.x, camera->at.y, camera->at.z, camera->up.x, camera->up.y, camera->up.z);
-    gSPLookAt(dl++, &D_80126540);
+    gSPLookAt(dl++, &gSPLookAtBufferB);
 
     gSPMatrix(dl++, &camera->projection, G_MTX_NOPUSH | G_MTX_LOAD | G_MTX_PROJECTION);
     gSPMatrix(dl++, &camera->viewing, G_MTX_NOPUSH | G_MTX_MUL | G_MTX_PROJECTION);
@@ -992,7 +946,7 @@ Gfx* func_80028C00(Gfx* dl, Camera* camera) {
 
 }
 
-//INCLUDE_ASM(const s32, "system/graphic", setCameraOrthographicValues);
+//INCLUDE_ASM("asm/nonmatchings/system/graphic", setCameraOrthographicValues);
 
 void setCameraOrthographicValues(Camera* camera, f32 l, f32 r, f32 t, f32 b, f32 n, f32 f) {
     
@@ -1005,7 +959,7 @@ void setCameraOrthographicValues(Camera* camera, f32 l, f32 r, f32 t, f32 b, f32
 
 }
 
-//INCLUDE_ASM(const s32, "system/graphic", setCameraPerspectiveValues);
+//INCLUDE_ASM("asm/nonmatchings/system/graphic", setCameraPerspectiveValues);
 
 void setCameraPerspectiveValues(Camera* camera, f32 fov, f32 aspect, f32 near, f32 far) {
 
@@ -1016,7 +970,7 @@ void setCameraPerspectiveValues(Camera* camera, f32 fov, f32 aspect, f32 near, f
 
 }
 
-//INCLUDE_ASM(const s32, "system/graphic", setCameraLookAt);
+//INCLUDE_ASM("asm/nonmatchings/system/graphic", setCameraLookAt);
 
 void setCameraLookAt(Camera* camera, f32 xEye, f32 yEye, f32 zEye, f32 atX, f32 atY, f32 atZ, f32 upX, f32 upY, f32 upZ) {
 
@@ -1034,7 +988,7 @@ void setCameraLookAt(Camera* camera, f32 xEye, f32 yEye, f32 zEye, f32 atX, f32 
 
 }
 
-//INCLUDE_ASM(const s32, "system/graphic", func_80028E14);
+//INCLUDE_ASM("asm/nonmatchings/system/graphic", func_80028E14);
 
 // unused
 inline Gfx *func_80028E14(Gfx* dl, u8 a, u8 r, u8 g, u8 b) {
@@ -1045,7 +999,7 @@ inline Gfx *func_80028E14(Gfx* dl, u8 a, u8 r, u8 g, u8 b) {
 
 }
 
-//INCLUDE_ASM(const s32, "system/graphic", func_80028E60);
+//INCLUDE_ASM("asm/nonmatchings/system/graphic", func_80028E60);
 
 // unused
 inline Gfx *func_80028E60(Gfx* dl, u8 a, u8 r, u8 g, u8 b) {
@@ -1056,7 +1010,7 @@ inline Gfx *func_80028E60(Gfx* dl, u8 a, u8 r, u8 g, u8 b) {
 
 }
 
-//INCLUDE_ASM(const s32, "system/graphic", func_80028EA8);
+//INCLUDE_ASM("asm/nonmatchings/system/graphic", func_80028EA8);
 
 // unused
 void func_80028EA8(UnknownGraphicsStruct* arg0, u8 arg1, u8 arg2, u8 arg3) {
@@ -1065,7 +1019,7 @@ void func_80028EA8(UnknownGraphicsStruct* arg0, u8 arg1, u8 arg2, u8 arg3) {
     arg0->unk_12 = arg3;
 }
 
-//INCLUDE_ASM(const s32, "system/graphic", setInitialWorldRotationAngles);
+//INCLUDE_ASM("asm/nonmatchings/system/graphic", setInitialWorldRotationAngles);
 
 void setInitialWorldRotationAngles(f32 x, f32 y, f32 z) {
     
@@ -1080,7 +1034,7 @@ void setInitialWorldRotationAngles(f32 x, f32 y, f32 z) {
 
 }
 
-//INCLUDE_ASM(const s32, "system/graphic", func_80028EF8);
+//INCLUDE_ASM("asm/nonmatchings/system/graphic", func_80028EF8);
 
 // mapContext.c --> increments/decrements 6 by 1
 void func_80028EF8(f32 x, f32 y, f32 z) {
@@ -1089,7 +1043,7 @@ void func_80028EF8(f32 x, f32 y, f32 z) {
     currentWorldRotationAngles.z += z;
 }
 
-//INCLUDE_ASM(const s32, "system/graphic", nuGfxInit);
+//INCLUDE_ASM("asm/nonmatchings/system/graphic", nuGfxInit);
 
 void nuGfxInit(void) {
 
@@ -1115,7 +1069,7 @@ void nuGfxInit(void) {
     gDPFullSync(gfxList_ptr++);
     gSPEndDisplayList(gfxList_ptr++);
     
-    nuGfxTaskStart(gfxList, (s32)(gfxList_ptr - gfxList) * sizeof(Gfx), NU_GFX_UCODE_F3DEX2, NU_SC_NOSWAPBUFFER);
+    nuGfxTaskStart(gfxList, (s32)(gfxList_ptr - gfxList) * sizeof(Gfx), NU_GFX_UCODE_F3DEX, NU_SC_NOSWAPBUFFER);
 
     nuGfxTaskAllEndWait();
     

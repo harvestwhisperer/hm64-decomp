@@ -1,11 +1,11 @@
 #include "common.h"
 #include "PR/os.h"
 
-#include "memory.h"
+#include "system/memory.h"
 
 OSPiHandle SramHandle;
 
-//INCLUDE_ASM(const s32, "system/memory", sramInit);
+//INCLUDE_ASM("asm/nonmatchings/system/memory", sramInit);
 
 inline OSPiHandle* sramInit(void) {
     
@@ -31,7 +31,7 @@ inline OSPiHandle* sramInit(void) {
 
 }
 
-//INCLUDE_ASM(const s32, "system/memory", func_8004DC48);
+//INCLUDE_ASM("asm/nonmatchings/system/memory", func_8004DC48);
 
 void func_8004DC48(void* devAddr, void* dramAddr, u32 size) {
 
@@ -54,7 +54,7 @@ void func_8004DC48(void* devAddr, void* dramAddr, u32 size) {
     
 }
 
-//INCLUDE_ASM(const s32, "system/memory", func_8004DD7C);
+//INCLUDE_ASM("asm/nonmatchings/system/memory", func_8004DD7C);
 
 void func_8004DD7C(void *devAddr, void *dramAddr, u32 size) {
 

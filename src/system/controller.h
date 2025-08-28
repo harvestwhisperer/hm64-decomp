@@ -41,9 +41,9 @@ typedef struct {
     u32 buttonHeld;
     u32 buttonPressed;
     u32 buttonReleased;
-    u32 unk_24;
-    u32 unk_28;
-    u8 unk_2C[0x18];
+    u32 buttonRepeat;
+    u32 buttonRepeatState;
+    u8 buttonFrameCounters[24];
 } Controller;
 
 // need to make button volatile to match func_8004CF6
@@ -56,19 +56,19 @@ typedef struct {
 } NUContDataPatch;
 
 extern void controllerInit(void);
-extern void func_8004CF68(void);
+extern void readControllerData(void);
 
 /* get buttons */
-extern u32 func_8004D35C(u8 contIndex, u32 buttonPattern);
-extern u32 func_8004D380(u8 contIndex, u32 buttonPattern);
-extern u32 func_8004D3A4(u8 contIndex, u32 buttonPattern);
-extern u32 func_8004D3C8(u8 contIndex, u32 buttonPattern);
-extern s8 func_8004D3EC(u8 contIndex);
-extern s8 func_8004D410(u8 contIndex);
-extern u8 func_8004D434(u8 contIndex);
-extern u8 func_8004D458(u8 contIndex);
+extern u32 checkButtonHeld(u8 contIndex, u32 buttonPattern);
+extern u32 checkButtonPressed(u8 contIndex, u32 buttonPattern);
+extern u32 checkButtonReleased(u8 contIndex, u32 buttonPattern);
+extern u32 checkButtonRepeat(u8 contIndex, u32 buttonPattern);
+extern s8 GetStickXValueSigned(u8 contIndex);
+extern s8 getStickYValueSigned(u8 contIndex);
+extern u8 getStickXValueUnsigned(u8 contIndex);
+extern u8 getStickYValueUnsigned(u8 contIndex);
 
-extern void func_8004D47C(u8 arg0);
+extern void convertAnalogSticksToDirections(u8 controllerIndex);
 
 /* mem pak */
 extern u8 func_8004D788(u8 contIndex);
@@ -82,7 +82,7 @@ extern u32 func_8004DAF4(u8 contIndex, u8 *noteName, u8 *extName);
 
 
 extern NUContDataPatch contData[NU_CONT_MAXCONTROLLERS];
-extern OSContStatus contStatus[NU_CONT_MAXCONTROLLERS];
+extern OSContStatus nuContStatus[NU_CONT_MAXCONTROLLERS];
 
 extern Controller controllers[NU_CONT_MAXCONTROLLERS];
 extern Controller gControllers[NU_CONT_MAXCONTROLLERS];

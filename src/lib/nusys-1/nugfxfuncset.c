@@ -1,3 +1,13 @@
-#include "common.h"
+#include <nusys.h>
 
-INCLUDE_ASM(const s32, "lib/nusys-1/nugfxfuncset", nuGfxFuncSet);
+void nuGfxFuncSet(NUGfxFunc func) {
+
+    OSIntMask mask;
+    nuGfxTaskAllEndWait();	    
+
+    mask = osSetIntMask(OS_IM_NONE);
+    nuGfxFunc = func;
+
+    osSetIntMask(mask);
+
+}

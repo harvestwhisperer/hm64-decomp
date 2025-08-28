@@ -2,7 +2,7 @@
 
 #include "system/pauseScreen.h"
 
-#include "system/sprite.h"
+#include "system/globalSprites.h"
 
 // bss
 extern PauseScreenSprite pauseScreenSprites[MAX_PAUSE_SCREEN_SPRITES];
@@ -14,7 +14,7 @@ extern u32 D_801133B0[];
 bool func_80046504(u16 spriteIndex);
 bool func_80046650(u16 spriteIndex, u8 arg1, u8 arg2);
 
-//INCLUDE_ASM(const s32, "system/pauseScreen", func_80045DE0);
+//INCLUDE_ASM("asm/nonmatchings/system/pauseScreen", func_80045DE0);
 
 void func_80045DE0(void) {
 
@@ -26,7 +26,7 @@ void func_80045DE0(void) {
     }
 }
 
-//INCLUDE_ASM(const s32, "system/pauseScreen", func_80045E20);
+//INCLUDE_ASM("asm/nonmatchings/system/pauseScreen", func_80045E20);
 
 bool func_80045E20(u16 index, u16 spriteIndex, u32 romSpritesheetStart, u32 romSpritesheetEnd, u32 romAssetIndexStart, u32 romAssetIndexEnd, 
     void *vaddrSpritesheet, void *vaddrPalette, void *vaddrUnknownAssetSheet, void *vaddrUnknownAsset2, 
@@ -72,7 +72,7 @@ bool func_80045E20(u16 index, u16 spriteIndex, u32 romSpritesheetStart, u32 romS
 
 }
 
-//INCLUDE_ASM(const s32, "system/pauseScreen", dmaPauseScreenSprites);
+//INCLUDE_ASM("asm/nonmatchings/system/pauseScreen", dmaPauseScreenSprites);
 
 bool dmaPauseScreenSprites(u16 index, u32 arg1, u8 arg2, u16 flag) {
     
@@ -127,7 +127,7 @@ bool dmaPauseScreenSprites(u16 index, u32 arg1, u8 arg2, u16 flag) {
 }
 
 
-//INCLUDE_ASM(const s32, "system/pauseScreen", deactivatePauseScreenSprites);
+//INCLUDE_ASM("asm/nonmatchings/system/pauseScreen", deactivatePauseScreenSprites);
 
 bool deactivatePauseScreenSprites(u16 index) {
     
@@ -156,7 +156,7 @@ bool deactivatePauseScreenSprites(u16 index) {
     return result;
 }
 
-//INCLUDE_ASM(const s32, "system/pauseScreen", setPauseScreenSpritesRGBA);
+//INCLUDE_ASM("asm/nonmatchings/system/pauseScreen", setPauseScreenSpritesRGBA);
 
 bool setPauseScreenSpritesRGBA(u16 spriteIndex, u8 r, u8 g, u8 b, u8 a) {
 
@@ -170,7 +170,7 @@ bool setPauseScreenSpritesRGBA(u16 spriteIndex, u8 r, u8 g, u8 b, u8 a) {
             count = pauseScreenSprites[spriteIndex].count;
 
             do {
-                func_8002C914(pauseScreenSprites[spriteIndex].spriteIndex + count, r, g, b, a);
+                setSpriteColor(pauseScreenSprites[spriteIndex].spriteIndex + count, r, g, b, a);
             } while (count--);
 
             result = TRUE;
@@ -182,7 +182,7 @@ bool setPauseScreenSpritesRGBA(u16 spriteIndex, u8 r, u8 g, u8 b, u8 a) {
     
 }
 
-//INCLUDE_ASM(const s32, "system/pauseScreen", setPauseScreenSpritesAlpha);
+//INCLUDE_ASM("asm/nonmatchings/system/pauseScreen", setPauseScreenSpritesAlpha);
 
 bool setPauseScreenSpritesAlpha(u16 spriteIndex, u8 a) {
 
@@ -208,7 +208,7 @@ bool setPauseScreenSpritesAlpha(u16 spriteIndex, u8 a) {
 
 }
 
-//INCLUDE_ASM(const s32, "system/pauseScreen", func_8004635C);
+//INCLUDE_ASM("asm/nonmatchings/system/pauseScreen", func_8004635C);
 
 bool func_8004635C(u16 spriteIndex, u8 arg1, u8 arg2, u8 arg3, u8 arg4, u16 arg5) {
 
@@ -233,7 +233,7 @@ bool func_8004635C(u16 spriteIndex, u8 arg1, u8 arg2, u8 arg3, u8 arg4, u16 arg5
     return result;
 }
 
-//INCLUDE_ASM(const s32, "system/pauseScreen", func_8004644C);
+//INCLUDE_ASM("asm/nonmatchings/system/pauseScreen", func_8004644C);
 
 // update rgba alpha
 bool func_8004644C(u16 spriteIndex, u8 arg1, s16 arg2) {
@@ -258,7 +258,7 @@ bool func_8004644C(u16 spriteIndex, u8 arg1, s16 arg2) {
     return result;
 }
 
-//INCLUDE_ASM(const s32, "system/pauseScreen", func_80046504);
+//INCLUDE_ASM("asm/nonmatchings/system/pauseScreen", func_80046504);
 
 bool func_80046504(u16 spriteIndex) {
 
@@ -279,7 +279,7 @@ bool func_80046504(u16 spriteIndex) {
             
             do {
 
-                func_8002BAD8(pauseScreenSprites[spriteIndex].spriteIndex + count);
+                resetAnimationState(pauseScreenSprites[spriteIndex].spriteIndex + count);
 
                 check = value / D_801133B0[count];
 
@@ -307,7 +307,7 @@ bool func_80046504(u16 spriteIndex) {
     
 }
 
-//INCLUDE_ASM(const s32, "system/pauseScreen", func_80046650);
+//INCLUDE_ASM("asm/nonmatchings/system/pauseScreen", func_80046650);
 
 bool func_80046650(u16 spriteIndex, u8 arg1, u8 arg2) {
 
@@ -318,24 +318,22 @@ bool func_80046650(u16 spriteIndex, u8 arg1, u8 arg2) {
 
         if (pauseScreenSprites[spriteIndex].flags & 1) {
 
-            // global sprite index
             tempIndex = pauseScreenSprites[spriteIndex].spriteIndex + arg2; 
             
-            // adjust Vec3fs
             setSpriteShrinkFactor(tempIndex, pauseScreenSprites[spriteIndex].coordinates.x - pauseScreenSprites[spriteIndex].unk_27 * arg2, pauseScreenSprites[spriteIndex].coordinates.y, pauseScreenSprites[spriteIndex].coordinates.z);
             setSpriteScale(tempIndex, 1.0f, 1.0f, 1.0f);
-            func_8002BE14(tempIndex, 0, 0, 0);
+            setSpriteAngles(tempIndex, 0, 0, 0);
             
             func_8002C680(tempIndex, 2, 2);
 
             if (pauseScreenSprites[spriteIndex].flags & 4) {
-                func_8002C7EC(tempIndex, 3);
+                setSpriteRenderingLayer(tempIndex, (1 | 2));
             } else {
-                func_8002C7EC(tempIndex, 2);
+                setSpriteRenderingLayer(tempIndex, 2);
             }
 
             // animation
-            func_8002B80C(tempIndex, pauseScreenSprites[spriteIndex].specialItemPages, pauseScreenSprites[spriteIndex].unk_26 + arg1);
+            startSpriteAnimation(tempIndex, pauseScreenSprites[spriteIndex].specialItemPages, pauseScreenSprites[spriteIndex].unk_26 + arg1);
             
             result = TRUE;
         }
@@ -345,10 +343,9 @@ bool func_80046650(u16 spriteIndex, u8 arg1, u8 arg2) {
 
 } 
 
-//INCLUDE_ASM(const s32, "system/pauseScreen", func_800467F8);
+//INCLUDE_ASM("asm/nonmatchings/system/pauseScreen", updatePauseScreenSprites);
 
-// main loop callback
-void func_800467F8(void) {
+void updatePauseScreenSprites(void) {
 
     u16 i;
 

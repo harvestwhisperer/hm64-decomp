@@ -1,3 +1,7 @@
-#include "common.h"
+#include "n_synthInternals.h"
 
-INCLUDE_ASM(const s32, "lib/os/libultra/libnaudio/n_synallocfx", n_alSynAllocFX);
+ALFxRef n_alSynAllocFX(s16 bus, ALSynConfig *c, ALHeap *hp)
+{
+    n_alFxNew(&n_syn->auxBus->fx_array[bus], c, hp);
+    return(n_syn->auxBus->fx_array[bus]);
+}
