@@ -7,7 +7,7 @@
 #include "game/mapObjects.h"
 #include "game/overlayScreens.h"
 #include "game/updateGame.h"     
-#include "weather.h"       
+#include "game/weather.h"       
 
 // bss
 // unused scoring variables
@@ -152,5 +152,3 @@ void func_800598E0(void) {
         }
     }
 }
-
-

@@ -10,7 +10,7 @@
 #include "game/level.h"
 #include "game/player.h"
 #include "game/setCutscenes.h"
-#include "weather.h"
+#include "game/weather.h"
                     
 // forward declarations           
 void setGlobalSeasonName(u8);

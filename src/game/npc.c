@@ -15,7 +15,7 @@
 #include "game/level.h"
 #include "game/player.h"
 #include "game/spriteIndices.h"
-#include "weather.h"
+#include "game/weather.h"
 
 // bss
 npcInfo npcInfoArray[0x30];

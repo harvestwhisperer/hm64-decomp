@@ -13,7 +13,7 @@
 #include "mainLoop.h"
 #include "game/overlayScreens.h"
 #include "game/spriteIndices.h"
-#include "weather.h"
+#include "game/weather.h"
        
 // forward declarations   
 void setTVContentIndex();                                  

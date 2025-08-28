@@ -25,7 +25,7 @@
 #include "game/shop.h"
 #include "game/spriteIndices.h"
 #include "game/updateGame.h"
-#include "weather.h"
+#include "game/weather.h"
 
 // bss
 static LevelInteractionsInfo levelInteractionsInfo;
