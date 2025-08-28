@@ -18,7 +18,7 @@
 #include "game/setCutscenes.h"        
 #include "game/shop.h"            
 #include "game/spriteIndices.h"                                                 
-#include "weather.h"      
+#include "game/weather.h"      
 
 // offsets into combined textures
 extern u8 D_801C3F35;

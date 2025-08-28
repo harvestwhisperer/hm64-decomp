@@ -26,7 +26,7 @@
 #include "game/player.h"
 #include "game/setCutscenes.h"
 #include "game/spriteIndices.h"
-#include "weather.h"    
+#include "game/weather.h"    
       
 // bss
 // unused: likely to show player coordinates on screen for debugging

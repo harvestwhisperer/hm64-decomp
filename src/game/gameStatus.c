@@ -577,7 +577,6 @@ u8 func_80065518(void) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/gameStatus", getSumNpcAffection);
 
-// get total npc affection
 s32 getSumNpcAffection(void) {
 
     u16 result = 0;

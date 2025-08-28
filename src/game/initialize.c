@@ -32,7 +32,7 @@
 #include "game/title.h"
 #include "game/tv.h"
 #include "game/updateGame.h"
-#include "weather.h"
+#include "game/weather.h"
 
 // unused variables
 extern u8 D_8017044B;

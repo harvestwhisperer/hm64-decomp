@@ -282,7 +282,7 @@ typedef struct {
     Vec3f scaling; // 0x40
     Vec3f offsets; // 0x4C
     Vec3f unk_58;
-    u16 spriteIndex; // sprite or map context index
+    u16 assetIndex; // sprite or map context index
     u16 waitFrames; // is asset active, does callback function loop
     u8 unk_68;
     u8 unk_69;

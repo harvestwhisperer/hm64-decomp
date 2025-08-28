@@ -28,7 +28,7 @@
 #include "game/shop.h"
 #include "game/spriteIndices.h"
 #include "game/updateGame.h"
-#include "weather.h"
+#include "game/weather.h"
 
 // forward declaration
 u8 func_80060DC0();

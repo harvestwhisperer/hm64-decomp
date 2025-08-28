@@ -1,6 +1,6 @@
 #include "common.h"
 
-#include "weather.h"
+#include "game/weather.h"
 
 #include "system/map.h"
 #include "system/mathUtils.h"

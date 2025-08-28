@@ -232,7 +232,7 @@ void initializeCutsceneExecutors(void) {
 
     for (i = 0; i < MAX_BYTECODE_EXECUTORS; i++) {
         
-        cutsceneExecutors[i].spriteIndex = 0;
+        cutsceneExecutors[i].assetIndex = 0;
         cutsceneExecutors[i].waitFrames = 0;
         cutsceneExecutors[i].unk_68 = 0;
         cutsceneExecutors[i].unk_69 = 0;
@@ -331,17 +331,17 @@ bool func_80046AB0(u16 index) {
 
         // global sprite flags
         if (cutsceneExecutors[index].flags & 2) {
-            deactivateSprite(cutsceneExecutors[index].spriteIndex);
+            deactivateSprite(cutsceneExecutors[index].assetIndex);
         }
 
         // global sprite flags
         if (cutsceneExecutors[index].flags & CHARACTER_SPRITE_ASSET) {
-            deactivateEntity(cutsceneExecutors[index].spriteIndex);
+            deactivateEntity(cutsceneExecutors[index].assetIndex);
         }
 
         // tiles/map
         if (cutsceneExecutors[index].flags & MAP_ASSET) {
-            func_8003C504(cutsceneExecutors[index].spriteIndex);
+            func_8003C504(cutsceneExecutors[index].assetIndex);
         }
         
         result = TRUE;
@@ -474,11 +474,11 @@ void updateCutsceneExecutors(void) {
             
             if (cutsceneExecutors[i].flags & CHARACTER_SPRITE_ASSET) {
                 
-                cutsceneExecutors[i].coordinates.x = entities[cutsceneExecutors[i].spriteIndex].coordinates.x;
-                cutsceneExecutors[i].coordinates.y = entities[cutsceneExecutors[i].spriteIndex].coordinates.y;
-                cutsceneExecutors[i].coordinates.z = entities[cutsceneExecutors[i].spriteIndex].coordinates.z;
+                cutsceneExecutors[i].coordinates.x = entities[cutsceneExecutors[i].assetIndex].coordinates.x;
+                cutsceneExecutors[i].coordinates.y = entities[cutsceneExecutors[i].assetIndex].coordinates.y;
+                cutsceneExecutors[i].coordinates.z = entities[cutsceneExecutors[i].assetIndex].coordinates.z;
                 
-                if (cutsceneExecutors[i].unk_1C != 0xFFFF && entities[cutsceneExecutors[i].spriteIndex].unk_58 == cutsceneExecutors[i].unk_1C && cutsceneExecutors[i].unk_1E == entities[cutsceneExecutors[i].spriteIndex].unk_5A) {
+                if (cutsceneExecutors[i].unk_1C != 0xFFFF && entities[cutsceneExecutors[i].assetIndex].unk_58 == cutsceneExecutors[i].unk_1C && cutsceneExecutors[i].unk_1E == entities[cutsceneExecutors[i].assetIndex].unk_5A) {
                     cutsceneExecutors[i].unk_1C = 0xFFFF;
                     cutsceneExecutors[i].waitFrames = 0;
                     cutsceneExecutors[i].bytecodePtr = cutsceneExecutors[i].unk_18;
@@ -487,9 +487,9 @@ void updateCutsceneExecutors(void) {
             }
             
             if (cutsceneExecutors[i].flags & MAP_ASSET) {
-                cutsceneExecutors[i].coordinates.x = gMapModelContext[cutsceneExecutors[i].spriteIndex].unk_4.x;
-                cutsceneExecutors[i].coordinates.y = gMapModelContext[cutsceneExecutors[i].spriteIndex].unk_4.y;
-                cutsceneExecutors[i].coordinates.z = gMapModelContext[cutsceneExecutors[i].spriteIndex].unk_4.z;
+                cutsceneExecutors[i].coordinates.x = gMapModelContext[cutsceneExecutors[i].assetIndex].unk_4.x;
+                cutsceneExecutors[i].coordinates.y = gMapModelContext[cutsceneExecutors[i].assetIndex].unk_4.y;
+                cutsceneExecutors[i].coordinates.z = gMapModelContext[cutsceneExecutors[i].assetIndex].unk_4.z;
             }
 
             if (cutsceneExecutors[i].waitFrames) {
@@ -582,7 +582,7 @@ INCLUDE_ASM("asm/nonmatchings/system/cutscene", func_80047640);
 
 // tiles
 void func_80047E34(u16 index) {
-    func_8003BE0C(cutsceneExecutors[index].spriteIndex, cutsceneExecutors[index].offsets.x, cutsceneExecutors[index].offsets.y, cutsceneExecutors[index].offsets.z);
+    func_8003BE0C(cutsceneExecutors[index].assetIndex, cutsceneExecutors[index].offsets.x, cutsceneExecutors[index].offsets.y, cutsceneExecutors[index].offsets.z);
 }
 
 //INCLUDE_ASM("asm/nonmatchings/system/cutscene", func_80047E94);
@@ -680,12 +680,12 @@ void func_80047F90(u16 index) {
 
     // tiles
     if (cutsceneExecutors[index].flags & MAP_ASSET) {
-        func_8003BDA4(cutsceneExecutors[index].spriteIndex, cutsceneExecutors[index].coordinates.x, cutsceneExecutors[index].coordinates.y, cutsceneExecutors[index].coordinates.z);
+        func_8003BDA4(cutsceneExecutors[index].assetIndex, cutsceneExecutors[index].coordinates.x, cutsceneExecutors[index].coordinates.y, cutsceneExecutors[index].coordinates.z);
     }
 
     // set sprite coordinates
     if (cutsceneExecutors[index].flags & CHARACTER_SPRITE_ASSET) {
-        setEntityCoordinates(cutsceneExecutors[index].spriteIndex, cutsceneExecutors[index].coordinates.x, cutsceneExecutors[index].coordinates.y, cutsceneExecutors[index].coordinates.z);
+        setEntityCoordinates(cutsceneExecutors[index].assetIndex, cutsceneExecutors[index].coordinates.x, cutsceneExecutors[index].coordinates.y, cutsceneExecutors[index].coordinates.z);
     }
     
 }
@@ -896,7 +896,7 @@ void func_800486F4(u16 index) {
 
     cutsceneExecutors[index].bytecodePtr += 2;
 
-    cutsceneExecutors[index].spriteIndex = ptr->spriteIndex;
+    cutsceneExecutors[index].assetIndex = ptr->spriteIndex;
     
     cutsceneExecutors[index].bytecodePtr += 2;
 
@@ -954,12 +954,12 @@ void func_800486F4(u16 index) {
 
     cutsceneExecutors[index].bytecodePtr += 4;
 
-    dmaSprite(cutsceneExecutors[index].spriteIndex, romTextureStart, romTextureEnd, romAssetIndexStart, 
+    dmaSprite(cutsceneExecutors[index].assetIndex, romTextureStart, romTextureEnd, romAssetIndexStart, 
         romAssetIndexEnd, romSpritesheetIndexStart, romSpritesheetIndexEnd, texture1Vaddr, texture2Vaddr, 
         paletteVaddr, animationVaddr, spriteToPaletteVaddr, spritesheetIndexVaddr, assetType, 0);
    
 
-    setBilinearFiltering(cutsceneExecutors[index].spriteIndex, TRUE);
+    setBilinearFiltering(cutsceneExecutors[index].assetIndex, TRUE);
     
 }
 
@@ -985,7 +985,7 @@ void func_800486F4(u16 index) {
 
     cutsceneExecutors[index].bytecodePtr += 2;
 
-    cutsceneExecutors[index].spriteIndex = ptr->spriteIndex;
+    cutsceneExecutors[index].assetIndex = ptr->spriteIndex;
     
     cutsceneExecutors[index].bytecodePtr += 2;
 
@@ -1041,12 +1041,12 @@ void func_800486F4(u16 index) {
 
     cutsceneExecutors[index].bytecodePtr += 4;
     
-    dmaSprite(cutsceneExecutors[index].spriteIndex, romTextureStart, romTextureEnd, romAssetIndexStart, 
+    dmaSprite(cutsceneExecutors[index].assetIndex, romTextureStart, romTextureEnd, romAssetIndexStart, 
         romAssetIndexEnd, romSpritesheetIndexStart, romSpritesheetIndexEnd, texture1Vaddr, texture2Vaddr, 
         paletteVaddr, animationVaddr, spriteToPaletteVaddr, spritesheetIndexVaddr, assetType, 0);
    
 
-    setBilinearFiltering(cutsceneExecutors[index].spriteIndex, TRUE);
+    setBilinearFiltering(cutsceneExecutors[index].assetIndex, TRUE);
     
 }
 */
@@ -1059,7 +1059,7 @@ void func_800488CC(u16 index) {
 
     cutsceneExecutors[index].bytecodePtr += 2;
 
-    cutsceneExecutors[index].spriteIndex = ptr->spriteIndex;
+    cutsceneExecutors[index].assetIndex = ptr->spriteIndex;
 
     cutsceneExecutors[index].bytecodePtr += 2;
 
@@ -1088,12 +1088,12 @@ void func_800488CC(u16 index) {
     cutsceneExecutors[index].bytecodePtr += 2;
 
     if (cutsceneExecutors[index].cameraFlags & MAP_ASSET) {
-        setEntityAnimationWithDirectionChange(cutsceneExecutors[index].spriteIndex, cutsceneExecutors[index].unk_26);
+        setEntityAnimationWithDirectionChange(cutsceneExecutors[index].assetIndex, cutsceneExecutors[index].unk_26);
     } else {
-        setEntityAnimationWithDirectionChange(cutsceneExecutors[index].spriteIndex, cutsceneExecutors[index].unk_20);
+        setEntityAnimationWithDirectionChange(cutsceneExecutors[index].assetIndex, cutsceneExecutors[index].unk_20);
     }
 
-    func_8002FCB4(cutsceneExecutors[index].spriteIndex, 0);
+    func_8002FCB4(cutsceneExecutors[index].assetIndex, 0);
 
     cutsceneExecutors[index].flags |= 8;
     
@@ -1325,13 +1325,13 @@ void func_80049228(u16 index) {
 
     cutsceneExecutors[index].bytecodePtr += 2;
 
-    cutsceneExecutors[index].spriteIndex = ptr->index;
+    cutsceneExecutors[index].assetIndex = ptr->index;
 
     cutsceneExecutors[index].bytecodePtr += 2;
 
-    func_8003C1E0(cutsceneExecutors[index].spriteIndex, gMapModelContext[cutsceneExecutors[index].spriteIndex].unk_4.x, gMapModelContext[cutsceneExecutors[index].spriteIndex].unk_4.y, gMapModelContext[cutsceneExecutors[index].spriteIndex].unk_4.z, 8, 8);
-    func_8003BD60(cutsceneExecutors[index].spriteIndex);
-    setMainMapIndex(cutsceneExecutors[index].spriteIndex);
+    func_8003C1E0(cutsceneExecutors[index].assetIndex, gMapModelContext[cutsceneExecutors[index].assetIndex].unk_4.x, gMapModelContext[cutsceneExecutors[index].assetIndex].unk_4.y, gMapModelContext[cutsceneExecutors[index].assetIndex].unk_4.z, 8, 8);
+    func_8003BD60(cutsceneExecutors[index].assetIndex);
+    setMainMapIndex(cutsceneExecutors[index].assetIndex);
 
     cutsceneExecutors[index].flags |= MAP_ASSET;
     
@@ -1379,7 +1379,7 @@ void func_8004A000(u16 index) {
     
     cutsceneExecutors[index].bytecodePtr += 2;
     
-    setEntityDirection(cutsceneExecutors[index].spriteIndex, (entities[spriteIndex].direction + 4)  % 8);
+    setEntityDirection(cutsceneExecutors[index].assetIndex, (entities[spriteIndex].direction + 4)  % 8);
 }
 
 //INCLUDE_ASM("asm/nonmatchings/system/cutscene", func_8004A0A8);
@@ -1455,7 +1455,7 @@ void func_8004A320(u16 index) {
 
     cutsceneExecutors[index].bytecodePtr += 2;
 
-    func_8002FCB4(cutsceneExecutors[index].spriteIndex, flag);
+    func_8002FCB4(cutsceneExecutors[index].assetIndex, flag);
 
 }
 
@@ -1512,7 +1512,7 @@ void func_8004B0E8(u16 index) {
     
     if (cutsceneExecutors[index].flags & 2) {
 
-        if (func_8002CBF8(cutsceneExecutors[index].spriteIndex)) {
+        if (func_8002CBF8(cutsceneExecutors[index].assetIndex)) {
             cutsceneExecutors[index].bytecodePtr += 2;
         } else {
             cutsceneExecutors[index].waitFrames = 1;
@@ -1522,7 +1522,7 @@ void func_8004B0E8(u16 index) {
     }
 
     if (cutsceneExecutors[index].flags & 8) {
-        if (func_8002CBF8(entities[cutsceneExecutors[index].spriteIndex].globalSpriteIndex)) {
+        if (func_8002CBF8(entities[cutsceneExecutors[index].assetIndex].globalSpriteIndex)) {
             cutsceneExecutors[index].bytecodePtr += 2;
         } else {
             cutsceneExecutors[index].waitFrames = 1;
@@ -1531,7 +1531,7 @@ void func_8004B0E8(u16 index) {
     }
 
     if (cutsceneExecutors[index].flags & 0x10) {
-        if (checkMapRGBADone(gMapModelContext[cutsceneExecutors[index].spriteIndex].mainMapIndex)) {
+        if (checkMapRGBADone(gMapModelContext[cutsceneExecutors[index].assetIndex].mainMapIndex)) {
             cutsceneExecutors[index].bytecodePtr += 2;
         } else {
             cutsceneExecutors[index].waitFrames = 1;
@@ -1807,7 +1807,7 @@ void func_8004C56C(u16 index) {
     
     cutsceneExecutors[index].bytecodePtr += 2;
     
-    setSpritePaletteIndex(cutsceneExecutors[index].spriteIndex, paletteIndex);
+    setSpritePaletteIndex(cutsceneExecutors[index].assetIndex, paletteIndex);
     
 }
 
@@ -2051,7 +2051,7 @@ void func_8004CB1C(u16 index) {
 
     cutsceneExecutors[index].bytecodePtr += 2;
 
-    setBilinearFiltering(cutsceneExecutors[index].spriteIndex, useBilinearFiltering);
+    setBilinearFiltering(cutsceneExecutors[index].assetIndex, useBilinearFiltering);
     
 }
 
