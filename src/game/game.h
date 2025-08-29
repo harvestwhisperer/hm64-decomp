@@ -76,7 +76,7 @@ extern void func_8005C07C(s16 arg0, u16 arg1);
 extern void func_8005C940(u16, u16 callbackIndex); 
 extern void func_8005CA2C(u16, u16);   
 extern void func_8005CDCC(); 
-extern u8 func_80060EC8(f32 animalX, f32 animalZ, f32 playerX, f32 playerZ);
+extern u8 calculateAnimalDirectionToPlayer(f32 animalX, f32 animalZ, f32 playerX, f32 playerZ);
 extern bool func_80061178(void);
 extern void func_80061690(u8);
 extern u8 func_800616CC(u8);  

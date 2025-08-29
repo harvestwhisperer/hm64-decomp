@@ -117,51 +117,51 @@ u8 getToolLevel(u8 tool) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800CF8F8);
 
-void func_800CF8F8(u8 spriteIndex, u8 arg1, f32 arg2, f32 arg3, f32 arg4) {
+void func_800CF8F8(u8 entityIndex, u8 arg1, f32 arg2, f32 arg3, f32 arg4) {
 
-    loadEntity(spriteIndex + ITEMS_OFFSET, 0x60, 1);
-    func_8002FF38(spriteIndex + ITEMS_OFFSET, 0);
-    setEntityTrackingTarget(spriteIndex + ITEMS_OFFSET, 0xFFFF, 0xFF);
-    func_8003019C(spriteIndex + ITEMS_OFFSET, 0);
-    func_80030054(spriteIndex + ITEMS_OFFSET, 0);
-    setEntityCoordinates(spriteIndex + ITEMS_OFFSET, arg2, arg3, arg4);
+    loadEntity(entityIndex + ITEMS_OFFSET, 0x60, 1);
+    func_8002FF38(entityIndex + ITEMS_OFFSET, 0);
+    setEntityTrackingTarget(entityIndex + ITEMS_OFFSET, 0xFFFF, 0xFF);
+    func_8003019C(entityIndex + ITEMS_OFFSET, 0);
+    func_80030054(entityIndex + ITEMS_OFFSET, 0);
+    setEntityCoordinates(entityIndex + ITEMS_OFFSET, arg2, arg3, arg4);
 
-    setEntityColor(spriteIndex + ITEMS_OFFSET, mainMap[MAIN_MAP_INDEX].mapFloats.groundRgba.r, mainMap[MAIN_MAP_INDEX].mapFloats.groundRgba.g, mainMap[MAIN_MAP_INDEX].mapFloats.groundRgba.b, mainMap[MAIN_MAP_INDEX].mapFloats.groundRgba.a);
+    setEntityColor(entityIndex + ITEMS_OFFSET, mainMap[MAIN_MAP_INDEX].mapFloats.groundRgba.r, mainMap[MAIN_MAP_INDEX].mapFloats.groundRgba.g, mainMap[MAIN_MAP_INDEX].mapFloats.groundRgba.b, mainMap[MAIN_MAP_INDEX].mapFloats.groundRgba.a);
     
-    setEntityAnimation(spriteIndex + ITEMS_OFFSET, arg1);
+    setEntityAnimation(entityIndex + ITEMS_OFFSET, arg1);
     
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800CFB38);
 
-void func_800CFB38(u8 spriteIndex, u8 animationIndex, f32 x, f32 y, f32 z) {
+void func_800CFB38(u8 entityIndex, u8 animationIndex, f32 x, f32 y, f32 z) {
 
     // flags
-    loadEntity(spriteIndex + ITEMS_OFFSET, 0x5D, 1);
-    func_8002FF38(spriteIndex + ITEMS_OFFSET, 0);
-    setEntityTrackingTarget(spriteIndex + ITEMS_OFFSET, 0xFFFF, 0xFF);
-    func_8003019C(spriteIndex + ITEMS_OFFSET, 0);
-    func_80030054(spriteIndex + ITEMS_OFFSET, 0);
+    loadEntity(entityIndex + ITEMS_OFFSET, 0x5D, 1);
+    func_8002FF38(entityIndex + ITEMS_OFFSET, 0);
+    setEntityTrackingTarget(entityIndex + ITEMS_OFFSET, 0xFFFF, 0xFF);
+    func_8003019C(entityIndex + ITEMS_OFFSET, 0);
+    func_80030054(entityIndex + ITEMS_OFFSET, 0);
 
-    setEntityCoordinates(spriteIndex + ITEMS_OFFSET, x, y, z);
+    setEntityCoordinates(entityIndex + ITEMS_OFFSET, x, y, z);
 
     // rgba
-    setEntityColor(spriteIndex + ITEMS_OFFSET, mainMap[MAIN_MAP_INDEX].mapFloats.groundRgba.r, mainMap[MAIN_MAP_INDEX].mapFloats.groundRgba.g, mainMap[MAIN_MAP_INDEX].mapFloats.groundRgba.b, mainMap[MAIN_MAP_INDEX].mapFloats.groundRgba.a);
+    setEntityColor(entityIndex + ITEMS_OFFSET, mainMap[MAIN_MAP_INDEX].mapFloats.groundRgba.r, mainMap[MAIN_MAP_INDEX].mapFloats.groundRgba.g, mainMap[MAIN_MAP_INDEX].mapFloats.groundRgba.b, mainMap[MAIN_MAP_INDEX].mapFloats.groundRgba.a);
     // flags
-    setEntityAnimation(spriteIndex + ITEMS_OFFSET, animationIndex);
+    setEntityAnimation(entityIndex + ITEMS_OFFSET, animationIndex);
     
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800CFD78);
 
-void func_800CFD78(u8 spriteIndex, u8 arg1) {
-    setEntityAnimation(spriteIndex + ITEMS_OFFSET, arg1);
+void func_800CFD78(u8 entityIndex, u8 arg1) {
+    setEntityAnimation(entityIndex + ITEMS_OFFSET, arg1);
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800CFDA0);
 
-void func_800CFDA0(u8 spriteIndex) {
-    deactivateEntity(spriteIndex + ITEMS_OFFSET);
+void func_800CFDA0(u8 entityIndex) {
+    deactivateEntity(entityIndex + ITEMS_OFFSET);
 }
 
 INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800CFDC4);

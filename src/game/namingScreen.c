@@ -17,8 +17,6 @@
 #include "game/player.h"
 #include "game/spriteIndices.h"
 
-extern u16 D_80202E8A;
-
 // FIXME:
 // instead of including the header, defining here because loadCutscene(u32) doesn't match in func_800ED974
 extern void loadCutscene(void);
@@ -38,10 +36,7 @@ extern u32 _landscapeBackgroundIndexSegmentRomEnd;
 // bss
 extern NamingScreenContext namingScreenContext;
 // FIXME: part of namingScreenContext, but needed for match 
-//extern f32 D_8016FBE0;
 // extern u16 D_8016FBEE;
-
-extern u16 D_80202E8A;
 
 // forward declarations
 void loadNameSelectionSprites(void);
@@ -56,6 +51,17 @@ void func_800F0320(void);
 void loadSeasonSelectionSprites(void);
 void func_800F0F84(void);
 
+
+static inline int getSpriteIndexFromFlags(u16 flags) {
+    int v = (flags & (0x4 | 0x8 | 0x10)) >> 2;
+    v -= 1;
+    return v;
+}
+
+static inline void setSpriteIndexOnFlags(s32 index) {
+    namingScreenContext.flags &= ~(0x4 | 0x8 | 0x10);
+    namingScreenContext.flags |= index << 2;
+}
 
 //INCLUDE_ASM("asm/nonmatchings/game/namingScreen", initializeNamingScreen);
 
@@ -98,7 +104,8 @@ void func_800ED974(void) {
     s32 temp = (namingScreenContext.flags & 0x60) >> 5;
     s32 temp2;
 
-    if (D_80202E8A & 0x400) {
+    // 0x90 = index 144
+    if (globalSprites[0x90].stateFlags & 0x400) {
         
         if (namingScreenContext.flags & 0x100) {
 
@@ -559,35 +566,38 @@ void func_800EFADC(void) {
     func_800F00D8();
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/namingScreen", func_800EFBEC);
+//INCLUDE_ASM("asm/nonmatchings/game/namingScreen", func_800EFBEC);
 
-// FIXME: Have to fix D_8016FBE0 usage
-/*
-    void func_800EFBEC(void) {
+void func_800EFBEC(void) {
         
     namingScreenContext.coordinates.x += 16.0f;
-    namingScreenContext.unk_18++;
     namingScreenContext.coordinates.z += 16.0f;
+
+    namingScreenContext.unk_18++;
 
     if (namingScreenContext.unk_18 >= 15) {
         namingScreenContext.unk_18 = 0;
     }
 
     if (namingScreenContext.unk_18 != 0) {
-        if (!(namingScreenContext.unk_18 % 5)) {
+        
+        if ((namingScreenContext.unk_18 % 5) == 0) {
             namingScreenContext.coordinates.x += 3.0f;
             namingScreenContext.coordinates.z += 3.0f;
         }
+
     } else {
+        // FIXME: probably different control flow
+        do {} while (0);
         namingScreenContext.coordinates.x = -126.0f;
-    // FIXME: should be member access; maybe from static inline scope
-    D_8016FBE0 = -116.0f;
+        namingScreenContext.coordinates.z = -116.0f;
+
     }
 
     func_800F00D8();
 
 }
-*/
+
 
 //INCLUDE_ASM("asm/nonmatchings/game/namingScreen", func_800EFCF8);
 
@@ -806,14 +816,14 @@ void func_800F0320(void) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/namingScreen", func_800F03C4);
+//INCLUDE_ASM("asm/nonmatchings/game/namingScreen", func_800F03C4);
 
 // FIXME: have to fix D_8016FBEE usage
-/*
-    void func_800F03C4(void) {
+
+void func_800F03C4(void) {
         
     bool set = FALSE;
-    s32 temp;
+    s32 index;
 
     if (namingScreenContext.flags & 0x80) {
         resetAnimationState(0x91);
@@ -871,39 +881,40 @@ INCLUDE_ASM("asm/nonmatchings/game/namingScreen", func_800F03C4);
             
         }       
             
-        if (!set) {
-            
-            if (checkButtonPressed(CONTROLLER_1, BUTTON_B)) {
+        
+    }
 
-                set = TRUE;
-                setSfx(1);
-                setSfxVolume(CLOSE, SFX_VOLUME);
+    if (!set) {
+            
+        if (checkButtonPressed(CONTROLLER_1, BUTTON_B)) {
+
+            set = TRUE;
+            setSfx(1);
+            setSfxVolume(CLOSE, SFX_VOLUME);
+            
+            index = getSpriteIndexFromFlags(namingScreenContext.flags);
+            
+            if (index >= 0) {
                 
-                temp = ((D_8016FBEE & (0x4 | 0x8 | 0x10)) >> 2);
+                namingScreenContext.name[index] = 0xFF;
+
+                setSpriteIndexOnFlags(index);
                 
-                temp -= 1;
+                startSpriteAnimation(index + 0x83, 2, 0);
                 
-                if (temp > -1) {
-                    
-                    namingScreenContext.name[temp] = 0xFF;
-                    
-                    D_8016FBEE &= ~(0x4 | 0x8 | 0x10);
-                    D_8016FBEE |= temp << 2;
-                    
-                    startSpriteAnimation(temp + 0x83, 2, 0);
-                    
-                    if (temp != 5) {
-                        startSpriteAnimation(temp + 0x8A, 2, 1);
-                    }
+                if (index != 5) {
+                    startSpriteAnimation(index + 0x8A, 2, 1);
                 }
-                    
-            }        
-        } 
-            
-        if (!set) { 
-            
-            if (checkButtonPressed(CONTROLLER_1, BUTTON_START)) {
                 
+            }
+                
+        }        
+    } 
+        
+    if (!set) { 
+        
+        if (checkButtonPressed(CONTROLLER_1, BUTTON_START)) {
+            
             namingScreenContext.unk_1A = 14;
             namingScreenContext.unk_18 = 12;
             namingScreenContext.unk_19 = 5;
@@ -918,16 +929,15 @@ INCLUDE_ASM("asm/nonmatchings/game/namingScreen", func_800F03C4);
             
             setSfx(3);
             setSfxVolume(3, SFX_VOLUME);
-            
+        
         }
+
     }
 
     setSpriteShrinkFactor(0x80, namingScreenContext.coordinates.x, namingScreenContext.coordinates.y, 20.0f);
     setSpriteShrinkFactor(0x82, namingScreenContext.coordinates.z, namingScreenContext.coordinates.w, 5.0f);
 
 }
-*/
-
 
 INCLUDE_ASM("asm/nonmatchings/game/namingScreen", loadSeasonSelectionSprites);
 

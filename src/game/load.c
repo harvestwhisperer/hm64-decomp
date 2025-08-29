@@ -74,7 +74,7 @@ void func_800598E0(void) {
         if (gSeason == WINTER) {
 
             if (gDayOfMonth == 5) {
-                gAverageFarmAnimalAffection = (gFarmAnimals[D_8016FAF8].affection + gFarmAnimals[D_801C3F46].affection + gFarmAnimals[D_8016F898].affection) / 3;
+                gAverageFarmAnimalAffection = (gFarmAnimals[mrsManaCow1Index].affection + gFarmAnimals[mrsManaCow2Index].affection + gFarmAnimals[mrsManaCow3Index].affection) / 3;
                 func_800886D0();
             }
 
@@ -152,3 +152,5 @@ void func_800598E0(void) {
         }
     }
 }
+
+

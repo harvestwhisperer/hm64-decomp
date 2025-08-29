@@ -701,7 +701,9 @@ static const f32 directionsToYValues[8] = {
 
 //INCLUDE_ASM("asm/nonmatchings/system/graphic", getMovementVectorFromDirection);
 
-Vec3f* getMovementVectorFromDirection(Vec3f *outputVec, f32 zDisplacement, u8 direction, f32 yOffset) {
+// Alternate: Vec3f* getMovementVectorFromDirection(Vec3f *outputVec, f32 zDisplacement, u8 direction, f32 yOffset)
+
+Vec3f getMovementVectorFromDirection(f32 zDisplacement, u8 direction, f32 yOffset) {
 
     f32 buffer[8];
 
@@ -794,10 +796,15 @@ Vec3f* getMovementVectorFromDirection(Vec3f *outputVec, f32 zDisplacement, u8 di
         vec2.z = 0.0f;
     }
 
+    return vec2;
+
+    // alternate return type
+    /*
     *outputVec = vec2;
     
     return outputVec;
-    
+    */
+
 }
 
 //INCLUDE_ASM("asm/nonmatchings/system/graphic", getSpriteYValueFromDirection);

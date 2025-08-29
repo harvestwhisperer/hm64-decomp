@@ -486,7 +486,7 @@ bool func_800AD1D0(u16 mapIndex) {
                     func_80038990(0, levelInteractionsInfo.mapAdditionsIndex, 0);
                 }
                 
-                func_8005C940(8, 2);
+                func_8005C940(8, MAP_LOAD);
                 return set;
                 
             } else {
@@ -774,7 +774,7 @@ static bool func_800ADCDC(u16 mapIndex, u8 arg1) {
                 if (checkDailyEventBit(0x16)) {
                     if (gBabyAge < 30) {
                         gPlayer.heldItem = 0xBA;             
-                        deactivateEntity(npcInfoArray[BABY].spriteIndex);
+                        deactivateEntity(npcInfoArray[BABY].entityIndex);
                         npcInfoArray[BABY].flags &= ~4;
                         setPlayerAction(4, 6);
                         if (!checkDailyEventBit(0x55)) {

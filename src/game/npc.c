@@ -144,7 +144,7 @@ void func_800752C0(void) {
     for (i = 0; i < TOTAL_NPCS; i++) {
         
         if (npcInfoArray[i].flags & 4) {
-            deactivateEntity(npcInfoArray[i].spriteIndex);
+            deactivateEntity(npcInfoArray[i].entityIndex);
         }
         
         npcInfoArray[i].flags = 0;
@@ -175,58 +175,58 @@ u8 func_80075374(u8 npcIndex, int arg1) {
             case MARIA:
                 if (checkLifeEventBit(MARRIED)) {
                     if (gWife == MARIA) {
-                        npcInfoArray[npcIndex].spriteIndex = 0x23; 
+                        npcInfoArray[npcIndex].entityIndex = 0x23; 
                         break;
                     } 
                 } 
-                npcInfoArray[npcIndex].spriteIndex = (u8)temp + 0x15;
+                npcInfoArray[npcIndex].entityIndex = (u8)temp + 0x15;
                 temp++;
                 break;
             case POPURI:
                 if (checkLifeEventBit(MARRIED)) {
                     if (gWife == POPURI) {
-                        npcInfoArray[npcIndex].spriteIndex = 0x23;
+                        npcInfoArray[npcIndex].entityIndex = 0x23;
                         break;
                     } 
                 }
-                npcInfoArray[npcIndex].spriteIndex = (u8)temp + 0x15;
+                npcInfoArray[npcIndex].entityIndex = (u8)temp + 0x15;
                 temp++;
                 break;
             case ELLI:
                 if (checkLifeEventBit(MARRIED)) {
                     if (gWife == ELLI) {
-                        npcInfoArray[npcIndex].spriteIndex = 0x23;
+                        npcInfoArray[npcIndex].entityIndex = 0x23;
                         break;
                     } 
                 }
-                npcInfoArray[npcIndex].spriteIndex = (u8)temp + 0x15;
+                npcInfoArray[npcIndex].entityIndex = (u8)temp + 0x15;
                 temp++;
                 break;
             case ANN:
                 if (checkLifeEventBit(MARRIED)) {
                     if (gWife == ANN) {
-                        npcInfoArray[npcIndex].spriteIndex = 0x23;
+                        npcInfoArray[npcIndex].entityIndex = 0x23;
                         break;
                     } 
                 }
-                npcInfoArray[npcIndex].spriteIndex = (u8)temp + 0x15;
+                npcInfoArray[npcIndex].entityIndex = (u8)temp + 0x15;
                 temp++;
                 break;
             case KAREN:
                 if (checkLifeEventBit(MARRIED)) {
                     if (gWife == KAREN) {
-                        npcInfoArray[npcIndex].spriteIndex = 0x23;
+                        npcInfoArray[npcIndex].entityIndex = 0x23;
                         break;
                     } 
                 }
-                npcInfoArray[npcIndex].spriteIndex = (u8)temp + 0x15;
+                npcInfoArray[npcIndex].entityIndex = (u8)temp + 0x15;
                 temp++;
                 break;
             case BABY:                               
-                npcInfoArray[npcIndex].spriteIndex = 0x24;
+                npcInfoArray[npcIndex].entityIndex = 0x24;
                 break;
             case PHOTOGRAPHER:
-                npcInfoArray[npcIndex].spriteIndex = 0x1D;
+                npcInfoArray[npcIndex].entityIndex = 0x1D;
                 break;
             case HARRIS:                                 
             case GRAY:                                 
@@ -262,7 +262,7 @@ u8 func_80075374(u8 npcIndex, int arg1) {
             case BARLEY:                                
             case GOURMET_JUDGE:
             default:
-                npcInfoArray[npcIndex].spriteIndex = (u8)temp + 0x15;
+                npcInfoArray[npcIndex].entityIndex = (u8)temp + 0x15;
                 temp++;
                 break;
         }
@@ -271,41 +271,41 @@ u8 func_80075374(u8 npcIndex, int arg1) {
         npcInfoArray[npcIndex].currentCoordinates.y = npcInfoArray[npcIndex].startingCoordinates.y;
         npcInfoArray[npcIndex].currentCoordinates.z = npcInfoArray[npcIndex].startingCoordinates.z;
     
-        loadEntity(npcInfoArray[npcIndex].spriteIndex, D_80114900[npcIndex], 1);
-        func_8003019C(npcInfoArray[npcIndex].spriteIndex, 1);
-        func_80030054(npcInfoArray[npcIndex].spriteIndex, 1);
-        func_8002FF38(npcInfoArray[npcIndex].spriteIndex, 0);
+        loadEntity(npcInfoArray[npcIndex].entityIndex, D_80114900[npcIndex], 1);
+        func_8003019C(npcInfoArray[npcIndex].entityIndex, 1);
+        func_80030054(npcInfoArray[npcIndex].entityIndex, 1);
+        func_8002FF38(npcInfoArray[npcIndex].entityIndex, 0);
     
-        setEntityDirection(npcInfoArray[npcIndex].spriteIndex, (npcInfoArray[npcIndex].direction + 8 - getCurrentMapRotation(MAIN_MAP_INDEX)) % 8);
-        setEntityCoordinates(npcInfoArray[npcIndex].spriteIndex, npcInfoArray[npcIndex].currentCoordinates.x, npcInfoArray[npcIndex].currentCoordinates.y, npcInfoArray[npcIndex].currentCoordinates.z);
+        setEntityDirection(npcInfoArray[npcIndex].entityIndex, (npcInfoArray[npcIndex].direction + 8 - getCurrentMapRotation(MAIN_MAP_INDEX)) % 8);
+        setEntityCoordinates(npcInfoArray[npcIndex].entityIndex, npcInfoArray[npcIndex].currentCoordinates.x, npcInfoArray[npcIndex].currentCoordinates.y, npcInfoArray[npcIndex].currentCoordinates.z);
     
         if (npcInfoArray[npcIndex].flags & 8) {
             switch (npcIndex) {                   
                 case BABY:                             
-                    setEntityTrackingTarget(npcInfoArray[npcIndex].spriteIndex, 0x23, 0xFE);
+                    setEntityTrackingTarget(npcInfoArray[npcIndex].entityIndex, 0x23, 0xFE);
                     break;
                 case 41:                            
-                    setEntityTrackingTarget(npcInfoArray[npcIndex].spriteIndex, npcInfoArray[MARIA].spriteIndex, 0xFE);
+                    setEntityTrackingTarget(npcInfoArray[npcIndex].entityIndex, npcInfoArray[MARIA].entityIndex, 0xFE);
                     break;
                 case 42:                            
-                    setEntityTrackingTarget(npcInfoArray[npcIndex].spriteIndex, npcInfoArray[POPURI].spriteIndex, 0xFE);
+                    setEntityTrackingTarget(npcInfoArray[npcIndex].entityIndex, npcInfoArray[POPURI].entityIndex, 0xFE);
                     break;
                 case 43:                            
-                    setEntityTrackingTarget(npcInfoArray[npcIndex].spriteIndex, npcInfoArray[ELLI].spriteIndex, 0xFE);
+                    setEntityTrackingTarget(npcInfoArray[npcIndex].entityIndex, npcInfoArray[ELLI].entityIndex, 0xFE);
                     break;
                 case 44:                            
-                    setEntityTrackingTarget(npcInfoArray[npcIndex].spriteIndex, npcInfoArray[ANN].spriteIndex, 0xFE);
+                    setEntityTrackingTarget(npcInfoArray[npcIndex].entityIndex, npcInfoArray[ANN].entityIndex, 0xFE);
                     break;
                 case 45:                            
-                    setEntityTrackingTarget(npcInfoArray[npcIndex].spriteIndex, npcInfoArray[KAREN].spriteIndex, 0xFE);
+                    setEntityTrackingTarget(npcInfoArray[npcIndex].entityIndex, npcInfoArray[KAREN].entityIndex, 0xFE);
                     break;
                 }
             
-                func_8002EDF0(npcInfoArray[npcIndex].spriteIndex, 0, 0xE, 0x14);
-                func_8003019C(npcInfoArray[npcIndex].spriteIndex, 0);
-                func_80030054(npcInfoArray[npcIndex].spriteIndex, 0);
-                func_80030240(npcInfoArray[npcIndex].spriteIndex, 0);
-                func_800302E4(npcInfoArray[npcIndex].spriteIndex, 0);
+                func_8002EDF0(npcInfoArray[npcIndex].entityIndex, 0, 0xE, 0x14);
+                func_8003019C(npcInfoArray[npcIndex].entityIndex, 0);
+                func_80030054(npcInfoArray[npcIndex].entityIndex, 0);
+                func_80030240(npcInfoArray[npcIndex].entityIndex, 0);
+                func_800302E4(npcInfoArray[npcIndex].entityIndex, 0);
         }
     
         npcInfoArray[npcIndex].unk_21 = 0;
@@ -321,15 +321,15 @@ u8 func_80075374(u8 npcIndex, int arg1) {
 
 void func_800758B8(void) {
 
-    u8 spriteIndex;
+    u8 npcIndex;
     u8 i;
 
     setNPCSpawningLocations();
     
-    spriteIndex = 0;
+    npcIndex = 0;
     
     for (i = 0; i < TOTAL_NPCS; i++) {
-        spriteIndex = func_80075374(i, spriteIndex);
+        npcIndex = func_80075374(i, npcIndex);
     }
     
     // handle all npc animations
@@ -346,9 +346,9 @@ void updateNPCCoordinates(void) {
     for (i = 0; i < TOTAL_NPCS; i++) {
         if (npcInfoArray[i].flags & 1) {
             if (npcInfoArray[i].levelIndex == gBaseMapIndex) {
-                npcInfoArray[i].currentCoordinates.x = entities[npcInfoArray[i].spriteIndex].coordinates.x;
-                npcInfoArray[i].currentCoordinates.y = entities[npcInfoArray[i].spriteIndex].coordinates.y;
-                npcInfoArray[i].currentCoordinates.z = entities[npcInfoArray[i].spriteIndex].coordinates.z; 
+                npcInfoArray[i].currentCoordinates.x = entities[npcInfoArray[i].entityIndex].coordinates.x;
+                npcInfoArray[i].currentCoordinates.y = entities[npcInfoArray[i].entityIndex].coordinates.y;
+                npcInfoArray[i].currentCoordinates.z = entities[npcInfoArray[i].entityIndex].coordinates.z; 
             }
             
         }
@@ -380,7 +380,7 @@ inline void setStartMovingDefault(u8 npcIndex) {
     npcInfoArray[npcIndex].unk_21 = 10;
     npcInfoArray[npcIndex].unk_22 = 0;
 
-    setEntityAnimationWithDirectionChange(npcInfoArray[npcIndex].spriteIndex, npcInfoArray[npcIndex].unk_24);
+    setEntityAnimationWithDirectionChange(npcInfoArray[npcIndex].entityIndex, npcInfoArray[npcIndex].unk_24);
 
     npcInfoArray[npcIndex].flags |= 2;
     
@@ -398,7 +398,7 @@ void func_80075EBC(u8 index) {
         npcInfoArray[index].unk_20 = 0;
         npcInfoArray[index].unk_22 = 0;
 
-        setEntityAnimationWithDirectionChange(npcInfoArray[index].spriteIndex, npcInfoArray[index].unk_24);
+        setEntityAnimationWithDirectionChange(npcInfoArray[index].entityIndex, npcInfoArray[index].unk_24);
 
         temp = getRandomNumberInRange(0, 60);
 
@@ -423,7 +423,7 @@ void func_80075EBC(u8 index) {
         npcInfoArray[index].unk_20 = 1;
         npcInfoArray[index].unk_22 = 0;
 
-        setEntityAnimationWithDirectionChange(npcInfoArray[index].spriteIndex, npcInfoArray[index].unk_25);
+        setEntityAnimationWithDirectionChange(npcInfoArray[index].entityIndex, npcInfoArray[index].unk_25);
         
         if (getRandomNumberInRange(0, 19) < 8) {
             npcInfoArray[index].unk_21 = 1;
@@ -446,7 +446,7 @@ inline void func_80076080(u8 index, u8 arg1) {
     npcInfoArray[index].unk_21 = 10;
     npcInfoArray[index].unk_22 = 0;
 
-    setEntityAnimationWithDirectionChange(npcInfoArray[index].spriteIndex, arg1);
+    setEntityAnimationWithDirectionChange(npcInfoArray[index].entityIndex, arg1);
 
     npcInfoArray[index].flags |= 2;
     
@@ -463,7 +463,7 @@ inline void func_80076108(u8 index, u8 arg1, u8 arg2) {
         npcInfoArray[index].unk_20 = 0;
         npcInfoArray[index].unk_22 = 0;
 
-        setEntityAnimationWithDirectionChange(npcInfoArray[index].spriteIndex, arg1);
+        setEntityAnimationWithDirectionChange(npcInfoArray[index].entityIndex, arg1);
 
         temp = getRandomNumberInRange(0, 60);
 
@@ -487,7 +487,7 @@ inline void func_80076108(u8 index, u8 arg1, u8 arg2) {
         npcInfoArray[index].unk_20 = 1;
         npcInfoArray[index].unk_22 = 0;
         
-        setEntityAnimationWithDirectionChange(npcInfoArray[index].spriteIndex, arg2);
+        setEntityAnimationWithDirectionChange(npcInfoArray[index].entityIndex, arg2);
         
         if (getRandomNumberInRange(0, 19) < 8) {
             npcInfoArray[index].unk_21 = 1;
@@ -1088,7 +1088,7 @@ void func_80083458(void) {
 
     if (npcInfoArray[DOUG].flags & 4) {
         
-        if (checkEntityAnimationStateChanged(npcInfoArray[DOUG].spriteIndex) && !npcInfoArray[DOUG].unk_22) {
+        if (checkEntityAnimationStateChanged(npcInfoArray[DOUG].entityIndex) && !npcInfoArray[DOUG].unk_22) {
             updateAnimation(DOUG);
         }
 
@@ -1108,7 +1108,7 @@ void func_80083550(void) {
 
     if (npcInfoArray[GOTZ].flags & 4) {
         
-        if (checkEntityAnimationStateChanged(npcInfoArray[GOTZ].spriteIndex) && !npcInfoArray[GOTZ].unk_22) {
+        if (checkEntityAnimationStateChanged(npcInfoArray[GOTZ].entityIndex) && !npcInfoArray[GOTZ].unk_22) {
 
             switch (npcInfoArray[GOTZ].movingFlag) {
 
@@ -1128,7 +1128,7 @@ void func_80083550(void) {
                         npcInfoArray[GOTZ].unk_20 = 0;
                         npcInfoArray[GOTZ].unk_22 = 0;
 
-                        setEntityAnimationWithDirectionChange(npcInfoArray[GOTZ].spriteIndex, 0);
+                        setEntityAnimationWithDirectionChange(npcInfoArray[GOTZ].entityIndex, 0);
 
                         tempDirection = getRandomNumberInRange(0, 60);
 
@@ -1144,7 +1144,7 @@ void func_80083550(void) {
                         npcInfoArray[GOTZ].unk_20 = 1;
                         npcInfoArray[GOTZ].unk_22 = 0;
 
-                        setEntityAnimationWithDirectionChange(npcInfoArray[GOTZ].spriteIndex, 8);
+                        setEntityAnimationWithDirectionChange(npcInfoArray[GOTZ].entityIndex, 8);
 
                         if (getRandomNumberInRange(0, 19) < 8) {
                             npcInfoArray[GOTZ].unk_21 = 1;
@@ -1179,7 +1179,7 @@ void func_8008374C(void) {
 
     if (npcInfoArray[SASHA].flags & 4) {
         
-        if (checkEntityAnimationStateChanged(npcInfoArray[SASHA].spriteIndex) && !npcInfoArray[SASHA].unk_22) {
+        if (checkEntityAnimationStateChanged(npcInfoArray[SASHA].entityIndex) && !npcInfoArray[SASHA].unk_22) {
 
             switch (npcInfoArray[SASHA].movingFlag) {
 
@@ -1199,7 +1199,7 @@ void func_8008374C(void) {
                         npcInfoArray[SASHA].unk_20 = 0;
                         npcInfoArray[SASHA].unk_22 = 0;
 
-                        setEntityAnimationWithDirectionChange(npcInfoArray[SASHA].spriteIndex, 0);
+                        setEntityAnimationWithDirectionChange(npcInfoArray[SASHA].entityIndex, 0);
                         tempDirection = getRandomNumberInRange(0, 60);
 
                         if (tempDirection < SOUTH) {
@@ -1214,7 +1214,7 @@ void func_8008374C(void) {
                         npcInfoArray[SASHA].unk_20 = 1;
                         npcInfoArray[SASHA].unk_22 = 0;
 
-                        setEntityAnimationWithDirectionChange(npcInfoArray[SASHA].spriteIndex, 8);
+                        setEntityAnimationWithDirectionChange(npcInfoArray[SASHA].entityIndex, 8);
 
                         if (getRandomNumberInRange(0, 19) < 8) {
                             npcInfoArray[SASHA].unk_21 = 1;
@@ -1245,7 +1245,7 @@ void func_80083948(void) {
 
     if (npcInfoArray[POTION_SHOP_DEALER].flags & 4) {
         
-        if (checkEntityAnimationStateChanged(npcInfoArray[POTION_SHOP_DEALER].spriteIndex) && !npcInfoArray[POTION_SHOP_DEALER].unk_22) {
+        if (checkEntityAnimationStateChanged(npcInfoArray[POTION_SHOP_DEALER].entityIndex) && !npcInfoArray[POTION_SHOP_DEALER].unk_22) {
             updateAnimation(POTION_SHOP_DEALER);
         }
 
@@ -1267,7 +1267,7 @@ void func_80083A40(void) {
 
     if (npcInfoArray[KENT].flags & 4) {
         
-        if (checkEntityAnimationStateChanged(npcInfoArray[KENT].spriteIndex) && !npcInfoArray[KENT].unk_22) {
+        if (checkEntityAnimationStateChanged(npcInfoArray[KENT].entityIndex) && !npcInfoArray[KENT].unk_22) {
 
             switch (npcInfoArray[KENT].movingFlag) {
 
@@ -1286,7 +1286,7 @@ void func_80083A40(void) {
                         
                         npcInfoArray[KENT].unk_20 = 0;
                         npcInfoArray[KENT].unk_22 = 0;
-                        setEntityAnimationWithDirectionChange(npcInfoArray[KENT].spriteIndex, 0);
+                        setEntityAnimationWithDirectionChange(npcInfoArray[KENT].entityIndex, 0);
                         tempDirection = getRandomNumberInRange(0, 60);
 
                         if (tempDirection < SOUTH) {
@@ -1301,7 +1301,7 @@ void func_80083A40(void) {
                         npcInfoArray[KENT].unk_20 = 2;
                         npcInfoArray[KENT].unk_22 = 0;
 
-                        setEntityAnimationWithDirectionChange(npcInfoArray[KENT].spriteIndex, 0x10);
+                        setEntityAnimationWithDirectionChange(npcInfoArray[KENT].entityIndex, 0x10);
 
                         if (getRandomNumberInRange(0, 19) < 8) {
                             npcInfoArray[KENT].unk_21 = 1;
@@ -1334,7 +1334,7 @@ void func_80083C3C(void) {
 
     if (npcInfoArray[STU].flags & 4) {
         
-        if (checkEntityAnimationStateChanged(npcInfoArray[STU].spriteIndex) && !npcInfoArray[STU].unk_22) {
+        if (checkEntityAnimationStateChanged(npcInfoArray[STU].entityIndex) && !npcInfoArray[STU].unk_22) {
             updateAnimation(STU);
         }
 
@@ -1353,7 +1353,7 @@ void func_80083D34(void) {
 
     if (npcInfoArray[MIDWIFE].flags & 4) {
         
-        if (checkEntityAnimationStateChanged(npcInfoArray[MIDWIFE].spriteIndex) && !npcInfoArray[MIDWIFE].unk_22) {
+        if (checkEntityAnimationStateChanged(npcInfoArray[MIDWIFE].entityIndex) && !npcInfoArray[MIDWIFE].unk_22) {
             updateAnimation(MIDWIFE);
         }
 
@@ -1373,7 +1373,7 @@ void func_80083E2C(void) {
 
     if (npcInfoArray[MAY].flags & 4) {
         
-        if (checkEntityAnimationStateChanged(npcInfoArray[MAY].spriteIndex) && !npcInfoArray[MAY].unk_22) {
+        if (checkEntityAnimationStateChanged(npcInfoArray[MAY].entityIndex) && !npcInfoArray[MAY].unk_22) {
             updateAnimation(MAY);
         }
 
@@ -1393,7 +1393,7 @@ void func_80083F24(void) {
 
     if (npcInfoArray[RICK].flags & 4) {
         
-        if (checkEntityAnimationStateChanged(npcInfoArray[RICK].spriteIndex) && !npcInfoArray[RICK].unk_22) {
+        if (checkEntityAnimationStateChanged(npcInfoArray[RICK].entityIndex) && !npcInfoArray[RICK].unk_22) {
             updateAnimation(RICK);
         }
 
@@ -1413,7 +1413,7 @@ void func_8008401C(void) {
 
     if (npcInfoArray[PASTOR].flags & 4) {
         
-        if (checkEntityAnimationStateChanged(npcInfoArray[PASTOR].spriteIndex) && !npcInfoArray[PASTOR].unk_22) {
+        if (checkEntityAnimationStateChanged(npcInfoArray[PASTOR].entityIndex) && !npcInfoArray[PASTOR].unk_22) {
             updateAnimation(PASTOR);
         }
 
@@ -1433,7 +1433,7 @@ void func_80084114(void) {
 
     if (npcInfoArray[SHIPPER].flags & 4) {
         
-        if (checkEntityAnimationStateChanged(npcInfoArray[SHIPPER].spriteIndex) && !npcInfoArray[SHIPPER].unk_22) {
+        if (checkEntityAnimationStateChanged(npcInfoArray[SHIPPER].entityIndex) && !npcInfoArray[SHIPPER].unk_22) {
             updateAnimation(SHIPPER);
         }
 
@@ -1453,7 +1453,7 @@ void func_8008420C(void) {
 
     if (npcInfoArray[SAIBARA].flags & 4) {
         
-        if (checkEntityAnimationStateChanged(npcInfoArray[SAIBARA].spriteIndex) && !npcInfoArray[SAIBARA].unk_22) {
+        if (checkEntityAnimationStateChanged(npcInfoArray[SAIBARA].entityIndex) && !npcInfoArray[SAIBARA].unk_22) {
             updateAnimation(SAIBARA);
         }
 
@@ -1472,7 +1472,7 @@ void func_80084304(void) {
 
     if (npcInfoArray[DUKE].flags & 4) {
         
-        if (checkEntityAnimationStateChanged(npcInfoArray[DUKE].spriteIndex) && !npcInfoArray[DUKE].unk_22) {
+        if (checkEntityAnimationStateChanged(npcInfoArray[DUKE].entityIndex) && !npcInfoArray[DUKE].unk_22) {
             updateAnimation(DUKE);
         }
 
@@ -1490,7 +1490,7 @@ void func_800843FC(void) {
 
     if (npcInfoArray[GREG].flags & 4) {
         
-        if (checkEntityAnimationStateChanged(npcInfoArray[GREG].spriteIndex) && !npcInfoArray[GREG].unk_22) {
+        if (checkEntityAnimationStateChanged(npcInfoArray[GREG].entityIndex) && !npcInfoArray[GREG].unk_22) {
             updateAnimation(GREG);
         }
 
@@ -1522,7 +1522,7 @@ void func_80084E2C(void) {
 
     if (npcInfoArray[SYDNEY].flags & 4) {
         
-        if (checkEntityAnimationStateChanged(npcInfoArray[SYDNEY].spriteIndex) && !npcInfoArray[SYDNEY].unk_22) {
+        if (checkEntityAnimationStateChanged(npcInfoArray[SYDNEY].entityIndex) && !npcInfoArray[SYDNEY].unk_22) {
             updateAnimation(SYDNEY);
         }
 
@@ -1542,7 +1542,7 @@ void func_80084F24(void) {
 
     if (npcInfoArray[BARLEY].flags & 4) {
         
-        if (checkEntityAnimationStateChanged(npcInfoArray[BARLEY].spriteIndex) && !npcInfoArray[BARLEY].unk_22) {
+        if (checkEntityAnimationStateChanged(npcInfoArray[BARLEY].entityIndex) && !npcInfoArray[BARLEY].unk_22) {
             updateAnimation(BARLEY);
         }
 
@@ -1562,7 +1562,7 @@ void func_8008501C(void) {
 
     if (npcInfoArray[GOURMET_JUDGE].flags & 4) {
         
-        if (checkEntityAnimationStateChanged(npcInfoArray[GOURMET_JUDGE].spriteIndex) && !npcInfoArray[GOURMET_JUDGE].unk_22) {
+        if (checkEntityAnimationStateChanged(npcInfoArray[GOURMET_JUDGE].entityIndex) && !npcInfoArray[GOURMET_JUDGE].unk_22) {
             updateAnimation(GOURMET_JUDGE);
         }
 
@@ -1582,7 +1582,7 @@ void func_80085114(void) {
 
     if (npcInfoArray[PHOTOGRAPHER].flags & 4) {
         
-        if (checkEntityAnimationStateChanged(npcInfoArray[PHOTOGRAPHER].spriteIndex) && !npcInfoArray[PHOTOGRAPHER].unk_22) {
+        if (checkEntityAnimationStateChanged(npcInfoArray[PHOTOGRAPHER].entityIndex) && !npcInfoArray[PHOTOGRAPHER].unk_22) {
             updateAnimation(PHOTOGRAPHER);
         }
 
@@ -1602,7 +1602,7 @@ void func_8008520C(void) {
 
     if (npcInfoArray[0x28].flags & 4) {
         
-        if (checkEntityAnimationStateChanged(npcInfoArray[0x28].spriteIndex) && !npcInfoArray[0x28].unk_22) {
+        if (checkEntityAnimationStateChanged(npcInfoArray[0x28].entityIndex) && !npcInfoArray[0x28].unk_22) {
             updateAnimation(0x28);
         }
 
@@ -1657,7 +1657,7 @@ u8 func_800858D4(void) {
         
         if (npcInfoArray[i].flags & 4) {
             
-            if (!entities[npcInfoArray[i].spriteIndex].unk_58 && entities[npcInfoArray[i].spriteIndex].unk_5A == 0x8000) {
+            if (!entities[npcInfoArray[i].entityIndex].unk_58 && entities[npcInfoArray[i].entityIndex].unk_5A == 0x8000) {
 
                 if (i == BABY && gBabyAge < 120) {
                                  
@@ -1678,7 +1678,7 @@ u8 func_800858D4(void) {
                                 setDailyEventBit(HELD_BABY);
                             }
                             
-                            deactivateEntity(npcInfoArray[i].spriteIndex);
+                            deactivateEntity(npcInfoArray[i].entityIndex);
                          
                             result = 2;
                             npcInfoArray[i].flags &= ~4;
@@ -1739,7 +1739,7 @@ bool func_80085C94(void) {
     while (i < TOTAL_NPCS && !found) {
 
         if (npcInfoArray[i].flags & 4) {
-            if (!entities[npcInfoArray[i].spriteIndex].unk_58) {
+            if (!entities[npcInfoArray[i].entityIndex].unk_58) {
                 npcInfoArray[i].movingFlag = 0x20;
                 npcTalkingTo = i;
                 found = TRUE;

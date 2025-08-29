@@ -663,6 +663,7 @@ inline int adjustValue(int initial, int value, int max) {
     } 
       
     return adjusted;
+    
 }
 
 
@@ -968,14 +969,15 @@ void func_8005C07C(s16 arg0, u16 arg1) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/game/game/game", func_8005C940);
 
-inline void func_8005C940(u16 arg0, u16 arg1) {
+// arg0 = unused
+inline void func_8005C940(u16 arg0, u16 callbackIndex) {
     
-    func_8003BF7C(0, 0, 0, 0, 0, 8);
+    func_8003BF7C(MAIN_MAP_INDEX, 0, 0, 0, 0, 8);
     updateEntitiesColor(0, 0, 0, 0, 8);
        
     setSongWithDefaultSpeed(gCurrentSongIndex);
     
-    gameLoopContext.callbackIndex = arg1;
+    gameLoopContext.callbackIndex = callbackIndex;
 
     resetGlobalLighting();
     
@@ -1260,7 +1262,6 @@ void func_8005D0BC(void) {
 
         //
 
-
     }
     
     // farm animal
@@ -1275,7 +1276,6 @@ void func_8005D0BC(void) {
             
         set = TRUE;
         
-
         // FIXME: should be inline adjustValue call
 
         checkOverflow = gHappiness;
@@ -2657,73 +2657,67 @@ void handleDailyShipment(void) {
 
 }
  
-//INCLUDE_ASM("asm/nonmatchings/game/game/game/game", func_80060EC8);
+//INCLUDE_ASM("asm/nonmatchings/game/game/game/game", calculateAnimalDirectionToPlayer);
 
-// update animal direction based on player position
-u8 func_80060EC8(f32 animalX, f32 animalZ, f32 playerX, f32 playerZ) {
+u8 calculateAnimalDirectionToPlayer(f32 animalX, f32 animalZ, f32 playerX, f32 playerZ) {
    
     u8 direction;
     
     s32 deltaX;
     s32 deltaZ;
-    u32 temp;
 
     deltaX = getAbsoluteValue((s32)(s16)(playerX - animalX));
     deltaZ = getAbsoluteValue((s32)(s16)(playerZ - animalZ));
     
     if (animalX <= playerX) {
         
-        temp = deltaX << 0x10;
-        
         if (animalZ <= playerZ) {
             
             if ((s16)deltaX <= (s16)deltaZ) {
-                direction = (((s32) ((s16) deltaZ + ((u32) (deltaZ * 65536) >> 0x1F)) >> 1) < (s16) deltaX) ? NORTHWEST : NORTH;
+                direction = ((s16)deltaZ / 2) < (s16)deltaX ? NORTHWEST : NORTH;
             } else {
-                direction = (((s32) ((s16) deltaX + ((temp) >> 0x1F)) >> 1) < (s16) deltaZ) ? NORTHWEST : WEST;
+                direction = ((s16)deltaX / 2) < (s16)deltaZ ? NORTHWEST : WEST;
             }
             
         } else if ((s16) deltaX <= (s16) deltaZ) {
 
-            direction = ((s16) deltaX) > (((s32) ((s16) deltaZ + ((u32) (deltaZ * 65536) >> 0x1F)) >> 1)) ? SOUTHWEST : SOUTH;
+            direction = (s16)deltaX > ((s16)deltaZ / 2) ? SOUTHWEST : SOUTH;
 
         } else {
-            do {
-                if (((s32) ((s16) deltaX + ((temp) >> 0x1F)) >> 1) >= (s16) deltaZ) {
-                    direction = WEST;
-                } else {
-                    direction = SOUTHWEST;
-                }
-            } while (0);
+
+            if ((s16)deltaX / 2 >= (s16) deltaZ) {
+                direction = WEST;
+            } else {
+                direction = SOUTHWEST;
+            }
+
         }
         
     } else if (animalZ <= playerZ) {
         
         if ((s16)deltaX <= (s16)deltaZ) {
 
-            direction = ((s32) ((s16) deltaZ + ((u32) (deltaZ * 65536) >> 0x1F)) >> 1) < (s16) deltaX;
+            direction = ((s16)deltaZ / 2) < (s16) deltaX;
             
         } else {
 
-            if (((s32) ((s16) deltaX + ((u32) (deltaX * 65536) >> 0x1F)) >> 1) >= (s16) deltaZ) {
+            if (((s16)deltaX / 2) >= (s16)deltaZ) {
                 direction = EAST;
             } else {
                 direction = NORTHEAST;
             }
         }
         
-    } else if ((s16) deltaX <= (s16) deltaZ) {
-
+    } else if ((s16)deltaX <= (s16)deltaZ) {
         
-        if (((s32) ((s16) deltaZ + ((u32) (deltaZ * 65536) >> 0x1F)) >> 1) >= (s16) deltaX) {
+        if (((s16)deltaZ / 2) >= (s16) deltaX) {
             direction = SOUTH;
         } else {
             direction = SOUTHEAST;
         }
         
     } else {
-        direction = ((s16)deltaZ > ((s32)((s16) deltaX + ((u32) (deltaX * 65536) >> 0x1F))) >> 1) ? SOUTHEAST : EAST;
-
+        direction = ((s16)deltaZ > ((s16)deltaX / 2)) ? SOUTHEAST : EAST;
     }
     
     return direction;

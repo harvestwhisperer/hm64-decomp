@@ -14,7 +14,6 @@
 void func_800471B0(u16);                               
 void func_80047640(u16);                               
 void func_80047E34(u16);        
-
 void func_80047E94(u16);
 void func_80047F20(u16);
 void func_80047F90(u16);
@@ -750,6 +749,7 @@ void func_8004838C(u16 index) {
     } else {
         cutsceneExecutors[index].bytecodePtr += 0xA;
     }
+
 }
 
 //INCLUDE_ASM("asm/nonmatchings/system/cutscene", func_80048430);
@@ -768,6 +768,7 @@ void func_80048430(u16 index) {
     } else {
         cutsceneExecutors[index].bytecodePtr += 0xA;
     }
+
 }
 
 //INCLUDE_ASM("asm/nonmatchings/system/cutscene", func_800484D4);
@@ -848,6 +849,7 @@ void func_800485EC(u16 index) {
             cutsceneExecutors[assetIndex].waitFrames = 0;
             cutsceneExecutors[assetIndex].bytecodePtr = ptr2;
         }
+
     }
     
 }
@@ -958,7 +960,6 @@ void func_800486F4(u16 index) {
         romAssetIndexEnd, romSpritesheetIndexStart, romSpritesheetIndexEnd, texture1Vaddr, texture2Vaddr, 
         paletteVaddr, animationVaddr, spriteToPaletteVaddr, spritesheetIndexVaddr, assetType, 0);
    
-
     setBilinearFiltering(cutsceneExecutors[index].assetIndex, TRUE);
     
 }
@@ -1482,7 +1483,6 @@ void func_8004A38C(u16 index) {
 
 }
 
-
 INCLUDE_ASM("asm/nonmatchings/system/cutscene", func_8004A400);
 
 INCLUDE_ASM("asm/nonmatchings/system/cutscene", func_8004A47C);
@@ -1770,6 +1770,7 @@ void func_8004C454(u16 index) {
         }
 
     }
+
 }
 
 //INCLUDE_ASM("asm/nonmatchings/system/cutscene", func_8004C4E0);
@@ -1791,6 +1792,7 @@ void func_8004C4E0(u16 index) {
         }
 
     }
+    
 }
 
 //INCLUDE_ASM("asm/nonmatchings/system/cutscene", func_8004C56C);

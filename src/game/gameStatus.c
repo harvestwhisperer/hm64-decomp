@@ -42,6 +42,7 @@ static inline int adjustValue2(int initial, int value, int max) {
     } 
       
     return adjusted;
+    
 }
 
 // FIXME: should be adjustValue() call

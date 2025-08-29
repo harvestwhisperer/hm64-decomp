@@ -1,14 +1,14 @@
 #include "common.h"
 
+#include "game/mapObjects.h"
+
 #include "game/game.h"
 #include "game/level.h"
-#include "game/mapObjects.h"
 #include "game/player.h"
 
 #include "system/map.h"
 #include "system/mathUtils.h"
 
-// FIXME: this should be one symbol
 // data
 extern u8 D_80118700[218][5];
 extern u8 D_80118701[218][5];

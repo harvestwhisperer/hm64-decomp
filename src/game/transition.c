@@ -53,8 +53,7 @@ void mainGameLoopCallback(void) {
         // handle button input and player animation
         func_8006623C();
         setNpcAnimations();
-        // animal updater
-        func_80087CD4();
+        updateAnimals();
         // player animation
         func_8006A2E8();
 
@@ -128,7 +127,7 @@ void func_80056030(u8 arg0) {
 
     func_8005CDCC();
     func_80065F5C();
-    func_800879C8();
+    updateAnimalCoordinates();
     updateNPCCoordinates();
     deactivateSprites();
     deactivateGlobalSprites();
@@ -594,10 +593,11 @@ void startNewDay(void) {
         toggleLifeEventBit(0x52);
     }
     
+    // Mrs. Mana's cow
     if (checkLifeEventBit(0x93)) {
         toggleLifeEventBit(0x93);
         setLifeEventBit(0x94);
-        func_8008841C();
+        setMrsManaCowsNames();
     }
     
     removeKeyItem(HORSE_RACE_TICKET);
@@ -649,4 +649,5 @@ void startNewDay(void) {
     }
     
     func_800598E0();
+    
 }
