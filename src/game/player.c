@@ -641,7 +641,7 @@ INCLUDE_ASM("asm/nonmatchings/game/player", func_800664C8);
 
 void func_80066F98(void) {
 
-    deactivateEntity(horseInfo.spriteIndex);
+    deactivateEntity(horseInfo.entityIndex);
 
     horseInfo.flags &= ~4;
     horseInfo.flags |= 8;
@@ -659,17 +659,17 @@ void func_80067034(void) {
 
     Vec3f vec1;
     Vec3f vec2;
-    u8 i; // not initialied; likely a bug
+    u8 direction; // not initialied; likely a bug
     bool set = FALSE;
     int temp;
     
-    while (i < 8 && !set) {
+    while (direction < 8 && !set) {
     
-        if (func_80031830(0, 8, (i + getCurrentMapRotation(gMainMapIndex)) % 8) == 0) {
+        if (func_80031830(PLAYER, 8, (direction + getCurrentMapRotation(gMainMapIndex)) % 8) == 0) {
 
-            if (func_80031830(0, 0x20, (i + getCurrentMapRotation(gMainMapIndex)) % 8) == 0) {
+            if (func_80031830(PLAYER, 0x20, (direction + getCurrentMapRotation(gMainMapIndex)) % 8) == 0) {
 
-                func_80031904(&vec1, 0, 0x20, (i + getCurrentMapRotation(MAIN_MAP_INDEX)) % 8);
+                vec1 = func_80031904(PLAYER, 0x20, (direction + getCurrentMapRotation(MAIN_MAP_INDEX)) % 8);
                 
                 temp = func_800DB1BC(vec1.x, vec1.z);
                 
@@ -677,16 +677,18 @@ void func_80067034(void) {
                     set = TRUE;
                 }
             }
+
         }
 
         if (!set) {
-            i++;
+            direction++;
         }
+
     }
 
     if (set) {
 
-            func_80031904(&vec2, 0, 0, i);
+            vec2 = func_80031904(PLAYER, 0, direction);
             
             horseInfo.coordinates = vec2;
             horseInfo.direction = (entities[PLAYER].direction + getCurrentMapRotation(MAIN_MAP_INDEX)) % 8;
@@ -700,16 +702,19 @@ void func_80067034(void) {
             // initialize animal locations
             func_8008B9AC();
            
-            entities[PLAYER].direction = i;
+            entities[PLAYER].direction = direction;
 
+            // FIXME: repeated gPlayer.actionProgress and gPlayer.animationState assignments indicates 2 macros
             gPlayer.currentAction = 0xE;
             gPlayer.actionProgress = 0;
             gPlayer.animationState = 0;
             gPlayer.nextAction = 0x10;
+
             gPlayer.animationState = 0;
             gPlayer.actionProgress = 0;
 
         }
+
 }
 
 INCLUDE_ASM("asm/nonmatchings/game/player", func_80067290);
@@ -990,7 +995,7 @@ void func_80068DFC(void) {
 
             setEntityDirection(PLAYER, convertSpriteToMapDirection(gPlayer.direction, MAIN_MAP_INDEX));
 
-            getMovementVectorFromDirection(&vec, 1.0f, gPlayer.direction, 0.0f);
+            vec = getMovementVectorFromDirection(1.0f, gPlayer.direction, 0.0f);
 
             gPlayer.movementVector = vec;
 
@@ -1048,7 +1053,7 @@ void func_80069830(void) {
             gPlayer.direction = SOUTH;
             gPlayer.actionTimer = 0x12;
             gPlayer.animationState++;
-            getMovementVectorFromDirection(&vec, 4.0f, 4, 0.0f);
+            vec = getMovementVectorFromDirection(4.0f, 4, 0.0f);
             gPlayer.movementVector = vec;
             setEntityDirection(PLAYER, convertSpriteToMapDirection(gPlayer.direction, MAIN_MAP_INDEX));
             gPlayer.nextAction = 2;
@@ -1100,7 +1105,7 @@ void func_80069830(void) {
                 gPlayer.direction = NORTH;
                 gPlayer.actionTimer = 0x12;
                 
-                getMovementVectorFromDirection(&vec2, 4.0f, 0, 0.0f);
+                vec = getMovementVectorFromDirection(4.0f, 0, 0.0f);
                 
                 gPlayer.movementVector = vec2;
                 
@@ -1683,7 +1688,7 @@ void func_8006AC4C(void) {
 
             default:
                 if (gPlayer.animationState >= 10) {
-                    func_8005C940(8, 0xD);    
+                    func_8005C940(8, END_OF_DAY_1);    
                 } else {
                     gPlayer.animationState++;
                 }

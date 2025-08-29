@@ -6,6 +6,7 @@
 #include "system/graphic.h"
 #include "system/mathUtils.h"
 #include "system/mapContext.h"
+#include "system/message.h"
 
 #include "game/game.h"
 #include "game/gameAudio.h"
@@ -23,11 +24,11 @@ Horse horseInfo;
 
 // TODO: label
 // watched cow stall #3
-u8 D_8016F898;
+u8 mrsManaCow3Index;
 // watched cow stall #1
-u8 D_8016FAF8;
+u8 mrsManaCow1Index;
 // watched cow stall #2
-u8 D_801C3F46;
+u8 mrsManaCow2Index;
 
 extern u16 D_8016FDF0;
 extern u8 D_8016FFE8;
@@ -36,81 +37,229 @@ extern u8 D_80170464;
 
 extern u8 D_80189054;
 extern u8 D_8018908C;
+extern u32 D_801890E0;
 // newest animal index (generic)?
 extern u8 D_801FC155;
- 
+
 // data
-// chicken starting coordianates
-extern Vec3f D_801149C0[];
-// farm animal starting coordinates
+extern Vec3f chickenStartingCoordinates[];
 extern Vec3f farmAnimalStartingCoordinates[];
 extern Vec3f D_80114AB0;
 extern u16 D_80114ABC[];
-extern u16 D_80114AC4[];
+extern u16 D_80114AC0[2];
 extern u16 D_80114ACC[];
+extern u16 D_80114AC4[];
+extern u16 D_80114AC8[2];
+extern u16 D_80114ACC[];
+extern u16 D_80114AD0[2];
 extern u16 D_80114AD4[];
+extern u16 D_80114AD8[2];
 extern u16 D_80114ADC[];
+extern u16 D_80114AE0[2];
 extern u16 D_80114AE2[];
+extern u16 D_80114AE4[];
+extern u16 D_80114AE6[2];
 extern u16 D_80114AE8[];
+extern u16 D_80114AEA[];
+extern u16 D_80114AEC[2];
+
 
 // forward declarations
 void func_800861A4(u8, u8, u8, u8, u8);               
 void func_80086458(u8, s8); 
+u8 initializeNewFarmAnimal(u8 arg0, u8 arg1);
 void setFarmAnimalLocation(u8); 
 void func_8008B1B8();                                  
 void func_8008B2E8(u8);                               
 void func_8008B55C(u8);                               
 void func_8008B9AC();                                  
 void func_8008BAF0(u8, u8); 
-void func_8008C208();                                  
+void updateDog();                                  
 void func_8008CF94(u8);                               
 void func_8008DAA0(u8);                               
-void func_80093B80();                                  
-void func_80093CE0();                                 
-void func_8009476C(u8);     
-void func_8009427C();       
+void updateHorse();                                  
+void updateHorseGrown();                                 
+void updateHorseNotGrown();       
 void func_8008A5F0();
 void func_8008A650(u8);                               
 void func_8008A9E8(u8);                               
 void func_8008B150();       
+void func_8009476C(u8);     
+void func_80094A5C(u8);                               
+void func_800958EC(u8);                               
+void func_80096264(u8);                               
+void func_800967E0(u8);                               
+void func_80096978(u8);                               
+void func_80096DFC(u8);                               
+void func_800973F8(u8);                               
+void func_80097804(u8);                               
+void func_80097CB0(u8);                               
+void func_80098188(u8);                               
+void func_80098740(u8);                               
+void func_80098B3C(u8);                               
+void func_80098F24(u8);                               
+void func_800991C0(u8);                               
+void func_80099424(u8);                               
+void func_80099548(u8);                               
+void func_800995F8(u8);                               
+void func_80099804(u8);                               
+void func_800999B0(u8);                               
+void func_80099B5C(u8);                               
+void func_80099C94(u8);                         
 void func_8009BCC4(u8, u8, u8);
 
-INCLUDE_ASM("asm/nonmatchings/game/animals", func_80085F70);
 
-INCLUDE_ASM("asm/nonmatchings/game/animals", func_800861A4);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", func_80085F70);
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008634C);
-
-void func_8008634C(s8 arg0) {
+void func_80085F70(void) {
 
     u8 i;
 
-    adjustDogAffection(arg0);
-    adjustHorseAffection(arg0);
+    if (dogInfo.flags & 4) {
+        deactivateEntity(dogInfo.entityIndex);
+    }
+
+    dogInfo.speed = 0;
+    dogInfo.unk_1A = 0;
+    dogInfo.flags &= ~4;
+
+    for (i = 0; i < MAX_CHICKENS; i++) {
+
+        if (gChickens[i].flags & 4) {
+            deactivateEntity(gChickens[i].entityIndex);
+        }
+
+        gChickens[i].unk_17 = 0;
+        gChickens[i].unk_1A = 0;
+        gChickens[i].flags &= ~4;
+        
+    }
+
+    for (i = 0; i < MAX_FARM_ANIMALS; i++) {
+
+        if (gFarmAnimals[i].flags & 4) {
+            deactivateEntity(gFarmAnimals[i].entityIndex);
+        }
+
+        gFarmAnimals[i].unk_1B = 0;
+        gFarmAnimals[i].unk_1D = 0;
+        gFarmAnimals[i].flags &= ~4;
+        
+    }
+
+    if (horseInfo.flags & 4) {
+        deactivateEntity(horseInfo.entityIndex);
+    }
+
+    horseInfo.speed = 0;
+    horseInfo.unk_1A = 0;
+    horseInfo.flags &= ~4;
+
+    for (i = 0; i < MAX_CHICKEN_EGGS; i++) {
+        
+        if (gChickenEggs[i].flags & 4) {
+            deactivateEntity(gChickenEggs[i].entityIndex);
+        }
+        
+        gChickenEggs[i].flags = 0;
+        gChickenEggs[i].unk_F = 0;
+        gChickenEggs[i].unk_13 = 0;
+        
+    }
+    
+}
+
+//INCLUDE_ASM("asm/nonmatchings/game/animals", func_800861A4);
+
+void func_800861A4(u8 animalType, u8 index, u8 type, u8 condition, u8 arg4) {
+
+    switch (animalType) {       
+        
+        case 0:
+            break;
+        
+        case 1:
+            
+            if (type != 0xFF) {
+                gChickens[index].type = type;
+                gChickens[index].unk_1E = 0;
+            }
+            
+            if (condition != 0xFF) {
+                gChickens[index].condition = condition;
+                gChickens[index].starvedCounter = 0;
+            }
+            
+            if (arg4 != 0xFF) {
+                gChickens[index].unk_17 = arg4;
+            }
+
+            gChickens[index].unk_19 = 0;
+            gChickens[index].unk_1A = 0;
+            gChickens[index].unk_1B = 0;
+        
+            break;
+        
+        case 2:
+            
+            if (type != 0xFF) {
+                gFarmAnimals[index].type = type;
+                gFarmAnimals[index].age = 0;
+            }
+            
+            if (condition != 0xFF) {
+                gFarmAnimals[index].condition = condition;
+                gFarmAnimals[index].conditionCounter = 0;
+            }
+            
+            if (arg4 != 0xFF) {
+                gFarmAnimals[index].unk_1B = arg4;
+            }
+
+            gFarmAnimals[index].unk_14 = 0;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+        
+            break;
+        
+        default:
+                break;
+        
+    }
+    
+}
+
+//INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008634C);
+
+void func_8008634C(s8 amount) {
+
+    u8 i;
+
+    adjustDogAffection(amount);
+    adjustHorseAffection(amount);
 
     for (i = 0; i < 8; i++) {
-        func_80086458(i, arg0);
+        func_80086458(i, amount);
     }
     
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/animals", adjustDogAffection);
 
-void adjustDogAffection(s8 arg0) {
+void adjustDogAffection(s8 amount) {
     if (dogInfo.flags & 1) {
-        dogInfo.affection += adjustValue(dogInfo.affection, arg0, 0xFF);
+        dogInfo.affection += adjustValue(dogInfo.affection, amount, 0xFF);
     }
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/animals", adjustHorseAffection);
 
-void adjustHorseAffection(s8 arg0) {
+inline void adjustHorseAffection(s8 amount) {
     if (horseInfo.flags & 1) {
-        horseInfo.affection += adjustValue(horseInfo.affection, arg0, 0xFF);
+        horseInfo.affection += adjustValue(horseInfo.affection, amount, 0xFF);
     }
 }
 
-// jtbl_80120320
 INCLUDE_ASM("asm/nonmatchings/game/animals", func_80086458);
 
 //INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008662C);
@@ -129,7 +278,7 @@ u16 func_8008662C(u8 animalIndex, u8 arg1, u16 arg2) {
             res = D_80114ABC[arg1];
         }
 
-        // FIXME: something wrong here
+        // possible FIXME
         if ((u8)(u16)(gFarmAnimals[animalIndex].affection + 105) < 70) {
             res = D_80114AC4[arg1];
         }
@@ -206,8 +355,8 @@ void func_8008779C(void) {
     u8 i;
 
     if (dogInfo.flags & 4) {
-        if (entities[dogInfo.spriteIndex].flags & 8) {
-            deactivateEntity(dogInfo.spriteIndex);
+        if (entities[dogInfo.entityIndex].flags & 8) {
+            deactivateEntity(dogInfo.entityIndex);
         }
     }
 
@@ -215,8 +364,8 @@ void func_8008779C(void) {
 
         if (gChickens[i].flags & 4) {
 
-            if (entities[gChickens[i].spriteIndex].flags & 8) {
-                deactivateEntity(gChickens[i].spriteIndex);
+            if (entities[gChickens[i].entityIndex].flags & 8) {
+                deactivateEntity(gChickens[i].entityIndex);
             }
 
         }
@@ -224,37 +373,79 @@ void func_8008779C(void) {
 
     for (i = 0; i < MAX_FARM_ANIMALS; i++) {
         if (gFarmAnimals[i].flags & 4) {
-            if (entities[gFarmAnimals[i].spriteIndex].flags & 8) {
-                deactivateEntity(gFarmAnimals[i].spriteIndex);
+            if (entities[gFarmAnimals[i].entityIndex].flags & 8) {
+                deactivateEntity(gFarmAnimals[i].entityIndex);
             }
         }
     }
 
     if (horseInfo.flags & 4) {
-        if (entities[horseInfo.spriteIndex].flags & 8) {
-            deactivateEntity(horseInfo.spriteIndex);
+        if (entities[horseInfo.entityIndex].flags & 8) {
+            deactivateEntity(horseInfo.entityIndex);
         }
     }
 
-    for (i = 0; i < 7; i++) {
+    for (i = 0; i < MAX_CHICKEN_EGGS; i++) {
         if (gChickenEggs[i].flags & 4) {
-            if (entities[gChickenEggs[i].spriteIndex].flags & 8) {
-                deactivateEntity(gChickenEggs[i].spriteIndex);
+            if (entities[gChickenEggs[i].entityIndex].flags & 8) {
+                deactivateEntity(gChickenEggs[i].entityIndex);
             }
         }
     }
     
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/animals", func_800879C8);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", updateAnimalCoordinates);
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_80087CD4);
+void updateAnimalCoordinates(void) {
 
-void func_80087CD4(void) {
+    u8 i = 0;
+
+    if ((dogInfo.flags) & 4 && (dogInfo.location == gBaseMapIndex)) {
+        dogInfo.coordinates.x = entities[dogInfo.entityIndex].coordinates.x; 
+        dogInfo.coordinates.y = entities[dogInfo.entityIndex].coordinates.y;
+        dogInfo.coordinates.z = entities[dogInfo.entityIndex].coordinates.z;
+    }
+
+    for (i = 0; i < MAX_CHICKENS; i++) {
+
+        if ((gChickens[i].flags & 4) && (gChickens[i].location == gBaseMapIndex)) {
+
+            gChickens[i].coordinates.x = entities[gChickens[i].entityIndex].coordinates.x; 
+            gChickens[i].coordinates.y = entities[gChickens[i].entityIndex].coordinates.y;
+            gChickens[i].coordinates.z = entities[gChickens[i].entityIndex].coordinates.z;
+            
+        }
+        
+    }
+
+    for (i = 0; i < MAX_FARM_ANIMALS; i++) {
+
+        if ((gFarmAnimals[i].flags & 4) && (gFarmAnimals[i].location == gBaseMapIndex)) {
+
+            gFarmAnimals[i].coordinates.x = entities[gFarmAnimals[i].entityIndex].coordinates.x; 
+            gFarmAnimals[i].coordinates.y = entities[gFarmAnimals[i].entityIndex].coordinates.y;
+            gFarmAnimals[i].coordinates.z = entities[gFarmAnimals[i].entityIndex].coordinates.z;
+            
+        }
+        
+    }
+
+    if ((horseInfo.flags) & 4 && (horseInfo.location == gBaseMapIndex)) {
+        horseInfo.coordinates.x = entities[horseInfo.entityIndex].coordinates.x; 
+        horseInfo.coordinates.y = entities[horseInfo.entityIndex].coordinates.y;
+        horseInfo.coordinates.z = entities[horseInfo.entityIndex].coordinates.z;
+    }
+    
+}
+
+//INCLUDE_ASM("asm/nonmatchings/game/animals", updateAnimals);
+
+void updateAnimals(void) {
 
     u8 i;
     
-    func_8008C208();
+    updateDog();
 
     for (i = 0; i < MAX_CHICKENS; i++) {
         func_8008CF94(i);
@@ -264,7 +455,7 @@ void func_80087CD4(void) {
         func_8008DAA0(i);
     }
 
-    func_80093B80();
+    updateHorse();
     
     for (i = 0; i < 7; i++) {
         func_8009476C(i);
@@ -320,7 +511,57 @@ void func_80087DEC(void) {
 
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/animals", func_80087F28);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", func_80087F28);
+
+u8 func_80087F28(u8 arg0, u8 arg1) {
+
+    u32 padding[4];
+    
+    u8 found;
+    u8 i;
+    u8 temp;
+
+    found = 0xFF;
+    temp = arg0 != 0 ? 0 : 6;
+    
+    for (i = 0; i < 6 && found == 0xFF; i++) {
+
+        if (!(gChickens[i + temp].flags & 1)) {
+            found = i + temp;
+        }
+        
+    }
+
+    if (found != 0xFF) {
+
+        if (arg1 == 0xFF) {
+
+            gChickens[found].location = 0x59;
+
+            gChickens[found].coordinates.x = chickenStartingCoordinates[found].x;
+            gChickens[found].coordinates.y = chickenStartingCoordinates[found].y;
+            gChickens[found].coordinates.z = chickenStartingCoordinates[found].z;
+            
+        } else {
+
+            gChickens[found].location = gChickens[arg1].location;
+
+            gChickens[found].coordinates.x = gChickens[arg1].coordinates.x;
+            gChickens[found].coordinates.y = gChickens[arg1].coordinates.y;
+            gChickens[found].coordinates.z = gChickens[arg1].coordinates.z;
+            
+        }
+
+        func_800861A4(1, found, arg0, 0, 0);
+
+        gChickens[found].direction = 2;
+        gChickens[found].flags = 1;
+        
+    }
+
+    return found;
+    
+}
 
 //INCLUDE_ASM("asm/nonmatchings/game/animals", initializeChicken);
 
@@ -412,15 +653,44 @@ u8 initializeNewFarmAnimal(u8 arg0, u8 arg1) {
     
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008841C);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", setMrsManaCowsNames);
+
+void setMrsManaCowsNames(void) {
+
+    mrsManaCow1Index = initializeNewFarmAnimal(1, 0);
+    mrsManaCow2Index = initializeNewFarmAnimal(1, 0);
+    mrsManaCow3Index = initializeNewFarmAnimal(1, 0);
+
+    gFarmAnimals[mrsManaCow1Index].name[0] = char_M;
+    gFarmAnimals[mrsManaCow1Index].name[1] = char_o;
+    gFarmAnimals[mrsManaCow1Index].name[2] = char_m;
+    gFarmAnimals[mrsManaCow1Index].name[3] = char_o;
+    gFarmAnimals[mrsManaCow1Index].name[4] = char_k;
+    gFarmAnimals[mrsManaCow1Index].name[5] = char_o;
+
+    gFarmAnimals[mrsManaCow2Index].name[0] = char_M;
+    gFarmAnimals[mrsManaCow2Index].name[1] = char_o;
+    gFarmAnimals[mrsManaCow2Index].name[2] = char_i;
+    gFarmAnimals[mrsManaCow2Index].name[3] = char_t;
+    gFarmAnimals[mrsManaCow2Index].name[4] = char_i;
+    gFarmAnimals[mrsManaCow2Index].name[5] = 0xFF;
+
+    gFarmAnimals[mrsManaCow3Index].name[0] = char_M;
+    gFarmAnimals[mrsManaCow3Index].name[1] = char_o;
+    gFarmAnimals[mrsManaCow3Index].name[2] = char_t;
+    gFarmAnimals[mrsManaCow3Index].name[3] = char_a;
+    gFarmAnimals[mrsManaCow3Index].name[4] = 0xFF;
+    gFarmAnimals[mrsManaCow3Index].name[5] = 0xFF;
+    
+}
 
 //INCLUDE_ASM("asm/nonmatchings/game/animals", func_800886D0);
 
 // initialize watched cows from Doug
 void func_800886D0(void) {
-    initializeFarmAnimal(D_8016FAF8);
-    initializeFarmAnimal(D_801C3F46);
-    initializeFarmAnimal(D_8016F898);
+    initializeFarmAnimal(mrsManaCow1Index);
+    initializeFarmAnimal(mrsManaCow2Index);
+    initializeFarmAnimal(mrsManaCow3Index);
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/animals", setFarmAnimalLocation);
@@ -435,7 +705,7 @@ void setFarmAnimalLocation(u8 animalIndex) {
         gFarmAnimals[animalIndex].coordinates.x = D_80114AB0.x;
         gFarmAnimals[animalIndex].coordinates.y = D_80114AB0.y;
         gFarmAnimals[animalIndex].coordinates.z = D_80114AB0.z;
-        gFarmAnimals[animalIndex].unk_1C = 4;
+        gFarmAnimals[animalIndex].direction = SOUTH;
 
     } else {
 
@@ -444,9 +714,9 @@ void setFarmAnimalLocation(u8 animalIndex) {
         gFarmAnimals[animalIndex].coordinates.z = farmAnimalStartingCoordinates[animalIndex].z;
         
         if (animalIndex >= 4) {
-            gFarmAnimals[animalIndex].unk_1C = 6;
+            gFarmAnimals[animalIndex].direction = WEST;
         } else {
-            gFarmAnimals[animalIndex].unk_1C = 2;
+            gFarmAnimals[animalIndex].direction = EAST;
         }
     }
 }
@@ -458,7 +728,7 @@ void initializeFarmAnimal(u8 animalIndex) {
     gFarmAnimals[animalIndex].location = 0;
     
     gFarmAnimals[animalIndex].unk_1B = 0;
-    gFarmAnimals[animalIndex].unk_1C = 0;
+    gFarmAnimals[animalIndex].direction = 0;
     gFarmAnimals[animalIndex].unk_14 = 0;
     gFarmAnimals[animalIndex].unk_1D = 0;
     gFarmAnimals[animalIndex].unk_1E = 0;
@@ -489,7 +759,7 @@ void initializeDog(void) {
 
     dogInfo.location = FARM;
     dogInfo.coordinates.y = 0.0f;
-    dogInfo.unk_17 = 0;
+    dogInfo.speed = 0;
     dogInfo.direction = NORTH;
     dogInfo.affection = 0; 
     dogInfo.unk_19 = 0;
@@ -507,7 +777,7 @@ void initializeHorse(void) {
     
     horseInfo.location = FARM;
     horseInfo.coordinates.y = 0.0f;
-    horseInfo.unk_17 = 0;
+    horseInfo.speed = 0;
     horseInfo.direction = NORTH;
     horseInfo.unk_19 = 0;
     horseInfo.unk_1A = 0;
@@ -595,9 +865,9 @@ void func_80088C1C(u8 mapIndex, u8 chickenIndex) {
             
         } else {
 
-            gChickens[chickenIndex].coordinates.x = D_801149C0[chickenIndex].x;
-            gChickens[chickenIndex].coordinates.y = D_801149C0[chickenIndex].y;
-            gChickens[chickenIndex].coordinates.z = D_801149C0[chickenIndex].z;
+            gChickens[chickenIndex].coordinates.x = chickenStartingCoordinates[chickenIndex].x;
+            gChickens[chickenIndex].coordinates.y = chickenStartingCoordinates[chickenIndex].y;
+            gChickens[chickenIndex].coordinates.z = chickenStartingCoordinates[chickenIndex].z;
             
         }
 
@@ -608,39 +878,108 @@ void func_80088C1C(u8 mapIndex, u8 chickenIndex) {
 
 INCLUDE_ASM("asm/nonmatchings/game/animals", func_80088D54);
 
-INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008A4A8);
+#ifdef PERMUTER
+u8 func_8008A4A8(u8 arg0, u8 arg1, f32 arg2, f32 arg3, f32 arg4) {
 
-INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008A5F0);
+    u32 padding[4];
+    
+    u8 i = 0;
+    u8 found = (arg0 != 0) ? 0xFF : 6;
+    u8 temp;
+    
+    if (arg0 == 5) {
+        found = 5;    
+    }
+
+    if (found == 0xFF) {
+        
+        for (i = 0; i < 5 && found == 0xFF; i++) {
+    
+            if (!(D_8016FB08[i].flags & 1)) {
+                found = i;
+            }
+            
+        }
+    }
+
+    temp = found;
+        
+    if (temp != 0xFF) {
+        
+        D_8016FB08[i].unk_15 = arg0;
+        D_8016FB08[i].unk_10 = arg1;
+        D_8016FB08[i].unk_F = 0;
+        D_8016FB08[i].unk_12 = 0;
+        D_8016FB08[i].flags = 1;
+        D_8016FB08[i].unk_0.x = arg2;
+        D_8016FB08[i].unk_0.y = arg3;
+        D_8016FB08[i].unk_0.z = arg4;
+        D_8016FB08[i].spriteIndex = found + 0xE;
+        D_8016FB08[i].mapIndex = gBaseMapIndex;
+        
+    }
+
+    return found;
+    
+}
+#else
+INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008A4A8);
+#endif
+
+//INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008A5F0);
+
+void func_8008A5F0(void) {
+    
+    if (checkDailyEventBit(0x43) && (dogInfo.flags & 1)) {
+        dogInfo.affection += adjustValue(dogInfo.affection, 2, MAX_AFFECTION);
+    }
+    
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008A650);
 
 INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008A9E8);
 
-INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008B150);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008B150);
+
+void func_8008B150(void) {
+
+    if ((horseInfo.flags & 1) && horseInfo.grown == FALSE) {
+        
+        horseInfo.age++;
+    
+        if (horseInfo.age == 20) {
+            horseInfo.grown = TRUE;
+            setLifeEventBit(0x3C);
+        }
+    
+    }
+    
+}
 
 //INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008B1B8);
 
 void func_8008B1B8(void) {
     
-    if (dogInfo.flags & 1 && (dogInfo.location == gBaseMapIndex) && !(dogInfo.flags & 8)) {
+    if ((dogInfo.flags & 1) && (dogInfo.location == gBaseMapIndex) && !(dogInfo.flags & 8)) {
         
-        dogInfo.spriteIndex = 1;
+        dogInfo.entityIndex = 1;
         
         loadEntity(1, 0x40, 1);
-        func_8003019C(dogInfo.spriteIndex, 1);
-        func_80030054(dogInfo.spriteIndex, 1);
-        func_8002FF38(dogInfo.spriteIndex, 0);
+        func_8003019C(dogInfo.entityIndex, 1);
+        func_80030054(dogInfo.entityIndex, 1);
+        func_8002FF38(dogInfo.entityIndex, 0);
         
-        setEntityDirection(dogInfo.spriteIndex, convertSpriteToMapDirection(dogInfo.direction, MAIN_MAP_INDEX));
-        setEntityCoordinates(dogInfo.spriteIndex, dogInfo.coordinates.x, dogInfo.coordinates.y, dogInfo.coordinates.z);
+        setEntityDirection(dogInfo.entityIndex, convertSpriteToMapDirection(dogInfo.direction, MAIN_MAP_INDEX));
+        setEntityCoordinates(dogInfo.entityIndex, dogInfo.coordinates.x, dogInfo.coordinates.y, dogInfo.coordinates.z);
         
-        dogInfo.unk_17 = 0;
+        dogInfo.speed = 0;
         dogInfo.unk_1A = 0;
         dogInfo.flags |= 4;
         
     }
     
-    func_8008C208();
+    updateDog();
     
 }
 
@@ -650,23 +989,23 @@ void func_8008B2E8(u8 chickenIndex) {
 
     if ((gChickens[chickenIndex].flags & 1) && (gChickens[chickenIndex].location == gBaseMapIndex) && !(gChickens[chickenIndex].flags & 8)) {
     
-        gChickens[chickenIndex].spriteIndex = chickenIndex + 2;
+        gChickens[chickenIndex].entityIndex = chickenIndex + 2;
         
         switch (gChickens[chickenIndex].type) {
 
             case 2:
                 initializeAnimalEntity(chickenIndex + 2, (void*)0x80275E00, (void*)0x80275F00, (void*)0x80276700, (void*)0x80276800);
-                loadEntity(gChickens[chickenIndex].spriteIndex, 0x44, 1);
+                loadEntity(gChickens[chickenIndex].entityIndex, 0x44, 1);
                 break;         
             
             case 1:
                 initializeAnimalEntity(chickenIndex + 2, (void*)0x80276B00, (void*)0x80276C00, (void*)0x80277000, (void*)0x80277100);
-                loadEntity(gChickens[chickenIndex].spriteIndex, 0x43, 1);
+                loadEntity(gChickens[chickenIndex].entityIndex, 0x43, 1);
                 break;
             
             case 0:
                 initializeAnimalEntity(chickenIndex + 2, (void*)0x8028DD50, (void*)0x80290550, (void*)0x80293A50, (void*)0x80293C50);
-                loadEntity(gChickens[chickenIndex].spriteIndex, 0x5D, 1);
+                loadEntity(gChickens[chickenIndex].entityIndex, 0x5D, 1);
                 break;
             
             default:
@@ -674,12 +1013,12 @@ void func_8008B2E8(u8 chickenIndex) {
             
         }
 
-        func_8003019C(gChickens[chickenIndex].spriteIndex, 1);
-        func_80030054(gChickens[chickenIndex].spriteIndex, 1);
-        func_8002FF38(gChickens[chickenIndex].spriteIndex, 0);
+        func_8003019C(gChickens[chickenIndex].entityIndex, 1);
+        func_80030054(gChickens[chickenIndex].entityIndex, 1);
+        func_8002FF38(gChickens[chickenIndex].entityIndex, 0);
 
-        setEntityDirection(gChickens[chickenIndex].spriteIndex, convertSpriteToMapDirection(gChickens[chickenIndex].direction, MAIN_MAP_INDEX));        
-        setEntityCoordinates(gChickens[chickenIndex].spriteIndex, gChickens[chickenIndex].coordinates.x, gChickens[chickenIndex].coordinates.y, gChickens[chickenIndex].coordinates.z);
+        setEntityDirection(gChickens[chickenIndex].entityIndex, convertSpriteToMapDirection(gChickens[chickenIndex].direction, MAIN_MAP_INDEX));        
+        setEntityCoordinates(gChickens[chickenIndex].entityIndex, gChickens[chickenIndex].coordinates.x, gChickens[chickenIndex].coordinates.y, gChickens[chickenIndex].coordinates.z);
         
         gChickens[chickenIndex].unk_17 = 0;
         gChickens[chickenIndex].flags |= 4;
@@ -696,15 +1035,15 @@ INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008B9AC);
 
 INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008BAF0);
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008C208);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", updateDog);
 
-void func_8008C208(void) {
+void updateDog(void) {
 
     Vec3f vec;
 
     if ((dogInfo.flags & 1) && (dogInfo.flags & 4)) {
         
-        if (checkEntityAnimationStateChanged(dogInfo.spriteIndex) || dogInfo.flags & 0x20) {
+        if (checkEntityAnimationStateChanged(dogInfo.entityIndex) || dogInfo.flags & 0x20) {
 
             if (dogInfo.unk_1A == 0) {
                 func_8008C358();
@@ -716,9 +1055,9 @@ void func_8008C208(void) {
             
         }
         
-        setEntityDirection(dogInfo.spriteIndex, convertSpriteToMapDirection(dogInfo.direction, MAIN_MAP_INDEX));
-        getMovementVectorFromDirection(&vec, dogInfo.unk_19, dogInfo.direction, 0.0f);
-        func_8002FE10(dogInfo.spriteIndex, vec.x, vec.y, vec.z, dogInfo.unk_19);
+        setEntityDirection(dogInfo.entityIndex, convertSpriteToMapDirection(dogInfo.direction, MAIN_MAP_INDEX));
+        vec = getMovementVectorFromDirection(dogInfo.unk_19, dogInfo.direction, 0.0f);
+        func_8002FE10(dogInfo.entityIndex, vec.x, vec.y, vec.z, dogInfo.unk_19);
 
     } 
     
@@ -740,21 +1079,2129 @@ INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008DAA0);
 
 INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008DF9C);
 
-INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008E98C);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008E98C);
 
-INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008F37C);
+void func_8008E98C(u8 index) {
 
-INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008FC68);
+    u16 temp;
+    u16 tempDirection;
+    
+    switch (gFarmAnimals[index].unk_1B) {
 
-INCLUDE_ASM("asm/nonmatchings/game/animals", func_800904E4);
+        case 0:
 
-INCLUDE_ASM("asm/nonmatchings/game/animals", func_80090DF8);
+            gFarmAnimals[index].unk_14 = 0;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
 
-INCLUDE_ASM("asm/nonmatchings/game/animals", func_8009170C);
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0xB0);
 
-INCLUDE_ASM("asm/nonmatchings/game/animals", func_80092094);
+            if ((gFarmAnimals[index].flags & 0x200) || (gFarmAnimals[index].flags & 0x400)) {
 
-INCLUDE_ASM("asm/nonmatchings/game/animals", func_80092808);
+                gFarmAnimals[index].direction = calculateAnimalDirectionToPlayer(
+                    entities[gFarmAnimals[index].entityIndex].coordinates.x,
+                    entities[gFarmAnimals[index].entityIndex].coordinates.z,
+                    entities[PLAYER].coordinates.x, 
+                    entities[PLAYER].coordinates.z);
+
+                gFarmAnimals[index].unk_1B = 1;
+                
+            } else {
+        
+                if (getRandomNumberInRange(0, 60) < 40) {
+                
+                    gFarmAnimals[index].unk_1B = 0;
+
+                } else {
+
+                    tempDirection = getRandomNumberInRange(0, 20);
+
+                    if (tempDirection < 7) {
+                        gFarmAnimals[index].direction = tempDirection;
+                    }
+
+                    temp = getRandomNumberInRange(0, 5);
+
+                    if (temp == 0) {
+                        gFarmAnimals[index].unk_1B = 1;
+                    }
+                    
+                    if (temp == 1) {
+                        gFarmAnimals[index].unk_1B = 2;
+                    }
+
+                    if (temp == 2) {
+                        gFarmAnimals[index].unk_1B = 3;
+                    }
+
+                    if (temp == 3) {
+                        gFarmAnimals[index].unk_1B = 4;
+                    }
+
+                    if (temp == 4) {
+                        gFarmAnimals[index].unk_1B = 5;
+                    }
+
+                    if (temp == 5) {
+                        gFarmAnimals[index].unk_1B = 6;
+                    }
+
+                }
+                
+            }
+        
+            gFarmAnimals[index].flags |= 2;
+            break;
+        
+        case 1:
+
+            gFarmAnimals[index].unk_14 = 1.0f;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0xB8);
+
+            if (gFarmAnimals[index].flags & 0x200) {
+
+                gFarmAnimals[index].flags &= ~0x400;
+
+                gFarmAnimals[index].direction = calculateAnimalDirectionToPlayer(
+                    entities[gFarmAnimals[index].entityIndex].coordinates.x,
+                    entities[gFarmAnimals[index].entityIndex].coordinates.z,
+                    entities[PLAYER].coordinates.x, 
+                    entities[PLAYER].coordinates.z);
+
+                if (getRandomNumberInRange(0, 20) == 0) {
+                    gFarmAnimals[index].flags &= ~0x200;
+                } 
+                
+            } else if (gFarmAnimals[index].flags & 0x400) {
+
+                 if (getRandomNumberInRange(0, 40) == 0) {
+                    gFarmAnimals[index].flags &= ~0x400;
+                } 
+                
+            } else {
+
+                if (getRandomNumberInRange(0, 20) < 10) {
+                    gFarmAnimals[index].unk_1B = 1;
+                } else {
+                    gFarmAnimals[index].unk_1B = 0;
+                }
+                
+            }
+
+            gFarmAnimals[index].flags |= 2;            
+            break;
+
+        case 2:
+
+            gFarmAnimals[index].unk_14 = 0;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0xD0);
+
+            temp = getRandomNumberInRange(0, 2); 
+            
+            if (temp == 0) {
+                gFarmAnimals[index].unk_1B = 2;
+            } 
+            if (temp == 1) {
+                gFarmAnimals[index].unk_1B = 0;
+            }
+            if (temp == 2) {
+                gFarmAnimals[index].unk_1B = 9;
+            }
+
+            gFarmAnimals[index].flags |= 2;  
+            break;
+
+        case 3:
+
+            gFarmAnimals[index].unk_14 = 0;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0xC0);
+            
+            gFarmAnimals[index].unk_1B = 7;
+            
+            gFarmAnimals[index].flags |= 2;  
+            break;
+
+        case 4:
+
+            gFarmAnimals[index].unk_14 = 0;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0xE8);
+
+            gFarmAnimals[index].unk_1B = 0;
+
+            gFarmAnimals[index].flags |= 2;  
+            break;
+
+        case 5:
+
+            gFarmAnimals[index].unk_14 = 0;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0xF0);
+
+            gFarmAnimals[index].unk_1B = 0;
+
+            gFarmAnimals[index].flags |= 2;
+            break;
+
+        case 6:
+
+            gFarmAnimals[index].unk_14 = 0;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0xF8);
+
+            gFarmAnimals[index].unk_1B = 0;
+
+            gFarmAnimals[index].flags |= 2;
+            break;
+
+        case 7:
+
+            gFarmAnimals[index].unk_14 = 0;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0xC8);
+
+            temp = getRandomNumberInRange(0, 11);
+
+            if (temp < 10) {
+                gFarmAnimals[index].unk_1B = 7;
+            }
+
+            if (temp == 10) {
+                gFarmAnimals[index].unk_1B = 8;
+            }
+
+            if (temp == 11) {
+                gFarmAnimals[index].unk_1B = 10;
+            }
+
+            gFarmAnimals[index].flags |= 2;
+            break;
+
+        case 8:
+
+            gFarmAnimals[index].unk_14 = 0;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0xD8);
+
+            if (getRandomNumberInRange(0, 4) >= 4) {
+                gFarmAnimals[index].unk_1B = 7;
+            } else {
+                gFarmAnimals[index].unk_1B = 8;
+            }
+
+            gFarmAnimals[index].flags |= 2;
+            
+            break;
+
+        case 9:
+
+            gFarmAnimals[index].unk_14 = 0;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0xE0);
+
+            gFarmAnimals[index].unk_1B = 2;
+
+            gFarmAnimals[index].flags |= 2;
+            break;
+
+        case 10:
+                    
+            gFarmAnimals[index].unk_14 = 0;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0xC0);
+
+            gFarmAnimals[index].unk_1B = 0;
+
+            gFarmAnimals[index].flags |= 2;
+            break;
+        
+        case 16:
+
+            gFarmAnimals[index].unk_14 = 0;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0xB0);
+
+            gFarmAnimals[index].flags |= (2 | 0x2000);
+            gFarmAnimals[index].flags &= ~(0x400);
+            
+            break;
+        
+        case 17:
+
+            gFarmAnimals[index].unk_14 = 0;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x50);
+
+            gFarmAnimals[index].unk_1B = 0;
+
+            gFarmAnimals[index].flags |= (2 | 0x2000);
+            gFarmAnimals[index].flags &= ~(0x400);
+
+            setAudio(0x36);
+            
+            break;
+        
+        case 18:
+
+            gFarmAnimals[index].unk_14 = 0;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x100);
+
+            gFarmAnimals[index].unk_1B = 0;
+
+            gFarmAnimals[index].flags |= (2 | 0x2000);
+            gFarmAnimals[index].flags &= ~(0x400);
+
+            setAudio(0x37);
+
+            break;
+        
+        case 19:
+            
+            gFarmAnimals[index].unk_14 = 0;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x60);
+
+            gFarmAnimals[index].unk_1B = 0x13;
+
+            gFarmAnimals[index].flags |= (2 | 0x2000);
+            gFarmAnimals[index].flags &= ~(0x400);
+            
+            break;
+        
+    }
+    
+}
+
+//INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008F37C);
+
+void func_8008F37C(u8 index) {
+
+    u16 temp;
+    u16 tempDirection;
+    
+    switch (gFarmAnimals[index].unk_1B) {
+
+        case 0:
+
+            gFarmAnimals[index].unk_14 = 0;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x68);
+
+            temp = getRandomNumberInRange(0, 60);
+
+            if ((gFarmAnimals[index].flags & 0x200) || (gFarmAnimals[index].flags & 0x400)) {
+
+                gFarmAnimals[index].direction = calculateAnimalDirectionToPlayer(
+                    entities[gFarmAnimals[index].entityIndex].coordinates.x,
+                    entities[gFarmAnimals[index].entityIndex].coordinates.z,
+                    entities[PLAYER].coordinates.x, 
+                    entities[PLAYER].coordinates.z);
+
+                gFarmAnimals[index].unk_1B = 1;
+                
+            } else {
+        
+                if (temp < 40) {
+                
+                    gFarmAnimals[index].unk_1B = 0;
+
+                } else {
+
+                    tempDirection = getRandomNumberInRange(0, 20);
+
+                    if (tempDirection < 7) {
+                        gFarmAnimals[index].direction = tempDirection;
+                    }
+
+                    temp = getRandomNumberInRange(0, 5);
+
+                    if (temp == 0) {
+                        gFarmAnimals[index].unk_1B = 1;
+                    }
+                    
+                    if (temp == 1) {
+                        gFarmAnimals[index].unk_1B = 2;
+                    }
+
+                    if (temp == 2) {
+                        gFarmAnimals[index].unk_1B = 3;
+                    }
+
+                    if (temp == 3) {
+                        gFarmAnimals[index].unk_1B = 4;
+                    }
+
+                }
+                
+            }
+        
+            gFarmAnimals[index].flags |= 2;
+            break;
+
+        
+        case 1:
+
+            gFarmAnimals[index].unk_14 = 0.5f;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x70);
+
+            if (gFarmAnimals[index].flags & 0x200) {
+
+                gFarmAnimals[index].flags &= ~0x400;
+
+                gFarmAnimals[index].direction = calculateAnimalDirectionToPlayer(
+                    entities[gFarmAnimals[index].entityIndex].coordinates.x,
+                    entities[gFarmAnimals[index].entityIndex].coordinates.z,
+                    entities[PLAYER].coordinates.x, 
+                    entities[PLAYER].coordinates.z);
+
+                if (getRandomNumberInRange(0, 20) == 0) {
+                    gFarmAnimals[index].flags &= ~0x200;
+                } 
+                
+            } else if (gFarmAnimals[index].flags & 0x400) {
+
+                 if (getRandomNumberInRange(0, 40) == 0) {
+                    gFarmAnimals[index].flags &= ~0x400;
+                } 
+                
+            } else {
+
+                if (getRandomNumberInRange(0, 20) < 10) {
+                    gFarmAnimals[index].unk_1B = 1;
+                } else {
+                    gFarmAnimals[index].unk_1B = 0;
+                }
+                
+            }
+
+            gFarmAnimals[index].flags |= 2;            
+            break;
+
+        case 2:
+
+            gFarmAnimals[index].unk_14 = 0;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x88);
+
+            temp = getRandomNumberInRange(0, 2); 
+            
+            if (temp == 0) {
+                gFarmAnimals[index].unk_1B = 2;
+            } 
+            if (temp == 1) {
+                gFarmAnimals[index].unk_1B = 0;
+            }
+            if (temp == 2) {
+                gFarmAnimals[index].unk_1B = 7;
+            }
+
+            gFarmAnimals[index].flags |= 2;  
+            break;
+
+        case 3:
+
+            gFarmAnimals[index].unk_14 = 0;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x78);
+            
+            gFarmAnimals[index].unk_1B = 5;
+            
+            gFarmAnimals[index].flags |= 2;  
+            break;
+
+        case 4:
+
+            gFarmAnimals[index].unk_14 = 0;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0xA8);
+
+            gFarmAnimals[index].unk_1B = 0;
+
+            gFarmAnimals[index].flags |= 2;  
+            break;
+
+        case 5:
+
+            gFarmAnimals[index].unk_14 = 0;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x80);
+
+            temp = getRandomNumberInRange(0, 11);
+
+            if (temp < 10) {
+                gFarmAnimals[index].unk_1B = 5;
+            }
+
+            if (temp == 10) {
+                gFarmAnimals[index].unk_1B = 6;
+            }
+
+            if (temp == 11) {
+                gFarmAnimals[index].unk_1B = 8;
+            }
+
+            gFarmAnimals[index].flags |= 2;
+            break;
+
+        case 6:
+
+            gFarmAnimals[index].unk_14 = 0;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x90);
+
+            if (getRandomNumberInRange(0, 4) >= 4) {
+                gFarmAnimals[index].unk_1B = 5;
+            } else {
+                gFarmAnimals[index].unk_1B = 6;
+            }
+
+            gFarmAnimals[index].flags |= 2;
+            break;
+
+        case 7:
+
+            gFarmAnimals[index].unk_14 = 0;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x98);
+
+            gFarmAnimals[index].unk_1B = 2;
+
+            gFarmAnimals[index].flags |= 2;
+            break;
+
+        case 8:
+
+            gFarmAnimals[index].unk_14 = 0;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x78);
+
+            gFarmAnimals[index].unk_1B = 0;
+
+            gFarmAnimals[index].flags |= 2;
+            
+            break;
+
+        case 16:
+
+            gFarmAnimals[index].unk_14 = 0;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x68);
+
+            gFarmAnimals[index].flags |= (2 | 0x2000);
+            gFarmAnimals[index].flags &= ~(0x400);
+            
+            break;
+        
+        case 17:
+
+            gFarmAnimals[index].unk_14 = 0;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x50);
+
+            gFarmAnimals[index].unk_1B = 0;
+
+            gFarmAnimals[index].flags |= (2 | 0x2000);
+            gFarmAnimals[index].flags &= ~(0x400);
+
+            setAudio(0x36);
+            
+            break;
+        
+        case 18:
+
+            gFarmAnimals[index].unk_14 = 0;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0xA0);
+
+            gFarmAnimals[index].unk_1B = 0;
+
+            gFarmAnimals[index].flags |= (2 | 0x2000);
+            gFarmAnimals[index].flags &= ~(0x400);
+
+            setAudio(0x37);
+
+            break;
+        
+        case 19:
+            
+            gFarmAnimals[index].unk_14 = 0;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x60);
+
+            gFarmAnimals[index].unk_1B = 0x13;
+
+            gFarmAnimals[index].flags |= (2 | 0x2000);
+            gFarmAnimals[index].flags &= ~(0x400);
+            
+            break;
+        
+    }
+    
+}
+
+//INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008FC68);
+
+void func_8008FC68(u8 index) {
+
+    u16 temp;
+    u16 tempDirection;
+    
+    switch (gFarmAnimals[index].unk_1B) {
+
+        case 0:
+
+            gFarmAnimals[index].unk_14 = 0;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x108);
+
+            if ((gFarmAnimals[index].flags & 0x200) || (gFarmAnimals[index].flags & 0x400)) {
+
+                gFarmAnimals[index].direction = calculateAnimalDirectionToPlayer(
+                    entities[gFarmAnimals[index].entityIndex].coordinates.x,
+                    entities[gFarmAnimals[index].entityIndex].coordinates.z,
+                    entities[PLAYER].coordinates.x, 
+                    entities[PLAYER].coordinates.z);
+
+                gFarmAnimals[index].unk_1B = 1;
+                
+            } else {
+        
+                if (getRandomNumberInRange(0, 60) < 40) {
+                
+                    gFarmAnimals[index].unk_1B = 0;
+
+                } else {
+
+                    tempDirection = getRandomNumberInRange(0, 20);
+
+                    if (tempDirection < 7) {
+                        gFarmAnimals[index].direction = tempDirection;
+                    }
+
+                    temp = getRandomNumberInRange(0, 5);
+
+                    if (temp == 0) {
+                        gFarmAnimals[index].unk_1B = 1;
+                    }
+                    
+                    if (temp == 1) {
+                        gFarmAnimals[index].unk_1B = 2;
+                    }
+
+                    if (temp == 2) {
+                        gFarmAnimals[index].unk_1B = 3;
+                    }
+
+                    if (temp == 3) {
+                        gFarmAnimals[index].unk_1B = 4;
+                    }
+
+                }
+                
+            }
+        
+            gFarmAnimals[index].flags |= 2;
+            break;
+
+        
+        case 1:
+
+            gFarmAnimals[index].unk_14 = 0.5f;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x110);
+
+            if (gFarmAnimals[index].flags & 0x200) {
+
+                gFarmAnimals[index].flags &= ~0x400;
+
+                gFarmAnimals[index].direction = calculateAnimalDirectionToPlayer(
+                    entities[gFarmAnimals[index].entityIndex].coordinates.x,
+                    entities[gFarmAnimals[index].entityIndex].coordinates.z,
+                    entities[PLAYER].coordinates.x, 
+                    entities[PLAYER].coordinates.z);
+
+                if (getRandomNumberInRange(0, 20) == 0) {
+                    gFarmAnimals[index].flags &= ~0x200;
+                } 
+                
+            } else if (gFarmAnimals[index].flags & 0x400) {
+
+                 if (getRandomNumberInRange(0, 40) == 0) {
+                    gFarmAnimals[index].flags &= ~0x400;
+                } 
+                
+            } else {
+
+                if (getRandomNumberInRange(0, 20) < 10) {
+                    gFarmAnimals[index].unk_1B = 1;
+                } else {
+                    gFarmAnimals[index].unk_1B = 0;
+                }
+                
+            }
+
+            gFarmAnimals[index].flags |= 2;            
+            break;
+
+        case 2:
+
+            gFarmAnimals[index].unk_14 = 0;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x128);
+
+            temp = getRandomNumberInRange(0, 2); 
+            
+            if (temp == 0) {
+                gFarmAnimals[index].unk_1B = 2;
+            } 
+            if (temp == 1) {
+                gFarmAnimals[index].unk_1B = 0;
+            }
+            if (temp == 2) {
+                gFarmAnimals[index].unk_1B = 6;
+            }
+
+            gFarmAnimals[index].flags |= 2;  
+            break;
+
+        case 3:
+
+            gFarmAnimals[index].unk_14 = 0;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x118);
+            
+            gFarmAnimals[index].unk_1B = 5;
+            
+            gFarmAnimals[index].flags |= 2;  
+            
+            break;
+
+        case 4:
+
+            gFarmAnimals[index].unk_14 = 0;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x138);
+
+            gFarmAnimals[index].unk_1B = 0;
+
+            gFarmAnimals[index].flags |= 2;  
+            break;
+
+        case 5:
+
+            gFarmAnimals[index].unk_14 = 0;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x120);
+
+            temp = getRandomNumberInRange(0, 11);
+
+            if (temp < 10) {
+                gFarmAnimals[index].unk_1B = 5;
+            }
+
+            if (temp == 10) {
+                gFarmAnimals[index].unk_1B = 6;
+            }
+
+            if (temp == 11) {
+                gFarmAnimals[index].unk_1B = 7;
+            }
+
+            gFarmAnimals[index].flags |= 2;
+            break;
+
+        case 6:
+
+            gFarmAnimals[index].unk_14 = 0;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x130);
+
+            gFarmAnimals[index].unk_1B = 2;
+
+            gFarmAnimals[index].flags |= 2;
+            break;
+
+        case 7:
+
+            gFarmAnimals[index].unk_14 = 0;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x118);
+
+            gFarmAnimals[index].unk_1B = 0;
+
+            gFarmAnimals[index].flags |= 2;
+            break;
+
+        case 16:
+
+            gFarmAnimals[index].unk_14 = 0;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x108);
+
+            gFarmAnimals[index].flags |= (2 | 0x2000);
+            gFarmAnimals[index].flags &= ~(0x400);
+            
+            break;
+        
+        case 17:
+
+            gFarmAnimals[index].unk_14 = 0;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x50);
+
+            gFarmAnimals[index].unk_1B = 0;
+
+            gFarmAnimals[index].flags |= (2 | 0x2000);
+            gFarmAnimals[index].flags &= ~(0x400);
+
+            setAudio(0x36);
+            
+            break;
+        
+        case 18:
+
+            gFarmAnimals[index].unk_14 = 0;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x108);
+
+            gFarmAnimals[index].unk_1B = 0;
+
+            gFarmAnimals[index].flags |= (2 | 0x2000);
+            gFarmAnimals[index].flags &= ~(0x400);
+
+            break;
+        
+        case 19:
+            
+            gFarmAnimals[index].unk_14 = 0;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x60);
+
+            gFarmAnimals[index].unk_1B = 0x13;
+
+            gFarmAnimals[index].flags |= (2 | 0x2000);
+            gFarmAnimals[index].flags &= ~(0x400);
+            
+            break;
+        
+    }
+    
+}
+
+//INCLUDE_ASM("asm/nonmatchings/game/animals", func_800904E4);
+
+void func_800904E4(u8 index) {
+    
+    u16 temp;
+    u16 tempDirection;
+    
+    switch (gFarmAnimals[index].unk_1B) {
+        
+        case 0:
+
+            gFarmAnimals[index].unk_14 = 0;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0);
+
+            if ((gFarmAnimals[index].flags & 0x200) || (gFarmAnimals[index].flags & 0x400)) {
+
+                gFarmAnimals[index].direction = calculateAnimalDirectionToPlayer(
+                    entities[gFarmAnimals[index].entityIndex].coordinates.x,
+                    entities[gFarmAnimals[index].entityIndex].coordinates.z,
+                    entities[PLAYER].coordinates.x, 
+                    entities[PLAYER].coordinates.z);
+
+                gFarmAnimals[index].unk_1B = 1;
+                
+            } else {
+        
+                if (getRandomNumberInRange(0, 60) < 40) {
+                    gFarmAnimals[index].unk_1B = 0;
+                } else {
+
+                    tempDirection = getRandomNumberInRange(0, 20);
+
+                    if (tempDirection < 7) {
+                        gFarmAnimals[index].direction = tempDirection;
+                    }
+
+                    temp = getRandomNumberInRange(0, 5);
+
+                    if (temp == 0) {
+                        gFarmAnimals[index].unk_1B = 1;
+                    }
+                    
+                    if (temp == 1) {
+                        gFarmAnimals[index].unk_1B = 2;
+                    }
+
+                    if (temp == 2) {
+                        gFarmAnimals[index].unk_1B = 3;
+                    }
+
+                    if (temp == 3) {
+                        gFarmAnimals[index].unk_1B = 4;
+                    }
+                    
+                    if (temp == 4) {
+                        gFarmAnimals[index].unk_1B = 5;
+                    }
+
+                    if (temp == 5) {
+                        gFarmAnimals[index].unk_1B = 6;
+                    }
+
+                }
+                
+            }
+        
+            gFarmAnimals[index].flags |= 2;
+            break;
+
+        
+        case 1:
+
+            gFarmAnimals[index].unk_14 = 1.0f;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 8);
+
+            if (gFarmAnimals[index].flags & 0x200) {
+
+                gFarmAnimals[index].flags &= ~0x400;
+
+                gFarmAnimals[index].direction = calculateAnimalDirectionToPlayer(
+                    entities[gFarmAnimals[index].entityIndex].coordinates.x,
+                    entities[gFarmAnimals[index].entityIndex].coordinates.z,
+                    entities[PLAYER].coordinates.x, 
+                    entities[PLAYER].coordinates.z);
+
+                if (getRandomNumberInRange(0, 20) == 0) {
+                    gFarmAnimals[index].flags &= ~0x200;
+                } 
+                
+            } else if (gFarmAnimals[index].flags & 0x400) {
+
+                 if (getRandomNumberInRange(0, 40) == 0) {
+                    gFarmAnimals[index].flags &= ~0x400;
+                } 
+                
+            } else {
+
+                if (getRandomNumberInRange(0, 20) < 10) {
+                    gFarmAnimals[index].unk_1B = 1;
+                } else {
+                    gFarmAnimals[index].unk_1B = 0;
+                }
+                
+            }
+
+            gFarmAnimals[index].flags |= 2;            
+            break;
+
+        case 2:
+
+            gFarmAnimals[index].unk_14 = 0;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x10);
+
+            temp = getRandomNumberInRange(0, 2); 
+            
+            if (temp == 0) {
+                gFarmAnimals[index].unk_1B = 2;
+            } 
+            if (temp == 1) {
+                gFarmAnimals[index].unk_1B = 0;
+            }
+            if (temp == 2) {
+                gFarmAnimals[index].unk_1B = 8;
+            }
+
+            gFarmAnimals[index].flags |= 2;  
+            break;
+
+        case 3:
+
+            gFarmAnimals[index].unk_14 = 0;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x18);
+
+            temp = getRandomNumberInRange(0, 2); 
+            
+            if (temp == 0) {
+                gFarmAnimals[index].unk_1B = 3;
+            } 
+            if (temp == 1) {
+                gFarmAnimals[index].unk_1B = 0;
+            }
+            if (temp == 2) {
+                gFarmAnimals[index].unk_1B = 7;
+            }
+            
+            gFarmAnimals[index].flags |= 2;  
+            
+            break;
+
+        case 4:
+
+            gFarmAnimals[index].unk_14 = 0;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x30);
+
+            gFarmAnimals[index].unk_1B = 0;
+
+            gFarmAnimals[index].flags |= 2;  
+            break;
+
+        case 5:
+
+            gFarmAnimals[index].unk_14 = 0;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x38);
+
+            gFarmAnimals[index].unk_1B = 0;
+
+            gFarmAnimals[index].flags |= 2;
+            break;
+
+        case 6:
+
+            gFarmAnimals[index].unk_14 = 0;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x40);
+
+            gFarmAnimals[index].unk_1B = 0;
+
+            gFarmAnimals[index].flags |= 2;
+            break;
+
+        case 7:
+
+            gFarmAnimals[index].unk_14 = 0;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x20);
+
+            if (getRandomNumberInRange(0, 4) >= 4) {
+                gFarmAnimals[index].unk_1B = 3;
+            } else {
+                gFarmAnimals[index].unk_1B = 7;
+            }
+
+            gFarmAnimals[index].flags |= 2;
+            break;
+
+        case 8:
+
+            gFarmAnimals[index].unk_14 = 0;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x28);
+
+            gFarmAnimals[index].unk_1B = 2;
+
+            gFarmAnimals[index].flags |= 2;
+            break;
+    
+        case 16:
+
+            gFarmAnimals[index].unk_14 = 0;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0);
+
+            gFarmAnimals[index].flags |= (2 | 0x2000);
+            gFarmAnimals[index].flags &= ~(0x400);
+            
+            break;
+        
+        case 17:
+
+            gFarmAnimals[index].unk_14 = 0;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x48);
+
+            gFarmAnimals[index].unk_1B = 0;
+
+            gFarmAnimals[index].flags |= (2 | 0x2000);
+            gFarmAnimals[index].flags &= ~(0x400);
+
+            setAudio(0x36);
+            
+            break;
+        
+        case 18:
+
+            gFarmAnimals[index].unk_14 = 0;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x50);
+
+            gFarmAnimals[index].unk_1B = 0;
+
+            gFarmAnimals[index].flags |= (2 | 0x2000);
+            gFarmAnimals[index].flags &= ~(0x400);
+
+            setAudio(0x37);
+            
+            break;
+        
+        case 19:
+            
+            gFarmAnimals[index].unk_14 = 0;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x58);
+
+            gFarmAnimals[index].unk_1B = 0x13;
+
+            gFarmAnimals[index].flags |= (2 | 0x2000);
+            gFarmAnimals[index].flags &= ~(0x400);
+            
+            break;
+        
+    }
+    
+}
+
+//INCLUDE_ASM("asm/nonmatchings/game/animals", func_80090DF8);
+
+void func_80090DF8(u8 index) {
+
+    u16 temp;
+    u16 tempDirection;
+    
+    switch (gFarmAnimals[index].unk_1B) {
+        
+        case 0:
+
+            gFarmAnimals[index].unk_14 = 0;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0);
+
+            if ((gFarmAnimals[index].flags & 0x200) || (gFarmAnimals[index].flags & 0x400)) {
+
+                gFarmAnimals[index].direction = calculateAnimalDirectionToPlayer(
+                    entities[gFarmAnimals[index].entityIndex].coordinates.x,
+                    entities[gFarmAnimals[index].entityIndex].coordinates.z,
+                    entities[PLAYER].coordinates.x, 
+                    entities[PLAYER].coordinates.z);
+
+                gFarmAnimals[index].unk_1B = 1;
+                
+            } else {
+        
+                if (getRandomNumberInRange(0, 60) < 40) {
+                    gFarmAnimals[index].unk_1B = 0;
+                } else {
+
+                    tempDirection = getRandomNumberInRange(0, 20);
+
+                    if (tempDirection < 7) {
+                        gFarmAnimals[index].direction = tempDirection;
+                    }
+
+                    temp = getRandomNumberInRange(0, 5);
+
+                    if (temp == 0) {
+                        gFarmAnimals[index].unk_1B = 1;
+                    }
+                    
+                    if (temp == 1) {
+                        gFarmAnimals[index].unk_1B = 2;
+                    }
+
+                    if (temp == 2) {
+                        gFarmAnimals[index].unk_1B = 3;
+                    }
+
+                    if (temp == 3) {
+                        gFarmAnimals[index].unk_1B = 4;
+                    }
+                    
+                    if (temp == 4) {
+                        gFarmAnimals[index].unk_1B = 5;
+                    }
+
+                    if (temp == 5) {
+                        gFarmAnimals[index].unk_1B = 6;
+                    }
+
+                }
+                
+            }
+        
+            gFarmAnimals[index].flags |= 2;
+            break;
+
+        
+        case 1:
+
+            gFarmAnimals[index].unk_14 = 1.0f;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 8);
+
+            if (gFarmAnimals[index].flags & 0x200) {
+
+                gFarmAnimals[index].flags &= ~0x400;
+
+                gFarmAnimals[index].direction = calculateAnimalDirectionToPlayer(
+                    entities[gFarmAnimals[index].entityIndex].coordinates.x,
+                    entities[gFarmAnimals[index].entityIndex].coordinates.z,
+                    entities[PLAYER].coordinates.x, 
+                    entities[PLAYER].coordinates.z);
+
+                if (getRandomNumberInRange(0, 20) == 0) {
+                    gFarmAnimals[index].flags &= ~0x200;
+                } 
+                
+            } else if (gFarmAnimals[index].flags & 0x400) {
+
+                 if (getRandomNumberInRange(0, 40) == 0) {
+                    gFarmAnimals[index].flags &= ~0x400;
+                } 
+                
+            } else {
+
+                if (getRandomNumberInRange(0, 20) < 10) {
+                    gFarmAnimals[index].unk_1B = 1;
+                } else {
+                    gFarmAnimals[index].unk_1B = 0;
+                }
+                
+            }
+
+            gFarmAnimals[index].flags |= 2;            
+            break;
+
+        case 2:
+
+            gFarmAnimals[index].unk_14 = 0;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x10);
+
+            temp = getRandomNumberInRange(0, 2); 
+            
+            if (temp == 0) {
+                gFarmAnimals[index].unk_1B = 2;
+            } 
+            if (temp == 1) {
+                gFarmAnimals[index].unk_1B = 0;
+            }
+            if (temp == 2) {
+                gFarmAnimals[index].unk_1B = 8;
+            }
+
+            gFarmAnimals[index].flags |= 2;  
+            break;
+
+        case 3:
+
+            gFarmAnimals[index].unk_14 = 0;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x18);
+
+            temp = getRandomNumberInRange(0, 2); 
+            
+            if (temp == 0) {
+                gFarmAnimals[index].unk_1B = 3;
+            } 
+            if (temp == 1) {
+                gFarmAnimals[index].unk_1B = 0;
+            }
+            if (temp == 2) {
+                gFarmAnimals[index].unk_1B = 7;
+            }
+            
+            gFarmAnimals[index].flags |= 2;  
+            
+            break;
+
+        case 4:
+
+            gFarmAnimals[index].unk_14 = 0;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x30);
+
+            gFarmAnimals[index].unk_1B = 0;
+
+            gFarmAnimals[index].flags |= 2;  
+            break;
+
+        case 5:
+
+            gFarmAnimals[index].unk_14 = 0;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x38);
+
+            gFarmAnimals[index].unk_1B = 0;
+
+            gFarmAnimals[index].flags |= 2;
+            break;
+
+        case 6:
+
+            gFarmAnimals[index].unk_14 = 0;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x40);
+
+            gFarmAnimals[index].unk_1B = 0;
+
+            gFarmAnimals[index].flags |= 2;
+            break;
+
+        case 7:
+
+            gFarmAnimals[index].unk_14 = 0;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x20);
+
+            if (getRandomNumberInRange(0, 4) >= 4) {
+                gFarmAnimals[index].unk_1B = 3;
+            } else {
+                gFarmAnimals[index].unk_1B = 7;
+            }
+
+            gFarmAnimals[index].flags |= 2;
+            break;
+
+        case 8:
+
+            gFarmAnimals[index].unk_14 = 0;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x28);
+
+            gFarmAnimals[index].unk_1B = 2;
+
+            gFarmAnimals[index].flags |= 2;
+            break;
+    
+        case 16:
+
+            gFarmAnimals[index].unk_14 = 0;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0);
+
+            gFarmAnimals[index].flags |= (2 | 0x2000);
+            gFarmAnimals[index].flags &= ~(0x400);
+            
+            break;
+        
+        case 17:
+
+            gFarmAnimals[index].unk_14 = 0;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x48);
+
+            gFarmAnimals[index].unk_1B = 0;
+
+            gFarmAnimals[index].flags |= (2 | 0x2000);
+            gFarmAnimals[index].flags &= ~(0x400);
+
+            setAudio(0x36);
+            
+            break;
+        
+        case 18:
+
+            gFarmAnimals[index].unk_14 = 0;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x50);
+
+            gFarmAnimals[index].unk_1B = 0;
+
+            gFarmAnimals[index].flags |= (2 | 0x2000);
+            gFarmAnimals[index].flags &= ~(0x400);
+
+            setAudio(0x37);
+            
+            break;
+        
+        case 19:
+            
+            gFarmAnimals[index].unk_14 = 0;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x58);
+
+            gFarmAnimals[index].unk_1B = 0x13;
+
+            gFarmAnimals[index].flags |= (2 | 0x2000);
+            gFarmAnimals[index].flags &= ~(0x400);
+            
+            break;
+        
+    }
+    
+}
+
+//INCLUDE_ASM("asm/nonmatchings/game/animals", func_8009170C);
+
+void func_8009170C(u8 index) {
+
+    u16 temp;
+    u16 tempDirection;
+    
+    switch (gFarmAnimals[index].unk_1B) {
+        
+        case 0:
+
+            gFarmAnimals[index].unk_14 = 0;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0);
+
+            if ((gFarmAnimals[index].flags & 0x200) || (gFarmAnimals[index].flags & 0x400)) {
+
+                gFarmAnimals[index].direction = calculateAnimalDirectionToPlayer(
+                    entities[gFarmAnimals[index].entityIndex].coordinates.x,
+                    entities[gFarmAnimals[index].entityIndex].coordinates.z,
+                    entities[PLAYER].coordinates.x, 
+                    entities[PLAYER].coordinates.z);
+
+                gFarmAnimals[index].unk_1B = 1;
+                
+            } else {
+        
+                if (getRandomNumberInRange(0, 60) < 40) {
+                    gFarmAnimals[index].unk_1B = 0;
+                } else {
+
+                    tempDirection = getRandomNumberInRange(0, 20);
+
+                    if (tempDirection < 7) {
+                        gFarmAnimals[index].direction = tempDirection;
+                    }
+
+                    temp = getRandomNumberInRange(0, 5);
+
+                    if (temp == 0) {
+                        gFarmAnimals[index].unk_1B = 1;
+                    }
+                    
+                    if (temp == 1) {
+                        gFarmAnimals[index].unk_1B = 2;
+                    }
+
+                    if (temp == 2) {
+                        gFarmAnimals[index].unk_1B = 3;
+                    }
+
+                    if (temp == 3) {
+                        gFarmAnimals[index].unk_1B = 4;
+                    }
+                    
+                    if (temp == 4) {
+                        gFarmAnimals[index].unk_1B = 5;
+                    }
+
+                    if (temp == 5) {
+                        gFarmAnimals[index].unk_1B = 6;
+                    }
+
+                }
+                
+            }
+        
+            gFarmAnimals[index].flags |= 2;
+            break;
+        
+        case 1:
+
+            gFarmAnimals[index].unk_14 = 0.5f;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 8);
+
+            if (gFarmAnimals[index].flags & 0x200) {
+
+                gFarmAnimals[index].flags &= ~0x400;
+
+                gFarmAnimals[index].direction = calculateAnimalDirectionToPlayer(
+                    entities[gFarmAnimals[index].entityIndex].coordinates.x,
+                    entities[gFarmAnimals[index].entityIndex].coordinates.z,
+                    entities[PLAYER].coordinates.x, 
+                    entities[PLAYER].coordinates.z);
+
+                if (getRandomNumberInRange(0, 20) == 0) {
+                    gFarmAnimals[index].flags &= ~0x200;
+                } 
+                
+            } else if (gFarmAnimals[index].flags & 0x400) {
+
+                 if (getRandomNumberInRange(0, 40) == 0) {
+                    gFarmAnimals[index].flags &= ~0x400;
+                } 
+                
+            } else {
+
+                if (getRandomNumberInRange(0, 20) < 10) {
+                    gFarmAnimals[index].unk_1B = 1;
+                } else {
+                    gFarmAnimals[index].unk_1B = 0;
+                }
+                
+            }
+
+            gFarmAnimals[index].flags |= 2;            
+            break;
+
+        case 2:
+
+            gFarmAnimals[index].unk_14 = 0;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x20);
+
+            temp = getRandomNumberInRange(0, 2); 
+            
+            if (temp == 0) {
+                gFarmAnimals[index].unk_1B = 2;
+            } 
+            if (temp == 1) {
+                gFarmAnimals[index].unk_1B = 0;
+            }
+            if (temp == 2) {
+                gFarmAnimals[index].unk_1B = 8;
+            }
+
+            gFarmAnimals[index].flags |= 2;  
+            break;
+
+        case 3:
+
+            gFarmAnimals[index].unk_14 = 0;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x10);
+
+            gFarmAnimals[index].unk_1B = 9;
+            gFarmAnimals[index].flags |= 2;  
+            
+            break;
+
+        case 4:
+
+            gFarmAnimals[index].unk_14 = 0;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x38);
+
+            gFarmAnimals[index].unk_1B = 0;
+
+            gFarmAnimals[index].flags |= 2;  
+            break;
+
+        case 5:
+
+            gFarmAnimals[index].unk_14 = 0;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x40);
+
+            gFarmAnimals[index].unk_1B = 0;
+
+            gFarmAnimals[index].flags |= 2;
+            break;
+
+        case 6:
+
+            gFarmAnimals[index].unk_14 = 0;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x48);
+
+            gFarmAnimals[index].unk_1B = 0;
+
+            gFarmAnimals[index].flags |= 2;
+            break;
+
+        case 7:
+
+            gFarmAnimals[index].unk_14 = 0;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x28);
+
+            if (getRandomNumberInRange(0, 4) >= 4) {
+                gFarmAnimals[index].unk_1B = 3;
+            } else {
+                gFarmAnimals[index].unk_1B = 7;
+            }
+
+            gFarmAnimals[index].flags |= 2;
+            break;
+
+        case 8:
+
+            gFarmAnimals[index].unk_14 = 0;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x30);
+
+            gFarmAnimals[index].unk_1B = 2;
+
+            gFarmAnimals[index].flags |= 2;
+            break;
+        
+        case 9:
+
+            gFarmAnimals[index].unk_14 = 0;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x18);
+
+            temp = getRandomNumberInRange(0, 2); 
+            
+            if (temp == 0) {
+                gFarmAnimals[index].unk_1B = 9;
+            } 
+            if (temp == 1) {
+                gFarmAnimals[index].unk_1B = 3;
+            }
+            if (temp == 2) {
+                gFarmAnimals[index].unk_1B = 7;
+            }
+            
+            gFarmAnimals[index].flags |= 2;
+            break;
+    
+        case 16:
+
+            gFarmAnimals[index].unk_14 = 0;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0);
+
+            gFarmAnimals[index].flags |= (2 | 0x2000);
+            gFarmAnimals[index].flags &= ~(0x400);
+            
+            break;
+        
+        case 17:
+
+            gFarmAnimals[index].unk_14 = 0;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x50);
+
+            gFarmAnimals[index].unk_1B = 0;
+
+            gFarmAnimals[index].flags |= (2 | 0x2000);
+            gFarmAnimals[index].flags &= ~(0x400);
+
+            setAudio(0x36);
+            
+            break;
+        
+        case 18:
+
+            gFarmAnimals[index].unk_14 = 0;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x58);
+
+            gFarmAnimals[index].unk_1B = 0;
+
+            gFarmAnimals[index].flags |= (2 | 0x2000);
+            gFarmAnimals[index].flags &= ~(0x400);
+
+            setAudio(0x37);
+            
+            break;
+        
+        case 19:
+            
+            gFarmAnimals[index].unk_14 = 0;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x60);
+
+            gFarmAnimals[index].unk_1B = 0x13;
+
+            gFarmAnimals[index].flags |= (2 | 0x2000);
+            gFarmAnimals[index].flags &= ~(0x400);
+            
+            break;
+        
+    }
+    
+}
+
+//INCLUDE_ASM("asm/nonmatchings/game/animals", func_80092094);
+
+void func_80092094(u8 index) {
+
+    u16 temp;
+    u16 tempDirection;
+    
+    switch (gFarmAnimals[index].unk_1B) {
+        
+        case 0:
+
+            gFarmAnimals[index].unk_14 = 0;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0);
+
+            if ((gFarmAnimals[index].flags & 0x200) || (gFarmAnimals[index].flags & 0x400)) {
+
+                gFarmAnimals[index].direction = calculateAnimalDirectionToPlayer(
+                    entities[gFarmAnimals[index].entityIndex].coordinates.x,
+                    entities[gFarmAnimals[index].entityIndex].coordinates.z,
+                    entities[PLAYER].coordinates.x, 
+                    entities[PLAYER].coordinates.z);
+
+                gFarmAnimals[index].unk_1B = 1;
+                
+            } else {
+        
+                if (getRandomNumberInRange(0, 60) < 40) {
+                    gFarmAnimals[index].unk_1B = 0;
+                } else {
+
+                    tempDirection = getRandomNumberInRange(0, 20);
+
+                    if (tempDirection < 7) {
+                        gFarmAnimals[index].direction = tempDirection;
+                    }
+
+                    temp = getRandomNumberInRange(0, 2);
+
+                    if (temp == 0) {
+                        gFarmAnimals[index].unk_1B = 1;
+                    }
+                    
+                    if (temp == 1) {
+                        gFarmAnimals[index].unk_1B = 2;
+                    }
+
+                    if (temp == 2) {
+                        gFarmAnimals[index].unk_1B = 3;
+                    }
+
+                }
+                
+            }
+        
+            gFarmAnimals[index].flags |= 2;
+            break;
+
+        case 1:
+
+            gFarmAnimals[index].unk_14 = 1.0f;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 8);
+
+            if (gFarmAnimals[index].flags & 0x200) {
+
+                gFarmAnimals[index].flags &= ~0x400;
+
+                gFarmAnimals[index].direction = calculateAnimalDirectionToPlayer(
+                    entities[gFarmAnimals[index].entityIndex].coordinates.x,
+                    entities[gFarmAnimals[index].entityIndex].coordinates.z,
+                    entities[PLAYER].coordinates.x, 
+                    entities[PLAYER].coordinates.z);
+
+                if (getRandomNumberInRange(0, 20) == 0) {
+                    gFarmAnimals[index].flags &= ~0x200;
+                } 
+                
+            } else if (gFarmAnimals[index].flags & 0x400) {
+
+                 if (getRandomNumberInRange(0, 40) == 0) {
+                    gFarmAnimals[index].flags &= ~0x400;
+                } 
+                
+            } else {
+
+                if (getRandomNumberInRange(0, 20) < 10) {
+                    gFarmAnimals[index].unk_1B = 1;
+                } else {
+                    gFarmAnimals[index].unk_1B = 0;
+                }
+                
+            }
+
+            gFarmAnimals[index].flags |= 2;            
+            break;
+
+        case 2:
+
+            gFarmAnimals[index].unk_14 = 0;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x10);
+
+            if (getRandomNumberInRange(0, 2) == 0) {
+                gFarmAnimals[index].unk_1B = 2;
+            } else {
+                gFarmAnimals[index].unk_1B = 0;
+            }
+
+            gFarmAnimals[index].flags |= 2;  
+            break;
+
+        case 3:
+
+            gFarmAnimals[index].unk_14 = 0;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x18);
+
+            gFarmAnimals[index].unk_1B = 4;
+            gFarmAnimals[index].flags |= 2;  
+            
+            break;
+
+
+        case 4:
+
+            gFarmAnimals[index].unk_14 = 0;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x20);
+
+            temp = getRandomNumberInRange(0, 11);
+
+            if (temp < 10) {
+                gFarmAnimals[index].unk_1B = 4;
+            }
+
+            if (temp == 10) {
+                gFarmAnimals[index].unk_1B = 4;
+            }
+
+            if (temp == 11) {
+                gFarmAnimals[index].unk_1B = 6;
+            }
+
+            gFarmAnimals[index].flags |= 2;  
+            break;
+
+        case 5:
+
+            gFarmAnimals[index].unk_14 = 0;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x28);
+
+            if (getRandomNumberInRange(0, 4) >= 4) {
+                gFarmAnimals[index].unk_1B = 4;
+            } else {
+                gFarmAnimals[index].unk_1B = 5;
+            }
+
+            gFarmAnimals[index].flags |= 2;
+            break;
+
+        case 6:
+
+            gFarmAnimals[index].unk_14 = 0;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x18);
+
+            gFarmAnimals[index].unk_1B = 0;
+            
+            gFarmAnimals[index].flags |= 2;
+            break;
+    
+        case 16:
+
+            gFarmAnimals[index].unk_14 = 0;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0);
+
+            gFarmAnimals[index].flags |= (2 | 0x2000);
+            gFarmAnimals[index].flags &= ~(0x400);
+            
+            break;
+        
+        case 17:
+
+            gFarmAnimals[index].unk_14 = 0;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0);
+
+            gFarmAnimals[index].unk_1B = 0;
+
+            gFarmAnimals[index].flags |= (2 | 0x2000);
+            gFarmAnimals[index].flags &= ~(0x400);
+
+            setAudio(0x3A);
+            
+            break;
+        
+        case 18:
+
+            gFarmAnimals[index].unk_14 = 0;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x30);
+
+            gFarmAnimals[index].unk_1B = 0;
+
+            gFarmAnimals[index].flags |= (2 | 0x2000);
+            gFarmAnimals[index].flags &= ~(0x400);
+
+            setAudio(0x3A);
+            
+            break;
+        
+        case 19:
+            
+            gFarmAnimals[index].unk_14 = 0;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x30);
+
+            gFarmAnimals[index].unk_1B = 0x13;
+
+            gFarmAnimals[index].flags |= (2 | 0x2000);
+            gFarmAnimals[index].flags &= ~(0x400);
+            
+            break;
+        
+    }
+    
+}
+
+//INCLUDE_ASM("asm/nonmatchings/game/animals", func_80092808);
+
+void func_80092808(u8 index) {
+
+    switch (gFarmAnimals[index].unk_1B) {
+        
+        case 0:
+
+            gFarmAnimals[index].unk_14 = 0;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x28);
+
+            gFarmAnimals[index].flags |= 2;
+            
+            break;
+    
+        case 16:
+
+            gFarmAnimals[index].unk_14 = 0;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0);
+
+            gFarmAnimals[index].flags |= (2 | 0x2000);
+            gFarmAnimals[index].flags &= ~(0x400);
+            
+            break;
+        
+        case 17:
+
+            gFarmAnimals[index].unk_14 = 0;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0);
+
+            gFarmAnimals[index].unk_1B = 0;
+
+            gFarmAnimals[index].flags |= (2 | 0x2000);
+            gFarmAnimals[index].flags &= ~(0x400);
+            
+            break;
+        
+        case 18:
+
+            gFarmAnimals[index].unk_14 = 0;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x30);
+
+            gFarmAnimals[index].unk_1B = 0;
+
+            gFarmAnimals[index].flags |= (2 | 0x2000);
+            gFarmAnimals[index].flags &= ~(0x400);
+            
+            break;
+        
+        case 19:
+            
+            gFarmAnimals[index].unk_14 = 0;
+            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].unk_1E = 0;
+
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x30);
+
+            gFarmAnimals[index].unk_1B = 0x13;
+
+            gFarmAnimals[index].flags |= (2 | 0x2000);
+            gFarmAnimals[index].flags &= ~(0x400);
+            
+            break;
+    
+    }
+    
+}
 
 //INCLUDE_ASM("asm/nonmatchings/game/animals", func_80092A64);
 
@@ -769,11 +3216,11 @@ void func_80092A64(u8 index) {
             gFarmAnimals[index].unk_14 = 0;
             gFarmAnimals[index].unk_1D = 0;
             gFarmAnimals[index].unk_1E = 0;
-            setEntityAnimationWithDirectionChange(gFarmAnimals[index].spriteIndex, 0x38);
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x38);
 
             if (gFarmAnimals[index].flags & 0x200 || gFarmAnimals[index].flags & 0x400) {
                 
-                gFarmAnimals[index].unk_1C = func_80060EC8(entities[gFarmAnimals[index].spriteIndex].coordinates.x, entities[gFarmAnimals[index].spriteIndex].coordinates.z, entities[PLAYER].coordinates.x, entities[PLAYER].coordinates.z);
+                gFarmAnimals[index].direction = calculateAnimalDirectionToPlayer(entities[gFarmAnimals[index].entityIndex].coordinates.x, entities[gFarmAnimals[index].entityIndex].coordinates.z, entities[PLAYER].coordinates.x, entities[PLAYER].coordinates.z);
                 gFarmAnimals[index].unk_1B = 1;
             
             } else if (getRandomNumberInRange(0, 60) < 40) {
@@ -785,7 +3232,7 @@ void func_80092A64(u8 index) {
                 temp = getRandomNumberInRange(0, 20);
                 
                 if (temp < 7) {
-                    gFarmAnimals[index].unk_1C = temp;
+                    gFarmAnimals[index].direction = temp;
                 }
 
                 temp = getRandomNumberInRange(0, 2);
@@ -813,12 +3260,12 @@ void func_80092A64(u8 index) {
             gFarmAnimals[index].unk_1D = 0;
             gFarmAnimals[index].unk_1E = 0;
             gFarmAnimals[index].unk_14 = 1.0f;
-            setEntityAnimationWithDirectionChange(gFarmAnimals[index].spriteIndex, 0x40);
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x40);
 
             if (gFarmAnimals[index].flags & 0x200) {
 
                 gFarmAnimals[index].flags &= ~0x400;
-                gFarmAnimals[index].unk_1C = func_80060EC8(entities[gFarmAnimals[index].spriteIndex].coordinates.x, entities[gFarmAnimals[index].spriteIndex].coordinates.z, entities[PLAYER].coordinates.x, entities[PLAYER].coordinates.z);
+                gFarmAnimals[index].direction = calculateAnimalDirectionToPlayer(entities[gFarmAnimals[index].entityIndex].coordinates.x, entities[gFarmAnimals[index].entityIndex].coordinates.z, entities[PLAYER].coordinates.x, entities[PLAYER].coordinates.z);
 
                 if (!getRandomNumberInRange(0, 20)) {
                     gFarmAnimals[index].flags &= ~0x200;
@@ -846,7 +3293,7 @@ void func_80092A64(u8 index) {
             gFarmAnimals[index].unk_14 = 0;
             gFarmAnimals[index].unk_1D = 0;
             gFarmAnimals[index].unk_1E = 0;
-            setEntityAnimationWithDirectionChange(gFarmAnimals[index].spriteIndex, 0x48);
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x48);
             
             if (!getRandomNumberInRange(0, 2)) {
                 gFarmAnimals[index].unk_1B = 2;
@@ -862,7 +3309,7 @@ void func_80092A64(u8 index) {
             gFarmAnimals[index].unk_14 = 0;
             gFarmAnimals[index].unk_1D = 0;
             gFarmAnimals[index].unk_1E = 0;
-            setEntityAnimationWithDirectionChange(gFarmAnimals[index].spriteIndex, 0x50);
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x50);
             gFarmAnimals[index].unk_1B = 4;
             gFarmAnimals[index].flags |= 2;
             break;
@@ -872,7 +3319,7 @@ void func_80092A64(u8 index) {
             gFarmAnimals[index].unk_14 = 0;
             gFarmAnimals[index].unk_1D = 0;
             gFarmAnimals[index].unk_1E = 0;
-            setEntityAnimationWithDirectionChange(gFarmAnimals[index].spriteIndex, 0x58);
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x58);
 
             temp = getRandomNumberInRange(0, 11);
 
@@ -897,7 +3344,7 @@ void func_80092A64(u8 index) {
             gFarmAnimals[index].unk_14 = 0;
             gFarmAnimals[index].unk_1D = 0;
             gFarmAnimals[index].unk_1E = 0;
-            setEntityAnimationWithDirectionChange(gFarmAnimals[index].spriteIndex, 0x60);
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x60);
 
             if (getRandomNumberInRange(0, 4) >= 4) {
                 gFarmAnimals[index].unk_1B = 4;
@@ -914,7 +3361,7 @@ void func_80092A64(u8 index) {
             gFarmAnimals[index].unk_14 = 0;
             gFarmAnimals[index].unk_1D = 0;
             gFarmAnimals[index].unk_1E = 0;
-            setEntityAnimationWithDirectionChange(gFarmAnimals[index].spriteIndex, 0x50);
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x50);
             gFarmAnimals[index].unk_1B = 0;
             gFarmAnimals[index].flags |= 2;
             
@@ -925,7 +3372,7 @@ void func_80092A64(u8 index) {
             gFarmAnimals[index].unk_14 = 0;
             gFarmAnimals[index].unk_1D = 0;
             gFarmAnimals[index].unk_1E = 0;
-            setEntityAnimationWithDirectionChange(gFarmAnimals[index].spriteIndex, 0x38);
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x38);
             gFarmAnimals[index].flags |= (0x2 | 0x2000);
             gFarmAnimals[index].flags &= ~0x400;
             break;
@@ -935,7 +3382,7 @@ void func_80092A64(u8 index) {
             gFarmAnimals[index].unk_14 = 0;
             gFarmAnimals[index].unk_1D = 0;
             gFarmAnimals[index].unk_1E = 0;
-            setEntityAnimationWithDirectionChange(gFarmAnimals[index].spriteIndex, 0x38);
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x38);
             gFarmAnimals[index].unk_1B = 0;
             gFarmAnimals[index].flags |= (0x2 | 0x2000);
             gFarmAnimals[index].flags &= ~0x400;
@@ -947,7 +3394,7 @@ void func_80092A64(u8 index) {
             gFarmAnimals[index].unk_14 = 0;
             gFarmAnimals[index].unk_1D = 0;
             gFarmAnimals[index].unk_1E = 0;
-            setEntityAnimationWithDirectionChange(gFarmAnimals[index].spriteIndex, 0x68);
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x68);
             gFarmAnimals[index].unk_1B = 0;
             gFarmAnimals[index].flags |= (0x2 | 0x2000);
             gFarmAnimals[index].flags &= ~0x400;
@@ -958,7 +3405,7 @@ void func_80092A64(u8 index) {
             gFarmAnimals[index].unk_14 = 0;
             gFarmAnimals[index].unk_1D = 0;
             gFarmAnimals[index].unk_1E = 0;
-            setEntityAnimationWithDirectionChange(gFarmAnimals[index].spriteIndex, 0x68);
+            setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x68);
             gFarmAnimals[index].unk_1B = 0x13;
             gFarmAnimals[index].flags |= (0x2 | 0x2000);
             gFarmAnimals[index].flags &= ~0x400;
@@ -972,22 +3419,22 @@ INCLUDE_ASM("asm/nonmatchings/game/animals", func_800931D8);
 
 INCLUDE_ASM("asm/nonmatchings/game/animals", func_80093434);
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_80093B80);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", updateHorse);
 
-void func_80093B80(void) {
+void updateHorse(void) {
 
     Vec3f vec;
 
     if ((horseInfo.flags & 1) && (horseInfo.flags & 4)) {
 
-        if (checkEntityAnimationStateChanged(horseInfo.spriteIndex) || horseInfo.flags & 0x20) {
+        if (checkEntityAnimationStateChanged(horseInfo.entityIndex) || horseInfo.flags & 0x20) {
             
             switch (horseInfo.grown) {
                 case FALSE:
-                    func_8009427C();
+                    updateHorseNotGrown();
                     break;                    
                 case TRUE:
-                    func_80093CE0();
+                    updateHorseGrown();
                     break;
             }
             
@@ -995,22 +3442,21 @@ void func_80093B80(void) {
             
         }
         
-        setEntityDirection(horseInfo.spriteIndex, convertSpriteToMapDirection(horseInfo.direction, MAIN_MAP_INDEX));
-        getMovementVectorFromDirection(&vec, horseInfo.unk_19, horseInfo.direction, 0.0f);
-        func_8002FE10(horseInfo.spriteIndex, vec.x, vec.y, vec.z, horseInfo.unk_19);
+        setEntityDirection(horseInfo.entityIndex, convertSpriteToMapDirection(horseInfo.direction, MAIN_MAP_INDEX));
+        vec = getMovementVectorFromDirection(horseInfo.unk_19, horseInfo.direction, 0.0f);
+        func_8002FE10(horseInfo.entityIndex, vec.x, vec.y, vec.z, horseInfo.unk_19);
 
     } 
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/animals", func_80093CE0);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", updateHorseGrown);
 
-#ifdef PERMUTER
-void func_8009427C(void) {
+void updateHorseGrown(void) {
 
     u16 tempDirection;
     u16 temp;
     
-    switch (horseInfo.unk_17) {
+    switch (horseInfo.speed) {
 
         case 0:
             
@@ -1018,46 +3464,56 @@ void func_8009427C(void) {
             horseInfo.unk_1A = 0;
             horseInfo.unk_1B = 0;
             
-            setEntityAnimationWithDirectionChange(horseInfo.spriteIndex, 0);
+            setEntityAnimationWithDirectionChange(horseInfo.entityIndex, 0);
             
             if (horseInfo.flags & 0x10) {
 
-                horseInfo.direction = func_80060EC8(entities[horseInfo.spriteIndex].coordinates.x, entities[horseInfo.spriteIndex].coordinates.z, entities[PLAYER].coordinates.x, entities[PLAYER].coordinates.z);
-                horseInfo.unk_17 = 4;
-                
-            } else if (getRandomNumberInRange(0, 60) >= 40) {
-
-                tempDirection = getRandomNumberInRange(0, 20);
-
-                if (tempDirection < MAX_DIRECTIONS) {
-                    horseInfo.direction = tempDirection;
-                }
-
-                temp = getRandomNumberInRange(0, 5);
-
-                if (temp == 0) {
-                    horseInfo.unk_17 = 1;
-                }
-                
-                if (temp == 1) {
-                    horseInfo.unk_17 = 2;
-                }
-
-                if (temp == 2) {
-                    horseInfo.unk_17 = 3;
-                }
-
-                if (temp == 3) {
-                    horseInfo.unk_17 = 4;
-                }
-
-                if (temp == 4) {
-                    horseInfo.unk_17 = 5;
-                }
+                horseInfo.direction = calculateAnimalDirectionToPlayer(entities[horseInfo.entityIndex].coordinates.x, entities[horseInfo.entityIndex].coordinates.z, entities[PLAYER].coordinates.x, entities[PLAYER].coordinates.z);
+                horseInfo.speed = 4;
                 
             } else {
-                horseInfo.unk_17 = 0;
-            }
+
+                if (getRandomNumberInRange(0, 60) < 40)  {
+                    
+                    horseInfo.speed = 0;
+                    
+                } else {
+                        
+                    tempDirection = getRandomNumberInRange(0, 20);
+
+                    if (tempDirection < 7) {
+                        horseInfo.direction = tempDirection;
+                    }
+
+                    temp = getRandomNumberInRange(0, 5);
+
+                    if (temp == 0) {
+                        horseInfo.speed = 1;
+                    }
+                    
+                    if (temp == 1) {
+                        horseInfo.speed = 2;
+                    }
+
+                    if (temp == 2) {
+                        horseInfo.speed = 3;
+                    }
+
+                    if (temp == 3) {
+                        horseInfo.speed = 4;
+                    }
+
+                    if (temp == 4) {
+                        horseInfo.speed = 5;
+                    }
+
+                    if (temp == 5) {
+                        horseInfo.speed = 6;
+                    }
+                    
+                }
+
+            } 
             
             horseInfo.flags |= 2;
             break;
@@ -1068,12 +3524,12 @@ void func_8009427C(void) {
             horseInfo.unk_1A = 0;
             horseInfo.unk_1B = 0;
             
-            setEntityAnimationWithDirectionChange(horseInfo.spriteIndex, 8);
+            setEntityAnimationWithDirectionChange(horseInfo.entityIndex, 8);
             
-            if (getRandomNumberInRange(0, 0x14) < 10) {
-                horseInfo.unk_17 = 1;
+            if (getRandomNumberInRange(0, 20) < 10) {
+                horseInfo.speed = 1;
             } else {
-                horseInfo.unk_17 = 0;
+                horseInfo.speed = 0;
             }
 
             horseInfo.flags |= 2;
@@ -1084,12 +3540,13 @@ void func_8009427C(void) {
             horseInfo.unk_19 = 0;
             horseInfo.unk_1A = 0;
             horseInfo.unk_1B = 0;
-            setEntityAnimationWithDirectionChange(horseInfo.spriteIndex, 0x20);
+            
+            setEntityAnimationWithDirectionChange(horseInfo.entityIndex, 0x20U);
 
-            if (!getRandomNumberInRange(0, 2)) {
-                horseInfo.unk_17 = 2;
+            if (getRandomNumberInRange(0, 2) == 0) {
+                horseInfo.speed = 2;
             } else {   
-                horseInfo.unk_17 = 0;    
+                horseInfo.speed = 0;    
             }       
             
             horseInfo.flags |= 2;
@@ -1101,9 +3558,9 @@ void func_8009427C(void) {
             horseInfo.unk_1A = 0;
             horseInfo.unk_1B = 0;
             
-            setEntityAnimationWithDirectionChange(horseInfo.spriteIndex, 0x18);
+            setEntityAnimationWithDirectionChange(horseInfo.entityIndex, 0x18);
             
-            horseInfo.unk_17 = 6;
+            horseInfo.speed = 7;
             horseInfo.flags |= 2;
             
             break;
@@ -1114,24 +3571,24 @@ void func_8009427C(void) {
             horseInfo.unk_1A = 0;
             horseInfo.unk_1B = 0;
             
-            setEntityAnimationWithDirectionChange(horseInfo.spriteIndex, 0x10);
+            setEntityAnimationWithDirectionChange(horseInfo.entityIndex, 0x10);
 
             if (horseInfo.flags & 0x10) {
                 
-                horseInfo.direction = func_80060EC8(entities[horseInfo.spriteIndex].coordinates.x, entities[horseInfo.spriteIndex].coordinates.z, entities[PLAYER].coordinates.x, entities[PLAYER].coordinates.z);
+                horseInfo.direction = calculateAnimalDirectionToPlayer(entities[horseInfo.entityIndex].coordinates.x, entities[horseInfo.entityIndex].coordinates.z, entities[PLAYER].coordinates.x, entities[PLAYER].coordinates.z);
                 
-                if (!getRandomNumberInRange(0, 20)) {
+                if (getRandomNumberInRange(0, 20) == 0) {
                     horseInfo.flags &= ~(0x10);
                 }
-
+                
             } else {
                 
-                if (!getRandomNumberInRange(0, 2)) {
-                    horseInfo.unk_17 = 4;
+                if (getRandomNumberInRange(0, 19) < 10) {
+                    horseInfo.speed = 4;
                 } else {                
-                    horseInfo.unk_17 = 0;    
+                    horseInfo.speed = 0;    
                 }
-            
+                
             }
         
             horseInfo.flags |= 2;
@@ -1143,12 +3600,12 @@ void func_8009427C(void) {
             horseInfo.unk_1A = 0;
             horseInfo.unk_1B = 0;
             
-            setEntityAnimationWithDirectionChange(horseInfo.spriteIndex, 0x30);
+            setEntityAnimationWithDirectionChange(horseInfo.entityIndex, 0x48);
 
-            if (!getRandomNumberInRange(0, 2)) {
-                horseInfo.unk_17 = 5;
+            if (getRandomNumberInRange(0, 2) == 0) {
+                horseInfo.speed = 5;
             } else {   
-                horseInfo.unk_17 = 0;    
+                horseInfo.speed = 0;    
             }
            
             horseInfo.flags |= 2;
@@ -1160,16 +3617,51 @@ void func_8009427C(void) {
             horseInfo.unk_1A = 0;
             horseInfo.unk_1B = 0;
             
-            setEntityAnimationWithDirectionChange(horseInfo.spriteIndex, 0x28);
+            setEntityAnimationWithDirectionChange(horseInfo.entityIndex, 0x50);
 
-            if (getRandomNumberInRange(0, 2)) {
-                horseInfo.unk_17 = 0;    
+            if (getRandomNumberInRange(0, 2) == 0) {
+                horseInfo.speed = 6;
             } else {
-                horseInfo.unk_17 = 6;
+                horseInfo.speed = 0;    
             }
            
             horseInfo.flags |= 2;
             break;
+
+        case 7:
+
+            horseInfo.unk_19 = 0;
+            horseInfo.unk_1A = 0;
+            horseInfo.unk_1B = 0;
+            
+            setEntityAnimationWithDirectionChange(horseInfo.entityIndex, 0x28);
+
+            if (getRandomNumberInRange(0, 2) == 0) {
+                horseInfo.speed = 7;
+            } else {
+                horseInfo.speed = 0;    
+            }
+           
+            horseInfo.flags |= 2;
+            break;
+
+        case 8:
+            
+            horseInfo.unk_19 = 0;
+            horseInfo.unk_1A = 0;
+            horseInfo.unk_1B = 0;
+            
+            setEntityAnimationWithDirectionChange(horseInfo.entityIndex, 0x30);
+
+            if (getRandomNumberInRange(0, 2) == 0) {
+                horseInfo.speed = 8;
+            } else {
+                horseInfo.speed = 0;    
+            }
+           
+            horseInfo.flags |= 2;
+            break;
+        
         
         case 16:
             
@@ -1177,7 +3669,7 @@ void func_8009427C(void) {
             horseInfo.unk_1A = 0;
             horseInfo.unk_1B = 0;
             
-            setEntityAnimationWithDirectionChange(horseInfo.spriteIndex, 0);
+            setEntityAnimationWithDirectionChange(horseInfo.entityIndex, 0);
             
             horseInfo.flags |= (0x2 | 0x80); 
             horseInfo.flags &= ~(0x40);
@@ -1190,9 +3682,9 @@ void func_8009427C(void) {
             horseInfo.unk_1A = 0;
             horseInfo.unk_1B = 0;
             
-            setEntityAnimationWithDirectionChange(horseInfo.spriteIndex, 0x30);
+            setEntityAnimationWithDirectionChange(horseInfo.entityIndex, 0x48);
             
-            horseInfo.unk_17 = 0;
+            horseInfo.speed = 0;
             horseInfo.flags |= (0x2 | 0x80); 
             horseInfo.flags &= ~(0x40);
             
@@ -1206,24 +3698,346 @@ void func_8009427C(void) {
             horseInfo.unk_1A = 0;
             horseInfo.unk_1B = 0;
             
-            setEntityAnimationWithDirectionChange(horseInfo.spriteIndex, 0);
+            setEntityAnimationWithDirectionChange(horseInfo.entityIndex, 0);
             
-            horseInfo.unk_17 = 0;
+            horseInfo.speed = 0;
             horseInfo.flags |= (0x2 | 0x80); 
             horseInfo.flags &= ~(0x40);
             
             setAudio(0x38);
             
             break;
+
+        default:
+            break;
         
     }
     
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game/animals", func_8009427C);
-#endif
 
-INCLUDE_ASM("asm/nonmatchings/game/animals", func_8009476C);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", updateHorseNotGrown);
+
+void updateHorseNotGrown(void) {
+
+    u16 tempDirection;
+    u16 temp;
+    
+    switch (horseInfo.speed) {
+
+        case 0:
+            
+            horseInfo.unk_19 = 0;
+            horseInfo.unk_1A = 0;
+            horseInfo.unk_1B = 0;
+            
+            setEntityAnimationWithDirectionChange(horseInfo.entityIndex, 0);
+            
+            if (horseInfo.flags & 0x10) {
+
+                horseInfo.direction = calculateAnimalDirectionToPlayer(entities[horseInfo.entityIndex].coordinates.x, entities[horseInfo.entityIndex].coordinates.z, entities[PLAYER].coordinates.x, entities[PLAYER].coordinates.z);
+                horseInfo.speed = 4;
+                
+            } else {
+
+                if (getRandomNumberInRange(0, 60) < 40)  {
+                    
+                    horseInfo.speed = 0;
+                    
+                } else {
+                        
+                    tempDirection = getRandomNumberInRange(0, 20);
+
+                    if (tempDirection < 7) {
+                        horseInfo.direction = tempDirection;
+                    }
+
+                    temp = getRandomNumberInRange(0, 5);
+
+                    if (temp == 0) {
+                        horseInfo.speed = 1;
+                    }
+                    
+                    if (temp == 1) {
+                        horseInfo.speed = 2;
+                    }
+
+                    if (temp == 2) {
+                        horseInfo.speed = 3;
+                    }
+
+                    if (temp == 3) {
+                        horseInfo.speed = 4;
+                    }
+
+                    if (temp == 4) {
+                        horseInfo.speed = 5;
+                    }
+                    
+                }
+
+            } 
+            
+            horseInfo.flags |= 2;
+            break;
+
+        case 1:
+
+            horseInfo.unk_19 = 1;
+            horseInfo.unk_1A = 0;
+            horseInfo.unk_1B = 0;
+            
+            setEntityAnimationWithDirectionChange(horseInfo.entityIndex, 8);
+            
+            if (getRandomNumberInRange(0, 20) < 10) {
+                horseInfo.speed = 1;
+            } else {
+                horseInfo.speed = 0;
+            }
+
+            horseInfo.flags |= 2;
+            break;
+
+        case 2:
+
+            horseInfo.unk_19 = 0;
+            horseInfo.unk_1A = 0;
+            horseInfo.unk_1B = 0;
+            
+            setEntityAnimationWithDirectionChange(horseInfo.entityIndex, 0x20U);
+
+            if (getRandomNumberInRange(0, 2) == 0) {
+                horseInfo.speed = 2;
+            } else {   
+                horseInfo.speed = 0;    
+            }       
+            
+            horseInfo.flags |= 2;
+            break;
+
+        case 3:
+
+            horseInfo.unk_19 = 0;
+            horseInfo.unk_1A = 0;
+            horseInfo.unk_1B = 0;
+            
+            setEntityAnimationWithDirectionChange(horseInfo.entityIndex, 0x18);
+            
+            horseInfo.speed = 6;
+            horseInfo.flags |= 2;
+            
+            break;
+
+        case 4:
+
+            horseInfo.unk_19 = 2;
+            horseInfo.unk_1A = 0;
+            horseInfo.unk_1B = 0;
+            
+            setEntityAnimationWithDirectionChange(horseInfo.entityIndex, 0x10);
+
+            if (horseInfo.flags & 0x10) {
+                
+                horseInfo.direction = calculateAnimalDirectionToPlayer(entities[horseInfo.entityIndex].coordinates.x, entities[horseInfo.entityIndex].coordinates.z, entities[PLAYER].coordinates.x, entities[PLAYER].coordinates.z);
+                
+                if (getRandomNumberInRange(0, 20) == 0) {
+                    horseInfo.flags &= ~(0x10);
+                }
+                
+            } else {
+                
+                if (getRandomNumberInRange(0, 2) == 0) {
+                    horseInfo.speed = 4;
+                } else {                
+                    horseInfo.speed = 0;    
+                }
+                
+            }
+        
+            horseInfo.flags |= 2;
+            break;
+
+        case 5:
+
+            horseInfo.unk_19 = 0;
+            horseInfo.unk_1A = 0;
+            horseInfo.unk_1B = 0;
+            
+            setEntityAnimationWithDirectionChange(horseInfo.entityIndex, 0x30);
+
+            if (getRandomNumberInRange(0, 2) == 0) {
+                horseInfo.speed = 5;
+            } else {   
+                horseInfo.speed = 0;    
+            }
+           
+            horseInfo.flags |= 2;
+            break;
+
+        case 6:
+
+            horseInfo.unk_19 = 0;
+            horseInfo.unk_1A = 0;
+            horseInfo.unk_1B = 0;
+            
+            setEntityAnimationWithDirectionChange(horseInfo.entityIndex, 0x28);
+
+            if (getRandomNumberInRange(0, 2) == 0) {
+                horseInfo.speed = 6;
+            } else {
+                horseInfo.speed = 0;    
+            }
+           
+            horseInfo.flags |= 2;
+            break;
+        
+        case 16:
+            
+            horseInfo.unk_19 = 0;
+            horseInfo.unk_1A = 0;
+            horseInfo.unk_1B = 0;
+            
+            setEntityAnimationWithDirectionChange(horseInfo.entityIndex, 0);
+            
+            horseInfo.flags |= (0x2 | 0x80); 
+            horseInfo.flags &= ~(0x40);
+            
+            break;
+
+        case 17:
+
+            horseInfo.unk_19 = 0;
+            horseInfo.unk_1A = 0;
+            horseInfo.unk_1B = 0;
+            
+            setEntityAnimationWithDirectionChange(horseInfo.entityIndex, 0x30);
+            
+            horseInfo.speed = 0;
+            horseInfo.flags |= (0x2 | 0x80); 
+            horseInfo.flags &= ~(0x40);
+            
+            setAudio(0x39);
+            
+            break;
+
+        case 18:
+
+            horseInfo.unk_19 = 0;
+            horseInfo.unk_1A = 0;
+            horseInfo.unk_1B = 0;
+            
+            setEntityAnimationWithDirectionChange(horseInfo.entityIndex, 0);
+            
+            horseInfo.speed = 0;
+            horseInfo.flags |= (0x2 | 0x80); 
+            horseInfo.flags &= ~(0x40);
+            
+            setAudio(0x38);
+            
+            break;
+
+        default:
+            break;
+        
+    }
+    
+}
+
+//INCLUDE_ASM("asm/nonmatchings/game/animals", func_8009476C);
+
+void func_8009476C(u8 index) {
+
+    Vec3f vec;
+
+    if ((gChickenEggs[index].flags & 1) && (gChickenEggs[index].flags & 4)) {
+
+        if (checkEntityAnimationStateChanged(gChickenEggs[index].entityIndex) || gChickenEggs[index].unk_F == 0x20) {
+
+            switch (gChickenEggs[index].unk_15) {
+
+                case 0:
+                    func_80094A5C(index);
+                    break;
+                
+                case 1:
+                    func_800958EC(index);
+                    break;
+                
+                case 2:
+                    func_80096264(index);
+                    break;
+                
+                case 3:
+                case 4:
+                    func_800967E0(index);
+                    break;
+
+                case 6:
+                    func_80096978(index);
+                    break;
+                
+                case 5:
+                    func_80096DFC(index);
+                    break;
+                case 7:
+                    func_800973F8(index);
+                    break;
+                case 8:
+                    func_80097804(index);
+                    break;
+                case 9:
+                    func_80097CB0(index);
+                    break;
+                case 10:
+                    func_80098188(index);
+                    break;
+                case 11:
+                    func_80098740(index);
+                    break;
+                case 12:
+                    func_80098B3C(index);
+                    break;
+                case 13:
+                    func_80098F24(index);
+                    break;
+                case 14:
+                    func_800991C0(index);
+                    break;
+                case 15:
+                    func_80099424(index);
+                    break;
+                case 16:
+                    func_80099548(index);
+                    break;
+                case 17:
+                    func_800995F8(index);
+                    break;
+                case 18:
+                    func_80099804(index);
+                    break;
+                case 19:
+                    func_800999B0(index);
+                    break;
+                case 20:
+                    func_80099B5C(index);
+                    break;
+                case 21:
+                    func_80099C94(index);
+                    break;
+                
+            }
+
+        }
+        
+        setEntityDirection(gChickenEggs[index].entityIndex, (gChickenEggs[index].direction + 8 - getCurrentMapRotation(MAIN_MAP_INDEX)) % 8);
+        
+        vec = getMovementVectorFromDirection(gChickenEggs[index].zDisplacement, gChickenEggs[index].direction, 0.0f);
+        vec.y = gChickenEggs[index].yDisplacement;
+        
+        func_8002FE10(gChickenEggs[index].entityIndex, vec.x, vec.y, vec.z, gChickenEggs[index].zDisplacement);
+        
+    }
+    
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/animals", func_80094A5C);
 
@@ -1241,7 +4055,6 @@ INCLUDE_ASM("asm/nonmatchings/game/animals", func_800973F8);
 
 INCLUDE_ASM("asm/nonmatchings/game/animals", func_80097804);
 
-// jtbl_80120E20
 INCLUDE_ASM("asm/nonmatchings/game/animals", func_80097CB0);
 
 INCLUDE_ASM("asm/nonmatchings/game/animals", func_80098188);
@@ -1254,27 +4067,337 @@ INCLUDE_ASM("asm/nonmatchings/game/animals", func_80098F24);
 
 INCLUDE_ASM("asm/nonmatchings/game/animals", func_800991C0);
 
-INCLUDE_ASM("asm/nonmatchings/game/animals", func_80099424);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", func_80099424);
 
-INCLUDE_ASM("asm/nonmatchings/game/animals", func_80099548);
+void func_80099424(u8 index) {
 
-INCLUDE_ASM("asm/nonmatchings/game/animals", func_800995F8);
+    switch (gChickenEggs[index].unk_F) {
 
-INCLUDE_ASM("asm/nonmatchings/game/animals", func_80099804);
+        case 0:
+        case 1:
 
-INCLUDE_ASM("asm/nonmatchings/game/animals", func_800999B0);
+            func_8003019C(gChickenEggs[index].entityIndex, 0);
+            func_80030240(gChickenEggs[index].entityIndex, 0);
+    
+            entities[gChickenEggs[index].entityIndex].unk_64 = 0x20;
+    
+            gChickenEggs[index].zDisplacement = 1;
+            gChickenEggs[index].unk_13 = 0;
+            gChickenEggs[index].unk_14 = 0;
+    
+            setEntityAnimation(gChickenEggs[index].entityIndex, 2);
+    
+            gChickenEggs[index].direction = getRandomNumberInRange(0, 7);
+            gChickenEggs[index].unk_F = 0;
+            gChickenEggs[index].flags |= 2;
+            
+            break;
+        
+        default:
+            break;
+        
+    }
+    
+}
 
-INCLUDE_ASM("asm/nonmatchings/game/animals", func_80099B5C);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", func_80099548);
 
-INCLUDE_ASM("asm/nonmatchings/game/animals", func_80099C94);
+void func_80099548(u8 index) {
 
+    switch (gChickenEggs[index].unk_F) {
+
+        case 0:
+        case 1:
+
+            gChickenEggs[index].zDisplacement = 0;
+            gChickenEggs[index].unk_13 = 0;
+            gChickenEggs[index].unk_14 = 0;
+    
+            setEntityAnimation(gChickenEggs[index].entityIndex, 0);
+
+            gChickenEggs[index].unk_F = 0;
+            gChickenEggs[index].flags |= 2;
+
+            break;
+        
+        default:
+            break;
+    
+    }
+    
+}
+
+//INCLUDE_ASM("asm/nonmatchings/game/animals", func_800995F8);
+
+void func_800995F8(u8 index) {
+
+    switch (gChickenEggs[index].unk_F) {
+
+        case 0:
+
+            gChickenEggs[index].zDisplacement = 0;
+            gChickenEggs[index].unk_13 = 0;
+            gChickenEggs[index].unk_14 = 0;
+
+            setEntityAnimation(gChickenEggs[index].entityIndex, 0);
+
+            entities[gChickenEggs[index].entityIndex].unk_64 = 0x40;
+
+            gChickenEggs[index].flags |= 2;
+
+            if (!(5 < gHour && gHour < 16)) {
+                setAudio(0x51);
+            } else {
+                setAudio(0x4E);
+            }
+            
+            break;
+        
+        case 1:
+
+            func_8003019C(gChickenEggs[index].entityIndex, 0);
+            func_80030240(gChickenEggs[index].entityIndex, 0);
+            func_800302E4(gChickenEggs[index].entityIndex, 0);
+            func_80030054(gChickenEggs[index].entityIndex, 0);
+            setEntityShadow(gChickenEggs[index].entityIndex, 0xFF);
+
+            entities[gChickenEggs[index].entityIndex].unk_64 = 0;
+
+            setEntityAnimation(gChickenEggs[index].entityIndex, 2);
+
+            gChickenEggs[index].zDisplacement = 4;
+            gChickenEggs[index].yDisplacement = 2;
+
+            gChickenEggs[index].flags |= 2;
+
+            gChickenEggs[index].unk_13++;
+            
+            break;    
+        
+    }
+    
+}
+
+//INCLUDE_ASM("asm/nonmatchings/game/animals", func_80099804);
+
+void func_80099804(u8 index) {
+
+     switch (gChickenEggs[index].unk_F) {
+
+        case 0:
+
+            gChickenEggs[index].zDisplacement = 0;
+            gChickenEggs[index].unk_13 = 0;
+            gChickenEggs[index].unk_14 = 0;
+
+            setEntityAnimation(gChickenEggs[index].entityIndex, 0);
+
+            gChickenEggs[index].flags |= 2;
+
+            break;
+        
+        case 1:
+
+            func_8003019C(gChickenEggs[index].entityIndex, 0);
+            func_80030240(gChickenEggs[index].entityIndex, 0);
+            func_800302E4(gChickenEggs[index].entityIndex, 0);
+            func_80030054(gChickenEggs[index].entityIndex, 0);
+            setEntityShadow(gChickenEggs[index].entityIndex, 0xFF);
+
+            entities[gChickenEggs[index].entityIndex].unk_64 = 0;
+
+            setEntityAnimation(gChickenEggs[index].entityIndex, 4);
+
+            gChickenEggs[index].zDisplacement = 4;
+            gChickenEggs[index].yDisplacement = 2;
+
+            gChickenEggs[index].flags |= 2;
+
+            gChickenEggs[index].unk_13++;
+            
+            break;    
+        
+    }
+    
+}
+
+//INCLUDE_ASM("asm/nonmatchings/game/animals", func_800999B0);
+
+void func_800999B0(u8 index) {
+
+    switch (gChickenEggs[index].unk_F) {
+
+        case 0:
+
+            gChickenEggs[index].zDisplacement = 0;
+            gChickenEggs[index].unk_13 = 0;
+            gChickenEggs[index].unk_14 = 0;
+
+            setEntityAnimation(gChickenEggs[index].entityIndex, 0);
+
+            gChickenEggs[index].flags |= 2;
+
+            break;
+        
+        case 1:
+
+            func_8003019C(gChickenEggs[index].entityIndex, 0);
+            func_80030240(gChickenEggs[index].entityIndex, 0);
+            func_800302E4(gChickenEggs[index].entityIndex, 0);
+            func_80030054(gChickenEggs[index].entityIndex, 0);
+            setEntityShadow(gChickenEggs[index].entityIndex, 0xFF);
+
+            entities[gChickenEggs[index].entityIndex].unk_64 = 0;
+
+            setEntityAnimation(gChickenEggs[index].entityIndex, 4);
+
+            gChickenEggs[index].zDisplacement = 4;
+            gChickenEggs[index].yDisplacement = 2;
+
+            gChickenEggs[index].flags |= 2;
+
+            gChickenEggs[index].unk_13++;
+            
+            break;    
+        
+    }
+    
+}
+
+//INCLUDE_ASM("asm/nonmatchings/game/animals", func_80099B5C);
+
+void func_80099B5C(u8 index) {
+
+    u16 temp;
+    
+    switch (gChickenEggs[index].unk_F) {
+
+        case 0:
+        case 1:
+
+            func_8003019C(gChickenEggs[index].entityIndex, 0);
+            func_80030240(gChickenEggs[index].entityIndex, 0);
+                        
+            entities[gChickenEggs[index].entityIndex].unk_64 = 0x20;
+
+            gChickenEggs[index].zDisplacement = 1;
+            gChickenEggs[index].unk_13 = 0;
+            gChickenEggs[index].unk_14 = 0;
+
+            setEntityAnimation(gChickenEggs[index].entityIndex, 2);
+
+            temp = getRandomNumberInRange(0, 20);
+
+            if (temp < 7) {
+                gChickenEggs[index].direction = temp;
+            }
+            
+            gChickenEggs[index].unk_F = 0;
+            gChickenEggs[index].flags |= 2;
+            
+            break;    
+        
+    }
+    
+}
+
+//INCLUDE_ASM("asm/nonmatchings/game/animals", func_80099C94);
+
+void func_80099C94(u8 index) {
+    
+    switch (gChickenEggs[index].unk_F) {
+
+        case 0:
+
+            gChickenEggs[index].zDisplacement = 0;
+            gChickenEggs[index].unk_13 = 0;
+            gChickenEggs[index].unk_14 = 0;
+
+            setEntityAnimation(gChickenEggs[index].entityIndex, 0);
+
+            gChickenEggs[index].flags |= 2;
+
+            break;
+        
+        case 1:
+
+            setEntityAnimation(gChickenEggs[index].entityIndex, 2);
+            gChickenEggs[index].flags |= 2;
+
+            if (gChickenEggs[index].unk_13 < 0x21) {
+                gChickenEggs[index].zDisplacement = 2;
+                gChickenEggs[index].yDisplacement = 0;
+                gChickenEggs[index].unk_13++;
+            } else {
+                deactivateEntity(gChickenEggs[index].entityIndex);
+                gChickenEggs[index].flags = 0;
+            }
+
+
+            
+            break;    
+        
+    }
+    
+}
+
+#ifdef PERMUTER
+void func_80099DE8(void) {
+
+    bool set = FALSE;
+    u8 i;
+
+    func_800305CC(PLAYER, 0.0f, 8.0f, set);
+
+    for (i = 0; i < MAX_FARM_ANIMALS && set == FALSE; i++) {
+
+        if ((gFarmAnimals[i].flags & 4) && (entities[gFarmAnimals[i].entityIndex].unk_58 == 0)) {
+            func_800861A4(2, i, 0xFF, 0xFF, 0x10);
+            set = TRUE;
+            gFarmAnimals[i].flags |= 0x8000; 
+        }
+        
+    }
+    
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/game/animals", func_80099DE8);
+#endif
 
 INCLUDE_ASM("asm/nonmatchings/game/animals", func_80099EEC);
 
-INCLUDE_ASM("asm/nonmatchings/game/animals", func_80099FF0);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", func_80099FF0);
 
-INCLUDE_ASM("asm/nonmatchings/game/animals", func_8009A074);
+void func_80099FF0(void) {
+
+    func_800305CC(PLAYER, 0.0f, 8.0f, 0);
+    
+    if ((dogInfo.flags & 4) && (entities[dogInfo.entityIndex].unk_58 == 0)) {
+        dogInfo.speed = 0x20;
+        dogInfo.flags |= 0x20;
+    }
+    
+}
+
+//INCLUDE_ASM("asm/nonmatchings/game/animals", func_8009A074);
+
+bool func_8009A074(void) {
+    
+    bool result;
+
+    func_800305CC(PLAYER, 0.0f, 8.0f, 0);
+    
+    result = 0;
+
+    if ((horseInfo.flags & 4) && (entities[horseInfo.entityIndex].unk_58 == 0)) {
+        result = 1;
+        horseInfo.speed = 0x10;
+        horseInfo.flags |= 0x20;
+    }
+    
+    return result;
+    
+}
 
 //INCLUDE_ASM("asm/nonmatchings/game/animals", func_8009A100);
 
@@ -1282,9 +4405,9 @@ bool func_8009A100(void) {
     
     bool result = FALSE;
 
-    if ((horseInfo.flags & 4) && (horseInfo.grown == TRUE) && (entities[horseInfo.spriteIndex].unk_58 == 0)) {
+    if ((horseInfo.flags & 4) && (horseInfo.grown == TRUE) && (entities[horseInfo.entityIndex].unk_58 == 0)) {
         
-        horseInfo.unk_17 = 0x10;
+        horseInfo.speed = 0x10;
         horseInfo.flags |=  0x20;
         result = TRUE;
         
@@ -1344,9 +4467,57 @@ void func_8009A17C(void) {
 INCLUDE_ASM("asm/nonmatchings/game/animals", func_8009A17C);
 #endif
 
-INCLUDE_ASM("asm/nonmatchings/game/animals", func_8009A2D0);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", func_8009A2D0);
 
-INCLUDE_ASM("asm/nonmatchings/game/animals", func_8009A398);
+// brush horse
+bool func_8009A2D0(void) {
+
+    bool result = FALSE;
+    
+    if (horseInfo.flags & 4) {
+
+        if (horseInfo.speed == 0x10) {
+            
+            horseInfo.speed = 0;
+            
+            if (!(horseInfo.flags & 0x100)) {
+                
+                horseInfo.speed = 0x11;
+                
+                adjustHorseAffection(2);
+            
+                horseInfo.flags |= (0x20 | 0x100);
+                func_8009BCC4(1, 0, 3);
+                result = TRUE;
+            
+            }
+                    
+        }
+    }
+    
+    return result;
+    
+}
+
+//INCLUDE_ASM("asm/nonmatchings/game/animals", func_8009A398);
+
+bool func_8009A398(void) {
+
+    bool result = FALSE;
+    
+    if ((horseInfo.flags & 4) && (horseInfo.speed == 0x10)) {
+        
+        horseInfo.speed = 0;
+        horseInfo.flags |= 0x20;
+        func_8009BCC4(1, 0, 1);
+        
+        result = TRUE;
+    
+    }
+
+    return result;
+    
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/animals", func_8009A400);
 
@@ -1469,9 +4640,127 @@ u8 func_8009B7BC(void) {
 
 INCLUDE_ASM("asm/nonmatchings/game/animals", func_8009B828);
 
-INCLUDE_ASM("asm/nonmatchings/game/animals", func_8009B914);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", func_8009B914);
 
-INCLUDE_ASM("asm/nonmatchings/game/animals", func_8009BA74);
+void func_8009B914(u16 arg0) {
+
+    u8 temp;
+    u16 temp2;
+    
+    switch (D_801C4216) {
+
+        case 2:
+            
+            if (gFarmAnimals[D_801FC155].goldenMilk == 0) {
+                
+                temp2 = D_80114AD8[0];
+                
+            } else {
+
+                temp = gFarmAnimals[D_801FC155].affection; 
+
+                if (temp < 151) {
+                    temp2 = D_80114AC0[0];
+                }
+                
+                if (150 < temp && temp < 221) {
+                    temp2 = D_80114AC8[0];
+                }
+    
+                if (temp >= 221) {
+                    temp2 = D_80114AD0[0];
+                }
+                    
+            }
+
+            D_801890E0 = temp2;
+            
+            break;
+
+        case 3:
+
+            temp = gFarmAnimals[D_801FC155].affection; 
+            
+            if (temp < 100) {
+                arg0 = D_80114AE0[0];
+            }
+            
+            if (99 < temp && temp < 200) {
+                arg0 = D_80114AE6[0];
+            }
+
+            if (temp >= 200) {
+                arg0 = D_80114AEC[0];
+            }
+
+            D_801890E0 = arg0;
+            
+            break;
+        
+        case 4:
+            D_801890E0 = 0x1F4;
+            break;
+
+        default:
+            break;
+    }
+
+    func_8003FBD8(0x12, D_801890E0, 0);
+    
+}
+
+//INCLUDE_ASM("asm/nonmatchings/game/animals", func_8009BA74);
+
+void func_8009BA74(u8 index) {
+
+    u16 temp;
+
+    if (1 < gFarmAnimals[index].type && gFarmAnimals[index].type < 4) {
+
+        if (gFarmAnimals[index].goldenMilk == 0) {
+            
+            temp = D_80114AD4[0];
+            
+        } else {
+
+            if (gFarmAnimals[index].affection < 151) {
+                temp = D_80114ABC[0];
+            }
+            
+            if (150 < gFarmAnimals[index].affection && gFarmAnimals[index].affection < 221) {
+                temp = D_80114AC4[0];
+            }
+
+            if (gFarmAnimals[index].affection >= 221) {
+                temp = D_80114ACC[0];
+            }
+            
+        }
+
+        switch (temp) {
+
+            case 0x15:
+                D_8016FBCC[0] = 0xB3;
+                break;
+            case 0x16:
+                D_8016FBCC[0] = 0xAD;
+                break;
+            case 0x17:
+                D_8016FBCC[0] = 0xAC;
+                break;
+            case 0x18:
+                D_8016FBCC[0] = 0xA7;
+                break;
+            default:
+                break;
+            
+        }
+        
+    } else {
+        D_8016FBCC[0] = 0xF6;
+    }
+
+}
 
 //INCLUDE_ASM("asm/nonmatchings/game/animals", func_8009BB70);
 
@@ -1485,14 +4774,43 @@ void func_8009BB70(void) {
     D_801886D4[5] = 0xF6;
 }
 
+#ifdef PERMUTER
+u8 func_8009BBAC(void) {
+
+    u8 temp;
+    u8 found = 0xFF;
+    u8 i = 0;
+
+    for (i = 0; i < MAX_FARM_ANIMALS; i++) {
+
+        if (gFarmAnimals[i].flags & 1) {
+
+            if ((1 < gFarmAnimals[i].type && gFarmAnimals[i].type < 4) || (gFarmAnimals[i].type == 0 || gFarmAnimals[i].type == 3)) {
+                
+                temp = gFarmAnimals[i].goldenMilk;
+    
+                if (i < temp) {
+                    found = temp;
+                }
+                
+            }
+            
+        }
+        
+    }
+
+    return found;
+    
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/game/animals", func_8009BBAC);
+#endif
 
-INCLUDE_ASM("asm/nonmatchings/game/animals", func_8009BC44);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", func_8009BC44);
 
-// FIXME: use dialogue box struct
-// u8 func_8009BC44(void) {
-//     return D_801886CC;
-// }
+u8 func_8009BC44(void) {
+    return dogInfo.unk_1C;
+}
 
 //INCLUDE_ASM("asm/nonmatchings/game/animals", func_8009BC54);
 
@@ -1528,23 +4846,23 @@ void func_8009BCC4(u8 animalType, u8 animalIndex, u8 arg2) {
     switch (animalType) {
 
         case DOG_TYPE:
-            setEntityTrackingTarget(0x30, dogInfo.spriteIndex, 0xFF);
+            setEntityTrackingTarget(0x30, dogInfo.entityIndex, 0xFF);
             break;
 
         case HORSE_TYPE:
-            setEntityTrackingTarget(0x30, horseInfo.spriteIndex, 0xFF);
+            setEntityTrackingTarget(0x30, horseInfo.entityIndex, 0xFF);
             break;
 
         case COW_TYPE:
-            setEntityTrackingTarget(0x30, gFarmAnimals[animalIndex].spriteIndex, 0xFF);
+            setEntityTrackingTarget(0x30, gFarmAnimals[animalIndex].entityIndex, 0xFF);
             break;
         
         case SHEEP_TYPE:
-            setEntityTrackingTarget(0x30, gFarmAnimals[animalIndex].spriteIndex, 0xFF);
+            setEntityTrackingTarget(0x30, gFarmAnimals[animalIndex].entityIndex, 0xFF);
             break;
 
         case CHICKEN_TYPE:
-            setEntityTrackingTarget(0x30, gChickens[animalIndex].spriteIndex, 0xFF);
+            setEntityTrackingTarget(0x30, gChickens[animalIndex].entityIndex, 0xFF);
             break;
 
         default:

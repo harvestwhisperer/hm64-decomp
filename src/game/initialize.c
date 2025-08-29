@@ -590,7 +590,7 @@ void initializeGameVariables(void) {
     toolUse.unk_E = 0;
 
     for (i = 0; i < TOTAL_NPCS; i++) {
-        npcInfoArray[i].spriteIndex = 0;
+        npcInfoArray[i].entityIndex = 0;
         npcInfoArray[i].unk_1A = 0;
         npcInfoArray[i].unk_1B = 0;
         npcInfoArray[i].levelIndex = 0;
@@ -611,7 +611,7 @@ void initializeGameVariables(void) {
     dogInfo.coordinates.y = 0;
     dogInfo.coordinates.z = 0;
     dogInfo.location = 0x52;
-    dogInfo.unk_17 = 0;
+    dogInfo.speed = 0;
     dogInfo.direction = NORTH;
     dogInfo.unk_19 = 0;
     dogInfo.unk_1A = 0;
@@ -631,7 +631,7 @@ void initializeGameVariables(void) {
     horseInfo.coordinates.y = 0;
     horseInfo.coordinates.z = 0;
     horseInfo.location = 0x52;
-    horseInfo.unk_17 = 0;
+    horseInfo.speed = 0;
     horseInfo.direction = NORTH;
     horseInfo.unk_19 = 0;
     horseInfo.unk_1A = 0;
@@ -678,7 +678,7 @@ void initializeGameVariables(void) {
         gFarmAnimals[i].location = 0;
          
         gFarmAnimals[i].unk_1B = 0;
-        gFarmAnimals[i].unk_1C = 0;
+        gFarmAnimals[i].direction = 0;
         gFarmAnimals[i].unk_14 = 0;
         gFarmAnimals[i].unk_1D = 0;
         gFarmAnimals[i].unk_1E = 0;
@@ -719,8 +719,8 @@ void initializeGameVariables(void) {
         gChickenEggs[i].unk_15 = 0;
         gChickenEggs[i].mapIndex = 0;
         gChickenEggs[i].unk_F = 0;
-        gChickenEggs[i].unk_10 = 0;
-        gChickenEggs[i].unk_11 = 0;
+        gChickenEggs[i].direction = 0;
+        gChickenEggs[i].zDisplacement = 0;
         gChickenEggs[i].unk_13 = 0;
         gChickenEggs[i].unk_14 = 0;
         gChickenEggs[i].unk_0.x = 0;

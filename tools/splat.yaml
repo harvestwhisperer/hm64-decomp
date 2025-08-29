@@ -130,7 +130,6 @@ segments:
       - [ 0xD6540, c, lib/nusys-1/nusched]
       - [ 0xD6D10, c, lib/nusys-1/nugfxthread]
       - [ 0xD6E60, c, lib/nusys-1/nugfxtaskmgr]
-      # [0xD6420, c] possible split, but doesn't seem like it
       - [ 0xD7250, c, lib/nusys-1/nugfxfuncset]
       - [ 0xD7290, c, lib/nusys-1/nugfxprenmifuncset]
       - [ 0xD72D0, c, lib/nusys-1/nugfxswapcfbfuncset]
@@ -215,7 +214,6 @@ segments:
       - [ 0xDBC90, c, lib/os/libultra/io/epilinkhandle]
       - [ 0xDBCE0, hasm, lib/os/libultra/libc/bcopy]
       - [ 0xDC000, hasm, lib/os/libultra/libc/bzero]
-        # TODO: contains osSyncPrintf; maybe change file or path
       - [ 0xDC0A0, c, lib/os/libultra/libc/syncPrintf]
       - [ 0xDC3F0, c, lib/os/libultra/audio/drvrnew]
       - [ 0xDCC20, c, lib/os/libultra/audio/env]

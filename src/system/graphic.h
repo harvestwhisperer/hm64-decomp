@@ -68,7 +68,7 @@ inline Plane calculatePlaneEquation(f32 x1, f32 y1, f32 z1, f32 x2, f32 y2, f32 
 extern f32 getHeightFromPlane(f32 arg0, f32 arg1, Plane vec);
 extern u8 isPointInTriangle(f32 pointX, f32 pointY, f32 pointZ, f32 v1x, f32 v1y, f32 v1z, f32 v2x, f32 v2y, f32 v2z, f32 v3x, f32 v3y, f32 v3z);
 extern f32 evaluatePlaneEquation(f32 arg0, f32 arg1, f32 arg2, Plane arg3);
-extern Vec3f* getMovementVectorFromDirection(Vec3f *outputVec, f32 zDisplacement, u8 direction, f32 yOffset);    
+extern Vec3f getMovementVectorFromDirection(f32 zDisplacement, u8 direction, f32 yOffset);    
 extern u8* func_80028888(u16 arg0, u32* arg1);                   
 extern u8 *func_800288A0(u16 arg0, u32 *arg1);
 extern u8* func_800288B8(u16 arg0, u32 *arg1, u8 *arg2);

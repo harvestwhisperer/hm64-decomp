@@ -100,12 +100,13 @@ void setAudio(u16 index) {
 
     } else {
 
-        // FIXME: for sfx used as background music?
+        // FIXME: labeling. Ssfx used as song?
         setSong(audioTypeTable[index], (u8*)sfxRomAddresses[index].romAddrStart, (u8*)sfxRomAddresses[index].romAddrEnd);
         setSongVolumes(audioTypeTable[index], volumesTable[index], volumesTable[index]);
     
     }
   }
+  
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/gameAudio", checkAllSfxInactive);

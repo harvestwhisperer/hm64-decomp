@@ -1709,7 +1709,7 @@ Vec3f* func_8003168C(Vec3f* arg0, u16 entityIndex, f32 arg2, f32 arg3) {
 
 //INCLUDE_ASM("asm/nonmatchings/system/entity", func_80031830);
 
-bool func_80031830(u16 index, u32 arg1, u8 arg2) {
+bool func_80031830(u16 index, s16 z, u8 direction) {
 
     Vec3f vec;
     
@@ -1725,7 +1725,7 @@ bool func_80031830(u16 index, u32 arg1, u8 arg2) {
     temp3 = entities[index].coordinates.y + 24.0f;
     temp4 = entities[index].coordinates.y - 24.0f;
     
-    func_80031904(&vec, index, arg1, arg2);
+    vec = func_80031904(index, z, direction);
     temp2 = func_80035150(MAIN_MAP_INDEX, vec.x, vec.z);
 
     check2 = 1;
@@ -1750,7 +1750,7 @@ bool func_80031830(u16 index, u32 arg1, u8 arg2) {
 
 //INCLUDE_ASM("asm/nonmatchings/system/entity", func_80031904);
 
-Vec3f* func_80031904(Vec3f* vec, u16 index, s16 arg2, u8 arg3) {
+Vec3f func_80031904(u16 index, s16 arg2, u8 arg3) {
 
     Vec3f vec1;
     Vec3f vec2;
@@ -1770,9 +1770,7 @@ Vec3f* func_80031904(Vec3f* vec, u16 index, s16 arg2, u8 arg3) {
     vec1.y = entities[index].coordinates.y + vec2.y;
     vec1.z = entities[index].coordinates.z + vec2.z;
 
-    *vec = vec1;
-    
-    return vec;
+    return vec1;
     
 }
 
@@ -1787,7 +1785,7 @@ void func_800321A8(u16 index) {
 
     if (func_80031A10(&entities[index], entities[index].unk_34.x, entities[index].unk_34.z, convertEntityToMapDirection(entities[index].direction, gMainMapIndex))) {
 
-        getMovementVectorFromDirection(&vec, entities[index].unk_4C, convertEntityToMapDirection(entities[index].direction, gMainMapIndex), 0);
+        vec = getMovementVectorFromDirection(entities[index].unk_4C, convertEntityToMapDirection(entities[index].direction, gMainMapIndex), 0);
 
         if (!(func_80031A10(&entities[index], vec.x, vec.z, convertEntityToMapDirection(entities[index].direction, gMainMapIndex)))) {
             entities[index].unk_34.x = vec.x;

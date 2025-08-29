@@ -28,7 +28,7 @@
 typedef struct {
 	u8 name[6];
 	Vec3f coordinates;
-	u16 spriteIndex;
+	u16 entityIndex;
 	u8 location;
 	u8 unk_17;
 	u8 direction;
@@ -48,10 +48,10 @@ typedef struct {
 	u8 name[6];
 	Vec3f coordinates;
 	f32 unk_14;
-	u16 spriteIndex;
+	u16 entityIndex;
 	u8 location;
 	u8 unk_1B;
-	u8 unk_1C; // likely direction
+	u8 direction;
 	u8 unk_1D;
 	u8 unk_1E;
 	u8 type; // 0x1F
@@ -70,9 +70,9 @@ typedef struct {
 	u8 affection; // 00
 	u8 name[6]; // 01-07
 	Vec3f coordinates; // 8
-	u16 spriteIndex; // 14
+	u16 entityIndex; // 14
 	u8 location; // 16
-	u8 unk_17; // 17
+	u8 speed; // 17
 	u8 direction; // 18
 	u8 unk_19; // 19
 	u8 unk_1A; // 1A
@@ -86,11 +86,11 @@ typedef struct {
 	u8 affection; // 00
 	u8 name[6]; // 01
 	Vec3f coordinates; // 08
-	u16 spriteIndex; // 14
+	u16 entityIndex; // 14
 	u8 location; // 16
-	u8 unk_17; // 17
+	u8 speed; // 17
 	u8 direction; // 18
-	u8 unk_19; // 19, might be speed
+	u8 unk_19; // 19
 	u8 unk_1A; // 1A
 	u8 unk_1B; // 1B
 	u8 grown; // 1C
@@ -112,12 +112,12 @@ typedef struct {
 // 0x8016FB08
 typedef struct {
 	Vec3f unk_0; // 08
-	u16 spriteIndex; // 14
+	u16 entityIndex; // 14
 	u8 mapIndex; // 16
 	u8 unk_F; // 17
-	u8 unk_10; // 18
-	u8 unk_11; // 19
-	u8 unk_12; // 1A
+	u8 direction; // 18
+	u8 zDisplacement; // 19
+	u8 yDisplacement; // 1A
 	u8 unk_13; // 1B
 	u8 unk_14; // 1C
 	u8 unk_15; // 1D
@@ -128,12 +128,12 @@ typedef struct {
 
 extern bool func_80086764();
 extern void func_800876D0();
-extern void func_800879C8();
-extern void func_80087CD4();
+extern void updateAnimalCoordinates();
+extern void updateAnimals();
 extern void func_80087D5C();
 extern void func_80087DEC();
 extern u8 func_80087F28(u8, u8);
-extern void func_8008841C();
+extern void setMrsManaCowsNames();
 extern void func_800886D0();
 extern void func_80088C1C(u8, u8);
 extern u8 func_8008A4A8(u8, u8, f32, f32, f32);
@@ -145,13 +145,13 @@ extern void func_80088D54();
 extern void func_80099DE8();
 extern void func_80099EEC();
 extern void func_80099FF0();
-extern void func_8009A398(void);
+extern bool func_8009A398(void);
 extern bool func_8009A074();
 extern bool func_8009A400();
 extern u8 func_8009A810();
 extern bool func_8009A100();
 extern void func_8009A17C();
-extern void func_8009A2D0();
+extern bool func_8009A2D0();
 extern void func_8009A53C();
 extern void func_8009A97C();
 extern void func_8009AAC8();
@@ -193,10 +193,10 @@ extern u8 D_8018985C[6];
 extern Dog dogInfo;
 extern Horse horseInfo;
 
-// watched cow stalls
-extern u8 D_8016F898;
-extern u8 D_8016FAF8;
-extern u8 D_801C3F46;
+// watched cow indexes
+extern u8 mrsManaCow3Index;
+extern u8 mrsManaCow1Index;
+extern u8 mrsManaCow2Index;
 
 extern u16 D_8016FDF0;
 extern u8 D_8016FFE8;

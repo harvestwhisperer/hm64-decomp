@@ -4,6 +4,7 @@
 
 #include "system/message.h"
 
+#include "mainLoop.h"
 #include "game/game.h"
 #include "game/gameStatus.h"
 #include "game/gameAudio.h"
@@ -46,7 +47,7 @@ void func_800D7C20(void) {
 
             setPlayerAction(0xFE, 0);
             // stop audio and set callback for loading
-            func_8005C940(1, 0xE);
+            func_8005C940(1, END_OF_DAY_2);
             
         }
 
@@ -67,7 +68,7 @@ void func_800D7C20(void) {
             setSongWithDefaultSpeed(gCurrentSongIndex);
             setDailyEventBit(0xF);
 
-        } else if (!(checkDailyEventBit(0x10)) && gCurrentSongIndex != 0xFF && checkDefaultSongChannelOpen(gCurrentSongIndex)) {
+        } else if (!checkDailyEventBit(0x10) && gCurrentSongIndex != 0xFF && checkDefaultSongChannelOpen(gCurrentSongIndex)) {
 
             setLevelAudio(gBaseMapIndex, gSeason, gHour);
             setSongVolume(gCurrentSongIndex, gSongVolume);
@@ -194,6 +195,7 @@ void setupNewYear(void) {
     toggleReadLetterBit(0x45);
     toggleReadLetterBit(0x46);
     toggleReadLetterBit(0x49);
+
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/updateGame", toggleMonthlyLetterBits);
@@ -250,6 +252,7 @@ bool checkFestivalDay(void) {
         }
 
     return result;
+
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/updateGame", setSeasonName);
@@ -267,6 +270,7 @@ void setSeasonName(void) {
     
     // message.c
     func_8003FBD8(0x15, gDayOfMonth, 1);
+
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/updateGame", setGlobalSeasonName);

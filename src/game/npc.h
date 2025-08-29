@@ -50,7 +50,7 @@
 typedef struct {
 	/* 0x00*/  Vec3f startingCoordinates;
 	/* 0x0C */ Vec3f currentCoordinates;
-	/* 0x18 */ u16 spriteIndex;
+	/* 0x18 */ u16 entityIndex;
 	/* 0x1A */ u8 unk_1A;
 	/* 0x1B */ u8 unk_1B;
 	/* 0x1C */ u8 levelIndex;
