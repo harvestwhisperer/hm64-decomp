@@ -62,33 +62,33 @@ void initializeEntities(void) {
 
 //INCLUDE_ASM("asm/nonmatchings/system/entity", initializeEntityAsset);
 
-bool initializeEntityAsset(u16 characterIndex, void* arg1, void* arg2, void* arg3, void* arg4, void* arg5, void* arg6, u8 arg7, u8 arg8, u16* arg9) {
+bool initializeEntityAsset(u16 entityAssetIndex, void* arg1, void* arg2, void* arg3, void* arg4, void* arg5, void* arg6, u8 arg7, u8 arg8, u16* arg9) {
 
     bool result = FALSE;
 
-    if (characterIndex < MAX_ENTITY_ASSETS) {
+    if (entityAssetIndex < MAX_ENTITY_ASSETS) {
 
-        if (!(entityAssetDescriptors[characterIndex].flags & 1)) {
+        if (!(entityAssetDescriptors[entityAssetIndex].flags & 1)) {
             
-            entityAssetDescriptors[characterIndex].romTextureStart = arg1;
-            entityAssetDescriptors[characterIndex].romTextureEnd = arg2;
-            entityAssetDescriptors[characterIndex].romAssetIndexStart = arg3;
-            entityAssetDescriptors[characterIndex].romAssetIndexEnd = arg4;
-            entityAssetDescriptors[characterIndex].romSpritesheetIndexStart = arg5;
-            entityAssetDescriptors[characterIndex].romSpritesheetIndexEnd = arg6;
-            entityAssetDescriptors[characterIndex].shadowSpriteIndex= arg8;
-            entityAssetDescriptors[characterIndex].spriteAnimationData = arg9;
+            entityAssetDescriptors[entityAssetIndex].romTextureStart = arg1;
+            entityAssetDescriptors[entityAssetIndex].romTextureEnd = arg2;
+            entityAssetDescriptors[entityAssetIndex].romAssetIndexStart = arg3;
+            entityAssetDescriptors[entityAssetIndex].romAssetIndexEnd = arg4;
+            entityAssetDescriptors[entityAssetIndex].romSpritesheetIndexStart = arg5;
+            entityAssetDescriptors[entityAssetIndex].romSpritesheetIndexEnd = arg6;
+            entityAssetDescriptors[entityAssetIndex].shadowSpriteIndex= arg8;
+            entityAssetDescriptors[entityAssetIndex].spriteAnimationData = arg9;
 
-            entityAssetDescriptors[characterIndex].collisionBufferX = 0;
-            entityAssetDescriptors[characterIndex].collisionBufferY = 0;
+            entityAssetDescriptors[entityAssetIndex].collisionBufferX = 0;
+            entityAssetDescriptors[entityAssetIndex].collisionBufferY = 0;
 
-            entityAssetDescriptors[characterIndex].unk_1C = 0;
-            entityAssetDescriptors[characterIndex].unk_1E = 0;
+            entityAssetDescriptors[entityAssetIndex].unk_1C = 0;
+            entityAssetDescriptors[entityAssetIndex].unk_1E = 0;
 
-            entityAssetDescriptors[characterIndex].flags = 1;
+            entityAssetDescriptors[entityAssetIndex].flags = 1;
 
             if (arg7) {
-                entityAssetDescriptors[characterIndex].flags = 3;
+                entityAssetDescriptors[entityAssetIndex].flags = 3;
             }
             
             result = TRUE;
@@ -193,7 +193,7 @@ bool func_8002E108(u16 index) {
 
         deactivateSprite(entities[index].globalSpriteIndex);
         
-        if (entityAssetDescriptors[entities[index].characterIndex].shadowSpriteIndex != 0xFF) {
+        if (entityAssetDescriptors[entities[index].entityAssetIndex].shadowSpriteIndex != 0xFF) {
             deactivateSprite(entities[index].shadowSpriteIndex);
         }
         
@@ -223,7 +223,7 @@ void deactivateSprites(void) {
             deactivateSprite(entities[i].globalSpriteIndex);
             
             // toggle flag on shadow sprite
-            if (entityAssetDescriptors[entities[i].characterIndex].shadowSpriteIndex != 0xFF) {
+            if (entityAssetDescriptors[entities[i].entityAssetIndex].shadowSpriteIndex != 0xFF) {
                 deactivateSprite(entities[i].shadowSpriteIndex);
             } 
         }
@@ -235,7 +235,7 @@ void deactivateSprites(void) {
 
 //INCLUDE_ASM("asm/nonmatchings/system/entity", loadEntity);
 
-bool loadEntity(u16 index, u16 characterIndex, u8 flag) {
+bool loadEntity(u16 index, u16 entityAssetIndex, u8 flag) {
 
     bool result = FALSE;
     
@@ -243,18 +243,18 @@ bool loadEntity(u16 index, u16 characterIndex, u8 flag) {
         
         if (entities[index].flags & ENTITY_ACTIVE) {
 
-            entities[index].characterIndex = characterIndex;
+            entities[index].entityAssetIndex = entityAssetIndex;
             entities[index].flag = flag;
 
-            if (entityAssetDescriptors[entities[index].characterIndex].flags & 2) {
+            if (entityAssetDescriptors[entities[index].entityAssetIndex].flags & 2) {
 
                 dmaSprite(entities[index].globalSpriteIndex, 
-                    entityAssetDescriptors[entities[index].characterIndex].romTextureStart, 
-                    entityAssetDescriptors[entities[index].characterIndex].romTextureEnd, 
-                    entityAssetDescriptors[entities[index].characterIndex].romAssetIndexStart, 
-                    entityAssetDescriptors[entities[index].characterIndex].romAssetIndexEnd, 
-                    entityAssetDescriptors[entities[index].characterIndex].romSpritesheetIndexStart, 
-                    entityAssetDescriptors[entities[index].characterIndex].romSpritesheetIndexEnd, 
+                    entityAssetDescriptors[entities[index].entityAssetIndex].romTextureStart, 
+                    entityAssetDescriptors[entities[index].entityAssetIndex].romTextureEnd, 
+                    entityAssetDescriptors[entities[index].entityAssetIndex].romAssetIndexStart, 
+                    entityAssetDescriptors[entities[index].entityAssetIndex].romAssetIndexEnd, 
+                    entityAssetDescriptors[entities[index].entityAssetIndex].romSpritesheetIndexStart, 
+                    entityAssetDescriptors[entities[index].entityAssetIndex].romSpritesheetIndexEnd, 
                     entities[index].vaddrTexture1,
                     entities[index].vaddrTexture2,
                     entities[index].vaddrPalette,
@@ -268,38 +268,38 @@ bool loadEntity(u16 index, u16 characterIndex, u8 flag) {
             } else {
                 
                 dmaSprite(entities[index].globalSpriteIndex, 
-                    entityAssetDescriptors[entities[index].characterIndex].romTextureStart, 
-                    entityAssetDescriptors[entities[index].characterIndex].romTextureEnd, 
-                    entityAssetDescriptors[entities[index].characterIndex].romAssetIndexStart, 
-                    entityAssetDescriptors[entities[index].characterIndex].romAssetIndexEnd, 
-                    entityAssetDescriptors[entities[index].characterIndex].romSpritesheetIndexStart, 
-                    entityAssetDescriptors[entities[index].characterIndex].romSpritesheetIndexEnd, 
+                    entityAssetDescriptors[entities[index].entityAssetIndex].romTextureStart, 
+                    entityAssetDescriptors[entities[index].entityAssetIndex].romTextureEnd, 
+                    entityAssetDescriptors[entities[index].entityAssetIndex].romAssetIndexStart, 
+                    entityAssetDescriptors[entities[index].entityAssetIndex].romAssetIndexEnd, 
+                    entityAssetDescriptors[entities[index].entityAssetIndex].romSpritesheetIndexStart, 
+                    entityAssetDescriptors[entities[index].entityAssetIndex].romSpritesheetIndexEnd, 
                     entities[index].vaddrTexture1,
                     0,
                     entities[index].vaddrPalette,
                     entities[index].vaddrUnknownAsset,
                     entities[index].vaddrTextureToPaletteLookup,
                     0,
-                    entityAssetDescriptors[entities[index].characterIndex].flags & 2 == 1,
+                    entityAssetDescriptors[entities[index].entityAssetIndex].flags & 2 == 1,
                     entities[index].flag                    
                     );
                 
             }
 
-            if (entityAssetDescriptors[entities[index].characterIndex].shadowSpriteIndex != 0xFF) {
+            if (entityAssetDescriptors[entities[index].entityAssetIndex].shadowSpriteIndex != 0xFF) {
                 
                 dmaSprite(entities[index].shadowSpriteIndex, 
-                    ShadowSpritesDescriptors[entityAssetDescriptors[entities[index].characterIndex].shadowSpriteIndex].romTextureStart, 
-                    ShadowSpritesDescriptors[entityAssetDescriptors[entities[index].characterIndex].shadowSpriteIndex].romTextureEnd, 
-                    ShadowSpritesDescriptors[entityAssetDescriptors[entities[index].characterIndex].shadowSpriteIndex].romAssetIndexStart, 
-                    ShadowSpritesDescriptors[entityAssetDescriptors[entities[index].characterIndex].shadowSpriteIndex].romAssetIndexEnd, 
+                    ShadowSpritesDescriptors[entityAssetDescriptors[entities[index].entityAssetIndex].shadowSpriteIndex].romTextureStart, 
+                    ShadowSpritesDescriptors[entityAssetDescriptors[entities[index].entityAssetIndex].shadowSpriteIndex].romTextureEnd, 
+                    ShadowSpritesDescriptors[entityAssetDescriptors[entities[index].entityAssetIndex].shadowSpriteIndex].romAssetIndexStart, 
+                    ShadowSpritesDescriptors[entityAssetDescriptors[entities[index].entityAssetIndex].shadowSpriteIndex].romAssetIndexEnd, 
                     0, 
                     0, 
-                    ShadowSpritesDescriptors[entityAssetDescriptors[entities[index].characterIndex].shadowSpriteIndex].vaddrSpritesheet, 
+                    ShadowSpritesDescriptors[entityAssetDescriptors[entities[index].entityAssetIndex].shadowSpriteIndex].vaddrSpritesheet, 
                     0, 
-                    ShadowSpritesDescriptors[entityAssetDescriptors[entities[index].characterIndex].shadowSpriteIndex].vaddrPalette, 
-                    ShadowSpritesDescriptors[entityAssetDescriptors[entities[index].characterIndex].shadowSpriteIndex].vaddrUnknownAssetSheet, 
-                    ShadowSpritesDescriptors[entityAssetDescriptors[entities[index].characterIndex].shadowSpriteIndex].vaddrUnknownAsset2, 
+                    ShadowSpritesDescriptors[entityAssetDescriptors[entities[index].entityAssetIndex].shadowSpriteIndex].vaddrPalette, 
+                    ShadowSpritesDescriptors[entityAssetDescriptors[entities[index].entityAssetIndex].shadowSpriteIndex].vaddrUnknownAssetSheet, 
+                    ShadowSpritesDescriptors[entityAssetDescriptors[entities[index].entityAssetIndex].shadowSpriteIndex].vaddrUnknownAsset2, 
                     0, 
                     0, 
                     entities[index].flag
@@ -488,7 +488,7 @@ bool setEntityColor(u16 index, u8 r, u8 g, u8 b, u8 a) {
             
             setSpriteColor(entities[index].globalSpriteIndex, r, g, b, a);
             
-            if (entityAssetDescriptors[entities[index].characterIndex].shadowSpriteIndex != 0xFF) {
+            if (entityAssetDescriptors[entities[index].entityAssetIndex].shadowSpriteIndex != 0xFF) {
 
                 setSpriteColor(entities[index].shadowSpriteIndex, r, g, b, SHADOW_ALPHA);
                 
@@ -512,9 +512,9 @@ bool setEntityShadow(u16 index, u8 shadowSpriteIndex) {
 
         if ((entities[index].flags & ENTITY_ACTIVE) && (entities[index].flags & ENTITY_INITIALIZED)) {
             
-            entityAssetDescriptors[entities[index].characterIndex].shadowSpriteIndex = shadowSpriteIndex;
+            entityAssetDescriptors[entities[index].entityAssetIndex].shadowSpriteIndex = shadowSpriteIndex;
 
-            if (entityAssetDescriptors[entities[index].characterIndex].shadowSpriteIndex == 0xFF) {
+            if (entityAssetDescriptors[entities[index].entityAssetIndex].shadowSpriteIndex == 0xFF) {
 
                 resetAnimationState(entities[index].shadowSpriteIndex);
 
@@ -540,7 +540,7 @@ bool updateEntityRGBA(u16 index, u8 r, u8 g, u8 b, u8 a, s16 rate) {
 
             updateSpriteRGBA(entities[index].globalSpriteIndex, r, g, b, a, rate);
 
-            if (entityAssetDescriptors[entities[index].characterIndex].shadowSpriteIndex != 0xFF) {
+            if (entityAssetDescriptors[entities[index].entityAssetIndex].shadowSpriteIndex != 0xFF) {
                 updateSpriteRGBA(entities[index].shadowSpriteIndex, r, g, b, SHADOW_ALPHA, rate);
             }
             
@@ -615,7 +615,7 @@ bool func_8002F4E0(u16 index) {
 
         if ((entities[index].flags & ENTITY_ACTIVE) && (entities[index].flags & ENTITY_INITIALIZED) && (entities[index].flags & 0x1000)) {
             
-            loadEntity(index, entities[index].characterIndex, entities[index].flag);
+            loadEntity(index, entities[index].entityAssetIndex, entities[index].flag);
 
             entities[index].flags |= 8;
             entities[index].flags &= ~0x1000;
@@ -733,7 +733,7 @@ void setEntitiesColor(u8 r, u8 g, u8 b, u8 a) {
 
                 setSpriteColor(entities[i].globalSpriteIndex, r, g, b, a);
 
-                if (entityAssetDescriptors[entities[i].characterIndex].shadowSpriteIndex != 0xFF) {
+                if (entityAssetDescriptors[entities[i].entityAssetIndex].shadowSpriteIndex != 0xFF) {
                     setSpriteColor(entities[i].shadowSpriteIndex, r, g, b, SHADOW_ALPHA);
                 }
 
@@ -757,7 +757,7 @@ void updateEntitiesColor(u8 r, u8 g, u8 b, u8 a, s16 arg4) {
         
                 updateSpriteRGBA(entities[i].globalSpriteIndex, r, g, b, a, arg4);
         
-                if (entityAssetDescriptors[entities[i].characterIndex].shadowSpriteIndex != 0xFF) {
+                if (entityAssetDescriptors[entities[i].entityAssetIndex].shadowSpriteIndex != 0xFF) {
                     updateSpriteRGBA(entities[i].shadowSpriteIndex, r, g, b, SHADOW_ALPHA, arg4);
                 }
         
@@ -779,7 +779,7 @@ bool deactivateEntity(u16 index) {
             entities[index].flags &= ~( 0x8 | 0x2000);
             deactivateSprite(entities[index].globalSpriteIndex);
             
-            if (entityAssetDescriptors[entities[index].characterIndex].shadowSpriteIndex != 0xFF) {
+            if (entityAssetDescriptors[entities[index].entityAssetIndex].shadowSpriteIndex != 0xFF) {
                 deactivateSprite(entities[index].shadowSpriteIndex);
             }
 
@@ -1037,15 +1037,15 @@ bool setEntityCollisionBuffers(u16 entityIndex, u8 xValue, u8 yValue) {
 
 //INCLUDE_ASM("asm/nonmatchings/system/entity", func_8002FFF4);
 
-bool func_8002FFF4(u16 characterIndex, u8 arg1, u8 arg2) {
+bool func_8002FFF4(u16 entityAssetIndex, u8 arg1, u8 arg2) {
 
     bool result = FALSE;
 
-    if (characterIndex < MAX_ENTITY_ASSETS) {
+    if (entityAssetIndex < MAX_ENTITY_ASSETS) {
 
-        if (entityAssetDescriptors[characterIndex].flags & 1) {
-            entityAssetDescriptors[characterIndex].unk_1C = arg1;
-            entityAssetDescriptors[characterIndex].unk_1E = arg2;
+        if (entityAssetDescriptors[entityAssetIndex].flags & 1) {
+            entityAssetDescriptors[entityAssetIndex].unk_1C = arg1;
+            entityAssetDescriptors[entityAssetIndex].unk_1E = arg2;
             result = TRUE;
         }
 
@@ -1194,7 +1194,7 @@ u16 func_800303D4(u16 entityIndex, f32 arg1, f32 arg2, u16 arg3, u16 arg4) {
                     
                     if (!(entities[i].flags & 0x4000)) {
 
-                        index = func_80031ED0(&entities[entityIndex], i, arg1, arg2, entityAssetDescriptors[entities[entityIndex].characterIndex].unk_1C, entityAssetDescriptors[entities[entityIndex].characterIndex].unk_1E);
+                        index = func_80031ED0(&entities[entityIndex], i, arg1, arg2, entityAssetDescriptors[entities[entityIndex].entityAssetIndex].unk_1C, entityAssetDescriptors[entities[entityIndex].entityAssetIndex].unk_1E);
                         
                         if (index) {
 
@@ -1254,7 +1254,7 @@ u16 func_800305CC(u16 index, f32 arg1, f32 arg2, u16 arg3) {
 
                     if (i != index && !(entities[i].flags & ENTITY_TRACKING_ACTIVE)) {
                         
-                        if (temp = func_80031ED0(&entities[index], i, vec2.x, vec2.z, entityAssetDescriptors[entities[index].characterIndex].unk_1C, entityAssetDescriptors[entities[index].characterIndex].unk_1E)) {
+                        if (temp = func_80031ED0(&entities[index], i, vec2.x, vec2.z, entityAssetDescriptors[entities[index].entityAssetIndex].unk_1C, entityAssetDescriptors[entities[index].entityAssetIndex].unk_1E)) {
                            
                             result |= temp;
                             
@@ -1365,7 +1365,7 @@ inline u16 getSpriteAnimationOffset(u16 entityIndex, u16 offset) {
 
     if (entityIndex < MAX_ENTITIES) {
         if (entities[entityIndex].flags & ENTITY_ACTIVE) {
-            animationDataOffset = entityAssetDescriptors[entities[entityIndex].characterIndex].spriteAnimationData[offset] & 0x1FFF;
+            animationDataOffset = entityAssetDescriptors[entities[entityIndex].entityAssetIndex].spriteAnimationData[offset] & 0x1FFF;
         }
     }
     
@@ -1387,7 +1387,7 @@ inline u16 getSpriteAnimationType(u16 entityIndex, u16 offset) {
 
     if (entityIndex < MAX_ENTITIES) {
         if (entities[entityIndex].flags & ENTITY_ACTIVE) {
-            flags = entityAssetDescriptors[entities[entityIndex].characterIndex].spriteAnimationData[offset] & 0x6000;
+            flags = entityAssetDescriptors[entities[entityIndex].entityAssetIndex].spriteAnimationData[offset] & 0x6000;
         }
     }
     
@@ -1403,7 +1403,7 @@ inline u16 getSpriteAnimationHorizontalFlip(u16 entityIndex, u16 offset) {
 
     if (entityIndex < MAX_ENTITIES) {
         if (entities[entityIndex].flags & ENTITY_ACTIVE) {
-            flipHorizontal = entityAssetDescriptors[entities[entityIndex].characterIndex].spriteAnimationData[offset] & 0x8000;
+            flipHorizontal = entityAssetDescriptors[entities[entityIndex].entityAssetIndex].spriteAnimationData[offset] & 0x8000;
         }
     }
     
@@ -1887,13 +1887,13 @@ void updateEntities(void) {
                           
                 }
 
-                if (entityAssetDescriptors[entities[i].characterIndex].shadowSpriteIndex != 0xFF) {
+                if (entityAssetDescriptors[entities[i].entityAssetIndex].shadowSpriteIndex != 0xFF) {
 
                     if (globalSprites[entities[i].shadowSpriteIndex].shrink.y <= entities[i].unk_3C.y) {
 
                         startSpriteAnimation(entities[i].shadowSpriteIndex, 
-                             ShadowSpritesDescriptors[entityAssetDescriptors[entities[i].characterIndex].shadowSpriteIndex].unk_20,
-                             ShadowSpritesDescriptors[entityAssetDescriptors[entities[i].characterIndex].shadowSpriteIndex].unk_22);
+                             ShadowSpritesDescriptors[entityAssetDescriptors[entities[i].entityAssetIndex].shadowSpriteIndex].unk_20,
+                             ShadowSpritesDescriptors[entityAssetDescriptors[entities[i].entityAssetIndex].shadowSpriteIndex].unk_22);
                                              
                     } else {
                         resetAnimationState(entities[i].shadowSpriteIndex);
@@ -1912,7 +1912,7 @@ void updateEntities(void) {
                 entities[i].animationIndices.nextAnimationIndex = 0xFFFF;
                 resetAnimationState(entities[i].globalSpriteIndex);
 
-                if (entityAssetDescriptors[entities[i].characterIndex].shadowSpriteIndex != 0xFF) {
+                if (entityAssetDescriptors[entities[i].entityAssetIndex].shadowSpriteIndex != 0xFF) {
                     resetAnimationState(entities[i].shadowSpriteIndex);
                 }
                     

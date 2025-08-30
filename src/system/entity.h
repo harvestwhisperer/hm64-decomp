@@ -38,7 +38,7 @@ typedef struct {
 	Vec3f unk_34; // 34-3C
 	Vec3f unk_3C;
 	f32 unk_4C;
-	u16 characterIndex; // 0x50 // entityAssetDescriptors index
+	u16 entityAssetIndex; // 0x50
 	u16 globalSpriteIndex;
 	AnimationIndices animationIndices; // 0x54-0x58
 	u16 unk_58; 
