@@ -307,7 +307,7 @@ bool func_80043430(u16 index, u16 dialogueMapAddressesIndex, u16 dialogueIndex, 
  
         setSpriteShrinkFactor(dialogues[index].dialogueButtonIcon1.spriteIndex, 0.0f, 0.0f, 0.0f);
         setSpriteScale(dialogues[index].dialogueButtonIcon1.spriteIndex, 1.0f, 1.0f, 1.0f);
-        setSpriteAngles(dialogues[index].dialogueButtonIcon1.spriteIndex, 0.0f, 0.0f, 0.0f);
+        setSpriteRotation(dialogues[index].dialogueButtonIcon1.spriteIndex, 0.0f, 0.0f, 0.0f);
         setBilinearFiltering(dialogues[index].dialogueButtonIcon1.spriteIndex, TRUE);
         setSpriteColor(dialogues[index].dialogueButtonIcon1.spriteIndex, 0xFF, 0xFF, 0xFF, 0xFF);
         func_8002C680(dialogues[index].dialogueButtonIcon1.spriteIndex, 2, 2);
@@ -331,7 +331,7 @@ bool func_80043430(u16 index, u16 dialogueMapAddressesIndex, u16 dialogueIndex, 
 
         setSpriteShrinkFactor(dialogues[index].dialogueButtonIcon2.spriteIndex, 0.0f, 0.0f, 0.0f);
         setSpriteScale(dialogues[index].dialogueButtonIcon2.spriteIndex, 1.0f, 1.0f, 1.0f);
-        setSpriteAngles(dialogues[index].dialogueButtonIcon2.spriteIndex, 0.0f, 0.0f, 0.0f);
+        setSpriteRotation(dialogues[index].dialogueButtonIcon2.spriteIndex, 0.0f, 0.0f, 0.0f);
         setBilinearFiltering(dialogues[index].dialogueButtonIcon2.spriteIndex, TRUE);
         setSpriteColor(dialogues[index].dialogueButtonIcon2.spriteIndex, 0xFF, 0xFF, 0xFF, 0xFF);
         func_8002C680(dialogues[index].dialogueButtonIcon2.spriteIndex, 2, 2);
@@ -355,7 +355,7 @@ bool func_80043430(u16 index, u16 dialogueMapAddressesIndex, u16 dialogueIndex, 
 
         setSpriteShrinkFactor(dialogues[index].dialogueButtonIcon3.spriteIndex, 0.0f, 0.0f, 0.0f);
         setSpriteScale(dialogues[index].dialogueButtonIcon3.spriteIndex, 1.0f, 1.0f, 1.0f);
-        setSpriteAngles(dialogues[index].dialogueButtonIcon3.spriteIndex, 0.0f, 0.0f, 0.0f);
+        setSpriteRotation(dialogues[index].dialogueButtonIcon3.spriteIndex, 0.0f, 0.0f, 0.0f);
         setBilinearFiltering(dialogues[index].dialogueButtonIcon3.spriteIndex, TRUE);
         setSpriteColor(dialogues[index].dialogueButtonIcon3.spriteIndex, 0xFF, 0xFF, 0xFF, 0xFF);
         func_8002C680(dialogues[index].dialogueButtonIcon3.spriteIndex, 2, 2);

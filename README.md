@@ -2,15 +2,23 @@
 
 ## Progress
 
-Currently, 70% of the 1467 game functions and 59% of the game source files have been decompiled. All library functions have also been identified with much progress on the matching (many thanks to cblck for the great work). More robust progress tracking is in the works.
+Currently, 68% of the 1467 game functions and 59% of the game source files have been decompiled. All library functions have also been identified with much progress on the matching (many thanks to cblck for the great work). More robust progress tracking is in the works.
 
 ## Asset extraction
 
-Sprites can be extracted and converted to png files using the `extract.py` script in the `tools` directory (`make extract` or `cd tools && python3 extract.py`). Extracted assets will be put in `./assets/sprites` folder. A number of sprite asset locations are already listed in the `sprite_addresses.csv` file in the tools directory (see next paragraph for formatting).
+### Sprites
+
+Sprites can be extracted and converted to png files using the `extract.py` script in the `tools` directory (`make extract-sprites` or `cd tools && python3 extract_sprites.py`). Extracted assets will be put in `./assets/sprites` folder. A number of sprite asset locations are already listed in the `sprite_addresses.csv` file in the tools directory (see next paragraph for formatting).
 
 There are two sprite asset formats used. Both types have a spritesheet at the beginning and an asset lookup table that follows it. Type 1 (used with character and map object sprites) includes a separate spritesheet index at the end of the asset, while type 2 (for smaller sprites, such as overlay icons) has the spritesheet index at the beginning of the actual spritesheet. Thus, the format for `sprite_addresses.csv` is: 
 - type 1: spritesheet start, asset lookup table start, spritesheet index start, asset end, and asset name
 - type 2: spritesheet start, asset lookup table start, asset end, and asset name.
+
+### Animation scripts
+
+The game contains two layers of animation data: animation scripts compiled in the data section and another set of metadata stored in the sprite asset in the binary section of the rom. The binary data contains metadata for the animation sequence (total frame count, duration in game ticks, contains audio trigger) and metadata for the final rendered bitmap. The scripts are bitpacked arrays that contain an index into the animation metadata table, an animation type, and whether to flip horizontally.
+
+These animation scripts can now be generated via `make extract-animation-scripts` or `cd tools && python3 extract_animation_scripts.py`. Running this script will generate a c file in `src/data/animations` for each specified asset in the `animation_addresses.csv` file. 
 
 ## Setting up
 1. Install [WSL2](https://learn.microsoft.com/en-us/windows/wsl/install)

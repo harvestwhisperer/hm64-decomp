@@ -70,7 +70,7 @@ void func_800D8540(void) {
 
     dmaSprite(TV_CONTENT, &_tvContentTextureSegmentRomStart, &_tvContentTextureSegmentRomEnd, &_tvContentAssetsIndexSegmentRomStart, &_tvContentAssetsIndexSegmentRomEnd, &_tvContentSpritesheetIndexSegmentRomStart, &_tvContentSpritesheetIndexSegmentRomEnd, (void*)MAP_OBJECTS_TEXTURE_VADDR_START, (void*)MAP_OBJECTS_TEXTURE_VADDR_END, (void*)MAP_OBJECTS_ASSETS_INDEX_VADDR_START, (void*)MAP_OBJECTS_ASSETS_INDEX_VADDR_END, (void*)MAP_OBJECTS_SPRITESHEET_INDEX_VADDR_START, MAP_OBJECTS_SPRITESHEET_INDEX_VADDR_END, 1, 1);
     setSpriteScale(TV_CONTENT, 2.0f, 2.0f, 1.0f);
-    setSpriteAngles(TV_CONTENT, 45.0f, -45.0f, 0.0f);
+    setSpriteRotation(TV_CONTENT, 45.0f, -45.0f, 0.0f);
     setSpriteRenderingLayer(TV_CONTENT, 3);
     setSpriteColor(TV_CONTENT, 0xFF, 0xFF, 0xFF, 0xFF);
     

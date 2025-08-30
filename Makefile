@@ -95,9 +95,12 @@ rebuild: clean-artifacts check
 
 rerun: clean split check
 
-extract:
+extract-sprites:
 	@rm -rf assets/sprites
-	@cd tools && python3 ./extract.py
+	@cd tools && python3 ./extract_sprites.py
+
+extract-animation-scripts:
+	@cd tools && python3 ./extract_animation_scripts.py
 
 build:
 	@mkdir $@
@@ -113,6 +116,10 @@ $(BUILD_DIR)/src/game/%.c.o: src/game/%.c
 
 $(BUILD_DIR)/src/system/%.c.o: src/system/%.c
 	$(dir_guard)
+	$(CC) -B $(KMC_PATH) $(OPTFLAGS) $(CFLAGS) $(DEBUG_FLAGS) $(CPPFLAGS) -c -o $@ $<
+
+$(BUILD_DIR)/src/data/animation/%.c.o: src/data/animation/%.c
+	$(dir_guard) 
 	$(CC) -B $(KMC_PATH) $(OPTFLAGS) $(CFLAGS) $(DEBUG_FLAGS) $(CPPFLAGS) -c -o $@ $<
 	
 $(BUILD_DIR)/src/overlays/%.c.o : src/overlays/%.c build

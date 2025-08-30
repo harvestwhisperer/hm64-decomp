@@ -1593,7 +1593,7 @@ void func_8004BE14(u16 index) {
     u16 spriteIndex;
     u16 flags;
     
-    CutsceneCharacterSpriteCmd* ptr = (CutsceneCharacterSpriteCmd*)cutsceneExecutors[index].bytecodePtr;
+    CutsceneEntityAssetCmd* ptr = (CutsceneEntityAssetCmd*)cutsceneExecutors[index].bytecodePtr;
 
     cutsceneExecutors[index].bytecodePtr += 2;
     
@@ -1605,7 +1605,7 @@ void func_8004BE14(u16 index) {
     
     cutsceneExecutors[index].bytecodePtr += 4;
 
-    characterSprites[spriteIndex].shadowSpriteIndex = flags;
+    entityAssetDescriptors[spriteIndex].shadowSpriteIndex = flags;
 
 }
 

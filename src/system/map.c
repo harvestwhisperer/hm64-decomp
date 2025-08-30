@@ -812,7 +812,7 @@ bool func_80035054(u16 mapIndex, u16 bitmapIndex, u16 spriteIndex, f32 x, f32 y,
     
         if (bitmapIndex) {
             
-            setBitmapFormat(&mainMap[mapIndex].mapBitmaps[bitmapIndex], func_80028888(spriteIndex, mainMap[mapIndex].groundObjects.textureIndex), func_800288B8(spriteIndex, mainMap[mapIndex].groundObjects.paletteIndex, mainMap[mapIndex].groundObjects.spriteToPaletteIndex));
+            setBitmapFormat(&mainMap[mapIndex].mapBitmaps[bitmapIndex], getTexturePtr(spriteIndex, mainMap[mapIndex].groundObjects.textureIndex), getPalettePtrType2(spriteIndex, mainMap[mapIndex].groundObjects.paletteIndex, mainMap[mapIndex].groundObjects.spriteToPaletteIndex));
               
             mainMap[mapIndex].mapBitmaps[bitmapIndex].unk_1C.x = x; 
             mainMap[mapIndex].mapBitmaps[bitmapIndex].unk_1C.y = y;
@@ -1477,7 +1477,7 @@ Gfx* func_8003797C(Gfx* dl, MainMap* map, u8 arg2) {
 
     Tile bitmap;
 
-    setBitmapFormat((BitmapObject*)&bitmap, func_80028888(arg2, map->unk_10), func_800288A0(arg2, map->unk_14));
+    setBitmapFormat((BitmapObject*)&bitmap, getTexturePtr(arg2, map->unk_10), getPalettePtrType1(arg2, map->unk_14));
 
     gDPLoadTextureTile_4b(dl++, bitmap.timg, bitmap.fmt, bitmap.width, bitmap.height, 0, 0, bitmap.width - 1, bitmap.height - 1, 0, G_TX_NOMIRROR | G_TX_WRAP, G_TX_NOMIRROR | G_TX_WRAP, G_TX_NOMASK, G_TX_NOMASK, G_TX_NOLOD, G_TX_NOLOD);
     gDPLoadTLUT_pal16(dl++, 0, bitmap.pal);
@@ -2031,7 +2031,7 @@ void func_80039F58(u16 mapIndex) {
     
 }
 
-static inline u8 handleRgba(u16 i) {
+static inline u8 updateMapRGBA(u16 i) {
 
     u8 count = 0;
     
@@ -2167,7 +2167,7 @@ void updateMapGraphics(void) {
             
             func_80039F58(i);
 
-            if (handleRgba(i) == 0) {
+            if (updateMapRGBA(i) == 0) {
                 mainMap[i].mapState.flags |= RGBA_FINISHED;
             } else {
                 mainMap[i].mapState.flags &= ~RGBA_FINISHED;

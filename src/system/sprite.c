@@ -28,18 +28,18 @@ void initializeBitmaps(void) {
 
     for (i = 0; i < MAX_BITMAPS; i++) {
         bitmaps[i].flags = 0;
-        bitmaps[i].unk_54 = 0;
+        bitmaps[i].renderingFlags = 0;
         bitmaps[i].spriteNumber = 0;
         bitmaps[i].vtxIndex = 0;
-        bitmaps[i].unk_1C.x = 0;
-        bitmaps[i].unk_1C.y = 0;
-        bitmaps[i].unk_1C.z = 0;
+        bitmaps[i].shrink.x = 0;
+        bitmaps[i].shrink.y = 0;
+        bitmaps[i].shrink.z = 0;
         bitmaps[i].scaling.x = 1.0f;
         bitmaps[i].scaling.y = 1.0f;
         bitmaps[i].scaling.z = 1.0f;
-        bitmaps[i].unk_34.x = 0;
-        bitmaps[i].unk_34.y = 0;
-        bitmaps[i].unk_34.z = 0;
+        bitmaps[i].rotation.x = 0;
+        bitmaps[i].rotation.y = 0;
+        bitmaps[i].rotation.z = 0;
         bitmaps[i].rgba.r = 255.0f;
         bitmaps[i].rgba.g = 255.0f;
         bitmaps[i].rgba.b = 255.0f;
@@ -91,7 +91,7 @@ u16 func_80029CF4(u8 *timg, u8 *pal, s32 width, s32 height, s32 fmt, s32 size, u
         bitmaps[bitmapCounter].fmt = fmt;
         bitmaps[bitmapCounter].pixelSize = size; 
         bitmaps[bitmapCounter].flags = flags | 1;
-        bitmaps[bitmapCounter].unk_54 = 0;
+        bitmaps[bitmapCounter].renderingFlags = 0;
         bitmapCounter++;
     } else { 
         result = 0xFFFF;
@@ -101,15 +101,15 @@ u16 func_80029CF4(u8 *timg, u8 *pal, s32 width, s32 height, s32 fmt, s32 size, u
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/sprite", func_80029DAC);
+//INCLUDE_ASM("asm/nonmatchings/system/sprite", setBitmap);
 
-u16 func_80029DAC(u8 *timg, u16 *pal, u16 flags) {
+u16 setBitmap(u8 *timg, u16 *pal, u16 flags) {
 
     u16 bitmapIndex = bitmapCounter;
     
     if (bitmapCounter < MAX_BITMAPS) {
         bitmaps[bitmapCounter].flags = flags | 1;
-        bitmaps[bitmapCounter].unk_54 = 0;
+        bitmaps[bitmapCounter].renderingFlags = 0;
         bitmaps[bitmapCounter].timg = timg;
         bitmaps[bitmapCounter].pal = pal;
         bitmapCounter++;
@@ -132,15 +132,15 @@ bool func_80029E2C(u16 index, u16 arg1, u16 arg2) {
 
     if (index < MAX_BITMAPS) {
 
-        if (bitmaps[index].flags & 1) {
+        if (bitmaps[index].flags & ACTIVE) {
 
-            bitmaps[index].unk_54 &= ~(8 | 0x10 | 0x20 | 0x40);
+            bitmaps[index].renderingFlags &= ~(8 | 0x10 | 0x20 | 0x40);
 
             temp1 = arg1 << 3;
-            bitmaps[index].unk_54 |= temp1;
+            bitmaps[index].renderingFlags |= temp1;
 
             temp2 = arg2 << 5;
-            bitmaps[index].unk_54 |= temp2;
+            bitmaps[index].renderingFlags |= temp2;
 
             result = TRUE;
 
@@ -160,11 +160,11 @@ bool func_80029EA4(u16 index, u16 arg1) {
     
     if (index < MAX_BITMAPS) {
 
-        if (bitmaps[index].flags & 1) {
+        if (bitmaps[index].flags & ACTIVE) {
             
-            bitmaps[index].unk_54 &= ~(0x80 | 0x100);
+            bitmaps[index].renderingFlags &= ~(0x80 | 0x100);
             temp = arg1 << 7;
-            bitmaps[index].unk_54 |= temp;
+            bitmaps[index].renderingFlags |= temp;
             
             result = TRUE;
 
@@ -183,12 +183,12 @@ bool func_80029F14(u16 index, u16 arg1) {
     
     if (index < MAX_BITMAPS) {
         
-        if (bitmaps[index].flags & 1) {
+        if (bitmaps[index].flags & ACTIVE) {
             
             if (arg1) {
-                bitmaps[index].unk_54 |= 0x200;
+                bitmaps[index].renderingFlags |= 0x200;
             } else {
-                bitmaps[index].unk_54 &= ~0x200;
+                bitmaps[index].renderingFlags &= ~0x200;
             }
             
             result = TRUE;
@@ -200,21 +200,22 @@ bool func_80029F14(u16 index, u16 arg1) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/sprite", func_80029F98);
+//INCLUDE_ASM("asm/nonmatchings/system/sprite", setBitmapFlip);
 
-bool func_80029F98(u16 index, u8 arg1, u8 arg2) {
+bool setBitmapFlip(u16 index, bool flipHorizontal, bool flipVertical) {
     
     bool result = FALSE;
     
     if (index < MAX_BITMAPS) {
-        if (bitmaps[index].flags & 1) {
+
+        if (bitmaps[index].flags & ACTIVE) {
     
-            if (arg1) {
-                bitmaps[index].unk_54 |= 1;
+            if (flipHorizontal) {
+                bitmaps[index].renderingFlags |= FLIP_HORIZONTAL;
             }
             
-            if (arg2) {
-               bitmaps[index].unk_54 |= 2;
+            if (flipVertical) {
+               bitmaps[index].renderingFlags |= FLIP_VERTICAL;
             }
             
             result = TRUE;
@@ -234,11 +235,11 @@ bool func_8002A02C(u16 index, u16 arg1) {
     int temp;
     
     if (index < MAX_BITMAPS) {
-        if (bitmaps[index].flags & 1) {
+        if (bitmaps[index].flags & ACTIVE) {
             
-            bitmaps[index].unk_54 &= ~(0x400 | 0x1000 | 0x800);
+            bitmaps[index].renderingFlags &= ~(0x400 | 0x1000 | 0x800);
             temp = arg1 << 10;
-            bitmaps[index].unk_54 |= temp;
+            bitmaps[index].renderingFlags |= temp;
             
             result = TRUE;
 
@@ -246,22 +247,22 @@ bool func_8002A02C(u16 index, u16 arg1) {
     }
     
     return result;
+    
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/sprite", func_8002A09C);
+//INCLUDE_ASM("asm/nonmatchings/system/sprite", setBitmapShrink);
 
-// set shrink factor
-bool func_8002A09C(u16 index, f32 arg1, f32 arg2, f32 arg3) {
+bool setBitmapShrink(u16 index, f32 arg1, f32 arg2, f32 arg3) {
     
     bool result = FALSE;
     
     if (index < MAX_BITMAPS) {
         
-        if (bitmaps[index].flags & 1) {
+        if (bitmaps[index].flags & ACTIVE) {
             
-            bitmaps[index].unk_1C.x = arg1;
-            bitmaps[index].unk_1C.y = arg2;
-            bitmaps[index].unk_1C.z = arg3;
+            bitmaps[index].shrink.x = arg1;
+            bitmaps[index].shrink.y = arg2;
+            bitmaps[index].shrink.z = arg3;
             
             result = TRUE;
 
@@ -272,15 +273,15 @@ bool func_8002A09C(u16 index, f32 arg1, f32 arg2, f32 arg3) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/sprite", func_8002A120);
+//INCLUDE_ASM("asm/nonmatchings/system/sprite", setBitmapScale);
 
-bool func_8002A120(u16 index, f32 arg1, f32 arg2, f32 arg3) {
+bool setBitmapScale(u16 index, f32 arg1, f32 arg2, f32 arg3) {
     
     bool result = FALSE;
     
     if (index < MAX_BITMAPS) {
         
-        if (bitmaps[index].flags & 1) {
+        if (bitmaps[index].flags & ACTIVE) {
             
             bitmaps[index].scaling.x = arg1;
             bitmaps[index].scaling.y = arg2;
@@ -295,19 +296,19 @@ bool func_8002A120(u16 index, f32 arg1, f32 arg2, f32 arg3) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/sprite", func_8002A1A4);
+//INCLUDE_ASM("asm/nonmatchings/system/sprite", setBitmapRotation);
 
-bool func_8002A1A4(u16 index, f32 arg1, f32 arg2, f32 arg3) {
+bool setBitmapRotation(u16 index, f32 arg1, f32 arg2, f32 arg3) {
 
     bool result = FALSE;
 
     if (index < MAX_BITMAPS) {
         
-        if (bitmaps[index].flags & 1) {
+        if (bitmaps[index].flags & ACTIVE) {
             
-            bitmaps[index].unk_34.x = arg1;
-            bitmaps[index].unk_34.y = arg2;
-            bitmaps[index].unk_34.z = arg3;
+            bitmaps[index].rotation.x = arg1;
+            bitmaps[index].rotation.y = arg2;
+            bitmaps[index].rotation.z = arg3;
             
             result = TRUE;
 
@@ -318,15 +319,15 @@ bool func_8002A1A4(u16 index, f32 arg1, f32 arg2, f32 arg3) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/sprite", func_8002A228);
+//INCLUDE_ASM("asm/nonmatchings/system/sprite", setBitmapRGBA);
 
-bool func_8002A228(u16 index, u8 r, u8 g, u8 b, u8 a) {
+bool setBitmapRGBA(u16 index, u8 r, u8 g, u8 b, u8 a) {
     
     bool result = FALSE;
     
     if (index < MAX_BITMAPS) {
         
-        if (bitmaps[index].flags & 1) {
+        if (bitmaps[index].flags & ACTIVE) {
             
             bitmaps[index].rgba.r = r;
             bitmaps[index].rgba.g = g;
@@ -342,18 +343,18 @@ bool func_8002A228(u16 index, u8 r, u8 g, u8 b, u8 a) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/sprite", func_8002A2E0);
+//INCLUDE_ASM("asm/nonmatchings/system/sprite", setBitmapAnchor);
 
-bool func_8002A2E0(u16 index, s16 arg1, s16 arg2) {
+bool setBitmapAnchor(u16 index, s16 anchorX, s16 anchorY) {
 
     bool result = FALSE;
     
     if (index < MAX_BITMAPS) {
         
-        if (bitmaps[index].flags & 1) {
+        if (bitmaps[index].flags & ACTIVE) {
             
-            bitmaps[index].unk_50 = arg1;
-            bitmaps[index].unk_52 = arg2;
+            bitmaps[index].anchorX = anchorX;
+            bitmaps[index].anchorY = anchorY;
             
             result = TRUE;
 
@@ -364,27 +365,25 @@ bool func_8002A2E0(u16 index, s16 arg1, s16 arg2) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/sprite", func_8002A340);
+//INCLUDE_ASM("asm/nonmatchings/system/sprite", setSpriteDMAInfo);
 
-u8 *func_8002A340(u16 index, u32 *spritesheetIndex, u8 *timg, u8 *romAddr) {
+u8* setSpriteDMAInfo(u16 index, u32 *spritesheetIndex, u8 *timg, u8 *romAddr) {
 
     u32 offset = spritesheetIndex[index];
 
-    // func_8002A3A0 = get texture length
-    setSpriteAssetDescriptors(romAddr + offset, timg, func_8002A3A0(index, spritesheetIndex));
+    setSpriteAssetDescriptors(romAddr + offset, timg, getTextureLength(index, spritesheetIndex));
 
     return timg;
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/sprite", func_8002A3A0);
+//INCLUDE_ASM("asm/nonmatchings/system/sprite", getTextureLength);
 
-// check if next sprite has same address (some sprites are reused with different palettes)
-// get length of texture segment
-u32 func_8002A3A0(u16 spriteIndex, u32 spritesheetIndex[]) {
-
-    u16 counter = spriteIndex+1;
+u32 getTextureLength(u16 spriteIndex, u32 spritesheetIndex[]) {
     
+    u16 counter = spriteIndex + 1;
+    
+    // check if next sprite has same address (some sprites are reused with different palettes)
     if (spritesheetIndex[counter] == spritesheetIndex[spriteIndex]) {
         
         while (spritesheetIndex[counter] == spritesheetIndex[spriteIndex]) {
@@ -458,24 +457,24 @@ inline void func_8002A530(Vec3f* arg0, BitmapObject* arg1) {
     height = arg1->height;
     scaleY = arg1->scaling.y;
     
-    arg0->x = arg1->unk_1C.x;
-    arg0->y = arg1->unk_1C.y;
-    arg0->z = arg1->unk_1C.z;
+    arg0->x = arg1->shrink.x;
+    arg0->y = arg1->shrink.y;
+    arg0->z = arg1->shrink.z;
 
     scaledWidth = (width / 2) * scaleX;
     scaledHeight  = (height / 2) * scaleY;
 
-    if (((arg1->unk_54 >> 3) & (1 | 2)) == 1) {
-        arg0->x = arg1->unk_1C.x + scaledWidth;
+    if (((arg1->renderingFlags >> 3) & (1 | 2)) == 1) {
+        arg0->x = arg1->shrink.x + scaledWidth;
     }
-    if (((arg1->unk_54 >> 3) & (1 | 2)) == 3) {
-        arg0->x = arg1->unk_1C.x - scaledWidth;
+    if (((arg1->renderingFlags >> 3) & (1 | 2)) == 3) {
+        arg0->x = arg1->shrink.x - scaledWidth;
     }
-    if (((arg1->unk_54 >> 5) & (1 | 2)) == 1) {
-        arg0->y = arg1->unk_1C.y + scaledHeight;
+    if (((arg1->renderingFlags >> 5) & (1 | 2)) == 1) {
+        arg0->y = arg1->shrink.y + scaledHeight;
     }
-    if (((arg1->unk_54 >> 5) & (1 | 2)) == 3) {
-        arg0->y = arg1->unk_1C.y - scaledHeight;
+    if (((arg1->renderingFlags >> 5) & (1 | 2)) == 3) {
+        arg0->y = arg1->shrink.y - scaledHeight;
     }
 
 }
@@ -508,14 +507,6 @@ static const Gfx D_8011ED30 = gsSPEndDisplayList();
 
 //INCLUDE_RODATA("asm/nonmatchings/systemsprite", D_8011ED30);
 
-typedef struct {
-
-    u16 padding2[3];
-    u16 textureWidth;
-
-} func_8002A66C_unknown_struct;
-
-// 99.95%
 #ifdef PERMUTER
 Gfx* func_8002A66C(Gfx* dl, BitmapObject* sprite, u16 arg2) {
 
@@ -526,54 +517,52 @@ Gfx* func_8002A66C(Gfx* dl, BitmapObject* sprite, u16 arg2) {
     u16 textureSize;
     u16 remainingSize;
 
+    u32 tempSize;
     Gfx tempDl[2];
 
-    func_8002A66C_unknown_struct unknownStruct;
+    TextureInfo textureInfo;
 
-    u32 tempSize;
-    
-    sprite->spriteNumber = arg2;
+    u32 temp;
 
-    dl = func_8002A410(dl, (sprite->unk_54 >> 10) & (1 | 2 | 4));
+    bitmap->spriteNumber = arg2;
+
+    dl = func_8002A410(dl, (bitmap->renderingFlags >> 10) & (1 | 2 | 4));
 
     *dl++ = D_8011ED00;
-    
-    if (sprite->flags & USE_BILINEAR_FILTERING) {
+
+    if (bitmap->flags & USE_BILINEAR_FILTERING) {
         // gsDPSetTextureFilter(G_TF_BILERP)
         *dl++ = D_8011ED08;
     } else {
         // gsDPSetTextureFilter(G_TF_POINT)
-        *dl++ = D_8011ED10;
+        *dl++ = D_8011ED10;;
     }
 
-    // totally cursed
-    switch (sprite->pixelSize) {
+    switch (bitmap->pixelSize) {
 
         case G_IM_SIZ_4b:
-            textureHeight = 4096 / sprite->width;
-            unknownStruct.textureWidth = ((((u32) sprite->width) >> 0x1F) + tempSize) / 2;
-            //unknownStruct.textureWidth = (tempSize + ((u32)(sprite->width) >> 0x1F)) / 2;
+            textureHeight = 4096 / bitmap->width;
+            textureInfo.width = (bitmap->width + (((u32)bitmap->width) >> 0x1F)) / 2;
             break;
 
         case G_IM_SIZ_8b:
-            textureHeight = 2048 / sprite->width;
-            tempSize = sprite->width;
-            unknownStruct.textureWidth = tempSize;
+            textureHeight = 2048 / bitmap->width;
+            textureInfo.width = bitmap->width;
             break;
 
         case G_IM_SIZ_16b:
-            textureHeight = 2048 / sprite->width;
-            unknownStruct.textureWidth = tempSize*2;
+            textureHeight = 2048 / bitmap->width;
+            textureInfo.width = temp*2;
             break;
 
         case G_IM_SIZ_32b:
-            textureHeight = 2048 / sprite->width;
-            unknownStruct.textureWidth = tempSize*4;
+            textureHeight = 2048 / bitmap->width;
+            textureInfo.width = temp*4;
             break;
         
     }
 
-    remainingSize = sprite->height;
+    remainingSize = bitmap->height;
 
     textureOffset = 0;
     textureDimensions = 0;
@@ -588,30 +577,32 @@ Gfx* func_8002A66C(Gfx* dl, BitmapObject* sprite, u16 arg2) {
         }
 
         setupBitmapVertices(
-            (Vtx*)&bitmapVertices[gGraphicsBufferIndex][sprite->spriteNumber + vtxIndex],
-            sprite->width,
-            sprite->height,
+            (Vtx*)&bitmapVertices[gGraphicsBufferIndex][bitmap->spriteNumber + vtxIndex],
+            bitmap->width,
+            bitmap->height,
             textureSize,
             textureOffset,
-            sprite->unk_54 & 1,
-            sprite->unk_54 & 2,
-            sprite->unk_50,
-            sprite->unk_52,
-            sprite->unk_54,
-            sprite->rgba.r,
-            sprite->rgba.g,
-            sprite->rgba.b,
-            sprite->rgba.a
+            bitmap->renderingFlags & FLIP_HORIZONTAL,
+            bitmap->renderingFlags & FLIP_VERTICAL,
+            bitmap->anchorX,
+            bitmap->anchorY,
+            bitmap->renderingFlags,
+            bitmap->rgba.r,
+            bitmap->rgba.g,
+            bitmap->rgba.b,
+            bitmap->rgba.a
         );
 
-        dl = loadBitmapTexture(dl, sprite, textureDimensions, textureSize);
+        dl = loadBitmapTexture(dl, bitmap, textureDimensions, textureSize);
 
-        gSPVertex(&tempDl[1], (Vtx*)&bitmapVertices[gGraphicsBufferIndex][sprite->spriteNumber + vtxIndex][0], 4, 0);
+         gSPVertex(&tempDl[1], (Vtx*)&bitmapVertices[gGraphicsBufferIndex][bitmap->spriteNumber + vtxIndex][0], 4, 0);
 
         *(tempDl) = *(tempDl+1);
-        *dl++ = *(tempDl);
+        *dl = *(tempDl);
+        
+        dl++;
 
-        if (sprite->unk_54 & 0x200) {
+        if (bitmap->renderingFlags & 0x200) {
             // gsSP2Triangles(0, 1, 2, 0, 0, 2, 3, 0)
             *dl++ = D_8011ED18;
         } else {
@@ -623,7 +614,7 @@ Gfx* func_8002A66C(Gfx* dl, BitmapObject* sprite, u16 arg2) {
         textureOffset += textureSize;
         vtxIndex++;
 
-        textureDimensions += textureSize * unknownStruct.textureWidth;
+        textureDimensions += textureSize * textureInfo.width;
 
         *dl++ = D_8011ED28;
 
@@ -631,7 +622,7 @@ Gfx* func_8002A66C(Gfx* dl, BitmapObject* sprite, u16 arg2) {
 
     *dl++ = D_8011ED30;
 
-    sprite->vtxIndex = vtxIndex;
+    bitmap->vtxIndex = vtxIndex;
 
     return dl;
     
@@ -656,34 +647,29 @@ static void processBitmapSceneNode(BitmapObject* sprite, Gfx *dl) {
 
     addSceneNodePosition(spriteIndex, vec.x, vec.y, vec.z);
     addSceneNodeScaling(spriteIndex, sprite->scaling.x, sprite->scaling.y, sprite->scaling.z);
-    addSceneNodeRotation(spriteIndex, sprite->unk_34.x, sprite->unk_34.y, sprite->unk_34.z);
+    addSceneNodeRotation(spriteIndex, sprite->rotation.x, sprite->rotation.y, sprite->rotation.z);
 
 }
 
 //INCLUDE_ASM("asm/nonmatchings/system/sprite", updateBitmaps);
 
-static const char D_8011ED4C[] = "EX";
-static const char D_8011ED50[] = "s:/system/sprite.c";
-
-// main loop function
 void updateBitmaps(void) {
 
     u16 i;
 
     Gfx *tempDl;
-
     Gfx *dl = spriteDisplayList[gGraphicsBufferIndex];
 
     u16 spriteNumber = 0;
     
     for (i = 0; i < MAX_BITMAPS; i++) {
         
-        if (bitmaps[i].flags & 1) {
+        if (bitmaps[i].flags & ACTIVE) {
     
             setBitmapFormat(&bitmaps[i], bitmaps[i].timg, bitmaps[i].pal);
 
             tempDl = dl;
-            dl = func_8002A66C(tempDl, &bitmaps[i], spriteNumber);
+            dl = func_8002A66C(dl, &bitmaps[i], spriteNumber);
 
             processBitmapSceneNode(&bitmaps[i], tempDl); 
             
@@ -694,9 +680,7 @@ void updateBitmaps(void) {
    }
     
     if (dl - spriteDisplayList[gGraphicsBufferIndex] >= 0x880) {
-        // FIXME: get string literals working
-        __assert(D_8011ED4C, D_8011ED50, 820);
-        //__assert("EX", "s:/system/sprite.c", 820);
+        __assert("EX", "s:/system/sprite.c", 820);
     }
 
 }

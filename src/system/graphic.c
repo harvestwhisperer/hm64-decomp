@@ -322,23 +322,13 @@ Gfx* loadBitmapTexture(Gfx* dl, BitmapObject* sprite, u32 offset, u16 height) {
 
 //INCLUDE_ASM("asm/nonmatchings/system/graphic", setupBitmapVertices);
 
-/*
-  void setupBitmapVertices(
-      Vtx vtxs[],           // Output vertices
-      u16 width,            // Quad width 
-      u16 height,           // Quad height
-      u16 textureSize,      // Texture height for UV mapping
-      u16 textureOffset,    // Vertical texture offset (used in positioning)
-      u16 flipHorizontal,   // flag for horizontal texture flipping
-      u16 anchorX,          // X-axis anchor/offset point
-      u16 anchorY,          // Y-axis anchor/offset point
-      s16 depthOffset,      // Z-axis depth offset (signed)
-      u16 flags,            // Orientation and alignment flags
-      u8 r, u8 g, u8 b, u8 a  // Color values
-  )
-*/
-
-void setupBitmapVertices(Vtx vtxs[], u16 width, u16 height, u16 textureSize, u16 textureOffset, u16 flipHorizontal, u16 anchorX, u16 anchorY, s16 depthOffset, u16 flags, u8 r, u8 g, u8 b, u8 a) {
+void setupBitmapVertices(Vtx vtxs[], 
+    u16 width, u16 height, 
+    u16 textureSize, u16 textureOffset, 
+    u16 flipHorizontal, u16 flipVertical, 
+    s16 anchorX, s16 anchorY, 
+    u16 flags, 
+    u8 r, u8 g, u8 b, u8 a) {
     
     u8 coordinate1;
     u8 coordinate2;
@@ -383,8 +373,8 @@ void setupBitmapVertices(Vtx vtxs[], u16 width, u16 height, u16 textureSize, u16
         vtxs[1].v.tc[0] = 0;
         vtxs[2].v.tc[0] = 0;
         
-        vtxs[0].v.ob[coordinate1] = -centerOffsetX - anchorY;
-        vtxs[3].v.ob[coordinate1] = -centerOffsetX - anchorY;
+        vtxs[0].v.ob[coordinate1] = -centerOffsetX - anchorX;
+        vtxs[3].v.ob[coordinate1] = -centerOffsetX - anchorX;
         
         vtxs[2].v.ob[coordinate1] = vtxs[1].v.ob[coordinate1] = vtxs[0].v.ob[coordinate1] + width;
         
@@ -396,8 +386,8 @@ void setupBitmapVertices(Vtx vtxs[], u16 width, u16 height, u16 textureSize, u16
         vtxs[0].v.tc[0] = 0;
         vtxs[3].v.tc[0] = 0;
         
-        vtxs[0].v.ob[coordinate1] = anchorY - centerOffsetX;
-        vtxs[3].v.ob[coordinate1] = anchorY - centerOffsetX;
+        vtxs[0].v.ob[coordinate1] = anchorX - centerOffsetX;
+        vtxs[3].v.ob[coordinate1] = anchorX - centerOffsetX;
         
         vtxs[2].v.ob[coordinate1] = vtxs[1].v.ob[coordinate1] = vtxs[0].v.ob[coordinate1] + width;  
         
@@ -410,23 +400,23 @@ void setupBitmapVertices(Vtx vtxs[], u16 width, u16 height, u16 textureSize, u16
     vtxs[1].v.tc[1] = 0;
     
     // vertical alignment
-    switch ((flags >> 5) & (1 | 2)) {
+    switch ((flags >> 5) & 3) {
 
         case 2:
-            vtxs[0].v.ob[coordinate2] = (centerOffsetY - textureOffset) - depthOffset;
-            vtxs[1].v.ob[coordinate2] = (centerOffsetY - textureOffset) - depthOffset;
+            vtxs[0].v.ob[coordinate2] = (centerOffsetY - textureOffset) - anchorY;
+            vtxs[1].v.ob[coordinate2] = (centerOffsetY - textureOffset) - anchorY;
             vtxs[3].v.ob[coordinate2] = vtxs[2].v.ob[coordinate2] = temp = vtxs[0].v.ob[coordinate2] - textureSize;
             break;
 
         case 1:
-            vtxs[0].v.ob[coordinate2] = textureOffset - depthOffset;
-            vtxs[1].v.ob[coordinate2] = textureOffset - depthOffset;
+            vtxs[0].v.ob[coordinate2] = textureOffset - anchorY;
+            vtxs[1].v.ob[coordinate2] = textureOffset - anchorY;
             vtxs[3].v.ob[coordinate2] = vtxs[2].v.ob[coordinate2] = temp2 = vtxs[0].v.ob[coordinate2] - textureSize;
             break;
 
         case 3:
-            vtxs[0].v.ob[coordinate2] = (height - textureOffset) - depthOffset;
-            vtxs[1].v.ob[coordinate2] = (height - textureOffset) - depthOffset;
+            vtxs[0].v.ob[coordinate2] = (height - textureOffset) - anchorY;
+            vtxs[1].v.ob[coordinate2] = (height - textureOffset) - anchorY;
             vtxs[3].v.ob[coordinate2] = vtxs[2].v.ob[coordinate2] = temp = vtxs[0].v.ob[coordinate2] - textureSize;
             break;
 
@@ -820,34 +810,34 @@ f32 getSpriteYValueFromDirection(u8 direction) {
 
 }
  
-//INCLUDE_ASM("asm/nonmatchings/system/graphic", func_80028888);
+//INCLUDE_ASM("asm/nonmatchings/system/graphic", getTexturePtr);
 
 // get ptr to ci texture from index
-u8* func_80028888(u16 spriteIndex, u32* textureIndex) {
+u8* getTexturePtr(u16 spriteIndex, u32* textureIndex) {
     return (u8*)textureIndex + textureIndex[spriteIndex];
 }
 
 // alternate
 /*
-void *func_80028888(u16 arg0, u32 *arg1) {
+void *getTexturePtr(u16 arg0, u32 *arg1) {
   void *res = arg1;
   return res + *(arg1 + arg0);
 }
 */
 
-//INCLUDE_ASM("asm/nonmatchings/system/graphic", func_800288A0);
+//INCLUDE_ASM("asm/nonmatchings/system/graphic", getPalettePtrType1);
 
 // get ptr to palette
 // FIXME: should return u16*?
-u8 *func_800288A0(u16 index, u32 *paletteIndex) {
+u8 *getPalettePtrType1(u16 index, u32 *paletteIndex) {
   return (u8*)paletteIndex + paletteIndex[index];
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/graphic", func_800288B8);
+//INCLUDE_ASM("asm/nonmatchings/system/graphic", getPalettePtrType2);
 
 // returns palette pointer from sprite-to-palette mapping table
 // used if global sprite flag 0x100 is set
-u8* func_800288B8(u16 spriteIndex, u32* paletteIndex, u8* spriteToPaletteIndex) {
+u8* getPalettePtrType2(u16 spriteIndex, u32* paletteIndex, u8* spriteToPaletteIndex) {
     
     u8* arr = spriteToPaletteIndex + 4;
     u16 i = arr[spriteIndex];
@@ -858,7 +848,7 @@ u8* func_800288B8(u16 spriteIndex, u32* paletteIndex, u8* spriteToPaletteIndex) 
 
 // alternate
 /*
-u8* func_800288B8(u16 arg0, u32 *arg1, u8 *arg2) {
+u8* getPalettePtrType2(u16 arg0, u32 *arg1, u8 *arg2) {
     return (u8*)arg1 + *(arg1 + *(arg0 + arg2 + 4));
 }
 */

@@ -24,7 +24,7 @@ options:
   libultra_symbols: True
   gfx_ucode: f3dex2
   # ld_symbol_header_path: include/ld_symbols.h
-  # disassemble_all: true
+  disassemble_all: true
   # dump_symbols: True
   # extensions_path: tools/splat_ext
   
@@ -349,8 +349,12 @@ segments:
       - [ 0xF3F50, .data, game/weather]
       - [ 0xF3F70, data, game/shop]
       - [ 0xF4B40, data, game/loadGameScreen] # packinsoft farm string
-      - [ 0xF4B50, data, game/characterSpriteAnimationData]
-      - [ 0xF71B0, data, game/sfx]
+      - [ 0xF4B50, .data, data/animation/player]
+      - [ 0xF50D0, .data, data/animation/maria]
+      - [ 0xF51D0, data, data/animation/packedAnimationData] #TODO: finish adding individual files
+      - [ 0xF63A0, .data, data/animation/chick]
+      - [ 0xF63D0, data, data/animation/packedAnimationData2] #TODO: finish adding individual files
+      - [ 0xF71B0, data, data/sfx]
       - [ 0xF7AD0, data, game/namingScreen]
       - [ 0xF7BF0, .data, lib/nusys-1/nupakmenu]
       - [ 0xF7C20, .data, lib/nusys-1/nupakmenuloadfont]
@@ -558,13 +562,25 @@ segments:
   #     palette
   #   palette2:
   #   ...
-  #   unknown index
-  #   unknown data, varying size (probably animation indices into spritesheet)
+  #   animation index
+  #   animation metadata 1
+  #     header
+  #     animation metadata 
+  #       frame counter
+  #       frame duration
+  #       has audio
+  #     sprite/bitmap metadata
+  #     	sprite number (index into spritesheet index table)
+  #       unused 2 bit field
+  #       anchorX (s16)
+  #       anchorY (s16)
+  #   animation metadata 2
+  #   ...
   #   sprite to palettes mapping table u8[] --> table[spritesheetEntry] --> paletteIndex
   #   assets index
   #     offset for spritesheet (i.e., 0)
   #     offset for palette section
-  #     offset for unknown section (probably animation indices)
+  #     offset for animation section
   #     sprite to palettes mapping array
   #     end of assets/start of spritesheet index
   #   spritesheet index
@@ -572,8 +588,7 @@ segments:
   #     offset2
   #     etc.
 
-  # animated/character sprites
-
+  # character sprites
   - name: playerTexture
     type: bin
     dir: sprites/player
@@ -2281,10 +2296,11 @@ segments:
   #   palette
   #     index
   #     palettes
-  #   unknown asset
+  #   animation
   #     index
-  #     asset
+  #     animation data
   #   sprite to palette map
+
   - name: funeralSpritesTexture
     type: bin
     dir: sprites/cutscenes/funeral

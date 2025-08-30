@@ -105,7 +105,7 @@ typedef struct {
     u16 functionIndex;
     u16 spriteIndex;
     u16 flags;
-} CutsceneCharacterSpriteCmd;
+} CutsceneEntityAssetCmd;
 
 /* map */
 

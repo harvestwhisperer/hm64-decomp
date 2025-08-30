@@ -6,11 +6,13 @@
 #include "system/sprite.h"
 #include "system/mathUtils.h"
 
+#include "mainproc.h"
+
 // forward declarations
-bool func_8002B8E0(u16, u8, void*);
-void setTotalAnimationFrames(SpriteAnimation*, u16*);             
-u8* func_8002CD34(u16 arg0, void* arg1);
-u16* func_8002CD4C(u16, u16*);   
+bool setupSpriteAnimation(u16 spriteIndex, u8 animationModeOrFrameIndex, u16* animationDataPtr);
+void setTotalAnimationFrames(SpriteAnimationMetadata*, u16*);             
+u8* getAnimationMetadataPtr(u16 arg0, void* arg1);
+u16* getAnimationMetadataPtrFromFrame(u16, u16*);   
 
 // bss
 extern SpriteObject globalSprites[MAX_ACTIVE_SPRITES];
@@ -48,31 +50,8 @@ static inline u16 swap16(Swap16 halfword) {
 
 // }
 
-// unsure... not technically a 32 bit swap
-// also used in graphic.c
-static inline u32 swap32(u16 halfword) {
-    
-    Swap32 swap;
-    u16 lower;
-    u16 upper;
-
-    upper = (halfword & 0xFF) << 8;
-    lower = halfword >> 8;
-    
-    swap.word = lower | upper;
-
-    return swap.halfword[0] | swap.halfword[1];
-    
-}
-
-static inline void swapBytes(SpriteAnimation *animation, Swap16 halfword) {
-
-    animation->unk_2 = halfword.byte[0];
-    animation->audioTrigger = halfword.byte[1];
-    
-}
-
-// static inline u16 swap16Alt(u16 halfword) {
+// alternate
+// static inline u16 swap16A(u16 halfword) {
 
 //     u32 padding[4];
     
@@ -92,6 +71,30 @@ static inline void swapBytes(SpriteAnimation *animation, Swap16 halfword) {
     
 // }
 
+// unsure... not technically a 32 bit swap
+// also used in graphic.c
+static inline u32 swap16to32(u16 halfword) {
+    
+    Swap32 swap;
+    u16 lower;
+    u16 upper;
+
+    upper = (halfword & 0xFF) << 8;
+    lower = halfword >> 8;
+    
+    swap.word = lower | upper;
+
+    return swap.halfword[0] | swap.halfword[1];
+    
+}
+
+static inline void swapBytes(SpriteAnimationMetadata *animationMetadata, Swap16 halfword) {
+
+    animationMetadata->frameDuration = halfword.byte[0];
+    animationMetadata->audioTrigger = halfword.byte[1];
+    
+}
+
 //INCLUDE_ASM("asm/nonmatchings/system/globalSprites", initializeGlobalSprites);
 
 void initializeGlobalSprites(void) {
@@ -106,7 +109,7 @@ void initializeGlobalSprites(void) {
         globalSprites[i].paletteIndex = 0;
         globalSprites[i].currentAnimationFrame = 0;
         globalSprites[i].audioTrigger = FALSE;
-        globalSprites[i].frameTimer = 0;
+        globalSprites[i].frameTickCounter = 0;
         
         globalSprites[i].shrink.x = 0;
         globalSprites[i].shrink.y = 0;
@@ -116,9 +119,9 @@ void initializeGlobalSprites(void) {
         globalSprites[i].scale.y = 1.0f;
         globalSprites[i].scale.z = 1.0f;
 
-        globalSprites[i].angles.x = 0;
-        globalSprites[i].angles.y = 0;
-        globalSprites[i].angles.z = 0;
+        globalSprites[i].rotation.x = 0;
+        globalSprites[i].rotation.y = 0;
+        globalSprites[i].rotation.z = 0;
         
         globalSprites[i].rgbaCurrent.r = 0;
         globalSprites[i].rgbaCurrent.g = 0;
@@ -217,8 +220,8 @@ bool func_8002B36C(u16 index, u32* animationIndexPtr, u32* spritesheetIndexPtr, 
             globalSprites[index].spritesheetIndexPtr = spritesheetIndexPtr;
             globalSprites[index].paletteIndexPtr = paletteIndexPtr;
             globalSprites[index].spriteToPaletteMappingPtr = spriteToPaletteMappingPtr;
-            globalSprites[index].texturePtr = (void*)0;
-            globalSprites[index].texture2Ptr = (void*)0;
+            globalSprites[index].texturePtr[0] = (void*)0;
+            globalSprites[index].texturePtr[1] = (void*)0;
             globalSprites[index].romTexturePtr = (void*)0;
 
             globalSprites[index].stateFlags = ACTIVE;
@@ -229,7 +232,7 @@ bool func_8002B36C(u16 index, u32* animationIndexPtr, u32* spritesheetIndexPtr, 
 
             setSpriteShrinkFactor(index, 0.0f, 0.0f, 0.0f);
             setSpriteScale(index, 1.0f, 1.0f, 1.0f);
-            setSpriteAngles(index, 0.0f, 0.0f, 0.0f);
+            setSpriteRotation(index, 0.0f, 0.0f, 0.0f);
             setSpriteDefaultRGBA(index, 0xFF, 0xFF, 0xFF, 0xFF);
             func_8002C680(index, 2, 2);
             func_8002C6F8(index, 2);
@@ -258,8 +261,8 @@ bool func_8002B50C(u16 spriteIndex, u32* animationIndexPtr, u32* spritesheetInde
             globalSprites[spriteIndex].spritesheetIndexPtr = spritesheetIndexPtr;
             globalSprites[spriteIndex].paletteIndexPtr = paletteIndexPtr;
             globalSprites[spriteIndex].spriteToPaletteMappingPtr = spriteToPaletteMappingPtr;
-            globalSprites[spriteIndex].texturePtr = texturePtr;
-            globalSprites[spriteIndex].texture2Ptr = texture2Ptr;
+            globalSprites[spriteIndex].texturePtr[0] = texturePtr;
+            globalSprites[spriteIndex].texturePtr[1] = texture2Ptr;
             globalSprites[spriteIndex].romTexturePtr = romTexturePtr;
 
             globalSprites[spriteIndex].stateFlags = (ACTIVE | 4);
@@ -270,7 +273,7 @@ bool func_8002B50C(u16 spriteIndex, u32* animationIndexPtr, u32* spritesheetInde
 
             setSpriteShrinkFactor(spriteIndex, 0, 0, 0);
             setSpriteScale(spriteIndex, 1.0f, 1.0f, 1.0f);
-            setSpriteAngles(spriteIndex, 0, 0, 0);
+            setSpriteRotation(spriteIndex, 0, 0, 0);
             setSpriteDefaultRGBA(spriteIndex, 0xFF, 0xFF, 0xFF, 0xFF);
             func_8002C680(spriteIndex, 2, 2);
             func_8002C6F8(spriteIndex, 2);
@@ -287,18 +290,19 @@ bool func_8002B50C(u16 spriteIndex, u32* animationIndexPtr, u32* spritesheetInde
 
 //INCLUDE_ASM("asm/nonmatchings/system/globalSprites", deactivateSprite);
 
-bool deactivateSprite(u16 spriteIndex) {
+inline bool deactivateSprite(u16 spriteIndex) {
 
     bool result = FALSE;
 
     if (spriteIndex < MAX_ACTIVE_SPRITES) {
         if (globalSprites[spriteIndex].stateFlags & ACTIVE) {
-            globalSprites[spriteIndex].stateFlags &= ~(ACTIVE | 2);
+            globalSprites[spriteIndex].stateFlags &= ~(ACTIVE | ANIMATION_HEADER_PROCESSED);
             result = TRUE;
         }        
     }
 
     return result; 
+
 }
 
 //INCLUDE_ASM("asm/nonmatchings/system/globalSprites", deactivateGlobalSprites);
@@ -327,12 +331,12 @@ void deactivateGlobalSprites(void) {
 
 //INCLUDE_ASM("asm/nonmatchings/system/globalSprites", func_8002B7A0);
 
-// possibly inline, otherwise unused
-bool func_8002B7A0(u16 spriteIndex, u8 arg1) {
+// unused or inline
+bool func_8002B7A0(u16 spriteIndex, u8 animationModeOrFrameIndex) {
 
     bool result;
 
-    result = func_8002B8E0(spriteIndex, arg1, globalSprites[spriteIndex].animationIndexPtr);
+    result = setupSpriteAnimation(spriteIndex, animationModeOrFrameIndex, globalSprites[spriteIndex].animationIndexPtr);
 
     globalSprites[spriteIndex].animationCounter[0] = 0xFF;
     globalSprites[spriteIndex].animationCounter[1] = 0xFF;
@@ -343,7 +347,7 @@ bool func_8002B7A0(u16 spriteIndex, u8 arg1) {
 
 //INCLUDE_ASM("asm/nonmatchings/system/globalSprites", startSpriteAnimation);
 
-bool startSpriteAnimation(u16 spriteIndex, u16 offset, u8 arg2) {
+bool startSpriteAnimation(u16 spriteIndex, u16 animationIndex, u8 animationModeOrFrameIndex) {
 
     bool result = FALSE;
     
@@ -351,10 +355,9 @@ bool startSpriteAnimation(u16 spriteIndex, u16 offset, u8 arg2) {
 
         if (globalSprites[spriteIndex].stateFlags & ACTIVE) {
             
-            if (globalSprites[spriteIndex].animationIndexPtr[offset] != globalSprites[spriteIndex].animationIndexPtr[offset+1]) {
+            if (globalSprites[spriteIndex].animationIndexPtr[animationIndex] != globalSprites[spriteIndex].animationIndexPtr[animationIndex+1]) {
 
-                // func_8002CD34(offset, globalSprites[spriteIndex].animationIndexPtr) = get address + offset for unknown asset ptr based on sprite index
-                result = func_8002B8E0(spriteIndex, arg2, func_8002CD34(offset, globalSprites[spriteIndex].animationIndexPtr));
+                result = setupSpriteAnimation(spriteIndex, animationModeOrFrameIndex, getAnimationMetadataPtr(animationIndex, globalSprites[spriteIndex].animationIndexPtr));
                 
                 globalSprites[spriteIndex].animationCounter[0] = 0xFF;
                 globalSprites[spriteIndex].animationCounter[1] = 0xFF;
@@ -367,24 +370,24 @@ bool startSpriteAnimation(u16 spriteIndex, u16 offset, u8 arg2) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", func_8002B8E0);
+//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", setupSpriteAnimation);
 
-bool func_8002B8E0(u16 spriteIndex, u8 arg1, void* animationDataPtr) {
+bool setupSpriteAnimation(u16 spriteIndex, u8 animationModeOrFrameIndex, u16* animationDataPtr) {
 
     bool result = FALSE;
-    u16 *temp;
+    u16 *metadataPtr;
     
     if ((spriteIndex < MAX_ACTIVE_SPRITES) && (globalSprites[spriteIndex].stateFlags & ACTIVE) && !(globalSprites[spriteIndex].stateFlags & ANIMATION_HEADER_PROCESSED)) {
 
         globalSprites[spriteIndex].animationDataPtr = animationDataPtr;
 
-        globalSprites[spriteIndex].frameTimer = 0;
+        globalSprites[spriteIndex].frameTickCounter = 0;
         globalSprites[spriteIndex].audioTrigger = FALSE;
 
         globalSprites[spriteIndex].stateFlags &= ~ANIMATION_STATE_CHANGED;
         globalSprites[spriteIndex].stateFlags |= ANIMATION_HEADER_PROCESSED;
 
-        switch (arg1) {
+        switch (animationModeOrFrameIndex) {
             case 0xFF:
                 globalSprites[spriteIndex].currentAnimationFrame = 0;
                 globalSprites[spriteIndex].stateFlags &= ~ANIMATION_LOOPS;
@@ -399,18 +402,19 @@ bool func_8002B8E0(u16 spriteIndex, u8 arg1, void* animationDataPtr) {
                 globalSprites[spriteIndex].stateFlags |= ANIMATION_PLAYING | DESTROY_ON_ANIMATION_END;
                 break;
             default:
-                globalSprites[spriteIndex].currentAnimationFrame = arg1;
+                // for static sprites, show a single frame
+                globalSprites[spriteIndex].currentAnimationFrame = animationModeOrFrameIndex;
                 globalSprites[spriteIndex].stateFlags &= ~(ANIMATION_PLAYING | ANIMATION_LOOPS);
                 break;
         }
 
-        // update animation from byteswapped table
-        setTotalAnimationFrames(&globalSprites[spriteIndex].animation, globalSprites[spriteIndex].animationDataPtr);
+        setTotalAnimationFrames(&globalSprites[spriteIndex].animationMetadata, globalSprites[spriteIndex].animationDataPtr);
 
-        temp = func_8002CD4C(globalSprites[spriteIndex].currentAnimationFrame, globalSprites[spriteIndex].animationDataPtr+8);
+        // animationDataPtr + 4 = skip header
+        metadataPtr = getAnimationMetadataPtrFromFrame(globalSprites[spriteIndex].currentAnimationFrame, globalSprites[spriteIndex].animationDataPtr + 4);
         
-        globalSprites[spriteIndex].unknownAsset3Ptr = temp;
-        globalSprites[spriteIndex].unknownAsset4Ptr = temp + 2;
+        globalSprites[spriteIndex].animationMetadataPtr = metadataPtr;
+        globalSprites[spriteIndex].bitmapMetadataPtr = metadataPtr + 2;
 
         result = TRUE;
         
@@ -474,9 +478,9 @@ bool func_8002BB88(u16 index) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", func_8002BBE0);
+//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", setSpriteFlip);
 
-bool func_8002BBE0(u16 index, u8 arg1, u8 arg2) {
+bool setSpriteFlip(u16 index, bool flipHorizontal, bool flipVertical) {
 
     bool result = FALSE;
     
@@ -484,16 +488,16 @@ bool func_8002BBE0(u16 index, u8 arg1, u8 arg2) {
 
         if (globalSprites[index].stateFlags & ACTIVE) {
 
-            if (arg1) {
-                globalSprites[index].renderingFlags |= 1;
+            if (flipHorizontal) {
+                globalSprites[index].renderingFlags |= FLIP_HORIZONTAL;
             } else {
-                globalSprites[index].renderingFlags &= ~1;
+                globalSprites[index].renderingFlags &= ~FLIP_HORIZONTAL;
             }
 
-            if (arg2) {
-                globalSprites[index].renderingFlags |= 2;
+            if (flipVertical) {
+                globalSprites[index].renderingFlags |= FLIP_VERTICAL;
             } else {
-                globalSprites[index].renderingFlags &= ~2;
+                globalSprites[index].renderingFlags &= ~FLIP_VERTICAL;
             }
             
             result = TRUE;
@@ -568,9 +572,9 @@ bool setSpriteScale(u16 index, f32 x, f32 y, f32 z) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", setSpriteAngles);
+//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", setSpriteRotation);
 
-bool setSpriteAngles(u16 index, f32 x, f32 y, f32 z) {
+bool setSpriteRotation(u16 index, f32 x, f32 y, f32 z) {
 
     bool result = FALSE;
 
@@ -578,9 +582,9 @@ bool setSpriteAngles(u16 index, f32 x, f32 y, f32 z) {
 
         if (globalSprites[index].stateFlags & ACTIVE) {
 
-            globalSprites[index].angles.x = x;
-            globalSprites[index].angles.y = y;
-            globalSprites[index].angles.z = z;
+            globalSprites[index].rotation.x = x;
+            globalSprites[index].rotation.y = y;
+            globalSprites[index].rotation.z = z;
 
             result = TRUE;
 
@@ -640,7 +644,8 @@ bool adjustSpriteScale(u16 index, f32 x, f32 y, f32 z) {
 
 //INCLUDE_ASM("asm/nonmatchings/system/globalSprites", func_8002C000);
 
-bool func_8002C000(u16 index, f32 x, f32 y, f32 z) {
+// unused or inline
+bool adjustSpriteRotation(u16 index, f32 x, f32 y, f32 z) {
 
     bool result = FALSE;
     
@@ -648,9 +653,9 @@ bool func_8002C000(u16 index, f32 x, f32 y, f32 z) {
         
         if (globalSprites[index].stateFlags & ACTIVE) {
 
-            globalSprites[index].angles.x += x;
-            globalSprites[index].angles.y += y;
-            globalSprites[index].angles.z += z;
+            globalSprites[index].rotation.x += x;
+            globalSprites[index].rotation.y += y;
+            globalSprites[index].rotation.z += z;
                 
             result = TRUE;
             
@@ -664,7 +669,7 @@ bool func_8002C000(u16 index, f32 x, f32 y, f32 z) {
 //INCLUDE_ASM("asm/nonmatchings/system/globalSprites", func_8002C0B4);
 
 // unused or inline
-bool func_8002C0B4(u16 index, s8 r, s8 g, s8 b, s8 a) {
+bool adjustSpriteRGBA(u16 index, s8 r, s8 g, s8 b, s8 a) {
 
     bool result = FALSE;
     
@@ -1045,57 +1050,54 @@ bool checkSpriteAnimationStateChanged(u16 index) {
     
 }
 
-void setTotalAnimationFrames(SpriteAnimation *animation, u16 *animationData) {
+void setTotalAnimationFrames(SpriteAnimationMetadata *animationMetadata, u16 *animationData) {
     
-    animation->totalFrames = swap16(animationData[2]);
-    
-}
-
-inline void func_8002CCA8(SpriteAnimation* animation, u16* animationData) {
-
-    animation->totalFrames = swap16(animationData[0]);
-    swapBytes(animation, animationData[1]);
+    animationMetadata->frameCount = swap16(animationData[2]);
     
 }
 
-// inline used by func_8002CDE8
-inline void func_8002CCDC(SpriteData* ptr, u16* data) {
+inline void setAnimationMetadata(SpriteAnimationMetadata* animationMetadata, u16* animationData) {
+
+    animationMetadata->frameCount = swap16(animationData[0]);
+    swapBytes(animationMetadata, animationData[1]);
     
-    ptr->spriteIndex = swap32(data[0]);    
+}
+
+inline void setBitmapMetadata(BitmapMetadata* ptr, u16* data) {
+    
+    ptr->spritesheetIndex = swap16to32(data[0]);    
     ptr->unk_2 = 0;
-    ptr->textureIndex = swap32(data[2]);
-    ptr->unk_6 = swap16(data[3]);
+    ptr->anchorX = swap16to32(data[2]);
+    ptr->anchorY = swap16(data[3]);
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", func_8002CD34);
+//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", getAnimationMetadataPtr);
 
 // TODO: see if void* type is necessary
-// unknown sprite asset index lookup
-u8* func_8002CD34(u16 arg0, void* arg1) {
+u8* getAnimationMetadataPtr(u16 index, void* table) {
  
-    u32 *arr = (u32*)arg1;
+    u32 *arr = (u32*)table;
     
-    return (u8*)(arg1 + arr[arg0]);
+    return (u8*)(table + arr[index]);
     
 }
 
 // alternate
 /*
-u8* func_8002CD34(u16 arg0, void* arg1) {
+u8* getAnimationMetadataPtr(u16 arg0, void* arg1) {
     return (u8*)(arg1 + *(u32*)(arg1 + arg0*4));
 }
 */
 
-//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", func_8002CD4C);
+//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", getAnimationMetadataPtrFromFrame);
 
-// FIXME: probably uses inlines; this could be an inline function used by graphic.c too
-// iterates through array of byteswapped shorts and swaps and increments ptr
-// arg0 = unk_90, arg1 = animationDataPtr
-inline u16* func_8002CD4C(u16 arg0, u16* arg1) {
+// update pointer by iterateing through animation data (contains header, animation metadata, and sprite metadata)
+inline u16* getAnimationMetadataPtrFromFrame(u16 currentFrame, u16* animationDataPtr) {
     
     u16 i;
-    SpriteAnimation unk;
+    SpriteAnimationMetadata animationMetadata;
+
     u32 pad[2];
 
     u32 temp;
@@ -1105,98 +1107,102 @@ inline u16* func_8002CD4C(u16 arg0, u16* arg1) {
     
     i = 0;
     
-    if (arg0 != 0) {
+    if (currentFrame != 0) {
         
         do {
+
+            // FIXME: should be inline setAnimationMetadata call
             
-            // FIXME: use swap inline
-            temp2 = arg1[0] << 8;
-            temp3 = arg1[0] >> 8;
+            temp2 = animationDataPtr[0] << 8;
+            temp3 = animationDataPtr[0] >> 8;
             
             temp = temp2 | temp3;
             
-            unk.totalFrames = temp;
+            animationMetadata.frameCount = temp;
 
-            temp2 = arg1[1];
+            temp2 = animationDataPtr[1];
             temp = temp2;
             temp2 = temp;
             
             temp2 = temp >> 8;
             temp4 = temp >> 8;
             
-            unk.unk_2 = temp4;
-            unk.audioTrigger = temp;
-              
-            arg1 += 2;
-            arg1 += unk.totalFrames * 4;
+            animationMetadata.frameDuration = temp4;
+            animationMetadata.audioTrigger = temp;
+            
+            //
+
+            // skip header for next iteration
+            animationDataPtr += 2;
+            // go to offset of next animation frame?
+            animationDataPtr += animationMetadata.frameCount * 4;
             
             i++;
             
-        } while (i < arg0);
+        } while (i < currentFrame);
+
     }
     
-    return arg1;
+    return animationDataPtr;
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", func_8002CDB4);
+//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", advanceBitmapMetadataPtr);
 
-inline u16* func_8002CDB4(u16 arg0, u16* arg1) {
+inline u16* advanceBitmapMetadataPtr(u16 numFrames, u16* bitmapMetadataPtr) {
     
     u32 i;
     
-    for (i = 0; (u16)i < arg0; i++) {
-        arg1+=4;
+    // FIXME: weird typecast
+    for (i = 0; (u16)i < numFrames; i++) {
+        bitmapMetadataPtr += 4;
     }
 
-    return arg1;
+    return bitmapMetadataPtr;
     
 }
 
 // alternate
 /*
-u32 func_8002CDB4(u16 arg0, u32 arg1) {
+u16* advanceBitmapMetadataPtr(u16 numFrames, u16* bitmapMetadataPtr) {
     
-    u16 i = 0;
-
-    u32 padding[2];
-    
-    if (arg0) {
-        do {
-            arg1 += 8;
-            i++;
-        } while (i < arg0);
-    }
-    
-    return arg1;
-}
-*/
-
-// alternate
-/*
-u32 func_8002CDB4(u16 arg0, u32 arg1) {
-    
-    u32 result;
+    u16* result;
     u32 padding[2];
     
     u16 i = 0;
     
-    if (arg0) {
+    if (numFrames) {
         do {
-            result += 8;
+            result += 4;
             i++;
-        } while (i < arg0);
+        } while (i < numFrames);
     }
     
     return result;
+    
 }
 */
 
-// sprites to bitmaps
-// set flags on bitmaps
-// arg1 = stack
+
+/*
+typedef struct {
+    volatile u16 spritesheetIndex;
+    u16 unk_2;
+    s16 anchorX;
+    s16 anchorY;
+    u16 unk_8; 
+} BitmapMetadataAlt;
+
+typedef struct {
+    u32 unk_0;
+    SpriteAnimationMetadata *animationMetadataPtr;
+    u32 unk_8; 
+    u32 length;
+} SpriteMetadata;
+*/
+
 #ifdef PERMUTER
-void func_8002CDE8(u16 spriteIndex, SpriteAnimation* arg1, u8 arg2) {
+void setBitmapFromSpriteObject(u16 spriteIndex, SpriteAnimationMetadata* animationMetadataPtr, u8 animationType) {
 
     u16 bitmapIndex;
     
@@ -1207,27 +1213,26 @@ void func_8002CDE8(u16 spriteIndex, SpriteAnimation* arg1, u8 arg2) {
     f32 shrinkY;
     f32 shrinkZ;
     
-    SpriteData data;
+    BitmapMetadataAlt bitmapMetadata;
+    SpriteMetadata metadata;
     
-    u16 temp;
+    u16 frameCount;
     u32 temp2;
     u16 temp3;
     u16 i;
+    
+    metadata.animationMetadataPtr = animationMetadataPtr;
+    frameCount = animationMetadataPtr->frameCount;
+    
+    metadata.length = 0;
+    
+    texturePtr = globalSprites[spriteIndex].texturePtr[gGraphicsBufferIndex];
 
-    u32 pad2[4];
-    
-    data.ptr2 = arg1;
-    temp = arg1->animation;
-    
-    data.length = 0;
-    
-    texturePtr = globalSprites[spriteIndex].texturePtrs[gGraphicsBufferIndex];
-
-    if (temp) {
+    if (frameCount) {
         
         i = 0;
     
-        temp2 = arg2;
+        temp2 = animationType;
     
         do {
             
@@ -1235,40 +1240,40 @@ void func_8002CDE8(u16 spriteIndex, SpriteAnimation* arg1, u8 arg2) {
 
                 do {
                     
-                    func_8002CCDC(&data, func_8002CDB4((temp - i) - 1, globalSprites[spriteIndex].unknownAsset4Ptr));
+                    setBitmapMetadata(&bitmapMetadata, advanceBitmapMetadataPtr((frameCount - i) - 1, globalSprites[spriteIndex].bitmapMetadataPtr));
                     
-                    texturePtr += data.length;
-                    
+                    texturePtr += metadata.length;
+                
                     if (temp2 == 2) {
-                        func_8002A340(data.spriteIndex, globalSprites[spriteIndex].spritesheetIndexPtr, texturePtr, globalSprites[spriteIndex].romTexturePtr);
+                        setSpriteDMAInfo(bitmapMetadata.spritesheetIndex, globalSprites[spriteIndex].spritesheetIndexPtr, texturePtr, globalSprites[spriteIndex].romTexturePtr);
                     }
-                    
-                    data.length = func_8002A3A0(data.spriteIndex, globalSprites[spriteIndex].spritesheetIndexPtr);
-                        
+                
+                    metadata.length = getTextureLength(bitmapMetadata.spritesheetIndex, globalSprites[spriteIndex].spritesheetIndexPtr);
+            
                 } while (0);
                 
             } else {
 
                 do {
                     
-                    temp3 = ((data.ptr2->animation - i) - 1);
+                    temp3 = ((metadata.animationMetadataPtr->frameCount - i) - 1);
     
                     if (temp2 < temp3) {
                         
                     }
     
-                    func_8002CCDC(&data, func_8002CDB4(temp3, globalSprites[spriteIndex].unknownAsset4Ptr));
+                    setBitmapMetadata(&bitmapMetadata, advanceBitmapMetadataPtr(temp3, globalSprites[spriteIndex].bitmapMetadataPtr));
     
-                    texturePtr = func_80028888(data.spriteIndex, globalSprites[spriteIndex].spritesheetIndexPtr);
+                    texturePtr = getTexturePtr(bitmapMetadata.spritesheetIndex, globalSprites[spriteIndex].spritesheetIndexPtr);
 
                 } while (0);
                
             }
 
             if (globalSprites[spriteIndex].stateFlags & DIRECT_PALETTE_MODE) {
-                palettePtr = func_800288A0(globalSprites[spriteIndex].paletteIndex, globalSprites[spriteIndex].paletteIndexPtr);
+                palettePtr = getPalettePtrType1(globalSprites[spriteIndex].paletteIndex, globalSprites[spriteIndex].paletteIndexPtr);
             } else {
-                palettePtr = func_800288B8(data.spriteIndex, globalSprites[spriteIndex].paletteIndexPtr, globalSprites[spriteIndex].spriteToPaletteMappingPtr);
+                palettePtr = getPalettePtrType2(bitmapMetadata.spritesheetIndex, globalSprites[spriteIndex].paletteIndexPtr, globalSprites[spriteIndex].spriteToPaletteMappingPtr);
             }
 
             shrinkX = globalSprites[spriteIndex].shrink.x;
@@ -1276,235 +1281,229 @@ void func_8002CDE8(u16 spriteIndex, SpriteAnimation* arg1, u8 arg2) {
             shrinkZ = globalSprites[spriteIndex].shrink.z;
 
             if (globalSprites[spriteIndex].stateFlags & SPRITE_FLIP_WINDING) {
-                bitmapIndex = func_80029DAC(texturePtr, palettePtr, (0x8 | 0x10 | 0x20 | 0x40));
+                bitmapIndex = setBitmap(texturePtr, palettePtr, (0x8 | 0x10 | 0x20 | 0x40));
             } else {
-                bitmapIndex = func_80029DAC(texturePtr, palettePtr, (0x8 | 0x10 | 0x30));
+                bitmapIndex = setBitmap(texturePtr, palettePtr, (0x8 | 0x10 | 0x30));
             }
             
-            func_8002A09C(bitmapIndex, shrinkX, shrinkY, shrinkZ);
-            func_8002A120(bitmapIndex, globalSprites[spriteIndex].scale.x, globalSprites[spriteIndex].scale.y, globalSprites[spriteIndex].scale.z);
-            func_8002A1A4(bitmapIndex, globalSprites[spriteIndex].angles.x, globalSprites[spriteIndex].angles.y, globalSprites[spriteIndex].angles.z);
-
-            func_8002A228(bitmapIndex, globalSprites[spriteIndex].rgbaCurrent.r, globalSprites[spriteIndex].rgbaCurrent.g, globalSprites[spriteIndex].rgbaCurrent.b, globalSprites[spriteIndex].rgbaCurrent.a);
-
-            func_8002A2E0(bitmapIndex, data.textureIndex, data.unk_6);
+            setBitmapShrink(bitmapIndex, shrinkX, shrinkY, shrinkZ);
+            setBitmapScale(bitmapIndex, globalSprites[spriteIndex].scale.x, globalSprites[spriteIndex].scale.y, globalSprites[spriteIndex].scale.z);
+            setBitmapRotation(bitmapIndex, globalSprites[spriteIndex].rotation.x, globalSprites[spriteIndex].rotation.y, globalSprites[spriteIndex].rotation.z);
+            setBitmapRGBA(bitmapIndex, globalSprites[spriteIndex].rgbaCurrent.r, globalSprites[spriteIndex].rgbaCurrent.g, globalSprites[spriteIndex].rgbaCurrent.b, globalSprites[spriteIndex].rgbaCurrent.a);
+            setBitmapAnchor(bitmapIndex, bitmapMetadata.anchorX, bitmapMetadata.anchorY);
             
-            func_80029F98(bitmapIndex, globalSprites[spriteIndex].renderingFlags & 1, globalSprites[spriteIndex].renderingFlags & 2);
-
-            func_80029E2C(bitmapIndex, (globalSprites[spriteIndex].renderingFlags >> 3) & (1 | 3), (globalSprites[spriteIndex].renderingFlags >> 5) & (1 | 3));
-            func_80029EA4(bitmapIndex, (globalSprites[spriteIndex].renderingFlags >> 7) & (1 | 3));
+            setBitmapFlip(bitmapIndex, globalSprites[spriteIndex].renderingFlags & FLIP_HORIZONTAL, globalSprites[spriteIndex].renderingFlags & FLIP_VERTICAL);
+            func_80029E2C(bitmapIndex, (globalSprites[spriteIndex].renderingFlags >> 3) & 3, (globalSprites[spriteIndex].renderingFlags >> 5) & 3);
+            func_80029EA4(bitmapIndex, (globalSprites[spriteIndex].renderingFlags >> 7) & 3);
             func_80029F14(bitmapIndex, globalSprites[spriteIndex].renderingFlags & 0x200);
-            func_8002A02C(bitmapIndex, (globalSprites[spriteIndex].renderingFlags >> 10) & (1 | 2 | 4));
+            func_8002A02C(bitmapIndex, (globalSprites[spriteIndex].renderingFlags >> 0xA) & 7);
 
-            if (globalSprites[spriteIndex].stateFlags & ENABLE_BILINEAR_FILTERING) {
-                bitmaps[bitmapIndex].flags |= USE_BILINEAR_FILTERING;
+            if (globalSprites[spriteIndex].stateFlags & 0x80) {
+                bitmaps[bitmapIndex].flags |= 4;
             } else {
-                bitmaps[bitmapIndex].flags &= ~USE_BILINEAR_FILTERING;
+                bitmaps[bitmapIndex].flags &= ~4;
             }
 
-            temp = data.ptr2->animation;
+            frameCount = metadata.animationMetadataPtr->frameCount;
             i++;
             
-        } while (i < data.ptr2->animation);
+        } while (i < metadata.animationMetadataPtr->frameCount);
         
     }
     
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/system/globalSprites", func_8002CDE8);
+INCLUDE_ASM("asm/nonmatchings/system/globalSprites", setBitmapFromSpriteObject);
 #endif
+
+static inline u8 updateSpriteCurrentRGBA(u16 i) {
+
+    u8 count = 0;
+    f32 tempf;
+
+    if (globalSprites[i].rgbaCurrent.r <  globalSprites[i].rgbaTarget.r) {
+        
+        globalSprites[i].rgbaCurrent.r += globalSprites[i].rgbaDelta.r;
+        
+        if (globalSprites[i].rgbaTarget.r <= globalSprites[i].rgbaCurrent.r) {
+            globalSprites[i].rgbaCurrent.r = globalSprites[i].rgbaTarget.r;
+        } else {
+            count = 1;
+        }
+    }
+
+    if (globalSprites[i].rgbaCurrent.r > globalSprites[i].rgbaTarget.r) {
+        
+        globalSprites[i].rgbaCurrent.r -= globalSprites[i].rgbaDelta.r;
+        
+        if (globalSprites[i].rgbaTarget.r >= globalSprites[i].rgbaCurrent.r) {
+            globalSprites[i].rgbaCurrent.r = globalSprites[i].rgbaTarget.r;
+        } else {
+            count++;
+        }
+    }
+
+    if (globalSprites[i].rgbaCurrent.g <  globalSprites[i].rgbaTarget.g) {
+        
+        globalSprites[i].rgbaCurrent.g +=  globalSprites[i].rgbaDelta.g;
+        
+        if ((globalSprites[i].rgbaTarget.g <= globalSprites[i].rgbaCurrent.g)) {
+            globalSprites[i].rgbaCurrent.g = globalSprites[i].rgbaTarget.g;
+        } else {
+            count++;
+        }
+    }
+
+    if (globalSprites[i].rgbaCurrent.g >  globalSprites[i].rgbaTarget.g) {
+        
+        globalSprites[i].rgbaCurrent.g -= globalSprites[i].rgbaDelta.g;
+        
+        if (globalSprites[i].rgbaTarget.g >= globalSprites[i].rgbaCurrent.g) {
+            globalSprites[i].rgbaCurrent.g = globalSprites[i].rgbaTarget.g;
+        } else {
+            count++;
+        }
+    }
+
+    if (globalSprites[i].rgbaCurrent.b <  globalSprites[i].rgbaTarget.b) {
+        
+        globalSprites[i].rgbaCurrent.b += globalSprites[i].rgbaDelta.b;
+        
+        if ((globalSprites[i].rgbaTarget.b <= globalSprites[i].rgbaCurrent.b)) {
+            globalSprites[i].rgbaCurrent.b = globalSprites[i].rgbaTarget.b;
+        } else {
+            count++;
+        }
+    }
+
+    if (globalSprites[i].rgbaCurrent.b >  globalSprites[i].rgbaTarget.b) {
+        
+        globalSprites[i].rgbaCurrent.b -= globalSprites[i].rgbaDelta.b;
+        
+        if (globalSprites[i].rgbaTarget.b >= globalSprites[i].rgbaCurrent.b) {
+            globalSprites[i].rgbaCurrent.b = globalSprites[i].rgbaTarget.b;
+        } else {
+            count++;
+        }
+    }
+
+    if (globalSprites[i].rgbaCurrent.a <  globalSprites[i].rgbaTarget.a) {
+        
+        globalSprites[i].rgbaCurrent.a += globalSprites[i].rgbaDelta.a;
+        
+        if ((globalSprites[i].rgbaTarget.a <= globalSprites[i].rgbaCurrent.a)) {
+            globalSprites[i].rgbaCurrent.a = globalSprites[i].rgbaTarget.a;
+        } else {
+            count++;
+        }
+    }
+
+    if (globalSprites[i].rgbaCurrent.a >  globalSprites[i].rgbaTarget.a) {
+        
+        globalSprites[i].rgbaCurrent.a -= globalSprites[i].rgbaDelta.a;
+        
+        if (globalSprites[i].rgbaTarget.a >= globalSprites[i].rgbaCurrent.a) {
+            globalSprites[i].rgbaCurrent.a = globalSprites[i].rgbaTarget.a;
+        } else {
+            count++;
+        }
+    }
+
+    return count;
+    
+}
 
 #ifdef PERMUTER
 void updateSprites(void) {
 
-    u16 i = 0;
-    u8 check;
-    f32 tempf;
+    SpriteAnimationMetadata animationMetadata;
+    u32 pad[3];
+    
+    u16 i;
     u16* ptr;
-    SpriteAnimation animation;
+
+    i = 0;
     
-    u32 pad[4];
+    while (i < MAX_ACTIVE_SPRITES) {
 
-    do {
-
-        if (globalSprites[i].stateFlags & 1) {
+        if (globalSprites[i].stateFlags & ACTIVE) {
         
-            check = 0;
-
-            if (globalSprites[i].rgbaCurrent.r <  globalSprites[i].rgbaTarget.r) {
-                
-                tempf = globalSprites[i].rgbaCurrent.r + globalSprites[i].rgbaDelta.r;
-                globalSprites[i].rgbaCurrent.r = tempf;
-                
-                if (globalSprites[i].rgbaTarget.r <= tempf) {
-                    globalSprites[i].rgbaCurrent.r = globalSprites[i].rgbaTarget.r;
-                } else {
-                    check = 1;
-                }
-            }
-    
-            if (globalSprites[i].rgbaCurrent.r > globalSprites[i].rgbaTarget.r) {
-                
-                tempf = globalSprites[i].rgbaCurrent.r - globalSprites[i].rgbaDelta.r;
-                globalSprites[i].rgbaCurrent.r = tempf;
-                
-                if (globalSprites[i].rgbaTarget.r >= tempf) {
-                    globalSprites[i].rgbaCurrent.r = globalSprites[i].rgbaTarget.r;
-                } else {
-                    check++;
-                }
-            }
-    
-            if (globalSprites[i].rgbaCurrent.g <  globalSprites[i].rgbaTarget.g) {
-                
-                tempf = globalSprites[i].rgbaCurrent.g + globalSprites[i].rgbaDelta.g;
-                globalSprites[i].rgbaCurrent.g = tempf;
-                
-                if ((globalSprites[i].rgbaTarget.g <= tempf)) {
-                    globalSprites[i].rgbaCurrent.g = globalSprites[i].rgbaTarget.g;
-                } else {
-                    check++;
-                }
-            }
-    
-            if (globalSprites[i].rgbaCurrent.g >  globalSprites[i].rgbaTarget.g) {
-                
-                tempf = globalSprites[i].rgbaCurrent.g - globalSprites[i].rgbaDelta.g;
-                globalSprites[i].rgbaCurrent.g = tempf;
-                
-                if (globalSprites[i].rgbaTarget.g >= tempf) {
-                    globalSprites[i].rgbaCurrent.g = globalSprites[i].rgbaTarget.g;
-                } else {
-                    check++;
-                }
-            }
-    
-            if (globalSprites[i].rgbaCurrent.b <  globalSprites[i].rgbaTarget.b) {
-                
-                tempf = globalSprites[i].rgbaCurrent.b + globalSprites[i].rgbaDelta.b;
-                globalSprites[i].rgbaCurrent.b = tempf;
-                
-                if ((globalSprites[i].rgbaTarget.b <= tempf)) {
-                    globalSprites[i].rgbaCurrent.b = globalSprites[i].rgbaTarget.b;
-                } else {
-                    check++;
-                }
-            }
-    
-            if (globalSprites[i].rgbaCurrent.b >  globalSprites[i].rgbaTarget.b) {
-                
-                tempf = globalSprites[i].rgbaCurrent.b - globalSprites[i].rgbaDelta.b;
-                globalSprites[i].rgbaCurrent.b = tempf;
-                
-                if (globalSprites[i].rgbaTarget.b >= tempf) {
-                    globalSprites[i].rgbaCurrent.b = globalSprites[i].rgbaTarget.b;
-                } else {
-                    check++;
-                }
-            }
-    
-            if (globalSprites[i].rgbaCurrent.a <  globalSprites[i].rgbaTarget.a) {
-                
-                tempf = globalSprites[i].rgbaCurrent.a + globalSprites[i].rgbaDelta.a;
-                globalSprites[i].rgbaCurrent.a = tempf;
-                
-                if ((globalSprites[i].rgbaTarget.a <= tempf)) {
-                    globalSprites[i].rgbaCurrent.a = globalSprites[i].rgbaTarget.a;
-                } else {
-                    check++;
-                }
-            }
-    
-            if (globalSprites[i].rgbaCurrent.a >  globalSprites[i].rgbaTarget.a) {
-                
-                tempf = globalSprites[i].rgbaCurrent.a - globalSprites[i].rgbaDelta.a;
-                globalSprites[i].rgbaCurrent.a = tempf;
-                
-                if (globalSprites[i].rgbaTarget.a >= tempf) {
-                    globalSprites[i].rgbaCurrent.a = globalSprites[i].rgbaTarget.a;
-                } else {
-                    check++;
-                }
-            }
-
-            if (check == 0) {
+            if (updateSpriteCurrentRGBA(i) == 0) {
                 globalSprites[i].stateFlags |= RGBA_IN_PROGRESS;
             }
 
             globalSprites[i].audioTrigger = FALSE;
 
-            if (globalSprites[i].stateFlags & ANIMATION_HEADER_PROCESSED) { 
+            if (!(globalSprites[i].stateFlags & ANIMATION_HEADER_PROCESSED)) {
+                continue;
+            } 
+            
+            setAnimationMetadata(&animationMetadata, globalSprites[i].animationMetadataPtr);
 
-                func_8002CCA8(&animation, globalSprites[i].unknownAsset3Ptr);
-
-                if (globalSprites[i].stateFlags & 4) {
-                    
-                    if (globalSprites[i].animationCounter[gGraphicsBufferIndex] != globalSprites[i].currentAnimationFrame) {
-                        func_8002CDE8(i, &animation, 2);
-                    } else {
-                        func_8002CDE8(i, &animation, 1);
-                    }
-
-                    globalSprites[i].animationCounter[gGraphicsBufferIndex] = globalSprites[i].currentAnimationFrame;
-                    
+            if (globalSprites[i].stateFlags & 4) {
+                
+                if (globalSprites[i].animationCounter[gGraphicsBufferIndex] != globalSprites[i].currentAnimationFrame) {
+                    setBitmapFromSpriteObject(i, &animationMetadata, 2);
                 } else {
-                    func_8002CDE8(i, &animation, 0);
+                    setBitmapFromSpriteObject(i, &animationMetadata, 1);
                 }
 
-                if (!(globalSprites[i].stateFlags & ANIMATION_PAUSED)) {
-                    globalSprites[i].frameTimer += 2; 
-                }
+                globalSprites[i].animationCounter[gGraphicsBufferIndex] = globalSprites[i].currentAnimationFrame;
+        
+            } else {        
+                setBitmapFromSpriteObject(i, &animationMetadata, 0);
+            }
 
-                if (globalSprites[i].frameTimer >= animation.unk_2) {
+            if (!(globalSprites[i].stateFlags & ANIMATION_PAUSED)) {
+                globalSprites[i].frameTickCounter += 2; 
+            }
 
-                    globalSprites[i].audioTrigger = animation.audioTrigger;
-                    globalSprites[i].frameTimer = 0;
+            if (globalSprites[i].frameTickCounter >= animationMetadata.frameDuration) {
 
-                    if (globalSprites[i].stateFlags & ANIMATION_PLAYING) {
+                globalSprites[i].audioTrigger = animationMetadata.audioTrigger;
+                globalSprites[i].frameTickCounter = 0;
 
-                        globalSprites[i].currentAnimationFrame += 1;
-                        
-                        if (globalSprites[i].animation.totalFrames <= globalSprites[i].currentAnimationFrame) {
+                if (globalSprites[i].stateFlags & ANIMATION_PLAYING) {
+                 
+                    globalSprites[i].currentAnimationFrame++;
+         
+                    if (!(globalSprites[i].currentAnimationFrame < globalSprites[i].animationMetadata.frameCount)) {
 
-                            if (globalSprites[i].stateFlags & ANIMATION_LOOPS) {
-                                
-                                globalSprites[i].currentAnimationFrame = 0;
-                                
-                            } else if (globalSprites[i].stateFlags & DESTROY_ON_ANIMATION_END) {
-                                
-                                if (i < MAX_ACTIVE_SPRITES && globalSprites[i].stateFlags & ACTIVE) {
-                                    globalSprites[i].stateFlags &= ~(ACTIVE | ANIMATION_HEADER_PROCESSED); 
-                                }
-                                
-                            } else {
-                                globalSprites[i].currentAnimationFrame -= 2;
-                            }
-
-                            globalSprites[i].stateFlags |= ANIMATION_STATE_CHANGED;
+                        if (globalSprites[i].stateFlags & ANIMATION_LOOPS) {
                             
+                            globalSprites[i].currentAnimationFrame = 0;
+                            
+                        } else if (globalSprites[i].stateFlags & DESTROY_ON_ANIMATION_END) {
+                        
+                            deactivateSprite(i);
+                            
+                        } else {
+                            globalSprites[i].currentAnimationFrame = globalSprites[i].animationMetadata.frameCount - 1;
                         }
 
-                        ptr = globalSprites[i].animationDataPtr + 8;
-
-                        func_8002CD4C(globalSprites[i].currentAnimationFrame, globalSprites[i].animationDataPtr);
-
-                        globalSprites[i].unknownAsset3Ptr = ptr;
-                        globalSprites[i].unknownAsset4Ptr = ptr + 2;
-                        
-                    } else {
                         globalSprites[i].stateFlags |= ANIMATION_STATE_CHANGED;
-                    }
-                    
-                }
+                        
+                    } 
 
+                    // globalSprites[i].animationDataPtr + 4 = skip header
+                    ptr = getAnimationMetadataPtrFromFrame(globalSprites[i].currentAnimationFrame, globalSprites[i].animationDataPtr + 4);
+
+                    globalSprites[i].animationMetadataPtr = ptr;
+                    globalSprites[i].bitmapMetadataPtr = ptr + 2;
+                    
+                } else {
+                    globalSprites[i].stateFlags |= ANIMATION_STATE_CHANGED;
+                }
+                
             }
+
         }   
     
         i++;
         
-    } while (i < MAX_ACTIVE_SPRITES);
-        
-} 
+    } 
+    
+}
 #else
 INCLUDE_ASM("asm/nonmatchings/system/globalSprites", updateSprites);
 #endif
