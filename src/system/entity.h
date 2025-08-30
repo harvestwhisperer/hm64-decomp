@@ -4,7 +4,7 @@
 #include "common.h"
 
 #define MAX_ENTITIES 49
-#define MAX_CHARACTER_SPRITES 102
+#define MAX_ENTITY_ASSETS 102
 
 /* flags */
 #define ENTITY_ACTIVE 0x1
@@ -38,7 +38,7 @@ typedef struct {
 	Vec3f unk_34; // 34-3C
 	Vec3f unk_3C;
 	f32 unk_4C;
-	u16 characterIndex; // 0x50 // characterSprites index
+	u16 characterIndex; // 0x50 // entityAssetDescriptors index
 	u16 globalSpriteIndex;
 	AnimationIndices animationIndices; // 0x54-0x58
 	u16 unk_58; 
@@ -69,7 +69,7 @@ typedef struct {
 	u8 collisionBufferY; /* 0x21 */
 	u8 shadowSpriteIndex; /* 0x22 */
 	u16 flags; /* 0x24 */ // bit 2 = asset type
-} CharacterSprite;
+} EntityAssetDescriptor;
 
 // 0x8016FFF8
 // ci4 asset layout
@@ -87,7 +87,7 @@ typedef struct {
 } ShadowSpriteDescriptor;
 
 extern void initializeEntities(void);
-extern bool initializeCharacterSprite(u16 npcIndex, void* arg1, void* arg2, void* arg3, void* arg4, void* arg5, void* arg6, u8 arg7, u8 arg8, u16* arg9);
+extern bool initializeEntityAsset(u16 npcIndex, void* arg1, void* arg2, void* arg3, void* arg4, void* arg5, void* arg6, u8 arg7, u8 arg8, u16* arg9);
 extern bool initializeEntity(u16, u16, u16, void*, void*, void*, void*, void*, void*);
 extern bool initializeAnimalEntity(u16 index, void* arg1, void* arg2, void* arg3, void* arg4);
 extern bool loadEntity(u16, u16, u8);      
@@ -133,6 +133,6 @@ extern Vec3f func_80031904(u16 entityIndex, s16 z, u8 direction);
 extern bool setEntityAnimationWithDirectionChange(u16 entityIndex, u16);
 
 extern Entity entities[MAX_ENTITIES];
-extern CharacterSprite characterSprites[MAX_CHARACTER_SPRITES];
+extern EntityAssetDescriptor entityAssetDescriptors[MAX_ENTITY_ASSETS];
 
 #endif

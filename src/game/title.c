@@ -49,7 +49,7 @@ void initializeTitleScreen(u8 arg0) {
     dmaSprite(HARVEST_MOON_64_LOGO, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesIndexSegmentRomStart, &_titleSpritesIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_END, (void*)TITLE_SCREEN_INDEX_VADDR_START, (void*)TITLE_SCREEN_INDEX_VADDR_END, NULL, NULL, 0);
     setSpriteShrinkFactor(HARVEST_MOON_64_LOGO, 0.0f, 64.0f, 64.0f);
     setSpriteScale(HARVEST_MOON_64_LOGO, 1.0f, 1.0f, 1.0f);
-    setSpriteAngles(HARVEST_MOON_64_LOGO, 0.0f, 0.0f, 0.0f);
+    setSpriteRotation(HARVEST_MOON_64_LOGO, 0.0f, 0.0f, 0.0f);
     setSpriteRenderingLayer(HARVEST_MOON_64_LOGO, (1 | 2));
     setSpriteColor(HARVEST_MOON_64_LOGO, 0xFF, 0xFF, 0xFF, 0xFF);
     setBilinearFiltering(HARVEST_MOON_64_LOGO, TRUE);
@@ -58,7 +58,7 @@ void initializeTitleScreen(u8 arg0) {
     dmaSprite(MARVCOME_VICTOR_COPYRIGHT_INFO, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesIndexSegmentRomStart, &_titleSpritesIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_END, (void*)TITLE_SCREEN_INDEX_VADDR_START, (void*)TITLE_SCREEN_INDEX_VADDR_END, NULL, NULL, 0);
     setSpriteShrinkFactor(MARVCOME_VICTOR_COPYRIGHT_INFO, 0.0f, -96.0f, 64.0f);
     setSpriteScale(MARVCOME_VICTOR_COPYRIGHT_INFO, 1.0f, 1.0f, 1.0f);
-    setSpriteAngles(MARVCOME_VICTOR_COPYRIGHT_INFO, 0.0f, 0.0f, 0.0f);
+    setSpriteRotation(MARVCOME_VICTOR_COPYRIGHT_INFO, 0.0f, 0.0f, 0.0f);
     setSpriteRenderingLayer(MARVCOME_VICTOR_COPYRIGHT_INFO, (1 | 2));
     setSpriteColor(MARVCOME_VICTOR_COPYRIGHT_INFO, 0xFF, 0xFF, 0xFF, 0xFF);
     startSpriteAnimation(MARVCOME_VICTOR_COPYRIGHT_INFO, 1, 0xFE);
@@ -66,7 +66,7 @@ void initializeTitleScreen(u8 arg0) {
     dmaSprite(PUSH_THE_START_SIGN_1, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesIndexSegmentRomStart, &_titleSpritesIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_END, (void*)TITLE_SCREEN_INDEX_VADDR_START, (void*)TITLE_SCREEN_INDEX_VADDR_END, NULL, NULL, 0);
     setSpriteShrinkFactor(PUSH_THE_START_SIGN_1, titleScreenContext.centerCoordinate + 160.0f, -16.0f, 48.0f);
     setSpriteScale(PUSH_THE_START_SIGN_1, 1.0f, 1.0f, 1.0f);
-    setSpriteAngles(PUSH_THE_START_SIGN_1, 0.0f, 0.0f, 0.0f);
+    setSpriteRotation(PUSH_THE_START_SIGN_1, 0.0f, 0.0f, 0.0f);
     setSpriteRenderingLayer(PUSH_THE_START_SIGN_1, (1 | 2));
     setSpriteColor(PUSH_THE_START_SIGN_1, 0xFF, 0xFF, 0xFF, 0xFF);
     setBilinearFiltering(PUSH_THE_START_SIGN_1, TRUE);
@@ -75,7 +75,7 @@ void initializeTitleScreen(u8 arg0) {
     dmaSprite(HOW_TO_PLAY_SIGN, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesIndexSegmentRomStart, &_titleSpritesIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_END, (void*)TITLE_SCREEN_INDEX_VADDR_START, (void*)TITLE_SCREEN_INDEX_VADDR_END, NULL, NULL, 0);
     setSpriteShrinkFactor(HOW_TO_PLAY_SIGN, titleScreenContext.centerCoordinate - 160.0f, -12.0f, 48.0f);
     setSpriteScale(HOW_TO_PLAY_SIGN, 1.0f, 1.0f, 1.0f);
-    setSpriteAngles(HOW_TO_PLAY_SIGN, 0.0f, 0.0f, 0.0f);
+    setSpriteRotation(HOW_TO_PLAY_SIGN, 0.0f, 0.0f, 0.0f);
     setSpriteRenderingLayer(HOW_TO_PLAY_SIGN, (1 | 2));
     setSpriteColor(HOW_TO_PLAY_SIGN, 0xFF, 0xFF, 0xFF, 0xFF);
     setBilinearFiltering(HOW_TO_PLAY_SIGN, TRUE);
@@ -84,7 +84,7 @@ void initializeTitleScreen(u8 arg0) {
     dmaSprite(DIRT_ROAD, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesIndexSegmentRomStart, &_titleSpritesIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_END, (void*)TITLE_SCREEN_INDEX_VADDR_START, (void*)TITLE_SCREEN_INDEX_VADDR_END, NULL, NULL, 0);
     setSpriteShrinkFactor(DIRT_ROAD, titleScreenContext.centerCoordinate - 160.0f, -44.0f, 48.0f);
     setSpriteScale(DIRT_ROAD, 1.0f, 1.0f, 1.0f);
-    setSpriteAngles(DIRT_ROAD, 0.0f, 0.0f, 0.0f);
+    setSpriteRotation(DIRT_ROAD, 0.0f, 0.0f, 0.0f);
     setSpriteRenderingLayer(DIRT_ROAD, (1 | 2));
     setSpriteColor(DIRT_ROAD, 0xFF, 0xFF, 0xFF, 0xFF);
     setBilinearFiltering(DIRT_ROAD, TRUE);
@@ -93,7 +93,7 @@ void initializeTitleScreen(u8 arg0) {
     dmaSprite(SIGN_POST_1, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesIndexSegmentRomStart, &_titleSpritesIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_END, (void*)TITLE_SCREEN_INDEX_VADDR_START, (void*)TITLE_SCREEN_INDEX_VADDR_END, NULL, NULL, 0);
     setSpriteShrinkFactor(SIGN_POST_1, titleScreenContext.centerCoordinate + 160.0f, -32.0f, 40.0f);
     setSpriteScale(SIGN_POST_1, 1.0f, 1.0f, 1.0f);
-    setSpriteAngles(SIGN_POST_1, 0.0f, 0.0f, 0.0f);
+    setSpriteRotation(SIGN_POST_1, 0.0f, 0.0f, 0.0f);
     setSpriteRenderingLayer(SIGN_POST_1, (1 | 2));
     setSpriteColor(SIGN_POST_1, 0xFF, 0xFF, 0xFF, 0xFF);
     setBilinearFiltering(SIGN_POST_1, TRUE);
@@ -102,7 +102,7 @@ void initializeTitleScreen(u8 arg0) {
     dmaSprite(SIGN_POST_2, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesIndexSegmentRomStart, &_titleSpritesIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_END, (void*)TITLE_SCREEN_INDEX_VADDR_START, (void*)TITLE_SCREEN_INDEX_VADDR_END, NULL, NULL, 0);
     setSpriteShrinkFactor(SIGN_POST_2, titleScreenContext.centerCoordinate - 192.0f, -32.0f, 40.0f);
     setSpriteScale(SIGN_POST_2, 1.0f, 1.0f, 1.0f);
-    setSpriteAngles(SIGN_POST_2, 0.0f, 0.0f, 0.0f);
+    setSpriteRotation(SIGN_POST_2, 0.0f, 0.0f, 0.0f);
     setSpriteRenderingLayer(SIGN_POST_2, (1 | 2));
     setSpriteColor(SIGN_POST_2, 0xFF, 0xFF, 0xFF, 0xFF);
     setBilinearFiltering(SIGN_POST_2, TRUE);
@@ -111,7 +111,7 @@ void initializeTitleScreen(u8 arg0) {
     dmaSprite(SIGN_POST_3, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesIndexSegmentRomStart, &_titleSpritesIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_END, (void*)TITLE_SCREEN_INDEX_VADDR_START, (void*)TITLE_SCREEN_INDEX_VADDR_END, NULL, NULL, 0);
     setSpriteShrinkFactor(SIGN_POST_3, titleScreenContext.centerCoordinate - 128.0f, -32.0f, 40.0f);
     setSpriteScale(SIGN_POST_3, 1.0f, 1.0f, 1.0f);
-    setSpriteAngles(SIGN_POST_3, 0.0f, 0.0f, 0.0f);
+    setSpriteRotation(SIGN_POST_3, 0.0f, 0.0f, 0.0f);
     setSpriteRenderingLayer(SIGN_POST_3, (1 | 2));
     setSpriteColor(SIGN_POST_3, 0xFF, 0xFF, 0xFF, 0xFF);
     setBilinearFiltering(SIGN_POST_3, TRUE);
@@ -120,7 +120,7 @@ void initializeTitleScreen(u8 arg0) {
     dmaSprite(CLOUD_1_1, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesIndexSegmentRomStart, &_titleSpritesIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_END, (void*)TITLE_SCREEN_INDEX_VADDR_START, (void*)TITLE_SCREEN_INDEX_VADDR_END, NULL, NULL, 0);
     setSpriteShrinkFactor(CLOUD_1_1, titleScreenContext.centerCoordinate + 160.0f, 0.0f, 56.0f);
     setSpriteScale(CLOUD_1_1, 1.0f, 1.0f, 1.0f);
-    setSpriteAngles(CLOUD_1_1, 0.0f, 0.0f, 0.0f);
+    setSpriteRotation(CLOUD_1_1, 0.0f, 0.0f, 0.0f);
     setSpriteRenderingLayer(CLOUD_1_1, (1 | 2));
     setSpriteColor(CLOUD_1_1, 0xFF, 0xFF, 0xFF, 0xFF);
     setBilinearFiltering(CLOUD_1_1, TRUE);
@@ -129,7 +129,7 @@ void initializeTitleScreen(u8 arg0) {
     dmaSprite(CLOUD_1_2, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesIndexSegmentRomStart, &_titleSpritesIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_END, (void*)TITLE_SCREEN_INDEX_VADDR_START, (void*)TITLE_SCREEN_INDEX_VADDR_END, NULL, NULL, 0);
     setSpriteShrinkFactor(CLOUD_1_2, titleScreenContext.centerCoordinate - 160.0f, 0.0f, 56.0f);
     setSpriteScale(CLOUD_1_2, 1.0f, 1.0f, 1.0f);
-    setSpriteAngles(CLOUD_1_2, 0.0f, 0.0f, 0.0f);
+    setSpriteRotation(CLOUD_1_2, 0.0f, 0.0f, 0.0f);
     setSpriteRenderingLayer(CLOUD_1_2, (1 | 2));
     setSpriteColor(CLOUD_1_2, 0xFF, 0xFF, 0xFF, 0xFF);
     setBilinearFiltering(CLOUD_1_2, TRUE);
@@ -138,7 +138,7 @@ void initializeTitleScreen(u8 arg0) {
     dmaSprite(CLOUD_2_1, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesIndexSegmentRomStart, &_titleSpritesIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_END, (void*)TITLE_SCREEN_INDEX_VADDR_START, (void*)TITLE_SCREEN_INDEX_VADDR_END, NULL, NULL, 0);
     setSpriteShrinkFactor(CLOUD_2_1, titleScreenContext.centerCoordinate + 160.0f, 64.0f, 64.0f);
     setSpriteScale(CLOUD_2_1, 1.0f, 1.0f, 1.0f);
-    setSpriteAngles(CLOUD_2_1, 0.0f, 0.0f, 0.0f);
+    setSpriteRotation(CLOUD_2_1, 0.0f, 0.0f, 0.0f);
     setSpriteRenderingLayer(CLOUD_2_1, (1 | 2));
     setSpriteColor(CLOUD_2_1, 0xFF, 0xFF, 0xFF, 0xFF);
     setBilinearFiltering(CLOUD_2_1, TRUE);
@@ -147,7 +147,7 @@ void initializeTitleScreen(u8 arg0) {
     dmaSprite(CLOUD_3_1, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesIndexSegmentRomStart, &_titleSpritesIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_END, (void*)TITLE_SCREEN_INDEX_VADDR_START, (void*)TITLE_SCREEN_INDEX_VADDR_END, NULL, NULL, 0);
     setSpriteShrinkFactor(CLOUD_3_1, titleScreenContext.centerCoordinate + 32.0f, 96.0f, 64.0f);
     setSpriteScale(CLOUD_3_1, 1.0f, 1.0f, 1.0f);
-    setSpriteAngles(CLOUD_3_1, 0.0f, 0.0f, 0.0f);
+    setSpriteRotation(CLOUD_3_1, 0.0f, 0.0f, 0.0f);
     setSpriteRenderingLayer(CLOUD_3_1, (1 | 2));
     setSpriteColor(CLOUD_3_1, 0xFF, 0xFF, 0xFF, 0xFF);
     setBilinearFiltering(CLOUD_3_1, TRUE);
@@ -156,7 +156,7 @@ void initializeTitleScreen(u8 arg0) {
     dmaSprite(LICENSED_BY_NINTENDO_1, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesIndexSegmentRomStart, &_titleSpritesIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_END, (void*)TITLE_SCREEN_INDEX_VADDR_START, (void*)TITLE_SCREEN_INDEX_VADDR_END, NULL, NULL, 0);
     setSpriteShrinkFactor(LICENSED_BY_NINTENDO_1, titleScreenContext.centerCoordinate + 224.0f, 80.0f, 64.0f);
     setSpriteScale(LICENSED_BY_NINTENDO_1, 1.0f, 1.0f, 1.0f);
-    setSpriteAngles(LICENSED_BY_NINTENDO_1, 0.0f, 0.0f, 0.0f);
+    setSpriteRotation(LICENSED_BY_NINTENDO_1, 0.0f, 0.0f, 0.0f);
     setSpriteRenderingLayer(LICENSED_BY_NINTENDO_1, (1 | 2));
     setSpriteColor(LICENSED_BY_NINTENDO_1, 0xFF, 0xFF, 0xFF, 0xFF);
     setBilinearFiltering(LICENSED_BY_NINTENDO_1, TRUE);
@@ -165,7 +165,7 @@ void initializeTitleScreen(u8 arg0) {
     dmaSprite(LICENSED_BY_NINTENDO_2, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesIndexSegmentRomStart, &_titleSpritesIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_END, (void*)TITLE_SCREEN_INDEX_VADDR_START, (void*)TITLE_SCREEN_INDEX_VADDR_END, NULL, NULL, 0);
     setSpriteShrinkFactor(LICENSED_BY_NINTENDO_2, titleScreenContext.centerCoordinate - 64.0f, 72.0f, 64.0f);
     setSpriteScale(LICENSED_BY_NINTENDO_2, 1.0f, 1.0f, 1.0f);
-    setSpriteAngles(LICENSED_BY_NINTENDO_2, 0.0f, 0.0f, 0.0f);
+    setSpriteRotation(LICENSED_BY_NINTENDO_2, 0.0f, 0.0f, 0.0f);
     setSpriteRenderingLayer(LICENSED_BY_NINTENDO_2, (1 | 2));
     setSpriteColor(LICENSED_BY_NINTENDO_2, 0xFF, 0xFF, 0xFF, 0xFF);
     setBilinearFiltering(LICENSED_BY_NINTENDO_2, TRUE);
@@ -174,7 +174,7 @@ void initializeTitleScreen(u8 arg0) {
     dmaSprite(CLOUD_3_2, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesIndexSegmentRomStart, &_titleSpritesIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_END, (void*)TITLE_SCREEN_INDEX_VADDR_START, (void*)TITLE_SCREEN_INDEX_VADDR_END, NULL, NULL, 0);
     setSpriteShrinkFactor(CLOUD_3_2, titleScreenContext.centerCoordinate - 192.0f, 108.0f, 64.0f);
     setSpriteScale(CLOUD_3_2, 1.0f, 1.0f, 1.0f);
-    setSpriteAngles(CLOUD_3_2, 0.0f, 0.0f, 0.0f);
+    setSpriteRotation(CLOUD_3_2, 0.0f, 0.0f, 0.0f);
     setSpriteRenderingLayer(CLOUD_3_2, (1 | 2));
     setSpriteColor(CLOUD_3_2, 0xFF, 0xFF, 0xFF, 0xFF);
     setBilinearFiltering(CLOUD_3_2, TRUE);
@@ -183,7 +183,7 @@ void initializeTitleScreen(u8 arg0) {
     dmaSprite(CLOUD_2_2, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesIndexSegmentRomStart, &_titleSpritesIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_END, (void*)TITLE_SCREEN_INDEX_VADDR_START, (void*)TITLE_SCREEN_INDEX_VADDR_END, NULL, NULL, 0);
     setSpriteShrinkFactor(CLOUD_2_2, titleScreenContext.centerCoordinate - 288.0f, 88.0f, 64.0f);
     setSpriteScale(CLOUD_2_2, 1.0f, 1.0f, 1.0f);
-    setSpriteAngles(CLOUD_2_2, 0.0f, 0.0f, 0.0f);
+    setSpriteRotation(CLOUD_2_2, 0.0f, 0.0f, 0.0f);
     setSpriteRenderingLayer(CLOUD_2_2, (1 | 2));
     setSpriteColor(CLOUD_2_2, 0xFF, 0xFF, 0xFF, 0xFF);
     setBilinearFiltering(CLOUD_2_2, TRUE);
@@ -192,7 +192,7 @@ void initializeTitleScreen(u8 arg0) {
     dmaSprite(FAR_GRASS_1_1, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesIndexSegmentRomStart, &_titleSpritesIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_END, (void*)TITLE_SCREEN_INDEX_VADDR_START, (void*)TITLE_SCREEN_INDEX_VADDR_END, NULL, NULL, 0);
     setSpriteShrinkFactor(FAR_GRASS_1_1, titleScreenContext.centerCoordinate + 160.0f, 0.0f, 8.0f);
     setSpriteScale(FAR_GRASS_1_1, 1.0f, 1.0f, 1.0f);
-    setSpriteAngles(FAR_GRASS_1_1, 0.0f, 0.0f, 0.0f);
+    setSpriteRotation(FAR_GRASS_1_1, 0.0f, 0.0f, 0.0f);
     setSpriteRenderingLayer(FAR_GRASS_1_1, (1 | 2));
     setSpriteColor(FAR_GRASS_1_1, 0xFF, 0xFF, 0xFF, 0xFF);
     setBilinearFiltering(FAR_GRASS_1_1, TRUE);
@@ -201,7 +201,7 @@ void initializeTitleScreen(u8 arg0) {
     dmaSprite(FAR_GRASS_1_2, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesIndexSegmentRomStart, &_titleSpritesIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_END, (void*)TITLE_SCREEN_INDEX_VADDR_START, (void*)TITLE_SCREEN_INDEX_VADDR_END, NULL, NULL, 0);
     setSpriteShrinkFactor(FAR_GRASS_1_2, titleScreenContext.centerCoordinate - 160.0f, 0.0f, 8.0f);
     setSpriteScale(FAR_GRASS_1_2, 1.0f, 1.0f, 1.0f);
-    setSpriteAngles(FAR_GRASS_1_2, 0.0f, 0.0f, 0.0f);
+    setSpriteRotation(FAR_GRASS_1_2, 0.0f, 0.0f, 0.0f);
     setSpriteRenderingLayer(FAR_GRASS_1_2, (1 | 2));
     setSpriteColor(FAR_GRASS_1_2, 0xFF, 0xFF, 0xFF, 0xFF);
     setBilinearFiltering(FAR_GRASS_1_2, TRUE);
@@ -210,7 +210,7 @@ void initializeTitleScreen(u8 arg0) {
     dmaSprite(FAR_GRASS_2_1, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesIndexSegmentRomStart, &_titleSpritesIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_END, (void*)TITLE_SCREEN_INDEX_VADDR_START, (void*)TITLE_SCREEN_INDEX_VADDR_END, NULL, NULL, 0);
     setSpriteShrinkFactor(FAR_GRASS_2_1, titleScreenContext.centerCoordinate + 160.0f, 0.0f, 16.0f);
     setSpriteScale(FAR_GRASS_2_1, 1.0f, 1.0f, 1.0f);
-    setSpriteAngles(FAR_GRASS_2_1, 0.0f, 0.0f, 0.0f);
+    setSpriteRotation(FAR_GRASS_2_1, 0.0f, 0.0f, 0.0f);
     setSpriteRenderingLayer(FAR_GRASS_2_1, (1 | 2));
     setSpriteColor(FAR_GRASS_2_1, 0xFF, 0xFF, 0xFF, 0xFF);
     setBilinearFiltering(FAR_GRASS_2_1, TRUE);
@@ -219,7 +219,7 @@ void initializeTitleScreen(u8 arg0) {
     dmaSprite(FAR_GRASS_3_1, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesIndexSegmentRomStart, &_titleSpritesIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_END, (void*)TITLE_SCREEN_INDEX_VADDR_START, (void*)TITLE_SCREEN_INDEX_VADDR_END, NULL, NULL, 0);
     setSpriteShrinkFactor(FAR_GRASS_3_1, titleScreenContext.centerCoordinate + 160.0f, 0.0f, 24.0f);
     setSpriteScale(FAR_GRASS_3_1, 1.0f, 1.0f, 1.0f);
-    setSpriteAngles(FAR_GRASS_3_1, 0.0f, 0.0f, 0.0f);
+    setSpriteRotation(FAR_GRASS_3_1, 0.0f, 0.0f, 0.0f);
     setSpriteRenderingLayer(FAR_GRASS_3_1, (1 | 2));
     setSpriteColor(FAR_GRASS_3_1, 0xFF, 0xFF, 0xFF, 0xFF);
     setBilinearFiltering(FAR_GRASS_3_1, TRUE);
@@ -228,7 +228,7 @@ void initializeTitleScreen(u8 arg0) {
     dmaSprite(FRONT_GRASS_2_1, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesIndexSegmentRomStart, &_titleSpritesIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_END, (void*)TITLE_SCREEN_INDEX_VADDR_START, (void*)TITLE_SCREEN_INDEX_VADDR_END, NULL, NULL, 0);
     setSpriteShrinkFactor(FRONT_GRASS_2_1, titleScreenContext.centerCoordinate + 160.0f, 0.0f, 32.0f);
     setSpriteScale(FRONT_GRASS_2_1, 1.0f, 1.0f, 1.0f);
-    setSpriteAngles(FRONT_GRASS_2_1, 0.0f, 0.0f, 0.0f);
+    setSpriteRotation(FRONT_GRASS_2_1, 0.0f, 0.0f, 0.0f);
     setSpriteRenderingLayer(FRONT_GRASS_2_1, (1 | 2));
     setSpriteColor(FRONT_GRASS_2_1, 0xFF, 0xFF, 0xFF, 0xFF);
     setBilinearFiltering(FRONT_GRASS_2_1, TRUE);
@@ -237,7 +237,7 @@ void initializeTitleScreen(u8 arg0) {
     dmaSprite(BACK_GRASS_2, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesIndexSegmentRomStart, &_titleSpritesIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_END, (void*)TITLE_SCREEN_INDEX_VADDR_START, (void*)TITLE_SCREEN_INDEX_VADDR_END, NULL, NULL, 0);
     setSpriteShrinkFactor(BACK_GRASS_2, titleScreenContext.centerCoordinate - 160.0f, 0.0f, 16.0f);
     setSpriteScale(BACK_GRASS_2, 1.0f, 1.0f, 1.0f);
-    setSpriteAngles(BACK_GRASS_2, 0.0f, 0.0f, 0.0f);
+    setSpriteRotation(BACK_GRASS_2, 0.0f, 0.0f, 0.0f);
     setSpriteRenderingLayer(BACK_GRASS_2, (1 | 2));
     setSpriteColor(BACK_GRASS_2, 0xFF, 0xFF, 0xFF, 0xFF);
     setBilinearFiltering(BACK_GRASS_2, TRUE);
@@ -246,7 +246,7 @@ void initializeTitleScreen(u8 arg0) {
     dmaSprite(BACK_GRASS_3_2, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesIndexSegmentRomStart, &_titleSpritesIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_END, (void*)TITLE_SCREEN_INDEX_VADDR_START, (void*)TITLE_SCREEN_INDEX_VADDR_END, NULL, NULL, 0);
     setSpriteShrinkFactor(BACK_GRASS_3_2, titleScreenContext.centerCoordinate - 160.0f, 0.0f, 24.0f);
     setSpriteScale(BACK_GRASS_3_2, 1.0f, 1.0f, 1.0f);
-    setSpriteAngles(BACK_GRASS_3_2, 0.0f, 0.0f, 0.0f);
+    setSpriteRotation(BACK_GRASS_3_2, 0.0f, 0.0f, 0.0f);
     setSpriteRenderingLayer(BACK_GRASS_3_2, (1 | 2));
     setSpriteColor(BACK_GRASS_3_2, 0xFF, 0xFF, 0xFF, 0xFF);
     setBilinearFiltering(BACK_GRASS_3_2, TRUE);
@@ -255,7 +255,7 @@ void initializeTitleScreen(u8 arg0) {
     dmaSprite(FRONT_GRASS_2_2, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesIndexSegmentRomStart, &_titleSpritesIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_END, (void*)TITLE_SCREEN_INDEX_VADDR_START, (void*)TITLE_SCREEN_INDEX_VADDR_END, NULL, NULL, 0);
     setSpriteShrinkFactor(FRONT_GRASS_2_2, titleScreenContext.centerCoordinate - 160.0f, 0.0f, 32.0f);
     setSpriteScale(FRONT_GRASS_2_2, 1.0f, 1.0f, 1.0f);
-    setSpriteAngles(FRONT_GRASS_2_2, 0.0f, 0.0f, 0.0f);
+    setSpriteRotation(FRONT_GRASS_2_2, 0.0f, 0.0f, 0.0f);
     setSpriteRenderingLayer(FRONT_GRASS_2_2, (1 | 2));
     setSpriteColor(FRONT_GRASS_2_2, 0xFF, 0xFF, 0xFF, 0xFF);
     setBilinearFiltering(FRONT_GRASS_2_2, TRUE);
@@ -264,7 +264,7 @@ void initializeTitleScreen(u8 arg0) {
     dmaSprite(PUSH_THE_START_SIGN_2, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsIndexSegmentRomStart, &_dialogueIconsIndexSegmentRomEnd, NULL, NULL, (void*)0x8023B400, NULL, (void*)0x8023CC00, (void*)0x8023CE00, (void*)0x8023D200, NULL, NULL, 0);
     setSpriteShrinkFactor(PUSH_THE_START_SIGN_2, -54.0f, -24.0f, 56.0f);
     setSpriteScale(PUSH_THE_START_SIGN_2, 1.0f, 1.0f, 1.0f);
-    setSpriteAngles(PUSH_THE_START_SIGN_2, 0.0f, 0.0f, 0.0f);
+    setSpriteRotation(PUSH_THE_START_SIGN_2, 0.0f, 0.0f, 0.0f);
     setSpriteRenderingLayer(PUSH_THE_START_SIGN_2, (1 | 2));
     setSpriteColor(PUSH_THE_START_SIGN_2, 0xFF, 0xFF, 0xFF, 0xFF);
     setBilinearFiltering(PUSH_THE_START_SIGN_2, TRUE);
@@ -320,7 +320,7 @@ void loadDogTitleSprite(void) {
     dmaSprite(DOG_TITLE_SPRITE, &_dogTitleTextureSegmentRomStart, &_dogTitleTextureSegmentRomEnd, &_dogTitleAssetsIndexSegmentRomStart, &_dogTitleAssetsIndexSegmentRomEnd, &_dogTitleSpritesheetIndexSegmentRomStart, &_dogTitleSpritesheetIndexSegmentRomEnd, (void*)0x80240B00, (void*)0x80243B00, (void*)0x80246B00, (void*)0x8024AB00, (void*)0x80252300, (void*)0x80252B00, 1, 0);
     setSpriteShrinkFactor(DOG_TITLE_SPRITE, 64.0f, -80.0f, 56.0f);
     setSpriteScale(DOG_TITLE_SPRITE, 1.0f, 1.0f, 1.0f);
-    setSpriteAngles(DOG_TITLE_SPRITE, 0, 0, 0);
+    setSpriteRotation(DOG_TITLE_SPRITE, 0, 0, 0);
     setSpriteRenderingLayer(DOG_TITLE_SPRITE, (1 | 2));
     setSpriteColor(DOG_TITLE_SPRITE, 0xFF, 0xFF, 0xFF, 0xFF);
     startSpriteAnimation(DOG_TITLE_SPRITE, 0x1D, 0xFE);

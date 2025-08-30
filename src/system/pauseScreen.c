@@ -322,7 +322,7 @@ bool func_80046650(u16 spriteIndex, u8 arg1, u8 arg2) {
             
             setSpriteShrinkFactor(tempIndex, pauseScreenSprites[spriteIndex].coordinates.x - pauseScreenSprites[spriteIndex].unk_27 * arg2, pauseScreenSprites[spriteIndex].coordinates.y, pauseScreenSprites[spriteIndex].coordinates.z);
             setSpriteScale(tempIndex, 1.0f, 1.0f, 1.0f);
-            setSpriteAngles(tempIndex, 0, 0, 0);
+            setSpriteRotation(tempIndex, 0, 0, 0);
             
             func_8002C680(tempIndex, 2, 2);
 
