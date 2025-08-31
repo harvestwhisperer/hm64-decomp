@@ -567,7 +567,7 @@ segments:
   #       total frames
   #       unused
   #     animation metadata 
-  #       frame counter
+  #       sprite/bitmap counter for frame
   #       frame duration
   #       has audio
   #     sprite/bitmap metadata
@@ -575,6 +575,8 @@ segments:
   #       unused 2 bit field
   #       anchorX (s16)
   #       anchorY (s16)
+  #      sprite/bitmap metadata 2
+  #       etc.
   #   animation metadata 2
   #   ...
   #   sprite to palettes mapping table u8[] --> table[spritesheetEntry] --> paletteIndex
