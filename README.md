@@ -22,7 +22,7 @@ The game contains two layers of animation data: animation scripts compiled in th
  
 These animation scripts can now be generated via `make extract-animation-scripts` or `cd tools && python3 extract_animation_scripts.py`. Running this script will generate a c file in `src/data/animations` for each specified asset in the `animation_addresses.csv` file. 
 
-### Gifs (experimental)
+#### Gifs (experimental)
 
 There's now experimental support for converting animations to gifs (via some messy, vibe-coded scripts). These seem to mostly be working for basic animations (one sprite per frame), but there are issues with sprite anchoring for frames with layered sprites.
 
