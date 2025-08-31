@@ -111,6 +111,7 @@ for asset_addresses in addresses_list:
 
     first_palette_offset = int(np.fromfile(f, dtype='>u4', count=1))
 
+    # just first_palette_offset / 4
     palette_count = int(((palette_index_base + first_palette_offset) - palette_index_base) / 4)
 
     f.seek(palette_index_base)
@@ -165,7 +166,8 @@ for asset_addresses in addresses_list:
         width = int(np.fromfile(f, dtype='<i2', count=1))
         height = int(np.fromfile(f, dtype='<i2', count=1))
 
-        sprite_start = f.tell()
+        # sprite start + header + size info
+        sprite_texture_start = f.tell()
 
         if len(asset_addresses) == 5:
             sprite_end = sprite_base + spritesheet_index[i+1]
@@ -175,7 +177,14 @@ for asset_addresses in addresses_list:
             # shouldn't be reachable
             break
 
-        sprite_length = sprite_end - sprite_start
+        if (sprite_texture_start > sprite_end):
+            info = open(path + info_filename, 'a')
+            info.write(sprite_name + ': duplicate sprite found at index: ' + str(i) + '; address: ' + str(hex(sprite_texture_start)) + '\n')
+            info.close()
+            f.seek(sprite_end)
+            continue
+
+        sprite_length = sprite_end - sprite_texture_start
 
         texture = np.fromfile(f, dtype=np.uint8, count=(sprite_length))
 
@@ -194,7 +203,7 @@ for asset_addresses in addresses_list:
         palette_address = palette_index_base + palette_index[current_palette_index]
 
         # start at header of next palette and subtract padding
-        palette_end_address = palette_index_base + palette_index[current_palette_index+1]
+        palette_end_address = palette_index_base + palette_index[current_palette_index + 1]
 
         if palette_end_address != palette_address:
             palette_address += 4
@@ -247,7 +256,7 @@ for asset_addresses in addresses_list:
         # log info
 
         info = open(path + info_filename, 'a')
-        info.write(sprite_name + ': sprite ' + str(i) + ' at ' + str(hex(sprite_start)) + ' : format ' + type + ' : width : ' + str(int(width)) + ' height: ' + str(int(height)) + ': palette ' + str(current_palette_index) + ' at ' + str(hex(palette_address)) + '\n')
+        info.write(sprite_name + ': sprite ' + str(i) + ' at ' + str(hex(sprite_texture_start)) + ' : format ' + type + ' : width : ' + str(int(width)) + ' height: ' + str(int(height)) + ': palette ' + str(current_palette_index) + ' at ' + str(hex(palette_address)) + '\n')
         info.close()
 
         # update file pointer for next iteration

@@ -56,7 +56,7 @@ typedef struct {
 
 // 0x801584F0
 typedef struct {
-	u16 *spriteAnimationData; /* 0x00 */ // data from 80119750-8011BCA0, related to animation; updateEntities
+	u16 *animationScripts; /* 0x00 */ // data from 80119750-8011BCA0, related to animation; updateEntities
 	void *romTextureStart; /* 0x04 */
 	void *romTextureEnd; /* 0x08 */
 	void *romAssetIndexStart; /* 0x0C */

@@ -1424,6 +1424,7 @@ Gfx* func_80042014(Gfx* dl, DialogueBox* dialogueBox, s32 arg2) {
 
                 dl = loadBitmapTexture(dl, (BitmapObject*)&sprite, 0, sprite.height);
 
+                // FIXME: might be a wrapper around gSPVertex
                 gSPVertex(&tempDl[1], &D_801C6230[gGraphicsBufferIndex][dialogueBox->unk_80+temp2][0], 4, 0);
 
                 *tempDl = *(tempDl+1);
