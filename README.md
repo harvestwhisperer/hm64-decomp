@@ -14,11 +14,19 @@ There are two sprite asset formats used. Both types have a spritesheet at the be
 - type 1: spritesheet start, asset lookup table start, spritesheet index start, asset end, and asset name
 - type 2: spritesheet start, asset lookup table start, asset end, and asset name.
 
-### Animation scripts
+### Animations
 
 The game contains two layers of animation data: animation scripts compiled in the data section and another set of metadata stored in the sprite asset in the binary section of the rom. The binary data contains metadata for the animation sequence (total frame count, duration in game ticks, contains audio trigger) and metadata for the final rendered bitmap. The scripts are bitpacked arrays that contain an index into the animation metadata table, an animation type, and whether to flip horizontally.
 
+#### Animation Scripts
+ 
 These animation scripts can now be generated via `make extract-animation-scripts` or `cd tools && python3 extract_animation_scripts.py`. Running this script will generate a c file in `src/data/animations` for each specified asset in the `animation_addresses.csv` file. 
+
+### Gifs (experimental)
+
+There's now experimental support for converting animations to gifs (via some messy, vibe-coded scripts). These seem to mostly be working for basic animations (one sprite per frame), but there are issues with sprite anchoring for frames with layered sprites.
+
+To create gifs, simply run `make extract-animations`, which will fetch the animation metadata, necessary sprites, and then run the gif conversion script, with all the generated assets in the `/assets/animations` directory. 
 
 ## Setting up
 1. Install [WSL2](https://learn.microsoft.com/en-us/windows/wsl/install)
@@ -42,6 +50,6 @@ Contributions are much welcome. There are a few areas of work left in the projec
 - Easy, repetitive (but numerous) functions, namely in `animals.c` and `npc.c`. These are great for getting started, as the structs and many examples functions are already available.
 - Getting "almost" matches over the finish line: there are several functions that are 95-99% matching in the repo (searchable under `#ifdef PERMUTER`)
 - Research into function, struct member, flag, and variable purposes and making accurate labels. This also includes adding macro values, such as player actions (see `player.h`)
-- Research into binary assets. Currently, only the sprite and audio formats are understood. Some work remains for animation data, maps, and dialogue formats.
+- Research into binary assets. Currently, only the sprite and audio formats are understood. Some work remains for maps and dialogue formats.
 
 For function matching work, Decomp.me has a `Harvest Moon 64` compiler preset that's selectable when creating new scratches. 
