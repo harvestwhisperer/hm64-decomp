@@ -10,9 +10,9 @@
 
 // forward declarations
 bool setupSpriteAnimation(u16 spriteIndex, u8 animationModeOrFrameIndex, u16* animationDataPtr);
-void setTotalAnimationFrames(SpriteAnimationMetadata*, u16*);             
-u8* getAnimationMetadataPtr(u16 arg0, void* arg1);
-u16* getAnimationMetadataPtrFromFrame(u16, u16*);   
+void setTotalAnimationFrames(AnimationFrameMetadata*, u16*);             
+u8* getAnimationFrameMetadataPtr(u16 arg0, void* arg1);
+u16* getAnimationFrameMetadataPtrFromFrame(u16, u16*);   
 
 // bss
 extern SpriteObject globalSprites[MAX_ACTIVE_SPRITES];
@@ -88,10 +88,10 @@ static inline u32 swap16to32(u16 halfword) {
     
 }
 
-static inline void swapBytes(SpriteAnimationMetadata *animationMetadata, Swap16 halfword) {
+static inline void swapBytes(AnimationFrameMetadata *animationFrameMetadata, Swap16 halfword) {
 
-    animationMetadata->frameDuration = halfword.byte[0];
-    animationMetadata->audioTrigger = halfword.byte[1];
+    animationFrameMetadata->frameDuration = halfword.byte[0];
+    animationFrameMetadata->audioTrigger = halfword.byte[1];
     
 }
 
@@ -357,7 +357,7 @@ bool startSpriteAnimation(u16 spriteIndex, u16 animationIndex, u8 animationModeO
             
             if (globalSprites[spriteIndex].animationIndexPtr[animationIndex] != globalSprites[spriteIndex].animationIndexPtr[animationIndex+1]) {
 
-                result = setupSpriteAnimation(spriteIndex, animationModeOrFrameIndex, getAnimationMetadataPtr(animationIndex, globalSprites[spriteIndex].animationIndexPtr));
+                result = setupSpriteAnimation(spriteIndex, animationModeOrFrameIndex, getAnimationFrameMetadataPtr(animationIndex, globalSprites[spriteIndex].animationIndexPtr));
                 
                 globalSprites[spriteIndex].animationCounter[0] = 0xFF;
                 globalSprites[spriteIndex].animationCounter[1] = 0xFF;
@@ -408,12 +408,13 @@ bool setupSpriteAnimation(u16 spriteIndex, u8 animationModeOrFrameIndex, u16* an
                 break;
         }
 
-        setTotalAnimationFrames(&globalSprites[spriteIndex].animationMetadata, globalSprites[spriteIndex].animationDataPtr);
+        // skips header and gets little endian u16 value
+        setTotalAnimationFrames(&globalSprites[spriteIndex].animationFrameMetadata, globalSprites[spriteIndex].animationDataPtr);
 
-        // animationDataPtr + 4 = skip header
-        metadataPtr = getAnimationMetadataPtrFromFrame(globalSprites[spriteIndex].currentAnimationFrame, globalSprites[spriteIndex].animationDataPtr + 4);
+        // animationDataPtr + 4 = skip header and frame count
+        metadataPtr = getAnimationFrameMetadataPtrFromFrame(globalSprites[spriteIndex].currentAnimationFrame, globalSprites[spriteIndex].animationDataPtr + 4);
         
-        globalSprites[spriteIndex].animationMetadataPtr = metadataPtr;
+        globalSprites[spriteIndex].animationFrameMetadataPtr = metadataPtr;
         globalSprites[spriteIndex].bitmapMetadataPtr = metadataPtr + 2;
 
         result = TRUE;
@@ -1050,16 +1051,17 @@ bool checkSpriteAnimationStateChanged(u16 index) {
     
 }
 
-void setTotalAnimationFrames(SpriteAnimationMetadata *animationMetadata, u16 *animationData) {
+void setTotalAnimationFrames(AnimationFrameMetadata *animationFrameMetadata, u16 *animationAsset) {
     
-    animationMetadata->frameCount = swap16(animationData[2]);
+    // skip 4 byte header
+    animationFrameMetadata->objectCount = swap16(animationAsset[2]);
     
 }
 
-inline void setAnimationMetadata(SpriteAnimationMetadata* animationMetadata, u16* animationData) {
+inline void setAnimationFrameMetadata(AnimationFrameMetadata* animationFrameMetadata, u16* animationFrameMetadataPtr) {
 
-    animationMetadata->frameCount = swap16(animationData[0]);
-    swapBytes(animationMetadata, animationData[1]);
+    animationFrameMetadata->objectCount = swap16(animationFrameMetadataPtr[0]);
+    swapBytes(animationFrameMetadata, animationFrameMetadataPtr[1]);
     
 }
 
@@ -1072,10 +1074,10 @@ inline void setBitmapMetadata(BitmapMetadata* ptr, u16* data) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", getAnimationMetadataPtr);
+//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", getAnimationFrameMetadataPtr);
 
 // TODO: see if void* type is necessary
-u8* getAnimationMetadataPtr(u16 index, void* table) {
+u8* getAnimationFrameMetadataPtr(u16 index, void* table) {
  
     u32 *arr = (u32*)table;
     
@@ -1085,18 +1087,18 @@ u8* getAnimationMetadataPtr(u16 index, void* table) {
 
 // alternate
 /*
-u8* getAnimationMetadataPtr(u16 arg0, void* arg1) {
+u8* getAnimationFrameMetadataPtr(u16 arg0, void* arg1) {
     return (u8*)(arg1 + *(u32*)(arg1 + arg0*4));
 }
 */
 
-//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", getAnimationMetadataPtrFromFrame);
+//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", getAnimationFrameMetadataPtrFromFrame);
 
 // update pointer by iterateing through animation data (contains header, animation metadata, and sprite metadata)
-inline u16* getAnimationMetadataPtrFromFrame(u16 currentFrame, u16* animationDataPtr) {
+inline u16* getAnimationFrameMetadataPtrFromFrame(u16 currentFrame, u16* animationFrameMetadataPtr) {
     
     u16 i;
-    SpriteAnimationMetadata animationMetadata;
+    AnimationFrameMetadata animationFrameMetadata;
 
     u32 pad[2];
 
@@ -1111,31 +1113,31 @@ inline u16* getAnimationMetadataPtrFromFrame(u16 currentFrame, u16* animationDat
         
         do {
 
-            // FIXME: should be inline setAnimationMetadata call
+            // FIXME: should be inline setAnimationFrameMetadata call
             
-            temp2 = animationDataPtr[0] << 8;
-            temp3 = animationDataPtr[0] >> 8;
+            temp2 = animationFrameMetadataPtr[0] << 8;
+            temp3 = animationFrameMetadataPtr[0] >> 8;
             
             temp = temp2 | temp3;
             
-            animationMetadata.frameCount = temp;
+            animationFrameMetadata.objectCount = temp;
 
-            temp2 = animationDataPtr[1];
+            temp2 = animationFrameMetadataPtr[1];
             temp = temp2;
             temp2 = temp;
             
             temp2 = temp >> 8;
             temp4 = temp >> 8;
             
-            animationMetadata.frameDuration = temp4;
-            animationMetadata.audioTrigger = temp;
+            animationFrameMetadata.frameDuration = temp4;
+            animationFrameMetadata.audioTrigger = temp;
             
             //
 
             // skip header for next iteration
-            animationDataPtr += 2;
-            // go to offset of next animation frame?
-            animationDataPtr += animationMetadata.frameCount * 4;
+            animationFrameMetadataPtr += 2;
+            // * sizeof(animationFrameMetadata); frame data consists of animationFrameMetadata + varying lengths of bitmapMetadata objects
+            animationFrameMetadataPtr += animationFrameMetadata.objectCount * 4;
             
             i++;
             
@@ -1143,7 +1145,7 @@ inline u16* getAnimationMetadataPtrFromFrame(u16 currentFrame, u16* animationDat
 
     }
     
-    return animationDataPtr;
+    return animationFrameMetadataPtr;
 
 }
 
@@ -1195,14 +1197,14 @@ typedef struct {
 
 typedef struct {
     u32 unk_0;
-    SpriteAnimationMetadata *animationMetadataPtr;
+    AnimationFrameMetadata *animationFrameMetadataPtr;
     u32 unk_8; 
     u32 length;
 } SpriteMetadata;
 */
 
 #ifdef PERMUTER
-void setBitmapFromSpriteObject(u16 spriteIndex, SpriteAnimationMetadata* animationMetadataPtr, u8 animationType) {
+void setBitmapFromSpriteObject(u16 spriteIndex, AnimationFrameMetadata* animationFrameMetadataPtr, u8 animationType) {
 
     u16 bitmapIndex;
     
@@ -1216,19 +1218,19 @@ void setBitmapFromSpriteObject(u16 spriteIndex, SpriteAnimationMetadata* animati
     BitmapMetadataAlt bitmapMetadata;
     SpriteMetadata metadata;
     
-    u16 frameCount;
+    u16 objectCount;
     u32 temp2;
     u16 temp3;
     u16 i;
     
-    metadata.animationMetadataPtr = animationMetadataPtr;
-    frameCount = animationMetadataPtr->frameCount;
+    metadata.animationFrameMetadataPtr = animationFrameMetadataPtr;
+    objectCount = animationFrameMetadataPtr->objectCount;
     
     metadata.length = 0;
     
     texturePtr = globalSprites[spriteIndex].texturePtr[gGraphicsBufferIndex];
 
-    if (frameCount) {
+    if (objectCount) {
         
         i = 0;
     
@@ -1240,7 +1242,7 @@ void setBitmapFromSpriteObject(u16 spriteIndex, SpriteAnimationMetadata* animati
 
                 do {
                     
-                    setBitmapMetadata(&bitmapMetadata, advanceBitmapMetadataPtr((frameCount - i) - 1, globalSprites[spriteIndex].bitmapMetadataPtr));
+                    setBitmapMetadata(&bitmapMetadata, advanceBitmapMetadataPtr((objectCount - i) - 1, globalSprites[spriteIndex].bitmapMetadataPtr));
                     
                     texturePtr += metadata.length;
                 
@@ -1256,7 +1258,7 @@ void setBitmapFromSpriteObject(u16 spriteIndex, SpriteAnimationMetadata* animati
 
                 do {
                     
-                    temp3 = ((metadata.animationMetadataPtr->frameCount - i) - 1);
+                    temp3 = ((metadata.animationFrameMetadataPtr->objectCount - i) - 1);
     
                     if (temp2 < temp3) {
                         
@@ -1304,10 +1306,10 @@ void setBitmapFromSpriteObject(u16 spriteIndex, SpriteAnimationMetadata* animati
                 bitmaps[bitmapIndex].flags &= ~4;
             }
 
-            frameCount = metadata.animationMetadataPtr->frameCount;
+            objectCount = metadata.animationFrameMetadataPtr->objectCount;
             i++;
             
-        } while (i < metadata.animationMetadataPtr->frameCount);
+        } while (i < metadata.animationFrameMetadataPtr->objectCount);
         
     }
     
@@ -1416,7 +1418,7 @@ static inline u8 updateSpriteCurrentRGBA(u16 i) {
 #ifdef PERMUTER
 void updateSprites(void) {
 
-    SpriteAnimationMetadata animationMetadata;
+    AnimationFrameMetadata animationFrameMetadata;
     u32 pad[3];
     
     u16 i;
@@ -1438,36 +1440,36 @@ void updateSprites(void) {
                 continue;
             } 
             
-            setAnimationMetadata(&animationMetadata, globalSprites[i].animationMetadataPtr);
+            setAnimationFrameMetadata(&animationFrameMetadata, globalSprites[i].animationFrameMetadataPtr);
 
             if (globalSprites[i].stateFlags & 4) {
                 
                 if (globalSprites[i].animationCounter[gGraphicsBufferIndex] != globalSprites[i].currentAnimationFrame) {
-                    setBitmapFromSpriteObject(i, &animationMetadata, 2);
+                    setBitmapFromSpriteObject(i, &animationFrameMetadata, 2);
                 } else {
-                    setBitmapFromSpriteObject(i, &animationMetadata, 1);
+                    setBitmapFromSpriteObject(i, &animationFrameMetadata, 1);
                 }
 
                 globalSprites[i].animationCounter[gGraphicsBufferIndex] = globalSprites[i].currentAnimationFrame;
         
             } else {        
-                setBitmapFromSpriteObject(i, &animationMetadata, 0);
+                setBitmapFromSpriteObject(i, &animationFrameMetadata, 0);
             }
 
             if (!(globalSprites[i].stateFlags & ANIMATION_PAUSED)) {
                 globalSprites[i].frameTickCounter += 2; 
             }
 
-            if (globalSprites[i].frameTickCounter >= animationMetadata.frameDuration) {
+            if (globalSprites[i].frameTickCounter >= animationFrameMetadata.frameDuration) {
 
-                globalSprites[i].audioTrigger = animationMetadata.audioTrigger;
+                globalSprites[i].audioTrigger = animationFrameMetadata.audioTrigger;
                 globalSprites[i].frameTickCounter = 0;
 
                 if (globalSprites[i].stateFlags & ANIMATION_PLAYING) {
                  
                     globalSprites[i].currentAnimationFrame++;
          
-                    if (!(globalSprites[i].currentAnimationFrame < globalSprites[i].animationMetadata.frameCount)) {
+                    if (!(globalSprites[i].currentAnimationFrame < globalSprites[i].animationFrameMetadata.objectCount)) {
 
                         if (globalSprites[i].stateFlags & ANIMATION_LOOPS) {
                             
@@ -1478,17 +1480,17 @@ void updateSprites(void) {
                             deactivateSprite(i);
                             
                         } else {
-                            globalSprites[i].currentAnimationFrame = globalSprites[i].animationMetadata.frameCount - 1;
+                            globalSprites[i].currentAnimationFrame = globalSprites[i].animationFrameMetadata.objectCount - 1;
                         }
 
                         globalSprites[i].stateFlags |= ANIMATION_STATE_CHANGED;
                         
                     } 
 
-                    // globalSprites[i].animationDataPtr + 4 = skip header
-                    ptr = getAnimationMetadataPtrFromFrame(globalSprites[i].currentAnimationFrame, globalSprites[i].animationDataPtr + 4);
+                    // globalSprites[i].animationDataPtr + 4 = skip header + 4 byte total metadata object count; start at first metadata object
+                    ptr = getAnimationFrameMetadataPtrFromFrame(globalSprites[i].currentAnimationFrame, globalSprites[i].animationDataPtr + 4);
 
-                    globalSprites[i].animationMetadataPtr = ptr;
+                    globalSprites[i].animationFrameMetadataPtr = ptr;
                     globalSprites[i].bitmapMetadataPtr = ptr + 2;
                     
                 } else {

@@ -99,8 +99,21 @@ extract-sprites:
 	@rm -rf assets/sprites
 	@cd tools && python3 ./extract_sprites.py
 
+extract-animation-metadata:
+	@cd tools && python3 ./extract_animation_metadata.py
+
 extract-animation-scripts:
 	@cd tools && python3 ./extract_animation_scripts.py
+	
+extract-animations:
+	@cd tools && \
+	python3 ./extract_animation_metadata.py && \
+	python3 ./fetch_sprites_for_animation.py && \
+	python3 ./make_gifs_from_animation.py 
+
+gifs:
+	@cd tools && python3 ./make_gifs_from_animation.py
+
 
 build:
 	@mkdir $@

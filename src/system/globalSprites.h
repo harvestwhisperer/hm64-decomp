@@ -28,10 +28,10 @@
 #define SHADOW_ALPHA 96
 
 typedef struct {
-	u16 frameCount;
+	u16 objectCount; // overloaded field set from both header value (total frame count) and from AnimationFrameMetadata value (number of bitmap metadata objects)
 	u8 frameDuration; // in game ticks
 	u8 audioTrigger;
-} SpriteAnimationMetadata;
+} AnimationFrameMetadata;
 
 typedef struct {
     u16 spritesheetIndex;
@@ -43,15 +43,15 @@ typedef struct {
 // 0x801FD630
 typedef struct {	
 	u32 *animationIndexPtr; // 0x0
-	u16 *animationDataPtr; // 0x4 // byteswapped data
+	u16 *animationDataPtr; // 0x4
 	u32 *spritesheetIndexPtr; // 0x8
 	u32 *paletteIndexPtr; // 0xC
 	u8 *spriteToPaletteMappingPtr; // 0x10
 	u8 *texturePtr[2]; // 0x14
 	void *romTexturePtr; // 0x1C
-	void *animationMetadataPtr; // 0x20
+	void *animationFrameMetadataPtr; // 0x20
 	void *bitmapMetadataPtr; // 0x24
-	SpriteAnimationMetadata animationMetadata; // 0x28
+	AnimationFrameMetadata animationFrameMetadata; // 0x28
 	Vec3f shrink; // 0x2C
 	Vec3f scale; // 0x38
 	Vec3f rotation;

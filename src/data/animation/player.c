@@ -1,8 +1,8 @@
 #include "common.h"
 
-#include "animationData.h"
+#include "animationScripts.h"
 
-u16 playerAnimationData[] = {
+u16 playerAnimationScripts[] = {
 		
 	PACK_ANIM_DATA(0, ANIM_TYPE_LOOP, 0),
 	PACK_ANIM_DATA(1, ANIM_TYPE_LOOP, 0),

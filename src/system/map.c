@@ -1537,7 +1537,6 @@ Gfx* func_800383B0(Gfx* dl, MainMap* map, u16 vtxIndex, f32 arg3, f32 arg4, f32 
     Gfx tempDl2;
 
     // FIXME: shouldn't be necessary
-    // ??
     f32 temp;
     u32 padding[2];
 
@@ -1547,9 +1546,9 @@ Gfx* func_800383B0(Gfx* dl, MainMap* map, u16 vtxIndex, f32 arg3, f32 arg4, f32 
     // ??
     count = func_80037668(map, vtxIndex, arg3, *(f32*)&arg4, arg5);
 
+    // FIXME: might be a wrapper around gSPVertex
     gSPVertex(&tempDl2 + 1, &mapVertices[gGraphicsBufferIndex][map->mapState.unk_C + map->mapState.unk_A], map->vtxs[vtxIndex].count, 0);
 
-    // FIXME:
     tempDl2 = *(&tempDl2 + 1);
     *dl++ = tempDl2;
     
@@ -2263,6 +2262,7 @@ Gfx* func_8003ACA8(Gfx* dl, MainMap* map, MapBitmap* bitmap, u16 vtxIndex) {
         map->mapFloats.groundRgba.b,
         map->mapFloats.groundRgba.a);
  
+    // FIXME: might be a wrapper around gSPVertex
     gSPVertex(&tempDl[1], &D_80165500[gGraphicsBufferIndex][vtxIndex][0], 4, 0);
 
     *tempDl = *(tempDl+1);

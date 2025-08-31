@@ -23,7 +23,7 @@ options:
   migrate_rodata_to_functions: true
   libultra_symbols: True
   gfx_ucode: f3dex2
-  # ld_symbol_header_path: include/ld_symbols.h
+  ld_symbol_header_path: include/ld_symbols.h
   disassemble_all: true
   # dump_symbols: True
   # extensions_path: tools/splat_ext
@@ -333,10 +333,10 @@ segments:
       - [ 0xEDD00, data, system/staticGfx]
       - [ 0xEE110, data, system/map]
       - [ 0xEE7B0, data, system/pauseScreen]
-      - [ 0xEE7D0, .data, system/cutscene] # cutscene function pointer table
+      - [ 0xEE7D0, .data, system/cutscene]
       - [ 0xEE980, data, game/fieldTileMaps]
       - [ 0xEEF20, data, game/game]
-      - [ 0xEF050, data, game/player] # default starting coordinates
+      - [ 0xEF050, data, game/player]
       - [ 0xEF680, data, game/level]
       - [ 0xEFD00, data, game/npc]
       - [ 0xEFDC0, data, game/animals]
@@ -436,8 +436,6 @@ segments:
       # library rodata
       - [ 0xFEC40, .rodata, lib/nusys-1/nupakmenu]
       - [ 0xFED00, .rodata, lib/libmus/player]
-      # [ 0xFED00, rodata, lib/libmus/player_commands]
-      # [ 0xFED40, rodata, lib/libmus/player]
       - [ 0xFEDE0, .rodata, lib/os/libultra/libnaudio/n_synthesizer]
       - [ 0xFEE00, .rodata, lib/os/libultra/libnaudio/n_drvrNew]
       - [ 0xFEE30, .rodata, lib/os/libultra/libnaudio/n_env]
@@ -565,8 +563,11 @@ segments:
   #   animation index
   #   animation metadata 1
   #     header
+  #       header signature
+  #       total frames
+  #       unused
   #     animation metadata 
-  #       frame counter
+  #       sprite/bitmap counter for frame
   #       frame duration
   #       has audio
   #     sprite/bitmap metadata
@@ -574,6 +575,8 @@ segments:
   #       unused 2 bit field
   #       anchorX (s16)
   #       anchorY (s16)
+  #      sprite/bitmap metadata 2
+  #       etc.
   #   animation metadata 2
   #   ...
   #   sprite to palettes mapping table u8[] --> table[spritesheetEntry] --> paletteIndex

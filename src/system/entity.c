@@ -77,7 +77,7 @@ bool initializeEntityAsset(u16 entityAssetIndex, void* arg1, void* arg2, void* a
             entityAssetDescriptors[entityAssetIndex].romSpritesheetIndexStart = arg5;
             entityAssetDescriptors[entityAssetIndex].romSpritesheetIndexEnd = arg6;
             entityAssetDescriptors[entityAssetIndex].shadowSpriteIndex= arg8;
-            entityAssetDescriptors[entityAssetIndex].spriteAnimationData = arg9;
+            entityAssetDescriptors[entityAssetIndex].animationScripts = arg9;
 
             entityAssetDescriptors[entityAssetIndex].collisionBufferX = 0;
             entityAssetDescriptors[entityAssetIndex].collisionBufferY = 0;
@@ -1361,15 +1361,15 @@ u8 func_800309B4(u16 entityIndex, f32 arg1, f32 arg2) {
 // returns param 2 of startSpriteAnimation
 inline u16 getSpriteAnimationOffset(u16 entityIndex, u16 offset) {
 
-    u16 animationDataOffset = 0xFFFF;
+    u16 animationIndex = 0xFFFF;
 
     if (entityIndex < MAX_ENTITIES) {
         if (entities[entityIndex].flags & ENTITY_ACTIVE) {
-            animationDataOffset = entityAssetDescriptors[entities[entityIndex].entityAssetIndex].spriteAnimationData[offset] & 0x1FFF;
+            animationIndex = entityAssetDescriptors[entities[entityIndex].entityAssetIndex].animationScripts[offset] & 0x1FFF;
         }
     }
     
-    return animationDataOffset;
+    return animationIndex;
     
 }
 
@@ -1387,7 +1387,7 @@ inline u16 getSpriteAnimationType(u16 entityIndex, u16 offset) {
 
     if (entityIndex < MAX_ENTITIES) {
         if (entities[entityIndex].flags & ENTITY_ACTIVE) {
-            flags = entityAssetDescriptors[entities[entityIndex].entityAssetIndex].spriteAnimationData[offset] & 0x6000;
+            flags = entityAssetDescriptors[entities[entityIndex].entityAssetIndex].animationScripts[offset] & 0x6000;
         }
     }
     
@@ -1403,7 +1403,7 @@ inline u16 getSpriteAnimationHorizontalFlip(u16 entityIndex, u16 offset) {
 
     if (entityIndex < MAX_ENTITIES) {
         if (entities[entityIndex].flags & ENTITY_ACTIVE) {
-            flipHorizontal = entityAssetDescriptors[entities[entityIndex].entityAssetIndex].spriteAnimationData[offset] & 0x8000;
+            flipHorizontal = entityAssetDescriptors[entities[entityIndex].entityAssetIndex].animationScripts[offset] & 0x8000;
         }
     }
     
@@ -1812,7 +1812,7 @@ void updateEntities(void) {
     u16 i = 0;
     
     u8 directionalOffset;
-    u16 animationDataOffset;
+    u16 animationMetadataIndex;
     u16 animationType;
     u16 flipHorizontal;
 
@@ -1840,7 +1840,7 @@ void updateEntities(void) {
                 directionalOffset = 0;
             }
 
-            animationDataOffset = getSpriteAnimationOffset(i, entities[i].animationIndices.animationIndex + directionalOffset);
+            animationMetadataIndex = getSpriteAnimationOffset(i, entities[i].animationIndices.animationIndex + directionalOffset);
             animationType = getSpriteAnimationType(i, entities[i].animationIndices.animationIndex + directionalOffset);
             flipHorizontal = getSpriteAnimationHorizontalFlip(i, entities[i].animationIndices.animationIndex + directionalOffset);
 
@@ -1857,15 +1857,15 @@ void updateEntities(void) {
                     switch (animationType) {
 
                         case 0:
-                            startSpriteAnimation(entities[i].globalSpriteIndex, animationDataOffset, 0xFF);
+                            startSpriteAnimation(entities[i].globalSpriteIndex, animationMetadataIndex, 0xFF);
                             break;
 
                         case 0x2000: 
-                            startSpriteAnimation(entities[i].globalSpriteIndex, animationDataOffset, 0xFE);
+                            startSpriteAnimation(entities[i].globalSpriteIndex, animationMetadataIndex, 0xFE);
                             break;
                         
                         case 0x4000:
-                            startSpriteAnimation(entities[i].globalSpriteIndex, animationDataOffset, 0xFD);
+                            startSpriteAnimation(entities[i].globalSpriteIndex, animationMetadataIndex, 0xFD);
                             break;
 
                         default:

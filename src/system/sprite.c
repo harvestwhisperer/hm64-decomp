@@ -507,26 +507,25 @@ static const Gfx D_8011ED30 = gsSPEndDisplayList();
 
 //INCLUDE_RODATA("asm/nonmatchings/systemsprite", D_8011ED30);
 
-#ifdef PERMUTER
-Gfx* func_8002A66C(Gfx* dl, BitmapObject* sprite, u16 arg2) {
+//INCLUDE_ASM("asm/nonmatchings/system/sprite", func_8002A66C);
+
+Gfx* func_8002A66C(Gfx* dl, BitmapObject* bitmap, u16 spriteNumber) {
 
     u16 vtxIndex;
+
     u32 textureDimensions;
     u16 textureOffset;
     u16 textureHeight;
+    u16 textureWidth; 
     u16 textureSize;
+
     u16 remainingSize;
-
-    u32 tempSize;
+    
     Gfx tempDl[2];
+    
+    bitmap->spriteNumber = spriteNumber;
 
-    TextureInfo textureInfo;
-
-    u32 temp;
-
-    bitmap->spriteNumber = arg2;
-
-    dl = func_8002A410(dl, (bitmap->renderingFlags >> 10) & (1 | 2 | 4));
+    dl = func_8002A410(dl, (bitmap->renderingFlags >> 10) & 7);
 
     *dl++ = D_8011ED00;
 
@@ -537,99 +536,91 @@ Gfx* func_8002A66C(Gfx* dl, BitmapObject* sprite, u16 arg2) {
         // gsDPSetTextureFilter(G_TF_POINT)
         *dl++ = D_8011ED10;;
     }
-
+    
     switch (bitmap->pixelSize) {
-
+        
         case G_IM_SIZ_4b:
             textureHeight = 4096 / bitmap->width;
-            textureInfo.width = (bitmap->width + (((u32)bitmap->width) >> 0x1F)) / 2;
+            textureWidth = bitmap->width / 2;
             break;
-
+            
         case G_IM_SIZ_8b:
             textureHeight = 2048 / bitmap->width;
-            textureInfo.width = bitmap->width;
-            break;
-
-        case G_IM_SIZ_16b:
-            textureHeight = 2048 / bitmap->width;
-            textureInfo.width = temp*2;
-            break;
-
-        case G_IM_SIZ_32b:
-            textureHeight = 2048 / bitmap->width;
-            textureInfo.width = temp*4;
+            textureWidth = bitmap->width;
             break;
         
-    }
+        case G_IM_SIZ_16b:
+            textureHeight = 2048 / bitmap->width;
+            textureWidth = bitmap->width * 2;
+            break;
+            
+        case G_IM_SIZ_32b:
+            textureHeight = 2048 / bitmap->width;
+            textureWidth = bitmap->width * 4;
+            break;
 
+    }
+    
     remainingSize = bitmap->height;
 
     textureOffset = 0;
     textureDimensions = 0;
     vtxIndex = 0;
-
+    
     do {
-
+    
         textureSize = remainingSize;
-
+    
         if (textureSize > textureHeight) {
-            textureSize = textureHeight;
+          textureSize = textureHeight;
         }
-
-        setupBitmapVertices(
-            (Vtx*)&bitmapVertices[gGraphicsBufferIndex][bitmap->spriteNumber + vtxIndex],
-            bitmap->width,
-            bitmap->height,
-            textureSize,
-            textureOffset,
-            bitmap->renderingFlags & FLIP_HORIZONTAL,
-            bitmap->renderingFlags & FLIP_VERTICAL,
+        
+        setupBitmapVertices((&bitmapVertices[gGraphicsBufferIndex][bitmap->spriteNumber + vtxIndex]), 
+            bitmap->width, 
+            bitmap->height, 
+            textureSize, 
+            textureOffset, 
+            bitmap->renderingFlags & FLIP_HORIZONTAL, 
+            bitmap->renderingFlags & FLIP_VERTICAL, 
             bitmap->anchorX,
-            bitmap->anchorY,
-            bitmap->renderingFlags,
-            bitmap->rgba.r,
-            bitmap->rgba.g,
-            bitmap->rgba.b,
+            bitmap->anchorY, 
+            bitmap->renderingFlags, 
+            bitmap->rgba.r, 
+            bitmap->rgba.g, 
+            bitmap->rgba.b, 
             bitmap->rgba.a
         );
-
-        dl = loadBitmapTexture(dl, bitmap, textureDimensions, textureSize);
-
-         gSPVertex(&tempDl[1], (Vtx*)&bitmapVertices[gGraphicsBufferIndex][bitmap->spriteNumber + vtxIndex][0], 4, 0);
-
-        *(tempDl) = *(tempDl+1);
-        *dl = *(tempDl);
         
-        dl++;
-
+        dl = loadBitmapTexture(dl, bitmap, textureDimensions, textureSize);
+    
+        // FIXME: might be a wrapper around gSPVertex
+        gSPVertex(&tempDl[1], &bitmapVertices[gGraphicsBufferIndex][bitmap->spriteNumber + vtxIndex][0], 4, 0);
+    
+        *tempDl = *(tempDl + 1);
+        *dl++ = *tempDl;
+        
         if (bitmap->renderingFlags & 0x200) {
-            // gsSP2Triangles(0, 1, 2, 0, 0, 2, 3, 0)
-            *dl++ = D_8011ED18;
-        } else {
-            // gsSP2Triangles(0, 2, 1, 0, 0, 3, 2, 0)
-            *dl++ = D_8011ED20;
+          *(dl++) = D_8011ED18;
         }
-
+        else {
+          *(dl++) = D_8011ED20;
+        }
+            
         remainingSize -= textureSize;
         textureOffset += textureSize;
         vtxIndex++;
-
-        textureDimensions += textureSize * textureInfo.width;
-
-        *dl++ = D_8011ED28;
-
+    
+        textureDimensions += textureSize * textureWidth;
+        *(dl++) = D_8011ED28;
+        
     } while (remainingSize);
-
-    *dl++ = D_8011ED30;
-
+    
+    *(dl++) = D_8011ED30;
     bitmap->vtxIndex = vtxIndex;
-
+    
     return dl;
     
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/system/sprite", func_8002A66C);
-#endif
 
 //INCLUDE_ASM("asm/nonmatchings/system/sprite", processBitmapSceneNode);
 

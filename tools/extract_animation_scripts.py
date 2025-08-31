@@ -6,7 +6,7 @@ from typing import List
 import numpy as np
 
 rom = '../baserom.us.z64'
-animation_addresses_csv = './animation_addresses.csv'
+animation_addresses_csv = './animation_scripts_addresses.csv'
 output_dir  = "../src/data/animation" 
 
 ANIMATION_TYPE_MAP = {
@@ -21,11 +21,11 @@ MASK_HORIZONTAL_FLIP = 0x8000
 
 FILE_HEADER = '''#include "common.h"
 
-#include "animationData.h"
+#include "animationScripts.h"
 
 '''
 
-ARRAY_TEMPLATE = '''u16 {label}AnimationData[] = {{
+ARRAY_TEMPLATE = '''u16 {label}AnimationScripts[] = {{
 {body}
 }};
 
@@ -33,7 +33,6 @@ ARRAY_TEMPLATE = '''u16 {label}AnimationData[] = {{
 
 def read_slice_as_u16(romf, start: int, end: int) -> np.ndarray:
     romf.seek(start)
-    print(f"seeking... ")
     buf = romf.read(end - start)
     dtype = np.dtype(">u2")
     return np.frombuffer(buf, dtype=dtype)
@@ -59,6 +58,7 @@ def write_c_file(label: str, entries: List[str], out_dir: str):
 
     with open(out_path, "w", newline="\n") as f:
         f.write(content)
+
     print(f"Wrote {out_path}")
 
 def decode_values(u16s: np.ndarray) -> List[str]:
@@ -72,11 +72,10 @@ def decode_values(u16s: np.ndarray) -> List[str]:
     for tb in animation_types.tolist():
         animation_type_names.append(ANIMATION_TYPE_MAP.get(int(tb), f"(/*UNKNOWN_TYPE*/0x{tb:04X})"))
 
-#     horizontal_flip_strs = ["FLIP_HORIZONTAL" if s else "0" for s in horizontal_flips.tolist()]
-
     out = []
     for i, (val, meta, tname, flipstr) in enumerate(zip(u16s.tolist(), metadata_offsets.tolist(), animation_type_names, horizontal_flips.tolist())):
 
+        # group by 8 (per 8 sprite directions)
         if i % 8 == 0:
             out.append("\t") 
 
@@ -88,7 +87,6 @@ def decode_values(u16s: np.ndarray) -> List[str]:
             sstr = "FLIP_HORIZONTAL" if flipstr else "0" 
             out.append(f"PACK_ANIM_DATA({meta}, {tname}, {sstr}){comma}")
 
-        print(f"PACK_ANIM_DATA({meta}, {tname}, {sstr}){comma}")
     return out
 
 def main():
@@ -99,8 +97,6 @@ def main():
         for line_no, row in enumerate(reader, start=1):
 
             start_address, end_address, label = [cell.strip() for cell in row]
-
-            print(f"first and start: {start_address}, {end_address}, {label}")
 
             try:
                 start = int(start_address, 16)
