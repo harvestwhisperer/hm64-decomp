@@ -879,8 +879,8 @@ void func_800486F4(u16 index) {
 
     u32 romTextureStart;
     u32 romTextureEnd;
-    u32 romAssetIndexStart;
-    u32 romAssetIndexEnd;
+    u32 romAssetsIndexStart;
+    u32 romAssetsIndexEnd;
     u32 romSpritesheetIndexStart;
     u32 romSpritesheetIndexEnd;
     u8* texture1Vaddr;
@@ -916,11 +916,11 @@ void func_800486F4(u16 index) {
 
     cutsceneExecutors[index].bytecodePtr += 4;
 
-    romAssetIndexStart = ptr2->romAssetIndexStart;
+    romAssetsIndexStart = ptr2->romAssetsIndexStart;
     
     cutsceneExecutors[index].bytecodePtr += 4;
 
-    romAssetIndexEnd = ptr2->romAssetIndexEnd;
+    romAssetsIndexEnd = ptr2->romAssetsIndexEnd;
 
     cutsceneExecutors[index].bytecodePtr += 4;
 
@@ -956,8 +956,8 @@ void func_800486F4(u16 index) {
 
     cutsceneExecutors[index].bytecodePtr += 4;
 
-    dmaSprite(cutsceneExecutors[index].assetIndex, romTextureStart, romTextureEnd, romAssetIndexStart, 
-        romAssetIndexEnd, romSpritesheetIndexStart, romSpritesheetIndexEnd, texture1Vaddr, texture2Vaddr, 
+    dmaSprite(cutsceneExecutors[index].assetIndex, romTextureStart, romTextureEnd, romAssetsIndexStart, 
+        romAssetsIndexEnd, romSpritesheetIndexStart, romSpritesheetIndexEnd, texture1Vaddr, texture2Vaddr, 
         paletteVaddr, animationVaddr, spriteToPaletteVaddr, spritesheetIndexVaddr, assetType, 0);
    
     setBilinearFiltering(cutsceneExecutors[index].assetIndex, TRUE);
@@ -970,8 +970,8 @@ void func_800486F4(u16 index) {
 
     u32 romTextureStart;
     u32 romTextureEnd;
-    u32 romAssetIndexStart;
-    u32 romAssetIndexEnd;
+    u32 romAssetsIndexStart;
+    u32 romAssetsIndexEnd;
     u32 romSpritesheetIndexStart;
     u32 romSpritesheetIndexEnd;
     u8* texture1Vaddr;
@@ -1002,11 +1002,11 @@ void func_800486F4(u16 index) {
 
     cutsceneExecutors[index].bytecodePtr += 4;
 
-    romAssetIndexStart = *(u32*)cutsceneExecutors[index].bytecodePtr;
+    romAssetsIndexStart = *(u32*)cutsceneExecutors[index].bytecodePtr;
     
     cutsceneExecutors[index].bytecodePtr += 4;
 
-    romAssetIndexEnd = *(u32*)cutsceneExecutors[index].bytecodePtr;
+    romAssetsIndexEnd = *(u32*)cutsceneExecutors[index].bytecodePtr;
 
     cutsceneExecutors[index].bytecodePtr += 4;
 
@@ -1042,8 +1042,8 @@ void func_800486F4(u16 index) {
 
     cutsceneExecutors[index].bytecodePtr += 4;
     
-    dmaSprite(cutsceneExecutors[index].assetIndex, romTextureStart, romTextureEnd, romAssetIndexStart, 
-        romAssetIndexEnd, romSpritesheetIndexStart, romSpritesheetIndexEnd, texture1Vaddr, texture2Vaddr, 
+    dmaSprite(cutsceneExecutors[index].assetIndex, romTextureStart, romTextureEnd, romAssetsIndexStart, 
+        romAssetsIndexEnd, romSpritesheetIndexStart, romSpritesheetIndexEnd, texture1Vaddr, texture2Vaddr, 
         paletteVaddr, animationVaddr, spriteToPaletteVaddr, spritesheetIndexVaddr, assetType, 0);
    
 

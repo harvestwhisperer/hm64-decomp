@@ -28,7 +28,7 @@ void func_80045DE0(void) {
 
 //INCLUDE_ASM("asm/nonmatchings/system/pauseScreen", func_80045E20);
 
-bool func_80045E20(u16 index, u16 spriteIndex, u32 romSpritesheetStart, u32 romSpritesheetEnd, u32 romAssetIndexStart, u32 romAssetIndexEnd, 
+bool func_80045E20(u16 index, u16 spriteIndex, u32 romSpritesheetStart, u32 romSpritesheetEnd, u32 romAssetsIndexStart, u32 romAssetsIndexEnd, 
     void *vaddrSpritesheet, void *vaddrPalette, void *vaddrUnknownAssetSheet, void *vaddrUnknownAsset2, 
     u32 argA, u16 argB, u8 argC, f32 x, f32 y, f32 z, u8 arg10) {
     
@@ -42,8 +42,8 @@ bool func_80045E20(u16 index, u16 spriteIndex, u32 romSpritesheetStart, u32 romS
         
             pauseScreenSprites[index].romSpritesheetStart = romSpritesheetStart;
             pauseScreenSprites[index].romSpritesheetEnd = romSpritesheetEnd;
-            pauseScreenSprites[index].romAssetIndexStart = romAssetIndexStart;
-            pauseScreenSprites[index].romAssetIndexEnd = romAssetIndexEnd;
+            pauseScreenSprites[index].romAssetsIndexStart = romAssetsIndexStart;
+            pauseScreenSprites[index].romAssetsIndexEnd = romAssetsIndexEnd;
 
             pauseScreenSprites[index].vaddrSpritesheet = vaddrSpritesheet;
             pauseScreenSprites[index].vaddrPalette = vaddrPalette;
@@ -96,8 +96,8 @@ bool dmaPauseScreenSprites(u16 index, u32 arg1, u8 arg2, u16 flag) {
                 dmaSprite(pauseScreenSprites[index].spriteIndex + count, 
                     pauseScreenSprites[index].romSpritesheetStart, 
                     pauseScreenSprites[index].romSpritesheetEnd, 
-                    pauseScreenSprites[index].romAssetIndexStart, 
-                    pauseScreenSprites[index].romAssetIndexEnd, 
+                    pauseScreenSprites[index].romAssetsIndexStart, 
+                    pauseScreenSprites[index].romAssetsIndexEnd, 
                     0, 
                     0, 
                     pauseScreenSprites[index].vaddrSpritesheet, 

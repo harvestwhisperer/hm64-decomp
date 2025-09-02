@@ -19,7 +19,7 @@
 #include "game/mapObjects.h"
 #include "game/npc.h"
 #include "game/player.h"
-#include "game/spriteIndices.h"
+#include "game/spriteInfo.h"
 
 // data
 extern u16 itemFlags[];

@@ -73,8 +73,8 @@ extern u8 D_80237420[31];
 
 extern u32 _checkerboardBackgroundTextureSegmentRomStart;
 extern u32 _checkerboardBackgroundTextureSegmentRomEnd;
-extern u32 _checkerboardBackgroundIndexSegmentRomStart;
-extern u32 _checkerboardBackgroundIndexSegmentRomEnd;
+extern u32 _checkerboardBackgroundAssetsIndexSegmentRomStart;
+extern u32 _checkerboardBackgroundAssetsIndexSegmentRomEnd;
 
 extern u32 _holdableItemsTextureSegmentRomStart;
 extern u32 _holdableItemsTextureSegmentRomEnd;

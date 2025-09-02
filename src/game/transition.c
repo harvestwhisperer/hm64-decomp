@@ -25,7 +25,7 @@
 #include "game/overlayScreens.h"
 #include "game/player.h"
 #include "game/setCutscenes.h"
-#include "game/spriteIndices.h"
+#include "game/spriteInfo.h"
 #include "game/weather.h"    
       
 // bss

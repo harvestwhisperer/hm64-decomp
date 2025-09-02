@@ -23,7 +23,7 @@
 #include "game/npc.h"
 #include "game/player.h"
 #include "game/shop.h"
-#include "game/spriteIndices.h"
+#include "game/spriteInfo.h"
 #include "game/updateGame.h"
 #include "game/weather.h"
 

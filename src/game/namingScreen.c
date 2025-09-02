@@ -2,6 +2,8 @@
 
 #include "game/namingScreen.h"
 
+#include "ld_symbols.h"
+
 #include "system/audio.h"
 #include "system/controller.h"
 #include "system/dialogue.h"
@@ -15,23 +17,12 @@
 #include "game/level.h"
 #include "game/npc.h"
 #include "game/player.h"
-#include "game/spriteIndices.h"
+#include "game/spriteInfo.h"
 
 // FIXME:
 // instead of including the header, defining here because loadCutscene(u32) doesn't match in func_800ED974
 extern void loadCutscene(void);
 extern u16 gCutsceneIndex;
-
-extern u32 _namingScreenTexture1SegmentRomStart;
-extern u32 _namingScreenTexture1SegmentRomEnd;
-extern u32 _namingScreenIndex1SegmentRomStart;
-extern u32 _namingScreenIndex1SegmentRomEnd;
-
-extern u32 _landscapeBackgroundTextureSegmentRomStart; 
-extern u32 _landscapeBackgroundTextureSegmentRomEnd;
-extern u32 _landscapeBackgroundIndexSegmentRomStart;
-extern u32 _landscapeBackgroundIndexSegmentRomEnd;
-
 
 // bss
 extern NamingScreenContext namingScreenContext;
@@ -128,9 +119,9 @@ void func_800ED974(void) {
 
             deactivateNamingScreenSprites();
             
-            dmaSprite(0x80, &_namingScreenTexture1SegmentRomStart, &_namingScreenTexture1SegmentRomEnd, &_namingScreenIndex1SegmentRomStart, &_namingScreenIndex1SegmentRomEnd, NULL, NULL, (void* )0x80263E00, NULL, (void* )0x80266E00, (void* )0x80267100, (void* )0x80267200, NULL, NULL, 0);
-            dmaSprite(0x84, &_namingScreenTexture1SegmentRomStart, &_namingScreenTexture1SegmentRomEnd, &_namingScreenIndex1SegmentRomStart, &_namingScreenIndex1SegmentRomEnd, NULL, NULL, (void* )0x80263E00, NULL, (void* )0x80266E00, (void* )0x80267100, (void* )0x80267200, NULL, NULL, 0);
-            dmaSprite(LANDSCAPE_BACKGROUND, &_landscapeBackgroundTextureSegmentRomStart, &_landscapeBackgroundTextureSegmentRomEnd, &_landscapeBackgroundIndexSegmentRomStart, &_landscapeBackgroundIndexSegmentRomEnd, NULL, NULL, (void* )0x8026AB00, NULL, (void* )0x8026DB00, (void* )0x8026DC00, (void* )0x8026DD00, NULL, NULL, 0);
+            dmaSprite(0x80, &_namingScreen1TextureSegmentRomStart, &_namingScreen1TextureSegmentRomEnd, &_namingScreen1AssetsIndexSegmentRomStart, &_namingScreen1AssetsIndexSegmentRomEnd, NULL, NULL, (void* )0x80263E00, NULL, (void* )0x80266E00, (void* )0x80267100, (void* )0x80267200, NULL, NULL, 0);
+            dmaSprite(0x84, &_namingScreen1TextureSegmentRomStart, &_namingScreen1TextureSegmentRomEnd, &_namingScreen1AssetsIndexSegmentRomStart, &_namingScreen1AssetsIndexSegmentRomEnd, NULL, NULL, (void* )0x80263E00, NULL, (void* )0x80266E00, (void* )0x80267100, (void* )0x80267200, NULL, NULL, 0);
+            dmaSprite(LANDSCAPE_BACKGROUND, &_namingScreenBackgroundTextureSegmentRomStart, &_namingScreenBackgroundTextureSegmentRomEnd, &_namingScreenBackgroundAssetsIndexSegmentRomStart, &_namingScreenBackgroundAssetsIndexSegmentRomEnd, NULL, NULL, (void* )0x8026AB00, NULL, (void* )0x8026DB00, (void* )0x8026DC00, (void* )0x8026DD00, NULL, NULL, 0);
             setBilinearFiltering(LANDSCAPE_BACKGROUND, TRUE);
             setSpriteScale(LANDSCAPE_BACKGROUND, 2.0f, 2.0f, 1.0f);
 

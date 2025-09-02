@@ -12,7 +12,8 @@
 #include "game/gameAudio.h"
 #include "game/gameStatus.h"
 #include "game/level.h"
-#include "game/spriteIndices.h"
+
+#include "game/spriteInfo.h"
 
 // bss
 Chicken gChickens[MAX_CHICKENS];

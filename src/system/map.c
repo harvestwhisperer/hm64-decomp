@@ -739,7 +739,7 @@ bool deactivateMapObject(u16 mapIndex, u8 index) {
 
 // load and set texture for map spawnable sprite
 // called by level.c
-bool func_80034EF0(u16 mapIndex, u8 arg1, u8 arg2, u32* textureIndex, u32* paletteIndex, u8* spriteToPaletteIndex, u32 romTextureStart, u32 arg7, u32 romAssetIndexStart, u32 romAssetIndexEnd, u8 argA) {
+bool func_80034EF0(u16 mapIndex, u8 arg1, u8 arg2, u32* textureIndex, u32* paletteIndex, u8* spriteToPaletteIndex, u32 romTextureStart, u32 arg7, u32 romAssetsIndexStart, u32 romAssetsIndexEnd, u8 argA) {
 
     bool result = FALSE;
     
@@ -764,7 +764,7 @@ bool func_80034EF0(u16 mapIndex, u8 arg1, u8 arg2, u32* textureIndex, u32* palet
 
         mainMap[mapIndex].groundObjects.unk_12 = argA;
         
-        nuPiReadRom(romAssetIndexStart, assetIndex, romAssetIndexEnd - romAssetIndexStart);
+        nuPiReadRom(romAssetsIndexStart, assetIndex, romAssetsIndexEnd - romAssetsIndexStart);
         
         offset1 = assetIndex[0];
         offset2 = assetIndex[1];

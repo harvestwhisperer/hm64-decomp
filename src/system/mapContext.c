@@ -11,7 +11,7 @@
 extern Vec4f D_8013D248;
 extern Vec4f D_802373F8;
 
-// struct
+// FIXME: struct member
 // flags
 extern s16 D_8017045A;
 
@@ -40,7 +40,7 @@ void initializeMapContext(void) {
     D_8013D248.b = 0;
     D_8013D248.a = 0;
     
-    // flags
+    // FIXME: flags field on struct
     D_8017045A = 0;
     
     for (i = 0; i < MAX_MAPS; i++) {
@@ -324,6 +324,7 @@ bool func_8003BF7C(u16 mapIndex, u8 r, u8 g, u8 b, u8 a, s16 arg5) {
         D_8013D248.b = b;
         D_8013D248.a = a;
         
+        // FIXME: flags field on struct
         D_8017045A = arg5;
         
         result = TRUE;

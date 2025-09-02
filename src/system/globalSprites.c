@@ -138,7 +138,7 @@ void initializeGlobalSprites(void) {
 
 //INCLUDE_ASM("asm/nonmatchings/system/globalSprites", dmaSprite);
 
-bool dmaSprite(u16 index, u32 romTextureStart, u32 romTextureEnd, u32 romAssetIndexStart, u32 romAssetIndexEnd, 
+bool dmaSprite(u16 index, u32 romTextureStart, u32 romTextureEnd, u32 romAssetsIndexStart, u32 romAssetsIndexEnd, 
     u32 romSpritesheetIndexStart, u32 romSpritesheetIndexEnd, u8* texture1Vaddr, u8* texture2Vaddr, u16* paletteVaddr, u16* animationVaddr, 
     u8* spriteToPaletteVaddr, u32* spritesheetIndexVaddr, u8 assetType, u8 flag) {
 
@@ -155,7 +155,7 @@ bool dmaSprite(u16 index, u32 romTextureStart, u32 romTextureEnd, u32 romAssetIn
         
         if (!(globalSprites[index].stateFlags & ACTIVE)) { 
             
-            nuPiReadRom(romAssetIndexStart, assetIndex, romAssetIndexEnd - romAssetIndexStart);
+            nuPiReadRom(romAssetsIndexStart, assetIndex, romAssetsIndexEnd - romAssetsIndexStart);
 
             // spritesheet
             offset1 = assetIndex[0];

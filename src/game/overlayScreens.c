@@ -517,7 +517,7 @@ void func_800B8018(void) {
     
     func_800593EC();
 
-    dmaSprite(0x80, &_checkerboardBackgroundTextureSegmentRomStart, &_checkerboardBackgroundTextureSegmentRomEnd, &_checkerboardBackgroundIndexSegmentRomStart, &_checkerboardBackgroundIndexSegmentRomEnd, 0, 0, 0x802DE5C0, 0, 0x802E0BC0, 0x802E0CC0, 0x802E0DC0, 0, 0, 0);
+    dmaSprite(0x80, &_checkerboardBackgroundTextureSegmentRomStart, &_checkerboardBackgroundTextureSegmentRomEnd, &_checkerboardBackgroundAssetsIndexSegmentRomStart, &_checkerboardBackgroundAssetsIndexSegmentRomEnd, 0, 0, 0x802DE5C0, 0, 0x802E0BC0, 0x802E0CC0, 0x802E0DC0, 0, 0, 0);
     setSpriteShrinkFactor(0x80, 0, 0, 0);
     setSpriteScale(0x80, 2.0f, 2.0f, 1.0f);
     setBilinearFiltering(0x80, TRUE);
@@ -537,7 +537,7 @@ void func_800B815C(void) {
 
     func_800593EC();
 
-    dmaSprite(0x80, &_checkerboardBackgroundTextureSegmentRomStart, &_checkerboardBackgroundTextureSegmentRomEnd, &_checkerboardBackgroundIndexSegmentRomStart, &_checkerboardBackgroundIndexSegmentRomEnd, NULL, NULL, (void*)0x802DE5C0, NULL, (void*)0x802E0BC0, (void*)0x802E0CC0, (void*)0x802E0DC0, NULL, NULL, 0);
+    dmaSprite(0x80, &_checkerboardBackgroundTextureSegmentRomStart, &_checkerboardBackgroundTextureSegmentRomEnd, &_checkerboardBackgroundAssetsIndexSegmentRomStart, &_checkerboardBackgroundAssetsIndexSegmentRomEnd, NULL, NULL, (void*)0x802DE5C0, NULL, (void*)0x802E0BC0, (void*)0x802E0CC0, (void*)0x802E0DC0, NULL, NULL, 0);
     setSpriteShrinkFactor(0x80, 0.0f, 0.0f, 0.0f);
     setSpriteScale(0x80, 2.0f, 2.0f, 1.0f);
     setBilinearFiltering(0x80, TRUE);
@@ -561,7 +561,7 @@ void func_800B815C(void) {
 void func_800B82AC(void) {
 
     func_800593EC();
-    dmaSprite(0x80, &_checkerboardBackgroundTextureSegmentRomStart, &_checkerboardBackgroundTextureSegmentRomEnd, &_checkerboardBackgroundIndexSegmentRomStart, &_checkerboardBackgroundIndexSegmentRomEnd, NULL, NULL, (void*)0x802DE5C0, NULL, (void*)0x802E0BC0, (void*)0x802E0CC0, (void*)0x802E0DC0, NULL, NULL, 0);
+    dmaSprite(0x80, &_checkerboardBackgroundTextureSegmentRomStart, &_checkerboardBackgroundTextureSegmentRomEnd, &_checkerboardBackgroundAssetsIndexSegmentRomStart, &_checkerboardBackgroundAssetsIndexSegmentRomEnd, NULL, NULL, (void*)0x802DE5C0, NULL, (void*)0x802E0BC0, (void*)0x802E0CC0, (void*)0x802E0DC0, NULL, NULL, 0);
     setSpriteShrinkFactor(0x80, 0.0f, 0.0f, 0.0f);
     setSpriteScale(0x80, 2.0f, 2.0f, 1.0f);
     setBilinearFiltering(0x80, TRUE);
@@ -580,7 +580,7 @@ void func_800B82AC(void) {
 void func_800B83F0(void) {
 
     func_800593EC();
-    dmaSprite(0x80, &_checkerboardBackgroundTextureSegmentRomStart, &_checkerboardBackgroundTextureSegmentRomEnd, &_checkerboardBackgroundIndexSegmentRomStart, &_checkerboardBackgroundIndexSegmentRomEnd, NULL, NULL, (void*)0x802DE5C0, NULL, (void*)0x802E0BC0, (void*)0x802E0CC0, (void*)0x802E0DC0, NULL, NULL, 0);
+    dmaSprite(0x80, &_checkerboardBackgroundTextureSegmentRomStart, &_checkerboardBackgroundTextureSegmentRomEnd, &_checkerboardBackgroundAssetsIndexSegmentRomStart, &_checkerboardBackgroundAssetsIndexSegmentRomEnd, NULL, NULL, (void*)0x802DE5C0, NULL, (void*)0x802E0BC0, (void*)0x802E0CC0, (void*)0x802E0DC0, NULL, NULL, 0);
     setSpriteShrinkFactor(0x80, 0.0f, 0.0f, 0.0f);
     setSpriteScale(0x80, 2.0f, 2.0f, 1.0f);
     setBilinearFiltering(0x80, TRUE);
@@ -603,7 +603,7 @@ void func_800B83F0(void) {
 void func_800B8554(void) {
     
     func_800593EC();
-    dmaSprite(0x80, &_checkerboardBackgroundTextureSegmentRomStart, &_checkerboardBackgroundTextureSegmentRomEnd, &_checkerboardBackgroundIndexSegmentRomStart, &_checkerboardBackgroundIndexSegmentRomEnd, NULL, NULL, (void*)0x802DE5C0, NULL, (void*)0x802E0BC0, (void*)0x802E0CC0, (void*)0x802E0DC0, NULL, NULL, 0);
+    dmaSprite(0x80, &_checkerboardBackgroundTextureSegmentRomStart, &_checkerboardBackgroundTextureSegmentRomEnd, &_checkerboardBackgroundAssetsIndexSegmentRomStart, &_checkerboardBackgroundAssetsIndexSegmentRomEnd, NULL, NULL, (void*)0x802DE5C0, NULL, (void*)0x802E0BC0, (void*)0x802E0CC0, (void*)0x802E0DC0, NULL, NULL, 0);
     setSpriteShrinkFactor(0x80, 0.0f, 0.0f, 0.0f);
     setSpriteScale(0x80, 2.0f, 2.0f, 1.0f);
     setBilinearFiltering(0x80, TRUE);
