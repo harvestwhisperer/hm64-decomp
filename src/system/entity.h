@@ -59,8 +59,8 @@ typedef struct {
 	u16 *animationScripts; /* 0x00 */ // data from 80119750-8011BCA0, related to animation; updateEntities
 	void *romTextureStart; /* 0x04 */
 	void *romTextureEnd; /* 0x08 */
-	void *romAssetIndexStart; /* 0x0C */
-	void *romAssetIndexEnd; /* 0x10 */
+	void *romAssetsIndexStart; /* 0x0C */
+	void *romAssetsIndexEnd; /* 0x10 */
 	void *romSpritesheetIndexStart; /* 0x14 */
 	void *romSpritesheetIndexEnd; /* 0x18 */
 	u16 unk_1C; /* 0x1C */
@@ -76,8 +76,8 @@ typedef struct {
 typedef struct {
 	void *romTextureStart;
 	void *romTextureEnd;
-	void *romAssetIndexStart;
-	void *romAssetIndexEnd;
+	void *romAssetsIndexStart;
+	void *romAssetsIndexEnd;
 	void *vaddrSpritesheet;
 	void *vaddrPalette;
 	void *vaddrUnknownAssetSheet;
@@ -87,7 +87,7 @@ typedef struct {
 } ShadowSpriteDescriptor;
 
 extern void initializeEntities(void);
-extern bool initializeEntityAsset(u16 npcIndex, void* arg1, void* arg2, void* arg3, void* arg4, void* arg5, void* arg6, u8 arg7, u8 arg8, u16* arg9);
+extern bool initializeEntityAsset(u16 index, void* arg1, void* arg2, void* arg3, void* arg4, void* arg5, void* arg6, u8 arg7, u8 arg8, u16* arg9);
 extern bool initializeEntity(u16, u16, u16, void*, void*, void*, void*, void*, void*);
 extern bool initializeAnimalEntity(u16 index, void* arg1, void* arg2, void* arg3, void* arg4);
 extern bool loadEntity(u16, u16, u8);      
@@ -115,7 +115,7 @@ extern bool checkEntityAnimationStateChanged(u16);
 extern bool setEntityPaletteIndex(u16 entityIndex, s16);
 extern bool func_8002FF38(u16, u16);
 extern bool setEntityCollisionBuffers(u16 entityIndex, u8 xValue, u8 yValue);
-extern bool func_8002FFF4(u16 npcIndex, u8 arg1, u8 arg2);
+extern bool func_8002FFF4(u16 index, u8 arg1, u8 arg2);
 extern bool func_80030054(u16, u8);                                                   
 extern bool func_80030388(u16 entityIndex);        
 extern void updateEntities(void);                          

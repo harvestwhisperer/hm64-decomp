@@ -72,11 +72,11 @@ bool initializeEntityAsset(u16 entityAssetIndex, void* arg1, void* arg2, void* a
             
             entityAssetDescriptors[entityAssetIndex].romTextureStart = arg1;
             entityAssetDescriptors[entityAssetIndex].romTextureEnd = arg2;
-            entityAssetDescriptors[entityAssetIndex].romAssetIndexStart = arg3;
-            entityAssetDescriptors[entityAssetIndex].romAssetIndexEnd = arg4;
+            entityAssetDescriptors[entityAssetIndex].romAssetsIndexStart = arg3;
+            entityAssetDescriptors[entityAssetIndex].romAssetsIndexEnd = arg4;
             entityAssetDescriptors[entityAssetIndex].romSpritesheetIndexStart = arg5;
             entityAssetDescriptors[entityAssetIndex].romSpritesheetIndexEnd = arg6;
-            entityAssetDescriptors[entityAssetIndex].shadowSpriteIndex= arg8;
+            entityAssetDescriptors[entityAssetIndex].shadowSpriteIndex = arg8;
             entityAssetDescriptors[entityAssetIndex].animationScripts = arg9;
 
             entityAssetDescriptors[entityAssetIndex].collisionBufferX = 0;
@@ -251,8 +251,8 @@ bool loadEntity(u16 index, u16 entityAssetIndex, u8 flag) {
                 dmaSprite(entities[index].globalSpriteIndex, 
                     entityAssetDescriptors[entities[index].entityAssetIndex].romTextureStart, 
                     entityAssetDescriptors[entities[index].entityAssetIndex].romTextureEnd, 
-                    entityAssetDescriptors[entities[index].entityAssetIndex].romAssetIndexStart, 
-                    entityAssetDescriptors[entities[index].entityAssetIndex].romAssetIndexEnd, 
+                    entityAssetDescriptors[entities[index].entityAssetIndex].romAssetsIndexStart, 
+                    entityAssetDescriptors[entities[index].entityAssetIndex].romAssetsIndexEnd, 
                     entityAssetDescriptors[entities[index].entityAssetIndex].romSpritesheetIndexStart, 
                     entityAssetDescriptors[entities[index].entityAssetIndex].romSpritesheetIndexEnd, 
                     entities[index].vaddrTexture1,
@@ -270,8 +270,8 @@ bool loadEntity(u16 index, u16 entityAssetIndex, u8 flag) {
                 dmaSprite(entities[index].globalSpriteIndex, 
                     entityAssetDescriptors[entities[index].entityAssetIndex].romTextureStart, 
                     entityAssetDescriptors[entities[index].entityAssetIndex].romTextureEnd, 
-                    entityAssetDescriptors[entities[index].entityAssetIndex].romAssetIndexStart, 
-                    entityAssetDescriptors[entities[index].entityAssetIndex].romAssetIndexEnd, 
+                    entityAssetDescriptors[entities[index].entityAssetIndex].romAssetsIndexStart, 
+                    entityAssetDescriptors[entities[index].entityAssetIndex].romAssetsIndexEnd, 
                     entityAssetDescriptors[entities[index].entityAssetIndex].romSpritesheetIndexStart, 
                     entityAssetDescriptors[entities[index].entityAssetIndex].romSpritesheetIndexEnd, 
                     entities[index].vaddrTexture1,
@@ -291,8 +291,8 @@ bool loadEntity(u16 index, u16 entityAssetIndex, u8 flag) {
                 dmaSprite(entities[index].shadowSpriteIndex, 
                     ShadowSpritesDescriptors[entityAssetDescriptors[entities[index].entityAssetIndex].shadowSpriteIndex].romTextureStart, 
                     ShadowSpritesDescriptors[entityAssetDescriptors[entities[index].entityAssetIndex].shadowSpriteIndex].romTextureEnd, 
-                    ShadowSpritesDescriptors[entityAssetDescriptors[entities[index].entityAssetIndex].shadowSpriteIndex].romAssetIndexStart, 
-                    ShadowSpritesDescriptors[entityAssetDescriptors[entities[index].entityAssetIndex].shadowSpriteIndex].romAssetIndexEnd, 
+                    ShadowSpritesDescriptors[entityAssetDescriptors[entities[index].entityAssetIndex].shadowSpriteIndex].romAssetsIndexStart, 
+                    ShadowSpritesDescriptors[entityAssetDescriptors[entities[index].entityAssetIndex].shadowSpriteIndex].romAssetsIndexEnd, 
                     0, 
                     0, 
                     ShadowSpritesDescriptors[entityAssetDescriptors[entities[index].entityAssetIndex].shadowSpriteIndex].vaddrSpritesheet, 
@@ -346,8 +346,8 @@ bool initializeShadowSprite(u16 index, u32 arg1, u32 arg2, u32 arg3, u32 arg4, u
         result = TRUE;
         ShadowSpritesDescriptors[index].romTextureStart = arg1;
         ShadowSpritesDescriptors[index].romTextureEnd = arg2;
-        ShadowSpritesDescriptors[index].romAssetIndexStart = arg3;
-        ShadowSpritesDescriptors[index].romAssetIndexEnd = arg4;
+        ShadowSpritesDescriptors[index].romAssetsIndexStart = arg3;
+        ShadowSpritesDescriptors[index].romAssetsIndexEnd = arg4;
         ShadowSpritesDescriptors[index].vaddrSpritesheet = arg5;
         ShadowSpritesDescriptors[index].vaddrPalette = arg6;
         ShadowSpritesDescriptors[index].vaddrUnknownAssetSheet = arg7;

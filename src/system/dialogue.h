@@ -20,8 +20,8 @@
 
 extern u32 _dialogueIconsTextureSegmentRomStart;
 extern u32 _dialogueIconsTextureSegmentRomEnd;
-extern u32 _dialogueIconsIndexSegmentRomStart;
-extern u32 _dialogueIconsIndexSegmentRomEnd;
+extern u32 _dialogueIconsAssetsIndexSegmentRomStart;
+extern u32 _dialogueIconsAssetsIndexSegmentRomEnd;
 
 extern u32 _charactercharacterAvatarsTextureSegmentRomStart;
 extern u32 _charactercharacterAvatarsTextureSegmentRomEnd;

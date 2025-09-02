@@ -186,8 +186,8 @@ typedef struct  {
     u16 assetType;
     u32 romTextureStart; 
     u32 romTextureEnd;
-    u32 romAssetIndexStart;
-    u32 romAssetIndexEnd;
+    u32 romAssetsIndexStart;
+    u32 romAssetsIndexEnd;
     u32 romSpritesheetIndexStart; 
     u32 romSpritesheetIndexEnd; 
     u32 texture1Vaddr;
@@ -205,8 +205,8 @@ typedef struct  {
     u16 assetType; 
     u32 romTextureStart; 
     u32 romTextureEnd;
-    u32 romAssetIndexStart;
-    u32 romAssetIndexEnd;
+    u32 romAssetsIndexStart;
+    u32 romAssetsIndexEnd;
     u32 romSpritesheetIndexStart; 
     u32 romSpritesheetIndexEnd; 
     u32 texture1Vaddr;

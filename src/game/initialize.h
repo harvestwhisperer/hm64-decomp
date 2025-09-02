@@ -6,7 +6,7 @@
 #include "common.h"
 
 // main loop callback functions
-// need to move to respective header files
+// TODO: need to move to respective header files
 extern void func_8005C00C();
 extern void func_8005CA64();
 extern void func_8005CAA8();

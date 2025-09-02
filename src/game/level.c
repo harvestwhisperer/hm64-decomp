@@ -2,6 +2,8 @@
 
 #include "game/level.h"
 
+#include "ld_symbols.h"
+
 #include "system/cutscene.h"
 #include "system/entity.h"
 #include "system/map.h"
@@ -17,7 +19,7 @@
 #include "game/npc.h"
 #include "game/setCutscenes.h"        
 #include "game/shop.h"            
-#include "game/spriteIndices.h"                                                 
+#include "game/spriteInfo.h"                                                 
 #include "game/weather.h"      
 
 // offsets into combined textures
@@ -31,116 +33,6 @@ extern u8 gBaseMapIndex;
 extern u8 gMapWithSeasonIndex;
 // global rotation
 extern u8 D_8021E6D0;
- 
-extern u32 _homeItemsTextureSegmentRomStart;
-extern u32 _homeItemsTextureSegmentRomEnd;
-extern u32 _homeItemsAssetsIndexSegmentRomStart;
-extern u32 _homeItemsAssetsIndexSegmentRomEnd;
-extern u32 _homeItemsSpritesheetIndexSegmentRomStart;
-extern u32 _homeItemsSpritesheetIndexSegmentRomEnd;
-
-extern u32 _farmPondTextureSegmentRomStart;
-extern u32 _farmPondTextureSegmentRomEnd;
-extern u32 _farmPondAssetsIndexSegmentRomStart;
-extern u32 _farmPondAssetsIndexSegmentRomEnd;
-extern u32 _farmPondSpritesheetIndexSegmentRomStart;
-extern u32 _farmPondSpritesheetIndexSegmentRomEnd;
-
-extern u32 _waterTilesTextureSegmentRomStart;
-extern u32 _waterTilesTextureSegmentRomEnd;
-extern u32 _waterTilesAssetsIndexSegmentRomStart;
-extern u32 _waterTilesAssetsIndexSegmentRomEnd;
-extern u32 _waterTilesSpritesheetIndexSegmentRomStart;
-extern u32 _waterTilesSpritesheetIndexSegmentRomEnd;
-
-extern u32 _bridgeTextureSegmentRomStart;
-extern u32 _bridgeTextureSegmentRomEnd;
-extern u32 _bridgeAssetsIndexSegmentRomStart;
-extern u32 _bridgeAssetsIndexSegmentRomEnd;
-extern u32 _bridgeSpritesheetIndexSegmentRomStart;
-extern u32 _bridgeSpritesheetIndexSegmentRomEnd;
-
-extern u32 _boulderTextureSegmentRomStart;
-extern u32 _boulderTextureSegmentRomEnd;
-extern u32 _boulderAssetsIndexSegmentRomStart;
-extern u32 _boulderAssetsIndexSegmentRomEnd;
-extern u32 _boulderSpritesheetIndexSegmentRomStart;
-extern u32 _boulderSpritesheetIndexSegmentRomEnd;
-
-extern u32 _stonePillarTextureSegmentRomStart;
-extern u32 _stonePillarTextureSegmentRomEnd;
-extern u32 _stonePillarAssetsIndexSegmentRomStart;
-extern u32 _stonePillarAssetsIndexSegmentRomEnd;
-extern u32 _stonePillarSpritesheetIndexSegmentRomStart;
-extern u32 _stonePillarSpritesheetIndexSegmentRomEnd;
-
-extern u32 _steamTextureSegmentRomStart;
-extern u32 _steamTextureSegmentRomEnd;
-extern u32 _steamAssetsIndexSegmentRomStart;
-extern u32 _steamAssetsIndexSegmentRomEnd;
-extern u32 _steamSpritesheetIndexSegmentRomStart;
-extern u32 _steamSpritesheetIndexSegmentRomEnd;
-
-extern u32 _mountainPathTilesTextureSegmentRomStart;
-extern u32 _mountainPathTilesTextureSegmentRomEnd;
-extern u32 _mountainPathTilesAssetsIndexSegmentRomStart;
-extern u32 _mountainPathTilesAssetsIndexSegmentRomEnd;
-extern u32 _mountainPathTilesSpritesheetIndexSegmentRomStart;
-extern u32 _mountainPathTilesSpritesheetIndexSegmentRomEnd;
-
-extern u32 _squareFountainTextureSegmentRomStart;
-extern u32 _squareFountainTextureSegmentRomEnd;
-extern u32 _squareFountainAssetsIndexSegmentRomStart;
-extern u32 _squareFountainAssetsIndexSegmentRomEnd;
-extern u32 _squareFountainSpritesheetIndexSegmentRomStart;
-extern u32 _squareFountainSpritesheetIndexSegmentRomEnd;
-
-extern u32 _festivalFlowersTextureSegmentRomStart;
-extern u32 _festivalFlowersTextureSegmentRomEnd;
-extern u32 _festivalFlowersAssetsIndexSegmentRomStart;
-extern u32 _festivalFlowersAssetsIndexSegmentRomEnd;
-extern u32 _festivalFlowersSpritesheetIndexSegmentRomStart;
-extern u32 _festivalFlowersSpritesheetIndexSegmentRomEnd;
-
-extern u32 _village2WaterTextureSegmentRomStart;
-extern u32 _village2WaterTextureSegmentRomEnd;
-extern u32 _village2WaterAssetsIndexSegmentRomStart;
-extern u32 _village2WaterAssetsIndexSegmentRomEnd;
-extern u32 _village2WaterSpritesheetIndexSegmentRomStart;
-extern u32 _village2WaterSpritesheetIndexSegmentRomEnd;
-
-extern u32 _wavesTextureSegmentRomStart;
-extern u32 _wavesTextureSegmentRomEnd;
-extern u32 _wavesAssetsIndexSegmentRomStart;
-extern u32 _wavesAssetsIndexSegmentRomEnd;
-extern u32 _wavesSpritesheetIndexSegmentRomStart;
-extern u32 _wavesSpritesheetIndexSegmentRomEnd;
-
-extern u32 _pondWaterTextureSegmentRomStart;
-extern u32 _pondWaterTextureSegmentRomEnd;
-extern u32 _pondWaterAssetsIndexSegmentRomStart;
-extern u32 _pondWaterAssetsIndexSegmentRomEnd;
-extern u32 _pondWaterSpritesheetIndexSegmentRomStart;
-extern u32 _pondWaterSpritesheetIndexSegmentRomEnd;
-
-extern u32 _vineyardTreeTextureSegmentRomStart;
-extern u32 _vineyardTreeTextureSegmentRomEnd;
-extern u32 _vineyardTreeAssetsIndexSegmentRomStart;
-extern u32 _vineyardTreeAssetsIndexSegmentRomEnd;
-extern u32 _vineyardTreeSpritesheetIndexSegmentRomStart;
-extern u32 _vineyardTreeSpritesheetIndexSegmentRomEnd;
-
-extern u32 _stoneTextureSegmentRomStart;
-extern u32 _stoneTextureSegmentRomEnd;
-extern u32 _stoneAssetsIndexSegmentRomStart;
-extern u32 _stoneAssetsIndexSegmentRomEnd;
-extern u32 _stoneSpritesheetIndexSegmentRomStart;
-extern u32 _stoneSpritesheetIndexSegmentRomEnd;
-
-extern u32 _groundObjectsTextureSegmentRomStart;
-extern u32 _groundObjectsTextureSegmentRomEnd;
-extern u32 _groundObjectsIndexSegmentRomStart;
-extern u32 _groundObjectsIndexSegmentRomEnd;
 
 // data
 extern u8 levelFlags[];

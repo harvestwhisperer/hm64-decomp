@@ -2,6 +2,8 @@
 
 #include "game/shop.h"
 
+#include "ld_symbols.h"
+
 #include "system/controller.h"
 #include "system/entity.h"
 #include "system/map.h"
@@ -19,7 +21,9 @@
 #include "game/overlayScreens.h"
 #include "game/player.h"
 #include "game/setCutscenes.h"
-#include "game/spriteIndices.h"
+#include "game/spriteInfo.h"
+
+#include "data/animationScripts/animationScripts.h"
 
 // bss
 extern ShopContext shopContext;
@@ -51,12 +55,8 @@ extern u8 D_80119628[];
 extern AnimationIndices D_80119660[56];
 // sprite index offsets for shop items
 extern u8 D_801194A0[];
-extern u16 D_8011BA10[];
 
-extern u32 _shopIconsTextureSegmentRomStart;
-extern u32 _shopIconsTextureSegmentRomEnd;
-extern u32 _shopIconsIndexSegmentRomStart;
-extern u32 _shopIconsIndexSegmentRomEnd;
+extern u16 shopItemsAnimationScripts[];
 
 // forward declarations
 u8 handlePurchase(u16 storeItemIndex, s32 quantity);
@@ -89,7 +89,7 @@ void loadShopItemSprite(u8 index) {
     setSpriteDefaultRGBA(D_801194A0[index] + 0x62, 0xFF, 0xFF, 0xFF, 0xFF);
     setSpriteColor(D_801194A0[index] + 0x62, 0xFF, 0xFF, 0xFF, 0xFF);
 
-    setMapObject(MAIN_MAP_INDEX, D_801194A0[index], D_801194A0[index] + 0x62, func_80030BA0(&D_8011BA10, func_800D5A88(D_80118FD0[index])), D_80119040[index].x, D_80119040[index].y, D_80119040[index].z, 0xFF, 0xFF, 0, 0);
+    setMapObject(MAIN_MAP_INDEX, D_801194A0[index], D_801194A0[index] + 0x62, func_80030BA0(&shopItemsAnimationScripts, func_800D5A88(D_80118FD0[index])), D_80119040[index].x, D_80119040[index].y, D_80119040[index].z, 0xFF, 0xFF, 0, 0);
 
 }
 
@@ -163,7 +163,7 @@ void func_800DCAB8(void) {
                 func_800B3BD8();
 
                 if (D_80118F60[shopContext.storeItemIndex] >= 2) {
-                    func_80045E20(0, 0x8F, &_shopIconsTextureSegmentRomStart, &_shopIconsTextureSegmentRomEnd, &_shopIconsIndexSegmentRomStart, &_shopIconsIndexSegmentRomEnd, (void*)SHOP_ICONS_TEXTURE_VADDR_START, (void*)SHOP_ICONS_TEXTURE_VADDR_END, (void* )SHOP_ICONS_INDEX_VADDR_START, (void* )SHOP_ICONS_INDEX_VADDR_END, 0, 2, 0, -16.0f, 64.0f, 256.0f, 0xA);
+                    func_80045E20(0, 0x8F, &_shopIconsTextureSegmentRomStart, &_shopIconsTextureSegmentRomEnd, &_shopIconsAssetsIndexSegmentRomStart, &_shopIconsAssetsIndexSegmentRomEnd, (void*)SHOP_ICONS_TEXTURE_VADDR_START, (void*)SHOP_ICONS_TEXTURE_VADDR_END, (void* )SHOP_ICONS_ASSETS_INDEX_VADDR_START, (void* )SHOP_ICONS_ASSETS_INDEX_VADDR_END, 0, 2, 0, -16.0f, 64.0f, 256.0f, 0xA);
                     dmaPauseScreenSprites(0, shopContext.quantity, 1, 3);
                     func_800B4238(D_80118F60[shopContext.storeItemIndex]);
                 }

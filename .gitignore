@@ -18,6 +18,7 @@ bin/
 build/
 obj/
 tools/gcc-2.7.2
+tools/__pycache__
 .vscode
 undefined_syms_auto.txt
 undefined_funcs_auto.txt

@@ -340,7 +340,7 @@ void setupBitmapVertices(Vtx vtxs[],
     u16 temp2;
 
     // coordinate mapping
-    switch ((flags >> 7) & (1 | 2)) {
+    switch ((flags >> 7) & 3) {
 
         case 2:
             coordinate1 = 0;

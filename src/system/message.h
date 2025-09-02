@@ -99,8 +99,8 @@ typedef struct {
 typedef struct {
 	u32 romTextureStart;
 	u32 romTextureEnd;
-	u32 romAssetIndexStart;
-	u32 romAssetIndexEnd;
+	u32 romAssetsIndexStart;
+	u32 romAssetsIndexEnd;
 	u32 romSpritesheetIndexStart;
 	u32 romSpritesheetIndexEnd;
 	void* vaddrTexture;
@@ -134,8 +134,8 @@ typedef struct {
 typedef struct {
     u32 romTextureStart;
 	u32 romTextureEnd;
-	u32 romAssetIndexStart;
-	u32 romAssetIndexEnd;
+	u32 romAssetsIndexStart;
+	u32 romAssetsIndexEnd;
 	u32 romSpritesheetIndexStart;
 	u32 romSpritesheetIndexEnd;
 	void* vaddrTexture;

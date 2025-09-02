@@ -2,6 +2,8 @@
 
 #include "game/weather.h"
 
+#include "ld_symbols.h"
+
 #include "system/map.h"
 #include "system/mathUtils.h"
 #include "system/globalSprites.h"
@@ -10,7 +12,7 @@
 #include "game/gameStatus.h"
 
 // bss
-extern u8 gWeather;
+u8 gWeather;
 
 // data
 extern u8 weatherLightingAdjustments[5][4] = { 
@@ -20,11 +22,6 @@ extern u8 weatherLightingAdjustments[5][4] = {
     { 0xB0, 0xB0, 0xC0, 0xB0 }, // snow
     { 0xFF, 0xFF, 0xFF, 0xFF } // typhoon
 };
-
-extern u32 _rainTextureSegmentRomStart;
-extern u32 _rainTextureSegmentRomEnd;
-extern u32 _rainIndexSegmentRomStart;
-extern u32 _rainIndexSegmentRomEnd;
 
 static const u8 D_80123438[4][5];
 static const u8 D_8012344C[4][5];
@@ -46,7 +43,7 @@ void func_800DC360(void) {
 
         for (i = 0; i < 10; i++) {
         
-            dmaSprite(i+0x6B, &_rainTextureSegmentRomStart, &_rainTextureSegmentRomEnd, &_rainIndexSegmentRomStart, &_rainIndexSegmentRomEnd, 0, 0, (void*)RAIN_TEXTURE_VADDR, NULL, 0x802A5DC0, 0x802A5EC0, 0x802A5FC0, 0, 0, 1);
+            dmaSprite(i+0x6B, &_rainTextureSegmentRomStart, &_rainTextureSegmentRomEnd, &_rainAssetsIndexSegmentRomStart, &_rainAssetsIndexSegmentRomEnd, 0, 0, (void*)RAIN_TEXTURE_VADDR, NULL, 0x802A5DC0, 0x802A5EC0, 0x802A5FC0, 0, 0, 1);
             setSpriteScale(i+0x6B, 1.0f, 1.0f, 1.0f);
             setSpriteRenderingLayer(i+0x6B, 4);
             setSpriteColor(i+0x6B, 0xFF, 0xFF, 0xFF, 0xFF);

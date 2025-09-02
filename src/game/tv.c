@@ -2,6 +2,8 @@
 
 #include "game/tv.h"
 
+#include "ld_symbols.h"
+
 #include "system/controller.h"
 #include "system/map.h"
 #include "system/mathUtils.h"
@@ -12,7 +14,7 @@
 #include "game/gameAudio.h"
 #include "mainLoop.h"
 #include "game/overlayScreens.h"
-#include "game/spriteIndices.h"
+#include "game/spriteInfo.h"
 #include "game/weather.h"
        
 // forward declarations   
@@ -22,13 +24,6 @@ void setTVPictureIndex();
 void func_800D8540();      
 
 TVContext tvContext;
-
-extern u32 _tvContentTextureSegmentRomStart;
-extern u32 _tvContentTextureSegmentRomEnd;
-extern u32 _tvContentAssetsIndexSegmentRomStart;
-extern u32 _tvContentAssetsIndexSegmentRomEnd;
-extern u32 _tvContentSpritesheetIndexSegmentRomStart;
-extern u32 _tvContentSpritesheetIndexSegmentRomEnd;
 
 #define CHANGE_CHANNEL(channel) \
     do {                                  \

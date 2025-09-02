@@ -9,16 +9,11 @@
 #include "mainproc.h"
 
 // bss
-extern u16 bitmapCounter;
+u16 bitmapCounter;
 
-extern BitmapObject bitmaps[MAX_BITMAPS];
-extern Gfx spriteDisplayList[2][0x880];
-extern Vtx bitmapVertices[2][0x80][4];
-               
-// forward declarations
-Gfx* func_8002A66C(Gfx*, BitmapObject*, u16);             
-void processBitmapSceneNode(BitmapObject* sprite, Gfx *dl);
-
+BitmapObject bitmaps[MAX_BITMAPS];
+Gfx spriteDisplayList[2][0x880];
+Vtx bitmapVertices[2][0x80][4];
 
 //INCLUDE_ASM("asm/nonmatchings/system/sprite", initializeBitmaps);
 
@@ -402,15 +397,15 @@ static const Gfx D_8011ECD0 = gsDPSetCombineMode(G_CC_MODULATEIDECALA, G_CC_MODU
 static const Gfx D_8011ECD8 = gsDPSetRenderMode(G_RM_AA_ZB_TEX_EDGE, G_RM_AA_ZB_TEX_EDGE2);
 static const Gfx D_8011ECE0 = gsDPSetRenderMode(G_RM_AA_TEX_EDGE, G_RM_AA_TEX_EDGE2);
 
-// INCLUDE_RODATA("asm/nonmatchings/systemsprite", D_8011ECC0);
+//INCLUDE_RODATA("asm/nonmatchings/systemsprite", D_8011ECC0);
 
-// INCLUDE_RODATA("asm/nonmatchings/systemsprite", D_8011ECC8);
+//INCLUDE_RODATA("asm/nonmatchings/systemsprite", D_8011ECC8);
 
-// INCLUDE_RODATA("asm/nonmatchings/systemsprite", D_8011ECD0);
+//INCLUDE_RODATA("asm/nonmatchings/systemsprite", D_8011ECD0);
 
-// INCLUDE_RODATA("asm/nonmatchings/systemsprite", D_8011ECD8);
+//INCLUDE_RODATA("asm/nonmatchings/systemsprite", D_8011ECD8);
 
-// INCLUDE_RODATA("asm/nonmatchings/systemsprite", D_8011ECE0);
+//INCLUDE_RODATA("asm/nonmatchings/systemsprite", D_8011ECE0);
 
 //INCLUDE_ASM("asm/nonmatchings/system/sprite", func_8002A410);
 
@@ -507,9 +502,9 @@ static const Gfx D_8011ED30 = gsSPEndDisplayList();
 
 //INCLUDE_RODATA("asm/nonmatchings/systemsprite", D_8011ED30);
 
-//INCLUDE_ASM("asm/nonmatchings/system/sprite", func_8002A66C);
+//INCLUDE_ASM("asm/nonmatchings/system/sprite", generateBitmapDisplayList);
 
-Gfx* func_8002A66C(Gfx* dl, BitmapObject* bitmap, u16 spriteNumber) {
+Gfx* generateBitmapDisplayList(Gfx* dl, BitmapObject* bitmap, u16 spriteNumber) {
 
     u16 vtxIndex;
 
@@ -633,7 +628,6 @@ static void processBitmapSceneNode(BitmapObject* sprite, Gfx *dl) {
     // adjust scaling if needed
     func_8002A530(&vec, sprite);
 
-    // update scene node
     spriteIndex = addSceneNode(dl, (sprite->flags & (0x8 | 0x10 | 0x20 | 0x40)) | 0x80);
 
     addSceneNodePosition(spriteIndex, vec.x, vec.y, vec.z);
@@ -648,7 +642,7 @@ void updateBitmaps(void) {
 
     u16 i;
 
-    Gfx *tempDl;
+    Gfx *dlStartPosition;
     Gfx *dl = spriteDisplayList[gGraphicsBufferIndex];
 
     u16 spriteNumber = 0;
@@ -659,10 +653,10 @@ void updateBitmaps(void) {
     
             setBitmapFormat(&bitmaps[i], bitmaps[i].timg, bitmaps[i].pal);
 
-            tempDl = dl;
-            dl = func_8002A66C(dl, &bitmaps[i], spriteNumber);
+            dlStartPosition = dl;
+            dl = generateBitmapDisplayList(dl, &bitmaps[i], spriteNumber);
 
-            processBitmapSceneNode(&bitmaps[i], tempDl); 
+            processBitmapSceneNode(&bitmaps[i], dlStartPosition); 
             
             spriteNumber += bitmaps[i].vtxIndex;
             bitmaps[i].flags &= ~1;

@@ -97,23 +97,22 @@ rerun: clean split check
 
 extract-sprites:
 	@rm -rf assets/sprites
-	@cd tools && python3 ./extract_sprites.py
+	@cd tools && python3 ./hm64_sprite_utilities.py write_all_textures    
 
 extract-animation-metadata:
-	@cd tools && python3 ./extract_animation_metadata.py
+	@cd tools && python3 ./hm64_animation_utilities.py extract_animation_metadata
 
 extract-animation-scripts:
 	@cd tools && python3 ./extract_animation_scripts.py
+
+extract-animation-sprites:
+	@cd tools && python3 ./hm64_animation_utilities.py fetch_sprites_for_animations
 	
 extract-animations:
-	@cd tools && \
-	python3 ./extract_animation_metadata.py && \
-	python3 ./fetch_sprites_for_animation.py && \
-	python3 ./make_gifs_from_animation.py 
+	@cd tools && python3 ./hm64_animation_utilities.py extract_all
 
 gifs:
-	@cd tools && python3 ./make_gifs_from_animation.py
-
+	@cd tools && python3 ./hm64_animation_utilities.py make_gifs_from_animations
 
 build:
 	@mkdir $@

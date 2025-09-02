@@ -74,7 +74,7 @@ bool addSceneNodePosition(u16 index, f32 x, f32 y, f32 z) {
     sceneNodes[index].positions.x = x;
     sceneNodes[index].positions.y = y;
     sceneNodes[index].positions.z = z;
-    return 1;
+    return TRUE;
 }
 
 //INCLUDE_ASM("asm/nonmatchings/system/sceneGraph", addSceneNodeScaling);
@@ -83,7 +83,7 @@ bool addSceneNodeScaling(u16 index, f32 x, f32 y, f32 z) {
     sceneNodes[index].scaling.x = x;
     sceneNodes[index].scaling.y = y;
     sceneNodes[index].scaling.z = z;
-    return 1;
+    return TRUE;
 }
 
 //INCLUDE_ASM("asm/nonmatchings/system/sceneGraph", addSceneNodeRotation);
@@ -92,7 +92,7 @@ bool addSceneNodeRotation(u16 index, f32 x, f32 y, f32 z) {
     sceneNodes[index].rotation.x = x;
     sceneNodes[index].rotation.y = y;
     sceneNodes[index].rotation.z = z;
-    return 1;
+    return TRUE;
 }
 
 void func_800293B8(void) {}
