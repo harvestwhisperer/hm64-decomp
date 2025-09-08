@@ -19,7 +19,7 @@ s32 getAbsoluteValue(s32 number) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/mathUtils", getRandomNumberInRange);
+//INCLUDE_ASM("asm/nonmatchings/system/math", getRandomNumberInRange);
 
 u16 getRandomNumberInRange(u16 min, u16 max) {
     

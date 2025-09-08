@@ -53,7 +53,7 @@ segments:
       - [ 0x1190, c, mainproc]
       - [ 0x13F0, c, mainLoop]
       - [ 0x1AC0, c, system/volume]
-      - [ 0x1C50, c, system/mathUtils]
+      - [ 0x1C50, c, system/math]
       - [ 0x1CF0, c, system/graphic]
       - [ 0x4400, c, system/spriteDMAManager]
       - [ 0x4570, c, system/sceneGraph]
@@ -61,7 +61,7 @@ segments:
       - [ 0x63E0, c, system/globalSprites]
       - [ 0x9070, c, system/entity]
       - [ 0xEBD0, c, system/map]
-      - [ 0x16C70, c, system/mapContext]
+      - [ 0x16C70, c, system/mapController]
       - [ 0x181C0, c, system/audio]
       - [ 0x18D70, c, system/message]
       - [ 0x1E360, c, system/dialogue]
@@ -418,7 +418,7 @@ segments:
       - [ 0xFA060, .rodata, system/graphic]
       - [ 0xFA0C0, .rodata, system/sprite]
       - [ 0xFA168, .rodata, system/map]
-      - [ 0xFA1E0, .rodata, system/mapContext]
+      - [ 0xFA1E0, .rodata, system/mapController]
       - [ 0xFA200, .rodata, system/audio]
       - [ 0xFA210, .rodata, system/message]
       - [ 0xFA2E0, .rodata, system/dialogue]
@@ -2070,12 +2070,12 @@ segments:
   # map format: 
   #   main index
   #   unknown data  
-  #   custom vertices?
+  #   unknown data2
   #     index, offsets = 0x28
   #     data array
   #       header
   #       data
-  #   unknown data2, used for float calculations
+  #   terrain quads
   #   unknown data3, possibly grid-to-texture tile map
   #   shorts used for floats (byte-swapped)
   #   ci4 textures1

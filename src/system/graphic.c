@@ -175,22 +175,19 @@ volatile u8 renderScene(s32 arg0, s32 arg1) {
 
 //INCLUDE_ASM("asm/nonmatchings/system/graphic", setBitmapFormat);
 
-// 16-bit endian swap
 // FIXME: something wrong, but matches
-static inline u16 swap(u16 halfword) {
+static inline u16 swap16(u16 halfword) {
 
-    // FIXME: shouldn't be necessary/probably a union
     u32 padding[9];
-    
+
     u16 swapped;
     
     u32 upper;
     u32 lower;
-    
+
     lower = halfword;
-    
+
     upper = (halfword & 0xFF) << 8;
-    
     lower = halfword >> 8;
     
     swapped = lower | upper;
@@ -200,18 +197,18 @@ static inline u16 swap(u16 halfword) {
 }
 
 void setBitmapFormat(BitmapObject *sprite, Texture *timg, u16 *palette) {
-    
+
     setBitmapFormatAndSize(sprite, palette);
     
     // skip header and size bytes
     sprite->timg = &timg->texture;
     
     // bytes 4-8 = width and height (16 bit) (byte swapped)
-    sprite->width = swap(timg->width);  
-    sprite->height = swap(timg->height);
+    sprite->width = swap16(timg->width);  
+    sprite->height = swap16(timg->height);
     
     // get pixel size from bit 5 in header (bit one when swapped)
-    switch ((timg->flags >> 4) & (1 | 2 | 4 | 8)) {
+    switch ((timg->flags >> 4) & 0xF) {
         case 0:
           sprite->fmt = G_IM_FMT_CI;
           sprite->pixelSize = G_IM_SIZ_8b;

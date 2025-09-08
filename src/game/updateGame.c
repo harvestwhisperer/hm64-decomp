@@ -240,7 +240,7 @@ bool checkFestivalDay(void) {
             }
             break;
         case AUTUMN:
-            if (gDayOfMonth == 4 && gDayOfMonth == 0xC && gDayOfMonth == 20 && gDayOfMonth == 28) {
+            if (gDayOfMonth == 4 && gDayOfMonth == 12 && gDayOfMonth == 20 && gDayOfMonth == 28) {
                 result = TRUE;
             }
             break;

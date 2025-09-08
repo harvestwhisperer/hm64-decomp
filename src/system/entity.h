@@ -7,16 +7,21 @@
 #define MAX_ENTITY_ASSETS 102
 
 /* flags */
-#define ENTITY_ACTIVE 0x1
+#define ENTITY_ACTIVE 1
+#define ENTITY_MOVEMENT_DISABLED 2
 #define ENTITY_INITIALIZED 0x4
 #define ENTITY_UNKNOWN_FLAG_1 0x8 // deactivating sprite
 #define ENTITY_ANIMATION_DIRECTION_CHANGE 0x10
 #define ENTITY_PAUSED 0x40 
-#define ENTITY_UNKNOWN_FLAG_2 0x80
+#define ENTITY_Y_MOVEMENT 0x80
 #define ENTITY_UNKNOWN_FLAG_3 0x100
 #define ENTITY_TRACKING_ACTIVE 0x200
-#define ENTITY_UNKNOWN_FLAG_4 0x1000 // load
+#define ENTITY_NON_COLLIDABLE 0x400
+#define ENTITY_UNKNOWN_FLAG_2 0x800 // not checked; set when entity is touching ground
+#define ENTITY_LOAD_PENDING 0x1000
 #define ENTITY_PALETTE_SET 0x2000
+#define ENTITY_COLLISION_EXEMPT 0x4000
+#define ENTITY_SINGLE_COLLISION_CHECK 0x8000
 
 typedef struct {
 	u16 animationIndex;
@@ -28,29 +33,29 @@ typedef struct {
 	void *vaddrTexture1; // 00
 	void *vaddrTexture2; // 04
 	void *vaddrPalette;  // 08
-	void *vaddrUnknownAsset; // 0C
+	void *vaddrAnimationMetadata; // 0C
 	void *vaddrTextureToPaletteLookup; // 10
 	void *vaddrSpritesheetIndex; // 14
-	Vec3f unk_18; // 18-20
+	Vec3f attachmentOffset; // 18-20
 	u16 targetSpriteIndex; // 24, for tracking one sprite to another (holdable items, expression bubbles, etc.)
 	u8 trackingMode; // 26
 	Vec3f coordinates; // 28-30
-	Vec3f unk_34; // 34-3C
-	Vec3f unk_3C;
-	f32 unk_4C;
+	Vec3f movementVector; // 34-3C
+	Vec3f viewSpacePosition;
+	f32 speed;
 	u16 entityAssetIndex; // 0x50
 	u16 globalSpriteIndex;
 	AnimationIndices animationIndices; // 0x54-0x58
-	u16 unk_58; 
-	u16	unk_5A;
+	u16 entityCollidedWithIndex; 
+	u16	buttonPressed;
 	u16 collision; // 0x5C
-	u16 unk_5E;
+	u16 unk_5E; // also tracks entity collided with, but never checked
 	u16 shadowSpriteIndex; // 0x60;
 	u16 paletteIndex;
-	u16 unk_64;
+	s16 yOffset;
 	u8 unk_66;
 	u8 direction;  // 0x67
-	u8 flag; // 0x68
+	bool transformExempt; // 0x68
 	u16 flags; // 0x6A
 } Entity;
 
@@ -81,7 +86,7 @@ typedef struct {
 	void *vaddrSpritesheet;
 	void *vaddrPalette;
 	void *vaddrUnknownAssetSheet;
-	void *vaddrUnknownAsset2;
+	void *vaddrAnimationMetadata;
 	u16 unk_20; // related to animation, offset
 	u16 unk_22; // related to animation, arg2 of startSpriteAnimation
 } ShadowSpriteDescriptor;
@@ -92,7 +97,7 @@ extern bool initializeEntity(u16, u16, u16, void*, void*, void*, void*, void*, v
 extern bool initializeAnimalEntity(u16 index, void* arg1, void* arg2, void* arg3, void* arg4);
 extern bool loadEntity(u16, u16, u8);      
 extern bool initializeShadowSprite(u16 index, u32 arg1, u32 arg2, u32 arg3, u32 arg4, u32* arg5, u16* arg6, u16* arg7, u16* arg8, u16 arg9, u8 argA);           
-extern bool func_8002EDF0(u16 entityIndex, s16, s16, s16);
+extern bool setEntityAttachmentOffset(u16 entityIndex, s16, s16, s16);
 extern bool setMainMapIndex(u16 arg0);     
 extern bool setEntityColor(u16, u8, u8, u8, u8);        
 extern bool setEntityTrackingTarget(u16, u16, u16);             
@@ -108,28 +113,31 @@ extern void updateEntitiesColor(u8 r, u8 g, u8 b, u8 a, s16);
 extern bool deactivateEntity(u16);      
 extern bool setEntityCoordinates(u16, f32, f32, f32);   
 extern void func_8002FB3C();
-extern bool func_8002FCB4(u16, u8);  
+extern bool func_8002FC38(u16 index); 
+extern bool pauseEntity(u16 index);
+extern bool func_8002FCB4(u16, bool);  
 extern bool func_8002FD24(u16 entityIndex);
-extern bool func_8002FE10(u16, f32, f32, f32, f32);           
+extern bool setEntityMovementVector(u16, f32, f32, f32, f32);           
 extern bool checkEntityAnimationStateChanged(u16); 
-extern bool setEntityPaletteIndex(u16 entityIndex, s16);
+extern bool setEntityPaletteIndex(u16 entityIndex, u16);
 extern bool func_8002FF38(u16, u16);
 extern bool setEntityCollisionBuffers(u16 entityIndex, u8 xValue, u8 yValue);
 extern bool func_8002FFF4(u16 index, u8 arg1, u8 arg2);
-extern bool func_80030054(u16, u8);                                                   
+extern bool setEntityYMovement(u16 entityIndex, bool flag);                                                   
 extern bool func_80030388(u16 entityIndex);        
 extern void updateEntities(void);                          
-extern bool func_8003019C(u16, u8);                            
-extern bool func_80030240(u16, u8);                            
-extern bool func_800302E4(u16, u8);         
+extern bool setEntityCollidable(u16, u8);                            
+extern bool setEntityTracksCollisions(u16, u8);                            
+extern bool enableEntityMovement(u16, u8);         
 extern u16 func_800305CC(u16 entityIndex, f32, f32, u16);
 extern u8 func_800309B4(u16, f32, f32);     
 extern u16 func_80030BA0(u16* ptr, u16 offset);  
-extern Vec3f* func_80030EAC(Vec3f*, u16, f32, f32);                  
-extern Vec3f* func_800315A0(Vec3f*, u16 index);    
+extern Vec3f func_80030EAC(u16, f32, f32);                  
+extern Vec3f func_800315A0(u16 index);    
+extern u8 detectEntityOverlap(Entity* entity, u16 entityIndex, f32 deltaX, f32 deltaZ, u16 collisionWidth, u16 collisionHeight);
 extern bool checkEntityShouldPlaySoundEffect(u16 entityIndex);   
-extern bool func_80031830(u16 entityIndex, s16 z, u8 direction);        
-extern Vec3f func_80031904(u16 entityIndex, s16 z, u8 direction);
+extern bool checkTerrainCollisionInDirection(u16 entityIndex, s16 z, u8 direction);        
+extern Vec3f projectEntityPosition(u16 entityIndex, s16 z, u8 direction);
 extern bool setEntityAnimationWithDirectionChange(u16 entityIndex, u16);
 
 extern Entity entities[MAX_ENTITIES];

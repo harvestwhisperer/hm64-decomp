@@ -190,7 +190,7 @@ typedef struct {
     f32 unk_34[4];
     void *unk_44;
     void *unk_48;
-    Vec3f shrink;
+    Vec3f viewSpacePosition;
     DialogueBoxFont fontContext; // 0x58
     u16 unk_64; // passed as Volume struct
     u16 frameCounter; // 0x66

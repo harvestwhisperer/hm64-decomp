@@ -26,9 +26,9 @@ void initializeBitmaps(void) {
         bitmaps[i].renderingFlags = 0;
         bitmaps[i].spriteNumber = 0;
         bitmaps[i].vtxIndex = 0;
-        bitmaps[i].shrink.x = 0;
-        bitmaps[i].shrink.y = 0;
-        bitmaps[i].shrink.z = 0;
+        bitmaps[i].viewSpacePosition.x = 0;
+        bitmaps[i].viewSpacePosition.y = 0;
+        bitmaps[i].viewSpacePosition.z = 0;
         bitmaps[i].scaling.x = 1.0f;
         bitmaps[i].scaling.y = 1.0f;
         bitmaps[i].scaling.z = 1.0f;
@@ -245,9 +245,9 @@ bool func_8002A02C(u16 index, u16 arg1) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/sprite", setBitmapShrink);
+//INCLUDE_ASM("asm/nonmatchings/system/sprite", setBitmapViewSpacePosition);
 
-bool setBitmapShrink(u16 index, f32 arg1, f32 arg2, f32 arg3) {
+bool setBitmapViewSpacePosition(u16 index, f32 arg1, f32 arg2, f32 arg3) {
     
     bool result = FALSE;
     
@@ -255,9 +255,9 @@ bool setBitmapShrink(u16 index, f32 arg1, f32 arg2, f32 arg3) {
         
         if (bitmaps[index].flags & ACTIVE) {
             
-            bitmaps[index].shrink.x = arg1;
-            bitmaps[index].shrink.y = arg2;
-            bitmaps[index].shrink.z = arg3;
+            bitmaps[index].viewSpacePosition.x = arg1;
+            bitmaps[index].viewSpacePosition.y = arg2;
+            bitmaps[index].viewSpacePosition.z = arg3;
             
             result = TRUE;
 
@@ -436,9 +436,9 @@ inline Gfx* func_8002A410(Gfx* dl, u16 flag) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/sprite", func_8002A530);
+//INCLUDE_ASM("asm/nonmatchings/system/sprite", calculateSceneNodePosition);
 
-inline void func_8002A530(Vec3f* arg0, BitmapObject* arg1) {
+inline void calculateSceneNodePosition(Vec3f* calculatedPosition, BitmapObject* sprite) {
     
     s32 width;
     s32 height;
@@ -447,29 +447,29 @@ inline void func_8002A530(Vec3f* arg0, BitmapObject* arg1) {
     s32 scaledWidth;
     s32 scaledHeight;
 
-    width = arg1->width;
-    scaleX = arg1->scaling.x;
-    height = arg1->height;
-    scaleY = arg1->scaling.y;
+    width = sprite->width;
+    scaleX = sprite->scaling.x;
+    height = sprite->height;
+    scaleY = sprite->scaling.y;
     
-    arg0->x = arg1->shrink.x;
-    arg0->y = arg1->shrink.y;
-    arg0->z = arg1->shrink.z;
+    calculatedPosition->x = sprite->viewSpacePosition.x;
+    calculatedPosition->y = sprite->viewSpacePosition.y;
+    calculatedPosition->z = sprite->viewSpacePosition.z;
 
     scaledWidth = (width / 2) * scaleX;
     scaledHeight  = (height / 2) * scaleY;
 
-    if (((arg1->renderingFlags >> 3) & (1 | 2)) == 1) {
-        arg0->x = arg1->shrink.x + scaledWidth;
+    if (((sprite->renderingFlags >> 3) & 3) == 1) {
+        calculatedPosition->x = sprite->viewSpacePosition.x + scaledWidth;
     }
-    if (((arg1->renderingFlags >> 3) & (1 | 2)) == 3) {
-        arg0->x = arg1->shrink.x - scaledWidth;
+    if (((sprite->renderingFlags >> 3) & 3) == 3) {
+        calculatedPosition->x = sprite->viewSpacePosition.x - scaledWidth;
     }
-    if (((arg1->renderingFlags >> 5) & (1 | 2)) == 1) {
-        arg0->y = arg1->shrink.y + scaledHeight;
+    if (((sprite->renderingFlags >> 5) & 3) == 1) {
+        calculatedPosition->y = sprite->viewSpacePosition.y + scaledHeight;
     }
-    if (((arg1->renderingFlags >> 5) & (1 | 2)) == 3) {
-        arg0->y = arg1->shrink.y - scaledHeight;
+    if (((sprite->renderingFlags >> 5) & 3) == 3) {
+        calculatedPosition->y = sprite->viewSpacePosition.y - scaledHeight;
     }
 
 }
@@ -626,7 +626,7 @@ static void processBitmapSceneNode(BitmapObject* sprite, Gfx *dl) {
     u16 spriteIndex; 
 
     // adjust scaling if needed
-    func_8002A530(&vec, sprite);
+    calculateSceneNodePosition(&vec, sprite);
 
     spriteIndex = addSceneNode(dl, (sprite->flags & (0x8 | 0x10 | 0x20 | 0x40)) | 0x80);
 

@@ -34,4 +34,9 @@ typedef struct {
     u32 romAddrEnd;
 } Addresses;
 
+typedef union {
+    u8 byte[2];
+    u16 halfword;
+} Swap16;
+
 #endif

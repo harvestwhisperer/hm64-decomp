@@ -3,12 +3,12 @@
 
 #include "common.h"
 
-#define MAX_SCENE_NODES 0x150
+#define MAX_SCENE_NODES 336
 
 #define ACTIVE 1
 #define UPDATE_SCALE 0x10
 #define UPDATE_ROTATION 0x20
-// 0x40 don't update translation based on rotation
+#define TRANSFORM_EXEMPT 0x40
 // 0x80 = bump up z value
 
 typedef struct {

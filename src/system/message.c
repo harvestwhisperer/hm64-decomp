@@ -69,9 +69,9 @@ void func_8003D970(void) {
         dialogueBoxes[i].fontContext.unk_60 = 0;
         dialogueBoxes[i].fontContext.unk_61 = 0;
 
-        dialogueBoxes[i].shrink.x = 0;
-        dialogueBoxes[i].shrink.y = 0;
-        dialogueBoxes[i].shrink.z = 0;
+        dialogueBoxes[i].viewSpacePosition.x = 0;
+        dialogueBoxes[i].viewSpacePosition.y = 0;
+        dialogueBoxes[i].viewSpacePosition.z = 0;
 
         dialogueBoxes[i].unk_92 = 0;
         dialogueBoxes[i].unk_93 = 0;
@@ -253,7 +253,7 @@ bool initializeDialogueBox(u16 dialogueBoxIndex, u16 dialogueInfoIndex, u16 dial
                 func_8002C680(dialogueWindows[dialogueBoxes[dialogueBoxIndex].dialogueWindowIndex].spriteIndex, 2, 2);
                 setSpriteRenderingLayer(dialogueWindows[dialogueBoxes[dialogueBoxIndex].dialogueWindowIndex].spriteIndex, (1 | 2));
                 startSpriteAnimation(dialogueWindows[dialogueBoxes[dialogueBoxIndex].dialogueWindowIndex].spriteIndex, dialogueWindows[dialogueBoxes[dialogueBoxIndex].dialogueWindowIndex].spriteOffset, dialogueWindows[dialogueBoxes[dialogueBoxIndex].dialogueWindowIndex].flag);
-                setSpriteShrinkFactor(dialogueWindows[dialogueBoxes[dialogueBoxIndex].dialogueWindowIndex].spriteIndex, dialogueBoxes[dialogueBoxIndex].shrink.x + dialogueWindows[dialogueBoxes[dialogueBoxIndex].dialogueWindowIndex].coordinates.x, dialogueBoxes[dialogueBoxIndex].shrink.y + dialogueWindows[dialogueBoxes[dialogueBoxIndex].dialogueWindowIndex].coordinates.y, (dialogueBoxes[dialogueBoxIndex].shrink.z + dialogueWindows[dialogueBoxes[dialogueBoxIndex].dialogueWindowIndex].coordinates.z) - 2.0f);
+                setSpriteViewSpacePosition(dialogueWindows[dialogueBoxes[dialogueBoxIndex].dialogueWindowIndex].spriteIndex, dialogueBoxes[dialogueBoxIndex].viewSpacePosition.x + dialogueWindows[dialogueBoxes[dialogueBoxIndex].dialogueWindowIndex].coordinates.x, dialogueBoxes[dialogueBoxIndex].viewSpacePosition.y + dialogueWindows[dialogueBoxes[dialogueBoxIndex].dialogueWindowIndex].coordinates.y, (dialogueBoxes[dialogueBoxIndex].viewSpacePosition.z + dialogueWindows[dialogueBoxes[dialogueBoxIndex].dialogueWindowIndex].coordinates.z) - 2.0f);
             
             }
 
@@ -467,9 +467,9 @@ bool func_8003F54C(u16 index, f32 x, f32 y, f32 z) {
 
         if (dialogueBoxes[index].flags & ACTIVE) {
             
-            dialogueBoxes[index].shrink.x = x;
-            dialogueBoxes[index].shrink.y = y;
-            dialogueBoxes[index].shrink.z = z;
+            dialogueBoxes[index].viewSpacePosition.x = x;
+            dialogueBoxes[index].viewSpacePosition.y = y;
+            dialogueBoxes[index].viewSpacePosition.z = z;
             
             result = TRUE;
 
@@ -647,8 +647,8 @@ bool func_8003FA1C(u16 index, u16 arg1, u32 romTextureStart, u32 romTextureEnd,
     u32 romAssetsIndexStart, u32 romAssetsIndexEnd, 
     u32 romSpritesheetIndexStart, u32 romSpritesheetIndexEnd, 
     void* vaddrTexture, void* vaddrTexture2, 
-    void* vaddrPalette, void* vaddrUnknownAsset, 
-    void* vaddrUnknownAsset2, void* vaddrSpritesheetIndex, 
+    void* vaddrPalette, void* vaddrAnimation, 
+    void* vaddrSpriteToPalette, void* vaddrSpritesheetIndex, 
     f32 x, f32 y, f32 z) {
 
     bool result = FALSE;
@@ -665,8 +665,8 @@ bool func_8003FA1C(u16 index, u16 arg1, u32 romTextureStart, u32 romTextureEnd,
         characterAvatars[index].vaddrTexture = vaddrTexture;
         characterAvatars[index].vaddrSpritesheet = vaddrTexture2;
         characterAvatars[index].vaddrPalette = vaddrPalette;
-        characterAvatars[index].vaddrAnimation = vaddrUnknownAsset;
-        characterAvatars[index].vaddrSpriteToPalette = vaddrUnknownAsset2;
+        characterAvatars[index].vaddrAnimation = vaddrAnimation;
+        characterAvatars[index].vaddrSpriteToPalette = vaddrSpriteToPalette;
         characterAvatars[index].vaddrSpritesheetIndex = vaddrSpritesheetIndex;
 
         characterAvatars[index].spriteIndex = arg1;
@@ -1335,11 +1335,11 @@ Gfx* func_80041CD8(Gfx* dl, DialogueBox* dialogueBox) {
 
     ulx = dialogueBox->fontContext.unk_60 / 2;
 
-    ulx = (((dialogueBox->shrink.x + 160.0f) - ulx) - ((dialogueBox->unk_92* dialogueBox->fontContext.unk_60) / 2) + ulx) - ((dialogueBox->unk_92* dialogueBox->currentLine) / 2);
+    ulx = (((dialogueBox->viewSpacePosition.x + 160.0f) - ulx) - ((dialogueBox->unk_92* dialogueBox->fontContext.unk_60) / 2) + ulx) - ((dialogueBox->unk_92* dialogueBox->currentLine) / 2);
 
     uly = dialogueBox->fontContext.unk_61 / 2;
     
-    uly = ((((120.0f - dialogueBox->shrink.y) - uly) - ((dialogueBox->unk_93 * dialogueBox->fontContext.unk_61) / 2)) + uly) - ((dialogueBox->unk_93 * dialogueBox->unk_9C) / 2);
+    uly = ((((120.0f - dialogueBox->viewSpacePosition.y) - uly) - ((dialogueBox->unk_93 * dialogueBox->fontContext.unk_61) / 2)) + uly) - ((dialogueBox->unk_93 * dialogueBox->unk_9C) / 2);
 
     gDPSetScissor(&tempDl, G_SC_NON_INTERLACE, ulx, uly, 
         ulx + (dialogueBox->unk_92 * dialogueBox->fontContext.unk_60) + (dialogueBox->unk_92 * dialogueBox->currentLine), 

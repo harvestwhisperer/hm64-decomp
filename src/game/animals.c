@@ -4,8 +4,8 @@
 
 #include "system/entity.h"
 #include "system/graphic.h"
-#include "system/mathUtils.h"
-#include "system/mapContext.h"
+#include "system/math.h"
+#include "system/mapController.h"
 #include "system/message.h"
 
 #include "game/game.h"
@@ -120,7 +120,7 @@ void func_80085F70(void) {
         deactivateEntity(dogInfo.entityIndex);
     }
 
-    dogInfo.speed = 0;
+    dogInfo.unk_17 = 0;
     dogInfo.unk_1A = 0;
     dogInfo.flags &= ~4;
 
@@ -152,7 +152,7 @@ void func_80085F70(void) {
         deactivateEntity(horseInfo.entityIndex);
     }
 
-    horseInfo.speed = 0;
+    horseInfo.unk_17 = 0;
     horseInfo.unk_1A = 0;
     horseInfo.flags &= ~4;
 
@@ -760,10 +760,10 @@ void initializeDog(void) {
 
     dogInfo.location = FARM;
     dogInfo.coordinates.y = 0.0f;
-    dogInfo.speed = 0;
+    dogInfo.unk_17 = 0;
     dogInfo.direction = NORTH;
     dogInfo.affection = 0; 
-    dogInfo.unk_19 = 0;
+    dogInfo.speed = 0;
     dogInfo.unk_1A = 0;
     dogInfo.unk_1B = 0;
     dogInfo.flags = 1;
@@ -778,9 +778,9 @@ void initializeHorse(void) {
     
     horseInfo.location = FARM;
     horseInfo.coordinates.y = 0.0f;
-    horseInfo.speed = 0;
+    horseInfo.unk_17 = 0;
     horseInfo.direction = NORTH;
-    horseInfo.unk_19 = 0;
+    horseInfo.speed = 0;
     horseInfo.unk_1A = 0;
     horseInfo.unk_1B = 0;
     horseInfo.grown = 0;
@@ -966,15 +966,15 @@ void func_8008B1B8(void) {
         
         dogInfo.entityIndex = 1;
         
-        loadEntity(1, 0x40, 1);
-        func_8003019C(dogInfo.entityIndex, 1);
-        func_80030054(dogInfo.entityIndex, 1);
-        func_8002FF38(dogInfo.entityIndex, 0);
+        loadEntity(1, 0x40, TRUE);
+        setEntityCollidable(dogInfo.entityIndex, TRUE);
+        setEntityYMovement(dogInfo.entityIndex, TRUE);
+        func_8002FF38(dogInfo.entityIndex, FALSE);
         
-        setEntityDirection(dogInfo.entityIndex, convertSpriteToMapDirection(dogInfo.direction, MAIN_MAP_INDEX));
+        setEntityDirection(dogInfo.entityIndex, convertSpriteToWorldDirection(dogInfo.direction, MAIN_MAP_INDEX));
         setEntityCoordinates(dogInfo.entityIndex, dogInfo.coordinates.x, dogInfo.coordinates.y, dogInfo.coordinates.z);
         
-        dogInfo.speed = 0;
+        dogInfo.unk_17 = 0;
         dogInfo.unk_1A = 0;
         dogInfo.flags |= 4;
         
@@ -996,17 +996,17 @@ void func_8008B2E8(u8 chickenIndex) {
 
             case 2:
                 initializeAnimalEntity(chickenIndex + 2, (void*)0x80275E00, (void*)0x80275F00, (void*)0x80276700, (void*)0x80276800);
-                loadEntity(gChickens[chickenIndex].entityIndex, 0x44, 1);
+                loadEntity(gChickens[chickenIndex].entityIndex, 0x44, TRUE);
                 break;         
             
             case 1:
                 initializeAnimalEntity(chickenIndex + 2, (void*)0x80276B00, (void*)0x80276C00, (void*)0x80277000, (void*)0x80277100);
-                loadEntity(gChickens[chickenIndex].entityIndex, 0x43, 1);
+                loadEntity(gChickens[chickenIndex].entityIndex, 0x43, TRUE);
                 break;
             
             case 0:
                 initializeAnimalEntity(chickenIndex + 2, (void*)0x8028DD50, (void*)0x80290550, (void*)0x80293A50, (void*)0x80293C50);
-                loadEntity(gChickens[chickenIndex].entityIndex, 0x5D, 1);
+                loadEntity(gChickens[chickenIndex].entityIndex, 0x5D, TRUE);
                 break;
             
             default:
@@ -1014,11 +1014,11 @@ void func_8008B2E8(u8 chickenIndex) {
             
         }
 
-        func_8003019C(gChickens[chickenIndex].entityIndex, 1);
-        func_80030054(gChickens[chickenIndex].entityIndex, 1);
+        setEntityCollidable(gChickens[chickenIndex].entityIndex, TRUE);
+        setEntityYMovement(gChickens[chickenIndex].entityIndex, TRUE);
         func_8002FF38(gChickens[chickenIndex].entityIndex, 0);
 
-        setEntityDirection(gChickens[chickenIndex].entityIndex, convertSpriteToMapDirection(gChickens[chickenIndex].direction, MAIN_MAP_INDEX));        
+        setEntityDirection(gChickens[chickenIndex].entityIndex, convertSpriteToWorldDirection(gChickens[chickenIndex].direction, MAIN_MAP_INDEX));        
         setEntityCoordinates(gChickens[chickenIndex].entityIndex, gChickens[chickenIndex].coordinates.x, gChickens[chickenIndex].coordinates.y, gChickens[chickenIndex].coordinates.z);
         
         gChickens[chickenIndex].unk_17 = 0;
@@ -1056,9 +1056,9 @@ void updateDog(void) {
             
         }
         
-        setEntityDirection(dogInfo.entityIndex, convertSpriteToMapDirection(dogInfo.direction, MAIN_MAP_INDEX));
-        vec = getMovementVectorFromDirection(dogInfo.unk_19, dogInfo.direction, 0.0f);
-        func_8002FE10(dogInfo.entityIndex, vec.x, vec.y, vec.z, dogInfo.unk_19);
+        setEntityDirection(dogInfo.entityIndex, convertSpriteToWorldDirection(dogInfo.direction, MAIN_MAP_INDEX));
+        vec = getMovementVectorFromDirection(dogInfo.speed, dogInfo.direction, 0.0f);
+        setEntityMovementVector(dogInfo.entityIndex, vec.x, vec.y, vec.z, dogInfo.speed);
 
     } 
     
@@ -3443,9 +3443,9 @@ void updateHorse(void) {
             
         }
         
-        setEntityDirection(horseInfo.entityIndex, convertSpriteToMapDirection(horseInfo.direction, MAIN_MAP_INDEX));
-        vec = getMovementVectorFromDirection(horseInfo.unk_19, horseInfo.direction, 0.0f);
-        func_8002FE10(horseInfo.entityIndex, vec.x, vec.y, vec.z, horseInfo.unk_19);
+        setEntityDirection(horseInfo.entityIndex, convertSpriteToWorldDirection(horseInfo.direction, MAIN_MAP_INDEX));
+        vec = getMovementVectorFromDirection(horseInfo.speed, horseInfo.direction, 0.0f);
+        setEntityMovementVector(horseInfo.entityIndex, vec.x, vec.y, vec.z, horseInfo.speed);
 
     } 
 }
@@ -3457,11 +3457,11 @@ void updateHorseGrown(void) {
     u16 tempDirection;
     u16 temp;
     
-    switch (horseInfo.speed) {
+    switch (horseInfo.unk_17) {
 
         case 0:
             
-            horseInfo.unk_19 = 0;
+            horseInfo.speed = 0;
             horseInfo.unk_1A = 0;
             horseInfo.unk_1B = 0;
             
@@ -3470,13 +3470,13 @@ void updateHorseGrown(void) {
             if (horseInfo.flags & 0x10) {
 
                 horseInfo.direction = calculateAnimalDirectionToPlayer(entities[horseInfo.entityIndex].coordinates.x, entities[horseInfo.entityIndex].coordinates.z, entities[PLAYER].coordinates.x, entities[PLAYER].coordinates.z);
-                horseInfo.speed = 4;
+                horseInfo.unk_17 = 4;
                 
             } else {
 
                 if (getRandomNumberInRange(0, 60) < 40)  {
                     
-                    horseInfo.speed = 0;
+                    horseInfo.unk_17 = 0;
                     
                 } else {
                         
@@ -3489,27 +3489,27 @@ void updateHorseGrown(void) {
                     temp = getRandomNumberInRange(0, 5);
 
                     if (temp == 0) {
-                        horseInfo.speed = 1;
+                        horseInfo.unk_17 = 1;
                     }
                     
                     if (temp == 1) {
-                        horseInfo.speed = 2;
+                        horseInfo.unk_17 = 2;
                     }
 
                     if (temp == 2) {
-                        horseInfo.speed = 3;
+                        horseInfo.unk_17 = 3;
                     }
 
                     if (temp == 3) {
-                        horseInfo.speed = 4;
+                        horseInfo.unk_17 = 4;
                     }
 
                     if (temp == 4) {
-                        horseInfo.speed = 5;
+                        horseInfo.unk_17 = 5;
                     }
 
                     if (temp == 5) {
-                        horseInfo.speed = 6;
+                        horseInfo.unk_17 = 6;
                     }
                     
                 }
@@ -3521,16 +3521,16 @@ void updateHorseGrown(void) {
 
         case 1:
 
-            horseInfo.unk_19 = 1;
+            horseInfo.speed = 1;
             horseInfo.unk_1A = 0;
             horseInfo.unk_1B = 0;
             
             setEntityAnimationWithDirectionChange(horseInfo.entityIndex, 8);
             
             if (getRandomNumberInRange(0, 20) < 10) {
-                horseInfo.speed = 1;
+                horseInfo.unk_17 = 1;
             } else {
-                horseInfo.speed = 0;
+                horseInfo.unk_17 = 0;
             }
 
             horseInfo.flags |= 2;
@@ -3538,16 +3538,16 @@ void updateHorseGrown(void) {
 
         case 2:
 
-            horseInfo.unk_19 = 0;
+            horseInfo.speed = 0;
             horseInfo.unk_1A = 0;
             horseInfo.unk_1B = 0;
             
             setEntityAnimationWithDirectionChange(horseInfo.entityIndex, 0x20U);
 
             if (getRandomNumberInRange(0, 2) == 0) {
-                horseInfo.speed = 2;
+                horseInfo.unk_17 = 2;
             } else {   
-                horseInfo.speed = 0;    
+                horseInfo.unk_17 = 0;    
             }       
             
             horseInfo.flags |= 2;
@@ -3555,20 +3555,20 @@ void updateHorseGrown(void) {
 
         case 3:
 
-            horseInfo.unk_19 = 0;
+            horseInfo.speed = 0;
             horseInfo.unk_1A = 0;
             horseInfo.unk_1B = 0;
             
             setEntityAnimationWithDirectionChange(horseInfo.entityIndex, 0x18);
             
-            horseInfo.speed = 7;
+            horseInfo.unk_17 = 7;
             horseInfo.flags |= 2;
             
             break;
 
         case 4:
 
-            horseInfo.unk_19 = 2;
+            horseInfo.speed = 2;
             horseInfo.unk_1A = 0;
             horseInfo.unk_1B = 0;
             
@@ -3585,9 +3585,9 @@ void updateHorseGrown(void) {
             } else {
                 
                 if (getRandomNumberInRange(0, 19) < 10) {
-                    horseInfo.speed = 4;
+                    horseInfo.unk_17 = 4;
                 } else {                
-                    horseInfo.speed = 0;    
+                    horseInfo.unk_17 = 0;    
                 }
                 
             }
@@ -3597,16 +3597,16 @@ void updateHorseGrown(void) {
 
         case 5:
 
-            horseInfo.unk_19 = 0;
+            horseInfo.speed = 0;
             horseInfo.unk_1A = 0;
             horseInfo.unk_1B = 0;
             
             setEntityAnimationWithDirectionChange(horseInfo.entityIndex, 0x48);
 
             if (getRandomNumberInRange(0, 2) == 0) {
-                horseInfo.speed = 5;
+                horseInfo.unk_17 = 5;
             } else {   
-                horseInfo.speed = 0;    
+                horseInfo.unk_17 = 0;    
             }
            
             horseInfo.flags |= 2;
@@ -3614,16 +3614,16 @@ void updateHorseGrown(void) {
 
         case 6:
 
-            horseInfo.unk_19 = 0;
+            horseInfo.speed = 0;
             horseInfo.unk_1A = 0;
             horseInfo.unk_1B = 0;
             
             setEntityAnimationWithDirectionChange(horseInfo.entityIndex, 0x50);
 
             if (getRandomNumberInRange(0, 2) == 0) {
-                horseInfo.speed = 6;
+                horseInfo.unk_17 = 6;
             } else {
-                horseInfo.speed = 0;    
+                horseInfo.unk_17 = 0;    
             }
            
             horseInfo.flags |= 2;
@@ -3631,16 +3631,16 @@ void updateHorseGrown(void) {
 
         case 7:
 
-            horseInfo.unk_19 = 0;
+            horseInfo.speed = 0;
             horseInfo.unk_1A = 0;
             horseInfo.unk_1B = 0;
             
             setEntityAnimationWithDirectionChange(horseInfo.entityIndex, 0x28);
 
             if (getRandomNumberInRange(0, 2) == 0) {
-                horseInfo.speed = 7;
+                horseInfo.unk_17 = 7;
             } else {
-                horseInfo.speed = 0;    
+                horseInfo.unk_17 = 0;    
             }
            
             horseInfo.flags |= 2;
@@ -3648,16 +3648,16 @@ void updateHorseGrown(void) {
 
         case 8:
             
-            horseInfo.unk_19 = 0;
+            horseInfo.speed = 0;
             horseInfo.unk_1A = 0;
             horseInfo.unk_1B = 0;
             
             setEntityAnimationWithDirectionChange(horseInfo.entityIndex, 0x30);
 
             if (getRandomNumberInRange(0, 2) == 0) {
-                horseInfo.speed = 8;
+                horseInfo.unk_17 = 8;
             } else {
-                horseInfo.speed = 0;    
+                horseInfo.unk_17 = 0;    
             }
            
             horseInfo.flags |= 2;
@@ -3666,7 +3666,7 @@ void updateHorseGrown(void) {
         
         case 16:
             
-            horseInfo.unk_19 = 0;
+            horseInfo.speed = 0;
             horseInfo.unk_1A = 0;
             horseInfo.unk_1B = 0;
             
@@ -3679,13 +3679,13 @@ void updateHorseGrown(void) {
 
         case 17:
 
-            horseInfo.unk_19 = 0;
+            horseInfo.speed = 0;
             horseInfo.unk_1A = 0;
             horseInfo.unk_1B = 0;
             
             setEntityAnimationWithDirectionChange(horseInfo.entityIndex, 0x48);
             
-            horseInfo.speed = 0;
+            horseInfo.unk_17 = 0;
             horseInfo.flags |= (0x2 | 0x80); 
             horseInfo.flags &= ~(0x40);
             
@@ -3695,13 +3695,13 @@ void updateHorseGrown(void) {
 
         case 18:
 
-            horseInfo.unk_19 = 0;
+            horseInfo.speed = 0;
             horseInfo.unk_1A = 0;
             horseInfo.unk_1B = 0;
             
             setEntityAnimationWithDirectionChange(horseInfo.entityIndex, 0);
             
-            horseInfo.speed = 0;
+            horseInfo.unk_17 = 0;
             horseInfo.flags |= (0x2 | 0x80); 
             horseInfo.flags &= ~(0x40);
             
@@ -3723,11 +3723,11 @@ void updateHorseNotGrown(void) {
     u16 tempDirection;
     u16 temp;
     
-    switch (horseInfo.speed) {
+    switch (horseInfo.unk_17) {
 
         case 0:
             
-            horseInfo.unk_19 = 0;
+            horseInfo.speed = 0;
             horseInfo.unk_1A = 0;
             horseInfo.unk_1B = 0;
             
@@ -3736,13 +3736,13 @@ void updateHorseNotGrown(void) {
             if (horseInfo.flags & 0x10) {
 
                 horseInfo.direction = calculateAnimalDirectionToPlayer(entities[horseInfo.entityIndex].coordinates.x, entities[horseInfo.entityIndex].coordinates.z, entities[PLAYER].coordinates.x, entities[PLAYER].coordinates.z);
-                horseInfo.speed = 4;
+                horseInfo.unk_17 = 4;
                 
             } else {
 
                 if (getRandomNumberInRange(0, 60) < 40)  {
                     
-                    horseInfo.speed = 0;
+                    horseInfo.unk_17 = 0;
                     
                 } else {
                         
@@ -3755,23 +3755,23 @@ void updateHorseNotGrown(void) {
                     temp = getRandomNumberInRange(0, 5);
 
                     if (temp == 0) {
-                        horseInfo.speed = 1;
+                        horseInfo.unk_17 = 1;
                     }
                     
                     if (temp == 1) {
-                        horseInfo.speed = 2;
+                        horseInfo.unk_17 = 2;
                     }
 
                     if (temp == 2) {
-                        horseInfo.speed = 3;
+                        horseInfo.unk_17 = 3;
                     }
 
                     if (temp == 3) {
-                        horseInfo.speed = 4;
+                        horseInfo.unk_17 = 4;
                     }
 
                     if (temp == 4) {
-                        horseInfo.speed = 5;
+                        horseInfo.unk_17 = 5;
                     }
                     
                 }
@@ -3783,16 +3783,16 @@ void updateHorseNotGrown(void) {
 
         case 1:
 
-            horseInfo.unk_19 = 1;
+            horseInfo.speed = 1;
             horseInfo.unk_1A = 0;
             horseInfo.unk_1B = 0;
             
             setEntityAnimationWithDirectionChange(horseInfo.entityIndex, 8);
             
             if (getRandomNumberInRange(0, 20) < 10) {
-                horseInfo.speed = 1;
+                horseInfo.unk_17 = 1;
             } else {
-                horseInfo.speed = 0;
+                horseInfo.unk_17 = 0;
             }
 
             horseInfo.flags |= 2;
@@ -3800,16 +3800,16 @@ void updateHorseNotGrown(void) {
 
         case 2:
 
-            horseInfo.unk_19 = 0;
+            horseInfo.speed = 0;
             horseInfo.unk_1A = 0;
             horseInfo.unk_1B = 0;
             
             setEntityAnimationWithDirectionChange(horseInfo.entityIndex, 0x20U);
 
             if (getRandomNumberInRange(0, 2) == 0) {
-                horseInfo.speed = 2;
+                horseInfo.unk_17 = 2;
             } else {   
-                horseInfo.speed = 0;    
+                horseInfo.unk_17 = 0;    
             }       
             
             horseInfo.flags |= 2;
@@ -3817,20 +3817,20 @@ void updateHorseNotGrown(void) {
 
         case 3:
 
-            horseInfo.unk_19 = 0;
+            horseInfo.speed = 0;
             horseInfo.unk_1A = 0;
             horseInfo.unk_1B = 0;
             
             setEntityAnimationWithDirectionChange(horseInfo.entityIndex, 0x18);
             
-            horseInfo.speed = 6;
+            horseInfo.unk_17 = 6;
             horseInfo.flags |= 2;
             
             break;
 
         case 4:
 
-            horseInfo.unk_19 = 2;
+            horseInfo.speed = 2;
             horseInfo.unk_1A = 0;
             horseInfo.unk_1B = 0;
             
@@ -3847,9 +3847,9 @@ void updateHorseNotGrown(void) {
             } else {
                 
                 if (getRandomNumberInRange(0, 2) == 0) {
-                    horseInfo.speed = 4;
+                    horseInfo.unk_17 = 4;
                 } else {                
-                    horseInfo.speed = 0;    
+                    horseInfo.unk_17 = 0;    
                 }
                 
             }
@@ -3859,16 +3859,16 @@ void updateHorseNotGrown(void) {
 
         case 5:
 
-            horseInfo.unk_19 = 0;
+            horseInfo.speed = 0;
             horseInfo.unk_1A = 0;
             horseInfo.unk_1B = 0;
             
             setEntityAnimationWithDirectionChange(horseInfo.entityIndex, 0x30);
 
             if (getRandomNumberInRange(0, 2) == 0) {
-                horseInfo.speed = 5;
+                horseInfo.unk_17 = 5;
             } else {   
-                horseInfo.speed = 0;    
+                horseInfo.unk_17 = 0;    
             }
            
             horseInfo.flags |= 2;
@@ -3876,16 +3876,16 @@ void updateHorseNotGrown(void) {
 
         case 6:
 
-            horseInfo.unk_19 = 0;
+            horseInfo.speed = 0;
             horseInfo.unk_1A = 0;
             horseInfo.unk_1B = 0;
             
             setEntityAnimationWithDirectionChange(horseInfo.entityIndex, 0x28);
 
             if (getRandomNumberInRange(0, 2) == 0) {
-                horseInfo.speed = 6;
+                horseInfo.unk_17 = 6;
             } else {
-                horseInfo.speed = 0;    
+                horseInfo.unk_17 = 0;    
             }
            
             horseInfo.flags |= 2;
@@ -3893,7 +3893,7 @@ void updateHorseNotGrown(void) {
         
         case 16:
             
-            horseInfo.unk_19 = 0;
+            horseInfo.speed = 0;
             horseInfo.unk_1A = 0;
             horseInfo.unk_1B = 0;
             
@@ -3906,13 +3906,13 @@ void updateHorseNotGrown(void) {
 
         case 17:
 
-            horseInfo.unk_19 = 0;
+            horseInfo.speed = 0;
             horseInfo.unk_1A = 0;
             horseInfo.unk_1B = 0;
             
             setEntityAnimationWithDirectionChange(horseInfo.entityIndex, 0x30);
             
-            horseInfo.speed = 0;
+            horseInfo.unk_17 = 0;
             horseInfo.flags |= (0x2 | 0x80); 
             horseInfo.flags &= ~(0x40);
             
@@ -3922,13 +3922,13 @@ void updateHorseNotGrown(void) {
 
         case 18:
 
-            horseInfo.unk_19 = 0;
+            horseInfo.speed = 0;
             horseInfo.unk_1A = 0;
             horseInfo.unk_1B = 0;
             
             setEntityAnimationWithDirectionChange(horseInfo.entityIndex, 0);
             
-            horseInfo.speed = 0;
+            horseInfo.unk_17 = 0;
             horseInfo.flags |= (0x2 | 0x80); 
             horseInfo.flags &= ~(0x40);
             
@@ -4028,13 +4028,13 @@ void func_8009476C(u8 index) {
             }
 
         }
-        
-        setEntityDirection(gChickenEggs[index].entityIndex, (gChickenEggs[index].direction + 8 - getCurrentMapRotation(MAIN_MAP_INDEX)) % 8);
+         
+        setEntityDirection(gChickenEggs[index].entityIndex, convertSpriteToWorldDirection(gChickenEggs[index].direction, MAIN_MAP_INDEX));
         
         vec = getMovementVectorFromDirection(gChickenEggs[index].zDisplacement, gChickenEggs[index].direction, 0.0f);
         vec.y = gChickenEggs[index].yDisplacement;
         
-        func_8002FE10(gChickenEggs[index].entityIndex, vec.x, vec.y, vec.z, gChickenEggs[index].zDisplacement);
+        setEntityMovementVector(gChickenEggs[index].entityIndex, vec.x, vec.y, vec.z, gChickenEggs[index].zDisplacement);
         
     }
     
@@ -4077,10 +4077,10 @@ void func_80099424(u8 index) {
         case 0:
         case 1:
 
-            func_8003019C(gChickenEggs[index].entityIndex, 0);
-            func_80030240(gChickenEggs[index].entityIndex, 0);
+            setEntityCollidable(gChickenEggs[index].entityIndex, FALSE);
+            setEntityTracksCollisions(gChickenEggs[index].entityIndex, FALSE);
     
-            entities[gChickenEggs[index].entityIndex].unk_64 = 0x20;
+            entities[gChickenEggs[index].entityIndex].yOffset = 0x20;
     
             gChickenEggs[index].zDisplacement = 1;
             gChickenEggs[index].unk_13 = 0;
@@ -4142,7 +4142,7 @@ void func_800995F8(u8 index) {
 
             setEntityAnimation(gChickenEggs[index].entityIndex, 0);
 
-            entities[gChickenEggs[index].entityIndex].unk_64 = 0x40;
+            entities[gChickenEggs[index].entityIndex].yOffset = 0x40;
 
             gChickenEggs[index].flags |= 2;
 
@@ -4156,13 +4156,13 @@ void func_800995F8(u8 index) {
         
         case 1:
 
-            func_8003019C(gChickenEggs[index].entityIndex, 0);
-            func_80030240(gChickenEggs[index].entityIndex, 0);
-            func_800302E4(gChickenEggs[index].entityIndex, 0);
-            func_80030054(gChickenEggs[index].entityIndex, 0);
+            setEntityCollidable(gChickenEggs[index].entityIndex, FALSE);
+            setEntityTracksCollisions(gChickenEggs[index].entityIndex, FALSE);
+            enableEntityMovement(gChickenEggs[index].entityIndex, FALSE);
+            setEntityYMovement(gChickenEggs[index].entityIndex, FALSE);
             setEntityShadow(gChickenEggs[index].entityIndex, 0xFF);
 
-            entities[gChickenEggs[index].entityIndex].unk_64 = 0;
+            entities[gChickenEggs[index].entityIndex].yOffset = 0;
 
             setEntityAnimation(gChickenEggs[index].entityIndex, 2);
 
@@ -4199,13 +4199,13 @@ void func_80099804(u8 index) {
         
         case 1:
 
-            func_8003019C(gChickenEggs[index].entityIndex, 0);
-            func_80030240(gChickenEggs[index].entityIndex, 0);
-            func_800302E4(gChickenEggs[index].entityIndex, 0);
-            func_80030054(gChickenEggs[index].entityIndex, 0);
+            setEntityCollidable(gChickenEggs[index].entityIndex, FALSE);
+            setEntityTracksCollisions(gChickenEggs[index].entityIndex, FALSE);
+            enableEntityMovement(gChickenEggs[index].entityIndex, FALSE);
+            setEntityYMovement(gChickenEggs[index].entityIndex, FALSE);
             setEntityShadow(gChickenEggs[index].entityIndex, 0xFF);
 
-            entities[gChickenEggs[index].entityIndex].unk_64 = 0;
+            entities[gChickenEggs[index].entityIndex].yOffset = 0;
 
             setEntityAnimation(gChickenEggs[index].entityIndex, 4);
 
@@ -4242,13 +4242,13 @@ void func_800999B0(u8 index) {
         
         case 1:
 
-            func_8003019C(gChickenEggs[index].entityIndex, 0);
-            func_80030240(gChickenEggs[index].entityIndex, 0);
-            func_800302E4(gChickenEggs[index].entityIndex, 0);
-            func_80030054(gChickenEggs[index].entityIndex, 0);
+            setEntityCollidable(gChickenEggs[index].entityIndex, FALSE);
+            setEntityTracksCollisions(gChickenEggs[index].entityIndex, FALSE);
+            enableEntityMovement(gChickenEggs[index].entityIndex, FALSE);
+            setEntityYMovement(gChickenEggs[index].entityIndex, FALSE);
             setEntityShadow(gChickenEggs[index].entityIndex, 0xFF);
 
-            entities[gChickenEggs[index].entityIndex].unk_64 = 0;
+            entities[gChickenEggs[index].entityIndex].yOffset = 0;
 
             setEntityAnimation(gChickenEggs[index].entityIndex, 4);
 
@@ -4276,10 +4276,10 @@ void func_80099B5C(u8 index) {
         case 0:
         case 1:
 
-            func_8003019C(gChickenEggs[index].entityIndex, 0);
-            func_80030240(gChickenEggs[index].entityIndex, 0);
+            setEntityCollidable(gChickenEggs[index].entityIndex, FALSE);
+            setEntityTracksCollisions(gChickenEggs[index].entityIndex, FALSE);
                         
-            entities[gChickenEggs[index].entityIndex].unk_64 = 0x20;
+            entities[gChickenEggs[index].entityIndex].yOffset = 0x20;
 
             gChickenEggs[index].zDisplacement = 1;
             gChickenEggs[index].unk_13 = 0;
@@ -4342,28 +4342,28 @@ void func_80099C94(u8 index) {
     
 }
 
-#ifdef PERMUTER
+//INCLUDE_ASM("asm/nonmatchings/game/animals", func_80099DE8);
+
 void func_80099DE8(void) {
-
+    
+    u8 i = 0;
     bool set = FALSE;
-    u8 i;
 
-    func_800305CC(PLAYER, 0.0f, 8.0f, set);
-
-    for (i = 0; i < MAX_FARM_ANIMALS && set == FALSE; i++) {
-
-        if ((gFarmAnimals[i].flags & 4) && (entities[gFarmAnimals[i].entityIndex].unk_58 == 0)) {
+    func_800305CC(PLAYER, 0.0f, 8.0f, 0);
+    
+    do {
+        
+        if ((gFarmAnimals[i].flags & 4) && (entities[gFarmAnimals[i].entityIndex].entityCollidedWithIndex == 0)) {
             func_800861A4(2, i, 0xFF, 0xFF, 0x10);
             set = TRUE;
             gFarmAnimals[i].flags |= 0x8000; 
         }
         
-    }
-    
+        i++;
+        
+    } while (i < MAX_FARM_ANIMALS && set == FALSE);
+        
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game/animals", func_80099DE8);
-#endif
 
 INCLUDE_ASM("asm/nonmatchings/game/animals", func_80099EEC);
 
@@ -4373,8 +4373,8 @@ void func_80099FF0(void) {
 
     func_800305CC(PLAYER, 0.0f, 8.0f, 0);
     
-    if ((dogInfo.flags & 4) && (entities[dogInfo.entityIndex].unk_58 == 0)) {
-        dogInfo.speed = 0x20;
+    if ((dogInfo.flags & 4) && (entities[dogInfo.entityIndex].entityCollidedWithIndex == 0)) {
+        dogInfo.unk_17 = 0x20;
         dogInfo.flags |= 0x20;
     }
     
@@ -4390,9 +4390,9 @@ bool func_8009A074(void) {
     
     result = 0;
 
-    if ((horseInfo.flags & 4) && (entities[horseInfo.entityIndex].unk_58 == 0)) {
+    if ((horseInfo.flags & 4) && (entities[horseInfo.entityIndex].entityCollidedWithIndex == 0)) {
         result = 1;
-        horseInfo.speed = 0x10;
+        horseInfo.unk_17 = 0x10;
         horseInfo.flags |= 0x20;
     }
     
@@ -4406,9 +4406,9 @@ bool func_8009A100(void) {
     
     bool result = FALSE;
 
-    if ((horseInfo.flags & 4) && (horseInfo.grown == TRUE) && (entities[horseInfo.entityIndex].unk_58 == 0)) {
+    if ((horseInfo.flags & 4) && (horseInfo.grown == TRUE) && (entities[horseInfo.entityIndex].entityCollidedWithIndex == 0)) {
         
-        horseInfo.speed = 0x10;
+        horseInfo.unk_17 = 0x10;
         horseInfo.flags |=  0x20;
         result = TRUE;
         
@@ -4477,13 +4477,13 @@ bool func_8009A2D0(void) {
     
     if (horseInfo.flags & 4) {
 
-        if (horseInfo.speed == 0x10) {
+        if (horseInfo.unk_17 == 0x10) {
             
-            horseInfo.speed = 0;
+            horseInfo.unk_17 = 0;
             
             if (!(horseInfo.flags & 0x100)) {
                 
-                horseInfo.speed = 0x11;
+                horseInfo.unk_17 = 0x11;
                 
                 adjustHorseAffection(2);
             
@@ -4506,9 +4506,9 @@ bool func_8009A398(void) {
 
     bool result = FALSE;
     
-    if ((horseInfo.flags & 4) && (horseInfo.speed == 0x10)) {
+    if ((horseInfo.flags & 4) && (horseInfo.unk_17 == 0x10)) {
         
-        horseInfo.speed = 0;
+        horseInfo.unk_17 = 0;
         horseInfo.flags |= 0x20;
         func_8009BCC4(1, 0, 1);
         
@@ -4841,8 +4841,8 @@ void func_8009BCC4(u8 animalType, u8 animalIndex, u8 arg2) {
     // tools, holdable items, expression bubbles, field items
 
     deactivateEntity(0x30);
-    loadEntity(0x30, 0x5B, 1);
-    func_8002FF38(0x30, 0);
+    loadEntity(0x30, 0x5B, TRUE);
+    func_8002FF38(0x30, FALSE);
 
     switch (animalType) {
 
@@ -4871,13 +4871,13 @@ void func_8009BCC4(u8 animalType, u8 animalIndex, u8 arg2) {
         
     }
 
-    func_8003019C(0x30, 0);
-    func_80030054(0x30, 0);
-    func_80030240(0x30, 0);
-    func_800302E4(0x30, 0);
+    setEntityCollidable(0x30, 0);
+    setEntityYMovement(0x30, FALSE);
+    setEntityTracksCollisions(0x30, FALSE);
+    enableEntityMovement(0x30, FALSE);
 
     setEntityColor(0x30, mainMap[MAIN_MAP_INDEX].mapFloats.groundRgba.r, mainMap[MAIN_MAP_INDEX].mapFloats.groundRgba.g, mainMap[MAIN_MAP_INDEX].mapFloats.groundRgba.b, mainMap[MAIN_MAP_INDEX].mapFloats.groundRgba.a);
-    func_8002EDF0(0x30, 0, 0x30, 0);
+    setEntityAttachmentOffset(0x30, 0, 0x30, 0);
     setEntityAnimation(0x30, arg2);
     
 }

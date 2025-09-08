@@ -6,7 +6,7 @@
 
 #include "system/controller.h"
 #include "system/map.h"
-#include "system/mathUtils.h"
+#include "system/math.h"
 #include "system/message.h"
 #include "system/globalSprites.h"
 

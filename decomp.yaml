@@ -4,7 +4,7 @@ platform: n64
 build_system: make
 versions:
 - name: us
-  fullname: US
+  fullname: HM64
   sha1: 90631460f1876a14849df0541d534012b410a34c
   paths:
     target: "hm64.z64"

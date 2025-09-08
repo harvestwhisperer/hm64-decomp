@@ -2,13 +2,14 @@
 
 #include "game/npc.h"
 
+#include "system/controller.h"
 #include "system/dialogue.h"
 #include "system/entity.h"
 #include "system/graphic.h"
 #include "system/map.h"
-#include "system/mathUtils.h"
+#include "system/math.h"
 #include "system/message.h"
-#include "system/mapContext.h"
+#include "system/mapController.h"
 
 #include "game/game.h"
 #include "game/gameStatus.h"
@@ -18,7 +19,7 @@
 #include "game/weather.h"
 
 // bss
-npcInfo npcInfoArray[0x30];
+npcInfo npcs[0x30];
 
 u8 npcTalkingTo;
 u16 D_801FBE2E;  
@@ -143,15 +144,15 @@ void func_800752C0(void) {
 
     for (i = 0; i < TOTAL_NPCS; i++) {
         
-        if (npcInfoArray[i].flags & 4) {
-            deactivateEntity(npcInfoArray[i].entityIndex);
+        if (npcs[i].flags & 4) {
+            deactivateEntity(npcs[i].entityIndex);
         }
         
-        npcInfoArray[i].flags = 0;
-        npcInfoArray[i].movingFlag = 0;
-        npcInfoArray[i].unk_24 = 0;
-        npcInfoArray[i].unk_25 = 0;
-        npcInfoArray[i].unk_21 = 0;
+        npcs[i].flags = 0;
+        npcs[i].movingFlag = 0;
+        npcs[i].unk_24 = 0;
+        npcs[i].unk_25 = 0;
+        npcs[i].unk_21 = 0;
         
     }
 
@@ -167,66 +168,66 @@ u8 func_80075374(u8 npcIndex, int arg1) {
     // FIXME: doesn't seem right
     int temp = arg1;
 
-    if ((npcInfoArray[npcIndex].flags & 1) && npcInfoArray[npcIndex].levelIndex == gBaseMapIndex) {
+    if ((npcs[npcIndex].flags & 1) && npcs[npcIndex].levelIndex == gBaseMapIndex) {
         
-        npcInfoArray[npcIndex].flags |= 4;
+        npcs[npcIndex].flags |= 4;
 
         switch (npcIndex) {
             case MARIA:
                 if (checkLifeEventBit(MARRIED)) {
                     if (gWife == MARIA) {
-                        npcInfoArray[npcIndex].entityIndex = 0x23; 
+                        npcs[npcIndex].entityIndex = 0x23; 
                         break;
                     } 
                 } 
-                npcInfoArray[npcIndex].entityIndex = (u8)temp + 0x15;
+                npcs[npcIndex].entityIndex = (u8)temp + 0x15;
                 temp++;
                 break;
             case POPURI:
                 if (checkLifeEventBit(MARRIED)) {
                     if (gWife == POPURI) {
-                        npcInfoArray[npcIndex].entityIndex = 0x23;
+                        npcs[npcIndex].entityIndex = 0x23;
                         break;
                     } 
                 }
-                npcInfoArray[npcIndex].entityIndex = (u8)temp + 0x15;
+                npcs[npcIndex].entityIndex = (u8)temp + 0x15;
                 temp++;
                 break;
             case ELLI:
                 if (checkLifeEventBit(MARRIED)) {
                     if (gWife == ELLI) {
-                        npcInfoArray[npcIndex].entityIndex = 0x23;
+                        npcs[npcIndex].entityIndex = 0x23;
                         break;
                     } 
                 }
-                npcInfoArray[npcIndex].entityIndex = (u8)temp + 0x15;
+                npcs[npcIndex].entityIndex = (u8)temp + 0x15;
                 temp++;
                 break;
             case ANN:
                 if (checkLifeEventBit(MARRIED)) {
                     if (gWife == ANN) {
-                        npcInfoArray[npcIndex].entityIndex = 0x23;
+                        npcs[npcIndex].entityIndex = 0x23;
                         break;
                     } 
                 }
-                npcInfoArray[npcIndex].entityIndex = (u8)temp + 0x15;
+                npcs[npcIndex].entityIndex = (u8)temp + 0x15;
                 temp++;
                 break;
             case KAREN:
                 if (checkLifeEventBit(MARRIED)) {
                     if (gWife == KAREN) {
-                        npcInfoArray[npcIndex].entityIndex = 0x23;
+                        npcs[npcIndex].entityIndex = 0x23;
                         break;
                     } 
                 }
-                npcInfoArray[npcIndex].entityIndex = (u8)temp + 0x15;
+                npcs[npcIndex].entityIndex = (u8)temp + 0x15;
                 temp++;
                 break;
             case BABY:                               
-                npcInfoArray[npcIndex].entityIndex = 0x24;
+                npcs[npcIndex].entityIndex = 0x24;
                 break;
             case PHOTOGRAPHER:
-                npcInfoArray[npcIndex].entityIndex = 0x1D;
+                npcs[npcIndex].entityIndex = 0x1D;
                 break;
             case HARRIS:                                 
             case GRAY:                                 
@@ -262,55 +263,58 @@ u8 func_80075374(u8 npcIndex, int arg1) {
             case BARLEY:                                
             case GOURMET_JUDGE:
             default:
-                npcInfoArray[npcIndex].entityIndex = (u8)temp + 0x15;
+                npcs[npcIndex].entityIndex = (u8)temp + 0x15;
                 temp++;
                 break;
         }
     
-        npcInfoArray[npcIndex].currentCoordinates.x = npcInfoArray[npcIndex].startingCoordinates.x;
-        npcInfoArray[npcIndex].currentCoordinates.y = npcInfoArray[npcIndex].startingCoordinates.y;
-        npcInfoArray[npcIndex].currentCoordinates.z = npcInfoArray[npcIndex].startingCoordinates.z;
+        npcs[npcIndex].currentCoordinates.x = npcs[npcIndex].startingCoordinates.x;
+        npcs[npcIndex].currentCoordinates.y = npcs[npcIndex].startingCoordinates.y;
+        npcs[npcIndex].currentCoordinates.z = npcs[npcIndex].startingCoordinates.z;
     
-        loadEntity(npcInfoArray[npcIndex].entityIndex, D_80114900[npcIndex], 1);
-        func_8003019C(npcInfoArray[npcIndex].entityIndex, 1);
-        func_80030054(npcInfoArray[npcIndex].entityIndex, 1);
-        func_8002FF38(npcInfoArray[npcIndex].entityIndex, 0);
+        loadEntity(npcs[npcIndex].entityIndex, D_80114900[npcIndex], TRUE);
+        setEntityCollidable(npcs[npcIndex].entityIndex, TRUE);
+        setEntityYMovement(npcs[npcIndex].entityIndex, TRUE);
+        func_8002FF38(npcs[npcIndex].entityIndex, FALSE);
     
-        setEntityDirection(npcInfoArray[npcIndex].entityIndex, (npcInfoArray[npcIndex].direction + 8 - getCurrentMapRotation(MAIN_MAP_INDEX)) % 8);
-        setEntityCoordinates(npcInfoArray[npcIndex].entityIndex, npcInfoArray[npcIndex].currentCoordinates.x, npcInfoArray[npcIndex].currentCoordinates.y, npcInfoArray[npcIndex].currentCoordinates.z);
+        // FIXME: macro not matching; should be convertSpriteToWorldDirection(npcs[npcIndex].direction, getCurrentMapRotation(MAIN_MAP_INDEX))
+        setEntityDirection(npcs[npcIndex].entityIndex, (npcs[npcIndex].direction + 8 - getCurrentMapRotation(MAIN_MAP_INDEX)) % 8);
+        setEntityCoordinates(npcs[npcIndex].entityIndex, npcs[npcIndex].currentCoordinates.x, npcs[npcIndex].currentCoordinates.y, npcs[npcIndex].currentCoordinates.z);
     
-        if (npcInfoArray[npcIndex].flags & 8) {
+        if (npcs[npcIndex].flags & 8) {
+
             switch (npcIndex) {                   
                 case BABY:                             
-                    setEntityTrackingTarget(npcInfoArray[npcIndex].entityIndex, 0x23, 0xFE);
+                    setEntityTrackingTarget(npcs[npcIndex].entityIndex, 0x23, 0xFE);
                     break;
                 case 41:                            
-                    setEntityTrackingTarget(npcInfoArray[npcIndex].entityIndex, npcInfoArray[MARIA].entityIndex, 0xFE);
+                    setEntityTrackingTarget(npcs[npcIndex].entityIndex, npcs[MARIA].entityIndex, 0xFE);
                     break;
                 case 42:                            
-                    setEntityTrackingTarget(npcInfoArray[npcIndex].entityIndex, npcInfoArray[POPURI].entityIndex, 0xFE);
+                    setEntityTrackingTarget(npcs[npcIndex].entityIndex, npcs[POPURI].entityIndex, 0xFE);
                     break;
                 case 43:                            
-                    setEntityTrackingTarget(npcInfoArray[npcIndex].entityIndex, npcInfoArray[ELLI].entityIndex, 0xFE);
+                    setEntityTrackingTarget(npcs[npcIndex].entityIndex, npcs[ELLI].entityIndex, 0xFE);
                     break;
                 case 44:                            
-                    setEntityTrackingTarget(npcInfoArray[npcIndex].entityIndex, npcInfoArray[ANN].entityIndex, 0xFE);
+                    setEntityTrackingTarget(npcs[npcIndex].entityIndex, npcs[ANN].entityIndex, 0xFE);
                     break;
                 case 45:                            
-                    setEntityTrackingTarget(npcInfoArray[npcIndex].entityIndex, npcInfoArray[KAREN].entityIndex, 0xFE);
+                    setEntityTrackingTarget(npcs[npcIndex].entityIndex, npcs[KAREN].entityIndex, 0xFE);
                     break;
                 }
             
-                func_8002EDF0(npcInfoArray[npcIndex].entityIndex, 0, 0xE, 0x14);
-                func_8003019C(npcInfoArray[npcIndex].entityIndex, 0);
-                func_80030054(npcInfoArray[npcIndex].entityIndex, 0);
-                func_80030240(npcInfoArray[npcIndex].entityIndex, 0);
-                func_800302E4(npcInfoArray[npcIndex].entityIndex, 0);
+                setEntityAttachmentOffset(npcs[npcIndex].entityIndex, 0, 0xE, 0x14);
+                setEntityCollidable(npcs[npcIndex].entityIndex, FALSE);
+                setEntityYMovement(npcs[npcIndex].entityIndex, FALSE);
+                setEntityTracksCollisions(npcs[npcIndex].entityIndex, FALSE);
+                enableEntityMovement(npcs[npcIndex].entityIndex, FALSE);
+
         }
     
-        npcInfoArray[npcIndex].unk_21 = 0;
-        npcInfoArray[npcIndex].unk_22 = 0;
-        npcInfoArray[npcIndex].flags |= 4;
+        npcs[npcIndex].unk_21 = 0;
+        npcs[npcIndex].unk_22 = 0;
+        npcs[npcIndex].flags |= 4;
         
     }
 
@@ -344,11 +348,11 @@ void updateNPCCoordinates(void) {
     u8 i;
 
     for (i = 0; i < TOTAL_NPCS; i++) {
-        if (npcInfoArray[i].flags & 1) {
-            if (npcInfoArray[i].levelIndex == gBaseMapIndex) {
-                npcInfoArray[i].currentCoordinates.x = entities[npcInfoArray[i].entityIndex].coordinates.x;
-                npcInfoArray[i].currentCoordinates.y = entities[npcInfoArray[i].entityIndex].coordinates.y;
-                npcInfoArray[i].currentCoordinates.z = entities[npcInfoArray[i].entityIndex].coordinates.z; 
+        if (npcs[i].flags & 1) {
+            if (npcs[i].levelIndex == gBaseMapIndex) {
+                npcs[i].currentCoordinates.x = entities[npcs[i].entityIndex].coordinates.x;
+                npcs[i].currentCoordinates.y = entities[npcs[i].entityIndex].coordinates.y;
+                npcs[i].currentCoordinates.z = entities[npcs[i].entityIndex].coordinates.z; 
             }
             
         }
@@ -362,7 +366,7 @@ void func_80075A18(void) {
     u8 i;
 
     for (i = 0; i < TOTAL_NPCS; i++) {
-        npcInfoArray[i].location = getRandomNumberInRange(0, 3);
+        npcs[i].location = getRandomNumberInRange(0, 3);
     }
 
 }
@@ -376,13 +380,13 @@ INCLUDE_ASM("asm/nonmatchings/game/npc", func_80075A78);
 
 inline void setStartMovingDefault(u8 npcIndex) {
 
-    npcInfoArray[npcIndex].unk_20 = 0;
-    npcInfoArray[npcIndex].unk_21 = 10;
-    npcInfoArray[npcIndex].unk_22 = 0;
+    npcs[npcIndex].unk_20 = 0;
+    npcs[npcIndex].unk_21 = 10;
+    npcs[npcIndex].unk_22 = 0;
 
-    setEntityAnimationWithDirectionChange(npcInfoArray[npcIndex].entityIndex, npcInfoArray[npcIndex].unk_24);
+    setEntityAnimationWithDirectionChange(npcs[npcIndex].entityIndex, npcs[npcIndex].unk_24);
 
-    npcInfoArray[npcIndex].flags |= 2;
+    npcs[npcIndex].flags |= 2;
     
 }
 
@@ -393,48 +397,48 @@ void func_80075EBC(u8 index) {
     
     u16 temp;
     
-    if (!npcInfoArray[index].unk_21) {
+    if (!npcs[index].unk_21) {
 
-        npcInfoArray[index].unk_20 = 0;
-        npcInfoArray[index].unk_22 = 0;
+        npcs[index].unk_20 = 0;
+        npcs[index].unk_22 = 0;
 
-        setEntityAnimationWithDirectionChange(npcInfoArray[index].entityIndex, npcInfoArray[index].unk_24);
+        setEntityAnimationWithDirectionChange(npcs[index].entityIndex, npcs[index].unk_24);
 
         temp = getRandomNumberInRange(0, 60);
 
         if (temp < 4) {
-            npcInfoArray[index].direction = temp*2;
-            npcInfoArray[index].unk_21 = 1;
+            npcs[index].direction = temp*2;
+            npcs[index].unk_21 = 1;
         }
 
-        npcInfoArray[index].flags |= 2;
+        npcs[index].flags |= 2;
 
         return;
     }
     
-    if (npcInfoArray[index].direction & 1) {
+    if (npcs[index].direction & 1) {
 
-        npcInfoArray[index].unk_20 = 0;
-        npcInfoArray[index].unk_22 = 0;
-        npcInfoArray[index].unk_21 = 0;
+        npcs[index].unk_20 = 0;
+        npcs[index].unk_22 = 0;
+        npcs[index].unk_21 = 0;
 
     } else {
 
-        npcInfoArray[index].unk_20 = 1;
-        npcInfoArray[index].unk_22 = 0;
+        npcs[index].unk_20 = 1;
+        npcs[index].unk_22 = 0;
 
-        setEntityAnimationWithDirectionChange(npcInfoArray[index].entityIndex, npcInfoArray[index].unk_25);
+        setEntityAnimationWithDirectionChange(npcs[index].entityIndex, npcs[index].unk_25);
         
         if (getRandomNumberInRange(0, 19) < 8) {
-            npcInfoArray[index].unk_21 = 1;
+            npcs[index].unk_21 = 1;
             
         } else {
-            npcInfoArray[index].unk_21 = 0;
+            npcs[index].unk_21 = 0;
         }
         
     }
     
-    npcInfoArray[index].flags |= 2;
+    npcs[index].flags |= 2;
 
 }
 
@@ -442,13 +446,13 @@ void func_80075EBC(u8 index) {
 
 inline void func_80076080(u8 index, u8 arg1) {
 
-    npcInfoArray[index].unk_20 = 0;
-    npcInfoArray[index].unk_21 = 10;
-    npcInfoArray[index].unk_22 = 0;
+    npcs[index].unk_20 = 0;
+    npcs[index].unk_21 = 10;
+    npcs[index].unk_22 = 0;
 
-    setEntityAnimationWithDirectionChange(npcInfoArray[index].entityIndex, arg1);
+    setEntityAnimationWithDirectionChange(npcs[index].entityIndex, arg1);
 
-    npcInfoArray[index].flags |= 2;
+    npcs[index].flags |= 2;
     
 }
 
@@ -458,46 +462,46 @@ inline void func_80076108(u8 index, u8 arg1, u8 arg2) {
 
     u16 temp;
     
-    if (!npcInfoArray[index].unk_21) {
+    if (!npcs[index].unk_21) {
 
-        npcInfoArray[index].unk_20 = 0;
-        npcInfoArray[index].unk_22 = 0;
+        npcs[index].unk_20 = 0;
+        npcs[index].unk_22 = 0;
 
-        setEntityAnimationWithDirectionChange(npcInfoArray[index].entityIndex, arg1);
+        setEntityAnimationWithDirectionChange(npcs[index].entityIndex, arg1);
 
         temp = getRandomNumberInRange(0, 60);
 
         if (temp < 4) {
-            npcInfoArray[index].direction = temp*2;
-            npcInfoArray[index].unk_21 = 1;
+            npcs[index].direction = temp*2;
+            npcs[index].unk_21 = 1;
         }
 
-        npcInfoArray[index].flags |= 2;
+        npcs[index].flags |= 2;
         return;
     }
     
-    if (npcInfoArray[index].direction & 1) {
+    if (npcs[index].direction & 1) {
 
-        npcInfoArray[index].unk_20 = 0;
-        npcInfoArray[index].unk_22 = 0;
-        npcInfoArray[index].unk_21 = 0;
+        npcs[index].unk_20 = 0;
+        npcs[index].unk_22 = 0;
+        npcs[index].unk_21 = 0;
 
     } else {
 
-        npcInfoArray[index].unk_20 = 1;
-        npcInfoArray[index].unk_22 = 0;
+        npcs[index].unk_20 = 1;
+        npcs[index].unk_22 = 0;
         
-        setEntityAnimationWithDirectionChange(npcInfoArray[index].entityIndex, arg2);
+        setEntityAnimationWithDirectionChange(npcs[index].entityIndex, arg2);
         
         if (getRandomNumberInRange(0, 19) < 8) {
-            npcInfoArray[index].unk_21 = 1;
+            npcs[index].unk_21 = 1;
         } else {
-            npcInfoArray[index].unk_21 = 0;
+            npcs[index].unk_21 = 0;
         }
         
     }
     
-    npcInfoArray[index].flags |= 2;
+    npcs[index].flags |= 2;
     
 }
 
@@ -579,7 +583,7 @@ u8 func_80076CF4(void) {
         if (gBabyAge < 30) {
             if (5 < gHour && gHour < 20) {
                 result = 2;
-                if (npcInfoArray[gWife].levelIndex != HOUSE) {
+                if (npcs[gWife].levelIndex != HOUSE) {
                     result = 1;
                 }
             } else {
@@ -644,10 +648,10 @@ INCLUDE_ASM("asm/nonmatchings/game/npc", func_8007D6E0);
 
 void func_8007D9F4(void) {
 
-    npcInfoArray[LILLIA].unk_1A = 0x40;
-    npcInfoArray[LILLIA].unk_1B = 0x40;
-    npcInfoArray[LILLIA].unk_25 = 8;
-    npcInfoArray[LILLIA].unk_24 = 0;
+    npcs[LILLIA].unk_1A = 0x40;
+    npcs[LILLIA].unk_1B = 0x40;
+    npcs[LILLIA].unk_25 = 8;
+    npcs[LILLIA].unk_24 = 0;
 
     if (gWeather != SUNNY) goto DEFAULT;
 
@@ -656,13 +660,13 @@ void func_8007D9F4(void) {
         case SUNDAY:
 
             if (8 < gHour && gHour < 17) { 
-                npcInfoArray[LILLIA].levelIndex = SQUARE;
-                npcInfoArray[LILLIA].startingCoordinates.y = 0;
-                npcInfoArray[LILLIA].direction = SOUTH;
-                npcInfoArray[LILLIA].unk_1E = 0;
-                npcInfoArray[LILLIA].startingCoordinates.x = -144.0f;
-                npcInfoArray[LILLIA].startingCoordinates.z = 256.0f;
-                npcInfoArray[LILLIA].flags |= 1;
+                npcs[LILLIA].levelIndex = SQUARE;
+                npcs[LILLIA].startingCoordinates.y = 0;
+                npcs[LILLIA].direction = SOUTH;
+                npcs[LILLIA].unk_1E = 0;
+                npcs[LILLIA].startingCoordinates.x = -144.0f;
+                npcs[LILLIA].startingCoordinates.z = 256.0f;
+                npcs[LILLIA].flags |= 1;
             }
             break;
 
@@ -672,20 +676,20 @@ void func_8007D9F4(void) {
         case MONDAY ... SATURDAY:
 DEFAULT:
             if (8 < gHour && gHour < 17) {
-                npcInfoArray[LILLIA].levelIndex = FLOWER_SHOP;
-                npcInfoArray[LILLIA].startingCoordinates.y = 0;
-                npcInfoArray[LILLIA].direction = NORTH;
-                npcInfoArray[LILLIA].unk_1E = 0;
-                npcInfoArray[LILLIA].startingCoordinates.x = 64.0f;
-                npcInfoArray[LILLIA].startingCoordinates.z = -128.0f;
-                npcInfoArray[LILLIA].flags |= 1;
+                npcs[LILLIA].levelIndex = FLOWER_SHOP;
+                npcs[LILLIA].startingCoordinates.y = 0;
+                npcs[LILLIA].direction = NORTH;
+                npcs[LILLIA].unk_1E = 0;
+                npcs[LILLIA].startingCoordinates.x = 64.0f;
+                npcs[LILLIA].startingCoordinates.z = -128.0f;
+                npcs[LILLIA].flags |= 1;
             }
     
             break;
 
     }
     
-    npcInfoArray[LILLIA].movingFlag = npcInfoArray[LILLIA].unk_1E;
+    npcs[LILLIA].movingFlag = npcs[LILLIA].unk_1E;
 
 }
 
@@ -694,10 +698,10 @@ DEFAULT:
 
 void func_8007DB38(void) {
 
-    npcInfoArray[BASIL].unk_1A = 0x40;
-    npcInfoArray[BASIL].unk_1B = 0x40;
-    npcInfoArray[BASIL].unk_24 = 0;
-    npcInfoArray[BASIL].unk_25 = 8;
+    npcs[BASIL].unk_1A = 0x40;
+    npcs[BASIL].unk_1B = 0x40;
+    npcs[BASIL].unk_24 = 0;
+    npcs[BASIL].unk_25 = 8;
 
     if (!checkLifeEventBit(BASIL_IN_TOWN)) goto FUNC_END;
 
@@ -706,36 +710,36 @@ void func_8007DB38(void) {
     switch (gDayOfWeek) {
         case SUNDAY:
             if (8 < gHour && gHour < 17) {
-                npcInfoArray[BASIL].levelIndex = SQUARE;
-                npcInfoArray[BASIL].startingCoordinates.y = 0;
-                npcInfoArray[BASIL].direction = SOUTH;
-                npcInfoArray[BASIL].unk_1E = 0;
-                npcInfoArray[BASIL].startingCoordinates.x = -176.0f;
-                npcInfoArray[BASIL].startingCoordinates.z = 256.0f;
-                npcInfoArray[BASIL].flags |= 1;
+                npcs[BASIL].levelIndex = SQUARE;
+                npcs[BASIL].startingCoordinates.y = 0;
+                npcs[BASIL].direction = SOUTH;
+                npcs[BASIL].unk_1E = 0;
+                npcs[BASIL].startingCoordinates.x = -176.0f;
+                npcs[BASIL].startingCoordinates.z = 256.0f;
+                npcs[BASIL].flags |= 1;
             }
             break;
         case THURSDAY:
             if (7  < gHour && gHour < 18) {
-                npcInfoArray[BASIL].levelIndex = VILLAGE_1;
-                npcInfoArray[BASIL].startingCoordinates.y = 0;
-                npcInfoArray[BASIL].direction = WEST;
-                npcInfoArray[BASIL].unk_1E = 0;
-                npcInfoArray[BASIL].startingCoordinates.x = 128.0f;
-                npcInfoArray[BASIL].startingCoordinates.z = -416.0f;
-                npcInfoArray[BASIL].flags |= 1;
+                npcs[BASIL].levelIndex = VILLAGE_1;
+                npcs[BASIL].startingCoordinates.y = 0;
+                npcs[BASIL].direction = WEST;
+                npcs[BASIL].unk_1E = 0;
+                npcs[BASIL].startingCoordinates.x = 128.0f;
+                npcs[BASIL].startingCoordinates.z = -416.0f;
+                npcs[BASIL].flags |= 1;
             }
             break;
         case FRIDAY:
         case SATURDAY:
             if (7  < gHour && gHour < 18) {
-                npcInfoArray[BASIL].levelIndex = MOUNTAIN_1;
-                npcInfoArray[BASIL].startingCoordinates.y = 0;
-                npcInfoArray[BASIL].direction = SOUTH;
-                npcInfoArray[BASIL].unk_1E = 1;
-                npcInfoArray[BASIL].startingCoordinates.x = 192.0f;
-                npcInfoArray[BASIL].startingCoordinates.z = -64.0f;
-                npcInfoArray[BASIL].flags |= 1;
+                npcs[BASIL].levelIndex = MOUNTAIN_1;
+                npcs[BASIL].startingCoordinates.y = 0;
+                npcs[BASIL].direction = SOUTH;
+                npcs[BASIL].unk_1E = 1;
+                npcs[BASIL].startingCoordinates.x = 192.0f;
+                npcs[BASIL].startingCoordinates.z = -64.0f;
+                npcs[BASIL].flags |= 1;
             }
             break;
         case MONDAY:
@@ -743,31 +747,31 @@ void func_8007DB38(void) {
         case WEDNESDAY:
 NOT_SUNNY:
             if (8 < gHour && gHour < 17) {
-                npcInfoArray[BASIL].levelIndex = FLOWER_SHOP;
-                npcInfoArray[BASIL].startingCoordinates.y = 0;
-                npcInfoArray[BASIL].direction = NORTH;
-                npcInfoArray[BASIL].unk_1E = 0;
-                npcInfoArray[BASIL].startingCoordinates.x = -48.0f;
-                npcInfoArray[BASIL].startingCoordinates.z = -64.0f;
-                npcInfoArray[BASIL].flags |= 1;
+                npcs[BASIL].levelIndex = FLOWER_SHOP;
+                npcs[BASIL].startingCoordinates.y = 0;
+                npcs[BASIL].direction = NORTH;
+                npcs[BASIL].unk_1E = 0;
+                npcs[BASIL].startingCoordinates.x = -48.0f;
+                npcs[BASIL].startingCoordinates.z = -64.0f;
+                npcs[BASIL].flags |= 1;
             }
             break;
         default:
             break;
     }
         
-    if ((17 < gHour && gHour < 24) && npcInfoArray[BASIL].location < 2) {
-        npcInfoArray[BASIL].levelIndex = 0x3B;
-        npcInfoArray[BASIL].startingCoordinates.y = 0;
-        npcInfoArray[BASIL].direction = WEST;
-        npcInfoArray[BASIL].unk_1E = 0;
-        npcInfoArray[BASIL].startingCoordinates.x = 32.0f;
-        npcInfoArray[BASIL].startingCoordinates.z = 48.0f;
-        npcInfoArray[BASIL].flags |= 1;
+    if ((17 < gHour && gHour < 24) && npcs[BASIL].location < 2) {
+        npcs[BASIL].levelIndex = 0x3B;
+        npcs[BASIL].startingCoordinates.y = 0;
+        npcs[BASIL].direction = WEST;
+        npcs[BASIL].unk_1E = 0;
+        npcs[BASIL].startingCoordinates.x = 32.0f;
+        npcs[BASIL].startingCoordinates.z = 48.0f;
+        npcs[BASIL].flags |= 1;
     }
 
 FUNC_END:
-    npcInfoArray[BASIL].movingFlag = npcInfoArray[BASIL].unk_1E;
+    npcs[BASIL].movingFlag = npcs[BASIL].unk_1E;
     
 }
 
@@ -775,34 +779,34 @@ FUNC_END:
 
 void setEllenLocation(void) {
 
-    npcInfoArray[ELLEN].unk_1A = 0x40;
-    npcInfoArray[ELLEN].unk_1B = 0x40;
-    npcInfoArray[ELLEN].unk_24 = 0;
-    npcInfoArray[ELLEN].unk_25 = 8;
+    npcs[ELLEN].unk_1A = 0x40;
+    npcs[ELLEN].unk_1B = 0x40;
+    npcs[ELLEN].unk_24 = 0;
+    npcs[ELLEN].unk_25 = 8;
     
     if (!checkLifeEventBit(ELLEN_DIED)) {
         if (gWeather == SUNNY && (7 < gHour && gHour < 17)) {
-                npcInfoArray[ELLEN].levelIndex = VILLAGE_1;
-                npcInfoArray[ELLEN].startingCoordinates.y = 0;
-                npcInfoArray[ELLEN].direction = NORTH;
-                npcInfoArray[ELLEN].unk_1E = 0;
-                npcInfoArray[ELLEN].startingCoordinates.x = 320.0f;
-                npcInfoArray[ELLEN].startingCoordinates.z = 128.0f;
-                npcInfoArray[ELLEN].flags |= 1;
+                npcs[ELLEN].levelIndex = VILLAGE_1;
+                npcs[ELLEN].startingCoordinates.y = 0;
+                npcs[ELLEN].direction = NORTH;
+                npcs[ELLEN].unk_1E = 0;
+                npcs[ELLEN].startingCoordinates.x = 320.0f;
+                npcs[ELLEN].startingCoordinates.z = 128.0f;
+                npcs[ELLEN].flags |= 1;
         } else {
             if (7 < gHour && gHour < 17) {
-                npcInfoArray[ELLEN].levelIndex = BAKERY;
-                npcInfoArray[ELLEN].startingCoordinates.y = 0;
-                npcInfoArray[ELLEN].direction = NORTH;
-                npcInfoArray[ELLEN].unk_1E = 0;
-                npcInfoArray[ELLEN].startingCoordinates.x = -128.0f;
-                npcInfoArray[ELLEN].startingCoordinates.z = -32.0f;
-                npcInfoArray[ELLEN].flags |= 1;
+                npcs[ELLEN].levelIndex = BAKERY;
+                npcs[ELLEN].startingCoordinates.y = 0;
+                npcs[ELLEN].direction = NORTH;
+                npcs[ELLEN].unk_1E = 0;
+                npcs[ELLEN].startingCoordinates.x = -128.0f;
+                npcs[ELLEN].startingCoordinates.z = -32.0f;
+                npcs[ELLEN].flags |= 1;
             }
         }
     }
     
-    npcInfoArray[ELLEN].movingFlag = npcInfoArray[ELLEN].unk_1E;
+    npcs[ELLEN].movingFlag = npcs[ELLEN].unk_1E;
 
 }
 
@@ -813,33 +817,33 @@ void func_8007DF14(void) {
     int temp = gDayOfWeek;
     int temp2;
 
-    npcInfoArray[DOUG].unk_1A = 0x40;
-    npcInfoArray[DOUG].unk_1B = 0x40;
-    npcInfoArray[DOUG].unk_24 = 0;
-    npcInfoArray[DOUG].unk_25 = 8;
+    npcs[DOUG].unk_1A = 0x40;
+    npcs[DOUG].unk_1B = 0x40;
+    npcs[DOUG].unk_24 = 0;
+    npcs[DOUG].unk_25 = 8;
 
     // FIXME: something off here
     if (temp >= SUNDAY && (temp < THURSDAY || temp < 7 && (temp2 = temp) >= FRIDAY) && (7 < gHour && gHour < 17)) {
-        npcInfoArray[DOUG].levelIndex = RANCH_STORE;
-        npcInfoArray[DOUG].startingCoordinates.y = 0;
-        npcInfoArray[DOUG].direction = WEST;
-        npcInfoArray[DOUG].unk_1E = 0;
-        npcInfoArray[DOUG].startingCoordinates.x = -96.0f;
-        npcInfoArray[DOUG].startingCoordinates.z = 64.0f;
-        npcInfoArray[DOUG].flags |= 1;
+        npcs[DOUG].levelIndex = RANCH_STORE;
+        npcs[DOUG].startingCoordinates.y = 0;
+        npcs[DOUG].direction = WEST;
+        npcs[DOUG].unk_1E = 0;
+        npcs[DOUG].startingCoordinates.x = -96.0f;
+        npcs[DOUG].startingCoordinates.z = 64.0f;
+        npcs[DOUG].flags |= 1;
     }
 
-    if (NIGHTTIME && npcInfoArray[DOUG].location < 2) {
-        npcInfoArray[DOUG].levelIndex = TAVERN;
-        npcInfoArray[DOUG].startingCoordinates.y = 0;
-        npcInfoArray[DOUG].direction = EAST;
-        npcInfoArray[DOUG].unk_1E = 0;
-        npcInfoArray[DOUG].startingCoordinates.x = -96.0f;
-        npcInfoArray[DOUG].startingCoordinates.z = 48.0f;
-        npcInfoArray[DOUG].flags |= 1;
+    if (NIGHTTIME && npcs[DOUG].location < 2) {
+        npcs[DOUG].levelIndex = TAVERN;
+        npcs[DOUG].startingCoordinates.y = 0;
+        npcs[DOUG].direction = EAST;
+        npcs[DOUG].unk_1E = 0;
+        npcs[DOUG].startingCoordinates.x = -96.0f;
+        npcs[DOUG].startingCoordinates.z = 48.0f;
+        npcs[DOUG].flags |= 1;
     }
 
-    npcInfoArray[DOUG].movingFlag = npcInfoArray[DOUG].unk_1E;
+    npcs[DOUG].movingFlag = npcs[DOUG].unk_1E;
     
 }
 
@@ -862,11 +866,100 @@ INCLUDE_ASM("asm/nonmatchings/game/npc", func_8007F81C);
 
 INCLUDE_ASM("asm/nonmatchings/game/npc", func_8007FA44);
 
-INCLUDE_ASM("asm/nonmatchings/game/npc", func_8007FC0C);
+//INCLUDE_ASM("asm/nonmatchings/game/npc", func_8007FC0C);
+
+void func_8007FC0C(void) {
+
+    npcs[SHIPPER].unk_1A = 0x40;
+    npcs[SHIPPER].unk_1B = 0x40;
+    npcs[SHIPPER].unk_24 = 0;
+    npcs[SHIPPER].unk_25 = 8;
+
+    if ((17 < gHour && gHour < 24) && npcs[SHIPPER].location < 2) {
+        
+        npcs[SHIPPER].levelIndex = TAVERN;
+        npcs[SHIPPER].startingCoordinates.y = 0.0f;
+        npcs[SHIPPER].direction = EAST;
+        npcs[SHIPPER].unk_1E = 0;
+    
+        npcs[SHIPPER].startingCoordinates.x = 128.0f;
+        npcs[SHIPPER].startingCoordinates.z = 64.0f;
+    
+        npcs[SHIPPER].flags |= 1;
+
+    }
+
+    npcs[SHIPPER].movingFlag =  npcs[SHIPPER].unk_1E;
+    
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/npc", func_8007FCD8);
 
-INCLUDE_ASM("asm/nonmatchings/game/npc", func_8007FE40);
+//INCLUDE_ASM("asm/nonmatchings/game/npc", func_8007FE40);
+
+void func_8007FE40(void) { 
+
+    int temp = gDayOfWeek;
+
+    npcs[DUKE].unk_1A = 0x40;
+    npcs[DUKE].unk_1B = 0x40;
+    npcs[DUKE].unk_24 = 0;
+    npcs[DUKE].unk_25 = 8;
+
+    switch (temp) {
+        
+        case MONDAY ... SATURDAY:
+            if (17 < gHour && gHour < 24) {
+                npcs[DUKE].levelIndex = TAVERN;
+                npcs[DUKE].startingCoordinates.y = 0.0f;
+                npcs[DUKE].direction = 0;
+                npcs[DUKE].unk_1E = 0;
+            
+                npcs[DUKE].startingCoordinates.x = -128.0f;
+                npcs[DUKE].startingCoordinates.z = -128.0f;
+            
+                npcs[DUKE].flags |= 1;
+            }
+            break;
+
+        default:
+            break;
+        
+    }
+
+    npcs[DUKE].movingFlag =  npcs[DUKE].unk_1E;
+
+}
+
+// alternate without switch
+/*
+void func_8007FE40(void) {
+    
+        int temp = gDayOfWeek;
+
+        npcs[DUKE].unk_1A = 0x40;
+        npcs[DUKE].unk_1B = 0x40;
+        npcs[DUKE].unk_24 = 0;
+        npcs[DUKE].unk_25 = 8;
+
+        if (temp < 7 && gDayOfWeek && (17 < gHour && gHour < 24)) {
+            
+        npcs[DUKE].levelIndex = TAVERN;
+        npcs[DUKE].startingCoordinates.y = 0.0f;
+        npcs[DUKE].direction = 0;
+        npcs[DUKE].unk_1E = 0;
+
+        npcs[DUKE].startingCoordinates.x = -128.0f;
+        npcs[DUKE].startingCoordinates.z = -128.0f;
+        
+        npcs[DUKE].flags |= 1;
+        
+    }
+
+    npcs[DUKE].movingFlag =  npcs[DUKE].unk_1E;
+    
+}
+*/
 
 INCLUDE_ASM("asm/nonmatchings/game/npc", func_8007FF04);
 
@@ -874,23 +967,314 @@ INCLUDE_ASM("asm/nonmatchings/game/npc", func_800800D0);
 
 INCLUDE_ASM("asm/nonmatchings/game/npc", func_80080364);
 
-INCLUDE_ASM("asm/nonmatchings/game/npc", func_80080630);
+//INCLUDE_ASM("asm/nonmatchings/game/npc", func_80080630);
 
-INCLUDE_ASM("asm/nonmatchings/game/npc", func_800807F8);
+void func_80080630(void) {
 
-INCLUDE_ASM("asm/nonmatchings/game/npc", func_800808B0);
+    npcs[MASTER_CARPENTER].unk_1A = 0x40;
+    npcs[MASTER_CARPENTER].unk_1B = 0x40;
+    npcs[MASTER_CARPENTER].unk_24 = 0;
+    npcs[MASTER_CARPENTER].unk_25 = 8;
 
-INCLUDE_ASM("asm/nonmatchings/game/npc", func_80080958);
+    if (!checkLifeEventBit(0xD) && !checkDailyEventBit(9) 
+        && (gYear != 1 
+            || (gSeason != AUTUMN || !(19 < gDayOfMonth && gDayOfMonth < 28))
+            && ((gSeason != WINTER || !(8 < gDayOfMonth && gDayOfMonth < 17)))
+           )
+       ) {
 
-INCLUDE_ASM("asm/nonmatchings/game/npc", func_80080A10);
+        if (gWeather == SUNNY && npcs[MASTER_CARPENTER].location >= 3) {
 
-INCLUDE_ASM("asm/nonmatchings/game/npc", func_80080B6C);
+            if (7 < gHour && gHour < 18) {    
+            
+                npcs[MASTER_CARPENTER].levelIndex = 0x15;
+        
+                npcs[MASTER_CARPENTER].startingCoordinates.y = 0;
+                npcs[MASTER_CARPENTER].direction = NORTH;
+                npcs[MASTER_CARPENTER].unk_1E = 0;
+                
+                npcs[MASTER_CARPENTER].startingCoordinates.x = -112.0f;
+                npcs[MASTER_CARPENTER].startingCoordinates.z = 112.0f;
+        
+                npcs[MASTER_CARPENTER].flags |= 1;
+                
+            }
 
-INCLUDE_ASM("asm/nonmatchings/game/npc", func_80080C9C);
+        } else if (7 < gHour && gHour < 18) {
 
-INCLUDE_ASM("asm/nonmatchings/game/npc", func_80080DAC);
+            npcs[MASTER_CARPENTER].levelIndex = 0x21;
+    
+            npcs[MASTER_CARPENTER].startingCoordinates.y = 0;
+            npcs[MASTER_CARPENTER].direction = NORTH;
+            npcs[MASTER_CARPENTER].unk_1E = 2;
+            
+            npcs[MASTER_CARPENTER].startingCoordinates.x = -32.0f;
+            npcs[MASTER_CARPENTER].startingCoordinates.z = -48.0f;
+    
+            npcs[MASTER_CARPENTER].flags |= 1;
+        
+        }
+        
+    } 
 
-INCLUDE_ASM("asm/nonmatchings/game/npc", func_80080EBC);
+    npcs[MASTER_CARPENTER].movingFlag = npcs[MASTER_CARPENTER].unk_1E;
+    
+}
+
+//INCLUDE_ASM("asm/nonmatchings/game/npc", func_800807F8);
+
+void func_800807F8(void) {
+
+    npcs[HARVEST_SPRITE_1].unk_1A = 0x40;
+    npcs[HARVEST_SPRITE_1].unk_1B = 0x40;
+    npcs[HARVEST_SPRITE_1].unk_24 = 0;
+    npcs[HARVEST_SPRITE_1].unk_25 = 8;
+
+    if (7 < gHour && gHour < 19) {
+        
+        npcs[HARVEST_SPRITE_1].levelIndex = CAVE;
+        npcs[HARVEST_SPRITE_1].startingCoordinates.y = 0.0f;
+        npcs[HARVEST_SPRITE_1].direction = 0;
+        npcs[HARVEST_SPRITE_1].unk_1E = 1;
+    
+        npcs[HARVEST_SPRITE_1].startingCoordinates.x = -32.0f;
+        npcs[HARVEST_SPRITE_1].startingCoordinates.z = -192.0f;
+    
+        npcs[HARVEST_SPRITE_1].flags |= 1;
+
+    }
+
+    npcs[HARVEST_SPRITE_1].movingFlag =  npcs[HARVEST_SPRITE_1].unk_1E;
+    
+}
+
+
+//INCLUDE_ASM("asm/nonmatchings/game/npc", func_800808B0);
+
+void func_800808B0(void) {
+
+    npcs[HARVEST_SPRITE_2].unk_1A = 0x40;
+    npcs[HARVEST_SPRITE_2].unk_1B = 0x40;
+    npcs[HARVEST_SPRITE_2].unk_24 = 0;
+    npcs[HARVEST_SPRITE_2].unk_25 = 8;
+
+    if (7 < gHour && gHour < 19) {
+        
+        npcs[HARVEST_SPRITE_2].levelIndex = HARVEST_SPRITE_CAVE;
+        npcs[HARVEST_SPRITE_2].startingCoordinates.y = 0.0f;
+        npcs[HARVEST_SPRITE_2].direction = NORTH;
+        npcs[HARVEST_SPRITE_2].unk_1E = 0;
+    
+        npcs[HARVEST_SPRITE_2].startingCoordinates.x = -128.0f;
+        npcs[HARVEST_SPRITE_2].startingCoordinates.z = -128.0f;
+    
+        npcs[HARVEST_SPRITE_2].flags |= 1;
+
+    }
+
+    npcs[HARVEST_SPRITE_2].movingFlag =  npcs[HARVEST_SPRITE_2].unk_1E;
+    
+}
+
+//INCLUDE_ASM("asm/nonmatchings/game/npc", func_80080958);
+
+void func_80080958(void) {
+
+    npcs[HARVEST_SPRITE_3].unk_1A = 0x40;
+    npcs[HARVEST_SPRITE_3].unk_1B = 0x40;
+    npcs[HARVEST_SPRITE_3].unk_24 = 0;
+    npcs[HARVEST_SPRITE_3].unk_25 = 8;
+
+    if (7 < gHour && gHour < 19) {
+        
+        npcs[HARVEST_SPRITE_3].levelIndex = HARVEST_SPRITE_CAVE;
+        npcs[HARVEST_SPRITE_3].startingCoordinates.y = 0.0f;
+        npcs[HARVEST_SPRITE_3].direction = EAST;
+        npcs[HARVEST_SPRITE_3].unk_1E = 0;
+    
+        npcs[HARVEST_SPRITE_3].startingCoordinates.x = 64.0f;
+        npcs[HARVEST_SPRITE_3].startingCoordinates.z = -64.0f;
+    
+        npcs[HARVEST_SPRITE_3].flags |= 1;
+
+    }
+
+    npcs[HARVEST_SPRITE_3].movingFlag =  npcs[HARVEST_SPRITE_3].unk_1E;
+    
+}
+
+//INCLUDE_ASM("asm/nonmatchings/game/npc", func_80080A10);
+
+void func_80080A10(void) {
+
+    npcs[SYDNEY].unk_1A = 0x40;
+    npcs[SYDNEY].unk_1B = 0x40;
+    npcs[SYDNEY].unk_24 = 0;
+    npcs[SYDNEY].unk_25 = 8;
+
+    if (gSeason != WINTER && gWeather == SUNNY && npcs[SYDNEY].location >= 2 && (7 < gHour && gHour < 17)) {
+
+        npcs[SYDNEY].levelIndex = MOON_MOUNTAIN;
+        npcs[SYDNEY].startingCoordinates.y = 0.0f;
+        npcs[SYDNEY].direction = EAST;
+        npcs[SYDNEY].unk_1E = 1;
+
+        npcs[SYDNEY].startingCoordinates.x = 64.0F;
+        npcs[SYDNEY].startingCoordinates.z = -32.0f;
+
+        npcs[SYDNEY].flags |= 1;
+        
+    } else if (7 < gHour && gHour < 17) {
+        
+        npcs[SYDNEY].levelIndex = DUMPLING_HOUSE;
+        npcs[SYDNEY].startingCoordinates.y = 0.0f;
+        npcs[SYDNEY].direction = WEST;
+        npcs[SYDNEY].unk_1E = 0;
+
+        npcs[SYDNEY].startingCoordinates.x = -128.0f;
+        npcs[SYDNEY].startingCoordinates.z = -128.0f;
+
+        npcs[SYDNEY].flags |= 1;
+
+    }
+
+    npcs[SYDNEY].movingFlag =  npcs[SYDNEY].unk_1E;
+    
+}
+
+//INCLUDE_ASM("asm/nonmatchings/game/npc", func_80080B6C);
+
+void func_80080B6C(void) {
+
+    npcs[BARLEY].unk_1A = 0x40;
+    npcs[BARLEY].unk_1B = 0x40;
+    npcs[BARLEY].unk_24 = 0;
+    npcs[BARLEY].unk_25 = 8;
+
+    if (npcs[BARLEY].location < 2 && (7 < gHour && gHour < 17)) {
+
+        npcs[BARLEY].levelIndex = DUMPLING_HOUSE;
+        npcs[BARLEY].startingCoordinates.y = 0.0f;
+        npcs[BARLEY].direction = 0;
+        npcs[BARLEY].unk_1E = 1;
+
+        npcs[BARLEY].startingCoordinates.x = -32.0f;
+        npcs[BARLEY].startingCoordinates.z = -128.0f;
+
+        npcs[BARLEY].flags |= 1;
+        
+    } else if (7 < gHour && gHour < 17) {
+        
+        npcs[BARLEY].levelIndex = DUMPLING_HOUSE;
+        npcs[BARLEY].startingCoordinates.x = 0.0f;
+        npcs[BARLEY].startingCoordinates.y = 0.0f;
+        npcs[BARLEY].direction = NORTH;
+        npcs[BARLEY].unk_1E = 0;
+
+        npcs[BARLEY].startingCoordinates.z = -192.0f;
+
+        npcs[BARLEY].flags |= 1;
+
+    }
+
+    npcs[BARLEY].movingFlag =  npcs[BARLEY].unk_1E;
+    
+}
+
+//INCLUDE_ASM("asm/nonmatchings/game/npc", func_80080C9C);
+
+void func_80080C9C(void) {
+    
+    npcs[GOURMET_JUDGE].unk_1A = 0x40;
+    npcs[GOURMET_JUDGE].unk_1B = 0x40;
+    npcs[GOURMET_JUDGE].unk_24 = 0;
+    npcs[GOURMET_JUDGE].unk_25 = 8;
+
+    if (gYear == 1 && gSeason == WINTER && (gDayOfMonth < 5) && checkLifeEventBit(0x94) && (17 < gHour && gHour < 24)) {
+
+        npcs[GOURMET_JUDGE].levelIndex = TAVERN;
+        npcs[GOURMET_JUDGE].startingCoordinates.y = 0;
+        npcs[GOURMET_JUDGE].direction = EAST;
+        npcs[GOURMET_JUDGE].unk_1E = 0;
+
+        npcs[GOURMET_JUDGE].startingCoordinates.x = 128.0f;
+        npcs[GOURMET_JUDGE].startingCoordinates.z = -112.0f;
+
+        npcs[GOURMET_JUDGE].flags |= 1;
+        
+    }
+
+    npcs[GOURMET_JUDGE].movingFlag =  npcs[GOURMET_JUDGE].unk_1E;
+    
+}
+
+//INCLUDE_ASM("asm/nonmatchings/game/npc", func_80080DAC);
+
+void func_80080DAC(void) {
+    
+    npcs[PHOTOGRAPHER].unk_1A = 0x40;
+    npcs[PHOTOGRAPHER].unk_1B = 0x40;
+    npcs[PHOTOGRAPHER].unk_24 = 0;
+    npcs[PHOTOGRAPHER].unk_25 = 8;
+
+    if (gYear == 1 && gSeason == WINTER && (gDayOfMonth < 5) && checkLifeEventBit(0x94) && (9 < gHour && gHour < 16)) {
+
+        npcs[PHOTOGRAPHER].levelIndex = BARN;
+        npcs[PHOTOGRAPHER].startingCoordinates.y = 0;
+        npcs[PHOTOGRAPHER].direction = NORTHWEST;
+        npcs[PHOTOGRAPHER].unk_1E = 0;
+
+        npcs[PHOTOGRAPHER].startingCoordinates.x = -192.0f;
+        npcs[PHOTOGRAPHER].startingCoordinates.z = -256.0f;
+
+        npcs[PHOTOGRAPHER].flags |= 1;
+        
+    }
+
+    npcs[PHOTOGRAPHER].movingFlag =  npcs[PHOTOGRAPHER].unk_1E;
+    
+}
+
+//INCLUDE_ASM("asm/nonmatchings/game/npc", func_80080EBC);
+
+void func_80080EBC(void) {
+
+    npcs[40].unk_1A = 0x40;
+    npcs[40].unk_1B = 0x40;
+    npcs[40].unk_24 = 0;
+    npcs[40].unk_25 = 8;
+
+    if (checkLifeEventBit(0x20) && npcs[40].location == 0 && (8 < gHour && gHour < 17)) {
+
+        npcs[40].levelIndex = ROAD;
+        npcs[40].startingCoordinates.y = 0;
+        npcs[40].direction = SOUTH;
+        npcs[40].unk_1E = 1;
+
+        npcs[40].startingCoordinates.x = -32.0f;
+        npcs[40].startingCoordinates.z = 64.0f;
+
+        npcs[40].flags |= 1;
+
+    }
+
+    if (checkLifeEventBit(0x19) && (8 < gHour && gHour < 17)) {
+        
+        npcs[40].levelIndex = VILLAGE_1;
+        npcs[40].startingCoordinates.y = 0;
+        npcs[40].direction = NORTH;
+        npcs[40].unk_1E = 1;
+
+        npcs[40].startingCoordinates.x = 320.0f;
+        npcs[40].startingCoordinates.z = 288.0f;
+
+        npcs[40].flags |= 1;
+    
+    }
+
+     npcs[40].movingFlag =  npcs[40].unk_1E; 
+    
+}
 
 //INCLUDE_ASM("asm/nonmatchings/game/npc", func_80081030);
 
@@ -901,30 +1285,30 @@ void func_80081030(void) {
     
     u8 temp;
     
-    npcInfoArray[41].unk_1A = 0x40;
-    npcInfoArray[41].unk_1B = 0x40;
-    npcInfoArray[41].unk_24 = 0;
-    npcInfoArray[41].unk_25 = 0;
+    npcs[41].unk_1A = 0x40;
+    npcs[41].unk_1B = 0x40;
+    npcs[41].unk_24 = 0;
+    npcs[41].unk_25 = 0;
 
     temp = func_80076DCC(0);
 
     if (temp == 1) {
 
-        if (npcInfoArray[PLAYER].flags & 1) {
+        if (npcs[MARIA].flags & 1) {
             
-            npcInfoArray[41].startingCoordinates.x = 0.0f;
-            npcInfoArray[41].startingCoordinates.y = 0.0f;
-            npcInfoArray[41].startingCoordinates.z = 0.0f;
+            npcs[41].startingCoordinates.x = 0.0f;
+            npcs[41].startingCoordinates.y = 0.0f;
+            npcs[41].startingCoordinates.z = 0.0f;
 
-            npcInfoArray[41].unk_1E = 0;
+            npcs[41].unk_1E = 0;
 
-            npcInfoArray[41].unk_24 = 8;
-            npcInfoArray[41].unk_25 = 8;
+            npcs[41].unk_24 = 8;
+            npcs[41].unk_25 = 8;
 
-            npcInfoArray[41].levelIndex = npcInfoArray[PLAYER].levelIndex;
-            npcInfoArray[41].flags |= (1 | 8);
+            npcs[41].levelIndex = npcs[MARIA].levelIndex;
+            npcs[41].flags |= (1 | 8);
 
-            npcInfoArray[41].direction = npcInfoArray[PLAYER].direction;
+            npcs[41].direction = npcs[MARIA].direction;
             
         }
         
@@ -932,38 +1316,38 @@ void func_80081030(void) {
     
     if (temp == 2) {
 
-        if (npcInfoArray[PLAYER].flags & 1) {
+        if (npcs[MARIA].flags & 1) {
 
-            npcInfoArray[41].levelIndex = npcInfoArray[0].levelIndex;
+            npcs[41].levelIndex = npcs[0].levelIndex;
             
             vec1.x = 0.0f;
             vec1.y = 0.0f;
             vec1.z = 32.0f;
             
             rotationAngles.x = 0.0f;
-            rotationAngles.y = getSpriteYValueFromDirection(npcInfoArray[0].direction);
+            rotationAngles.y = getSpriteYValueFromDirection(npcs[0].direction);
             rotationAngles.z = 0.0f;
             
-            rotateVector3D(vec1, &npcInfoArray[41].startingCoordinates, rotationAngles);
+            rotateVector3D(vec1, &npcs[41].startingCoordinates, rotationAngles);
 
-            npcInfoArray[41].unk_1E = 1;
+            npcs[41].unk_1E = 1;
 
-            npcInfoArray[41].unk_24 = 0;
-            npcInfoArray[41].unk_25 = 0;
+            npcs[41].unk_24 = 0;
+            npcs[41].unk_25 = 0;
 
-            npcInfoArray[41].flags |= 1;
+            npcs[41].flags |= 1;
 
-            npcInfoArray[41].startingCoordinates.x = npcInfoArray[PLAYER].startingCoordinates.x + vec1.x;
-            npcInfoArray[41].startingCoordinates.y = npcInfoArray[PLAYER].startingCoordinates.y;
-            npcInfoArray[41].startingCoordinates.z = npcInfoArray[PLAYER].startingCoordinates.z + vec1.z;
+            npcs[41].startingCoordinates.x = npcs[MARIA].startingCoordinates.x + vec1.x;
+            npcs[41].startingCoordinates.y = npcs[MARIA].startingCoordinates.y;
+            npcs[41].startingCoordinates.z = npcs[MARIA].startingCoordinates.z + vec1.z;
             
-            npcInfoArray[41].direction = npcInfoArray[PLAYER].direction;
+            npcs[41].direction = npcs[MARIA].direction;
                             
         }
         
     }
 
-    npcInfoArray[41].movingFlag = npcInfoArray[41].unk_1E;
+    npcs[41].movingFlag = npcs[41].unk_1E;
     
 }
 
@@ -977,9 +1361,13 @@ INCLUDE_ASM("asm/nonmatchings/game/npc", func_80081810);
 
 INCLUDE_ASM("asm/nonmatchings/game/npc", func_80081A08);
 
+
+
+/* animations */
+
 static inline void updateAnimation(u8 index) {
     
-    switch (npcInfoArray[index].movingFlag) {
+    switch (npcs[index].movingFlag) {
 
         case 0:
             setStartMovingDefault(index);
@@ -1044,9 +1432,6 @@ void setNpcAnimations(void) {
     func_800857DC();
 }
 
-
-/* animations */
-
 INCLUDE_ASM("asm/nonmatchings/game/npc", func_80081C90);
 
 // jtbl_801202D8
@@ -1086,14 +1471,14 @@ INCLUDE_ASM("asm/nonmatchings/game/npc", func_80083384);
 
 void func_80083458(void) {
 
-    if (npcInfoArray[DOUG].flags & 4) {
+    if (npcs[DOUG].flags & 4) {
         
-        if (checkEntityAnimationStateChanged(npcInfoArray[DOUG].entityIndex) && !npcInfoArray[DOUG].unk_22) {
+        if (checkEntityAnimationStateChanged(npcs[DOUG].entityIndex) && !npcs[DOUG].unk_22) {
             updateAnimation(DOUG);
         }
 
-        if (npcInfoArray[DOUG].unk_22) {
-            npcInfoArray[DOUG].unk_22--; 
+        if (npcs[DOUG].unk_22) {
+            npcs[DOUG].unk_22--; 
         } 
         
         func_80075A78(DOUG);
@@ -1106,11 +1491,11 @@ void func_80083550(void) {
 
    u16 tempDirection;
 
-    if (npcInfoArray[GOTZ].flags & 4) {
+    if (npcs[GOTZ].flags & 4) {
         
-        if (checkEntityAnimationStateChanged(npcInfoArray[GOTZ].entityIndex) && !npcInfoArray[GOTZ].unk_22) {
+        if (checkEntityAnimationStateChanged(npcs[GOTZ].entityIndex) && !npcs[GOTZ].unk_22) {
 
-            switch (npcInfoArray[GOTZ].movingFlag) {
+            switch (npcs[GOTZ].movingFlag) {
 
                 case 0:
                     setStartMovingDefault(GOTZ);
@@ -1123,36 +1508,36 @@ void func_80083550(void) {
                 case 3:
 
                     // FIXME: should be inline function
-                    if (npcInfoArray[GOTZ].unk_21 == 0 ) {
+                    if (npcs[GOTZ].unk_21 == 0 ) {
 
-                        npcInfoArray[GOTZ].unk_20 = 0;
-                        npcInfoArray[GOTZ].unk_22 = 0;
+                        npcs[GOTZ].unk_20 = 0;
+                        npcs[GOTZ].unk_22 = 0;
 
-                        setEntityAnimationWithDirectionChange(npcInfoArray[GOTZ].entityIndex, 0);
+                        setEntityAnimationWithDirectionChange(npcs[GOTZ].entityIndex, 0);
 
                         tempDirection = getRandomNumberInRange(0, 60);
 
                         if (tempDirection < SOUTH) {
-                            npcInfoArray[GOTZ].direction = tempDirection * 2;
-                            npcInfoArray[GOTZ].unk_21 = 1;
+                            npcs[GOTZ].direction = tempDirection * 2;
+                            npcs[GOTZ].unk_21 = 1;
                         }
 
-                        npcInfoArray[GOTZ].flags |= 2;
+                        npcs[GOTZ].flags |= 2;
                         
                     } else {       
 
-                        npcInfoArray[GOTZ].unk_20 = 1;
-                        npcInfoArray[GOTZ].unk_22 = 0;
+                        npcs[GOTZ].unk_20 = 1;
+                        npcs[GOTZ].unk_22 = 0;
 
-                        setEntityAnimationWithDirectionChange(npcInfoArray[GOTZ].entityIndex, 8);
+                        setEntityAnimationWithDirectionChange(npcs[GOTZ].entityIndex, 8);
 
                         if (getRandomNumberInRange(0, 19) < 8) {
-                            npcInfoArray[GOTZ].unk_21 = 1;
+                            npcs[GOTZ].unk_21 = 1;
                         } else {
-                            npcInfoArray[GOTZ].unk_21 = 0;
+                            npcs[GOTZ].unk_21 = 0;
                         }
 
-                        npcInfoArray[GOTZ].flags |= 2;                
+                        npcs[GOTZ].flags |= 2;                
                     }
 
                     break;
@@ -1162,8 +1547,8 @@ void func_80083550(void) {
             }
         }
     
-    if (npcInfoArray[GOTZ].unk_22) {
-        npcInfoArray[GOTZ].unk_22--;
+    if (npcs[GOTZ].unk_22) {
+        npcs[GOTZ].unk_22--;
     }
     
     func_80075A78(GOTZ);
@@ -1177,11 +1562,11 @@ void func_8008374C(void) {
 
    u16 tempDirection;
 
-    if (npcInfoArray[SASHA].flags & 4) {
+    if (npcs[SASHA].flags & 4) {
         
-        if (checkEntityAnimationStateChanged(npcInfoArray[SASHA].entityIndex) && !npcInfoArray[SASHA].unk_22) {
+        if (checkEntityAnimationStateChanged(npcs[SASHA].entityIndex) && !npcs[SASHA].unk_22) {
 
-            switch (npcInfoArray[SASHA].movingFlag) {
+            switch (npcs[SASHA].movingFlag) {
 
                 case 0:
                     setStartMovingDefault(SASHA);
@@ -1194,35 +1579,35 @@ void func_8008374C(void) {
                 case 3:
 
                     // FIXME: should be inline function
-                    if (npcInfoArray[SASHA].unk_21 == 0 ) {
+                    if (npcs[SASHA].unk_21 == 0 ) {
 
-                        npcInfoArray[SASHA].unk_20 = 0;
-                        npcInfoArray[SASHA].unk_22 = 0;
+                        npcs[SASHA].unk_20 = 0;
+                        npcs[SASHA].unk_22 = 0;
 
-                        setEntityAnimationWithDirectionChange(npcInfoArray[SASHA].entityIndex, 0);
+                        setEntityAnimationWithDirectionChange(npcs[SASHA].entityIndex, 0);
                         tempDirection = getRandomNumberInRange(0, 60);
 
                         if (tempDirection < SOUTH) {
-                            npcInfoArray[SASHA].direction = tempDirection * 2;
-                            npcInfoArray[SASHA].unk_21 = 1;
+                            npcs[SASHA].direction = tempDirection * 2;
+                            npcs[SASHA].unk_21 = 1;
                         }
 
-                        npcInfoArray[SASHA].flags |= 2;
+                        npcs[SASHA].flags |= 2;
                         
                     } else {       
 
-                        npcInfoArray[SASHA].unk_20 = 1;
-                        npcInfoArray[SASHA].unk_22 = 0;
+                        npcs[SASHA].unk_20 = 1;
+                        npcs[SASHA].unk_22 = 0;
 
-                        setEntityAnimationWithDirectionChange(npcInfoArray[SASHA].entityIndex, 8);
+                        setEntityAnimationWithDirectionChange(npcs[SASHA].entityIndex, 8);
 
                         if (getRandomNumberInRange(0, 19) < 8) {
-                            npcInfoArray[SASHA].unk_21 = 1;
+                            npcs[SASHA].unk_21 = 1;
                         } else {
-                            npcInfoArray[SASHA].unk_21 = 0;
+                            npcs[SASHA].unk_21 = 0;
                         }
 
-                        npcInfoArray[SASHA].flags |= 2;                
+                        npcs[SASHA].flags |= 2;                
                     }
 
                     break;
@@ -1232,8 +1617,8 @@ void func_8008374C(void) {
             }
         }
     
-    if (npcInfoArray[SASHA].unk_22) {
-        npcInfoArray[SASHA].unk_22--;
+    if (npcs[SASHA].unk_22) {
+        npcs[SASHA].unk_22--;
     }
     
     func_80075A78(SASHA);
@@ -1243,14 +1628,14 @@ void func_8008374C(void) {
 
 void func_80083948(void) {
 
-    if (npcInfoArray[POTION_SHOP_DEALER].flags & 4) {
+    if (npcs[POTION_SHOP_DEALER].flags & 4) {
         
-        if (checkEntityAnimationStateChanged(npcInfoArray[POTION_SHOP_DEALER].entityIndex) && !npcInfoArray[POTION_SHOP_DEALER].unk_22) {
+        if (checkEntityAnimationStateChanged(npcs[POTION_SHOP_DEALER].entityIndex) && !npcs[POTION_SHOP_DEALER].unk_22) {
             updateAnimation(POTION_SHOP_DEALER);
         }
 
-        if (npcInfoArray[POTION_SHOP_DEALER].unk_22) {
-            npcInfoArray[POTION_SHOP_DEALER].unk_22--; 
+        if (npcs[POTION_SHOP_DEALER].unk_22) {
+            npcs[POTION_SHOP_DEALER].unk_22--; 
         } 
         
         func_80075A78(POTION_SHOP_DEALER);
@@ -1265,11 +1650,11 @@ void func_80083A40(void) {
 
     u16 tempDirection;
 
-    if (npcInfoArray[KENT].flags & 4) {
+    if (npcs[KENT].flags & 4) {
         
-        if (checkEntityAnimationStateChanged(npcInfoArray[KENT].entityIndex) && !npcInfoArray[KENT].unk_22) {
+        if (checkEntityAnimationStateChanged(npcs[KENT].entityIndex) && !npcs[KENT].unk_22) {
 
-            switch (npcInfoArray[KENT].movingFlag) {
+            switch (npcs[KENT].movingFlag) {
 
                 case 0:
                     setStartMovingDefault(KENT);
@@ -1282,34 +1667,34 @@ void func_80083A40(void) {
                 case 2:
 
                     // FIXME: should be inline function
-                    if (npcInfoArray[KENT].unk_21 == 0) {
+                    if (npcs[KENT].unk_21 == 0) {
                         
-                        npcInfoArray[KENT].unk_20 = 0;
-                        npcInfoArray[KENT].unk_22 = 0;
-                        setEntityAnimationWithDirectionChange(npcInfoArray[KENT].entityIndex, 0);
+                        npcs[KENT].unk_20 = 0;
+                        npcs[KENT].unk_22 = 0;
+                        setEntityAnimationWithDirectionChange(npcs[KENT].entityIndex, 0);
                         tempDirection = getRandomNumberInRange(0, 60);
 
                         if (tempDirection < SOUTH) {
-                            npcInfoArray[KENT].direction = tempDirection * 2 ;
-                            npcInfoArray[KENT].unk_21 = 1;
+                            npcs[KENT].direction = tempDirection * 2 ;
+                            npcs[KENT].unk_21 = 1;
                         } 
 
-                        npcInfoArray[KENT].flags |= 2;  
+                        npcs[KENT].flags |= 2;  
 
                     } else {
 
-                        npcInfoArray[KENT].unk_20 = 2;
-                        npcInfoArray[KENT].unk_22 = 0;
+                        npcs[KENT].unk_20 = 2;
+                        npcs[KENT].unk_22 = 0;
 
-                        setEntityAnimationWithDirectionChange(npcInfoArray[KENT].entityIndex, 0x10);
+                        setEntityAnimationWithDirectionChange(npcs[KENT].entityIndex, 0x10);
 
                         if (getRandomNumberInRange(0, 19) < 8) {
-                            npcInfoArray[KENT].unk_21 = 1;
+                            npcs[KENT].unk_21 = 1;
                         } else {
-                            npcInfoArray[KENT].unk_21 = 0;
+                            npcs[KENT].unk_21 = 0;
                         }
 
-                        npcInfoArray[KENT].flags |= 2;
+                        npcs[KENT].flags |= 2;
                     }
 
                     break;
@@ -1319,8 +1704,8 @@ void func_80083A40(void) {
             }
        }    
 
-    if (npcInfoArray[KENT].unk_22) {
-        npcInfoArray[KENT].unk_22--;
+    if (npcs[KENT].unk_22) {
+        npcs[KENT].unk_22--;
     }
     
     func_80075A78(KENT);
@@ -1332,14 +1717,14 @@ void func_80083A40(void) {
 
 void func_80083C3C(void) {
 
-    if (npcInfoArray[STU].flags & 4) {
+    if (npcs[STU].flags & 4) {
         
-        if (checkEntityAnimationStateChanged(npcInfoArray[STU].entityIndex) && !npcInfoArray[STU].unk_22) {
+        if (checkEntityAnimationStateChanged(npcs[STU].entityIndex) && !npcs[STU].unk_22) {
             updateAnimation(STU);
         }
 
-        if (npcInfoArray[STU].unk_22) {
-            npcInfoArray[STU].unk_22--; 
+        if (npcs[STU].unk_22) {
+            npcs[STU].unk_22--; 
         } 
         
         func_80075A78(STU);
@@ -1351,14 +1736,14 @@ void func_80083C3C(void) {
 
 void func_80083D34(void) {
 
-    if (npcInfoArray[MIDWIFE].flags & 4) {
+    if (npcs[MIDWIFE].flags & 4) {
         
-        if (checkEntityAnimationStateChanged(npcInfoArray[MIDWIFE].entityIndex) && !npcInfoArray[MIDWIFE].unk_22) {
+        if (checkEntityAnimationStateChanged(npcs[MIDWIFE].entityIndex) && !npcs[MIDWIFE].unk_22) {
             updateAnimation(MIDWIFE);
         }
 
-        if (npcInfoArray[MIDWIFE].unk_22) {
-            npcInfoArray[MIDWIFE].unk_22--; 
+        if (npcs[MIDWIFE].unk_22) {
+            npcs[MIDWIFE].unk_22--; 
         } 
         
         func_80075A78(MIDWIFE);
@@ -1371,14 +1756,14 @@ void func_80083D34(void) {
 
 void func_80083E2C(void) {
 
-    if (npcInfoArray[MAY].flags & 4) {
+    if (npcs[MAY].flags & 4) {
         
-        if (checkEntityAnimationStateChanged(npcInfoArray[MAY].entityIndex) && !npcInfoArray[MAY].unk_22) {
+        if (checkEntityAnimationStateChanged(npcs[MAY].entityIndex) && !npcs[MAY].unk_22) {
             updateAnimation(MAY);
         }
 
-        if (npcInfoArray[MAY].unk_22) {
-            npcInfoArray[MAY].unk_22--; 
+        if (npcs[MAY].unk_22) {
+            npcs[MAY].unk_22--; 
         } 
         
         func_80075A78(MAY);
@@ -1391,14 +1776,14 @@ void func_80083E2C(void) {
 
 void func_80083F24(void) {
 
-    if (npcInfoArray[RICK].flags & 4) {
+    if (npcs[RICK].flags & 4) {
         
-        if (checkEntityAnimationStateChanged(npcInfoArray[RICK].entityIndex) && !npcInfoArray[RICK].unk_22) {
+        if (checkEntityAnimationStateChanged(npcs[RICK].entityIndex) && !npcs[RICK].unk_22) {
             updateAnimation(RICK);
         }
 
-        if (npcInfoArray[RICK].unk_22) {
-            npcInfoArray[RICK].unk_22--; 
+        if (npcs[RICK].unk_22) {
+            npcs[RICK].unk_22--; 
         } 
         
         func_80075A78(RICK);
@@ -1411,14 +1796,14 @@ void func_80083F24(void) {
 
 void func_8008401C(void) {
 
-    if (npcInfoArray[PASTOR].flags & 4) {
+    if (npcs[PASTOR].flags & 4) {
         
-        if (checkEntityAnimationStateChanged(npcInfoArray[PASTOR].entityIndex) && !npcInfoArray[PASTOR].unk_22) {
+        if (checkEntityAnimationStateChanged(npcs[PASTOR].entityIndex) && !npcs[PASTOR].unk_22) {
             updateAnimation(PASTOR);
         }
 
-        if (npcInfoArray[PASTOR].unk_22) {
-            npcInfoArray[PASTOR].unk_22--; 
+        if (npcs[PASTOR].unk_22) {
+            npcs[PASTOR].unk_22--; 
         } 
         
         func_80075A78(PASTOR);
@@ -1431,14 +1816,14 @@ void func_8008401C(void) {
 
 void func_80084114(void) {
 
-    if (npcInfoArray[SHIPPER].flags & 4) {
+    if (npcs[SHIPPER].flags & 4) {
         
-        if (checkEntityAnimationStateChanged(npcInfoArray[SHIPPER].entityIndex) && !npcInfoArray[SHIPPER].unk_22) {
+        if (checkEntityAnimationStateChanged(npcs[SHIPPER].entityIndex) && !npcs[SHIPPER].unk_22) {
             updateAnimation(SHIPPER);
         }
 
-        if (npcInfoArray[SHIPPER].unk_22) {
-            npcInfoArray[SHIPPER].unk_22--; 
+        if (npcs[SHIPPER].unk_22) {
+            npcs[SHIPPER].unk_22--; 
         } 
         
         func_80075A78(SHIPPER);
@@ -1451,14 +1836,14 @@ void func_80084114(void) {
 
 void func_8008420C(void) {
 
-    if (npcInfoArray[SAIBARA].flags & 4) {
+    if (npcs[SAIBARA].flags & 4) {
         
-        if (checkEntityAnimationStateChanged(npcInfoArray[SAIBARA].entityIndex) && !npcInfoArray[SAIBARA].unk_22) {
+        if (checkEntityAnimationStateChanged(npcs[SAIBARA].entityIndex) && !npcs[SAIBARA].unk_22) {
             updateAnimation(SAIBARA);
         }
 
-        if (npcInfoArray[SAIBARA].unk_22) {
-            npcInfoArray[SAIBARA].unk_22--; 
+        if (npcs[SAIBARA].unk_22) {
+            npcs[SAIBARA].unk_22--; 
         } 
         
         func_80075A78(SAIBARA);
@@ -1470,14 +1855,14 @@ void func_8008420C(void) {
 //INCLUDE_ASM("asm/nonmatchings/game/npc", func_80084304);
 void func_80084304(void) {
 
-    if (npcInfoArray[DUKE].flags & 4) {
+    if (npcs[DUKE].flags & 4) {
         
-        if (checkEntityAnimationStateChanged(npcInfoArray[DUKE].entityIndex) && !npcInfoArray[DUKE].unk_22) {
+        if (checkEntityAnimationStateChanged(npcs[DUKE].entityIndex) && !npcs[DUKE].unk_22) {
             updateAnimation(DUKE);
         }
 
-        if (npcInfoArray[DUKE].unk_22) {
-            npcInfoArray[DUKE].unk_22--; 
+        if (npcs[DUKE].unk_22) {
+            npcs[DUKE].unk_22--; 
         } 
         
         func_80075A78(DUKE);
@@ -1488,14 +1873,14 @@ void func_80084304(void) {
 
 void func_800843FC(void) {
 
-    if (npcInfoArray[GREG].flags & 4) {
+    if (npcs[GREG].flags & 4) {
         
-        if (checkEntityAnimationStateChanged(npcInfoArray[GREG].entityIndex) && !npcInfoArray[GREG].unk_22) {
+        if (checkEntityAnimationStateChanged(npcs[GREG].entityIndex) && !npcs[GREG].unk_22) {
             updateAnimation(GREG);
         }
 
-        if (npcInfoArray[GREG].unk_22) {
-            npcInfoArray[GREG].unk_22--; 
+        if (npcs[GREG].unk_22) {
+            npcs[GREG].unk_22--; 
         } 
         
         func_80075A78(GREG);
@@ -1520,14 +1905,14 @@ INCLUDE_ASM("asm/nonmatchings/game/npc", func_80084D34);
 
 void func_80084E2C(void) {
 
-    if (npcInfoArray[SYDNEY].flags & 4) {
+    if (npcs[SYDNEY].flags & 4) {
         
-        if (checkEntityAnimationStateChanged(npcInfoArray[SYDNEY].entityIndex) && !npcInfoArray[SYDNEY].unk_22) {
+        if (checkEntityAnimationStateChanged(npcs[SYDNEY].entityIndex) && !npcs[SYDNEY].unk_22) {
             updateAnimation(SYDNEY);
         }
 
-        if (npcInfoArray[SYDNEY].unk_22) {
-            npcInfoArray[SYDNEY].unk_22--; 
+        if (npcs[SYDNEY].unk_22) {
+            npcs[SYDNEY].unk_22--; 
         } 
         
         func_80075A78(SYDNEY);
@@ -1540,14 +1925,14 @@ void func_80084E2C(void) {
 
 void func_80084F24(void) {
 
-    if (npcInfoArray[BARLEY].flags & 4) {
+    if (npcs[BARLEY].flags & 4) {
         
-        if (checkEntityAnimationStateChanged(npcInfoArray[BARLEY].entityIndex) && !npcInfoArray[BARLEY].unk_22) {
+        if (checkEntityAnimationStateChanged(npcs[BARLEY].entityIndex) && !npcs[BARLEY].unk_22) {
             updateAnimation(BARLEY);
         }
 
-        if (npcInfoArray[BARLEY].unk_22) {
-            npcInfoArray[BARLEY].unk_22--; 
+        if (npcs[BARLEY].unk_22) {
+            npcs[BARLEY].unk_22--; 
         } 
         
         func_80075A78(BARLEY);
@@ -1560,14 +1945,14 @@ void func_80084F24(void) {
 
 void func_8008501C(void) {
 
-    if (npcInfoArray[GOURMET_JUDGE].flags & 4) {
+    if (npcs[GOURMET_JUDGE].flags & 4) {
         
-        if (checkEntityAnimationStateChanged(npcInfoArray[GOURMET_JUDGE].entityIndex) && !npcInfoArray[GOURMET_JUDGE].unk_22) {
+        if (checkEntityAnimationStateChanged(npcs[GOURMET_JUDGE].entityIndex) && !npcs[GOURMET_JUDGE].unk_22) {
             updateAnimation(GOURMET_JUDGE);
         }
 
-        if (npcInfoArray[GOURMET_JUDGE].unk_22) {
-            npcInfoArray[GOURMET_JUDGE].unk_22--; 
+        if (npcs[GOURMET_JUDGE].unk_22) {
+            npcs[GOURMET_JUDGE].unk_22--; 
         } 
         
         func_80075A78(GOURMET_JUDGE);
@@ -1580,14 +1965,14 @@ void func_8008501C(void) {
 
 void func_80085114(void) {
 
-    if (npcInfoArray[PHOTOGRAPHER].flags & 4) {
+    if (npcs[PHOTOGRAPHER].flags & 4) {
         
-        if (checkEntityAnimationStateChanged(npcInfoArray[PHOTOGRAPHER].entityIndex) && !npcInfoArray[PHOTOGRAPHER].unk_22) {
+        if (checkEntityAnimationStateChanged(npcs[PHOTOGRAPHER].entityIndex) && !npcs[PHOTOGRAPHER].unk_22) {
             updateAnimation(PHOTOGRAPHER);
         }
 
-        if (npcInfoArray[PHOTOGRAPHER].unk_22) {
-            npcInfoArray[PHOTOGRAPHER].unk_22--; 
+        if (npcs[PHOTOGRAPHER].unk_22) {
+            npcs[PHOTOGRAPHER].unk_22--; 
         } 
         
         func_80075A78(PHOTOGRAPHER);
@@ -1600,14 +1985,14 @@ void func_80085114(void) {
 
 void func_8008520C(void) {
 
-    if (npcInfoArray[0x28].flags & 4) {
+    if (npcs[0x28].flags & 4) {
         
-        if (checkEntityAnimationStateChanged(npcInfoArray[0x28].entityIndex) && !npcInfoArray[0x28].unk_22) {
+        if (checkEntityAnimationStateChanged(npcs[0x28].entityIndex) && !npcs[0x28].unk_22) {
             updateAnimation(0x28);
         }
 
-        if (npcInfoArray[0x28].unk_22) {
-            npcInfoArray[0x28].unk_22--; 
+        if (npcs[0x28].unk_22) {
+            npcs[0x28].unk_22--; 
         } 
         
         func_80075A78(0x28);
@@ -1655,9 +2040,9 @@ u8 func_800858D4(void) {
         // ???
         ptr = npcAffection+5;
         
-        if (npcInfoArray[i].flags & 4) {
+        if (npcs[i].flags & 4) {
             
-            if (!entities[npcInfoArray[i].entityIndex].unk_58 && entities[npcInfoArray[i].entityIndex].unk_5A == 0x8000) {
+            if (!entities[npcs[i].entityIndex].entityCollidedWithIndex && entities[npcs[i].entityIndex].buttonPressed == BUTTON_A) {
 
                 if (i == BABY && gBabyAge < 120) {
                                  
@@ -1678,10 +2063,10 @@ u8 func_800858D4(void) {
                                 setDailyEventBit(HELD_BABY);
                             }
                             
-                            deactivateEntity(npcInfoArray[i].entityIndex);
+                            deactivateEntity(npcs[i].entityIndex);
                          
                             result = 2;
-                            npcInfoArray[i].flags &= ~4;
+                            npcs[i].flags &= ~4;
                            
                         } 
                         
@@ -1713,7 +2098,7 @@ u8 func_800858D4(void) {
                     
                     showDialogueBox(0, D_80114960[i], temp, 0, 0);
                     result = 1;
-                    npcInfoArray[i].movingFlag = 0x10;
+                    npcs[i].movingFlag = 0x10;
                     
                 }
             }    
@@ -1738,9 +2123,9 @@ bool func_80085C94(void) {
 
     while (i < TOTAL_NPCS && !found) {
 
-        if (npcInfoArray[i].flags & 4) {
-            if (!entities[npcInfoArray[i].entityIndex].unk_58) {
-                npcInfoArray[i].movingFlag = 0x20;
+        if (npcs[i].flags & 4) {
+            if (!entities[npcs[i].entityIndex].entityCollidedWithIndex) {
+                npcs[i].movingFlag = 0x20;
                 npcTalkingTo = i;
                 found = TRUE;
             }
@@ -1770,7 +2155,7 @@ bool func_80085D48(int index, u16 arg1) {
     
     result = FALSE;
     
-    if (npcInfoArray[index].flags & 4) {
+    if (npcs[index].flags & 4) {
 
         // FIXME: fake match
         // check if girl and load heart icon

@@ -198,7 +198,7 @@ void func_800B3A60(void) {
 
 // FIXME: indicates the grouped sprite functions are probably macro/static inline
 static inline inline_func() {
-    setSpriteShrinkFactor(0x8E, 0, 0, 256.0f);
+    setSpriteViewSpacePosition(0x8E, 0, 0, 256.0f);
 }
 
 INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800B3BD8);
@@ -223,13 +223,13 @@ void func_800B3BD8(void) {
     setSpriteAlpha(0x8E, 0xFF);
     
     dmaSprite(0x82, &D_D3BFE0, &D_D3DCC0, &D_D3DCC0_2, &D_D3DCE0, 0, 0, 0x802E0EC0, 0, 0x802E27C0, 0x802E28C0, 0x802E2BC0, 0, 0, 0);
-    setSpriteShrinkFactor(0x82, -96.0f, 64.0f, 256.0f);
+    setSpriteViewSpacePosition(0x82, -96.0f, 64.0f, 256.0f);
     setBilinearFiltering(0x82, TRUE);
     setSpriteColor(0x82, 0xFF, 0xFF, 0xFF, 0xFF);
     startSpriteAnimation(0x82, 0, 0);
     
     dmaSprite(0x83, &D_D3BFE0, &D_D3DCC0, &D_D3DCC0_2, &D_D3DCE0, 0, 0, 0x802E0EC0, 0, 0x802E27C0, 0x802E28C0, 0x802E2BC0, 0, 0, 0);
-    setSpriteShrinkFactor(0x83, -56.0f, 64.0f, 256.0f);
+    setSpriteViewSpacePosition(0x83, -56.0f, 64.0f, 256.0f);
     setBilinearFiltering(0x83, TRUE);
     setSpriteColor(0x83, 0xFF, 0xFF, 0xFF, 0xFF);
     startSpriteAnimation(0x83, 1, 0);
@@ -239,17 +239,17 @@ void func_800B3BD8(void) {
     setSpriteColor(0x84, 0xFF, 0xFF, 0xFF, 0xFF);
     
     dmaSprite(0x85, &D_D3BFE0, &D_D3DCC0, &D_D3DCC0_2, &D_D3DCE0, 0, 0, 0x802E0EC0, 0, 0x802E27C0, 0x802E28C0, 0x802E2BC0, 0, 0, 0);
-    setSpriteShrinkFactor(0x85, -12.0f, 13.0f, 256.0f);
+    setSpriteViewSpacePosition(0x85, -12.0f, 13.0f, 256.0f);
     setBilinearFiltering(0x85, TRUE);
     setSpriteColor(0x85, 0xFF, 0xFF, 0xFF, 0xFF);
     
     dmaSprite(0x86, &D_D3BFE0, &D_D3DCC0, &D_D3DCC0_2, &D_D3DCE0, 0, 0, 0x802E0EC0, 0, 0x802E27C0, 0x802E28C0, 0x802E2BC0, 0, 0, 0);
-    setSpriteShrinkFactor(0x86, -12.0f, 13.0f, 256.0f);
+    setSpriteViewSpacePosition(0x86, -12.0f, 13.0f, 256.0f);
     setBilinearFiltering(0x86, TRUE);
     setSpriteColor(0x86, 0xFF, 0xFF, 0xFF, 0xFF);
     
     dmaSprite(0x87, &D_D3BFE0, &D_D3DCC0, &D_D3DCC0_2, &D_D3DCE0, 0, 0, 0x802E0EC0, 0, 0x802E27C0, 0x802E28C0, 0x802E2BC0, 0, 0, 0);
-    setSpriteShrinkFactor(0x87, -16.0f, 11.0f, 224.0f);
+    setSpriteViewSpacePosition(0x87, -16.0f, 11.0f, 224.0f);
     setBilinearFiltering(0x87, TRUE);
     setSpriteColor(0x87, 0xFF, 0xFF, 0xFF, 0xFF);
 
@@ -267,7 +267,7 @@ void func_800B4160(void) {
         resetAnimationState(0x82);
         resetAnimationState(0x83);
         resetAnimationState(0x84);
-        setSpriteShrinkFactor(0x84, -96.0f, 64.0f, 256.0f);
+        setSpriteViewSpacePosition(0x84, -96.0f, 64.0f, 256.0f);
         startSpriteAnimation(0x82, 7, 0xFE);
         startSpriteAnimation(0x83, 1, 0);
         startSpriteAnimation(0x84, 5, 0);
@@ -275,11 +275,12 @@ void func_800B4160(void) {
         resetAnimationState(0x82);
         resetAnimationState(0x83);
         resetAnimationState(0x84);
-        setSpriteShrinkFactor(0x84, -56.0f, 64.0f, 256.0f);
+        setSpriteViewSpacePosition(0x84, -56.0f, 64.0f, 256.0f);
         startSpriteAnimation(0x82, 0, 0);
         startSpriteAnimation(0x83, 8, 0xFE);
         startSpriteAnimation(0x84, 6, 0);
     }
+
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800B4238);
@@ -300,6 +301,7 @@ void func_800B4238(u8 arg0) {
     }
     
     resetAnimationState(0x86);
+
 }
 
 INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800B42E0);
@@ -392,11 +394,11 @@ void func_800B5FC4(u8 arg0, u8 arg1, u8 arg2) {
     } else {
         
         if (arg1 != 0xFF) {
-            setSpriteShrinkFactor(0x79, D_80116D80[arg1], D_80116D90[arg1], 32.0f);
+            setSpriteViewSpacePosition(0x79, D_80116D80[arg1], D_80116D90[arg1], 32.0f);
         }
 
         if (arg2 != 0xFF) {
-            setSpriteShrinkFactor(0x79, D_80116DA0[arg2], D_80116DB0[arg2], 32.0f);
+            setSpriteViewSpacePosition(0x79, D_80116DA0[arg2], D_80116DB0[arg2], 32.0f);
         }
         
         startSpriteAnimation(0x79, 3, 0);
@@ -404,17 +406,18 @@ void func_800B5FC4(u8 arg0, u8 arg1, u8 arg2) {
     }
     
     if (arg1 != 0xFF) {
-        setSpriteShrinkFactor(0xB2, D_80116D80[arg1], D_80116D90[arg1], 32.0f);
+        setSpriteViewSpacePosition(0xB2, D_80116D80[arg1], D_80116D90[arg1], 32.0f);
     }
 
     if (arg2 != 0xFF) {
-        setSpriteShrinkFactor(0xB2, arg2, arg2, 32.0f);
+        setSpriteViewSpacePosition(0xB2, arg2, arg2, 32.0f);
     }
     
     // can't remove this without messing up control flow
     temp = 0xB2;
 
     startSpriteAnimation(0xB2, 3, 0);
+
 }
 
 INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800B60E4);
@@ -481,7 +484,7 @@ void func_800B7E28(void) {
 void func_800B7F6C(u8 arg0) {
 
     if (arg0 != 0xFF) {
-        setSpriteShrinkFactor(0x79, D_80116DC0[arg0], D_80116DD4[arg0], 32.0f);
+        setSpriteViewSpacePosition(0x79, D_80116DC0[arg0], D_80116DD4[arg0], 32.0f);
     }
 
     startSpriteAnimation(0x79, 3, 0);
@@ -518,7 +521,7 @@ void func_800B8018(void) {
     func_800593EC();
 
     dmaSprite(0x80, &_checkerboardBackgroundTextureSegmentRomStart, &_checkerboardBackgroundTextureSegmentRomEnd, &_checkerboardBackgroundAssetsIndexSegmentRomStart, &_checkerboardBackgroundAssetsIndexSegmentRomEnd, 0, 0, 0x802DE5C0, 0, 0x802E0BC0, 0x802E0CC0, 0x802E0DC0, 0, 0, 0);
-    setSpriteShrinkFactor(0x80, 0, 0, 0);
+    setSpriteViewSpacePosition(0x80, 0, 0, 0);
     setSpriteScale(0x80, 2.0f, 2.0f, 1.0f);
     setBilinearFiltering(0x80, TRUE);
     setSpriteColor(0x80, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -538,7 +541,7 @@ void func_800B815C(void) {
     func_800593EC();
 
     dmaSprite(0x80, &_checkerboardBackgroundTextureSegmentRomStart, &_checkerboardBackgroundTextureSegmentRomEnd, &_checkerboardBackgroundAssetsIndexSegmentRomStart, &_checkerboardBackgroundAssetsIndexSegmentRomEnd, NULL, NULL, (void*)0x802DE5C0, NULL, (void*)0x802E0BC0, (void*)0x802E0CC0, (void*)0x802E0DC0, NULL, NULL, 0);
-    setSpriteShrinkFactor(0x80, 0.0f, 0.0f, 0.0f);
+    setSpriteViewSpacePosition(0x80, 0.0f, 0.0f, 0.0f);
     setSpriteScale(0x80, 2.0f, 2.0f, 1.0f);
     setBilinearFiltering(0x80, TRUE);
     setSpriteColor(0x80, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -554,7 +557,6 @@ void func_800B815C(void) {
 
 }
 
-
 //INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800B82AC);
 
 // home extensions selection
@@ -562,7 +564,7 @@ void func_800B82AC(void) {
 
     func_800593EC();
     dmaSprite(0x80, &_checkerboardBackgroundTextureSegmentRomStart, &_checkerboardBackgroundTextureSegmentRomEnd, &_checkerboardBackgroundAssetsIndexSegmentRomStart, &_checkerboardBackgroundAssetsIndexSegmentRomEnd, NULL, NULL, (void*)0x802DE5C0, NULL, (void*)0x802E0BC0, (void*)0x802E0CC0, (void*)0x802E0DC0, NULL, NULL, 0);
-    setSpriteShrinkFactor(0x80, 0.0f, 0.0f, 0.0f);
+    setSpriteViewSpacePosition(0x80, 0.0f, 0.0f, 0.0f);
     setSpriteScale(0x80, 2.0f, 2.0f, 1.0f);
     setBilinearFiltering(0x80, TRUE);
     setSpriteColor(0x80, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -581,7 +583,7 @@ void func_800B83F0(void) {
 
     func_800593EC();
     dmaSprite(0x80, &_checkerboardBackgroundTextureSegmentRomStart, &_checkerboardBackgroundTextureSegmentRomEnd, &_checkerboardBackgroundAssetsIndexSegmentRomStart, &_checkerboardBackgroundAssetsIndexSegmentRomEnd, NULL, NULL, (void*)0x802DE5C0, NULL, (void*)0x802E0BC0, (void*)0x802E0CC0, (void*)0x802E0DC0, NULL, NULL, 0);
-    setSpriteShrinkFactor(0x80, 0.0f, 0.0f, 0.0f);
+    setSpriteViewSpacePosition(0x80, 0.0f, 0.0f, 0.0f);
     setSpriteScale(0x80, 2.0f, 2.0f, 1.0f);
     setBilinearFiltering(0x80, TRUE);
     setSpriteColor(0x80, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -595,6 +597,7 @@ void func_800B83F0(void) {
     overlayScreenTable.unk_B = 0;
 
     setMainLoopCallbackFunctionIndex(CALENDAR);
+
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800B8554);
@@ -604,7 +607,7 @@ void func_800B8554(void) {
     
     func_800593EC();
     dmaSprite(0x80, &_checkerboardBackgroundTextureSegmentRomStart, &_checkerboardBackgroundTextureSegmentRomEnd, &_checkerboardBackgroundAssetsIndexSegmentRomStart, &_checkerboardBackgroundAssetsIndexSegmentRomEnd, NULL, NULL, (void*)0x802DE5C0, NULL, (void*)0x802E0BC0, (void*)0x802E0CC0, (void*)0x802E0DC0, NULL, NULL, 0);
-    setSpriteShrinkFactor(0x80, 0.0f, 0.0f, 0.0f);
+    setSpriteViewSpacePosition(0x80, 0.0f, 0.0f, 0.0f);
     setSpriteScale(0x80, 2.0f, 2.0f, 1.0f);
     setBilinearFiltering(0x80, TRUE);
     setSpriteColor(0x80, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -618,6 +621,7 @@ void func_800B8554(void) {
     overlayScreenTable.unk_B = 0;
 
     setMainLoopCallbackFunctionIndex(RECIPE_BOOK);
+
 }
 
 INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800B86B8);
@@ -1050,28 +1054,28 @@ INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800C7850);
 
 void func_800C7C88(f32 x, f32 y) {
     startSpriteAnimation(0x7C, 0xB, 0xFE);
-    setSpriteShrinkFactor(0x7C, x, y, 32.0f);
+    setSpriteViewSpacePosition(0x7C, x, y, 32.0f);
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800C7CE4);
 
 void func_800C7CE4(f32 x, f32 y) {
     startSpriteAnimation(0x7D, 0xA, 0xFE);
-    setSpriteShrinkFactor(0x7D, x, y, 32.0f);
+    setSpriteViewSpacePosition(0x7D, x, y, 32.0f);
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800C7D40);
 
 void func_800C7D40(f32 x, f32 y) {
     startSpriteAnimation(0x7F, 1, 0xFE);
-    setSpriteShrinkFactor(0x7F, x, y, 32.0f);
+    setSpriteViewSpacePosition(0x7F, x, y, 32.0f);
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800C7D9C);
 
 void func_800C7D9C(f32 x, f32 y) {
     startSpriteAnimation(0x7E, 0xC, 0xFE);
-    setSpriteShrinkFactor(0x7E, x, y, 32.0f);
+    setSpriteViewSpacePosition(0x7E, x, y, 32.0f);
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800C7DF8);
@@ -1104,14 +1108,14 @@ INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800C7E78);
 
 void func_800C80F0(f32 x, f32 y) {
     startSpriteAnimation(0x7B, 0xB, 0xFE);
-    setSpriteShrinkFactor(0x7B, x, y, 32.0f);
+    setSpriteViewSpacePosition(0x7B, x, y, 32.0f);
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800C814C);
 
 void func_800C814C(f32 x, f32 y) {
     startSpriteAnimation(0x7A, 0xA, 0xFE);
-    setSpriteShrinkFactor(0x7A, x, y, 32.0f);
+    setSpriteViewSpacePosition(0x7A, x, y, 32.0f);
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800C81A8);
@@ -1385,7 +1389,6 @@ void func_800CE894(u8 arg0) {
         }
     
 }
-
 
 INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800CE930);
 
