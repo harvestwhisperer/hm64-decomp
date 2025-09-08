@@ -7,7 +7,7 @@
 #include "system/entity.h"
 #include "system/graphic.h"
 #include "system/map.h"
-#include "system/mathUtils.h"
+#include "system/math.h"
 #include "system/message.h"
 #include "system/globalSprites.h"
 
@@ -774,8 +774,8 @@ static bool func_800ADCDC(u16 mapIndex, u8 arg1) {
                 if (checkDailyEventBit(0x16)) {
                     if (gBabyAge < 30) {
                         gPlayer.heldItem = 0xBA;             
-                        deactivateEntity(npcInfoArray[BABY].entityIndex);
-                        npcInfoArray[BABY].flags &= ~4;
+                        deactivateEntity(npcs[BABY].entityIndex);
+                        npcs[BABY].flags &= ~4;
                         setPlayerAction(4, 6);
                         if (!checkDailyEventBit(0x55)) {
                             npcAffection[BABY] += adjustValue(npcAffection[BABY], 2, MAX_AFFECTION);

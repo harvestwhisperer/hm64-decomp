@@ -77,7 +77,7 @@ extern void setNpcAnimations();
 extern void setNPCSpawningLocations();                     
 
 extern u8 npcAffection[TOTAL_NPCS];
-extern npcInfo npcInfoArray[];
+extern npcInfo npcs[];
 
 extern u8 npcTalkingTo;
 

@@ -183,7 +183,7 @@ Gfx* renderSceneGraph(Gfx* dl, SceneMatrices* matrices) {
         
         if (sceneNodes[i].flags & ACTIVE) {
         
-            if (sceneNodes[i].flags & 0x40) {
+            if (sceneNodes[i].flags & TRANSFORM_EXEMPT) {
 
                 vec = sceneNodes[i].positions;
                 
@@ -193,7 +193,7 @@ Gfx* renderSceneGraph(Gfx* dl, SceneMatrices* matrices) {
                 y = sceneNodes[i].positions.y;
                 z = sceneNodes[i].positions.z;
         
-                // FIXME: don't use temp
+                // FIXME: possibly don't need to use tempZ
                 rotatedX = (sceneNodes[i].positions.z * sinYCurrent) + (x * cosYCurrent);
                 tempZ = (sceneNodes[i].positions.z * cosYCurrent) - (x * sinYCurrent);
                 rotatedY = ((-tempZ) * sinXCurrent) + (y * cosXCurrent);

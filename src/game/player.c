@@ -5,8 +5,8 @@
 #include "system/controller.h"
 #include "system/entity.h"
 #include "system/graphic.h"
-#include "system/mathUtils.h"
-#include "system/mapContext.h"
+#include "system/math.h"
+#include "system/mapController.h"
 
 #include "game/animals.h"
 #include "game/game.h"
@@ -152,19 +152,19 @@ static inline void setAction2(u8 arg0, u8 arg1) {
     gPlayer.animationState = 0;
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", setupPlayerSprite);
+//INCLUDE_ASM("asm/nonmatchings/game/player", setupPlayerEntity);
 
-void setupPlayerSprite(u16 arg0, u8 resetPlayer) {
+void setupPlayerEntity(u16 arg0, u8 resetPlayer) {
  
-    loadEntity(PLAYER, 0, 1);
+    loadEntity(ENTITY_PLAYER, 0, TRUE);
 
-    func_8003019C(PLAYER, 1);
-    func_80030054(PLAYER, 1);
-    func_8002FF38(PLAYER, 1);
-    func_8002FCB4(PLAYER, 1);
+    setEntityCollidable(ENTITY_PLAYER, TRUE);
+    setEntityYMovement(ENTITY_PLAYER, TRUE);
+    func_8002FF38(ENTITY_PLAYER, TRUE);
+    func_8002FCB4(ENTITY_PLAYER, TRUE);
 
-    setEntityColor(PLAYER, globalLightingRgba.r, globalLightingRgba.g, globalLightingRgba.b, globalLightingRgba.a);
-    setEntityShadow(PLAYER, 0);
+    setEntityColor(ENTITY_PLAYER, globalLightingRgba.r, globalLightingRgba.g, globalLightingRgba.b, globalLightingRgba.a);
+    setEntityShadow(ENTITY_PLAYER, 0);
 
     if (resetPlayer) {
         gPlayer.startingCoordinates.x = playerDefaultStartingCoordinates[arg0].x;
@@ -173,8 +173,8 @@ void setupPlayerSprite(u16 arg0, u8 resetPlayer) {
         gPlayer.direction = playerDefaultStartingDirections[arg0];
     }
 
-    setEntityDirection(PLAYER, convertSpriteToMapDirection(gPlayer.direction, MAIN_MAP_INDEX));
-    setEntityCoordinates(PLAYER, gPlayer.startingCoordinates.x, gPlayer.startingCoordinates.y, gPlayer.startingCoordinates.z);
+    setEntityDirection(ENTITY_PLAYER, convertSpriteToWorldDirection(gPlayer.direction, MAIN_MAP_INDEX));
+    setEntityCoordinates(ENTITY_PLAYER, gPlayer.startingCoordinates.x, gPlayer.startingCoordinates.y, gPlayer.startingCoordinates.z);
 
     toolUse.unk_3 = 0;
     toolUse.unk_4 = 0;
@@ -420,7 +420,7 @@ void func_80065F5C(void) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/player", func_80065F94);
 
-Vec3f* func_80065F94(Vec3f *arg0, f32 arg1, u8 arg2) {
+Vec3f func_80065F94(f32 arg1, u8 arg2) {
     
     Vec3f vec;
 
@@ -430,24 +430,23 @@ Vec3f* func_80065F94(Vec3f *arg0, f32 arg1, u8 arg2) {
     memcpy(buffer, D_8011F3F0, 9);
     memcpy(buffer2, D_8011F3FC, 9);
     
-    func_800315A0(&vec, 0);
+    vec = func_800315A0(ENTITY_PLAYER);
 
     if (vec.y != 65535.0f) {
 
-        vec.x += buffer[(entities[PLAYER].direction + getCurrentMapRotation(gMainMapIndex)) % 8] * arg1;
-        vec.z += buffer2[(entities[PLAYER].direction + getCurrentMapRotation(gMainMapIndex)) % 8] * arg1;
+        vec.x += buffer[convertWorldToSpriteDirection(entities[PLAYER].direction, gMainMapIndex)] * arg1;
+        vec.z += buffer2[convertWorldToSpriteDirection(entities[PLAYER].direction, gMainMapIndex)] * arg1;
 
         if (arg2 != 8) {
             
-            vec.x += buffer[((entities[PLAYER].direction + getCurrentMapRotation(gMainMapIndex)+ arg2) % 8)];
+            // TODO: is this a separate macro?
+            vec.x += buffer[((entities[PLAYER].direction + getCurrentMapRotation(gMainMapIndex) + arg2) % 8)];
             vec.z += buffer2[((entities[PLAYER].direction + getCurrentMapRotation(gMainMapIndex) + arg2) % 8)];
             
         }
     }
 
-    *arg0 = vec;
-    
-    return arg0;
+    return vec;
     
 }
 
@@ -477,7 +476,7 @@ Vec3f* func_80065F94(Vec3f *arg0, f32 arg1, u8 arg2) {
 
         if (arg2 != 8) {
             
-            vec.x += ptr[((entities[PLAYER].direction + getCurrentMapRotation(gMainMapIndex)+ arg2) % 8)];
+            vec.x += ptr[((entities[PLAYER].direction + getCurrentMapRotation(gMainMapIndex) + arg2) % 8)];
             vec.z += ptr2[((entities[PLAYER].direction + getCurrentMapRotation(gMainMapIndex) + arg2) % 8)];
             
         }
@@ -649,7 +648,7 @@ void func_80066F98(void) {
 
     setDailyEventBit(0x5C);
  
-    setEntityDirection(PLAYER, convertSpriteToMapDirection(horseInfo.direction, MAIN_MAP_INDEX));
+    setEntityDirection(ENTITY_PLAYER, convertSpriteToWorldDirection(horseInfo.direction, MAIN_MAP_INDEX));
     
 }
 
@@ -665,11 +664,11 @@ void func_80067034(void) {
     
     while (direction < 8 && !set) {
     
-        if (func_80031830(PLAYER, 8, (direction + getCurrentMapRotation(gMainMapIndex)) % 8) == 0) {
+        if (checkTerrainCollisionInDirection(ENTITY_PLAYER, 8, convertWorldToSpriteDirection(direction, gMainMapIndex)) == 0) {
 
-            if (func_80031830(PLAYER, 0x20, (direction + getCurrentMapRotation(gMainMapIndex)) % 8) == 0) {
+            if (checkTerrainCollisionInDirection(ENTITY_PLAYER, 0x20, convertWorldToSpriteDirection(direction, gMainMapIndex)) == 0) {
 
-                vec1 = func_80031904(PLAYER, 0x20, (direction + getCurrentMapRotation(MAIN_MAP_INDEX)) % 8);
+                vec1 = projectEntityPosition(ENTITY_PLAYER, 0x20, convertWorldToSpriteDirection(direction, MAIN_MAP_INDEX));
                 
                 temp = func_800DB1BC(vec1.x, vec1.z);
                 
@@ -688,10 +687,10 @@ void func_80067034(void) {
 
     if (set) {
 
-            vec2 = func_80031904(PLAYER, 0, direction);
+            vec2 = projectEntityPosition(ENTITY_PLAYER, 0, direction);
             
             horseInfo.coordinates = vec2;
-            horseInfo.direction = (entities[PLAYER].direction + getCurrentMapRotation(MAIN_MAP_INDEX)) % 8;
+            horseInfo.direction = convertWorldToSpriteDirection(entities[PLAYER].direction, MAIN_MAP_INDEX);
             horseInfo.location = gBaseMapIndex;
             horseInfo.flags &= ~0x8;     
 
@@ -800,7 +799,7 @@ INCLUDE_ASM("asm/nonmatchings/game/player", func_80067F50);
 
 void func_8006807C(void) {
 
-    if (checkEntityAnimationStateChanged(PLAYER)) {
+    if (checkEntityAnimationStateChanged(ENTITY_PLAYER)) {
      
         if (gPlayer.animationState == 0) {
             func_800D55E4(gPlayer.itemInfoIndex, 9);
@@ -856,12 +855,16 @@ void func_80068120(void) {
 void func_80068258(void) {
 
     if (gPlayer.animationState == 0) {
-        setEntityCoordinates(0, -140.0f, 0.0f, -152.0f);
-        func_8003019C(0, 0);
-        func_80030054(0, 0);
-        func_8002FF38(PLAYER, 0);
+    
+        setEntityCoordinates(ENTITY_PLAYER, -140.0f, 0.0f, -152.0f);
+        setEntityCollidable(ENTITY_PLAYER, FALSE);
+        setEntityYMovement(ENTITY_PLAYER, FALSE);
+        func_8002FF38(ENTITY_PLAYER, FALSE);
+    
         gPlayer.animationState++;
+
         func_80034DC8(MAIN_MAP_INDEX, 0, 7);
+    
     }
 
     if (gPlayer.animationState == 3) {
@@ -993,7 +996,7 @@ void func_80068DFC(void) {
             gPlayer.nextAction = 1;
             gPlayer.direction = gPlayer.unk_6E;
 
-            setEntityDirection(PLAYER, convertSpriteToMapDirection(gPlayer.direction, MAIN_MAP_INDEX));
+            setEntityDirection(ENTITY_PLAYER, convertSpriteToWorldDirection(gPlayer.direction, MAIN_MAP_INDEX));
 
             vec = getMovementVectorFromDirection(1.0f, gPlayer.direction, 0.0f);
 
@@ -1024,7 +1027,7 @@ void func_80068DFC(void) {
             break;
     }
 
-    func_8002FE10(0, gPlayer.movementVector.x, 0.0f, gPlayer.movementVector.z, 1.0f);
+    setEntityMovementVector(0, gPlayer.movementVector.x, 0.0f, gPlayer.movementVector.z, 1.0f);
    
 }
 
@@ -1045,24 +1048,24 @@ void func_80069830(void) {
 
         case 0:
 
-            func_8003019C(PLAYER, 0);
-            func_80030240(PLAYER, 0);
-            func_800302E4(PLAYER, 0);
-            func_80030054(PLAYER, 0);
-            func_80038990(PLAYER, 1, 0);
+            setEntityCollidable(ENTITY_PLAYER, FALSE);
+            setEntityTracksCollisions(ENTITY_PLAYER, FALSE);
+            enableEntityMovement(ENTITY_PLAYER, FALSE);
+            setEntityYMovement(ENTITY_PLAYER, FALSE);
+            func_80038990(ENTITY_PLAYER, 1, 0);
             gPlayer.direction = SOUTH;
             gPlayer.actionTimer = 0x12;
             gPlayer.animationState++;
             vec = getMovementVectorFromDirection(4.0f, 4, 0.0f);
             gPlayer.movementVector = vec;
-            setEntityDirection(PLAYER, convertSpriteToMapDirection(gPlayer.direction, MAIN_MAP_INDEX));
+            setEntityDirection(ENTITY_PLAYER, convertSpriteToWorldDirection(gPlayer.direction, MAIN_MAP_INDEX));
             gPlayer.nextAction = 2;
             break;
 
         case 1:
 
             if (gPlayer.actionTimer == 0) {
-                func_80038990(PLAYER, 0, 0);
+                func_80038990(ENTITY_PLAYER, 0, 0);
                 gPlayer.direction = SOUTHWEST;
                 // to-do: replace with static inline
                 gPlayer.currentAction = 0xC;
@@ -1098,7 +1101,7 @@ void func_80069830(void) {
 
             if (gPlayer.actionTimer == 0) {
                 
-                func_80038990(PLAYER, 1, 0);
+                func_80038990(ENTITY_PLAYER, 1, 0);
                 
                 setAudio(0x32);
                 
@@ -1109,7 +1112,7 @@ void func_80069830(void) {
                 
                 gPlayer.movementVector = vec2;
                 
-                setEntityDirection(PLAYER, convertSpriteToMapDirection(gPlayer.direction, MAIN_MAP_INDEX));
+                setEntityDirection(ENTITY_PLAYER, convertSpriteToWorldDirection(gPlayer.direction, MAIN_MAP_INDEX));
                 
                 gPlayer.nextAction = 2;
                 gPlayer.animationState++;
@@ -1128,11 +1131,11 @@ void func_80069830(void) {
                 gPlayer.movementVector.y = 0;
                 gPlayer.movementVector.z = 0;
 
-                func_8003019C(PLAYER, 1);
-                func_80030240(PLAYER, 1);
-                func_800302E4(PLAYER, 1);
-                func_80030054(PLAYER, 1);
-                func_80038990(PLAYER, 0, 0);
+                setEntityCollidable(ENTITY_PLAYER, TRUE);
+                setEntityTracksCollisions(ENTITY_PLAYER, TRUE);
+                enableEntityMovement(ENTITY_PLAYER, 1);
+                setEntityYMovement(ENTITY_PLAYER, TRUE);
+                func_80038990(ENTITY_PLAYER, 0, 0);
 
                 resetAction();
 
@@ -1152,7 +1155,7 @@ void func_80069830(void) {
 
     }
 
-    func_8002FE10(PLAYER, gPlayer.movementVector.x, 0.0f, gPlayer.movementVector.z, 1.0f);
+    setEntityMovementVector(ENTITY_PLAYER, gPlayer.movementVector.x, 0.0f, gPlayer.movementVector.z, 1.0f);
 
 }
 */
@@ -1161,7 +1164,7 @@ void func_80069830(void) {
 
 void func_80069C5C(void) {
     
-    if (checkEntityShouldPlaySoundEffect(PLAYER)) {
+    if (checkEntityShouldPlaySoundEffect(ENTITY_PLAYER)) {
         setAudio(0xA);
     }
 
@@ -1171,7 +1174,7 @@ void func_80069C5C(void) {
 
 void func_80069C90(void) {
 
-    if (checkEntityShouldPlaySoundEffect(PLAYER)) {
+    if (checkEntityShouldPlaySoundEffect(ENTITY_PLAYER)) {
         setAudio(0xA);
     }
 
@@ -1248,21 +1251,21 @@ void func_8006A2E8(void) {
             if (!gPlayer.heldItem && !checkDailyEventBit(0xD)) {
                 
                 if ((gPlayer.flags & 1)) {
-                    setEntityAnimationWithDirectionChange(PLAYER, 0x204);    
+                    setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x204);    
                 } else {
                     if (gPlayer.flags & 4) {
-                         setEntityAnimationWithDirectionChange(PLAYER, 0x244);
+                         setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x244);
                     } else {
                         if (gPlayer.flags & 0x20) {
-                            setEntityAnimationWithDirectionChange(PLAYER, 0x244);
+                            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x244);
                         } else {
-                            setEntityAnimationWithDirectionChange(PLAYER, 0);
+                            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0);
                         }
                     }   
                 }
                 
             } else {
-                setEntityAnimationWithDirectionChange(PLAYER, 0x18);
+                setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x18);
             }
             
             if (!(gPlayer.flags & 1)) {
@@ -1287,12 +1290,12 @@ void func_8006A2E8(void) {
             
             if (!gPlayer.heldItem && !checkDailyEventBit(0xD)) {
                 if (gPlayer.flags & 1) {
-                   setEntityAnimationWithDirectionChange(PLAYER, 0x20C);
+                   setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x20C);
                 } else {
-                    setEntityAnimationWithDirectionChange(PLAYER, 8);
+                    setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 8);
                 }
             } else {
-                setEntityAnimationWithDirectionChange(PLAYER, 0x20);
+                setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x20);
             }
             
             playerIdleCounter = 0;
@@ -1303,25 +1306,25 @@ void func_8006A2E8(void) {
             if (!gPlayer.heldItem && !checkDailyEventBit(0xD)) {
 
                 if (gPlayer.flags & 1) { 
-                    if (checkEntityShouldPlaySoundEffect(PLAYER)) {
+                    if (checkEntityShouldPlaySoundEffect(ENTITY_PLAYER)) {
                         setAudio(9);
                     }
-                    setEntityAnimationWithDirectionChange(PLAYER, 0x214);
+                    setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x214);
 
                 } else {
-                    if (checkEntityShouldPlaySoundEffect(PLAYER)) {
+                    if (checkEntityShouldPlaySoundEffect(ENTITY_PLAYER)) {
                         setAudio(5);
                     }
-                    setEntityAnimationWithDirectionChange(PLAYER, 0x10);
+                    setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x10);
                 }
 
             } else {
 
-                if (checkEntityShouldPlaySoundEffect(PLAYER)) {
+                if (checkEntityShouldPlaySoundEffect(ENTITY_PLAYER)) {
                     setAudio(5);
                 }
 
-                setEntityAnimationWithDirectionChange(PLAYER, 0x28);
+                setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x28);
             }
 
             playerIdleCounter = 0;
@@ -1472,11 +1475,11 @@ static inline handleStopHolding() {
 
 void func_8006A714(void) {
     
-    if (checkEntityAnimationStateChanged(PLAYER) || gPlayer.animationState == 0) {
+    if (checkEntityAnimationStateChanged(ENTITY_PLAYER) || gPlayer.animationState == 0) {
         
         if (gPlayer.animationState == 0) {
         
-            setEntityAnimationWithDirectionChange(PLAYER, 0x1A5);
+            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x1A5);
             gPlayer.animationState++;
         
         } else {
@@ -1493,7 +1496,7 @@ static inline updateAnimation(u16 animation) {
     
      if (gPlayer.animationState == 0) {
 
-        setEntityAnimationWithDirectionChange(PLAYER, animation);
+        setEntityAnimationWithDirectionChange(ENTITY_PLAYER, animation);
         func_800D55E4(gPlayer.itemInfoIndex, 0xD);
     
     } else {
@@ -1505,7 +1508,7 @@ static inline updateAnimation(u16 animation) {
 
 void func_8006A7B0(void) {
     
-    if (checkEntityAnimationStateChanged(PLAYER) || gPlayer.animationState == 0) {
+    if (checkEntityAnimationStateChanged(ENTITY_PLAYER) || gPlayer.animationState == 0) {
        updateAnimation(0x1A5);
     }
 }
@@ -1514,11 +1517,11 @@ void func_8006A7B0(void) {
 
 void func_8006A848(void) {
     
-    if (checkEntityAnimationStateChanged(PLAYER) || gPlayer.animationState == 0) {
+    if (checkEntityAnimationStateChanged(ENTITY_PLAYER) || gPlayer.animationState == 0) {
     
         if (gPlayer.animationState == 0) {
 
-            setEntityAnimationWithDirectionChange(PLAYER, 0x1AD);
+            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x1AD);
             
         } else {
 
@@ -1532,17 +1535,17 @@ void func_8006A848(void) {
 
 void func_8006A8C4(void) {
     
-    if (checkEntityAnimationStateChanged(PLAYER) || gPlayer.animationState == 0) {
+    if (checkEntityAnimationStateChanged(ENTITY_PLAYER) || gPlayer.animationState == 0) {
         switch (gPlayer.animationState) {                       
             case 0:
-                setEntityAnimationWithDirectionChange(PLAYER, 0x1B7);
+                setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x1B7);
                 func_800D55E4(gPlayer.itemInfoIndex, 8);
                 break;
             case 1:
-                setEntityAnimationWithDirectionChange(PLAYER, 0x1BF);
+                setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x1BF);
                 break;
             case 2:
-                setEntityAnimationWithDirectionChange(PLAYER, 0x1B7);
+                setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x1B7);
                 break;
             default:
                 handleStopHolding();
@@ -1555,12 +1558,12 @@ void func_8006A8C4(void) {
 
 void func_8006A9A8(void) {
     
-    if (checkEntityAnimationStateChanged(PLAYER) || gPlayer.animationState == 0) {
+    if (checkEntityAnimationStateChanged(ENTITY_PLAYER) || gPlayer.animationState == 0) {
 
         switch (gPlayer.animationState) {       
 
             case 0:
-                setEntityAnimationWithDirectionChange(PLAYER, 0x18);
+                setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x18);
                 break;
             case 1:
                 func_800D55E4(gPlayer.itemInfoIndex, 0xA);
@@ -1568,7 +1571,7 @@ void func_8006A9A8(void) {
                 gPlayer.animationState++;
                 break;
             case 2:
-                setEntityAnimation(PLAYER, 0x1B5);
+                setEntityAnimation(ENTITY_PLAYER, 0x1B5);
                 break;
             default:
                 handleStopHolding();
@@ -1582,22 +1585,22 @@ void func_8006A9A8(void) {
 
 void func_8006AA9C(void) {
 
-    if (checkEntityAnimationStateChanged(PLAYER) || gPlayer.animationState == 0) {
+    if (checkEntityAnimationStateChanged(ENTITY_PLAYER) || gPlayer.animationState == 0) {
         
         if (gPlayer.animationState == 0) {
             
             switch (gPlayer.fatigue.level) {       
                 case 1:
-                    setEntityAnimation(PLAYER, 0x1D0);
+                    setEntityAnimation(ENTITY_PLAYER, 0x1D0);
                     break;
                 case 2:
-                    setEntityAnimation(PLAYER, 0x1D1);
+                    setEntityAnimation(ENTITY_PLAYER, 0x1D1);
                     break;
                 case 3:
-                    setEntityAnimation(PLAYER, 0x1D2);
+                    setEntityAnimation(ENTITY_PLAYER, 0x1D2);
                     break;
                 case 4:
-                    setEntityAnimation(PLAYER, 0x1D3);
+                    setEntityAnimation(ENTITY_PLAYER, 0x1D3);
                     break;
             }
     
@@ -1615,16 +1618,16 @@ void func_8006AA9C(void) {
 
 void func_8006AB90(void) {
 
-    if (checkEntityAnimationStateChanged(PLAYER) || gPlayer.animationState == 0) {
+    if (checkEntityAnimationStateChanged(ENTITY_PLAYER) || gPlayer.animationState == 0) {
         
         if (gPlayer.animationState == 0) {
 
             switch (gPlayer.fatigue.unk_2) {                   
                 case 1:
-                    setEntityAnimation(PLAYER, 0x299);
+                    setEntityAnimation(ENTITY_PLAYER, 0x299);
                     break;
                 case 2:
-                    setEntityAnimation(PLAYER, 0x29A);
+                    setEntityAnimation(ENTITY_PLAYER, 0x29A);
                     break;
                 case 3:
                     break;
@@ -1645,31 +1648,31 @@ void func_8006AB90(void) {
 // handle wife going to sleep at the same time
 void func_8006AC4C(void) {
 
-    if (checkEntityAnimationStateChanged(PLAYER) || gPlayer.animationState == 0) {
+    if (checkEntityAnimationStateChanged(ENTITY_PLAYER) || gPlayer.animationState == 0) {
 
         switch (gPlayer.animationState) {         
 
             case 1:
 
-                setEntityAnimation(PLAYER, 0x1D4);
+                setEntityAnimation(ENTITY_PLAYER, 0x1D4);
                 gPlayer.animationState++;
 
                 if (checkLifeEventBit(MARRIED) && (19 < gHour && gHour < 22)) {
                     switch (gWife) {
                         case MARIA:
-                            npcInfoArray[MARIA].movingFlag = 4;
+                            npcs[MARIA].movingFlag = 4;
                             break;
                         case POPURI:
-                            npcInfoArray[POPURI].movingFlag = 4;
+                            npcs[POPURI].movingFlag = 4;
                             break;
                         case ELLI:
-                            npcInfoArray[ELLI].movingFlag = 4;
+                            npcs[ELLI].movingFlag = 4;
                             break;
                         case ANN:
-                            npcInfoArray[ANN].movingFlag = 4;
+                            npcs[ANN].movingFlag = 4;
                             break;
                         case KAREN:
-                            npcInfoArray[KAREN].movingFlag = 4;
+                            npcs[KAREN].movingFlag = 4;
                             break;
                     }
                 }
@@ -1677,12 +1680,12 @@ void func_8006AC4C(void) {
                 break;
 
             case 2:
-                setEntityAnimation(PLAYER, 0x1D5);
+                setEntityAnimation(ENTITY_PLAYER, 0x1D5);
                 gPlayer.animationState++;
                 break;
 
             case 3:
-                setEntityAnimation(PLAYER, 0x1D6);
+                setEntityAnimation(ENTITY_PLAYER, 0x1D6);
                 gPlayer.animationState++;
                 break;             
 
@@ -1704,26 +1707,26 @@ void func_8006AC4C(void) {
 // napping/idle animation
 void func_8006ADF4(void) {
 
-    if (checkEntityAnimationStateChanged(PLAYER) || gPlayer.animationState == 0) {
+    if (checkEntityAnimationStateChanged(ENTITY_PLAYER) || gPlayer.animationState == 0) {
 
         switch (gPlayer.animationState) { 
             case 0:
-                setEntityAnimation(PLAYER, 0x1E0);
+                setEntityAnimation(ENTITY_PLAYER, 0x1E0);
                 gPlayer.animationState++;
                 break;
             case 1:
-                setEntityAnimation(PLAYER, 0x1E1);
+                setEntityAnimation(ENTITY_PLAYER, 0x1E1);
                 gPlayer.animationState++;
                 break;
             case 2:
                 playerIdleCounter++;
                 if (playerIdleCounter == 1800) {
-                    setEntityAnimation(PLAYER, 0x1E2);
+                    setEntityAnimation(ENTITY_PLAYER, 0x1E2);
                     gPlayer.animationState++;
                 }
                 break;
             case 4:
-                setEntityAnimation(PLAYER, 0x1E3);
+                setEntityAnimation(ENTITY_PLAYER, 0x1E3);
                 gPlayer.animationState++;
                 break;
             default:
@@ -1740,21 +1743,21 @@ void func_8006ADF4(void) {
 
 void func_8006AEEC(void) {
     
-    if (checkEntityAnimationStateChanged(PLAYER) || gPlayer.animationState == 0) {
+    if (checkEntityAnimationStateChanged(ENTITY_PLAYER) || gPlayer.animationState == 0) {
 
         switch (gPlayer.animationState) { 
             case 0:
-                setEntityAnimationWithDirectionChange(PLAYER, 0x1B7);
+                setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x1B7);
                 break;
             case 1:
-                setEntityAnimationWithDirectionChange(PLAYER, 0x1BF);
+                setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x1BF);
                 gPlayer.animationState++;
                 break;
             case 3:
-                setEntityAnimationWithDirectionChange(PLAYER, 0x1BF);
+                setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x1BF);
                 break;            
             case 4:
-                setEntityAnimationWithDirectionChange(PLAYER, 0x1B7);
+                setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x1B7);
                 gPlayer.animationState++;
                 break;           
             default:
@@ -1767,15 +1770,15 @@ void func_8006AEEC(void) {
 
 void func_8006AFE4(void) {
     
-    if (checkEntityAnimationStateChanged(PLAYER) || gPlayer.animationState == 0) {
+    if (checkEntityAnimationStateChanged(ENTITY_PLAYER) || gPlayer.animationState == 0) {
 
         switch (gPlayer.animationState) {  
             case 0:
                 if (!func_800DCAA0(gPlayer.shopItemIndex)) {
-                    setEntityAnimationWithDirectionChange(PLAYER, STANDING);
+                    setEntityAnimationWithDirectionChange(ENTITY_PLAYER, STANDING);
                     break;
                 }
-                setEntityAnimationWithDirectionChange(PLAYER, 0x1AD);
+                setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x1AD);
                 break;
             case 1:
                 // shop.c
@@ -1785,12 +1788,12 @@ void func_8006AFE4(void) {
                 break;
             case 2:
                 if (func_800DCAA0(gPlayer.shopItemIndex)) {
-                    setEntityAnimationWithDirectionChange(PLAYER, 0x1AD);
+                    setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x1AD);
                 }
                 break;
             case 3:
                 if (func_800DCAA0(gPlayer.shopItemIndex)) {
-                    setEntityAnimationWithDirectionChange(PLAYER, 0x1AD);
+                    setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x1AD);
                 }
                 break;
             default:
@@ -1807,11 +1810,11 @@ void func_8006B4D4(void) {}
 
 void func_8006B4DC(void) {
 
-    if (checkEntityAnimationStateChanged(PLAYER) || (gPlayer.animationState == 0)) {
+    if (checkEntityAnimationStateChanged(ENTITY_PLAYER) || (gPlayer.animationState == 0)) {
         
         if (gPlayer.animationState == 0) {
             
-            setEntityAnimation(PLAYER, 0x1DB);
+            setEntityAnimation(ENTITY_PLAYER, 0x1DB);
             
             gPlayer.animationState = 1;
             gPlayer.heldItem = 0xCA;
@@ -1829,11 +1832,11 @@ void func_8006B4DC(void) {
 
 void func_8006B584(void) {
     
-    if ((checkEntityAnimationStateChanged(PLAYER)) || (gPlayer.animationState == 0)) {
+    if ((checkEntityAnimationStateChanged(ENTITY_PLAYER)) || (gPlayer.animationState == 0)) {
         
         if (gPlayer.animationState == 0) {
             
-            setEntityAnimationWithDirectionChange(PLAYER, 0x1B7);
+            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x1B7);
             func_800D55E4(gPlayer.itemInfoIndex, 0x11);
             
         } else {
@@ -1849,16 +1852,16 @@ void func_8006B584(void) {
 
 void func_8006B61C(void) {
 
-    if ((checkEntityAnimationStateChanged(PLAYER)) || (gPlayer.animationState == 0)) {
+    if ((checkEntityAnimationStateChanged(ENTITY_PLAYER)) || (gPlayer.animationState == 0)) {
         
         if (gPlayer.animationState == 0) {
             
-            setEntityAnimationWithDirectionChange(PLAYER, 0x1A5);
+            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x1A5);
             func_800D55E4(gPlayer.itemInfoIndex, 0xD);
             
         } else {
 
-            setEntityAnimationWithDirectionChange(PLAYER, STANDING);
+            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, STANDING);
             gItemBeingHeld = 0xFF;
 
             if (!checkDailyEventBit(0x45) && !checkDailyEventBit(0x47) && !checkDailyEventBit(0x48)) {
@@ -1873,10 +1876,10 @@ void func_8006B61C(void) {
 
 void func_8006B6EC(void) {
 
-    if ((checkEntityAnimationStateChanged(PLAYER)) || (gPlayer.animationState == 0)) {
+    if ((checkEntityAnimationStateChanged(ENTITY_PLAYER)) || (gPlayer.animationState == 0)) {
 
         if (gPlayer.animationState == 0) {
-            setEntityAnimation(PLAYER, 0x2B3);
+            setEntityAnimation(ENTITY_PLAYER, 0x2B3);
             gPlayer.animationState++;
         } else {
             resetAction();
@@ -1889,18 +1892,18 @@ void func_8006B6EC(void) {
 
 void func_8006B77C(void) {
 
-    if ((checkEntityAnimationStateChanged(PLAYER)) || (gPlayer.animationState == 0)) {
+    if ((checkEntityAnimationStateChanged(ENTITY_PLAYER)) || (gPlayer.animationState == 0)) {
 
         switch (gPlayer.animationState) {
 
             case 0:
                 
-                setEntityAnimationWithDirectionChange(PLAYER, 0x18);
+                setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x18);
                 break;
             
             case 1:
                 
-                setEntityAnimationWithDirectionChange(PLAYER, 0x26A);
+                setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x26A);
                 func_800D55E4(gPlayer.itemInfoIndex, 1);
                 gPlayer.animationState++;
                 break;
@@ -1928,10 +1931,10 @@ void func_8006B77C(void) {
 
 void func_8006B8BC(void) {
 
-    if ((checkEntityAnimationStateChanged(PLAYER)) || (gPlayer.animationState == 0)) {
+    if ((checkEntityAnimationStateChanged(ENTITY_PLAYER)) || (gPlayer.animationState == 0)) {
         
         if (gPlayer.animationState == 0) {
-             setEntityAnimationWithDirectionChange(PLAYER, 0x21C);
+             setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x21C);
         }
     }
     
@@ -1941,10 +1944,10 @@ void func_8006B8BC(void) {
 
 void func_8006B910(void) {
 
-    if ((checkEntityAnimationStateChanged(PLAYER)) || (gPlayer.animationState == 0)) {
+    if ((checkEntityAnimationStateChanged(ENTITY_PLAYER)) || (gPlayer.animationState == 0)) {
         
         if (gPlayer.animationState == 0) {
-             setEntityAnimationWithDirectionChange(PLAYER, 0x25C);
+             setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x25C);
         }
     }
     
@@ -1960,10 +1963,10 @@ void func_8006B974(void) {}
 
 void func_8006B97C(void) {
     
-    if ((checkEntityAnimationStateChanged(PLAYER)) || (gPlayer.animationState == 0)) {
+    if ((checkEntityAnimationStateChanged(ENTITY_PLAYER)) || (gPlayer.animationState == 0)) {
 
         if (gPlayer.animationState == 0) {
-            setEntityAnimationWithDirectionChange(PLAYER, 0x19D);
+            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x19D);
             gPlayer.animationState++;
         } else {
             resetAction();
@@ -1979,10 +1982,10 @@ void func_8006B97C(void) {
 
 void func_8006BA14(void) {
     
-    if ((checkEntityAnimationStateChanged(PLAYER)) || (gPlayer.animationState == 0)) {
+    if ((checkEntityAnimationStateChanged(ENTITY_PLAYER)) || (gPlayer.animationState == 0)) {
 
         if (gPlayer.animationState == 0) {
-            setEntityAnimationWithDirectionChange(PLAYER, 0x19D);
+            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x19D);
             gPlayer.animationState++;
         } else {
             resetAction();
@@ -1997,22 +2000,22 @@ void func_8006BA14(void) {
 
 void func_8006BAAC(void) {
 
-    if ((checkEntityAnimationStateChanged(PLAYER)) || (gPlayer.animationState == 0)) {
+    if ((checkEntityAnimationStateChanged(ENTITY_PLAYER)) || (gPlayer.animationState == 0)) {
 
         switch (gPlayer.animationState) {
 
             case 0:
                 
-                setEntityAnimationWithDirectionChange(PLAYER, 0x18);
+                setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x18);
                 break;
             
             case 1:
 
                 if (func_800D5A6C(gPlayer.heldItem) & 0x4000) {
-                    setEntityAnimation(PLAYER, 0x2B3);
+                    setEntityAnimation(ENTITY_PLAYER, 0x2B3);
                     gAlcoholTolerance += adjustValue(gAlcoholTolerance, 1, 0xFF);
                 } else {
-                    setEntityAnimation(PLAYER, 0x1B6);
+                    setEntityAnimation(ENTITY_PLAYER, 0x1B6);
                 }
                 
                 gPlayer.heldItem = 0;
@@ -2032,11 +2035,11 @@ void func_8006BAAC(void) {
 
 void func_8006BBC4(void) {
     
-    if ((checkEntityAnimationStateChanged(PLAYER)) || (gPlayer.animationState == 0)) {
+    if ((checkEntityAnimationStateChanged(ENTITY_PLAYER)) || (gPlayer.animationState == 0)) {
         
         if (gPlayer.animationState == 0) {
             
-            setEntityAnimationWithDirectionChange(PLAYER, 0x26A);
+            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x26A);
             func_800D55E4(gPlayer.itemInfoIndex, 1);
             gPlayer.heldItem = 0;
             gPlayer.animationState++;
@@ -2060,13 +2063,13 @@ void handleFishingRodUse(void) {
     s32 temp2;
     int max;
 
-    if (checkEntityAnimationStateChanged(PLAYER) || gPlayer.animationState == 0) {
+    if (checkEntityAnimationStateChanged(ENTITY_PLAYER) || gPlayer.animationState == 0) {
         
         switch (gPlayer.animationState) {
             
             case 0:
                 
-                setEntityAnimationWithDirectionChange(PLAYER, 0x182);
+                setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x182);
                 gPlayer.animationState++;
                 break;
             
@@ -2074,8 +2077,8 @@ void handleFishingRodUse(void) {
                 
                 if (func_800AD0C4(gBaseMapIndex)) {
                 
-                    func_80065F94(&vec, 2.0f, 8);
-                    func_8003AF58(&vec, 0, vec.x, vec.z);
+                    vec = func_80065F94(2.0f, 8);
+                    vec = func_8003AF58(0, vec.x, vec.z);
 
                     switch (gPlayer.fatigue.unk_3) {
                         case 0:
@@ -2094,7 +2097,7 @@ void handleFishingRodUse(void) {
 
                     func_800CFB38(0, 0x9D, vec.x, vec.y, vec.z);
                     setAudio(0x28);
-                    setEntityAnimationWithDirectionChange(PLAYER, 0x17A);
+                    setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x17A);
                     gPlayer.animationState = 2;
                 
                 } else {
@@ -2105,7 +2108,7 @@ void handleFishingRodUse(void) {
             
             case 3:
                 func_800CFD78(0, 0x9E);
-                setEntityAnimationWithDirectionChange(PLAYER, 0x18A);
+                setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x18A);
                 gPlayer.animationState = 4;
                 break;
             
@@ -2171,7 +2174,7 @@ void handleFishingRodUse(void) {
             case 6:
             case 8:
                 func_800CFDA0(0);
-                setEntityAnimationWithDirectionChange(PLAYER, 0x192);
+                setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x192);
                 gPlayer.animationState++;
                 break;
               
@@ -2182,7 +2185,7 @@ void handleFishingRodUse(void) {
         }
     }
 
-    if (checkEntityShouldPlaySoundEffect(PLAYER)) {
+    if (checkEntityShouldPlaySoundEffect(ENTITY_PLAYER)) {
         setAudio(0xB);
     }
     
@@ -2197,14 +2200,14 @@ void func_8006C134(void) {}
 // climbing trees
 void func_8006C13C(void) {
 
-    if (checkEntityAnimationStateChanged(PLAYER) || gPlayer.animationState == 0 || gPlayer.animationState == 2) {
+    if (checkEntityAnimationStateChanged(ENTITY_PLAYER) || gPlayer.animationState == 0 || gPlayer.animationState == 2) {
         switch (gPlayer.animationState) {
             case 1:
-                setEntityAnimationWithDirectionChange(PLAYER, 0x29B);
+                setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x29B);
                 break;
             case 0:
             case 2:
-                setEntityAnimationWithDirectionChange(PLAYER, 0x30);
+                setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x30);
                 break;
         }
     }
@@ -2221,10 +2224,10 @@ void func_8006C1DC(void) {
     data = *(UnknownPlayerData*)D_8011F5D4;
     ptr = (u8*)&data;
     
-    if (checkEntityAnimationStateChanged(PLAYER) || gPlayer.animationState == 0) {
+    if (checkEntityAnimationStateChanged(ENTITY_PLAYER) || gPlayer.animationState == 0) {
         switch (gPlayer.animationState) {
             case 0:
-                setEntityAnimation(PLAYER, 0x171);
+                setEntityAnimation(ENTITY_PLAYER, 0x171);
                 gPlayer.animationState = 1;
                 gPlayer.heldItem = *(&ptr[D_801A8B5C+D_8018A724*3]-3);
                 gPlayer.itemInfoIndex = func_800D5308(0, 0x15, gPlayer.heldItem, 0, 8);
@@ -2322,10 +2325,10 @@ void func_8006DFB0(void) {
 
     switch (gPlayer.animationState) {
         case 0:
-            setEntityAnimation(PLAYER, 0);
+            setEntityAnimation(ENTITY_PLAYER, 0);
             break;
         case 1:
-            setEntityAnimation(PLAYER, 0x148);
+            setEntityAnimation(ENTITY_PLAYER, 0x148);
             break;
         case 2:
             func_800CF850();
@@ -2356,10 +2359,10 @@ void func_8006E0D4(void) {
 
     switch (gPlayer.animationState) {
         case 0:
-            setEntityAnimationWithDirectionChange(PLAYER, STANDING);
+            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, STANDING);
             break;
         case 1:
-            setEntityAnimationWithDirectionChange(PLAYER, 0x169);
+            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x169);
             break;
         case 2:
             func_800CF850();
@@ -2403,11 +2406,11 @@ void func_8006E240(void) {
 
     switch (gPlayer.animationState) {                           
         case 0:
-            setEntityAnimationWithDirectionChange(PLAYER, STANDING);
+            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, STANDING);
             func_80099DE8();
             break;
         case 1:
-            setEntityAnimationWithDirectionChange(PLAYER, 0x234);
+            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x234);
             break;
         case 2:
             func_800CF850();
@@ -2439,12 +2442,12 @@ void func_8006E574(void) {
 
     switch (gPlayer.animationState) {
         case 0:
-            setEntityAnimationWithDirectionChange(PLAYER, STANDING);
-            func_800305CC(PLAYER, 0.0f, 8.0f, 0);
+            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, STANDING);
+            func_800305CC(ENTITY_PLAYER, 0.0f, 8.0f, 0);
             func_80085C94();
             break;
         case 1:
-            setEntityAnimationWithDirectionChange(PLAYER, 0x234);
+            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x234);
             break;
         case 2:
             func_800CF850();
@@ -2472,7 +2475,7 @@ void func_8006E678(void) {
 
             if (gPlayer.bottleContents == 0) {
                 
-                setEntityAnimationWithDirectionChange(PLAYER, STANDING);
+                setEntityAnimationWithDirectionChange(ENTITY_PLAYER, STANDING);
                 func_80099DE8();
                 
             } else {
@@ -2516,7 +2519,7 @@ void func_8006E678(void) {
             break;
 
         case 1:
-            setEntityAnimationWithDirectionChange(PLAYER, 0x272);
+            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x272);
             break;
 
         case 2:

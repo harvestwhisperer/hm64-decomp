@@ -7,7 +7,7 @@
 #include "game/player.h"
 
 #include "system/map.h"
-#include "system/mathUtils.h"
+#include "system/math.h"
 
 // data
 extern u8 D_80118700[218][5];
@@ -543,7 +543,7 @@ void func_800DAD74(u8 arg0, f32 arg1, u8 arg2) {
     u8 temp4;
     u8 temp5;
 
-    func_80065F94(&vec, arg1, arg2);
+    vec = func_80065F94(arg1, arg2);
 
     if (vec.y != 65535.0f) {
 

@@ -2,7 +2,7 @@
 
 #include "system/controller.h" 
 #include "system/dialogue.h"
-#include "system/mathUtils.h"
+#include "system/math.h"
 #include "system/message.h"
 #include "system/globalSprites.h"
 
@@ -277,6 +277,7 @@ inline int func_80043408(int initial, int value, int max) {
     } 
       
     return adjusted;
+    
 }
 
 //INCLUDE_ASM("asm/nonmatchings/system/dialogue", func_80043430);
@@ -305,7 +306,7 @@ bool func_80043430(u16 index, u16 dialogueMapAddressesIndex, u16 dialogueIndex, 
             0,
             0);
  
-        setSpriteShrinkFactor(dialogues[index].dialogueButtonIcon1.spriteIndex, 0.0f, 0.0f, 0.0f);
+        setSpriteViewSpacePosition(dialogues[index].dialogueButtonIcon1.spriteIndex, 0.0f, 0.0f, 0.0f);
         setSpriteScale(dialogues[index].dialogueButtonIcon1.spriteIndex, 1.0f, 1.0f, 1.0f);
         setSpriteRotation(dialogues[index].dialogueButtonIcon1.spriteIndex, 0.0f, 0.0f, 0.0f);
         setBilinearFiltering(dialogues[index].dialogueButtonIcon1.spriteIndex, TRUE);
@@ -329,7 +330,7 @@ bool func_80043430(u16 index, u16 dialogueMapAddressesIndex, u16 dialogueIndex, 
             0,
             0);
 
-        setSpriteShrinkFactor(dialogues[index].dialogueButtonIcon2.spriteIndex, 0.0f, 0.0f, 0.0f);
+        setSpriteViewSpacePosition(dialogues[index].dialogueButtonIcon2.spriteIndex, 0.0f, 0.0f, 0.0f);
         setSpriteScale(dialogues[index].dialogueButtonIcon2.spriteIndex, 1.0f, 1.0f, 1.0f);
         setSpriteRotation(dialogues[index].dialogueButtonIcon2.spriteIndex, 0.0f, 0.0f, 0.0f);
         setBilinearFiltering(dialogues[index].dialogueButtonIcon2.spriteIndex, TRUE);
@@ -353,7 +354,7 @@ bool func_80043430(u16 index, u16 dialogueMapAddressesIndex, u16 dialogueIndex, 
             0,
             0);
 
-        setSpriteShrinkFactor(dialogues[index].dialogueButtonIcon3.spriteIndex, 0.0f, 0.0f, 0.0f);
+        setSpriteViewSpacePosition(dialogues[index].dialogueButtonIcon3.spriteIndex, 0.0f, 0.0f, 0.0f);
         setSpriteScale(dialogues[index].dialogueButtonIcon3.spriteIndex, 1.0f, 1.0f, 1.0f);
         setSpriteRotation(dialogues[index].dialogueButtonIcon3.spriteIndex, 0.0f, 0.0f, 0.0f);
         setBilinearFiltering(dialogues[index].dialogueButtonIcon3.spriteIndex, TRUE);
@@ -674,7 +675,7 @@ void func_80044684(u16 index) {
     setBilinearFiltering(dialogueWindows[dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].dialogueWindowIndex].spriteIndex, TRUE);
 
     startSpriteAnimation(dialogues[index].dialogueButtonIcon1.spriteIndex, dialogues[index].dialogueButtonIcon1.spriteOffset, dialogues[index].dialogueButtonIcon1.flag);
-    setSpriteShrinkFactor(dialogues[index].dialogueButtonIcon1.spriteIndex, dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].shrink.x + temp1, dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].shrink.y + temp2, dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].shrink.z);
+    setSpriteViewSpacePosition(dialogues[index].dialogueButtonIcon1.spriteIndex, dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].viewSpacePosition.x + temp1, dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].viewSpacePosition.y + temp2, dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].viewSpacePosition.z);
 
 }
 #else
@@ -690,13 +691,11 @@ void func_800449C4(u16 index) {
 
     setSpriteScale(dialogueWindows[dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].dialogueWindowIndex].spriteIndex, dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].unk_A0 * 0.5f, dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].unk_93 * 0.6f, 1.0f);
     
-    // flags
     setSpriteRenderingLayer(dialogueWindows[dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].dialogueWindowIndex].spriteIndex, (1 | 2));
     setBilinearFiltering(dialogueWindows[dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].dialogueWindowIndex].spriteIndex, TRUE);
 
-    // animation
     startSpriteAnimation(dialogues[index].dialogueButtonIcon2.spriteIndex, dialogues[index].dialogueButtonIcon2.spriteOffset, dialogues[index].dialogueButtonIcon2.flag);
-    setSpriteShrinkFactor(dialogues[index].dialogueButtonIcon2.spriteIndex, dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].shrink.x + tempX, dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].shrink.y + tempY, dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].shrink.z);
+    setSpriteViewSpacePosition(dialogues[index].dialogueButtonIcon2.spriteIndex, dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].viewSpacePosition.x + tempX, dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].viewSpacePosition.y + tempY, dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].viewSpacePosition.z);
 
 }
 
@@ -707,13 +706,11 @@ void func_80044BF4(u16 index) {
     f32 tempX = dialogues[index].dialogueButtonIcon3.coordinates.x;
     f32 tempY = dialogues[index].dialogueButtonIcon3.coordinates.y;
 
-    // flags
     setSpriteRenderingLayer(dialogueWindows[dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].dialogueWindowIndex].spriteIndex, (1 | 2));
     setBilinearFiltering(dialogueWindows[dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].dialogueWindowIndex].spriteIndex, 1);
 
-    // animation
     startSpriteAnimation(dialogues[index].dialogueButtonIcon3.spriteIndex, dialogues[index].dialogueButtonIcon3.spriteOffset, dialogues[index].dialogueButtonIcon3.flag);
-    setSpriteShrinkFactor(dialogues[index].dialogueButtonIcon3.spriteIndex, dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].shrink.x + tempX, dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].shrink.y + tempY, dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].shrink.z);
+    setSpriteViewSpacePosition(dialogues[index].dialogueButtonIcon3.spriteIndex, dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].viewSpacePosition.x + tempX, dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].viewSpacePosition.y + tempY, dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].viewSpacePosition.z);
 
 }
 
@@ -733,7 +730,7 @@ void func_80044D78(u16 index) {
 
                 if (dialogues[index].struct5.unk_18 != dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].unk_93 - 1) {
                     dialogues[index].struct5.unk_18++;
-                    adjustSpriteShrinkFactor(dialogues[index].dialogueButtonIcon1.spriteIndex, 0.0f, -dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].fontContext.unk_61 - dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].unk_9C, 0.0f);
+                    adjustSpriteViewSpacePosition(dialogues[index].dialogueButtonIcon1.spriteIndex, 0.0f, -dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].fontContext.unk_61 - dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].unk_9C, 0.0f);
                 } else {
                     func_8003FE9C(dialogues[index].struct5.dialogueBoxIndex2);
                     dialogues[index].struct5.unk_19++;
@@ -759,7 +756,7 @@ void func_80044D78(u16 index) {
                     
                     if (dialogues[index].struct5.unk_18) {
                         dialogues[index].struct5.unk_18--;
-                        adjustSpriteShrinkFactor(dialogues[index].dialogueButtonIcon1.spriteIndex, 0.0f, dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].fontContext.unk_61 + dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].unk_9C, 0.0f);
+                        adjustSpriteViewSpacePosition(dialogues[index].dialogueButtonIcon1.spriteIndex, 0.0f, dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].fontContext.unk_61 + dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].unk_9C, 0.0f);
                     } else {
                         func_8003FFF4(dialogues[index].struct5.dialogueBoxIndex2);
                         dialogues[index].struct5.unk_19--;
@@ -1130,6 +1127,7 @@ void updateDialogues(void) {
                 func_80045260(i);
             }
         }
+    
     }
     
 }

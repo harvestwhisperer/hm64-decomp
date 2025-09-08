@@ -13,7 +13,7 @@
 #include "system/graphic.h"
 #include "system/memory.h"
 #include "system/message.h"
-#include "system/mapContext.h"
+#include "system/mapController.h"
 
 #include "game/animals.h" 
 #include "game/evaluation.h"
@@ -365,17 +365,17 @@ void initializeGameVariables(void) {
     toolUse.unk_E = 0;
 
     for (i = 0; i < TOTAL_NPCS; i++) {
-        npcInfoArray[i].entityIndex = 0;
-        npcInfoArray[i].unk_1A = 0;
-        npcInfoArray[i].unk_1B = 0;
-        npcInfoArray[i].levelIndex = 0;
-        npcInfoArray[i].movingFlag = 0;
-        npcInfoArray[i].unk_1E = 0;
-        npcInfoArray[i].direction = NORTH;
-        npcInfoArray[i].unk_20 = 0;
-        npcInfoArray[i].unk_21 = 0;
-        npcInfoArray[i].unk_22 = 0;
-        npcInfoArray[i].location = 0;
+        npcs[i].entityIndex = 0;
+        npcs[i].unk_1A = 0;
+        npcs[i].unk_1B = 0;
+        npcs[i].levelIndex = 0;
+        npcs[i].movingFlag = 0;
+        npcs[i].unk_1E = 0;
+        npcs[i].direction = NORTH;
+        npcs[i].unk_20 = 0;
+        npcs[i].unk_21 = 0;
+        npcs[i].unk_22 = 0;
+        npcs[i].location = 0;
     }
 
     for (i = 0; i < TOTAL_NPCS; i++) {
@@ -386,9 +386,9 @@ void initializeGameVariables(void) {
     dogInfo.coordinates.y = 0;
     dogInfo.coordinates.z = 0;
     dogInfo.location = 0x52;
-    dogInfo.speed = 0;
+    dogInfo.unk_17 = 0;
     dogInfo.direction = NORTH;
-    dogInfo.unk_19 = 0;
+    dogInfo.speed = 0;
     dogInfo.unk_1A = 0;
     dogInfo.unk_1B = 0;
     dogInfo.name[0] = 0xF6;
@@ -406,9 +406,9 @@ void initializeGameVariables(void) {
     horseInfo.coordinates.y = 0;
     horseInfo.coordinates.z = 0;
     horseInfo.location = 0x52;
-    horseInfo.speed = 0;
+    horseInfo.unk_17 = 0;
     horseInfo.direction = NORTH;
-    horseInfo.unk_19 = 0;
+    horseInfo.speed = 0;
     horseInfo.unk_1A = 0;
     horseInfo.unk_1B = 0;
     horseInfo.age = 0;
@@ -723,7 +723,6 @@ void registerMainLoopCallbacks(void) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/initialize", func_8004F768);
 
-// TODO: finish adding entity name macros to function calls
 void func_8004F768(void) {
     
     initializeShadowSprite(0, &_shadowsTextureSegmentRomStart, &_shadowsTextureSegmentRomEnd, &_shadowsIndexSegmentRomStart, &_shadowsIndexSegmentRomEnd, (void*)SHADOW_TEXTURE_VADDR_START, (void*)SHADOW_TEXTURE_VADDR_END, (void*)SHADOW_ASSETS_INDEX_VADDR_START, (void*)SHADOW_ASSETS_INDEX_VADDR_END, 0, 0);
@@ -891,208 +890,208 @@ void func_8004F768(void) {
     func_8002FFF4(ENTITY_SHADY_SALESMAN, 0xC, 0xC);
     
     initializeEntityAsset(ENTITY_MRS_MANA_SON, &_mrsManaSonTextureSegmentRomStart, &_mrsManaSonTextureSegmentRomEnd, &_mrsManaSonAssetsIndexSegmentRomStart, &_mrsManaSonAssetsIndexSegmentRomEnd, &_mrsManaSonSpritesheetIndexSegmentRomStart, &_mrsManaSonSpritesheetIndexSegmentRomEnd, 1, 0, &mrsManaSonAnimationScripts);
-    setEntityCollisionBuffers(0x28, 0xF, 0xF);
-    func_8002FFF4(0x28, 0xC, 0xC);
+    setEntityCollisionBuffers(ENTITY_MRS_MANA_SON, 0xF, 0xF);
+    func_8002FFF4(ENTITY_MRS_MANA_SON, 0xC, 0xC);
     
     initializeEntityAsset(ENTITY_MRS_MANA, &_mrsManaTextureSegmentRomStart, &_mrsManaTextureSegmentRomEnd, &_mrsManaAssetsIndexSegmentRomStart, &_mrsManaAssetsIndexSegmentRomEnd, &_mrsManaSpritesheetIndexSegmentRomStart, &_mrsManaSpritesheetIndexSegmentRomEnd, 1, 0, &mrsManaAnimationScripts);
-    setEntityCollisionBuffers(0x29, 0xF, 0xF);
-    func_8002FFF4(0x29, 0xC, 0xC);
+    setEntityCollisionBuffers(ENTITY_MRS_MANA, 0xF, 0xF);
+    func_8002FFF4(ENTITY_MRS_MANA, 0xC, 0xC);
     
     initializeEntityAsset(ENTITY_OLD_MAN, &_oldManTextureSegmentRomStart, &_oldManTextureSegmentRomEnd, &_oldManAssetsIndexSegmentRomStart, &_oldManAssetsIndexSegmentRomEnd, &_oldManSpritesheetIndexSegmentRomStart, &_oldManSpritesheetIndexSegmentRomEnd, 1, 0, &oldManAnimationScripts);
-    setEntityCollisionBuffers(0x2A, 0xF, 0xF);
-    func_8002FFF4(0x2A, 0xC, 0xC);
+    setEntityCollisionBuffers(ENTITY_OLD_MAN, 0xF, 0xF);
+    func_8002FFF4(ENTITY_OLD_MAN, 0xC, 0xC);
     
     initializeEntityAsset(ENTITY_OLD_WOMAN, &_oldWomanTextureSegmentRomStart, &_oldWomanTextureSegmentRomEnd, &_oldWomanAssetsIndexSegmentRomStart, &_oldWomanAssetsIndexSegmentRomEnd, &_oldWomanSpritesheetIndexSegmentRomStart, &_oldWomanSpritesheetIndexSegmentRomEnd, 1, 0, &oldWomanAnimationScripts);
-    setEntityCollisionBuffers(0x2B, 0xF, 0xF);
-    func_8002FFF4(0x2B, 0xC, 0xC);
+    setEntityCollisionBuffers(ENTITY_OLD_WOMAN, 0xF, 0xF);
+    func_8002FFF4(ENTITY_OLD_WOMAN, 0xC, 0xC);
     
     initializeEntityAsset(ENTITY_TOURIST_COUPLE_MAN, &_touristCoupleManTextureSegmentRomStart, &_touristCoupleManTextureSegmentRomEnd, &_touristCoupleManAssetsIndexSegmentRomStart, &_touristCoupleManAssetsIndexSegmentRomEnd, &_touristCoupleManSpritesheetIndexSegmentRomStart, &_touristCoupleManSpritesheetIndexSegmentRomEnd, 1, 0, &touristCoupleManAnimationScripts);
-    setEntityCollisionBuffers(0x2C, 0xF, 0xF);
-    func_8002FFF4(0x2C, 0xC, 0xC);
+    setEntityCollisionBuffers(ENTITY_TOURIST_COUPLE_MAN, 0xF, 0xF);
+    func_8002FFF4(ENTITY_TOURIST_COUPLE_MAN, 0xC, 0xC);
     
     initializeEntityAsset(ENTITY_TOURIST_COUPLE_WOMAN, &_touristCoupleWomanTextureSegmentRomStart, &_touristCoupleWomanTextureSegmentRomEnd, &_touristCoupleWomanAssetsIndexSegmentRomStart, &_touristCoupleWomanAssetsIndexSegmentRomEnd, &_touristCoupleWomanSpritesheetIndexSegmentRomStart, &_touristCoupleWomanSpritesheetIndexSegmentRomEnd, 1, 0, &touristCoupleWomanAnimationScripts);
-    setEntityCollisionBuffers(0x2D, 0xF, 0xF);
-    func_8002FFF4(0x2D, 0xC, 0xC);
+    setEntityCollisionBuffers(ENTITY_TOURIST_COUPLE_WOMAN, 0xF, 0xF);
+    func_8002FFF4(ENTITY_TOURIST_COUPLE_WOMAN, 0xC, 0xC);
     
     initializeEntityAsset(ENTITY_FESTIVAL_GIRL1, &_festivalGirl1TextureSegmentRomStart, &_festivalGirl1TextureSegmentRomEnd, &_festivalGirl1AssetsIndexSegmentRomStart, &_festivalGirl1AssetsIndexSegmentRomEnd, &_festivalGirl1SpritesheetIndexSegmentRomStart, &_festivalGirl1SpritesheetIndexSegmentRomEnd, 1, 0, &festivalGirl1AnimationScripts);
-    setEntityCollisionBuffers(0x2E, 0xF, 0xF);
-    func_8002FFF4(0x2E, 0xC, 0xC);
+    setEntityCollisionBuffers(ENTITY_FESTIVAL_GIRL1, 0xF, 0xF);
+    func_8002FFF4(ENTITY_FESTIVAL_GIRL1, 0xC, 0xC);
     
     initializeEntityAsset(ENTITY_FESTIVAL_GIRL2, &_festivalGirl2TextureSegmentRomStart, &_festivalGirl2TextureSegmentRomEnd, &_festivalGirl2AssetsIndexSegmentRomStart, &_festivalGirl2AssetsIndexSegmentRomEnd, &_festivalGirl2SpritesheetIndexSegmentRomStart, &_festivalGirl2SpritesheetIndexSegmentRomEnd, 1, 0, &festivalGirl2AnimationScripts);
-    setEntityCollisionBuffers(0x2F, 0xF, 0xF);
-    func_8002FFF4(0x2F, 0xC, 0xC);
+    setEntityCollisionBuffers(ENTITY_FESTIVAL_GIRL2, 0xF, 0xF);
+    func_8002FFF4(ENTITY_FESTIVAL_GIRL2, 0xC, 0xC);
     
     initializeEntityAsset(ENTITY_FESTIVAL_GIRL3, &_festivalGirl3TextureSegmentRomStart, &_festivalGirl3TextureSegmentRomEnd, &_festivalGirl3AssetsIndexSegmentRomStart, &_festivalGirl3AssetsIndexSegmentRomEnd, &_festivalGirl3SpritesheetIndexSegmentRomStart, &_festivalGirl3SpritesheetIndexSegmentRomEnd, 1, 0, &festivalGirl3AnimationScripts);
-    setEntityCollisionBuffers(0x30, 0xF, 0xF);
-    func_8002FFF4(0x30, 0xC, 0xC);
+    setEntityCollisionBuffers(ENTITY_FESTIVAL_GIRL3, 0xF, 0xF);
+    func_8002FFF4(ENTITY_FESTIVAL_GIRL3, 0xC, 0xC);
     
     initializeEntityAsset(ENTITY_HARVEST_GODDESS, &_harvestGoddessTextureSegmentRomStart, &_harvestGoddessTextureSegmentRomEnd, &_harvestGoddessAssetsIndexSegmentRomStart, &_harvestGoddessAssetsIndexSegmentRomEnd, &_harvestGoddessSpritesheetIndexSegmentRomStart, &_harvestGoddessSpritesheetIndexSegmentRomEnd, 1, 0, &harvestGoddessAnimationScripts);
-    setEntityCollisionBuffers(0x31, 0xF, 0xF);
-    func_8002FFF4(0x31, 0xC, 0xC);
+    setEntityCollisionBuffers(ENTITY_HARVEST_GODDESS, 0xF, 0xF);
+    func_8002FFF4(ENTITY_HARVEST_GODDESS, 0xC, 0xC);
     
     initializeEntityAsset(ENTITY_SPIRIT_FESTIVAL_OCARINA_PERFORMER, &_spiritFestivalOcarinaPerformerTextureSegmentRomStart, &_spiritFestivalOcarinaPerformerTextureSegmentRomEnd, &_spiritFestivalOcarinaPerformerAssetsIndexSegmentRomStart, &_spiritFestivalOcarinaPerformerAssetsIndexSegmentRomEnd, &_spiritFestivalOcarinaPerformerSpritesheetIndexSegmentRomStart, &_spiritFestivalOcarinaPerformerSpritesheetIndexSegmentRomEnd, 1, 0, &spiritFestivalOcarinaPerformerAnimationScripts);
-    setEntityCollisionBuffers(0x32, 0xF, 0xF);
-    func_8002FFF4(0x32, 0xC, 0xC);
+    setEntityCollisionBuffers(ENTITY_SPIRIT_FESTIVAL_OCARINA_PERFORMER, 0xF, 0xF);
+    func_8002FFF4(ENTITY_SPIRIT_FESTIVAL_OCARINA_PERFORMER, 0xC, 0xC);
     
     initializeEntityAsset(ENTITY_KAPPA, &_kappaTextureSegmentRomStart, &_kappaTextureSegmentRomEnd, &_kappaAssetsIndexSegmentRomStart, &_kappaAssetsIndexSegmentRomEnd, &_kappaSpritesheetIndexSegmentRomStart, &_kappaSpritesheetIndexSegmentRomEnd, 1, 0, &kappaAnimationScripts);
-    setEntityCollisionBuffers(0x33, 0xF, 0xF);
-    func_8002FFF4(0x33, 0xC, 0xC);
+    setEntityCollisionBuffers(ENTITY_KAPPA, 0xF, 0xF);
+    func_8002FFF4(ENTITY_KAPPA, 0xC, 0xC);
     
     initializeEntityAsset(ENTITY_PRINCESS, &_princessTextureSegmentRomStart, &_princessTextureSegmentRomEnd, &_princessAssetsIndexSegmentRomStart, &_princessAssetsIndexSegmentRomEnd, &_princessSpritesheetIndexSegmentRomStart, &_princessSpritesheetIndexSegmentRomEnd, 1, 0, &princessAnimationScripts);
-    setEntityCollisionBuffers(0x34, 0xF, 0xF);
-    func_8002FFF4(0x34, 0xC, 0xC);
+    setEntityCollisionBuffers(ENTITY_PRINCESS, 0xF, 0xF);
+    func_8002FFF4(ENTITY_PRINCESS, 0xC, 0xC);
     
     initializeEntityAsset(ENTITY_EMPTY_NPC_SPRITE, &_emptyNPCTextureSegmentRomStart, &_emptyNPCTextureSegmentRomEnd, &_emptyNPCAssetsIndexSegmentRomStart, &_emptyNPCAssetsIndexSegmentRomEnd, &_emptyNPCSpritesheetIndexSegmentRomStart, &_emptyNPCSpritesheetIndexSegmentRomEnd, 1, 0, &playerAnimationScripts);
-    setEntityCollisionBuffers(0x35, 0xF, 0xF);
-    func_8002FFF4(0x35, 0xC, 0xC);
+    setEntityCollisionBuffers(ENTITY_EMPTY_NPC_SPRITE, 0xF, 0xF);
+    func_8002FFF4(ENTITY_EMPTY_NPC_SPRITE, 0xC, 0xC);
     
     initializeEntityAsset(ENTITY_BUNNY, &_bunnyTextureSegmentRomStart, &_bunnyTextureSegmentRomEnd, &_bunnyAssetsIndexSegmentRomStart, &_bunnyAssetsIndexSegmentRomEnd, &_bunnySpritesheetIndexSegmentRomStart, &_bunnySpritesheetIndexSegmentRomEnd, 1, 0, &bunnyAnimationScripts);
-    setEntityCollisionBuffers(0x36, 0xF, 0xF);
-    func_8002FFF4(0x36, 0xC, 0xC);
+    setEntityCollisionBuffers(ENTITY_BUNNY, 0xF, 0xF);
+    func_8002FFF4(ENTITY_BUNNY, 0xC, 0xC);
     
     initializeEntityAsset(ENTITY_MOUSE, &_mouseTextureSegmentRomStart, &_mouseTextureSegmentRomEnd, &_mouseAssetsIndexSegmentRomStart, &_mouseAssetsIndexSegmentRomEnd, &_mouseSpritesheetIndexSegmentRomStart, &_mouseSpritesheetIndexSegmentRomEnd, 1, 0, &mouseAnimationScripts);
-    setEntityCollisionBuffers(0x37, 0xF, 0xF);
-    func_8002FFF4(0x37, 0xC, 0xC);
+    setEntityCollisionBuffers(ENTITY_MOUSE, 0xF, 0xF);
+    func_8002FFF4(ENTITY_MOUSE, 0xC, 0xC);
     
     initializeEntityAsset(ENTITY_FOX, &_foxTextureSegmentRomStart, &_foxTextureSegmentRomEnd, &_foxAssetsIndexSegmentRomStart, &_foxAssetsIndexSegmentRomEnd, &_foxSpritesheetIndexSegmentRomStart, &_foxSpritesheetIndexSegmentRomEnd, 1, 0, &foxAnimationScripts);
-    setEntityCollisionBuffers(0x38, 0xF, 0xF);
-    func_8002FFF4(0x38, 0xC, 0xC);
+    setEntityCollisionBuffers(ENTITY_FOX, 0xF, 0xF);
+    func_8002FFF4(ENTITY_FOX, 0xC, 0xC);
     
     initializeEntityAsset(ENTITY_MONKEY, &_monkeyTextureSegmentRomStart, &_monkeyTextureSegmentRomEnd, &_monkeyAssetsIndexSegmentRomStart, &_monkeyAssetsIndexSegmentRomEnd, &_monkeySpritesheetIndexSegmentRomStart, &_monkeySpritesheetIndexSegmentRomEnd, 1, 0, &monkeyAnimationScripts);
-    setEntityCollisionBuffers(0x39, 0xF, 0xF);
-    func_8002FFF4(0x39, 0xC, 0xC);
+    setEntityCollisionBuffers(ENTITY_MONKEY, 0xF, 0xF);
+    func_8002FFF4(ENTITY_MONKEY, 0xC, 0xC);
     
     initializeEntityAsset(ENTITY_HAWK, &_hawkTextureSegmentRomStart, &_hawkTextureSegmentRomEnd, &_hawkAssetsIndexSegmentRomStart, &_hawkAssetsIndexSegmentRomEnd, &_hawkSpritesheetIndexSegmentRomStart, &_hawkSpritesheetIndexSegmentRomEnd, 1, 0, &hawkAnimationScripts);
-    setEntityCollisionBuffers(0x3A, 0xF, 0xF);
-    func_8002FFF4(0x3A, 0xC, 0xC);
+    setEntityCollisionBuffers(ENTITY_HAWK, 0xF, 0xF);
+    func_8002FFF4(ENTITY_HAWK, 0xC, 0xC);
     
     initializeEntityAsset(ENTITY_MOLE, &_moleTextureSegmentRomStart, &_moleTextureSegmentRomEnd, &_moleAssetsIndexSegmentRomStart, &_moleAssetsIndexSegmentRomEnd, &_moleSpritesheetIndexSegmentRomStart, &_moleSpritesheetIndexSegmentRomEnd, 1, 0, &playerAnimationScripts);
-    setEntityCollisionBuffers(0x3B, 0xF, 0xF);
-    func_8002FFF4(0x3B, 0xC, 0xC);
+    setEntityCollisionBuffers(ENTITY_MOLE, 0xF, 0xF);
+    func_8002FFF4(ENTITY_MOLE, 0xC, 0xC);
     
     initializeEntityAsset(ENTITY_SQUIRREL, &_squirrelTextureSegmentRomStart, &_squirrelTextureSegmentRomEnd, &_squirrelAssetsIndexSegmentRomStart, &_squirrelAssetsIndexSegmentRomEnd, &_squirrelSpritesheetIndexSegmentRomStart, &_squirrelSpritesheetIndexSegmentRomEnd, 1, 0, &squirrelAnimationScripts);
-    setEntityCollisionBuffers(0x3C, 0xF, 0xF);
-    func_8002FFF4(0x3C, 0xC, 0xC);
+    setEntityCollisionBuffers(ENTITY_SQUIRREL, 0xF, 0xF);
+    func_8002FFF4(ENTITY_SQUIRREL, 0xC, 0xC);
     
     initializeEntityAsset(ENTITY_DOG_RACE, &_dogRaceTextureSegmentRomStart, &_dogRaceTextureSegmentRomEnd, &_dogRaceAssetsIndexSegmentRomStart, &_dogRaceAssetsIndexSegmentRomEnd, &_dogRaceSpritesheetIndexSegmentRomStart, &_dogRaceSpritesheetIndexSegmentRomEnd, 1, 0, &dogRaceAnimationScripts);
-    setEntityCollisionBuffers(0x3D, 0xF, 0xF);
-    func_8002FFF4(0x3D, 0xC, 0xC);
+    setEntityCollisionBuffers(ENTITY_DOG_RACE, 0xF, 0xF);
+    func_8002FFF4(ENTITY_DOG_RACE, 0xC, 0xC);
     
     initializeEntityAsset(ENTITY_CAT, &_catTextureSegmentRomStart, &_catTextureSegmentRomEnd, &_catAssetsIndexSegmentRomStart, &_catAssetsIndexSegmentRomEnd, &_catSpritesheetIndexSegmentRomStart, &_catSpritesheetIndexSegmentRomEnd, 1, 0, &catAnimationScripts);
-    setEntityCollisionBuffers(0x3E, 0xF, 0xF);
-    func_8002FFF4(0x3E, 0xC, 0xC);
+    setEntityCollisionBuffers(ENTITY_CAT, 0xF, 0xF);
+    func_8002FFF4(ENTITY_CAT, 0xC, 0xC);
     
     initializeEntityAsset(ENTITY_DOG, &_dogTextureSegmentRomStart, &_dogTextureSegmentRomEnd, &_dogAssetsIndexSegmentRomStart, &_dogAssetsIndexSegmentRomEnd, &_dogSpritesheetIndexSegmentRomStart, &_dogSpritesheetIndexSegmentRomEnd, 1, 2, &dogAnimationScripts);
-    setEntityCollisionBuffers(0x3F, 0xF, 0xF);
-    func_8002FFF4(0x3F, 0xC, 0xC);
+    setEntityCollisionBuffers(ENTITY_DOG, 0xF, 0xF);
+    func_8002FFF4(ENTITY_DOG, 0xC, 0xC);
     
     initializeEntityAsset(ENTITY_DOG_TITLE, &_dogTitleTextureSegmentRomStart, &_dogTitleTextureSegmentRomEnd, &_dogTitleAssetsIndexSegmentRomStart, &_dogTitleAssetsIndexSegmentRomEnd, &_dogTitleSpritesheetIndexSegmentRomStart, &_dogTitleSpritesheetIndexSegmentRomEnd, 1, 0, &dogTitleAnimationScripts);
-    setEntityCollisionBuffers(0x40, 0xF, 0xF);
-    func_8002FFF4(0x40, 0xC, 0xC);
+    setEntityCollisionBuffers(ENTITY_DOG_TITLE, 0xF, 0xF);
+    func_8002FFF4(ENTITY_DOG_TITLE, 0xC, 0xC);
     
     initializeEntityAsset(ENTITY_HORSE_PONY, &_horsePonyTextureSegmentRomStart, &_horsePonyTextureSegmentRomEnd, &_horsePonyAssetsIndexSegmentRomStart, &_horsePonyAssetsIndexSegmentRomEnd, &_horsePonySpritesheetIndexSegmentRomStart, &_horsePonySpritesheetIndexSegmentRomEnd, 1, 0, &horsePonyAnimationScripts);
-    setEntityCollisionBuffers(0x41, 0xF, 0xF);
-    func_8002FFF4(0x41, 0xC, 0xC);
+    setEntityCollisionBuffers(ENTITY_HORSE_PONY, 0xF, 0xF);
+    func_8002FFF4(ENTITY_HORSE_PONY, 0xC, 0xC);
     
     initializeEntityAsset(ENTITY_HORSE_GROWN, &_horseGrownTextureSegmentRomStart, &_horseGrownTextureSegmentRomEnd, &_horseGrownAssetsIndexSegmentRomStart, &_horseGrownAssetsIndexSegmentRomEnd, &_horseGrownSpritesheetIndexSegmentRomStart, &_horseGrownSpritesheetIndexSegmentRomEnd, 1, 0, &horseGrownAnimationScripts);
-    setEntityCollisionBuffers(0x42, 0xF, 0xF);
-    func_8002FFF4(0x42, 0xC, 0xC);
+    setEntityCollisionBuffers(ENTITY_HORSE_GROWN, 0xF, 0xF);
+    func_8002FFF4(ENTITY_HORSE_GROWN, 0xC, 0xC);
     
     initializeEntityAsset(ENTITY_CHICK, &_chickTextureSegmentRomStart, &_chickTextureSegmentRomEnd, &_chickAssetsIndexSegmentRomStart, &_chickAssetsIndexSegmentRomEnd, &_chickSpritesheetIndexSegmentRomStart, &_chickSpritesheetIndexSegmentRomEnd, 1, 2, &chickAnimationScripts);
-    setEntityCollisionBuffers(0x43, 0xF, 0xF);
-    func_8002FFF4(0x43, 0xC, 0xC);
+    setEntityCollisionBuffers(ENTITY_CHICK, 0xF, 0xF);
+    func_8002FFF4(ENTITY_CHICK, 0xC, 0xC);
     
     initializeEntityAsset(ENTITY_CHICKEN, &_chickenTextureSegmentRomStart, &_chickenTextureSegmentRomEnd, &_chickenAssetsIndexSegmentRomStart, &_chickenAssetsIndexSegmentRomEnd, &_chickenSpritesheetIndexSegmentRomStart, &_chickenSpritesheetIndexSegmentRomEnd, 1, 0, &chickenAnimationScripts);
-    setEntityCollisionBuffers(0x44, 0xF, 0xF);
-    func_8002FFF4(0x44, 0xC, 0xC);
+    setEntityCollisionBuffers(ENTITY_CHICKEN, 0xF, 0xF);
+    func_8002FFF4(ENTITY_CHICKEN, 0xC, 0xC);
     
     initializeEntityAsset(ENTITY_CALF, &_calfTextureSegmentRomStart, &_calfTextureSegmentRomEnd, &_calfAssetsIndexSegmentRomStart, &_calfAssetsIndexSegmentRomEnd, &_calfSpritesheetIndexSegmentRomStart, &_calfSpritesheetIndexSegmentRomEnd, 1, 0, &calfAnimationScripts);
-    setEntityCollisionBuffers(0x45, 0xF, 0xF);
-    func_8002FFF4(0x45, 0xC, 0xC);
+    setEntityCollisionBuffers(ENTITY_CALF, 0xF, 0xF);
+    func_8002FFF4(ENTITY_CALF, 0xC, 0xC);
     
     initializeEntityAsset(ENTITY_YOUNG_COW, &_youngCowTextureSegmentRomStart, &_youngCowTextureSegmentRomEnd, &_youngCowAssetsIndexSegmentRomStart, &_youngCowAssetsIndexSegmentRomEnd, &_youngCowSpritesheetIndexSegmentRomStart, &_youngCowSpritesheetIndexSegmentRomEnd, 1, 1, &youngCowAnimationScripts);
-    setEntityCollisionBuffers(0x46, 0xF, 0xF);
-    func_8002FFF4(0x46, 0xC, 0xC);
+    setEntityCollisionBuffers(ENTITY_YOUNG_COW, 0xF, 0xF);
+    func_8002FFF4(ENTITY_YOUNG_COW, 0xC, 0xC);
     
     initializeEntityAsset(ENTITY_COW, &_cowTextureSegmentRomStart, &_cowTextureSegmentRomEnd, &_cowAssetsIndexSegmentRomStart, &_cowAssetsIndexSegmentRomEnd, &_cowSpritesheetIndexSegmentRomStart, &_cowSpritesheetIndexSegmentRomEnd, 1, 1, &cowAnimationScripts);
-    setEntityCollisionBuffers(0x47, 0xF, 0xF);
-    func_8002FFF4(0x47, 0xC, 0xC);
+    setEntityCollisionBuffers(ENTITY_COW, 0xF, 0xF);
+    func_8002FFF4(ENTITY_COW, 0xC, 0xC);
     
     initializeEntityAsset(ENTITY_LAMB, &_lambTextureSegmentRomStart, &_lambTextureSegmentRomEnd, &_lambAssetsIndexSegmentRomStart, &_lambAssetsIndexSegmentRomEnd, &_lambSpritesheetIndexSegmentRomStart, &_lambSpritesheetIndexSegmentRomEnd, 1, 0, &lambAnimationScripts);
-    setEntityCollisionBuffers(0x48, 0xF, 0xF);
-    func_8002FFF4(0x48, 0xC, 0xC);
+    setEntityCollisionBuffers(ENTITY_LAMB, 0xF, 0xF);
+    func_8002FFF4(ENTITY_LAMB, 0xC, 0xC);
     
     initializeEntityAsset(ENTITY_SHEEP, &_sheepTextureSegmentRomStart, &_sheepTextureSegmentRomEnd, &_sheepAssetsIndexSegmentRomStart, &_sheepAssetsIndexSegmentRomEnd, &_sheepSpritesheetIndexSegmentRomStart, &_sheepSpritesheetIndexSegmentRomEnd, 1, 0, &sheepAnimationScripts);
-    setEntityCollisionBuffers(0x49, 0xF, 0xF);
-    func_8002FFF4(0x49, 0xC, 0xC);
+    setEntityCollisionBuffers(ENTITY_SHEEP, 0xF, 0xF);
+    func_8002FFF4(ENTITY_SHEEP, 0xC, 0xC);
     
     initializeEntityAsset(ENTITY_FROG, &_frogTextureSegmentRomStart, &_frogTextureSegmentRomEnd, &_frogAssetsIndexSegmentRomStart, &_frogAssetsIndexSegmentRomEnd, &_frogSpritesheetIndexSegmentRomStart, &_frogSpritesheetIndexSegmentRomEnd, 1, 0, &playerAnimationScripts);
-    setEntityCollisionBuffers(0x4A, 0xF, 0xF);
-    func_8002FFF4(0x4A, 0xC, 0xC);
+    setEntityCollisionBuffers(ENTITY_FROG, 0xF, 0xF);
+    func_8002FFF4(ENTITY_FROG, 0xC, 0xC);
     
     initializeEntityAsset(ENTITY_CRAB, &_crabTextureSegmentRomStart, &_crabTextureSegmentRomEnd, &_crabAssetsIndexSegmentRomStart, &_crabAssetsIndexSegmentRomEnd, &_crabSpritesheetIndexSegmentRomStart, &_crabSpritesheetIndexSegmentRomEnd, 1, 0, &crabAnimationScripts);
-    setEntityCollisionBuffers(0x4B, 0xF, 0xF);
-    func_8002FFF4(0x4B, 0xC, 0xC);
+    setEntityCollisionBuffers(ENTITY_CRAB, 0xF, 0xF);
+    func_8002FFF4(ENTITY_CRAB, 0xC, 0xC);
     
     initializeEntityAsset(ENTITY_HORNED_BEETLE, &_hornedBeetleTextureSegmentRomStart, &_hornedBeetleTextureSegmentRomEnd, &_hornedBeetleAssetsIndexSegmentRomStart, &_hornedBeetleAssetsIndexSegmentRomEnd, &_hornedBeetleSpritesheetIndexSegmentRomStart, &_hornedBeetleSpritesheetIndexSegmentRomEnd, 1, 0xFF, &hornedBeetleAnimationScripts);
-    setEntityCollisionBuffers(0x4C, 0xF, 0xF);
-    func_8002FFF4(0x4C, 0xC, 0xC);
+    setEntityCollisionBuffers(ENTITY_HORNED_BEETLE, 0xF, 0xF);
+    func_8002FFF4(ENTITY_HORNED_BEETLE, 0xC, 0xC);
     
     initializeEntityAsset(ENTITY_STAG_BEETLE, &_stagBeetleTextureSegmentRomStart, &_stagBeetleTextureSegmentRomEnd, &_stagBeetleAssetsIndexSegmentRomStart, &_stagBeetleAssetsIndexSegmentRomEnd, &_stagBeetleSpritesheetIndexSegmentRomStart, &_stagBeetleSpritesheetIndexSegmentRomEnd, 1, 0xFF, &stagBeetleAnimationScripts);
-    setEntityCollisionBuffers(0x4D, 0xF, 0xF);
-    func_8002FFF4(0x4D, 0xC, 0xC);
+    setEntityCollisionBuffers(ENTITY_STAG_BEETLE, 0xF, 0xF);
+    func_8002FFF4(ENTITY_STAG_BEETLE, 0xC, 0xC);
     
     initializeEntityAsset(ENTITY_BELL_RING_CRICKET, &_bellRingCricketTextureSegmentRomStart, &_bellRingCricketTextureSegmentRomEnd, &_bellRingCricketAssetsIndexSegmentRomStart, &_bellRingCricketAssetsIndexSegmentRomEnd, &_bellRingCricketSpritesheetIndexSegmentRomStart, &_bellRingCricketSpritesheetIndexSegmentRomEnd, 1, 0xFF, &bellRingCricketAnimationScripts);
-    setEntityCollisionBuffers(0x4E, 0xF, 0xF);
-    func_8002FFF4(0x4E, 0xC, 0xC);
+    setEntityCollisionBuffers(ENTITY_BELL_RING_CRICKET, 0xF, 0xF);
+    func_8002FFF4(ENTITY_BELL_RING_CRICKET, 0xC, 0xC);
     
     initializeEntityAsset(ENTITY_CICADA, &_cicadaTextureSegmentRomStart, &_cicadaTextureSegmentRomEnd, &_cicadaAssetsIndexSegmentRomStart, &_cicadaAssetsIndexSegmentRomEnd, &_cicadaSpritesheetIndexSegmentRomStart, &_cicadaSpritesheetIndexSegmentRomEnd, 1, 0xFF, &cicadaAnimationScripts);
-    setEntityCollisionBuffers(0x4F, 0xF, 0xF);
-    func_8002FFF4(0x4F, 0xC, 0xC);
+    setEntityCollisionBuffers(ENTITY_CICADA, 0xF, 0xF);
+    func_8002FFF4(ENTITY_CICADA, 0xC, 0xC);
     
     initializeEntityAsset(ENTITY_BIRD, &_birdTextureSegmentRomStart, &_birdTextureSegmentRomEnd, &_birdAssetsIndexSegmentRomStart, &_birdAssetsIndexSegmentRomEnd, &_birdSpritesheetIndexSegmentRomStart, &_birdSpritesheetIndexSegmentRomEnd, 1, 2, &birdAnimationScripts);
-    setEntityCollisionBuffers(0x50, 0xF, 0xF);
-    func_8002FFF4(0x50, 0xC, 0xC);
+    setEntityCollisionBuffers(ENTITY_BIRD, 0xF, 0xF);
+    func_8002FFF4(ENTITY_BIRD, 0xC, 0xC);
     
     initializeEntityAsset(ENTITY_LADYBUG, &_ladybugTextureSegmentRomStart, &_ladybugTextureSegmentRomEnd, &_ladybugAssetsIndexSegmentRomStart, &_ladybugAssetsIndexSegmentRomEnd, &_ladybugSpritesheetIndexSegmentRomStart, &_ladybugSpritesheetIndexSegmentRomEnd, 1, 0xFF, &ladybugAnimationScripts);
-    setEntityCollisionBuffers(0x51, 0xF, 0xF);
-    func_8002FFF4(0x51, 0xC, 0xC);
+    setEntityCollisionBuffers(ENTITY_LADYBUG, 0xF, 0xF);
+    func_8002FFF4(ENTITY_LADYBUG, 0xC, 0xC);
     
     initializeEntityAsset(ENTITY_DRAGONFLY, &_dragonflyTextureSegmentRomStart, &_dragonflyTextureSegmentRomEnd, &_dragonflyAssetsIndexSegmentRomStart, &_dragonflyAssetsIndexSegmentRomEnd, &_dragonflySpritesheetIndexSegmentRomStart, &_dragonflySpritesheetIndexSegmentRomEnd, 1, 2, &dragonflyAnimationScripts);
-    setEntityCollisionBuffers(0x52, 0xF, 0xF);
-    func_8002FFF4(0x52, 0xC, 0xC);
+    setEntityCollisionBuffers(ENTITY_DRAGONFLY, 0xF, 0xF);
+    func_8002FFF4(ENTITY_DRAGONFLY, 0xC, 0xC);
     
     initializeEntityAsset(ENTITY_GRASSHOPPER, &_grasshopperTextureSegmentRomStart, &_grasshopperTextureSegmentRomEnd, &_grasshopperAssetsIndexSegmentRomStart, &_grasshopperAssetsIndexSegmentRomEnd, &_grasshopperSpritesheetIndexSegmentRomStart, &_grasshopperSpritesheetIndexSegmentRomEnd, 1, 0, &playerAnimationScripts);
-    setEntityCollisionBuffers(0x53, 0xF, 0xF);
-    func_8002FFF4(0x53, 0xC, 0xC);
+    setEntityCollisionBuffers(ENTITY_GRASSHOPPER, 0xF, 0xF);
+    func_8002FFF4(ENTITY_GRASSHOPPER, 0xC, 0xC);
     
     initializeEntityAsset(ENTITY_SNAKE, &_snakeTextureSegmentRomStart, &_snakeTextureSegmentRomEnd, &_snakeAssetsIndexSegmentRomStart, &_snakeAssetsIndexSegmentRomEnd, &_snakeSpritesheetIndexSegmentRomStart, &_snakeSpritesheetIndexSegmentRomEnd, 1, 2, &snakeAnimationScripts);
-    setEntityCollisionBuffers(0x54, 0xF, 0xF);
-    func_8002FFF4(0x54, 0xC, 0xC);
+    setEntityCollisionBuffers(ENTITY_SNAKE, 0xF, 0xF);
+    func_8002FFF4(ENTITY_SNAKE, 0xC, 0xC);
     
     initializeEntityAsset(ENTITY_PURPLE_BUTTERFLY, &_purpleButterflyTextureSegmentRomStart, &_purpleButterflyTextureSegmentRomEnd, &_purpleButterflyAssetsIndexSegmentRomStart, &_purpleButterflyAssetsIndexSegmentRomEnd, &_purpleButterflySpritesheetIndexSegmentRomStart, &_purpleButterflySpritesheetIndexSegmentRomEnd, 1, 0, &playerAnimationScripts);
-    setEntityCollisionBuffers(0x55, 0xF, 0xF);
-    func_8002FFF4(0x55, 0xC, 0xC);
+    setEntityCollisionBuffers(ENTITY_PURPLE_BUTTERFLY, 0xF, 0xF);
+    func_8002FFF4(ENTITY_PURPLE_BUTTERFLY, 0xC, 0xC);
     
     initializeEntityAsset(ENTITY_DAD, &_dadTextureSegmentRomStart, &_dadTextureSegmentRomEnd, &_dadAssetsIndexSegmentRomStart, &_dadAssetsIndexSegmentRomEnd, &_dadSpritesheetIndexSegmentRomStart, &_dadSpritesheetIndexSegmentRomEnd, 1, 0, &playerAnimationScripts);
-    setEntityCollisionBuffers(0x56, 0xF, 0xF);
-    func_8002FFF4(0x56, 0xC, 0xC);
+    setEntityCollisionBuffers(ENTITY_DAD, 0xF, 0xF);
+    func_8002FFF4(ENTITY_DAD, 0xC, 0xC);
     
     initializeEntityAsset(ENTITY_COW_INDOORS, &_cowIndoorsTextureSegmentRomStart, &_cowIndoorsTextureSegmentRomEnd, &_cowIndoorsAssetsIndexSegmentRomStart, &_cowIndoorsAssetsIndexSegmentRomEnd, &_cowIndoorsSpritesheetIndexSegmentRomStart, &_cowIndoorsSpritesheetIndexSegmentRomEnd, 1, 1, &cowIndoorsAnimationScripts);
-    setEntityCollisionBuffers(0x57, 0xF, 0xF);
-    func_8002FFF4(0x57, 0xC, 0xC);
+    setEntityCollisionBuffers(ENTITY_COW_INDOORS, 0xF, 0xF);
+    func_8002FFF4(ENTITY_COW_INDOORS, 0xC, 0xC);
     
     initializeEntityAsset(ENTITY_HORSE_UNBRIDLED, &_horseUnbridledTextureSegmentRomStart, &_horseUnbridledTextureSegmentRomEnd, &_horseUnbridledAssetsIndexSegmentRomStart, &_horseUnbridledAssetsIndexSegmentRomEnd, &_horseUnbridledSpritesheetIndexSegmentRomStart, &_horseUnbridledSpritesheetIndexSegmentRomEnd, 1, 0, &horseUnbridledAnimationScripts);
-    setEntityCollisionBuffers(0x58, 0xF, 0xF);
-    func_8002FFF4(0x58, 0xC, 0xC);
+    setEntityCollisionBuffers(ENTITY_HORSE_UNBRIDLED, 0xF, 0xF);
+    func_8002FFF4(ENTITY_HORSE_UNBRIDLED, 0xC, 0xC);
     
     initializeEntityAsset(ENTITY_HORSE_RACER, &_horseRacerTextureSegmentRomStart, &_horseRacerTextureSegmentRomEnd, &_horseRacerAssetsIndexSegmentRomStart, &_horseRacerAssetsIndexSegmentRomEnd, &_horseRacerSpritesheetIndexSegmentRomStart, &_horseRacerSpritesheetIndexSegmentRomEnd, 1, 0, &playerAnimationScripts);
-    setEntityCollisionBuffers(0x59, 0xF, 0xF);
-    func_8002FFF4(0x59, 0xC, 0xC);
+    setEntityCollisionBuffers(ENTITY_HORSE_RACER, 0xF, 0xF);
+    func_8002FFF4(ENTITY_HORSE_RACER, 0xC, 0xC);
     
     initializeEntityAsset(ENTITY_EMPTY_ENTITY, &_emptyEntityTextureSegmentRomStart, &_emptyEntityTextureSegmentRomEnd, &_emptyEntityAssetsIndexSegmentRomStart, &_emptyEntityAssetsIndexSegmentRomEnd, &_emptyEntitySpritesheetIndexSegmentRomStart, &_emptyEntitySpritesheetIndexSegmentRomEnd, 1, 0, &playerAnimationScripts);
-    setEntityCollisionBuffers(0x5A, 0xF, 0xF);
-    func_8002FFF4(0x5A, 0xC, 0xC);
+    setEntityCollisionBuffers(ENTITY_EMPTY_ENTITY, 0xF, 0xF);
+    func_8002FFF4(ENTITY_EMPTY_ENTITY, 0xC, 0xC);
     
     initializeEntityAsset(0x5B, &_holdableItemsTextureSegmentRomStart, &_holdableItemsTextureSegmentRomEnd, &_holdableItemsAssetsIndexSegmentRomStart, &_holdableItemsAssetsIndexSegmentRomEnd, &_holdableItemsSpritesheetIndexSegmentRomStart, &_holdableItemsSpritesheetIndexSegmentRomEnd, 1, 0xFF, &holdableItemsAnimationScripts1);
     setEntityCollisionBuffers(0x5B, 0xF, 0xF);
@@ -1119,24 +1118,24 @@ void func_8004F768(void) {
     func_8002FFF4(0x60, 0xC, 0xC);
     
     initializeEntityAsset(ENTITY_MARIA_HARRIS_BABY, &_mariaHarrisBabyTextureSegmentRomStart, &_mariaHarrisBabyTextureSegmentRomEnd, &_mariaHarrisBabyAssetsIndexSegmentRomStart, &_mariaHarrisBabyAssetsIndexSegmentRomEnd, &_mariaHarrisBabySpritesheetIndexSegmentRomStart, &_mariaHarrisBabySpritesheetIndexSegmentRomEnd, 1, 0, &mariaHarrisBabyAnimationScripts);
-    setEntityCollisionBuffers(0x61, 0xF, 0xF);
-    func_8002FFF4(0x61, 0xC, 0xC);
+    setEntityCollisionBuffers(ENTITY_MARIA_HARRIS_BABY, 0xF, 0xF);
+    func_8002FFF4(ENTITY_MARIA_HARRIS_BABY, 0xC, 0xC);
     
     initializeEntityAsset(ENTITY_POPURI_GRAY_BABY, &_popuriGrayBabyTextureSegmentRomStart, &_popuriGrayBabyTextureSegmentRomEnd, &_popuriGrayBabyAssetsIndexSegmentRomStart, &_popuriGrayBabyAssetsIndexSegmentRomEnd, &_popuriGrayBabySpritesheetIndexSegmentRomStart, &_popuriGrayBabySpritesheetIndexSegmentRomEnd, 1, 0, &popuriGrayBabyAnimationScripts);
-    setEntityCollisionBuffers(0x62, 0xF, 0xF);
-    func_8002FFF4(0x62, 0xC, 0xC);
+    setEntityCollisionBuffers(ENTITY_POPURI_GRAY_BABY, 0xF, 0xF);
+    func_8002FFF4(ENTITY_POPURI_GRAY_BABY, 0xC, 0xC);
     
     initializeEntityAsset(ENTITY_ELLI_JEFF_BABY, &_elliJeffBabyTextureSegmentRomStart, &_elliJeffBabyTextureSegmentRomEnd, &_elliJeffBabyAssetsIndexSegmentRomStart, &_elliJeffBabyAssetsIndexSegmentRomEnd, &_elliJeffBabySpritesheetIndexSegmentRomStart, &_elliJeffBabySpritesheetIndexSegmentRomEnd, 1, 0, &elliJeffBabyAnimationScripts);
-    setEntityCollisionBuffers(0x63, 0xF, 0xF);
-    func_8002FFF4(0x63, 0xC, 0xC);
+    setEntityCollisionBuffers(ENTITY_ELLI_JEFF_BABY, 0xF, 0xF);
+    func_8002FFF4(ENTITY_ELLI_JEFF_BABY, 0xC, 0xC);
     
     initializeEntityAsset(ENTITY_ANN_CLIFF_BABY, &_annCliffBabyTextureSegmentRomStart, &_annCliffBabyTextureSegmentRomEnd, &_annCliffBabyAssetsIndexSegmentRomStart, &_annCliffBabyAssetsIndexSegmentRomEnd, &_annCliffBabySpritesheetIndexSegmentRomStart, &_annCliffBabySpritesheetIndexSegmentRomEnd, 1, 0, &annCliffBabyAnimationScripts);
-    setEntityCollisionBuffers(0x64, 0xF, 0xF);
-    func_8002FFF4(0x64, 0xC, 0xC);
+    setEntityCollisionBuffers(ENTITY_ANN_CLIFF_BABY, 0xF, 0xF);
+    func_8002FFF4(ENTITY_ANN_CLIFF_BABY, 0xC, 0xC);
     
     initializeEntityAsset(ENTITY_KAREN_KAI_BABY, &_karenKaiBabyTextureSegmentRomStart, &_karenKaiBabyTextureSegmentRomEnd, &_karenKaiBabyAssetsIndexSegmentRomStart, &_karenKaiBabyAssetsIndexSegmentRomEnd, &_karenKaiBabySpritesheetIndexSegmentRomStart, &_karenKaiBabySpritesheetIndexSegmentRomEnd, 1, 0, &karenKaiBabyAnimationScripts);
-    setEntityCollisionBuffers(0x65, 0xF, 0xF);
-    func_8002FFF4(0x65, 0xC, 0xC);
+    setEntityCollisionBuffers(ENTITY_KAREN_KAI_BABY, 0xF, 0xF);
+    func_8002FFF4(ENTITY_KAREN_KAI_BABY, 0xC, 0xC);
     
 }
 
@@ -1610,7 +1609,6 @@ void func_80054734(void) {
     setDialogueMapAddressInfo(0x3A, 0xA, 0xA, &_D_E925B0, &_D_E925F0, 0x8030C800, &_D_E92570_2, 0x8030CC00);
 }
 */
-
 
 //INCLUDE_ASM("asm/nonmatchings/game/initialize", initializeDialogueVariables);
 

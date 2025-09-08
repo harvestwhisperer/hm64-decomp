@@ -3,7 +3,7 @@
 #include "system/controller.h"
 
 #include "system/graphic.h"
-#include "system/mathUtils.h"
+#include "system/math.h"
 
 #include "mainproc.h"
 

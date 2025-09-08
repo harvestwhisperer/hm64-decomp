@@ -7,9 +7,9 @@
 #include "system/cutscene.h"
 #include "system/entity.h"
 #include "system/map.h"
-#include "system/mathUtils.h"
+#include "system/math.h"
 #include "system/message.h"
-#include "system/mapContext.h"
+#include "system/mapController.h"
 
 #include "game/animals.h"
 #include "game/game.h"
@@ -42,11 +42,11 @@ extern u32 gCutsceneFlagsHack[2];
 void mainGameLoopCallback(void) {
     
     // for debugging?
-    D_8018A062 = (s16)entities[PLAYER].coordinates.x;
-    D_80237A20 = (s16)entities[PLAYER].coordinates.y;
-    D_80182D8C = (s16)entities[PLAYER].coordinates.z;
+    D_8018A062 = (s16)entities[ENTITY_PLAYER].coordinates.x;
+    D_80237A20 = (s16)entities[ENTITY_PLAYER].coordinates.y;
+    D_80182D8C = (s16)entities[ENTITY_PLAYER].coordinates.z;
     
-    if (func_8002FD24(PLAYER) && !(func_80030388(PLAYER))) {
+    if (func_8002FD24(ENTITY_PLAYER) && !(func_80030388(ENTITY_PLAYER))) {
 
         // increment clock and handle audio changes
         func_800D7C20();
@@ -101,7 +101,7 @@ inline void func_80055F08(u16 cutsceneIndex, u16 entranceIndex, u8 arg2) {
     // set up map/level
     func_8006E840(gEntranceIndex);
  
-    setupPlayerSprite(gEntranceIndex, 0);
+    setupPlayerEntity(gEntranceIndex, FALSE);
 
     func_8006A2E8();
 
@@ -201,7 +201,7 @@ void func_80056030(u8 arg0) {
     toggleDailyEventBit(0x53);
     toggleDailyEventBit(0x54);
     
-    setupPlayerSprite(gEntranceIndex, arg0);
+    setupPlayerEntity(gEntranceIndex, arg0);
     
     handleEatingAndDrinking();
     func_800D5290();
@@ -463,7 +463,7 @@ void func_800563D0(u8 arg0) {
 void func_80059300(void) {
     togglePauseEntities();
     func_80046CF4();
-    func_8002FCB4(PLAYER, 1);
+    func_8002FCB4(ENTITY_PLAYER, TRUE);
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/transition", func_80059334);
@@ -471,7 +471,7 @@ void func_80059300(void) {
 void inline func_80059334(void) {
     pauseEntities();
     func_80046C98();
-    func_8002FCB4(PLAYER, 0);
+    func_8002FCB4(ENTITY_PLAYER, FALSE);
 }
  
 //INCLUDE_ASM("asm/nonmatchings/game/transition", func_80059368);
@@ -481,7 +481,7 @@ void func_80059368(void) {
 
     func_8002FB7C();
     func_80046CF4();
-    func_8002FCB4(PLAYER, 1);
+    func_8002FCB4(ENTITY_PLAYER, TRUE);
     handleEatingAndDrinking();
 
     // load current map
@@ -503,7 +503,7 @@ void func_80059368(void) {
 void inline func_800593EC(void) {
     func_8002FB3C();
     func_80046C98();
-    func_8002FCB4(PLAYER, 0);
+    func_8002FCB4(ENTITY_PLAYER, FALSE);
     func_8003C504(MAIN_MAP_INDEX);
 }
 

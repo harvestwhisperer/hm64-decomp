@@ -9,7 +9,7 @@
 #include "system/message.h"
 #include "system/pauseScreen.h"
 #include "system/sprite.h"
-#include "system/mapContext.h"
+#include "system/mapController.h"
 #include "system/sceneGraph.h"
 
 #include "game/gameStart.h"
@@ -120,7 +120,7 @@ void initializeEngine(void) {
     // system/flags.c
     func_8004DEB0();
     initializeEntities();
-    initializeMapContext();
+    initializeMapControllers();
 
     nuGfxSwapCfbFuncSet(NULL);
     nuGfxSwapCfbFuncSet(gfxBufferSwap);

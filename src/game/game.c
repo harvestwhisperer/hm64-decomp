@@ -6,10 +6,10 @@
 #include "system/entity.h"
 #include "system/graphic.h"
 #include "system/map.h"
-#include "system/mathUtils.h"
+#include "system/math.h"
 #include "system/memory.h"
 #include "system/message.h"
-#include "system/mapContext.h"
+#include "system/mapController.h"
 
 #include "game/animals.h"
 #include "game/evaluation.h"
@@ -672,13 +672,13 @@ inline int adjustValue(int initial, int value, int max) {
 static inline func_80059334_2(void) {
     pauseEntities();
     func_80046C98();
-    func_8002FCB4(PLAYER, 0);
+    func_8002FCB4(ENTITY_PLAYER, FALSE);
 }
 
 static inline func_800593EC_2(void) {
     func_8002FB3C();
     func_80046C98();
-    func_8002FCB4(PLAYER, 0);
+    func_8002FCB4(ENTITY_PLAYER, FALSE);
     func_8003C504(MAIN_MAP_INDEX);
 }
 
@@ -1049,10 +1049,10 @@ void func_8005CB50(void) {
 
 void func_8005CBA4(void) {
 
-    if (!(gMapModelContext[MAIN_MAP_INDEX].flags & (0x8 | 0x10))) {
+    if (!(mapControllers[MAIN_MAP_INDEX].flags & (0x8 | 0x10))) {
         togglePauseEntities();
         func_80046CF4();
-        func_8002FCB4(PLAYER, 1);
+        func_8002FCB4(ENTITY_PLAYER, TRUE);
         setMainLoopCallbackFunctionIndex(MAIN_GAME);
     }
 
@@ -1082,7 +1082,7 @@ void func_8005CBF0(void) {
         
         togglePauseEntities();
         func_80046CF4();
-        func_8002FCB4(PLAYER, 1);
+        func_8002FCB4(ENTITY_PLAYER, TRUE);
 
     }
 }
@@ -1143,10 +1143,10 @@ void func_8005CEFC(void) {
 
         setMainLoopCallbackFunctionIndex(MAIN_GAME);
 
-        // reset bits on flags in structs
         togglePauseEntities();
         func_80046CF4();
-        func_8002FCB4(PLAYER, 1);
+        func_8002FCB4(ENTITY_PLAYER, TRUE);
+
     }
 }
 
@@ -1163,7 +1163,7 @@ void func_8005CF4C(void) {
         togglePauseEntities();
         // cutscene executor flags
         func_80046CF4();
-        func_8002FCB4(PLAYER, 1);
+        func_8002FCB4(ENTITY_PLAYER, TRUE);
 
     }
 
@@ -1392,7 +1392,7 @@ static inline void func_80055F08_2(u16 cutsceneIndex, u16 entranceIndex, u8 arg2
     loadCutscene(0);
     
     func_8006E840(gEntranceIndex);
-    setupPlayerSprite(gEntranceIndex, 0);
+    setupPlayerEntity(gEntranceIndex, 0);
 
     func_8006A2E8();
 
@@ -1429,7 +1429,7 @@ void func_8005D2B0() {
         
         togglePauseEntities();
         func_80046CF4();
-        func_8002FCB4(PLAYER, 1);
+        func_8002FCB4(ENTITY_PLAYER, TRUE);
 
         temp = func_80043C6C(0);
 

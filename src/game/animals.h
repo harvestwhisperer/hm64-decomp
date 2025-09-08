@@ -72,9 +72,9 @@ typedef struct {
 	Vec3f coordinates; // 8
 	u16 entityIndex; // 14
 	u8 location; // 16
-	u8 speed; // 17
+	u8 unk_17; // 17
 	u8 direction; // 18
-	u8 unk_19; // 19
+	u8 speed; // 19
 	u8 unk_1A; // 1A
 	u8 unk_1B; // 1B
 	u8 unk_1C; // 1C
@@ -88,9 +88,9 @@ typedef struct {
 	Vec3f coordinates; // 08
 	u16 entityIndex; // 14
 	u8 location; // 16
-	u8 speed; // 17
+	u8 unk_17; // 17
 	u8 direction; // 18
-	u8 unk_19; // 19
+	u8 speed; // 19
 	u8 unk_1A; // 1A
 	u8 unk_1B; // 1B
 	u8 grown; // 1C

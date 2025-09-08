@@ -9,7 +9,7 @@
 #include "system/map.h"
 #include "system/memory.h"
 #include "system/globalSprites.h"
-#include "system/mapContext.h"
+#include "system/mapController.h"
 
 #include "game/animals.h"
 #include "game/game.h"

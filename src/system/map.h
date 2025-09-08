@@ -3,7 +3,7 @@
 
 #include "common.h"
 
-#include "system/mapContext.h"
+#include "system/mapController.h"
 
 #define MAX_MAPS 1
 
@@ -22,6 +22,7 @@ typedef struct {
     u32 fmt;
 } Tile;
 
+// TODO: find better names for vec structs
 typedef struct {
     f32 x, y, z; // Vec3f
     u8 flags;
@@ -54,7 +55,7 @@ typedef struct {
     u8 count;
 } VtxInfo;
 
-// 8013DC70
+// 0x8013DC70
 typedef struct MapVtx {
     Vtx *vtx;
     u16 currentVtxIndex;
@@ -65,42 +66,42 @@ typedef struct MapVtx {
     u8 count;
 } MapVtx;
 
-// 8013DC64
+// 0x8013DC64
 // same layout as MapVtx but looks like members have a different function
 typedef struct {
-    u16 *ptr; // 0x64, might 2D array pointer // 0x8025503C
+    u16 *tileIndices; // 0x64, might 2D array pointer // 0x8025503C
     u16 unk_4; // 0x68, used in looking up index of map object interacted with
-    u16 unk_6; // 0x6A // loop counter for vertex info objects
-    u8 scalingFactorX; // 0x6C // conversion of sprite coordinates x, used as divisor; tile size in world units (scaling factor), x
-    u8 scalingFactorZ; // 0x6D // conversion of sprite coordinates z, used as divisor; tile size in world units (scaling factor), z
+    u16 vertexCount; // 0x6A, loop counter for vertex info objects
+    u8 tileSizeX; // 0x6C
+    u8 tileSizeZ; // 0x6D
     // counters for indexing into 8025503C
-    u8 mapWidth; // 0x6E // related to data from mainMap.unk_4 and unk_8, possibly collisions/interactables; mapWidth in tiles x
+    u8 mapWidth; // 0x6E, mapWidth in tiles x
     u8 mapHeight; // 0x6F, mapHeight in tiles Z
-} UnknownMapStruct1;
+} MapGrid;
 
-// D_8014198C
+// 0x8014198C
 // offset 0x3D4C
 typedef struct {
-    Vec3f unk_0;
+    Vec3f currentPosition;
     Vec3f unk_C; //0x998
     Vec3f unk_18; // 0x9A4
     Vec3f unk_24; // 0x9B0
-    Vec3f unk_30; // 0x9BC // angles
-    Vec3f unk_3C; // 0x9C8
-    u8 unk_48; // 0x9D4
-    u8 unk_49; // 0x9D5
-    u8 unk_4A; // 0x9D6
-    u8 unk_4B; // 0x9D7
-} UnknownMapStruct2;
+    Vec3f rotation; // 0x9BC // angles
+    Vec3f viewOffset; // 0x9C8
+    u8 calculatedTileX; // 0x9D4
+    u8 calculatedTileZ; // 0x9D5
+    u8 viewExtentX; // 0x9D6
+    u8 viewExtentZ; // 0x9D7
+} MapCameraView;
 
-// D_801418D8
+// 0x801418D8
 typedef struct {
     u16 unk_0; // counter
     u8 unk_2; // related to bitmap scale for traversing timg
     u8 unk_3; // counter for byteswapped Vec3fs
 } UnknownMapStruct3;
 
-// D_80141A18
+// 0x80141A18
 // map objects sprite info
 typedef struct {
     Vec3f coordinates; // 0xA18, coordinates
@@ -111,7 +112,7 @@ typedef struct {
     volatile u8 flags; // 0xA2A
 } MapObject;
 
-// 80141B64
+// 0x80141B64
 typedef struct {
     u32 unk_0;
     u8 unk_4;
@@ -121,7 +122,7 @@ typedef struct {
     u8 flags;
 } WeatherSprite;
 
-// D_80141C98
+// 0x80141C98
 // map spawnable sprites
 // loads textures at 0xD8B1D0
 typedef struct {
@@ -177,8 +178,8 @@ typedef struct {
 // 0x1A608
 // D_80158248
 typedef struct {
-    f32 unk_0; // 0x48 // x value
-    f32 unk_4; // 0x4C // z value
+    f32 mapOriginX; // 0x48
+    f32 mapOriginZ; // 0x4C
     u16 unk_8; // 0x50, timer for gradual RGBA; likely an s16
     u16 unk_A; // 0x52 // vertex count or part of map size
     u16 unk_C; // 0x54 // vertex count or part of map size
@@ -210,9 +211,9 @@ typedef struct {
 // 0x8013DC40
 typedef struct  {
     // ptrs set from offset array at 80255000
-    // could be substruct of pointers to binary data loaded from MapModelContext object
+    // could be its own pointers substruct
     void *unk_0; // ptr to array of offsets + vertex info structs
-    u8 *unk_4; // u8 array used for float calculations
+    u8 *terrainQuads; // u8 array used for float calculations
     u8 **unk_8; // seems like grid to tile mapping, used in looking up index of map object interacted with
     u8 *unk_C; // ptr to compressed Vec3fs bank
     void *unk_10; // index + tile spritesheets
@@ -220,12 +221,12 @@ typedef struct  {
     void *unk_18; // index + ci sprites
     void *unk_1C; // index + palette
     void *unk_20; // param 2 of func_800388A4, 0x8013DC60
-    UnknownMapStruct1 mapStruct1; // 0x24, vertex/mesh info, 0x8013DC64
+    MapGrid mapGrid; // 0x24, vertex/mesh info, 0x8013DC64
     MapVtx vtxs[1024]; // 0x30 // map model vertices
     u16 unkArr[80]; // 0x3030, corresponds to D_80204B48
     u16 unk_30D0;
     u16 unk_30D2[0x63C]; // more vertices
-    UnknownMapStruct2 mapStruct2; // 0x3D4C
+    MapCameraView mapCameraView; // 0x3D4C
     UnknownMapStruct3 mapStruct3[16]; // 0x3D98 // related to tile bitmaps/compressed vecs
     MapObject mapObjects[12]; // 0x3DD8
     u32 padding1[20];
@@ -244,7 +245,7 @@ typedef struct  {
 } MainMap;
 
 extern void func_800337D0(void);    
-extern bool func_80033A90(u16 mapIndex, LevelMapContext* arg1, void* arg2, void* arg3, void* arg4, void* arg5, void* arg6, void* arg7, void* arg8, void* arg9, void *argA);
+extern bool func_80033A90(u16 mapIndex, MapController* arg1, void* arg2, void* arg3, void* arg4, void* arg5, void* arg6, void* arg7, void* arg8, void* arg9, void *argA);
 extern bool func_80034090(u16 mapIndex);  
 extern bool setMapTranslation(u16, f32, f32, f32);
 extern bool func_80034298(u16, f32, f32, f32);   
@@ -261,19 +262,18 @@ extern bool deactivateMapObject(u16, u8);
 extern bool func_80034EF0(u16 mapIndex, u8 arg1, u8 arg2, u32* arg3, u32* arg4, u8* arg5, u32 arg6, u32 arg7, u32 arg8, u32 arg9, u8 argA);
 extern bool func_80035004(u16 arg0, u16 arg1, u8 arg2, u8 arg3); 
 extern bool func_80035054(u16 mapIndex, u16 bitmapIndex, u16 arg2, f32 arg3, f32 arg4, f32 arg5);
-extern f32 func_80035150(u16 mapIndex, f32, f32);      
+extern f32 getTerrainHeightAtPosition(u16 mapIndex, f32, f32);      
 extern bool func_80035914(u16 mapIndex, f32 arg1, f32 arg2);
-//extern Vec3f* func_800359C8(Vec3f* arg0, MainMap* arg1, f32 arg2, f32 arg3);
-extern Vec3f func_800359C8(MainMap* arg1, f32 arg2, f32 arg3);
+extern Vec3f getTileCoordinates(MainMap* arg1, f32 arg2, f32 arg3);
 extern u8 func_80036318(u16, f32, f32);
-extern Vec3f* func_80036610(Vec3f*, u16, f32, f32);   
-extern Vec3f* func_800366F4(Vec3f* arg0, u16 mapIndex, f32 arg2, f32 arg3);
+extern Vec3f convertWorldToTileCoordinates(u16, f32, f32);   
+extern Vec3f func_800366F4(u16 mapIndex, f32 x, f32 z);
 extern u16 func_80036880(u16, f32, f32);  
 extern bool func_80036980(u16, u16, f32, f32);
 extern bool checkMapRGBADone(u16);      
-extern void func_80036C08(u16);                                 
+extern void func_80036C08(u16 mapIndex);                                 
 extern void func_80036FA0(u16 mapIndex); 
-extern u16 func_80037254(u16, u8, u8);
+extern u16 getTerrainIndexForTile(u16, u8, u8);
 extern bool func_80038810(u16 mapIndex);
 extern bool func_80038900(u16 mapIndex, u16 arg1, u16 arg2, u16 arg3, u16 arg4); 
 extern bool func_80038990(u16, u16, u8);       
@@ -281,7 +281,7 @@ extern bool func_80038A2C(u16 mapIndex, u16 arg1, u8 arg2, u8 arg3);
 extern bool func_80038AE0(u16 mapIndex, u16 arg1);
 extern bool func_80038B58(u16, u16, u8, u8);   
 extern void updateMapGraphics(void);
-extern Vec3f* func_8003AF58(Vec3f*, u16, u8, u8); 
+extern Vec3f func_8003AF58(u16, u8, u8); 
 
 extern MainMap mainMap[1];
 

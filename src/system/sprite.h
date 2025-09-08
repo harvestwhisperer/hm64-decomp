@@ -23,7 +23,7 @@ typedef struct {
 	s32 pixelSize; // 14
 	u16 spriteNumber; // 18
 	u16 vtxIndex; // 1A
-	Vec3f shrink; // set from byteswapped level Vec3fs from binary data for map bitmaps
+	Vec3f viewSpacePosition; // set from byteswapped level Vec3fs from binary data for map bitmaps
 	Vec3f scaling; // 28
 	Vec3f rotation; // 34
 	Vec4f rgba; // 40
@@ -55,7 +55,7 @@ extern bool func_80029EA4(u16 index, u16);
 extern bool func_80029F14(u16 index, u16);
 extern bool setBitmapFlip(u16 index, u8, u8);
 extern bool func_8002A02C(u16 index, u16);
-extern bool setBitmapShrink(u16 index, f32, f32, f32);
+extern bool setBitmapViewSpacePosition(u16 index, f32, f32, f32);
 extern bool setBitmapScale(u16 index, f32, f32, f32);
 extern bool setBitmapRotation(u16 index, f32, f32, f32);
 extern bool setBitmapRGBA(u16 index, u8 r, u8 g, u8 b, u8 a);

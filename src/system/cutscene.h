@@ -25,6 +25,17 @@ typedef struct {
 
 typedef struct {
     u16 functionIndex;
+    u8 cameraFlags;
+} CutsceneCameraFlagsCmd;
+
+// func_8004B920
+typedef struct {
+    u16 functionINdex;
+    u16 unk_2;
+} CutsceneCameraFlagsUpdateCmd;
+
+typedef struct {
+    u16 functionIndex;
     u16 unk_2;
     u32 romAddrStart;
     u32 romAddrEnd;
@@ -45,6 +56,80 @@ typedef struct {
     u16 functionIndex;
     short offset;
 } CutsceneJumpCmd;
+
+// func_80049E84
+typedef struct {
+    u16 functionIndex;
+    u16 unk_2;
+    u16 unk_4;
+    s16 unk_8;
+} CutsceneUnknownCmd;
+
+// func_80049064
+typedef struct {
+    u16 functionIndex;
+    u16 unk_2;
+    u32* unk_4;
+} CutsceneUnknown2Cmd;
+
+/* gameStatus */
+
+typedef struct {
+    u16 index;
+    u16 bit;
+    u32* bitfield;
+} CutsceneSpecialBitToggleCmd;
+
+// func_8004AB04
+typedef struct {
+    u16 functionIndex;
+    s16 value;
+    s16 max;
+    u8* valuePtr;
+} CutsceneU8UpdateCmd;
+
+// func_8004ABA8
+typedef struct {
+    u16 functionIndex;
+    s16 value;
+    u16 max;
+    u16* valuePtr;
+} CutsceneU16UpdateCmd;
+
+// func_8004AC4C
+typedef struct {
+    u16 functionIndex;
+    u32 value;
+    u32 max;
+    u32* valuePtr;
+} CutsceneU32UpdateCmd;
+
+typedef struct {
+    u16 index;
+    u16 frames;
+} CutsceneWaitFramesCmd;
+
+/* general graphics */
+
+// func_8004A47C
+typedef struct {
+    u16 functionIndex;
+    u8 r, g, b, a;
+} CutsceneSetColorsCmd;
+
+// func_8004A7A4
+typedef struct {
+    u16 functionIndex;
+    u8 r, g, b, a;
+    s16 rate;
+} CutsceneUpdateRGBACmd;
+
+// func_8004AD44
+typedef struct {
+    u16 functionIndex;
+    u8 r, g, b, a;
+    s16 rate;
+} CutsceneUpdateRGBA2Cmd;
 
 /* audio */
 
@@ -92,6 +177,13 @@ typedef struct {
 typedef struct {
     u16 functionIndex;
     u16 dialogueBoxIndex;
+    u16 dialogueBytecodeUnk14;
+    u16 dialogueStruct1Unk0;
+} CutscenInitializeDialogueBoxCmd;
+
+typedef struct {
+    u16 functionIndex;
+    u16 dialogueBoxIndex;
     u8 r;
     u8 b;
     u8 g;
@@ -99,13 +191,146 @@ typedef struct {
     s32 flags;
 } CutsceneDialogueBoxRGBACmd;
 
+typedef struct {
+    u16 functionIndex;
+    u16 spriteIndex;
+    u8 dialogueWindowIndex;
+} CutsceneDialogueBoxSetupCmd;
+
+typedef struct {
+    u16 functionIndex;
+    u16 dialogueBoxIndex;
+    s16 x;
+    s16 y;
+    s16 z;
+} CutsceneDialogueBoxViewSpaceCmd;
+
+// func_80049A28
+typedef struct {
+    u16 functionIndex;
+    u16 dialogueBoxIndex;
+} CutsceneUnknownDialogueBoxCmd;
+
+typedef struct {
+    u16 functionIndex;
+    u16 dialogueBoxIndex;
+} CutsceneDialogueWaitCmd;
+
+// func_8004B498
+typedef struct {
+    u16 functionIndex;
+    u16 dialoguesIndex;
+} CutsceneDialoguesWaitCmd;
+
+// func_8004B538
+typedef struct {
+    u16 functionIndex;
+    u16 dialoguesIndex;
+    u16 unk;
+} CutsceneDialoguesUnknownCmd;
+
+// func_8004B410
+typedef struct {
+    u16 functionIndex;
+    u16 dialoguesIndex;
+    u16 dialogueMapAddressIndex;
+    u16 dialogueIndex;
+} CutsceneDialogueSpritesDMACmd;
+
 /* entity */
 
 typedef struct {
     u16 functionIndex;
-    u16 spriteIndex;
+    u16 entityAssetIndex;
     u16 flags;
-} CutsceneEntityAssetCmd;
+} CutsceneEntitySetShadowFlagsCmd;
+
+typedef struct {
+    u16 functionIndex;
+    u16 entityIndex;
+} CutsceneEntityCmd1;
+
+typedef struct {
+    u16 functionIndex;
+    u16 entityIndex;
+    u16 unk_4;
+    u16 unk_6;
+    u16 unk_8;
+    u16 unk_A;
+    u16 unk_C;
+    u16 unk_E;
+    u16 unk_10;
+} CutsceneEntityCmd2;
+
+typedef struct {
+    u16 functionIndex;
+    u16 entityIndex;
+    u16 entityAssetIndex;
+    u16 flag;
+} CutsceneEntityCmd3;
+
+typedef struct {
+    u16 functionIndex;
+    u16 entityIndex;
+    u16 collisionWidth;
+    u16 collisionHeight;
+} CutsceneEntityCollisionCheckCmd;
+
+// func_80049F40
+typedef struct {
+    u16 functionIndex;
+    u16 entityIndex;
+} CutsceneEntityPauseCmd;
+
+// func_80049FA0
+typedef struct {
+    u16 functionIndex;
+    u16 entityIndex;
+} CutsceneEntityTogglePauseCmd;
+
+// func_80049D64
+typedef struct {
+    u16 functionIndex;
+    u16 animation;
+} CutsceneEntitySetAnimationCmd;
+
+// func_80049DF4
+typedef struct {
+    u16 functionIndex;
+    u16 animation;
+} CutsceneEntitySetAnimationWithDirectionCmd;
+
+// func_8004910C
+typedef struct {
+    u16 functionIndex;
+    u8 direction;
+} CutsceneEntityDirectionCmd;
+
+typedef struct {
+    u16 functionIndex;
+    u16 paletteIndex;
+} CutsceneEntitySetPaletteIndexCmd;
+
+typedef struct {
+    u16 functionIndex;
+    u16 unk_2;
+} CutsceneEntitySetFlagsCmd;
+
+typedef struct {
+    u16 functionIndex;
+    u16 entityIndex;
+    u8 targetDirecton;
+} CutscenEntityCheckDirectionCmd;
+
+// func_8004B7B8
+typedef struct {
+    u16 functionIndex;
+    u16 targetSpriteIndex;
+    s16 arg1;
+    s16 arg2;
+    s16 arg3;
+    u8 trackingMode;
+} CutsceneEntityUnknownCmd;
 
 /* map */
 
@@ -114,6 +339,14 @@ typedef struct {
     u16 mapAdditionIndex;
     u16 flag;
 } CutsceneMapAdditionsCmd;
+
+// func_8004CB88
+typedef struct {
+    u16 functionIndex;
+    u16 mapAdditionIndex;
+    u8 arg2;
+    u8 arg3;
+} CutsceneMapSetMapAdditionsCmd;
 
 typedef struct {
     u16 functionIndex;
@@ -128,18 +361,31 @@ typedef struct {
     s32* cutsceneFlagPointer;
 } CutsceneMapFlagCmd;
 
-/* mapContext */
+/* mapControllr */
 
 typedef struct {
     u16 functionIndex;
-    u16 mapModelContextIndex;
+    u16 mapModelIndex;
     u16 mainMapIndex;
-} CutsceneMapModelContextCmd;
+} CutsceneMapControllerCmd;
 
 typedef struct {
     u16 functionIndex;
     u16 index;
-} CutsceneMapModelContextCmd2;
+} CutsceneMapControllerCmd2;
+
+// func_8004ACE4
+typedef struct {
+    u16 functionIndex;
+    u16 mapIndex;
+} CutsceneMapControllerCmd3;
+
+typedef struct {
+    u16 functionIndex;
+    u16 mapIndex;
+    u8 arg1;
+    u8 rotation;
+} CutsceneMapControllerSetRotationFlagCmd;
 
 /* sprite */
 
@@ -158,24 +404,11 @@ typedef struct {
     u16 flag;
 } CutsceneSetBilinearFilteringCmd;
 
+// func_8004BE88
 typedef struct {
     u16 functionIndex;
-    u16 spriteIndex;
-    u16 unk_4;
-    u16 unk_6;
-    u16 unk_8;
-    u16 unk_A;
-    u16 unk_C;
-    u16 unk_E;
-    u16 unk_10;
-} CutsceneSpriteCmd3;
-
-typedef struct {
-    u16 functionIndex;
-    u16 spriteIndex;
-    u16 characterIndex;
-    u16 flag;
-} CutsceneSpriteCmd4;
+    s16 x, y, z;
+} CutsceneSpriteSetScaleCmd;
 
 /* spriteDMAManager */
 
@@ -217,6 +450,11 @@ typedef struct  {
     u32 spritesheetIndexVaddr;
 } CutsceneSpriteDMAManagerCmd;
 */
+
+typedef struct {
+    u16 functionIndex;
+    u16 renderingLayer;
+} CutsceneSetSpriteRenderingLayerCmd;
 
 /* unknown */
 
@@ -261,6 +499,14 @@ typedef struct {
     u32* unk_8;
 } CutsceneUnknownCmd6;
 
+typedef struct {
+    u16 functionIndex;
+    u16 unk_2;
+    u32 unk_4;
+    u32 unk_8;
+    u32 unk_C;
+} CutsceneUnknownCmd7;
+
 // 0x801808B0
 typedef struct {
     void *bytecodePtr;
@@ -268,15 +514,16 @@ typedef struct {
     void *unk_8; // return ptr
     Vec3f unk_C;
     u32 unk_18; // sets cutscenePointer
-    u16 unk_1C; // sprite info, entities.unk_58
-    u16 unk_1E; // sprite info,  entities.unk_5A
+    u16 unk_1C; // entities, entities.entityCollidedWithIndex
+    u16 unk_1E; // entities,  entities.buttonPressed
     u16 unk_20; // sprite animation
     u16 unk_22; // sprite animation
     u16 unk_24; // sprite animation
     u16 unk_26; // sprite animation
     u16 unk_28; // sprite animation
     u16 unk_2A; // sprite animation
-    u32 unk_2C;
+    u16 unk_2C;
+    u16 unk_2E;
     u16 cameraFlags; // 0x30
     Vec3f coordinates; // 0x34
     Vec3f scaling; // 0x40

@@ -1,7 +1,7 @@
 #include "common.h"
 
 #include "game/gameStatus.h"
-#include "system/mathUtils.h"
+#include "system/math.h"
 
 #include "game/animals.h"
 #include "game/game.h"
@@ -23,7 +23,7 @@ extern u32 albumBits;
 void toggleSpecialDialogueBit(u16);
 
 
-// FIXME: should be inline adjustValue from game.c ... have to mess with linker options
+// same as adjustValue from game.c
 static inline int adjustValue2(int initial, int value, int max) {
 
     int temp;
@@ -343,33 +343,46 @@ inline u32 func_80065340(u16 bitIndex) {
     return mailboxBits[temp >> 5] & (1 << (temp & 0x1F));
 }
 
-#ifdef PERMUTER
+static inline void toggleLetterBit(u32 i, u32 mailBox) {
+    mailboxBits[i >> 5] &= ~mailBox;
+}
+
+static inline void setReadMail(u32 i, u32 mailBox) {
+    readMailBits[i >> 5] |= mailBox;
+}
+
+static inline u32 getLetterBit(u32 mailBox) {
+    return (1 << (mailBox & 0x1F));
+}
+
+//INCLUDE_ASM("asm/nonmatchings/game/gameStatus", func_8006536C);
+
 u8 func_8006536C(void) {
     
     u8 result = 0xFF;
     u8 i;
     
-    u32 temp;
+    u32 mailBox;
+    u32 letterBit;
     
     for (i = 0; i < 0x50 && result == 0xFF; i++) {
+
+        mailBox = mailboxBits[i >> 5];
+        letterBit = getLetterBit(i);
         
-        temp = func_80065340(i);
-        
-        if (temp) {
-            
-            mailboxBits[i >> 5] &= ~temp;
-            readMailBits[i >> 5] |= temp;
+        if (mailBox & letterBit) {
+
+            toggleLetterBit(i, letterBit);
+            setReadMail(i, letterBit);
             
             result = i;
+            
         }
     }
     
     return result;
     
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game/gameStatus", func_8006536C);
-#endif
 
 // jtbl_8011F398
 //INCLUDE_ASM("asm/nonmatchings/game/gameStatus", setAlbumPicture);

@@ -11,7 +11,7 @@
 #include "system/message.h"
 #include "system/pauseScreen.h"
 #include "system/sprite.h"
-#include "system/mapContext.h"
+#include "system/mapController.h"
 #include "system/sceneGraph.h"
 
 #include "mainproc.h"

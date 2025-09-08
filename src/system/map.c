@@ -3,21 +3,23 @@
 #include "system/map.h"
 
 #include "system/graphic.h"
-#include "system/mathUtils.h"
-#include "system/mapContext.h"
+#include "system/math.h"
+#include "system/mapController.h"
 #include "system/sceneGraph.h"
 
 #include "mainproc.h" 
  
 // forward declarations
-void func_80035A58(UnknownMapStruct2*);
+Vec3f getTerrainHeight(TerrainQuad *quad, f32 x, f32 z, u8 fallbackHeight);
+void updateCameraViewBounds(MapCameraView*);
 bool func_80035DA4(MainMap *map, u8 arg1, u8 arg2);       
 bool func_800360BC(u16, u16, u8, u8, u32);       
-Vec3f* func_800366F4(Vec3f*, u16, f32, f32);                  
+Vec3f func_800366F4(u16, f32, f32);                  
+inline u16 getTerrainIndexForTile(u16 mapIndex, u8 x, u8 z);
 Gfx* func_8003797C(Gfx* dl, MainMap* map, u8 arg2);
 u16 func_80036880(u16, f32, f32);  
 void func_80036AB4(MainMap*); 
-void func_800372F0(UnknownMapStruct1*, LevelMapContext*);                 
+void setMapGrid(MapGrid*, MapGridInfo*);                 
 u8* func_800374C0(WeatherSprite*, u8*);
 u8* func_80037614(MapVtx* arg0, VtxInfo* arg1);    
 u16* func_80037650(u16 arg0, void *arg1);
@@ -29,6 +31,7 @@ void func_8003851C(MainMap*);
 void func_80038630(DecompressedVec3f* arg0, CompressedVec3f* arg1);                        
 void func_800386C0(UnknownMapStruct3* arg0, u8* arg1); 
 CompressedVec3f* func_800386D4(u16 arg0, u8* arg1);     
+void setTerrainQuad(TerrainQuad *arg0, u8* arg1, u16 arg2);
 u8* func_800388A4(u16 arg0, u8 *arg1);
 void func_80038BC4(MainMap*); 
 void func_800393E0(MainMap*); 
@@ -46,7 +49,7 @@ extern f32 D_80170460;
 extern DecompressedVec3f D_80181BA0[];
 extern u8 D_801FB5CB;
 extern f32 D_801FB5D4;
-// counter for updating shrink factor
+// counter
 extern u8 D_801FB700;
 extern f32 D_801FB5D4;
 extern f32 D_802226EC;
@@ -73,37 +76,14 @@ extern const Gfx D_8011EDD8;
 extern const char D_8011EDB0[];
 extern const char D_8011EDB4[];
 
-typedef union {
-    u8 byte[2];
-    u16 halfword;
-} Swap16;
+static inline u16 swap16Tile(Swap16 halfword) {
 
-typedef union {
-    u16 halfword[2];
-    u32 word;
-} SwapVertex;
-
-static inline u16 swapVertex(u16 halfword) {
-    
-    SwapVertex swap;
-    u16 lower;
-    u16 upper;
-
-    upper = (halfword & 0xFF) << 8;
-    lower = halfword >> 8;
-    
-    swap.word = lower | upper;
-
-    return swap.halfword[0] | swap.halfword[1] - 1;
-    
-}
-
-static inline u16 swap16(u8 byte1, u8 byte2) {
-    
     Swap16 swap;
     
-    swap.byte[0] = byte2;
-    swap.byte[1] = byte1;
+    swap.byte[1] = halfword.byte[0];
+    swap.byte[0] = halfword.byte[1];
+
+    swap.halfword -= 1;
     
     return swap.halfword;
 
@@ -142,34 +122,34 @@ void initializeMap(void) {
         mainMap[i].mapFloats.groundRgba.b = 255.0f;
         mainMap[i].mapFloats.groundRgba.a = 255.0f;
 
-        mainMap[i].mapStruct2.unk_48 = 0;
-        mainMap[i].mapStruct2.unk_49 = 0;
-        mainMap[i].mapStruct2.unk_4A = 0;
-        mainMap[i].mapStruct2.unk_4B = 0;
+        mainMap[i].mapCameraView.calculatedTileX = 0;
+        mainMap[i].mapCameraView.calculatedTileZ = 0;
+        mainMap[i].mapCameraView.viewExtentX = 0;
+        mainMap[i].mapCameraView.viewExtentZ = 0;
 
-        mainMap[i].mapStruct2.unk_3C.x = 0;
-        mainMap[i].mapStruct2.unk_3C.y = 0;
-        mainMap[i].mapStruct2.unk_3C.z = 0;
+        mainMap[i].mapCameraView.viewOffset.x = 0;
+        mainMap[i].mapCameraView.viewOffset.y = 0;
+        mainMap[i].mapCameraView.viewOffset.z = 0;
 
-        mainMap[i].mapStruct2.unk_0.x = 0;
-        mainMap[i].mapStruct2.unk_0.y = 0;
-        mainMap[i].mapStruct2.unk_0.z = 0;
+        mainMap[i].mapCameraView.currentPosition.x = 0;
+        mainMap[i].mapCameraView.currentPosition.y = 0;
+        mainMap[i].mapCameraView.currentPosition.z = 0;
 
-        mainMap[i].mapStruct2.unk_C.x = 0;
-        mainMap[i].mapStruct2.unk_C.y = 0;
-        mainMap[i].mapStruct2.unk_C.z = 0;
+        mainMap[i].mapCameraView.unk_C.x = 0;
+        mainMap[i].mapCameraView.unk_C.y = 0;
+        mainMap[i].mapCameraView.unk_C.z = 0;
         
-        mainMap[i].mapStruct2.unk_18.x = 0;
-        mainMap[i].mapStruct2.unk_18.y = 0;
-        mainMap[i].mapStruct2.unk_18.z = 0;
+        mainMap[i].mapCameraView.unk_18.x = 0;
+        mainMap[i].mapCameraView.unk_18.y = 0;
+        mainMap[i].mapCameraView.unk_18.z = 0;
 
-        mainMap[i].mapStruct2.unk_24.x = 0;
-        mainMap[i].mapStruct2.unk_24.y = 0;
-        mainMap[i].mapStruct2.unk_24.z = 0;
+        mainMap[i].mapCameraView.unk_24.x = 0;
+        mainMap[i].mapCameraView.unk_24.y = 0;
+        mainMap[i].mapCameraView.unk_24.z = 0;
 
-        mainMap[i].mapStruct2.unk_30.x = 0;
-        mainMap[i].mapStruct2.unk_30.y = 0;
-        mainMap[i].mapStruct2.unk_30.z = 0;
+        mainMap[i].mapCameraView.rotation.x = 0;
+        mainMap[i].mapCameraView.rotation.y = 0;
+        mainMap[i].mapCameraView.rotation.z = 0;
   
         for (j = 0; j < 1024; j++) {
             mainMap[i].vtxs[j].currentVtxIndex = 0;
@@ -179,20 +159,22 @@ void initializeMap(void) {
             mainMap[i].vtxs[j].flags = 0;
             mainMap[i].vtxs[j].count = 0;
         }
+    
     }
+
 } 
 
 //INCLUDE_ASM("asm/nonmatchings/system/map", func_80033A90);
 
 // FIXME: iterators are messed up; loops are probably inline funcs 
-bool func_80033A90(u16 mapIndex, LevelMapContext* arg1, void* arg2, void* arg3, void* arg4, void* arg5, void* arg6, void* arg7, void* arg8, void* arg9, void *argA) {
+bool func_80033A90(u16 mapIndex, MapController* arg1, void* arg2, void* terrainQuads, void* arg4, void* arg5, void* arg6, void* arg7, void* arg8, void* arg9, void *argA) {
 
     bool result;
 
     u16 i, k, l, m, n, o, p, q, j, r;
 
-    u8 temp1;
-    u8 temp2;
+    u8 centerTileX;
+    u8 centerTileZ;
 
     result = FALSE;
 
@@ -203,7 +185,7 @@ bool func_80033A90(u16 mapIndex, LevelMapContext* arg1, void* arg2, void* arg3, 
         mainMap[mapIndex].mapState.mapObjectCount = 0;
         
         mainMap[mapIndex].unk_0 = arg2;
-        mainMap[mapIndex].unk_4 = (u8*)arg3;
+        mainMap[mapIndex].terrainQuads = (u8*)terrainQuads;
         mainMap[mapIndex].unk_8 = (u8**)arg4;
         mainMap[mapIndex].unk_C = (u8*)arg5;
         mainMap[mapIndex].unk_10 = arg6;
@@ -255,24 +237,24 @@ bool func_80033A90(u16 mapIndex, LevelMapContext* arg1, void* arg2, void* arg3, 
             
         }
 
-        func_800372F0(&mainMap[mapIndex].mapStruct1, &arg1->modelDataIndex);
+        setMapGrid(&mainMap[mapIndex].mapGrid, &arg1->modelDataIndex);
 
         func_80036AB4(&mainMap[mapIndex]);
         func_80036C08(mapIndex);
         func_8003851C(&mainMap[mapIndex]);
 
-        temp1 = mainMap[mapIndex].mapStruct1.mapWidth / 2;
-        temp2 = mainMap[mapIndex].mapStruct1.mapHeight / 2;
+        centerTileX = mainMap[mapIndex].mapGrid.mapWidth / 2;
+        centerTileZ = mainMap[mapIndex].mapGrid.mapHeight / 2;
 
-        func_800343FC(mapIndex, temp1, temp2, temp1, temp2, 0.0f, 0.0f, 0.0f, 1);
-        func_80035A58(&mainMap[mapIndex].mapStruct2);
+        func_800343FC(mapIndex, centerTileX, centerTileZ, centerTileX, centerTileZ, 0.0f, 0.0f, 0.0f, 1);
+        updateCameraViewBounds(&mainMap[mapIndex].mapCameraView);
 
-        mainMap[mapIndex].mapState.unk_0 = ((mainMap[mapIndex].mapStruct1.mapWidth * mainMap[mapIndex].mapStruct1.scalingFactorX) / 2) + (mainMap[mapIndex].mapStruct1.scalingFactorX / 2);
-        mainMap[mapIndex].mapState.unk_4 = ((mainMap[mapIndex].mapStruct1.mapHeight * mainMap[mapIndex].mapStruct1.scalingFactorZ) / 2) + (mainMap[mapIndex].mapStruct1.scalingFactorZ / 2);
+        mainMap[mapIndex].mapState.mapOriginX = ((mainMap[mapIndex].mapGrid.mapWidth * mainMap[mapIndex].mapGrid.tileSizeX) / 2) + (mainMap[mapIndex].mapGrid.tileSizeX / 2);
+        mainMap[mapIndex].mapState.mapOriginZ = ((mainMap[mapIndex].mapGrid.mapHeight * mainMap[mapIndex].mapGrid.tileSizeZ) / 2) + (mainMap[mapIndex].mapGrid.tileSizeZ / 2);
 
         for (r = 0; r < 0x63C; r++) {
-            D_8013D5F0[r] = r % mainMap[mapIndex].mapStruct1.mapWidth;
-            D_8018A090[r] = r / mainMap[mapIndex].mapStruct1.mapWidth;
+            D_8013D5F0[r] = r % mainMap[mapIndex].mapGrid.mapWidth;
+            D_8018A090[r] = r / mainMap[mapIndex].mapGrid.mapWidth;
         }
         
         result = TRUE;
@@ -304,6 +286,7 @@ bool func_80034090(u16 mapIndex) {
             }
             
             mainMap[mapIndex].mapObjects[i].flags = 0;
+
         }
         
         for (i = 0; i < 0x10; i++) { 
@@ -313,6 +296,7 @@ bool func_80034090(u16 mapIndex) {
             }
 
             mainMap[mapIndex].weatherSprites[i].flags = 0;
+
         }
         
         mainMap[mapIndex].mapState.flags = 0;
@@ -418,14 +402,14 @@ bool func_800343FC(u16 mapIndex, u8 arg1, u8 arg2, u8 arg3, u8 arg4, f32 x, f32 
 
     if (mapIndex == MAIN_MAP_INDEX && (mainMap[mapIndex].mapState.flags & MAP_ACTIVE)) {
 
-        mainMap[mapIndex].mapStruct2.unk_48 = arg1;
-        mainMap[mapIndex].mapStruct2.unk_49 = arg2;
-        mainMap[mapIndex].mapStruct2.unk_4A = arg3;
-        mainMap[mapIndex].mapStruct2.unk_4B = arg4;
+        mainMap[mapIndex].mapCameraView.calculatedTileX = arg1;
+        mainMap[mapIndex].mapCameraView.calculatedTileZ = arg2;
+        mainMap[mapIndex].mapCameraView.viewExtentX = arg3;
+        mainMap[mapIndex].mapCameraView.viewExtentZ = arg4;
 
-        mainMap[mapIndex].mapStruct2.unk_3C.x = -x;
-        mainMap[mapIndex].mapStruct2.unk_3C.y = -y;
-        mainMap[mapIndex].mapStruct2.unk_3C.z = -z;
+        mainMap[mapIndex].mapCameraView.viewOffset.x = -x;
+        mainMap[mapIndex].mapCameraView.viewOffset.y = -y;
+        mainMap[mapIndex].mapCameraView.viewOffset.z = -z;
         
         if (arg8 == 1) {
             mainMap[mapIndex].mapState.flags |= 4;
@@ -433,7 +417,7 @@ bool func_800343FC(u16 mapIndex, u8 arg1, u8 arg2, u8 arg3, u8 arg4, f32 x, f32 
             mainMap[mapIndex].mapState.flags &= ~4;
         }
 
-        func_80035A58(&mainMap[mapIndex].mapStruct2);
+        updateCameraViewBounds(&mainMap[mapIndex].mapCameraView);
         
         result = TRUE;
 
@@ -596,32 +580,32 @@ bool func_80034A6C(u16 mapIndex, s8 arg1, s8 arg2, s8 arg3, u8 arg4, f32 arg5, f
 
     if (mapIndex == MAIN_MAP_INDEX && (mainMap[mapIndex].mapState.flags & MAP_ACTIVE)) { 
 
-        mainMap[mapIndex].mapStruct2.unk_48 += arg1;
+        mainMap[mapIndex].mapCameraView.calculatedTileX += arg1;
 
-        mainMap[mapIndex].mapStruct2.unk_0.y = 0;
-        mainMap[mapIndex].mapStruct2.unk_C.y = 0;
-        mainMap[mapIndex].mapStruct2.unk_18.y = 0;
-        mainMap[mapIndex].mapStruct2.unk_24.y = 0;
+        mainMap[mapIndex].mapCameraView.currentPosition.y = 0;
+        mainMap[mapIndex].mapCameraView.unk_C.y = 0;
+        mainMap[mapIndex].mapCameraView.unk_18.y = 0;
+        mainMap[mapIndex].mapCameraView.unk_24.y = 0;
         
-        mainMap[mapIndex].mapStruct2.unk_49 += arg2;
-        mainMap[mapIndex].mapStruct2.unk_4A += arg3;
-        mainMap[mapIndex].mapStruct2.unk_4B += arg4;
+        mainMap[mapIndex].mapCameraView.calculatedTileZ += arg2;
+        mainMap[mapIndex].mapCameraView.viewExtentX += arg3;
+        mainMap[mapIndex].mapCameraView.viewExtentZ += arg4;
 
-        mainMap[mapIndex].mapStruct2.unk_3C.x += arg5;
-        mainMap[mapIndex].mapStruct2.unk_3C.y += arg6;
-        mainMap[mapIndex].mapStruct2.unk_3C.z += arg7;
+        mainMap[mapIndex].mapCameraView.viewOffset.x += arg5;
+        mainMap[mapIndex].mapCameraView.viewOffset.y += arg6;
+        mainMap[mapIndex].mapCameraView.viewOffset.z += arg7;
 
-        mainMap[mapIndex].mapStruct2.unk_0.x += arg1;
-        mainMap[mapIndex].mapStruct2.unk_0.z += arg2;
+        mainMap[mapIndex].mapCameraView.currentPosition.x += arg1;
+        mainMap[mapIndex].mapCameraView.currentPosition.z += arg2;
 
-        mainMap[mapIndex].mapStruct2.unk_C.x += arg1;
-        mainMap[mapIndex].mapStruct2.unk_C.z += arg2;
+        mainMap[mapIndex].mapCameraView.unk_C.x += arg1;
+        mainMap[mapIndex].mapCameraView.unk_C.z += arg2;
 
-        mainMap[mapIndex].mapStruct2.unk_18.x += arg1;
-        mainMap[mapIndex].mapStruct2.unk_18.z += arg2;
+        mainMap[mapIndex].mapCameraView.unk_18.x += arg1;
+        mainMap[mapIndex].mapCameraView.unk_18.z += arg2;
 
-        mainMap[mapIndex].mapStruct2.unk_24.x += arg1;
-        mainMap[mapIndex].mapStruct2.unk_24.z += arg2;
+        mainMap[mapIndex].mapCameraView.unk_24.x += arg1;
+        mainMap[mapIndex].mapCameraView.unk_24.z += arg2;
         
         result = TRUE;
     
@@ -792,6 +776,7 @@ bool func_80035004(u16 mapIndex, u16 arg1, u8 arg2, u8 arg3) {
     
     if (mapIndex == MAIN_MAP_INDEX && (mainMap[mapIndex].mapState.flags & MAP_ACTIVE)) {
 
+        // FIXME: likely a multidimensional array
         mainMap[mapIndex].groundObjects.arr2[0][arg3*0x14 + arg2] = arg1;
         result = TRUE;
 
@@ -827,15 +812,69 @@ bool func_80035054(u16 mapIndex, u16 bitmapIndex, u16 spriteIndex, f32 x, f32 y,
 
 }
 
-// uses inline func_80037254
-INCLUDE_ASM("asm/nonmatchings/system/map", func_80035150);
+//INCLUDE_ASM("asm/nonmatchings/system/map", getTerrainHeightAtPosition);
+
+// FIXME: inline function used before it's defined means it doesn't properly inline; also can't use `swap16Tile` directly
+static inline u16 getTerrainIndexForTile_static_inline(u16 mapIndex, u8 x, u8 z) {
+    return swap16Tile((&mainMap[mapIndex].mapGrid.tileIndices[mainMap[mapIndex].mapGrid.mapWidth * z])[x]);
+}
+
+f32 getTerrainHeightAtPosition(u16 mapIndex, f32 x, f32 z) {
+    
+    Vec3f vec;
+    TerrainQuad quad;
+
+    f32 result;
+
+    f32 worldX, worldZ, tileX, tileZ;
+    f32 xRemainder, zRemainder;
+
+    u16 terrainIndex;
+    f32 tileOriginZ;
+
+    u8 tileIndexX, tileIndexZ;
+
+    result = 0.0f;
+
+    if (mapIndex == MAIN_MAP_INDEX && mainMap[mapIndex].mapState.flags & 1) {
+
+        worldX = x + mainMap[mapIndex].mapState.mapOriginX;
+        tileX = worldX / mainMap[mapIndex].mapGrid.tileSizeX;
+        
+        tileIndexX = (u8)tileX;
+        
+        worldZ = z + mainMap[mapIndex].mapState.mapOriginZ;
+        tileZ = worldZ / mainMap[mapIndex].mapGrid.tileSizeZ;
+        
+        xRemainder = worldX - tileIndexX * mainMap[mapIndex].mapGrid.tileSizeX;
+        
+        tileIndexZ = (u8)tileZ; 
+        
+        tileOriginZ = tileIndexZ * mainMap[mapIndex].mapGrid.tileSizeZ;        
+
+        terrainIndex = getTerrainIndexForTile_static_inline(mapIndex, tileIndexX, tileIndexZ);
+        
+        zRemainder = worldZ - tileOriginZ;
+        
+        setTerrainQuad(&quad, mainMap[mapIndex].terrainQuads, terrainIndex);
+        
+        vec = getTerrainHeight(&quad, xRemainder, zRemainder, mainMap[mapIndex].vtxs[terrainIndex].unk_9);
+        
+        result = mainMap[mapIndex].vtxs[terrainIndex].unk_8 + vec.y;
+        
+    }
+
+    return result;
+    
+}
+
 
 //INCLUDE_ASM("asm/nonmatchings/system/map", getTerrainHeight);
 
-Vec3f *getTerrainHeight(Vec3f *result, TerrainQuad *quad, f32 x, f32 z, u8 fallbackHeight) {
+Vec3f getTerrainHeight(TerrainQuad *quad, f32 x, f32 z, u8 fallbackHeight) {
   
     Plane planeEquation;
-
+    
     u32 padding[6];
     u8 padding2[16];
 
@@ -920,10 +959,10 @@ Vec3f *getTerrainHeight(Vec3f *result, TerrainQuad *quad, f32 x, f32 z, u8 fallb
         } else {
             heightResult.y = fallbackHeight;
         }
+
     }
 
-    *result = heightResult;
-    return result;
+    return heightResult;
 
 }
 
@@ -937,7 +976,7 @@ bool func_80035914(u16 mapIndex, f32 arg1, f32 arg2) {
 
     if (mapIndex == MAIN_MAP_INDEX && (mainMap[mapIndex].mapState.flags & MAP_ACTIVE)) {
 
-        func_800366F4(&vec, 0, arg1, arg2);
+        vec = func_800366F4(0, arg1, arg2);
 
         if (vec.y != 65535.0f) {
             result = func_80036880(MAIN_MAP_INDEX, vec.x, vec.z) != 0;
@@ -949,17 +988,17 @@ bool func_80035914(u16 mapIndex, f32 arg1, f32 arg2) {
 
 }
  
-//INCLUDE_ASM("asm/nonmatchings/system/map", func_800359C8);
+//INCLUDE_ASM("asm/nonmatchings/system/map", getTileCoordinates);
 
 // alternate
 /*
-Vec3f* func_800359C8(Vec3f* arg0, MainMap* map, f32 x, f32 z) {
+Vec3f* getTileCoordinates(Vec3f* arg0, MainMap* map, f32 x, f32 z) {
     
     Vec3f vec;
 
-    vec.x = (x + map->mapState.unk_0) / map->mapStruct1.scalingFactorX;
+    vec.x = (x + map->mapState.mapOriginX) / map->mapGrid.tileSizeX;
     vec.y = 0;
-    vec.z = (z + map->mapState.unk_4) / map->mapStruct1.scalingFactorZ;
+    vec.z = (z + map->mapState.mapOriginZ) / map->mapGrid.tileSizeZ;
 
     *arg0 = vec;
     
@@ -968,77 +1007,78 @@ Vec3f* func_800359C8(Vec3f* arg0, MainMap* map, f32 x, f32 z) {
 }
 */
 
-Vec3f func_800359C8(MainMap* map, f32 x, f32 z) {
+Vec3f getTileCoordinates(MainMap* map, f32 x, f32 z) {
     
-    Vec3f vec;
+    Vec3f tileCoordinates;
 
-    vec.x = (x + map->mapState.unk_0) / map->mapStruct1.scalingFactorX;
-    vec.y = 0;
-    vec.z = (z + map->mapState.unk_4) / map->mapStruct1.scalingFactorZ;
+    tileCoordinates.x = (x + map->mapState.mapOriginX) / map->mapGrid.tileSizeX;
+    tileCoordinates.y = 0;
+    tileCoordinates.z = (z + map->mapState.mapOriginZ) / map->mapGrid.tileSizeZ;
 
-    return vec;
+    return tileCoordinates;
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/map", func_80035A58);
+//INCLUDE_ASM("asm/nonmatchings/system/map", updateCameraViewBounds);
 
-void func_80035A58(UnknownMapStruct2* arg0) {
+void updateCameraViewBounds(MapCameraView* mapCameraView) {
 
     Vec3f padding[3];
     
-    Vec3f vec;
-    Vec3f vec2;
+    Vec3f cornerOffset;
+    Vec3f rotatedCenterOffset;
 
-    vec.x = -arg0->unk_4A;
-    vec.y = 0;
-    vec.z = -arg0->unk_4B;
+    cornerOffset.x = -mapCameraView->viewExtentX;
+    cornerOffset.y = 0;
+    cornerOffset.z = -mapCameraView->viewExtentZ;
 
-    rotateVector3D(vec, &arg0->unk_0, arg0->unk_30);
+    rotateVector3D(cornerOffset, &mapCameraView->currentPosition, mapCameraView->rotation);
 
-    vec.x = -arg0->unk_4A;
-    vec.y = 0;
-    vec.z = arg0->unk_4B;
+    cornerOffset.x = -mapCameraView->viewExtentX;
+    cornerOffset.y = 0;
+    cornerOffset.z = mapCameraView->viewExtentZ;
 
-    rotateVector3D(vec, &arg0->unk_C, arg0->unk_30);
+    rotateVector3D(cornerOffset, &mapCameraView->unk_C, mapCameraView->rotation);
 
-    vec.x = arg0->unk_4A;
-    vec.y = 0;
-    vec.z = arg0->unk_4B;
+    cornerOffset.x = mapCameraView->viewExtentX;
+    cornerOffset.y = 0;
+    cornerOffset.z = mapCameraView->viewExtentZ;
 
-    rotateVector3D(vec, &arg0->unk_18, arg0->unk_30);
+    rotateVector3D(cornerOffset, &mapCameraView->unk_18, mapCameraView->rotation);
 
-    vec.x = arg0->unk_4A;
-    vec.y = 0;
-    vec.z = -arg0->unk_4B;
+    cornerOffset.x = mapCameraView->viewExtentX;
+    cornerOffset.y = 0;
+    cornerOffset.z = -mapCameraView->viewExtentZ;
 
-    rotateVector3D(vec, &arg0->unk_24, arg0->unk_30);
+    rotateVector3D(cornerOffset, &mapCameraView->unk_24, mapCameraView->rotation);
 
-    vec2.x = 0.0f;
-    vec2.y = 0;
-    vec2.z = 0.0f;
+    rotatedCenterOffset.x = 0.0f;
+    rotatedCenterOffset.y = 0;
+    rotatedCenterOffset.z = 0.0f;
     
-    rotateVector3D(vec2, &vec2, arg0->unk_30);
+    rotateVector3D(rotatedCenterOffset, &rotatedCenterOffset, mapCameraView->rotation);
     
-    arg0->unk_0.x += arg0->unk_48 + vec2.x;
-    arg0->unk_0.y = 0;
-    arg0->unk_0.z += arg0->unk_49 + vec2.z;
+    mapCameraView->currentPosition.x += mapCameraView->calculatedTileX + rotatedCenterOffset.x;
+    mapCameraView->currentPosition.y = 0;
+    mapCameraView->currentPosition.z += mapCameraView->calculatedTileZ + rotatedCenterOffset.z;
 
-    arg0->unk_C.x += arg0->unk_48 + vec2.x;
-    arg0->unk_C.y = 0;
-    arg0->unk_C.z += arg0->unk_49 + vec2.z;
+    mapCameraView->unk_C.x += mapCameraView->calculatedTileX + rotatedCenterOffset.x;
+    mapCameraView->unk_C.y = 0;
+    mapCameraView->unk_C.z += mapCameraView->calculatedTileZ + rotatedCenterOffset.z;
 
-    arg0->unk_18.x += arg0->unk_48 + vec2.x;
-    arg0->unk_18.y = 0;
-    arg0->unk_18.z += arg0->unk_49 + vec2.z;
+    mapCameraView->unk_18.x += mapCameraView->calculatedTileX + rotatedCenterOffset.x;
+    mapCameraView->unk_18.y = 0;
+    mapCameraView->unk_18.z += mapCameraView->calculatedTileZ + rotatedCenterOffset.z;
     
-    arg0->unk_24.x += arg0->unk_48 + vec2.x;
-    arg0->unk_24.y = 0;
-    arg0->unk_24.z += arg0->unk_49 + vec2.z;
+    mapCameraView->unk_24.x += mapCameraView->calculatedTileX + rotatedCenterOffset.x;
+    mapCameraView->unk_24.y = 0;
+    mapCameraView->unk_24.z += mapCameraView->calculatedTileZ + rotatedCenterOffset.z;
     
-    D_802226EC = arg0->unk_0.x - arg0->unk_C.x;
-    D_80170460 = arg0->unk_C.x - arg0->unk_18.x;
-    D_8013D550 = arg0->unk_18.x - arg0->unk_24.x;
-    D_801FB5D4 = arg0->unk_24.x - arg0->unk_0.x;
+    // edge widths
+    D_802226EC = mapCameraView->currentPosition.x - mapCameraView->unk_C.x;
+    D_80170460 = mapCameraView->unk_C.x - mapCameraView->unk_18.x;
+    D_8013D550 = mapCameraView->unk_18.x - mapCameraView->unk_24.x;
+    D_801FB5D4 = mapCameraView->unk_24.x - mapCameraView->currentPosition.x;
     
 }
 
@@ -1048,10 +1088,11 @@ bool func_80035DA4(MainMap *map, u8 arg1, u8 arg2) {
     
   bool result = FALSE;
 
-  if (-1.0f <= (((map->mapStruct2.unk_0.z * (map->mapStruct2.unk_C.x - arg1)) + (map->mapStruct2.unk_C.z * (arg1 - map->mapStruct2.unk_0.x))) + (arg2 * D_802226EC))) {
-    if (-1.0f <= (((map->mapStruct2.unk_C.z * (map->mapStruct2.unk_18.x - arg1)) + (map->mapStruct2.unk_18.z * (arg1 - map->mapStruct2.unk_C.x))) + (arg2 * D_80170460))) {
-      if (-1.0f <= (((map->mapStruct2.unk_18.z * (map->mapStruct2.unk_24.x - arg1)) + (map->mapStruct2.unk_24.z * (arg1 - map->mapStruct2.unk_18.x))) + (arg2 * D_8013D550))) {
-        if (-1.0f <= (((map->mapStruct2.unk_24.z * (map->mapStruct2.unk_0.x - arg1)) + (map->mapStruct2.unk_0.z * (arg1 - map->mapStruct2.unk_24.x))) + (arg2 * D_801FB5D4))) {
+  // FIXME: likely macros
+  if (-1.0f <= (((map->mapCameraView.currentPosition.z * (map->mapCameraView.unk_C.x - arg1)) + (map->mapCameraView.unk_C.z * (arg1 - map->mapCameraView.currentPosition.x))) + (arg2 * D_802226EC))) {
+    if (-1.0f <= (((map->mapCameraView.unk_C.z * (map->mapCameraView.unk_18.x - arg1)) + (map->mapCameraView.unk_18.z * (arg1 - map->mapCameraView.unk_C.x))) + (arg2 * D_80170460))) {
+      if (-1.0f <= (((map->mapCameraView.unk_18.z * (map->mapCameraView.unk_24.x - arg1)) + (map->mapCameraView.unk_24.z * (arg1 - map->mapCameraView.unk_18.x))) + (arg2 * D_8013D550))) {
+        if (-1.0f <= (((map->mapCameraView.unk_24.z * (map->mapCameraView.currentPosition.x - arg1)) + (map->mapCameraView.currentPosition.z * (arg1 - map->mapCameraView.unk_24.x))) + (arg2 * D_801FB5D4))) {
           result = TRUE;
         }
       }
@@ -1065,7 +1106,7 @@ bool func_80035DA4(MainMap *map, u8 arg1, u8 arg2) {
 // unused or inline
 INCLUDE_ASM("asm/nonmatchings/system/map", func_80035EE0);
 
-// mapStruct1, vertices for map additions (house extensions, hot springs, etc.)
+// mapGrid, vertices for map additions (house extensions, hot springs, etc.)
 INCLUDE_ASM("asm/nonmatchings/system/map", func_800360BC);
 
 // returns index for interactable object/exit from rodata array per level
@@ -1086,15 +1127,15 @@ bool func_80036490(u16 mapIndex, u8 arg1, f32 arg2, f32 arg3) {
 
     if (mapIndex == MAIN_MAP_INDEX && mainMap[mapIndex].mapState.flags & MAP_ACTIVE) {
 
-        vec2.x = ((arg2 + mainMap[mapIndex].mapState.unk_0) / mainMap[mapIndex].mapStruct1.scalingFactorX);
+        vec2.x = ((arg2 + mainMap[mapIndex].mapState.mapOriginX) / mainMap[mapIndex].mapGrid.tileSizeX);
         vec2.y = 0;
-        vec2.z = ((arg3 + mainMap[mapIndex].mapState.unk_4) / mainMap[mapIndex].mapStruct1.scalingFactorZ);
+        vec2.z = ((arg3 + mainMap[mapIndex].mapState.mapOriginZ) / mainMap[mapIndex].mapGrid.tileSizeZ);
 
         vec1 = vec2;
 
         ptr = (u8*)&mainMap[mapIndex].unk_8[0]+4;
         
-        ptr[(mainMap[mapIndex].mapStruct1.mapWidth * (u8)vec1.z) + (u8)vec1.x] = arg1;
+        ptr[(mainMap[mapIndex].mapGrid.mapWidth * (u8)vec1.z) + (u8)vec1.x] = arg1;
 
         result = TRUE;
         
@@ -1107,37 +1148,34 @@ bool func_80036490(u16 mapIndex, u8 arg1, f32 arg2, f32 arg3) {
 INCLUDE_ASM("asm/nonmatchings/system/map", func_80036490);
 #endif
 
-//INCLUDE_ASM("asm/nonmatchings/system/map", func_80036610);
+//INCLUDE_ASM("asm/nonmatchings/system/map", convertWorldToTileCoordinates);
 
-// get map coordinates for sprites
-Vec3f *func_80036610(Vec3f *arg0, u16 mapIndex, f32 arg2, f32 arg3) {
+Vec3f convertWorldToTileCoordinates(u16 mapIndex, f32 x, f32 z) {
 
-    Vec3f vec;
-    Vec3f vec2;
+    Vec3f tileCoordinates;
+    Vec3f calculatedTiles;
 
-    vec.x = 0.0f;
-    vec.z = 0.0f;
-    vec.y = 65535.0f;
+    tileCoordinates.x = 0.0f;
+    tileCoordinates.z = 0.0f;
+    tileCoordinates.y = 65535.0f;
 
     if (mapIndex == MAIN_MAP_INDEX && (mainMap[mapIndex].mapState.flags & MAP_ACTIVE)) {
         
-        vec2.x = (arg2 + mainMap[mapIndex].mapState.unk_0) / mainMap[mapIndex].mapStruct1.scalingFactorX;
-        vec2.y = 0;
-        vec2.z = (arg3 + mainMap[mapIndex].mapState.unk_4) / mainMap[mapIndex].mapStruct1.scalingFactorZ;
+        calculatedTiles.x = (x + mainMap[mapIndex].mapState.mapOriginX) / mainMap[mapIndex].mapGrid.tileSizeX;
+        calculatedTiles.y = 0;
+        calculatedTiles.z = (z + mainMap[mapIndex].mapState.mapOriginZ) / mainMap[mapIndex].mapGrid.tileSizeZ;
 
-        vec = vec2; 
+        tileCoordinates = calculatedTiles; 
 
     }
  
-    *arg0 = vec;
-    
-    return arg0;
+    return tileCoordinates;
 
 }
 
 //INCLUDE_ASM("asm/nonmatchings/system/map", func_800366F4);
 
-Vec3f* func_800366F4(Vec3f* arg0, u16 mapIndex, f32 arg2, f32 arg3) {
+Vec3f func_800366F4(u16 mapIndex, f32 arg2, f32 arg3) {
 
     Vec3f vec;
     Vec3f vec2;
@@ -1148,9 +1186,9 @@ Vec3f* func_800366F4(Vec3f* arg0, u16 mapIndex, f32 arg2, f32 arg3) {
 
     if (mapIndex == MAIN_MAP_INDEX && (mainMap[mapIndex].mapState.flags & MAP_ACTIVE)) {
         
-        vec2.x = (arg2 + mainMap[mapIndex].mapState.unk_0) / mainMap[mapIndex].mapStruct1.scalingFactorX;
+        vec2.x = (arg2 + mainMap[mapIndex].mapState.mapOriginX) / mainMap[mapIndex].mapGrid.tileSizeX;
         vec2.y = 0;
-        vec2.z = (arg3 + mainMap[mapIndex].mapState.unk_4) / mainMap[mapIndex].mapStruct1.scalingFactorZ;
+        vec2.z = (arg3 + mainMap[mapIndex].mapState.mapOriginZ) / mainMap[mapIndex].mapGrid.tileSizeZ;
         
         vec = vec2;
         
@@ -1162,15 +1200,13 @@ Vec3f* func_800366F4(Vec3f* arg0, u16 mapIndex, f32 arg2, f32 arg3) {
         }
     }
 
-    *arg0 = vec;
-
-    return arg0;
+    return vec;
     
 }
 
 //INCLUDE_ASM("asm/nonmatchings/system/map", func_80036880);
 
-u16 func_80036880(u16 mapIndex, f32 arg1, f32 arg2) {
+u16 func_80036880(u16 mapIndex, f32 x, f32 z) {
 
     u32 padding[4];
     
@@ -1178,7 +1214,7 @@ u16 func_80036880(u16 mapIndex, f32 arg1, f32 arg2) {
     
     if (mapIndex == MAIN_MAP_INDEX && mainMap[mapIndex].mapState.flags & MAP_ACTIVE) {
 
-        result = mainMap[mapIndex].groundObjects.arr2[0][(u8)arg2*0x14+(u8)arg1];        
+        result = mainMap[mapIndex].groundObjects.arr2[0][(u8)z*0x14+(u8)x];        
         
     }
 
@@ -1196,6 +1232,7 @@ bool func_80036980(u16 mapIndex, u16 arg1, f32 arg2, f32 arg3) {
     
     if (mapIndex == MAIN_MAP_INDEX && mainMap[mapIndex].mapState.flags & MAP_ACTIVE) {
 
+        // FIXME: array indexing
         mainMap[mapIndex].groundObjects.arr2[0][(u8)arg3*0x14+(u8)arg2] = arg1;    
         result = TRUE;
         
@@ -1233,7 +1270,7 @@ void func_80036AB4(MainMap* map) {
     count = 0;
     i = 0;
   
-    if (map->mapStruct1.unk_6) {
+    if (map->mapGrid.vertexCount) {
         
         do {
 
@@ -1264,7 +1301,7 @@ void func_80036AB4(MainMap* map) {
             
             i++;
             
-        } while (i < map->mapStruct1.unk_6);
+        } while (i < map->mapGrid.vertexCount);
     }  
 
 } 
@@ -1273,42 +1310,43 @@ INCLUDE_ASM("asm/nonmatchings/system/map", func_80036C08);
 
 INCLUDE_ASM("asm/nonmatchings/system/map", func_80036FA0);
 
-#ifdef PERMUTER
-u16 func_80037254(u16 mapIndex, u8 x, u8 z) {
-    
-    u16* grid;
+//INCLUDE_ASM("asm/nonmatchings/system/map", getTerrainIndexForTile);
 
-    grid = (u16*)mainMap[mapIndex].mapStruct1.ptr;
+//used in getTerrainHeightAtPosition
+inline u16 getTerrainIndexForTile(u16 mapIndex, u8 x, u8 z) {
     
-    return swapVertex(grid[(x * 2) + (z * mainMap[mapIndex].mapStruct1.mapWidth)]);
+    return swap16Tile((&mainMap[mapIndex].mapGrid.tileIndices[mainMap[mapIndex].mapGrid.mapWidth * z])[x]);
     
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/system/map", func_80037254);
-#endif
 
-#ifdef PERMUTER
-void func_800372F0(UnknownMapStruct1* mapStruct, MapGridInfo* info) {
+//INCLUDE_ASM("asm/nonmatchings/system/map", setMapGrid);
 
-    mapStruct->scalingFactorX = info->scalingX;
-    mapStruct->scalingFactorZ = info->scalingY;
-    mapStruct->mapWidth = info->mapWidth;
-    mapStruct->mapHeight = info->mapHeight;
+void setMapGrid(MapGrid* mapGrid, MapGridInfo* info) {
 
-    mapStruct->unk_4 = swap16(info->unk_8, info->unk_9);
-    mapStruct->unk_6 = swap16(info->unk_A, info->unk_B);
+    Swap16 swap;
+    
+    mapGrid->tileSizeX = info->scalingX;
+    mapGrid->tileSizeZ = info->scalingY;
+    mapGrid->mapWidth = info->mapWidth;
+    mapGrid->mapHeight = info->mapHeight;
 
-    mapStruct->ptr = info + 1;
+    swap.byte[1] = info->unk_8;
+    swap.byte[0] = info->unk_9;
+    
+    mapGrid->unk_4 = swap.halfword;
+
+    swap.byte[1] = info->unk_A;
+    swap.byte[0] = info->unk_B;
+    
+    mapGrid->vertexCount = swap.halfword;
+
+    mapGrid->tileIndices = info + 1;
     
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/system/map", func_800372F0);
-#endif
 
 //INCLUDE_ASM("asm/nonmatchings/system/map", func_80037350);
 
 // unused or inline
-// arg0 = struct
 u8* func_80037350(UnknownVertexStruct* arg0, u8* arg1) {
 
     // arg1 = &*(arg1+4);
@@ -1356,6 +1394,7 @@ u8* func_80037388(UnknownVertexStruct* arg0, u8* arg1, u8 arg2) {
 
     arg1++;
 
+    // probably inline swap
     arg0->unk_0 = temp | (*arg1 << 8);
     
     arg1++;
@@ -1366,6 +1405,7 @@ u8* func_80037388(UnknownVertexStruct* arg0, u8* arg1, u8 arg2) {
 
         arg1++;
 
+        // probably inline swap
         arg0->unk_2 = temp | (*arg1 << 8);
 
         arg1++;
@@ -1451,6 +1491,7 @@ u32 func_80037668(MainMap* map, u16 vtxIndex, f32 arg2, f32 arg3, f32 arg4) {
             
             mapVertices[gGraphicsBufferIndex][count2].v.ob[0] = *vtx + arg2;
             vtx++;
+            // FIXME
             mapVertices[gGraphicsBufferIndex][count2].v.ob[1] = *(u8*)vtx + arg3;
             vtx++;
             mapVertices[gGraphicsBufferIndex][count2].v.ob[2] = *vtx + arg4;
@@ -1486,7 +1527,6 @@ Gfx* func_8003797C(Gfx* dl, MainMap* map, u8 arg2) {
 
 }
 
-// uses gSPVertex
 // calls func_800383B0
 INCLUDE_ASM("asm/nonmatchings/system/map", func_80037BC4);
 
@@ -1621,6 +1661,7 @@ void func_80038630(DecompressedVec3f* arg0, CompressedVec3f* arg1) {
     u32 padding[8];
     
     arg0->flags = arg1->flags;
+    
     arg0->x = (s16)(arg1->part1 | (arg1->part2 << 8));
     arg0->y = (s16)(arg1->part3 | (arg1->part4 << 8));
     arg0->z = (s16)(arg1->part5 | (arg1->part6 << 8));
@@ -1656,44 +1697,46 @@ u8* func_800386D4(u16 arg0, u8* arg1) {
 INCLUDE_ASM("asm/nonmatchings/system/map", func_800386D4);
 #endif
 
-//INCLUDE_ASM("asm/nonmatchings/system/map", func_80038728);
-
-// arg0 = stack array
-// arg1 = map.unk_4
-// arg2 = offset
-void func_80038728(u8 arg0[], u8* arg1, u16 arg2) {
+//INCLUDE_ASM("asm/nonmatchings/system/map", setTerrainQuad);
+ 
+// arg2 = offset, return value of getTerrainIndexForTile
+void setTerrainQuad(TerrainQuad* quad, u8* quadPtr, u16 offset) {
 
     u8* arr;
 
     // skip header
-    arr = (arg1 + 4);
+    arr = quadPtr + 4;
 
-    // get offset
-    // 0x13 = sizeof arrays
-    arr += (arg2*0x13);
+    arr += offset * sizeof(TerrainQuad);
 
-    arg0[0] = arr[0];
-    arg0[1] = arr[1];
-    arg0[2] = arr[2];
-    arg0[3] = arr[3];
-    arg0[4] = arr[4];
-    arg0[5] = arr[5];
-    arg0[6] = arr[6];
-    arg0[7] = arr[7];
-    arg0[8] = arr[8];
-    arg0[9] = arr[9];
-    arg0[10] = arr[10];
-    arg0[11] = arr[11];
-    arg0[12] = arr[12];
-    arg0[13] = arr[13];
-    arg0[14] = arr[14];
-    arg0[15] = arr[15];
-    arg0[16] = arr[16];
-    arg0[17] = arr[17];
-    arg0[18] = arr[18];
+    quad->baseHeight = arr[0];
+
+    quad->triangle1[0][0] = arr[1];
+    quad->triangle1[0][1] = arr[2];
+    quad->triangle1[0][2] = arr[3];
+    
+    quad->triangle1[1][0] = arr[4];
+    quad->triangle1[1][1] = arr[5];
+    quad->triangle1[1][2] = arr[6];
+    
+    quad->triangle1[2][0] = arr[7];
+    quad->triangle1[2][1] = arr[8];
+    quad->triangle1[2][2] = arr[9];
+
+    quad->triangle2[0][0] = arr[10];
+    quad->triangle2[0][1] = arr[11];
+    quad->triangle2[0][2] = arr[12];
+    
+    quad->triangle2[1][0] = arr[13];
+    quad->triangle2[1][1] = arr[14];
+    quad->triangle2[1][2] = arr[15];
+    
+    quad->triangle2[2][0] = arr[16];
+    quad->triangle2[2][1] = arr[17];
+    quad->triangle2[2][2] = arr[18];
     
 }
- 
+
 //INCLUDE_ASM("asm/nonmatchings/system/map", func_800387E0);
 
 u32* func_800387E0(u16 arg0, u32* arg1) {
@@ -1744,7 +1787,7 @@ bool func_8003886C(u16 mapIndex) {
 //INCLUDE_ASM("asm/nonmatchings/system/map", func_800388A4);
 
 // FIXME: likely uses inlines
-// param_2 = mainMap.unk_20 (set from gMapModelContext in func_80033A90, called by func_8003BC50)
+// param_2 = mainMap.unk_20 (set from mapControllers in func_80033A90, called by func_8003BC50)
 // map additions
 // param1 = mapAdditions.unk_44, set from sprite vec.x
 // param2 = mainMap.unk_20
@@ -1951,9 +1994,9 @@ void processMapSceneNode(u16 mapIndex, Gfx* dl) {
 
     u16 temp = addSceneNode(dl, (8 | 0x20));
     
-    addSceneNodePosition(temp, mainMap[mapIndex].mapFloats.translation.x + mainMap[mapIndex].mapStruct2.unk_3C.x, 
-        mainMap[mapIndex].mapFloats.translation.y + mainMap[mapIndex].mapStruct2.unk_3C.y, 
-        mainMap[mapIndex].mapFloats.translation.z + mainMap[mapIndex].mapStruct2.unk_3C.z);
+    addSceneNodePosition(temp, mainMap[mapIndex].mapFloats.translation.x + mainMap[mapIndex].mapCameraView.viewOffset.x, 
+        mainMap[mapIndex].mapFloats.translation.y + mainMap[mapIndex].mapCameraView.viewOffset.y, 
+        mainMap[mapIndex].mapFloats.translation.z + mainMap[mapIndex].mapCameraView.viewOffset.z);
 
     addSceneNodeScaling(temp, mainMap[mapIndex].mapFloats.scale.x, mainMap[mapIndex].mapFloats.scale.y, mainMap[mapIndex].mapFloats.scale.z);
     
@@ -2132,20 +2175,19 @@ static inline u8 updateMapRGBA(u16 i) {
 
 static inline void handleRotation(u16 i) {
     
-    mainMap[i].mapStruct2.unk_30.x = 0.0f;
-    mainMap[i].mapStruct2.unk_30.y = 360.0f - currentWorldRotationAngles.y;
-    mainMap[i].mapStruct2.unk_30.z = 0.0f;
+    mainMap[i].mapCameraView.rotation.x = 0.0f;
+    mainMap[i].mapCameraView.rotation.y = 360.0f - currentWorldRotationAngles.y;
+    mainMap[i].mapCameraView.rotation.z = 0.0f;
 
-    if (mainMap[i].mapStruct2.unk_30.y < 0.0f) {
-        mainMap[i].mapStruct2.unk_30.y += 360.0f;
+    if (mainMap[i].mapCameraView.rotation.y < 0.0f) {
+        mainMap[i].mapCameraView.rotation.y += 360.0f;
     }
 
-    if (mainMap[i].mapStruct2.unk_30.y >= 360.0f) {
-        mainMap[i].mapStruct2.unk_30.y -= 360.0f;
+    if (mainMap[i].mapCameraView.rotation.y >= 360.0f) {
+        mainMap[i].mapCameraView.rotation.y -= 360.0f;
     }
     
 }
-
 
 //INCLUDE_ASM("asm/nonmatchings/system/map", updateMapGraphics);
 
@@ -2155,7 +2197,7 @@ void updateMapGraphics(void) {
     u16 i;
     
     Gfx *dl = mapDisplayList[gGraphicsBufferIndex];
-    Gfx *tempDl;
+    Gfx *dlStartingPosition;
     
     // FIXME: shoudn't be necessary
     u32 padding[4];
@@ -2198,15 +2240,15 @@ void updateMapGraphics(void) {
 
             handleRotation(i);
             
-            tempDl = dl;
+            dlStartingPosition = dl;
             
-            dl = func_80037DF0(tempDl, &mainMap[i], height);
+            dl = func_80037DF0(dlStartingPosition, &mainMap[i], height);
             
             func_80038BC4(&mainMap[i]);
             func_800393E0(&mainMap[i]);
             func_80039990(&mainMap[i]);
             
-            processMapSceneNode(i, tempDl);
+            processMapSceneNode(i, dlStartingPosition);
 
             // append spawnable sprites to display list
             func_8003B1BC(&mainMap[i]);
@@ -2218,7 +2260,7 @@ void updateMapGraphics(void) {
     }
 
     if (dl - mapDisplayList[gGraphicsBufferIndex] >= 0x1B00) {
-        // FIXME: replace with string literals
+        // FIXME: replace with string literals; same strings used by updateMapGraphics
         __assert(D_8011EDB0, D_8011EDB4, 3912);
     }
 
@@ -2278,7 +2320,7 @@ Gfx* func_8003ACA8(Gfx* dl, MainMap* map, MapBitmap* bitmap, u16 vtxIndex) {
 
 //INCLUDE_ASM("asm/nonmatchings/system/map", func_8003AF58);
 
-Vec3f* func_8003AF58(Vec3f* arg0, u16 arg1, u8 arg2, u8 arg3) {
+Vec3f func_8003AF58(u16 arg1, u8 arg2, u8 arg3) {
 
     Vec3f vec;
 
@@ -2286,19 +2328,17 @@ Vec3f* func_8003AF58(Vec3f* arg0, u16 arg1, u8 arg2, u8 arg3) {
     f32 temp2;
 
     // these two statements have to be on the same line to match lmao (otherwise compiler inserts a nop)
-    temp1 = mainMap[arg1].mapStruct1.scalingFactorX; vec.x = ((arg2 *  temp1) - mainMap[arg1].mapState.unk_0) + (mainMap[arg1].mapStruct1.scalingFactorX / 2);
+    temp1 = mainMap[arg1].mapGrid.tileSizeX; vec.x = ((arg2 *  temp1) - mainMap[arg1].mapState.mapOriginX) + (mainMap[arg1].mapGrid.tileSizeX / 2);
 
-    temp2 = mainMap[arg1].mapStruct1.scalingFactorZ; vec.z = ((arg3 * temp2) - mainMap[arg1].mapState.unk_4) + (mainMap[arg1].mapStruct1.scalingFactorZ / 2);
+    temp2 = mainMap[arg1].mapGrid.tileSizeZ; vec.z = ((arg3 * temp2) - mainMap[arg1].mapState.mapOriginZ) + (mainMap[arg1].mapGrid.tileSizeZ / 2);
     
-    vec.y = func_80035150(MAIN_MAP_INDEX, vec.x, vec.z);
+    vec.y = getTerrainHeightAtPosition(MAIN_MAP_INDEX, vec.x, vec.z);
     
     if (arg2 < mainMap[arg1].groundObjects.unk_10 || arg3 < mainMap[arg1].groundObjects.unk_11 || arg2 >= mainMap[arg1].groundObjects.unk_10 + 0x14 || arg3 >= mainMap[arg1].groundObjects.unk_11 + 0x18) {
         vec.y = 65535.0f;
     }
     
-    *arg0 = vec;
-
-    return arg0;
+    return vec;
     
 }
 
@@ -2313,9 +2353,9 @@ void func_8003B100(MainMap* map, f32 arg1, f32 arg2, f32 arg3, f32 arg4, f32 arg
     f32 temp_f22;
     f32 temp_f24;
 
-    temp_f22 = (arg1 + map->mapState.unk_0 + map->mapStruct2.unk_3C.x) - arg4;
-    temp_f24 = arg2 + map->mapStruct2.unk_3C.y;
-    temp_f20 = (arg3 + map->mapState.unk_4 + map->mapStruct2.unk_3C.z) - arg5;
+    temp_f22 = (arg1 + map->mapState.mapOriginX + map->mapCameraView.viewOffset.x) - arg4;
+    temp_f24 = arg2 + map->mapCameraView.viewOffset.y;
+    temp_f20 = (arg3 + map->mapState.mapOriginZ + map->mapCameraView.viewOffset.z) - arg5;
     
     addSceneNodePosition(addSceneNode(dl, 8), temp_f22, temp_f24, temp_f20);
 

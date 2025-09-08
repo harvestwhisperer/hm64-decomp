@@ -83,12 +83,12 @@ typedef struct {
     u8 unk_14;
 } UnknownPlayerData;
 
-extern void setupPlayerSprite(u16 arg0, u8 resetPlayer);
+extern void setupPlayerEntity(u16 arg0, u8 resetPlayer);
 
 extern void handleEatingAndDrinking();
 extern u8 func_80065BCC(u8 tool);
 extern void func_80065F5C();   
-extern Vec3f* func_80065F94(Vec3f *arg0, f32 arg1, u8 arg2);
+extern Vec3f func_80065F94(f32 arg1, u8 arg2);
 extern void func_8006623C();  
 extern void func_8006A2E8();   
 

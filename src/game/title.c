@@ -6,7 +6,7 @@
 
 #include "system/controller.h"  
 #include "system/dialogue.h"
-#include "system/mathUtils.h"
+#include "system/math.h"
 #include "system/message.h"
 #include "system/globalSprites.h"
                                                         
@@ -37,7 +37,7 @@ void initializeTitleScreen(u8 arg0) {
     titleScreenContext.centerCoordinate = -160.0f;
 
     dmaSprite(HARVEST_MOON_64_LOGO, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesAssetsIndexSegmentRomStart, &_titleSpritesAssetsIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_END, (void*)TITLE_SCREEN_ASSETS_INDEX_VADDR_START, (void*)TITLE_SCREEN_ASSETS_INDEX_VADDR_END, NULL, NULL, 0);
-    setSpriteShrinkFactor(HARVEST_MOON_64_LOGO, 0.0f, 64.0f, 64.0f);
+    setSpriteViewSpacePosition(HARVEST_MOON_64_LOGO, 0.0f, 64.0f, 64.0f);
     setSpriteScale(HARVEST_MOON_64_LOGO, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(HARVEST_MOON_64_LOGO, 0.0f, 0.0f, 0.0f);
     setSpriteRenderingLayer(HARVEST_MOON_64_LOGO, (1 | 2));
@@ -46,7 +46,7 @@ void initializeTitleScreen(u8 arg0) {
     startSpriteAnimation(HARVEST_MOON_64_LOGO, 0, 0xFE);
      
     dmaSprite(MARVCOME_VICTOR_COPYRIGHT_INFO, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesAssetsIndexSegmentRomStart, &_titleSpritesAssetsIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_END, (void*)TITLE_SCREEN_ASSETS_INDEX_VADDR_START, (void*)TITLE_SCREEN_ASSETS_INDEX_VADDR_END, NULL, NULL, 0);
-    setSpriteShrinkFactor(MARVCOME_VICTOR_COPYRIGHT_INFO, 0.0f, -96.0f, 64.0f);
+    setSpriteViewSpacePosition(MARVCOME_VICTOR_COPYRIGHT_INFO, 0.0f, -96.0f, 64.0f);
     setSpriteScale(MARVCOME_VICTOR_COPYRIGHT_INFO, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(MARVCOME_VICTOR_COPYRIGHT_INFO, 0.0f, 0.0f, 0.0f);
     setSpriteRenderingLayer(MARVCOME_VICTOR_COPYRIGHT_INFO, (1 | 2));
@@ -54,7 +54,7 @@ void initializeTitleScreen(u8 arg0) {
     startSpriteAnimation(MARVCOME_VICTOR_COPYRIGHT_INFO, 1, 0xFE);
     
     dmaSprite(PUSH_THE_START_SIGN_1, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesAssetsIndexSegmentRomStart, &_titleSpritesAssetsIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_END, (void*)TITLE_SCREEN_ASSETS_INDEX_VADDR_START, (void*)TITLE_SCREEN_ASSETS_INDEX_VADDR_END, NULL, NULL, 0);
-    setSpriteShrinkFactor(PUSH_THE_START_SIGN_1, titleScreenContext.centerCoordinate + 160.0f, -16.0f, 48.0f);
+    setSpriteViewSpacePosition(PUSH_THE_START_SIGN_1, titleScreenContext.centerCoordinate + 160.0f, -16.0f, 48.0f);
     setSpriteScale(PUSH_THE_START_SIGN_1, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(PUSH_THE_START_SIGN_1, 0.0f, 0.0f, 0.0f);
     setSpriteRenderingLayer(PUSH_THE_START_SIGN_1, (1 | 2));
@@ -63,7 +63,7 @@ void initializeTitleScreen(u8 arg0) {
     startSpriteAnimation(PUSH_THE_START_SIGN_1, 3, 0xFE);
     
     dmaSprite(HOW_TO_PLAY_SIGN, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesAssetsIndexSegmentRomStart, &_titleSpritesAssetsIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_END, (void*)TITLE_SCREEN_ASSETS_INDEX_VADDR_START, (void*)TITLE_SCREEN_ASSETS_INDEX_VADDR_END, NULL, NULL, 0);
-    setSpriteShrinkFactor(HOW_TO_PLAY_SIGN, titleScreenContext.centerCoordinate - 160.0f, -12.0f, 48.0f);
+    setSpriteViewSpacePosition(HOW_TO_PLAY_SIGN, titleScreenContext.centerCoordinate - 160.0f, -12.0f, 48.0f);
     setSpriteScale(HOW_TO_PLAY_SIGN, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(HOW_TO_PLAY_SIGN, 0.0f, 0.0f, 0.0f);
     setSpriteRenderingLayer(HOW_TO_PLAY_SIGN, (1 | 2));
@@ -72,7 +72,7 @@ void initializeTitleScreen(u8 arg0) {
     startSpriteAnimation(HOW_TO_PLAY_SIGN, 5, 0xFE);
 
     dmaSprite(DIRT_ROAD, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesAssetsIndexSegmentRomStart, &_titleSpritesAssetsIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_END, (void*)TITLE_SCREEN_ASSETS_INDEX_VADDR_START, (void*)TITLE_SCREEN_ASSETS_INDEX_VADDR_END, NULL, NULL, 0);
-    setSpriteShrinkFactor(DIRT_ROAD, titleScreenContext.centerCoordinate - 160.0f, -44.0f, 48.0f);
+    setSpriteViewSpacePosition(DIRT_ROAD, titleScreenContext.centerCoordinate - 160.0f, -44.0f, 48.0f);
     setSpriteScale(DIRT_ROAD, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(DIRT_ROAD, 0.0f, 0.0f, 0.0f);
     setSpriteRenderingLayer(DIRT_ROAD, (1 | 2));
@@ -81,7 +81,7 @@ void initializeTitleScreen(u8 arg0) {
     startSpriteAnimation(DIRT_ROAD, 7, 0xFE);
 
     dmaSprite(SIGN_POST_1, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesAssetsIndexSegmentRomStart, &_titleSpritesAssetsIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_END, (void*)TITLE_SCREEN_ASSETS_INDEX_VADDR_START, (void*)TITLE_SCREEN_ASSETS_INDEX_VADDR_END, NULL, NULL, 0);
-    setSpriteShrinkFactor(SIGN_POST_1, titleScreenContext.centerCoordinate + 160.0f, -32.0f, 40.0f);
+    setSpriteViewSpacePosition(SIGN_POST_1, titleScreenContext.centerCoordinate + 160.0f, -32.0f, 40.0f);
     setSpriteScale(SIGN_POST_1, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(SIGN_POST_1, 0.0f, 0.0f, 0.0f);
     setSpriteRenderingLayer(SIGN_POST_1, (1 | 2));
@@ -90,7 +90,7 @@ void initializeTitleScreen(u8 arg0) {
     startSpriteAnimation(SIGN_POST_1, 2, 0xFE);
 
     dmaSprite(SIGN_POST_2, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesAssetsIndexSegmentRomStart, &_titleSpritesAssetsIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_END, (void*)TITLE_SCREEN_ASSETS_INDEX_VADDR_START, (void*)TITLE_SCREEN_ASSETS_INDEX_VADDR_END, NULL, NULL, 0);
-    setSpriteShrinkFactor(SIGN_POST_2, titleScreenContext.centerCoordinate - 192.0f, -32.0f, 40.0f);
+    setSpriteViewSpacePosition(SIGN_POST_2, titleScreenContext.centerCoordinate - 192.0f, -32.0f, 40.0f);
     setSpriteScale(SIGN_POST_2, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(SIGN_POST_2, 0.0f, 0.0f, 0.0f);
     setSpriteRenderingLayer(SIGN_POST_2, (1 | 2));
@@ -99,7 +99,7 @@ void initializeTitleScreen(u8 arg0) {
     startSpriteAnimation(SIGN_POST_2, 2, 0xFE);
 
     dmaSprite(SIGN_POST_3, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesAssetsIndexSegmentRomStart, &_titleSpritesAssetsIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_END, (void*)TITLE_SCREEN_ASSETS_INDEX_VADDR_START, (void*)TITLE_SCREEN_ASSETS_INDEX_VADDR_END, NULL, NULL, 0);
-    setSpriteShrinkFactor(SIGN_POST_3, titleScreenContext.centerCoordinate - 128.0f, -32.0f, 40.0f);
+    setSpriteViewSpacePosition(SIGN_POST_3, titleScreenContext.centerCoordinate - 128.0f, -32.0f, 40.0f);
     setSpriteScale(SIGN_POST_3, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(SIGN_POST_3, 0.0f, 0.0f, 0.0f);
     setSpriteRenderingLayer(SIGN_POST_3, (1 | 2));
@@ -108,7 +108,7 @@ void initializeTitleScreen(u8 arg0) {
     startSpriteAnimation(SIGN_POST_3, 2, 0xFE);
 
     dmaSprite(CLOUD_1_1, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesAssetsIndexSegmentRomStart, &_titleSpritesAssetsIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_END, (void*)TITLE_SCREEN_ASSETS_INDEX_VADDR_START, (void*)TITLE_SCREEN_ASSETS_INDEX_VADDR_END, NULL, NULL, 0);
-    setSpriteShrinkFactor(CLOUD_1_1, titleScreenContext.centerCoordinate + 160.0f, 0.0f, 56.0f);
+    setSpriteViewSpacePosition(CLOUD_1_1, titleScreenContext.centerCoordinate + 160.0f, 0.0f, 56.0f);
     setSpriteScale(CLOUD_1_1, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(CLOUD_1_1, 0.0f, 0.0f, 0.0f);
     setSpriteRenderingLayer(CLOUD_1_1, (1 | 2));
@@ -117,7 +117,7 @@ void initializeTitleScreen(u8 arg0) {
     startSpriteAnimation(CLOUD_1_1, 9, 0xFE);
 
     dmaSprite(CLOUD_1_2, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesAssetsIndexSegmentRomStart, &_titleSpritesAssetsIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_END, (void*)TITLE_SCREEN_ASSETS_INDEX_VADDR_START, (void*)TITLE_SCREEN_ASSETS_INDEX_VADDR_END, NULL, NULL, 0);
-    setSpriteShrinkFactor(CLOUD_1_2, titleScreenContext.centerCoordinate - 160.0f, 0.0f, 56.0f);
+    setSpriteViewSpacePosition(CLOUD_1_2, titleScreenContext.centerCoordinate - 160.0f, 0.0f, 56.0f);
     setSpriteScale(CLOUD_1_2, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(CLOUD_1_2, 0.0f, 0.0f, 0.0f);
     setSpriteRenderingLayer(CLOUD_1_2, (1 | 2));
@@ -126,7 +126,7 @@ void initializeTitleScreen(u8 arg0) {
     startSpriteAnimation(CLOUD_1_2, 9, 0xFE);
     
     dmaSprite(CLOUD_2_1, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesAssetsIndexSegmentRomStart, &_titleSpritesAssetsIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_END, (void*)TITLE_SCREEN_ASSETS_INDEX_VADDR_START, (void*)TITLE_SCREEN_ASSETS_INDEX_VADDR_END, NULL, NULL, 0);
-    setSpriteShrinkFactor(CLOUD_2_1, titleScreenContext.centerCoordinate + 160.0f, 64.0f, 64.0f);
+    setSpriteViewSpacePosition(CLOUD_2_1, titleScreenContext.centerCoordinate + 160.0f, 64.0f, 64.0f);
     setSpriteScale(CLOUD_2_1, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(CLOUD_2_1, 0.0f, 0.0f, 0.0f);
     setSpriteRenderingLayer(CLOUD_2_1, (1 | 2));
@@ -135,7 +135,7 @@ void initializeTitleScreen(u8 arg0) {
     startSpriteAnimation(CLOUD_2_1, 0x10, 0xFE);
     
     dmaSprite(CLOUD_3_1, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesAssetsIndexSegmentRomStart, &_titleSpritesAssetsIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_END, (void*)TITLE_SCREEN_ASSETS_INDEX_VADDR_START, (void*)TITLE_SCREEN_ASSETS_INDEX_VADDR_END, NULL, NULL, 0);
-    setSpriteShrinkFactor(CLOUD_3_1, titleScreenContext.centerCoordinate + 32.0f, 96.0f, 64.0f);
+    setSpriteViewSpacePosition(CLOUD_3_1, titleScreenContext.centerCoordinate + 32.0f, 96.0f, 64.0f);
     setSpriteScale(CLOUD_3_1, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(CLOUD_3_1, 0.0f, 0.0f, 0.0f);
     setSpriteRenderingLayer(CLOUD_3_1, (1 | 2));
@@ -144,7 +144,7 @@ void initializeTitleScreen(u8 arg0) {
     startSpriteAnimation(CLOUD_3_1, 0x11, 0xFE);
     
     dmaSprite(LICENSED_BY_NINTENDO_1, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesAssetsIndexSegmentRomStart, &_titleSpritesAssetsIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_END, (void*)TITLE_SCREEN_ASSETS_INDEX_VADDR_START, (void*)TITLE_SCREEN_ASSETS_INDEX_VADDR_END, NULL, NULL, 0);
-    setSpriteShrinkFactor(LICENSED_BY_NINTENDO_1, titleScreenContext.centerCoordinate + 224.0f, 80.0f, 64.0f);
+    setSpriteViewSpacePosition(LICENSED_BY_NINTENDO_1, titleScreenContext.centerCoordinate + 224.0f, 80.0f, 64.0f);
     setSpriteScale(LICENSED_BY_NINTENDO_1, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(LICENSED_BY_NINTENDO_1, 0.0f, 0.0f, 0.0f);
     setSpriteRenderingLayer(LICENSED_BY_NINTENDO_1, (1 | 2));
@@ -153,7 +153,7 @@ void initializeTitleScreen(u8 arg0) {
     startSpriteAnimation(LICENSED_BY_NINTENDO_1, 0x12, 0xFE);
     
     dmaSprite(LICENSED_BY_NINTENDO_2, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesAssetsIndexSegmentRomStart, &_titleSpritesAssetsIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_END, (void*)TITLE_SCREEN_ASSETS_INDEX_VADDR_START, (void*)TITLE_SCREEN_ASSETS_INDEX_VADDR_END, NULL, NULL, 0);
-    setSpriteShrinkFactor(LICENSED_BY_NINTENDO_2, titleScreenContext.centerCoordinate - 64.0f, 72.0f, 64.0f);
+    setSpriteViewSpacePosition(LICENSED_BY_NINTENDO_2, titleScreenContext.centerCoordinate - 64.0f, 72.0f, 64.0f);
     setSpriteScale(LICENSED_BY_NINTENDO_2, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(LICENSED_BY_NINTENDO_2, 0.0f, 0.0f, 0.0f);
     setSpriteRenderingLayer(LICENSED_BY_NINTENDO_2, (1 | 2));
@@ -162,7 +162,7 @@ void initializeTitleScreen(u8 arg0) {
     startSpriteAnimation(LICENSED_BY_NINTENDO_2, 0x12, 0xFE);
 
     dmaSprite(CLOUD_3_2, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesAssetsIndexSegmentRomStart, &_titleSpritesAssetsIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_END, (void*)TITLE_SCREEN_ASSETS_INDEX_VADDR_START, (void*)TITLE_SCREEN_ASSETS_INDEX_VADDR_END, NULL, NULL, 0);
-    setSpriteShrinkFactor(CLOUD_3_2, titleScreenContext.centerCoordinate - 192.0f, 108.0f, 64.0f);
+    setSpriteViewSpacePosition(CLOUD_3_2, titleScreenContext.centerCoordinate - 192.0f, 108.0f, 64.0f);
     setSpriteScale(CLOUD_3_2, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(CLOUD_3_2, 0.0f, 0.0f, 0.0f);
     setSpriteRenderingLayer(CLOUD_3_2, (1 | 2));
@@ -171,7 +171,7 @@ void initializeTitleScreen(u8 arg0) {
     startSpriteAnimation(CLOUD_3_2, 0x11, 0xFE);
 
     dmaSprite(CLOUD_2_2, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesAssetsIndexSegmentRomStart, &_titleSpritesAssetsIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_END, (void*)TITLE_SCREEN_ASSETS_INDEX_VADDR_START, (void*)TITLE_SCREEN_ASSETS_INDEX_VADDR_END, NULL, NULL, 0);
-    setSpriteShrinkFactor(CLOUD_2_2, titleScreenContext.centerCoordinate - 288.0f, 88.0f, 64.0f);
+    setSpriteViewSpacePosition(CLOUD_2_2, titleScreenContext.centerCoordinate - 288.0f, 88.0f, 64.0f);
     setSpriteScale(CLOUD_2_2, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(CLOUD_2_2, 0.0f, 0.0f, 0.0f);
     setSpriteRenderingLayer(CLOUD_2_2, (1 | 2));
@@ -180,7 +180,7 @@ void initializeTitleScreen(u8 arg0) {
     startSpriteAnimation(CLOUD_2_2, 0x10, 0xFE);
     
     dmaSprite(FAR_GRASS_1_1, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesAssetsIndexSegmentRomStart, &_titleSpritesAssetsIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_END, (void*)TITLE_SCREEN_ASSETS_INDEX_VADDR_START, (void*)TITLE_SCREEN_ASSETS_INDEX_VADDR_END, NULL, NULL, 0);
-    setSpriteShrinkFactor(FAR_GRASS_1_1, titleScreenContext.centerCoordinate + 160.0f, 0.0f, 8.0f);
+    setSpriteViewSpacePosition(FAR_GRASS_1_1, titleScreenContext.centerCoordinate + 160.0f, 0.0f, 8.0f);
     setSpriteScale(FAR_GRASS_1_1, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(FAR_GRASS_1_1, 0.0f, 0.0f, 0.0f);
     setSpriteRenderingLayer(FAR_GRASS_1_1, (1 | 2));
@@ -189,7 +189,7 @@ void initializeTitleScreen(u8 arg0) {
     startSpriteAnimation(FAR_GRASS_1_1, 0xA, 0xFE);
 
     dmaSprite(FAR_GRASS_1_2, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesAssetsIndexSegmentRomStart, &_titleSpritesAssetsIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_END, (void*)TITLE_SCREEN_ASSETS_INDEX_VADDR_START, (void*)TITLE_SCREEN_ASSETS_INDEX_VADDR_END, NULL, NULL, 0);
-    setSpriteShrinkFactor(FAR_GRASS_1_2, titleScreenContext.centerCoordinate - 160.0f, 0.0f, 8.0f);
+    setSpriteViewSpacePosition(FAR_GRASS_1_2, titleScreenContext.centerCoordinate - 160.0f, 0.0f, 8.0f);
     setSpriteScale(FAR_GRASS_1_2, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(FAR_GRASS_1_2, 0.0f, 0.0f, 0.0f);
     setSpriteRenderingLayer(FAR_GRASS_1_2, (1 | 2));
@@ -198,7 +198,7 @@ void initializeTitleScreen(u8 arg0) {
     startSpriteAnimation(FAR_GRASS_1_2, 0xA, 0xFE);
     
     dmaSprite(FAR_GRASS_2_1, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesAssetsIndexSegmentRomStart, &_titleSpritesAssetsIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_END, (void*)TITLE_SCREEN_ASSETS_INDEX_VADDR_START, (void*)TITLE_SCREEN_ASSETS_INDEX_VADDR_END, NULL, NULL, 0);
-    setSpriteShrinkFactor(FAR_GRASS_2_1, titleScreenContext.centerCoordinate + 160.0f, 0.0f, 16.0f);
+    setSpriteViewSpacePosition(FAR_GRASS_2_1, titleScreenContext.centerCoordinate + 160.0f, 0.0f, 16.0f);
     setSpriteScale(FAR_GRASS_2_1, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(FAR_GRASS_2_1, 0.0f, 0.0f, 0.0f);
     setSpriteRenderingLayer(FAR_GRASS_2_1, (1 | 2));
@@ -207,7 +207,7 @@ void initializeTitleScreen(u8 arg0) {
     startSpriteAnimation(FAR_GRASS_2_1, 0xB, 0xFE);
 
     dmaSprite(FAR_GRASS_3_1, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesAssetsIndexSegmentRomStart, &_titleSpritesAssetsIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_END, (void*)TITLE_SCREEN_ASSETS_INDEX_VADDR_START, (void*)TITLE_SCREEN_ASSETS_INDEX_VADDR_END, NULL, NULL, 0);
-    setSpriteShrinkFactor(FAR_GRASS_3_1, titleScreenContext.centerCoordinate + 160.0f, 0.0f, 24.0f);
+    setSpriteViewSpacePosition(FAR_GRASS_3_1, titleScreenContext.centerCoordinate + 160.0f, 0.0f, 24.0f);
     setSpriteScale(FAR_GRASS_3_1, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(FAR_GRASS_3_1, 0.0f, 0.0f, 0.0f);
     setSpriteRenderingLayer(FAR_GRASS_3_1, (1 | 2));
@@ -216,7 +216,7 @@ void initializeTitleScreen(u8 arg0) {
     startSpriteAnimation(FAR_GRASS_3_1, 0xC, 0xFE);
 
     dmaSprite(FRONT_GRASS_2_1, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesAssetsIndexSegmentRomStart, &_titleSpritesAssetsIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_END, (void*)TITLE_SCREEN_ASSETS_INDEX_VADDR_START, (void*)TITLE_SCREEN_ASSETS_INDEX_VADDR_END, NULL, NULL, 0);
-    setSpriteShrinkFactor(FRONT_GRASS_2_1, titleScreenContext.centerCoordinate + 160.0f, 0.0f, 32.0f);
+    setSpriteViewSpacePosition(FRONT_GRASS_2_1, titleScreenContext.centerCoordinate + 160.0f, 0.0f, 32.0f);
     setSpriteScale(FRONT_GRASS_2_1, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(FRONT_GRASS_2_1, 0.0f, 0.0f, 0.0f);
     setSpriteRenderingLayer(FRONT_GRASS_2_1, (1 | 2));
@@ -225,7 +225,7 @@ void initializeTitleScreen(u8 arg0) {
     startSpriteAnimation(FRONT_GRASS_2_1, 0xE, 0xFE);
     
     dmaSprite(BACK_GRASS_2, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesAssetsIndexSegmentRomStart, &_titleSpritesAssetsIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_END, (void*)TITLE_SCREEN_ASSETS_INDEX_VADDR_START, (void*)TITLE_SCREEN_ASSETS_INDEX_VADDR_END, NULL, NULL, 0);
-    setSpriteShrinkFactor(BACK_GRASS_2, titleScreenContext.centerCoordinate - 160.0f, 0.0f, 16.0f);
+    setSpriteViewSpacePosition(BACK_GRASS_2, titleScreenContext.centerCoordinate - 160.0f, 0.0f, 16.0f);
     setSpriteScale(BACK_GRASS_2, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(BACK_GRASS_2, 0.0f, 0.0f, 0.0f);
     setSpriteRenderingLayer(BACK_GRASS_2, (1 | 2));
@@ -234,7 +234,7 @@ void initializeTitleScreen(u8 arg0) {
     startSpriteAnimation(BACK_GRASS_2, 0xB, 0xFE);
     
     dmaSprite(BACK_GRASS_3_2, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesAssetsIndexSegmentRomStart, &_titleSpritesAssetsIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_END, (void*)TITLE_SCREEN_ASSETS_INDEX_VADDR_START, (void*)TITLE_SCREEN_ASSETS_INDEX_VADDR_END, NULL, NULL, 0);
-    setSpriteShrinkFactor(BACK_GRASS_3_2, titleScreenContext.centerCoordinate - 160.0f, 0.0f, 24.0f);
+    setSpriteViewSpacePosition(BACK_GRASS_3_2, titleScreenContext.centerCoordinate - 160.0f, 0.0f, 24.0f);
     setSpriteScale(BACK_GRASS_3_2, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(BACK_GRASS_3_2, 0.0f, 0.0f, 0.0f);
     setSpriteRenderingLayer(BACK_GRASS_3_2, (1 | 2));
@@ -243,7 +243,7 @@ void initializeTitleScreen(u8 arg0) {
     startSpriteAnimation(BACK_GRASS_3_2, 0xC, 0xFE);
     
     dmaSprite(FRONT_GRASS_2_2, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesAssetsIndexSegmentRomStart, &_titleSpritesAssetsIndexSegmentRomEnd, NULL, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_START, NULL, (void*)TITLE_SCREEN_TEXTURE_VADDR_END, (void*)TITLE_SCREEN_ASSETS_INDEX_VADDR_START, (void*)TITLE_SCREEN_ASSETS_INDEX_VADDR_END, NULL, NULL, 0);
-    setSpriteShrinkFactor(FRONT_GRASS_2_2, titleScreenContext.centerCoordinate - 160.0f, 0.0f, 32.0f);
+    setSpriteViewSpacePosition(FRONT_GRASS_2_2, titleScreenContext.centerCoordinate - 160.0f, 0.0f, 32.0f);
     setSpriteScale(FRONT_GRASS_2_2, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(FRONT_GRASS_2_2, 0.0f, 0.0f, 0.0f);
     setSpriteRenderingLayer(FRONT_GRASS_2_2, (1 | 2));
@@ -252,7 +252,7 @@ void initializeTitleScreen(u8 arg0) {
     startSpriteAnimation(FRONT_GRASS_2_2, 0xE, 0xFE);
     
     dmaSprite(PUSH_THE_START_SIGN_2, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsAssetsIndexSegmentRomStart, &_dialogueIconsAssetsIndexSegmentRomEnd, NULL, NULL, (void*)0x8023B400, NULL, (void*)0x8023CC00, (void*)0x8023CE00, (void*)0x8023D200, NULL, NULL, 0);
-    setSpriteShrinkFactor(PUSH_THE_START_SIGN_2, -54.0f, -24.0f, 56.0f);
+    setSpriteViewSpacePosition(PUSH_THE_START_SIGN_2, -54.0f, -24.0f, 56.0f);
     setSpriteScale(PUSH_THE_START_SIGN_2, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(PUSH_THE_START_SIGN_2, 0.0f, 0.0f, 0.0f);
     setSpriteRenderingLayer(PUSH_THE_START_SIGN_2, (1 | 2));
@@ -266,28 +266,28 @@ void initializeTitleScreen(u8 arg0) {
 
         titleScreenContext.mode = 2;
 
-        adjustSpriteShrinkFactor(PUSH_THE_START_SIGN_1, 320.0f, 0.0f, 0.0f);
-        adjustSpriteShrinkFactor(HOW_TO_PLAY_SIGN, 320.0f, 0.0f, 0.0f);
-        adjustSpriteShrinkFactor(DIRT_ROAD, 320.0f, 0.0f, 0.0f);
-        adjustSpriteShrinkFactor(SIGN_POST_1, 320.0f, 0.0f, 0.0f);
-        adjustSpriteShrinkFactor(SIGN_POST_2, 320.0f, 0.0f, 0.0f);
-        adjustSpriteShrinkFactor(SIGN_POST_3, 320.0f, 0.0f, 0.0f);
-        adjustSpriteShrinkFactor(FAR_GRASS_1_1, 320.0f, 0.0f, 0.0f);
-        adjustSpriteShrinkFactor(FAR_GRASS_1_2, 320.0f, 0.0f, 0.0f);
-        adjustSpriteShrinkFactor(FAR_GRASS_2_1, 128.0f, 0.0f, 0.0f);
-        adjustSpriteShrinkFactor(FAR_GRASS_3_1, 192.0f, 0.0f, 0.0f);
-        adjustSpriteShrinkFactor(FRONT_GRASS_2_1, 256.0f, 0.0f, 0.0f);
-        adjustSpriteShrinkFactor(BACK_GRASS_2, 128.0f, 0.0f, 0.0f);
-        adjustSpriteShrinkFactor(BACK_GRASS_3_2, 192.0f, 0.0f, 0.0f);
-        adjustSpriteShrinkFactor(FRONT_GRASS_2_2, 256.0f, 0.0f, 0.0f);
-        adjustSpriteShrinkFactor(CLOUD_1_1, 64.0f, 0.0f, 0.0f);
-        adjustSpriteShrinkFactor(CLOUD_1_2, 64.0f, 0.0f, 0.0f);
-        adjustSpriteShrinkFactor(CLOUD_2_1, 64.0f, 0.0f, 0.0f);
-        adjustSpriteShrinkFactor(CLOUD_3_1, 64.0f, 0.0f, 0.0f);
-        adjustSpriteShrinkFactor(LICENSED_BY_NINTENDO_1, 64.0f, 0.0f, 0.0f);
-        adjustSpriteShrinkFactor(LICENSED_BY_NINTENDO_2, 64.0f, 0.0f, 0.0f);
-        adjustSpriteShrinkFactor(CLOUD_3_2, 64.0f, 0.0f, 0.0f);
-        adjustSpriteShrinkFactor(CLOUD_2_2, 64.0f, 0.0f, 0.0f);
+        adjustSpriteViewSpacePosition(PUSH_THE_START_SIGN_1, 320.0f, 0.0f, 0.0f);
+        adjustSpriteViewSpacePosition(HOW_TO_PLAY_SIGN, 320.0f, 0.0f, 0.0f);
+        adjustSpriteViewSpacePosition(DIRT_ROAD, 320.0f, 0.0f, 0.0f);
+        adjustSpriteViewSpacePosition(SIGN_POST_1, 320.0f, 0.0f, 0.0f);
+        adjustSpriteViewSpacePosition(SIGN_POST_2, 320.0f, 0.0f, 0.0f);
+        adjustSpriteViewSpacePosition(SIGN_POST_3, 320.0f, 0.0f, 0.0f);
+        adjustSpriteViewSpacePosition(FAR_GRASS_1_1, 320.0f, 0.0f, 0.0f);
+        adjustSpriteViewSpacePosition(FAR_GRASS_1_2, 320.0f, 0.0f, 0.0f);
+        adjustSpriteViewSpacePosition(FAR_GRASS_2_1, 128.0f, 0.0f, 0.0f);
+        adjustSpriteViewSpacePosition(FAR_GRASS_3_1, 192.0f, 0.0f, 0.0f);
+        adjustSpriteViewSpacePosition(FRONT_GRASS_2_1, 256.0f, 0.0f, 0.0f);
+        adjustSpriteViewSpacePosition(BACK_GRASS_2, 128.0f, 0.0f, 0.0f);
+        adjustSpriteViewSpacePosition(BACK_GRASS_3_2, 192.0f, 0.0f, 0.0f);
+        adjustSpriteViewSpacePosition(FRONT_GRASS_2_2, 256.0f, 0.0f, 0.0f);
+        adjustSpriteViewSpacePosition(CLOUD_1_1, 64.0f, 0.0f, 0.0f);
+        adjustSpriteViewSpacePosition(CLOUD_1_2, 64.0f, 0.0f, 0.0f);
+        adjustSpriteViewSpacePosition(CLOUD_2_1, 64.0f, 0.0f, 0.0f);
+        adjustSpriteViewSpacePosition(CLOUD_3_1, 64.0f, 0.0f, 0.0f);
+        adjustSpriteViewSpacePosition(LICENSED_BY_NINTENDO_1, 64.0f, 0.0f, 0.0f);
+        adjustSpriteViewSpacePosition(LICENSED_BY_NINTENDO_2, 64.0f, 0.0f, 0.0f);
+        adjustSpriteViewSpacePosition(CLOUD_3_2, 64.0f, 0.0f, 0.0f);
+        adjustSpriteViewSpacePosition(CLOUD_2_2, 64.0f, 0.0f, 0.0f);
 
     } else {
 
@@ -308,7 +308,7 @@ void initializeTitleScreen(u8 arg0) {
 
 void loadDogTitleSprite(void) {
     dmaSprite(DOG_TITLE_SPRITE, &_dogTitleTextureSegmentRomStart, &_dogTitleTextureSegmentRomEnd, &_dogTitleAssetsIndexSegmentRomStart, &_dogTitleAssetsIndexSegmentRomEnd, &_dogTitleSpritesheetIndexSegmentRomStart, &_dogTitleSpritesheetIndexSegmentRomEnd, (void*)0x80240B00, (void*)0x80243B00, (void*)0x80246B00, (void*)0x8024AB00, (void*)0x80252300, (void*)0x80252B00, 1, 0);
-    setSpriteShrinkFactor(DOG_TITLE_SPRITE, 64.0f, -80.0f, 56.0f);
+    setSpriteViewSpacePosition(DOG_TITLE_SPRITE, 64.0f, -80.0f, 56.0f);
     setSpriteScale(DOG_TITLE_SPRITE, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(DOG_TITLE_SPRITE, 0, 0, 0);
     setSpriteRenderingLayer(DOG_TITLE_SPRITE, (1 | 2));
@@ -364,7 +364,7 @@ static inline void resetSpriteFlags() {
 static inline bool inline1() {
 
     if (titleScreenContext.rowHighlighted != 1) {
-        setSpriteShrinkFactor(PUSH_THE_START_SIGN_2, -56.0f, -52.0f, 56.0f);
+        setSpriteViewSpacePosition(PUSH_THE_START_SIGN_2, -56.0f, -52.0f, 56.0f);
         titleScreenContext.rowHighlighted = 1;
         setAudio(MOVE_CURSOR);
     }
@@ -377,7 +377,7 @@ static inline bool inline1() {
 static inline bool inline2() {
 
     if (titleScreenContext.rowHighlighted != 0) {
-        setSpriteShrinkFactor(PUSH_THE_START_SIGN_2, -56.0f, -20.0f, 56.0f);
+        setSpriteViewSpacePosition(PUSH_THE_START_SIGN_2, -56.0f, -20.0f, 56.0f);
         titleScreenContext.rowHighlighted = 0;
         setAudio(MOVE_CURSOR);
     }
@@ -467,28 +467,28 @@ void titleScreenMainLoopCallback(void) {
             // static inline?
             if (titleScreenContext.unk_4 < 64) {
 
-                adjustSpriteShrinkFactor(PUSH_THE_START_SIGN_1, 5.0f, 0.0f, 0.0f);
-                adjustSpriteShrinkFactor(HOW_TO_PLAY_SIGN, 5.0f, 0, 0);
-                adjustSpriteShrinkFactor(DIRT_ROAD, 5.0f, 0, 0);
-                adjustSpriteShrinkFactor(SIGN_POST_1, 5.0f, 0, 0);
-                adjustSpriteShrinkFactor(SIGN_POST_2, 5.0f, 0, 0);
-                adjustSpriteShrinkFactor(SIGN_POST_3, 5.0f, 0, 0);
-                adjustSpriteShrinkFactor(FAR_GRASS_1_1, 5.0f, 0, 0);
-                adjustSpriteShrinkFactor(FAR_GRASS_1_2, 5.0f, 0, 0);
-                adjustSpriteShrinkFactor(FAR_GRASS_2_1, 2.0f, 0, 0);
-                adjustSpriteShrinkFactor(FAR_GRASS_3_1, 3.0f, 0, 0);
-                adjustSpriteShrinkFactor(FRONT_GRASS_2_1, 5.0f, 0, 0);
-                adjustSpriteShrinkFactor(BACK_GRASS_2, 2.0f, 0, 0);
-                adjustSpriteShrinkFactor(BACK_GRASS_3_2, 3.0f, 0, 0);
-                adjustSpriteShrinkFactor(FRONT_GRASS_2_2, 5.0f, 0, 0);
-                adjustSpriteShrinkFactor(CLOUD_1_1, 1.0f, 0, 0);
-                adjustSpriteShrinkFactor(CLOUD_1_2, 1.0f, 0, 0);
-                adjustSpriteShrinkFactor(CLOUD_2_1, 1.0f, 0, 0);
-                adjustSpriteShrinkFactor(CLOUD_3_1, 1.0f, 0, 0);
-                adjustSpriteShrinkFactor(LICENSED_BY_NINTENDO_1, 1.0f, 0, 0);
-                adjustSpriteShrinkFactor(LICENSED_BY_NINTENDO_2, 1.0f, 0, 0);
-                adjustSpriteShrinkFactor(CLOUD_3_2, 1.0f, 0, 0);
-                adjustSpriteShrinkFactor(CLOUD_2_2, 1.0f, 0, 0);
+                adjustSpriteViewSpacePosition(PUSH_THE_START_SIGN_1, 5.0f, 0.0f, 0.0f);
+                adjustSpriteViewSpacePosition(HOW_TO_PLAY_SIGN, 5.0f, 0, 0);
+                adjustSpriteViewSpacePosition(DIRT_ROAD, 5.0f, 0, 0);
+                adjustSpriteViewSpacePosition(SIGN_POST_1, 5.0f, 0, 0);
+                adjustSpriteViewSpacePosition(SIGN_POST_2, 5.0f, 0, 0);
+                adjustSpriteViewSpacePosition(SIGN_POST_3, 5.0f, 0, 0);
+                adjustSpriteViewSpacePosition(FAR_GRASS_1_1, 5.0f, 0, 0);
+                adjustSpriteViewSpacePosition(FAR_GRASS_1_2, 5.0f, 0, 0);
+                adjustSpriteViewSpacePosition(FAR_GRASS_2_1, 2.0f, 0, 0);
+                adjustSpriteViewSpacePosition(FAR_GRASS_3_1, 3.0f, 0, 0);
+                adjustSpriteViewSpacePosition(FRONT_GRASS_2_1, 5.0f, 0, 0);
+                adjustSpriteViewSpacePosition(BACK_GRASS_2, 2.0f, 0, 0);
+                adjustSpriteViewSpacePosition(BACK_GRASS_3_2, 3.0f, 0, 0);
+                adjustSpriteViewSpacePosition(FRONT_GRASS_2_2, 5.0f, 0, 0);
+                adjustSpriteViewSpacePosition(CLOUD_1_1, 1.0f, 0, 0);
+                adjustSpriteViewSpacePosition(CLOUD_1_2, 1.0f, 0, 0);
+                adjustSpriteViewSpacePosition(CLOUD_2_1, 1.0f, 0, 0);
+                adjustSpriteViewSpacePosition(CLOUD_3_1, 1.0f, 0, 0);
+                adjustSpriteViewSpacePosition(LICENSED_BY_NINTENDO_1, 1.0f, 0, 0);
+                adjustSpriteViewSpacePosition(LICENSED_BY_NINTENDO_2, 1.0f, 0, 0);
+                adjustSpriteViewSpacePosition(CLOUD_3_2, 1.0f, 0, 0);
+                adjustSpriteViewSpacePosition(CLOUD_2_2, 1.0f, 0, 0);
 
             } else {
                 setNewMode(2);
@@ -503,7 +503,7 @@ void titleScreenMainLoopCallback(void) {
 
             resetAnimationState(DOG_TITLE_SPRITE);
             startSpriteAnimation(DOG_TITLE_SPRITE, 0x1D, 0xFE);
-            setSpriteShrinkFactor(PUSH_THE_START_SIGN_2, -56.0f, -20.0f, 56.0f);
+            setSpriteViewSpacePosition(PUSH_THE_START_SIGN_2, -56.0f, -20.0f, 56.0f);
             startSpriteAnimation(PUSH_THE_START_SIGN_2, 3, 0xFE);
             
             titleScreenContext.mode = 3;
@@ -772,33 +772,32 @@ void updateGrassAnimation(void) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/title", func_800E10E8);
 
-// adjust shrink of overlaying sprites
 void func_800E10E8(void) {
     
-    if (globalSprites[CLOUD_2_1].shrink.x > 320.0f) {
-        setSpriteShrinkFactor(CLOUD_2_1, titleScreenContext.centerCoordinate - 320.0f, 64.0f, 64.0f);
+    if (globalSprites[CLOUD_2_1].viewSpacePosition.x > 320.0f) {
+        setSpriteViewSpacePosition(CLOUD_2_1, titleScreenContext.centerCoordinate - 320.0f, 64.0f, 64.0f);
     }
-    if (globalSprites[CLOUD_3_1].shrink.x > 320.0f) {
-        setSpriteShrinkFactor(CLOUD_3_1, titleScreenContext.centerCoordinate - 320.0f, 96.0f, 64.0f);
+    if (globalSprites[CLOUD_3_1].viewSpacePosition.x > 320.0f) {
+        setSpriteViewSpacePosition(CLOUD_3_1, titleScreenContext.centerCoordinate - 320.0f, 96.0f, 64.0f);
     }
-    if (globalSprites[LICENSED_BY_NINTENDO_1].shrink.x > 320.0f) {
-        setSpriteShrinkFactor(LICENSED_BY_NINTENDO_1, titleScreenContext.centerCoordinate - 320.0f, 80.0f, 64.0f);
+    if (globalSprites[LICENSED_BY_NINTENDO_1].viewSpacePosition.x > 320.0f) {
+        setSpriteViewSpacePosition(LICENSED_BY_NINTENDO_1, titleScreenContext.centerCoordinate - 320.0f, 80.0f, 64.0f);
     }
-    if (globalSprites[LICENSED_BY_NINTENDO_2].shrink.x > 320.0f) {
-        setSpriteShrinkFactor(LICENSED_BY_NINTENDO_2, titleScreenContext.centerCoordinate - 320.0f, 72.0f, 64.0f);
+    if (globalSprites[LICENSED_BY_NINTENDO_2].viewSpacePosition.x > 320.0f) {
+        setSpriteViewSpacePosition(LICENSED_BY_NINTENDO_2, titleScreenContext.centerCoordinate - 320.0f, 72.0f, 64.0f);
     }
-    if (globalSprites[CLOUD_3_2].shrink.x > 320.0f) {
-        setSpriteShrinkFactor(CLOUD_3_2, titleScreenContext.centerCoordinate - 320.0f, 108.0f, 64.0f);
+    if (globalSprites[CLOUD_3_2].viewSpacePosition.x > 320.0f) {
+        setSpriteViewSpacePosition(CLOUD_3_2, titleScreenContext.centerCoordinate - 320.0f, 108.0f, 64.0f);
     }
-    if (globalSprites[CLOUD_2_2].shrink.x > 320.0f) {
-        setSpriteShrinkFactor(CLOUD_2_2, titleScreenContext.centerCoordinate - 320.0f, 88.0f, 64.0f);
+    if (globalSprites[CLOUD_2_2].viewSpacePosition.x > 320.0f) {
+        setSpriteViewSpacePosition(CLOUD_2_2, titleScreenContext.centerCoordinate - 320.0f, 88.0f, 64.0f);
     }
     
-    adjustSpriteShrinkFactor(CLOUD_2_1, 0.2f, 0.0f, 0.0f);
-    adjustSpriteShrinkFactor(CLOUD_3_1, 0.1f, 0.0f, 0.0f);
-    adjustSpriteShrinkFactor(LICENSED_BY_NINTENDO_1, 0.3f, 0.0f, 0.0f);
-    adjustSpriteShrinkFactor(LICENSED_BY_NINTENDO_2, 0.4f, 0.0f, 0.0f);
-    adjustSpriteShrinkFactor(CLOUD_3_2, 0.1f, 0.0f, 0.0f);
-    adjustSpriteShrinkFactor(CLOUD_2_2, 0.2f, 0.0f, 0.0f);
+    adjustSpriteViewSpacePosition(CLOUD_2_1, 0.2f, 0.0f, 0.0f);
+    adjustSpriteViewSpacePosition(CLOUD_3_1, 0.1f, 0.0f, 0.0f);
+    adjustSpriteViewSpacePosition(LICENSED_BY_NINTENDO_1, 0.3f, 0.0f, 0.0f);
+    adjustSpriteViewSpacePosition(LICENSED_BY_NINTENDO_2, 0.4f, 0.0f, 0.0f);
+    adjustSpriteViewSpacePosition(CLOUD_3_2, 0.1f, 0.0f, 0.0f);
+    adjustSpriteViewSpacePosition(CLOUD_2_2, 0.2f, 0.0f, 0.0f);
     
 }

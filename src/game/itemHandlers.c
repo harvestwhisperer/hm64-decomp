@@ -7,7 +7,7 @@
 #include "system/entity.h"
 #include "system/graphic.h"
 #include "system/map.h"
-#include "system/mapContext.h"
+#include "system/mapController.h"
 
 #include "game/animals.h"
 #include "game/game.h"
@@ -122,8 +122,8 @@ void func_800CF8F8(u8 entityIndex, u8 arg1, f32 arg2, f32 arg3, f32 arg4) {
     loadEntity(entityIndex + ITEMS_OFFSET, 0x60, 1);
     func_8002FF38(entityIndex + ITEMS_OFFSET, 0);
     setEntityTrackingTarget(entityIndex + ITEMS_OFFSET, 0xFFFF, 0xFF);
-    func_8003019C(entityIndex + ITEMS_OFFSET, 0);
-    func_80030054(entityIndex + ITEMS_OFFSET, 0);
+    setEntityCollidable(entityIndex + ITEMS_OFFSET, FALSE);
+    setEntityYMovement(entityIndex + ITEMS_OFFSET, FALSE);
     setEntityCoordinates(entityIndex + ITEMS_OFFSET, arg2, arg3, arg4);
 
     setEntityColor(entityIndex + ITEMS_OFFSET, mainMap[MAIN_MAP_INDEX].mapFloats.groundRgba.r, mainMap[MAIN_MAP_INDEX].mapFloats.groundRgba.g, mainMap[MAIN_MAP_INDEX].mapFloats.groundRgba.b, mainMap[MAIN_MAP_INDEX].mapFloats.groundRgba.a);
@@ -140,8 +140,8 @@ void func_800CFB38(u8 entityIndex, u8 animationIndex, f32 x, f32 y, f32 z) {
     loadEntity(entityIndex + ITEMS_OFFSET, 0x5D, 1);
     func_8002FF38(entityIndex + ITEMS_OFFSET, 0);
     setEntityTrackingTarget(entityIndex + ITEMS_OFFSET, 0xFFFF, 0xFF);
-    func_8003019C(entityIndex + ITEMS_OFFSET, 0);
-    func_80030054(entityIndex + ITEMS_OFFSET, 0);
+    setEntityCollidable(entityIndex + ITEMS_OFFSET, FALSE);
+    setEntityYMovement(entityIndex + ITEMS_OFFSET, FALSE);
 
     setEntityCoordinates(entityIndex + ITEMS_OFFSET, x, y, z);
 
@@ -357,7 +357,7 @@ void func_800D373C(void) {
 
     Vec3f vec;
 
-    direction = (entities[PLAYER].direction + getCurrentMapRotation(MAIN_MAP_INDEX)) % 8;
+    direction = convertWorldToSpriteDirection(entities[PLAYER].direction, MAIN_MAP_INDEX);
     
     if (direction < SOUTHWEST) {
         temp2 = D_80117180[toolUse.unk_2];
@@ -366,7 +366,7 @@ void func_800D373C(void) {
         temp2 = D_8011718C[toolUse.unk_2];
     }
     
-    func_80065F94(&vec, 0.0f, temp2);
+    vec = func_80065F94(0.0f, temp2);
  
     if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && vec.y != 65535.0f) {
         if (gSeason == SPRING || gBaseMapIndex == GREENHOUSE) {
@@ -399,7 +399,7 @@ void func_800D3958(void) {
 
     Vec3f vec;
 
-    direction = (entities[PLAYER].direction + getCurrentMapRotation(MAIN_MAP_INDEX)) % 8;
+    direction = convertWorldToSpriteDirection(entities[PLAYER].direction, MAIN_MAP_INDEX);
     
     if (direction < SOUTHWEST) {
         temp2 = D_80117180[toolUse.unk_2];
@@ -408,7 +408,7 @@ void func_800D3958(void) {
         temp2 = D_8011718C[toolUse.unk_2];
     }
 
-    func_80065F94(&vec, 0.0f, temp2);
+    vec = func_80065F94(0.0f, temp2);
  
     if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && vec.y != 65535.0f) {
         if (gSeason == SPRING || gBaseMapIndex == GREENHOUSE) {
@@ -442,7 +442,7 @@ void func_800D3B74(void) {
 
     Vec3f vec;
 
-    direction = (entities[PLAYER].direction + getCurrentMapRotation(MAIN_MAP_INDEX)) % 8;
+    direction = convertWorldToSpriteDirection(entities[PLAYER].direction, MAIN_MAP_INDEX);
     
     if (direction < SOUTHWEST) {
         temp2 = D_80117180[toolUse.unk_2];
@@ -451,7 +451,7 @@ void func_800D3B74(void) {
         temp2 = D_8011718C[toolUse.unk_2];
     }
     
-    func_80065F94(&vec, 0.0f, temp2);
+    vec = func_80065F94(0.0f, temp2);
  
     if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && vec.y != 65535.0f) {
         if (gSeason == SPRING || gBaseMapIndex == GREENHOUSE) {
@@ -485,7 +485,7 @@ void func_800D3D90(void) {
 
     Vec3f vec;
 
-    direction = (entities[PLAYER].direction + getCurrentMapRotation(MAIN_MAP_INDEX)) % 8;
+    direction = convertWorldToSpriteDirection(entities[PLAYER].direction, MAIN_MAP_INDEX);
     
     if (direction < SOUTHWEST) {
         temp2 = D_80117180[toolUse.unk_2];
@@ -494,7 +494,7 @@ void func_800D3D90(void) {
         temp2 = D_8011718C[toolUse.unk_2];
     }
     
-    func_80065F94(&vec, 0.0f, temp2);
+    vec = func_80065F94(0.0f, temp2);
  
     if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && vec.y != 65535.0f) {
         if (gSeason == SUMMER || gBaseMapIndex == GREENHOUSE) {
@@ -528,7 +528,7 @@ void func_800D3FAC(void) {
 
     Vec3f vec;
 
-    direction = (entities[PLAYER].direction + getCurrentMapRotation(MAIN_MAP_INDEX)) % 8;
+    direction = convertWorldToSpriteDirection(entities[PLAYER].direction, MAIN_MAP_INDEX);
     
     if (direction < SOUTHWEST) {
         temp2 = D_80117180[toolUse.unk_2];
@@ -537,7 +537,7 @@ void func_800D3FAC(void) {
         temp2 = D_8011718C[toolUse.unk_2];
     }
     
-    func_80065F94(&vec, 0.0f, temp2);
+    vec = func_80065F94(0.0f, temp2);
  
     if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && vec.y != 65535.0f) {
         if (gSeason == SUMMER || gBaseMapIndex == GREENHOUSE) {
@@ -571,7 +571,7 @@ void func_800D41C8(void) {
 
     Vec3f vec;
 
-    direction = (entities[PLAYER].direction + getCurrentMapRotation(MAIN_MAP_INDEX)) % 8;
+    direction = convertWorldToSpriteDirection(entities[PLAYER].direction, MAIN_MAP_INDEX);
     
     if (direction < SOUTHWEST) {
         temp2 = D_80117180[toolUse.unk_2];
@@ -580,7 +580,7 @@ void func_800D41C8(void) {
         temp2 = D_8011718C[toolUse.unk_2];
     }
 
-    func_80065F94(&vec, 0.0f, temp2);
+    vec = func_80065F94(0.0f, temp2);
  
     if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && vec.y != 65535.0f) {
         if (gSeason == AUTUMN || gBaseMapIndex == GREENHOUSE) {
@@ -614,7 +614,7 @@ void func_800D43E4(void) {
 
     Vec3f vec;
 
-    direction = (entities[PLAYER].direction + getCurrentMapRotation(MAIN_MAP_INDEX)) % 8;
+    direction = convertWorldToSpriteDirection(entities[PLAYER].direction, MAIN_MAP_INDEX);
     
     if (direction < SOUTHWEST) {
         temp2 = D_80117180[toolUse.unk_2];
@@ -623,7 +623,7 @@ void func_800D43E4(void) {
         temp2 = D_8011718C[toolUse.unk_2];
     }
 
-    func_80065F94(&vec, 0.0f, temp2);
+    vec = func_80065F94(0.0f, temp2);
 
     if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && vec.y != 65535.0f) {
 
@@ -657,7 +657,7 @@ void func_800D45F4(void) {
 
     Vec3f vec;
 
-    direction = (entities[PLAYER].direction + getCurrentMapRotation(MAIN_MAP_INDEX)) % 8;
+    direction = convertWorldToSpriteDirection(entities[PLAYER].direction, MAIN_MAP_INDEX);
     
     if (direction < SOUTHWEST) {
         temp2 = D_80117180[toolUse.unk_2];
@@ -666,7 +666,7 @@ void func_800D45F4(void) {
         temp2 = D_8011718C[toolUse.unk_2];
     }
     
-    func_80065F94(&vec, 0.0f, temp2);
+    vec = func_80065F94(0.0f, temp2);
  
     if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && vec.y != 65535.0f) {
         
@@ -701,7 +701,7 @@ void func_800D4814(void) {
 
     Vec3f vec;
 
-    direction = (entities[PLAYER].direction + getCurrentMapRotation(MAIN_MAP_INDEX)) % 8;
+    direction = convertWorldToSpriteDirection(entities[PLAYER].direction, MAIN_MAP_INDEX);
     
     if (direction < SOUTHWEST) {
         temp2 = D_80117180[toolUse.unk_2];
@@ -710,7 +710,7 @@ void func_800D4814(void) {
         temp2 = D_8011718C[toolUse.unk_2];
     }
     
-    func_80065F94(&vec, 0.0f, temp2);
+    vec = func_80065F94(0.0f, temp2);
  
     if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && vec.y != 65535.0f) {
 
@@ -745,7 +745,7 @@ void func_800D4A34(void) {
 
     Vec3f vec;
 
-    direction = (entities[PLAYER].direction + getCurrentMapRotation(MAIN_MAP_INDEX)) % 8;
+    direction = convertWorldToSpriteDirection(entities[PLAYER].direction, MAIN_MAP_INDEX);
     
     if (direction < SOUTHWEST) {
         temp2 = D_80117180[toolUse.unk_2];
@@ -754,7 +754,7 @@ void func_800D4A34(void) {
         temp2 = D_8011718C[toolUse.unk_2];
     }
     
-    func_80065F94(&vec, 0.0f, temp2);
+    vec = func_80065F94(0.0f, temp2);
  
     if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && vec.y != 65535.0f) {
         func_800DAC70(gBaseMapIndex, 0xB2, (u8)vec.x - D_801FD624, (u8)vec.z - D_801C3F35);
@@ -843,7 +843,7 @@ void func_800D4D68(void) {
 
     Vec3f vec;
 
-    direction = (entities[PLAYER].direction + getCurrentMapRotation(MAIN_MAP_INDEX)) % 8;
+    direction = convertWorldToSpriteDirection(entities[PLAYER].direction, MAIN_MAP_INDEX);
     
     if (direction < SOUTHWEST) {
         temp2 = D_80117180[toolUse.unk_2];
@@ -852,7 +852,7 @@ void func_800D4D68(void) {
         temp2 = D_8011718C[toolUse.unk_2];
     }
     
-    func_80065F94(&vec, 0.0f, temp2);
+    vec = func_80065F94(0.0f, temp2);
  
     if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && vec.y != 65535.0f) {
         if (gBaseMapIndex == FARM) {
@@ -900,7 +900,7 @@ void handleBlueFeatherUse(void) {
 
     func_80085D48(npcTalkingTo, 0);
     
-    npcInfoArray[npcTalkingTo].movingFlag = npcInfoArray[npcTalkingTo].unk_1E;
+    npcs[npcTalkingTo].movingFlag = npcs[npcTalkingTo].unk_1E;
     
     setSpecialDialogueBit(0x135);
     
@@ -1304,7 +1304,7 @@ void func_800D6B28(void) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D6B58);
 
-static inline void setVec3f(u8 index, float x, float y, float z) {
+static inline void setVec3f(u8 index, f32 x, f32 y, f32 z) {
 
     itemInfo[index].unk_0.x = x;
     itemInfo[index].unk_0.y = y;
@@ -1325,13 +1325,13 @@ void func_800D6B58(u8 arg0, u8 index) {
     itemInfo[index].unk_18.z = 0;
     itemInfo[index].flags |= 8;
 
-    func_8002FE10(index + ITEMS_OFFSET, 0.0f, 0.0f, 0.0f, 0.0f);
+    setEntityMovementVector(index + ITEMS_OFFSET, 0.0f, 0.0f, 0.0f, 0.0f);
     setEntityTrackingTarget(index + ITEMS_OFFSET, 0xFFFF, 0xFF);
     
-    func_8003019C(index + ITEMS_OFFSET, 0);
-    func_80030054(index + ITEMS_OFFSET, 0);
-    func_80030240(index + ITEMS_OFFSET, 0);
-    func_800302E4(index + ITEMS_OFFSET, 0);
+    setEntityCollidable(index + ITEMS_OFFSET, FALSE);
+    setEntityYMovement(index + ITEMS_OFFSET, FALSE);
+    setEntityTracksCollisions(index + ITEMS_OFFSET, FALSE);
+    enableEntityMovement(index + ITEMS_OFFSET, FALSE);
 
     if (gBaseMapIndex == FARM) {
         

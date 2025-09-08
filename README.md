@@ -2,7 +2,7 @@
 
 ## Progress
 
-Currently, 70% of the 1467 game functions and 63% of the game source files have been decompiled. All library functions have also been identified with much progress on the matching (many thanks to cblck for the great work). More robust progress tracking is in the works.
+Currently, 75% of the 1467 game functions and 68% of the game source files have been decompiled. All library functions have also been identified with much progress on the matching (many thanks to cblck for the great work). More robust progress tracking is in the works.
 
 ## Asset extraction
 
@@ -14,6 +14,8 @@ There are two sprite asset formats used. Both types have a spritesheet at the be
 - type 1: spritesheet start, asset lookup table start, spritesheet index start, asset end, and asset name
 - type 2: spritesheet start, asset lookup table start, asset end, and asset name.
 
+All sprites with the exception of map tile data are listed in the `sprite_addresses.csv` file.
+
 ### Animations
 
 The game contains two layers of animation data: animation scripts compiled in the data section and another set of metadata stored on the sprite asset in the binary section of the rom. The binary data contains metadata for the animation sequence (total frame count, duration in game ticks, contains audio trigger) and metadata for the final rendered bitmap. The scripts are bitpacked arrays that contain an index into the animation metadata table, an animation type, and a flag for whether to flip horizontally.
@@ -24,7 +26,7 @@ These animation scripts can now be generated via `make extract-animation-scripts
 
 ### Gifs
 
-There's now support for converting animations to gifs. These seem to mostly be working, but there are issues with sprite anchoring for frames with layered sprites.
+There's now support for converting animations to gifs. These seem to be working with all sprites, but there are issues with sprite anchoring for frames with layered sprites.
 
 To create gifs, simply run `make extract-animations`, which will fetch the animation metadata, necessary sprites, and then run the gif conversion script, with all the generated assets in the `/assets/animations` directory. 
 
@@ -42,14 +44,15 @@ To create gifs, simply run `make extract-animations`, which will fetch the anima
 
 ## Known bugs
 
-With the current version of Splat (0.35.1) and spimdisasm (1.36.0), the `asm_nonmatching_label_macro` setting must be set to `""` in order to preserve matching, otherwise spimdisasm will generate duplicate symbols for unmatched but already labeled functions, which affects the final build.
+With the version 0.35.1 of Splat or higher, which requires spimdisasm >= 1.36.0, the `asm_nonmatching_label_macro` setting must be set to `""` in order to preserve matching, otherwise spimdisasm will generate duplicate symbols for unmatched but already labeled functions, which affects the final build.
 
 ## Contributing
 
 Contributions are much welcome. There are a few areas of work left in the project:
-- Easy, repetitive (but numerous) functions, namely in `animals.c` and `npc.c`. These are great for getting started, as the structs and many examples functions are already available.
+- Easy, repetitive (but numerous) functions (`npc.c` is a great example). These are great for getting started, as the structs and many examples functions are already available.
 - Getting "almost" matches over the finish line: there are several functions that are 95-99% matching in the repo (searchable under `#ifdef PERMUTER`)
+- Cleaning up fake/forced matches (searchable under `FIXME`)
 - Research into function, struct member, flag, and variable purposes and making accurate labels. This also includes adding macro values, such as player actions (see `player.h`)
-- Research into binary assets. Currently, only the sprite and audio formats are understood. Some work remains for maps and dialogue formats.
+- Research into and reversing binary asset formats. Currently, only the sprite and audio formats are understood. Some work remains for cutscene and dialgoue bytecode, as well as map data.
 
-For function matching work, Decomp.me has a `Harvest Moon 64` compiler preset that's selectable when creating new scratches. 
+For function matching work, Decomp.me has a `Harvest Moon 64` compiler preset that's selectable when creating new scratches.

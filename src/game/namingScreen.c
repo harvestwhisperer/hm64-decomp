@@ -187,6 +187,7 @@ void func_800ED974(void) {
          if (namingScreenContext.flags & 0x800) {
 
             setGameVariableString(0, gPlayer.name, 6);
+            
             deactivateNamingScreenSprites();
             func_8003DD14(3);
             func_8003DD14(4);
@@ -376,7 +377,7 @@ void func_800ED974(void) {
 
 INCLUDE_ASM("asm/nonmatchings/game/namingScreen", loadNameSelectionSprites);
 
-// need to add linker symbols
+// TODO: matches but need to add linker symbols
 /*
 void loadNameSelectionSprites(void) {
 
@@ -405,22 +406,22 @@ void loadNameSelectionSprites(void) {
 
     setSpriteScale(LANDSCAPE_BACKGROUND, 2.0f, 2.0f, 1.0f);
     
-    setSpriteShrinkFactor(0x80, 0.0f, 0.0f, -1.0f);
-    setSpriteShrinkFactor(0x81, 0.0f, -1.0f, 10.0f);
-    setSpriteShrinkFactor(0x82, 0.0f, 0.0f, -2.0f);
-    setSpriteShrinkFactor(0x8F, 0.0f, 0.0f, 1.0f);
-    setSpriteShrinkFactor(0x83, 8.0f, 72.0f, 20.0f);
-    setSpriteShrinkFactor(0x84, 24.0f, 72.0f, 20.0f);
-    setSpriteShrinkFactor(0x85, 40.0f, 72.0f, 20.0f);
-    setSpriteShrinkFactor(0x86, 56.0f, 72.0f, 20.0f);
-    setSpriteShrinkFactor(0x87, 72.0f, 72.0f, 20.0f);
-    setSpriteShrinkFactor(0x88, 88.0f, 72.0f, 20.0f);
-    setSpriteShrinkFactor(0x8A, 24.0f, 68.0f, 20.0f);
-    setSpriteShrinkFactor(0x8B, 40.0f, 68.0f, 20.0f);
-    setSpriteShrinkFactor(0x8C, 56.0f, 68.0f, 20.0f);
-    setSpriteShrinkFactor(0x8D, 72.0f, 68.0f, 20.0f);
-    setSpriteShrinkFactor(0x8E, 88.0f, 68.0f, 20.0f);
-    setSpriteShrinkFactor(0x91, 0.0f, 0.0f, 20.0f);
+    setSpriteViewSpacePosition(0x80, 0.0f, 0.0f, -1.0f);
+    setSpriteViewSpacePosition(0x81, 0.0f, -1.0f, 10.0f);
+    setSpriteViewSpacePosition(0x82, 0.0f, 0.0f, -2.0f);
+    setSpriteViewSpacePosition(0x8F, 0.0f, 0.0f, 1.0f);
+    setSpriteViewSpacePosition(0x83, 8.0f, 72.0f, 20.0f);
+    setSpriteViewSpacePosition(0x84, 24.0f, 72.0f, 20.0f);
+    setSpriteViewSpacePosition(0x85, 40.0f, 72.0f, 20.0f);
+    setSpriteViewSpacePosition(0x86, 56.0f, 72.0f, 20.0f);
+    setSpriteViewSpacePosition(0x87, 72.0f, 72.0f, 20.0f);
+    setSpriteViewSpacePosition(0x88, 88.0f, 72.0f, 20.0f);
+    setSpriteViewSpacePosition(0x8A, 24.0f, 68.0f, 20.0f);
+    setSpriteViewSpacePosition(0x8B, 40.0f, 68.0f, 20.0f);
+    setSpriteViewSpacePosition(0x8C, 56.0f, 68.0f, 20.0f);
+    setSpriteViewSpacePosition(0x8D, 72.0f, 68.0f, 20.0f);
+    setSpriteViewSpacePosition(0x8E, 88.0f, 68.0f, 20.0f);
+    setSpriteViewSpacePosition(0x91, 0.0f, 0.0f, 20.0f);
     
     startSpriteAnimation(0x80, 3, 0);
     startSpriteAnimation(0x81, 1, 2);
@@ -925,8 +926,8 @@ void func_800F03C4(void) {
 
     }
 
-    setSpriteShrinkFactor(0x80, namingScreenContext.coordinates.x, namingScreenContext.coordinates.y, 20.0f);
-    setSpriteShrinkFactor(0x82, namingScreenContext.coordinates.z, namingScreenContext.coordinates.w, 5.0f);
+    setSpriteViewSpacePosition(0x80, namingScreenContext.coordinates.x, namingScreenContext.coordinates.y, 20.0f);
+    setSpriteViewSpacePosition(0x82, namingScreenContext.coordinates.z, namingScreenContext.coordinates.w, 5.0f);
 
 }
 
@@ -947,17 +948,17 @@ dmaSprite(0x84, &D_CDE2E0, &D_CED610, &D_CED610_2, &D_CED630, 0, 0, 0x80267300, 
     dmaSprite(0x8C, &D_CDAEB0, &D_CDE2C0, &D_CDE2C0_2, &D_CDE2E0_2, 0, 0, 0x80263E00, 0, 0x80266E00, 0x80267100, 0x80267200, 0, 0, 0);
     dmaSprite(LANDSCAPE_BACKGROUND, &D_CC9390, &D_CCB980, &D_CCB980_2, &D_CCB9A0, 0, 0, 0x8026AB00, 0, 0x8026DB00, 0x8026DC00, 0x8026DD00, 0, 0, 0);
     
-    setSpriteShrinkFactor(0x80, 0, 0, -1.0f);
+    setSpriteViewSpacePosition(0x80, 0, 0, -1.0f);
     
-    setSpriteShrinkFactor(0x83, -48.0f, 0, 10.0f);
-    setSpriteShrinkFactor(0x84, 96.0f, 0, 10.0f);
-    setSpriteShrinkFactor(0x85, -48.0f, -48.0f, 10.0f);
-    setSpriteShrinkFactor(0x86, 96.0f, -48.0f, 10.0f);
+    setSpriteViewSpacePosition(0x83, -48.0f, 0, 10.0f);
+    setSpriteViewSpacePosition(0x84, 96.0f, 0, 10.0f);
+    setSpriteViewSpacePosition(0x85, -48.0f, -48.0f, 10.0f);
+    setSpriteViewSpacePosition(0x86, 96.0f, -48.0f, 10.0f);
     
-    setSpriteShrinkFactor(0x89, 0, 0, 5.0f);
-    setSpriteShrinkFactor(0x8A, 0, 0, 5.0f);
-    setSpriteShrinkFactor(0x8B, 0, 0, 5.0f);
-    setSpriteShrinkFactor(0x8C, 0, 0, 5.0f);
+    setSpriteViewSpacePosition(0x89, 0, 0, 5.0f);
+    setSpriteViewSpacePosition(0x8A, 0, 0, 5.0f);
+    setSpriteViewSpacePosition(0x8B, 0, 0, 5.0f);
+    setSpriteViewSpacePosition(0x8C, 0, 0, 5.0f);
     
     setSpritePaletteIndex(0x84, 0);
     setSpritePaletteIndex(0x85, 0);
@@ -1079,7 +1080,7 @@ void func_800F0F84(void) {
         }
     }
     
-    setSpriteShrinkFactor(0x80, namingScreenContext.coordinates.x, namingScreenContext.coordinates.y, 20.0f);
+    setSpriteViewSpacePosition(0x80, namingScreenContext.coordinates.x, namingScreenContext.coordinates.y, 20.0f);
     
 }
 

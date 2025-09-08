@@ -4,7 +4,6 @@
 #include "common.h"
 
 #define MAX_SPRITES 192
-#define MAX_ACTIVE_SPRITES 192
 #define MAX_SHADOW_SPRITES 3
 
 /* global sprite rendering flags */
@@ -12,18 +11,18 @@
 #define FLIP_VERTICAL 2
 
 /* global sprite state flags */
-#define ACTIVE 0x1
-#define ANIMATION_HEADER_PROCESSED 0x2 // read from unknownAsset3Ptr and do 16 bit swap
-#define UNKNOWN_SPRITE_FLAG 0x4
-#define ANIMATION_PLAYING 0x8
-#define ANIMATION_LOOPS 0x10
-#define ANIMATION_PAUSED 0x20
-#define ANIMATION_STATE_CHANGED 0x40
-#define ENABLE_BILINEAR_FILTERING 0x80
-#define DIRECT_PALETTE_MODE 0x100
-#define SPRITE_FLIP_WINDING 0x200
-#define RGBA_IN_PROGRESS 0x400
-#define DESTROY_ON_ANIMATION_END 0x800 
+#define SPRITE_ACTIVE 0x1
+#define SPRITE_ANIMATION_HEADER_PROCESSED 0x2
+#define SPRITE_UNKNOWN_FLAG 0x4
+#define SPRITE_ANIMATION_PLAYING 0x8
+#define SPRITE_ANIMATION_LOOPS 0x10
+#define SPRITE_ANIMATION_PAUSED 0x20
+#define SPRITE_ANIMATION_STATE_CHANGED 0x40
+#define SPRITE_ENABLE_BILINEAR_FILTERING 0x80
+#define SPRITE_DIRECT_PALETTE_MODE 0x100
+#define SPRITE_NO_TRANSFORM 0x200
+#define SPRITE_RGBA_IN_PROGRESS 0x400
+#define SPRITE_DESTROY_ON_ANIMATION_END 0x800 
 
 #define SHADOW_ALPHA 96
 
@@ -52,7 +51,7 @@ typedef struct {
 	void *animationFrameMetadataPtr; // 0x20
 	void *bitmapMetadataPtr; // 0x24
 	AnimationFrameMetadata animationFrameMetadata; // 0x28
-	Vec3f shrink; // 0x2C
+	Vec3f viewSpacePosition; // 0x2C
 	Vec3f scale; // 0x38
 	Vec3f rotation;
     Vec4f baseRGBA; // 0x50 
@@ -79,9 +78,9 @@ extern bool resetAnimationState(u16);
 extern bool func_8002BB30(u16);
 extern bool func_8002BB88(u16); 
 extern bool setSpriteFlip(u16 index, bool flipHorizontal, bool flipVertical);
-extern bool setSpriteShrinkFactor(u16 index, f32 x, f32 y, f32 z);  
+extern bool setSpriteViewSpacePosition(u16 index, f32 x, f32 y, f32 z);  
 extern bool setSpriteScale(u16, f32, f32, f32);                                                                                                        
-extern bool adjustSpriteShrinkFactor(u16, f32, f32, f32);    
+extern bool adjustSpriteViewSpacePosition(u16, f32, f32, f32);    
 extern bool setSpriteRotation(u16, f32, f32, f32);                        
 extern bool updateSpriteRGBA(u16 index, u8 r, u8 g, u8 b, u8 a, s16 arg5);
 extern bool updateSpriteAlpha(u16, u8, s16);
@@ -99,6 +98,6 @@ extern bool checkSpriteAnimationStateChanged(u16);
 extern void updateSprites(void);
 extern void deactivateSprites(void);
 
-extern SpriteObject globalSprites[MAX_ACTIVE_SPRITES];
+extern SpriteObject globalSprites[MAX_SPRITES];
 
 #endif

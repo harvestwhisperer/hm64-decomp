@@ -5,7 +5,7 @@
 #include "ld_symbols.h"
 
 #include "system/map.h"
-#include "system/mathUtils.h"
+#include "system/math.h"
 #include "system/globalSprites.h"
 
 #include "game/game.h"

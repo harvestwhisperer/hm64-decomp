@@ -4,28 +4,19 @@
 
 #include "system/memory.h"
 #include "system/sprite.h"
-#include "system/mathUtils.h"
+#include "system/math.h"
 
 #include "mainproc.h"
 
 // forward declarations
 bool setupSpriteAnimation(u16 spriteIndex, u8 animationModeOrFrameIndex, u16* animationDataPtr);
-void setTotalAnimationFrames(AnimationFrameMetadata*, u16*);             
+void setTotalAnimationFrames(AnimationFrameMetadata*, Swap16*);             
 u8* getAnimationFrameMetadataPtr(u16 arg0, void* arg1);
-u16* getAnimationFrameMetadataPtrFromFrame(u16, u16*);   
+inline AnimationFrameMetadata* getAnimationFrameMetadataPtrFromFrame(u16, u16*);   
 
 // bss
-extern SpriteObject globalSprites[MAX_ACTIVE_SPRITES];
+extern SpriteObject globalSprites[MAX_SPRITES];
 
-typedef union {
-    u8 byte[2];
-    u16 halfword;
-} Swap16;
-
-typedef union {
-    u16 halfword[2];
-    u32 word;
-} Swap32;
 
 static inline u16 swap16(Swap16 halfword) {
     
@@ -38,42 +29,47 @@ static inline u16 swap16(Swap16 halfword) {
 
 }
 
-// alternate
-// static inline u16 swap16(u16 halfword) {
+// alternate swaps
+/*
+static inline u16 swap16(u16 halfword) {
     
-//     Swap16 swap;
+    Swap16 swap;
     
-//     swap.byte[1] = halfword >> 8;
-//     swap.byte[0] = halfword;
+    swap.byte[1] = halfword >> 8;
+    swap.byte[0] = halfword;
     
-//     return swap.halfword;
+    return swap.halfword;
 
-// }
+}
 
-// alternate
-// static inline u16 swap16A(u16 halfword) {
+static inline u16 swap16(u16 halfword) {
 
-//     u32 padding[4];
+    u32 padding[4];
     
-//     Swap16 swap;
+    Swap16 swap;
     
-//     u32 upper;
-//     u32 lower;
+    u32 upper;
+    u32 lower;
     
-//     lower = halfword;
+    lower = halfword;
     
-//     upper = (halfword & 0xFF) << 8;
-//     lower = halfword >> 8;
+    upper = (halfword & 0xFF) << 8;
+    lower = halfword >> 8;
     
-//     swap.halfword = lower | upper;
+    swap.halfword = lower | upper;
     
-//     return swap.halfword;
+    return swap.halfword;
     
-// }
+}
 
-// unsure... not technically a 32 bit swap
+typedef union {
+    u16 halfword[2];
+    u32 word;
+} Swap32;
+
+// compared to swap16, this one doesn't produce register pressure artifacts in the assembly (from GCC 2.7.2's buggy handling of union types)
 // also used in graphic.c
-static inline u32 swap16to32(u16 halfword) {
+static inline u32 swap16Alt(u16 halfword) {
     
     Swap32 swap;
     u16 lower;
@@ -83,17 +79,11 @@ static inline u32 swap16to32(u16 halfword) {
     lower = halfword >> 8;
     
     swap.word = lower | upper;
-
+    
     return swap.halfword[0] | swap.halfword[1];
     
 }
-
-static inline void swapBytes(AnimationFrameMetadata *animationFrameMetadata, Swap16 halfword) {
-
-    animationFrameMetadata->frameDuration = halfword.byte[0];
-    animationFrameMetadata->audioTrigger = halfword.byte[1];
-    
-}
+*/
 
 //INCLUDE_ASM("asm/nonmatchings/system/globalSprites", initializeGlobalSprites);
 
@@ -111,9 +101,9 @@ void initializeGlobalSprites(void) {
         globalSprites[i].audioTrigger = FALSE;
         globalSprites[i].frameTickCounter = 0;
         
-        globalSprites[i].shrink.x = 0;
-        globalSprites[i].shrink.y = 0;
-        globalSprites[i].shrink.z = 0;
+        globalSprites[i].viewSpacePosition.x = 0;
+        globalSprites[i].viewSpacePosition.y = 0;
+        globalSprites[i].viewSpacePosition.z = 0;
         
         globalSprites[i].scale.x = 1.0f;
         globalSprites[i].scale.y = 1.0f;
@@ -138,9 +128,14 @@ void initializeGlobalSprites(void) {
 
 //INCLUDE_ASM("asm/nonmatchings/system/globalSprites", dmaSprite);
 
-bool dmaSprite(u16 index, u32 romTextureStart, u32 romTextureEnd, u32 romAssetsIndexStart, u32 romAssetsIndexEnd, 
-    u32 romSpritesheetIndexStart, u32 romSpritesheetIndexEnd, u8* texture1Vaddr, u8* texture2Vaddr, u16* paletteVaddr, u16* animationVaddr, 
-    u8* spriteToPaletteVaddr, u32* spritesheetIndexVaddr, u8 assetType, u8 flag) {
+bool dmaSprite(u16 index, 
+    u32 romTextureStart, u32 romTextureEnd, 
+    u32 romAssetsIndexStart, u32 romAssetsIndexEnd, 
+    u32 romSpritesheetIndexStart, u32 romSpritesheetIndexEnd, 
+    u8* texture1Vaddr, u8* texture2Vaddr, 
+    u16* paletteVaddr, u16* animationVaddr, 
+    u8* spriteToPaletteVaddr, u32* spritesheetIndexVaddr, 
+    u8 assetType, bool transformExempt) {
 
     u32 assetIndex[8];
     bool result = FALSE;
@@ -151,9 +146,9 @@ bool dmaSprite(u16 index, u32 romTextureStart, u32 romTextureEnd, u32 romAssetsI
     u32 offset4;
     u32 offset5;
 
-    if (index < MAX_ACTIVE_SPRITES) {
+    if (index < MAX_SPRITES) {
         
-        if (!(globalSprites[index].stateFlags & ACTIVE)) { 
+        if (!(globalSprites[index].stateFlags & SPRITE_ACTIVE)) { 
             
             nuPiReadRom(romAssetsIndexStart, assetIndex, romAssetsIndexEnd - romAssetsIndexStart);
 
@@ -190,11 +185,11 @@ bool dmaSprite(u16 index, u32 romTextureStart, u32 romTextureEnd, u32 romAssetsI
 
             }
 
-            if (!flag) {
-                globalSprites[index].stateFlags |= SPRITE_FLIP_WINDING;
+            if (!transformExempt) {
+                globalSprites[index].stateFlags |= SPRITE_NO_TRANSFORM;
             }
 
-            globalSprites[index].stateFlags |= ANIMATION_STATE_CHANGED;
+            globalSprites[index].stateFlags |= SPRITE_ANIMATION_STATE_CHANGED;
 
             result = TRUE;
 
@@ -212,9 +207,9 @@ bool func_8002B36C(u16 index, u32* animationIndexPtr, u32* spritesheetIndexPtr, 
 
     bool result = FALSE;
 
-    if (index < MAX_ACTIVE_SPRITES) {
+    if (index < MAX_SPRITES) {
 
-        if (!(globalSprites[index].stateFlags & ACTIVE)) {
+        if (!(globalSprites[index].stateFlags & SPRITE_ACTIVE)) {
 
             globalSprites[index].animationIndexPtr = animationIndexPtr;
             globalSprites[index].spritesheetIndexPtr = spritesheetIndexPtr;
@@ -224,13 +219,13 @@ bool func_8002B36C(u16 index, u32* animationIndexPtr, u32* spritesheetIndexPtr, 
             globalSprites[index].texturePtr[1] = (void*)0;
             globalSprites[index].romTexturePtr = (void*)0;
 
-            globalSprites[index].stateFlags = ACTIVE;
+            globalSprites[index].stateFlags = SPRITE_ACTIVE;
             globalSprites[index].renderingFlags = 0;
 
             globalSprites[index].paletteIndex = 0;
             globalSprites[index].audioTrigger = FALSE;
 
-            setSpriteShrinkFactor(index, 0.0f, 0.0f, 0.0f);
+            setSpriteViewSpacePosition(index, 0.0f, 0.0f, 0.0f);
             setSpriteScale(index, 1.0f, 1.0f, 1.0f);
             setSpriteRotation(index, 0.0f, 0.0f, 0.0f);
             setSpriteDefaultRGBA(index, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -253,9 +248,9 @@ bool func_8002B50C(u16 spriteIndex, u32* animationIndexPtr, u32* spritesheetInde
     
     bool result = FALSE;
 
-    if (spriteIndex < MAX_ACTIVE_SPRITES) {
+    if (spriteIndex < MAX_SPRITES) {
 
-        if (!(globalSprites[spriteIndex].stateFlags & ACTIVE)) {
+        if (!(globalSprites[spriteIndex].stateFlags & SPRITE_ACTIVE)) {
 
             globalSprites[spriteIndex].animationIndexPtr = animationIndexPtr;
             globalSprites[spriteIndex].spritesheetIndexPtr = spritesheetIndexPtr;
@@ -265,13 +260,13 @@ bool func_8002B50C(u16 spriteIndex, u32* animationIndexPtr, u32* spritesheetInde
             globalSprites[spriteIndex].texturePtr[1] = texture2Ptr;
             globalSprites[spriteIndex].romTexturePtr = romTexturePtr;
 
-            globalSprites[spriteIndex].stateFlags = (ACTIVE | 4);
+            globalSprites[spriteIndex].stateFlags = (SPRITE_ACTIVE | 4);
             globalSprites[spriteIndex].renderingFlags = 0;
 
             globalSprites[spriteIndex].paletteIndex = 0;
             globalSprites[spriteIndex].audioTrigger = FALSE;
 
-            setSpriteShrinkFactor(spriteIndex, 0, 0, 0);
+            setSpriteViewSpacePosition(spriteIndex, 0, 0, 0);
             setSpriteScale(spriteIndex, 1.0f, 1.0f, 1.0f);
             setSpriteRotation(spriteIndex, 0, 0, 0);
             setSpriteDefaultRGBA(spriteIndex, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -294,9 +289,9 @@ inline bool deactivateSprite(u16 spriteIndex) {
 
     bool result = FALSE;
 
-    if (spriteIndex < MAX_ACTIVE_SPRITES) {
-        if (globalSprites[spriteIndex].stateFlags & ACTIVE) {
-            globalSprites[spriteIndex].stateFlags &= ~(ACTIVE | ANIMATION_HEADER_PROCESSED);
+    if (spriteIndex < MAX_SPRITES) {
+        if (globalSprites[spriteIndex].stateFlags & SPRITE_ACTIVE) {
+            globalSprites[spriteIndex].stateFlags &= ~(SPRITE_ACTIVE | SPRITE_ANIMATION_HEADER_PROCESSED);
             result = TRUE;
         }        
     }
@@ -311,14 +306,14 @@ void deactivateGlobalSprites(void) {
 
     u16 i;
 
-    for (i = 0; i < MAX_ACTIVE_SPRITES; i++) {
+    for (i = 0; i < MAX_SPRITES; i++) {
 
-            if ((globalSprites[i].stateFlags & ACTIVE) && (globalSprites[i].stateFlags & ANIMATION_HEADER_PROCESSED)) {
+            if ((globalSprites[i].stateFlags & SPRITE_ACTIVE) && (globalSprites[i].stateFlags & SPRITE_ANIMATION_HEADER_PROCESSED)) {
 
                 // FIXME: probably inline
-                if (i < MAX_ACTIVE_SPRITES) {
+                if (i < MAX_SPRITES) {
                     
-                    globalSprites[i].stateFlags &= ~(ACTIVE | 2);
+                    globalSprites[i].stateFlags &= ~(SPRITE_ACTIVE | 2);
 
                 }
 
@@ -351,9 +346,9 @@ bool startSpriteAnimation(u16 spriteIndex, u16 animationIndex, u8 animationModeO
 
     bool result = FALSE;
     
-    if (spriteIndex < MAX_ACTIVE_SPRITES) {
+    if (spriteIndex < MAX_SPRITES) {
 
-        if (globalSprites[spriteIndex].stateFlags & ACTIVE) {
+        if (globalSprites[spriteIndex].stateFlags & SPRITE_ACTIVE) {
             
             if (globalSprites[spriteIndex].animationIndexPtr[animationIndex] != globalSprites[spriteIndex].animationIndexPtr[animationIndex+1]) {
 
@@ -377,34 +372,34 @@ bool setupSpriteAnimation(u16 spriteIndex, u8 animationModeOrFrameIndex, u16* an
     bool result = FALSE;
     u16 *metadataPtr;
     
-    if ((spriteIndex < MAX_ACTIVE_SPRITES) && (globalSprites[spriteIndex].stateFlags & ACTIVE) && !(globalSprites[spriteIndex].stateFlags & ANIMATION_HEADER_PROCESSED)) {
+    if ((spriteIndex < MAX_SPRITES) && (globalSprites[spriteIndex].stateFlags & SPRITE_ACTIVE) && !(globalSprites[spriteIndex].stateFlags & SPRITE_ANIMATION_HEADER_PROCESSED)) {
 
         globalSprites[spriteIndex].animationDataPtr = animationDataPtr;
 
         globalSprites[spriteIndex].frameTickCounter = 0;
         globalSprites[spriteIndex].audioTrigger = FALSE;
 
-        globalSprites[spriteIndex].stateFlags &= ~ANIMATION_STATE_CHANGED;
-        globalSprites[spriteIndex].stateFlags |= ANIMATION_HEADER_PROCESSED;
+        globalSprites[spriteIndex].stateFlags &= ~SPRITE_ANIMATION_STATE_CHANGED;
+        globalSprites[spriteIndex].stateFlags |= SPRITE_ANIMATION_HEADER_PROCESSED;
 
         switch (animationModeOrFrameIndex) {
             case 0xFF:
                 globalSprites[spriteIndex].currentAnimationFrame = 0;
-                globalSprites[spriteIndex].stateFlags &= ~ANIMATION_LOOPS;
-                globalSprites[spriteIndex].stateFlags |= ANIMATION_PLAYING;
+                globalSprites[spriteIndex].stateFlags &= ~SPRITE_ANIMATION_LOOPS;
+                globalSprites[spriteIndex].stateFlags |= SPRITE_ANIMATION_PLAYING;
                 break;
             case 0xFE:
                 globalSprites[spriteIndex].currentAnimationFrame = 0;
-                globalSprites[spriteIndex].stateFlags |= ANIMATION_PLAYING | ANIMATION_LOOPS;
+                globalSprites[spriteIndex].stateFlags |= SPRITE_ANIMATION_PLAYING | SPRITE_ANIMATION_LOOPS;
                 break;
             case 0xFD:
                 globalSprites[spriteIndex].currentAnimationFrame = 0;
-                globalSprites[spriteIndex].stateFlags |= ANIMATION_PLAYING | DESTROY_ON_ANIMATION_END;
+                globalSprites[spriteIndex].stateFlags |= SPRITE_ANIMATION_PLAYING | SPRITE_DESTROY_ON_ANIMATION_END;
                 break;
             default:
                 // for static sprites, show a single frame
                 globalSprites[spriteIndex].currentAnimationFrame = animationModeOrFrameIndex;
-                globalSprites[spriteIndex].stateFlags &= ~(ANIMATION_PLAYING | ANIMATION_LOOPS);
+                globalSprites[spriteIndex].stateFlags &= ~(SPRITE_ANIMATION_PLAYING | SPRITE_ANIMATION_LOOPS);
                 break;
         }
 
@@ -431,10 +426,10 @@ bool resetAnimationState(u16 index) {
 
     bool result = FALSE;
 
-    if (index < MAX_ACTIVE_SPRITES) {
+    if (index < MAX_SPRITES) {
 
-        if (globalSprites[index].stateFlags & ACTIVE) {
-            globalSprites[index].stateFlags &= ~ANIMATION_HEADER_PROCESSED;
+        if (globalSprites[index].stateFlags & SPRITE_ACTIVE) {
+            globalSprites[index].stateFlags &= ~SPRITE_ANIMATION_HEADER_PROCESSED;
             result = TRUE;
         }
     }
@@ -449,10 +444,10 @@ bool func_8002BB30(u16 index) {
 
     bool result = FALSE;
 
-    if (index < MAX_ACTIVE_SPRITES) {
+    if (index < MAX_SPRITES) {
 
-        if (globalSprites[index].stateFlags & ACTIVE) {
-            globalSprites[index].stateFlags &= ~ANIMATION_PAUSED;
+        if (globalSprites[index].stateFlags & SPRITE_ACTIVE) {
+            globalSprites[index].stateFlags &= ~SPRITE_ANIMATION_PAUSED;
             result = TRUE;
         }
     }
@@ -467,10 +462,10 @@ bool func_8002BB88(u16 index) {
 
     bool result = FALSE;
 
-    if (index < MAX_ACTIVE_SPRITES) {
+    if (index < MAX_SPRITES) {
 
-        if (globalSprites[index].stateFlags & ACTIVE) {
-            globalSprites[index].stateFlags |= ANIMATION_PAUSED;
+        if (globalSprites[index].stateFlags & SPRITE_ACTIVE) {
+            globalSprites[index].stateFlags |= SPRITE_ANIMATION_PAUSED;
             result = TRUE;
         }
     }
@@ -485,9 +480,9 @@ bool setSpriteFlip(u16 index, bool flipHorizontal, bool flipVertical) {
 
     bool result = FALSE;
     
-    if (index < MAX_ACTIVE_SPRITES) {
+    if (index < MAX_SPRITES) {
 
-        if (globalSprites[index].stateFlags & ACTIVE) {
+        if (globalSprites[index].stateFlags & SPRITE_ACTIVE) {
 
             if (flipHorizontal) {
                 globalSprites[index].renderingFlags |= FLIP_HORIZONTAL;
@@ -516,10 +511,10 @@ bool func_8002BCC8(u16 index) {
 
     bool result = FALSE;
 
-    if (index < MAX_ACTIVE_SPRITES) {
+    if (index < MAX_SPRITES) {
 
-        if (globalSprites[index].stateFlags & ACTIVE) {
-            result = globalSprites[index].stateFlags & ANIMATION_STATE_CHANGED;
+        if (globalSprites[index].stateFlags & SPRITE_ACTIVE) {
+            result = globalSprites[index].stateFlags & SPRITE_ANIMATION_STATE_CHANGED;
         }
     }
     
@@ -527,19 +522,19 @@ bool func_8002BCC8(u16 index) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", setSpriteShrinkFactor);
+//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", setSpriteViewSpacePosition);
 
-bool setSpriteShrinkFactor(u16 index, f32 x, f32 y, f32 z) {
+bool setSpriteViewSpacePosition(u16 index, f32 x, f32 y, f32 z) {
 
     bool result = FALSE;
 
-    if (index < MAX_ACTIVE_SPRITES) {
+    if (index < MAX_SPRITES) {
 
-        if (globalSprites[index].stateFlags & ACTIVE) {
+        if (globalSprites[index].stateFlags & SPRITE_ACTIVE) {
 
-            globalSprites[index].shrink.x = x;
-            globalSprites[index].shrink.y = y;
-            globalSprites[index].shrink.z = z;
+            globalSprites[index].viewSpacePosition.x = x;
+            globalSprites[index].viewSpacePosition.y = y;
+            globalSprites[index].viewSpacePosition.z = z;
 
             result = TRUE;
 
@@ -556,9 +551,9 @@ bool setSpriteScale(u16 index, f32 x, f32 y, f32 z) {
 
     bool result = FALSE;
 
-    if (index < MAX_ACTIVE_SPRITES) {
+    if (index < MAX_SPRITES) {
 
-        if (globalSprites[index].stateFlags & ACTIVE) {
+        if (globalSprites[index].stateFlags & SPRITE_ACTIVE) {
 
             globalSprites[index].scale.x = x;
             globalSprites[index].scale.y = y;
@@ -579,9 +574,9 @@ bool setSpriteRotation(u16 index, f32 x, f32 y, f32 z) {
 
     bool result = FALSE;
 
-    if (index < MAX_ACTIVE_SPRITES) {
+    if (index < MAX_SPRITES) {
 
-        if (globalSprites[index].stateFlags & ACTIVE) {
+        if (globalSprites[index].stateFlags & SPRITE_ACTIVE) {
 
             globalSprites[index].rotation.x = x;
             globalSprites[index].rotation.y = y;
@@ -596,19 +591,19 @@ bool setSpriteRotation(u16 index, f32 x, f32 y, f32 z) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", adjustSpriteShrinkFactor);
+//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", adjustSpriteViewSpacePosition);
 
-bool adjustSpriteShrinkFactor(u16 index, f32 x, f32 y, f32 z) {
+bool adjustSpriteViewSpacePosition(u16 index, f32 x, f32 y, f32 z) {
 
     bool result = FALSE;
     
-    if (index < MAX_ACTIVE_SPRITES) {
+    if (index < MAX_SPRITES) {
         
-        if (globalSprites[index].stateFlags & ACTIVE) {
+        if (globalSprites[index].stateFlags & SPRITE_ACTIVE) {
 
-            globalSprites[index].shrink.x += x;
-            globalSprites[index].shrink.y += y;
-            globalSprites[index].shrink.z += z;
+            globalSprites[index].viewSpacePosition.x += x;
+            globalSprites[index].viewSpacePosition.y += y;
+            globalSprites[index].viewSpacePosition.z += z;
                 
             result = TRUE;
             
@@ -626,9 +621,9 @@ bool adjustSpriteScale(u16 index, f32 x, f32 y, f32 z) {
 
     bool result = FALSE;
     
-    if (index < MAX_ACTIVE_SPRITES) {
+    if (index < MAX_SPRITES) {
 
-        if (globalSprites[index].stateFlags & ACTIVE) {
+        if (globalSprites[index].stateFlags & SPRITE_ACTIVE) {
 
             globalSprites[index].scale.x += x;
             globalSprites[index].scale.y += y;
@@ -650,9 +645,9 @@ bool adjustSpriteRotation(u16 index, f32 x, f32 y, f32 z) {
 
     bool result = FALSE;
     
-    if (index < MAX_ACTIVE_SPRITES) {
+    if (index < MAX_SPRITES) {
         
-        if (globalSprites[index].stateFlags & ACTIVE) {
+        if (globalSprites[index].stateFlags & SPRITE_ACTIVE) {
 
             globalSprites[index].rotation.x += x;
             globalSprites[index].rotation.y += y;
@@ -674,9 +669,9 @@ bool adjustSpriteRGBA(u16 index, s8 r, s8 g, s8 b, s8 a) {
 
     bool result = FALSE;
     
-    if (index < MAX_ACTIVE_SPRITES) {
+    if (index < MAX_SPRITES) {
 
-        if (globalSprites[index].stateFlags & ACTIVE) {
+        if (globalSprites[index].stateFlags & SPRITE_ACTIVE) {
 
             globalSprites[index].rgbaCurrent.r += r;
             globalSprites[index].rgbaCurrent.g += g;
@@ -705,16 +700,16 @@ bool updateSpriteRGBA(u16 index, u8 r, u8 g, u8 b, u8 a, s16 rate) {
     
     result = 0;
     
-    if (index < MAX_ACTIVE_SPRITES) {
+    if (index < MAX_SPRITES) {
         
-        if (globalSprites[index].stateFlags & ACTIVE) {
+        if (globalSprites[index].stateFlags & SPRITE_ACTIVE) {
  
             globalSprites[index].rgbaTarget.r = (globalSprites[index].baseRGBA.r * r) / 255.0f;
             globalSprites[index].rgbaTarget.g = (globalSprites[index].baseRGBA.g * g) / 255.0f;
             globalSprites[index].rgbaTarget.b = (globalSprites[index].baseRGBA.b * b) / 255.0f;
             globalSprites[index].rgbaTarget.a = (globalSprites[index].baseRGBA.a * a) / 255.0f;
             
-            globalSprites[index].stateFlags &= ~RGBA_IN_PROGRESS;
+            globalSprites[index].stateFlags &= ~SPRITE_RGBA_IN_PROGRESS;
 
             if (globalSprites[index].rgbaTarget.r < globalSprites[index].rgbaCurrent.r) {
                 tempFloat = globalSprites[index].rgbaCurrent.r - globalSprites[index].rgbaTarget.r;
@@ -768,13 +763,13 @@ bool updateSpriteAlpha(u16 index, u8 arg1, s16 rate) {
 
     result = FALSE;
 
-    if (index < MAX_ACTIVE_SPRITES) {
+    if (index < MAX_SPRITES) {
 
-        if (globalSprites[index].stateFlags & ACTIVE) {
+        if (globalSprites[index].stateFlags & SPRITE_ACTIVE) {
 
             globalSprites[index].rgbaTarget.a = (globalSprites[index].baseRGBA.a * arg1) / 255.0f;
 
-            globalSprites[index].stateFlags &= ~RGBA_IN_PROGRESS;
+            globalSprites[index].stateFlags &= ~SPRITE_RGBA_IN_PROGRESS;
 
             if (globalSprites[index].rgbaTarget.a < globalSprites[index].rgbaCurrent.a) {
                 tempF = globalSprites[index].rgbaCurrent.a - globalSprites[index].rgbaTarget.a;
@@ -800,9 +795,9 @@ bool func_8002C680(u16 index, u16 arg1, u16 flags) {
     bool result = FALSE;
     int temp;
 
-    if (index < MAX_ACTIVE_SPRITES) {
+    if (index < MAX_SPRITES) {
 
-        if (globalSprites[index].stateFlags & ACTIVE) { 
+        if (globalSprites[index].stateFlags & SPRITE_ACTIVE) { 
             
             globalSprites[index].renderingFlags &= ~( 8 | 0x10 | 0x20 | 0x40);
             
@@ -829,9 +824,9 @@ bool func_8002C6F8(u16 index, u16 arg1) {
 
     bool result = FALSE;
     
-    if (index < MAX_ACTIVE_SPRITES) {
+    if (index < MAX_SPRITES) {
         
-        if (globalSprites[index].stateFlags & ACTIVE) {
+        if (globalSprites[index].stateFlags & SPRITE_ACTIVE) {
             
             globalSprites[index].renderingFlags &= ~(0x80 | 0x100);
             temp = arg1 << 7;
@@ -852,9 +847,9 @@ bool func_8002C768(u16 index, u16 arg1) {
 
     bool result = FALSE;
     
-    if (index < MAX_ACTIVE_SPRITES) {
+    if (index < MAX_SPRITES) {
         
-        if (globalSprites[index].stateFlags & ACTIVE) {
+        if (globalSprites[index].stateFlags & SPRITE_ACTIVE) {
 
             if (arg1) {
                 globalSprites[index].renderingFlags |= 0x200;
@@ -880,9 +875,9 @@ bool setSpriteRenderingLayer(u16 index, u16 flags) {
 
     bool result = FALSE;
     
-    if (index < MAX_ACTIVE_SPRITES) {
+    if (index < MAX_SPRITES) {
         
-        if (globalSprites[index].stateFlags & ACTIVE) {
+        if (globalSprites[index].stateFlags & SPRITE_ACTIVE) {
             
             globalSprites[index].renderingFlags &= ~(0x400 | 0x800 | 0x1000);
             temp = flags << 10;
@@ -903,9 +898,9 @@ bool setSpriteDefaultRGBA(u16 index, u8 r, u8 g, u8 b, u8 a) {
 
     bool result = FALSE;
 
-    if (index < MAX_ACTIVE_SPRITES) {
+    if (index < MAX_SPRITES) {
         
-        if (globalSprites[index].stateFlags & ACTIVE) {
+        if (globalSprites[index].stateFlags & SPRITE_ACTIVE) {
             
             globalSprites[index].baseRGBA.r = r;
             globalSprites[index].baseRGBA.g = g;
@@ -927,9 +922,9 @@ bool setSpriteColor(u16 index, u8 r, u8 g, u8 b, u8 a) {
 
     bool result = FALSE;
     
-    if (index < MAX_ACTIVE_SPRITES) {
+    if (index < MAX_SPRITES) {
         
-        if (globalSprites[index].stateFlags & ACTIVE) {        
+        if (globalSprites[index].stateFlags & SPRITE_ACTIVE) {        
 
             result = TRUE;
             
@@ -956,9 +951,9 @@ bool setSpriteAlpha(u16 index, u8 a) {
     
     bool result = FALSE;
 
-    if (index < MAX_ACTIVE_SPRITES) {
+    if (index < MAX_SPRITES) {
 
-        if (globalSprites[index].stateFlags & ACTIVE) {
+        if (globalSprites[index].stateFlags & SPRITE_ACTIVE) {
 
             globalSprites[index].baseRGBA.a = a;
             globalSprites[index].rgbaCurrent.a = a;
@@ -979,13 +974,13 @@ bool setBilinearFiltering(u16 index, bool useBilinearFiltering) {
 
     bool result = FALSE;
 
-    if (index < MAX_ACTIVE_SPRITES) {
+    if (index < MAX_SPRITES) {
         
-        if (globalSprites[index].stateFlags & ACTIVE) {
+        if (globalSprites[index].stateFlags & SPRITE_ACTIVE) {
             if (useBilinearFiltering == TRUE) {
-                globalSprites[index].stateFlags |= ENABLE_BILINEAR_FILTERING;
+                globalSprites[index].stateFlags |= SPRITE_ENABLE_BILINEAR_FILTERING;
             } else {
-                globalSprites[index].stateFlags &= ~ENABLE_BILINEAR_FILTERING;
+                globalSprites[index].stateFlags &= ~SPRITE_ENABLE_BILINEAR_FILTERING;
             }
 
             result = TRUE;
@@ -1002,12 +997,12 @@ bool setSpritePaletteIndex(u16 index, u16 paletteIndex) {
 
     bool result = FALSE;
 
-    if (index < MAX_ACTIVE_SPRITES) {
+    if (index < MAX_SPRITES) {
 
-        if (globalSprites[index].stateFlags & ACTIVE) {
+        if (globalSprites[index].stateFlags & SPRITE_ACTIVE) {
 
             globalSprites[index].paletteIndex = paletteIndex;
-            globalSprites[index].stateFlags |= DIRECT_PALETTE_MODE;
+            globalSprites[index].stateFlags |= SPRITE_DIRECT_PALETTE_MODE;
 
             result = TRUE;
 
@@ -1026,8 +1021,8 @@ bool func_8002CBF8(u16 index) {
 
     result = FALSE;
     
-    if (index < MAX_ACTIVE_SPRITES) {
-        if (globalSprites[index].stateFlags & ACTIVE) {
+    if (index < MAX_SPRITES) {
+        if (globalSprites[index].stateFlags & SPRITE_ACTIVE) {
             result = (globalSprites[index].stateFlags >> 10) & 1;
         }
     }
@@ -1042,8 +1037,8 @@ bool checkSpriteAnimationStateChanged(u16 index) {
 
     bool result = FALSE;
 
-    if (index < MAX_ACTIVE_SPRITES) {
-        // flag 0x40, ANIMATION_STATE_CHANGED
+    if (index < MAX_SPRITES) {
+        // flag 0x40, SPRITE_ANIMATION_STATE_CHANGED
         result = (globalSprites[index].stateFlags >> 6) & 1;
     }
 
@@ -1051,28 +1046,82 @@ bool checkSpriteAnimationStateChanged(u16 index) {
     
 }
 
-void setTotalAnimationFrames(AnimationFrameMetadata *animationFrameMetadata, u16 *animationAsset) {
+void setTotalAnimationFrames(AnimationFrameMetadata *animationFrameMetadata, Swap16 *animationAsset) {
     
     // skip 4 byte header
     animationFrameMetadata->objectCount = swap16(animationAsset[2]);
     
 }
 
-inline void setAnimationFrameMetadata(AnimationFrameMetadata* animationFrameMetadata, u16* animationFrameMetadataPtr) {
+inline void setAnimationFrameMetadata(AnimationFrameMetadata* animationFrameMetadata, Swap16* animationFrameMetadataPtr) {
 
-    animationFrameMetadata->objectCount = swap16(animationFrameMetadataPtr[0]);
-    swapBytes(animationFrameMetadata, animationFrameMetadataPtr[1]);
+    Swap16 swap;
+
+    swap.byte[1] = animationFrameMetadataPtr[0].halfword >> 8;
+    swap.byte[0] = animationFrameMetadataPtr[0].halfword;
+    
+    animationFrameMetadata->objectCount = swap.halfword;
+
+    swap.halfword = animationFrameMetadataPtr[1].halfword;
+
+    animationFrameMetadata->frameDuration = swap.byte[0];
+    animationFrameMetadata->audioTrigger = swap.byte[1];
     
 }
 
+// alternate: 
+/*
+static inline void swapBytes(AnimationFrameMetadata *animationFrameMetadata, Swap16 halfword) {
+    
+    animationFrameMetadata->frameDuration = halfword.byte[0];
+    animationFrameMetadata->audioTrigger = halfword.byte[1];
+
+}
+
+inline void setAnimationFrameMetadata(AnimationFrameMetadata* animationFrameMetadata, u16* animationFrameMetadataPtr) {
+    
+    animationFrameMetadata->objectCount = swap16(animationFrameMetadataPtr[0]);
+    swapBytes(animationFrameMetadata, animationFrameMetadataPtr[1]);
+    animationFrameMetadata->frameDuration = swap.byte[0];
+    animationFrameMetadata->audioTrigger = swap.byte[1];
+
+}
+*/
+
+inline void setBitmapMetadata(BitmapMetadata* ptr, Swap16* data) {
+    
+    Swap16 swap;
+    
+    swap.byte[1] = data[0].halfword >> 8;
+    swap.byte[0] = data[0].halfword;
+    
+    ptr->spritesheetIndex = swap.halfword;    
+    
+    ptr->unk_2 = 0;
+    
+    swap.byte[1] = data[2].halfword >> 8;
+    swap.byte[0] = data[2].halfword;
+    
+    ptr->anchorX = swap.halfword;
+
+    swap.byte[1] = data[3].halfword >> 8;
+    swap.byte[0] = data[3].halfword;
+    
+    ptr->anchorY = swap.halfword;
+    
+}
+
+// alternate
+/*
 inline void setBitmapMetadata(BitmapMetadata* ptr, u16* data) {
     
-    ptr->spritesheetIndex = swap16to32(data[0]);    
+    ptr->spritesheetIndex = swap16Alt(data[0]);    
     ptr->unk_2 = 0;
-    ptr->anchorX = swap16to32(data[2]);
+    ptr->anchorX = swap16Alt(data[2]);
     ptr->anchorY = swap16(data[3]);
 
 }
+*/
 
 //INCLUDE_ASM("asm/nonmatchings/system/globalSprites", getAnimationFrameMetadataPtr);
 
@@ -1095,57 +1144,27 @@ u8* getAnimationFrameMetadataPtr(u16 arg0, void* arg1) {
 //INCLUDE_ASM("asm/nonmatchings/system/globalSprites", getAnimationFrameMetadataPtrFromFrame);
 
 // update pointer by iterateing through animation data (contains header, animation metadata, and sprite metadata)
-inline u16* getAnimationFrameMetadataPtrFromFrame(u16 currentFrame, u16* animationFrameMetadataPtr) {
+inline AnimationFrameMetadata* getAnimationFrameMetadataPtrFromFrame(u16 currentFrame, u16* animationFrameMetadataPtr) {
     
     u16 i;
     AnimationFrameMetadata animationFrameMetadata;
-
-    u32 pad[2];
-
-    u32 temp;
-    u32 temp2;
-    u32 temp3;
-    u8 temp4;
     
     i = 0;
-    
-    if (currentFrame != 0) {
         
-        do {
+    while (i < currentFrame) {
 
-            // FIXME: should be inline setAnimationFrameMetadata call
-            
-            temp2 = animationFrameMetadataPtr[0] << 8;
-            temp3 = animationFrameMetadataPtr[0] >> 8;
-            
-            temp = temp2 | temp3;
-            
-            animationFrameMetadata.objectCount = temp;
+        setAnimationFrameMetadata(&animationFrameMetadata, animationFrameMetadataPtr);
 
-            temp2 = animationFrameMetadataPtr[1];
-            temp = temp2;
-            temp2 = temp;
-            
-            temp2 = temp >> 8;
-            temp4 = temp >> 8;
-            
-            animationFrameMetadata.frameDuration = temp4;
-            animationFrameMetadata.audioTrigger = temp;
-            
-            //
-
-            // skip header for next iteration
-            animationFrameMetadataPtr += 2;
-            // * sizeof(animationFrameMetadata); frame data consists of animationFrameMetadata + varying lengths of bitmapMetadata objects
-            animationFrameMetadataPtr += animationFrameMetadata.objectCount * 4;
-            
-            i++;
-            
-        } while (i < currentFrame);
-
-    }
+        // skip header for next iteration
+        animationFrameMetadataPtr += 2;
+        // * sizeof(animationFrameMetadata); frame data consists of animationFrameMetadata + varying lengths of bitmapMetadata objects
+        animationFrameMetadataPtr += animationFrameMetadata.objectCount * 4;
+        
+        i++;
+        
+    } 
     
-    return animationFrameMetadataPtr;
+    return (AnimationFrameMetadata*)animationFrameMetadataPtr;
 
 }
 
@@ -1185,110 +1204,89 @@ u16* advanceBitmapMetadataPtr(u16 numFrames, u16* bitmapMetadataPtr) {
 }
 */
 
+//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", setBitmapFromSpriteObject);
 
-/*
-typedef struct {
-    volatile u16 spritesheetIndex;
-    u16 unk_2;
-    s16 anchorX;
-    s16 anchorY;
-    u16 unk_8; 
-} BitmapMetadataAlt;
-
-typedef struct {
-    u32 unk_0;
-    AnimationFrameMetadata *animationFrameMetadataPtr;
-    u32 unk_8; 
-    u32 length;
-} SpriteMetadata;
-*/
-
-#ifdef PERMUTER
 void setBitmapFromSpriteObject(u16 spriteIndex, AnimationFrameMetadata* animationFrameMetadataPtr, u8 animationType) {
-
+    
+    BitmapMetadata bitmapMetadata; 
+    u32 padding[2];
+    
+    AnimationFrameMetadata* ptrCopy;
+    
+    u32 length;
     u16 bitmapIndex;
     
-    u16 *texturePtr;
+    u32 texturePtr;
     u16 *palettePtr;
     
-    f32 shrinkX;
-    f32 shrinkY;
-    f32 shrinkZ;
-    
-    BitmapMetadataAlt bitmapMetadata;
-    SpriteMetadata metadata;
+    f32 viewSpacePositionX;
+    f32 viewSpacePositionY;
+    f32 viewSpacePositionZ;
     
     u16 objectCount;
-    u32 temp2;
-    u16 temp3;
-    u16 i;
+    u32 type;
+    u16 temp;
     
-    metadata.animationFrameMetadataPtr = animationFrameMetadataPtr;
+    u16 i = 0;
+    
+    ptrCopy = animationFrameMetadataPtr;
     objectCount = animationFrameMetadataPtr->objectCount;
     
-    metadata.length = 0;
+    length = 0;
     
     texturePtr = globalSprites[spriteIndex].texturePtr[gGraphicsBufferIndex];
 
     if (objectCount) {
         
-        i = 0;
-    
-        temp2 = animationType;
-    
+        type = animationType;
+            
         do {
             
-            if (temp2) {
+            if (type) {
 
-                do {
-                    
-                    setBitmapMetadata(&bitmapMetadata, advanceBitmapMetadataPtr((objectCount - i) - 1, globalSprites[spriteIndex].bitmapMetadataPtr));
-                    
-                    texturePtr += metadata.length;
+                setBitmapMetadata(&bitmapMetadata, advanceBitmapMetadataPtr((objectCount - i) - 1, globalSprites[spriteIndex].bitmapMetadataPtr));
                 
-                    if (temp2 == 2) {
-                        setSpriteDMAInfo(bitmapMetadata.spritesheetIndex, globalSprites[spriteIndex].spritesheetIndexPtr, texturePtr, globalSprites[spriteIndex].romTexturePtr);
-                    }
-                
-                    metadata.length = getTextureLength(bitmapMetadata.spritesheetIndex, globalSprites[spriteIndex].spritesheetIndexPtr);
+                texturePtr += length;
             
-                } while (0);
+                if (type == 2) {
+                    setSpriteDMAInfo(bitmapMetadata.spritesheetIndex, globalSprites[spriteIndex].spritesheetIndexPtr, texturePtr, globalSprites[spriteIndex].romTexturePtr);
+                }
+            
+                length = getTextureLength(bitmapMetadata.spritesheetIndex, globalSprites[spriteIndex].spritesheetIndexPtr);
+        
                 
             } else {
+                
+                // FIXME: something wrong; maybe dead debug code path?
+                temp = ((ptrCopy->objectCount - i) - 1);
 
-                do {
+                if (type < temp) {
                     
-                    temp3 = ((metadata.animationFrameMetadataPtr->objectCount - i) - 1);
-    
-                    if (temp2 < temp3) {
-                        
-                    }
-    
-                    setBitmapMetadata(&bitmapMetadata, advanceBitmapMetadataPtr(temp3, globalSprites[spriteIndex].bitmapMetadataPtr));
-    
-                    texturePtr = getTexturePtr(bitmapMetadata.spritesheetIndex, globalSprites[spriteIndex].spritesheetIndexPtr);
+                }
+        
+                setBitmapMetadata(&bitmapMetadata, advanceBitmapMetadataPtr(temp, globalSprites[spriteIndex].bitmapMetadataPtr));
 
-                } while (0);
-               
+                texturePtr = getTexturePtr(bitmapMetadata.spritesheetIndex, globalSprites[spriteIndex].spritesheetIndexPtr);
+                
             }
 
-            if (globalSprites[spriteIndex].stateFlags & DIRECT_PALETTE_MODE) {
+            if (globalSprites[spriteIndex].stateFlags & SPRITE_DIRECT_PALETTE_MODE) {
                 palettePtr = getPalettePtrType1(globalSprites[spriteIndex].paletteIndex, globalSprites[spriteIndex].paletteIndexPtr);
             } else {
                 palettePtr = getPalettePtrType2(bitmapMetadata.spritesheetIndex, globalSprites[spriteIndex].paletteIndexPtr, globalSprites[spriteIndex].spriteToPaletteMappingPtr);
             }
 
-            shrinkX = globalSprites[spriteIndex].shrink.x;
-            shrinkY = globalSprites[spriteIndex].shrink.y;
-            shrinkZ = globalSprites[spriteIndex].shrink.z;
+            viewSpacePositionX = globalSprites[spriteIndex].viewSpacePosition.x;
+            viewSpacePositionY = globalSprites[spriteIndex].viewSpacePosition.y;
+            viewSpacePositionZ = globalSprites[spriteIndex].viewSpacePosition.z;
 
-            if (globalSprites[spriteIndex].stateFlags & SPRITE_FLIP_WINDING) {
+            if (globalSprites[spriteIndex].stateFlags & SPRITE_NO_TRANSFORM) {
                 bitmapIndex = setBitmap(texturePtr, palettePtr, (0x8 | 0x10 | 0x20 | 0x40));
             } else {
                 bitmapIndex = setBitmap(texturePtr, palettePtr, (0x8 | 0x10 | 0x30));
             }
-            
-            setBitmapShrink(bitmapIndex, shrinkX, shrinkY, shrinkZ);
+
+            setBitmapViewSpacePosition(bitmapIndex, viewSpacePositionX, viewSpacePositionY, viewSpacePositionZ);
             setBitmapScale(bitmapIndex, globalSprites[spriteIndex].scale.x, globalSprites[spriteIndex].scale.y, globalSprites[spriteIndex].scale.z);
             setBitmapRotation(bitmapIndex, globalSprites[spriteIndex].rotation.x, globalSprites[spriteIndex].rotation.y, globalSprites[spriteIndex].rotation.z);
             setBitmapRGBA(bitmapIndex, globalSprites[spriteIndex].rgbaCurrent.r, globalSprites[spriteIndex].rgbaCurrent.g, globalSprites[spriteIndex].rgbaCurrent.b, globalSprites[spriteIndex].rgbaCurrent.a);
@@ -1306,17 +1304,14 @@ void setBitmapFromSpriteObject(u16 spriteIndex, AnimationFrameMetadata* animatio
                 bitmaps[bitmapIndex].flags &= ~4;
             }
 
-            objectCount = metadata.animationFrameMetadataPtr->objectCount;
+            objectCount = ptrCopy->objectCount;
             i++;
             
-        } while (i < metadata.animationFrameMetadataPtr->objectCount);
+        } while (i < objectCount);
         
     }
     
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/system/globalSprites", setBitmapFromSpriteObject);
-#endif
 
 static inline u8 updateSpriteCurrentRGBA(u16 i) {
 
@@ -1415,97 +1410,95 @@ static inline u8 updateSpriteCurrentRGBA(u16 i) {
     
 }
 
-#ifdef PERMUTER
+//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", updateSprites);
+
 void updateSprites(void) {
 
     AnimationFrameMetadata animationFrameMetadata;
-    u32 pad[3];
+    u32 pad[4];
     
-    u16 i;
+    u16 i = 0;
     u16* ptr;
+    u32 temp;
 
-    i = 0;
-    
-    while (i < MAX_ACTIVE_SPRITES) {
+    u16 j;
+        
+    while (i < MAX_SPRITES) {
 
-        if (globalSprites[i].stateFlags & ACTIVE) {
+        if (globalSprites[i].stateFlags & SPRITE_ACTIVE) {
         
             if (updateSpriteCurrentRGBA(i) == 0) {
-                globalSprites[i].stateFlags |= RGBA_IN_PROGRESS;
+                globalSprites[i].stateFlags |= SPRITE_RGBA_IN_PROGRESS;
             }
 
             globalSprites[i].audioTrigger = FALSE;
 
-            if (!(globalSprites[i].stateFlags & ANIMATION_HEADER_PROCESSED)) {
-                continue;
-            } 
+            if ((globalSprites[i].stateFlags & SPRITE_ANIMATION_HEADER_PROCESSED)) {
             
-            setAnimationFrameMetadata(&animationFrameMetadata, globalSprites[i].animationFrameMetadataPtr);
-
-            if (globalSprites[i].stateFlags & 4) {
-                
-                if (globalSprites[i].animationCounter[gGraphicsBufferIndex] != globalSprites[i].currentAnimationFrame) {
-                    setBitmapFromSpriteObject(i, &animationFrameMetadata, 2);
-                } else {
-                    setBitmapFromSpriteObject(i, &animationFrameMetadata, 1);
-                }
-
-                globalSprites[i].animationCounter[gGraphicsBufferIndex] = globalSprites[i].currentAnimationFrame;
-        
-            } else {        
-                setBitmapFromSpriteObject(i, &animationFrameMetadata, 0);
-            }
-
-            if (!(globalSprites[i].stateFlags & ANIMATION_PAUSED)) {
-                globalSprites[i].frameTickCounter += 2; 
-            }
-
-            if (globalSprites[i].frameTickCounter >= animationFrameMetadata.frameDuration) {
-
-                globalSprites[i].audioTrigger = animationFrameMetadata.audioTrigger;
-                globalSprites[i].frameTickCounter = 0;
-
-                if (globalSprites[i].stateFlags & ANIMATION_PLAYING) {
-                 
-                    globalSprites[i].currentAnimationFrame++;
-         
-                    if (!(globalSprites[i].currentAnimationFrame < globalSprites[i].animationFrameMetadata.objectCount)) {
-
-                        if (globalSprites[i].stateFlags & ANIMATION_LOOPS) {
-                            
-                            globalSprites[i].currentAnimationFrame = 0;
-                            
-                        } else if (globalSprites[i].stateFlags & DESTROY_ON_ANIMATION_END) {
-                        
-                            deactivateSprite(i);
-                            
-                        } else {
-                            globalSprites[i].currentAnimationFrame = globalSprites[i].animationFrameMetadata.objectCount - 1;
-                        }
-
-                        globalSprites[i].stateFlags |= ANIMATION_STATE_CHANGED;
-                        
-                    } 
-
-                    // globalSprites[i].animationDataPtr + 4 = skip header + 4 byte total metadata object count; start at first metadata object
-                    ptr = getAnimationFrameMetadataPtrFromFrame(globalSprites[i].currentAnimationFrame, globalSprites[i].animationDataPtr + 4);
-
-                    globalSprites[i].animationFrameMetadataPtr = ptr;
-                    globalSprites[i].bitmapMetadataPtr = ptr + 2;
+                setAnimationFrameMetadata(&animationFrameMetadata, globalSprites[i].animationFrameMetadataPtr);
+    
+                if (globalSprites[i].stateFlags & 4) {
                     
-                } else {
-                    globalSprites[i].stateFlags |= ANIMATION_STATE_CHANGED;
+                    if (globalSprites[i].animationCounter[gGraphicsBufferIndex] != globalSprites[i].currentAnimationFrame) {
+                        setBitmapFromSpriteObject(i, &animationFrameMetadata, 2);
+                    } else {
+                        setBitmapFromSpriteObject(i, &animationFrameMetadata, 1);
+                    }
+    
+                    globalSprites[i].animationCounter[gGraphicsBufferIndex] = globalSprites[i].currentAnimationFrame;
+            
+                } else {        
+                    setBitmapFromSpriteObject(i, &animationFrameMetadata, 0);
                 }
-                
-            }
+    
+                if (!(globalSprites[i].stateFlags & SPRITE_ANIMATION_PAUSED)) {
+                    globalSprites[i].frameTickCounter += 2; 
+                }
+    
+                if (globalSprites[i].frameTickCounter >= animationFrameMetadata.frameDuration) {
+    
+                    globalSprites[i].audioTrigger = animationFrameMetadata.audioTrigger;
+                    globalSprites[i].frameTickCounter = 0;
+    
+                    if (globalSprites[i].stateFlags & SPRITE_ANIMATION_PLAYING) {
+                     
+                        globalSprites[i].currentAnimationFrame++;
+             
+                        if (!(globalSprites[i].currentAnimationFrame < globalSprites[i].animationFrameMetadata.objectCount)) {
+    
+                            if (globalSprites[i].stateFlags & SPRITE_ANIMATION_LOOPS) {
+                                
+                                globalSprites[i].currentAnimationFrame = 0;
+                                
+                            } else if (globalSprites[i].stateFlags & SPRITE_DESTROY_ON_ANIMATION_END) {
+                            
+                                deactivateSprite(i);
+                                
+                            } else {
+                                globalSprites[i].currentAnimationFrame = globalSprites[i].animationFrameMetadata.objectCount - 1;
+                            }
+    
+                            globalSprites[i].stateFlags |= SPRITE_ANIMATION_STATE_CHANGED;
+                            
+                        } 
 
-        }   
+                        // globalSprites[i].animationDataPtr + 4 = skip header + 4 byte total metadata object count; start at first metadata object
+                        ptr = getAnimationFrameMetadataPtrFromFrame(globalSprites[i].currentAnimationFrame, globalSprites[i].animationDataPtr + 4);
+                        
+                        globalSprites[i].animationFrameMetadataPtr = ptr;
+                        globalSprites[i].bitmapMetadataPtr = ptr + 2;
+                        
+                    } else {
+                        globalSprites[i].stateFlags |= SPRITE_ANIMATION_STATE_CHANGED;
+                    }
+                    
+                }
+    
+            }   
+        } 
     
         i++;
         
     } 
     
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/system/globalSprites", updateSprites);
-#endif
