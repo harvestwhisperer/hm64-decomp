@@ -2,7 +2,6 @@
 
 #include "animationScripts.h"
 
-// u16 chickAnimationScripts[n][8] = {};
 u16 playerAnimationScripts[] = {
 		
 	PACK_ANIM_DATA(0, ANIM_TYPE_LOOP, 0),
