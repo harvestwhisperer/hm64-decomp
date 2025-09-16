@@ -3,7 +3,7 @@
 
 #include "common.h"
 
-#define TOTAL_NPCS 48
+#define MAX_NPCS 48
 
 #define MARIA 0
 #define POPURI 1
@@ -66,7 +66,7 @@ typedef struct {
 	/* 0x26 */ u16 flags;
 } npcInfo;
 
-extern void func_800752C0();  
+extern void deactivateNPCEntities();  
 extern u8 func_80075374(u8 npcIndex, int arg1);
 extern void func_80075A18(); 
 extern void func_800758B8();                                  
@@ -76,8 +76,8 @@ extern bool func_80085D48(int index, u16 arg1);
 extern void setNpcAnimations(); 
 extern void setNPCSpawningLocations();                     
 
-extern u8 npcAffection[TOTAL_NPCS];
-extern npcInfo npcs[];
+extern u8 npcAffection[MAX_NPCS];
+extern npcInfo npcs[MAX_NPCS];
 
 extern u8 npcTalkingTo;
 

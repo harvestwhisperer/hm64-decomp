@@ -18,8 +18,10 @@
 #include "game/spriteInfo.h"
 #include "game/weather.h"
 
+#include "ld_symbols.h"
+
 // bss
-npcInfo npcs[0x30];
+npcInfo npcs[MAX_NPCS];
 
 u8 npcTalkingTo;
 u16 D_801FBE2E;  
@@ -27,11 +29,9 @@ u16 D_801FBFBE;
 u16 D_801FBFE6;
 
 // data
-// character indices for rendered sprite
+// entity asset indices
 extern u16 D_80114900[];
-
-// data
-// conversation indices
+// dialogue bytecode indices; indexed by npc
 extern u16 D_80114960[30];
 
 // forward declarations
@@ -134,15 +134,14 @@ void func_800855EC(void);
 void func_800856E4(void);
 void func_800857DC(void);
 
-
  
-//INCLUDE_ASM("asm/nonmatchings/game/npc", func_800752C0);
+//INCLUDE_ASM("asm/nonmatchings/game/npc", deactivateNPCEntities);
 
-void func_800752C0(void) {
+void deactivateNPCEntities(void) {
     
     u8 i;
 
-    for (i = 0; i < TOTAL_NPCS; i++) {
+    for (i = 0; i < MAX_NPCS; i++) {
         
         if (npcs[i].flags & 4) {
             deactivateEntity(npcs[i].entityIndex);
@@ -332,7 +331,7 @@ void func_800758B8(void) {
     
     npcIndex = 0;
     
-    for (i = 0; i < TOTAL_NPCS; i++) {
+    for (i = 0; i < MAX_NPCS; i++) {
         npcIndex = func_80075374(i, npcIndex);
     }
     
@@ -347,7 +346,7 @@ void updateNPCCoordinates(void) {
 
     u8 i;
 
-    for (i = 0; i < TOTAL_NPCS; i++) {
+    for (i = 0; i < MAX_NPCS; i++) {
         if (npcs[i].flags & 1) {
             if (npcs[i].levelIndex == gBaseMapIndex) {
                 npcs[i].currentCoordinates.x = entities[npcs[i].entityIndex].coordinates.x;
@@ -365,7 +364,7 @@ void func_80075A18(void) {
     
     u8 i;
 
-    for (i = 0; i < TOTAL_NPCS; i++) {
+    for (i = 0; i < MAX_NPCS; i++) {
         npcs[i].location = getRandomNumberInRange(0, 3);
     }
 
@@ -2023,6 +2022,7 @@ static inline bool checkNotHoldingItem() {
 }
 
 // FIXME: totally cursed
+// initiates dialogue with NPC on button press
 u8 func_800858D4(void) {
     
     u8 result = 0;
@@ -2044,6 +2044,7 @@ u8 func_800858D4(void) {
             
             if (!entities[npcs[i].entityIndex].entityCollidedWithIndex && entities[npcs[i].entityIndex].buttonPressed == BUTTON_A) {
 
+                // FIXME: might be static inline baby handler function
                 if (i == BABY && gBabyAge < 120) {
                                  
                     // should be gPlayer.heldItem == 0
@@ -2096,17 +2097,17 @@ u8 func_800858D4(void) {
                         
                     }
                     
-                    showDialogueBox(0, D_80114960[i], temp, 0, 0);
+                    showMessageBox(0, D_80114960[i], temp, 0, 0);
                     result = 1;
                     npcs[i].movingFlag = 0x10;
                     
-                }
+                } 
             }    
         }
         
         i++;
             
-    } while (i < TOTAL_NPCS && result == 0);
+    } while (i < MAX_NPCS && result == 0);
 
     return result;
     
@@ -2121,7 +2122,7 @@ bool func_80085C94(void) {
     
     npcTalkingTo = 0xFF;
 
-    while (i < TOTAL_NPCS && !found) {
+    while (i < MAX_NPCS && !found) {
 
         if (npcs[i].flags & 4) {
             if (!entities[npcs[i].entityIndex].entityCollidedWithIndex) {
@@ -2164,8 +2165,8 @@ bool func_80085D48(int index, u16 arg1) {
             func_8003F910(1, 0x78, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsAssetsIndexSegmentRomStart, &_dialogueIconsAssetsIndexSegmentRomEnd, (void*)DIALOGUE_ICONS_TEXTURE_VADDR_START, (void*)DIALOGUE_ICONS_TEXTURE_VADDR_END, (void*)DIALOGUE_ICONS_ASSETS_INDEX_VADDR_START, (void*)DIALOGUE_ICONS_ASSETS_INDEX_VADDR_END, 0, (npcAffection[index] / 52) + 5, 0xFE, 106.0f, -15.0f, 0);
         }
 
-        // D_80114960 = conversation indices
-        showDialogueBox(0, D_80114960[arr[7]], arg1, 0, 0);
+        // D_80114960 =  dialogue bytecode addresses indices
+        showMessageBox(0, D_80114960[arr[7]], arg1, 0, 0);
         result = TRUE;
         
     }

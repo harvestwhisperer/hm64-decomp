@@ -12,7 +12,7 @@ u16 calculateNPCAffectionScore(void) {
     u8 i;
     u16 score = 0;
 
-    for (i = 0; i < TOTAL_NPCS; i++) {
+    for (i = 0; i < MAX_NPCS; i++) {
         score += npcAffection[i];
     }
     

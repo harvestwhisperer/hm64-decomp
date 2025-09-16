@@ -75,7 +75,7 @@ void mainLoop(void) {
             resetSceneNodeCounter();
             updateCutsceneExecutors();
             updateEntities();
-            updateMapContext();
+            updateMapController();
             updateMapGraphics();
             updatePauseScreenSprites();
             updateSprites(); 

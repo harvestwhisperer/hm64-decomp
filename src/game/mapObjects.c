@@ -5,6 +5,7 @@
 #include "game/game.h"
 #include "game/level.h"
 #include "game/player.h"
+#include "game/weather.h"
 
 #include "system/map.h"
 #include "system/math.h"
@@ -580,54 +581,180 @@ void func_800DAD74(u8 arg0, f32 arg1, u8 arg2) {
     }
 }
 
-// get index of foragable item
-#ifdef PERMUTER
-u8 func_800DAF58(f32 arg0, u8 arg1) {
+static inline u8 subtractX(u8 x) {
 
+    u8 result;
+    
+    result = x - D_801FD624; 
+    
+    return result;
+    
+}
+
+static inline u8 subtractZ(u8 z) {
+
+    u8 result;
+    
+    result = z - D_801C3F35; 
+    
+    return result;
+    
+}
+
+//INCLUDE_ASM("asm/nonmatchings/game/mapObjects", func_800DAF58);
+
+// get index of foragable item
+u8 func_800DAF58(f32 arg0, u8 arg1) {
+    
     Vec3f vec;
     Vec3f vec2;
 
-    u8 height;
-    u8 width;
-    u8 mapIndex;
     u8 result = 0xFF;
 
-    if (gBaseMapIndex == FARM || gBaseMapIndex == GREENHOUSE || gBaseMapIndex == MOUNTAIN_1 | gBaseMapIndex == MOUNTAIN_2 || gBaseMapIndex == TOP_OF_MOUNTAIN_1 || gBaseMapIndex == MOON_MOUNTAIN || gBaseMapIndex == POND || gBaseMapIndex == CAVE || ((u32) (gBaseMapIndex - MINE) < 2U) || gBaseMapIndex == RANCH) {
+    if (gBaseMapIndex == FARM || gBaseMapIndex == GREENHOUSE || gBaseMapIndex == MOUNTAIN_1 | gBaseMapIndex == MOUNTAIN_2 || gBaseMapIndex == TOP_OF_MOUNTAIN_1 || gBaseMapIndex == MOON_MOUNTAIN || gBaseMapIndex == POND || gBaseMapIndex == CAVE || (CAVE < gBaseMapIndex && gBaseMapIndex < MINE_2 + 1) || gBaseMapIndex == RANCH) {
 
-        func_80065F94(&vec, arg0, arg1);
+        vec = func_80065F94(arg0, arg1);
 
-        func_8003AF58(&vec2, 0, vec.x, vec.z);
+        vec2 = func_8003AF58(0, vec.x, vec.z);
 
         if (vec2.y != 65535.0f) {
-
-            mapIndex = gBaseMapIndex;
             
-            height = vec.x;
-            height -= D_801FD624;
-            
-            width = vec.z;
-            width -= D_801C3F35;
-            
-            result = func_800DA9A8(mapIndex, height, width);
+            result = func_800DA9A8(gBaseMapIndex, (u8)vec.x - D_801FD624, (u8)vec.z - D_801C3F35);
             
         }
         
     }
 
     return result;
-  
+    
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game/mapObjects", func_800DAF58);
-#endif
 
-INCLUDE_ASM("asm/nonmatchings/game/mapObjects", func_800DB1BC);
+//INCLUDE_ASM("asm/nonmatchings/game/mapObjects", func_800DB1BC);
+
+u8 func_800DB1BC(f32 x, f32 z) {
+
+    Vec3f vec;
+    Vec3f vec2;
+    
+    u8 mapIndex;
+
+    u8 result = 0xFF;
+    
+    if (gBaseMapIndex == FARM || gBaseMapIndex == GREENHOUSE || gBaseMapIndex == MOUNTAIN_1 | gBaseMapIndex == MOUNTAIN_2 || gBaseMapIndex == TOP_OF_MOUNTAIN_1 || gBaseMapIndex == MOON_MOUNTAIN || gBaseMapIndex == POND || gBaseMapIndex == CAVE || (CAVE < gBaseMapIndex && gBaseMapIndex < MINE_2 + 1) || gBaseMapIndex == RANCH) {
+
+        vec = convertWorldToTileCoordinates(0, x, z);
+        vec2 = func_8003AF58(0, vec.x, vec.z);
+
+        if (vec2.y != 65535.0f) {
+
+            mapIndex = gBaseMapIndex;
+            
+            result = func_800DA9A8(mapIndex, (u8)vec.x - D_801FD624, (u8)vec.z - D_801C3F35);
+            
+        }
+        
+    }
+
+    return result;
+    
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/mapObjects", func_800DB424);
 
-INCLUDE_ASM("asm/nonmatchings/game/mapObjects", func_800DB858);
+//INCLUDE_ASM("asm/nonmatchings/game/mapObjects", func_800DB858);
 
-INCLUDE_ASM("asm/nonmatchings/game/mapObjects", func_800DB99C);
+void func_800DB858(void) {
+
+    u8 i, j;
+    u8 temp, tile;
+    
+    if (gWeather == RAIN) {
+
+        for (i = 0; i < FIELD_WIDTH; i++) {
+            
+            for (j = 0; j < FIELD_HEIGHT; j++) {
+
+                tile = farmFieldTiles[i][j];
+
+                if (tile) {
+                    
+                    if (tile < 0xDA) {
+                        temp = D_80118703[tile][0];
+                    } else {
+                        temp = 0;
+                    }
+
+                    if (temp & 0x10) {
+                        
+                        func_800DAA90(FARM, tile + 1, j, i);
+                    
+                    }
+                        
+                }
+        
+            }
+        }
+        
+        if (blueMistFlowerPlot) {
+
+            if (blueMistFlowerPlot < 0xDA) {
+                temp = D_80118703[blueMistFlowerPlot][0];
+            } else {
+                temp = 0;
+            }
+            if (temp & 0x10) {
+                blueMistFlowerPlot += 1;
+            }
+            
+        }
+        
+    }
+    
+}
+
+//INCLUDE_ASM("asm/nonmatchings/game/mapObjects", func_800DB99C);
+
+bool func_800DB99C(void) {
+
+    u8 i, j;
+    
+    bool found = FALSE;
+    
+    u8 temp1 = 0xFF;
+    u8 temp2 = 0xFF;
+
+    for (i = 0; i < FIELD_WIDTH; i++) {
+        
+        for (j = 0; j < FIELD_HEIGHT; j++) {
+
+            if (farmFieldTiles[i][j] == 0x8E) {
+
+                if (found) continue;
+    
+                temp1 = j;
+                temp2 = i;
+                
+                if (!getRandomNumberInRange(0, 9)) {
+                    
+                    found = TRUE;
+                    
+                }
+            }
+    
+        }
+    }
+
+    if (temp1 == 0xFF && temp2 == 0xFF) {
+        return FALSE;
+    } else {
+        
+        func_800DAA90(FARM, 0x8F, temp1, temp2);
+    
+        return TRUE;
+
+    }
+
+}
 
 //INCLUDE_ASM("asm/nonmatchings/game/mapObjects", func_800DBAC4);
 

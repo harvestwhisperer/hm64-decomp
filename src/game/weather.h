@@ -11,7 +11,7 @@
 
 #define RAIN_TEXTURE_VADDR 0x802A5AC0
 
-extern void func_800DC360(void);
+extern void setWeatherSprites(void);
 
 extern void setForecast(void);
 extern Vec4f setWeatherLighting(u8 weather);

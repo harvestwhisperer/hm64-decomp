@@ -113,7 +113,6 @@ def extract(label: str, table_base: int) -> None:
     first_offset = np.frombuffer(rom, dtype=np.dtype(">u4"), count=1, offset=table_base)[0].item()
 
     count = first_offset // 4
-    count -= 1 # last address points to end of data (start of sprite to palette table)
 
     offsets = np.frombuffer(rom, dtype=np.dtype(">u4"), count=count, offset=table_base)
 
@@ -122,17 +121,16 @@ def extract(label: str, table_base: int) -> None:
 
     previous_off = -1
 
+    # last address is the end address, not a valid animation, and some assets use the last address as padding
+    offsets = [offset for offset in offsets if offset != offsets[-1]]
+
     for idx, off in enumerate(offsets, start=1):
 
         # skip repeats
         if (off == previous_off):
             continue
 
-        if (off == offsets[-1]):
-            break
-
         previous_off = off
-
         meta_addr = table_base + int(off)
         data = read_metadata(meta_addr)
 
@@ -283,6 +281,7 @@ def build_gif_for_anim_dir(
         dur_ms = int(frame_entry["animation_metadata"]["frame_duration"]) * tick_ms
         durations.append(dur_ms)
 
+    # happens when an animation uses an invalid sprite index
     if not composed:
         print(f"Gif failed to compose: {anim_dir}")
         return False

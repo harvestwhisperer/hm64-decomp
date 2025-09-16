@@ -72,12 +72,12 @@ void mainGameLoopCallback(void) {
 //INCLUDE_ASM("asm/nonmatchings/game/transition", func_80055F08);
 
 // setup title/demo/non game cutscenes
-// inline, used by game.c
+// used by game.c
 inline void func_80055F08(u16 cutsceneIndex, u16 entranceIndex, u8 arg2) {
     
     deactivateSprites();
     deactivateGlobalSprites();
-    func_8003D970();
+    initializeMessageBoxes();
     initializeCutsceneExecutors();
     func_80053088();
     
@@ -132,8 +132,8 @@ void func_80056030(u8 arg0) {
     deactivateSprites();
     deactivateGlobalSprites();
     initializeCutsceneExecutors();
-    func_800752C0();
-    func_80085F70();
+    deactivateNPCEntities();
+    deactivateAnimalEntities();
     func_800D51B0();
     
     if (!checkDailyEventBit(0x2F)) {
@@ -142,7 +142,7 @@ void func_80056030(u8 arg0) {
 
     setDailyEventBit(0x2F);
     
-    mapIndex = func_80074C38(gEntranceIndex);
+    mapIndex = getMapFromExit(gEntranceIndex);
     func_8006E840(gEntranceIndex);
 
     if ((mapIndex == FARM || mapIndex == BARN) == 0 && mapIndex != COOP) {
@@ -301,7 +301,7 @@ void func_800563D0(u8 arg0) {
             
             break;
         
-        // sea festival, demo cutscenes
+        // default, sea festival, demo cutscenes
         case 1:
             
             initializeEntity(0, 0, 0x31, (void*)0x80240B00, (void*)0x80243B00, (void*)0x80246B00, (void*)0x8024AB00, (void*)0x80252300, (void*)0x80252B00);
@@ -456,6 +456,7 @@ void func_800563D0(u8 arg0) {
             break;
 
     }
+    
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/transition", func_80059300);
@@ -463,7 +464,7 @@ void func_800563D0(u8 arg0) {
 void func_80059300(void) {
     togglePauseEntities();
     func_80046CF4();
-    func_8002FCB4(ENTITY_PLAYER, TRUE);
+    setEntityMapSpaceIndependent(ENTITY_PLAYER, TRUE);
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/transition", func_80059334);
@@ -471,7 +472,7 @@ void func_80059300(void) {
 void inline func_80059334(void) {
     pauseEntities();
     func_80046C98();
-    func_8002FCB4(ENTITY_PLAYER, FALSE);
+    setEntityMapSpaceIndependent(ENTITY_PLAYER, FALSE);
 }
  
 //INCLUDE_ASM("asm/nonmatchings/game/transition", func_80059368);
@@ -481,14 +482,14 @@ void func_80059368(void) {
 
     func_8002FB7C();
     func_80046CF4();
-    func_8002FCB4(ENTITY_PLAYER, TRUE);
+    setEntityMapSpaceIndependent(ENTITY_PLAYER, TRUE);
     handleEatingAndDrinking();
 
     // load current map
-    func_8003BC50(0, gMapWithSeasonIndex);
+    dmaMapAssets(0, gMapWithSeasonIndex);
     
-    setLevelGraphicsData(gBaseMapIndex);
-    //setLevelGraphicsData(currentMapContext.currentMapIndex);
+    setupLevelMap(gBaseMapIndex);
+    //setupLevelMap(currentMapContext.currentMapIndex);
     
     setPlayerAction(0xFE, 0);
     func_8006623C();
@@ -503,7 +504,7 @@ void func_80059368(void) {
 void inline func_800593EC(void) {
     func_8002FB3C();
     func_80046C98();
-    func_8002FCB4(ENTITY_PLAYER, FALSE);
+    setEntityMapSpaceIndependent(ENTITY_PLAYER, FALSE);
     func_8003C504(MAIN_MAP_INDEX);
 }
 
@@ -575,13 +576,16 @@ void startNewDay(void) {
             
             // check animal score
             if ((func_8009B564() + func_8009B374()) >= 2) {
-                setLifeEventBit(0x4D);
+                setLifeEventBit(HARVEST_SPRITES_ANIMAL_HELP);
             }
+
         }
         
-        if (gWeather == TYPHOON && checkLifeEventBit(0x4D)) {
+        // harvest sprites help with animals during typhoon
+        if (gWeather == TYPHOON && checkLifeEventBit(HARVEST_SPRITES_ANIMAL_HELP)) {
             func_80087D5C();
         }
+
     }
     
     // dog/horse race

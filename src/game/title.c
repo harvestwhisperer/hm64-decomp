@@ -419,7 +419,7 @@ static inline bool handleFrameIncrement() {
         updateSpriteRGBA(CLOUD_3_2, 0, 0, 0, 0, 8);
         updateSpriteRGBA(CLOUD_2_2, 0, 0, 0, 0, 8);
 
-        setSongWithDefaultSpeed(TITLE_THEME);
+        stopSongWithDefaultFadeOut(TITLE_THEME);
 
         titleScreenContext.mode = 5;
 

@@ -507,9 +507,9 @@ bool setSpriteFlip(u16 index, bool flipHorizontal, bool flipVertical) {
 
 //INCLUDE_ASM("asm/nonmatchings/system/globalSprites", func_8002BCC8);
 
-bool func_8002BCC8(u16 index) {
+u16 func_8002BCC8(u16 index) {
 
-    bool result = FALSE;
+    u16 result = FALSE;
 
     if (index < MAX_SPRITES) {
 
@@ -1318,7 +1318,7 @@ static inline u8 updateSpriteCurrentRGBA(u16 i) {
     u8 count = 0;
     f32 tempf;
 
-    if (globalSprites[i].rgbaCurrent.r <  globalSprites[i].rgbaTarget.r) {
+    if (globalSprites[i].rgbaCurrent.r < globalSprites[i].rgbaTarget.r) {
         
         globalSprites[i].rgbaCurrent.r += globalSprites[i].rgbaDelta.r;
         

@@ -117,18 +117,19 @@ u8 getToolLevel(u8 tool) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800CF8F8);
 
-void func_800CF8F8(u8 entityIndex, u8 arg1, f32 arg2, f32 arg3, f32 arg4) {
+void func_800CF8F8(u8 entityIndex, u8 animationIndex, f32 x, f32 y, f32 z) {
 
     loadEntity(entityIndex + ITEMS_OFFSET, 0x60, 1);
-    func_8002FF38(entityIndex + ITEMS_OFFSET, 0);
+    func_8002FF38(entityIndex + ITEMS_OFFSET, FALSE);
     setEntityTrackingTarget(entityIndex + ITEMS_OFFSET, 0xFFFF, 0xFF);
     setEntityCollidable(entityIndex + ITEMS_OFFSET, FALSE);
     setEntityYMovement(entityIndex + ITEMS_OFFSET, FALSE);
-    setEntityCoordinates(entityIndex + ITEMS_OFFSET, arg2, arg3, arg4);
+
+    setEntityCoordinates(entityIndex + ITEMS_OFFSET, x, y, z);
 
     setEntityColor(entityIndex + ITEMS_OFFSET, mainMap[MAIN_MAP_INDEX].mapFloats.groundRgba.r, mainMap[MAIN_MAP_INDEX].mapFloats.groundRgba.g, mainMap[MAIN_MAP_INDEX].mapFloats.groundRgba.b, mainMap[MAIN_MAP_INDEX].mapFloats.groundRgba.a);
     
-    setEntityAnimation(entityIndex + ITEMS_OFFSET, arg1);
+    setEntityAnimation(entityIndex + ITEMS_OFFSET, animationIndex);
     
 }
 
@@ -154,8 +155,8 @@ void func_800CFB38(u8 entityIndex, u8 animationIndex, f32 x, f32 y, f32 z) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800CFD78);
 
-void func_800CFD78(u8 entityIndex, u8 arg1) {
-    setEntityAnimation(entityIndex + ITEMS_OFFSET, arg1);
+void func_800CFD78(u8 entityIndex, u8 animationIndex) {
+    setEntityAnimation(entityIndex + ITEMS_OFFSET, animationIndex);
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800CFDA0);
@@ -268,6 +269,7 @@ void handleToolUse(void) {
         default:
             return;
     }
+    
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D0318);
@@ -287,7 +289,7 @@ void func_800D0318(void) {
     }
 }
 
-// alternate for studying
+// alternate for reference
 // void func_800D0318(void) {
 
 //     int temp = toolUse.unk_E; 
@@ -376,17 +378,19 @@ void func_800D373C(void) {
         }
         
         func_800DAC70(gBaseMapIndex, temp3, (u8)vec.x - D_801FD624, (u8)vec.z - D_801C3F35);
+        
     }
     
     if (!toolUse.unk_2) {
         setAudio(0x1D);
     }
     
-    toolUse.unk_2 += 1;
+    toolUse.unk_2++;
     
     if (toolUse.unk_2 == 9) {
         toolUse.unk_E = 0;
     }
+
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D3958);
@@ -403,8 +407,7 @@ void func_800D3958(void) {
     
     if (direction < SOUTHWEST) {
         temp2 = D_80117180[toolUse.unk_2];
-    }
-    else {
+    } else {
         temp2 = D_8011718C[toolUse.unk_2];
     }
 
@@ -424,11 +427,12 @@ void func_800D3958(void) {
         setAudio(0x1D);
     }
     
-    toolUse.unk_2 += 1;
+    toolUse.unk_2++;
     
     if (toolUse.unk_2 == 9) {
         toolUse.unk_E = 0;
     }
+
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D3B74);
@@ -446,14 +450,14 @@ void func_800D3B74(void) {
     
     if (direction < SOUTHWEST) {
         temp2 = D_80117180[toolUse.unk_2];
-    }
-    else {
+    } else {
         temp2 = D_8011718C[toolUse.unk_2];
     }
     
     vec = func_80065F94(0.0f, temp2);
  
     if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && vec.y != 65535.0f) {
+        
         if (gSeason == SPRING || gBaseMapIndex == GREENHOUSE) {
           temp3 = 0x33;
         } else {
@@ -461,17 +465,19 @@ void func_800D3B74(void) {
         }
         
         func_800DAC70(gBaseMapIndex, temp3, (u8)vec.x - D_801FD624, (u8)vec.z - D_801C3F35);
+
     }
     
     if (!toolUse.unk_2) {
         setAudio(0x1D);
     }
     
-    toolUse.unk_2 += 1;
+    toolUse.unk_2++;
     
     if (toolUse.unk_2 == 9) {
         toolUse.unk_E = 0;
     }
+
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D3D90);
@@ -510,11 +516,12 @@ void func_800D3D90(void) {
         setAudio(0x1D);
     }
     
-    toolUse.unk_2 += 1;
+    toolUse.unk_2++;
     
     if (toolUse.unk_2 == 9) {
         toolUse.unk_E = 0;
     }
+
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D3FAC);
@@ -553,11 +560,12 @@ void func_800D3FAC(void) {
         setAudio(0x1D);
     }
     
-    toolUse.unk_2 += 1;
+    toolUse.unk_2++;
     
     if (toolUse.unk_2 == 9) {
         toolUse.unk_E = 0;
     }
+
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D41C8);
@@ -596,11 +604,12 @@ void func_800D41C8(void) {
         setAudio(0x1D);
     }
     
-    toolUse.unk_2 += 1;
+    toolUse.unk_2++;
     
     if (toolUse.unk_2 == 9) {
         toolUse.unk_E = 0;
     }
+
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D43E4);
@@ -639,11 +648,12 @@ void func_800D43E4(void) {
         setAudio(0x1D);
     }
 
-    toolUse.unk_2 += 1;
+    toolUse.unk_2++;
     
     if (toolUse.unk_2 == 9) {
         toolUse.unk_E = 0;
     }
+
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D45F4);
@@ -684,11 +694,12 @@ void func_800D45F4(void) {
         setAudio(0x1D);
     }
     
-    toolUse.unk_2 += 1;
+    toolUse.unk_2++;
     
     if (toolUse.unk_2 == 9) {
         toolUse.unk_E = 0;
     }
+
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D4814);
@@ -705,8 +716,7 @@ void func_800D4814(void) {
     
     if (direction < SOUTHWEST) {
         temp2 = D_80117180[toolUse.unk_2];
-    }
-    else {
+    } else {
         temp2 = D_8011718C[toolUse.unk_2];
     }
     
@@ -733,6 +743,7 @@ void func_800D4814(void) {
     if (toolUse.unk_2 == 9) {
         toolUse.unk_E = 0;
     }
+
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D4A34);
@@ -764,11 +775,12 @@ void func_800D4A34(void) {
         setAudio(0x1D);
     }
     
-    toolUse.unk_2 += 1;
+    toolUse.unk_2++;
     
     if (toolUse.unk_2 == 9) {
         toolUse.unk_E = 0;
     }
+
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D4C28);
@@ -786,6 +798,7 @@ void func_800D4C28(void) {
     }
     
     toolUse.unk_E = 0;  
+
 }
 
 // ball
@@ -816,6 +829,7 @@ void func_800D4CD0(void) {
     }
 
     toolUse.unk_E = 0;
+
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D4D1C);
@@ -830,6 +844,7 @@ void func_800D4D1C(void) {
     }
 
     toolUse.unk_E = 0;
+
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D4D68);
@@ -864,11 +879,12 @@ void func_800D4D68(void) {
         setAudio(0x1D);
     }
     
-    toolUse.unk_2 += 1;
+    toolUse.unk_2++;
     
     if (toolUse.unk_2 == 9) {
         toolUse.unk_E = 0;
     }
+
 }
 
 INCLUDE_RODATA("asm/nonmatchings/game/itemHandlers", D_80122340);
@@ -891,7 +907,6 @@ const u8 D_80122374[12] = { 5, 4, 3, 6, 8, 2, 7, 0, 1, 0, 0, 0 };
  
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", handleBlueFeatherUse);
 
-// jumtable: 80122380, 0xFD780
 void handleBlueFeatherUse(void) {
      
     toggleDailyEventBit(SUCCESSFUL_PROPOSAL);
@@ -958,6 +973,7 @@ void handleBlueFeatherUse(void) {
     
 func_end:
         toolUse.unk_E = 0;
+
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D5130);
@@ -1310,8 +1326,6 @@ static inline void setVec3f(u8 index, f32 x, f32 y, f32 z) {
     itemInfo[index].unk_0.y = y;
     itemInfo[index].unk_0.z = z;
 
-    itemInfo[index].flags |= 2;
-
 }
 
 void func_800D6B58(u8 arg0, u8 index) {
@@ -1340,6 +1354,7 @@ void func_800D6B58(u8 arg0, u8 index) {
         
         if (temp2 < 2 || temp == 0x1D) {
             setVec3f(index, 288.0f, 80.0f, -404.0f);
+            itemInfo[index].flags |= 2;
             setEntityAnimation(index + ITEMS_OFFSET, 0xE9);
         } 
 
@@ -1351,6 +1366,7 @@ void func_800D6B58(u8 arg0, u8 index) {
         
         if (temp == 0x10 || temp == 0x14) {
             setVec3f(index, 160.0f, 64.0f, -128.0f);
+            itemInfo[index].flags |= 2;
             setEntityAnimation(index + ITEMS_OFFSET, 0xE9);
         }
         
@@ -1370,6 +1386,7 @@ void func_800D6B58(u8 arg0, u8 index) {
         
         if (temp == 0x10) {
             setVec3f(index, -16.0f, 80.0f, -224.0f);
+            itemInfo[index].flags |= 2;
             setEntityAnimation(index + ITEMS_OFFSET, 0xE9);
         }
         

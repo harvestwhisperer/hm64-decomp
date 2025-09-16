@@ -243,8 +243,6 @@ void setTVContentIndex(void) {
     }
 }
 
-// jtbl_801227A0
-// jtbl_801227F0
 //INCLUDE_ASM("asm/nonmatchings/game/tv", setTVDialogueIndex );
 
 void setTVDialogueIndex (void) {
@@ -656,7 +654,7 @@ void setTVPictureIndex(void) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/tv", tvMainLoopCallback);
 
-// alternate with static inline funciton and forced do {} while(0)
+// alternate with static inline function and forced do {} while(0)
 // void tvMainLoopCallback(void) {
 
 //     bool set = FALSE;
@@ -668,10 +666,10 @@ void setTVPictureIndex(void) {
 //             if (tvContext.dialogueIndex != 0xFF) {
                 
 //                 // set up dialogue box
-//                 func_8003F54C(0, 0, -64.0f, 352.0f);
-//                 setDialogueBoxSpriteIndices(0, 1, 0, 0);
-//                 func_8003F360(0, ~(1 | 2), 0);
-//                 initializeDialogueBox(MAIN_DIALOGUE_BOX_INDEX, 8, tvContext.dialogueIndex, 0);
+//                 setMessageBoxViewSpacePosition(0, 0, -64.0f, 352.0f);
+//                 setMessageBoxSpriteIndices(0, 1, 0, 0);
+//                 func_8003F360(0, -4, 0);
+//                 initializeMessageBox(MAIN_DIALOGUE_BOX_INDEX, 8, tvContext.dialogueIndex, 0);
 
 //                 tvContext.mode++;
 
@@ -684,7 +682,7 @@ void setTVPictureIndex(void) {
 
 //         case TV_MODE_DIALOGUE:
 
-//             if (dialogueBoxes[0].flags & 4) {
+//             if (messageBoxes[0].flags & 4) {
 //                 tvContext.mode++;
 //             }
 
@@ -740,11 +738,10 @@ void tvMainLoopCallback(void) {
 
             if (tvContext.dialogueIndex != 0xFF) {
                 
-                // set up dialogue box
-                func_8003F54C(0, 0, -64.0f, 352.0f);
-                setDialogueBoxSpriteIndices(0, 1, 0, 0);
-                func_8003F360(0, ~(1 | 2), 0);
-                initializeDialogueBox(MAIN_DIALOGUE_BOX_INDEX, 8, tvContext.dialogueIndex, 0);
+                setMessageBoxViewSpacePosition(0, 0, -64.0f, 352.0f);
+                setMessageBoxSpriteIndices(0, 1, 0, 0);
+                func_8003F360(0, -4, 0);
+                initializeMessageBox(MAIN_DIALOGUE_BOX_INDEX, 8, tvContext.dialogueIndex, 0);
 
                 tvContext.mode++;
 
@@ -757,7 +754,7 @@ void tvMainLoopCallback(void) {
 
         case TV_MODE_DIALOGUE:
 
-            if (dialogueBoxes[0].flags & 4) {
+            if (messageBoxes[0].flags & 4) {
                 tvContext.mode++;
             }
 

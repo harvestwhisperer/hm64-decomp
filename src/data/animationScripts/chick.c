@@ -2,8 +2,6 @@
 
 #include "animationScripts.h"
 
-// alternate
-// u16 chickAnimationScripts[3][8] = {};
 u16 chickAnimationScripts[] = {
     PACK_ANIM_DATA(14, ANIM_TYPE_LOOP, 0),
     PACK_ANIM_DATA(10, ANIM_TYPE_LOOP, 0),

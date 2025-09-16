@@ -33,17 +33,12 @@ void func_8004DF10(void) {
     } else {
 
         setMainLoopCallbackFunctionIndex(NO_OP);
-
-        // set position floats
-        func_8003F54C(0, 0, -64.0f, 352.0f);
-
-        setDialogueBoxSpriteIndices(0, 1, 0, 0);
-
-        // dialogue box flags
-        func_8003F360(0, ~(1 | 2), 2);
+        setMessageBoxViewSpacePosition(0, 0, -64.0f, 352.0f);
+        setMessageBoxSpriteIndices(0, 1, 0, 0);
+        func_8003F360(0, -4, 2);
 
         // load "no controller" dialogue
-        initializeDialogueBox(MAIN_DIALOGUE_BOX_INDEX, 0, 0x19, 0x80000);
+        initializeMessageBox(MAIN_DIALOGUE_BOX_INDEX, 0, 0x19, 0x80000);
 
     }
 }

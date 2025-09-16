@@ -125,6 +125,36 @@ void func_8006B6EC(void);
 void func_8006B77C(void);
 void func_8006AC4C(void);
 
+void func_8006CD84();                                  
+void func_8006CDF8();                                  
+void func_8006CE6C();                                  
+void func_8006CEE0();                                  
+void func_8006CF54();                                  
+void func_8006D0AC();                                  
+void func_8006D21C();                                  
+void func_8006D304();                                  
+void func_8006D3FC();                                  
+void func_8006D56C();                                  
+void func_8006D690();                                  
+void func_8006D7B4();                                  
+void func_8006D8D8();                                  
+void func_8006D9FC();                                  
+void func_8006DB20();                                  
+void func_8006DC44();                                  
+void func_8006DD68();                                  
+void func_8006DE8C();                                  
+void func_8006DFB0();                                  
+void func_8006E0D4();                                  
+void func_8006E1F8();                                  
+void func_8006E200();                                  
+void func_8006E208();                                  
+void func_8006E210();                                  
+void func_8006E240();                                  
+void func_8006E348();                                  
+void func_8006E450();                                  
+void func_8006E574();                                  
+void func_8006E678();                                  
+
 static inline void resetAction() {
     gPlayer.actionProgress = 0;
     gPlayer.animationState = 0;
@@ -132,24 +162,18 @@ static inline void resetAction() {
     gPlayer.nextAction = 0;
 }
 
-// FIXME: shouldn't be necessary
-static inline void resetAction2() {
+static inline void startNewAction(u8 arg0, u8 arg1) {
+    gPlayer.currentAction = arg0;
     gPlayer.actionProgress = 0;
     gPlayer.animationState = 0;
-}
-
-static inline void setAction(u8 arg0, u8 arg1, u8 arg2, u8 arg3) {
-    gPlayer.currentAction = arg0;
-    gPlayer.actionProgress = arg1;
-    gPlayer.animationState = arg2;
-    gPlayer.nextAction = arg3;
-}
-
-static inline void setAction2(u8 arg0, u8 arg1) {
-    gPlayer.currentAction = arg0;
     gPlayer.nextAction = arg1;
+}
+
+static inline void resetMovement() {
+    gPlayer.movementVector.x = 0.0f;
+    gPlayer.movementVector.y = 0.0f;
+    gPlayer.movementVector.z = 0.0f;
     gPlayer.actionProgress = 0;
-    gPlayer.animationState = 0;
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/player", setupPlayerEntity);
@@ -161,20 +185,20 @@ void setupPlayerEntity(u16 arg0, u8 resetPlayer) {
     setEntityCollidable(ENTITY_PLAYER, TRUE);
     setEntityYMovement(ENTITY_PLAYER, TRUE);
     func_8002FF38(ENTITY_PLAYER, TRUE);
-    func_8002FCB4(ENTITY_PLAYER, TRUE);
+    setEntityMapSpaceIndependent(ENTITY_PLAYER, TRUE);
 
     setEntityColor(ENTITY_PLAYER, globalLightingRgba.r, globalLightingRgba.g, globalLightingRgba.b, globalLightingRgba.a);
     setEntityShadow(ENTITY_PLAYER, 0);
 
     if (resetPlayer) {
-        gPlayer.startingCoordinates.x = playerDefaultStartingCoordinates[arg0].x;
-        gPlayer.startingCoordinates.y = playerDefaultStartingCoordinates[arg0].y;
-        gPlayer.startingCoordinates.z = playerDefaultStartingCoordinates[arg0].z;
+        gPlayer.coordinates.x = playerDefaultStartingCoordinates[arg0].x;
+        gPlayer.coordinates.y = playerDefaultStartingCoordinates[arg0].y;
+        gPlayer.coordinates.z = playerDefaultStartingCoordinates[arg0].z;
         gPlayer.direction = playerDefaultStartingDirections[arg0];
     }
 
     setEntityDirection(ENTITY_PLAYER, convertSpriteToWorldDirection(gPlayer.direction, MAIN_MAP_INDEX));
-    setEntityCoordinates(ENTITY_PLAYER, gPlayer.startingCoordinates.x, gPlayer.startingCoordinates.y, gPlayer.startingCoordinates.z);
+    setEntityCoordinates(ENTITY_PLAYER, gPlayer.coordinates.x, gPlayer.coordinates.y, gPlayer.coordinates.z);
 
     toolUse.unk_3 = 0;
     toolUse.unk_4 = 0;
@@ -258,6 +282,7 @@ u8 addItemToRucksack(u8 item) {
     }
 
     return found;    
+    
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/player", func_80065BCC);
@@ -344,6 +369,7 @@ inline u8 acquireKeyItem(u8 item) {
     }
     
     return found;
+
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/player", removeKeyItem);
@@ -361,6 +387,7 @@ u8 removeKeyItem(u8 item) {
     }
     
     return found;
+
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/player", checkHaveTool);
@@ -394,7 +421,7 @@ bool checkHaveTool(u8 tool) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/player", checkHaveKeyItem);
 
-bool checkHaveKeyItem(u8 item) {
+inline bool checkHaveKeyItem(u8 item) {
 
     u8 i;
     bool found = FALSE;
@@ -408,14 +435,15 @@ bool checkHaveKeyItem(u8 item) {
     }
 
     return found;
+
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/player", func_80065F5C);
 
 void func_80065F5C(void) {
-    gPlayer.startingCoordinates.x = entities[PLAYER].coordinates.x;
-    gPlayer.startingCoordinates.y = entities[PLAYER].coordinates.y;
-    gPlayer.startingCoordinates.z = entities[PLAYER].coordinates.z;
+    gPlayer.coordinates.x = entities[PLAYER].coordinates.x;
+    gPlayer.coordinates.y = entities[PLAYER].coordinates.y;
+    gPlayer.coordinates.z = entities[PLAYER].coordinates.z;
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/player", func_80065F94);
@@ -634,7 +662,437 @@ void func_8006623C(void) {
 
 // handle button input
 // D_8011F490
+#ifdef PERMUTER
+void func_800664C8(void) {
+
+    Vec3f vec;
+    Vec3f vec2;
+    Vec3f vec3;
+    
+    u32 padding[2];
+    
+    u8 temp1;
+    u16 temp2;
+    f32 tempF;
+    
+    u8 temp3 = 0;
+    u8 temp4;
+    u8 temp5;
+    u8 temp6;
+    u8 tempDirection;
+    
+    bool set = FALSE;
+
+    gPlayer.unk_70 = func_800DAF58(0.6f, 8);
+
+    if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
+        controllers[CONTROLLER_1].button &= BUTTON_A;
+        controllers[CONTROLLER_1].buttonPressed &= BUTTON_A;
+    }
+
+    if (func_800AD1D0(gBaseMapIndex)) {
+        set = TRUE;
+        temp3 = 0xFF;
+    }
+
+    func_800305CC(ENTITY_PLAYER, 0.0f, 8.0f, 0x8000);
+
+    temp1 = func_8009A100();
+
+    // npc interaction
+    temp2 = func_800858D4();
+
+    if (!set && temp2 == 1) {
+
+        temp3 = 0xFF;
+
+        func_80059334();
+        setMainLoopCallbackFunctionIndex(9);
+
+        set = TRUE;
+
+        resetAction();
+        
+    }
+
+    if (!set && temp2 == 2) {
+
+        temp3 = 0xFF;
+
+        set = TRUE;
+        
+        startNewAction(4, 6);
+    
+    }
+
+    if (!set) {
+
+        if (func_80086764()) {
+
+            set = TRUE;
+            temp3 = 0xFF;
+            
+        }
+        
+    }
+
+    if (!set) {
+        
+        if (!(gPlayer.flags & 1)) {
+
+            if (func_800D5B30()) {
+                
+                set = TRUE;
+                temp3 = 0xFF;
+
+                startNewAction(4, 6);
+                
+            }
+            
+        }
+        
+    }
+
+    if (!set) {
+
+        if (gBaseMapIndex == FARM) {
+
+            if (gPlayer.unk_70 == 6) {
+
+                if ((getStickYValueUnsigned(CONTROLLER_1) / 1.2f) > 4.6) {
+                    
+                    if (!checkTerrainCollisionInDirection(ENTITY_PLAYER, 0x34, convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX))) {
+
+                        vec3 = projectEntityPosition(ENTITY_PLAYER, 0x34, convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX));
+
+                        temp6 = func_800DB1BC(vec3.x, vec3.z);
+
+                        if (temp6 == 0xFF || func_800DA978(temp6) & 8) {
+
+                            setDailyEventBit(6);
+                            set = TRUE;
+                            temp3 = 0xFF;
+
+                            startNewAction(0xC, 0xE);
+                                                
+                        }
+                        
+                    } 
+
+                }
+                
+            }
+            
+        }
+        
+    }
+
+    if (!set) {
+
+        if (checkButtonPressed(CONTROLLER_1, BUTTON_C_DOWN)) {
+
+            if (gPlayer.heldItem && func_800D5A6C(gPlayer.heldItem) & 1) {
+                
+                set = TRUE;
+
+                startNewAction(6, 8);
+                
+            }
+            
+        }
+        
+    }
+
+    if (!checkDailyEventBit(0xD)) {
+
+        if (!set) {
+
+            if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
+
+                if (entities[ENTITY_PLAYER].collision > 0 || entities[ENTITY_PLAYER].collision == 0xFFFF) {
+                    
+                    if (!(gPlayer.flags & 1)) {
+                        
+                        if (gPlayer.heldItem) {
+                            set = TRUE; 
+                            func_80067290();
+                            temp3 = 0xFF;
+                        }
+                        
+                    } else {
+                        func_80067034();
+                        set = TRUE;
+                        temp3 = 0xFF;
+                    }
+                
+                }
+                
+            }
+            
+        }
+        
+    }
+
+    if (!set) {
+
+        if (!(gPlayer.flags & 1)) {
+
+            if (!checkDailyEventBit(0x12)) {
+
+                if (checkButtonPressed(CONTROLLER_1, BUTTON_B)) {
+
+                    if (gPlayer.heldItem == 0) {
+
+                        if (gPlayer.currentTool) {
+                            
+                            gPlayer.actionProgress = 0;
+                            gPlayer.animationState = 0;
+                            gPlayer.toolHeldCounter = 0;
+                            gPlayer.staminaLevelForCurrentToolUse = 0;
+
+
+                            if (!func_80067A24(1)) {
+
+                                if (!func_80067B38()) {
+
+                                    startNewAction(1, 3);
+                                    
+                                    set = TRUE;
+                                    temp3 = 0xFF;
+                                    
+                                } else {
+                                    temp3 = 0xFF;
+                                }
+                                
+                            }
+                            
+                            set = TRUE;
+                            temp3 = 0xFF;
+                            
+                        }
+                        
+                    }
+                    
+                }
+                                
+            }
+            
+        }
+        
+    }
+
+    if (!set) {
+
+        if (!(gPlayer.flags & 1)) {
+
+            if (!checkDailyEventBit(0x12)) {
+
+                if (checkButtonPressed(CONTROLLER_1, BUTTON_Z)) {
+
+                    if (gPlayer.heldItem != 0) {
+                        
+                        set = TRUE;
+                        func_800D67FC(gPlayer.heldItem);
+
+                        temp3 = 0xFF;
+                        
+                    }
+                    
+                }
+                
+            }
+            
+        }
+        
+    }
+
+    if (!set) {
+
+        if (!(gPlayer.flags & 1)) {
+
+            if (checkButtonPressed(CONTROLLER_1, BUTTON_C_RIGHT)) {
+                                
+                set = TRUE;
+                temp3 = 0xFF;
+
+                startNewAction(0x12, 0x13);
+
+            }
+    
+        }
+        
+    }
+
+    if (!set) {
+
+        if (!(gPlayer.flags & 1)) {
+        
+            if (checkButtonPressed(CONTROLLER_1, BUTTON_C_LEFT)) {
+    
+                set = TRUE;
+                temp3 = 0xFF;
+
+                startNewAction(0x13, 0x14);
+
+                
+            }
+    
+        }
+        
+    }
+
+    if (!set) {
+
+        if (!(gPlayer.flags & 1)) {
+
+            if (checkButtonPressed(CONTROLLER_1, BUTTON_C_UP)) {
+    
+                if (gPlayer.heldItem != 0) {
+                
+                    if (func_800D5A6C(gPlayer.heldItem) & 2) {
+                        
+                        if (addItemToRucksack(gPlayer.heldItem) != 0xFF) {
+                            
+                            set = TRUE;
+                            temp3 = 0xFF;
+                            
+                            startNewAction(0x15, 0x16);
+
+                        
+                        } 
+                        
+                    }
+   
+                }
+                
+            }
+    
+        }
+        
+    }
+
+    if (!set) {
+
+        if (!(gPlayer.flags & 1)) {
+
+            if (!checkDailyEventBit(0x13)) {
+        
+                if (checkButtonPressed(CONTROLLER_1, BUTTON_START)) {
+        
+                    set = TRUE;
+                    func_80059334();
+                    func_8005CA2C(1, 0x14);
+                    setAudio(8);
+                    temp3 = 0xFF;
+                    
+                }
+                
+            }
+    
+        }
+        
+    }
+
+    if (gBaseMapIndex == FARM) {
+
+        if (!set) {
+
+            if (checkButtonPressed(CONTROLLER_1, BUTTON_R)) {
+
+                resetAction();
+
+                func_80059334();
+                func_8003C5C0(0, 0, 0xFF);
+
+                setMainLoopCallbackFunctionIndex(8);
+
+                D_8021E6D0 = (D_8021E6D0 + 7) % 8;
+
+                set = TRUE;
+                temp3 = 0xFF;
+                
+            }
+
+            if (!set) {
+                
+                if (checkButtonPressed(CONTROLLER_1, BUTTON_L)) {
+    
+                    resetAction();
+    
+                    func_80059334();
+                    func_8003C5C0(0, 1, 0xFF);
+    
+                    setMainLoopCallbackFunctionIndex(8);
+    
+                    D_8021E6D0 = (D_8021E6D0 + 1) % 8;
+    
+                    set = TRUE;
+                    temp3 = 0xFF;
+                    
+                }
+                
+            }
+            
+        }
+        
+    }
+
+    if (!set) {
+
+        if (checkButtonPressed(CONTROLLER_1, BUTTON_A) && entities[ENTITY_PLAYER].collision != 0xFFFF) {
+            gPlayer.nextAction = 0;
+            setEntityAnimationWithDirectionChange(0, 0);
+            set = TRUE;
+            temp3 = 0xFF;
+        }
+    }
+
+    tempF = 0.0f;
+
+    if (!set) {
+
+        if (!temp3) {
+
+            temp3 = getStickXValueUnsigned(CONTROLLER_1);
+            tempF = getStickYValueUnsigned(CONTROLLER_1);
+            
+        }
+
+        if (temp3 != 0xFF) {
+
+            temp3 = convertWorldToSpriteDirection(temp3, MAIN_MAP_INDEX);
+            
+            if (tempF >= 4.0f) {
+                temp5 = 1;
+            } else {
+                temp5 = 2;
+            }
+
+            startNewAction(0, temp5);
+
+            setEntityDirection(ENTITY_PLAYER, convertSpriteToWorldDirection(temp3, MAIN_MAP_INDEX));
+            
+        } else {
+            
+            tempF = 0.0f;
+            
+            resetAction();
+
+        }
+
+        vec = getMovementVectorFromDirection((s8)tempF, temp3, 0.0f);
+        
+        setEntityMovementVector(ENTITY_PLAYER, vec.x, vec.y, vec.z, tempF);
+        
+    }
+
+    gPlayer.direction = convertWorldToSpriteDirection(entities[PLAYER].direction, MAIN_MAP_INDEX);
+    gPlayer.unk_60 = tempF;
+    
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/game/player", func_800664C8);
+#endif
 
 //INCLUDE_ASM("asm/nonmatchings/game/player", func_80066F98);
 
@@ -658,7 +1116,7 @@ void func_80067034(void) {
 
     Vec3f vec1;
     Vec3f vec2;
-    u8 direction; // not initialied; likely a bug
+    u8 direction; // bug: not initialied
     bool set = FALSE;
     int temp;
     
@@ -703,11 +1161,7 @@ void func_80067034(void) {
            
             entities[PLAYER].direction = direction;
 
-            // FIXME: repeated gPlayer.actionProgress and gPlayer.animationState assignments indicates 2 macros
-            gPlayer.currentAction = 0xE;
-            gPlayer.actionProgress = 0;
-            gPlayer.animationState = 0;
-            gPlayer.nextAction = 0x10;
+            startNewAction(0xE, 0x10);
 
             gPlayer.animationState = 0;
             gPlayer.actionProgress = 0;
@@ -716,7 +1170,148 @@ void func_80067034(void) {
 
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/player", func_80067290);
+//INCLUDE_ASM("asm/nonmatchings/game/player", func_80067290);
+
+void func_80067290(u8 arg0) {
+
+    bool set = FALSE;
+    Vec3f vec;
+    u8 temp;
+    
+    if (arg0 == 0) {
+
+        if ((func_800D5A6C(gPlayer.heldItem) & 0x20) && (func_800309B4(ENTITY_PLAYER, 0.0f, 32.0f) == 0x11) && gBaseMapIndex == COOP && !func_8009B7BC()) {
+            set = TRUE;
+            startNewAction(5, 7);
+        }
+
+        if ((func_800D5A6C(gPlayer.heldItem) & 0x2000) && !set && (func_800309B4(ENTITY_PLAYER, 0.0f, 32.0f) == 0x11) && gBaseMapIndex == FARM) {
+            set = TRUE;
+            startNewAction(5, 7);
+        }
+
+        if (func_800ACEAC(gBaseMapIndex) != 0xFF) {
+            
+            if (func_800D5A6C(gPlayer.heldItem) & 1 && !set) {    
+                startNewAction(0x1F, 0x20);
+            }
+            
+            set = TRUE;
+        }
+
+        if ((func_800D5A6C(gPlayer.heldItem) & 0x2) && !set && func_800ACEF8(gBaseMapIndex) != 0xFF) {
+            set = TRUE;
+            startNewAction(0x20, 0x21);
+        }
+        
+    }
+
+    if (func_800D5A6C(gPlayer.heldItem) & 4 && !set) {
+
+        if (func_800ACD70(gBaseMapIndex) != 0xFF || arg0) {
+            startNewAction(3, 5);
+        } else {
+            startNewAction(2, 4);
+        }
+
+        set = TRUE;
+        
+    }    
+
+    if (arg0 == 0) {
+
+        if ((func_800D5A6C(gPlayer.heldItem) & 0x40) && !set) {
+
+            if (func_800ACDF4(gBaseMapIndex) != 0xFF) {
+                startNewAction(5, 7);
+            } else {
+                startNewAction(2, 4);
+            }
+
+            set = TRUE;
+            
+        }
+
+        if ((func_800D5A6C(gPlayer.heldItem) & 0x80) && !set) {
+
+            if (!checkTerrainCollisionInDirection(ENTITY_PLAYER, 0x20, convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, gMainMapIndex))) {
+
+                vec = projectEntityPosition(ENTITY_PLAYER, 0x20, convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX));
+
+                temp = func_800DB1BC(vec.x, vec.z);
+    
+                if (temp == 0xFF || func_800DA978(temp) & 8) {
+
+                    startNewAction(5, 7);
+                                        
+                }
+                
+            
+            }
+
+            set = TRUE;
+            
+        }
+
+        if ((func_800D5A6C(gPlayer.heldItem) & 0x100) && !set) {
+            startNewAction(5, 7);
+            set = TRUE;
+        }
+        
+        if ((func_800D5A6C(gPlayer.heldItem) & 0x400) && !set) {
+            
+            if (gBaseMapIndex == 0x57) {
+
+                if (func_800309B4(ENTITY_PLAYER, 0.0f, 32.0f) == 0x16) {
+                    startNewAction(5, 7);
+                }
+                
+            } 
+            
+            set = TRUE;
+            
+        }
+
+        if ((func_800D5A6C(gPlayer.heldItem) & 0x800) && !set) {
+
+            if (!checkTerrainCollisionInDirection(ENTITY_PLAYER, 0x20, convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, gMainMapIndex))) {
+
+                vec = projectEntityPosition(ENTITY_PLAYER, 0x20, convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX));
+    
+                temp = func_800DB1BC(vec.x, vec.z);
+    
+                if (temp == 0xFF || func_800DA978(temp) & 8) {
+    
+                    startNewAction(5, 7);
+                                        
+                }
+                
+            
+            }
+
+            set = TRUE;
+            
+        }
+
+        if ((func_800D5A6C(gPlayer.heldItem) & 0x10) && !set) {
+
+            temp = func_800DAF58(1.0f, 8);
+
+            if (temp && temp < 4 && temp != 0xFF) {
+                startNewAction(5, 7);
+            }  
+            
+            set = TRUE;
+            
+        }
+    
+        if (!set) {    
+            startNewAction(2, 4);
+        }
+        
+    }
+    
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/player", func_80067950);
 
@@ -752,7 +1347,7 @@ bool func_80067B38(void) {
         
         set = TRUE;
 
-        setAction(0x19, 0, 0, 0x1A);
+        startNewAction(0x19, 0x1A);
 
         gPlayer.fatigue.unk_2 = fatigue;
         
@@ -768,7 +1363,8 @@ INCLUDE_ASM("asm/nonmatchings/game/player", func_80067BC4);
 
 void func_80067E5C(void) {
 
-    // FIXME: ??
+    // FIXME: possibly a union. This matches:
+    // if (!(gPlayer.actionUnion.actionProgress & ~0xFF)) {
     if (!(*(s32*)&gPlayer.actionProgress & ~0xFF)) {
         setAudio(0x26);
         func_800D5548(gPlayer.itemInfoIndex);
@@ -793,7 +1389,40 @@ void func_80067EE0(void) {
 
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/player", func_80067F50);
+//INCLUDE_ASM("asm/nonmatchings/game/player", func_80067F50);
+
+void func_80067F50(void) {
+
+    if (!(*(s32*)&gPlayer.actionProgress & ~0xFF)) {
+        
+        setAudio(0x24);
+        startNewAction(4, 6);
+
+        switch (gPlayer.heldItem) {
+
+            case 0x58 ... 0x6F:
+            case 0xBA ... 0xC9:
+            case 0x7B ... 0xB2:
+                gPlayer.itemInfoIndex = func_800D5308(0, 6, gPlayer.heldItem, 4, 8);
+                break;
+            default:
+                gPlayer.itemInfoIndex = func_800D5308(0, 6, gPlayer.heldItem, 0, 8);
+                break;
+        
+            }
+            
+    }
+    
+    if (gPlayer.actionProgress == 4) {
+    
+        func_800D55E4(gPlayer.itemInfoIndex, 7);
+        gPlayer.animationState++;
+    
+    }
+    
+    gPlayer.actionProgress++;
+
+}
 
 //INCLUDE_ASM("asm/nonmatchings/game/player", func_8006807C);
 
@@ -881,7 +1510,37 @@ void func_800682F8(void) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/player", func_80068340);
+//INCLUDE_ASM("asm/nonmatchings/game/player", func_80068340);
+
+void func_80068340(void) {
+
+    if (gPlayer.animationState == 0) {
+
+        gPlayer.actionProgress++;
+        
+        if (gPlayer.actionProgress == 2) {
+            gPlayer.animationState++;
+        }
+        
+    }
+
+    if (gPlayer.animationState == 3) {
+
+        gPlayer.actionProgress++;
+        
+        if (gPlayer.actionProgress == 2) {
+            gPlayer.animationState++;
+        }
+        
+    }
+
+    if (gPlayer.animationState == 2) {
+        setMainLoopCallbackFunctionIndex(0x12);
+        gPlayer.actionProgress = 0;
+        gPlayer.animationState++;
+    }
+    
+}
 
 //INCLUDE_ASM("asm/nonmatchings/game/player", func_80068410);
 
@@ -915,11 +1574,118 @@ void func_80068410(void) {
 
 }
 
-// D_8011F498
-INCLUDE_ASM("asm/nonmatchings/game/player", func_80068558);
+//INCLUDE_ASM("asm/nonmatchings/game/player", func_80068558);
 
-// D_8011F4A0
-INCLUDE_ASM("asm/nonmatchings/game/player", func_80068738);
+void func_80068558(void) {
+
+    Vec3f vec;
+    Vec3f vec2;
+    
+    if (gPlayer.animationState) {
+        if (checkEntityAnimationStateChanged(ENTITY_PLAYER)) {
+            gPlayer.animationState++;
+        }
+    }
+
+    if (gPlayer.animationState == 0) {
+
+        if (gPlayer.actionProgress == 0) {
+
+            setAudio(4);
+            
+            setEntityCollidable(ENTITY_PLAYER, 0);
+            setEntityTracksCollisions(ENTITY_PLAYER, 0);
+            enableEntityMovement(ENTITY_PLAYER, 0);
+            setEntityYMovement(ENTITY_PLAYER, 0);
+            
+            vec2 = getMovementVectorFromDirection(4.0f, gPlayer.direction, 0.0f);
+            
+            gPlayer.movementVector = vec2;
+            
+            gPlayer.movementVector.y = entities[ENTITY_PLAYER].coordinates.y;
+            
+        }
+
+        if (gPlayer.actionProgress < 15) {
+
+            setEntityMovementVector(ENTITY_PLAYER, gPlayer.movementVector.x, 0.0f, gPlayer.movementVector.z, 4.0f);
+            
+            entities->coordinates.y = 
+                ((gPlayer.movementVector.y 
+                     + (((gPlayer.actionProgress - 7) * (gPlayer.actionProgress - 7)) * -0.4f)) 
+                     + 19.6);
+            
+        } else {
+            
+            setEntityMovementVector(ENTITY_PLAYER, 0.0f, 0.0f, 0.0f, 0.0f);
+            gPlayer.animationState++;
+            gPlayer.actionProgress = 0;
+            toggleDailyEventBit(6);
+            
+        }
+
+        gPlayer.actionProgress++;
+        
+    }
+    
+}
+
+//INCLUDE_ASM("asm/nonmatchings/game/player", func_80068738);
+
+void func_80068738(void) {
+
+    Vec3f vec;
+    Vec3f vec2;
+    
+    if (gPlayer.animationState) {
+        if (checkEntityAnimationStateChanged(ENTITY_PLAYER)) {
+            gPlayer.animationState++;
+        }
+    }
+
+    if (gPlayer.animationState == 0) {
+
+        if (gPlayer.actionProgress == 0) {
+
+            setAudio(4);
+            
+            setEntityCollidable(ENTITY_PLAYER, 0);
+            setEntityTracksCollisions(ENTITY_PLAYER, 0);
+            enableEntityMovement(ENTITY_PLAYER, 0);
+            setEntityYMovement(ENTITY_PLAYER, 0);
+            
+            vec2 = getMovementVectorFromDirection(4.0f, gPlayer.direction, 0.0f);
+            
+            gPlayer.movementVector = vec2;
+            
+            gPlayer.movementVector.y = entities[ENTITY_PLAYER].coordinates.y;
+            
+        }
+
+        if (gPlayer.actionProgress < 27) {
+
+            setEntityMovementVector(ENTITY_PLAYER, gPlayer.movementVector.x, 0.0f, gPlayer.movementVector.z, 4.0f);
+            
+            entities->coordinates.y = 
+                ((gPlayer.movementVector.y 
+                     + (((gPlayer.actionProgress - 7) * (gPlayer.actionProgress - 7)) * -0.4f)) 
+                     + 19.6);
+            
+        } else {
+            
+            setEntityMovementVector(ENTITY_PLAYER, 0.0f, 0.0f, 0.0f, 0.0f);
+            gPlayer.animationState++;
+            gPlayer.actionProgress = 0;
+            toggleDailyEventBit(6);
+            
+        }
+
+        gPlayer.actionProgress++;
+        
+    }
+    
+}
+
 
 void func_80068918(void) {}
 
@@ -972,9 +1738,96 @@ void func_80068A08(void) {
 
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/player", func_80068A98);
+//INCLUDE_ASM("asm/nonmatchings/game/player", func_80068A98);
 
-INCLUDE_ASM("asm/nonmatchings/game/player", func_80068C8C);
+void func_80068A98(void) {
+
+    Vec3f vec;
+
+    if (gPlayer.animationState == 0) {
+
+        if (gPlayer.actionProgress == 0) {
+
+            setAudio(4);
+            setEntityCollidable(ENTITY_PLAYER, FALSE);
+            setEntityYMovement(ENTITY_PLAYER, FALSE);
+            vec = getMovementVectorFromDirection(4.0f, gPlayer.direction, 0.0f);
+            gPlayer.movementVector = vec;
+            gPlayer.movementVector.y = entities[ENTITY_PLAYER].coordinates.y;
+            
+        }
+
+        if (gPlayer.actionProgress < 6) {
+            setEntityMovementVector(ENTITY_PLAYER, gPlayer.movementVector.x, 0.0f, gPlayer.movementVector.z, 4.0f);
+        } else {
+            setEntityMovementVector(ENTITY_PLAYER, 0.0f, 0.0f, 0.0f, 0.0f);
+            gPlayer.animationState++;
+            gPlayer.actionProgress = 0;
+        }
+
+        gPlayer.actionProgress++;
+        
+    }
+
+    if (gPlayer.animationState) {
+        
+        setEntityCollidable(ENTITY_PLAYER, TRUE);
+        setEntityYMovement(ENTITY_PLAYER, TRUE);
+        
+        resetAction();
+
+        deactivateEntity(horseInfo.entityIndex);
+
+        horseInfo.flags &= ~4;
+        horseInfo.flags |= 8;
+        gPlayer.flags |= 1;
+
+        setDailyEventBit(0x5C);
+
+        setEntityDirection(ENTITY_PLAYER, convertSpriteToWorldDirection(horseInfo.direction, MAIN_MAP_INDEX));
+        
+    }
+    
+}
+
+//INCLUDE_ASM("asm/nonmatchings/game/player", func_80068C8C);
+
+void func_80068C8C(void) {
+
+    Vec3f vec;
+
+    if (gPlayer.animationState == 0) {
+
+        if (gPlayer.actionProgress == 0) {
+
+            setAudio(4);
+            setEntityCollidable(ENTITY_PLAYER, FALSE);
+            setEntityYMovement(ENTITY_PLAYER, FALSE);
+            vec = getMovementVectorFromDirection(4.0f, gPlayer.direction, 0.0f);
+            gPlayer.movementVector = vec;
+            gPlayer.movementVector.y = entities[ENTITY_PLAYER].coordinates.y;
+            
+        }
+
+        if (gPlayer.actionProgress < 8) {
+            setEntityMovementVector(ENTITY_PLAYER, gPlayer.movementVector.x, 0.0f, gPlayer.movementVector.z, 4.0f);
+        } else {
+            setEntityMovementVector(ENTITY_PLAYER, 0.0f, 0.0f, 0.0f, 0.0f);
+            gPlayer.animationState++;
+            gPlayer.actionProgress = 0;
+        }
+
+        gPlayer.actionProgress++;
+        
+    }
+
+    if (gPlayer.animationState) {
+        setEntityCollidable(ENTITY_PLAYER, TRUE);
+        setEntityYMovement(ENTITY_PLAYER, TRUE);
+        resetAction();
+    }
+    
+}
 
 //INCLUDE_ASM("asm/nonmatchings/game/player", func_80068DFC);
 
@@ -1031,16 +1884,289 @@ void func_80068DFC(void) {
    
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/player", func_80068FB0);
+//INCLUDE_ASM("asm/nonmatchings/game/player", func_80068FB0);
 
-INCLUDE_ASM("asm/nonmatchings/game/player", func_800692E4);
+void func_80068FB0(void) {
 
-INCLUDE_ASM("asm/nonmatchings/game/player", func_80069830);
+    Vec3f vec;
+    Vec3f vec2;
 
-// FIXME: have to fix D_801890C8 usage
-/*
+    switch (gPlayer.animationState) {
+
+        case 0:
+
+            setEntityCollidable(ENTITY_PLAYER, FALSE);
+            setEntityYMovement(ENTITY_PLAYER, FALSE);
+            
+            func_80038990(ENTITY_PLAYER, 0, 0);
+            
+            gPlayer.direction = SOUTH;
+            gPlayer.actionTimer = 16;
+            gPlayer.animationState++;
+            
+            vec = getMovementVectorFromDirection(4.0f, 4, 0.0f);
+            gPlayer.movementVector = vec;
+            
+            setEntityDirection(ENTITY_PLAYER, convertSpriteToWorldDirection(gPlayer.direction, MAIN_MAP_INDEX));
+            gPlayer.nextAction = 2;
+            
+            break;
+
+
+        case 1:
+
+            if (gPlayer.actionTimer == 0) {
+
+                gPlayer.movementVector.x = 0.0f;
+                gPlayer.movementVector.y = 0.0f;
+                gPlayer.movementVector.z = 0.0f;
+
+                func_80038990(ENTITY_PLAYER, 2, 0);
+                             
+                gPlayer.actionProgress = 0;
+                gPlayer.nextAction = 0;
+                gPlayer.animationState++;
+                
+            } else {
+                gPlayer.actionTimer--;
+            }
+            
+            break;
+
+        
+        case 2:
+
+            if (gPlayer.actionProgress == 90) {
+                
+                func_80038990(ENTITY_PLAYER, 0, 0);
+
+                setAudio(0x32);
+                
+                gPlayer.direction = NORTH;
+                gPlayer.actionTimer = 16;
+                gPlayer.animationState++;
+                
+                vec2 = getMovementVectorFromDirection(4.0f, 0, 0.0f);
+                gPlayer.movementVector = vec2;
+                
+                setEntityDirection(ENTITY_PLAYER, convertSpriteToWorldDirection(gPlayer.direction, MAIN_MAP_INDEX));
+                gPlayer.nextAction = 2;
+                
+            } else {
+                
+                gPlayer.actionProgress++;
+                
+                if (gPlayer.actionProgress == 10) {
+                    setAudio(0x56);
+                }
+                
+            }
+
+            break;
+        
+        case 3:
+
+            if (gPlayer.actionTimer == 0) {
+
+                gPlayer.movementVector.x = 0.0f;
+                gPlayer.movementVector.y = 0.0f;
+                gPlayer.movementVector.z = 0.0f;
+                
+                setEntityCollidable(ENTITY_PLAYER, TRUE);
+                setEntityYMovement(ENTITY_PLAYER, TRUE);
+    
+                func_80038990(ENTITY_PLAYER, 2, 0);
+    
+                resetAction();
+    
+                toggleDailyEventBit(6);
+    
+                if (!checkDailyEventBit(0x31)) {
+    
+                    gPlayer.fatigue.counter += adjustValue(gPlayer.fatigue.counter, -10, 0x64);
+                
+                } 
+                
+                setDailyEventBit(0x31);
+                
+            } else {
+                gPlayer.actionTimer--;
+            }
+
+            break;
+        
+    }
+
+    setEntityMovementVector(ENTITY_PLAYER, gPlayer.movementVector.x, 0.0f, gPlayer.movementVector.z, 1.0f);
+    
+}
+
+//INCLUDE_ASM("asm/nonmatchings/game/player", func_800692E4);
+
+void func_800692E4(void) {
+
+    Vec3f vec;
+    Vec3f vec2;
+    Vec3f vec3;
+
+    switch (gPlayer.animationState) {
+
+        case 0:
+
+            setEntityCollidable(ENTITY_PLAYER, FALSE);
+            setEntityTracksCollisions(ENTITY_PLAYER, FALSE);
+            enableEntityMovement(ENTITY_PLAYER, FALSE);
+            setEntityYMovement(ENTITY_PLAYER, FALSE);
+            func_80038990(ENTITY_PLAYER, 1, 0);
+            
+            gPlayer.direction = EAST;
+            gPlayer.actionTimer = 16;
+            gPlayer.animationState++;
+            
+            vec = getMovementVectorFromDirection(4.0f, 2, 0.0f);
+            gPlayer.movementVector = vec;
+            
+            setEntityDirection(ENTITY_PLAYER, convertSpriteToWorldDirection(gPlayer.direction, MAIN_MAP_INDEX));
+            gPlayer.nextAction = 2;
+            
+            break;
+        
+        case 1:
+
+            if (gPlayer.actionTimer == 0) {
+                
+                func_80038990(ENTITY_PLAYER, 3, 0);
+                
+                gPlayer.direction = SOUTH;
+                gPlayer.actionTimer = 20;
+                
+                vec2 = getMovementVectorFromDirection(4.0f, 4, 0.0f);
+                gPlayer.movementVector = vec2;
+                
+                setEntityDirection(ENTITY_PLAYER, convertSpriteToWorldDirection(gPlayer.direction, MAIN_MAP_INDEX));
+                gPlayer.animationState++;
+                
+            } else {
+                gPlayer.actionTimer--;
+            }
+            
+            break;
+        
+        case 2:
+
+            if (gPlayer.actionTimer == 0) {
+                
+                gPlayer.direction = EAST;
+                
+                resetMovement();
+                startNewAction(0xC, 0xE);
+                
+                gPlayer.flags |= 0x2;
+            
+            } else {
+                gPlayer.actionTimer--;
+            }
+
+            break;
+
+        case 3:
+
+            if (gPlayer.actionProgress == 60) {
+                
+                gPlayer.direction = WEST;
+                startNewAction(0xC, 0xE);
+                gPlayer.flags |= 8;
+
+            } else {
+                gPlayer.actionProgress++;
+            }
+
+            break;
+
+        case 4:
+
+            gPlayer.direction = NORTH;
+            
+            gPlayer.actionTimer = 20;
+            gPlayer.animationState++;
+            
+            vec2 = getMovementVectorFromDirection(4.0f, 0, 0.0f);
+            gPlayer.movementVector = vec2;
+
+            setEntityDirection(ENTITY_PLAYER, convertSpriteToWorldDirection(gPlayer.direction, MAIN_MAP_INDEX));
+            gPlayer.nextAction = 2;
+            
+            break;
+
+        case 5:
+
+            if (gPlayer.actionTimer == 0) {
+
+                func_80038990(ENTITY_PLAYER, 1, 0);
+                setAudio(0x32);
+                gPlayer.direction = WEST;
+                gPlayer.actionTimer = 16;
+                vec3 = getMovementVectorFromDirection(4.0f, 6, 0.0f);
+
+                gPlayer.movementVector = vec3;
+                
+                setEntityDirection(ENTITY_PLAYER, convertSpriteToWorldDirection(gPlayer.direction, MAIN_MAP_INDEX));
+                gPlayer.animationState++;
+                
+            } else {
+                gPlayer.actionTimer--;
+            }
+
+            break;
+        
+        case 6:
+
+            if (gPlayer.actionTimer == 0) {
+    
+                gPlayer.movementVector.x = 0.0f;
+                gPlayer.movementVector.y = 0.0f;
+                gPlayer.movementVector.z = 0.0f;
+                
+                setEntityCollidable(ENTITY_PLAYER, TRUE);
+                setEntityTracksCollisions(ENTITY_PLAYER, TRUE);
+                enableEntityMovement(ENTITY_PLAYER, TRUE);
+                setEntityYMovement(ENTITY_PLAYER, TRUE);
+    
+                func_80038990(ENTITY_PLAYER, 3, 0);
+    
+                resetAction();
+    
+                toggleDailyEventBit(6);
+    
+                if (!checkDailyEventBit(0x32)) {
+    
+                    if (checkHaveKeyItem(20)) {
+                        gPlayer.fatigue.counter += adjustValue(gPlayer.fatigue.counter, -20, 0x64);
+                    } else {
+                        gPlayer.fatigue.counter += adjustValue(gPlayer.fatigue.counter, -10, 0x64);
+                    }
+                    
+                } 
+                
+                setDailyEventBit(0x32);
+                
+            } else {
+                gPlayer.actionTimer--;
+            }
+        
+        break;
+        
+    }
+
+    setEntityMovementVector(ENTITY_PLAYER, gPlayer.movementVector.x, 0.0f, gPlayer.movementVector.z, 1.0f);
+
+}
+
+//INCLUDE_ASM("asm/nonmatchings/game/player", func_80069830);
+
 void func_80069830(void) {
 
+    // needing separate vecs implies these case statements are static inlines that have their own vecs
     Vec3f vec;
     Vec3f vec2;
 
@@ -1053,13 +2179,17 @@ void func_80069830(void) {
             enableEntityMovement(ENTITY_PLAYER, FALSE);
             setEntityYMovement(ENTITY_PLAYER, FALSE);
             func_80038990(ENTITY_PLAYER, 1, 0);
+            
             gPlayer.direction = SOUTH;
             gPlayer.actionTimer = 0x12;
             gPlayer.animationState++;
+
             vec = getMovementVectorFromDirection(4.0f, 4, 0.0f);
             gPlayer.movementVector = vec;
+            
             setEntityDirection(ENTITY_PLAYER, convertSpriteToWorldDirection(gPlayer.direction, MAIN_MAP_INDEX));
             gPlayer.nextAction = 2;
+            
             break;
 
         case 1:
@@ -1067,29 +2197,20 @@ void func_80069830(void) {
             if (gPlayer.actionTimer == 0) {
                 func_80038990(ENTITY_PLAYER, 0, 0);
                 gPlayer.direction = SOUTHWEST;
-                // to-do: replace with static inline
-                gPlayer.currentAction = 0xC;
-                gPlayer.movementVector.x = 0;
-                gPlayer.movementVector.y = 0;
-                gPlayer.movementVector.z = 0;
-                gPlayer.actionProgress = 0;
-                D_801890C8 = 0;
-                gPlayer.animationState = 0;
-                gPlayer.nextAction = 0xE;
+                resetMovement();
+                startNewAction(0xC, 0xE);
                 gPlayer.flags |= 0x10;
             } else {
                 gPlayer.actionTimer--;
             }
+
             break;
 
         case 2:
 
             if (gPlayer.actionProgress == 0x3C) {
                 gPlayer.direction = NORTHEAST;
-                // replace with single static inline
-                gPlayer.currentAction = 0xC;
-                resetAction2();
-                gPlayer.nextAction = 0xE;
+                startNewAction(0xC, 0xE);
                 gPlayer.flags |= 0x40;
             } else {
                 gPlayer.actionProgress++;
@@ -1108,7 +2229,7 @@ void func_80069830(void) {
                 gPlayer.direction = NORTH;
                 gPlayer.actionTimer = 0x12;
                 
-                vec = getMovementVectorFromDirection(4.0f, 0, 0.0f);
+                vec2 = getMovementVectorFromDirection(4.0f, 0, 0.0f);
                 
                 gPlayer.movementVector = vec2;
                 
@@ -1156,9 +2277,8 @@ void func_80069830(void) {
     }
 
     setEntityMovementVector(ENTITY_PLAYER, gPlayer.movementVector.x, 0.0f, gPlayer.movementVector.z, 1.0f);
-
+    
 }
-*/
 
 //INCLUDE_ASM("asm/nonmatchings/game/player", func_80069C5C);
 
@@ -1271,10 +2391,7 @@ void func_8006A2E8(void) {
             if (!(gPlayer.flags & 1)) {
 
                 if (playerIdleCounter == 1200) {
-                    gPlayer.currentAction = 9;
-                    gPlayer.actionProgress = 0;
-                    gPlayer.animationState = 0;
-                    gPlayer.nextAction = 0xB;
+                    startNewAction(9, 0xB);
                 } else {
                     playerIdleCounter++;
                 }
@@ -1802,7 +2919,126 @@ void func_8006AFE4(void) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/player", func_8006B104);
+//INCLUDE_ASM("asm/nonmatchings/game/player", func_8006B104);
+
+void func_8006B104(void) {
+
+    if (checkEntityAnimationStateChanged(ENTITY_PLAYER) || (gPlayer.animationState == 0)) {
+        
+        switch (gPlayer.animationState) {                          
+        
+            case 0:
+                
+                if (gPlayer.heldItem != 0) {
+                    setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x40);
+                } else if (gPlayer.flags & 1) {
+                    setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x224);
+                } else if (gPlayer.flags & 2) {
+                    setEntityAnimation(ENTITY_PLAYER, 0x23C);
+                } else if (gPlayer.flags & 8) {
+                    setEntityAnimation(ENTITY_PLAYER, 0x241);
+                } else if (gPlayer.flags & 0x10) {
+                    setEntityAnimation(ENTITY_PLAYER, 0x23D);
+                } else if (gPlayer.flags & 0x40) {
+                    setEntityAnimation(ENTITY_PLAYER, 0x240);
+                } else {
+                    setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x30);
+                }
+                
+                break;
+                
+            case 1:
+                
+                if (gPlayer.heldItem != 0) {
+                    setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x48);
+                } else if (gPlayer.flags & 1) {
+                    setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x22C);
+                } else if (gPlayer.flags & 2) {
+                    setEntityAnimation(ENTITY_PLAYER, 0x23E);
+                } else if (gPlayer.flags & 8) {
+                    setEntityAnimation(ENTITY_PLAYER, 0x243);
+                } else if (gPlayer.flags & 0x10) {
+                    setEntityAnimation(ENTITY_PLAYER, 0x23F);
+                } else if (gPlayer.flags & 0x40) {
+                    setEntityAnimation(ENTITY_PLAYER, 0x242);
+                } else {
+                    setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x38);
+                }
+
+                break;
+            
+            default:
+                
+                if (gPlayer.flags & 2) {
+                    
+                    startNewAction(0x11, 0);
+
+                    gPlayer.direction = NORTH;
+                    
+                    gPlayer.flags &= ~2; 
+                    gPlayer.flags |= 4;
+                    
+                    gPlayer.movementVector.x = 0.0f;
+                    gPlayer.movementVector.y = 0.0f;
+                    gPlayer.movementVector.z = 0.0f;
+                    gPlayer.animationState = 3;
+
+                    setEntityDirection(ENTITY_PLAYER, convertSpriteToWorldDirection(gPlayer.direction, MAIN_MAP_INDEX));
+                    setAudio(0x28);
+                      
+                } else if (gPlayer.flags & 8) {
+                    
+                    startNewAction(0x11, 0);
+                    
+                    gPlayer.flags &= ~(4 | 8);
+                                        
+                    gPlayer.movementVector.x = 0.0f;
+                    gPlayer.movementVector.y = 0.0f;
+                    gPlayer.movementVector.z = 0.0f;
+                    gPlayer.animationState = 4;
+                    
+                } else  if (gPlayer.flags & 0x10) {
+                    
+                    startNewAction(0x1D, 0);
+
+                    gPlayer.direction = NORTH;
+                    
+                    gPlayer.flags &= ~(0x10);
+                    gPlayer.flags |= 0x20;
+                    
+                    gPlayer.movementVector.x = 0.0f;
+                    gPlayer.movementVector.y = 0.0f;
+                    gPlayer.movementVector.z = 0.0f;
+                    gPlayer.animationState = 2;
+                    
+                    setEntityDirection(ENTITY_PLAYER, convertSpriteToWorldDirection(gPlayer.direction, MAIN_MAP_INDEX));
+                    setAudio(0x28);
+                                        
+                } else if (gPlayer.flags & 0x40) {
+                
+                    startNewAction(0x1D, 0);
+                    
+                    gPlayer.flags &= ~(0x20 | 0x40); 
+    
+                    gPlayer.movementVector.x = 0.0f;
+                    gPlayer.movementVector.y = 0.0f;
+                    gPlayer.movementVector.z = 0.0f;
+                    gPlayer.animationState = 3;
+                
+            } else {
+                
+                setEntityCollidable(ENTITY_PLAYER, TRUE);
+                setEntityTracksCollisions(ENTITY_PLAYER, TRUE);
+                enableEntityMovement(ENTITY_PLAYER, TRUE);
+                setEntityYMovement(ENTITY_PLAYER, TRUE);
+                
+                resetAction();
+                
+            }
+        }
+    }
+    
+}
 
 void func_8006B4D4(void) {}
 
@@ -2155,7 +3391,7 @@ void handleFishingRodUse(void) {
                     
                     gPlayer.heldItem = POWER_NUT;
 
-                    setAction(6, 0, 0, 8);
+                    startNewAction(6, 8);
                     
                     powerNutBits |= FISHING_POWER_NUT;
                     
@@ -2225,7 +3461,9 @@ void func_8006C1DC(void) {
     ptr = (u8*)&data;
     
     if (checkEntityAnimationStateChanged(ENTITY_PLAYER) || gPlayer.animationState == 0) {
+
         switch (gPlayer.animationState) {
+
             case 0:
                 setEntityAnimation(ENTITY_PLAYER, 0x171);
                 gPlayer.animationState = 1;
@@ -2246,8 +3484,11 @@ void func_8006C1DC(void) {
                 gPlayer.heldItem = 0;
                 resetAction();
                 break;
+
         }
+
     }
+
 }
 #else
 INCLUDE_ASM("asm/nonmatchings/game/player", func_8006C1DC);
@@ -2256,19 +3497,206 @@ INCLUDE_ASM("asm/nonmatchings/game/player", func_8006C1DC);
 // u8 array, probably 2d
 INCLUDE_RODATA("asm/nonmatchings/game/player", D_8011F5D4);
 
-INCLUDE_ASM("asm/nonmatchings/game/player", func_8006C384);
+//INCLUDE_ASM("asm/nonmatchings/game/player", func_8006C384);
 
-// jtbl_8011F6D8
+void func_8006C384(void) {
+    
+    if (checkEntityAnimationStateChanged(ENTITY_PLAYER) || (gPlayer.animationState == 0)) {
+        
+        switch (gPlayer.currentTool) {                          
+            case 1:                                     
+                func_8006CD84();
+                break;
+            case 2:                                     
+                func_8006CDF8();
+                break;
+            case 3:                                     
+                func_8006CE6C();
+                break;
+            case 4:                                     
+                func_8006CEE0();
+                break;
+            case 5:                                     
+                func_8006CF54();
+                break;
+            case 6:                                     
+                func_8006D0AC();
+                break;
+            case 7:                                     
+                func_8006D21C();
+                break;
+            case 8:                                     
+                func_8006D304();
+                break;
+            case 9:                                     
+                func_8006D3FC();
+                break;
+            case 10:                                    
+                func_8006D56C();
+                break;
+            case 11:                                    
+                func_8006D690();
+                break;
+            case 12:                                    
+                func_8006D7B4();
+                break;
+            case 13:                                    
+                func_8006D8D8();
+                break;
+            case 14:                                    
+                func_8006D9FC();
+                break;
+            case 15:                                    
+                func_8006DB20();
+                break;
+            case 16:                                    
+                func_8006DC44();
+                break;
+            case 17:                                    
+                func_8006DD68();
+                break;
+            case 18:                                    
+                func_8006DE8C();
+                break;
+            case 19:                                    
+                func_8006DFB0();
+                break;
+            case 20:                                    
+                func_8006E0D4();
+                break;
+            case 21:                                    
+                func_8006E1F8();
+                break;
+            case 22:                                    
+                func_8006E200();
+                break;
+            case 23:                                    
+                func_8006E208();
+                break;
+            case 24:                                    
+                func_8006E210();
+                break;
+            case 25:                                    
+                func_8006E240();
+                break;
+            case 26:                                    
+                func_8006E348();
+                break;
+            case 27:                                    
+                func_8006E450();
+                break;
+            case 28:                                    
+                func_8006E574();
+                break;
+            case 29:                                    
+                func_8006E678();
+                break;
+            }
+    }
+    
+    if (checkEntityShouldPlaySoundEffect(ENTITY_PLAYER)) {
+        
+        switch (gPlayer.currentTool) {         
+
+            case 1:
+            case 2:
+            case 3:
+            case 4:
+            case 5:
+                break;
+            case 6:                                     
+                setAudio(0x1E);
+                break;
+            case 7:                                     
+                setAudio(0x20);
+                break;
+            case 8:                                     
+                setAudio(0x1F);
+                break;
+            case 9:                                     
+                setAudio(0x22);
+                break;
+            case 20:                                    
+                setAudio(0x1D);
+                break;
+            case 25:                                    
+            case 26:                                    
+            case 28:                                    
+                setAudio(0x23);
+                break;
+            case 29:
+            default:
+                break;
+            }
+        
+    }
+    
+}
+
 INCLUDE_ASM("asm/nonmatchings/game/player", func_8006C628);
 
 
-// tool animation
+// tool animations
 
-INCLUDE_ASM("asm/nonmatchings/game/player", func_8006CD84);
+//INCLUDE_ASM("asm/nonmatchings/game/player", func_8006CD84);
 
-INCLUDE_ASM("asm/nonmatchings/game/player", func_8006CDF8);
+void func_8006CD84(void) {
+    
+    switch(gPlayer.staminaLevelForCurrentToolUse) {
 
-INCLUDE_ASM("asm/nonmatchings/game/player", func_8006CE6C);
+        case 0:
+            func_8006C628(0x50, 0x68);
+            break;
+        case 1:
+            func_8006C628(0x58, 0x70);
+            break;
+        case 2:
+            func_8006C628(0x60, 0x78);
+            break;
+        
+    }
+    
+}
+
+//INCLUDE_ASM("asm/nonmatchings/game/player", func_8006CDF8);
+
+void func_8006CDF8(void) {
+    
+    switch(gPlayer.staminaLevelForCurrentToolUse) {
+
+        case 0:
+            func_8006C628(0x80, 0x98);
+            break;
+        case 1:
+            func_8006C628(0x88, 0xA0);
+            break;
+        case 2:
+            func_8006C628(0x90, 0xA8);
+            break;
+        
+    }
+
+}
+
+//INCLUDE_ASM("asm/nonmatchings/game/player", func_8006CE6C);
+
+void func_8006CE6C(void) {
+
+    switch(gPlayer.staminaLevelForCurrentToolUse) {
+
+        case 0:
+            func_8006C628(0xB0, 0xC8);
+            break;
+        case 1:
+            func_8006C628(0xB8, 0xD0);
+            break;
+        case 2:
+            func_8006C628(0xC0, 0xD8);
+            break;
+        
+    }
+    
+}
 
 //INCLUDE_ASM("asm/nonmatchings/game/player", func_8006CEE0);
 
@@ -2291,33 +3719,620 @@ void func_8006CEE0(void) {
     
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/player", func_8006CF54);
+static inline void unknownInlineFunc() {
 
-INCLUDE_ASM("asm/nonmatchings/game/player", func_8006D0AC);
+    u8 temp;
+    
+    switch (gPlayer.animationState) {
+                    
+        case 0:
+            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x140);
+            break;
+        
+        case 1:
 
-INCLUDE_ASM("asm/nonmatchings/game/player", func_8006D21C);
+            if (toolUse.unk_E == 0) {
 
-INCLUDE_ASM("asm/nonmatchings/game/player", func_8006D304);
+                temp = gPlayer.toolLevels[4];
 
-INCLUDE_ASM("asm/nonmatchings/game/player", func_8006D3FC);
+                if (temp != gPlayer.animationState) {
+                    
+                    switch (temp) {
 
-INCLUDE_ASM("asm/nonmatchings/game/player", func_8006D56C);
+                        case 0:
+                            D_8016FBCD = 0x1E;
+                            break;
+                        
+                        case 1:
+                            break;
+                        
+                        case 2:
+                            D_8016FBCD = 0x50;
+                            break;
 
-INCLUDE_ASM("asm/nonmatchings/game/player", func_8006D690);
+                    }
+                    
+                } else {
+                    D_8016FBCD = 0x32;
+                }
 
-INCLUDE_ASM("asm/nonmatchings/game/player", func_8006D7B4);
+                if (!(func_80067A24(0))) {
+                    resetAction();
+                }
+                
+            }
+            
+            break;
+    
+    }
+    
+}
 
-INCLUDE_ASM("asm/nonmatchings/game/player", func_8006D8D8);
+//INCLUDE_ASM("asm/nonmatchings/game/player", func_8006CF54);
 
-INCLUDE_ASM("asm/nonmatchings/game/player", func_8006D9FC);
+void func_8006CF54(void) {
 
-INCLUDE_ASM("asm/nonmatchings/game/player", func_8006DB20);
+    u8 temp;
+    
+    switch (gPlayer.staminaLevelForCurrentToolUse) {                              
+        
+        case 0:
 
-INCLUDE_ASM("asm/nonmatchings/game/player", func_8006DC44);
+            if (func_800ACFE8(gBaseMapIndex)) {
 
-INCLUDE_ASM("asm/nonmatchings/game/player", func_8006DD68);
+                unknownInlineFunc();
+                
+            } else {
+                func_8006C628(0x110, 0x128);
+                break;
+            }
+            
+            break;
+        
+        case 1:
+            func_8006C628(0x118, 0x130);
+            break;
 
-INCLUDE_ASM("asm/nonmatchings/game/player", func_8006DE8C);
+        case 2:
+            func_8006C628(0x120, 0x138);
+            break;
+        
+        default:
+            break;
+        
+    }
+    
+}
+
+//INCLUDE_ASM("asm/nonmatchings/game/player", func_8006D0AC);
+
+void func_8006D0AC(void) {
+
+    switch (gPlayer.animationState) {                              
+        
+        case 0:
+            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0);
+            func_80099DE8();
+            break;
+        
+        case 1:
+            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x149);
+            break;
+        
+        case 2:
+            func_800CF850();
+            gPlayer.animationState++;
+            break;
+        
+        case 3:
+            
+            if (toolUse.unk_E == 0) {
+
+                if (gPlayer.heldItem == 0) {
+
+                    if (!(func_80067A24(0))) {
+                        resetAction();
+                    }
+                    
+                } else {
+
+                    if (!(func_80067A24(0))) {
+                        startNewAction(4, 6);
+                    } else {
+                        gPlayer.itemInfoIndex = func_800D5308(0, 6, gPlayer.heldItem, 0, 8);
+                    }
+                    
+                }
+                
+            }
+        
+            break;
+        
+    }
+    
+}
+
+//INCLUDE_ASM("asm/nonmatchings/game/player", func_8006D21C);
+
+void func_8006D21C(void) {
+    
+    switch (gPlayer.animationState) {                              
+        
+        case 0:
+            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0);
+            break;
+        
+        case 1:
+            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x151);
+            break;
+        
+        case 2:
+            func_800CF850();
+            gPlayer.animationState++;
+            break;
+        
+        case 3:
+            
+            if ((toolUse.unk_E == 0) && !(func_80067A24(0))) {
+                resetAction();
+            }
+        
+            break;
+        
+    }
+    
+}
+
+//INCLUDE_ASM("asm/nonmatchings/game/player", func_8006D304);
+
+void func_8006D304(void) {
+
+    switch (gPlayer.animationState) {                              
+        
+        case 0:
+            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0);
+            func_80099DE8();
+            func_8009A074();
+            break;
+        
+        case 1:
+            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x159);
+            break;
+        
+        case 2:
+            func_800CF850();
+            gPlayer.animationState++;
+            break;
+        
+        case 3:
+            
+            if ((toolUse.unk_E == 0) && !(func_80067A24(0))) {
+                resetAction();
+            }
+        
+            break;
+        
+        }
+    
+}
+
+//INCLUDE_ASM("asm/nonmatchings/game/player", func_8006D3FC);
+
+void func_8006D3FC(void) {
+
+    switch (gPlayer.animationState) {                              
+        
+        case 0:
+            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, STANDING);
+            func_80099DE8();
+            break;
+
+        case 1:
+            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x161);
+            break;
+    
+        case 2:
+            func_800CF850();
+            gPlayer.animationState++;
+            break;
+        
+        case 3:
+            
+            if (toolUse.unk_E == 0) {
+                
+                if (gPlayer.heldItem == 0) {
+                    
+                    if (!(func_80067A24(0))) {
+                        resetAction();
+                    }
+                    
+                } else {
+                    
+                    if (!(func_80067A24(0))) {
+                        startNewAction(4, 6);
+                    } else {
+                        gPlayer.itemInfoIndex = func_800D5308(0, 6, gPlayer.heldItem, 0, 8);
+                    }
+                    
+                    
+                }
+                
+            } 
+            
+            break;
+        
+    }
+    
+}
+
+//INCLUDE_ASM("asm/nonmatchings/game/player", func_8006D56C);
+
+void func_8006D56C(void) {
+    
+    switch (gPlayer.animationState) {
+
+        case 0:
+            setEntityAnimation(ENTITY_PLAYER, 0);
+            break;
+        
+        case 1:
+            setEntityAnimation(ENTITY_PLAYER, 0x148);
+            break;
+        
+        case 2:
+            func_800CF850();
+            gPlayer.animationState++;
+            break;
+        
+        case 3:
+
+            if (toolUse.unk_E == 0) {
+                
+                if (!(func_80067A24(0))) {
+                    resetAction();
+                }
+
+                D_801FC154 += adjustValue(D_801FC154, -1, 20);
+
+                if (!D_801FC154) {
+                    gPlayer.currentTool = 0;
+                }
+                
+            }
+            
+            break;
+        
+    }
+    
+}
+
+//INCLUDE_ASM("asm/nonmatchings/game/player", func_8006D690);
+
+void func_8006D690(void) {
+    
+    switch (gPlayer.animationState) {
+
+        case 0:
+            setEntityAnimation(ENTITY_PLAYER, 0);
+            break;
+        
+        case 1:
+            setEntityAnimation(ENTITY_PLAYER, 0x148);
+            break;
+        
+        case 2:
+            func_800CF850();
+            gPlayer.animationState++;
+            break;
+        
+        case 3:
+
+            if (toolUse.unk_E == 0) {
+                
+                if (!(func_80067A24(0))) {
+                    resetAction();
+                }
+
+                D_80204DF4 += adjustValue(D_80204DF4, -1, 20);
+
+                if (!D_80204DF4) {
+                    gPlayer.currentTool = 0;
+                }
+                
+            }
+            
+            break;
+        
+    }
+    
+}
+
+//INCLUDE_ASM("asm/nonmatchings/game/player", func_8006D7B4);
+
+void func_8006D7B4(void) {
+    
+    switch (gPlayer.animationState) {
+
+        case 0:
+            setEntityAnimation(ENTITY_PLAYER, 0);
+            break;
+        
+        case 1:
+            setEntityAnimation(ENTITY_PLAYER, 0x148);
+            break;
+        
+        case 2:
+            func_800CF850();
+            gPlayer.animationState++;
+            break;
+        
+        case 3:
+
+            if (toolUse.unk_E == 0) {
+                
+                if (!(func_80067A24(0))) {
+                    resetAction();
+                }
+
+                D_8018A725 += adjustValue(D_8018A725, -1, 20);
+
+                if (!D_8018A725) {
+                    gPlayer.currentTool = 0;
+                }
+                
+            }
+            
+            break;
+        
+    }
+    
+}
+
+//INCLUDE_ASM("asm/nonmatchings/game/player", func_8006D8D8);
+
+void func_8006D8D8(void) {
+    
+    switch (gPlayer.animationState) {
+
+        case 0:
+            setEntityAnimation(ENTITY_PLAYER, 0);
+            break;
+        
+        case 1:
+            setEntityAnimation(ENTITY_PLAYER, 0x148);
+            break;
+        
+        case 2:
+            func_800CF850();
+            gPlayer.animationState++;
+            break;
+        
+        case 3:
+
+            if (toolUse.unk_E == 0) {
+                
+                if (!(func_80067A24(0))) {
+                    resetAction();
+                }
+
+                D_8013DC2C += adjustValue(D_8013DC2C, -1, 20);
+
+                if (!D_8013DC2C) {
+                    gPlayer.currentTool = 0;
+                }
+                
+            }
+            
+            break;
+        
+    }
+    
+}
+
+//INCLUDE_ASM("asm/nonmatchings/game/player", func_8006D9FC);
+
+void func_8006D9FC(void) {
+    
+    switch (gPlayer.animationState) {
+
+        case 0:
+            setEntityAnimation(ENTITY_PLAYER, 0);
+            break;
+        
+        case 1:
+            setEntityAnimation(ENTITY_PLAYER, 0x148);
+            break;
+        
+        case 2:
+            func_800CF850();
+            gPlayer.animationState++;
+            break;
+        
+        case 3:
+
+            if (toolUse.unk_E == 0) {
+                
+                if (!(func_80067A24(0))) {
+                    resetAction();
+                }
+
+                D_801FAD91 += adjustValue(D_801FAD91, -1, 20);
+
+                if (!D_801FAD91) {
+                    gPlayer.currentTool = 0;
+                }
+                
+            }
+            
+            break;
+        
+    }
+    
+}
+
+//INCLUDE_ASM("asm/nonmatchings/game/player", func_8006DB20);
+
+void func_8006DB20(void) {
+    
+    switch (gPlayer.animationState) {
+
+        case 0:
+            setEntityAnimation(ENTITY_PLAYER, 0);
+            break;
+        
+        case 1:
+            setEntityAnimation(ENTITY_PLAYER, 0x148);
+            break;
+        
+        case 2:
+            func_800CF850();
+            gPlayer.animationState++;
+            break;
+        
+        case 3:
+
+            if (toolUse.unk_E == 0) {
+                
+                if (!(func_80067A24(0))) {
+                    resetAction();
+                }
+
+                D_80237458 += adjustValue(D_80237458, -1, 20);
+
+                if (!D_80237458) {
+                    gPlayer.currentTool = 0;
+                }
+                
+            }
+            
+            break;
+        
+    }
+    
+}
+
+//INCLUDE_ASM("asm/nonmatchings/game/player", func_8006DC44);
+
+void func_8006DC44(void) {
+    
+    switch (gPlayer.animationState) {
+
+        case 0:
+            setEntityAnimation(ENTITY_PLAYER, 0);
+            break;
+        
+        case 1:
+            setEntityAnimation(ENTITY_PLAYER, 0x148);
+            break;
+        
+        case 2:
+            func_800CF850();
+            gPlayer.animationState++;
+            break;
+        
+        case 3:
+
+            if (toolUse.unk_E == 0) {
+                
+                if (!(func_80067A24(0))) {
+                    resetAction();
+                }
+
+                D_802373E8 += adjustValue(D_802373E8, -1, 20);
+
+                if (!D_802373E8) {
+                    gPlayer.currentTool = 0;
+                }
+                
+            }
+            
+            break;
+        
+    }
+    
+}
+
+//INCLUDE_ASM("asm/nonmatchings/game/player", func_8006DD68);
+
+void func_8006DD68(void) {
+
+    switch (gPlayer.animationState) {
+
+        case 0:
+            setEntityAnimation(ENTITY_PLAYER, 0);
+            break;
+        
+        case 1:
+            setEntityAnimation(ENTITY_PLAYER, 0x148);
+            break;
+        
+        case 2:
+            func_800CF850();
+            gPlayer.animationState++;
+            break;
+        
+        case 3:
+
+            if (toolUse.unk_E == 0) {
+                
+                if (!(func_80067A24(0))) {
+                    resetAction();
+                }
+
+                D_801C3F70 += adjustValue(D_801C3F70, -1, 20);
+
+                if (!D_801C3F70) {
+                    gPlayer.currentTool = 0;
+                }
+                
+            }
+            
+            break;
+        
+    }
+    
+}
+
+//INCLUDE_ASM("asm/nonmatchings/game/player", func_8006DE8C);
+
+void func_8006DE8C(void) {
+
+        switch (gPlayer.animationState) {
+
+        case 0:
+            setEntityAnimation(ENTITY_PLAYER, 0);
+            break;
+        
+        case 1:
+            setEntityAnimation(ENTITY_PLAYER, 0x148);
+            break;
+        
+        case 2:
+            func_800CF850();
+            gPlayer.animationState++;
+            break;
+
+        case 3:
+
+            if (toolUse.unk_E == 0) {
+                
+                if (!(func_80067A24(0))) {
+                    resetAction();
+                }
+
+                D_80205636 += adjustValue(D_80205636, -1, 20);
+
+                if (!D_80205636) {
+                    gPlayer.currentTool = 0;
+                }
+                
+            }
+            
+            break;
+        
+    }
+
+}
 
 //INCLUDE_ASM("asm/nonmatchings/game/player", func_8006DFB0);
 
@@ -2358,27 +4373,38 @@ void func_8006DFB0(void) {
 void func_8006E0D4(void) {
 
     switch (gPlayer.animationState) {
+
         case 0:
             setEntityAnimationWithDirectionChange(ENTITY_PLAYER, STANDING);
             break;
+
         case 1:
             setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x169);
             break;
+
         case 2:
             func_800CF850();
             gPlayer.animationState++;
             break;
+
         case 3:
+
             if (!toolUse.unk_E) {
+
                 if (!func_80067A24(0)) {
                     resetAction();
                 }
+
                 chickenFeedQuantity += adjustValue(chickenFeedQuantity, -1, 999);
+                
                 if (!chickenFeedQuantity) {
                     gPlayer.currentTool = 0;
                 }
+
             }
+
             break;
+
         default:
             break;
     }
@@ -2393,10 +4419,7 @@ void func_8006E208(void) {}
 //INCLUDE_ASM("asm/nonmatchings/game/player", func_8006E210);
 
 void func_8006E210(void) {
-    gPlayer.currentAction = 0x16;
-    gPlayer.actionProgress = 0;
-    gPlayer.animationState = 0;
-    gPlayer.nextAction = 0x17;
+    startNewAction(0x16, 0x17);
 }
 
 // empty bottle
@@ -2432,9 +4455,86 @@ void func_8006E240(void) {
 
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/player", func_8006E348);
+//INCLUDE_ASM("asm/nonmatchings/game/player", func_8006E348);
 
-INCLUDE_ASM("asm/nonmatchings/game/player", func_8006E450);
+void func_8006E348(void) {
+
+    switch (gPlayer.animationState) {
+
+        case 0:
+            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0);
+            func_80099DE8();
+            break;
+        
+        case 1:
+            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x234);
+            break;
+        
+        case 2:
+            func_800CF850();
+            gPlayer.animationState++;
+            break;
+
+        case 3:
+
+            if (toolUse.unk_E == 0) {
+                
+                if (!(func_80067A24(0))) {
+                    resetAction();
+                }
+
+                if (checkDailyEventBit(0x14)) {
+                    gPlayer.currentTool = 0;
+                }
+                
+            }
+            
+            break;
+        
+    }
+    
+}
+
+//INCLUDE_ASM("asm/nonmatchings/game/player", func_8006E450);
+
+void func_8006E450(void) {
+
+    switch (gPlayer.animationState) {
+
+        case 0:
+            setEntityAnimation(ENTITY_PLAYER, 0);
+            break;
+        
+        case 1:
+            setEntityAnimation(ENTITY_PLAYER, 0x148);
+            break;
+        
+        case 2:
+            func_800CF850();
+            gPlayer.animationState++;
+            break;
+
+        case 3:
+
+            if (toolUse.unk_E == 0) {
+                
+                if (!(func_80067A24(0))) {
+                    resetAction();
+                }
+
+                D_801C3E28 += adjustValue(D_801C3E28, -1, 20);
+
+                if (!D_801C3E28) {
+                    gPlayer.currentTool = 0;
+                }
+                
+            }
+            
+            break;
+        
+    }
+    
+}
 
 //INCLUDE_ASM("asm/nonmatchings/game/player", func_8006E574);
 
@@ -2464,7 +4564,6 @@ void func_8006E574(void) {
     
 }
 
-// jtbl_8011F6F0
 //INCLUDE_ASM("asm/nonmatchings/game/player", func_8006E678);
 
 void func_8006E678(void) {
@@ -2480,7 +4579,7 @@ void func_8006E678(void) {
                 
             } else {
 
-                setAction2(0x14, 0x15);
+                startNewAction(0x14, 0x15);
                 
                 switch (gPlayer.bottleContents) {
                     case 1:
@@ -2536,4 +4635,5 @@ void func_8006E678(void) {
         default:
             break;
     }
+
 }

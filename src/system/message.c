@@ -1,95 +1,129 @@
 #include "common.h"
 
+#include "system/audio.h"
+#include "system/controller.h"
 #include "system/dialogue.h"
+#include "system/graphic.h"
 #include "system/message.h"
 #include "system/globalSprites.h"
-#include "system/volume.h"
+#include "system/interpolation.h"
+#include "system/sceneGraph.h"
+#include "system/sprite.h"
+
+#include "mainproc.h"
+
+#include "ld_symbols.h"
 
 // bss
-extern u16 D_80204BF0[256];
-extern DialogueBox dialogueBoxes[MAX_DIALOGUE_BOXES];
+
+extern MessageBox messageBoxes[MAX_DIALOGUE_BOXES];
 extern GameVariableString gameVariableStrings[64];
-extern Vtx D_801C6230[2][2048][4];
+
 // byteswapped font texture buffer
 extern FontData D_801706C0[2][256];
 
+// text buffer of current displayed lines in game string characters; each line is size 0x20 (0x10 u16s)
+// u16 linesBuffer[8][0x10]
+// always 16 chars per line (filled with padding) 
+extern u16 D_80204BF0[256];
+
+extern Vtx D_801C6230[2][512][4];
+extern Gfx messageBoxDisplayList[2][3072];
+
+// pointer to character avatar animation scripts
+u8* D_801891C8;
+
 // rodata
-extern u32 powersOfTen[8];
-extern u8 digitCharacterCodes[16];
-extern u8 D_8011EE90[8];
-extern Gfx D_8011EEB0;
-extern Gfx D_8011EEB8;
-extern Gfx D_8011EEC0;
+static const u32 powersOfTen[8];
+static const u8 digitCharacterCodes[16];
+static const u8 controlByteBitMasks[8];
+
+static const Gfx D_8011EE98;
+static const Gfx D_8011EEA0;
+static const Gfx D_8011EEA8;
+static const Gfx D_8011EEB0;
+static const Gfx D_8011EEB8;
+static const Gfx D_8011EEC0;
 
 // forward delcarations
 bool func_8003F024(u16 index, u8 arg1, u8 arg2, u8 arg3, u8 arg4);
 bool func_8003E77C(u16 index, u8 arg1, u8 arg2, u8 arg3, u8 arg4);
-bool func_8003FDB0(u16);      
+void func_8003FD74(void);
+bool func_8003FDB0(u16 index);
+void func_8004022C(u16 index);
 u8 func_800403F0(u16 index, u16 arg1);
-void func_80040628(u16, u8); 
-u32 func_80041850(u16 index);
-u32 func_80041B28(u16 index, u16 offset);
-void func_80041B80(u16, DialogueBoxFont*, u8*);
+void advanceToLine(u16, u8); 
+void func_80040318(u16 index);
+void func_80040858(u16);                               
+void func_80040C38(u16);                               
+u16 func_80041850(u16 index);
+u8 func_800419C4(u16 index);
+Gfx* func_80041CD8(Gfx* dl, MessageBox* messageBox);
+Gfx* func_80042014(Gfx* dl, MessageBox* messageBox, u8 arg2, s32 arg3); 
+void addMessageCharSceneNode(MessageBox* messageBox, u8 line, Gfx* dl);    
+u32 getTextAddress(u16 index, u16 offset);
+void unpackFontCI2Data(u16, MessageBoxFont*, u8*);
 
-//INCLUDE_ASM("asm/nonmatchings/system/message", func_8003D970);
 
-void func_8003D970(void) {
+//INCLUDE_ASM("asm/nonmatchings/system/message", initializeMessageBoxes);
+
+void initializeMessageBoxes(void) {
 
     u16 i = 0;
 
     for (i = 0; i < MAX_DIALOGUE_BOXES; i++) {
 
-        dialogueBoxes[i].flags = 0;
+        messageBoxes[i].flags = 0;
         
-        dialogueBoxes[i].dialogueIndex = 0;
+        messageBoxes[i].textIndex = 0;
         
-        dialogueBoxes[i].unk_90 = 0;
-        dialogueBoxes[i].unk_91 = 0;
-        
-        dialogueBoxes[i].unk_7C = 0;
-
-        dialogueBoxes[i].buttonSfxCounter = 0;
-        dialogueBoxes[i].flag = 0;
-        dialogueBoxes[i].margins = 0;
-        dialogueBoxes[i].maxLinesInBox = 0;
-
-        dialogueBoxes[i].unk_9B = 0;
-        dialogueBoxes[i].unk_9C = 0;
-
-        dialogueBoxes[i].unk_70 = 0xFF;
-        dialogueBoxes[i].unk_74 = 0xFF;
-        dialogueBoxes[i].unk_78 = 0xFF;
-
-        dialogueBoxes[i].unk_80 = 0;
-        dialogueBoxes[i].unk_82 = 0;
-        dialogueBoxes[i].unk_84 = 0;
-        dialogueBoxes[i].unk_86 = 0;
-        dialogueBoxes[i].dialogueInfoIndex = 0;
-
-        dialogueBoxes[i].fontContext.unk_60 = 0;
-        dialogueBoxes[i].fontContext.unk_61 = 0;
-
-        dialogueBoxes[i].viewSpacePosition.x = 0;
-        dialogueBoxes[i].viewSpacePosition.y = 0;
-        dialogueBoxes[i].viewSpacePosition.z = 0;
-
-        dialogueBoxes[i].unk_92 = 0;
-        dialogueBoxes[i].unk_93 = 0;
-
-        dialogueBoxes[i].unk_14.r = 255.0f;
-        dialogueBoxes[i].unk_14.g = 255.0f;
-        dialogueBoxes[i].unk_14.b = 255.0f;
-        dialogueBoxes[i].unk_14.a = 255.0f;
-
-        dialogueBoxes[i].unk_24.r = 255.0f;
-        dialogueBoxes[i].unk_24.g = 255.0f;
-        dialogueBoxes[i].unk_24.b = 255.0f;
-        dialogueBoxes[i].unk_24.a = 255.0f;
-       
-        func_800267A4((Volume*)&dialogueBoxes[i].unk_64, 0, 0);
-        func_800267A4((Volume*)&dialogueBoxes[i].volume, 0, 0);
+        messageBoxes[i].currentCompressionControlByte = 0;
+        messageBoxes[i].compressionBitIndex = 0;
          
-        dialogueBoxes[i].unk_9D = 0;
+        messageBoxes[i].unk_7C = 0;
+
+        messageBoxes[i].scrollCount = 0;
+        messageBoxes[i].totalLinesToPrint = 0;
+        messageBoxes[i].currentCharCountOnLine = 0;
+        messageBoxes[i].currentLineBeingPrinted = 0;
+
+        messageBoxes[i].characterSpacing = 0;
+        messageBoxes[i].lineSpacing = 0;
+
+        messageBoxes[i].characterPrintSfx = 0xFF;
+        messageBoxes[i].unk_74 = 0xFF;
+        messageBoxes[i].messageCloseSfx = 0xFF;
+
+        messageBoxes[i].totalCharactersProcessed = 0;
+        messageBoxes[i].charactersProcessedPerLine = 0;
+        messageBoxes[i].defaultScrollSpeed = 0;
+        messageBoxes[i].buttonMask = 0;
+        messageBoxes[i].textAddressesIndex = 0;
+ 
+        messageBoxes[i].fontContext.characterCellWidth = 0;
+        messageBoxes[i].fontContext.characterCellHeight = 0;
+
+        messageBoxes[i].viewSpacePosition.x = 0;
+        messageBoxes[i].viewSpacePosition.y = 0;
+        messageBoxes[i].viewSpacePosition.z = 0;
+
+        messageBoxes[i].textBoxLineCharWidth = 0;
+        messageBoxes[i].textBoxVisibleRows = 0;
+
+        messageBoxes[i].unk_14.r = 255.0f;
+        messageBoxes[i].unk_14.g = 255.0f;
+        messageBoxes[i].unk_14.b = 255.0f;
+        messageBoxes[i].unk_14.a = 255.0f;
+
+        messageBoxes[i].unk_24.r = 255.0f;
+        messageBoxes[i].unk_24.g = 255.0f;
+        messageBoxes[i].unk_24.b = 255.0f;
+        messageBoxes[i].unk_24.a = 255.0f;
+       
+        initializeInterpolator((Interpolator*)&messageBoxes[i].unk_64, 0, 0);
+        initializeInterpolator((Interpolator*)&messageBoxes[i].scrollInterpolator, 0, 0);
+         
+        messageBoxes[i].unk_9D = 0;
         
     }
 
@@ -101,34 +135,34 @@ void func_8003D970(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/message", func_8003DBE8);
+//INCLUDE_ASM("asm/nonmatchings/system/message", initializeEmptyMessageBox);
 
-bool func_8003DBE8(u16 dialogueBoxIndex, u8* textBufferAddr) {
+bool initializeEmptyMessageBox(u16 messageBoxIndex, u8* textBufferAddr) {
  
     bool set = FALSE;
     
-    if (dialogueBoxIndex < MAX_DIALOGUE_BOXES) {
+    if (messageBoxIndex < MAX_DIALOGUE_BOXES) {
 
-        if (!(dialogueBoxes[dialogueBoxIndex].flags & ACTIVE)) {
+        if (!(messageBoxes[messageBoxIndex].flags & DIALOGUE_BOX_ACTIVE)) {
 
-            dialogueBoxes[dialogueBoxIndex].unk_90 = 0;
-            dialogueBoxes[dialogueBoxIndex].unk_91 = 0;
+            messageBoxes[messageBoxIndex].currentCompressionControlByte = 0;
+            messageBoxes[messageBoxIndex].compressionBitIndex = 0;
  
-            dialogueBoxes[dialogueBoxIndex].buttonSfxCounter = 0;
-            dialogueBoxes[dialogueBoxIndex].flag = 0;
-            dialogueBoxes[dialogueBoxIndex].margins = 0;
-            dialogueBoxes[dialogueBoxIndex].maxLinesInBox = 0;
+            messageBoxes[messageBoxIndex].scrollCount = 0;
+            messageBoxes[messageBoxIndex].totalLinesToPrint = 0;
+            messageBoxes[messageBoxIndex].currentCharCountOnLine = 0;
+            messageBoxes[messageBoxIndex].currentLineBeingPrinted = 0;
 
-            dialogueBoxes[dialogueBoxIndex].unk_70 = 0xFF;
-            dialogueBoxes[dialogueBoxIndex].unk_74 = 0xFF;
-            dialogueBoxes[dialogueBoxIndex].unk_78 = 0xFF;
+            messageBoxes[messageBoxIndex].characterPrintSfx = 0xFF;
+            messageBoxes[messageBoxIndex].unk_74 = 0xFF;
+            messageBoxes[messageBoxIndex].messageCloseSfx = 0xFF;
 
-            dialogueBoxes[dialogueBoxIndex].textBufferBase = textBufferAddr;
+            messageBoxes[messageBoxIndex].textBufferBase = textBufferAddr;
             
-            dialogueBoxes[dialogueBoxIndex].flags = 1;
+            messageBoxes[messageBoxIndex].flags = 1;
 
-            func_800267A4((Volume*)&dialogueBoxes[dialogueBoxIndex].volume, 0, 0);
-            func_8003F024(dialogueBoxIndex, 0xFF, 0xFF, 0xFF, 0xFF);
+            initializeInterpolator((Interpolator*)&messageBoxes[messageBoxIndex].scrollInterpolator, 0, 0);
+            func_8003F024(messageBoxIndex, 0xFF, 0xFF, 0xFF, 0xFF);
             
             set = TRUE;        
 
@@ -148,16 +182,16 @@ bool func_8003DD14(u16 index) {
     
     if (index < MAX_DIALOGUE_BOXES) {
 
-        if (dialogueBoxes[index].flags & ACTIVE) {
+        if (messageBoxes[index].flags & DIALOGUE_BOX_ACTIVE) {
             
-            dialogueBoxes[index].flags &= ~1;
+            messageBoxes[index].flags &= ~1;
             
-            if (dialogueBoxes[index].flags & HAS_DIALOGUE_WINDOW) {
-                resetAnimationState(dialogueWindows[dialogueBoxes[index].dialogueWindowIndex].spriteIndex);
+            if (messageBoxes[index].flags & DIALOGUE_BOX_HAS_DIALOGUE_WINDOW) {
+                resetAnimationState(dialogueWindows[messageBoxes[index].dialogueWindowIndex].spriteIndex);
             }
             
-            if (dialogueBoxes[index].flags & HAS_CHARACTER_AVATAR) {
-                resetAnimationState(characterAvatars[dialogueBoxes[index].characterAvatarIndex].spriteIndex);
+            if (messageBoxes[index].flags & DIALOGUE_BOX_HAS_CHARACTER_AVATAR) {
+                resetAnimationState(characterAvatars[messageBoxes[index].characterAvatarIndex].spriteIndex);
             }
             
             result = TRUE;
@@ -170,94 +204,92 @@ bool func_8003DD14(u16 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/message", initializeDialogueBox);
+//INCLUDE_ASM("asm/nonmatchings/system/message", initializeMessageBox);
 
-bool initializeDialogueBox(u16 dialogueBoxIndex, u16 dialogueInfoIndex, u16 dialogueIndex, u32 flag) {
+bool initializeMessageBox(u16 messageBoxIndex, u16 textAddressesIndex, u16 textIndex, u32 flag) {
 
     bool result = FALSE;
 
-    u16 tempDialogueIndex;
+    u16 tempTextIndex;
     u32 textAddress;
 
-    tempDialogueIndex = dialogueIndex;
+    tempTextIndex = textIndex;
     
-    if (dialogueBoxIndex < MAX_DIALOGUE_BOXES) {
+    if (messageBoxIndex < MAX_DIALOGUE_BOXES) {
         
-        if (dialogueBoxes[dialogueBoxIndex].flags & ACTIVE) {
+        if (messageBoxes[messageBoxIndex].flags & DIALOGUE_BOX_ACTIVE) {
 
-            dialogueBoxes[dialogueBoxIndex].dialogueIndex = dialogueIndex;
-            dialogueBoxes[dialogueBoxIndex].dialogueInfoIndex = dialogueInfoIndex;
+            messageBoxes[messageBoxIndex].textIndex = textIndex;
+            messageBoxes[messageBoxIndex].textAddressesIndex = textAddressesIndex;
             
-            nuPiReadRom(dialogueInfo[dialogueInfoIndex].romIndexStart, dialogueInfo[dialogueInfoIndex].index, dialogueInfo[dialogueInfoIndex].romIndexEnd - dialogueInfo[dialogueInfoIndex].romIndexStart);
+            nuPiReadRom(textAddresses[textAddressesIndex].romIndexStart, textAddresses[textAddressesIndex].indexVaddr, textAddresses[textAddressesIndex].romIndexEnd - textAddresses[textAddressesIndex].romIndexStart);
 
-            textAddress = func_80041B28(dialogueBoxIndex, dialogueBoxes[dialogueBoxIndex].dialogueIndex);
-            nuPiReadRom(textAddress, dialogueBoxes[dialogueBoxIndex].textBufferBase, func_80041B28(dialogueBoxIndex, dialogueBoxes[dialogueBoxIndex].dialogueIndex + 1) - textAddress);
+            textAddress = getTextAddress(messageBoxIndex, messageBoxes[messageBoxIndex].textIndex);
+            nuPiReadRom(textAddress, messageBoxes[messageBoxIndex].textBufferBase, getTextAddress(messageBoxIndex, messageBoxes[messageBoxIndex].textIndex + 1) - textAddress);
             
-            dialogueBoxes[dialogueBoxIndex].flag = func_800403F0(dialogueBoxIndex, tempDialogueIndex);
-            dialogueBoxes[dialogueBoxIndex].unk_90 = 0;
-            dialogueBoxes[dialogueBoxIndex].unk_91 = 0;
-            dialogueBoxes[dialogueBoxIndex].buttonSfxCounter = 0;
-            dialogueBoxes[dialogueBoxIndex].margins = 0;
-            dialogueBoxes[dialogueBoxIndex].maxLinesInBox = 0;
-            dialogueBoxes[dialogueBoxIndex].unk_9D = 0;
+            messageBoxes[messageBoxIndex].totalLinesToPrint = func_800403F0(messageBoxIndex, tempTextIndex);
+            messageBoxes[messageBoxIndex].currentCompressionControlByte = 0;
+            messageBoxes[messageBoxIndex].compressionBitIndex = 0;
+            messageBoxes[messageBoxIndex].scrollCount = 0;
+            messageBoxes[messageBoxIndex].currentCharCountOnLine = 0;
+            messageBoxes[messageBoxIndex].currentLineBeingPrinted = 0;
+            messageBoxes[messageBoxIndex].unk_9D = 0;
 
-            dialogueBoxes[dialogueBoxIndex].currentCharPtr = dialogueBoxes[dialogueBoxIndex].textBufferBase;
+            messageBoxes[messageBoxIndex].currentCharPtr = messageBoxes[messageBoxIndex].textBufferBase;
 
-            dialogueBoxes[dialogueBoxIndex].flags &= ~4;
-            dialogueBoxes[dialogueBoxIndex].flags &= ~0x4000;
-            dialogueBoxes[dialogueBoxIndex].flags |= INITIALIZED;
+            messageBoxes[messageBoxIndex].flags &= ~4;
+            messageBoxes[messageBoxIndex].flags &= ~0x4000;
+            messageBoxes[messageBoxIndex].flags |= DIALOGUE_BOX_INITIALIZED;
 
-            dialogueBoxes[dialogueBoxIndex].flags &= ~0x8000;
-            dialogueBoxes[dialogueBoxIndex].flags &= ~0x40000;
-            dialogueBoxes[dialogueBoxIndex].flags &= ~0x80000;
-            dialogueBoxes[dialogueBoxIndex].flags &= ~0x100000;
-            dialogueBoxes[dialogueBoxIndex].flags &= ~0x20000;
+            messageBoxes[messageBoxIndex].flags &= ~0x8000;
+            messageBoxes[messageBoxIndex].flags &= ~0x40000;
+            messageBoxes[messageBoxIndex].flags &= ~0x80000;
+            messageBoxes[messageBoxIndex].flags &= ~0x100000;
+            messageBoxes[messageBoxIndex].flags &= ~0x20000;
 
             if (flag == 0x8000) {
-                dialogueBoxes[dialogueBoxIndex].flags |= 0x8000;
+                messageBoxes[messageBoxIndex].flags |= 0x8000;
             }
             
             if (flag == 0x40000) {
-                dialogueBoxes[dialogueBoxIndex].flags |= flag;
+                messageBoxes[messageBoxIndex].flags |= flag;
             }
 
             if (flag == 0x80000) {
-                dialogueBoxes[dialogueBoxIndex].flags |= flag;
+                messageBoxes[messageBoxIndex].flags |= flag;
             }
 
             if (flag == 0x100000) {
-                dialogueBoxes[dialogueBoxIndex].flags |= flag;
+                messageBoxes[messageBoxIndex].flags |= flag;
             }
 
-            if (dialogueBoxes[dialogueBoxIndex].flags & HAS_OVERLAY_ICON) {
-                dmaSprite(overlayIcons[dialogueBoxes[dialogueBoxIndex].overlayIconIndex].spriteIndex, overlayIcons[dialogueBoxes[dialogueBoxIndex].overlayIconIndex].romTextureStart, overlayIcons[dialogueBoxes[dialogueBoxIndex].overlayIconIndex].romTextureEnd, overlayIcons[dialogueBoxes[dialogueBoxIndex].overlayIconIndex].romIndexStart, overlayIcons[dialogueBoxes[dialogueBoxIndex].overlayIconIndex].romIndexEnd, 0, 0, overlayIcons[dialogueBoxes[dialogueBoxIndex].overlayIconIndex].vaddrTextureStart, NULL, overlayIcons[dialogueBoxes[dialogueBoxIndex].overlayIconIndex].vaddrTextureEnd, overlayIcons[dialogueBoxes[dialogueBoxIndex].overlayIconIndex].vaddrIndexStart, overlayIcons[dialogueBoxes[dialogueBoxIndex].overlayIconIndex].vaddrIndexEnd, overlayIcons[dialogueBoxes[dialogueBoxIndex].overlayIconIndex].unk_20, 0, 0);
-                setBilinearFiltering(overlayIcons[dialogueBoxes[dialogueBoxIndex].overlayIconIndex].spriteIndex, TRUE);
-                setSpriteColor(overlayIcons[dialogueBoxes[dialogueBoxIndex].overlayIconIndex].spriteIndex, 0xFF, 0xFF, 0xFF, 0xFF);
-                func_8002C680(overlayIcons[dialogueBoxes[dialogueBoxIndex].overlayIconIndex].spriteIndex, 2, 2);
-                setSpriteRenderingLayer(overlayIcons[dialogueBoxes[dialogueBoxIndex].overlayIconIndex].spriteIndex, (1 | 2));
+            if (messageBoxes[messageBoxIndex].flags & DIALOGUE_BOX_HAS_OVERLAY_ICON) {
+                dmaSprite(overlayIcons[messageBoxes[messageBoxIndex].overlayIconIndex].spriteIndex, overlayIcons[messageBoxes[messageBoxIndex].overlayIconIndex].romTextureStart, overlayIcons[messageBoxes[messageBoxIndex].overlayIconIndex].romTextureEnd, overlayIcons[messageBoxes[messageBoxIndex].overlayIconIndex].romIndexStart, overlayIcons[messageBoxes[messageBoxIndex].overlayIconIndex].romIndexEnd, 0, 0, overlayIcons[messageBoxes[messageBoxIndex].overlayIconIndex].vaddrTextureStart, NULL, overlayIcons[messageBoxes[messageBoxIndex].overlayIconIndex].vaddrTextureEnd, overlayIcons[messageBoxes[messageBoxIndex].overlayIconIndex].vaddrIndexStart, overlayIcons[messageBoxes[messageBoxIndex].overlayIconIndex].vaddrIndexEnd, overlayIcons[messageBoxes[messageBoxIndex].overlayIconIndex].unk_20, 0, 0);
+                setBilinearFiltering(overlayIcons[messageBoxes[messageBoxIndex].overlayIconIndex].spriteIndex, TRUE);
+                setSpriteColor(overlayIcons[messageBoxes[messageBoxIndex].overlayIconIndex].spriteIndex, 0xFF, 0xFF, 0xFF, 0xFF);
+                func_8002C680(overlayIcons[messageBoxes[messageBoxIndex].overlayIconIndex].spriteIndex, 2, 2);
+                setSpriteRenderingLayer(overlayIcons[messageBoxes[messageBoxIndex].overlayIconIndex].spriteIndex, (1 | 2));
             }
 
-            if (dialogueBoxes[dialogueBoxIndex].flags & HAS_CHARACTER_AVATAR) {
-                dmaSprite(characterAvatars[dialogueBoxes[dialogueBoxIndex].characterAvatarIndex].spriteIndex, characterAvatars[dialogueBoxes[dialogueBoxIndex].characterAvatarIndex].romTextureStart, characterAvatars[dialogueBoxes[dialogueBoxIndex].characterAvatarIndex].romTextureEnd, characterAvatars[dialogueBoxes[dialogueBoxIndex].characterAvatarIndex].romAssetsIndexStart, characterAvatars[dialogueBoxes[dialogueBoxIndex].characterAvatarIndex].romAssetsIndexEnd, characterAvatars[dialogueBoxes[dialogueBoxIndex].characterAvatarIndex].romSpritesheetIndexStart, characterAvatars[dialogueBoxes[dialogueBoxIndex].characterAvatarIndex].romSpritesheetIndexEnd, characterAvatars[dialogueBoxes[dialogueBoxIndex].characterAvatarIndex].vaddrTexture, characterAvatars[dialogueBoxes[dialogueBoxIndex].characterAvatarIndex].vaddrSpritesheet, characterAvatars[dialogueBoxes[dialogueBoxIndex].characterAvatarIndex].vaddrPalette, characterAvatars[dialogueBoxes[dialogueBoxIndex].characterAvatarIndex].vaddrAnimation, characterAvatars[dialogueBoxes[dialogueBoxIndex].characterAvatarIndex].vaddrSpriteToPalette, characterAvatars[dialogueBoxes[dialogueBoxIndex].characterAvatarIndex].vaddrSpritesheetIndex, 1, 0);
-                setBilinearFiltering(characterAvatars[dialogueBoxes[dialogueBoxIndex].characterAvatarIndex].spriteIndex, TRUE);
-                setSpriteColor(characterAvatars[dialogueBoxes[dialogueBoxIndex].characterAvatarIndex].spriteIndex, 0xFF, 0xFF, 0xFF, 0xFF);
-                func_8002C680(characterAvatars[dialogueBoxes[dialogueBoxIndex].characterAvatarIndex].spriteIndex, 2, 2);
-                setSpriteRenderingLayer(characterAvatars[dialogueBoxes[dialogueBoxIndex].characterAvatarIndex].spriteIndex, (1 | 2));
+            if (messageBoxes[messageBoxIndex].flags & DIALOGUE_BOX_HAS_CHARACTER_AVATAR) {
+                dmaSprite(characterAvatars[messageBoxes[messageBoxIndex].characterAvatarIndex].spriteIndex, characterAvatars[messageBoxes[messageBoxIndex].characterAvatarIndex].romTextureStart, characterAvatars[messageBoxes[messageBoxIndex].characterAvatarIndex].romTextureEnd, characterAvatars[messageBoxes[messageBoxIndex].characterAvatarIndex].romAssetsIndexStart, characterAvatars[messageBoxes[messageBoxIndex].characterAvatarIndex].romAssetsIndexEnd, characterAvatars[messageBoxes[messageBoxIndex].characterAvatarIndex].romSpritesheetIndexStart, characterAvatars[messageBoxes[messageBoxIndex].characterAvatarIndex].romSpritesheetIndexEnd, characterAvatars[messageBoxes[messageBoxIndex].characterAvatarIndex].vaddrTexture, characterAvatars[messageBoxes[messageBoxIndex].characterAvatarIndex].vaddrSpritesheet, characterAvatars[messageBoxes[messageBoxIndex].characterAvatarIndex].vaddrPalette, characterAvatars[messageBoxes[messageBoxIndex].characterAvatarIndex].vaddrAnimation, characterAvatars[messageBoxes[messageBoxIndex].characterAvatarIndex].vaddrSpriteToPalette, characterAvatars[messageBoxes[messageBoxIndex].characterAvatarIndex].vaddrSpritesheetIndex, 1, 0);
+                setBilinearFiltering(characterAvatars[messageBoxes[messageBoxIndex].characterAvatarIndex].spriteIndex, TRUE);
+                setSpriteColor(characterAvatars[messageBoxes[messageBoxIndex].characterAvatarIndex].spriteIndex, 0xFF, 0xFF, 0xFF, 0xFF);
+                func_8002C680(characterAvatars[messageBoxes[messageBoxIndex].characterAvatarIndex].spriteIndex, 2, 2);
+                setSpriteRenderingLayer(characterAvatars[messageBoxes[messageBoxIndex].characterAvatarIndex].spriteIndex, (1 | 2));
             }
 
-            if (dialogueBoxes[dialogueBoxIndex].flags & HAS_DIALOGUE_WINDOW) {
-
-                dmaSprite(dialogueWindows[dialogueBoxes[dialogueBoxIndex].dialogueWindowIndex].spriteIndex, dialogueWindows[dialogueBoxes[dialogueBoxIndex].dialogueWindowIndex].romTextureStart, dialogueWindows[dialogueBoxes[dialogueBoxIndex].dialogueWindowIndex].romTextureEnd, dialogueWindows[dialogueBoxes[dialogueBoxIndex].dialogueWindowIndex].romIndexStart, dialogueWindows[dialogueBoxes[dialogueBoxIndex].dialogueWindowIndex].romIndexEnd, 0, 0, dialogueWindows[dialogueBoxes[dialogueBoxIndex].dialogueWindowIndex].vaddrTextureStart, NULL, dialogueWindows[dialogueBoxes[dialogueBoxIndex].dialogueWindowIndex].vaddrTextureEnd, dialogueWindows[dialogueBoxes[dialogueBoxIndex].dialogueWindowIndex].vaddrIndexStart, dialogueWindows[dialogueBoxes[dialogueBoxIndex].dialogueWindowIndex].vaddrIndexEnd, dialogueWindows[dialogueBoxes[dialogueBoxIndex].dialogueWindowIndex].unk_20, 0, 0);
-                setBilinearFiltering(dialogueWindows[dialogueBoxes[dialogueBoxIndex].dialogueWindowIndex].spriteIndex, TRUE);
-                setSpriteColor(dialogueWindows[dialogueBoxes[dialogueBoxIndex].dialogueWindowIndex].spriteIndex, 0xFF, 0xFF, 0xFF, 0xFF);
-                func_8002C680(dialogueWindows[dialogueBoxes[dialogueBoxIndex].dialogueWindowIndex].spriteIndex, 2, 2);
-                setSpriteRenderingLayer(dialogueWindows[dialogueBoxes[dialogueBoxIndex].dialogueWindowIndex].spriteIndex, (1 | 2));
-                startSpriteAnimation(dialogueWindows[dialogueBoxes[dialogueBoxIndex].dialogueWindowIndex].spriteIndex, dialogueWindows[dialogueBoxes[dialogueBoxIndex].dialogueWindowIndex].spriteOffset, dialogueWindows[dialogueBoxes[dialogueBoxIndex].dialogueWindowIndex].flag);
-                setSpriteViewSpacePosition(dialogueWindows[dialogueBoxes[dialogueBoxIndex].dialogueWindowIndex].spriteIndex, dialogueBoxes[dialogueBoxIndex].viewSpacePosition.x + dialogueWindows[dialogueBoxes[dialogueBoxIndex].dialogueWindowIndex].coordinates.x, dialogueBoxes[dialogueBoxIndex].viewSpacePosition.y + dialogueWindows[dialogueBoxes[dialogueBoxIndex].dialogueWindowIndex].coordinates.y, (dialogueBoxes[dialogueBoxIndex].viewSpacePosition.z + dialogueWindows[dialogueBoxes[dialogueBoxIndex].dialogueWindowIndex].coordinates.z) - 2.0f);
-            
+            if (messageBoxes[messageBoxIndex].flags & DIALOGUE_BOX_HAS_DIALOGUE_WINDOW) {
+                dmaSprite(dialogueWindows[messageBoxes[messageBoxIndex].dialogueWindowIndex].spriteIndex, dialogueWindows[messageBoxes[messageBoxIndex].dialogueWindowIndex].romTextureStart, dialogueWindows[messageBoxes[messageBoxIndex].dialogueWindowIndex].romTextureEnd, dialogueWindows[messageBoxes[messageBoxIndex].dialogueWindowIndex].romIndexStart, dialogueWindows[messageBoxes[messageBoxIndex].dialogueWindowIndex].romIndexEnd, 0, 0, dialogueWindows[messageBoxes[messageBoxIndex].dialogueWindowIndex].vaddrTextureStart, NULL, dialogueWindows[messageBoxes[messageBoxIndex].dialogueWindowIndex].vaddrTextureEnd, dialogueWindows[messageBoxes[messageBoxIndex].dialogueWindowIndex].vaddrIndexStart, dialogueWindows[messageBoxes[messageBoxIndex].dialogueWindowIndex].vaddrIndexEnd, dialogueWindows[messageBoxes[messageBoxIndex].dialogueWindowIndex].unk_20, 0, 0);
+                setBilinearFiltering(dialogueWindows[messageBoxes[messageBoxIndex].dialogueWindowIndex].spriteIndex, TRUE);
+                setSpriteColor(dialogueWindows[messageBoxes[messageBoxIndex].dialogueWindowIndex].spriteIndex, 0xFF, 0xFF, 0xFF, 0xFF);
+                func_8002C680(dialogueWindows[messageBoxes[messageBoxIndex].dialogueWindowIndex].spriteIndex, 2, 2);
+                setSpriteRenderingLayer(dialogueWindows[messageBoxes[messageBoxIndex].dialogueWindowIndex].spriteIndex, (1 | 2));
+                startSpriteAnimation(dialogueWindows[messageBoxes[messageBoxIndex].dialogueWindowIndex].spriteIndex, dialogueWindows[messageBoxes[messageBoxIndex].dialogueWindowIndex].spriteOffset, dialogueWindows[messageBoxes[messageBoxIndex].dialogueWindowIndex].flag);
+                setSpriteViewSpacePosition(dialogueWindows[messageBoxes[messageBoxIndex].dialogueWindowIndex].spriteIndex, messageBoxes[messageBoxIndex].viewSpacePosition.x + dialogueWindows[messageBoxes[messageBoxIndex].dialogueWindowIndex].coordinates.x, messageBoxes[messageBoxIndex].viewSpacePosition.y + dialogueWindows[messageBoxes[messageBoxIndex].dialogueWindowIndex].coordinates.y, (messageBoxes[messageBoxIndex].viewSpacePosition.z + dialogueWindows[messageBoxes[messageBoxIndex].dialogueWindowIndex].coordinates.z) - 2.0f);
             }
 
-            func_8003E77C(dialogueBoxIndex, 0xFF, 0xFF, 0xFF, 0xFF);
+            func_8003E77C(messageBoxIndex, 0xFF, 0xFF, 0xFF, 0xFF);
 
             result = TRUE;
             
@@ -270,23 +302,23 @@ bool initializeDialogueBox(u16 dialogueBoxIndex, u16 dialogueInfoIndex, u16 dial
 
 //INCLUDE_ASM("asm/nonmatchings/system/message", func_8003E77C);
 
-bool func_8003E77C(u16 index, u8 arg1, u8 arg2, u8 arg3, u8 arg4) {
+bool func_8003E77C(u16 index, u8 r, u8 g, u8 b, u8 a) {
 
     bool result = FALSE;
     
     if (index < MAX_DIALOGUE_BOXES) { 
 
-        if (dialogueBoxes[index].flags & ACTIVE) {
+        if (messageBoxes[index].flags & DIALOGUE_BOX_ACTIVE) {
             
-            dialogueBoxes[index].unk_14.r = (dialogueBoxes[index].unk_4.r * arg1) / 255.0f;
-            dialogueBoxes[index].unk_14.g = (dialogueBoxes[index].unk_4.g * arg2) / 255.0f;
-            dialogueBoxes[index].unk_14.b = (dialogueBoxes[index].unk_4.b * arg3) / 255.0f;
-            dialogueBoxes[index].unk_14.a = (dialogueBoxes[index].unk_4.a * arg4) / 255.0f;
+            messageBoxes[index].unk_14.r = (messageBoxes[index].unk_4.r * r) / 255.0f;
+            messageBoxes[index].unk_14.g = (messageBoxes[index].unk_4.g * g) / 255.0f;
+            messageBoxes[index].unk_14.b = (messageBoxes[index].unk_4.b * b) / 255.0f;
+            messageBoxes[index].unk_14.a = (messageBoxes[index].unk_4.a * a) / 255.0f;
     
-            dialogueBoxes[index].unk_24.r = (dialogueBoxes[index].unk_4.r * arg1) / 255.0f;
-            dialogueBoxes[index].unk_24.g = (dialogueBoxes[index].unk_4.g * arg2) / 255.0f;
-            dialogueBoxes[index].unk_24.b = (dialogueBoxes[index].unk_4.b * arg3) / 255.0f;
-            dialogueBoxes[index].unk_24.a = (dialogueBoxes[index].unk_4.a * arg4) / 255.0f;
+            messageBoxes[index].unk_24.r = (messageBoxes[index].unk_4.r * r) / 255.0f;
+            messageBoxes[index].unk_24.g = (messageBoxes[index].unk_4.g * g) / 255.0f;
+            messageBoxes[index].unk_24.b = (messageBoxes[index].unk_4.b * b) / 255.0f;
+            messageBoxes[index].unk_24.a = (messageBoxes[index].unk_4.a * a) / 255.0f;
     
             result = TRUE;
      
@@ -298,13 +330,110 @@ bool func_8003E77C(u16 index, u8 arg1, u8 arg2, u8 arg3, u8 arg4) {
     
 }
 
-// rgba
-INCLUDE_ASM("asm/nonmatchings/system/message", func_8003E910);
+//INCLUDE_ASM("asm/nonmatchings/system/message", func_8003E910);
 
-INCLUDE_ASM("asm/nonmatchings/system/message", func_8003EA1C);
+bool func_8003E910(u16 index, s8 r, s8 g, s8 b, s8 a) {
+
+    bool result = FALSE;
+    
+    if (index < MAX_DIALOGUE_BOXES) { 
+
+        if (messageBoxes[index].flags & DIALOGUE_BOX_ACTIVE) {
+
+            messageBoxes[index].unk_14.r += r;
+            messageBoxes[index].unk_14.g += g;
+            messageBoxes[index].unk_14.b += b;
+            messageBoxes[index].unk_14.a += a;
+            
+            result = TRUE;
+            
+        }
+    }
+
+    return result;
+
+}
+
+//INCLUDE_ASM("asm/nonmatchings/system/message", func_8003EA1C);
+
+bool func_8003EA1C(u16 index, u8 r, u8 g, u8 b, u8 a, s16 rate) {
+
+    f32 tempF;
+    s16 temp = getAbsoluteValue(rate);
+
+    bool result = FALSE;
+    
+    if (index < MAX_DIALOGUE_BOXES) { 
+
+        if (messageBoxes[index].flags & DIALOGUE_BOX_ACTIVE) {
+
+            messageBoxes[index].unk_24.r = (messageBoxes[index].unk_4.r * r) / 255.0f;
+            messageBoxes[index].unk_24.g = (messageBoxes[index].unk_4.g * g) / 255.0f;
+            messageBoxes[index].unk_24.b = (messageBoxes[index].unk_4.b * b) / 255.0f;
+            messageBoxes[index].unk_24.a = (messageBoxes[index].unk_4.a * a) / 255.0f;
+            
+            messageBoxes[index].flags &= ~0x200000;
+
+            if (messageBoxes[index].unk_24.r < messageBoxes[index].unk_14.r) {
+                tempF = messageBoxes[index].unk_14.r - messageBoxes[index].unk_24.r;
+            } else {
+                tempF = messageBoxes[index].unk_24.r - messageBoxes[index].unk_14.r;
+            }
+
+            messageBoxes[index].unk_34.r = (tempF * temp) / messageBoxes[index].unk_4.r;
+            
+            if (messageBoxes[index].unk_24.g < messageBoxes[index].unk_14.g) {
+                tempF = messageBoxes[index].unk_14.g - messageBoxes[index].unk_24.g;
+            } else {
+                tempF = messageBoxes[index].unk_24.g - messageBoxes[index].unk_14.g;
+            }
+
+            messageBoxes[index].unk_34.g = (tempF * temp) / messageBoxes[index].unk_4.g;
+            
+            if (messageBoxes[index].unk_24.b < messageBoxes[index].unk_14.b) {
+                tempF = messageBoxes[index].unk_14.b - messageBoxes[index].unk_24.b;
+            } else {
+                tempF = messageBoxes[index].unk_24.b - messageBoxes[index].unk_14.b;
+            }
+
+            messageBoxes[index].unk_34.b = (tempF * temp) / messageBoxes[index].unk_4.b;
+
+            if (messageBoxes[index].unk_24.a < messageBoxes[index].unk_14.a) {
+                tempF = messageBoxes[index].unk_14.a - messageBoxes[index].unk_24.a;
+            } else {
+                tempF = messageBoxes[index].unk_24.a - messageBoxes[index].unk_14.a;
+            }
+
+            messageBoxes[index].unk_34.a = (tempF * temp) / messageBoxes[index].unk_4.a;
+        
+            if (messageBoxes[index].flags & 0x200) {
+                updateSpriteRGBA(dialogueWindows[messageBoxes[index].dialogueWindowIndex].spriteIndex, 
+                    r, g, b, a, temp);
+            }
+
+            if (messageBoxes[index].flags & 0x10000) {
+                updateSpriteRGBA(characterAvatars[messageBoxes[index].characterAvatarIndex].spriteIndex, 
+                    r, g, b, a, temp);
+            }
+
+            if (messageBoxes[index].flags & 0x400) {
+                updateSpriteRGBA(overlayIcons[messageBoxes[index].overlayIconIndex].spriteIndex, 
+                    r, g, b, a, temp);
+            }
+            
+            result = TRUE;
+        
+        }
+
+    }
+
+    return result;
+
+}
 
 //INCLUDE_ASM("asm/nonmatchings/system/message", func_8003EE7C);
 
+// update alpha
 bool func_8003EE7C(u16 index, u8 arg1, s16 arg2) {
 
     bool result;
@@ -317,19 +446,19 @@ bool func_8003EE7C(u16 index, u8 arg1, s16 arg2) {
     
     if (index < MAX_DIALOGUE_BOXES) {
 
-        if (dialogueBoxes[index].flags & ACTIVE) {
+        if (messageBoxes[index].flags & DIALOGUE_BOX_ACTIVE) {
 
-            dialogueBoxes[index].unk_24.a = (dialogueBoxes[index].unk_4.a * arg1) / 255.0f;
+            messageBoxes[index].unk_24.a = (messageBoxes[index].unk_4.a * arg1) / 255.0f;
 
-            dialogueBoxes[index].flags &= ~(0x200000);
+            messageBoxes[index].flags &= ~(0x200000);
 
-            if (dialogueBoxes[index].unk_24.a < dialogueBoxes[index].unk_14.a) {
-                tempF = dialogueBoxes[index].unk_14.a - dialogueBoxes[index].unk_24.a;
+            if (messageBoxes[index].unk_24.a < messageBoxes[index].unk_14.a) {
+                tempF = messageBoxes[index].unk_14.a - messageBoxes[index].unk_24.a;
             } else {
-                tempF = dialogueBoxes[index].unk_24.a - dialogueBoxes[index].unk_14.a;
+                tempF = messageBoxes[index].unk_24.a - messageBoxes[index].unk_14.a;
             }
 
-            dialogueBoxes[index].unk_34[3] = (tempF * temp) / dialogueBoxes[index].unk_4.a;
+            messageBoxes[index].unk_34.a = (tempF * temp) / messageBoxes[index].unk_4.a;
 
             result = TRUE;
             
@@ -349,8 +478,8 @@ bool func_8003EFD8(u16 index) {
 
     if (index < MAX_DIALOGUE_BOXES) {
 
-        if (dialogueBoxes[index].flags & ACTIVE) {
-            result = (dialogueBoxes[index].flags >> 0x15) & 1;
+        if (messageBoxes[index].flags & DIALOGUE_BOX_ACTIVE) {
+            result = (messageBoxes[index].flags >> 0x15) & 1;
         }
         
     }
@@ -367,12 +496,12 @@ bool func_8003F024(u16 index, u8 r, u8 g, u8 b, u8 a) {
     
     if (index < MAX_DIALOGUE_BOXES) {
 
-        if (dialogueBoxes[index].flags & ACTIVE) {
+        if (messageBoxes[index].flags & DIALOGUE_BOX_ACTIVE) {
 
-            dialogueBoxes[index].unk_4.r = r;
-            dialogueBoxes[index].unk_4.g = g;
-            dialogueBoxes[index].unk_4.b = b;
-            dialogueBoxes[index].unk_4.a = a;
+            messageBoxes[index].unk_4.r = r;
+            messageBoxes[index].unk_4.g = g;
+            messageBoxes[index].unk_4.b = b;
+            messageBoxes[index].unk_4.a = a;
 
             result = TRUE;
             
@@ -393,7 +522,7 @@ bool func_8003F0DC(void) {
 
     for (i = 0; i < MAX_DIALOGUE_BOXES; i++) {
 
-        if (dialogueBoxes[i].flags & 4) {
+        if (messageBoxes[i].flags & 4) {
             result = TRUE;
         }
         
@@ -403,22 +532,72 @@ bool func_8003F0DC(void) {
     
 }
 
-INCLUDE_ASM("asm/nonmatchings/system/message", func_8003F130);
+//INCLUDE_ASM("asm/nonmatchings/system/message", func_8003F130);
 
-INCLUDE_ASM("asm/nonmatchings/system/message", func_8003F28C);
+bool func_8003F130(u16 index) {
 
-//INCLUDE_ASM("asm/nonmatchings/system/message", setDialogueInfo);
+    bool result = FALSE;
+    
+    if (index < MAX_DIALOGUE_BOXES) {
 
-bool setDialogueInfo(u16 dialogueIndex, u32 romIndexStart, u32 romIndexEnd, u32 romTextStart, u32 index) {
+        if (messageBoxes[index].flags & DIALOGUE_BOX_ACTIVE) {
+
+            if (!(messageBoxes[index].flags & 0x8000) && !(messageBoxes[index].flags & 0x40000) && !(messageBoxes[index].flags & 0x80000)) {
+                messageBoxes[index].flags &= ~(2 | 8);
+            }
+
+            if ((messageBoxes[index].flags & 0x200) && !(messageBoxes[index].flags & 0x8000) && !(messageBoxes[index].flags & 0x40000) && !(messageBoxes[index].flags & 0x80000)) {
+
+                resetAnimationState(dialogueWindows[messageBoxes[index].dialogueWindowIndex].spriteIndex);
+
+                if (messageBoxes[index].flags & 0x10000) {
+                    resetAnimationState(characterAvatars[messageBoxes[index].characterAvatarIndex].spriteIndex);        
+                }
+            
+            }
+
+            result = TRUE;
+            
+        }
+        
+    }
+
+    return result;
+    
+}
+
+//INCLUDE_ASM("asm/nonmatchings/system/message", func_8003F28C);
+
+bool func_8003F28C(u16 index, s16 rate) {
+
+    bool result = FALSE;
+    
+    if (index < MAX_DIALOGUE_BOXES && (messageBoxes[index].flags & DIALOGUE_BOX_ACTIVE)) {
+
+        messageBoxes[index].unk_7C = rate;
+        
+        initializeInterpolator((Interpolator*)&messageBoxes[index].unk_64, rate, 0);
+        
+        result = TRUE;
+            
+    }
+
+    return result;
+    
+}
+
+//INCLUDE_ASM("asm/nonmatchings/system/message", setTextAddresses);
+
+bool setTextAddresses(u16 textAddressesIndex, u32 romIndexStart, u32 romIndexEnd, u32 romTextStart, u32 indexVaddr) {
 
     bool result = FALSE;
 
-    if (dialogueIndex < MAX_DIALOGUE_BANKS) {
+    if (textAddressesIndex < MAX_TEXT_BANKS) {
 
-        dialogueInfo[dialogueIndex].romIndexStart = romIndexStart;
-        dialogueInfo[dialogueIndex].romIndexEnd = romIndexEnd;
-        dialogueInfo[dialogueIndex].index = index;
-        dialogueInfo[dialogueIndex].romTextStart = romTextStart;
+        textAddresses[textAddressesIndex].romIndexStart = romIndexStart;
+        textAddresses[textAddressesIndex].romIndexEnd = romIndexEnd;
+        textAddresses[textAddressesIndex].indexVaddr = indexVaddr;
+        textAddresses[textAddressesIndex].romTextStart = romTextStart;
         
         result = TRUE;
         
@@ -428,22 +607,64 @@ bool setDialogueInfo(u16 dialogueIndex, u32 romIndexStart, u32 romIndexEnd, u32 
     
 }
 
-INCLUDE_ASM("asm/nonmatchings/system/message", func_8003F360);
+//INCLUDE_ASM("asm/nonmatchings/system/message", func_8003F360);
 
-//INCLUDE_ASM("asm/nonmatchings/system/message", func_8003F464);
-
-bool func_8003F464(u16 index, u8 arg1, u8 arg2, u8* fontTexturePtr, u16* fontPalettePtr) {
+bool func_8003F360(u16 index, s16 rate, u8 flags) {
     
-    u8 result = FALSE;
+    bool result = FALSE;
     
     if (index < MAX_DIALOGUE_BOXES) {
         
-        if (dialogueBoxes[index].flags & ACTIVE) {
+        if (messageBoxes[index].flags & DIALOGUE_BOX_ACTIVE) {
+
+            messageBoxes[index].unk_7C = rate;
+            initializeInterpolator((Interpolator*)&messageBoxes[index].unk_64, rate, 0);
+
+            messageBoxes[index].flags &= ~(0x10 | 0x20);
+
+            switch (flags) {
+
+                case 0:
+                    break;
+                
+                case 1:
+                    messageBoxes[index].flags |= 0x10;
+                    break;
+
+                case 2:
+                    messageBoxes[index].flags |= 0x20;
+                    break;                    
+
+                case 3:
+                    messageBoxes[index].flags |= (0x10 | 0x20);
+                    break;               
+                
+            }
             
-            dialogueBoxes[index].fontContext.unk_60 = arg1;
-            dialogueBoxes[index].fontContext.unk_61 = arg2;
-            dialogueBoxes[index].fontContext.fontTexturePtr = fontTexturePtr;
-            dialogueBoxes[index].fontContext.fontPalettePtr = fontPalettePtr;
+            result = TRUE;
+        
+        }
+    
+    }
+
+    return result;
+    
+}
+
+//INCLUDE_ASM("asm/nonmatchings/system/message", func_8003F464);
+
+bool func_8003F464(u16 index, u8 arg1, u8 arg2, u8* compressedCI2FontData, u16* fontPalettePtr) {
+    
+    bool result = FALSE;
+    
+    if (index < MAX_DIALOGUE_BOXES) {
+        
+        if (messageBoxes[index].flags & DIALOGUE_BOX_ACTIVE) {
+            
+            messageBoxes[index].fontContext.characterCellWidth = arg1;
+            messageBoxes[index].fontContext.characterCellHeight = arg2;
+            messageBoxes[index].fontContext.compressedCI2FontData = compressedCI2FontData;
+            messageBoxes[index].fontContext.fontPalettePtr = fontPalettePtr;
              
             result = TRUE;
             
@@ -454,22 +675,43 @@ bool func_8003F464(u16 index, u8 arg1, u8 arg2, u8* fontTexturePtr, u16* fontPal
     
 }
 
+//INCLUDE_ASM("asm/nonmatchings/system/message", setMessageBoxSfx);
 
-INCLUDE_ASM("asm/nonmatchings/system/message", func_8003F4E0);
-
-//INCLUDE_ASM("asm/nonmatchings/system/message", func_8003F54C);
-
-bool func_8003F54C(u16 index, f32 x, f32 y, f32 z) {
+bool setMessageBoxSfx(u16 index, u32 arg1, u32 arg2, u32 arg3) {
 
     bool result = FALSE;
 
     if (index < MAX_DIALOGUE_BOXES) {
 
-        if (dialogueBoxes[index].flags & ACTIVE) {
+        if (messageBoxes[index].flags & DIALOGUE_BOX_ACTIVE) {
+
+            messageBoxes[index].characterPrintSfx = arg1;
+            messageBoxes[index].unk_74 = arg2;
+            messageBoxes[index].messageCloseSfx = arg3;
             
-            dialogueBoxes[index].viewSpacePosition.x = x;
-            dialogueBoxes[index].viewSpacePosition.y = y;
-            dialogueBoxes[index].viewSpacePosition.z = z;
+            result = TRUE;
+        
+        }
+    
+    }
+
+    return result;
+    
+}
+
+//INCLUDE_ASM("asm/nonmatchings/system/message", setMessageBoxViewSpacePosition);
+
+bool setMessageBoxViewSpacePosition(u16 index, f32 x, f32 y, f32 z) {
+
+    bool result = FALSE;
+
+    if (index < MAX_DIALOGUE_BOXES) {
+
+        if (messageBoxes[index].flags & DIALOGUE_BOX_ACTIVE) {
+            
+            messageBoxes[index].viewSpacePosition.x = x;
+            messageBoxes[index].viewSpacePosition.y = y;
+            messageBoxes[index].viewSpacePosition.z = z;
             
             result = TRUE;
 
@@ -489,10 +731,10 @@ bool func_8003F5D0(u16 index, u8 arg1, u8 arg2) {
     
     if (index < MAX_DIALOGUE_BOXES) {
 
-        if (dialogueBoxes[index].flags & ACTIVE) {
+        if (messageBoxes[index].flags & DIALOGUE_BOX_ACTIVE) {
 
-            dialogueBoxes[index].unk_92 = arg1;
-            dialogueBoxes[index].unk_93 = arg2;
+            messageBoxes[index].textBoxLineCharWidth = arg1;
+            messageBoxes[index].textBoxVisibleRows = arg2;
             
             result = TRUE;
             
@@ -511,10 +753,10 @@ bool func_8003F630(u16 index, u8 arg1, u8 arg2) {
     
     if (index < MAX_DIALOGUE_BOXES) {
 
-        if (dialogueBoxes[index].flags & ACTIVE) {
+        if (messageBoxes[index].flags & DIALOGUE_BOX_ACTIVE) {
 
-            dialogueBoxes[index].unk_9B = arg1;
-            dialogueBoxes[index].unk_9C = arg2;
+            messageBoxes[index].characterSpacing = arg1;
+            messageBoxes[index].lineSpacing = arg2;
             
             result = TRUE;
             
@@ -525,36 +767,36 @@ bool func_8003F630(u16 index, u8 arg1, u8 arg2) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/message", setDialogueBoxSpriteIndices);
+//INCLUDE_ASM("asm/nonmatchings/system/message", setMessageBoxSpriteIndices);
 
-bool setDialogueBoxSpriteIndices(u16 index, u8 dialogueWindowIndex, u8 overlayIconIndex, u8 characterAvatarIndex) {
+bool setMessageBoxSpriteIndices(u16 index, u8 dialogueWindowIndex, u8 overlayIconIndex, u8 characterAvatarIndex) {
 
     bool result = FALSE;
     
     if (index < MAX_DIALOGUE_BOXES) {
 
-        if (dialogueBoxes[index].flags & ACTIVE) { 
+        if (messageBoxes[index].flags & DIALOGUE_BOX_ACTIVE) { 
             
-            dialogueBoxes[index].dialogueWindowIndex = dialogueWindowIndex;
-            dialogueBoxes[index].overlayIconIndex = overlayIconIndex;
-            dialogueBoxes[index].characterAvatarIndex = characterAvatarIndex;
+            messageBoxes[index].dialogueWindowIndex = dialogueWindowIndex;
+            messageBoxes[index].overlayIconIndex = overlayIconIndex;
+            messageBoxes[index].characterAvatarIndex = characterAvatarIndex;
 
-            if (dialogueBoxes[index].dialogueWindowIndex != 0xFF) {
-                dialogueBoxes[index].flags |= HAS_DIALOGUE_WINDOW;
+            if (messageBoxes[index].dialogueWindowIndex != 0xFF) {
+                messageBoxes[index].flags |= DIALOGUE_BOX_HAS_DIALOGUE_WINDOW;
             } else {
-                dialogueBoxes[index].flags &= ~HAS_DIALOGUE_WINDOW;
+                messageBoxes[index].flags &= ~DIALOGUE_BOX_HAS_DIALOGUE_WINDOW;
             }
 
-            if (dialogueBoxes[index].overlayIconIndex != 0xFF) {
-                dialogueBoxes[index].flags |= HAS_OVERLAY_ICON;
+            if (messageBoxes[index].overlayIconIndex != 0xFF) {
+                messageBoxes[index].flags |= DIALOGUE_BOX_HAS_OVERLAY_ICON;
             } else {
-                dialogueBoxes[index].flags &= ~HAS_OVERLAY_ICON;
+                messageBoxes[index].flags &= ~DIALOGUE_BOX_HAS_OVERLAY_ICON;
             }
 
-            if (dialogueBoxes[index].characterAvatarIndex != 0xFF) {
-                dialogueBoxes[index].flags |= HAS_CHARACTER_AVATAR;
+            if (messageBoxes[index].characterAvatarIndex != 0xFF) {
+                messageBoxes[index].flags |= DIALOGUE_BOX_HAS_CHARACTER_AVATAR;
             } else {
-                dialogueBoxes[index].flags &= ~HAS_CHARACTER_AVATAR;
+                messageBoxes[index].flags &= ~DIALOGUE_BOX_HAS_CHARACTER_AVATAR;
             }
 
             result = TRUE;
@@ -588,7 +830,7 @@ bool func_8003F80C(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextu
         dialogueWindows[index].spriteIndex = spriteIndex;
         dialogueWindows[index].spriteOffset = spriteOffset;
 
-        dialogueWindows[index].flag = flag;
+        dialogueWindows[index].flag= flag;
 
         dialogueWindows[index].coordinates.x = x;
         dialogueWindows[index].coordinates.y = y;
@@ -643,7 +885,7 @@ bool func_8003F910(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextu
 
 //INCLUDE_ASM("asm/nonmatchings/system/message", func_8003FA1C);
 
-bool func_8003FA1C(u16 index, u16 arg1, u32 romTextureStart, u32 romTextureEnd, 
+bool func_8003FA1C(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextureEnd, 
     u32 romAssetsIndexStart, u32 romAssetsIndexEnd, 
     u32 romSpritesheetIndexStart, u32 romSpritesheetIndexEnd, 
     void* vaddrTexture, void* vaddrTexture2, 
@@ -669,7 +911,7 @@ bool func_8003FA1C(u16 index, u16 arg1, u32 romTextureStart, u32 romTextureEnd,
         characterAvatars[index].vaddrSpriteToPalette = vaddrSpriteToPalette;
         characterAvatars[index].vaddrSpritesheetIndex = vaddrSpritesheetIndex;
 
-        characterAvatars[index].spriteIndex = arg1;
+        characterAvatars[index].spriteIndex = spriteIndex;
 
         characterAvatars[index].coordinates.x = x;
         characterAvatars[index].coordinates.y = y;
@@ -685,19 +927,19 @@ bool func_8003FA1C(u16 index, u16 arg1, u32 romTextureStart, u32 romTextureEnd,
 
 //INCLUDE_ASM("asm/nonmatchings/system/message", func_8003FAE8);
 
-void func_8003FAE8(void* arg0) {
+void func_8003FAE8(u8* arg0) {
     D_801891C8 = arg0;
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/message", func_8003FAF8);
+//INCLUDE_ASM("asm/nonmatchings/system/message", setMessageBoxButtonMask);
 
-bool func_8003FAF8(u16 index, u16 arg1) {
+bool setMessageBoxButtonMask(u16 index, u16 arg1) {
 
     bool result = FALSE;
 
     if (index < MAX_DIALOGUE_BOXES) {
-        if (dialogueBoxes[index].flags & ACTIVE ) {
-            dialogueBoxes[index].unk_86 = arg1;
+        if (messageBoxes[index].flags & DIALOGUE_BOX_ACTIVE) {
+            messageBoxes[index].buttonMask = arg1;
             result = TRUE;
         }
     }
@@ -708,18 +950,15 @@ bool func_8003FAF8(u16 index, u16 arg1) {
 
 //INCLUDE_ASM("asm/nonmatchings/system/message", func_8003FB4C);
 
-bool func_8003FB4C(u16 index, u16 arg1) {
+bool func_8003FB4C(u16 index, s16 speed) {
 
-    u8 result = FALSE;
+    bool result = FALSE;
 
     if (index < MAX_DIALOGUE_BOXES) {
 
-        if (dialogueBoxes[index].flags & ACTIVE ) {
-
-            dialogueBoxes[index].unk_84 = arg1;
-
+        if (messageBoxes[index].flags & DIALOGUE_BOX_ACTIVE) {
+            messageBoxes[index].defaultScrollSpeed = speed;
             result = TRUE;
-
         }
     }
 
@@ -747,11 +986,11 @@ bool setGameVariableString(u16 index, u8* ptr, s8 length) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/message", func_8003FBD8);
+//INCLUDE_ASM("asm/nonmatchings/system/message", convertNumberToString);
 
 // set number string for game variables based on their current quantity
-// FIXME: likely fake matches, but need do {} while (0) to get registers right
-bool func_8003FBD8(u16 index, u32 number, u8 terminatorType) {
+// FIXME: fake matches, but need do {} while (0) to get registers right
+bool convertNumberToString(u16 index, u32 number, u8 terminatorType) {
     
     u32 digitDivisorsBuffer[8];
     u8 digitCharacterCodesBuffer[16];
@@ -806,9 +1045,9 @@ writeDigitChar:
             // leading zeros
 writePaddingChar:
             if (terminatorType == STANDALONE) {
-                gameVariableStrings[index].ptr[position] = 0xEE;
+                gameVariableStrings[index].ptr[position] = char_SPACE;
             } else {
-                gameVariableStrings[index].ptr[position] = 0xFF;
+                gameVariableStrings[index].ptr[position] = char_TERMINATOR;
             }
 
 advancePosition:
@@ -829,7 +1068,7 @@ void func_8003FD74(void) {
     u16 i;
 
     for (i = 0; i < 256; i++) {
-        D_80204BF0[i] = 0xEE;
+        D_80204BF0[i] = char_SPACE;
     }
     
 }
@@ -839,27 +1078,23 @@ void func_8003FD74(void) {
 bool func_8003FDB0(u16 index) {
 
     u16 i;
-    u16 temp;
+    u16 cellCount;
     u32 temp2;
 
     bool result = FALSE;
 
     if (index < MAX_DIALOGUE_BOXES) {
 
-        if (dialogueBoxes[index].flags & ACTIVE) {
+        if (messageBoxes[index].flags & DIALOGUE_BOX_ACTIVE) {
 
-            temp = dialogueBoxes[index].unk_92 * dialogueBoxes[index].unk_93;
+            cellCount = messageBoxes[index].textBoxLineCharWidth * messageBoxes[index].textBoxVisibleRows;
 
-            if (((dialogueBoxes[index].flags >> 4) & (1 | 2)) / 3) {
-   
-                temp += dialogueBoxes[index].unk_92;
-
+            if (((messageBoxes[index].flags >> 4) & 3) / 3) {
+                cellCount += messageBoxes[index].textBoxLineCharWidth;
             }
 
-            for (i = 0; i < temp; i++) {
-
-                D_80204BF0[dialogueBoxes[index].unk_80 + i] = 0xEE;
-
+            for (i = 0; i < cellCount; i++) {
+                D_80204BF0[messageBoxes[index].totalCharactersProcessed + i] = char_SPACE;
             }
         
             result = TRUE;
@@ -873,26 +1108,28 @@ bool func_8003FDB0(u16 index) {
 
 //INCLUDE_ASM("asm/nonmatchings/system/message", func_8003FE9C);
 
+// overlay dialogue boxes
 bool func_8003FE9C(u16 index) {
 
     bool result = FALSE;
 
     if (index < MAX_DIALOGUE_BOXES) { 
 
-        if ((dialogueBoxes[index].flags & ACTIVE) && (dialogueBoxes[index].flags & INITIALIZED) && !(dialogueBoxes[index].flags & (0x40 | 0x80))) {
+        if ((messageBoxes[index].flags & DIALOGUE_BOX_ACTIVE) && (messageBoxes[index].flags & DIALOGUE_BOX_INITIALIZED) && !(messageBoxes[index].flags & (0x40 | 0x80))) {
 
-            if (dialogueBoxes[index].flag + 1 != dialogueBoxes[index].buttonSfxCounter + dialogueBoxes[index].unk_93) {
+            if (messageBoxes[index].totalLinesToPrint + 1 != messageBoxes[index].scrollCount + messageBoxes[index].textBoxVisibleRows) {
+ 
+                initializeInterpolator((Interpolator*)&messageBoxes[index].scrollInterpolator, messageBoxes[index].defaultScrollSpeed, 0);
 
-                func_800267A4((Volume*)&dialogueBoxes[index].volume, dialogueBoxes[index].unk_84, 0);
+                messageBoxes[index].flags |= 0x40;
+                messageBoxes[index].flags &= ~8;
 
-                dialogueBoxes[index].flags |= 0x40;
-                dialogueBoxes[index].flags &= ~8;
-
-                dialogueBoxes[index].maxLinesInBox++;
+                messageBoxes[index].currentLineBeingPrinted++;
                 
-                func_80040628(index, dialogueBoxes[index].buttonSfxCounter + dialogueBoxes[index].unk_93 + 1);
+                // handle next line/scroll
+                advanceToLine(index, messageBoxes[index].scrollCount + messageBoxes[index].textBoxVisibleRows + 1);
                 
-                dialogueBoxes[index].currentCharPtr--;
+                messageBoxes[index].currentCharPtr--;
                 
                 result = TRUE ;
                 
@@ -912,21 +1149,22 @@ bool func_8003FFF4(u16 index) {
 
     if (index < MAX_DIALOGUE_BOXES) { 
 
-        if ((dialogueBoxes[index].flags & ACTIVE) && (dialogueBoxes[index].flags & INITIALIZED) && !(dialogueBoxes[index].flags & (0x40 | 0x80))) {
+        if ((messageBoxes[index].flags & DIALOGUE_BOX_ACTIVE) && (messageBoxes[index].flags & DIALOGUE_BOX_INITIALIZED) && !(messageBoxes[index].flags & (0x40 | 0x80))) {
 
-            if (dialogueBoxes[index].buttonSfxCounter) {
+            if (messageBoxes[index].scrollCount) {
 
-                func_800267A4((Volume*)&dialogueBoxes[index].volume, dialogueBoxes[index].unk_84, 0);
+                initializeInterpolator((Interpolator*)&messageBoxes[index].scrollInterpolator, messageBoxes[index].defaultScrollSpeed, 0);
 
-                dialogueBoxes[index].flags |= 0x80;
-                dialogueBoxes[index].flags &= ~8;
+                messageBoxes[index].flags |= 0x80;
+                messageBoxes[index].flags &= ~8;
 
-                dialogueBoxes[index].buttonSfxCounter--;
-                dialogueBoxes[index].maxLinesInBox++;
+                messageBoxes[index].scrollCount--;
+                messageBoxes[index].currentLineBeingPrinted++;
                 
-                func_80040628(index, dialogueBoxes[index].buttonSfxCounter + dialogueBoxes[index].unk_93 + 1);
+                // handle next line/scroll
+                advanceToLine(index, messageBoxes[index].scrollCount + messageBoxes[index].textBoxVisibleRows + 1);
                 
-                dialogueBoxes[index].currentCharPtr--;
+                messageBoxes[index].currentCharPtr--;
                 
                 result = TRUE;
                 
@@ -946,8 +1184,8 @@ bool func_80040140(u16 index) {
 
     if (index < MAX_DIALOGUE_BOXES) { 
 
-        if ((dialogueBoxes[index].flags & ACTIVE) && (dialogueBoxes[index].flags & INITIALIZED)) {
-            result = dialogueBoxes[index].flag + 1 != dialogueBoxes[index].buttonSfxCounter + dialogueBoxes[index].unk_93;
+        if ((messageBoxes[index].flags & DIALOGUE_BOX_ACTIVE) && (messageBoxes[index].flags & DIALOGUE_BOX_INITIALIZED)) {
+            result = messageBoxes[index].totalLinesToPrint + 1 != messageBoxes[index].scrollCount + messageBoxes[index].textBoxVisibleRows;
         }
         
     }
@@ -963,8 +1201,8 @@ u8 func_800401C8(u16 index) {
     u8 count = 0;
 
     if (index < MAX_DIALOGUE_BOXES) {
-        if (dialogueBoxes[index].flags & ACTIVE && dialogueBoxes[index].flags & INITIALIZED) {
-            count = dialogueBoxes[index].buttonSfxCounter != 0;
+        if (messageBoxes[index].flags & DIALOGUE_BOX_ACTIVE && messageBoxes[index].flags & DIALOGUE_BOX_INITIALIZED) {
+            count = messageBoxes[index].scrollCount != 0;
         }
     }
 
@@ -974,18 +1212,20 @@ u8 func_800401C8(u16 index) {
 
 //INCLUDE_ASM("asm/nonmatchings/system/message", func_8004022C);
 
+// handle text auto-scroll
 void func_8004022C(u16 index) {
 
-    func_800267B4((Volume*)&dialogueBoxes[index].volume);
+    func_800267B4((Interpolator*)&messageBoxes[index].scrollInterpolator);
 
-    if ((u16)func_80026844((Volume*)&dialogueBoxes[index].volume) >= dialogueBoxes[index].fontContext.unk_61 + dialogueBoxes[index].unk_9C) {
+    // FIXME: probably a u16 return value
+    if ((u16)getInterpolatorValue((Interpolator*)&messageBoxes[index].scrollInterpolator) >= messageBoxes[index].fontContext.characterCellHeight + messageBoxes[index].lineSpacing) {
 
-        dialogueBoxes[index].flags &= ~0x40;
+        messageBoxes[index].flags &= ~0x40;
          
-        func_800267A4((Volume*)&dialogueBoxes[index].volume, 0, 0);
+        initializeInterpolator((Interpolator*)&messageBoxes[index].scrollInterpolator, 0, 0);
  
-        dialogueBoxes[index].buttonSfxCounter++;
-        dialogueBoxes[index].maxLinesInBox--;
+        messageBoxes[index].scrollCount++;
+        messageBoxes[index].currentLineBeingPrinted--;
         
     }
        
@@ -995,15 +1235,15 @@ void func_8004022C(u16 index) {
 
 void func_80040318(u16 index) {
 
-    func_800267B4((Volume*)&dialogueBoxes[index].volume);
+    func_800267B4((Interpolator*)&messageBoxes[index].scrollInterpolator);
 
-    if ((u16)func_80026844((Volume*)&dialogueBoxes[index].volume) >= dialogueBoxes[index].fontContext.unk_61 + dialogueBoxes[index].unk_9C) {
+    if ((u16)getInterpolatorValue((Interpolator*)&messageBoxes[index].scrollInterpolator) >= messageBoxes[index].fontContext.characterCellHeight + messageBoxes[index].lineSpacing) {
 
-        dialogueBoxes[index].flags &= ~0x80;
+        messageBoxes[index].flags &= ~0x80;
         
-        func_800267A4((Volume*)&dialogueBoxes[index].volume, 0, 0);
+        initializeInterpolator((Interpolator*)&messageBoxes[index].scrollInterpolator, 0, 0);
 
-        dialogueBoxes[index].maxLinesInBox--;
+        messageBoxes[index].currentLineBeingPrinted--;
         
     }
 
@@ -1024,66 +1264,79 @@ static const u8 digitCharacterCodes[16] = {
 
 //INCLUDE_ASM("asm/nonmatchings/system/message", func_800403F0);
 
-u8 func_800403F0(u16 index, u16 arg1) {
+// get total lines to print
+u8 func_800403F0(u16 index, u16 textIndex) {
     
     u8 result = 0;
     
-    bool set = 0;
+    bool done = FALSE;
     
     u8 count2 = 0;
     u8 count = 0;
     
     u8 i;
-    u8 temp;
+    u8 gameVariableStringIndex;
     
-    dialogueBoxes[index].unk_90 = 0;
-    dialogueBoxes[index].unk_91 = 0;
-    dialogueBoxes[index].unk_A0 = 0;
-    dialogueBoxes[index].unk_A1 = 0;
-    dialogueBoxes[index].currentCharPtr = dialogueBoxes[index].textBufferBase;
+    messageBoxes[index].currentCompressionControlByte = 0;
+    messageBoxes[index].compressionBitIndex = 0;
+    messageBoxes[index].unk_A0 = 0;
+    messageBoxes[index].unk_A1 = 0;
+    messageBoxes[index].currentCharPtr = messageBoxes[index].textBufferBase;
     
     do {
-        switch ((u16)func_80041850(index)) {
-            case 0:
-                if (dialogueBoxes[index].unk_A0 < count2) {
-                    dialogueBoxes[index].unk_A0 = count2;
+
+        switch (func_80041850(index)) {
+
+            case CHARACTER_CONTROL_LINEBREAK:
+
+                if (messageBoxes[index].unk_A0 < count2) {
+                    messageBoxes[index].unk_A0 = count2;
                 }
+
                 count2 = 0;
                 result += 1;
                 count++;
+
                 break;
 
-            case 1:
+            case CHARACTER_CONTROL_SOFTBREAK:
                 result += 1;
                 count++;
                 break;
 
-            case 2:
-                if (dialogueBoxes[index].unk_A0 < count2) {
-                    dialogueBoxes[index].unk_A0 = count2;
+            case CHARACTER_CONTROL_TEXT_END:
+
+                if (messageBoxes[index].unk_A0 < count2) {
+                    messageBoxes[index].unk_A0 = count2;
                 }
-                set = 1;
+
+                done = TRUE;
                 count++;
+
                 break;
 
-            case 7:
-                temp = *dialogueBoxes[index].currentCharPtr;
-                dialogueBoxes[index].currentCharPtr++;
+            case CHARACTER_CONTROL_INSERT_GAME_VARIABLE:
+
+                gameVariableStringIndex = *messageBoxes[index].currentCharPtr;
+                messageBoxes[index].currentCharPtr++;
                 
-                if (gameVariableStrings[temp].ptr[0] != 0xFF) {
+                if (gameVariableStrings[gameVariableStringIndex].ptr[0] != char_TERMINATOR) {
                     
                     i = 0;
                     
-                    while ((gameVariableStrings[temp].ptr[i] != 0xFF) && (i < gameVariableStrings[temp].maxLength)) {
+                    while ((gameVariableStrings[gameVariableStringIndex].ptr[i] != char_TERMINATOR) && (i < gameVariableStrings[gameVariableStringIndex].maxLength)) {
                         i++;
+                        // get length of string
                         count2++;
                     }
+
                 }
+
                 break;
 
-            case 3:
-            case 9:
-                dialogueBoxes[index].currentCharPtr++;
+            case CHARACTER_CONTROL_WAIT:
+            case CHARACTER_CONTROL_CHARACTER_AVATAR:
+                messageBoxes[index].currentCharPtr++;
                 break;
 
             default:
@@ -1091,34 +1344,33 @@ u8 func_800403F0(u16 index, u16 arg1) {
                 break;
         }
 
-    } while (!set);
+    } while (!done);
     
-    dialogueBoxes[index].unk_A1 = count;
+    messageBoxes[index].unk_A1 = count;
     
     return result;
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/message", func_80040628);
+//INCLUDE_ASM("asm/nonmatchings/system/message", advanceToLine);
 
 // FIXME: do {} while (0) switch statement
-void func_80040628(u16 index, u8 arg1) {
+void advanceToLine(u16 index, u8 linesToSkip) {
     
     u8 i;
     u8 position;
-    u8 done;
-    
-    u16 temp;
-    u32 temp2;
-    
-    done = 0; 
+    u16 character;
+
+    bool done = FALSE;
+
     i = 0;
     
-    dialogueBoxes[index].unk_90 = 0;
-    dialogueBoxes[index].unk_91 = 0;
-    dialogueBoxes[index].currentCharPtr = dialogueBoxes[index].textBufferBase;
+    messageBoxes[index].currentCompressionControlByte = 0;
+    messageBoxes[index].compressionBitIndex = 0;
+
+    messageBoxes[index].currentCharPtr = messageBoxes[index].textBufferBase;
     
-    if (arg1) {
+    if (linesToSkip != 0) {
         
         do {
 
@@ -1126,127 +1378,611 @@ void func_80040628(u16 index, u8 arg1) {
                 
                 position++;
                 
-                if (gameVariableStrings[dialogueBoxes[index].gameVariableStringPosition].ptr[position] == 0xFF) {
+                if (gameVariableStrings[messageBoxes[index].gameVariableStringIndex].ptr[position] == char_TERMINATOR) {
                     
-                    while ((gameVariableStrings[dialogueBoxes[index].gameVariableStringPosition].ptr[position] == 0xFF) && (position < gameVariableStrings[dialogueBoxes[index].gameVariableStringPosition].maxLength)) {
+                    while ((gameVariableStrings[messageBoxes[index].gameVariableStringIndex].ptr[position] == char_TERMINATOR) && (position < gameVariableStrings[messageBoxes[index].gameVariableStringIndex].maxLength)) {
                         position++;
                     }
 
                 }
                 
-                temp = 0xEE;
+                character = char_SPACE;
                 
-                if (position == gameVariableStrings[dialogueBoxes[index].gameVariableStringPosition].maxLength) {
-                    done = 0;
+                if (position == gameVariableStrings[messageBoxes[index].gameVariableStringIndex].maxLength) {
+                    done = FALSE;
                 }
                 
             } else {
-                temp = func_80041850(index);
+                // loop back to here until done
+                character = func_80041850(index);
             }
             
-            switch (temp) {
+            // handle control character
+            switch (character) {
                 
                 do {
-                    case 2:
-                        i = arg1;
+
+                    case CHARACTER_CONTROL_TEXT_END:
+                        i = linesToSkip;
                         break;
-                    case 0:
-                    case 1:
+                    case CHARACTER_CONTROL_LINEBREAK:
+                    case CHARACTER_CONTROL_SOFTBREAK:
                         i++;
                         break;
-                    case 7:
+                    case CHARACTER_CONTROL_INSERT_GAME_VARIABLE:
                         position = 0;
-                        done = 1;
-                        dialogueBoxes[index].currentCharPtr++;
+                        done = TRUE;
+                        messageBoxes[index].currentCharPtr++;
                         break;
-                    case 3:
-                    case 9:
-                        dialogueBoxes[index].currentCharPtr++;
+                    case CHARACTER_CONTROL_WAIT:
+                    case CHARACTER_CONTROL_CHARACTER_AVATAR:
+                        messageBoxes[index].currentCharPtr++;
                         do {} while (0);
                         break;
+
                 } while (0);
             
                 default:
                     break;
             }
 
-        } while (i < arg1);
+        } while (i < linesToSkip);
+
     }
+
 }
 
-INCLUDE_ASM("asm/nonmatchings/system/message", func_80040858);
+//INCLUDE_ASM("asm/nonmatchings/system/message", func_80040858);
 
-INCLUDE_ASM("asm/nonmatchings/system/message", func_80040C38);
+void func_80040858(u16 index) {
+    
+    u8* originalCharPtr;
+    
+    u8 characterPositionOnLine;
+    u8 currentLine;
+    
+    u8 gameVariableStringIndex;
+    u8 gameVariableStringPosition;
+    u8 gameVariableStringLength;
+    bool processingGameVariableString;
+    
+    u16 character;
+    u8 renderMode;
+    u16 bufferPosition;
+    
+    switch ((messageBoxes[index].flags >> 4) & 3) {
+            
+        case 0:
+            renderMode = 0;
+            break;
+        case 1:
+            renderMode = 1;
+            break;
+        case 2:
+            renderMode = 2;
+            break;
+        case 3:
+            renderMode = 3;
+            break;
+
+    }
+
+    originalCharPtr = messageBoxes[index].currentCharPtr;
+    
+    characterPositionOnLine = 0;
+    
+    advanceToLine(index, messageBoxes[index].scrollCount);
+
+    currentLine = 0;
+    processingGameVariableString = FALSE;
+
+    while (messageBoxes[index].currentCharPtr < originalCharPtr || processingGameVariableString) {
+        
+        if (processingGameVariableString) {
+
+            character = gameVariableStrings[gameVariableStringIndex].ptr[gameVariableStringPosition];
+            gameVariableStringPosition++;
+            
+            while (gameVariableStrings[gameVariableStringIndex].ptr[gameVariableStringPosition] == char_TERMINATOR && 
+                   gameVariableStringPosition < gameVariableStrings[gameVariableStringIndex].maxLength) {
+                gameVariableStringPosition++;
+            }
+            
+            if (character != char_TERMINATOR) {
+                character += 0xB;
+            } else {
+                character = 0xFFFF;
+            }
+            
+            if (gameVariableStringPosition == gameVariableStringLength) {
+                processingGameVariableString = FALSE;
+            }
+            
+        } else {
+            character = func_80041850(index);
+        }
+
+        switch (character) {
+
+            case CHARACTER_CONTROL_LINEBREAK:
+                characterPositionOnLine = 0;
+                currentLine++;
+                break;
+            
+            // clear and start new line (overwrite text box)
+            case CHARACTER_CONTROL_SOFTBREAK:
+
+                func_8003FDB0(index);
+                characterPositionOnLine = 0;
+                currentLine = 0;
+                break;
+                    
+            case CHARACTER_CONTROL_TEXT_END:
+
+                if (renderMode == 3) {
+                    
+                    messageBoxes[index].currentCharPtr--;
+                    
+                } else if (!(messageBoxes[index].flags & 0x4000) || 
+                          (messageBoxes[index].savedCharPtr != messageBoxes[index].currentCharPtr)) {
+                    
+                    characterPositionOnLine = 0;
+                    currentLine++;
+                    
+                }
+                
+                break;
+
+            case CHARACTER_CONTROL_WAIT:
+                messageBoxes[index].currentCharPtr++;
+                break;
+
+            // set up game variable printing
+            case CHARACTER_CONTROL_INSERT_GAME_VARIABLE:
+                
+                if (messageBoxes[index].gameVariableStringPtr == messageBoxes[index].currentCharPtr) {
+                    
+                    messageBoxes[index].currentCharPtr++;
+                    gameVariableStringIndex = messageBoxes[index].gameVariableStringIndex;
+                    gameVariableStringLength = messageBoxes[index].gameVariableStringLength;
+                    processingGameVariableString = 2;
+                    
+                } else {
+                    
+                    gameVariableStringIndex = *messageBoxes[index].currentCharPtr;
+                    messageBoxes[index].currentCharPtr++;
+                    gameVariableStringLength = gameVariableStrings[gameVariableStringIndex].maxLength;
+                    processingGameVariableString = TRUE;
+                }
+
+                gameVariableStringPosition = 0;
+                
+                break;
+
+            case CHARACTER_CONTROL_CHARACTER_AVATAR:
+                messageBoxes[index].currentCharPtr++;
+                break;
+            
+            // update text buffer, converting from ROM char o font index 
+            default:
+                D_80204BF0[messageBoxes[index].totalCharactersProcessed + 
+                                   (currentLine * messageBoxes[index].textBoxLineCharWidth) + 
+                                   characterPositionOnLine] = character - 0xB;
+                
+                characterPositionOnLine++;
+
+                break;
+
+            case CHARACTER_CONTROL_WAIT_WITH_ICON:
+            case 0xFFFF:
+                break;
+
+        }
+    }
+    
+}
+
+//INCLUDE_ASM("asm/nonmatchings/system/message", func_80040C38);
+
+void func_80040C38(u16 index) {
+    
+    Swap16 swap;
+
+    u8 temp;
+    u8 temp2;
+
+    u16 character;
+
+    u8 animationIndex;
+
+    u8 renderMode;
+    u8 currentLine;
+        
+    bool continueProcessing;
+        
+    switch ((messageBoxes[index].flags >> 4) & 3) {
+                
+        case 0:
+            renderMode = 0;
+            break;
+        case 1:
+            renderMode = 1;
+            break;
+        case 2:
+            renderMode = 2;
+            break;
+        case 3:
+            renderMode = 3;
+            break;
+                
+    }
+
+    temp = (((messageBoxes[index].flags >> 4) & 3) / 3) ^ 1;
+    
+    continueProcessing = FALSE;
+    
+    while (!continueProcessing) {
+        
+        if (messageBoxes[index].flags & 0x100) {
+            
+            character = func_800419C4(index);
+            
+            if (character == 0xFF) {
+                character = 0xFFFF;
+            } else {
+                character += 0xB;
+            }
+            
+        } else if ((messageBoxes[index].flags & 0x1000) || (messageBoxes[index].flags & 0x4000)) {
+            
+            if (messageBoxes[index].flags & 0x1000) {
+                character = 4;
+            } else {
+                character = 2;
+            }
+            
+        } else {
+            character = func_80041850(index);
+        }
+        
+        switch (character) {
+            
+            case CHARACTER_CONTROL_LINEBREAK:
+                
+                currentLine = messageBoxes[index].currentLineBeingPrinted;
+                
+                // Check if need to scroll
+                if (currentLine >= (messageBoxes[index].textBoxVisibleRows - temp)) {
+                    
+                    if (renderMode != 3) {
+                                
+                        if (checkButtonHeld(CONTROLLER_1, messageBoxes[index].buttonMask) || (renderMode == 2)) {
+                            // fast scroll if button held
+                            initializeInterpolator(&messageBoxes[index].scrollInterpolator, 4, 0);
+                        } else {
+                            // default scroll speed
+                            initializeInterpolator(&messageBoxes[index].scrollInterpolator, messageBoxes[index].defaultScrollSpeed, 0);
+                        }
+                        
+                        // scrolling flag
+                        messageBoxes[index].flags |= 0x40;
+                        messageBoxes[index].currentLineBeingPrinted++;
+                                
+                    } else {
+                        messageBoxes[index].flags |= 8;
+                    }
+                        
+                    temp2 = renderMode;
+                    temp2 -= 2;
+                    
+                    if (temp2 < 2) {
+                        continueProcessing = TRUE;
+                    }
+                        
+                } else {
+                    messageBoxes[index].currentLineBeingPrinted++;
+                }   
+            
+                messageBoxes[index].currentCharCountOnLine = 0;
+                
+                if (renderMode < 2) {
+                    continueProcessing = TRUE;
+                }
+                
+                break;
+                    
+            case CHARACTER_CONTROL_SOFTBREAK:
+                    
+                func_8003FDB0(index);
+                
+                messageBoxes[index].currentCharCountOnLine = 0;
+                messageBoxes[index].scrollCount += messageBoxes[index].currentLineBeingPrinted + 1;
+                messageBoxes[index].currentLineBeingPrinted = 0;
+                
+                continueProcessing = TRUE;
+                
+                break;
+                    
+            case CHARACTER_CONTROL_TEXT_END:
+                
+                if (renderMode == 3) {
+                    
+                    messageBoxes[index].flags |= 8;
+                
+                } else {
+                
+                    messageBoxes[index].flags |= 0x4000;
+                    messageBoxes[index].savedCharPtr = messageBoxes[index].currentCharPtr;
+                    
+                    if ((messageBoxes[index].flags & 0x400) && !(messageBoxes[index].flags & 0x80000)) {
+                        
+                        startSpriteAnimation(overlayIcons[messageBoxes[index].overlayIconIndex].spriteIndex, 
+                                overlayIcons[messageBoxes[index].overlayIconIndex + 1].spriteOffset, 
+                                overlayIcons[messageBoxes[index].overlayIconIndex + 1].flag
+                        );
+                        
+                        setSpriteViewSpacePosition(overlayIcons[messageBoxes[index].overlayIconIndex].spriteIndex, 
+                        messageBoxes[index].viewSpacePosition.x + overlayIcons[messageBoxes[index].overlayIconIndex].coordinates.x,
+                            messageBoxes[index].viewSpacePosition.y + overlayIcons[messageBoxes[index].overlayIconIndex].coordinates.y,
+                            messageBoxes[index].viewSpacePosition.z + overlayIcons[messageBoxes[index].overlayIconIndex].coordinates.z + 1.0f);
+                            
+                    }
+                    
+                    if ((messageBoxes[index].flags & 0x800) || (messageBoxes[index].flags & 0x100000)) {
+                        
+                        __asm__ __volatile__("" : : : "memory");
+                        
+                        messageBoxes[index].flags &= ~0x4000;
+                        messageBoxes[index].flags |= 4;
+                        
+                        if (!(messageBoxes[index].flags & 0x40000)) {
+                            func_8003F130(index);
+                        }
+                        
+                        resetAnimationState(overlayIcons[messageBoxes[index].overlayIconIndex].spriteIndex);
+                        
+                        // play close sound effect
+                        if (!(messageBoxes[index].flags & 0x100000) && (messageBoxes[index].characterPrintSfx != 0xFF)) {
+                            setSfx(messageBoxes[index].messageCloseSfx + 1);
+                            setSfxVolume(messageBoxes[index].messageCloseSfx + 1, 0x80);
+                        }
+                        
+                    }
+                }
+                
+                messageBoxes[index].currentCharCountOnLine = 0;
+                continueProcessing = TRUE;
+                
+                break;
+                
+            case CHARACTER_CONTROL_WAIT:
+                
+                initializeInterpolator(&messageBoxes[index].unk_64, -(s16)*messageBoxes[index].currentCharPtr, 0);
+                
+                messageBoxes[index].currentCharPtr++;
+                messageBoxes[index].flags |= 0x2000;
+                continueProcessing = TRUE;
+                
+                break;
+                
+            case CHARACTER_CONTROL_WAIT_WITH_ICON:
+                
+                messageBoxes[index].flags |= 0x1000;
+                messageBoxes[index].savedCharPtr = messageBoxes[index].currentCharPtr;
+                
+                if (messageBoxes[index].flags & 0x400) {
+                    
+                    startSpriteAnimation(overlayIcons[messageBoxes[index].overlayIconIndex].spriteIndex, overlayIcons[messageBoxes[index].overlayIconIndex].spriteOffset, overlayIcons[messageBoxes[index].overlayIconIndex].flag);
+                    setSpriteViewSpacePosition(overlayIcons[messageBoxes[index].overlayIconIndex].spriteIndex,
+                    messageBoxes[index].viewSpacePosition.x + overlayIcons[messageBoxes[index].overlayIconIndex].coordinates.x,
+                    messageBoxes[index].viewSpacePosition.y + overlayIcons[messageBoxes[index].overlayIconIndex].coordinates.y,
+                    messageBoxes[index].viewSpacePosition.z + overlayIcons[messageBoxes[index].overlayIconIndex].coordinates.z + 1.0f);
+                
+                }
+                
+                if (messageBoxes[index].flags & 0x800) {
+                    
+                    messageBoxes[index].flags &= ~0x800;
+                    messageBoxes[index].flags &= ~0x1000;
+                    
+                    resetAnimationState(overlayIcons[messageBoxes[index].overlayIconIndex].spriteIndex);
+                    
+                    if (messageBoxes[index].characterPrintSfx != 0xFF) {
+                        setSfx(messageBoxes[index].unk_74 + 1);
+                        setSfxVolume(messageBoxes[index].unk_74 + 1, 0x80);
+                    }
+                    
+                } else {
+                    continueProcessing = TRUE;
+                }
+                
+                break;
+                
+            case CHARACTER_CONTROL_LOAD_TEXT:
+                
+                // Read dialogue index (2 bytes, little endian)
+                swap.byte[1] = *messageBoxes[index].currentCharPtr;
+                messageBoxes[index].currentCharPtr++;
+                swap.byte[0] = *messageBoxes[index].currentCharPtr;
+                messageBoxes[index].currentCharPtr++;
+                
+                messageBoxes[index].textIndex = swap.halfword;
+                
+                // Reset text state
+                messageBoxes[index].currentCompressionControlByte = 0;
+                messageBoxes[index].compressionBitIndex = 0;
+                messageBoxes[index].currentCharCountOnLine = 0;
+                messageBoxes[index].currentLineBeingPrinted = 0;
+                messageBoxes[index].scrollCount = 0;
+                messageBoxes[index].totalLinesToPrint = 0;
+                
+                messageBoxes[index].currentCharPtr = messageBoxes[index].textBufferBase;
+                
+                break;
+                
+            case CHARACTER_CONTROL_UNUSED:
+                break;
+            
+            case CHARACTER_CONTROL_INSERT_GAME_VARIABLE:
+
+                messageBoxes[index].gameVariableStringPtr = messageBoxes[index].currentCharPtr;
+                
+                swap.byte[0] = *messageBoxes[index].currentCharPtr;
+                
+                messageBoxes[index].currentCharPtr++;
+                
+                messageBoxes[index].gameVariableStringIndex = swap.byte[0];
+                
+                messageBoxes[index].gameVariableStringLength = 0;
+                
+                messageBoxes[index].flags |= 0x100;
+                
+                break;
+                
+            case CHARACTER_CONTROL_WAIT_ALTERNATE: 
+            
+                messageBoxes[index].flags |= 0x4000;
+                messageBoxes[index].savedCharPtr = messageBoxes[index].currentCharPtr;
+                
+                if (messageBoxes[index].flags & 0x800) {
+                    messageBoxes[index].flags = (messageBoxes[index].flags & ~0x4000) | 4;
+                } else {
+                    continueProcessing = TRUE;
+                }
+            
+                break;
+                
+            case CHARACTER_CONTROL_CHARACTER_AVATAR:
+                
+                animationIndex = *messageBoxes[index].currentCharPtr;
+                messageBoxes[index].currentCharPtr++;
+                
+                resetAnimationState(characterAvatars[messageBoxes[index].characterAvatarIndex].spriteIndex);
+                startSpriteAnimation(characterAvatars[messageBoxes[index].characterAvatarIndex].spriteIndex, D_801891C8[animationIndex], 0);
+                
+                setSpriteViewSpacePosition(characterAvatars[messageBoxes[index].characterAvatarIndex].spriteIndex,
+                    messageBoxes[index].viewSpacePosition.x + characterAvatars[messageBoxes[index].characterAvatarIndex].coordinates.x,
+                    messageBoxes[index].viewSpacePosition.y + characterAvatars[messageBoxes[index].characterAvatarIndex].coordinates.y,
+                    messageBoxes[index].viewSpacePosition.z + characterAvatars[messageBoxes[index].characterAvatarIndex].coordinates.z - 1.0f);
+                    
+                break;
+                
+            case 0xFFFF:
+                break;
+
+            case 0xA:
+                break;
+                
+            default:
+                
+                D_80204BF0[messageBoxes[index].totalCharactersProcessed + 
+                    (messageBoxes[index].currentLineBeingPrinted * messageBoxes[index].textBoxLineCharWidth) + 
+                    messageBoxes[index].currentCharCountOnLine] = character - 0xB;
+                
+                messageBoxes[index].currentCharCountOnLine++;
+                
+                if (renderMode != 0) break;
+                
+                if (messageBoxes[index].characterPrintSfx != 0xFF) {
+                    
+                    // skip space characters
+                    if ((character - 0xB) != 0xEE) {
+                            
+                        setSfx(messageBoxes[index].characterPrintSfx + 1);
+                        setSfxVolume(messageBoxes[index].characterPrintSfx + 1, 0x80);
+                        
+                    }
+            
+                }
+        
+                continueProcessing = TRUE;
+            
+                break;
+                
+        }
+            
+    } 
+    
+    func_800267B4((Interpolator*)&messageBoxes[index].unk_64);
+    
+}
 
 //INCLUDE_ASM("asm/nonmatchings/system/message", func_80041850);
 
-u32 func_80041850(u16 index) {
-
+u16 func_80041850(u16 index) {
+    
     u8 buffer[2];
     u32 padding[4];
 
-    u32 result;
+    u16 character;
     
-    u8 temp;
-    u32 temp2;
+    u8 lower;
+    u32 higher;
     
-    memcpy(buffer, D_8011EE90, 8);
+    memcpy(buffer, controlByteBitMasks, 8);
 
-    if (!(dialogueBoxes[index].unk_91 & (1 | 2 | 4))) {
-        dialogueBoxes[index].unk_90 = *dialogueBoxes[index].currentCharPtr;        
-        dialogueBoxes[index].currentCharPtr++;
+    // every 8 characters, store control byte (which determines how to read 8 character stream)
+    if ((messageBoxes[index].compressionBitIndex % 8) == 0) {
+        messageBoxes[index].currentCompressionControlByte = *messageBoxes[index].currentCharPtr;        
+        messageBoxes[index].currentCharPtr++;
     }
-
-    if (dialogueBoxes[index].unk_90 & buffer[dialogueBoxes[index].unk_91 & (1 | 2 | 4)]) {
+    
+    // get two-byte value if needed
+    if (messageBoxes[index].currentCompressionControlByte & buffer[messageBoxes[index].compressionBitIndex % 8]) {
         
-        temp = *dialogueBoxes[index].currentCharPtr;
-        dialogueBoxes[index].currentCharPtr++;
+        lower = *messageBoxes[index].currentCharPtr;
+        messageBoxes[index].currentCharPtr++;
         
-        temp2 = *dialogueBoxes[index].currentCharPtr;
-        dialogueBoxes[index].currentCharPtr++;
+        higher = *messageBoxes[index].currentCharPtr;
+        messageBoxes[index].currentCharPtr++;
         
-        result = (temp | (temp2 << 8));
+        character = (lower | (higher << 8));
         
     } else {
-        result = *dialogueBoxes[index].currentCharPtr; 
-        dialogueBoxes[index].currentCharPtr++;
+        character = *messageBoxes[index].currentCharPtr; 
+        messageBoxes[index].currentCharPtr++;
     }
 
-    dialogueBoxes[index].unk_91++;
+    // only reset on new text
+    messageBoxes[index].compressionBitIndex++;
 
-    return result;
+    return character;
     
 }
 
 //INCLUDE_ASM("asm/nonmatchings/system/message", func_800419C4);
 
-u32 func_800419C4(u16 index) {
+u8 func_800419C4(u16 index) {
 
-    u32 result;
+    u8 result;
 
-    result = gameVariableStrings[dialogueBoxes[index].gameVariableStringPosition].ptr[dialogueBoxes[index].gameVariableStringLength];
+    result = gameVariableStrings[messageBoxes[index].gameVariableStringIndex].ptr[messageBoxes[index].gameVariableStringLength];
     
-    dialogueBoxes[index].gameVariableStringLength++;
+    messageBoxes[index].gameVariableStringLength++;
     
-     while (gameVariableStrings[dialogueBoxes[index].gameVariableStringPosition].ptr[dialogueBoxes[index].gameVariableStringLength] == 0xFF && dialogueBoxes[index].gameVariableStringLength < gameVariableStrings[dialogueBoxes[index].gameVariableStringPosition].maxLength) {
-        dialogueBoxes[index].gameVariableStringLength++;
+    while (gameVariableStrings[messageBoxes[index].gameVariableStringIndex].ptr[messageBoxes[index].gameVariableStringLength] == char_TERMINATOR 
+        && messageBoxes[index].gameVariableStringLength < gameVariableStrings[messageBoxes[index].gameVariableStringIndex].maxLength) {
+       
+        messageBoxes[index].gameVariableStringLength++;
+    
     } 
 
-    if (dialogueBoxes[index].gameVariableStringLength == gameVariableStrings[dialogueBoxes[index].gameVariableStringPosition].maxLength) {
-        dialogueBoxes[index].flags &= ~0x100;
+    if (messageBoxes[index].gameVariableStringLength == gameVariableStrings[messageBoxes[index].gameVariableStringIndex].maxLength) {
+        messageBoxes[index].flags &= ~0x100;
     }
 
     return result;
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/message", func_80041B28);
+//INCLUDE_ASM("asm/nonmatchings/system/message", getTextAddress);
 
-u32 func_80041B28(u16 index, u16 offset) {
+// returns rom address for text
+u32 getTextAddress(u16 index, u16 textIndex) {
 
-    u32 result = dialogueInfo[dialogueBoxes[index].dialogueInfoIndex].romTextStart;
-    
-    result += dialogueInfo[dialogueBoxes[index].dialogueInfoIndex].index[offset];
+    u32 result = textAddresses[messageBoxes[index].textAddressesIndex].romTextStart;
+
+    result += textAddresses[messageBoxes[index].textAddressesIndex].indexVaddr[textIndex];
 
     return result;
     
@@ -1259,8 +1995,10 @@ static inline void swapTop(u8* source, u8* dest) {
     // 0xC0 = 1100 0000
     // 0x30 = 0011 0000
 
+    // 1100 0000 --> 0011 0000
     temp = ((*source) & 0xC0) >> 2;
     *dest = temp;
+    // 0011 0000 --> 0000 0011
     *dest |= ((*source) & 0x30) >> 4;
     
 }
@@ -1272,79 +2010,94 @@ static inline void swapBottom(u8* source, u8* dest) {
     // 0xC = 1100
     // 0x3 = 0011
 
+    // 1100 --> 0011 0000
     temp = ((*source) & 0xC) << 2;
     *dest = temp;
-    *dest |= *source & (1 | 2);
+    *dest |= *source & 3;
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/message", func_80041B80);
+//INCLUDE_ASM("asm/nonmatchings/system/message", unpackFontCI2Data);
 
-void func_80041B80(u16 arg0, DialogueBoxFont* fontContext, u8 arg2[]) {
+// outputs CI2 data (pixel values range from 0-3, corresponding to one of four palettes)
+void unpackFontCI2Data(u16 characterIndex, MessageBoxFont* fontContext, u8 outputBuffer[]) {
 
     u8 i;
 
-    u8 *arr;
-    u8 *ptr;
+    u8 *source;
+    u8 *out;
 
-    arr = (fontContext->fontTexturePtr+3);
-    arr = &arr[arg0*0x40];
+    source = fontContext->compressedCI2FontData + 3;
+
+    source = &source[characterIndex * 0x40];
     
-    ptr = arg2; 
+    out = outputBuffer; 
     
     i = 0;
     
-    if (fontContext->unk_60) {
+    if (fontContext->characterCellWidth) {
 
+        // process 4 bytes, output 8
         do {
 
-            swapTop(arr, ptr);
-            swapBottom(arr, ++ptr);
-            arr--;
+            // byte 1
+            swapTop(source, out);
+            swapBottom(source, ++out);
+            source--;
 
-            swapTop(arr, ++ptr);
-            swapBottom(arr, ++ptr);
-            arr--;
+            // byte 2
+            swapTop(source, ++out);
+            swapBottom(source, ++out);
+            source--;
 
-            swapTop(arr, ++ptr);
-            swapBottom(arr, ++ptr);
-            arr--;
+            // byte 3
+            swapTop(source, ++out);
+            swapBottom(source, ++out);
+            source--;
 
-            swapTop(arr, ++ptr);
+            // byte 4; only process top nibble
+            swapTop(source, ++out);
             
-            arr += 7;
-            ptr++;
+            // skip last nibble
+            source += 7;
+            out++;
             
             i++;
             
-        } while (i < fontContext->unk_60);
+        } while (i < fontContext->characterCellWidth);
+
     }
     
 }
 
-#ifdef PERMUTER
-Gfx* func_80041CD8(Gfx* dl, DialogueBox* dialogueBox) {
+//INCLUDE_ASM("asm/nonmatchings/system/message", func_80041CD8);
 
-    f32 ulx, uly;
+Gfx* func_80041CD8(Gfx* dl, MessageBox* messageBox) {
+
+    u16 ulx, uly, lrx, lry;
+    u16 temp;
     
     Gfx tempDl;
 
     *dl++ = D_8011EE98;
-
     *dl++ = D_8011EEA0;
 
-    ulx = dialogueBox->fontContext.unk_60 / 2;
+    temp = (messageBox->fontContext.characterCellWidth / 2);
 
-    ulx = (((dialogueBox->viewSpacePosition.x + 160.0f) - ulx) - ((dialogueBox->unk_92* dialogueBox->fontContext.unk_60) / 2) + ulx) - ((dialogueBox->unk_92* dialogueBox->currentLine) / 2);
+    ulx = messageBox->viewSpacePosition.x + 160.0f - temp - ((messageBox->textBoxLineCharWidth * messageBox->fontContext.characterCellWidth) / 2) + temp - ((messageBox->textBoxLineCharWidth * messageBox->characterSpacing) / 2);
 
-    uly = dialogueBox->fontContext.unk_61 / 2;
+    temp = (messageBox->fontContext.characterCellHeight / 2);
+
+    uly = 120.0f - messageBox->viewSpacePosition.y - temp - (messageBox->textBoxVisibleRows * messageBox->fontContext.characterCellHeight / 2) + temp - (messageBox->textBoxVisibleRows * messageBox->lineSpacing / 2);
     
-    uly = ((((120.0f - dialogueBox->viewSpacePosition.y) - uly) - ((dialogueBox->unk_93 * dialogueBox->fontContext.unk_61) / 2)) + uly) - ((dialogueBox->unk_93 * dialogueBox->unk_9C) / 2);
+    lrx = ulx  + (messageBox->textBoxLineCharWidth * messageBox->fontContext.characterCellWidth) 
+        + (messageBox->textBoxLineCharWidth * messageBox->characterSpacing);
 
-    gDPSetScissor(&tempDl, G_SC_NON_INTERLACE, ulx, uly, 
-        ulx + (dialogueBox->unk_92 * dialogueBox->fontContext.unk_60) + (dialogueBox->unk_92 * dialogueBox->currentLine), 
-        uly + (dialogueBox->unk_93 * dialogueBox->fontContext.unk_61) + (dialogueBox->unk_93 * dialogueBox->unk_9C));
+    lry = uly + (messageBox->textBoxVisibleRows * messageBox->fontContext.characterCellHeight) 
+        + (messageBox->textBoxVisibleRows * messageBox->lineSpacing);
 
+    gDPSetScissor(&tempDl, G_SC_NON_INTERLACE, ulx, uly, lrx, lry);
+    
     *dl++ = tempDl;
 
     *dl++ = D_8011EEA8;
@@ -1352,113 +2105,141 @@ Gfx* func_80041CD8(Gfx* dl, DialogueBox* dialogueBox) {
     return dl++;
     
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/system/message", func_80041CD8);
-#endif
 
-#ifdef PERMUTER
-Gfx* func_80042014(Gfx* dl, DialogueBox* dialogueBox, s32 arg2) {
+//INCLUDE_ASM("asm/nonmatchings/system/message", func_80042014);
 
-    u32 count1;
-    u16 count2;
-    
-    u32 temp;
-    u16 temp2;
-    u16 temp3;
-    u32 tempFlags;
+Gfx* func_80042014(Gfx* dl, MessageBox* messageBox, u8 lineNumber, s32 arg3) {
 
     FontBitmap sprite;
-    Gfx tempDl[2];
-
-    temp = dialogueBox->unk_92;
     
-    count2 = 0;
-    count1 = 0;
+    Gfx tempDl[2];
+    
+    u16 charOffset;
 
-    if (dialogueBox->unk_92) {
+    u32 flags;
 
-        arg2 &= 0xFF;
-        temp3 = arg2;
+    u16 characterCount = 0;
+    u8 i = 0;
+    
+    u32 i2;
+    
+    while (i < messageBox->textBoxLineCharWidth) {
 
-        do {
+        // FIXME: seems fake
+        i2 = i; 
+        charOffset = i2 + (lineNumber * messageBox->textBoxLineCharWidth);
+        
+        unpackFontCI2Data(
+            D_80204BF0[messageBox->totalCharactersProcessed + charOffset], 
+            &messageBox->fontContext.compressedCI2FontData, 
+            D_801706C0[gGraphicsBufferIndex][messageBox->totalCharactersProcessed + charOffset].timg
+        );
+        
+        if (messageBox->flags & 2) {
 
-            count1 &= 0xFF;
-            temp *= temp3;
-            temp += count1;
-            temp2 = (dialogueBox->unk_80 + temp);
-            
-            func_80041B80(
-                D_80204BF0[dialogueBox->unk_80+temp2], 
-                &dialogueBox->fontContext.fontTexturePtr, 
-                D_801706C0[gGraphicsBufferIndex][dialogueBox->unk_80+temp2].timg
+            flags = (0x10 | 0x40 | 0x100 | 0x400);
+
+            setupBitmapVertices(
+                &D_801C6230[gGraphicsBufferIndex][messageBox->totalCharactersProcessed + charOffset][0],
+                messageBox->fontContext.characterCellWidth,
+                messageBox->fontContext.characterCellHeight,
+                messageBox->fontContext.characterCellHeight,
+                0,
+                0,
+                0,
+                ((messageBox->fontContext.characterCellWidth + messageBox->characterSpacing)*i),
+                0,
+                flags,
+                messageBox->unk_14.r,
+                messageBox->unk_14.g,
+                messageBox->unk_14.b,
+                messageBox->unk_14.a
             );
 
-            if (dialogueBox->flags & 2) {
+            sprite.timg = D_801706C0[gGraphicsBufferIndex][messageBox->totalCharactersProcessed + charOffset].timg;
 
-                tempFlags = (0x10 | 0x40 | 0x100 | 0x400);
-                
-                setupBitmapVertices(&D_801C6230[gGraphicsBufferIndex][dialogueBox->unk_80+temp2][0], 
-                    dialogueBox->fontContext.unk_60,
-                    dialogueBox->fontContext.unk_61,
-                    dialogueBox->fontContext.unk_61,
-                    0,
-                    0,
-                    0,
-                    (s16)((dialogueBox->fontContext.unk_60 + dialogueBox->unk_9B)*count1) / 2, 
-                    0, 
-                    tempFlags, 
-                    dialogueBox->unk_14.r, 
-                    dialogueBox->unk_14.g, 
-                    dialogueBox->unk_14.b, 
-                    dialogueBox->unk_14.a
-                );
-                
-                sprite.timg = D_801706C0[gGraphicsBufferIndex][dialogueBox->unk_80 + temp2].timg;
-                
-                setBitmapFormatAndSize((BitmapObject*)&sprite, dialogueBox->fontContext.fontPalettePtr);
+            setBitmapFormatAndSize((BitmapObject*)&sprite, messageBox->fontContext.fontPalettePtr);
 
-                sprite.width = dialogueBox->fontContext.unk_60;
-                sprite.height = dialogueBox->fontContext.unk_61;
-                sprite.fmt = 2;
-                sprite.pixelSize = 0;
+            sprite.width = messageBox->fontContext.characterCellWidth;
+            sprite.height = messageBox->fontContext.characterCellHeight;
+            sprite.fmt = 2; // CI2
+            sprite.pixelSize = 0;
 
-                dl = loadBitmapTexture(dl, (BitmapObject*)&sprite, 0, sprite.height);
-
-                // FIXME: might be a wrapper around gSPVertex
-                gSPVertex(&tempDl[1], &D_801C6230[gGraphicsBufferIndex][dialogueBox->unk_80+temp2][0], 4, 0);
-
-                *tempDl = *(tempDl+1);
-                *dl++ = *tempDl;
-                
-                *dl++ = D_8011EEB0;
-                *dl++ = D_8011EEB8;
-                
-            }
+            dl = loadBitmapTexture(dl, (BitmapObject*)&sprite, 0, sprite.height);
             
-            count2++;
-            count1++;
+            // FIXME: likely wrapper around gSPVertex
+            gSPVertex(&tempDl[1], &D_801C6230[gGraphicsBufferIndex][messageBox->totalCharactersProcessed + charOffset][0], 4, 0);
+
+            *tempDl = *(tempDl+1);
+            *dl++ = *tempDl;
             
-        } while ((u8)count1 < dialogueBox->unk_92);
+            // set triangle
+            *dl++ = D_8011EEB0;
+            // pipe sync
+            *dl++ = D_8011EEB8;
+            
+        }
+
+        characterCount++;
+        i++;
 
     }
 
+    // pipe sync
     *dl++ = D_8011EEB8;
+    // end display list
     *dl++ = D_8011EEC0;
 
-    dialogueBox->unk_82 += count2;
+    messageBox->charactersProcessedPerLine += characterCount;
     
     return dl++;
     
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/system/message", func_80042014);
-#endif
 
-INCLUDE_ASM("asm/nonmatchings/system/message", func_800423F0);
+//INCLUDE_ASM("asm/nonmatchings/system/message", addMessageCharSceneNode);
 
-static const u8 D_8011EE90[8] = { 0x80, 0x40, 0x20, 0x10, 8, 4, 2, 1, 0 };
+void addMessageCharSceneNode(MessageBox* messageBox, u8 line, Gfx* dl) {
 
-//INCLUDE_RODATA("asm/nonmatchings/systemmessage", D_8011EE90);
+    Vec3f vec;
+
+    f32 f1, f2;
+    u16 sceneNodeIndex;
+    
+    if (messageBox->flags & 0x80) {
+        f1 = messageBox->fontContext.characterCellHeight + messageBox->lineSpacing;
+    } else {
+        f1 = 0.0f;
+    }
+
+    if (messageBox->flags & 0x80) {
+        f2 = -(f32)getInterpolatorValue((Interpolator*)&messageBox->scrollInterpolator);
+    } else {
+        f2 = getInterpolatorValue((Interpolator*)&messageBox->scrollInterpolator);
+    }
+    
+    sceneNodeIndex = addSceneNode(dl, (8 | 0x40));
+    
+    vec.x = messageBox->viewSpacePosition.x 
+        - ((messageBox->textBoxLineCharWidth * messageBox->fontContext.characterCellWidth) / 2) 
+        + (messageBox->fontContext.characterCellWidth / 2) 
+        - ((messageBox->textBoxLineCharWidth * messageBox->characterSpacing) / 2);
+
+    vec.y = messageBox->viewSpacePosition.y + f2 + f1
+        + (-line * messageBox->fontContext.characterCellHeight)
+        + (-line * messageBox->lineSpacing) 
+        + ((messageBox->textBoxVisibleRows * messageBox->fontContext.characterCellHeight) / 2)
+        - (messageBox->fontContext.characterCellHeight / 2)
+        + ((messageBox->textBoxVisibleRows * messageBox->lineSpacing) / 2);
+
+    vec.z = messageBox->viewSpacePosition.z + 16.0f;
+
+    addSceneNodePosition(sceneNodeIndex, vec.x, vec.y, vec.z);
+    
+}
+
+static const u8 controlByteBitMasks[8] = { 0x80, 0x40, 0x20, 0x10, 8, 4, 2, 1 };
+
+//INCLUDE_RODATA("asm/nonmatchings/systemmessage", controlByteBitMasks);
 
 static const Gfx D_8011EE98 = gsDPSetCombineMode(G_CC_MODULATEIDECALA, G_CC_MODULATEIDECALA);
 
@@ -1484,5 +2265,230 @@ static const Gfx D_8011EEC0 = gsSPEndDisplayList();
 
 //INCLUDE_RODATA("asm/nonmatchings/systemmessage", D_8011EEC0);
 
-// main loop function
-INCLUDE_ASM("asm/nonmatchings/system/message", updateMessageBox);
+static inline u8 updateMessageBoxRGBA(u16 i) {
+    
+    // bug: never initialized
+    u8 count;
+
+    if (messageBoxes[i].unk_14.r < messageBoxes[i].unk_24.r) {
+
+        messageBoxes[i].unk_14.r += messageBoxes[i].unk_34.r;
+        
+            if (messageBoxes[i].unk_14.r >= messageBoxes[i].unk_24.r) {
+                messageBoxes[i].unk_14.r = messageBoxes[i].unk_24.r;
+            } else {
+                count++;
+        }
+
+    }
+
+    if (messageBoxes[i].unk_14.r > messageBoxes[i].unk_24.r) {
+        
+        messageBoxes[i].unk_14.r -= messageBoxes[i].unk_34.r;
+
+        if (messageBoxes[i].unk_14.r <= messageBoxes[i].unk_24.r) {
+                messageBoxes[i].unk_14.r = messageBoxes[i].unk_24.r;
+            } else {
+                count++;
+            }
+            
+    }
+    
+    if (messageBoxes[i].unk_14.g < messageBoxes[i].unk_24.g) {
+        
+        messageBoxes[i].unk_14.g += messageBoxes[i].unk_34.g;
+        
+        if (messageBoxes[i].unk_14.g >= messageBoxes[i].unk_24.g) {
+            messageBoxes[i].unk_14.g = messageBoxes[i].unk_24.g;
+            } else {
+                count++;
+            }
+            
+    }
+
+    if (messageBoxes[i].unk_14.g > messageBoxes[i].unk_24.g) {
+        
+        messageBoxes[i].unk_14.g -= messageBoxes[i].unk_34.g;
+        
+        if (messageBoxes[i].unk_14.g <= messageBoxes[i].unk_24.g) {
+            messageBoxes[i].unk_14.g = messageBoxes[i].unk_24.g;
+        } else {
+            count++;
+        }
+        
+    }
+
+    if (messageBoxes[i].unk_14.b < messageBoxes[i].unk_24.b) {
+        
+        messageBoxes[i].unk_14.b += messageBoxes[i].unk_34.b;
+        
+        if (messageBoxes[i].unk_14.b >= messageBoxes[i].unk_24.b) {
+            messageBoxes[i].unk_14.b = messageBoxes[i].unk_24.b;
+        } else {
+            count++;
+        }
+    
+    }
+
+    if (messageBoxes[i].unk_14.b > messageBoxes[i].unk_24.b) {
+        
+        messageBoxes[i].unk_14.b -= messageBoxes[i].unk_34.b;
+        
+        if (messageBoxes[i].unk_14.b <= messageBoxes[i].unk_24.b) {
+            messageBoxes[i].unk_14.b = messageBoxes[i].unk_24.b;
+        } else {
+            count++;
+        }
+        
+    }
+    
+    if (messageBoxes[i].unk_14.a < messageBoxes[i].unk_24.a) {
+
+    messageBoxes[i].unk_14.a += messageBoxes[i].unk_34.a;
+
+        if (messageBoxes[i].unk_14.a >= messageBoxes[i].unk_24.a) {
+            messageBoxes[i].unk_14.a = messageBoxes[i].unk_24.a;
+        } else {
+            count++;
+        }
+        
+    }
+    
+    if (messageBoxes[i].unk_14.a > messageBoxes[i].unk_24.a) {
+        
+        messageBoxes[i].unk_14.a -= messageBoxes[i].unk_34.a;
+
+        if (messageBoxes[i].unk_14.a <= messageBoxes[i].unk_24.a) {
+            messageBoxes[i].unk_14.a = messageBoxes[i].unk_24.a;
+        } else {
+            count++;
+    }
+    
+    }
+    
+    return count;
+    
+}
+
+//INCLUDE_ASM("asm/nonmatchings/system/message", updateMessageBox);
+
+void updateMessageBox(void) {
+    
+    u16 i = 0;
+    u16 j;
+    u8 k;
+
+    u8 extraLines;
+    
+    Gfx* dl;
+    Gfx* dlStartingPosition;
+    
+    s16 temp;
+    u16 totalProcessedCharacterCount;
+
+    dl = messageBoxDisplayList[gGraphicsBufferIndex];
+
+    totalProcessedCharacterCount = 0;
+    
+    for (i = 0; i < MAX_DIALOGUE_BOXES; i++) {
+
+        if (messageBoxes[i].flags & DIALOGUE_BOX_ACTIVE) {
+
+            if (updateMessageBoxRGBA(i) == 0) {
+                messageBoxes[i].flags |= 0x200000;
+            } 
+
+            messageBoxes[i].totalCharactersProcessed = totalProcessedCharacterCount;
+
+            if (!(messageBoxes[i].flags & 4) && (messageBoxes[i].flags & 2)) {
+
+                if (!(messageBoxes[i].flags & 8)) {
+
+                    // reset message buffer
+                    func_8003FDB0(i);
+
+                    // handle scroll
+                    if (messageBoxes[i].flags & 0x40) {
+                        func_8004022C(i);
+                    }                    
+
+                    // handle scroll
+                    if (messageBoxes[i].flags & 0x80) {
+                        func_80040318(i);
+                    }    
+
+                    func_80040858(i);
+
+                    if (!(messageBoxes[i].flags & (0x40 | 0x80))) {
+
+                        temp = func_800267B4((Interpolator*)&messageBoxes[i].unk_64);
+                        j = 0;
+                        
+                        if (checkButtonPressed(CONTROLLER_1, messageBoxes[i].buttonMask)) {
+
+                            if (!(messageBoxes[i].flags & 0x80000)) {
+                                messageBoxes[i].flags |= 0x800;
+                            }
+                            
+                        }
+
+                        if (checkButtonHeld(CONTROLLER_1, messageBoxes[i].buttonMask) && !(messageBoxes[i].flags & 0x100000)) {
+                            temp = 1;
+                        }
+
+                        while (j < temp) {
+
+                            if (messageBoxes[i].flags & 0x2000) {
+                                initializeInterpolator((Interpolator*)&messageBoxes[i].unk_64, messageBoxes[i].unk_7C, 0);
+                                messageBoxes[i].flags &= ~0x2000;    
+                            }
+
+                            func_80040C38(i);
+                            messageBoxes[i].flags &= ~0x800;    
+                            j++;
+                            
+                        }
+                        
+                    }
+                    
+                
+                }
+                
+            }
+
+            messageBoxes[i].charactersProcessedPerLine = 0;
+
+            // divide by max lines per text box
+            extraLines = ((messageBoxes[i].flags >> 4) & 3) / 3;
+
+            dlStartingPosition = dl;
+            dl = func_80041CD8(dl, &messageBoxes[i]);
+
+            k = 0;
+            
+            if (messageBoxes[i].textBoxVisibleRows + extraLines) {
+
+                do {
+
+                    dl = func_80042014(dl, &messageBoxes[i], k, totalProcessedCharacterCount);
+                    addMessageCharSceneNode(&messageBoxes[i], k, dlStartingPosition);
+                    
+                    dlStartingPosition = dl;
+                    k++;
+                    
+                } while (k < messageBoxes[i].textBoxVisibleRows + extraLines);
+                
+            }
+
+            // updated by func_80042014
+            totalProcessedCharacterCount += messageBoxes[i].charactersProcessedPerLine;
+            
+        }
+        
+    }
+
+    if (dl - messageBoxDisplayList[gGraphicsBufferIndex] >= 3072) {
+        __assert("EX", "s:/system/message.c", 2524);
+    }
+    
+}

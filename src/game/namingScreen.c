@@ -72,11 +72,11 @@ inline void initializeNamingScreen(u8* arg0, u8 arg1) {
     loadNameSelectionSprites();
 
     // dialogue boxes
-    func_8003F54C(0, 0, -64.0f, 352.0f);
+    setMessageBoxViewSpacePosition(0, 0, -64.0f, 352.0f);
     func_8003F360(0, -4, 0);
-    setDialogueBoxSpriteIndices(0, 1, 0, 0);
+    setMessageBoxSpriteIndices(0, 1, 0, 0);
     
-    namingScreenContext.unk_4 = arg1;
+    namingScreenContext.dialogueIndex = arg1;
     
     stopCurrentSong(NAMING_SCREEN_THEME);
     setCurrentSong(NAMING_SCREEN_THEME);
@@ -139,28 +139,28 @@ void func_800ED974(void) {
             updateSpriteRGBA(0x84, 0xFF, 0xFF, 0xFF, 0xFF, 8);
             updateSpriteRGBA(LANDSCAPE_BACKGROUND, 0xFF, 0xFF, 0xFF, 0xFF, 8);
 
-            namingScreenContext.unk_4 = 10;
+            namingScreenContext.dialogueIndex = 10;
             namingScreenContext.flags &= ~(0x20 | 0x40);
             namingScreenContext.flags |= 0x40;
 
-            func_8003DBE8(3, (void*)0x8030B800);
-            func_8003F54C(3, 4.0f, 56.0f, 30.0f);
+            initializeEmptyMessageBox(3, (void*)0x8030B800);
+            setMessageBoxViewSpacePosition(3, 4.0f, 56.0f, 30.0f);
             func_8003F5D0(3, 6, 1);
             func_8003F630(3, 0, 2);
-            func_8003F464(3, 0xE, 0xE, 0x802FF000, 0x8030A000);
+            func_8003F464(3, 0xE, 0xE, (u8*)COMPRESSED_FONT_VADDR, FONT_PALETTE_1_VADDR);
             func_8003F360(3, 1, 1);
-            setDialogueBoxSpriteIndices(3, 0xFF, 0xFF, 0xFF);
-            initializeDialogueBox(3, 0xA, 0xD, 0x80000);
+            setMessageBoxSpriteIndices(3, 0xFF, 0xFF, 0xFF);
+            initializeMessageBox(3, 0xA, 0xD, 0x80000);
             func_8003E77C(3, 0, 0, 0, 0);
             func_8003EA1C(3, 0xFF, 0xFF, 0xFF, 0xFF, 8);
-            func_8003DBE8(4, (void*)0x8030BC00);
-            func_8003F54C(4, 4.0f, -10.0f, 30.0f);
+            initializeEmptyMessageBox(4, (void*)0x8030BC00);
+            setMessageBoxViewSpacePosition(4, 4.0f, -10.0f, 30.0f);
             func_8003F5D0(4, 6, 1);
             func_8003F630(4, 0, 2);
-            func_8003F464(4, 0xE, 0xE, 0x802FF000, 0x8030A000);
+            func_8003F464(4, 0xE, 0xE, (u8*)COMPRESSED_FONT_VADDR, FONT_PALETTE_1_VADDR);
             func_8003F360(4, 1, 1);
-            setDialogueBoxSpriteIndices(4, 0xFF, 0xFF, 0xFF);
-            initializeDialogueBox(4, 0xA, temp2 + 0xE, 0x80000);
+            setMessageBoxSpriteIndices(4, 0xFF, 0xFF, 0xFF);
+            initializeMessageBox(4, 0xA, temp2 + 0xE, 0x80000);
             func_8003E77C(4, 0, 0, 0, 0);
             func_8003EA1C(4, 0xFF, 0xFF, 0xFF, 0xFF, 8);
             
@@ -177,7 +177,7 @@ void func_800ED974(void) {
             func_8003DD14(4);
             loadNameSelectionSprites();
             
-            namingScreenContext.unk_4 = 12;
+            namingScreenContext.dialogueIndex = 12;
             namingScreenContext.flags &= ~(0x400);
             
             return;
@@ -191,8 +191,8 @@ void func_800ED974(void) {
             deactivateNamingScreenSprites();
             func_8003DD14(3);
             func_8003DD14(4);
-            setDialogueBoxSpriteIndices(0, 0, 0, 0);
-            func_8003F54C(0, 24.0f, -64.0f, 352.0f);
+            setMessageBoxSpriteIndices(0, 0, 0, 0);
+            setMessageBoxViewSpacePosition(0, 24.0f, -64.0f, 352.0f);
 
              switch (namingScreenContext.unk_6) {
                  
@@ -278,13 +278,13 @@ void func_800ED974(void) {
                 return;
             }
     
-            if (namingScreenContext.unk_4 != 0xFFFF) {
-                func_80043430(0, 0x3A, namingScreenContext.unk_4, 0);
-                namingScreenContext.unk_4 = 0xFFFF;
+            if (namingScreenContext.dialogueIndex != 0xFFFF) {
+                initializeDialogueSession(0, 0x3A, namingScreenContext.dialogueIndex, 0);
+                namingScreenContext.dialogueIndex = 0xFFFF;
                 return;
             }
                  
-            if (dialogues[0].struct5.flags & 4) {
+            if (dialogues[0].sessionManager.flags & 4) {
                 
                     switch (temp) {   
     
@@ -298,7 +298,7 @@ void func_800ED974(void) {
     
                         case 2:
                             
-                            if (dialogues[0].struct5.unk_17 == 0) {
+                            if (dialogues[0].sessionManager.unk_17 == 0) {
                                 
                                 namingScreenContext.flags |= 0x800;
                                 
@@ -326,7 +326,7 @@ void func_800ED974(void) {
     
                         case 3:
     
-                            if (dialogues[0].struct5.unk_17 == 0) {
+                            if (dialogues[0].sessionManager.unk_17 == 0) {
                                 
                                 namingScreenContext.flags |= 0x800;
 
@@ -353,7 +353,7 @@ void func_800ED974(void) {
     
                                 if (namingScreenContext.unk_6 != 1) {
                                     
-                                    setSongWithDefaultSpeed(NAMING_SCREEN_THEME);
+                                    stopSongWithDefaultFadeOut(NAMING_SCREEN_THEME);
                                     
                                     namingScreenContext.flags &= ~(0x800);
                                     namingScreenContext.flags |= 0x1000;
@@ -514,15 +514,15 @@ void loadNameSelectionSprites(void) {
     
     setGameVariableString(0, namingScreenContext.name, 6);
     
-    func_8003DBE8(3, (void*)0x8030B800);
-    func_8003F54C(3, 48.0f, 72.0f, 30.0f);
+    initializeEmptyMessageBox(3, (void*)0x8030B800);
+    setMessageBoxViewSpacePosition(3, 48.0f, 72.0f, 30.0f);
     
     func_8003F5D0(3, 6, 1);
     func_8003F630(3, 2, 2);
-    func_8003F464(3, 0xE, 0xE, 0x802FF000, 0x8030A000);
+    func_8003F464(3, 0xE, 0xE, (u8*)COMPRESSED_FONT_VADDR, FONT_PALETTE_1_VADDR);
     func_8003F360(3, 1, 1);
-    setDialogueBoxSpriteIndices(3, 0xFF, 0xFF, 0xFF);
-    initializeDialogueBox(3, 0xA, 0xD, 0x80000);
+    setMessageBoxSpriteIndices(3, 0xFF, 0xFF, 0xFF);
+    initializeMessageBox(3, 0xA, 0xD, 0x80000);
     func_8003E77C(3, 0, 0, 0, 0);
     func_8003EA1C(3, 0xFF, 0xFF, 0xFF, 0xFF, 8);
     
@@ -1001,7 +1001,7 @@ dmaSprite(0x84, &D_CDE2E0, &D_CED610, &D_CED610_2, &D_CED630, 0, 0, 0x80267300, 
     updateSpriteRGBA(LANDSCAPE_BACKGROUND, 0xFF, 0xFF, 0xFF, 0xFF, 8);
     
     namingScreenContext.unk_7 = 0;
-    namingScreenContext.unk_4 = 9;
+    namingScreenContext.dialogueIndex = 9;
     namingScreenContext.coordinates.x = -128.0f;
     namingScreenContext.coordinates.y = 52.0f;
     namingScreenContext.flags &= ~(0x20 | -0x40);

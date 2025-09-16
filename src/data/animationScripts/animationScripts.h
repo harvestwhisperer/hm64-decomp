@@ -102,3 +102,4 @@ extern u16 holdableItemsAnimationScripts1[];
 extern u16 holdableItemsAnimationScripts2[];
 extern u16 holdableItemsAnimationScripts3[];
 extern u16 toolsAnimationScripts[];
+extern u16 characterAvatarAnimationScripts[];

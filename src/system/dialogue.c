@@ -8,57 +8,60 @@
 
 #include "game/game.h"
 
+#include "ld_symbols.h"
+
 // bss
 // struct/array
 extern u32 D_8013CE0C;
 extern u8 D_8013CE10;
 
 // game state updated by/talked about in dialogues
-extern DialogueVariable dialogueVariables[46];
+extern DialogueVariable dialogueVariables[MAX_DIALOGUE_VARIABLES];
 
 extern u32* specialDialogueBitsPointer;
 
 // forward declarations
 extern u32 func_80043C98(u16, u16);
 extern void func_80043B84(u16);
-extern void func_80044684(u16 index);
+extern void setOverlayMessageBoxSprite(u16 index);
 extern void func_800449C4(u16 index);
 extern void func_80044BF4(u16 index);
 extern void func_80044D78(u16);
-extern void func_80045260(u16);
+extern void updateCurrentDialogue(u16);
 
 //INCLUDE_ASM("asm/nonmatchings/system/dialogue", func_80042F60);
 
 void func_80042F60(void) {
-
+ 
     u16 i;
  
     for (i = 0; i < MAX_DIALOGUES; i++) {
-        dialogues[i].struct5.dialogueIndex = 0;
-        dialogues[i].struct5.dialogueMapAddressesIndex = 0;
-        dialogues[i].struct5.dialogueBoxIndex1 = 0;
-        dialogues[i].struct5.scrollSfxIndex = 0xFF;
-        dialogues[i].struct5.closeSfxIndex = 0xFF;
-        dialogues[i].struct5.unk_8 = 0xFF;
-        dialogues[i].struct5.flags = 0;
+        dialogues[i].sessionManager.dialogueIndex = 0;
+        dialogues[i].sessionManager.dialogueBytecodeAddressesIndex = 0;
+        dialogues[i].sessionManager.mainMessageBoxIndex = 0;
+        dialogues[i].sessionManager.scrollSfxIndex = 0xFF;
+        dialogues[i].sessionManager.closeSfxIndex = 0xFF;
+        dialogues[i].sessionManager.unk_8 = 0xFF;
+        dialogues[i].sessionManager.flags = 0;
     }
+
 } 
 
 //INCLUDE_ASM("asm/nonmatchings/system/dialogue", func_80042FEC);
 
-bool func_80042FEC(u16 index, u16 dialogueBoxIndex1, u16 dialogueBoxIndex2) {
+bool func_80042FEC(u16 index, u16 mainMessageBoxIndex, u16 overlayMessageBoxIndex) {
 
     bool result = FALSE;
  
-    if (index == 0 && !(dialogues[index].struct5.flags & ACTIVE)) {
+    if (index == 0 && !(dialogues[index].sessionManager.flags & DIALOGUE_ACTIVE)) {
 
-        dialogues[index].struct5.scrollSfxIndex = 0xFF;
-        dialogues[index].struct5.closeSfxIndex = 0xFF;
-        dialogues[index].struct5.unk_8 = 0xFF;
-        dialogues[index].struct5.dialogueBoxIndex1 = dialogueBoxIndex1;
-        dialogues[index].struct5.dialogueBoxIndex2 = dialogueBoxIndex2;
+        dialogues[index].sessionManager.scrollSfxIndex = 0xFF;
+        dialogues[index].sessionManager.closeSfxIndex = 0xFF;
+        dialogues[index].sessionManager.unk_8 = 0xFF;
+        dialogues[index].sessionManager.mainMessageBoxIndex = mainMessageBoxIndex;
+        dialogues[index].sessionManager.overlayMessageBoxIndex = overlayMessageBoxIndex;
 
-        dialogues[index].struct5.flags = 1;
+        dialogues[index].sessionManager.flags = 1;
         
         result = TRUE;
         
@@ -68,21 +71,21 @@ bool func_80042FEC(u16 index, u16 dialogueBoxIndex1, u16 dialogueBoxIndex2) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/dialogue", setdialogueMapAddressInfo);
+//INCLUDE_ASM("asm/nonmatchings/system/dialogue", setDialogueBytecodeAddressInfo);
 
-bool setDialogueMapAddressInfo(u16 index, u16 arg1, u16 arg2, u32 romStart, u32 romEnd, void* vaddr, u32 romIndex, void* vaddrIndex) {
+bool setDialogueBytecodeAddressInfo(u16 index, u16 textAddressesIndex, u16 subdialogueTextAddressesIndex, u32 romIndexStart, u32 romIndexEnd, void* vaddrIndex, u32 romStart, void* vaddr) {
 
     bool result = FALSE;
     
-    if (index < TOTAL_CONVERSATION_BANKS) {
+    if (index < MAX_BYTECODE_ADDRESSES) {
 
-        dialogueMapAddresses[index].unk_14 = arg1;
-        dialogueMapAddresses[index].unk_16 = arg2;
-        dialogueMapAddresses[index].romStart = romStart;
-        dialogueMapAddresses[index].romEnd = romEnd;
-        dialogueMapAddresses[index].vaddr = vaddr;
-        dialogueMapAddresses[index].romIndex = romIndex;
-        dialogueMapAddresses[index].vaddrIndex = vaddrIndex;
+        dialogueBytecodeAddresses[index].textAddressesIndex = textAddressesIndex;
+        dialogueBytecodeAddresses[index].subdialogueTextAddressesIndex = subdialogueTextAddressesIndex;
+        dialogueBytecodeAddresses[index].romIndexStart = romIndexStart;
+        dialogueBytecodeAddresses[index].romIndexEnd = romIndexEnd;
+        dialogueBytecodeAddresses[index].vaddrIndex = vaddrIndex;
+        dialogueBytecodeAddresses[index].romStart = romStart;
+        dialogueBytecodeAddresses[index].vaddr = vaddr;
         
         result = TRUE;
 
@@ -125,15 +128,15 @@ bool setSpecialDialogueBitsPointer(u32* arg0) {
 
 //INCLUDE_ASM("asm/nonmatchings/system/dialogue", func_80043148);
 
-bool func_80043148(u16 index, u32 scrollSfxIndex, u32 closeSfxIndex, u32 arg3) {
+bool func_80043148(u16 index, u32 scrollSfxIndex, u32 closeSfxIndex, u32 sfxIndex) {
 
     bool result = FALSE;
 
-    if (index == 0 && dialogues[index].struct5.flags & ACTIVE) {
+    if (index == 0 && dialogues[index].sessionManager.flags & DIALOGUE_ACTIVE) {
         
-        dialogues[index].struct5.scrollSfxIndex = scrollSfxIndex;
-        dialogues[index].struct5.closeSfxIndex = closeSfxIndex;
-        dialogues[index].struct5.unk_8 = arg3;
+        dialogues[index].sessionManager.scrollSfxIndex = scrollSfxIndex;
+        dialogues[index].sessionManager.closeSfxIndex = closeSfxIndex;
+        dialogues[index].sessionManager.unk_8 = sfxIndex;
         
         result = TRUE;
 
@@ -151,7 +154,7 @@ bool func_8004318C(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextu
 
     bool result = FALSE;
 
-    if (index == 0 && (dialogues[index].struct5.flags & ACTIVE)) {
+    if (index == 0 && (dialogues[index].sessionManager.flags & DIALOGUE_ACTIVE)) {
   
         dialogues[index].dialogueButtonIcon1.romTextureStart = romTextureStart;
         dialogues[index].dialogueButtonIcon1.romTextureEnd = romTextureEnd;
@@ -188,7 +191,7 @@ bool func_80043260(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextu
 
     bool result = FALSE;
 
-    if (index == 0 && (dialogues[index].struct5.flags & ACTIVE)) {
+    if (index == 0 && (dialogues[index].sessionManager.flags & DIALOGUE_ACTIVE)) {
   
         dialogues[index].dialogueButtonIcon2.romTextureStart = romTextureStart;
         dialogues[index].dialogueButtonIcon2.romTextureEnd = romTextureEnd;
@@ -225,7 +228,7 @@ bool func_80043334(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextu
 
     bool result = FALSE;
 
-    if (index == 0 && (dialogues[index].struct5.flags & ACTIVE)) {
+    if (index == 0 && (dialogues[index].sessionManager.flags & DIALOGUE_ACTIVE)) {
         
         dialogues[index].dialogueButtonIcon3.romTextureStart = romTextureStart;
         dialogues[index].dialogueButtonIcon3.romTextureEnd = romTextureEnd;
@@ -248,8 +251,6 @@ bool func_80043334(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextu
         
         result = TRUE;
         
-        result = TRUE;
-
     }
     
     return result;
@@ -280,15 +281,15 @@ inline int func_80043408(int initial, int value, int max) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/dialogue", func_80043430);
+//INCLUDE_ASM("asm/nonmatchings/system/dialogue", initializeDialogueSession);
 
-bool func_80043430(u16 index, u16 dialogueMapAddressesIndex, u16 dialogueIndex, u16 flag) {
+bool initializeDialogueSession(u16 index, u16 dialogueBytecodeAddressesIndex, u16 dialogueIndex, u16 flag) {
 
     bool result = FALSE;
 
     u32 romAddr;
 
-    if (index == 0 && dialogues[index].struct5.flags & ACTIVE) {
+    if (index == 0 && dialogues[index].sessionManager.flags & DIALOGUE_ACTIVE) {
 
         dmaSprite(dialogues[index].dialogueButtonIcon1.spriteIndex, 
             dialogues[index].dialogueButtonIcon1.romTextureStart, 
@@ -362,51 +363,50 @@ bool func_80043430(u16 index, u16 dialogueMapAddressesIndex, u16 dialogueIndex, 
         func_8002C680(dialogues[index].dialogueButtonIcon3.spriteIndex, 2, 2);
         setSpriteRenderingLayer(dialogues[index].dialogueButtonIcon3.spriteIndex, (1 | 2));
         
-        dialogues[index].struct1.unk_12 = 0xFF;
-        dialogues[index].struct5.dialogueMapAddressesIndex = dialogueMapAddressesIndex;
-        dialogues[index].struct5.dialogueIndex = dialogueIndex;
+        dialogues[index].bytecodeExecutor.currentOpcode = 0xFF;
+        dialogues[index].sessionManager.dialogueBytecodeAddressesIndex = dialogueBytecodeAddressesIndex;
+        dialogues[index].sessionManager.dialogueIndex = dialogueIndex;
 
-        nuPiReadRom(dialogueMapAddresses[dialogueMapAddressesIndex].romStart, dialogueMapAddresses[dialogueMapAddressesIndex].vaddr, dialogueMapAddresses[dialogueMapAddressesIndex].romEnd - dialogueMapAddresses[dialogueMapAddressesIndex].romStart);
+        nuPiReadRom(dialogueBytecodeAddresses[dialogueBytecodeAddressesIndex].romIndexStart, dialogueBytecodeAddresses[dialogueBytecodeAddressesIndex].vaddrIndex, dialogueBytecodeAddresses[dialogueBytecodeAddressesIndex].romIndexEnd - dialogueBytecodeAddresses[dialogueBytecodeAddressesIndex].romIndexStart);
 
-        romAddr = func_80043C98(0, dialogues[index].struct5.dialogueIndex);
+        romAddr = func_80043C98(0, dialogues[index].sessionManager.dialogueIndex);
 
-        nuPiReadRom(romAddr, dialogueMapAddresses[dialogues[index].struct5.dialogueMapAddressesIndex].vaddrIndex, func_80043C98(0, dialogues[index].struct5.dialogueIndex + 1) - romAddr);
+        nuPiReadRom(romAddr, dialogueBytecodeAddresses[dialogues[index].sessionManager.dialogueBytecodeAddressesIndex].vaddr, func_80043C98(0, dialogues[index].sessionManager.dialogueIndex + 1) - romAddr);
 
-        dialogues[index].dialoguePointer = dialogueMapAddresses[dialogues[index].struct5.dialogueMapAddressesIndex].vaddrIndex;
+        dialogues[index].dialogueBytecodePointer = dialogueBytecodeAddresses[dialogues[index].sessionManager.dialogueBytecodeAddressesIndex].vaddr;
         
-        dialogues[index].struct5.unk_16 = 0;
-        dialogues[index].struct5.unk_17 = 0;
-
-        dialogues[index].struct1.unk_0 = 0;
-        dialogues[index].struct1.unk_2 = 0;
-        dialogues[index].struct1.unk_4 = 0;
-        dialogues[index].struct1.unk_6 = 0;
-        dialogues[index].struct1.unk_8 = 0;
-        dialogues[index].struct1.dialogueVariableValue = 0;
-        dialogues[index].struct1.specialDialogueBit = 0;
-        dialogues[index].struct1.updatedDialogueVariableAdjustment = 0;
-        dialogues[index].struct1.unk_10 = 0;
+        dialogues[index].sessionManager.unk_16 = 0;
+        dialogues[index].sessionManager.unk_17 = 0;
+ 
+        dialogues[index].bytecodeExecutor.textIndex = 0;
+        dialogues[index].bytecodeExecutor.branchingDialogueIndex = 0;
+        dialogues[index].bytecodeExecutor.minimumDialogueVariableValue = 0;
+        dialogues[index].bytecodeExecutor.maximumDialogueVariableValue = 0;
+        dialogues[index].bytecodeExecutor.randomValue = 0;
+        dialogues[index].bytecodeExecutor.dialogueVariableValue = 0;
+        dialogues[index].bytecodeExecutor.specialDialogueBit = 0;
+        dialogues[index].bytecodeExecutor.updatedDialogueVariableAdjustment = 0;
+        dialogues[index].bytecodeExecutor.textOffset = 0;
+        dialogues[index].bytecodeExecutor.dialogueVariablesIndex = 0;
+        dialogues[index].bytecodeExecutor.randomMinimumValue = 0;
+        dialogues[index].bytecodeExecutor.randomMaximumValue = 0;
+        dialogues[index].bytecodeExecutor.unusedField = 0;
+        dialogues[index].bytecodeExecutor.unusedField2 = 0;
+        dialogues[index].bytecodeExecutor.unk_18 = 0;
         
-        dialogues[index].struct1.dialogueVariablesIndex = 0;
-        dialogues[index].struct1.unk_14 = 0;
-        dialogues[index].struct1.unk_15 = 0;
-        dialogues[index].struct1.unk_16 = 0;
-        dialogues[index].struct1.unk_17 = 0;
-        dialogues[index].struct1.unk_18 = 0;
-        
-        dialogues[index].struct5.flags &= ~4;
-        dialogues[index].struct5.flags |= INITIALIZED;
+        dialogues[index].sessionManager.flags &= ~4;
+        dialogues[index].sessionManager.flags |= DIALOGUE_INITIALIZED;
 
         if (flag == 0x40) {
-            dialogues[index].struct5.flags |= (INITIALIZED | 0x40);
+            dialogues[index].sessionManager.flags |= (DIALOGUE_INITIALIZED | 0x40);
         }  else {
-            dialogues[index].struct5.flags &= ~(0x40);
+            dialogues[index].sessionManager.flags &= ~(0x40);
         }
 
         if (flag == 0x80) {
-            dialogues[index].struct5.flags |= 0x80;
+            dialogues[index].sessionManager.flags |= 0x80;
         } else {
-            dialogues[index].struct5.flags &= ~0x80;
+            dialogues[index].sessionManager.flags &= ~0x80;
         }
 
         result = TRUE;
@@ -425,7 +425,7 @@ bool func_80043A88(void) {
     u16 i;
 
     for (i = 0; i < 1; i++) {
-        if (dialogues[i].struct5.flags & 4) {
+        if (dialogues[i].sessionManager.flags & 4) {
             result = TRUE;
         }
     }
@@ -440,16 +440,16 @@ bool func_80043AD8(u16 index) {
 
     bool result = FALSE;
 
-    if (index == 0 && dialogues[index].struct5.flags & ACTIVE) {
+    if (index == 0 && dialogues[index].sessionManager.flags & DIALOGUE_ACTIVE) {
 
-        if (!(dialogues[index].struct5.flags & 0x40)) {
-            dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex1].flags &= ~0x8000;
+        if (!(dialogues[index].sessionManager.flags & 0x40)) {
+            messageBoxes[dialogues[index].sessionManager.mainMessageBoxIndex].flags &= ~0x8000;
         }
 
-        func_8003F130(dialogues[index].struct5.dialogueBoxIndex1);
+        func_8003F130(dialogues[index].sessionManager.mainMessageBoxIndex);
         func_80043B84(0);
         
-        dialogues[index].struct5.flags = 5;
+        dialogues[index].sessionManager.flags = (1 | 4);
         
         result = TRUE;
 
@@ -463,37 +463,37 @@ bool func_80043AD8(u16 index) {
 
 void func_80043B84(u16 index) {
 
-    dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].flags &= ~0x8000;
+    messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].flags &= ~0x8000;
     
-    func_8003F130(dialogues[index].struct5.dialogueBoxIndex2);
+    func_8003F130(dialogues[index].sessionManager.overlayMessageBoxIndex);
     
     resetAnimationState(dialogues[index].dialogueButtonIcon1.spriteIndex);
     resetAnimationState(dialogues[index].dialogueButtonIcon2.spriteIndex);
     resetAnimationState(dialogues[index].dialogueButtonIcon3.spriteIndex);
     
-    dialogues[index].struct5.flags &= ~0x20;
+    dialogues[index].sessionManager.flags &= ~DIALOGUE_PAUSE_FOR_USER_INPUT;
     
 }
 
 //INCLUDE_ASM("asm/nonmatchings/system/dialogue", func_80043C6C);
 
 u8 func_80043C6C(u16 index) {
-    return dialogues[index].struct5.unk_17;
+    return dialogues[index].sessionManager.unk_17;
 }
 
 //INCLUDE_ASM("asm/nonmatchings/system/dialogue", func_80043C98);
 
-u32 func_80043C98(u16 index, u16 textIndex) {
+u32 func_80043C98(u16 index, u16 dialogueOffset) {
 
-    u32 ptr = dialogueMapAddresses[dialogues[index].struct5.dialogueMapAddressesIndex].romIndex;
+    u32 ptr = dialogueBytecodeAddresses[dialogues[index].sessionManager.dialogueBytecodeAddressesIndex].romStart;
     
-    return ptr + dialogueMapAddresses[dialogues[index].struct5.dialogueMapAddressesIndex].vaddr[textIndex];
+    return ptr + dialogueBytecodeAddresses[dialogues[index].sessionManager.dialogueBytecodeAddressesIndex].vaddrIndex[dialogueOffset];
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/dialogue", setDialogueVariable_inline);
+//INCLUDE_ASM("asm/nonmatchings/system/dialogue", setDialogueVariableValue);
 
-inline void setDialogueVariable_inline(u16 index, u16 value) {
+inline void setDialogueVariableValue(u16 index, u16 value) {
 
     switch (dialogueVariables[index].type) {
         case UNSIGNED_CHAR:
@@ -559,128 +559,196 @@ inline u32 checkSpecialDialogueBitFromPointer(u16 bitIndex) {
 
 }
 
-static inline u32 swap(u16 index) {
+//INCLUDE_ASM("asm/nonmatchings/system/dialogue", parseDialogueBytecode);
 
-    u8* ptr;
-    u8 temp;
-    u32 temp2;
+void parseDialogueBytecode(u16 index) {
 
-    ptr = dialogues[index].dialoguePointer++; 
-    
-    temp = *ptr++;
-    
-    dialogues[index].dialoguePointer += 1;
-    
-    temp2 = *(ptr) << 8;
-    
-    return temp | temp2;  
-    
-}
+    Swap16 byteswap;
 
-// parse dialogue map data and set struct
-#ifdef PERMUTER
-void func_80043EC8(u16 index) {
+    dialogues[index].bytecodeExecutor.currentOpcode = *(u8*)dialogues[index].dialogueBytecodePointer++;
 
-    u32 padding[0x12];
-
-    dialogues[index].struct1.unk_12 = *(u8*)dialogues[index].dialoguePointer++;
-
-    switch (dialogues[index].struct1.unk_12) {
+    switch (dialogues[index].bytecodeExecutor.currentOpcode) {
         
-        case 0:
-            dialogues[index].struct1.unk_0 = swap(index);  
-            break;
-        
-        case 1:
-            dialogues[index].struct1.unk_13 = (*(u8*)dialogues[index].dialoguePointer++);  
-            dialogues[index].struct1.unk_4 = swap(index);
-            dialogues[index].struct1.unk_6 = swap(index);        
-            dialogues[index].struct1.unk_0 = swap(index);
-            dialogues[index].struct1.unk_2 = swap(index);  
+        case DIALOGUE_OPCODE_SHOW_TEXT:
+                        
+            byteswap.byte[1] = *(u8*)dialogues[index].dialogueBytecodePointer++;            
+            byteswap.byte[0] = *(u8*)dialogues[index].dialogueBytecodePointer++;
+            
+            dialogues[index].bytecodeExecutor.textIndex = byteswap.halfword;
             
             break;
         
-        case 2:
+        case DIALOGUE_OPCODE_DIALOGUE_VARIABLE_BRANCH:
             
-            dialogues[index].struct1.unk_13 = (*(u8*)dialogues[index].dialoguePointer++);
-            dialogues[index].struct1.unk_E = swap(index);  
+            dialogues[index].bytecodeExecutor.dialogueVariablesIndex = *(u8*)dialogues[index].dialogueBytecodePointer++;  
+
+            byteswap.byte[1] = *(u8*)dialogues[index].dialogueBytecodePointer++;
+            byteswap.byte[0] = *(u8*)dialogues[index].dialogueBytecodePointer++;
+            
+            dialogues[index].bytecodeExecutor.minimumDialogueVariableValue = byteswap.halfword;
+            
+            byteswap.byte[1] = *(u8*)dialogues[index].dialogueBytecodePointer++;
+            byteswap.byte[0] = *(u8*)dialogues[index].dialogueBytecodePointer++;
+            
+            dialogues[index].bytecodeExecutor.maximumDialogueVariableValue = byteswap.halfword;
+            
+            byteswap.byte[1] = *(u8*)dialogues[index].dialogueBytecodePointer++;
+            byteswap.byte[0] = *(u8*)dialogues[index].dialogueBytecodePointer++;
+            
+            dialogues[index].bytecodeExecutor.textIndex = byteswap.halfword;
+            
+            byteswap.byte[1] = *(u8*)dialogues[index].dialogueBytecodePointer++;
+            byteswap.byte[0] = *(u8*)dialogues[index].dialogueBytecodePointer++;
+            
+            dialogues[index].bytecodeExecutor.branchingDialogueIndex = byteswap.halfword;
+            
             break;
         
-        case 3:
+        case DIALOGUE_OPCODE_UPDATE_DIALOGUE_VARIABLE:
             
-            dialogues[index].struct1.unk_13 = (*(u8*)dialogues[index].dialoguePointer++);  
-            dialogues[index].struct1.unk_A = swap(index);  
+            dialogues[index].bytecodeExecutor.dialogueVariablesIndex = *(u8*)dialogues[index].dialogueBytecodePointer++;
+
+            byteswap.byte[1] = *(u8*)dialogues[index].dialogueBytecodePointer++;
+            byteswap.byte[0] = *(u8*)dialogues[index].dialogueBytecodePointer++;
+            
+            dialogues[index].bytecodeExecutor.updatedDialogueVariableAdjustment = byteswap.halfword;
+            
             break;
         
-        case 4:
+        case DIALOGUE_OPCODE_SET_DIALOGUE_VARIABLE:
             
-            dialogues[index].struct1.unk_C = swap(index);
-            dialogues[index].struct1.unk_0 = swap(index);  
-            dialogues[index].struct1.unk_2 = swap(index);  
+            dialogues[index].bytecodeExecutor.dialogueVariablesIndex = *(u8*)dialogues[index].dialogueBytecodePointer++;  
+
+            byteswap.byte[1] = *(u8*)dialogues[index].dialogueBytecodePointer++;
+            byteswap.byte[0] = *(u8*)dialogues[index].dialogueBytecodePointer++;
+
+            dialogues[index].bytecodeExecutor.dialogueVariableValue = byteswap.halfword;
+            
             break;
         
-        case 5:
-            dialogues[index].struct1.unk_C = swap(index);                
+        case DIALOGUE_OPCODE_SPECIAL_DIALOGUE_BIT_BRANCH:
+            
+            byteswap.byte[1] = *(u8*)dialogues[index].dialogueBytecodePointer++;
+            byteswap.byte[0] = *(u8*)dialogues[index].dialogueBytecodePointer++;
+            
+            dialogues[index].bytecodeExecutor.specialDialogueBit = byteswap.halfword;
+                        
+            byteswap.byte[1] = *(u8*)dialogues[index].dialogueBytecodePointer++;
+            byteswap.byte[0] = *(u8*)dialogues[index].dialogueBytecodePointer++;
+            
+            dialogues[index].bytecodeExecutor.textIndex = byteswap.halfword;
+                        
+            byteswap.byte[1] = *(u8*)dialogues[index].dialogueBytecodePointer++;
+            byteswap.byte[0] = *(u8*)dialogues[index].dialogueBytecodePointer++;
+            
+            dialogues[index].bytecodeExecutor.branchingDialogueIndex = byteswap.halfword;
+            
+            break;
+        
+        case DIALOGUE_OPCODE_SET_SPECIAL_DIALOGUE_BIT:
+            
+            byteswap.byte[1] = *(u8*)dialogues[index].dialogueBytecodePointer++;
+            byteswap.byte[0] = *(u8*)dialogues[index].dialogueBytecodePointer++;
+            
+            dialogues[index].bytecodeExecutor.specialDialogueBit = byteswap.halfword;  
+            
             break;
 
-        case 6:
-            dialogues[index].struct1.unk_C = swap(index);
+        case DIALOGUE_OPCODE_TOGGLE_SPECIAL_DIALOGUE_BIT:
+                    
+            byteswap.byte[1] = *(u8*)dialogues[index].dialogueBytecodePointer++;
+            byteswap.byte[0] = *(u8*)dialogues[index].dialogueBytecodePointer++;
+            
+            dialogues[index].bytecodeExecutor.specialDialogueBit = byteswap.halfword;
+            
             break;
 
-        case 7:
- 
-            dialogues[index].struct1.unk_14 = swap(index);
-            dialogues[index].struct1.unk_15 = swap(index);
-            dialogues[index].struct1.unk_0 = swap(index);
-            dialogues[index].struct1.unk_2 = swap(index);  
-            dialogues[index].struct1.unk_8 = getRandomNumberInRange(0, 99);  
+        case DIALOGUE_OPCODE_RANDOM_BRANCH:
+            
+            dialogues[index].bytecodeExecutor.randomMinimumValue = *(u8*)dialogues[index].dialogueBytecodePointer++;
+            dialogues[index].bytecodeExecutor.randomMaximumValue = *(u8*)dialogues[index].dialogueBytecodePointer++;
+            
+            byteswap.byte[1] = *(u8*)dialogues[index].dialogueBytecodePointer++;
+            byteswap.byte[0] = *(u8*)dialogues[index].dialogueBytecodePointer++;
+            
+            dialogues[index].bytecodeExecutor.textIndex = byteswap.halfword;
+                        
+            byteswap.byte[1] = *(u8*)dialogues[index].dialogueBytecodePointer++;
+            byteswap.byte[0] = *(u8*)dialogues[index].dialogueBytecodePointer++;
+    
+            dialogues[index].bytecodeExecutor.branchingDialogueIndex = byteswap.halfword;
+            
+            dialogues[index].bytecodeExecutor.randomValue = getRandomNumberInRange(0, 99);  
+            
             break;
 
-        case 8:
-            dialogues[index].struct1.unk_2 = swap(index);  
+        case DIALOGUE_OPCODE_BRANCH:
+             
+            byteswap.byte[1] = *(u8*)dialogues[index].dialogueBytecodePointer++;
+            byteswap.byte[0] = *(u8*)dialogues[index].dialogueBytecodePointer++;
+            
+            dialogues[index].bytecodeExecutor.branchingDialogueIndex = byteswap.halfword;  
+            
             break;
         
-        case 10:
-            dialogues[index].struct1.unk_10 = swap(index);
-            dialogues[index].struct1.unk_17 = swap(index);     
+        case DIALOGUE_OPCODE_SHOW_SUBDIALOGUE_BOX:
+            
+            byteswap.byte[1] = *(u8*)dialogues[index].dialogueBytecodePointer++;
+            byteswap.byte[0] = *(u8*)dialogues[index].dialogueBytecodePointer++;
+            
+            dialogues[index].bytecodeExecutor.textOffset = byteswap.halfword;
+            
+            dialogues[index].bytecodeExecutor.unusedField2 = *(u8*)dialogues[index].dialogueBytecodePointer++;
+            
             break;
     
         case 11:
-            dialogues[index].struct1.unk_18 = swap(index);
-            dialogues[index].struct1.unk_2 = swap(index);     
+            
+            dialogues[index].bytecodeExecutor.unk_18 = *(u8*)dialogues[index].dialogueBytecodePointer++;
+            
+            byteswap.byte[1] = *(u8*)dialogues[index].dialogueBytecodePointer++;
+            byteswap.byte[0] = *(u8*)dialogues[index].dialogueBytecodePointer++;
+            
+            dialogues[index].bytecodeExecutor.branchingDialogueIndex = byteswap.halfword;  
+            
             break;
 
-        case 12:
+        case DIALOGUE_OPCODE_END_DIALOGUE:
             break;
     
     }
-    
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/system/dialogue", func_80043EC8);
-#endif
 
-#ifdef PERMUTER
-void func_80044684(u16 index) {
+//INCLUDE_ASM("asm/nonmatchings/system/dialogue", setOverlayMessageBoxSprite);
 
-    f32 temp1, temp2;
+void setOverlayMessageBoxSprite(u16 index) {
 
-    temp1 = -(dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].unk_92 * dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].fontContext.unk_60) - (dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].unk_92 * dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].unk_9B) - dialogues[index].dialogueButtonIcon1.coordinates.x;
-    temp2 = (dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].unk_93 * dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].fontContext.unk_61) + (dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].unk_93 * dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].unk_9C) - dialogues[index].dialogueButtonIcon1.coordinates.y;    
+    f32 xPosition, yPosition;
 
-    setSpriteScale(dialogueWindows[dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].dialogueWindowIndex].spriteIndex, dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].unk_A0 * 0.5f, dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].unk_93 * 0.6f, 1.0f);
-    
-    setSpriteRenderingLayer(dialogueWindows[dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].dialogueWindowIndex].spriteIndex, (1 | 2));
-    setSpriteColor(dialogueWindows[dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].dialogueWindowIndex].spriteIndex, 255, 255, 255, 192);
-    setBilinearFiltering(dialogueWindows[dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].dialogueWindowIndex].spriteIndex, TRUE);
+    // pain
+    xPosition = -((messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].textBoxLineCharWidth * messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].fontContext.characterCellWidth) / 2) 
+        - ((messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].textBoxLineCharWidth * messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].characterSpacing) / 2) 
+        - dialogues[index].dialogueButtonIcon1.coordinates.x;
 
+    yPosition = ((messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].textBoxVisibleRows * messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].fontContext.characterCellHeight) / 2) 
+        + ((messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].textBoxVisibleRows * messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].lineSpacing) / 2) 
+        + dialogues[index].dialogueButtonIcon1.coordinates.y;
+
+    setSpriteScale(dialogueWindows[messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].dialogueWindowIndex].spriteIndex, 
+       messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].unk_A0 * 0.5f, 
+       messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].textBoxVisibleRows * 0.6f, 
+       1.0f);
+
+    setSpriteRenderingLayer(dialogueWindows[messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].dialogueWindowIndex].spriteIndex, (1 | 2));
+    setSpriteColor(dialogueWindows[messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].dialogueWindowIndex].spriteIndex, 255, 255, 255, 192);
+    setBilinearFiltering(dialogueWindows[messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].dialogueWindowIndex].spriteIndex, TRUE);
     startSpriteAnimation(dialogues[index].dialogueButtonIcon1.spriteIndex, dialogues[index].dialogueButtonIcon1.spriteOffset, dialogues[index].dialogueButtonIcon1.flag);
-    setSpriteViewSpacePosition(dialogues[index].dialogueButtonIcon1.spriteIndex, dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].viewSpacePosition.x + temp1, dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].viewSpacePosition.y + temp2, dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].viewSpacePosition.z);
+    setSpriteViewSpacePosition(dialogues[index].dialogueButtonIcon1.spriteIndex, 
+       messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].viewSpacePosition.x + xPosition, 
+       messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].viewSpacePosition.y + yPosition, 
+       messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].viewSpacePosition.z);
 
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/system/dialogue", func_80044684);
-#endif
 
 //INCLUDE_ASM("asm/nonmatchings/system/dialogue", func_800449C4);
 
@@ -689,13 +757,13 @@ void func_800449C4(u16 index) {
     f32 tempX = dialogues[index].dialogueButtonIcon2.coordinates.x;
     f32 tempY = dialogues[index].dialogueButtonIcon2.coordinates.y;
 
-    setSpriteScale(dialogueWindows[dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].dialogueWindowIndex].spriteIndex, dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].unk_A0 * 0.5f, dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].unk_93 * 0.6f, 1.0f);
+    setSpriteScale(dialogueWindows[messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].dialogueWindowIndex].spriteIndex, messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].unk_A0 * 0.5f, messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].textBoxVisibleRows * 0.6f, 1.0f);
     
-    setSpriteRenderingLayer(dialogueWindows[dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].dialogueWindowIndex].spriteIndex, (1 | 2));
-    setBilinearFiltering(dialogueWindows[dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].dialogueWindowIndex].spriteIndex, TRUE);
+    setSpriteRenderingLayer(dialogueWindows[messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].dialogueWindowIndex].spriteIndex, (1 | 2));
+    setBilinearFiltering(dialogueWindows[messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].dialogueWindowIndex].spriteIndex, TRUE);
 
     startSpriteAnimation(dialogues[index].dialogueButtonIcon2.spriteIndex, dialogues[index].dialogueButtonIcon2.spriteOffset, dialogues[index].dialogueButtonIcon2.flag);
-    setSpriteViewSpacePosition(dialogues[index].dialogueButtonIcon2.spriteIndex, dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].viewSpacePosition.x + tempX, dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].viewSpacePosition.y + tempY, dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].viewSpacePosition.z);
+    setSpriteViewSpacePosition(dialogues[index].dialogueButtonIcon2.spriteIndex, messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].viewSpacePosition.x + tempX, messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].viewSpacePosition.y + tempY, messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].viewSpacePosition.z);
 
 }
 
@@ -706,11 +774,11 @@ void func_80044BF4(u16 index) {
     f32 tempX = dialogues[index].dialogueButtonIcon3.coordinates.x;
     f32 tempY = dialogues[index].dialogueButtonIcon3.coordinates.y;
 
-    setSpriteRenderingLayer(dialogueWindows[dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].dialogueWindowIndex].spriteIndex, (1 | 2));
-    setBilinearFiltering(dialogueWindows[dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].dialogueWindowIndex].spriteIndex, 1);
+    setSpriteRenderingLayer(dialogueWindows[messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].dialogueWindowIndex].spriteIndex, (1 | 2));
+    setBilinearFiltering(dialogueWindows[messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].dialogueWindowIndex].spriteIndex, 1);
 
     startSpriteAnimation(dialogues[index].dialogueButtonIcon3.spriteIndex, dialogues[index].dialogueButtonIcon3.spriteOffset, dialogues[index].dialogueButtonIcon3.flag);
-    setSpriteViewSpacePosition(dialogues[index].dialogueButtonIcon3.spriteIndex, dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].viewSpacePosition.x + tempX, dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].viewSpacePosition.y + tempY, dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].viewSpacePosition.z);
+    setSpriteViewSpacePosition(dialogues[index].dialogueButtonIcon3.spriteIndex, messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].viewSpacePosition.x + tempX, messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].viewSpacePosition.y + tempY, messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].viewSpacePosition.z);
 
 }
 
@@ -720,25 +788,25 @@ void func_80044D78(u16 index) {
 
     bool set = FALSE;
 
-    if (!(dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].flags & (0x40 | 0x80))) { 
+    if (!(messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].flags & (0x40 | 0x80))) { 
 
         if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_UP)) {
 
-            if (dialogues[index].struct5.unk_17 < (dialogues[index].struct5.unk_16 - 1)) {
+            if (dialogues[index].sessionManager.unk_17 < (dialogues[index].sessionManager.unk_16 - 1)) {
 
-                dialogues[index].struct5.unk_17++;
+                dialogues[index].sessionManager.unk_17++;
 
-                if (dialogues[index].struct5.unk_18 != dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].unk_93 - 1) {
-                    dialogues[index].struct5.unk_18++;
-                    adjustSpriteViewSpacePosition(dialogues[index].dialogueButtonIcon1.spriteIndex, 0.0f, -dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].fontContext.unk_61 - dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].unk_9C, 0.0f);
+                if (dialogues[index].sessionManager.unk_18 != messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].textBoxVisibleRows - 1) {
+                    dialogues[index].sessionManager.unk_18++;
+                    adjustSpriteViewSpacePosition(dialogues[index].dialogueButtonIcon1.spriteIndex, 0.0f, -messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].fontContext.characterCellHeight - messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].lineSpacing, 0.0f);
                 } else {
-                    func_8003FE9C(dialogues[index].struct5.dialogueBoxIndex2);
-                    dialogues[index].struct5.unk_19++;
+                    func_8003FE9C(dialogues[index].sessionManager.overlayMessageBoxIndex);
+                    dialogues[index].sessionManager.unk_19++;
                 }
 
-                if (dialogues[index].struct5.scrollSfxIndex != 0xFF) {
-                    setSfx(dialogues[index].struct5.scrollSfxIndex + 1);
-                    setSfxVolume(dialogues[index].struct5.scrollSfxIndex + 1, DIALOGUE_SFX_VOLUME);
+                if (dialogues[index].sessionManager.scrollSfxIndex != 0xFF) {
+                    setSfx(dialogues[index].sessionManager.scrollSfxIndex + 1);
+                    setSfxVolume(dialogues[index].sessionManager.scrollSfxIndex + 1, DIALOGUE_SFX_VOLUME);
                 }
                 
                 set = TRUE;
@@ -750,21 +818,21 @@ void func_80044D78(u16 index) {
 
             if (!set) {
 
-                if (dialogues[index].struct5.unk_17) {
+                if (dialogues[index].sessionManager.unk_17) {
 
-                    dialogues[index].struct5.unk_17--;
+                    dialogues[index].sessionManager.unk_17--;
                     
-                    if (dialogues[index].struct5.unk_18) {
-                        dialogues[index].struct5.unk_18--;
-                        adjustSpriteViewSpacePosition(dialogues[index].dialogueButtonIcon1.spriteIndex, 0.0f, dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].fontContext.unk_61 + dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].unk_9C, 0.0f);
+                    if (dialogues[index].sessionManager.unk_18) {
+                        dialogues[index].sessionManager.unk_18--;
+                        adjustSpriteViewSpacePosition(dialogues[index].dialogueButtonIcon1.spriteIndex, 0.0f, messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].fontContext.characterCellHeight + messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].lineSpacing, 0.0f);
                     } else {
-                        func_8003FFF4(dialogues[index].struct5.dialogueBoxIndex2);
-                        dialogues[index].struct5.unk_19--;
+                        func_8003FFF4(dialogues[index].sessionManager.overlayMessageBoxIndex);
+                        dialogues[index].sessionManager.unk_19--;
                     }
 
-                    if (dialogues[index].struct5.scrollSfxIndex != 0xFF) {
-                        setSfx(dialogues[index].struct5.scrollSfxIndex + 1);
-                        setSfxVolume(dialogues[index].struct5.scrollSfxIndex + 1, DIALOGUE_SFX_VOLUME);
+                    if (dialogues[index].sessionManager.scrollSfxIndex != 0xFF) {
+                        setSfx(dialogues[index].sessionManager.scrollSfxIndex + 1);
+                        setSfxVolume(dialogues[index].sessionManager.scrollSfxIndex + 1, DIALOGUE_SFX_VOLUME);
                         
                     }
                     
@@ -774,15 +842,15 @@ void func_80044D78(u16 index) {
             }
         }
 
-        if (dialogues[index].struct5.unk_16 > dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].unk_93) { 
+        if (dialogues[index].sessionManager.unk_16 > messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].textBoxVisibleRows) { 
 
-            if (dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].unk_93 < (dialogues[index].struct5.unk_16 - dialogues[index].struct5.unk_19)) {
+            if (messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].textBoxVisibleRows < (dialogues[index].sessionManager.unk_16 - dialogues[index].sessionManager.unk_19)) {
                 func_80044BF4(index);
             } else {
                 resetAnimationState(dialogues[index].dialogueButtonIcon3.spriteIndex);
             }
 
-            if (dialogues[index].struct5.unk_19) {
+            if (dialogues[index].sessionManager.unk_19) {
                 func_800449C4(index);
             } else {
                 resetAnimationState(dialogues[index].dialogueButtonIcon2.spriteIndex);
@@ -795,11 +863,11 @@ void func_80044D78(u16 index) {
             if (!set) {
                 
                 func_80043B84(index);
-                dialogues[index].struct1.unk_12 = 0xFF;
+                dialogues[index].bytecodeExecutor.currentOpcode = 0xFF;
                 
-                if (dialogues[index].struct5.closeSfxIndex != 0xFF) {
-                    setSfx(dialogues[index].struct5.closeSfxIndex + 1);
-                    setSfxVolume(dialogues[index].struct5.closeSfxIndex + 1, DIALOGUE_SFX_VOLUME);
+                if (dialogues[index].sessionManager.closeSfxIndex != 0xFF) {
+                    setSfx(dialogues[index].sessionManager.closeSfxIndex + 1);
+                    setSfxVolume(dialogues[index].sessionManager.closeSfxIndex + 1, DIALOGUE_SFX_VOLUME);
                     set = TRUE;
                 }
                 
@@ -809,109 +877,113 @@ void func_80044D78(u16 index) {
    
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/dialogue", func_80045260);
+//INCLUDE_ASM("asm/nonmatchings/system/dialogue", updateCurrentDialogue);
 
-void func_80045260(u16 index) {
+void updateCurrentDialogue(u16 index) {
     
-    u16 set = FALSE;
+    u16 finishCurrentDialogueBlockProcessing = FALSE;
     
-    u16 temp;
+    u16 dialogueVariableValue;
     u16 temp2;
     u16 temp3;
     int temp4;
     int temp5;
+    u16 temp6;
 
     u16 tempIndex;
-    u16 dialogueIndex;
+    u16 textOrDialogueIndex;
     
     int adjusted;
     int max;
     int initial;
     
-    while (!set) {
+    // loop and continue to process new opcodes unless marked as done
+    while (!finishCurrentDialogueBlockProcessing) {
         
-        if (dialogues[index].struct1.unk_12 == 0xFF) {
-            // set struct data from dialogue map
-            func_80043EC8(index);
+        // currentOpcode is reset to 0xFF after processing
+        if (dialogues[index].bytecodeExecutor.currentOpcode == 0xFF) {
+            parseDialogueBytecode(index);
         }
         
-        switch (dialogues[index].struct1.unk_12) {
+        switch (dialogues[index].bytecodeExecutor.currentOpcode) {
         
-            case 0:
-                if (dialogues[index].struct5.flags & 0x80) {
-                    initializeDialogueBox(dialogues[index].struct5.dialogueBoxIndex1, dialogueMapAddresses[dialogues[index].struct5.dialogueMapAddressesIndex].unk_14, dialogues[index].struct1.unk_0, 0);
+            case DIALOGUE_OPCODE_SHOW_TEXT:
+
+                if (dialogues[index].sessionManager.flags & 0x80) {
+                    initializeMessageBox(dialogues[index].sessionManager.mainMessageBoxIndex, dialogueBytecodeAddresses[dialogues[index].sessionManager.dialogueBytecodeAddressesIndex].textAddressesIndex, dialogues[index].bytecodeExecutor.textIndex, 0);
                 } else {
-                    initializeDialogueBox(dialogues[index].struct5.dialogueBoxIndex1, dialogueMapAddresses[dialogues[index].struct5.dialogueMapAddressesIndex].unk_14, dialogues[index].struct1.unk_0, 0x8000);
+                    initializeMessageBox(dialogues[index].sessionManager.mainMessageBoxIndex, dialogueBytecodeAddresses[dialogues[index].sessionManager.dialogueBytecodeAddressesIndex].textAddressesIndex, dialogues[index].bytecodeExecutor.textIndex, 0x8000);
                 }
                 
-                set = TRUE;
+                finishCurrentDialogueBlockProcessing = TRUE;
 
-                dialogues[index].struct1.unk_12 = 0xFF;
-                dialogues[index].struct5.flags |= 0x10;
+                dialogues[index].bytecodeExecutor.currentOpcode = 0xFF;
+                dialogues[index].sessionManager.flags |= DIALOGUE_WAIT_FOR_DIALOGUE_BOX;
                 
                 break;
 
-            case 1:
+            case DIALOGUE_OPCODE_DIALOGUE_VARIABLE_BRANCH:
                 
-                temp = getDialogueVariableValue(dialogues[index].struct1.dialogueVariablesIndex);
+                dialogueVariableValue = getDialogueVariableValue(dialogues[index].bytecodeExecutor.dialogueVariablesIndex);
                 
-                if ((temp >= dialogues[index].struct1.unk_4) && (dialogues[index].struct1.unk_6 >= temp)) {
+                if ((dialogueVariableValue >= dialogues[index].bytecodeExecutor.minimumDialogueVariableValue) && (dialogues[index].bytecodeExecutor.maximumDialogueVariableValue >= dialogueVariableValue)) {
                 
-                    dialogueIndex = dialogues[index].struct1.unk_0;
+                    textOrDialogueIndex = dialogues[index].bytecodeExecutor.textIndex;
                     
-                    if (dialogueIndex != 0xFFFF) {
+                    // if a specific text is set, branch to that; otherwise, branch to another bytecode segment
+                    if (textOrDialogueIndex != 0xFFFF) {
 
-                        if (dialogues[index].struct5.flags & 0x80) {
-                            initializeDialogueBox(dialogues[index].struct5.dialogueBoxIndex1, dialogueMapAddresses[dialogues[index].struct5.dialogueMapAddressesIndex].unk_14, dialogueIndex, 0);
+                        if (dialogues[index].sessionManager.flags & 0x80) {
+                            initializeMessageBox(dialogues[index].sessionManager.mainMessageBoxIndex, dialogueBytecodeAddresses[dialogues[index].sessionManager.dialogueBytecodeAddressesIndex].textAddressesIndex, textOrDialogueIndex, 0);
                         } else {
-                            initializeDialogueBox(dialogues[index].struct5.dialogueBoxIndex1, dialogueMapAddresses[dialogues[index].struct5.dialogueMapAddressesIndex].unk_14, dialogueIndex, 0x8000);
+                            initializeMessageBox(dialogues[index].sessionManager.mainMessageBoxIndex, dialogueBytecodeAddresses[dialogues[index].sessionManager.dialogueBytecodeAddressesIndex].textAddressesIndex, textOrDialogueIndex, 0x8000);
                         }
                         
-                        set = TRUE;
+                        finishCurrentDialogueBlockProcessing = TRUE;
                         
-                        dialogues[index].struct1.unk_0 = 0xFFFF;
-                        dialogues[index].struct5.flags |= 0x10;
+                        dialogues[index].bytecodeExecutor.textIndex = 0xFFFF;
+                        dialogues[index].sessionManager.flags |= DIALOGUE_WAIT_FOR_DIALOGUE_BOX;
                         
+                    // branch to another bytecode segment
                     } else {
                         
-                        dialogueIndex = dialogues[index].struct1.unk_2;
+                        textOrDialogueIndex = dialogues[index].bytecodeExecutor.branchingDialogueIndex;
                         
-                        if (dialogueIndex != 0xFFFF) {
-                            func_80043430(index, dialogues[index].struct5.dialogueMapAddressesIndex, dialogueIndex, dialogues[index].struct5.flags & (0x40 | 0x80));
+                        if (textOrDialogueIndex != 0xFFFF) {
+                            initializeDialogueSession(index, dialogues[index].sessionManager.dialogueBytecodeAddressesIndex, textOrDialogueIndex, dialogues[index].sessionManager.flags & (0x40 | 0x80));
                         } else {
-                            dialogues[index].struct1.unk_12 = 0xFF;
+                            dialogues[index].bytecodeExecutor.currentOpcode = 0xFF;
                         }
                     }
                     
                 } else {
-                    dialogues[index].struct1.unk_12 = 0xFF;
+                    dialogues[index].bytecodeExecutor.currentOpcode = 0xFF;
                 }
                 
                 break;
 
-            // update dialogue variable value
-            case 2:
+            case DIALOGUE_OPCODE_UPDATE_DIALOGUE_VARIABLE:
 
                 /*
 
-                temp4 = (u16)getDialogueVariableValue(dialogues[index].struct1.dialogueVariablesIndex);
+                temp4 = (u16)getDialogueVariableValue(dialogues[index].bytecodeExecutor.dialogueVariablesIndex);
 
-                temp4 += adjustValue_dialogue_c(temp4, dialogues[index].struct1.updatedDialogueVariableAdjustment, dialogueVariables[dialogues[index].struct1.dialogueVariablesIndex].maxValue);
+                temp4 += adjustValue_dialogue_c(temp4, dialogues[index].bytecodeExecutor.updatedDialogueVariableAdjustment, dialogueVariables[dialogues[index].bytecodeExecutor.dialogueVariablesIndex].maxValue);
                 
-                setDialogueVariable_inline(dialogues[index].struct1.dialogueVariablesIndex, temp4);
+                setDialogueVariableValue(dialogues[index].bytecodeExecutor.dialogueVariablesIndex, temp4);
                 
-                dialogues[index].struct1.unk_12 = 0xFF;
+                dialogues[index].bytecodeExecutor.currentOpcode = 0xFF;
                 
                 break;
 
                 */
 
-                temp4 = getDialogueVariableValue(dialogues[index].struct1.dialogueVariablesIndex);
+                temp4 = getDialogueVariableValue(dialogues[index].bytecodeExecutor.dialogueVariablesIndex);
 
                 // FIXME: should be inline adjustValue call
 
-                max = dialogueVariables[dialogues[index].struct1.dialogueVariablesIndex].maxValue;
-                adjusted = dialogues[index].struct1.updatedDialogueVariableAdjustment;
+                max = dialogueVariables[dialogues[index].bytecodeExecutor.dialogueVariablesIndex].maxValue;
+                adjusted = dialogues[index].bytecodeExecutor.updatedDialogueVariableAdjustment;
                 
                 temp5 = (u16)temp4;
                 temp5 += adjusted;
@@ -926,9 +998,9 @@ void func_80045260(u16 index) {
                 
                 max = temp4 + adjusted;
                 
-                // FIXME: should be inline setDialogueVariable_inline call
+                // FIXME: should be inline setDialogueVariableValue call
 
-                tempIndex = dialogues[index].struct1.dialogueVariablesIndex;
+                tempIndex = dialogues[index].bytecodeExecutor.dialogueVariablesIndex;
                 
                 switch (dialogueVariables[tempIndex].type) {
                     case UNSIGNED_CHAR:
@@ -944,154 +1016,164 @@ void func_80045260(u16 index) {
                         break;
                 }
 
-                dialogues[index].struct1.unk_12 = 0xFF;
+                dialogues[index].bytecodeExecutor.currentOpcode = 0xFF;
                 
                 break;
 
-            case 3:
-                setDialogueVariable_inline(dialogues[index].struct1.dialogueVariablesIndex, dialogues[index].struct1.dialogueVariableValue);
-                dialogues[index].struct1.unk_12 = 0xFF;
+            case DIALOGUE_OPCODE_SET_DIALOGUE_VARIABLE:
+                setDialogueVariableValue(dialogues[index].bytecodeExecutor.dialogueVariablesIndex, dialogues[index].bytecodeExecutor.dialogueVariableValue);
+                dialogues[index].bytecodeExecutor.currentOpcode = 0xFF;
                 break;
 
-            case 4:
+            case DIALOGUE_OPCODE_SPECIAL_DIALOGUE_BIT_BRANCH:
                 
-                if (checkSpecialDialogueBitFromPointer(dialogues[index].struct1.specialDialogueBit)) {
+                if (checkSpecialDialogueBitFromPointer(dialogues[index].bytecodeExecutor.specialDialogueBit)) {
                     
-                    dialogueIndex = dialogues[index].struct1.unk_0;
+                    textOrDialogueIndex = dialogues[index].bytecodeExecutor.textIndex;
                 
-                    if (dialogueIndex != 0xFFFF) {
+                    // if specific text is set, branch to that; otherwise branch to another bytecode segment
+                    if (textOrDialogueIndex != 0xFFFF) {
                         
-                        if (dialogues[index].struct5.flags & 0x80) {
-                            initializeDialogueBox(dialogues[index].struct5.dialogueBoxIndex1, dialogueMapAddresses[dialogues[index].struct5.dialogueMapAddressesIndex].unk_14, dialogueIndex, 0);
+                        if (dialogues[index].sessionManager.flags & 0x80) {
+                            initializeMessageBox(dialogues[index].sessionManager.mainMessageBoxIndex, dialogueBytecodeAddresses[dialogues[index].sessionManager.dialogueBytecodeAddressesIndex].textAddressesIndex, textOrDialogueIndex, 0);
                         } else {
-                            initializeDialogueBox(dialogues[index].struct5.dialogueBoxIndex1, dialogueMapAddresses[dialogues[index].struct5.dialogueMapAddressesIndex].unk_14, dialogueIndex, 0x8000);
+                            initializeMessageBox(dialogues[index].sessionManager.mainMessageBoxIndex, dialogueBytecodeAddresses[dialogues[index].sessionManager.dialogueBytecodeAddressesIndex].textAddressesIndex, textOrDialogueIndex, 0x8000);
                         }
                         
-                        set = TRUE;
-                        dialogues[index].struct1.unk_0 = 0xFFFF;
-                        dialogues[index].struct5.flags |= 0x10;
+                        finishCurrentDialogueBlockProcessing = TRUE;
+                        dialogues[index].bytecodeExecutor.textIndex = 0xFFFF;
+                        dialogues[index].sessionManager.flags |= DIALOGUE_WAIT_FOR_DIALOGUE_BOX;
                     
+                    // branch to another bytecode segment
                     } else {
                         
-                        dialogueIndex = dialogues[index].struct1.unk_2;
+                        textOrDialogueIndex = dialogues[index].bytecodeExecutor.branchingDialogueIndex;
 
-                        if (dialogueIndex != 0xFFFF) {
-                            func_80043430(index, dialogues[index].struct5.dialogueMapAddressesIndex, dialogueIndex, dialogues[index].struct5.flags & (0x40 | 0x80));
+                        if (textOrDialogueIndex != 0xFFFF) {
+                            initializeDialogueSession(index, dialogues[index].sessionManager.dialogueBytecodeAddressesIndex, textOrDialogueIndex, dialogues[index].sessionManager.flags & (0x40 | 0x80));
                         } else {
-                            dialogues[index].struct1.unk_12 = 0xFF;
+                            dialogues[index].bytecodeExecutor.currentOpcode = 0xFF;
                         }
 
                     }
                     
                 } else {
-                    dialogues[index].struct1.unk_12 = 0xFF;
+                    dialogues[index].bytecodeExecutor.currentOpcode = 0xFF;
                 }
                 
                 break;
 
-            case 5:
-                setSpecialDialogueBitFromPointer(dialogues[index].struct1.specialDialogueBit);
-                dialogues[index].struct1.unk_12 = 0xFF;
+            case DIALOGUE_OPCODE_SET_SPECIAL_DIALOGUE_BIT:
+                setSpecialDialogueBitFromPointer(dialogues[index].bytecodeExecutor.specialDialogueBit);
+                dialogues[index].bytecodeExecutor.currentOpcode = 0xFF;
                 break;
 
-            case 6:
-                toggleSpecialDialogueBitFromPointer(dialogues[index].struct1.specialDialogueBit);
-                dialogues[index].struct1.unk_12 = 0xFF;
+            case DIALOGUE_OPCODE_TOGGLE_SPECIAL_DIALOGUE_BIT:
+                toggleSpecialDialogueBitFromPointer(dialogues[index].bytecodeExecutor.specialDialogueBit);
+                dialogues[index].bytecodeExecutor.currentOpcode = 0xFF;
                 break;
 
-            case 7:
+            case DIALOGUE_OPCODE_RANDOM_BRANCH:
                 
-                temp3 = dialogues[index].struct1.unk_8;
+                temp3 = dialogues[index].bytecodeExecutor.randomValue;
                 
-                if ((temp3 >= dialogues[index].struct1.unk_14) && (dialogues[index].struct1.unk_15 >= temp3)) {
+                if ((temp3 >= dialogues[index].bytecodeExecutor.randomMinimumValue) && (dialogues[index].bytecodeExecutor.randomMaximumValue >= temp3)) {
                 
-                    dialogueIndex = dialogues[index].struct1.unk_0;
+                    textOrDialogueIndex = dialogues[index].bytecodeExecutor.textIndex;
                     
-                    if (dialogueIndex != 0xFFFF) {
-                        if (dialogues[index].struct5.flags & 0x80) {
-                            initializeDialogueBox(dialogues[index].struct5.dialogueBoxIndex1, dialogueMapAddresses[dialogues[index].struct5.dialogueMapAddressesIndex].unk_14, dialogueIndex, 0);
+                    if (textOrDialogueIndex != 0xFFFF) {
+
+                        if (dialogues[index].sessionManager.flags & 0x80) {
+                            initializeMessageBox(dialogues[index].sessionManager.mainMessageBoxIndex, dialogueBytecodeAddresses[dialogues[index].sessionManager.dialogueBytecodeAddressesIndex].textAddressesIndex, textOrDialogueIndex, 0);
                         } else {
-                            initializeDialogueBox(dialogues[index].struct5.dialogueBoxIndex1, dialogueMapAddresses[dialogues[index].struct5.dialogueMapAddressesIndex].unk_14, dialogueIndex, 0x8000);
+                            initializeMessageBox(dialogues[index].sessionManager.mainMessageBoxIndex, dialogueBytecodeAddresses[dialogues[index].sessionManager.dialogueBytecodeAddressesIndex].textAddressesIndex, textOrDialogueIndex, 0x8000);
                         }
                         
-                        set = TRUE;
-                        dialogues[index].struct1.unk_0 = 0xFFFF;
-                        dialogues[index].struct5.flags |= 0x10;
+                        finishCurrentDialogueBlockProcessing = TRUE;
+
+                        dialogues[index].bytecodeExecutor.textIndex = 0xFFFF;
+                        dialogues[index].sessionManager.flags |= DIALOGUE_WAIT_FOR_DIALOGUE_BOX;
                         
                     } else {
                         
-                        dialogueIndex = dialogues[index].struct1.unk_2;
+                        textOrDialogueIndex = dialogues[index].bytecodeExecutor.branchingDialogueIndex;
                         
-                        if (dialogueIndex != 0xFFFF) {
-                            func_80043430(index, dialogues[index].struct5.dialogueMapAddressesIndex, dialogueIndex, dialogues[index].struct5.flags & (0x40 | 0x80));
+                        if (textOrDialogueIndex != 0xFFFF) {
+                            initializeDialogueSession(index, dialogues[index].sessionManager.dialogueBytecodeAddressesIndex, textOrDialogueIndex, dialogues[index].sessionManager.flags & (0x40 | 0x80));
                         } else {
-                            dialogues[index].struct1.unk_12 = 0xFF;
+                            dialogues[index].bytecodeExecutor.currentOpcode = 0xFF;
                         }
                     }
                     
                 } else {
-                    dialogues[index].struct1.unk_12 = 0xFF;
+                    dialogues[index].bytecodeExecutor.currentOpcode = 0xFF;
                 }
                 
                 break;
 
-            case 8:
-                func_80043430(index, dialogues[index].struct5.dialogueMapAddressesIndex, dialogues[index].struct1.unk_2, dialogues[index].struct5.flags & (0x40 | 0x80));
+            case DIALOGUE_OPCODE_BRANCH:
+                initializeDialogueSession(index, dialogues[index].sessionManager.dialogueBytecodeAddressesIndex, dialogues[index].bytecodeExecutor.branchingDialogueIndex, dialogues[index].sessionManager.flags & (0x40 | 0x80));
                 break;
 
-            case 10:
+            case DIALOGUE_OPCODE_SHOW_SUBDIALOGUE_BOX:
                 
-                dialogues[index].struct1.unk_12 = 0xFF;
-                dialogues[index].struct5.unk_17 = 0;
-                dialogues[index].struct5.unk_18 = 0;
-                dialogues[index].struct5.unk_19 = 0;
-                dialogues[index].struct5.unk_14 = dialogues[index].struct1.unk_10;
-                dialogues[index].struct5.flags |= 0x20;
+                dialogues[index].bytecodeExecutor.currentOpcode = 0xFF;
+                dialogues[index].sessionManager.unk_17 = 0;
+                dialogues[index].sessionManager.unk_18 = 0;
+                dialogues[index].sessionManager.unk_19 = 0;
+                dialogues[index].sessionManager.unk_14 = dialogues[index].bytecodeExecutor.textOffset;
+                dialogues[index].sessionManager.flags |= DIALOGUE_PAUSE_FOR_USER_INPUT;
                 
-                initializeDialogueBox(dialogues[index].struct5.dialogueBoxIndex2, dialogueMapAddresses[dialogues[index].struct5.dialogueMapAddressesIndex].unk_16, dialogues[index].struct5.unk_14, 0);
+                initializeMessageBox(dialogues[index].sessionManager.overlayMessageBoxIndex, dialogueBytecodeAddresses[dialogues[index].sessionManager.dialogueBytecodeAddressesIndex].subdialogueTextAddressesIndex, dialogues[index].sessionManager.unk_14, 0);
                 
-                temp2 = dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].unk_A1;
+                // probably line height or selection count
+                temp2 = messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].unk_A1;
                 
                 if (temp2 >= 5) {
-                    func_8003F5D0(dialogues[index].struct5.dialogueBoxIndex2, dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].unk_A0, 4);
+                    func_8003F5D0(dialogues[index].sessionManager.overlayMessageBoxIndex, messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].unk_A0, 4);
                 } else {
-                    func_8003F5D0(dialogues[index].struct5.dialogueBoxIndex2, dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].unk_A0, temp2);
+                    func_8003F5D0(dialogues[index].sessionManager.overlayMessageBoxIndex, messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].unk_A0, temp2);
                 }
                 
-                dialogues[index].struct5.unk_16 = dialogueBoxes[dialogues[index].struct5.dialogueBoxIndex2].unk_A1;
+                dialogues[index].sessionManager.unk_16 = messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].unk_A1;
                 
-                func_80044684(index);
+                setOverlayMessageBoxSprite(index);
                 
-                if (dialogues[index].struct5.unk_8 != 0xFF) {
-                    setSfx(dialogues[index].struct5.unk_8 + 1);
-                    setSfxVolume(dialogues[index].struct5.unk_8 + 1, DIALOGUE_SFX_VOLUME);
+                if (dialogues[index].sessionManager.unk_8 != 0xFF) {
+                    setSfx(dialogues[index].sessionManager.unk_8 + 1);
+                    setSfxVolume(dialogues[index].sessionManager.unk_8 + 1, DIALOGUE_SFX_VOLUME);
                 }
                 
-                set = TRUE;
+                finishCurrentDialogueBlockProcessing = TRUE;
                 
                 break;
 
-            case 9:
+            case DIALOGUE_OPCODE_UNUSED:
                 break;
 
             case 11:
                 
-                temp = dialogues[index].struct5.unk_17;
+                temp6 = dialogues[index].sessionManager.unk_17;
                 
-                if (dialogues[index].struct1.unk_18 == temp) {
-                    func_80043430(index, dialogues[index].struct5.dialogueMapAddressesIndex, dialogues[index].struct1.unk_2, dialogues[index].struct5.flags & (0x40 | 0x80));
-                    dialogues[index].struct5.unk_17 = temp;
+                if (dialogues[index].bytecodeExecutor.unk_18 == temp6) {
+                    
+                    initializeDialogueSession(index, dialogues[index].sessionManager.dialogueBytecodeAddressesIndex, dialogues[index].bytecodeExecutor.branchingDialogueIndex, dialogues[index].sessionManager.flags & (0x40 | 0x80));
+                    // ?
+                    dialogues[index].sessionManager.unk_17 = temp6;
+
                 } else {
-                    dialogues[index].struct1.unk_12 = 0xFF;
+                    dialogues[index].bytecodeExecutor.currentOpcode = 0xFF;
                 }
                 
                 break;
 
-            case 12:
-                set = TRUE;
+            case DIALOGUE_OPCODE_END_DIALOGUE:
+                finishCurrentDialogueBlockProcessing = TRUE;
                 func_80043AD8(index);
                 break;
-        }
+        
+            }
+
     }
 }
 
@@ -1100,32 +1182,33 @@ void func_80045260(u16 index) {
 void updateDialogues(void) {
 
     u16 i;
-    bool set;
+    bool skipDialogueUpdate;
 
     for (i = 0; i < MAX_DIALOGUES; i++) {
         
-        if ((dialogues[i].struct5.flags & ACTIVE) && (dialogues[i].struct5.flags & INITIALIZED)) {
+        if ((dialogues[i].sessionManager.flags & DIALOGUE_ACTIVE) && (dialogues[i].sessionManager.flags & DIALOGUE_INITIALIZED)) {
             
-            set = FALSE;
+            skipDialogueUpdate = FALSE;
             
-            if (dialogues[i].struct5.flags & 0x10) {
+            if (dialogues[i].sessionManager.flags & DIALOGUE_WAIT_FOR_DIALOGUE_BOX) {
                 
-                if (dialogueBoxes[dialogues[i].struct5.dialogueBoxIndex1].flags & 4 || dialogueBoxes[dialogues[i].struct5.dialogueBoxIndex1].flags & 0x20000) {
-                    dialogues[i].struct5.flags &= ~0x10;
+                if ((messageBoxes[dialogues[i].sessionManager.mainMessageBoxIndex].flags & 4) || (messageBoxes[dialogues[i].sessionManager.mainMessageBoxIndex].flags & 0x20000)) {
+                    dialogues[i].sessionManager.flags &= ~DIALOGUE_WAIT_FOR_DIALOGUE_BOX;
                 }
                 
-                set = TRUE;
+                skipDialogueUpdate = TRUE;
 
             }
             
-            if (dialogues[i].struct5.flags & 0x20) {
+            if (dialogues[i].sessionManager.flags & DIALOGUE_PAUSE_FOR_USER_INPUT) {
                 func_80044D78(i);
-                set = TRUE;
+                skipDialogueUpdate = TRUE;
             }
             
-            if (!set) {
-                func_80045260(i);
+            if (!skipDialogueUpdate) {
+                updateCurrentDialogue(i);
             }
+
         }
     
     }

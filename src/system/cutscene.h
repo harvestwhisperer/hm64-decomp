@@ -6,22 +6,38 @@
 #define MAX_BYTECODE_EXECUTORS 42
 
 // TODO: figure out and add flag macros
-#define ACTIVE 1
-#define CHARACTER_SPRITE_ASSET 8
-#define MAP_ASSET 0x10
+#define CUTSCENE_ASSET_ACTIVE 1
+#define CUTSCENE_SPRITE_ASSET 2
+#define CUTSCENE_ENTITY_ASSET 8
+#define CUTSCENE_MAP_ASSET 0x10
 
 /* general */
 
 typedef struct {
     u16 functionIndex;
-    u16 assetIndex;
-    short offset; // offset from main cutscene object ptr
+    u16 executorIndex;
+    short offset;
 } CutsceneExecutorInitializationCmd;
 
 typedef struct {
     u16 functionIndex;
-    u16 CutsceneExecutorIndex;
-} CutsceneAssetFlagsCmd;
+    u16 executorIndex;
+    short offset;
+} CutsceneExecutorSetPtrCmd;
+
+typedef struct {
+    u16 functionIndex;
+    u16 executorIndex;
+} CutsceneExecutorSetFlagsCmd;
+
+typedef struct {
+    u16 functionIndex;
+    u16 executorIndex;
+} CutsceneDeactivateExecutorCmd;
+
+typedef struct {
+    u16 functionIndex;
+} CutsceneDeactivateSelfCmd;
 
 typedef struct {
     u16 functionIndex;
@@ -65,20 +81,26 @@ typedef struct {
     s16 unk_8;
 } CutsceneUnknownCmd;
 
+/* gameStatus */
+
 // func_80049064
 typedef struct {
     u16 functionIndex;
-    u16 unk_2;
-    u32* unk_4;
-} CutsceneUnknown2Cmd;
+    u16 bit;
+    u32* bitfield;
+} CutsceneBranchOnSpecialBitCmd;
 
-/* gameStatus */
+typedef struct {
+    u16 functionIndex;
+    u16 bit;
+    s32* bitfield;
+} CutsceneSetSpecialBitCmd;
 
 typedef struct {
     u16 index;
     u16 bit;
     u32* bitfield;
-} CutsceneSpecialBitToggleCmd;
+} CutsceneToggleSpecialBitToggleCmd;
 
 // func_8004AB04
 typedef struct {
@@ -135,29 +157,34 @@ typedef struct {
 
 typedef struct {
     u16 functionIndex;
-    u16 index;
+    u16 songIndex;
     u8 *songStart;
     u8 *songEnd;
-} CutsceneSongCmd;
+} CutsceneAudioSetSongCmd;
 
 typedef struct {
     u16 functionIndex;
-    u16 index;
+    u16 songIndex;
+} CutsceneAudioIdleWhilePlayingCmd;
+
+typedef struct {
+    u16 functionIndex;
+    u16 songIndex;
     u16 speed;
-} CutsceneSongSpeedCmd;
+} CutsceneAudioStopSongWithFadeOutCmd;
 
 typedef struct {
     u16 functionIndex;
-    u16 index;
-    u16 maxVolume;
+    u16 songIndex;
+    u16 targetVolume;
     s16 volume;
-} CutsceneSongVolumeCmd;
+} CutsceneAudioSetSongVolumeCmd;
 
 typedef struct {
     u16 functionIndex;
-    u16 index;
+    u16 sfxIndex;
     u16 volume;
-} CutsceneSfxVolumeCmd;
+} CutsceneAudioSetSfxCmd;
 
 /* controller */
 
@@ -165,55 +192,74 @@ typedef struct {
     u16 functionIndex;
     u16 controllerIndex;
     u32 buttonMask;
-} CutsceneButtonCmd;
+} CutsceneBranchOnCurrentButton;
+
+typedef struct {
+    u16 functionIndex;
+    u16 controllerIndex;
+    u32 buttonMask;
+} CutsceneBranchOnButtonPressed;
+
+typedef struct {
+    u16 functionIndex;
+    u16 controllerIndex;
+    u32 buttonMask;
+} CutsceneBranchOnButtonRepeat;
 
 /* dialogue */
 
 typedef struct {
     u16 functionIndex;
-    u16 dialogueBoxIndex;
-} CutsceneDialogueBoxIndexCmd;
+    u16 messageBoxIndex;
+} CutsceneMessageBoxIndexCmd;
 
 typedef struct {
     u16 functionIndex;
-    u16 dialogueBoxIndex;
-    u16 dialogueBytecodeUnk14;
-    u16 dialogueStruct1Unk0;
-} CutscenInitializeDialogueBoxCmd;
+    u16 messageBoxIndex;
+    u16 textAddressesIndex;
+    u16 textIndex;
+} CutsceneMessageBoxInitializeType1Cmd;
 
 typedef struct {
     u16 functionIndex;
-    u16 dialogueBoxIndex;
+    u16 messageBoxIndex;
+    u16 textAddressesIndex;
+    u16 textIndex;
+} CutsceneMessageBoxInitializeType2Cmd;
+
+typedef struct {
+    u16 functionIndex;
+    u16 messageBoxIndex;
     u8 r;
     u8 b;
     u8 g;
     u8 a;
     s32 flags;
-} CutsceneDialogueBoxRGBACmd;
+} CutsceneMessageBoxRGBACmd;
 
 typedef struct {
     u16 functionIndex;
     u16 spriteIndex;
     u8 dialogueWindowIndex;
-} CutsceneDialogueBoxSetupCmd;
+} CutsceneMessageBoxSetupCmd;
 
 typedef struct {
     u16 functionIndex;
-    u16 dialogueBoxIndex;
+    u16 messageBoxIndex;
     s16 x;
     s16 y;
     s16 z;
-} CutsceneDialogueBoxViewSpaceCmd;
+} CutsceneMessageBoxViewSpaceCmd;
 
 // func_80049A28
 typedef struct {
     u16 functionIndex;
-    u16 dialogueBoxIndex;
-} CutsceneUnknownDialogueBoxCmd;
+    u16 messageBoxIndex;
+} CutsceneUnknownMessageBoxCmd;
 
 typedef struct {
     u16 functionIndex;
-    u16 dialogueBoxIndex;
+    u16 messageBoxIndex;
 } CutsceneDialogueWaitCmd;
 
 // func_8004B498
@@ -233,9 +279,9 @@ typedef struct {
 typedef struct {
     u16 functionIndex;
     u16 dialoguesIndex;
-    u16 dialogueMapAddressIndex;
+    u16 dialogueBytecodeAddressIndex;
     u16 dialogueIndex;
-} CutsceneDialogueSpritesDMACmd;
+} CutsceneDialogueInitializeCmd;
 
 /* entity */
 
@@ -248,26 +294,25 @@ typedef struct {
 typedef struct {
     u16 functionIndex;
     u16 entityIndex;
-} CutsceneEntityCmd1;
+} CutsceneEntitySetDirectionCmd;
 
 typedef struct {
     u16 functionIndex;
     u16 entityIndex;
-    u16 unk_4;
-    u16 unk_6;
-    u16 unk_8;
-    u16 unk_A;
-    u16 unk_C;
-    u16 unk_E;
-    u16 unk_10;
-} CutsceneEntityCmd2;
+    u16 animationIndex1;
+    u16 animationIndex2;
+    u16 animationIndex3;
+    u16 animationIndex4;
+    u16 animationIndex5;
+    u16 animationIndex6;
+} CutsceneEntitySetAnimationsCmd;
 
 typedef struct {
     u16 functionIndex;
     u16 entityIndex;
     u16 entityAssetIndex;
     u16 flag;
-} CutsceneEntityCmd3;
+} CutsceneEntityLoadCmd;
 
 typedef struct {
     u16 functionIndex;
@@ -318,9 +363,14 @@ typedef struct {
 
 typedef struct {
     u16 functionIndex;
+    u16 flag;
+} CutsceneSetEntityUnknownFlagCmd;
+
+typedef struct {
+    u16 functionIndex;
     u16 entityIndex;
     u8 targetDirecton;
-} CutscenEntityCheckDirectionCmd;
+} CutsceneEntityBranchOnEntityDirectionCmd;
 
 // func_8004B7B8
 typedef struct {
@@ -355,19 +405,19 @@ typedef struct {
     u8 index2;
 } CutsceneMapStruct6Cmd;
 
-typedef struct {
-    u16 functionIndex;
-    u16 flag;
-    s32* cutsceneFlagPointer;
-} CutsceneMapFlagCmd;
-
-/* mapControllr */
+/* mapController */
 
 typedef struct {
     u16 functionIndex;
     u16 mapModelIndex;
     u16 mainMapIndex;
 } CutsceneMapControllerCmd;
+
+typedef struct {
+    u16 functionIndex;
+    u16 mapModelIndex;
+    u16 mainMapIndex;
+} CutsceneMapControllerLoadMapCmd;
 
 typedef struct {
     u16 functionIndex;
@@ -387,6 +437,16 @@ typedef struct {
     u8 rotation;
 } CutsceneMapControllerSetRotationFlagCmd;
 
+/* message */
+
+// func_8004CCF0
+typedef struct {
+    u16 functionIndex;
+    s16 rate;
+    u8 messageBoxIndex;
+    u8 flag;
+} CutsceneMessageSetInterpolationRate;
+
 /* sprite */
 
 typedef struct {
@@ -402,7 +462,7 @@ typedef struct {
 typedef struct {
     u16 functionIndex;
     u16 flag;
-} CutsceneSetBilinearFilteringCmd;
+} CutsceneSetSpriteBilinearFilteringCmd;
 
 // func_8004BE88
 typedef struct {
@@ -510,30 +570,30 @@ typedef struct {
 // 0x801808B0
 typedef struct {
     void *bytecodePtr;
-    void *unk_4;
-    void *unk_8; // return ptr
-    Vec3f unk_C;
-    u32 unk_18; // sets cutscenePointer
-    u16 unk_1C; // entities, entities.entityCollidedWithIndex
-    u16 unk_1E; // entities,  entities.buttonPressed
-    u16 unk_20; // sprite animation
-    u16 unk_22; // sprite animation
-    u16 unk_24; // sprite animation
-    u16 unk_26; // sprite animation
-    u16 unk_28; // sprite animation
-    u16 unk_2A; // sprite animation
-    u16 unk_2C;
-    u16 unk_2E;
+    void *subroutineBytecodePtr;
+    void *returnPtr;
+    Vec3f targetPosition;
+    u32 callbackBytecodePtr; // when branching based on button interaction with entity
+    u16 entityCollidedWithIndex;
+    u16 targetButtonMask;
+    u16 animationIndex1;
+    u16 animationIndex2;
+    u16 animationIndex3;
+    u16 animationIndex4;
+    u16 animationIndex5;
+    u16 animationIndex6;
+    u16 collisionWidth;
+    u16 collisionHeight;
     u16 cameraFlags; // 0x30
     Vec3f coordinates; // 0x34
-    Vec3f scaling; // 0x40
-    Vec3f offsets; // 0x4C
-    Vec3f unk_58;
+    Vec3f scale; // 0x40
+    Vec3f frameDelta; // 0x4C
+    Vec3f movementVector;
     u16 assetIndex; // sprite or map context index
-    u16 waitFrames; // is asset active, does callback function loop
-    u8 unk_68;
-    u8 unk_69;
-    u8 unk_6A;
+    u16 waitFrames;
+    u8 animationFrameCounter;
+    u8 entityDirectionOrMapRotation;
+    u8 movementDistance;
     u16 flags; // 0x6C
 } CutsceneExecutor;
 
@@ -544,7 +604,7 @@ extern u32 cutsceneFlagsHack[2];
 extern void initializeCutsceneExecutors(void);
 extern void updateCutsceneExecutors(void);
 extern bool spawnCutsceneExecutor(u16 index, void *bytecodePtr);
-extern void func_80046BB8(void);   
+extern void deactivateCutsceneExecutors(void);   
 extern void func_80046C98(void);     
 extern void func_80046CF4(void);    
 extern inline int func_80046D50(int adjustment, int value, int max);

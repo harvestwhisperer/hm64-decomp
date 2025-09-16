@@ -25,8 +25,8 @@
 #define ANN_MARRIAGE_CUTSCENE 0x1B
 #define KAREN_MARRIAGE_CUTSCENE 0x1C
 // 0x1D/1E --> fall farm animals
-#define STORES_CLOSED_FOR_FESTIVAL 0x2D
-#define FESTIVAL_DAY 0x30
+#define FESTIVAL_DAY_TYPE_1 0x2D
+#define FESTIVAL_DAY_TYPE_2 0x30
 // 0x4B level audio set?; set by func_800AC21C
 #define FED_DOG 0x43
 #define FESTIVAL 0x4D
@@ -93,7 +93,7 @@
 // #define HAVE_TURTLE 0x47
 #define BRIDGE_COMPLETED 0x48
 #define HOT_SPRINGS_COMPLETED 0x4C
-// 0x4D have more than 2 animals
+#define HARVEST_SPRITES_ANIMAL_HELP 0x4D
 // 0x4E = earthquake
 // #define ENTERED_HORSE_RACE 0x51
 // #define ENTERED_DOG_RACE 0x52
@@ -177,6 +177,8 @@
 #define WIFE_PREGNANT_ELLI 0x14E
 #define WIFE_PREGNANT_ANN 0x14F
 #define WIFE_PREGNANT_KAREN 0x150
+
+#define MAX_LETTERS 80
 
 // TODO: add mail bits
 

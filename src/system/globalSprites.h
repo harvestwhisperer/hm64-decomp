@@ -77,6 +77,7 @@ extern bool startSpriteAnimation(u16 index, u16 offset, u8);
 extern bool resetAnimationState(u16);   
 extern bool func_8002BB30(u16);
 extern bool func_8002BB88(u16); 
+extern u16 func_8002BCC8(u16 index);
 extern bool setSpriteFlip(u16 index, bool flipHorizontal, bool flipVertical);
 extern bool setSpriteViewSpacePosition(u16 index, f32 x, f32 y, f32 z);  
 extern bool setSpriteScale(u16, f32, f32, f32);                                                                                                        

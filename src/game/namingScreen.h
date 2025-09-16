@@ -11,7 +11,7 @@
 // 0x8016FBD0
 typedef struct {
     u8* name;
-    u16 unk_4;
+    u16 dialogueIndex;
     u8 unk_6; // mode/name to enter
     u8 unk_7;
     Vec4f_Coordinates coordinates;

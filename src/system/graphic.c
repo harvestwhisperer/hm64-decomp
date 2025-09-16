@@ -271,24 +271,24 @@ void setBitmapFormat(Bitmap *sprite, u16 *timg, u16 *palette) {
 
 void setBitmapFormatAndSize(BitmapObject* sprite, u16* palette) {
 
-    // FIXME: shouldn't be necessary
     u32 padding[5];
     
     // skip header
     sprite->pal = palette + 2;
 
-    // get pixel size from bit 5 in header (bit one when swapped)
-    switch ((*(palette + 1) >> 4) & (1 | 2 | 4 | 8)) {                           
+    // get pixel size from bit 5 in header
+    switch ((palette[1] >> 4) & 0xF) {                           
         case 0:
             sprite->fmt = G_IM_FMT_CI;
             sprite->pixelSize = G_IM_SIZ_8b;
-            return;
+            break;
         case 1:
             sprite->fmt = G_IM_FMT_CI;
             sprite->pixelSize = G_IM_SIZ_4b;
-            return;
+            break;
         }
-}
+
+    }
 
 //INCLUDE_ASM("asm/nonmatchings/system/graphic", loadBitmapTexture);
 
@@ -985,6 +985,7 @@ void setCameraLookAt(Camera* camera, f32 xEye, f32 yEye, f32 zEye, f32 atX, f32 
 //INCLUDE_ASM("asm/nonmatchings/system/graphic", func_80028E14);
 
 // unused
+// used by map as a static inline
 inline Gfx *func_80028E14(Gfx* dl, u8 a, u8 r, u8 g, u8 b) {
 
     gSPLightColor(dl++, LIGHT_2, (r << 0x18) + (g << 0x10) + (b << 8));
@@ -996,6 +997,7 @@ inline Gfx *func_80028E14(Gfx* dl, u8 a, u8 r, u8 g, u8 b) {
 //INCLUDE_ASM("asm/nonmatchings/system/graphic", func_80028E60);
 
 // unused
+// used by map as a static inline
 inline Gfx *func_80028E60(Gfx* dl, u8 a, u8 r, u8 g, u8 b) {
 
     gSPLightColor(dl++, LIGHT_1, (r << 0x18) + (g << 0x10) + (b << 8));

@@ -3,6 +3,8 @@
 
 #include "common.h"
 
+#define TOTAL_SHOP_ITEMS 56
+
 /* shop item indices */
 // 0x13-0x19 rick's
 // 0x1A-1C = tavern
@@ -11,7 +13,7 @@
 
 // D_8023740A
 typedef struct {
-    u16 unk_0;
+    u16 itemTextIndex;
     u8 quantity;
     u8 unk_3; // index into dialogues for shops: 1 = item description, 2 = purchasing, 5 = decline/accept, 7 = not enough money, 0xFF = done
     u8 storeItemIndex;
