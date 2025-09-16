@@ -65,7 +65,7 @@ void func_800D7C20(void) {
         
         if (!checkDailyEventBit(0xF)) {
 
-            setSongWithDefaultSpeed(gCurrentSongIndex);
+            stopSongWithDefaultFadeOut(gCurrentSongIndex);
             setDailyEventBit(0xF);
 
         } else if (!checkDailyEventBit(0x10) && gCurrentSongIndex != 0xFF && checkDefaultSongChannelOpen(gCurrentSongIndex)) {
@@ -80,7 +80,7 @@ void func_800D7C20(void) {
     }
     
     if (gHour < 6 && gWeather != RAIN && gBaseMapIndex != BEACH && !checkDailyEventBit(0x11)) {
-        setSongWithDefaultSpeed(gCurrentSongIndex);
+        stopSongWithDefaultFadeOut(gCurrentSongIndex);
         setDailyEventBit(0x11);
     }
     
@@ -269,7 +269,7 @@ void setSeasonName(void) {
     gCurrentSeasonName[5] = gGlobalSeasonName[5];
     
     // message.c
-    func_8003FBD8(0x15, gDayOfMonth, 1);
+    convertNumberToString(0x15, gDayOfMonth, 1);
 
 }
 

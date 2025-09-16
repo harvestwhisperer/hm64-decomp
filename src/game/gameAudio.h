@@ -80,7 +80,7 @@
 void initializeWaveTable(u16 waveTableIndex);
 void setCurrentSong(u16 songIndex);
 void stopCurrentSong(u16 songIndex);
-void setSongWithDefaultSpeed(u16 songIndex);
+void stopSongWithDefaultFadeOut(u16 songIndex);
 u8 checkDefaultSongChannelOpen(u16 songIndex);
 void setSongVolume(u16 songIndex, u32 arg1);
 void func_800ACC1C(u16 songIndex);
@@ -88,6 +88,6 @@ void setAudio(u16 index);
 u8 checkAllSfxInactive(void);
 
 extern int musPriorityList[];
-extern u8 *sfxList[];
+extern char *sfxList[];
 
 #endif

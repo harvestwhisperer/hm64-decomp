@@ -33,24 +33,6 @@ typedef union {
     Aligned32 aligned_32;
 } MemoryRead_32;
 
-// possibly a builtin mem function (resembles bcopy)
-static inline void readMemory(u32 addr1, u32 addr2, u32 size) {
-
-    MemoryRead_32 *ptr = (MemoryRead_32*)addr2;
-    MemoryRead_32 *ptr2 = (MemoryRead_32*)addr1;
-
-    if (((u32)addr1 | (u32)addr2) % 4) { 
-        do {
-            *(Unaligned32*)ptr++ = *(Unaligned32*)ptr2++;
-        } while (ptr2 != (addr1 + size));        
-    } else {
-        do {
-            *(Aligned32*)ptr++ = *(Aligned32*)ptr2++;
-        } while (ptr2 != (addr1 + size));       
-    }
-
-}
-
 extern void func_8004DD7C(void *dramAddr, void *devAddr, u32 size);
 
 #endif

@@ -114,6 +114,13 @@ extract-animations:
 gifs:
 	@cd tools && python3 ./hm64_animation_utilities.py make_gifs_from_animations
 
+extract-texts:
+	@cd tools && python3 ./hm64_text_utilities.py process_all write_files
+
+extract-dialogues:
+	@cd tools && python3 ./hm64_dialogue_utilities.py decode_all
+
+
 build:
 	@mkdir $@
 

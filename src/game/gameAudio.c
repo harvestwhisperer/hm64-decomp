@@ -8,13 +8,12 @@
 extern Sfx gSfx[4];
 extern SongInfo gSongs[4];
 
-// rodata
+// data
 extern WaveTableInfo waveTableAddresses[1];
 extern Addresses songRomAddresses[0x40];
 extern Addresses sfxRomAddresses[0x80];
 extern s32 volumesTable[];
-// rodata: 0xF1CFC
-// size 0x60 or 0x180? 0x60 set elements, but takes up 0x180 bytes in rodata
+// 0x60 set elements, but takes up 0x180 bytes in rodata
 extern u8 audioTypeTable[0x60];
 
 
@@ -36,11 +35,11 @@ void setCurrentSong(u16 songIndex) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/gameAudio", setSongWithDefaultSpeed);
+//INCLUDE_ASM("asm/nonmatchings/game/gameAudio", stopSongWithDefaultFadeOut);
 
-void setSongWithDefaultSpeed(u16 songIndex) {
+void stopSongWithDefaultFadeOut(u16 songIndex) {
     if (songIndex < TOTAL_SONGS) {
-        setSongSpeed(0, 32);
+        stopSongWithFadeOut(0, 32);
     }
 }
 
@@ -68,13 +67,14 @@ bool checkDefaultSongChannelOpen(u16 songIndex) {
     }
     
     return result;
+
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/gameAudio", setSongVolume);
 
-void setSongVolume(u16 songIndex, u32 arg1) {
+void setSongVolume(u16 songIndex, u32 targetVolume) {
     if (songIndex < TOTAL_SONGS) {
-        setSongVolumes(0, arg1, 32);
+        setSongVolumes(0, targetVolume, 32);
     }
 }
 
@@ -100,7 +100,6 @@ void setAudio(u16 index) {
 
     } else {
 
-        // FIXME: labeling. Ssfx used as song?
         setSong(audioTypeTable[index], (u8*)sfxRomAddresses[index].romAddrStart, (u8*)sfxRomAddresses[index].romAddrEnd);
         setSongVolumes(audioTypeTable[index], volumesTable[index], volumesTable[index]);
     
@@ -111,7 +110,6 @@ void setAudio(u16 index) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/gameAudio", checkAllSfxInactive);
 
-// check if all sfx objects are inactive
 u8 checkAllSfxInactive(void) {
 
     u8 i;

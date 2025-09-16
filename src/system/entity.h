@@ -14,7 +14,7 @@
 #define ENTITY_ANIMATION_DIRECTION_CHANGE 0x10
 #define ENTITY_PAUSED 0x40 
 #define ENTITY_Y_MOVEMENT 0x80
-#define ENTITY_UNKNOWN_FLAG_3 0x100
+#define ENTITY_MAP_SPACE_INDEPENDENT 0x100
 #define ENTITY_TRACKING_ACTIVE 0x200
 #define ENTITY_NON_COLLIDABLE 0x400
 #define ENTITY_UNKNOWN_FLAG_2 0x800 // not checked; set when entity is touching ground
@@ -68,8 +68,8 @@ typedef struct {
 	void *romAssetsIndexEnd; /* 0x10 */
 	void *romSpritesheetIndexStart; /* 0x14 */
 	void *romSpritesheetIndexEnd; /* 0x18 */
-	u16 unk_1C; /* 0x1C */
-	u16 unk_1E; /* 0x1E */
+	u16 spriteWidth; /* 0x1C */
+	u16 spriteHeight; /* 0x1E */
 	u8 collisionBufferX; /* 0x20 */
 	u8 collisionBufferY; /* 0x21 */
 	u8 shadowSpriteIndex; /* 0x22 */
@@ -115,14 +115,14 @@ extern bool setEntityCoordinates(u16, f32, f32, f32);
 extern void func_8002FB3C();
 extern bool func_8002FC38(u16 index); 
 extern bool pauseEntity(u16 index);
-extern bool func_8002FCB4(u16, bool);  
+extern bool setEntityMapSpaceIndependent(u16, bool);  
 extern bool func_8002FD24(u16 entityIndex);
 extern bool setEntityMovementVector(u16, f32, f32, f32, f32);           
 extern bool checkEntityAnimationStateChanged(u16); 
 extern bool setEntityPaletteIndex(u16 entityIndex, u16);
 extern bool func_8002FF38(u16, u16);
 extern bool setEntityCollisionBuffers(u16 entityIndex, u8 xValue, u8 yValue);
-extern bool func_8002FFF4(u16 index, u8 arg1, u8 arg2);
+extern bool setEntitySpriteDimensions(u16 index, u8 arg1, u8 arg2);
 extern bool setEntityYMovement(u16 entityIndex, bool flag);                                                   
 extern bool func_80030388(u16 entityIndex);        
 extern void updateEntities(void);                          

@@ -2,6 +2,7 @@
 
 #include "game/overlayScreens.h"
 
+#include "system/controller.h"
 #include "system/pauseScreen.h"
 #include "system/globalSprites.h"
 
@@ -1178,76 +1179,76 @@ void func_800CCFC8(void) {
     setGameVariableString(0x2E, overlayScreenStrings.dialogueVariableStrings[overlayScreenStrings.dialogueVariableIndices[4]], 6);
     setGameVariableString(0x2F, overlayScreenStrings.dialogueVariableStrings[overlayScreenStrings.dialogueVariableIndices[5]], 6);
     
-    func_8003DBE8(0, (u8*)0x8030B000);
-    func_8003F54C(0, -32.0f, 32.0f, 0.0f);
+    initializeEmptyMessageBox(0, (u8*)0x8030B000);
+    setMessageBoxViewSpacePosition(0, -32.0f, 32.0f, 0.0f);
     func_8003F5D0(0, 0xA, 2);
     func_8003F630(0, 0, 2);
-    func_8003F464(0, 0xE, 0xE, (u8*)0x802FF000, (u16*)0x8030A000);
+    func_8003F464(0, 0xE, 0xE, (u8*)COMPRESSED_FONT_VADDR, (u16*)FONT_PALETTE_1_VADDR);
     func_8003F360(0, -4, 2);
-    setDialogueBoxSpriteIndices(0, 0xFF, 0, 0);
-    func_8003FAF8(0, 0x8000);
+    setMessageBoxSpriteIndices(0, 0xFF, 0, 0);
+    setMessageBoxButtonMask(0, BUTTON_A);
     func_8003FB4C(0, 1);
-    initializeDialogueBox(0, 0, 0x12, 0x80000);
+    initializeMessageBox(0, 0, 0x12, 0x80000);
     func_8003E77C(0, 0xFF, 0xFF, 0xFF, 0xFF);
     
-    func_8003DBE8(1, (u8*)0x8030B400);
-    func_8003F54C(1, -32.0f, 16.0f, 0.0f);
+    initializeEmptyMessageBox(1, (u8*)0x8030B400);
+    setMessageBoxViewSpacePosition(1, -32.0f, 16.0f, 0.0f);
     func_8003F5D0(1, 0xA, 2);
     func_8003F630(1, 0, 2);
-    func_8003F464(1, 0xE, 0xE, (u8*)0x802FF000, (u16*)0x8030A000);
+    func_8003F464(1, 0xE, 0xE, (u8*)COMPRESSED_FONT_VADDR, (u16*)FONT_PALETTE_1_VADDR);
     func_8003F360(1, -4, 2);
-    setDialogueBoxSpriteIndices(1, 0xFF, 0, 0);
-    func_8003FAF8(1, 0x8000);
+    setMessageBoxSpriteIndices(1, 0xFF, 0, 0);
+    setMessageBoxButtonMask(1, BUTTON_A);
     func_8003FB4C(1, 1);
-    initializeDialogueBox(1, 0, 0x13, 0x80000);
+    initializeMessageBox(1, 0, 0x13, 0x80000);
     func_8003E77C(1, 0xFF, 0xFF, 0xFF, 0xFF);
     
-    func_8003DBE8(2, (u8*)0x8030B800);
-    func_8003F54C(2, -32.0f, 0.0f, 0.0f);
+    initializeEmptyMessageBox(2, (u8*)0x8030B800);
+    setMessageBoxViewSpacePosition(2, -32.0f, 0.0f, 0.0f);
     func_8003F5D0(2, 0xA, 2);
     func_8003F630(2, 0, 2);
-    func_8003F464(2, 0xE, 0xE, (u8*)0x802FF000, (u16*)0x8030A000);
+    func_8003F464(2, 0xE, 0xE, (u8*)COMPRESSED_FONT_VADDR, (u16*)FONT_PALETTE_1_VADDR);
     func_8003F360(2, -4, 2);
-    setDialogueBoxSpriteIndices(2, 0xFF, 0, 0);
-    func_8003FAF8(2, 0x8000);
+    setMessageBoxSpriteIndices(2, 0xFF, 0, 0);
+    setMessageBoxButtonMask(2, BUTTON_A);
     func_8003FB4C(2, 1);
-    initializeDialogueBox(2, 0, 0x14, 0x80000);
+    initializeMessageBox(2, 0, 0x14, 0x80000);
     func_8003E77C(2, 0xFF, 0xFF, 0xFF, 0xFF);
     
-    func_8003DBE8(3, (u8*)0x8030BC00);
-    func_8003F54C(3, 96.0f, 32.0f, 0.0f);
+    initializeEmptyMessageBox(3, (u8*)0x8030BC00);
+    setMessageBoxViewSpacePosition(3, 96.0f, 32.0f, 0.0f);
     func_8003F5D0(3, 0xA, 2);
     func_8003F630(3, 0, 2);
-    func_8003F464(3, 0xE, 0xE, (u8*)0x802FF000, (u16*)0x8030A000);
+    func_8003F464(3, 0xE, 0xE, (u8*)COMPRESSED_FONT_VADDR, (u16*)FONT_PALETTE_1_VADDR);
     func_8003F360(3, -4, 2);
-    setDialogueBoxSpriteIndices(3, 0xFF, 0, 0);
-    func_8003FAF8(3, 0x8000);
+    setMessageBoxSpriteIndices(3, 0xFF, 0, 0);
+    setMessageBoxButtonMask(3, BUTTON_A);
     func_8003FB4C(3, 1);
-    initializeDialogueBox(3, 0, 0x15, 0x80000);
+    initializeMessageBox(3, 0, 0x15, 0x80000);
     func_8003E77C(3, 0xFF, 0xFF, 0xFF, 0xFF);
     
-    func_8003DBE8(4, (u8*)0x8030C000);
-    func_8003F54C(4, 96.0f, 16.0f, 0.0f);
+    initializeEmptyMessageBox(4, (u8*)0x8030C000);
+    setMessageBoxViewSpacePosition(4, 96.0f, 16.0f, 0.0f);
     func_8003F5D0(4, 0xA, 2);
     func_8003F630(4, 0, 2);
-    func_8003F464(4, 0xE, 0xE, (u8*)0x802FF000, (u16*)0x8030A000);
+    func_8003F464(4, 0xE, 0xE, (u8*)COMPRESSED_FONT_VADDR, (u16*)FONT_PALETTE_1_VADDR);
     func_8003F360(4, -4, 2);
-    setDialogueBoxSpriteIndices(4, 0xFF, 0, 0);
-    func_8003FAF8(4, 0x8000);
+    setMessageBoxSpriteIndices(4, 0xFF, 0, 0);
+    setMessageBoxButtonMask(4, BUTTON_A);
     func_8003FB4C(4, 1);
-    initializeDialogueBox(4, 0, 0x16, 0x80000);
+    initializeMessageBox(4, 0, 0x16, 0x80000);
     func_8003E77C(4, 0xFF, 0xFF, 0xFF, 0xFF);
     
-    func_8003DBE8(5, (u8*)0x8030C400);
-    func_8003F54C(5, 96.0f, 0.0f, 0.0f);
+    initializeEmptyMessageBox(5, (u8*)0x8030C400);
+    setMessageBoxViewSpacePosition(5, 96.0f, 0.0f, 0.0f);
     func_8003F5D0(5, 0xA, 2);
     func_8003F630(5, 0, 2);
-    func_8003F464(5, 0xE, 0xE, (u8*)0x802FF000, (u16*)0x8030A000);
+    func_8003F464(5, 0xE, 0xE, (u8*)COMPRESSED_FONT_VADDR, (u16*)FONT_PALETTE_1_VADDR);
     func_8003F360(5, -4, 2);
-    setDialogueBoxSpriteIndices(5, 0xFF, 0, 0);
-    func_8003FAF8(5, 0x8000);
+    setMessageBoxSpriteIndices(5, 0xFF, 0, 0);
+    setMessageBoxButtonMask(5, BUTTON_A);
     func_8003FB4C(5, 1);
-    initializeDialogueBox(5, 0, 0x17, 0x80000);
+    initializeMessageBox(5, 0, 0x17, 0x80000);
     func_8003E77C(5, 0xFF, 0xFF, 0xFF, 0xFF);
     
 }

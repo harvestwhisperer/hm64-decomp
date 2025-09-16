@@ -267,7 +267,6 @@ bool func_80033A90(u16 mapIndex, MapController* arg1, void* arg2, void* terrainQ
 
 //INCLUDE_ASM("asm/nonmatchings/system/map", func_80034090);
 
-// turn off active sprite flags for map objects
 bool func_80034090(u16 mapIndex) {
 
     bool result = FALSE;
@@ -867,7 +866,6 @@ f32 getTerrainHeightAtPosition(u16 mapIndex, f32 x, f32 z) {
     return result;
     
 }
-
 
 //INCLUDE_ASM("asm/nonmatchings/system/map", getTerrainHeight);
 
@@ -1787,7 +1785,7 @@ bool func_8003886C(u16 mapIndex) {
 //INCLUDE_ASM("asm/nonmatchings/system/map", func_800388A4);
 
 // FIXME: likely uses inlines
-// param_2 = mainMap.unk_20 (set from mapControllers in func_80033A90, called by func_8003BC50)
+// param_2 = mainMap.unk_20 (set from mapControllers in func_80033A90, called by dmaMapAssets)
 // map additions
 // param1 = mapAdditions.unk_44, set from sprite vec.x
 // param2 = mainMap.unk_20

@@ -2,6 +2,7 @@
 
 #include "game/loadGameScreen.h"
 
+#include "system/controller.h"
 #include "system/message.h"
 
 #include "game/game.h"
@@ -145,10 +146,10 @@ void func_800E16D0(u8 arg0, u8 arg1) {
             func_8003E77C(1, 0, 0, 0, 0);
             func_8003E77C(2, 0, 0, 0, 0);
             func_8003E77C(3, 0, 0, 0, 0);
-            func_8003EA1C(0, 0xFF, 0xFF, 0xFF, 0xFF, 0x18);
-            func_8003EA1C(1, 0xFF, 0xFF, 0xFF, 0xFF, 0x18);
-            func_8003EA1C(2, 0xFF, 0xFF, 0xFF, 0xFF, 0x18);
-            func_8003EA1C(3, 0xFF, 0xFF, 0xFF, 0xFF, 0x18);
+            func_8003EA1C(0, 0xFF, 0xFF, 0xFF, 0xFF, 24);
+            func_8003EA1C(1, 0xFF, 0xFF, 0xFF, 0xFF, 24);
+            func_8003EA1C(2, 0xFF, 0xFF, 0xFF, 0xFF, 24);
+            func_8003EA1C(3, 0xFF, 0xFF, 0xFF, 0xFF, 24);
             return;
         }
         
@@ -166,8 +167,8 @@ void func_800E16D0(u8 arg0, u8 arg1) {
     if (arg0) {
         func_8003E77C(0, 0, 0, 0, 0);
         func_8003E77C(1, 0, 0, 0, 0);
-        func_8003EA1C(0, 0xFF, 0xFF, 0xFF, 0xFF, 0x18);
-        func_8003EA1C(1, 0xFF, 0xFF, 0xFF, 0xFF, 0x18);
+        func_8003EA1C(0, 0xFF, 0xFF, 0xFF, 0xFF, 24);
+        func_8003EA1C(1, 0xFF, 0xFF, 0xFF, 0xFF, 24);
         return;
     }
     
@@ -221,88 +222,88 @@ void func_800E1A94(void) {
 
         if (loadGameScreenContext.fontLoadingFlags[0] & 1) { 
             func_8003DD14(0);
-            func_8003DBE8(0, (void*)0x8030B000);
-            func_8003F54C(0, 16.0f, 52.0f, 0);
+            initializeEmptyMessageBox(0, (void*)0x8030B000);
+            setMessageBoxViewSpacePosition(0, 16.0f, 52.0f, 0);
             func_8003F5D0(0, 0xC, 2);
             func_8003F630(0, 0, 2);
-            func_8003F464(0, 0xE, 0xE, (void*)0x802FF000, (void*)0x8030A000);
-            func_8003F360(0, ~(1 | 2), 2);
-            setDialogueBoxSpriteIndices(0, 0xFF, 0, 0);
-            func_8003FAF8(0, 0x8000);
+            func_8003F464(0, 0xE, 0xE, (u8*)COMPRESSED_FONT_VADDR, (u16*)FONT_PALETTE_1_VADDR);
+            func_8003F360(0, -4, 2);
+            setMessageBoxSpriteIndices(0, 0xFF, 0, 0);
+            setMessageBoxButtonMask(0, BUTTON_A);
             func_8003FB4C(0, 1);
-            initializeDialogueBox(MAIN_DIALOGUE_BOX_INDEX, 0, 1, 0x80000);
+            initializeMessageBox(MAIN_DIALOGUE_BOX_INDEX, 0, 1, 0x80000);
         }
 
         if (loadGameScreenContext.fontLoadingFlags[1] & 1) {
             func_8003DD14(1);
-            func_8003DBE8(1, (void*)0x8030B400);
-            func_8003F54C(1, 16.0f, 8.0f, 0);
+            initializeEmptyMessageBox(1, (void*)0x8030B400);
+            setMessageBoxViewSpacePosition(1, 16.0f, 8.0f, 0);
             func_8003F5D0(1, 0xC, 2);
             func_8003F630(1, 0, 2);
-            func_8003F464(1, 0xE, 0xE, (void*)0x802FF000, (void*)0x8030A000);
+            func_8003F464(1, 0xE, 0xE, (u8*)COMPRESSED_FONT_VADDR, (u16*)FONT_PALETTE_1_VADDR);
             func_8003F360(1, -4, 2);
-            setDialogueBoxSpriteIndices(1, 0xFF, 0, 0);
-            func_8003FAF8(1, 0x8000);
+            setMessageBoxSpriteIndices(1, 0xFF, 0, 0);
+            setMessageBoxButtonMask(1, BUTTON_A);
             func_8003FB4C(1, 1);
-            initializeDialogueBox(1, 0, 2, 0x80000);
+            initializeMessageBox(1, 0, 2, 0x80000);
         }
 
         if (loadGameScreenContext.fontLoadingFlags[2] & 1) {
             func_8003DD14(2);
-            func_8003DBE8(2, (void*)0x8030B800);
-            func_8003F54C(2, 16.0f, -36.0f, 0);
+            initializeEmptyMessageBox(2, (void*)0x8030B800);
+            setMessageBoxViewSpacePosition(2, 16.0f, -36.0f, 0);
             func_8003F5D0(2, 0xC, 2);
             func_8003F630(2, 0, 2);
-            func_8003F464(2, 0xE, 0xE, (void*)0x802FF000, (void*)0x8030A000);
+            func_8003F464(2, 0xE, 0xE, (u8*)COMPRESSED_FONT_VADDR, (u16*)FONT_PALETTE_1_VADDR);
             func_8003F360(2, -4, 2);
-            setDialogueBoxSpriteIndices(2, 0xFF, 0, 0);
-            func_8003FAF8(2, 0x8000);
+            setMessageBoxSpriteIndices(2, 0xFF, 0, 0);
+            setMessageBoxButtonMask(2, BUTTON_A);
             func_8003FB4C(2, 1);
-            initializeDialogueBox(2, 0, 3, 0x80000);
+            initializeMessageBox(2, 0, 3, 0x80000);
         }
 
         if (loadGameScreenContext.fontLoadingFlags[3] & 1) {
             func_8003DD14(3);
-            func_8003DBE8(3, (void*)0x8030BC00);
-            func_8003F54C(3, 16.0f, -80.0f, 0);
+            initializeEmptyMessageBox(3, (void*)0x8030BC00);
+            setMessageBoxViewSpacePosition(3, 16.0f, -80.0f, 0);
             func_8003F5D0(3, 0xC, 2);
             func_8003F630(3, 0, 2);
-            func_8003F464(3, 0xE, 0xE, (void*)0x802FF000, (void*)0x8030A000);
+            func_8003F464(3, 0xE, 0xE, (u8*)COMPRESSED_FONT_VADDR, (u16*)FONT_PALETTE_1_VADDR);
             func_8003F360(3, -4, 2);
-            setDialogueBoxSpriteIndices(3, 0xFF, 0, 0);
-            func_8003FAF8(3, 0x8000);
+            setMessageBoxSpriteIndices(3, 0xFF, 0, 0);
+            setMessageBoxButtonMask(3, BUTTON_A);
             func_8003FB4C(3, 1);
-            initializeDialogueBox(3, 0, 4, 0x80000);
+            initializeMessageBox(3, 0, 4, 0x80000);
         }
 
     } else {
 
         if (loadGameScreenContext.fontLoadingFlags[0] & 1) {
             func_8003DD14(0);
-            func_8003DBE8(0, (void*)0x8030B000);
-            func_8003F54C(0, 16.0f, 52.0f, 0);
+            initializeEmptyMessageBox(0, (void*)0x8030B000);
+            setMessageBoxViewSpacePosition(0, 16.0f, 52.0f, 0);
             func_8003F5D0(0, 0xC, 2);
             func_8003F630(0, 0, 2);
-            func_8003F464(0, 0xE, 0xE, (void*)0x802FF000, (void*)0x8030A000);
-            func_8003F360(0, ~(1 | 2), 2);
-            setDialogueBoxSpriteIndices(0, 0xFF, 0, 0);
-            func_8003FAF8(0, 0x8000);
+            func_8003F464(0, 0xE, 0xE, (u8*)COMPRESSED_FONT_VADDR, (u16*)FONT_PALETTE_1_VADDR);
+            func_8003F360(0, -4, 2);
+            setMessageBoxSpriteIndices(0, 0xFF, 0, 0);
+            setMessageBoxButtonMask(0, BUTTON_A);
             func_8003FB4C(0, 1);
-            initializeDialogueBox(MAIN_DIALOGUE_BOX_INDEX, 0, 1, 0x80000);
+            initializeMessageBox(MAIN_DIALOGUE_BOX_INDEX, 0, 1, 0x80000);
         }
         
         if (loadGameScreenContext.fontLoadingFlags[1] & 1) {
             func_8003DD14(1);
-            func_8003DBE8(1, (void*)0x8030B400);
-            func_8003F54C(1, 16.0f, 8.0f, 0);
+            initializeEmptyMessageBox(1, (void*)0x8030B400);
+            setMessageBoxViewSpacePosition(1, 16.0f, 8.0f, 0);
             func_8003F5D0(1, 0xC, 2);
             func_8003F630(1, 0, 2);
-            func_8003F464(1, 0xE, 0xE, (void*)0x802FF000, (void*)0x8030A000);
+            func_8003F464(1, 0xE, 0xE, (u8*)COMPRESSED_FONT_VADDR, (u16*)FONT_PALETTE_1_VADDR);
             func_8003F360(1, -4, 2);
-            setDialogueBoxSpriteIndices(1, 0xFF, 0, 0);
-            func_8003FAF8(1, 0x8000);
+            setMessageBoxSpriteIndices(1, 0xFF, 0, 0);
+            setMessageBoxButtonMask(1, BUTTON_A);
             func_8003FB4C(1, 1);
-            initializeDialogueBox(1, 0, 2, 0x80000);
+            initializeMessageBox(1, 0, 2, 0x80000);
         }
     }
 }
@@ -350,16 +351,16 @@ void func_800E3358(u8 arg0, u8 arg1, u8 arg2) {
 
                 switch (arg0) {
                     case 0:
-                        func_8003FBD8(1, gYear, 1);
+                        convertNumberToString(1, gYear, 1);
                         break;                  
                     case 1:
-                        func_8003FBD8(5, gYear, 1);
+                        convertNumberToString(5, gYear, 1);
                         break;
                     case 2:
-                        func_8003FBD8(9, gYear, 1);
+                        convertNumberToString(9, gYear, 1);
                         break;
                     case 3:
-                        func_8003FBD8(13, gYear, 1);
+                        convertNumberToString(13, gYear, 1);
                         break;                  
                     default:
                         break;

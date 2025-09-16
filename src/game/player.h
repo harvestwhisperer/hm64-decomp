@@ -48,7 +48,7 @@ typedef struct {
     u8 keyItemSlots[24];
     u8 unk_46;
     u8 unk_47;
-	Vec3f startingCoordinates; // 0x48
+	Vec3f coordinates; // 0x48
 	Vec3f movementVector; // 0x54
 	f32 unk_60; // 0x60, likely speed/velocity
 	u16 currentAction; // 0x64

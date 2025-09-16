@@ -30,6 +30,8 @@
 #include "game/updateGame.h"
 #include "game/weather.h"
 
+#include "ld_symbols.h"
+
 // forward declaration
 u8 func_80060DC0();
 
@@ -145,10 +147,10 @@ extern u8 D_80113C28[24]; // a
 
 
 // rodata
-extern u8 houseConstructionDays[6];
-extern u16 lifeEventHouseConstructionBits[6];
-extern u8 animalLocationsHouseConstruction[6];
-extern MemoryRead_32 D_8011F25C[];
+static const u8 houseConstructionDays[6];
+static const u16 lifeEventHouseConstructionBits[6];
+static const u8 animalLocationsHouseConstruction[6];
+static const u16 D_8011F25C[79];
 
 static const s16 houseExtensionPrices[6];     
 static const s16 houseExtensionLumberCosts[6];
@@ -672,13 +674,13 @@ inline int adjustValue(int initial, int value, int max) {
 static inline func_80059334_2(void) {
     pauseEntities();
     func_80046C98();
-    func_8002FCB4(ENTITY_PLAYER, FALSE);
+    setEntityMapSpaceIndependent(ENTITY_PLAYER, FALSE);
 }
 
 static inline func_800593EC_2(void) {
     func_8002FB3C();
     func_80046C98();
-    func_8002FCB4(ENTITY_PLAYER, FALSE);
+    setEntityMapSpaceIndependent(ENTITY_PLAYER, FALSE);
     func_8003C504(MAIN_MAP_INDEX);
 }
 
@@ -686,29 +688,29 @@ static inline func_800593EC_2(void) {
 //INCLUDE_ASM("asm/nonmatchings/game/game/game/game", showTextBox);
 
 // show text box
-inline void showTextBox(u16 arg0, u16 dialogueInfoIndex, u16 arg2, int arg3, u16 arg4) {
+inline void showTextBox(u16 arg0, u16 dialogueInfoIndex, u16 dialogueIndex, int arg3, u16 arg4) {
   
     func_80059334_2();
     
     switch (arg0) {
         
         case 0:
-          func_8003F54C(0, 24.0f, -64.0f, 352.0f);
-          setDialogueBoxSpriteIndices(0, 0, 0, 0);
+          setMessageBoxViewSpacePosition(0, 24.0f, -64.0f, 352.0f);
+          setMessageBoxSpriteIndices(0, 0, 0, 0);
           break;
         
         case 1:
-          func_8003F54C(0, 0, -64.0f, 352.0f);
-          setDialogueBoxSpriteIndices(0, 1, 0, 0);
+          setMessageBoxViewSpacePosition(0, 0, -64.0f, 352.0f);
+          setMessageBoxSpriteIndices(0, 1, 0, 0);
           break;
         
         default:
           break;
     }
 
-    func_8003F360(0, ~(1 | 2), arg4);
+    func_8003F360(0, -4, arg4);
   
-    initializeDialogueBox(MAIN_DIALOGUE_BOX_INDEX, dialogueInfoIndex, arg2, arg3);
+    initializeMessageBox(MAIN_DIALOGUE_BOX_INDEX, dialogueInfoIndex, dialogueIndex, arg3);
   
     setMainLoopCallbackFunctionIndex(TEXT);
     
@@ -718,28 +720,28 @@ inline void showTextBox(u16 arg0, u16 dialogueInfoIndex, u16 arg2, int arg3, u16
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/game/game/game", showDialogueBox);
+//INCLUDE_ASM("asm/nonmatchings/game/game/game/game", showMessageBox);
 
 // show dialogue box
-inline void showDialogueBox(u16 arg0, u16 arg1, u16 arg2, u32 arg3, u16 arg4) {
+inline void showMessageBox(u16 arg0, u16 dialogueBytecodeAddressesIndex, u16 dialogueIndex, u32 flag, u16 messageBoxFlags) {
     
     func_80059334_2();
     
     switch (arg0) {
         case 0:
-            func_8003F54C(0, 24.0f, -64.0f, 352.0f);
-            setDialogueBoxSpriteIndices(0, 0, 0, 0);
+            setMessageBoxViewSpacePosition(0, 24.0f, -64.0f, 352.0f);
+            setMessageBoxSpriteIndices(0, 0, 0, 0);
             break;
         case 1:
-            func_8003F54C(0, 0, -64.0f, 352.0f);
-            setDialogueBoxSpriteIndices(0, 1, 0, 0);
+            setMessageBoxViewSpacePosition(0, 0, -64.0f, 352.0f);
+            setMessageBoxSpriteIndices(0, 1, 0, 0);
             break;
         default:
             break;
     }
 
-    func_8003F360(0, ~(1 | 2), arg4);
-    func_80043430(0, arg1, arg2, arg3);
+    func_8003F360(0, -4, messageBoxFlags);
+    initializeDialogueSession(0, dialogueBytecodeAddressesIndex, dialogueIndex, flag);
 
     setMainLoopCallbackFunctionIndex(DIALOGUE);
 
@@ -759,116 +761,116 @@ void func_8005B09C(u8 arg0) {
         default:
             break;
         case 0:
-            showDialogueBox(1, 1, 0, 0, 2);
+            showMessageBox(1, 1, 0, 0, 2);
             break;
         case 1:
-            showDialogueBox(1, 1, 1, 0, 2);
+            showMessageBox(1, 1, 1, 0, 2);
             break;    
         case 2:
-            showDialogueBox(0, 0x3D, 0xC, 0x40, 0);
+            showMessageBox(0, 0x3D, 0xC, 0x40, 0);
             break;         
         case 3:
-            showDialogueBox(0, 0x3D, 0xB, 0x40, 0);
+            showMessageBox(0, 0x3D, 0xB, 0x40, 0);
             break;          
         case 4:
-            showDialogueBox(0, 0x3D, 0x12, 0x40, 0);
+            showMessageBox(0, 0x3D, 0x12, 0x40, 0);
             break;       
         case 5:
-            showDialogueBox(0, 0x3D, 0xD, 0x40, 0);
+            showMessageBox(0, 0x3D, 0xD, 0x40, 0);
             break;        
         case 6:
-            showDialogueBox(0, 0x3D, 0xE, 0x40, 0);
+            showMessageBox(0, 0x3D, 0xE, 0x40, 0);
             break;      
         case 7:
-            showDialogueBox(0, 0x3D, 0xF, 0x40, 0);
+            showMessageBox(0, 0x3D, 0xF, 0x40, 0);
             break;      
         case 8:
-            showDialogueBox(0, 0x3E, 7, 0x40, 0);
+            showMessageBox(0, 0x3E, 7, 0x40, 0);
             break;      
         case 9:
-            showDialogueBox(0, 0x3E, 6, 0x40, 0);
+            showMessageBox(0, 0x3E, 6, 0x40, 0);
             break;    
         case 10:
-            showDialogueBox(0, 0x3E, 2, 0x40, 0);
+            showMessageBox(0, 0x3E, 2, 0x40, 0);
             break;  
         case 11:
-            showDialogueBox(0, 0x3E, 0, 0x40, 0);
+            showMessageBox(0, 0x3E, 0, 0x40, 0);
             break;        
         case 12:
-            showDialogueBox(0, 0x3E, 1, 0x40, 0);
+            showMessageBox(0, 0x3E, 1, 0x40, 0);
             break;          
         case 13:
             if (gSeason == SPRING || gSeason == WINTER) {
-                showDialogueBox(1, 0x44, 0, 0, 2);
+                showMessageBox(1, 0x44, 0, 0, 2);
             } else {
-                showDialogueBox(1, 0x44, 10, 0, 2);
+                showMessageBox(1, 0x44, 10, 0, 2);
             }            
             break;
         case 14:
             if (gSeason == SPRING || gSeason == WINTER) {
-                showDialogueBox(1, 0x44, 1, 0x40, 2);
+                showMessageBox(1, 0x44, 1, 0x40, 2);
             } else {
-                showDialogueBox(1, 0x44, 0xB, 0, 2);
+                showMessageBox(1, 0x44, 0xB, 0, 2);
             }
             break;
         case 15:
             if (gSeason == SPRING || gSeason == WINTER) {
-                showDialogueBox(1, 0x44, 2, 0x40, 2);
+                showMessageBox(1, 0x44, 2, 0x40, 2);
             } else {
-                showDialogueBox(1, 0x44, 0xC, 0, 2);
+                showMessageBox(1, 0x44, 0xC, 0, 2);
             }
             break; 
         case 16:
             if (gSeason == SPRING || gSeason == WINTER) {
-                showDialogueBox(1, 0x44, 3, 0x40, 2);
+                showMessageBox(1, 0x44, 3, 0x40, 2);
             } else {
-                showDialogueBox(1, 0x44, 0xD, 0, 2);
+                showMessageBox(1, 0x44, 0xD, 0, 2);
             }
             break;   
         case 17:
             if (gSeason == SPRING || gSeason == WINTER) {
-                showDialogueBox(1, 0x44, 4, 0x40, 2);
+                showMessageBox(1, 0x44, 4, 0x40, 2);
             } else {
-                showDialogueBox(1, 0x44, 0xE, 0, 2);
+                showMessageBox(1, 0x44, 0xE, 0, 2);
             }
             break;     
         case 18:
             if (gSeason == SPRING || gSeason == WINTER) {
-                showDialogueBox(1, 0x44, 5, 0x40, 2);
+                showMessageBox(1, 0x44, 5, 0x40, 2);
             } else {
-                showDialogueBox(1, 0x44, 0xF, 0, 2);
+                showMessageBox(1, 0x44, 0xF, 0, 2);
             }
             break;        
         case 19:
             if (gSeason == SPRING || gSeason == WINTER) {
-                showDialogueBox(1, 0x44, 6, 0x40, 2);
+                showMessageBox(1, 0x44, 6, 0x40, 2);
             } else {
-                showDialogueBox(1, 0x44, 0x10, 0, 2);
+                showMessageBox(1, 0x44, 0x10, 0, 2);
             }
             break;        
         case 20:
             if (gSeason == SPRING || gSeason == WINTER) {
-                showDialogueBox(1, 0x44, 7, 0x40, 2);
+                showMessageBox(1, 0x44, 7, 0x40, 2);
             } else {
-                showDialogueBox(1, 0x44, 0x11, 0, 2);
+                showMessageBox(1, 0x44, 0x11, 0, 2);
             }
             break;       
         case 21:
             if (gSeason == SPRING || gSeason == WINTER) {
-                showDialogueBox(1, 0x44, 8, 0x40, 2);
+                showMessageBox(1, 0x44, 8, 0x40, 2);
             } else {
-                showDialogueBox(1, 0x44, 0x12, 0, 2);
+                showMessageBox(1, 0x44, 0x12, 0, 2);
             }
             break;       
         case 22:
             if (gSeason == SPRING || gSeason == WINTER) {
-                showDialogueBox(1, 0x44, 9, 0x40, 2);
+                showMessageBox(1, 0x44, 9, 0x40, 2);
             } else {
-                showDialogueBox(1, 0x44, 0x13, 0, 2);
+                showMessageBox(1, 0x44, 0x13, 0, 2);
             }
             break;     
         case 23:
-            showDialogueBox(1, 1, 0x15, 0, 2);
+            showMessageBox(1, 1, 0x15, 0, 2);
             break;    
     }
 
@@ -975,7 +977,7 @@ inline void func_8005C940(u16 arg0, u16 callbackIndex) {
     func_8003BF7C(MAIN_MAP_INDEX, 0, 0, 0, 0, 8);
     updateEntitiesColor(0, 0, 0, 0, 8);
        
-    setSongWithDefaultSpeed(gCurrentSongIndex);
+    stopSongWithDefaultFadeOut(gCurrentSongIndex);
     
     gameLoopContext.callbackIndex = callbackIndex;
 
@@ -1021,7 +1023,7 @@ void func_8005CAA8(void) {
         // map rgba
         func_8003BE98(MAIN_MAP_INDEX, 0, 0, 0, 0);
         // reset cutscene structs
-        func_80046BB8();
+        deactivateCutsceneExecutors();
         initializeCutsceneExecutors();
 
         D_801891D4 = 0;
@@ -1052,7 +1054,7 @@ void func_8005CBA4(void) {
     if (!(mapControllers[MAIN_MAP_INDEX].flags & (0x8 | 0x10))) {
         togglePauseEntities();
         func_80046CF4();
-        func_8002FCB4(ENTITY_PLAYER, TRUE);
+        setEntityMapSpaceIndependent(ENTITY_PLAYER, TRUE);
         setMainLoopCallbackFunctionIndex(MAIN_GAME);
     }
 
@@ -1082,7 +1084,7 @@ void func_8005CBF0(void) {
         
         togglePauseEntities();
         func_80046CF4();
-        func_8002FCB4(ENTITY_PLAYER, TRUE);
+        setEntityMapSpaceIndependent(ENTITY_PLAYER, TRUE);
 
     }
 }
@@ -1145,7 +1147,7 @@ void func_8005CEFC(void) {
 
         togglePauseEntities();
         func_80046CF4();
-        func_8002FCB4(ENTITY_PLAYER, TRUE);
+        setEntityMapSpaceIndependent(ENTITY_PLAYER, TRUE);
 
     }
 }
@@ -1163,7 +1165,7 @@ void func_8005CF4C(void) {
         togglePauseEntities();
         // cutscene executor flags
         func_80046CF4();
-        func_8002FCB4(ENTITY_PLAYER, TRUE);
+        setEntityMapSpaceIndependent(ENTITY_PLAYER, TRUE);
 
     }
 
@@ -1310,7 +1312,10 @@ void func_8005D0BC(void) {
 
 }
 
+// FIXME: clean up/rename inlines
+
 static inline void inline1(u8 arg0, u8 arg1, u8 arg2, u8 arg3, u8 arg4) {
+
     switch (arg0) {                   
         case 0:                                 
             func_800DC9FC(arg1);
@@ -1329,6 +1334,7 @@ static inline void inline1(u8 arg0, u8 arg1, u8 arg2, u8 arg3, u8 arg4) {
             setMainLoopCallbackFunctionIndex(MAIN_GAME);
             break;
     }
+
 }
 
 static inline void inline2(u8 arg0, u8 arg1, u8 arg2, u8 arg3, u8 arg4, u8 arg5) {
@@ -1356,11 +1362,15 @@ static inline void inline2(u8 arg0, u8 arg1, u8 arg2, u8 arg3, u8 arg4, u8 arg5)
     }
 }
 
-static inline void inline3() {                 
-    dialogues[0].struct5.flags &= ~0x40;
+static inline void inline3() {           
+
+    dialogues[0].sessionManager.flags &= ~0x40;
+    
     func_80043AD8(0);
+
     setPlayerAction(0, 0);
     setMainLoopCallbackFunctionIndex(MAIN_GAME);
+
 }
 
 // from transition.c
@@ -1370,7 +1380,7 @@ static inline void func_80055F08_2(u16 cutsceneIndex, u16 entranceIndex, u8 arg2
     
     deactivateGlobalSprites();
     
-    func_8003D970();
+    initializeMessageBoxes();
     initializeCutsceneExecutors();
     func_80053088();
     
@@ -1425,11 +1435,11 @@ void func_8005D2B0() {
 
     u8 temp;
 
-    if (dialogues[0].struct5.flags & 4) {
+    if (dialogues[0].sessionManager.flags & 4) {
         
         togglePauseEntities();
         func_80046CF4();
-        func_8002FCB4(ENTITY_PLAYER, TRUE);
+        setEntityMapSpaceIndependent(ENTITY_PLAYER, TRUE);
 
         temp = func_80043C6C(0);
 
@@ -1441,7 +1451,7 @@ void func_8005D2B0() {
                         func_8005B09C(1);
                         break;
                     case 1:                                 
-                        showDialogueBox(1, 1, 2, 0x80, 2);
+                        showMessageBox(1, 1, 2, 0x80, 2);
                         break;
                     case 2:                                 
                         setMainLoopCallbackFunctionIndex(0x19);
@@ -1518,10 +1528,10 @@ void func_8005D2B0() {
                 switch (temp) {                    
                     case 0:                         
 
-                        gGold += adjustValue(gGold, D_801890E0, 999999);
+                        gGold += adjustValue(gGold, D_801890E0, MAX_GOLD);
                         
                         D_801890E0 = 0;                        
-                        dialogues[0].struct5.flags &= ~0x40;
+                        dialogues[0].sessionManager.flags &= ~0x40;
                         
                         func_80043AD8(0);
                         setEntrance(9);
@@ -1543,7 +1553,7 @@ void func_8005D2B0() {
                         break;
                     
                     case 1:                                 
-                        dialogues[0].struct5.flags &= ~0x40;
+                        dialogues[0].sessionManager.flags &= ~0x40;
                         func_80043AD8(0);
                         setMainLoopCallbackFunctionIndex(MAIN_GAME);
                         break;
@@ -1555,7 +1565,7 @@ void func_8005D2B0() {
                 switch (temp) {                    
                     case 0:                                 
                         
-                        dialogues[0].struct5.flags &= ~0x40;
+                        dialogues[0].sessionManager.flags &= ~0x40;
                         func_80043AD8(0);
                         setEntrance(9);
 
@@ -1569,7 +1579,7 @@ void func_8005D2B0() {
                         break;
                         
                     case 1:                                 
-                        dialogues[0].struct5.flags &= ~0x40;
+                        dialogues[0].sessionManager.flags &= ~0x40;
                         func_80043AD8(0);
                         setMainLoopCallbackFunctionIndex(MAIN_GAME);
                         break;
@@ -1584,7 +1594,7 @@ void func_8005D2B0() {
                     gVoteForFlowerFestivalGoddess = temp;
                 }
                 
-                dialogues[0].struct5.flags &= ~0x40;
+                dialogues[0].sessionManager.flags &= ~0x40;
                 func_80043AD8(0);
                 setMainLoopCallbackFunctionIndex(MAIN_GAME);
                 break;
@@ -1666,7 +1676,7 @@ void func_8005D2B0() {
                                 showTextBox(1, 1, 2, 0, 0);
                                 break;
                             case 3:
-                                dialogues[0].struct5.flags &= ~0x40;
+                                dialogues[0].sessionManager.flags &= ~0x40;
                                 func_80043AD8(0);
                                 setPlayerAction(0, 0);
                                 setMainLoopCallbackFunctionIndex(MAIN_GAME);
@@ -1684,6 +1694,7 @@ void func_8005D2B0() {
                 }
                 
                 if (gPlayer.currentAction == 0x1E || temp == 3) {
+                    
                     switch (temp) {                 
                         case 0:                             
                             showTextBox(1, 1, 3, 0, 0);
@@ -1695,7 +1706,7 @@ void func_8005D2B0() {
                             showTextBox(1, 1, 5, 0, 0);
                             break;
                         case 3:
-                            dialogues[0].struct5.flags &= ~0x40;
+                            dialogues[0].sessionManager.flags &= ~0x40;
                             func_80043AD8(0);
                             setPlayerAction(0, 0);
                             setMainLoopCallbackFunctionIndex(MAIN_GAME);
@@ -1726,7 +1737,7 @@ void func_8005D2B0() {
                                 showTextBox(1, 1, 11, 0, 0);
                                 break;
                             case 3:
-                                dialogues[0].struct5.flags &= ~0x40;
+                                dialogues[0].sessionManager.flags &= ~0x40;
                                 func_80043AD8(0);
                                 setPlayerAction(0, 0);
                                 setMainLoopCallbackFunctionIndex(MAIN_GAME);
@@ -1756,7 +1767,7 @@ void func_8005D2B0() {
                             showTextBox(1, 1, 8, 0, 0);
                             break;
                         case 3:
-                            dialogues[0].struct5.flags &= ~0x40;
+                            dialogues[0].sessionManager.flags &= ~0x40;
                             func_80043AD8(0);
                             setPlayerAction(0, 0);
                             setMainLoopCallbackFunctionIndex(MAIN_GAME);
@@ -1788,7 +1799,7 @@ void func_8005D2B0() {
                             showTextBox(1, 1, 14, 0, 0);
                             break;
                         case 3:
-                            dialogues[0].struct5.flags &= ~0x40;
+                            dialogues[0].sessionManager.flags &= ~0x40;
                             func_80043AD8(0);
                             setPlayerAction(0, 0);
                             setMainLoopCallbackFunctionIndex(MAIN_GAME);
@@ -1817,7 +1828,7 @@ void func_8005D2B0() {
                         showTextBox(1, 1, 17, 0, 0);
                         break;
                     case 3:
-                        dialogues[0].struct5.flags &= ~0x40;
+                        dialogues[0].sessionManager.flags &= ~0x40;
                         func_80043AD8(0);
                         setPlayerAction(0, 0);
                         setMainLoopCallbackFunctionIndex(MAIN_GAME);
@@ -1848,7 +1859,7 @@ void func_8005D2B0() {
                             showTextBox(1, 1, 20, 0, 0);
                             break;                        
                         case 3:
-                            dialogues[0].struct5.flags &= ~0x40;
+                            dialogues[0].sessionManager.flags &= ~0x40;
                             func_80043AD8(0);
                             setPlayerAction(0, 0);
                             setMainLoopCallbackFunctionIndex(MAIN_GAME);
@@ -1877,7 +1888,7 @@ void func_8005D2B0() {
                         showTextBox(1, 1, 23, 0, 0);
                         break;
                     case 3:
-                        dialogues[0].struct5.flags &= ~0x40;
+                        dialogues[0].sessionManager.flags &= ~0x40;
                         func_80043AD8(0);
                         setPlayerAction(0, 0);
                         setMainLoopCallbackFunctionIndex(MAIN_GAME);
@@ -1910,7 +1921,7 @@ void func_8005D2B0() {
                             showTextBox(1, 1, 24, 0, 0);
                             break;
                         case 4:
-                            dialogues[0].struct5.flags &= ~0x40;
+                            dialogues[0].sessionManager.flags &= ~0x40;
                             func_80043AD8(0);
                             setPlayerAction(0, 0);
                             setMainLoopCallbackFunctionIndex(MAIN_GAME);
@@ -1942,7 +1953,7 @@ void func_8005D2B0() {
                         showTextBox(1, 1, 31, 0, 0);
                         break;                       
                     case 4:        
-                        dialogues[0].struct5.flags &= ~0x40;
+                        dialogues[0].sessionManager.flags &= ~0x40;
                         func_80043AD8(0);
                         setPlayerAction(0, 0);
                         setMainLoopCallbackFunctionIndex(MAIN_GAME);
@@ -1975,7 +1986,7 @@ void func_8005D2B0() {
                             showTextBox(1, 1, 35, 0, 0);
                             break;
                         case 4:
-                            dialogues[0].struct5.flags &= ~0x40;
+                            dialogues[0].sessionManager.flags &= ~0x40;
                             func_80043AD8(0);
                             setPlayerAction(0, 0);
                             setMainLoopCallbackFunctionIndex(MAIN_GAME);
@@ -2008,7 +2019,7 @@ void func_8005D2B0() {
                         showTextBox(1, 1, 39, 0, 0);
                         break;
                     case 4:
-                        dialogues[0].struct5.flags &= ~0x40;
+                        dialogues[0].sessionManager.flags &= ~0x40;
                         func_80043AD8(0);
                         setPlayerAction(0, 0);
                         setMainLoopCallbackFunctionIndex(MAIN_GAME);
@@ -2041,7 +2052,7 @@ void func_8005D2B0() {
                             showTextBox(1, 1, 43, 0, 0);
                             break;
                         case 4:
-                            dialogues[0].struct5.flags &= ~0x40;
+                            dialogues[0].sessionManager.flags &= ~0x40;
                             func_80043AD8(0);
                             setPlayerAction(0, 0);
                             setMainLoopCallbackFunctionIndex(MAIN_GAME);
@@ -2073,7 +2084,7 @@ void func_8005D2B0() {
                         showTextBox(1, 1, 47, 0, 0);
                         break;
                     case 4:
-                        dialogues[0].struct5.flags &= ~0x40;
+                        dialogues[0].sessionManager.flags &= ~0x40;
                         func_80043AD8(0);
                         setPlayerAction(0, 0);
                         setMainLoopCallbackFunctionIndex(MAIN_GAME);
@@ -2106,7 +2117,7 @@ void func_8005D2B0() {
                             showTextBox(1, 1, 51, 0, 0);
                             break;
                         case 4:
-                            dialogues[0].struct5.flags &= ~0x40;
+                            dialogues[0].sessionManager.flags &= ~0x40;
                             func_80043AD8(0);
                             setPlayerAction(0, 0);
                             setMainLoopCallbackFunctionIndex(MAIN_GAME);
@@ -2138,7 +2149,7 @@ void func_8005D2B0() {
                         showTextBox(1, 1, 55, 0, 0);
                         break;
                     case 4:
-                        dialogues[0].struct5.flags &= ~0x40;
+                        dialogues[0].sessionManager.flags &= ~0x40;
                         func_80043AD8(0);
                         setPlayerAction(0, 0);
                         setMainLoopCallbackFunctionIndex(MAIN_GAME);
@@ -2171,7 +2182,7 @@ void func_8005D2B0() {
                             showTextBox(1, 1, 59, 0, 0);
                             break;
                         case 4:
-                            dialogues[0].struct5.flags &= ~0x40;
+                            dialogues[0].sessionManager.flags &= ~0x40;
                             func_80043AD8(0);
                             setPlayerAction(0, 0);
                             setMainLoopCallbackFunctionIndex(MAIN_GAME);
@@ -2206,7 +2217,7 @@ void func_8005D2B0() {
                         showTextBox(1, 1, 63, 0, 0);
                         break;
                     case 4:
-                        dialogues[0].struct5.flags &= ~0x40;
+                        dialogues[0].sessionManager.flags &= ~0x40;
                         func_80043AD8(0);
                         setPlayerAction(0, 0);
                         setMainLoopCallbackFunctionIndex(MAIN_GAME);
@@ -2229,7 +2240,9 @@ void func_8005D2B0() {
         case 22:             
 
             if (gSeason == SPRING || gSeason == WINTER) {
+
                 if (gPlayer.currentAction == 0x1E || temp == 4) {
+
                     switch (temp) {             
                         case 0:                         
                             showTextBox(1, 1, 64, 0, 0);
@@ -2244,7 +2257,7 @@ void func_8005D2B0() {
                             showTextBox(1, 1, 67, 0, 0);
                             break;
                         case 4:
-                            dialogues[0].struct5.flags &= ~0x40;
+                            dialogues[0].sessionManager.flags &= ~0x40;
                             func_80043AD8(0);
                             setPlayerAction(0, 0);
                             setMainLoopCallbackFunctionIndex(MAIN_GAME);
@@ -2277,7 +2290,7 @@ void func_8005D2B0() {
                         showTextBox(1, 1, 71, 0, 0);
                         break;
                     case 4:
-                        dialogues[0].struct5.flags &= ~0x40;
+                        dialogues[0].sessionManager.flags &= ~0x40;
                         func_80043AD8(0);
                         setPlayerAction(0, 0);
                         setMainLoopCallbackFunctionIndex(MAIN_GAME);
@@ -2341,26 +2354,26 @@ void func_800604B0(void) {
 
     if (checkMapRGBADone(MAIN_MAP_INDEX) || !(mainMap[MAIN_MAP_INDEX].mapState.flags & 1)) {
         
-        func_8003F54C(MAIN_DIALOGUE_BOX_INDEX, 0, -64.0f, 352.0f);
-        setDialogueBoxSpriteIndices(MAIN_DIALOGUE_BOX_INDEX, 1, 0, 0);
-        func_8003F360(MAIN_DIALOGUE_BOX_INDEX, ~(1 | 2), 0);
+        setMessageBoxViewSpacePosition(MAIN_DIALOGUE_BOX_INDEX, 0, -64.0f, 352.0f);
+        setMessageBoxSpriteIndices(MAIN_DIALOGUE_BOX_INDEX, 1, 0, 0);
+        func_8003F360(MAIN_DIALOGUE_BOX_INDEX, -4, 0);
         
         switch (gCutsceneIndex) {
             case 0x81 ... 0x82:
             case 0x8B:              
             case 0x195 ... 0x199:
-                initializeDialogueBox(MAIN_DIALOGUE_BOX_INDEX, 4, 0x4D, 0);
+                initializeMessageBox(MAIN_DIALOGUE_BOX_INDEX, 4, 0x4D, 0);
                 break;
             case SEA_FESTIVAL:
             case EGG_FESTIVAL:
             case NEW_YEAR_FESTIVAL:
-                initializeDialogueBox(MAIN_DIALOGUE_BOX_INDEX, 4, 0x4A, 0);
+                initializeMessageBox(MAIN_DIALOGUE_BOX_INDEX, 4, 0x4A, 0);
                 break;
             case 0x1A0:
-                initializeDialogueBox(MAIN_DIALOGUE_BOX_INDEX, 4, 0x4C, 0);
+                initializeMessageBox(MAIN_DIALOGUE_BOX_INDEX, 4, 0x4C, 0);
                 break;
             default:
-                initializeDialogueBox(MAIN_DIALOGUE_BOX_INDEX, 4, 0x4B, 0);
+                initializeMessageBox(MAIN_DIALOGUE_BOX_INDEX, 4, 0x4B, 0);
                 break;
         }
         
@@ -3655,11 +3668,12 @@ void setLetters(void) {
 // D_8011F25C
 //INCLUDE_ASM("asm/nonmatchings/game/game/game/game", func_80063A2C);
 
+// get text index for letter
 u16 func_80063A2C(u8 index) {
 
     u16 arr[80];
     
-    readMemory(D_8011F25C, arr, 0xA0);
+    memcpy(arr,  D_8011F25C, 0xA0);
 
     return arr[index];
 
@@ -3687,28 +3701,27 @@ static const u16 lifeEventHouseConstructionBits[6] = { 0x10, 0x11, 0x12, 0x13, 0
 
 //INCLUDE_RODATA("asm/nonmatchings/game/game", animalLocationsHouseConstruction);
 
-static const u8 animalLocationsHouseConstruction[6] = { 0x52, 0x52, 0x57, 0x52, 0x52, 0x57 };
+static const u8 animalLocationsHouseConstruction[6] = { FARM, FARM, HOUSE, FARM, FARM, HOUSE };
 
-INCLUDE_RODATA("asm/nonmatchings/game/game", D_8011F25C);
+// INCLUDE_RODATA("asm/nonmatchings/game/game", D_8011F25C);
 
-/*
-static const u16 D_8011F25C[75] = { 
+// text indices for letters
+static const u16 D_8011F25C[79] = { 
      0, 1, 2, 3, 4, 5, 
-     8, 9, 10, 11, 12, 
-     13, 14, 15, 16, 17, 
-     18, 19, 20, 21, 22, 
-     23, 24, 25, 26, 27, 
-     28, 29, 30, 31, 32,
-     33, 34, 35, 36, 36, 
-     36, 36, 36, 36, 36,
+     6, 7, 8, 9, 10, 11, 
+     12, 13, 14, 15, 16, 
+     17, 18, 19, 20, 21, 
+     22, 23, 24, 25, 26, 
+     27, 28, 29, 30, 31, 
+     32, 33, 34, 35, 36, 
      36, 36, 36, 36, 36, 
-     36, 36, 36, 36, 38, 
-     39, 39, 39, 39, 39, 
-     40, 41, 42, 43, 44,
-     45, 46, 47, 47, 48, 
-     49, 50, 51, 52, 53,
-     54, 55, 58, 59, 0, 
-     0x0000 0000, 0x0000 0000 
+     36, 36, 36, 36, 36, 
+     36, 36, 36, 36, 36, 
+     38, 39, 39, 39, 39, 
+     39, 40, 41, 42, 43, 
+     44, 45, 46, 47, 47, 
+     48, 49, 50, 51, 52, 
+     53, 54, 55, 56, 57,
+     0, 0, 0, 0
 };
-*/
 

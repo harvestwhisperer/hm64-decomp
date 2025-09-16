@@ -3,7 +3,7 @@
 
 #include "common.h"
 
-#include "system/volume.h"
+#include "system/interpolation.h"
 
 #define SONG 1
 #define SFX 0xFF
@@ -15,13 +15,19 @@
 #define SFX_VOLUME 128
 #define SONG_VOLUME 128
 
+#define MAX_VOLUME 256
+
+#define AUDIO_ACTIVE 1
+#define AUDIO_START 2
+#define AUDIO_STOP 4
+
 typedef struct {
     u8 *currentSongRomAddrStart;
     u8 *currentSongRomAddrEnd;
-    Volume volumes;
+    Interpolator volumes;
     musHandle handle;
-    s32 unk_1C;
-    s32 unk_20;
+    s32 unused1; // seem to be volumes 
+    s32 unused2;
     u32 speed;
     u8 numChannelsPlaying;
     u16 flags;
@@ -46,7 +52,7 @@ typedef struct {
 extern void initializeAudio(musConfig*);      
 extern void updateAudio();
 extern bool setSong(u16 songIndex, u8 *songAddrStart, u8 *songAddrEnd);
-extern bool setSongSpeed(u16 index, u32 speed);
+extern bool stopSongWithFadeOut(u16 index, u32 speed);
 extern bool stopSong(u16 songIndex);
 extern bool setSongVolumes(u16 index, s32 maxVolume, s16 arg2);
 extern void setSongBank(u8 *pBankStart, u8 *pBankEnd, u8 *wBankStart);

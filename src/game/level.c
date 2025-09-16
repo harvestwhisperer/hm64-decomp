@@ -34,27 +34,48 @@ extern u8 gMapWithSeasonIndex;
 // global rotation
 extern u8 D_8021E6D0;
 
+
 // data
 extern u8 levelFlags[];
 
+/*
+u8 levelFlags[] = {
+    0x0F, 0x0F, 0x0F, 0x0F, 0x10, 0x10, 0x10, 0x10, 0x10, 0x0F, 0x0F, 0x0F, 0x0F, 0x0F, 0x0F, 0x0F,
+    0x0F, 0x0F, 0x0F, 0x0F, 0x0F, 0x0F, 0x0F, 0x0F, 0x0F, 0x0F, 0x0F, 0x0F, 0x0F, 0x0F, 0x0F, 0x0F,
+    0x10, 0x10, 0x0F, 0x0F, 0x0F, 0x0F, 0x10, 0x10, 0x0F, 0x0F, 0x0F, 0x0F, 0x0F, 0x0F, 0x0F, 0x0F,
+    0x10, 0x10, 0x10, 0x10, 0x0F, 0x0F, 0x0F, 0x0F, 0x10, 0x10, 0x10, 0x10, 0x10, 0x10, 0x10, 0x10,
+    0x10, 0x10, 0x11, 0x11, 0x11, 0x10, 0x0F, 0x0F, 0x0F, 0x0F, 0x10, 0x10, 0x10, 0x0F, 0x0F, 0x0F,
+    0x0F, 0x2F, 0x2F, 0x2F, 0x2F, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x00, 0x00, 0x00, 0x00
+}
+*/
+
 // rotations for map model context struct
-// all 7
-extern u8 D_80114280[95];
+extern u8 D_80114280[];
+
+/*
+u8 D_80114280[] = {
+    0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07,
+    0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07,
+    0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07,
+    0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07,
+    0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07,
+    0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x00, 0x00, 0x00, 0x00
+}
+*/
 
 // global lighting defaults based on map index
 extern u8 D_801142E0[95][4];
 
 // song indices for level
-// I feel this should be [0x60][2][4]
+// seems like this should be [0x60][2][4]
 // [mapIndex][day or night][season-1]
 extern u8 levelToMusicMappings[TOTAL_MAPS][8];
 
-// exit to map indices
 // FIXME: probably shouldn't be volatile, but need it for matching func_80074C50
-extern volatile u8 D_801147C0[];
+extern volatile u8 exitsToMapIndices[];
 
 /*
-u8 D_801147C0[] = {
+u8 exitsToMapIndices[] = {
     FARM, FARM, FARM, FARM,
     FARM, FARM, FARM, FARM,
     FARM, FARM, HOUSE, HOUSE,
@@ -66,8 +87,9 @@ u8 D_801147C0[] = {
 }
 */
 
-extern u8 D_8011FB28[];
-extern Vec D_8011FB70[];
+// FIXME: needs to be Vec3f
+static const f32 D_8011FB28[];
+static const Vec3f D_8011FB70[];
 
 // forward declaration
 void func_8006EC58(u16 mapIndex);
@@ -90,7 +112,7 @@ void func_8006E840(u16 entranceIndex) {
     }
 
     previousMapIndex = gBaseMapIndex;
-    gBaseMapIndex = D_801147C0[entranceIndex];
+    gBaseMapIndex = exitsToMapIndices[entranceIndex];
     gMapWithSeasonIndex = gBaseMapIndex;
 
     if (getLevelFlags(gMapWithSeasonIndex) & HAS_SEASON_MAP) {
@@ -109,14 +131,14 @@ void func_8006E840(u16 entranceIndex) {
      
     func_8003C1E0(MAIN_MAP_INDEX, 0, 0, 0, 8, 8);
     func_8009C054(gBaseMapIndex);
-    setLevelGraphicsData(gBaseMapIndex);
+    setupLevelMap(gBaseMapIndex);
     setMainMapIndex(0);
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/level", setLevelGraphicsData);
+//INCLUDE_ASM("asm/nonmatchings/game/level", setupLevelMap);
 
-void setLevelGraphicsData(u16 mapIndex) {
+void setupLevelMap(u16 mapIndex) {
 
     func_8003BD60(MAIN_MAP_INDEX);
     
@@ -132,8 +154,7 @@ void setLevelGraphicsData(u16 mapIndex) {
     func_800D9600(gBaseMapIndex);
     
     if (getLevelFlags(mapIndex) & OUTDOORS) {
-        // load rain/snow sprites
-        func_800DC360();
+        setWeatherSprites();
     }
     
     func_80036C08(MAIN_MAP_INDEX);
@@ -979,14 +1000,19 @@ void func_80073244(u8 itemIndex) {
 
     Vec3f arr[6];
 
+    // FIXME: this should just be memcpy(arr, D_8011FB28, 0x40);
+
     MemoryRead_32 *ptr = (MemoryRead_32*)arr;
     MemoryRead_32 *ptr2 = (MemoryRead_32*)D_8011FB28;
 
     do {
         *(Aligned32*)ptr++ = *(Aligned32*)ptr2++;
-    } while (ptr2 != (D_8011FB28 + 0x40));    
+    } while (ptr2 != (D_8011FB28 + 0x10));    
 
     *(Vec2f*)ptr = *(Vec2f*)ptr2;
+
+    //
+    
 
     dmaSprite(itemIndex + MAP_OBJECT_1, &_homeItemsTextureSegmentRomStart, &_homeItemsTextureSegmentRomEnd, &_homeItemsAssetsIndexSegmentRomStart, &_homeItemsAssetsIndexSegmentRomEnd, &_homeItemsSpritesheetIndexSegmentRomStart, &_homeItemsSpritesheetIndexSegmentRomEnd, (void*)0x802E4000, (void*)0x802E4D00, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
     setSpriteScale(itemIndex + MAP_OBJECT_1, 1.0f, 1.0f, 1.0f);
@@ -1004,14 +1030,18 @@ void func_8007341C(u8 itemIndex) {
 
     Vec3f arr[9];
     
+    // FIXME: should be memcpy call
+
     Vec* ptr = arr;
     Vec* ptr2 = D_8011FB70;
 
     do {    
         *(Vec4f*)ptr++ = *(Vec4f*)ptr2++;
-    } while (ptr2 != (D_8011FB70 + 0x6));
+    } while (ptr2 != (D_8011FB70 + 0x8));
 
     *(Vec3f*)ptr = *(Vec3f*)ptr2;
+
+    //
 
     dmaSprite(itemIndex + MAP_OBJECT_1, &_homeItemsTextureSegmentRomStart, &_homeItemsTextureSegmentRomEnd, &_homeItemsAssetsIndexSegmentRomStart, &_homeItemsAssetsIndexSegmentRomEnd, &_homeItemsSpritesheetIndexSegmentRomStart, &_homeItemsSpritesheetIndexSegmentRomEnd, (void* )0x802E4000, (void* )0x802E4D00, (void* )0x802E7400, (void* )0x802E7700, (void* )0x802E7A00, (void* )0x802E7B00, (void* )1, (u8) (void* )1);
     setSpriteScale(itemIndex + MAP_OBJECT_1, 1.0f, 1.0f, 1.0f);
@@ -1052,28 +1082,35 @@ void func_8007341C(u8 arg0) {
 }
 */
 
-INCLUDE_RODATA("asm/nonmatchings/game/level", D_8011FB28);
+// FIXME: should be Vec3f
+static const f32 D_8011FB28[] = {
+    -120, 0, 56,
+    -120, 0, 24,
+    -120, 0, -8,
+    -120, 0, -40,
+    -120, 0, -72,
+    -120, 0, -104,
+};
 
-INCLUDE_RODATA("asm/nonmatchings/game/level", D_8011FB70);
+//INCLUDE_RODATA("asm/nonmatchings/game/level", D_8011FB28);
 
-// static const f32 D_8011FB70[28] = {
-//     -136.0f, 0.0f, 88.0f,
-//     -136.0f, 0.0f, 24.0f,
-//     -136.0f, 0.0f, -40.0f,
-//     -136.0f, 0.0f, -104.0f,
-//     120.0f, 0.0f, 88.0f,
-//     120.0f, 0.0f, 24.0f,
-//     120.0f, 0.0f, -40.0f,
-//     120.0f, 0.0f, -104.0f,
-//     220.0f, 0.0f, -264.0f,
-//     0.0f
-// };
+//INCLUDE_RODATA("asm/nonmatchings/game/level", D_8011FB70);
 
-INCLUDE_ASM("asm/nonmatchings/game/level", func_800735FC);
+static const Vec3f D_8011FB70[] = {
+    -136.0f, 0.0f, 88.0f,
+    -136.0f, 0.0f, 24.0f,
+    -136.0f, 0.0f, -40.0f,
+    -136.0f, 0.0f, -104.0f,
+    120.0f, 0.0f, 88.0f,
+    120.0f, 0.0f, 24.0f,
+    120.0f, 0.0f, -40.0f,
+    120.0f, 0.0f, -104.0f,
+    220.0f, 0.0f, -264.0f,
+};
+
+//INCLUDE_ASM("asm/nonmatchings/game/level", func_800735FC);
 
 // map struct 7
-// TODO: matches but have to match preceding rodata
-/*
 void func_800735FC(u16 levelIndex) {
 
     switch (levelIndex) {
@@ -1318,7 +1355,6 @@ void func_800735FC(u16 levelIndex) {
         
     }   
 }
-*/
 
 //INCLUDE_ASM("asm/nonmatchings/game/level", setAdditionalMapAdditionsForLevel);
 
@@ -1465,22 +1501,20 @@ void setAdditionalMapAdditionsForLevel(u16 mapIndex) {
     }
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/level", func_80074C38);
+//INCLUDE_ASM("asm/nonmatchings/game/level", getMapFromExit);
 
-// get map index from exit
-u8 func_80074C38(u8 exitIndex) {
-    return D_801147C0[exitIndex];
+u8 getMapFromExit(u8 exitIndex) {
+    return exitsToMapIndices[exitIndex];
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/level", func_80074C50);
 
-// jtbl_8011FEA0
 u16 func_80074C50(u16 exitIndex) {
 
     u16 index = 0xFFFF;
 
     // FIXME: no idea
-    u32 temp = D_801147C0[exitIndex];
+    u32 temp = exitsToMapIndices[exitIndex];
     u8 temp2 = temp;
 
     switch (temp2) {

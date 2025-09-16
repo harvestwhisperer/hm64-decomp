@@ -110,9 +110,9 @@ void func_80099C94(u8);
 void func_8009BCC4(u8, u8, u8);
 
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_80085F70);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", deactivateAnimalEntities);
 
-void func_80085F70(void) {
+void deactivateAnimalEntities(void) {
 
     u8 i;
 
@@ -1016,7 +1016,7 @@ void func_8008B2E8(u8 chickenIndex) {
 
         setEntityCollidable(gChickens[chickenIndex].entityIndex, TRUE);
         setEntityYMovement(gChickens[chickenIndex].entityIndex, TRUE);
-        func_8002FF38(gChickens[chickenIndex].entityIndex, 0);
+        func_8002FF38(gChickens[chickenIndex].entityIndex, FALSE);
 
         setEntityDirection(gChickens[chickenIndex].entityIndex, convertSpriteToWorldDirection(gChickens[chickenIndex].direction, MAIN_MAP_INDEX));        
         setEntityCoordinates(gChickens[chickenIndex].entityIndex, gChickens[chickenIndex].coordinates.x, gChickens[chickenIndex].coordinates.y, gChickens[chickenIndex].coordinates.z);
@@ -4706,7 +4706,7 @@ void func_8009B914(u16 arg0) {
             break;
     }
 
-    func_8003FBD8(0x12, D_801890E0, 0);
+    convertNumberToString(0x12, D_801890E0, 0);
     
 }
 

@@ -15,7 +15,7 @@
 u8 gWeather;
 
 // data
-extern u8 weatherLightingAdjustments[5][4] = { 
+u8 weatherLightingAdjustments[5][4] = { 
     { 0xFF, 0xFF, 0xFF, 0xFF }, // sunny
     { 0xB0, 0xB0, 0xC0, 0xB0 }, // rain
     { 0xFF, 0xFF, 0xFF, 0xFF }, // rain alternate
@@ -23,13 +23,13 @@ extern u8 weatherLightingAdjustments[5][4] = {
     { 0xFF, 0xFF, 0xFF, 0xFF } // typhoon
 };
 
-static const u8 D_80123438[4][5];
-static const u8 D_8012344C[4][5];
+static const u8 weatherForecastProbabilities[4][5];
+static const u8 weatherForecastProbabilitiesAlternate[4][5];
 
-//INCLUDE_ASM("asm/nonmatchings/game/weather", func_800DC360);
+//INCLUDE_ASM("asm/nonmatchings/game/weather", setWeatherSprites);
 
 // load rain/snow sprites
-void func_800DC360(void) {
+void setWeatherSprites(void) {
     
     u8 i;
     
@@ -66,8 +66,8 @@ void setForecast(void) {
     u8 buffer[4][5];
     u8 buffer2[4][5];
 
-    memcpy(buffer, D_80123438, 20);
-    memcpy(buffer2, D_8012344C, 20);
+    memcpy(buffer, weatherForecastProbabilities, 20);
+    memcpy(buffer2, weatherForecastProbabilitiesAlternate, 20);
     
     score = getRandomNumberInRange(1, 100);
     
@@ -77,11 +77,8 @@ void setForecast(void) {
     do {
         
         if (checkLifeEventBit(0x44) || checkLifeEventBit(0x46)) {
-            
            currentScore += buffer2[gSeasonTomorrow-1][i];
-
         } else {
-
             currentScore += buffer[gSeasonTomorrow-1][i];
         }
         
@@ -108,22 +105,22 @@ Vec4f setWeatherLighting(u8 weather) {
 
 }
 
-//INCLUDE_RODATA("asm/nonmatchings/gameweather", D_80123438);
+//INCLUDE_RODATA("asm/nonmatchings/gameweather", weatherForecastProbabilities);
 
 // weights for weather types depending on season for forecasting
 // percents out of 100
 // i.e., sunny will be 85% of the forecasts in spring
-static const u8 D_80123438[4][5] = { 
+static const u8 weatherForecastProbabilities[4][5] = { 
             { 85, 15, 0, 0, 0 },
             { 85, 10, 0, 0, 5 },
             { 85, 15, 0, 0, 0 },
             { 70, 0, 30, 0, 0 } 
             };
 
-//INCLUDE_RODATA("asm/nonmatchings/gameweather", D_8012344C);
+//INCLUDE_RODATA("asm/nonmatchings/gameweather", weatherForecastProbabilitiesAlternate);
 
 // alternate weights; weather vane? or every other year?
-static const u8 D_8012344C[4][5] = { 
+static const u8 weatherForecastProbabilitiesAlternate[4][5] = { 
             { 85, 15, 0, 0, 0 },
             { 85, 13, 0, 0, 2 },
             { 85, 15, 0, 0, 0 },

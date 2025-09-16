@@ -110,8 +110,7 @@ void initializeEngine(void) {
     initializeBitmaps();
     initializeGlobalSprites();
     initializeMap();
-    // system/message.c
-    func_8003D970();
+    initializeMessageBoxes();
     // system/dialogue.c
     func_80042F60();
     // system/pauseScreen.c

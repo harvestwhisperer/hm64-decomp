@@ -2,7 +2,7 @@
 
 ## Progress
 
-Currently, 75% of the 1467 game functions and 68% of the game source files have been decompiled. All library functions have also been identified with much progress on the matching (many thanks to cblck for the great work). More robust progress tracking is in the works.
+Currently, 79% of the 1467 game functions and 75% of the game source files have been decompiled. All library functions have also been identified with much progress on the matching (many thanks to cblck for the great work). More robust progress tracking is in the works.
 
 ## Asset extraction
 
@@ -30,6 +30,20 @@ There's now support for converting animations to gifs. These seem to be working 
 
 To create gifs, simply run `make extract-animations`, which will fetch the animation metadata, necessary sprites, and then run the gif conversion script, with all the generated assets in the `/assets/animations` directory. 
 
+### Text
+
+Text data (including decoding of control characters that encode character avatar information, new lines, etc.) can now be dumped via `make extract-texts`. Currently, only English characters are supported (there appears to be at least one text bank in Japanese included in the US version of the gam).
+
+The text system has two key components: special opcode characters (0-10), which `system/message.c` functions parse and use to modify message boxes and printing, and a 1-byte bitfield number that appears every 8 characters. The bitfield encodes which characters in an 8-character stream are 1 or 2 bytes. I.e., 0x03 (b0000 0011) has bits 1 and 2 set, which means the first and second characters are 2-bytes long, while the rest are 1 byte.
+
+The character values themselves are used by the game code as offsets into the font texture array, adjusted for the opcode characters by subtracting 11. 
+
+### Dialogue Bytecode
+
+Dialogue bytecode can now be disassembled into text and json via `make extract-dialogues` (only a handful of dialogue bytecode segments are listed out currently). The dialogue bytecode is a somewhat sophisticated system that allows for branching to different texts within a text bank based on various conditions (game variable values, like NPC affection; random values; special dialogue status bits) and also setting game variable values and special dialogue bits. The bytecode also supports spawning sub-dialogue boxes (such as with choice menus).
+
+Currently, the disassembly references game variables, special dialogue bits, and text indices by number, but I hope to eventually add in support for using their in-game identifiers.
+
 ## Setting up
 1. Install [WSL2](https://learn.microsoft.com/en-us/windows/wsl/install)
 1. WSL: `sudo apt-get update && sudo apt install -y python3 pip binutils-mips-linux-gnu gcc-mips-linux-gnu build-essential wget`
@@ -41,10 +55,6 @@ To create gifs, simply run `make extract-animations`, which will fetch the anima
 1. `sudo tools/setup.sh`. This will fetch needed system packages not already installd, Splat, GCC 2.7.2, and the necessary GCC binutils for compiling and linking.
 1. Copy `baserom.us.z64` to the project's root directory (must provide your own and must be in big endian/z64 format).
 1. Run `make setup && make` (with `VERBOSE=1` optional)
-
-## Known bugs
-
-With the version 0.35.1 of Splat or higher, which requires spimdisasm >= 1.36.0, the `asm_nonmatching_label_macro` setting must be set to `""` in order to preserve matching, otherwise spimdisasm will generate duplicate symbols for unmatched but already labeled functions, which affects the final build.
 
 ## Contributing
 

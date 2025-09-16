@@ -490,7 +490,7 @@ bool func_800AD1D0(u16 mapIndex) {
                 return set;
                 
             } else {
-                switch (func_80074C38(gEntranceIndex)) {                           
+                switch (getMapFromExit(gEntranceIndex)) {                           
                     case KAREN_ROOM:                                  
                         showTextBox(0, 6, temp2, 0, 0);
                         setPlayerAction(0xF, 0);
@@ -540,7 +540,7 @@ static bool func_800AD8D0(u16 mapIndex, u8 arg1) {
             break;
          
         case 3:        
-            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+            if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = TRUE;
                 setEntrance(0x14);
             }
@@ -608,7 +608,7 @@ static bool func_800AD8D0(u16 mapIndex, u8 arg1) {
             break;
         
         case 26:
-            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+            if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = TRUE;
                 setEntrance(0x70);
             }
@@ -629,9 +629,12 @@ static bool func_800AD8D0(u16 mapIndex, u8 arg1) {
             }
             break;
 
+        // mailbox
         case 18:
+        
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
                 
+                // check if receive photo or item in mail 
                 temp = func_8006536C(); 
  
                 if (temp != 0xFF) {
@@ -641,19 +644,21 @@ static bool func_800AD8D0(u16 mapIndex, u8 arg1) {
                         acquireKeyItem(GOLD_PENDANT);
                         setSpecialDialogueBit(HAVE_GOLD_PENDANT);
                     }
+
                 } else {
                     showTextBox(1, 5, 0x3A, 0, 2);
                 }
 
                 result = TRUE;
             }
+            
             break;
         
         case 19:
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
                 
                 if (gPlayer.direction == EAST) {
-                    func_8003FBD8(0x18, gLumber, 0);
+                    convertNumberToString(0x18, gLumber, 0);
                     showTextBox(1, 6, 0xA3, 0, 2);
                     result = TRUE;
                 }
@@ -662,7 +667,7 @@ static bool func_800AD8D0(u16 mapIndex, u8 arg1) {
 
         case 20:
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
-                func_8003FBD8(0x17, fodderQuantity, 0);
+                convertNumberToString(0x17, fodderQuantity, 0);
                 showTextBox(1, 6, 0xA2, 0, 2);
                 result = TRUE;
             }
@@ -703,7 +708,7 @@ static bool func_800ADCDC(u16 mapIndex, u8 arg1) {
     
     switch (arg1) {
         case 1:
-            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+            if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 if (gWeather != TYPHOON) {
                     result = TRUE;
                     setEntrance(0);
@@ -723,7 +728,7 @@ static bool func_800ADCDC(u16 mapIndex, u8 arg1) {
             }            
             break;
         case 3:
-            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+            if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 if (gWeather != TYPHOON) {
                     result = TRUE;
                     setEntrance(0x6F);
@@ -810,7 +815,7 @@ static u8 func_800AE00C(u16 mapIndex, u8 arg1) {
         
         case 1:
             
-            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+            if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = 1;
                 setEntrance(2);
             }
@@ -858,7 +863,7 @@ static u8 func_800AE00C(u16 mapIndex, u8 arg1) {
                             gCurrentSeasonName[4] = gGlobalSeasonName[4];
                             gCurrentSeasonName[5] = gGlobalSeasonName[5];
 
-                            func_8003FBD8(0x15, gFarmAnimals[0].birthdayDayOfMonth, 1);
+                            convertNumberToString(0x15, gFarmAnimals[0].birthdayDayOfMonth, 1);
                             func_8009BA74(0);
                             setGameVariableString(0x26, gFarmAnimals[0].unk_23, 6);
                             func_80061690(gFarmAnimals[0].goldenMilk);
@@ -898,7 +903,7 @@ static u8 func_800AE00C(u16 mapIndex, u8 arg1) {
                             gCurrentSeasonName[4] = gGlobalSeasonName[4];
                             gCurrentSeasonName[5] = gGlobalSeasonName[5];
                         
-                            func_8003FBD8(0x15, gFarmAnimals[1].birthdayDayOfMonth, 1);
+                            convertNumberToString(0x15, gFarmAnimals[1].birthdayDayOfMonth, 1);
                             func_8009BA74(1);
                             setGameVariableString(0x26, gFarmAnimals[1].unk_23, 6);
                             func_80061690(gFarmAnimals[1].goldenMilk);
@@ -938,7 +943,7 @@ static u8 func_800AE00C(u16 mapIndex, u8 arg1) {
                             gCurrentSeasonName[4] = gGlobalSeasonName[4];
                             gCurrentSeasonName[5] = gGlobalSeasonName[5];
                         
-                            func_8003FBD8(0x15, gFarmAnimals[2].birthdayDayOfMonth, 1);
+                            convertNumberToString(0x15, gFarmAnimals[2].birthdayDayOfMonth, 1);
                             func_8009BA74(2);
                             setGameVariableString(0x26, gFarmAnimals[2].unk_23, 6);
                             func_80061690(gFarmAnimals[2].goldenMilk);
@@ -978,7 +983,7 @@ static u8 func_800AE00C(u16 mapIndex, u8 arg1) {
                                 gCurrentSeasonName[4] = gGlobalSeasonName[4];
                                 gCurrentSeasonName[5] = gGlobalSeasonName[5];
                             
-                                func_8003FBD8(0x15, gFarmAnimals[3].birthdayDayOfMonth, 1);
+                                convertNumberToString(0x15, gFarmAnimals[3].birthdayDayOfMonth, 1);
                                 func_8009BA74(3);
                                 setGameVariableString(0x26, gFarmAnimals[3].unk_23, 6);
                                 func_80061690(gFarmAnimals[3].goldenMilk);
@@ -1018,7 +1023,7 @@ static u8 func_800AE00C(u16 mapIndex, u8 arg1) {
                             gCurrentSeasonName[4] = gGlobalSeasonName[4];
                             gCurrentSeasonName[5] = gGlobalSeasonName[5];
                         
-                            func_8003FBD8(0x15, gFarmAnimals[4].birthdayDayOfMonth, 1);
+                            convertNumberToString(0x15, gFarmAnimals[4].birthdayDayOfMonth, 1);
                             func_8009BA74(4);
                             setGameVariableString(0x26, gFarmAnimals[4].unk_23, 6);
                             func_80061690(gFarmAnimals[4].goldenMilk);
@@ -1059,7 +1064,7 @@ static u8 func_800AE00C(u16 mapIndex, u8 arg1) {
                             gCurrentSeasonName[4] = gGlobalSeasonName[4];
                             gCurrentSeasonName[5] = gGlobalSeasonName[5];
                         
-                            func_8003FBD8(0x15, gFarmAnimals[5].birthdayDayOfMonth, 1);
+                            convertNumberToString(0x15, gFarmAnimals[5].birthdayDayOfMonth, 1);
                             func_8009BA74(5);
                             setGameVariableString(0x26, gFarmAnimals[5].unk_23, 6);
                             func_80061690(gFarmAnimals[5].goldenMilk);
@@ -1100,7 +1105,7 @@ static u8 func_800AE00C(u16 mapIndex, u8 arg1) {
                             gCurrentSeasonName[4] = gGlobalSeasonName[4];
                             gCurrentSeasonName[5] = gGlobalSeasonName[5];
                         
-                            func_8003FBD8(0x15, gFarmAnimals[6].birthdayDayOfMonth, 1);
+                            convertNumberToString(0x15, gFarmAnimals[6].birthdayDayOfMonth, 1);
                             func_8009BA74(6);
                             setGameVariableString(0x26, gFarmAnimals[6].unk_23, 6);
                             func_80061690(gFarmAnimals[6].goldenMilk);
@@ -1140,7 +1145,7 @@ static u8 func_800AE00C(u16 mapIndex, u8 arg1) {
                             gCurrentSeasonName[4] = gGlobalSeasonName[4];
                             gCurrentSeasonName[5] = gGlobalSeasonName[5];
                         
-                            func_8003FBD8(0x15, gFarmAnimals[7].birthdayDayOfMonth, 1);
+                            convertNumberToString(0x15, gFarmAnimals[7].birthdayDayOfMonth, 1);
                             func_8009BA74(7);
                             setGameVariableString(0x26, gFarmAnimals[7].unk_23, 6);
                             func_80061690(gFarmAnimals[7].goldenMilk);
@@ -1162,7 +1167,7 @@ static u8 func_800AE00C(u16 mapIndex, u8 arg1) {
         case 27:
             
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
-                func_8003FBD8(0x17, fodderQuantity, 0);
+                convertNumberToString(0x17, fodderQuantity, 0);
                 showTextBox(1, 6, 0xA8, 0, 2);
                 result = 1;
             }
@@ -1198,7 +1203,7 @@ static bool func_800AEB54(u16 mapIndex, u8 arg1) {
     switch (arg1) {
         
         case 1:
-            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+            if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = TRUE;
                 setEntrance(3);
             }
@@ -1280,7 +1285,7 @@ static bool func_800AED60(u16 mapIndex, u8 arg1) {
 
     switch (arg1) {
         case 1:
-            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+            if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = TRUE;
                 setEntrance(0xB);
             }
@@ -1385,7 +1390,7 @@ static bool func_800AF060(u16 arg0, u8 arg1) {
     bool result = FALSE;
 
     if (arg1 == 1) {
-        if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+        if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
             result = TRUE;
             setEntrance(7);
         }
@@ -1405,14 +1410,14 @@ static bool func_800AF0B0(u16 mapIndex, u8 arg1) {
     switch (arg1) {
         
         case 1:
-            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+            if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = TRUE;
                 setEntrance(0x17);
             }
             break;
         
         case 2:
-            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+            if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = TRUE;
                 setEntrance(0x3F);
             }
@@ -1536,7 +1541,7 @@ static bool func_800AF0B0(u16 mapIndex, u8 arg1) {
 
         case 9:
 
-            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+            if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 if (gPlayer.direction == EAST) {
                     result = TRUE;
                     setEntrance(0x61);
@@ -1547,7 +1552,7 @@ static bool func_800AF0B0(u16 mapIndex, u8 arg1) {
 
         case 10:
             
-            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+            if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 if (gPlayer.direction == EAST) {
                     result = TRUE;
                     setEntrance(0x63);
@@ -1558,7 +1563,7 @@ static bool func_800AF0B0(u16 mapIndex, u8 arg1) {
 
         case 37:
 
-            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+            if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 if (gPlayer.direction == NORTHEAST) {
                     result = TRUE;
                     setEntrance(0x63);
@@ -1569,7 +1574,7 @@ static bool func_800AF0B0(u16 mapIndex, u8 arg1) {
 
         case 38:
 
-            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+            if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 if (gPlayer.direction == SOUTHEAST) {
                     result = TRUE;
                     setEntrance(0x63);
@@ -1580,7 +1585,7 @@ static bool func_800AF0B0(u16 mapIndex, u8 arg1) {
 
         case 39:
 
-            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+            if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 if (gPlayer.direction == NORTHEAST) {
                     result = TRUE;
                     setEntrance(0x61);
@@ -1591,7 +1596,7 @@ static bool func_800AF0B0(u16 mapIndex, u8 arg1) {
 
         case 40:
 
-            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+            if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 if (gPlayer.direction == SOUTHEAST) {
                     result = TRUE;
                     setEntrance(0x61);
@@ -1602,7 +1607,7 @@ static bool func_800AF0B0(u16 mapIndex, u8 arg1) {
 
         case 11:
             
-            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+            if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = TRUE;
                 setEntrance(0x44);
             }
@@ -1646,7 +1651,7 @@ static u8 func_800AF494(u16 mapIndex, u8 arg1) {
 
         case 1:
 
-            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+            if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = 1;
                 setEntrance(0x34);
             }
@@ -1692,7 +1697,7 @@ static u8 func_800AF494(u16 mapIndex, u8 arg1) {
                     
                 } else {
                     if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
-                        showDialogueBox(0, 0x3D, 0x27, 0x80, 0);
+                        showMessageBox(0, 0x3D, 0x27, 0x80, 0);
                         result = 1;
                     }
                 }
@@ -1902,7 +1907,7 @@ static u8 func_800AF494(u16 mapIndex, u8 arg1) {
         case 30:
             
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) { 
-                showDialogueBox(0, 0x3D, 0x28, 0x80, 0);
+                showMessageBox(0, 0x3D, 0x28, 0x80, 0);
                 result = 1;
             }
         
@@ -1920,7 +1925,7 @@ static bool func_800AFA2C(u16 mapIndex, u8 arg1) {
     bool result = FALSE;
     
     if (arg1 == 1) {
-        if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+        if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
             result = TRUE;
             setEntrance(FLOWER_SHOP_ENTRANCE);
         }
@@ -1941,7 +1946,7 @@ static bool func_800AFA7C(u16 mapIndex, u8 arg1) {
 
         case 1:
             
-            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+            if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = TRUE;
                 setEntrance(0x35);
             }
@@ -1969,7 +1974,7 @@ static bool func_800AFA7C(u16 mapIndex, u8 arg1) {
 
         case 3:
 
-            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+            if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = TRUE;
                 setEntrance(0x3D);
             }
@@ -2046,7 +2051,7 @@ static bool func_800AFCD0(u16 mapIndex, u8 arg1) {
     bool result = FALSE;
 
     if (arg1 == 1) {
-        if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+        if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
             result = TRUE;
             setEntrance(0x5A);
         }
@@ -2067,7 +2072,7 @@ static bool func_800AFD20(u16 mapIndex, u8 arg1) {
 
         case 1:
         
-            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+            if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = 1;
                 setEntrance(0x36);
             }
@@ -2267,7 +2272,7 @@ static bool func_800B00E0(u16 mapIndex, u8 arg1) {
 
         case 1:
 
-            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+            if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = TRUE;
                 setEntrance(0x38);
             }
@@ -2318,7 +2323,7 @@ static bool func_800B01EC(u16 arg0, u8 arg1) {
 
         case 1:
 
-            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+            if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = TRUE;
                 setEntrance(0x39);
             }
@@ -2389,7 +2394,7 @@ static bool func_800B0378(u16 mapIndex, u8 arg1) {
 
         case 1:
         
-            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+            if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = TRUE;
                 setEntrance(0x18);
             }
@@ -2398,7 +2403,7 @@ static bool func_800B0378(u16 mapIndex, u8 arg1) {
 
         case 2:
             
-            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+            if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = TRUE;
                 setEntrance(0x33);
             }
@@ -2483,7 +2488,7 @@ static bool func_800B0378(u16 mapIndex, u8 arg1) {
         
         case 7:
             
-            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+            if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = TRUE;
                 setEntrance(0x3C);
             }
@@ -2601,7 +2606,7 @@ static bool func_800B0714(u16 mapIndex, u8 arg1) {
 
         case 1:
 
-            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+            if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = TRUE;
                 setEntrance(0x40);
             }
@@ -2796,7 +2801,7 @@ static bool func_800B0A64(u16 mapIndex, u8 arg1) {
 
         case 1:
 
-            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) { 
+            if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) { 
                 result = TRUE;
                 setEntrance(0x43);
             }
@@ -2828,7 +2833,7 @@ static bool func_800B0AFC(u16 mapIndex, u8 arg1) {
 
         case 1:
 
-            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+            if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = TRUE;
                 setEntrance(0x41);
             }
@@ -2890,7 +2895,7 @@ static bool func_800B0C48(u16 mapIndex, u8 arg1) {
     switch (arg1) {
         case 1:
 
-            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+            if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = TRUE;
                 setEntrance(0x66);
             }
@@ -2914,7 +2919,7 @@ static u8 func_800B0C98(u16 mapIndex, u8 arg1) {
 
         case 1:
 
-            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+            if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = 1;
                 setEntrance(0x42);
             }
@@ -3067,7 +3072,7 @@ static bool func_800B0FB8(u16 mapIndex, u8 arg1) {
     switch (arg1) {
 
         case 1:
-            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+            if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = TRUE;
                 setEntrance(0x69);
             }
@@ -3113,7 +3118,7 @@ u8 func_800B106C(u16 mapIndex, u8 arg1) {
 
         case 1:
 
-            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+            if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = 1;
                 setEntrance(0x3A);
             }
@@ -3136,7 +3141,7 @@ u8 func_800B106C(u16 mapIndex, u8 arg1) {
 
         case 3:
 
-            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+            if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = 1;
                 setEntrance(0x3B);
             }
@@ -3296,7 +3301,7 @@ static bool func_800B1438(u16 mapIndex, u8 arg1) {
 
         case 1:
 
-            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) { 
+            if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) { 
                 result = TRUE;
                 setEntrance(0x19);                
             }
@@ -3304,7 +3309,7 @@ static bool func_800B1438(u16 mapIndex, u8 arg1) {
 
         case 2:
 
-            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) { 
+            if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) { 
                 result = TRUE;
                 setEntrance(0x1D);                
             }
@@ -3313,7 +3318,7 @@ static bool func_800B1438(u16 mapIndex, u8 arg1) {
 
         case 3:
 
-            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) { 
+            if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) { 
                 result = TRUE;
                 setEntrance(0x23);                
             }
@@ -3345,7 +3350,7 @@ static u8 func_800B1540(u16 mapIndex, u8 arg1) {
         
         case 1:
 
-            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+            if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = 1;
                 setEntrance(0x1B);
             }
@@ -3355,7 +3360,7 @@ static u8 func_800B1540(u16 mapIndex, u8 arg1) {
     
         case 2:
             
-            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+            if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = 1;
                 setEntrance(0x45);
             }
@@ -3364,7 +3369,7 @@ static u8 func_800B1540(u16 mapIndex, u8 arg1) {
 
         case 3:
             
-            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+            if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = 1;
                 setEntrance(0x48);
             }
@@ -3425,7 +3430,7 @@ static u8 func_800B1540(u16 mapIndex, u8 arg1) {
     
         case 5:
 
-            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+            if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = 1;
                 setEntrance(0x25);
             }
@@ -3435,7 +3440,7 @@ static u8 func_800B1540(u16 mapIndex, u8 arg1) {
     
         case 6:
 
-            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+            if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = 1;
                 setEntrance(0x24);
             }
@@ -3502,7 +3507,7 @@ static u8 func_800B1808(u16 mapIndex, u8 arg1) {
 
         case 1:
 
-            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+            if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = 1;
                 setEntrance(0x1C);
             }
@@ -3511,7 +3516,7 @@ static u8 func_800B1808(u16 mapIndex, u8 arg1) {
 
         case 2:
 
-            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+            if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = 1;
                 setEntrance(0x22);
             }
@@ -3576,7 +3581,7 @@ static bool func_800B1994(u16 mapIndex, u8 arg1) {
     switch (arg1) {
 
         case 1:
-            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) { 
+            if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) { 
                 result = TRUE;
                 setEntrance(0x21);                
             }
@@ -3625,7 +3630,7 @@ static bool func_800B1AC4(u16 mapIndex, u8 arg1) {
 
         case 1:
 
-            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+            if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = TRUE;
                 setEntrance(0x1);
             }
@@ -3635,7 +3640,7 @@ static bool func_800B1AC4(u16 mapIndex, u8 arg1) {
 
         case 2:
 
-            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+            if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = TRUE;
                 setEntrance(0x29);
             }
@@ -3645,7 +3650,7 @@ static bool func_800B1AC4(u16 mapIndex, u8 arg1) {
 
         case 3:
 
-            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+            if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = TRUE;
                 setEntrance(0x2E);
             }
@@ -3654,7 +3659,7 @@ static bool func_800B1AC4(u16 mapIndex, u8 arg1) {
 
         case 4:
 
-            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+            if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = TRUE;
                 setEntrance(0x32);
             }
@@ -3664,7 +3669,7 @@ static bool func_800B1AC4(u16 mapIndex, u8 arg1) {
 
         case 5:
 
-            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+            if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = TRUE;
                 setEntrance(0x3E);
             }
@@ -3674,7 +3679,7 @@ static bool func_800B1AC4(u16 mapIndex, u8 arg1) {
 
         case 6:
 
-            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+            if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = TRUE;
                 setEntrance(0x1A);
             }
@@ -3730,7 +3735,7 @@ static bool handleCarpenterHutInteractions(u16 mapIndex, u8 arg1) {
         
         case 1:
 
-            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+            if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = TRUE;
                 setEntrance(0x20);
             } 
@@ -3778,7 +3783,7 @@ static bool handleDumplingHouseExit(u16 mapIndex, u8 arg1) {
 
         case 1:
 
-            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+            if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = TRUE;
                 setEntrance(DUMPLING_HOUSE_EXIT);
             }
@@ -3801,7 +3806,7 @@ static bool func_800B1DBC(u16 mapIndex, u8 arg1) {
 
         case 1:
 
-            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) { 
+            if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) { 
                 result = TRUE;
                 setEntrance(0x1E);                
             }
@@ -3848,7 +3853,7 @@ static bool func_800B1EE4(u16 mapIndex, u8 arg1) {
 
         case 1:
 
-            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) { 
+            if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) { 
                 result = TRUE;
                 setEntrance(0x46);                
             }
@@ -3914,7 +3919,7 @@ static bool func_800B2078(u16 mapIndex, u8 arg1) {
         
         case 1:
 
-            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+            if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = TRUE;
                 setEntrance(MINE_EXIT);
             }
@@ -3938,7 +3943,7 @@ static bool func_800B20C8(u16 mapIndex, u8 arg1) {
         
         case 1:
 
-            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) { 
+            if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) { 
                 result = TRUE;
                 setEntrance(0x1F);                
             }
@@ -3962,7 +3967,7 @@ bool func_800B2118(u16 mapIndex, u8 arg1) {
 
         case 1:
 
-            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+            if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = TRUE;
                 setEntrance(0x16);
             }
@@ -4024,7 +4029,7 @@ static bool func_800B2264(u16 mapIndex, u8 arg1) {
 
         case 1:
 
-            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) { 
+            if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) { 
                 result = TRUE;
                 setEntrance(0x52);                
             }
@@ -4033,7 +4038,7 @@ static bool func_800B2264(u16 mapIndex, u8 arg1) {
 
         case 2:
 
-            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) { 
+            if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) { 
                 result = TRUE;
                 setEntrance(0x2F);                
             }
@@ -4064,7 +4069,7 @@ static bool func_800B2340(u16 mapIndex, u8 arg1) {
 
         case 1:
         
-            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+            if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
 
                 if (gPlayer.direction == WEST) { 
                     result = TRUE;
@@ -4092,7 +4097,7 @@ static bool func_800B23A4(u16 mapIndex, u8 arg1) {
 
         case 1:
 
-            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+            if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = TRUE;
                 setEntrance(0x30);
             }
@@ -4100,7 +4105,7 @@ static bool func_800B23A4(u16 mapIndex, u8 arg1) {
 
          case 2:
 
-             if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) { 
+             if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) { 
                  if (SOUTHWEST < gPlayer.direction && gPlayer.direction < (MAX_DIRECTIONS + 1) || gPlayer.direction == SOUTHWEST) {
                     result = TRUE;
                     setEntrance(0x55);
@@ -4143,7 +4148,7 @@ static bool func_800B24D4(u16 mapIndex, u8 arg1) {
 
         case 1:
             
-            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) { 
+            if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) { 
                 result = TRUE;
                 setEntrance(0x54);
             }
@@ -4205,7 +4210,7 @@ bool func_800B2604(u16 mapIndex, u8 arg1) {
 
         case 1:
 
-            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+            if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = TRUE;
                 setEntrance(0x15);
             }
@@ -4214,7 +4219,7 @@ bool func_800B2604(u16 mapIndex, u8 arg1) {
         
         case 2:
 
-            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+            if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = TRUE;
                 setEntrance(0x28);
             }
@@ -4303,7 +4308,7 @@ static bool func_800B27CC(u16 mapIndex, u8 collisionIndex) {
 
         case 1: 
 
-            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+            if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = TRUE;
                 setEntrance(RANCH_FROM_RANCH_HOUSE);
             }
@@ -4353,7 +4358,7 @@ static u8 handleRanchStoreExits(u16 mapIndex, u8 collisionIndex) {
         // exit
         case 1:
         
-            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+            if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = 1;
                 setEntrance(RANCH_FROM_RANCH_STORE);
             }
@@ -4455,7 +4460,7 @@ static u8 handleRanchStoreExits(u16 mapIndex, u8 collisionIndex) {
         case 21:
 
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) { 
-                showDialogueBox(1, 0x3D, 0x29, 0x80, 2);
+                showMessageBox(1, 0x3D, 0x29, 0x80, 2);
                 result = 1;
             }
 
@@ -4478,7 +4483,7 @@ static bool func_800B2B90(u16 mapIndex, u8 arg1) {
 
         case 1:
 
-            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+            if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = TRUE;
                 setEntrance(0x4C);
             }
@@ -4508,7 +4513,7 @@ static bool func_800B2C28(u16 mapIndex, u8 arg1) {
     bool result = FALSE;    
 
     if (arg1 == 1) {
-        if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+        if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
             result = TRUE;
             setEntrance(0x2D);
         }
@@ -4532,7 +4537,7 @@ static bool func_800B2C78(u16 mapIndex, u8 arg1) {
 
         case 2:
 
-            if (!checkDailyEventBit(STORES_CLOSED_FOR_FESTIVAL)) {
+            if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = TRUE;
                 setEntrance(0x2A);
             }

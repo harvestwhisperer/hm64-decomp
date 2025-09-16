@@ -52,8 +52,8 @@ void initializeEntities(void) {
     for (i = 0; i < MAX_ENTITIES; i++) {
         entityAssetDescriptors[i].collisionBufferX = 0;
         entityAssetDescriptors[i].collisionBufferY = 0;
-        entityAssetDescriptors[i].unk_1C = 0;
-        entityAssetDescriptors[i].unk_1E = 0;
+        entityAssetDescriptors[i].spriteWidth = 0;
+        entityAssetDescriptors[i].spriteHeight = 0;
         entityAssetDescriptors[i].flags = 0; 
     } 
 }
@@ -80,8 +80,8 @@ bool initializeEntityAsset(u16 entityAssetIndex, void* arg1, void* arg2, void* a
             entityAssetDescriptors[entityAssetIndex].collisionBufferX = 0;
             entityAssetDescriptors[entityAssetIndex].collisionBufferY = 0;
 
-            entityAssetDescriptors[entityAssetIndex].unk_1C = 0;
-            entityAssetDescriptors[entityAssetIndex].unk_1E = 0;
+            entityAssetDescriptors[entityAssetIndex].spriteWidth = 0;
+            entityAssetDescriptors[entityAssetIndex].spriteHeight = 0;
 
             entityAssetDescriptors[entityAssetIndex].flags = 1;
 
@@ -425,7 +425,7 @@ bool setEntityAttachmentOffset(u16 index, s16 x, s16 y, s16 z) {
 
 //INCLUDE_ASM("asm/nonmatchings/system/entity", setMainMapIndex);
 
-// why is this here?
+// used by level.c and cutscene.c
 bool setMainMapIndex(u16 mapIndex) {
 
     bool result = FALSE;
@@ -875,9 +875,9 @@ bool func_8002FC38(u16 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/entity", func_8002FCB4);
+//INCLUDE_ASM("asm/nonmatchings/system/entity", setEntityMapSpaceIndependent);
 
-bool func_8002FCB4(u16 index, bool flag) {
+bool setEntityMapSpaceIndependent(u16 index, bool flag) {
     
     bool result = FALSE;
 
@@ -886,9 +886,9 @@ bool func_8002FCB4(u16 index, bool flag) {
         if ((entities[index].flags & ENTITY_ACTIVE) && (entities[index].flags & 8)) {
 
             if (flag) {
-                entities[index].flags &= ~0x100;
+                entities[index].flags &= ~ENTITY_MAP_SPACE_INDEPENDENT;
             } else {
-                entities[index].flags |= 0x100;
+                entities[index].flags |= ENTITY_MAP_SPACE_INDEPENDENT;
             }
 
             result = TRUE;
@@ -911,7 +911,7 @@ bool func_8002FD24(u16 index) {
     if (index < MAX_ENTITIES) {
 
         if ((entities[index].flags & ENTITY_ACTIVE) && (entities[index].flags & 8)) {
-            temp = entities[index].flags & 0x100;
+            temp = entities[index].flags & ENTITY_MAP_SPACE_INDEPENDENT;
             result = !temp;
         }
 
@@ -1033,17 +1033,17 @@ bool setEntityCollisionBuffers(u16 entityIndex, u8 xValue, u8 yValue) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/entity", func_8002FFF4);
+//INCLUDE_ASM("asm/nonmatchings/system/entity", setEntitySpriteDimensions);
 
-bool func_8002FFF4(u16 entityAssetIndex, u8 arg1, u8 arg2) {
+bool setEntitySpriteDimensions(u16 entityAssetIndex, u8 arg1, u8 arg2) {
 
     bool result = FALSE;
 
     if (entityAssetIndex < MAX_ENTITY_ASSETS) {
 
         if (entityAssetDescriptors[entityAssetIndex].flags & 1) {
-            entityAssetDescriptors[entityAssetIndex].unk_1C = arg1;
-            entityAssetDescriptors[entityAssetIndex].unk_1E = arg2;
+            entityAssetDescriptors[entityAssetIndex].spriteWidth = arg1;
+            entityAssetDescriptors[entityAssetIndex].spriteHeight = arg2;
             result = TRUE;
         }
 
@@ -1197,11 +1197,12 @@ u16 checkEntityToEntityCollision(u16 entityIndex, f32 x, f32 z, u16 buttonPresse
                     
                     if (!(entities[i].flags & ENTITY_COLLISION_EXEMPT)) {
 
-                        count = detectEntityOverlap(&entities[entityIndex], i, x, z, entityAssetDescriptors[entities[entityIndex].entityAssetIndex].unk_1C, entityAssetDescriptors[entities[entityIndex].entityAssetIndex].unk_1E);
+                        count = detectEntityOverlap(&entities[entityIndex], i, x, z, entityAssetDescriptors[entities[entityIndex].entityAssetIndex].spriteWidth, entityAssetDescriptors[entities[entityIndex].entityAssetIndex].spriteHeight);
                         
                         if (count) {
 
                             entities[i].entityCollidedWithIndex = entityIndex;
+                            // seems to imply plans to support different interactions with entities based on button pressed
                             entities[i].buttonPressed = buttonPressed;
                             entities[entityIndex].collision = i;
                             
@@ -1258,7 +1259,7 @@ u16 func_800305CC(u16 index, f32 x, f32 z, u16 buttonPressed) {
 
                     if (i != index && !(entities[i].flags & ENTITY_TRACKING_ACTIVE)) {
                         
-                        if (temp = detectEntityOverlap(&entities[index], i, rotatedPosition.x, rotatedPosition.z, entityAssetDescriptors[entities[index].entityAssetIndex].unk_1C, entityAssetDescriptors[entities[index].entityAssetIndex].unk_1E)) {
+                        if (temp = detectEntityOverlap(&entities[index], i, rotatedPosition.x, rotatedPosition.z, entityAssetDescriptors[entities[index].entityAssetIndex].spriteWidth, entityAssetDescriptors[entities[index].entityAssetIndex].spriteHeight)) {
                            
                             result |= temp;
                             
@@ -1338,7 +1339,7 @@ u8 func_800309B4(u16 entityIndex, f32 x, f32 z) {
 
         if ((entities[entityIndex].flags & ENTITY_ACTIVE)) {
             
-            if (!(entities[entityIndex].flags & ENTITY_PAUSED) && !(entities[entityIndex].flags & 0x100)) {
+            if (!(entities[entityIndex].flags & ENTITY_PAUSED) && !(entities[entityIndex].flags & ENTITY_MAP_SPACE_INDEPENDENT)) {
 
                 worldCoordinates.x = x;
                 worldCoordinates.y = 0;
@@ -1431,7 +1432,7 @@ u16 func_80030CB0(u16 entityIndex, f32 x, f32 z) {
 
     if (entityIndex < MAX_ENTITIES) {
         
-        if ((entities[entityIndex].flags & ENTITY_ACTIVE) && !(entities[entityIndex].flags & ENTITY_PAUSED) && !(entities[entityIndex].flags & 0x100)) {
+        if ((entities[entityIndex].flags & ENTITY_ACTIVE) && !(entities[entityIndex].flags & ENTITY_PAUSED) && !(entities[entityIndex].flags & ENTITY_MAP_SPACE_INDEPENDENT)) {
             
             vec = func_80030EAC(entityIndex, x, z);
 
@@ -1456,7 +1457,7 @@ bool func_80030DB0(u16 entityIndex, f32 arg1, f32 arg2, u16 arg3) {
     Vec3f padding[4];
     Vec3f vec;
     
-    if ((entityIndex < MAX_ENTITIES) && (entities[entityIndex].flags & ENTITY_ACTIVE) && !(entities[entityIndex].flags & ENTITY_PAUSED) && !(entities[entityIndex].flags & 0x100)) {
+    if ((entityIndex < MAX_ENTITIES) && (entities[entityIndex].flags & ENTITY_ACTIVE) && !(entities[entityIndex].flags & ENTITY_PAUSED) && !(entities[entityIndex].flags & ENTITY_MAP_SPACE_INDEPENDENT)) {
             
         vec = func_80030EAC(entityIndex, arg1, arg2);
         
@@ -1485,7 +1486,7 @@ Vec3f func_80030EAC(u16 entityIndex, f32 arg2, f32 arg3) {
 
     if (entityIndex < MAX_ENTITIES) {
 
-        if ((entities[entityIndex].flags & ENTITY_ACTIVE) && !(entities[entityIndex].flags & ENTITY_PAUSED) && !(entities[entityIndex].flags & 0x100)) {
+        if ((entities[entityIndex].flags & ENTITY_ACTIVE) && !(entities[entityIndex].flags & ENTITY_PAUSED) && !(entities[entityIndex].flags & ENTITY_MAP_SPACE_INDEPENDENT)) {
 
             vec.x = arg2;
             vec.y = 0;
@@ -1520,7 +1521,7 @@ u16 func_80031050(u16 entityIndex, f32 x, f32 z) {
 
     if (entityIndex < MAX_ENTITIES) {
 
-        if ((entities[entityIndex].flags & ENTITY_ACTIVE) && !(entities[entityIndex].flags & ENTITY_PAUSED) && !(entities[entityIndex].flags & 0x100)) {
+        if ((entities[entityIndex].flags & ENTITY_ACTIVE) && !(entities[entityIndex].flags & ENTITY_PAUSED) && !(entities[entityIndex].flags & ENTITY_MAP_SPACE_INDEPENDENT)) {
 
             tileCoordinates = getEntityRelativeTilePosition(entityIndex, x, z);
 
@@ -1549,7 +1550,7 @@ bool func_800311E0(u16 entityIndex, f32 arg1, f32 arg2, u16 arg3) {
 
      if (entityIndex < MAX_ENTITIES) {
         
-        if ((entities[entityIndex].flags & ENTITY_ACTIVE) && !(entities[entityIndex].flags & ENTITY_PAUSED) && !(entities[entityIndex].flags & 0x100)) {
+        if ((entities[entityIndex].flags & ENTITY_ACTIVE) && !(entities[entityIndex].flags & ENTITY_PAUSED) && !(entities[entityIndex].flags & ENTITY_MAP_SPACE_INDEPENDENT)) {
 
             tileCoordinates = getEntityRelativeTilePosition(entityIndex, arg1, arg2);
 
@@ -1601,7 +1602,7 @@ Vec3f getEntityRelativeTilePosition(u16 entityIndex, f32 x, f32 z) {
 
     if (entityIndex < MAX_ENTITIES) {
 
-        if ((entities[entityIndex].flags & ENTITY_ACTIVE) && !(entities[entityIndex].flags & ENTITY_PAUSED) && !(entities[entityIndex].flags & 0x100)) {
+        if ((entities[entityIndex].flags & ENTITY_ACTIVE) && !(entities[entityIndex].flags & ENTITY_PAUSED) && !(entities[entityIndex].flags & ENTITY_MAP_SPACE_INDEPENDENT)) {
 
             worldCoordinates.x = x;
             worldCoordinates.y = 0;
@@ -1637,7 +1638,7 @@ Vec3f func_800315A0(u16 index) {
     tileCoordinates.y = 65535.0f;
     
     if (index < MAX_ENTITIES) {
-        if ((entities[index].flags & ENTITY_ACTIVE) && !(entities[index].flags & ENTITY_PAUSED) && !(entities[index].flags & 0x100)) {
+        if ((entities[index].flags & ENTITY_ACTIVE) && !(entities[index].flags & ENTITY_PAUSED) && !(entities[index].flags & ENTITY_MAP_SPACE_INDEPENDENT)) {
             tileCoordinates = convertWorldToTileCoordinates(mapControllers[gMainMapIndex].mainMapIndex, entities[index].coordinates.x, entities[index].coordinates.z);
         } 
     }
@@ -1658,7 +1659,7 @@ Vec3f func_800315A0(u16 index) {
 //     vec.y = 65535.0f;
     
 //     if (index < MAX_ENTITIES) {
-//         if ((entities[index].flags & ENTITY_ACTIVE) && !(entities[index].flags & ENTITY_PAUSED) && !(entities[index].flags & 0x100)) {
+//         if ((entities[index].flags & ENTITY_ACTIVE) && !(entities[index].flags & ENTITY_PAUSED) && !(entities[index].flags & ENTITY_MAP_SPACE_INDEPENDENT)) {
 //             convertWorldToTileCoordinates(&vec, mapControllers[gMainMapIndex].mainMapIndex, entities[index].coordinates.x, entities[index].coordinates.z);
 //         } 
 //     }
@@ -1682,7 +1683,7 @@ Vec3f func_8003168C(u16 entityIndex, f32 x, f32 z) {
 
     if (entityIndex < MAX_ENTITIES) {
 
-        if ((entities[entityIndex].flags & ENTITY_ACTIVE) && !(entities[entityIndex].flags & ENTITY_PAUSED) && !(entities[entityIndex].flags & 0x100)) {
+        if ((entities[entityIndex].flags & ENTITY_ACTIVE) && !(entities[entityIndex].flags & ENTITY_PAUSED) && !(entities[entityIndex].flags & ENTITY_MAP_SPACE_INDEPENDENT)) {
 
             position.x = x;
             position.y = 0;
@@ -1901,7 +1902,7 @@ u16 checkTerrainMovementCollision(Entity* entity, f32 deltaX, f32 deltaZ, u8 dir
 
 //INCLUDE_ASM("asm/nonmatchings/system/entity", detectEntityOverlap);
 
-u8 detectEntityOverlap(Entity* entity, u16 entityIndex, f32 deltaX, f32 deltaZ, u16 arg4, u16 arg5) {
+u8 detectEntityOverlap(Entity* entity, u16 entityIndex, f32 deltaX, f32 deltaZ, u16 entityWidth, u16 entityHeight) {
 
     u32 padding[12];
  
@@ -1925,16 +1926,16 @@ u8 detectEntityOverlap(Entity* entity, u16 entityIndex, f32 deltaX, f32 deltaZ, 
         adjustedX = entity->coordinates.x + deltaX;
         adjustedZ = entity->coordinates.z + deltaZ;
 
-        if (entityAssetDescriptors[entities[entityIndex].entityAssetIndex].unk_1C < arg4) {
-            dimensionX = arg4;
+        if (entityAssetDescriptors[entities[entityIndex].entityAssetIndex].spriteWidth < entityWidth) {
+            dimensionX = entityWidth;
         } else {
-            dimensionX = entityAssetDescriptors[entities[entityIndex].entityAssetIndex].unk_1C;
+            dimensionX = entityAssetDescriptors[entities[entityIndex].entityAssetIndex].spriteWidth;
         }
 
-        if (entityAssetDescriptors[entities[entityIndex].entityAssetIndex].unk_1E < arg5) {
-            dimensionZ = arg5;
+        if (entityAssetDescriptors[entities[entityIndex].entityAssetIndex].spriteHeight < entityHeight) {
+            dimensionZ = entityHeight;
         } else {
-            dimensionZ = entityAssetDescriptors[entities[entityIndex].entityAssetIndex].unk_1E;
+            dimensionZ = entityAssetDescriptors[entities[entityIndex].entityAssetIndex].spriteHeight;
         }
 
         if (adjustedX <= entities[entityIndex].coordinates.x) {
@@ -2205,7 +2206,7 @@ void updateEntityPhysics(u16 index) {
                 
             }
 
-            func_8003BDA4(gMainMapIndex, tempX, entities[index].coordinates.y, tempZ);
+            setMapControllerViewPosition(gMainMapIndex, tempX, entities[index].coordinates.y, tempZ);
 
             entities[index].viewSpacePosition.x = entities[index].coordinates.x - tempX;
             entities[index].viewSpacePosition.y = 0;

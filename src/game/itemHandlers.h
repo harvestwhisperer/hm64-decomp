@@ -185,6 +185,7 @@ extern u16 func_800D5A6C(u16 index);
 extern bool func_800D5B30();
 extern void func_800D67FC(u8 index);
 extern void func_800D7010();  
+extern u8 getToolLevel(u8 tool);
 
 extern ItemContext itemInfo[10];
 extern ToolUse toolUse;

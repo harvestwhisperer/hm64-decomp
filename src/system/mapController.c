@@ -146,7 +146,7 @@ bool loadMap(u16 index, u16 mapIndex) {
     if (index == MAIN_MAP_INDEX && (mapControllers[index].flags & 1)) {
         
         // dma map data
-        func_8003BC50(MAIN_MAP_INDEX, mapIndex);
+        dmaMapAssets(MAIN_MAP_INDEX, mapIndex);
         
         setMapTranslation(mapControllers[index].mainMapIndex, 0.0f, 0.0f, 0.0f);
         setMapScale(mapControllers[index].mainMapIndex, 1.0f, 1.0f, 1.0f);
@@ -154,7 +154,7 @@ bool loadMap(u16 index, u16 mapIndex) {
         
         mapControllers[index].rotation = 0;
         
-        func_8003BDA4(MAIN_MAP_INDEX, 0.0f, 0.0f, 0.0f);
+        setMapControllerViewPosition(MAIN_MAP_INDEX, 0.0f, 0.0f, 0.0f);
         func_8003C084(MAIN_MAP_INDEX, 0);
         func_8003C1E0(MAIN_MAP_INDEX, 0.0f, 0.0f, 0.0f, 0, 0);
         setMapRGBA(mapControllers[index].mainMapIndex, 0, 0, 0, 0);
@@ -171,9 +171,9 @@ static inline u8* getAddress(u32 offsets[], u32 i) {
     return (u8*)offsets + offsets[i];
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/mapController", func_8003BC50);
+//INCLUDE_ASM("asm/nonmatchings/system/mapController", dmaMapAssets);
 
-bool func_8003BC50(u16 mainMapIndex, u16 levelMapIndex) {
+bool dmaMapAssets(u16 mainMapIndex, u16 levelMapIndex) {
 
     bool result = FALSE;
     
@@ -243,9 +243,9 @@ bool func_8003BD60(u16 mapIndex) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/mapContext", func_8003BDA4);
+//INCLUDE_ASM("asm/nonmatchings/system/mapContext", setMapControllerViewPosition);
 
-bool func_8003BDA4(u16 mapIndex, f32 x, f32 y, f32 z) {
+bool setMapControllerViewPosition(u16 mapIndex, f32 x, f32 y, f32 z) {
     
     bool result = FALSE;
     
@@ -264,9 +264,9 @@ bool func_8003BDA4(u16 mapIndex, f32 x, f32 y, f32 z) {
 }
 
 
-//INCLUDE_ASM("asm/nonmatchings/system/mapContext", func_8003BE0C);
+//INCLUDE_ASM("asm/nonmatchings/system/mapContext", adjustMapControllerViewPosition);
 
-bool func_8003BE0C(u16 mapIndex, f32 x, f32 y, f32 z) {
+bool adjustMapControllerViewPosition(u16 mapIndex, f32 x, f32 y, f32 z) {
     
     bool result = FALSE;
     
@@ -309,20 +309,20 @@ bool func_8003BE98(u16 mapIndex, u8 r, u8 g, u8 b, u8 a) {
 
 //INCLUDE_ASM("asm/nonmatchings/system/mapContext", func_8003BF7C);
 
-bool func_8003BF7C(u16 mapIndex, u8 r, u8 g, u8 b, u8 a, s16 arg5) {
+bool func_8003BF7C(u16 mapIndex, u8 r, u8 g, u8 b, u8 a, s16 rate) {
     
     bool result = FALSE;
     
     if (mapIndex == MAIN_MAP_INDEX && (mapControllers[mapIndex].flags & 1) && (mapControllers[mapIndex].flags & 2)) {
 
-        func_80034738(mapControllers[mapIndex].mainMapIndex, r, g, b, a, arg5);
+        func_80034738(mapControllers[mapIndex].mainMapIndex, r, g, b, a, rate);
 
         D_8013D248.r = r;
         D_8013D248.g = g;
         D_8013D248.b = b;
         D_8013D248.a = a;
         
-        D_8017045A = arg5;
+        D_8017045A = rate;
         
         result = TRUE;
 
@@ -590,9 +590,9 @@ bool func_8003C5C0(u16 mapIndex, u8 arg1, u8 targetRotation) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/mapContext", updateMapContext);
+//INCLUDE_ASM("asm/nonmatchings/system/mapContext", updateMapController);
 
-void updateMapContext(void) {
+void updateMapController(void) {
 
     u16 i;
 

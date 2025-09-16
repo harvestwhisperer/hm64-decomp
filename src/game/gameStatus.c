@@ -230,7 +230,143 @@ void func_80064048(void) {
     
 }
 
+#ifdef PERMUTER
+void func_80064114(void) {
+
+    u8 i;
+    
+    func_800DBBB0(16);
+
+    for (i = 0; i < MAX_FARM_ANIMALS; i++) {
+
+        if ((gFarmAnimals[i].flags & 1) && getLevelFlags(gFarmAnimals[i].location) & 2) {
+
+            gFarmAnimals[i].flags |= 0x4000;
+            
+            switch (gFarmAnimals[i].type) {
+
+                case 0:
+                    func_80086458(i, -0x14);
+                    break;
+                
+                case 1:
+                    func_80086458(i, -0x14);
+                    break;
+                
+                case 2:
+
+                    switch (gFarmAnimals[i].condition) {
+
+                        case 0:
+                        case 1:
+                        case 2:
+
+                            if (!getRandomNumberInRange(0, 3)) {
+                                
+                                func_800861A4(2, i, 0xFF, 2, 0);
+                                func_80086458(i, -20);
+                                
+                                gHappiness += adjustValue(gHappiness, -5, MAX_HAPPINESS);
+                                
+                            }
+                            
+                            if (!getRandomNumberInRange(0, 7)) {
+                                
+                                func_800861A4(2, i, 0xFF, 3, 0);
+                                func_80086458(i, -30);
+                                gHappiness += adjustValue(gHappiness, -10, MAX_HAPPINESS);
+                                
+                            } 
+                            
+                            break;
+                                                
+                        case 3:
+                            func_80086458(i, -20);
+                            break;
+
+                        default:
+                            break;
+                        
+                    }
+                    
+                    break;
+                
+                case 3:
+                    func_80086458(i, -0x14);
+                    break;
+                
+                case 4:
+                    func_80086458(i, -0x14);
+                    break;
+                
+                case 5:
+
+                    if (gFarmAnimals[i].condition != 0) {
+                        
+                        if (!getRandomNumberInRange(0, 7)) {
+                            
+                            func_800861A4(2, i, 0xFF, 3, 0);
+                            func_80086458(i, -30);
+                            gHappiness += adjustValue(gHappiness, -10, MAX_HAPPINESS);
+                            
+                        } 
+    
+                    } else {
+                        if (!getRandomNumberInRange(0, 3)) {
+                            func_800861A4(2, i, 0xFF, 3, 0);
+                            func_80086458(i, -30);
+                            gHappiness += adjustValue(gHappiness, -10, MAX_HAPPINESS);
+                        }
+                    }
+                            
+                    break;
+                
+                case 6:
+
+                    if (gFarmAnimals[i].condition != 0) {
+                        
+                        if (!getRandomNumberInRange(0, 7)) {
+                                
+                            func_800861A4(2, i, 0xFF, 3, 0);
+                            func_80086458(i, -30);
+                            gHappiness += adjustValue(gHappiness, -10, MAX_HAPPINESS);
+                            
+                        } 
+                        
+                    } else {
+                        func_80086458(i, -20);
+                    }
+                    
+                    break;
+                
+            }
+            
+        }
+        
+    }
+
+    for (i = 0; i < MAX_CHICKENS; i++) {
+
+        if ((gChickens[i].flags & 1) && getLevelFlags(gChickens[i].location) & 2) {
+
+            gChickens[i].flags |= 0x80;
+
+            if (gChickens[i].type == 2) {
+             
+                if (gChickens[i].condition == 0) {
+                    func_800861A4(1, i, 0xFF, 1, 0);
+                }
+            
+            }
+
+        }
+        
+    }
+    
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/game/gameStatus", func_80064114);
+#endif
 
 INCLUDE_ASM("asm/nonmatchings/game/gameStatus", func_800644B0);
 
@@ -242,113 +378,113 @@ INCLUDE_ASM("asm/nonmatchings/game/gameStatus", func_80064CF0);
 
 void setDailyEventBit(u16 bitIndex) {
     u32 temp = bitIndex;
-    dailyEventBits[temp >> 5] |= 1 << (temp & 0x1F);
+    dailyEventBits[temp / 32] |= 1 << (temp & 0x1F);
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/gameStatus", toggleDailyEventBit);
 
 void toggleDailyEventBit(u16 bitIndex) {
     u32 temp = bitIndex;
-    dailyEventBits[temp >> 5] &= ~(1 << (temp & 0x1F));
+    dailyEventBits[temp / 32] &= ~(1 << (temp & 0x1F));
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/gameStatus", checkDailyEventBit);
 
 u32 checkDailyEventBit(u16 bitIndex) {
     u32 temp = bitIndex;
-    return dailyEventBits[temp >> 5] & (1 << (temp & 0x1F));
+    return dailyEventBits[temp / 32] & (1 << (temp & 0x1F));
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/gameStatus", setLifeEventBit);
 
 void setLifeEventBit(u16 bitIndex) {
     u32 temp = bitIndex;
-    lifeEventBits[temp >> 5] |= 1 << (temp & 0x1F);
+    lifeEventBits[temp / 32] |= 1 << (temp & 0x1F);
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/gameStatus", toggleLifeEventBit);
 
 void toggleLifeEventBit(u16 bitIndex) {
     u32 temp = bitIndex;
-    lifeEventBits[temp >> 5] &= ~(1 << (temp & 0x1F));
+    lifeEventBits[temp / 32] &= ~(1 << (temp & 0x1F));
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/gameStatus", checkLifeEventBit);
 
 u32 checkLifeEventBit(u16 bitIndex) {
     u32 temp = bitIndex;
-    return lifeEventBits[temp >> 5] & (1 << (temp & 0x1F));
+    return lifeEventBits[temp / 32] & (1 << (temp & 0x1F));
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/gameStatus", setSpecialDialogueBit);
 
 void setSpecialDialogueBit(u16 bitIndex) {
     u32 temp = bitIndex;
-    specialDialogueBits[temp >> 5] |= 1 << (temp & 0x1F);
+    specialDialogueBits[temp / 32] |= 1 << (temp & 0x1F);
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/gameStatus", toggleSpecialDialogueBit);
 
 void toggleSpecialDialogueBit(u16 bitIndex) {
     u32 temp = bitIndex;
-    specialDialogueBits[temp >> 5] &= ~(1 << (temp & 0x1F));
+    specialDialogueBits[temp / 32] &= ~(1 << (temp & 0x1F));
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/gameStatus", checkSpecialDialogueBit);
 
 u32 checkSpecialDialogueBit(u16 bitIndex) {
     u32 temp = bitIndex;
-    return specialDialogueBits[temp >> 5] & (1 << (temp & 0x1F));
+    return specialDialogueBits[temp / 32] & (1 << (temp & 0x1F));
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/gameStatus", func_8006523C);
 
 void func_8006523C(u16 bitIndex) {
     u32 temp = bitIndex;
-    readMailBits[temp >> 5] |= (1 << (temp & 0x1F));
+    readMailBits[temp / 32] |= (1 << (temp & 0x1F));
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/gameStatus", toggleReadLetterBit);
 
 void toggleReadLetterBit(u16 bitIndex) {
     u32 temp = bitIndex;
-    return readMailBits[temp >> 5] &= ~(1 << (temp & 0x1F));
+    return readMailBits[temp / 32] &= ~(1 << (temp & 0x1F));
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/gameStatus", checkMailRead);
 
 u32 checkMailRead(u16 bitIndex) {
     u32 temp = bitIndex;
-    return readMailBits[temp >> 5] & (1 << (temp & 0x1F));
+    return readMailBits[temp / 32] & (1 << (temp & 0x1F));
 }
 
 //NCLUDE_ASM(const s32, "gameStatus", setMail);
 
 void setMail(u16 bitIndex) {
     u32 temp = bitIndex;
-    return mailboxBits[temp >> 5] |= (1 << (temp & 0x1F));
+    return mailboxBits[temp / 32] |= (1 << (temp & 0x1F));
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/gameStatus", func_80065308);
 
 void func_80065308(u16 bitIndex) {
     u32 temp = bitIndex;
-    mailboxBits[temp >> 5] &= ~(1 << (temp & 0x1F));
+    mailboxBits[temp / 32] &= ~(1 << (temp & 0x1F));
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/gameStatus", func_80065340);
 
 inline u32 func_80065340(u16 bitIndex) {
     u32 temp = bitIndex;
-    return mailboxBits[temp >> 5] & (1 << (temp & 0x1F));
+    return mailboxBits[temp / 32] & (1 << (temp & 0x1F));
 }
 
 static inline void toggleLetterBit(u32 i, u32 mailBox) {
-    mailboxBits[i >> 5] &= ~mailBox;
+    mailboxBits[i / 32] &= ~mailBox;
 }
 
 static inline void setReadMail(u32 i, u32 mailBox) {
-    readMailBits[i >> 5] |= mailBox;
+    readMailBits[i / 32] |= mailBox;
 }
 
 static inline u32 getLetterBit(u32 mailBox) {
@@ -357,6 +493,7 @@ static inline u32 getLetterBit(u32 mailBox) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/gameStatus", func_8006536C);
 
+// get first unread leter index
 u8 func_8006536C(void) {
     
     u8 result = 0xFF;
@@ -365,9 +502,9 @@ u8 func_8006536C(void) {
     u32 mailBox;
     u32 letterBit;
     
-    for (i = 0; i < 0x50 && result == 0xFF; i++) {
+    for (i = 0; i < MAX_LETTERS && result == 0xFF; i++) {
 
-        mailBox = mailboxBits[i >> 5];
+        mailBox = mailboxBits[i / 32];
         letterBit = getLetterBit(i);
         
         if (mailBox & letterBit) {
@@ -596,7 +733,7 @@ s32 getSumNpcAffection(void) {
     u16 result = 0;
     u8 i;
 
-    for (i = 0; i < TOTAL_NPCS; i++) {
+    for (i = 0; i < MAX_NPCS; i++) {
         result += npcAffection[i];
     }
 

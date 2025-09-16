@@ -52,7 +52,7 @@ segments:
       - [ 0x1050, c, lib/nusys-1/nuboot]
       - [ 0x1190, c, mainproc]
       - [ 0x13F0, c, mainLoop]
-      - [ 0x1AC0, c, system/volume]
+      - [ 0x1AC0, c, system/interpolation]
       - [ 0x1C50, c, system/math]
       - [ 0x1CF0, c, system/graphic]
       - [ 0x4400, c, system/spriteDMAManager]
@@ -325,14 +325,15 @@ segments:
       - [ 0xEBBC0, hasm, lib/gcc/udivid3]
       - [ 0xEBBE0, hasm, lib/gcc/umoddi3]
       # end of functions/text, start of data
-      - [ 0xEBC20, bin, ucode/rspboot]
-      - [ 0xEBCF0, bin, ucode/n_aspMain_text]
-      - [ 0xEC950, bin, ucode/gspF3DEX2.fifo_text]
-      - [ 0xECAB0, data, unknownData]
-      - [ 0xECAC0, data, unknownData2] # unused?
-      - [ 0xEDD00, data, system/staticGfx]
+      - [ 0xEBC20, textbin, ucode/rspboot]
+      - [ 0xEBCF0, textbin, ucode/n_aspMain]
+      - [ 0xEC950, textbin, ucode/gspF3DEX2.fifo]
+      - [ 0xECAB0, .data, system/unknownData]
+      - [ 0xECAC0, .data, system/unknownData2] # unused
+      - [ 0xEDD00, .data, system/staticGfx]
+      - [ 0xEDE80, data, system/paddingData]
       - [ 0xEE110, data, system/map]
-      - [ 0xEE7B0, data, system/pauseScreen]
+      - [ 0xEE7B0, .data, system/pauseScreen]
       - [ 0xEE7D0, .data, system/cutscene]
       - [ 0xEE980, data, game/fieldTileMaps]
       - [ 0xEEF20, data, game/game]
@@ -347,19 +348,14 @@ segments:
       - [ 0xF2580, data, game/itemHandlers]
       - [ 0xF3B00, data, game/mapObjects]
       - [ 0xF3F50, .data, game/weather]
-      - [ 0xF3F70, data, game/shop]
+      - [ 0xF3F70, .data, game/shop]
       - [ 0xF4B40, data, game/loadGameScreen] # packinsoft farm string
       - [ 0xF4B50, .data, data/animationScripts/player]
-      - [ 0xF50D0, .data, data/animationScripts/maria]
-      - [ 0xF51D0, .data, data/animationScripts/popuri]
-      - [ 0xF52F0, .data, data/animationScripts/elli]
-      - [ 0xF53F0, .data, data/animationScripts/ann]
-      # - [ 0xF5500, data, data/animationScripts/karen]
-      # - [ 0xF55F4, data, data/animationScripts/gray]
-      - [ 0xF5500, data, data/animationScripts/animationScripts] #TODO: finish adding individual files
+      - [ 0xF50D0, .data, data/animationScripts/npc] #TODO: finish adding. Based on the splits, these unfortunately seem to all be in the same file 
+      - [ 0xF5660, data, data/animationScripts/animationScripts]
       - [ 0xF63A0, .data, data/animationScripts/chick]
-      - [ 0xF63D0, data, data/animationScripts/animationScripts2] #TODO: finish adding individual files
-      # - [ 0xF7118, data, data/message/unknownMessageData] # FIXME: breaks matching
+      - [ 0xF63D0, data, data/animationScripts/animationScripts2]
+      # - [ 0xF7118, data, data/message/unknownMessageData]
       - [ 0xF71B0, data, data/sfx]
       - [ 0xF7AD0, data, game/namingScreen]
       - [ 0xF7BF0, .data, lib/nusys-1/nupakmenu]
@@ -411,9 +407,8 @@ segments:
       - [ 0xF9870, .data, lib/os/libultra/rmon/rmoncmds]
       - [ 0xF9950, .data, lib/os/libultra/rmon/rmonmain]
       - [ 0xF9960, .data, lib/os/libultra/libc/xlitob]
-      # should be bin
-      - [ 0xF9990, rodata, lib/ucode/n_aspMain_data]
-      - [ 0xF9C40, rodata, lib/ucode/gspF3DEX2.fifo_data]
+      - [ 0xF9990, rodatabin, ucode/n_aspMain]
+      - [ 0xF9C40, rodatabin, ucode/gspF3DEX2.fifo]
       # game rodata
       - [ 0xFA060, .rodata, system/graphic]
       - [ 0xFA0C0, .rodata, system/sprite]
@@ -494,7 +489,7 @@ segments:
       - { start: 0xFF5C0, type: .bss, vram: 0x8013C860, name: lib/os/libultra/rmon/rmonmain }
       - { start: 0xFF5C0, type: .bss, vram: 0x8013CCE0, name: lib/os/libultra/rmon/rmonbrk }
       - { start: 0xFF5C0, type: .bss, vram: 0x8013CDF0, name: lib/libkmc/rand }
-      - { start: 0xFF5C0, type: bss, vram: 0x8013CE00, name: bss3 }
+      - { start: 0xFF5C0, type: bss, vram: 0x8013CE00, name: bss2 }
       
   - name: sramBuffer
     type: code
@@ -3440,15 +3435,1425 @@ segments:
     dir: sprites/font
     start: 0xE137D0
 
-  - name: dialogues
+  - name: dialogue1Text
     type: bin
-    dir: dialogue
+    dir: text/dialogue0
     start: 0xE13800
 
-  - name: dialogueMaps
+  - name: dialogue1TextIndex
     type: bin
-    dir: dialogue
+    dir: text/dialogue0
+    start: 0xE13920
+
+  - name: libraryText
+    type: bin
+    dir: text/library
+    start: 0xE13990
+
+  - name: libraryTextIndex
+    type: bin
+    dir: text/library
+    start: 0xE13C30
+
+  - name: diaryText
+    type: bin
+    dir: text/diary
+    start: 0xE13C60
+
+  - name: diaryTextIndex
+    type: bin
+    dir: text/diary
+    start: 0xE167C0
+
+  - name: dialogue4Text
+    type: bin
+    dir: text/dialogue3
+    start: 0xE16A90
+
+  - name: dialogue4TextIndex
+    type: bin
+    dir: text/dialogue3
+    start: 0xE19F60
+
+  - name: festivalOverlaySelectionsText
+    type: bin
+    dir: text/festival-overlay-selections
+    start: 0xE19FF0
+
+  - name: festivalOverlaySelectionsTextIndex
+    type: bin
+    dir: text/festival-overlay-selections
+    start: 0xE1B3A0
+
+  - name: lettersText
+    type: bin
+    dir: text/letters
+    start: 0xE1B4E0
+
+  - name: lettersTextIndex
+    type: bin
+    dir: text/letters
+    start: 0xE1C8C0
+
+  - name: shopText
+    type: bin
+    dir: text/shop
+    start: 0xE1C9C0
+
+  - name: shopTextIndex
+    type: bin
+    dir: text/shop
+    start: 0xE21150
+
+  - name: animalInteractionsText
+    type: bin
+    dir: text/animal-interactions
+    start: 0xE21700
+
+  - name: animalInteractionsTextIndex
+    type: bin
+    dir: text/animal-interactions
+    start: 0xE218A0
+
+  - name: tvText
+    type: bin
+    dir: text/tv
+    start: 0xE218D0
+
+  - name: tvTextIndex
+    type: bin
+    dir: text/tv
+    start: 0xE24E20
+
+  - name: dialogue10Text
+    type: bin
+    dir: text/dialogue10
+    start: 0xE24F60
+
+  - name: dialogue10TextIndex
+    type: bin
+    dir: text/dialogue10
+    start: 0xE24F70
+
+  - name: namingScreenText
+    type: bin
+    dir: text/naming-screen
+    start: 0xE24F80
+
+  - name: namingScreenTextIndex
+    type: bin
+    dir: text/naming-screen
+    start: 0xE25170
+
+  - name: elliText
+    type: bin
+    dir: dialogue/npc/elli
+    start: 0xE251D0
+
+  - name: elliTextIndex
+    type: bin
+    dir: dialogue/npc/elli
+    start: 0xE28460
+
+  - name: kaiText
+    type: bin
+    dir: dialogue/npc/kai
+    start: 0xE28720
+
+  - name: kaiTextIndex
+    type: bin
+    dir: dialogue/npc/kai
+    start: 0xE2A230
+
+  - name: karenText
+    type: bin
+    dir: dialogue/npc/karen
+    start: 0xE2A380
+
+  - name: karenTextIndex
+    type: bin
+    dir: dialogue/npc/karen
+    start: 0xE2D080
+
+  - name: gotzText
+    type: bin
+    dir: dialogue/npc/gotz
+    start: 0xE2D330
+
+  - name: gotzTextIndex
+    type: bin
+    dir: dialogue/npc/gotz
+    start: 0xE2E500
+
+  - name: sashaText
+    type: bin
+    dir: dialogue/npc/sasha
+    start: 0xE2E600
+
+  - name: sashaTextIndex
+    type: bin
+    dir: dialogue/npc/sasha
+    start: 0xE2F650
+
+  - name: cliffText
+    type: bin
+    dir: dialogue/npc/cliff
+    start: 0xE2F730
+
+  - name: cliffTextIndex
+    type: bin
+    dir: dialogue/npc/cliff
+    start: 0xE30ED0
+
+  - name: jeffText
+    type: bin
+    dir: dialogue/npc/jeff
+    start: 0xE31010
+
+  - name: jeffTextIndex
+    type: bin
+    dir: dialogue/npc/jeff
+    start: 0xE33020
+
+  - name: kentText
+    type: bin
+    dir: dialogue/npc/kent
+    start: 0xE33190
+
+  - name: kentTextIndex
+    type: bin
+    dir: dialogue/npc/kent
+    start: 0xE34650
+
+  - name: harrisText
+    type: bin
+    dir: dialogue/npc/harris
+    start: 0xE34790
+
+  - name: harrisTextIndex
+    type: bin
+    dir: dialogue/npc/harris
+    start: 0xE36000
+
+  - name: popuriText
+    type: bin
+    dir: dialogue/npc/popuri
+    start: 0xE36150
+
+  - name: popuriTextIndex
+    type: bin
+    dir: dialogue/npc/popuri
+    start: 0xE39360
+
+  - name: mariaText
+    type: bin
+    dir: dialogue/npc/maria
+    start: 0xE39610
+
+  - name: mariaTextIndex
+    type: bin
+    dir: dialogue/npc/maria
+    start: 0xE3C700
+
+  - name: mayText
+    type: bin
+    dir: dialogue/npc/may
+    start: 0xE3C9A0
+
+  - name: mayTextIndex
+    type: bin
+    dir: dialogue/npc/may
+    start: 0xE3D600
+
+  - name: annText
+    type: bin
+    dir: dialogue/npc/ann
+    start: 0xE3D6D0
+
+  - name: annTextIndex
+    type: bin
+    dir: dialogue/npc/ann
+    start: 0xE40B90
+
+  - name: dougText
+    type: bin
+    dir: dialogue/npc/doug
+    start: 0xE40E50
+
+  - name: dougTextIndex
+    type: bin
+    dir: dialogue/npc/doug
+    start: 0xE42010
+
+  - name: grayText
+    type: bin
+    dir: dialogue/npc/gray
+    start: 0xE42100
+
+  - name: grayTextIndex
+    type: bin
+    dir: dialogue/npc/gray
+    start: 0xE42D50
+
+  - name: basilText
+    type: bin
+    dir: dialogue/npc/basil
+    start: 0xE42E60
+
+  - name: basilTextIndex
+    type: bin
+    dir: dialogue/npc/basil
+    start: 0xE43E80
+
+  - name: liliaText
+    type: bin
+    dir: dialogue/npc/lilia
+    start: 0xE43F60
+
+  - name: liliaTextIndex
+    type: bin
+    dir: dialogue/npc/lilia
+    start: 0xE45130
+
+  - name: dukeText
+    type: bin
+    dir: dialogue/npc/duke
+    start: 0xE45200
+
+  - name: dukeTextIndex
+    type: bin
+    dir: dialogue/npc/duke
+    start: 0xE461C0
+
+  - name: shipperText
+    type: bin
+    dir: dialogue/npc/shipper
+    start: 0xE46280
+
+  - name: shipperTextIndex
+    type: bin
+    dir: dialogue/npc/shipper
+    start: 0xE47140
+
+  - name: harvestSpritesText
+    type: bin
+    dir: dialogue/npc/harvest-sprites
+    start: 0xE471E0
+
+  - name: harvestSpritesTextIndex
+    type: bin
+    dir: dialogue/npc/harvest-sprites
+    start: 0xE485D0
+
+  - name: assistantCarpentersText
+    type: bin
+    dir: dialogue/npc/assistant-carpenters
+    start: 0xE48720
+
+  - name: assistantCarpentersTextIndex
+    type: bin
+    dir: dialogue/npc/assistant-carpenters
+    start: 0xE49480
+
+  - name: masterCarpenterText
+    type: bin
+    dir: dialogue/npc/master-carpenter
+    start: 0xE49540
+
+  - name: masterCarpenterTextIndex
+    type: bin
+    dir: dialogue/npc/master-carpenter
+    start: 0xE4A230
+
+  - name: mayorText
+    type: bin
+    dir: dialogue/npc/mayor
+    start: 0xE4A2D0
+
+  - name: mayorTextIndex
+    type: bin
+    dir: dialogue/npc/mayor
+    start: 0xE4B6E0
+
+  - name: gregText
+    type: bin
+    dir: dialogue/npc/greg
+    start: 0xE4B7D0
+
+  - name: gregTextIndex
+    type: bin
+    dir: dialogue/npc/greg
+    start: 0xE4C8D0
+
+  - name: rickText
+    type: bin
+    dir: dialogue/npc/rick
+    start: 0xE4C9B0
+
+  - name: rickTextIndex
+    type: bin
+    dir: dialogue/npc/rick
+    start: 0xE4E230
+
+  - name: barleyText
+    type: bin
+    dir: dialogue/npc/barley
+    start: 0xE4E320
+
+  - name: barleyTextIndex
+    type: bin
+    dir: dialogue/npc/barley
+    start: 0xE4EC70
+
+  - name: sydneyText
+    type: bin
+    dir: dialogue/npc/sydney
+    start: 0xE4ED10
+
+  - name: sydneyTextIndex
+    type: bin
+    dir: dialogue/npc/sydney
+    start: 0xE4F370
+
+  - name: potionShopDealerText
+    type: bin
+    dir: dialogue/npc/potion-shop-dealer
+    start: 0xE4F3F0
+
+  - name: potionShopDealerTextIndex
+    type: bin
+    dir: dialogue/npc/potion-shop-dealer
+    start: 0xE50520
+
+  - name: mayorWifeText
+    type: bin
+    dir: dialogue/npc/mayor-wife
+    start: 0xE50600
+
+  - name: mayorWifeTextIndex
+    type: bin
+    dir: dialogue/npc/mayor-wife
+    start: 0xE51A00
+
+  - name: ellenText
+    type: bin
+    dir: dialogue/npc/ellen
+    start: 0xE51AE0
+
+  - name: ellenTextIndex
+    type: bin
+    dir: dialogue/npc/ellen
+    start: 0xE52740
+
+  - name: stuText
+    type: bin
+    dir: dialogue/npc/stu
+    start: 0xE527E0
+
+  - name: stuTextIndex
+    type: bin
+    dir: dialogue/npc/stu
+    start: 0xE53450
+
+  - name: midwifeText
+    type: bin
+    dir: dialogue/npc/midwife
+    start: 0xE53540
+
+  - name: midwifeTextIndex
+    type: bin
+    dir: dialogue/npc/midwife
+    start: 0xE54C60
+
+  - name: pastorText
+    type: bin
+    dir: dialogue/npc/pastor
+    start: 0xE54D60
+
+  - name: pastorTextIndex
+    type: bin
+    dir: dialogue/npc/pastor
+    start: 0xE55AE0
+
+  - name: saibaraText
+    type: bin
+    dir: dialogue/npc/saibara
+    start: 0xE55BA0
+
+  - name: saibaraTextIndex
+    type: bin
+    dir: dialogue/npc/saibara
+    start: 0xE569C0
+
+  - name: cutscenes1Text
+    type: bin
+    dir: dialogue/cutscenes/cutscenes-1
+    start: 0xE56A80
+
+  - name: cutscenes1TextIndex
+    type: bin
+    dir: dialogue/cutscenes/cutscenes-1
+    start: 0xE58010
+
+  - name: funeralIntroText
+    type: bin
+    dir: dialogue/cutscenes/funeral-intro
+    start: 0xE58160
+
+  - name: funeralIntroTextIndex
+    type: bin
+    dir: dialogue/cutscenes/funeral-intro
+    start: 0xE583C0
+
+  - name: dialogue48Text
+    type: bin
+    dir: text/dialogue48
+    start: 0xE583F0
+
+  - name: dialogue48TextIndex
+    type: bin
+    dir: text/dialogue48
+    start: 0xE58880
+
+  - name: dialogue49Text
+    type: bin
+    dir: text/dialogue49
+    start: 0xE588D0
+
+  - name: dialogue49TextIndex
+    type: bin
+    dir: text/dialogue49
+    start: 0xE5A6D0
+
+  - name: dialogue50Text
+    type: bin
+    dir: text/dialogue50
+    start: 0xE5A8C0
+
+  - name: dialogue50TextIndex
+    type: bin
+    dir: text/dialogue50
+    start: 0xE5D240
+
+  - name: dialogue51Text
+    type: bin
+    dir: text/dialogue51
+    start: 0xE5D4C0
+
+  - name: dialogue51TextIndex
+    type: bin
+    dir: text/dialogue51
+    start: 0xE5E270
+
+  - name: dialogue52Text
+    type: bin
+    dir: text/dialogue52
+    start: 0xE5E340
+
+  - name: dialogue52TextIndex
+    type: bin
+    dir: text/dialogue52
+    start: 0xE5F220
+
+  - name: dogRaceText
+    type: bin
+    dir: text/dog-race
+    start: 0xE5F300
+
+  - name: dogRaceTextIndex
+    type: bin
+    dir: text/dog-race
+    start: 0xE60080
+
+  - name: dialogue54Text
+    type: bin
+    dir: text/dialogue54
+    start: 0xE60170
+
+  - name: dialogue54TextIndex
+    type: bin
+    dir: text/dialogue5
+    start: 0xE64680
+
+  - name: dialogue55Text
+    type: bin
+    dir: text/dialogue55
+    start: 0xE64AF0
+
+  - name: dialogue55TextIndex
+    type: bin
+    dir: text/dialogue55
+    start: 0xE66260
+
+  - name: dialogue56Text
+    type: bin
+    dir: text/dialogue56
+    start: 0xE663F0
+
+  - name: dialogue56TextIndex
+    type: bin
+    dir: text/dialogue56
+    start: 0xE677B0
+
+  - name: newYearFestivalText
+    type: bin
+    dir: text/new-year-festival
+    start: 0xE678E0
+
+  - name: newYearFestivalTextIndex
+    type: bin
+    dir: text/new-year-festival
+    start: 0xE68620
+
+  - name: spiritFestivalText
+    type: bin
+    dir: text/spirit-festival
+    start: 0xE68700
+
+  - name: spiritFestivalTextIndex
+    type: bin
+    dir: text/spirit-festival
+    start: 0xE68BA0
+
+  - name: horseRaceText
+    type: bin
+    dir: text/horse-race
+    start: 0xE68BF0
+
+  - name: horseRaceTextIndex
+    type: bin
+    dir: text/horse-race
+    start: 0xE6ADC0
+
+  - name: marriedDialoguesText
+    type: bin
+    dir: text/dialogue60
+    start: 0xE6AFE0
+
+  - name: marriedDialoguesTextIndex
+    type: bin
+    dir: text/dialogue60
+    start: 0xE6F1E0
+
+  - name: dialogue61Text
+    type: bin
+    dir: text/dialogue61
+    start: 0xE6F5C0
+
+  - name: dialogue61TextIndex
+    type: bin
+    dir: text/dialogue61
+    start: 0xE714D0
+
+  - name: karenCutscenes1Text
+    type: bin
+    dir: text/dialogue62
+    start: 0xE71690
+
+  - name: karenCutscenes1TextIndex
+    type: bin
+    dir: text/dialogue62
+    start: 0xE72680
+
+  - name: dialogue63Text
+    type: bin
+    dir: text/dialogue63
+    start: 0xE72780
+
+  - name: dialogue63TextIndex
+    type: bin
+    dir: text/dialogue63
+    start: 0xE73070
+
+  - name: dialogue64Text
+    type: bin
+    dir: text/dialogue64
+    start: 0xE73110
+
+  - name: dialogue64TextIndex
+    type: bin
+    dir: text/dialogue64
+    start: 0xE7C7B0
+
+  - name: dialogue65Text
+    type: bin
+    dir: text/dialogue65
+    start: 0xE7D1E0
+
+  - name: dialogue65TextIndex
+    type: bin
+    dir: text/dialogue65
+    start: 0xE81660
+
+  - name: eggFestivalText
+    type: bin
+    dir: text/egg-festival
+    start: 0xE81F50
+
+  - name: eggFestivalTextIndex
+    type: bin
+    dir: text/egg-festival
+    start: 0xE82B30
+
+  - name: karenCutscenes2Text
+    type: bin
+    dir: dialogue/cutscenes/karen-cutscenes
+    start: 0xE82C40
+
+  - name: karenCutscenes2TextIndex
+    type: bin
+    dir: dialogue/cutscenes/karen-cutscenes
+    start: 0xE83880
+
+  - name: vegetableFestivalText
+    type: bin
+    dir: text/vegetable-festival
+    start: 0xE83960
+
+  - name: vegetableFestivalTextIndex
+    type: bin
+    dir: text/vegetable-festival
+    start: 0xE84690
+
+  - name: babyText
+    type: bin
+    dir: dialogue/npc/baby
+    start: 0xE84760
+
+  - name: babyTextIndex
+    type: bin
+    dir: dialogue/npc/baby
+    start: 0xE84910
+
+  - name: mrsManaAndJohnText
+    type: bin
+    dir: dialogue/npc/mrs-mana-and-john
+    start: 0xE84990
+
+  - name: mrsManaAndJohnTextIndex
+    type: bin
+    dir: dialogue/npc/mrs-mana-and-john
+    start: 0xE84F50
+
+  - name: additionalNpcsText
+    type: bin
+    dir: dialogue/npc/additional-npcs
+    start: 0xE84FD0
+
+  - name: additionalNpcsTextIndex
+    type: bin
+    dir: dialogue/npc/additional-npcs
+    start: 0xE85730
+
+  - name: howToPlayText
+    type: bin
+    dir: text/how-to-play
+    start: 0xE857A0
+
+  - name: howToPlayTextIndex
+    type: bin
+    dir: text/how-to-play
+    start: 0xE87080
+
+  - name: dialogueBytecodeSegment1
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE871A0
+
+  - name: dialogueBytecodeSegment1Index
+    type: bin
+    dir: dialogues/bytecode
     start: 0xE871B0
+
+  - name: dialogueBytecodeSegment2
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE871C0
+
+  - name: dialogueBytecodeSegment2Index
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE872C0
+
+  - name: dialogueBytecodeSegment3
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE87320
+
+  - name: dialogueBytecodeSegment3Index
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE87BB0
+
+  - name: dialogueBytecodeSegment4
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE87CE0
+
+  - name: dialogueBytecodeSegment4Index
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE88190
+
+  - name: dialogueBytecodeSegment5
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE88240
+
+  - name: dialogueBytecodeSegment5Index
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE88B20
+
+  - name: dialogueBytecodeSegment6
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE88C60
+
+  - name: dialogueBytecodeSegment6Index
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE89070
+
+  - name: dialogueBytecodeSegment7
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE89120
+
+  - name: dialogueBytecodeSegment7Index
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE89600
+
+  - name: dialogueBytecodeSegment8
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE896B0
+
+  - name: dialogueBytecodeSegment8Index
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE89B60
+
+  - name: dialogueBytecodeSegment9
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE89C00
+
+  - name: dialogueBytecodeSegment9Index
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE8A460
+
+  - name: dialogueBytecodeSegment10
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE8A590
+
+  - name: dialogueBytecodeSegment10Index
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE8AE00
+
+  - name: dialogueBytecodeSegment11
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE8AF30
+
+  - name: dialogueBytecodeSegment11Index
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE8B7A0
+
+  - name: dialogueBytecodeSegment12
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE8B8F0
+
+  - name: dialogueBytecodeSegment12Index
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE8BCE0
+
+  - name: dialogueBytecodeSegment13
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE8BD80
+
+  - name: dialogueBytecodeSegment13Index
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE8C000
+
+  - name: dialogueBytecodeSegment14
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE8C070
+
+  - name: dialogueBytecodeSegment14Index
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE8C400
+
+  - name: dialogueBytecodeSegment15
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE8C480
+
+  - name: dialogueBytecodeSegment15Index
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE8C750
+
+  - name: dialogueBytecodeSegment16
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE8C7D0
+
+  - name: dialogueBytecodeSegment16Index
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE8CBA0
+
+  - name: dialogueBytecodeSegment17
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE8CC40
+
+  - name: dialogueBytecodeSegment17Index
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE8CF90
+
+  - name: dialogueBytecodeSegment18
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE8D010
+
+  - name: dialogueBytecodeSegment18Index
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE8D3F0
+
+  - name: dialogueBytecodeSegment19
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE8D470
+
+  - name: dialogueBytecodeSegment19Index
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE8D7B0
+
+  - name: dialogueBytecodeSegment20
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE8D830
+
+  - name: dialogueBytecodeSegment20Index
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE8DA90
+
+  - name: dialogueBytecodeSegment21
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE8DB00
+
+  - name: dialogueBytecodeSegment21Index
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE8DDF0
+
+  - name: dialogueBytecodeSegment22
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE8DE60
+
+  - name: dialogueBytecodeSegment22Index
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE8E0E0
+
+  - name: dialogueBytecodeSegment23
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE8E160
+    
+  - name: dialogueBytecodeSegment23Index
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE8E490
+
+  - name: dialogueBytecodeSegment24
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE8E520
+
+  - name: dialogueBytecodeSegment24Index
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE8E780
+
+  - name: dialogueBytecodeSegment25
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE8E7F0
+
+  - name: dialogueBytecodeSegment25Index
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE8EAC0
+
+  - name: dialogueBytecodeSegment26
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE8EB30
+
+  - name: dialogueBytecodeSegment26Index
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE8EE50
+    
+  - name: dialogueBytecodeSegment27
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE8EEC0
+
+  - name: dialogueBytecodeSegment27Index
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE8F1E0
+
+  - name: dialogueBytecodeSegment28
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE8F250
+
+  - name: dialogueBytecodeSegment28Index
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE8F550
+
+  - name: dialogueBytecodeSegment29
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE8F5C0
+
+  - name: dialogueBytecodeSegment29Index
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE8F7A0
+
+  - name: dialogueBytecodeSegment30
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE8F810
+
+  - name: dialogueBytecodeSegment30Index
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE8FA00
+
+  - name: dialogueBytecodeSegment31
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE8FA70
+
+  - name: dialogueBytecodeSegment31Index
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE8FC90
+
+  - name: dialogueBytecodeSegment32
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE8FD00
+
+  - name: dialogueBytecodeSegment32Index
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE90000
+
+  - name: dialogueBytecodeSegment33
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE90080
+
+  - name: dialogueBytecodeSegment33Index
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE903D0
+
+  - name: dialogueBytecodeSegment34
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE90460
+
+  - name: dialogueBytecodeSegment34Index
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE90810
+
+  - name: dialogueBytecodeSegment35
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE90890
+
+  - name: dialogueBytecodeSegment35Index
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE90B00
+
+  - name: dialogueBytecodeSegment36
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE90B70
+
+  - name: dialogueBytecodeSegment36Index
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE90DD0
+
+  - name: dialogueBytecodeSegment37
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE90E40
+
+  - name: dialogueBytecodeSegment37Index
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE91210
+
+  - name: dialogueBytecodeSegment38
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE91290
+
+  - name: dialogueBytecodeSegment38Index
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE914C0
+
+  - name: dialogueBytecodeSegment39
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE91520
+
+  - name: dialogueBytecodeSegment39Index
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE917E0
+
+  - name: dialogueBytecodeSegment40
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE91860
+
+  - name: dialogueBytecodeSegment40Index
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE918A0
+
+  - name: dialogueBytecodeSegment41
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE918D0
+
+  - name: dialogueBytecodeSegment41Index
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE91900
+
+  - name: dialogueBytecodeSegment42
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE91920
+
+  - name: dialogueBytecodeSegment42Index
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE91970
+
+  - name: dialogueBytecodeSegment43
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE919A0
+
+  - name: dialogueBytecodeSegment43Index
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE91A50
+
+  - name: dialogueBytecodeSegment44
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE91AB0
+
+  - name: dialogueBytecodeSegment44Index
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE91AD0
+
+  - name: dialogueBytecodeSegment45
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE91AE0
+
+  - name: dialogueBytecodeSegment45Index
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE91B50
+
+  - name: dialogueBytecodeSegment46
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE91B80
+
+  - name: dialogueBytecodeSegment46Index
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE91B90
+
+  - name: dialogueBytecodeSegment47
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE91BA0
+
+  - name: dialogueBytecodeSegment47Index
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE91BF0
+
+  - name: dialogueBytecodeSegment48
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE91C20
+
+  - name: dialogueBytecodeSegment48Index
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE91CE0
+
+  - name: dialogueBytecodeSegment49
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE91D30
+
+  - name: dialogueBytecodeSegment49Index
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE91DC0
+
+  - name: dialogueBytecodeSegment50
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE91E00
+
+  - name: dialogueBytecodeSegment50Index
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE91EF0
+
+  - name: dialogueBytecodeSegment51
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE91F60
+
+  - name: dialogueBytecodeSegment51Index
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE91F90
+
+  - name: dialogueBytecodeSegment52
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE91FB0
+
+  - name: dialogueBytecodeSegment52Index
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE91FF0
+
+  - name: dialogueBytecodeSegment53
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE92010
+
+  - name: dialogueBytecodeSegment53Index
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE92030
+
+  - name: dialogueBytecodeSegment54
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE92040
+
+  - name: dialogueBytecodeSegment54Index
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE92180
+
+  - name: dialogueBytecodeSegment55
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE92220
+
+  - name: dialogueBytecodeSegment55Index
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE922E0
+
+  - name: dialogueBytecodeSegment56
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE92370
+
+  - name: dialogueBytecodeSegment56Index
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE92380
+
+  - name: dialogueBytecodeSegment57
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE92390
+
+  - name: dialogueBytecodeSegment57Index
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE924A0
+
+  - name: dialogueBytecodeSegment58
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE92520
+
+  - name: dialogueBytecodeSegment58Index
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE92550
+
+  - name: dialogueBytecodeSegment59
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE92570
+
+  - name: dialogueBytecodeSegment59Index
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE925B0
+
+  - name: dialogueBytecodeSegment60
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE925F0
+
+  - name: dialogueBytecodeSegment60Index
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE92600
+
+  - name: dialogueBytecodeSegment61
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE92610
+
+  - name: dialogueBytecodeSegment61Index
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE92630
+
+  - name: dialogueBytecodeSegment62
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE92640
+
+  - name: dialogueBytecodeSegment62Index
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE92800
+
+  - name: dialogueBytecodeSegment63
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE928B0
+
+  - name: dialogueBytecodeSegment63Index
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE92910
+
+  - name: dialogueBytecodeSegment64
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE92950
+
+  - name: dialogueBytecodeSegment64Index
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE92B40
+
+  - name: dialogueBytecodeSegment65
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE92B90
+
+  - name: dialogueBytecodeSegment65Index
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE92C50
+
+  - name: dialogueBytecodeSegment66
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE92C70
+
+  - name: dialogueBytecodeSegment66Index
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE92DB0
+
+  - name: dialogueBytecodeSegment67
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE92DE0
+
+  - name: dialogueBytecodeSegment67Index
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE92E90
+
+  - name: dialogueBytecodeSegment68
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE92EC0
+
+  - name: dialogueBytecodeSegment68Index
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE92EE0
+
+  - name: dialogueBytecodeSegment69
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE92EF0
+
+  - name: dialogueBytecodeSegment69Index
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE92F90
+
+  - name: dialogueBytecodeSegment70
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE92FF0
+
+  - name: dialogueBytecodeSegment70Index
+    type: bin
+    dir: dialogues/bytecode
+    start: 0xE93060
 
   - name: ptr_table
     type: bin
