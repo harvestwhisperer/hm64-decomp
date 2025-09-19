@@ -6,6 +6,10 @@
 #include "system/mapController.h"
 
 #define MAX_MAPS 1
+#define MAX_GROUND_OBJECTS 64
+#define MAX_MAP_ADDITIONS 32
+#define MAX_MAP_OBJECTS 16
+#define MAX_WEATHER_SPRITES 16
 
 /* flags */
 #define MAP_ACTIVE 1
@@ -41,10 +45,16 @@ typedef struct {
 typedef struct {
     u16 unk_0;
     u16 unk_2;
-    u8 arr[4];
-    u8 arr2[4];
-    u8 arr3[4];
-} UnknownVertexStruct;
+    u8 unk_4[3];
+    u8 unk_7;
+    u8 unk_8[3];
+    u8 unk_B;
+    u8 unk_C[3];
+    u8 unk_F;
+    u8 flags;
+    u8 unk_11;
+    u8 unk_12;
+} UnknownMapStruct2;
 
 typedef struct {
     u8 ob[3];
@@ -99,26 +109,24 @@ typedef struct {
     u16 unk_0; // counter
     u8 unk_2; // related to bitmap scale for traversing timg
     u8 unk_3; // counter for byteswapped Vec3fs
-} UnknownMapStruct3;
+} UnknownMapStruct;
 
 // 0x80141A18
 // map objects sprite info
 typedef struct {
     Vec3f coordinates; // 0xA18, coordinates
     u16 spriteIndex; // 0xA24
-    u16 unk_E; // 0xA26 // likely offset into shared spritesheet
+    u16 animationIndex; // 0xA26
     u8 unk_10; // 0xA28
-    u8 unk_11; // 0xA29
+    u8 animationMode; // 0xA29
     volatile u8 flags; // 0xA2A
 } MapObject;
 
 // 0x80141B64
 typedef struct {
-    u32 unk_0;
-    u8 unk_4;
-    u32 unk_8;
+    Vec3f coordinates;
     u16 spriteIndex;
-    u16 unk_E;
+    u16 animationIndex;
     u8 flags;
 } WeatherSprite;
 
@@ -145,8 +153,8 @@ typedef struct {
     u16 arr2[0x10]; // 0x80142888
     u16 unk_40; // 0x801428A8
     u16 unk_42; // 0x801428AA, current index into arr1
-    u8 unk_44; // 0x801428AC set from sprite vec.x, size
-    u8 unk_45; // 0x801428AD set from sprite vec.z, size
+    u8 unk_44; // 0x801428AC set from entity tile coordinate
+    u8 unk_45; // 0x801428AD set from entity tile coordinate
     u16 flags; // 0x801428AE
 } MapAdditions;
 
@@ -198,15 +206,15 @@ typedef struct {
 typedef struct {
     u16 header;
     u16 unk_2;
-    u8 scalingX;
-    u8 scalingY;;
+    u8 tileSizeX;
+    u8 tileSizeY;;
     u8 mapWidth;
     u8 mapHeight;
     u8 unk_8;
     u8 unk_9;
     u8 unk_A;
     u8 unk_B;
-} MapGridInfo;
+} MapGridData;
 
 // 0x8013DC40
 typedef struct  {
@@ -227,7 +235,7 @@ typedef struct  {
     u16 unk_30D0;
     u16 unk_30D2[0x63C]; // more vertices
     MapCameraView mapCameraView; // 0x3D4C
-    UnknownMapStruct3 mapStruct3[16]; // 0x3D98 // related to tile bitmaps/compressed vecs
+    UnknownMapStruct unknownMapStruct[16]; // 0x3D98 // related to tile bitmaps/compressed vecs
     MapObject mapObjects[12]; // 0x3DD8
     u32 padding1[20];
     WeatherSprite weatherSprites[16];
@@ -245,7 +253,7 @@ typedef struct  {
 } MainMap;
 
 extern void func_800337D0(void);    
-extern bool func_80033A90(u16 mapIndex, MapController* arg1, void* arg2, void* arg3, void* arg4, void* arg5, void* arg6, void* arg7, void* arg8, void* arg9, void *argA);
+extern bool func_80033A90(u16 mapIndex, MapGridData* grid, void* arg2, u8* terrainQuads, void* arg4, void* arg5, void* arg6, u16* paletteIndex, void* arg8, void* arg9, void *argA);
 extern bool func_80034090(u16 mapIndex);  
 extern bool setMapTranslation(u16, f32, f32, f32);
 extern bool func_80034298(u16, f32, f32, f32);   

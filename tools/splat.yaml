@@ -17,7 +17,6 @@ options:
   asm_function_macro: glabel
   asm_data_macro: dlabel
   asm_emit_size_directive: true
-  asm_nonmatching_label_macro: ""
   symbol_addrs_path: symbol_addrs.txt
   segment_symbols_style: makerom
   migrate_rodata_to_functions: true
@@ -352,8 +351,8 @@ segments:
       - [ 0xF4B40, data, game/loadGameScreen] # packinsoft farm string
       - [ 0xF4B50, .data, data/animationScripts/player]
       - [ 0xF50D0, .data, data/animationScripts/npc] #TODO: finish adding. Based on the splits, these unfortunately seem to all be in the same file 
-      - [ 0xF5660, data, data/animationScripts/animationScripts]
-      - [ 0xF63A0, .data, data/animationScripts/chick]
+      - [ 0xF5890, data, data/animationScripts/animationScripts]
+      - [ 0xF6240, data, data/animationScripts/animals]
       - [ 0xF63D0, data, data/animationScripts/animationScripts2]
       # - [ 0xF7118, data, data/message/unknownMessageData]
       - [ 0xF71B0, data, data/sfx]

@@ -6,6 +6,7 @@
 #define MAX_BITMAPS 176
 
 /* bitmap flags */
+#define BITMAP_ACTIVE 1
 #define USE_BILINEAR_FILTERING 0x4
 
 /* rendering flags */

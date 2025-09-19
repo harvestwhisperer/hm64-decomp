@@ -5,10 +5,10 @@
 
 #define MAX_SCENE_NODES 336
 
-#define ACTIVE 1
-#define UPDATE_SCALE 0x10
-#define UPDATE_ROTATION 0x20
-#define TRANSFORM_EXEMPT 0x40
+#define SCENE_NODE_ACTIVE 1
+#define SCENE_NODE_UPDATE_SCALE 0x10
+#define SCENE_NODE_UPDATE_ROTATION 0x20
+#define SCENE_NODE_TRANSFORM_EXEMPT 0x40
 // 0x80 = bump up z value
 
 typedef struct {

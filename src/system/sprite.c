@@ -127,7 +127,7 @@ bool func_80029E2C(u16 index, u16 arg1, u16 arg2) {
 
     if (index < MAX_BITMAPS) {
 
-        if (bitmaps[index].flags & ACTIVE) {
+        if (bitmaps[index].flags & BITMAP_ACTIVE) {
 
             bitmaps[index].renderingFlags &= ~(8 | 0x10 | 0x20 | 0x40);
 
@@ -155,7 +155,7 @@ bool func_80029EA4(u16 index, u16 arg1) {
     
     if (index < MAX_BITMAPS) {
 
-        if (bitmaps[index].flags & ACTIVE) {
+        if (bitmaps[index].flags & BITMAP_ACTIVE) {
             
             bitmaps[index].renderingFlags &= ~(0x80 | 0x100);
             temp = arg1 << 7;
@@ -178,7 +178,7 @@ bool func_80029F14(u16 index, u16 arg1) {
     
     if (index < MAX_BITMAPS) {
         
-        if (bitmaps[index].flags & ACTIVE) {
+        if (bitmaps[index].flags & BITMAP_ACTIVE) {
             
             if (arg1) {
                 bitmaps[index].renderingFlags |= 0x200;
@@ -203,7 +203,7 @@ bool setBitmapFlip(u16 index, bool flipHorizontal, bool flipVertical) {
     
     if (index < MAX_BITMAPS) {
 
-        if (bitmaps[index].flags & ACTIVE) {
+        if (bitmaps[index].flags & BITMAP_ACTIVE) {
     
             if (flipHorizontal) {
                 bitmaps[index].renderingFlags |= FLIP_HORIZONTAL;
@@ -230,7 +230,8 @@ bool func_8002A02C(u16 index, u16 arg1) {
     int temp;
     
     if (index < MAX_BITMAPS) {
-        if (bitmaps[index].flags & ACTIVE) {
+
+        if (bitmaps[index].flags & BITMAP_ACTIVE) {
             
             bitmaps[index].renderingFlags &= ~(0x400 | 0x1000 | 0x800);
             temp = arg1 << 10;
@@ -239,6 +240,7 @@ bool func_8002A02C(u16 index, u16 arg1) {
             result = TRUE;
 
         }
+        
     }
     
     return result;
@@ -253,7 +255,7 @@ bool setBitmapViewSpacePosition(u16 index, f32 arg1, f32 arg2, f32 arg3) {
     
     if (index < MAX_BITMAPS) {
         
-        if (bitmaps[index].flags & ACTIVE) {
+        if (bitmaps[index].flags & BITMAP_ACTIVE) {
             
             bitmaps[index].viewSpacePosition.x = arg1;
             bitmaps[index].viewSpacePosition.y = arg2;
@@ -276,7 +278,7 @@ bool setBitmapScale(u16 index, f32 arg1, f32 arg2, f32 arg3) {
     
     if (index < MAX_BITMAPS) {
         
-        if (bitmaps[index].flags & ACTIVE) {
+        if (bitmaps[index].flags & BITMAP_ACTIVE) {
             
             bitmaps[index].scaling.x = arg1;
             bitmaps[index].scaling.y = arg2;
@@ -299,7 +301,7 @@ bool setBitmapRotation(u16 index, f32 arg1, f32 arg2, f32 arg3) {
 
     if (index < MAX_BITMAPS) {
         
-        if (bitmaps[index].flags & ACTIVE) {
+        if (bitmaps[index].flags & BITMAP_ACTIVE) {
             
             bitmaps[index].rotation.x = arg1;
             bitmaps[index].rotation.y = arg2;
@@ -322,7 +324,7 @@ bool setBitmapRGBA(u16 index, u8 r, u8 g, u8 b, u8 a) {
     
     if (index < MAX_BITMAPS) {
         
-        if (bitmaps[index].flags & ACTIVE) {
+        if (bitmaps[index].flags & BITMAP_ACTIVE) {
             
             bitmaps[index].rgba.r = r;
             bitmaps[index].rgba.g = g;
@@ -346,7 +348,7 @@ bool setBitmapAnchor(u16 index, s16 anchorX, s16 anchorY) {
     
     if (index < MAX_BITMAPS) {
         
-        if (bitmaps[index].flags & ACTIVE) {
+        if (bitmaps[index].flags & BITMAP_ACTIVE) {
             
             bitmaps[index].anchorX = anchorX;
             bitmaps[index].anchorY = anchorY;
@@ -649,7 +651,7 @@ void updateBitmaps(void) {
     
     for (i = 0; i < MAX_BITMAPS; i++) {
         
-        if (bitmaps[i].flags & ACTIVE) {
+        if (bitmaps[i].flags & BITMAP_ACTIVE) {
     
             setBitmapFormat(&bitmaps[i], bitmaps[i].timg, bitmaps[i].pal);
 

@@ -177,13 +177,13 @@ bool dmaMapAssets(u16 mainMapIndex, u16 levelMapIndex) {
 
     bool result = FALSE;
     
-    u32 *offset1;
+    MapGridData *mapGrid;
     u32 *offset2;
-    u32 *terrainQuads;
+    u8 *terrainQuads;
     u32 *offset4;
     u32 *offset5;
     u32 *offset6;
-    u32 *offset7;
+    u16 *paletteIndex;
     u32 *offset8;
     u32 *offset9;
     u32 *offset10; 
@@ -194,13 +194,13 @@ bool dmaMapAssets(u16 mainMapIndex, u16 levelMapIndex) {
         
         nuPiReadRom(gMapModelAddresses[levelMapIndex].romStart, mapControllers[mainMapIndex].modelDataIndex, gMapModelAddresses[levelMapIndex].romEnd - gMapModelAddresses[levelMapIndex].romStart);
  
-        offset1 = getAddress(mapControllers[mainMapIndex].modelDataIndex, 0);
+        mapGrid = (MapGridData*)getAddress(mapControllers[mainMapIndex].modelDataIndex, 0);
         offset2 = getAddress(mapControllers[mainMapIndex].modelDataIndex, 1);
-        terrainQuads = getAddress(mapControllers[mainMapIndex].modelDataIndex, 2);
+        terrainQuads = (u8*)getAddress(mapControllers[mainMapIndex].modelDataIndex, 2);
         offset4 = getAddress(mapControllers[mainMapIndex].modelDataIndex, 3);
         offset5 = getAddress(mapControllers[mainMapIndex].modelDataIndex, 4);
         offset6 = getAddress(mapControllers[mainMapIndex].modelDataIndex, 5);
-        offset7 = getAddress(mapControllers[mainMapIndex].modelDataIndex, 6);
+        paletteIndex = (u16*)getAddress(mapControllers[mainMapIndex].modelDataIndex, 6);
         offset8 = getAddress(mapControllers[mainMapIndex].modelDataIndex, 7);
         offset9 = getAddress(mapControllers[mainMapIndex].modelDataIndex, 8);
         offset10 = getAddress(mapControllers[mainMapIndex].modelDataIndex, 9);
@@ -208,13 +208,13 @@ bool dmaMapAssets(u16 mainMapIndex, u16 levelMapIndex) {
         mapControllers[mainMapIndex].flags |= 2;
                 
         func_80033A90(mapControllers[mainMapIndex].mainMapIndex, 
-            offset1, 
+            mapGrid, 
             offset2, 
             terrainQuads, 
             offset4, 
             offset5, 
             offset6, 
-            offset7, 
+            paletteIndex, 
             offset8, 
             offset9, 
             offset10
