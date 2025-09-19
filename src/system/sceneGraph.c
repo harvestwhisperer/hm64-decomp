@@ -181,9 +181,9 @@ Gfx* renderSceneGraph(Gfx* dl, SceneMatrices* matrices) {
 
     for (i = 0; i < MAX_SCENE_NODES; i++) {
         
-        if (sceneNodes[i].flags & ACTIVE) {
+        if (sceneNodes[i].flags & SCENE_NODE_ACTIVE) {
         
-            if (sceneNodes[i].flags & TRANSFORM_EXEMPT) {
+            if (sceneNodes[i].flags & SCENE_NODE_TRANSFORM_EXEMPT) {
 
                 vec = sceneNodes[i].positions;
                 
@@ -212,7 +212,7 @@ Gfx* renderSceneGraph(Gfx* dl, SceneMatrices* matrices) {
             
             gSPMatrix(dl++, OS_K0_TO_PHYSICAL(&sceneNodes[i].translation), G_MTX_NOPUSH | G_MTX_LOAD | G_MTX_MODELVIEW);
 
-            if (sceneNodes[i].flags & UPDATE_ROTATION) {
+            if (sceneNodes[i].flags & SCENE_NODE_UPDATE_ROTATION) {
 
                 guRotateRPY(&sceneNodes[i].rotationX, sceneNodes[i].rotation.x, 0.0f, 0.0f);
                 guRotateRPY(&sceneNodes[i].rotationY, 0.0f, sceneNodes[i].rotation.y, 0.0f);
@@ -224,7 +224,7 @@ Gfx* renderSceneGraph(Gfx* dl, SceneMatrices* matrices) {
                 
             }
 
-            if (sceneNodes[i].flags & UPDATE_SCALE) {
+            if (sceneNodes[i].flags & SCENE_NODE_UPDATE_SCALE) {
 
                 guScale(&sceneNodes[i].scale, sceneNodes[i].scaling.x, sceneNodes[i].scaling.y, sceneNodes[i].scaling.z);                
                 gSPMatrix(dl++, OS_K0_TO_PHYSICAL(&sceneNodes[i].scale), G_MTX_NOPUSH | G_MTX_MUL | G_MTX_MODELVIEW);

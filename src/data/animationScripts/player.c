@@ -795,5 +795,6 @@ u16 playerAnimationScripts[] = {
 	0,
 	0,
 	0
+
 };
 

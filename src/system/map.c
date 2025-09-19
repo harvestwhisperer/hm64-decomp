@@ -2,6 +2,7 @@
 
 #include "system/map.h"
 
+#include "system/globalSprites.h"
 #include "system/graphic.h"
 #include "system/math.h"
 #include "system/mapController.h"
@@ -13,31 +14,32 @@
 Vec3f getTerrainHeight(TerrainQuad *quad, f32 x, f32 z, u8 fallbackHeight);
 void updateCameraViewBounds(MapCameraView*);
 bool func_80035DA4(MainMap *map, u8 arg1, u8 arg2);       
-bool func_800360BC(u16, u16, u8, u8, u32);       
+bool func_800360BC(u16, u16, u8, u8, u16);       
 Vec3f func_800366F4(u16, f32, f32);                  
 inline u16 getTerrainIndexForTile(u16 mapIndex, u8 x, u8 z);
 Gfx* func_8003797C(Gfx* dl, MainMap* map, u8 arg2);
 u16 func_80036880(u16, f32, f32);  
 void func_80036AB4(MainMap*); 
-void setMapGrid(MapGrid*, MapGridInfo*);                 
-u8* func_800374C0(WeatherSprite*, u8*);
+void func_80036C08(u16 mapIndex);
+void setMapGrid(MapGrid*, MapGridData*);                 
+u8* func_800374C0(UnknownMapStruct2*, u8*);
 u8* func_80037614(MapVtx* arg0, VtxInfo* arg1);    
 u16* func_80037650(u16 arg0, void *arg1);
 u32 func_80037668(MainMap*, u16, f32, f32, f32);
-Gfx* func_80037BC4(Gfx*, MainMap*, u16, u16);
-s16 func_80037F08(Gfx*, MainMap*, WeatherSprite*);  
+Gfx* func_80037BC4(Gfx*, MainMap*, u16, u8);
+s16 func_80037F08(Gfx*, MainMap*, UnknownMapStruct2**);  
 Gfx* func_800383B0(Gfx* arg0, MainMap* arg1, u16 arg2, f32 arg3, f32 arg4, f32 arg5);
 void func_8003851C(MainMap*);  
 void func_80038630(DecompressedVec3f* arg0, CompressedVec3f* arg1);                        
-void func_800386C0(UnknownMapStruct3* arg0, u8* arg1); 
-CompressedVec3f* func_800386D4(u16 arg0, u8* arg1);     
+void func_800386C0(UnknownMapStruct* arg0, u8* arg1); 
+u8* func_800386D4(u16 arg0, u8* arg1);     
 void setTerrainQuad(TerrainQuad *arg0, u8* arg1, u16 arg2);
 u8* func_800388A4(u16 arg0, u8 *arg1);
 void func_80038BC4(MainMap*); 
 void func_800393E0(MainMap*); 
 void func_80039990(MainMap*); 
 void processMapSceneNode(u16, Gfx*);                 
-bool func_8003B1BC(MainMap*);         
+void func_8003B1BC(MainMap*);         
 void func_80039F58(u16);   
 
 
@@ -49,7 +51,6 @@ extern f32 D_80170460;
 extern DecompressedVec3f D_80181BA0[];
 extern u8 D_801FB5CB;
 extern f32 D_801FB5D4;
-// counter
 extern u8 D_801FB700;
 extern f32 D_801FB5D4;
 extern f32 D_802226EC;
@@ -60,21 +61,25 @@ extern u8 D_8018A090[];
 extern u8 D_80181BAC[0x10][0x10];
 extern Gfx mapDisplayList[2][6912];
 extern Vtx mapVertices[2][2560];
+extern u16 D_80204B48[0x50];
+
+// data
+extern u8 D_80112D10[27][27];
 
 // rodata
-extern const Gfx D_8011ED68;
-extern const Gfx D_8011ED70;
-extern const Gfx D_8011ED78;
-extern const Gfx D_8011ED88;
-extern const Gfx D_8011EDC8;
-extern const Gfx D_8011ED80;
-extern const Gfx D_8011ED90;
-extern const Gfx D_8011EDA8;
-extern const Gfx D_8011EDD0;
-extern const Gfx D_8011EDD8;
+static const Gfx D_8011ED68;
+static const Gfx D_8011ED70;
+static const Gfx D_8011ED78;
+static const Gfx D_8011ED88;
+static const Gfx D_8011EDC8;
+static const Gfx D_8011ED80;
+static const Gfx D_8011ED90;
+static const Gfx D_8011EDA8;
+static const Gfx D_8011EDD0;
+static const Gfx D_8011EDD8;
 
-extern const char D_8011EDB0[];
-extern const char D_8011EDB4[];
+static const char D_8011EDB0[];
+static const char D_8011EDB4[];
 
 static inline u16 swap16Tile(Swap16 halfword) {
 
@@ -167,7 +172,7 @@ void initializeMap(void) {
 //INCLUDE_ASM("asm/nonmatchings/system/map", func_80033A90);
 
 // FIXME: iterators are messed up; loops are probably inline funcs 
-bool func_80033A90(u16 mapIndex, MapController* arg1, void* arg2, void* terrainQuads, void* arg4, void* arg5, void* arg6, void* arg7, void* arg8, void* arg9, void *argA) {
+bool func_80033A90(u16 mapIndex, MapGridData* grid, void* arg2, u8* terrainQuads, void* arg4, void* arg5, void* arg6, u16* paletteIndex, void* arg8, void* arg9, void *argA) {
 
     bool result;
 
@@ -189,16 +194,16 @@ bool func_80033A90(u16 mapIndex, MapController* arg1, void* arg2, void* terrainQ
         mainMap[mapIndex].unk_8 = (u8**)arg4;
         mainMap[mapIndex].unk_C = (u8*)arg5;
         mainMap[mapIndex].unk_10 = arg6;
-        mainMap[mapIndex].unk_14 = arg7;
+        mainMap[mapIndex].unk_14 = paletteIndex;
         mainMap[mapIndex].unk_18 = arg8;
         mainMap[mapIndex].unk_1C = arg9;
         mainMap[mapIndex].unk_20 = argA;
 
         for (j = 0; j < 16; j++) {
 
-            mainMap[mapIndex].mapStruct3[j].unk_2 = 0; 
-            mainMap[mapIndex].mapStruct3[j].unk_3 = 0; 
-            mainMap[mapIndex].mapStruct3[j].unk_0 = 0; 
+            mainMap[mapIndex].unknownMapStruct[j].unk_2 = 0; 
+            mainMap[mapIndex].unknownMapStruct[j].unk_3 = 0; 
+            mainMap[mapIndex].unknownMapStruct[j].unk_0 = 0; 
 
         }
 
@@ -206,27 +211,27 @@ bool func_80033A90(u16 mapIndex, MapController* arg1, void* arg2, void* terrainQ
             D_80181BA0[l].flags = 0;
         }
 
-        for (i = 0; i < 16; i++) {
+        for (i = 0; i < MAX_MAP_OBJECTS; i++) {
             mainMap[mapIndex].mapObjects[i].flags = 0;
         }
 
-        for (i = 0; i < 0x40; i++) {
+        for (i = 0; i < MAX_GROUND_OBJECTS; i++) {
             mainMap[mapIndex].groundObjects.arr[i] = 0xFFFF;
         }
 
-        for (i = 0; i < 0x10; i++) {
+        for (i = 0; i < MAX_WEATHER_SPRITES; i++) {
             mainMap[mapIndex].weatherSprites[i].flags = 0;
         }
 
-        for (p = 0; p < 0x1E0; p++) {
+        for (p = 0; p < 480; p++) {
             mainMap[mapIndex].groundObjects.arr2[0][p] = 0;
             mainMap[mapIndex].groundObjects.arr2[1][p] = 0;
             mainMap[mapIndex].groundObjects.arr2[2][p] = 0;
         }
 
-        for (i = 0; i < 0x20; i++) {
+        for (i = 0; i < MAX_MAP_ADDITIONS; i++) {
 
-            for (j = 0; j < 0x10; j++) {
+            for (j = 0; j < 16; j++) {
                 mainMap[mapIndex].mapAdditions[i].arr1[j] = 0xFFFF;
                 mainMap[mapIndex].mapAdditions[i].arr2[j] = 0;
             }
@@ -237,7 +242,7 @@ bool func_80033A90(u16 mapIndex, MapController* arg1, void* arg2, void* terrainQ
             
         }
 
-        setMapGrid(&mainMap[mapIndex].mapGrid, &arg1->modelDataIndex);
+        setMapGrid(&mainMap[mapIndex].mapGrid, grid);
 
         func_80036AB4(&mainMap[mapIndex]);
         func_80036C08(mapIndex);
@@ -252,7 +257,7 @@ bool func_80033A90(u16 mapIndex, MapController* arg1, void* arg2, void* terrainQ
         mainMap[mapIndex].mapState.mapOriginX = ((mainMap[mapIndex].mapGrid.mapWidth * mainMap[mapIndex].mapGrid.tileSizeX) / 2) + (mainMap[mapIndex].mapGrid.tileSizeX / 2);
         mainMap[mapIndex].mapState.mapOriginZ = ((mainMap[mapIndex].mapGrid.mapHeight * mainMap[mapIndex].mapGrid.tileSizeZ) / 2) + (mainMap[mapIndex].mapGrid.tileSizeZ / 2);
 
-        for (r = 0; r < 0x63C; r++) {
+        for (r = 0; r < 1596; r++) {
             D_8013D5F0[r] = r % mainMap[mapIndex].mapGrid.mapWidth;
             D_8018A090[r] = r / mainMap[mapIndex].mapGrid.mapWidth;
         }
@@ -278,7 +283,7 @@ bool func_80034090(u16 mapIndex) {
         D_801FB700 = 0;
         D_801FB5CB = 0;
 
-        for (i = 0; i < 0x10; i++) {
+        for (i = 0; i < MAX_MAP_OBJECTS; i++) {
             
             if (mainMap[mapIndex].mapObjects[i].flags & MAP_OBJECT_ACTIVE) {
                 deactivateSprite(mainMap[mapIndex].mapObjects[i].spriteIndex);
@@ -288,7 +293,7 @@ bool func_80034090(u16 mapIndex) {
 
         }
         
-        for (i = 0; i < 0x10; i++) { 
+        for (i = 0; i < MAX_WEATHER_SPRITES; i++) { 
             
             if (mainMap[mapIndex].weatherSprites[i].flags & MAP_SPRITE_ACTIVE) {
                 deactivateSprite(mainMap[mapIndex].weatherSprites[i].spriteIndex);
@@ -310,15 +315,15 @@ bool func_80034090(u16 mapIndex) {
 
 //INCLUDE_ASM("asm/nonmatchings/system/map", setMapTranslation);
 
-bool setMapTranslation(u16 mapIndex, f32 arg1, f32 arg2, f32 arg3) {
+bool setMapTranslation(u16 mapIndex, f32 x, f32 y, f32 z) {
 
     bool result = FALSE;
     
     if (mapIndex == MAIN_MAP_INDEX && (mainMap[mapIndex].mapState.flags & MAP_ACTIVE)) {
 
-        mainMap[mapIndex].mapFloats.translation.x = arg1;
-        mainMap[mapIndex].mapFloats.translation.y = arg2;
-        mainMap[mapIndex].mapFloats.translation.z = arg3;
+        mainMap[mapIndex].mapFloats.translation.x = x;
+        mainMap[mapIndex].mapFloats.translation.y = y;
+        mainMap[mapIndex].mapFloats.translation.z = z;
 
         result = TRUE;
 
@@ -624,14 +629,14 @@ bool setMapObject(u16 mapIndex, u8 index, u16 spriteIndex, u16 arg3, f32 x, f32 
     if (mapIndex == MAIN_MAP_INDEX && (mainMap[mapIndex].mapState.flags & MAP_ACTIVE)) {
          
         mainMap[mapIndex].mapObjects[index].spriteIndex = spriteIndex; 
-        mainMap[mapIndex].mapObjects[index].unk_E = arg3;
+        mainMap[mapIndex].mapObjects[index].animationIndex = arg3;
 
         mainMap[mapIndex].mapObjects[index].coordinates.x = x;
         mainMap[mapIndex].mapObjects[index].coordinates.y = y;
         mainMap[mapIndex].mapObjects[index].coordinates.z = z;
 
         mainMap[mapIndex].mapObjects[index].unk_10 = arg7;
-        mainMap[mapIndex].mapObjects[index].unk_11 = arg8;
+        mainMap[mapIndex].mapObjects[index].animationMode = arg8;
 
         mainMap[mapIndex].mapObjects[index].flags |= 1;
         
@@ -663,7 +668,7 @@ bool func_80034D64(u16 mapIndex, u8 index, u16 spriteIndex, u16 arg3) {
     if (mapIndex == MAIN_MAP_INDEX && (mainMap[mapIndex].mapState.flags & MAP_ACTIVE)) {
 
         mainMap[mapIndex].weatherSprites[index].spriteIndex = spriteIndex;
-        mainMap[mapIndex].weatherSprites[index].unk_E = arg3;
+        mainMap[mapIndex].weatherSprites[index].animationIndex = arg3;
         mainMap[mapIndex].weatherSprites[index].flags = 1;
 
         result = TRUE;
@@ -684,7 +689,7 @@ bool func_80034DC8(u16 mapIndex, u8 index, u16 arg2) {
         
         resetAnimationState(mainMap[mapIndex].mapObjects[index].spriteIndex);
         
-        mainMap[mapIndex].mapObjects[index].unk_E = arg2;
+        mainMap[mapIndex].mapObjects[index].animationIndex = arg2;
         mainMap[mapIndex].mapObjects[index].flags &= ~2;
 
         result = TRUE;
@@ -886,31 +891,31 @@ Vec3f getTerrainHeight(TerrainQuad *quad, f32 x, f32 z, u8 fallbackHeight) {
     heightResult.z = 0.0f;
 
     planeEquation = calculatePlaneEquation( 
-                  quad->triangle1[0][0], 
-                  quad->triangle1[0][1], 
-                  quad->triangle1[0][2], 
-                  quad->triangle1[1][0], 
-                  quad->triangle1[1][1], 
-                  quad->triangle1[1][2], 
-                  quad->triangle1[2][0], 
-                  quad->triangle1[2][1], 
-                  quad->triangle1[2][2]);
+        quad->triangle1[0][0], 
+        quad->triangle1[0][1], 
+        quad->triangle1[0][2], 
+        quad->triangle1[1][0], 
+        quad->triangle1[1][1], 
+        quad->triangle1[1][2], 
+        quad->triangle1[2][0], 
+        quad->triangle1[2][1], 
+        quad->triangle1[2][2]);
 
     calculatedHeight = getHeightFromPlane(x, z, planeEquation);
     height = calculatedHeight;
 
     if (isPointInTriangle(x, 
-                      height, 
-                      z, 
-                      quad->triangle1[0][0], 
-                      quad->triangle1[0][1], 
-                      quad->triangle1[0][2], 
-                      quad->triangle1[1][0], 
-                      quad->triangle1[1][1], 
-                      quad->triangle1[1][2], 
-                      quad->triangle1[2][0], 
-                      quad->triangle1[2][1], 
-                      quad->triangle1[2][2])) {
+            height, 
+            z, 
+            quad->triangle1[0][0], 
+            quad->triangle1[0][1], 
+            quad->triangle1[0][2], 
+            quad->triangle1[1][0], 
+            quad->triangle1[1][1], 
+            quad->triangle1[1][2], 
+            quad->triangle1[2][0], 
+            quad->triangle1[2][1], 
+            quad->triangle1[2][2])) {
 
         if (calculatedHeight != 0.0f) {
             heightResult.y = calculatedHeight;
@@ -921,30 +926,30 @@ Vec3f getTerrainHeight(TerrainQuad *quad, f32 x, f32 z, u8 fallbackHeight) {
     } else {
 
         planeEquation = calculatePlaneEquation( 
-                      quad->triangle2[0][0], 
-                      quad->triangle2[0][1], 
-                      quad->triangle2[0][2], 
-                      quad->triangle2[1][0], 
-                      quad->triangle2[1][1], 
-                      quad->triangle2[1][2], 
-                      quad->triangle2[2][0], 
-                      quad->triangle2[2][1], 
-                      quad->triangle2[2][2]);
-        
+            quad->triangle2[0][0], 
+            quad->triangle2[0][1], 
+            quad->triangle2[0][2], 
+            quad->triangle2[1][0], 
+            quad->triangle2[1][1], 
+            quad->triangle2[1][2], 
+            quad->triangle2[2][0], 
+            quad->triangle2[2][1], 
+            quad->triangle2[2][2]);
+
         height = getHeightFromPlane(x, z, planeEquation);
         
         if (isPointInTriangle(x, 
-                          height, 
-                          z, 
-                          quad->triangle2[0][0], 
-                          quad->triangle2[0][1], 
-                          quad->triangle2[0][2], 
-                          quad->triangle2[1][0], 
-                          quad->triangle2[1][1], 
-                          quad->triangle2[1][2], 
-                          quad->triangle2[2][0], 
-                          quad->triangle2[2][1], 
-                          quad->triangle2[2][2])) {
+                height, 
+                z, 
+                quad->triangle2[0][0], 
+                quad->triangle2[0][1], 
+                quad->triangle2[0][2], 
+                quad->triangle2[1][0], 
+                quad->triangle2[1][1], 
+                quad->triangle2[1][2], 
+                quad->triangle2[2][0], 
+                quad->triangle2[2][1], 
+                quad->triangle2[2][2])) {
             
             if (height != 0.0f) {
                 heightResult.y = height;
@@ -1101,16 +1106,170 @@ bool func_80035DA4(MainMap *map, u8 arg1, u8 arg2) {
 
 }
 
-// unused or inline
-INCLUDE_ASM("asm/nonmatchings/system/map", func_80035EE0);
+//INCLUDE_ASM("asm/nonmatchings/system/map", func_80035EE0);
+
+// unused
+void func_80035EE0(MainMap* mainMap) {
+
+    u8 i, j;
+    u8 temp1, temp2, temp3, temp4;
+    
+    mainMap->mapCameraView.viewExtentX = 13;
+    mainMap->mapCameraView.viewExtentZ = 13;
+
+    for (i = 0; i < 38; i++) {
+
+        for (j = 0; j < 42; j++) {
+            mainMap->visibilityGrid[i][j] = 0;
+        }
+        
+    }
+
+    if (mainMap->mapCameraView.calculatedTileX < mainMap->mapCameraView.viewExtentX) {
+        temp1 = mainMap->mapCameraView.viewExtentX - mainMap->mapCameraView.calculatedTileX;    
+    } else {
+        temp1 = 0;
+    }
+
+    if (mainMap->mapCameraView.calculatedTileZ < mainMap->mapCameraView.viewExtentZ) {
+        temp2 = mainMap->mapCameraView.viewExtentZ - mainMap->mapCameraView.calculatedTileZ;
+    } else {    
+        temp2 = 0;
+    }
+
+    if ((mainMap->mapCameraView.calculatedTileX + mainMap->mapCameraView.viewExtentX) >= mainMap->mapGrid.mapWidth) {
+        temp3 = mainMap->mapCameraView.viewExtentX + (mainMap->mapGrid.mapWidth - mainMap->mapCameraView.calculatedTileX);
+    } else {
+        temp3 = (mainMap->mapCameraView.viewExtentX * 2) | 1;
+    } 
+
+    if ((mainMap->mapCameraView.calculatedTileZ + mainMap->mapCameraView.viewExtentZ) >= mainMap->mapGrid.mapHeight) {
+        temp4 = mainMap->mapCameraView.viewExtentZ + (mainMap->mapGrid.mapHeight - mainMap->mapCameraView.calculatedTileZ);
+    } else {
+        temp4 = (mainMap->mapCameraView.viewExtentZ * 2) | 1;
+    } 
+
+    for (i = temp2; i < temp4; i++) {
+        
+        for (j = temp1; j < temp3; j++) {
+            mainMap->visibilityGrid[(mainMap->mapCameraView.calculatedTileZ - mainMap->mapCameraView.viewExtentZ) + i][(mainMap->mapCameraView.calculatedTileX - mainMap->mapCameraView.viewExtentX) + j] = D_80112D10[i][j];
+        } 
+    }
+        
+}
 
 // mapGrid, vertices for map additions (house extensions, hot springs, etc.)
-INCLUDE_ASM("asm/nonmatchings/system/map", func_800360BC);
+//INCLUDE_ASM("asm/nonmatchings/system/map", func_800360BC);
+
+u8 func_800360BC(u16 mapIndex, u16 arg1, u8 arg2, u8 arg3, u16 arg4) {
+
+    Swap16 swap;
+    
+    bool result = FALSE;
+    
+    u8 i, j;
+    u8 height, width;
+    u8 x, z;
+    
+    s16 tempValue;
+    u16 temp;
+    u16 temp2;
+    
+    u8 *ptr;
+    u8 *ptr2;
+
+    if (mapIndex  == MAIN_MAP_INDEX) {
+
+        if (mainMap[mapIndex].mapState.flags & MAP_ACTIVE) {
+
+            ptr = func_800388A4(arg1, mainMap[mapIndex].unk_20);
+
+            x = *ptr++;
+            z = *ptr++;
+            
+            height = *ptr++;
+            width = *ptr++;
+
+            if (arg4) {
+                x = arg2;
+                z = arg3;
+            }
+
+            for (i = 0; i < width; i++) {
+
+                for (j = 0; j < height; j++) {
+
+                    swap.byte[0] = *ptr++;
+                    swap.byte[1] = *ptr++;
+
+                    temp = (mainMap[mapIndex].mapGrid.mapWidth * (z + i)) + x + j;
+                    
+                    mainMap[mapIndex].mapGrid.tileIndices[temp] = swap.halfword;
+
+                }
+                
+            }
+
+            for (i = 0; i < width; i++) {
+
+                for (j = 0; j < height; j++) {
+
+                    swap.byte[0] = *ptr++;
+                    
+                    ptr2 = mainMap[mapIndex].unk_8 + 1;
+
+                    temp = (mainMap[mapIndex].mapGrid.mapWidth * (z + i)) + x + j;
+
+                    ptr2[temp] = swap.byte[0];
+
+                }
+                
+            }
+            
+            result = TRUE;
+            
+        }
+        
+    }
+
+    return result;
+    
+}
+
+//INCLUDE_ASM("asm/nonmatchings/system/map", func_80036318);
 
 // returns index for interactable object/exit from rodata array per level
-INCLUDE_ASM("asm/nonmatchings/system/map", func_80036318);
+u8 func_80036318(u16 mapIndex, f32 x, f32 z) {
 
-#ifdef PERMUTER
+    Vec3f vec1;
+    Vec3f vec2;
+    u8 index = 0;
+    u8* ptr;
+    
+    if (mapIndex == MAIN_MAP_INDEX) {
+        
+        if (mainMap[mapIndex].mapState.flags & MAP_ACTIVE) {
+        
+            vec2.x = (x + mainMap[mapIndex].mapState.mapOriginX) / mainMap[mapIndex].mapGrid.tileSizeX; 
+            vec2.y = 0;
+            vec2.z = (z + mainMap[mapIndex].mapState.mapOriginZ) / mainMap[mapIndex].mapGrid.tileSizeZ;
+
+            vec1 = vec2;
+
+            ptr = mainMap[mapIndex].unk_8 + 1; 
+
+            index = (ptr + (mainMap[mapIndex].mapGrid.mapWidth * (u8)vec1.z))[(u8)vec1.x];
+            
+        }
+        
+    }
+
+    return index;
+    
+}
+
+//INCLUDE_ASM("asm/nonmatchings/system/map", func_80036490);
+
 bool func_80036490(u16 mapIndex, u8 arg1, f32 arg2, f32 arg3) {
 
     Vec3f vec1;
@@ -1131,9 +1290,9 @@ bool func_80036490(u16 mapIndex, u8 arg1, f32 arg2, f32 arg3) {
 
         vec1 = vec2;
 
-        ptr = (u8*)&mainMap[mapIndex].unk_8[0]+4;
+        ptr = mainMap[mapIndex].unk_8 + 1;
         
-        ptr[(mainMap[mapIndex].mapGrid.mapWidth * (u8)vec1.z) + (u8)vec1.x] = arg1;
+        (ptr + (mainMap[mapIndex].mapGrid.mapWidth * (u8)vec1.z))[(u8)vec1.x] = arg1;
 
         result = TRUE;
         
@@ -1142,9 +1301,6 @@ bool func_80036490(u16 mapIndex, u8 arg1, f32 arg2, f32 arg3) {
     return result;
     
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/system/map", func_80036490);
-#endif
 
 //INCLUDE_ASM("asm/nonmatchings/system/map", convertWorldToTileCoordinates);
 
@@ -1263,7 +1419,7 @@ void func_80036AB4(MainMap* map) {
     u8* ptr;
     u16 temp;
 
-    WeatherSprite weatherSprites[32]; 
+    UnknownMapStruct2 unknownMapStructs[32]; 
 
     count = 0;
     i = 0;
@@ -1272,27 +1428,26 @@ void func_80036AB4(MainMap* map) {
         
         do {
 
-            // func_80037650 = get vertex info object from vertex info object bank + (offset)
             ptr = func_80037614(&map->vtxs[i], func_80037650(i, map->unk_0));
 
             j = 0;
             
             while (1) {
 
-                ptr =  func_800374C0(&weatherSprites[j], ptr);
+                ptr =  func_800374C0(&unknownMapStructs[j], ptr);
     
-                if (weatherSprites[j].flags & 0x80) {
+                if (unknownMapStructs[j].flags & 0x80) {
                     map->vtxs[i].flags |= 0x80;
                 }
 
-                if (weatherSprites[j++].flags & 0x10) {
+                if (unknownMapStructs[j++].flags & 0x10) {
                     break;
                 } 
 
             } 
 
             map->vtxs[i].currentVtxIndex = count;
-            temp = func_80037F08(&map->displayLists[count], map, weatherSprites);
+            temp = func_80037F08(&map->displayLists[count], map, unknownMapStructs);
 
             count += temp;
             map->vtxs[i].vtxCount = temp;
@@ -1306,118 +1461,248 @@ void func_80036AB4(MainMap* map) {
 
 INCLUDE_ASM("asm/nonmatchings/system/map", func_80036C08);
 
-INCLUDE_ASM("asm/nonmatchings/system/map", func_80036FA0);
+//INCLUDE_ASM("asm/nonmatchings/system/map", func_80036FA0);
+
+void func_80036FA0(u16 mapIndex) {
+
+    u16 arr[0x40];
+    
+    u16 i, j;
+    u8 k, m;
+    u16 l;
+    
+    u16 temp;
+
+    for (i = 0; i < 0x40; i++) {
+        mainMap[mapIndex].groundObjects.arr[i] = 0xFFFF;
+    }
+
+    for (j = 0; j < 0x1E0; j++) {
+        mainMap[mapIndex].groundObjects.arr2[1][j] = 0;
+        mainMap[mapIndex].groundObjects.arr2[2][j] = 0;
+    }
+
+    for (k = 0; k < 0x40; k++) {
+        mainMap[mapIndex].groundObjects.arr[k] = 0xFFFF;
+        arr[k] = 0xFFFF;
+    }
+    
+    for (l = 0; l < 0x1E0; l++) {
+
+        if (mainMap[mapIndex].groundObjects.arr2[0][l] && mainMap[mapIndex].groundObjects.arr2[0][l] != 0xFFFF) {
+
+            if (mainMap[mapIndex].groundObjects.arr[mainMap[mapIndex].groundObjects.arr2[0][l]] == 0xFFFF) {
+
+                mainMap[mapIndex].groundObjects.arr[mainMap[mapIndex].groundObjects.arr2[0][l]] = l;
+                arr[mainMap[mapIndex].groundObjects.arr2[0][l]] = l;
+                mainMap[mapIndex].groundObjects.arr2[1][l] = 0xFFFF;
+                
+            } else {
+
+                temp = arr[mainMap[mapIndex].groundObjects.arr2[0][l]];
+                
+                arr[mainMap[mapIndex].groundObjects.arr2[0][l]] = l;
+                
+                mainMap[mapIndex].groundObjects.arr2[2][temp] = l;
+                mainMap[mapIndex].groundObjects.arr2[1][l] = temp;
+
+            }
+            
+        }
+        
+    }
+
+    for (m = 0; m < 0x40; m++) {
+
+        if (arr[m] != 0xFFFF) {
+            mainMap[mapIndex].groundObjects.arr2[2][arr[m]] = 0xFFFF;
+        }
+        
+    }
+
+}
 
 //INCLUDE_ASM("asm/nonmatchings/system/map", getTerrainIndexForTile);
 
-//used in getTerrainHeightAtPosition
+// used in getTerrainHeightAtPosition
 inline u16 getTerrainIndexForTile(u16 mapIndex, u8 x, u8 z) {
-    
     return swap16Tile((&mainMap[mapIndex].mapGrid.tileIndices[mainMap[mapIndex].mapGrid.mapWidth * z])[x]);
-    
 }
 
 //INCLUDE_ASM("asm/nonmatchings/system/map", setMapGrid);
 
-void setMapGrid(MapGrid* mapGrid, MapGridInfo* info) {
+void setMapGrid(MapGrid* mapGrid, MapGridData* data) {
 
     Swap16 swap;
     
-    mapGrid->tileSizeX = info->scalingX;
-    mapGrid->tileSizeZ = info->scalingY;
-    mapGrid->mapWidth = info->mapWidth;
-    mapGrid->mapHeight = info->mapHeight;
+    mapGrid->tileSizeX = data->tileSizeX;
+    mapGrid->tileSizeZ = data->tileSizeY;
+    mapGrid->mapWidth = data->mapWidth;
+    mapGrid->mapHeight = data->mapHeight;
 
-    swap.byte[1] = info->unk_8;
-    swap.byte[0] = info->unk_9;
+    swap.byte[1] = data->unk_8;
+    swap.byte[0] = data->unk_9;
     
     mapGrid->unk_4 = swap.halfword;
 
-    swap.byte[1] = info->unk_A;
-    swap.byte[0] = info->unk_B;
+    swap.byte[1] = data->unk_A;
+    swap.byte[0] = data->unk_B;
     
     mapGrid->vertexCount = swap.halfword;
 
-    mapGrid->tileIndices = info + 1;
+    mapGrid->tileIndices = data + 1;
     
 }
 
 //INCLUDE_ASM("asm/nonmatchings/system/map", func_80037350);
 
 // unused or inline
-u8* func_80037350(UnknownVertexStruct* arg0, u8* arg1) {
+u8* func_80037350(UnknownMapStruct2* arg0, u8* arg1) {
 
     // arg1 = &*(arg1+4);
     // skip header
     arg1 = &arg1[4];
     
-    arg0->arr2[0] = *arg1;
-    
-    arg1++;
-
-    arg0->arr2[1] = *arg1;
-    
-    arg1++;
-    
-    arg0->arr2[2] = *arg1;
-    
-    arg1++;
-    
-    arg0->arr2[3] = *arg1;
-    
-    arg1++;
+    arg0->unk_8[0] = *arg1++;
+    arg0->unk_8[1] = *arg1++;
+    arg0->unk_8[2] = *arg1++;
+    arg0->unk_B = *arg1++;
 
     return arg1;
     
 }
 
-// inline (called by func_80037400 and func_800374C0)
-#ifdef PERMUTER
-u8* func_80037388(UnknownVertexStruct* arg0, u8* arg1, u8 arg2) {
+//INCLUDE_ASM("asm/nonmatchings/system/map", func_80037388);
 
-    UnknownVertexStruct struc;
-
-    u8 temp;
-
-    arg0->arr[0] = *arg1;
-    arg1++;
+// unused or inline
+u8* func_80037388(UnknownMapStruct2* arg0, u8* arg1, u8 arg2) {
     
-    arg0->arr2[0] = *arg1;
-    arg1++;
+    Swap16 swap;
+
+    arg0->unk_4[0] = *arg1++;
+    arg0->unk_8[0] = *arg1++;
+    arg0->unk_C[0] = *arg1++;
+
+    swap.byte[1] = *arg1++;
+    swap.byte[0] = *arg1++;
     
-    arg0->arr3[0] = *arg1;
-    arg1++;
-
-    temp = *arg1;
-
-    arg1++;
-
-    // probably inline swap
-    arg0->unk_0 = temp | (*arg1 << 8);
-    
-    arg1++;
+    arg0->unk_0 = swap.halfword;
 
     if (arg2) {
 
-        temp = *arg1;
-
-        arg1++;
-
-        // probably inline swap
-        arg0->unk_2 = temp | (*arg1 << 8);
-
-        arg1++;
+        swap.byte[1] = *arg1++;
+        swap.byte[0] = *arg1++;
+        
+        arg0->unk_2 = swap.halfword;
+        
     }
     
     return arg1;
+    
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/system/map", func_80037388);
-#endif
 
-INCLUDE_ASM("asm/nonmatchings/system/map", func_80037400);
+//INCLUDE_ASM("asm/nonmatchings/system/map", func_80037400);
 
-INCLUDE_ASM("asm/nonmatchings/system/map", func_800374C0);
+inline u8* func_80037400(UnknownMapStruct2* unknownMapStruct, u8* ptr, bool flag) {
+    
+    Swap16 swap;
+    u8 i;
+        
+    for (i = 0; i < 3; i++) {
+        unknownMapStruct->unk_4[i] = *ptr++;
+        unknownMapStruct->unk_8[i] = *ptr++;
+        unknownMapStruct->unk_C[i] = *ptr++;
+    }
+
+    if (flag) {
+        unknownMapStruct->unk_7 = *ptr++;
+        unknownMapStruct->unk_B = *ptr++;
+        unknownMapStruct->unk_F = *ptr++;
+    }
+    
+    swap.byte[1] = *ptr++;
+    swap.byte[0] = *ptr++;
+
+    unknownMapStruct->unk_0 = swap.halfword;
+
+    if (flag) {
+
+        swap.byte[1] = *ptr++;
+        swap.byte[0] = *ptr++;
+
+        unknownMapStruct->unk_2 = swap.halfword;
+        
+    }
+    
+    return ptr;
+    
+}
+
+static inline u8* unknownMapStructSwap(UnknownMapStruct2* unknownMapStruct, u8* ptr, u8 flag) {
+
+    u16 temp;
+    u8 temp1, temp2;
+    
+    if (flag) {
+
+        temp1 = ptr[1];
+        temp2 = ptr[0];
+
+        temp = temp1 << 8 | temp2;
+
+        unknownMapStruct->unk_2 = temp;
+        
+        ptr += 2;
+        
+    }
+    
+    return ptr;
+    
+}
+
+//INCLUDE_ASM("asm/nonmatchings/system/map", func_800374C0);
+
+u8* func_800374C0(UnknownMapStruct2* unknownMapStruct, u8* ptr) {
+
+    Swap16 swap;
+    u32 padding[2];
+    
+    u8 i;
+    u8 flags, flags2;
+    u8* ptr2;
+    
+    unknownMapStruct->flags = *ptr++;
+    
+    if (unknownMapStruct->flags & 0x20) {
+        unknownMapStruct->unk_11 = *ptr++;
+        unknownMapStruct->unk_12 = *ptr++;
+    }
+
+    flags = unknownMapStruct->flags;
+
+    if (unknownMapStruct->flags & 0x80) {
+
+        ptr = func_80037400(unknownMapStruct, ptr, flags & 0x40);
+        
+    } else {
+
+        unknownMapStruct->unk_4[0] = ptr[0];
+        unknownMapStruct->unk_8[0] = ptr[1];
+        unknownMapStruct->unk_C[0] = ptr[2];
+
+        swap.byte[1] = ptr[3];
+        swap.byte[0] = ptr[4];
+
+        unknownMapStruct->unk_0 = swap.halfword;
+        
+        ptr = unknownMapStructSwap(unknownMapStruct, ptr + 5, flags & 0x40);
+                
+    }
+
+    return ptr;
+    
+}
+
 
 //INCLUDE_ASM("asm/nonmatchings/system/map", func_80037614);
 
@@ -1525,8 +1810,53 @@ Gfx* func_8003797C(Gfx* dl, MainMap* map, u8 arg2) {
 
 }
 
-// calls func_800383B0
-INCLUDE_ASM("asm/nonmatchings/system/map", func_80037BC4);
+//INCLUDE_ASM("asm/nonmatchings/system/map", func_80037BC4);
+
+Gfx* func_80037BC4(Gfx* dl, MainMap* mainMap, u16 arg2, u8 arg3) {
+
+    Swap16 swap;
+    
+    u16 temp;
+    u16 temp2;
+    
+    do {
+
+        if (func_80035DA4(mainMap, D_8013D5F0[arg2], D_8018A090[arg2])) {
+
+            mainMap->visibilityGrid[D_8018A090[arg2]][D_8013D5F0[arg2]] = 1;
+            
+            if (arg3 != 0x50) {
+                dl = func_8003797C(dl, mainMap, arg3);
+                arg3 = 0x50;
+            }
+
+            // FIXME: should be inline swap16Tile?
+            swap.byte[1] = mainMap->mapGrid.tileIndices[arg2] >> 8;
+            swap.byte[0] = mainMap->mapGrid.tileIndices[arg2];
+        
+            temp = swap.halfword;
+
+            temp2 = temp - 1;
+            
+            dl = func_800383B0(dl, 
+                mainMap,
+                temp2, 
+                (D_8013D5F0[arg2] - mainMap->mapCameraView.calculatedTileX) * mainMap->mapGrid.tileSizeX,
+                mainMap->vtxs[temp2].unk_8,
+                (D_8018A090[arg2] - mainMap->mapCameraView.calculatedTileZ) * mainMap->mapGrid.tileSizeZ);
+        
+        } else {
+            mainMap->visibilityGrid[D_8018A090[arg2]][D_8013D5F0[arg2]] = 0;
+        }
+
+        arg2 = mainMap->unk_30D2[arg2];
+        
+    } while (arg2 != 0xFFFF);
+
+    return dl;
+    
+}
+
 
 //INCLUDE_ASM("asm/nonmatchings/system/map", func_80037DF0);
 
@@ -1627,20 +1957,20 @@ void func_8003851C(MainMap* map) {
 
             ptr = func_800386D4(i, ptr);
 
-            func_800386C0(&map->mapStruct3[i].unk_0, ptr);
+            func_800386C0(&map->unknownMapStruct[i].unk_0, ptr);
 
-            map->mapStruct3[i].unk_0 = count;
+            map->unknownMapStruct[i].unk_0 = count;
             j = 0;
             
             ptr += 2;
             
-            if (map->mapStruct3[i].unk_3) {
+            if (map->unknownMapStruct[i].unk_3) {
                 do {
                     func_80038630(&D_80181BA0[count], ptr);
                     ptr += 7;
                     count++;
                     j++;
-                }  while (j < map->mapStruct3[i].unk_3);
+                }  while (j < map->unknownMapStruct[i].unk_3);
             }
             
             i++;
@@ -1668,32 +1998,38 @@ void func_80038630(DecompressedVec3f* arg0, CompressedVec3f* arg1) {
 
 //INCLUDE_ASM("asm/nonmatchings/system/map", func_800386C0);
 
-void func_800386C0(UnknownMapStruct3* arg0, u8* arg1) {
+void func_800386C0(UnknownMapStruct* arg0, u8* arg1) {
     arg0->unk_2 = arg1[0];
     arg0->unk_3 = arg1[1];
 }
 
 // arg1 = ptr from mainMap.unk_C = ptr to byteswapped shorts for vec3f conversion
-#ifdef PERMUTER
+//INCLUDE_ASM("asm/nonmatchings/system/map", func_800386D4);
+
 u8* func_800386D4(u16 arg0, u8* arg1) {
 
     u16 i;
     u8 arr[4];
 
+    u8 temp;
+
     arg1++;
 
     for (i = 0; i < arg0; i++) {
+        
         arr[2] = arg1[0];
-        arg1 += arg1[1] * 7;
-        arr[3] = 2;
-   }
+        temp = arg1[1];
+        
+        arg1 += 2;
+        arg1 += (temp *  7);
+        
+        arr[3] = temp;
+   
+    }
 
     return arg1;
 
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/system/map", func_800386D4);
-#endif
 
 //INCLUDE_ASM("asm/nonmatchings/system/map", setTerrainQuad);
  
@@ -1784,47 +2120,38 @@ bool func_8003886C(u16 mapIndex) {
 
 //INCLUDE_ASM("asm/nonmatchings/system/map", func_800388A4);
 
-// FIXME: likely uses inlines
-// param_2 = mainMap.unk_20 (set from mapControllers in func_80033A90, called by dmaMapAssets)
 // map additions
 // param1 = mapAdditions.unk_44, set from sprite vec.x
 // param2 = mainMap.unk_20
-u8* func_800388A4(u16 arg0, u8 *arg1) {
+u8* func_800388A4(u16 count, u8 *ptr) {
 
     u16 i;
+    u32 size;
     u32 temp;
-    u32 temp2;
     
-    arg1 += 6;
+    // skip header
+    ptr += 6;
 
     i = 0;
 
-    if (arg0) {
-        
-        do {
+    while (i < count) {
+            
+        ptr += 2;
     
-            arg1 += 2;
+        size = *ptr++;
+
+        temp = *ptr++;
+        temp *= size;
+
+        ptr += (temp * 2);
         
-            temp = arg1[0];
+        i++;
 
-            arg1 += 1;
-
-            temp2 = arg1[0];
-
-            temp2 *= (temp);
-
-            arg1 += 1;
-
-            arg1 += (temp2 * 2);
+        ptr += temp;
             
-            i++;
+    } 
 
-            arg1 += temp2;
-            
-        } while (i < arg0);
-    }
-
-    return arg1;
+    return ptr;
     
 }
 
@@ -1918,7 +2245,7 @@ bool func_80038990(u16 mapIndex, u16 mapAdditionIndex, u8 arg2) {
 
 //INCLUDE_ASM("asm/nonmatchings/system/map", func_80038A2C);
 
-bool func_80038A2C(u16 mapIndex, u16 mapAdditionIndex, u8 arg2, u8 arg3) {
+bool func_80038A2C(u16 mapIndex, u16 mapAdditionIndex, u8 x, u8 z) {
 
     bool result = FALSE;
 
@@ -1929,8 +2256,8 @@ bool func_80038A2C(u16 mapIndex, u16 mapAdditionIndex, u8 arg2, u8 arg3) {
             mainMap[mapIndex].mapAdditions[mapAdditionIndex].flags = 0;
             mainMap[mapIndex].mapAdditions[mapAdditionIndex].unk_40 = 0;
             mainMap[mapIndex].mapAdditions[mapAdditionIndex].unk_42 = 0;
-            mainMap[mapIndex].mapAdditions[mapAdditionIndex].unk_44 = arg2;
-            mainMap[mapIndex].mapAdditions[mapAdditionIndex].unk_45 = arg3;
+            mainMap[mapIndex].mapAdditions[mapAdditionIndex].unk_44 = x;
+            mainMap[mapIndex].mapAdditions[mapAdditionIndex].unk_45 = z;
 
             mainMap[mapIndex].mapAdditions[mapAdditionIndex].flags |= 3;
             
@@ -1946,7 +2273,6 @@ bool func_80038A2C(u16 mapIndex, u16 mapAdditionIndex, u8 arg2, u8 arg3) {
 
 //INCLUDE_ASM("asm/nonmatchings/system/map", func_80038AE0);
 
-// load map additions (house extensions, hot springs, etc.)
 bool func_80038AE0(u16 mapIndex, u16 mapAdditionIndex) {
 
     bool result = FALSE;
@@ -1980,11 +2306,221 @@ bool func_80038B58(u16 mapIndex, u16 mapAdditionIndex, u8 arg2, u8 arg3) {
 
 INCLUDE_ASM("asm/nonmatchings/system/map", func_80038BC4);
 
-INCLUDE_ASM("asm/nonmatchings/system/map", func_800393E0);
+//INCLUDE_ASM("asm/nonmatchings/system/map", func_800393E0);
 
-INCLUDE_ASM("asm/nonmatchings/system/map", func_80039990);
+void func_800393E0(MainMap *mainMap) {
+    
+    u16 i;
 
-//INCLUDE_ASM("asm/nonmatchings/system/map", func_80039E00);
+    u8 flags;
+    
+    f32 xPosition, yPosition, zPosition;
+    f32 tileOffsetX, tileOffsetZ;
+    f32 cameraWorldX, cameraWorldZ;
+    f32 mapWorldCenterX, mapWorldCenterZ;
+    
+    s32 temp1, temp2;
+    f32 tempF;
+    
+    for (i = 0; i < MAX_MAP_OBJECTS; i++) {
+
+        flags = mainMap->mapObjects[i].flags; 
+        
+        if (flags & 1) {
+            
+            if (!(flags & 2)) {
+                startSpriteAnimation(mainMap->mapObjects[i].spriteIndex, mainMap->mapObjects[i].animationIndex, mainMap->mapObjects[i].animationMode);
+                mainMap->mapObjects[i].flags |= 2;
+            }
+            
+            xPosition = mainMap->mapObjects[i].coordinates.x;
+            zPosition = mainMap->mapObjects[i].coordinates.z;
+            
+            mapWorldCenterX = (mainMap->mapGrid.mapWidth * mainMap->mapGrid.tileSizeX) / 2;
+            mapWorldCenterZ = (mainMap->mapGrid.mapHeight * mainMap->mapGrid.tileSizeZ) / 2;
+            
+            tileOffsetX = mainMap->mapGrid.tileSizeX / 2;
+            tileOffsetZ = mainMap->mapGrid.tileSizeZ / 2;
+            
+            xPosition = (mainMap->mapObjects[i].coordinates.x + mapWorldCenterX) - tileOffsetX;
+            yPosition = mainMap->mapObjects[i].coordinates.y;
+            zPosition = (mainMap->mapObjects[i].coordinates.z + mapWorldCenterZ) - tileOffsetZ;
+            
+            cameraWorldX = mainMap->mapCameraView.calculatedTileX * mainMap->mapGrid.tileSizeX;
+            cameraWorldZ = mainMap->mapCameraView.calculatedTileZ * mainMap->mapGrid.tileSizeZ;
+            
+            xPosition -= cameraWorldX;
+            zPosition -= cameraWorldZ;
+            
+            // FIXME: fake
+            tempF = mainMap->mapCameraView.viewOffset.z;
+            
+            xPosition += mainMap->mapCameraView.viewOffset.x;
+            zPosition += mainMap->mapCameraView.viewOffset.z;
+            
+            if (mainMap->mapObjects[i].flags & 4) {
+    
+                temp1 = (mainMap->mapCameraView.calculatedTileX - (mainMap->mapGrid.mapWidth) / 2) * mainMap->mapGrid.tileSizeX;
+                temp2 = (mainMap->mapCameraView.calculatedTileZ - (mainMap->mapGrid.mapHeight) / 2) * mainMap->mapGrid.tileSizeZ;
+    
+                if (temp1 >= 0) {
+                    temp1 += ((mainMap->mapCameraView.viewExtentX * mainMap->mapGrid.tileSizeX) / 2); 
+                } else {
+                    temp1 -= ((mainMap->mapCameraView.viewExtentX * mainMap->mapGrid.tileSizeX) / 2); 
+                }
+    
+                if (temp2 >= 0) {
+                    temp2 += ((mainMap->mapCameraView.viewExtentZ * mainMap->mapGrid.tileSizeZ) / 2); 
+                } else {
+                    temp2 -= ((mainMap->mapCameraView.viewExtentZ * mainMap->mapGrid.tileSizeZ) / 2); 
+                }
+
+                temp1 = (s32)((temp1 - xPosition) / 320) * 320;
+                temp2 = (s32)((temp2 - zPosition) / 240) * 240;
+
+                xPosition = (s32)xPosition + temp1;
+                yPosition = (s32)yPosition;
+                zPosition = (s32)zPosition + temp2;
+
+            }
+        
+            tempF = mainMap->mapCameraView.viewOffset.y;
+            flags = mainMap->mapObjects[i].flags & 8;
+
+            // FIXME: likely fake
+            do {
+                
+                yPosition += tempF;
+                
+                if (flags) {
+                    
+                    if (D_801FB700 < 0x18) {
+                        D_801FB5CB++;
+                    } else {
+                        D_801FB5CB--;
+                    }
+                    
+                    D_801FB700++;
+                    
+                    if (D_801FB700 == 0x30) {
+                        D_801FB700 = 0;
+                    }
+                    
+                    yPosition += D_801FB5CB / 2;
+                
+                }
+                
+            } while (0);
+        
+            setSpriteViewSpacePosition(mainMap->mapObjects[i].spriteIndex, xPosition, yPosition, zPosition);
+            
+            if (mainMap->mapObjects[i].unk_10 != 0xFF) {
+                setSpriteRotation(mainMap->mapObjects[i].spriteIndex, mainMap->mapFloats.rotation.x, mainMap->mapFloats.rotation.y + mainMap->mapObjects[i].unk_10, mainMap->mapFloats.rotation.z);
+            }
+            
+            setSpriteColor(mainMap->mapObjects[i].spriteIndex, mainMap->mapFloats.groundRgba.r, mainMap->mapFloats.groundRgba.g, mainMap->mapFloats.groundRgba.b, mainMap->mapFloats.groundRgba.a);
+            setBilinearFiltering(mainMap->mapObjects[i].spriteIndex, 1);
+        
+        }
+    
+    }
+    
+}
+
+//INCLUDE_ASM("asm/nonmatchings/system/map", func_80039990);
+
+void func_80039990(MainMap* mainMap) {
+
+    u16 i;
+
+    s16 temp1;
+    s32 temp2;
+    s16 temp3;
+    s32 temp4;
+    
+    f32 xPosition, yPosition, zPosition;
+    f32 cameraWorldX, cameraWorldZ;
+    f32 tileCenterOffsetX, tileCenterOffsetZ;
+    f32 spriteWorldX, spriteWorldZ;
+    f32 mapWorldCenterX, mapWorldCenterZ;
+    f32 tileOffsetX, tileOffsetZ; 
+    
+    for (i = 0; i < MAX_WEATHER_SPRITES; i++) {
+
+        if (mainMap->weatherSprites[i].flags & 1) {
+
+            if (func_8002BCC8(mainMap->weatherSprites[i].spriteIndex) || !(mainMap->weatherSprites[i].flags & 2)) {
+                
+                resetAnimationState(mainMap->weatherSprites[i].spriteIndex);
+
+                if (!(getRandomNumberInRange(0, 4))) {
+                
+                    globalSprites[mainMap->weatherSprites[i].spriteIndex].stateFlags &= ~0x40;
+                    startSpriteAnimation(mainMap->weatherSprites[i].spriteIndex, mainMap->weatherSprites[i].animationIndex, 0xFE);
+                    
+                    mainMap->weatherSprites[i].flags |= 2;
+                    
+                    temp1 = getRandomNumberInRange(0, 0x140);
+                    temp2 = (((mainMap->mapCameraView.calculatedTileX - (mainMap->mapGrid.mapWidth / 2)) * mainMap->mapGrid.tileSizeX)) - 0xA0;
+
+                    mainMap->weatherSprites[i].coordinates.x = temp1 + temp2;
+                        
+                    mainMap->weatherSprites[i].coordinates.y = 0;
+                    
+                    temp3 = getRandomNumberInRange(0, 0xF0);
+                    temp4 = (((mainMap->mapCameraView.calculatedTileZ - (mainMap->mapGrid.mapHeight / 2)) * mainMap->mapGrid.tileSizeZ)) - 0x78;
+                    
+                    mainMap->weatherSprites[i].coordinates.z = temp3 + temp4;
+                    
+                }
+            
+            }
+
+            mapWorldCenterX = (mainMap->mapGrid.mapWidth * mainMap->mapGrid.tileSizeX) / 2;
+            mapWorldCenterZ = (mainMap->mapGrid.mapHeight * mainMap->mapGrid.tileSizeZ) / 2;
+
+            tileOffsetX = mainMap->mapGrid.tileSizeX / 2;
+            tileOffsetZ = mainMap->mapGrid.tileSizeZ / 2;
+
+            cameraWorldX = mainMap->mapCameraView.calculatedTileX * mainMap->mapGrid.tileSizeX;
+            cameraWorldZ = mainMap->mapCameraView.calculatedTileZ * mainMap->mapGrid.tileSizeZ;
+
+            spriteWorldX = mainMap->weatherSprites[i].coordinates.x;
+            spriteWorldZ = mainMap->weatherSprites[i].coordinates.z;
+
+            xPosition = spriteWorldX + mapWorldCenterX - tileOffsetX;
+            zPosition = spriteWorldZ + mapWorldCenterZ - tileOffsetZ;
+            
+            xPosition -= cameraWorldX;
+            zPosition -= cameraWorldZ;
+            
+            xPosition += mainMap->mapCameraView.viewOffset.x;
+            zPosition += mainMap->mapCameraView.viewOffset.z;
+
+            yPosition = mainMap->weatherSprites[i].coordinates.y;
+            
+            if (globalSprites[mainMap->weatherSprites[i].spriteIndex].renderingFlags & 0x200) {
+                yPosition -= mainMap->mapCameraView.viewOffset.y;
+            } else {
+                yPosition += mainMap->mapCameraView.viewOffset.y;
+            }
+
+            setSpriteViewSpacePosition(mainMap->weatherSprites[i].spriteIndex,
+                xPosition, yPosition, zPosition);
+
+            setSpriteColor(mainMap->weatherSprites[i].spriteIndex, 
+                   mainMap->mapFloats.groundRgba.r, 
+                   mainMap->mapFloats.groundRgba.g, 
+                   mainMap->mapFloats.groundRgba.b, 
+                   mainMap->mapFloats.groundRgba.a);
+            
+            setBilinearFiltering(mainMap->weatherSprites[i].spriteIndex, TRUE);
+                
+        }
+        
+    }
+    
+}
 
 //INCLUDE_ASM("asm/nonmatchings/system/map", processMapSceneNode);
 
@@ -2347,15 +2883,11 @@ void func_8003B100(MainMap* map, f32 arg1, f32 arg2, f32 arg3, f32 arg4, f32 arg
 
     Vec3f vec;
     
-    f32 temp_f20;
-    f32 temp_f22;
-    f32 temp_f24;
+    f32 x = (arg1 + map->mapState.mapOriginX + map->mapCameraView.viewOffset.x) - arg4;
+    f32 y = arg2 + map->mapCameraView.viewOffset.y;
+    f32 z = (arg3 + map->mapState.mapOriginZ + map->mapCameraView.viewOffset.z) - arg5;
 
-    temp_f22 = (arg1 + map->mapState.mapOriginX + map->mapCameraView.viewOffset.x) - arg4;
-    temp_f24 = arg2 + map->mapCameraView.viewOffset.y;
-    temp_f20 = (arg3 + map->mapState.mapOriginZ + map->mapCameraView.viewOffset.z) - arg5;
-    
-    addSceneNodePosition(addSceneNode(dl, 8), temp_f22, temp_f24, temp_f20);
+    addSceneNodePosition(addSceneNode(dl, 8), x, y, z);
 
 }
 
