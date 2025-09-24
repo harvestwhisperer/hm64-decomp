@@ -71,18 +71,6 @@ extern u8 D_80189108[5][7];
 // FIXME: should be 2D array with [4][8]
 extern u8 D_80237420[31];
 
-extern u32 _checkerboardBackgroundTextureSegmentRomStart;
-extern u32 _checkerboardBackgroundTextureSegmentRomEnd;
-extern u32 _checkerboardBackgroundAssetsIndexSegmentRomStart;
-extern u32 _checkerboardBackgroundAssetsIndexSegmentRomEnd;
-
-extern u32 _holdableItemsTextureSegmentRomStart;
-extern u32 _holdableItemsTextureSegmentRomEnd;
-extern u32 _holdableItemsAssetsIndexSegmentRomStart;
-extern u32 _holdableItemsAssetsIndexSegmentRomEnd;
-extern u32 _holdableItemsSpritesheetIndexSegmentRomStart;
-extern u32 _holdableItemsSpritesheetIndexSegmentRomEnd;
-
 extern OverlayScreenTable overlayScreenTable;
 extern OverlayScreenStrings overlayScreenStrings;
 

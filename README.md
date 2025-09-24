@@ -2,7 +2,7 @@
 
 ## Progress
 
-Currently, 79% of the 1467 game functions and 75% of the game source files have been decompiled. All library functions have also been identified with much progress on the matching (many thanks to cblck for the great work). More robust progress tracking is in the works.
+Currently, 80% of the 1467 game functions and 77% of the game source files have been decompiled, with the entire game engine (the "system" according to leftover debug logs) is now fully decompiled. All library functions have also been identified with much progress on the matching (many thanks to cblck for the great work). More robust progress tracking is in the works.
 
 ## Asset extraction
 
@@ -44,6 +44,36 @@ Dialogue bytecode can now be disassembled into text and json via `make extract-d
 
 Currently, the disassembly references game variables, special dialogue bits, and text indices by number, but I hope to eventually add in support for using their in-game identifiers.
 
+### Maps
+
+Map tiles and "core map objects" can now be extracted via `make extract-map-sprites`. 
+
+Map assets consist of 10 sub-assets:
+- 1.) The map grid information, which includes basic map metadata and a mapping between tile number and grid position.
+- 2.) Mesh data, which is essentially tile vertex information. This consists of two parts:
+    - a.) Individual vertex information, which contains a pointer to its coordinate data, how many vertices to use per tile, y offest information, etc.
+    - b.) Drawing information, which includes flags, coloring data, and bitfields that encapsulate vertex order for triangle drawing commands
+- 3.) Terrain quads used for certain entity height calculations
+- 4.) Grid to level interaction indicies (i.e., which squares in the grid have a specific flag the game can use for game interaction logic, such as the home TV, signs, the vineyard wine barrel, etc.)
+- 5.) Core map objects data (coordinates and flags)
+- 6.) Tile textures
+- 7.) Tile palettes
+- 8.) Core map object textures
+- 9.) Core map object palettes
+- 10.) "Map addtions" metadata (new geometry added to the map once they're unlocked in the game, such as the house extensions)
+
+The "core map objects" are sprites that are always rendered on top of the geometry, independent of game status, which includes things like trees and fences. 
+
+The map code manages two separate display lists for the tiles and ground objects (foragable items) and appends other sprites to the scene graph indirectly via calling `sprite.c` functions (i.e., weather sprites, map objects set up by the game, map additions, and the core map objects).
+
+### Cutscenes
+
+Work is being done on cutscene bytecode interpretation. The bytecode system works by having variable length messages where the first two bits correspond to an index in a cutscene handler function table defined in `cutscene.c`. 
+
+As an example, opcode 88 corresponds to `cutsceneHandlerSetSong`, which is the 88th function in the cutscene function table (starting count from 0). Each opcode is variable length, where the rest of the data after the first two bits are used by the handlng function (these data are usually parameters for other function calls). In the case of `cutsceneHandlerSetSong`, the parameters are song index (16 bits), a pointer to the rom address for the song start (32 bits), and a pointer to the rom address for the song end (32 bits). The handler function then calls `setSong(songIndex, songStart, songEnd);` from `audio.c` and increments the bytecode pointer for the next message.
+
+Compared to the dialogue bytecode, the cutscene bytecode is much more sophisticated and involves multiple bytecode executors. I.e., the initial executor can spawn child executors that execute different segments of the bytecode and can spawn their own child executors as well.
+
 ## Setting up
 1. Install [WSL2](https://learn.microsoft.com/en-us/windows/wsl/install)
 1. WSL: `sudo apt-get update && sudo apt install -y python3 pip binutils-mips-linux-gnu gcc-mips-linux-gnu build-essential wget`
@@ -63,6 +93,5 @@ Contributions are much welcome. There are a few areas of work left in the projec
 - Getting "almost" matches over the finish line: there are several functions that are 95-99% matching in the repo (searchable under `#ifdef PERMUTER`)
 - Cleaning up fake/forced matches (searchable under `FIXME`)
 - Research into function, struct member, flag, and variable purposes and making accurate labels. This also includes adding macro values, such as player actions (see `player.h`)
-- Research into and reversing binary asset formats. Currently, only the sprite and audio formats are understood. Some work remains for cutscene and dialgoue bytecode, as well as map data.
 
 For function matching work, Decomp.me has a `Harvest Moon 64` compiler preset that's selectable when creating new scratches.

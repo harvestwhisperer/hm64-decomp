@@ -2,15 +2,18 @@
 
 #include "game/mapObjects.h"
 
+#include "system/map.h"
+#include "system/mapController.h"
+#include "system/math.h"
+
 #include "game/game.h"
 #include "game/level.h"
 #include "game/player.h"
 #include "game/weather.h"
 
-#include "system/map.h"
-#include "system/math.h"
-
 // data
+// FIXME: should be one array 
+// map additions and spawnable sprite indices
 extern u8 D_80118700[218][5];
 extern u8 D_80118701[218][5];
 extern u8 D_80118702[218][5];
@@ -497,36 +500,36 @@ bool func_800DAA90(u8 mapIndex, u8 arg1, u8 heightIndex, u8 widthIndex) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/mapObjects", func_800DAC70);
 
-void func_800DAC70(u8 arg0, u8 arg1, u8 arg2, u8 arg3) {
+void func_800DAC70(u8 arg0, u8 arg1, u8 x, u8 z) {
     
     u8 temp;
-    u8 temp2;
+    u8 spriteIndex;
     
-    if (func_800DAA90(arg0, arg1, arg2, arg3)) {
+    if (func_800DAA90(arg0, arg1, x, z)) {
         
-        temp2 = D_80118700[arg1][1];
+        spriteIndex = D_80118700[arg1][1];
         
         if (D_80118700[arg1][0] != 0xFF) {
-            func_80038B58(0, D_80118700[arg1][0], D_801FD624 + arg2, D_801C3F35 + arg3);
+            setMapAdditionIndexFromCoordinates(0, D_80118700[arg1][0], D_801FD624 + x, D_801C3F35 + z);
         }
         
         temp = 0;
         
-        switch (temp2) {
+        switch (spriteIndex) {
             default:
-                func_80035004(MAIN_MAP_INDEX, temp2, arg2, arg3);
+                setMapGroundObjectSpriteIndex(MAIN_MAP_INDEX, spriteIndex, x, z);
                 break;
 
             case 0xFF:
-                func_80035004(MAIN_MAP_INDEX, 0xFFFF, arg2, arg3);
+                setMapGroundObjectSpriteIndex(MAIN_MAP_INDEX, 0xFFFF, x, z);
                 break;
 
             case 0:
-                func_80035004(MAIN_MAP_INDEX, 0, arg2, arg3);
+                setMapGroundObjectSpriteIndex(MAIN_MAP_INDEX, 0, x, z);
                 break;
         }
 
-        func_80036FA0(0);
+        setGroundObjects(0);
         func_80036C08(temp);
 
     }
@@ -559,22 +562,22 @@ void func_800DAD74(u8 arg0, f32 arg1, u8 arg2) {
             temp3 = D_80118701[arg0][0];
 
             if (D_80118700[arg0][0] != 0xFF) {
-                func_80038B58(0, D_80118700[arg0][0], D_801FD624 + temp4, D_801C3F35 + temp5);
+                setMapAdditionIndexFromCoordinates(0, D_80118700[arg0][0], D_801FD624 + temp4, D_801C3F35 + temp5);
             }
 
             switch (temp3) {
                 default: 
-                    func_80035004(MAIN_MAP_INDEX, temp3, temp4, temp5);
+                    setMapGroundObjectSpriteIndex(MAIN_MAP_INDEX, temp3, temp4, temp5);
                     break;
                 case 0xFF:
-                    func_80035004(MAIN_MAP_INDEX, 0xFFFF, temp4, temp5);
+                    setMapGroundObjectSpriteIndex(MAIN_MAP_INDEX, 0xFFFF, temp4, temp5);
                     break;
                 case 0:
-                    func_80035004(MAIN_MAP_INDEX, 0, temp4, temp5);
+                    setMapGroundObjectSpriteIndex(MAIN_MAP_INDEX, 0, temp4, temp5);
                     break;
             }
             
-            func_80036FA0(0);
+            setGroundObjects(0);
             func_80036C08(0);
             
         }
@@ -941,22 +944,22 @@ void func_800DC1E8(void) {
                     temp = D_8011870B;
 
                     if (D_8011870A != 0xFF) {
-                        func_80038B58(0, D_8011870A, D_801FD624 + j, D_801C3F35 + i);
+                        setMapAdditionIndexFromCoordinates(0, D_8011870A, D_801FD624 + j, D_801C3F35 + i);
                     }
 
                     switch (temp) {
                         default:
-                            func_80035004(MAIN_MAP_INDEX, temp, j, i);
+                            setMapGroundObjectSpriteIndex(MAIN_MAP_INDEX, temp, j, i);
                             break;
                         case 0xFF:
-                            func_80035004(MAIN_MAP_INDEX, 0xFFFF, j, i);
+                            setMapGroundObjectSpriteIndex(MAIN_MAP_INDEX, 0xFFFF, j, i);
                             break;
                         case 0:
-                            func_80035004(MAIN_MAP_INDEX, 0, j, i);
+                            setMapGroundObjectSpriteIndex(MAIN_MAP_INDEX, 0, j, i);
                             break;
                     }
 
-                    func_80036FA0(0);
+                    setGroundObjects(0);
                     func_80036C08(0);
                     
                 }

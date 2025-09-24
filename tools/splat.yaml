@@ -331,7 +331,7 @@ segments:
       - [ 0xECAC0, .data, system/unknownData2] # unused
       - [ 0xEDD00, .data, system/staticGfx]
       - [ 0xEDE80, data, system/paddingData]
-      - [ 0xEE110, data, system/map]
+      - [ 0xEE110, .data, system/map]
       - [ 0xEE7B0, .data, system/pauseScreen]
       - [ 0xEE7D0, .data, system/cutscene]
       - [ 0xEE980, data, game/fieldTileMaps]
@@ -2063,14 +2063,21 @@ segments:
   
   # map format: 
   #   main index
-  #   unknown data  
-  #   unknown data2
+  #   map grid
+  #     tile size x
+  #     tile size z
+  #     map width
+  #     map height
+  #     unknown 16-bit value
+  #     vertex count
+  #     tile to vertex index array
+  #   vtx info
   #     index, offsets = 0x28
   #     data array
   #       header
   #       data
   #   terrain quads
-  #   unknown data3, possibly grid-to-texture tile map
+  #   grid to level interaction indices
   #   shorts used for floats (byte-swapped)
   #   ci4 textures1
   #     index
@@ -2088,13 +2095,13 @@ segments:
   #       header
   #       dimensions
   #       ci4 data
-  #   unknown data5, arrays of size 0x28
+  #   ci4 palettes
   #     index
   #     data1, size 0x28
   #       header
   #       data
   #     data2
-  #   unknown data6
+  #   map additions metadata
   #     header
   #     data: u16 arr[7]
   #   padding/end, 8 bytes

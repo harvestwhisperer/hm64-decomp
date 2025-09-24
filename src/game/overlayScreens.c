@@ -16,6 +16,8 @@
 #include "game/shop.h"
 #include "game/tv.h"
 
+#include "ld_symbols.h"
+
 // bss
 extern OverlayScreenTable overlayScreenTable;
  
@@ -30,21 +32,6 @@ extern f32 D_80116DA0[];
 extern f32 D_80116DB0[];
 extern f32 D_80116DC0[5];
 extern f32 D_80116DD4[5];
-
-// TODO: replace with linker symbols
-// money sprites
-// extern void *D_CFE610;
-// extern void *D_CFE610_2;
-// extern void *D_CFF6F0;
-// extern void *D_CFF6F0_2;
-// extern void *D_CFF6F0_3;
-// extern void *D_CFF6F0_4;
-// extern void *D_CFF710;
-
-// extern void *D_D3BFE0;
-// extern void *D_D3DCC0;
-// extern void *D_D3DCC0_2;
-// extern void *D_D3DCE0;
 
 // forward declarations
 void func_800B4160(void);
@@ -211,7 +198,7 @@ void func_800B3BD8(void) {
 
     u32 temp = gGold;
 
-    dmaSprite(0x8E, &D_CFE610, &D_CFF6F0, &D_CFF6F0_2, &D_CFF710, 0, 0, 0x80253B00, 0, 0x80254A00, 0x80254E00, 0x80254F00, 0, 0, 0);
+    dmaSprite(0x8E, &_moneyTextureSegmentRomStart, &_moneyTextureSegmentRomEnd, &_moneyAssetsIndexSegmentRomStart, &_moneyTextureSegmentRomEnd, 0, 0, 0x80253B00, 0, 0x80254A00, 0x80254E00, 0x80254F00, 0, 0, 0);
     inline_func();
     setBilinearFiltering(0x8E, TRUE);
     setSpriteColor(0x8E, 0xFF, 0xFF, 0xFF, 0);
@@ -648,7 +635,7 @@ INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800B9914);
 INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800B99EC);
 
 INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800B9B8C);
-
+ 
 // jtbl_80121C98
 // pause screen main loop callback
 INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800B9D3C);
@@ -657,7 +644,48 @@ INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800BA928);
 
 INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800BA9E8);
 
-INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800BAAA0);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800BAAA0);
+
+void func_800BAAA0(void) {
+
+    u8 i;
+    
+    setSpriteColor(0x83, 0x80, 0x80, 0x80, 0xFF);
+    setSpriteColor(0x84, 0x80, 0x80, 0x80, 0xFF);
+    setSpriteColor(0x85, 0x80, 0x80, 0x80, 0xFF);
+
+    switch (overlayScreenTable.subscreen) {
+
+        case 5:
+            setSpriteColor(0x83, 0xFF, 0xFF, 0xFF, 0xFF);
+            break;
+        case 6:
+            setSpriteColor(0x84, 0xFF, 0xFF, 0xFF, 0xFF);
+            break;
+        case 7:
+            setSpriteColor(0x85, 0xFF, 0xFF, 0xFF, 0xFF);
+            break;
+    }
+
+    for (i = 0; i < 9; i++) {
+         if (gPlayer.toolSlots[i]) {
+             setSpriteColor(i + 0xA3, 0xFF, 0xFF, 0xFF, 0xFF);
+         }
+    }
+
+    for (i = 0; i < 9; i++) {
+         if (gPlayer.belongingsSlots[i]) {
+             setSpriteColor(i + 0xAC, 0xFF, 0xFF, 0xFF, 0xFF);
+         }
+    }
+
+    for (i = 0; i < 9; i++) {
+         if (gPlayer.keyItemSlots[(overlayScreenTable.pageNumber * 8) + i]) {
+             setSpriteColor(i + 0xB5, 0xFF, 0xFF, 0xFF, 0xFF);
+         }
+    }
+    
+}
 
 //INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800BAC7C);
 
@@ -689,7 +717,45 @@ void func_800BAC7C(void) {
     
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800BADD0);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800BADD0);
+
+void func_800BADD0(void) {
+    
+    func_800593EC();
+    
+    dmaSprite(0x80, 
+        &_checkerboardBackgroundTextureSegmentRomStart,
+        &_checkerboardBackgroundTextureSegmentRomEnd, 
+        &_checkerboardBackgroundAssetsIndexSegmentRomStart, 
+        &_checkerboardBackgroundAssetsIndexSegmentRomEnd, 
+        NULL, 
+        NULL, 
+        (u8*)0x802DE5C0, 
+        NULL, 
+        (u16*)0x802E0BC0,
+        (u16*)0x802E0CC0, 
+        (u8*)0x802E0DC0, 
+        NULL, 
+        0, 
+        0
+    );
+    
+    setSpriteViewSpacePosition(0x80, 0.0f, 0.0f, 0.0f);
+    setSpriteScale(0x80, 2.0f, 2.0f, 1.0f);
+    setBilinearFiltering(0x80, 1);
+    setSpriteColor(0x80, 0xFF, 0xFF, 0xFF, 0xFF);
+    startSpriteAnimation(0x80, 0, 0);
+    
+    overlayScreenTable.cellIndex = 0;
+    overlayScreenTable.previousCellIndex = 0;
+    overlayScreenTable.pageNumber = 0;
+    overlayScreenTable.unk_3 = 0xFF;
+    overlayScreenTable.unk_4 = 0;
+    overlayScreenTable.subscreen = 0;
+        
+    setMainLoopCallbackFunctionIndex(0x24);
+    
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800BAF1C);
 

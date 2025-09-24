@@ -7,6 +7,7 @@
 #include "system/controller.h"
 #include "system/entity.h"
 #include "system/map.h"
+#include "system/mapController.h"
 #include "system/message.h"
 #include "system/pauseScreen.h"
 #include "system/globalSprites.h"
@@ -17,11 +18,12 @@
 #include "game/gameStatus.h"
 #include "game/itemHandlers.h"
 #include "game/level.h"
-#include "mainLoop.h"
 #include "game/overlayScreens.h"
 #include "game/player.h"
 #include "game/setCutscenes.h"
 #include "game/spriteInfo.h"
+
+#include "mainLoop.h"
 
 #include "data/animationScripts/animationScripts.h"
 
@@ -523,7 +525,7 @@ void loadShopItemSprite(u8 index) {
     dmaSprite(D_801194A0[index] + 0x62, &_holdableItemsTextureSegmentRomStart, &_holdableItemsTextureSegmentRomEnd, &_holdableItemsAssetsIndexSegmentRomStart, &_holdableItemsAssetsIndexSegmentRomEnd, &_holdableItemsSpritesheetIndexSegmentRomStart, &_holdableItemsSpritesheetIndexSegmentRomEnd, D_801192E0[index][0], D_801192E0[index][1], 0x8028DD50, 0x80290550, 0x80293A50, 0x80293C50, 1, 1);
     setSpriteScale(D_801194A0[index] + 0x62, 1.0f, 1.0f, 1.0f);
     setSpriteRenderingLayer(D_801194A0[index] + 0x62, (1 | 2));
-    setSpriteDefaultRGBA(D_801194A0[index] + 0x62, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteBaseRGBA(D_801194A0[index] + 0x62, 0xFF, 0xFF, 0xFF, 0xFF);
     setSpriteColor(D_801194A0[index] + 0x62, 0xFF, 0xFF, 0xFF, 0xFF);
 
     setMapObject(MAIN_MAP_INDEX, D_801194A0[index], D_801194A0[index] + 0x62, func_80030BA0(&shopItemsAnimationScripts, func_800D5A88(D_80118FD0[index])), D_80119040[index].x, D_80119040[index].y, D_80119040[index].z, 0xFF, 0xFF, 0, 0);

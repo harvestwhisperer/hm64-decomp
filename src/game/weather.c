@@ -4,17 +4,16 @@
 
 #include "ld_symbols.h"
 
-#include "system/map.h"
-#include "system/math.h"
 #include "system/globalSprites.h"
+#include "system/map.h"
+#include "system/mapController.h"
+#include "system/math.h"
 
 #include "game/game.h"
 #include "game/gameStatus.h"
 
-// bss
 u8 gWeather;
 
-// data
 u8 weatherLightingAdjustments[5][4] = { 
     { 0xFF, 0xFF, 0xFF, 0xFF }, // sunny
     { 0xB0, 0xB0, 0xC0, 0xB0 }, // rain
@@ -33,23 +32,22 @@ void setWeatherSprites(void) {
     
     u8 i;
     
-    u16 type = ((gWeather == RAIN || gWeather == 4) == FALSE) ? 0xFF : 0;
+    u16 animationIndex = ((gWeather == RAIN || gWeather == 4) == FALSE) ? 0xFF : 0;
 
     if (gWeather == SNOW) {
-        type = 1;
+        animationIndex = 1;
     }
     
-    if (type != 0xFF) {
+    if (animationIndex != 0xFF) {
 
         for (i = 0; i < 10; i++) {
         
-            dmaSprite(i+0x6B, &_rainTextureSegmentRomStart, &_rainTextureSegmentRomEnd, &_rainAssetsIndexSegmentRomStart, &_rainAssetsIndexSegmentRomEnd, 0, 0, (void*)RAIN_TEXTURE_VADDR, NULL, 0x802A5DC0, 0x802A5EC0, 0x802A5FC0, 0, 0, 1);
-            setSpriteScale(i+0x6B, 1.0f, 1.0f, 1.0f);
-            setSpriteRenderingLayer(i+0x6B, 4);
-            setSpriteColor(i+0x6B, 0xFF, 0xFF, 0xFF, 0xFF);
+            dmaSprite(i + 0x6B, &_rainTextureSegmentRomStart, &_rainTextureSegmentRomEnd, &_rainAssetsIndexSegmentRomStart, &_rainAssetsIndexSegmentRomEnd, 0, 0, (void*)RAIN_TEXTURE_VADDR, NULL, 0x802A5DC0, 0x802A5EC0, 0x802A5FC0, 0, 0, 1);
+            setSpriteScale(i + 0x6B, 1.0f, 1.0f, 1.0f);
+            setSpriteRenderingLayer(i + 0x6B, 4);
+            setSpriteColor(i + 0x6B, 0xFF, 0xFF, 0xFF, 0xFF);
             
-            // set weather sprite info on map struct
-            func_80034D64(MAIN_MAP_INDEX, i+3, i+0x6B, type);
+            setMapWeatherSprite(MAIN_MAP_INDEX, i + 3, i + 0x6B, animationIndex);
 
         }
     }

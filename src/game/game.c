@@ -6,10 +6,10 @@
 #include "system/entity.h"
 #include "system/graphic.h"
 #include "system/map.h"
+#include "system/mapController.h"
 #include "system/math.h"
 #include "system/memory.h"
 #include "system/message.h"
-#include "system/mapController.h"
 
 #include "game/animals.h"
 #include "game/evaluation.h"
@@ -45,7 +45,7 @@ extern u8 gSeason;
 extern u8 gSeasonTomorrow;
 extern u8 gYear;
 
-extern Vec4f globalLightingRgba;
+extern Vec4f globalLightingRGBA;
 
 extern u8 gHarvestKing;
 extern u8 gFlowerFestivalGoddess;
@@ -913,40 +913,40 @@ void func_8005C07C(s16 arg0, u16 arg1) {
             case SUNNY:
             case 4:
             case TYPHOON:
-                globalLightingRgba.r = D_80113B20[gHour];
-                globalLightingRgba.g = D_80113B38[gHour];
-                globalLightingRgba.b = D_80113B50[gHour];
-                globalLightingRgba.a = D_80113B68[gHour];
+                globalLightingRGBA.r = D_80113B20[gHour];
+                globalLightingRGBA.g = D_80113B38[gHour];
+                globalLightingRGBA.b = D_80113B50[gHour];
+                globalLightingRGBA.a = D_80113B68[gHour];
                 break;
             case RAIN:
-                globalLightingRgba.r = D_80113B80[gHour];
-                globalLightingRgba.g = D_80113B98[gHour];
-                globalLightingRgba.b = D_80113BB0[gHour];
-                globalLightingRgba.a = D_80113BC8[gHour];  
+                globalLightingRGBA.r = D_80113B80[gHour];
+                globalLightingRGBA.g = D_80113B98[gHour];
+                globalLightingRGBA.b = D_80113BB0[gHour];
+                globalLightingRGBA.a = D_80113BC8[gHour];  
                 break;
             case SNOW:
-                globalLightingRgba.r = D_80113BE0[gHour];
-                globalLightingRgba.g = D_80113BF8[gHour];
-                globalLightingRgba.b = D_80113C10[gHour];
-                globalLightingRgba.a = D_80113C28[gHour];  
+                globalLightingRGBA.r = D_80113BE0[gHour];
+                globalLightingRGBA.g = D_80113BF8[gHour];
+                globalLightingRGBA.b = D_80113C10[gHour];
+                globalLightingRGBA.a = D_80113C28[gHour];  
                 break;
             default:
                 break;
         }
         
     } else {
-        func_8006EB94(&globalLightingRgba, gBaseMapIndex);
+        func_8006EB94(&globalLightingRGBA, gBaseMapIndex);
     }
     
     if (arg0 == 0) {
         
-        setEntitiesColor(globalLightingRgba.r, globalLightingRgba.g, globalLightingRgba.b, globalLightingRgba.a);
-        func_8003BE98(MAIN_MAP_INDEX, globalLightingRgba.r, globalLightingRgba.g, globalLightingRgba.b, globalLightingRgba.a);
+        setEntitiesColor(globalLightingRGBA.r, globalLightingRGBA.g, globalLightingRGBA.b, globalLightingRGBA.a);
+        func_8003BE98(MAIN_MAP_INDEX, globalLightingRGBA.r, globalLightingRGBA.g, globalLightingRGBA.b, globalLightingRGBA.a);
         
-    } else if (globalLightingRgba.r != unknownRGBA.r || globalLightingRgba.g != unknownRGBA.g || globalLightingRgba.b != unknownRGBA.b || globalLightingRgba.a != unknownRGBA.a) {
+    } else if (globalLightingRGBA.r != unknownRGBA.r || globalLightingRGBA.g != unknownRGBA.g || globalLightingRGBA.b != unknownRGBA.b || globalLightingRGBA.a != unknownRGBA.a) {
         
-        updateEntitiesColor(globalLightingRgba.r, globalLightingRgba.g, globalLightingRgba.b, globalLightingRgba.a, arg0);
-        func_8003BF7C(0, globalLightingRgba.r, globalLightingRgba.g, globalLightingRgba.b, globalLightingRgba.a, arg0);
+        updateEntitiesColor(globalLightingRGBA.r, globalLightingRGBA.g, globalLightingRGBA.b, globalLightingRGBA.a, arg0);
+        func_8003BF7C(0, globalLightingRGBA.r, globalLightingRGBA.g, globalLightingRGBA.b, globalLightingRGBA.a, arg0);
         
         if (!checkDailyEventBit(0x4B)) {
             setSongVolume(gCurrentSongIndex, gSongVolume);
@@ -954,10 +954,10 @@ void func_8005C07C(s16 arg0, u16 arg1) {
 
     }
 
-    unknownRGBA.r = globalLightingRgba.r;
-    unknownRGBA.g = globalLightingRgba.g;
-    unknownRGBA.b = globalLightingRgba.b;
-    unknownRGBA.a = globalLightingRgba.a;
+    unknownRGBA.r = globalLightingRGBA.r;
+    unknownRGBA.g = globalLightingRGBA.g;
+    unknownRGBA.b = globalLightingRGBA.b;
+    unknownRGBA.a = globalLightingRGBA.a;
 
     gameLoopContext.callbackIndex = arg1;
     

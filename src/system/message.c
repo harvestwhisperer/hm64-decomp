@@ -16,19 +16,19 @@
 
 // bss
 
-extern MessageBox messageBoxes[MAX_DIALOGUE_BOXES];
-extern GameVariableString gameVariableStrings[64];
+MessageBox messageBoxes[MAX_DIALOGUE_BOXES];
+GameVariableString gameVariableStrings[64];
 
 // byteswapped font texture buffer
-extern FontData D_801706C0[2][256];
+FontData D_801706C0[2][256];
 
 // text buffer of current displayed lines in game string characters; each line is size 0x20 (0x10 u16s)
 // u16 linesBuffer[8][0x10]
 // always 16 chars per line (filled with padding) 
-extern u16 D_80204BF0[256];
+u16 D_80204BF0[256];
 
-extern Vtx D_801C6230[2][512][4];
-extern Gfx messageBoxDisplayList[2][3072];
+Vtx D_801C6230[2][512][4];
+Gfx messageBoxDisplayList[2][3072];
 
 // pointer to character avatar animation scripts
 u8* D_801891C8;

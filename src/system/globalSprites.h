@@ -7,8 +7,8 @@
 #define MAX_SHADOW_SPRITES 3
 
 /* global sprite rendering flags */
-#define FLIP_HORIZONTAL 1
-#define FLIP_VERTICAL 2
+#define SPRITE_RENDERING_FLIP_HORIZONTAL 1
+#define SPRITE_RENDERING_FLIP_VERTICAL 2
 
 /* global sprite state flags */
 #define SPRITE_ACTIVE 0x1
@@ -55,9 +55,9 @@ typedef struct {
 	Vec3f scale; // 0x38
 	Vec3f rotation;
     Vec4f baseRGBA; // 0x50 
-	Vec4f rgbaCurrent; // 0x60
-	Vec4f rgbaTarget; // 0x70
-	Vec4f rgbaDelta; // 0x80
+	Vec4f currentRGBA; // 0x60
+	Vec4f targetRGBA; // 0x70
+	Vec4f deltaRGBA; // 0x80
 	u8 currentAnimationFrame;
 	u8 frameTickCounter;
 	bool audioTrigger;
@@ -89,7 +89,7 @@ extern bool func_8002C680(u16 index, u16, u16);
 extern bool func_8002C6F8(u16, u16);
 extern bool func_8002C768(u16, u16);
 extern bool setSpriteRenderingLayer(u16, u16);                              
-extern bool setSpriteDefaultRGBA(u16 index, u8 r, u8 g, u8 b, u8 a);
+extern bool setSpriteBaseRGBA(u16 index, u8 r, u8 g, u8 b, u8 a);
 extern bool setSpriteColor(u16, u8, u8, u8, u8);
 extern bool setSpriteAlpha(u16, u8);  
 extern bool setBilinearFiltering(u16 spriteIndex, bool useBilinearFiltering);     

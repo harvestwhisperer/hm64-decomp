@@ -260,7 +260,7 @@ extern u16 func_80063A2C(u8);
 extern MainLoopCallbackInfo gameLoopContext;
 
 extern Vec4f D_8016F8A0;
-extern Vec4f globalLightingRgba;
+extern Vec4f globalLightingRGBA;
 
 extern u32 gGold;
 extern u16 gLumber;
@@ -343,10 +343,10 @@ extern Vec4f unknownRGBA;
 
 static inline void resetGlobalLighting() {
 
-    globalLightingRgba.r = 0;
-    globalLightingRgba.g = 0;
-    globalLightingRgba.b = 0;
-    globalLightingRgba.a = 0;
+    globalLightingRGBA.r = 0;
+    globalLightingRGBA.g = 0;
+    globalLightingRGBA.b = 0;
+    globalLightingRGBA.a = 0;
 
     // dialogue icon struct
     unknownRGBA.r = 0;

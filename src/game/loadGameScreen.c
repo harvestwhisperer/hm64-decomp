@@ -7,10 +7,11 @@
 
 #include "game/game.h"
 #include "game/itemHandlers.h"
-#include "mainLoop.h"
 #include "game/overlayScreens.h"
 #include "game/player.h"
 #include "game/updateGame.h"
+
+#include "mainLoop.h"
                                                                          
 // forward declaration
 u8 func_800E4424(u8, u8);                 

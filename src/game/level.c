@@ -49,7 +49,7 @@ u8 levelFlags[] = {
 }
 */
 
-// rotations for map model context struct
+// rotations for map controlle
 extern u8 D_80114280[];
 
 /*
@@ -158,8 +158,7 @@ void setupLevelMap(u16 mapIndex) {
     }
     
     func_80036C08(MAIN_MAP_INDEX);
-
-    func_80036FA0(MAIN_MAP_INDEX);
+    setGroundObjects(MAIN_MAP_INDEX);
 
 }
  
@@ -416,7 +415,7 @@ void func_8006F938(u16 levelIndex) {
             dmaSprite(MAP_OBJECT_1, &_homeItemsTextureSegmentRomStart, &_homeItemsTextureSegmentRomEnd, &_homeItemsAssetsIndexSegmentRomStart, &_homeItemsAssetsIndexSegmentRomEnd, &_homeItemsSpritesheetIndexSegmentRomStart, &_homeItemsSpritesheetIndexSegmentRomEnd, (void*)0x802E4000, (void*)0x802E4D00, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
             setSpriteScale(MAP_OBJECT_1, 1.0f, 1.0f, 1.0f);
             setSpriteRenderingLayer(MAP_OBJECT_1, (1 | 2));
-            setSpriteDefaultRGBA(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
+            setSpriteBaseRGBA(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
             setSpriteColor(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
             
             if (checkDailyEventBit(0x43)) {
@@ -430,7 +429,7 @@ void func_8006F938(u16 levelIndex) {
             func_8002C6F8(MAP_OBJECT_2, (1 | 2));
             func_8002C768(MAP_OBJECT_2, 0x200);
             setSpriteRenderingLayer(MAP_OBJECT_2, 2);
-            setSpriteDefaultRGBA(MAP_OBJECT_2, 0xFF, 0xFF, 0xFF, 0x80);
+            setSpriteBaseRGBA(MAP_OBJECT_2, 0xFF, 0xFF, 0xFF, 0x80);
             setSpriteColor(MAP_OBJECT_2, 0xFF, 0xFF, 0xFF, 0xFF);
             
             setMapObject(MAIN_MAP_INDEX, 1, MAP_OBJECT_2, 0, 304.f, 64.0f, -384.0f, 0, 0xFE, 0, 0);
@@ -442,7 +441,7 @@ void func_8006F938(u16 levelIndex) {
             dmaSprite(MAP_OBJECT_1, &_homeItemsTextureSegmentRomStart, &_homeItemsTextureSegmentRomEnd, &_homeItemsAssetsIndexSegmentRomStart, &_homeItemsAssetsIndexSegmentRomEnd, &_homeItemsSpritesheetIndexSegmentRomStart, &_homeItemsSpritesheetIndexSegmentRomEnd, (void*)0x802E4000, (void*)0x802E4D00, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
             setSpriteScale(MAP_OBJECT_1, 2.0f, 2.0f, 1.0f);
             setSpriteRenderingLayer(MAP_OBJECT_1, (1 | 2));
-            setSpriteDefaultRGBA(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
+            setSpriteBaseRGBA(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
             setSpriteColor(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
             setMapObject(MAIN_MAP_INDEX, 0, MAP_OBJECT_1, 6, -160.0f, 32.0f, -112.0f, 0xFF, 0xFF, 0, 0);
             
@@ -451,7 +450,7 @@ void func_8006F938(u16 levelIndex) {
                 dmaSprite(MAP_OBJECT_2, &_homeItemsTextureSegmentRomStart, &_homeItemsTextureSegmentRomEnd, &_homeItemsAssetsIndexSegmentRomStart, &_homeItemsAssetsIndexSegmentRomEnd, &_homeItemsSpritesheetIndexSegmentRomStart, &_homeItemsSpritesheetIndexSegmentRomEnd, (void*)0x802E7C00, (void*)0x802E7E80, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
                 setSpriteScale(MAP_OBJECT_2, 1.0f, 1.0f, 1.0f);
                 setSpriteRenderingLayer(MAP_OBJECT_2, (1 | 2));
-                setSpriteDefaultRGBA(MAP_OBJECT_2, 0xFF, 0xFF, 0xFF, 0xFF);
+                setSpriteBaseRGBA(MAP_OBJECT_2, 0xFF, 0xFF, 0xFF, 0xFF);
                 setSpriteColor(MAP_OBJECT_2, 0xFF, 0xFF, 0xFF, 0xFF);
                 setMapObject(MAIN_MAP_INDEX, 1, MAP_OBJECT_2, 0x10, 8.0f, 72.0f, -168.0f, 0xFF, 0xFF, 0, 0);
                 
@@ -462,7 +461,7 @@ void func_8006F938(u16 levelIndex) {
                 dmaSprite(MAP_OBJECT_3, &_homeItemsTextureSegmentRomStart, &_homeItemsTextureSegmentRomEnd, &_homeItemsAssetsIndexSegmentRomStart, &_homeItemsAssetsIndexSegmentRomEnd, &_homeItemsSpritesheetIndexSegmentRomStart, &_homeItemsSpritesheetIndexSegmentRomEnd, (void*)0x802E8100, (void*)0x802E8380, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
                 setSpriteScale(MAP_OBJECT_3, 1.0f, 1.0f, 1.0f);
                 setSpriteRenderingLayer(MAP_OBJECT_3, (1 | 2));
-                setSpriteDefaultRGBA(MAP_OBJECT_3, 0xFF, 0xFF, 0xFF, 0xFF);
+                setSpriteBaseRGBA(MAP_OBJECT_3, 0xFF, 0xFF, 0xFF, 0xFF);
                 setSpriteColor(MAP_OBJECT_3, 0xFF, 0xFF, 0xFF, 0xFF);
                 setMapObject(MAIN_MAP_INDEX, 2, MAP_OBJECT_3, 9, 104.0f, 0, 24.0f, 0xFF, 0xFF, 0, 0);
                 
@@ -474,7 +473,7 @@ void func_8006F938(u16 levelIndex) {
                 dmaSprite(MAP_OBJECT_4, &_homeItemsTextureSegmentRomStart, &_homeItemsTextureSegmentRomEnd, &_homeItemsAssetsIndexSegmentRomStart, &_homeItemsAssetsIndexSegmentRomEnd, &_homeItemsSpritesheetIndexSegmentRomStart, &_homeItemsSpritesheetIndexSegmentRomEnd, (void*)0x802E8600, (void*)0x802E8880, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
                 setSpriteScale(MAP_OBJECT_4, 1.0f, 1.0f, 1.0f);
                 setSpriteRenderingLayer(MAP_OBJECT_4, (1 | 2));
-                setSpriteDefaultRGBA(MAP_OBJECT_4, 0xFF, 0xFF, 0xFF, 0xFF);
+                setSpriteBaseRGBA(MAP_OBJECT_4, 0xFF, 0xFF, 0xFF, 0xFF);
                 setSpriteColor(MAP_OBJECT_4, 0xFF, 0xFF, 0xFF, 0xFF);
 
                 // cabinet
@@ -491,7 +490,7 @@ void func_8006F938(u16 levelIndex) {
                 dmaSprite(MAP_OBJECT_5, &_homeItemsTextureSegmentRomStart, &_homeItemsTextureSegmentRomEnd, &_homeItemsAssetsIndexSegmentRomStart, &_homeItemsAssetsIndexSegmentRomEnd, &_homeItemsSpritesheetIndexSegmentRomStart, &_homeItemsSpritesheetIndexSegmentRomEnd, (void*)0x802E8B00, (void*)0x802E8D80, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
                 setSpriteScale(MAP_OBJECT_5, 1.0f, 1.0f, 1.0f);
                 setSpriteRenderingLayer(MAP_OBJECT_5, (1 | 2));
-                setSpriteDefaultRGBA(MAP_OBJECT_5, 0xFF, 0xFF, 0xFF, 0xFF);
+                setSpriteBaseRGBA(MAP_OBJECT_5, 0xFF, 0xFF, 0xFF, 0xFF);
                 setSpriteColor(MAP_OBJECT_5, 0xFF, 0xFF, 0xFF, 0xFF);
                 setMapObject(MAIN_MAP_INDEX, 4, MAP_OBJECT_5, 0x11, -176.0f, 24.0f, -160.0f, 0xFF, 0xFF, 0, 0);
                 
@@ -503,7 +502,7 @@ void func_8006F938(u16 levelIndex) {
                 dmaSprite(MAP_OBJECT_6, &_homeItemsTextureSegmentRomStart, &_homeItemsTextureSegmentRomEnd, &_homeItemsAssetsIndexSegmentRomStart, &_homeItemsAssetsIndexSegmentRomEnd, &_homeItemsSpritesheetIndexSegmentRomStart, &_homeItemsSpritesheetIndexSegmentRomEnd, (void*)0x802E9000, (void*)0x802E9280, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
                 setSpriteScale(MAP_OBJECT_6, 1.0f, 1.0f, 1.0f);
                 setSpriteRenderingLayer(MAP_OBJECT_6, (1 | 2));
-                setSpriteDefaultRGBA(MAP_OBJECT_6, 0xFF, 0xFF, 0xFF, 0xFF);
+                setSpriteBaseRGBA(MAP_OBJECT_6, 0xFF, 0xFF, 0xFF, 0xFF);
                 setSpriteColor(MAP_OBJECT_6, 0xFF, 0xFF, 0xFF, 0xFF);
                 setMapObject(MAIN_MAP_INDEX, 5, MAP_OBJECT_6, 4, -40.0f, 8.0f, 8.0f, 0xFF, 0xFF, 0, 0);
             
@@ -519,7 +518,7 @@ void func_8006F938(u16 levelIndex) {
                 dmaSprite(MAP_OBJECT_1, &_homeItemsTextureSegmentRomStart, &_homeItemsTextureSegmentRomEnd, &_homeItemsAssetsIndexSegmentRomStart, &_homeItemsAssetsIndexSegmentRomEnd, &_homeItemsSpritesheetIndexSegmentRomStart, &_homeItemsSpritesheetIndexSegmentRomEnd, (void*)0x802E7C00, (void*)0x802E7E80, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
                 setSpriteScale(MAP_OBJECT_1, 1.0f, 1.0f, 1.0f);
                 setSpriteRenderingLayer(MAP_OBJECT_1, (1 | 2));
-                setSpriteDefaultRGBA(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
+                setSpriteBaseRGBA(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
                 setSpriteColor(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
                 setMapObject(MAIN_MAP_INDEX, 0, MAP_OBJECT_1, 10, -48.f, 16.0f, -80.0f, 0xFF, 0xFF, 0, 0);
         		
@@ -534,7 +533,7 @@ void func_8006F938(u16 levelIndex) {
             func_8002C6F8(MAP_OBJECT_1, (1 | 2));
             func_8002C768(MAP_OBJECT_1, 0x200);
             setSpriteRenderingLayer(MAP_OBJECT_1, 2);
-            setSpriteDefaultRGBA(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0x80);
+            setSpriteBaseRGBA(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0x80);
             setSpriteColor(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
             setMapObject(MAIN_MAP_INDEX, 0, MAP_OBJECT_1, 0, -288.0f, 0.0f, -140.0f, 0x5A, 0xFE, 0, 0);
              
@@ -543,7 +542,7 @@ void func_8006F938(u16 levelIndex) {
             func_8002C6F8(MAP_OBJECT_2, (1 | 2));
             func_8002C768(MAP_OBJECT_2, 0x200);
             setSpriteRenderingLayer(MAP_OBJECT_2, 2);
-            setSpriteDefaultRGBA(MAP_OBJECT_2, 0xFF, 0xFF, 0xFF, 0x80);
+            setSpriteBaseRGBA(MAP_OBJECT_2, 0xFF, 0xFF, 0xFF, 0x80);
             setSpriteColor(MAP_OBJECT_2, 0xFF, 0xFF, 0xFF, 0xFF);
             setMapObject(MAIN_MAP_INDEX, 1, MAP_OBJECT_2, 0, -224.0f, 0.0f, 320.0f, 0, 0xFE, 0, 0);
              
@@ -552,7 +551,7 @@ void func_8006F938(u16 levelIndex) {
             func_8002C6F8(MAP_OBJECT_3, (1 | 2));
             func_8002C768(MAP_OBJECT_3, 0x200);
             setSpriteRenderingLayer(MAP_OBJECT_3, 2);
-            setSpriteDefaultRGBA(MAP_OBJECT_3, 0xFF, 0xFF, 0xFF, 0x80);
+            setSpriteBaseRGBA(MAP_OBJECT_3, 0xFF, 0xFF, 0xFF, 0x80);
             setSpriteColor(MAP_OBJECT_3, 0xFF, 0xFF, 0xFF, 0xFF);
             setMapObject(MAIN_MAP_INDEX, 2, MAP_OBJECT_3, 1, 160.0f, 32.0f, -160.0f, 0, 0xFE, 0, 0);
              
@@ -561,7 +560,7 @@ void func_8006F938(u16 levelIndex) {
                 dmaSprite(MAP_OBJECT_4, &_boulderTextureSegmentRomStart, &_boulderTextureSegmentRomEnd, &_boulderAssetsIndexSegmentRomStart, &_boulderAssetsIndexSegmentRomEnd, &_boulderSpritesheetIndexSegmentRomStart, &_boulderSpritesheetIndexSegmentRomEnd, (void*)0x802E9A00, (void*)0x802EA700, (void*)0x802EB400, (void*)0x802EB500, (void*)0x802EB600, (void*)0x802EB700, 1, 1);
                 setSpriteScale(MAP_OBJECT_4, 1.0f, 1.0f, 1.0f);
                 setSpriteRenderingLayer(MAP_OBJECT_4, (1 | 2));
-                setSpriteDefaultRGBA(MAP_OBJECT_4, 0xFF, 0xFF, 0xFF, 0xFF);
+                setSpriteBaseRGBA(MAP_OBJECT_4, 0xFF, 0xFF, 0xFF, 0xFF);
                 setSpriteColor(MAP_OBJECT_4, 0xFF, 0xFF, 0xFF, 0xFF);
 
                 if (gSeason == WINTER) {
@@ -580,7 +579,7 @@ void func_8006F938(u16 levelIndex) {
             func_8002C6F8(MAP_OBJECT_1, (1 | 2));
             func_8002C768(MAP_OBJECT_1, 0x200);
             setSpriteRenderingLayer(MAP_OBJECT_1, 2);
-            setSpriteDefaultRGBA(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0x80);
+            setSpriteBaseRGBA(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0x80);
             setSpriteColor(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
 
             setMapObject(MAIN_MAP_INDEX, 0, MAP_OBJECT_1, 0, 224.0f, 0, -254.0f, 0x5A, 0xFE, 0, 0);
@@ -590,7 +589,7 @@ void func_8006F938(u16 levelIndex) {
             func_8002C6F8(MAP_OBJECT_2, (1 | 2));
             func_8002C768(MAP_OBJECT_2, 0x200);
             setSpriteRenderingLayer(MAP_OBJECT_2, 2);
-            setSpriteDefaultRGBA(MAP_OBJECT_2, 0xFF, 0xFF, 0xFF, 0x80);
+            setSpriteBaseRGBA(MAP_OBJECT_2, 0xFF, 0xFF, 0xFF, 0x80);
             setSpriteColor(MAP_OBJECT_2, 0xFF, 0xFF, 0xFF, 0xFF);
             
             setMapObject(MAIN_MAP_INDEX, 1, MAP_OBJECT_2, 0, 192.0f, 0, 416.0f, 0, 0xFE, 0, 0);
@@ -606,7 +605,7 @@ void func_8006F938(u16 levelIndex) {
 
                 setSpriteScale(MAP_OBJECT_3, 1.0f, 1.0f, 1.0f);
                 setSpriteRenderingLayer(MAP_OBJECT_3, (1 | 2));
-                setSpriteDefaultRGBA(MAP_OBJECT_3, 0xFF, 0xFF, 0xFF, 0xFF);
+                setSpriteBaseRGBA(MAP_OBJECT_3, 0xFF, 0xFF, 0xFF, 0xFF);
                 setSpriteColor(MAP_OBJECT_3, 0xFF, 0xFF, 0xFF, 0xFF);
 
                 setMapObject(MAIN_MAP_INDEX, 2, MAP_OBJECT_3, 0, 96.0f, 224.0f, -448.0f, 0xFF, 0, 0, 0);
@@ -619,7 +618,7 @@ void func_8006F938(u16 levelIndex) {
 
                 setSpriteScale(MAP_OBJECT_4, 1.0f, 1.0f, 1.0f);
                 setSpriteRenderingLayer(MAP_OBJECT_4, (1 | 2));
-                setSpriteDefaultRGBA(MAP_OBJECT_4, 0xFF, 0xFF, 0xFF, 0xFF);
+                setSpriteBaseRGBA(MAP_OBJECT_4, 0xFF, 0xFF, 0xFF, 0xFF);
                 setSpriteColor(MAP_OBJECT_4, 0xFF, 0xFF, 0xFF, 0xFF);
                 setMapObject(MAIN_MAP_INDEX, 3, MAP_OBJECT_4, 0, 96.0f, 224.0f, -376, 0xFF, 0, 0, 0);
 
@@ -631,7 +630,7 @@ void func_8006F938(u16 levelIndex) {
 
                 setSpriteScale(MAP_OBJECT_5, 1.0f, 1.0f, 1.0f);
                 setSpriteRenderingLayer(MAP_OBJECT_5, (1 | 2));
-                setSpriteDefaultRGBA(MAP_OBJECT_5, 0xFF, 0xFF, 0xFF, 0xFF);
+                setSpriteBaseRGBA(MAP_OBJECT_5, 0xFF, 0xFF, 0xFF, 0xFF);
                 setSpriteColor(MAP_OBJECT_5, 0xFF, 0xFF, 0xFF, 0xFF);
                 setMapObject(MAIN_MAP_INDEX, 4, MAP_OBJECT_5, 0, 304.0f, 224.0f, -432.0f, 0xFF, 0, 0, 0);
 
@@ -643,7 +642,7 @@ void func_8006F938(u16 levelIndex) {
 
                 setSpriteScale(MAP_OBJECT_6, 1.0f, 1.0f, 1.0f);
                 setSpriteRenderingLayer(MAP_OBJECT_6, (1 | 2));
-                setSpriteDefaultRGBA(MAP_OBJECT_6, 0xFF, 0xFF, 0xFF, 0xFF);
+                setSpriteBaseRGBA(MAP_OBJECT_6, 0xFF, 0xFF, 0xFF, 0xFF);
                 setSpriteColor(MAP_OBJECT_6, 0xFF, 0xFF, 0xFF, 0xFF);
                 setMapObject(MAIN_MAP_INDEX, 5, MAP_OBJECT_6, 0, 304.0f, 224.0f, -368.0f, 0xFF, 0, 0, 0);
                 
@@ -660,7 +659,7 @@ void func_8006F938(u16 levelIndex) {
                 func_8002C6F8(MAP_OBJECT_1, (1 | 2));
                 func_8002C768(MAP_OBJECT_1, 0x200);
                 setSpriteRenderingLayer(MAP_OBJECT_1, 2);
-                setSpriteDefaultRGBA(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0x80);
+                setSpriteBaseRGBA(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0x80);
                 setSpriteColor(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
                 setMapObject(MAIN_MAP_INDEX, 0, MAP_OBJECT_1, 0, 0, 216.0f, -128.0f, 0, 0xFE, 0, 0);
 
@@ -672,7 +671,7 @@ void func_8006F938(u16 levelIndex) {
 
                 setSpriteScale(MAP_OBJECT_3, 1.0f, 1.0f, 1.0f);
                 setSpriteRenderingLayer(MAP_OBJECT_3, (1 | 2));
-                setSpriteDefaultRGBA(MAP_OBJECT_3, 0xFF, 0xFF, 0xFF, 0xFF);
+                setSpriteBaseRGBA(MAP_OBJECT_3, 0xFF, 0xFF, 0xFF, 0xFF);
                 setSpriteColor(MAP_OBJECT_3, 0xFF, 0xFF, 0xFF, 0xFF);
                 setMapObject(MAIN_MAP_INDEX, 2, MAP_OBJECT_3, 0, -192.0f, 228.0f, 4.0f, 0xFF, 0, 0, 0);
 
@@ -684,7 +683,7 @@ void func_8006F938(u16 levelIndex) {
                 
                 setSpriteScale(MAP_OBJECT_4, 1.0f, 1.0f, 1.0f);
                 setSpriteRenderingLayer(MAP_OBJECT_4, (1 | 2));
-                setSpriteDefaultRGBA(MAP_OBJECT_4, 0xFF, 0xFF, 0xFF, 0xFF);
+                setSpriteBaseRGBA(MAP_OBJECT_4, 0xFF, 0xFF, 0xFF, 0xFF);
                 setSpriteColor(MAP_OBJECT_4, 0xFF, 0xFF, 0xFF, 0xFF);
                 setMapObject(MAIN_MAP_INDEX, 3, MAP_OBJECT_4, 0, -192.0f, 224.0f, 64.0f, 0xFF, 0, 0, 0);
 
@@ -696,7 +695,7 @@ void func_8006F938(u16 levelIndex) {
                 
                 setSpriteScale(MAP_OBJECT_5, 1.0f, 1.0f, 1.0f);
                 setSpriteRenderingLayer(MAP_OBJECT_5, (1 | 2));
-                setSpriteDefaultRGBA(MAP_OBJECT_5, 0xFF, 0xFF, 0xFF, 0xFF);
+                setSpriteBaseRGBA(MAP_OBJECT_5, 0xFF, 0xFF, 0xFF, 0xFF);
                 setSpriteColor(MAP_OBJECT_5, 0xFF, 0xFF, 0xFF, 0xFF);
                 setMapObject(MAIN_MAP_INDEX, 4, MAP_OBJECT_5, 0, -408.0f, 224.0f, -16.0f, 0xFF, 0, 0, 0);
 
@@ -708,7 +707,7 @@ void func_8006F938(u16 levelIndex) {
                 
                 setSpriteScale(MAP_OBJECT_6, 1.0f, 1.0f, 1.0f);
                 setSpriteRenderingLayer(MAP_OBJECT_6, (1 | 2));
-                setSpriteDefaultRGBA(MAP_OBJECT_6, 0xFF, 0xFF, 0xFF, 0xFF);
+                setSpriteBaseRGBA(MAP_OBJECT_6, 0xFF, 0xFF, 0xFF, 0xFF);
                 setSpriteColor(MAP_OBJECT_6, 0xFF, 0xFF, 0xFF, 0xFF);
                 setMapObject(MAIN_MAP_INDEX, 5, MAP_OBJECT_6, 0, -408.0f, 224.0f, 48.0f, 0xFF, 0, 0, 0);
                 
@@ -717,7 +716,7 @@ void func_8006F938(u16 levelIndex) {
                 dmaSprite(MAP_OBJECT_1, &_bridgeTextureSegmentRomStart, &_bridgeTextureSegmentRomEnd, &_bridgeAssetsIndexSegmentRomStart, &_bridgeAssetsIndexSegmentRomEnd, &_bridgeSpritesheetIndexSegmentRomStart, &_bridgeSpritesheetIndexSegmentRomEnd, (void*)0x802E4000, (void*)0x802E4D00, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
                 setSpriteScale(MAP_OBJECT_1, 1.0f, 1.0f, 1.0f);
                 setSpriteRenderingLayer(MAP_OBJECT_1, (1 | 2));
-                setSpriteDefaultRGBA(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
+                setSpriteBaseRGBA(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
                 setSpriteColor(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
                 setMapObject(MAIN_MAP_INDEX, 0, MAP_OBJECT_1, 3, -160.0f, 224.0f, 8.0f, 0xFF, 0, 0, 0);
                 
@@ -728,7 +727,7 @@ void func_8006F938(u16 levelIndex) {
                 dmaSprite(MAP_OBJECT_2, &_steamTextureSegmentRomStart, &_steamTextureSegmentRomEnd, &_steamAssetsIndexSegmentRomStart, &_steamAssetsIndexSegmentRomEnd, &_steamSpritesheetIndexSegmentRomStart, &_steamSpritesheetIndexSegmentRomEnd, (void*)0x802E4C00, (void*)0x802E5800, (void*)0x802E6400, (void*)0x802E6500, (void*)0x802E6600, (void*)0x802E6700, 1, 1);
                 setSpriteScale(MAP_OBJECT_2, 2.0f, 2.0f, 1.0f);
                 setSpriteRenderingLayer(MAP_OBJECT_2, 2);
-                setSpriteDefaultRGBA(MAP_OBJECT_2, 0xFF, 0xFF, 0xFF, 0x60);
+                setSpriteBaseRGBA(MAP_OBJECT_2, 0xFF, 0xFF, 0xFF, 0x60);
                 setSpriteColor(MAP_OBJECT_2, 0xFF, 0xFF, 0xFF, 0xFF);
                 setMapObject(MAIN_MAP_INDEX, 1, MAP_OBJECT_2, 0, 0.0f, 256.0f, -136.0f, 0xFF, 0xFE, 0, 0);
 
@@ -743,7 +742,7 @@ void func_8006F938(u16 levelIndex) {
             func_8002C6F8(MAP_OBJECT_1, (1 | 2));
             func_8002C768(MAP_OBJECT_1, 0x200);
             setSpriteRenderingLayer(MAP_OBJECT_1, 2);
-            setSpriteDefaultRGBA(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0x80);
+            setSpriteBaseRGBA(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0x80);
             setSpriteColor(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
             setMapObject(MAIN_MAP_INDEX, 0, MAP_OBJECT_1, 0, 0.0f, 64.0f, -96.0f, 0x5A, 0xFE, 0, 0);
 
@@ -756,7 +755,7 @@ void func_8006F938(u16 levelIndex) {
             func_8002C6F8(MAP_OBJECT_1, (1 | 2));
             func_8002C768(MAP_OBJECT_1, 0x200);
             setSpriteRenderingLayer(MAP_OBJECT_1, 2);
-            setSpriteDefaultRGBA(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0x80);
+            setSpriteBaseRGBA(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0x80);
             setSpriteColor(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
             setMapObject(MAIN_MAP_INDEX, 0, MAP_OBJECT_1, 0, 304.f, 112.0f, -10.0f, 0, 0xFE, 0, 1);
             
@@ -769,7 +768,7 @@ void func_8006F938(u16 levelIndex) {
             func_8002C6F8(MAP_OBJECT_1, (1 | 2));
             func_8002C768(MAP_OBJECT_1, 0x200);
             setSpriteRenderingLayer(MAP_OBJECT_1, 2);
-            setSpriteDefaultRGBA(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0x80);
+            setSpriteBaseRGBA(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0x80);
             setSpriteColor(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
             setMapObject(MAIN_MAP_INDEX, 0, MAP_OBJECT_1, 0, -40.0f, 64.0f, -208.0f, 0, 0xFE, 0, 0);    
 
@@ -782,7 +781,7 @@ void func_8006F938(u16 levelIndex) {
             func_8002C6F8(MAP_OBJECT_1, (1 | 2));
             func_8002C768(MAP_OBJECT_1, 0x200);
             setSpriteRenderingLayer(MAP_OBJECT_1, 2);
-            setSpriteDefaultRGBA(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0x80);
+            setSpriteBaseRGBA(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0x80);
             setSpriteColor(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
             setMapObject(MAIN_MAP_INDEX, 0, MAP_OBJECT_1, 0, -256.0f, 104.f, -24.0f, 0, 0xFE, 0, 0);
             
@@ -792,7 +791,7 @@ void func_8006F938(u16 levelIndex) {
                     dmaSprite(MAP_OBJECT_2, &_homeItemsTextureSegmentRomStart, &_homeItemsTextureSegmentRomEnd, &_homeItemsAssetsIndexSegmentRomStart, &_homeItemsAssetsIndexSegmentRomEnd, &_homeItemsSpritesheetIndexSegmentRomStart, &_homeItemsSpritesheetIndexSegmentRomEnd, (void*)0x802E4000, (void*)0x802E4D00, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
                     setSpriteScale(MAP_OBJECT_2, 1.0f, 1.0f, 1.0f);
                     setSpriteRenderingLayer(MAP_OBJECT_2, (1 | 2));
-                    setSpriteDefaultRGBA(MAP_OBJECT_2, 0xFF, 0xFF, 0xFF, 0xFF);
+                    setSpriteBaseRGBA(MAP_OBJECT_2, 0xFF, 0xFF, 0xFF, 0xFF);
                     setSpriteColor(MAP_OBJECT_2, 0xFF, 0xFF, 0xFF, 0xFF);
                     setMapObject(MAIN_MAP_INDEX, 1, MAP_OBJECT_2, 0xD, 80.0f, 128.0f, 208.0f, 0xFF, 0xFF, 0, 0);
                 }
@@ -805,7 +804,7 @@ void func_8006F938(u16 levelIndex) {
                         dmaSprite(j + MAP_OBJECT_2, &_festivalFlowersTextureSegmentRomStart, &_festivalFlowersTextureSegmentRomEnd, &_festivalFlowersAssetsIndexSegmentRomStart, &_festivalFlowersAssetsIndexSegmentRomEnd, &_festivalFlowersSpritesheetIndexSegmentRomStart, &_festivalFlowersSpritesheetIndexSegmentRomEnd, (void*)0x802E4000, 0, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, 0, 0, 1);
                         setSpriteScale(j + MAP_OBJECT_2, 1.0f, 1.0f, 1.0f);
                         setSpriteRenderingLayer(j + MAP_OBJECT_2, (1 | 2));
-                        setSpriteDefaultRGBA(j + MAP_OBJECT_2, 0xFF, 0xFF, 0xFF, 0xFF);
+                        setSpriteBaseRGBA(j + MAP_OBJECT_2, 0xFF, 0xFF, 0xFF, 0xFF);
                         setSpriteColor(j + MAP_OBJECT_2, 0xFF, 0xFF, 0xFF, 0xFF);
                         
                     } 
@@ -842,7 +841,7 @@ void func_8006F938(u16 levelIndex) {
             func_8002C6F8(MAP_OBJECT_1, (1 | 2));
             func_8002C768(MAP_OBJECT_1, 0x200);
             setSpriteRenderingLayer(MAP_OBJECT_1, 2);
-            setSpriteDefaultRGBA(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0x80);
+            setSpriteBaseRGBA(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0x80);
             setSpriteColor(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
 
             setMapObject(MAIN_MAP_INDEX, 0, MAP_OBJECT_1, 0, -128.0f, 8.0f, -128.0f, 0, 0xFE, 0, 0);
@@ -850,7 +849,7 @@ void func_8006F938(u16 levelIndex) {
             dmaSprite(MAP_OBJECT_2, &_steamTextureSegmentRomStart, &_steamTextureSegmentRomEnd, &_steamAssetsIndexSegmentRomStart, &_steamAssetsIndexSegmentRomEnd, &_steamSpritesheetIndexSegmentRomStart, &_steamSpritesheetIndexSegmentRomEnd, (void*)0x802E7C00, (void*)0x802E8900, (void*)0x802E9600, (void*)0x802E9700, (void*)0x802E9800, (void*)0x802E9900, 1, 1);
             setSpriteScale(MAP_OBJECT_2, 1.6f, 1.6f, 1.0f);
             setSpriteRenderingLayer(MAP_OBJECT_2, 2);
-            setSpriteDefaultRGBA(MAP_OBJECT_2, 0xFF, 0xFF, 0xFF, 0x60);
+            setSpriteBaseRGBA(MAP_OBJECT_2, 0xFF, 0xFF, 0xFF, 0x60);
             setSpriteColor(MAP_OBJECT_2, 0xFF, 0xFF, 0xFF, 0xFF);
 
             setMapObject(MAIN_MAP_INDEX, 1, MAP_OBJECT_2, 0, -64.0f, 64.0f, -80.0f, 0xFF, 0xFE, 0, 0);
@@ -931,7 +930,7 @@ void func_8006F938(u16 levelIndex) {
             }
             if (checkShopItemShouldBeDisplayed(0x17)) {
                 loadShopItemSprite(0x17);
-                func_80038AE0(0, 0);
+                setMapAddition(0, 0);
             }
             
             break;
@@ -980,7 +979,7 @@ void func_8006F938(u16 levelIndex) {
             dmaSprite(MAP_OBJECT_1, &_vineyardTreeTextureSegmentRomStart, &_vineyardTreeTextureSegmentRomEnd, &_vineyardTreeAssetsIndexSegmentRomStart, &_vineyardTreeAssetsIndexSegmentRomEnd, &_vineyardTreeSpritesheetIndexSegmentRomStart, &_vineyardTreeSpritesheetIndexSegmentRomEnd, (void*)0x802E4000, (void*)0x802E4D00, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
             setSpriteScale(MAP_OBJECT_1, 2.0f, 2.0f, 1.0f);
             setSpriteRenderingLayer(MAP_OBJECT_1, (1 | 2));
-            setSpriteDefaultRGBA(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
+            setSpriteBaseRGBA(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
             setSpriteColor(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
             
             if (checkSpecialDialogueBit(0x14B)) {
@@ -1017,7 +1016,7 @@ void func_80073244(u8 itemIndex) {
     dmaSprite(itemIndex + MAP_OBJECT_1, &_homeItemsTextureSegmentRomStart, &_homeItemsTextureSegmentRomEnd, &_homeItemsAssetsIndexSegmentRomStart, &_homeItemsAssetsIndexSegmentRomEnd, &_homeItemsSpritesheetIndexSegmentRomStart, &_homeItemsSpritesheetIndexSegmentRomEnd, (void*)0x802E4000, (void*)0x802E4D00, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
     setSpriteScale(itemIndex + MAP_OBJECT_1, 1.0f, 1.0f, 1.0f);
     setSpriteRenderingLayer(itemIndex + MAP_OBJECT_1, (1 | 2));
-    setSpriteDefaultRGBA(itemIndex + MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteBaseRGBA(itemIndex + MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
     setSpriteColor(itemIndex + MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
 
     setMapObject(MAIN_MAP_INDEX, itemIndex, itemIndex + MAP_OBJECT_1, 0xC, arr[itemIndex].x, arr[itemIndex].y, arr[itemIndex].z, 0xFF, 0xFF, 0, 0);
@@ -1046,7 +1045,7 @@ void func_8007341C(u8 itemIndex) {
     dmaSprite(itemIndex + MAP_OBJECT_1, &_homeItemsTextureSegmentRomStart, &_homeItemsTextureSegmentRomEnd, &_homeItemsAssetsIndexSegmentRomStart, &_homeItemsAssetsIndexSegmentRomEnd, &_homeItemsSpritesheetIndexSegmentRomStart, &_homeItemsSpritesheetIndexSegmentRomEnd, (void* )0x802E4000, (void* )0x802E4D00, (void* )0x802E7400, (void* )0x802E7700, (void* )0x802E7A00, (void* )0x802E7B00, (void* )1, (u8) (void* )1);
     setSpriteScale(itemIndex + MAP_OBJECT_1, 1.0f, 1.0f, 1.0f);
     setSpriteRenderingLayer(itemIndex + MAP_OBJECT_1, (1 | 2));
-    setSpriteDefaultRGBA(itemIndex + MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteBaseRGBA(itemIndex + MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
     setSpriteColor(itemIndex + MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
 
     setMapObject(MAIN_MAP_INDEX, itemIndex, itemIndex + MAP_OBJECT_1, 0xB, arr[itemIndex].x, arr[itemIndex].y, arr[itemIndex].z, 0xFF, 0xFF, 0, 0);
@@ -1074,7 +1073,7 @@ void func_8007341C(u8 arg0) {
     dmaSprite(arg0 + MAP_OBJECT_1, &_homeItemsTextureSegmentRomStart, &_homeItemsTextureSegmentRomEnd, &_homeItemsAssetsIndexSegmentRomStart, &_homeItemsAssetsIndexSegmentRomEnd, &_homeItemsSpritesheetIndexSegmentRomStart, &_homeItemsSpritesheetIndexSegmentRomEnd, (void* )0x802E4000, (void* )0x802E4D00, (void* )0x802E7400, (void* )0x802E7700, (void* )0x802E7A00, (void* )0x802E7B00, (void* )1, (u8) (void* )1);
     setSpriteScale(arg0 + MAP_OBJECT_1, 1.0f, 1.0f, 1.0f);
     setSpriteRenderingLayer(arg0 + MAP_OBJECT_1, (1 | 2));
-    setSpriteDefaultRGBA(arg0 + MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteBaseRGBA(arg0 + MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
     setSpriteColor(arg0 + MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
 
     setMapObject(MAIN_MAP_INDEX, arg0, arg0 + MAP_OBJECT_1, 0xB, arr[arg0].x, arr[arg0].y, arr[arg0].z, 0xFF, 0xFF, 0, 0);
@@ -1365,101 +1364,101 @@ void setAdditionalMapAdditionsForLevel(u16 mapIndex) {
         case FARM:
             if (checkLifeEventBit(HAVE_KITCHEN)) {
                 if (checkLifeEventBit(HAVE_BATHROOM)) {
-                    func_80038AE0(MAIN_MAP_INDEX, 0x10);
+                    setMapAddition(MAIN_MAP_INDEX, 0x10);
                 } else {
-                    func_80038AE0(MAIN_MAP_INDEX, 0xE);
+                    setMapAddition(MAIN_MAP_INDEX, 0xE);
                 }
             } else if (checkLifeEventBit(HAVE_BATHROOM)) {
-                func_80038AE0(MAIN_MAP_INDEX, 0xF);
+                setMapAddition(MAIN_MAP_INDEX, 0xF);
             }
             if (checkLifeEventBit(HAVE_GREENHOUSE)) {
-                func_80038AE0(MAIN_MAP_INDEX, 0x13);
+                setMapAddition(MAIN_MAP_INDEX, 0x13);
             }
             if (checkLifeEventBit(HAVE_LOG_TERRACE)) {
-                func_80038AE0(MAIN_MAP_INDEX, 0x11);
+                setMapAddition(MAIN_MAP_INDEX, 0x11);
             }
             if (checkLifeEventBit(HAVE_STAIRS)) {
-                func_80038AE0(MAIN_MAP_INDEX, 0x1A);
+                setMapAddition(MAIN_MAP_INDEX, 0x1A);
             }
             if (checkLifeEventBit(0x57)) {
-                func_80038AE0(MAIN_MAP_INDEX, 0x1C);
+                setMapAddition(MAIN_MAP_INDEX, 0x1C);
             }
             if (checkLifeEventBit(0x56)) {
-                func_80038AE0(MAIN_MAP_INDEX, 0x1D);
+                setMapAddition(MAIN_MAP_INDEX, 0x1D);
             }
             if (checkLifeEventBit(0xD7)) {
-                func_80038AE0(MAIN_MAP_INDEX, 0x1E);
+                setMapAddition(MAIN_MAP_INDEX, 0x1E);
             }
             break;
         case HOUSE:
             if ((checkLifeEventBit(HAVE_KITCHEN)) || (checkLifeEventBit(HAVE_BATHROOM))) {
-                func_80038AE0(MAIN_MAP_INDEX, 0);
+                setMapAddition(MAIN_MAP_INDEX, 0);
             }
             if (checkLifeEventBit(HAVE_STAIRS)) {
-                func_80038AE0(MAIN_MAP_INDEX, 7);
+                setMapAddition(MAIN_MAP_INDEX, 7);
             }
             if (checkLifeEventBit(HAVE_BABY_BED)) {
-                func_80038AE0(MAIN_MAP_INDEX, 8);
+                setMapAddition(MAIN_MAP_INDEX, 8);
             }
             if (checkLifeEventBit(HAVE_CABINET)) {
-                 func_80038AE0(MAIN_MAP_INDEX, 1);
+                 setMapAddition(MAIN_MAP_INDEX, 1);
             } else if (checkLifeEventBit(0x58)) {
-                func_80038AE0(MAIN_MAP_INDEX, 0xC);
+                setMapAddition(MAIN_MAP_INDEX, 0xC);
             }
             if (checkLifeEventBit(0x3F)) {
-                func_80038AE0(MAIN_MAP_INDEX, 9);
+                setMapAddition(MAIN_MAP_INDEX, 9);
             }
             if (checkLifeEventBit(HAVE_TABLECLOTH)) {
                 if (checkLifeEventBit(HAVE_RUG)) {
-                    func_80038AE0(MAIN_MAP_INDEX, 6);
+                    setMapAddition(MAIN_MAP_INDEX, 6);
                 } else {
-                    func_80038AE0(MAIN_MAP_INDEX, 4);
+                    setMapAddition(MAIN_MAP_INDEX, 4);
                 }
             } else if (checkLifeEventBit(HAVE_RUG)) {
-                func_80038AE0(MAIN_MAP_INDEX, 5);
+                setMapAddition(MAIN_MAP_INDEX, 5);
             }
             if (checkLifeEventBit(0x47)) {
-                func_80038AE0(MAIN_MAP_INDEX, 0xB);
+                setMapAddition(MAIN_MAP_INDEX, 0xB);
             }
             break;
         case KITCHEN:
             if (checkLifeEventBit(HAVE_BATHROOM)) {
-                func_80038AE0(MAIN_MAP_INDEX, 1);
+                setMapAddition(MAIN_MAP_INDEX, 1);
             }
             if (checkLifeEventBit(0x5D)) {
-                func_80038AE0(MAIN_MAP_INDEX, 3);
+                setMapAddition(MAIN_MAP_INDEX, 3);
             }
             break;
         case COOP:
             if (func_8009B564() == 6 && !func_8009B7BC()) {
-                func_80038AE0(MAIN_MAP_INDEX, 1);
+                setMapAddition(MAIN_MAP_INDEX, 1);
             }
             break;
         case MOUNTAIN_1:
             if (checkLifeEventBit(0x45) && gSeason == WINTER) {
-                func_80038AE0(MAIN_MAP_INDEX, 0);
+                setMapAddition(MAIN_MAP_INDEX, 0);
             }
             break;
         case MOUNTAIN_2:
             if (checkLifeEventBit(BRIDGE_COMPLETED)) {
-                func_80038AE0(MAIN_MAP_INDEX, 0);
-                func_80038AE0(MAIN_MAP_INDEX, 1);
-                func_80038AE0(MAIN_MAP_INDEX, 2);
+                setMapAddition(MAIN_MAP_INDEX, 0);
+                setMapAddition(MAIN_MAP_INDEX, 1);
+                setMapAddition(MAIN_MAP_INDEX, 2);
             }
             break;
         case TOP_OF_MOUNTAIN_1:
             if (checkLifeEventBit(BRIDGE_COMPLETED)) {
-                func_80038AE0(MAIN_MAP_INDEX, 2);
-                func_80038AE0(MAIN_MAP_INDEX, 3);
-                func_80038AE0(MAIN_MAP_INDEX, 4);
-                func_80038AE0(MAIN_MAP_INDEX, 5);
+                setMapAddition(MAIN_MAP_INDEX, 2);
+                setMapAddition(MAIN_MAP_INDEX, 3);
+                setMapAddition(MAIN_MAP_INDEX, 4);
+                setMapAddition(MAIN_MAP_INDEX, 5);
             }
             if (checkLifeEventBit(HOT_SPRINGS_COMPLETED)) {
-                func_80038AE0(MAIN_MAP_INDEX, 0);
+                setMapAddition(MAIN_MAP_INDEX, 0);
                 break;
             }
             if (gYear == 1 && gSeason == WINTER && (11 < gDayOfMonth && gDayOfMonth < 17)) {
-                func_80038AE0(MAIN_MAP_INDEX, 6);
+                setMapAddition(MAIN_MAP_INDEX, 6);
             }
             break;
         case BEACH:
@@ -1468,31 +1467,31 @@ void setAdditionalMapAdditionsForLevel(u16 mapIndex) {
         case VINEYARD_CELLAR:
             // karen yellow heart event
             if (0x2C2 < gCutsceneIndex && gCutsceneIndex < 0x2C5) {
-                func_80038AE0(MAIN_MAP_INDEX, 0);
+                setMapAddition(MAIN_MAP_INDEX, 0);
             }
             break;
         case SQUARE:
             if (gSeason == SPRING) {
                 if (18 < gDayOfMonth && gDayOfMonth < 23) {
-                    func_80038AE0(MAIN_MAP_INDEX, 4);
+                    setMapAddition(MAIN_MAP_INDEX, 4);
                 }
             }
             if (gSeason == SUMMER && gDayOfMonth == 1 && (17 < gHour && gHour < 24) && !checkLifeEventBit(MARRIED) && !checkLifeEventBit(MARIA_HARRIS_MARRIED)) {
-                func_80038AE0(MAIN_MAP_INDEX, 1);
-                func_80038AE0(MAIN_MAP_INDEX, 2);
+                setMapAddition(MAIN_MAP_INDEX, 1);
+                setMapAddition(MAIN_MAP_INDEX, 2);
             }
             if (gSeason == SPRING) {
                 if (gDayOfMonth == 17 && (7 < gHour && gHour < 18) && gCutsceneFlags & 1) {
-                    func_80038AE0(MAIN_MAP_INDEX, 3);
-                    func_80038AE0(MAIN_MAP_INDEX, 5);
+                    setMapAddition(MAIN_MAP_INDEX, 3);
+                    setMapAddition(MAIN_MAP_INDEX, 5);
                 }
             }
             if (gSeason == AUTUMN && gDayOfMonth == 28 && (7 < gHour && gHour < 18) && gCutsceneFlags & 1) {
-                func_80038AE0(MAIN_MAP_INDEX, 1);
-                func_80038AE0(MAIN_MAP_INDEX, 6);
+                setMapAddition(MAIN_MAP_INDEX, 1);
+                setMapAddition(MAIN_MAP_INDEX, 6);
             }
             if (gSeason == WINTER && gDayOfMonth == 19 && (7 < gHour && gHour < 18) && gCutsceneFlags & 1) {
-                func_80038AE0(MAIN_MAP_INDEX, 1);
+                setMapAddition(MAIN_MAP_INDEX, 1);
             }
             break;
         case BATHROOM:

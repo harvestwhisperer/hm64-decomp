@@ -15,7 +15,7 @@ u8* getAnimationFrameMetadataPtr(u16 arg0, void* arg1);
 inline AnimationFrameMetadata* getAnimationFrameMetadataPtrFromFrame(u16, u16*);   
 
 // bss
-extern SpriteObject globalSprites[MAX_SPRITES];
+SpriteObject globalSprites[MAX_SPRITES];
 
 
 static inline u16 swap16(Swap16 halfword) {
@@ -113,15 +113,15 @@ void initializeGlobalSprites(void) {
         globalSprites[i].rotation.y = 0;
         globalSprites[i].rotation.z = 0;
         
-        globalSprites[i].rgbaCurrent.r = 0;
-        globalSprites[i].rgbaCurrent.g = 0;
-        globalSprites[i].rgbaCurrent.b = 0;
-        globalSprites[i].rgbaCurrent.a = 0;
+        globalSprites[i].currentRGBA.r = 0;
+        globalSprites[i].currentRGBA.g = 0;
+        globalSprites[i].currentRGBA.b = 0;
+        globalSprites[i].currentRGBA.a = 0;
         
-        globalSprites[i].rgbaTarget.r = 0;
-        globalSprites[i].rgbaTarget.g = 0;
-        globalSprites[i].rgbaTarget.b = 0;
-        globalSprites[i].rgbaTarget.a = 0;
+        globalSprites[i].targetRGBA.r = 0;
+        globalSprites[i].targetRGBA.g = 0;
+        globalSprites[i].targetRGBA.b = 0;
+        globalSprites[i].targetRGBA.a = 0;
 
     }
 }
@@ -228,7 +228,7 @@ bool func_8002B36C(u16 index, u32* animationIndexPtr, u32* spritesheetIndexPtr, 
             setSpriteViewSpacePosition(index, 0.0f, 0.0f, 0.0f);
             setSpriteScale(index, 1.0f, 1.0f, 1.0f);
             setSpriteRotation(index, 0.0f, 0.0f, 0.0f);
-            setSpriteDefaultRGBA(index, 0xFF, 0xFF, 0xFF, 0xFF);
+            setSpriteBaseRGBA(index, 0xFF, 0xFF, 0xFF, 0xFF);
             func_8002C680(index, 2, 2);
             func_8002C6F8(index, 2);
             setSpriteRenderingLayer(index, (1 | 2));
@@ -269,7 +269,7 @@ bool func_8002B50C(u16 spriteIndex, u32* animationIndexPtr, u32* spritesheetInde
             setSpriteViewSpacePosition(spriteIndex, 0, 0, 0);
             setSpriteScale(spriteIndex, 1.0f, 1.0f, 1.0f);
             setSpriteRotation(spriteIndex, 0, 0, 0);
-            setSpriteDefaultRGBA(spriteIndex, 0xFF, 0xFF, 0xFF, 0xFF);
+            setSpriteBaseRGBA(spriteIndex, 0xFF, 0xFF, 0xFF, 0xFF);
             func_8002C680(spriteIndex, 2, 2);
             func_8002C6F8(spriteIndex, 2);
             setSpriteRenderingLayer(spriteIndex, (1 | 2));
@@ -485,15 +485,15 @@ bool setSpriteFlip(u16 index, bool flipHorizontal, bool flipVertical) {
         if (globalSprites[index].stateFlags & SPRITE_ACTIVE) {
 
             if (flipHorizontal) {
-                globalSprites[index].renderingFlags |= FLIP_HORIZONTAL;
+                globalSprites[index].renderingFlags |= SPRITE_RENDERING_FLIP_HORIZONTAL;
             } else {
-                globalSprites[index].renderingFlags &= ~FLIP_HORIZONTAL;
+                globalSprites[index].renderingFlags &= ~SPRITE_RENDERING_FLIP_HORIZONTAL;
             }
 
             if (flipVertical) {
-                globalSprites[index].renderingFlags |= FLIP_VERTICAL;
+                globalSprites[index].renderingFlags |= SPRITE_RENDERING_FLIP_VERTICAL;
             } else {
-                globalSprites[index].renderingFlags &= ~FLIP_VERTICAL;
+                globalSprites[index].renderingFlags &= ~SPRITE_RENDERING_FLIP_VERTICAL;
             }
             
             result = TRUE;
@@ -673,10 +673,10 @@ bool adjustSpriteRGBA(u16 index, s8 r, s8 g, s8 b, s8 a) {
 
         if (globalSprites[index].stateFlags & SPRITE_ACTIVE) {
 
-            globalSprites[index].rgbaCurrent.r += r;
-            globalSprites[index].rgbaCurrent.g += g;
-            globalSprites[index].rgbaCurrent.b += b;
-            globalSprites[index].rgbaCurrent.a += a;
+            globalSprites[index].currentRGBA.r += r;
+            globalSprites[index].currentRGBA.g += g;
+            globalSprites[index].currentRGBA.b += b;
+            globalSprites[index].currentRGBA.a += a;
             
             result = TRUE;
             
@@ -704,44 +704,44 @@ bool updateSpriteRGBA(u16 index, u8 r, u8 g, u8 b, u8 a, s16 rate) {
         
         if (globalSprites[index].stateFlags & SPRITE_ACTIVE) {
  
-            globalSprites[index].rgbaTarget.r = (globalSprites[index].baseRGBA.r * r) / 255.0f;
-            globalSprites[index].rgbaTarget.g = (globalSprites[index].baseRGBA.g * g) / 255.0f;
-            globalSprites[index].rgbaTarget.b = (globalSprites[index].baseRGBA.b * b) / 255.0f;
-            globalSprites[index].rgbaTarget.a = (globalSprites[index].baseRGBA.a * a) / 255.0f;
+            globalSprites[index].targetRGBA.r = (globalSprites[index].baseRGBA.r * r) / 255.0f;
+            globalSprites[index].targetRGBA.g = (globalSprites[index].baseRGBA.g * g) / 255.0f;
+            globalSprites[index].targetRGBA.b = (globalSprites[index].baseRGBA.b * b) / 255.0f;
+            globalSprites[index].targetRGBA.a = (globalSprites[index].baseRGBA.a * a) / 255.0f;
             
             globalSprites[index].stateFlags &= ~SPRITE_RGBA_IN_PROGRESS;
 
-            if (globalSprites[index].rgbaTarget.r < globalSprites[index].rgbaCurrent.r) {
-                tempFloat = globalSprites[index].rgbaCurrent.r - globalSprites[index].rgbaTarget.r;
+            if (globalSprites[index].targetRGBA.r < globalSprites[index].currentRGBA.r) {
+                tempFloat = globalSprites[index].currentRGBA.r - globalSprites[index].targetRGBA.r;
             } else {
-                tempFloat = globalSprites[index].rgbaTarget.r - globalSprites[index].rgbaCurrent.r;
+                tempFloat = globalSprites[index].targetRGBA.r - globalSprites[index].currentRGBA.r;
             }
 
-            globalSprites[index].rgbaDelta.r = (tempFloat * absValueRate) / globalSprites[index].baseRGBA.r;
+            globalSprites[index].deltaRGBA.r = (tempFloat * absValueRate) / globalSprites[index].baseRGBA.r;
 
-            if (globalSprites[index].rgbaTarget.g < globalSprites[index].rgbaCurrent.g) {
-                tempFloat = globalSprites[index].rgbaCurrent.g - globalSprites[index].rgbaTarget.g;
+            if (globalSprites[index].targetRGBA.g < globalSprites[index].currentRGBA.g) {
+                tempFloat = globalSprites[index].currentRGBA.g - globalSprites[index].targetRGBA.g;
             } else {
-                tempFloat = globalSprites[index].rgbaTarget.g - globalSprites[index].rgbaCurrent.g;
+                tempFloat = globalSprites[index].targetRGBA.g - globalSprites[index].currentRGBA.g;
             }
 
-            globalSprites[index].rgbaDelta.g = (tempFloat * absValueRate) / globalSprites[index].baseRGBA.g;
+            globalSprites[index].deltaRGBA.g = (tempFloat * absValueRate) / globalSprites[index].baseRGBA.g;
 
-            if (globalSprites[index].rgbaTarget.b < globalSprites[index].rgbaCurrent.b) {
-                tempFloat = globalSprites[index].rgbaCurrent.b - globalSprites[index].rgbaTarget.b;
+            if (globalSprites[index].targetRGBA.b < globalSprites[index].currentRGBA.b) {
+                tempFloat = globalSprites[index].currentRGBA.b - globalSprites[index].targetRGBA.b;
             } else {
-                tempFloat = globalSprites[index].rgbaTarget.b - globalSprites[index].rgbaCurrent.b;
+                tempFloat = globalSprites[index].targetRGBA.b - globalSprites[index].currentRGBA.b;
             }
 
-            globalSprites[index].rgbaDelta.b = (tempFloat * absValueRate) / globalSprites[index].baseRGBA.b;
+            globalSprites[index].deltaRGBA.b = (tempFloat * absValueRate) / globalSprites[index].baseRGBA.b;
 
-            if (globalSprites[index].rgbaTarget.a < globalSprites[index].rgbaCurrent.a) {
-                tempFloat = globalSprites[index].rgbaCurrent.a - globalSprites[index].rgbaTarget.a;
+            if (globalSprites[index].targetRGBA.a < globalSprites[index].currentRGBA.a) {
+                tempFloat = globalSprites[index].currentRGBA.a - globalSprites[index].targetRGBA.a;
             } else {
-                tempFloat = globalSprites[index].rgbaTarget.a - globalSprites[index].rgbaCurrent.a;
+                tempFloat = globalSprites[index].targetRGBA.a - globalSprites[index].currentRGBA.a;
             }
 
-            globalSprites[index].rgbaDelta.a = (tempFloat * absValueRate) / globalSprites[index].baseRGBA.a;
+            globalSprites[index].deltaRGBA.a = (tempFloat * absValueRate) / globalSprites[index].baseRGBA.a;
             
             result = TRUE;
             
@@ -767,17 +767,17 @@ bool updateSpriteAlpha(u16 index, u8 arg1, s16 rate) {
 
         if (globalSprites[index].stateFlags & SPRITE_ACTIVE) {
 
-            globalSprites[index].rgbaTarget.a = (globalSprites[index].baseRGBA.a * arg1) / 255.0f;
+            globalSprites[index].targetRGBA.a = (globalSprites[index].baseRGBA.a * arg1) / 255.0f;
 
             globalSprites[index].stateFlags &= ~SPRITE_RGBA_IN_PROGRESS;
 
-            if (globalSprites[index].rgbaTarget.a < globalSprites[index].rgbaCurrent.a) {
-                tempF = globalSprites[index].rgbaCurrent.a - globalSprites[index].rgbaTarget.a;
+            if (globalSprites[index].targetRGBA.a < globalSprites[index].currentRGBA.a) {
+                tempF = globalSprites[index].currentRGBA.a - globalSprites[index].targetRGBA.a;
             } else {
-                tempF = globalSprites[index].rgbaTarget.a - globalSprites[index].rgbaCurrent.a;
+                tempF = globalSprites[index].targetRGBA.a - globalSprites[index].currentRGBA.a;
             }
 
-            globalSprites[index].rgbaDelta.a = (tempF * absValueRate) / globalSprites[index].baseRGBA.a;
+            globalSprites[index].deltaRGBA.a = (tempF * absValueRate) / globalSprites[index].baseRGBA.a;
             
             result = TRUE;
 
@@ -892,9 +892,9 @@ bool setSpriteRenderingLayer(u16 index, u16 flags) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", setSpriteDefaultRGBA);
+//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", setSpriteBaseRGBA);
 
-bool setSpriteDefaultRGBA(u16 index, u8 r, u8 g, u8 b, u8 a) {
+bool setSpriteBaseRGBA(u16 index, u8 r, u8 g, u8 b, u8 a) {
 
     bool result = FALSE;
 
@@ -928,15 +928,15 @@ bool setSpriteColor(u16 index, u8 r, u8 g, u8 b, u8 a) {
 
             result = TRUE;
             
-            globalSprites[index].rgbaCurrent.r = (globalSprites[index].baseRGBA.r * r) / 255.0f;
-            globalSprites[index].rgbaCurrent.g = (globalSprites[index].baseRGBA.g * g) / 255.0f;
-            globalSprites[index].rgbaCurrent.b = (globalSprites[index].baseRGBA.b * b) / 255.0f;
-            globalSprites[index].rgbaCurrent.a = (globalSprites[index].baseRGBA.a * a) / 255.0f;
+            globalSprites[index].currentRGBA.r = (globalSprites[index].baseRGBA.r * r) / 255.0f;
+            globalSprites[index].currentRGBA.g = (globalSprites[index].baseRGBA.g * g) / 255.0f;
+            globalSprites[index].currentRGBA.b = (globalSprites[index].baseRGBA.b * b) / 255.0f;
+            globalSprites[index].currentRGBA.a = (globalSprites[index].baseRGBA.a * a) / 255.0f;
 
-            globalSprites[index].rgbaTarget.r = (globalSprites[index].baseRGBA.r * r) / 255.0f;
-            globalSprites[index].rgbaTarget.g = (globalSprites[index].baseRGBA.g * g) / 255.0f;
-            globalSprites[index].rgbaTarget.b = (globalSprites[index].baseRGBA.b * b) / 255.0f;
-            globalSprites[index].rgbaTarget.a = (globalSprites[index].baseRGBA.a * a) / 255.0f;
+            globalSprites[index].targetRGBA.r = (globalSprites[index].baseRGBA.r * r) / 255.0f;
+            globalSprites[index].targetRGBA.g = (globalSprites[index].baseRGBA.g * g) / 255.0f;
+            globalSprites[index].targetRGBA.b = (globalSprites[index].baseRGBA.b * b) / 255.0f;
+            globalSprites[index].targetRGBA.a = (globalSprites[index].baseRGBA.a * a) / 255.0f;
 
         }
     }
@@ -956,8 +956,8 @@ bool setSpriteAlpha(u16 index, u8 a) {
         if (globalSprites[index].stateFlags & SPRITE_ACTIVE) {
 
             globalSprites[index].baseRGBA.a = a;
-            globalSprites[index].rgbaCurrent.a = a;
-            globalSprites[index].rgbaTarget.a = a;
+            globalSprites[index].currentRGBA.a = a;
+            globalSprites[index].targetRGBA.a = a;
             
             result = TRUE;
 
@@ -1289,10 +1289,10 @@ void setBitmapFromSpriteObject(u16 spriteIndex, AnimationFrameMetadata* animatio
             setBitmapViewSpacePosition(bitmapIndex, viewSpacePositionX, viewSpacePositionY, viewSpacePositionZ);
             setBitmapScale(bitmapIndex, globalSprites[spriteIndex].scale.x, globalSprites[spriteIndex].scale.y, globalSprites[spriteIndex].scale.z);
             setBitmapRotation(bitmapIndex, globalSprites[spriteIndex].rotation.x, globalSprites[spriteIndex].rotation.y, globalSprites[spriteIndex].rotation.z);
-            setBitmapRGBA(bitmapIndex, globalSprites[spriteIndex].rgbaCurrent.r, globalSprites[spriteIndex].rgbaCurrent.g, globalSprites[spriteIndex].rgbaCurrent.b, globalSprites[spriteIndex].rgbaCurrent.a);
+            setBitmapRGBA(bitmapIndex, globalSprites[spriteIndex].currentRGBA.r, globalSprites[spriteIndex].currentRGBA.g, globalSprites[spriteIndex].currentRGBA.b, globalSprites[spriteIndex].currentRGBA.a);
             setBitmapAnchor(bitmapIndex, bitmapMetadata.anchorX, bitmapMetadata.anchorY);
             
-            setBitmapFlip(bitmapIndex, globalSprites[spriteIndex].renderingFlags & FLIP_HORIZONTAL, globalSprites[spriteIndex].renderingFlags & FLIP_VERTICAL);
+            setBitmapFlip(bitmapIndex, globalSprites[spriteIndex].renderingFlags & SPRITE_RENDERING_FLIP_HORIZONTAL, globalSprites[spriteIndex].renderingFlags & SPRITE_RENDERING_FLIP_VERTICAL);
             func_80029E2C(bitmapIndex, (globalSprites[spriteIndex].renderingFlags >> 3) & 3, (globalSprites[spriteIndex].renderingFlags >> 5) & 3);
             func_80029EA4(bitmapIndex, (globalSprites[spriteIndex].renderingFlags >> 7) & 3);
             func_80029F14(bitmapIndex, globalSprites[spriteIndex].renderingFlags & 0x200);
@@ -1318,89 +1318,89 @@ static inline u8 updateSpriteCurrentRGBA(u16 i) {
     u8 count = 0;
     f32 tempf;
 
-    if (globalSprites[i].rgbaCurrent.r < globalSprites[i].rgbaTarget.r) {
+    if (globalSprites[i].currentRGBA.r < globalSprites[i].targetRGBA.r) {
         
-        globalSprites[i].rgbaCurrent.r += globalSprites[i].rgbaDelta.r;
+        globalSprites[i].currentRGBA.r += globalSprites[i].deltaRGBA.r;
         
-        if (globalSprites[i].rgbaTarget.r <= globalSprites[i].rgbaCurrent.r) {
-            globalSprites[i].rgbaCurrent.r = globalSprites[i].rgbaTarget.r;
+        if (globalSprites[i].targetRGBA.r <= globalSprites[i].currentRGBA.r) {
+            globalSprites[i].currentRGBA.r = globalSprites[i].targetRGBA.r;
         } else {
             count = 1;
         }
     }
 
-    if (globalSprites[i].rgbaCurrent.r > globalSprites[i].rgbaTarget.r) {
+    if (globalSprites[i].currentRGBA.r > globalSprites[i].targetRGBA.r) {
         
-        globalSprites[i].rgbaCurrent.r -= globalSprites[i].rgbaDelta.r;
+        globalSprites[i].currentRGBA.r -= globalSprites[i].deltaRGBA.r;
         
-        if (globalSprites[i].rgbaTarget.r >= globalSprites[i].rgbaCurrent.r) {
-            globalSprites[i].rgbaCurrent.r = globalSprites[i].rgbaTarget.r;
+        if (globalSprites[i].targetRGBA.r >= globalSprites[i].currentRGBA.r) {
+            globalSprites[i].currentRGBA.r = globalSprites[i].targetRGBA.r;
         } else {
             count++;
         }
     }
 
-    if (globalSprites[i].rgbaCurrent.g <  globalSprites[i].rgbaTarget.g) {
+    if (globalSprites[i].currentRGBA.g <  globalSprites[i].targetRGBA.g) {
         
-        globalSprites[i].rgbaCurrent.g +=  globalSprites[i].rgbaDelta.g;
+        globalSprites[i].currentRGBA.g +=  globalSprites[i].deltaRGBA.g;
         
-        if ((globalSprites[i].rgbaTarget.g <= globalSprites[i].rgbaCurrent.g)) {
-            globalSprites[i].rgbaCurrent.g = globalSprites[i].rgbaTarget.g;
+        if ((globalSprites[i].targetRGBA.g <= globalSprites[i].currentRGBA.g)) {
+            globalSprites[i].currentRGBA.g = globalSprites[i].targetRGBA.g;
         } else {
             count++;
         }
     }
 
-    if (globalSprites[i].rgbaCurrent.g >  globalSprites[i].rgbaTarget.g) {
+    if (globalSprites[i].currentRGBA.g >  globalSprites[i].targetRGBA.g) {
         
-        globalSprites[i].rgbaCurrent.g -= globalSprites[i].rgbaDelta.g;
+        globalSprites[i].currentRGBA.g -= globalSprites[i].deltaRGBA.g;
         
-        if (globalSprites[i].rgbaTarget.g >= globalSprites[i].rgbaCurrent.g) {
-            globalSprites[i].rgbaCurrent.g = globalSprites[i].rgbaTarget.g;
+        if (globalSprites[i].targetRGBA.g >= globalSprites[i].currentRGBA.g) {
+            globalSprites[i].currentRGBA.g = globalSprites[i].targetRGBA.g;
         } else {
             count++;
         }
     }
 
-    if (globalSprites[i].rgbaCurrent.b <  globalSprites[i].rgbaTarget.b) {
+    if (globalSprites[i].currentRGBA.b <  globalSprites[i].targetRGBA.b) {
         
-        globalSprites[i].rgbaCurrent.b += globalSprites[i].rgbaDelta.b;
+        globalSprites[i].currentRGBA.b += globalSprites[i].deltaRGBA.b;
         
-        if ((globalSprites[i].rgbaTarget.b <= globalSprites[i].rgbaCurrent.b)) {
-            globalSprites[i].rgbaCurrent.b = globalSprites[i].rgbaTarget.b;
+        if ((globalSprites[i].targetRGBA.b <= globalSprites[i].currentRGBA.b)) {
+            globalSprites[i].currentRGBA.b = globalSprites[i].targetRGBA.b;
         } else {
             count++;
         }
     }
 
-    if (globalSprites[i].rgbaCurrent.b >  globalSprites[i].rgbaTarget.b) {
+    if (globalSprites[i].currentRGBA.b >  globalSprites[i].targetRGBA.b) {
         
-        globalSprites[i].rgbaCurrent.b -= globalSprites[i].rgbaDelta.b;
+        globalSprites[i].currentRGBA.b -= globalSprites[i].deltaRGBA.b;
         
-        if (globalSprites[i].rgbaTarget.b >= globalSprites[i].rgbaCurrent.b) {
-            globalSprites[i].rgbaCurrent.b = globalSprites[i].rgbaTarget.b;
+        if (globalSprites[i].targetRGBA.b >= globalSprites[i].currentRGBA.b) {
+            globalSprites[i].currentRGBA.b = globalSprites[i].targetRGBA.b;
         } else {
             count++;
         }
     }
 
-    if (globalSprites[i].rgbaCurrent.a <  globalSprites[i].rgbaTarget.a) {
+    if (globalSprites[i].currentRGBA.a <  globalSprites[i].targetRGBA.a) {
         
-        globalSprites[i].rgbaCurrent.a += globalSprites[i].rgbaDelta.a;
+        globalSprites[i].currentRGBA.a += globalSprites[i].deltaRGBA.a;
         
-        if ((globalSprites[i].rgbaTarget.a <= globalSprites[i].rgbaCurrent.a)) {
-            globalSprites[i].rgbaCurrent.a = globalSprites[i].rgbaTarget.a;
+        if ((globalSprites[i].targetRGBA.a <= globalSprites[i].currentRGBA.a)) {
+            globalSprites[i].currentRGBA.a = globalSprites[i].targetRGBA.a;
         } else {
             count++;
         }
     }
 
-    if (globalSprites[i].rgbaCurrent.a >  globalSprites[i].rgbaTarget.a) {
+    if (globalSprites[i].currentRGBA.a >  globalSprites[i].targetRGBA.a) {
         
-        globalSprites[i].rgbaCurrent.a -= globalSprites[i].rgbaDelta.a;
+        globalSprites[i].currentRGBA.a -= globalSprites[i].deltaRGBA.a;
         
-        if (globalSprites[i].rgbaTarget.a >= globalSprites[i].rgbaCurrent.a) {
-            globalSprites[i].rgbaCurrent.a = globalSprites[i].rgbaTarget.a;
+        if (globalSprites[i].targetRGBA.a >= globalSprites[i].currentRGBA.a) {
+            globalSprites[i].currentRGBA.a = globalSprites[i].targetRGBA.a;
         } else {
             count++;
         }

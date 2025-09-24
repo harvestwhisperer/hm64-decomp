@@ -206,11 +206,11 @@ bool setBitmapFlip(u16 index, bool flipHorizontal, bool flipVertical) {
         if (bitmaps[index].flags & BITMAP_ACTIVE) {
     
             if (flipHorizontal) {
-                bitmaps[index].renderingFlags |= FLIP_HORIZONTAL;
+                bitmaps[index].renderingFlags |= BITMAP_RENDERING_FLIP_HORIZONTAL;
             }
             
             if (flipVertical) {
-               bitmaps[index].renderingFlags |= FLIP_VERTICAL;
+               bitmaps[index].renderingFlags |= BITMAP_RENDERING_FLIP_VERTICAL;
             }
             
             result = TRUE;
@@ -224,7 +224,7 @@ bool setBitmapFlip(u16 index, bool flipHorizontal, bool flipVertical) {
 
 //INCLUDE_ASM("asm/nonmatchings/system/sprite", func_8002A02C);
 
-bool func_8002A02C(u16 index, u16 arg1) {
+bool func_8002A02C(u16 index, u16 flag) {
 
     bool result = FALSE;
     int temp;
@@ -233,8 +233,8 @@ bool func_8002A02C(u16 index, u16 arg1) {
 
         if (bitmaps[index].flags & BITMAP_ACTIVE) {
             
-            bitmaps[index].renderingFlags &= ~(0x400 | 0x1000 | 0x800);
-            temp = arg1 << 10;
+            bitmaps[index].renderingFlags &= ~(0x400 | 0x800 | 0x1000);
+            temp = flag << 10;
             bitmaps[index].renderingFlags |= temp;
             
             result = TRUE;
@@ -526,7 +526,7 @@ Gfx* generateBitmapDisplayList(Gfx* dl, BitmapObject* bitmap, u16 spriteNumber) 
 
     *dl++ = D_8011ED00;
 
-    if (bitmap->flags & USE_BILINEAR_FILTERING) {
+    if (bitmap->flags & BITMAP_USE_BILINEAR_FILTERING) {
         // gsDPSetTextureFilter(G_TF_BILERP)
         *dl++ = D_8011ED08;
     } else {
@@ -577,8 +577,8 @@ Gfx* generateBitmapDisplayList(Gfx* dl, BitmapObject* bitmap, u16 spriteNumber) 
             bitmap->height, 
             textureSize, 
             textureOffset, 
-            bitmap->renderingFlags & FLIP_HORIZONTAL, 
-            bitmap->renderingFlags & FLIP_VERTICAL, 
+            bitmap->renderingFlags & BITMAP_RENDERING_FLIP_HORIZONTAL, 
+            bitmap->renderingFlags & BITMAP_RENDERING_FLIP_VERTICAL, 
             bitmap->anchorX,
             bitmap->anchorY, 
             bitmap->renderingFlags, 

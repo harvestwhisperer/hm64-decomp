@@ -10,24 +10,21 @@
 
 #include "ld_symbols.h"
 
-// bss
-// struct/array
-extern u32 D_8013CE0C;
-extern u8 D_8013CE10;
 
 // game state updated by/talked about in dialogues
-extern DialogueVariable dialogueVariables[MAX_DIALOGUE_VARIABLES];
+DialogueVariable dialogueVariables[MAX_DIALOGUE_VARIABLES];
 
-extern u32* specialDialogueBitsPointer;
+u32* specialDialogueBitsPointer;
 
 // forward declarations
-extern u32 func_80043C98(u16, u16);
-extern void func_80043B84(u16);
-extern void setOverlayMessageBoxSprite(u16 index);
-extern void func_800449C4(u16 index);
-extern void func_80044BF4(u16 index);
-extern void func_80044D78(u16);
-extern void updateCurrentDialogue(u16);
+u32 func_80043C98(u16, u16);
+void func_80043B84(u16);
+void setOverlayMessageBoxSprite(u16 index);
+void func_800449C4(u16 index);
+void func_80044BF4(u16 index);
+void func_80044D78(u16);
+void updateCurrentDialogue(u16);
+
 
 //INCLUDE_ASM("asm/nonmatchings/system/dialogue", func_80042F60);
 

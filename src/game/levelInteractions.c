@@ -94,7 +94,7 @@ u8 func_800ACD70(u16 mapIndex) {
     
     if ((mapIndex == FARM || mapIndex == COOP || mapIndex == BARN || mapIndex == GREENHOUSE)) {
 
-        temp = func_800309B4(0, 0, 32.0f);
+        temp = getLevelInteractionIndexFromEntityPosition(0, 0, 32.0f);
 
         if (temp == 0x10) {
             result = temp;
@@ -115,7 +115,7 @@ u8 func_800ACDF4(u16 mapIndex) {
     
     if (mapIndex == BARN) {
 
-        temp = func_800309B4(0, 0, 32.0f);
+        temp = getLevelInteractionIndexFromEntityPosition(0, 0, 32.0f);
         
         if (17 < temp && temp < 27) {
             result = temp;
@@ -135,7 +135,7 @@ bool func_800ACE50(u16 mapIndex) {
     
     if (mapIndex == COOP) {
         
-        temp = func_800309B4(0, 0, 32.0f);
+        temp = getLevelInteractionIndexFromEntityPosition(0, 0, 32.0f);
 
         if (18 < temp && temp < 25) {
             result = temp;
@@ -156,10 +156,10 @@ u8 func_800ACEAC(u16 mapIndex) {
 
         // for reference
         // -(cVar1 != '\x17') | 1;
-        //result = -(func_800309B4(0, 0, 32.0f) != 0x17) | 1;
-        //result = -((func_800309B4(0, 0, 32.0f) != 0x17) ? 1 : 0) | 1;        
+        //result = -(getLevelInteractionIndexFromEntityPosition(0, 0, 32.0f) != 0x17) | 1;
+        //result = -((getLevelInteractionIndexFromEntityPosition(0, 0, 32.0f) != 0x17) ? 1 : 0) | 1;        
 
-        result = func_800309B4(0, 0, 32.0f) == 0x17 ? 1 : 0xFF;
+        result = getLevelInteractionIndexFromEntityPosition(0, 0, 32.0f) == 0x17 ? 1 : 0xFF;
 
     }
 
@@ -176,19 +176,19 @@ u8 func_800ACEF8(u16 mapIndex) {
     result = 0xFF;
     
     if (mapIndex == FARM) {
-        temp = func_800309B4(0, 0.0f, 32.0f);
+        temp = getLevelInteractionIndexFromEntityPosition(0, 0.0f, 32.0f);
         result = ((0x1A < temp && temp < 0x1D) || temp == 0x1D) == FALSE ? 0xFF : 1;
     }
     
     if (mapIndex == MOUNTAIN_1) {
-        temp = func_800309B4(0, 0.0f, 32.0f);
+        temp = getLevelInteractionIndexFromEntityPosition(0, 0.0f, 32.0f);
         if (temp == 0x10 || temp == 0x14) {
             result = TRUE;
         }
     }
     
     if (mapIndex == POND) {
-        if (func_800309B4(0, 0.0f, 32.0f) == 0x10) {
+        if (getLevelInteractionIndexFromEntityPosition(0, 0.0f, 32.0f) == 0x10) {
             result = TRUE;
         }
     }
@@ -204,12 +204,12 @@ bool func_800ACFE8(u16 mapIndex) {
     u8 temp;
     
     if (mapIndex == FARM) {
-        temp = func_800309B4(0, 0, 32.0f);
+        temp = getLevelInteractionIndexFromEntityPosition(0, 0, 32.0f);
         result = ((0x1A < temp && temp < 0x1D) || temp == 0x1D);
     }
 
     if (mapIndex == GREENHOUSE) {
-        if (func_800309B4(0, 0, 32.0f) == 0x12) { 
+        if (getLevelInteractionIndexFromEntityPosition(0, 0, 32.0f) == 0x12) { 
             result = TRUE;
         }
     }
@@ -225,7 +225,7 @@ bool checkWineBarrelInteraction(u16 mapIndex) {
     bool result = FALSE;
     
     if (mapIndex == VINEYARD_CELLAR_BASEMENT) {
-        result = func_800309B4(0, 0, 32.0f) == 0x11;
+        result = getLevelInteractionIndexFromEntityPosition(0, 0, 32.0f) == 0x11;
     }
 
     return result;
@@ -241,7 +241,7 @@ bool func_800AD0C4(u16 mapIndex) {
     
     if (mapIndex == MOUNTAIN_1) {
 
-        object = func_800309B4(0, 0, 64.0f);
+        object = getLevelInteractionIndexFromEntityPosition(0, 0, 64.0f);
 
         if (object == 0x10 || object == 0x14) {
             gPlayer.fatigue.unk_3 = 0;
@@ -255,14 +255,14 @@ bool func_800AD0C4(u16 mapIndex) {
     }
     
     if (mapIndex == MOUNTAIN_2) {
-        if (func_800309B4(0, 0, 64.0f) == 0x10) {
+        if (getLevelInteractionIndexFromEntityPosition(0, 0, 64.0f) == 0x10) {
             gPlayer.fatigue.unk_3 = 2;
             result = TRUE;
         }
     }
     
     if (mapIndex == BEACH) {
-        if (func_800309B4(0, 0, 64.0f) == 0x10) {
+        if (getLevelInteractionIndexFromEntityPosition(0, 0, 64.0f) == 0x10) {
             gPlayer.fatigue.unk_3 = 3;
             result = TRUE;
         }
@@ -286,7 +286,7 @@ bool func_800AD1D0(u16 mapIndex) {
     levelInteractionsInfo.mapAdditionsIndex = 0xFF;
     levelInteractionsInfo.interactionSfxIndex = 0xFF;
 
-    temp = func_800309B4(0, 0, 32.0f);
+    temp = getLevelInteractionIndexFromEntityPosition(0, 0, 32.0f);
 
     D_80189826 = temp;
     
@@ -3454,7 +3454,7 @@ static u8 func_800B1540(u16 mapIndex, u8 arg1) {
                 
                 if (gPlayer.heldItem == 0) {
 
-                    if (func_800309B4(PLAYER, 0.0f, 16.0f) == 0x11) {
+                    if (getLevelInteractionIndexFromEntityPosition(PLAYER, 0.0f, 16.0f) == 0x11) {
                         setDailyEventBit(6);
                         setPlayerAction(0x1A, 0x1B);
                         result = 2;
