@@ -4,20 +4,14 @@
 
 #include "common.h"
 
-#define MAX_MODELS 96
-#define MODEL_DATA_BANK 0x80255000
-#define MAIN_MAP_INDEX 0
+#define MAX_MAP_ADDRESSES 96
+#define MAP_DATA_VADDR 0x80255000
 
-typedef struct {
-	u16 header1;
-	u16 header2;
-	u32 unk_4;
-	Vtx vertices[1]; // varying size
-} Model;
+#define MAIN_MAP_INDEX 0
 
 // 0x802055D8
 typedef struct {
-	u32 *modelDataIndex; // vaddr = 0x80255000
+	u32 *mapDataIndex; // vaddr = 0x80255000
 	Vec3f viewPosition;
 	Vec3f unk_10;
 	Vec3f unk_1C;
@@ -37,7 +31,7 @@ typedef struct {
     void *romStart;
     void *romEnd;
     u16 flags;
-} MapModelAddresses;
+} MapDataAddress;
 
 // possible struct
 // 0x8017044C
@@ -45,7 +39,7 @@ typedef struct {
 typedef struct {
 	Vec3f currentWorldRotation;
 	u8 currentMapIndex; // D_80170458/gBaseMapIndex
-	u16 flags; // D_8017045A
+	u16 RGBARate; // D_8017045A
 } CurrentMapContext;
 */
 

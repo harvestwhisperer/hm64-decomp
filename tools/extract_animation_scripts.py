@@ -7,7 +7,7 @@ import numpy as np
 
 rom = '../baserom.us.z64'
 animation_addresses_csv = './animation_scripts_addresses.csv'
-output_dir  = "../src/data/animation" 
+output_dir  = "../src/data/animationScripts" 
 
 ANIMATION_TYPE_MAP = {
     0x0000: "ANIM_TYPE_ONE_SHOT",
@@ -27,6 +27,7 @@ FILE_HEADER = '''#include "common.h"
 
 ARRAY_TEMPLATE = '''u16 {label}AnimationScripts[] = {{
 {body}
+
 }};
 
 '''

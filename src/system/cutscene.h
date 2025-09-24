@@ -10,25 +10,40 @@
 #define CUTSCENE_SPRITE_ASSET 2
 #define CUTSCENE_ENTITY_ASSET 8
 #define CUTSCENE_MAP_ASSET 0x10
+#define CUTSCENE_PAUSE_EXECUTION 0x20
 
 /* general */
 
 typedef struct {
     u16 functionIndex;
     u16 executorIndex;
-    short offset;
+    s16 offset;
+    u16 unused;
 } CutsceneExecutorInitializationCmd;
 
 typedef struct {
     u16 functionIndex;
     u16 executorIndex;
-    short offset;
+    s16 offset;
 } CutsceneExecutorSetPtrCmd;
 
 typedef struct {
     u16 functionIndex;
     u16 executorIndex;
-} CutsceneExecutorSetFlagsCmd;
+} CutsceneExecutorPauseExecutorCmd;
+
+typedef struct {
+    u16 functionIndex;
+    u16 executorIndex;
+} CutsceneExecutorTogglePauseExecutorCmd;
+
+typedef struct {
+    u16 functionIndex;
+} cutsceneExecutorPauseAllChildExecutorsCmd;
+
+typedef struct {
+    u16 functionIndex;
+} cutsceneExecutorTogglePauseAllChildExecutorsCmd;
 
 typedef struct {
     u16 functionIndex;
@@ -64,14 +79,21 @@ typedef struct {
     u16 cutsceneIndex2;
     u16 unk_6;
     u16* cutsceneIndexPtr;
-    u16 unk_C;
-    u16 padding;
+    s16 offset;
+    u16 unused;
 } CutsceneIndexCheckCmd;
 
 typedef struct {
     u16 functionIndex;
-    short offset;
+    s16 offset;
 } CutsceneJumpCmd;
+
+typedef struct {
+    u16 functionIndex;
+    u16 unk_2;
+    u32 cutsceneIndex;
+    u32* cutsceneIndexPtr;
+} CutsceneUpdateCutsceneIndexCmd;
 
 // func_80049E84
 typedef struct {
@@ -394,28 +416,28 @@ typedef struct {
 typedef struct {
     u16 functionIndex;
     u16 mapAdditionIndex;
-    u8 arg2;
-    u8 arg3;
+    u8 x;
+    u8 z;
 } CutsceneMapSetMapAdditionsCmd;
 
 typedef struct {
     u16 functionIndex;
-    u16 value;
-    u8 index1;
-    u8 index2;
-} CutsceneMapStruct6Cmd;
+    u16 spriteIndex;
+    u8 x;
+    u8 z;
+} CutsceneMapSetGroundObjectCmd;
 
 /* mapController */
 
 typedef struct {
     u16 functionIndex;
-    u16 mapModelIndex;
+    u16 mapDataIndex;
     u16 mainMapIndex;
 } CutsceneMapControllerCmd;
 
 typedef struct {
     u16 functionIndex;
-    u16 mapModelIndex;
+    u16 mapDataIndex;
     u16 mainMapIndex;
 } CutsceneMapControllerLoadMapCmd;
 
@@ -452,7 +474,7 @@ typedef struct {
 typedef struct {
     u16 functionIndex;
     u16 paletteIndex;
-} CutscenePaletteCmd;
+} CutsceneSpriteSetPaletteCmd;
 
 typedef struct {
     u16 functionIndex;
@@ -461,10 +483,14 @@ typedef struct {
 
 typedef struct {
     u16 functionIndex;
-    u16 flag;
-} CutsceneSetSpriteBilinearFilteringCmd;
+    u16 renderingLayer;
+} CutsceneSpriteSetRenderingLayerCmd;
 
-// func_8004BE88
+typedef struct {
+    u16 functionIndex;
+    u16 useBilinearFilterng;
+} CutsceneSpriteSetBilinearFilteringCmd;
+
 typedef struct {
     u16 functionIndex;
     s16 x, y, z;
@@ -511,11 +537,6 @@ typedef struct  {
 } CutsceneSpriteDMAManagerCmd;
 */
 
-typedef struct {
-    u16 functionIndex;
-    u16 renderingLayer;
-} CutsceneSetSpriteRenderingLayerCmd;
-
 /* unknown */
 
 typedef struct {
@@ -551,13 +572,6 @@ typedef struct {
     u16* unk_8;
     u32 unk_C;
 } CutsceneUnknownCmd5;
-
-typedef struct {
-    u16 functionIndex;
-    u16 unk_2;
-    u32 unk_4;
-    u32* unk_8;
-} CutsceneUnknownCmd6;
 
 typedef struct {
     u16 functionIndex;

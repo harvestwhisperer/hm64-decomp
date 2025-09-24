@@ -120,6 +120,9 @@ extract-texts:
 extract-dialogues:
 	@cd tools && python3 ./hm64_dialogue_utilities.py decode_all
 
+extract-map-sprites:
+	@cd tools && python3 ./hm64_map_utilities.py write_all_textures
+
 
 build:
 	@mkdir $@

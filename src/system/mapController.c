@@ -15,7 +15,7 @@ extern Vec4f D_802373F8;
 extern s16 D_8017045A;
 
 extern MapController mapControllers[1];
-extern MapModelAddresses gMapModelAddresses[96];
+extern MapDataAddress mapDataAddresses[96];
 
 // forward declarations
 void func_8003C8D4(MapController*); 
@@ -75,27 +75,27 @@ void initializeMapControllers(void) {
     }
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/mapController", setMapModelAddresses);
+//INCLUDE_ASM("asm/nonmatchings/system/mapController", setMapDataAddresses);
 
-bool setMapModelAddresses(u16 mapIndex, void *start, void *end) {
+bool setMapDataAddresses(u16 mapIndex, void *start, void *end) {
     
     bool result = FALSE;
     
-    if (mapIndex < MAX_MODELS) {
-        if (!(gMapModelAddresses[mapIndex].flags & 1)) {
+    if (mapIndex < MAX_MAP_ADDRESSES) {
+        if (!(mapDataAddresses[mapIndex].flags & 1)) {
             result = TRUE;
-            gMapModelAddresses[mapIndex].romStart = start;
-            gMapModelAddresses[mapIndex].romEnd = end;
-            gMapModelAddresses[mapIndex].flags = 1;
+            mapDataAddresses[mapIndex].romStart = start;
+            mapDataAddresses[mapIndex].romEnd = end;
+            mapDataAddresses[mapIndex].flags = 1;
         }
     }
 
     return result;
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/mapController", setupMapModel);
+//INCLUDE_ASM("asm/nonmatchings/system/mapController", initializeMapController);
 
-bool setupMapModel(u16 index, u16 mapIndex, u32 *modelDataIndex) {
+bool initializeMapController(u16 index, u16 mapIndex, u32 *mapDataIndex) {
     
     bool result;
 
@@ -107,7 +107,7 @@ bool setupMapModel(u16 index, u16 mapIndex, u32 *modelDataIndex) {
         
         mapControllers[index].mainMapIndex = mapIndex;
         
-        mapControllers[index].modelDataIndex = modelDataIndex;
+        mapControllers[index].mapDataIndex = mapDataIndex;
         
         mapControllers[index].flags = 1;
 
@@ -145,7 +145,6 @@ bool loadMap(u16 index, u16 mapIndex) {
     
     if (index == MAIN_MAP_INDEX && (mapControllers[index].flags & 1)) {
         
-        // dma map data
         dmaMapAssets(MAIN_MAP_INDEX, mapIndex);
         
         setMapTranslation(mapControllers[index].mainMapIndex, 0.0f, 0.0f, 0.0f);
@@ -177,47 +176,47 @@ bool dmaMapAssets(u16 mainMapIndex, u16 levelMapIndex) {
 
     bool result = FALSE;
     
-    MapGridData *mapGrid;
-    u32 *offset2;
+    u8 *mapGrid;
+    void *mesh;
     u8 *terrainQuads;
-    u32 *offset4;
-    u32 *offset5;
-    u32 *offset6;
-    u16 *paletteIndex;
-    u32 *offset8;
-    u32 *offset9;
-    u32 *offset10; 
+    u8 **gridToLevelInteractionIndex;
+    void *coreMapObjects;
+    void *tileTextures;
+    void *tilePalettes;
+    void *coreMapObjectsTextures;
+    void *coreMapObjectsPalettes;
+    u8 *mapAdditionsMetadata; 
  
     if (mainMapIndex == MAIN_MAP_INDEX && mapControllers[mainMapIndex].flags & 1) {
         
         mapControllers[mainMapIndex].mapIndex = levelMapIndex;
         
-        nuPiReadRom(gMapModelAddresses[levelMapIndex].romStart, mapControllers[mainMapIndex].modelDataIndex, gMapModelAddresses[levelMapIndex].romEnd - gMapModelAddresses[levelMapIndex].romStart);
+        nuPiReadRom(mapDataAddresses[levelMapIndex].romStart, mapControllers[mainMapIndex].mapDataIndex, mapDataAddresses[levelMapIndex].romEnd - mapDataAddresses[levelMapIndex].romStart);
  
-        mapGrid = (MapGridData*)getAddress(mapControllers[mainMapIndex].modelDataIndex, 0);
-        offset2 = getAddress(mapControllers[mainMapIndex].modelDataIndex, 1);
-        terrainQuads = (u8*)getAddress(mapControllers[mainMapIndex].modelDataIndex, 2);
-        offset4 = getAddress(mapControllers[mainMapIndex].modelDataIndex, 3);
-        offset5 = getAddress(mapControllers[mainMapIndex].modelDataIndex, 4);
-        offset6 = getAddress(mapControllers[mainMapIndex].modelDataIndex, 5);
-        paletteIndex = (u16*)getAddress(mapControllers[mainMapIndex].modelDataIndex, 6);
-        offset8 = getAddress(mapControllers[mainMapIndex].modelDataIndex, 7);
-        offset9 = getAddress(mapControllers[mainMapIndex].modelDataIndex, 8);
-        offset10 = getAddress(mapControllers[mainMapIndex].modelDataIndex, 9);
-        
+        mapGrid = getAddress(mapControllers[mainMapIndex].mapDataIndex, 0);
+        mesh = getAddress(mapControllers[mainMapIndex].mapDataIndex, 1);
+        terrainQuads = getAddress(mapControllers[mainMapIndex].mapDataIndex, 2);
+        gridToLevelInteractionIndex = getAddress(mapControllers[mainMapIndex].mapDataIndex, 3);
+        coreMapObjects = getAddress(mapControllers[mainMapIndex].mapDataIndex, 4);
+        tileTextures = getAddress(mapControllers[mainMapIndex].mapDataIndex, 5);
+        tilePalettes = getAddress(mapControllers[mainMapIndex].mapDataIndex, 6);
+        coreMapObjectsTextures = getAddress(mapControllers[mainMapIndex].mapDataIndex, 7);
+        coreMapObjectsPalettes = getAddress(mapControllers[mainMapIndex].mapDataIndex, 8);
+        mapAdditionsMetadata = getAddress(mapControllers[mainMapIndex].mapDataIndex, 9);
+         
         mapControllers[mainMapIndex].flags |= 2;
                 
-        func_80033A90(mapControllers[mainMapIndex].mainMapIndex, 
+        setupMap(mapControllers[mainMapIndex].mainMapIndex, 
             mapGrid, 
-            offset2, 
+            mesh, 
             terrainQuads, 
-            offset4, 
-            offset5, 
-            offset6, 
-            paletteIndex, 
-            offset8, 
-            offset9, 
-            offset10
+            gridToLevelInteractionIndex, 
+            coreMapObjects, 
+            tileTextures, 
+            tilePalettes, 
+            coreMapObjectsTextures, 
+            coreMapObjectsPalettes, 
+            mapAdditionsMetadata
             );
         
         result = TRUE;
@@ -600,20 +599,22 @@ void updateMapController(void) {
 
         if ((mapControllers[i].flags & 1) && (mapControllers[i].flags & 4)) {
             
-            func_80038810(mapControllers[i].mainMapIndex);
+            updateGroundObjects(mapControllers[i].mainMapIndex);
             func_8003C8D4(&mapControllers[i]);
             
             if (mapControllers[i].flags & (0x8 | 0x10)) {
                 func_8003CB3C(i);
             }
 
-            D_802373F8.r = mainMap[mapControllers[i].mainMapIndex].mapFloats.groundRgba.r;
-            D_802373F8.g = mainMap[mapControllers[i].mainMapIndex].mapFloats.groundRgba.g;
-            D_802373F8.b = mainMap[mapControllers[i].mainMapIndex].mapFloats.groundRgba.b;
-            D_802373F8.a = mainMap[mapControllers[i].mainMapIndex].mapFloats.groundRgba.a;
+            D_802373F8.r = mainMap[mapControllers[i].mainMapIndex].mapGlobals.currentRGBA.r;
+            D_802373F8.g = mainMap[mapControllers[i].mainMapIndex].mapGlobals.currentRGBA.g;
+            D_802373F8.b = mainMap[mapControllers[i].mainMapIndex].mapGlobals.currentRGBA.b;
+            D_802373F8.a = mainMap[mapControllers[i].mainMapIndex].mapGlobals.currentRGBA.a;
         
         }   
+
     }
+    
 }
 
 //INCLUDE_ASM("asm/nonmatchings/system/mapContext", func_8003C8D4);

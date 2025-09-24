@@ -5,10 +5,11 @@
 #include "ld_symbols.h"
 
 #include "system/controller.h"
+#include "system/globalSprites.h"
 #include "system/map.h"
+#include "system/mapController.h"
 #include "system/math.h"
 #include "system/message.h"
-#include "system/globalSprites.h"
 
 #include "game/game.h"
 #include "game/gameAudio.h"

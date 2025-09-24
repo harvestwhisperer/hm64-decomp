@@ -12,9 +12,9 @@
 #include "game/npc.h"
 
 // bss
-extern EntityAssetDescriptor entityAssetDescriptors[MAX_ENTITY_ASSETS];
-extern Entity entities[MAX_ENTITIES];
-extern ShadowSpriteDescriptor ShadowSpritesDescriptors[3];
+EntityAssetDescriptor entityAssetDescriptors[MAX_ENTITY_ASSETS];
+Entity entities[MAX_ENTITIES];
+ShadowSpriteDescriptor ShadowSpritesDescriptors[3];
 
 // forward declarations
 Vec3f getEntityRelativeTilePosition(u16, f32, f32);  
@@ -317,11 +317,11 @@ bool loadEntity(u16 index, u16 entityAssetIndex, bool transformExempt) {
             if (!(checkMapRGBADone(mapControllers[gMainMapIndex].mainMapIndex))) {
  
                 updateEntityRGBA(index, 
-                    mainMap[mapControllers[gMainMapIndex].mainMapIndex].mapFloats.defaultRgba.r, 
-                    mainMap[mapControllers[gMainMapIndex].mainMapIndex].mapFloats.defaultRgba.g, 
-                    mainMap[mapControllers[gMainMapIndex].mainMapIndex].mapFloats.defaultRgba.b, 
-                    mainMap[mapControllers[gMainMapIndex].mainMapIndex].mapFloats.defaultRgba.a, 
-                    mainMap[mapControllers[gMainMapIndex].mainMapIndex].mapState.unk_8);
+                    mainMap[mapControllers[gMainMapIndex].mainMapIndex].mapGlobals.targetRGBA.r, 
+                    mainMap[mapControllers[gMainMapIndex].mainMapIndex].mapGlobals.targetRGBA.g, 
+                    mainMap[mapControllers[gMainMapIndex].mainMapIndex].mapGlobals.targetRGBA.b, 
+                    mainMap[mapControllers[gMainMapIndex].mainMapIndex].mapGlobals.targetRGBA.a, 
+                    mainMap[mapControllers[gMainMapIndex].mainMapIndex].mapState.RGBARate);
                 
             }
             
@@ -1309,6 +1309,7 @@ u16 func_800305CC(u16 index, f32 x, f32 z, u16 buttonPressed) {
 
 //INCLUDE_ASM("asm/nonmatchings/system/entity", func_800308E0);
 
+// unused; check if position has level interaction
 bool func_800308E0(u16 entityIndex, f32 arg1, f32 arg2) {
     
     bool result = FALSE; 
@@ -1316,7 +1317,7 @@ bool func_800308E0(u16 entityIndex, f32 arg1, f32 arg2) {
     if (entityIndex < MAX_ENTITIES) {
 
         if ((entities[entityIndex].flags & ENTITY_ACTIVE) && !(entities[entityIndex].flags & ENTITY_PAUSED)) {
-            result = func_80036318(mapControllers[gMainMapIndex].mainMapIndex, entities[entityIndex].coordinates.x + arg1, entities[entityIndex].coordinates.z + arg2);
+            result = getLevelInteractionIndexFromPosition(mapControllers[gMainMapIndex].mainMapIndex, entities[entityIndex].coordinates.x + arg1, entities[entityIndex].coordinates.z + arg2);
         }
 
     }
@@ -1325,15 +1326,15 @@ bool func_800308E0(u16 entityIndex, f32 arg1, f32 arg2) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/entity", func_800309B4);
+//INCLUDE_ASM("asm/nonmatchings/system/entity", getLevelInteractionIndexFromEntityPosition);
 
-u8 func_800309B4(u16 entityIndex, f32 x, f32 z) {
+u8 getLevelInteractionIndexFromEntityPosition(u16 entityIndex, f32 x, f32 z) {
     
     Vec3f worldCoordinates;
     Vec3f rotatedPosition;
     Vec3f rotation;
 
-    u8 result = 0;
+    u8 levelInteractionIndex = 0;
 
     if ((entityIndex < MAX_ENTITIES)) {
 
@@ -1351,14 +1352,14 @@ u8 func_800309B4(u16 entityIndex, f32 x, f32 z) {
                 
                 rotateVector3D(worldCoordinates, &rotatedPosition, rotation);
 
-                result = func_80036318(mapControllers[gMainMapIndex].mainMapIndex, entities[entityIndex].coordinates.x + rotatedPosition.x, entities[entityIndex].coordinates.z + rotatedPosition.z);
+                levelInteractionIndex = getLevelInteractionIndexFromPosition(mapControllers[gMainMapIndex].mainMapIndex, entities[entityIndex].coordinates.x + rotatedPosition.x, entities[entityIndex].coordinates.z + rotatedPosition.z);
                 
             }
         }
         
     } 
     
-    return result;
+    return levelInteractionIndex;
     
 }
 
@@ -1437,7 +1438,7 @@ u16 func_80030CB0(u16 entityIndex, f32 x, f32 z) {
             vec = func_80030EAC(entityIndex, x, z);
 
             if (vec.y != 65535.0f) {
-                index = func_80036880(mapControllers[gMainMapIndex].mainMapIndex, vec.x, vec.z);
+                index = getMapGroundObjectSpriteIndex(mapControllers[gMainMapIndex].mainMapIndex, vec.x, vec.z);
             }
             
         }
@@ -1451,7 +1452,7 @@ u16 func_80030CB0(u16 entityIndex, f32 x, f32 z) {
 
 // unused or inline
 // map ground objects
-bool func_80030DB0(u16 entityIndex, f32 arg1, f32 arg2, u16 arg3) {
+bool func_80030DB0(u16 entityIndex, f32 arg1, f32 arg2, u16 spriteIndex) {
 
     // FIXME: shouldn't be necessary
     Vec3f padding[4];
@@ -1462,7 +1463,7 @@ bool func_80030DB0(u16 entityIndex, f32 arg1, f32 arg2, u16 arg3) {
         vec = func_80030EAC(entityIndex, arg1, arg2);
         
         if (vec.y != 65535.0f) {
-            func_80036980(mapControllers[gMainMapIndex].mainMapIndex, arg3, vec.x, vec.z);
+            setMapGroundObjectSpriteIndexFromFloat(mapControllers[gMainMapIndex].mainMapIndex, spriteIndex, vec.x, vec.z);
         }
         
     }
@@ -1498,7 +1499,7 @@ Vec3f func_80030EAC(u16 entityIndex, f32 arg2, f32 arg3) {
 
             rotateVector3D(vec, &rotatedPosition, rotation);
 
-            vec4 = func_800366F4(mapControllers[gMainMapIndex].mainMapIndex, entities[entityIndex].coordinates.x + rotatedPosition.x, entities[entityIndex].coordinates.z + rotatedPosition.z);
+            vec4 = getMapGroundObjectCoordinates(mapControllers[gMainMapIndex].mainMapIndex, entities[entityIndex].coordinates.x + rotatedPosition.x, entities[entityIndex].coordinates.z + rotatedPosition.z);
             
         }
         
@@ -1511,6 +1512,7 @@ Vec3f func_80030EAC(u16 entityIndex, f32 arg2, f32 arg3) {
 
 //INCLUDE_ASM("asm/nonmatchings/system/entity", func_80031050);
 
+// unused
 u16 func_80031050(u16 entityIndex, f32 x, f32 z) {
 
     u32 padding[11];
@@ -1526,7 +1528,7 @@ u16 func_80031050(u16 entityIndex, f32 x, f32 z) {
             tileCoordinates = getEntityRelativeTilePosition(entityIndex, x, z);
 
             if (tileCoordinates.y != 65535.0f) {   
-                terrainIndex = getTerrainIndexForTile(mapControllers[gMainMapIndex].mainMapIndex, tileCoordinates.x, tileCoordinates.z);
+                terrainIndex = getTileIndexFromGrid(mapControllers[gMainMapIndex].mainMapIndex, tileCoordinates.x, tileCoordinates.z);
             }
         }
     
@@ -1750,7 +1752,7 @@ bool checkTerrainCollisionInDirection(u16 index, s16 moveDistance, u8 direction)
 
 //INCLUDE_ASM("asm/nonmatchings/system/entity", projectEntityPosition);
 
-Vec3f projectEntityPosition(u16 index, s16 arg2, u8 direction) {
+Vec3f projectEntityPosition(u16 index, s16 zDisplacement, u8 direction) {
 
     Vec3f offset;
     Vec3f rotatedOffset;
@@ -1758,7 +1760,7 @@ Vec3f projectEntityPosition(u16 index, s16 arg2, u8 direction) {
 
     offset.x = 0.0f;
     offset.y = 0.0f;
-    offset.z = arg2;
+    offset.z = zDisplacement;
 
     rotation.x = 0;
     rotation.y = getSpriteYValueFromDirection(direction % 8);
@@ -1826,7 +1828,7 @@ u16 checkTerrainMovementCollision(Entity* entity, f32 deltaX, f32 deltaZ, u8 dir
         isGroundTooLow = FALSE;
     }
 
-    if ((isGroundTooHigh | isGroundTooLow) || (func_80035914(MAIN_MAP_INDEX, rotatedCollisionPoint.x + entity->coordinates.x + deltaX, rotatedCollisionPoint.z + entity->coordinates.z + deltaZ))) {
+    if ((isGroundTooHigh | isGroundTooLow) || (checkTileHasGroundObject(MAIN_MAP_INDEX, rotatedCollisionPoint.x + entity->coordinates.x + deltaX, rotatedCollisionPoint.z + entity->coordinates.z + deltaZ))) {
         collisionFlags = 0xF00;
     }
 
@@ -1848,7 +1850,7 @@ u16 checkTerrainMovementCollision(Entity* entity, f32 deltaX, f32 deltaZ, u8 dir
         isGroundTooLow = FALSE;
     }
 
-    if ((isGroundTooHigh | isGroundTooLow) || (func_80035914(MAIN_MAP_INDEX, rotatedCollisionPoint.x + entity->coordinates.x + deltaX, rotatedCollisionPoint.z + entity->coordinates.z + deltaZ))) {
+    if ((isGroundTooHigh | isGroundTooLow) || (checkTileHasGroundObject(MAIN_MAP_INDEX, rotatedCollisionPoint.x + entity->coordinates.x + deltaX, rotatedCollisionPoint.z + entity->coordinates.z + deltaZ))) {
         collisionFlags |= 0xF000;
     }
     
@@ -1870,7 +1872,7 @@ u16 checkTerrainMovementCollision(Entity* entity, f32 deltaX, f32 deltaZ, u8 dir
         isGroundTooLow = FALSE;
     }
 
-    if ((isGroundTooHigh | isGroundTooLow) || (func_80035914(MAIN_MAP_INDEX, rotatedCollisionPoint.x + entity->coordinates.x + deltaX, rotatedCollisionPoint.z + entity->coordinates.z + deltaZ))) {
+    if ((isGroundTooHigh | isGroundTooLow) || (checkTileHasGroundObject(MAIN_MAP_INDEX, rotatedCollisionPoint.x + entity->coordinates.x + deltaX, rotatedCollisionPoint.z + entity->coordinates.z + deltaZ))) {
         collisionFlags |= 2;
     }
     
@@ -1892,7 +1894,7 @@ u16 checkTerrainMovementCollision(Entity* entity, f32 deltaX, f32 deltaZ, u8 dir
         isGroundTooLow = 0;
     }
 
-    if ((isGroundTooHigh | isGroundTooLow) || (func_80035914(MAIN_MAP_INDEX, rotatedCollisionPoint.x + entity->coordinates.x + deltaX, rotatedCollisionPoint.z + entity->coordinates.z + deltaZ))) {
+    if ((isGroundTooHigh | isGroundTooLow) || (checkTileHasGroundObject(MAIN_MAP_INDEX, rotatedCollisionPoint.x + entity->coordinates.x + deltaX, rotatedCollisionPoint.z + entity->coordinates.z + deltaZ))) {
         collisionFlags |= 0x20;
     }
     

@@ -7,15 +7,14 @@
 
 #include "mainproc.h"
 
+// bss
+u16 D_80182FBA;
+u16 D_801FADB0;
+u8 contPattern;
+
 // forward declaration
 void convertAnalogSticksToDirections(u8);                         
       
-// bss
-extern u16 D_80182FBA;
-extern u16 D_801FADB0;
-// used by gameStatus.c
-extern u8 contPattern;
-
 
 //INCLUDE_ASM("asm/nonmatchings/system/controller", controllerInit);
 

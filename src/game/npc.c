@@ -7,6 +7,7 @@
 #include "system/entity.h"
 #include "system/graphic.h"
 #include "system/map.h"
+#include "system/mapController.h"
 #include "system/math.h"
 #include "system/message.h"
 #include "system/mapController.h"

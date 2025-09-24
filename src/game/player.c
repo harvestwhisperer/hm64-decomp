@@ -5,8 +5,8 @@
 #include "system/controller.h"
 #include "system/entity.h"
 #include "system/graphic.h"
-#include "system/math.h"
 #include "system/mapController.h"
+#include "system/math.h"
 
 #include "game/animals.h"
 #include "game/game.h"
@@ -187,7 +187,7 @@ void setupPlayerEntity(u16 arg0, u8 resetPlayer) {
     func_8002FF38(ENTITY_PLAYER, TRUE);
     setEntityMapSpaceIndependent(ENTITY_PLAYER, TRUE);
 
-    setEntityColor(ENTITY_PLAYER, globalLightingRgba.r, globalLightingRgba.g, globalLightingRgba.b, globalLightingRgba.a);
+    setEntityColor(ENTITY_PLAYER, globalLightingRGBA.r, globalLightingRGBA.g, globalLightingRGBA.b, globalLightingRGBA.a);
     setEntityShadow(ENTITY_PLAYER, 0);
 
     if (resetPlayer) {
@@ -1180,12 +1180,12 @@ void func_80067290(u8 arg0) {
     
     if (arg0 == 0) {
 
-        if ((func_800D5A6C(gPlayer.heldItem) & 0x20) && (func_800309B4(ENTITY_PLAYER, 0.0f, 32.0f) == 0x11) && gBaseMapIndex == COOP && !func_8009B7BC()) {
+        if ((func_800D5A6C(gPlayer.heldItem) & 0x20) && (getLevelInteractionIndexFromEntityPosition(ENTITY_PLAYER, 0.0f, 32.0f) == 0x11) && gBaseMapIndex == COOP && !func_8009B7BC()) {
             set = TRUE;
             startNewAction(5, 7);
         }
 
-        if ((func_800D5A6C(gPlayer.heldItem) & 0x2000) && !set && (func_800309B4(ENTITY_PLAYER, 0.0f, 32.0f) == 0x11) && gBaseMapIndex == FARM) {
+        if ((func_800D5A6C(gPlayer.heldItem) & 0x2000) && !set && (getLevelInteractionIndexFromEntityPosition(ENTITY_PLAYER, 0.0f, 32.0f) == 0x11) && gBaseMapIndex == FARM) {
             set = TRUE;
             startNewAction(5, 7);
         }
@@ -1262,7 +1262,7 @@ void func_80067290(u8 arg0) {
             
             if (gBaseMapIndex == 0x57) {
 
-                if (func_800309B4(ENTITY_PLAYER, 0.0f, 32.0f) == 0x16) {
+                if (getLevelInteractionIndexFromEntityPosition(ENTITY_PLAYER, 0.0f, 32.0f) == 0x16) {
                     startNewAction(5, 7);
                 }
                 

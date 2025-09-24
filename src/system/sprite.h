@@ -7,11 +7,11 @@
 
 /* bitmap flags */
 #define BITMAP_ACTIVE 1
-#define USE_BILINEAR_FILTERING 0x4
+#define BITMAP_USE_BILINEAR_FILTERING 0x4
 
 /* rendering flags */
-#define FLIP_HORIZONTAL 1
-#define FLIP_VERTICAL 2
+#define BITMAP_RENDERING_FLIP_HORIZONTAL 1
+#define BITMAP_RENDERING_FLIP_VERTICAL 2
 // 0x200 related to vertex order on triangles
 
 // 0x801F7110

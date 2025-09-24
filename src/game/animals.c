@@ -4,8 +4,8 @@
 
 #include "system/entity.h"
 #include "system/graphic.h"
-#include "system/math.h"
 #include "system/mapController.h"
+#include "system/math.h"
 #include "system/message.h"
 
 #include "game/game.h"
@@ -4876,7 +4876,7 @@ void func_8009BCC4(u8 animalType, u8 animalIndex, u8 arg2) {
     setEntityTracksCollisions(0x30, FALSE);
     enableEntityMovement(0x30, FALSE);
 
-    setEntityColor(0x30, mainMap[MAIN_MAP_INDEX].mapFloats.groundRgba.r, mainMap[MAIN_MAP_INDEX].mapFloats.groundRgba.g, mainMap[MAIN_MAP_INDEX].mapFloats.groundRgba.b, mainMap[MAIN_MAP_INDEX].mapFloats.groundRgba.a);
+    setEntityColor(0x30, mainMap[MAIN_MAP_INDEX].mapGlobals.currentRGBA.r, mainMap[MAIN_MAP_INDEX].mapGlobals.currentRGBA.g, mainMap[MAIN_MAP_INDEX].mapGlobals.currentRGBA.b, mainMap[MAIN_MAP_INDEX].mapGlobals.currentRGBA.a);
     setEntityAttachmentOffset(0x30, 0, 0x30, 0);
     setEntityAnimation(0x30, arg2);
     

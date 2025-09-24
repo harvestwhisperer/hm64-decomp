@@ -127,7 +127,7 @@ void func_800CF8F8(u8 entityIndex, u8 animationIndex, f32 x, f32 y, f32 z) {
 
     setEntityCoordinates(entityIndex + ITEMS_OFFSET, x, y, z);
 
-    setEntityColor(entityIndex + ITEMS_OFFSET, mainMap[MAIN_MAP_INDEX].mapFloats.groundRgba.r, mainMap[MAIN_MAP_INDEX].mapFloats.groundRgba.g, mainMap[MAIN_MAP_INDEX].mapFloats.groundRgba.b, mainMap[MAIN_MAP_INDEX].mapFloats.groundRgba.a);
+    setEntityColor(entityIndex + ITEMS_OFFSET, mainMap[MAIN_MAP_INDEX].mapGlobals.currentRGBA.r, mainMap[MAIN_MAP_INDEX].mapGlobals.currentRGBA.g, mainMap[MAIN_MAP_INDEX].mapGlobals.currentRGBA.b, mainMap[MAIN_MAP_INDEX].mapGlobals.currentRGBA.a);
     
     setEntityAnimation(entityIndex + ITEMS_OFFSET, animationIndex);
     
@@ -147,7 +147,7 @@ void func_800CFB38(u8 entityIndex, u8 animationIndex, f32 x, f32 y, f32 z) {
     setEntityCoordinates(entityIndex + ITEMS_OFFSET, x, y, z);
 
     // rgba
-    setEntityColor(entityIndex + ITEMS_OFFSET, mainMap[MAIN_MAP_INDEX].mapFloats.groundRgba.r, mainMap[MAIN_MAP_INDEX].mapFloats.groundRgba.g, mainMap[MAIN_MAP_INDEX].mapFloats.groundRgba.b, mainMap[MAIN_MAP_INDEX].mapFloats.groundRgba.a);
+    setEntityColor(entityIndex + ITEMS_OFFSET, mainMap[MAIN_MAP_INDEX].mapGlobals.currentRGBA.r, mainMap[MAIN_MAP_INDEX].mapGlobals.currentRGBA.g, mainMap[MAIN_MAP_INDEX].mapGlobals.currentRGBA.b, mainMap[MAIN_MAP_INDEX].mapGlobals.currentRGBA.a);
     // flags
     setEntityAnimation(entityIndex + ITEMS_OFFSET, animationIndex);
     
@@ -1349,7 +1349,7 @@ void func_800D6B58(u8 arg0, u8 index) {
 
     if (gBaseMapIndex == FARM) {
         
-        temp = func_800309B4(0, 0.0f, 32.0f);
+        temp = getLevelInteractionIndexFromEntityPosition(0, 0.0f, 32.0f);
         temp2 = temp - 0x1B;
         
         if (temp2 < 2 || temp == 0x1D) {
@@ -1362,7 +1362,7 @@ void func_800D6B58(u8 arg0, u8 index) {
     
     if (gBaseMapIndex == MOUNTAIN_1) {
         
-        temp = func_800309B4(0, 0.0f, 40.0f);
+        temp = getLevelInteractionIndexFromEntityPosition(0, 0.0f, 40.0f);
         
         if (temp == 0x10 || temp == 0x14) {
             setVec3f(index, 160.0f, 64.0f, -128.0f);
@@ -1382,7 +1382,7 @@ void func_800D6B58(u8 arg0, u8 index) {
 
     if (gBaseMapIndex == POND) {
         
-        temp = func_800309B4(0, 0.0f, 32.0f);
+        temp = getLevelInteractionIndexFromEntityPosition(0, 0.0f, 32.0f);
         
         if (temp == 0x10) {
             setVec3f(index, -16.0f, 80.0f, -224.0f);

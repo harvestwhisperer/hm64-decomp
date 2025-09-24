@@ -130,7 +130,7 @@ extern bool setEntityCollidable(u16, u8);
 extern bool setEntityTracksCollisions(u16, u8);                            
 extern bool enableEntityMovement(u16, u8);         
 extern u16 func_800305CC(u16 entityIndex, f32, f32, u16);
-extern u8 func_800309B4(u16, f32, f32);     
+extern u8 getLevelInteractionIndexFromEntityPosition(u16, f32, f32);     
 extern u16 func_80030BA0(u16* ptr, u16 offset);  
 extern Vec3f func_80030EAC(u16, f32, f32);                  
 extern Vec3f func_800315A0(u16 index);    
