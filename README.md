@@ -2,7 +2,7 @@
 
 ## Progress
 
-Currently, 80% of the 1467 game functions and 77% of the game source files have been decompiled, with the entire game engine (the "system" according to leftover debug logs) is now fully decompiled. All library functions have also been identified with much progress on the matching (many thanks to cblck for the great work). More robust progress tracking is in the works.
+Currently, 80% of the 1467 game functions and 77% of the game source files have been decompiled, with the entire game engine (the "system" according to leftover debug logs) now fully decompiled. All library functions have also been identified with much progress on the matching (many thanks to cblck for the great work). More robust progress tracking is in the works.
 
 ## Asset extraction
 
