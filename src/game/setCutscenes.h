@@ -164,7 +164,6 @@ extern u8 D_80113580[0x18][0x14];
 
 // flags
 extern s32 D_801891D4;
-// cutscene location
 extern u16 D_8018981C;
 
 #endif

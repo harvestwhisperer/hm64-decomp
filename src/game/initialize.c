@@ -27,7 +27,7 @@
 #include "game/level.h" 
 #include "game/loadGameScreen.h"
 #include "mainLoop.h"
-#include "game/mapObjects.h"
+#include "game/fieldObjects.h"
 #include "game/npc.h"
 #include "game/overlayScreens.h"
 #include "game/player.h"
@@ -316,7 +316,6 @@ void initializeGameVariables(void) {
     gameLoopContext.unk_2 = 0;
     gameLoopContext.unk_4 = 0;
 
-    // cutscene location
     D_8018981C = 0xFFFF;
     gItemBeingHeld = 0xFF;
 
@@ -368,7 +367,7 @@ void initializeGameVariables(void) {
         npcs[i].movingFlag = 0;
         npcs[i].unk_1E = 0;
         npcs[i].direction = NORTH;
-        npcs[i].unk_20 = 0;
+        npcs[i].speed = 0;
         npcs[i].unk_21 = 0;
         npcs[i].unk_22 = 0;
         npcs[i].location = 0;
@@ -647,7 +646,7 @@ void initializeGameVariables(void) {
     
     memcpy(farmFieldTiles , D_80113580, 0x1E0);
 
-    memcpy(D_80182BA8, D_80113760, 0x1E0);
+    memcpy(greenhouseFieldTiles, D_80113760, 0x1E0);
         
     albumBits |= 1;
 

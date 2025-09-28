@@ -35,53 +35,53 @@ u8 D_80189826;
 u8 D_801C3E2C;
 
 // forward declarations
-static bool func_800AD8D0(u16, u8);
-static bool func_800ADCDC(u16, u8);
-static bool func_800AE00C(u16, u8);
-static bool func_800AEB54(u16, u8);
-static bool func_800AED60(u16, u8);
-static bool func_800AEE8C(u16, u8);
-static bool func_800AF060(u16, u8);
-static bool func_800AF0B0(u16, u8);
-static bool func_800AF494(u16, u8);
-static bool func_800AFA2C(u16, u8);
-static bool func_800AFA7C(u16, u8);
-static bool func_800AFCD0(u16, u8);
-static bool func_800AFD20(u16, u8);
-static bool func_800AFF9C(u16, u8);
-static bool func_800B00E0(u16, u8);
-static bool func_800B01EC(u16, u8);
-static bool func_800B0378(u16, u8);
-static bool func_800B0714(u16, u8);
-static bool func_800B0A64(u16, u8);
-static bool func_800B0AFC(u16, u8);
-static bool func_800B0C48(u16, u8);
-static bool func_800B0C98(u16, u8);
-static bool func_800B0FB8(u16, u8);
-static bool func_800B106C(u16, u8);
-static bool func_800B1438(u16, u8);
-static bool func_800B1540(u16, u8);
-static bool func_800B1808(u16, u8);
-static bool func_800B1994(u16, u8);
-static bool func_800B1AC4(u16, u8);
-static bool handleCarpenterHutInteractions(u16, u8);
-static bool handleDumplingHouseExit(u16, u8);
-static bool func_800B1DBC(u16, u8);
-static bool func_800B20C8(u16, u8);
-static bool func_800B2118(u16, u8);
-static bool func_800B2264(u16, u8);
-static bool func_800B2340(u16, u8);
-static bool func_800B23A4(u16, u8);
-static bool func_800B24D4(u16, u8);
-static bool func_800B256C(u16, u8);
-static bool func_800B2604(u16, u8);
-static bool func_800B27CC(u16, u8);
-static bool handleRanchStoreExits(u16, u8);
-static bool func_800B2B90(u16, u8);
-static bool func_800B2C28(u16, u8);
-static bool func_800B2C78(u16, u8);
-static bool func_800B1EE4(u16, u8);
-static bool func_800B2078(u16, u8);
+bool func_800AD8D0(u16, u8);
+bool func_800ADCDC(u16, u8);
+bool func_800AE00C(u16, u8);
+bool func_800AEB54(u16, u8);
+bool func_800AED60(u16, u8);
+bool func_800AEE8C(u16, u8);
+bool func_800AF060(u16, u8);
+bool func_800AF0B0(u16, u8);
+bool func_800AF494(u16, u8);
+bool func_800AFA2C(u16, u8);
+bool func_800AFA7C(u16, u8);
+bool func_800AFCD0(u16, u8);
+bool func_800AFD20(u16, u8);
+bool func_800AFF9C(u16, u8);
+bool func_800B00E0(u16, u8);
+bool func_800B01EC(u16, u8);
+bool func_800B0378(u16, u8);
+bool func_800B0714(u16, u8);
+bool func_800B0A64(u16, u8);
+bool func_800B0AFC(u16, u8);
+bool func_800B0C48(u16, u8);
+bool func_800B0C98(u16, u8);
+bool func_800B0FB8(u16, u8);
+bool func_800B106C(u16, u8);
+bool func_800B1438(u16, u8);
+bool func_800B1540(u16, u8);
+bool func_800B1808(u16, u8);
+bool func_800B1994(u16, u8);
+bool func_800B1AC4(u16, u8);
+bool handleCarpenterHutInteractions(u16, u8);
+bool handleDumplingHouseExit(u16, u8);
+bool func_800B1DBC(u16, u8);
+bool func_800B20C8(u16, u8);
+bool func_800B2118(u16, u8);
+bool func_800B2264(u16, u8);
+bool func_800B2340(u16, u8);
+bool func_800B23A4(u16, u8);
+bool func_800B24D4(u16, u8);
+bool func_800B256C(u16, u8);
+bool func_800B2604(u16, u8);
+bool func_800B27CC(u16, u8);
+bool handleRanchStoreExits(u16, u8);
+bool func_800B2B90(u16, u8);
+bool func_800B2C28(u16, u8);
+bool func_800B2C78(u16, u8);
+bool func_800B1EE4(u16, u8);
+bool func_800B2078(u16, u8);
 
                                                                   
 //INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800ACD70);
@@ -271,7 +271,6 @@ bool func_800AD0C4(u16 mapIndex) {
     return result;
 } 
 
-// jtbl_80121408
 //INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800AD1D0);
 
 bool func_800AD1D0(u16 mapIndex) {
@@ -523,11 +522,10 @@ bool func_800AD1D0(u16 mapIndex) {
 
 }
 
-// jtbl_80121578
 //INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800AD8D0);
 
 // farm
-static bool func_800AD8D0(u16 mapIndex, u8 arg1) {
+bool func_800AD8D0(u16 mapIndex, u8 arg1) {
 
     bool result = FALSE;
     u8 temp;
@@ -540,7 +538,8 @@ static bool func_800AD8D0(u16 mapIndex, u8 arg1) {
             break;
          
         case 3:        
-            if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
+        
+        if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = TRUE;
                 setEntrance(0x14);
             }
@@ -548,6 +547,7 @@ static bool func_800AD8D0(u16 mapIndex, u8 arg1) {
             return result;
         
         case 4:
+
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
                 if (gPlayer.direction == SOUTH) {
                     result = TRUE;
@@ -556,9 +556,11 @@ static bool func_800AD8D0(u16 mapIndex, u8 arg1) {
                     setEntrance(0xA);
                 }
             }
+
             break;
         
         case 5:
+
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
                 if (gPlayer.direction == SOUTH) {
                     result = TRUE;
@@ -567,36 +569,44 @@ static bool func_800AD8D0(u16 mapIndex, u8 arg1) {
                     setEntrance(0xE);
                 }
             }
+
             break;
         
         case 6:
+
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
                 result = TRUE;
                 levelInteractionsInfo.mapAdditionsIndex = 0xA;
                 levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN;
                 setEntrance(0x11);
             }
+
             break;
         
         case 7:
+
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
                 result = TRUE;
                 levelInteractionsInfo.mapAdditionsIndex = 0xB;
                 levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN;
                 setEntrance(0x12);
             }
+
             break;
 
         case 8:
+
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
                 result = TRUE;
                 levelInteractionsInfo.mapAdditionsIndex = 0x14;
                 levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN;
                 setEntrance(0x13);
             }
+
             break;
 
         case 9:
+
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
                 if (gPlayer.direction == WEST) {
                     result = TRUE;
@@ -605,16 +615,20 @@ static bool func_800AD8D0(u16 mapIndex, u8 arg1) {
                     setEntrance(0xB);
                 }
             }
+
             break;
         
         case 26:
+
             if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = TRUE;
                 setEntrance(0x70);
             }
+
             break;
         
         case 17:
+
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
                 if (gPlayer.heldItem == 0) {
                     if (!(gPlayer.flags & 1)) {
@@ -627,6 +641,7 @@ static bool func_800AD8D0(u16 mapIndex, u8 arg1) {
                     }
                 }
             }
+
             break;
 
         // mailbox
@@ -655,6 +670,7 @@ static bool func_800AD8D0(u16 mapIndex, u8 arg1) {
             break;
         
         case 19:
+
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
                 
                 if (gPlayer.direction == EAST) {
@@ -663,24 +679,30 @@ static bool func_800AD8D0(u16 mapIndex, u8 arg1) {
                     result = TRUE;
                 }
             }
+
             break;
 
         case 20:
+
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
                 convertNumberToString(0x17, fodderQuantity, 0);
                 showTextBox(1, 6, 0xA2, 0, 2);
                 result = TRUE;
             }
+
             break;
         
         case 21:
+
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
                 showTextBox(1, 6, 0xA1, 0, 2);
                 result = TRUE;
             }
+
             break;
         
         case 25:
+
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
                 if (!checkHaveKeyItem(TREASURE_MAP)) {
                     showTextBox(1, 6, 0xA7, 0, 2);
@@ -690,19 +712,21 @@ static bool func_800AD8D0(u16 mapIndex, u8 arg1) {
                 }
             }
 
+            break;
+
         case 30:
             break;
+
     }
 
     return result;
    
 }
 
-// jtbl_801215F0
 //INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800ADCDC);
 
 // house
-static bool func_800ADCDC(u16 mapIndex, u8 arg1) {
+bool func_800ADCDC(u16 mapIndex, u8 arg1) {
 
     bool result = FALSE;
     
@@ -802,10 +826,9 @@ static bool func_800ADCDC(u16 mapIndex, u8 arg1) {
 }
 
 // barn
-// jtbl_80121678
 //INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800AE00C);
 
-static u8 func_800AE00C(u16 mapIndex, u8 arg1) {
+u8 func_800AE00C(u16 mapIndex, u8 arg1) {
 
     u8 result = 0;
     s32 temp;
@@ -1192,11 +1215,10 @@ static u8 func_800AE00C(u16 mapIndex, u8 arg1) {
     
 }
 
-// jtbl_801216E8
 //INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800AEB54);
 
 // coop
-static bool func_800AEB54(u16 mapIndex, u8 arg1) {
+bool func_800AEB54(u16 mapIndex, u8 arg1) {
 
     bool result = FALSE;
 
@@ -1275,11 +1297,10 @@ static bool func_800AEB54(u16 mapIndex, u8 arg1) {
     
 }
 
-// jtbl_80121748
 //INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800AED60);
 
 // kitchen
-static bool func_800AED60(u16 mapIndex, u8 arg1) {
+bool func_800AED60(u16 mapIndex, u8 arg1) {
 
     bool result = FALSE;
 
@@ -1329,7 +1350,7 @@ static bool func_800AED60(u16 mapIndex, u8 arg1) {
 //INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800AEE8C);
 
 // bathroom
-static bool func_800AEE8C(u16 mapIndex, u8 arg1) {
+bool func_800AEE8C(u16 mapIndex, u8 arg1) {
 
     bool result = FALSE;
 
@@ -1385,7 +1406,7 @@ static bool func_800AEE8C(u16 mapIndex, u8 arg1) {
 //INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800AF060);
 
 // greenhouse
-static bool func_800AF060(u16 arg0, u8 arg1) {
+bool func_800AF060(u16 arg0, u8 arg1) {
 
     bool result = FALSE;
 
@@ -1400,10 +1421,9 @@ static bool func_800AF060(u16 arg0, u8 arg1) {
     
 }
 
-// jtbl_801217A0
 //INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800AF0B0);
 
-static bool func_800AF0B0(u16 mapIndex, u8 arg1) {
+bool func_800AF0B0(u16 mapIndex, u8 arg1) {
 
     bool result = FALSE;
 
@@ -1640,10 +1660,9 @@ static bool func_800AF0B0(u16 mapIndex, u8 arg1) {
    
 }
 
-// jtbl_80121840
 //INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800AF494);
 
-static u8 func_800AF494(u16 mapIndex, u8 arg1) {
+u8 func_800AF494(u16 mapIndex, u8 arg1) {
 
     u8 result = 0;
     
@@ -1920,7 +1939,7 @@ static u8 func_800AF494(u16 mapIndex, u8 arg1) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800AFA2C);
 
-static bool func_800AFA2C(u16 mapIndex, u8 arg1) {
+bool func_800AFA2C(u16 mapIndex, u8 arg1) {
     
     bool result = FALSE;
     
@@ -1935,10 +1954,9 @@ static bool func_800AFA2C(u16 mapIndex, u8 arg1) {
 
 }
 
-// jtbl_801218B8
 //INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800AFA7C);
 
-static bool func_800AFA7C(u16 mapIndex, u8 arg1) {
+bool func_800AFA7C(u16 mapIndex, u8 arg1) {
 
     bool result = FALSE;
 
@@ -2046,7 +2064,7 @@ static bool func_800AFA7C(u16 mapIndex, u8 arg1) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800AFCD0);
 
-static bool func_800AFCD0(u16 mapIndex, u8 arg1) {
+bool func_800AFCD0(u16 mapIndex, u8 arg1) {
 
     bool result = FALSE;
 
@@ -2061,10 +2079,9 @@ static bool func_800AFCD0(u16 mapIndex, u8 arg1) {
     
 }
 
-// jtbl_80121900
 //INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800AFD20);
 
-static bool func_800AFD20(u16 mapIndex, u8 arg1) {
+bool func_800AFD20(u16 mapIndex, u8 arg1) {
 
     bool result = FALSE;
 
@@ -2202,10 +2219,9 @@ static bool func_800AFD20(u16 mapIndex, u8 arg1) {
     
 }
 
-// jtbl_80121960
 //INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800AFF9C);
 
-static u8 func_800AFF9C(u16 arg0, u8 arg1) {
+u8 func_800AFF9C(u16 arg0, u8 arg1) {
 
     u8 result = 0;
     
@@ -2264,7 +2280,7 @@ static u8 func_800AFF9C(u16 arg0, u8 arg1) {
 //INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800B00E0);
 
 // church
-static bool func_800B00E0(u16 mapIndex, u8 arg1) {
+bool func_800B00E0(u16 mapIndex, u8 arg1) {
 
     bool result = FALSE;
 
@@ -2315,7 +2331,7 @@ static bool func_800B00E0(u16 mapIndex, u8 arg1) {
 //INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800B01EC);
 
 // tavern
-static bool func_800B01EC(u16 arg0, u8 arg1) {
+bool func_800B01EC(u16 arg0, u8 arg1) {
 
     bool result = FALSE;
 
@@ -2383,10 +2399,9 @@ static bool func_800B01EC(u16 arg0, u8 arg1) {
     
 }
 
-// jtbl_801219B0
 //INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800B0378);
 
-static bool func_800B0378(u16 mapIndex, u8 arg1) {
+bool func_800B0378(u16 mapIndex, u8 arg1) {
 
     bool result = FALSE;
 
@@ -2595,10 +2610,9 @@ static bool func_800B0378(u16 mapIndex, u8 arg1) {
     
 }
 
-// jtbl_80121A10
 //INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800B0714);
 
-static bool func_800B0714(u16 mapIndex, u8 arg1) {
+bool func_800B0714(u16 mapIndex, u8 arg1) {
 
     bool result = FALSE;
 
@@ -2793,7 +2807,7 @@ static bool func_800B0714(u16 mapIndex, u8 arg1) {
 //INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800B0A64);
 
 // midwife
-static bool func_800B0A64(u16 mapIndex, u8 arg1) {
+bool func_800B0A64(u16 mapIndex, u8 arg1) {
 
     bool result = FALSE;
 
@@ -2825,7 +2839,7 @@ static bool func_800B0A64(u16 mapIndex, u8 arg1) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800B0AFC);
 
-static bool func_800B0AFC(u16 mapIndex, u8 arg1) {
+bool func_800B0AFC(u16 mapIndex, u8 arg1) {
 
     bool result = FALSE;
 
@@ -2888,7 +2902,7 @@ static bool func_800B0AFC(u16 mapIndex, u8 arg1) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800B0C48);
 
-static bool func_800B0C48(u16 mapIndex, u8 arg1) {
+bool func_800B0C48(u16 mapIndex, u8 arg1) {
 
    bool result = FALSE;
 
@@ -2908,10 +2922,9 @@ static bool func_800B0C48(u16 mapIndex, u8 arg1) {
     
 }
 
-// jtbl_80121A78
 //INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800B0C98);
 
-static u8 func_800B0C98(u16 mapIndex, u8 arg1) {
+u8 func_800B0C98(u16 mapIndex, u8 arg1) {
 
     bool result = 0;
 
@@ -3065,7 +3078,7 @@ static u8 func_800B0C98(u16 mapIndex, u8 arg1) {
 //INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800B0FB8);
 
 // potion shop bedroom
-static bool func_800B0FB8(u16 mapIndex, u8 arg1) {
+bool func_800B0FB8(u16 mapIndex, u8 arg1) {
 
     bool result = FALSE;
 
@@ -3104,10 +3117,9 @@ static bool func_800B0FB8(u16 mapIndex, u8 arg1) {
     
 }
 
-// square
-// jtbl_80121AC8
 //INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800B106C);
 
+// square
 // FIXME: lots of unnecessary gotos
 u8 func_800B106C(u16 mapIndex, u8 arg1) {
 
@@ -3293,7 +3305,7 @@ label5:
 //INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800B1438);
 
 // mountain 1
-static bool func_800B1438(u16 mapIndex, u8 arg1) {
+bool func_800B1438(u16 mapIndex, u8 arg1) {
 
     bool result = FALSE;
 
@@ -3339,10 +3351,9 @@ static bool func_800B1438(u16 mapIndex, u8 arg1) {
     
 }
 
-// jtbl_80121B30
 //INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800B1540);
 
-static u8 func_800B1540(u16 mapIndex, u8 arg1) {
+u8 func_800B1540(u16 mapIndex, u8 arg1) {
 
     u8 result = 0;
     
@@ -3496,10 +3507,9 @@ static u8 func_800B1540(u16 mapIndex, u8 arg1) {
     
 }
 
-// jtbl_80121B80
 //INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800B1808);
 
-static u8 func_800B1808(u16 mapIndex, u8 arg1) {
+u8 func_800B1808(u16 mapIndex, u8 arg1) {
 
     bool result = 0;
 
@@ -3574,7 +3584,7 @@ static u8 func_800B1808(u16 mapIndex, u8 arg1) {
 //INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800B1994);
 
 // moon mountain
-static bool func_800B1994(u16 mapIndex, u8 arg1) {
+bool func_800B1994(u16 mapIndex, u8 arg1) {
 
     bool result = FALSE;
 
@@ -3619,10 +3629,9 @@ static bool func_800B1994(u16 mapIndex, u8 arg1) {
     
 }
 
-// jtbl_80121BD0
 //INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800B1AC4);
 
-static bool func_800B1AC4(u16 mapIndex, u8 arg1) {
+bool func_800B1AC4(u16 mapIndex, u8 arg1) {
 
     bool result = FALSE;
 
@@ -3727,7 +3736,7 @@ static bool func_800B1AC4(u16 mapIndex, u8 arg1) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handleCarpenterHutInteractions);
 
-static bool handleCarpenterHutInteractions(u16 mapIndex, u8 arg1) {
+bool handleCarpenterHutInteractions(u16 mapIndex, u8 arg1) {
 
     bool result = FALSE;
     
@@ -3775,7 +3784,7 @@ static bool handleCarpenterHutInteractions(u16 mapIndex, u8 arg1) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handleDumplingHouseExit);
 
-static bool handleDumplingHouseExit(u16 mapIndex, u8 arg1) {
+bool handleDumplingHouseExit(u16 mapIndex, u8 arg1) {
 
     bool result = FALSE;
 
@@ -3798,7 +3807,7 @@ static bool handleDumplingHouseExit(u16 mapIndex, u8 arg1) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800B1DBC);
 
-static bool func_800B1DBC(u16 mapIndex, u8 arg1) {
+bool func_800B1DBC(u16 mapIndex, u8 arg1) {
 
     bool result = FALSE;
 
@@ -3845,7 +3854,7 @@ static bool func_800B1DBC(u16 mapIndex, u8 arg1) {
 //INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800B1EE4);
 
 // harvest sprite cave
-static bool func_800B1EE4(u16 mapIndex, u8 arg1) {
+bool func_800B1EE4(u16 mapIndex, u8 arg1) {
 
     bool result = FALSE;
 
@@ -3911,7 +3920,7 @@ static bool func_800B1EE4(u16 mapIndex, u8 arg1) {
 //INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800B2078);
 
 // mine
-static bool func_800B2078(u16 mapIndex, u8 arg1) {
+bool func_800B2078(u16 mapIndex, u8 arg1) {
 
     bool result = FALSE;
 
@@ -3935,7 +3944,7 @@ static bool func_800B2078(u16 mapIndex, u8 arg1) {
 //INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800B20C8);
 
 // pond
-static bool func_800B20C8(u16 mapIndex, u8 arg1) {
+bool func_800B20C8(u16 mapIndex, u8 arg1) {
     
     bool result = FALSE;
 
@@ -4021,7 +4030,7 @@ bool func_800B2118(u16 mapIndex, u8 arg1) {
 //INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800B2264);
 
 // vineyard house
-static bool func_800B2264(u16 mapIndex, u8 arg1) {
+bool func_800B2264(u16 mapIndex, u8 arg1) {
 
     bool result = FALSE;
 
@@ -4061,7 +4070,7 @@ static bool func_800B2264(u16 mapIndex, u8 arg1) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800B2340);
 
-static bool func_800B2340(u16 mapIndex, u8 arg1) {
+bool func_800B2340(u16 mapIndex, u8 arg1) {
 
     bool result = FALSE;    
     
@@ -4089,7 +4098,7 @@ static bool func_800B2340(u16 mapIndex, u8 arg1) {
 //INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800B23A4);
 
 // vineyard cellar
-static bool func_800B23A4(u16 mapIndex, u8 arg1) {
+bool func_800B23A4(u16 mapIndex, u8 arg1) {
 
     bool result = FALSE;
     
@@ -4140,7 +4149,7 @@ static bool func_800B23A4(u16 mapIndex, u8 arg1) {
 //INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800B24D4);
 
 // vineyard cellar basement
-static bool func_800B24D4(u16 mapIndex, u8 arg1) {
+bool func_800B24D4(u16 mapIndex, u8 arg1) {
 
     bool result = FALSE; 
 
@@ -4173,7 +4182,7 @@ static bool func_800B24D4(u16 mapIndex, u8 arg1) {
 //INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800B256C);
 
 // race track
-static bool func_800B256C(u16 mapIndex, u8 arg1) {
+bool func_800B256C(u16 mapIndex, u8 arg1) {
 
     bool result = FALSE; 
     
@@ -4300,7 +4309,7 @@ label:
 //INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800B27CC);
 
 // ranch house
-static bool func_800B27CC(u16 mapIndex, u8 collisionIndex) {
+bool func_800B27CC(u16 mapIndex, u8 collisionIndex) {
 
     bool result = FALSE;
 
@@ -4346,10 +4355,9 @@ static bool func_800B27CC(u16 mapIndex, u8 collisionIndex) {
     return result;
 }
 
-// jtbl_80121C30
 //INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handleRanchStoreExits);
 
-static u8 handleRanchStoreExits(u16 mapIndex, u8 collisionIndex) {
+u8 handleRanchStoreExits(u16 mapIndex, u8 collisionIndex) {
 
     u8 result = 0;
     
@@ -4475,7 +4483,7 @@ static u8 handleRanchStoreExits(u16 mapIndex, u8 collisionIndex) {
 //INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800B2B90);
 
 // ann's room
-static bool func_800B2B90(u16 mapIndex, u8 arg1) {
+bool func_800B2B90(u16 mapIndex, u8 arg1) {
 
     bool result = FALSE; 
 
@@ -4508,7 +4516,7 @@ static bool func_800B2B90(u16 mapIndex, u8 arg1) {
 //INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800B2C28);
 
 // ranch barn
-static bool func_800B2C28(u16 mapIndex, u8 arg1) {
+bool func_800B2C28(u16 mapIndex, u8 arg1) {
 
     bool result = FALSE;    
 
@@ -4526,7 +4534,7 @@ static bool func_800B2C28(u16 mapIndex, u8 arg1) {
 //INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800B2C78);
 
 // beach
-static bool func_800B2C78(u16 mapIndex, u8 arg1) {
+bool func_800B2C78(u16 mapIndex, u8 arg1) {
 
     bool result = FALSE;    
     

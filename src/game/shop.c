@@ -22,7 +22,7 @@
 #include "game/player.h"
 #include "game/setCutscenes.h"
 #include "game/spriteInfo.h"
-
+ 
 #include "mainLoop.h"
 
 #include "data/animationScripts/animationScripts.h"
@@ -567,7 +567,6 @@ u8 func_800DCAA0(u8 index) {
     return D_80119510[index];
 }
 
-// jtbl_80123480
 //INCLUDE_ASM("asm/nonmatchings/game/shop", func_800DCAB8);
 
 void func_800DCAB8(void) {
@@ -855,7 +854,6 @@ void func_800DCAB8(void) {
     
 }
 
-// jtbl_80123498
 //INCLUDE_ASM("asm/nonmatchings/game/shop", handlePurchase);
 
 u8 handlePurchase(u16 storeItemIndex, s32 quantity) {
@@ -1156,12 +1154,10 @@ u8 handlePurchase(u16 storeItemIndex, s32 quantity) {
                 break;
 
             case 0x1B:
-                
                 result = func_80065BCC(MIRACLE_POTION);
                 break;
             
             case 0x1C:
-
                 result = func_80065BCC(COW_MEDICINE);            
                 break;
             
@@ -1189,9 +1185,7 @@ u8 handlePurchase(u16 storeItemIndex, s32 quantity) {
                     D_801C4216 = 4;
                     
                 } else {
-                    
                     result = 3;
-                    
                 }
 
                 break;
@@ -1417,7 +1411,6 @@ u8 handlePurchase(u16 storeItemIndex, s32 quantity) {
     
 }
 
-// jtbl_80123578
 //INCLUDE_ASM("asm/nonmatchings/game/shop", checkShopItemShouldBeDisplayed);
 
 // check if should be selling items

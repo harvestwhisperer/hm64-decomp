@@ -23,17 +23,16 @@
 
 #define MAP_WEATHER_SPRITE_ACTIVE 1
 
+// 0x8013DC64
 typedef struct {
-    Vec3f coordinates;
-    u8 flags;
-} CoreMapObject;
-
-// 0x801418D8
-typedef struct {
-    u16 unk_0; // counter
-    u8 spriteIndex;
-    u8 totalCoreMapObjects;
-} CoreMapObjectsMetadata;
+    u16 *gridToTileIndex; // 0x64
+    u16 unused; // 0x68
+    u16 tileCount; // 0x6A
+    u8 tileSizeX; // 0x6C
+    u8 tileSizeZ; // 0x6D
+    u8 mapWidth; // 0x6E, in tiles
+    u8 mapHeight; // 0x6F, in tiles
+} MapGrid;
 
 // 0x8013DC70
 typedef struct {
@@ -49,8 +48,9 @@ typedef struct {
 typedef struct {
     u16 triangle1Bitfield;
     u16 triangle2Bitfield;
-    u8 vtx[4];
-    u8 colors[2][4];
+    u8 data1[4]; // usually vtx number for modifying texture coordinates, sometimes r value for tiles that use a solid color
+    u8 data2[4]; // usually tc[0] value, sometimes g
+    u8 data3[4]; // usually tc[1] value, sometimes b
     u8 flags;
     u8 unused1;
     u8 unused2;
@@ -64,31 +64,17 @@ typedef struct {
     u32 fmt;
 } TileBitmap;
 
-// 0x8013DC64
 typedef struct {
-    u16 *gridToTileIndex; // 0x64
-    u16 unused; // 0x68
-    u16 meshVtxCount; // 0x6A
-    u8 tileSizeX; // 0x6C
-    u8 tileSizeZ; // 0x6D
-    u8 mapWidth; // 0x6E, in tiles
-    u8 mapHeight; // 0x6F, in tiles
-} MapGrid;
+    Vec3f coordinates;
+    u8 flags;
+} CoreMapObject;
 
-// 0x8014198C
-// offset 0x3D4C
+// 0x801418D8
 typedef struct {
-    Vec3f frustumCorner0;
-    Vec3f frustumCorner1; //0x998
-    Vec3f frustumCorner2; // 0x9A4
-    Vec3f frustumCorner3; // 0x9B0
-    Vec3f rotation; // 0x9BC // angles
-    Vec3f viewOffset; // 0x9C8
-    u8 cameraTileX; // 0x9D4
-    u8 cameraTileZ; // 0x9D5
-    u8 viewExtentX; // 0x9D6
-    u8 viewExtentZ; // 0x9D7
-} MapCameraView;
+    u16 unk_0; // counter
+    u8 spriteIndex;
+    u8 repeatObjectCount;
+} CoreMapObjectsMetadata;
 
 // 0x80141A18
 typedef struct {
@@ -145,6 +131,21 @@ typedef struct {
     u8 z; // 0x801428AD
     u16 flags; // 0x801428AE
 } MapAdditions;
+
+// 0x8014198C
+// offset 0x3D4C
+typedef struct {
+    Vec3f frustumCorner0;
+    Vec3f frustumCorner1; //0x998
+    Vec3f frustumCorner2; // 0x9A4
+    Vec3f frustumCorner3; // 0x9B0
+    Vec3f rotation; // 0x9BC // angles
+    Vec3f viewOffset; // 0x9C8
+    u8 cameraTileX; // 0x9D4
+    u8 cameraTileZ; // 0x9D5
+    u8 viewExtentX; // 0x9D6
+    u8 viewExtentZ; // 0x9D7
+} MapCameraView;
 
 // D_801580A4
 typedef struct {
@@ -224,9 +225,9 @@ extern bool setMapObject(u16 mapIndex, u8 index, u16 spriteIndex, u16 arg3, f32 
 extern bool setMapWeatherSprite(u16 arg0, u8 arg1, u16 arg2, u16 arg3);
 extern bool func_80034DC8(u16, u8, u16);
 extern bool deactivateMapObject(u16, u8);     
-extern bool func_80034EF0(u16 mapIndex, u8 arg1, u8 arg2, u32* arg3, u32* arg4, u8* arg5, u32 arg6, u32 arg7, u32 arg8, u32 arg9, u8 argA);
+extern bool loadGroundObjects(u16 mapIndex, u8 arg1, u8 arg2, u32* arg3, u32* arg4, u8* arg5, u32 arg6, u32 arg7, u32 arg8, u32 arg9, u8 argA);
 extern bool setMapGroundObjectSpriteIndex(u16 arg0, u16 arg1, u8 arg2, u8 arg3); 
-extern bool func_80035054(u16 mapIndex, u16 bitmapIndex, u16 arg2, f32 arg3, f32 arg4, f32 arg5);
+extern bool setGroundObjectBitmap(u16 mapIndex, u16 bitmapIndex, u16 arg2, f32 arg3, f32 arg4, f32 arg5);
 extern f32 getTerrainHeightAtPosition(u16 mapIndex, f32, f32);      
 extern bool checkTileHasGroundObject(u16 mapIndex, f32 arg1, f32 arg2);
 extern Vec3f getTileCoordinates(MainMap* arg1, f32 arg2, f32 arg3);
@@ -236,7 +237,7 @@ extern Vec3f getMapGroundObjectCoordinates(u16 mapIndex, f32 x, f32 z);
 extern u16 getMapGroundObjectSpriteIndex(u16, f32, f32);  
 extern bool setMapGroundObjectSpriteIndexFromFloat(u16, u16, f32, f32);
 extern bool checkMapRGBADone(u16);      
-extern void func_80036C08(u16 mapIndex);                                 
+extern void setGridToTileTextureMappings(u16 mapIndex);                                 
 extern void setGroundObjects(u16 mapIndex); 
 extern u16 getTileIndexFromGrid(u16, u8, u8);
 extern bool updateGroundObjects(u16 mapIndex);

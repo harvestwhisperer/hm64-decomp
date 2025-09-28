@@ -2,7 +2,7 @@
 
 ## Progress
 
-Currently, 80% of the 1467 game functions and 77% of the game source files have been decompiled, with the entire game engine (the "system" according to leftover debug logs) now fully decompiled. All library functions have also been identified with much progress on the matching (many thanks to cblck for the great work). More robust progress tracking is in the works.
+Currently, 88% of the 1474 game functions and 77% of the game source files have been decompiled, with the entire game engine ("system") now fully decompiled. The esimated total bytes matched is around 75%. Additionally, the libultra and nusys functions are now completely matched (many thanks to cblck for the great work tackling the bulk of the library code).
 
 ## Asset extraction
 
@@ -13,8 +13,6 @@ Sprites can be extracted and converted to png files using the `extract.py` scrip
 There are two sprite asset formats used. Both types have a spritesheet at the beginning and an asset lookup table that follows it. Type 1 (used with character and map object sprites) includes a separate spritesheet index at the end of the asset, while type 2 (for smaller sprites, such as overlay icons) has the spritesheet index at the beginning of the actual spritesheet. Thus, the format for `sprite_addresses.csv` is: 
 - type 1: spritesheet start, asset lookup table start, spritesheet index start, asset end, and asset name
 - type 2: spritesheet start, asset lookup table start, asset end, and asset name.
-
-All sprites with the exception of map tile data are listed in the `sprite_addresses.csv` file.
 
 ### Animations
 
@@ -32,7 +30,7 @@ To create gifs, simply run `make extract-animations`, which will fetch the anima
 
 ### Text
 
-Text data (including decoding of control characters that encode character avatar information, new lines, etc.) can now be dumped via `make extract-texts`. Currently, only English characters are supported (there appears to be at least one text bank in Japanese included in the US version of the gam).
+Text data (including decoding of control characters that encode character avatar information, new lines, etc.) can now be dumped via `make extract-texts`. Currently, only English characters are supported (there appears to be at least one text bank in Japanese included in the US version of the game).
 
 The text system has two key components: special opcode characters (0-10), which `system/message.c` functions parse and use to modify message boxes and printing, and a 1-byte bitfield number that appears every 8 characters. The bitfield encodes which characters in an 8-character stream are 1 or 2 bytes. I.e., 0x03 (b0000 0011) has bits 1 and 2 set, which means the first and second characters are 2-bytes long, while the rest are 1 byte.
 
@@ -82,7 +80,7 @@ Compared to the dialogue bytecode, the cutscene bytecode is much more sophistica
 1. `git clone --recursive https://github.com/harvestwhisperer/hm64-decomp.git`
 1. `cd hm64-decomp`
 1. `sudo chmod +x tools/setup.sh`
-1. `sudo tools/setup.sh`. This will fetch needed system packages not already installd, Splat, GCC 2.7.2, and the necessary GCC binutils for compiling and linking.
+1. `sudo tools/setup.sh`. This will fetch needed system packages not already installed, Splat, GCC 2.7.2, and the necessary GCC binutils for compiling and linking.
 1. Copy `baserom.us.z64` to the project's root directory (must provide your own and must be in big endian/z64 format).
 1. Run `make setup && make` (with `VERBOSE=1` optional)
 

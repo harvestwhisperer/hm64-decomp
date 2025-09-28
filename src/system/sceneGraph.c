@@ -51,6 +51,7 @@ void resetSceneNodeCounter(void) {
     sceneNodeCounter = 0;
 }
 
+// empty function
 void func_80029294(void) {}
 
 //INCLUDE_ASM("asm/nonmatchings/system/sceneGraph", addSceneNode);
@@ -95,6 +96,7 @@ bool addSceneNodeRotation(u16 index, f32 x, f32 y, f32 z) {
     return TRUE;
 }
 
+// empty function
 void func_800293B8(void) {}
 
 //INCLUDE_ASM("asm/nonmatchings/system/sceneGraph", renderSceneGraph);

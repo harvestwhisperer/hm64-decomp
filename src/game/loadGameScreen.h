@@ -37,4 +37,6 @@ extern void func_800E53E8(u8);
 extern u8 gCurrentGameIndex;
 extern u32 D_801654F4;
 
+extern LoadGameScreenContext loadGameScreenContext;
+
 #endif

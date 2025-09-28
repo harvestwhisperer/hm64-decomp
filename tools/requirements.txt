@@ -2,3 +2,4 @@ n64img==0.3.3
 numpy==2.2.5
 mapfile_parser>=2.3.0,<3.0.0
 Pillow==11.3.0
+splat64[mips]>=0.36.2,<1.0.0

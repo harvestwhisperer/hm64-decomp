@@ -139,6 +139,8 @@ bool initializeMapController(u16 index, u16 mapIndex, u32 *mapDataIndex) {
     return result;
 }
 
+//INCLUDE_ASM("asm/nonmatchings/system/mapController", loadMap);
+
 bool loadMap(u16 index, u16 mapIndex) {
 
     bool result = FALSE;
@@ -458,7 +460,6 @@ f32 func_8003C318(u16 mapIndex, f32 x) {
 }
 
 //INCLUDE_ASM("asm/nonmatchings/system/mapContext", func_8003C3E4);
-
 
 // unused or inline
 f32 func_8003C3E4(u16 mapIndex, f32 z) {

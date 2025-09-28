@@ -87,7 +87,7 @@ submodules:
 	git submodule update
 
 split:
-	$(V)python3 tools/splat/split.py ./tools/splat.yaml
+	$(V)python3 -m splat split ./tools/splat.yaml
 
 setup: clean split
 
@@ -164,7 +164,6 @@ $(BUILD_DIR)/src/lib/libkmc/%.c.o : src/lib/libkmc/%.c build
 	$(dir_guard)
 	$(CC) -B $(KMC_PATH) $(LIBKMC_OPTFLAGS) $(CFLAGS) $(CPPFLAGS) -c -o $@ $< 
 
-# for hasm OS functions
 $(BUILD_DIR)/asm/lib/os/libultra/gu/%.s.o : src/lib/os/libultra/gu/%.s build
 	$(dir_guard)
 	$(V)$(AS) $(ASFLAGS) -o $@ $<

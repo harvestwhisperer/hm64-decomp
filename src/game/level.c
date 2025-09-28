@@ -15,16 +15,15 @@
 #include "game/game.h"
 #include "game/gameAudio.h"
 #include "game/gameStatus.h"
-#include "game/mapObjects.h"   
+#include "game/fieldObjects.h"   
 #include "game/npc.h"
 #include "game/setCutscenes.h"        
 #include "game/shop.h"            
 #include "game/spriteInfo.h"                                                 
 #include "game/weather.h"      
 
-// offsets into combined textures
-extern u8 D_801C3F35;
-extern u8 D_801FD624;
+extern u8 groundObjectsGridX;
+extern u8 groundObjectsGridZ;
                              
 // likely bss
 extern u8 previousEntranceIndex;
@@ -157,7 +156,7 @@ void setupLevelMap(u16 mapIndex) {
         setWeatherSprites();
     }
     
-    func_80036C08(MAIN_MAP_INDEX);
+    setGridToTileTextureMappings(MAIN_MAP_INDEX);
     setGroundObjects(MAIN_MAP_INDEX);
 
 }
@@ -251,55 +250,55 @@ void func_8006EC58(u16 mapIndex) {
     switch (mapIndex) {
 
         case FARM:
-            D_801FD624 = 0xE;
-            D_801C3F35 = 0xB;
-            func_80034EF0(MAIN_MAP_INDEX, 0xE, 0xB, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &_groundObjectsTextureSegmentRomStart, &_groundObjectsTextureSegmentRomEnd, &_groundObjectsIndexSegmentRomStart, &_groundObjectsIndexSegmentRomEnd, 0x60); 
+            groundObjectsGridX = 0xE;
+            groundObjectsGridZ = 0xB;
+            loadGroundObjects(MAIN_MAP_INDEX, 0xE, 0xB, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &_groundObjectsTextureSegmentRomStart, &_groundObjectsTextureSegmentRomEnd, &_groundObjectsIndexSegmentRomStart, &_groundObjectsIndexSegmentRomEnd, 0x60); 
             break;
         case GREENHOUSE:
-            D_801FD624 = 1;
-            D_801C3F35 = 1;
-            func_80034EF0(MAIN_MAP_INDEX, 1, 1, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &_groundObjectsTextureSegmentRomStart, &_groundObjectsTextureSegmentRomEnd, &_groundObjectsIndexSegmentRomStart, &_groundObjectsIndexSegmentRomEnd, 2); 
+            groundObjectsGridX = 1;
+            groundObjectsGridZ = 1;
+            loadGroundObjects(MAIN_MAP_INDEX, 1, 1, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &_groundObjectsTextureSegmentRomStart, &_groundObjectsTextureSegmentRomEnd, &_groundObjectsIndexSegmentRomStart, &_groundObjectsIndexSegmentRomEnd, 2); 
             break;            
         case MOUNTAIN_1:
-            D_801FD624 = 5;
-            D_801C3F35 = 0;
-            func_80034EF0(MAIN_MAP_INDEX, 5, 0, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &_groundObjectsTextureSegmentRomStart, &_groundObjectsTextureSegmentRomEnd, &_groundObjectsIndexSegmentRomStart, &_groundObjectsIndexSegmentRomEnd, 0); 
+            groundObjectsGridX = 5;
+            groundObjectsGridZ = 0;
+            loadGroundObjects(MAIN_MAP_INDEX, 5, 0, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &_groundObjectsTextureSegmentRomStart, &_groundObjectsTextureSegmentRomEnd, &_groundObjectsIndexSegmentRomStart, &_groundObjectsIndexSegmentRomEnd, 0); 
             break;    
         case MOUNTAIN_2:
-            D_801FD624 = 3;
-            D_801C3F35 = 5;
-            func_80034EF0(MAIN_MAP_INDEX, 3, 5, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &_groundObjectsTextureSegmentRomStart, &_groundObjectsTextureSegmentRomEnd, &_groundObjectsIndexSegmentRomStart, &_groundObjectsIndexSegmentRomEnd, 0); 
+            groundObjectsGridX = 3;
+            groundObjectsGridZ = 5;
+            loadGroundObjects(MAIN_MAP_INDEX, 3, 5, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &_groundObjectsTextureSegmentRomStart, &_groundObjectsTextureSegmentRomEnd, &_groundObjectsIndexSegmentRomStart, &_groundObjectsIndexSegmentRomEnd, 0); 
             break;  
         case TOP_OF_MOUNTAIN_1:
-            D_801FD624 = 5;
-            D_801C3F35 = 0;
-            func_80034EF0(MAIN_MAP_INDEX, 5, 0, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &_groundObjectsTextureSegmentRomStart, &_groundObjectsTextureSegmentRomEnd, &_groundObjectsIndexSegmentRomStart, &_groundObjectsIndexSegmentRomEnd, 0); 
+            groundObjectsGridX = 5;
+            groundObjectsGridZ = 0;
+            loadGroundObjects(MAIN_MAP_INDEX, 5, 0, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &_groundObjectsTextureSegmentRomStart, &_groundObjectsTextureSegmentRomEnd, &_groundObjectsIndexSegmentRomStart, &_groundObjectsIndexSegmentRomEnd, 0); 
             break;  
         case MOON_MOUNTAIN:
-            D_801FD624 = 5;
-            D_801C3F35 = 0;
-            func_80034EF0(MAIN_MAP_INDEX, 5, 0, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &_groundObjectsTextureSegmentRomStart, &_groundObjectsTextureSegmentRomEnd, &_groundObjectsIndexSegmentRomStart, &_groundObjectsIndexSegmentRomEnd, 0); 
+            groundObjectsGridX = 5;
+            groundObjectsGridZ = 0;
+            loadGroundObjects(MAIN_MAP_INDEX, 5, 0, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &_groundObjectsTextureSegmentRomStart, &_groundObjectsTextureSegmentRomEnd, &_groundObjectsIndexSegmentRomStart, &_groundObjectsIndexSegmentRomEnd, 0); 
             break;                            
         case POND:
-            D_801FD624 = 5;
-            D_801C3F35 = 0;
-            func_80034EF0(MAIN_MAP_INDEX, 5, 0, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &_groundObjectsTextureSegmentRomStart, &_groundObjectsTextureSegmentRomEnd, &_groundObjectsIndexSegmentRomStart, &_groundObjectsIndexSegmentRomEnd, 0); 
+            groundObjectsGridX = 5;
+            groundObjectsGridZ = 0;
+            loadGroundObjects(MAIN_MAP_INDEX, 5, 0, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &_groundObjectsTextureSegmentRomStart, &_groundObjectsTextureSegmentRomEnd, &_groundObjectsIndexSegmentRomStart, &_groundObjectsIndexSegmentRomEnd, 0); 
             break;          
         case CAVE:
-            D_801FD624 = 0;
-            D_801C3F35 = 0;
-            func_80034EF0(MAIN_MAP_INDEX, 0, 0, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &_groundObjectsTextureSegmentRomStart, &_groundObjectsTextureSegmentRomEnd, &_groundObjectsIndexSegmentRomStart, &_groundObjectsIndexSegmentRomEnd, 0); 
+            groundObjectsGridX = 0;
+            groundObjectsGridZ = 0;
+            loadGroundObjects(MAIN_MAP_INDEX, 0, 0, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &_groundObjectsTextureSegmentRomStart, &_groundObjectsTextureSegmentRomEnd, &_groundObjectsIndexSegmentRomStart, &_groundObjectsIndexSegmentRomEnd, 0); 
             break;    
         case MINE:                                      
         case MINE_2:        
-            D_801FD624 = 2;
-            D_801C3F35 = 2;
-            func_80034EF0(MAIN_MAP_INDEX, 2, 2, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &_groundObjectsTextureSegmentRomStart, &_groundObjectsTextureSegmentRomEnd, &_groundObjectsIndexSegmentRomStart, &_groundObjectsIndexSegmentRomEnd, 0); 
+            groundObjectsGridX = 2;
+            groundObjectsGridZ = 2;
+            loadGroundObjects(MAIN_MAP_INDEX, 2, 2, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &_groundObjectsTextureSegmentRomStart, &_groundObjectsTextureSegmentRomEnd, &_groundObjectsIndexSegmentRomStart, &_groundObjectsIndexSegmentRomEnd, 0); 
             break;    
         case RANCH:
-            D_801FD624 = 0x10;
-            D_801C3F35 = 0xA;
-            func_80034EF0(MAIN_MAP_INDEX, 0x10, 0xA, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &_groundObjectsTextureSegmentRomStart, &_groundObjectsTextureSegmentRomEnd, &_groundObjectsIndexSegmentRomStart, &_groundObjectsIndexSegmentRomEnd, 0); 
+            groundObjectsGridX = 0x10;
+            groundObjectsGridZ = 0xA;
+            loadGroundObjects(MAIN_MAP_INDEX, 0x10, 0xA, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &_groundObjectsTextureSegmentRomStart, &_groundObjectsTextureSegmentRomEnd, &_groundObjectsIndexSegmentRomStart, &_groundObjectsIndexSegmentRomEnd, 0); 
             break;   
     }
 
@@ -319,78 +318,78 @@ void func_8006EC58(u16 mapIndex) {
             
             switch (gSeason) {                      
                 case 1:                                    
-                    func_80035054(MAIN_MAP_INDEX, 2, 3, 0, 8.0f, 0);
+                    setGroundObjectBitmap(MAIN_MAP_INDEX, 2, 3, 0, 8.0f, 0);
                     break;
                 case 2:                      
-                    func_80035054(MAIN_MAP_INDEX, 2, 0x26, 0, 8.0f, 0);
+                    setGroundObjectBitmap(MAIN_MAP_INDEX, 2, 0x26, 0, 8.0f, 0);
                     break;
                 case 3:                                    
-                    func_80035054(MAIN_MAP_INDEX, 2, 0x29, 0, 8.0f, 0);
+                    setGroundObjectBitmap(MAIN_MAP_INDEX, 2, 0x29, 0, 8.0f, 0);
                     break;
             }
             
             if (gSeason == WINTER) {
-                func_80035054(MAIN_MAP_INDEX, 1, 0x1F, 0, 8.0f, 0);
-                func_80035054(MAIN_MAP_INDEX, 3, 0x21, 0, 8.0f, 0);
-                func_80035054(MAIN_MAP_INDEX, 4, 0x24, 0, 8.0f, 0);
-                func_80035054(MAIN_MAP_INDEX, 0x2C, 0x20, 16.0f, 8.0f, 16.0f);
-                func_80035054(MAIN_MAP_INDEX, 0x2D, 0x25, 16.0f, 8.0f, 16.0f);
+                setGroundObjectBitmap(MAIN_MAP_INDEX, 1, 0x1F, 0, 8.0f, 0);
+                setGroundObjectBitmap(MAIN_MAP_INDEX, 3, 0x21, 0, 8.0f, 0);
+                setGroundObjectBitmap(MAIN_MAP_INDEX, 4, 0x24, 0, 8.0f, 0);
+                setGroundObjectBitmap(MAIN_MAP_INDEX, 0x2C, 0x20, 16.0f, 8.0f, 16.0f);
+                setGroundObjectBitmap(MAIN_MAP_INDEX, 0x2D, 0x25, 16.0f, 8.0f, 16.0f);
             } else {
-                func_80035054(MAIN_MAP_INDEX, 1, 0, 0, 8.0f, 0);
-                func_80035054(MAIN_MAP_INDEX, 3, 0x1D, 0, 8.0f, 0);
-                func_80035054(MAIN_MAP_INDEX, 4, 0x1E, 0, 8.0f, 0);
-                func_80035054(MAIN_MAP_INDEX, 0x2C, 8, 16.0f, 8.0f, 16.0f);
-                func_80035054(MAIN_MAP_INDEX, 0x2D, 0x19, 16.0f, 8.0f, 16.0f);
+                setGroundObjectBitmap(MAIN_MAP_INDEX, 1, 0, 0, 8.0f, 0);
+                setGroundObjectBitmap(MAIN_MAP_INDEX, 3, 0x1D, 0, 8.0f, 0);
+                setGroundObjectBitmap(MAIN_MAP_INDEX, 4, 0x1E, 0, 8.0f, 0);
+                setGroundObjectBitmap(MAIN_MAP_INDEX, 0x2C, 8, 16.0f, 8.0f, 16.0f);
+                setGroundObjectBitmap(MAIN_MAP_INDEX, 0x2D, 0x19, 16.0f, 8.0f, 16.0f);
             }
             
-            func_80035054(MAIN_MAP_INDEX, 5, 0x22, 0, 8.0f, 0);
-            func_80035054(MAIN_MAP_INDEX, 6, 0x23, 0, 8.0f, 0);
-            func_80035054(MAIN_MAP_INDEX, 7, 7, 0, 8.0f, 0);
-            func_80035054(MAIN_MAP_INDEX, 8, 0x27, 0, 8.0f, 0);
-            func_80035054(MAIN_MAP_INDEX, 9, 0x28, 0, 8.0f, 0);
-            func_80035054(MAIN_MAP_INDEX, 0xA, 9, 0, 8.0f, 0);
-            func_80035054(MAIN_MAP_INDEX, 0xB, 0x3F, 0, 8.0f, 0);
-            func_80035054(MAIN_MAP_INDEX, 0xC, 0x40, 0, 8.0f, 0);
-            func_80035054(MAIN_MAP_INDEX, 0xD, 0x41, 0, 8.0f, 0);
-            func_80035054(MAIN_MAP_INDEX, 0xE, 0xD, 0, 8.0f, 0);
-            func_80035054(MAIN_MAP_INDEX, 0xF, 1, 0, 8.0f, 0);
-            func_80035054(MAIN_MAP_INDEX, 0x10, 0x2C, 0, 8.0f, 0);
-            func_80035054(MAIN_MAP_INDEX, 0x11, 0x2D, 0, 8.0f, 0);
-            func_80035054(MAIN_MAP_INDEX, 0x12, 0xA, 0, 8.0f, 0);
-            func_80035054(MAIN_MAP_INDEX, 0x13, 2, 0, 8.0f, 0);
-            func_80035054(MAIN_MAP_INDEX, 0x14, 4, 0, 8.0f, 0);
-            func_80035054(MAIN_MAP_INDEX, 0x15, 5, 0, 8.0f, 0);
-            func_80035054(MAIN_MAP_INDEX, 0x16, 6, 0, 8.0f, 0);
-            func_80035054(MAIN_MAP_INDEX, 0x17, 0x31, 0, 8.0f, 0);
-            func_80035054(MAIN_MAP_INDEX, 0x18, 0x32, 0, 8.0f, 0);
-            func_80035054(MAIN_MAP_INDEX, 0x19, 0x33, 0, 8.0f, 0);
-            func_80035054(MAIN_MAP_INDEX, 0x1A, 0x34, 0, 8.0f, 0);
-            func_80035054(MAIN_MAP_INDEX, 0x1B, 0xB, 0, 8.0f, 0);
-            func_80035054(MAIN_MAP_INDEX, 0x1C, 0x39, 0, 8.0f, 0);
-            func_80035054(MAIN_MAP_INDEX, 0x1D, 0x3A, 0, 8.0f, 0);
-            func_80035054(MAIN_MAP_INDEX, 0x1E, 0x3B, 0, 8.0f, 0);
-            func_80035054(MAIN_MAP_INDEX, 0x1F, 0x3C, 0, 8.0f, 0);
-            func_80035054(MAIN_MAP_INDEX, 0x20, 0xC, 0, 8.0f, 0);
-            func_80035054(MAIN_MAP_INDEX, 0x21, 0xE, 0, 8.0f, 0);
-            func_80035054(MAIN_MAP_INDEX, 0x22, 0xF, 0, 8.0f, 0);
-            func_80035054(MAIN_MAP_INDEX, 0x23, 0x10, 0, 8.0f, 0);
-            func_80035054(MAIN_MAP_INDEX, 0x24, 0x11, 0, 8.0f, 0);
-            func_80035054(MAIN_MAP_INDEX, 0x25, 0x12, 0, 8.0f, 0);
-            func_80035054(MAIN_MAP_INDEX, 0x26, 0x13, 0, 8.0f, 0);
-            func_80035054(MAIN_MAP_INDEX, 0x27, 0x14, 0, 8.0f, 0);
-            func_80035054(MAIN_MAP_INDEX, 0x28, 0x15, 0, 8.0f, 0);
-            func_80035054(MAIN_MAP_INDEX, 0x29, 0x16, -8.0f, 8.0f, -8.0f);
-            func_80035054(MAIN_MAP_INDEX, 0x2A, 0x17, -8.0f, 8.0f, -8.0f);
-            func_80035054(MAIN_MAP_INDEX, 0x2B, 0x18, -8.0f, 8.0f, -8.0f);
-            func_80035054(MAIN_MAP_INDEX, 0x30, 0x2A, 0, 8.0f, 0);
-            func_80035054(MAIN_MAP_INDEX, 0x31, 0x2B, 0, 8.0f, 0);
-            func_80035054(MAIN_MAP_INDEX, 0x32, 0x2E, 0, 8.0f, 0);
-            func_80035054(MAIN_MAP_INDEX, 0x33, 0x2F, 0, 8.0f, 0);
-            func_80035054(MAIN_MAP_INDEX, 0x34, 0x30, 0, 8.0f, 0);
-            func_80035054(MAIN_MAP_INDEX, 0x35, 0x35, 0, 8.0f, 0);
-            func_80035054(MAIN_MAP_INDEX, 0x36, 0x36, 0, 8.0f, 0);
-            func_80035054(MAIN_MAP_INDEX, 0x37, 0x37, 0, 8.0f, 0);
-            func_80035054(MAIN_MAP_INDEX, 0x38, 0x38, 0, 8.0f, 0);
+            setGroundObjectBitmap(MAIN_MAP_INDEX, 5, 0x22, 0, 8.0f, 0);
+            setGroundObjectBitmap(MAIN_MAP_INDEX, 6, 0x23, 0, 8.0f, 0);
+            setGroundObjectBitmap(MAIN_MAP_INDEX, 7, 7, 0, 8.0f, 0);
+            setGroundObjectBitmap(MAIN_MAP_INDEX, 8, 0x27, 0, 8.0f, 0);
+            setGroundObjectBitmap(MAIN_MAP_INDEX, 9, 0x28, 0, 8.0f, 0);
+            setGroundObjectBitmap(MAIN_MAP_INDEX, 0xA, 9, 0, 8.0f, 0);
+            setGroundObjectBitmap(MAIN_MAP_INDEX, 0xB, 0x3F, 0, 8.0f, 0);
+            setGroundObjectBitmap(MAIN_MAP_INDEX, 0xC, 0x40, 0, 8.0f, 0);
+            setGroundObjectBitmap(MAIN_MAP_INDEX, 0xD, 0x41, 0, 8.0f, 0);
+            setGroundObjectBitmap(MAIN_MAP_INDEX, 0xE, 0xD, 0, 8.0f, 0);
+            setGroundObjectBitmap(MAIN_MAP_INDEX, 0xF, 1, 0, 8.0f, 0);
+            setGroundObjectBitmap(MAIN_MAP_INDEX, 0x10, 0x2C, 0, 8.0f, 0);
+            setGroundObjectBitmap(MAIN_MAP_INDEX, 0x11, 0x2D, 0, 8.0f, 0);
+            setGroundObjectBitmap(MAIN_MAP_INDEX, 0x12, 0xA, 0, 8.0f, 0);
+            setGroundObjectBitmap(MAIN_MAP_INDEX, 0x13, 2, 0, 8.0f, 0);
+            setGroundObjectBitmap(MAIN_MAP_INDEX, 0x14, 4, 0, 8.0f, 0);
+            setGroundObjectBitmap(MAIN_MAP_INDEX, 0x15, 5, 0, 8.0f, 0);
+            setGroundObjectBitmap(MAIN_MAP_INDEX, 0x16, 6, 0, 8.0f, 0);
+            setGroundObjectBitmap(MAIN_MAP_INDEX, 0x17, 0x31, 0, 8.0f, 0);
+            setGroundObjectBitmap(MAIN_MAP_INDEX, 0x18, 0x32, 0, 8.0f, 0);
+            setGroundObjectBitmap(MAIN_MAP_INDEX, 0x19, 0x33, 0, 8.0f, 0);
+            setGroundObjectBitmap(MAIN_MAP_INDEX, 0x1A, 0x34, 0, 8.0f, 0);
+            setGroundObjectBitmap(MAIN_MAP_INDEX, 0x1B, 0xB, 0, 8.0f, 0);
+            setGroundObjectBitmap(MAIN_MAP_INDEX, 0x1C, 0x39, 0, 8.0f, 0);
+            setGroundObjectBitmap(MAIN_MAP_INDEX, 0x1D, 0x3A, 0, 8.0f, 0);
+            setGroundObjectBitmap(MAIN_MAP_INDEX, 0x1E, 0x3B, 0, 8.0f, 0);
+            setGroundObjectBitmap(MAIN_MAP_INDEX, 0x1F, 0x3C, 0, 8.0f, 0);
+            setGroundObjectBitmap(MAIN_MAP_INDEX, 0x20, 0xC, 0, 8.0f, 0);
+            setGroundObjectBitmap(MAIN_MAP_INDEX, 0x21, 0xE, 0, 8.0f, 0);
+            setGroundObjectBitmap(MAIN_MAP_INDEX, 0x22, 0xF, 0, 8.0f, 0);
+            setGroundObjectBitmap(MAIN_MAP_INDEX, 0x23, 0x10, 0, 8.0f, 0);
+            setGroundObjectBitmap(MAIN_MAP_INDEX, 0x24, 0x11, 0, 8.0f, 0);
+            setGroundObjectBitmap(MAIN_MAP_INDEX, 0x25, 0x12, 0, 8.0f, 0);
+            setGroundObjectBitmap(MAIN_MAP_INDEX, 0x26, 0x13, 0, 8.0f, 0);
+            setGroundObjectBitmap(MAIN_MAP_INDEX, 0x27, 0x14, 0, 8.0f, 0);
+            setGroundObjectBitmap(MAIN_MAP_INDEX, 0x28, 0x15, 0, 8.0f, 0);
+            setGroundObjectBitmap(MAIN_MAP_INDEX, 0x29, 0x16, -8.0f, 8.0f, -8.0f);
+            setGroundObjectBitmap(MAIN_MAP_INDEX, 0x2A, 0x17, -8.0f, 8.0f, -8.0f);
+            setGroundObjectBitmap(MAIN_MAP_INDEX, 0x2B, 0x18, -8.0f, 8.0f, -8.0f);
+            setGroundObjectBitmap(MAIN_MAP_INDEX, 0x30, 0x2A, 0, 8.0f, 0);
+            setGroundObjectBitmap(MAIN_MAP_INDEX, 0x31, 0x2B, 0, 8.0f, 0);
+            setGroundObjectBitmap(MAIN_MAP_INDEX, 0x32, 0x2E, 0, 8.0f, 0);
+            setGroundObjectBitmap(MAIN_MAP_INDEX, 0x33, 0x2F, 0, 8.0f, 0);
+            setGroundObjectBitmap(MAIN_MAP_INDEX, 0x34, 0x30, 0, 8.0f, 0);
+            setGroundObjectBitmap(MAIN_MAP_INDEX, 0x35, 0x35, 0, 8.0f, 0);
+            setGroundObjectBitmap(MAIN_MAP_INDEX, 0x36, 0x36, 0, 8.0f, 0);
+            setGroundObjectBitmap(MAIN_MAP_INDEX, 0x37, 0x37, 0, 8.0f, 0);
+            setGroundObjectBitmap(MAIN_MAP_INDEX, 0x38, 0x38, 0, 8.0f, 0);
 
             break;
         
@@ -1109,7 +1108,7 @@ static const Vec3f D_8011FB70[] = {
 
 //INCLUDE_ASM("asm/nonmatchings/game/level", func_800735FC);
 
-// map struct 7
+// map additions
 void func_800735FC(u16 levelIndex) {
 
     switch (levelIndex) {

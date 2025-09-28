@@ -45,6 +45,13 @@
 #define BARLEY 0x25
 #define GOURMET_JUDGE 0x26
 #define PHOTOGRAPHER 0x27
+// unknown 0x28
+#define MARIA_HARRIS_BABY 0x29
+#define POPURI_GRAY_BABY 0x2A
+#define ELLI_JEFF_BABY 0x2B
+#define ANN_CLIFF_BABY 0x2C
+#define KAREN_KAI_BABY 0x2D
+// unknown 0x2E
 
 // 0x801FB9D0
 typedef struct {
@@ -57,12 +64,12 @@ typedef struct {
 	/* 0x1D */ u8 movingFlag;
 	/* 0x1E */ u8 unk_1E;
 	/* 0x1F */ u8 direction;
-	/* 0x20 */ u8 unk_20;
-	/* 0x21 */ u8 unk_21; // possibly animation flags
+	/* 0x20 */ u8 speed;
+	/* 0x21 */ u8 unk_21;
 	/* 0x22 */ u8 unk_22;
 	/* 0x23 */ u8 location;
-	/* 0x24 */ u8 unk_24;
-	/* 0x25 */ u8 unk_25;
+	/* 0x24 */ u8 animationIndex1;
+	/* 0x25 */ u8 animationIndex2;
 	/* 0x26 */ u16 flags;
 } npcInfo;
 

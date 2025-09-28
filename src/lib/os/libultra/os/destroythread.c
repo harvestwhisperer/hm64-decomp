@@ -3,8 +3,6 @@
 
 #define NULL 0
 
-//INCLUDE_ASM("lib/os/libultra/os/destroythread", osDestroyThread);
-
 void osDestroyThread(OSThread* thread) {
     
     register s32 int_disabled;

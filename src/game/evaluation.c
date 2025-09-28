@@ -2,8 +2,12 @@
 
 #include "game/game.h"
 #include "game/gameStatus.h"
-#include "game/mapObjects.h"
+#include "game/fieldObjects.h"
 #include "game/npc.h"
+
+// bss
+
+extern u16 D_8013D438;
 
 //INCLUDE_ASM("asm/nonmatchings/game/evaluation", calculateNPCAffectionScore);
 
@@ -47,6 +51,8 @@ u32 calculateHouseExtensionScore(void) {
     return score;
     
 }
+
+//INCLUDE_ASM("asm/nonmatchings/game/evaluation", calculateGrassScore);
 
 u16 calculateGrassScore(void) {
     

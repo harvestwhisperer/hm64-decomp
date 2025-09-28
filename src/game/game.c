@@ -20,7 +20,7 @@
 #include "game/itemHandlers.h"
 #include "game/level.h"
 #include "mainLoop.h"
-#include "game/mapObjects.h"
+#include "game/fieldObjects.h"
 #include "game/namingScreen.h"
 #include "game/npc.h"
 #include "game/player.h"
@@ -82,7 +82,7 @@ extern u32 gTotalCropsShipped;
 extern u32 gTotalEggsShipped;
 extern u32 gTotalGoldenMilkShipped;
 
-extern u8 D_801C3F36;
+extern u8 popuriGrayBabyAge;
 
 extern u8 D_801C3F96;
 extern u8 D_801C3F97;
@@ -93,11 +93,11 @@ extern u8 numberOfSpiritFestivalAssistantsRecruited;
 extern u8 spiritFestivalAssistant1;
 extern u8 spiritFestivalAssistant2;
 extern u8 spiritFestivalAssistant3;  
-extern u8 D_801FC15C;
+extern u8 elliJeffBabyAge;
 
 extern u8 mariaHarrisPregnancyCounter;
 extern u8 mariaHarrisBabyAge;
-extern u8 popuriGrayNewlyWedCounter;
+extern u8 popuriGrayNewlywedCounter;
 extern u8 popuriGrayPregnancyCounter;
 extern u8 elliJeffNewlywedCounter;
 extern u8 elliJeffPregnancyCounter;
@@ -160,7 +160,7 @@ extern inline void showTextBox(u16 arg0, u16 arg1, u16 arg2, int arg3, u16 arg4)
 extern void func_8005B09C(u8);
 extern void func_8005B09C(u8);        
 
-//INCLUDE_ASM("asm/nonmatchings/game/game/game/game", func_80059D90);
+//INCLUDE_ASM("asm/nonmatchings/game/game", func_80059D90);
 
 void func_80059D90(void) {
 
@@ -236,22 +236,22 @@ not_married:
 
         mariaHarrisNewlywedCounter += adjustValue(mariaHarrisNewlywedCounter, 1, 120);
 
-        if (checkLifeEventBit(MARIA_HARRIS_BABY) && mariaHarrisBabyAge < 120) {
+        if (checkLifeEventBit(MARIA_HARRIS_HAVE_BABY) && mariaHarrisBabyAge < 120) {
             mariaHarrisBabyAge++;
         }
 
-        if (!checkLifeEventBit(MARIA_HARRIS_BABY) && checkLifeEventBit(MARIA_PREGNANT) && mariaHarrisPregnancyCounter >= 60) {
+        if (!checkLifeEventBit(MARIA_HARRIS_HAVE_BABY) && checkLifeEventBit(MARIA_PREGNANT) && mariaHarrisPregnancyCounter >= 60) {
             toggleLifeEventBit(MARIA_PREGNANT);
-            setLifeEventBit(MARIA_HARRIS_BABY);
-            setSpecialDialogueBit(MARIA_HARRIS_BABY_DIALOGUE);
+            setLifeEventBit(MARIA_HARRIS_HAVE_BABY);
+            setSpecialDialogueBit(MARIA_HARRIS_HAVE_BABY_DIALOGUE);
             toggleSpecialDialogueBit(MARIA_PREGNANT_DIALOGUE);
         }
 
-        if (!checkLifeEventBit(MARIA_HARRIS_BABY) && checkLifeEventBit(MARIA_PREGNANT)) {
+        if (!checkLifeEventBit(MARIA_HARRIS_HAVE_BABY) && checkLifeEventBit(MARIA_PREGNANT)) {
             mariaHarrisPregnancyCounter++;
         }
 
-        if (!checkLifeEventBit(MARIA_HARRIS_BABY) && !checkLifeEventBit(MARIA_PREGNANT) && npcAffection[HARRIS] >= 250 && mariaHarrisNewlywedCounter >= 30) {
+        if (!checkLifeEventBit(MARIA_HARRIS_HAVE_BABY) && !checkLifeEventBit(MARIA_PREGNANT) && npcAffection[HARRIS] >= 250 && mariaHarrisNewlywedCounter >= 30) {
             setLifeEventBit(MARIA_PREGNANT);
             mariaHarrisPregnancyCounter = 0;
             setSpecialDialogueBit(MARIA_PREGNANT_DIALOGUE);
@@ -260,24 +260,24 @@ not_married:
 
      if (checkLifeEventBit(POPURI_GRAY_MARRIED)) {
 
-        popuriGrayNewlyWedCounter += adjustValue(popuriGrayNewlyWedCounter, 1, 120);
+        popuriGrayNewlywedCounter += adjustValue(popuriGrayNewlywedCounter, 1, 120);
 
-        if (checkLifeEventBit(POPURI_GRAY_BABY) && D_801C3F36 < 120) {
-            D_801C3F36++;
+        if (checkLifeEventBit(POPURI_GRAY_HAVE_BABY) && popuriGrayBabyAge < 120) {
+            popuriGrayBabyAge++;
         }
 
-        if (!checkLifeEventBit(POPURI_GRAY_BABY) && checkLifeEventBit(POPURI_PREGNANT) && popuriGrayPregnancyCounter >= 60) {
+        if (!checkLifeEventBit(POPURI_GRAY_HAVE_BABY) && checkLifeEventBit(POPURI_PREGNANT) && popuriGrayPregnancyCounter >= 60) {
             toggleLifeEventBit(POPURI_PREGNANT);
-            setLifeEventBit(POPURI_GRAY_BABY);
-            setSpecialDialogueBit(POPURI_GRAY_BABY_DIALOGUE);
+            setLifeEventBit(POPURI_GRAY_HAVE_BABY);
+            setSpecialDialogueBit(POPURI_GRAY_HAVE_BABY_DIALOGUE);
             toggleSpecialDialogueBit(0x38);
         }
 
-        if (!checkLifeEventBit(POPURI_GRAY_BABY) && checkLifeEventBit(POPURI_PREGNANT)) {
+        if (!checkLifeEventBit(POPURI_GRAY_HAVE_BABY) && checkLifeEventBit(POPURI_PREGNANT)) {
             popuriGrayPregnancyCounter++;
         }
 
-        if (!checkLifeEventBit(POPURI_GRAY_BABY) && !checkLifeEventBit(POPURI_PREGNANT) && npcAffection[GRAY] >= 250 && popuriGrayNewlyWedCounter >= 30) {
+        if (!checkLifeEventBit(POPURI_GRAY_HAVE_BABY) && !checkLifeEventBit(POPURI_PREGNANT) && npcAffection[GRAY] >= 250 && popuriGrayNewlywedCounter >= 30) {
             setLifeEventBit(POPURI_PREGNANT);
             popuriGrayPregnancyCounter = 0;
             setSpecialDialogueBit(0x38);
@@ -288,22 +288,22 @@ not_married:
 
         elliJeffNewlywedCounter += adjustValue(elliJeffNewlywedCounter, 1, 120);
 
-        if (checkLifeEventBit(ELLI_JEFF_BABY) && D_801FC15C < 120) {
-            D_801FC15C++;
+        if (checkLifeEventBit(ELLI_JEFF_HAVE_BABY) && elliJeffBabyAge < 120) {
+            elliJeffBabyAge++;
         }
 
-        if (!checkLifeEventBit(ELLI_JEFF_BABY) && checkLifeEventBit(ELLI_PREGNANT) && elliJeffPregnancyCounter >= 60) {
+        if (!checkLifeEventBit(ELLI_JEFF_HAVE_BABY) && checkLifeEventBit(ELLI_PREGNANT) && elliJeffPregnancyCounter >= 60) {
             toggleLifeEventBit(ELLI_PREGNANT);
-            setLifeEventBit(ELLI_JEFF_BABY);
-            setSpecialDialogueBit(ELLI_JEFF_BABY_DIALOGUE);
+            setLifeEventBit(ELLI_JEFF_HAVE_BABY);
+            setSpecialDialogueBit(ELLI_JEFF_HAVE_BABY_DIALOGUE);
             toggleSpecialDialogueBit(ELLI_PREGNANT_DIALOGUE);
         }
 
-        if (!checkLifeEventBit(ELLI_JEFF_BABY) && checkLifeEventBit(ELLI_PREGNANT)) {
+        if (!checkLifeEventBit(ELLI_JEFF_HAVE_BABY) && checkLifeEventBit(ELLI_PREGNANT)) {
             elliJeffPregnancyCounter++;
         }
 
-        if (!checkLifeEventBit(ELLI_JEFF_BABY) && !checkLifeEventBit(ELLI_PREGNANT) && npcAffection[JEFF] >= 250 && elliJeffNewlywedCounter >= 30) {
+        if (!checkLifeEventBit(ELLI_JEFF_HAVE_BABY) && !checkLifeEventBit(ELLI_PREGNANT) && npcAffection[JEFF] >= 250 && elliJeffNewlywedCounter >= 30) {
             setLifeEventBit(ELLI_PREGNANT);
             elliJeffPregnancyCounter = 0;
             setSpecialDialogueBit(ELLI_PREGNANT_DIALOGUE);
@@ -314,22 +314,22 @@ not_married:
 
         annCliffNewlywedCounter += adjustValue(annCliffNewlywedCounter, 1, 120);
 
-        if (checkLifeEventBit(ANN_CLIFF_BABY) && annCliffBabyAge < 120) {
+        if (checkLifeEventBit(ANN_CLIFF_HAVE_BABY) && annCliffBabyAge < 120) {
             annCliffBabyAge++;
         }
 
-        if (!checkLifeEventBit(ANN_CLIFF_BABY) && checkLifeEventBit(ANN_PREGNANT) && annPregnancyCounter >= 60) {
+        if (!checkLifeEventBit(ANN_CLIFF_HAVE_BABY) && checkLifeEventBit(ANN_PREGNANT) && annPregnancyCounter >= 60) {
             toggleLifeEventBit(ANN_PREGNANT);
-            setLifeEventBit(ANN_CLIFF_BABY);
-            setSpecialDialogueBit(ANN_CLIFF_BABY_DIALOGUE);
+            setLifeEventBit(ANN_CLIFF_HAVE_BABY);
+            setSpecialDialogueBit(ANN_CLIFF_HAVE_BABY_DIALOGUE);
             toggleSpecialDialogueBit(ANN_PREGNANT_DIALOGUE);
         }
 
-        if (!checkLifeEventBit(ANN_CLIFF_BABY) && checkLifeEventBit(ANN_PREGNANT)) {
+        if (!checkLifeEventBit(ANN_CLIFF_HAVE_BABY) && checkLifeEventBit(ANN_PREGNANT)) {
             annPregnancyCounter++;
         }
 
-        if (!checkLifeEventBit(ANN_CLIFF_BABY) && !checkLifeEventBit(ANN_PREGNANT) && npcAffection[CLIFF] >= 250 && annCliffNewlywedCounter >= 30) {
+        if (!checkLifeEventBit(ANN_CLIFF_HAVE_BABY) && !checkLifeEventBit(ANN_PREGNANT) && npcAffection[CLIFF] >= 250 && annCliffNewlywedCounter >= 30) {
             setLifeEventBit(ANN_PREGNANT);
             annPregnancyCounter = 0;
             setSpecialDialogueBit(ANN_PREGNANT_DIALOGUE);
@@ -340,22 +340,22 @@ not_married:
         
         karenKaiNewlywedCounter += adjustValue(karenKaiNewlywedCounter, 1, 120);
 
-        if (checkLifeEventBit(KAREN_KAI_BABY) && karenKaiBabyAge < 120) {
+        if (checkLifeEventBit(KAREN_KAI_HAVE_BABY) && karenKaiBabyAge < 120) {
             karenKaiBabyAge++;
         }
 
-        if (!checkLifeEventBit(KAREN_KAI_BABY) && checkLifeEventBit(KAREN_PREGNANT) && karenPregnancyCounter >= 60) {
+        if (!checkLifeEventBit(KAREN_KAI_HAVE_BABY) && checkLifeEventBit(KAREN_PREGNANT) && karenPregnancyCounter >= 60) {
             toggleLifeEventBit(KAREN_PREGNANT);
-            setLifeEventBit(KAREN_KAI_BABY);
-            setSpecialDialogueBit(KAREN_KAI_BABY_DIALOGUE);
+            setLifeEventBit(KAREN_KAI_HAVE_BABY);
+            setSpecialDialogueBit(KAREN_KAI_HAVE_BABY_DIALOGUE);
             toggleSpecialDialogueBit(KAREN_PREGNANT_DIALOGUE);
         }
 
-        if (!checkLifeEventBit(KAREN_KAI_BABY) && checkLifeEventBit(KAREN_PREGNANT)) {
+        if (!checkLifeEventBit(KAREN_KAI_HAVE_BABY) && checkLifeEventBit(KAREN_PREGNANT)) {
             karenPregnancyCounter++;
         }
 
-        if (!checkLifeEventBit(KAREN_KAI_BABY) && !checkLifeEventBit(KAREN_PREGNANT) && npcAffection[KAI] >= 250 && karenKaiNewlywedCounter >= 30) {
+        if (!checkLifeEventBit(KAREN_KAI_HAVE_BABY) && !checkLifeEventBit(KAREN_PREGNANT) && npcAffection[KAI] >= 250 && karenKaiNewlywedCounter >= 30) {
             setLifeEventBit(0x25);
             karenPregnancyCounter = 0;
             setSpecialDialogueBit(KAREN_PREGNANT_DIALOGUE);
@@ -363,7 +363,7 @@ not_married:
     }
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/game/game/game", func_8005A60C);
+//INCLUDE_ASM("asm/nonmatchings/game/game", func_8005A60C);
 
 void func_8005A60C(void) {
 
@@ -399,7 +399,7 @@ handleAnimals:
 }
 
 // func_8005A708
-//INCLUDE_ASM("asm/nonmatchings/game/game/game/game", setSpecialDialogues);
+//INCLUDE_ASM("asm/nonmatchings/game/game", setSpecialDialogues);
 
 void setSpecialDialogues(void) {
 
@@ -527,7 +527,7 @@ void setSpecialDialogues(void) {
     }
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/game/game/game", func_8005AAE4);
+//INCLUDE_ASM("asm/nonmatchings/game/game", func_8005AAE4);
 
 void func_8005AAE4(void) {
 
@@ -558,7 +558,7 @@ void func_8005AAE4(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/game/game/game", resetDailyBits);
+//INCLUDE_ASM("asm/nonmatchings/game/game", resetDailyBits);
 
 void resetDailyBits(void) {
     
@@ -646,6 +646,8 @@ void resetDailyBits(void) {
     toggleSpecialDialogueBit(0x12A);
 }
 
+//INCLUDE_ASM("asm/nonmatchings/game/game", adjustValue);
+
 // same as func_80046D50
 inline int adjustValue(int initial, int value, int max) {
 
@@ -685,7 +687,7 @@ static inline func_800593EC_2(void) {
 }
 
 
-//INCLUDE_ASM("asm/nonmatchings/game/game/game/game", showTextBox);
+//INCLUDE_ASM("asm/nonmatchings/game/game", showTextBox);
 
 // show text box
 inline void showTextBox(u16 arg0, u16 dialogueInfoIndex, u16 dialogueIndex, int arg3, u16 arg4) {
@@ -720,7 +722,7 @@ inline void showTextBox(u16 arg0, u16 dialogueInfoIndex, u16 dialogueIndex, int 
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/game/game/game", showMessageBox);
+//INCLUDE_ASM("asm/nonmatchings/game/game", showMessageBox);
 
 // show dialogue box
 inline void showMessageBox(u16 arg0, u16 dialogueBytecodeAddressesIndex, u16 dialogueIndex, u32 flag, u16 messageBoxFlags) {
@@ -751,7 +753,7 @@ inline void showMessageBox(u16 arg0, u16 dialogueBytecodeAddressesIndex, u16 dia
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/game/game/game", func_8005B09C);
+//INCLUDE_ASM("asm/nonmatchings/game/game", func_8005B09C);
 
 void func_8005B09C(u8 arg0) {
 
@@ -878,7 +880,7 @@ void func_8005B09C(u8 arg0) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/game/game/game", func_8005C00C);
+//INCLUDE_ASM("asm/nonmatchings/game/game", func_8005C00C);
 
 void func_8005C00C(void) {
     
@@ -897,8 +899,7 @@ void func_8005C00C(void) {
 
 }
 
-// jtbl_8011EFF8
-//INCLUDE_ASM("asm/nonmatchings/game/game/game/game", func_8005C07C);
+//INCLUDE_ASM("asm/nonmatchings/game/game", func_8005C07C);
 
 void func_8005C07C(s16 arg0, u16 arg1) {
 
@@ -969,7 +970,7 @@ void func_8005C07C(s16 arg0, u16 arg1) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/game/game/game", func_8005C940);
+//INCLUDE_ASM("asm/nonmatchings/game/game", func_8005C940);
 
 // arg0 = unused
 inline void func_8005C940(u16 arg0, u16 callbackIndex) {
@@ -990,7 +991,7 @@ inline void func_8005C940(u16 arg0, u16 callbackIndex) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/game/game/game", func_8005CA2C);
+//INCLUDE_ASM("asm/nonmatchings/game/game", func_8005CA2C);
 
 void func_8005CA2C(u16 arg0, u16 arg1) {
     gameLoopContext.unk_4 = arg0;
@@ -999,7 +1000,7 @@ void func_8005CA2C(u16 arg0, u16 arg1) {
     setMainLoopCallbackFunctionIndex(OVERLAY_SCREEN_LOAD);
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/game/game/game", func_8005CA64);
+//INCLUDE_ASM("asm/nonmatchings/game/game", func_8005CA64);
 
 void func_8005CA64(void) {
 
@@ -1011,7 +1012,7 @@ void func_8005CA64(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/game/game/game", func_8005CAA8);
+//INCLUDE_ASM("asm/nonmatchings/game/game", func_8005CAA8);
 
 void func_8005CAA8(void) {
 
@@ -1035,7 +1036,7 @@ void func_8005CAA8(void) {
     }
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/game/game/game", func_8005CB50);
+//INCLUDE_ASM("asm/nonmatchings/game/game", func_8005CB50);
 
 void func_8005CB50(void) {
 
@@ -1047,7 +1048,7 @@ void func_8005CB50(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/game/game/game", func_8005CBA4);
+//INCLUDE_ASM("asm/nonmatchings/game/game", func_8005CBA4);
 
 void func_8005CBA4(void) {
 
@@ -1060,7 +1061,7 @@ void func_8005CBA4(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/game/game/game", func_8005CBF0);
+//INCLUDE_ASM("asm/nonmatchings/game/game", func_8005CBF0);
 
 // main loop callback for finishing dialogue
 void func_8005CBF0(void) {
@@ -1089,7 +1090,7 @@ void func_8005CBF0(void) {
     }
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/game/game/game", func_8005CDCC);
+//INCLUDE_ASM("asm/nonmatchings/game/game", func_8005CDCC);
 
 // update stuff after closing dialogue
 void func_8005CDCC(void) {
@@ -1137,7 +1138,7 @@ void func_8005CDCC(void) {
     }
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/game/game/game", func_8005CEFC);
+//INCLUDE_ASM("asm/nonmatchings/game/game", func_8005CEFC);
 
 void func_8005CEFC(void) {
     
@@ -1152,7 +1153,7 @@ void func_8005CEFC(void) {
     }
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/game/game/game", func_8005CF4C);
+//INCLUDE_ASM("asm/nonmatchings/game/game", func_8005CF4C);
 
 // unused main loop callback functions
 // ends cutscene
@@ -1171,8 +1172,7 @@ void func_8005CF4C(void) {
 
 }
 
-// jtbl_8011F010, 0xFA410
-//INCLUDE_ASM("asm/nonmatchings/game/game/game/game", func_8005CF94);
+//INCLUDE_ASM("asm/nonmatchings/game/game", func_8005CF94);
 
 void func_8005CF94(void) {
     
@@ -1212,7 +1212,7 @@ void func_8005CF94(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/game/game/game", func_8005D0BC);
+//INCLUDE_ASM("asm/nonmatchings/game/game", func_8005D0BC);
 
 void func_8005D0BC(void) {
     
@@ -1412,23 +1412,7 @@ static inline void func_80055F08_2(u16 cutsceneIndex, u16 entranceIndex, u8 arg2
 
 // possible split
 
-// jtbl_8011F030
-// jtbl_8011F090
-// jtbl_8011F0A8
-// jtbl_8011F0C0
-// jtbl_8011F0D8
-// jtbl_8011F0F0
-// jtbl_8011F108
-// jtbl_8011F120
-// jtbl_8011F138
-// jtbl_8011F150
-// jtbl_8011F168
-// jtbl_8011F180
-// jtbl_8011F198
-// jtbl_8011F1B0
-// jtbl_8011F1C8
-// 0xFA430-0xFA600
-//INCLUDE_ASM("asm/nonmatchings/game/game/game/game", func_8005D2B0);
+//INCLUDE_ASM("asm/nonmatchings/game/game", func_8005D2B0);
 
 // pink overlay main loop callback
 void func_8005D2B0() {
@@ -2313,7 +2297,7 @@ void func_8005D2B0() {
 
                 case 0:                 
                 
-                    if (calculateHouseExtensionScore() == 6 && checkLifeEventBit(MARRIED) && npcAffection[gWife] >= 250 && checkLifeEventBit(1) && dogInfo.affection >= 200 && getSumNpcAffection() >= 2500 && func_800DBF90() >= 0x180 && gMaximumStamina >= 0xBE && gHappiness >= 250 && func_8009B5E0() && D_801886D2 >= 10) {          
+                    if (calculateHouseExtensionScore() == 6 && checkLifeEventBit(MARRIED) && npcAffection[gWife] >= 250 && checkLifeEventBit(HAVE_BABY) && dogInfo.affection >= 200 && getSumNpcAffection() >= 2500 && func_800DBF90() >= 384 && gMaximumStamina >= 190 && gHappiness >= 250 && func_8009B5E0() && D_801886D2 >= 10) {          
                         albumBits |= 0x8000;  
                     }
                     
@@ -2331,7 +2315,7 @@ void func_8005D2B0() {
     }
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/game/game/game", func_80060454);
+//INCLUDE_ASM("asm/nonmatchings/game/game", func_80060454);
 
 // main loop callback
 void func_80060454(void) {
@@ -2340,19 +2324,19 @@ void func_80060454(void) {
     }
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/game/game/game", func_80060490);
+//INCLUDE_ASM("asm/nonmatchings/game/game", func_80060490);
 
 // main loop callback; set cutscene prep
 void func_80060490(void) {
     func_800A8F74();
 } 
 
-//INCLUDE_ASM("asm/nonmatchings/game/game/game/game", func_800604B0);
+//INCLUDE_ASM("asm/nonmatchings/game/game", func_800604B0);
 
 // show end of festival day dialogue box 
 void func_800604B0(void) {
 
-    if (checkMapRGBADone(MAIN_MAP_INDEX) || !(mainMap[MAIN_MAP_INDEX].mapState.flags & 1)) {
+    if (checkMapRGBADone(MAIN_MAP_INDEX) || !(mainMap[MAIN_MAP_INDEX].mapState.flags & MAP_ACTIVE)) {
         
         setMessageBoxViewSpacePosition(MAIN_DIALOGUE_BOX_INDEX, 0, -64.0f, 352.0f);
         setMessageBoxSpriteIndices(MAIN_DIALOGUE_BOX_INDEX, 1, 0, 0);
@@ -2382,7 +2366,7 @@ void func_800604B0(void) {
     }
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/game/game/game", func_800605F0);
+//INCLUDE_ASM("asm/nonmatchings/game/game", func_800605F0);
 
 void func_800605F0(void) {
     if (func_8003F0DC()) {
@@ -2390,7 +2374,7 @@ void func_800605F0(void) {
     }
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/game/game/game", func_80060624);
+//INCLUDE_ASM("asm/nonmatchings/game/game", func_80060624);
 
 void func_80060624(void) {
     
@@ -2402,7 +2386,7 @@ void func_80060624(void) {
     int tempStamina;
     u8 tempTime;
 
-    if (checkMapRGBADone(MAIN_MAP_INDEX) || !(mainMap[MAIN_MAP_INDEX].mapState.flags & 1)) {
+    if (checkMapRGBADone(MAIN_MAP_INDEX) || !(mainMap[MAIN_MAP_INDEX].mapState.flags & MAP_ACTIVE)) {
         
         func_800610DC();
         
@@ -2464,11 +2448,11 @@ void func_80060624(void) {
     }
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/game/game/game", func_80060838);
+//INCLUDE_ASM("asm/nonmatchings/game/game", func_80060838);
  
 void func_80060838(void) {
     
-    if (checkMapRGBADone(MAIN_MAP_INDEX) || !(mainMap[MAIN_MAP_INDEX].mapState.flags & 1)) {
+    if (checkMapRGBADone(MAIN_MAP_INDEX) || !(mainMap[MAIN_MAP_INDEX].mapState.flags & MAP_ACTIVE)) {
 
         func_800610DC();
 
@@ -2524,7 +2508,7 @@ void func_80060838(void) {
     }
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/game/game/game", setFestivalDailyBits);
+//INCLUDE_ASM("asm/nonmatchings/game/game", setFestivalDailyBits);
 
 void setFestivalDailyBits(void) {
 
@@ -2639,7 +2623,7 @@ void setFestivalDailyBits(void) {
     }
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/game/game/game", func_80060DC0);
+//INCLUDE_ASM("asm/nonmatchings/game/game", func_80060DC0);
 
 // earthquake
 bool func_80060DC0(void) {
@@ -2659,7 +2643,7 @@ bool func_80060DC0(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/game/game/game", handleDailyShipment);
+//INCLUDE_ASM("asm/nonmatchings/game/game", handleDailyShipment);
 
 void handleDailyShipment(void) {
 
@@ -2670,7 +2654,7 @@ void handleDailyShipment(void) {
 
 }
  
-//INCLUDE_ASM("asm/nonmatchings/game/game/game/game", calculateAnimalDirectionToPlayer);
+//INCLUDE_ASM("asm/nonmatchings/game/game", calculateAnimalDirectionToPlayer);
 
 u8 calculateAnimalDirectionToPlayer(f32 animalX, f32 animalZ, f32 playerX, f32 playerZ) {
    
@@ -2737,7 +2721,7 @@ u8 calculateAnimalDirectionToPlayer(f32 animalX, f32 animalZ, f32 playerX, f32 p
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/game/game/game", func_800610DC);
+//INCLUDE_ASM("asm/nonmatchings/game/game", func_800610DC);
 
 void func_800610DC(void) {
     
@@ -2763,7 +2747,7 @@ void func_800610DC(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/game/game/game", func_80061178);
+//INCLUDE_ASM("asm/nonmatchings/game/game", func_80061178);
 
 // check if girl is ready to get married for blue feather to appear
 bool func_80061178(void) {
@@ -2794,7 +2778,7 @@ bool func_80061178(void) {
 
 // func_800611E0
 
-//INCLUDE_ASM("asm/nonmatchings/game/game/game/game", setWifeNameString);
+//INCLUDE_ASM("asm/nonmatchings/game/game", setWifeNameString);
 
 void setWifeNameString(u8 wife) {
 
@@ -2846,8 +2830,7 @@ void setWifeNameString(u8 wife) {
 }
 
 // func_80061354
-// jtbl_8011F1F8
-//INCLUDE_ASM("asm/nonmatchings/game/game/game/game", setDefaultBabyName);
+//INCLUDE_ASM("asm/nonmatchings/game/game", setDefaultBabyName);
 
 void setDefaultBabyName(u8 wife) {
     
@@ -2897,8 +2880,8 @@ void setDefaultBabyName(u8 wife) {
     }
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/game/game/game", setHarvestKingName);
-
+//INCLUDE_ASM("asm/nonmatchings/game/game", setHarvestKingName);
+ 
 void setHarvestKingName(u8 harvestKing) {
 
     switch (harvestKing) {
@@ -2955,7 +2938,7 @@ void setHarvestKingName(u8 harvestKing) {
         }
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/game/game/game", func_80061690);
+//INCLUDE_ASM("asm/nonmatchings/game/game", func_80061690);
 
 void func_80061690(u8 arg0) {
     D_801886D4[0] = 0xF6;
@@ -2966,7 +2949,7 @@ void func_80061690(u8 arg0) {
     D_801886D4[5] = 0xF6;
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/game/game/game", func_800616CC);
+//INCLUDE_ASM("asm/nonmatchings/game/game", func_800616CC);
 
 u8 func_800616CC(u8 houseExtensionIndex) {
 
@@ -2999,7 +2982,7 @@ u8 func_800616CC(u8 houseExtensionIndex) {
 }
 
 // func_80061860
-//INCLUDE_ASM("asm/nonmatchings/game/game/game/game", setFlowerFestivalGoddess);
+//INCLUDE_ASM("asm/nonmatchings/game/game", setFlowerFestivalGoddess);
 
 void setFlowerFestivalGoddess(void) {
     
@@ -3020,7 +3003,7 @@ void setFlowerFestivalGoddess(void) {
 }
 
 // func_800618EC
-//INCLUDE_ASM("asm/nonmatchings/game/game/game/game", getBacholeretteWithHighestAffection);
+//INCLUDE_ASM("asm/nonmatchings/game/game", getBacholeretteWithHighestAffection);
 
 u8 getBacholeretteWithHighestAffection(u8 affectionLevel) {
     
@@ -3055,7 +3038,7 @@ u8 getBacholeretteWithHighestAffection(u8 affectionLevel) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/game/game/game", func_80061A1C);
+//INCLUDE_ASM("asm/nonmatchings/game/game", func_80061A1C);
 
 inline void func_80061A1C(u8 numberOfSpiritFestivalAssistants, u8 npcIndex) {
     switch (numberOfSpiritFestivalAssistants) {                   
@@ -3079,7 +3062,7 @@ static inline void setSpiritFestivalAssistant(u8 npcIndex) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/game/game/game", recruitSpiritFestivalAssistants);
+//INCLUDE_ASM("asm/nonmatchings/game/game", recruitSpiritFestivalAssistants);
 
 void recruitSpiritFestivalAssistants(void) {
     
@@ -3161,7 +3144,7 @@ void recruitSpiritFestivalAssistants(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/game/game/game", setRecipes);
+//INCLUDE_ASM("asm/nonmatchings/game/game", setRecipes);
 
 void setRecipes(void) {
 
@@ -3274,7 +3257,7 @@ void setRecipes(void) {
 }
 
 // func_800623E4
-//INCLUDE_ASM("asm/nonmatchings/game/game/game/game", handleHouseConstruction);
+//INCLUDE_ASM("asm/nonmatchings/game/game", handleHouseConstruction);
 
 u8 handleHouseConstruction(u8 day) {
 
@@ -3359,7 +3342,7 @@ u8 handleHouseConstruction(u8 day) {
 */
 
 // func_8006252C
-//INCLUDE_ASM("asm/nonmatchings/game/game/game/game", setLetters);
+//INCLUDE_ASM("asm/nonmatchings/game/game", setLetters);
 
 // TODO: label bits/use flags
 void setLetters(void) {
@@ -3451,7 +3434,7 @@ void setLetters(void) {
         setMail(0x15);
     }
 
-    if (!checkMailRead(0x16) && checkLifeEventBit(MARIA_HARRIS_BABY)) {
+    if (!checkMailRead(0x16) && checkLifeEventBit(MARIA_HARRIS_HAVE_BABY)) {
         setMail(0x16);
     }
 
@@ -3459,7 +3442,7 @@ void setLetters(void) {
         setMail(0x17);
     }
 
-    if (!checkMailRead(0x18) && checkLifeEventBit(POPURI_GRAY_BABY)) {
+    if (!checkMailRead(0x18) && checkLifeEventBit(POPURI_GRAY_HAVE_BABY)) {
         setMail(0x18);
     }
 
@@ -3467,7 +3450,7 @@ void setLetters(void) {
         setMail(0x19);
     }
 
-    if (!checkMailRead(0x1A) && checkLifeEventBit(ELLI_JEFF_BABY)) {
+    if (!checkMailRead(0x1A) && checkLifeEventBit(ELLI_JEFF_HAVE_BABY)) {
         setMail(0x1A);
     }
 
@@ -3475,7 +3458,7 @@ void setLetters(void) {
         setMail(0x1B);
     }
  
-    if (!checkMailRead(0x1C) && checkLifeEventBit(ANN_CLIFF_BABY)) {
+    if (!checkMailRead(0x1C) && checkLifeEventBit(ANN_CLIFF_HAVE_BABY)) {
         setMail(0x1C);
     }
 
@@ -3483,7 +3466,7 @@ void setLetters(void) {
         setMail(0x1D);
     }
 
-    if (!checkMailRead(0x1E) && checkLifeEventBit(KAREN_KAI_BABY)) {
+    if (!checkMailRead(0x1E) && checkLifeEventBit(KAREN_KAI_HAVE_BABY)) {
         setMail(0x1E);
     }
 
@@ -3666,7 +3649,7 @@ void setLetters(void) {
 }
 
 // D_8011F25C
-//INCLUDE_ASM("asm/nonmatchings/game/game/game/game", func_80063A2C);
+//INCLUDE_ASM("asm/nonmatchings/game/game", func_80063A2C);
 
 // get text index for letter
 u16 func_80063A2C(u8 index) {

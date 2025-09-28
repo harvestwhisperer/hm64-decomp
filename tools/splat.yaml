@@ -17,6 +17,7 @@ options:
   asm_function_macro: glabel
   asm_data_macro: dlabel
   asm_emit_size_directive: true
+  generate_asm_macros_files: false
   symbol_addrs_path: symbol_addrs.txt
   segment_symbols_style: makerom
   migrate_rodata_to_functions: true
@@ -87,7 +88,7 @@ segments:
       - [ 0xAAC50, c, game/itemHandlers]
       - [ 0xB3020, c, game/updateGame]
       - [ 0xB3940, c, game/tv]
-      - [ 0xB4A00, c, game/mapObjects]
+      - [ 0xB4A00, c, game/fieldObjects]
       - [ 0xB7760, c, game/weather]
       - [ 0xB7B50, c, game/shop]
       - [ 0xB97C0, c, game/title]
@@ -315,7 +316,7 @@ segments:
       - [ 0xEAB60, c, lib/os/libultra/io/sprawread]
       - [ 0xEABB0, c, lib/os/libultra/io/sprawwrite]
       - [ 0xEAC00, c, lib/os/libultra/os/getactivequeue]
-      - [ 0xEAC10, c, lib/os/libultra/rmon/rmonrcp]
+      - [ 0xEAC10, hasm, lib/os/libultra/rmon/rmonrcp]
       - [ 0xEACB0, c, lib/os/libultra/rmon/rmonbrk]
       - [ 0xEB650, c, lib/os/libultra/libc/ldiv]
       - [ 0xEB810, c, lib/libkmc/rand]
@@ -334,18 +335,18 @@ segments:
       - [ 0xEE110, .data, system/map]
       - [ 0xEE7B0, .data, system/pauseScreen]
       - [ 0xEE7D0, .data, system/cutscene]
-      - [ 0xEE980, data, game/fieldTileMaps]
+      - [ 0xEE980, data, game/fieldTiles]
       - [ 0xEEF20, data, game/game]
       - [ 0xEF050, data, game/player]
       - [ 0xEF680, data, game/level]
       - [ 0xEFD00, data, game/npc]
       - [ 0xEFDC0, data, game/animals]
       - [ 0xEFEF0, data, game/setCutscenes]
-      - [ 0xF0250, data, game/cutsceneFieldTileMaps]
+      - [ 0xF0250, data, game/cutsceneFieldTiles]
       - [ 0xF16F0, data, game/gameAudio] # wave table
       - [ 0xF2080, data, game/overlayScreens]
       - [ 0xF2580, data, game/itemHandlers]
-      - [ 0xF3B00, data, game/mapObjects]
+      - [ 0xF3B00, data, game/fieldObjects]
       - [ 0xF3F50, .data, game/weather]
       - [ 0xF3F70, .data, game/shop]
       - [ 0xF4B40, data, game/loadGameScreen] # packinsoft farm string
@@ -356,7 +357,7 @@ segments:
       - [ 0xF63D0, data, data/animationScripts/animationScripts2]
       # - [ 0xF7118, data, data/message/unknownMessageData]
       - [ 0xF71B0, data, data/sfx]
-      - [ 0xF7AD0, data, game/namingScreen]
+      - [ 0xF7A80, data, game/namingScreen]
       - [ 0xF7BF0, .data, lib/nusys-1/nupakmenu]
       - [ 0xF7C20, .data, lib/nusys-1/nupakmenuloadfont]
       - [ 0xF7C50, .data, lib/nusys-1/nuaustlinit]
@@ -427,7 +428,7 @@ segments:
       - [ 0xFD090, .rodata, game/overlayScreens]
       - [ 0xFD6B0, .rodata, game/itemHandlers]
       - [ 0xFDB60, .rodata, game/tv]
-      - [ 0xFDC58, .rodata, game/mapObjects]
+      - [ 0xFDC58, .rodata, game/fieldObjects]
       - [ 0xFE838, .rodata, game/weather]
       - [ 0xFE860, .rodata, game/shop]
       - [ 0xFEA58, .rodata, game/title]
@@ -2062,48 +2063,105 @@ segments:
   # maps
   
   # map format: 
-  #   main index
+  #   main index with offsets for each subasset
   #   map grid
+  #     header
   #     tile size x
   #     tile size z
   #     map width
   #     map height
-  #     unknown 16-bit value
-  #     vertex count
-  #     tile to vertex index array
-  #   vtx info
-  #     index, offsets = 0x28
-  #     data array
+  #     unused value
+  #     total tile count
+  #     linear grid position to tile number/tile index array
+  #   tile vertices and rendering metadata
+  #     index
+  #     vertices
   #       header
-  #       data
-  #   terrain quads
-  #   grid to level interaction indices
-  #   shorts used for floats (byte-swapped)
-  #   ci4 textures1
+  #       y offset
+  #       fallback height
+  #       texture index (bits 0-6 encode the index, while bit 7 means use max/invalid value (set on tiles with shared textures))
+  #       vertices per tile (usually 4)
+  #       coordinates array (3 x 4, char-sized elements)
+  #     rendering metadata (format depends on the tile is being rendered as a triangle or quad and if a texture or a solid color is being used)
+  #       header
+  #       flags (render 1 triangle, render 2 triangles, use solid color vs. texture)
+  #       unused field
+  #       unused field
+  #       if using a texture:
+  #         array of vtx, tc[0], tc[1] for gSPModifyVertex commands
+  #         if quad:
+  #           array for vtx 4
+  #       if using a solid color:
+  #         r
+  #         g
+  #         b
+  #       triangle 1 bitfield (encodes the vertex order for gSP1Triangle)
+  #       if quad:
+  #         triangle 2 bitfield (encodes the vertex order for gSP2Triangles)
+  #   terrain quads for each tile
+  #     header
+  #     base height
+  #     triangle 1
+  #       point 1:
+  #         x, y, z
+  #       point 2:
+  #         x, y, z
+  #       point 3:
+  #         x, y, z
+  #     triangle 2
+  #       point 1:
+  #         x, y, z
+  #       point 2:
+  #         x, y, z
+  #       point 3:
+  #         x, y, z
+  #   linear grid position to level interaction index array
+  #   core map objects
+  #     total core map objects
+  #     object 1
+  #       metadata
+  #         header
+  #         sprite index
+  #         repeat object count
+  #       subobject 1
+  #         flags
+  #         x
+  #         y
+  #         z
+  #       subobject 2
+  #         ...
+  #     object 2
+  #       ...
+  #   tile textures (CI4)
   #     index
   #     textures
   #       header
   #       dimensions
   #       texture
-  #   ci4 palettes
-  #     palette1
+  #   tile palettes
+  #     index
+  #     palettes
   #       header
   #       palette
-  #   ci4 textures2, 32 x 32, 15-16 elements
+  #   core map object textures (CI4)
   #     index
   #     textures
   #       header
   #       dimensions
-  #       ci4 data
-  #   ci4 palettes
+  #       texture
+  #   core map object palettes
   #     index
-  #     data1, size 0x28
+  #     palettes
   #       header
-  #       data
-  #     data2
+  #       palette
   #   map additions metadata
   #     header
-  #     data: u16 arr[7]
+  #     x
+  #     z
+  #     width
+  #     height
+  #     grid to tile index values (for appending to the main grid to tile index array)
+  #     grid to level interaction index (for appending to main grid to level interaction index array)
   #   padding/end, 8 bytes
   - name: ranchSpringMap
     type: bin
@@ -3419,6 +3477,11 @@ segments:
     type: bin
     dir: sprites/misc
     start: 0xE08850
+
+  - name: emptyTexture2AssetsIndex
+    type: bin
+    dir: sprites/misc
+    start: 0xE08860
 
   # 16x11200, i2
   - name: fontTexture
