@@ -17,7 +17,7 @@
 #include "game/levelInteractions.h"
 #include "mainLoop.h"
 #include "mainproc.h"
-#include "game/mapObjects.h"
+#include "game/fieldObjects.h"
 #include "game/npc.h"
 #include "game/shop.h"
 #include "game/spriteInfo.h"
@@ -35,7 +35,6 @@ extern u16 chickenFeedQuantity;
 extern u16 D_801890C8;
 
 extern u8 gMaximumStamina;
-extern u32 powerNutBits;
 
 // possible bss
 extern u8 gToolchestSlots[];   
@@ -540,7 +539,6 @@ const s8 D_8011F3F0[12] = { 0, 0xFF, 0xFF, 0xFF, 0, 1, 1, 1, 0, 0, 0, 0 };
  
 const s8 D_8011F3FC[12] = { 1, 1, 0, 0xFF, 0xFF, 0xFF, 0, 1, 0, 0, 0, 0 };
 
-// jtbl_8011F408
 //INCLUDE_ASM("asm/nonmatchings/game/player", func_8006623C);
 
 void func_8006623C(void) {
@@ -1686,7 +1684,7 @@ void func_80068738(void) {
     
 }
 
-
+// empty function
 void func_80068918(void) {}
 
 //INCLUDE_ASM("asm/nonmatchings/game/player", func_80068920);
@@ -1717,6 +1715,7 @@ void func_80068990(void) {
 
 }
 
+// empty function
 void func_80068A00(void) {}
 
 //INCLUDE_ASM("asm/nonmatchings/game/player", func_80068A08);
@@ -2321,6 +2320,7 @@ void func_80069CC4(void) {
     }
 }
 
+// empty function
 void func_80069DA8(void) {}
 
 //INCLUDE_ASM("asm/nonmatchings/game/player", func_80069DB0);
@@ -2348,16 +2348,21 @@ void func_80069DB0(void) {
     }
 }
 
+// empty function
 void func_80069E54(void) {}
 
+// empty function
 void func_80069E5C(void) {}
 
+// empty function
 void func_80069E64(void) {} 
 
+// empty function
 void func_80069E6C(void) {}
 
 INCLUDE_ASM("asm/nonmatchings/game/player", func_80069E74);
 
+// empty function
 void func_8006A2E0(void) {} 
  
 //INCLUDE_ASM("asm/nonmatchings/game/player", func_8006A2E8);
@@ -3040,6 +3045,7 @@ void func_8006B104(void) {
     
 }
 
+// empty function
 void func_8006B4D4(void) {}
 
 //INCLUDE_ASM("asm/nonmatchings/game/player", func_8006B4DC);
@@ -3189,10 +3195,13 @@ void func_8006B910(void) {
     
 }
 
+// empty function
 void func_8006B964(void) {}
 
+// empty function
 void func_8006B96C(void) {}
 
+// empty function
 void func_8006B974(void) {}
 
 //INCLUDE_ASM("asm/nonmatchings/game/player", func_8006B97C);
@@ -3427,8 +3436,10 @@ void handleFishingRodUse(void) {
     
 }
 
+// empty function
 void func_8006C12C(void) {}
 
+// empty function
 void func_8006C134(void) {}
 
 //INCLUDE_ASM("asm/nonmatchings/game/player", func_8006C13C);
@@ -4410,10 +4421,13 @@ void func_8006E0D4(void) {
     }
 }
 
+// empty function
 void func_8006E1F8(void) {}
 
+// empty function
 void func_8006E200(void) {}
 
+// empty function
 void func_8006E208(void) {}
 
 //INCLUDE_ASM("asm/nonmatchings/game/player", func_8006E210);
@@ -4544,6 +4558,7 @@ void func_8006E574(void) {
         case 0:
             setEntityAnimationWithDirectionChange(ENTITY_PLAYER, STANDING);
             func_800305CC(ENTITY_PLAYER, 0.0f, 8.0f, 0);
+            // set npc talking to
             func_80085C94();
             break;
         case 1:

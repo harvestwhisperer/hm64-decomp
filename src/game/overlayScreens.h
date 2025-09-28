@@ -31,15 +31,9 @@ typedef struct {
     u16 unk_8;
     u16 unk_A;
     u8 dialogueVariableStrings[6][6]; // dialogue variable 0x2A-0x2F, 0x801C3DAC
-    u8 string7[6];
-    u8 string8[6];
-    u8 string9[6];
-    u8 string10[6];
-    u8 string11[6];
-    u8 string12[6];
-    u8 string13[6];
-    u8 string14[6];
-    u8 string15[6];
+    u8 strings2[3][6];
+    u8 strings3[3][6];
+    u16 unk_54[9];
     u8 dialogueVariableIndices[6]; // 0x801C3E06
     u8 unk_6A; // 0x801C3E0C, index into string10
     u8 unk_6B; // set from random number

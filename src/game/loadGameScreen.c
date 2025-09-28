@@ -483,7 +483,6 @@ INCLUDE_ASM("asm/nonmatchings/game/loadGameScreen", func_800E6FB4);
 
 INCLUDE_ASM("asm/nonmatchings/game/loadGameScreen", func_800E80AC);
 
-// jtbl_801236C0
 INCLUDE_ASM("asm/nonmatchings/game/loadGameScreen", func_800E8F08);
 
 INCLUDE_ASM("asm/nonmatchings/game/loadGameScreen", func_800E9550);

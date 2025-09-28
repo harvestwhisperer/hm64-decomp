@@ -28,27 +28,15 @@
 #define FIELD_WIDTH 24
 #define FIELD_HEIGHT 20
 
-// TODO: label these appropriately
-// object maps for levels
-// top of mountain 1
-extern u8 D_8013D258[FIELD_WIDTH][FIELD_HEIGHT];
-// moon mountain
-extern u8 D_8016FBF0[FIELD_WIDTH][FIELD_HEIGHT];
-// pond
-extern u8 D_8016FE08[FIELD_WIDTH][FIELD_HEIGHT];
-// cave
-extern u8 D_8016F8F8[FIELD_WIDTH][FIELD_HEIGHT];
-// mine
-extern u8 D_80170468[FIELD_WIDTH][FIELD_HEIGHT];
-// greenhouse
-extern u8 D_80182BA8[FIELD_WIDTH][FIELD_HEIGHT];
-// mountain 1
-extern u8 D_80182FD8[FIELD_WIDTH][FIELD_HEIGHT];
-// mountain 2
-extern u8 D_80189868[FIELD_WIDTH][FIELD_HEIGHT];
-// ranch
-extern u8 D_801C3FC0[FIELD_WIDTH][FIELD_HEIGHT];
-
+extern u8 topOfMountain1FieldTiles[FIELD_WIDTH][FIELD_HEIGHT];
+extern u8 moonMountainFieldTiles[FIELD_WIDTH][FIELD_HEIGHT];
+extern u8 pondFieldTiles[FIELD_WIDTH][FIELD_HEIGHT];
+extern u8 caveFieldTiles[FIELD_WIDTH][FIELD_HEIGHT];
+extern u8 mineFieldTiles[FIELD_WIDTH][FIELD_HEIGHT];
+extern u8 greenhouseFieldTiles[FIELD_WIDTH][FIELD_HEIGHT];
+extern u8 mountain1FieldTiles[FIELD_WIDTH][FIELD_HEIGHT];
+extern u8 mountain2FieldTiles[FIELD_WIDTH][FIELD_HEIGHT];
+extern u8 ranchFieldTiles[FIELD_WIDTH][FIELD_HEIGHT];
 extern u8 farmFieldTiles[FIELD_WIDTH][FIELD_HEIGHT];
 
 extern void func_800D9600(u8);   
@@ -68,7 +56,7 @@ extern void func_800DBAC4();
 extern void func_800DBBB0(u8);             
 extern u16 func_800DBF90();     
 extern u16 func_800DC008();       
-extern u32 func_800DC080(); 
+extern u16 func_800DC080(); 
 
 extern u16 countPinkCatMintFlowersFarm(void);     
 extern u16 countPinkCatMintFlowersGreenhouse(void);  

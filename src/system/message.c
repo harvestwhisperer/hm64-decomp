@@ -19,19 +19,16 @@
 MessageBox messageBoxes[MAX_DIALOGUE_BOXES];
 GameVariableString gameVariableStrings[64];
 
-// byteswapped font texture buffer
-FontData D_801706C0[2][256];
-
 // text buffer of current displayed lines in game string characters; each line is size 0x20 (0x10 u16s)
 // u16 linesBuffer[8][0x10]
 // always 16 chars per line (filled with padding) 
-u16 D_80204BF0[256];
+u16 textBuffer[256];
 
-Vtx D_801C6230[2][512][4];
+FontData fontTexturesBuffer[2][256];
+Vtx fontVertices[2][512][4];
 Gfx messageBoxDisplayList[2][3072];
 
-// pointer to character avatar animation scripts
-u8* D_801891C8;
+u8* characterAvatarsAnimationsPtr;
 
 // rodata
 static const u32 powersOfTen[8];
@@ -928,7 +925,7 @@ bool func_8003FA1C(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextu
 //INCLUDE_ASM("asm/nonmatchings/system/message", func_8003FAE8);
 
 void func_8003FAE8(u8* arg0) {
-    D_801891C8 = arg0;
+    characterAvatarsAnimationsPtr = arg0;
 }
 
 //INCLUDE_ASM("asm/nonmatchings/system/message", setMessageBoxButtonMask);
@@ -1068,7 +1065,7 @@ void func_8003FD74(void) {
     u16 i;
 
     for (i = 0; i < 256; i++) {
-        D_80204BF0[i] = char_SPACE;
+        textBuffer[i] = char_SPACE;
     }
     
 }
@@ -1094,7 +1091,7 @@ bool func_8003FDB0(u16 index) {
             }
 
             for (i = 0; i < cellCount; i++) {
-                D_80204BF0[messageBoxes[index].totalCharactersProcessed + i] = char_SPACE;
+                textBuffer[messageBoxes[index].totalCharactersProcessed + i] = char_SPACE;
             }
         
             result = TRUE;
@@ -1563,9 +1560,9 @@ void func_80040858(u16 index) {
                 messageBoxes[index].currentCharPtr++;
                 break;
             
-            // update text buffer, converting from ROM char o font index 
+            // update text buffer, converting from ROM char to font index 
             default:
-                D_80204BF0[messageBoxes[index].totalCharactersProcessed + 
+                textBuffer[messageBoxes[index].totalCharactersProcessed + 
                                    (currentLine * messageBoxes[index].textBoxLineCharWidth) + 
                                    characterPositionOnLine] = character - 0xB;
                 
@@ -1858,7 +1855,7 @@ void func_80040C38(u16 index) {
                 messageBoxes[index].currentCharPtr++;
                 
                 resetAnimationState(characterAvatars[messageBoxes[index].characterAvatarIndex].spriteIndex);
-                startSpriteAnimation(characterAvatars[messageBoxes[index].characterAvatarIndex].spriteIndex, D_801891C8[animationIndex], 0);
+                startSpriteAnimation(characterAvatars[messageBoxes[index].characterAvatarIndex].spriteIndex, characterAvatarsAnimationsPtr[animationIndex], 0);
                 
                 setSpriteViewSpacePosition(characterAvatars[messageBoxes[index].characterAvatarIndex].spriteIndex,
                     messageBoxes[index].viewSpacePosition.x + characterAvatars[messageBoxes[index].characterAvatarIndex].coordinates.x,
@@ -1875,7 +1872,7 @@ void func_80040C38(u16 index) {
                 
             default:
                 
-                D_80204BF0[messageBoxes[index].totalCharactersProcessed + 
+                textBuffer[messageBoxes[index].totalCharactersProcessed + 
                     (messageBoxes[index].currentLineBeingPrinted * messageBoxes[index].textBoxLineCharWidth) + 
                     messageBoxes[index].currentCharCountOnLine] = character - 0xB;
                 
@@ -2130,9 +2127,9 @@ Gfx* func_80042014(Gfx* dl, MessageBox* messageBox, u8 lineNumber, s32 arg3) {
         charOffset = i2 + (lineNumber * messageBox->textBoxLineCharWidth);
         
         unpackFontCI2Data(
-            D_80204BF0[messageBox->totalCharactersProcessed + charOffset], 
+            textBuffer[messageBox->totalCharactersProcessed + charOffset], 
             &messageBox->fontContext.compressedCI2FontData, 
-            D_801706C0[gGraphicsBufferIndex][messageBox->totalCharactersProcessed + charOffset].timg
+            fontTexturesBuffer[gGraphicsBufferIndex][messageBox->totalCharactersProcessed + charOffset].timg
         );
         
         if (messageBox->flags & 2) {
@@ -2140,7 +2137,7 @@ Gfx* func_80042014(Gfx* dl, MessageBox* messageBox, u8 lineNumber, s32 arg3) {
             flags = (0x10 | 0x40 | 0x100 | 0x400);
 
             setupBitmapVertices(
-                &D_801C6230[gGraphicsBufferIndex][messageBox->totalCharactersProcessed + charOffset][0],
+                &fontVertices[gGraphicsBufferIndex][messageBox->totalCharactersProcessed + charOffset][0],
                 messageBox->fontContext.characterCellWidth,
                 messageBox->fontContext.characterCellHeight,
                 messageBox->fontContext.characterCellHeight,
@@ -2156,7 +2153,7 @@ Gfx* func_80042014(Gfx* dl, MessageBox* messageBox, u8 lineNumber, s32 arg3) {
                 messageBox->unk_14.a
             );
 
-            sprite.timg = D_801706C0[gGraphicsBufferIndex][messageBox->totalCharactersProcessed + charOffset].timg;
+            sprite.timg = fontTexturesBuffer[gGraphicsBufferIndex][messageBox->totalCharactersProcessed + charOffset].timg;
 
             setBitmapFormatAndSize((BitmapObject*)&sprite, messageBox->fontContext.fontPalettePtr);
 
@@ -2168,7 +2165,7 @@ Gfx* func_80042014(Gfx* dl, MessageBox* messageBox, u8 lineNumber, s32 arg3) {
             dl = loadBitmapTexture(dl, (BitmapObject*)&sprite, 0, sprite.height);
             
             // FIXME: likely wrapper around gSPVertex
-            gSPVertex(&tempDl[1], &D_801C6230[gGraphicsBufferIndex][messageBox->totalCharactersProcessed + charOffset][0], 4, 0);
+            gSPVertex(&tempDl[1], &fontVertices[gGraphicsBufferIndex][messageBox->totalCharactersProcessed + charOffset][0], 4, 0);
 
             *tempDl = *(tempDl+1);
             *dl++ = *tempDl;

@@ -170,6 +170,9 @@ extern u8 func_8009B658();
 extern u8 func_8009B7BC();
 extern u8 func_8009B828(u8);
 extern void func_8009BA74(u8);
+extern u8 func_8009BBAC(void);
+extern u8 func_8009BC44(void);
+extern u8 func_8009BC54(void);
 extern void func_8009BC64();
 
 extern void initializeDog(void);

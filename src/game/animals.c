@@ -4831,7 +4831,6 @@ void func_8009BC64(void) {
     
 }
 
-// jtbl_80120EA8
 //INCLUDE_ASM("asm/nonmatchings/game/animals", func_8009BCC4);
 
 // show expression bubble when interacting with animals

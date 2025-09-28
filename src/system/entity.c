@@ -14,7 +14,7 @@
 // bss
 EntityAssetDescriptor entityAssetDescriptors[MAX_ENTITY_ASSETS];
 Entity entities[MAX_ENTITIES];
-ShadowSpriteDescriptor ShadowSpritesDescriptors[3];
+ShadowSpriteDescriptor shadowSpriteDescriptors[3];
 
 // forward declarations
 Vec3f getEntityRelativeTilePosition(u16, f32, f32);  
@@ -287,17 +287,17 @@ bool loadEntity(u16 index, u16 entityAssetIndex, bool transformExempt) {
             if (entityAssetDescriptors[entities[index].entityAssetIndex].shadowSpriteIndex != 0xFF) {
                 
                 dmaSprite(entities[index].shadowSpriteIndex, 
-                    ShadowSpritesDescriptors[entityAssetDescriptors[entities[index].entityAssetIndex].shadowSpriteIndex].romTextureStart, 
-                    ShadowSpritesDescriptors[entityAssetDescriptors[entities[index].entityAssetIndex].shadowSpriteIndex].romTextureEnd, 
-                    ShadowSpritesDescriptors[entityAssetDescriptors[entities[index].entityAssetIndex].shadowSpriteIndex].romAssetsIndexStart, 
-                    ShadowSpritesDescriptors[entityAssetDescriptors[entities[index].entityAssetIndex].shadowSpriteIndex].romAssetsIndexEnd, 
+                    shadowSpriteDescriptors[entityAssetDescriptors[entities[index].entityAssetIndex].shadowSpriteIndex].romTextureStart, 
+                    shadowSpriteDescriptors[entityAssetDescriptors[entities[index].entityAssetIndex].shadowSpriteIndex].romTextureEnd, 
+                    shadowSpriteDescriptors[entityAssetDescriptors[entities[index].entityAssetIndex].shadowSpriteIndex].romAssetsIndexStart, 
+                    shadowSpriteDescriptors[entityAssetDescriptors[entities[index].entityAssetIndex].shadowSpriteIndex].romAssetsIndexEnd, 
                     NULL, 
                     NULL, 
-                    ShadowSpritesDescriptors[entityAssetDescriptors[entities[index].entityAssetIndex].shadowSpriteIndex].vaddrSpritesheet, 
+                    shadowSpriteDescriptors[entityAssetDescriptors[entities[index].entityAssetIndex].shadowSpriteIndex].vaddrSpritesheet, 
                     NULL, 
-                    ShadowSpritesDescriptors[entityAssetDescriptors[entities[index].entityAssetIndex].shadowSpriteIndex].vaddrPalette, 
-                    ShadowSpritesDescriptors[entityAssetDescriptors[entities[index].entityAssetIndex].shadowSpriteIndex].vaddrUnknownAssetSheet, 
-                    ShadowSpritesDescriptors[entityAssetDescriptors[entities[index].entityAssetIndex].shadowSpriteIndex].vaddrAnimationMetadata, 
+                    shadowSpriteDescriptors[entityAssetDescriptors[entities[index].entityAssetIndex].shadowSpriteIndex].vaddrPalette, 
+                    shadowSpriteDescriptors[entityAssetDescriptors[entities[index].entityAssetIndex].shadowSpriteIndex].vaddrUnknownAssetSheet, 
+                    shadowSpriteDescriptors[entityAssetDescriptors[entities[index].entityAssetIndex].shadowSpriteIndex].vaddrAnimationMetadata, 
                     NULL, 
                     NULL, 
                     entities[index].transformExempt
@@ -342,16 +342,16 @@ bool initializeShadowSprite(u16 index, u32 arg1, u32 arg2, u32 arg3, u32 arg4, u
     
     if (index < MAX_SHADOW_SPRITES) {
         result = TRUE;
-        ShadowSpritesDescriptors[index].romTextureStart = arg1;
-        ShadowSpritesDescriptors[index].romTextureEnd = arg2;
-        ShadowSpritesDescriptors[index].romAssetsIndexStart = arg3;
-        ShadowSpritesDescriptors[index].romAssetsIndexEnd = arg4;
-        ShadowSpritesDescriptors[index].vaddrSpritesheet = arg5;
-        ShadowSpritesDescriptors[index].vaddrPalette = arg6;
-        ShadowSpritesDescriptors[index].vaddrUnknownAssetSheet = arg7;
-        ShadowSpritesDescriptors[index].vaddrAnimationMetadata = arg8;
-        ShadowSpritesDescriptors[index].unk_20 = arg9;
-        ShadowSpritesDescriptors[index].unk_22 = argA;
+        shadowSpriteDescriptors[index].romTextureStart = arg1;
+        shadowSpriteDescriptors[index].romTextureEnd = arg2;
+        shadowSpriteDescriptors[index].romAssetsIndexStart = arg3;
+        shadowSpriteDescriptors[index].romAssetsIndexEnd = arg4;
+        shadowSpriteDescriptors[index].vaddrSpritesheet = arg5;
+        shadowSpriteDescriptors[index].vaddrPalette = arg6;
+        shadowSpriteDescriptors[index].vaddrUnknownAssetSheet = arg7;
+        shadowSpriteDescriptors[index].vaddrAnimationMetadata = arg8;
+        shadowSpriteDescriptors[index].unk_20 = arg9;
+        shadowSpriteDescriptors[index].unk_22 = argA;
     }
 
     return result;
@@ -2344,8 +2344,8 @@ void updateEntities(void) {
                     if (globalSprites[entities[i].shadowSpriteIndex].viewSpacePosition.y <= entities[i].viewSpacePosition.y) {
 
                         startSpriteAnimation(entities[i].shadowSpriteIndex, 
-                             ShadowSpritesDescriptors[entityAssetDescriptors[entities[i].entityAssetIndex].shadowSpriteIndex].unk_20,
-                             ShadowSpritesDescriptors[entityAssetDescriptors[entities[i].entityAssetIndex].shadowSpriteIndex].unk_22);
+                             shadowSpriteDescriptors[entityAssetDescriptors[entities[i].entityAssetIndex].shadowSpriteIndex].unk_20,
+                             shadowSpriteDescriptors[entityAssetDescriptors[entities[i].entityAssetIndex].shadowSpriteIndex].unk_22);
                                              
                     } else {
                         resetAnimationState(entities[i].shadowSpriteIndex);

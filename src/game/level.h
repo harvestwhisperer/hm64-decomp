@@ -160,4 +160,7 @@ extern u8 previousMapIndex;
 extern u8 gMapWithSeasonIndex;
 extern u8 D_8021E6D0;
 
+extern u8 groundObjectsGridZ;
+extern u8 groundObjectsGridX;
+
 #endif

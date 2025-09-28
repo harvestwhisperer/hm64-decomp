@@ -29,6 +29,7 @@ void func_8004DEE4(void) {
     D_80181B8C &= ~1;
 }
 
+// empty function
 void func_8004DF00(void) {}
 
 //INCLUDE_ASM("asm/nonmatchings/system/flags", func_8004DF08);

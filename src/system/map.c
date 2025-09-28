@@ -14,13 +14,13 @@
 Vec3f getTerrainHeight(TerrainQuad *quad, f32 x, f32 z, u8 fallbackHeight);
 void updateCameraViewBounds(MapCameraView*);
 bool checkTileVisible(MainMap *map, u8 arg1, u8 arg2);       
-bool setMapAdditionMetadata(u16, u16, u8, u8, u16);       
+bool updateGridsWithMapAdditions(u16, u16, u8, u8, u16);       
 Vec3f getMapGroundObjectCoordinates(u16, f32, f32);                  
 inline u16 getTileIndexFromGrid(u16 mapIndex, u8 x, u8 z);
 Gfx* prepareTileTextures(Gfx* dl, MainMap* map, u8 arg2);
 u16 getMapGroundObjectSpriteIndex(u16, f32, f32);  
 void initializeMesh(MainMap*); 
-void func_80036C08(u16 mapIndex);
+void setGridToTileTextureMappings(u16 mapIndex);
 void setMapGrid(MapGrid*, u8*);                 
 u8* func_800374C0(TileRenderingInfo*, u8*);
 u8* setTileVertexData(Tile* vtx, u8* data);    
@@ -316,7 +316,7 @@ bool setupMap(u16 mapIndex,
         for (j = 0; j < 16; j++) {
 
             mainMap[mapIndex].coreMapObjectsMetadata[j].spriteIndex = 0; 
-            mainMap[mapIndex].coreMapObjectsMetadata[j].totalCoreMapObjects = 0; 
+            mainMap[mapIndex].coreMapObjectsMetadata[j].repeatObjectCount = 0; 
             mainMap[mapIndex].coreMapObjectsMetadata[j].unk_0 = 0; 
 
         }
@@ -360,7 +360,7 @@ bool setupMap(u16 mapIndex,
 
         initializeMesh(&mainMap[mapIndex]);
         // tiles
-        func_80036C08(mapIndex);
+        setGridToTileTextureMappings(mapIndex);
         setCoreMapObjects(&mainMap[mapIndex]);
 
         // setup camera
@@ -838,11 +838,11 @@ bool deactivateMapObject(u16 mapIndex, u8 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/map", func_80034EF0);
+//INCLUDE_ASM("asm/nonmatchings/system/map", loadGroundObjects);
 
 // load and set texture for map spawnable sprite
 // called by level.c
-bool func_80034EF0(u16 mapIndex, u8 arg1, u8 arg2, u32* textureIndex, u32* paletteIndex, u8* spriteToPaletteIndex, u32 romTextureStart, u32 arg7, u32 romAssetsIndexStart, u32 romAssetsIndexEnd, u8 argA) {
+bool loadGroundObjects(u16 mapIndex, u8 x, u8 z, u32* textureIndex, u32* paletteIndex, u8* spriteToPaletteIndex, u32 romTextureStart, u32 arg7, u32 romAssetsIndexStart, u32 romAssetsIndexEnd, u8 argA) {
 
     bool result = FALSE;
     
@@ -861,10 +861,8 @@ bool func_80034EF0(u16 mapIndex, u8 arg1, u8 arg2, u32* textureIndex, u32* palet
         mainMap[mapIndex].groundObjects.spriteToPaletteIndex = spriteToPaletteIndex;
 
         // grid positions
-        // D_801FD624 
-        mainMap[mapIndex].groundObjects.x = arg1;
-        // D_801C3F35
-        mainMap[mapIndex].groundObjects.z = arg2;
+        mainMap[mapIndex].groundObjects.x = x;
+        mainMap[mapIndex].groundObjects.z = z;
 
         mainMap[mapIndex].groundObjects.unk_12 = argA;
         
@@ -906,10 +904,10 @@ bool setMapGroundObjectSpriteIndex(u16 mapIndex, u16 spriteIndex, u8 x, u8 z) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/map", func_80035054);
+//INCLUDE_ASM("asm/nonmatchings/system/map", setGroundObjectBitmap);
 
 // used for maps with foragable items
-bool func_80035054(u16 mapIndex, u16 bitmapIndex, u16 spriteIndex, f32 x, f32 y, f32 z) {
+bool setGroundObjectBitmap(u16 mapIndex, u16 bitmapIndex, u16 spriteIndex, f32 x, f32 y, f32 z) {
 
     bool result = FALSE;
 
@@ -932,12 +930,12 @@ bool func_80035054(u16 mapIndex, u16 bitmapIndex, u16 spriteIndex, f32 x, f32 y,
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/map", getTerrainHeightAtPosition);
-
 // FIXME: inline function used before it's defined means it doesn't properly inline; also can't use `swap16TileIndex` directly
 static inline u16 getTileIndexFromGrid_static_inline(u16 mapIndex, u8 x, u8 z) {
     return swap16TileIndex((&mainMap[mapIndex].mapGrid.gridToTileIndex[mainMap[mapIndex].mapGrid.mapWidth * z])[x]);
 }
+
+//INCLUDE_ASM("asm/nonmatchings/system/map", getTerrainHeightAtPosition);
 
 f32 getTerrainHeightAtPosition(u16 mapIndex, f32 x, f32 z) {
     
@@ -1270,9 +1268,9 @@ void func_80035EE0(MainMap* mainMap) {
         
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/map", setMapAdditionMetadata);
-
-u8 setMapAdditionMetadata(u16 mapIndex, u16 mapAdditionIndex, u8 xCoord, u8 zCoord, u16 flag) {
+//INCLUDE_ASM("asm/nonmatchings/system/map", updateGridsWithMapAdditions);
+        
+u8 updateGridsWithMapAdditions(u16 mapIndex, u16 mapAdditionIndex, u8 xCoord, u8 zCoord, u16 flag) {
 
     Swap16 swap;
     
@@ -1536,7 +1534,7 @@ void initializeMesh(MainMap* mainMap) {
     currentVtx = 0;
     i = 0;
   
-    if (mainMap->mapGrid.meshVtxCount) {
+    if (mainMap->mapGrid.tileCount) {
         
         do {
 
@@ -1568,17 +1566,17 @@ void initializeMesh(MainMap* mainMap) {
             
             i++;
             
-        } while (i < mainMap->mapGrid.meshVtxCount);
+        } while (i < mainMap->mapGrid.tileCount);
 
     }  
 
 } 
 
-//INCLUDE_ASM("asm/nonmatchings/system/map", func_80036C08);
+//INCLUDE_ASM("asm/nonmatchings/system/map", setGridToTileTextureMappings);
 
-// implements a linked list for tile textures --> grid positions to allow for batch renderings
-// tiles are rendered by texture order, not by grid position or tile number
-void func_80036C08(u16 mapIndex) {
+// implements a linked list for tile textures to grid positions to allow for batch rendering
+// i.e., tiles are rendered by texture order, not by grid position or tile number
+void setGridToTileTextureMappings(u16 mapIndex) {
 
     u16 padding[0x140];
     
@@ -1747,7 +1745,7 @@ void setMapGrid(MapGrid* mapGrid, u8* data) {
     swap.byte[1] = data[10];
     swap.byte[0] = data[11];
         
-    mapGrid->meshVtxCount = swap.halfword;
+    mapGrid->tileCount = swap.halfword;
 
     // set ptr
     mapGrid->gridToTileIndex = data + 12;
@@ -1763,10 +1761,10 @@ u8* func_80037350(TileRenderingInfo* tileRenderingInfo, u8* data) {
     // skip header
     data = &data[4];
     
-    tileRenderingInfo->colors[0][0] = *data++;
-    tileRenderingInfo->colors[0][1] = *data++;
-    tileRenderingInfo->colors[0][2] = *data++;
-    tileRenderingInfo->colors[0][3] = *data++;
+    tileRenderingInfo->data2[0] = *data++;
+    tileRenderingInfo->data2[1] = *data++;
+    tileRenderingInfo->data2[2] = *data++;
+    tileRenderingInfo->data2[3] = *data++;
 
     return data;
     
@@ -1779,9 +1777,9 @@ u8* func_80037388(TileRenderingInfo* tileRenderingInfo, u8* data, u8 arg2) {
     
     Swap16 swap;
 
-    tileRenderingInfo->vtx[0] = *data++;
-    tileRenderingInfo->colors[0][0] = *data++;
-    tileRenderingInfo->colors[1][0] = *data++;
+    tileRenderingInfo->data1[0] = *data++;
+    tileRenderingInfo->data2[0] = *data++;
+    tileRenderingInfo->data3[0] = *data++;
 
     swap.byte[1] = *data++;
     swap.byte[0] = *data++;
@@ -1809,15 +1807,15 @@ inline u8* func_80037400(TileRenderingInfo* tileRenderingInfo, u8* data, bool fl
     u8 i;
         
     for (i = 0; i < 3; i++) {
-        tileRenderingInfo->vtx[i] = *data++;
-        tileRenderingInfo->colors[0][i] = *data++;
-        tileRenderingInfo->colors[1][i] = *data++;
+        tileRenderingInfo->data1[i] = *data++;
+        tileRenderingInfo->data2[i] = *data++;
+        tileRenderingInfo->data3[i] = *data++;
     }
 
     if (flag) {
-        tileRenderingInfo->vtx[3] = *data++;
-        tileRenderingInfo->colors[0][3] = *data++;
-        tileRenderingInfo->colors[1][3] = *data++;
+        tileRenderingInfo->data1[3] = *data++;
+        tileRenderingInfo->data2[3] = *data++;
+        tileRenderingInfo->data3[3] = *data++;
     }
     
     swap.byte[1] = *data++;
@@ -1886,9 +1884,9 @@ u8* func_800374C0(TileRenderingInfo* tileRenderingInfo, u8* data) {
         
     } else {
 
-        tileRenderingInfo->vtx[0] = data[0];
-        tileRenderingInfo->colors[0][0] = data[1];
-        tileRenderingInfo->colors[1][0] = data[2];
+        tileRenderingInfo->data1[0] = data[0];
+        tileRenderingInfo->data2[0] = data[1];
+        tileRenderingInfo->data3[0] = data[2];
 
         swap.byte[1] = data[3];
         swap.byte[0] = data[4];
@@ -2109,6 +2107,7 @@ u16 buildTileRenderingCommands(Gfx* dl, MainMap* mainMap, TileRenderingInfo tile
     
     do {
 
+        // update texture coordinates for vertice
         if (tileRenderingInfo[i].flags & 0x80) {
 
             count++;
@@ -2118,34 +2117,36 @@ u16 buildTileRenderingCommands(Gfx* dl, MainMap* mainMap, TileRenderingInfo tile
             // gsDPSetCombineMode(G_CC_MODULATEIDECALA, G_CC_MODULATEIDECALA)
             *dl++ = D_8011ED90;
             
-            gSPModifyVertex(&dl2[1], tileRenderingInfo[i].vtx[0], G_MWO_POINT_ST, (tileRenderingInfo[i].colors[0][0] << 0x16) | (tileRenderingInfo[i].colors[1][0] << 6));
+            gSPModifyVertex(&dl2[1], tileRenderingInfo[i].data1[0], G_MWO_POINT_ST, (tileRenderingInfo[i].data2[0] << 0x16) | (tileRenderingInfo[i].data3[0] << 6));
 
             dl2[0] = dl2[1];
             *dl++ = dl2[0];
             
-            gSPModifyVertex(&dl2[1], tileRenderingInfo[i].vtx[1], G_MWO_POINT_ST, (tileRenderingInfo[i].colors[0][1] << 0x16) | (tileRenderingInfo[i].colors[1][1] << 6));
+            gSPModifyVertex(&dl2[1], tileRenderingInfo[i].data1[1], G_MWO_POINT_ST, (tileRenderingInfo[i].data2[1] << 0x16) | (tileRenderingInfo[i].data3[1] << 6));
 
             dl2[0] = dl2[1];
             *dl++ = dl2[0];
             
-            gSPModifyVertex(&dl2[1], tileRenderingInfo[i].vtx[2], G_MWO_POINT_ST, (tileRenderingInfo[i].colors[0][2] << 0x16) | (tileRenderingInfo[i].colors[1][2] << 6));
+            gSPModifyVertex(&dl2[1], tileRenderingInfo[i].data1[2], G_MWO_POINT_ST, (tileRenderingInfo[i].data2[2] << 0x16) | (tileRenderingInfo[i].data3[2] << 6));
 
             dl2[0] = dl2[1];
             *dl++ = dl2[0];
             
             count += 4;
             
+            // render quad with 2 triangles (add 4th vertex)
             if (tileRenderingInfo[i].flags & 0x40) {
                 
                 count++;
 
-                gSPModifyVertex(&dl2[1], tileRenderingInfo[i].vtx[3], G_MWO_POINT_ST, (tileRenderingInfo[i].colors[0][3] << 0x16) | (tileRenderingInfo[i].colors[1][3] << 6));
+                gSPModifyVertex(&dl2[1], tileRenderingInfo[i].data1[3], G_MWO_POINT_ST, (tileRenderingInfo[i].data2[3] << 0x16) | (tileRenderingInfo[i].data3[3] << 6));
 
                 dl2[0] = dl2[1];
                 *dl++ = dl2[0];
                 
             } 
         
+        // render solid color for tile instead of using a texture
         } else {
             
             count += 3;
@@ -2158,8 +2159,7 @@ u16 buildTileRenderingCommands(Gfx* dl, MainMap* mainMap, TileRenderingInfo tile
             // FIXME
             asm("");
     
-            // tileRenderingInfo[i].vtx[0] being used as r color value?
-            gDPSetPrimColor(&dl2[1], 0, 0, tileRenderingInfo[i].vtx[0], tileRenderingInfo[i].colors[0][0], tileRenderingInfo[i].colors[1][0], 255);
+            gDPSetPrimColor(&dl2[1], 0, 0, tileRenderingInfo[i].data1[0], tileRenderingInfo[i].data2[0], tileRenderingInfo[i].data3[0], 255);
             
             dl2[0] = dl2[1];
             *dl++ = dl2[0];
@@ -2275,6 +2275,7 @@ Gfx* appendTileToDL(Gfx* dl, MainMap* mainMap, u16 tileIndex, f32 x, f32 y, f32 
     
 }
 
+// empty function 
 void func_80038514(void) {}
 
 //INCLUDE_ASM("asm/nonmatchings/system/map", setCoreMapObjects);
@@ -2305,7 +2306,7 @@ void setCoreMapObjects(MainMap* mainMap) {
         
         coreMapObjectDataPtr += 2;
         
-        while (j < mainMap->coreMapObjectsMetadata[i].totalCoreMapObjects) {
+        while (j < mainMap->coreMapObjectsMetadata[i].repeatObjectCount) {
 
             setCoreMapObject(&coreMapObjects[count], coreMapObjectDataPtr);
             
@@ -2340,29 +2341,28 @@ void setCoreMapObject(CoreMapObject* coreMapObject, u8* data) {
 
 void setCoreMapObjectsMetadata(CoreMapObjectsMetadata* metadata, u8* data) {
     metadata->spriteIndex = data[0];
-    metadata->totalCoreMapObjects = data[1];
+    metadata->repeatObjectCount = data[1];
 }
 
 //INCLUDE_ASM("asm/nonmatchings/system/map", getCoreMapObjectPtrFromCount);
 
 u8* getCoreMapObjectPtrFromCount(u16 objectCount, u8* ptr) {
 
+    CoreMapObjectsMetadata metadata;
     u16 i;
-    u8 arr[4];
-
     u8 temp;
 
     ptr++;
 
     for (i = 0; i < objectCount; i++) {
         
-        arr[2] = ptr[0];
+        metadata.spriteIndex = ptr[0];
         temp = ptr[1];
         
         ptr += 2;
         ptr += (temp *  7);
         
-        arr[3] = temp;
+        metadata.repeatObjectCount = temp;
    
     }
 
@@ -2534,18 +2534,22 @@ u8* getMapAdditionsMetadataPtrFromIndex(u16 arg0, u8 *arg1) {
 //INCLUDE_ASM("asm/nonmatchings/system/map", func_80038900);
 
 // called by func_800735FC
-bool func_80038900(u16 mapIndex, u16 arg1, u16 arg2, u16 arg3, u16 arg4) {
+bool func_80038900(u16 mapIndex, u16 mapAdditionIndex, u16 arg2, u16 arg3, u16 arg4) {
 
     bool result = FALSE;
 
     if (mapIndex == MAIN_MAP_INDEX && mainMap[mapIndex].mapState.flags & MAP_ACTIVE) {
-        if (arg1 < 0x20 && !(mainMap[mapIndex].mapAdditions[arg1].flags & 1)) {
-            if (arg2 < 0x10) {
-                mainMap[mapIndex].mapAdditions[arg1].arr1[arg2] = arg3;
-                mainMap[mapIndex].mapAdditions[arg1].arr2[arg2] = arg4;
+
+        if (mapAdditionIndex < 32 && !(mainMap[mapIndex].mapAdditions[mapAdditionIndex].flags & 1)) {
+
+            if (arg2 < 16) {
+                mainMap[mapIndex].mapAdditions[mapAdditionIndex].arr1[arg2] = arg3;
+                mainMap[mapIndex].mapAdditions[mapAdditionIndex].arr2[arg2] = arg4;
                 result = TRUE;
             }
+
         }
+
     }
     
     return result;
@@ -2558,7 +2562,7 @@ bool func_80038990(u16 mapIndex, u16 mapAdditionIndex, u8 arg2) {
 
     bool result = FALSE;
 
-    if (mapIndex == MAIN_MAP_INDEX && mainMap[mapIndex].mapState.flags & MAP_ACTIVE && mapAdditionIndex < 0x20) {
+    if (mapIndex == MAIN_MAP_INDEX && mainMap[mapIndex].mapState.flags & MAP_ACTIVE && mapAdditionIndex < 32) {
 
         if (!(mainMap[mapIndex].mapAdditions[mapAdditionIndex].flags & 1)) {
 
@@ -2580,11 +2584,12 @@ bool func_80038990(u16 mapIndex, u16 mapAdditionIndex, u8 arg2) {
 
 //INCLUDE_ASM("asm/nonmatchings/system/map", func_80038A2C);
 
+// used by unused entity function
 bool func_80038A2C(u16 mapIndex, u16 mapAdditionIndex, u8 x, u8 z) {
 
     bool result = FALSE;
 
-    if (mapIndex == MAIN_MAP_INDEX && mainMap[mapIndex].mapState.flags & MAP_ACTIVE && mapAdditionIndex < 0x20) {
+    if (mapIndex == MAIN_MAP_INDEX && mainMap[mapIndex].mapState.flags & MAP_ACTIVE && mapAdditionIndex < 32) {
 
         if (!(mainMap[mapIndex].mapAdditions[mapAdditionIndex].flags & 1)) {
             
@@ -2614,7 +2619,7 @@ bool setMapAddition(u16 mapIndex, u16 mapAdditionIndex) {
 
     if (mapIndex == MAIN_MAP_INDEX && mainMap[mapIndex].mapState.flags & MAP_ACTIVE) {
 
-        setMapAdditionMetadata(MAIN_MAP_INDEX, mainMap[mapIndex].mapAdditions[mapAdditionIndex].arr1[0], mainMap[mapIndex].mapAdditions[mapAdditionIndex].x, mainMap[mapIndex].mapAdditions[mapAdditionIndex].z, 0);
+        updateGridsWithMapAdditions(MAIN_MAP_INDEX, mainMap[mapIndex].mapAdditions[mapAdditionIndex].arr1[0], mainMap[mapIndex].mapAdditions[mapAdditionIndex].x, mainMap[mapIndex].mapAdditions[mapAdditionIndex].z, 0);
         result = TRUE;
 
     }
@@ -2630,7 +2635,7 @@ bool setMapAdditionIndexFromCoordinates(u16 mapIndex, u16 mapAdditionIndex, u8 x
     bool result  = 0;
 
     if (mapIndex == MAIN_MAP_INDEX && (mainMap[mapIndex].mapState.flags & MAP_ACTIVE)) {
-        setMapAdditionMetadata(MAIN_MAP_INDEX, mainMap[mapIndex].mapAdditions[mapAdditionIndex].arr1[0], x , z, 2);
+        updateGridsWithMapAdditions(MAIN_MAP_INDEX, mainMap[mapIndex].mapAdditions[mapAdditionIndex].arr1[0], x , z, 2);
         result = TRUE;
     }
     
@@ -2638,15 +2643,15 @@ bool setMapAdditionIndexFromCoordinates(u16 mapIndex, u16 mapAdditionIndex, u8 x
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/map", setupCoreMapObjectSprites);
-
 static inline u8* getTexturePtrInline(u8 spriteIndex, u32* textureIndex) {
     return (u8*)textureIndex + textureIndex[spriteIndex];
 }
 
 static inline u8 *getPalettePtrTypeInline(u8 index, u32 *paletteIndex) {
-  return (u8*)paletteIndex + paletteIndex[index];
+    return (u8*)paletteIndex + paletteIndex[index];
 }
+
+//INCLUDE_ASM("asm/nonmatchings/system/map", setupCoreMapObjectSprites);
 
 void setupCoreMapObjectSprites(MainMap* mainMap) {
     
@@ -2680,7 +2685,7 @@ void setupCoreMapObjectSprites(MainMap* mainMap) {
         j = 0;
         k = mainMap->coreMapObjectsMetadata[i].unk_0;
 
-        total = mainMap->coreMapObjectsMetadata[i].totalCoreMapObjects;  
+        total = mainMap->coreMapObjectsMetadata[i].repeatObjectCount;  
         
         while (j < total) {
 
@@ -2811,7 +2816,7 @@ void setupCoreMapObjectSprites(MainMap* mainMap) {
             asm("");
             
             j++;
-            total = mainMap->coreMapObjectsMetadata[i].totalCoreMapObjects;  
+            total = mainMap->coreMapObjectsMetadata[i].repeatObjectCount;  
             k++;
                 
         } 
@@ -3058,13 +3063,13 @@ void processMapSceneNode(u16 mapIndex, Gfx* dl) {
 
 void func_80039F58(u16 mapIndex) {
 
-    bool found = FALSE;
-    bool set = FALSE;
+    bool mapAdditionAdded = FALSE;
+    bool done = FALSE;
     u16 i = 0;
 
     do {
 
-        if ((mainMap[mapIndex].mapAdditions[i].flags & MAP_ADDITION_ACTIVE) && !set) {
+        if ((mainMap[mapIndex].mapAdditions[i].flags & MAP_ADDITION_ACTIVE) && !done) {
         
             do {
 
@@ -3072,8 +3077,8 @@ void func_80039F58(u16 mapIndex) {
 
                     if (mainMap[mapIndex].mapAdditions[i].arr1[mainMap[mapIndex].mapAdditions[i].unk_42] != 0xFFFF) {
  
-                        setMapAdditionMetadata(mapIndex, mainMap[mapIndex].mapAdditions[i].arr1[mainMap[mapIndex].mapAdditions[i].unk_42], mainMap[mapIndex].mapAdditions[i].x, mainMap[mapIndex].mapAdditions[i].z, mainMap[mapIndex].mapAdditions[i].flags & 2);
-                        found = TRUE;
+                        updateGridsWithMapAdditions(mapIndex, mainMap[mapIndex].mapAdditions[i].arr1[mainMap[mapIndex].mapAdditions[i].unk_42], mainMap[mapIndex].mapAdditions[i].x, mainMap[mapIndex].mapAdditions[i].z, mainMap[mapIndex].mapAdditions[i].flags & 2);
+                        mapAdditionAdded = TRUE;
                         
                     } else {
                         
@@ -3082,8 +3087,8 @@ void func_80039F58(u16 mapIndex) {
                             mainMap[mapIndex].mapAdditions[i].unk_40 = 0;
                             mainMap[mapIndex].mapAdditions[i].unk_42 = 0;
                             
-                            setMapAdditionMetadata(mapIndex, mainMap[mapIndex].mapAdditions[i].arr1[mainMap[mapIndex].mapAdditions[i].unk_42], mainMap[mapIndex].mapAdditions[i].x, mainMap[mapIndex].mapAdditions[i].z, mainMap[mapIndex].mapAdditions[i].flags & 2);
-                            found = TRUE;
+                            updateGridsWithMapAdditions(mapIndex, mainMap[mapIndex].mapAdditions[i].arr1[mainMap[mapIndex].mapAdditions[i].unk_42], mainMap[mapIndex].mapAdditions[i].x, mainMap[mapIndex].mapAdditions[i].z, mainMap[mapIndex].mapAdditions[i].flags & 2);
+                            mapAdditionAdded = TRUE;
                             
                         } else {
                             mainMap[mapIndex].mapAdditions[i].flags &= ~MAP_ADDITION_ACTIVE;
@@ -3098,18 +3103,18 @@ void func_80039F58(u16 mapIndex) {
                     
                     if (mainMap[mapIndex].mapAdditions[i].unk_42 == 16) {
                         mainMap[mapIndex].mapAdditions[i].flags &= ~MAP_ADDITION_ACTIVE;
-                        set = TRUE;
+                        done = TRUE;
                     } 
 
                     mainMap[mapIndex].mapAdditions[i].unk_40 = 0;
                      
                 } else {
                     mainMap[mapIndex].mapAdditions[i].unk_40++;
-                    set = TRUE;
+                    done = TRUE;
                     
                 }
                 
-            } while (!set);
+            } while (!done);
             
         }
 
@@ -3117,8 +3122,8 @@ void func_80039F58(u16 mapIndex) {
             
     } while (i < MAX_MAP_ADDITIONS);
 
-    if (found) {
-        func_80036C08(MAIN_MAP_INDEX);
+    if (mapAdditionAdded) {
+        setGridToTileTextureMappings(MAIN_MAP_INDEX);
     }
     
 }
@@ -3243,7 +3248,7 @@ static inline void handleRotation(u16 i) {
 
 void updateMapGraphics(void) {
 
-    u16 height = 0;
+    u16 startingCount = 0;
     u16 i;
     
     Gfx *dl = mapDisplayList[gGraphicsBufferIndex];
@@ -3294,7 +3299,7 @@ void updateMapGraphics(void) {
             dlStartingPosition = dl;
             
             // tiles
-            dl = buildMapDisplayList(dlStartingPosition, &mainMap[i], height);
+            dl = buildMapDisplayList(dlStartingPosition, &mainMap[i], startingCount);
             
             // these sprites are rendered via display lists in sprite.c
             setupCoreMapObjectSprites(&mainMap[i]);
@@ -3305,7 +3310,7 @@ void updateMapGraphics(void) {
 
             renderGroundObjects(&mainMap[i]);
 
-            height += mainMap[i].mapState.totalVertexCount;
+            startingCount += mainMap[i].mapState.totalVertexCount;
 
         }
         
@@ -3428,10 +3433,12 @@ void renderGroundObjects(MainMap* mainMap) {
     s16 temp1;
     s16 temp2;
     
+    // FIXME: fake array usage
     f32 arr[8];
     
     arr[6] = mainMap->mapCameraView.cameraTileX * mainMap->mapGrid.tileSizeX;
 
+    // FIXME: dead code
     index = gGraphicsBufferIndex;
     
     if (index) {

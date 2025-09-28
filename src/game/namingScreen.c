@@ -27,6 +27,10 @@ extern u16 gCutsceneIndex;
 // bss
 extern NamingScreenContext namingScreenContext;
 
+// data
+// japanese strings
+extern u8 D_8011C680[10][6];
+
 // forward declarations
 void loadNameSelectionSprites(void);
 bool func_800EF578(void);
@@ -373,15 +377,13 @@ void func_800ED974(void) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/namingScreen", loadNameSelectionSprites);
+//INCLUDE_ASM("asm/nonmatchings/game/namingScreen", loadNameSelectionSprites);
 
-// TODO: matches but need to add linker symbols
-/*
 void loadNameSelectionSprites(void) {
 
     s32 i = 0;
 
-    dmaSprite(0x80, &_characterDialogueIconsTextureSegmentRomStart, &_characterDialogueIconsTextureSegmentRomEnd, &_dialogueIconsAssetsIndexSegmentRomStart, &_dialogueIconsAssetsIndexSegmentRomEnd, NULL, NULL, (void*)0x8023B400, NULL, (void*)0x8023CC00, (void*)0x8023CE00, (void*)0x8023D200, NULL, NULL, 0);
+    dmaSprite(0x80, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsAssetsIndexSegmentRomStart, &_dialogueIconsAssetsIndexSegmentRomEnd, NULL, NULL, (void*)0x8023B400, NULL, (void*)0x8023CC00, (void*)0x8023CE00, (void*)0x8023D200, NULL, NULL, 0);
     dmaSprite(0x81, &_namingScreen2TextureSegmentRomStart, &_namingScreen2TextureSegmentRomEnd, &_namingScreen2AssetsIndexSegmentRomStart, &_namingScreen2AssetsIndexSegmentRomEnd, NULL, NULL, (void*)0x80253B00, NULL, (void*)0x80263B00, (void*)0x80263C00, (void*)0x80263D00, NULL, NULL, 0);
     dmaSprite(0x82, &_namingScreen2TextureSegmentRomStart, &_namingScreen2TextureSegmentRomEnd, &_namingScreen2AssetsIndexSegmentRomStart, &_namingScreen2AssetsIndexSegmentRomEnd, NULL, NULL, (void*)0x80253B00, NULL, (void*)0x80263B00, (void*)0x80263C00, (void*)0x80263D00, NULL, NULL, 0);
     dmaSprite(0x83, &_namingScreen2TextureSegmentRomStart, &_namingScreen2TextureSegmentRomEnd, &_namingScreen2AssetsIndexSegmentRomStart, &_namingScreen2AssetsIndexSegmentRomEnd, NULL, NULL, (void*)0x80253B00, NULL, (void*)0x80263B00, (void*)0x80263C00, (void*)0x80263D00, NULL, NULL, 0);
@@ -397,7 +399,7 @@ void loadNameSelectionSprites(void) {
     dmaSprite(0x8E, &_namingScreen2TextureSegmentRomStart, &_namingScreen2TextureSegmentRomEnd, &_namingScreen2AssetsIndexSegmentRomStart, &_namingScreen2AssetsIndexSegmentRomEnd, NULL, NULL, (void*)0x80253B00, NULL, (void*)0x80263B00, (void*)0x80263C00, (void*)0x80263D00, NULL, NULL, 0);
     dmaSprite(0x8F, &_namingScreen2TextureSegmentRomStart, &_namingScreen2TextureSegmentRomEnd, &_namingScreen2AssetsIndexSegmentRomStart, &_namingScreen2AssetsIndexSegmentRomEnd, NULL, NULL, (void*)0x80253B00, NULL, (void*)0x80263B00, (void*)0x80263C00, (void*)0x80263D00, NULL, NULL, 0);
     dmaSprite(LANDSCAPE_BACKGROUND, &_namingScreenBackgroundTextureSegmentRomStart, &_namingScreenBackgroundTextureSegmentRomEnd, &_namingScreenBackgroundAssetsIndexSegmentRomStart, &_namingScreenBackgroundAssetsIndexSegmentRomEnd, NULL, NULL, (void*)0x8026AB00, NULL, (void*)0x8026DB00, (void*)0x8026DC00, (void*)0x8026DD00, NULL, NULL, 0);
-    dmaSprite(0x91, &_characterDialogueIconsTextureSegmentRomStart, &_characterDialogueIconsTextureSegmentRomEnd, &_dialogueIconsAssetsIndexSegmentRomStart, &_dialogueIconsAssetsIndexSegmentRomEnd, NULL, NULL, (void*)0x8023B400, NULL, (void*)0x8023CC00, (void*)0x8023CE00, (void*)0x8023D200, NULL, NULL, 0);
+    dmaSprite(0x91, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsAssetsIndexSegmentRomStart, &_dialogueIconsAssetsIndexSegmentRomEnd, NULL, NULL, (void*)0x8023B400, NULL, (void*)0x8023CC00, (void*)0x8023CE00, (void*)0x8023D200, NULL, NULL, 0);
     
     setBilinearFiltering(0x8F, TRUE);
     setBilinearFiltering(LANDSCAPE_BACKGROUND, TRUE);
@@ -525,7 +527,7 @@ void loadNameSelectionSprites(void) {
     func_8003EA1C(3, 0xFF, 0xFF, 0xFF, 0xFF, 8);
     
 }
-*/
+
 
 INCLUDE_ASM("asm/nonmatchings/game/namingScreen", func_800EF578);
 
@@ -673,8 +675,98 @@ void func_800EFE84(void) {
     
 }
 
+//INCLUDE_ASM("asm/nonmatchings/game/namingScreen", func_800EFFDC);
+
 // unused or inline
-INCLUDE_ASM("asm/nonmatchings/game/namingScreen", func_800EFFDC);
+bool func_800EFFDC(void) {
+    
+    bool processingChar;
+    bool doneProcessingWord;
+    int processedWordCount;
+    
+    int spaceChar;
+    int endChar;
+    int endWord;
+    
+    u8 *currentNamePtr;
+    u8 *D_8011C680_ptr;
+    u8 *D_8011C680_stringPtr;
+    u8 *namingScreenContextNamePtr;
+    
+    processedWordCount = 0;
+    namingScreenContextNamePtr = namingScreenContext.name;
+    
+    spaceChar = 0xEE;
+    endChar = 0xFF;
+    
+    D_8011C680_ptr = D_8011C680;
+    
+    while (processedWordCount < 13) {
+        
+        // FIXME
+        do { 
+            processingChar = 0; 
+            doneProcessingWord = 0; 
+            D_8011C680_stringPtr = D_8011C680_ptr; 
+        } while (0);
+        
+        currentNamePtr = namingScreenContextNamePtr;
+        endWord = D_8011C680_stringPtr + 6;
+        
+        do {
+        
+            if (processingChar || (*currentNamePtr == 0xEE || *currentNamePtr == 0xFF) == 0) {
+                
+                processingChar = TRUE;
+                
+                if (*currentNamePtr != *D_8011C680_stringPtr) {
+                    
+                    if (*currentNamePtr != spaceChar) {
+                        doneProcessingWord = TRUE;
+                        break;
+                    } else if (*D_8011C680_stringPtr != endChar) {
+                        doneProcessingWord = TRUE;
+                        break;
+                    }
+                    
+                } else {
+                
+                    D_8011C680_stringPtr++;
+                    currentNamePtr++;
+                    continue;
+                
+                }
+                
+            }
+                    
+            D_8011C680_stringPtr++;
+        
+            // FIXME
+            if (*D_8011C680_ptr) {
+                currentNamePtr++;
+            } else {
+                currentNamePtr++;
+            }
+        
+        } while ((s32)D_8011C680_stringPtr < (s32)endWord);
+            
+        if (doneProcessingWord) {
+            
+            processedWordCount++;
+            // skip to next word
+            D_8011C680_ptr += 6;
+        
+            if (processedWordCount >= 13) {
+                return TRUE;
+            }
+        
+        } else {
+            return FALSE;
+        }
+        
+    }
+    
+}
 
 //INCLUDE_ASM("asm/nonmatchings/game/namingScreen", deactivateNamingScreenSprites);
 
@@ -929,59 +1021,57 @@ void func_800F03C4(void) {
 
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/namingScreen", loadSeasonSelectionSprites);
+//INCLUDE_ASM("asm/nonmatchings/game/namingScreen", loadSeasonSelectionSprites);
 
-// need to add linker symbols
-/*
 void loadSeasonSelectionSprites(void) {
     
-dmaSprite(0x80, &_characterDialogueIconsTextureSegmentRomStart, &_characterDialogueIconsTextureSegmentRomEnd, &_dialogueIconsAssetsIndexSegmentRomStart, &_dialogueIconsAssetsIndexSegmentRomEnd, 0, 0, 0x8023B400, 0, 0x8023CC00, 0x8023CE00, 0x8023D200, 0, 0, 0);
-dmaSprite(0x83, &_calendarTextureSegmentRomStart, &_calendarTextureSegmentRomEnd, &_calendarAssetsIndexSegmentRomStart, &_calendarAssetsIndexSegmentRomEnd, 0, 0, 0x80267300, 0, 0x8026A300, 0x8026A700, 0x8026AA00, 0, 0, 0);
-dmaSprite(0x84, &_calendarTextureSegmentRomStart, &_calendarTextureSegmentRomEnd, &_calendarAssetsIndexSegmentRomStart, &_calendarAssetsIndexSegmentRomEnd, 0, 0, 0x80267300, 0, 0x8026A300, 0x8026A700, 0x8026AA00, 0, 0, 0);
-dmaSprite(0x85, &_calendarTextureSegmentRomStart, &_calendarTextureSegmentRomEnd, &_calendarAssetsIndexSegmentRomStart, &_calendarAssetsIndexSegmentRomEnd, 0, 0, 0x80267300, 0, 0x8026A300, 0x8026A700, 0x8026AA00, 0, 0, 0);
-dmaSprite(0x86, &_calendarTextureSegmentRomStart, &_calendarTextureSegmentRomEnd, &_calendarAssetsIndexSegmentRomStart, &_calendarAssetsIndexSegmentRomEnd, 0, 0, 0x80267300, 0, 0x8026A300, 0x8026A700, 0x8026AA00, 0, 0, 0);
-dmaSprite(0x89, &_namingScreen1TextureSegmentRomStart, &_namingScreen1TextureSegmentRomEnd, &_namingScreen1AssetsIndexSegmentRomStart, &_namingScreen1AssetsIndexSegmentRomEnd, 0, 0, 0x80263E00, 0, 0x80266E00, 0x80267100, 0x80267200, 0, 0, 0);
-dmaSprite(0x8A, &_namingScreen1TextureSegmentRomStart, &_namingScreen1TextureSegmentRomEnd, &_namingScreen1AssetsIndexSegmentRomStart, &_namingScreen1AssetsIndexSegmentRomEnd, 0, 0, 0x80263E00, 0, 0x80266E00, 0x80267100, 0x80267200, 0, 0, 0);
-dmaSprite(0x8B, &_namingScreen1TextureSegmentRomStart, &_namingScreen1TextureSegmentRomEnd, &_namingScreen1AssetsIndexSegmentRomStart, &_namingScreen1AssetsIndexSegmentRomEnd, 0, 0, 0x80263E00, 0, 0x80266E00, 0x80267100, 0x80267200, 0, 0, 0);
-dmaSprite(0x8C, &_namingScreen1TextureSegmentRomStart, &_namingScreen1TextureSegmentRomEnd, &_namingScreen1AssetsIndexSegmentRomStart, &_namingScreen1AssetsIndexSegmentRomEnd, 0, 0, 0x80263E00, 0, 0x80266E00, 0x80267100, 0x80267200, 0, 0, 0);
-dmaSprite(LANDSCAPE_BACKGROUND, &_namingScreenBackgroundTextureSegmentRomStart, &_namingScreenBackgroundTextureSegmentRomEnd, &_namingScreenBackgroundAssetsIndexSegmentRomStart, &_namingScreenBackgroundAssetsIndexSegmentRomEnd, NULL, NULL, 0x8026AB00, 0, 0x8026DB00, 0x8026DC00, 0x8026DD00, 0, 0, 0);
+    dmaSprite(0x80, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsAssetsIndexSegmentRomStart, &_dialogueIconsAssetsIndexSegmentRomEnd, 0, 0, 0x8023B400, 0, 0x8023CC00, 0x8023CE00, 0x8023D200, 0, 0, 0);
+    dmaSprite(0x83, &_calendarTextureSegmentRomStart, &_calendarTextureSegmentRomEnd, &_calendarAssetsIndexSegmentRomStart, &_calendarAssetsIndexSegmentRomEnd, 0, 0, 0x80267300, 0, 0x8026A300, 0x8026A700, 0x8026AA00, 0, 0, 0);
+    dmaSprite(0x84, &_calendarTextureSegmentRomStart, &_calendarTextureSegmentRomEnd, &_calendarAssetsIndexSegmentRomStart, &_calendarAssetsIndexSegmentRomEnd, 0, 0, 0x80267300, 0, 0x8026A300, 0x8026A700, 0x8026AA00, 0, 0, 0);
+    dmaSprite(0x85, &_calendarTextureSegmentRomStart, &_calendarTextureSegmentRomEnd, &_calendarAssetsIndexSegmentRomStart, &_calendarAssetsIndexSegmentRomEnd, 0, 0, 0x80267300, 0, 0x8026A300, 0x8026A700, 0x8026AA00, 0, 0, 0);
+    dmaSprite(0x86, &_calendarTextureSegmentRomStart, &_calendarTextureSegmentRomEnd, &_calendarAssetsIndexSegmentRomStart, &_calendarAssetsIndexSegmentRomEnd, 0, 0, 0x80267300, 0, 0x8026A300, 0x8026A700, 0x8026AA00, 0, 0, 0);
+    dmaSprite(0x89, &_namingScreen1TextureSegmentRomStart, &_namingScreen1TextureSegmentRomEnd, &_namingScreen1AssetsIndexSegmentRomStart, &_namingScreen1AssetsIndexSegmentRomEnd, 0, 0, 0x80263E00, 0, 0x80266E00, 0x80267100, 0x80267200, 0, 0, 0);
+    dmaSprite(0x8A, &_namingScreen1TextureSegmentRomStart, &_namingScreen1TextureSegmentRomEnd, &_namingScreen1AssetsIndexSegmentRomStart, &_namingScreen1AssetsIndexSegmentRomEnd, 0, 0, 0x80263E00, 0, 0x80266E00, 0x80267100, 0x80267200, 0, 0, 0);
+    dmaSprite(0x8B, &_namingScreen1TextureSegmentRomStart, &_namingScreen1TextureSegmentRomEnd, &_namingScreen1AssetsIndexSegmentRomStart, &_namingScreen1AssetsIndexSegmentRomEnd, 0, 0, 0x80263E00, 0, 0x80266E00, 0x80267100, 0x80267200, 0, 0, 0);
+    dmaSprite(0x8C, &_namingScreen1TextureSegmentRomStart, &_namingScreen1TextureSegmentRomEnd, &_namingScreen1AssetsIndexSegmentRomStart, &_namingScreen1AssetsIndexSegmentRomEnd, 0, 0, 0x80263E00, 0, 0x80266E00, 0x80267100, 0x80267200, 0, 0, 0);
+    dmaSprite(LANDSCAPE_BACKGROUND, &_namingScreenBackgroundTextureSegmentRomStart, &_namingScreenBackgroundTextureSegmentRomEnd, &_namingScreenBackgroundAssetsIndexSegmentRomStart, &_namingScreenBackgroundAssetsIndexSegmentRomEnd, NULL, NULL, 0x8026AB00, 0, 0x8026DB00, 0x8026DC00, 0x8026DD00, 0, 0, 0);
 
-setSpriteViewSpacePosition(0x80, 0, 0, -1.0f);
+    setSpriteViewSpacePosition(0x80, 0, 0, -1.0f);
 
-setSpriteViewSpacePosition(0x83, -48.0f, 0, 10.0f);
-setSpriteViewSpacePosition(0x84, 96.0f, 0, 10.0f);
-setSpriteViewSpacePosition(0x85, -48.0f, -48.0f, 10.0f);
-setSpriteViewSpacePosition(0x86, 96.0f, -48.0f, 10.0f);
+    setSpriteViewSpacePosition(0x83, -48.0f, 0, 10.0f);
+    setSpriteViewSpacePosition(0x84, 96.0f, 0, 10.0f);
+    setSpriteViewSpacePosition(0x85, -48.0f, -48.0f, 10.0f);
+    setSpriteViewSpacePosition(0x86, 96.0f, -48.0f, 10.0f);
 
-setSpriteViewSpacePosition(0x89, 0, 0, 5.0f);
-setSpriteViewSpacePosition(0x8A, 0, 0, 5.0f);
-setSpriteViewSpacePosition(0x8B, 0, 0, 5.0f);
-setSpriteViewSpacePosition(0x8C, 0, 0, 5.0f);
+    setSpriteViewSpacePosition(0x89, 0, 0, 5.0f);
+    setSpriteViewSpacePosition(0x8A, 0, 0, 5.0f);
+    setSpriteViewSpacePosition(0x8B, 0, 0, 5.0f);
+    setSpriteViewSpacePosition(0x8C, 0, 0, 5.0f);
 
-setSpritePaletteIndex(0x84, 0);
-setSpritePaletteIndex(0x85, 0);
-setSpritePaletteIndex(0x86, 0);
-setSpritePaletteIndex(0x8A, 2);
-setSpritePaletteIndex(0x8B, 3);
-setSpritePaletteIndex(0x8C, 4);
-setBilinearFiltering(LANDSCAPE_BACKGROUND, TRUE);
-setSpriteScale(LANDSCAPE_BACKGROUND, 2.0f, 2.0f, 1.0f);
-startSpriteAnimation(0x80, 3, 0);
-startSpriteAnimation(0x83, 4, 0);
-startSpriteAnimation(0x84, 4, 1);
-startSpriteAnimation(0x85, 4, 2);
-startSpriteAnimation(0x86, 4, 3);
-startSpriteAnimation(0x89, 0, 0);
-startSpriteAnimation(0x8A, 0, 1);
-startSpriteAnimation(0x8B, 0, 2);
-startSpriteAnimation(0x8C, 0, 3);
-startSpriteAnimation(LANDSCAPE_BACKGROUND, 0, 0);
-setSpriteColor(0x80, 0, 0, 0, 0);
-setSpriteColor(0x83, 0, 0, 0, 0);
-setSpriteColor(0x84, 0, 0, 0, 0);
-setSpriteColor(0x85, 0, 0, 0, 0);
-setSpriteColor(0x86, 0, 0, 0, 0);
-setSpriteColor(0x89, 0, 0, 0, 0);
+    setSpritePaletteIndex(0x84, 0);
+    setSpritePaletteIndex(0x85, 0);
+    setSpritePaletteIndex(0x86, 0);
+    setSpritePaletteIndex(0x8A, 2);
+    setSpritePaletteIndex(0x8B, 3);
+    setSpritePaletteIndex(0x8C, 4);
+    setBilinearFiltering(LANDSCAPE_BACKGROUND, TRUE);
+    setSpriteScale(LANDSCAPE_BACKGROUND, 2.0f, 2.0f, 1.0f);
+    startSpriteAnimation(0x80, 3, 0);
+    startSpriteAnimation(0x83, 4, 0);
+    startSpriteAnimation(0x84, 4, 1);
+    startSpriteAnimation(0x85, 4, 2);
+    startSpriteAnimation(0x86, 4, 3);
+    startSpriteAnimation(0x89, 0, 0);
+    startSpriteAnimation(0x8A, 0, 1);
+    startSpriteAnimation(0x8B, 0, 2);
+    startSpriteAnimation(0x8C, 0, 3);
+    startSpriteAnimation(LANDSCAPE_BACKGROUND, 0, 0);
+    setSpriteColor(0x80, 0, 0, 0, 0);
+    setSpriteColor(0x83, 0, 0, 0, 0);
+    setSpriteColor(0x84, 0, 0, 0, 0);
+    setSpriteColor(0x85, 0, 0, 0, 0);
+    setSpriteColor(0x86, 0, 0, 0, 0);
+    setSpriteColor(0x89, 0, 0, 0, 0);
     setSpriteColor(0x8A, 0, 0, 0, 0);
     setSpriteColor(0x8B, 0, 0, 0, 0);
     setSpriteColor(0x8C, 0, 0, 0, 0);
@@ -1002,19 +1092,18 @@ setSpriteColor(0x89, 0, 0, 0, 0);
     namingScreenContext.dialogueIndex = 9;
     namingScreenContext.coordinates.x = -128.0f;
     namingScreenContext.coordinates.y = 52.0f;
-    namingScreenContext.flags &= ~(0x20 | -0x40);
+    namingScreenContext.flags &= ~(0x20 | 0x40);
     namingScreenContext.flags |= 0x20;
     
 }
-*/
 
 //INCLUDE_ASM("asm/nonmatchings/game/namingScreen", func_800F0F84);
 
 void func_800F0F84(void) {
     
-bool set = FALSE;
+    bool set = FALSE;
 
-if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_UP) || checkButtonRepeat(CONTROLLER_1, 0x100000)) {
+    if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_UP) || checkButtonRepeat(CONTROLLER_1, 0x100000)) {
     
         set = TRUE;
         

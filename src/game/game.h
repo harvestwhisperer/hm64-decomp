@@ -41,6 +41,7 @@
 #define ENTITY_HARVEST_SPRITE 33
 #define ENTITY_BARLEY 34
 #define ENTITY_SYDNEY 35
+#define ENTITY_WIFE 35
 #define ENTITY_ENTOMOLOGIST 36
 #define ENTITY_GOURMET_JUDGE 37
 #define ENTITY_PHOTOGRAPHER 38
@@ -236,6 +237,7 @@ extern void setWifeNameString(u8 wife);
 
 extern u8 getBacholeretteWithHighestAffection(u8 affectionLevel);
 
+extern void setHarvestKingName(u8 harvestKing);
 extern void setFlowerFestivalGoddess();
 extern u8 handleHouseConstruction(u8);   
 
@@ -308,6 +310,8 @@ extern u8 spiritFestivalAssistant2;
 extern u8 spiritFestivalAssistant1;
 extern u8 spiritFestivalAssistant3;  
 
+extern u16 D_801886D2;
+
 extern u8 gFarmName[6];
 extern u8 gWifeName[6];
 extern u8 gBabyName[6];
@@ -317,10 +321,12 @@ extern u8 gHappiness;
 
 extern u8 mariaHarrisPregnancyCounter;
 extern u8 mariaHarrisBabyAge;
-extern u8 popuriGrayNewlyWedCounter;
+extern u8 popuriGrayNewlywedCounter;
 extern u8 popuriGrayPregnancyCounter;
+extern u8 popuriGrayBabyAge;
 extern u8 elliJeffNewlywedCounter;
 extern u8 elliJeffPregnancyCounter;
+extern u8 elliJeffBabyAge;
 extern u8 karenKaiBabyAge;
 extern u8 karenKaiNewlywedCounter;
 extern u8 karenPregnancyCounter;
@@ -332,7 +338,6 @@ extern u8 numberOfSpiritFestivalAssistantsRecruited;
 extern u8 spiritFestivalAssistant1;
 extern u8 spiritFestivalAssistant2;
 extern u8 spiritFestivalAssistant3;  
-extern u8 D_801FC15C;
 
 extern u8 mountainConstructionWorkDays;
 

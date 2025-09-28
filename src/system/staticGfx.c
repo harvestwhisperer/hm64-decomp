@@ -4,9 +4,8 @@
 #define SCREEN_WD	320
 #define SCREEN_HT	240
 
-// FIXME: get these symbols defined/working via Splat somehow
-// extern long long int gspF3DEX2_fifoTextStart[];
-// extern long long int gspF3DEX2_fifoDataStart[];
+extern long long int gspF3DEX2_fifoTextStart[];
+extern long long int gspF3DEX2_fifoDataStart[];
 
 static Vp vp = 
 {
@@ -14,10 +13,8 @@ static Vp vp =
   SCREEN_WD*2, SCREEN_HT*2, G_MAXZ/2, 0,	/* translate */
 };
 
-// FIXME: use symbols
 NUUcode nugfx_ucode[] = {
-    //{(u64*)gspF3DEX2_fifoTextStart, (u64*)gspF3DEX2_fifoDataStart}
-    {(u64*)0x80111550, (u64*)0x8011E840}
+    {(u64*)gspF3DEX2_fifoTextStart, (u64*)gspF3DEX2_fifoDataStart}
 };
 
 u16* FrameBuf[3] = {

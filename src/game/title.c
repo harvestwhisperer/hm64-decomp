@@ -429,7 +429,6 @@ static inline bool handleFrameIncrement() {
     
 }
 
-// jtbl_80123658
 //INCLUDE_ASM("asm/nonmatchings/game/title", titleScreenMainLoopCallback);
 
 // main loop callback
@@ -672,7 +671,6 @@ static inline void handleUpdateDogAnimation() {
         titleScreenContext.dogIdleCounter++;
 }
 
-// jtbl_80123670
 //INCLUDE_ASM("asm/nonmatchings/game/title", func_800E0ED4);
 
 void func_800E0ED4(void) {

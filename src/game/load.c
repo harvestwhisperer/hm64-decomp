@@ -4,7 +4,7 @@
 #include "game/game.h"
 #include "game/gameStatus.h"
 #include "game/npc.h"
-#include "game/mapObjects.h"
+#include "game/fieldObjects.h"
 #include "game/overlayScreens.h"
 #include "game/updateGame.h"     
 #include "game/weather.h"       
@@ -64,7 +64,7 @@ void func_800598E0(void) {
     gSumGirlsWithHighAffection = getBacholeretteWithHighestAffection(140);
     gTotalGrassTiles = func_800DC008() + func_800DC080(); // farm field + greenhouse
     gTotalPinkCatMintFlowersGrowing = countPinkCatMintFlowersFarm() + countPinkCatMintFlowersGreenhouse(); // farm field + greenhouse
-    
+     
     if (checkLifeEventBit(MARRIED)) {
         setWifeNameString(gWife);
     }

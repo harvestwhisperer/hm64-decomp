@@ -303,6 +303,7 @@ bool spawnCutsceneExecutor(u16 index, void *bytecodePtr) {
 
 //INCLUDE_ASM("asm/nonmatchings/system/cutscene", func_80046A58);
 
+// unused
 bool func_80046A58(u16 index, void* bytecodePtr) {
     
     bool result = FALSE;
@@ -1981,6 +1982,7 @@ void func_80049AC4(u16 index) {
 
     setEntityDirection(cutsceneExecutors[index].assetIndex, convertSpriteToWorldDirection(cutsceneExecutors[index].entityDirectionOrMapRotation, gMainMapIndex));
     
+    // dead code
     if (cutsceneExecutors[index].cameraFlags & 0x10) {
         vec = getMovementVectorFromDirection(cutsceneExecutors[index].movementDistance, convertWorldToSpriteDirection(entities[cutsceneExecutors[index].assetIndex].direction, gMainMapIndex), 0.0f);
     } else {
@@ -3516,7 +3518,7 @@ void cutsceneHandlerSetMapAddition(u16 index) {
     cutsceneExecutors[index].bytecodePtr += 2;
     
     setMapAdditionIndexFromCoordinates(MAIN_MAP_INDEX, mapAdditionIndex, x, z);
-    func_80036C08(MAIN_MAP_INDEX);
+    setGridToTileTextureMappings(MAIN_MAP_INDEX);
     
 }
 

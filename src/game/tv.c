@@ -76,7 +76,6 @@ void func_800D8540(void) {
 
 }
 
-// jtbl_80122760
 //INCLUDE_ASM("asm/nonmatchings/game/tv", func_800D86D8);
 
 // variety show episode incrementer
@@ -139,7 +138,6 @@ void func_800D86D8(void) {
     }
 }
 
-// jtbl_80122780
 //INCLUDE_ASM("asm/nonmatchings/game/tv", setTVContentIndex);
 
 void setTVContentIndex(void) {
@@ -566,7 +564,6 @@ void setTVDialogueIndex (void) {
     
 }
 
-// jtbl_80122808
 //INCLUDE_ASM("asm/nonmatchings/game/tv", setTVPictureIndex);
 
 void setTVPictureIndex(void) {

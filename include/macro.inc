@@ -33,7 +33,6 @@
 # A label referenced by a jumptable.
 .macro jlabel label, visibility=global
     .\visibility \label
-    .type \label, @function
     \label:
 .endm
 

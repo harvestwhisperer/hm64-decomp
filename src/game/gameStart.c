@@ -120,4 +120,5 @@ void func_8004DFF8(void) {
     
 }
 
+// empty function
 void func_8004E154(void) {}

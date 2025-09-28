@@ -1046,12 +1046,16 @@ bool checkSpriteAnimationStateChanged(u16 index) {
     
 }
 
+//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", setTotalAnimationFrames);
+
 void setTotalAnimationFrames(AnimationFrameMetadata *animationFrameMetadata, Swap16 *animationAsset) {
     
     // skip 4 byte header
     animationFrameMetadata->objectCount = swap16(animationAsset[2]);
     
 }
+
+//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", setAnimationFrameMetadata);
 
 inline void setAnimationFrameMetadata(AnimationFrameMetadata* animationFrameMetadata, Swap16* animationFrameMetadataPtr) {
 
@@ -1087,6 +1091,8 @@ inline void setAnimationFrameMetadata(AnimationFrameMetadata* animationFrameMeta
 
 }
 */
+
+//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", setBitmapMetadata);
 
 inline void setBitmapMetadata(BitmapMetadata* ptr, Swap16* data) {
     

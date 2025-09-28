@@ -16,7 +16,7 @@
 #include "game/level.h"
 #include "game/levelInteractions.h"
 #include "game/loadGameScreen.h"
-#include "game/mapObjects.h"
+#include "game/fieldObjects.h"
 #include "game/npc.h"
 #include "game/player.h"
 #include "game/spriteInfo.h"
@@ -34,8 +34,6 @@ extern u8 D_80118620[];
 
 // bss
 extern u8 D_8018907D;
-extern u8 D_801C3F35;
-extern u8 D_801FD624;
 
 // load game screen
 // strawberries shipped
@@ -93,7 +91,6 @@ void func_800CF850(void) {
     toolUse.unk_E = 2;
 }
 
-// jtbl_801222B0
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", getToolLevel);
 
 u8 getToolLevel(u8 tool) {
@@ -171,7 +168,6 @@ INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800CFF1C);
 
 INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D0074);
 
-// jtbl_801222C8
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", handleToolUse);
 
 void handleToolUse(void) {
@@ -363,21 +359,21 @@ void func_800D373C(void) {
     
     if (direction < SOUTHWEST) {
         temp2 = D_80117180[toolUse.unk_2];
-    }
-    else {
+    } else {
         temp2 = D_8011718C[toolUse.unk_2];
     }
     
     vec = func_80065F94(0.0f, temp2);
  
     if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && vec.y != 65535.0f) {
+
         if (gSeason == SPRING || gBaseMapIndex == GREENHOUSE) {
           temp3 = 8;
         } else {
           temp3 = 0xD7;
         }
         
-        func_800DAC70(gBaseMapIndex, temp3, (u8)vec.x - D_801FD624, (u8)vec.z - D_801C3F35);
+        func_800DAC70(gBaseMapIndex, temp3, (u8)vec.x - groundObjectsGridX, (u8)vec.z - groundObjectsGridZ);
         
     }
     
@@ -420,7 +416,7 @@ void func_800D3958(void) {
           temp3 = 0xD7;
         }
         
-        func_800DAC70(gBaseMapIndex, temp3, (u8)vec.x - D_801FD624, (u8)vec.z - D_801C3F35);
+        func_800DAC70(gBaseMapIndex, temp3, (u8)vec.x - groundObjectsGridX, (u8)vec.z - groundObjectsGridZ);
     }
     
     if (!toolUse.unk_2) {
@@ -464,7 +460,7 @@ void func_800D3B74(void) {
           temp3 = 0xD7;
         }
         
-        func_800DAC70(gBaseMapIndex, temp3, (u8)vec.x - D_801FD624, (u8)vec.z - D_801C3F35);
+        func_800DAC70(gBaseMapIndex, temp3, (u8)vec.x - groundObjectsGridX, (u8)vec.z - groundObjectsGridZ);
 
     }
     
@@ -509,7 +505,7 @@ void func_800D3D90(void) {
           temp3 = 0xD7;
         }
         
-        func_800DAC70(gBaseMapIndex, temp3, (u8)vec.x - D_801FD624, (u8)vec.z - D_801C3F35);
+        func_800DAC70(gBaseMapIndex, temp3, (u8)vec.x - groundObjectsGridX, (u8)vec.z - groundObjectsGridZ);
     }
     
     if (!toolUse.unk_2) {
@@ -553,7 +549,7 @@ void func_800D3FAC(void) {
           temp3 = 0xD7;
         }
         
-        func_800DAC70(gBaseMapIndex, temp3, (u8)vec.x - D_801FD624, (u8)vec.z - D_801C3F35);
+        func_800DAC70(gBaseMapIndex, temp3, (u8)vec.x - groundObjectsGridX, (u8)vec.z - groundObjectsGridZ);
     }
     
     if (!toolUse.unk_2) {
@@ -597,7 +593,7 @@ void func_800D41C8(void) {
           temp3 = 0xD7;
         }
         
-        func_800DAC70(gBaseMapIndex, temp3, (u8)vec.x - D_801FD624, (u8)vec.z - D_801C3F35);
+        func_800DAC70(gBaseMapIndex, temp3, (u8)vec.x - groundObjectsGridX, (u8)vec.z - groundObjectsGridZ);
     }
     
     if (!toolUse.unk_2) {
@@ -641,7 +637,7 @@ void func_800D43E4(void) {
 
         tempFlags = (gBaseMapIndex == 0x56) ? ( 4 | 0x40 ) : ~( 8 | 0x20 );
 
-        func_800DAC70(gBaseMapIndex, tempFlags, (u8)vec.x - D_801FD624, (u8)vec.z - D_801C3F35);
+        func_800DAC70(gBaseMapIndex, tempFlags, (u8)vec.x - groundObjectsGridX, (u8)vec.z - groundObjectsGridZ);
     }
 
     if (toolUse.unk_2 == 0) {
@@ -687,7 +683,7 @@ void func_800D45F4(void) {
             temp3 = 0xD7;
         }
 
-        func_800DAC70(gBaseMapIndex, temp3, (u8)vec.x - D_801FD624, (u8)vec.z - D_801C3F35);
+        func_800DAC70(gBaseMapIndex, temp3, (u8)vec.x - groundObjectsGridX, (u8)vec.z - groundObjectsGridZ);
     }
     
     if (!toolUse.unk_2) {
@@ -731,7 +727,7 @@ void func_800D4814(void) {
             temp3 = 0xD7;
         }
 
-        func_800DAC70(gBaseMapIndex, temp3, (u8)vec.x - D_801FD624, (u8)vec.z - D_801C3F35);
+        func_800DAC70(gBaseMapIndex, temp3, (u8)vec.x - groundObjectsGridX, (u8)vec.z - groundObjectsGridZ);
     }
     
     if (!toolUse.unk_2) {
@@ -768,7 +764,7 @@ void func_800D4A34(void) {
     vec = func_80065F94(0.0f, temp2);
  
     if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && vec.y != 65535.0f) {
-        func_800DAC70(gBaseMapIndex, 0xB2, (u8)vec.x - D_801FD624, (u8)vec.z - D_801C3F35);
+        func_800DAC70(gBaseMapIndex, 0xB2, (u8)vec.x - groundObjectsGridX, (u8)vec.z - groundObjectsGridZ);
     }
     
     if (!toolUse.unk_2) {
@@ -802,12 +798,15 @@ void func_800D4C28(void) {
 }
 
 // ball
+// empty function
 void func_800D4CA8(void) {}
 
 // feeding bottle
+// empty function
 void func_800D4CB0(void) {}
 
 // unknown tool
+// empty function
 void func_800D4CB8(void) {}
 
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D4CC0);
@@ -871,7 +870,7 @@ void func_800D4D68(void) {
  
     if ((func_800DA948(func_800DAF58(0.0f, temp2)) & 0x20) && vec.y != 65535.0f) {
         if (gBaseMapIndex == FARM) {
-            func_800DAC70(FARM, 0x85, (u8)vec.x - D_801FD624, (u8)vec.z - D_801C3F35);    
+            func_800DAC70(FARM, 0x85, (u8)vec.x - groundObjectsGridX, (u8)vec.z - groundObjectsGridZ);    
         }
     }
     
@@ -1328,6 +1327,8 @@ static inline void setVec3f(u8 index, f32 x, f32 y, f32 z) {
 
 }
 
+//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D6B58);
+
 void func_800D6B58(u8 arg0, u8 index) {
 
     u8 temp;
@@ -1398,5 +1399,4 @@ void func_800D6B58(u8 arg0, u8 index) {
     }
 }
 
-// jtbl_80122708
 INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D7010);

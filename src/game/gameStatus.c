@@ -6,7 +6,7 @@
 #include "game/animals.h"
 #include "game/game.h"
 #include "game/level.h"
-#include "game/mapObjects.h"
+#include "game/fieldObjects.h"
 #include "game/npc.h"
 
 // bss
@@ -71,7 +71,6 @@ static inline void handleAddShipment(s32 amount) {
     
 }
 
-// jtbl_8011F300
 //INCLUDE_ASM("asm/nonmatchings/game/gameStatus", handleWifeMorningHelp);
 
 void handleWifeMorningHelp(void) {
@@ -374,7 +373,7 @@ INCLUDE_ASM("asm/nonmatchings/game/gameStatus", func_80064814);
 
 INCLUDE_ASM("asm/nonmatchings/game/gameStatus", func_80064CF0);
 
-//INCLUDE_ASM("asm/nonmatchings/game/gameStatus", func_80065074);
+//INCLUDE_ASM("asm/nonmatchings/game/gameStatus", setDailyEventBit);
 
 void setDailyEventBit(u16 bitIndex) {
     u32 temp = bitIndex;
@@ -458,7 +457,7 @@ u32 checkMailRead(u16 bitIndex) {
     return readMailBits[temp / 32] & (1 << (temp & 0x1F));
 }
 
-//NCLUDE_ASM(const s32, "gameStatus", setMail);
+//INCLUDE_ASM(const s32, "gameStatus", setMail);
 
 void setMail(u16 bitIndex) {
     u32 temp = bitIndex;
@@ -521,7 +520,6 @@ u8 func_8006536C(void) {
     
 }
 
-// jtbl_8011F398
 //INCLUDE_ASM("asm/nonmatchings/game/gameStatus", setAlbumPicture);
 
 void setAlbumPicture(u8 pictureBitIndex) {
@@ -741,10 +739,14 @@ s32 getSumNpcAffection(void) {
     
 }
 
+// empty function
 void func_800657AC(void) {}
 
+// empty function
 void func_800657B4(void) {}
 
+// empty function
 void func_800657BC(void) {}
 
+// empty function
 void func_800657C4(void) {}
