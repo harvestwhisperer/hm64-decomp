@@ -14,156 +14,149 @@
 #include "game/weather.h"
 
 // bss
-extern u8 topOfMountain1FieldTiles[FIELD_WIDTH][FIELD_HEIGHT];
-extern u8 moonMountainFieldTiles[FIELD_WIDTH][FIELD_HEIGHT];
-extern u8 pondFieldTiles[FIELD_WIDTH][FIELD_HEIGHT];
-extern u8 caveFieldTiles[FIELD_WIDTH][FIELD_HEIGHT];
-extern u8 mineFieldTiles[FIELD_WIDTH][FIELD_HEIGHT];
-extern u8 greenhouseFieldTiles[FIELD_WIDTH][FIELD_HEIGHT];
-extern u8 mountain1FieldTiles[FIELD_WIDTH][FIELD_HEIGHT];
-extern u8 mountain2FieldTiles[FIELD_WIDTH][FIELD_HEIGHT];
-extern u8 ranchFieldTiles[FIELD_WIDTH][FIELD_HEIGHT];
-
-extern u8 D_80113940[FIELD_WIDTH][FIELD_HEIGHT];
+extern u8 topOfMountain1FieldTiles[FIELD_HEIGHT][FIELD_WIDTH];
+extern u8 moonMountainFieldTiles[FIELD_HEIGHT][FIELD_WIDTH];
+extern u8 pondFieldTiles[FIELD_HEIGHT][FIELD_WIDTH];
+extern u8 caveFieldTiles[FIELD_HEIGHT][FIELD_WIDTH];
+extern u8 mineFieldTiles[FIELD_HEIGHT][FIELD_WIDTH];
+extern u8 greenhouseFieldTiles[FIELD_HEIGHT][FIELD_WIDTH];
+extern u8 mountain1FieldTiles[FIELD_HEIGHT][FIELD_WIDTH];
+extern u8 mountain2FieldTiles[FIELD_HEIGHT][FIELD_WIDTH];
+extern u8 ranchFieldTiles[FIELD_HEIGHT][FIELD_WIDTH];
 
 // data
-// FIXME: should be one array 
-// map additions and spawnable sprite indices
-extern u8 D_80118700[218][5];
-extern u8 D_80118701[218][5];
-extern u8 D_80118702[218][5];
-extern u8 D_80118703[218][5];
-extern u8 D_80118704[218][5];
-extern u8 D_8011870A;
-extern u8 D_8011870B;
-
+extern GroundObjectInfo groundObjectsInfo[MAX_FIELD_OBJECTS];
 
 // forward declarations
-u8 func_800DA9A8(u8 mapIndex, u8 heightIndex, u8 widthIndex);
+u8 getGroundObjectIndexFromTilePosition(u8 mapIndex, u8 heightIndex, u8 widthIndex);
 
+// TODO: put this in a header for field tiles data
+extern u8 D_80113940[FIELD_HEIGHT][FIELD_WIDTH];
 
-//INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", func_800D9600);
+//INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", setMapGroundObjects);
 
-void func_800D9600(u8 mapIndex) {
+void setMapGroundObjects(u8 mapIndex) {
 
     u8 i, j;
     
     switch (mapIndex) {
 
         case FARM:
-            for (i = 0; i < FIELD_WIDTH; i++) {
-                for (j = 0; j < FIELD_HEIGHT; j++) {
+            for (i = 0; i < FIELD_HEIGHT; i++) {
+                for (j = 0; j < FIELD_WIDTH; j++) {
                     if (farmFieldTiles[i][j]) {
-                        func_800DAC70(mapIndex, farmFieldTiles[i][j], j, i);
+                        addGroundObjectToMap(mapIndex, farmFieldTiles[i][j], j, i);
                     }
                 }
             }
-            return;
+            break;
 
         case GREENHOUSE:
-            for (i = 0; i < FIELD_WIDTH; i++) {
-                for (j = 0; j < FIELD_HEIGHT; j++) {
+            for (i = 0; i < FIELD_HEIGHT; i++) {
+                for (j = 0; j < FIELD_WIDTH; j++) {
                     if (greenhouseFieldTiles[i][j]) {
-                        func_800DAC70(mapIndex, greenhouseFieldTiles[i][j], j, i);
+                        addGroundObjectToMap(mapIndex, greenhouseFieldTiles[i][j], j, i);
                     }
                 }
             }
-            return;
+            break;
 
         case MOUNTAIN_1:
-            for (i = 0; i < FIELD_WIDTH; i++) {
-                for (j = 0; j < FIELD_HEIGHT; j++) {
+            for (i = 0; i < FIELD_HEIGHT; i++) {
+                for (j = 0; j < FIELD_WIDTH; j++) {
                     if (mountain1FieldTiles[i][j]) {
-                        func_800DAC70(mapIndex, mountain1FieldTiles[i][j], j, i);
+                        addGroundObjectToMap(mapIndex, mountain1FieldTiles[i][j], j, i);
                     }
                 }
             }
-            return;
+            break;
 
         case MOUNTAIN_2:
-            for (i = 0; i < FIELD_WIDTH; i++) {
-                for (j = 0; j < FIELD_HEIGHT; j++) {
+            for (i = 0; i < FIELD_HEIGHT; i++) {
+                for (j = 0; j < FIELD_WIDTH; j++) {
                     if (mountain2FieldTiles[i][j]) {
-                        func_800DAC70(mapIndex, mountain2FieldTiles[i][j], j, i);
+                        addGroundObjectToMap(mapIndex, mountain2FieldTiles[i][j], j, i);
                     }
                 }
             }
-            return;    
+            break;    
 
         case TOP_OF_MOUNTAIN_1:
-            for (i = 0; i < FIELD_WIDTH; i++) {
-                for (j = 0; j < FIELD_HEIGHT; j++) {
+            for (i = 0; i < FIELD_HEIGHT; i++) {
+                for (j = 0; j < FIELD_WIDTH; j++) {
                     if (topOfMountain1FieldTiles[i][j]) {
-                        func_800DAC70(mapIndex, topOfMountain1FieldTiles[i][j], j, i);
+                        addGroundObjectToMap(mapIndex, topOfMountain1FieldTiles[i][j], j, i);
                     }
                 }
             }
-            return;    
+            break;    
 
         case MOON_MOUNTAIN:
-            for (i = 0; i < FIELD_WIDTH; i++) {
-                for (j = 0; j < FIELD_HEIGHT; j++) {
+            for (i = 0; i < FIELD_HEIGHT; i++) {
+                for (j = 0; j < FIELD_WIDTH; j++) {
                     if (moonMountainFieldTiles[i][j]) {
-                        func_800DAC70(mapIndex, moonMountainFieldTiles[i][j], j, i);
+                        addGroundObjectToMap(mapIndex, moonMountainFieldTiles[i][j], j, i);
                     }
                 }
             }
-            return;    
+            break;    
 
         case POND:
-            for (i = 0; i < FIELD_WIDTH; i++) {
-                for (j = 0; j < FIELD_HEIGHT; j++) {
+            for (i = 0; i < FIELD_HEIGHT; i++) {
+                for (j = 0; j < FIELD_WIDTH; j++) {
                     if (pondFieldTiles[i][j]) {
-                        func_800DAC70(mapIndex, pondFieldTiles[i][j], j, i);
+                        addGroundObjectToMap(mapIndex, pondFieldTiles[i][j], j, i);
                     }
                 }
             }
-            return;
+            break;
 
         case CAVE:
-            for (i = 0; i < FIELD_WIDTH; i++) {
-                for (j = 0; j < FIELD_HEIGHT; j++) {
+            for (i = 0; i < FIELD_HEIGHT; i++) {
+                for (j = 0; j < FIELD_WIDTH; j++) {
                     if (caveFieldTiles[i][j]) {
-                        func_800DAC70(mapIndex, caveFieldTiles[i][j], j, i);
+                        addGroundObjectToMap(mapIndex, caveFieldTiles[i][j], j, i);
                     }
                 }
             }
-            return;    
+            break;    
 
         case MINE:
         case MINE_2:
-            for (i = 0; i < FIELD_WIDTH; i++) {
-                for (j = 0; j < FIELD_HEIGHT; j++) {
+            for (i = 0; i < FIELD_HEIGHT; i++) {
+                for (j = 0; j < FIELD_WIDTH; j++) {
                     if (mineFieldTiles[i][j]) {
-                        func_800DAC70(mapIndex, mineFieldTiles[i][j], j, i);
+                        addGroundObjectToMap(mapIndex, mineFieldTiles[i][j], j, i);
                     }
                 }
             }
-            return;    
+            break;    
 
         case RANCH:
-            for (i = 0; i < FIELD_WIDTH; i++) {
-                for (j = 0; j < FIELD_HEIGHT; j++) {
+            for (i = 0; i < FIELD_HEIGHT; i++) {
+                for (j = 0; j < FIELD_WIDTH; j++) {
                     if (ranchFieldTiles[i][j]) {
-                        func_800DAC70(mapIndex, ranchFieldTiles[i][j], j, i);
+                        addGroundObjectToMap(mapIndex, ranchFieldTiles[i][j], j, i);
                     }
                 }
             }
-            return;   
-        default:
-            return;
+            break;   
+
     }
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", func_800D9AC8);
+//INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", clearForagableObjects);
 
-void func_800D9AC8(u8 mapIndex) {
+void clearForagableObjects(u8 mapIndex) {
 
     u8 i, j;
     
-    for (i = 0; i < FIELD_WIDTH; i++) {
-        for (j = 0; j < FIELD_HEIGHT; j++) {
+    for (i = 0; i < FIELD_HEIGHT; i++) {
+
+        for (j = 0; j < FIELD_WIDTH; j++) {
+
             switch (mapIndex) {
+
                 case MOUNTAIN_1:
                     mountain1FieldTiles[i][j] = 0;
                     break;
@@ -189,9 +182,13 @@ void func_800D9AC8(u8 mapIndex) {
                 case RANCH:
                     ranchFieldTiles[i][j] = 0;
                     break;
+
             }
+        
         }
+
     }   
+
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", func_800D9BFC);
@@ -200,9 +197,9 @@ void func_800D9BFC(void) {
 
     u8 i, j;
 
-    for (i = 0; i < FIELD_WIDTH; i++) {
+    for (i = 0; i < FIELD_HEIGHT; i++) {
 
-        for (j = 0; j < FIELD_HEIGHT; j++) {
+        for (j = 0; j < FIELD_WIDTH; j++) {
             mountain1FieldTiles[i][j] = 0;
             mountain2FieldTiles[i][j] = 0;
             topOfMountain1FieldTiles[i][j] = 0;
@@ -220,27 +217,27 @@ void func_800D9BFC(void) {
         case SPRING:
 
             if (gBaseMapIndex != MOUNTAIN_1) {
-                mountain1FieldTiles[22][12] = 5;
-                mountain1FieldTiles[20][13] = 5;
-                mountain1FieldTiles[22][4] = 5;
+                mountain1FieldTiles[22][12] = WEED;
+                mountain1FieldTiles[20][13] = WEED;
+                mountain1FieldTiles[22][4] = WEED;
                 mountain1FieldTiles[17][13] = 0xCD;
                 mountain1FieldTiles[14][15] = 0xCE;
                 mountain1FieldTiles[12][10] = 0xD5;
-                mountain1FieldTiles[2][16] = 0xC8;
+                mountain1FieldTiles[2][16] = STUMP;
                 mountain1FieldTiles[2][17] = 0xC9;
                 mountain1FieldTiles[3][16] = 0xCA;
                 mountain1FieldTiles[3][17] = 0xCB;
             }
 
             if (gBaseMapIndex != MOUNTAIN_2) {
-                mountain2FieldTiles[23][5] = 5;
+                mountain2FieldTiles[23][5] = WEED;
                 mountain2FieldTiles[16][1] = 0xCE;
                 mountain2FieldTiles[23][6] = 0xD5;
-                mountain2FieldTiles[20][8] = 0xC8;
+                mountain2FieldTiles[20][8] = STUMP;
                 mountain2FieldTiles[20][9] = 0xC9;
                 mountain2FieldTiles[21][8] = 0xCA;
                 mountain2FieldTiles[21][9] = 0xCB;
-                mountain2FieldTiles[9][6] = 0xC8;
+                mountain2FieldTiles[9][6] = STUMP;
                 mountain2FieldTiles[9][7] = 0xC9;
                 mountain2FieldTiles[10][6] = 0xCA;
                 mountain2FieldTiles[10][7] = 0xCB;
@@ -249,18 +246,18 @@ void func_800D9BFC(void) {
             if (gBaseMapIndex != TOP_OF_MOUNTAIN_1) {
                 
                 if (!(checkLifeEventBit(HOT_SPRINGS_COMPLETED)) && gYear == 1 && ((gSeason < WINTER) || ((gSeason == WINTER) && (gDayOfMonth < 12)))) {
-                    topOfMountain1FieldTiles[3][7] = 5;
+                    topOfMountain1FieldTiles[3][7] = WEED;
                     topOfMountain1FieldTiles[9][16] = 0xCE;
                     topOfMountain1FieldTiles[3][14] = 0xD5;
-                    topOfMountain1FieldTiles[4][6] = 0xC8;
+                    topOfMountain1FieldTiles[4][6] = STUMP;
                     topOfMountain1FieldTiles[4][7] = 0xC9;
                     topOfMountain1FieldTiles[5][6] = 0xCA;
                     topOfMountain1FieldTiles[5][7] = 0xCB;
-                    topOfMountain1FieldTiles[7][7] = 0xC8;
+                    topOfMountain1FieldTiles[7][7] = STUMP;
                     topOfMountain1FieldTiles[7][8] = 0xC9;
                     topOfMountain1FieldTiles[8][7] = 0xCA;
                     topOfMountain1FieldTiles[8][8] = 0xCB;
-                    topOfMountain1FieldTiles[5][10] = 0xC8;
+                    topOfMountain1FieldTiles[5][10] = STUMP;
                     topOfMountain1FieldTiles[5][11] = 0xC9;
                     topOfMountain1FieldTiles[6][10] = 0xCA;
                     topOfMountain1FieldTiles[6][11] = 0xCB;
@@ -285,7 +282,7 @@ void func_800D9BFC(void) {
                 pondFieldTiles[8][6] = 0xD5;
                 pondFieldTiles[3][4] = 0xD5;
                 pondFieldTiles[2][1] = 0xD5;
-                pondFieldTiles[4][12] = 0xC8;
+                pondFieldTiles[4][12] = STUMP;
                 pondFieldTiles[4][13] = 0xC9;
                 pondFieldTiles[5][12] = 0xCA;
                 pondFieldTiles[5][13] = 0xCB;
@@ -305,28 +302,28 @@ void func_800D9BFC(void) {
         case SUMMER:
 
             if (gBaseMapIndex != MOUNTAIN_1) {
-                mountain1FieldTiles[22][12] = 5;
-                mountain1FieldTiles[20][13] = 5;
-                mountain1FieldTiles[22][4] = 5;
+                mountain1FieldTiles[22][12] = WEED;
+                mountain1FieldTiles[20][13] = WEED;
+                mountain1FieldTiles[22][4] = WEED;
                 mountain1FieldTiles[17][13] = 0xCD;
                 mountain1FieldTiles[12][10] = 0xD5;
                 mountain1FieldTiles[16][0] = 0xD0;
-                mountain1FieldTiles[2][16] = 0xC8;
+                mountain1FieldTiles[2][16] = STUMP;
                 mountain1FieldTiles[2][17] = 0xC9;
                 mountain1FieldTiles[3][16] = 0xCA;
                 mountain1FieldTiles[3][17] = 0xCB;
             }
 
             if (gBaseMapIndex != MOUNTAIN_2) {
-                mountain2FieldTiles[23][5] = 5;
+                mountain2FieldTiles[23][5] = WEED;
                 mountain2FieldTiles[23][6] = 0xD5;
                 mountain2FieldTiles[12][13] = 0xD0;
-                mountain2FieldTiles[20][8] = 0xC8;
+                mountain2FieldTiles[20][8] = STUMP;
                 mountain2FieldTiles[20][9] = 0xC9;
                 mountain2FieldTiles[21][8] = 0xCA;
                 mountain2FieldTiles[21][9] = 0xCB;
                 mountain2FieldTiles[11][7] = 0xCB;
-                mountain2FieldTiles[10][6] = 0xC8;
+                mountain2FieldTiles[10][6] = STUMP;
                 mountain2FieldTiles[10][7] = 0xC9;
                 mountain2FieldTiles[11][6] = 0xCA;
                 mountain2FieldTiles[7][2] = 0xCF;
@@ -334,17 +331,17 @@ void func_800D9BFC(void) {
 
             if (gBaseMapIndex != TOP_OF_MOUNTAIN_1) {
                 if (!(checkLifeEventBit(HOT_SPRINGS_COMPLETED)) && gYear == 1 && ((gSeason < WINTER) || (gSeason == WINTER && gDayOfMonth < 12))) {
-                    topOfMountain1FieldTiles[3][7] = 5;
+                    topOfMountain1FieldTiles[3][7] = WEED;
                     topOfMountain1FieldTiles[3][14] = 0xD5;
-                    topOfMountain1FieldTiles[4][6] = 0xC8;
+                    topOfMountain1FieldTiles[4][6] = STUMP;
                     topOfMountain1FieldTiles[4][7] = 0xC9;
                     topOfMountain1FieldTiles[5][6] = 0xCA;
                     topOfMountain1FieldTiles[5][7] = 0xCB;
-                    topOfMountain1FieldTiles[7][7] = 0xC8;
+                    topOfMountain1FieldTiles[7][7] = STUMP;
                     topOfMountain1FieldTiles[7][8] = 0xC9;
                     topOfMountain1FieldTiles[8][7] = 0xCA;
                     topOfMountain1FieldTiles[8][8] = 0xCB;
-                    topOfMountain1FieldTiles[5][10] = 0xC8;
+                    topOfMountain1FieldTiles[5][10] = STUMP;
                     topOfMountain1FieldTiles[5][11] = 0xC9;
                     topOfMountain1FieldTiles[6][10] = 0xCA;
                     topOfMountain1FieldTiles[6][11] = 0xCB;
@@ -368,7 +365,7 @@ void func_800D9BFC(void) {
                 pondFieldTiles[8][6] = 0xD5;
                 pondFieldTiles[3][4] = 0xD5;
                 pondFieldTiles[2][1] = 0xD5;
-                pondFieldTiles[4][12] = 0xC8;
+                pondFieldTiles[4][12] = STUMP;
                 pondFieldTiles[4][13] = 0xC9;
                 pondFieldTiles[5][12] = 0xCA;
                 pondFieldTiles[5][13] = 0xCB;
@@ -388,25 +385,25 @@ void func_800D9BFC(void) {
         case AUTUMN:
 
             if (gBaseMapIndex != MOUNTAIN_1) {
-                mountain1FieldTiles[22][12] = 5;
-                mountain1FieldTiles[20][13] = 5;
-                mountain1FieldTiles[22][4] = 5;
+                mountain1FieldTiles[22][12] = WEED;
+                mountain1FieldTiles[20][13] = WEED;
+                mountain1FieldTiles[22][4] = WEED;
                 mountain1FieldTiles[17][13] = 0xCD;
                 mountain1FieldTiles[21][14] = 0xD2;
-                mountain1FieldTiles[2][16] = 0xC8;
+                mountain1FieldTiles[2][16] = STUMP;
                 mountain1FieldTiles[2][17] = 0xC9;
                 mountain1FieldTiles[3][16] = 0xCA;
                 mountain1FieldTiles[3][17] = 0xCB;
             }
 
             if (gBaseMapIndex != MOUNTAIN_2) {
-                mountain2FieldTiles[23][5] = 5;
+                mountain2FieldTiles[23][5] = WEED;
                 mountain2FieldTiles[23][12] = 0xD2;
-                mountain2FieldTiles[20][8] = 0xC8;
+                mountain2FieldTiles[20][8] = STUMP;
                 mountain2FieldTiles[20][9] = 0xC9;
                 mountain2FieldTiles[21][8] = 0xCA;
                 mountain2FieldTiles[21][9] = 0xCB;
-                mountain2FieldTiles[9][6] = 0xC8;
+                mountain2FieldTiles[9][6] = STUMP;
                 mountain2FieldTiles[9][7] = 0xC9;
                 mountain2FieldTiles[10][6] = 0xCA;
                 mountain2FieldTiles[10][7] = 0xCB;
@@ -416,17 +413,17 @@ void func_800D9BFC(void) {
 
             if (gBaseMapIndex != TOP_OF_MOUNTAIN_1) {
                 if (!(checkLifeEventBit(HOT_SPRINGS_COMPLETED)) && gYear == 1 && ((gSeason < 4) || (gSeason == 4 && gDayOfMonth < 12))) {
-                    topOfMountain1FieldTiles[3][7] = 5;
+                    topOfMountain1FieldTiles[3][7] = WEED;
                     topOfMountain1FieldTiles[3][3] = 0xD2;
-                    topOfMountain1FieldTiles[4][6] = 0xC8;
+                    topOfMountain1FieldTiles[4][6] = STUMP;
                     topOfMountain1FieldTiles[4][7] = 0xC9;
                     topOfMountain1FieldTiles[5][6] = 0xCA;
                     topOfMountain1FieldTiles[5][7] = 0xCB;
-                    topOfMountain1FieldTiles[7][7] = 0xC8;
+                    topOfMountain1FieldTiles[7][7] = STUMP;
                     topOfMountain1FieldTiles[7][8] = 0xC9;
                     topOfMountain1FieldTiles[8][7] = 0xCA;
                     topOfMountain1FieldTiles[8][8] = 0xCB;
-                    topOfMountain1FieldTiles[5][10] = 0xC8;
+                    topOfMountain1FieldTiles[5][10] = STUMP;
                     topOfMountain1FieldTiles[5][11] = 0xC9;
                     topOfMountain1FieldTiles[6][10] = 0xCA;
                     topOfMountain1FieldTiles[6][11] = 0xCB;
@@ -451,7 +448,7 @@ void func_800D9BFC(void) {
                 
                 pondFieldTiles[3][5] = 0xCC;
                 pondFieldTiles[5][1] = 0xD2;
-                pondFieldTiles[4][12] = 0xC8;
+                pondFieldTiles[4][12] = STUMP;
                 pondFieldTiles[4][13] = 0xC9;
                 pondFieldTiles[5][12] = 0xCA;
                 pondFieldTiles[5][13] = 0xCB;
@@ -463,18 +460,18 @@ void func_800D9BFC(void) {
         case WINTER:
 
             if (gBaseMapIndex != MOUNTAIN_1) {
-                mountain1FieldTiles[2][16] = 0xC8;
+                mountain1FieldTiles[2][16] = STUMP;
                 mountain1FieldTiles[2][17] = 0xC9;
                 mountain1FieldTiles[3][16] = 0xCA;
                 mountain1FieldTiles[3][17] = 0xCB;
             }
 
             if (gBaseMapIndex != MOUNTAIN_2) {
-                mountain2FieldTiles[20][8] = 0xC8;
+                mountain2FieldTiles[20][8] = STUMP;
                 mountain2FieldTiles[20][9] = 0xC9;
                 mountain2FieldTiles[21][8] = 0xCA;
                 mountain2FieldTiles[21][9] = 0xCB;
-                mountain2FieldTiles[9][6] = 0xC8;
+                mountain2FieldTiles[9][6] = STUMP;
                 mountain2FieldTiles[9][7] = 0xC9;
                 mountain2FieldTiles[10][6] = 0xCA;
                 mountain2FieldTiles[10][7] = 0xCB;
@@ -482,15 +479,15 @@ void func_800D9BFC(void) {
 
             if (gBaseMapIndex != TOP_OF_MOUNTAIN_1) {
                 if (!(checkLifeEventBit(HOT_SPRINGS_COMPLETED)) && gYear == 1 && ((gSeason < 4U) || (gSeason == 4 && gDayOfMonth < 12))) {
-                    topOfMountain1FieldTiles[4][6] = 0xC8;
+                    topOfMountain1FieldTiles[4][6] = STUMP;
                     topOfMountain1FieldTiles[4][7] = 0xC9;
                     topOfMountain1FieldTiles[5][6] = 0xCA;
                     topOfMountain1FieldTiles[5][7] = 0xCB;
-                    topOfMountain1FieldTiles[7][7] = 0xC8;
+                    topOfMountain1FieldTiles[7][7] = STUMP;
                     topOfMountain1FieldTiles[7][8] = 0xC9;
                     topOfMountain1FieldTiles[8][7] = 0xCA;
                     topOfMountain1FieldTiles[8][8] = 0xCB;
-                    topOfMountain1FieldTiles[5][10] = 0xC8;
+                    topOfMountain1FieldTiles[5][10] = STUMP;
                     topOfMountain1FieldTiles[5][11] = 0xC9;
                     topOfMountain1FieldTiles[6][10] = 0xCA;
                     topOfMountain1FieldTiles[6][11] = 0xCB;
@@ -499,7 +496,7 @@ void func_800D9BFC(void) {
 
            if (gBaseMapIndex != POND) {
                 
-                pondFieldTiles[4][12] = 0xC8;
+                pondFieldTiles[4][12] = STUMP;
                 pondFieldTiles[4][13] = 0xC9;
                 pondFieldTiles[5][12] = 0xCA;
                 pondFieldTiles[5][13] = 0xCB;
@@ -507,54 +504,54 @@ void func_800D9BFC(void) {
             }
             
             break;
-
  
     }
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", func_800DA8B8);
+//INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", getGroundObjectMapAdditionIndex);
 
-u8 func_800DA8B8(u8 index) {
+u8 getGroundObjectMapAdditionIndex(u8 index) {
 
     u8 result;
 
-    if (index >= 218) {
+    if (index >= MAX_FIELD_OBJECTS) {
         result = 0;
     } else {
-        result = D_80118700[index][0]; 
+        result = groundObjectsInfo[index].mapAdditionIndex; 
     }
     
     return result;
     
-}
+} 
 
 //INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", func_800DA8E8);
 
+// unused
 u8 func_800DA8E8(u8 index) {
 
     u8 result;
 
-    if (index >= 218) {
+    if (index >= MAX_FIELD_OBJECTS) {
         result = 0;
     } else {
-        result = D_80118701[index][0]; 
+        result = groundObjectsInfo[index].spriteIndex; 
     }
     
     return result;
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", func_800DA918);
+//INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", getHeldItemIndexFromGroundObject);
 
-u8 func_800DA918(u8 index) {
+u8 getHeldItemIndexFromGroundObject(u8 index) {
 
     u8 result;
 
-    if (index >= 218) {
+    if (index >= MAX_FIELD_OBJECTS) {
         result = 0;
     } else {
-        result = D_80118702[index][0]; 
+        result = groundObjectsInfo[index].heldItemIndex; 
     }
     
     return result;
@@ -563,14 +560,14 @@ u8 func_800DA918(u8 index) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", func_800DA948);
 
-u8 func_800DA948(u8 index) {
+u8 func_800DA948(u8 groundObjectIndex) {
 
     u8 result;
 
-    if (index >= 218) {
+    if (groundObjectIndex >= MAX_FIELD_OBJECTS) {
         result = 0;
     } else {
-        result = D_80118703[index][0]; 
+        result = groundObjectsInfo[groundObjectIndex].flag2; 
     }
     
     return result;
@@ -578,16 +575,16 @@ u8 func_800DA948(u8 index) {
 }
 
 
-//INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", func_800DA978);
+//INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", getGroundObjectFlags);
 
-u8 func_800DA978(u8 index) {
+u8 getGroundObjectFlags(u8 index) {
 
     u8 result;
 
-    if (index >= 218) {
+    if (index >= MAX_FIELD_OBJECTS) {
         result = 0;
     } else {
-        result = D_80118704[index][0]; 
+        result = groundObjectsInfo[index].flag3; 
     }
     
     return result;
@@ -596,9 +593,9 @@ u8 func_800DA978(u8 index) {
 
 // alternate
 /*
-u8 func_800DA978(u8 index) {
+u8 getGroundObjectFlags(u8 index) {
 
-    if (index < 218) {
+    if (index < MAX_FIELD_OBJECTS) {
 		return D_80118704[index][0];
     }
     
@@ -606,11 +603,11 @@ u8 func_800DA978(u8 index) {
 }
 */
 
-//INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", func_800DA9A8);
+//INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", getGroundObjectIndexFromTilePosition);
 
-u8 func_800DA9A8(u8 mapIndex, u8 heightIndex, u8 widthIndex) {
+u8 getGroundObjectIndexFromTilePosition(u8 mapIndex, u8 heightIndex, u8 widthIndex) {
     
-    u8 result;
+    u8 groundObjectIndex;
     
     switch (mapIndex) {
 
@@ -693,63 +690,63 @@ u8 func_800DA9A8(u8 mapIndex, u8 heightIndex, u8 widthIndex) {
             break;
             
         case FARM:
-            result = farmFieldTiles[widthIndex][heightIndex];
+            groundObjectIndex = farmFieldTiles[widthIndex][heightIndex];
             break;
         case GREENHOUSE:
-            result = greenhouseFieldTiles[widthIndex][heightIndex];
+            groundObjectIndex = greenhouseFieldTiles[widthIndex][heightIndex];
             break;
         case MOUNTAIN_1:
-            result = mountain1FieldTiles[widthIndex][heightIndex];
+            groundObjectIndex = mountain1FieldTiles[widthIndex][heightIndex];
             break;
         case MOUNTAIN_2:
-            result = mountain2FieldTiles[widthIndex][heightIndex];
+            groundObjectIndex = mountain2FieldTiles[widthIndex][heightIndex];
             break;
         case TOP_OF_MOUNTAIN_1:
-            result = topOfMountain1FieldTiles[widthIndex][heightIndex];
+            groundObjectIndex = topOfMountain1FieldTiles[widthIndex][heightIndex];
             break;
         case MOON_MOUNTAIN:
-            result = moonMountainFieldTiles[widthIndex][heightIndex];
+            groundObjectIndex = moonMountainFieldTiles[widthIndex][heightIndex];
             break;
         case POND:
-            result = pondFieldTiles[widthIndex][heightIndex];
+            groundObjectIndex = pondFieldTiles[widthIndex][heightIndex];
             break;
         case CAVE:
-            result = caveFieldTiles[widthIndex][heightIndex];
+            groundObjectIndex = caveFieldTiles[widthIndex][heightIndex];
             break;
         case MINE:
         case MINE_2:
-            result = mineFieldTiles[widthIndex][heightIndex];
+            groundObjectIndex = mineFieldTiles[widthIndex][heightIndex];
             break;
         case RANCH:
-            result = ranchFieldTiles[widthIndex][heightIndex];
+            groundObjectIndex = ranchFieldTiles[widthIndex][heightIndex];
             break;
         }
     
-    return result;
+    return groundObjectIndex;
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", func_800DAA90);
+//INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", setFieldTile);
 
-bool func_800DAA90(u8 mapIndex, u8 arg1, u8 heightIndex, u8 widthIndex) {
+bool setFieldTile(u8 mapIndex, u8 groundObjectIndex, u8 heightIndex, u8 widthIndex) {
 
     bool set = FALSE;
 
     switch (mapIndex) {
 
         case FARM:
-            farmFieldTiles[widthIndex][heightIndex] = arg1;
+            farmFieldTiles[widthIndex][heightIndex] = groundObjectIndex;
             set = TRUE;
             break;
 
         case GREENHOUSE:
-            greenhouseFieldTiles[widthIndex][heightIndex] = arg1;
+            greenhouseFieldTiles[widthIndex][heightIndex] = groundObjectIndex;
             set = TRUE;
             break;
 
         case MOUNTAIN_1:
-            if (arg1 != 1) {
-                mountain1FieldTiles[widthIndex][heightIndex] = arg1;
+            if (groundObjectIndex != 1) {
+                mountain1FieldTiles[widthIndex][heightIndex] = groundObjectIndex;
             } else {
                 mountain1FieldTiles[widthIndex][heightIndex] = 0;
             }
@@ -757,8 +754,8 @@ bool func_800DAA90(u8 mapIndex, u8 arg1, u8 heightIndex, u8 widthIndex) {
             break;
 
         case MOUNTAIN_2:
-            if (arg1 != 1) {
-                mountain2FieldTiles[widthIndex][heightIndex] = arg1;
+            if (groundObjectIndex != 1) {
+                mountain2FieldTiles[widthIndex][heightIndex] = groundObjectIndex;
             } else {
                 mountain2FieldTiles[widthIndex][heightIndex] = 0;
             }
@@ -766,17 +763,17 @@ bool func_800DAA90(u8 mapIndex, u8 arg1, u8 heightIndex, u8 widthIndex) {
             break;
 
         case TOP_OF_MOUNTAIN_1:
-            if (arg1 != 1) {
-                topOfMountain1FieldTiles[widthIndex][heightIndex] = arg1;
+            if (groundObjectIndex != 1) {
+                topOfMountain1FieldTiles[widthIndex][heightIndex] = groundObjectIndex;
             } else {
-               topOfMountain1FieldTiles[widthIndex][heightIndex] = 0;
+                topOfMountain1FieldTiles[widthIndex][heightIndex] = 0;
             }
             set = TRUE;
             break;
 
         case MOON_MOUNTAIN:
-            if (arg1 != 1) {
-                moonMountainFieldTiles[widthIndex][heightIndex] = arg1;
+            if (groundObjectIndex != 1) {
+                moonMountainFieldTiles[widthIndex][heightIndex] = groundObjectIndex;
             } else {
                 moonMountainFieldTiles[widthIndex][heightIndex] = 0;
             }
@@ -784,8 +781,8 @@ bool func_800DAA90(u8 mapIndex, u8 arg1, u8 heightIndex, u8 widthIndex) {
             break;
 
         case POND:
-            if (arg1 != 1) {
-                pondFieldTiles[widthIndex][heightIndex] = arg1;
+            if (groundObjectIndex != 1) {
+                pondFieldTiles[widthIndex][heightIndex] = groundObjectIndex;
             } else {
                 pondFieldTiles[widthIndex][heightIndex] = 0;
             }
@@ -793,8 +790,8 @@ bool func_800DAA90(u8 mapIndex, u8 arg1, u8 heightIndex, u8 widthIndex) {
             break;
         
         case CAVE:
-            if (arg1 != 1) {
-                caveFieldTiles[widthIndex][heightIndex] = arg1;
+            if (groundObjectIndex != 1) {
+                caveFieldTiles[widthIndex][heightIndex] = groundObjectIndex;
             } else {
                 caveFieldTiles[widthIndex][heightIndex] = 0;
             }
@@ -803,13 +800,13 @@ bool func_800DAA90(u8 mapIndex, u8 arg1, u8 heightIndex, u8 widthIndex) {
 
         case MINE:
         case MINE_2:
-            mineFieldTiles[widthIndex][heightIndex] = arg1;
+            mineFieldTiles[widthIndex][heightIndex] = groundObjectIndex;
             set = TRUE;
             break;
 
         case RANCH:
-            if (arg1 != 1) {
-                ranchFieldTiles[widthIndex][heightIndex] = arg1;
+            if (groundObjectIndex != 1) {
+                ranchFieldTiles[widthIndex][heightIndex] = groundObjectIndex;
             } else {
                 ranchFieldTiles[widthIndex][heightIndex] = 0;
             }
@@ -823,24 +820,22 @@ bool func_800DAA90(u8 mapIndex, u8 arg1, u8 heightIndex, u8 widthIndex) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", func_800DAC70);
+//INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", addGroundObjectToMap);
 
-void func_800DAC70(u8 arg0, u8 arg1, u8 x, u8 z) {
+inline void addGroundObjectToMap(u8 mapIndex, u8 groundObjectIndex, u8 x, u8 z) {
     
-    u8 temp;
     u8 spriteIndex;
     
-    if (func_800DAA90(arg0, arg1, x, z)) {
+    if (setFieldTile(mapIndex, groundObjectIndex, x, z)) {
         
-        spriteIndex = D_80118700[arg1][1];
+        spriteIndex = groundObjectsInfo[groundObjectIndex].spriteIndex;
         
-        if (D_80118700[arg1][0] != 0xFF) {
-            setMapAdditionIndexFromCoordinates(0, D_80118700[arg1][0], groundObjectsGridX + x, groundObjectsGridZ + z);
+        if (groundObjectsInfo[groundObjectIndex].mapAdditionIndex != 0xFF) {
+            setMapAdditionIndexFromCoordinates(MAIN_MAP_INDEX, groundObjectsInfo[groundObjectIndex].mapAdditionIndex, groundObjectsGridX + x, groundObjectsGridZ + z);
         }
         
-        temp = 0;
-        
         switch (spriteIndex) {
+
             default:
                 setMapGroundObjectSpriteIndex(MAIN_MAP_INDEX, spriteIndex, x, z);
                 break;
@@ -852,62 +847,42 @@ void func_800DAC70(u8 arg0, u8 arg1, u8 x, u8 z) {
             case 0:
                 setMapGroundObjectSpriteIndex(MAIN_MAP_INDEX, 0, x, z);
                 break;
+
         }
 
-        setGroundObjects(0);
-        setGridToTileTextureMappings(temp);
+        setGroundObjects(MAIN_MAP_INDEX);
+        setGridToTileTextureMappings(MAIN_MAP_INDEX);
 
     }
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", func_800DAD74);
+//INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", addGroundObjectToMapFromPlayerPosition);
 
-void func_800DAD74(u8 arg0, f32 arg1, u8 arg2) {
+void addGroundObjectToMapFromPlayerPosition(u8 groundObjectIndex, f32 arg1, u8 arg2) {
 
     Vec3f vec;
 
     u8 temp1;
     u8 temp2;
-    u8 temp3;
-    u8 temp4;
-    u8 temp5;
+    u8 spriteIndex;
+    u8 x;
+    u8 z;
 
     vec = func_80065F94(arg1, arg2);
 
     if (vec.y != 65535.0f) {
 
         temp1 = vec.x;
-        temp4 = temp1 - groundObjectsGridX;
+        x = temp1 - groundObjectsGridX;
         
         temp2 = vec.z;
-        temp5 = temp2 - groundObjectsGridZ;
+        z = temp2 - groundObjectsGridZ;
+
+        addGroundObjectToMap(gBaseMapIndex, groundObjectIndex, x, z);
         
-        if (func_800DAA90(gBaseMapIndex, arg0, temp4, temp5)) {
-
-            temp3 = D_80118701[arg0][0];
-
-            if (D_80118700[arg0][0] != 0xFF) {
-                setMapAdditionIndexFromCoordinates(0, D_80118700[arg0][0], groundObjectsGridX + temp4, groundObjectsGridZ + temp5);
-            }
-
-            switch (temp3) {
-                default: 
-                    setMapGroundObjectSpriteIndex(MAIN_MAP_INDEX, temp3, temp4, temp5);
-                    break;
-                case 0xFF:
-                    setMapGroundObjectSpriteIndex(MAIN_MAP_INDEX, 0xFFFF, temp4, temp5);
-                    break;
-                case 0:
-                    setMapGroundObjectSpriteIndex(MAIN_MAP_INDEX, 0, temp4, temp5);
-                    break;
-            }
-            
-            setGroundObjects(0);
-            setGridToTileTextureMappings(0);
-            
-        }
     }
+
 }
 
 static inline u8 subtractX(u8 x) {
@@ -930,44 +905,39 @@ static inline u8 subtractZ(u8 z) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", func_800DAF58);
+//INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", getGroundObjectIndexFromPlayerPosition);
 
-// get index of foragable item
-u8 func_800DAF58(f32 arg0, u8 arg1) {
+u8 getGroundObjectIndexFromPlayerPosition(f32 arg0, u8 arg1) {
     
     Vec3f vec;
     Vec3f vec2;
 
-    u8 result = 0xFF;
+    u8 groundObjectIndex = 0xFF;
 
     if (gBaseMapIndex == FARM || gBaseMapIndex == GREENHOUSE || gBaseMapIndex == MOUNTAIN_1 | gBaseMapIndex == MOUNTAIN_2 || gBaseMapIndex == TOP_OF_MOUNTAIN_1 || gBaseMapIndex == MOON_MOUNTAIN || gBaseMapIndex == POND || gBaseMapIndex == CAVE || (CAVE < gBaseMapIndex && gBaseMapIndex < MINE_2 + 1) || gBaseMapIndex == RANCH) {
 
         vec = func_80065F94(arg0, arg1);
-
         vec2 = func_8003AF58(0, vec.x, vec.z);
 
         if (vec2.y != 65535.0f) {
-            
-            result = func_800DA9A8(gBaseMapIndex, (u8)vec.x - groundObjectsGridX, (u8)vec.z - groundObjectsGridZ);
-            
+            groundObjectIndex = getGroundObjectIndexFromTilePosition(gBaseMapIndex, (u8)vec.x - groundObjectsGridX, (u8)vec.z - groundObjectsGridZ);
         }
         
     }
 
-    return result;
+    return groundObjectIndex;
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", func_800DB1BC);
+//INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", getGroundObjectIndexFromCoordinates);
 
-u8 func_800DB1BC(f32 x, f32 z) {
+u8 getGroundObjectIndexFromCoordinates(f32 x, f32 z) {
 
     Vec3f vec;
     Vec3f vec2;
     
     u8 mapIndex;
-
-    u8 result = 0xFF;
+    u8 groundObjectIndex = 0xFF;
     
     if (gBaseMapIndex == FARM || gBaseMapIndex == GREENHOUSE || gBaseMapIndex == MOUNTAIN_1 | gBaseMapIndex == MOUNTAIN_2 || gBaseMapIndex == TOP_OF_MOUNTAIN_1 || gBaseMapIndex == MOON_MOUNTAIN || gBaseMapIndex == POND || gBaseMapIndex == CAVE || (CAVE < gBaseMapIndex && gBaseMapIndex < MINE_2 + 1) || gBaseMapIndex == RANCH) {
 
@@ -975,48 +945,43 @@ u8 func_800DB1BC(f32 x, f32 z) {
         vec2 = func_8003AF58(0, vec.x, vec.z);
 
         if (vec2.y != 65535.0f) {
-
             mapIndex = gBaseMapIndex;
-            
-            result = func_800DA9A8(mapIndex, (u8)vec.x - groundObjectsGridX, (u8)vec.z - groundObjectsGridZ);
-            
+            groundObjectIndex = getGroundObjectIndexFromTilePosition(mapIndex, (u8)vec.x - groundObjectsGridX, (u8)vec.z - groundObjectsGridZ);
         }
         
     }
 
-    return result;
+    return groundObjectIndex;
     
 }
 
 INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", func_800DB424);
 
-//INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", func_800DB858);
+//INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", updateCropsIfRain);
 
-void func_800DB858(void) {
+void updateCropsIfRain(void) {
 
     u8 i, j;
-    u8 temp, tile;
+    u8 flags, groundObjectIndex;
     
     if (gWeather == RAIN) {
 
-        for (i = 0; i < FIELD_WIDTH; i++) {
+        for (i = 0; i < FIELD_HEIGHT; i++) {
             
-            for (j = 0; j < FIELD_HEIGHT; j++) {
+            for (j = 0; j < FIELD_WIDTH; j++) {
 
-                tile = farmFieldTiles[i][j];
+                groundObjectIndex = farmFieldTiles[i][j];
 
-                if (tile) {
+                if (groundObjectIndex) {
                     
-                    if (tile < 0xDA) {
-                        temp = D_80118703[tile][0];
+                    if (groundObjectIndex < 0xDA) {
+                        flags = groundObjectsInfo[groundObjectIndex].flag2;
                     } else {
-                        temp = 0;
+                        flags = 0;
                     }
 
-                    if (temp & 0x10) {
-                        
-                        func_800DAA90(FARM, tile + 1, j, i);
-                    
+                    if (flags & 0x10) {
+                        setFieldTile(FARM, groundObjectIndex + 1, j, i);
                     }
                         
                 }
@@ -1027,12 +992,13 @@ void func_800DB858(void) {
         if (blueMistFlowerPlot) {
 
             if (blueMistFlowerPlot < 0xDA) {
-                temp = D_80118703[blueMistFlowerPlot][0];
+                flags = groundObjectsInfo[blueMistFlowerPlot].flag2;
             } else {
-                temp = 0;
+                flags = 0;
             }
-            if (temp & 0x10) {
-                blueMistFlowerPlot += 1;
+
+            if (flags & 0x10) {
+                blueMistFlowerPlot++;
             }
             
         }
@@ -1052,11 +1018,11 @@ bool func_800DB99C(void) {
     u8 temp1 = 0xFF;
     u8 temp2 = 0xFF;
 
-    for (i = 0; i < FIELD_WIDTH; i++) {
+    for (i = 0; i < FIELD_HEIGHT; i++) {
         
-        for (j = 0; j < FIELD_HEIGHT; j++) {
+        for (j = 0; j < FIELD_WIDTH; j++) {
 
-            if (farmFieldTiles[i][j] == 0x8E) {
+            if (farmFieldTiles[i][j] == GRASS_GROWN) {
 
                 if (found) continue;
     
@@ -1064,39 +1030,35 @@ bool func_800DB99C(void) {
                 temp2 = i;
                 
                 if (!getRandomNumberInRange(0, 9)) {
-                    
                     found = TRUE;
-                    
                 }
+
             }
     
         }
+
     }
 
     if (temp1 == 0xFF && temp2 == 0xFF) {
         return FALSE;
     } else {
-        
-        func_800DAA90(FARM, 0x8F, temp1, temp2);
-    
+        setFieldTile(FARM, GRASS_CUT, temp1, temp2);
         return TRUE;
-
     }
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", func_800DBAC4);
+//INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", randomlyAddWeedsToFarmField);
 
-// randomly add weed to farm tiles
-void func_800DBAC4(void) {
+void randomlyAddWeedsToFarmField(void) {
 
     u8 i, j;
 
     if (gSeason != WINTER) {
-        for (i = 0; i < FIELD_WIDTH; i++) {
-            for (j = 0; j < FIELD_HEIGHT; j++) {
+        for (i = 0; i < FIELD_HEIGHT; i++) {
+            for (j = 0; j < FIELD_WIDTH; j++) {
                 if (farmFieldTiles[i][j] != 0 && farmFieldTiles[i][j] < 4 && !getRandomNumberInRange(0, 128)) {
-                    func_800DAA90(FARM, WEED, j, i);
+                    setFieldTile(FARM, WEED, j, i);
                 }
             }
         }
@@ -1104,17 +1066,16 @@ void func_800DBAC4(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", func_800DBBB0);
+//INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", randomlyBreakLogPieces);
 
-// randomly break log fence pieces
-void func_800DBBB0(u8 arg0) {
+void randomlyBreakLogPieces(u8 randomRange) {
 
     u8 i, j;
 
-    for (i = 0; i < FIELD_WIDTH; i++) {
-        for (j = 0; j < FIELD_HEIGHT; j++) {
-            if (farmFieldTiles[i][j] == LOG && !getRandomNumberInRange(0, arg0)) {
-                func_800DAA90(FARM, BROKEN_LOG, j, i);
+    for (i = 0; i < FIELD_HEIGHT; i++) {
+        for (j = 0; j < FIELD_WIDTH; j++) {
+            if (farmFieldTiles[i][j] == LOG && !getRandomNumberInRange(0, randomRange)) {
+                setFieldTile(FARM, BROKEN_LOG, j, i);
             }
         }
     }
@@ -1124,6 +1085,34 @@ void func_800DBBB0(u8 arg0) {
 //INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", func_800DBC9C);
 
 // randomly cut grass
+void func_800DBC9C(u8 randomRange) {
+
+    u8 i;
+    u8 j;
+    
+    for (i = 0; i < FIELD_HEIGHT; i++) {
+    
+        for (j = 0; j < FIELD_WIDTH; j++) {
+            
+            switch (farmFieldTiles[i][j]) {
+                case GRASS_PLANTED ... GRASS_GROWN:
+                    if (!getRandomNumberInRange(0, randomRange)) {
+                        setFieldTile(FARM, GRASS_CUT, j, i);    
+                    }
+                    break;
+                default:
+                    break;
+                
+            }
+            
+            
+        }
+    }
+    
+}
+
+// alternate
+/*
 void func_800DBC9C(u8 arg0) {
 
     u8 i;
@@ -1132,23 +1121,57 @@ void func_800DBC9C(u8 arg0) {
     int temp;
     int temp2;
     
-    for (i = 0; i < FIELD_WIDTH; i++) {
+    for (i = 0; i < FIELD_HEIGHT; i++) {
     
-        for (j = 0; j < FIELD_HEIGHT; j++) {
+        for (j = 0; j < FIELD_WIDTH; j++) {
             
             temp = GRASS_CUT;
             temp2 = GRASS_PLANTED;
             
             if (farmFieldTiles[i][j] < temp && farmFieldTiles[i][j] >= temp2 && !getRandomNumberInRange(0, arg0)) {
-                func_800DAA90(FARM, temp, j, i);    
+                setFieldTile(FARM, temp, j, i);    
             }
             
         }
     }
 }
+*/
 
 //INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", func_800DBD88);
 
+void func_800DBD88(u8 randomRange) {
+
+    u8 i;
+    u8 j;
+    
+    int temp;
+    int temp2;
+    int temp3;
+    int temp4;
+    
+    for (i = 0; i < FIELD_HEIGHT; i++) {
+    
+        for (j = 0; j < FIELD_WIDTH; j++) {
+            
+            switch (farmFieldTiles[i][j]) {
+                case 0x8 ... CORN_DEAD:
+                case MOONDROP_PLANTED ... 0xC3:
+                    if (!getRandomNumberInRange(0, randomRange)) {
+                        setFieldTile(FARM, TILLED, j, i);    
+                    }
+                    break;
+                default:
+                    break;
+                
+            }
+            
+        }
+    }
+    
+}
+
+// alternate
+/*
 void func_800DBD88(u8 arg0) {
 
     u8 i;
@@ -1159,15 +1182,16 @@ void func_800DBD88(u8 arg0) {
     int temp3;
     int temp4;
     
-    for (i = 0; i < FIELD_WIDTH; i++) {
+    for (i = 0; i < FIELD_HEIGHT; i++) {
     
-        for (j = 0; j < FIELD_HEIGHT; j++) {
+        for (j = 0; j < FIELD_WIDTH; j++) {
             
-            temp = 0x85;
-            temp2 = 0x90;
+            temp = CORN_PLANT_WITHERED;
+            temp2 = MOONDROP_PLANTED;
             temp3 = 8;
-            temp4 = 0xC4;
+            temp4 = BOULDER;
             
+            // FIXME: probably ranged switch
             if (farmFieldTiles[i][j] >= temp3) {
                 if (farmFieldTiles[i][j] >= temp) {
                      if (farmFieldTiles[i][j] < temp4 && farmFieldTiles[i][j] >= temp2) {
@@ -1176,7 +1200,7 @@ void func_800DBD88(u8 arg0) {
                 } else {
 label:
                     if (!getRandomNumberInRange(0, arg0)) {
-                        func_800DAA90(FARM, 2, j, i);    
+                        setFieldTile(FARM, 2, j, i);    
                     }
                 }
             }
@@ -1185,9 +1209,40 @@ label:
     }
     
 }
+*/
 
 //INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", func_800DBE8C);
 
+// update greenhouse field after typhoon
+void func_800DBE8C(u8 randomRange) {
+    
+    u8 i;
+    u8 j;
+    
+    for (i = 0; i < FIELD_HEIGHT; i++) {
+    
+        for (j = 0; j < FIELD_WIDTH; j++) {
+            
+            switch (greenhouseFieldTiles[i][j]) {
+                case 0x8 ... CORN_DEAD:
+                case MOONDROP_PLANTED ... 0xC3:
+                    if (!getRandomNumberInRange(0, randomRange)) {
+                        setFieldTile(GREENHOUSE, TILLED, j, i);    
+                    }
+                    break;
+                default:
+                    break;
+                
+            }
+            
+        }
+
+    }
+    
+}
+
+// alternate
+/*
 void func_800DBE8C(u8 arg0) {
     
     u8 i;
@@ -1198,15 +1253,16 @@ void func_800DBE8C(u8 arg0) {
     int temp3;
     int temp4;
     
-    for (i = 0; i < FIELD_WIDTH; i++) {
+    for (i = 0; i < FIELD_HEIGHT; i++) {
     
-        for (j = 0; j < FIELD_HEIGHT; j++) {
+        for (j = 0; j < FIELD_WIDTH; j++) {
             
-            temp = 0x85;
-            temp2 = 0x90;
+            temp = CORN_PLANT_WITHERED;
+            temp2 = MOONDROP_PLANTED;
             temp3 = 8;
-            temp4 = 0xC4;
+            temp4 = BOULDER;
             
+            // FIXME: probably ranged switch
             if (greenhouseFieldTiles[i][j] >= temp3) {
                 if (greenhouseFieldTiles[i][j] >= temp) {
                      if (greenhouseFieldTiles[i][j] < temp4 && greenhouseFieldTiles[i][j] >= temp2) {
@@ -1215,7 +1271,7 @@ void func_800DBE8C(u8 arg0) {
                 } else {
 label:
                     if (!getRandomNumberInRange(0, arg0)) {
-                        func_800DAA90(GREENHOUSE, 2, j, i);    
+                        setFieldTile(GREENHOUSE, 2, j, i);    
                     }
                 }
             }
@@ -1224,10 +1280,40 @@ label:
     }
     
 }
+*/
 
-//INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", func_800DBF90);
+//INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", getFarmGrassTilesSum);
 
-u16 func_800DBF90(void) {
+u16 getFarmGrassTilesSum(void) {
+    
+    u8 i;
+    u8 j;
+    u16 count = 0; 
+    
+    for (i = 0; i < FIELD_HEIGHT; i++) {
+    
+        for (j = 0; j < FIELD_WIDTH; j++) {
+
+            switch (farmFieldTiles[i][j]) {
+                case CORN_PLANT_WITHERED ... GRASS_CUT:
+                    count++;
+                    break;
+                default:
+                    break;
+                
+            }
+            
+        }
+
+    }
+
+    return count;
+    
+}
+
+// alternate
+/*
+u16 getFarmGrassTilesSum(void) {
     
     u8 i;
     u8 j;
@@ -1236,14 +1322,14 @@ u16 func_800DBF90(void) {
     int temp;
     int temp2;
     
-    for (i = 0; i < FIELD_WIDTH; i++) {
+    for (i = 0; i < FIELD_HEIGHT; i++) {
     
-        for (j = 0; j < FIELD_HEIGHT; j++) {
+        for (j = 0; j < FIELD_WIDTH; j++) {
             
-            temp = 0x90;
-            temp2 = 0x85;
+            temp = MOONDROP_PLANTED;
+            temp2 = CORN_PLANT_WITHERED;
             
-             if (farmFieldTiles[i][j] < temp && farmFieldTiles[i][j] >= temp2) {
+            if (farmFieldTiles[i][j] < temp && farmFieldTiles[i][j] >= temp2) {
                 count++;
             }
             
@@ -1253,6 +1339,7 @@ u16 func_800DBF90(void) {
     return count;
     
 }
+*/
 
 //INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", func_800DC008);
 
@@ -1262,19 +1349,20 @@ u16 func_800DC008(void) {
     u8 j;
     u16 count = 0; 
     
-    int temp;
-    int temp2;
     
-    for (i = 0; i < FIELD_WIDTH; i++) {
+    for (i = 0; i < FIELD_HEIGHT; i++) {
     
-        for (j = 0; j < FIELD_HEIGHT; j++) {
+        for (j = 0; j < FIELD_WIDTH; j++) {
             
-            temp = 0x9E;
-            temp2 = 0x9C;
-            
-             if (farmFieldTiles[i][j] < temp && farmFieldTiles[i][j] >= temp2) {
-                count++;
+            switch (farmFieldTiles[i][j]) {
+                case 0x9C ... 0x9D:
+                    count++;
+                    break;
+                default:
+                    break;
+                
             }
+            
             
         }
     }
@@ -1282,6 +1370,36 @@ u16 func_800DC008(void) {
     return count;
 
 }
+
+// alternate
+/*
+u16 func_800DC008(void) {
+    
+    u8 i;
+    u8 j;
+    u16 count = 0; 
+
+    int temp;
+    int temp2;
+
+    for (i = 0; i < FIELD_HEIGHT; i++) {
+        
+    for (j = 0; j < FIELD_WIDTH; j++) {
+        
+    temp = 0x9E;
+    temp2 = 0x9C;
+
+    if (farmFieldTiles[i][j] < temp && farmFieldTiles[i][j] >= temp2) {
+        count++;
+    }
+
+            }
+        }
+        
+    return count;
+    
+}
+*/
 
 //INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", func_800DC080);
 
@@ -1291,12 +1409,41 @@ u16 func_800DC080(void) {
     u8 j;
     u16 count = 0; 
     
+    for (i = 0; i < FIELD_HEIGHT; i++) {
+    
+        for (j = 0; j < FIELD_WIDTH; j++) {
+            
+            switch (greenhouseFieldTiles[i][j]) {
+                case 0x9C ... 0x9D:
+                    count++;
+                    break;
+                default:
+                    break;
+                
+            }
+            
+            
+        }
+    }
+
+    return count;
+    
+}
+
+// alternate
+/*
+u16 func_800DC080(void) {
+
+    u8 i;
+    u8 j;
+    u16 count = 0; 
+    
     int temp;
     int temp2;
     
-    for (i = 0; i < FIELD_WIDTH; i++) {
+    for (i = 0; i < FIELD_HEIGHT; i++) {
     
-        for (j = 0; j < FIELD_HEIGHT; j++) {
+        for (j = 0; j < FIELD_WIDTH; j++) {
             
             temp = 0x9E;
             temp2 = 0x9C;
@@ -1311,16 +1458,17 @@ u16 func_800DC080(void) {
     return count;
     
 }
+*/
 
-//INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", countPinkCatMintFlowersFarm);
+//INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", getFarmPinkCatMintFlowersTilesSum);
 
-u16 countPinkCatMintFlowersFarm(void) {
+u16 getFarmPinkCatMintFlowersTilesSum(void) {
 
     u8 i, j;
     u16 count = 0;
 
-    for (i = 0; i < FIELD_WIDTH; i++) {
-        for (j = 0; j < FIELD_HEIGHT; j++) {
+    for (i = 0; i < FIELD_HEIGHT; i++) {
+        for (j = 0; j < FIELD_WIDTH; j++) {
             switch (farmFieldTiles[i][j]) {
                 case 0xAF ... 0xB0:
                     count++;
@@ -1334,15 +1482,15 @@ u16 countPinkCatMintFlowersFarm(void) {
     return count;
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", countPinkCatMintFlowersGreenhouse);
+//INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", getGreenhousePinkCatMintFlowersTilesSum);
 
-u16 countPinkCatMintFlowersGreenhouse(void) {
+u16 getGreenhousePinkCatMintFlowersTilesSum(void) {
 
     u8 i, j;
     u16 count = 0;
 
-    for (i = 0; i < FIELD_WIDTH; i++) {
-        for (j = 0; j < FIELD_HEIGHT; j++) {
+    for (i = 0; i < FIELD_HEIGHT; i++) {
+        for (j = 0; j < FIELD_WIDTH; j++) {
             switch (greenhouseFieldTiles[i][j]) {
                 // pink cat mint flowers
                 case 0xAF ... 0xB0:
@@ -1361,53 +1509,36 @@ u16 countPinkCatMintFlowersGreenhouse(void) {
 
 void func_800DC1E8(void) {
 
+    u8 i;
+    u8 j;
     bool found = FALSE;
-    u8 i, j;
 
-    u8 temp;
+    u8 spriteIndex;
 
-    int temp2;
-    int temp3;
-    u8 *temp4;
-
-    for (i = 0; i < FIELD_WIDTH; i++) {
+    for (i = 0; i < FIELD_HEIGHT; i++) {
     
-        for (j = 0; j < FIELD_HEIGHT; j++) {
+        for (j = 0; j < FIELD_WIDTH; j++) {
 
-            temp2 = 0xB1;
-            temp3 = 0xAF;
-            
-            // FIXME: something wrong
-            if (farmFieldTiles[i][j] < temp2 && (temp4 = farmFieldTiles[i])[j] >= temp3 && !found) {
-                
-                if (func_800DAA90(FARM, 2, j, i)) {
+            switch (farmFieldTiles[i][j]) {
 
-                    temp = D_8011870B;
-
-                    if (D_8011870A != 0xFF) {
-                        setMapAdditionIndexFromCoordinates(0, D_8011870A, groundObjectsGridX + j, groundObjectsGridZ + i);
-                    }
-
-                    switch (temp) {
-                        default:
-                            setMapGroundObjectSpriteIndex(MAIN_MAP_INDEX, temp, j, i);
-                            break;
-                        case 0xFF:
-                            setMapGroundObjectSpriteIndex(MAIN_MAP_INDEX, 0xFFFF, j, i);
-                            break;
-                        case 0:
-                            setMapGroundObjectSpriteIndex(MAIN_MAP_INDEX, 0, j, i);
-                            break;
-                    }
-
-                    setGroundObjects(0);
-                    setGridToTileTextureMappings(0);
+                case 0xAF ... 0xB0:
                     
-                }
-                
-                found = TRUE;
+                    if (!found) {
+                        
+                        addGroundObjectToMap(FARM, 2, j, i);
+                        found = TRUE;
+                        
+                    }
+                    
+                    break;
+
+                default:
+                    break;
                 
             }
+            
         }
+        
     }
+
 }

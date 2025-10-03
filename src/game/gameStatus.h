@@ -105,6 +105,7 @@
 #define MARIA_FARM_GIFT_2 0x6E
 #define POPURI_FARM_GIFT_1 0x70
 #define POPURI_FARM_GIFT_2 0x71
+#define MRS_MANA_COWS_EVENT 0x94
 // 0x9C karen pink heart event/beach cutscene
 // 0x9D kai beach cutscene
 // #define CARPENTER_WINTER_CUTSCENE 0xAC

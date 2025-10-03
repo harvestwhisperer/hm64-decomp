@@ -59,6 +59,7 @@ void func_800D7C20(void) {
             // do global lighting
             func_8005C07C(1, 0);
         }
+
     }
     
     if (NIGHTTIME) {
@@ -313,5 +314,7 @@ void setGlobalSeasonName(u8 season) {
             break;
         default:
             break;
+
     }
+    
 }

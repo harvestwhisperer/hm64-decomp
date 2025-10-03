@@ -4,7 +4,7 @@
 #include "common.h"
 
 extern void func_800D8540(void);
-extern void func_800D86D8(void); 
+extern void incrementVarietyShowCounter(void); 
 extern void tvMainLoopCallback(void);
 
 #define WEATHER_CHANNEL 0

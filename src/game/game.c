@@ -1,7 +1,6 @@
 #include "common.h"
 
 #include "system/controller.h"
-#include "system/cutscene.h"
 #include "system/dialogue.h"
 #include "system/entity.h"
 #include "system/graphic.h"
@@ -156,13 +155,13 @@ static const s16 houseExtensionPrices[6];
 static const s16 houseExtensionLumberCosts[6];
 
 // forward declarations
-extern inline void showTextBox(u16 arg0, u16 arg1, u16 arg2, int arg3, u16 arg4);
+extern inline void showTextBox(u16 arg0, u16 arg1, u16 arg2, u32 flag, u16 arg4);
 extern void func_8005B09C(u8);
 extern void func_8005B09C(u8);        
 
-//INCLUDE_ASM("asm/nonmatchings/game/game", func_80059D90);
+//INCLUDE_ASM("asm/nonmatchings/game/game", updateFamilyStates);
 
-void func_80059D90(void) {
+void updateFamilyStates(void) {
 
     if (!checkLifeEventBit(MARRIED)) goto not_married;
 
@@ -178,7 +177,8 @@ void func_80059D90(void) {
         setLifeEventBit(HAVE_BABY);
         setSpecialDialogueBit(4);
         
-         switch (gWife) {                     
+         switch (gWife) {        
+
             case MARIA:                              
                 setSpecialDialogueBit(0x151);
                 break;
@@ -196,7 +196,9 @@ void func_80059D90(void) {
                 break;
             default:
                 break;
+
         }
+
      }
 
     if (!checkLifeEventBit(HAVE_BABY) && checkLifeEventBit(WIFE_PREGNANT)) {
@@ -228,6 +230,7 @@ void func_80059D90(void) {
             default:
                 break;
         }
+
     }
 
 not_married:
@@ -256,6 +259,7 @@ not_married:
             mariaHarrisPregnancyCounter = 0;
             setSpecialDialogueBit(MARIA_PREGNANT_DIALOGUE);
         }
+
     }
 
      if (checkLifeEventBit(POPURI_GRAY_MARRIED)) {
@@ -282,6 +286,7 @@ not_married:
             popuriGrayPregnancyCounter = 0;
             setSpecialDialogueBit(0x38);
         }
+
     }
 
     if (checkLifeEventBit(ELLI_JEFF_MARRIED)) {
@@ -308,6 +313,7 @@ not_married:
             elliJeffPregnancyCounter = 0;
             setSpecialDialogueBit(ELLI_PREGNANT_DIALOGUE);
         }
+
     }
 
     if (checkLifeEventBit(ANN_CLIFF_MARRIED)) {
@@ -334,6 +340,7 @@ not_married:
             annPregnancyCounter = 0;
             setSpecialDialogueBit(ANN_PREGNANT_DIALOGUE);
         }
+
     }
 
     if (checkLifeEventBit(KAREN_KAI_MARRIED)) {
@@ -360,7 +367,9 @@ not_married:
             karenPregnancyCounter = 0;
             setSpecialDialogueBit(KAREN_PREGNANT_DIALOGUE);
         }
+
     }
+
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/game", func_8005A60C);
@@ -396,6 +405,7 @@ void func_8005A60C(void) {
 handleAnimals:
     adjustDogAffection(-1);
     adjustHorseAffection(-1);
+
 }
 
 // func_8005A708
@@ -525,6 +535,7 @@ void setSpecialDialogues(void) {
     else {
         toggleSpecialDialogueBit(KAREN_BIRTHDAY);
     }
+
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/game", func_8005AAE4);
@@ -644,6 +655,7 @@ void resetDailyBits(void) {
     toggleSpecialDialogueBit(0x128);
     toggleSpecialDialogueBit(0x129);
     toggleSpecialDialogueBit(0x12A);
+
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/game", adjustValue);
@@ -675,13 +687,13 @@ inline int adjustValue(int initial, int value, int max) {
 
 static inline func_80059334_2(void) {
     pauseEntities();
-    func_80046C98();
+    pauseAllCutsceneExecutors();
     setEntityMapSpaceIndependent(ENTITY_PLAYER, FALSE);
 }
 
 static inline func_800593EC_2(void) {
     func_8002FB3C();
-    func_80046C98();
+    pauseAllCutsceneExecutors();
     setEntityMapSpaceIndependent(ENTITY_PLAYER, FALSE);
     func_8003C504(MAIN_MAP_INDEX);
 }
@@ -689,12 +701,11 @@ static inline func_800593EC_2(void) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/game", showTextBox);
 
-// show text box
-inline void showTextBox(u16 arg0, u16 dialogueInfoIndex, u16 dialogueIndex, int arg3, u16 arg4) {
+inline void showTextBox(u16 messageBoxType, u16 dialogueInfoIndex, u16 dialogueIndex, u32 flag, u16 flags) {
   
     func_80059334_2();
     
-    switch (arg0) {
+    switch (messageBoxType) {
         
         case 0:
           setMessageBoxViewSpacePosition(0, 24.0f, -64.0f, 352.0f);
@@ -710,9 +721,9 @@ inline void showTextBox(u16 arg0, u16 dialogueInfoIndex, u16 dialogueIndex, int 
           break;
     }
 
-    func_8003F360(0, -4, arg4);
+    func_8003F360(0, -4, flags);
   
-    initializeMessageBox(MAIN_DIALOGUE_BOX_INDEX, dialogueInfoIndex, dialogueIndex, arg3);
+    initializeMessageBox(MAIN_DIALOGUE_BOX_INDEX, dialogueInfoIndex, dialogueIndex, flag);
   
     setMainLoopCallbackFunctionIndex(TEXT);
     
@@ -1034,6 +1045,7 @@ void func_8005CAA8(void) {
         setMainLoopCallbackFunctionIndex(gameLoopContext.callbackIndex);
 
     }
+
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/game", func_8005CB50);
@@ -1069,7 +1081,7 @@ void func_8005CBF0(void) {
     // check flag on dialogue box struct
     if (func_80043A88()) {
         
-        if (!(func_800D5A6C(gPlayer.heldItem) & (0x80 | 0x100 | 0x400 | 0x800))) {
+        if (!(getItemFlags(gPlayer.heldItem) & (0x80 | 0x100 | 0x400 | 0x800))) {
             func_800D55E4(gPlayer.itemInfoIndex, 1);
             gPlayer.heldItem = 0;
             gItemBeingHeld = 0xFF;
@@ -1088,6 +1100,7 @@ void func_8005CBF0(void) {
         setEntityMapSpaceIndependent(ENTITY_PLAYER, TRUE);
 
     }
+
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/game", func_8005CDCC);
@@ -1136,6 +1149,7 @@ void func_8005CDCC(void) {
     if (checkSpecialDialogueBit(0x84)) {
         setLifeEventBit(GIVE_RICK_RARE_METAL);
     }
+
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/game", func_8005CEFC);
@@ -1151,6 +1165,7 @@ void func_8005CEFC(void) {
         setEntityMapSpaceIndependent(ENTITY_PLAYER, TRUE);
 
     }
+    
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/game", func_8005CF4C);
@@ -1508,8 +1523,10 @@ void func_8005D2B0() {
                 inline1(temp, 30, 31, 32, 33);
                 break;
 
-            case 7:                                     
-                switch (temp) {                    
+            case 7: 
+
+                switch (temp) {                   
+
                     case 0:                         
 
                         gGold += adjustValue(gGold, D_801890E0, MAX_GOLD);
@@ -1540,7 +1557,9 @@ void func_8005D2B0() {
                         dialogues[0].sessionManager.flags &= ~0x40;
                         func_80043AD8(0);
                         setMainLoopCallbackFunctionIndex(MAIN_GAME);
+                        
                         break;
+
                     }
                 
                 break;
@@ -2297,7 +2316,7 @@ void func_8005D2B0() {
 
                 case 0:                 
                 
-                    if (calculateHouseExtensionScore() == 6 && checkLifeEventBit(MARRIED) && npcAffection[gWife] >= 250 && checkLifeEventBit(HAVE_BABY) && dogInfo.affection >= 200 && getSumNpcAffection() >= 2500 && func_800DBF90() >= 384 && gMaximumStamina >= 190 && gHappiness >= 250 && func_8009B5E0() && D_801886D2 >= 10) {          
+                    if (calculateHouseExtensionScore() == 6 && checkLifeEventBit(MARRIED) && npcAffection[gWife] >= 250 && checkLifeEventBit(HAVE_BABY) && dogInfo.affection >= 200 && getSumNpcAffection() >= 2500 && getFarmGrassTilesSum() >= 384 && gMaximumStamina >= 190 && gHappiness >= 250 && func_8009B5E0() && D_801886D2 >= 10) {          
                         albumBits |= 0x8000;  
                     }
                     

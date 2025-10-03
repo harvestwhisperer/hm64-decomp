@@ -60,28 +60,10 @@ typedef struct {
 	u8 direction; // 0x6D
 	u8 unk_6E; // 0x6E
 	u8 actionTimer; // 0x6F
-	u8 unk_70; // collision object id? 
+	u8 groundObjectIndex;
 	Fatigue fatigue; // 71
     u16 flags; // 0x76
 } Player;
-
-typedef struct {
-    u8 unk_0;
-    u8 unk_1;
-    u8 unk_2;
-    u8 unk_3;
-    u8 unk_4;
-    u8 unk_5;
-    u8 unk_6;
-    u8 unk_7;
-    u8 unk_8;
-    u8 unk_9;
-    u8 unk_10;
-    u8 unk_11;
-    u8 unk_12;
-    u8 unk_13;
-    u8 unk_14;
-} UnknownPlayerData;
 
 extern void setupPlayerEntity(u16 arg0, u8 resetPlayer);
 
@@ -109,36 +91,6 @@ extern u8 gMaximumStamina;
 extern u8 gPlayerBirthdaySeason;
 
 extern u8 gToolchestSlots[];
-
-// TODO: labels
-// seed counters
-// turnip
-extern u8 D_801FC154;
-// potato
-extern u8 D_80204DF4;
-// eggplant
-extern u8 D_80237458;
-// cabbage
-extern u8 D_8018A725;
-// strawberry
-extern u8 D_802373E8;
-// tomato
-extern u8 D_8013DC2C;
-// corn
-extern u8 D_801FAD91;
-// grass seeds
-extern u8 D_801C3E28;
-// moondrop flower
-extern u8 D_801C3F70;
-// pink cat mint
-extern u8 D_80205636;
-// blue mist
-extern u8 D_802373A8;
-
-// watering can uses
-extern u8 D_8016FBCD;
-// chicken feed
-extern u16 chickenFeedQuantity;
 
 // counter until napping animation
 extern u16 playerIdleCounter;

@@ -886,7 +886,7 @@ u16 func_8009C324(u8 arg0) {
         }        
         
         if (!set) {
-            if (!checkLifeEventBit(0x6B) && countPinkCatMintFlowersFarm() && gWeather == SUNNY && (gSeason && gSeason < 3) && (5 < gHour && gHour < 12)) {
+            if (!checkLifeEventBit(0x6B) && getFarmPinkCatMintFlowersTilesSum() && gWeather == SUNNY && (gSeason && gSeason < 3) && (5 < gHour && gHour < 12)) {
                 setLifeEventBit(0x6B);
                 gCutsceneIndex = 0x73;
                 loadCutscene(arg0);
@@ -895,7 +895,7 @@ u16 func_8009C324(u8 arg0) {
         }        
 
         if (!set) {
-            if (!checkLifeEventBit(0x6C) && countPinkCatMintFlowersFarm() >= 16 && npcAffection[STU] >= 80 && gWeather == SUNNY && (gSeason && gSeason < 3) && (5 < gHour && gHour < 12)) {
+            if (!checkLifeEventBit(0x6C) && getFarmPinkCatMintFlowersTilesSum() >= 16 && npcAffection[STU] >= 80 && gWeather == SUNNY && (gSeason && gSeason < 3) && (5 < gHour && gHour < 12)) {
                 setLifeEventBit(0x6C);
                 gCutsceneIndex = 0x74;
                 loadCutscene(arg0);
@@ -1156,7 +1156,7 @@ u16 func_8009C324(u8 arg0) {
         }
         
         if (!set && arg0 == 0) {
-            if (!checkLifeEventBit(0x87) && (func_800DC008() + countPinkCatMintFlowersFarm()) >= 24 && gWeather == SUNNY && gSeason == SPRING && DAYTIME && gEntranceIndex == HOUSE_EXIT) {
+            if (!checkLifeEventBit(0x87) && (func_800DC008() + getFarmPinkCatMintFlowersTilesSum()) >= 24 && gWeather == SUNNY && gSeason == SPRING && DAYTIME && gEntranceIndex == HOUSE_EXIT) {
                 setLifeEventBit(0x87);
                 gCutsceneIndex = 0xE4;
                 loadCutscene(arg0);
@@ -1165,7 +1165,7 @@ u16 func_8009C324(u8 arg0) {
         }
 
         if (!set && arg0 == 0) {
-            if (!checkLifeEventBit(0x88) && func_800DBF90() >= 90 && gWeather == SUNNY && gSeason == AUTUMN && DAYTIME && gEntranceIndex == HOUSE_EXIT) {
+            if (!checkLifeEventBit(0x88) && getFarmGrassTilesSum() >= 90 && gWeather == SUNNY && gSeason == AUTUMN && DAYTIME && gEntranceIndex == HOUSE_EXIT) {
                 setLifeEventBit(0x88);
                 gCutsceneIndex = 0xE6;
                 loadCutscene(arg0);
@@ -1210,7 +1210,7 @@ u16 func_8009C324(u8 arg0) {
         }
 
         if (!set && arg0 == 0) {
-            if (!checkLifeEventBit(0x8D) && (func_800DC008() + countPinkCatMintFlowersFarm()) >= 24 && gWeather == SUNNY && gSeason == SUMMER && DAYTIME && gEntranceIndex == HOUSE_EXIT) {
+            if (!checkLifeEventBit(0x8D) && (func_800DC008() + getFarmPinkCatMintFlowersTilesSum()) >= 24 && gWeather == SUNNY && gSeason == SUMMER && DAYTIME && gEntranceIndex == HOUSE_EXIT) {
                 setLifeEventBit(0x8D);
                 gCutsceneIndex = 0xEC;
                 loadCutscene(arg0);
@@ -2793,7 +2793,7 @@ u16 func_800A5314(void) {
     if (!set && !checkLifeEventBit(0x9A) && !checkLifeEventBit(MARRIED) && npcAffection[MARIA] >= 250 && gWeather == SUNNY && 11 < gHour && gHour < 18 && !checkLifeEventBit(MARRIED) && !checkLifeEventBit(0x1A) && previousMapIndex == 0x3C) {
         setLifeEventBit(0x9A);
         gCutsceneIndex = 0x205;
-        gCutsceneFlags |= 6;
+        gCutsceneFlags |= (2 | 4);
         loadCutscene(0);
     } 
     

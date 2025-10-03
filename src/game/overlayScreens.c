@@ -30,6 +30,7 @@
 extern OverlayScreenTable overlayScreenTable;
 extern u32 D_80205204;
 extern u8 D_801890E8[31];
+extern u8 D_80189108[5][7];
  
 // shared bss
 extern u8 D_801C3F70;
@@ -1211,7 +1212,7 @@ bool func_800BE5D0(u8 arg0) {
         
     }
 
-    if (func_800D5A6C(temp) & 0x200) {
+    if (getItemFlags(temp) & 0x200) {
         result = TRUE;
     }
 
@@ -1420,7 +1421,7 @@ bool func_800C0450(u8 arg0) {
         
     }
 
-    if (func_800D5A6C(temp) & 0x1000) {
+    if (getItemFlags(temp) & 0x1000) {
         result = TRUE;
     }
 

@@ -8,6 +8,7 @@
 #include "game/level.h"
 #include "game/fieldObjects.h"
 #include "game/npc.h"
+#include "game/player.h"
 
 // bss
 u32 dailyEventBits[];
@@ -158,11 +159,11 @@ void func_80063D38(void) {
 
     if (gSeason != WINTER) {
 
-        for (i = 0; i < FIELD_WIDTH; i++) {
-            for (j = 0; j < FIELD_HEIGHT; j++) {
+        for (i = 0; i < FIELD_HEIGHT; i++) {
+            for (j = 0; j < FIELD_WIDTH; j++) {
                 if (farmFieldTiles[i][j] == WEED) {
                     setSpecialDialogueBit(0x88);
-                    func_800DAA90(FARM, 1, j, i);
+                    setFieldTile(FARM, 1, j, i);
                 } 
             }
         } 
@@ -201,13 +202,13 @@ void func_80063F3C(void) {
     
     if (gSeason != WINTER) {
 
-        for (i = 0; i < FIELD_WIDTH; i++) {
-            for (j = 0; j < FIELD_HEIGHT; j++) {
+        for (i = 0; i < FIELD_HEIGHT; i++) {
+            for (j = 0; j < FIELD_WIDTH; j++) {
                 temp = farmFieldTiles[i][j];
                 if (farmFieldTiles[i][j] && func_800DA948(temp) & 0x10 && !(getRandomNumberInRange(0, 3))) {
                     setSpecialDialogueBit(0x89);
                     temp++;
-                    func_800DAA90(FARM, temp, j, i);
+                    setFieldTile(FARM, temp, j, i);
                 }
             }
         }   
@@ -229,12 +230,61 @@ void func_80064048(void) {
     
 }
 
-#ifdef PERMUTER
+// FIXME: something wrong here
+static inline int adjustValue3(int initial, int value, int max) {
+
+    int temp;
+    int temp2;
+    int adjusted;
+
+    adjusted = value;
+    temp = (initial + adjusted);
+    temp -= 5;
+    
+    if (max < temp) {
+        adjusted -= temp - max;
+        temp = max;
+    }
+    
+    if (temp < 0) {
+        adjusted -= temp;
+    } 
+      
+    return adjusted;
+    
+}
+
+static inline int adjustValue4(int initial, int value, int max) {
+
+    int temp;
+    int temp2;
+    int adjusted;
+
+    adjusted = value;
+    temp = (initial + adjusted);
+    temp -= 10;
+    
+    if (max < temp) {
+        adjusted -= temp - max;
+        temp = max;
+    }
+    
+    if (temp < 0) {
+        adjusted -= temp;
+    } 
+      
+    return adjusted;
+    
+}
+
+//INCLUDE_ASM("asm/nonmatchings/game/gameStatus", func_80064114);
+
+// rain
 void func_80064114(void) {
 
     u8 i;
-    
-    func_800DBBB0(16);
+
+    randomlyBreakLogPieces(16);
 
     for (i = 0; i < MAX_FARM_ANIMALS; i++) {
 
@@ -245,11 +295,11 @@ void func_80064114(void) {
             switch (gFarmAnimals[i].type) {
 
                 case 0:
-                    func_80086458(i, -0x14);
+                    func_80086458(i, -20);
                     break;
                 
                 case 1:
-                    func_80086458(i, -0x14);
+                    func_80086458(i, -20);
                     break;
                 
                 case 2:
@@ -264,8 +314,9 @@ void func_80064114(void) {
                                 
                                 func_800861A4(2, i, 0xFF, 2, 0);
                                 func_80086458(i, -20);
-                                
-                                gHappiness += adjustValue(gHappiness, -5, MAX_HAPPINESS);
+
+                                // FIXME: should just be += adjustValue(gHappiness, -5, MAX_HAPPINESS)
+                                gHappiness += adjustValue3(gHappiness + 5, -5, MAX_HAPPINESS);
                                 
                             }
                             
@@ -273,7 +324,8 @@ void func_80064114(void) {
                                 
                                 func_800861A4(2, i, 0xFF, 3, 0);
                                 func_80086458(i, -30);
-                                gHappiness += adjustValue(gHappiness, -10, MAX_HAPPINESS);
+                        
+                                gHappiness += adjustValue4(gHappiness + 10, -10, MAX_HAPPINESS);
                                 
                             } 
                             
@@ -291,51 +343,62 @@ void func_80064114(void) {
                     break;
                 
                 case 3:
-                    func_80086458(i, -0x14);
+                    func_80086458(i, -20);
                     break;
                 
                 case 4:
-                    func_80086458(i, -0x14);
+                    func_80086458(i, -20);
                     break;
                 
                 case 5:
 
-                    if (gFarmAnimals[i].condition != 0) {
-                        
-                        if (!getRandomNumberInRange(0, 7)) {
+                    switch (gFarmAnimals[i].condition) {
+
+                        case 0:
                             
-                            func_800861A4(2, i, 0xFF, 3, 0);
-                            func_80086458(i, -30);
-                            gHappiness += adjustValue(gHappiness, -10, MAX_HAPPINESS);
+                            if (!getRandomNumberInRange(0, 7)) {
                             
-                        } 
-    
-                    } else {
-                        if (!getRandomNumberInRange(0, 3)) {
-                            func_800861A4(2, i, 0xFF, 3, 0);
-                            func_80086458(i, -30);
-                            gHappiness += adjustValue(gHappiness, -10, MAX_HAPPINESS);
-                        }
+                                func_800861A4(2, i, 0xFF, 3, 0);
+                                func_80086458(i, -30);
+                                
+                                gHappiness += adjustValue4(gHappiness + 10, -10, MAX_HAPPINESS);
+                                
+                            }
+                            
+                            break;
+
+                        case 3:
+                            func_80086458(i, -20);
+                            break;
+                            
                     }
-                            
+
                     break;
                 
                 case 6:
 
-                    if (gFarmAnimals[i].condition != 0) {
-                        
-                        if (!getRandomNumberInRange(0, 7)) {
-                                
-                            func_800861A4(2, i, 0xFF, 3, 0);
-                            func_80086458(i, -30);
-                            gHappiness += adjustValue(gHappiness, -10, MAX_HAPPINESS);
+                    switch (gFarmAnimals[i].condition) {
+
+                        case 0:
                             
-                        } 
+                            if (!getRandomNumberInRange(0, 7)) {
+                                    
+                                func_800861A4(2, i, 0xFF, 3, 0);
+                                func_80086458(i, -30);
+                                
+                                gHappiness += adjustValue4(gHappiness + 10, -10, MAX_HAPPINESS);
+                                
+                            } 
+                            
+                            break;
+
+                        case 3:
+                            func_80086458(i, -20);
+                            break;
                         
-                    } else {
-                        func_80086458(i, -20);
                     }
-                    
+
+
                     break;
                 
             }
@@ -350,12 +413,368 @@ void func_80064114(void) {
 
             gChickens[i].flags |= 0x80;
 
-            if (gChickens[i].type == 2) {
-             
-                if (gChickens[i].condition == 0) {
-                    func_800861A4(1, i, 0xFF, 1, 0);
-                }
+            switch (gChickens[i].type) {
+
+                case 1:
+                    break;
+                case 2:
+                    if (gChickens[i].condition == 0) {
+                        func_800861A4(1, i, 0xFF, 1, 0);
+                    }
+                case 0:
+                    break;
+                
+            } 
+
+        }
+        
+    }
+    
+}
+
+//INCLUDE_ASM("asm/nonmatchings/game/gameStatus", func_800644B0);
+
+// snow
+void func_800644B0(void) {
+    
+    u8 i;
+
+    randomlyBreakLogPieces(8);
+
+    for (i = 0; i < MAX_FARM_ANIMALS; i++) {
+
+        if ((gFarmAnimals[i].flags & 1) && getLevelFlags(gFarmAnimals[i].location) & 2) {
+
+            switch (gFarmAnimals[i].type) {
+
+                case 0:
+                    func_80086458(i, -20);
+                    break;
+                
+                case 1:
+                    func_80086458(i, -20);
+                    break;
+                
+                case 2:
+
+                    switch (gFarmAnimals[i].condition) {
+
+                        case 0:
+                        case 1:
+                        case 2:
+
+                            if (!getRandomNumberInRange(0, 1)) {
+                                
+                                func_800861A4(2, i, 0xFF, 2, 0);
+                                func_80086458(i, -20);
+
+                                gHappiness += adjustValue3(gHappiness + 5, -5, MAX_HAPPINESS);
+                                
+                            }
+                            
+                            if (!getRandomNumberInRange(0, 3)) {
+                                
+                                func_800861A4(2, i, 0xFF, 3, 0);
+                                func_80086458(i, -30);
+                        
+                                gHappiness += adjustValue4(gHappiness + 10, -10, MAX_HAPPINESS);
+                                
+                            } 
+                            
+                            break;
+                                                
+                        case 3:
+                            func_80086458(i, -20);
+                            break;
+
+                        default:
+                            break;
+                        
+                    }
+                    
+                    break;
+                
+                case 3:
+                    func_80086458(i, -20);
+                    break;
+                
+                case 4:
+                    func_80086458(i, -20);
+                    break;
+                
+                case 5:
+
+                    switch (gFarmAnimals[i].condition) {
+
+                        case 0:
+                            
+                            if (!getRandomNumberInRange(0, 3)) {
+                            
+                                func_800861A4(2, i, 0xFF, 3, 0);
+                                func_80086458(i, -30);
+                                
+                                gHappiness += adjustValue4(gHappiness + 10, -10, MAX_HAPPINESS);
+                                
+                            }
+                            
+                            break;
+
+                        case 3:
+                            func_80086458(i, -20);
+                            break;
+                            
+                    }
+
+                    break;
+                
+                case 6:
+
+                    switch (gFarmAnimals[i].condition) {
+
+                        case 0:
+                            
+                            if (!getRandomNumberInRange(0, 3)) {
+                                    
+                                func_800861A4(2, i, 0xFF, 3, 0);
+                                func_80086458(i, -30);
+                                
+                                gHappiness += adjustValue4(gHappiness + 10, -10, MAX_HAPPINESS);
+                                
+                            } 
+                            
+                            break;
+
+                        case 3:
+                            func_80086458(i, -20);
+                            break;
+                        
+                    }
+
+
+                    break;
+                
+            }
             
+        }
+        
+    }
+
+    for (i = 0; i < MAX_CHICKENS; i++) {
+
+        if ((gChickens[i].flags & 1) && getLevelFlags(gChickens[i].location) & 2) {
+
+            switch (gChickens[i].type) {
+
+                case 1:
+                    break;
+                case 2:
+                    if (gChickens[i].condition == 0) {
+                        func_800861A4(1, i, 0xFF, 1, 0);
+                    }
+                case 0:
+                    break;
+                
+            } 
+
+        }
+        
+    }
+
+}
+
+//INCLUDE_ASM("asm/nonmatchings/game/gameStatus", func_80064814);
+
+// typhoon
+void func_80064814(void) {
+
+    u8 i;
+
+    randomlyBreakLogPieces(8);
+    func_800DBC9C(4);
+    func_800DBD88(8);
+
+    if (checkLifeEventBit(HAVE_GREENHOUSE)) {
+
+        if (!getRandomNumberInRange(0, 3)) {
+
+            memcpy((u32)&greenhouseFieldTiles, (u32)D_80113760, 0x1E0);
+
+            setLifeEventBit(0xD7);
+            toggleLifeEventBit(HAVE_GREENHOUSE);
+            setAnimalLocations(GREENHOUSE);
+            
+        }
+        
+    }
+
+    for (i = 0; i < MAX_FARM_ANIMALS; i++) {
+
+        if ((gFarmAnimals[i].flags & 1) && getLevelFlags(gFarmAnimals[i].location) & 2) {
+
+            switch (gFarmAnimals[i].type) {
+
+                case 0:
+                    func_80086458(i, -30);
+                    break;
+                
+                case 1:
+                    func_80086458(i, -30);
+                    break;
+                
+                case 2:
+
+                    switch (gFarmAnimals[i].condition) {
+
+                        case 0:
+                        case 1:
+                        case 2:
+
+                            if (!getRandomNumberInRange(0, 1)) {
+                                
+                                func_800861A4(2, i, 0xFF, 2, 0);
+                                func_80086458(i, -20);
+
+                                gHappiness += adjustValue3(gHappiness + 5, -5, MAX_HAPPINESS);
+                                
+                            }
+                            
+                            if (!getRandomNumberInRange(0, 1)) {
+                                
+                                func_800861A4(2, i, 0xFF, 3, 0);
+                                func_80086458(i, -30);
+                        
+                                gHappiness += adjustValue4(gHappiness + 10, -10, MAX_HAPPINESS);
+                                
+                            } 
+                            
+                            break;
+                                                
+                        case 3:
+                            func_80086458(i, -30);
+                            break;
+
+                        default:
+                            break;
+                        
+                    }
+                    
+                    break;
+                
+                case 3:
+                    func_80086458(i, -30);
+                    break;
+                
+                case 4:
+                    func_80086458(i, -30);
+                    break;
+                
+                case 5:
+
+                    switch (gFarmAnimals[i].condition) {
+
+                        case 0:
+                            
+                            if (!getRandomNumberInRange(0, 1)) {
+                            
+                                func_800861A4(2, i, 0xFF, 3, 0);
+                                func_80086458(i, -30);
+                                
+                                gHappiness += adjustValue4(gHappiness + 10, -10, MAX_HAPPINESS);
+                                
+                            }
+                            
+                            break;
+
+                        case 3:
+                            func_80086458(i, -30);
+                            break;
+                            
+                    }
+
+                    break;
+                
+                case 6:
+
+                    switch (gFarmAnimals[i].condition) {
+
+                        case 0:
+                            
+                            if (!getRandomNumberInRange(0, 1)) {
+                                    
+                                func_800861A4(2, i, 0xFF, 3, 0);
+                                func_80086458(i, -30);
+                                
+                                gHappiness += adjustValue4(gHappiness + 10, -10, MAX_HAPPINESS);
+                                
+                            } 
+                            
+                            break;
+
+                        case 3:
+                            func_80086458(i, -30);
+                            break;
+                        
+                    }
+
+
+                    break;
+                
+            }
+            
+        }
+        
+    }
+
+    for (i = 0; i < MAX_CHICKENS; i++) {
+
+        if ((gChickens[i].flags & 1) && getLevelFlags(gChickens[i].location) & 2) {
+
+            switch (gChickens[i].type) {
+
+                case 1:
+
+                    func_800861A4(1, i, 0xFF, 2, 0xFF);
+
+                    gChickens[i].flags = 0;
+
+                    setLifeEventBit(0x2B);
+                    
+                    D_8018985C[0] = gChickens[i].name[0];
+                    D_8018985C[1] = gChickens[i].name[1];
+                    D_8018985C[2] = gChickens[i].name[2];
+                    D_8018985C[3] = gChickens[i].name[3];
+                    D_8018985C[4] = gChickens[i].name[4];
+                    D_8018985C[5] = gChickens[i].name[5];
+
+                    break;
+
+                case 2:
+
+                    switch (gChickens[i].condition) {
+
+                        case 0:
+                        case 1:
+                        
+                            func_800861A4(1, i, 0xFF, 2, 0xFF);
+        
+                            gChickens[i].flags = 0;
+        
+                            setLifeEventBit(0x2B);
+                            
+                            D_8018985C[0] = gChickens[i].name[0];
+                            D_8018985C[1] = gChickens[i].name[1];
+                            D_8018985C[2] = gChickens[i].name[2];
+                            D_8018985C[3] = gChickens[i].name[3];
+                            D_8018985C[4] = gChickens[i].name[4];
+                            D_8018985C[5] = gChickens[i].name[5];
+        
+                            break;
+
+                    }
+
+                case 0:
+                    break;
+                
             }
 
         }
@@ -363,15 +782,156 @@ void func_80064114(void) {
     }
     
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game/gameStatus", func_80064114);
-#endif
 
-INCLUDE_ASM("asm/nonmatchings/game/gameStatus", func_800644B0);
+//INCLUDE_ASM("asm/nonmatchings/game/gameStatus", func_80064CF0);
 
-INCLUDE_ASM("asm/nonmatchings/game/gameStatus", func_80064814);
+void func_80064CF0(void) {
+    
+    u8 i;
 
-INCLUDE_ASM("asm/nonmatchings/game/gameStatus", func_80064CF0);
+    randomlyBreakLogPieces(16);
+    func_800DBE8C(8);
+
+    for (i = 0; i < MAX_FARM_ANIMALS; i++) {
+
+        if ((gFarmAnimals[i].flags & 1) && getLevelFlags(gFarmAnimals[i].location) & 2) {
+
+            switch (gFarmAnimals[i].type) {
+
+                case 0:
+                    func_80086458(i, -10);
+                    break;
+                
+                case 1:
+                    func_80086458(i, -10);
+                    break;
+                
+                case 2:
+
+                    switch (gFarmAnimals[i].condition) {
+
+                        case 0:
+                        case 1:
+                        case 2:
+
+                            if (!getRandomNumberInRange(0, 3)) {
+                                
+                                func_800861A4(2, i, 0xFF, 2, 0);
+                                func_80086458(i, -20);
+
+                                gHappiness += adjustValue3(gHappiness + 5, -5, MAX_HAPPINESS);
+                                
+                            }
+                            
+                            if (!getRandomNumberInRange(0, 7)) {
+                                
+                                func_800861A4(2, i, 0xFF, 3, 0);
+                                func_80086458(i, -30);
+                        
+                                gHappiness += adjustValue4(gHappiness + 10, -10, MAX_HAPPINESS);
+                                
+                            } 
+                            
+                            break;
+                                                
+                        case 3:
+                            func_80086458(i, -10);
+                            break;
+
+                        default:
+                            break;
+                        
+                    }
+                    
+                    break;
+                
+                case 3:
+                    func_80086458(i, -10);
+                    break;
+                
+                case 4:
+                    func_80086458(i, -10);
+                    break;
+                
+                case 5:
+
+                    switch (gFarmAnimals[i].condition) {
+
+                        case 0:
+                            
+                            if (!getRandomNumberInRange(0, 7)) {
+                            
+                                func_800861A4(2, i, 0xFF, 3, 0);
+                                func_80086458(i, -30);
+                                
+                                gHappiness += adjustValue4(gHappiness + 10, -10, MAX_HAPPINESS);
+                                
+                            }
+                            
+                            break;
+
+                        case 3:
+                            func_80086458(i, -10);
+                            break;
+                            
+                    }
+
+                    break;
+                
+                case 6:
+
+                    switch (gFarmAnimals[i].condition) {
+
+                        case 0:
+                            
+                            if (!getRandomNumberInRange(0, 7)) {
+                                    
+                                func_800861A4(2, i, 0xFF, 3, 0);
+                                func_80086458(i, -30);
+                                
+                                gHappiness += adjustValue4(gHappiness + 10, -10, MAX_HAPPINESS);
+                                
+                            } 
+                            
+                            break;
+
+                        case 3:
+                            func_80086458(i, -10);
+                            break;
+                        
+                    }
+
+
+                    break;
+                
+            }
+            
+        }
+        
+    }
+
+    for (i = 0; i < MAX_CHICKENS; i++) {
+
+        if ((gChickens[i].flags & 1) && getLevelFlags(gChickens[i].location) & 2) {
+
+            switch (gChickens[i].type) {
+
+                case 1:
+                    break;
+                case 2:
+                    if (gChickens[i].condition == 0 && !getRandomNumberInRange(0, 3)) {
+                        func_800861A4(1, i, 0xFF, 1, 0);
+                    }
+                case 0:
+                    break;
+                
+            } 
+
+        }
+        
+    }
+    
+}
 
 //INCLUDE_ASM("asm/nonmatchings/game/gameStatus", setDailyEventBit);
 
@@ -722,6 +1282,7 @@ u8 func_80065518(void) {
     }
 
     return result;
+    
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/gameStatus", getSumNpcAffection);

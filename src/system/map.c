@@ -796,16 +796,16 @@ bool setMapWeatherSprite(u16 mapIndex, u8 index, u16 spriteIndex, u16 animationI
 
 //INCLUDE_ASM("asm/nonmatchings/system/map", func_80034DC8);
 
-bool func_80034DC8(u16 mapIndex, u8 index, u16 arg2) {
+bool func_80034DC8(u16 mapIndex, u8 mapObjectIndex, u16 animationIndex) {
 
     bool result = FALSE; 
 
     if (mapIndex == MAIN_MAP_INDEX && (mainMap[mapIndex].mapState.flags & MAP_ACTIVE)) { 
         
-        resetAnimationState(mainMap[mapIndex].mapObjects[index].spriteIndex);
+        resetAnimationState(mainMap[mapIndex].mapObjects[mapObjectIndex].spriteIndex);
         
-        mainMap[mapIndex].mapObjects[index].animationIndex = arg2;
-        mainMap[mapIndex].mapObjects[index].flags &= ~2;
+        mainMap[mapIndex].mapObjects[mapObjectIndex].animationIndex = animationIndex;
+        mainMap[mapIndex].mapObjects[mapObjectIndex].flags &= ~2;
 
         result = TRUE;
 
@@ -1347,7 +1347,7 @@ u8 updateGridsWithMapAdditions(u16 mapIndex, u16 mapAdditionIndex, u8 xCoord, u8
 
 //INCLUDE_ASM("asm/nonmatchings/system/map", getLevelInteractionIndexFromPosition);
 
-// takes in entity coordinates and returns index for interactable object/exit from rodata array per level
+// takes in rotated entity coordinates and returns index for interactable object/exit from rodata array per level
 u8 getLevelInteractionIndexFromPosition(u16 mapIndex, f32 x, f32 z) {
 
     Vec3f vec1;

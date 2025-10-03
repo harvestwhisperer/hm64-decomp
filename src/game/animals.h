@@ -24,6 +24,9 @@
 #define SHEEP_TYPE 3
 #define CHICKEN_TYPE 4
 
+/* flags */
+#define CHICKEN_FED 0x10
+
 // 0x801C3BF0
 typedef struct {
 	u8 name[6];
@@ -131,7 +134,7 @@ extern void func_800876D0();
 extern void updateAnimalCoordinates();
 extern void updateAnimals();
 extern void func_80087D5C();
-extern void func_80087DEC();
+extern void resetAnimalStatuses();
 extern u8 func_80087F28(u8, u8);
 extern void setMrsManaCowsNames();
 extern void func_800886D0();
