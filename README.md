@@ -87,7 +87,7 @@ Compared to the dialogue bytecode, the cutscene bytecode is much more sophistica
 ## Contributing
 
 Contributions are much welcome. There are a few areas of work left in the project:
-- Easy, repetitive (but numerous) functions (`npc.c` is a great example). These are great for getting started, as the structs and many examples functions are already available.
+- The main files left to decompile are `animals.c`, `overlayScreens.c`, and `loadGameScreen.c`, as well as some difficult one-offs in a few files `setCutscene.c`, `fieldObjects.c,` `player.c`, and `namingScreen.c`.
 - Getting "almost" matches over the finish line: there are several functions that are 95-99% matching in the repo (searchable under `#ifdef PERMUTER`)
 - Cleaning up fake/forced matches (searchable under `FIXME`)
 - Research into function, struct member, flag, and variable purposes and making accurate labels. This also includes adding macro values, such as player actions (see `player.h`)
