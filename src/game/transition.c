@@ -4,7 +4,6 @@
 
 #include "system/audio.h"
 #include "system/controller.h"
-#include "system/cutscene.h"
 #include "system/entity.h"
 #include "system/map.h"
 #include "system/math.h"
@@ -62,7 +61,7 @@ void mainGameLoopCallback(void) {
     // set additional info if needed for cutscene/end cutscene
     func_800A8F74();
 
-    // check buttons pressed in frame
+    // dead code
     checkButtonPressed(CONTROLLER_1, BUTTON_C_RIGHT);
     checkButtonPressed(CONTROLLER_1, BUTTON_C_DOWN);
     checkButtonPressed(CONTROLLER_1, BUTTON_Z);
@@ -461,6 +460,7 @@ void func_800563D0(u8 arg0) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/transition", func_80059300);
 
+// resume everything
 void func_80059300(void) {
     togglePauseEntities();
     func_80046CF4();
@@ -469,9 +469,10 @@ void func_80059300(void) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/transition", func_80059334);
 
+// pause everything
 void inline func_80059334(void) {
     pauseEntities();
-    func_80046C98();
+    pauseAllCutsceneExecutors();
     setEntityMapSpaceIndependent(ENTITY_PLAYER, FALSE);
 }
  
@@ -485,7 +486,6 @@ void func_80059368(void) {
     setEntityMapSpaceIndependent(ENTITY_PLAYER, TRUE);
     handleEatingAndDrinking();
 
-    // load current map
     dmaMapAssets(0, gMapWithSeasonIndex);
     
     setupLevelMap(gBaseMapIndex);
@@ -503,7 +503,7 @@ void func_80059368(void) {
 
 void inline func_800593EC(void) {
     func_8002FB3C();
-    func_80046C98();
+    pauseAllCutsceneExecutors();
     setEntityMapSpaceIndependent(ENTITY_PLAYER, FALSE);
     func_8003C504(MAIN_MAP_INDEX);
 }
@@ -538,6 +538,7 @@ void startNewDay(void) {
                 D_80189108[i][j] = 0xFF;
             }
         }
+        
     }
     
     if (gSeason == SPRING && gDayOfMonth == 23) {
@@ -627,8 +628,7 @@ void startNewDay(void) {
     
     gWeather = gForecast;
     
-    // increment variety show episode counters
-    func_800D86D8();
+    incrementVarietyShowCounter();
     setForecast();
     
     if (checkLifeEventBit(0x7E)) {
@@ -637,10 +637,11 @@ void startNewDay(void) {
     }
     
     func_800DB424();
-    func_80087DEC();
-    func_800DB858();
-    func_800DBAC4();
-    func_80059D90();
+
+    resetAnimalStatuses();
+    updateCropsIfRain();
+    randomlyAddWeedsToFarmField();
+    updateFamilyStates();
     setLetters();
     
     if (checkLifeEventBit(MARRIED)) {
@@ -652,6 +653,7 @@ void startNewDay(void) {
         func_800E53E8(gCurrentGameIndex);
     }
     
+    // update more game state
     func_800598E0();
     
 }

@@ -60,7 +60,7 @@ void initializeEntities(void) {
 
 //INCLUDE_ASM("asm/nonmatchings/system/entity", initializeEntityAsset);
 
-bool initializeEntityAsset(u16 entityAssetIndex, void* arg1, void* arg2, void* arg3, void* arg4, void* arg5, void* arg6, u8 arg7, u8 arg8, u16* arg9) {
+bool initializeEntityAsset(u16 entityAssetIndex, u32 arg1, u32 arg2, u32 arg3, u32 arg4, u32 arg5, u32 arg6, u8 arg7, u8 arg8, u16* arg9) {
 
     bool result = FALSE;
 
@@ -99,8 +99,8 @@ bool initializeEntityAsset(u16 entityAssetIndex, void* arg1, void* arg2, void* a
 
 //INCLUDE_ASM("asm/nonmatchings/system/entity", initializeSpriteInstance);
 
-bool initializeEntity(u16 entityIndex, u16 globalSpriteIndex, u16 shadowSpriteIndex, void* vaddrTexture1, void* vaddrTexture2, 
-    void* vaddrPalette, void* vaddrAnimationMetadata, void* vaddrTextureToPaletteLookup, void* vaddrSpritesheetIndex) {
+bool initializeEntity(u16 entityIndex, u16 globalSpriteIndex, u16 shadowSpriteIndex, u32 vaddrTexture1, u32 vaddrTexture2, 
+    u32 vaddrPalette, u32 vaddrAnimationMetadata, u32 vaddrTextureToPaletteLookup, u32 vaddrSpritesheetIndex) {
 
     bool set = FALSE;
     
@@ -1626,9 +1626,9 @@ Vec3f getEntityRelativeTilePosition(u16 entityIndex, f32 x, f32 z) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/entity", func_800315A0);
+//INCLUDE_ASM("asm/nonmatchings/system/entity", getEntityTileCoordinates);
 
-Vec3f func_800315A0(u16 index) {
+Vec3f getEntityTileCoordinates(u16 entityIndex) {
 
     // FIXME: shouldn't be necessary
     u32 padding[11];
@@ -1639,9 +1639,9 @@ Vec3f func_800315A0(u16 index) {
     tileCoordinates.z = 0;
     tileCoordinates.y = 65535.0f;
     
-    if (index < MAX_ENTITIES) {
-        if ((entities[index].flags & ENTITY_ACTIVE) && !(entities[index].flags & ENTITY_PAUSED) && !(entities[index].flags & ENTITY_MAP_SPACE_INDEPENDENT)) {
-            tileCoordinates = convertWorldToTileCoordinates(mapControllers[gMainMapIndex].mainMapIndex, entities[index].coordinates.x, entities[index].coordinates.z);
+    if (entityIndex < MAX_ENTITIES) {
+        if ((entities[entityIndex].flags & ENTITY_ACTIVE) && !(entities[entityIndex].flags & ENTITY_PAUSED) && !(entities[entityIndex].flags & ENTITY_MAP_SPACE_INDEPENDENT)) {
+            tileCoordinates = convertWorldToTileCoordinates(mapControllers[gMainMapIndex].mainMapIndex, entities[entityIndex].coordinates.x, entities[entityIndex].coordinates.z);
         } 
     }
 
@@ -1650,7 +1650,7 @@ Vec3f func_800315A0(u16 index) {
 }
 
 // alternate
-// Vec3f func_800315A0(u16 index) {
+// Vec3f getEntityTileCoordinates(u16 index) {
     
 //     int padding[11];
 
@@ -2021,7 +2021,7 @@ u16 attemptEntityMovement(u16 index) {
 
     if (collisionFlags) {
 
-        projectedPosition = getMovementVectorFromDirection(entities[index].speed, convertWorldToSpriteDirection(entities[index].direction, gMainMapIndex), 0);
+        projectedPosition = getMovementVectorFromDirection(entities[index].speed, convertWorldToSpriteDirection(entities[index].direction, gMainMapIndex), 0.0f);
 
         collisionFlags = checkTerrainMovementCollision(&entities[index], projectedPosition.x, projectedPosition.z, convertWorldToSpriteDirection(entities[index].direction, gMainMapIndex));
         
@@ -2038,7 +2038,6 @@ u16 attemptEntityMovement(u16 index) {
 
 //INCLUDE_ASM("asm/nonmatchings/system/entity", doEntityPathfinding);
 
-// pathfinding
 void doEntityPathfinding(u16 index) {
     
     Vec3f projectedPosition;

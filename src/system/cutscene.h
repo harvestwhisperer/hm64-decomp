@@ -611,15 +611,11 @@ typedef struct {
     u16 flags; // 0x6C
 } CutsceneExecutor;
 
-// can't get a consistent match across files for this variable; some functions need array/struct loading, which breaks the match in other functions
-extern u32 gCutsceneFlags;
-extern u32 cutsceneFlagsHack[2];
-
 extern void initializeCutsceneExecutors(void);
 extern void updateCutsceneExecutors(void);
 extern bool spawnCutsceneExecutor(u16 index, void *bytecodePtr);
 extern void deactivateCutsceneExecutors(void);   
-extern void func_80046C98(void);     
+extern void pauseAllCutsceneExecutors(void);     
 extern void func_80046CF4(void);    
 extern inline int func_80046D50(int adjustment, int value, int max);
 

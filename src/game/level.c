@@ -4,7 +4,6 @@
 
 #include "ld_symbols.h"
 
-#include "system/cutscene.h"
 #include "system/entity.h"
 #include "system/map.h"
 #include "system/memory.h"
@@ -150,7 +149,7 @@ void setupLevelMap(u16 mapIndex) {
 
     setAdditionalMapAdditionsForLevel(mapIndex);
 
-    func_800D9600(gBaseMapIndex);
+    setMapGroundObjects(gBaseMapIndex);
     
     if (getLevelFlags(mapIndex) & OUTDOORS) {
         setWeatherSprites();

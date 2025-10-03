@@ -63,13 +63,13 @@ void func_800598E0(void) {
     
     gSumGirlsWithHighAffection = getBacholeretteWithHighestAffection(140);
     gTotalGrassTiles = func_800DC008() + func_800DC080(); // farm field + greenhouse
-    gTotalPinkCatMintFlowersGrowing = countPinkCatMintFlowersFarm() + countPinkCatMintFlowersGreenhouse(); // farm field + greenhouse
+    gTotalPinkCatMintFlowersGrowing = getFarmPinkCatMintFlowersTilesSum() + getGreenhousePinkCatMintFlowersTilesSum();
      
     if (checkLifeEventBit(MARRIED)) {
         setWifeNameString(gWife);
     }
     
-    if (checkLifeEventBit(0x94)) {
+    if (checkLifeEventBit(MRS_MANA_COWS_EVENT)) {
 
         if (gSeason == WINTER) {
 
@@ -79,16 +79,16 @@ void func_800598E0(void) {
             }
 
             if (gSeason == WINTER && gDayOfMonth == 6) {
-                toggleLifeEventBit(0x94);
+                toggleLifeEventBit(MRS_MANA_COWS_EVENT);
             }
+
         }
+
     }
     
-    // set season name string
     setSeasonName();
     // decrease wife/baby/horse/dog affection
     func_8005A60C();
-    // set festival daily event bits 
     setFestivalDailyBits();
     
     if (checkDailyEventBit(0x4E)) {
@@ -120,17 +120,23 @@ void func_800598E0(void) {
     }
 
     if (gSeason == AUTUMN) {
+
         if (gDayOfMonth == 3) {
             toggleLifeEventBit(0x91);
             // animal index
             D_80189054 = 0xFF;
         }
+
+        // redundant code: macro or static inline?
         if (gSeason == AUTUMN) {
+
             if (gDayOfMonth == 5) {  
                 // animal index     
                 D_80189054 = 0xFF;
             }
+
         }
+
     }
     
     if (gSeason == SUMMER && gDayOfMonth == 9) {
@@ -142,7 +148,7 @@ void func_800598E0(void) {
     
     if (gYear == 1) {
         if (tempSeason == AUTUMN && gDayOfMonth == 23) {
-          mountainConstructionWorkDays = 1;
+            mountainConstructionWorkDays = 1;
         }
     }
     
@@ -151,6 +157,5 @@ void func_800598E0(void) {
             mountainConstructionWorkDays = 1;
         }
     }
+
 }
-
-

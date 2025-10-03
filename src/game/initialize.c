@@ -8,7 +8,6 @@
 
 #include "system/audio.h"
 #include "system/controller.h"
-#include "system/cutscene.h"
 #include "system/dialogue.h"
 #include "system/entity.h"
 #include "system/graphic.h"
@@ -106,7 +105,7 @@ static inline void initializePlayer() {
     gPlayer.fatigue.unk_2 = 0;
     gPlayer.shopItemIndex = 0;
     gPlayer.direction = NORTH;
-    gPlayer.unk_70 = 0;
+    gPlayer.groundObjectIndex = 0;
     gPlayer.currentAction = 0;
     gPlayer.nextAction = 0;
     gPlayer.actionProgress = 0;
@@ -350,7 +349,7 @@ void initializeGameVariables(void) {
     initializePlayer();
     
     toolUse.unk_0 = 0;
-    toolUse.unk_2 = 0;
+    toolUse.entityIndex = 0;
     toolUse.unk_3 = 0;
     toolUse.unk_4 = 0;
     toolUse.unk_6 = 0;
@@ -543,7 +542,7 @@ void initializeGameVariables(void) {
     D_801C3F70 = 0;
     D_80205636 = 0;
     D_802373A8 = 0;
-    D_8016FBCD = 0;
+    wateringCanUses = 0;
     gLumber = 0;
     fodderQuantity = 0;
     chickenFeedQuantity = 0;
@@ -742,7 +741,7 @@ void func_8004F768(void) {
     
     initializeEntityAsset(ENTITY_ANN, &_annTextureSegmentRomStart, &_annTextureSegmentRomEnd, &_annAssetsIndexSegmentRomStart, &_annAssetsIndexSegmentRomEnd, &_annSpritesheetIndexSegmentRomStart, &_annSpritesheetIndexSegmentRomEnd, 1, 0, &annAnimationScripts);
     setEntityCollisionBuffers(ENTITY_ANN, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_ANN, 0xC, 0xC);
+    setEntitySpriteDimensions(ENTITY_ANN, 0xC, 0xC); 
     
     initializeEntityAsset(ENTITY_KAREN, &_karenTextureSegmentRomStart, &_karenTextureSegmentRomEnd, &_karenAssetsIndexSegmentRomStart, &_karenAssetsIndexSegmentRomEnd, &_karenSpritesheetIndexSegmentRomStart, &_karenSpritesheetIndexSegmentRomEnd, 1, 0, &karenAnimationScripts);
     setEntityCollisionBuffers(ENTITY_KAREN, 0xF, 0xF);

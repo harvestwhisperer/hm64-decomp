@@ -105,6 +105,7 @@
 
 #define MAX_GOLD 999999
 #define MAX_LUMBER 999
+#define MAX_FODDER 999
 #define MAX_ITEM_SHIPPING_VALUE 999
 #define MAX_ANIMAL_ITEM_SHIPPED 9999
 #define MAX_TOTAL_CROPS_SHIPPED 99999
@@ -243,11 +244,11 @@ extern u8 handleHouseConstruction(u8);
 
 extern void handleDailyShipment();   
 
-extern void func_80059D90();    
+extern void updateFamilyStates();    
 extern void func_8005A60C();      
 extern void func_8005AAE4();  
 extern void func_8005B09C(u8);   
-extern void showTextBox(u16 arg0, u16 arg1, u16 arg2, int arg3, u16 arg4);
+extern void showTextBox(u16 arg0, u16 arg1, u16 arg2, u32 arg3, u16 arg4);
 extern void showMessageBox(u16 arg0, u16 arg1, u16 arg2, u32 arg3, u16 arg4);
 extern void func_8005C07C(s16 arg0, u16 arg1);
 extern void func_8005C940(u16, u16 callbackIndex); 

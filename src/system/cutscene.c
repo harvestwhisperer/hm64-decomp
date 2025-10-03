@@ -397,9 +397,9 @@ bool func_80046C48(u16 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/cutscene", func_80046C98);
+//INCLUDE_ASM("asm/nonmatchings/system/cutscene", pauseAllCutsceneExecutors);
 
-void func_80046C98(void) {
+void pauseAllCutsceneExecutors(void) {
 
     u16 i = 0;
     u16 j;

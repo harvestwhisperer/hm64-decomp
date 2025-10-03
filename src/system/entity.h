@@ -92,8 +92,7 @@ typedef struct {
 } ShadowSpriteDescriptor;
 
 extern void initializeEntities(void);
-extern bool initializeEntityAsset(u16 index, void* arg1, void* arg2, void* arg3, void* arg4, void* arg5, void* arg6, u8 arg7, u8 arg8, u16* arg9);
-extern bool initializeEntity(u16, u16, u16, void*, void*, void*, void*, void*, void*);
+extern bool initializeEntity(u16 entityIndex, u16 globalSpriteIndex, u16 shadowSpriteIndex, u32 vaddrTexture1, u32 vaddrTexture2, u32 vaddrPalette, u32 vaddrAnimationMetadata, u32 vaddrTextureToPaletteLookup, u32 vaddrSpritesheetIndex);
 extern bool initializeAnimalEntity(u16 index, void* arg1, void* arg2, void* arg3, void* arg4);
 extern bool loadEntity(u16, u16, u8);      
 extern bool initializeShadowSprite(u16 index, u32 arg1, u32 arg2, u32 arg3, u32 arg4, u32* arg5, u16* arg6, u16* arg7, u16* arg8, u16 arg9, u8 argA);           
@@ -133,7 +132,7 @@ extern u16 func_800305CC(u16 entityIndex, f32, f32, u16);
 extern u8 getLevelInteractionIndexFromEntityPosition(u16, f32, f32);     
 extern u16 func_80030BA0(u16* ptr, u16 offset);  
 extern Vec3f func_80030EAC(u16, f32, f32);                  
-extern Vec3f func_800315A0(u16 index);    
+extern Vec3f getEntityTileCoordinates(u16 index);    
 extern u8 detectEntityOverlap(Entity* entity, u16 entityIndex, f32 deltaX, f32 deltaZ, u16 collisionWidth, u16 collisionHeight);
 extern bool checkEntityShouldPlaySoundEffect(u16 entityIndex);   
 extern bool checkTerrainCollisionInDirection(u16 entityIndex, s16 z, u8 direction);        

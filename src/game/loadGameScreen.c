@@ -6,6 +6,7 @@
 #include "system/message.h"
 
 #include "game/game.h"
+#include "game/gameStatus.h"
 #include "game/itemHandlers.h"
 #include "game/overlayScreens.h"
 #include "game/player.h"
@@ -22,12 +23,18 @@ extern u32 D_801654F4;
 
 // bss
 extern LoadGameScreenContext loadGameScreenContext;
+extern u16 D_801FB940[];
+extern u8 D_801FB95C[];
 
-// sram memory
-extern u8 D_8030E000[16];
- 
 // shared
 extern u8 gGlobalSeasonName[6];
+
+// data
+extern u8 D_801FB994[];
+
+// buffer bss
+// sram memory
+extern u8 D_8030E000[16];
 
 // foward declarations
 void func_800E16D0(u8 arg0, u8 arg1);
@@ -514,17 +521,47 @@ void func_800EA2A4(u8 arg0) {
 
 } 
 
-INCLUDE_ASM("asm/nonmatchings/game/loadGameScreen", func_800EA360);
+//INCLUDE_ASM("asm/nonmatchings/game/loadGameScreen", func_800EA360);
+
+u8 func_800EA360(void) {
+
+    u8 count = 0;
+
+    if (D_801FB994[0] & 1) {
+
+loop:
+        if (count < 5) {
+            
+            count++;
+            
+            if (D_801FB994[count] & 1) {
+                goto loop;
+            }
+            
+        } 
+    }
+
+    return count;
+    
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/loadGameScreen", func_800EA3AC);
 
 INCLUDE_ASM("asm/nonmatchings/game/loadGameScreen", func_800EAA9C);
 
-INCLUDE_ASM("asm/nonmatchings/game/loadGameScreen", func_800EB74C);
+//INCLUDE_ASM("asm/nonmatchings/game/loadGameScreen", func_800EB74C);
+
+void func_800EB74C(u8 arg0) {
+    D_801FB940[arg0] = getFarmGrassTilesSum();
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/loadGameScreen", func_800EB788);
 
-INCLUDE_ASM("asm/nonmatchings/game/loadGameScreen", func_800EBA90);
+//INCLUDE_ASM("asm/nonmatchings/game/loadGameScreen", func_800EBA90);
+
+void func_800EBA90(u8 arg0) {
+    D_801FB95C[arg0] = func_80065518();
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/loadGameScreen", func_800EBAC8);
 

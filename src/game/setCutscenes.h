@@ -160,6 +160,10 @@ extern void loadCutscene(u8);
 // maybe game.c bss
 extern u16 gCutsceneIndex;
 
+// can't get a consistent match across files for this variable; some functions need array/struct loading, which breaks the match in other functions
+extern u32 gCutsceneFlags;
+extern u32 cutsceneFlagsHack[2];
+
 extern u8 D_80113580[0x18][0x14];
 
 // flags

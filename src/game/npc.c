@@ -12,6 +12,7 @@
 #include "system/message.h"
 #include "system/mapController.h"
 
+#include "game/animals.h"
 #include "game/game.h"
 #include "game/gameStatus.h"
 #include "game/itemHandlers.h"
@@ -31,10 +32,23 @@ u16 D_801FBFBE;
 u16 D_801FBFE6;
 
 // data
-// entity asset indices
-extern u16 npcToEntityIndex[];
-// dialogue bytecode indices; indexed by npc
-extern u16 D_80114960[30];
+u16 npcToEntityIndex[] = { 
+    1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 
+    11, 12, 13, 14, 15, 16, 17, 18, 
+    19, 20, 21, 22, 23, 24, 25, 26, 
+    27, 28, 29, 30, 31, 31, 32, 33,
+    33, 33, 34, 35, 41, 40, 37, 97,
+    98, 99, 100, 101, 36 
+};
+
+u16 npcToDialogueBytecodeIndex[] = {
+    9, 8, 2, 10, 4, 63, 7, 11, 6, 5, 
+    3, 31, 36, 20, 19, 12, 18, 13, 14,
+    38, 15, 17, 22, 16, 33, 37, 24, 21,
+    23, 32, 28, 29, 30, 25, 26, 27, 34,
+    35, 64, 65, 66, 67, 67, 67, 67, 67, 
+    69
+};
 
 // forward declarations
 void func_80085114(void);
@@ -1021,15 +1035,2432 @@ u8 func_80076DCC(u8 npcIndex) {
 
 /* set starting locations */
 
-INCLUDE_ASM("asm/nonmatchings/game/npc", func_80076F10);
+//INCLUDE_ASM("asm/nonmatchings/game/npc", func_80076F10);
 
-INCLUDE_ASM("asm/nonmatchings/game/npc", func_80077D14);
+void func_80076F10(void) {
 
-INCLUDE_ASM("asm/nonmatchings/game/npc", func_80078BF0);
+     u8 result;
 
-INCLUDE_ASM("asm/nonmatchings/game/npc", func_80079A74);
+    npcs[MARIA].unk_1A = 0x40;
+    npcs[MARIA].unk_1B = 0x40;
+    npcs[MARIA].animationIndex1 = 0;
+    npcs[MARIA].animationIndex2 = 8;
 
-INCLUDE_ASM("asm/nonmatchings/game/npc", func_8007A9B0);
+    if (!checkDailyEventBit(0x52) && !checkLifeEventBit(0xD9) && !checkDailyEventBit(0x56)) {
+
+        if (checkLifeEventBit(MARRIED) && gWife == MARIA) {
+
+            if (5 < gHour && gHour < 8) {
+
+                npcs[MARIA].levelIndex = HOUSE;
+                npcs[MARIA].startingCoordinates.y = 0.0f;
+                npcs[MARIA].direction = NORTHWEST;
+                npcs[MARIA].unk_1E = 0;
+                npcs[MARIA].startingCoordinates.x = -128.0f;
+                npcs[MARIA].startingCoordinates.z = -64.0f;
+                npcs[MARIA].flags |= 1;
+                
+            }
+
+            if (7 < gHour && gHour < 12) {
+
+                if (gDayOfWeek == SUNDAY) {
+
+                    if (npcs[MARIA].location < 2) {
+
+                        npcs[MARIA].levelIndex = CHURCH;
+                        npcs[MARIA].startingCoordinates.y = 0.0f;
+                        npcs[MARIA].direction = NORTH;
+                        npcs[MARIA].unk_1E = 0;
+                        npcs[MARIA].startingCoordinates.x = -112.0f;
+                        npcs[MARIA].startingCoordinates.z = -192.0f;
+                        npcs[MARIA].flags |= 1;
+                        
+                    }  else {
+
+                        npcs[MARIA].levelIndex = LIBRARY;
+                        npcs[MARIA].startingCoordinates.y = 0.0f;
+                        npcs[MARIA].direction = NORTH;
+                        npcs[MARIA].unk_1E = 0;
+                        npcs[MARIA].startingCoordinates.x = 48.0f;
+                        npcs[MARIA].startingCoordinates.z = -96.0f;
+                        npcs[MARIA].flags |= 1;
+                        
+                    }
+                    
+                } else if (gWeather == SUNNY) {
+                        
+                    npcs[MARIA].levelIndex = FARM;
+                    npcs[MARIA].startingCoordinates.y = 0.0f;
+                    npcs[MARIA].direction = NORTH;
+                    npcs[MARIA].unk_1E = 0;
+                    npcs[MARIA].startingCoordinates.x = -256.0f;
+                    npcs[MARIA].startingCoordinates.z = -240.0f;
+                    npcs[MARIA].flags |= 1;
+                    
+                } else {
+
+                    npcs[MARIA].levelIndex = HOUSE;
+                    npcs[MARIA].startingCoordinates.x = 0.0f;
+                    npcs[MARIA].startingCoordinates.y = 0.0f;
+                    npcs[MARIA].startingCoordinates.z = 0.0f;
+                    npcs[MARIA].direction = NORTH;
+                    npcs[MARIA].unk_1E = 1;
+                    npcs[MARIA].flags |= 1;
+                    
+                }
+                
+            }
+
+            if (gHour == 12) {
+                
+                npcs[MARIA].levelIndex = KITCHEN;
+                npcs[MARIA].startingCoordinates.y = 0.0f;
+                npcs[MARIA].direction = EAST;
+                npcs[MARIA].unk_1E = 0;
+                npcs[MARIA].startingCoordinates.x = -160.0f;
+                npcs[MARIA].startingCoordinates.z = -64.0f;
+                npcs[MARIA].flags |= 1;
+                
+            }
+
+            if (12 < gHour && gHour < 17) {
+
+                npcs[MARIA].levelIndex = HOUSE;
+                npcs[MARIA].startingCoordinates.x = 0.0f;
+                npcs[MARIA].startingCoordinates.y = 0.0f;
+                npcs[MARIA].startingCoordinates.z = 0.0f;
+                npcs[MARIA].direction = NORTH;
+                npcs[MARIA].unk_1E = 1;
+                npcs[MARIA].flags |= 1;
+                
+            }
+
+            if (16 < gHour && gHour < 20) {
+                
+                npcs[MARIA].levelIndex = KITCHEN;
+                npcs[MARIA].startingCoordinates.y = 0.0f;
+                npcs[MARIA].direction = EAST;
+                npcs[MARIA].unk_1E = 0;
+                npcs[MARIA].startingCoordinates.x = -160.0f;
+                npcs[MARIA].startingCoordinates.z = -64.0f;
+                npcs[MARIA].flags |= 1;
+                
+            }
+            
+            if (19 < gHour && gHour < 22) {
+
+                npcs[MARIA].levelIndex = HOUSE;
+                npcs[MARIA].startingCoordinates.y = 0.0f;
+                npcs[MARIA].direction = WEST;
+                npcs[MARIA].unk_1E = 0;
+                npcs[MARIA].startingCoordinates.x = -128.0f;
+                npcs[MARIA].startingCoordinates.z = -112.0f;
+                npcs[MARIA].flags |= 1;
+                
+            }
+
+            if ((u32)(gHour - 6) >= 16) {
+
+                npcs[MARIA].levelIndex = HOUSE;
+                npcs[MARIA].startingCoordinates.y = 0.0f;
+                npcs[MARIA].direction = NORTH;
+                npcs[MARIA].unk_1E = 4;
+                npcs[MARIA].startingCoordinates.x = -192.0f;
+                npcs[MARIA].startingCoordinates.z = -160.0f;
+                npcs[MARIA].flags |= 1;
+                
+            }
+
+            if (func_80076CF4() == 1 && ((u8)(gPlayer.heldItem + 0x46)) >= 0x10) {
+                npcs[MARIA].animationIndex1 = 0x6C;
+                npcs[MARIA].animationIndex2 = 0x76;
+            }
+    
+        } else if (!checkDailyEventBit(0x4D)) {
+
+            if (checkLifeEventBit(0x1A)) {
+
+                switch (gDayOfWeek) {
+
+                    case TUESDAY:
+                    case WEDNESDAY:
+                    case THURSDAY:
+                    case FRIDAY:
+                    case SATURDAY:
+                    case SUNDAY:
+
+                        if (8 < gHour && gHour < 17) {
+                            
+                            npcs[MARIA].levelIndex = LIBRARY;
+                            npcs[MARIA].startingCoordinates.y = 0.0f;
+                            npcs[MARIA].direction = NORTH;
+                            npcs[MARIA].unk_1E = 0;
+                            npcs[MARIA].startingCoordinates.x = 48.0f;
+                            npcs[MARIA].startingCoordinates.z = -96.0f;
+                            npcs[MARIA].flags |= 1;
+        
+                        }
+
+                        break;
+
+                    case MONDAY:
+
+                        if (gWeather == SUNNY) {
+
+                            if (npcs[MARIA].location < 2) {
+                                
+                                if (7 < gHour && gHour < 15) { 
+                                
+                                    npcs[MARIA].levelIndex = VILLAGE_1;
+                                    npcs[MARIA].startingCoordinates.x = 0.0f;
+                                    npcs[MARIA].startingCoordinates.y = 0.0f;
+                                    npcs[MARIA].direction = NORTH;
+                                    npcs[MARIA].unk_1E = 0;
+                                    npcs[MARIA].startingCoordinates.z = -144.0f;
+                                    npcs[MARIA].flags |= 1;
+                                    
+                                }
+                                
+                            } else {
+
+                                if (7 < gHour && gHour < 17) { 
+                                
+                                    npcs[MARIA].levelIndex = VILLAGE_2;
+                                    npcs[MARIA].startingCoordinates.x = 0.0f;
+                                    npcs[MARIA].startingCoordinates.y = 0.0f;
+                                    npcs[MARIA].startingCoordinates.z = 0.0f;
+                                    npcs[MARIA].direction = NORTH;
+                                    npcs[MARIA].unk_1E = 0;
+                                    npcs[MARIA].flags |= 1;
+                                    
+                                }
+                                
+                            }
+                            
+                        } else {
+
+                            if (8 < gHour && gHour < 17) {
+                                
+                                npcs[MARIA].levelIndex = MAYOR_HOUSE;
+                                npcs[MARIA].startingCoordinates.y = 0.0f;
+                                npcs[MARIA].direction = NORTH;
+                                npcs[MARIA].unk_1E = 0;
+                                npcs[MARIA].startingCoordinates.x = -128.0f;
+                                npcs[MARIA].startingCoordinates.z = -32.0f;
+                                npcs[MARIA].flags |= 1;
+        
+                            }
+                    
+                        }
+                        
+                        break;
+                    
+                }
+
+                if (gSeason == SUMMER &&  0 < gDayOfMonth && gDayOfMonth < 11) {
+                    
+                        npcs[MARIA].levelIndex = MAYOR_HOUSE;
+                        npcs[MARIA].startingCoordinates.y = 0.0f;
+                        npcs[MARIA].direction = NORTH;
+                        npcs[MARIA].unk_1E = 0;
+                        npcs[MARIA].startingCoordinates.x = -128.0f;
+                        npcs[MARIA].startingCoordinates.z = -32.0f;
+                        npcs[MARIA].flags |= 1;
+                    
+                } 
+
+                if (gSeason == WINTER && 0 < gDayOfMonth && gDayOfMonth < 11) {
+
+                    if (npcs[MARIA].location < 2) {
+                        
+                        npcs[MARIA].levelIndex = MAYOR_HOUSE;
+                        npcs[MARIA].startingCoordinates.y = 0.0f;
+                        npcs[MARIA].direction = NORTH;
+                        npcs[MARIA].unk_1E = 0;
+                        npcs[MARIA].startingCoordinates.x = -128.0f;
+                        npcs[MARIA].startingCoordinates.z = -32.0f;
+                        npcs[MARIA].flags |= 1;
+                            
+                    } else {
+
+                        npcs[MARIA].levelIndex = CHURCH;
+                        npcs[MARIA].startingCoordinates.y = 0.0f;
+                        npcs[MARIA].direction = NORTH;
+                        npcs[MARIA].unk_1E = 0;
+                        npcs[MARIA].startingCoordinates.x = -112.0f;
+                        npcs[MARIA].startingCoordinates.z = -192.0f;
+                        npcs[MARIA].flags |= 1;
+                        
+                    }
+                    
+                } 
+
+                if (func_80076DCC(MARIA) == 1 && ((u8)(gPlayer.heldItem + 0x46)) >= 0x10) {
+                    npcs[MARIA].animationIndex1 = 0x6C;
+                    npcs[MARIA].animationIndex2 = 0x76;
+                }
+                
+            } else {
+
+                if (gDayOfWeek == MONDAY) {
+    
+                    if (gWeather == SUNNY) {
+                        
+                        if (npcs[MARIA].location < 2) {
+                            
+                            if (7 < gHour && gHour < 15) {
+                                
+                                npcs[MARIA].levelIndex = VILLAGE_1;
+                                npcs[MARIA].startingCoordinates.x = 0.0f;
+                                npcs[MARIA].startingCoordinates.y = 0.0f;
+                                npcs[MARIA].direction = NORTH;
+                                npcs[MARIA].unk_1E = 0;
+                                npcs[MARIA].startingCoordinates.z = -144.0f;
+                                npcs[MARIA].flags |= 1;
+                                
+                            } 
+                            
+                        } else if (9 < gHour && gHour < 17) {
+                                    
+                            npcs[MARIA].levelIndex = MOUNTAIN_1;
+                            npcs[MARIA].startingCoordinates.y = 0.0f;
+                            npcs[MARIA].direction = NORTH;
+                            npcs[MARIA].unk_1E = 1;
+                            npcs[MARIA].startingCoordinates.x = 128.0f;
+                            npcs[MARIA].startingCoordinates.z = 128.0f;
+                            npcs[MARIA].flags |= 1;
+    
+                            setSpecialDialogueBit(0x136);
+                                
+                        }
+                        
+                    } else {
+
+                        if (8 < gHour && gHour < 17) {
+                            
+                            npcs[MARIA].levelIndex = MAYOR_HOUSE;
+                            npcs[MARIA].startingCoordinates.y = 0.0f;
+                            npcs[MARIA].direction = NORTH;
+                            npcs[MARIA].unk_1E = 0;
+                            npcs[MARIA].startingCoordinates.x = -128.0f;
+                            npcs[MARIA].startingCoordinates.z = -32.0f;
+                            npcs[MARIA].flags |= 1;
+                            
+                        }
+                                                
+                    }
+                                      
+                } else {
+    
+                    if (8 < gHour && gHour < 17) {
+                        
+                        npcs[MARIA].levelIndex = LIBRARY;
+                        npcs[MARIA].startingCoordinates.y = 0.0f;
+                        npcs[MARIA].direction = NORTH;
+                        npcs[MARIA].unk_1E = 0;
+                        npcs[MARIA].startingCoordinates.x = 48.0f;
+                        npcs[MARIA].startingCoordinates.z = -96.0f;
+                        npcs[MARIA].flags |= 1;
+                    
+                    }
+    
+                }
+
+                if (gSeason == SUMMER && 0 < gDayOfMonth && gDayOfMonth < 11) {
+    
+                    if (gWeather == SUNNY) {
+                        
+                        if (npcs[MARIA].location < 2) {
+    
+                            if (8 < gHour && gHour < 17) {
+    
+                                npcs[MARIA].levelIndex = MOUNTAIN_2;
+                                npcs[MARIA].startingCoordinates.y = 0.0f;
+                                npcs[MARIA].direction = NORTHWEST;
+                                npcs[MARIA].unk_1E = 0;
+                                npcs[MARIA].startingCoordinates.x = -208.0f;
+                                npcs[MARIA].startingCoordinates.z = -160.0f;
+                                npcs[MARIA].flags |= 1;
+        
+                                setSpecialDialogueBit(0x136);
+                                
+                            }
+                            
+                        } else {
+    
+                            if (8 < gHour && gHour < 17) {
+                               
+                                npcs[MARIA].levelIndex = POND;
+                                npcs[MARIA].startingCoordinates.y = 0.0f;
+                                npcs[MARIA].direction = WEST;
+                                npcs[MARIA].unk_1E = 0;
+                                npcs[MARIA].startingCoordinates.x = -96.0f;
+                                npcs[MARIA].startingCoordinates.z = -32.0f;
+                                npcs[MARIA].flags |= 1;
+    
+                                setSpecialDialogueBit(0x136);
+                                
+                            }
+                            
+                        }
+                        
+                    } else {
+
+                        if (8 < gHour && gHour < 17) {
+                            
+                            npcs[MARIA].levelIndex = MAYOR_HOUSE;
+                            npcs[MARIA].startingCoordinates.y = 0.0f;
+                            npcs[MARIA].direction = NORTH;
+                            npcs[MARIA].unk_1E = 0;
+                            npcs[MARIA].startingCoordinates.x = -128.0f;
+                            npcs[MARIA].startingCoordinates.z = -32.0f;
+                            npcs[MARIA].flags |= 1;
+                        
+                        }
+                        
+                    }
+                    
+                }
+    
+                if (gSeason == WINTER && 0 < gDayOfMonth && gDayOfMonth < 11) {
+    
+                    if (npcs[MARIA].location < 2) {
+    
+                        if (8 < gHour && gHour < 17) { 
+                        
+                            npcs[MARIA].levelIndex = MAYOR_HOUSE;
+                            npcs[MARIA].startingCoordinates.y = 0.0f;
+                            npcs[MARIA].direction = NORTH;
+                            npcs[MARIA].unk_1E = 0;
+                            npcs[MARIA].startingCoordinates.x = -128.0f;
+                            npcs[MARIA].startingCoordinates.z = -32.0f;
+                            npcs[MARIA].flags |= 1;
+                        
+                        }
+    
+                    } else {
+    
+                        if (8 < gHour && gHour < 17) {
+    
+                            npcs[MARIA].levelIndex = CHURCH;
+                            npcs[MARIA].startingCoordinates.y = 0;
+                            npcs[MARIA].direction = NORTH;
+                            npcs[MARIA].unk_1E = 0;
+                            npcs[MARIA].startingCoordinates.x = -112.0f;
+                            npcs[MARIA].startingCoordinates.z = -192.0f;
+                            npcs[MARIA].flags |= 1;
+                            
+                        }
+                        
+                    }
+                    
+                }
+    
+                if (gSeason == SUMMER && gDayOfWeek == SUNDAY && gWeather == SUNNY && npcs[MARIA].location == 0) {
+    
+                    if (17 < gHour && gHour < 21) {
+    
+                        npcs[MARIA].levelIndex = BEACH;
+                        npcs[MARIA].startingCoordinates.y = 0.0f;
+                        npcs[MARIA].startingCoordinates.z = 0.0f;
+                        npcs[MARIA].direction = NORTH;
+                        npcs[MARIA].unk_1E = 2;
+                        npcs[MARIA].startingCoordinates.x = -224.0f;
+                        npcs[MARIA].flags |= 1;
+
+                        setSpecialDialogueBit(0xB1);
+                        
+                    }
+                    
+                }
+                
+            }
+            
+        } 
+        
+    }
+
+    npcs[MARIA].movingFlag = npcs[MARIA].unk_1E;
+    
+}
+
+//INCLUDE_ASM("asm/nonmatchings/game/npc", func_80077D14);
+
+void func_80077D14(void) {
+
+    u8 result;
+
+    npcs[POPURI].unk_1A = 0x40;
+    npcs[POPURI].unk_1B = 0x40;
+    npcs[POPURI].animationIndex1 = 0;
+    npcs[POPURI].animationIndex2 = 8;
+
+    if (!checkDailyEventBit(0x52) && !checkLifeEventBit(0xD9) && !checkDailyEventBit(0x57)) {
+
+        if (checkLifeEventBit(MARRIED) && gWife == POPURI) {
+
+            if (5 < gHour && gHour < 8) {
+
+                npcs[POPURI].levelIndex = HOUSE;
+                npcs[POPURI].startingCoordinates.y = 0.0f;
+                npcs[POPURI].direction = NORTHWEST;
+                npcs[POPURI].unk_1E = 0;
+                npcs[POPURI].startingCoordinates.x = -128.0f;
+                npcs[POPURI].startingCoordinates.z = -64.0f;
+                npcs[POPURI].flags |= 1;
+                
+            }
+
+            if (7 < gHour && gHour < 12) {
+
+                if (gDayOfWeek == MONDAY) {
+
+                    if (npcs[ELLI].location < 2) {
+
+                        if (8 < gHour && gHour < 17) {
+
+                            if (gWeather == SUNNY) {
+      
+                                npcs[POPURI].levelIndex = MOUNTAIN_2;    
+                                npcs[POPURI].startingCoordinates.y = 0.0f;
+                                npcs[POPURI].direction = NORTH;
+                                npcs[POPURI].unk_1E = 1;
+                                npcs[POPURI].startingCoordinates.x = -224.0f;
+                                npcs[POPURI].startingCoordinates.z = -96.0f;
+                                npcs[POPURI].flags |= 1;
+        
+                                setSpecialDialogueBit(0x91);
+                                
+                            } else {
+                                
+                                npcs[POPURI].levelIndex = KITCHEN;
+                                npcs[POPURI].startingCoordinates.y = 0.0f;
+                                npcs[POPURI].direction = NORTH;
+                                npcs[POPURI].unk_1E = 1;
+                                npcs[POPURI].startingCoordinates.x = -160.0f;
+                                npcs[POPURI].startingCoordinates.z = -64.0f;
+                                npcs[POPURI].flags |= 1;
+                                                                
+                            }
+                            
+                        }
+                                              
+                    } else {
+
+                        if (8 < gHour && gHour < 17) {
+
+                            npcs[POPURI].levelIndex = FLOWER_SHOP;    
+                            npcs[POPURI].startingCoordinates.y = 0.0f;
+                            npcs[POPURI].direction = WEST;
+                            npcs[POPURI].unk_1E = 0;
+                            npcs[POPURI].startingCoordinates.x = -112.0f;
+                            npcs[POPURI].startingCoordinates.z = 64.0f;
+                            npcs[POPURI].flags |= 1;
+                            
+                        }
+
+                    }
+                    
+                } else {
+
+                    if (gWeather == SUNNY) {
+                        
+                        npcs[POPURI].levelIndex = FARM;
+                        npcs[POPURI].startingCoordinates.y = 0.0f;
+                        npcs[POPURI].direction = NORTH;
+                        npcs[POPURI].unk_1E = 0;
+                        npcs[POPURI].startingCoordinates.x = 320.0f;
+                        npcs[POPURI].startingCoordinates.z = -352.0f;
+                        npcs[POPURI].flags |= 1;
+                        
+                    } else {
+                            
+                        npcs[POPURI].levelIndex = KITCHEN;
+                        npcs[POPURI].startingCoordinates.y = 0.0f;
+                        npcs[POPURI].direction = NORTH;
+                        npcs[POPURI].unk_1E = 1;
+                        npcs[POPURI].startingCoordinates.x = -160.0f;
+                        npcs[POPURI].startingCoordinates.z = -64.0f;
+                        npcs[POPURI].flags |= 1;
+                                            
+                    }
+                    
+                }
+                
+            }
+
+            if (gHour == 12) {
+                
+                npcs[POPURI].levelIndex = KITCHEN;
+                npcs[POPURI].startingCoordinates.y = 0.0f;
+                npcs[POPURI].direction = EAST;
+                npcs[POPURI].unk_1E = 0;
+                npcs[POPURI].startingCoordinates.x = -160.0f;
+                npcs[POPURI].startingCoordinates.z = -64.0f;
+                npcs[POPURI].flags |= 1;
+                
+            }
+
+            if (12 < gHour && gHour < 17) {
+
+                npcs[POPURI].levelIndex = HOUSE;
+                npcs[POPURI].startingCoordinates.x = 0.0f;
+                npcs[POPURI].startingCoordinates.y = 0.0f;
+                npcs[POPURI].startingCoordinates.z = 0.0f;
+                npcs[POPURI].direction = NORTH;
+                npcs[POPURI].unk_1E = 1;
+                npcs[POPURI].flags |= 1;
+                
+            }
+
+            if (16 < gHour && gHour < 20) {
+                
+                npcs[POPURI].levelIndex = KITCHEN;
+                npcs[POPURI].startingCoordinates.y = 0.0f;
+                npcs[POPURI].direction = EAST;
+                npcs[POPURI].unk_1E = 0;
+                npcs[POPURI].startingCoordinates.x = -160.0f;
+                npcs[POPURI].startingCoordinates.z = -64.0f;
+                npcs[POPURI].flags |= 1;
+                
+            }
+            
+            if (19 < gHour && gHour < 22) {
+
+                npcs[POPURI].levelIndex = HOUSE;
+                npcs[POPURI].startingCoordinates.y = 0.0f;
+                npcs[POPURI].direction = WEST;
+                npcs[POPURI].unk_1E = 0;
+                npcs[POPURI].startingCoordinates.x = -128.0f;
+                npcs[POPURI].startingCoordinates.z = -112.0f;
+                npcs[POPURI].flags |= 1;
+                
+            }
+
+            if ((u32)(gHour - 6) >= 16) {
+
+                npcs[POPURI].levelIndex = HOUSE;
+                npcs[POPURI].startingCoordinates.y = 0.0f;
+                npcs[POPURI].direction = NORTH;
+                npcs[POPURI].unk_1E = 4;
+                npcs[POPURI].startingCoordinates.x = -192.0f;
+                npcs[POPURI].startingCoordinates.z = -160.0f;
+                npcs[POPURI].flags |= 1;
+                
+            }
+
+            if (func_80076CF4() == 1 && ((u8)(gPlayer.heldItem + 0x46)) >= 0x10) {
+                npcs[POPURI].animationIndex1 = 0x7A;
+                npcs[POPURI].animationIndex2 = 0x84;
+            }
+    
+        } else if (!checkDailyEventBit(0x4D)) {
+
+            if (checkLifeEventBit(0x1B)) {
+
+                switch (gDayOfWeek) {
+
+                    case MONDAY:
+                    case TUESDAY:
+                    case THURSDAY:
+                    case FRIDAY:
+                    case SATURDAY:
+
+                        if (8 < gHour && gHour < 17) {
+
+                            if (gWeather == SUNNY) {
+                                
+                                npcs[POPURI].levelIndex = RANCH;
+                                npcs[POPURI].startingCoordinates.y = 0.0f;
+                                npcs[POPURI].direction = WEST;
+                                npcs[POPURI].startingCoordinates.x = -32.0f;
+                                npcs[POPURI].startingCoordinates.z = -96.0f;
+                                npcs[POPURI].flags |= 1;
+
+                                if (func_80076DCC(POPURI) == 1) {
+                                    npcs[POPURI].unk_1E = 1;
+                                } else {
+                                    npcs[POPURI].unk_1E = 3;
+                                }
+
+                                setSpecialDialogueBit(0x46);
+                                                
+                            } else {
+                                
+                                npcs[POPURI].levelIndex = RANCH_STORE;
+                                npcs[POPURI].startingCoordinates.y = 0.0f;
+                                npcs[POPURI].direction = EAST;
+                                npcs[POPURI].unk_1E = 0;
+                                npcs[POPURI].startingCoordinates.x = 64.0f;
+                                npcs[POPURI].startingCoordinates.z = 64.0f;
+                                npcs[POPURI].flags |= 1;  
+                            }
+                        
+                        }
+
+                        break;
+
+                    case SUNDAY:
+                    case WEDNESDAY:
+    
+                        npcs[POPURI].levelIndex = RANCH_STORE;
+                        npcs[POPURI].startingCoordinates.y = 0.0f;
+                        npcs[POPURI].direction = EAST;
+                        npcs[POPURI].unk_1E = 0;
+                        npcs[POPURI].startingCoordinates.x = 64.0f;
+                        npcs[POPURI].startingCoordinates.z = 64.0f;
+                        npcs[POPURI].flags |= 1;  
+                        break;
+                    
+                }
+
+                if (func_80076DCC(POPURI) == 1) {
+                    npcs[POPURI].animationIndex1 = 0x7A;
+                    npcs[POPURI].animationIndex2 = 0x84;
+                }
+                
+            } else {
+
+                if (SUNDAY < gDayOfWeek && gDayOfWeek < FRIDAY) {
+
+                    if (gWeather == SUNNY) {
+
+                        if (8 < gHour && gHour < 17) {
+
+                            npcs[POPURI].levelIndex = VILLAGE_1;
+                            npcs[POPURI].startingCoordinates.y = 0.0f;
+                            npcs[POPURI].direction = NORTH;
+                            npcs[POPURI].unk_1E = 3;
+                            npcs[POPURI].startingCoordinates.x = 96.0f;
+                            npcs[POPURI].startingCoordinates.z = -224.0f;
+                            npcs[POPURI].flags |= 1;  
+                                
+                        }
+                        
+                    } else {
+
+                        if (8 < gHour && gHour < 17) {
+
+                            npcs[POPURI].levelIndex = FLOWER_SHOP;
+                            npcs[POPURI].startingCoordinates.y = 0.0f;
+                            npcs[POPURI].direction = WEST;
+                            npcs[POPURI].unk_1E = 0;
+                            npcs[POPURI].startingCoordinates.x = -112.0f;
+                            npcs[POPURI].startingCoordinates.z = 64.0f;
+                            npcs[POPURI].flags |= 1;  
+                            
+                        }
+                        
+                    }
+                    
+                }
+
+                if (gDayOfWeek == FRIDAY) {
+
+                    if (gWeather == SUNNY) {
+
+                        if (npcs[POPURI].location < 2) {
+
+                            if (8 < gHour && gHour < 17) {
+                                
+                                npcs[POPURI].levelIndex = MOUNTAIN_2;
+                                npcs[POPURI].startingCoordinates.y = 0.0f;
+                                npcs[POPURI].direction = NORTH;
+                                npcs[POPURI].unk_1E = 1;
+                                npcs[POPURI].startingCoordinates.x = -224.0f;
+                                npcs[POPURI].startingCoordinates.z = -128.0f;
+                                npcs[POPURI].flags |= 1;  
+
+                                setSpecialDialogueBit(0x91);
+                                
+                            }
+
+                        } else {
+
+                            if (8 < gHour && gHour < 17) {
+                                
+                                npcs[POPURI].levelIndex = MOON_MOUNTAIN;
+                                npcs[POPURI].startingCoordinates.y = 0.0f;
+                                npcs[POPURI].startingCoordinates.z = 0.0f;
+                                npcs[POPURI].direction = SOUTH;
+                                npcs[POPURI].unk_1E = 0;
+                                npcs[POPURI].startingCoordinates.x = 64.0f;
+                                npcs[POPURI].flags |= 1;  
+
+                                setSpecialDialogueBit(0x92);
+                                
+                            }
+                            
+                        }
+                        
+                    } else {
+
+                        if (8 < gHour && gHour < 17) {
+
+                            npcs[POPURI].levelIndex = FLOWER_SHOP;
+                            npcs[POPURI].startingCoordinates.y = 0.0f;
+                            npcs[POPURI].direction = WEST;
+                            npcs[POPURI].unk_1E = 0;
+                            npcs[POPURI].startingCoordinates.x = -112.0f;
+                            npcs[POPURI].startingCoordinates.z = 64.0f;
+                            npcs[POPURI].flags |= 1;  
+                            
+                        }
+                        
+                    }
+                    
+                }
+
+                if (gDayOfWeek == SATURDAY) {
+
+                    if (gWeather == SUNNY) {
+
+                        if (npcs[POPURI].location < 2) {
+
+                            if (8 < gHour && gHour < 17) {
+                                
+                                npcs[POPURI].levelIndex = MOUNTAIN_2;
+                                npcs[POPURI].startingCoordinates.y = 0.0f;
+                                npcs[POPURI].direction = WEST;
+                                npcs[POPURI].unk_1E = 1;
+                                npcs[POPURI].startingCoordinates.x = -128.0f;
+                                npcs[POPURI].startingCoordinates.z = -416.0f;
+                                npcs[POPURI].flags |= 1;  
+
+                                setSpecialDialogueBit(0x91);
+                                
+                            }
+
+                        } else {
+                          
+                            if (8 < gHour && gHour < 17) {
+                                
+                                npcs[POPURI].levelIndex = POND;
+                                npcs[POPURI].startingCoordinates.y = 0.0f;
+                                npcs[POPURI].direction = WEST;
+                                npcs[POPURI].unk_1E = 0;
+                                npcs[POPURI].startingCoordinates.x = -224.0f;
+                                npcs[POPURI].startingCoordinates.z = -96.0f;
+                                npcs[POPURI].flags |= 1;  
+
+                            }      
+                            
+                        } 
+                        
+                    } else {
+                        
+                        if (8 < gHour && gHour < 17) {
+
+                            npcs[POPURI].levelIndex = FLOWER_SHOP;
+                            npcs[POPURI].startingCoordinates.y = 0.0f;
+                            npcs[POPURI].direction = WEST;
+                            npcs[POPURI].unk_1E = 0;
+                            npcs[POPURI].startingCoordinates.x = -112.0f;
+                            npcs[POPURI].startingCoordinates.z = 64.0f;
+                            npcs[POPURI].flags |= 1;  
+                            
+                        }
+                    }
+                    
+                }
+
+                if (gDayOfWeek == SUNDAY) {
+
+                    if (!(npcs[POPURI].location < 2) && gWeather == SUNNY) {
+
+                        if (8 < gHour && gHour < 17) {
+                            
+                            npcs[POPURI].levelIndex = RANCH;
+                            npcs[POPURI].startingCoordinates.y = 0.0f;
+                            npcs[POPURI].direction = WEST;
+                            npcs[POPURI].unk_1E = 0;
+                            npcs[POPURI].startingCoordinates.x = -32.0f;
+                            npcs[POPURI].startingCoordinates.z = -96.0f;
+                            npcs[POPURI].flags |= 1;
+    
+                            setSpecialDialogueBit(0x46);
+                            
+                        }
+                                            
+                    } else {
+
+                        if (8 < gHour && gHour < 17) {
+                            
+                            npcs[POPURI].levelIndex = BAKERY;
+                            npcs[POPURI].startingCoordinates.x = 0.0f;
+                            npcs[POPURI].startingCoordinates.y = 0.0f;
+                            npcs[POPURI].startingCoordinates.z = 0.0f;
+                            npcs[POPURI].direction = NORTH;
+                            npcs[POPURI].unk_1E = 0;
+                            npcs[POPURI].flags |= 1;
+    
+                            setSpecialDialogueBit(0x93);
+                            
+                        }
+                        
+                    }
+                    
+                }
+
+                if (gSeason == SUMMER && gDayOfWeek == THURSDAY) {
+
+                    if (gWeather == SUNNY && npcs[POPURI].location == 0) {
+
+                        if (18 < gHour && gHour < 21) {
+    
+                            npcs[POPURI].levelIndex = BEACH;
+                            npcs[POPURI].startingCoordinates.y = 0.0f;
+                            npcs[POPURI].startingCoordinates.z = 0.0f;
+                            npcs[POPURI].direction = NORTH;
+                            npcs[POPURI].unk_1E = 2;
+                            npcs[POPURI].startingCoordinates.x = -224.0f;
+                            npcs[POPURI].flags |= 1;
+    
+                            setSpecialDialogueBit(0xB4);
+                            
+                        }
+                    
+                        
+                    }
+                    
+                }
+
+                if (gWeather == 4 && npcs[POPURI].location == 0) {
+
+                    if (8 < gHour && gHour < 17) {
+                        
+                        npcs[POPURI].levelIndex = MOUNTAIN_2;
+                        npcs[POPURI].startingCoordinates.y = 0.0f;
+                        npcs[POPURI].direction = NORTH;
+                        npcs[POPURI].unk_1E = 0;
+                        npcs[POPURI].startingCoordinates.x = -64.0f;
+                        npcs[POPURI].startingCoordinates.z = -160.0f;
+                        npcs[POPURI].flags |= 1;  
+
+                        setSpecialDialogueBit(0x91);
+                                   
+                    }
+                    
+                }
+
+                if (gSeason == WINTER && 24 < gDayOfMonth && gDayOfMonth < 31) {
+
+                    if (8 < gHour && gHour < 17) {
+       
+                        npcs[POPURI].levelIndex = FLOWER_SHOP;
+                        npcs[POPURI].startingCoordinates.y = 0.0f;
+                        npcs[POPURI].direction = WEST;
+                        npcs[POPURI].unk_1E = 0;
+                        npcs[POPURI].startingCoordinates.x = -112.0f;
+                        npcs[POPURI].startingCoordinates.z = 64.0f;
+                        npcs[POPURI].flags |= 1;  
+                        
+                    }
+                                     
+                }
+                
+            } 
+        
+        }
+        
+    }
+
+    npcs[POPURI].movingFlag = npcs[POPURI].unk_1E;
+    
+}
+
+//INCLUDE_ASM("asm/nonmatchings/game/npc", func_80078BF0);
+
+void func_80078BF0(void) {
+
+    u8 result;
+
+    npcs[ELLI].unk_1A = 0x40;
+    npcs[ELLI].unk_1B = 0x40;
+    npcs[ELLI].animationIndex1 = 0;
+    npcs[ELLI].animationIndex2 = 8;
+
+    if (!checkDailyEventBit(0x52) && !checkLifeEventBit(0xD9) && !checkDailyEventBit(0x58)) {
+
+        if (checkLifeEventBit(MARRIED) && gWife == ELLI) {
+
+            if (5 < gHour && gHour < 8) {
+
+                npcs[ELLI].levelIndex = HOUSE;
+                npcs[ELLI].startingCoordinates.y = 0.0f;
+                npcs[ELLI].direction = NORTHWEST;
+                npcs[ELLI].unk_1E = 0;
+                npcs[ELLI].startingCoordinates.x = -128.0f;
+                npcs[ELLI].startingCoordinates.z = -64.0f;
+                npcs[ELLI].flags |= 1;
+                
+            }
+
+            if (7 < gHour && gHour < 12) {
+
+                if (gDayOfWeek == SUNDAY) {
+
+                    if (npcs[ELLI].location < 2) {
+                                                    
+                        npcs[ELLI].levelIndex = BAKERY;
+                        npcs[ELLI].startingCoordinates.y = 0.0f;
+                        npcs[ELLI].direction = NORTH;
+                        npcs[ELLI].unk_1E = 0;
+                        npcs[ELLI].startingCoordinates.x = -32.0f;
+                        npcs[ELLI].startingCoordinates.z = 16.0f;
+                        npcs[ELLI].flags |= 1;  
+
+                    } else if (gWeather == SUNNY) {
+                        
+                        npcs[ELLI].levelIndex = MOUNTAIN_2;
+                        npcs[ELLI].startingCoordinates.y = 0.0f;
+                        npcs[ELLI].direction = EAST;
+                        npcs[ELLI].unk_1E = 0;
+                        npcs[ELLI].startingCoordinates.x = 96.0f;
+                        npcs[ELLI].startingCoordinates.z = -64.0f;
+                        npcs[ELLI].flags |= 1;  
+        
+                        setSpecialDialogueBit(0x97);
+                                
+                    } else {
+                        
+                        npcs[ELLI].levelIndex = KITCHEN;
+                        npcs[ELLI].startingCoordinates.y = 0.0f;
+                        npcs[ELLI].direction = NORTH;
+                        npcs[ELLI].unk_1E = 1;
+                        npcs[ELLI].startingCoordinates.x = -160.0f;
+                        npcs[ELLI].startingCoordinates.z = -64.0f;
+                        npcs[ELLI].flags |= 1;
+                        
+                    }
+                    
+                } else {
+
+                    if (gWeather == SUNNY) {
+                                                
+                        npcs[ELLI].levelIndex = FARM;
+                        npcs[ELLI].startingCoordinates.y = 0.0f;
+                        npcs[ELLI].startingCoordinates.z = 0.0f;
+                        npcs[ELLI].direction = NORTH;
+                        npcs[ELLI].unk_1E = 0;
+                        npcs[ELLI].startingCoordinates.x = -448.0f;
+                        npcs[ELLI].flags |= 1;
+                        
+                    } else {
+                                                
+                        npcs[ELLI].levelIndex = KITCHEN;
+                        npcs[ELLI].startingCoordinates.y = 0.0f;
+                        npcs[ELLI].direction = NORTH;
+                        npcs[ELLI].unk_1E = 1;
+                        npcs[ELLI].startingCoordinates.x = -160.0f;
+                        npcs[ELLI].startingCoordinates.z = -64.0f;
+                        npcs[ELLI].flags |= 1;
+                        
+                    }
+                                        
+                }
+                
+            }
+
+            if (gHour == 12) {
+                
+                npcs[ELLI].levelIndex = KITCHEN;
+                npcs[ELLI].startingCoordinates.y = 0.0f;
+                npcs[ELLI].direction = EAST;
+                npcs[ELLI].unk_1E = 1;
+                npcs[ELLI].startingCoordinates.x = -128.0f;
+                npcs[ELLI].startingCoordinates.z = -128.0f;
+                npcs[ELLI].flags |= 1;
+                
+            }
+
+            if (12 < gHour && gHour < 17) {
+
+                npcs[ELLI].levelIndex = KITCHEN;
+                npcs[ELLI].startingCoordinates.y = 0.0f;
+                npcs[ELLI].direction = NORTH;
+                npcs[ELLI].unk_1E = 1;
+                npcs[ELLI].startingCoordinates.x = -160.0f;
+                npcs[ELLI].startingCoordinates.z = -64.0f;
+                npcs[ELLI].flags |= 1;
+                
+            }
+
+            if (16 < gHour && gHour < 20) {
+                
+                npcs[ELLI].levelIndex = KITCHEN;
+                npcs[ELLI].startingCoordinates.y = 0.0f;
+                npcs[ELLI].direction = EAST;
+                npcs[ELLI].unk_1E = 0;
+                npcs[ELLI].startingCoordinates.x = -160.0f;
+                npcs[ELLI].startingCoordinates.z = -64.0f;
+                npcs[ELLI].flags |= 1;
+                
+            }
+            
+            if (19 < gHour && gHour < 22) {
+
+                npcs[ELLI].levelIndex = HOUSE;
+                npcs[ELLI].startingCoordinates.y = 0.0f;
+                npcs[ELLI].direction = WEST;
+                npcs[ELLI].unk_1E = 0;
+                npcs[ELLI].startingCoordinates.x = -128.0f;
+                npcs[ELLI].startingCoordinates.z = -112.0f;
+                npcs[ELLI].flags |= 1;
+                
+            }
+
+            if ((u32)(gHour - 6) >= 16) {
+
+                npcs[ELLI].levelIndex = HOUSE;
+                npcs[ELLI].startingCoordinates.y = 0.0f;
+                npcs[ELLI].direction = NORTH;
+                npcs[ELLI].unk_1E = 4;
+                npcs[ELLI].startingCoordinates.x = -192.0f;
+                npcs[ELLI].startingCoordinates.z = -160.0f;
+                npcs[ELLI].flags |= 1;
+                
+            }
+
+            if (func_80076CF4() == 1 && ((u8)(gPlayer.heldItem + 0x46)) >= 0x10) {
+                npcs[ELLI].animationIndex1 = 0x69;
+                npcs[ELLI].animationIndex2 = 0x73;
+            }
+    
+        } else if (!checkDailyEventBit(0x4D)) {
+
+            if (checkLifeEventBit(0x1C)) {
+
+                if (gWeather == SUNNY) {
+
+                    switch (gDayOfWeek) {
+
+                        case MONDAY:
+
+                            switch (gSeason) {
+
+                                case SPRING:
+                                case SUMMER:
+                                    
+                                    if (5 < gHour && gHour < 18) {
+                            
+                                        npcs[ELLI].levelIndex = MOUNTAIN_2;
+                                        npcs[ELLI].startingCoordinates.y = 0.0f;
+                                        npcs[ELLI].direction = EAST;
+                                        npcs[ELLI].unk_1E = 0;
+                                        npcs[ELLI].startingCoordinates.x = 96.0f;
+                                        npcs[ELLI].startingCoordinates.z = -64.0f;
+                                        npcs[ELLI].flags |= 1;  
+                
+                                        setSpecialDialogueBit(0x97);
+                                        
+                                    }            
+                                            
+                                    break;
+                                
+                                case WINTER:
+                                    
+                                    if (5 < gHour && gHour < 18) {
+                
+                                        npcs[ELLI].levelIndex = BAKERY;
+                                        npcs[ELLI].startingCoordinates.y = 0.0f;
+                                        npcs[ELLI].direction = NORTH;
+                                        npcs[ELLI].unk_1E = 1;
+                                        npcs[ELLI].startingCoordinates.x = -32.0f;
+                                        npcs[ELLI].startingCoordinates.z = 16.0f;
+                                        npcs[ELLI].flags |= 1;  
+                                    
+                                    }
+                                    
+                                    break;
+                                
+                                case AUTUMN:
+
+                                     if (5 < gHour && gHour < 18) {
+                                
+                                        npcs[ELLI].levelIndex = MOUNTAIN_1;
+                                        npcs[ELLI].startingCoordinates.y = 0.0f;
+                                        npcs[ELLI].direction = NORTH;
+                                        npcs[ELLI].unk_1E = 0;
+                                        npcs[ELLI].startingCoordinates.x = 112.0f;
+                                        npcs[ELLI].startingCoordinates.z = -32.0f;
+                                        npcs[ELLI].flags |= 1;  
+                
+                                        setSpecialDialogueBit(0x96);
+                                        
+                                    }       
+
+                                    break;
+                                
+                            }
+
+                            break;
+
+                        case WEDNESDAY:
+                            
+                            if (8 < gHour && gHour < 12) {
+                                
+                                npcs[ELLI].levelIndex = FLOWER_SHOP;
+                                npcs[ELLI].startingCoordinates.y = 0.0f;
+                                npcs[ELLI].direction = NORTH;
+                                npcs[ELLI].unk_1E = 0;
+                                npcs[ELLI].startingCoordinates.x = 32.0f;
+                                npcs[ELLI].startingCoordinates.z = -16.0f;
+                                npcs[ELLI].flags |= 1;  
+        
+                                setSpecialDialogueBit(0x98);
+        
+                            }
+
+                            if (11 < gHour && gHour < 17) {
+    
+                                npcs[ELLI].levelIndex = VILLAGE_1;
+                                npcs[ELLI].startingCoordinates.y = 0.0f;
+                                npcs[ELLI].direction = EAST;
+                                npcs[ELLI].unk_1E = 0;
+                                npcs[ELLI].startingCoordinates.x = 352.0f;
+                                npcs[ELLI].startingCoordinates.z = 96.0f;
+                                npcs[ELLI].flags |= 1;  
+                                
+                            }
+
+                            break;
+
+                        case SUNDAY:
+                        case TUESDAY:
+                        case THURSDAY:
+                        case FRIDAY:
+                        case SATURDAY:
+
+                            if (5 < gHour && gHour < 18) {
+
+                                npcs[ELLI].levelIndex = BAKERY;
+                                npcs[ELLI].startingCoordinates.y = 0.0f;
+                                npcs[ELLI].direction = NORTH;
+                                npcs[ELLI].unk_1E = 1;
+                                npcs[ELLI].startingCoordinates.x = -32.0f;
+                                npcs[ELLI].startingCoordinates.z = 16.0f;
+                                npcs[ELLI].flags |= 1;  
+                                
+                            }
+                            
+                            break;
+                        
+                    }
+                    
+                } else {
+                    
+                    if (5 < gHour && gHour < 18) {
+
+                        npcs[ELLI].levelIndex = BAKERY;
+                        npcs[ELLI].startingCoordinates.y = 0.0f;
+                        npcs[ELLI].direction = NORTH;
+                        npcs[ELLI].unk_1E = 1;
+                        npcs[ELLI].startingCoordinates.x = -32.0f;
+                        npcs[ELLI].startingCoordinates.z = 16.0f;
+                        npcs[ELLI].flags |= 1;  
+                    
+                    }
+                    
+                }
+
+                if (func_80076DCC(ELLI) == 1) {
+                    npcs[ELLI].animationIndex1 = 0x69;
+                    npcs[ELLI].animationIndex2 = 0x73;
+                }
+                
+            } else {
+
+                switch (gDayOfWeek) {
+                    
+                    case TUESDAY:
+                    case THURSDAY:
+                    case FRIDAY:
+                    case SATURDAY:
+
+                        if (gWeather == SUNNY) {
+                            
+                            if (8 < gHour && gHour < 17) {
+                            
+                                npcs[ELLI].levelIndex = BAKERY;
+                                npcs[ELLI].startingCoordinates.y = 0.0f;
+                                npcs[ELLI].direction = NORTH;
+                                npcs[ELLI].unk_1E = 1;
+                                npcs[ELLI].startingCoordinates.x = -32.0f;
+                                npcs[ELLI].startingCoordinates.z = 16.0f;
+                                npcs[ELLI].flags |= 1;  
+        
+                            } 
+                            
+                        } else {
+                                                    
+                            if (8 < gHour && gHour < 17) {
+                                
+                                npcs[ELLI].levelIndex = BAKERY;
+                                npcs[ELLI].startingCoordinates.y = 0.0f;
+                                npcs[ELLI].direction = NORTH;
+                                npcs[ELLI].unk_1E = 0;
+                                npcs[ELLI].startingCoordinates.x = -32.0f;
+                                npcs[ELLI].startingCoordinates.z = 16.0f;
+                                npcs[ELLI].flags |= 1;  
+        
+                            } 
+                            
+                        }
+                        
+                        break;
+                    
+                }
+
+                if (gDayOfWeek == WEDNESDAY) {
+
+                    if (8 < gHour && gHour < 12) {
+                        
+                        npcs[ELLI].levelIndex = FLOWER_SHOP;
+                        npcs[ELLI].startingCoordinates.y = 0.0f;
+                        npcs[ELLI].direction = NORTH;
+                        npcs[ELLI].unk_1E = 0;
+                        npcs[ELLI].startingCoordinates.x = 32.0f;
+                        npcs[ELLI].startingCoordinates.z = -16.0f;
+                        npcs[ELLI].flags |= 1;  
+
+                        setSpecialDialogueBit(0x98);
+
+                    }
+
+                    if (11 < gHour && gHour < 17) {
+
+                        if (gWeather == SUNNY) {
+                                                    
+                            npcs[ELLI].levelIndex = VILLAGE_1;
+                            npcs[ELLI].startingCoordinates.y = 0.0f;
+                            npcs[ELLI].direction = EAST;
+                            npcs[ELLI].unk_1E = 0;
+                            npcs[ELLI].startingCoordinates.x = 352.0f;
+                            npcs[ELLI].startingCoordinates.z = 96.0f;
+                            npcs[ELLI].flags |= 1;  
+
+                        } else {
+                            
+                            npcs[ELLI].levelIndex = BAKERY;
+                            npcs[ELLI].startingCoordinates.y = 0.0f;
+                            npcs[ELLI].direction = NORTH;
+                            npcs[ELLI].unk_1E = 0;
+                            npcs[ELLI].startingCoordinates.x = -32.0f;
+                            npcs[ELLI].startingCoordinates.z = 16.0f;
+                            npcs[ELLI].flags |= 1;  
+    
+                        }
+                        
+                    }
+                    
+                }
+
+                if (gDayOfWeek == MONDAY) {
+
+                    if (gWeather == SUNNY) {
+
+                        if (npcs[ELLI].location < 2) {
+                            
+                             if (7 < gHour && gHour < 17) {
+                            
+                                npcs[ELLI].levelIndex = MOUNTAIN_2;
+                                npcs[ELLI].startingCoordinates.y = 0.0f;
+                                npcs[ELLI].direction = EAST;
+                                npcs[ELLI].unk_1E = 0;
+                                npcs[ELLI].startingCoordinates.x = 96.0f;
+                                npcs[ELLI].startingCoordinates.z = -64.0f;
+                                npcs[ELLI].flags |= 1;  
+        
+                                setSpecialDialogueBit(0x97);
+                                
+                            }            
+                            
+                        } else {
+                            
+                             if (7 < gHour && gHour < 17) {
+                            
+                                npcs[ELLI].levelIndex = MOUNTAIN_1;
+                                npcs[ELLI].startingCoordinates.y = 0.0f;
+                                npcs[ELLI].direction = NORTH;
+                                npcs[ELLI].unk_1E = 0;
+                                npcs[ELLI].startingCoordinates.x = 112.0f;
+                                npcs[ELLI].startingCoordinates.z = -32.0f;
+                                npcs[ELLI].flags |= 1;  
+        
+                                setSpecialDialogueBit(0x96);
+                                
+                            }       
+                            
+                            
+                        }
+                        
+                    } else {
+                             
+                        if (8 < gHour && gHour < 17) {
+                            
+                            npcs[ELLI].levelIndex = BAKERY;
+                            npcs[ELLI].startingCoordinates.y = 0.0f;
+                            npcs[ELLI].direction = NORTH;
+                            npcs[ELLI].unk_1E = 0;
+                            npcs[ELLI].startingCoordinates.x = -32.0f;
+                            npcs[ELLI].startingCoordinates.z = 16.0f;
+                            npcs[ELLI].flags |= 1;  
+    
+                        }             
+
+                    }
+                    
+                }
+
+                if (gSeason == SUMMER) {
+
+                    if (gDayOfWeek == WEDNESDAY && gWeather == SUNNY && npcs[ELLI].location == 0) {
+
+                        if (18 < gHour && gHour < 21) {
+                            
+                            npcs[ELLI].levelIndex = BEACH;
+                            npcs[ELLI].startingCoordinates.y = 0.0f;
+                            npcs[ELLI].startingCoordinates.z = 0.0f;
+                            npcs[ELLI].direction = NORTH;
+                            npcs[ELLI].unk_1E = 2;
+                            npcs[ELLI].startingCoordinates.x = -224.0f;
+                            npcs[ELLI].flags |= 1;  
+    
+                            setSpecialDialogueBit(0x99);
+                            
+                        }
+                        
+                    }
+
+                    if (gSeason == SUMMER && gDayOfWeek == MONDAY && gWeather == SUNNY) {
+    
+                        if (7 < gHour && gHour < 17) {
+           
+                            npcs[ELLI].levelIndex = BEACH;
+                            npcs[ELLI].startingCoordinates.y = 0.0f;
+                            npcs[ELLI].direction = SOUTH;
+                            npcs[ELLI].unk_1E = 0;
+                            npcs[ELLI].startingCoordinates.x = -128.0f;
+                            npcs[ELLI].startingCoordinates.z = 160.0f;
+                            npcs[ELLI].flags |= 1;  
+    
+                            setSpecialDialogueBit(0x99);
+                            
+                        }
+                                         
+                    }
+                    
+                }
+                
+            } 
+        
+        }
+        
+    }
+
+    npcs[ELLI].movingFlag = npcs[ELLI].unk_1E;
+    
+}
+
+//INCLUDE_ASM("asm/nonmatchings/game/npc", func_80079A74);
+
+void func_80079A74(void) {
+u8 result;
+
+    npcs[ANN].unk_1A = 0x40;
+    npcs[ANN].unk_1B = 0x40;
+    npcs[ANN].animationIndex1 = 0;
+    npcs[ANN].animationIndex2 = 8;
+
+    if (!checkDailyEventBit(0x52) && !checkLifeEventBit(0xD9) && !checkDailyEventBit(0x59)) {
+
+        if (checkLifeEventBit(MARRIED) && gWife == ANN) {
+
+            if (5 < gHour && gHour < 8) {
+
+                npcs[ANN].levelIndex = HOUSE;
+                npcs[ANN].startingCoordinates.y = 0.0f;
+                npcs[ANN].direction = NORTHWEST;
+                npcs[ANN].unk_1E = 0;
+                npcs[ANN].startingCoordinates.x = -128.0f;
+                npcs[ANN].startingCoordinates.z = -64.0f;
+                npcs[ANN].flags |= 1;
+                
+            }
+
+            if (7 < gHour && gHour < 12) {
+
+                if (gDayOfWeek == SUNDAY) {
+
+                    if (npcs[ANN].location < 2) {
+                                                    
+                        npcs[ANN].levelIndex = RICK_STORE;
+                        npcs[ANN].startingCoordinates.x = 0.0f;
+                        npcs[ANN].startingCoordinates.y = 0.0f;
+                        npcs[ANN].startingCoordinates.z = 0.0f;
+                        npcs[ANN].direction = NORTH;
+                        npcs[ANN].unk_1E = 0;
+                        npcs[ANN].flags |= 1;  
+
+                        setSpecialDialogueBit(0xA1);
+
+                    } else  {
+
+                        if (gWeather == SUNNY) {
+                            
+                            npcs[ANN].levelIndex = RANCH;
+                            npcs[ANN].startingCoordinates.y = 0.0f;
+                            npcs[ANN].direction = NORTH;
+                            npcs[ANN].unk_1E = 1;
+                            npcs[ANN].startingCoordinates.x = -64.0f;
+                            npcs[ANN].startingCoordinates.z = 128.0f;
+                            npcs[ANN].flags |= 1;  
+                            
+                        } else if (func_8009B374()) {
+
+                            npcs[ANN].levelIndex = BARN;
+                            npcs[ANN].startingCoordinates.x = 0.0f;
+                            npcs[ANN].startingCoordinates.y = 0.0f;
+                            npcs[ANN].startingCoordinates.z = 0.0f;
+                            npcs[ANN].direction = NORTH;
+                            npcs[ANN].unk_1E = 1;
+                            npcs[ANN].flags |= 1;
+                            
+                        } else {
+
+                            if (func_8009B564()) {
+
+                                npcs[ANN].levelIndex = COOP;
+                                npcs[ANN].startingCoordinates.x = 0.0f;
+                                npcs[ANN].startingCoordinates.y = 0.0f;
+                                npcs[ANN].startingCoordinates.z = 0.0f;
+                                npcs[ANN].direction = NORTH;
+                                npcs[ANN].unk_1E = 1;
+                                npcs[ANN].flags |= 1;
+                                
+                            } else {
+                                
+                                npcs[ANN].levelIndex = HOUSE;
+                                npcs[ANN].startingCoordinates.x = 0.0f;
+                                npcs[ANN].startingCoordinates.y = 0.0f;
+                                npcs[ANN].startingCoordinates.z = 0.0f;
+                                npcs[ANN].direction = NORTH;
+                                npcs[ANN].unk_1E = 1;
+                                npcs[ANN].flags |= 1;
+                                
+                            }
+                            
+                        }
+                        
+                    }
+                    
+                } else {
+
+                    if (gWeather == SUNNY) {
+                                                
+                        npcs[ANN].levelIndex = FARM;
+                        npcs[ANN].startingCoordinates.y = 0.0f;
+                        npcs[ANN].direction = NORTH;
+                        npcs[ANN].unk_1E = 0;
+                        npcs[ANN].startingCoordinates.x = -256.0f;
+                        npcs[ANN].startingCoordinates.z = -320.0f;
+                        npcs[ANN].flags |= 1;
+                        
+                    } else {
+                                                
+                        if (func_8009B374()) {
+
+                            npcs[ANN].levelIndex = BARN;
+                            npcs[ANN].startingCoordinates.x = 0.0f;
+                            npcs[ANN].startingCoordinates.y = 0.0f;
+                            npcs[ANN].startingCoordinates.z = 0.0f;
+                            npcs[ANN].direction = NORTH;
+                            npcs[ANN].unk_1E = 1;
+                            npcs[ANN].flags |= 1;
+                            
+                        } else {
+
+                            if (func_8009B564()) {
+
+                                npcs[ANN].levelIndex = COOP;
+                                npcs[ANN].startingCoordinates.x = 0.0f;
+                                npcs[ANN].startingCoordinates.y = 0.0f;
+                                npcs[ANN].startingCoordinates.z = 0.0f;
+                                npcs[ANN].direction = NORTH;
+                                npcs[ANN].unk_1E = 1;
+                                npcs[ANN].flags |= 1;
+                                
+                            } else {
+                                
+                                npcs[ANN].levelIndex = HOUSE;
+                                npcs[ANN].startingCoordinates.x = 0.0f;
+                                npcs[ANN].startingCoordinates.y = 0.0f;
+                                npcs[ANN].startingCoordinates.z = 0.0f;
+                                npcs[ANN].direction = NORTH;
+                                npcs[ANN].unk_1E = 1;
+                                npcs[ANN].flags |= 1;
+                                
+                            }
+                            
+                        }
+                        
+                    }
+                                        
+                }
+                
+            }
+
+            if (gHour == 12) {
+                
+                npcs[ANN].levelIndex = KITCHEN;
+                npcs[ANN].startingCoordinates.y = 0.0f;
+                npcs[ANN].direction = EAST;
+                npcs[ANN].unk_1E = 0;
+                npcs[ANN].startingCoordinates.x = -160.0f;
+                npcs[ANN].startingCoordinates.z = -64.0f;
+                npcs[ANN].flags |= 1;
+                
+            }
+
+            if (12 < gHour && gHour < 17) {
+
+                npcs[ANN].levelIndex = HOUSE;
+                npcs[ANN].startingCoordinates.x = 0.0f;
+                npcs[ANN].startingCoordinates.y = 0.0f;
+                npcs[ANN].startingCoordinates.z = 0.0f;
+                npcs[ANN].direction = NORTH;
+                npcs[ANN].unk_1E = 1;
+                npcs[ANN].flags |= 1;
+                
+            }
+
+            if (16 < gHour && gHour < 20) {
+                
+                npcs[ANN].levelIndex = KITCHEN;
+                npcs[ANN].startingCoordinates.y = 0.0f;
+                npcs[ANN].direction = EAST;
+                npcs[ANN].unk_1E = 0;
+                npcs[ANN].startingCoordinates.x = -160.0f;
+                npcs[ANN].startingCoordinates.z = -64.0f;
+                npcs[ANN].flags |= 1;
+                
+            }
+            
+            if (19 < gHour && gHour < 22) {
+
+                npcs[ANN].levelIndex = HOUSE;
+                npcs[ANN].startingCoordinates.y = 0.0f;
+                npcs[ANN].direction = WEST;
+                npcs[ANN].unk_1E = 0;
+                npcs[ANN].startingCoordinates.x = -128.0f;
+                npcs[ANN].startingCoordinates.z = -112.0f;
+                npcs[ANN].flags |= 1;
+                
+            }
+
+            if ((u32)(gHour - 6) >= 16) {
+
+                npcs[ANN].levelIndex = HOUSE;
+                npcs[ANN].startingCoordinates.y = 0.0f;
+                npcs[ANN].direction = NORTH;
+                npcs[ANN].unk_1E = 4;
+                npcs[ANN].startingCoordinates.x = -192.0f;
+                npcs[ANN].startingCoordinates.z = -160.0f;
+                npcs[ANN].flags |= 1;
+                
+            }
+
+            if (func_80076CF4() == 1 && ((u8)(gPlayer.heldItem + 0x46)) >= 0x10) {
+                npcs[ANN].animationIndex1 = 0x6F;
+                npcs[ANN].animationIndex2 = 0x79;
+            }
+    
+        } else if (!checkDailyEventBit(0x4D)) {
+
+            if (checkLifeEventBit(0x1D)) {
+
+                switch (gDayOfWeek) {
+
+                    case SUNDAY:
+                    case MONDAY:
+                    case TUESDAY:
+                    case WEDNESDAY:
+                    case FRIDAY:
+                    case SATURDAY:
+
+                        if (gWeather == SUNNY) {
+                            
+                            if (7 < gHour && gHour < 17) {
+                            
+                                npcs[ANN].levelIndex = RANCH;
+                                npcs[ANN].startingCoordinates.y = 0.0f;
+                                npcs[ANN].direction = NORTH;
+                                npcs[ANN].unk_1E = 1;
+                                npcs[ANN].startingCoordinates.x = -64.0f;
+                                npcs[ANN].startingCoordinates.z = 128.0f;
+                                npcs[ANN].flags |= 1;  
+                                
+                            }
+                            
+                        } else {
+
+                            if (7 < gHour && gHour < 17) {
+                                
+                                npcs[ANN].levelIndex = RANCH_HOUSE;
+                                npcs[ANN].startingCoordinates.y = 0.0f;
+                                npcs[ANN].direction = WEST;
+                                npcs[ANN].unk_1E = 0;
+                                npcs[ANN].startingCoordinates.x = -192.0f;
+                                npcs[ANN].startingCoordinates.z = -32.0f;
+                                npcs[ANN].flags |= 1;  
+                                
+                            }
+                            
+                        }
+
+                        break;
+
+                    case THURSDAY:
+
+                        if (gWeather == SUNNY) {
+
+                            if (8 < gHour && gHour < 17) {
+
+                                switch (gSeason) {
+
+                                    case SPRING:
+                                    case AUTUMN:
+                                        npcs[ANN].levelIndex = MOUNTAIN_2;
+                                        npcs[ANN].startingCoordinates.y = 0.0f;
+                                        npcs[ANN].direction = NORTH;
+                                        npcs[ANN].unk_1E = 0;
+                                        npcs[ANN].startingCoordinates.x = -64.0f;
+                                        npcs[ANN].startingCoordinates.z = -160.0f;
+                                        npcs[ANN].flags |= 1;  
+                
+                                        setSpecialDialogueBit(0x9E);
+
+                                        break;
+
+                                    case SUMMER:
+                                        
+                                        npcs[ANN].levelIndex = CAVE;
+                                        npcs[ANN].startingCoordinates.y = 0.0f;
+                                        npcs[ANN].direction = NORTH;
+                                        npcs[ANN].unk_1E = 0;
+                                        npcs[ANN].startingCoordinates.x = 64.0f;
+                                        npcs[ANN].startingCoordinates.z = -224.0f;
+                                        npcs[ANN].flags |= 1;  
+                
+                                        setSpecialDialogueBit(0x9E);
+
+                                        break;
+
+                                    case WINTER:
+                                                                                
+                                        npcs[ANN].levelIndex = RANCH_HOUSE;
+                                        npcs[ANN].startingCoordinates.y = 0.0f;
+                                        npcs[ANN].direction = WEST;
+                                        npcs[ANN].unk_1E = 0;
+                                        npcs[ANN].startingCoordinates.x = -192.0f;
+                                        npcs[ANN].startingCoordinates.z = -32.0f;
+                                        npcs[ANN].flags |= 1;  
+                                        
+                                        break;
+                                    
+                                    }
+                                
+                            }
+                            
+                        } else if (7 < gHour && gHour < 17) {
+                            
+                            npcs[ANN].levelIndex = RANCH_BARN;
+                            npcs[ANN].startingCoordinates.y = 0.0f;
+                            npcs[ANN].direction = NORTH;
+                            npcs[ANN].unk_1E = 0;
+                            npcs[ANN].startingCoordinates.x = -128.0f;
+                            npcs[ANN].startingCoordinates.z = -292.0f;
+                            npcs[ANN].flags |= 1;  
+    
+                        }
+
+                        break;
+                    
+                }
+                
+                if (func_80076DCC(ANN) == 1) {
+                    npcs[ANN].animationIndex1 = 0x6F;
+                    npcs[ANN].animationIndex2 = 0x79;
+                }
+                
+            } else {
+
+                switch (gDayOfWeek) {
+
+                    case MONDAY:
+                    case TUESDAY:
+                    case WEDNESDAY:
+                    case FRIDAY:
+                    case SATURDAY:
+                        
+                        if (gWeather == SUNNY) {
+                           
+                            if (7 < gHour && gHour < 17) {
+                            
+                                npcs[ANN].levelIndex = RANCH;
+                                npcs[ANN].startingCoordinates.y = 0.0f;
+                                npcs[ANN].direction = NORTH;
+                                npcs[ANN].unk_1E = 1;
+                                npcs[ANN].startingCoordinates.x = -64.0f;
+                                npcs[ANN].startingCoordinates.z = 128.0f;
+                                npcs[ANN].flags |= 1;  
+                                
+                            }
+                            
+                        } else {
+                            
+                            if (7 < gHour && gHour < 17) {
+                            
+                                npcs[ANN].levelIndex = RANCH_BARN;
+                                npcs[ANN].startingCoordinates.y = 0.0f;
+                                npcs[ANN].direction = NORTH;
+                                npcs[ANN].unk_1E = 0;
+                                npcs[ANN].startingCoordinates.x = -128.0f;
+                                npcs[ANN].startingCoordinates.z = -292.0f;
+                                npcs[ANN].flags |= 1;  
+        
+                            }
+                            
+                        }
+                        
+                        break;
+                    
+                }
+
+                if (gDayOfWeek == THURSDAY) {
+
+                    if (gWeather == SUNNY) {
+
+                        switch (npcs[ANN].location) {
+
+                            case 0:
+
+                                if (8 < gHour && gHour < 17) {
+                        
+                                    npcs[ANN].levelIndex = MOUNTAIN_1;
+                                    npcs[ANN].startingCoordinates.y = 0.0f;
+                                    npcs[ANN].direction = NORTH;
+                                    npcs[ANN].unk_1E = 0;
+                                    npcs[ANN].startingCoordinates.x = 128.0f;
+                                    npcs[ANN].startingCoordinates.z = 32.0f;
+                                    npcs[ANN].flags |= 1;  
+            
+                                    setSpecialDialogueBit(0x9E);
+                                    
+                                }        
+                                
+                                break;
+
+                            case 1:
+                                
+                                if (8 < gHour && gHour < 17) {
+                                
+                                    npcs[ANN].levelIndex = MOUNTAIN_2;
+                                    npcs[ANN].startingCoordinates.y = 0.0f;
+                                    npcs[ANN].direction = NORTH;
+                                    npcs[ANN].unk_1E = 0;
+                                    npcs[ANN].startingCoordinates.x = -64.0f;
+                                    npcs[ANN].startingCoordinates.z = -160.0f;
+                                    npcs[ANN].flags |= 1;  
+            
+                                    setSpecialDialogueBit(0x9E);
+                                    
+                                }            
+                                break;
+                            
+                            case 2:
+
+                                if (8 < gHour && gHour < 17) {
+                        
+                                    npcs[ANN].levelIndex = VINEYARD;
+                                    npcs[ANN].startingCoordinates.y = 0.0f;
+                                    npcs[ANN].direction = NORTH;
+                                    npcs[ANN].unk_1E = 0;
+                                    npcs[ANN].startingCoordinates.x = 16.0f;
+                                    npcs[ANN].startingCoordinates.z = -144.0f;
+                                    npcs[ANN].flags |= 1;  
+            
+                                    setSpecialDialogueBit(0xA0);
+                                    
+                                }        
+                                
+                                break;
+
+                            
+                            case 3:
+
+                                if (8 < gHour && gHour < 17) {
+                                    
+                                    npcs[ANN].levelIndex = RICK_STORE;
+                                    npcs[ANN].startingCoordinates.x = 0.0f;
+                                    npcs[ANN].startingCoordinates.y = 0.0f;
+                                    npcs[ANN].startingCoordinates.z = 0.0f;
+                                    npcs[ANN].direction = NORTH;
+                                    npcs[ANN].unk_1E = 0;
+                                    npcs[ANN].flags |= 1;  
+            
+                                    setSpecialDialogueBit(0xA1);
+                                    
+                                }
+                            
+                        }
+                            
+                        
+                            
+                        
+                        
+                    } else {
+                        
+                       if (8 < gHour && gHour < 17) {
+                        
+                            npcs[ANN].levelIndex = RANCH_STORE;
+                            npcs[ANN].startingCoordinates.y = 0.0f;
+                            npcs[ANN].direction = NORTH;
+                            npcs[ANN].unk_1E = 0;
+                            npcs[ANN].startingCoordinates.x = 80.0f;
+                            npcs[ANN].startingCoordinates.z = -144.0f;
+                            npcs[ANN].flags |= 1;  
+    
+                                
+                        }      
+                        
+                    }
+                   
+                }
+
+                if (gDayOfWeek == SUNDAY) {
+
+                    if (gWeather == SUNNY) {
+
+                        if (npcs[ANN].location < 2) {
+                            
+                             if (7 < gHour && gHour < 17) {
+                            
+                                npcs[ANN].levelIndex = POND;
+                                npcs[ANN].startingCoordinates.y = 0.0f;
+                                npcs[ANN].direction = NORTH;
+                                npcs[ANN].unk_1E = 0;
+                                npcs[ANN].startingCoordinates.x = 80.0f;
+                                npcs[ANN].startingCoordinates.z = -176.0f;
+                                npcs[ANN].flags |= 1;  
+        
+                            }            
+                            
+                        } else {
+                            
+                             if (7 < gHour && gHour < 17) {
+                            
+                                npcs[ANN].levelIndex = RANCH;
+                                npcs[ANN].startingCoordinates.y = 0.0f;
+                                npcs[ANN].direction = NORTH;
+                                npcs[ANN].unk_1E = 1;
+                                npcs[ANN].startingCoordinates.x = 256.0f;
+                                npcs[ANN].startingCoordinates.z = 128.0f;
+                                npcs[ANN].flags |= 1;  
+        
+                            }       
+                            
+                        }
+                        
+                    } else {
+                             
+                        if (8 < gHour && gHour < 17) {
+                            
+                            npcs[ANN].levelIndex = RANCH_BARN;
+                            npcs[ANN].startingCoordinates.y = 0.0f;
+                            npcs[ANN].direction = NORTH;
+                            npcs[ANN].unk_1E = 0;
+                            npcs[ANN].startingCoordinates.x = -128.0f;
+                            npcs[ANN].startingCoordinates.z = -292.0f;
+                            npcs[ANN].flags |= 1;  
+    
+                        }             
+                    }
+                    
+                }
+
+
+                if (gSeason == SUMMER && gDayOfWeek == TUESDAY && gWeather == SUNNY && npcs[ANN].location == 0) {
+
+                    if (17 < gHour && gHour < 21) {
+       
+                        npcs[ANN].levelIndex = BEACH;
+                        npcs[ANN].startingCoordinates.y = 0.0f;
+                        npcs[ANN].startingCoordinates.z = 0.0f;
+                        npcs[ANN].direction = NORTH;
+                        npcs[ANN].unk_1E = 2;
+                        npcs[ANN].startingCoordinates.x = -224.0f;
+                        npcs[ANN].flags |= 1;  
+
+                        setSpecialDialogueBit(0x9F);
+                        
+                    }
+                                     
+                    
+                }
+                
+            } 
+        
+        }
+        
+    }
+
+    npcs[ANN].movingFlag = npcs[ANN].unk_1E;
+    
+}
+
+//INCLUDE_ASM("asm/nonmatchings/game/npc", func_8007A9B0);
+
+void func_8007A9B0(void) {
+
+    u8 result;
+
+    npcs[KAREN].unk_1A = 0x40;
+    npcs[KAREN].unk_1B = 0x40;
+    npcs[KAREN].animationIndex1 = 0;
+    npcs[KAREN].animationIndex2 = 8;
+
+    if (!checkDailyEventBit(0x52) && !checkLifeEventBit(0xD9) && !checkLifeEventBit(0x2F) && !checkDailyEventBit(0x5A)) {
+
+        if (checkLifeEventBit(MARRIED) && gWife == KAREN) {
+
+            if (5 < gHour && gHour < 8) {
+
+                npcs[KAREN].levelIndex = HOUSE;
+                npcs[KAREN].startingCoordinates.y = 0.0f;
+                npcs[KAREN].direction = NORTHWEST;
+                npcs[KAREN].unk_1E = 0;
+                npcs[KAREN].startingCoordinates.x = -128.0f;
+                npcs[KAREN].startingCoordinates.z = -64.0f;
+                npcs[KAREN].flags |= 1;
+                
+            }
+
+            if (7 < gHour && gHour < 12) {
+
+                if (gDayOfWeek == SUNDAY) {
+
+                    switch (npcs[KAREN].location) {
+
+                        case 0:
+                        case 1:
+                            npcs[KAREN].levelIndex = BEACH;
+                            npcs[KAREN].startingCoordinates.y = 0.0f;
+                            npcs[KAREN].startingCoordinates.z = 0.0f;
+                            npcs[KAREN].direction = WEST;
+                            npcs[KAREN].unk_1E = 0;
+                            npcs[KAREN].startingCoordinates.x = -224.0f;
+                            npcs[KAREN].flags |= 1;
+
+                            setSpecialDialogueBit(0xA9);
+
+                            break;
+                        
+                        case 2:
+                                                        
+                            npcs[KAREN].levelIndex = VINEYARD;
+                            npcs[KAREN].startingCoordinates.y = 0.0f;
+                            npcs[KAREN].startingCoordinates.z = 0.0f;
+                            npcs[KAREN].direction = EAST;
+                            npcs[KAREN].unk_1E = 1;
+                            npcs[KAREN].startingCoordinates.x = -32.0f;
+                            npcs[KAREN].flags |= 1;
+                            
+                            break;
+                        
+                        case 3:
+
+                            npcs[KAREN].levelIndex = MOUNTAIN_1;
+                            npcs[KAREN].startingCoordinates.y = 0.0f;
+                            npcs[KAREN].direction = WEST;
+                            npcs[KAREN].unk_1E = 1;
+                            npcs[KAREN].startingCoordinates.x = 96.0f;
+                            npcs[KAREN].startingCoordinates.z = 96.0f;
+                            npcs[KAREN].flags |= 1;
+
+                            setSpecialDialogueBit(0xAa);
+
+                            break;
+                        
+                    } 
+                    
+                } else if (gWeather == SUNNY) {
+                        
+                    npcs[KAREN].levelIndex = FARM;
+                    npcs[KAREN].startingCoordinates.y = 0.0f;
+                    npcs[KAREN].direction = NORTH;
+                    npcs[KAREN].unk_1E = 0;
+                    npcs[KAREN].startingCoordinates.x = -256.0f;
+                    npcs[KAREN].startingCoordinates.z = -320.0f;
+                    npcs[KAREN].flags |= 1;
+                    
+                } else {
+
+                    npcs[KAREN].levelIndex = KITCHEN;
+                    npcs[KAREN].startingCoordinates.y = 0.0f;
+                    npcs[KAREN].direction = EAST;
+                    npcs[KAREN].unk_1E = 1;
+                    npcs[KAREN].startingCoordinates.x = -160.0f;
+                    npcs[KAREN].startingCoordinates.z = -64.0f;
+                    npcs[KAREN].flags |= 1;
+                    
+                }
+                
+            }
+
+            if (gHour == 12) {
+                
+                npcs[KAREN].levelIndex = KITCHEN;
+                npcs[KAREN].startingCoordinates.y = 0.0f;
+                npcs[KAREN].direction = EAST;
+                npcs[KAREN].unk_1E = 0;
+                npcs[KAREN].startingCoordinates.x = -160.0f;
+                npcs[KAREN].startingCoordinates.z = -64.0f;
+                npcs[KAREN].flags |= 1;
+                
+            }
+
+            if (12 < gHour && gHour < 17) {
+
+                npcs[KAREN].levelIndex = HOUSE;
+                npcs[KAREN].startingCoordinates.x = 0.0f;
+                npcs[KAREN].startingCoordinates.y = 0.0f;
+                npcs[KAREN].startingCoordinates.z = 0.0f;
+                npcs[KAREN].direction = NORTH;
+                npcs[KAREN].unk_1E = 1;
+                npcs[KAREN].flags |= 1;
+                
+            }
+
+            if (16 < gHour && gHour < 20) {
+                
+                npcs[KAREN].levelIndex = KITCHEN;
+                npcs[KAREN].startingCoordinates.y = 0.0f;
+                npcs[KAREN].direction = EAST;
+                npcs[KAREN].unk_1E = 0;
+                npcs[KAREN].startingCoordinates.x = -160.0f;
+                npcs[KAREN].startingCoordinates.z = -64.0f;
+                npcs[KAREN].flags |= 1;
+                
+            }
+            
+            if (19 < gHour && gHour < 22) {
+
+                npcs[KAREN].levelIndex = HOUSE;
+                npcs[KAREN].startingCoordinates.y = 0.0f;
+                npcs[KAREN].direction = WEST;
+                npcs[KAREN].unk_1E = 0;
+                npcs[KAREN].startingCoordinates.x = -128.0f;
+                npcs[KAREN].startingCoordinates.z = -112.0f;
+                npcs[KAREN].flags |= 1;
+                
+            }
+
+            if ((u32)(gHour - 6) >= 16) {
+
+                npcs[KAREN].levelIndex = HOUSE;
+                npcs[KAREN].startingCoordinates.y = 0.0f;
+                npcs[KAREN].direction = NORTH;
+                npcs[KAREN].unk_1E = 4;
+                npcs[KAREN].startingCoordinates.x = -192.0f;
+                npcs[KAREN].startingCoordinates.z = -160.0f;
+                npcs[KAREN].flags |= 1;
+                
+            }
+
+            if (func_80076CF4() == 1 && ((u8)(gPlayer.heldItem + 0x46)) >= 0x10) {
+                npcs[KAREN].animationIndex1 = 0x66;
+                npcs[KAREN].animationIndex2 = 0x70;
+            }
+    
+        } else if (!checkDailyEventBit(0x4D)) {
+
+            if (checkLifeEventBit(0x1E)) {
+
+                if (gWeather == SUNNY) {
+
+                    switch (gDayOfWeek) {
+
+                        case SUNDAY:
+
+                            if (9 < gHour && gHour < 18) {
+                                
+                                npcs[KAREN].levelIndex = BEACH;
+                                npcs[KAREN].startingCoordinates.y = 0.0f;
+                                npcs[KAREN].startingCoordinates.z = 0.0f;
+                                npcs[KAREN].direction = WEST;
+                                npcs[KAREN].unk_1E = 0;
+                                npcs[KAREN].startingCoordinates.x = -224.0f;
+                                npcs[KAREN].flags |= 1;
+            
+                                setSpecialDialogueBit(0xA9);
+                                
+                            }
+
+                            break;
+
+                        case MONDAY:
+                        case THURSDAY:
+                            
+                            if (8 < gHour && gHour < 17) { 
+                            
+                                npcs[KAREN].levelIndex = VINEYARD;
+                                npcs[KAREN].startingCoordinates.y = 0.0f;
+                                npcs[KAREN].direction = SOUTH;
+                                npcs[KAREN].unk_1E = 1;
+                                npcs[KAREN].startingCoordinates.x = 192.0f;
+                                npcs[KAREN].startingCoordinates.z = 192.0f;
+                                npcs[KAREN].flags |= 1;
+                                
+                            }
+                            
+                            break;
+
+                        case TUESDAY:
+                        case WEDNESDAY:
+                        case FRIDAY:
+                        case SATURDAY:
+
+                            if (8 < gHour && gHour < 17) {
+                                
+                                if (npcs[KAREN].location < 2) {
+                                                         
+                                    npcs[KAREN].levelIndex = VINEYARD_CELLAR_BASEMENT;
+                                    npcs[KAREN].startingCoordinates.y = 0.0f;
+                                    npcs[KAREN].direction = EAST;
+                                    npcs[KAREN].unk_1E = 0;
+                                    npcs[KAREN].startingCoordinates.x = -32.0f;
+                                    npcs[KAREN].startingCoordinates.z = -128.0f;
+                                    npcs[KAREN].flags |= 1;
+                                            
+                                }
+                                
+                            }
+                        
+                    }
+
+                    if (gSeason == AUTUMN && 7 < gDayOfMonth && gDayOfMonth < 11) {
+
+                        if (8 < gHour && gHour < 17) {
+                                             
+                            npcs[KAREN].levelIndex = VINEYARD;
+                            npcs[KAREN].startingCoordinates.y = 0.0f;
+                            npcs[KAREN].startingCoordinates.z = 0.0f;
+                            npcs[KAREN].direction = NORTH;
+                            npcs[KAREN].unk_1E = 3;
+                            npcs[KAREN].startingCoordinates.x = -192.0f;
+                            npcs[KAREN].flags |= 1;
+                                              
+                        }
+                        
+                    }
+                    
+                } else {
+
+                    if (npcs[KAREN].location < 2) {
+
+                        if (8 < gHour && gHour < 17) {
+
+                            npcs[KAREN].levelIndex = VINEYARD_CELLAR;
+                            npcs[KAREN].startingCoordinates.y = 0.0f;
+                            npcs[KAREN].direction = EAST;
+                            npcs[KAREN].unk_1E = 0;
+                            npcs[KAREN].startingCoordinates.x = -80.0f;
+                            npcs[KAREN].startingCoordinates.z = -112.0f;
+                            npcs[KAREN].flags |= 1;
+                            
+                        }
+                        
+                    }
+                    
+                    
+                }
+
+                if (func_80076DCC(KAREN) == 1) {
+                    npcs[KAREN].animationIndex1 = 0x66;
+                    npcs[KAREN].animationIndex2 = 0x70;
+                }
+                
+            } else {
+
+            if ((gDayOfWeek == MONDAY || gDayOfWeek == THURSDAY) && gWeather == SUNNY && 8 < gHour && gHour < 17) {
+                    
+                npcs[KAREN].levelIndex = VINEYARD;
+                npcs[KAREN].startingCoordinates.y = 0.0f;
+                npcs[KAREN].direction = SOUTH;
+                npcs[KAREN].unk_1E = 1;
+                npcs[KAREN].startingCoordinates.x = 192.0f;
+                npcs[KAREN].startingCoordinates.z = 192.0f;
+                npcs[KAREN].flags |= 1;
+                                  
+            }
+
+            switch (gDayOfWeek) {
+
+
+                case TUESDAY:
+                case WEDNESDAY:
+                case FRIDAY:
+                case SATURDAY:
+                    
+                    if (gWeather == SUNNY) {
+
+                        switch (npcs[KAREN].location) {
+                            
+                            case 0:
+
+                                if (9 < gHour && gHour < 17) {
+                                    
+                                    npcs[KAREN].levelIndex = MOUNTAIN_2;
+                                    npcs[KAREN].startingCoordinates.y = 0.0f;
+                                    npcs[KAREN].direction = NORTH;
+                                    npcs[KAREN].unk_1E = 0;
+                                    npcs[KAREN].startingCoordinates.x = -80.0f;
+                                    npcs[KAREN].startingCoordinates.z = 160.0f;
+                                    npcs[KAREN].flags |= 1;
+        
+                                    setSpecialDialogueBit(0xAA);
+                                    
+                                } 
+                            
+                                break;
+
+                            case 1:
+
+                                if (9 < gHour && gHour < 17) {
+                                    
+                                    npcs[KAREN].levelIndex = BEACH;
+                                    npcs[KAREN].startingCoordinates.y = 0.0f;
+                                    npcs[KAREN].direction = WEST;
+                                    npcs[KAREN].unk_1E = 0;
+                                    npcs[KAREN].startingCoordinates.x = -96.0f;
+                                    npcs[KAREN].startingCoordinates.z = 176.0f;
+                                    npcs[KAREN].flags |= 1;
+                
+                                    setSpecialDialogueBit(0xA9);
+                                    
+                                }
+
+                                break;
+                            
+                            case 2:
+                            case 3:
+                                break;
+                            
+                        }
+                        
+                    }
+
+
+                
+            }
+
+            if (gDayOfWeek == SUNDAY && gWeather == SUNNY) {
+
+                if (9 < gHour && gHour < 18) {
+                    
+                    npcs[KAREN].levelIndex = BEACH;
+                    npcs[KAREN].startingCoordinates.y = 0.0f;
+                    npcs[KAREN].startingCoordinates.z = 0.0f;
+                    npcs[KAREN].direction = WEST;
+                    npcs[KAREN].unk_1E = 0;
+                    npcs[KAREN].startingCoordinates.x = -224.0f;
+                    npcs[KAREN].flags |= 1;
+
+                    setSpecialDialogueBit(0xA9);
+                
+                    
+                }
+                
+            } 
+
+            if (gSeason == AUTUMN && 7 < gDayOfMonth && gDayOfMonth < 11 && gWeather == SUNNY) {
+
+                if (8 < gHour && gHour < 17) {
+                    
+                    npcs[KAREN].levelIndex = VINEYARD;
+                    npcs[KAREN].startingCoordinates.y = 0.0f;
+                    npcs[KAREN].startingCoordinates.z = 0.0f;
+                    npcs[KAREN].direction = NORTH;
+                    npcs[KAREN].unk_1E = 3;
+                    npcs[KAREN].startingCoordinates.x = -192.0f;
+                    npcs[KAREN].flags |= 1;
+                    
+                }
+                
+            }
+
+            if (17 < gHour && gHour < 24) {
+
+                if (3 < gDayOfWeek && gDayOfWeek < 7) {
+                    
+                    npcs[KAREN].levelIndex = TAVERN;
+                    npcs[KAREN].startingCoordinates.y = 0.0f;
+                    npcs[KAREN].direction = NORTH;
+                    npcs[KAREN].unk_1E = 1;
+                    npcs[KAREN].startingCoordinates.x = 64.0f;
+                    npcs[KAREN].startingCoordinates.z = -32.0f;
+                    npcs[KAREN].flags |= 1;
+
+                    setSpecialDialogueBit(0xAB);
+                    
+                }
+
+                if (gDayOfWeek == MONDAY) {
+
+                    npcs[KAREN].levelIndex = TAVERN;
+                    npcs[KAREN].startingCoordinates.y = 0;
+                    npcs[KAREN].direction = NORTH;
+                    npcs[KAREN].unk_1E = 0;
+                    npcs[KAREN].startingCoordinates.x = -64.0f;
+                    npcs[KAREN].startingCoordinates.z = -64.0f;
+                    npcs[KAREN].flags |= 1;
+
+                    setSpecialDialogueBit(0xAB);
+                    
+                }
+                
+            }
+
+            if (gSeason == SUMMER && gDayOfWeek == SATURDAY && gWeather == SUNNY && npcs[KAREN].location == 0) {
+
+                if (18 < gHour && gHour < 21) {
+
+                        npcs[KAREN].levelIndex = BEACH;
+                        npcs[KAREN].startingCoordinates.y = 0.0f;
+                        npcs[KAREN].startingCoordinates.z = 0.0f;
+                        npcs[KAREN].direction = NORTH;
+                        npcs[KAREN].unk_1E = 2;
+                        npcs[KAREN].startingCoordinates.x = -224.0f;
+                        npcs[KAREN].flags |= 1;
+
+                        setSpecialDialogueBit(0xA9);
+                    
+                }
+                
+            }
+            
+        }
+            
+        } 
+        
+    }
+
+    npcs[KAREN].movingFlag = npcs[KAREN].unk_1E;
+    
+}
 
 //INCLUDE_ASM("asm/nonmatchings/game/npc", func_8007B828);
 
@@ -6621,7 +9052,7 @@ u8 func_800858D4(void) {
                         
                     }
                     
-                    showMessageBox(0, D_80114960[i], temp, 0, 0);
+                    showMessageBox(0, npcToDialogueBytecodeIndex[i], temp, 0, 0);
                     result = 1;
                     npcs[i].movingFlag = 0x10;
                     
@@ -6692,8 +9123,7 @@ bool func_80085D48(int index, u16 arg1) {
             func_8003F910(1, 0x78, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsAssetsIndexSegmentRomStart, &_dialogueIconsAssetsIndexSegmentRomEnd, (void*)DIALOGUE_ICONS_TEXTURE_VADDR_START, (void*)DIALOGUE_ICONS_TEXTURE_VADDR_END, (void*)DIALOGUE_ICONS_ASSETS_INDEX_VADDR_START, (void*)DIALOGUE_ICONS_ASSETS_INDEX_VADDR_END, 0, (npcAffection[index] / 52) + 5, 0xFE, 106.0f, -15.0f, 0);
         }
 
-        // D_80114960 =  dialogue bytecode addresses indices
-        showMessageBox(0, D_80114960[arr[7]], arg1, 0, 0);
+        showMessageBox(0, npcToDialogueBytecodeIndex[arr[7]], arg1, 0, 0);
         result = TRUE;
         
     }

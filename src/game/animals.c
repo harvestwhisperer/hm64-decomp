@@ -247,7 +247,7 @@ void func_8008634C(s8 amount) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/animals", adjustDogAffection);
 
-void adjustDogAffection(s8 amount) {
+inline void adjustDogAffection(s8 amount) {
     if (dogInfo.flags & 1) {
         dogInfo.affection += adjustValue(dogInfo.affection, amount, 0xFF);
     }
@@ -471,7 +471,7 @@ void func_80087D5C(void) {
     u8 i;
 
     for (i = 0; i < MAX_CHICKENS; i++) {
-        gChickens[i].flags |= 0x10;
+        gChickens[i].flags |= CHICKEN_FED;
     }
 
     for (i = 0; i < MAX_FARM_ANIMALS; i++) {
@@ -480,9 +480,9 @@ void func_80087D5C(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_80087DEC);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", resetAnimalStatuses);
 
-void func_80087DEC(void) {
+void resetAnimalStatuses(void) {
 
     u8 i;
     
@@ -498,7 +498,7 @@ void func_80087DEC(void) {
 
     for (i = 0; i < MAX_CHICKENS; i++) {
         func_8008A650(i);
-        gChickens[i].flags &= ~(0x10 | 0x80);
+        gChickens[i].flags &= ~(CHICKEN_FED| 0x80);
     }
 
     for (i = 0; i < MAX_FARM_ANIMALS; i++) { 
@@ -4406,7 +4406,7 @@ bool func_8009A100(void) {
     
     bool result = FALSE;
 
-    if ((horseInfo.flags & 4) && (horseInfo.grown == TRUE) && (entities[horseInfo.entityIndex].entityCollidedWithIndex == 0)) {
+    if ((horseInfo.flags & 4) && (horseInfo.grown == TRUE) && (entities[horseInfo.entityIndex].entityCollidedWithIndex == ENTITY_PLAYER)) {
         
         horseInfo.unk_17 = 0x10;
         horseInfo.flags |=  0x20;
@@ -4530,7 +4530,68 @@ INCLUDE_ASM("asm/nonmatchings/game/animals", func_8009A97C);
 
 INCLUDE_ASM("asm/nonmatchings/game/animals", func_8009AAC8);
 
-INCLUDE_ASM("asm/nonmatchings/game/animals", func_8009AC54);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", func_8009AC54);
+
+bool func_8009AC54(void) {
+
+    u8 i = 0;
+    bool result = FALSE;
+
+    do {
+
+        if ((gFarmAnimals[i].flags & 4) && gFarmAnimals[i].unk_1B == 0x10) {
+
+            func_800861A4(2, i, 0xFF, 0xFF, 0);
+
+            switch (gFarmAnimals[i].type) {
+
+                case 0 ... 3:
+                    
+                    func_80086458(i, -10);
+                    func_800861A4(2, i, 0xFF, 0xFF, 0x12);
+                    
+                    gFarmAnimals[i].flags |= 0x8000;
+                    
+                    func_8009BCC4(2, i, 0);
+
+                    if (gFarmAnimals[i].type == 2) {
+                        
+                        if (!(getRandomNumberInRange(0, 7))) {
+                            func_800861A4(2, i, 0xFF, 2, 0xFFU);
+                            func_80086458(i, -20);
+                            gHappiness += adjustValue(gHappiness, -5, 0xFF);
+                        }
+                        
+                    }
+                    
+                    result = TRUE;
+                    
+                    break;
+
+                case 4 ... 6:
+                    
+                    func_80086458(i, -10);
+                    func_800861A4(2, i, 0xFF, 0xFF, 0x12);
+                    
+                    gFarmAnimals[i].flags |= 0x8000;
+                    
+                    func_8009BCC4(2, i, 0);
+                    
+                    result = TRUE;
+                    
+                    break;                    
+                
+            }
+            
+        }
+
+        i++;
+        
+    } while (i < MAX_FARM_ANIMALS && result == FALSE);
+
+    return result;
+    
+}
 
 //INCLUDE_ASM("asm/nonmatchings/game/animals", func_8009AE7C);
 
@@ -4575,13 +4636,91 @@ bool func_8009AE7C(void) {
 
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/animals", func_8009AFB4);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", func_8009AFB4);
+ 
+bool func_8009AFB4(void) {
 
-INCLUDE_ASM("asm/nonmatchings/game/animals", func_8009B068);
+    bool result = FALSE;
+    
+    if (dogInfo.flags & 4) {
 
-INCLUDE_ASM("asm/nonmatchings/game/animals", func_8009B11C);
+        if (dogInfo.unk_17 == 0x20) {
 
-INCLUDE_ASM("asm/nonmatchings/game/animals", func_8009B1BC);
+            dogInfo.unk_17 = 0x22;
+
+            adjustDogAffection(-8);
+
+            dogInfo.flags |= 0x20;
+            func_8009BCC4(0, 0, 0);
+            result = TRUE;
+            
+        }
+        
+    }
+
+    return result;
+    
+}
+
+//INCLUDE_ASM("asm/nonmatchings/game/animals", func_8009B068);
+
+bool func_8009B068(void) {
+    
+    bool result = FALSE;
+    
+    if (horseInfo.flags & 4) {
+
+        if (horseInfo.unk_17 == 0x10) {
+
+            horseInfo.unk_17 = 0x12;
+
+            adjustHorseAffection(-8);
+
+            horseInfo.flags |= 0x20;
+            func_8009BCC4(1, 0, 0);
+            result = TRUE;
+            
+        }
+        
+    }
+
+    return result;
+    
+}
+
+//INCLUDE_ASM("asm/nonmatchings/game/animals", func_8009B11C);
+
+void func_8009B11C(void) {
+
+    if (dogInfo.flags & 4) {
+        dogInfo.flags |= 0x10;
+        dogInfo.unk_17 = 0;
+        setAudio(0x3B);
+    }
+
+    if (!(dogInfo.flags & 0x80)) {
+        adjustDogAffection(1);
+        dogInfo.flags |= 0x80;
+    }
+    
+}
+
+//INCLUDE_ASM("asm/nonmatchings/game/animals", func_8009B1BC);
+
+void func_8009B1BC(void) {
+    
+    if (horseInfo.flags & 4) {
+        horseInfo.flags |= 0x10;
+        horseInfo.unk_17 = 0;
+        setAudio(0x38);
+    }
+    
+    if (!(horseInfo.flags & 0x200)) {
+        adjustHorseAffection(1);
+        horseInfo.flags |= 0x200;
+    }
+    
+}
 
 //INCLUDE_ASM("asm/nonmatchings/game/animals", func_8009B25C);
 
@@ -4704,6 +4843,7 @@ void func_8009B914(u16 arg0) {
 
         default:
             break;
+            
     }
 
     convertNumberToString(0x12, D_801890E0, 0);

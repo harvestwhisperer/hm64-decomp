@@ -76,10 +76,10 @@ void func_800D8540(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/tv", func_800D86D8);
+//INCLUDE_ASM("asm/nonmatchings/game/tv", incrementVarietyShowCounter);
 
 // variety show episode incrementer
-void func_800D86D8(void) {
+void incrementVarietyShowCounter(void) {
     
     switch (gDayOfWeek) {
         

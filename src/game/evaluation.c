@@ -59,8 +59,8 @@ u16 calculateGrassScore(void) {
     u8 j, i;
     u16 score = 0;
 
-    for (i = 0; i < FIELD_WIDTH; i++) {
-        for (j = 0; j < FIELD_HEIGHT; j++) {
+    for (i = 0; i < FIELD_HEIGHT; i++) {
+        for (j = 0; j < FIELD_WIDTH; j++) {
             switch (farmFieldTiles[i][j]) {
                  default:
                     break;
@@ -84,8 +84,8 @@ u16 calculateFieldScore(void) {
     u8 j;
     u16 score = 0;
 
-    for (i = 0; i < FIELD_WIDTH; i++) {
-        for (j = 0; j < FIELD_HEIGHT; j++) {
+    for (i = 0; i < FIELD_HEIGHT; i++) {
+        for (j = 0; j < FIELD_WIDTH; j++) {
             if (farmFieldTiles[i][j] > WEED) {
                 score++;
             } 

@@ -64,8 +64,8 @@ bool func_800B1540(u16, u8);
 bool func_800B1808(u16, u8);
 bool func_800B1994(u16, u8);
 bool func_800B1AC4(u16, u8);
-bool handleCarpenterHutInteractions(u16, u8);
-bool handleDumplingHouseExit(u16, u8);
+bool handleCarpenterHutLevelInteractions(u16, u8);
+bool handleDumplingHouseLevelInteractions(u16, u8);
 bool func_800B1DBC(u16, u8);
 bool func_800B20C8(u16, u8);
 bool func_800B2118(u16, u8);
@@ -76,7 +76,7 @@ bool func_800B24D4(u16, u8);
 bool func_800B256C(u16, u8);
 bool func_800B2604(u16, u8);
 bool func_800B27CC(u16, u8);
-bool handleRanchStoreExits(u16, u8);
+bool handleRanchStoreLevelInteractions(u16, u8);
 bool func_800B2B90(u16, u8);
 bool func_800B2C28(u16, u8);
 bool func_800B2C78(u16, u8);
@@ -86,6 +86,7 @@ bool func_800B2078(u16, u8);
                                                                   
 //INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800ACD70);
 
+// shipping bins
 u8 func_800ACD70(u16 mapIndex) {
 
     u8 result = 0xFF;
@@ -94,7 +95,7 @@ u8 func_800ACD70(u16 mapIndex) {
     
     if ((mapIndex == FARM || mapIndex == COOP || mapIndex == BARN || mapIndex == GREENHOUSE)) {
 
-        temp = getLevelInteractionIndexFromEntityPosition(0, 0, 32.0f);
+        temp = getLevelInteractionIndexFromEntityPosition(ENTITY_PLAYER, 0.0f, 32.0f);
 
         if (temp == 0x10) {
             result = temp;
@@ -115,7 +116,7 @@ u8 func_800ACDF4(u16 mapIndex) {
     
     if (mapIndex == BARN) {
 
-        temp = getLevelInteractionIndexFromEntityPosition(0, 0, 32.0f);
+        temp = getLevelInteractionIndexFromEntityPosition(ENTITY_PLAYER, 0.0f, 32.0f);
         
         if (17 < temp && temp < 27) {
             result = temp;
@@ -135,7 +136,7 @@ bool func_800ACE50(u16 mapIndex) {
     
     if (mapIndex == COOP) {
         
-        temp = getLevelInteractionIndexFromEntityPosition(0, 0, 32.0f);
+        temp = getLevelInteractionIndexFromEntityPosition(ENTITY_PLAYER, 0.0f, 32.0f);
 
         if (18 < temp && temp < 25) {
             result = temp;
@@ -144,6 +145,7 @@ bool func_800ACE50(u16 mapIndex) {
     }
     
     return result;
+
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800ACEAC);
@@ -154,12 +156,12 @@ u8 func_800ACEAC(u16 mapIndex) {
     
     if (mapIndex == FARM) {
 
-        // for reference
+        // autodecomp of ternany for reference
         // -(cVar1 != '\x17') | 1;
-        //result = -(getLevelInteractionIndexFromEntityPosition(0, 0, 32.0f) != 0x17) | 1;
-        //result = -((getLevelInteractionIndexFromEntityPosition(0, 0, 32.0f) != 0x17) ? 1 : 0) | 1;        
+        //result = -(getLevelInteractionIndexFromEntityPosition(ENTITY_PLAYER, 0.0f, 32.0f) != 0x17) | 1;
+        //result = -((getLevelInteractionIndexFromEntityPosition(ENTITY_PLAYER, 0.0f, 32.0f) != 0x17) ? 1 : 0) | 1;        
 
-        result = getLevelInteractionIndexFromEntityPosition(0, 0, 32.0f) == 0x17 ? 1 : 0xFF;
+        result = getLevelInteractionIndexFromEntityPosition(ENTITY_PLAYER, 0.0f, 32.0f) == 0x17 ? 1 : 0xFF;
 
     }
 
@@ -168,6 +170,7 @@ u8 func_800ACEAC(u16 mapIndex) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800ACEF8);
 
+// water?
 u8 func_800ACEF8(u16 mapIndex) {
     
     u8 result;
@@ -176,19 +179,19 @@ u8 func_800ACEF8(u16 mapIndex) {
     result = 0xFF;
     
     if (mapIndex == FARM) {
-        temp = getLevelInteractionIndexFromEntityPosition(0, 0.0f, 32.0f);
+        temp = getLevelInteractionIndexFromEntityPosition(ENTITY_PLAYER, 0.0f, 32.0f);
         result = ((0x1A < temp && temp < 0x1D) || temp == 0x1D) == FALSE ? 0xFF : 1;
     }
     
     if (mapIndex == MOUNTAIN_1) {
-        temp = getLevelInteractionIndexFromEntityPosition(0, 0.0f, 32.0f);
+        temp = getLevelInteractionIndexFromEntityPosition(ENTITY_PLAYER, 0.0f, 32.0f);
         if (temp == 0x10 || temp == 0x14) {
             result = TRUE;
         }
     }
     
     if (mapIndex == POND) {
-        if (getLevelInteractionIndexFromEntityPosition(0, 0.0f, 32.0f) == 0x10) {
+        if (getLevelInteractionIndexFromEntityPosition(ENTITY_PLAYER, 0.0f, 32.0f) == 0x10) {
             result = TRUE;
         }
     }
@@ -204,12 +207,12 @@ bool func_800ACFE8(u16 mapIndex) {
     u8 temp;
     
     if (mapIndex == FARM) {
-        temp = getLevelInteractionIndexFromEntityPosition(0, 0, 32.0f);
+        temp = getLevelInteractionIndexFromEntityPosition(ENTITY_PLAYER, 0.0f, 32.0f);
         result = ((0x1A < temp && temp < 0x1D) || temp == 0x1D);
     }
 
     if (mapIndex == GREENHOUSE) {
-        if (getLevelInteractionIndexFromEntityPosition(0, 0, 32.0f) == 0x12) { 
+        if (getLevelInteractionIndexFromEntityPosition(ENTITY_PLAYER, 0.0f, 32.0f) == 0x12) { 
             result = TRUE;
         }
     }
@@ -225,10 +228,11 @@ bool checkWineBarrelInteraction(u16 mapIndex) {
     bool result = FALSE;
     
     if (mapIndex == VINEYARD_CELLAR_BASEMENT) {
-        result = getLevelInteractionIndexFromEntityPosition(0, 0, 32.0f) == 0x11;
+        result = getLevelInteractionIndexFromEntityPosition(ENTITY_PLAYER, 0.0f, 32.0f) == 0x11;
     }
 
     return result;
+
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800AD0C4);
@@ -237,57 +241,59 @@ bool checkWineBarrelInteraction(u16 mapIndex) {
 bool func_800AD0C4(u16 mapIndex) {
 
     bool result = FALSE;
-    u8 object;
+    u8 levelInteractionIndex;
     
     if (mapIndex == MOUNTAIN_1) {
 
-        object = getLevelInteractionIndexFromEntityPosition(0, 0, 64.0f);
+        levelInteractionIndex = getLevelInteractionIndexFromEntityPosition(ENTITY_PLAYER, 0.0f, 64.0f);
 
-        if (object == 0x10 || object == 0x14) {
+        if (levelInteractionIndex == 0x10 || levelInteractionIndex == 0x14) {
             gPlayer.fatigue.unk_3 = 0;
             result = TRUE;
         }
         
-        if (object == 0x12) {
+        if (levelInteractionIndex == 0x12) {
             gPlayer.fatigue.unk_3 = 1;
             result = TRUE;
         }
+
     }
     
     if (mapIndex == MOUNTAIN_2) {
-        if (getLevelInteractionIndexFromEntityPosition(0, 0, 64.0f) == 0x10) {
+        if (getLevelInteractionIndexFromEntityPosition(ENTITY_PLAYER, 0.0f, 64.0f) == 0x10) {
             gPlayer.fatigue.unk_3 = 2;
             result = TRUE;
         }
     }
     
     if (mapIndex == BEACH) {
-        if (getLevelInteractionIndexFromEntityPosition(0, 0, 64.0f) == 0x10) {
+        if (getLevelInteractionIndexFromEntityPosition(ENTITY_PLAYER, 0.0f, 64.0f) == 0x10) {
             gPlayer.fatigue.unk_3 = 3;
             result = TRUE;
         }
     }
     
     return result;
+    
 } 
 
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800AD1D0);
+//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handleLevelInteraction);
 
-bool func_800AD1D0(u16 mapIndex) {
+bool handleLevelInteraction(u16 mapIndex) {
 
-    bool set;
+    bool canEnter;
     s32 tempExit;
-    u8 temp;
-    u16 temp2;
+    u8 levelInteractionIndex;
+    u16 dialogueInfoIndex;
 
     tempExit = gEntranceIndex;
     
     levelInteractionsInfo.mapAdditionsIndex = 0xFF;
     levelInteractionsInfo.interactionSfxIndex = 0xFF;
 
-    temp = getLevelInteractionIndexFromEntityPosition(0, 0, 32.0f);
+    levelInteractionIndex = getLevelInteractionIndexFromEntityPosition(ENTITY_PLAYER, 0.0f, 32.0f);
 
-    D_80189826 = temp;
+    D_80189826 = levelInteractionIndex;
     
     if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
         D_801C3E2C = D_80189826;
@@ -295,157 +301,160 @@ bool func_800AD1D0(u16 mapIndex) {
         D_801C3E2C = 0xFF;
     }
 
-    set = FALSE;
+    canEnter = FALSE;
     
-    if (temp) {
+    if (levelInteractionIndex) {
+
         switch (mapIndex) {
+
             case FARM:
-                set = func_800AD8D0(mapIndex, temp);
+                canEnter = func_800AD8D0(mapIndex, levelInteractionIndex);
                 break;
             case HOUSE:
-                set = func_800ADCDC(mapIndex, temp);
+                canEnter = func_800ADCDC(mapIndex, levelInteractionIndex);
                 break;
             case BARN:
-                set = func_800AE00C(mapIndex, temp);
+                canEnter = func_800AE00C(mapIndex, levelInteractionIndex);
                 break;
             case COOP:
-                set = func_800AEB54(mapIndex, temp);
+                canEnter = func_800AEB54(mapIndex, levelInteractionIndex);
                 break;
             case KITCHEN:
-                set = func_800AED60(mapIndex, temp);
+                canEnter = func_800AED60(mapIndex, levelInteractionIndex);
                 break;
             case BATHROOM:
-                set = func_800AEE8C(mapIndex, temp);
+                canEnter = func_800AEE8C(mapIndex, levelInteractionIndex);
                 break;
             case GREENHOUSE:
-                set = func_800AF060(mapIndex, temp);
+                canEnter = func_800AF060(mapIndex, levelInteractionIndex);
                 break;
             case VILLAGE_1:
-                set = func_800AF0B0(mapIndex, temp);
+                canEnter = func_800AF0B0(mapIndex, levelInteractionIndex);
                 break;
             case FLOWER_SHOP:
-                set = func_800AF494(mapIndex, temp);
+                canEnter = func_800AF494(mapIndex, levelInteractionIndex);
                 break;
             case POPURI_ROOM:
-                set = func_800AFA2C(mapIndex, temp);
+                canEnter = func_800AFA2C(mapIndex, levelInteractionIndex);
                 break;
             case BAKERY:
-                set = func_800AFA7C(mapIndex, temp);
+                canEnter = func_800AFA7C(mapIndex, levelInteractionIndex);
                 break;
             case ELLI_ROOM:
-                set = func_800AFCD0(mapIndex, temp);
+                canEnter = func_800AFCD0(mapIndex, levelInteractionIndex);
                 break;
             case RICK_STORE:
-                set = func_800AFD20(mapIndex, temp);
+                canEnter = func_800AFD20(mapIndex, levelInteractionIndex);
                 break;
             case SOUVENIR_SHOP:
-                set = func_800AFF9C(mapIndex, temp);
+                canEnter = func_800AFF9C(mapIndex, levelInteractionIndex);
                 break;
             case CHURCH:
-                set = func_800B00E0(mapIndex, temp);
+                canEnter = func_800B00E0(mapIndex, levelInteractionIndex);
                 break;
             case TAVERN:
-                set = func_800B01EC(mapIndex, temp);
+                canEnter = func_800B01EC(mapIndex, levelInteractionIndex);
                 break;
             case VILLAGE_2:
-                set = func_800B0378(mapIndex, temp);
+                canEnter = func_800B0378(mapIndex, levelInteractionIndex);
                 break;
             case LIBRARY:
-                set = func_800B0714(mapIndex, temp);
+                canEnter = func_800B0714(mapIndex, levelInteractionIndex);
                 break;
             case MIDWIFE_HOUSE:
-                set = func_800B0A64(mapIndex, temp);
+                canEnter = func_800B0A64(mapIndex, levelInteractionIndex);
                 break;
             case MAYOR_HOUSE:
-                set = func_800B0AFC(mapIndex, temp);
+                canEnter = func_800B0AFC(mapIndex, levelInteractionIndex);
                 break;
             case MARIA_ROOM:
-                set = func_800B0C48(mapIndex, temp);
+                canEnter = func_800B0C48(mapIndex, levelInteractionIndex);
                 break;
             case POTION_SHOP:
-                set = func_800B0C98(mapIndex, temp);
+                canEnter = func_800B0C98(mapIndex, levelInteractionIndex);
                 break;
             case POTION_SHOP_BEDROOM:
-                set = func_800B0FB8(mapIndex, temp);
+                canEnter = func_800B0FB8(mapIndex, levelInteractionIndex);
                 break;
             case SQUARE:
-                set = func_800B106C(mapIndex, temp);
+                canEnter = func_800B106C(mapIndex, levelInteractionIndex);
                 break;
             case MOUNTAIN_1:
-                set = func_800B1438(mapIndex, temp);
+                canEnter = func_800B1438(mapIndex, levelInteractionIndex);
                 break;
             case MOUNTAIN_2:
-                set = func_800B1540(mapIndex, temp);
+                canEnter = func_800B1540(mapIndex, levelInteractionIndex);
                 break;
             case TOP_OF_MOUNTAIN_1:
-                set = func_800B1808(mapIndex, temp);
+                canEnter = func_800B1808(mapIndex, levelInteractionIndex);
                 break;
             case MOON_MOUNTAIN:
-                set = func_800B1994(mapIndex, temp);
+                canEnter = func_800B1994(mapIndex, levelInteractionIndex);
                 break;
             case ROAD:
-                set = func_800B1AC4(mapIndex, temp);
+                canEnter = func_800B1AC4(mapIndex, levelInteractionIndex);
                 break;
             case CARPENTER_HUT:
-                set = handleCarpenterHutInteractions(mapIndex, temp);
+                canEnter = handleCarpenterHutLevelInteractions(mapIndex, levelInteractionIndex);
                 break;
             case DUMPLING_HOUSE:
-                set = handleDumplingHouseExit(mapIndex, temp);
+                canEnter = handleDumplingHouseLevelInteractions(mapIndex, levelInteractionIndex);
                 break;
             case CAVE:
-                set = func_800B1DBC(mapIndex, temp);
+                canEnter = func_800B1DBC(mapIndex, levelInteractionIndex);
                 break;
             case POND:
-                set = func_800B20C8(mapIndex, temp);
+                canEnter = func_800B20C8(mapIndex, levelInteractionIndex);
                 break;
             case VINEYARD:
-                set = func_800B2118(mapIndex, temp);
+                canEnter = func_800B2118(mapIndex, levelInteractionIndex);
                 break;
             case VINEYARD_HOUSE:
-                set = func_800B2264(mapIndex, temp);
+                canEnter = func_800B2264(mapIndex, levelInteractionIndex);
                 break;
             case KAREN_ROOM:
-                set = func_800B2340(mapIndex, temp);
+                canEnter = func_800B2340(mapIndex, levelInteractionIndex);
                 break;
             case VINEYARD_CELLAR:
-                set = func_800B23A4(mapIndex, temp);
+                canEnter = func_800B23A4(mapIndex, levelInteractionIndex);
                 break;
             case VINEYARD_CELLAR_BASEMENT:
-                set = func_800B24D4(mapIndex, temp);
+                canEnter = func_800B24D4(mapIndex, levelInteractionIndex);
                 break;
             case RACE_TRACK:
-                set = func_800B256C(mapIndex, temp);
+                canEnter = func_800B256C(mapIndex, levelInteractionIndex);
                 break;
             case RANCH:
-                set = func_800B2604(mapIndex, temp);
+                canEnter = func_800B2604(mapIndex, levelInteractionIndex);
                 break;
             case RANCH_HOUSE:
-                set = func_800B27CC(mapIndex, temp);
+                canEnter = func_800B27CC(mapIndex, levelInteractionIndex);
                 break;
             case RANCH_STORE:
-                set = handleRanchStoreExits(mapIndex, temp);
+                canEnter = handleRanchStoreLevelInteractions(mapIndex, levelInteractionIndex);
                 break;
             case ANN_ROOM:
-                set = func_800B2B90(mapIndex, temp);
+                canEnter = func_800B2B90(mapIndex, levelInteractionIndex);
                 break;
             case RANCH_BARN:
-                set = func_800B2C28(mapIndex, temp);
+                canEnter = func_800B2C28(mapIndex, levelInteractionIndex);
                 break;
             case BEACH:
-                set = func_800B2C78(mapIndex, temp);
+                canEnter = func_800B2C78(mapIndex, levelInteractionIndex);
                 break;
             case HARVEST_SPRITE_CAVE:
-                set = func_800B1EE4(mapIndex, temp);
+                canEnter = func_800B1EE4(mapIndex, levelInteractionIndex);
                 break;
             case MINE:
-                set = func_800B2078(mapIndex, temp);
+                canEnter = func_800B2078(mapIndex, levelInteractionIndex);
                 break;
             default:
                 break;
+
         }
     }
 
-    if (set == 1) {
+    if (canEnter == 1) {
         setPlayerAction(0, 0);
     }
 
@@ -457,41 +466,41 @@ bool func_800AD1D0(u16 mapIndex) {
         
         if (!(gPlayer.flags & 1)) {
             
-            temp2 = func_80074C50(gEntranceIndex);
+            dialogueInfoIndex = func_80074C50(gEntranceIndex);
          
             if (gEntranceIndex == 0x5F) {
                 if (!checkLifeEventBit(MARRIED)) {
                     if (gSeason == WINTER) {
                         if (gDayOfMonth == 24 && (18 < gHour && gHour < 21)) {
-                            temp2 = 0xFFFF;
+                            dialogueInfoIndex = 0xFFFF;
                         }
                         if (gSeason == WINTER && gDayOfMonth == 30 && (17 < gHour && gHour < 24)) {
-                            temp2 = 0xFFFF;
+                            dialogueInfoIndex = 0xFFFF;
                         }
                     }
                 } else {
                     if (gSeason == WINTER && gDayOfMonth == 30 && (17 < gHour && gHour < 24)) {
-                        temp2 = 0xFFFF;
+                        dialogueInfoIndex = 0xFFFF;
                     }
                 }
             }
             if ((gEntranceIndex == 0x59 || gEntranceIndex == 0x5B) && !checkLifeEventBit(MARRIED) && gSeason == SUMMER && gDayOfMonth == 1 && (18 < gHour && gHour < 21)) {
-                temp2 = 0xFFFF;
+                dialogueInfoIndex = 0xFFFF;
             }
     
-            if (temp2 == 0xFFFF) {
+            if (dialogueInfoIndex == 0xFFFF) {
 
                 if (levelInteractionsInfo.mapAdditionsIndex != 0xFF) {
                     func_80038990(0, levelInteractionsInfo.mapAdditionsIndex, 0);
                 }
                 
                 func_8005C940(8, MAP_LOAD);
-                return set;
+                return canEnter;
                 
             } else {
                 switch (getMapFromExit(gEntranceIndex)) {                           
                     case KAREN_ROOM:                                  
-                        showTextBox(0, 6, temp2, 0, 0);
+                        showTextBox(0, 6, dialogueInfoIndex, 0, 0);
                         setPlayerAction(0xF, 0);
                         gPlayer.actionTimer = 0x20;
                         gPlayer.unk_6E = 6;
@@ -500,10 +509,10 @@ bool func_800AD1D0(u16 mapIndex) {
                     case MARIA_ROOM:                                
                     case ANN_ROOM:                                  
                     case ELLI_ROOM:                    
-                        showTextBox(0, 6, temp2, 0, 0);
+                        showTextBox(0, 6, dialogueInfoIndex, 0, 0);
                         break;
                     default:            
-                        showTextBox(1, 6, temp2, 0, 2);
+                        showTextBox(1, 6, dialogueInfoIndex, 0, 2);
                         break;
                     }
                     
@@ -511,26 +520,26 @@ bool func_800AD1D0(u16 mapIndex) {
             }
 
         } else {
-            set = FALSE;
+            canEnter = FALSE;
         }
         
         gEntranceIndex = tempExit;
         
     } 
     
-    return set;
+    return canEnter;
 
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800AD8D0);
 
 // farm
-bool func_800AD8D0(u16 mapIndex, u8 arg1) {
+bool func_800AD8D0(u16 mapIndex, u8 levelInteractionIndex) {
 
     bool result = FALSE;
     u8 temp;
     
-    switch (arg1) {
+    switch (levelInteractionIndex) {
 
         case 1:
         case 2:
@@ -627,18 +636,24 @@ bool func_800AD8D0(u16 mapIndex, u8 arg1) {
 
             break;
         
+        // lumber storage
         case 17:
 
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
+
                 if (gPlayer.heldItem == 0) {
+                
                     if (!(gPlayer.flags & 1)) {
+                    
                         if (gLumber != 0) {
                             gPlayer.heldItem = 3;
                             setPlayerAction(4, 6);
-                            gLumber += adjustValue(gLumber, -1, 0x3E7);
+                            gLumber += adjustValue(gLumber, -1, MAX_LUMBER);
                             result = 2;
                         }
+
                     }
+
                 }
             }
 
@@ -653,8 +668,10 @@ bool func_800AD8D0(u16 mapIndex, u8 arg1) {
                 temp = func_8006536C(); 
  
                 if (temp != 0xFF) {
+
                     setAlbumPicture(temp);
                     showTextBox(1, 5, func_80063A2C(temp), 0, 2);
+                    
                     if (temp == 0x23) {
                         acquireKeyItem(GOLD_PENDANT);
                         setSpecialDialogueBit(HAVE_GOLD_PENDANT);
@@ -704,12 +721,14 @@ bool func_800AD8D0(u16 mapIndex, u8 arg1) {
         case 25:
 
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
+
                 if (!checkHaveKeyItem(TREASURE_MAP)) {
                     showTextBox(1, 6, 0xA7, 0, 2);
                     acquireKeyItem(TREASURE_MAP);
                     result = TRUE;
                     toolUse.unk_F = 0;
                 }
+
             }
 
             break;
@@ -726,11 +745,12 @@ bool func_800AD8D0(u16 mapIndex, u8 arg1) {
 //INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800ADCDC);
 
 // house
-bool func_800ADCDC(u16 mapIndex, u8 arg1) {
+bool func_800ADCDC(u16 mapIndex, u8 levelInteractionIndex) {
 
     bool result = FALSE;
     
-    switch (arg1) {
+    switch (levelInteractionIndex) {
+
         case 1:
             if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 if (gWeather != TYPHOON) {
@@ -739,6 +759,7 @@ bool func_800ADCDC(u16 mapIndex, u8 arg1) {
                 }
             }
             break;     
+
         case 2:
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A) && gWeather != TYPHOON) {
                 levelInteractionsInfo.mapAdditionsIndex = 2;
@@ -751,6 +772,7 @@ bool func_800ADCDC(u16 mapIndex, u8 arg1) {
                 }
             }            
             break;
+
         case 3:
             if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 if (gWeather != TYPHOON) {
@@ -759,12 +781,15 @@ bool func_800ADCDC(u16 mapIndex, u8 arg1) {
                 }
             }
             break;
+
         case 0x10:
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A) && gPlayer.heldItem == 0 && checkLifeEventBit(MAYOR_TOUR) && !checkDailyEventBit(0x15)) {
                 func_8005B09C(0);
                 result = TRUE; 
             }
             break;
+
+        // TV
         case 0x12:
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A) && gPlayer.direction == SOUTH) {
                 func_800B3694();
@@ -775,6 +800,7 @@ bool func_800ADCDC(u16 mapIndex, u8 arg1) {
                 result = 2;
             }
             break;
+
         case 0x13:
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
                 func_80038990(0, 3, 1);
@@ -783,6 +809,7 @@ bool func_800ADCDC(u16 mapIndex, u8 arg1) {
                 result = TRUE;
             }
             break;
+
         case 0x14:
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
                 setMainLoopCallbackFunctionIndex(CALENDAR_LOAD);
@@ -790,6 +817,7 @@ bool func_800ADCDC(u16 mapIndex, u8 arg1) {
                 result = TRUE;
             }
             break;
+
         case 0x15:
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A) != 0) {
                 func_80038990(0, 0xA, 1);
@@ -798,24 +826,38 @@ bool func_800ADCDC(u16 mapIndex, u8 arg1) {
                 result = TRUE;
             }
             break;
+
+        // baby
         case 0x16:
+
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A) && gPlayer.heldItem == 0) {
+
                 if (checkDailyEventBit(0x16)) {
+
                     if (gBabyAge < 30) {
-                        gPlayer.heldItem = 0xBA;             
+
+                        gPlayer.heldItem = 0xBA;
+                        
                         deactivateEntity(npcs[BABY].entityIndex);
                         npcs[BABY].flags &= ~4;
+
                         setPlayerAction(4, 6);
+
                         if (!checkDailyEventBit(0x55)) {
                             npcAffection[BABY] += adjustValue(npcAffection[BABY], 2, MAX_AFFECTION);
                             setDailyEventBit(0x55);
                         }
+                        
                         toggleDailyEventBit(0x16);
                         result = 2;
+
                     }
+
                 }
             }    
+
             break;
+
         case 0x21:
         default:
             break;
@@ -825,16 +867,16 @@ bool func_800ADCDC(u16 mapIndex, u8 arg1) {
     
 }
 
-// barn
 //INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800AE00C);
 
-u8 func_800AE00C(u16 mapIndex, u8 arg1) {
+// barn
+u8 func_800AE00C(u16 mapIndex, u8 levelInteractionIndex) {
 
     u8 result = 0;
     s32 temp;
     u16 temp2;
 
-    switch (arg1) {
+    switch (levelInteractionIndex) {
         
         case 1:
             
@@ -873,6 +915,7 @@ u8 func_800AE00C(u16 mapIndex, u8 arg1) {
 
                     temp = gFarmAnimals[0].type;
                     
+                    // FIXME: actually a switch
                     if (temp >= 0) {
 
                         if (temp < 4) {
@@ -913,6 +956,7 @@ u8 func_800AE00C(u16 mapIndex, u8 arg1) {
 
                     temp = gFarmAnimals[1].type;
                 
+                    // FIXME: actually a switch
                     if (temp >= 0) {
 
                         if (temp < 4) {
@@ -953,6 +997,7 @@ u8 func_800AE00C(u16 mapIndex, u8 arg1) {
 
                     temp = gFarmAnimals[2].type;
                 
+                    // FIXME: actually a switch
                     if (temp >= 0) {
 
                         if (temp < 4) {
@@ -993,32 +1038,33 @@ u8 func_800AE00C(u16 mapIndex, u8 arg1) {
 
                     temp = gFarmAnimals[3].type;
                     
-                        if (temp >= 0) {
+                    // FIXME: actually a switch
+                    if (temp >= 0) {
 
-                            if (temp < 4) {
-                                
-                                setGlobalSeasonName(gFarmAnimals[3].birthdaySeason);
+                        if (temp < 4) {
                             
-                                gCurrentSeasonName[0] = gGlobalSeasonName[0];
-                                gCurrentSeasonName[1] = gGlobalSeasonName[1];
-                                gCurrentSeasonName[2] = gGlobalSeasonName[2];
-                                gCurrentSeasonName[3] = gGlobalSeasonName[3];
-                                gCurrentSeasonName[4] = gGlobalSeasonName[4];
-                                gCurrentSeasonName[5] = gGlobalSeasonName[5];
+                            setGlobalSeasonName(gFarmAnimals[3].birthdaySeason);
+                        
+                            gCurrentSeasonName[0] = gGlobalSeasonName[0];
+                            gCurrentSeasonName[1] = gGlobalSeasonName[1];
+                            gCurrentSeasonName[2] = gGlobalSeasonName[2];
+                            gCurrentSeasonName[3] = gGlobalSeasonName[3];
+                            gCurrentSeasonName[4] = gGlobalSeasonName[4];
+                            gCurrentSeasonName[5] = gGlobalSeasonName[5];
+                        
+                            convertNumberToString(0x15, gFarmAnimals[3].birthdayDayOfMonth, 1);
+                            func_8009BA74(3);
+                            setGameVariableString(0x26, gFarmAnimals[3].unk_23, 6);
+                            func_80061690(gFarmAnimals[3].goldenMilk);
+                            showTextBox(1, 6, 0xE8, 0, 2);
                             
-                                convertNumberToString(0x15, gFarmAnimals[3].birthdayDayOfMonth, 1);
-                                func_8009BA74(3);
-                                setGameVariableString(0x26, gFarmAnimals[3].unk_23, 6);
-                                func_80061690(gFarmAnimals[3].goldenMilk);
-                                showTextBox(1, 6, 0xE8, 0, 2);
-                                
-                            } else if (temp < 7) {
-                                showTextBox(1, 6, 0xF0, 0, 2);
-                            }
+                        } else if (temp < 7) {
+                            showTextBox(1, 6, 0xF0, 0, 2);
+                        }
 
-                        } 
+                    } 
 
-                        result = 1;
+                    result = 1;
         
                 }
             }
@@ -1032,7 +1078,8 @@ u8 func_800AE00C(u16 mapIndex, u8 arg1) {
                 if (gPlayer.heldItem != FODDER && gFarmAnimals[4].flags & 1) {
 
                     temp = gFarmAnimals[4].type;
-                    
+
+                    // FIXME: actually a switch
                     if (temp >= 0) {
 
                         if (temp < 4) {
@@ -1074,6 +1121,7 @@ u8 func_800AE00C(u16 mapIndex, u8 arg1) {
 
                     temp = gFarmAnimals[5].type;
                     
+                    // FIXME: actually a switch
                     if (temp >= 0) {
 
                         if (temp < 4) {
@@ -1115,6 +1163,7 @@ u8 func_800AE00C(u16 mapIndex, u8 arg1) {
 
                     temp = gFarmAnimals[6].type;
                     
+                    // FIXME: actually a switch
                     if (temp >= 0) {
 
                         if (temp < 4) {
@@ -1155,6 +1204,7 @@ u8 func_800AE00C(u16 mapIndex, u8 arg1) {
 
                     temp = gFarmAnimals[7].type;
                     
+                    // FIXME: actually a switch
                     if (temp >= 0) {
 
                         if (temp < 4) {
@@ -1218,11 +1268,11 @@ u8 func_800AE00C(u16 mapIndex, u8 arg1) {
 //INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800AEB54);
 
 // coop
-bool func_800AEB54(u16 mapIndex, u8 arg1) {
+bool func_800AEB54(u16 mapIndex, u8 levelInteractionIndex) {
 
     bool result = FALSE;
 
-    switch (arg1) {
+    switch (levelInteractionIndex) {
         
         case 1:
             if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
@@ -1300,11 +1350,11 @@ bool func_800AEB54(u16 mapIndex, u8 arg1) {
 //INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800AED60);
 
 // kitchen
-bool func_800AED60(u16 mapIndex, u8 arg1) {
+bool func_800AED60(u16 mapIndex, u8 levelInteractionIndex) {
 
     bool result = FALSE;
 
-    switch (arg1) {
+    switch (levelInteractionIndex) {
         case 1:
             if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = TRUE;
@@ -1350,11 +1400,11 @@ bool func_800AED60(u16 mapIndex, u8 arg1) {
 //INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800AEE8C);
 
 // bathroom
-bool func_800AEE8C(u16 mapIndex, u8 arg1) {
+bool func_800AEE8C(u16 mapIndex, u8 levelInteractionIndex) {
 
     bool result = FALSE;
 
-    switch (arg1) {
+    switch (levelInteractionIndex) {
 
         case 1:
             
@@ -1406,11 +1456,11 @@ bool func_800AEE8C(u16 mapIndex, u8 arg1) {
 //INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800AF060);
 
 // greenhouse
-bool func_800AF060(u16 arg0, u8 arg1) {
+bool func_800AF060(u16 arg0, u8 levelInteractionIndex) {
 
     bool result = FALSE;
 
-    if (arg1 == 1) {
+    if (levelInteractionIndex == 1) {
         if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
             result = TRUE;
             setEntrance(7);
@@ -1423,11 +1473,11 @@ bool func_800AF060(u16 arg0, u8 arg1) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800AF0B0);
 
-bool func_800AF0B0(u16 mapIndex, u8 arg1) {
+bool func_800AF0B0(u16 mapIndex, u8 levelInteractionIndex) {
 
     bool result = FALSE;
 
-    switch (arg1) {
+    switch (levelInteractionIndex) {
         
         case 1:
             if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
@@ -1662,11 +1712,11 @@ bool func_800AF0B0(u16 mapIndex, u8 arg1) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800AF494);
 
-u8 func_800AF494(u16 mapIndex, u8 arg1) {
+u8 func_800AF494(u16 mapIndex, u8 levelInteractionIndex) {
 
     u8 result = 0;
     
-    switch (arg1) {
+    switch (levelInteractionIndex) {
 
         case 1:
 
@@ -1939,11 +1989,11 @@ u8 func_800AF494(u16 mapIndex, u8 arg1) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800AFA2C);
 
-bool func_800AFA2C(u16 mapIndex, u8 arg1) {
+bool func_800AFA2C(u16 mapIndex, u8 levelInteractionIndex) {
     
     bool result = FALSE;
     
-    if (arg1 == 1) {
+    if (levelInteractionIndex == 1) {
         if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
             result = TRUE;
             setEntrance(FLOWER_SHOP_ENTRANCE);
@@ -1956,11 +2006,11 @@ bool func_800AFA2C(u16 mapIndex, u8 arg1) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800AFA7C);
 
-bool func_800AFA7C(u16 mapIndex, u8 arg1) {
+bool func_800AFA7C(u16 mapIndex, u8 levelInteractionIndex) {
 
     bool result = FALSE;
 
-    switch (arg1) {
+    switch (levelInteractionIndex) {
 
         case 1:
             
@@ -2064,11 +2114,11 @@ bool func_800AFA7C(u16 mapIndex, u8 arg1) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800AFCD0);
 
-bool func_800AFCD0(u16 mapIndex, u8 arg1) {
+bool func_800AFCD0(u16 mapIndex, u8 levelInteractionIndex) {
 
     bool result = FALSE;
 
-    if (arg1 == 1) {
+    if (levelInteractionIndex == 1) {
         if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
             result = TRUE;
             setEntrance(0x5A);
@@ -2081,11 +2131,11 @@ bool func_800AFCD0(u16 mapIndex, u8 arg1) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800AFD20);
 
-bool func_800AFD20(u16 mapIndex, u8 arg1) {
+bool func_800AFD20(u16 mapIndex, u8 levelInteractionIndex) {
 
     bool result = FALSE;
 
-    switch (arg1) {
+    switch (levelInteractionIndex) {
 
         case 1:
         
@@ -2221,11 +2271,11 @@ bool func_800AFD20(u16 mapIndex, u8 arg1) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800AFF9C);
 
-u8 func_800AFF9C(u16 arg0, u8 arg1) {
+u8 func_800AFF9C(u16 arg0, u8 levelInteractionIndex) {
 
     u8 result = 0;
     
-    switch (arg1) {
+    switch (levelInteractionIndex) {
 
         case 1:
 
@@ -2280,11 +2330,11 @@ u8 func_800AFF9C(u16 arg0, u8 arg1) {
 //INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800B00E0);
 
 // church
-bool func_800B00E0(u16 mapIndex, u8 arg1) {
+bool func_800B00E0(u16 mapIndex, u8 levelInteractionIndex) {
 
     bool result = FALSE;
 
-    switch (arg1) {
+    switch (levelInteractionIndex) {
 
         case 1:
 
@@ -2331,11 +2381,11 @@ bool func_800B00E0(u16 mapIndex, u8 arg1) {
 //INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800B01EC);
 
 // tavern
-bool func_800B01EC(u16 arg0, u8 arg1) {
+bool func_800B01EC(u16 arg0, u8 levelInteractionIndex) {
 
     bool result = FALSE;
 
-    switch (arg1) {
+    switch (levelInteractionIndex) {
 
         case 1:
 
@@ -2401,11 +2451,11 @@ bool func_800B01EC(u16 arg0, u8 arg1) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800B0378);
 
-bool func_800B0378(u16 mapIndex, u8 arg1) {
+bool func_800B0378(u16 mapIndex, u8 levelInteractionIndex) {
 
     bool result = FALSE;
 
-    switch (arg1) {
+    switch (levelInteractionIndex) {
 
         case 1:
         
@@ -2612,11 +2662,11 @@ bool func_800B0378(u16 mapIndex, u8 arg1) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800B0714);
 
-bool func_800B0714(u16 mapIndex, u8 arg1) {
+bool func_800B0714(u16 mapIndex, u8 levelInteractionIndex) {
 
     bool result = FALSE;
 
-    switch (arg1) {
+    switch (levelInteractionIndex) {
 
         case 1:
 
@@ -2807,11 +2857,11 @@ bool func_800B0714(u16 mapIndex, u8 arg1) {
 //INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800B0A64);
 
 // midwife
-bool func_800B0A64(u16 mapIndex, u8 arg1) {
+bool func_800B0A64(u16 mapIndex, u8 levelInteractionIndex) {
 
     bool result = FALSE;
 
-    switch (arg1) {
+    switch (levelInteractionIndex) {
 
         case 1:
 
@@ -2839,11 +2889,11 @@ bool func_800B0A64(u16 mapIndex, u8 arg1) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800B0AFC);
 
-bool func_800B0AFC(u16 mapIndex, u8 arg1) {
+bool func_800B0AFC(u16 mapIndex, u8 levelInteractionIndex) {
 
     bool result = FALSE;
 
-    switch (arg1) {
+    switch (levelInteractionIndex) {
 
         case 1:
 
@@ -2902,11 +2952,11 @@ bool func_800B0AFC(u16 mapIndex, u8 arg1) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800B0C48);
 
-bool func_800B0C48(u16 mapIndex, u8 arg1) {
+bool func_800B0C48(u16 mapIndex, u8 levelInteractionIndex) {
 
    bool result = FALSE;
 
-    switch (arg1) {
+    switch (levelInteractionIndex) {
         case 1:
 
             if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
@@ -2924,11 +2974,11 @@ bool func_800B0C48(u16 mapIndex, u8 arg1) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800B0C98);
 
-u8 func_800B0C98(u16 mapIndex, u8 arg1) {
+u8 func_800B0C98(u16 mapIndex, u8 levelInteractionIndex) {
 
     bool result = 0;
 
-    switch (arg1) {
+    switch (levelInteractionIndex) {
 
         case 1:
 
@@ -3078,11 +3128,11 @@ u8 func_800B0C98(u16 mapIndex, u8 arg1) {
 //INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800B0FB8);
 
 // potion shop bedroom
-bool func_800B0FB8(u16 mapIndex, u8 arg1) {
+bool func_800B0FB8(u16 mapIndex, u8 levelInteractionIndex) {
 
     bool result = FALSE;
 
-    switch (arg1) {
+    switch (levelInteractionIndex) {
 
         case 1:
             if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
@@ -3121,12 +3171,12 @@ bool func_800B0FB8(u16 mapIndex, u8 arg1) {
 
 // square
 // FIXME: lots of unnecessary gotos
-u8 func_800B106C(u16 mapIndex, u8 arg1) {
+u8 func_800B106C(u16 mapIndex, u8 levelInteractionIndex) {
 
     u8 result = 0;
     u8 temp;
 
-    switch (arg1) {
+    switch (levelInteractionIndex) {
 
         case 1:
 
@@ -3191,7 +3241,7 @@ label4:
                         }
                         
                     } else {
-                        func_80046C98();
+                        pauseAllCutsceneExecutors();
                         setMainLoopCallbackFunctionIndex(0x21);
                     }
                     
@@ -3201,7 +3251,7 @@ label2:
                     
                 } else {
 label:
-                    func_80046C98();
+                    pauseAllCutsceneExecutors();
                     setMainLoopCallbackFunctionIndex(0x21);
                     
                 }
@@ -3221,7 +3271,7 @@ label:
                 } else if (overlayScreenStrings.unk_6A == 3) {
                     showTextBox(0, 4, 8, 0, 0);
                 } else if (!overlayScreenStrings.unk_6D[overlayScreenStrings.unk_6A]) {
-                    func_80046C98();
+                    pauseAllCutsceneExecutors();
                     setMainLoopCallbackFunctionIndex(0x1F);
                 } else {
                     showTextBox(0, 4, 7, 0, 0);
@@ -3240,7 +3290,7 @@ label:
                 if (gPlayer.heldItem == 0) {
                 
                     if (checkShopItemShouldBeDisplayed(0x35)) {
-                        func_80046C98();
+                        pauseAllCutsceneExecutors();
                         func_800DC9FC(0x35);
                     }
                     
@@ -3274,13 +3324,13 @@ label:
                     if (gPlayer.heldItem == 0) {
                     
                         if (checkShopItemShouldBeDisplayed(0x36)) {
-                            func_80046C98();
+                            pauseAllCutsceneExecutors();
                             func_800DC9FC(0x36);
                             goto label5;
                         }
                         
                         if (checkShopItemShouldBeDisplayed(0x37)) {
-                            func_80046C98();   
+                            pauseAllCutsceneExecutors();   
                             func_800DC9FC(0x37);
 label5:
                         }
@@ -3305,11 +3355,11 @@ label5:
 //INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800B1438);
 
 // mountain 1
-bool func_800B1438(u16 mapIndex, u8 arg1) {
+bool func_800B1438(u16 mapIndex, u8 levelInteractionIndex) {
 
     bool result = FALSE;
 
-    switch (arg1) {
+    switch (levelInteractionIndex) {
 
         case 1:
 
@@ -3353,11 +3403,11 @@ bool func_800B1438(u16 mapIndex, u8 arg1) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800B1540);
 
-u8 func_800B1540(u16 mapIndex, u8 arg1) {
+u8 func_800B1540(u16 mapIndex, u8 levelInteractionIndex) {
 
     u8 result = 0;
     
-    switch (arg1) {
+    switch (levelInteractionIndex) {
         
         case 1:
 
@@ -3509,11 +3559,11 @@ u8 func_800B1540(u16 mapIndex, u8 arg1) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800B1808);
 
-u8 func_800B1808(u16 mapIndex, u8 arg1) {
+u8 func_800B1808(u16 mapIndex, u8 levelInteractionIndex) {
 
     bool result = 0;
 
-    switch (arg1) {
+    switch (levelInteractionIndex) {
 
         case 1:
 
@@ -3584,11 +3634,11 @@ u8 func_800B1808(u16 mapIndex, u8 arg1) {
 //INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800B1994);
 
 // moon mountain
-bool func_800B1994(u16 mapIndex, u8 arg1) {
+bool func_800B1994(u16 mapIndex, u8 levelInteractionIndex) {
 
     bool result = FALSE;
 
-    switch (arg1) {
+    switch (levelInteractionIndex) {
 
         case 1:
             if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) { 
@@ -3631,11 +3681,11 @@ bool func_800B1994(u16 mapIndex, u8 arg1) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800B1AC4);
 
-bool func_800B1AC4(u16 mapIndex, u8 arg1) {
+bool func_800B1AC4(u16 mapIndex, u8 levelInteractionIndex) {
 
     bool result = FALSE;
 
-    switch (arg1) {
+    switch (levelInteractionIndex) {
 
         case 1:
 
@@ -3734,13 +3784,13 @@ bool func_800B1AC4(u16 mapIndex, u8 arg1) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handleCarpenterHutInteractions);
+//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handleCarpenterHutLevelInteractions);
 
-bool handleCarpenterHutInteractions(u16 mapIndex, u8 arg1) {
+bool handleCarpenterHutLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
     bool result = FALSE;
     
-    switch (arg1) {
+    switch (levelInteractionIndex) {
         
         case 1:
 
@@ -3782,13 +3832,13 @@ bool handleCarpenterHutInteractions(u16 mapIndex, u8 arg1) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handleDumplingHouseExit);
+//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handleDumplingHouseLevelInteractions);
 
-bool handleDumplingHouseExit(u16 mapIndex, u8 arg1) {
+bool handleDumplingHouseLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
     bool result = FALSE;
 
-    switch (arg1) {
+    switch (levelInteractionIndex) {
 
         case 1:
 
@@ -3807,11 +3857,11 @@ bool handleDumplingHouseExit(u16 mapIndex, u8 arg1) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800B1DBC);
 
-bool func_800B1DBC(u16 mapIndex, u8 arg1) {
+bool func_800B1DBC(u16 mapIndex, u8 levelInteractionIndex) {
 
     bool result = FALSE;
 
-    switch (arg1) {
+    switch (levelInteractionIndex) {
 
         case 1:
 
@@ -3854,11 +3904,11 @@ bool func_800B1DBC(u16 mapIndex, u8 arg1) {
 //INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800B1EE4);
 
 // harvest sprite cave
-bool func_800B1EE4(u16 mapIndex, u8 arg1) {
+bool func_800B1EE4(u16 mapIndex, u8 levelInteractionIndex) {
 
     bool result = FALSE;
 
-    switch (arg1) {
+    switch (levelInteractionIndex) {
 
         case 1:
 
@@ -3920,11 +3970,11 @@ bool func_800B1EE4(u16 mapIndex, u8 arg1) {
 //INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800B2078);
 
 // mine
-bool func_800B2078(u16 mapIndex, u8 arg1) {
+bool func_800B2078(u16 mapIndex, u8 levelInteractionIndex) {
 
     bool result = FALSE;
 
-    switch (arg1) {
+    switch (levelInteractionIndex) {
         
         case 1:
 
@@ -3944,11 +3994,11 @@ bool func_800B2078(u16 mapIndex, u8 arg1) {
 //INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800B20C8);
 
 // pond
-bool func_800B20C8(u16 mapIndex, u8 arg1) {
+bool func_800B20C8(u16 mapIndex, u8 levelInteractionIndex) {
     
     bool result = FALSE;
 
-    switch (arg1) {
+    switch (levelInteractionIndex) {
         
         case 1:
 
@@ -3968,11 +4018,11 @@ bool func_800B20C8(u16 mapIndex, u8 arg1) {
 // vineyard
 //INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800B2118);
 
-bool func_800B2118(u16 mapIndex, u8 arg1) {
+bool func_800B2118(u16 mapIndex, u8 levelInteractionIndex) {
 
     bool result = FALSE;
 
-    switch (arg1) {
+    switch (levelInteractionIndex) {
 
         case 1:
 
@@ -4030,11 +4080,11 @@ bool func_800B2118(u16 mapIndex, u8 arg1) {
 //INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800B2264);
 
 // vineyard house
-bool func_800B2264(u16 mapIndex, u8 arg1) {
+bool func_800B2264(u16 mapIndex, u8 levelInteractionIndex) {
 
     bool result = FALSE;
 
-    switch (arg1) {
+    switch (levelInteractionIndex) {
 
         case 1:
 
@@ -4070,11 +4120,11 @@ bool func_800B2264(u16 mapIndex, u8 arg1) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800B2340);
 
-bool func_800B2340(u16 mapIndex, u8 arg1) {
+bool func_800B2340(u16 mapIndex, u8 levelInteractionIndex) {
 
     bool result = FALSE;    
     
-    switch (arg1) {
+    switch (levelInteractionIndex) {
 
         case 1:
         
@@ -4098,11 +4148,11 @@ bool func_800B2340(u16 mapIndex, u8 arg1) {
 //INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800B23A4);
 
 // vineyard cellar
-bool func_800B23A4(u16 mapIndex, u8 arg1) {
+bool func_800B23A4(u16 mapIndex, u8 levelInteractionIndex) {
 
     bool result = FALSE;
     
-    switch (arg1) {
+    switch (levelInteractionIndex) {
 
         case 1:
 
@@ -4149,11 +4199,11 @@ bool func_800B23A4(u16 mapIndex, u8 arg1) {
 //INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800B24D4);
 
 // vineyard cellar basement
-bool func_800B24D4(u16 mapIndex, u8 arg1) {
+bool func_800B24D4(u16 mapIndex, u8 levelInteractionIndex) {
 
     bool result = FALSE; 
 
-    switch (arg1) {
+    switch (levelInteractionIndex) {
 
         case 1:
             
@@ -4182,11 +4232,11 @@ bool func_800B24D4(u16 mapIndex, u8 arg1) {
 //INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800B256C);
 
 // race track
-bool func_800B256C(u16 mapIndex, u8 arg1) {
+bool func_800B256C(u16 mapIndex, u8 levelInteractionIndex) {
 
     bool result = FALSE; 
     
-    switch (arg1) {
+    switch (levelInteractionIndex) {
         case 1:
             result = TRUE;
             setEntrance(0x62);
@@ -4211,11 +4261,11 @@ bool func_800B256C(u16 mapIndex, u8 arg1) {
 //INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800B2604);
 
 // FIXME: gotos
-bool func_800B2604(u16 mapIndex, u8 arg1) {
+bool func_800B2604(u16 mapIndex, u8 levelInteractionIndex) {
 
     bool result = FALSE;
     
-    switch (arg1) {
+    switch (levelInteractionIndex) {
 
         case 1:
 
@@ -4355,9 +4405,9 @@ bool func_800B27CC(u16 mapIndex, u8 collisionIndex) {
     return result;
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handleRanchStoreExits);
+//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handleRanchStoreLevelInteractions);
 
-u8 handleRanchStoreExits(u16 mapIndex, u8 collisionIndex) {
+u8 handleRanchStoreLevelInteractions(u16 mapIndex, u8 collisionIndex) {
 
     u8 result = 0;
     
@@ -4483,11 +4533,11 @@ u8 handleRanchStoreExits(u16 mapIndex, u8 collisionIndex) {
 //INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800B2B90);
 
 // ann's room
-bool func_800B2B90(u16 mapIndex, u8 arg1) {
+bool func_800B2B90(u16 mapIndex, u8 levelInteractionIndex) {
 
     bool result = FALSE; 
 
-    switch (arg1) {
+    switch (levelInteractionIndex) {
 
         case 1:
 
@@ -4516,11 +4566,11 @@ bool func_800B2B90(u16 mapIndex, u8 arg1) {
 //INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800B2C28);
 
 // ranch barn
-bool func_800B2C28(u16 mapIndex, u8 arg1) {
+bool func_800B2C28(u16 mapIndex, u8 levelInteractionIndex) {
 
     bool result = FALSE;    
 
-    if (arg1 == 1) {
+    if (levelInteractionIndex == 1) {
         if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
             result = TRUE;
             setEntrance(0x2D);
@@ -4534,11 +4584,11 @@ bool func_800B2C28(u16 mapIndex, u8 arg1) {
 //INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800B2C78);
 
 // beach
-bool func_800B2C78(u16 mapIndex, u8 arg1) {
+bool func_800B2C78(u16 mapIndex, u8 levelInteractionIndex) {
 
     bool result = FALSE;    
     
-    switch (arg1) {
+    switch (levelInteractionIndex) {
 
         case 1:
             break;

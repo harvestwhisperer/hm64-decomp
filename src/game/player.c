@@ -19,8 +19,10 @@
 #include "mainproc.h"
 #include "game/fieldObjects.h"
 #include "game/npc.h"
+#include "game/setCutscenes.h"
 #include "game/shop.h"
 #include "game/spriteInfo.h"
+#include "game/weather.h"
  
 // forward declaration
 u8 func_80067A24(u8);                 
@@ -41,19 +43,19 @@ extern u8 gToolchestSlots[];
 extern u8 D_8018A724;
 extern u8 D_801A8B5C;
 
+
 extern u32 totalFishCaught;
 
 // data
 extern Vec3f playerDefaultStartingCoordinates[];
 // = { -352.0f, 0.0f, -16.0f }
-
-// data
 extern u8 playerDefaultStartingDirections[73];
+extern volatile u8 D_8011421C[10][3];
 
 // rodata
 extern const s8 D_8011F3F0[12];
 extern const s8 D_8011F3FC[12]; 
-extern const u8 D_8011F5D4[];
+static const u8 D_8011F5D4[];
 
 // forward declarations
 void func_80067BC4(void);
@@ -449,7 +451,7 @@ void func_80065F5C(void) {
 
 Vec3f func_80065F94(f32 arg1, u8 arg2) {
     
-    Vec3f vec;
+    Vec3f tileCoordinates;
 
     s8 buffer[10];
     s8 buffer2[10];
@@ -457,23 +459,24 @@ Vec3f func_80065F94(f32 arg1, u8 arg2) {
     memcpy(buffer, D_8011F3F0, 9);
     memcpy(buffer2, D_8011F3FC, 9);
     
-    vec = func_800315A0(ENTITY_PLAYER);
+    tileCoordinates = getEntityTileCoordinates(ENTITY_PLAYER);
 
-    if (vec.y != 65535.0f) {
+    if (tileCoordinates.y != 65535.0f) {
 
-        vec.x += buffer[convertWorldToSpriteDirection(entities[PLAYER].direction, gMainMapIndex)] * arg1;
-        vec.z += buffer2[convertWorldToSpriteDirection(entities[PLAYER].direction, gMainMapIndex)] * arg1;
+        tileCoordinates.x += buffer[convertWorldToSpriteDirection(entities[PLAYER].direction, gMainMapIndex)] * arg1;
+        tileCoordinates.z += buffer2[convertWorldToSpriteDirection(entities[PLAYER].direction, gMainMapIndex)] * arg1;
 
+        // rotation
         if (arg2 != 8) {
             
             // TODO: is this a separate macro?
-            vec.x += buffer[((entities[PLAYER].direction + getCurrentMapRotation(gMainMapIndex) + arg2) % 8)];
-            vec.z += buffer2[((entities[PLAYER].direction + getCurrentMapRotation(gMainMapIndex) + arg2) % 8)];
+            tileCoordinates.x += buffer[((entities[PLAYER].direction + getCurrentMapRotation(gMainMapIndex) + arg2) % 8)];
+            tileCoordinates.z += buffer2[((entities[PLAYER].direction + getCurrentMapRotation(gMainMapIndex) + arg2) % 8)];
             
         }
     }
 
-    return vec;
+    return tileCoordinates;
     
 }
 
@@ -494,7 +497,7 @@ Vec3f* func_80065F94(Vec3f *arg0, f32 arg1, u8 arg2) {
     ptr = (s8*)&struct1;
     ptr2 = (s8*)&struct2;
 
-    func_800315A0(&vec, 0);
+    getEntityTileCoordinates(&vec, 0);
 
     if (vec.y != 65535.0f) {D_8011F3F0
 
@@ -654,12 +657,11 @@ void func_8006623C(void) {
     }
     
     func_800D7010();
+    // handle tool use
     func_800D0318();
 
 }
 
-// handle button input
-// D_8011F490
 #ifdef PERMUTER
 void func_800664C8(void) {
 
@@ -667,328 +669,220 @@ void func_800664C8(void) {
     Vec3f vec2;
     Vec3f vec3;
     
-    u32 padding[2];
-    
-    u8 temp1;
-    u16 temp2;
+    u8 temp;
     f32 tempF;
     
-    u8 temp3 = 0;
-    u8 temp4;
-    u8 temp5;
-    u8 temp6;
-    u8 tempDirection;
+    u8 horseResult;
+    u8 npcResult;
     
-    bool set = FALSE;
+    u8 direction;
+    u8 groundObjectIndex;
 
-    gPlayer.unk_70 = func_800DAF58(0.6f, 8);
+    bool set;
+
+    set = FALSE;
+    temp = 0;
+
+    gPlayer.groundObjectIndex = getGroundObjectIndexFromPlayerPosition(0.6f, 8);
 
     if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
         controllers[CONTROLLER_1].button &= BUTTON_A;
         controllers[CONTROLLER_1].buttonPressed &= BUTTON_A;
     }
+    
+    do {} while (0);
 
-    if (func_800AD1D0(gBaseMapIndex)) {
+    if (handleLevelInteraction(gBaseMapIndex)) {
         set = TRUE;
-        temp3 = 0xFF;
+        temp = 0xFF;
     }
 
     func_800305CC(ENTITY_PLAYER, 0.0f, 8.0f, 0x8000);
 
-    temp1 = func_8009A100();
+    horseResult = func_8009A100();
+    npcResult = func_800858D4();
 
-    // npc interaction
-    temp2 = func_800858D4();
-
-    if (!set && temp2 == 1) {
-
-        temp3 = 0xFF;
-
+    if (!set && npcResult == 1) {
+        temp = 0xFF;
         func_80059334();
-        setMainLoopCallbackFunctionIndex(9);
-
+        setMainLoopCallbackFunctionIndex(DIALOGUE);
         set = TRUE;
-
         resetAction();
-        
     }
 
-    if (!set && temp2 == 2) {
-
-        temp3 = 0xFF;
-
+    if (!set && npcResult == 2) {
+        temp = 0xFF;
         set = TRUE;
-        
-        startNewAction(4, 6);
-    
+        reset();
+        gPlayer.currentAction = 4;
+        gPlayer.nextAction = 6;
     }
 
     if (!set) {
-
         if (func_80086764()) {
-
             set = TRUE;
-            temp3 = 0xFF;
-            
+            temp = 0xFF;
         }
-        
     }
 
     if (!set) {
-        
-        if (!(gPlayer.flags & 1)) {
-
-            if (func_800D5B30()) {
-                
-                set = TRUE;
-                temp3 = 0xFF;
-
-                startNewAction(4, 6);
-                
-            }
-            
+        if (!(gPlayer.flags & 1) && func_800D5B30()) {
+            set = TRUE;
+            temp = 0xFF;
+            reset();
+            gPlayer.currentAction = 4;
+            gPlayer.nextAction = 6;
         }
-        
     }
 
     if (!set) {
+        if (gBaseMapIndex == FARM && gPlayer.groundObjectIndex == 6) {
+            if ((getStickYValueUnsigned(CONTROLLER_1) / 1.2f) > 4.6) {
+                
+                if (!checkTerrainCollisionInDirection(ENTITY_PLAYER, 0x34, convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX))) {
 
-        if (gBaseMapIndex == FARM) {
+                    vec3 = projectEntityPosition(ENTITY_PLAYER, 0x34, convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX));
 
-            if (gPlayer.unk_70 == 6) {
+                    groundObjectIndex = getGroundObjectIndexFromCoordinates(vec3.x, vec3.z);
 
-                if ((getStickYValueUnsigned(CONTROLLER_1) / 1.2f) > 4.6) {
-                    
-                    if (!checkTerrainCollisionInDirection(ENTITY_PLAYER, 0x34, convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX))) {
-
-                        vec3 = projectEntityPosition(ENTITY_PLAYER, 0x34, convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX));
-
-                        temp6 = func_800DB1BC(vec3.x, vec3.z);
-
-                        if (temp6 == 0xFF || func_800DA978(temp6) & 8) {
-
-                            setDailyEventBit(6);
-                            set = TRUE;
-                            temp3 = 0xFF;
-
-                            startNewAction(0xC, 0xE);
-                                                
-                        }
+                    if (groundObjectIndex == 0xFF || getGroundObjectFlags(groundObjectIndex) & 8) {
                         
-                    } 
-
-                }
-                
+                        setDailyEventBit(6);
+                        set = TRUE;
+                        temp = 0xFF;
+                        startNewAction(0xC, 0xE);
+                        
+                    }
+                    
+                } 
             }
-            
         }
-        
     }
 
     if (!set) {
-
         if (checkButtonPressed(CONTROLLER_1, BUTTON_C_DOWN)) {
-
-            if (gPlayer.heldItem && func_800D5A6C(gPlayer.heldItem) & 1) {
-                
+            if (gPlayer.heldItem && getItemFlags(gPlayer.heldItem) & 1) {
                 set = TRUE;
-
                 startNewAction(6, 8);
-                
             }
-            
         }
-        
     }
 
     if (!checkDailyEventBit(0xD)) {
-
         if (!set) {
-
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
-
-                if (entities[ENTITY_PLAYER].collision > 0 || entities[ENTITY_PLAYER].collision == 0xFFFF) {
-                    
+                
+                if (entities[ENTITY_PLAYER].collision == 0xFFFF || horseResult > 0) {
+                   
                     if (!(gPlayer.flags & 1)) {
-                        
+                    
                         if (gPlayer.heldItem) {
                             set = TRUE; 
-                            func_80067290();
-                            temp3 = 0xFF;
+                            func_80067290(horseResult);
+                            temp = 0xFF;
                         }
                         
                     } else {
                         func_80067034();
                         set = TRUE;
-                        temp3 = 0xFF;
+                        temp = 0xFF;
                     }
                 
                 }
                 
             }
-            
         }
-        
     }
 
     if (!set) {
+        if (!(gPlayer.flags & 1) && !checkDailyEventBit(0x12)) {
+            if (checkButtonPressed(CONTROLLER_1, BUTTON_B)) {
+                
+                if (gPlayer.heldItem == 0 && gPlayer.currentTool) {
+                        
+                    gPlayer.actionProgress = 0;
+                    gPlayer.animationState = 0;
+                    gPlayer.toolHeldCounter = 0;
+                    gPlayer.staminaLevelForCurrentToolUse = 0;
 
-        if (!(gPlayer.flags & 1)) {
+                    if (!func_80067A24(1)) {
 
-            if (!checkDailyEventBit(0x12)) {
+                        if (!func_80067B38()) {
 
-                if (checkButtonPressed(CONTROLLER_1, BUTTON_B)) {
-
-                    if (gPlayer.heldItem == 0) {
-
-                        if (gPlayer.currentTool) {
-                            
-                            gPlayer.actionProgress = 0;
-                            gPlayer.animationState = 0;
-                            gPlayer.toolHeldCounter = 0;
-                            gPlayer.staminaLevelForCurrentToolUse = 0;
-
-
-                            if (!func_80067A24(1)) {
-
-                                if (!func_80067B38()) {
-
-                                    startNewAction(1, 3);
-                                    
-                                    set = TRUE;
-                                    temp3 = 0xFF;
-                                    
-                                } else {
-                                    temp3 = 0xFF;
-                                }
-                                
-                            }
-                            
+                            startNewAction(1, 3);
                             set = TRUE;
-                            temp3 = 0xFF;
+                            temp = 0xFF;
                             
+                        } else {
+                            temp = 0xFF;
                         }
                         
                     }
                     
-                }
-                                
-            }
-            
-        }
-        
-    }
-
-    if (!set) {
-
-        if (!(gPlayer.flags & 1)) {
-
-            if (!checkDailyEventBit(0x12)) {
-
-                if (checkButtonPressed(CONTROLLER_1, BUTTON_Z)) {
-
-                    if (gPlayer.heldItem != 0) {
-                        
-                        set = TRUE;
-                        func_800D67FC(gPlayer.heldItem);
-
-                        temp3 = 0xFF;
-                        
-                    }
-                    
-                }
-                
-            }
-            
-        }
-        
-    }
-
-    if (!set) {
-
-        if (!(gPlayer.flags & 1)) {
-
-            if (checkButtonPressed(CONTROLLER_1, BUTTON_C_RIGHT)) {
-                                
-                set = TRUE;
-                temp3 = 0xFF;
-
-                startNewAction(0x12, 0x13);
-
-            }
-    
-        }
-        
-    }
-
-    if (!set) {
-
-        if (!(gPlayer.flags & 1)) {
-        
-            if (checkButtonPressed(CONTROLLER_1, BUTTON_C_LEFT)) {
-    
-                set = TRUE;
-                temp3 = 0xFF;
-
-                startNewAction(0x13, 0x14);
-
-                
-            }
-    
-        }
-        
-    }
-
-    if (!set) {
-
-        if (!(gPlayer.flags & 1)) {
-
-            if (checkButtonPressed(CONTROLLER_1, BUTTON_C_UP)) {
-    
-                if (gPlayer.heldItem != 0) {
-                
-                    if (func_800D5A6C(gPlayer.heldItem) & 2) {
-                        
-                        if (addItemToRucksack(gPlayer.heldItem) != 0xFF) {
-                            
-                            set = TRUE;
-                            temp3 = 0xFF;
-                            
-                            startNewAction(0x15, 0x16);
-
-                        
-                        } 
-                        
-                    }
-   
-                }
-                
-            }
-    
-        }
-        
-    }
-
-    if (!set) {
-
-        if (!(gPlayer.flags & 1)) {
-
-            if (!checkDailyEventBit(0x13)) {
-        
-                if (checkButtonPressed(CONTROLLER_1, BUTTON_START)) {
-        
                     set = TRUE;
-                    func_80059334();
-                    func_8005CA2C(1, 0x14);
-                    setAudio(8);
-                    temp3 = 0xFF;
+                    temp = 0xFF;
                     
                 }
-                
             }
-    
         }
-        
+    }
+
+    if (!set) {
+        if (!(gPlayer.flags & 1) && !checkDailyEventBit(0x12)) {
+            if (checkButtonPressed(CONTROLLER_1, BUTTON_Z)) {
+                if (gPlayer.heldItem != 0) {
+                    set = TRUE;
+                    func_800D67FC(gPlayer.heldItem);
+                    temp = 0xFF;
+                }
+            }
+        }
+    }
+
+    if (!set) {
+        if (!(gPlayer.flags & 1)) {
+            if (checkButtonPressed(CONTROLLER_1, BUTTON_C_RIGHT)) {
+                set = TRUE;
+                temp = 0xFF;
+                startNewAction(0x12, 0x13);
+            }
+        }
+    }
+
+    if (!set) {
+        if (!(gPlayer.flags & 1)) {
+            if (checkButtonPressed(CONTROLLER_1, BUTTON_C_LEFT)) {
+                set = TRUE;
+                temp = 0xFF;
+                startNewAction(0x13, 0x14);
+            }
+        }
+    }
+
+    if (!set) {
+        if (!(gPlayer.flags & 1)) {
+            if (checkButtonPressed(CONTROLLER_1, BUTTON_C_UP)) {
+                if (gPlayer.heldItem != 0 && getItemFlags(gPlayer.heldItem) & 2) {
+                    if (addItemToRucksack(gPlayer.heldItem) != 0xFF) {
+                        set = TRUE;
+                        temp = 0xFF;
+                        startNewAction(0x15, 0x16);
+                    }
+                }
+            }
+        }
+    }
+
+    if (!set) {
+        if (!(gPlayer.flags & 1) && !checkDailyEventBit(0x13)) {
+            if (checkButtonPressed(CONTROLLER_1, BUTTON_START)) {
+                set = TRUE;
+                func_80059334();
+                func_8005CA2C(1, 0x14);
+                setAudio(8);
+                temp = 0xFF;
+            }
+        }
     }
 
     if (gBaseMapIndex == FARM) {
@@ -998,34 +892,32 @@ void func_800664C8(void) {
             if (checkButtonPressed(CONTROLLER_1, BUTTON_R)) {
 
                 resetAction();
-
                 func_80059334();
-                func_8003C5C0(0, 0, 0xFF);
+                func_8003C5C0(MAIN_MAP_INDEX, 0, 0xFF);
 
-                setMainLoopCallbackFunctionIndex(8);
+                setMainLoopCallbackFunctionIndex(ROTATING);
 
                 D_8021E6D0 = (D_8021E6D0 + 7) % 8;
 
                 set = TRUE;
-                temp3 = 0xFF;
+                temp = 0xFF;
                 
             }
 
             if (!set) {
                 
                 if (checkButtonPressed(CONTROLLER_1, BUTTON_L)) {
-    
+
                     resetAction();
-    
                     func_80059334();
-                    func_8003C5C0(0, 1, 0xFF);
+                    func_8003C5C0(MAIN_MAP_INDEX, 1, 0xFF);
     
-                    setMainLoopCallbackFunctionIndex(8);
+                    setMainLoopCallbackFunctionIndex(ROTATING);
     
                     D_8021E6D0 = (D_8021E6D0 + 1) % 8;
     
                     set = TRUE;
-                    temp3 = 0xFF;
+                    temp = 0xFF;
                     
                 }
                 
@@ -1036,12 +928,11 @@ void func_800664C8(void) {
     }
 
     if (!set) {
-
         if (checkButtonPressed(CONTROLLER_1, BUTTON_A) && entities[ENTITY_PLAYER].collision != 0xFFFF) {
             gPlayer.nextAction = 0;
-            setEntityAnimationWithDirectionChange(0, 0);
+            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0);
             set = TRUE;
-            temp3 = 0xFF;
+            temp = 0xFF;
         }
     }
 
@@ -1049,37 +940,43 @@ void func_800664C8(void) {
 
     if (!set) {
 
-        if (!temp3) {
+        if (!temp) {
 
-            temp3 = getStickXValueUnsigned(CONTROLLER_1);
+            temp = getStickXValueUnsigned(CONTROLLER_1);
             tempF = getStickYValueUnsigned(CONTROLLER_1);
             
         }
 
-        if (temp3 != 0xFF) {
+        if (temp != 0xFF) {
 
-            temp3 = convertWorldToSpriteDirection(temp3, MAIN_MAP_INDEX);
+            temp = convertWorldToSpriteDirection(temp, MAIN_MAP_INDEX);
             
             if (tempF >= 4.0f) {
-                temp5 = 1;
+                gPlayer.actionProgress = 0;
+                gPlayer.animationState = 0;
+                gPlayer.currentAction = 0;
+                gPlayer.nextAction = 2;
             } else {
-                temp5 = 2;
+                gPlayer.actionProgress = 0;
+                gPlayer.animationState = 0;
+                gPlayer.currentAction = 0;
+                gPlayer.nextAction = 1;
             }
 
-            startNewAction(0, temp5);
+            direction = convertSpriteToWorldDirection(temp, MAIN_MAP_INDEX);
+            setEntityDirection(ENTITY_PLAYER, direction);
 
-            setEntityDirection(ENTITY_PLAYER, convertSpriteToWorldDirection(temp3, MAIN_MAP_INDEX));
-            
         } else {
             
             tempF = 0.0f;
-            
             resetAction();
-
+            
         }
-
-        vec = getMovementVectorFromDirection((s8)tempF, temp3, 0.0f);
         
+        tempF = (s8)tempF;
+
+        vec = getMovementVectorFromDirection(tempF, temp, 0);
+
         setEntityMovementVector(ENTITY_PLAYER, vec.x, vec.y, vec.z, tempF);
         
     }
@@ -1116,7 +1013,7 @@ void func_80067034(void) {
     Vec3f vec2;
     u8 direction; // bug: not initialied
     bool set = FALSE;
-    int temp;
+    int groundObjectIndex;
     
     while (direction < 8 && !set) {
     
@@ -1126,9 +1023,9 @@ void func_80067034(void) {
 
                 vec1 = projectEntityPosition(ENTITY_PLAYER, 0x20, convertWorldToSpriteDirection(direction, MAIN_MAP_INDEX));
                 
-                temp = func_800DB1BC(vec1.x, vec1.z);
+                groundObjectIndex = getGroundObjectIndexFromCoordinates(vec1.x, vec1.z);
                 
-                if (temp == 0xFF || (func_800DA978(temp) & 8)) {
+                if (groundObjectIndex == 0xFF || (getGroundObjectFlags(groundObjectIndex) & 8)) {
                     set = TRUE;
                 }
             }
@@ -1143,69 +1040,75 @@ void func_80067034(void) {
 
     if (set) {
 
-            vec2 = projectEntityPosition(ENTITY_PLAYER, 0, direction);
-            
-            horseInfo.coordinates = vec2;
-            horseInfo.direction = convertWorldToSpriteDirection(entities[PLAYER].direction, MAIN_MAP_INDEX);
-            horseInfo.location = gBaseMapIndex;
-            horseInfo.flags &= ~0x8;     
+        vec2 = projectEntityPosition(ENTITY_PLAYER, 0, direction);
+        
+        horseInfo.coordinates = vec2;
+        horseInfo.direction = convertWorldToSpriteDirection(entities[PLAYER].direction, MAIN_MAP_INDEX);
+        horseInfo.location = gBaseMapIndex;
+        horseInfo.flags &= ~0x8;     
 
-            gPlayer.flags &= -2;
-            
-            toggleDailyEventBit(0x5C);
-            
-            // initialize animal locations
-            func_8008B9AC();
-           
-            entities[PLAYER].direction = direction;
+        gPlayer.flags &= -2;
+        
+        toggleDailyEventBit(0x5C);
+        
+        // initialize animal locations
+        func_8008B9AC();
+        
+        entities[PLAYER].direction = direction;
 
-            startNewAction(0xE, 0x10);
+        startNewAction(0xE, 0x10);
 
-            gPlayer.animationState = 0;
-            gPlayer.actionProgress = 0;
+        gPlayer.animationState = 0;
+        gPlayer.actionProgress = 0;
 
-        }
+    }
 
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/player", func_80067290);
 
+// handle dropping item?
 void func_80067290(u8 arg0) {
 
     bool set = FALSE;
     Vec3f vec;
-    u8 temp;
+    u8 groundObjectIndex;
     
     if (arg0 == 0) {
 
-        if ((func_800D5A6C(gPlayer.heldItem) & 0x20) && (getLevelInteractionIndexFromEntityPosition(ENTITY_PLAYER, 0.0f, 32.0f) == 0x11) && gBaseMapIndex == COOP && !func_8009B7BC()) {
+        if ((getItemFlags(gPlayer.heldItem) & 0x20) && (getLevelInteractionIndexFromEntityPosition(ENTITY_PLAYER, 0.0f, 32.0f) == 0x11) && gBaseMapIndex == COOP && !func_8009B7BC()) {
             set = TRUE;
             startNewAction(5, 7);
         }
 
-        if ((func_800D5A6C(gPlayer.heldItem) & 0x2000) && !set && (getLevelInteractionIndexFromEntityPosition(ENTITY_PLAYER, 0.0f, 32.0f) == 0x11) && gBaseMapIndex == FARM) {
+        if ((getItemFlags(gPlayer.heldItem) & 0x2000) && !set && (getLevelInteractionIndexFromEntityPosition(ENTITY_PLAYER, 0.0f, 32.0f) == 0x11) && gBaseMapIndex == FARM) {
             set = TRUE;
             startNewAction(5, 7);
         }
 
+        // check level interaction 0x17 on farm
         if (func_800ACEAC(gBaseMapIndex) != 0xFF) {
             
-            if (func_800D5A6C(gPlayer.heldItem) & 1 && !set) {    
+            if (getItemFlags(gPlayer.heldItem) & 1 && !set) {    
                 startNewAction(0x1F, 0x20);
             }
             
             set = TRUE;
+
         }
 
-        if ((func_800D5A6C(gPlayer.heldItem) & 0x2) && !set && func_800ACEF8(gBaseMapIndex) != 0xFF) {
+        // drop into water
+        if ((getItemFlags(gPlayer.heldItem) & 2) && !set && func_800ACEF8(gBaseMapIndex) != 0xFF) {
             set = TRUE;
             startNewAction(0x20, 0x21);
         }
         
     }
 
-    if (func_800D5A6C(gPlayer.heldItem) & 4 && !set) {
+    // add item to shipping bin
+    if ((getItemFlags(gPlayer.heldItem) & ITEM_SHIPPABLE) && !set) {
 
+        // shipping bins
         if (func_800ACD70(gBaseMapIndex) != 0xFF || arg0) {
             startNewAction(3, 5);
         } else {
@@ -1218,8 +1121,9 @@ void func_80067290(u8 arg0) {
 
     if (arg0 == 0) {
 
-        if ((func_800D5A6C(gPlayer.heldItem) & 0x40) && !set) {
+        if ((getItemFlags(gPlayer.heldItem) & 0x40) && !set) {
 
+            // check barn level interaction
             if (func_800ACDF4(gBaseMapIndex) != 0xFF) {
                 startNewAction(5, 7);
             } else {
@@ -1230,18 +1134,16 @@ void func_80067290(u8 arg0) {
             
         }
 
-        if ((func_800D5A6C(gPlayer.heldItem) & 0x80) && !set) {
+        if ((getItemFlags(gPlayer.heldItem) & 0x80) && !set) {
 
             if (!checkTerrainCollisionInDirection(ENTITY_PLAYER, 0x20, convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, gMainMapIndex))) {
 
                 vec = projectEntityPosition(ENTITY_PLAYER, 0x20, convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX));
 
-                temp = func_800DB1BC(vec.x, vec.z);
+                groundObjectIndex = getGroundObjectIndexFromCoordinates(vec.x, vec.z);
     
-                if (temp == 0xFF || func_800DA978(temp) & 8) {
-
+                if (groundObjectIndex == 0xFF || getGroundObjectFlags(groundObjectIndex) & 8) {
                     startNewAction(5, 7);
-                                        
                 }
                 
             
@@ -1251,15 +1153,16 @@ void func_80067290(u8 arg0) {
             
         }
 
-        if ((func_800D5A6C(gPlayer.heldItem) & 0x100) && !set) {
+        if ((getItemFlags(gPlayer.heldItem) & 0x100) && !set) {
             startNewAction(5, 7);
             set = TRUE;
         }
         
-        if ((func_800D5A6C(gPlayer.heldItem) & 0x400) && !set) {
+        if ((getItemFlags(gPlayer.heldItem) & 0x400) && !set) {
             
-            if (gBaseMapIndex == 0x57) {
+            if (gBaseMapIndex == HOUSE) {
 
+                // baby
                 if (getLevelInteractionIndexFromEntityPosition(ENTITY_PLAYER, 0.0f, 32.0f) == 0x16) {
                     startNewAction(5, 7);
                 }
@@ -1270,20 +1173,17 @@ void func_80067290(u8 arg0) {
             
         }
 
-        if ((func_800D5A6C(gPlayer.heldItem) & 0x800) && !set) {
+        if ((getItemFlags(gPlayer.heldItem) & 0x800) && !set) {
 
             if (!checkTerrainCollisionInDirection(ENTITY_PLAYER, 0x20, convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, gMainMapIndex))) {
 
                 vec = projectEntityPosition(ENTITY_PLAYER, 0x20, convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX));
     
-                temp = func_800DB1BC(vec.x, vec.z);
+                groundObjectIndex = getGroundObjectIndexFromCoordinates(vec.x, vec.z);
     
-                if (temp == 0xFF || func_800DA978(temp) & 8) {
-    
+                if (groundObjectIndex == 0xFF || getGroundObjectFlags(groundObjectIndex) & 8) {
                     startNewAction(5, 7);
-                                        
                 }
-                
             
             }
 
@@ -1291,11 +1191,11 @@ void func_80067290(u8 arg0) {
             
         }
 
-        if ((func_800D5A6C(gPlayer.heldItem) & 0x10) && !set) {
+        if ((getItemFlags(gPlayer.heldItem) & 0x10) && !set) {
 
-            temp = func_800DAF58(1.0f, 8);
+            groundObjectIndex = getGroundObjectIndexFromPlayerPosition(1.0f, 8);
 
-            if (temp && temp < 4 && temp != 0xFF) {
+            if (groundObjectIndex && groundObjectIndex < 4 && groundObjectIndex != 0xFF) {
                 startNewAction(5, 7);
             }  
             
@@ -1311,7 +1211,42 @@ void func_80067290(u8 arg0) {
     
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/player", func_80067950);
+//INCLUDE_ASM("asm/nonmatchings/game/player", func_80067950);
+
+inline u8 func_80067950(void) {
+
+    s32 temp;
+    u8 temp2;
+    u8 result;
+
+    result = 0;
+    temp = gMaximumStamina;
+    
+    if (temp < 0) {
+        temp += 3;
+    }
+
+    temp2 = (u32)temp >> 2;
+
+    if (D_8011421C[gPlayer.currentTool][gPlayer.staminaLevelForCurrentToolUse] > gPlayer.currentStamina) {
+        result = 4;
+    } else {
+        
+        if (temp2 >= gPlayer.currentStamina) {
+            result = 3;
+        } else if ((temp2 * 2) >= gPlayer.currentStamina) {
+            result = 2;
+        } else {
+            if ((temp2 * 3) >= gPlayer.currentStamina) {
+                result = 1;
+            }
+        }
+        
+    }
+    
+    return result;
+    
+}
 
 //INCLUDE_ASM("asm/nonmatchings/game/player", checkFatigueLevel);
 
@@ -1331,7 +1266,24 @@ inline u8 checkFatigueLevel(void) {
 
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/player", func_80067A24);
+//INCLUDE_ASM("asm/nonmatchings/game/player", func_80067A24);
+
+bool func_80067A24(u8 arg0) {
+
+    bool result = FALSE;
+    u8 fatigueLevel;
+
+    fatigueLevel = func_80067950();
+
+    if (fatigueLevel && fatigueLevel != gPlayer.fatigue.level && arg0 == 0 || fatigueLevel == 4)  {
+        result = TRUE;
+        startNewAction(7, 9);
+        gPlayer.fatigue.level = fatigueLevel;
+    }
+
+    return result; 
+    
+}
 
 //INCLUDE_ASM("asm/nonmatchings/game/player", func_80067B38);
 
@@ -1342,20 +1294,78 @@ bool func_80067B38(void) {
     u32 fatigue = checkFatigueLevel();
 
     if (fatigue != 0 && fatigue != gPlayer.fatigue.unk_2) {
-        
         set = TRUE;
-
         startNewAction(0x19, 0x1A);
-
         gPlayer.fatigue.unk_2 = fatigue;
-        
     }
 
     return set;
 
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/player", func_80067BC4);
+//INCLUDE_ASM("asm/nonmatchings/game/player", func_80067BC4);
+
+void func_80067BC4(void) {
+
+    s32 temp;
+
+    if (checkEntityAnimationStateChanged(ENTITY_PLAYER)) {
+
+        if (gPlayer.animationState == 0) {
+
+            if (gPlayer.actionProgress == 0) {
+                gPlayer.toolHeldCounter = 0;
+                gPlayer.staminaLevelForCurrentToolUse = 0;
+                toggleDailyEventBit(0x14);
+                gPlayer.actionProgress++;
+            }
+
+            if (!checkButtonHeld(CONTROLLER_1, BUTTON_B)) {
+
+                gPlayer.animationState++;
+                gPlayer.currentStamina += adjustValue(gPlayer.currentStamina, -D_8011421C[gPlayer.currentTool][gPlayer.staminaLevelForCurrentToolUse], gMaximumStamina);
+
+                if (((SUNNY < gWeather && gWeather < 4) || !(5 < gHour && gHour < 18)) && gBaseMapIndex != GREENHOUSE) {
+
+                    if (checkLifeEventBit(0x5F)) {
+                        gPlayer.fatigue.counter += adjustValue(gPlayer.fatigue.counter, D_8011421C[gPlayer.currentTool][gPlayer.staminaLevelForCurrentToolUse] / 2, 100);
+                    } else {
+                        
+                        // fake match if D_8011421C isn't volatile
+                        // if (D_8011421C[gPlayer.currentTool][gPlayer.staminaLevelForCurrentToolUse] + 1) {
+                        //     temp = D_8011421C[gPlayer.currentTool][gPlayer.staminaLevelForCurrentToolUse];
+                        // }
+                        
+                        // temp = D_8011421C[gPlayer.currentTool][gPlayer.staminaLevelForCurrentToolUse];
+                        
+                        gPlayer.fatigue.counter += adjustValue(gPlayer.fatigue.counter, D_8011421C[gPlayer.currentTool][gPlayer.staminaLevelForCurrentToolUse], 100);
+                        
+                    }
+
+                }
+                
+            } else if (gPlayer.toolHeldCounter >= 16 && gPlayer.staminaLevelForCurrentToolUse < getToolLevel(gPlayer.currentTool)) {
+
+                if (D_8011421C[gPlayer.currentTool][gPlayer.staminaLevelForCurrentToolUse] && !(D_8011421C[gPlayer.currentTool][gPlayer.staminaLevelForCurrentToolUse+1] > gPlayer.currentStamina)) {
+                    gPlayer.toolHeldCounter = 0;
+                    gPlayer.staminaLevelForCurrentToolUse++;
+                }
+
+                
+            } else {
+                gPlayer.toolHeldCounter++;
+            }
+
+        } else {
+            
+            gPlayer.currentAction = 0xFE;
+            gPlayer.animationState++;
+            
+        }
+        
+    }
+    
+}
 
 //INCLUDE_ASM("asm/nonmatchings/game/player", func_80067E5C);
 
@@ -1805,7 +1815,7 @@ void func_80068C8C(void) {
             vec = getMovementVectorFromDirection(4.0f, gPlayer.direction, 0.0f);
             gPlayer.movementVector = vec;
             gPlayer.movementVector.y = entities[ENTITY_PLAYER].coordinates.y;
-            
+             
         }
 
         if (gPlayer.actionProgress < 8) {
@@ -2344,8 +2354,11 @@ void func_80069DB0(void) {
             default:
                 gPlayer.animationState = 8;
                 break;
+
         }
+
     }
+    
 }
 
 // empty function
@@ -2360,7 +2373,135 @@ void func_80069E64(void) {}
 // empty function
 void func_80069E6C(void) {}
 
-INCLUDE_ASM("asm/nonmatchings/game/player", func_80069E74);
+static inline void fakeInline() {
+    gPlayer.movementVector.y += 1.0f;
+    entities[ENTITY_PLAYER].coordinates.y = gPlayer.movementVector.y;
+}
+
+//INCLUDE_ASM("asm/nonmatchings/game/player", func_80069E74);
+
+// FIXME: have to trick the CSE pass to access actionProgress via -2 of animationState instead of reloading it from memory every time
+// The CSE pass doesn't do this for smaller functions with the same code (func_80068C8C), so there's something around the basic block size/complexity 
+void func_80069E74(void) {
+
+    Vec3f vec;
+
+    u16 *temp;
+
+    if (gPlayer.animationState == 0) {
+
+        // FIXME: fake
+        temp = &gPlayer.actionProgress;
+        
+        if (gPlayer.actionProgress == 0) {
+            
+            setAudio(4);
+
+            setEntityCollidable(ENTITY_PLAYER, FALSE);
+            setEntityYMovement(ENTITY_PLAYER, FALSE);
+            setEntityTracksCollisions(ENTITY_PLAYER, FALSE);
+            enableEntityMovement(ENTITY_PLAYER, FALSE);
+            
+            vec = getMovementVectorFromDirection(2.0f, gPlayer.direction, 0.0f);
+            
+            gPlayer.movementVector = vec;
+            gPlayer.movementVector.y = entities[ENTITY_PLAYER].coordinates.y;
+            
+        }
+
+        if (gPlayer.actionProgress < 6) {
+            
+            setEntityMovementVector(ENTITY_PLAYER, gPlayer.movementVector.x, 0.0f, gPlayer.movementVector.z, 2.0f);
+            
+            entities->coordinates.y = 
+                ((gPlayer.movementVector.y 
+                     + (((gPlayer.actionProgress - 7) * (gPlayer.actionProgress - 7)) * -0.8f)) 
+                     + 39.2);
+            
+        } else {
+            
+            setEntityMovementVector(ENTITY_PLAYER, 0.0f, 0.0f, 0.0f, 0.0f);
+            gPlayer.actionProgress = 0;
+            gPlayer.animationState++;
+            gPlayer.movementVector.y = entities[ENTITY_PLAYER].coordinates.y;
+            setEntityShadow(ENTITY_PLAYER, 0xFF);
+            
+        }
+
+         gPlayer.actionProgress++;
+        
+    } 
+    
+    if (gPlayer.animationState == 1) {
+        
+        // FIXME: fake
+        // tricks CSE2 pass
+        do {} while (0);
+        temp = &gPlayer.actionProgress;
+
+        if (gPlayer.actionProgress < 0x80) {
+            
+            // need this to force memory lookup and NOT have pointer access for the other gPlayer members
+            fakeInline();
+            
+        } else {
+            
+            setEntityMovementVector(ENTITY_PLAYER, 0.0f, 0.0f, 0.0f, 0.0f);
+            
+            gPlayer.actionProgress = 0;
+            gPlayer.animationState++;
+            
+            vec = getMovementVectorFromDirection(10.0f, SOUTH, 0.0f);
+            
+            gPlayer.movementVector = vec;
+            gPlayer.movementVector.y = entities[ENTITY_PLAYER].coordinates.y;
+
+            setEntityDirection(ENTITY_PLAYER, convertSpriteToWorldDirection(SOUTH, MAIN_MAP_INDEX));
+            
+        }
+
+        gPlayer.actionProgress++;
+        
+    }
+
+    if (gPlayer.animationState == 2) {
+        
+        // FIXME: fake
+        temp = &gPlayer.actionProgress;
+        
+        if (gPlayer.actionProgress < 15) {
+            
+            setEntityMovementVector(ENTITY_PLAYER, gPlayer.movementVector.x, 0.0f, gPlayer.movementVector.z, 10.0f);
+
+            entities->coordinates.y = 
+                ((gPlayer.movementVector.y 
+                     + (((gPlayer.actionProgress - 7) * (gPlayer.actionProgress - 7)) * -1.2f)) 
+                     + 58.5);
+            
+        } else {
+            setEntityMovementVector(ENTITY_PLAYER, 0.0f, 0.0f, 0.0f, 0.0f);
+            gPlayer.actionProgress = 0;
+            gPlayer.animationState++;
+            gPlayer.movementVector.y = entities[ENTITY_PLAYER].coordinates.y;
+        }
+        
+        gPlayer.actionProgress++;
+        
+    }
+
+    if (gPlayer.animationState == 3) {
+        
+        setEntityCollidable(ENTITY_PLAYER, TRUE);
+        setEntityYMovement(ENTITY_PLAYER, TRUE);
+        resetAction();
+        setEntityTracksCollisions(ENTITY_PLAYER, TRUE);
+        enableEntityMovement(ENTITY_PLAYER, TRUE);
+        setEntityShadow(ENTITY_PLAYER, 0);
+        toggleDailyEventBit(6);
+        
+    }
+    
+}
 
 // empty function
 void func_8006A2E0(void) {} 
@@ -2685,10 +2826,10 @@ void func_8006A9A8(void) {
         switch (gPlayer.animationState) {       
 
             case 0:
-                setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x18);
+                setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 24);
                 break;
             case 1:
-                func_800D55E4(gPlayer.itemInfoIndex, 0xA);
+                func_800D55E4(gPlayer.itemInfoIndex, 10);
                 gPlayer.actionProgress = 0;
                 gPlayer.animationState++;
                 break;
@@ -2767,7 +2908,6 @@ void func_8006AB90(void) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/player", func_8006AC4C);
 
-// handle wife going to sleep at the same time
 void func_8006AC4C(void) {
 
     if (checkEntityAnimationStateChanged(ENTITY_PLAYER) || gPlayer.animationState == 0) {
@@ -2780,6 +2920,7 @@ void func_8006AC4C(void) {
                 gPlayer.animationState++;
 
                 if (checkLifeEventBit(MARRIED) && (19 < gHour && gHour < 22)) {
+
                     switch (gWife) {
                         case MARIA:
                             npcs[MARIA].movingFlag = 4;
@@ -2832,6 +2973,7 @@ void func_8006ADF4(void) {
     if (checkEntityAnimationStateChanged(ENTITY_PLAYER) || gPlayer.animationState == 0) {
 
         switch (gPlayer.animationState) { 
+
             case 0:
                 setEntityAnimation(ENTITY_PLAYER, 0x1E0);
                 gPlayer.animationState++;
@@ -2857,6 +2999,7 @@ void func_8006ADF4(void) {
                 break;
             case 3:
                 break;
+
         } 
     }
 }
@@ -3256,7 +3399,7 @@ void func_8006BAAC(void) {
             
             case 1:
 
-                if (func_800D5A6C(gPlayer.heldItem) & 0x4000) {
+                if (getItemFlags(gPlayer.heldItem) & 0x4000) {
                     setEntityAnimation(ENTITY_PLAYER, 0x2B3);
                     gAlcoholTolerance += adjustValue(gAlcoholTolerance, 1, 0xFF);
                 } else {
@@ -3461,16 +3604,15 @@ void func_8006C13C(void) {
     
 }
 
-// array indexing is off
-#ifdef PERMUTER
+//INCLUDE_ASM("asm/nonmatchings/game/player", func_8006C1DC);
+
 void func_8006C1DC(void) {
 
-    UnknownPlayerData data;
-    u8 *ptr;
+    u8 arr[5][3];
+    u8 temp;
 
-    data = *(UnknownPlayerData*)D_8011F5D4;
-    ptr = (u8*)&data;
-    
+    memcpy(arr, D_8011F5D4, 15);
+
     if (checkEntityAnimationStateChanged(ENTITY_PLAYER) || gPlayer.animationState == 0) {
 
         switch (gPlayer.animationState) {
@@ -3478,35 +3620,43 @@ void func_8006C1DC(void) {
             case 0:
                 setEntityAnimation(ENTITY_PLAYER, 0x171);
                 gPlayer.animationState = 1;
-                gPlayer.heldItem = *(&ptr[D_801A8B5C+D_8018A724*3]-3);
-                gPlayer.itemInfoIndex = func_800D5308(0, 0x15, gPlayer.heldItem, 0, 8);
+                temp = arr[D_8018A724][D_801A8B5C-3];
+                gPlayer.heldItem = temp;
+                gPlayer.itemInfoIndex = func_800D5308(0, 0x15, temp, 0, 8);
                 break;
+            
             case 1:
                 gPlayer.animationState = 2;
                 break;
+            
             case 2:
                 gPlayer.animationState = 3;
                 setAudio(0x5A);
                 setMainLoopCallbackFunctionIndex(0xB);
                 func_80059334();
                 break;
+
             default:
                 func_800D55E4(gPlayer.itemInfoIndex, 1);
                 gPlayer.heldItem = 0;
                 resetAction();
                 break;
-
+            
         }
-
+        
     }
-
+    
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game/player", func_8006C1DC);
-#endif
 
-// u8 array, probably 2d
-INCLUDE_RODATA("asm/nonmatchings/game/player", D_8011F5D4);
+//INCLUDE_RODATA("asm/nonmatchings/game/player", D_8011F5D4);
+
+static const u8 D_8011F5D4[] = {
+    0xCB, 0xCC, 0xCD,
+    0xCE, 0xCF, 0xD0,
+    0xD1, 0xD2, 0xD3,
+    0xD4, 0xD5, 0xD6,
+    0xD7, 0xD8, 0xD9,
+};
 
 //INCLUDE_ASM("asm/nonmatchings/game/player", func_8006C384);
 
@@ -3515,10 +3665,10 @@ void func_8006C384(void) {
     if (checkEntityAnimationStateChanged(ENTITY_PLAYER) || (gPlayer.animationState == 0)) {
         
         switch (gPlayer.currentTool) {                          
-            case 1:                                     
+            case SICKLE:                                     
                 func_8006CD84();
                 break;
-            case 2:                                     
+            case HOE:                                     
                 func_8006CDF8();
                 break;
             case 3:                                     
@@ -3527,7 +3677,7 @@ void func_8006C384(void) {
             case 4:                                     
                 func_8006CEE0();
                 break;
-            case 5:                                     
+            case WATERING_CAN:                                     
                 func_8006CF54();
                 break;
             case 6:                                     
@@ -3644,7 +3794,255 @@ void func_8006C384(void) {
     
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/player", func_8006C628);
+//INCLUDE_ASM("asm/nonmatchings/game/player", func_8006C628);
+
+void func_8006C628(u16 arg0, u16 arg1) {
+
+    u8 found;
+    u8 found2;
+
+    switch (gPlayer.animationState) {
+
+        case 0:
+
+            toggleDailyEventBit(0x29);
+            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, arg0);
+
+            switch (gPlayer.currentTool) {
+                case 1:
+                case 2:
+                case 3:
+                case 4:
+                    func_80099DE8();
+                    func_80099EEC();
+                    func_80099FF0();
+                    func_8009A074();
+                    break;
+            }
+
+            break;
+        
+        case 1:                                         
+            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, arg1);
+            func_800CF850();
+            break;
+
+
+        case 2:
+
+            if (toolUse.unk_E == 0) {
+                
+                if (!(func_80067A24(0))) {
+                    resetAction();
+                }
+
+                switch (gPlayer.currentTool) {
+
+                    case 1:
+                        
+                        if (!(gCutsceneFlags & 1)) {
+                            
+                            if (gPlayer.toolUseCounters[0] != 400) {
+                                
+                                gPlayer.toolUseCounters[0]++;
+                                
+                                if (gPlayer.toolUseCounters[0] == 200) {
+                                    
+                                    gPlayer.toolLevels[0] = 1;
+                                    startNewAction(0x1B, 0x1C);
+                                    D_8018A724 = 1;
+                                    D_801A8B5C = 1;
+                                    
+                                }
+                                
+                                if (gPlayer.toolUseCounters[0] == 400) {
+                                    
+                                    gPlayer.toolLevels[0] = 2;
+                                    startNewAction(0x1B, 0x1C);
+                                    D_8018A724 = 1;
+                                    D_801A8B5C = 2;
+                                    
+                                }
+                                
+                            }
+                            
+                        }
+                        
+                        break;
+
+                    case 2:
+                        
+                        if (!(gCutsceneFlags & 1)) {
+
+                            if (gPlayer.toolUseCounters[1] != 500) {
+                                
+                                gPlayer.toolUseCounters[1]++;
+
+                                if (gPlayer.toolUseCounters[1] == 250) {
+                                    
+                                    gPlayer.toolLevels[1] = 1;
+                                    startNewAction(0x1B, 0x1C);
+                                    D_8018A724 = 2;
+                                    D_801A8B5C = 1;
+                                    
+                                }
+                                
+                                if (gPlayer.toolUseCounters[1] == 500) {
+                                    
+                                    gPlayer.toolLevels[1] = 2;
+                                    startNewAction(0x1B, 0x1C);
+                                    D_8018A724 = 2;
+                                    D_801A8B5C = 2;
+                                    
+                                }
+
+                            } 
+                            
+                            if (toolUse.unk_F == 10) {
+
+                                if (checkHaveKeyItem(10) && !checkHaveKeyItem(4)) {
+
+                                    gPlayer.heldItem = 0xDA;
+                                    startNewAction(0x22, 0x23);
+                                    
+                                }
+                                
+                                toolUse.unk_F = 0;
+
+                            } else if (checkDailyEventBit(0x29) && !(powerNutBits & 1) && !(getRandomNumberInRange(0, 479))) {
+                            
+                                gPlayer.heldItem = 0x57;
+                                startNewAction(6, 8);
+                                handleEatingAndDrinking();
+                                powerNutBits |= 1;
+                                gMaximumStamina += adjustValue(gMaximumStamina, 15, MAX_STAMINA);
+                                
+                            }
+
+                        }
+    
+                        toggleDailyEventBit(0x29);
+                        break;
+
+
+                    case 3:
+
+                        if (!(gCutsceneFlags & 1)) {
+                            
+                            if (gPlayer.toolUseCounters[2] != 900) {
+
+                                gPlayer.toolUseCounters[2]++;
+                                
+                                if (gPlayer.toolUseCounters[2] == 450) {
+                                
+                                    gPlayer.toolLevels[2] = 1;
+                                    startNewAction(0x1B, 0x1C);
+                                    D_8018A724 = 3;
+                                    D_801A8B5C = 1;
+                                
+                                }
+                                
+                                if (gPlayer.toolUseCounters[2] == 900) {
+                                    
+                                    gPlayer.toolLevels[2] = 2;
+                                    startNewAction(0x1B, 0x1C);
+                                    D_8018A724 = 3;
+                                    D_801A8B5C = 2;
+                                    
+                                }
+                                
+                            }
+                       
+                        }
+                        
+                        break;
+
+                    case 4:
+
+                        if (!(gCutsceneFlags & 1)) {
+                            
+                            if (gPlayer.toolUseCounters[3] != 200) {
+
+                                gPlayer.toolUseCounters[3]++;
+                                
+                                if (gPlayer.toolUseCounters[3] == 100) {
+                                
+                                    gPlayer.toolLevels[3] = 1;
+                                    startNewAction(0x1B, 0x1C);
+                                    D_8018A724 = 4;
+                                    D_801A8B5C = 1;
+                                
+                                }
+                                
+                                if (gPlayer.toolUseCounters[3] == 200) {
+                                    
+                                    gPlayer.toolLevels[3] = 2;
+                                    startNewAction(0x1B, 0x1C);
+                                    D_8018A724 = 4;
+                                    D_801A8B5C = 2;
+                                    
+                                }
+                            
+                            }
+                            
+                            if (checkDailyEventBit(0x29) && !(powerNutBits & 0x10)) {
+                                
+                                gPlayer.heldItem = 0x57;
+                                startNewAction(6, 8);
+                                handleEatingAndDrinking();
+                                powerNutBits |= 0x10;
+                                
+                                gMaximumStamina += adjustValue(gMaximumStamina, 15, 250);
+                                setLifeEventBit(0x45);
+                                
+                            }
+                        
+                        }
+                        
+                        toggleDailyEventBit(0x29U);
+                        break;
+                    
+                    case 5:
+
+                        if (!(gCutsceneFlags & 1)) {
+
+                            if (gPlayer.toolUseCounters[4] != 1200) {
+
+                                gPlayer.toolUseCounters[4]++;
+                                
+                                if (gPlayer.toolUseCounters[4] == 600) {
+                                
+                                    gPlayer.toolLevels[4] = 1;
+                                    startNewAction(0x1B, 0x1C);
+                                    D_8018A724 = 5;
+                                    D_801A8B5C = 1;
+                                
+                                }
+                                
+                                if (gPlayer.toolUseCounters[4] == 1200) {
+                                    
+                                    gPlayer.toolLevels[4] = 2;
+                                    startNewAction(0x1B, 0x1C);
+                                    D_8018A724 = 5;
+                                    D_801A8B5C = 2;
+                                    
+                                }
+                                
+                            }
+                       
+                        }
+
+                        break;
+                    
+                }
+                
+            }
+            
+            break;
+        
+    }
+    
+}
 
 
 // tool animations
@@ -3730,6 +4128,7 @@ void func_8006CEE0(void) {
     
 }
 
+// watering can
 static inline void unknownInlineFunc() {
 
     u8 temp;
@@ -3746,25 +4145,25 @@ static inline void unknownInlineFunc() {
 
                 temp = gPlayer.toolLevels[4];
 
-                if (temp != gPlayer.animationState) {
+                if (temp != 1) {
                     
                     switch (temp) {
 
                         case 0:
-                            D_8016FBCD = 0x1E;
+                            wateringCanUses = 30;
                             break;
                         
                         case 1:
                             break;
                         
                         case 2:
-                            D_8016FBCD = 0x50;
+                            wateringCanUses = 80;
                             break;
 
                     }
                     
                 } else {
-                    D_8016FBCD = 0x32;
+                    wateringCanUses = 50;
                 }
 
                 if (!(func_80067A24(0))) {
@@ -3831,6 +4230,7 @@ void func_8006D0AC(void) {
             break;
         
         case 2:
+            // reset tool use struct
             func_800CF850();
             gPlayer.animationState++;
             break;
@@ -4597,6 +4997,7 @@ void func_8006E678(void) {
                 startNewAction(0x14, 0x15);
                 
                 switch (gPlayer.bottleContents) {
+                    
                     case 1:
                         gPlayer.heldItem = 0x71;
                         break;

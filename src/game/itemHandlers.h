@@ -6,6 +6,9 @@
 #define TOTAL_ITEMS 67
 #define MAX_KEY_ITEMS 24 
 
+/* holdable item flags */
+#define ITEM_SHIPPABLE 4
+
 /* tools */
 #define SICKLE 1
 #define HOE 2
@@ -146,7 +149,7 @@ typedef struct {
     Vec3f unk_18; // 0xE10
     u16 unk_24; // 0xE1C
     u16 unk_26; // 0xE1E
-    u16 unk_28; // 0xE20 = animation flagss
+    u16 unk_28; // 0xE20
     u8 unk_2A; // 0xE22
     u8 flags; // 0xE23
 } ItemContext;
@@ -154,13 +157,13 @@ typedef struct {
 // 0x80189828
 typedef struct {
     u16 unk_0; // 28
-    u8 unk_2; // 2A
+    u8 entityIndex; // 2A, possibly an overloaded field
     u8 unk_3; // 2B
-    u16 unk_4; // 2C
-    u16 unk_6; // 2E
+    s16 unk_4; // 2C
+    s16 unk_6; // 2E
     u8 unk_8; // 30
-    u16 unk_A; // 32
-    u16 unk_C; // 34
+    s16 unk_A; // 32
+    s16 unk_C; // 34
     u8 unk_E; // 36
     u8 unk_F; // 37;
     u32 unk_10; // 38
@@ -181,7 +184,7 @@ extern u8 func_800D5B00(u16 index);
 extern u8 func_800D5B18(u16 index);   
 extern void func_800D51B0();                  
 extern void func_800D5290();  
-extern u16 func_800D5A6C(u16 index);   
+extern u16 getItemFlags(u16 index);   
 extern bool func_800D5B30();
 extern void func_800D67FC(u8 index);
 extern void func_800D7010();  
@@ -206,6 +209,33 @@ extern u32 D_80237414;
 // strawberries shipped
 extern u32 D_801806C0;
 
+// TODO: labels
+// seed counters
+// turnip
+extern u8 D_801FC154;
+// potato
+extern u8 D_80204DF4;
+// eggplant
+extern u8 D_80237458;
+// cabbage
+extern u8 D_8018A725;
+// strawberry
+extern u8 D_802373E8;
+// tomato
+extern u8 D_8013DC2C;
+// corn
+extern u8 D_801FAD91;
+// grass seeds
+extern u8 D_801C3E28;
+// moondrop flower
+extern u8 D_801C3F70;
+// pink cat mint
+extern u8 D_80205636;
+// blue mist
+extern u8 D_802373A8;
+
 extern u16 fodderQuantity;
+extern u16 chickenFeedQuantity;
+extern u8 wateringCanUses;
 
 #endif

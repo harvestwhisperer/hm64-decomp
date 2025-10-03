@@ -10,14 +10,13 @@ typedef struct {
 
 extern u8 func_800ACD70(u16 mapIndex);
 extern u8 func_800ACDF4(u16 mapIndex);
-extern u8 func_800ACDF4(u16 mapIndex);
 extern u8 func_800ACEAC(u16 mapIndex);
 extern u8 func_800ACEF8(u16 mapIndex);
 extern bool checkWineBarrelInteraction(u16);
 extern bool func_800ACE50(u16 mapIndex);
 extern bool func_800ACFE8(u16 mapIndex);   
 extern bool func_800AD0C4(u16 mapIndex);
-extern bool func_800AD1D0(u16 mapIndex);
+extern bool handleLevelInteraction(u16 mapIndex);
 
 extern LevelInteractionsInfo levelInteractionsInfo;
 

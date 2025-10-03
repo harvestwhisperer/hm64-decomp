@@ -656,7 +656,7 @@ void func_800DCAB8(void) {
 
                 if (!set) {
 
-                    if (shopContext.quantity< D_80118F60[shopContext.storeItemIndex]) {
+                    if (shopContext.quantity < D_80118F60[shopContext.storeItemIndex]) {
                     
                         shopContext.quantity++;
                     
@@ -683,14 +683,19 @@ void func_800DCAB8(void) {
                     if (shopContext.quantity< 2) {
                         set = TRUE;
                     } else {
+                    
                         shopContext.quantity--;
+                    
                         dmaPauseScreenSprites(0, shopContext.quantity, 1, 3);
                         convertNumberToString(0x12, shopContext.quantity * prices[shopContext.storeItemIndex], 0);
+
                         if (D_80118F60[shopContext.storeItemIndex] >= 2) {
                             func_800B4238(D_80118F60[shopContext.storeItemIndex]);
                             setAudio(2);
                         }
+
                     }
+
                     set = TRUE;  
 
                 }
