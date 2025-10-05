@@ -2,7 +2,7 @@
 
 ## Progress
 
-Currently, 91% of the 1474 game functions and 81% of the game source files have been decompiled, with the entire game engine ("system") now fully decompiled. The esimated total bytes matched is around 80%. Additionally, the libultra and nusys functions are now completely matched (many thanks to cblck for the great work tackling the bulk of the library code).
+Currently, 93% of the 1474 game functions and 81% of the game source files have been decompiled, with the entire game engine ("system") now fully decompiled. The esimated total bytes matched is around 80%. Additionally, the libultra and nusys functions are now completely matched (many thanks to cblck for the great work tackling the bulk of the library code).
 
 ## Asset extraction
 

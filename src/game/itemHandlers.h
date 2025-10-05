@@ -5,9 +5,16 @@
 
 #define TOTAL_ITEMS 67
 #define MAX_KEY_ITEMS 24 
+#define MAX_TOOLS 30
 
 /* holdable item flags */
+#define ITEM_EATABLE 1
+#define ITEM_STORAGABLE_IN_RUCKSACK 2
 #define ITEM_SHIPPABLE 4
+#define ITEM_PLACEABLE_ON_GROUND 0x10
+// 0x200 = overlay screen flag
+// 0x1000 = overlay screen flag
+#define ITEM_HAS_ALCOHOL 0x4000
 
 /* tools */
 #define SICKLE 1
@@ -64,12 +71,12 @@
 
 // TODO: finish adding items
 /* item indices */
-#define WEED_ITEM_INDEX 1
-#define ROCK 2
-#define LOG_ITEM_INDEX 3
-#define MOONDROP_FLOWER 4
-#define PINK_CAT_MINT_FLOWER 5  
-#define BLUE_MIST_FLOWER 6
+#define WEED_HELD_ITEM 1
+#define ROCK_HELD_ITEM 2
+#define LOG_HELD_ITEM 3
+#define MOONDROP_FLOWER_HELD_ITEM 4
+#define PINK_CAT_MINT_FLOWER_HELD_ITEM 5  
+#define BLUE_MIST_FLOWER_HELD_ITEM 6
 #define CAKE 7
 #define PIE 8
 #define COOKIES 9
@@ -81,7 +88,7 @@
 #define CORN 17
 #define EGGPLANT 18
 #define STRAWBERRY 19
-#define EGG 20
+#define EGG_HELD_ITEM 20
 #define SMALL_MILK 21
 #define MEDIUM_MILK 22
 #define LARGE_MILK 23
@@ -112,29 +119,66 @@
 #define RARE_METAL 48
 #define MOONLIGHT_STONE 49
 #define PONTANA_ROOT 50
-#define FODDER 57
-#define SEEDS_ITEM_INDEX 64
+#define FODDER_HELD_ITEM 57
+#define SEEDS_HELD_ITEM 64
 #define MEDICINE 72
-#define SHEARS_ITEM_INDEX 73
+#define SHEARS_HELD_ITEM 73
 #define RICE_CAKE 80
 #define BREAD 81
 #define EGGS 82
 #define POWER_NUT 87
-#define DOG_ITEM_INDEX 89
-#define CHICK_ITEM_INDEX 101
-#define BOTTLE_WITH_WINE 114
-#define PUPPY 128
-#define CAT 137
-#define SQUIRREL 154
-#define MONKEY 165
-#define DOG_2_ITEM_INDEX 176
-#define INSECT 183
-#define CRICKET 185
-#define BABY_ITEM_INDEX 192
-#define GROWN_UP_BABY 195
+#define DOG_HELD_ITEM 88
+// multiple directions
+#define CHICKEN_HELD_ITEM 96
+// multiple directions
+#define EMPTY_BOTTLE_HELD_ITEM 112
+#define BOTTLE_WITH_WATER_HELD_ITEM 113
+#define BOTTLE_WITH_WINE_HELD_ITEM 114
+#define PUPPY_1_HELD_ITEM 123
+// multiple directions
+#define CAT_HELD_ITEM 131
+// multiple directions
+#define FOX_HELD_ITEM 139
+// multiple directions
+#define SQUIRREL_HELD_ITEM 147
+// multiple directions
+#define RABBIT_HELD_ITEM 155
+// multiple directions
+#define MONKEY_HELD_ITEM 163
+// multiple directions
+#define DOG_2_HELD_ITEM 171
+// multiple directions
+#define BUTTERFLY_HELD_ITEM 179
+#define LADYBUG_HELD_ITEM 180
+#define CICADA_HELD_ITEM 181
+#define HORNED_BEETLE_HELD_ITEM 182
+#define STAG_BEETLE_HELD_ITEM 183
+#define RED_DRAGONFLY_HELD_ITEM 184
+#define CRICKET_HELD_ITEM 185
+#define BABY_HELD_ITEM 186
+// multiple directions
+// #define BABY_HELD_ITEM 192
+#define BABY_GROWN_HELD_ITEM 194
+// multiple directions
+// #define BABY_GROWN_HELD_ITEM 195
 #define OPEN_BOOK 202
-#define SICKLE_ITEM_INDEX 203
-#define OCARINA_ITEM_INDEX 225
+#define SICKLE_HELD_ITEM 203
+#define SILVER_SICKLE_HELD_ITEM 204
+#define GOLDEN_SICKLE_HELD_ITEM 205
+#define HOE_HELD_ITEM 206
+#define SILVER_HOE_HELD_ITEM 207
+#define GOLDEN_HOE_HELD_ITEM 208
+#define AX_HELD_ITEM 209
+#define SILVER_AX_HELD_ITEM 210
+#define GOLDEN_AX_HELD_ITEM 211
+#define HAMMER_HELD_ITEM 212
+#define SILVER_HAMMER_HELD_ITEM 213
+#define GOLDEN_HAMMER_HELD_ITEM 214
+#define WATERING_CAN_HELD_ITEM 215
+#define SILVER_WATERING_CAN_HELD_ITEM 216
+#define GOLDEN_WATERING_CAN_HELD_ITEM 217
+#define BROKEN_MUSIC_BOX_HELD_ITEM 218
+#define OCARINA_HELD_ITEM 225
 
 /* bottle contents */
 #define EMPTY 0
@@ -148,26 +192,30 @@ typedef struct {
     Vec3f unk_C;  // DFC
     Vec3f unk_18; // 0xE10
     u16 unk_24; // 0xE1C
-    u16 unk_26; // 0xE1E
-    u16 unk_28; // 0xE20
-    u8 unk_2A; // 0xE22
+    u16 itemAnimationFrameCounter; // 0xE1E
+    u16 heldItemIndex; // 0xE20
+    u8 unk_2A; // state machine index
     u8 flags; // 0xE23
 } ItemContext;
 
 // 0x80189828
 typedef struct {
-    u16 unk_0; // 28
-    u8 entityIndex; // 2A, possibly an overloaded field
-    u8 unk_3; // 2B
-    s16 unk_4; // 2C
-    s16 unk_6; // 2E
-    u8 unk_8; // 30
-    s16 unk_A; // 32
-    s16 unk_C; // 34
-    u8 unk_E; // 36
-    u8 unk_F; // 37;
-    u32 unk_10; // 38
+    u16 unk_0; // unused
+    u8 stepIndex;
+    u8 stumpHitCounter; 
+    s16 stumpHitPositionX;
+    s16 stumpHitPositionZ;
+    u8 boulderHitCounter; 
+    s16 boulderHitPositionX;
+    s16 boulderHitPositionZ;
+    u8 toolUseState; 
+    u8 musicBoxTileDigCounter;
 } ToolUse;
+
+typedef struct {
+    u16 entityAssetIndex;
+    u16 animationIndex[4];
+} ItemEntityMetadata;
 
 extern void func_800CF850();     
 extern void func_800CFB38(u8, u8, f32, f32, f32);   

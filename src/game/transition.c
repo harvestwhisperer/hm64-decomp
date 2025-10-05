@@ -45,7 +45,7 @@ void mainGameLoopCallback(void) {
     D_80237A20 = (s16)entities[ENTITY_PLAYER].coordinates.y;
     D_80182D8C = (s16)entities[ENTITY_PLAYER].coordinates.z;
     
-    if (func_8002FD24(ENTITY_PLAYER) && !(func_80030388(ENTITY_PLAYER))) {
+    if (func_8002FD24(ENTITY_PLAYER) && !(checkEntityPaused(ENTITY_PLAYER))) {
 
         // increment clock and handle audio changes
         func_800D7C20();
@@ -53,8 +53,7 @@ void mainGameLoopCallback(void) {
         func_8006623C();
         setNpcAnimations();
         updateAnimals();
-        // player animation
-        func_8006A2E8();
+        handlePlayerAnimation();
 
     }
 
@@ -101,8 +100,7 @@ inline void func_80055F08(u16 cutsceneIndex, u16 entranceIndex, u8 arg2) {
     func_8006E840(gEntranceIndex);
  
     setupPlayerEntity(gEntranceIndex, FALSE);
-
-    func_8006A2E8();
+    handlePlayerAnimation();
 
     setMainLoopCallbackFunctionIndex(4);
 
@@ -202,7 +200,7 @@ void func_80056030(u8 arg0) {
     
     setupPlayerEntity(gEntranceIndex, arg0);
     
-    handleEatingAndDrinking();
+    func_80065AA0();
     func_800D5290();
 
     if (arg0 != 2) {
@@ -221,9 +219,12 @@ void func_80056030(u8 arg0) {
         }
     }
     
-    func_8006A2E8();
+    handlePlayerAnimation();
+    // handle item state
     func_800D7010();
+    // handle tool use
     func_800D0318();
+
     setEntitiesColor(0, 0, 0, 0);
     func_8003BE98(MAIN_MAP_INDEX, 0, 0, 0, 0);
     
@@ -266,6 +267,7 @@ void func_800563D0(u8 arg0) {
             initializeEntity(0x13, 0x13, 0x44, (void*)0x80281710, (void*)0x80282198, (void*)0x802779C0, (void*)0x80277AC0, (void*)0x8027A6C0, (void*)0x8027A8C0);
             initializeEntity(0x14, 0x14, 0x45, (void*)0x80282C20, (void*)0x802836A8, (void*)0x80270210, (void*)0x80270410, (void*)0x80272000, (void*)0x80272200);
             
+            // items and tools
             initializeEntity(0x27, 0x15, 0x46, (void*)0x8028B930, (void*)0x8028C730, (void*)0x8028DD50, (void*)0x80290550, (void*)0x80293A50, (void*)0x80293C50);
             initializeEntity(0x28, 0x16, 0x47, (void*)0x80294250, (void*)0x80295050, (void*)0x8028DD50, (void*)0x80290550, (void*)0x80293A50, (void*)0x80293C50);
             initializeEntity(0x29, 0x17, 0x48, (void*)0x80295E50, (void*)0x80296C50, (void*)0x8028DD50, (void*)0x80290550, (void*)0x80293A50, (void*)0x80293C50);
@@ -325,6 +327,7 @@ void func_800563D0(u8 arg0) {
             initializeEntity(0x13, 0x13, 0x44, (void*)0x80281710, (void*)0x80282198, (void*)0x802779C0, (void*)0x80277AC0, (void*)0x8027A6C0, (void*)0x8027A8C0);
             initializeEntity(0x14, 0x14, 0x45, (void*)0x80282C20, (void*)0x802836A8, (void*)0x80270210, (void*)0x80270410, (void*)0x80272000, (void*)0x80272200);
             
+            // items and tools
             initializeEntity(0x27, 0x15, 0x46, (void*)0x8028B930, (void*)0x8028C730, (void*)0x8028DD50, (void*)0x80290550, (void*)0x80293A50, (void*)0x80293C50);
             initializeEntity(0x28, 0x16, 0x47, (void*)0x80294250, (void*)0x80295050, (void*)0x8028DD50, (void*)0x80290550, (void*)0x80293A50, (void*)0x80293C50);
             initializeEntity(0x29, 0x17, 0x48, (void*)0x80295E50, (void*)0x80296C50, (void*)0x8028DD50, (void*)0x80290550, (void*)0x80293A50, (void*)0x80293C50);
@@ -484,7 +487,7 @@ void func_80059368(void) {
     func_8002FB7C();
     func_80046CF4();
     setEntityMapSpaceIndependent(ENTITY_PLAYER, TRUE);
-    handleEatingAndDrinking();
+    func_80065AA0();
 
     dmaMapAssets(0, gMapWithSeasonIndex);
     

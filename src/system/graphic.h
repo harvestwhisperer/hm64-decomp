@@ -11,14 +11,14 @@
 
 #define DEGREES_TO_RADIANS_CONSTANT 0.0174532925199432955
 
-#define NORTH 0
-#define NORTHEAST 1
-#define EAST 2
-#define SOUTHEAST 3
-#define SOUTH 4
-#define SOUTHWEST 5
-#define WEST 6
-#define NORTHWEST 7
+#define SOUTHWEST 0
+#define WEST 1
+#define NORTHWEST 2
+#define NORTH 3
+#define NORTHEAST 4
+#define EAST 5
+#define SOUTHEAST 6
+#define SOUTH 7
 #define MAX_DIRECTIONS 7
 
 #define convertSpriteToWorldDirection(direction, mapIndex) ((direction + 8) - getCurrentMapRotation(mapIndex)) % 8  

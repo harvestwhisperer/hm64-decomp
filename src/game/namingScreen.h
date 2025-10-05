@@ -12,11 +12,12 @@
 typedef struct {
     u8* name;
     u16 dialogueIndex;
-    u8 unk_6; // mode/name to enter
-    u8 unk_7;
-    Vec4f_Coordinates coordinates;
-    s8 unk_18;
-    s8 unk_19;
+    u8 screenType;
+    u8 selectedSeason;
+    Vec2f cursor;
+    Vec2f shadow;
+    s8 gridX;
+    s8 gridY; 
     s8 unk_1A;
     u16 unk_1C;
     u16 flags;

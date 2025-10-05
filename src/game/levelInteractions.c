@@ -248,12 +248,12 @@ bool func_800AD0C4(u16 mapIndex) {
         levelInteractionIndex = getLevelInteractionIndexFromEntityPosition(ENTITY_PLAYER, 0.0f, 64.0f);
 
         if (levelInteractionIndex == 0x10 || levelInteractionIndex == 0x14) {
-            gPlayer.fatigue.unk_3 = 0;
+            gPlayer.fishingSpotType = 0;
             result = TRUE;
         }
         
         if (levelInteractionIndex == 0x12) {
-            gPlayer.fatigue.unk_3 = 1;
+            gPlayer.fishingSpotType = 1;
             result = TRUE;
         }
 
@@ -261,14 +261,14 @@ bool func_800AD0C4(u16 mapIndex) {
     
     if (mapIndex == MOUNTAIN_2) {
         if (getLevelInteractionIndexFromEntityPosition(ENTITY_PLAYER, 0.0f, 64.0f) == 0x10) {
-            gPlayer.fatigue.unk_3 = 2;
+            gPlayer.fishingSpotType = 2;
             result = TRUE;
         }
     }
     
     if (mapIndex == BEACH) {
         if (getLevelInteractionIndexFromEntityPosition(ENTITY_PLAYER, 0.0f, 64.0f) == 0x10) {
-            gPlayer.fatigue.unk_3 = 3;
+            gPlayer.fishingSpotType = 3;
             result = TRUE;
         }
     }
@@ -558,10 +558,10 @@ bool func_800AD8D0(u16 mapIndex, u8 levelInteractionIndex) {
         case 4:
 
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
-                if (gPlayer.direction == SOUTH) {
+                if (gPlayer.direction == NORTHEAST) {
                     result = TRUE;
                     levelInteractionsInfo.mapAdditionsIndex = 9;
-                    levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN;
+                    levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN_SFX;
                     setEntrance(0xA);
                 }
             }
@@ -571,10 +571,10 @@ bool func_800AD8D0(u16 mapIndex, u8 levelInteractionIndex) {
         case 5:
 
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
-                if (gPlayer.direction == SOUTH) {
+                if (gPlayer.direction == NORTHEAST) {
                     result = TRUE;
                     levelInteractionsInfo.mapAdditionsIndex = 0xD;
-                    levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN;
+                    levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN_SFX;
                     setEntrance(0xE);
                 }
             }
@@ -586,7 +586,7 @@ bool func_800AD8D0(u16 mapIndex, u8 levelInteractionIndex) {
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
                 result = TRUE;
                 levelInteractionsInfo.mapAdditionsIndex = 0xA;
-                levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN;
+                levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN_SFX;
                 setEntrance(0x11);
             }
 
@@ -597,7 +597,7 @@ bool func_800AD8D0(u16 mapIndex, u8 levelInteractionIndex) {
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
                 result = TRUE;
                 levelInteractionsInfo.mapAdditionsIndex = 0xB;
-                levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN;
+                levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN_SFX;
                 setEntrance(0x12);
             }
 
@@ -608,7 +608,7 @@ bool func_800AD8D0(u16 mapIndex, u8 levelInteractionIndex) {
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
                 result = TRUE;
                 levelInteractionsInfo.mapAdditionsIndex = 0x14;
-                levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN;
+                levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN_SFX;
                 setEntrance(0x13);
             }
 
@@ -617,10 +617,10 @@ bool func_800AD8D0(u16 mapIndex, u8 levelInteractionIndex) {
         case 9:
 
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
-                if (gPlayer.direction == WEST) {
+                if (gPlayer.direction == SOUTHEAST) {
                     result = TRUE;
                     levelInteractionsInfo.mapAdditionsIndex = 0xC;
-                    levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN;
+                    levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN_SFX;
                     setEntrance(0xB);
                 }
             }
@@ -690,7 +690,7 @@ bool func_800AD8D0(u16 mapIndex, u8 levelInteractionIndex) {
 
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
                 
-                if (gPlayer.direction == EAST) {
+                if (gPlayer.direction == NORTHWEST) {
                     convertNumberToString(0x18, gLumber, 0);
                     showTextBox(1, 6, 0xA3, 0, 2);
                     result = TRUE;
@@ -726,7 +726,7 @@ bool func_800AD8D0(u16 mapIndex, u8 levelInteractionIndex) {
                     showTextBox(1, 6, 0xA7, 0, 2);
                     acquireKeyItem(TREASURE_MAP);
                     result = TRUE;
-                    toolUse.unk_F = 0;
+                    toolUse.musicBoxTileDigCounter = 0;
                 }
 
             }
@@ -763,7 +763,7 @@ bool func_800ADCDC(u16 mapIndex, u8 levelInteractionIndex) {
         case 2:
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A) && gWeather != TYPHOON) {
                 levelInteractionsInfo.mapAdditionsIndex = 2;
-                levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN;
+                levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN_SFX;
                 result = TRUE;
                 if (checkLifeEventBit(HAVE_KITCHEN)) {                   
                     setEntrance(0xF);
@@ -791,7 +791,7 @@ bool func_800ADCDC(u16 mapIndex, u8 levelInteractionIndex) {
 
         // TV
         case 0x12:
-            if (checkButtonPressed(CONTROLLER_1, BUTTON_A) && gPlayer.direction == SOUTH) {
+            if (checkButtonPressed(CONTROLLER_1, BUTTON_A) && gPlayer.direction == NORTHEAST) {
                 func_800B3694();
                 // turn on TV
                 func_800D8540();
@@ -805,7 +805,7 @@ bool func_800ADCDC(u16 mapIndex, u8 levelInteractionIndex) {
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
                 func_80038990(0, 3, 1);
                 func_8005CA2C(0xA, 0x15);
-                levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN;
+                levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN_SFX;
                 result = TRUE;
             }
             break;
@@ -813,7 +813,7 @@ bool func_800ADCDC(u16 mapIndex, u8 levelInteractionIndex) {
         case 0x14:
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
                 setMainLoopCallbackFunctionIndex(CALENDAR_LOAD);
-                levelInteractionsInfo.interactionSfxIndex  = MENU_OPEN;
+                levelInteractionsInfo.interactionSfxIndex  = MENU_OPEN_SFX;
                 result = TRUE;
             }
             break;
@@ -822,7 +822,7 @@ bool func_800ADCDC(u16 mapIndex, u8 levelInteractionIndex) {
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A) != 0) {
                 func_80038990(0, 0xA, 1);
                 func_8005CA2C(0xA, 0x17);
-                levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN;
+                levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN_SFX;
                 result = TRUE;
             }
             break;
@@ -891,7 +891,7 @@ u8 func_800AE00C(u16 mapIndex, u8 levelInteractionIndex) {
             
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
                 if (gPlayer.heldItem == 0 && fodderQuantity != 0) {
-                        gPlayer.heldItem = FODDER;
+                        gPlayer.heldItem = FODDER_HELD_ITEM;
                         setPlayerAction(4, 6);
                         fodderQuantity += adjustValue((s32) fodderQuantity, -1, 999);
                         result = 2;
@@ -911,7 +911,7 @@ u8 func_800AE00C(u16 mapIndex, u8 levelInteractionIndex) {
             
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
                 
-                if (gPlayer.heldItem != FODDER && gFarmAnimals[0].flags & 1) {
+                if (gPlayer.heldItem != FODDER_HELD_ITEM && gFarmAnimals[0].flags & 1) {
 
                     temp = gFarmAnimals[0].type;
                     
@@ -952,7 +952,7 @@ u8 func_800AE00C(u16 mapIndex, u8 levelInteractionIndex) {
 
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
                 
-                if (gPlayer.heldItem != FODDER && gFarmAnimals[1].flags & 1) {
+                if (gPlayer.heldItem != FODDER_HELD_ITEM && gFarmAnimals[1].flags & 1) {
 
                     temp = gFarmAnimals[1].type;
                 
@@ -993,7 +993,7 @@ u8 func_800AE00C(u16 mapIndex, u8 levelInteractionIndex) {
 
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
                 
-                if (gPlayer.heldItem != FODDER && gFarmAnimals[2].flags & 1) {
+                if (gPlayer.heldItem != FODDER_HELD_ITEM && gFarmAnimals[2].flags & 1) {
 
                     temp = gFarmAnimals[2].type;
                 
@@ -1034,7 +1034,7 @@ u8 func_800AE00C(u16 mapIndex, u8 levelInteractionIndex) {
 
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
                 
-                if (gPlayer.heldItem != FODDER && gFarmAnimals[3].flags & 1) {
+                if (gPlayer.heldItem != FODDER_HELD_ITEM && gFarmAnimals[3].flags & 1) {
 
                     temp = gFarmAnimals[3].type;
                     
@@ -1075,7 +1075,7 @@ u8 func_800AE00C(u16 mapIndex, u8 levelInteractionIndex) {
 
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
                 
-                if (gPlayer.heldItem != FODDER && gFarmAnimals[4].flags & 1) {
+                if (gPlayer.heldItem != FODDER_HELD_ITEM && gFarmAnimals[4].flags & 1) {
 
                     temp = gFarmAnimals[4].type;
 
@@ -1117,7 +1117,7 @@ u8 func_800AE00C(u16 mapIndex, u8 levelInteractionIndex) {
 
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
                 
-                if (gPlayer.heldItem != FODDER && gFarmAnimals[5].flags & 1) {
+                if (gPlayer.heldItem != FODDER_HELD_ITEM && gFarmAnimals[5].flags & 1) {
 
                     temp = gFarmAnimals[5].type;
                     
@@ -1159,7 +1159,7 @@ u8 func_800AE00C(u16 mapIndex, u8 levelInteractionIndex) {
 
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
                 
-                if (gPlayer.heldItem != FODDER && gFarmAnimals[6].flags & 1) {
+                if (gPlayer.heldItem != FODDER_HELD_ITEM && gFarmAnimals[6].flags & 1) {
 
                     temp = gFarmAnimals[6].type;
                     
@@ -1200,7 +1200,7 @@ u8 func_800AE00C(u16 mapIndex, u8 levelInteractionIndex) {
 
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
                 
-                if (gPlayer.heldItem != FODDER && gFarmAnimals[7].flags & 1) {
+                if (gPlayer.heldItem != FODDER_HELD_ITEM && gFarmAnimals[7].flags & 1) {
 
                     temp = gFarmAnimals[7].type;
                     
@@ -1365,7 +1365,7 @@ bool func_800AED60(u16 mapIndex, u8 levelInteractionIndex) {
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
                 result = TRUE;
                 levelInteractionsInfo.mapAdditionsIndex = 2;
-                levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN;
+                levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN_SFX;
                 setEntrance(0xD);
             }        
             break;
@@ -1373,21 +1373,21 @@ bool func_800AED60(u16 mapIndex, u8 levelInteractionIndex) {
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
                 func_80038990(0, 0, 1);
                 func_8005CA2C(0xA, 0x16);
-                levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN;
+                levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN_SFX;
                 result = TRUE;
             }
             break;
         case 21:
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
                 setMainLoopCallbackFunctionIndex(RECIPE_BOOK_LOAD);
-                levelInteractionsInfo.interactionSfxIndex = MENU_OPEN;
+                levelInteractionsInfo.interactionSfxIndex = MENU_OPEN_SFX;
                 result = TRUE;
             }
             break;
         case 22:
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
                 setMainLoopCallbackFunctionIndex(KITCHEN_PICTURE_LOAD);
-                levelInteractionsInfo.interactionSfxIndex = MENU_OPEN;
+                levelInteractionsInfo.interactionSfxIndex = MENU_OPEN_SFX;
                 result = TRUE;
             }
             break;
@@ -1427,7 +1427,7 @@ bool func_800AEE8C(u16 mapIndex, u8 levelInteractionIndex) {
                 if (gPlayer.heldItem == 0 && entities[PLAYER].coordinates.z >= -44.0f && entities[PLAYER].coordinates.z < -36.0f) {
                     setDailyEventBit(6);
                     setPlayerAction(0x11, 0);
-                    levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN;
+                    levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN_SFX;
                     result = 2;
                 }
             }         
@@ -1442,7 +1442,7 @@ bool func_800AEE8C(u16 mapIndex, u8 levelInteractionIndex) {
                     setPlayerAction(0x10, 0);
                     gHappiness += adjustValue(gHappiness, 2, 0xFF);
                     result = 2;
-                    levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN;
+                    levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN_SFX;
                 }
             }            
 
@@ -1506,7 +1506,7 @@ bool func_800AF0B0(u16 mapIndex, u8 levelInteractionIndex) {
                     setEntrance(0x56);
                 }
                 
-                levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN;
+                levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN_SFX;
                 
             }
         
@@ -1516,7 +1516,7 @@ bool func_800AF0B0(u16 mapIndex, u8 levelInteractionIndex) {
 
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) { 
                 
-                if (gPlayer.direction == SOUTH) {
+                if (gPlayer.direction == NORTHEAST) {
                     
                     if (checkDailyEventBit(0x28) || checkDailyEventBit(FESTIVAL)) { 
                         showTextBox(1, 6, 0x168, 0, 2);
@@ -1527,7 +1527,7 @@ bool func_800AF0B0(u16 mapIndex, u8 levelInteractionIndex) {
                         setEntrance(0x59);
                     }
                     
-                    levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN;
+                    levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN_SFX;
                         
                 }
                 
@@ -1548,7 +1548,7 @@ bool func_800AF0B0(u16 mapIndex, u8 levelInteractionIndex) {
                     setEntrance(0x5D);
                 }
                 
-                levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN;
+                levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN_SFX;
                 
             }
         
@@ -1567,7 +1567,7 @@ bool func_800AF0B0(u16 mapIndex, u8 levelInteractionIndex) {
                     setEntrance(0x5E);
                 }
                 
-                levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN;
+                levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN_SFX;
                 
             }
         
@@ -1585,7 +1585,7 @@ bool func_800AF0B0(u16 mapIndex, u8 levelInteractionIndex) {
                     setEntrance(0x5F);
                 }
                 
-                levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN;
+                levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN_SFX;
                 
             }
         
@@ -1603,7 +1603,7 @@ bool func_800AF0B0(u16 mapIndex, u8 levelInteractionIndex) {
                     setEntrance(0x60);
                 }
                 
-                levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN;
+                levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN_SFX;
                 
             }
         
@@ -1612,7 +1612,7 @@ bool func_800AF0B0(u16 mapIndex, u8 levelInteractionIndex) {
         case 9:
 
             if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
-                if (gPlayer.direction == EAST) {
+                if (gPlayer.direction == NORTHWEST) {
                     result = TRUE;
                     setEntrance(0x61);
                 }
@@ -1623,7 +1623,7 @@ bool func_800AF0B0(u16 mapIndex, u8 levelInteractionIndex) {
         case 10:
             
             if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
-                if (gPlayer.direction == EAST) {
+                if (gPlayer.direction == NORTHWEST) {
                     result = TRUE;
                     setEntrance(0x63);
                 }
@@ -1634,7 +1634,7 @@ bool func_800AF0B0(u16 mapIndex, u8 levelInteractionIndex) {
         case 37:
 
             if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
-                if (gPlayer.direction == NORTHEAST) {
+                if (gPlayer.direction == WEST) {
                     result = TRUE;
                     setEntrance(0x63);
                 }
@@ -1645,7 +1645,7 @@ bool func_800AF0B0(u16 mapIndex, u8 levelInteractionIndex) {
         case 38:
 
             if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
-                if (gPlayer.direction == SOUTHEAST) {
+                if (gPlayer.direction == NORTH) {
                     result = TRUE;
                     setEntrance(0x63);
                 }
@@ -1656,7 +1656,7 @@ bool func_800AF0B0(u16 mapIndex, u8 levelInteractionIndex) {
         case 39:
 
             if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
-                if (gPlayer.direction == NORTHEAST) {
+                if (gPlayer.direction == WEST) {
                     result = TRUE;
                     setEntrance(0x61);
                 }
@@ -1667,7 +1667,7 @@ bool func_800AF0B0(u16 mapIndex, u8 levelInteractionIndex) {
         case 40:
 
             if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
-                if (gPlayer.direction == SOUTHEAST) {
+                if (gPlayer.direction == NORTH) {
                     result = TRUE;
                     setEntrance(0x61);
                 }
@@ -1698,7 +1698,7 @@ bool func_800AF0B0(u16 mapIndex, u8 levelInteractionIndex) {
                     setEntrance(0x5B);
                 }
                 
-                levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN;
+                levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN_SFX;
                 
             }
             
@@ -1739,7 +1739,7 @@ u8 func_800AF494(u16 mapIndex, u8 levelInteractionIndex) {
                     setEntrance(0x58);
                 }
                 
-                levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN;
+                levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN_SFX;
                 
             }
         
@@ -1747,7 +1747,7 @@ u8 func_800AF494(u16 mapIndex, u8 levelInteractionIndex) {
 
         case 16:
 
-            if (gPlayer.direction == SOUTH) {
+            if (gPlayer.direction == NORTHEAST) {
                 
                 if (gSeason == WINTER && (24 < gDayOfMonth && gDayOfMonth < 30)) {
 
@@ -2034,7 +2034,7 @@ bool func_800AFA7C(u16 mapIndex, u8 levelInteractionIndex) {
                     setEntrance(0x5C);
                 }
                 
-                levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN;
+                levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN_SFX;
                 
             }
         
@@ -2051,7 +2051,7 @@ bool func_800AFA7C(u16 mapIndex, u8 levelInteractionIndex) {
 
         case 16:
 
-            if (gPlayer.direction == SOUTH) {
+            if (gPlayer.direction == NORTHEAST) {
                 
                 if (gSeason == WINTER && (24 < gDayOfMonth && gDayOfMonth < 30)) {
 
@@ -2083,7 +2083,7 @@ bool func_800AFA7C(u16 mapIndex, u8 levelInteractionIndex) {
 
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) { 
                 
-                if (gPlayer.direction == SOUTH && gPlayer.heldItem == 0) {
+                if (gPlayer.direction == NORTHEAST && gPlayer.heldItem == 0) {
                     func_8005B09C(2);
                     result = TRUE;
                 }
@@ -2150,7 +2150,7 @@ bool func_800AFD20(u16 mapIndex, u8 levelInteractionIndex) {
             
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) { 
                 
-                if (gPlayer.direction == SOUTH) {
+                if (gPlayer.direction == NORTHEAST) {
                         showTextBox(0, 6, 0x44, 0, 0);
                         result = 1;
                 }
@@ -2488,7 +2488,7 @@ bool func_800B0378(u16 mapIndex, u8 levelInteractionIndex) {
                     setEntrance(0x64);
                 }
                 
-                levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN;
+                levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN_SFX;
                 
             }
         
@@ -2507,7 +2507,7 @@ bool func_800B0378(u16 mapIndex, u8 levelInteractionIndex) {
                     setEntrance(0x65);
                 }
                 
-                levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN;
+                levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN_SFX;
                 
             }
         
@@ -2526,7 +2526,7 @@ bool func_800B0378(u16 mapIndex, u8 levelInteractionIndex) {
                     setEntrance(0x68);
                 }
                 
-                levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN;
+                levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN_SFX;
                 
             }
         
@@ -2545,7 +2545,7 @@ bool func_800B0378(u16 mapIndex, u8 levelInteractionIndex) {
                     setEntrance(0x6B);
                 }
                 
-                levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN;
+                levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN_SFX;
                 
             }
         
@@ -2681,7 +2681,7 @@ bool func_800B0714(u16 mapIndex, u8 levelInteractionIndex) {
 
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {  
 
-                if (gPlayer.direction == SOUTH) {
+                if (gPlayer.direction == NORTHEAST) {
 
                     if (checkLifeEventBit(MARRIED) && gWife == MARIA) {
                         showTextBox(0, 6, 0xD7, 0, 0);
@@ -2822,7 +2822,7 @@ bool func_800B0714(u16 mapIndex, u8 levelInteractionIndex) {
 
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
 
-                if (gPlayer.direction == EAST && gPlayer.heldItem == 0) {
+                if (gPlayer.direction == NORTHWEST && gPlayer.heldItem == 0) {
 
                     showTextBox(1, 1, 8, 0, 2);
                     result = TRUE;
@@ -2837,7 +2837,7 @@ bool func_800B0714(u16 mapIndex, u8 levelInteractionIndex) {
 
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {  
 
-                if (gPlayer.direction == EAST && gPlayer.heldItem == 0) {
+                if (gPlayer.direction == NORTHWEST && gPlayer.heldItem == 0) {
 
                     showTextBox(1, 1, 9, 0, 2);
                     result = TRUE;
@@ -2917,7 +2917,7 @@ bool func_800B0AFC(u16 mapIndex, u8 levelInteractionIndex) {
                     setEntrance(0x67);
                 }
                 
-                levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN;
+                levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN_SFX;
                 
             }
         
@@ -3002,7 +3002,7 @@ u8 func_800B0C98(u16 mapIndex, u8 levelInteractionIndex) {
                     setEntrance(0x6A);
                 }
                 
-                levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN;
+                levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN_SFX;
                 
             }
         
@@ -3193,7 +3193,7 @@ u8 func_800B106C(u16 mapIndex, u8 levelInteractionIndex) {
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {  
 
                 levelInteractionsInfo.mapAdditionsIndex = 0;
-                levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN;
+                levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN_SFX;
                 result = 1;
                 setEntrance(0x6C);
                 
@@ -3441,7 +3441,7 @@ u8 func_800B1540(u16 mapIndex, u8 levelInteractionIndex) {
 
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) { 
                 
-                if (gPlayer.direction == SOUTH) {
+                if (gPlayer.direction == NORTHEAST) {
                     
                     if (checkDailyEventBit(0x28) || checkDailyEventBit(FESTIVAL)) { 
                         
@@ -3481,7 +3481,7 @@ u8 func_800B1540(u16 mapIndex, u8 levelInteractionIndex) {
                         }
                     }
                     
-                    levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN;
+                    levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN_SFX;
                     
                 }
             
@@ -3530,7 +3530,7 @@ u8 func_800B1540(u16 mapIndex, u8 levelInteractionIndex) {
 
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) { 
                 
-                if (gPlayer.direction == NORTH) {
+                if (gPlayer.direction == SOUTHWEST) {
                     setDailyEventBit(6);
                     setPlayerAction(0x1C, 0xE);
                     result = 2;
@@ -3605,7 +3605,7 @@ u8 func_800B1808(u16 mapIndex, u8 levelInteractionIndex) {
                         if (-48.0f <= entities[PLAYER].coordinates.x && entities[PLAYER].coordinates.x < -40.0f) {
                             setDailyEventBit(6);
                             setPlayerAction(0x1D, 0);
-                            levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN;
+                            levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN_SFX;
                             result = 2;
                         }
                     }
@@ -3659,7 +3659,7 @@ bool func_800B1994(u16 mapIndex, u8 levelInteractionIndex) {
                     setEntrance(0x4A);                
                 }
                 
-                levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN;
+                levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN_SFX;
             }
 
             break;        
@@ -3891,7 +3891,7 @@ bool func_800B1DBC(u16 mapIndex, u8 levelInteractionIndex) {
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) { 
                 showTextBox(1, 6, 0xB2, 0, 2);
                 result = TRUE;
-                levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN;        
+                levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN_SFX;        
             }
 
             break;
@@ -4046,7 +4046,7 @@ bool func_800B2118(u16 mapIndex, u8 levelInteractionIndex) {
                     setEntrance(0x51);
                 }
                 
-                levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN;
+                levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN_SFX;
                 
             }
         
@@ -4065,7 +4065,7 @@ bool func_800B2118(u16 mapIndex, u8 levelInteractionIndex) {
                     setEntrance(0x53);
                 }
                 
-                levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN;
+                levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN_SFX;
                 
             }
         
@@ -4130,7 +4130,7 @@ bool func_800B2340(u16 mapIndex, u8 levelInteractionIndex) {
         
             if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
 
-                if (gPlayer.direction == WEST) { 
+                if (gPlayer.direction == SOUTHEAST) { 
                     result = TRUE;
                     setEntrance(0x50);
                 }
@@ -4165,7 +4165,7 @@ bool func_800B23A4(u16 mapIndex, u8 levelInteractionIndex) {
          case 2:
 
              if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) { 
-                 if (SOUTHWEST < gPlayer.direction && gPlayer.direction < (MAX_DIRECTIONS + 1) || gPlayer.direction == SOUTHWEST) {
+                 if (EAST < gPlayer.direction && gPlayer.direction < (MAX_DIRECTIONS + 1) || gPlayer.direction == EAST) {
                     result = TRUE;
                     setEntrance(0x55);
                  }
@@ -4304,7 +4304,7 @@ bool func_800B2604(u16 mapIndex, u8 levelInteractionIndex) {
                     goto label;
                 }
                 
-                levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN;
+                levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN_SFX;
                 
             }
             
@@ -4323,7 +4323,7 @@ bool func_800B2604(u16 mapIndex, u8 levelInteractionIndex) {
                     setEntrance(0x4E);
                 }
                 
-                levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN;
+                levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN_SFX;
                 
             }
             
@@ -4344,7 +4344,7 @@ label:
                     setEntrance(0x4F);
                 }
                 
-                levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN;
+                levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN_SFX;
                 
             }
             
@@ -4436,7 +4436,7 @@ u8 handleRanchStoreLevelInteractions(u16 mapIndex, u8 collisionIndex) {
                     setEntrance(ANN_ROOM_ENTER);
                 }
 
-                levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN;
+                levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN_SFX;
             } 
 
             break;
@@ -4444,7 +4444,7 @@ u8 handleRanchStoreLevelInteractions(u16 mapIndex, u8 collisionIndex) {
         // the following seem like unused items/interactions
         case 16:
 
-            if (checkButtonPressed(CONTROLLER_1, BUTTON_A) && gPlayer.direction == EAST) {
+            if (checkButtonPressed(CONTROLLER_1, BUTTON_A) && gPlayer.direction == NORTHWEST) {
 
                     if (!checkDailyEventBit(1) && !checkDailyEventBit(2)) {
 

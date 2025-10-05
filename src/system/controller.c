@@ -205,7 +205,7 @@ void convertAnalogSticksToDirections(u8 controllerIndex) {
     
     controllers[controllerIndex].sticks.u_stick_x = 0;
 
-    if (sticks.u_stick_x < SOUTHEAST && sticks.u_stick_y < SOUTHEAST) {
+    if (sticks.u_stick_x < NORTH && sticks.u_stick_y < NORTH) {
         
         controllers[controllerIndex].sticks.u_stick_x = 0xFF;
         
@@ -217,21 +217,21 @@ void convertAnalogSticksToDirections(u8 controllerIndex) {
             
             if ((sticks.u_stick_x / 2) < controllers[controllerIndex].sticks.u_stick_y) {
                 if ((sticks.s_stick_x << 0x18) < 0) {
-                    controllers[controllerIndex].sticks.u_stick_x = EAST;
+                    controllers[controllerIndex].sticks.u_stick_x = NORTHWEST;
                 } else {
-                    controllers[controllerIndex].sticks.u_stick_x = WEST;
+                    controllers[controllerIndex].sticks.u_stick_x = SOUTHEAST;
                 }
             } else if ((sticks.s_stick_y << 0x18) < 0) {
                 if ((sticks.s_stick_x << 0x18) < 0) {
-                    controllers[controllerIndex].sticks.u_stick_x = NORTHEAST;
+                    controllers[controllerIndex].sticks.u_stick_x = WEST;
                 } else {
-                    controllers[controllerIndex].sticks.u_stick_x = NORTHWEST;
+                    controllers[controllerIndex].sticks.u_stick_x = SOUTH;
                 }
             } else {
                 if ((sticks.s_stick_x << 0x18) < 0) {
-                    controllers[controllerIndex].sticks.u_stick_x = SOUTHEAST;
+                    controllers[controllerIndex].sticks.u_stick_x = NORTH;
                 } else {
-                    controllers[controllerIndex].sticks.u_stick_x = SOUTHWEST;
+                    controllers[controllerIndex].sticks.u_stick_x = EAST;
                 }
     
             }
@@ -244,21 +244,21 @@ void convertAnalogSticksToDirections(u8 controllerIndex) {
             
             if ((sticks.u_stick_y / 2) < controllers[controllerIndex].sticks.u_stick_y) {
                 if ((sticks.s_stick_y << 0x18) < 0) {
-                    controllers[controllerIndex].sticks.u_stick_x = NORTH;
+                    controllers[controllerIndex].sticks.u_stick_x = SOUTHWEST;
                 } else {
-                    controllers[controllerIndex].sticks.u_stick_x = SOUTH;
+                    controllers[controllerIndex].sticks.u_stick_x = NORTHEAST;
                 } 
             } else if ((sticks.s_stick_x << 0x18) < 0) {
                 if ((sticks.s_stick_y << 0x18) < 0) {
-                    controllers[controllerIndex].sticks.u_stick_x = NORTHEAST;
+                    controllers[controllerIndex].sticks.u_stick_x = WEST;
                 } else {
-                    controllers[controllerIndex].sticks.u_stick_x = SOUTHEAST;
+                    controllers[controllerIndex].sticks.u_stick_x = NORTH;
                 }
             } else {
                 if ((sticks.s_stick_y << 0x18) < 0) { 
-                    controllers[controllerIndex].sticks.u_stick_x = NORTHWEST;
+                    controllers[controllerIndex].sticks.u_stick_x = SOUTH;
                 } else {
-                    controllers[controllerIndex].sticks.u_stick_x = SOUTHWEST;
+                    controllers[controllerIndex].sticks.u_stick_x = EAST;
                 }
             }
     
@@ -268,7 +268,7 @@ void convertAnalogSticksToDirections(u8 controllerIndex) {
      }
     
     if (controllers[controllerIndex].sticks.u_stick_y >= MAX_DIRECTIONS) {
-        controllers[controllerIndex].sticks.u_stick_y = WEST;
+        controllers[controllerIndex].sticks.u_stick_y = SOUTHEAST;
     }
     
     controllers[controllerIndex].button |= (0x10000 << (controllers[controllerIndex].sticks.u_stick_x)); 

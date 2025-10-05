@@ -52,9 +52,8 @@
 #define DIALOGUE_ICONS_3 0x7B
 
 /* naming screen */
+#define NAMING_SCREEN_SPRITES_BASE 0x83
 #define LANDSCAPE_BACKGROUND 0x90
-
-#define ITEMS_OFFSET 0x27 // offset from sprite bank start to start of item sprites
 
 /* virtual addressses for dma */
 #define SHADOW_TEXTURE_VADDR_START 0x80240300

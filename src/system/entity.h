@@ -17,7 +17,7 @@
 #define ENTITY_MAP_SPACE_INDEPENDENT 0x100
 #define ENTITY_TRACKING_ACTIVE 0x200
 #define ENTITY_NON_COLLIDABLE 0x400
-#define ENTITY_UNKNOWN_FLAG_2 0x800 // not checked; set when entity is touching ground
+#define ENTITY_UNKNOWN_FLAG_2 0x800 // used by item entities set when entity is touching ground
 #define ENTITY_LOAD_PENDING 0x1000
 #define ENTITY_PALETTE_SET 0x2000
 #define ENTITY_COLLISION_EXEMPT 0x4000
@@ -123,7 +123,7 @@ extern bool func_8002FF38(u16, u16);
 extern bool setEntityCollisionBuffers(u16 entityIndex, u8 xValue, u8 yValue);
 extern bool setEntitySpriteDimensions(u16 index, u8 arg1, u8 arg2);
 extern bool setEntityYMovement(u16 entityIndex, bool flag);                                                   
-extern bool func_80030388(u16 entityIndex);        
+extern bool checkEntityPaused(u16 entityIndex);        
 extern void updateEntities(void);                          
 extern bool setEntityCollidable(u16, u8);                            
 extern bool setEntityTracksCollisions(u16, u8);                            

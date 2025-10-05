@@ -1054,7 +1054,7 @@ void func_80076F10(void) {
 
                 npcs[MARIA].levelIndex = HOUSE;
                 npcs[MARIA].startingCoordinates.y = 0.0f;
-                npcs[MARIA].direction = NORTHWEST;
+                npcs[MARIA].direction = SOUTH;
                 npcs[MARIA].unk_1E = 0;
                 npcs[MARIA].startingCoordinates.x = -128.0f;
                 npcs[MARIA].startingCoordinates.z = -64.0f;
@@ -1070,7 +1070,7 @@ void func_80076F10(void) {
 
                         npcs[MARIA].levelIndex = CHURCH;
                         npcs[MARIA].startingCoordinates.y = 0.0f;
-                        npcs[MARIA].direction = NORTH;
+                        npcs[MARIA].direction = SOUTHWEST;
                         npcs[MARIA].unk_1E = 0;
                         npcs[MARIA].startingCoordinates.x = -112.0f;
                         npcs[MARIA].startingCoordinates.z = -192.0f;
@@ -1080,7 +1080,7 @@ void func_80076F10(void) {
 
                         npcs[MARIA].levelIndex = LIBRARY;
                         npcs[MARIA].startingCoordinates.y = 0.0f;
-                        npcs[MARIA].direction = NORTH;
+                        npcs[MARIA].direction = SOUTHWEST;
                         npcs[MARIA].unk_1E = 0;
                         npcs[MARIA].startingCoordinates.x = 48.0f;
                         npcs[MARIA].startingCoordinates.z = -96.0f;
@@ -1092,7 +1092,7 @@ void func_80076F10(void) {
                         
                     npcs[MARIA].levelIndex = FARM;
                     npcs[MARIA].startingCoordinates.y = 0.0f;
-                    npcs[MARIA].direction = NORTH;
+                    npcs[MARIA].direction = SOUTHWEST;
                     npcs[MARIA].unk_1E = 0;
                     npcs[MARIA].startingCoordinates.x = -256.0f;
                     npcs[MARIA].startingCoordinates.z = -240.0f;
@@ -1104,7 +1104,7 @@ void func_80076F10(void) {
                     npcs[MARIA].startingCoordinates.x = 0.0f;
                     npcs[MARIA].startingCoordinates.y = 0.0f;
                     npcs[MARIA].startingCoordinates.z = 0.0f;
-                    npcs[MARIA].direction = NORTH;
+                    npcs[MARIA].direction = SOUTHWEST;
                     npcs[MARIA].unk_1E = 1;
                     npcs[MARIA].flags |= 1;
                     
@@ -1116,7 +1116,7 @@ void func_80076F10(void) {
                 
                 npcs[MARIA].levelIndex = KITCHEN;
                 npcs[MARIA].startingCoordinates.y = 0.0f;
-                npcs[MARIA].direction = EAST;
+                npcs[MARIA].direction = NORTHWEST;
                 npcs[MARIA].unk_1E = 0;
                 npcs[MARIA].startingCoordinates.x = -160.0f;
                 npcs[MARIA].startingCoordinates.z = -64.0f;
@@ -1130,7 +1130,7 @@ void func_80076F10(void) {
                 npcs[MARIA].startingCoordinates.x = 0.0f;
                 npcs[MARIA].startingCoordinates.y = 0.0f;
                 npcs[MARIA].startingCoordinates.z = 0.0f;
-                npcs[MARIA].direction = NORTH;
+                npcs[MARIA].direction = SOUTHWEST;
                 npcs[MARIA].unk_1E = 1;
                 npcs[MARIA].flags |= 1;
                 
@@ -1140,7 +1140,7 @@ void func_80076F10(void) {
                 
                 npcs[MARIA].levelIndex = KITCHEN;
                 npcs[MARIA].startingCoordinates.y = 0.0f;
-                npcs[MARIA].direction = EAST;
+                npcs[MARIA].direction = NORTHWEST;
                 npcs[MARIA].unk_1E = 0;
                 npcs[MARIA].startingCoordinates.x = -160.0f;
                 npcs[MARIA].startingCoordinates.z = -64.0f;
@@ -1152,7 +1152,7 @@ void func_80076F10(void) {
 
                 npcs[MARIA].levelIndex = HOUSE;
                 npcs[MARIA].startingCoordinates.y = 0.0f;
-                npcs[MARIA].direction = WEST;
+                npcs[MARIA].direction = SOUTHEAST;
                 npcs[MARIA].unk_1E = 0;
                 npcs[MARIA].startingCoordinates.x = -128.0f;
                 npcs[MARIA].startingCoordinates.z = -112.0f;
@@ -1164,7 +1164,7 @@ void func_80076F10(void) {
 
                 npcs[MARIA].levelIndex = HOUSE;
                 npcs[MARIA].startingCoordinates.y = 0.0f;
-                npcs[MARIA].direction = NORTH;
+                npcs[MARIA].direction = SOUTHWEST;
                 npcs[MARIA].unk_1E = 4;
                 npcs[MARIA].startingCoordinates.x = -192.0f;
                 npcs[MARIA].startingCoordinates.z = -160.0f;
@@ -1194,7 +1194,7 @@ void func_80076F10(void) {
                             
                             npcs[MARIA].levelIndex = LIBRARY;
                             npcs[MARIA].startingCoordinates.y = 0.0f;
-                            npcs[MARIA].direction = NORTH;
+                            npcs[MARIA].direction = SOUTHWEST;
                             npcs[MARIA].unk_1E = 0;
                             npcs[MARIA].startingCoordinates.x = 48.0f;
                             npcs[MARIA].startingCoordinates.z = -96.0f;
@@ -1215,7 +1215,7 @@ void func_80076F10(void) {
                                     npcs[MARIA].levelIndex = VILLAGE_1;
                                     npcs[MARIA].startingCoordinates.x = 0.0f;
                                     npcs[MARIA].startingCoordinates.y = 0.0f;
-                                    npcs[MARIA].direction = NORTH;
+                                    npcs[MARIA].direction = SOUTHWEST;
                                     npcs[MARIA].unk_1E = 0;
                                     npcs[MARIA].startingCoordinates.z = -144.0f;
                                     npcs[MARIA].flags |= 1;
@@ -1230,7 +1230,7 @@ void func_80076F10(void) {
                                     npcs[MARIA].startingCoordinates.x = 0.0f;
                                     npcs[MARIA].startingCoordinates.y = 0.0f;
                                     npcs[MARIA].startingCoordinates.z = 0.0f;
-                                    npcs[MARIA].direction = NORTH;
+                                    npcs[MARIA].direction = SOUTHWEST;
                                     npcs[MARIA].unk_1E = 0;
                                     npcs[MARIA].flags |= 1;
                                     
@@ -1244,7 +1244,7 @@ void func_80076F10(void) {
                                 
                                 npcs[MARIA].levelIndex = MAYOR_HOUSE;
                                 npcs[MARIA].startingCoordinates.y = 0.0f;
-                                npcs[MARIA].direction = NORTH;
+                                npcs[MARIA].direction = SOUTHWEST;
                                 npcs[MARIA].unk_1E = 0;
                                 npcs[MARIA].startingCoordinates.x = -128.0f;
                                 npcs[MARIA].startingCoordinates.z = -32.0f;
@@ -1262,7 +1262,7 @@ void func_80076F10(void) {
                     
                         npcs[MARIA].levelIndex = MAYOR_HOUSE;
                         npcs[MARIA].startingCoordinates.y = 0.0f;
-                        npcs[MARIA].direction = NORTH;
+                        npcs[MARIA].direction = SOUTHWEST;
                         npcs[MARIA].unk_1E = 0;
                         npcs[MARIA].startingCoordinates.x = -128.0f;
                         npcs[MARIA].startingCoordinates.z = -32.0f;
@@ -1276,7 +1276,7 @@ void func_80076F10(void) {
                         
                         npcs[MARIA].levelIndex = MAYOR_HOUSE;
                         npcs[MARIA].startingCoordinates.y = 0.0f;
-                        npcs[MARIA].direction = NORTH;
+                        npcs[MARIA].direction = SOUTHWEST;
                         npcs[MARIA].unk_1E = 0;
                         npcs[MARIA].startingCoordinates.x = -128.0f;
                         npcs[MARIA].startingCoordinates.z = -32.0f;
@@ -1286,7 +1286,7 @@ void func_80076F10(void) {
 
                         npcs[MARIA].levelIndex = CHURCH;
                         npcs[MARIA].startingCoordinates.y = 0.0f;
-                        npcs[MARIA].direction = NORTH;
+                        npcs[MARIA].direction = SOUTHWEST;
                         npcs[MARIA].unk_1E = 0;
                         npcs[MARIA].startingCoordinates.x = -112.0f;
                         npcs[MARIA].startingCoordinates.z = -192.0f;
@@ -1314,7 +1314,7 @@ void func_80076F10(void) {
                                 npcs[MARIA].levelIndex = VILLAGE_1;
                                 npcs[MARIA].startingCoordinates.x = 0.0f;
                                 npcs[MARIA].startingCoordinates.y = 0.0f;
-                                npcs[MARIA].direction = NORTH;
+                                npcs[MARIA].direction = SOUTHWEST;
                                 npcs[MARIA].unk_1E = 0;
                                 npcs[MARIA].startingCoordinates.z = -144.0f;
                                 npcs[MARIA].flags |= 1;
@@ -1325,7 +1325,7 @@ void func_80076F10(void) {
                                     
                             npcs[MARIA].levelIndex = MOUNTAIN_1;
                             npcs[MARIA].startingCoordinates.y = 0.0f;
-                            npcs[MARIA].direction = NORTH;
+                            npcs[MARIA].direction = SOUTHWEST;
                             npcs[MARIA].unk_1E = 1;
                             npcs[MARIA].startingCoordinates.x = 128.0f;
                             npcs[MARIA].startingCoordinates.z = 128.0f;
@@ -1341,7 +1341,7 @@ void func_80076F10(void) {
                             
                             npcs[MARIA].levelIndex = MAYOR_HOUSE;
                             npcs[MARIA].startingCoordinates.y = 0.0f;
-                            npcs[MARIA].direction = NORTH;
+                            npcs[MARIA].direction = SOUTHWEST;
                             npcs[MARIA].unk_1E = 0;
                             npcs[MARIA].startingCoordinates.x = -128.0f;
                             npcs[MARIA].startingCoordinates.z = -32.0f;
@@ -1357,7 +1357,7 @@ void func_80076F10(void) {
                         
                         npcs[MARIA].levelIndex = LIBRARY;
                         npcs[MARIA].startingCoordinates.y = 0.0f;
-                        npcs[MARIA].direction = NORTH;
+                        npcs[MARIA].direction = SOUTHWEST;
                         npcs[MARIA].unk_1E = 0;
                         npcs[MARIA].startingCoordinates.x = 48.0f;
                         npcs[MARIA].startingCoordinates.z = -96.0f;
@@ -1377,7 +1377,7 @@ void func_80076F10(void) {
     
                                 npcs[MARIA].levelIndex = MOUNTAIN_2;
                                 npcs[MARIA].startingCoordinates.y = 0.0f;
-                                npcs[MARIA].direction = NORTHWEST;
+                                npcs[MARIA].direction = SOUTH;
                                 npcs[MARIA].unk_1E = 0;
                                 npcs[MARIA].startingCoordinates.x = -208.0f;
                                 npcs[MARIA].startingCoordinates.z = -160.0f;
@@ -1393,7 +1393,7 @@ void func_80076F10(void) {
                                
                                 npcs[MARIA].levelIndex = POND;
                                 npcs[MARIA].startingCoordinates.y = 0.0f;
-                                npcs[MARIA].direction = WEST;
+                                npcs[MARIA].direction = SOUTHEAST;
                                 npcs[MARIA].unk_1E = 0;
                                 npcs[MARIA].startingCoordinates.x = -96.0f;
                                 npcs[MARIA].startingCoordinates.z = -32.0f;
@@ -1411,7 +1411,7 @@ void func_80076F10(void) {
                             
                             npcs[MARIA].levelIndex = MAYOR_HOUSE;
                             npcs[MARIA].startingCoordinates.y = 0.0f;
-                            npcs[MARIA].direction = NORTH;
+                            npcs[MARIA].direction = SOUTHWEST;
                             npcs[MARIA].unk_1E = 0;
                             npcs[MARIA].startingCoordinates.x = -128.0f;
                             npcs[MARIA].startingCoordinates.z = -32.0f;
@@ -1431,7 +1431,7 @@ void func_80076F10(void) {
                         
                             npcs[MARIA].levelIndex = MAYOR_HOUSE;
                             npcs[MARIA].startingCoordinates.y = 0.0f;
-                            npcs[MARIA].direction = NORTH;
+                            npcs[MARIA].direction = SOUTHWEST;
                             npcs[MARIA].unk_1E = 0;
                             npcs[MARIA].startingCoordinates.x = -128.0f;
                             npcs[MARIA].startingCoordinates.z = -32.0f;
@@ -1445,7 +1445,7 @@ void func_80076F10(void) {
     
                             npcs[MARIA].levelIndex = CHURCH;
                             npcs[MARIA].startingCoordinates.y = 0;
-                            npcs[MARIA].direction = NORTH;
+                            npcs[MARIA].direction = SOUTHWEST;
                             npcs[MARIA].unk_1E = 0;
                             npcs[MARIA].startingCoordinates.x = -112.0f;
                             npcs[MARIA].startingCoordinates.z = -192.0f;
@@ -1464,7 +1464,7 @@ void func_80076F10(void) {
                         npcs[MARIA].levelIndex = BEACH;
                         npcs[MARIA].startingCoordinates.y = 0.0f;
                         npcs[MARIA].startingCoordinates.z = 0.0f;
-                        npcs[MARIA].direction = NORTH;
+                        npcs[MARIA].direction = SOUTHWEST;
                         npcs[MARIA].unk_1E = 2;
                         npcs[MARIA].startingCoordinates.x = -224.0f;
                         npcs[MARIA].flags |= 1;
@@ -1504,7 +1504,7 @@ void func_80077D14(void) {
 
                 npcs[POPURI].levelIndex = HOUSE;
                 npcs[POPURI].startingCoordinates.y = 0.0f;
-                npcs[POPURI].direction = NORTHWEST;
+                npcs[POPURI].direction = SOUTH;
                 npcs[POPURI].unk_1E = 0;
                 npcs[POPURI].startingCoordinates.x = -128.0f;
                 npcs[POPURI].startingCoordinates.z = -64.0f;
@@ -1524,7 +1524,7 @@ void func_80077D14(void) {
       
                                 npcs[POPURI].levelIndex = MOUNTAIN_2;    
                                 npcs[POPURI].startingCoordinates.y = 0.0f;
-                                npcs[POPURI].direction = NORTH;
+                                npcs[POPURI].direction = SOUTHWEST;
                                 npcs[POPURI].unk_1E = 1;
                                 npcs[POPURI].startingCoordinates.x = -224.0f;
                                 npcs[POPURI].startingCoordinates.z = -96.0f;
@@ -1536,7 +1536,7 @@ void func_80077D14(void) {
                                 
                                 npcs[POPURI].levelIndex = KITCHEN;
                                 npcs[POPURI].startingCoordinates.y = 0.0f;
-                                npcs[POPURI].direction = NORTH;
+                                npcs[POPURI].direction = SOUTHWEST;
                                 npcs[POPURI].unk_1E = 1;
                                 npcs[POPURI].startingCoordinates.x = -160.0f;
                                 npcs[POPURI].startingCoordinates.z = -64.0f;
@@ -1552,7 +1552,7 @@ void func_80077D14(void) {
 
                             npcs[POPURI].levelIndex = FLOWER_SHOP;    
                             npcs[POPURI].startingCoordinates.y = 0.0f;
-                            npcs[POPURI].direction = WEST;
+                            npcs[POPURI].direction = SOUTHEAST;
                             npcs[POPURI].unk_1E = 0;
                             npcs[POPURI].startingCoordinates.x = -112.0f;
                             npcs[POPURI].startingCoordinates.z = 64.0f;
@@ -1568,7 +1568,7 @@ void func_80077D14(void) {
                         
                         npcs[POPURI].levelIndex = FARM;
                         npcs[POPURI].startingCoordinates.y = 0.0f;
-                        npcs[POPURI].direction = NORTH;
+                        npcs[POPURI].direction = SOUTHWEST;
                         npcs[POPURI].unk_1E = 0;
                         npcs[POPURI].startingCoordinates.x = 320.0f;
                         npcs[POPURI].startingCoordinates.z = -352.0f;
@@ -1578,7 +1578,7 @@ void func_80077D14(void) {
                             
                         npcs[POPURI].levelIndex = KITCHEN;
                         npcs[POPURI].startingCoordinates.y = 0.0f;
-                        npcs[POPURI].direction = NORTH;
+                        npcs[POPURI].direction = SOUTHWEST;
                         npcs[POPURI].unk_1E = 1;
                         npcs[POPURI].startingCoordinates.x = -160.0f;
                         npcs[POPURI].startingCoordinates.z = -64.0f;
@@ -1594,7 +1594,7 @@ void func_80077D14(void) {
                 
                 npcs[POPURI].levelIndex = KITCHEN;
                 npcs[POPURI].startingCoordinates.y = 0.0f;
-                npcs[POPURI].direction = EAST;
+                npcs[POPURI].direction = NORTHWEST;
                 npcs[POPURI].unk_1E = 0;
                 npcs[POPURI].startingCoordinates.x = -160.0f;
                 npcs[POPURI].startingCoordinates.z = -64.0f;
@@ -1608,7 +1608,7 @@ void func_80077D14(void) {
                 npcs[POPURI].startingCoordinates.x = 0.0f;
                 npcs[POPURI].startingCoordinates.y = 0.0f;
                 npcs[POPURI].startingCoordinates.z = 0.0f;
-                npcs[POPURI].direction = NORTH;
+                npcs[POPURI].direction = SOUTHWEST;
                 npcs[POPURI].unk_1E = 1;
                 npcs[POPURI].flags |= 1;
                 
@@ -1618,7 +1618,7 @@ void func_80077D14(void) {
                 
                 npcs[POPURI].levelIndex = KITCHEN;
                 npcs[POPURI].startingCoordinates.y = 0.0f;
-                npcs[POPURI].direction = EAST;
+                npcs[POPURI].direction = NORTHWEST;
                 npcs[POPURI].unk_1E = 0;
                 npcs[POPURI].startingCoordinates.x = -160.0f;
                 npcs[POPURI].startingCoordinates.z = -64.0f;
@@ -1630,7 +1630,7 @@ void func_80077D14(void) {
 
                 npcs[POPURI].levelIndex = HOUSE;
                 npcs[POPURI].startingCoordinates.y = 0.0f;
-                npcs[POPURI].direction = WEST;
+                npcs[POPURI].direction = SOUTHEAST;
                 npcs[POPURI].unk_1E = 0;
                 npcs[POPURI].startingCoordinates.x = -128.0f;
                 npcs[POPURI].startingCoordinates.z = -112.0f;
@@ -1642,7 +1642,7 @@ void func_80077D14(void) {
 
                 npcs[POPURI].levelIndex = HOUSE;
                 npcs[POPURI].startingCoordinates.y = 0.0f;
-                npcs[POPURI].direction = NORTH;
+                npcs[POPURI].direction = SOUTHWEST;
                 npcs[POPURI].unk_1E = 4;
                 npcs[POPURI].startingCoordinates.x = -192.0f;
                 npcs[POPURI].startingCoordinates.z = -160.0f;
@@ -1673,7 +1673,7 @@ void func_80077D14(void) {
                                 
                                 npcs[POPURI].levelIndex = RANCH;
                                 npcs[POPURI].startingCoordinates.y = 0.0f;
-                                npcs[POPURI].direction = WEST;
+                                npcs[POPURI].direction = SOUTHEAST;
                                 npcs[POPURI].startingCoordinates.x = -32.0f;
                                 npcs[POPURI].startingCoordinates.z = -96.0f;
                                 npcs[POPURI].flags |= 1;
@@ -1690,7 +1690,7 @@ void func_80077D14(void) {
                                 
                                 npcs[POPURI].levelIndex = RANCH_STORE;
                                 npcs[POPURI].startingCoordinates.y = 0.0f;
-                                npcs[POPURI].direction = EAST;
+                                npcs[POPURI].direction = NORTHWEST;
                                 npcs[POPURI].unk_1E = 0;
                                 npcs[POPURI].startingCoordinates.x = 64.0f;
                                 npcs[POPURI].startingCoordinates.z = 64.0f;
@@ -1706,7 +1706,7 @@ void func_80077D14(void) {
     
                         npcs[POPURI].levelIndex = RANCH_STORE;
                         npcs[POPURI].startingCoordinates.y = 0.0f;
-                        npcs[POPURI].direction = EAST;
+                        npcs[POPURI].direction = NORTHWEST;
                         npcs[POPURI].unk_1E = 0;
                         npcs[POPURI].startingCoordinates.x = 64.0f;
                         npcs[POPURI].startingCoordinates.z = 64.0f;
@@ -1730,7 +1730,7 @@ void func_80077D14(void) {
 
                             npcs[POPURI].levelIndex = VILLAGE_1;
                             npcs[POPURI].startingCoordinates.y = 0.0f;
-                            npcs[POPURI].direction = NORTH;
+                            npcs[POPURI].direction = SOUTHWEST;
                             npcs[POPURI].unk_1E = 3;
                             npcs[POPURI].startingCoordinates.x = 96.0f;
                             npcs[POPURI].startingCoordinates.z = -224.0f;
@@ -1744,7 +1744,7 @@ void func_80077D14(void) {
 
                             npcs[POPURI].levelIndex = FLOWER_SHOP;
                             npcs[POPURI].startingCoordinates.y = 0.0f;
-                            npcs[POPURI].direction = WEST;
+                            npcs[POPURI].direction = SOUTHEAST;
                             npcs[POPURI].unk_1E = 0;
                             npcs[POPURI].startingCoordinates.x = -112.0f;
                             npcs[POPURI].startingCoordinates.z = 64.0f;
@@ -1766,7 +1766,7 @@ void func_80077D14(void) {
                                 
                                 npcs[POPURI].levelIndex = MOUNTAIN_2;
                                 npcs[POPURI].startingCoordinates.y = 0.0f;
-                                npcs[POPURI].direction = NORTH;
+                                npcs[POPURI].direction = SOUTHWEST;
                                 npcs[POPURI].unk_1E = 1;
                                 npcs[POPURI].startingCoordinates.x = -224.0f;
                                 npcs[POPURI].startingCoordinates.z = -128.0f;
@@ -1783,7 +1783,7 @@ void func_80077D14(void) {
                                 npcs[POPURI].levelIndex = MOON_MOUNTAIN;
                                 npcs[POPURI].startingCoordinates.y = 0.0f;
                                 npcs[POPURI].startingCoordinates.z = 0.0f;
-                                npcs[POPURI].direction = SOUTH;
+                                npcs[POPURI].direction = NORTHEAST;
                                 npcs[POPURI].unk_1E = 0;
                                 npcs[POPURI].startingCoordinates.x = 64.0f;
                                 npcs[POPURI].flags |= 1;  
@@ -1800,7 +1800,7 @@ void func_80077D14(void) {
 
                             npcs[POPURI].levelIndex = FLOWER_SHOP;
                             npcs[POPURI].startingCoordinates.y = 0.0f;
-                            npcs[POPURI].direction = WEST;
+                            npcs[POPURI].direction = SOUTHEAST;
                             npcs[POPURI].unk_1E = 0;
                             npcs[POPURI].startingCoordinates.x = -112.0f;
                             npcs[POPURI].startingCoordinates.z = 64.0f;
@@ -1822,7 +1822,7 @@ void func_80077D14(void) {
                                 
                                 npcs[POPURI].levelIndex = MOUNTAIN_2;
                                 npcs[POPURI].startingCoordinates.y = 0.0f;
-                                npcs[POPURI].direction = WEST;
+                                npcs[POPURI].direction = SOUTHEAST;
                                 npcs[POPURI].unk_1E = 1;
                                 npcs[POPURI].startingCoordinates.x = -128.0f;
                                 npcs[POPURI].startingCoordinates.z = -416.0f;
@@ -1838,7 +1838,7 @@ void func_80077D14(void) {
                                 
                                 npcs[POPURI].levelIndex = POND;
                                 npcs[POPURI].startingCoordinates.y = 0.0f;
-                                npcs[POPURI].direction = WEST;
+                                npcs[POPURI].direction = SOUTHEAST;
                                 npcs[POPURI].unk_1E = 0;
                                 npcs[POPURI].startingCoordinates.x = -224.0f;
                                 npcs[POPURI].startingCoordinates.z = -96.0f;
@@ -1854,7 +1854,7 @@ void func_80077D14(void) {
 
                             npcs[POPURI].levelIndex = FLOWER_SHOP;
                             npcs[POPURI].startingCoordinates.y = 0.0f;
-                            npcs[POPURI].direction = WEST;
+                            npcs[POPURI].direction = SOUTHEAST;
                             npcs[POPURI].unk_1E = 0;
                             npcs[POPURI].startingCoordinates.x = -112.0f;
                             npcs[POPURI].startingCoordinates.z = 64.0f;
@@ -1873,7 +1873,7 @@ void func_80077D14(void) {
                             
                             npcs[POPURI].levelIndex = RANCH;
                             npcs[POPURI].startingCoordinates.y = 0.0f;
-                            npcs[POPURI].direction = WEST;
+                            npcs[POPURI].direction = SOUTHEAST;
                             npcs[POPURI].unk_1E = 0;
                             npcs[POPURI].startingCoordinates.x = -32.0f;
                             npcs[POPURI].startingCoordinates.z = -96.0f;
@@ -1891,7 +1891,7 @@ void func_80077D14(void) {
                             npcs[POPURI].startingCoordinates.x = 0.0f;
                             npcs[POPURI].startingCoordinates.y = 0.0f;
                             npcs[POPURI].startingCoordinates.z = 0.0f;
-                            npcs[POPURI].direction = NORTH;
+                            npcs[POPURI].direction = SOUTHWEST;
                             npcs[POPURI].unk_1E = 0;
                             npcs[POPURI].flags |= 1;
     
@@ -1912,7 +1912,7 @@ void func_80077D14(void) {
                             npcs[POPURI].levelIndex = BEACH;
                             npcs[POPURI].startingCoordinates.y = 0.0f;
                             npcs[POPURI].startingCoordinates.z = 0.0f;
-                            npcs[POPURI].direction = NORTH;
+                            npcs[POPURI].direction = SOUTHWEST;
                             npcs[POPURI].unk_1E = 2;
                             npcs[POPURI].startingCoordinates.x = -224.0f;
                             npcs[POPURI].flags |= 1;
@@ -1932,7 +1932,7 @@ void func_80077D14(void) {
                         
                         npcs[POPURI].levelIndex = MOUNTAIN_2;
                         npcs[POPURI].startingCoordinates.y = 0.0f;
-                        npcs[POPURI].direction = NORTH;
+                        npcs[POPURI].direction = SOUTHWEST;
                         npcs[POPURI].unk_1E = 0;
                         npcs[POPURI].startingCoordinates.x = -64.0f;
                         npcs[POPURI].startingCoordinates.z = -160.0f;
@@ -1950,7 +1950,7 @@ void func_80077D14(void) {
        
                         npcs[POPURI].levelIndex = FLOWER_SHOP;
                         npcs[POPURI].startingCoordinates.y = 0.0f;
-                        npcs[POPURI].direction = WEST;
+                        npcs[POPURI].direction = SOUTHEAST;
                         npcs[POPURI].unk_1E = 0;
                         npcs[POPURI].startingCoordinates.x = -112.0f;
                         npcs[POPURI].startingCoordinates.z = 64.0f;
@@ -1989,7 +1989,7 @@ void func_80078BF0(void) {
 
                 npcs[ELLI].levelIndex = HOUSE;
                 npcs[ELLI].startingCoordinates.y = 0.0f;
-                npcs[ELLI].direction = NORTHWEST;
+                npcs[ELLI].direction = SOUTH;
                 npcs[ELLI].unk_1E = 0;
                 npcs[ELLI].startingCoordinates.x = -128.0f;
                 npcs[ELLI].startingCoordinates.z = -64.0f;
@@ -2005,7 +2005,7 @@ void func_80078BF0(void) {
                                                     
                         npcs[ELLI].levelIndex = BAKERY;
                         npcs[ELLI].startingCoordinates.y = 0.0f;
-                        npcs[ELLI].direction = NORTH;
+                        npcs[ELLI].direction = SOUTHWEST;
                         npcs[ELLI].unk_1E = 0;
                         npcs[ELLI].startingCoordinates.x = -32.0f;
                         npcs[ELLI].startingCoordinates.z = 16.0f;
@@ -2015,7 +2015,7 @@ void func_80078BF0(void) {
                         
                         npcs[ELLI].levelIndex = MOUNTAIN_2;
                         npcs[ELLI].startingCoordinates.y = 0.0f;
-                        npcs[ELLI].direction = EAST;
+                        npcs[ELLI].direction = NORTHWEST;
                         npcs[ELLI].unk_1E = 0;
                         npcs[ELLI].startingCoordinates.x = 96.0f;
                         npcs[ELLI].startingCoordinates.z = -64.0f;
@@ -2027,7 +2027,7 @@ void func_80078BF0(void) {
                         
                         npcs[ELLI].levelIndex = KITCHEN;
                         npcs[ELLI].startingCoordinates.y = 0.0f;
-                        npcs[ELLI].direction = NORTH;
+                        npcs[ELLI].direction = SOUTHWEST;
                         npcs[ELLI].unk_1E = 1;
                         npcs[ELLI].startingCoordinates.x = -160.0f;
                         npcs[ELLI].startingCoordinates.z = -64.0f;
@@ -2042,7 +2042,7 @@ void func_80078BF0(void) {
                         npcs[ELLI].levelIndex = FARM;
                         npcs[ELLI].startingCoordinates.y = 0.0f;
                         npcs[ELLI].startingCoordinates.z = 0.0f;
-                        npcs[ELLI].direction = NORTH;
+                        npcs[ELLI].direction = SOUTHWEST;
                         npcs[ELLI].unk_1E = 0;
                         npcs[ELLI].startingCoordinates.x = -448.0f;
                         npcs[ELLI].flags |= 1;
@@ -2051,7 +2051,7 @@ void func_80078BF0(void) {
                                                 
                         npcs[ELLI].levelIndex = KITCHEN;
                         npcs[ELLI].startingCoordinates.y = 0.0f;
-                        npcs[ELLI].direction = NORTH;
+                        npcs[ELLI].direction = SOUTHWEST;
                         npcs[ELLI].unk_1E = 1;
                         npcs[ELLI].startingCoordinates.x = -160.0f;
                         npcs[ELLI].startingCoordinates.z = -64.0f;
@@ -2067,7 +2067,7 @@ void func_80078BF0(void) {
                 
                 npcs[ELLI].levelIndex = KITCHEN;
                 npcs[ELLI].startingCoordinates.y = 0.0f;
-                npcs[ELLI].direction = EAST;
+                npcs[ELLI].direction = NORTHWEST;
                 npcs[ELLI].unk_1E = 1;
                 npcs[ELLI].startingCoordinates.x = -128.0f;
                 npcs[ELLI].startingCoordinates.z = -128.0f;
@@ -2079,7 +2079,7 @@ void func_80078BF0(void) {
 
                 npcs[ELLI].levelIndex = KITCHEN;
                 npcs[ELLI].startingCoordinates.y = 0.0f;
-                npcs[ELLI].direction = NORTH;
+                npcs[ELLI].direction = SOUTHWEST;
                 npcs[ELLI].unk_1E = 1;
                 npcs[ELLI].startingCoordinates.x = -160.0f;
                 npcs[ELLI].startingCoordinates.z = -64.0f;
@@ -2091,7 +2091,7 @@ void func_80078BF0(void) {
                 
                 npcs[ELLI].levelIndex = KITCHEN;
                 npcs[ELLI].startingCoordinates.y = 0.0f;
-                npcs[ELLI].direction = EAST;
+                npcs[ELLI].direction = NORTHWEST;
                 npcs[ELLI].unk_1E = 0;
                 npcs[ELLI].startingCoordinates.x = -160.0f;
                 npcs[ELLI].startingCoordinates.z = -64.0f;
@@ -2103,7 +2103,7 @@ void func_80078BF0(void) {
 
                 npcs[ELLI].levelIndex = HOUSE;
                 npcs[ELLI].startingCoordinates.y = 0.0f;
-                npcs[ELLI].direction = WEST;
+                npcs[ELLI].direction = SOUTHEAST;
                 npcs[ELLI].unk_1E = 0;
                 npcs[ELLI].startingCoordinates.x = -128.0f;
                 npcs[ELLI].startingCoordinates.z = -112.0f;
@@ -2115,7 +2115,7 @@ void func_80078BF0(void) {
 
                 npcs[ELLI].levelIndex = HOUSE;
                 npcs[ELLI].startingCoordinates.y = 0.0f;
-                npcs[ELLI].direction = NORTH;
+                npcs[ELLI].direction = SOUTHWEST;
                 npcs[ELLI].unk_1E = 4;
                 npcs[ELLI].startingCoordinates.x = -192.0f;
                 npcs[ELLI].startingCoordinates.z = -160.0f;
@@ -2147,7 +2147,7 @@ void func_80078BF0(void) {
                             
                                         npcs[ELLI].levelIndex = MOUNTAIN_2;
                                         npcs[ELLI].startingCoordinates.y = 0.0f;
-                                        npcs[ELLI].direction = EAST;
+                                        npcs[ELLI].direction = NORTHWEST;
                                         npcs[ELLI].unk_1E = 0;
                                         npcs[ELLI].startingCoordinates.x = 96.0f;
                                         npcs[ELLI].startingCoordinates.z = -64.0f;
@@ -2165,7 +2165,7 @@ void func_80078BF0(void) {
                 
                                         npcs[ELLI].levelIndex = BAKERY;
                                         npcs[ELLI].startingCoordinates.y = 0.0f;
-                                        npcs[ELLI].direction = NORTH;
+                                        npcs[ELLI].direction = SOUTHWEST;
                                         npcs[ELLI].unk_1E = 1;
                                         npcs[ELLI].startingCoordinates.x = -32.0f;
                                         npcs[ELLI].startingCoordinates.z = 16.0f;
@@ -2181,7 +2181,7 @@ void func_80078BF0(void) {
                                 
                                         npcs[ELLI].levelIndex = MOUNTAIN_1;
                                         npcs[ELLI].startingCoordinates.y = 0.0f;
-                                        npcs[ELLI].direction = NORTH;
+                                        npcs[ELLI].direction = SOUTHWEST;
                                         npcs[ELLI].unk_1E = 0;
                                         npcs[ELLI].startingCoordinates.x = 112.0f;
                                         npcs[ELLI].startingCoordinates.z = -32.0f;
@@ -2203,7 +2203,7 @@ void func_80078BF0(void) {
                                 
                                 npcs[ELLI].levelIndex = FLOWER_SHOP;
                                 npcs[ELLI].startingCoordinates.y = 0.0f;
-                                npcs[ELLI].direction = NORTH;
+                                npcs[ELLI].direction = SOUTHWEST;
                                 npcs[ELLI].unk_1E = 0;
                                 npcs[ELLI].startingCoordinates.x = 32.0f;
                                 npcs[ELLI].startingCoordinates.z = -16.0f;
@@ -2217,7 +2217,7 @@ void func_80078BF0(void) {
     
                                 npcs[ELLI].levelIndex = VILLAGE_1;
                                 npcs[ELLI].startingCoordinates.y = 0.0f;
-                                npcs[ELLI].direction = EAST;
+                                npcs[ELLI].direction = NORTHWEST;
                                 npcs[ELLI].unk_1E = 0;
                                 npcs[ELLI].startingCoordinates.x = 352.0f;
                                 npcs[ELLI].startingCoordinates.z = 96.0f;
@@ -2237,7 +2237,7 @@ void func_80078BF0(void) {
 
                                 npcs[ELLI].levelIndex = BAKERY;
                                 npcs[ELLI].startingCoordinates.y = 0.0f;
-                                npcs[ELLI].direction = NORTH;
+                                npcs[ELLI].direction = SOUTHWEST;
                                 npcs[ELLI].unk_1E = 1;
                                 npcs[ELLI].startingCoordinates.x = -32.0f;
                                 npcs[ELLI].startingCoordinates.z = 16.0f;
@@ -2255,7 +2255,7 @@ void func_80078BF0(void) {
 
                         npcs[ELLI].levelIndex = BAKERY;
                         npcs[ELLI].startingCoordinates.y = 0.0f;
-                        npcs[ELLI].direction = NORTH;
+                        npcs[ELLI].direction = SOUTHWEST;
                         npcs[ELLI].unk_1E = 1;
                         npcs[ELLI].startingCoordinates.x = -32.0f;
                         npcs[ELLI].startingCoordinates.z = 16.0f;
@@ -2285,7 +2285,7 @@ void func_80078BF0(void) {
                             
                                 npcs[ELLI].levelIndex = BAKERY;
                                 npcs[ELLI].startingCoordinates.y = 0.0f;
-                                npcs[ELLI].direction = NORTH;
+                                npcs[ELLI].direction = SOUTHWEST;
                                 npcs[ELLI].unk_1E = 1;
                                 npcs[ELLI].startingCoordinates.x = -32.0f;
                                 npcs[ELLI].startingCoordinates.z = 16.0f;
@@ -2299,7 +2299,7 @@ void func_80078BF0(void) {
                                 
                                 npcs[ELLI].levelIndex = BAKERY;
                                 npcs[ELLI].startingCoordinates.y = 0.0f;
-                                npcs[ELLI].direction = NORTH;
+                                npcs[ELLI].direction = SOUTHWEST;
                                 npcs[ELLI].unk_1E = 0;
                                 npcs[ELLI].startingCoordinates.x = -32.0f;
                                 npcs[ELLI].startingCoordinates.z = 16.0f;
@@ -2319,7 +2319,7 @@ void func_80078BF0(void) {
                         
                         npcs[ELLI].levelIndex = FLOWER_SHOP;
                         npcs[ELLI].startingCoordinates.y = 0.0f;
-                        npcs[ELLI].direction = NORTH;
+                        npcs[ELLI].direction = SOUTHWEST;
                         npcs[ELLI].unk_1E = 0;
                         npcs[ELLI].startingCoordinates.x = 32.0f;
                         npcs[ELLI].startingCoordinates.z = -16.0f;
@@ -2335,7 +2335,7 @@ void func_80078BF0(void) {
                                                     
                             npcs[ELLI].levelIndex = VILLAGE_1;
                             npcs[ELLI].startingCoordinates.y = 0.0f;
-                            npcs[ELLI].direction = EAST;
+                            npcs[ELLI].direction = NORTHWEST;
                             npcs[ELLI].unk_1E = 0;
                             npcs[ELLI].startingCoordinates.x = 352.0f;
                             npcs[ELLI].startingCoordinates.z = 96.0f;
@@ -2345,7 +2345,7 @@ void func_80078BF0(void) {
                             
                             npcs[ELLI].levelIndex = BAKERY;
                             npcs[ELLI].startingCoordinates.y = 0.0f;
-                            npcs[ELLI].direction = NORTH;
+                            npcs[ELLI].direction = SOUTHWEST;
                             npcs[ELLI].unk_1E = 0;
                             npcs[ELLI].startingCoordinates.x = -32.0f;
                             npcs[ELLI].startingCoordinates.z = 16.0f;
@@ -2367,7 +2367,7 @@ void func_80078BF0(void) {
                             
                                 npcs[ELLI].levelIndex = MOUNTAIN_2;
                                 npcs[ELLI].startingCoordinates.y = 0.0f;
-                                npcs[ELLI].direction = EAST;
+                                npcs[ELLI].direction = NORTHWEST;
                                 npcs[ELLI].unk_1E = 0;
                                 npcs[ELLI].startingCoordinates.x = 96.0f;
                                 npcs[ELLI].startingCoordinates.z = -64.0f;
@@ -2383,7 +2383,7 @@ void func_80078BF0(void) {
                             
                                 npcs[ELLI].levelIndex = MOUNTAIN_1;
                                 npcs[ELLI].startingCoordinates.y = 0.0f;
-                                npcs[ELLI].direction = NORTH;
+                                npcs[ELLI].direction = SOUTHWEST;
                                 npcs[ELLI].unk_1E = 0;
                                 npcs[ELLI].startingCoordinates.x = 112.0f;
                                 npcs[ELLI].startingCoordinates.z = -32.0f;
@@ -2402,7 +2402,7 @@ void func_80078BF0(void) {
                             
                             npcs[ELLI].levelIndex = BAKERY;
                             npcs[ELLI].startingCoordinates.y = 0.0f;
-                            npcs[ELLI].direction = NORTH;
+                            npcs[ELLI].direction = SOUTHWEST;
                             npcs[ELLI].unk_1E = 0;
                             npcs[ELLI].startingCoordinates.x = -32.0f;
                             npcs[ELLI].startingCoordinates.z = 16.0f;
@@ -2423,7 +2423,7 @@ void func_80078BF0(void) {
                             npcs[ELLI].levelIndex = BEACH;
                             npcs[ELLI].startingCoordinates.y = 0.0f;
                             npcs[ELLI].startingCoordinates.z = 0.0f;
-                            npcs[ELLI].direction = NORTH;
+                            npcs[ELLI].direction = SOUTHWEST;
                             npcs[ELLI].unk_1E = 2;
                             npcs[ELLI].startingCoordinates.x = -224.0f;
                             npcs[ELLI].flags |= 1;  
@@ -2440,7 +2440,7 @@ void func_80078BF0(void) {
            
                             npcs[ELLI].levelIndex = BEACH;
                             npcs[ELLI].startingCoordinates.y = 0.0f;
-                            npcs[ELLI].direction = SOUTH;
+                            npcs[ELLI].direction = NORTHEAST;
                             npcs[ELLI].unk_1E = 0;
                             npcs[ELLI].startingCoordinates.x = -128.0f;
                             npcs[ELLI].startingCoordinates.z = 160.0f;
@@ -2482,7 +2482,7 @@ u8 result;
 
                 npcs[ANN].levelIndex = HOUSE;
                 npcs[ANN].startingCoordinates.y = 0.0f;
-                npcs[ANN].direction = NORTHWEST;
+                npcs[ANN].direction = SOUTH;
                 npcs[ANN].unk_1E = 0;
                 npcs[ANN].startingCoordinates.x = -128.0f;
                 npcs[ANN].startingCoordinates.z = -64.0f;
@@ -2500,7 +2500,7 @@ u8 result;
                         npcs[ANN].startingCoordinates.x = 0.0f;
                         npcs[ANN].startingCoordinates.y = 0.0f;
                         npcs[ANN].startingCoordinates.z = 0.0f;
-                        npcs[ANN].direction = NORTH;
+                        npcs[ANN].direction = SOUTHWEST;
                         npcs[ANN].unk_1E = 0;
                         npcs[ANN].flags |= 1;  
 
@@ -2512,7 +2512,7 @@ u8 result;
                             
                             npcs[ANN].levelIndex = RANCH;
                             npcs[ANN].startingCoordinates.y = 0.0f;
-                            npcs[ANN].direction = NORTH;
+                            npcs[ANN].direction = SOUTHWEST;
                             npcs[ANN].unk_1E = 1;
                             npcs[ANN].startingCoordinates.x = -64.0f;
                             npcs[ANN].startingCoordinates.z = 128.0f;
@@ -2524,7 +2524,7 @@ u8 result;
                             npcs[ANN].startingCoordinates.x = 0.0f;
                             npcs[ANN].startingCoordinates.y = 0.0f;
                             npcs[ANN].startingCoordinates.z = 0.0f;
-                            npcs[ANN].direction = NORTH;
+                            npcs[ANN].direction = SOUTHWEST;
                             npcs[ANN].unk_1E = 1;
                             npcs[ANN].flags |= 1;
                             
@@ -2536,7 +2536,7 @@ u8 result;
                                 npcs[ANN].startingCoordinates.x = 0.0f;
                                 npcs[ANN].startingCoordinates.y = 0.0f;
                                 npcs[ANN].startingCoordinates.z = 0.0f;
-                                npcs[ANN].direction = NORTH;
+                                npcs[ANN].direction = SOUTHWEST;
                                 npcs[ANN].unk_1E = 1;
                                 npcs[ANN].flags |= 1;
                                 
@@ -2546,7 +2546,7 @@ u8 result;
                                 npcs[ANN].startingCoordinates.x = 0.0f;
                                 npcs[ANN].startingCoordinates.y = 0.0f;
                                 npcs[ANN].startingCoordinates.z = 0.0f;
-                                npcs[ANN].direction = NORTH;
+                                npcs[ANN].direction = SOUTHWEST;
                                 npcs[ANN].unk_1E = 1;
                                 npcs[ANN].flags |= 1;
                                 
@@ -2562,7 +2562,7 @@ u8 result;
                                                 
                         npcs[ANN].levelIndex = FARM;
                         npcs[ANN].startingCoordinates.y = 0.0f;
-                        npcs[ANN].direction = NORTH;
+                        npcs[ANN].direction = SOUTHWEST;
                         npcs[ANN].unk_1E = 0;
                         npcs[ANN].startingCoordinates.x = -256.0f;
                         npcs[ANN].startingCoordinates.z = -320.0f;
@@ -2576,7 +2576,7 @@ u8 result;
                             npcs[ANN].startingCoordinates.x = 0.0f;
                             npcs[ANN].startingCoordinates.y = 0.0f;
                             npcs[ANN].startingCoordinates.z = 0.0f;
-                            npcs[ANN].direction = NORTH;
+                            npcs[ANN].direction = SOUTHWEST;
                             npcs[ANN].unk_1E = 1;
                             npcs[ANN].flags |= 1;
                             
@@ -2588,7 +2588,7 @@ u8 result;
                                 npcs[ANN].startingCoordinates.x = 0.0f;
                                 npcs[ANN].startingCoordinates.y = 0.0f;
                                 npcs[ANN].startingCoordinates.z = 0.0f;
-                                npcs[ANN].direction = NORTH;
+                                npcs[ANN].direction = SOUTHWEST;
                                 npcs[ANN].unk_1E = 1;
                                 npcs[ANN].flags |= 1;
                                 
@@ -2598,7 +2598,7 @@ u8 result;
                                 npcs[ANN].startingCoordinates.x = 0.0f;
                                 npcs[ANN].startingCoordinates.y = 0.0f;
                                 npcs[ANN].startingCoordinates.z = 0.0f;
-                                npcs[ANN].direction = NORTH;
+                                npcs[ANN].direction = SOUTHWEST;
                                 npcs[ANN].unk_1E = 1;
                                 npcs[ANN].flags |= 1;
                                 
@@ -2616,7 +2616,7 @@ u8 result;
                 
                 npcs[ANN].levelIndex = KITCHEN;
                 npcs[ANN].startingCoordinates.y = 0.0f;
-                npcs[ANN].direction = EAST;
+                npcs[ANN].direction = NORTHWEST;
                 npcs[ANN].unk_1E = 0;
                 npcs[ANN].startingCoordinates.x = -160.0f;
                 npcs[ANN].startingCoordinates.z = -64.0f;
@@ -2630,7 +2630,7 @@ u8 result;
                 npcs[ANN].startingCoordinates.x = 0.0f;
                 npcs[ANN].startingCoordinates.y = 0.0f;
                 npcs[ANN].startingCoordinates.z = 0.0f;
-                npcs[ANN].direction = NORTH;
+                npcs[ANN].direction = SOUTHWEST;
                 npcs[ANN].unk_1E = 1;
                 npcs[ANN].flags |= 1;
                 
@@ -2640,7 +2640,7 @@ u8 result;
                 
                 npcs[ANN].levelIndex = KITCHEN;
                 npcs[ANN].startingCoordinates.y = 0.0f;
-                npcs[ANN].direction = EAST;
+                npcs[ANN].direction = NORTHWEST;
                 npcs[ANN].unk_1E = 0;
                 npcs[ANN].startingCoordinates.x = -160.0f;
                 npcs[ANN].startingCoordinates.z = -64.0f;
@@ -2652,7 +2652,7 @@ u8 result;
 
                 npcs[ANN].levelIndex = HOUSE;
                 npcs[ANN].startingCoordinates.y = 0.0f;
-                npcs[ANN].direction = WEST;
+                npcs[ANN].direction = SOUTHEAST;
                 npcs[ANN].unk_1E = 0;
                 npcs[ANN].startingCoordinates.x = -128.0f;
                 npcs[ANN].startingCoordinates.z = -112.0f;
@@ -2664,7 +2664,7 @@ u8 result;
 
                 npcs[ANN].levelIndex = HOUSE;
                 npcs[ANN].startingCoordinates.y = 0.0f;
-                npcs[ANN].direction = NORTH;
+                npcs[ANN].direction = SOUTHWEST;
                 npcs[ANN].unk_1E = 4;
                 npcs[ANN].startingCoordinates.x = -192.0f;
                 npcs[ANN].startingCoordinates.z = -160.0f;
@@ -2696,7 +2696,7 @@ u8 result;
                             
                                 npcs[ANN].levelIndex = RANCH;
                                 npcs[ANN].startingCoordinates.y = 0.0f;
-                                npcs[ANN].direction = NORTH;
+                                npcs[ANN].direction = SOUTHWEST;
                                 npcs[ANN].unk_1E = 1;
                                 npcs[ANN].startingCoordinates.x = -64.0f;
                                 npcs[ANN].startingCoordinates.z = 128.0f;
@@ -2710,7 +2710,7 @@ u8 result;
                                 
                                 npcs[ANN].levelIndex = RANCH_HOUSE;
                                 npcs[ANN].startingCoordinates.y = 0.0f;
-                                npcs[ANN].direction = WEST;
+                                npcs[ANN].direction = SOUTHEAST;
                                 npcs[ANN].unk_1E = 0;
                                 npcs[ANN].startingCoordinates.x = -192.0f;
                                 npcs[ANN].startingCoordinates.z = -32.0f;
@@ -2734,7 +2734,7 @@ u8 result;
                                     case AUTUMN:
                                         npcs[ANN].levelIndex = MOUNTAIN_2;
                                         npcs[ANN].startingCoordinates.y = 0.0f;
-                                        npcs[ANN].direction = NORTH;
+                                        npcs[ANN].direction = SOUTHWEST;
                                         npcs[ANN].unk_1E = 0;
                                         npcs[ANN].startingCoordinates.x = -64.0f;
                                         npcs[ANN].startingCoordinates.z = -160.0f;
@@ -2748,7 +2748,7 @@ u8 result;
                                         
                                         npcs[ANN].levelIndex = CAVE;
                                         npcs[ANN].startingCoordinates.y = 0.0f;
-                                        npcs[ANN].direction = NORTH;
+                                        npcs[ANN].direction = SOUTHWEST;
                                         npcs[ANN].unk_1E = 0;
                                         npcs[ANN].startingCoordinates.x = 64.0f;
                                         npcs[ANN].startingCoordinates.z = -224.0f;
@@ -2762,7 +2762,7 @@ u8 result;
                                                                                 
                                         npcs[ANN].levelIndex = RANCH_HOUSE;
                                         npcs[ANN].startingCoordinates.y = 0.0f;
-                                        npcs[ANN].direction = WEST;
+                                        npcs[ANN].direction = SOUTHEAST;
                                         npcs[ANN].unk_1E = 0;
                                         npcs[ANN].startingCoordinates.x = -192.0f;
                                         npcs[ANN].startingCoordinates.z = -32.0f;
@@ -2778,7 +2778,7 @@ u8 result;
                             
                             npcs[ANN].levelIndex = RANCH_BARN;
                             npcs[ANN].startingCoordinates.y = 0.0f;
-                            npcs[ANN].direction = NORTH;
+                            npcs[ANN].direction = SOUTHWEST;
                             npcs[ANN].unk_1E = 0;
                             npcs[ANN].startingCoordinates.x = -128.0f;
                             npcs[ANN].startingCoordinates.z = -292.0f;
@@ -2811,7 +2811,7 @@ u8 result;
                             
                                 npcs[ANN].levelIndex = RANCH;
                                 npcs[ANN].startingCoordinates.y = 0.0f;
-                                npcs[ANN].direction = NORTH;
+                                npcs[ANN].direction = SOUTHWEST;
                                 npcs[ANN].unk_1E = 1;
                                 npcs[ANN].startingCoordinates.x = -64.0f;
                                 npcs[ANN].startingCoordinates.z = 128.0f;
@@ -2825,7 +2825,7 @@ u8 result;
                             
                                 npcs[ANN].levelIndex = RANCH_BARN;
                                 npcs[ANN].startingCoordinates.y = 0.0f;
-                                npcs[ANN].direction = NORTH;
+                                npcs[ANN].direction = SOUTHWEST;
                                 npcs[ANN].unk_1E = 0;
                                 npcs[ANN].startingCoordinates.x = -128.0f;
                                 npcs[ANN].startingCoordinates.z = -292.0f;
@@ -2851,7 +2851,7 @@ u8 result;
                         
                                     npcs[ANN].levelIndex = MOUNTAIN_1;
                                     npcs[ANN].startingCoordinates.y = 0.0f;
-                                    npcs[ANN].direction = NORTH;
+                                    npcs[ANN].direction = SOUTHWEST;
                                     npcs[ANN].unk_1E = 0;
                                     npcs[ANN].startingCoordinates.x = 128.0f;
                                     npcs[ANN].startingCoordinates.z = 32.0f;
@@ -2869,7 +2869,7 @@ u8 result;
                                 
                                     npcs[ANN].levelIndex = MOUNTAIN_2;
                                     npcs[ANN].startingCoordinates.y = 0.0f;
-                                    npcs[ANN].direction = NORTH;
+                                    npcs[ANN].direction = SOUTHWEST;
                                     npcs[ANN].unk_1E = 0;
                                     npcs[ANN].startingCoordinates.x = -64.0f;
                                     npcs[ANN].startingCoordinates.z = -160.0f;
@@ -2886,7 +2886,7 @@ u8 result;
                         
                                     npcs[ANN].levelIndex = VINEYARD;
                                     npcs[ANN].startingCoordinates.y = 0.0f;
-                                    npcs[ANN].direction = NORTH;
+                                    npcs[ANN].direction = SOUTHWEST;
                                     npcs[ANN].unk_1E = 0;
                                     npcs[ANN].startingCoordinates.x = 16.0f;
                                     npcs[ANN].startingCoordinates.z = -144.0f;
@@ -2907,7 +2907,7 @@ u8 result;
                                     npcs[ANN].startingCoordinates.x = 0.0f;
                                     npcs[ANN].startingCoordinates.y = 0.0f;
                                     npcs[ANN].startingCoordinates.z = 0.0f;
-                                    npcs[ANN].direction = NORTH;
+                                    npcs[ANN].direction = SOUTHWEST;
                                     npcs[ANN].unk_1E = 0;
                                     npcs[ANN].flags |= 1;  
             
@@ -2927,7 +2927,7 @@ u8 result;
                         
                             npcs[ANN].levelIndex = RANCH_STORE;
                             npcs[ANN].startingCoordinates.y = 0.0f;
-                            npcs[ANN].direction = NORTH;
+                            npcs[ANN].direction = SOUTHWEST;
                             npcs[ANN].unk_1E = 0;
                             npcs[ANN].startingCoordinates.x = 80.0f;
                             npcs[ANN].startingCoordinates.z = -144.0f;
@@ -2950,7 +2950,7 @@ u8 result;
                             
                                 npcs[ANN].levelIndex = POND;
                                 npcs[ANN].startingCoordinates.y = 0.0f;
-                                npcs[ANN].direction = NORTH;
+                                npcs[ANN].direction = SOUTHWEST;
                                 npcs[ANN].unk_1E = 0;
                                 npcs[ANN].startingCoordinates.x = 80.0f;
                                 npcs[ANN].startingCoordinates.z = -176.0f;
@@ -2964,7 +2964,7 @@ u8 result;
                             
                                 npcs[ANN].levelIndex = RANCH;
                                 npcs[ANN].startingCoordinates.y = 0.0f;
-                                npcs[ANN].direction = NORTH;
+                                npcs[ANN].direction = SOUTHWEST;
                                 npcs[ANN].unk_1E = 1;
                                 npcs[ANN].startingCoordinates.x = 256.0f;
                                 npcs[ANN].startingCoordinates.z = 128.0f;
@@ -2980,7 +2980,7 @@ u8 result;
                             
                             npcs[ANN].levelIndex = RANCH_BARN;
                             npcs[ANN].startingCoordinates.y = 0.0f;
-                            npcs[ANN].direction = NORTH;
+                            npcs[ANN].direction = SOUTHWEST;
                             npcs[ANN].unk_1E = 0;
                             npcs[ANN].startingCoordinates.x = -128.0f;
                             npcs[ANN].startingCoordinates.z = -292.0f;
@@ -2999,7 +2999,7 @@ u8 result;
                         npcs[ANN].levelIndex = BEACH;
                         npcs[ANN].startingCoordinates.y = 0.0f;
                         npcs[ANN].startingCoordinates.z = 0.0f;
-                        npcs[ANN].direction = NORTH;
+                        npcs[ANN].direction = SOUTHWEST;
                         npcs[ANN].unk_1E = 2;
                         npcs[ANN].startingCoordinates.x = -224.0f;
                         npcs[ANN].flags |= 1;  
@@ -3040,7 +3040,7 @@ void func_8007A9B0(void) {
 
                 npcs[KAREN].levelIndex = HOUSE;
                 npcs[KAREN].startingCoordinates.y = 0.0f;
-                npcs[KAREN].direction = NORTHWEST;
+                npcs[KAREN].direction = SOUTH;
                 npcs[KAREN].unk_1E = 0;
                 npcs[KAREN].startingCoordinates.x = -128.0f;
                 npcs[KAREN].startingCoordinates.z = -64.0f;
@@ -3059,7 +3059,7 @@ void func_8007A9B0(void) {
                             npcs[KAREN].levelIndex = BEACH;
                             npcs[KAREN].startingCoordinates.y = 0.0f;
                             npcs[KAREN].startingCoordinates.z = 0.0f;
-                            npcs[KAREN].direction = WEST;
+                            npcs[KAREN].direction = SOUTHEAST;
                             npcs[KAREN].unk_1E = 0;
                             npcs[KAREN].startingCoordinates.x = -224.0f;
                             npcs[KAREN].flags |= 1;
@@ -3073,7 +3073,7 @@ void func_8007A9B0(void) {
                             npcs[KAREN].levelIndex = VINEYARD;
                             npcs[KAREN].startingCoordinates.y = 0.0f;
                             npcs[KAREN].startingCoordinates.z = 0.0f;
-                            npcs[KAREN].direction = EAST;
+                            npcs[KAREN].direction = NORTHWEST;
                             npcs[KAREN].unk_1E = 1;
                             npcs[KAREN].startingCoordinates.x = -32.0f;
                             npcs[KAREN].flags |= 1;
@@ -3084,7 +3084,7 @@ void func_8007A9B0(void) {
 
                             npcs[KAREN].levelIndex = MOUNTAIN_1;
                             npcs[KAREN].startingCoordinates.y = 0.0f;
-                            npcs[KAREN].direction = WEST;
+                            npcs[KAREN].direction = SOUTHEAST;
                             npcs[KAREN].unk_1E = 1;
                             npcs[KAREN].startingCoordinates.x = 96.0f;
                             npcs[KAREN].startingCoordinates.z = 96.0f;
@@ -3100,7 +3100,7 @@ void func_8007A9B0(void) {
                         
                     npcs[KAREN].levelIndex = FARM;
                     npcs[KAREN].startingCoordinates.y = 0.0f;
-                    npcs[KAREN].direction = NORTH;
+                    npcs[KAREN].direction = SOUTHWEST;
                     npcs[KAREN].unk_1E = 0;
                     npcs[KAREN].startingCoordinates.x = -256.0f;
                     npcs[KAREN].startingCoordinates.z = -320.0f;
@@ -3110,7 +3110,7 @@ void func_8007A9B0(void) {
 
                     npcs[KAREN].levelIndex = KITCHEN;
                     npcs[KAREN].startingCoordinates.y = 0.0f;
-                    npcs[KAREN].direction = EAST;
+                    npcs[KAREN].direction = NORTHWEST;
                     npcs[KAREN].unk_1E = 1;
                     npcs[KAREN].startingCoordinates.x = -160.0f;
                     npcs[KAREN].startingCoordinates.z = -64.0f;
@@ -3124,7 +3124,7 @@ void func_8007A9B0(void) {
                 
                 npcs[KAREN].levelIndex = KITCHEN;
                 npcs[KAREN].startingCoordinates.y = 0.0f;
-                npcs[KAREN].direction = EAST;
+                npcs[KAREN].direction = NORTHWEST;
                 npcs[KAREN].unk_1E = 0;
                 npcs[KAREN].startingCoordinates.x = -160.0f;
                 npcs[KAREN].startingCoordinates.z = -64.0f;
@@ -3138,7 +3138,7 @@ void func_8007A9B0(void) {
                 npcs[KAREN].startingCoordinates.x = 0.0f;
                 npcs[KAREN].startingCoordinates.y = 0.0f;
                 npcs[KAREN].startingCoordinates.z = 0.0f;
-                npcs[KAREN].direction = NORTH;
+                npcs[KAREN].direction = SOUTHWEST;
                 npcs[KAREN].unk_1E = 1;
                 npcs[KAREN].flags |= 1;
                 
@@ -3148,7 +3148,7 @@ void func_8007A9B0(void) {
                 
                 npcs[KAREN].levelIndex = KITCHEN;
                 npcs[KAREN].startingCoordinates.y = 0.0f;
-                npcs[KAREN].direction = EAST;
+                npcs[KAREN].direction = NORTHWEST;
                 npcs[KAREN].unk_1E = 0;
                 npcs[KAREN].startingCoordinates.x = -160.0f;
                 npcs[KAREN].startingCoordinates.z = -64.0f;
@@ -3160,7 +3160,7 @@ void func_8007A9B0(void) {
 
                 npcs[KAREN].levelIndex = HOUSE;
                 npcs[KAREN].startingCoordinates.y = 0.0f;
-                npcs[KAREN].direction = WEST;
+                npcs[KAREN].direction = SOUTHEAST;
                 npcs[KAREN].unk_1E = 0;
                 npcs[KAREN].startingCoordinates.x = -128.0f;
                 npcs[KAREN].startingCoordinates.z = -112.0f;
@@ -3172,7 +3172,7 @@ void func_8007A9B0(void) {
 
                 npcs[KAREN].levelIndex = HOUSE;
                 npcs[KAREN].startingCoordinates.y = 0.0f;
-                npcs[KAREN].direction = NORTH;
+                npcs[KAREN].direction = SOUTHWEST;
                 npcs[KAREN].unk_1E = 4;
                 npcs[KAREN].startingCoordinates.x = -192.0f;
                 npcs[KAREN].startingCoordinates.z = -160.0f;
@@ -3200,7 +3200,7 @@ void func_8007A9B0(void) {
                                 npcs[KAREN].levelIndex = BEACH;
                                 npcs[KAREN].startingCoordinates.y = 0.0f;
                                 npcs[KAREN].startingCoordinates.z = 0.0f;
-                                npcs[KAREN].direction = WEST;
+                                npcs[KAREN].direction = SOUTHEAST;
                                 npcs[KAREN].unk_1E = 0;
                                 npcs[KAREN].startingCoordinates.x = -224.0f;
                                 npcs[KAREN].flags |= 1;
@@ -3218,7 +3218,7 @@ void func_8007A9B0(void) {
                             
                                 npcs[KAREN].levelIndex = VINEYARD;
                                 npcs[KAREN].startingCoordinates.y = 0.0f;
-                                npcs[KAREN].direction = SOUTH;
+                                npcs[KAREN].direction = NORTHEAST;
                                 npcs[KAREN].unk_1E = 1;
                                 npcs[KAREN].startingCoordinates.x = 192.0f;
                                 npcs[KAREN].startingCoordinates.z = 192.0f;
@@ -3239,7 +3239,7 @@ void func_8007A9B0(void) {
                                                          
                                     npcs[KAREN].levelIndex = VINEYARD_CELLAR_BASEMENT;
                                     npcs[KAREN].startingCoordinates.y = 0.0f;
-                                    npcs[KAREN].direction = EAST;
+                                    npcs[KAREN].direction = NORTHWEST;
                                     npcs[KAREN].unk_1E = 0;
                                     npcs[KAREN].startingCoordinates.x = -32.0f;
                                     npcs[KAREN].startingCoordinates.z = -128.0f;
@@ -3258,7 +3258,7 @@ void func_8007A9B0(void) {
                             npcs[KAREN].levelIndex = VINEYARD;
                             npcs[KAREN].startingCoordinates.y = 0.0f;
                             npcs[KAREN].startingCoordinates.z = 0.0f;
-                            npcs[KAREN].direction = NORTH;
+                            npcs[KAREN].direction = SOUTHWEST;
                             npcs[KAREN].unk_1E = 3;
                             npcs[KAREN].startingCoordinates.x = -192.0f;
                             npcs[KAREN].flags |= 1;
@@ -3275,7 +3275,7 @@ void func_8007A9B0(void) {
 
                             npcs[KAREN].levelIndex = VINEYARD_CELLAR;
                             npcs[KAREN].startingCoordinates.y = 0.0f;
-                            npcs[KAREN].direction = EAST;
+                            npcs[KAREN].direction = NORTHWEST;
                             npcs[KAREN].unk_1E = 0;
                             npcs[KAREN].startingCoordinates.x = -80.0f;
                             npcs[KAREN].startingCoordinates.z = -112.0f;
@@ -3299,7 +3299,7 @@ void func_8007A9B0(void) {
                     
                 npcs[KAREN].levelIndex = VINEYARD;
                 npcs[KAREN].startingCoordinates.y = 0.0f;
-                npcs[KAREN].direction = SOUTH;
+                npcs[KAREN].direction = NORTHEAST;
                 npcs[KAREN].unk_1E = 1;
                 npcs[KAREN].startingCoordinates.x = 192.0f;
                 npcs[KAREN].startingCoordinates.z = 192.0f;
@@ -3325,7 +3325,7 @@ void func_8007A9B0(void) {
                                     
                                     npcs[KAREN].levelIndex = MOUNTAIN_2;
                                     npcs[KAREN].startingCoordinates.y = 0.0f;
-                                    npcs[KAREN].direction = NORTH;
+                                    npcs[KAREN].direction = SOUTHWEST;
                                     npcs[KAREN].unk_1E = 0;
                                     npcs[KAREN].startingCoordinates.x = -80.0f;
                                     npcs[KAREN].startingCoordinates.z = 160.0f;
@@ -3343,7 +3343,7 @@ void func_8007A9B0(void) {
                                     
                                     npcs[KAREN].levelIndex = BEACH;
                                     npcs[KAREN].startingCoordinates.y = 0.0f;
-                                    npcs[KAREN].direction = WEST;
+                                    npcs[KAREN].direction = SOUTHEAST;
                                     npcs[KAREN].unk_1E = 0;
                                     npcs[KAREN].startingCoordinates.x = -96.0f;
                                     npcs[KAREN].startingCoordinates.z = 176.0f;
@@ -3374,7 +3374,7 @@ void func_8007A9B0(void) {
                     npcs[KAREN].levelIndex = BEACH;
                     npcs[KAREN].startingCoordinates.y = 0.0f;
                     npcs[KAREN].startingCoordinates.z = 0.0f;
-                    npcs[KAREN].direction = WEST;
+                    npcs[KAREN].direction = SOUTHEAST;
                     npcs[KAREN].unk_1E = 0;
                     npcs[KAREN].startingCoordinates.x = -224.0f;
                     npcs[KAREN].flags |= 1;
@@ -3393,7 +3393,7 @@ void func_8007A9B0(void) {
                     npcs[KAREN].levelIndex = VINEYARD;
                     npcs[KAREN].startingCoordinates.y = 0.0f;
                     npcs[KAREN].startingCoordinates.z = 0.0f;
-                    npcs[KAREN].direction = NORTH;
+                    npcs[KAREN].direction = SOUTHWEST;
                     npcs[KAREN].unk_1E = 3;
                     npcs[KAREN].startingCoordinates.x = -192.0f;
                     npcs[KAREN].flags |= 1;
@@ -3408,7 +3408,7 @@ void func_8007A9B0(void) {
                     
                     npcs[KAREN].levelIndex = TAVERN;
                     npcs[KAREN].startingCoordinates.y = 0.0f;
-                    npcs[KAREN].direction = NORTH;
+                    npcs[KAREN].direction = SOUTHWEST;
                     npcs[KAREN].unk_1E = 1;
                     npcs[KAREN].startingCoordinates.x = 64.0f;
                     npcs[KAREN].startingCoordinates.z = -32.0f;
@@ -3422,7 +3422,7 @@ void func_8007A9B0(void) {
 
                     npcs[KAREN].levelIndex = TAVERN;
                     npcs[KAREN].startingCoordinates.y = 0;
-                    npcs[KAREN].direction = NORTH;
+                    npcs[KAREN].direction = SOUTHWEST;
                     npcs[KAREN].unk_1E = 0;
                     npcs[KAREN].startingCoordinates.x = -64.0f;
                     npcs[KAREN].startingCoordinates.z = -64.0f;
@@ -3441,7 +3441,7 @@ void func_8007A9B0(void) {
                         npcs[KAREN].levelIndex = BEACH;
                         npcs[KAREN].startingCoordinates.y = 0.0f;
                         npcs[KAREN].startingCoordinates.z = 0.0f;
-                        npcs[KAREN].direction = NORTH;
+                        npcs[KAREN].direction = SOUTHWEST;
                         npcs[KAREN].unk_1E = 2;
                         npcs[KAREN].startingCoordinates.x = -224.0f;
                         npcs[KAREN].flags |= 1;
@@ -3499,7 +3499,7 @@ void func_8007B828(void) {
 
             npcs[BABY].levelIndex = HOUSE;
             npcs[BABY].startingCoordinates.y = 0.0f;
-            npcs[BABY].direction = NORTH;
+            npcs[BABY].direction = SOUTHWEST;
             npcs[BABY].unk_1E = 1;
             npcs[BABY].startingCoordinates.x = -192.0f;
             npcs[BABY].startingCoordinates.z = -64.0f;
@@ -3513,7 +3513,7 @@ void func_8007B828(void) {
 
             npcs[BABY].levelIndex = HOUSE;
             npcs[BABY].startingCoordinates.y = 0.0f;
-            npcs[BABY].direction = NORTH;
+            npcs[BABY].direction = SOUTHWEST;
             npcs[BABY].unk_1E = 2;
             npcs[BABY].startingCoordinates.x = -192.0f;
             npcs[BABY].startingCoordinates.z = -64.0f;
@@ -3547,7 +3547,7 @@ void func_8007B828(void) {
                 
                 npcs[BABY].levelIndex = HOUSE;
                 npcs[BABY].startingCoordinates.y = 0.0f;
-                npcs[BABY].direction = NORTH;
+                npcs[BABY].direction = SOUTHWEST;
                 npcs[BABY].unk_1E = 5;
                 npcs[BABY].startingCoordinates.x = -194.0f;
                 npcs[BABY].startingCoordinates.z = -64.0f;
@@ -3600,7 +3600,7 @@ void func_8007BD50(void) {
                 npcs[HARRIS].startingCoordinates.x = 0.0f;
                 npcs[HARRIS].startingCoordinates.y = 0.0f;
                 npcs[HARRIS].startingCoordinates.z = 0.0f;
-                npcs[HARRIS].direction = NORTH;
+                npcs[HARRIS].direction = SOUTHWEST;
                 npcs[HARRIS].unk_1E = 1;
                 npcs[HARRIS].flags |= 1;
                 
@@ -3611,7 +3611,7 @@ void func_8007BD50(void) {
                 npcs[HARRIS].startingCoordinates.x = 0.0f;
                 npcs[HARRIS].startingCoordinates.y = 0.0f;
                 npcs[HARRIS].startingCoordinates.z = 0.0f;
-                npcs[HARRIS].direction = NORTH;
+                npcs[HARRIS].direction = SOUTHWEST;
                 npcs[HARRIS].unk_1E = 1;
                 npcs[HARRIS].flags |= 1;
                 
@@ -3627,7 +3627,7 @@ void func_8007BD50(void) {
                 case 1:
                     npcs[HARRIS].levelIndex = MOUNTAIN_1;
                     npcs[HARRIS].startingCoordinates.y = 0.0f;
-                    npcs[HARRIS].direction = NORTH;
+                    npcs[HARRIS].direction = SOUTHWEST;
                     npcs[HARRIS].unk_1E = 1;
                     npcs[HARRIS].startingCoordinates.x = -16.0f;
                     npcs[HARRIS].startingCoordinates.z = 128.0f;
@@ -3639,7 +3639,7 @@ void func_8007BD50(void) {
                     npcs[HARRIS].levelIndex = ROAD;
                     npcs[HARRIS].startingCoordinates.y = 0.0f;
                     npcs[HARRIS].startingCoordinates.z = 0.0f;
-                    npcs[HARRIS].direction = NORTH;
+                    npcs[HARRIS].direction = SOUTHWEST;
                     npcs[HARRIS].unk_1E = 1;
                     npcs[HARRIS].startingCoordinates.x = -64.0f;
                     npcs[HARRIS].flags |= 1;
@@ -3649,7 +3649,7 @@ void func_8007BD50(void) {
 
                     npcs[HARRIS].levelIndex = RANCH;
                     npcs[HARRIS].startingCoordinates.y = 0.0f;
-                    npcs[HARRIS].direction = NORTH;
+                    npcs[HARRIS].direction = SOUTHWEST;
                     npcs[HARRIS].unk_1E = 1;
                     npcs[HARRIS].startingCoordinates.x = 160.0f;
                     npcs[HARRIS].startingCoordinates.z = -320.0f;
@@ -3670,7 +3670,7 @@ void func_8007BD50(void) {
             
             npcs[HARRIS].levelIndex = LIBRARY;
             npcs[HARRIS].startingCoordinates.y = 0.0f;
-            npcs[HARRIS].direction = WEST;
+            npcs[HARRIS].direction = SOUTHEAST;
             npcs[HARRIS].unk_1E = 0;
             npcs[HARRIS].startingCoordinates.x = 32.0f;
             npcs[HARRIS].startingCoordinates.z = 96.0f;
@@ -3685,7 +3685,7 @@ void func_8007BD50(void) {
         npcs[HARRIS].levelIndex = TAVERN;
         npcs[HARRIS].startingCoordinates.y = 0.0f;
         npcs[HARRIS].startingCoordinates.z = 0.0f;
-        npcs[HARRIS].direction = NORTH;
+        npcs[HARRIS].direction = SOUTHWEST;
         npcs[HARRIS].unk_1E = 0;
         npcs[HARRIS].startingCoordinates.x = -144.0f;
         npcs[HARRIS].flags |= 1;
@@ -3721,7 +3721,7 @@ void func_8007C088(void) {
 
                 npcs[GRAY].levelIndex = RANCH_BARN;
                 npcs[GRAY].startingCoordinates.y = 0.0f;
-                npcs[GRAY].direction = NORTH;
+                npcs[GRAY].direction = SOUTHWEST;
                 npcs[GRAY].unk_1E = 1;
                 npcs[GRAY].startingCoordinates.x = -128.0f;
                 npcs[GRAY].startingCoordinates.z = -48.0f;
@@ -3735,7 +3735,7 @@ void func_8007C088(void) {
                     
                     npcs[GRAY].levelIndex = RANCH;
                     npcs[GRAY].startingCoordinates.y = 0.0f;
-                    npcs[GRAY].direction = NORTH;
+                    npcs[GRAY].direction = SOUTHWEST;
                     npcs[GRAY].unk_1E = 1;
                     npcs[GRAY].startingCoordinates.x = -160.0f;
                     npcs[GRAY].startingCoordinates.z = 128.0f;
@@ -3747,7 +3747,7 @@ void func_8007C088(void) {
                     npcs[GRAY].startingCoordinates.x = 0.0f;
                     npcs[GRAY].startingCoordinates.y = 0.0f;
                     npcs[GRAY].startingCoordinates.z = 0.0f;
-                    npcs[GRAY].direction = NORTH;
+                    npcs[GRAY].direction = SOUTHWEST;
                     npcs[GRAY].unk_1E = 2;
                     npcs[GRAY].flags |= 1;
                     
@@ -3765,7 +3765,7 @@ void func_8007C088(void) {
 
                     npcs[GRAY].levelIndex = MOUNTAIN_2;
                     npcs[GRAY].startingCoordinates.y = 0.0f;
-                    npcs[GRAY].direction = WEST;
+                    npcs[GRAY].direction = SOUTHEAST;
                     npcs[GRAY].unk_1E = 0;
                     npcs[GRAY].startingCoordinates.x = -128.0f;
                     npcs[GRAY].startingCoordinates.z = 352.0f;
@@ -3777,7 +3777,7 @@ void func_8007C088(void) {
 
                 npcs[GRAY].levelIndex = RANCH_HOUSE;
                 npcs[GRAY].startingCoordinates.y = 0.0f;
-                npcs[GRAY].direction = NORTH;
+                npcs[GRAY].direction = SOUTHWEST;
                 npcs[GRAY].unk_1E = 1;
                 npcs[GRAY].startingCoordinates.x = -64.0f;
                 npcs[GRAY].startingCoordinates.z = -64.0f;
@@ -3792,7 +3792,7 @@ void func_8007C088(void) {
         npcs[GRAY].levelIndex = TAVERN;
         npcs[GRAY].startingCoordinates.y = 0.0f;
         npcs[GRAY].startingCoordinates.z = 0.0f;
-        npcs[GRAY].direction = NORTH;
+        npcs[GRAY].direction = SOUTHWEST;
         npcs[GRAY].unk_1E = 0;
         npcs[GRAY].startingCoordinates.x = 80.0f;
         npcs[GRAY].flags |= 1;
@@ -3825,7 +3825,7 @@ void func_8007C3D4(void) {
                     
                     npcs[JEFF].levelIndex = BAKERY;
                     npcs[JEFF].startingCoordinates.y = 0.0f;
-                    npcs[JEFF].direction = NORTH;
+                    npcs[JEFF].direction = SOUTHWEST;
                     npcs[JEFF].unk_1E = 0;
                     npcs[JEFF].startingCoordinates.x = -96.0f;
                     npcs[JEFF].startingCoordinates.z = -96.0f;
@@ -3846,7 +3846,7 @@ void func_8007C3D4(void) {
 
                             npcs[JEFF].levelIndex = MOUNTAIN_1;
                             npcs[JEFF].startingCoordinates.y = 0.0f;
-                            npcs[JEFF].direction = EAST;
+                            npcs[JEFF].direction = NORTHWEST;
                             npcs[JEFF].unk_1E = 2;
                             npcs[JEFF].startingCoordinates.x = -224.0f;
                             npcs[JEFF].startingCoordinates.z = -128.0f;
@@ -3862,7 +3862,7 @@ void func_8007C3D4(void) {
 
                             npcs[JEFF].levelIndex = MOUNTAIN_1;
                             npcs[JEFF].startingCoordinates.y = 0.0f;
-                            npcs[JEFF].direction = SOUTH;
+                            npcs[JEFF].direction = NORTHEAST;
                             npcs[JEFF].unk_1E = 0;
                             npcs[JEFF].startingCoordinates.x = 192.0f;
                             npcs[JEFF].startingCoordinates.z = 48.0f;
@@ -3888,7 +3888,7 @@ void func_8007C3D4(void) {
                     
                     npcs[JEFF].levelIndex = BAKERY;
                     npcs[JEFF].startingCoordinates.y = 0.0f;
-                    npcs[JEFF].direction = NORTH;
+                    npcs[JEFF].direction = SOUTHWEST;
                     npcs[JEFF].unk_1E = 0;
                     npcs[JEFF].startingCoordinates.x = -96.0f;
                     npcs[JEFF].startingCoordinates.z = -96.0f;
@@ -3906,7 +3906,7 @@ void func_8007C3D4(void) {
                         
                         npcs[JEFF].levelIndex = MOUNTAIN_1;
                         npcs[JEFF].startingCoordinates.y = 0.0f;
-                        npcs[JEFF].direction = EAST;
+                        npcs[JEFF].direction = NORTHWEST;
                         npcs[JEFF].unk_1E = 2;
                         npcs[JEFF].startingCoordinates.x = -224.0f;
                         npcs[JEFF].startingCoordinates.z = -128.0f;
@@ -3924,7 +3924,7 @@ void func_8007C3D4(void) {
             
             npcs[JEFF].levelIndex = TAVERN;
             npcs[JEFF].startingCoordinates.y = 0.0f;
-            npcs[JEFF].direction = SOUTH;
+            npcs[JEFF].direction = NORTHEAST;
             npcs[JEFF].unk_1E = 0;
             npcs[JEFF].startingCoordinates.x = -160.0f;
             npcs[JEFF].startingCoordinates.z = -64.0f;
@@ -3967,7 +3967,7 @@ void func_8007C7C4(void) {
 
                             npcs[CLIFF].levelIndex = RANCH;
                             npcs[CLIFF].startingCoordinates.y = 0.0f;
-                            npcs[CLIFF].direction = WEST;
+                            npcs[CLIFF].direction = SOUTHEAST;
                             npcs[CLIFF].unk_1E = 1;
                             npcs[CLIFF].startingCoordinates.x = 64.0f;
                             npcs[CLIFF].startingCoordinates.z = 128.0f;
@@ -3981,7 +3981,7 @@ void func_8007C7C4(void) {
                         npcs[CLIFF].startingCoordinates.x = 0.0f;
                         npcs[CLIFF].startingCoordinates.y = 0.0f;
                         npcs[CLIFF].startingCoordinates.z = -256.0f;
-                        npcs[CLIFF].direction = NORTH;
+                        npcs[CLIFF].direction = SOUTHWEST;
                         npcs[CLIFF].unk_1E = 0;
                         npcs[CLIFF].flags |= 1;
                     
@@ -3999,7 +3999,7 @@ void func_8007C7C4(void) {
 
                                 npcs[CLIFF].levelIndex = MOUNTAIN_2;
                                 npcs[CLIFF].startingCoordinates.y = 0.0f;
-                                npcs[CLIFF].direction = NORTHWEST;
+                                npcs[CLIFF].direction = SOUTH;
                                 npcs[CLIFF].unk_1E = 0;
                                 npcs[CLIFF].startingCoordinates.x = -224.0f;
                                 npcs[CLIFF].startingCoordinates.z = 160.0f;
@@ -4009,7 +4009,7 @@ void func_8007C7C4(void) {
                                 
                                 npcs[CLIFF].levelIndex = CAVE;
                                 npcs[CLIFF].startingCoordinates.y = 0.0f;
-                                npcs[CLIFF].direction = WEST;
+                                npcs[CLIFF].direction = SOUTHEAST;
                                 npcs[CLIFF].unk_1E = 0;
                                 npcs[CLIFF].startingCoordinates.x = -256.0f;
                                 npcs[CLIFF].startingCoordinates.z = -128.0f;
@@ -4025,7 +4025,7 @@ void func_8007C7C4(void) {
                             
                             npcs[CLIFF].levelIndex = CARPENTER_HUT;
                             npcs[CLIFF].startingCoordinates.y = 0.0f;
-                            npcs[CLIFF].direction = SOUTHWEST;
+                            npcs[CLIFF].direction = EAST;
                             npcs[CLIFF].unk_1E = 0;
                             npcs[CLIFF].startingCoordinates.x = -144.0f;
                             npcs[CLIFF].startingCoordinates.z = 80.0f;
@@ -4051,7 +4051,7 @@ void func_8007C7C4(void) {
                             
                             npcs[CLIFF].levelIndex = MOUNTAIN_2;
                             npcs[CLIFF].startingCoordinates.y = 0.0f;
-                            npcs[CLIFF].direction = NORTHWEST;
+                            npcs[CLIFF].direction = SOUTH;
                             npcs[CLIFF].unk_1E = 0;
                             npcs[CLIFF].startingCoordinates.x = -224.0f;
                             npcs[CLIFF].startingCoordinates.z = 160.0f;
@@ -4068,7 +4068,7 @@ void func_8007C7C4(void) {
                             npcs[CLIFF].levelIndex = TOP_OF_MOUNTAIN_1;
                             npcs[CLIFF].startingCoordinates.y = 0.0f;
                             npcs[CLIFF].startingCoordinates.z = 0.0f;
-                            npcs[CLIFF].direction = EAST;
+                            npcs[CLIFF].direction = NORTHWEST;
                             npcs[CLIFF].unk_1E = 0;
                             npcs[CLIFF].startingCoordinates.x = 192.0f;
                             npcs[CLIFF].flags |= 1;
@@ -4084,7 +4084,7 @@ void func_8007C7C4(void) {
                             npcs[CLIFF].levelIndex = BEACH;
                             npcs[CLIFF].startingCoordinates.y = 0.0f;
                             npcs[CLIFF].startingCoordinates.z = 0.0f;
-                            npcs[CLIFF].direction = WEST;
+                            npcs[CLIFF].direction = SOUTHEAST;
                             npcs[CLIFF].unk_1E = 1;
                             npcs[CLIFF].startingCoordinates.x = -224.0f;
                             npcs[CLIFF].flags |= 1;
@@ -4099,7 +4099,7 @@ void func_8007C7C4(void) {
 
                             npcs[CLIFF].levelIndex = RANCH;
                             npcs[CLIFF].startingCoordinates.y = 0.0f;
-                            npcs[CLIFF].direction = WEST;
+                            npcs[CLIFF].direction = SOUTHEAST;
                             npcs[CLIFF].unk_1E = 0;
                             npcs[CLIFF].startingCoordinates.x = -32.0f;
                             npcs[CLIFF].startingCoordinates.z = -96.0f;
@@ -4115,7 +4115,7 @@ void func_8007C7C4(void) {
 
                             npcs[CLIFF].levelIndex = MOUNTAIN_2;
                             npcs[CLIFF].startingCoordinates.y = 0.0f;
-                            npcs[CLIFF].direction = EAST;
+                            npcs[CLIFF].direction = NORTHWEST;
                             npcs[CLIFF].unk_1E = 0;
                             npcs[CLIFF].startingCoordinates.x = 64.0f;
                             npcs[CLIFF].startingCoordinates.z = -160.0f;
@@ -4134,7 +4134,7 @@ void func_8007C7C4(void) {
                             npcs[CLIFF].startingCoordinates.x = 0.0f;
                             npcs[CLIFF].startingCoordinates.y = 0.0f;
                             npcs[CLIFF].startingCoordinates.z = 0.0f;
-                            npcs[CLIFF].direction = NORTH;
+                            npcs[CLIFF].direction = SOUTHWEST;
                             npcs[CLIFF].unk_1E = 1;
                             npcs[CLIFF].flags |= 1;
                             
@@ -4150,7 +4150,7 @@ void func_8007C7C4(void) {
 
                     npcs[CLIFF].levelIndex = CAVE;
                     npcs[CLIFF].startingCoordinates.y = 0.0f;
-                    npcs[CLIFF].direction = WEST;
+                    npcs[CLIFF].direction = SOUTHEAST;
                     npcs[CLIFF].unk_1E = 0;
                     npcs[CLIFF].startingCoordinates.x = -256.0f;
                     npcs[CLIFF].startingCoordinates.z = -128.0f;
@@ -4160,7 +4160,7 @@ void func_8007C7C4(void) {
 
                     npcs[CLIFF].levelIndex = CARPENTER_HUT;
                     npcs[CLIFF].startingCoordinates.y = 0.0f;
-                    npcs[CLIFF].direction = SOUTHWEST;
+                    npcs[CLIFF].direction = EAST;
                     npcs[CLIFF].unk_1E = 0;
                     npcs[CLIFF].startingCoordinates.x = -144.0f;
                     npcs[CLIFF].startingCoordinates.z = 80.0f;
@@ -4180,7 +4180,7 @@ void func_8007C7C4(void) {
                             
                             npcs[CLIFF].levelIndex = MOUNTAIN_1;
                             npcs[CLIFF].startingCoordinates.y = 0.0f;
-                            npcs[CLIFF].direction = WEST;
+                            npcs[CLIFF].direction = SOUTHEAST;
                             npcs[CLIFF].unk_1E = 0;
                             npcs[CLIFF].startingCoordinates.x = 96.0f;
                             npcs[CLIFF].startingCoordinates.z = -16.0f;
@@ -4201,7 +4201,7 @@ void func_8007C7C4(void) {
                             
                             npcs[CLIFF].levelIndex = TAVERN;
                             npcs[CLIFF].startingCoordinates.y = 0.0f;
-                            npcs[CLIFF].direction = SOUTH;
+                            npcs[CLIFF].direction = NORTHEAST;
                             npcs[CLIFF].unk_1E = 0;
                             npcs[CLIFF].startingCoordinates.x = 80.0f;
                             npcs[CLIFF].startingCoordinates.z = -64.0f;
@@ -4248,7 +4248,7 @@ void func_8007CEB4(void) {
                         npcs[KAI].startingCoordinates.x = 0.0f;
                         npcs[KAI].startingCoordinates.y = 0.0f;
                         npcs[KAI].startingCoordinates.z = -64.0f;
-                        npcs[KAI].direction = NORTH;
+                        npcs[KAI].direction = SOUTHWEST;
                         npcs[KAI].unk_1E = 1;
                         npcs[KAI].flags |= 1;
 
@@ -4260,7 +4260,7 @@ void func_8007CEB4(void) {
                         
                         npcs[KAI].levelIndex = VINEYARD_CELLAR_BASEMENT;
                         npcs[KAI].startingCoordinates.y = 0;
-                        npcs[KAI].direction = NORTH;
+                        npcs[KAI].direction = SOUTHWEST;
                         npcs[KAI].unk_1E = 1;
                         npcs[KAI].startingCoordinates.x = -32.0f;
                         npcs[KAI].startingCoordinates.z = -64.0f;
@@ -4274,7 +4274,7 @@ void func_8007CEB4(void) {
 
                     npcs[KAI].levelIndex = BEACH;
                     npcs[KAI].startingCoordinates.y = 0;
-                    npcs[KAI].direction = WEST;
+                    npcs[KAI].direction = SOUTHEAST;
                     npcs[KAI].unk_1E = 0;
                     npcs[KAI].startingCoordinates.x = -224.0f;
                     npcs[KAI].startingCoordinates.z = -32.0f;
@@ -4288,7 +4288,7 @@ void func_8007CEB4(void) {
                     npcs[KAI].startingCoordinates.x = -224.0f;
                     npcs[KAI].startingCoordinates.y = 0.0f;
                     npcs[KAI].startingCoordinates.z = 0.0f;
-                    npcs[KAI].direction = NORTH;
+                    npcs[KAI].direction = SOUTHWEST;
                     npcs[KAI].unk_1E = 1;
                     npcs[KAI].flags |= 1;
                     
@@ -4299,7 +4299,7 @@ void func_8007CEB4(void) {
                 if (8 < gHour && gHour < 17) {
                     npcs[KAI].levelIndex = VINEYARD_CELLAR;
                     npcs[KAI].startingCoordinates.y = 0.0f;
-                    npcs[KAI].direction = WEST;
+                    npcs[KAI].direction = SOUTHEAST;
                     npcs[KAI].unk_1E = 0;
                     npcs[KAI].startingCoordinates.x = -64.0f;
                     npcs[KAI].startingCoordinates.z = -64.0f;
@@ -4333,7 +4333,7 @@ void func_8007CEB4(void) {
                     
                         npcs[KAI].levelIndex = VINEYARD_CELLAR_BASEMENT;
                         npcs[KAI].startingCoordinates.y = 0;
-                        npcs[KAI].direction = NORTH;
+                        npcs[KAI].direction = SOUTHWEST;
                         npcs[KAI].unk_1E = 1;
                         npcs[KAI].startingCoordinates.x = -32.0f;
                         npcs[KAI].startingCoordinates.z = -64.0f;
@@ -4349,7 +4349,7 @@ void func_8007CEB4(void) {
                     
                     npcs[KAI].levelIndex = VINEYARD_CELLAR;
                     npcs[KAI].startingCoordinates.y = 0;
-                    npcs[KAI].direction = WEST;
+                    npcs[KAI].direction = SOUTHEAST;
                     npcs[KAI].unk_1E = 0;
                     npcs[KAI].startingCoordinates.x = -64.0f;
                     npcs[KAI].startingCoordinates.z = -64.0f;
@@ -4363,7 +4363,7 @@ void func_8007CEB4(void) {
 
                     npcs[KAI].levelIndex = TAVERN;
                     npcs[KAI].startingCoordinates.y = 0.0f;
-                    npcs[KAI].direction = SOUTH;
+                    npcs[KAI].direction = NORTHEAST;
                     npcs[KAI].unk_1E = 0;
                     npcs[KAI].startingCoordinates.x = -144.0f;
                     npcs[KAI].startingCoordinates.z = 96.0f;
@@ -4399,7 +4399,7 @@ void func_8007D3C4(void) {
                 if (8 < gHour && gHour < 15) {
                     npcs[MAYOR].levelIndex = CHURCH;
                     npcs[MAYOR].startingCoordinates.y = 0;
-                    npcs[MAYOR].direction = SOUTH;
+                    npcs[MAYOR].direction = NORTHEAST;
                     npcs[MAYOR].unk_1E = 0;
                     npcs[MAYOR].startingCoordinates.x = -80.0f;
                     npcs[MAYOR].startingCoordinates.z = -32.0f;
@@ -4419,7 +4419,7 @@ void func_8007D3C4(void) {
                     if (7 < gHour && gHour < 17) {
                         npcs[MAYOR].levelIndex = VILLAGE_2;
                         npcs[MAYOR].startingCoordinates.y = 0;
-                        npcs[MAYOR].direction = NORTH;
+                        npcs[MAYOR].direction = SOUTHWEST;
                         npcs[MAYOR].unk_1E = 1;
                         npcs[MAYOR].startingCoordinates.x = -224.0f;
                         npcs[MAYOR].startingCoordinates.z = 32.0f;
@@ -4431,7 +4431,7 @@ void func_8007D3C4(void) {
                     if (7 < gHour && gHour < 17) {
                         npcs[MAYOR].levelIndex = VILLAGE_1;
                         npcs[MAYOR].startingCoordinates.y = 0;
-                        npcs[MAYOR].direction = WEST;
+                        npcs[MAYOR].direction = SOUTHEAST;
                         npcs[MAYOR].unk_1E = 1;
                         npcs[MAYOR].startingCoordinates.x = -128.0f;
                         npcs[MAYOR].startingCoordinates.z = -64.0f;
@@ -4448,7 +4448,7 @@ void func_8007D3C4(void) {
                     if (7 < gHour && gHour < 17) {
                         npcs[MAYOR].levelIndex = VILLAGE_1;
                         npcs[MAYOR].startingCoordinates.y = 0;
-                        npcs[MAYOR].direction = NORTH;
+                        npcs[MAYOR].direction = SOUTHWEST;
                         npcs[MAYOR].unk_1E = 1;
                         npcs[MAYOR].startingCoordinates.x = -224.0f;
                         npcs[MAYOR].startingCoordinates.z = 288.0f;
@@ -4459,7 +4459,7 @@ void func_8007D3C4(void) {
                     if (7 < gHour && gHour < 17) {
                         npcs[MAYOR].levelIndex = LIBRARY;
                         npcs[MAYOR].startingCoordinates.y = 0;
-                        npcs[MAYOR].direction = NORTH;
+                        npcs[MAYOR].direction = SOUTHWEST;
                         npcs[MAYOR].unk_1E = 0;
                         npcs[MAYOR].startingCoordinates.x = 64.0f;
                         npcs[MAYOR].startingCoordinates.z = 64.0f;
@@ -4475,7 +4475,7 @@ void func_8007D3C4(void) {
     } else if (8 < gHour && gHour < 15) {
         npcs[MAYOR].levelIndex = MAYOR_HOUSE;
         npcs[MAYOR].startingCoordinates.y = 0;
-        npcs[MAYOR].direction = NORTH;
+        npcs[MAYOR].direction = SOUTHWEST;
         npcs[MAYOR].unk_1E = 0;
         npcs[MAYOR].startingCoordinates.x = 16.0f;
         npcs[MAYOR].startingCoordinates.z = -32.0f;
@@ -4529,7 +4529,7 @@ void func_8007D6E0(void) {
                 if (8 < gHour && gHour < 15) {
                     npcs[MAYOR_WIFE].levelIndex = CHURCH;
                     npcs[MAYOR_WIFE].startingCoordinates.y = 0;
-                    npcs[MAYOR_WIFE].direction = SOUTH;
+                    npcs[MAYOR_WIFE].direction = NORTHEAST;
                     npcs[MAYOR_WIFE].unk_1E = 0;
                     npcs[MAYOR_WIFE].startingCoordinates.x = -112.0f;
                     npcs[MAYOR_WIFE].startingCoordinates.z = -32.0f;
@@ -4546,7 +4546,7 @@ void func_8007D6E0(void) {
                 if (7 < gHour && gHour < 17) {
                     npcs[MAYOR_WIFE].levelIndex = MAYOR_HOUSE;
                     npcs[MAYOR_WIFE].startingCoordinates.y = 0;
-                    npcs[MAYOR_WIFE].direction = NORTH;
+                    npcs[MAYOR_WIFE].direction = SOUTHWEST;
                     npcs[MAYOR_WIFE].unk_1E = 1;
                     npcs[MAYOR_WIFE].startingCoordinates.x = -64.0f;
                     npcs[MAYOR_WIFE].startingCoordinates.z = -64.0f;
@@ -4560,7 +4560,7 @@ void func_8007D6E0(void) {
                 if (11 < gHour && gHour < 17) {
                     npcs[MAYOR_WIFE].levelIndex = BAKERY;
                     npcs[MAYOR_WIFE].startingCoordinates.y = 0;
-                    npcs[MAYOR_WIFE].direction = NORTH;
+                    npcs[MAYOR_WIFE].direction = SOUTHWEST;
                     npcs[MAYOR_WIFE].unk_1E = 0;
                     npcs[MAYOR_WIFE].startingCoordinates.x = 64.0f;
                     npcs[MAYOR_WIFE].startingCoordinates.z = -32.0f;
@@ -4574,7 +4574,7 @@ void func_8007D6E0(void) {
                 if (7 < gHour && gHour < 17) {
                     npcs[MAYOR_WIFE].levelIndex = MAYOR_HOUSE;
                     npcs[MAYOR_WIFE].startingCoordinates.y = 0;
-                    npcs[MAYOR_WIFE].direction = NORTH;
+                    npcs[MAYOR_WIFE].direction = SOUTHWEST;
                     npcs[MAYOR_WIFE].unk_1E = 1;
                     npcs[MAYOR_WIFE].startingCoordinates.x = -64.0f;
                     npcs[MAYOR_WIFE].startingCoordinates.z = -64.0f;
@@ -4588,7 +4588,7 @@ void func_8007D6E0(void) {
     } else if (7 < gHour && gHour < 17) {
         npcs[MAYOR_WIFE].levelIndex = MAYOR_HOUSE;
         npcs[MAYOR_WIFE].startingCoordinates.y = 0;
-        npcs[MAYOR_WIFE].direction = EAST;
+        npcs[MAYOR_WIFE].direction = NORTHWEST;
         npcs[MAYOR_WIFE].unk_1E = 0;
         npcs[MAYOR_WIFE].startingCoordinates.x = 64.0f;
         npcs[MAYOR_WIFE].startingCoordinates.z = 16.0f;
@@ -4617,7 +4617,7 @@ void func_8007D9F4(void) {
             if (8 < gHour && gHour < 17) { 
                 npcs[LILLIA].levelIndex = SQUARE;
                 npcs[LILLIA].startingCoordinates.y = 0;
-                npcs[LILLIA].direction = SOUTH;
+                npcs[LILLIA].direction = NORTHEAST;
                 npcs[LILLIA].unk_1E = 0;
                 npcs[LILLIA].startingCoordinates.x = -144.0f;
                 npcs[LILLIA].startingCoordinates.z = 256.0f;
@@ -4633,7 +4633,7 @@ DEFAULT:
             if (8 < gHour && gHour < 17) {
                 npcs[LILLIA].levelIndex = FLOWER_SHOP;
                 npcs[LILLIA].startingCoordinates.y = 0;
-                npcs[LILLIA].direction = NORTH;
+                npcs[LILLIA].direction = SOUTHWEST;
                 npcs[LILLIA].unk_1E = 0;
                 npcs[LILLIA].startingCoordinates.x = 64.0f;
                 npcs[LILLIA].startingCoordinates.z = -128.0f;
@@ -4666,7 +4666,7 @@ void func_8007DB38(void) {
             if (8 < gHour && gHour < 17) {
                 npcs[BASIL].levelIndex = SQUARE;
                 npcs[BASIL].startingCoordinates.y = 0;
-                npcs[BASIL].direction = SOUTH;
+                npcs[BASIL].direction = NORTHEAST;
                 npcs[BASIL].unk_1E = 0;
                 npcs[BASIL].startingCoordinates.x = -176.0f;
                 npcs[BASIL].startingCoordinates.z = 256.0f;
@@ -4677,7 +4677,7 @@ void func_8007DB38(void) {
             if (7  < gHour && gHour < 18) {
                 npcs[BASIL].levelIndex = VILLAGE_1;
                 npcs[BASIL].startingCoordinates.y = 0;
-                npcs[BASIL].direction = WEST;
+                npcs[BASIL].direction = SOUTHEAST;
                 npcs[BASIL].unk_1E = 0;
                 npcs[BASIL].startingCoordinates.x = 128.0f;
                 npcs[BASIL].startingCoordinates.z = -416.0f;
@@ -4689,7 +4689,7 @@ void func_8007DB38(void) {
             if (7  < gHour && gHour < 18) {
                 npcs[BASIL].levelIndex = MOUNTAIN_1;
                 npcs[BASIL].startingCoordinates.y = 0;
-                npcs[BASIL].direction = SOUTH;
+                npcs[BASIL].direction = NORTHEAST;
                 npcs[BASIL].unk_1E = 1;
                 npcs[BASIL].startingCoordinates.x = 192.0f;
                 npcs[BASIL].startingCoordinates.z = -64.0f;
@@ -4703,7 +4703,7 @@ NOT_SUNNY:
             if (8 < gHour && gHour < 17) {
                 npcs[BASIL].levelIndex = FLOWER_SHOP;
                 npcs[BASIL].startingCoordinates.y = 0;
-                npcs[BASIL].direction = NORTH;
+                npcs[BASIL].direction = SOUTHWEST;
                 npcs[BASIL].unk_1E = 0;
                 npcs[BASIL].startingCoordinates.x = -48.0f;
                 npcs[BASIL].startingCoordinates.z = -64.0f;
@@ -4717,7 +4717,7 @@ NOT_SUNNY:
     if ((17 < gHour && gHour < 24) && npcs[BASIL].location < 2) {
         npcs[BASIL].levelIndex = 0x3B;
         npcs[BASIL].startingCoordinates.y = 0;
-        npcs[BASIL].direction = WEST;
+        npcs[BASIL].direction = SOUTHEAST;
         npcs[BASIL].unk_1E = 0;
         npcs[BASIL].startingCoordinates.x = 32.0f;
         npcs[BASIL].startingCoordinates.z = 48.0f;
@@ -4744,7 +4744,7 @@ void setEllenLocation(void) {
 
                 npcs[ELLEN].levelIndex = VILLAGE_1;
                 npcs[ELLEN].startingCoordinates.y = 0;
-                npcs[ELLEN].direction = NORTH;
+                npcs[ELLEN].direction = SOUTHWEST;
                 npcs[ELLEN].unk_1E = 0;
                 npcs[ELLEN].startingCoordinates.x = 320.0f;
                 npcs[ELLEN].startingCoordinates.z = 128.0f;
@@ -4756,7 +4756,7 @@ void setEllenLocation(void) {
 
                 npcs[ELLEN].levelIndex = BAKERY;
                 npcs[ELLEN].startingCoordinates.y = 0;
-                npcs[ELLEN].direction = NORTH;
+                npcs[ELLEN].direction = SOUTHWEST;
                 npcs[ELLEN].unk_1E = 0;
                 npcs[ELLEN].startingCoordinates.x = -128.0f;
                 npcs[ELLEN].startingCoordinates.z = -32.0f;
@@ -4788,7 +4788,7 @@ void func_8007DF14(void) {
     if (temp >= SUNDAY && (temp < THURSDAY || temp < 7 && (temp2 = temp) >= FRIDAY) && (7 < gHour && gHour < 17)) {
         npcs[DOUG].levelIndex = RANCH_STORE;
         npcs[DOUG].startingCoordinates.y = 0;
-        npcs[DOUG].direction = WEST;
+        npcs[DOUG].direction = SOUTHEAST;
         npcs[DOUG].unk_1E = 0;
         npcs[DOUG].startingCoordinates.x = -96.0f;
         npcs[DOUG].startingCoordinates.z = 64.0f;
@@ -4798,7 +4798,7 @@ void func_8007DF14(void) {
     if (NIGHTTIME && npcs[DOUG].location < 2) {
         npcs[DOUG].levelIndex = TAVERN;
         npcs[DOUG].startingCoordinates.y = 0;
-        npcs[DOUG].direction = EAST;
+        npcs[DOUG].direction = NORTHWEST;
         npcs[DOUG].unk_1E = 0;
         npcs[DOUG].startingCoordinates.x = -96.0f;
         npcs[DOUG].startingCoordinates.z = 48.0f;
@@ -4830,7 +4830,7 @@ void func_8007E07C(void) {
 
                     npcs[GOTZ].levelIndex = VINEYARD;
                     npcs[GOTZ].startingCoordinates.y = 0.0f;
-                    npcs[GOTZ].direction = NORTH;
+                    npcs[GOTZ].direction = SOUTHWEST;
                     npcs[GOTZ].unk_1E = 0;
                     npcs[GOTZ].startingCoordinates.x = 128.0f;
                     npcs[GOTZ].startingCoordinates.z = -128.0f;
@@ -4844,7 +4844,7 @@ void func_8007E07C(void) {
     
                         npcs[GOTZ].levelIndex = VINEYARD;
                         npcs[GOTZ].startingCoordinates.y = 0.0f;
-                        npcs[GOTZ].direction = NORTH;
+                        npcs[GOTZ].direction = SOUTHWEST;
                         npcs[GOTZ].unk_1E = 3;
                         npcs[GOTZ].startingCoordinates.x = -192.0f;
                         npcs[GOTZ].startingCoordinates.z = -64.0f;
@@ -4862,7 +4862,7 @@ void func_8007E07C(void) {
 
                     npcs[GOTZ].levelIndex = VINEYARD_HOUSE;
                     npcs[GOTZ].startingCoordinates.y = 0.0f;
-                    npcs[GOTZ].direction = NORTHWEST;
+                    npcs[GOTZ].direction = SOUTH;
                     npcs[GOTZ].unk_1E = 0;
                     npcs[GOTZ].startingCoordinates.x = -160.0f;
                     npcs[GOTZ].startingCoordinates.z = -32.0f;
@@ -4880,7 +4880,7 @@ void func_8007E07C(void) {
 
             npcs[GOTZ].levelIndex = VINEYARD_HOUSE;
             npcs[GOTZ].startingCoordinates.y = 0.0f;
-            npcs[GOTZ].direction = NORTHWEST;
+            npcs[GOTZ].direction = SOUTH;
             npcs[GOTZ].unk_1E = 0;
             npcs[GOTZ].startingCoordinates.x = -160.0f;
             npcs[GOTZ].startingCoordinates.z = -32.0f;
@@ -4896,7 +4896,7 @@ void func_8007E07C(void) {
             
             npcs[GOTZ].levelIndex = TAVERN;
             npcs[GOTZ].startingCoordinates.y = 0.0f;
-            npcs[GOTZ].direction = NORTH;
+            npcs[GOTZ].direction = SOUTHWEST;
             npcs[GOTZ].unk_1E = 0;
             npcs[GOTZ].startingCoordinates.x = 80.0f;
             npcs[GOTZ].startingCoordinates.z = -160.0f;
@@ -4924,7 +4924,7 @@ void func_8007E2E4(void) {
         
         npcs[SASHA].levelIndex = VINEYARD_HOUSE;
         npcs[SASHA].startingCoordinates.y = 0.0f;
-        npcs[SASHA].direction = NORTH;
+        npcs[SASHA].direction = SOUTHWEST;
         npcs[SASHA].unk_1E = 0;
         npcs[SASHA].startingCoordinates.x = -128.0f;
         npcs[SASHA].startingCoordinates.z = -96.0f;
@@ -4938,7 +4938,7 @@ void func_8007E2E4(void) {
         
             npcs[SASHA].levelIndex = VINEYARD;
             npcs[SASHA].startingCoordinates.y = 0.0f;
-            npcs[SASHA].direction = NORTH;
+            npcs[SASHA].direction = SOUTHWEST;
             npcs[SASHA].unk_1E = 3;
             npcs[SASHA].startingCoordinates.x = -192.0f;
             npcs[SASHA].startingCoordinates.z = 64.0f;
@@ -4975,7 +4975,7 @@ void func_8007E440(void) {
 
                     npcs[POTION_SHOP_DEALER].levelIndex = POTION_SHOP;
                     npcs[POTION_SHOP_DEALER].startingCoordinates.y = 0.0f;
-                    npcs[POTION_SHOP_DEALER].direction = WEST;
+                    npcs[POTION_SHOP_DEALER].direction = SOUTHEAST;
                     npcs[POTION_SHOP_DEALER].unk_1E = 0;
                     npcs[POTION_SHOP_DEALER].startingCoordinates.x = -96.0f;
                     npcs[POTION_SHOP_DEALER].startingCoordinates.z = -16.0f;
@@ -4994,7 +4994,7 @@ void func_8007E440(void) {
             
                         npcs[POTION_SHOP_DEALER].levelIndex = MOUNTAIN_2;
                         npcs[POTION_SHOP_DEALER].startingCoordinates.y = 0.0f;
-                        npcs[POTION_SHOP_DEALER].direction = NORTHWEST;
+                        npcs[POTION_SHOP_DEALER].direction = SOUTH;
                         npcs[POTION_SHOP_DEALER].unk_1E = 1;
                         npcs[POTION_SHOP_DEALER].startingCoordinates.x = -112.0f;
                         npcs[POTION_SHOP_DEALER].startingCoordinates.z = 192.0f;
@@ -5006,7 +5006,7 @@ void func_8007E440(void) {
             
                     npcs[POTION_SHOP_DEALER].levelIndex = CAVE;
                     npcs[POTION_SHOP_DEALER].startingCoordinates.y = 0.0f;
-                    npcs[POTION_SHOP_DEALER].direction = NORTHWEST;
+                    npcs[POTION_SHOP_DEALER].direction = SOUTH;
                     npcs[POTION_SHOP_DEALER].unk_1E = 0;
                     npcs[POTION_SHOP_DEALER].startingCoordinates.x = -288.0f;
                     npcs[POTION_SHOP_DEALER].startingCoordinates.z = -224.0f;
@@ -5022,7 +5022,7 @@ void func_8007E440(void) {
 
         npcs[POTION_SHOP_DEALER].levelIndex = POTION_SHOP;
         npcs[POTION_SHOP_DEALER].startingCoordinates.y = 0.0f;
-        npcs[POTION_SHOP_DEALER].direction = WEST;
+        npcs[POTION_SHOP_DEALER].direction = SOUTHEAST;
         npcs[POTION_SHOP_DEALER].unk_1E = 0;
         npcs[POTION_SHOP_DEALER].startingCoordinates.x = -96.0f;
         npcs[POTION_SHOP_DEALER].startingCoordinates.z = -16.0f;
@@ -5066,7 +5066,7 @@ void func_8007E600(void) {
                 
                                     npcs[KENT].levelIndex = MOUNTAIN_2;
                                     npcs[KENT].startingCoordinates.y = 0.0f;
-                                    npcs[KENT].direction = NORTH;
+                                    npcs[KENT].direction = SOUTHWEST;
                                     npcs[KENT].unk_1E = 1;
                                     npcs[KENT].startingCoordinates.x = -160.0f;
                                     npcs[KENT].startingCoordinates.z = -160.0f;
@@ -5085,7 +5085,7 @@ void func_8007E600(void) {
                                     npcs[KENT].levelIndex = LIBRARY;
                                     npcs[KENT].startingCoordinates.y = 0.0f;
                                     npcs[KENT].startingCoordinates.z = 0.0f;
-                                    npcs[KENT].direction = WEST;
+                                    npcs[KENT].direction = SOUTHEAST;
                                     npcs[KENT].unk_1E = 1;
                                     npcs[KENT].startingCoordinates.x = -32.0f;
                                     npcs[KENT].flags |= 1;
@@ -5101,7 +5101,7 @@ void func_8007E600(void) {
                                     npcs[KENT].levelIndex = VILLAGE_2;
                                     npcs[KENT].startingCoordinates.y = 0.0f;
                                     npcs[KENT].startingCoordinates.z = 0.0f;
-                                    npcs[KENT].direction = NORTHWEST;
+                                    npcs[KENT].direction = SOUTH;
                                     npcs[KENT].unk_1E = 0;
                                     npcs[KENT].startingCoordinates.x = 288.0f;
                                     npcs[KENT].flags |= 1;
@@ -5122,7 +5122,7 @@ void func_8007E600(void) {
 
                                 npcs[KENT].levelIndex = BEACH;
                                 npcs[KENT].startingCoordinates.y = 0.0f;
-                                npcs[KENT].direction = WEST;
+                                npcs[KENT].direction = SOUTHEAST;
                                 npcs[KENT].unk_1E = 0;
                                 npcs[KENT].startingCoordinates.x = -224.0f;
                                 npcs[KENT].startingCoordinates.z = -96.0f;
@@ -5136,7 +5136,7 @@ void func_8007E600(void) {
 
                                 npcs[KENT].levelIndex = MOUNTAIN_2;
                                 npcs[KENT].startingCoordinates.y = 0.0f;
-                                npcs[KENT].direction = NORTH;
+                                npcs[KENT].direction = SOUTHWEST;
                                 npcs[KENT].unk_1E = 1;
                                 npcs[KENT].startingCoordinates.x = -128.0f;
                                 npcs[KENT].startingCoordinates.z = -160.0f;
@@ -5158,7 +5158,7 @@ void func_8007E600(void) {
 
                                 npcs[KENT].levelIndex = POTION_SHOP_BEDROOM;
                                 npcs[KENT].startingCoordinates.y = 0.0f;
-                                npcs[KENT].direction = NORTH;
+                                npcs[KENT].direction = SOUTHWEST;
                                 npcs[KENT].unk_1E = 0;
                                 npcs[KENT].startingCoordinates.x = 32.0f;
                                 npcs[KENT].startingCoordinates.z = -32.0f;
@@ -5172,7 +5172,7 @@ void func_8007E600(void) {
 
                                 npcs[KENT].levelIndex = MOUNTAIN_2;
                                 npcs[KENT].startingCoordinates.y = 0.0f;
-                                npcs[KENT].direction = NORTH;
+                                npcs[KENT].direction = SOUTHWEST;
                                 npcs[KENT].unk_1E = 1;
                                 npcs[KENT].startingCoordinates.x = -128.0f;
                                 npcs[KENT].startingCoordinates.z = -160.0f;
@@ -5213,7 +5213,7 @@ void func_8007E600(void) {
                     npcs[KENT].levelIndex = VILLAGE_1;
                     npcs[KENT].startingCoordinates.x = 0.0f;
                     npcs[KENT].startingCoordinates.y = 0.0f;
-                    npcs[KENT].direction = EAST;
+                    npcs[KENT].direction = NORTHWEST;
                     npcs[KENT].unk_1E = 1;
                     npcs[KENT].startingCoordinates.z = 352.0f;
                     npcs[KENT].flags |= 1;
@@ -5232,7 +5232,7 @@ void func_8007E600(void) {
                         npcs[KENT].startingCoordinates.x = 0.0f;
                         npcs[KENT].startingCoordinates.y = 0.0f;
                         npcs[KENT].startingCoordinates.z = 0.0f;
-                        npcs[KENT].direction = SOUTH;
+                        npcs[KENT].direction = NORTHEAST;
                         npcs[KENT].unk_1E = 2;
                         npcs[KENT].flags |= 1;
                         
@@ -5244,7 +5244,7 @@ void func_8007E600(void) {
                                     
                         npcs[KENT].levelIndex = MOUNTAIN_1;
                         npcs[KENT].startingCoordinates.y = 0.0f;
-                        npcs[KENT].direction = WEST;
+                        npcs[KENT].direction = SOUTHEAST;
                         npcs[KENT].unk_1E = 1;
                         npcs[KENT].startingCoordinates.x = 64.0f;
                         npcs[KENT].startingCoordinates.z = -96.0f;
@@ -5266,7 +5266,7 @@ void func_8007E600(void) {
 
             npcs[KENT].levelIndex = VILLAGE_2;
             npcs[KENT].startingCoordinates.y = 0.0f;
-            npcs[KENT].direction = NORTH;
+            npcs[KENT].direction = SOUTHWEST;
             npcs[KENT].unk_1E = 0;
             npcs[KENT].startingCoordinates.x = 412.0f;
             npcs[KENT].startingCoordinates.z = -64.0f;
@@ -5279,7 +5279,7 @@ void func_8007E600(void) {
         npcs[KENT].levelIndex = temp;
         npcs[KENT].startingCoordinates.x = 0.0f;
         npcs[KENT].startingCoordinates.y = 0.0f;
-        npcs[KENT].direction = EAST;
+        npcs[KENT].direction = NORTHWEST;
         npcs[KENT].unk_1E = 0;
         npcs[KENT].startingCoordinates.z = -16.0f;
         npcs[KENT].flags |= 1;
@@ -5322,7 +5322,7 @@ void func_8007ECE4(void) {
                 
                                     npcs[STU].levelIndex = MOUNTAIN_2;
                                     npcs[STU].startingCoordinates.y = 0.0f;
-                                    npcs[STU].direction = NORTH;
+                                    npcs[STU].direction = SOUTHWEST;
                                     npcs[STU].unk_1E = 1;
                                     npcs[STU].startingCoordinates.x = -160.0f;
                                     npcs[STU].startingCoordinates.z = -160.0f;
@@ -5338,7 +5338,7 @@ void func_8007ECE4(void) {
                 
                                     npcs[STU].levelIndex = LIBRARY;
                                     npcs[STU].startingCoordinates.y = 0.0f;
-                                    npcs[STU].direction = WEST;
+                                    npcs[STU].direction = SOUTHEAST;
                                     npcs[STU].unk_1E = 1;
                                     npcs[STU].startingCoordinates.x = -64.0f;
                                     npcs[STU].startingCoordinates.z = -64.0f;
@@ -5355,7 +5355,7 @@ void func_8007ECE4(void) {
                                     npcs[STU].levelIndex = VILLAGE_2;
                                     npcs[STU].startingCoordinates.y = 0.0f;
                                     npcs[STU].startingCoordinates.z = 0.0f;
-                                    npcs[STU].direction = NORTHWEST;
+                                    npcs[STU].direction = SOUTH;
                                     npcs[STU].unk_1E = 0;
                                     npcs[STU].startingCoordinates.x = 256.0f;
                                     npcs[STU].flags |= 1;
@@ -5376,7 +5376,7 @@ void func_8007ECE4(void) {
 
                                 npcs[STU].levelIndex = BEACH;
                                 npcs[STU].startingCoordinates.y = 0.0f;
-                                npcs[STU].direction = WEST;
+                                npcs[STU].direction = SOUTHEAST;
                                 npcs[STU].unk_1E = 0;
                                 npcs[STU].startingCoordinates.x = -224.0f;
                                 npcs[STU].startingCoordinates.z = -128.0f;
@@ -5390,7 +5390,7 @@ void func_8007ECE4(void) {
 
                                 npcs[STU].levelIndex = MOUNTAIN_2;
                                 npcs[STU].startingCoordinates.y = 0.0f;
-                                npcs[STU].direction = NORTH;
+                                npcs[STU].direction = SOUTHWEST;
                                 npcs[STU].unk_1E = 1;
                                 npcs[STU].startingCoordinates.x = -160.0f;
                                 npcs[STU].startingCoordinates.z = -160.0f;
@@ -5409,7 +5409,7 @@ void func_8007ECE4(void) {
                             npcs[STU].levelIndex = POTION_SHOP_BEDROOM;
                             npcs[STU].startingCoordinates.x = 0.0f;
                             npcs[STU].startingCoordinates.y = 0.0f;
-                            npcs[STU].direction = NORTH;
+                            npcs[STU].direction = SOUTHWEST;
                             npcs[STU].unk_1E = 0;
                             npcs[STU].startingCoordinates.z = -32.0f;
                             npcs[STU].flags |= 1;
@@ -5444,7 +5444,7 @@ void func_8007ECE4(void) {
                      
                     npcs[STU].levelIndex = VILLAGE_1;
                     npcs[STU].startingCoordinates.y = 0.0f;
-                    npcs[STU].direction = EAST;
+                    npcs[STU].direction = NORTHWEST;
                     npcs[STU].unk_1E = 1;
                     npcs[STU].startingCoordinates.x = 32.0f;
                     npcs[STU].startingCoordinates.z = 352.0f;
@@ -5463,7 +5463,7 @@ void func_8007ECE4(void) {
                         npcs[STU].levelIndex = SQUARE;
                         npcs[STU].startingCoordinates.y = 0.0f;
                         npcs[STU].startingCoordinates.z = 0.0f;
-                        npcs[STU].direction = SOUTH;
+                        npcs[STU].direction = NORTHEAST;
                         npcs[STU].unk_1E = 1;
                         npcs[STU].startingCoordinates.x = -32.0f;
                         npcs[STU].flags |= 1;
@@ -5476,7 +5476,7 @@ void func_8007ECE4(void) {
                                     
                         npcs[STU].levelIndex = MOUNTAIN_1;
                         npcs[STU].startingCoordinates.y = 0.0f;
-                        npcs[STU].direction = WEST;
+                        npcs[STU].direction = SOUTHEAST;
                         npcs[STU].unk_1E = 1;
                         npcs[STU].startingCoordinates.x = 64.0f;
                         npcs[STU].startingCoordinates.z = -64.0f;
@@ -5499,7 +5499,7 @@ void func_8007ECE4(void) {
                 npcs[STU].levelIndex = POTION_SHOP_BEDROOM;
                 npcs[STU].startingCoordinates.x = 0.0f;
                 npcs[STU].startingCoordinates.y = 0.0f;
-                npcs[STU].direction = NORTH;
+                npcs[STU].direction = SOUTHWEST;
                 npcs[STU].unk_1E = 0;
                 npcs[STU].startingCoordinates.z = -32.0f;
                 npcs[STU].flags |= 1;
@@ -5512,7 +5512,7 @@ void func_8007ECE4(void) {
     
                 npcs[STU].levelIndex = VILLAGE_2;
                 npcs[STU].startingCoordinates.y = 0.0f;
-                npcs[STU].direction = NORTH;
+                npcs[STU].direction = SOUTHWEST;
                 npcs[STU].unk_1E = 0;
                 npcs[STU].startingCoordinates.x = 444.0f;
                 npcs[STU].startingCoordinates.z = -64.0f;
@@ -5528,7 +5528,7 @@ void func_8007ECE4(void) {
         npcs[STU].levelIndex = temp;
         npcs[STU].startingCoordinates.x = 0.0f;
         npcs[STU].startingCoordinates.y = 0.0f;
-        npcs[STU].direction = EAST;
+        npcs[STU].direction = NORTHWEST;
         npcs[STU].unk_1E = 0;
         npcs[STU].startingCoordinates.z = -48.0f;
         npcs[STU].flags |= 1;
@@ -5560,7 +5560,7 @@ void func_8007F378(void) {
             
                         npcs[MIDWIFE].levelIndex = VILLAGE_2;
                         npcs[MIDWIFE].startingCoordinates.y = 0.0f;
-                        npcs[MIDWIFE].direction = NORTH;
+                        npcs[MIDWIFE].direction = SOUTHWEST;
                         npcs[MIDWIFE].unk_1E = 1;
                         npcs[MIDWIFE].startingCoordinates.x = 48.0f;
                         npcs[MIDWIFE].startingCoordinates.z = -64.0f;
@@ -5581,7 +5581,7 @@ void func_8007F378(void) {
     
                         npcs[MIDWIFE].levelIndex = MIDWIFE_HOUSE;
                         npcs[MIDWIFE].startingCoordinates.y = 0.0f;
-                        npcs[MIDWIFE].direction = NORTH;
+                        npcs[MIDWIFE].direction = SOUTHWEST;
                         npcs[MIDWIFE].unk_1E = 0;
                         npcs[MIDWIFE].startingCoordinates.x = -16.0f;
                         npcs[MIDWIFE].startingCoordinates.z = -32.0f;
@@ -5598,7 +5598,7 @@ void func_8007F378(void) {
 
             npcs[MIDWIFE].levelIndex = MIDWIFE_HOUSE;
             npcs[MIDWIFE].startingCoordinates.y = 0.0f;
-            npcs[MIDWIFE].direction = NORTH;
+            npcs[MIDWIFE].direction = SOUTHWEST;
             npcs[MIDWIFE].unk_1E = 0;
             npcs[MIDWIFE].startingCoordinates.x = -16.0f;
             npcs[MIDWIFE].startingCoordinates.z = -32.0f;
@@ -5633,7 +5633,7 @@ void func_8007F4E0(void) {
             
                         npcs[MAY].levelIndex = SQUARE;
                         npcs[MAY].startingCoordinates.y = 0.0f;
-                        npcs[MAY].direction = SOUTH;
+                        npcs[MAY].direction = NORTHEAST;
                         npcs[MAY].unk_1E = 0;
                         npcs[MAY].startingCoordinates.x = -32.0f;
                         npcs[MAY].startingCoordinates.z = -320.0f;
@@ -5647,7 +5647,7 @@ void func_8007F4E0(void) {
             
                         npcs[MAY].levelIndex = MOUNTAIN_2;
                         npcs[MAY].startingCoordinates.y = 0.0f;
-                        npcs[MAY].direction = WEST;
+                        npcs[MAY].direction = SOUTHEAST;
                         npcs[MAY].unk_1E = 0;
                         npcs[MAY].startingCoordinates.x = -160.0f;
                         npcs[MAY].startingCoordinates.z = 288.0f;
@@ -5664,7 +5664,7 @@ void func_8007F4E0(void) {
         
                     npcs[MAY].levelIndex = CHURCH;
                     npcs[MAY].startingCoordinates.y = 0.0f;
-                    npcs[MAY].direction = SOUTH;
+                    npcs[MAY].direction = NORTHEAST;
                     npcs[MAY].unk_1E = 0;
                     npcs[MAY].startingCoordinates.x = -96.0f;
                     npcs[MAY].startingCoordinates.z = -32.0f;
@@ -5676,7 +5676,7 @@ void func_8007F4E0(void) {
                     
                     npcs[MAY].levelIndex = VILLAGE_2;
                     npcs[MAY].startingCoordinates.y = 0.0f;
-                    npcs[MAY].direction = SOUTH;
+                    npcs[MAY].direction = NORTHEAST;
                     npcs[MAY].unk_1E = 0;
                     npcs[MAY].startingCoordinates.x = -64.0f;
                     npcs[MAY].startingCoordinates.z = 64.0f;
@@ -5692,7 +5692,7 @@ void func_8007F4E0(void) {
         
                     npcs[MAY].levelIndex = VILLAGE_2;
                     npcs[MAY].startingCoordinates.y = 0.0f;
-                    npcs[MAY].direction = NORTH;
+                    npcs[MAY].direction = SOUTHWEST;
                     npcs[MAY].unk_1E = 1;
                     npcs[MAY].startingCoordinates.x = 48.f;
                     npcs[MAY].startingCoordinates.z = -64.0f;
@@ -5711,7 +5711,7 @@ void func_8007F4E0(void) {
             npcs[MAY].levelIndex = LIBRARY;
             npcs[MAY].startingCoordinates.x = 0.0f;
             npcs[MAY].startingCoordinates.y = 0.0f;
-            npcs[MAY].direction = WEST;
+            npcs[MAY].direction = SOUTHEAST;
             npcs[MAY].unk_1E = 0;
             npcs[MAY].startingCoordinates.z = -64.0f;
             npcs[MAY].flags |= 1;
@@ -5724,7 +5724,7 @@ void func_8007F4E0(void) {
     
             npcs[MAY].levelIndex = MIDWIFE_HOUSE;
             npcs[MAY].startingCoordinates.y = 0.0f;
-            npcs[MAY].direction = WEST;
+            npcs[MAY].direction = SOUTHEAST;
             npcs[MAY].unk_1E = 0;
             npcs[MAY].startingCoordinates.x = -96.0f;
             npcs[MAY].startingCoordinates.z = -32.0f;
@@ -5759,7 +5759,7 @@ void func_8007F81C(void) {
             
                         npcs[RICK].levelIndex = SQUARE;
                         npcs[RICK].startingCoordinates.y = 0.0f;
-                        npcs[RICK].direction = WEST;
+                        npcs[RICK].direction = SOUTHEAST;
                         npcs[RICK].unk_1E = 0;
                         npcs[RICK].startingCoordinates.x = -192.0f;
                         npcs[RICK].startingCoordinates.z = -32.0f;
@@ -5780,7 +5780,7 @@ void func_8007F81C(void) {
                     npcs[RICK].startingCoordinates.x = 0.0f;
                     npcs[RICK].startingCoordinates.y = 0.0f;
                     npcs[RICK].startingCoordinates.z = 0.0f;
-                    npcs[RICK].direction = NORTH;
+                    npcs[RICK].direction = SOUTHWEST;
                     npcs[RICK].unk_1E = 1;
                     npcs[RICK].flags |= 1;
                     
@@ -5795,7 +5795,7 @@ void func_8007F81C(void) {
         
                     npcs[RICK].levelIndex = RICK_STORE;
                     npcs[RICK].startingCoordinates.y = 0.0f;
-                    npcs[RICK].direction = NORTH;
+                    npcs[RICK].direction = SOUTHWEST;
                     npcs[RICK].unk_1E = 0;
                     npcs[RICK].startingCoordinates.x = -96.0f;
                     npcs[RICK].startingCoordinates.z = -96.0f;
@@ -5813,7 +5813,7 @@ void func_8007F81C(void) {
     
                         npcs[RICK].levelIndex = VILLAGE_1;
                         npcs[RICK].startingCoordinates.y = 0.0f;
-                        npcs[RICK].direction = WEST;
+                        npcs[RICK].direction = SOUTHEAST;
                         npcs[RICK].unk_1E = 0;
                         npcs[RICK].startingCoordinates.x = -96.0f;
                         npcs[RICK].startingCoordinates.z = 160.0f;
@@ -5858,7 +5858,7 @@ void func_8007FA44(void) {
         
                     npcs[PASTOR].levelIndex = CHURCH;
                     npcs[PASTOR].startingCoordinates.y = 0.0f;
-                    npcs[PASTOR].direction = NORTH;
+                    npcs[PASTOR].direction = SOUTHWEST;
                     npcs[PASTOR].unk_1E = 0;
                     npcs[PASTOR].startingCoordinates.x = -16.0f;
                     npcs[PASTOR].startingCoordinates.z = -192.0f;
@@ -5875,7 +5875,7 @@ void func_8007FA44(void) {
 
                     npcs[PASTOR].levelIndex = VILLAGE_1;
                     npcs[PASTOR].startingCoordinates.y = 0.0f;
-                    npcs[PASTOR].direction = NORTH;
+                    npcs[PASTOR].direction = SOUTHWEST;
                     npcs[PASTOR].unk_1E = 0;
                     npcs[PASTOR].startingCoordinates.x = -128.0f;
                     npcs[PASTOR].startingCoordinates.z = -128.0f;
@@ -5894,7 +5894,7 @@ void func_8007FA44(void) {
         npcs[PASTOR].startingCoordinates.x = 0.0f;
         npcs[PASTOR].startingCoordinates.y = 0.0f;
         npcs[PASTOR].startingCoordinates.z = 0.0f;
-        npcs[PASTOR].direction = NORTH;
+        npcs[PASTOR].direction = SOUTHWEST;
         npcs[PASTOR].unk_1E = 1;
         npcs[PASTOR].flags |= 1;
             
@@ -5917,7 +5917,7 @@ void func_8007FC0C(void) {
         
         npcs[SHIPPER].levelIndex = TAVERN;
         npcs[SHIPPER].startingCoordinates.y = 0.0f;
-        npcs[SHIPPER].direction = EAST;
+        npcs[SHIPPER].direction = NORTHWEST;
         npcs[SHIPPER].unk_1E = 0;
     
         npcs[SHIPPER].startingCoordinates.x = 128.0f;
@@ -5951,7 +5951,7 @@ void func_8007FCD8(void) {
                     npcs[SAIBARA].levelIndex = TOP_OF_MOUNTAIN_1;
                     npcs[SAIBARA].startingCoordinates.y = 0.0f;
                     npcs[SAIBARA].startingCoordinates.z = 0.0f;
-                    npcs[SAIBARA].direction = WEST;
+                    npcs[SAIBARA].direction = SOUTHEAST;
                     npcs[SAIBARA].unk_1E = 0;
                     npcs[SAIBARA].startingCoordinates.x = -128.0f;
                     npcs[SAIBARA].flags |= 1;
@@ -5970,7 +5970,7 @@ void func_8007FCD8(void) {
         
                     npcs[SAIBARA].levelIndex = SOUVENIR_SHOP;
                     npcs[SAIBARA].startingCoordinates.y = 0.0f;
-                    npcs[SAIBARA].direction = NORTH;
+                    npcs[SAIBARA].direction = SOUTHWEST;
                     npcs[SAIBARA].unk_1E = 0;
                     npcs[SAIBARA].startingCoordinates.x = 16.0f;
                     npcs[SAIBARA].startingCoordinates.z = -64.0f;
@@ -5988,7 +5988,7 @@ void func_8007FCD8(void) {
 
             npcs[SAIBARA].levelIndex = SOUVENIR_SHOP;
             npcs[SAIBARA].startingCoordinates.y = 0.0f;
-            npcs[SAIBARA].direction = NORTH;
+            npcs[SAIBARA].direction = SOUTHWEST;
             npcs[SAIBARA].unk_1E = 0;
             npcs[SAIBARA].startingCoordinates.x = 16.0f;
             npcs[SAIBARA].startingCoordinates.z = -64.0f;
@@ -6095,7 +6095,7 @@ void func_8007FF04(void) {
                         npcs[GREG].levelIndex = MOUNTAIN_1;
                 
                         npcs[GREG].startingCoordinates.y = 0;
-                        npcs[GREG].direction = EAST;
+                        npcs[GREG].direction = NORTHWEST;
                         npcs[GREG].unk_1E = 0;
                         
                         npcs[GREG].startingCoordinates.x = -160.0f;
@@ -6112,7 +6112,7 @@ void func_8007FF04(void) {
                         npcs[GREG].levelIndex = MOUNTAIN_2;
                 
                         npcs[GREG].startingCoordinates.y = 0;
-                        npcs[GREG].direction = WEST;
+                        npcs[GREG].direction = SOUTHEAST;
                         npcs[GREG].unk_1E = 0;
                         
                         npcs[GREG].startingCoordinates.x = 96.0f;
@@ -6133,7 +6133,7 @@ void func_8007FF04(void) {
                     npcs[GREG].levelIndex = BEACH;
             
                     npcs[GREG].startingCoordinates.y = 0;
-                    npcs[GREG].direction = WEST;
+                    npcs[GREG].direction = SOUTHEAST;
                     npcs[GREG].unk_1E = 0;
                     
                     npcs[GREG].startingCoordinates.x = -96.0f;
@@ -6178,7 +6178,7 @@ void func_800800D0(void) {
                     npcs[CARPENTER_1].levelIndex = MOUNTAIN_2;
                     npcs[CARPENTER_1].startingCoordinates.x = 0.0f;
                     npcs[CARPENTER_1].startingCoordinates.y = 0;
-                    npcs[CARPENTER_1].direction = NORTH;
+                    npcs[CARPENTER_1].direction = SOUTHWEST;
                     npcs[CARPENTER_1].unk_1E = 2;
                     npcs[CARPENTER_1].startingCoordinates.z = 32.0f;
                     npcs[CARPENTER_1].flags |= 1;
@@ -6191,7 +6191,7 @@ void func_800800D0(void) {
                     npcs[CARPENTER_1].startingCoordinates.x = 0.0f;
                     npcs[CARPENTER_1].startingCoordinates.y = 0.0f;
                     npcs[CARPENTER_1].startingCoordinates.z = 0.0f;
-                    npcs[CARPENTER_1].direction = NORTH;
+                    npcs[CARPENTER_1].direction = SOUTHWEST;
                     npcs[CARPENTER_1].unk_1E = 0;
                     npcs[CARPENTER_1].flags |= 1;
 
@@ -6205,7 +6205,7 @@ void func_800800D0(void) {
             
                     npcs[CARPENTER_1].startingCoordinates.y = 0;
                     npcs[CARPENTER_1].startingCoordinates.z = 0.0f;
-                    npcs[CARPENTER_1].direction = WEST;
+                    npcs[CARPENTER_1].direction = SOUTHEAST;
                     npcs[CARPENTER_1].unk_1E = 0;
                     npcs[CARPENTER_1].startingCoordinates.x = -80.0f;
                     npcs[CARPENTER_1].flags |= 1;
@@ -6219,7 +6219,7 @@ void func_800800D0(void) {
             npcs[CARPENTER_1].levelIndex = CAVE;
     
             npcs[CARPENTER_1].startingCoordinates.y = 0;
-            npcs[CARPENTER_1].direction = WEST;
+            npcs[CARPENTER_1].direction = SOUTHEAST;
             npcs[CARPENTER_1].unk_1E = 0;
             npcs[CARPENTER_1].startingCoordinates.x = -304.0f;
             npcs[CARPENTER_1].startingCoordinates.z = -80.0f;
@@ -6259,7 +6259,7 @@ void func_80080364(void) {
                     
                         npcs[CARPENTER_2].levelIndex = MOUNTAIN_2;
                         npcs[CARPENTER_2].startingCoordinates.y = 0;
-                        npcs[CARPENTER_2].direction = NORTH;
+                        npcs[CARPENTER_2].direction = SOUTHWEST;
                         npcs[CARPENTER_2].unk_1E = 2;
                         npcs[CARPENTER_2].startingCoordinates.x = -224.0f;
                         npcs[CARPENTER_2].startingCoordinates.z = 64.0f;
@@ -6271,7 +6271,7 @@ void func_80080364(void) {
     
                     npcs[CARPENTER_2].levelIndex = 0x21;
                     npcs[CARPENTER_2].startingCoordinates.y = 0.0f;
-                    npcs[CARPENTER_2].direction = SOUTH;
+                    npcs[CARPENTER_2].direction = NORTHEAST;
                     npcs[CARPENTER_2].unk_1E = 0;
                     npcs[CARPENTER_2].startingCoordinates.x = 64.0f;
                     npcs[CARPENTER_2].startingCoordinates.z = -112.0f;
@@ -6286,7 +6286,7 @@ void func_80080364(void) {
                     npcs[CARPENTER_2].levelIndex = CARPENTER_HUT;
                     npcs[CARPENTER_2].startingCoordinates.y = 0;
                     npcs[CARPENTER_2].startingCoordinates.z = 0.0f;
-                    npcs[CARPENTER_2].direction = EAST;
+                    npcs[CARPENTER_2].direction = NORTHWEST;
                     npcs[CARPENTER_2].unk_1E = 0;
                     npcs[CARPENTER_2].startingCoordinates.x = 16.0f;
                     npcs[CARPENTER_2].flags |= 1;
@@ -6301,7 +6301,7 @@ void func_80080364(void) {
             npcs[CARPENTER_2].startingCoordinates.x = 0.0f;
             npcs[CARPENTER_2].startingCoordinates.y = 0;
             npcs[CARPENTER_2].startingCoordinates.z = 0.0f;
-            npcs[CARPENTER_2].direction = NORTH;
+            npcs[CARPENTER_2].direction = SOUTHWEST;
             npcs[CARPENTER_2].unk_1E = 1;
             npcs[CARPENTER_2].flags |= 1;
         
@@ -6336,7 +6336,7 @@ void func_80080630(void) {
                 npcs[MASTER_CARPENTER].levelIndex = MOUNTAIN_2;
         
                 npcs[MASTER_CARPENTER].startingCoordinates.y = 0;
-                npcs[MASTER_CARPENTER].direction = NORTH;
+                npcs[MASTER_CARPENTER].direction = SOUTHWEST;
                 npcs[MASTER_CARPENTER].unk_1E = 0;
                 
                 npcs[MASTER_CARPENTER].startingCoordinates.x = -112.0f;
@@ -6351,7 +6351,7 @@ void func_80080630(void) {
             npcs[MASTER_CARPENTER].levelIndex = CARPENTER_HUT;
     
             npcs[MASTER_CARPENTER].startingCoordinates.y = 0;
-            npcs[MASTER_CARPENTER].direction = NORTH;
+            npcs[MASTER_CARPENTER].direction = SOUTHWEST;
             npcs[MASTER_CARPENTER].unk_1E = 2;
             
             npcs[MASTER_CARPENTER].startingCoordinates.x = -32.0f;
@@ -6408,7 +6408,7 @@ void func_800808B0(void) {
         
         npcs[HARVEST_SPRITE_2].levelIndex = HARVEST_SPRITE_CAVE;
         npcs[HARVEST_SPRITE_2].startingCoordinates.y = 0.0f;
-        npcs[HARVEST_SPRITE_2].direction = NORTH;
+        npcs[HARVEST_SPRITE_2].direction = SOUTHWEST;
         npcs[HARVEST_SPRITE_2].unk_1E = 0;
     
         npcs[HARVEST_SPRITE_2].startingCoordinates.x = -128.0f;
@@ -6435,7 +6435,7 @@ void func_80080958(void) {
         
         npcs[HARVEST_SPRITE_3].levelIndex = HARVEST_SPRITE_CAVE;
         npcs[HARVEST_SPRITE_3].startingCoordinates.y = 0.0f;
-        npcs[HARVEST_SPRITE_3].direction = EAST;
+        npcs[HARVEST_SPRITE_3].direction = NORTHWEST;
         npcs[HARVEST_SPRITE_3].unk_1E = 0;
     
         npcs[HARVEST_SPRITE_3].startingCoordinates.x = 64.0f;
@@ -6462,7 +6462,7 @@ void func_80080A10(void) {
 
         npcs[SYDNEY].levelIndex = MOON_MOUNTAIN;
         npcs[SYDNEY].startingCoordinates.y = 0.0f;
-        npcs[SYDNEY].direction = EAST;
+        npcs[SYDNEY].direction = NORTHWEST;
         npcs[SYDNEY].unk_1E = 1;
 
         npcs[SYDNEY].startingCoordinates.x = 64.0F;
@@ -6474,7 +6474,7 @@ void func_80080A10(void) {
         
         npcs[SYDNEY].levelIndex = DUMPLING_HOUSE;
         npcs[SYDNEY].startingCoordinates.y = 0.0f;
-        npcs[SYDNEY].direction = WEST;
+        npcs[SYDNEY].direction = SOUTHEAST;
         npcs[SYDNEY].unk_1E = 0;
 
         npcs[SYDNEY].startingCoordinates.x = -128.0f;
@@ -6514,7 +6514,7 @@ void func_80080B6C(void) {
         npcs[BARLEY].levelIndex = DUMPLING_HOUSE;
         npcs[BARLEY].startingCoordinates.x = 0.0f;
         npcs[BARLEY].startingCoordinates.y = 0.0f;
-        npcs[BARLEY].direction = NORTH;
+        npcs[BARLEY].direction = SOUTHWEST;
         npcs[BARLEY].unk_1E = 0;
 
         npcs[BARLEY].startingCoordinates.z = -192.0f;
@@ -6540,7 +6540,7 @@ void func_80080C9C(void) {
 
         npcs[GOURMET_JUDGE].levelIndex = TAVERN;
         npcs[GOURMET_JUDGE].startingCoordinates.y = 0;
-        npcs[GOURMET_JUDGE].direction = EAST;
+        npcs[GOURMET_JUDGE].direction = NORTHWEST;
         npcs[GOURMET_JUDGE].unk_1E = 0;
 
         npcs[GOURMET_JUDGE].startingCoordinates.x = 128.0f;
@@ -6567,7 +6567,7 @@ void func_80080DAC(void) {
 
         npcs[PHOTOGRAPHER].levelIndex = BARN;
         npcs[PHOTOGRAPHER].startingCoordinates.y = 0;
-        npcs[PHOTOGRAPHER].direction = NORTHWEST;
+        npcs[PHOTOGRAPHER].direction = SOUTH;
         npcs[PHOTOGRAPHER].unk_1E = 0;
 
         npcs[PHOTOGRAPHER].startingCoordinates.x = -192.0f;
@@ -6594,7 +6594,7 @@ void func_80080EBC(void) {
 
         npcs[40].levelIndex = ROAD;
         npcs[40].startingCoordinates.y = 0;
-        npcs[40].direction = SOUTH;
+        npcs[40].direction = NORTHEAST;
         npcs[40].unk_1E = 1;
 
         npcs[40].startingCoordinates.x = -32.0f;
@@ -6608,7 +6608,7 @@ void func_80080EBC(void) {
         
         npcs[40].levelIndex = VILLAGE_1;
         npcs[40].startingCoordinates.y = 0;
-        npcs[40].direction = NORTH;
+        npcs[40].direction = SOUTHWEST;
         npcs[40].unk_1E = 1;
 
         npcs[40].startingCoordinates.x = 320.0f;
@@ -7010,7 +7010,7 @@ void func_80081A08(void) {
 
         npcs[0x2E].levelIndex = MOUNTAIN_1;
         npcs[0x2E].startingCoordinates.y = 0;
-        npcs[0x2E].direction = NORTHWEST;
+        npcs[0x2E].direction = SOUTH;
         npcs[0x2E].unk_1E = 1;
 
         npcs[0x2E].startingCoordinates.x = -32.0f;
@@ -7910,7 +7910,7 @@ void func_80083550(void) {
 
                         tempDirection = getRandomNumberInRange(0, 60);
 
-                        if (tempDirection < SOUTH) {
+                        if (tempDirection < NORTHEAST) {
                             npcs[GOTZ].direction = tempDirection * 2;
                             npcs[GOTZ].unk_21 = 1;
                         }
@@ -7980,7 +7980,7 @@ void func_8008374C(void) {
                         setEntityAnimationWithDirectionChange(npcs[SASHA].entityIndex, 0);
                         tempDirection = getRandomNumberInRange(0, 60);
 
-                        if (tempDirection < SOUTH) {
+                        if (tempDirection < NORTHEAST) {
                             npcs[SASHA].direction = tempDirection * 2;
                             npcs[SASHA].unk_21 = 1;
                         }
@@ -8071,7 +8071,7 @@ void func_80083A40(void) {
                         setEntityAnimationWithDirectionChange(npcs[KENT].entityIndex, 0);
                         tempDirection = getRandomNumberInRange(0, 60);
 
-                        if (tempDirection < SOUTH) {
+                        if (tempDirection < NORTHEAST) {
                             npcs[KENT].direction = tempDirection * 2 ;
                             npcs[KENT].unk_21 = 1;
                         } 

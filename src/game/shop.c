@@ -550,7 +550,7 @@ void func_800DC9FC(u8 arg0) {
     if (func_800DCAA0(arg0)) {
 
         gPlayer.itemInfoIndex = func_800D5308(D_80119548[arg0], 6, D_80118FD0[arg0], 0, 0);
-        setAudio(0x24);
+        setAudio(PICKING_UP_SFX);
 
         if (D_801194A0[arg0] != 0xFF) {
             deactivateMapObject(MAIN_MAP_INDEX, D_801194A0[arg0]);
@@ -748,6 +748,7 @@ void func_800DCAB8(void) {
                     setAudio(1);
 
                 }
+                
             }
             
             break;     
@@ -820,7 +821,7 @@ void func_800DCAB8(void) {
                 func_800B2CE0();
                 setMainLoopCallbackFunctionIndex(MAIN_GAME);
                 setPlayerAction(D_80119660[shopContext.storeItemIndex].animationIndex, D_80119660[shopContext.storeItemIndex].nextAnimationIndex);
-                gPlayer.animationState = D_801195F0[shopContext.storeItemIndex];
+                gPlayer.actionPhase = D_801195F0[shopContext.storeItemIndex];
                 shopContext.unk_3 = 0xFF;
                 func_80059300();
             }
@@ -833,7 +834,7 @@ void func_800DCAB8(void) {
                 func_800B2CE0();
                 setMainLoopCallbackFunctionIndex(MAIN_GAME);
                 setPlayerAction(D_80119660[shopContext.storeItemIndex].animationIndex, D_80119660[shopContext.storeItemIndex].nextAnimationIndex);
-                gPlayer.animationState = 3;
+                gPlayer.actionPhase = 3;
                 shopContext.unk_3 = 0xFF;
                 func_80059300();
             }
@@ -846,7 +847,7 @@ void func_800DCAB8(void) {
                 func_800B2CE0();
                 setMainLoopCallbackFunctionIndex(MAIN_GAME);
                 setPlayerAction(D_80119660[shopContext.storeItemIndex].animationIndex, D_80119660[shopContext.storeItemIndex].nextAnimationIndex);
-                gPlayer.animationState = D_80119628[shopContext.storeItemIndex];
+                gPlayer.actionPhase = D_80119628[shopContext.storeItemIndex];
                 shopContext.unk_3 = 0xFF;
                 func_80059300();
             }
@@ -1020,7 +1021,7 @@ u8 handlePurchase(u16 storeItemIndex, s32 quantity) {
 
                 gPlayer.heldItem = CAKE;
 
-                handleEatingAndDrinking();
+                func_80065AA0();
 
                 if (!checkLifeEventBit(HAVE_BAKEY_CARD)) {
                     
@@ -1045,7 +1046,7 @@ u8 handlePurchase(u16 storeItemIndex, s32 quantity) {
             case 0xC:
 
                 gPlayer.heldItem = 8;
-                handleEatingAndDrinking();
+                func_80065AA0();
 
                 if (!checkLifeEventBit(HAVE_BAKEY_CARD)) {
                     
@@ -1068,35 +1069,35 @@ u8 handlePurchase(u16 storeItemIndex, s32 quantity) {
             case 0xD:
                 
                 gPlayer.heldItem = COOKIES;
-                handleEatingAndDrinking();
+                func_80065AA0();
                 temp = 0;
                 break;
             
             case 0xE:
 
                 gPlayer.heldItem = CAKE;
-                handleEatingAndDrinking();
+                func_80065AA0();
                 temp = 0;
                 break;
 
             case 0xF:
 
                 gPlayer.heldItem = PIE;
-                handleEatingAndDrinking();
+                func_80065AA0();
                 temp = 0;
                 break;
 
             case 0x10:
 
                 gPlayer.heldItem = 0x78;
-                handleEatingAndDrinking();
+                func_80065AA0();
                 temp = 0;
                 break;
 
             case 0x11:
 
                 gPlayer.heldItem = 0x71;
-                handleEatingAndDrinking();
+                func_80065AA0();
                 temp = 0;
                 break;
 
@@ -1284,92 +1285,92 @@ u8 handlePurchase(u16 storeItemIndex, s32 quantity) {
             
             case 0x28:
             
-                gPlayer.heldItem = BOTTLE_WITH_WINE;
-                handleEatingAndDrinking();
+                gPlayer.heldItem = BOTTLE_WITH_WINE_HELD_ITEM;
+                func_80065AA0();
                 temp = 0;
                 break;
             
             case 0x29:
                         
                 gPlayer.heldItem = 0x79;
-                handleEatingAndDrinking();
+                func_80065AA0();
                 temp = 0;
                 break;
             
             case 0x2A:
                                     
                 gPlayer.heldItem = 0x7A;
-                handleEatingAndDrinking();
+                func_80065AA0();
                 temp = 0;
                 break;
             
             case 0x2B:
                                     
                 gPlayer.heldItem = 0x76;
-                handleEatingAndDrinking();
+                func_80065AA0();
                 temp = 0;
                 break;
             
             case 0x2C:
 
                 gPlayer.heldItem = 0x71;
-                handleEatingAndDrinking();
+                func_80065AA0();
                 temp = 0;
                 break;
             
             case 0x2D:
 
                 gPlayer.heldItem = 0x78;
-                handleEatingAndDrinking();
+                func_80065AA0();
                 temp = 0;
                 break;
             
             case 0x2E:
           
                 gPlayer.heldItem = 0x76;
-                handleEatingAndDrinking();
+                func_80065AA0();
                 temp = 0;
                 break;
             
             case 0x2F:
             
                 gPlayer.heldItem = 0x78;
-                handleEatingAndDrinking();
+                func_80065AA0();
                 temp = 0;
                 break;
             
             case 0x30:
                       
                 gPlayer.heldItem = 0x76;
-                handleEatingAndDrinking();
+                func_80065AA0();
                 temp = 0;
                 break;
             
             case 0x31:
 
                 gPlayer.heldItem = COOKIES;
-                handleEatingAndDrinking();
+                func_80065AA0();
                 temp = 0;
                 break;
             
             case 0x32:
 
                 gPlayer.heldItem = COTTON_CANDY;
-                handleEatingAndDrinking();
+                func_80065AA0();
                 temp = 0;
                 break;
             
             case 0x33:
 
                 gPlayer.heldItem = FRIED_OCTUPUS;
-                handleEatingAndDrinking();
+                func_80065AA0();
                 temp = 0;
                 break;
             
             case 0x34:
 
                 gPlayer.heldItem = ROASTED_CORN;
-                handleEatingAndDrinking();
+                func_80065AA0();
                 temp = 0;
                 break;
             

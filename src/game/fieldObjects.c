@@ -8,10 +8,15 @@
 
 #include "game/game.h"
 #include "game/gameStatus.h"
+#include "game/itemHandlers.h"
 #include "game/level.h"
 #include "game/npc.h"
 #include "game/player.h"
 #include "game/weather.h"
+
+// TODO: put this in a header for field tiles data
+extern u8 D_80113940[FIELD_HEIGHT][FIELD_WIDTH];
+
 
 // bss
 extern u8 topOfMountain1FieldTiles[FIELD_HEIGHT][FIELD_WIDTH];
@@ -25,13 +30,232 @@ extern u8 mountain2FieldTiles[FIELD_HEIGHT][FIELD_WIDTH];
 extern u8 ranchFieldTiles[FIELD_HEIGHT][FIELD_WIDTH];
 
 // data
-extern GroundObjectInfo groundObjectsInfo[MAX_FIELD_OBJECTS];
+GroundObjectInfo groundObjectsInfo[MAX_FIELD_OBJECTS] = {
+    { 0xFF, 0x00, 0x00, 0x00, 0x08 },
+    { 0x08, 0x00, 0x00, GROUND_OBJECT_TILLABLE, 0x08 },
+    { 0x04, 0x00, 0x00, GROUND_OBJECT_TILLABLE | GROUND_OBJECT_HAMMERABLE | GROUND_OBJECT_WATERABLE | GROUND_OBJECT_PLANTABLE, 0x08 },
+    { 0x05, 0x00, 0x00, (GROUND_OBJECT_TILLABLE | GROUND_OBJECT_HAMMERABLE | GROUND_OBJECT_PLANTABLE), 0x0A },
+    { 0x08, 0x01, ROCK_HELD_ITEM, GROUND_OBJECT_HAMMERABLE, 0x00 },
+    { 0x08, 0x02, WEED_HELD_ITEM, GROUND_OBJECT_CUTTABLE, 0x00 },
+    { 0x08, 0x03, LOG_HELD_ITEM, 0x00, 0x00 },
+    { 0x08, 0x04, 0x00, GROUND_OBJECT_HAMMERABLE, 0x00 },
+    { 0x06, 0x00, 0x00, (GROUND_OBJECT_TILLABLE | GROUND_OBJECT_WATERABLE), 0x08 },
+    { 0x07, 0x00, 0x00, GROUND_OBJECT_TILLABLE, 0x09 },
+    { 0x06, 0x00, 0x00, (GROUND_OBJECT_TILLABLE | GROUND_OBJECT_WATERABLE), 0x08 },
+    { 0x07, 0x00, 0x00, GROUND_OBJECT_TILLABLE, 0x09 },
+    { 0x04, 0x05, 0x00, GROUND_OBJECT_CUTTABLE | GROUND_OBJECT_WATERABLE, 0x00 },
+    { 0x05, 0x05, 0x00, GROUND_OBJECT_CUTTABLE, 0x01 },
+    { 0x04, 0x05, 0x00, GROUND_OBJECT_CUTTABLE | GROUND_OBJECT_WATERABLE, 0x00 },
+    { 0x05, 0x05, 0x00, GROUND_OBJECT_CUTTABLE, 0x01 },
+    { 0x04, 0x06, TURNIP, GROUND_OBJECT_CUTTABLE | GROUND_OBJECT_WATERABLE, 0x00 },
+    { 0x05, 0x06, TURNIP, GROUND_OBJECT_CUTTABLE, 0x02 },
+    { 0x04, 0x07, 0x00, GROUND_OBJECT_CUTTABLE, 0x00 },
+    { 0x06, 0x00, 0x00, (GROUND_OBJECT_TILLABLE | GROUND_OBJECT_WATERABLE), 0x08 },
+    { 0x07, 0x00, 0x00, GROUND_OBJECT_TILLABLE, 0x09 },
+    { 0x06, 0x00, 0x00, (GROUND_OBJECT_TILLABLE | GROUND_OBJECT_WATERABLE), 0x08 },
+    { 0x07, 0x00, 0x00, GROUND_OBJECT_TILLABLE, 0x09 },
+    { 0x06, 0x00, 0x00, (GROUND_OBJECT_TILLABLE | GROUND_OBJECT_WATERABLE), 0x08 },
+    { 0x07, 0x00, 0x00, GROUND_OBJECT_TILLABLE, 0x09 },
+    { 0x04, 0x08, 0x00, GROUND_OBJECT_CUTTABLE | GROUND_OBJECT_WATERABLE, 0x00 },
+    { 0x05, 0x08, 0x00, GROUND_OBJECT_CUTTABLE, 0x01 },
+    { 0x04, 0x08, 0x00, GROUND_OBJECT_CUTTABLE | GROUND_OBJECT_WATERABLE, 0x00 },
+    { 0x05, 0x08, 0x00, GROUND_OBJECT_CUTTABLE, 0x01 },
+    { 0x04, 0x08, 0x00, GROUND_OBJECT_CUTTABLE | GROUND_OBJECT_WATERABLE, 0x00 },
+    { 0x05, 0x08, 0x00, GROUND_OBJECT_CUTTABLE, 0x01 },
+    { 0x04, 0x09, POTATO, GROUND_OBJECT_CUTTABLE | GROUND_OBJECT_WATERABLE, 0x00 },
+    { 0x05, 0x09, POTATO, GROUND_OBJECT_CUTTABLE, 0x02 },
+    { 0x04, 0x0A, 0x00, GROUND_OBJECT_CUTTABLE, 0x00 },
+    { 0x06, 0x00, 0x00, (GROUND_OBJECT_TILLABLE | GROUND_OBJECT_WATERABLE), 0x08 },
+    { 0x07, 0x00, 0x00, GROUND_OBJECT_TILLABLE, 0x09 },
+    { 0x06, 0x00, 0x00, (GROUND_OBJECT_TILLABLE | GROUND_OBJECT_WATERABLE), 0x08 },
+    { 0x07, 0x00, 0x00, GROUND_OBJECT_TILLABLE, 0x09 },
+    { 0x04, 0x0B, 0x00, GROUND_OBJECT_CUTTABLE | GROUND_OBJECT_WATERABLE, 0x00 },
+    { 0x05, 0x0B, 0x00, GROUND_OBJECT_CUTTABLE, 0x01 },
+    { 0x04, 0x0B, 0x00, GROUND_OBJECT_CUTTABLE | GROUND_OBJECT_WATERABLE, 0x00 },
+    { 0x05, 0x0B, 0x00, GROUND_OBJECT_CUTTABLE, 0x01 },
+    { 0x04, 0x0C, 0x00, GROUND_OBJECT_CUTTABLE | GROUND_OBJECT_WATERABLE, 0x00 },
+    { 0x05, 0x0C, 0x00, GROUND_OBJECT_CUTTABLE, 0x01 },
+    { 0x04, 0x0C, 0x00, GROUND_OBJECT_CUTTABLE | GROUND_OBJECT_WATERABLE, 0x00 },
+    { 0x05, 0x0C, 0x00, GROUND_OBJECT_CUTTABLE, 0x01 },
+    { 0x04, 0x0C, 0x00, GROUND_OBJECT_CUTTABLE | GROUND_OBJECT_WATERABLE, 0x00 },
+    { 0x05, 0x0C, 0x00, GROUND_OBJECT_CUTTABLE, 0x01 },
+    { 0x04, 0x0D, EGGPLANT, GROUND_OBJECT_CUTTABLE | GROUND_OBJECT_WATERABLE, 0x00 },
+    { 0x05, 0x0D, EGGPLANT, GROUND_OBJECT_CUTTABLE, 0x02 },
+    { 0x04, 0x0E, 0x00, GROUND_OBJECT_CUTTABLE, 0x00 },
+    { 0x06, 0x00, 0x00, (GROUND_OBJECT_TILLABLE | GROUND_OBJECT_WATERABLE), 0x08 },
+    { 0x07, 0x00, 0x00, GROUND_OBJECT_TILLABLE, 0x09 },
+    { 0x06, 0x00, 0x00, (GROUND_OBJECT_TILLABLE | GROUND_OBJECT_WATERABLE), 0x08 },
+    { 0x07, 0x00, 0x00, GROUND_OBJECT_TILLABLE, 0x09 },
+    { 0x06, 0x00, 0x00, (GROUND_OBJECT_TILLABLE | GROUND_OBJECT_WATERABLE), 0x08 },
+    { 0x07, 0x00, 0x00, GROUND_OBJECT_TILLABLE, 0x09 },
+    { 0x04, 0x0F, 0x00, GROUND_OBJECT_CUTTABLE | GROUND_OBJECT_WATERABLE, 0x00 },
+    { 0x05, 0x0F, 0x00, GROUND_OBJECT_CUTTABLE, 0x01 },
+    { 0x04, 0x0F, 0x00, GROUND_OBJECT_CUTTABLE | GROUND_OBJECT_WATERABLE, 0x00 },
+    { 0x05, 0x0F, 0x00, GROUND_OBJECT_CUTTABLE, 0x01 },
+    { 0x04, 0x10, 0x00, GROUND_OBJECT_CUTTABLE | GROUND_OBJECT_WATERABLE, 0x00 },
+    { 0x05, 0x10, 0x00, GROUND_OBJECT_CUTTABLE, 0x01 },
+    { 0x04, 0x10, 0x00, GROUND_OBJECT_CUTTABLE | GROUND_OBJECT_WATERABLE, 0x00 },
+    { 0x05, 0x10, 0x00, GROUND_OBJECT_CUTTABLE, 0x01 },
+    { 0x04, 0x11, CABBAGE, GROUND_OBJECT_CUTTABLE | GROUND_OBJECT_WATERABLE, 0x00 },
+    { 0x05, 0x11, CABBAGE, GROUND_OBJECT_CUTTABLE, 0x02 },
+    { 0x04, 0x12, 0x00, GROUND_OBJECT_CUTTABLE, 0x00 },
+    { 0x06, 0x00, 0x00, (GROUND_OBJECT_TILLABLE | GROUND_OBJECT_WATERABLE), 0x08 },
+    { 0x07, 0x00, 0x00, GROUND_OBJECT_TILLABLE, 0x09 },
+    { 0x06, 0x00, 0x00, (GROUND_OBJECT_TILLABLE | GROUND_OBJECT_WATERABLE), 0x08 },
+    { 0x07, 0x00, 0x00, GROUND_OBJECT_TILLABLE, 0x09 },
+    { 0x04, 0x13, 0x00, GROUND_OBJECT_CUTTABLE | GROUND_OBJECT_WATERABLE, 0x00 },
+    { 0x05, 0x13, 0x00, GROUND_OBJECT_CUTTABLE, 0x01 },
+    { 0x04, 0x13, 0x00, GROUND_OBJECT_CUTTABLE | GROUND_OBJECT_WATERABLE, 0x00 },
+    { 0x05, 0x13, 0x00, GROUND_OBJECT_CUTTABLE, 0x01 },
+    { 0x04, 0x14, 0x00, GROUND_OBJECT_CUTTABLE | GROUND_OBJECT_WATERABLE, 0x00 },
+    { 0x05, 0x14, 0x00, GROUND_OBJECT_CUTTABLE, 0x01 },
+    { 0x04, 0x14, 0x00, GROUND_OBJECT_CUTTABLE | GROUND_OBJECT_WATERABLE, 0x00 },
+    { 0x05, 0x14, 0x00, GROUND_OBJECT_CUTTABLE, 0x01 },
+    { 0x04, 0x15, STRAWBERRY, GROUND_OBJECT_CUTTABLE | GROUND_OBJECT_WATERABLE, 0x00 },
+    { 0x05, 0x15, STRAWBERRY, GROUND_OBJECT_CUTTABLE, 0x02 },
+    { 0x04, 0x16, 0x00, GROUND_OBJECT_CUTTABLE, 0x00 },
+    { 0x06, 0x00, 0x00, (GROUND_OBJECT_TILLABLE | GROUND_OBJECT_WATERABLE), 0x08 },
+    { 0x07, 0x00, 0x00, GROUND_OBJECT_TILLABLE, 0x09 },
+    { 0x06, 0x00, 0x00, (GROUND_OBJECT_TILLABLE | GROUND_OBJECT_WATERABLE), 0x08 },
+    { 0x07, 0x00, 0x00, GROUND_OBJECT_TILLABLE, 0x09 },
+    { 0x04, 0x17, 0x00, GROUND_OBJECT_CUTTABLE | GROUND_OBJECT_WATERABLE, 0x00 },
+    { 0x05, 0x17, 0x00, GROUND_OBJECT_CUTTABLE, 0x01 },
+    { 0x04, 0x17, 0x00, GROUND_OBJECT_CUTTABLE | GROUND_OBJECT_WATERABLE, 0x00 },
+    { 0x05, 0x17, 0x00, GROUND_OBJECT_CUTTABLE, 0x01 },
+    { 0x04, 0x18, 0x00, GROUND_OBJECT_CUTTABLE | GROUND_OBJECT_WATERABLE, 0x00 },
+    { 0x05, 0x18, 0x00, GROUND_OBJECT_CUTTABLE, 0x01 },
+    { 0x04, 0x18, 0x00, GROUND_OBJECT_CUTTABLE | GROUND_OBJECT_WATERABLE, 0x00 },
+    { 0x05, 0x18, 0x00, GROUND_OBJECT_CUTTABLE, 0x01 },
+    { 0x04, 0x19, 0x00, GROUND_OBJECT_CUTTABLE | GROUND_OBJECT_WATERABLE, 0x00 },
+    { 0x05, 0x19, 0x00, GROUND_OBJECT_CUTTABLE, 0x01 },
+    { 0x04, 0x19, 0x00, GROUND_OBJECT_CUTTABLE | GROUND_OBJECT_WATERABLE, 0x00 },
+    { 0x05, 0x19, 0x00, GROUND_OBJECT_CUTTABLE, 0x01 },
+    { 0x04, 0x19, 0x00, GROUND_OBJECT_CUTTABLE | GROUND_OBJECT_WATERABLE, 0x00 },
+    { 0x05, 0x19, 0x00, GROUND_OBJECT_CUTTABLE, 0x01 },
+    { 0x04, 0x1A, TOMATO, GROUND_OBJECT_CUTTABLE | GROUND_OBJECT_WATERABLE, 0x00 },
+    { 0x05, 0x1A, TOMATO, GROUND_OBJECT_CUTTABLE, 0x02 },
+    { 0x04, 0x1B, 0x00, GROUND_OBJECT_CUTTABLE, 0x00 },
+    { 0x06, 0x00, 0x00, (GROUND_OBJECT_TILLABLE | GROUND_OBJECT_WATERABLE), 0x08 },
+    { 0x07, 0x00, 0x00, GROUND_OBJECT_TILLABLE, 0x09 },
+    { 0x06, 0x00, 0x00, (GROUND_OBJECT_TILLABLE | GROUND_OBJECT_WATERABLE), 0x08 },
+    { 0x07, 0x00, 0x00, GROUND_OBJECT_TILLABLE, 0x09 },
+    { 0x06, 0x00, 0x00, (GROUND_OBJECT_TILLABLE | GROUND_OBJECT_WATERABLE), 0x08 },
+    { 0x07, 0x00, 0x00, GROUND_OBJECT_TILLABLE, 0x09 },
+    { 0x04, 0x1C, 0x00, GROUND_OBJECT_CUTTABLE | GROUND_OBJECT_WATERABLE, 0x00 },
+    { 0x05, 0x1C, 0x00, GROUND_OBJECT_CUTTABLE, 0x01 },
+    { 0x04, 0x1C, 0x00, GROUND_OBJECT_CUTTABLE | GROUND_OBJECT_WATERABLE, 0x00 },
+    { 0x05, 0x1C, 0x00, GROUND_OBJECT_CUTTABLE, 0x01 },
+    { 0x04, 0x1C, 0x00, GROUND_OBJECT_CUTTABLE | GROUND_OBJECT_WATERABLE, 0x00 },
+    { 0x05, 0x1C, 0x00, GROUND_OBJECT_CUTTABLE, 0x01 },
+    { 0x04, 0x1D, 0x00, GROUND_OBJECT_CUTTABLE | GROUND_OBJECT_WATERABLE, 0x00 },
+    { 0x05, 0x1D, 0x00, GROUND_OBJECT_CUTTABLE, 0x01 },
+    { 0x04, 0x1D, 0x00, GROUND_OBJECT_CUTTABLE | GROUND_OBJECT_WATERABLE, 0x00 },
+    { 0x05, 0x1D, 0x00, GROUND_OBJECT_CUTTABLE, 0x01 },
+    { 0x04, 0x1D, 0x00, GROUND_OBJECT_CUTTABLE | GROUND_OBJECT_WATERABLE, 0x00 },
+    { 0x05, 0x1D, 0x00, GROUND_OBJECT_CUTTABLE, 0x01 },
+    { 0x04, 0x1E, 0x00, GROUND_OBJECT_CUTTABLE | GROUND_OBJECT_WATERABLE, 0x00 },
+    { 0x05, 0x1E, 0x00, GROUND_OBJECT_CUTTABLE, 0x01 },
+    { 0x04, 0x1E, 0x00, GROUND_OBJECT_CUTTABLE | GROUND_OBJECT_WATERABLE, 0x00 },
+    { 0x05, 0x1E, 0x00, GROUND_OBJECT_CUTTABLE, 0x01 },
+    { 0x04, 0x1E, 0x00, GROUND_OBJECT_CUTTABLE | GROUND_OBJECT_WATERABLE, 0x00 },
+    { 0x05, 0x1E, 0x00, GROUND_OBJECT_CUTTABLE, 0x01 },
+    { 0x04, 0x1E, 0x00, GROUND_OBJECT_CUTTABLE | GROUND_OBJECT_WATERABLE, 0x00 },
+    { 0x05, 0x1E, 0x00, GROUND_OBJECT_CUTTABLE, 0x01 },
+    { 0x04, 0x1F, CORN, GROUND_OBJECT_CUTTABLE | GROUND_OBJECT_WATERABLE, 0x00 },
+    { 0x05, 0x1F, CORN, GROUND_OBJECT_CUTTABLE, 0x02 },
+    { 0x04, 0x20, 0x00, GROUND_OBJECT_CUTTABLE, 0x00 },
+    { 0x06, 0x00, 0x00, GROUND_OBJECT_TILLABLE, 0x09 },
+    { 0x06, 0x00, 0x00, GROUND_OBJECT_TILLABLE, 0x09 },
+    { 0x06, 0x00, 0x00, GROUND_OBJECT_TILLABLE, 0x09 },
+    { 0x00, 0x00, 0x00, 0x00, 0x09 },
+    { 0x00, 0x00, 0x00, 0x00, 0x09 },
+    { 0x00, 0x00, 0x00, 0x00, 0x09 },
+    { 0x01, 0x00, 0x00, 0x00, 0x09 },
+    { 0x01, 0x00, 0x00, 0x00, 0x09 },
+    { 0x01, 0x00, 0x00, 0x00, 0x09 },
+    { 0x02, 0x00, 0x00, GROUND_OBJECT_CUTTABLE, 0x08 },
+    { 0x03, 0x00, 0x00, GROUND_OBJECT_TILLABLE, 0x0C },
+    { 0x06, 0x00, 0x00, (GROUND_OBJECT_TILLABLE | GROUND_OBJECT_WATERABLE), 0x08 },
+    { 0x07, 0x00, 0x00, GROUND_OBJECT_TILLABLE, 0x09 },
+    { 0x06, 0x00, 0x00, (GROUND_OBJECT_TILLABLE | GROUND_OBJECT_WATERABLE), 0x08 },
+    { 0x07, 0x00, 0x00, GROUND_OBJECT_TILLABLE, 0x09 },
+    { 0x04, 0x21, 0x00, GROUND_OBJECT_CUTTABLE | GROUND_OBJECT_WATERABLE, 0x00 },
+    { 0x05, 0x21, 0x00, GROUND_OBJECT_CUTTABLE, 0x01 },
+    { 0x04, 0x21, 0x00, GROUND_OBJECT_CUTTABLE | GROUND_OBJECT_WATERABLE, 0x00 },
+    { 0x05, 0x21, 0x00, GROUND_OBJECT_CUTTABLE, 0x01 },
+    { 0x04, 0x22, 0x00, GROUND_OBJECT_CUTTABLE | GROUND_OBJECT_WATERABLE, 0x00 },
+    { 0x05, 0x22, 0x00, GROUND_OBJECT_CUTTABLE, 0x01 },
+    { 0x04, 0x22, 0x00, GROUND_OBJECT_CUTTABLE | GROUND_OBJECT_WATERABLE, 0x00 },
+    { 0x05, 0x22, 0x00, GROUND_OBJECT_CUTTABLE, 0x01 },
+    { 0x04, 0x23, MOONDROP_FLOWER_HELD_ITEM, GROUND_OBJECT_CUTTABLE | GROUND_OBJECT_WATERABLE, 0x00 },
+    { 0x05, 0x23, MOONDROP_FLOWER_HELD_ITEM, GROUND_OBJECT_CUTTABLE, 0x02 },
+    { 0x04, 0x24, 0x00, GROUND_OBJECT_CUTTABLE, 0x00 },
+    { 0x06, 0x00, 0x00, (GROUND_OBJECT_TILLABLE | GROUND_OBJECT_WATERABLE), 0x08 },
+    { 0x07, 0x00, 0x00, GROUND_OBJECT_TILLABLE, 0x09 },
+    { 0x06, 0x00, 0x00, (GROUND_OBJECT_TILLABLE | GROUND_OBJECT_WATERABLE), 0x08 },
+    { 0x07, 0x00, 0x00, GROUND_OBJECT_TILLABLE, 0x09 },
+    { 0x06, 0x00, 0x00, (GROUND_OBJECT_TILLABLE | GROUND_OBJECT_WATERABLE), 0x08 },
+    { 0x07, 0x00, 0x00, GROUND_OBJECT_TILLABLE, 0x09 },
+    { 0x04, 0x25, 0x00, GROUND_OBJECT_CUTTABLE | GROUND_OBJECT_WATERABLE, 0x00 },
+    { 0x05, 0x25, 0x00, GROUND_OBJECT_CUTTABLE, 0x01 },
+    { 0x04, 0x25, 0x00, GROUND_OBJECT_CUTTABLE | GROUND_OBJECT_WATERABLE, 0x00 },
+    { 0x05, 0x25, 0x00, GROUND_OBJECT_CUTTABLE, 0x01 },
+    { 0x04, 0x25, 0x00, GROUND_OBJECT_CUTTABLE | GROUND_OBJECT_WATERABLE, 0x00 },
+    { 0x05, 0x25, 0x00, GROUND_OBJECT_CUTTABLE, 0x01 },
+    { 0x04, 0x26, 0x00, GROUND_OBJECT_CUTTABLE | GROUND_OBJECT_WATERABLE, 0x00 },
+    { 0x05, 0x26, 0x00, GROUND_OBJECT_CUTTABLE, 0x01 },
+    { 0x04, 0x26, 0x00, GROUND_OBJECT_CUTTABLE | GROUND_OBJECT_WATERABLE, 0x00 },
+    { 0x05, 0x26, 0x00, GROUND_OBJECT_CUTTABLE, 0x01 },
+    { 0x04, 0x27, PINK_CAT_MINT_FLOWER_HELD_ITEM, GROUND_OBJECT_CUTTABLE | GROUND_OBJECT_WATERABLE, 0x00 },
+    { 0x05, 0x27, PINK_CAT_MINT_FLOWER_HELD_ITEM, GROUND_OBJECT_CUTTABLE, 0x02 },
+    { 0x04, 0x28, 0x00, GROUND_OBJECT_CUTTABLE, 0x00 },
+    { 0x06, 0x00, 0x00, GROUND_OBJECT_WATERABLE, 0x00 },
+    { 0x07, 0x00, 0x00, 0x00, 0x01 },
+    { 0x06, 0x00, 0x00, GROUND_OBJECT_WATERABLE, 0x00 },
+    { 0x07, 0x00, 0x00, 0x00, 0x01 },
+    { 0x06, 0x00, 0x00, GROUND_OBJECT_WATERABLE, 0x00 },
+    { 0x07, 0x00, 0x00, 0x00, 0x01 },
+    { 0x04, 0x29, 0x00, GROUND_OBJECT_WATERABLE, 0x00 },
+    { 0x05, 0x29, 0x00, 0x00, 0x01 },
+    { 0x04, 0x29, 0x00, GROUND_OBJECT_WATERABLE, 0x00 },
+    { 0x05, 0x29, 0x00, 0x00, 0x01 },
+    { 0x04, 0x29, 0x00, GROUND_OBJECT_WATERABLE, 0x00 },
+    { 0x05, 0x29, 0x00, 0x00, 0x01 },
+    { 0x04, 0x2A, 0x00, GROUND_OBJECT_WATERABLE, 0x00 },
+    { 0x05, 0x2A, 0x00, 0x00, 0x01 },
+    { 0x04, 0x2A, 0x00, GROUND_OBJECT_WATERABLE, 0x00 },
+    { 0x05, 0x2A, 0x00, 0x00, 0x01 },
+    { 0x04, 0x2B, 0x00, GROUND_OBJECT_WATERABLE, 0x00 }, // herb
+    { 0x05, 0x2B, 0x00, 0x00, 0x02 }, // herb
+    { 0xFF, 0x2C, 0x00, GROUND_OBJECT_HAMMERABLE, 0x00 },
+    { 0xFF, 0xFF, 0x00, GROUND_OBJECT_HAMMERABLE, 0x00 },
+    { 0xFF, 0xFF, 0x00, GROUND_OBJECT_HAMMERABLE, 0x00 },
+    { 0xFF, 0xFF, 0x00, GROUND_OBJECT_HAMMERABLE, 0x00 },
+    { 0xFF, 0x2D, 0x00, GROUND_OBJECT_CHOPPABLE, 0x00 }, // cabbage
+    { 0xFF, 0xFF, 0x00, GROUND_OBJECT_CHOPPABLE, 0x00 },
+    { 0xFF, 0xFF, 0x00, GROUND_OBJECT_CHOPPABLE, 0x00 },
+    { 0xFF, 0xFF, 0x00, GROUND_OBJECT_CHOPPABLE, 0x00 },
+    { 0xFF, 0x30, MEDICINAL_HERB, GROUND_OBJECT_CUTTABLE, 0x00 },
+    { 0xFF, 0x31, EDIBLE_HERB, GROUND_OBJECT_CUTTABLE, 0x00 }, 
+    { 0xFF, 0x32, VERYBERRY, GROUND_OBJECT_CUTTABLE, 0x00 },
+    { 0xFF, 0x33, TROPICAL_FRUIT, GROUND_OBJECT_CUTTABLE, 0x00 },
+    { 0xFF, 0x34, WALNUT, GROUND_OBJECT_CUTTABLE, 0x00 }, 
+    { 0xFF, 0x35, WILD_GRAPES, GROUND_OBJECT_CUTTABLE, 0x00 },
+    { 0xFF, 0x36, MUSHROOM, GROUND_OBJECT_CUTTABLE, 0x00 },
+    { 0xFF, 0x37, POISONOUS_MUSHROOM, GROUND_OBJECT_CUTTABLE, 0x00 },
+    { 0xFF, 0x38, BERRY_OF_THE_FULLMOON, GROUND_OBJECT_CUTTABLE, 0x00 }, // berry of fullmoon
+    { 0xFF, 0x23, MOONDROP_FLOWER_HELD_ITEM, GROUND_OBJECT_CUTTABLE | GROUND_OBJECT_WATERABLE, 0x00 }, // turnip
+    { 0xFF, 0x23, MOONDROP_FLOWER_HELD_ITEM, GROUND_OBJECT_CUTTABLE, 0x02 },
+    { 0x06, 0x00, 0x00, (GROUND_OBJECT_TILLABLE | GROUND_OBJECT_WATERABLE), 0x08 },
+    { 0x07, 0x00, 0x00, GROUND_OBJECT_TILLABLE, 0x0A },
+    { 0x00, 0x00, 0x00, 0x00, 0x00 },
+    { 0x00, 0x00, 0x00, 0x00, 0x00 },
+    { 0x00, 0x00, 0x00, 0x00, 0x00 },
+};
 
 // forward declarations
 u8 getGroundObjectIndexFromTilePosition(u8 mapIndex, u8 heightIndex, u8 widthIndex);
 
-// TODO: put this in a header for field tiles data
-extern u8 D_80113940[FIELD_HEIGHT][FIELD_WIDTH];
 
 //INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", setMapGroundObjects);
 
@@ -220,9 +444,9 @@ void func_800D9BFC(void) {
                 mountain1FieldTiles[22][12] = WEED;
                 mountain1FieldTiles[20][13] = WEED;
                 mountain1FieldTiles[22][4] = WEED;
-                mountain1FieldTiles[17][13] = 0xCD;
-                mountain1FieldTiles[14][15] = 0xCE;
-                mountain1FieldTiles[12][10] = 0xD5;
+                mountain1FieldTiles[17][13] = EDIBLE_HERB_FIELD;
+                mountain1FieldTiles[14][15] = VERYBERRY_FRUIT_FIELD;
+                mountain1FieldTiles[12][10] = MOONDROP_PLANT_FIELD;
                 mountain1FieldTiles[2][16] = STUMP;
                 mountain1FieldTiles[2][17] = 0xC9;
                 mountain1FieldTiles[3][16] = 0xCA;
@@ -231,8 +455,8 @@ void func_800D9BFC(void) {
 
             if (gBaseMapIndex != MOUNTAIN_2) {
                 mountain2FieldTiles[23][5] = WEED;
-                mountain2FieldTiles[16][1] = 0xCE;
-                mountain2FieldTiles[23][6] = 0xD5;
+                mountain2FieldTiles[16][1] = VERYBERRY_FRUIT_FIELD;
+                mountain2FieldTiles[23][6] = MOONDROP_PLANT_FIELD;
                 mountain2FieldTiles[20][8] = STUMP;
                 mountain2FieldTiles[20][9] = 0xC9;
                 mountain2FieldTiles[21][8] = 0xCA;
@@ -247,8 +471,8 @@ void func_800D9BFC(void) {
                 
                 if (!(checkLifeEventBit(HOT_SPRINGS_COMPLETED)) && gYear == 1 && ((gSeason < WINTER) || ((gSeason == WINTER) && (gDayOfMonth < 12)))) {
                     topOfMountain1FieldTiles[3][7] = WEED;
-                    topOfMountain1FieldTiles[9][16] = 0xCE;
-                    topOfMountain1FieldTiles[3][14] = 0xD5;
+                    topOfMountain1FieldTiles[9][16] = VERYBERRY_FRUIT_FIELD;
+                    topOfMountain1FieldTiles[3][14] = MOONDROP_PLANT_FIELD;
                     topOfMountain1FieldTiles[4][6] = STUMP;
                     topOfMountain1FieldTiles[4][7] = 0xC9;
                     topOfMountain1FieldTiles[5][6] = 0xCA;
@@ -267,21 +491,21 @@ void func_800D9BFC(void) {
     
             if (gBaseMapIndex != CAVE) {
                 
-                caveFieldTiles[3][9] = 0xCD;
-                caveFieldTiles[2][3] = 0xCC;
-                caveFieldTiles[3][4] = 0xCC;
+                caveFieldTiles[3][9] = EDIBLE_HERB_FIELD;
+                caveFieldTiles[2][3] = MEDICINAL_HERB_FIELD;
+                caveFieldTiles[3][4] = MEDICINAL_HERB_FIELD;
     
             }
     
             if (gBaseMapIndex != POND) {
                 
-                pondFieldTiles[3][5] = 0xCC;
-                pondFieldTiles[4][14] = 0xCE;
-                pondFieldTiles[3][10] = 0xD5;
-                pondFieldTiles[8][9] = 0xD5;
-                pondFieldTiles[8][6] = 0xD5;
-                pondFieldTiles[3][4] = 0xD5;
-                pondFieldTiles[2][1] = 0xD5;
+                pondFieldTiles[3][5] = MEDICINAL_HERB_FIELD;
+                pondFieldTiles[4][14] = VERYBERRY_FRUIT_FIELD;
+                pondFieldTiles[3][10] = MOONDROP_PLANT_FIELD;
+                pondFieldTiles[8][9] = MOONDROP_PLANT_FIELD;
+                pondFieldTiles[8][6] = MOONDROP_PLANT_FIELD;
+                pondFieldTiles[3][4] = MOONDROP_PLANT_FIELD;
+                pondFieldTiles[2][1] = MOONDROP_PLANT_FIELD;
                 pondFieldTiles[4][12] = STUMP;
                 pondFieldTiles[4][13] = 0xC9;
                 pondFieldTiles[5][12] = 0xCA;
@@ -294,7 +518,7 @@ void func_800D9BFC(void) {
             }
     
             if (gBaseMapIndex != RANCH && npcAffection[GRAY] >= 150) {
-                memcpy((u32)&ranchFieldTiles, (u32)D_80113940, 0x1E0);
+                memcpy((u32)&ranchFieldTiles, (u32)D_80113940, FIELD_SIZE);
             }
 
         break;
@@ -305,9 +529,9 @@ void func_800D9BFC(void) {
                 mountain1FieldTiles[22][12] = WEED;
                 mountain1FieldTiles[20][13] = WEED;
                 mountain1FieldTiles[22][4] = WEED;
-                mountain1FieldTiles[17][13] = 0xCD;
-                mountain1FieldTiles[12][10] = 0xD5;
-                mountain1FieldTiles[16][0] = 0xD0;
+                mountain1FieldTiles[17][13] = EDIBLE_HERB_FIELD;
+                mountain1FieldTiles[12][10] = MOONDROP_PLANT_FIELD;
+                mountain1FieldTiles[16][0] = WALNUT_FIELD;
                 mountain1FieldTiles[2][16] = STUMP;
                 mountain1FieldTiles[2][17] = 0xC9;
                 mountain1FieldTiles[3][16] = 0xCA;
@@ -316,8 +540,8 @@ void func_800D9BFC(void) {
 
             if (gBaseMapIndex != MOUNTAIN_2) {
                 mountain2FieldTiles[23][5] = WEED;
-                mountain2FieldTiles[23][6] = 0xD5;
-                mountain2FieldTiles[12][13] = 0xD0;
+                mountain2FieldTiles[23][6] = MOONDROP_PLANT_FIELD;
+                mountain2FieldTiles[12][13] = WALNUT_FIELD;
                 mountain2FieldTiles[20][8] = STUMP;
                 mountain2FieldTiles[20][9] = 0xC9;
                 mountain2FieldTiles[21][8] = 0xCA;
@@ -326,13 +550,13 @@ void func_800D9BFC(void) {
                 mountain2FieldTiles[10][6] = STUMP;
                 mountain2FieldTiles[10][7] = 0xC9;
                 mountain2FieldTiles[11][6] = 0xCA;
-                mountain2FieldTiles[7][2] = 0xCF;
+                mountain2FieldTiles[7][2] = TROPICAL_FRUIT_FIELD;
             }
 
             if (gBaseMapIndex != TOP_OF_MOUNTAIN_1) {
                 if (!(checkLifeEventBit(HOT_SPRINGS_COMPLETED)) && gYear == 1 && ((gSeason < WINTER) || (gSeason == WINTER && gDayOfMonth < 12))) {
                     topOfMountain1FieldTiles[3][7] = WEED;
-                    topOfMountain1FieldTiles[3][14] = 0xD5;
+                    topOfMountain1FieldTiles[3][14] = MOONDROP_PLANT_FIELD;
                     topOfMountain1FieldTiles[4][6] = STUMP;
                     topOfMountain1FieldTiles[4][7] = 0xC9;
                     topOfMountain1FieldTiles[5][6] = 0xCA;
@@ -345,26 +569,26 @@ void func_800D9BFC(void) {
                     topOfMountain1FieldTiles[5][11] = 0xC9;
                     topOfMountain1FieldTiles[6][10] = 0xCA;
                     topOfMountain1FieldTiles[6][11] = 0xCB;
-                    topOfMountain1FieldTiles[3][15] = 0xCF;
+                    topOfMountain1FieldTiles[3][15] = TROPICAL_FRUIT_FIELD;
                 }
             }
 
             if (gBaseMapIndex != CAVE) {
                 
-                caveFieldTiles[3][9] = 0xCD;
-                caveFieldTiles[2][3] = 0xCC;
-                caveFieldTiles[3][4] = 0xCC;
+                caveFieldTiles[3][9] = EDIBLE_HERB_FIELD;
+                caveFieldTiles[2][3] = MEDICINAL_HERB_FIELD;
+                caveFieldTiles[3][4] = MEDICINAL_HERB_FIELD;
     
             }
 
             if (gBaseMapIndex != POND) {
                 
-                pondFieldTiles[3][5] = 0xCC;
-                pondFieldTiles[3][10] = 0xD5;
-                pondFieldTiles[8][9] = 0xD5;
-                pondFieldTiles[8][6] = 0xD5;
-                pondFieldTiles[3][4] = 0xD5;
-                pondFieldTiles[2][1] = 0xD5;
+                pondFieldTiles[3][5] = MEDICINAL_HERB_FIELD;
+                pondFieldTiles[3][10] = MOONDROP_PLANT_FIELD;
+                pondFieldTiles[8][9] = MOONDROP_PLANT_FIELD;
+                pondFieldTiles[8][6] = MOONDROP_PLANT_FIELD;
+                pondFieldTiles[3][4] = MOONDROP_PLANT_FIELD;
+                pondFieldTiles[2][1] = MOONDROP_PLANT_FIELD;
                 pondFieldTiles[4][12] = STUMP;
                 pondFieldTiles[4][13] = 0xC9;
                 pondFieldTiles[5][12] = 0xCA;
@@ -377,7 +601,7 @@ void func_800D9BFC(void) {
             }
     
             if (gBaseMapIndex != RANCH && npcAffection[GRAY] >= 150) {
-                memcpy((u32)&ranchFieldTiles, (u32)D_80113940, 0x1E0);
+                memcpy((u32)&ranchFieldTiles, (u32)D_80113940, FIELD_SIZE);
             }
 
             break;
@@ -388,8 +612,8 @@ void func_800D9BFC(void) {
                 mountain1FieldTiles[22][12] = WEED;
                 mountain1FieldTiles[20][13] = WEED;
                 mountain1FieldTiles[22][4] = WEED;
-                mountain1FieldTiles[17][13] = 0xCD;
-                mountain1FieldTiles[21][14] = 0xD2;
+                mountain1FieldTiles[17][13] = EDIBLE_HERB_FIELD;
+                mountain1FieldTiles[21][14] = MUSHROOM_FIELD;
                 mountain1FieldTiles[2][16] = STUMP;
                 mountain1FieldTiles[2][17] = 0xC9;
                 mountain1FieldTiles[3][16] = 0xCA;
@@ -398,7 +622,7 @@ void func_800D9BFC(void) {
 
             if (gBaseMapIndex != MOUNTAIN_2) {
                 mountain2FieldTiles[23][5] = WEED;
-                mountain2FieldTiles[23][12] = 0xD2;
+                mountain2FieldTiles[23][12] = MUSHROOM_FIELD;
                 mountain2FieldTiles[20][8] = STUMP;
                 mountain2FieldTiles[20][9] = 0xC9;
                 mountain2FieldTiles[21][8] = 0xCA;
@@ -407,14 +631,14 @@ void func_800D9BFC(void) {
                 mountain2FieldTiles[9][7] = 0xC9;
                 mountain2FieldTiles[10][6] = 0xCA;
                 mountain2FieldTiles[10][7] = 0xCB;
-                mountain2FieldTiles[15][2] = 0xD3;
-                mountain2FieldTiles[10][2] = 0xD1;
+                mountain2FieldTiles[15][2] = POISONOUS_MUSHROOM_FIELD;
+                mountain2FieldTiles[10][2] = WILD_GRAPES_FIELD;
             }
 
             if (gBaseMapIndex != TOP_OF_MOUNTAIN_1) {
                 if (!(checkLifeEventBit(HOT_SPRINGS_COMPLETED)) && gYear == 1 && ((gSeason < 4) || (gSeason == 4 && gDayOfMonth < 12))) {
                     topOfMountain1FieldTiles[3][7] = WEED;
-                    topOfMountain1FieldTiles[3][3] = 0xD2;
+                    topOfMountain1FieldTiles[3][3] = MUSHROOM_FIELD;
                     topOfMountain1FieldTiles[4][6] = STUMP;
                     topOfMountain1FieldTiles[4][7] = 0xC9;
                     topOfMountain1FieldTiles[5][6] = 0xCA;
@@ -427,7 +651,7 @@ void func_800D9BFC(void) {
                     topOfMountain1FieldTiles[5][11] = 0xC9;
                     topOfMountain1FieldTiles[6][10] = 0xCA;
                     topOfMountain1FieldTiles[6][11] = 0xCB;
-                    topOfMountain1FieldTiles[6][15] = 0xD1;
+                    topOfMountain1FieldTiles[6][15] = WILD_GRAPES_FIELD;
                 }
             }
             
@@ -437,17 +661,17 @@ void func_800D9BFC(void) {
 
             if (gBaseMapIndex != CAVE) {
                 
-                caveFieldTiles[3][9] = 0xCD;
-                caveFieldTiles[2][3] = 0xCC;
-                caveFieldTiles[3][4] = 0xCC;
-                caveFieldTiles[3][8] = 0xD3;
+                caveFieldTiles[3][9] = EDIBLE_HERB_FIELD;
+                caveFieldTiles[2][3] = MEDICINAL_HERB_FIELD;
+                caveFieldTiles[3][4] = MEDICINAL_HERB_FIELD;
+                caveFieldTiles[3][8] = POISONOUS_MUSHROOM_FIELD;
     
             }
 
             if (gBaseMapIndex != POND) {
                 
-                pondFieldTiles[3][5] = 0xCC;
-                pondFieldTiles[5][1] = 0xD2;
+                pondFieldTiles[3][5] = MEDICINAL_HERB_FIELD;
+                pondFieldTiles[5][1] = MUSHROOM_FIELD;
                 pondFieldTiles[4][12] = STUMP;
                 pondFieldTiles[4][13] = 0xC9;
                 pondFieldTiles[5][12] = 0xCA;
@@ -558,16 +782,16 @@ u8 getHeldItemIndexFromGroundObject(u8 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", func_800DA948);
+//INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", getGroundObjectToolInteractionFlags);
 
-u8 func_800DA948(u8 groundObjectIndex) {
+u8 getGroundObjectToolInteractionFlags(u8 groundObjectIndex) {
 
     u8 result;
 
     if (groundObjectIndex >= MAX_FIELD_OBJECTS) {
         result = 0;
     } else {
-        result = groundObjectsInfo[groundObjectIndex].flag2; 
+        result = groundObjectsInfo[groundObjectIndex].toolInteractionFlags; 
     }
     
     return result;
@@ -575,16 +799,16 @@ u8 func_800DA948(u8 groundObjectIndex) {
 }
 
 
-//INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", getGroundObjectFlags);
+//INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", getGroundObjectPlayerInteractionsFlags);
 
-u8 getGroundObjectFlags(u8 index) {
+u8 getGroundObjectPlayerInteractionsFlags(u8 index) {
 
     u8 result;
 
     if (index >= MAX_FIELD_OBJECTS) {
         result = 0;
     } else {
-        result = groundObjectsInfo[index].flag3; 
+        result = groundObjectsInfo[index].playerInteractionFlags; 
     }
     
     return result;
@@ -593,7 +817,7 @@ u8 getGroundObjectFlags(u8 index) {
 
 // alternate
 /*
-u8 getGroundObjectFlags(u8 index) {
+u8 getGroundObjectPlayerInteractionsFlags(u8 index) {
 
     if (index < MAX_FIELD_OBJECTS) {
 		return D_80118704[index][0];
@@ -720,6 +944,7 @@ u8 getGroundObjectIndexFromTilePosition(u8 mapIndex, u8 heightIndex, u8 widthInd
         case RANCH:
             groundObjectIndex = ranchFieldTiles[widthIndex][heightIndex];
             break;
+
         }
     
     return groundObjectIndex;
@@ -869,7 +1094,7 @@ void addGroundObjectToMapFromPlayerPosition(u8 groundObjectIndex, f32 arg1, u8 a
     u8 x;
     u8 z;
 
-    vec = func_80065F94(arg1, arg2);
+    vec = getOffsetTileCoordinates(arg1, arg2);
 
     if (vec.y != 65535.0f) {
 
@@ -916,7 +1141,7 @@ u8 getGroundObjectIndexFromPlayerPosition(f32 arg0, u8 arg1) {
 
     if (gBaseMapIndex == FARM || gBaseMapIndex == GREENHOUSE || gBaseMapIndex == MOUNTAIN_1 | gBaseMapIndex == MOUNTAIN_2 || gBaseMapIndex == TOP_OF_MOUNTAIN_1 || gBaseMapIndex == MOON_MOUNTAIN || gBaseMapIndex == POND || gBaseMapIndex == CAVE || (CAVE < gBaseMapIndex && gBaseMapIndex < MINE_2 + 1) || gBaseMapIndex == RANCH) {
 
-        vec = func_80065F94(arg0, arg1);
+        vec = getOffsetTileCoordinates(arg0, arg1);
         vec2 = func_8003AF58(0, vec.x, vec.z);
 
         if (vec2.y != 65535.0f) {
@@ -955,7 +1180,229 @@ u8 getGroundObjectIndexFromCoordinates(f32 x, f32 z) {
     
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", func_800DB424);
+//INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", func_800DB424);
+
+void func_800DB424(void) {
+
+    u8 i, j;
+    u8 flags;
+    u8 temp;
+    
+    for (i = 0; i < FIELD_HEIGHT; i++) {
+        
+        for (j = 0; j < FIELD_WIDTH; j++) {
+
+            temp = farmFieldTiles[i][j];
+
+            if (temp) {
+                
+                if (temp < MAX_FIELD_OBJECTS) {
+                    flags = groundObjectsInfo[temp].playerInteractionFlags;
+                } else {
+                    flags = 0;
+                }
+        
+                if (flags & 1) {
+                    temp++;
+                }
+                
+                if (flags & 2) {
+                    temp--;
+                }
+                
+                if (flags & 4) {
+                    temp -= 7;
+                }
+    
+                if (gDayOfMonth == 1) {
+    
+                    switch (gSeason) {
+    
+                        case SPRING:
+
+                            switch (temp) {
+    
+                                case GRASS_PLANTED_STAGE_1 ... GRASS_RIPE:
+                                    temp = GRASS_CUT;
+                                    break;
+                                
+                                case TILLED ... TILLED_WATERED:
+                                    
+                                    if (getRandomNumberInRange(0, 5) >= 3) {
+                                        temp = BASE_TILE;
+                                    }
+                                    
+                                    break;
+
+                                case 0xD7 ... 0xD8:
+                                    temp = TILLED;
+                                    break;
+                                    
+                            }
+    
+                            break;
+                        
+                        case SUMMER:
+                        
+                            switch (temp) {
+    
+                                case TURNIP_PLANTED_STAGE_1 ... TURNIP_PLANTED_STAGE_2_WATERED:
+                                case CABBAGE_PLANTED_STAGE_1 ... CABBAGE_PLANTED_STAGE_3_WATERED:
+                                case POTATO_PLANTED_STAGE_1 ... POTATO_PLANTED_STAGE_3_WATERED:
+                                case 0xD7 ... 0xD8:
+                                    temp = TILLED;
+                                    break;
+                                
+                                case TURNIP_SPROUT_STAGE_1 ... TURNIP_RIPE_WATERED:
+                                    temp = TURNIP_DEAD;
+                                    break;
+                                case POTATO_SPROUT_STAGE_1 ... POTATO_RIPE_WATERED:
+                                    temp = POTATO_DEAD;
+                                    break;
+                                case CABBAGE_SPROUT_STAGE_1 ... CABBAGE_RIPE_WATERED:
+                                    temp = CABBAGE_DEAD;
+                                    break;
+                                
+                            }
+
+                            break;
+                        
+                        case AUTUMN:
+    
+                            switch (temp) {
+
+                                case TURNIP_PLANTED_STAGE_1 ... TURNIP_PLANTED_STAGE_2_WATERED:
+                                case CABBAGE_PLANTED_STAGE_1 ... CABBAGE_PLANTED_STAGE_3_WATERED:
+                                case POTATO_PLANTED_STAGE_1 ... POTATO_PLANTED_STAGE_3_WATERED:
+                                case TOMATO_PLANTED_STAGE_1 ...TOMATO_PLANTED_STAGE_2_WATERED:
+                                case CORN_PLANTED_STAGE_1 ... CORN_PLANTED_STAGE_3_WATERED:
+                                case MOONDROP_PLANTED_STAGE_1 ... MOONDROP_PLANTED_STAGE_2_WATERED:
+                                case PINK_CAT_MINT_PLANTED_STAGE_1 ... PINK_CAT_MINT_PLANTED_STAGE_3_WATERED:
+                                case 0xD7 ... 0xD8:
+                                    temp = TILLED;
+                                    break;
+                                
+                                case TOMATO_SPROUT_STAGE_1 ... TOMATO_RIPE_WATERED:
+                                    temp = TOMATO_DEAD;
+                                    break;
+                                
+                                case CORN_SPROUT_STAGE_1 ... CORN_RIPE_WATERED:
+                                    temp = CORN_DEAD;
+                                    break;
+
+                                case MOONDROP_SPROUT_STAGE_1 ... MOONDROP_RIPE_WATERED:
+                                    temp = MOONDROP_DEAD;
+                                    break;
+                                
+                                case PINK_CAT_MINT_SPROUT_STAGE_1 ... PINK_CAT_MINT_RIPE_WATERED:
+                                    temp = PINK_CAT_MINT_DEAD;
+                                    break;
+                                    
+                                
+                            }
+                            
+                            break;
+                        
+                        case WINTER:
+
+                            switch (temp) {
+
+                                case TILLED:
+                                case WEED:
+                                case TURNIP_PLANTED_STAGE_1 ... TURNIP_PLANTED_STAGE_2_WATERED:
+                                case TURNIP_DEAD ... POTATO_PLANTED_STAGE_3_WATERED:
+                                case POTATO_DEAD ... EGGPLANT_RIPE_WATERED:
+                                case CABBAGE_PLANTED_STAGE_1 ... CABBAGE_PLANTED_STAGE_3_WATERED:
+                                case CABBAGE_DEAD:
+                                case TOMATO_PLANTED_STAGE_1 ... TOMATO_PLANTED_STAGE_2_WATERED:
+                                case TOMATO_DEAD ... CORN_PLANTED_STAGE_3_WATERED:
+                                case CORN_DEAD:
+                                case MOONDROP_PLANTED_STAGE_1 ... MOONDROP_PLANTED_STAGE_2_WATERED:
+                                case MOONDROP_DEAD ... PINK_CAT_MINT_PLANTED_STAGE_3_WATERED:
+                                case PINK_CAT_MINT_DEAD:
+                                case 0xD7 ... 0xD8:
+                                    temp = BASE_TILE;
+                                    break;
+                                
+                            }
+                            
+                            break;
+    
+                        
+                    }
+                    
+                }
+                
+                farmFieldTiles[i][j] = temp;
+                
+            }
+            
+        }
+        
+    }
+
+    for (i = 0; i < FIELD_HEIGHT; i++) {
+     
+        for (j = 0; j < FIELD_WIDTH; j++) {
+
+            temp = greenhouseFieldTiles[i][j];
+            
+            if (greenhouseFieldTiles[i][j]) {
+                
+                if (greenhouseFieldTiles[i][j] < MAX_FIELD_OBJECTS) {
+                    flags = groundObjectsInfo[greenhouseFieldTiles[i][j]].playerInteractionFlags;
+                } else {
+                    flags = 0;
+                }
+
+                if (flags & 1) {
+                    temp++;
+                }
+                if (flags & 2) {
+                    temp--;
+                } 
+                if (flags & 4) {
+                    temp -= 7;
+                }
+
+                 greenhouseFieldTiles[i][j] = temp;
+                
+            }
+            
+        }
+        
+    }
+
+    if (blueMistFlowerPlot) {
+        
+        if (gSeason < AUTUMN) {
+            
+            if (blueMistFlowerPlot < MAX_FIELD_OBJECTS) {
+                flags = groundObjectsInfo[blueMistFlowerPlot].playerInteractionFlags;
+            } else {
+                flags = 0;
+            }
+
+            if (flags & 1) {
+                blueMistFlowerPlot++;
+            } else if (flags & 2) {
+                blueMistFlowerPlot--;
+            } else if (blueMistFlowerPlot < BLUE_MIST_FLOWER_RIPE) {
+                blueMistFlowerPlot = 0;
+                toggleLifeEventBit(2);
+                toggleLifeEventBit(0x9E);
+            }
+            
+        } else {
+            blueMistFlowerPlot = 0;
+            toggleLifeEventBit(2);
+            toggleLifeEventBit(0x9E);
+            toggleLifeEventBit(0x9F);
+        }
+        
+    }
+    
+}
 
 //INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", updateCropsIfRain);
 
@@ -974,13 +1421,13 @@ void updateCropsIfRain(void) {
 
                 if (groundObjectIndex) {
                     
-                    if (groundObjectIndex < 0xDA) {
-                        flags = groundObjectsInfo[groundObjectIndex].flag2;
+                    if (groundObjectIndex < MAX_FIELD_OBJECTS) {
+                        flags = groundObjectsInfo[groundObjectIndex].toolInteractionFlags;
                     } else {
                         flags = 0;
                     }
 
-                    if (flags & 0x10) {
+                    if (flags & GROUND_OBJECT_WATERABLE) {
                         setFieldTile(FARM, groundObjectIndex + 1, j, i);
                     }
                         
@@ -991,13 +1438,13 @@ void updateCropsIfRain(void) {
         
         if (blueMistFlowerPlot) {
 
-            if (blueMistFlowerPlot < 0xDA) {
-                flags = groundObjectsInfo[blueMistFlowerPlot].flag2;
+            if (blueMistFlowerPlot < MAX_FIELD_OBJECTS) {
+                flags = groundObjectsInfo[blueMistFlowerPlot].toolInteractionFlags;
             } else {
                 flags = 0;
             }
 
-            if (flags & 0x10) {
+            if (flags & GROUND_OBJECT_WATERABLE) {
                 blueMistFlowerPlot++;
             }
             
@@ -1022,7 +1469,7 @@ bool func_800DB99C(void) {
         
         for (j = 0; j < FIELD_WIDTH; j++) {
 
-            if (farmFieldTiles[i][j] == GRASS_GROWN) {
+            if (farmFieldTiles[i][j] == GRASS_RIPE) {
 
                 if (found) continue;
     
@@ -1095,7 +1542,7 @@ void func_800DBC9C(u8 randomRange) {
         for (j = 0; j < FIELD_WIDTH; j++) {
             
             switch (farmFieldTiles[i][j]) {
-                case GRASS_PLANTED ... GRASS_GROWN:
+                case GRASS_SPROUT_STAGE_1 ... GRASS_RIPE:
                     if (!getRandomNumberInRange(0, randomRange)) {
                         setFieldTile(FARM, GRASS_CUT, j, i);    
                     }
@@ -1126,7 +1573,7 @@ void func_800DBC9C(u8 arg0) {
         for (j = 0; j < FIELD_WIDTH; j++) {
             
             temp = GRASS_CUT;
-            temp2 = GRASS_PLANTED;
+            temp2 = GRASS_SPROUT_STAGE_1;
             
             if (farmFieldTiles[i][j] < temp && farmFieldTiles[i][j] >= temp2 && !getRandomNumberInRange(0, arg0)) {
                 setFieldTile(FARM, temp, j, i);    
@@ -1144,18 +1591,13 @@ void func_800DBD88(u8 randomRange) {
     u8 i;
     u8 j;
     
-    int temp;
-    int temp2;
-    int temp3;
-    int temp4;
-    
     for (i = 0; i < FIELD_HEIGHT; i++) {
     
         for (j = 0; j < FIELD_WIDTH; j++) {
             
             switch (farmFieldTiles[i][j]) {
-                case 0x8 ... CORN_DEAD:
-                case MOONDROP_PLANTED ... 0xC3:
+                case TURNIP_PLANTED_STAGE_1 ... CORN_DEAD:
+                case MOONDROP_PLANTED_STAGE_1 ... BLUE_MIST_FLOWER_RIPE_WATERED:
                     if (!getRandomNumberInRange(0, randomRange)) {
                         setFieldTile(FARM, TILLED, j, i);    
                     }
@@ -1186,7 +1628,7 @@ void func_800DBD88(u8 arg0) {
     
         for (j = 0; j < FIELD_WIDTH; j++) {
             
-            temp = CORN_PLANT_WITHERED;
+            temp = GRASS_PLANTED_STAGE_1;
             temp2 = MOONDROP_PLANTED;
             temp3 = 8;
             temp4 = BOULDER;
@@ -1215,7 +1657,7 @@ label:
 
 // update greenhouse field after typhoon
 void func_800DBE8C(u8 randomRange) {
-    
+     
     u8 i;
     u8 j;
     
@@ -1224,8 +1666,8 @@ void func_800DBE8C(u8 randomRange) {
         for (j = 0; j < FIELD_WIDTH; j++) {
             
             switch (greenhouseFieldTiles[i][j]) {
-                case 0x8 ... CORN_DEAD:
-                case MOONDROP_PLANTED ... 0xC3:
+                case TURNIP_PLANTED_STAGE_1 ... CORN_DEAD:
+                case MOONDROP_PLANTED_STAGE_1 ... BLUE_MIST_FLOWER_RIPE_WATERED:
                     if (!getRandomNumberInRange(0, randomRange)) {
                         setFieldTile(GREENHOUSE, TILLED, j, i);    
                     }
@@ -1257,8 +1699,8 @@ void func_800DBE8C(u8 arg0) {
     
         for (j = 0; j < FIELD_WIDTH; j++) {
             
-            temp = CORN_PLANT_WITHERED;
-            temp2 = MOONDROP_PLANTED;
+            temp = GRASS_PLANTED_STAGE_1;
+            temp2 = MOONDROP_PLANTED_STAGE_1;
             temp3 = 8;
             temp4 = BOULDER;
             
@@ -1295,7 +1737,7 @@ u16 getFarmGrassTilesSum(void) {
         for (j = 0; j < FIELD_WIDTH; j++) {
 
             switch (farmFieldTiles[i][j]) {
-                case CORN_PLANT_WITHERED ... GRASS_CUT:
+                case GRASS_PLANTED_STAGE_1 ... GRASS_CUT:
                     count++;
                     break;
                 default:
@@ -1326,8 +1768,8 @@ u16 getFarmGrassTilesSum(void) {
     
         for (j = 0; j < FIELD_WIDTH; j++) {
             
-            temp = MOONDROP_PLANTED;
-            temp2 = CORN_PLANT_WITHERED;
+            temp = MOONDROP_PLANTED_STAGE_1;
+            temp2 = GRASS_PLANTED_STAGE_1;
             
             if (farmFieldTiles[i][j] < temp && farmFieldTiles[i][j] >= temp2) {
                 count++;
@@ -1349,13 +1791,12 @@ u16 func_800DC008(void) {
     u8 j;
     u16 count = 0; 
     
-    
     for (i = 0; i < FIELD_HEIGHT; i++) {
     
         for (j = 0; j < FIELD_WIDTH; j++) {
             
             switch (farmFieldTiles[i][j]) {
-                case 0x9C ... 0x9D:
+                case MOONDROP_RIPE ... MOONDROP_RIPE_WATERED:
                     count++;
                     break;
                 default:
@@ -1414,7 +1855,7 @@ u16 func_800DC080(void) {
         for (j = 0; j < FIELD_WIDTH; j++) {
             
             switch (greenhouseFieldTiles[i][j]) {
-                case 0x9C ... 0x9D:
+                case MOONDROP_RIPE ... MOONDROP_RIPE_WATERED:
                     count++;
                     break;
                 default:
@@ -1470,7 +1911,7 @@ u16 getFarmPinkCatMintFlowersTilesSum(void) {
     for (i = 0; i < FIELD_HEIGHT; i++) {
         for (j = 0; j < FIELD_WIDTH; j++) {
             switch (farmFieldTiles[i][j]) {
-                case 0xAF ... 0xB0:
+                case PINK_CAT_MINT_RIPE ... PINK_CAT_MINT_RIPE_WATERED:
                     count++;
                     break;
                 default:
@@ -1492,8 +1933,7 @@ u16 getGreenhousePinkCatMintFlowersTilesSum(void) {
     for (i = 0; i < FIELD_HEIGHT; i++) {
         for (j = 0; j < FIELD_WIDTH; j++) {
             switch (greenhouseFieldTiles[i][j]) {
-                // pink cat mint flowers
-                case 0xAF ... 0xB0:
+                case PINK_CAT_MINT_RIPE ... PINK_CAT_MINT_RIPE_WATERED:
                     count++;
                     break;
                 default:
@@ -1521,15 +1961,11 @@ void func_800DC1E8(void) {
 
             switch (farmFieldTiles[i][j]) {
 
-                case 0xAF ... 0xB0:
-                    
+                case PINK_CAT_MINT_RIPE ... PINK_CAT_MINT_RIPE_WATERED:
                     if (!found) {
-                        
                         addGroundObjectToMap(FARM, 2, j, i);
                         found = TRUE;
-                        
                     }
-                    
                     break;
 
                 default:

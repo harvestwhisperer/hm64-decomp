@@ -38,13 +38,12 @@
 
 // TODO: add japanese characters
 // 1 - 0xA0 = Japanese characters
-
 #define char_A 0xA1
 #define char_B 0xA2
 #define char_C 0xA3
 #define char_D 0xA4
 #define char_E 0xA5
-#define char_F 0xa6
+#define char_F 0xA6
 #define char_G 0xA7
 #define char_H 0xA8
 #define char_I 0xA9
@@ -62,8 +61,8 @@
 #define char_U 0xB5
 #define char_V 0xB6
 #define char_W 0xB7
-#define char_Y 0xB8
-#define char_X 0xB9
+#define char_X 0xB8
+#define char_Y 0xB9
 #define char_Z 0xBA
 #define char_a 0xBB
 #define char_b 0xBC
@@ -91,6 +90,31 @@
 #define char_x 0xD2
 #define char_y 0xD3
 #define char_z 0xD4
+#define char_1 0xD5
+#define char_2 0xD6
+#define char_3 0xD7
+#define char_4 0xD8
+#define char_5 0xD9
+#define char_6 0xDA
+#define char_7 0xDB
+#define char_8 0xDC
+#define char_9 0xDD
+#define char_0 0xDE
+#define char_QUESTION_MARK 0xDF
+#define char_EXCLAMATION_MARK 0xE0
+#define char_DASH 0xE1
+#define char_TILDE 0xE2
+#define char_PERIOD 0xE3
+#define char_COMMA 0xE4
+#define char_DOT 0xE5
+#define char_SLASH 0xE6
+#define char_STAR_1 0xE7
+#define char_STAR_2 0xE8
+#define char_AMPERSAND 0xE9
+#define char_HEART_1 0xEA
+#define char_HEART_2 0xEB
+#define char_DROP 0xEC
+#define char_PAW_PRINT 0xED
 #define char_SPACE 0xEE
 #define char_TERMINATOR 0xFF
 

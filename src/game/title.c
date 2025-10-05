@@ -16,15 +16,17 @@
 #include "mainLoop.h" 
 #include "game/setCutscenes.h"         
 #include "game/spriteInfo.h"            
-     
+
+
+// bss
+static TitleContext titleScreenContext;
+
 // forward declarations
 void func_800E0ED4();                                  
 void updateGrassAnimation();                                  
 void func_800E10E8();                                  
 void loadDogTitleSprite(void);
 
-// bss
-static TitleContext titleScreenContext;
 
 //INCLUDE_ASM("asm/nonmatchings/game/title", initializeTitleScreen);
 

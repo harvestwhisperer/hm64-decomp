@@ -3,6 +3,7 @@
 
 #include "common.h"
 
+#define MAX_BIRDS 5
 #define MAX_CHICKENS 12
 #define MAX_CHICKEN_EGGS 7
 #define MAX_FARM_ANIMALS 8
@@ -12,9 +13,11 @@
 
 // TODO: finish adding animal types
 #define CALF 1
+#define CHICK 1
 #define ADULT_COW 2
-#define UNUSED_ANIMAL_TYPE 3
-#define INFANT_SHEEP 4
+#define ADULT_CHICKEN 2
+#define PREGNANT_COW 3
+#define BABY_SHEEP 4
 #define ADULT_SHEEP 5
 #define SHEARED_SHEEP 6
 
@@ -114,7 +117,7 @@ typedef struct {
 
 // 0x8016FB08
 typedef struct {
-	Vec3f unk_0; // 08
+	Vec3f coordinates; // 08
 	u16 entityIndex; // 14
 	u8 mapIndex; // 16
 	u8 unk_F; // 17
@@ -127,7 +130,7 @@ typedef struct {
 	u8 unk_16; // 1E
 	u8 unk_17; // 1F
 	u16 flags; // 20
-} ChickenEgg;
+} Bird;
 
 extern bool func_80086764();
 extern void func_800876D0();
@@ -153,10 +156,10 @@ extern bool func_8009A074();
 extern bool func_8009A400();
 extern u8 func_8009A810();
 extern bool func_8009A100();
-extern void func_8009A17C();
+extern bool func_8009A17C();
 extern bool func_8009A2D0();
-extern void func_8009A53C();
-extern void func_8009A97C();
+extern bool func_8009A53C();
+extern bool func_8009A97C();
 extern void func_8009AAC8();
 extern void func_8009B11C();
 extern void func_8009B1BC(void);
@@ -188,7 +191,7 @@ extern void setAnimalLocations(u8);
 extern void setDogLocation(u8);
 extern void setHorseLocation(u8);
 
-extern ChickenEgg gChickenEggs[MAX_CHICKEN_EGGS];
+extern Bird gBirds[MAX_CHICKEN_EGGS];
 extern Chicken gChickens[MAX_CHICKENS];
 extern FarmAnimal gFarmAnimals[MAX_FARM_ANIMALS];
 extern u8 D_8016FBCC[1];
