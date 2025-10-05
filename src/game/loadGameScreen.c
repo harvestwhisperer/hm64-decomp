@@ -28,8 +28,6 @@ extern u8 D_801FB95C[];
 
 // shared
 extern u8 gGlobalSeasonName[6];
-
-// data
 extern u8 D_801FB994[];
 
 // buffer bss

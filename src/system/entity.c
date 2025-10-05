@@ -1159,16 +1159,15 @@ bool enableEntityMovement(u16 index, bool flag) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/entity", func_80030388);
+//INCLUDE_ASM("asm/nonmatchings/system/entity", checkEntityPaused);
 
-bool func_80030388(u16 index) {
+bool checkEntityPaused(u16 index) {
 
     bool result = FALSE;
 
     if (index < MAX_ENTITIES) {
         
         if (entities[index].flags & ENTITY_ACTIVE) {
-            // get flag 0x40
             result = (entities[index].flags >> 6) & 1;
         }
 

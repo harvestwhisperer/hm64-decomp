@@ -25,11 +25,84 @@ extern void loadCutscene(void);
 extern u16 gCutsceneIndex;
 
 // bss
-extern NamingScreenContext namingScreenContext;
+NamingScreenContext namingScreenContext;
 
 // data
 // japanese strings
-extern u8 D_8011C680[10][6];
+u8 D_8011C680[13][6] = {
+    0x6E, 0x77, 0xE1, 0xFF, 0xFF, 0xFF,
+    0x96, 0x94, 0x77, 0xFF, 0xFF, 0xFF,
+    0x53, 0x77, 0x9D, 0xFF, 0xFF, 0xFF,
+    0x76, 0x7D, 0xFF, 0xFF, 0xFF, 0xFF,
+    0x55, 0x79, 0x7D, 0xFF, 0xFF, 0xFF,
+    0x69, 0x77, 0x5C, 0xFF, 0xFF, 0xFF,
+    0x80, 0x79, 0x51, 0xFF, 0xFF, 0xFF,
+    0x84, 0x9F, 0x6B, 0xFF, 0xFF, 0xFF,
+    0x57, 0x77, 0x6B, 0xFF, 0xFF, 0xFF,
+    0x55, 0x51, 0xFF, 0xFF, 0xFF, 0xFF,
+    0x58, 0x7D, 0x5F, 0xFF, 0xFF, 0xFF,
+    0x74, 0x52, 0xFF, 0xFF, 0xFF, 0xFF,
+    0x71, 0x51, 0xFF, 0xFF, 0xFF, 0xFF
+};
+
+// japanese character set 1 grid to char index
+// columns x rows
+u8 D_8011C6D0[15][6] = {
+    { 0, 0x5, 0xA, 0xF, 0x14, 0x19 },
+    { 0x1, 0x6, 0xB, 0x10, 0x15, 0x1A },
+    { 0x2, 0x7, 0xC, 0x11, 0x16, 0x1B },
+    { 0x3, 0x8, 0xD, 0x12, 0x17, 0x1C },
+    { 0x4, 0x9, 0xE, 0x13, 0x18, 0x1D },
+    { 0x1E, 0x23, 0x26, 0x2B, 0x4B, 0x47 },
+    { 0x1F, 0xEE, 0x27, 0x2C, 0x4C, 0x48 },
+    { 0x20, 0x24, 0x28, 0x2D, 0x4D, 0x49 },
+    { 0x21, 0xEE, 0x29, 0xEE, 0x4E, 0x4A },
+    { 0x22, 0x25, 0x2A, 0xEE, 0x4F, 0xE1 },
+    { 0x2E, 0x33, 0x38, 0x3D, 0x42, 0xEE },
+    { 0x2F, 0x34, 0x39, 0x3E, 0x43, 0xEE },
+    { 0x30, 0x35, 0x3A, 0x3F, 0x44, 0xEE },
+    { 0x31, 0x36, 0x3B, 0x40, 0x45, 0xEE },
+    { 0x32, 0x37, 0x3C, 0x41, 0x46, 0xEE },
+};
+
+// japanese character set 2 grid to char index
+u8 D_8011C72C[15][6] = {
+    { 0x50, 0x55, 0x5A, 0x5F, 0x64, 0x69 },
+    { 0x51, 0x56, 0x5B, 0x60, 0x65, 0x6A },
+    { 0x52, 0x57, 0x5C, 0x61, 0x66, 0x6B },
+    { 0x53, 0x58, 0x5D, 0x62, 0x67, 0x6C },
+    { 0x54, 0x59, 0x5E, 0x63, 0x68, 0x6D },
+    { 0x6E, 0x73, 0x76, 0x7B, 0x9C, 0x98 },
+    { 0x6F, 0xEE, 0x77, 0x7C, 0x9D, 0x99 },
+    { 0x70, 0x74, 0x78, 0x7D, 0x9E, 0x9A },
+    { 0x71, 0xEE, 0x79, 0xEE, 0x9F, 0x9B },
+    { 0x72, 0x75, 0x7A, 0x97, 0xA0, 0xE1 },
+    { 0x7E, 0x83, 0x88, 0x8D, 0x92, 0xEE },
+    { 0x7F, 0x84, 0x89, 0x8E, 0x93, 0xEE },
+    { 0x80, 0x85, 0x8A, 0x8F, 0x94, 0xEE },
+    { 0x81, 0x86, 0x8B, 0x90, 0x95, 0xEE },
+    { 0x82, 0x87, 0x8C, 0x91, 0x96, 0xEE },
+};
+
+// US grid to char index
+// columns x rows
+u8 D_8011C788[15][6] = {
+    { char_A, char_F, char_K,                char_P,      char_U,           char_Z     },
+    { char_B, char_G, char_L,                char_Q,      char_V,           char_SPACE },
+    { char_C, char_H, char_M,                char_R,      char_W,           char_SPACE },
+    { char_D, char_I, char_N,                char_S,      char_X,           char_SPACE },
+    { char_E, char_J, char_O,                char_T,      char_Y,           char_SPACE },
+    { char_a, char_f, char_k,                char_p,      char_u,           char_z     },
+    { char_b, char_g, char_l,                char_q,      char_v,           char_SPACE },
+    { char_c, char_h, char_m,                char_r,      char_w,           char_SPACE },
+    { char_d, char_i, char_n,                char_s,      char_x,           char_SPACE },
+    { char_e, char_j, char_o,                char_t,      char_y,           char_SPACE },
+    { char_1, char_6, char_QUESTION_MARK,    char_COMMA,  char_AMPERSAND,   char_SPACE },
+    { char_2, char_7, char_EXCLAMATION_MARK, char_DOT,    char_HEART_1,     char_SPACE },
+    { char_3, char_8, char_DASH,             char_SLASH,  char_HEART_2,     char_SPACE },
+    { char_4, char_9, char_TILDE,            char_STAR_1, char_DROP,        char_SPACE },
+    { char_5, char_0, char_PERIOD,           char_STAR_2, char_PAW_PRINT,   char_SPACE },
+};
 
 // forward declarations
 void loadNameSelectionSprites(void);
@@ -53,7 +126,7 @@ static inline int getSpriteIndexFromFlags(u16 flags) {
 
 static inline void setSpriteIndexOnFlags(s32 index) {
     namingScreenContext.flags &= ~(0x4 | 0x8 | 0x10);
-    namingScreenContext.flags |= index << 2;
+    namingScreenContext.flags |= (index << 2);
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/namingScreen", initializeNamingScreen);
@@ -62,8 +135,8 @@ inline void initializeNamingScreen(u8* arg0, u8 arg1) {
 
     s32 i = 0;
     
-    namingScreenContext.unk_6 = arg1;
-    namingScreenContext.unk_7 = 0;
+    namingScreenContext.screenType = arg1;
+    namingScreenContext.selectedSeason = 0;
 
     namingScreenContext.name = arg0;
 
@@ -73,7 +146,6 @@ inline void initializeNamingScreen(u8* arg0, u8 arg1) {
 
     loadNameSelectionSprites();
 
-    // dialogue boxes
     setMessageBoxViewSpacePosition(0, 0, -64.0f, 352.0f);
     func_8003F360(0, -4, 0);
     setMessageBoxSpriteIndices(0, 1, 0, 0);
@@ -97,19 +169,18 @@ void func_800ED974(void) {
     s32 temp = (namingScreenContext.flags & 0x60) >> 5;
     s32 temp2;
 
-    // 0x90 = index 144
     if (globalSprites[0x90].stateFlags & 0x400) {
         
         if (namingScreenContext.flags & 0x100) {
 
             deactivateNamingScreenSprites();
 
-            // dialogue box
+            // message box
             func_8003DD14(3);
 
             loadSeasonSelectionSprites();
             
-            namingScreenContext.flags &= ~(0x100);
+            namingScreenContext.flags &= ~0x100;
 
             return;
 
@@ -117,7 +188,7 @@ void func_800ED974(void) {
 
         if (namingScreenContext.flags & 0x200) {
 
-            temp2 = namingScreenContext.unk_7;
+            temp2 = namingScreenContext.selectedSeason;
 
             deactivateNamingScreenSprites();
             
@@ -166,7 +237,7 @@ void func_800ED974(void) {
             func_8003E77C(4, 0, 0, 0, 0);
             func_8003EA1C(4, 0xFF, 0xFF, 0xFF, 0xFF, 8);
             
-            namingScreenContext.flags &= ~(0x200);
+            namingScreenContext.flags &= ~0x200;
             
             return;
             
@@ -180,7 +251,7 @@ void func_800ED974(void) {
             loadNameSelectionSprites();
             
             namingScreenContext.dialogueIndex = 12;
-            namingScreenContext.flags &= ~(0x400);
+            namingScreenContext.flags &= ~0x400;
             
             return;
             
@@ -196,22 +267,17 @@ void func_800ED974(void) {
             setMessageBoxSpriteIndices(0, 0, 0, 0);
             setMessageBoxViewSpacePosition(0, 24.0f, -64.0f, 352.0f);
 
-             switch (namingScreenContext.unk_6) {
+             switch (namingScreenContext.screenType) {
                  
                  case 0:
-
                     initializeNamingScreen(gFarmName, 1);
-                     
                     return;
                  
                  case 1:
-
                     initializeNamingScreen(dogInfo.name, 2);
-                     
                     return;
                  
                  case 2:
-                     
                     startGame();
                     return;
                  
@@ -275,7 +341,7 @@ void func_800ED974(void) {
         } else {
              
             if (namingScreenContext.flags & 0x1000) {
-                namingScreenContext.flags &= ~(0x1000);
+                namingScreenContext.flags &= ~0x1000;
                 namingScreenContext.flags |= 0x800;
                 return;
             }
@@ -310,7 +376,7 @@ void func_800ED974(void) {
                                 updateSpriteRGBA(0x84, 0, 0, 0, 0, 8);
                                 updateSpriteRGBA(LANDSCAPE_BACKGROUND, 0, 0, 0, 0, 8);
                                 
-                                gPlayerBirthdaySeason = namingScreenContext.unk_7 + 1;
+                                gPlayerBirthdaySeason = namingScreenContext.selectedSeason + 1;
 
                                 return;
                                 
@@ -353,7 +419,7 @@ void func_800ED974(void) {
                                 updateSpriteRGBA(0x8E, 0, 0, 0, 0, 8);
                                 updateSpriteRGBA(0x91, 0, 0, 0, 0, 8);
     
-                                if (namingScreenContext.unk_6 != 1) {
+                                if (namingScreenContext.screenType != 1) {
                                     
                                     stopSongWithDefaultFadeOut(NAMING_SCREEN_THEME);
                                     
@@ -371,10 +437,15 @@ void func_800ED974(void) {
     
                     default:
                         return;
+
                 }
+
             }
         }
+
+
     }
+
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/namingScreen", loadNameSelectionSprites);
@@ -480,27 +551,27 @@ void loadNameSelectionSprites(void) {
     updateSpriteRGBA(0x8E, 0xFF, 0xFF, 0xFF, 0xFF, 8);
     updateSpriteRGBA(0x91, 0xFF, 0xFF, 0xFF, 0xFF, 8);
 
-    namingScreenContext.unk_19 = 0;
-    namingScreenContext.unk_18 = 0;
+    namingScreenContext.gridY = 0;
+    namingScreenContext.gridX = 0;
     namingScreenContext.unk_1C = 0;
     namingScreenContext.flags = 2;
 
-    namingScreenContext.coordinates.x = -126.0f;
-    namingScreenContext.coordinates.y = 16.0f;
-    namingScreenContext.coordinates.z = -116.0f;
-    namingScreenContext.coordinates.w = 26.0f;
+    namingScreenContext.cursor.x = -126.0f;
+    namingScreenContext.cursor.y = 16.0f;
+    namingScreenContext.shadow.x = -116.0f;
+    namingScreenContext.shadow.y = 26.0f;
 
-    for (i = 0; i < 6; i++) {
+    for (i = 0; i < NAME_LENGTH; i++) {
         
         if (namingScreenContext.name[i] != 0xFF) {
             
-            setSpriteColor(i + 0x83, 0xFF, 0xFF, 0xFF, 0xFF);
-            resetAnimationState(i + 0x83);
+            setSpriteColor(NAMING_SCREEN_SPRITES_BASE + i, 0xFF, 0xFF, 0xFF, 0xFF);
+            resetAnimationState(NAMING_SCREEN_SPRITES_BASE + i);
 
             if (i != 5) {
                
-                setSpriteColor(i + 0x8A, 0xFF, 0xFF, 0xFF, 0xFF);
-                resetAnimationState(i + 0x8A);
+                setSpriteColor(0x8A + i, 0xFF, 0xFF, 0xFF, 0xFF);
+                resetAnimationState(0x8A + i);
                 
             } 
 
@@ -510,6 +581,7 @@ void loadNameSelectionSprites(void) {
         }
     } 
       
+    // store current character position
     namingScreenContext.flags |= i << 2;
     
     setGameVariableString(0, namingScreenContext.name, 6);
@@ -528,61 +600,236 @@ void loadNameSelectionSprites(void) {
     
 }
 
+//INCLUDE_ASM("asm/nonmatchings/game/namingScreen", func_800EF578);
 
-INCLUDE_ASM("asm/nonmatchings/game/namingScreen", func_800EF578);
+bool func_800EF578(void) {
+
+    bool result = FALSE; 
+
+    s32 charsetFlags;
+    s32 tempFlags;
+    s32 tempFlags2;
+    
+    s32 characterPosition;
+    u32 spriteIndex;
+    u32 spriteIndex2;
+    
+    u8 character;
+    s32 temp, temp2;
+    u32 temp3;
+
+    if (namingScreenContext.gridX >= 10 && namingScreenContext.gridY == 5) {
+
+        charsetFlags = namingScreenContext.flags & 3;
+
+        // navigate to other charset (japanese version)
+        if (namingScreenContext.gridX == 10) {
+            
+            resetAnimationState(0x81);
+            
+            switch (charsetFlags) {                      
+                case 0:                                 
+                    temp = 2;
+                    tempFlags = 2;
+                    break;
+                case 1:             
+                    temp = 0;
+                    tempFlags = 0;
+                    break;
+                case 2:                                 
+                    temp = 1;
+                    tempFlags = 1;
+                    break;
+            }    
+
+            startSpriteAnimation(0x81, 1, temp);
+            charsetFlags = tempFlags;
+        
+        // navigate to other charset (japanese version)
+        } else if (namingScreenContext.gridX == 11) {
+            
+            resetAnimationState(0x81);
+                
+            switch (charsetFlags) {                      
+                case 0:                                 
+                    temp2 = 1;
+                    tempFlags2 = 1;
+                    break;
+                case 1:                                 
+                    temp2 = 2;
+                    tempFlags2 = 2;
+                    break;
+                case 2:                                 
+                    temp2 = 0;
+                    tempFlags2 = 0;
+                    break;
+            }    
+
+            startSpriteAnimation(0x81, 1, temp2);
+            charsetFlags = tempFlags2;
+                
+        // ok button
+        } else if (namingScreenContext.gridX == 12) {
+
+            // get current character index
+            temp3 = (namingScreenContext.flags & 0x1C) >> 2;
+                        
+            resetAnimationState(0x91);
+            startSpriteAnimation(0x91, 2, 2);
+            setSpritePaletteIndex(0x91, 5);
+            
+            if (temp3 == 0) {
+                
+                initializeDialogueSession(0, 0x3A, 8, 0);
+                namingScreenContext.flags |= 0x80;
+            
+            } else if (namingScreenContext.screenType == 0) {
+            
+                func_8003EA1C(3, 0, 0, 0, 0, 8);
+                updateSpriteRGBA(0x80, 0, 0, 0, 0, 8);
+                updateSpriteRGBA(0x81, 0, 0, 0, 0, 8);
+                updateSpriteRGBA(0x82, 0, 0, 0, 0, 8);
+                updateSpriteRGBA(0x8F, 0, 0, 0, 0, 8);
+                updateSpriteRGBA(0x90, 0, 0, 0, 0, 8);
+                updateSpriteRGBA(0x83, 0, 0, 0, 0, 8);
+                updateSpriteRGBA(0x84, 0, 0, 0, 0, 8);
+                updateSpriteRGBA(0x85, 0, 0, 0, 0, 8);
+                updateSpriteRGBA(0x86, 0, 0, 0, 0, 8);
+                updateSpriteRGBA(0x87, 0, 0, 0, 0, 8);
+                updateSpriteRGBA(0x88, 0, 0, 0, 0, 8);
+                updateSpriteRGBA(0x89, 0, 0, 0, 0, 8);
+                updateSpriteRGBA(0x8A, 0, 0, 0, 0, 8);
+                updateSpriteRGBA(0x8B, 0, 0, 0, 0, 8);
+                updateSpriteRGBA(0x8C, 0, 0, 0, 0, 8);
+                updateSpriteRGBA(0x8D, 0, 0, 0, 0, 8);
+                updateSpriteRGBA(0x8E, 0, 0, 0, 0, 8);
+                updateSpriteRGBA(0x91, 0, 0, 0, 0, 8);
+                
+                namingScreenContext.flags |= 0x100;
+                result = TRUE;
+                
+            } else {
+            
+                namingScreenContext.flags |= (0x20 | 0x40);
+                initializeDialogueSession(0, 0x3A, 0xB, 0);
+            
+            }
+
+        }
+
+        namingScreenContext.flags &= ~(1 | 2);
+        namingScreenContext.flags |= (charsetFlags & 3);
+
+    } else {
+
+        characterPosition = ((namingScreenContext.flags & 0x1C) >> 2);
+        
+        spriteIndex = NAMING_SCREEN_SPRITES_BASE + characterPosition;
+        spriteIndex2 = 0x89 + characterPosition;
+        
+        // get character sets
+        switch (namingScreenContext.flags & 3) {
+
+            // japanese 1
+            case 0:
+                character = D_8011C6D0[namingScreenContext.gridX][namingScreenContext.gridY];
+                break;
+
+            // japanese 2
+            case 1:
+                character = D_8011C72C[namingScreenContext.gridX][namingScreenContext.gridY];
+                break;
+
+            // english
+            case 2:
+                character = D_8011C788[namingScreenContext.gridX][namingScreenContext.gridY];
+                break;
+            
+        }
+
+        if (characterPosition == 6) {
+            namingScreenContext.name[5] = character;
+        } else {
+            namingScreenContext.name[characterPosition] = character;
+        }
+
+        characterPosition++;
+        
+        if (characterPosition < 7) {
+            
+            namingScreenContext.flags &= ~(4 | 8 | 0x10);
+            // store current character position
+            namingScreenContext.flags |= (characterPosition << 2);
+            
+            resetAnimationState(spriteIndex);
+            
+            if (characterPosition != 6) {
+                resetAnimationState(spriteIndex2 + 1);
+            }
+            
+        } else {
+            return;
+        }
+        
+    }
+
+    return result;
+    
+}
 
 //INCLUDE_ASM("asm/nonmatchings/game/namingScreen", func_800EFADC);
 
 void func_800EFADC(void) {
 
-    namingScreenContext.coordinates.x -= 16.0f;
-    namingScreenContext.coordinates.z -= 16.0f;
+    namingScreenContext.cursor.x -= 16.0f;
+    namingScreenContext.shadow.x -= 16.0f;
 
-    if (namingScreenContext.unk_18 != 0) {
-        if (!(namingScreenContext.unk_18 % 5)) {
-            namingScreenContext.coordinates.x -= 3.0f;
-            namingScreenContext.coordinates.z -= 3.0f;
+    if (namingScreenContext.gridX != 0) {
+        if (!(namingScreenContext.gridX % 5)) {
+            namingScreenContext.cursor.x -= 3.0f;
+            namingScreenContext.shadow.x -= 3.0f;
         }
     } 
 
-    namingScreenContext.unk_18 -= 1;
+    namingScreenContext.gridX -= 1;
     
-    if ((namingScreenContext.unk_18 << 0x18) < 0) {
+    if ((namingScreenContext.gridX << 0x18) < 0) {
 
-        namingScreenContext.unk_18 = 14;
-        namingScreenContext.coordinates.x = 104.0f;
-        namingScreenContext.coordinates.z = 114.0f;
+        namingScreenContext.gridX = 14;
+        namingScreenContext.cursor.x = 104.0f;
+        namingScreenContext.shadow.x = 114.0f;
         
     }
     
     func_800F00D8();
+    
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/namingScreen", func_800EFBEC);
 
 void func_800EFBEC(void) {
         
-    namingScreenContext.coordinates.x += 16.0f;
-    namingScreenContext.coordinates.z += 16.0f;
+    namingScreenContext.cursor.x += 16.0f;
+    namingScreenContext.shadow.x += 16.0f;
 
-    namingScreenContext.unk_18++;
+    namingScreenContext.gridX++;
 
-    if (namingScreenContext.unk_18 >= 15) {
-        namingScreenContext.unk_18 = 0;
+    if (namingScreenContext.gridX >= 15) {
+        namingScreenContext.gridX = 0;
     }
 
-    if (namingScreenContext.unk_18 != 0) {
+    if (namingScreenContext.gridX != 0) {
         
-        if ((namingScreenContext.unk_18 % 5) == 0) {
-            namingScreenContext.coordinates.x += 3.0f;
-            namingScreenContext.coordinates.z += 3.0f;
+        if ((namingScreenContext.gridX % 5) == 0) {
+            namingScreenContext.cursor.x += 3.0f;
+            namingScreenContext.shadow.x += 3.0f;
         }
 
     } else {
         // FIXME: probably different control flow
         do {} while (0);
-        namingScreenContext.coordinates.x = -126.0f;
-        namingScreenContext.coordinates.z = -116.0f;
+        namingScreenContext.cursor.x = -126.0f;
+        namingScreenContext.shadow.x = -116.0f;
 
     }
 
@@ -595,31 +842,31 @@ void func_800EFBEC(void) {
 
 void func_800EFCF8(void) {
 
-    namingScreenContext.coordinates.y += 16.0f;
-    namingScreenContext.coordinates.w += 16.0f;
+    namingScreenContext.cursor.y += 16.0f;
+    namingScreenContext.shadow.y += 16.0f;
     
-    namingScreenContext.unk_19 -= 1;
+    namingScreenContext.gridY -= 1;
     
-    if ((namingScreenContext.unk_19 << 0x18) < 0) {
+    if ((namingScreenContext.gridY << 0x18) < 0) {
         
-        namingScreenContext.unk_19 = 5;
+        namingScreenContext.gridY = 5;
 
-        namingScreenContext.coordinates.y = -64.0f;
-        namingScreenContext.coordinates.w = -54.0f;
+        namingScreenContext.cursor.y = -64.0f;
+        namingScreenContext.shadow.y = -54.0f;
 
         func_800F0320();
         
     }
 
-    if (namingScreenContext.unk_18 >= 10 && namingScreenContext.unk_19 == 4) {
+    if (namingScreenContext.gridX >= 10 && namingScreenContext.gridY == 4) {
 
-        namingScreenContext.unk_18 = namingScreenContext.unk_1A;
+        namingScreenContext.gridX = namingScreenContext.unk_1A;
 
-        namingScreenContext.coordinates.y = -48.0f;
-        namingScreenContext.coordinates.w = -38.0f;
+        namingScreenContext.cursor.y = -48.0f;
+        namingScreenContext.shadow.y = -38.0f;
 
-        namingScreenContext.coordinates.x = (namingScreenContext.unk_1A * 16.0f) + -126.0f + 6.0f;
-        namingScreenContext.coordinates.z = (namingScreenContext.unk_1A * 16.0f) + -116.0f + 6.0f;
+        namingScreenContext.cursor.x = (namingScreenContext.unk_1A * 16.0f) + -126.0f + 6.0f;
+        namingScreenContext.shadow.x = (namingScreenContext.unk_1A * 16.0f) + -116.0f + 6.0f;
         
         resetAnimationState(0x82);
         startSpriteAnimation(0x82, 2, 0);
@@ -637,29 +884,29 @@ void func_800EFCF8(void) {
 
 void func_800EFE84(void) {
 
-    namingScreenContext.coordinates.y -= 16.0f;
-    namingScreenContext.coordinates.w -= 16.0f;
+    namingScreenContext.cursor.y -= 16.0f;
+    namingScreenContext.shadow.y -= 16.0f;
     
-    namingScreenContext.unk_19 += 1;
+    namingScreenContext.gridY += 1;
     
-    if (namingScreenContext.unk_19 >= 6) {
+    if (namingScreenContext.gridY >= 6) {
         
-        namingScreenContext.unk_19 = 0;
+        namingScreenContext.gridY = 0;
 
-        namingScreenContext.coordinates.y = 16.0f;
-        namingScreenContext.coordinates.w = 26.0f;
+        namingScreenContext.cursor.y = 16.0f;
+        namingScreenContext.shadow.y = 26.0f;
 
-        if (namingScreenContext.unk_18 >= 10) {
+        if (namingScreenContext.gridX >= 10) {
 
-            namingScreenContext.unk_18 = namingScreenContext.unk_1A;
+            namingScreenContext.gridX = namingScreenContext.unk_1A;
 
-            namingScreenContext.coordinates.x = (namingScreenContext.unk_18 * 16.0f);
-            namingScreenContext.coordinates.x += -126.0f;
-            namingScreenContext.coordinates.x += 6.0f;
+            namingScreenContext.cursor.x = (namingScreenContext.gridX * 16.0f);
+            namingScreenContext.cursor.x += -126.0f;
+            namingScreenContext.cursor.x += 6.0f;
             
-            namingScreenContext.coordinates.z = (namingScreenContext.unk_18 * 16.0f);
-            namingScreenContext.coordinates.z += -116.0f;
-            namingScreenContext.coordinates.z += 6.0f;
+            namingScreenContext.shadow.x = (namingScreenContext.gridX * 16.0f);
+            namingScreenContext.shadow.x += -116.0f;
+            namingScreenContext.shadow.x += 6.0f;
 
             resetAnimationState(0x82);
             startSpriteAnimation(0x82, 2, 0);
@@ -703,7 +950,7 @@ bool func_800EFFDC(void) {
     
     while (processedWordCount < 13) {
         
-        // FIXME
+        // FIXME: fake
         do { 
             processingChar = 0; 
             doneProcessingWord = 0; 
@@ -800,25 +1047,25 @@ void func_800F00D8(void) {
 
     s8 temp;
 
-    if (namingScreenContext.unk_19 == 5) {
+    if (namingScreenContext.gridY == 5) {
         
-        temp = namingScreenContext.unk_18 - 9;
+        temp = namingScreenContext.gridX - 9;
         
         switch (temp) {
 
             case 0:
             case 2:
                 namingScreenContext.unk_1A = 10;
-                namingScreenContext.unk_18 = 9;
+                namingScreenContext.gridX = 9;
                 
                 resetAnimationState(0x91);
                 startSpriteAnimation(0x91, 2, 0);
                 setSpritePaletteIndex(0x91, 3);
 
-                namingScreenContext.coordinates.x = 21.0f;
-                namingScreenContext.coordinates.z = 31.0f;
-                namingScreenContext.coordinates.y = -64.0f;
-                namingScreenContext.coordinates.w = -54.0f;
+                namingScreenContext.cursor.x = 21.0f;
+                namingScreenContext.shadow.x = 31.0f;
+                namingScreenContext.cursor.y = -64.0f;
+                namingScreenContext.shadow.y = -54.0f;
                 
                 resetAnimationState(0x82);
                 startSpriteAnimation(0x82, 2, 0);
@@ -826,14 +1073,14 @@ void func_800F00D8(void) {
 
             case 1:
 
-                namingScreenContext.unk_18 = 12;
+                namingScreenContext.gridX = 12;
 
             case 3:
 
                 namingScreenContext.unk_1A = 13;
 
-                namingScreenContext.coordinates.x = 100.0f;
-                namingScreenContext.coordinates.y = -95.0f;
+                namingScreenContext.cursor.x = 100.0f;
+                namingScreenContext.cursor.y = -95.0f;
                 
                 resetAnimationState(0x82);
                 resetAnimationState(0x91);
@@ -844,12 +1091,12 @@ void func_800F00D8(void) {
 
             case 4:
                 
-                namingScreenContext.unk_18 = 0;
+                namingScreenContext.gridX = 0;
 
-                namingScreenContext.coordinates.x = -126.0f;
-                namingScreenContext.coordinates.z = -116.0f;
-                namingScreenContext.coordinates.y = -64.0f;
-                namingScreenContext.coordinates.w = -54.0f;
+                namingScreenContext.cursor.x = -126.0f;
+                namingScreenContext.shadow.x = -116.0f;
+                namingScreenContext.cursor.y = -64.0f;
+                namingScreenContext.shadow.y = -54.0f;
 
                 resetAnimationState(0x82);
                 startSpriteAnimation(0x82, 2, 0);
@@ -862,10 +1109,10 @@ void func_800F00D8(void) {
             case 5:
                 
                 namingScreenContext.unk_1A = 13;
-                namingScreenContext.unk_18 = 12;
+                namingScreenContext.gridX = 12;
 
-                namingScreenContext.coordinates.x = 100.0f;
-                namingScreenContext.coordinates.y = -95.0f;
+                namingScreenContext.cursor.x = 100.0f;
+                namingScreenContext.cursor.y = -95.0f;
 
                 resetAnimationState(0x82);
                 resetAnimationState(0x91);
@@ -882,13 +1129,13 @@ void func_800F00D8(void) {
 
 void func_800F0320(void) {
     
-    if ((namingScreenContext.unk_19 == 5) && (namingScreenContext.unk_18 >= 10)) {
+    if ((namingScreenContext.gridY == 5) && (namingScreenContext.gridX >= 10)) {
         
-        namingScreenContext.unk_1A = namingScreenContext.unk_18;
+        namingScreenContext.unk_1A = namingScreenContext.gridX;
         
-        namingScreenContext.unk_18 = 12;
-        namingScreenContext.coordinates.x = 100.0f;
-        namingScreenContext.coordinates.y = -95.0f;
+        namingScreenContext.gridX = 12;
+        namingScreenContext.cursor.x = 100.0f;
+        namingScreenContext.cursor.y = -95.0f;
         
         resetAnimationState(0x82);
         resetAnimationState(0x91);
@@ -896,11 +1143,10 @@ void func_800F0320(void) {
         setSpritePaletteIndex(0x91, 4);
         
     }
+
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/namingScreen", func_800F03C4);
-
-// FIXME: have to fix D_8016FBEE usage
 
 void func_800F03C4(void) {
         
@@ -982,10 +1228,10 @@ void func_800F03C4(void) {
 
                 setSpriteIndexOnFlags(index);
                 
-                startSpriteAnimation(index + 0x83, 2, 0);
+                startSpriteAnimation(NAMING_SCREEN_SPRITES_BASE + index, 2, 0);
                 
                 if (index != 5) {
-                    startSpriteAnimation(index + 0x8A, 2, 1);
+                    startSpriteAnimation(0x8A + index, 2, 1);
                 }
                 
             }
@@ -998,11 +1244,11 @@ void func_800F03C4(void) {
         if (checkButtonPressed(CONTROLLER_1, BUTTON_START)) {
             
             namingScreenContext.unk_1A = 14;
-            namingScreenContext.unk_18 = 12;
-            namingScreenContext.unk_19 = 5;
+            namingScreenContext.gridX = 12;
+            namingScreenContext.gridY = 5;
                     
-            namingScreenContext.coordinates.x = 100.0f;
-            namingScreenContext.coordinates.y = -95.0f;
+            namingScreenContext.cursor.x = 100.0f;
+            namingScreenContext.cursor.y = -95.0f;
             
             resetAnimationState(0x82);
             resetAnimationState(0x91);
@@ -1016,8 +1262,8 @@ void func_800F03C4(void) {
 
     }
 
-    setSpriteViewSpacePosition(0x80, namingScreenContext.coordinates.x, namingScreenContext.coordinates.y, 20.0f);
-    setSpriteViewSpacePosition(0x82, namingScreenContext.coordinates.z, namingScreenContext.coordinates.w, 5.0f);
+    setSpriteViewSpacePosition(0x80, namingScreenContext.cursor.x, namingScreenContext.cursor.y, 20.0f);
+    setSpriteViewSpacePosition(0x82, namingScreenContext.shadow.x, namingScreenContext.shadow.y, 5.0f);
 
 }
 
@@ -1088,10 +1334,10 @@ void loadSeasonSelectionSprites(void) {
     updateSpriteRGBA(0x8C, 0xFF, 0xFF, 0xFF, 0xFF, 8);
     updateSpriteRGBA(LANDSCAPE_BACKGROUND, 0xFF, 0xFF, 0xFF, 0xFF, 8);
     
-    namingScreenContext.unk_7 = 0;
+    namingScreenContext.selectedSeason = 0;
     namingScreenContext.dialogueIndex = 9;
-    namingScreenContext.coordinates.x = -128.0f;
-    namingScreenContext.coordinates.y = 52.0f;
+    namingScreenContext.cursor.x = -128.0f;
+    namingScreenContext.cursor.y = 52.0f;
     namingScreenContext.flags &= ~(0x20 | 0x40);
     namingScreenContext.flags |= 0x20;
     
@@ -1167,57 +1413,55 @@ void func_800F0F84(void) {
         }
     }
     
-    setSpriteViewSpacePosition(0x80, namingScreenContext.coordinates.x, namingScreenContext.coordinates.y, 20.0f);
+    setSpriteViewSpacePosition(0x80, namingScreenContext.cursor.x, namingScreenContext.cursor.y, 20.0f);
     
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/namingScreen", func_800F121C);
 
-// birthday season selection
 void func_800F121C(void) {
 
     u16 temp1;
     u16 temp2;
 
-    temp1 = namingScreenContext.unk_7;
+    temp1 = namingScreenContext.selectedSeason;
     
-    setSpritePaletteIndex(temp1 + 0x83, 0);
+    setSpritePaletteIndex(0x83 + temp1, 0);
     
-    if (namingScreenContext.coordinates.y == 52.0f) {
-        namingScreenContext.coordinates.y -= 48.0f;
+    if (namingScreenContext.cursor.y == 52.0f) {
+        namingScreenContext.cursor.y -= 48.0f;
         temp2 = temp1 + 2;
     } else {
         temp2 = temp1 - 2;
-        namingScreenContext.coordinates.y += 48.0f;
+        namingScreenContext.cursor.y += 48.0f;
     }
     
-    setSpritePaletteIndex(temp2 + 0x83, temp2 + 1);
+    setSpritePaletteIndex(NAMING_SCREEN_SPRITES_BASE + temp2, temp2 + 1);
     
-    namingScreenContext.unk_7 = temp2;
+    namingScreenContext.selectedSeason = temp2;
 
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/namingScreen", func_800F12C4);
 
-// birthday season selection
 void func_800F12C4(void) {
 
     u16 temp1;
     u16 temp2;
 
-    temp1 = namingScreenContext.unk_7;
+    temp1 = namingScreenContext.selectedSeason;
     
-    setSpritePaletteIndex(temp1 + 0x83, 0);
+    setSpritePaletteIndex(NAMING_SCREEN_SPRITES_BASE + temp1, 0);
     
-    if (namingScreenContext.coordinates.x == -128.0f) {
-        namingScreenContext.coordinates.x += 144.0f;
+    if (namingScreenContext.cursor.x == -128.0f) {
+        namingScreenContext.cursor.x += 144.0f;
         temp2 = temp1 + 1;
     } else {
         temp2 = temp1 - 1;
-        namingScreenContext.coordinates.x -= 144.0f;
+        namingScreenContext.cursor.x -= 144.0f;
     }
  
-    setSpritePaletteIndex(temp2 + 0x83, temp2+1);
-    namingScreenContext.unk_7 = temp2;
+    setSpritePaletteIndex(NAMING_SCREEN_SPRITES_BASE + temp2, temp2 + 1);
+    namingScreenContext.selectedSeason = temp2;
 
 }

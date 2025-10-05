@@ -100,21 +100,21 @@ static inline void initializeTV() {
 
 static inline void initializePlayer() {
 
-    gPlayer.fatigue.counter = 0;
-    gPlayer.fatigue.level = 0;
-    gPlayer.fatigue.unk_2 = 0;
+    gPlayer.fatigueCounter = 0;
+    gPlayer.staminaExhaustionLevel = 0;
+    gPlayer.fatigueThreshold= 0;
     gPlayer.shopItemIndex = 0;
-    gPlayer.direction = NORTH;
+    gPlayer.direction = SOUTHWEST;
     gPlayer.groundObjectIndex = 0;
-    gPlayer.currentAction = 0;
-    gPlayer.nextAction = 0;
-    gPlayer.actionProgress = 0;
-    gPlayer.animationState = 0;
-    gPlayer.fatigue.unk_3 = 0;
+    gPlayer.actionHandler = 0;
+    gPlayer.animationHandler = 0;
+    gPlayer.actionPhaseFrameCounter = 0;
+    gPlayer.actionPhase = 0;
+    gPlayer.fishingSpotType = 0;
     gPlayer.flags = 0;
     gPlayer.unk_60 = 0.0f;
     gPlayer.toolHeldCounter = 0;
-    gPlayer.staminaLevelForCurrentToolUse = 0;
+    gPlayer.currentToolLevel = 0;
     gPlayer.bottleContents = 0;
     gPlayer.toolLevels[0] = 0;
     gPlayer.toolSlots[0] = 2;
@@ -349,14 +349,14 @@ void initializeGameVariables(void) {
     initializePlayer();
     
     toolUse.unk_0 = 0;
-    toolUse.entityIndex = 0;
-    toolUse.unk_3 = 0;
-    toolUse.unk_4 = 0;
-    toolUse.unk_6 = 0;
-    toolUse.unk_8 = 0;
-    toolUse.unk_A = 0;
-    toolUse.unk_C = 0;
-    toolUse.unk_E = 0;
+    toolUse.stepIndex = 0;
+    toolUse.stumpHitCounter = 0;
+    toolUse.stumpHitPositionX = 0;
+    toolUse.stumpHitPositionZ = 0;
+    toolUse.boulderHitCounter = 0;
+    toolUse.boulderHitPositionX = 0;
+    toolUse.boulderHitPositionZ = 0;
+    toolUse.toolUseState = 0;
 
     for (i = 0; i < MAX_NPCS; i++) {
         npcs[i].entityIndex = 0;
@@ -365,7 +365,7 @@ void initializeGameVariables(void) {
         npcs[i].levelIndex = 0;
         npcs[i].movingFlag = 0;
         npcs[i].unk_1E = 0;
-        npcs[i].direction = NORTH;
+        npcs[i].direction = SOUTHWEST;
         npcs[i].speed = 0;
         npcs[i].unk_21 = 0;
         npcs[i].unk_22 = 0;
@@ -381,7 +381,7 @@ void initializeGameVariables(void) {
     dogInfo.coordinates.z = 0;
     dogInfo.location = FARM;
     dogInfo.unk_17 = 0;
-    dogInfo.direction = NORTH;
+    dogInfo.direction = SOUTHWEST;
     dogInfo.speed = 0;
     dogInfo.unk_1A = 0;
     dogInfo.unk_1B = 0;
@@ -401,7 +401,7 @@ void initializeGameVariables(void) {
     horseInfo.coordinates.z = 0;
     horseInfo.location = FARM;
     horseInfo.unk_17 = 0;
-    horseInfo.direction = NORTH;
+    horseInfo.direction = SOUTHWEST;
     horseInfo.speed = 0;
     horseInfo.unk_1A = 0;
     horseInfo.unk_1B = 0;
@@ -419,7 +419,7 @@ void initializeGameVariables(void) {
 
         gChickens[i].location = 0;
         gChickens[i].unk_17 = 0;
-        gChickens[i].direction = NORTH;
+        gChickens[i].direction = SOUTHWEST;
         gChickens[i].unk_19 = 0;
         gChickens[i].unk_1A = 0;
         gChickens[i].unk_1B = 0;
@@ -485,17 +485,17 @@ void initializeGameVariables(void) {
 
     for (i = 0; i < MAX_CHICKEN_EGGS; i++) {
 
-        gChickenEggs[i].unk_15 = 0;
-        gChickenEggs[i].mapIndex = 0;
-        gChickenEggs[i].unk_F = 0;
-        gChickenEggs[i].direction = 0;
-        gChickenEggs[i].zDisplacement = 0;
-        gChickenEggs[i].unk_13 = 0;
-        gChickenEggs[i].unk_14 = 0;
-        gChickenEggs[i].unk_0.x = 0;
-        gChickenEggs[i].unk_0.y = 0;
-        gChickenEggs[i].unk_0.z = 0;
-        gChickenEggs[i].flags = 0;
+        gBirds[i].unk_15 = 0;
+        gBirds[i].mapIndex = 0;
+        gBirds[i].unk_F = 0;
+        gBirds[i].direction = 0;
+        gBirds[i].zDisplacement = 0;
+        gBirds[i].unk_13 = 0;
+        gBirds[i].unk_14 = 0;
+        gBirds[i].coordinates.x = 0;
+        gBirds[i].coordinates.y = 0;
+        gBirds[i].coordinates.z = 0;
+        gBirds[i].flags = 0;
 
     }
 
@@ -516,8 +516,8 @@ void initializeGameVariables(void) {
         itemInfo[i].unk_18.z = 0;
         
         itemInfo[i].unk_24 = 0;
-        itemInfo[i].unk_26 = 0;
-        itemInfo[i].unk_28 = 0;
+        itemInfo[i].itemAnimationFrameCounter = 0;
+        itemInfo[i].heldItemIndex = 0;
         
         itemInfo[i].unk_2A = 0;
         itemInfo[i].flags = 0;

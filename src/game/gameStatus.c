@@ -205,7 +205,7 @@ void func_80063F3C(void) {
         for (i = 0; i < FIELD_HEIGHT; i++) {
             for (j = 0; j < FIELD_WIDTH; j++) {
                 temp = farmFieldTiles[i][j];
-                if (farmFieldTiles[i][j] && func_800DA948(temp) & 0x10 && !(getRandomNumberInRange(0, 3))) {
+                if (farmFieldTiles[i][j] && getGroundObjectToolInteractionFlags(temp) & 0x10 && !(getRandomNumberInRange(0, 3))) {
                     setSpecialDialogueBit(0x89);
                     temp++;
                     setFieldTile(FARM, temp, j, i);

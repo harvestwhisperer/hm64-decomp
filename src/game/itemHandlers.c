@@ -23,23 +23,541 @@
 
 
 // bss
-extern u8 D_8018907D;
 extern ToolUse toolUse;
 extern ItemContext itemInfo[10];
 
+// shared bss (load game screen)
+// items shippd
+// strawberries shipped
+extern u32 D_801806C0;
+extern u32 D_80188F60;
+extern u32 D_801C3F80;
+extern u32 D_801FB5D0;
+extern u32 D_801FB6FC;
+extern u32 D_80237414;
+
 // data
-extern u16 itemFlags[];
-// entity animation indices
-extern u16 D_801171A0[192][4];
-extern u16 D_801174A0[4][5];
-extern u16 D_80117D60[];
-extern u8 D_80117F20[];
-extern u8 D_80117180[];
-extern u8 D_8011718C[];
-extern u16 D_80118000[];
-extern u16 D_801181C0[];
-extern u8 D_80118540[];
-extern u8 D_80118620[];
+// offsets for tool sweeping effects (sickle and watering can)
+u8 D_80117180[] = { 8, 0, 7, 6, 5, 4, 3, 2, 1, 0, 0, 0 };
+u8 D_8011718C[] = { 8, 0, 1, 2, 3, 4, 5, 6, 7, 0, 0, 0 }; 
+
+u8 unused[] = { 0, 0, 0, 0, 0, 0, 0, 0 };
+
+u16 D_801171A0[96][4] = {
+    { 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF },
+    { 0x0000, 0x003D, 0x003E, 0x003E },
+    { 0x0001, 0x0001, 0x0001, 0x0042 },
+    { 0x0002, 0x0002, 0x0002, 0x0002 },
+    { 0x0003, 0x0003, 0x0003, 0x0003 },
+    { 0x0004, 0x0004, 0x0004, 0x0004 },
+    { 0x0005, 0x0005, 0x0005, 0x0005 },
+    { 0x0006, 0x0006, 0x0006, 0x0006 },
+    { 0x0007, 0x0007, 0x0007, 0x0007 },
+    { 0x0008, 0x0008, 0x0008, 0x0008 },
+    { 0x0009, 0x0009, 0x0009, 0x0009 },
+    { 0x000A, 0x000A, 0x000A, 0x000A },
+    { 0x000B, 0x000B, 0x000B, 0x000B },
+    { 0x000C, 0x000C, 0x000C, 0x000C },
+    { 0x000D, 0x000D, 0x000D, 0x000D },
+    { 0x000E, 0x000E, 0x000E, 0x000E },
+    { 0x000F, 0x000F, 0x000F, 0x000F },
+    { 0x0010, 0x0010, 0x0010, 0x0010 },
+    { 0x0011, 0x0011, 0x0011, 0x0011 },
+    { 0x0012, 0x0012, 0x0012, 0x0012 },
+    { 0x0013, 0x0013, 0x0013, 0x0013 },
+    { 0x0014, 0x0014, 0x0014, 0x0014 },
+    { 0x0015, 0x0015, 0x0015, 0x0015 },
+    { 0x0016, 0x0016, 0x0016, 0x0016 },
+    { 0x0017, 0x0017, 0x0017, 0x0017 },
+    { 0x0018, 0x0018, 0x0018, 0x0018 },
+    { 0x0019, 0x0019, 0x0019, 0x0019 },
+    { 0x001A, 0x001A, 0x001A, 0x001A },
+    { 0x001B, 0x001B, 0x001B, 0x001B },
+    { 0x001C, 0x001C, 0x001C, 0x001C },
+    { 0x001D, 0x001D, 0x001D, 0x001D },
+    { 0x001E, 0x001E, 0x001E, 0x001E },
+    { 0x001F, 0x001F, 0x001F, 0x001F },
+    { 0x0020, 0x0020, 0x0020, 0x0020 },
+    { 0x0021, 0x0021, 0x0021, 0x0021 },
+    { 0x0022, 0x0022, 0x0022, 0x0022 },
+    { 0x0023, 0x0023, 0x0023, 0x0023 },
+    { 0x0024, 0x0024, 0x0024, 0x0024 },
+    { 0x0025, 0x0025, 0x0025, 0x0025 },
+    { 0x0026, 0x0026, 0x0026, 0x0026 },
+    { 0x0027, 0x0027, 0x0027, 0x0027 },
+    { 0x0028, 0x0028, 0x0028, 0x0028 },
+    { 0x0029, 0x0029, 0x0029, 0x0029 },
+    { 0x002A, 0x002A, 0x002A, 0x002A },
+    { 0x002B, 0x002B, 0x002B, 0x002B },
+    { 0x002C, 0x002C, 0x002C, 0x002C },
+    { 0x002D, 0x002D, 0x002D, 0x002D },
+    { 0x002E, 0x002E, 0x002E, 0x002E },
+    { 0x002F, 0x002F, 0x002F, 0x002F },
+    { 0x0030, 0x0030, 0x0030, 0x0030 },
+    { 0x0031, 0x0031, 0x0031, 0x0031 },
+    { 0x0032, 0x0032, 0x0032, 0x0032 },
+    { 0x0033, 0x0033, 0x0033, 0x0033 },
+    { 0x0034, 0x0034, 0x0034, 0x0034 },
+    { 0x0035, 0x0035, 0x0035, 0x0035 },
+    { 0x0036, 0x0036, 0x0036, 0x0036 },
+    { 0x0037, 0x0037, 0x0037, 0x0037 },
+    { 0x0038, 0x0038, 0x0038, 0x0038 },
+    { 0x0039, 0x0039, 0x0039, 0x0039 },
+    { 0x003A, 0x003A, 0x003A, 0x003A },
+    { 0x003B, 0x003B, 0x003B, 0x0043 },
+    { 0x003C, 0x003C, 0x003C, 0x0044 },
+    { 0x003F, 0x0040, 0x0041, 0x0000 },
+    { 0x0000, 0x0000, 0x0000, 0x0000 },
+    { 0x0000, 0x0000, 0x0000, 0x0000 },
+    { 0x0000, 0x0000, 0x0000, 0x0000 },
+    { 0x0000, 0x0000, 0x0000, 0x0000 },
+    { 0x0000, 0x0000, 0x0000, 0x0000 },
+    { 0x0000, 0x0000, 0x0000, 0x0000 },
+    { 0x0000, 0x0000, 0x0000, 0x0000 },
+    { 0x0000, 0x0000, 0x0000, 0x0000 },
+    { 0x0000, 0x0000, 0x0000, 0x0000 },
+    { 0x0000, 0x0000, 0x0000, 0x0000 },
+    { 0x0000, 0x0000, 0x0000, 0x0000 },
+    { 0x0000, 0x0000, 0x0000, 0x0000 },
+    { 0x0000, 0x0000, 0x0000, 0x0000 },
+    { 0x0000, 0x0000, 0x0000, 0x0000 },
+    { 0x0000, 0x0000, 0x0000, 0x0000 },
+    { 0x0000, 0x0000, 0x0000, 0x0000 },
+    { 0x0000, 0x0000, 0x0000, 0x0000 },
+    { 0x0000, 0x0000, 0x0000, 0x0000 },
+    { 0x0000, 0x0000, 0x0000, 0x0000 },
+    { 0x0000, 0x0000, 0x0000, 0x0000 },
+    { 0x0000, 0x0000, 0x0000, 0x0000 },
+    { 0x0000, 0x0000, 0x0000, 0x0000 },
+    { 0x0000, 0x0000, 0x0000, 0x0000 },
+    { 0x0000, 0x0000, 0x0000, 0x0000 },
+    { 0x0000, 0x0000, 0x0000, 0x0000 },
+    { 0x0000, 0x0000, 0x0000, 0x0000 },
+    { 0x0000, 0x0000, 0x0000, 0x0000 },
+    { 0x0000, 0x0000, 0x0000, 0x0000 },
+    { 0x0000, 0x0000, 0x0000, 0x0000 },
+    { 0x0000, 0x0000, 0x0000, 0x0000 },
+    { 0x0000, 0x0000, 0x0000, 0x0000 },
+    { 0x0000, 0x0000, 0x0000, 0x0000 },
+    { 0x0000, 0x0000, 0x0000, 0x0000 },
+};
+
+// entity metadata struct
+//   entity asset index
+//   animation index per season
+u16 D_801174A0[224][5] = {
+    { 0x005D, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF },
+    { 0x005D, 0x0000, 0x008B, 0x008C, 0x008C },
+    { 0x005D, 0x0001, 0x0001, 0x0001, 0x0001 },
+    { 0x005D, 0x0002, 0x0002, 0x0002, 0x0002 },
+    { 0x005D, 0x0003, 0x0003, 0x0003, 0x0003 },
+    { 0x005D, 0x0004, 0x0004, 0x0004, 0x0004 },
+    { 0x005D, 0x0005, 0x0005, 0x0005, 0x0005 },
+    { 0x005D, 0x0006, 0x0006, 0x0006, 0x0006 },
+    { 0x005D, 0x0007, 0x0007, 0x0007, 0x0007 },
+    { 0x005D, 0x0008, 0x0008, 0x0008, 0x0008 },
+    { 0x005D, 0x0009, 0x0009, 0x0009, 0x0009 },
+    { 0x005D, 0x000A, 0x000A, 0x000A, 0x000A },
+    { 0x005D, 0x000B, 0x000B, 0x000B, 0x000B },
+    { 0x005D, 0x000C, 0x000C, 0x000C, 0x000C },
+    { 0x005D, 0x000D, 0x000D, 0x000D, 0x000D },
+    { 0x005D, 0x000E, 0x000E, 0x000E, 0x000E },
+    { 0x005D, 0x000F, 0x000F, 0x000F, 0x000F },
+    { 0x005D, 0x0010, 0x0010, 0x0010, 0x0010 },
+    { 0x005D, 0x0011, 0x0011, 0x0011, 0x0011 },
+    { 0x005D, 0x0012, 0x0012, 0x0012, 0x0012 },
+    { 0x005D, 0x0013, 0x0013, 0x0013, 0x0013 },
+    { 0x005D, 0x0014, 0x0014, 0x0014, 0x0014 },
+    { 0x005D, 0x0015, 0x0015, 0x0015, 0x0015 },
+    { 0x005D, 0x0016, 0x0016, 0x0016, 0x0016 },
+    { 0x005D, 0x0017, 0x0017, 0x0017, 0x0017 },
+    { 0x005D, 0x0018, 0x0018, 0x0018, 0x0018 },
+    { 0x005D, 0x0019, 0x0019, 0x0019, 0x0019 },
+    { 0x005D, 0x001A, 0x001A, 0x001A, 0x001A },
+    { 0x005D, 0x001B, 0x001B, 0x001B, 0x001B },
+    { 0x005D, 0x001C, 0x001C, 0x001C, 0x001C },
+    { 0x005D, 0x001D, 0x001D, 0x001D, 0x001D },
+    { 0x005D, 0x001E, 0x001E, 0x001E, 0x001E },
+    { 0x005D, 0x001F, 0x001F, 0x001F, 0x001F },
+    { 0x005D, 0x0020, 0x0020, 0x0020, 0x0020 },
+    { 0x005D, 0x0021, 0x0021, 0x0021, 0x0021 },
+    { 0x005D, 0x0022, 0x0022, 0x0022, 0x0022 },
+    { 0x005D, 0x0023, 0x0023, 0x0023, 0x0023 },
+    { 0x005D, 0x0024, 0x0024, 0x0024, 0x0024 },
+    { 0x005D, 0x0025, 0x0025, 0x0025, 0x0025 },
+    { 0x005D, 0x0026, 0x0026, 0x0026, 0x0026 },
+    { 0x005D, 0x0027, 0x0027, 0x0027, 0x0027 },
+    { 0x005D, 0x0028, 0x0028, 0x0028, 0x0028 },
+    { 0x005D, 0x0029, 0x0029, 0x0029, 0x0029 },
+    { 0x005D, 0x002A, 0x002A, 0x002A, 0x002A },
+    { 0x005D, 0x002B, 0x002B, 0x002B, 0x002B },
+    { 0x005D, 0x002C, 0x002C, 0x002C, 0x002C },
+    { 0x005D, 0x002D, 0x002D, 0x002D, 0x002D },
+    { 0x005D, 0x002E, 0x002E, 0x002E, 0x002E },
+    { 0x005D, 0x002F, 0x002F, 0x002F, 0x002F },
+    { 0x005D, 0x0030, 0x0030, 0x0030, 0x0030 },
+    { 0x005D, 0x0031, 0x0031, 0x0031, 0x0031 },
+    { 0x005D, 0x0032, 0x0032, 0x0032, 0x0032 },
+    { 0x005D, 0x0033, 0x0033, 0x0033, 0x0033 },
+    { 0x005D, 0x0034, 0x0034, 0x0034, 0x0034 },
+    { 0x005D, 0x0035, 0x0035, 0x0035, 0x0035 },
+    { 0x005D, 0x0036, 0x0036, 0x0036, 0x0036 },
+    { 0x005D, 0x0037, 0x0037, 0x0037, 0x0037 },
+    { 0x005D, 0x0038, 0x0038, 0x0038, 0x0038 },
+    { 0x005D, 0x0060, 0x0060, 0x0060, 0x0060 },
+    { 0x005D, 0x0061, 0x0061, 0x0061, 0x0061 },
+    { 0x005D, 0x0062, 0x0062, 0x0062, 0x0062 },
+    { 0x005D, 0x0063, 0x0063, 0x0063, 0x0063 },
+    { 0x005D, 0x0064, 0x0064, 0x0064, 0x0064 },
+    { 0x005D, 0x0065, 0x0065, 0x0065, 0x0065 },
+    { 0x005D, 0x0066, 0x0066, 0x0066, 0x0066 },
+    { 0x005D, 0x0067, 0x0067, 0x0067, 0x0067 },
+    { 0x005D, 0x0068, 0x0068, 0x0068, 0x0068 },
+    { 0x005D, 0x0069, 0x0069, 0x0069, 0x0069 },
+    { 0x005D, 0x006A, 0x006A, 0x006A, 0x006A },
+    { 0x005D, 0x0082, 0x0082, 0x0082, 0x0082 },
+    { 0x005D, 0x0083, 0x0083, 0x0083, 0x0083 },
+    { 0x005D, 0x0084, 0x0084, 0x0084, 0x0084 },
+    { 0x005D, 0x0085, 0x0085, 0x0085, 0x0085 },
+    { 0x005D, 0x0086, 0x0086, 0x0086, 0x0086 },
+    { 0x005D, 0x0087, 0x0087, 0x0087, 0x0087 },
+    { 0x005D, 0x0088, 0x0088, 0x0088, 0x0088 },
+    { 0x005D, 0x0089, 0x0089, 0x0089, 0x0089 },
+    { 0x005D, 0x008A, 0x008A, 0x008A, 0x008A },
+    { 0x005D, 0x009B, 0x009B, 0x009B, 0x009B },
+    { 0x005D, 0x009C, 0x009C, 0x009C, 0x009C },
+    { 0x005D, 0x0039, 0x0039, 0x0039, 0x0039 },
+    { 0x005D, 0x003A, 0x003A, 0x003A, 0x003A },
+    { 0x005D, 0x003B, 0x003B, 0x003B, 0x003B },
+    { 0x005D, 0x003C, 0x003C, 0x003C, 0x003C },
+    { 0x005D, 0x003D, 0x003D, 0x003D, 0x003D },
+    { 0x005D, 0x003E, 0x003E, 0x003E, 0x003E },
+    { 0x005D, 0x003F, 0x003F, 0x003F, 0x003F },
+    { 0x005D, 0x00D2, 0x00D2, 0x00D2, 0x00D2 },
+    { 0x005D, 0x0040, 0x0040, 0x0040, 0x0040 },
+    { 0x005D, 0x0041, 0x0041, 0x0041, 0x0041 },
+    { 0x005D, 0x0042, 0x0042, 0x0042, 0x0042 },
+    { 0x005D, 0x0043, 0x0043, 0x0043, 0x0043 },
+    { 0x005D, 0x0044, 0x0044, 0x0044, 0x0044 },
+    { 0x005D, 0x0045, 0x0045, 0x0045, 0x0045 },
+    { 0x005D, 0x0046, 0x0046, 0x0046, 0x0046 },
+    { 0x005D, 0x0047, 0x0047, 0x0047, 0x0047 },
+    { 0x005D, 0x0050, 0x0050, 0x0050, 0x0050 },
+    { 0x005D, 0x0051, 0x0051, 0x0051, 0x0051 },
+    { 0x005D, 0x0052, 0x0052, 0x0052, 0x0052 },
+    { 0x005D, 0x0053, 0x0053, 0x0053, 0x0053 },
+    { 0x005D, 0x0054, 0x0054, 0x0054, 0x0054 },
+    { 0x005D, 0x0055, 0x0055, 0x0055, 0x0055 },
+    { 0x005D, 0x0056, 0x0056, 0x0056, 0x0056 },
+    { 0x005D, 0x0057, 0x0057, 0x0057, 0x0057 },
+    { 0x005D, 0x0058, 0x0058, 0x0058, 0x0058 },
+    { 0x005D, 0x0059, 0x0059, 0x0059, 0x0059 },
+    { 0x005D, 0x005A, 0x005A, 0x005A, 0x005A },
+    { 0x005D, 0x005B, 0x005B, 0x005B, 0x005B },
+    { 0x005D, 0x005C, 0x005C, 0x005C, 0x005C },
+    { 0x005D, 0x005D, 0x005D, 0x005D, 0x005D },
+    { 0x005D, 0x005E, 0x005E, 0x005E, 0x005E },
+    { 0x005D, 0x005F, 0x005F, 0x005F, 0x005F },
+    { 0x005D, 0x0070, 0x0070, 0x0070, 0x0070 },
+    { 0x005D, 0x008D, 0x008D, 0x008D, 0x008D },
+    { 0x005D, 0x006D, 0x006D, 0x006D, 0x006D },
+    { 0x005D, 0x006F, 0x006F, 0x006F, 0x006F },
+    { 0x005D, 0x006E, 0x006E, 0x006E, 0x006E },
+    { 0x005D, 0x006E, 0x006E, 0x006E, 0x006E },
+    { 0x005D, 0x0071, 0x0071, 0x0071, 0x0071 },
+    { 0x005D, 0x006E, 0x006E, 0x006E, 0x006E },
+    { 0x005D, 0x006D, 0x006D, 0x006D, 0x006D },
+    { 0x005D, 0x006D, 0x006D, 0x006D, 0x006D },
+    { 0x005D, 0x006E, 0x006E, 0x006E, 0x006E },
+    { 0x005D, 0x0048, 0x0048, 0x0048, 0x0048 },
+    { 0x005D, 0x0049, 0x0049, 0x0049, 0x0049 },
+    { 0x005D, 0x004A, 0x004A, 0x004A, 0x004A },
+    { 0x005D, 0x004B, 0x004B, 0x004B, 0x004B },
+    { 0x005D, 0x004C, 0x004C, 0x004C, 0x004C },
+    { 0x005D, 0x004D, 0x004D, 0x004D, 0x004D },
+    { 0x005D, 0x004E, 0x004E, 0x004E, 0x004E },
+    { 0x005D, 0x004F, 0x004F, 0x004F, 0x004F },
+    { 0x005D, 0x00C3, 0x00C3, 0x00C3, 0x00C3 },
+    { 0x005D, 0x00C4, 0x00C4, 0x00C4, 0x00C4 },
+    { 0x005D, 0x00C5, 0x00C5, 0x00C5, 0x00C5 },
+    { 0x005D, 0x00C6, 0x00C6, 0x00C6, 0x00C6 },
+    { 0x005D, 0x00C7, 0x00C7, 0x00C7, 0x00C7 },
+    { 0x005D, 0x00C8, 0x00C8, 0x00C8, 0x00C8 },
+    { 0x005D, 0x00C9, 0x00C9, 0x00C9, 0x00C9 },
+    { 0x005D, 0x00CA, 0x00CA, 0x00CA, 0x00CA },
+    { 0x005D, 0x00A3, 0x00A3, 0x00A3, 0x00A3 },
+    { 0x005D, 0x00A4, 0x00A4, 0x00A4, 0x00A4 },
+    { 0x005D, 0x00A5, 0x00A5, 0x00A5, 0x00A5 },
+    { 0x005D, 0x00A6, 0x00A6, 0x00A6, 0x00A6 },
+    { 0x005D, 0x00A7, 0x00A7, 0x00A7, 0x00A7 },
+    { 0x005D, 0x00A8, 0x00A8, 0x00A8, 0x00A8 },
+    { 0x005D, 0x00A9, 0x00A9, 0x00A9, 0x00A9 },
+    { 0x005D, 0x00AA, 0x00AA, 0x00AA, 0x00AA },
+    { 0x005D, 0x00AB, 0x00AB, 0x00AB, 0x00AB },
+    { 0x005D, 0x00AC, 0x00AC, 0x00AC, 0x00AC },
+    { 0x005D, 0x00AD, 0x00AD, 0x00AD, 0x00AD },
+    { 0x005D, 0x00AE, 0x00AE, 0x00AE, 0x00AE },
+    { 0x005D, 0x00AF, 0x00AF, 0x00AF, 0x00AF },
+    { 0x005D, 0x00B0, 0x00B0, 0x00B0, 0x00B0 },
+    { 0x005D, 0x00B1, 0x00B1, 0x00B1, 0x00B1 },
+    { 0x005D, 0x00B2, 0x00B2, 0x00B2, 0x00B2 },
+    { 0x005D, 0x00B3, 0x00B3, 0x00B3, 0x00B3 },
+    { 0x005D, 0x00B4, 0x00B4, 0x00B4, 0x00B4 },
+    { 0x005D, 0x00B5, 0x00B5, 0x00B5, 0x00B5 },
+    { 0x005D, 0x00B6, 0x00B6, 0x00B6, 0x00B6 },
+    { 0x005D, 0x00B7, 0x00B7, 0x00B7, 0x00B7 },
+    { 0x005D, 0x00B8, 0x00B8, 0x00B8, 0x00B8 },
+    { 0x005D, 0x00B9, 0x00B9, 0x00B9, 0x00B9 },
+    { 0x005D, 0x00BA, 0x00BA, 0x00BA, 0x00BA },
+    { 0x005D, 0x00BB, 0x00BB, 0x00BB, 0x00BB },
+    { 0x005D, 0x00BC, 0x00BC, 0x00BC, 0x00BC },
+    { 0x005D, 0x00BD, 0x00BD, 0x00BD, 0x00BD },
+    { 0x005D, 0x00BE, 0x00BE, 0x00BE, 0x00BE },
+    { 0x005D, 0x00BF, 0x00BF, 0x00BF, 0x00BF },
+    { 0x005D, 0x00C0, 0x00C0, 0x00C0, 0x00C0 },
+    { 0x005D, 0x00C1, 0x00C1, 0x00C1, 0x00C1 },
+    { 0x005D, 0x00C2, 0x00C2, 0x00C2, 0x00C2 },
+    { 0x005D, 0x0040, 0x0040, 0x0040, 0x0040 },
+    { 0x005D, 0x0041, 0x0041, 0x0041, 0x0041 },
+    { 0x005D, 0x0042, 0x0042, 0x0042, 0x0042 },
+    { 0x005D, 0x0043, 0x0043, 0x0043, 0x0043 },
+    { 0x005D, 0x0044, 0x0044, 0x0044, 0x0044 },
+    { 0x005D, 0x0045, 0x0045, 0x0045, 0x0045 },
+    { 0x005D, 0x0046, 0x0046, 0x0046, 0x0046 },
+    { 0x005D, 0x0047, 0x0047, 0x0047, 0x0047 },
+    { 0x005D, 0x00CB, 0x00CB, 0x00CB, 0x00CB },
+    { 0x005D, 0x00CC, 0x00CC, 0x00CC, 0x00CC },
+    { 0x005D, 0x00CD, 0x00CD, 0x00CD, 0x00CD },
+    { 0x005D, 0x00CE, 0x00CE, 0x00CE, 0x00CE },
+    { 0x005D, 0x00CF, 0x00CF, 0x00CF, 0x00CF },
+    { 0x005D, 0x00D0, 0x00D0, 0x00D0, 0x00D0 },
+    { 0x005D, 0x00D1, 0x00D1, 0x00D1, 0x00D1 },
+    { 0x005D, 0x00D5, 0x00D5, 0x00D5, 0x00D5 },
+    { 0x005D, 0x00D6, 0x00D6, 0x00D6, 0x00D6 },
+    { 0x005D, 0x00D7, 0x00D7, 0x00D7, 0x00D7 },
+    { 0x005D, 0x00D8, 0x00D8, 0x00D8, 0x00D8 },
+    { 0x005D, 0x00D9, 0x00D9, 0x00D9, 0x00D9 },
+    { 0x005D, 0x00DA, 0x00DA, 0x00DA, 0x00DA },
+    { 0x005D, 0x00DB, 0x00DB, 0x00DB, 0x00DB },
+    { 0x005D, 0x00DC, 0x00DC, 0x00DC, 0x00DC },
+    { 0x005D, 0x00DD, 0x00DD, 0x00DD, 0x00DD },
+    { 0x005D, 0x00DE, 0x00DE, 0x00DE, 0x00DE },
+    { 0x005D, 0x00DF, 0x00DF, 0x00DF, 0x00DF },
+    { 0x005D, 0x00E0, 0x00E0, 0x00E0, 0x00E0 },
+    { 0x005D, 0x00E1, 0x00E1, 0x00E1, 0x00E1 },
+    { 0x005D, 0x00E2, 0x00E2, 0x00E2, 0x00E2 },
+    { 0x005D, 0x00E3, 0x00E3, 0x00E3, 0x00E3 },
+    { 0x005D, 0x00E4, 0x00E4, 0x00E4, 0x00E4 },
+    { 0x005D, 0x00E7, 0x00E7, 0x00E7, 0x00E7 },
+    { 0x005D, 0x00EA, 0x00EA, 0x00EA, 0x00EA },
+    { 0x005D, 0x00EB, 0x00EB, 0x00EB, 0x00EB },
+    { 0x005D, 0x00EC, 0x00EC, 0x00EC, 0x00EC },
+    { 0x005D, 0x00ED, 0x00ED, 0x00ED, 0x00ED },
+    { 0x005D, 0x00EE, 0x00EE, 0x00EE, 0x00EE },
+    { 0x005D, 0x00EF, 0x00EF, 0x00EF, 0x00EF },
+    { 0x005D, 0x00F0, 0x00F0, 0x00F0, 0x00F0 },
+    { 0x005D, 0x00F1, 0x00F1, 0x00F1, 0x00F1 },
+    { 0x005D, 0x00F2, 0x00F2, 0x00F2, 0x00F2 },
+    { 0x005D, 0x00F3, 0x00F3, 0x00F3, 0x00F3 },
+    { 0x005D, 0x00F4, 0x00F4, 0x00F4, 0x00F4 },
+    { 0x005D, 0x00F5, 0x00F5, 0x00F5, 0x00F5 },
+    { 0x005D, 0x00F6, 0x00F6, 0x00F6, 0x00F6 },
+    { 0x005D, 0x00F7, 0x00F7, 0x00F7, 0x00F7 },
+    { 0x005D, 0x00F8, 0x00F8, 0x00F8, 0x00F8 },
+    { 0x005D, 0x0090, 0x0090, 0x0090, 0x0090 },
+    { 0x005D, 0x0095, 0x0095, 0x0095, 0x0095 },
+    { 0x005D, 0x0093, 0x0093, 0x0093, 0x0093 },
+    { 0x0000, 0x0000, 0x0000, 0x0000, 0x0000 },
+    { 0x0000, 0x0000, 0x0000, 0x0000, 0x0000 },
+    { 0x0000, 0x0000, 0x0000, 0x0000, 0x0000 },
+};
+
+// entity palette index
+extern u16 D_80117D60[] = {
+    0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 
+    0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 
+    0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 
+    0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 
+    0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 
+    0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 
+    0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 
+    0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 
+    0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 
+    0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 
+    0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 
+    0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 
+    0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 
+    0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 
+    0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 
+    0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 
+    0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 
+    0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 
+    0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 
+    0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 
+    0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF,
+    0xFFFF, 0xFFFF, 0xFFFF, 0x0096, 0x0096, 0x0096, 0x0096, 0x0096, 
+    0x0096, 0x0096, 0x0096, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF,
+    0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 
+    0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 
+    0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 
+    0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 
+    0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0x0000, 0x0000, 0x0000
+};
+
+// player fatigue
+u8 D_80117F20[] = {
+    0x00, 0x30, 0x2F, 0x2A, 0x0D, 0x0E, 0x00, 0x0F, 0x10, 0x11, 0x32, 0x00, 0x00, 0x01, 0x02, 0x03, 
+    0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 
+    0x31, 0x00, 0x19, 0x1B, 0x1C, 0x1D, 0x1E, 0x1F, 0x1A, 0x20, 0x21, 0x00, 0x23, 0x22, 0x2B, 0x2D, 
+    0x2C, 0x2E, 0x3D, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x29, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x33, 0x33, 0x33, 0x33, 0x33, 0x33, 0x33, 0x33, 
+    0x3E, 0x3E, 0x3E, 0x3E, 0x3E, 0x3E, 0x3E, 0x3E, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x41, 0x41, 0x41, 0x41, 0x41, 
+    0x41, 0x41, 0x41, 0x40, 0x40, 0x40, 0x40, 0x40, 0x40, 0x40, 0x40, 0x40, 0x40, 0x40, 0x40, 0x40, 
+    0x40, 0x40, 0x40, 0x40, 0x40, 0x40, 0x40, 0x40, 0x40, 0x40, 0x40, 0x40, 0x40, 0x40, 0x40, 0x40, 
+    0x40, 0x40, 0x40, 0x40, 0x40, 0x40, 0x40, 0x40, 0x40, 0x40, 0x40, 0x42, 0x42, 0x42, 0x42, 0x42, 
+    0x42, 0x42, 0x42, 0x39, 0x3A, 0x38, 0x35, 0x36, 0x3B, 0x3C, 0x34, 0x34, 0x34, 0x34, 0x34, 0x34, 
+    0x34, 0x34, 0x34, 0x34, 0x34, 0x34, 0x34, 0x34, 0x34, 0x34, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+};
+
+// dialogue indices
+u16 D_80118000[] = {
+    0x0000, 0x013B, 0x013A, 0x0135, 0x011D, 0x011E, 0x0000, 0x011F, 
+    0x0120, 0x0121, 0x013D, 0x0000, 0x0000, 0x0111, 0x0112, 0x0113, 
+    0x0114, 0x0115, 0x0116, 0x0117, 0x0118, 0x0119, 0x011A, 0x011B, 
+    0x011C, 0x0122, 0x0123, 0x0124, 0x0125, 0x0126, 0x0127, 0x0128, 
+    0x013C, 0x0000, 0x0129, 0x012B, 0x012C, 0x012D, 0x012E, 0x012F, 
+    0x012A, 0x0130, 0x0131, 0x014E, 0x0133, 0x0132, 0x0136, 0x0138, 
+    0x0137, 0x0139, 0x014D, 0x0000, 0x0000, 0x014F, 0x0000, 0x0000, 
+    0x0000, 0x0134, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 
+    0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 
+    0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 
+    0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 
+    0x013E, 0x013E, 0x013E, 0x013E, 0x013E, 0x013E, 0x013E, 0x013E, 
+    0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 
+    0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 
+    0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 
+    0x0000, 0x0000, 0x0000, 0x0150, 0x0150, 0x0150, 0x0150, 0x0150, 
+    0x0150, 0x0150, 0x0150, 0x014A, 0x014A, 0x014A, 0x014A, 0x014A, 
+    0x014A, 0x014A, 0x014A, 0x0149, 0x0149, 0x0149, 0x0149, 0x0149, 
+    0x0149, 0x0149, 0x0149, 0x014B, 0x014B, 0x014B, 0x014B, 0x014B, 
+    0x014B, 0x014B, 0x014B, 0x0148, 0x0148, 0x0148, 0x0148, 0x0148, 
+    0x0148, 0x0148, 0x0148, 0x014C, 0x014C, 0x014C, 0x014C, 0x014C, 
+    0x014C, 0x014C, 0x014C, 0x0151, 0x0151, 0x0151, 0x0151, 0x0151, 
+    0x0151, 0x0151, 0x0151, 0x0144, 0x0145, 0x0143, 0x0140, 0x0141, 
+    0x0146, 0x0147, 0x013F, 0x013F, 0x013F, 0x013F, 0x013F, 0x013F, 
+    0x013F, 0x013F, 0x013F, 0x013F, 0x013F, 0x013F, 0x013F, 0x013F, 
+    0x013F, 0x013F, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 
+    0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 
+    0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 
+};
+
+// shipping bin value
+u16 D_801181C0[] = {
+    0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 
+    0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x003C, 0x0050, 0x005A, 
+    0x005A, 0x0078, 0x003C, 0x0096, 0x0032, 0x0064, 0x0096, 0x012C, 
+    0x01F4, 0x0384, 0x0708, 0x0032, 0x0028, 0x0046, 0x0028, 0x003C, 
+    0x0064, 0x0000, 0x012C, 0x0046, 0x001E, 0x001E, 0x0064, 0x00B4, 
+    0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0064, 0x02BC, 
+    0x03E8, 0x01F4, 0x0320, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 
+    0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 
+    0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 
+    0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 
+    0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 
+    0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 
+    0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 
+    0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 
+    0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 
+    0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 
+    0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 
+    0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 
+    0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 
+    0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 
+    0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 
+    0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 
+    0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 
+    0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 
+    0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 
+    0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 
+    0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 
+    0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 
+};
+
+u16 itemFlags[] = {
+    0x0000, 0x100A, 0x101A, 0x301A, 0x100A, 0x100A, 0x0000, 0x020B,
+    0x020B, 0x020B, 0x0000, 0x0000, 0x0000, 0x820F, 0x820F, 0x820F,
+    0x820F, 0x820F, 0x820F, 0x820F, 0x822F, 0x900E, 0x900E, 0x900E,
+    0x900E, 0x100E, 0x100E, 0x020F, 0x020F, 0x020F, 0x020F, 0x020F,
+    0x020F, 0x0000, 0x020F, 0x020F, 0x020F, 0x020F, 0x020F, 0x020F,
+    0x020B, 0x020B, 0x020B, 0x0201, 0x020B, 0x020B, 0x100E, 0x100E,
+    0x100E, 0x100E, 0x100E, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000,
+    0x0000, 0x104A, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000,
+    0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000,
+    0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000,
+    0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000,
+    0x0088, 0x0088, 0x0088, 0x0088, 0x0088, 0x0088, 0x0088, 0x0088,
+    0x0088, 0x0088, 0x0088, 0x0088, 0x0088, 0x0088, 0x0088, 0x0088,
+    0x0088, 0x0088, 0x0088, 0x0088, 0x0088, 0x0088, 0x0088, 0x0088,
+    0x0000, 0x0000, 0x4000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000,
+    0x0000, 0x4000, 0x4000, 0x0088, 0x0088, 0x0088, 0x0088, 0x0088,
+    0x0088, 0x0088, 0x0088, 0x0088, 0x0088, 0x0088, 0x0088, 0x0088,
+    0x0088, 0x0088, 0x0088, 0x0088, 0x0088, 0x0088, 0x0088, 0x0088,
+    0x0088, 0x0088, 0x0088, 0x0088, 0x0088, 0x0088, 0x0088, 0x0088,
+    0x0088, 0x0088, 0x0088, 0x0088, 0x0088, 0x0088, 0x0088, 0x0088,
+    0x0088, 0x0088, 0x0088, 0x0088, 0x0088, 0x0088, 0x0088, 0x0088,
+    0x0088, 0x0088, 0x0088, 0x0088, 0x0088, 0x0088, 0x0088, 0x0088,
+    0x0088, 0x0088, 0x0088, 0x0088, 0x0088, 0x0108, 0x0108, 0x0108,
+    0x0088, 0x0088, 0x0408, 0x0408, 0x0408, 0x0408, 0x0408, 0x0408,
+    0x0408, 0x0408, 0x0808, 0x0808, 0x0808, 0x0808, 0x0808, 0x0808,
+    0x0808, 0x0808, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000,
+    0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000,
+    0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000,
+};
+
+// player stamina increase
+u8 D_80118540[] = {
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x14, 0x14, 0x14, 0x00, 0x00, 
+    0x00, 0x08, 0x0A, 0x08, 0x08, 0x0A, 0x08, 0x0C, 0x08, 0x08, 0x0C, 0x10, 
+    0x14, 0x00, 0x00, 0x06, 0x06, 0x06, 0x06, 0x06, 0x00, 0x00, 0x14, 0x00, 
+    0x06, 0x06, 0x08, 0x10, 0x02, 0x08, 0x08, 0x08, 0x02, 0x02, 0x00, 0x00, 
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x14, 0x14, 0x14, 0x14, 
+    0x14, 0x14, 0x14, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x03, 0x08, 0x00, 0x00, 0x00, 0x0C, 0xC8, 
+    0x08, 0x08, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,  
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+};
+
+// player fatigue counter decrease
+u8 D_80118620[] = {
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+    0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+    0x00, 0x00, 0x00, 0x14, 0x0A, 0x1E, 0x00, 0x64, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+};
+
 
 // rodata
 static const u8 D_80122340[];
@@ -50,16 +568,6 @@ static const u8 D_80122350[];
 static const u8 D_8012235C[];
 static const u8 D_80122368[];
 static const u8 D_80122374[];
-
-// load game screen
-// items shippd
-// strawberries shipped
-extern u32 D_801806C0;
-extern u32 D_80188F60;
-extern u32 D_801C3F80;
-extern u32 D_801FB5D0;
-extern u32 D_801FB6FC;
-extern u32 D_80237414;
 
 
 // forward declarations
@@ -108,8 +616,8 @@ u16 getItemFlags(u16 index);
 
 void func_800CF850(void) {
     toolUse.unk_0 = 0;
-    toolUse.entityIndex = 0;
-    toolUse.unk_E = 2;
+    toolUse.stepIndex = 0;
+    toolUse.toolUseState = 2;
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", getToolLevel);
@@ -135,102 +643,103 @@ u8 getToolLevel(u8 tool) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800CF8F8);
 
-void func_800CF8F8(u8 entityIndex, u8 animationIndex, f32 x, f32 y, f32 z) {
+void func_800CF8F8(u8 itemOffset, u8 animationIndex, f32 x, f32 y, f32 z) {
 
-    loadEntity(entityIndex + ITEMS_OFFSET, 0x60, 1);
-    func_8002FF38(entityIndex + ITEMS_OFFSET, FALSE);
-    setEntityTrackingTarget(entityIndex + ITEMS_OFFSET, 0xFFFF, 0xFF);
-    setEntityCollidable(entityIndex + ITEMS_OFFSET, FALSE);
-    setEntityYMovement(entityIndex + ITEMS_OFFSET, FALSE);
-    setEntityCoordinates(entityIndex + ITEMS_OFFSET, x, y, z);
-    setEntityColor(entityIndex + ITEMS_OFFSET, mainMap[MAIN_MAP_INDEX].mapGlobals.currentRGBA.r, mainMap[MAIN_MAP_INDEX].mapGlobals.currentRGBA.g, mainMap[MAIN_MAP_INDEX].mapGlobals.currentRGBA.b, mainMap[MAIN_MAP_INDEX].mapGlobals.currentRGBA.a);
-    setEntityAnimation(entityIndex + ITEMS_OFFSET, animationIndex);
+    loadEntity(ENTITY_ITEM_BASE_INDEX + itemOffset, 0x60, 1);
+    func_8002FF38(ENTITY_ITEM_BASE_INDEX + itemOffset, FALSE);
+    setEntityTrackingTarget(ENTITY_ITEM_BASE_INDEX + itemOffset, 0xFFFF, 0xFF);
+    setEntityCollidable(ENTITY_ITEM_BASE_INDEX + itemOffset, FALSE);
+    setEntityYMovement(ENTITY_ITEM_BASE_INDEX + itemOffset, FALSE);
+    setEntityCoordinates(ENTITY_ITEM_BASE_INDEX + itemOffset, x, y, z);
+    setEntityColor(ENTITY_ITEM_BASE_INDEX + itemOffset, mainMap[MAIN_MAP_INDEX].mapGlobals.currentRGBA.r, mainMap[MAIN_MAP_INDEX].mapGlobals.currentRGBA.g, mainMap[MAIN_MAP_INDEX].mapGlobals.currentRGBA.b, mainMap[MAIN_MAP_INDEX].mapGlobals.currentRGBA.a);
+    setEntityAnimation(ENTITY_ITEM_BASE_INDEX + itemOffset, animationIndex);
     
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800CFB38);
 
 // only used with fishing rod
-void func_800CFB38(u8 entityIndex, u8 animationIndex, f32 x, f32 y, f32 z) {
+void func_800CFB38(u8 itemOffset, u8 animationIndex, f32 x, f32 y, f32 z) {
 
-    loadEntity(entityIndex + ITEMS_OFFSET, 0x5D, 1);
-    func_8002FF38(entityIndex + ITEMS_OFFSET, FALSE);
-    setEntityTrackingTarget(entityIndex + ITEMS_OFFSET, 0xFFFF, 0xFF);
-    setEntityCollidable(entityIndex + ITEMS_OFFSET, FALSE);
-    setEntityYMovement(entityIndex + ITEMS_OFFSET, FALSE);
-    setEntityCoordinates(entityIndex + ITEMS_OFFSET, x, y, z);
-    setEntityColor(entityIndex + ITEMS_OFFSET, mainMap[MAIN_MAP_INDEX].mapGlobals.currentRGBA.r, mainMap[MAIN_MAP_INDEX].mapGlobals.currentRGBA.g, mainMap[MAIN_MAP_INDEX].mapGlobals.currentRGBA.b, mainMap[MAIN_MAP_INDEX].mapGlobals.currentRGBA.a);
-    setEntityAnimation(entityIndex + ITEMS_OFFSET, animationIndex);
+    loadEntity(ENTITY_ITEM_BASE_INDEX + itemOffset, 0x5D, 1);
+    func_8002FF38(ENTITY_ITEM_BASE_INDEX + itemOffset, FALSE);
+    setEntityTrackingTarget(ENTITY_ITEM_BASE_INDEX + itemOffset, 0xFFFF, 0xFF);
+    setEntityCollidable(ENTITY_ITEM_BASE_INDEX + itemOffset, FALSE);
+    setEntityYMovement(ENTITY_ITEM_BASE_INDEX + itemOffset, FALSE);
+    setEntityCoordinates(ENTITY_ITEM_BASE_INDEX + itemOffset, x, y, z);
+    setEntityColor(ENTITY_ITEM_BASE_INDEX + itemOffset, mainMap[MAIN_MAP_INDEX].mapGlobals.currentRGBA.r, mainMap[MAIN_MAP_INDEX].mapGlobals.currentRGBA.g, mainMap[MAIN_MAP_INDEX].mapGlobals.currentRGBA.b, mainMap[MAIN_MAP_INDEX].mapGlobals.currentRGBA.a);
+    setEntityAnimation(ENTITY_ITEM_BASE_INDEX + itemOffset, animationIndex);
     
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800CFD78);
 
-void func_800CFD78(u8 entityIndex, u8 animationIndex) {
-    setEntityAnimation(entityIndex + ITEMS_OFFSET, animationIndex);
+void func_800CFD78(u8 itemOffset, u8 animationIndex) {
+    setEntityAnimation(ENTITY_ITEM_BASE_INDEX + itemOffset, animationIndex);
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800CFDA0);
 
-void func_800CFDA0(u8 entityIndex) {
-    deactivateEntity(entityIndex + ITEMS_OFFSET);
+void func_800CFDA0(u8 offset) {
+    deactivateEntity(ENTITY_ITEM_BASE_INDEX + offset);
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800CFDC4);
 
-bool func_800CFDC4(u8 arg0, s16 arg1, s16 arg2) {
+bool func_800CFDC4(u8 groundObjectIndex, s16 x, s16 z) {
 
     bool result = FALSE;
 
     s16 temp;
     s16 temp2;
     
-    switch (arg0) {
+    switch (groundObjectIndex) {
 
-        case 0xC8:
-            temp = arg1;
-            temp2 = arg2;
+        case STUMP:
+            temp = x;
+            temp2 = z;
             break;
         case 0xC9:
-            temp = arg1 - 1;
-            temp2 = arg2;
+            temp = x - 1;
+            temp2 = z;
             break;
         case 0xCA:
-            temp = arg1;
-            temp2 = arg2 - 1;
+            temp = x;
+            temp2 = z - 1;
             break;
         case 0xCB:
-            temp = arg1 - 1;
-            temp2 = arg2 - 1;
+            temp = x - 1;
+            temp2 = z - 1;
             break;
  
     }
 
-    if (toolUse.unk_4 != temp || toolUse.unk_6 != temp2) {
-        toolUse.unk_4 = temp;
-        toolUse.unk_6 = temp2;
-        toolUse.unk_3 = 0;
+    if (toolUse.stumpHitPositionX != temp || toolUse.stumpHitPositionZ != temp2) {
+        toolUse.stumpHitPositionX = temp;
+        toolUse.stumpHitPositionZ = temp2;
+        toolUse.stumpHitCounter = 0;
     }
 
-    switch (gPlayer.staminaLevelForCurrentToolUse) {
+    switch (gPlayer.currentToolLevel) {
 
         case 0:
-            toolUse.unk_3 += 1;
+            toolUse.stumpHitCounter += 1;
             break;
         
         case 1:
-            toolUse.unk_3 += 3;
+            toolUse.stumpHitCounter += 3;
             break;
         
         case 2:
-            toolUse.unk_3 += 6;
+            toolUse.stumpHitCounter += 6;
             break;
         
     }
     
-    if (toolUse.unk_3 >= 6) {
+    // break stump after multiple hits
+    if (toolUse.stumpHitCounter >= 6) {
 
-        toolUse.unk_3 = 0;
+        toolUse.stumpHitCounter = 0;
         result = TRUE;
 
     }
@@ -241,59 +750,60 @@ bool func_800CFDC4(u8 arg0, s16 arg1, s16 arg2) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800CFF1C);
 
-bool func_800CFF1C(u8 arg0, s16 arg1, s16 arg2) {
+bool func_800CFF1C(u8 groundObjectIndex, s16 x, s16 z) {
     
     bool result = FALSE;
 
     s16 temp;
     s16 temp2;
     
-    switch (arg0) {
+    switch (groundObjectIndex) {
 
-        case 0xC4:
-            temp = arg1;
-            temp2 = arg2;
+        case BOULDER:
+            temp = x;
+            temp2 = z;
             break;
         case 0xC5:
-            temp = arg1 - 1;
-            temp2 = arg2;
+            temp = x - 1;
+            temp2 = z;
             break;
         case 0xC6:
-            temp = arg1;
-            temp2 = arg2 - 1;
+            temp = x;
+            temp2 = z - 1;
             break;
         case 0xC7:
-            temp = arg1 - 1;
-            temp2 = arg2 - 1;
+            temp = x - 1;
+            temp2 = z - 1;
             break;
  
     }
 
-    if (toolUse.unk_A != temp || toolUse.unk_C != temp2) {
-        toolUse.unk_A = temp;
-        toolUse.unk_C = temp2;
-        toolUse.unk_8 = 0;
+    if (toolUse.boulderHitPositionX != temp || toolUse.boulderHitPositionZ != temp2) {
+        toolUse.boulderHitPositionX = temp;
+        toolUse.boulderHitPositionZ = temp2;
+        toolUse.boulderHitCounter = 0;
     }
 
-    switch (gPlayer.staminaLevelForCurrentToolUse) {
+    switch (gPlayer.currentToolLevel) {
 
         case 0:
-            toolUse.unk_8 += 1;
+            toolUse.boulderHitCounter += 1;
             break;
         
         case 1:
-            toolUse.unk_8 += 3;
+            toolUse.boulderHitCounter += 3;
             break;
         
         case 2:
-            toolUse.unk_8 += 6;
+            toolUse.boulderHitCounter += 6;
             break;
         
     }
     
-    if (toolUse.unk_8 >= 6) {
+    // break boulder after multiple hits
+    if (toolUse.boulderHitCounter >= 6) {
 
-        toolUse.unk_8 = 0;
+        toolUse.boulderHitCounter = 0;
         result = TRUE;
 
     }
@@ -307,20 +817,20 @@ bool func_800CFF1C(u8 arg0, s16 arg1, s16 arg2) {
 inline u8 func_800D0074(s16 arg0, s16 arg1) {
     
     if (gBaseMapIndex == FARM) {
-        
+         
         setDailyEventBit(0x29); 
         
         if (arg0 == 12 && arg1 == 2) {
-            toolUse.unk_F += 1;
+            toolUse.musicBoxTileDigCounter++;
         } else {
-            toolUse.unk_F = 0;    
+            toolUse.musicBoxTileDigCounter = 0;    
         }
         
     } else {
-        toolUse.unk_F = 0;
+        toolUse.musicBoxTileDigCounter = 0;
     }
     
-    return toolUse.unk_F;
+    return toolUse.musicBoxTileDigCounter;
     
 }
 
@@ -428,9 +938,9 @@ void handleToolUse(void) {
 
 void func_800D0318(void) {
 
-    if (toolUse.unk_E) {
+    if (toolUse.toolUseState) {
 
-        switch (toolUse.unk_E) {        
+        switch (toolUse.toolUseState) {        
             case 2:
                 handleToolUse();
             case 3:
@@ -448,7 +958,7 @@ void func_800D0318(void) {
 // alternate for reference
 // void func_800D0318(void) {
 
-//     int temp = toolUse.unk_E; 
+//     int temp = toolUse.toolUseState; 
 
 //     if (temp) {
 //         if (temp != 3) {
@@ -494,7 +1004,7 @@ void func_800D0360(void) {
 
     direction = convertWorldToSpriteDirection(entities[PLAYER].direction, MAIN_MAP_INDEX);
 
-    switch (gPlayer.staminaLevelForCurrentToolUse) {
+    switch (gPlayer.currentToolLevel) {
 
         case 0:
             temp1 = 1;
@@ -508,15 +1018,15 @@ void func_800D0360(void) {
             if (direction & 1) {
                 
                 if (entities[PLAYER].direction < 5) {
-                    temp2 = arr3[toolUse.entityIndex];
+                    temp2 = arr3[toolUse.stepIndex];
                 } else {
-                    temp2 = arr4[toolUse.entityIndex]; 
+                    temp2 = arr4[toolUse.stepIndex]; 
                 }
                 
             } else if (entities[PLAYER].direction < 5) {
-                temp2 = arr1[toolUse.entityIndex];
+                temp2 = arr1[toolUse.stepIndex];
             } else {
-                temp2 = arr2[toolUse.entityIndex];
+                temp2 = arr2[toolUse.stepIndex];
             }
             
             break;
@@ -526,9 +1036,9 @@ void func_800D0360(void) {
             temp1 = 0;
 
             if ((u8)direction < 5) {
-                temp2 = arr5[toolUse.entityIndex];
+                temp2 = arr5[toolUse.stepIndex];
             } else {
-                temp2 = arr6[toolUse.entityIndex];
+                temp2 = arr6[toolUse.stepIndex];
             }
             
             break;
@@ -537,14 +1047,14 @@ void func_800D0360(void) {
 
     tempF = (f32)temp1;
             
-    vec = func_80065F94(tempF, temp2);
+    vec = getOffsetTileCoordinates(tempF, temp2);
     currentGroundObjectIndex = getGroundObjectIndexFromPlayerPosition(tempF, temp2);
     
-    if ((func_800DA948(currentGroundObjectIndex) & 1) && vec.y != 65535.0f && (gBaseMapIndex == GREENHOUSE || gSeason != WINTER)) {
+    if ((getGroundObjectToolInteractionFlags(currentGroundObjectIndex) & GROUND_OBJECT_CUTTABLE) && vec.y != 65535.0f && (gBaseMapIndex == GREENHOUSE || gSeason != WINTER)) {
 
-        if (currentGroundObjectIndex == 0x8E) {
+        if (currentGroundObjectIndex == GRASS_RIPE) {
             
-            groundObjectIndex = 0x8F;
+            groundObjectIndex = GRASS_CUT;
             fodderQuantity += adjustValue(fodderQuantity, 1, MAX_FODDER);
             temp4 = 62;
             
@@ -553,13 +1063,13 @@ void func_800D0360(void) {
             switch (getGroundObjectMapAdditionIndex(currentGroundObjectIndex)) {
 
                 case 4:
-                    groundObjectIndex = 2;
+                    groundObjectIndex = TILLED;
                     break;
                 case 5:
-                    groundObjectIndex = 3;
+                    groundObjectIndex = TILLED_WATERED;
                     break;
                 default:
-                    groundObjectIndex = 1;
+                    groundObjectIndex = BASE_TILE;
                     break;
                 
             }         
@@ -577,44 +1087,44 @@ void func_800D0360(void) {
 
     }
 
-    if (toolUse.entityIndex == 0) {
+    if (toolUse.stepIndex == 0) {
 
-        switch (gPlayer.staminaLevelForCurrentToolUse) {
+        switch (gPlayer.currentToolLevel) {
 
             case 0:
-                setAudio(0xB);
+                setAudio(SICKLE_SFX);
                 break;
             case 1:
-                setAudio(0xC);
+                setAudio(SILVER_SICKLE_SFX);
                 break;
             case 2:
-                setAudio(0xD);
+                setAudio(GOLDEN_SICKLE_SFX );
                 break;
             
         }
         
     }
 
-    toolUse.entityIndex++;
+    toolUse.stepIndex++;
     
-    switch (gPlayer.staminaLevelForCurrentToolUse) {
+    switch (gPlayer.currentToolLevel) {
             
         case 0:
-            toolUse.unk_E = 0;
+            toolUse.toolUseState = 0;
             break;
         
         case 1:
 
-            if (toolUse.entityIndex == 3) {
-                toolUse.unk_E = 0;
+            if (toolUse.stepIndex == 3) {
+                toolUse.toolUseState = 0;
             }
     
             break;
         
         case 2:
 
-            if (toolUse.entityIndex == 9) {
-                toolUse.unk_E = 0;
+            if (toolUse.stepIndex == 9) {
+                toolUse.toolUseState = 0;
             }
             
             break;
@@ -641,57 +1151,57 @@ void func_800D093C(void) {
     
     u8 direction = convertWorldToSpriteDirection(entities[PLAYER].direction, MAIN_MAP_INDEX);
 
-    switch (gPlayer.staminaLevelForCurrentToolUse) {
+    switch (gPlayer.currentToolLevel) {
 
         case 0:
             temp = 1;
             break;
         case 1:
-            temp = toolUse.entityIndex + 1;
+            temp = toolUse.stepIndex + 1;
             break;
         case 2:
-            temp = toolUse.entityIndex + 1;
+            temp = toolUse.stepIndex + 1;
             break;
         
     }
 
     tempF = temp;
 
-    vec = func_80065F94(tempF, 8);
+    vec = getOffsetTileCoordinates(tempF, 8);
 
     if (vec.y != 65535.0f) {
         
-        if ((func_800DA948(getGroundObjectIndexFromPlayerPosition(tempF, 8)) & 2) && (gBaseMapIndex == GREENHOUSE || gBaseMapIndex == MINE || gBaseMapIndex == MINE_2 || gSeason != WINTER)) {
+        if ((getGroundObjectToolInteractionFlags(getGroundObjectIndexFromPlayerPosition(tempF, 8)) & GROUND_OBJECT_TILLABLE) && (gBaseMapIndex == GREENHOUSE || gBaseMapIndex == MINE || gBaseMapIndex == MINE_2 || gSeason != WINTER)) {
 
             addGroundObjectToMap(gBaseMapIndex, TILLED, (u8)vec.x - groundObjectsGridX, (u8)vec.z - groundObjectsGridZ);
             
             vec = func_8003AF58(0, (u8)vec.x, (u8)vec.z);
             
-            func_800CF8F8(toolUse.entityIndex, 0, vec.x, vec.y, vec.z);
+            func_800CF8F8(toolUse.stepIndex, 0, vec.x, vec.y, vec.z);
 
-            if (toolUse.entityIndex == 0) {
+            if (toolUse.stepIndex == 0) {
 
                 tempX = (s16)vec.x / 32;
                 tempZ = (s16)vec.z / 32;
 
                 func_800D0074(tempX, tempZ);
-                setAudio(0xE);
+                setAudio(HOE_SFX);
                 
             } else {
-                setAudio(0xE);
+                setAudio(HOE_SFX);
             }
             
         } else {
-            toolUse.unk_E = 0;
+            toolUse.toolUseState = 0;
             setAudio(0x1B);
         }
 
-        toolUse.entityIndex++;
+        toolUse.stepIndex++;
 
-        switch (gPlayer.staminaLevelForCurrentToolUse) {
+        switch (gPlayer.currentToolLevel) {
             
             case 0:
-                toolUse.unk_E = 0;
+                toolUse.toolUseState = 0;
                 break;
             
             case 1:
@@ -700,18 +1210,18 @@ void func_800D093C(void) {
 
                     if (direction & 1) {
 
-                        if (toolUse.entityIndex == 2) {
-                            toolUse.unk_E = 0;
+                        if (toolUse.stepIndex == 2) {
+                            toolUse.toolUseState = 0;
                         }
                         
                     } else {
-                        if (toolUse.entityIndex == 3) {
-                            toolUse.unk_E = 0;
+                        if (toolUse.stepIndex == 3) {
+                            toolUse.toolUseState = 0;
                         }
                     }
                     
                 } else {
-                    toolUse.unk_E = 0;
+                    toolUse.toolUseState = 0;
                 }
 
                 break;
@@ -722,18 +1232,18 @@ void func_800D093C(void) {
 
                     if (direction & 1) {
 
-                        if (toolUse.entityIndex == 4) {
-                            toolUse.unk_E = 0;
+                        if (toolUse.stepIndex == 4) {
+                            toolUse.toolUseState = 0;
                         }
                         
                     } else {
-                        if (toolUse.entityIndex == 6) {
-                            toolUse.unk_E = 0;
+                        if (toolUse.stepIndex == 6) {
+                            toolUse.toolUseState = 0;
                         }
                     }
                     
                 } else {
-                    toolUse.unk_E = 0;
+                    toolUse.toolUseState = 0;
                 }
 
                 break;
@@ -741,7 +1251,7 @@ void func_800D093C(void) {
         }
 
     } else {
-        toolUse.unk_E = 0;
+        toolUse.toolUseState = 0;
         setAudio(0x1B);
     }
 
@@ -762,13 +1272,13 @@ void func_800D0DD4(void) {
     Vec3f vec2;
     u8 groundObjectIndex;
 
-    vec = func_80065F94(1.0f, 8);
+    vec = getOffsetTileCoordinates(1.0f, 8);
 
     if (vec.y != 65535.0f) {
 
-        groundObjectIndex =getGroundObjectIndexFromPlayerPosition(1.0f, 8);
+        groundObjectIndex = getGroundObjectIndexFromPlayerPosition(1.0f, 8);
 
-        if (func_800DA948(groundObjectIndex) & 4) {
+        if (getGroundObjectToolInteractionFlags(groundObjectIndex) & GROUND_OBJECT_CHOPPABLE) {
 
             if (func_800CFDC4(groundObjectIndex, (s16)vec.x / 32, (s16)vec.z / 32)) {
 
@@ -776,11 +1286,11 @@ void func_800D0DD4(void) {
 
                 switch (groundObjectIndex) {
 
-                    case 0xC8:
-                        addGroundObjectToMap(gBaseMapIndex, 1, (u8)vec.x - groundObjectsGridX, (u8)vec.z - groundObjectsGridZ);
-                        addGroundObjectToMap(gBaseMapIndex, 1, (u8)vec.x - groundObjectsGridX + 1, (u8)vec.z - groundObjectsGridZ);
-                        addGroundObjectToMap(gBaseMapIndex, 1, (u8)vec.x - groundObjectsGridX, (u8)vec.z - groundObjectsGridZ + 1);
-                        addGroundObjectToMap(gBaseMapIndex, 1, (u8)vec.x - groundObjectsGridX + 1, (u8)vec.z - groundObjectsGridZ + 1);
+                    case STUMP:
+                        addGroundObjectToMap(gBaseMapIndex, BASE_TILE, (u8)vec.x - groundObjectsGridX, (u8)vec.z - groundObjectsGridZ);
+                        addGroundObjectToMap(gBaseMapIndex, BASE_TILE, (u8)vec.x - groundObjectsGridX + 1, (u8)vec.z - groundObjectsGridZ);
+                        addGroundObjectToMap(gBaseMapIndex, BASE_TILE, (u8)vec.x - groundObjectsGridX, (u8)vec.z - groundObjectsGridZ + 1);
+                        addGroundObjectToMap(gBaseMapIndex, BASE_TILE, (u8)vec.x - groundObjectsGridX + 1, (u8)vec.z - groundObjectsGridZ + 1);
 
                         vec2.x = 16.0f;
                         vec2.z = 16.0f;
@@ -788,10 +1298,10 @@ void func_800D0DD4(void) {
                         break;
 
                     case 0xC9:
-                        addGroundObjectToMap(gBaseMapIndex, 1, (u8)vec.x - groundObjectsGridX, (u8)vec.z - groundObjectsGridZ);
-                        addGroundObjectToMap(gBaseMapIndex, 1, (u8)vec.x - groundObjectsGridX - 1, (u8)vec.z - groundObjectsGridZ);
-                        addGroundObjectToMap(gBaseMapIndex, 1, (u8)vec.x - groundObjectsGridX, (u8)vec.z - groundObjectsGridZ + 1);
-                        addGroundObjectToMap(gBaseMapIndex, 1, (u8)vec.x - groundObjectsGridX - 1, (u8)vec.z - groundObjectsGridZ + 1);
+                        addGroundObjectToMap(gBaseMapIndex, BASE_TILE, (u8)vec.x - groundObjectsGridX, (u8)vec.z - groundObjectsGridZ);
+                        addGroundObjectToMap(gBaseMapIndex, BASE_TILE, (u8)vec.x - groundObjectsGridX - 1, (u8)vec.z - groundObjectsGridZ);
+                        addGroundObjectToMap(gBaseMapIndex, BASE_TILE, (u8)vec.x - groundObjectsGridX, (u8)vec.z - groundObjectsGridZ + 1);
+                        addGroundObjectToMap(gBaseMapIndex, BASE_TILE, (u8)vec.x - groundObjectsGridX - 1, (u8)vec.z - groundObjectsGridZ + 1);
 
                         vec2.x = -16.0f;
                         vec2.z = 16.0f;
@@ -799,10 +1309,10 @@ void func_800D0DD4(void) {
                         break;
                     
                     case 0xCA:
-                        addGroundObjectToMap(gBaseMapIndex, 1, (u8)vec.x - groundObjectsGridX, (u8)vec.z - groundObjectsGridZ);
-                        addGroundObjectToMap(gBaseMapIndex, 1, (u8)vec.x - groundObjectsGridX + 1, (u8)vec.z - groundObjectsGridZ);
-                        addGroundObjectToMap(gBaseMapIndex, 1, (u8)vec.x - groundObjectsGridX, (u8)vec.z - groundObjectsGridZ - 1);
-                        addGroundObjectToMap(gBaseMapIndex, 1, (u8)vec.x - groundObjectsGridX + 1, (u8)vec.z - groundObjectsGridZ - 1);
+                        addGroundObjectToMap(gBaseMapIndex, BASE_TILE, (u8)vec.x - groundObjectsGridX, (u8)vec.z - groundObjectsGridZ);
+                        addGroundObjectToMap(gBaseMapIndex, BASE_TILE, (u8)vec.x - groundObjectsGridX + 1, (u8)vec.z - groundObjectsGridZ);
+                        addGroundObjectToMap(gBaseMapIndex, BASE_TILE, (u8)vec.x - groundObjectsGridX, (u8)vec.z - groundObjectsGridZ - 1);
+                        addGroundObjectToMap(gBaseMapIndex, BASE_TILE, (u8)vec.x - groundObjectsGridX + 1, (u8)vec.z - groundObjectsGridZ - 1);
 
                         vec2.x = 16.0f;
                         vec2.z = -16.0f;
@@ -811,10 +1321,10 @@ void func_800D0DD4(void) {
                         break;
                     
                     case 0xCB:
-                        addGroundObjectToMap(gBaseMapIndex, 1, (u8)vec.x - groundObjectsGridX, (u8)vec.z - groundObjectsGridZ);
-                        addGroundObjectToMap(gBaseMapIndex, 1, (u8)vec.x - groundObjectsGridX - 1, (u8)vec.z - groundObjectsGridZ);
-                        addGroundObjectToMap(gBaseMapIndex, 1, (u8)vec.x - groundObjectsGridX, (u8)vec.z - groundObjectsGridZ - 1);
-                        addGroundObjectToMap(gBaseMapIndex, 1, (u8)vec.x - groundObjectsGridX - 1, (u8)vec.z - groundObjectsGridZ - 1);
+                        addGroundObjectToMap(gBaseMapIndex, BASE_TILE, (u8)vec.x - groundObjectsGridX, (u8)vec.z - groundObjectsGridZ);
+                        addGroundObjectToMap(gBaseMapIndex, BASE_TILE, (u8)vec.x - groundObjectsGridX - 1, (u8)vec.z - groundObjectsGridZ);
+                        addGroundObjectToMap(gBaseMapIndex, BASE_TILE, (u8)vec.x - groundObjectsGridX, (u8)vec.z - groundObjectsGridZ - 1);
+                        addGroundObjectToMap(gBaseMapIndex, BASE_TILE, (u8)vec.x - groundObjectsGridX - 1, (u8)vec.z - groundObjectsGridZ - 1);
     
                         vec2.x = -16.0f;
                         vec2.z = -16.0f;
@@ -835,49 +1345,50 @@ void func_800D0DD4(void) {
             }
             
         } else {
-            toolUse.unk_E = 0;
+            toolUse.toolUseState = 0;
         }
 
-        if (toolUse.entityIndex == 0) {
+        if (toolUse.stepIndex == 0) {
 
-            switch (gPlayer.staminaLevelForCurrentToolUse) {
+            switch (gPlayer.currentToolLevel) {
 
                 case 0:
-                    setAudio(0x11);
+                    setAudio(AX_SFX);
                     break;
                 case 1:
-                    setAudio(0x12);
+                    setAudio(SILVER_AX_SFX);
                     break;
                 case 2:
-                    setAudio(0x13);
+                    setAudio(GOLDEN_AX_SFX);
                     break;
                 
             }
             
         }
 
-        toolUse.entityIndex++;
+        toolUse.stepIndex++;
 
-        switch (gPlayer.staminaLevelForCurrentToolUse) {
+        switch (gPlayer.currentToolLevel) {
         
             case 0:
-                toolUse.unk_E = 0;
+                toolUse.toolUseState = 0;
                 break;
             
             case 1:
-                toolUse.unk_E = 0;
+                toolUse.toolUseState = 0;
                 break;
             
             case 2:
-                toolUse.unk_E = 0;
+                toolUse.toolUseState = 0;
                 break;
 
         }
         
     } else {
-        toolUse.unk_E = 0;
+        toolUse.toolUseState = 0;
     }
 
+    // hit animals
     func_8009AC54();
     func_8009AE7C();
     func_8009AFB4();
@@ -896,13 +1407,13 @@ void func_800D1DB0(void) {
     s16 tempX, tempZ;
     u8 groundObjectIndex;
 
-    vec = func_80065F94(1.0f, 8);
+    vec = getOffsetTileCoordinates(1.0f, 8);
     
     if (vec.y != 65535.0f) {
         
         groundObjectIndex = getGroundObjectIndexFromPlayerPosition(1.0f, 8U);
     
-        if (func_800DA948(groundObjectIndex) & 8) {
+        if (getGroundObjectToolInteractionFlags(groundObjectIndex) & GROUND_OBJECT_HAMMERABLE) {
 
             vec2.y = 0.0f;
 
@@ -910,12 +1421,12 @@ void func_800D1DB0(void) {
 
                 case SMALL_ROCK:
 
-                    addGroundObjectToMap(gBaseMapIndex, UNTILLED, (u8)vec.x - groundObjectsGridX, (u8)vec.z - groundObjectsGridZ);
+                    addGroundObjectToMap(gBaseMapIndex, BASE_TILE, (u8)vec.x - groundObjectsGridX, (u8)vec.z - groundObjectsGridZ);
                     
                     vec2.x = 0.0f;
                     vec2.z = 0.0f;
                     
-                    toolUse.unk_8 = 0;
+                    toolUse.boulderHitCounter = 0;
                     
                     groundObjectIndex = func_800D5488(1, 12, 2, 0, 8);
                     
@@ -929,7 +1440,7 @@ void func_800D1DB0(void) {
                 case TILLED:
                 case TILLED_WATERED:
                 case BROKEN_LOG:
-                    addGroundObjectToMap(gBaseMapIndex, UNTILLED, (u8)vec.x - groundObjectsGridX, (u8)vec.z - groundObjectsGridZ);
+                    addGroundObjectToMap(gBaseMapIndex, BASE_TILE, (u8)vec.x - groundObjectsGridX, (u8)vec.z - groundObjectsGridZ);
                     break;
                 
                 case BOULDER ... 0xC7:
@@ -939,10 +1450,10 @@ void func_800D1DB0(void) {
                         switch (groundObjectIndex) {
 
                             case BOULDER:
-                                addGroundObjectToMap(gBaseMapIndex, 1, (u8)vec.x - groundObjectsGridX, (u8)vec.z - groundObjectsGridZ);
-                                addGroundObjectToMap(gBaseMapIndex, 1, (u8)vec.x - groundObjectsGridX + 1, (u8)vec.z - groundObjectsGridZ);
-                                addGroundObjectToMap(gBaseMapIndex, 1, (u8)vec.x - groundObjectsGridX, (u8)vec.z - groundObjectsGridZ + 1);
-                                addGroundObjectToMap(gBaseMapIndex, 1, (u8)vec.x - groundObjectsGridX + 1, (u8)vec.z - groundObjectsGridZ + 1);
+                                addGroundObjectToMap(gBaseMapIndex, BASE_TILE, (u8)vec.x - groundObjectsGridX, (u8)vec.z - groundObjectsGridZ);
+                                addGroundObjectToMap(gBaseMapIndex, BASE_TILE, (u8)vec.x - groundObjectsGridX + 1, (u8)vec.z - groundObjectsGridZ);
+                                addGroundObjectToMap(gBaseMapIndex, BASE_TILE, (u8)vec.x - groundObjectsGridX, (u8)vec.z - groundObjectsGridZ + 1);
+                                addGroundObjectToMap(gBaseMapIndex, BASE_TILE, (u8)vec.x - groundObjectsGridX + 1, (u8)vec.z - groundObjectsGridZ + 1);
 
                                 vec2.x = 16.0f;
                                 vec2.z = 16.0f;
@@ -952,10 +1463,10 @@ void func_800D1DB0(void) {
                                 break;
 
                             case 0xC5:
-                                addGroundObjectToMap(gBaseMapIndex, 1, (u8)vec.x - groundObjectsGridX, (u8)vec.z - groundObjectsGridZ);
-                                addGroundObjectToMap(gBaseMapIndex, 1, (u8)vec.x - groundObjectsGridX - 1, (u8)vec.z - groundObjectsGridZ);
-                                addGroundObjectToMap(gBaseMapIndex, 1, (u8)vec.x - groundObjectsGridX, (u8)vec.z - groundObjectsGridZ + 1);
-                                addGroundObjectToMap(gBaseMapIndex, 1, (u8)vec.x - groundObjectsGridX - 1, (u8)vec.z - groundObjectsGridZ + 1);
+                                addGroundObjectToMap(gBaseMapIndex, BASE_TILE, (u8)vec.x - groundObjectsGridX, (u8)vec.z - groundObjectsGridZ);
+                                addGroundObjectToMap(gBaseMapIndex, BASE_TILE, (u8)vec.x - groundObjectsGridX - 1, (u8)vec.z - groundObjectsGridZ);
+                                addGroundObjectToMap(gBaseMapIndex, BASE_TILE, (u8)vec.x - groundObjectsGridX, (u8)vec.z - groundObjectsGridZ + 1);
+                                addGroundObjectToMap(gBaseMapIndex, BASE_TILE, (u8)vec.x - groundObjectsGridX - 1, (u8)vec.z - groundObjectsGridZ + 1);
 
                                 vec2.x = -16.0f;
                                 vec2.z = 16.0f;
@@ -965,10 +1476,10 @@ void func_800D1DB0(void) {
                                 break;
 
                             case 0xC6:
-                                addGroundObjectToMap(gBaseMapIndex, 1, (u8)vec.x - groundObjectsGridX, (u8)vec.z - groundObjectsGridZ);
-                                addGroundObjectToMap(gBaseMapIndex, 1, (u8)vec.x - groundObjectsGridX + 1, (u8)vec.z - groundObjectsGridZ);
-                                addGroundObjectToMap(gBaseMapIndex, 1, (u8)vec.x - groundObjectsGridX, (u8)vec.z - groundObjectsGridZ - 1);
-                                addGroundObjectToMap(gBaseMapIndex, 1, (u8)vec.x - groundObjectsGridX + 1, (u8)vec.z - groundObjectsGridZ - 1);
+                                addGroundObjectToMap(gBaseMapIndex, BASE_TILE, (u8)vec.x - groundObjectsGridX, (u8)vec.z - groundObjectsGridZ);
+                                addGroundObjectToMap(gBaseMapIndex, BASE_TILE, (u8)vec.x - groundObjectsGridX + 1, (u8)vec.z - groundObjectsGridZ);
+                                addGroundObjectToMap(gBaseMapIndex, BASE_TILE, (u8)vec.x - groundObjectsGridX, (u8)vec.z - groundObjectsGridZ - 1);
+                                addGroundObjectToMap(gBaseMapIndex, BASE_TILE, (u8)vec.x - groundObjectsGridX + 1, (u8)vec.z - groundObjectsGridZ - 1);
 
                                 vec2.x = 16.0f;
                                 vec2.z = -16.0f;
@@ -978,10 +1489,10 @@ void func_800D1DB0(void) {
                                 break;
                         
                             case 0xC7:
-                                addGroundObjectToMap(gBaseMapIndex, 1, (u8)vec.x - groundObjectsGridX, (u8)vec.z - groundObjectsGridZ);
-                                addGroundObjectToMap(gBaseMapIndex, 1, (u8)vec.x - groundObjectsGridX - 1, (u8)vec.z - groundObjectsGridZ);
-                                addGroundObjectToMap(gBaseMapIndex, 1, (u8)vec.x - groundObjectsGridX, (u8)vec.z - groundObjectsGridZ - 1);
-                                addGroundObjectToMap(gBaseMapIndex, 1, (u8)vec.x - groundObjectsGridX - 1, (u8)vec.z - groundObjectsGridZ - 1);
+                                addGroundObjectToMap(gBaseMapIndex, BASE_TILE, (u8)vec.x - groundObjectsGridX, (u8)vec.z - groundObjectsGridZ);
+                                addGroundObjectToMap(gBaseMapIndex, BASE_TILE, (u8)vec.x - groundObjectsGridX - 1, (u8)vec.z - groundObjectsGridZ);
+                                addGroundObjectToMap(gBaseMapIndex, BASE_TILE, (u8)vec.x - groundObjectsGridX, (u8)vec.z - groundObjectsGridZ - 1);
+                                addGroundObjectToMap(gBaseMapIndex, BASE_TILE, (u8)vec.x - groundObjectsGridX - 1, (u8)vec.z - groundObjectsGridZ - 1);
 
                                 vec2.x = -16.0f;
                                 vec2.z = -16.0f;
@@ -989,6 +1500,7 @@ void func_800D1DB0(void) {
                                 temp = 60;
                                 
                                 break;
+
                         }
 
                         groundObjectIndex = func_800D5488(1, 12, temp, 0, 8);
@@ -1007,50 +1519,50 @@ void func_800D1DB0(void) {
             }
             
         } else {
-            toolUse.unk_E = 0;
+            toolUse.toolUseState = 0;
         }
 
-        if (toolUse.entityIndex == 0) {
+        if (toolUse.stepIndex == 0) {
 
-            switch (gPlayer.staminaLevelForCurrentToolUse) {
+            switch (gPlayer.currentToolLevel) {
 
                 case 0:
-                    setAudio(0x14);
+                    setAudio(HAMMER_SFX);
                     break;
                 case 1:
-                    setAudio(0x15);
+                    setAudio(SILVER_HAMMER_SFX);
                     break;
                 case 2:
-                    setAudio(0x16);
+                    setAudio(GOLDEN_HAMMER_SFX);
                     break;
                 
             }
             
         }
 
-        toolUse.entityIndex++;
+        toolUse.stepIndex++;
 
-        switch (gPlayer.staminaLevelForCurrentToolUse) {
+        switch (gPlayer.currentToolLevel) {
         
             case 0:
-                toolUse.unk_E = 0;
+                toolUse.toolUseState = 0;
                 break;
             
             case 1:
-                toolUse.unk_E = 0;
+                toolUse.toolUseState = 0;
                 break;
             
             case 2:
-                toolUse.unk_E = 0;
+                toolUse.toolUseState = 0;
                 break;
 
         }
     
     } else {
-        toolUse.unk_E = 0;
+        toolUse.toolUseState = 0;
     }
  
-    if (gBaseMapIndex == MOUNTAIN_1 && (getLevelInteractionIndexFromEntityPosition(ENTITY_PLAYER, 0, 32.0f) == 0x11) && (gPlayer.staminaLevelForCurrentToolUse == 2)) {
+    if (gBaseMapIndex == MOUNTAIN_1 && (getLevelInteractionIndexFromEntityPosition(ENTITY_PLAYER, 0, 32.0f) == 0x11) && (gPlayer.currentToolLevel == 2)) {
         deactivateMapObject(MAIN_MAP_INDEX, 3);
         setDailyEventBit(0x29);
     }
@@ -1093,7 +1605,7 @@ void func_800D304C(void) {
     
     direction = convertWorldToSpriteDirection(entities[PLAYER].direction, MAIN_MAP_INDEX);
 
-    switch (gPlayer.staminaLevelForCurrentToolUse) {
+    switch (gPlayer.currentToolLevel) {
 
         case 0:
             temp1 = 1;
@@ -1107,15 +1619,15 @@ void func_800D304C(void) {
             if (direction & 1) {
                 
                 if (entities[PLAYER].direction < 5) {
-                    temp2 = arr3[toolUse.entityIndex];
+                    temp2 = arr3[toolUse.stepIndex];
                 } else {
-                    temp2 = arr4[toolUse.entityIndex]; 
+                    temp2 = arr4[toolUse.stepIndex]; 
                 }
 
             } else if (entities[PLAYER].direction < 5) {
-                temp2 = arr1[toolUse.entityIndex];
+                temp2 = arr1[toolUse.stepIndex];
             } else {
-                temp2 = arr2[toolUse.entityIndex];
+                temp2 = arr2[toolUse.stepIndex];
             }
             
             break;
@@ -1125,9 +1637,9 @@ void func_800D304C(void) {
             temp1 = 2;
 
             if ((u8)direction < 5) {
-                temp2 = arr5[toolUse.entityIndex];
+                temp2 = arr5[toolUse.stepIndex];
             } else {
-                temp2 = arr6[toolUse.entityIndex];
+                temp2 = arr6[toolUse.stepIndex];
             }
             
             break;
@@ -1136,12 +1648,12 @@ void func_800D304C(void) {
 
     tempF = (f32)temp1;
             
-    vec = func_80065F94(tempF, temp2);
+    vec = getOffsetTileCoordinates(tempF, temp2);
     currentGroundObjectIndex = getGroundObjectIndexFromPlayerPosition(tempF, temp2);
     
     if (wateringCanUses != 0) {
 
-        if ((func_800DA948(currentGroundObjectIndex) & 0x10) && vec.y != 65535.0f) {
+        if ((getGroundObjectToolInteractionFlags(currentGroundObjectIndex) & GROUND_OBJECT_WATERABLE) && vec.y != 65535.0f) {
 
             if (currentGroundObjectIndex == TILLED) {
                 temp2 = TILLED_WATERED;            
@@ -1152,7 +1664,7 @@ void func_800D304C(void) {
             addGroundObjectToMap(gBaseMapIndex, temp2, (u8)vec.x - groundObjectsGridX, (u8)vec.z - groundObjectsGridZ);
 
             vec = func_8003AF58(0, (u8)vec.x, (u8)vec.z);
-            func_800CF8F8(toolUse.entityIndex, 1, vec.x, vec.y, vec.z);
+            func_800CF8F8(toolUse.stepIndex, 1, vec.x, vec.y, vec.z);
 
             if (gBaseMapIndex == POND) {
                 blueMistFlowerPlot = temp2;
@@ -1163,24 +1675,24 @@ void func_800D304C(void) {
             vec = func_8003AF58(0, (u8)vec.x, (u8)vec.z);
             vec.y = entities[ENTITY_PLAYER].coordinates.y;
 
-            func_800CF8F8(toolUse.entityIndex, 1, vec.x, vec.y, vec.z);
+            func_800CF8F8(toolUse.stepIndex, 1, vec.x, vec.y, vec.z);
             
         } 
 
         wateringCanUses--;
         
-        if (toolUse.entityIndex == 0) {
+        if (toolUse.stepIndex == 0) {
 
-            switch (gPlayer.staminaLevelForCurrentToolUse) {
+            switch (gPlayer.currentToolLevel) {
 
                 case 0:
-                    setAudio(0x17);
+                    setAudio(WATERING_CAN_SFX);
                     break;
                 case 1:
-                    setAudio(0x18);
+                    setAudio(SILVER_WATERING_CAN_SFX);
                     break;
                 case 2:
-                    setAudio(0x19);
+                    setAudio(GOLDEN_WATERING_CAN_SFX);
                     break;
                 
             }
@@ -1189,26 +1701,26 @@ void func_800D304C(void) {
         
     }
 
-    toolUse.entityIndex++;
+    toolUse.stepIndex++;
 
-    switch (gPlayer.staminaLevelForCurrentToolUse) {
+    switch (gPlayer.currentToolLevel) {
             
         case 0:
-            toolUse.unk_E = 0;
+            toolUse.toolUseState = 0;
             break;
         
         case 1:
 
-            if (toolUse.entityIndex == 3) {
-                toolUse.unk_E = 0;
+            if (toolUse.stepIndex == 3) {
+                toolUse.toolUseState = 0;
             }
     
             break;
         
         case 2:
 
-            if (toolUse.entityIndex == 9) {
-                toolUse.unk_E = 0;
+            if (toolUse.stepIndex == 9) {
+                toolUse.toolUseState = 0;
             }
             
             break;
@@ -1222,7 +1734,7 @@ void func_800D304C(void) {
 // milker
 void func_800D3694(void) {
     func_8009A53C();
-    toolUse.unk_E = 0;
+    toolUse.toolUseState = 0;
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D36BC);
@@ -1230,7 +1742,7 @@ void func_800D3694(void) {
 // cow bell
 void func_800D36BC(void) {
     func_8009B25C();
-    toolUse.unk_E = 0;
+    toolUse.toolUseState = 0;
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D36E4);
@@ -1239,7 +1751,7 @@ void func_800D36BC(void) {
 void func_800D36E4(void) {
     func_8009A17C();
     func_8009A2D0();
-    toolUse.unk_E = 0;
+    toolUse.toolUseState = 0;
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D3714);
@@ -1247,7 +1759,7 @@ void func_800D36E4(void) {
 // clippers
 void func_800D3714(void) {
     func_8009AAC8();
-    toolUse.unk_E = 0;
+    toolUse.toolUseState = 0;
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D373C);
@@ -1263,40 +1775,41 @@ void func_800D373C(void) {
 
     direction = convertWorldToSpriteDirection(entities[PLAYER].direction, MAIN_MAP_INDEX);
     
-    if (direction < SOUTHWEST) {
-        temp = D_80117180[toolUse.entityIndex];
+    if (direction < EAST) {
+        temp = D_80117180[toolUse.stepIndex];
     } else {
-        temp = D_8011718C[toolUse.entityIndex];
+        temp = D_8011718C[toolUse.stepIndex];
     }
     
-    vec = func_80065F94(0.0f, temp);
+    vec = getOffsetTileCoordinates(0.0f, temp);
  
-    if ((func_800DA948(getGroundObjectIndexFromPlayerPosition(0.0f, temp)) & 0x20) && vec.y != 65535.0f) {
+    if ((getGroundObjectToolInteractionFlags(getGroundObjectIndexFromPlayerPosition(0.0f, temp)) & GROUND_OBJECT_PLANTABLE) && vec.y != 65535.0f) {
 
         if (gSeason == SPRING || gBaseMapIndex == GREENHOUSE) {
-          groundObjectIndex = 8;
+            groundObjectIndex = TURNIP_PLANTED_STAGE_1;
         } else {
-          groundObjectIndex = 0xD7;
+            groundObjectIndex = INVALID_GROUND_OBJECT;
         }
         
         addGroundObjectToMap(gBaseMapIndex, groundObjectIndex, (u8)vec.x - groundObjectsGridX, (u8)vec.z - groundObjectsGridZ);
         
     }
     
-    if (toolUse.entityIndex == 0) {
-        setAudio(0x1D);
+    if (toolUse.stepIndex == 0) {
+        setAudio(SEEDS_SFX);
     }
     
-    toolUse.entityIndex++;
+    toolUse.stepIndex++;
     
-    if (toolUse.entityIndex == 9) {
-        toolUse.unk_E = 0;
+    if (toolUse.stepIndex == 9) {
+        toolUse.toolUseState = 0;
     }
 
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D3958);
 
+// potato seeds
 void func_800D3958(void) {
 
     u8 direction;
@@ -1307,34 +1820,34 @@ void func_800D3958(void) {
 
     direction = convertWorldToSpriteDirection(entities[PLAYER].direction, MAIN_MAP_INDEX);
     
-    if (direction < SOUTHWEST) {
-        temp = D_80117180[toolUse.entityIndex];
+    if (direction < EAST) {
+        temp = D_80117180[toolUse.stepIndex];
     } else {
-        temp = D_8011718C[toolUse.entityIndex];
+        temp = D_8011718C[toolUse.stepIndex];
     }
 
-    vec = func_80065F94(0.0f, temp);
+    vec = getOffsetTileCoordinates(0.0f, temp);
  
-    if ((func_800DA948(getGroundObjectIndexFromPlayerPosition(0.0f, temp)) & 0x20) && vec.y != 65535.0f) {
+    if ((getGroundObjectToolInteractionFlags(getGroundObjectIndexFromPlayerPosition(0.0f, temp)) & GROUND_OBJECT_PLANTABLE) && vec.y != 65535.0f) {
 
         if (gSeason == SPRING || gBaseMapIndex == GREENHOUSE) {
-          groundObjectIndex = 0x13;
+          groundObjectIndex = POTATO_PLANTED_STAGE_1;
         } else {
-          groundObjectIndex = 0xD7;
+          groundObjectIndex = INVALID_GROUND_OBJECT;
         }
         
         addGroundObjectToMap(gBaseMapIndex, groundObjectIndex, (u8)vec.x - groundObjectsGridX, (u8)vec.z - groundObjectsGridZ);
         
     }
     
-    if (toolUse.entityIndex == 0) {
-        setAudio(0x1D);
+    if (toolUse.stepIndex == 0) {
+        setAudio(SEEDS_SFX);
     }
     
-    toolUse.entityIndex++;
+    toolUse.stepIndex++;
     
-    if (toolUse.entityIndex == 9) {
-        toolUse.unk_E = 0;
+    if (toolUse.stepIndex == 9) {
+        toolUse.toolUseState = 0;
     }
 
 }
@@ -1352,34 +1865,34 @@ void func_800D3B74(void) {
 
     direction = convertWorldToSpriteDirection(entities[PLAYER].direction, MAIN_MAP_INDEX);
     
-    if (direction < SOUTHWEST) {
-        temp = D_80117180[toolUse.entityIndex];
+    if (direction < EAST) {
+        temp = D_80117180[toolUse.stepIndex];
     } else {
-        temp = D_8011718C[toolUse.entityIndex];
+        temp = D_8011718C[toolUse.stepIndex];
     }
     
-    vec = func_80065F94(0.0f, temp);
+    vec = getOffsetTileCoordinates(0.0f, temp);
  
-    if ((func_800DA948(getGroundObjectIndexFromPlayerPosition(0.0f, temp)) & 0x20) && vec.y != 65535.0f) {
+    if ((getGroundObjectToolInteractionFlags(getGroundObjectIndexFromPlayerPosition(0.0f, temp)) & GROUND_OBJECT_PLANTABLE) && vec.y != 65535.0f) {
         
         if (gSeason == SPRING || gBaseMapIndex == GREENHOUSE) {
-          groundObjectIndex = 0x33;
+          groundObjectIndex = CABBAGE_PLANTED_STAGE_1;
         } else {
-          groundObjectIndex = 0xD7;
+          groundObjectIndex = INVALID_GROUND_OBJECT;
         }
         
         addGroundObjectToMap(gBaseMapIndex, groundObjectIndex, (u8)vec.x - groundObjectsGridX, (u8)vec.z - groundObjectsGridZ);
 
     }
     
-    if (toolUse.entityIndex == 0) {
-        setAudio(0x1D);
+    if (toolUse.stepIndex == 0) {
+        setAudio(SEEDS_SFX);
     }
     
-    toolUse.entityIndex++;
+    toolUse.stepIndex++;
     
-    if (toolUse.entityIndex == 9) {
-        toolUse.unk_E = 0;
+    if (toolUse.stepIndex == 9) {
+        toolUse.toolUseState = 0;
     }
 
 }
@@ -1397,34 +1910,34 @@ void func_800D3D90(void) {
 
     direction = convertWorldToSpriteDirection(entities[PLAYER].direction, MAIN_MAP_INDEX);
     
-    if (direction < SOUTHWEST) {
-        temp = D_80117180[toolUse.entityIndex];
+    if (direction < EAST) {
+        temp = D_80117180[toolUse.stepIndex];
     } else {
-        temp = D_8011718C[toolUse.entityIndex];
+        temp = D_8011718C[toolUse.stepIndex];
     }
     
-    vec = func_80065F94(0.0f, temp);
+    vec = getOffsetTileCoordinates(0.0f, temp);
  
-    if ((func_800DA948(getGroundObjectIndexFromPlayerPosition(0.0f, temp)) & 0x20) && vec.y != 65535.0f) {
+    if ((getGroundObjectToolInteractionFlags(getGroundObjectIndexFromPlayerPosition(0.0f, temp)) & GROUND_OBJECT_PLANTABLE) && vec.y != 65535.0f) {
 
         if (gSeason == SUMMER || gBaseMapIndex == GREENHOUSE) {
-          groundObjectIndex = 0x53;
+          groundObjectIndex = TOMATO_PLANTED_STAGE_1;
         } else {
-          groundObjectIndex = 0xD7;
+          groundObjectIndex = INVALID_GROUND_OBJECT;
         }
         
         addGroundObjectToMap(gBaseMapIndex, groundObjectIndex, (u8)vec.x - groundObjectsGridX, (u8)vec.z - groundObjectsGridZ);
 
     }
     
-    if (toolUse.entityIndex == 0) {
-        setAudio(0x1D);
+    if (toolUse.stepIndex == 0) {
+        setAudio(SEEDS_SFX);
     }
     
-    toolUse.entityIndex++;
+    toolUse.stepIndex++;
     
-    if (toolUse.entityIndex == 9) {
-        toolUse.unk_E = 0;
+    if (toolUse.stepIndex == 9) {
+        toolUse.toolUseState = 0;
     }
 
 }
@@ -1442,33 +1955,33 @@ void func_800D3FAC(void) {
 
     direction = convertWorldToSpriteDirection(entities[PLAYER].direction, MAIN_MAP_INDEX);
     
-    if (direction < SOUTHWEST) {
-        temp = D_80117180[toolUse.entityIndex];
+    if (direction < EAST) {
+        temp = D_80117180[toolUse.stepIndex];
     } else {
-        temp = D_8011718C[toolUse.entityIndex];
+        temp = D_8011718C[toolUse.stepIndex];
     }
     
-    vec = func_80065F94(0.0f, temp);
+    vec = getOffsetTileCoordinates(0.0f, temp);
  
-    if ((func_800DA948(getGroundObjectIndexFromPlayerPosition(0.0f, temp)) & 0x20) && vec.y != 65535.0f) {
+    if ((getGroundObjectToolInteractionFlags(getGroundObjectIndexFromPlayerPosition(0.0f, temp)) & GROUND_OBJECT_PLANTABLE) && vec.y != 65535.0f) {
 
         if (gSeason == SUMMER || gBaseMapIndex == GREENHOUSE) {
-            groundObjectIndex = 0x68;
+            groundObjectIndex = CORN_PLANTED_STAGE_1;
         } else {
-            groundObjectIndex = 0xD7;
+            groundObjectIndex = INVALID_GROUND_OBJECT;
         }
         
         addGroundObjectToMap(gBaseMapIndex, groundObjectIndex, (u8)vec.x - groundObjectsGridX, (u8)vec.z - groundObjectsGridZ);
     }
     
-    if (toolUse.entityIndex == 0) {
-        setAudio(0x1D);
+    if (toolUse.stepIndex == 0) {
+        setAudio(SEEDS_SFX);
     }
     
-    toolUse.entityIndex++;
+    toolUse.stepIndex++;
     
-    if (toolUse.entityIndex == 9) {
-        toolUse.unk_E = 0;
+    if (toolUse.stepIndex == 9) {
+        toolUse.toolUseState = 0;
     }
 
 }
@@ -1486,35 +1999,35 @@ void func_800D41C8(void) {
 
     direction = convertWorldToSpriteDirection(entities[PLAYER].direction, MAIN_MAP_INDEX);
     
-    if (direction < SOUTHWEST) {
-        temp = D_80117180[toolUse.entityIndex];
+    if (direction < EAST) {
+        temp = D_80117180[toolUse.stepIndex];
     }
     else {
-        temp = D_8011718C[toolUse.entityIndex];
+        temp = D_8011718C[toolUse.stepIndex];
     }
 
-    vec = func_80065F94(0.0f, temp);
+    vec = getOffsetTileCoordinates(0.0f, temp);
  
-    if ((func_800DA948(getGroundObjectIndexFromPlayerPosition(0.0f, temp)) & 0x20) && vec.y != 65535.0f) {
+    if ((getGroundObjectToolInteractionFlags(getGroundObjectIndexFromPlayerPosition(0.0f, temp)) & GROUND_OBJECT_PLANTABLE) && vec.y != 65535.0f) {
 
         if (gSeason == AUTUMN || gBaseMapIndex == GREENHOUSE) {
-            groundObjectIndex = 0x22;
+            groundObjectIndex = EGGPLANT_PLANTED_STAGE_1;
         } else {
-            groundObjectIndex = 0xD7;
+            groundObjectIndex = INVALID_GROUND_OBJECT;
         }
         
         addGroundObjectToMap(gBaseMapIndex, groundObjectIndex, (u8)vec.x - groundObjectsGridX, (u8)vec.z - groundObjectsGridZ);
 
     }
     
-    if (toolUse.entityIndex == 0) {
-        setAudio(0x1D);
+    if (toolUse.stepIndex == 0) {
+        setAudio(SEEDS_SFX);
     }
     
-    toolUse.entityIndex++;
+    toolUse.stepIndex++;
     
-    if (toolUse.entityIndex == 9) {
-        toolUse.unk_E = 0;
+    if (toolUse.stepIndex == 9) {
+        toolUse.toolUseState = 0;
     }
 
 }
@@ -1532,34 +2045,34 @@ void func_800D43E4(void) {
 
     direction = convertWorldToSpriteDirection(entities[PLAYER].direction, MAIN_MAP_INDEX);
     
-    if (direction < SOUTHWEST) {
-        temp = D_80117180[toolUse.entityIndex];
+    if (direction < EAST) {
+        temp = D_80117180[toolUse.stepIndex];
     }
     else {
-        temp = D_8011718C[toolUse.entityIndex];
+        temp = D_8011718C[toolUse.stepIndex];
     }
 
-    vec = func_80065F94(0.0f, temp);
+    vec = getOffsetTileCoordinates(0.0f, temp);
 
-    if ((func_800DA948(getGroundObjectIndexFromPlayerPosition(0.0f, temp)) & 0x20) && vec.y != 65535.0f) {
+    if ((getGroundObjectToolInteractionFlags(getGroundObjectIndexFromPlayerPosition(0.0f, temp)) & GROUND_OBJECT_PLANTABLE) && vec.y != 65535.0f) {
 
         // leaving for reference
         //groundObjectIndex = ((-(gBaseMapIndex != 0x56) & ~0x28) | 0x44);
 
-        groundObjectIndex = (gBaseMapIndex == GREENHOUSE) ? 0x44 : 0xD7;
+        groundObjectIndex = (gBaseMapIndex == GREENHOUSE) ? STRAWBERRY_PLANTED_STAGE_1 : INVALID_GROUND_OBJECT;
 
         addGroundObjectToMap(gBaseMapIndex, groundObjectIndex, (u8)vec.x - groundObjectsGridX, (u8)vec.z - groundObjectsGridZ);
 
     }
 
-    if (toolUse.entityIndex == 0) {
-        setAudio(0x1D);
+    if (toolUse.stepIndex == 0) {
+        setAudio(SEEDS_SFX);
     }
 
-    toolUse.entityIndex++;
+    toolUse.stepIndex++;
     
-    if (toolUse.entityIndex == 9) {
-        toolUse.unk_E = 0;
+    if (toolUse.stepIndex == 9) {
+        toolUse.toolUseState = 0;
     }
 
 }
@@ -1577,36 +2090,36 @@ void func_800D45F4(void) {
 
     direction = convertWorldToSpriteDirection(entities[PLAYER].direction, MAIN_MAP_INDEX);
     
-    if (direction < SOUTHWEST) {
-        temp = D_80117180[toolUse.entityIndex];
+    if (direction < EAST) {
+        temp = D_80117180[toolUse.stepIndex];
     }
     else {
-        temp = D_8011718C[toolUse.entityIndex];
+        temp = D_8011718C[toolUse.stepIndex];
     }
     
-    vec = func_80065F94(0.0f, temp);
+    vec = getOffsetTileCoordinates(0.0f, temp);
  
-    if ((func_800DA948(getGroundObjectIndexFromPlayerPosition(0.0f, temp)) & 0x20) && vec.y != 65535.0f) {
+    if ((getGroundObjectToolInteractionFlags(getGroundObjectIndexFromPlayerPosition(0.0f, temp)) & GROUND_OBJECT_PLANTABLE) && vec.y != 65535.0f) {
         
         // alternate for reference: (gSeason - 1 < 2U)
         if ((gSeason == SPRING || gSeason == SUMMER) || gBaseMapIndex == GREENHOUSE) {
-            groundObjectIndex = 0x90; 
+            groundObjectIndex = MOONDROP_PLANTED_STAGE_1; 
         } else {
-            groundObjectIndex = 0xD7;
+            groundObjectIndex = INVALID_GROUND_OBJECT;
         }
 
         addGroundObjectToMap(gBaseMapIndex, groundObjectIndex, (u8)vec.x - groundObjectsGridX, (u8)vec.z - groundObjectsGridZ);
 
     }
     
-    if (toolUse.entityIndex == 0) {
-        setAudio(0x1D);
+    if (toolUse.stepIndex == 0) {
+        setAudio(SEEDS_SFX);
     }
     
-    toolUse.entityIndex++;
+    toolUse.stepIndex++;
     
-    if (toolUse.entityIndex == 9) {
-        toolUse.unk_E = 0;
+    if (toolUse.stepIndex == 9) {
+        toolUse.toolUseState = 0;
     }
 
 }
@@ -1623,34 +2136,34 @@ void func_800D4814(void) {
 
     direction = convertWorldToSpriteDirection(entities[PLAYER].direction, MAIN_MAP_INDEX);
     
-    if (direction < SOUTHWEST) {
-        temp = D_80117180[toolUse.entityIndex];
+    if (direction < EAST) {
+        temp = D_80117180[toolUse.stepIndex];
     } else {
-        temp = D_8011718C[toolUse.entityIndex];
+        temp = D_8011718C[toolUse.stepIndex];
     }
     
-    vec = func_80065F94(0.0f, temp);
+    vec = getOffsetTileCoordinates(0.0f, temp);
  
-    if ((func_800DA948(getGroundObjectIndexFromPlayerPosition(0.0f, temp)) & 0x20) && vec.y != 65535.0f) {
+    if ((getGroundObjectToolInteractionFlags(getGroundObjectIndexFromPlayerPosition(0.0f, temp)) & GROUND_OBJECT_PLANTABLE) && vec.y != 65535.0f) {
 
         // FIXME: should be range
         if ((gSeason - 1 < 2U) || gBaseMapIndex == GREENHOUSE) {
-            groundObjectIndex = 0x9F; 
+            groundObjectIndex = PINK_CAT_MINT_PLANTED_STAGE_1; 
         } else {
-            groundObjectIndex = 0xD7;
+            groundObjectIndex = INVALID_GROUND_OBJECT;
         }
 
         addGroundObjectToMap(gBaseMapIndex, groundObjectIndex, (u8)vec.x - groundObjectsGridX, (u8)vec.z - groundObjectsGridZ);
     }
     
-    if (toolUse.entityIndex == 0) {
-        setAudio(0x1D);
+    if (toolUse.stepIndex == 0) {
+        setAudio(SEEDS_SFX);
     }
     
-    toolUse.entityIndex++;
+    toolUse.stepIndex++;
     
-    if (toolUse.entityIndex == 9) {
-        toolUse.unk_E = 0;
+    if (toolUse.stepIndex == 9) {
+        toolUse.toolUseState = 0;
     }
 
 }
@@ -1666,26 +2179,26 @@ void func_800D4A34(void) {
 
     direction = convertWorldToSpriteDirection(entities[PLAYER].direction, MAIN_MAP_INDEX);
     
-    if (direction < SOUTHWEST) {
-        temp = D_80117180[toolUse.entityIndex];
+    if (direction < EAST) {
+        temp = D_80117180[toolUse.stepIndex];
     } else {
-        temp = D_8011718C[toolUse.entityIndex];
+        temp = D_8011718C[toolUse.stepIndex];
     }
     
-    vec = func_80065F94(0.0f, temp);
+    vec = getOffsetTileCoordinates(0.0f, temp);
  
-    if ((func_800DA948(getGroundObjectIndexFromPlayerPosition(0.0f, temp)) & 0x20) && vec.y != 65535.0f) {
+    if ((getGroundObjectToolInteractionFlags(getGroundObjectIndexFromPlayerPosition(0.0f, temp)) & GROUND_OBJECT_PLANTABLE) && vec.y != 65535.0f) {
         addGroundObjectToMap(gBaseMapIndex, 0xB2, (u8)vec.x - groundObjectsGridX, (u8)vec.z - groundObjectsGridZ);
     }
     
-    if (toolUse.entityIndex == 0) {
-        setAudio(0x1D);
+    if (toolUse.stepIndex == 0) {
+        setAudio(SEEDS_SFX);
     }
     
-    toolUse.entityIndex++;
+    toolUse.stepIndex++;
     
-    if (toolUse.entityIndex == 9) {
-        toolUse.unk_E = 0;
+    if (toolUse.stepIndex == 9) {
+        toolUse.toolUseState = 0;
     }
 
 }
@@ -1705,7 +2218,7 @@ void func_800D4C28(void) {
         gChickens[levelInteractionIndex - 0x13].flags |= CHICKEN_FED;
     }
     
-    toolUse.unk_E = 0;  
+    toolUse.toolUseState = 0;  
 
 }
 
@@ -1725,7 +2238,7 @@ void func_800D4CB8(void) {}
 
 // fishing pole
 void func_800D4CC0(void) {
-    toolUse.unk_E = 0;
+    toolUse.toolUseState = 0;
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D4CD0);
@@ -1739,7 +2252,7 @@ void func_800D4CD0(void) {
         toggleDailyEventBit(0x14);
     }
 
-    toolUse.unk_E = 0;
+    toolUse.toolUseState = 0;
 
 }
 
@@ -1754,7 +2267,7 @@ void func_800D4D1C(void) {
         toggleDailyEventBit(0x14);
     }
 
-    toolUse.unk_E = 0;
+    toolUse.toolUseState = 0;
 
 }
 
@@ -1770,16 +2283,16 @@ void func_800D4D68(void) {
 
     direction = convertWorldToSpriteDirection(entities[PLAYER].direction, MAIN_MAP_INDEX);
     
-    if (direction < SOUTHWEST) {
-        temp = D_80117180[toolUse.entityIndex];
+    if (direction < EAST) {
+        temp = D_80117180[toolUse.stepIndex];
     }
     else {
-        temp = D_8011718C[toolUse.entityIndex];
+        temp = D_8011718C[toolUse.stepIndex];
     }
     
-    vec = func_80065F94(0.0f, temp);
+    vec = getOffsetTileCoordinates(0.0f, temp);
  
-    if ((func_800DA948(getGroundObjectIndexFromPlayerPosition(0.0f, temp)) & 0x20) && vec.y != 65535.0f) {
+    if ((getGroundObjectToolInteractionFlags(getGroundObjectIndexFromPlayerPosition(0.0f, temp)) & GROUND_OBJECT_PLANTABLE) && vec.y != 65535.0f) {
 
         if (gBaseMapIndex == FARM) {
             addGroundObjectToMap(FARM, 0x85, (u8)vec.x - groundObjectsGridX, (u8)vec.z - groundObjectsGridZ);    
@@ -1787,14 +2300,14 @@ void func_800D4D68(void) {
 
     }
     
-    if (toolUse.entityIndex == 0) {
-        setAudio(0x1D);
+    if (toolUse.stepIndex == 0) {
+        setAudio(SEEDS_SFX);
     }
     
-    toolUse.entityIndex++;
+    toolUse.stepIndex++;
     
-    if (toolUse.entityIndex == 9) {
-        toolUse.unk_E = 0;
+    if (toolUse.stepIndex == 9) {
+        toolUse.toolUseState = 0;
     }
 
 }
@@ -1898,7 +2411,7 @@ void handleBlueFeatherUse(void) {
     }
     
 func_end:
-        toolUse.unk_E = 0;
+        toolUse.toolUseState = 0;
 
 }
 
@@ -1915,7 +2428,7 @@ void func_800D5130(void) {
         func_8009A97C();
     }
 
-    toolUse.unk_E = 0;
+    toolUse.toolUseState = 0;
 
 }
 
@@ -1941,8 +2454,8 @@ void func_800D51B0(void) {
         itemInfo[i].unk_18.z = 0;
 
         itemInfo[i].unk_24 = 0;
-        itemInfo[i].unk_26 = 0;
-        itemInfo[i].unk_28 = 0;
+        itemInfo[i].itemAnimationFrameCounter = 0;
+        itemInfo[i].heldItemIndex = 0;
         itemInfo[i].unk_2A = 0;
         itemInfo[i].flags = 0;
 
@@ -1958,7 +2471,7 @@ void func_800D5290(void) {
     
     for (i = 0; i < 10; i++) {
         if (itemInfo[i].flags & 1) {
-            func_800D56E8(i, itemInfo[i].unk_28);
+            func_800D56E8(i, itemInfo[i].heldItemIndex);
         }    
     }
 
@@ -1967,14 +2480,14 @@ void func_800D5290(void) {
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D5308);
 
 // tool acquisition handler
-u8 func_800D5308(u8 index, u8 arg1, u32 arg2, s32 arg3, s32 arg4) {
+inline u8 func_800D5308(u8 index, u8 arg1, u32 heldItemIndex, s32 arg3, s32 arg4) {
 
     itemInfo[index].unk_2A = arg1;
-    itemInfo[index].unk_28 = arg2;
-    itemInfo[index].unk_26 = 0;
+    itemInfo[index].heldItemIndex = heldItemIndex;
+    itemInfo[index].itemAnimationFrameCounter = 0;
     itemInfo[index].flags = arg3 | (arg4 | 1);
     
-    gItemBeingHeld = func_800D67E4(arg2);
+    gItemBeingHeld = func_800D67E4(heldItemIndex);
     
     return index;
 
@@ -1982,7 +2495,7 @@ u8 func_800D5308(u8 index, u8 arg1, u32 arg2, s32 arg3, s32 arg4) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D5390);
 
-u8 func_800D5390(u8 index, u8 arg1, u32 arg2, u16 arg3, u8 arg4) {
+u8 func_800D5390(u8 index, u8 arg1, u32 heldItemIndex, u16 arg3, u8 arg4) {
     
     u8 found = FALSE;
     int tempBit = 1;
@@ -1999,11 +2512,16 @@ u8 func_800D5390(u8 index, u8 arg1, u32 arg2, u16 arg3, u8 arg4) {
     }
     
     if (found) {
+        
+        // FIXME: inline func_800D5308 call
         itemInfo[index].unk_2A = arg1;
-        itemInfo[index].unk_28 = arg2;
+        itemInfo[index].heldItemIndex = heldItemIndex;
         itemInfo[index].flags = arg3 | (arg4 | tempBit);
-        itemInfo[index].unk_26 = 0;
-        gItemBeingHeld = func_800D67E4(arg2);
+        itemInfo[index].itemAnimationFrameCounter = 0;
+        gItemBeingHeld = func_800D67E4(heldItemIndex);
+
+        // index = func_800D5308(index, arg1, arg2, arg3, arg4);
+
     }
       
     else {
@@ -2015,7 +2533,7 @@ u8 func_800D5390(u8 index, u8 arg1, u32 arg2, u16 arg3, u8 arg4) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D5488);
 
-u8 func_800D5488(u8 index, u8 arg1, u32 arg2, u16 arg3, u8 arg4) {
+u8 func_800D5488(u8 index, u8 arg1, u32 heldItemIndex, u16 arg3, u8 arg4) {
     
     u8 found = FALSE;
     
@@ -2033,9 +2551,9 @@ u8 func_800D5488(u8 index, u8 arg1, u32 arg2, u16 arg3, u8 arg4) {
     if (found) {
         
         itemInfo[index].unk_2A = arg1;
-        itemInfo[index].unk_28 = arg2;
+        itemInfo[index].heldItemIndex = heldItemIndex;
         itemInfo[index].flags = arg3 | (arg4 | 1);
-        itemInfo[index].unk_26 = 0;
+        itemInfo[index].itemAnimationFrameCounter = 0;
 
     } else {
         index = 0xff;
@@ -2050,7 +2568,7 @@ u8 func_800D5488(u8 index, u8 arg1, u32 arg2, u16 arg3, u8 arg4) {
 void func_800D5548(u8 index) {
 
     if (itemInfo[index].flags & 1) {        
-        deactivateEntity(index + ITEMS_OFFSET);
+        deactivateEntity(ENTITY_ITEM_BASE_INDEX + index);
         itemInfo[index].unk_2A = 0;
         itemInfo[index].flags = 0;
     }
@@ -2060,7 +2578,7 @@ void func_800D5548(u8 index) {
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D55B8);
 
 u16 func_800D55B8(u8 index) {
-    return itemInfo[index].unk_28;
+    return itemInfo[index].heldItemIndex;
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D55E4);
@@ -2097,39 +2615,39 @@ void func_800D5688(u8 index, f32 arg1, f32 arg2, f32 arg3) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D56E8);
 
-void func_800D56E8(u8 itemIndex, u16 arg1) {
+void func_800D56E8(u8 itemIndex, u16 heldItemIndex) {
 
-    itemInfo[itemIndex].unk_28 = arg1;
+    itemInfo[itemIndex].heldItemIndex = heldItemIndex;
 
-    loadEntity(itemIndex + 0x27, D_801174A0[arg1][0], TRUE);
-    func_8002FF38(itemIndex + 0x27, FALSE);
+    loadEntity(ENTITY_ITEM_BASE_INDEX + itemIndex, D_801174A0[heldItemIndex][0], TRUE);
+    func_8002FF38(ENTITY_ITEM_BASE_INDEX + itemIndex, FALSE);
 
     if (itemInfo[itemIndex].flags & 8){
-        setEntityTrackingTarget(itemIndex + 0x27, 0, 0xFF);
+        setEntityTrackingTarget(ENTITY_ITEM_BASE_INDEX + itemIndex, 0, 0xFF);
     } else {
-        setEntityTrackingTarget(itemIndex + 0x27, 0xFFFF, 0xFF);
+        setEntityTrackingTarget(ENTITY_ITEM_BASE_INDEX + itemIndex, 0xFFFF, 0xFF);
     }
 
-    setEntityCollidable(itemIndex + 0x27, FALSE);
-    setEntityYMovement(itemIndex + 0x27, FALSE);
-    setEntityTracksCollisions(itemIndex + 0x27, FALSE);
-    enableEntityMovement(itemIndex + 0x27, FALSE);
+    setEntityCollidable(ENTITY_ITEM_BASE_INDEX + itemIndex, FALSE);
+    setEntityYMovement(ENTITY_ITEM_BASE_INDEX + itemIndex, FALSE);
+    setEntityTracksCollisions(ENTITY_ITEM_BASE_INDEX + itemIndex, FALSE);
+    enableEntityMovement(ENTITY_ITEM_BASE_INDEX + itemIndex, FALSE);
 
-    setEntityColor(itemIndex + 0x27, mainMap[MAIN_MAP_INDEX].mapGlobals.currentRGBA.r, mainMap[MAIN_MAP_INDEX].mapGlobals.currentRGBA.g, mainMap[MAIN_MAP_INDEX].mapGlobals.currentRGBA.b, mainMap[MAIN_MAP_INDEX].mapGlobals.currentRGBA.a);
+    setEntityColor(ENTITY_ITEM_BASE_INDEX + itemIndex, mainMap[MAIN_MAP_INDEX].mapGlobals.currentRGBA.r, mainMap[MAIN_MAP_INDEX].mapGlobals.currentRGBA.g, mainMap[MAIN_MAP_INDEX].mapGlobals.currentRGBA.b, mainMap[MAIN_MAP_INDEX].mapGlobals.currentRGBA.a);
 
-    setEntityAttachmentOffset(itemIndex + 0x27, 0, 0, 0);
+    setEntityAttachmentOffset(ENTITY_ITEM_BASE_INDEX + itemIndex, 0, 0, 0);
 
     if (itemInfo[itemIndex].flags & 4) {
-        setEntityAnimationWithDirectionChange(itemIndex + 0x27, D_801174A0[arg1][gSeason]);
+        setEntityAnimationWithDirectionChange(ENTITY_ITEM_BASE_INDEX + itemIndex, D_801174A0[heldItemIndex][gSeason]);
     } else {
-        setEntityAnimation(itemIndex + 0x27, D_801174A0[arg1][gSeason]);
+        setEntityAnimation(ENTITY_ITEM_BASE_INDEX + itemIndex, D_801174A0[heldItemIndex][gSeason]);
     }
 
-    if (D_80117D60[arg1] != 0xFFFF) {
-        setEntityPaletteIndex(itemIndex + 0x27, D_80117D60[arg1]);
+    if (D_80117D60[heldItemIndex] != 0xFFFF) {
+        setEntityPaletteIndex(ENTITY_ITEM_BASE_INDEX + itemIndex, D_80117D60[heldItemIndex]);
     }
 
-    setEntityShadow(itemIndex + 0x27, 2);
+    setEntityShadow(ENTITY_ITEM_BASE_INDEX + itemIndex, 2);
 
     itemInfo[itemIndex].unk_2A = 0;
     
@@ -2201,15 +2719,13 @@ u8 func_800D5B30(void) {
                 
                 switch (groundObjectIndex) {
 
-                    case 0x65 ... 0x66:
+                    case TOMATO_RIPE ... TOMATO_RIPE_WATERED:
                         addGroundObjectToMapFromPlayerPosition(0x5F, 1.0f, 8);
                         break;
-                    
-                    case 0x82 ... CORN_RIPE:
+                    case CORN_RIPE ... CORN_RIPE_WATERED:
                         addGroundObjectToMapFromPlayerPosition(0x7A, 1.0f, 8);
                         break;
-
-                    case 0x30 ... 0x31:
+                    case EGGPLANT_RIPE ... EGGPLANT_RIPE_WATERED:
                         addGroundObjectToMapFromPlayerPosition(0x2A, 1.0f, 8);
                         break;
                     
@@ -2224,7 +2740,7 @@ u8 func_800D5B30(void) {
                                 addGroundObjectToMapFromPlayerPosition(TILLED_WATERED, 1.0f, 8);
                                 break;
                             default:
-                                addGroundObjectToMapFromPlayerPosition(UNTILLED, 1.0f, 8);
+                                addGroundObjectToMapFromPlayerPosition(BASE_TILE, 1.0f, 8);
                                 break;
                             
                         }         
@@ -2247,6 +2763,7 @@ u8 func_800D5B30(void) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D5CC0);
 
+// handle putting objects down
 bool func_800D5CC0(u8 itemIndex) {
 
     Vec3f vec;
@@ -2255,7 +2772,7 @@ bool func_800D5CC0(u8 itemIndex) {
     Vec3f vec4;
     u8 temp;
     u16 temp2;
-    u16 unk_28;
+    u16 heldItemIndex;
     u8 direction;
     u8 i;
     u8 levelInteractionIndex;
@@ -2263,22 +2780,22 @@ bool func_800D5CC0(u8 itemIndex) {
     bool result = FALSE;
 
     // FIXME: I am beyond clueless
-    temp2 = *(u16*)0&itemInfo[itemIndex].unk_28;
+    temp2 = *(u16*)0&itemInfo[itemIndex].heldItemIndex;
     
     if (temp2) {
-        unk_28 = itemInfo[itemIndex].unk_28;
+        heldItemIndex = itemInfo[itemIndex].heldItemIndex;
     } else {
-        unk_28 = itemInfo[itemIndex].unk_28;
+        heldItemIndex = itemInfo[itemIndex].heldItemIndex;
     }
     
-    switch (itemInfo[itemIndex].unk_28) {        
+    switch (itemInfo[itemIndex].heldItemIndex) {        
         
-        case 2:              
+        case ROCK_HELD_ITEM:              
             addGroundObjectToMapFromPlayerPosition(4, 1.0f, 8);
             setGroundObjects(mapControllers[MAIN_MAP_INDEX].mainMapIndex);
             break;
         
-        case 3:
+        case LOG_HELD_ITEM:
             if ((getLevelInteractionIndexFromEntityPosition(0, 0, 32.0f) == 0x11) && (gBaseMapIndex == FARM)) {
                 gLumber += adjustValue(gLumber, 1, MAX_LUMBER);
             } else {
@@ -2287,7 +2804,8 @@ bool func_800D5CC0(u8 itemIndex) {
             }
             break;
 
-        case 0x60:                                     
+        // chicken and chick (multiple sprites per direction)
+        case CHICKEN_HELD_ITEM:                                     
         case 0x61:                                     
         case 0x62:                                     
         case 0x63:                                     
@@ -2317,7 +2835,7 @@ bool func_800D5CC0(u8 itemIndex) {
             
             break;
 
-        case 0x58:                                     
+        case DOG_HELD_ITEM:                                     
         case 0x59:                                     
         case 0x5A:                                     
         case 0x5B:                                     
@@ -2339,7 +2857,7 @@ bool func_800D5CC0(u8 itemIndex) {
             
             break;
 
-        case 0xAB:                                     
+        case DOG_2_HELD_ITEM:                                     
         case 0xAC:                                     
         case 0xAD:                                     
         case 0xAE:                                     
@@ -2353,7 +2871,7 @@ bool func_800D5CC0(u8 itemIndex) {
 
             break;
         
-        case 0x7B:                                     
+        case PUPPY_1_HELD_ITEM:                                     
         case 0x7C:                                     
         case 0x7D:                                     
         case 0x7E:                                     
@@ -2367,7 +2885,7 @@ bool func_800D5CC0(u8 itemIndex) {
 
             break;
 
-        case 0x83:                                     
+        case CAT_HELD_ITEM:                                     
         case 0x84:                                     
         case 0x85:                                     
         case 0x86:                                     
@@ -2380,7 +2898,8 @@ bool func_800D5CC0(u8 itemIndex) {
             func_8008BAF0(func_8008A4A8(2, direction, vec.x, vec.y, vec.z), 0);
 
             break;
-        case 0x8B:                                     
+
+        case FOX_HELD_ITEM:                                     
         case 0x8C:                                     
         case 0x8D:                                     
         case 0x8E:                                     
@@ -2394,7 +2913,7 @@ bool func_800D5CC0(u8 itemIndex) {
 
             break;       
                 
-        case 0x93:                                     
+        case SQUIRREL_HELD_ITEM:                                     
         case 0x94:                                     
         case 0x95:                                     
         case 0x96:                                     
@@ -2408,7 +2927,7 @@ bool func_800D5CC0(u8 itemIndex) {
 
             break;     
 
-        case 0x9B:                                     
+        case RABBIT_HELD_ITEM:                                     
         case 0x9C:                                     
         case 0x9D:                                     
         case 0x9E:                                     
@@ -2421,7 +2940,7 @@ bool func_800D5CC0(u8 itemIndex) {
             func_8008BAF0(func_8008A4A8(8, direction, vec.x, vec.y, vec.z), 0);
             break;     
         
-        case 0xA3:                                     
+        case MONKEY_HELD_ITEM:                                     
         case 0xA4:                                     
         case 0xA5:                                     
         case 0xA6:                                     
@@ -2434,34 +2953,34 @@ bool func_800D5CC0(u8 itemIndex) {
             func_8008BAF0(func_8008A4A8(10, direction, vec.x, vec.y, vec.z), 0);
             break;     
 
-        case 0xB3:                                     
-        case 0xB4:                                     
-        case 0xB5:                                     
-        case 0xB6:                                     
-        case 0xB7:                                     
-        case 0xB8:                                     
-        case 0xB9:                  
+        case BUTTERFLY_HELD_ITEM:                                     
+        case LADYBUG_HELD_ITEM:                                     
+        case CICADA_HELD_ITEM:                                     
+        case HORNED_BEETLE_HELD_ITEM:                                     
+        case STAG_BEETLE_HELD_ITEM:                                     
+        case RED_DRAGONFLY_HELD_ITEM:                                     
+        case CRICKET_HELD_ITEM:                  
             
-            switch (unk_28) {                          
+            switch (heldItemIndex) {                          
                 case 0xB3:                                  
                     temp = 0xF;
                     break;
-                case 0xB4:                                  
+                case LADYBUG_HELD_ITEM:                                  
                     temp = 0x10;
                     break;
-                case 0xB5:                                  
+                case CICADA_HELD_ITEM:                                  
                     temp = 0x11;
                     break;
-                case 0xB6:                                  
+                case HORNED_BEETLE_HELD_ITEM:                                  
                     temp = 0x12;
                     break;
-                case 0xB7:                                  
+                case STAG_BEETLE_HELD_ITEM:                                  
                     temp = 0x13;
                     break;
-                case 0xB8:                                  
+                case RED_DRAGONFLY_HELD_ITEM:                                  
                     temp = 0x14;
                     break;
-                case 0xB9:                                  
+                case CRICKET_HELD_ITEM:                                  
                     temp = 0x15;
                     break;
             }
@@ -2475,7 +2994,7 @@ bool func_800D5CC0(u8 itemIndex) {
 
             break;
 
-       case 0x14:                              
+       case EGG_HELD_ITEM:                              
 
             gPlayer.heldChickenIndex = func_80087F28(0, 0xFF);
 
@@ -2493,7 +3012,7 @@ bool func_800D5CC0(u8 itemIndex) {
 
             break;
 
-        case 0x39:                    
+        case FODDER_HELD_ITEM:                    
 
             levelInteractionIndex = func_800ACDF4(gBaseMapIndex);
 
@@ -2515,7 +3034,7 @@ bool func_800D5CC0(u8 itemIndex) {
             
             break;
         
-        case 0xBA:                                     
+        case BABY_HELD_ITEM:                                     
         case 0xBB:                                     
         case 0xBC:                                     
         case 0xBD:                                     
@@ -2526,7 +3045,7 @@ bool func_800D5CC0(u8 itemIndex) {
 
             npcs[BABY].levelIndex = HOUSE;
             npcs[BABY].startingCoordinates.y = 0;
-            npcs[BABY].direction = NORTH;
+            npcs[BABY].direction = SOUTHWEST;
             npcs[BABY].unk_1E = 1;
             npcs[BABY].animationIndex1 = 0;
             npcs[BABY].movingFlag = 1;
@@ -2541,7 +3060,7 @@ bool func_800D5CC0(u8 itemIndex) {
 
             break;
             
-        case 0xC2:                                     
+        case BABY_GROWN_HELD_ITEM:                                     
         case 0xC3:                                     
         case 0xC4:                                     
         case 0xC5:                                     
@@ -2582,6 +3101,7 @@ u8 func_800D67E4(u8 index) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D67FC);
 
+// show text for held item
 void func_800D67FC(u8 index) {
 
     u16 temp;
@@ -2591,7 +3111,6 @@ void func_800D67FC(u8 index) {
             temp =  gPlayer.heldChickenIndex + 0xF5;
             break;
         default:
-            // array of npc/dialogue-related u16s
             temp = D_80118000[index];
             break;
     }
@@ -2697,24 +3216,24 @@ static inline void setVec3f(u8 index, f32 x, f32 y, f32 z) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D6B58);
 
-void func_800D6B58(u8 arg0, u8 index) {
+void func_800D6B58(u8 arg0, u8 itemIndex) {
 
     u8 temp;
     u8 temp2;
     u8 flags;
     
-    itemInfo[index].unk_18.x = 0;
-    itemInfo[index].unk_18.y = 0;
-    itemInfo[index].unk_18.z = 0;
-    itemInfo[index].flags |= 8;
+    itemInfo[itemIndex].unk_18.x = 0;
+    itemInfo[itemIndex].unk_18.y = 0;
+    itemInfo[itemIndex].unk_18.z = 0;
+    itemInfo[itemIndex].flags |= 8;
 
-    setEntityMovementVector(index + ITEMS_OFFSET, 0.0f, 0.0f, 0.0f, 0.0f);
-    setEntityTrackingTarget(index + ITEMS_OFFSET, 0xFFFF, 0xFF);
+    setEntityMovementVector(ENTITY_ITEM_BASE_INDEX + itemIndex, 0.0f, 0.0f, 0.0f, 0.0f);
+    setEntityTrackingTarget(ENTITY_ITEM_BASE_INDEX + itemIndex, 0xFFFF, 0xFF);
     
-    setEntityCollidable(index + ITEMS_OFFSET, FALSE);
-    setEntityYMovement(index + ITEMS_OFFSET, FALSE);
-    setEntityTracksCollisions(index + ITEMS_OFFSET, FALSE);
-    enableEntityMovement(index + ITEMS_OFFSET, FALSE);
+    setEntityCollidable(ENTITY_ITEM_BASE_INDEX + itemIndex, FALSE);
+    setEntityYMovement(ENTITY_ITEM_BASE_INDEX + itemIndex, FALSE);
+    setEntityTracksCollisions(ENTITY_ITEM_BASE_INDEX + itemIndex, FALSE);
+    enableEntityMovement(ENTITY_ITEM_BASE_INDEX + itemIndex, FALSE);
 
     if (gBaseMapIndex == FARM) {
         
@@ -2723,9 +3242,9 @@ void func_800D6B58(u8 arg0, u8 index) {
         temp2 = temp - 0x1B;
         
         if (temp2 < 2 || temp == 0x1D) {
-            setVec3f(index, 288.0f, 80.0f, -404.0f);
-            itemInfo[index].flags |= 2;
-            setEntityAnimation(index + ITEMS_OFFSET, 0xE9);
+            setVec3f(itemIndex, 288.0f, 80.0f, -404.0f);
+            itemInfo[itemIndex].flags |= 2;
+            setEntityAnimation(ENTITY_ITEM_BASE_INDEX + itemIndex, 0xE9);
         } 
 
     }
@@ -2735,17 +3254,21 @@ void func_800D6B58(u8 arg0, u8 index) {
         temp = getLevelInteractionIndexFromEntityPosition(0, 0.0f, 40.0f);
         
         if (temp == 0x10 || temp == 0x14) {
-            setVec3f(index, 160.0f, 64.0f, -128.0f);
-            itemInfo[index].flags |= 2;
-            setEntityAnimation(index + ITEMS_OFFSET, 0xE9);
+            setVec3f(itemIndex, 160.0f, 64.0f, -128.0f);
+            itemInfo[itemIndex].flags |= 2;
+            setEntityAnimation(ENTITY_ITEM_BASE_INDEX + itemIndex, 0xE9);
         }
         
         if (!(gCutsceneFlags & 1)) {
 
-            if (!checkLifeEventBit(0x5E) && !checkDailyEventBit(0x21) && (itemInfo[index].unk_28 - 0x25) < 2U && 8 < gHour && gHour < 17) {
+            // FIXME: use a range
+            // fish
+            if (!checkLifeEventBit(0x5E) && !checkDailyEventBit(0x21) && (itemInfo[itemIndex].heldItemIndex - 0x25) < 2U && 8 < gHour && gHour < 17) {
                 setDailyEventBit(0x47);
             }
-            if (!checkLifeEventBit(0x5F) && !checkDailyEventBit(0x21) && itemInfo[index].unk_28 ==  0x27 && 8 < gHour && gHour < 17) {
+
+            // check kappa power nut
+            if (!checkLifeEventBit(0x5F) && !checkDailyEventBit(0x21) && itemInfo[itemIndex].heldItemIndex == 0x27 && 8 < gHour && gHour < 17) {
                 setDailyEventBit(0x48);
             }
 
@@ -2755,16 +3278,16 @@ void func_800D6B58(u8 arg0, u8 index) {
 
     if (gBaseMapIndex == POND) {
         
-        temp = getLevelInteractionIndexFromEntityPosition(0, 0.0f, 32.0f);
+        temp = getLevelInteractionIndexFromEntityPosition(ENTITY_PLAYER, 0.0f, 32.0f);
         
         if (temp == 0x10) {
-            setVec3f(index, -16.0f, 80.0f, -224.0f);
-            itemInfo[index].flags |= 2;
-            setEntityAnimation(index + ITEMS_OFFSET, 0xE9);
+            setVec3f(itemIndex, -16.0f, 80.0f, -224.0f);
+            itemInfo[itemIndex].flags |= 2;
+            setEntityAnimation(ENTITY_ITEM_BASE_INDEX + itemIndex, 0xE9);
         }
         
         if (!(gCutsceneFlags & 1)) {
-            if (!checkDailyEventBit(0x46) && itemFlags[itemInfo[index].unk_28] & 0x8000 && 8 < gHour && gHour < 17 ) {
+            if (!checkDailyEventBit(0x46) && (itemFlags[itemInfo[itemIndex].heldItemIndex] & 0x8000) && 8 < gHour && gHour < 17 ) {
                 setDailyEventBit(0x45);    
             }
         }
@@ -2775,6 +3298,8 @@ void func_800D6B58(u8 arg0, u8 index) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D7010);
 
+// run held item state machine
+// handle thrown/dropped items
 void func_800D7010(void) {
 
     Vec3f vec;
@@ -2806,7 +3331,7 @@ void func_800D7010(void) {
                 switch (itemInfo[i].unk_2A) {
 
                     case 2:
-                        func_800D56E8(i, itemInfo[i].unk_28);
+                        func_800D56E8(i, itemInfo[i].heldItemIndex);
                         itemInfo[i].unk_18.x = 0;
                         itemInfo[i].unk_18.y = y;
                         itemInfo[i].unk_18.z = z;
@@ -2814,8 +3339,8 @@ void func_800D7010(void) {
                         break;
 
                     case 16:
-                        func_800D56E8(i, itemInfo[i].unk_28);
-                        setEntityTrackingTarget(i + 0x27, 0, 0);
+                        func_800D56E8(i, itemInfo[i].heldItemIndex);
+                        setEntityTrackingTarget(ENTITY_ITEM_BASE_INDEX + i, 0, 0);
                         itemInfo[i].unk_18.x = x;
                         itemInfo[i].unk_18.y = 24.0f;
                         itemInfo[i].unk_18.z = z3;
@@ -2823,8 +3348,8 @@ void func_800D7010(void) {
                         break;
                     
                     case 21:
-                        func_800D56E8(i, itemInfo[i].unk_28);
-                        setEntityTrackingTarget(i + 0x27, 0, 0);
+                        func_800D56E8(i, itemInfo[i].heldItemIndex);
+                        setEntityTrackingTarget(ENTITY_ITEM_BASE_INDEX + i, 0, 0);
                         itemInfo[i].unk_18.x = x;
                         itemInfo[i].unk_18.y = 64.0f;
                         itemInfo[i].unk_18.z = z3;
@@ -2832,7 +3357,7 @@ void func_800D7010(void) {
                         break;
 
                     case 3:
-                        func_800D56E8(i, itemInfo[i].unk_28);
+                        func_800D56E8(i, itemInfo[i].heldItemIndex);
                         itemInfo[i].unk_18.x = 0.0f;
                         itemInfo[i].unk_18.y = y2;
                         itemInfo[i].unk_18.z = z2;
@@ -2842,32 +3367,32 @@ void func_800D7010(void) {
 
                     case 4:    
                         
-                        setEntityTrackingTarget(i + 0x27, 0xFFFF, 0xFF);
+                        setEntityTrackingTarget(ENTITY_ITEM_BASE_INDEX + i, 0xFFFF, 0xFF);
 
                         vec = getMovementVectorFromDirection(4.0f, convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX), 0.0f);
 
                         itemInfo[i].unk_C = vec;
 
-                        itemInfo[i].unk_C.y = entities[i + 0x27].coordinates.y;
+                        itemInfo[i].unk_C.y = entities[ENTITY_ITEM_BASE_INDEX + i].coordinates.y;
                         
-                        itemInfo[i].unk_26 = 0;
+                        itemInfo[i].itemAnimationFrameCounter = 0;
                         itemInfo[i].unk_2A = 5;
 
                         break;
 
                     case 5:
                         
-                        if (entities[i + 0x27].flags & 0x800) {
+                        if (entities[ENTITY_ITEM_BASE_INDEX + i].flags & 0x800) {
                             
                             itemInfo[i].unk_C.x = 0;
                             itemInfo[i].unk_C.y = 0;
                             itemInfo[i].unk_C.z = 0;
                             
-                            func_8002FF38(i + 0x27, FALSE);
-                            setEntityCollidable(i + 0x27, FALSE);
-                            setEntityYMovement(i + 0x27, FALSE);
-                            setEntityTracksCollisions(i + 0x27, FALSE);
-                            enableEntityMovement(i + 0x27, FALSE);
+                            func_8002FF38(ENTITY_ITEM_BASE_INDEX + i, FALSE);
+                            setEntityCollidable(ENTITY_ITEM_BASE_INDEX + i, FALSE);
+                            setEntityYMovement(ENTITY_ITEM_BASE_INDEX + i, FALSE);
+                            setEntityTracksCollisions(ENTITY_ITEM_BASE_INDEX + i, FALSE);
+                            enableEntityMovement(ENTITY_ITEM_BASE_INDEX + i, FALSE);
 
                             itemInfo[i].unk_2A = 12;
 
@@ -2875,8 +3400,9 @@ void func_800D7010(void) {
 
                         } else {
 
-                            entities[i + 0x27].coordinates.y = itemInfo[i].unk_C.y + (f32)(itemInfo[i].unk_26 * itemInfo[i].unk_26) * -0.5f;
-                            itemInfo[i].unk_26++;
+                            // parabolic equation for throwing items
+                            entities[ENTITY_ITEM_BASE_INDEX + i].coordinates.y = itemInfo[i].unk_C.y + (f32)(itemInfo[i].itemAnimationFrameCounter * itemInfo[i].itemAnimationFrameCounter) * -0.5f;
+                            itemInfo[i].itemAnimationFrameCounter++;
                             
                         }
                         
@@ -2887,21 +3413,21 @@ void func_800D7010(void) {
 
                     case 12:
 
-                        deactivateEntity(i + 0x27);
-                        loadEntity(i + 0x27, 0x5E, 1);
-                        setEntityColor(i + 0x27, mainMap[MAIN_MAP_INDEX].mapGlobals.currentRGBA.r, mainMap[MAIN_MAP_INDEX].mapGlobals.currentRGBA.g, mainMap[MAIN_MAP_INDEX].mapGlobals.currentRGBA.b, mainMap[MAIN_MAP_INDEX].mapGlobals.currentRGBA.a);
-                        setEntityMovementVector(i + 0x27, 0.0f, 0.0f, 0.0f, 0.0f);
-                        func_8002FF38(i + 0x27, FALSE);
-                        setEntityTrackingTarget(i + 0x27, 0xFFFF, 0xFF);
-                        setEntityCollidable(i + 0x27, FALSE);
-                        setEntityYMovement(i + 0x27, FALSE);
-                        setEntityTracksCollisions(i + 0x27, FALSE);
-                        enableEntityMovement(i + 0x27, FALSE);
-                        setEntityAnimation(i + 0x27, D_801171A0[itemInfo[i].unk_28][gSeason-1]);
+                        deactivateEntity(ENTITY_ITEM_BASE_INDEX + i);
+                        loadEntity(ENTITY_ITEM_BASE_INDEX + i, 0x5E, 1);
+                        setEntityColor(ENTITY_ITEM_BASE_INDEX + i, mainMap[MAIN_MAP_INDEX].mapGlobals.currentRGBA.r, mainMap[MAIN_MAP_INDEX].mapGlobals.currentRGBA.g, mainMap[MAIN_MAP_INDEX].mapGlobals.currentRGBA.b, mainMap[MAIN_MAP_INDEX].mapGlobals.currentRGBA.a);
+                        setEntityMovementVector(ENTITY_ITEM_BASE_INDEX + i, 0.0f, 0.0f, 0.0f, 0.0f);
+                        func_8002FF38(ENTITY_ITEM_BASE_INDEX + i, FALSE);
+                        setEntityTrackingTarget(ENTITY_ITEM_BASE_INDEX + i, 0xFFFF, 0xFF);
+                        setEntityCollidable(ENTITY_ITEM_BASE_INDEX + i, FALSE);
+                        setEntityYMovement(ENTITY_ITEM_BASE_INDEX + i, FALSE);
+                        setEntityTracksCollisions(ENTITY_ITEM_BASE_INDEX + i, FALSE);
+                        enableEntityMovement(ENTITY_ITEM_BASE_INDEX + i, FALSE);
+                        setEntityAnimation(ENTITY_ITEM_BASE_INDEX + i, D_801171A0[itemInfo[i].heldItemIndex][gSeason-1]);
 
                         itemInfo[i].unk_2A = 1;
 
-                        if (itemFlags[itemInfo[i].unk_28] & 1) {
+                        if (itemFlags[itemInfo[i].heldItemIndex] & ITEM_EATABLE) {
                             gHappiness += adjustValue(gHappiness, -1, MAX_HAPPINESS);
                         } 
 
@@ -2916,7 +3442,7 @@ void func_800D7010(void) {
                         
                         itemInfo[i].flags |= 8;
 
-                        func_800D56E8(i, itemInfo[i].unk_28);
+                        func_800D56E8(i, itemInfo[i].heldItemIndex);
 
                         break;
 
@@ -2944,7 +3470,7 @@ void func_800D7010(void) {
                         func_800D5CC0(i);
        
                         if (itemInfo[i].flags & 1) {
-                            deactivateEntity(i + 0x27);
+                            deactivateEntity(ENTITY_ITEM_BASE_INDEX + i);
                             itemInfo[i].unk_2A = 0;
                             itemInfo[i].flags = 0;
                         }
@@ -2953,7 +3479,7 @@ void func_800D7010(void) {
 
                     case 10:
                         
-                        setEntityTrackingTarget(i + 0x27, 0, 0);
+                        setEntityTrackingTarget(ENTITY_ITEM_BASE_INDEX + i, 0, 0);
                         
                         itemInfo[i].unk_18.x = x;
                         itemInfo[i].unk_18.y = y2;
@@ -2964,33 +3490,33 @@ void func_800D7010(void) {
 
                     case 14:
                         
-                        func_800D6868(itemInfo[i].unk_28);
+                        func_800D6868(itemInfo[i].heldItemIndex);
 
                         switch (gBaseMapIndex) {        
 
                             case FARM:                     
-                                func_80038990(0, 0x12, 0);
-                                setAudio(4);
+                                func_80038990(MAIN_MAP_INDEX, 0x12, 0);
+                                setAudio(ITEM_PLUCK_SFX);
                                 break;
                      
                             case BARN:
-                                func_80038990(0, 0, 0);
-                                setAudio(4);
+                                func_80038990(MAIN_MAP_INDEX, 0, 0);
+                                setAudio(ITEM_PLUCK_SFX);
                                 break;
 
                             case COOP:
-                                func_80038990(0, 0, 0);
-                                setAudio(4);
+                                func_80038990(MAIN_MAP_INDEX, 0, 0);
+                                setAudio(ITEM_PLUCK_SFX);
                                 break;
                             
                             case GREENHOUSE:                     
-                                func_80038990(0, 0, 0);
-                                setAudio(4);
+                                func_80038990(MAIN_MAP_INDEX, 0, 0);
+                                setAudio(ITEM_PLUCK_SFX);
                                 break;
                             
                         }
                         
-                        deactivateEntity(i + 0x27);
+                        deactivateEntity(ENTITY_ITEM_BASE_INDEX + i);
                         itemInfo[i].unk_2A = 1;
 
                         break;
@@ -3006,7 +3532,7 @@ void func_800D7010(void) {
                     case 18:
                         func_80034DC8(MAIN_MAP_INDEX, 0, 0x13);
                         setDailyEventBit(0x43);
-                        deactivateEntity(i + 0x27);
+                        deactivateEntity(ENTITY_ITEM_BASE_INDEX + i);
                         itemInfo[i].unk_2A = 1;
                         break;
                     
@@ -3019,17 +3545,19 @@ void func_800D7010(void) {
                         break;
                     
                     case 20:
-                        func_800D6B58(itemInfo[i].unk_28, i);
+                        func_800D6B58(itemInfo[i].heldItemIndex, i);
                         setAudio(0x28);
                         itemInfo[i].unk_2A = 1;
                         break;
                     
                     case 1:
                         
-                        if (checkEntityAnimationStateChanged(i + 0x27) || !(itemInfo[i].unk_26 < 30)) {
+                        // wait 30 frames before removing item
+                        if (checkEntityAnimationStateChanged(ENTITY_ITEM_BASE_INDEX + i) || !(itemInfo[i].itemAnimationFrameCounter < 30)) {
 
                             if (itemInfo[i].flags & 1) {
-                                deactivateEntity(i + 0x27);
+
+                                deactivateEntity(ENTITY_ITEM_BASE_INDEX + i);
 
                                 // FIXME: fake match in order to get float registers right
                                 if (y2) {
@@ -3075,7 +3603,7 @@ void func_800D7010(void) {
                             } 
                             
                         } else {
-                            itemInfo[i].unk_26 +=  1;
+                            itemInfo[i].itemAnimationFrameCounter++;
                         }
                         
                         break;
@@ -3085,15 +3613,15 @@ void func_800D7010(void) {
             } while (set);
 
             if (itemInfo[i].flags & 2) {
-                setEntityCoordinates(i + 0x27, itemInfo[i].unk_0.x, itemInfo[i].unk_0.y, itemInfo[i].unk_0.z);
+                setEntityCoordinates(ENTITY_ITEM_BASE_INDEX + i, itemInfo[i].unk_0.x, itemInfo[i].unk_0.y, itemInfo[i].unk_0.z);
             }
             
             if (itemInfo[i].flags & 8) {
-                setEntityAttachmentOffset(i + 0x27, itemInfo[i].unk_18.x, itemInfo[i].unk_18.y, itemInfo[i].unk_18.z);
+                setEntityAttachmentOffset(ENTITY_ITEM_BASE_INDEX + i, itemInfo[i].unk_18.x, itemInfo[i].unk_18.y, itemInfo[i].unk_18.z);
             }
             
-            setEntityMovementVector(i + 0x27, itemInfo[i].unk_C.x, 0.0f, itemInfo[i].unk_C.z, 4.0f);
-            setEntityDirection(i + 0x27, entities[ENTITY_PLAYER].direction);
+            setEntityMovementVector(ENTITY_ITEM_BASE_INDEX + i, itemInfo[i].unk_C.x, 0.0f, itemInfo[i].unk_C.z, 4.0f);
+            setEntityDirection(ENTITY_ITEM_BASE_INDEX + i, entities[ENTITY_PLAYER].direction);
             
         }
         

@@ -376,7 +376,7 @@ not_married:
 
 void func_8005A60C(void) {
 
-    if (!checkLifeEventBit(MARRIED)) goto handleAnimals;
+    if (!checkLifeEventBit(MARRIED)) goto handle_animals;
 
     switch (gWife) {     
         case MARIA:
@@ -402,7 +402,7 @@ void func_8005A60C(void) {
         npcAffection[BABY] += adjustValue(npcAffection[BABY], -1, 0xFF);
     }
 
-handleAnimals:
+handle_animals:
     adjustDogAffection(-1);
     adjustHorseAffection(-1);
 
@@ -1419,7 +1419,7 @@ static inline void func_80055F08_2(u16 cutsceneIndex, u16 entranceIndex, u8 arg2
     func_8006E840(gEntranceIndex);
     setupPlayerEntity(gEntranceIndex, 0);
 
-    func_8006A2E8();
+    handlePlayerAnimation();
 
     setMainLoopCallbackFunctionIndex(4);
 
@@ -1667,7 +1667,7 @@ void func_8005D2B0() {
 
             case 13:                                    
                 if (gSeason == SPRING || gSeason == WINTER) {
-                    if (gPlayer.currentAction == 0x1E || temp == 3) {
+                    if (gPlayer.actionHandler == 0x1E || temp == 3) {
                         switch (temp) {             
                             case 0:                         
                                 showTextBox(1, 1, 0, 0, 0);
@@ -1696,7 +1696,7 @@ void func_8005D2B0() {
                     break;
                 }
                 
-                if (gPlayer.currentAction == 0x1E || temp == 3) {
+                if (gPlayer.actionHandler == 0x1E || temp == 3) {
                     
                     switch (temp) {                 
                         case 0:                             
@@ -1728,7 +1728,7 @@ void func_8005D2B0() {
 
             case 14:                                    
                 if (gSeason == SPRING || gSeason == WINTER) {
-                    if (gPlayer.currentAction == 0x1E || temp == 3) {
+                    if (gPlayer.actionHandler == 0x1E || temp == 3) {
                         switch (temp) {            
                             case 0:                        
                                 showTextBox(1, 1, 9, 0, 0);
@@ -1758,7 +1758,7 @@ void func_8005D2B0() {
                     break;
                 }
                 
-                if (gPlayer.currentAction == 0x1E || temp == 3) {
+                if (gPlayer.actionHandler == 0x1E || temp == 3) {
                     switch (temp) {                
                         case 0:                             
                             showTextBox(1, 1, 6, 0, 0);
@@ -1790,7 +1790,7 @@ void func_8005D2B0() {
 
         case 15:                                    
             if (gSeason == SPRING || gSeason == WINTER) {
-                if (gPlayer.currentAction == 0x1E || temp == 3) {
+                if (gPlayer.actionHandler == 0x1E || temp == 3) {
                     switch (temp) {             
                         case 0:                         
                             showTextBox(1, 1, 12, 0, 0);
@@ -1819,7 +1819,7 @@ void func_8005D2B0() {
                 break;
             }
             
-            if (gPlayer.currentAction == 0x1E || temp == 3) {
+            if (gPlayer.actionHandler == 0x1E || temp == 3) {
                 switch (temp) {                         
                     case 0:                             
                         showTextBox(1, 1, 15, 0, 0);
@@ -1850,7 +1850,7 @@ void func_8005D2B0() {
 
         case 16:                                    
             if (gSeason == SPRING || gSeason == WINTER) {
-                if (gPlayer.currentAction == 0x1E || temp == 3) {
+                if (gPlayer.actionHandler == 0x1E || temp == 3) {
                     switch (temp) {             
                         case 0:                         
                             showTextBox(1, 1, 18, 0, 0);
@@ -1879,7 +1879,7 @@ void func_8005D2B0() {
                     break;
                 }
             
-            if (gPlayer.currentAction == 0x1E || temp == 3) {
+            if (gPlayer.actionHandler == 0x1E || temp == 3) {
                 switch (temp) {                 
                     case 0:                             
                         showTextBox(1, 1, 21, 0, 0);
@@ -1909,7 +1909,7 @@ void func_8005D2B0() {
 
         case 17:                                    
             if (gSeason == SPRING || gSeason == WINTER) {
-                if (gPlayer.currentAction == 0x1E || temp == 4) {
+                if (gPlayer.actionHandler == 0x1E || temp == 4) {
                     switch (temp) {            
                         case 0:                         
                             showTextBox(1, 1, 25, 0, 0);
@@ -1941,7 +1941,7 @@ void func_8005D2B0() {
                 break;
             }
             
-            if (gPlayer.currentAction == 0x1E || temp == 4) {
+            if (gPlayer.actionHandler == 0x1E || temp == 4) {
                 switch (temp) {                
                     case 0:                             
                         showTextBox(1, 1, 28, 0, 0);
@@ -1974,7 +1974,7 @@ void func_8005D2B0() {
 
         case 18:                                    
             if (gSeason == SPRING || gSeason == WINTER) {
-                if (gPlayer.currentAction == 0x1E || temp == 4) {
+                if (gPlayer.actionHandler == 0x1E || temp == 4) {
                     switch (temp) {             
                         case 0:                         
                             showTextBox(1, 1, 32, 0, 0);
@@ -2007,7 +2007,7 @@ void func_8005D2B0() {
                     break;
                 }
             
-            if (gPlayer.currentAction == 0x1E || temp == 4) {
+            if (gPlayer.actionHandler == 0x1E || temp == 4) {
                 switch (temp) {                 
                     case 0:                             
                         showTextBox(1, 1, 36, 0, 0);
@@ -2040,7 +2040,7 @@ void func_8005D2B0() {
         
         case 19:                                    
             if (gSeason == SPRING || gSeason == WINTER) {
-                if (gPlayer.currentAction == 0x1E || temp == 4) {
+                if (gPlayer.actionHandler == 0x1E || temp == 4) {
                     switch (temp) {             
                         case 0:                         
                             showTextBox(1, 1, 40, 0, 0);
@@ -2072,7 +2072,7 @@ void func_8005D2B0() {
                     break;
                 }
             
-            if (gPlayer.currentAction == 0x1E || temp == 4) {
+            if (gPlayer.actionHandler == 0x1E || temp == 4) {
                 switch (temp) {                 
                     case 0:                             
                         showTextBox(1, 1, 44, 0, 0);
@@ -2105,7 +2105,7 @@ void func_8005D2B0() {
         
         case 20:                                    
             if (gSeason == SPRING || gSeason == WINTER) {
-                if (gPlayer.currentAction == 0x1E || temp == 4) {
+                if (gPlayer.actionHandler == 0x1E || temp == 4) {
                     switch (temp) {             
                         case 0:                         
                             showTextBox(1, 1, 48, 0, 0);
@@ -2137,7 +2137,7 @@ void func_8005D2B0() {
                 break;
             }
             
-            if (gPlayer.currentAction == 0x1E || temp == 4) {
+            if (gPlayer.actionHandler == 0x1E || temp == 4) {
                 switch (temp) {                 
                     case 0:                             
                         showTextBox(1, 1, 52, 0, 0);
@@ -2170,7 +2170,7 @@ void func_8005D2B0() {
 
         case 21:                                    
             if (gSeason == SPRING || gSeason == WINTER) {
-                if (gPlayer.currentAction == 0x1E || temp == 4) {
+                if (gPlayer.actionHandler == 0x1E || temp == 4) {
                     switch (temp) {             
                         case 0:                         
                             showTextBox(1, 1, 56, 0, 0);
@@ -2203,7 +2203,7 @@ void func_8005D2B0() {
                 break;
             }
             
-            if (gPlayer.currentAction == 0x1E || temp == 4) {
+            if (gPlayer.actionHandler == 0x1E || temp == 4) {
 
                 switch (temp) {       
 
@@ -2244,7 +2244,7 @@ void func_8005D2B0() {
 
             if (gSeason == SPRING || gSeason == WINTER) {
 
-                if (gPlayer.currentAction == 0x1E || temp == 4) {
+                if (gPlayer.actionHandler == 0x1E || temp == 4) {
 
                     switch (temp) {             
                         case 0:                         
@@ -2277,7 +2277,7 @@ void func_8005D2B0() {
                     break;
                 }
             
-            if (gPlayer.currentAction == 0x1E || temp == 4) {
+            if (gPlayer.actionHandler == 0x1E || temp == 4) {
 
                 switch (temp) {                 
                     case 0:                             
@@ -2397,12 +2397,6 @@ void func_800605F0(void) {
 
 void func_80060624(void) {
     
-    short temp = 1;
-
-    int temp1;
-    int temp2;
-    
-    int tempStamina;
     u8 tempTime;
 
     if (checkMapRGBADone(MAIN_MAP_INDEX) || !(mainMap[MAIN_MAP_INDEX].mapState.flags & MAP_ACTIVE)) {
@@ -2438,11 +2432,10 @@ void func_80060624(void) {
                 tempTime += 24;
             }
             
-            // TODO: check if cushion
             if (checkLifeEventBit(0x5A)) {
-                gPlayer.fatigue.counter += adjustValue(gPlayer.fatigue.counter, -((30 - tempTime) * 3), 100);
+                gPlayer.fatigueCounter += adjustValue(gPlayer.fatigueCounter, -((30 - tempTime) * 3), 100);
             } else {
-                gPlayer.fatigue.counter += adjustValue(gPlayer.fatigue.counter, -((30 - tempTime) * 2), 100);
+                gPlayer.fatigueCounter += adjustValue(gPlayer.fatigueCounter, -((30 - tempTime) * 2), 100);
             }
         }
         
@@ -2690,21 +2683,21 @@ u8 calculateAnimalDirectionToPlayer(f32 animalX, f32 animalZ, f32 playerX, f32 p
         if (animalZ <= playerZ) {
             
             if ((s16)deltaX <= (s16)deltaZ) {
-                direction = ((s16)deltaZ / 2) < (s16)deltaX ? NORTHWEST : NORTH;
+                direction = ((s16)deltaZ / 2) < (s16)deltaX ? SOUTH : SOUTHWEST;
             } else {
-                direction = ((s16)deltaX / 2) < (s16)deltaZ ? NORTHWEST : WEST;
+                direction = ((s16)deltaX / 2) < (s16)deltaZ ? SOUTH : SOUTHEAST;
             }
             
         } else if ((s16) deltaX <= (s16) deltaZ) {
 
-            direction = (s16)deltaX > ((s16)deltaZ / 2) ? SOUTHWEST : SOUTH;
+            direction = (s16)deltaX > ((s16)deltaZ / 2) ? EAST : NORTHEAST;
 
         } else {
 
             if ((s16)deltaX / 2 >= (s16) deltaZ) {
-                direction = WEST;
+                direction = SOUTHEAST;
             } else {
-                direction = SOUTHWEST;
+                direction = EAST;
             }
 
         }
@@ -2718,22 +2711,22 @@ u8 calculateAnimalDirectionToPlayer(f32 animalX, f32 animalZ, f32 playerX, f32 p
         } else {
 
             if (((s16)deltaX / 2) >= (s16)deltaZ) {
-                direction = EAST;
+                direction = NORTHWEST;
             } else {
-                direction = NORTHEAST;
+                direction = WEST;
             }
         }
         
     } else if ((s16)deltaX <= (s16)deltaZ) {
         
         if (((s16)deltaZ / 2) >= (s16) deltaX) {
-            direction = SOUTH;
+            direction = NORTHEAST;
         } else {
-            direction = SOUTHEAST;
+            direction = NORTH;
         }
         
     } else {
-        direction = ((s16)deltaZ > ((s16)deltaX / 2)) ? SOUTHEAST : EAST;
+        direction = ((s16)deltaZ > ((s16)deltaX / 2)) ? NORTH : NORTHWEST;
     }
     
     return direction;

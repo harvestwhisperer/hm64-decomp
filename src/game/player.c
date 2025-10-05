@@ -23,41 +23,299 @@
 #include "game/shop.h"
 #include "game/spriteInfo.h"
 #include "game/weather.h"
- 
-// forward declaration
-u8 func_80067A24(u8);                 
-void func_8006C628(u16, u16);
 
+
+// bss
 // consumable tool counters (seeds, feed)
 extern u8 D_802373A8;
-// chicken feed counter
 extern u16 chickenFeedQuantity;
-
-// FIXME: part of player struct, but necessary for matching right now
-extern u16 D_801890C8;
-
-extern u8 gMaximumStamina;
-
-// possible bss
-extern u8 gToolchestSlots[];   
-extern u8 D_8018A724;
-extern u8 D_801A8B5C;
-
-
 extern u32 totalFishCaught;
+extern u8 gMaximumStamina;
+extern u8 gToolchestSlots[];   
+extern u8 upgradedToolIndex;
+extern u8 upgradedToolLevelIndex;
 
 // data
-extern Vec3f playerDefaultStartingCoordinates[];
-// = { -352.0f, 0.0f, -16.0f }
-extern u8 playerDefaultStartingDirections[73];
-extern volatile u8 D_8011421C[10][3];
+Vec3f playerDefaultStartingCoordinates[] = {
+    { -352.0f, 0.0f, -16.0f },
+    { -544.0f, 0.0f, 144.0f },
+    { -128.0f, 0.0f, -336.0f },
+    { 64.0f, 0.0f, -368.0f },
+    { 0.0f, 0.0f, 0.0f },
+    { 0.0f, 0.0f, 0.0f },
+    { -448.0f, 0.0f, -96.0f },
+    { -272.0f, 0.0f, 326.0f },
+    { -448.0f, 0.0f, -80.0f },
+    { -352.0f, 0.0f, 144.0f },
+    { -48.0f, 0.0f, 112.0f },
+    { -176.0f, 0.0f, 16.0f },
+    { -48.0f, 0.0f, -48.0f },
+    { 48.0f, 0.0f, 64.0f },
+    { 48.0f, 0.0f, 64.0f },
+    { 96.0f, 0.0f, 48.0f },
+    { 64.0f, 0.0f, -144.0f },
+    { -16.0f, 0.0f, 208.0f },
+    { -16.0f, 0.0f, 80.0f },
+    { 240.0f, 0.0f, -16.0f },
+    { 128.0f, 0.0f, -16.0f },
+    { 64.0f, 0.0f, 240.0f },
+    { -176.0f, 0.0f, -304.0f },
+    { -224.0f, 0.0f, -144.0f },
+    { -224.0f, 0.0f, 48.0f },
+    { 96.0f, 0.0f, -304.0f },
+    { -16.0f, 0.0f, 320.0f },
+    { -160.0f, 0.0f, 128.0f },
+    { 0.0f, 0.0f, -416.0f },
+    { 96.0f, 0.0f, 224.0f },
+    { -16.0f, 0.0f, -192.0f },
+    { -224.0f, 0.0f, 240.0f },
+    { -112.0f, 0.0f, 128.0f },
+    { -176.0f, 0.0f, -480.0f },
+    { 64.0f, 0.0f, -416.0f },
+    { -96.0f, 0.0f, 112.0f },
+    { -192.0f, 0.0f, 16.0f },
+    { -384.0f, 0.0f, 288.0f },
+    { 96.0f, 0.0f, -64.0f },
+    { 0.0f, 0.0f, 0.0f },
+    { -512.0f, 0.0f, -208.0f },
+    { 176.0f, 0.0f, -480.0f },
+    { 448.0f, 0.0f, -464.0f },
+    { 320.0f, 0.0f, -208.0f },
+    { 112.0f, 0.0f, -304.0f },
+    { -368.0f, 0.0f, -80.0f },
+    { 320.0f, 0.0f, 160.0f },
+    { 80.0f, 0.0f, -144.0f },
+    { 176.0f, 0.0f, 144.0f },
+    { 16.0f, 0.0f, 112.0f },
+    { 464.0f, 0.0f, -48.0f },
+    { 192.0f, 0.0f, 384.0f },
+    { 304.0f, 0.0f, -144.0f },
+    { 224.0f, 0.0f, 240.0f },
+    { -272.0f, 0.0f, 240.0f },
+    { -176.0f, 0.0f, 240.0f },
+    { -80.0f, 0.0f, -128.0f },
+    { -416.0f, 0.0f, -160.0f },
+    { -384.0f, 0.0f, -80.0f },
+    { -384.0f, 0.0f, 176.0f },
+    { -256.0f, 0.0f, 384.0f },
+    { 288.0f, 0.0f, 160.0f },
+    { 448.0f, 0.0f, 80.0f },
+    { -240.0f, 0.0f, -192.0f },
+    { -304.0f, 0.0f, -112.0f },
+    { -400.0f, 0.0f, 176.0f },
+    { 368.0f, 0.0f, -64.0f },
+    { -64.0f, 0.0f, 0.0f },
+    { 176.0f, 0.0f, -192.0f },
+    { 80.0f, 0.0f, 160.0f },
+    { -32.0f, 0.0f, -224.0f },
+    { -304.0f, 0.0f, -128.0f },
+    { 256.0f, 0.0f, -80.0f },
+    { -32.0f, 0.0f, 80.0f },
+    { -80.0f, 0.0f, -16.0f },
+    { -16.0f, 0.0f, 96.0f },
+    { 80.0f, 0.0f, -144.0f },
+    { 32.0f, 0.0f, 64.0f },
+    { 32.0f, 0.0f, -16.0f },
+    { -48.0f, 0.0f, 240.0f },
+    { -96.0f, 0.0f, -144.0f },
+    { -16.0f, 0.0f, 128.0f },
+    { -176.0f, 0.0f, -96.0f },
+    { 64.0f, 0.0f, -16.0f },
+    { -160.0f, 0.0f, 48.0f },
+    { -32.0f, 0.0f, 48.0f },
+    { -16.0f, 0.0f, 64.0f },
+    { -112.0f, 0.0f, 64.0f },
+    { 64.0f, 0.0f, 16.0f },
+    { 48.0f, 0.0f, 64.0f },
+    { -144.0f, 0.0f, 32.0f },
+    { 96.0f, 0.0f, 48.0f },
+    { 48.0f, 0.0f, 80.0f },
+    { -32.0f, 0.0f, 96.0f },
+    { -16.0f, 0.0f, 32.0f },
+    { -16.0f, 0.0f, 96.0f },
+    { -16.0f, 0.0f, 96.0f },
+    { 192.0f, 0.0f, -144.0f },
+    { -256.0f, 0.0f, 80.0f },
+    { 192.0f, 0.0f, 112.0f },
+    { 64.0f, 0.0f, -16.0f },
+    { -32.0f, 0.0f, 96.0f },
+    { -144.0f, 0.0f, 64.0f },
+    { 64.0f, 0.0f, 80.0f },
+    { 32.0f, 0.0f, -16.0f },
+    { -112.0f, 0.0f, 32.0f },
+    { 32.0f, 0.0f, 32.0f },
+    { -16.0f, 0.0f, 64.0f },
+    { 96.0f, 0.0f, -160.0f },
+    { -32.0f, 0.0f, 80.0f },
+    { 128.0f, 0.0f, 0.0f },
+    { -352.0f, 0.0f, -64.0f },
+    { 80.0f, 0.0f, -80.0f },
+    { 0.0f, 0.0f, 0.0f },
+};
+
+u8 playerDefaultStartingDirections[] = {
+    SOUTHWEST, 
+    SOUTHEAST, 
+    SOUTHWEST, 
+    SOUTHWEST, 
+    SOUTHWEST, 
+    SOUTHWEST, 
+    SOUTHWEST, 
+    SOUTHEAST, 
+    NORTHWEST, 
+    NORTHWEST, 
+    NORTHEAST, 
+    SOUTHEAST, 
+    SOUTHWEST, 
+    NORTHEAST, 
+    NORTHEAST, 
+    NORTHWEST, 
+    SOUTHWEST, 
+    NORTHEAST, 
+    NORTHEAST, 
+    NORTHWEST, 
+    NORTHWEST, 
+    NORTHEAST, 
+    SOUTHWEST, 
+    SOUTHEAST, 
+    SOUTHEAST, 
+    SOUTHWEST, 
+    NORTHEAST, 
+    SOUTHEAST, 
+    SOUTHEAST, 
+    NORTHWEST, 
+    SOUTHWEST, 
+    SOUTHEAST, 
+    SOUTHWEST, 
+    SOUTHWEST, 
+    NORTHWEST, 
+    NORTHWEST, 
+    SOUTHEAST, 
+    NORTHEAST, 
+    SOUTHWEST, 
+    NORTHEAST, 
+    SOUTHEAST, 
+    SOUTHWEST, 
+    NORTHWEST, 
+    SOUTHWEST, 
+    SOUTHEAST, 
+    SOUTHWEST, 
+    NORTHEAST, 
+    SOUTHWEST, 
+    SOUTHEAST, 
+    NORTHWEST, 
+    NORTHWEST, 
+    NORTHEAST, 
+    SOUTHWEST, 
+    SOUTHWEST, 
+    SOUTHWEST, 
+    SOUTHWEST, 
+    SOUTHWEST, 
+    SOUTHWEST, 
+    SOUTHEAST, 
+    SOUTHEAST, 
+    NORTHEAST, 
+    SOUTHEAST, 
+    NORTHWEST, 
+    SOUTHWEST, 
+    SOUTHEAST, 
+    SOUTHWEST, 
+    SOUTHEAST, 
+    SOUTHWEST, 
+    SOUTHWEST, 
+    NORTHEAST, 
+    SOUTHWEST, 
+    SOUTHEAST, 
+    NORTHWEST, 
+    NORTHEAST, 
+    NORTHEAST, 
+    NORTHEAST, 
+    SOUTHWEST, 
+    NORTHEAST, 
+    NORTHWEST, 
+    NORTHEAST, 
+    SOUTHEAST, 
+    NORTHEAST, 
+    NORTHWEST, 
+    NORTHWEST, 
+    NORTHWEST, 
+    SOUTHEAST, 
+    NORTHEAST, 
+    SOUTHEAST, 
+    NORTHWEST, 
+    NORTHEAST, 
+    SOUTHEAST, 
+    NORTHWEST, 
+    NORTHWEST, 
+    NORTHEAST, 
+    NORTHEAST, 
+    NORTHEAST, 
+    NORTHEAST, 
+    NORTHWEST, 
+    SOUTHEAST, 
+    NORTHWEST, 
+    NORTHWEST, 
+    NORTHEAST, 
+    SOUTHEAST, 
+    NORTHWEST, 
+    NORTHWEST, 
+    SOUTHEAST, 
+    NORTHWEST, 
+    NORTHEAST, 
+    SOUTHWEST, 
+    NORTHEAST, 
+    NORTHWEST, 
+    SOUTHWEST, 
+    SOUTHWEST, 
+    NORTHWEST, 
+    SOUTHWEST, 
+    SOUTHWEST
+};
+
+// FIXME: probably shouldn't be volatile
+volatile u8 D_8011421C[MAX_TOOLS][3] = {
+    { 0, 0, 0 },
+    { 2, 4, 6 },
+    { 2, 4, 6 },
+    { 1, 2, 3 },
+    { 1, 2, 3 },
+    { 1, 2, 6 },
+    { 1, 0, 0 },
+    { 1, 0, 0 },
+    { 1, 0, 0 },
+    { 1, 0, 0 },
+    { 1, 0, 0 },
+    { 1, 0, 0 },
+    { 1, 0, 0 },
+    { 1, 0, 0 },
+    { 1, 0, 0 },
+    { 1, 0, 0 },
+    { 1, 0, 0 },
+    { 1, 0, 0 },
+    { 1, 0, 0 },
+    { 1, 0, 0 },
+    { 0, 0, 0 },
+    { 0, 0, 0 },
+    { 0, 0, 0 },
+    { 0, 0, 0 },
+    { 0, 0, 0 },
+    { 0, 0, 0 },
+    { 0, 0, 0 },
+    { 1, 0, 0 },
+    { 0, 0, 0 },
+    { 0, 0, 0 },
+    { 0, 0, 0 },
+    { 0, 0, 0 },
+};
 
 // rodata
-extern const s8 D_8011F3F0[12];
-extern const s8 D_8011F3FC[12]; 
-static const u8 D_8011F5D4[];
+extern const s8 directionToTileDeltaX[12];
+extern const s8 directionToTileDeltaZ[12]; 
+static const u8 toolHeldItemIndices[5][3];
 
 // forward declarations
+u8 func_80067A24(u8);                 
+bool func_80067B38(void);
 void func_80067BC4(void);
 void func_80067E5C(void);
 void func_80067EE0(void);
@@ -99,6 +357,15 @@ void func_8006A848(void);
 void func_8006A8C4(void);
 void func_8006A9A8(void);
 void func_8006AA9C(void);
+void func_8006AB90(void);
+void func_8006ADF4(void);
+void func_8006B4D4(void);
+void func_8006B4DC(void);
+void func_8006B584(void);
+void func_8006B61C(void);
+void func_8006B6EC(void);
+void func_8006B77C(void);
+void func_8006AC4C(void);
 void func_8006AEEC(void);
 void func_8006AFE4(void);
 void func_8006B104(void);
@@ -114,18 +381,9 @@ void func_8006BBC4(void);
 void handleFishingRodUse(void);
 void func_8006C12C(void);
 void func_8006C134(void);
-void func_8006AB90(void);
 void func_8006C13C(void);
 void func_8006C1DC(void);
-void func_8006ADF4(void);
-void func_8006B4D4(void);
-void func_8006B4DC(void);
-void func_8006B584(void);
-void func_8006B61C(void);
-void func_8006B6EC(void);
-void func_8006B77C(void);
-void func_8006AC4C(void);
-
+void func_8006C628(u16, u16);
 void func_8006CD84();                                  
 void func_8006CDF8();                                  
 void func_8006CE6C();                                  
@@ -157,24 +415,29 @@ void func_8006E574();
 void func_8006E678();                                  
 
 static inline void resetAction() {
-    gPlayer.actionProgress = 0;
-    gPlayer.animationState = 0;
-    gPlayer.currentAction = 0;
-    gPlayer.nextAction = 0;
+    gPlayer.actionPhaseFrameCounter = 0;
+    gPlayer.actionPhase = 0;
+    gPlayer.actionHandler = 0;
+    gPlayer.animationHandler = 0;
 }
 
-static inline void startNewAction(u8 arg0, u8 arg1) {
-    gPlayer.currentAction = arg0;
-    gPlayer.actionProgress = 0;
-    gPlayer.animationState = 0;
-    gPlayer.nextAction = arg1;
+static inline void startAction(u8 arg0, u8 arg1) {
+    gPlayer.actionHandler = arg0;
+    gPlayer.actionPhaseFrameCounter = 0;
+    gPlayer.actionPhase = 0;
+    gPlayer.animationHandler = arg1;
 }
 
 static inline void resetMovement() {
     gPlayer.movementVector.x = 0.0f;
     gPlayer.movementVector.y = 0.0f;
     gPlayer.movementVector.z = 0.0f;
-    gPlayer.actionProgress = 0;
+    gPlayer.actionPhaseFrameCounter = 0;
+}
+
+static inline void reset() {
+    gPlayer.actionPhaseFrameCounter = 0;
+    gPlayer.actionPhase = 0;
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/player", setupPlayerEntity);
@@ -201,27 +464,26 @@ void setupPlayerEntity(u16 arg0, u8 resetPlayer) {
     setEntityDirection(ENTITY_PLAYER, convertSpriteToWorldDirection(gPlayer.direction, MAIN_MAP_INDEX));
     setEntityCoordinates(ENTITY_PLAYER, gPlayer.coordinates.x, gPlayer.coordinates.y, gPlayer.coordinates.z);
 
-    toolUse.unk_3 = 0;
-    toolUse.unk_4 = 0;
-    toolUse.unk_6 = 0;
-    toolUse.unk_8 = 0;
-    toolUse.unk_A = 0;
-    toolUse.unk_C = 0;
+    toolUse.stumpHitCounter = 0;
+    toolUse.stumpHitPositionX = 0;
+    toolUse.stumpHitPositionZ = 0;
+    toolUse.boulderHitCounter = 0;
+    toolUse.boulderHitPositionX = 0;
+    toolUse.boulderHitPositionZ = 0;
 
 }
   
-//INCLUDE_ASM("asm/nonmatchings/game/player", handleEatingAndDrinking);
+//INCLUDE_ASM("asm/nonmatchings/game/player", func_80065AA0);
 
-// handle eating/drinking
-void handleEatingAndDrinking(void) {
+void func_80065AA0(void) {
 
     if (gPlayer.heldItem) {
         
         switch (gPlayer.heldItem) {
 
-            case 0x58 ... 0x6F:
-            case 0xBA ... 0xC9:
-            case 0x7B ... 0xB2:
+            case DOG_HELD_ITEM ... 0x6F:
+            case BABY_HELD_ITEM ... 0xC9:
+            case PUPPY_1_HELD_ITEM ... 0xB2:
                 gPlayer.itemInfoIndex = func_800D5308(0, 2, gPlayer.heldItem, 4, 8);
                 break;
             default:
@@ -270,7 +532,7 @@ block_9:
 
 //INCLUDE_ASM("asm/nonmatchings/game/player", addItemToRucksack);
 
-u8 addItemToRucksack(u8 item) {
+inline u8 addItemToRucksack(u8 item) {
 
     u8 i;
     u8 found = 0xFF;
@@ -447,31 +709,29 @@ void func_80065F5C(void) {
     gPlayer.coordinates.z = entities[PLAYER].coordinates.z;
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", func_80065F94);
+//INCLUDE_ASM("asm/nonmatchings/game/player", getOffsetTileCoordinates );
 
-Vec3f func_80065F94(f32 arg1, u8 arg2) {
+Vec3f getOffsetTileCoordinates (f32 range, u8 directionalOffset) {
     
     Vec3f tileCoordinates;
 
     s8 buffer[10];
     s8 buffer2[10];
 
-    memcpy(buffer, D_8011F3F0, 9);
-    memcpy(buffer2, D_8011F3FC, 9);
+    memcpy(buffer, directionToTileDeltaX, 9);
+    memcpy(buffer2, directionToTileDeltaZ, 9);
     
     tileCoordinates = getEntityTileCoordinates(ENTITY_PLAYER);
 
     if (tileCoordinates.y != 65535.0f) {
 
-        tileCoordinates.x += buffer[convertWorldToSpriteDirection(entities[PLAYER].direction, gMainMapIndex)] * arg1;
-        tileCoordinates.z += buffer2[convertWorldToSpriteDirection(entities[PLAYER].direction, gMainMapIndex)] * arg1;
+        tileCoordinates.x += buffer[convertWorldToSpriteDirection(entities[PLAYER].direction, gMainMapIndex)] * range;
+        tileCoordinates.z += buffer2[convertWorldToSpriteDirection(entities[PLAYER].direction, gMainMapIndex)] * range;
 
-        // rotation
-        if (arg2 != 8) {
+        if (directionalOffset != 8) {
             
-            // TODO: is this a separate macro?
-            tileCoordinates.x += buffer[((entities[PLAYER].direction + getCurrentMapRotation(gMainMapIndex) + arg2) % 8)];
-            tileCoordinates.z += buffer2[((entities[PLAYER].direction + getCurrentMapRotation(gMainMapIndex) + arg2) % 8)];
+            tileCoordinates.x += buffer[((entities[PLAYER].direction + getCurrentMapRotation(gMainMapIndex) + directionalOffset) % 8)];
+            tileCoordinates.z += buffer2[((entities[PLAYER].direction + getCurrentMapRotation(gMainMapIndex) + directionalOffset) % 8)];
             
         }
     }
@@ -482,7 +742,7 @@ Vec3f func_80065F94(f32 arg1, u8 arg2) {
 
 // alternate without memcpy
 /*
-Vec3f* func_80065F94(Vec3f *arg0, f32 arg1, u8 arg2) {
+Vec3f* getOffsetTileCoordinates (Vec3f *arg0, f32 arg1, u8 arg2) {
      
     Vec3f vec;
     CoordinateOffsetData struct1;
@@ -491,15 +751,15 @@ Vec3f* func_80065F94(Vec3f *arg0, f32 arg1, u8 arg2) {
     s8 *ptr;
     s8 *ptr2;
 
-    struct1 = *(CoordinateOffsetData*)D_8011F3F0;
-    struct2 = *(CoordinateOffsetData*)D_8011F3FC;
+    struct1 = *(CoordinateOffsetData*)directionToTileDeltaX;
+    struct2 = *(CoordinateOffsetData*)directionToTileDeltaZ;
     
     ptr = (s8*)&struct1;
     ptr2 = (s8*)&struct2;
 
     getEntityTileCoordinates(&vec, 0);
 
-    if (vec.y != 65535.0f) {D_8011F3F0
+    if (vec.y != 65535.0f) {directionToTileDeltaX
 
         vec.x += ptr[(entities[PLAYER].direction + getCurrentMapRotation(gMainMapIndex)) % 8] * arg1;
         vec.z += ptr2[(entities[PLAYER].direction + getCurrentMapRotation(gMainMapIndex)) % 8] * arg1;
@@ -520,38 +780,38 @@ Vec3f* func_80065F94(Vec3f *arg0, f32 arg1, u8 arg2) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/player", setPlayerAction);
 
-void setPlayerAction(u16 action, u16 nextAction) {
+void setPlayerAction(u16 action, u16 animationHandler) {
 
     if (action != 0xFF) {
-        gPlayer.actionProgress = 0;
-        gPlayer.animationState = 0;
-        gPlayer.currentAction = action;
+        gPlayer.actionPhaseFrameCounter = 0;
+        gPlayer.actionPhase = 0;
+        gPlayer.actionHandler = action;
     }
 
-    if (nextAction != 0xFF) {
-        gPlayer.nextAction = nextAction;
+    if (animationHandler != 0xFF) {
+        gPlayer.animationHandler = animationHandler;
     }
     
 }
 
-//INCLUDE_RODATA("asm/nonmatchings/game/player", D_8011F3F0);
+//INCLUDE_RODATA("asm/nonmatchings/game/player", directionToTileDeltaX);
  
-const s8 D_8011F3F0[12] = { 0, 0xFF, 0xFF, 0xFF, 0, 1, 1, 1, 0, 0, 0, 0 };
+const s8 directionToTileDeltaX[12] = { 0, -1, -1, -1, 0, 1, 1, 1, 0, 0, 0, 0 };
 
-//INCLUDE_RODATA("asm/nonmatchings/game/player", D_8011F3FC);
+//INCLUDE_RODATA("asm/nonmatchings/game/player", directionToTileDeltaZ);
  
-const s8 D_8011F3FC[12] = { 1, 1, 0, 0xFF, 0xFF, 0xFF, 0, 1, 0, 0, 0, 0 };
+const s8 directionToTileDeltaZ[12] = { 1, 1, 0, -1, -1, -1, 0, 1, 0, 0, 0, 0 };
 
 //INCLUDE_ASM("asm/nonmatchings/game/player", func_8006623C);
 
 void func_8006623C(void) {
 
-    if (gPlayer.currentAction == 0) {
+    if (gPlayer.actionHandler == 0) {
         // handle button input
         func_800664C8();
     }
     
-    switch (gPlayer.currentAction - 1) {
+    switch (gPlayer.actionHandler - 1) {
         case 0:
             func_80067BC4();
             break;
@@ -606,10 +866,10 @@ void func_8006623C(void) {
         case 17:
             func_80069C5C();
             break;
-        case 18:
+        case WHISTLE_FOR_DOG:
             func_80069C90();
             break;
-        case WHISTLING:
+        case WHISTLE_FOR_HORSE:
             func_80069CC4();
             break;
         case DRINKING:
@@ -656,21 +916,24 @@ void func_8006623C(void) {
             break;
     }
     
+    // handle item state
     func_800D7010();
     // handle tool use
     func_800D0318();
 
 }
 
-#ifdef PERMUTER
+//INCLUDE_ASM("asm/nonmatchings/game/player", func_800664C8);
+
 void func_800664C8(void) {
 
     Vec3f vec;
-    Vec3f vec2;
+    u32 padding[3];
     Vec3f vec3;
     
     u8 temp;
     f32 tempF;
+    f32 temp2;
     
     u8 horseResult;
     u8 npcResult;
@@ -690,6 +953,7 @@ void func_800664C8(void) {
         controllers[CONTROLLER_1].buttonPressed &= BUTTON_A;
     }
     
+    // FIXME: fake
     do {} while (0);
 
     if (handleLevelInteraction(gBaseMapIndex)) {
@@ -714,8 +978,8 @@ void func_800664C8(void) {
         temp = 0xFF;
         set = TRUE;
         reset();
-        gPlayer.currentAction = 4;
-        gPlayer.nextAction = 6;
+        gPlayer.actionHandler = PICKING_UP;
+        gPlayer.animationHandler = PICKING_UP + 2;
     }
 
     if (!set) {
@@ -730,8 +994,8 @@ void func_800664C8(void) {
             set = TRUE;
             temp = 0xFF;
             reset();
-            gPlayer.currentAction = 4;
-            gPlayer.nextAction = 6;
+            gPlayer.actionHandler = 4;
+            gPlayer.animationHandler = 6;
         }
     }
 
@@ -745,12 +1009,12 @@ void func_800664C8(void) {
 
                     groundObjectIndex = getGroundObjectIndexFromCoordinates(vec3.x, vec3.z);
 
-                    if (groundObjectIndex == 0xFF || getGroundObjectFlags(groundObjectIndex) & 8) {
+                    if (groundObjectIndex == 0xFF || getGroundObjectPlayerInteractionsFlags(groundObjectIndex) & 8) {
                         
                         setDailyEventBit(6);
                         set = TRUE;
                         temp = 0xFF;
-                        startNewAction(0xC, 0xE);
+                        startAction(0xC, 0xE);
                         
                     }
                     
@@ -761,9 +1025,9 @@ void func_800664C8(void) {
 
     if (!set) {
         if (checkButtonPressed(CONTROLLER_1, BUTTON_C_DOWN)) {
-            if (gPlayer.heldItem && getItemFlags(gPlayer.heldItem) & 1) {
+            if (gPlayer.heldItem && getItemFlags(gPlayer.heldItem) & ITEM_EATABLE) {
                 set = TRUE;
-                startNewAction(6, 8);
+                startAction(EATING, EATING + 2);
             }
         }
     }
@@ -800,16 +1064,16 @@ void func_800664C8(void) {
                 
                 if (gPlayer.heldItem == 0 && gPlayer.currentTool) {
                         
-                    gPlayer.actionProgress = 0;
-                    gPlayer.animationState = 0;
+                    gPlayer.actionPhaseFrameCounter = 0;
+                    gPlayer.actionPhase = 0;
                     gPlayer.toolHeldCounter = 0;
-                    gPlayer.staminaLevelForCurrentToolUse = 0;
+                    gPlayer.currentToolLevel = 0;
 
                     if (!func_80067A24(1)) {
 
                         if (!func_80067B38()) {
 
-                            startNewAction(1, 3);
+                            startAction(1, 3);
                             set = TRUE;
                             temp = 0xFF;
                             
@@ -828,6 +1092,7 @@ void func_800664C8(void) {
     }
 
     if (!set) {
+        // show text for item being held
         if (!(gPlayer.flags & 1) && !checkDailyEventBit(0x12)) {
             if (checkButtonPressed(CONTROLLER_1, BUTTON_Z)) {
                 if (gPlayer.heldItem != 0) {
@@ -841,20 +1106,22 @@ void func_800664C8(void) {
 
     if (!set) {
         if (!(gPlayer.flags & 1)) {
+            // whistle for dog
             if (checkButtonPressed(CONTROLLER_1, BUTTON_C_RIGHT)) {
                 set = TRUE;
                 temp = 0xFF;
-                startNewAction(0x12, 0x13);
+                startAction(WHISTLE_FOR_DOG, WHISTLE_FOR_DOG + 1);
             }
         }
     }
 
     if (!set) {
         if (!(gPlayer.flags & 1)) {
+            // whistle for horse
             if (checkButtonPressed(CONTROLLER_1, BUTTON_C_LEFT)) {
                 set = TRUE;
                 temp = 0xFF;
-                startNewAction(0x13, 0x14);
+                startAction(WHISTLE_FOR_HORSE, WHISTLE_FOR_HORSE + 1);
             }
         }
     }
@@ -862,11 +1129,11 @@ void func_800664C8(void) {
     if (!set) {
         if (!(gPlayer.flags & 1)) {
             if (checkButtonPressed(CONTROLLER_1, BUTTON_C_UP)) {
-                if (gPlayer.heldItem != 0 && getItemFlags(gPlayer.heldItem) & 2) {
+                if (gPlayer.heldItem != 0 && getItemFlags(gPlayer.heldItem) & ITEM_STORAGABLE_IN_RUCKSACK) {
                     if (addItemToRucksack(gPlayer.heldItem) != 0xFF) {
                         set = TRUE;
                         temp = 0xFF;
-                        startNewAction(0x15, 0x16);
+                        startAction(PUTTING_ITEM_IN_RUCKSACK, PUTTING_ITEM_IN_RUCKSACK + 1);
                     }
                 }
             }
@@ -877,9 +1144,11 @@ void func_800664C8(void) {
         if (!(gPlayer.flags & 1) && !checkDailyEventBit(0x13)) {
             if (checkButtonPressed(CONTROLLER_1, BUTTON_START)) {
                 set = TRUE;
+                // pause everything
                 func_80059334();
+                // load overlay screen
                 func_8005CA2C(1, 0x14);
-                setAudio(8);
+                setAudio(MENU_OPEN_SFX);
                 temp = 0xFF;
             }
         }
@@ -929,7 +1198,7 @@ void func_800664C8(void) {
 
     if (!set) {
         if (checkButtonPressed(CONTROLLER_1, BUTTON_A) && entities[ENTITY_PLAYER].collision != 0xFFFF) {
-            gPlayer.nextAction = 0;
+            gPlayer.animationHandler = 0;
             setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0);
             set = TRUE;
             temp = 0xFF;
@@ -952,20 +1221,23 @@ void func_800664C8(void) {
             temp = convertWorldToSpriteDirection(temp, MAIN_MAP_INDEX);
             
             if (tempF >= 4.0f) {
-                gPlayer.actionProgress = 0;
-                gPlayer.animationState = 0;
-                gPlayer.currentAction = 0;
-                gPlayer.nextAction = 2;
+                gPlayer.actionPhaseFrameCounter = 0;
+                gPlayer.actionPhase = 0;
+                gPlayer.actionHandler = 0;
+                gPlayer.animationHandler = 2;
             } else {
-                gPlayer.actionProgress = 0;
-                gPlayer.animationState = 0;
-                gPlayer.currentAction = 0;
-                gPlayer.nextAction = 1;
+                gPlayer.actionPhaseFrameCounter = 0;
+                gPlayer.actionPhase = 0;
+                gPlayer.actionHandler = 0;
+                gPlayer.animationHandler = 1;
             }
 
             direction = convertSpriteToWorldDirection(temp, MAIN_MAP_INDEX);
             setEntityDirection(ENTITY_PLAYER, direction);
 
+            // FIXME: likely fake
+            temp2 = 0;
+            
         } else {
             
             tempF = 0.0f;
@@ -975,8 +1247,8 @@ void func_800664C8(void) {
         
         tempF = (s8)tempF;
 
-        vec = getMovementVectorFromDirection(tempF, temp, 0);
-
+        vec = getMovementVectorFromDirection(tempF, temp, temp2);
+        
         setEntityMovementVector(ENTITY_PLAYER, vec.x, vec.y, vec.z, tempF);
         
     }
@@ -985,12 +1257,10 @@ void func_800664C8(void) {
     gPlayer.unk_60 = tempF;
     
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game/player", func_800664C8);
-#endif
 
 //INCLUDE_ASM("asm/nonmatchings/game/player", func_80066F98);
 
+// mount horse
 void func_80066F98(void) {
 
     deactivateEntity(horseInfo.entityIndex);
@@ -1025,7 +1295,7 @@ void func_80067034(void) {
                 
                 groundObjectIndex = getGroundObjectIndexFromCoordinates(vec1.x, vec1.z);
                 
-                if (groundObjectIndex == 0xFF || (getGroundObjectFlags(groundObjectIndex) & 8)) {
+                if (groundObjectIndex == 0xFF || (getGroundObjectPlayerInteractionsFlags(groundObjectIndex) & 8)) {
                     set = TRUE;
                 }
             }
@@ -1056,10 +1326,10 @@ void func_80067034(void) {
         
         entities[PLAYER].direction = direction;
 
-        startNewAction(0xE, 0x10);
+        startAction(0xE, 0x10);
 
-        gPlayer.animationState = 0;
-        gPlayer.actionProgress = 0;
+        gPlayer.actionPhase = 0;
+        gPlayer.actionPhaseFrameCounter = 0;
 
     }
 
@@ -1078,19 +1348,19 @@ void func_80067290(u8 arg0) {
 
         if ((getItemFlags(gPlayer.heldItem) & 0x20) && (getLevelInteractionIndexFromEntityPosition(ENTITY_PLAYER, 0.0f, 32.0f) == 0x11) && gBaseMapIndex == COOP && !func_8009B7BC()) {
             set = TRUE;
-            startNewAction(5, 7);
+            startAction(PUTTING_DOWN, PUTTING_DOWN + 2);
         }
 
         if ((getItemFlags(gPlayer.heldItem) & 0x2000) && !set && (getLevelInteractionIndexFromEntityPosition(ENTITY_PLAYER, 0.0f, 32.0f) == 0x11) && gBaseMapIndex == FARM) {
             set = TRUE;
-            startNewAction(5, 7);
+            startAction(PUTTING_DOWN, PUTTING_DOWN + 2);
         }
 
         // check level interaction 0x17 on farm
         if (func_800ACEAC(gBaseMapIndex) != 0xFF) {
             
             if (getItemFlags(gPlayer.heldItem) & 1 && !set) {    
-                startNewAction(0x1F, 0x20);
+                startAction(0x1F, 0x20);
             }
             
             set = TRUE;
@@ -1100,7 +1370,7 @@ void func_80067290(u8 arg0) {
         // drop into water
         if ((getItemFlags(gPlayer.heldItem) & 2) && !set && func_800ACEF8(gBaseMapIndex) != 0xFF) {
             set = TRUE;
-            startNewAction(0x20, 0x21);
+            startAction(0x20, 0x21);
         }
         
     }
@@ -1110,9 +1380,9 @@ void func_80067290(u8 arg0) {
 
         // shipping bins
         if (func_800ACD70(gBaseMapIndex) != 0xFF || arg0) {
-            startNewAction(3, 5);
+            startAction(3, 5);
         } else {
-            startNewAction(2, 4);
+            startAction(THROWING, THROWING + 2);
         }
 
         set = TRUE;
@@ -1125,9 +1395,9 @@ void func_80067290(u8 arg0) {
 
             // check barn level interaction
             if (func_800ACDF4(gBaseMapIndex) != 0xFF) {
-                startNewAction(5, 7);
+                startAction(PUTTING_DOWN, PUTTING_DOWN + 2);
             } else {
-                startNewAction(2, 4);
+                startAction(THROWING, THROWING + 2);
             }
 
             set = TRUE;
@@ -1142,8 +1412,8 @@ void func_80067290(u8 arg0) {
 
                 groundObjectIndex = getGroundObjectIndexFromCoordinates(vec.x, vec.z);
     
-                if (groundObjectIndex == 0xFF || getGroundObjectFlags(groundObjectIndex) & 8) {
-                    startNewAction(5, 7);
+                if (groundObjectIndex == 0xFF || getGroundObjectPlayerInteractionsFlags(groundObjectIndex) & 8) {
+                    startAction(PUTTING_DOWN, PUTTING_DOWN + 2);
                 }
                 
             
@@ -1154,7 +1424,7 @@ void func_80067290(u8 arg0) {
         }
 
         if ((getItemFlags(gPlayer.heldItem) & 0x100) && !set) {
-            startNewAction(5, 7);
+            startAction(PUTTING_DOWN, PUTTING_DOWN + 2);
             set = TRUE;
         }
         
@@ -1164,7 +1434,7 @@ void func_80067290(u8 arg0) {
 
                 // baby
                 if (getLevelInteractionIndexFromEntityPosition(ENTITY_PLAYER, 0.0f, 32.0f) == 0x16) {
-                    startNewAction(5, 7);
+                    startAction(PUTTING_DOWN, PUTTING_DOWN + 2);
                 }
                 
             } 
@@ -1181,8 +1451,8 @@ void func_80067290(u8 arg0) {
     
                 groundObjectIndex = getGroundObjectIndexFromCoordinates(vec.x, vec.z);
     
-                if (groundObjectIndex == 0xFF || getGroundObjectFlags(groundObjectIndex) & 8) {
-                    startNewAction(5, 7);
+                if (groundObjectIndex == 0xFF || getGroundObjectPlayerInteractionsFlags(groundObjectIndex) & 8) {
+                    startAction(PUTTING_DOWN, PUTTING_DOWN + 2);
                 }
             
             }
@@ -1191,12 +1461,12 @@ void func_80067290(u8 arg0) {
             
         }
 
-        if ((getItemFlags(gPlayer.heldItem) & 0x10) && !set) {
+        if ((getItemFlags(gPlayer.heldItem) & ITEM_PLACEABLE_ON_GROUND) && !set) {
 
             groundObjectIndex = getGroundObjectIndexFromPlayerPosition(1.0f, 8);
 
             if (groundObjectIndex && groundObjectIndex < 4 && groundObjectIndex != 0xFF) {
-                startNewAction(5, 7);
+                startAction(PUTTING_DOWN, PUTTING_DOWN + 2);
             }  
             
             set = TRUE;
@@ -1204,16 +1474,16 @@ void func_80067290(u8 arg0) {
         }
     
         if (!set) {    
-            startNewAction(2, 4);
+            startAction(2, 4);
         }
         
     }
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", func_80067950);
+//INCLUDE_ASM("asm/nonmatchings/game/player", checkStaminaExhaustionLevel);
 
-inline u8 func_80067950(void) {
+inline u8 checkStaminaExhaustionLevel(void) {
 
     s32 temp;
     u8 temp2;
@@ -1222,13 +1492,9 @@ inline u8 func_80067950(void) {
     result = 0;
     temp = gMaximumStamina;
     
-    if (temp < 0) {
-        temp += 3;
-    }
+    temp2 = temp / 4;
 
-    temp2 = (u32)temp >> 2;
-
-    if (D_8011421C[gPlayer.currentTool][gPlayer.staminaLevelForCurrentToolUse] > gPlayer.currentStamina) {
+    if (D_8011421C[gPlayer.currentTool][gPlayer.currentToolLevel] > gPlayer.currentStamina) {
         result = 4;
     } else {
         
@@ -1254,12 +1520,12 @@ inline u8 checkFatigueLevel(void) {
 
     u8 result;
      
-    if (gPlayer.fatigue.counter == 100) {
+    if (gPlayer.fatigueCounter == MAX_FATIGUE_POINTS) {
         result = 3;
-    } else if (gPlayer.fatigue.counter >= 75) {
+    } else if (gPlayer.fatigueCounter >= 75) {
         result = 2;
     }  else {
-        result = (gPlayer.fatigue.counter < 50) == 0;  
+        result = (gPlayer.fatigueCounter < 50) == 0;  
     }
 
     return result;
@@ -1271,14 +1537,14 @@ inline u8 checkFatigueLevel(void) {
 bool func_80067A24(u8 arg0) {
 
     bool result = FALSE;
-    u8 fatigueLevel;
+    u8 staminaExhaustionLevel;
 
-    fatigueLevel = func_80067950();
+    staminaExhaustionLevel = checkStaminaExhaustionLevel();
 
-    if (fatigueLevel && fatigueLevel != gPlayer.fatigue.level && arg0 == 0 || fatigueLevel == 4)  {
+    if (staminaExhaustionLevel && staminaExhaustionLevel != gPlayer.staminaExhaustionLevel && arg0 == 0 || staminaExhaustionLevel == 4)  {
         result = TRUE;
-        startNewAction(7, 9);
-        gPlayer.fatigue.level = fatigueLevel;
+        startAction(7, 9);
+        gPlayer.staminaExhaustionLevel = staminaExhaustionLevel;
     }
 
     return result; 
@@ -1291,12 +1557,12 @@ bool func_80067B38(void) {
 
     bool set = FALSE;
     
-    u32 fatigue = checkFatigueLevel();
+    u32 fatigueThreshold = checkFatigueLevel();
 
-    if (fatigue != 0 && fatigue != gPlayer.fatigue.unk_2) {
+    if (fatigueThreshold != 0 && fatigueThreshold != gPlayer.fatigueThreshold) {
         set = TRUE;
-        startNewAction(0x19, 0x1A);
-        gPlayer.fatigue.unk_2 = fatigue;
+        startAction(0x19, 0x1A);
+        gPlayer.fatigueThreshold = fatigueThreshold;
     }
 
     return set;
@@ -1311,44 +1577,45 @@ void func_80067BC4(void) {
 
     if (checkEntityAnimationStateChanged(ENTITY_PLAYER)) {
 
-        if (gPlayer.animationState == 0) {
+        if (gPlayer.actionPhase == 0) {
 
-            if (gPlayer.actionProgress == 0) {
+            if (gPlayer.actionPhaseFrameCounter == 0) {
                 gPlayer.toolHeldCounter = 0;
-                gPlayer.staminaLevelForCurrentToolUse = 0;
+                gPlayer.currentToolLevel = 0;
                 toggleDailyEventBit(0x14);
-                gPlayer.actionProgress++;
+                gPlayer.actionPhaseFrameCounter++;
             }
 
             if (!checkButtonHeld(CONTROLLER_1, BUTTON_B)) {
 
-                gPlayer.animationState++;
-                gPlayer.currentStamina += adjustValue(gPlayer.currentStamina, -D_8011421C[gPlayer.currentTool][gPlayer.staminaLevelForCurrentToolUse], gMaximumStamina);
+                gPlayer.actionPhase++;
+                gPlayer.currentStamina += adjustValue(gPlayer.currentStamina, -D_8011421C[gPlayer.currentTool][gPlayer.currentToolLevel], gMaximumStamina);
 
                 if (((SUNNY < gWeather && gWeather < 4) || !(5 < gHour && gHour < 18)) && gBaseMapIndex != GREENHOUSE) {
 
+                    // kappa power nut
                     if (checkLifeEventBit(0x5F)) {
-                        gPlayer.fatigue.counter += adjustValue(gPlayer.fatigue.counter, D_8011421C[gPlayer.currentTool][gPlayer.staminaLevelForCurrentToolUse] / 2, 100);
+                        gPlayer.fatigueCounter += adjustValue(gPlayer.fatigueCounter, D_8011421C[gPlayer.currentTool][gPlayer.currentToolLevel] / 2, MAX_FATIGUE_POINTS);
                     } else {
                         
                         // fake match if D_8011421C isn't volatile
-                        // if (D_8011421C[gPlayer.currentTool][gPlayer.staminaLevelForCurrentToolUse] + 1) {
-                        //     temp = D_8011421C[gPlayer.currentTool][gPlayer.staminaLevelForCurrentToolUse];
+                        // if (D_8011421C[gPlayer.currentTool][gPlayer.currentToolLevel] + 1) {
+                        //     temp = D_8011421C[gPlayer.currentTool][gPlayer.currentToolLevel];
                         // }
                         
-                        // temp = D_8011421C[gPlayer.currentTool][gPlayer.staminaLevelForCurrentToolUse];
+                        // temp = D_8011421C[gPlayer.currentTool][gPlayer.currentToolLevel];
                         
-                        gPlayer.fatigue.counter += adjustValue(gPlayer.fatigue.counter, D_8011421C[gPlayer.currentTool][gPlayer.staminaLevelForCurrentToolUse], 100);
+                        gPlayer.fatigueCounter += adjustValue(gPlayer.fatigueCounter, D_8011421C[gPlayer.currentTool][gPlayer.currentToolLevel], MAX_FATIGUE_POINTS);
                         
                     }
 
                 }
                 
-            } else if (gPlayer.toolHeldCounter >= 16 && gPlayer.staminaLevelForCurrentToolUse < getToolLevel(gPlayer.currentTool)) {
+            } else if (gPlayer.toolHeldCounter >= 16 && gPlayer.currentToolLevel < getToolLevel(gPlayer.currentTool)) {
 
-                if (D_8011421C[gPlayer.currentTool][gPlayer.staminaLevelForCurrentToolUse] && !(D_8011421C[gPlayer.currentTool][gPlayer.staminaLevelForCurrentToolUse+1] > gPlayer.currentStamina)) {
+                if (D_8011421C[gPlayer.currentTool][gPlayer.currentToolLevel] && !(D_8011421C[gPlayer.currentTool][gPlayer.currentToolLevel+1] > gPlayer.currentStamina)) {
                     gPlayer.toolHeldCounter = 0;
-                    gPlayer.staminaLevelForCurrentToolUse++;
+                    gPlayer.currentToolLevel++;
                 }
 
                 
@@ -1358,8 +1625,8 @@ void func_80067BC4(void) {
 
         } else {
             
-            gPlayer.currentAction = 0xFE;
-            gPlayer.animationState++;
+            gPlayer.actionHandler = 0xFE;
+            gPlayer.actionPhase++;
             
         }
         
@@ -1372,13 +1639,13 @@ void func_80067BC4(void) {
 void func_80067E5C(void) {
 
     // FIXME: possibly a union. This matches:
-    // if (!(gPlayer.actionUnion.actionProgress & ~0xFF)) {
-    if (!(*(s32*)&gPlayer.actionProgress & ~0xFF)) {
+    // if (!(gPlayer.actionUnion.actionPhaseFrameCounter & ~0xFF)) {
+    if (!(*(s32*)&gPlayer.actionPhaseFrameCounter & ~0xFF)) {
         setAudio(0x26);
         func_800D5548(gPlayer.itemInfoIndex);
         func_800D5390(1, 3, gPlayer.heldItem, 0, 8);
         gPlayer.heldItem = 0;
-        gPlayer.actionProgress = 1;
+        gPlayer.actionPhaseFrameCounter = 1;
     }
 
 }
@@ -1387,13 +1654,13 @@ void func_80067E5C(void) {
 
 void func_80067EE0(void) {
 
-    if (gPlayer.actionProgress == 3) {
+    if (gPlayer.actionPhaseFrameCounter == 3) {
         func_800D55E4(gPlayer.itemInfoIndex, 0xE);
         gPlayer.heldItem = 0;
-        gPlayer.animationState++;
+        gPlayer.actionPhase++;
     }
 
-    gPlayer.actionProgress++;
+    gPlayer.actionPhaseFrameCounter++;
 
 }
 
@@ -1401,16 +1668,17 @@ void func_80067EE0(void) {
 
 void func_80067F50(void) {
 
-    if (!(*(s32*)&gPlayer.actionProgress & ~0xFF)) {
+    // FIXME
+    if (!(*(s32*)&gPlayer.actionPhaseFrameCounter & ~0xFF)) {
         
-        setAudio(0x24);
-        startNewAction(4, 6);
+        setAudio(PICKING_UP_SFX);
+        startAction(PICKING_UP, 6);
 
         switch (gPlayer.heldItem) {
 
-            case 0x58 ... 0x6F:
-            case 0xBA ... 0xC9:
-            case 0x7B ... 0xB2:
+            case DOG_HELD_ITEM ... 0x6F:
+            case BABY_HELD_ITEM ... 0xC9:
+            case PUPPY_1_HELD_ITEM ... 0xB2:
                 gPlayer.itemInfoIndex = func_800D5308(0, 6, gPlayer.heldItem, 4, 8);
                 break;
             default:
@@ -1421,14 +1689,14 @@ void func_80067F50(void) {
             
     }
     
-    if (gPlayer.actionProgress == 4) {
+    if (gPlayer.actionPhaseFrameCounter == 4) {
     
         func_800D55E4(gPlayer.itemInfoIndex, 7);
-        gPlayer.animationState++;
+        gPlayer.actionPhase++;
     
     }
     
-    gPlayer.actionProgress++;
+    gPlayer.actionPhaseFrameCounter++;
 
 }
 
@@ -1438,14 +1706,14 @@ void func_8006807C(void) {
 
     if (checkEntityAnimationStateChanged(ENTITY_PLAYER)) {
      
-        if (gPlayer.animationState == 0) {
+        if (gPlayer.actionPhase == 0) {
             func_800D55E4(gPlayer.itemInfoIndex, 9);
             gPlayer.heldItem = 0;
-            setAudio(0x24);
+            setAudio(PICKING_UP_SFX);
         }
 
-        if (gPlayer.animationState != 1 || (gPlayer.actionProgress++, gPlayer.actionProgress == 2)) {
-            gPlayer.animationState++;
+        if (gPlayer.actionPhase != 1 || (gPlayer.actionPhaseFrameCounter++, gPlayer.actionPhaseFrameCounter == 2)) {
+            gPlayer.actionPhase++;
         }
 
     }   
@@ -1458,30 +1726,30 @@ void func_8006807C(void) {
 // putting down action
 void func_80068120(void) {
 
-    if (gPlayer.animationState == 2) {
+    if (gPlayer.actionPhase == 2) {
 
-        if (gPlayer.actionProgress == 0xA) {
+        if (gPlayer.actionPhaseFrameCounter == 10) {
             func_800D55E4(gPlayer.itemInfoIndex, 1);
             gPlayer.heldItem = 0;
-            gPlayer.animationState++;
+            gPlayer.actionPhase++;
             setAudio(0x25); 
         }
 
-        gPlayer.actionProgress++;
+        gPlayer.actionPhaseFrameCounter++;
     }
 
-    if (gPlayer.animationState == 0) {
+    if (gPlayer.actionPhase == 0) {
 
-        if (gPlayer.actionProgress == 0) {
+        if (gPlayer.actionPhaseFrameCounter == 0) {
             gPlayer.currentStamina += adjustValue(gPlayer.currentStamina, func_800D5B00(gPlayer.heldItem), gMaximumStamina);
-            gPlayer.fatigue.counter += adjustValue(gPlayer.fatigue.counter, -func_800D5B18(gPlayer.heldItem), 100);
+            gPlayer.fatigueCounter += adjustValue(gPlayer.fatigueCounter, -func_800D5B18(gPlayer.heldItem), 100);
         }
 
-        if (gPlayer.actionProgress == 0x1E) {
-            gPlayer.animationState++;
+        if (gPlayer.actionPhaseFrameCounter == 30) {
+            gPlayer.actionPhase++;
         }
 
-        gPlayer.actionProgress++;
+        gPlayer.actionPhaseFrameCounter++;
 
     }
 
@@ -1491,20 +1759,20 @@ void func_80068120(void) {
 
 void func_80068258(void) {
 
-    if (gPlayer.animationState == 0) {
+    if (gPlayer.actionPhase == 0) {
     
         setEntityCoordinates(ENTITY_PLAYER, -140.0f, 0.0f, -152.0f);
         setEntityCollidable(ENTITY_PLAYER, FALSE);
         setEntityYMovement(ENTITY_PLAYER, FALSE);
         func_8002FF38(ENTITY_PLAYER, FALSE);
     
-        gPlayer.animationState++;
+        gPlayer.actionPhase++;
 
         func_80034DC8(MAIN_MAP_INDEX, 0, 7);
     
     }
 
-    if (gPlayer.animationState == 3) {
+    if (gPlayer.actionPhase == 3) {
         func_80034DC8(MAIN_MAP_INDEX, 0, 8);
     }
 
@@ -1513,8 +1781,8 @@ void func_80068258(void) {
 //INCLUDE_ASM("asm/nonmatchings/game/player", func_800682F8);
 
 void func_800682F8(void) {
-    if (checkButtonHeld(CONTROLLER_1, 0xFFFFFFFF) && gPlayer.animationState < 4) {
-        gPlayer.animationState = 4;
+    if (checkButtonHeld(CONTROLLER_1, 0xFFFFFFFF) && gPlayer.actionPhase < 4) {
+        gPlayer.actionPhase = 4;
     }
 }
 
@@ -1522,30 +1790,30 @@ void func_800682F8(void) {
 
 void func_80068340(void) {
 
-    if (gPlayer.animationState == 0) {
+    if (gPlayer.actionPhase == 0) {
 
-        gPlayer.actionProgress++;
+        gPlayer.actionPhaseFrameCounter++;
         
-        if (gPlayer.actionProgress == 2) {
-            gPlayer.animationState++;
+        if (gPlayer.actionPhaseFrameCounter == 2) {
+            gPlayer.actionPhase++;
         }
         
     }
 
-    if (gPlayer.animationState == 3) {
+    if (gPlayer.actionPhase == 3) {
 
-        gPlayer.actionProgress++;
+        gPlayer.actionPhaseFrameCounter++;
         
-        if (gPlayer.actionProgress == 2) {
-            gPlayer.animationState++;
+        if (gPlayer.actionPhaseFrameCounter == 2) {
+            gPlayer.actionPhase++;
         }
         
     }
 
-    if (gPlayer.animationState == 2) {
+    if (gPlayer.actionPhase == 2) {
         setMainLoopCallbackFunctionIndex(0x12);
-        gPlayer.actionProgress = 0;
-        gPlayer.animationState++;
+        gPlayer.actionPhaseFrameCounter = 0;
+        gPlayer.actionPhase++;
     }
     
 }
@@ -1554,30 +1822,30 @@ void func_80068340(void) {
 
 void func_80068410(void) {
 
-    if (gPlayer.animationState == 0) {
-        if (gPlayer.actionProgress == 4) {
+    if (gPlayer.actionPhase == 0) {
+        if (gPlayer.actionPhaseFrameCounter == 4) {
             if (func_800DCAA0(gPlayer.shopItemIndex)) {
                 func_800D55E4(gPlayer.itemInfoIndex, 7);
             }
-            gPlayer.animationState++;
+            gPlayer.actionPhase++;
         }
-        gPlayer.actionProgress++;
+        gPlayer.actionPhaseFrameCounter++;
     }
     
-    if (gPlayer.animationState == 2) {
+    if (gPlayer.actionPhase == 2) {
         if (func_800DCAA0(gPlayer.shopItemIndex)) {
             func_800D55E4(gPlayer.itemInfoIndex, 1);
         }
         loadShopItemSprite(gPlayer.shopItemIndex);
-        gPlayer.animationState = 5;
+        gPlayer.actionPhase = 5;
     }
     
-    if (gPlayer.animationState == 3) {
+    if (gPlayer.actionPhase == 3) {
         if (func_800DCAA0(gPlayer.shopItemIndex)) {
             func_800D55E4(gPlayer.itemInfoIndex, 1);
         }
         func_800DC9C0(gPlayer.shopItemIndex);
-        gPlayer.animationState = 5;
+        gPlayer.actionPhase = 5;
     }
 
 }
@@ -1589,15 +1857,15 @@ void func_80068558(void) {
     Vec3f vec;
     Vec3f vec2;
     
-    if (gPlayer.animationState) {
+    if (gPlayer.actionPhase) {
         if (checkEntityAnimationStateChanged(ENTITY_PLAYER)) {
-            gPlayer.animationState++;
+            gPlayer.actionPhase++;
         }
     }
 
-    if (gPlayer.animationState == 0) {
+    if (gPlayer.actionPhase == 0) {
 
-        if (gPlayer.actionProgress == 0) {
+        if (gPlayer.actionPhaseFrameCounter == 0) {
 
             setAudio(4);
             
@@ -1614,25 +1882,26 @@ void func_80068558(void) {
             
         }
 
-        if (gPlayer.actionProgress < 15) {
+        if (gPlayer.actionPhaseFrameCounter < 15) {
 
             setEntityMovementVector(ENTITY_PLAYER, gPlayer.movementVector.x, 0.0f, gPlayer.movementVector.z, 4.0f);
             
+            // parabolic equation: y = initial_y - gravity * (time - peak_time)²
             entities->coordinates.y = 
                 ((gPlayer.movementVector.y 
-                     + (((gPlayer.actionProgress - 7) * (gPlayer.actionProgress - 7)) * -0.4f)) 
+                     + (((gPlayer.actionPhaseFrameCounter - 7) * (gPlayer.actionPhaseFrameCounter - 7)) * -0.4f)) 
                      + 19.6);
             
         } else {
             
             setEntityMovementVector(ENTITY_PLAYER, 0.0f, 0.0f, 0.0f, 0.0f);
-            gPlayer.animationState++;
-            gPlayer.actionProgress = 0;
+            gPlayer.actionPhase++;
+            gPlayer.actionPhaseFrameCounter = 0;
             toggleDailyEventBit(6);
             
         }
 
-        gPlayer.actionProgress++;
+        gPlayer.actionPhaseFrameCounter++;
         
     }
     
@@ -1645,15 +1914,15 @@ void func_80068738(void) {
     Vec3f vec;
     Vec3f vec2;
     
-    if (gPlayer.animationState) {
+    if (gPlayer.actionPhase) {
         if (checkEntityAnimationStateChanged(ENTITY_PLAYER)) {
-            gPlayer.animationState++;
+            gPlayer.actionPhase++;
         }
     }
 
-    if (gPlayer.animationState == 0) {
+    if (gPlayer.actionPhase == 0) {
 
-        if (gPlayer.actionProgress == 0) {
+        if (gPlayer.actionPhaseFrameCounter == 0) {
 
             setAudio(4);
             
@@ -1670,25 +1939,26 @@ void func_80068738(void) {
             
         }
 
-        if (gPlayer.actionProgress < 27) {
+        if (gPlayer.actionPhaseFrameCounter < 27) {
 
             setEntityMovementVector(ENTITY_PLAYER, gPlayer.movementVector.x, 0.0f, gPlayer.movementVector.z, 4.0f);
             
+            // parabolic equation: y = initial_y - gravity * (time - peak_time)²
             entities->coordinates.y = 
                 ((gPlayer.movementVector.y 
-                     + (((gPlayer.actionProgress - 7) * (gPlayer.actionProgress - 7)) * -0.4f)) 
+                     + (((gPlayer.actionPhaseFrameCounter - 7) * (gPlayer.actionPhaseFrameCounter - 7)) * -0.4f)) 
                      + 19.6);
             
         } else {
             
             setEntityMovementVector(ENTITY_PLAYER, 0.0f, 0.0f, 0.0f, 0.0f);
-            gPlayer.animationState++;
-            gPlayer.actionProgress = 0;
+            gPlayer.actionPhase++;
+            gPlayer.actionPhaseFrameCounter = 0;
             toggleDailyEventBit(6);
             
         }
 
-        gPlayer.actionProgress++;
+        gPlayer.actionPhaseFrameCounter++;
         
     }
     
@@ -1701,13 +1971,13 @@ void func_80068918(void) {}
   
 void func_80068920(void) {
  
-    if (gPlayer.actionProgress == 3) {
+    if (gPlayer.actionPhaseFrameCounter == 3) {
         func_800D55E4(gPlayer.itemInfoIndex, 0x12);
         gPlayer.heldItem = 0;
-        gPlayer.animationState++;
+        gPlayer.actionPhase++;
     }
 
-    gPlayer.actionProgress++;
+    gPlayer.actionPhaseFrameCounter++;
     
 }
 
@@ -1715,13 +1985,13 @@ void func_80068920(void) {
 
 void func_80068990(void) {
 
-    if (gPlayer.actionProgress == 3) {
+    if (gPlayer.actionPhaseFrameCounter == 3) {
         func_800D55E4(gPlayer.itemInfoIndex, 0x14);
         gPlayer.heldItem = 0;
-        gPlayer.animationState++;
+        gPlayer.actionPhase++;
     }
 
-    gPlayer.actionProgress++;
+    gPlayer.actionPhaseFrameCounter++;
 
 }
 
@@ -1732,16 +2002,16 @@ void func_80068A00(void) {}
 
 void func_80068A08(void) {
 
-    if (gPlayer.animationState == 0) {
+    if (gPlayer.actionPhase == 0) {
         
-        if (gPlayer.actionProgress == 0) {
+        if (gPlayer.actionPhaseFrameCounter == 0) {
             gPlayer.itemInfoIndex = func_800D5308(0, 2, gPlayer.heldItem, 0, 8);
         }
         
-        if (gPlayer.actionProgress >= 0x1E) {
-            gPlayer.animationState = 1;
+        if (gPlayer.actionPhaseFrameCounter >= 30) {
+            gPlayer.actionPhase = 1;
         } else {
-            gPlayer.actionProgress++;
+            gPlayer.actionPhaseFrameCounter++;
         }
     }
 
@@ -1753,9 +2023,9 @@ void func_80068A98(void) {
 
     Vec3f vec;
 
-    if (gPlayer.animationState == 0) {
+    if (gPlayer.actionPhase == 0) {
 
-        if (gPlayer.actionProgress == 0) {
+        if (gPlayer.actionPhaseFrameCounter == 0) {
 
             setAudio(4);
             setEntityCollidable(ENTITY_PLAYER, FALSE);
@@ -1766,19 +2036,19 @@ void func_80068A98(void) {
             
         }
 
-        if (gPlayer.actionProgress < 6) {
+        if (gPlayer.actionPhaseFrameCounter < 6) {
             setEntityMovementVector(ENTITY_PLAYER, gPlayer.movementVector.x, 0.0f, gPlayer.movementVector.z, 4.0f);
         } else {
             setEntityMovementVector(ENTITY_PLAYER, 0.0f, 0.0f, 0.0f, 0.0f);
-            gPlayer.animationState++;
-            gPlayer.actionProgress = 0;
+            gPlayer.actionPhase++;
+            gPlayer.actionPhaseFrameCounter = 0;
         }
 
-        gPlayer.actionProgress++;
+        gPlayer.actionPhaseFrameCounter++;
         
     }
 
-    if (gPlayer.animationState) {
+    if (gPlayer.actionPhase) {
         
         setEntityCollidable(ENTITY_PLAYER, TRUE);
         setEntityYMovement(ENTITY_PLAYER, TRUE);
@@ -1805,9 +2075,9 @@ void func_80068C8C(void) {
 
     Vec3f vec;
 
-    if (gPlayer.animationState == 0) {
+    if (gPlayer.actionPhase == 0) {
 
-        if (gPlayer.actionProgress == 0) {
+        if (gPlayer.actionPhaseFrameCounter == 0) {
 
             setAudio(4);
             setEntityCollidable(ENTITY_PLAYER, FALSE);
@@ -1818,19 +2088,19 @@ void func_80068C8C(void) {
              
         }
 
-        if (gPlayer.actionProgress < 8) {
+        if (gPlayer.actionPhaseFrameCounter < 8) {
             setEntityMovementVector(ENTITY_PLAYER, gPlayer.movementVector.x, 0.0f, gPlayer.movementVector.z, 4.0f);
         } else {
             setEntityMovementVector(ENTITY_PLAYER, 0.0f, 0.0f, 0.0f, 0.0f);
-            gPlayer.animationState++;
-            gPlayer.actionProgress = 0;
+            gPlayer.actionPhase++;
+            gPlayer.actionPhaseFrameCounter = 0;
         }
 
-        gPlayer.actionProgress++;
+        gPlayer.actionPhaseFrameCounter++;
         
     }
 
-    if (gPlayer.animationState) {
+    if (gPlayer.actionPhase) {
         setEntityCollidable(ENTITY_PLAYER, TRUE);
         setEntityYMovement(ENTITY_PLAYER, TRUE);
         resetAction();
@@ -1844,18 +2114,18 @@ void func_80068DFC(void) {
 
     Vec3f vec;
 
-    switch (gPlayer.animationState) {
+    switch (gPlayer.actionPhase) {
         
         case 0:
 
-            gPlayer.nextAction = 0;
-            gPlayer.animationState++;
+            gPlayer.animationHandler = 0;
+            gPlayer.actionPhase++;
             
             break;
         
         case 1:
 
-            gPlayer.nextAction = 1;
+            gPlayer.animationHandler = 1;
             gPlayer.direction = gPlayer.unk_6E;
 
             setEntityDirection(ENTITY_PLAYER, convertSpriteToWorldDirection(gPlayer.direction, MAIN_MAP_INDEX));
@@ -1864,7 +2134,7 @@ void func_80068DFC(void) {
 
             gPlayer.movementVector = vec;
 
-            gPlayer.animationState++;
+            gPlayer.actionPhase++;
             
             break;
         
@@ -1872,7 +2142,7 @@ void func_80068DFC(void) {
                 
             if (gPlayer.actionTimer == 0) {
                 
-                gPlayer.animationState++;
+                gPlayer.actionPhase++;
                 
                 gPlayer.movementVector.x = 0.0f;
                 gPlayer.movementVector.y = 0.0f;
@@ -1900,7 +2170,7 @@ void func_80068FB0(void) {
     Vec3f vec;
     Vec3f vec2;
 
-    switch (gPlayer.animationState) {
+    switch (gPlayer.actionPhase) {
 
         case 0:
 
@@ -1909,15 +2179,15 @@ void func_80068FB0(void) {
             
             func_80038990(ENTITY_PLAYER, 0, 0);
             
-            gPlayer.direction = SOUTH;
+            gPlayer.direction = NORTHEAST;
             gPlayer.actionTimer = 16;
-            gPlayer.animationState++;
+            gPlayer.actionPhase++;
             
             vec = getMovementVectorFromDirection(4.0f, 4, 0.0f);
             gPlayer.movementVector = vec;
             
             setEntityDirection(ENTITY_PLAYER, convertSpriteToWorldDirection(gPlayer.direction, MAIN_MAP_INDEX));
-            gPlayer.nextAction = 2;
+            gPlayer.animationHandler = 2;
             
             break;
 
@@ -1932,9 +2202,9 @@ void func_80068FB0(void) {
 
                 func_80038990(ENTITY_PLAYER, 2, 0);
                              
-                gPlayer.actionProgress = 0;
-                gPlayer.nextAction = 0;
-                gPlayer.animationState++;
+                gPlayer.actionPhaseFrameCounter = 0;
+                gPlayer.animationHandler = 0;
+                gPlayer.actionPhase++;
                 
             } else {
                 gPlayer.actionTimer--;
@@ -1945,27 +2215,27 @@ void func_80068FB0(void) {
         
         case 2:
 
-            if (gPlayer.actionProgress == 90) {
+            if (gPlayer.actionPhaseFrameCounter == 90) {
                 
                 func_80038990(ENTITY_PLAYER, 0, 0);
 
                 setAudio(0x32);
                 
-                gPlayer.direction = NORTH;
+                gPlayer.direction = SOUTHWEST;
                 gPlayer.actionTimer = 16;
-                gPlayer.animationState++;
+                gPlayer.actionPhase++;
                 
                 vec2 = getMovementVectorFromDirection(4.0f, 0, 0.0f);
                 gPlayer.movementVector = vec2;
                 
                 setEntityDirection(ENTITY_PLAYER, convertSpriteToWorldDirection(gPlayer.direction, MAIN_MAP_INDEX));
-                gPlayer.nextAction = 2;
+                gPlayer.animationHandler = 2;
                 
             } else {
                 
-                gPlayer.actionProgress++;
+                gPlayer.actionPhaseFrameCounter++;
                 
-                if (gPlayer.actionProgress == 10) {
+                if (gPlayer.actionPhaseFrameCounter == 10) {
                     setAudio(0x56);
                 }
                 
@@ -1992,7 +2262,7 @@ void func_80068FB0(void) {
     
                 if (!checkDailyEventBit(0x31)) {
     
-                    gPlayer.fatigue.counter += adjustValue(gPlayer.fatigue.counter, -10, 0x64);
+                    gPlayer.fatigueCounter += adjustValue(gPlayer.fatigueCounter, -10, MAX_FATIGUE_POINTS);
                 
                 } 
                 
@@ -2018,7 +2288,7 @@ void func_800692E4(void) {
     Vec3f vec2;
     Vec3f vec3;
 
-    switch (gPlayer.animationState) {
+    switch (gPlayer.actionPhase) {
 
         case 0:
 
@@ -2028,15 +2298,15 @@ void func_800692E4(void) {
             setEntityYMovement(ENTITY_PLAYER, FALSE);
             func_80038990(ENTITY_PLAYER, 1, 0);
             
-            gPlayer.direction = EAST;
+            gPlayer.direction = NORTHWEST;
             gPlayer.actionTimer = 16;
-            gPlayer.animationState++;
+            gPlayer.actionPhase++;
             
             vec = getMovementVectorFromDirection(4.0f, 2, 0.0f);
             gPlayer.movementVector = vec;
             
             setEntityDirection(ENTITY_PLAYER, convertSpriteToWorldDirection(gPlayer.direction, MAIN_MAP_INDEX));
-            gPlayer.nextAction = 2;
+            gPlayer.animationHandler = 2;
             
             break;
         
@@ -2046,14 +2316,14 @@ void func_800692E4(void) {
                 
                 func_80038990(ENTITY_PLAYER, 3, 0);
                 
-                gPlayer.direction = SOUTH;
+                gPlayer.direction = NORTHEAST;
                 gPlayer.actionTimer = 20;
                 
                 vec2 = getMovementVectorFromDirection(4.0f, 4, 0.0f);
                 gPlayer.movementVector = vec2;
                 
                 setEntityDirection(ENTITY_PLAYER, convertSpriteToWorldDirection(gPlayer.direction, MAIN_MAP_INDEX));
-                gPlayer.animationState++;
+                gPlayer.actionPhase++;
                 
             } else {
                 gPlayer.actionTimer--;
@@ -2065,10 +2335,10 @@ void func_800692E4(void) {
 
             if (gPlayer.actionTimer == 0) {
                 
-                gPlayer.direction = EAST;
+                gPlayer.direction = NORTHWEST;
                 
                 resetMovement();
-                startNewAction(0xC, 0xE);
+                startAction(0xC, 0xE);
                 
                 gPlayer.flags |= 0x2;
             
@@ -2080,30 +2350,30 @@ void func_800692E4(void) {
 
         case 3:
 
-            if (gPlayer.actionProgress == 60) {
+            if (gPlayer.actionPhaseFrameCounter == 60) {
                 
-                gPlayer.direction = WEST;
-                startNewAction(0xC, 0xE);
+                gPlayer.direction = SOUTHEAST;
+                startAction(0xC, 0xE);
                 gPlayer.flags |= 8;
 
             } else {
-                gPlayer.actionProgress++;
+                gPlayer.actionPhaseFrameCounter++;
             }
 
             break;
 
         case 4:
 
-            gPlayer.direction = NORTH;
+            gPlayer.direction = SOUTHWEST;
             
             gPlayer.actionTimer = 20;
-            gPlayer.animationState++;
+            gPlayer.actionPhase++;
             
             vec2 = getMovementVectorFromDirection(4.0f, 0, 0.0f);
             gPlayer.movementVector = vec2;
 
             setEntityDirection(ENTITY_PLAYER, convertSpriteToWorldDirection(gPlayer.direction, MAIN_MAP_INDEX));
-            gPlayer.nextAction = 2;
+            gPlayer.animationHandler = 2;
             
             break;
 
@@ -2113,14 +2383,14 @@ void func_800692E4(void) {
 
                 func_80038990(ENTITY_PLAYER, 1, 0);
                 setAudio(0x32);
-                gPlayer.direction = WEST;
+                gPlayer.direction = SOUTHEAST;
                 gPlayer.actionTimer = 16;
                 vec3 = getMovementVectorFromDirection(4.0f, 6, 0.0f);
 
                 gPlayer.movementVector = vec3;
                 
                 setEntityDirection(ENTITY_PLAYER, convertSpriteToWorldDirection(gPlayer.direction, MAIN_MAP_INDEX));
-                gPlayer.animationState++;
+                gPlayer.actionPhase++;
                 
             } else {
                 gPlayer.actionTimer--;
@@ -2149,10 +2419,10 @@ void func_800692E4(void) {
     
                 if (!checkDailyEventBit(0x32)) {
     
-                    if (checkHaveKeyItem(20)) {
-                        gPlayer.fatigue.counter += adjustValue(gPlayer.fatigue.counter, -20, 0x64);
+                    if (checkHaveKeyItem(FLOWER_BATH_CRYSTALS)) {
+                        gPlayer.fatigueCounter += adjustValue(gPlayer.fatigueCounter, -20, MAX_FATIGUE_POINTS);
                     } else {
-                        gPlayer.fatigue.counter += adjustValue(gPlayer.fatigue.counter, -10, 0x64);
+                        gPlayer.fatigueCounter += adjustValue(gPlayer.fatigueCounter, -10, MAX_FATIGUE_POINTS);
                     }
                     
                 } 
@@ -2179,7 +2449,7 @@ void func_80069830(void) {
     Vec3f vec;
     Vec3f vec2;
 
-    switch (gPlayer.animationState) {
+    switch (gPlayer.actionPhase) {
 
         case 0:
 
@@ -2189,15 +2459,15 @@ void func_80069830(void) {
             setEntityYMovement(ENTITY_PLAYER, FALSE);
             func_80038990(ENTITY_PLAYER, 1, 0);
             
-            gPlayer.direction = SOUTH;
+            gPlayer.direction = NORTHEAST;
             gPlayer.actionTimer = 0x12;
-            gPlayer.animationState++;
+            gPlayer.actionPhase++;
 
             vec = getMovementVectorFromDirection(4.0f, 4, 0.0f);
             gPlayer.movementVector = vec;
             
             setEntityDirection(ENTITY_PLAYER, convertSpriteToWorldDirection(gPlayer.direction, MAIN_MAP_INDEX));
-            gPlayer.nextAction = 2;
+            gPlayer.animationHandler = 2;
             
             break;
 
@@ -2205,9 +2475,9 @@ void func_80069830(void) {
 
             if (gPlayer.actionTimer == 0) {
                 func_80038990(ENTITY_PLAYER, 0, 0);
-                gPlayer.direction = SOUTHWEST;
+                gPlayer.direction = EAST;
                 resetMovement();
-                startNewAction(0xC, 0xE);
+                startAction(0xC, 0xE);
                 gPlayer.flags |= 0x10;
             } else {
                 gPlayer.actionTimer--;
@@ -2217,12 +2487,12 @@ void func_80069830(void) {
 
         case 2:
 
-            if (gPlayer.actionProgress == 0x3C) {
-                gPlayer.direction = NORTHEAST;
-                startNewAction(0xC, 0xE);
+            if (gPlayer.actionPhaseFrameCounter == 60) {
+                gPlayer.direction = WEST;
+                startAction(0xC, 0xE);
                 gPlayer.flags |= 0x40;
             } else {
-                gPlayer.actionProgress++;
+                gPlayer.actionPhaseFrameCounter++;
             }
 
             break;
@@ -2235,7 +2505,7 @@ void func_80069830(void) {
                 
                 setAudio(0x32);
                 
-                gPlayer.direction = NORTH;
+                gPlayer.direction = SOUTHWEST;
                 gPlayer.actionTimer = 0x12;
                 
                 vec2 = getMovementVectorFromDirection(4.0f, 0, 0.0f);
@@ -2244,8 +2514,8 @@ void func_80069830(void) {
                 
                 setEntityDirection(ENTITY_PLAYER, convertSpriteToWorldDirection(gPlayer.direction, MAIN_MAP_INDEX));
                 
-                gPlayer.nextAction = 2;
-                gPlayer.animationState++;
+                gPlayer.animationHandler = 2;
+                gPlayer.actionPhase++;
 
             } else {
                 gPlayer.actionTimer--;
@@ -2272,7 +2542,7 @@ void func_80069830(void) {
                 toggleDailyEventBit(6);
 
                 if (!checkDailyEventBit(0x33)) {
-                    gPlayer.fatigue.counter += adjustValue(gPlayer.fatigue.counter, -10, 100);
+                    gPlayer.fatigueCounter += adjustValue(gPlayer.fatigueCounter, -10, MAX_FATIGUE_POINTS);
                 }
 
                 setDailyEventBit(0x33);
@@ -2313,19 +2583,19 @@ void func_80069C90(void) {
 
 void func_80069CC4(void) {
 
-    if (gPlayer.animationState == 0) {
+    if (gPlayer.actionPhase == 0) {
 
-        if (gPlayer.actionProgress == 0) {
+        if (gPlayer.actionPhaseFrameCounter == 0) {
             gPlayer.currentStamina += adjustValue(gPlayer.currentStamina, func_800D5B00(gPlayer.heldItem), gMaximumStamina);
-            gPlayer.fatigue.counter += adjustValue(gPlayer.fatigue.counter, -func_800D5B18(gPlayer.heldItem), 0x64);
+            gPlayer.fatigueCounter += adjustValue(gPlayer.fatigueCounter, -func_800D5B18(gPlayer.heldItem), MAX_FATIGUE_POINTS);
         }
         
-        if (gPlayer.actionProgress == 0x1E) {
+        if (gPlayer.actionPhaseFrameCounter == 30) {
             func_800D55E4(gPlayer.itemInfoIndex, 1);
-            gPlayer.animationState++;
+            gPlayer.actionPhase++;
         }
         
-        gPlayer.actionProgress++;
+        gPlayer.actionPhaseFrameCounter++;
         
     }
 }
@@ -2337,22 +2607,22 @@ void func_80069DA8(void) {}
 
 void func_80069DB0(void) {
 
-    if (gPlayer.animationState == 2) {
+    if (gPlayer.actionPhase == 2) {
 
         if (!getRandomNumberInRange(0, 400)) {
-            gPlayer.animationState = 3;
+            gPlayer.actionPhase = 3;
         }
     }
     
-    if (gPlayer.animationState && checkButtonReleased(CONTROLLER_1, BUTTON_B)) {
+    if (gPlayer.actionPhase && checkButtonReleased(CONTROLLER_1, BUTTON_B)) {
 
-        switch (gPlayer.animationState) {
+        switch (gPlayer.actionPhase) {
             
             case 3 ... 5:
-                gPlayer.animationState = 6;
+                gPlayer.actionPhase = 6;
                 break;
             default:
-                gPlayer.animationState = 8;
+                gPlayer.actionPhase = 8;
                 break;
 
         }
@@ -2380,7 +2650,7 @@ static inline void fakeInline() {
 
 //INCLUDE_ASM("asm/nonmatchings/game/player", func_80069E74);
 
-// FIXME: have to trick the CSE pass to access actionProgress via -2 of animationState instead of reloading it from memory every time
+// FIXME: have to trick the CSE pass to access actionPhaseFrameCounter via -2 of animationState instead of reloading it from memory every time
 // The CSE pass doesn't do this for smaller functions with the same code (func_80068C8C), so there's something around the basic block size/complexity 
 void func_80069E74(void) {
 
@@ -2388,12 +2658,12 @@ void func_80069E74(void) {
 
     u16 *temp;
 
-    if (gPlayer.animationState == 0) {
+    if (gPlayer.actionPhase == 0) {
 
         // FIXME: fake
-        temp = &gPlayer.actionProgress;
+        temp = &gPlayer.actionPhaseFrameCounter;
         
-        if (gPlayer.actionProgress == 0) {
+        if (gPlayer.actionPhaseFrameCounter == 0) {
             
             setAudio(4);
 
@@ -2409,37 +2679,38 @@ void func_80069E74(void) {
             
         }
 
-        if (gPlayer.actionProgress < 6) {
+        if (gPlayer.actionPhaseFrameCounter < 6) {
             
             setEntityMovementVector(ENTITY_PLAYER, gPlayer.movementVector.x, 0.0f, gPlayer.movementVector.z, 2.0f);
             
+            // parabolic equation: y = initial_y - gravity * (time - peak_time)²
             entities->coordinates.y = 
                 ((gPlayer.movementVector.y 
-                     + (((gPlayer.actionProgress - 7) * (gPlayer.actionProgress - 7)) * -0.8f)) 
+                     + (((gPlayer.actionPhaseFrameCounter - 7) * (gPlayer.actionPhaseFrameCounter - 7)) * -0.8f)) 
                      + 39.2);
             
         } else {
             
             setEntityMovementVector(ENTITY_PLAYER, 0.0f, 0.0f, 0.0f, 0.0f);
-            gPlayer.actionProgress = 0;
-            gPlayer.animationState++;
+            gPlayer.actionPhaseFrameCounter = 0;
+            gPlayer.actionPhase++;
             gPlayer.movementVector.y = entities[ENTITY_PLAYER].coordinates.y;
             setEntityShadow(ENTITY_PLAYER, 0xFF);
             
         }
 
-         gPlayer.actionProgress++;
+         gPlayer.actionPhaseFrameCounter++;
         
     } 
     
-    if (gPlayer.animationState == 1) {
+    if (gPlayer.actionPhase == 1) {
         
         // FIXME: fake
         // tricks CSE2 pass
         do {} while (0);
-        temp = &gPlayer.actionProgress;
+        temp = &gPlayer.actionPhaseFrameCounter;
 
-        if (gPlayer.actionProgress < 0x80) {
+        if (gPlayer.actionPhaseFrameCounter < 0x80) {
             
             // need this to force memory lookup and NOT have pointer access for the other gPlayer members
             fakeInline();
@@ -2448,48 +2719,49 @@ void func_80069E74(void) {
             
             setEntityMovementVector(ENTITY_PLAYER, 0.0f, 0.0f, 0.0f, 0.0f);
             
-            gPlayer.actionProgress = 0;
-            gPlayer.animationState++;
+            gPlayer.actionPhaseFrameCounter = 0;
+            gPlayer.actionPhase++;
             
-            vec = getMovementVectorFromDirection(10.0f, SOUTH, 0.0f);
+            vec = getMovementVectorFromDirection(10.0f, NORTHEAST, 0.0f);
             
             gPlayer.movementVector = vec;
             gPlayer.movementVector.y = entities[ENTITY_PLAYER].coordinates.y;
 
-            setEntityDirection(ENTITY_PLAYER, convertSpriteToWorldDirection(SOUTH, MAIN_MAP_INDEX));
+            setEntityDirection(ENTITY_PLAYER, convertSpriteToWorldDirection(NORTHEAST, MAIN_MAP_INDEX));
             
         }
 
-        gPlayer.actionProgress++;
+        gPlayer.actionPhaseFrameCounter++;
         
     }
 
-    if (gPlayer.animationState == 2) {
+    if (gPlayer.actionPhase == 2) {
         
         // FIXME: fake
-        temp = &gPlayer.actionProgress;
+        temp = &gPlayer.actionPhaseFrameCounter;
         
-        if (gPlayer.actionProgress < 15) {
+        if (gPlayer.actionPhaseFrameCounter < 15) {
             
             setEntityMovementVector(ENTITY_PLAYER, gPlayer.movementVector.x, 0.0f, gPlayer.movementVector.z, 10.0f);
 
+            // parabolic equation: y = initial_y - gravity * (time - peak_time)²
             entities->coordinates.y = 
                 ((gPlayer.movementVector.y 
-                     + (((gPlayer.actionProgress - 7) * (gPlayer.actionProgress - 7)) * -1.2f)) 
+                     + (((gPlayer.actionPhaseFrameCounter - 7) * (gPlayer.actionPhaseFrameCounter - 7)) * -1.2f)) 
                      + 58.5);
             
         } else {
             setEntityMovementVector(ENTITY_PLAYER, 0.0f, 0.0f, 0.0f, 0.0f);
-            gPlayer.actionProgress = 0;
-            gPlayer.animationState++;
+            gPlayer.actionPhaseFrameCounter = 0;
+            gPlayer.actionPhase++;
             gPlayer.movementVector.y = entities[ENTITY_PLAYER].coordinates.y;
         }
         
-        gPlayer.actionProgress++;
+        gPlayer.actionPhaseFrameCounter++;
         
     }
 
-    if (gPlayer.animationState == 3) {
+    if (gPlayer.actionPhase == 3) {
         
         setEntityCollidable(ENTITY_PLAYER, TRUE);
         setEntityYMovement(ENTITY_PLAYER, TRUE);
@@ -2506,11 +2778,11 @@ void func_80069E74(void) {
 // empty function
 void func_8006A2E0(void) {} 
  
-//INCLUDE_ASM("asm/nonmatchings/game/player", func_8006A2E8);
+//INCLUDE_ASM("asm/nonmatchings/game/player", handlePlayerAnimation);
 
-void func_8006A2E8(void) {
+void handlePlayerAnimation(void) {
 
-    switch (gPlayer.nextAction) {
+    switch (gPlayer.animationHandler) {
         
         case 0:
             
@@ -2537,7 +2809,7 @@ void func_8006A2E8(void) {
             if (!(gPlayer.flags & 1)) {
 
                 if (playerIdleCounter == 1200) {
-                    startNewAction(9, 0xB);
+                    startAction(9, 0xB);
                 } else {
                     playerIdleCounter++;
                 }
@@ -2576,7 +2848,7 @@ void func_8006A2E8(void) {
 
                 } else {
                     if (checkEntityShouldPlaySoundEffect(ENTITY_PLAYER)) {
-                        setAudio(5);
+                        setAudio(WALKING_SFX);
                     }
                     setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x10);
                 }
@@ -2584,7 +2856,7 @@ void func_8006A2E8(void) {
             } else {
 
                 if (checkEntityShouldPlaySoundEffect(ENTITY_PLAYER)) {
-                    setAudio(5);
+                    setAudio(WALKING_SFX);
                 }
 
                 setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x28);
@@ -2625,6 +2897,7 @@ void func_8006A2E8(void) {
             func_8006AC4C();
             playerIdleCounter = 0;
             break;
+        // idle/napping animation
         case 11:
             func_8006ADF4();
             break;
@@ -2724,6 +2997,7 @@ void func_8006A2E8(void) {
             func_8006B77C();
             playerIdleCounter = 0;
             break;
+
     }
     
 }
@@ -2738,12 +3012,12 @@ static inline handleStopHolding() {
 
 void func_8006A714(void) {
     
-    if (checkEntityAnimationStateChanged(ENTITY_PLAYER) || gPlayer.animationState == 0) {
+    if (checkEntityAnimationStateChanged(ENTITY_PLAYER) || gPlayer.actionPhase == 0) {
         
-        if (gPlayer.animationState == 0) {
+        if (gPlayer.actionPhase == 0) {
         
             setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x1A5);
-            gPlayer.animationState++;
+            gPlayer.actionPhase++;
         
         } else {
 
@@ -2757,21 +3031,17 @@ void func_8006A714(void) {
 
 static inline updateAnimation(u16 animation) {
     
-     if (gPlayer.animationState == 0) {
-
+     if (gPlayer.actionPhase == 0) {
         setEntityAnimationWithDirectionChange(ENTITY_PLAYER, animation);
         func_800D55E4(gPlayer.itemInfoIndex, 0xD);
-    
     } else {
-
         handleStopHolding();
-
     }
 }
 
 void func_8006A7B0(void) {
     
-    if (checkEntityAnimationStateChanged(ENTITY_PLAYER) || gPlayer.animationState == 0) {
+    if (checkEntityAnimationStateChanged(ENTITY_PLAYER) || gPlayer.actionPhase == 0) {
        updateAnimation(0x1A5);
     }
 }
@@ -2780,14 +3050,11 @@ void func_8006A7B0(void) {
 
 void func_8006A848(void) {
     
-    if (checkEntityAnimationStateChanged(ENTITY_PLAYER) || gPlayer.animationState == 0) {
+    if (checkEntityAnimationStateChanged(ENTITY_PLAYER) || gPlayer.actionPhase == 0) {
     
-        if (gPlayer.animationState == 0) {
-
+        if (gPlayer.actionPhase == 0) {
             setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x1AD);
-            
         } else {
-
             resetAction();
 
         }
@@ -2798,8 +3065,10 @@ void func_8006A848(void) {
 
 void func_8006A8C4(void) {
     
-    if (checkEntityAnimationStateChanged(ENTITY_PLAYER) || gPlayer.animationState == 0) {
-        switch (gPlayer.animationState) {                       
+    if (checkEntityAnimationStateChanged(ENTITY_PLAYER) || gPlayer.actionPhase == 0) {
+
+        switch (gPlayer.actionPhase) {     
+
             case 0:
                 setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x1B7);
                 func_800D55E4(gPlayer.itemInfoIndex, 8);
@@ -2813,7 +3082,9 @@ void func_8006A8C4(void) {
             default:
                 handleStopHolding();
                 break;
+
             }
+
     }
 }
 
@@ -2821,17 +3092,17 @@ void func_8006A8C4(void) {
 
 void func_8006A9A8(void) {
     
-    if (checkEntityAnimationStateChanged(ENTITY_PLAYER) || gPlayer.animationState == 0) {
+    if (checkEntityAnimationStateChanged(ENTITY_PLAYER) || gPlayer.actionPhase == 0) {
 
-        switch (gPlayer.animationState) {       
+        switch (gPlayer.actionPhase) {       
 
             case 0:
                 setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 24);
                 break;
             case 1:
                 func_800D55E4(gPlayer.itemInfoIndex, 10);
-                gPlayer.actionProgress = 0;
-                gPlayer.animationState++;
+                gPlayer.actionPhaseFrameCounter = 0;
+                gPlayer.actionPhase++;
                 break;
             case 2:
                 setEntityAnimation(ENTITY_PLAYER, 0x1B5);
@@ -2839,6 +3110,7 @@ void func_8006A9A8(void) {
             default:
                 handleStopHolding();
                 break;
+
             }
 
     }
@@ -2848,11 +3120,11 @@ void func_8006A9A8(void) {
 
 void func_8006AA9C(void) {
 
-    if (checkEntityAnimationStateChanged(ENTITY_PLAYER) || gPlayer.animationState == 0) {
+    if (checkEntityAnimationStateChanged(ENTITY_PLAYER) || gPlayer.actionPhase == 0) {
         
-        if (gPlayer.animationState == 0) {
+        if (gPlayer.actionPhase == 0) {
             
-            switch (gPlayer.fatigue.level) {       
+            switch (gPlayer.staminaExhaustionLevel) {       
                 case 1:
                     setEntityAnimation(ENTITY_PLAYER, 0x1D0);
                     break;
@@ -2867,7 +3139,7 @@ void func_8006AA9C(void) {
                     break;
             }
     
-            gPlayer.animationState++;
+            gPlayer.actionPhase++;
 
         } else {
 
@@ -2881,11 +3153,11 @@ void func_8006AA9C(void) {
 
 void func_8006AB90(void) {
 
-    if (checkEntityAnimationStateChanged(ENTITY_PLAYER) || gPlayer.animationState == 0) {
+    if (checkEntityAnimationStateChanged(ENTITY_PLAYER) || gPlayer.actionPhase == 0) {
         
-        if (gPlayer.animationState == 0) {
+        if (gPlayer.actionPhase == 0) {
 
-            switch (gPlayer.fatigue.unk_2) {                   
+            switch (gPlayer.fatigueThreshold) {                   
                 case 1:
                     setEntityAnimation(ENTITY_PLAYER, 0x299);
                     break;
@@ -2896,7 +3168,7 @@ void func_8006AB90(void) {
                     break;
                 }
             
-            gPlayer.animationState++;
+            gPlayer.actionPhase++;
         
         } else {
 
@@ -2910,14 +3182,14 @@ void func_8006AB90(void) {
 
 void func_8006AC4C(void) {
 
-    if (checkEntityAnimationStateChanged(ENTITY_PLAYER) || gPlayer.animationState == 0) {
+    if (checkEntityAnimationStateChanged(ENTITY_PLAYER) || gPlayer.actionPhase == 0) {
 
-        switch (gPlayer.animationState) {         
+        switch (gPlayer.actionPhase) {         
 
             case 1:
 
                 setEntityAnimation(ENTITY_PLAYER, 0x1D4);
-                gPlayer.animationState++;
+                gPlayer.actionPhase++;
 
                 if (checkLifeEventBit(MARRIED) && (19 < gHour && gHour < 22)) {
 
@@ -2944,19 +3216,19 @@ void func_8006AC4C(void) {
 
             case 2:
                 setEntityAnimation(ENTITY_PLAYER, 0x1D5);
-                gPlayer.animationState++;
+                gPlayer.actionPhase++;
                 break;
 
             case 3:
                 setEntityAnimation(ENTITY_PLAYER, 0x1D6);
-                gPlayer.animationState++;
+                gPlayer.actionPhase++;
                 break;             
 
             default:
-                if (gPlayer.animationState >= 10) {
+                if (gPlayer.actionPhase >= 10) {
                     func_8005C940(8, END_OF_DAY_1);    
                 } else {
-                    gPlayer.animationState++;
+                    gPlayer.actionPhase++;
                 }
                 
                 break;
@@ -2970,28 +3242,28 @@ void func_8006AC4C(void) {
 // napping/idle animation
 void func_8006ADF4(void) {
 
-    if (checkEntityAnimationStateChanged(ENTITY_PLAYER) || gPlayer.animationState == 0) {
+    if (checkEntityAnimationStateChanged(ENTITY_PLAYER) || gPlayer.actionPhase == 0) {
 
-        switch (gPlayer.animationState) { 
+        switch (gPlayer.actionPhase) { 
 
             case 0:
                 setEntityAnimation(ENTITY_PLAYER, 0x1E0);
-                gPlayer.animationState++;
+                gPlayer.actionPhase++;
                 break;
             case 1:
                 setEntityAnimation(ENTITY_PLAYER, 0x1E1);
-                gPlayer.animationState++;
+                gPlayer.actionPhase++;
                 break;
             case 2:
                 playerIdleCounter++;
                 if (playerIdleCounter == 1800) {
                     setEntityAnimation(ENTITY_PLAYER, 0x1E2);
-                    gPlayer.animationState++;
+                    gPlayer.actionPhase++;
                 }
                 break;
             case 4:
                 setEntityAnimation(ENTITY_PLAYER, 0x1E3);
-                gPlayer.animationState++;
+                gPlayer.actionPhase++;
                 break;
             default:
                 resetAction();
@@ -3008,22 +3280,22 @@ void func_8006ADF4(void) {
 
 void func_8006AEEC(void) {
     
-    if (checkEntityAnimationStateChanged(ENTITY_PLAYER) || gPlayer.animationState == 0) {
+    if (checkEntityAnimationStateChanged(ENTITY_PLAYER) || gPlayer.actionPhase == 0) {
 
-        switch (gPlayer.animationState) { 
+        switch (gPlayer.actionPhase) { 
             case 0:
                 setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x1B7);
                 break;
             case 1:
                 setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x1BF);
-                gPlayer.animationState++;
+                gPlayer.actionPhase++;
                 break;
             case 3:
                 setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x1BF);
                 break;            
             case 4:
                 setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x1B7);
-                gPlayer.animationState++;
+                gPlayer.actionPhase++;
                 break;           
             default:
                 resetAction();
@@ -3035,9 +3307,9 @@ void func_8006AEEC(void) {
 
 void func_8006AFE4(void) {
     
-    if (checkEntityAnimationStateChanged(ENTITY_PLAYER) || gPlayer.animationState == 0) {
+    if (checkEntityAnimationStateChanged(ENTITY_PLAYER) || gPlayer.actionPhase == 0) {
 
-        switch (gPlayer.animationState) {  
+        switch (gPlayer.actionPhase) {  
             case 0:
                 if (!func_800DCAA0(gPlayer.shopItemIndex)) {
                     setEntityAnimationWithDirectionChange(ENTITY_PLAYER, STANDING);
@@ -3048,7 +3320,7 @@ void func_8006AFE4(void) {
             case 1:
                 // shop.c
                 func_800DC750(gPlayer.shopItemIndex);
-                gPlayer.actionProgress = 0;
+                gPlayer.actionPhaseFrameCounter = 0;
                 func_80059334();
                 break;
             case 2:
@@ -3071,9 +3343,9 @@ void func_8006AFE4(void) {
 
 void func_8006B104(void) {
 
-    if (checkEntityAnimationStateChanged(ENTITY_PLAYER) || (gPlayer.animationState == 0)) {
+    if (checkEntityAnimationStateChanged(ENTITY_PLAYER) || (gPlayer.actionPhase == 0)) {
         
-        switch (gPlayer.animationState) {                          
+        switch (gPlayer.actionPhase) {                          
         
             case 0:
                 
@@ -3119,9 +3391,9 @@ void func_8006B104(void) {
                 
                 if (gPlayer.flags & 2) {
                     
-                    startNewAction(0x11, 0);
+                    startAction(0x11, 0);
 
-                    gPlayer.direction = NORTH;
+                    gPlayer.direction = SOUTHWEST;
                     
                     gPlayer.flags &= ~2; 
                     gPlayer.flags |= 4;
@@ -3129,27 +3401,27 @@ void func_8006B104(void) {
                     gPlayer.movementVector.x = 0.0f;
                     gPlayer.movementVector.y = 0.0f;
                     gPlayer.movementVector.z = 0.0f;
-                    gPlayer.animationState = 3;
+                    gPlayer.actionPhase = 3;
 
                     setEntityDirection(ENTITY_PLAYER, convertSpriteToWorldDirection(gPlayer.direction, MAIN_MAP_INDEX));
                     setAudio(0x28);
                       
                 } else if (gPlayer.flags & 8) {
                     
-                    startNewAction(0x11, 0);
+                    startAction(0x11, 0);
                     
                     gPlayer.flags &= ~(4 | 8);
                                         
                     gPlayer.movementVector.x = 0.0f;
                     gPlayer.movementVector.y = 0.0f;
                     gPlayer.movementVector.z = 0.0f;
-                    gPlayer.animationState = 4;
+                    gPlayer.actionPhase = 4;
                     
-                } else  if (gPlayer.flags & 0x10) {
+                } else if (gPlayer.flags & 0x10) {
                     
-                    startNewAction(0x1D, 0);
+                    startAction(0x1D, 0);
 
-                    gPlayer.direction = NORTH;
+                    gPlayer.direction = SOUTHWEST;
                     
                     gPlayer.flags &= ~(0x10);
                     gPlayer.flags |= 0x20;
@@ -3157,21 +3429,21 @@ void func_8006B104(void) {
                     gPlayer.movementVector.x = 0.0f;
                     gPlayer.movementVector.y = 0.0f;
                     gPlayer.movementVector.z = 0.0f;
-                    gPlayer.animationState = 2;
+                    gPlayer.actionPhase = 2;
                     
                     setEntityDirection(ENTITY_PLAYER, convertSpriteToWorldDirection(gPlayer.direction, MAIN_MAP_INDEX));
                     setAudio(0x28);
                                         
                 } else if (gPlayer.flags & 0x40) {
                 
-                    startNewAction(0x1D, 0);
+                    startAction(0x1D, 0);
                     
                     gPlayer.flags &= ~(0x20 | 0x40); 
     
                     gPlayer.movementVector.x = 0.0f;
                     gPlayer.movementVector.y = 0.0f;
                     gPlayer.movementVector.z = 0.0f;
-                    gPlayer.animationState = 3;
+                    gPlayer.actionPhase = 3;
                 
             } else {
                 
@@ -3195,13 +3467,13 @@ void func_8006B4D4(void) {}
 
 void func_8006B4DC(void) {
 
-    if (checkEntityAnimationStateChanged(ENTITY_PLAYER) || (gPlayer.animationState == 0)) {
+    if (checkEntityAnimationStateChanged(ENTITY_PLAYER) || (gPlayer.actionPhase == 0)) {
         
-        if (gPlayer.animationState == 0) {
+        if (gPlayer.actionPhase == 0) {
             
             setEntityAnimation(ENTITY_PLAYER, 0x1DB);
             
-            gPlayer.animationState = 1;
+            gPlayer.actionPhase = 1;
             gPlayer.heldItem = 0xCA;
             gPlayer.itemInfoIndex = func_800D5308(0, 0x10, 0xCA, 0, 8);
             
@@ -3217,9 +3489,9 @@ void func_8006B4DC(void) {
 
 void func_8006B584(void) {
     
-    if ((checkEntityAnimationStateChanged(ENTITY_PLAYER)) || (gPlayer.animationState == 0)) {
+    if ((checkEntityAnimationStateChanged(ENTITY_PLAYER)) || (gPlayer.actionPhase == 0)) {
         
-        if (gPlayer.animationState == 0) {
+        if (gPlayer.actionPhase == 0) {
             
             setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x1B7);
             func_800D55E4(gPlayer.itemInfoIndex, 0x11);
@@ -3237,9 +3509,9 @@ void func_8006B584(void) {
 
 void func_8006B61C(void) {
 
-    if ((checkEntityAnimationStateChanged(ENTITY_PLAYER)) || (gPlayer.animationState == 0)) {
+    if ((checkEntityAnimationStateChanged(ENTITY_PLAYER)) || (gPlayer.actionPhase == 0)) {
         
-        if (gPlayer.animationState == 0) {
+        if (gPlayer.actionPhase == 0) {
             
             setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x1A5);
             func_800D55E4(gPlayer.itemInfoIndex, 0xD);
@@ -3261,11 +3533,11 @@ void func_8006B61C(void) {
 
 void func_8006B6EC(void) {
 
-    if ((checkEntityAnimationStateChanged(ENTITY_PLAYER)) || (gPlayer.animationState == 0)) {
+    if ((checkEntityAnimationStateChanged(ENTITY_PLAYER)) || (gPlayer.actionPhase == 0)) {
 
-        if (gPlayer.animationState == 0) {
+        if (gPlayer.actionPhase == 0) {
             setEntityAnimation(ENTITY_PLAYER, 0x2B3);
-            gPlayer.animationState++;
+            gPlayer.actionPhase++;
         } else {
             resetAction();
         }
@@ -3277,29 +3549,24 @@ void func_8006B6EC(void) {
 
 void func_8006B77C(void) {
 
-    if ((checkEntityAnimationStateChanged(ENTITY_PLAYER)) || (gPlayer.animationState == 0)) {
+    if ((checkEntityAnimationStateChanged(ENTITY_PLAYER)) || (gPlayer.actionPhase == 0)) {
 
-        switch (gPlayer.animationState) {
+        switch (gPlayer.actionPhase) {
 
             case 0:
-                
                 setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x18);
                 break;
             
             case 1:
-                
                 setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x26A);
                 func_800D55E4(gPlayer.itemInfoIndex, 1);
-                gPlayer.animationState++;
+                gPlayer.actionPhase++;
                 break;
             
             default:
-                
-                if (gPlayer.heldItem == 0xDA) {
-                    
+                if (gPlayer.heldItem == BROKEN_MUSIC_BOX_HELD_ITEM) {
                     acquireKeyItem(BROKEN_MUSIC_BOX);
                     setSpecialDialogueBit(HAVE_BROKEN_MUSIC_BOX_DIALOGUE);
-                    
                 }
     
                 gPlayer.heldItem = 0;
@@ -3316,9 +3583,9 @@ void func_8006B77C(void) {
 
 void func_8006B8BC(void) {
 
-    if ((checkEntityAnimationStateChanged(ENTITY_PLAYER)) || (gPlayer.animationState == 0)) {
+    if ((checkEntityAnimationStateChanged(ENTITY_PLAYER)) || (gPlayer.actionPhase == 0)) {
         
-        if (gPlayer.animationState == 0) {
+        if (gPlayer.actionPhase == 0) {
              setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x21C);
         }
     }
@@ -3329,9 +3596,9 @@ void func_8006B8BC(void) {
 
 void func_8006B910(void) {
 
-    if ((checkEntityAnimationStateChanged(ENTITY_PLAYER)) || (gPlayer.animationState == 0)) {
+    if ((checkEntityAnimationStateChanged(ENTITY_PLAYER)) || (gPlayer.actionPhase == 0)) {
         
-        if (gPlayer.animationState == 0) {
+        if (gPlayer.actionPhase == 0) {
              setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x25C);
         }
     }
@@ -3351,14 +3618,14 @@ void func_8006B974(void) {}
 
 void func_8006B97C(void) {
     
-    if ((checkEntityAnimationStateChanged(ENTITY_PLAYER)) || (gPlayer.animationState == 0)) {
+    if ((checkEntityAnimationStateChanged(ENTITY_PLAYER)) || (gPlayer.actionPhase == 0)) {
 
-        if (gPlayer.animationState == 0) {
+        if (gPlayer.actionPhase == 0) {
             setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x19D);
-            gPlayer.animationState++;
+            gPlayer.actionPhase++;
         } else {
             resetAction();
-            // animals.c
+            // dog
             func_8009B11C();
         }
     }
@@ -3370,14 +3637,14 @@ void func_8006B97C(void) {
 
 void func_8006BA14(void) {
     
-    if ((checkEntityAnimationStateChanged(ENTITY_PLAYER)) || (gPlayer.animationState == 0)) {
+    if ((checkEntityAnimationStateChanged(ENTITY_PLAYER)) || (gPlayer.actionPhase == 0)) {
 
-        if (gPlayer.animationState == 0) {
+        if (gPlayer.actionPhase == 0) {
             setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x19D);
-            gPlayer.animationState++;
+            gPlayer.actionPhase++;
         } else {
             resetAction();
-            // animals.c
+            // horse
             func_8009B1BC();
         }
     }
@@ -3388,18 +3655,17 @@ void func_8006BA14(void) {
 
 void func_8006BAAC(void) {
 
-    if ((checkEntityAnimationStateChanged(ENTITY_PLAYER)) || (gPlayer.animationState == 0)) {
+    if ((checkEntityAnimationStateChanged(ENTITY_PLAYER)) || (gPlayer.actionPhase == 0)) {
 
-        switch (gPlayer.animationState) {
+        switch (gPlayer.actionPhase) {
 
             case 0:
-                
                 setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x18);
                 break;
             
             case 1:
 
-                if (getItemFlags(gPlayer.heldItem) & 0x4000) {
+                if (getItemFlags(gPlayer.heldItem) & ITEM_HAS_ALCOHOL) {
                     setEntityAnimation(ENTITY_PLAYER, 0x2B3);
                     gAlcoholTolerance += adjustValue(gAlcoholTolerance, 1, 0xFF);
                 } else {
@@ -3407,7 +3673,7 @@ void func_8006BAAC(void) {
                 }
                 
                 gPlayer.heldItem = 0;
-                gPlayer.animationState++;
+                gPlayer.actionPhase++;
                 break;
             
             default:
@@ -3423,15 +3689,15 @@ void func_8006BAAC(void) {
 
 void func_8006BBC4(void) {
     
-    if ((checkEntityAnimationStateChanged(ENTITY_PLAYER)) || (gPlayer.animationState == 0)) {
+    if ((checkEntityAnimationStateChanged(ENTITY_PLAYER)) || (gPlayer.actionPhase == 0)) {
         
-        if (gPlayer.animationState == 0) {
+        if (gPlayer.actionPhase == 0) {
             
             setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x26A);
             func_800D55E4(gPlayer.itemInfoIndex, 1);
             gPlayer.heldItem = 0;
-            gPlayer.animationState++;
-            setAudio(0x24);
+            gPlayer.actionPhase++;
+            setAudio(PICKING_UP_SFX);
             
         } else {
             resetAction();
@@ -3451,24 +3717,24 @@ void handleFishingRodUse(void) {
     s32 temp2;
     int max;
 
-    if (checkEntityAnimationStateChanged(ENTITY_PLAYER) || gPlayer.animationState == 0) {
+    if (checkEntityAnimationStateChanged(ENTITY_PLAYER) || gPlayer.actionPhase == 0) {
         
-        switch (gPlayer.animationState) {
+        switch (gPlayer.actionPhase) {
             
             case 0:
                 
                 setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x182);
-                gPlayer.animationState++;
+                gPlayer.actionPhase++;
                 break;
             
             case 1:
                 
                 if (func_800AD0C4(gBaseMapIndex)) {
                 
-                    vec = func_80065F94(2.0f, 8);
+                    vec = getOffsetTileCoordinates (2.0f, 8);
                     vec = func_8003AF58(0, vec.x, vec.z);
 
-                    switch (gPlayer.fatigue.unk_3) {
+                    switch (gPlayer.fishingSpotType) {
                         case 0:
                             vec.y = 36.0f;
                             break;
@@ -3486,10 +3752,10 @@ void handleFishingRodUse(void) {
                     func_800CFB38(0, 0x9D, vec.x, vec.y, vec.z);
                     setAudio(0x28);
                     setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x17A);
-                    gPlayer.animationState = 2;
+                    gPlayer.actionPhase = 2;
                 
                 } else {
-                    gPlayer.animationState = 8;
+                    gPlayer.actionPhase = 8;
                 }
                 
                 break;
@@ -3497,27 +3763,28 @@ void handleFishingRodUse(void) {
             case 3:
                 func_800CFD78(0, 0x9E);
                 setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x18A);
-                gPlayer.animationState = 4;
+                gPlayer.actionPhase = 4;
                 break;
             
             case 4:
-                gPlayer.animationState = 5;
+                gPlayer.actionPhase = 5;
                 break;
             
             case 5:
-                gPlayer.animationState = 1;
+                gPlayer.actionPhase = 1;
                 break;
             
             // catch fish
             case 7:
 
+                // FIXME: likely a switch
                 // ?
-                temp2 = gPlayer.fatigue.unk_3;
+                temp2 = gPlayer.fishingSpotType;
                 max = 4;
 
-                if (gPlayer.fatigue.unk_3 == 0) {
+                if (gPlayer.fishingSpotType == 0) {
                     temp = 1;
-                } else if (0 <= temp2 && gPlayer.fatigue.unk_3 < max) {
+                } else if (0 <= temp2 && gPlayer.fishingSpotType < max) {
                     temp = 2;
                 }
                 
@@ -3534,16 +3801,16 @@ void handleFishingRodUse(void) {
                         break;                    
                 }
 
-                gPlayer.animationState = 9;
+                gPlayer.actionPhase = 9;
 
                 gHappiness += adjustValue(gHappiness, 1, MAX_HAPPINESS);
 
                 // get power nut 
-                if (gPlayer.fatigue.unk_3 == 3 && !(powerNutBits & FISHING_POWER_NUT) && !getRandomNumberInRange(0, 50)) {
+                if (gPlayer.fishingSpotType == 3 && !(powerNutBits & FISHING_POWER_NUT) && !getRandomNumberInRange(0, 50)) {
                     
                     gPlayer.heldItem = POWER_NUT;
 
-                    startNewAction(6, 8);
+                    startAction(6, 8);
                     
                     powerNutBits |= FISHING_POWER_NUT;
                     
@@ -3555,7 +3822,7 @@ void handleFishingRodUse(void) {
 
                 totalFishCaught += adjustValue(totalFishCaught, 1, MAX_FISH_CAUGHT);
 
-                handleEatingAndDrinking();
+                func_80065AA0();
                 
                 break;
             
@@ -3563,7 +3830,7 @@ void handleFishingRodUse(void) {
             case 8:
                 func_800CFDA0(0);
                 setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x192);
-                gPlayer.animationState++;
+                gPlayer.actionPhase++;
                 break;
               
             default:            
@@ -3590,8 +3857,8 @@ void func_8006C134(void) {}
 // climbing trees
 void func_8006C13C(void) {
 
-    if (checkEntityAnimationStateChanged(ENTITY_PLAYER) || gPlayer.animationState == 0 || gPlayer.animationState == 2) {
-        switch (gPlayer.animationState) {
+    if (checkEntityAnimationStateChanged(ENTITY_PLAYER) || gPlayer.actionPhase == 0 || gPlayer.actionPhase == 2) {
+        switch (gPlayer.actionPhase) {
             case 1:
                 setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x29B);
                 break;
@@ -3606,31 +3873,32 @@ void func_8006C13C(void) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/player", func_8006C1DC);
 
+// acquire tool upgrade
 void func_8006C1DC(void) {
 
-    u8 arr[5][3];
+    u8 buffer[5][3];
     u8 temp;
 
-    memcpy(arr, D_8011F5D4, 15);
+    memcpy(buffer, toolHeldItemIndices, 15);
 
-    if (checkEntityAnimationStateChanged(ENTITY_PLAYER) || gPlayer.animationState == 0) {
+    if (checkEntityAnimationStateChanged(ENTITY_PLAYER) || gPlayer.actionPhase == 0) {
 
-        switch (gPlayer.animationState) {
+        switch (gPlayer.actionPhase) {
 
             case 0:
                 setEntityAnimation(ENTITY_PLAYER, 0x171);
-                gPlayer.animationState = 1;
-                temp = arr[D_8018A724][D_801A8B5C-3];
+                gPlayer.actionPhase = 1;
+                temp = buffer[upgradedToolIndex][upgradedToolLevelIndex - 3];
                 gPlayer.heldItem = temp;
                 gPlayer.itemInfoIndex = func_800D5308(0, 0x15, temp, 0, 8);
                 break;
             
             case 1:
-                gPlayer.animationState = 2;
+                gPlayer.actionPhase = 2;
                 break;
             
             case 2:
-                gPlayer.animationState = 3;
+                gPlayer.actionPhase = 3;
                 setAudio(0x5A);
                 setMainLoopCallbackFunctionIndex(0xB);
                 func_80059334();
@@ -3650,19 +3918,21 @@ void func_8006C1DC(void) {
 
 //INCLUDE_RODATA("asm/nonmatchings/game/player", D_8011F5D4);
 
-static const u8 D_8011F5D4[] = {
-    0xCB, 0xCC, 0xCD,
-    0xCE, 0xCF, 0xD0,
-    0xD1, 0xD2, 0xD3,
-    0xD4, 0xD5, 0xD6,
-    0xD7, 0xD8, 0xD9,
+// for displaying upgraded tool
+static const u8 toolHeldItemIndices[5][3] = {
+    { SICKLE_HELD_ITEM, SILVER_SICKLE_HELD_ITEM, GOLDEN_SICKLE_HELD_ITEM },
+    { HOE_HELD_ITEM, SILVER_HOE_HELD_ITEM, GOLDEN_HOE_HELD_ITEM },
+    { AX_HELD_ITEM, SILVER_AX_HELD_ITEM, GOLDEN_AX_HELD_ITEM },
+    { HAMMER_HELD_ITEM, SILVER_HAMMER_HELD_ITEM, GOLDEN_HAMMER_HELD_ITEM },
+    { WATERING_CAN_HELD_ITEM, SILVER_WATERING_CAN_HELD_ITEM, GOLDEN_WATERING_CAN_HELD_ITEM }
 };
 
 //INCLUDE_ASM("asm/nonmatchings/game/player", func_8006C384);
 
+// handle initial tool use animation and sound effects
 void func_8006C384(void) {
     
-    if (checkEntityAnimationStateChanged(ENTITY_PLAYER) || (gPlayer.animationState == 0)) {
+    if (checkEntityAnimationStateChanged(ENTITY_PLAYER) || (gPlayer.actionPhase == 0)) {
         
         switch (gPlayer.currentTool) {                          
             case SICKLE:                                     
@@ -3759,36 +4029,37 @@ void func_8006C384(void) {
         
         switch (gPlayer.currentTool) {         
 
-            case 1:
-            case 2:
-            case 3:
-            case 4:
-            case 5:
+            case SICKLE:
+            case HOE:
+            case AX:
+            case HAMMER:
+            case WATERING_CAN:
                 break;
-            case 6:                                     
-                setAudio(0x1E);
+            case MILKER:                                     
+                setAudio(MILKER_SFX);
                 break;
-            case 7:                                     
+            case BELL:                                     
                 setAudio(0x20);
                 break;
-            case 8:                                     
+            case BRUSH:                                     
                 setAudio(0x1F);
                 break;
-            case 9:                                     
+            case CLIPPERS:                                     
                 setAudio(0x22);
                 break;
-            case 20:                                    
+            case CHICKEN_FEED:                                    
                 setAudio(0x1D);
                 break;
-            case 25:                                    
-            case 26:                                    
-            case 28:                                    
+            case MIRACLE_POTION:                                    
+            case COW_MEDICINE:                                    
+            case BLUE_FEATHER:                                    
                 setAudio(0x23);
                 break;
-            case 29:
+            case EMPTY_BOTTLE:
             default:
                 break;
-            }
+
+        }
         
     }
     
@@ -3801,7 +4072,7 @@ void func_8006C628(u16 arg0, u16 arg1) {
     u8 found;
     u8 found2;
 
-    switch (gPlayer.animationState) {
+    switch (gPlayer.actionPhase) {
 
         case 0:
 
@@ -3830,7 +4101,7 @@ void func_8006C628(u16 arg0, u16 arg1) {
 
         case 2:
 
-            if (toolUse.unk_E == 0) {
+            if (toolUse.toolUseState == 0) {
                 
                 if (!(func_80067A24(0))) {
                     resetAction();
@@ -3838,7 +4109,7 @@ void func_8006C628(u16 arg0, u16 arg1) {
 
                 switch (gPlayer.currentTool) {
 
-                    case 1:
+                    case SICKLE:
                         
                         if (!(gCutsceneFlags & 1)) {
                             
@@ -3849,18 +4120,18 @@ void func_8006C628(u16 arg0, u16 arg1) {
                                 if (gPlayer.toolUseCounters[0] == 200) {
                                     
                                     gPlayer.toolLevels[0] = 1;
-                                    startNewAction(0x1B, 0x1C);
-                                    D_8018A724 = 1;
-                                    D_801A8B5C = 1;
+                                    startAction(0x1B, 0x1C);
+                                    upgradedToolIndex = 1;
+                                    upgradedToolLevelIndex = 1;
                                     
                                 }
                                 
                                 if (gPlayer.toolUseCounters[0] == 400) {
                                     
                                     gPlayer.toolLevels[0] = 2;
-                                    startNewAction(0x1B, 0x1C);
-                                    D_8018A724 = 1;
-                                    D_801A8B5C = 2;
+                                    startAction(0x1B, 0x1C);
+                                    upgradedToolIndex = 1;
+                                    upgradedToolLevelIndex = 2;
                                     
                                 }
                                 
@@ -3870,7 +4141,7 @@ void func_8006C628(u16 arg0, u16 arg1) {
                         
                         break;
 
-                    case 2:
+                    case HOE:
                         
                         if (!(gCutsceneFlags & 1)) {
 
@@ -3881,39 +4152,37 @@ void func_8006C628(u16 arg0, u16 arg1) {
                                 if (gPlayer.toolUseCounters[1] == 250) {
                                     
                                     gPlayer.toolLevels[1] = 1;
-                                    startNewAction(0x1B, 0x1C);
-                                    D_8018A724 = 2;
-                                    D_801A8B5C = 1;
+                                    startAction(0x1B, 0x1C);
+                                    upgradedToolIndex = 2;
+                                    upgradedToolLevelIndex = 1;
                                     
                                 }
                                 
                                 if (gPlayer.toolUseCounters[1] == 500) {
                                     
                                     gPlayer.toolLevels[1] = 2;
-                                    startNewAction(0x1B, 0x1C);
-                                    D_8018A724 = 2;
-                                    D_801A8B5C = 2;
+                                    startAction(0x1B, 0x1C);
+                                    upgradedToolIndex = 2;
+                                    upgradedToolLevelIndex = 2;
                                     
                                 }
 
                             } 
                             
-                            if (toolUse.unk_F == 10) {
+                            if (toolUse.musicBoxTileDigCounter == 10) {
 
-                                if (checkHaveKeyItem(10) && !checkHaveKeyItem(4)) {
-
-                                    gPlayer.heldItem = 0xDA;
-                                    startNewAction(0x22, 0x23);
-                                    
+                                if (checkHaveKeyItem(TREASURE_MAP) && !checkHaveKeyItem(BROKEN_MUSIC_BOX)) {
+                                    gPlayer.heldItem = BROKEN_MUSIC_BOX_HELD_ITEM;
+                                    startAction(0x22, 0x23);
                                 }
                                 
-                                toolUse.unk_F = 0;
+                                toolUse.musicBoxTileDigCounter = 0;
 
                             } else if (checkDailyEventBit(0x29) && !(powerNutBits & 1) && !(getRandomNumberInRange(0, 479))) {
                             
-                                gPlayer.heldItem = 0x57;
-                                startNewAction(6, 8);
-                                handleEatingAndDrinking();
+                                gPlayer.heldItem = POWER_NUT;
+                                startAction(EATING, EATING + 2);
+                                func_80065AA0();
                                 powerNutBits |= 1;
                                 gMaximumStamina += adjustValue(gMaximumStamina, 15, MAX_STAMINA);
                                 
@@ -3924,8 +4193,7 @@ void func_8006C628(u16 arg0, u16 arg1) {
                         toggleDailyEventBit(0x29);
                         break;
 
-
-                    case 3:
+                    case AX:
 
                         if (!(gCutsceneFlags & 1)) {
                             
@@ -3936,18 +4204,18 @@ void func_8006C628(u16 arg0, u16 arg1) {
                                 if (gPlayer.toolUseCounters[2] == 450) {
                                 
                                     gPlayer.toolLevels[2] = 1;
-                                    startNewAction(0x1B, 0x1C);
-                                    D_8018A724 = 3;
-                                    D_801A8B5C = 1;
+                                    startAction(0x1B, 0x1C);
+                                    upgradedToolIndex = 3;
+                                    upgradedToolLevelIndex = 1;
                                 
                                 }
                                 
                                 if (gPlayer.toolUseCounters[2] == 900) {
                                     
                                     gPlayer.toolLevels[2] = 2;
-                                    startNewAction(0x1B, 0x1C);
-                                    D_8018A724 = 3;
-                                    D_801A8B5C = 2;
+                                    startAction(0x1B, 0x1C);
+                                    upgradedToolIndex = 3;
+                                    upgradedToolLevelIndex = 2;
                                     
                                 }
                                 
@@ -3957,7 +4225,7 @@ void func_8006C628(u16 arg0, u16 arg1) {
                         
                         break;
 
-                    case 4:
+                    case HAMMER:
 
                         if (!(gCutsceneFlags & 1)) {
                             
@@ -3968,18 +4236,18 @@ void func_8006C628(u16 arg0, u16 arg1) {
                                 if (gPlayer.toolUseCounters[3] == 100) {
                                 
                                     gPlayer.toolLevels[3] = 1;
-                                    startNewAction(0x1B, 0x1C);
-                                    D_8018A724 = 4;
-                                    D_801A8B5C = 1;
+                                    startAction(0x1B, 0x1C);
+                                    upgradedToolIndex = 4;
+                                    upgradedToolLevelIndex = 1;
                                 
                                 }
                                 
                                 if (gPlayer.toolUseCounters[3] == 200) {
                                     
                                     gPlayer.toolLevels[3] = 2;
-                                    startNewAction(0x1B, 0x1C);
-                                    D_8018A724 = 4;
-                                    D_801A8B5C = 2;
+                                    startAction(0x1B, 0x1C);
+                                    upgradedToolIndex = 4;
+                                    upgradedToolLevelIndex = 2;
                                     
                                 }
                             
@@ -3988,8 +4256,8 @@ void func_8006C628(u16 arg0, u16 arg1) {
                             if (checkDailyEventBit(0x29) && !(powerNutBits & 0x10)) {
                                 
                                 gPlayer.heldItem = 0x57;
-                                startNewAction(6, 8);
-                                handleEatingAndDrinking();
+                                startAction(6, 8);
+                                func_80065AA0();
                                 powerNutBits |= 0x10;
                                 
                                 gMaximumStamina += adjustValue(gMaximumStamina, 15, 250);
@@ -4002,7 +4270,7 @@ void func_8006C628(u16 arg0, u16 arg1) {
                         toggleDailyEventBit(0x29U);
                         break;
                     
-                    case 5:
+                    case WATERING_CAN:
 
                         if (!(gCutsceneFlags & 1)) {
 
@@ -4013,18 +4281,18 @@ void func_8006C628(u16 arg0, u16 arg1) {
                                 if (gPlayer.toolUseCounters[4] == 600) {
                                 
                                     gPlayer.toolLevels[4] = 1;
-                                    startNewAction(0x1B, 0x1C);
-                                    D_8018A724 = 5;
-                                    D_801A8B5C = 1;
+                                    startAction(0x1B, 0x1C);
+                                    upgradedToolIndex = 5;
+                                    upgradedToolLevelIndex = 1;
                                 
                                 }
                                 
                                 if (gPlayer.toolUseCounters[4] == 1200) {
                                     
                                     gPlayer.toolLevels[4] = 2;
-                                    startNewAction(0x1B, 0x1C);
-                                    D_8018A724 = 5;
-                                    D_801A8B5C = 2;
+                                    startAction(0x1B, 0x1C);
+                                    upgradedToolIndex = 5;
+                                    upgradedToolLevelIndex = 2;
                                     
                                 }
                                 
@@ -4051,7 +4319,7 @@ void func_8006C628(u16 arg0, u16 arg1) {
 
 void func_8006CD84(void) {
     
-    switch(gPlayer.staminaLevelForCurrentToolUse) {
+    switch(gPlayer.currentToolLevel) {
 
         case 0:
             func_8006C628(0x50, 0x68);
@@ -4071,7 +4339,7 @@ void func_8006CD84(void) {
 
 void func_8006CDF8(void) {
     
-    switch(gPlayer.staminaLevelForCurrentToolUse) {
+    switch(gPlayer.currentToolLevel) {
 
         case 0:
             func_8006C628(0x80, 0x98);
@@ -4091,7 +4359,7 @@ void func_8006CDF8(void) {
 
 void func_8006CE6C(void) {
 
-    switch(gPlayer.staminaLevelForCurrentToolUse) {
+    switch(gPlayer.currentToolLevel) {
 
         case 0:
             func_8006C628(0xB0, 0xC8);
@@ -4111,7 +4379,7 @@ void func_8006CE6C(void) {
 
 void func_8006CEE0(void) {
 
-    switch (gPlayer.staminaLevelForCurrentToolUse) {
+    switch (gPlayer.currentToolLevel) {
         
         case 0:
             func_8006C628(0xE0, 0xF8);
@@ -4133,7 +4401,7 @@ static inline void unknownInlineFunc() {
 
     u8 temp;
     
-    switch (gPlayer.animationState) {
+    switch (gPlayer.actionPhase) {
                     
         case 0:
             setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x140);
@@ -4141,7 +4409,7 @@ static inline void unknownInlineFunc() {
         
         case 1:
 
-            if (toolUse.unk_E == 0) {
+            if (toolUse.toolUseState == 0) {
 
                 temp = gPlayer.toolLevels[4];
 
@@ -4184,7 +4452,7 @@ void func_8006CF54(void) {
 
     u8 temp;
     
-    switch (gPlayer.staminaLevelForCurrentToolUse) {                              
+    switch (gPlayer.currentToolLevel) {                              
         
         case 0:
 
@@ -4218,7 +4486,7 @@ void func_8006CF54(void) {
 
 void func_8006D0AC(void) {
 
-    switch (gPlayer.animationState) {                              
+    switch (gPlayer.actionPhase) {                              
         
         case 0:
             setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0);
@@ -4232,12 +4500,12 @@ void func_8006D0AC(void) {
         case 2:
             // reset tool use struct
             func_800CF850();
-            gPlayer.animationState++;
+            gPlayer.actionPhase++;
             break;
         
         case 3:
             
-            if (toolUse.unk_E == 0) {
+            if (toolUse.toolUseState == 0) {
 
                 if (gPlayer.heldItem == 0) {
 
@@ -4248,7 +4516,7 @@ void func_8006D0AC(void) {
                 } else {
 
                     if (!(func_80067A24(0))) {
-                        startNewAction(4, 6);
+                        startAction(4, 6);
                     } else {
                         gPlayer.itemInfoIndex = func_800D5308(0, 6, gPlayer.heldItem, 0, 8);
                     }
@@ -4267,7 +4535,7 @@ void func_8006D0AC(void) {
 
 void func_8006D21C(void) {
     
-    switch (gPlayer.animationState) {                              
+    switch (gPlayer.actionPhase) {                              
         
         case 0:
             setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0);
@@ -4279,12 +4547,12 @@ void func_8006D21C(void) {
         
         case 2:
             func_800CF850();
-            gPlayer.animationState++;
+            gPlayer.actionPhase++;
             break;
         
         case 3:
             
-            if ((toolUse.unk_E == 0) && !(func_80067A24(0))) {
+            if ((toolUse.toolUseState == 0) && !(func_80067A24(0))) {
                 resetAction();
             }
         
@@ -4298,7 +4566,7 @@ void func_8006D21C(void) {
 
 void func_8006D304(void) {
 
-    switch (gPlayer.animationState) {                              
+    switch (gPlayer.actionPhase) {                              
         
         case 0:
             setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0);
@@ -4312,12 +4580,12 @@ void func_8006D304(void) {
         
         case 2:
             func_800CF850();
-            gPlayer.animationState++;
+            gPlayer.actionPhase++;
             break;
         
         case 3:
             
-            if ((toolUse.unk_E == 0) && !(func_80067A24(0))) {
+            if ((toolUse.toolUseState == 0) && !(func_80067A24(0))) {
                 resetAction();
             }
         
@@ -4331,7 +4599,7 @@ void func_8006D304(void) {
 
 void func_8006D3FC(void) {
 
-    switch (gPlayer.animationState) {                              
+    switch (gPlayer.actionPhase) {                              
         
         case 0:
             setEntityAnimationWithDirectionChange(ENTITY_PLAYER, STANDING);
@@ -4344,12 +4612,12 @@ void func_8006D3FC(void) {
     
         case 2:
             func_800CF850();
-            gPlayer.animationState++;
+            gPlayer.actionPhase++;
             break;
         
         case 3:
             
-            if (toolUse.unk_E == 0) {
+            if (toolUse.toolUseState == 0) {
                 
                 if (gPlayer.heldItem == 0) {
                     
@@ -4360,7 +4628,7 @@ void func_8006D3FC(void) {
                 } else {
                     
                     if (!(func_80067A24(0))) {
-                        startNewAction(4, 6);
+                        startAction(PICKING_UP, PICKING_UP + 2);
                     } else {
                         gPlayer.itemInfoIndex = func_800D5308(0, 6, gPlayer.heldItem, 0, 8);
                     }
@@ -4380,7 +4648,7 @@ void func_8006D3FC(void) {
 
 void func_8006D56C(void) {
     
-    switch (gPlayer.animationState) {
+    switch (gPlayer.actionPhase) {
 
         case 0:
             setEntityAnimation(ENTITY_PLAYER, 0);
@@ -4392,12 +4660,12 @@ void func_8006D56C(void) {
         
         case 2:
             func_800CF850();
-            gPlayer.animationState++;
+            gPlayer.actionPhase++;
             break;
         
         case 3:
 
-            if (toolUse.unk_E == 0) {
+            if (toolUse.toolUseState == 0) {
                 
                 if (!(func_80067A24(0))) {
                     resetAction();
@@ -4421,7 +4689,7 @@ void func_8006D56C(void) {
 
 void func_8006D690(void) {
     
-    switch (gPlayer.animationState) {
+    switch (gPlayer.actionPhase) {
 
         case 0:
             setEntityAnimation(ENTITY_PLAYER, 0);
@@ -4433,12 +4701,12 @@ void func_8006D690(void) {
         
         case 2:
             func_800CF850();
-            gPlayer.animationState++;
+            gPlayer.actionPhase++;
             break;
         
         case 3:
 
-            if (toolUse.unk_E == 0) {
+            if (toolUse.toolUseState == 0) {
                 
                 if (!(func_80067A24(0))) {
                     resetAction();
@@ -4462,7 +4730,7 @@ void func_8006D690(void) {
 
 void func_8006D7B4(void) {
     
-    switch (gPlayer.animationState) {
+    switch (gPlayer.actionPhase) {
 
         case 0:
             setEntityAnimation(ENTITY_PLAYER, 0);
@@ -4474,12 +4742,12 @@ void func_8006D7B4(void) {
         
         case 2:
             func_800CF850();
-            gPlayer.animationState++;
+            gPlayer.actionPhase++;
             break;
         
         case 3:
 
-            if (toolUse.unk_E == 0) {
+            if (toolUse.toolUseState == 0) {
                 
                 if (!(func_80067A24(0))) {
                     resetAction();
@@ -4503,7 +4771,7 @@ void func_8006D7B4(void) {
 
 void func_8006D8D8(void) {
     
-    switch (gPlayer.animationState) {
+    switch (gPlayer.actionPhase) {
 
         case 0:
             setEntityAnimation(ENTITY_PLAYER, 0);
@@ -4515,12 +4783,12 @@ void func_8006D8D8(void) {
         
         case 2:
             func_800CF850();
-            gPlayer.animationState++;
+            gPlayer.actionPhase++;
             break;
         
         case 3:
 
-            if (toolUse.unk_E == 0) {
+            if (toolUse.toolUseState == 0) {
                 
                 if (!(func_80067A24(0))) {
                     resetAction();
@@ -4544,7 +4812,7 @@ void func_8006D8D8(void) {
 
 void func_8006D9FC(void) {
     
-    switch (gPlayer.animationState) {
+    switch (gPlayer.actionPhase) {
 
         case 0:
             setEntityAnimation(ENTITY_PLAYER, 0);
@@ -4556,12 +4824,12 @@ void func_8006D9FC(void) {
         
         case 2:
             func_800CF850();
-            gPlayer.animationState++;
+            gPlayer.actionPhase++;
             break;
         
         case 3:
 
-            if (toolUse.unk_E == 0) {
+            if (toolUse.toolUseState == 0) {
                 
                 if (!(func_80067A24(0))) {
                     resetAction();
@@ -4585,7 +4853,7 @@ void func_8006D9FC(void) {
 
 void func_8006DB20(void) {
     
-    switch (gPlayer.animationState) {
+    switch (gPlayer.actionPhase) {
 
         case 0:
             setEntityAnimation(ENTITY_PLAYER, 0);
@@ -4597,12 +4865,12 @@ void func_8006DB20(void) {
         
         case 2:
             func_800CF850();
-            gPlayer.animationState++;
+            gPlayer.actionPhase++;
             break;
         
         case 3:
 
-            if (toolUse.unk_E == 0) {
+            if (toolUse.toolUseState == 0) {
                 
                 if (!(func_80067A24(0))) {
                     resetAction();
@@ -4626,7 +4894,7 @@ void func_8006DB20(void) {
 
 void func_8006DC44(void) {
     
-    switch (gPlayer.animationState) {
+    switch (gPlayer.actionPhase) {
 
         case 0:
             setEntityAnimation(ENTITY_PLAYER, 0);
@@ -4638,12 +4906,12 @@ void func_8006DC44(void) {
         
         case 2:
             func_800CF850();
-            gPlayer.animationState++;
+            gPlayer.actionPhase++;
             break;
         
         case 3:
 
-            if (toolUse.unk_E == 0) {
+            if (toolUse.toolUseState == 0) {
                 
                 if (!(func_80067A24(0))) {
                     resetAction();
@@ -4667,7 +4935,7 @@ void func_8006DC44(void) {
 
 void func_8006DD68(void) {
 
-    switch (gPlayer.animationState) {
+    switch (gPlayer.actionPhase) {
 
         case 0:
             setEntityAnimation(ENTITY_PLAYER, 0);
@@ -4679,12 +4947,12 @@ void func_8006DD68(void) {
         
         case 2:
             func_800CF850();
-            gPlayer.animationState++;
+            gPlayer.actionPhase++;
             break;
         
         case 3:
 
-            if (toolUse.unk_E == 0) {
+            if (toolUse.toolUseState == 0) {
                 
                 if (!(func_80067A24(0))) {
                     resetAction();
@@ -4708,7 +4976,7 @@ void func_8006DD68(void) {
 
 void func_8006DE8C(void) {
 
-        switch (gPlayer.animationState) {
+        switch (gPlayer.actionPhase) {
 
         case 0:
             setEntityAnimation(ENTITY_PLAYER, 0);
@@ -4720,12 +4988,12 @@ void func_8006DE8C(void) {
         
         case 2:
             func_800CF850();
-            gPlayer.animationState++;
+            gPlayer.actionPhase++;
             break;
 
         case 3:
 
-            if (toolUse.unk_E == 0) {
+            if (toolUse.toolUseState == 0) {
                 
                 if (!(func_80067A24(0))) {
                     resetAction();
@@ -4749,7 +5017,7 @@ void func_8006DE8C(void) {
 
 void func_8006DFB0(void) {
 
-    switch (gPlayer.animationState) {
+    switch (gPlayer.actionPhase) {
         case 0:
             setEntityAnimation(ENTITY_PLAYER, 0);
             break;
@@ -4758,10 +5026,10 @@ void func_8006DFB0(void) {
             break;
         case 2:
             func_800CF850();
-            gPlayer.animationState++;
+            gPlayer.actionPhase++;
             break;
         case 3:            
-            if (!toolUse.unk_E) {
+            if (toolUse.toolUseState == 0) {
                 if (!func_80067A24(0)) {
                     resetAction();
                 }
@@ -4783,7 +5051,7 @@ void func_8006DFB0(void) {
 
 void func_8006E0D4(void) {
 
-    switch (gPlayer.animationState) {
+    switch (gPlayer.actionPhase) {
 
         case 0:
             setEntityAnimationWithDirectionChange(ENTITY_PLAYER, STANDING);
@@ -4795,12 +5063,12 @@ void func_8006E0D4(void) {
 
         case 2:
             func_800CF850();
-            gPlayer.animationState++;
+            gPlayer.actionPhase++;
             break;
 
         case 3:
 
-            if (!toolUse.unk_E) {
+            if (toolUse.toolUseState == 0) {
 
                 if (!func_80067A24(0)) {
                     resetAction();
@@ -4833,7 +5101,7 @@ void func_8006E208(void) {}
 //INCLUDE_ASM("asm/nonmatchings/game/player", func_8006E210);
 
 void func_8006E210(void) {
-    startNewAction(0x16, 0x17);
+    startAction(0x16, 0x17);
 }
 
 // empty bottle
@@ -4841,7 +5109,7 @@ void func_8006E210(void) {
 
 void func_8006E240(void) {
 
-    switch (gPlayer.animationState) {                           
+    switch (gPlayer.actionPhase) {                           
         case 0:
             setEntityAnimationWithDirectionChange(ENTITY_PLAYER, STANDING);
             func_80099DE8();
@@ -4851,10 +5119,10 @@ void func_8006E240(void) {
             break;
         case 2:
             func_800CF850();
-            gPlayer.animationState++;
+            gPlayer.actionPhase++;
             break;
         case 3:
-            if (!toolUse.unk_E) {
+            if (toolUse.toolUseState == 0) {
                 if (!func_80067A24(0)) {
                     resetAction();
                 }
@@ -4873,7 +5141,7 @@ void func_8006E240(void) {
 
 void func_8006E348(void) {
 
-    switch (gPlayer.animationState) {
+    switch (gPlayer.actionPhase) {
 
         case 0:
             setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0);
@@ -4886,12 +5154,12 @@ void func_8006E348(void) {
         
         case 2:
             func_800CF850();
-            gPlayer.animationState++;
+            gPlayer.actionPhase++;
             break;
 
         case 3:
 
-            if (toolUse.unk_E == 0) {
+            if (toolUse.toolUseState == 0) {
                 
                 if (!(func_80067A24(0))) {
                     resetAction();
@@ -4913,7 +5181,7 @@ void func_8006E348(void) {
 
 void func_8006E450(void) {
 
-    switch (gPlayer.animationState) {
+    switch (gPlayer.actionPhase) {
 
         case 0:
             setEntityAnimation(ENTITY_PLAYER, 0);
@@ -4925,12 +5193,12 @@ void func_8006E450(void) {
         
         case 2:
             func_800CF850();
-            gPlayer.animationState++;
+            gPlayer.actionPhase++;
             break;
 
         case 3:
 
-            if (toolUse.unk_E == 0) {
+            if (toolUse.toolUseState == 0) {
                 
                 if (!(func_80067A24(0))) {
                     resetAction();
@@ -4954,7 +5222,7 @@ void func_8006E450(void) {
 
 void func_8006E574(void) {
 
-    switch (gPlayer.animationState) {
+    switch (gPlayer.actionPhase) {
         case 0:
             setEntityAnimationWithDirectionChange(ENTITY_PLAYER, STANDING);
             func_800305CC(ENTITY_PLAYER, 0.0f, 8.0f, 0);
@@ -4966,10 +5234,10 @@ void func_8006E574(void) {
             break;
         case 2:
             func_800CF850();
-            gPlayer.animationState++;
+            gPlayer.actionPhase++;
             break;
         case 3:
-            if (toolUse.unk_E == 0 && !func_80067A24(0)) {
+            if (toolUse.toolUseState == 0 && !func_80067A24(0)) {
                 resetAction();
             }
             break;
@@ -4983,7 +5251,7 @@ void func_8006E574(void) {
 
 void func_8006E678(void) {
 
-    switch (gPlayer.animationState) {
+    switch (gPlayer.actionPhase) {
 
         case 0:
 
@@ -4994,7 +5262,7 @@ void func_8006E678(void) {
                 
             } else {
 
-                startNewAction(0x14, 0x15);
+                startAction(0x14, 0x15);
                 
                 switch (gPlayer.bottleContents) {
                     
@@ -5002,7 +5270,7 @@ void func_8006E678(void) {
                         gPlayer.heldItem = 0x71;
                         break;
                     case 2:
-                        gPlayer.heldItem = BOTTLE_WITH_WINE;
+                        gPlayer.heldItem = BOTTLE_WITH_WINE_HELD_ITEM;
                         break;
                     case 3:
                         gPlayer.heldItem = 0x73;
@@ -5025,7 +5293,7 @@ void func_8006E678(void) {
                     
                 }
                 
-                handleEatingAndDrinking();
+                func_80065AA0();
 
                 gPlayer.bottleContents = 0;       
 
@@ -5039,17 +5307,18 @@ void func_8006E678(void) {
 
         case 2:
             func_800CF850();
-            gPlayer.animationState++;
+            gPlayer.actionPhase++;
             break;
 
         case 3:
-            if (toolUse.unk_E == 0 && !func_80067A24(0)) {
+            if (toolUse.toolUseState == 0 && !func_80067A24(0)) {
                 resetAction();
             }    
             break;
 
         default:
             break;
+    
     }
 
 }

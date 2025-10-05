@@ -15,10 +15,9 @@ typedef struct {
 	f32 r,g,b,a;
 } Vec4f;
 
-// FIXME: should be tl, tr, bl, br (corners of letter tiles) but need to verify order
 typedef struct {
-    f32 x, y, z, w;
-} Vec4f_Coordinates;
+    u8 r, g, b, a;
+} Vec4c;
 
 typedef struct {
     f32 x, y;

@@ -1475,9 +1475,7 @@ u16 getMapGroundObjectSpriteIndex(u16 mapIndex, f32 x, f32 z) {
     u16 result = 0;
     
     if (mapIndex == MAIN_MAP_INDEX && mainMap[mapIndex].mapState.flags & MAP_ACTIVE) {
-
         result = mainMap[mapIndex].groundObjects.gridToSpriteIndex[((u8)z * 20) + (u8)x];        
-        
     }
 
     return result;

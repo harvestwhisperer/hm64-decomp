@@ -64,8 +64,7 @@ u16 calculateGrassScore(void) {
             switch (farmFieldTiles[i][j]) {
                  default:
                     break;
-                // bug: includes withered corn plants in score
-                case CORN_PLANT_WITHERED ... GRASS_CUT:
+                case GRASS_PLANTED_STAGE_1 ... GRASS_CUT:
                     score++;
                     break;
             }
