@@ -1071,7 +1071,20 @@ INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008D650);
 
 INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008D70C);
 
-INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008DA00);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008DA00);
+
+void func_8008DA00(u8 index) {
+    switch(gChickens[index].unk_17)
+    {
+        case 0:
+        case 0x10:
+            gChickens[index].unk_19 = 0;
+            gChickens[index].unk_1A = 0;
+            gChickens[index].unk_1B = 0;
+            setEntityAnimation(gChickens[index].entityIndex, 0x13);
+            gChickens[index].flags |= 0x2;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008DAA0);
 
