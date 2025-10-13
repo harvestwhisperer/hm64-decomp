@@ -1067,7 +1067,23 @@ INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008CF94);
 
 INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008D1C0);
 
-INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008D650);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008D650);
+
+void func_8008D650(u8 index) {
+    u16 randomDirection;
+
+    gChickens[index].unk_19 = 0;
+    gChickens[index].unk_1A = 0;
+    gChickens[index].unk_1B = 0;
+    setEntityAnimationWithDirectionChange(gChickens[index].entityIndex, 0x28);
+    randomDirection = getRandomNumberInRange(0, 0x3E8);
+    if (randomDirection < 7) {
+        gChickens[index].direction = randomDirection;
+    }
+    gChickens[index].unk_17 = 0;
+    gChickens[index].flags |= 2;
+}
+
 
 INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008D70C);
 
