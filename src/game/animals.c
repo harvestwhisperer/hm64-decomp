@@ -1102,10 +1102,11 @@ void func_8008D650(u8 index) {
     gChickens[index].unk_1A = 0;
     gChickens[index].unk_1B = 0;
     setEntityAnimationWithDirectionChange(gChickens[index].entityIndex, 0x28);
-    randomDirection = getRandomNumberInRange(0, 0x3E8);
+    randomDirection = getRandomNumberInRange(0, 1000);
     if (randomDirection < 7) {
         gChickens[index].direction = randomDirection;
     }
+    
     gChickens[index].unk_17 = 0;
     gChickens[index].flags |= 2;
 }
