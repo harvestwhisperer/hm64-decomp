@@ -1032,43 +1032,30 @@ INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008B55C);
 // INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008B9AC);
 
 void func_8008B9AC(void) {
-    u8 var_a1;
-    s32 temp_v1_2;
-    s32 var_a1_2;
-    u16 horseInfoFlags;
-    u16* temp_s0;
-
-    horseInfoFlags = horseInfo.flags;
-    if ((horseInfoFlags & 0x1) && (horseInfo.location == gBaseMapIndex) && !(horseInfoFlags & 0x8)) {
+    if ((horseInfo.flags & 0x1) && (horseInfo.location == gBaseMapIndex) && !(horseInfo.flags & 0x8)) {
         horseInfo.entityIndex = 0x26;
         
         switch (horseInfo.grown) {
         case FALSE:
-            var_a1 = 0x41;
-            loadEntity(0x26, var_a1, 1);
+            loadEntity(0x26, 0x41, 1);
             break;
         case TRUE:
-            var_a1 = 0x42;
-            loadEntity(0x26, var_a1, 1);
+            loadEntity(0x26, 0x42, 1);
             break;
         }
 
-        temp_s0 = &horseInfo.entityIndex;
-        setEntityCollidable(*temp_s0, 1);
-        setEntityYMovement(*temp_s0, 1);
-        func_8002FF38(*temp_s0, 0);
-        temp_v1_2 = 8 + horseInfo.direction - getCurrentMapRotation(0);
-        var_a1_2 = temp_v1_2;
-        if (temp_v1_2 < 0) {
-            var_a1_2 = temp_v1_2 + 7;
-        }
-        setEntityDirection(*temp_s0, (temp_v1_2 - ((var_a1_2 >> 3) * 8)) & 0xFF);
-        setEntityCoordinates(*temp_s0, horseInfo.coordinates.x, horseInfo.coordinates.y, horseInfo.coordinates.z);
+        setEntityCollidable(horseInfo.entityIndex, 1);
+        setEntityYMovement(horseInfo.entityIndex, 1);
+        func_8002FF38(horseInfo.entityIndex, 0);
+        setEntityDirection(horseInfo.entityIndex, convertSpriteToWorldDirection(horseInfo.direction, MAIN_MAP_INDEX));
+        setEntityCoordinates(horseInfo.entityIndex, horseInfo.coordinates.x, horseInfo.coordinates.y, horseInfo.coordinates.z);
         horseInfo.unk_17 = 0;
         horseInfo.flags |= 4;
     }
+    
     updateHorse();
 }
+
 
 INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008BAF0);
 
