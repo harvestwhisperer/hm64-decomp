@@ -1112,7 +1112,68 @@ void func_8008D650(u8 index) {
 }
 
 
-INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008D70C);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008D70C);
+
+void func_8008D70C(u8 index) {
+    u16 randomNumber;
+
+    switch (gChickens[index].unk_17) {
+    case 0:
+        gChickens[index].unk_19 = 0;
+        gChickens[index].unk_1A = 0;
+        gChickens[index].unk_1B = 0;
+        setEntityAnimationWithDirectionChange(gChickens[index].entityIndex, 0);
+        if (getRandomNumberInRange(0, 100) < 40) {
+            gChickens[index].unk_17 = 0;
+        } else {
+            randomNumber = getRandomNumberInRange(0, 10);
+            if (randomNumber < 7) {
+                gChickens[index].direction = randomNumber;
+            }
+            randomNumber = getRandomNumberInRange(0, 40);
+            if (randomNumber < 20) {
+                gChickens[index].unk_17 = 1;
+            }
+            if ((u16) (randomNumber - 20) < 20) {
+                gChickens[index].unk_17 = 2;
+            }
+        }
+        
+        gChickens[index].flags |= 2;
+        break;
+
+    case 1:
+        gChickens[index].unk_19 = 1;
+        gChickens[index].unk_1A = 0;
+        gChickens[index].unk_1B = 0;
+        setEntityAnimationWithDirectionChange(gChickens[index].entityIndex, 8);
+        if (getRandomNumberInRange(0, 0x14) < 10) {
+            gChickens[index].unk_17 = 1;
+        } else {
+            gChickens[index].unk_17 = 0;
+        }
+        gChickens[index].flags |= 2;
+        setAudio(0x42);
+        break;
+
+    case 2:
+        gChickens[index].unk_19 = 0;
+        gChickens[index].unk_1A = 0;
+        gChickens[index].unk_1B = 0;
+        setEntityAnimationWithDirectionChange(gChickens[index].entityIndex, 16);
+        gChickens[index].unk_17 = 0;
+        gChickens[index].flags |= 2;
+        break;
+
+    case 16:
+        gChickens[index].unk_19 = 0;
+        gChickens[index].unk_1A = 0;
+        gChickens[index].unk_1B = 0;
+        setEntityAnimationWithDirectionChange(gChickens[index].entityIndex, 0);
+        gChickens[index].flags |= 2;
+        break;
+    }
+}
 
 //INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008DA00);
 
