@@ -1029,7 +1029,33 @@ void func_8008B2E8(u8 chickenIndex) {
 
 INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008B55C);
 
-INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008B9AC);
+// INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008B9AC);
+
+void func_8008B9AC(void) {
+    if ((horseInfo.flags & 0x1) && (horseInfo.location == gBaseMapIndex) && !(horseInfo.flags & 0x8)) {
+        horseInfo.entityIndex = 0x26;
+        
+        switch (horseInfo.grown) {
+        case FALSE:
+            loadEntity(0x26, 0x41, 1);
+            break;
+        case TRUE:
+            loadEntity(0x26, 0x42, 1);
+            break;
+        }
+
+        setEntityCollidable(horseInfo.entityIndex, 1);
+        setEntityYMovement(horseInfo.entityIndex, 1);
+        func_8002FF38(horseInfo.entityIndex, 0);
+        setEntityDirection(horseInfo.entityIndex, convertSpriteToWorldDirection(horseInfo.direction, MAIN_MAP_INDEX));
+        setEntityCoordinates(horseInfo.entityIndex, horseInfo.coordinates.x, horseInfo.coordinates.y, horseInfo.coordinates.z);
+        horseInfo.unk_17 = 0;
+        horseInfo.flags |= 4;
+    }
+    
+    updateHorse();
+}
+
 
 INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008BAF0);
 
@@ -1067,7 +1093,24 @@ INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008CF94);
 
 INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008D1C0);
 
-INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008D650);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008D650);
+
+void func_8008D650(u8 index) {
+    u16 randomDirection;
+
+    gChickens[index].unk_19 = 0;
+    gChickens[index].unk_1A = 0;
+    gChickens[index].unk_1B = 0;
+    setEntityAnimationWithDirectionChange(gChickens[index].entityIndex, 0x28);
+    randomDirection = getRandomNumberInRange(0, 1000);
+    if (randomDirection < 7) {
+        gChickens[index].direction = randomDirection;
+    }
+    
+    gChickens[index].unk_17 = 0;
+    gChickens[index].flags |= 2;
+}
+
 
 INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008D70C);
 
