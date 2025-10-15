@@ -1091,7 +1091,110 @@ INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008C358);
 
 INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008CF94);
 
-INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008D1C0);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008D1C0);
+
+void func_8008D1C0(u8 index) {
+    u16 randomNumber;
+
+    switch (gChickens[index].unk_17) {
+    case 0:
+        gChickens[index].unk_19 = 0;
+        gChickens[index].unk_1A = 0;
+        gChickens[index].unk_1B = 0;
+        setEntityAnimationWithDirectionChange(gChickens[index].entityIndex, 0);
+        if (getRandomNumberInRange(0, 100) < 40) {
+            gChickens[index].unk_17 = 0;
+        } else {
+            randomNumber = getRandomNumberInRange(0, 10);
+            if (randomNumber < 7) {
+                gChickens[index].direction = randomNumber;
+            }
+            randomNumber = getRandomNumberInRange(0, 60);
+            if (randomNumber < 20) {
+                gChickens[index].unk_17 = 1;
+            }
+            if (19 < randomNumber && randomNumber < 40) {
+                gChickens[index].unk_17 = 2;
+            }
+            
+            if (39 < randomNumber && randomNumber < 60) {
+                gChickens[index].unk_17 = 3;
+            }
+        }
+        gChickens[index].flags |= 2;
+
+        break;
+    case 1:
+        gChickens[index].unk_19  = 1;
+        gChickens[index].unk_1A = 0;
+        gChickens[index].unk_1B = 0;
+        setEntityAnimationWithDirectionChange(gChickens[index].entityIndex, 8);
+        if (getRandomNumberInRange(0, 20) < 10) {
+            gChickens[index].unk_17 = 1;
+        } else {
+            gChickens[index].unk_17 = 0;
+        }
+        gChickens[index].flags |= 2;
+        setAudio(0x40);
+        
+        break;
+    case 2:
+        gChickens[index].unk_19 = 0;
+        gChickens[index].unk_1A = 0;
+        gChickens[index].unk_1B = 0;
+        setEntityAnimationWithDirectionChange(gChickens[index].entityIndex, 0x10);
+        gChickens[index].unk_17 = 0;
+        gChickens[index].flags |= 2;
+        
+        break;
+    case 3:
+        gChickens[index].unk_19 = 0;
+        gChickens[index].unk_1A = 0;
+        gChickens[index].unk_1B = 0;
+        setEntityAnimationWithDirectionChange(gChickens[index].entityIndex, 0x20);
+        if (getRandomNumberInRange(0,19) < 10) {
+            gChickens[index].unk_17 = 0;      
+        } else {
+            gChickens[index].unk_17 = 4;
+        }
+        gChickens[index].flags |= 2;
+        
+        break;
+    case 4:
+        gChickens[index].unk_19 = 0;
+        gChickens[index].unk_1A = 0;
+        gChickens[index].unk_1B = 0;
+        setEntityAnimationWithDirectionChange(gChickens[index].entityIndex, 0x18);
+        
+        if (getRandomNumberInRange(0, 19) < 10) {
+            gChickens[index].unk_17 = 4;
+        } else {
+            gChickens[index].unk_17 = 3;
+        }
+        gChickens[index].flags |= 2;
+        
+        break;
+    case 16:
+        gChickens[index].unk_19 = 0;
+        gChickens[index].unk_1A = 0;
+        gChickens[index].unk_1B = 0;
+        setEntityAnimationWithDirectionChange(gChickens[index].entityIndex, 0);
+        gChickens[index].flags |= 2;
+        
+        break;
+    case 17:
+        gChickens[index].unk_19 = 0;
+        gChickens[index].unk_1A = 0;
+        gChickens[index].unk_1B = 0;
+        setEntityAnimationWithDirectionChange(gChickens[index].entityIndex, 0x30);
+        gChickens[index].unk_17 = 0;
+        gChickens[index].flags |=  2;
+        setAudio(0x41);
+        
+        break;
+    }
+}
+
 
 //INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008D650);
 
