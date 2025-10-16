@@ -1270,7 +1270,7 @@ void func_8008D70C(u8 index) {
             if (randomNumber < 20) {
                 gChickens[index].unk_17 = 1;
             }
-            if ((u16) (randomNumber - 20) < 20) {
+            if (19 < randomNumber && randomNumber < 40) {
                 gChickens[index].unk_17 = 2;
             }
         }
@@ -1283,7 +1283,7 @@ void func_8008D70C(u8 index) {
         gChickens[index].unk_1A = 0;
         gChickens[index].unk_1B = 0;
         setEntityAnimationWithDirectionChange(gChickens[index].entityIndex, 8);
-        if (getRandomNumberInRange(0, 0x14) < 10) {
+        if (getRandomNumberInRange(0, 20) < 10) {
             gChickens[index].unk_17 = 1;
         } else {
             gChickens[index].unk_17 = 0;
@@ -1310,6 +1310,7 @@ void func_8008D70C(u8 index) {
         break;
     }
 }
+
 
 //INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008DA00);
 
