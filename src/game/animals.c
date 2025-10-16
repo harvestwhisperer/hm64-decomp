@@ -1089,7 +1089,40 @@ void updateDog(void) {
 
 INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008C358);
 
-INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008CF94);
+// INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008CF94);
+
+void func_8008CF94(u8 index) {
+    Vec3f vec;
+
+    if (gChickens[index].flags & 1 && gChickens[index].flags & 4) {
+        if ((checkEntityAnimationStateChanged(gChickens[index].entityIndex) || gChickens[index].flags & 0x40)) {
+            switch(gChickens[index].type) {
+                case ADULT_CHICKEN:
+                    switch(gChickens[index].condition) {
+                        case 0:
+                                func_8008D1C0(index);
+                            break;
+                        case 1:
+                                func_8008D650(index);
+                            break;
+                    }
+                    break;
+                case CHICK:
+                    func_8008D70C(index);
+                    break;
+                case 0:
+                    func_8008DA00(index);
+                    break;
+            }
+
+            gChickens[index].flags &= 0xFFBF;
+        }
+
+        setEntityDirection(gChickens[index].entityIndex, convertSpriteToWorldDirection(gChickens[index].direction, MAIN_MAP_INDEX));
+        vec = getMovementVectorFromDirection(gChickens[index].unk_19, gChickens[index].direction, 0);
+        setEntityMovementVector(gChickens[index].entityIndex, vec.x, vec.y, vec.z, gChickens[index].unk_19);
+    }
+}
 
 //INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008D1C0);
 
