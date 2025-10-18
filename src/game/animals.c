@@ -1072,8 +1072,9 @@ void func_8008B55C(u8 index) {
         setEntityDirection(gFarmAnimals[index].entityIndex, convertSpriteToWorldDirection(gFarmAnimals[index].direction, MAIN_MAP_INDEX));
         setEntityCoordinates(gFarmAnimals[index].entityIndex, gFarmAnimals[index].coordinates.x, gFarmAnimals[index].coordinates.y, gFarmAnimals[index].coordinates.z);
         func_800300F8(gFarmAnimals[index].entityIndex, 0);
-        gFarmAnimals[index].flags = (gFarmAnimals[index].flags | 0x4) & 0xF9FF;
-        
+        gFarmAnimals[index].flags |=  0x4;
+        gFarmAnimals[index].flags &= ~(0x200 | 0x400);
+
         if ((gWeather == SUNNY) || !(getLevelFlags(gFarmAnimals[index].location) & 2)) {
             gFarmAnimals[index].unk_1B = 0;
         } else {
