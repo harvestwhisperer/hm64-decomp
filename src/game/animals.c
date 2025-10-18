@@ -1037,28 +1037,28 @@ void func_8008B55C(u8 index) {
         switch (gFarmAnimals[index].type) {
             case 0:
                 initializeAnimalEntity(gFarmAnimals[index].entityIndex, (void*)0x802B1E40, (void*)0x802B1F40, (void*)0x802B2E40, (void*)0x802B2F40);
-                loadEntity(gFarmAnimals[index].entityIndex, 0x45, 1);
+                loadEntity(gFarmAnimals[index].entityIndex, 0x45, TRUE);
                 break;
             case 1:
                 initializeAnimalEntity(gFarmAnimals[index].entityIndex, (void*)0x802B0940, (void*)0x802B0A40, (void*)0x802B1940, (void*)0x802B1A40);
-                loadEntity(gFarmAnimals[index].entityIndex, 0x46, 1);
+                loadEntity(gFarmAnimals[index].entityIndex, 0x46, TRUE);
                 break;
             case 2:
                 initializeAnimalEntity(gFarmAnimals[index].entityIndex, (void*)0x802779C0, (void*)0x80277AC0, (void*)0x8027A6C0, (void*)0x8027A8C0);
-                loadEntity(gFarmAnimals[index].entityIndex, 0x47, 1);
+                loadEntity(gFarmAnimals[index].entityIndex, 0x47, TRUE);
                 break;
             case 3:
                 initializeAnimalEntity(gFarmAnimals[index].entityIndex, (void*)0x802B3140, (void*)0x802B3240, (void*)0x802B4240, (void*)0x802B4340);
-                loadEntity(gFarmAnimals[index].entityIndex, 0x57, 1);
+                loadEntity(gFarmAnimals[index].entityIndex, 0x57, TRUE);
                 break;
             case 4:
                 initializeAnimalEntity(gFarmAnimals[index].entityIndex, (void*)0x802B5A40, (void*)0x802B5B40, (void*)0x802B6240, (void*)0x802B6340);
-                loadEntity(gFarmAnimals[index].entityIndex, 0x48, 1);
+                loadEntity(gFarmAnimals[index].entityIndex, 0x48, TRUE);
                 break;
             case 5:
             case 6:
                 initializeAnimalEntity(gFarmAnimals[index].entityIndex, (void*)0x802B4540, (void*)0x802B4640, (void*)0x802B5640, (void*)0x802B5740);
-                loadEntity(gFarmAnimals[index].entityIndex, 0x49, 1);
+                loadEntity(gFarmAnimals[index].entityIndex, 0x49, TRUE);
                 break;
         }
 
@@ -1066,12 +1066,12 @@ void func_8008B55C(u8 index) {
             setFarmAnimalLocation(index);
         }
         
-        setEntityCollidable(gFarmAnimals[index].entityIndex, 1);
-        setEntityYMovement(gFarmAnimals[index].entityIndex, 1);
-        func_8002FF38(gFarmAnimals[index].entityIndex, 0);
+        setEntityCollidable(gFarmAnimals[index].entityIndex, TRUE);
+        setEntityYMovement(gFarmAnimals[index].entityIndex, TRUE);
+        func_8002FF38(gFarmAnimals[index].entityIndex, FALSE);
         setEntityDirection(gFarmAnimals[index].entityIndex, convertSpriteToWorldDirection(gFarmAnimals[index].direction, MAIN_MAP_INDEX));
         setEntityCoordinates(gFarmAnimals[index].entityIndex, gFarmAnimals[index].coordinates.x, gFarmAnimals[index].coordinates.y, gFarmAnimals[index].coordinates.z);
-        func_800300F8(gFarmAnimals[index].entityIndex, 0);
+        func_800300F8(gFarmAnimals[index].entityIndex, FALSE);
         gFarmAnimals[index].flags |=  0x4;
         gFarmAnimals[index].flags &= ~(0x200 | 0x400);
 
