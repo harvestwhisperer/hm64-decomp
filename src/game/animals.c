@@ -1156,78 +1156,78 @@ void func_8008BAF0(u8 index, u8 arg1) {
 
         switch (gBirds[index].unk_15) {
             case 0:
-                loadEntity(gBirds[index].entityIndex, 0x40, 1);
+                loadEntity(gBirds[index].entityIndex, 0x40, TRUE);
                 break;
             case 1:
-                loadEntity(gBirds[index].entityIndex, 0x3F, 1);
+                loadEntity(gBirds[index].entityIndex, 0x3F, TRUE);
                 break;
             case 2:
-                loadEntity(gBirds[index].entityIndex, 0x3E, 1);
+                loadEntity(gBirds[index].entityIndex, 0x3E, TRUE);
                 break;
             case 3:
             case 4:
-                loadEntity(gBirds[index].entityIndex, 0x58, 1);
+                loadEntity(gBirds[index].entityIndex, 0x58, TRUE);
                 break;
             case 6:
-                loadEntity(gBirds[index].entityIndex, 0x49, 1);
+                loadEntity(gBirds[index].entityIndex, 0x49, TRUE);
                 break;
             case 5:
-                loadEntity(gBirds[index].entityIndex, 0x47, 1);
+                loadEntity(gBirds[index].entityIndex, 0x47, TRUE);
                 break;
             case 7:
-                loadEntity(gBirds[index].entityIndex, 0x38, 1);
+                loadEntity(gBirds[index].entityIndex, 0x38, TRUE);
                 break;
             case 8:
-                loadEntity(gBirds[index].entityIndex, 0x36, 1);
+                loadEntity(gBirds[index].entityIndex, 0x36, TRUE);
                 break;
             case 9:
-                loadEntity(gBirds[index].entityIndex, 0x3C, 1);
+                loadEntity(gBirds[index].entityIndex, 0x3C, TRUE);
                 break;
             case 10:
-                loadEntity(gBirds[index].entityIndex, 0x39, 1);
+                loadEntity(gBirds[index].entityIndex, 0x39, TRUE);
                 break;
             case 11:
-                loadEntity(gBirds[index].entityIndex, 0x3D, 1);
+                loadEntity(gBirds[index].entityIndex, 0x3D, TRUE);
                 setEntityPaletteIndex(gBirds[index].entityIndex, 0);
                 break;
             case 12:
-                loadEntity(gBirds[index].entityIndex, 0x3D, 1);
+                loadEntity(gBirds[index].entityIndex, 0x3D, TRUE);
                 break;
             case 13:
-                loadEntity(gBirds[index].entityIndex, 0x4B, 1);
+                loadEntity(gBirds[index].entityIndex, 0x4B, TRUE);
                 break;
             case 14:
-                loadEntity(gBirds[index].entityIndex, 0x54, 1);
+                loadEntity(gBirds[index].entityIndex, 0x54, TRUE);
                 break;
             case 15:
-                loadEntity(gBirds[index].entityIndex, 0x50, 1);
+                loadEntity(gBirds[index].entityIndex, 0x50, TRUE);
                 break;
             case 16:
-                loadEntity(gBirds[index].entityIndex, 0x51, 1);
+                loadEntity(gBirds[index].entityIndex, 0x51, TRUE);
                 break;
             case 17:
-                loadEntity(gBirds[index].entityIndex, 0x4F, 1);
+                loadEntity(gBirds[index].entityIndex, 0x4F, TRUE);
                 break;
             case 18:
-                loadEntity(gBirds[index].entityIndex, 0x4C, 1);
+                loadEntity(gBirds[index].entityIndex, 0x4C, TRUE);
                 break;
             case 19:
-                loadEntity(gBirds[index].entityIndex, 0x4D, 1);
+                loadEntity(gBirds[index].entityIndex, 0x4D, TRUE);
                 break;
             case 20:
-                loadEntity(gBirds[index].entityIndex, 0x52, 1);
+                loadEntity(gBirds[index].entityIndex, 0x52, TRUE);
                 break;
             case 21:
-                loadEntity(gBirds[index].entityIndex, 0x4E, 1);
+                loadEntity(gBirds[index].entityIndex, 0x4E, TRUE);
                 break;
         }
 
-        setEntityCollidable(gBirds[index].entityIndex, 1);
-        setEntityYMovement(gBirds[index].entityIndex, 1);
-        func_8002FF38(gBirds[index].entityIndex, 0);
+        setEntityCollidable(gBirds[index].entityIndex, TRUE);
+        setEntityYMovement(gBirds[index].entityIndex, TRUE);
+        func_8002FF38(gBirds[index].entityIndex, FALSE);
         setEntityDirection(gBirds[index].entityIndex, convertSpriteToWorldDirection(gBirds[index].direction, MAIN_MAP_INDEX));
         setEntityCoordinates(gBirds[index].entityIndex, gBirds[index].coordinates.x, gBirds[index].coordinates.y, gBirds[index].coordinates.z);
-        func_800300F8(gBirds[index].entityIndex, 0);
+        func_800300F8(gBirds[index].entityIndex, FALSE);
         gBirds[index].unk_F = arg1;
         gBirds[index].flags |= 4;
     }
