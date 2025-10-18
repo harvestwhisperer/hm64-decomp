@@ -2,6 +2,7 @@
 #define _ANIMALS_H_
 
 #include "common.h"
+#include "weather.h"
 
 #define MAX_BIRDS 5
 #define MAX_CHICKENS 12
