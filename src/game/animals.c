@@ -1027,7 +1027,63 @@ void func_8008B2E8(u8 chickenIndex) {
     
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008B55C);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008B55C);
+
+void func_8008B55C(u8 index) {
+    if ((gFarmAnimals[index].flags & 1) && (D_80189054 != index) && (gFarmAnimals[index].location == gBaseMapIndex)) {
+        
+        gFarmAnimals[index].entityIndex = index + 21;
+        
+        switch (gFarmAnimals[index].type) {
+            case 0:
+                initializeAnimalEntity(gFarmAnimals[index].entityIndex, (void*)0x802B1E40, (void*)0x802B1F40, (void*)0x802B2E40, (void*)0x802B2F40);
+                loadEntity(gFarmAnimals[index].entityIndex, 0x45, TRUE);
+                break;
+            case 1:
+                initializeAnimalEntity(gFarmAnimals[index].entityIndex, (void*)0x802B0940, (void*)0x802B0A40, (void*)0x802B1940, (void*)0x802B1A40);
+                loadEntity(gFarmAnimals[index].entityIndex, 0x46, TRUE);
+                break;
+            case 2:
+                initializeAnimalEntity(gFarmAnimals[index].entityIndex, (void*)0x802779C0, (void*)0x80277AC0, (void*)0x8027A6C0, (void*)0x8027A8C0);
+                loadEntity(gFarmAnimals[index].entityIndex, 0x47, TRUE);
+                break;
+            case 3:
+                initializeAnimalEntity(gFarmAnimals[index].entityIndex, (void*)0x802B3140, (void*)0x802B3240, (void*)0x802B4240, (void*)0x802B4340);
+                loadEntity(gFarmAnimals[index].entityIndex, 0x57, TRUE);
+                break;
+            case 4:
+                initializeAnimalEntity(gFarmAnimals[index].entityIndex, (void*)0x802B5A40, (void*)0x802B5B40, (void*)0x802B6240, (void*)0x802B6340);
+                loadEntity(gFarmAnimals[index].entityIndex, 0x48, TRUE);
+                break;
+            case 5:
+            case 6:
+                initializeAnimalEntity(gFarmAnimals[index].entityIndex, (void*)0x802B4540, (void*)0x802B4640, (void*)0x802B5640, (void*)0x802B5740);
+                loadEntity(gFarmAnimals[index].entityIndex, 0x49, TRUE);
+                break;
+        }
+
+        if (gFarmAnimals[index].location == BARN) {
+            setFarmAnimalLocation(index);
+        }
+        
+        setEntityCollidable(gFarmAnimals[index].entityIndex, TRUE);
+        setEntityYMovement(gFarmAnimals[index].entityIndex, TRUE);
+        func_8002FF38(gFarmAnimals[index].entityIndex, FALSE);
+        setEntityDirection(gFarmAnimals[index].entityIndex, convertSpriteToWorldDirection(gFarmAnimals[index].direction, MAIN_MAP_INDEX));
+        setEntityCoordinates(gFarmAnimals[index].entityIndex, gFarmAnimals[index].coordinates.x, gFarmAnimals[index].coordinates.y, gFarmAnimals[index].coordinates.z);
+        func_800300F8(gFarmAnimals[index].entityIndex, FALSE);
+        gFarmAnimals[index].flags |=  0x4;
+        gFarmAnimals[index].flags &= ~(0x200 | 0x400);
+
+        if ((gWeather == SUNNY) || !(getLevelFlags(gFarmAnimals[index].location) & 2)) {
+            gFarmAnimals[index].unk_1B = 0;
+        } else {
+            gFarmAnimals[index].unk_1B = 19;
+        }
+    }
+    func_8008DAA0(index);
+}
+
 
 // INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008B9AC);
 
@@ -1057,7 +1113,127 @@ void func_8008B9AC(void) {
 }
 
 
-INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008BAF0);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008BAF0);
+
+void func_8008BAF0(u8 index, u8 arg1) {
+
+    if ((gBirds[index].flags & 1) && (index < 7)) {
+        switch(gBirds[index].unk_15) {
+            case 0:
+                initializeAnimalEntity(gBirds[index].entityIndex, (void*)0x80270210, (void*)0x80270410, (void*)0x80272000, (void*)0x80272200);
+                setEntityPaletteIndex(gBirds[index].entityIndex, 2);
+                
+                break;
+            case 5:
+                initializeAnimalEntity(gBirds[index].entityIndex, (void*)0x802779C0, (void*)0x80277AC0, (void*)0x8027A6C0, (void*)0x8027A8C0);
+                
+                break;
+            default:
+                switch (index) {
+                    case 0:
+                        initializeAnimalEntity(gBirds[index].entityIndex, (void*)0x80284130, (void*)0x80284230, (void*)0x802852B0 , (void*)0x802854B0);
+                        break;
+                    case 1:
+                        initializeAnimalEntity(gBirds[index].entityIndex, (void*)0x80285930, (void*)0x80285A30, (void*)0x80286AB0, (void*)0x80286CB0);
+                        break;
+                    case 2:
+                        initializeAnimalEntity(gBirds[index].entityIndex, (void*)0x80287130, (void*)0x80287230, (void*)0x802882B0, (void*)0x802884B0);
+                        break;
+                    case 3:
+                        initializeAnimalEntity(gBirds[index].entityIndex, (void*)0x80288930, (void*)0x80288A30, (void*)0x80289AB0, (void*)0x80289CB0);
+                        break;
+                    case 4:
+                        initializeAnimalEntity(gBirds[index].entityIndex, (void*)0x8028A130, (void*)0x8028A230, (void*)0x8028B2B0, (void*)0x8028B4B0);
+                        break;
+                    }
+    
+                if (gBirds[index].unk_15 == 4) {
+                    setEntityPaletteIndex(gBirds[index].entityIndex, 0);
+                }
+                
+                break;
+        }
+
+        switch (gBirds[index].unk_15) {
+            case 0:
+                loadEntity(gBirds[index].entityIndex, 0x40, TRUE);
+                break;
+            case 1:
+                loadEntity(gBirds[index].entityIndex, 0x3F, TRUE);
+                break;
+            case 2:
+                loadEntity(gBirds[index].entityIndex, 0x3E, TRUE);
+                break;
+            case 3:
+            case 4:
+                loadEntity(gBirds[index].entityIndex, 0x58, TRUE);
+                break;
+            case 6:
+                loadEntity(gBirds[index].entityIndex, 0x49, TRUE);
+                break;
+            case 5:
+                loadEntity(gBirds[index].entityIndex, 0x47, TRUE);
+                break;
+            case 7:
+                loadEntity(gBirds[index].entityIndex, 0x38, TRUE);
+                break;
+            case 8:
+                loadEntity(gBirds[index].entityIndex, 0x36, TRUE);
+                break;
+            case 9:
+                loadEntity(gBirds[index].entityIndex, 0x3C, TRUE);
+                break;
+            case 10:
+                loadEntity(gBirds[index].entityIndex, 0x39, TRUE);
+                break;
+            case 11:
+                loadEntity(gBirds[index].entityIndex, 0x3D, TRUE);
+                setEntityPaletteIndex(gBirds[index].entityIndex, 0);
+                break;
+            case 12:
+                loadEntity(gBirds[index].entityIndex, 0x3D, TRUE);
+                break;
+            case 13:
+                loadEntity(gBirds[index].entityIndex, 0x4B, TRUE);
+                break;
+            case 14:
+                loadEntity(gBirds[index].entityIndex, 0x54, TRUE);
+                break;
+            case 15:
+                loadEntity(gBirds[index].entityIndex, 0x50, TRUE);
+                break;
+            case 16:
+                loadEntity(gBirds[index].entityIndex, 0x51, TRUE);
+                break;
+            case 17:
+                loadEntity(gBirds[index].entityIndex, 0x4F, TRUE);
+                break;
+            case 18:
+                loadEntity(gBirds[index].entityIndex, 0x4C, TRUE);
+                break;
+            case 19:
+                loadEntity(gBirds[index].entityIndex, 0x4D, TRUE);
+                break;
+            case 20:
+                loadEntity(gBirds[index].entityIndex, 0x52, TRUE);
+                break;
+            case 21:
+                loadEntity(gBirds[index].entityIndex, 0x4E, TRUE);
+                break;
+        }
+
+        setEntityCollidable(gBirds[index].entityIndex, TRUE);
+        setEntityYMovement(gBirds[index].entityIndex, TRUE);
+        func_8002FF38(gBirds[index].entityIndex, FALSE);
+        setEntityDirection(gBirds[index].entityIndex, convertSpriteToWorldDirection(gBirds[index].direction, MAIN_MAP_INDEX));
+        setEntityCoordinates(gBirds[index].entityIndex, gBirds[index].coordinates.x, gBirds[index].coordinates.y, gBirds[index].coordinates.z);
+        func_800300F8(gBirds[index].entityIndex, FALSE);
+        gBirds[index].unk_F = arg1;
+        gBirds[index].flags |= 4;
+    }
+    
+    func_8009476C(index);
+}
 
 //INCLUDE_ASM("asm/nonmatchings/game/animals", updateDog);
 
