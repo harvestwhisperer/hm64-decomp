@@ -1578,7 +1578,117 @@ void func_8008DA00(u8 index) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008DAA0);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008DAA0);
+
+void func_8008DAA0(u8 index) {
+    Vec3f vec;
+    u8 levelInteractionIndex;
+
+    if ((gFarmAnimals[index].flags & 1) && (gFarmAnimals[index].flags & 4)) {
+        if ((checkEntityAnimationStateChanged(gFarmAnimals[index].entityIndex)) || (gFarmAnimals[index].flags & 0x8000)) {
+            if (entities[gFarmAnimals[index].entityIndex].unk_5E == 0) {
+                if (!(gFarmAnimals[index].flags & 0x2000)) {
+                    gFarmAnimals[index].direction = gPlayer.direction;
+                    gFarmAnimals[index].unk_1B = 1;
+                    gFarmAnimals[index].flags &= ~(0x200);
+                    gFarmAnimals[index].flags |= 0x2400;
+                }
+            }
+            
+            switch (gFarmAnimals[index].type) {
+                case 0:
+                    func_80090DF8(index);
+                    
+                    break;
+                case 1:
+                    func_800904E4(index);
+                    
+                    break;
+                case 2:
+                    switch(gFarmAnimals[index].condition) {
+                        case 0:
+                            func_8008DF9C(index);
+                            
+                        break;
+                        case 1:
+                            func_8008E98C(index);
+                            
+                        break;
+                        case 2:
+                            func_8008F37C(index);
+                            
+                        break;
+                        case 3:
+                            func_8008FC68(index);
+                        break;
+                    }
+                    
+                    break;
+                case 3:
+                    func_8009170C(index);
+                    
+                    break;
+                case 4:
+                    func_80093434(index);
+                    
+                    break;
+                case 5:
+                    switch(gFarmAnimals[index].condition) {
+                        case 0:
+                            func_80092094(index);
+                            
+                        break;
+                        case 3:
+                            func_80092808(index);
+                            
+                        break;
+                    }
+    
+                    break;
+                case 6:
+                    switch(gFarmAnimals[index].condition) {
+                        case 0:
+                            func_80092A64(index);
+                            
+                        break;
+                        case 3:
+                            func_800931D8(index);
+                            
+                        break;
+                    }
+    
+                    break;
+                }
+            gFarmAnimals[index].flags &= ~(0xA000);
+        }
+        setEntityDirection(gFarmAnimals[index].entityIndex, convertSpriteToWorldDirection(gFarmAnimals[index].direction, MAIN_MAP_INDEX));
+        vec = getMovementVectorFromDirection(gFarmAnimals[index].unk_14, gFarmAnimals[index].direction, 0.0f);
+        setEntityMovementVector(gFarmAnimals[index].entityIndex, vec.x, vec.y, vec.z, gFarmAnimals[index].unk_14);
+        levelInteractionIndex = getLevelInteractionIndexFromEntityPosition(gFarmAnimals[index].entityIndex, 0, 32);
+        switch(gFarmAnimals[index].location) {
+            case FARM_SPRING:
+                if (levelInteractionIndex == 6) {
+                    gFarmAnimals[index].location = BARN;
+                    deactivateEntity(gFarmAnimals[index].entityIndex);
+                    gFarmAnimals[index].flags &= ~(0x4);
+                    func_80038990(MAIN_MAP_INDEX, 0x1B, 0);  
+                }
+                
+            break;
+            case BARN:
+                if (levelInteractionIndex == 1) {
+                    gFarmAnimals[index].location = FARM_SPRING;
+                    deactivateEntity(gFarmAnimals[index].entityIndex);
+                    gFarmAnimals[index].flags &= ~(0x4);
+                    gFarmAnimals[index].coordinates.x = -128.0f;
+                    gFarmAnimals[index].coordinates.y = 0.0f;
+                    gFarmAnimals[index].coordinates.z = -288.0f;
+                }
+                
+            break;
+        }
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008DF9C);
 
