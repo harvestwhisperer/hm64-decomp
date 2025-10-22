@@ -277,7 +277,7 @@ u8 levelToMusicMappings[TOTAL_MAPS][8] = {
     { 0, 0, 0, 0, 0, 0, 0, 0 },
 };
 
-// FIXME: probably shouldn't be volatile, but need it for matching func_80074C50
+// FIXME: probably shouldn't be volatile but need it for matching func_80074C50
 volatile u8 exitsToMapIndices[] = {
     FARM, FARM, FARM, FARM, FARM, FARM, FARM, FARM, FARM, FARM, 
     HOUSE, HOUSE, HOUSE, 
@@ -1151,8 +1151,8 @@ void func_8006F938(u16 levelIndex) {
             }
             if (checkShopItemShouldBeDisplayed(0xA)) {
                 loadShopItemSprite(0xA);
-                return;
             }
+
             break;
 
        case RANCH_STORE:
@@ -1272,6 +1272,7 @@ void func_80073244(u8 itemIndex) {
         *(Aligned32*)ptr++ = *(Aligned32*)ptr2++;
     } while (ptr2 != (D_8011FB28 + 0x10));    
 
+    // ??
     *(Vec2f*)ptr = *(Vec2f*)ptr2;
 
     //

@@ -12,8 +12,10 @@
 #include "game/game.h"
 #include "game/gameAudio.h"
 #include "game/gameStatus.h"
+#include "game/itemHandlers.h"
 #include "game/level.h"
 #include "game/player.h"
+#include "game/weather.h"
 
 #include "game/spriteInfo.h"
 
@@ -72,21 +74,22 @@ void func_800861A4(u8, u8, u8, u8, u8);
 void func_80086458(u8, s8); 
 u8 initializeNewFarmAnimal(u8 arg0, u8 arg1);
 void setFarmAnimalLocation(u8); 
+void updateDog();                                  
+void updateHorse();                                  
+void updateHorseGrown();                                 
+void updateHorseNotGrown();       
+u8 func_8008A4A8(u8 birdIndex, u8 direction, f32 x, f32 y, f32 z);          
+void func_8008A5F0();
+void func_8008A650(u8);                               
+void func_8008A9E8(u8);                               
+void func_8008B150();       
 void func_8008B1B8();                                  
 void func_8008B2E8(u8);                               
 void func_8008B55C(u8);                               
 void func_8008B9AC();                                  
 void func_8008BAF0(u8, u8); 
-void updateDog();                                  
 void func_8008CF94(u8);                               
 void func_8008DAA0(u8);                               
-void updateHorse();                                  
-void updateHorseGrown();                                 
-void updateHorseNotGrown();       
-void func_8008A5F0();
-void func_8008A650(u8);                               
-void func_8008A9E8(u8);                               
-void func_8008B150();       
 void func_8009476C(u8);     
 void func_80094A5C(u8);                               
 void func_800958EC(u8);                               
@@ -101,7 +104,7 @@ void func_80098188(u8);
 void func_80098740(u8);                               
 void func_80098B3C(u8);                               
 void func_80098F24(u8);                               
-void func_800991C0(u8);                               
+void func_800991C0(u8);                     
 void func_80099424(u8);                               
 void func_80099548(u8);                               
 void func_800995F8(u8);                               
@@ -880,7 +883,294 @@ void func_80088C1C(u8 mapIndex, u8 chickenIndex) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/animals", func_80088D54);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", func_80088D54);
+
+void func_80088D54(void) {
+
+    switch (gBaseMapIndex) {
+        
+        case FARM:
+
+            if (gSeason != WINTER && gWeather == SUNNY && 5 < gHour && gHour < 9) {
+
+                if (gBirds[4].unk_16 == 1) {
+                    func_8008A4A8(0xB, SOUTHWEST, -336.0f, 0.0f, 0.0f);
+                    func_8008A4A8(0xB, SOUTHWEST, -368.0f, 0.0f, 32.0f);
+                }
+
+                if (gBirds[4].unk_16 == 2) {
+                    func_8008A4A8(0xB, SOUTHWEST, 320.0f, 0.0f, -352.0f);
+                    func_8008A4A8(0xB, SOUTHWEST, 288.0f, 0.0f, -352.0f);
+                }
+                
+            }
+            
+            break;
+        
+        case POND:
+
+            if (gSeason == AUTUMN && 12 < gHour && gHour < 22 && gBirds[0].unk_16 >= 2 && (u8)(gPlayer.heldItem + 0x75) >= 8) {
+                func_8008A4A8(7, 6, -192.0f, 0.0f, -64.0f);
+            }
+
+            if (gSeason == WINTER && 12 < gHour && gHour < 22 && gBirds[0].unk_16 == 1 && (u8)(gPlayer.heldItem + 0x75) >= 8) {
+                func_8008A4A8(7, 6, -192.0f, 0.0f, -64.0f);
+            }
+            
+            if (gSeason == SPRING && 8 < gHour && gHour < 15 && gBirds[1].unk_16 == 1 && (u8)(gPlayer.heldItem + 0x65) >= 8) {
+                func_8008A4A8(8, 4, -192.0f, 0.0f, -160.0f);
+            }
+
+            if (gSeason == SUMMER && 10 < gHour && gHour < 17 && !(gBirds[1].unk_16 < 2) && (u8)(gPlayer.heldItem + 0x65) >= 8) {
+                func_8008A4A8(8, 4, -192.0f, 0.0f, -160.0f);
+            }
+
+            if (gSeason == SUMMER && 10 < gHour && gHour < 17 && gBirds[2].unk_16 == 1 && (u8)(gPlayer.heldItem + 0x6D) >= 8) {
+                gBirds[func_8008A4A8(9, SOUTHWEST, 144.0f, 0.0f, -256.0f)].unk_F = 0x10;
+            }
+
+            if (gSeason == WINTER && 10 < gHour && gHour < 17 && gBirds[3].unk_16 >= 2 && (u8)(gPlayer.heldItem + 0x5D) >= 8) {
+                func_8008A4A8(0xA, SOUTHEAST, -192.0f, 0.0f, -224.0f);
+            }
+
+            if (gSeason == SUMMER && gWeather != RAIN && 7 < gHour && gHour < 16 && gBirds[4].unk_16 < 2) {
+                func_8008A4A8(0xE, SOUTHWEST, 96.0f, 0.0f, -64.0f);
+            }
+
+            break;
+
+        case MOUNTAIN_1:
+
+            if (gSeason == SUMMER && 10 < gHour && gHour < 17 && gBirds[1].unk_16 < 2 && (u8)(gPlayer.heldItem + 0x65) >= 8) {
+                func_8008A4A8(8, NORTHWEST, 128.0f, 0.0f, 64.0f);
+            }
+
+            if (gSeason == SPRING && 6 < gHour && gHour < 16 && !(gBirds[2].unk_16 < 2) && (u8)(gPlayer.heldItem + 0x6D) >= 8) {
+                func_8008A4A8(9, SOUTHWEST, 256.0f, 0.0f, -416.0f);
+            }
+            
+            if (gSeason == SUMMER && 10 < gHour && gHour < 17 && gBirds[2].unk_16 < 1 && (u8)(gPlayer.heldItem + 0x6D) >= 8) {
+                func_8008A4A8(9, SOUTHWEST, 160.0f, 0.0f, 128.0f);
+            }
+
+            if (gSeason == AUTUMN && 10 < gHour && gHour < 17 && gBirds[3].unk_16 == 1 && (u8)(gPlayer.heldItem + 0x5D) >= 8) {
+                func_8008A4A8(0xA, SOUTHWEST, -96.0f, 0.0f, 128.0f);
+            }
+
+            if (gSeason == SUMMER && gWeather != RAIN && 7 < gHour && gHour < 16 && !(gBirds[4].unk_16 < 2)) {
+                func_8008A4A8(0xE, SOUTHWEST, 160.0f, 0.0f, 128.0f);
+            }
+
+            if (gSeason == AUTUMN && gWeather != RAIN && 8 < gHour && gHour < 16 && !(gBirds[5].unk_16 < 2) && gPlayer.heldItem != RED_DRAGONFLY_HELD_ITEM) {
+                func_8008A4A8(0x14, SOUTHWEST, 0.0f, 0.0f, -128.0f);
+            }
+
+            if (gSeason == AUTUMN && gWeather != RAIN && 8 < gHour && gHour < 16 && gBirds[4].unk_16 < 2 && gPlayer.heldItem != CRICKET_HELD_ITEM) {
+                func_8008A4A8(0x15, SOUTHWEST, 128.0f, 0.0f, 64.0f);
+            }
+            
+            break;
+
+        case MOUNTAIN_2:
+
+            if (gSeason == AUTUMN && 12 < gHour && gHour < 22 && gBirds[0].unk_16 < 2 && (u8)(gPlayer.heldItem + 0x75) >= 8) {
+                func_8008A4A8(7, 6, -128.0f, 0.0f, 224.0f);
+            }
+
+            if (gSeason == WINTER && 12 < gHour && gHour < 22 && gBirds[0].unk_16 == 0 && (u8)(gPlayer.heldItem + 0x75) >= 8) {
+                func_8008A4A8(7, 6, -128.0f, 0.0f, 224.0f);
+            }
+            
+            if (gSeason == SPRING && 8 < gHour && gHour < 15 && gBirds[1].unk_16 < 1 && (u8)(gPlayer.heldItem + 0x65) >= 8) {
+                func_8008A4A8(8, NORTHEAST, -192.0f, 0.0f, -192.0f);
+            }
+
+            if (gSeason == SPRING && 6 < gHour && gHour < 16 && gBirds[2].unk_16 < 2 && (u8)(gPlayer.heldItem + 0x6D) >= 8) {
+                func_8008A4A8(9, SOUTHWEST, -224.0f, 0.0f, -160.0f);
+            }
+
+            if (gSeason == SUMMER && 10 < gHour && gHour < 17 && gBirds[3].unk_16 < 2 && (u8)(gPlayer.heldItem + 0x5D) >= 8) {
+                func_8008A4A8(0xA, SOUTHWEST, -320.0f, 0.0f, -320.0f);
+            }
+
+            if (gSeason == SUMMER && 10 < gHour && gHour < 17 && !(gBirds[3].unk_16 < 2) && (u8)(gPlayer.heldItem + 0x5D) >= 8) {
+                func_8008A4A8(0xA, SOUTHWEST, 0.0f, 0.0f, 288.0f);
+            }
+
+            if (gSeason == AUTUMN && 10 < gHour && gHour < 17 && gBirds[3].unk_16 == 0 && (u8)(gPlayer.heldItem + 0x5D) >= 8) {
+                gBirds[func_8008A4A8(0xA, SOUTHWEST, -112.0f, 0.0f, -160.0f)].unk_F = 0x10;
+            }
+
+            if (gSeason != WINTER && gWeather != RAIN && 7 < gHour && gHour < 16 && gBirds[4].unk_16 < 2) {
+                func_8008A4A8(0xC, SOUTHWEST, -128.0f, 0.0f, 32.0f);
+                func_8008A4A8(0xC, SOUTHEAST, -96.0f, 0.0f, 64.0f);
+            }
+
+            if (gSeason < AUTUMN && gWeather != RAIN && 8 < gHour && gHour < 16 && gPlayer.heldItem < 0xB4) {
+                func_8008A4A8(0x10, SOUTHWEST, 96.0f, 0.0f, -96.0f);
+            }
+
+            if (gSeason == SUMMER && gWeather != RAIN && 8 < gHour && gHour < 16 && gBirds[3].unk_16 < 2 && gPlayer.heldItem != CICADA_HELD_ITEM) {
+                func_8008A4A8(0x11, SOUTHWEST, -112.0f, 0.0f, -160.0f);
+            }
+            
+            break;
+        
+        case TOP_OF_MOUNTAIN_1:
+
+            if (gSeason == SUMMER && gWeather != RAIN && 8 < gHour && gHour < 16 && gBirds[0].unk_16 < 2 && gPlayer.heldItem != HORNED_BEETLE_HELD_ITEM) {
+                func_8008A4A8(0x12, SOUTHWEST, 192.0f, 0.0f, -192.0f);
+            }
+
+            if (gSeason == SUMMER && gWeather != RAIN && 8 < gHour && gHour < 16 && gBirds[1].unk_16 < 2 && gPlayer.heldItem != STAG_BEETLE_HELD_ITEM) {
+                func_8008A4A8(0x13, SOUTHWEST, 224.0f, 0.0f, 0.0f);
+            }
+
+            break;
+        
+        case MOON_MOUNTAIN:
+
+            if (gSeason != WINTER && gWeather != RAIN && 7 < gHour && gHour < 16 && !(gBirds[4].unk_16 < 2)) {
+                func_8008A4A8(0xC, SOUTHWEST, 192.0f, 0.0f, -64.0f);
+                func_8008A4A8(0xC, SOUTHEAST, 224.0f, 0.0f, -96.0f);
+            }
+
+            if (gSeason == AUTUMN && gWeather != RAIN && 8 < gHour && gHour < 16 && gBirds[5].unk_16 == 0 && gPlayer.heldItem != RED_DRAGONFLY_HELD_ITEM) {
+                func_8008A4A8(0x14, SOUTHWEST, 128.0f, 0.0f, -256.0f);
+            }
+
+            break;
+        
+        case SQUARE:
+
+            if (gSeason != WINTER && gWeather == SUNNY && 5 < gHour && gHour < 9 && gBirds[4].unk_16 == 3) {
+                func_8008A4A8(0xB, SOUTHWEST, -128.0f, 0.0f, 0.0f);
+                func_8008A4A8(0xB, SOUTHWEST, -96.0f, 0.0f, -32.0f);
+            }
+
+            break;
+        
+        case BEACH:
+
+            if (gSeason == SUMMER && gWeather != RAIN && 7 < gHour && gHour < 16) {
+                func_8008A4A8(0xD, SOUTHWEST, -256.0f, 0.0f, -64.0f);
+            }
+
+            break;
+
+        case VILLAGE_1:
+                
+            if (gSeason < AUTUMN && gWeather != RAIN && 8 < gHour && gHour < 16 && gBirds[0].unk_16 == 0 && gPlayer.heldItem != BUTTERFLY_HELD_ITEM) {
+                func_8008A4A8(0xF, SOUTHWEST, 64.0f, 0.0f, -352.0f);
+            }
+
+            if (gSeason < AUTUMN && gWeather != RAIN && 8 < gHour && gHour < 16 && gBirds[0].unk_16 == 1 && gPlayer.heldItem != BUTTERFLY_HELD_ITEM) {
+                func_8008A4A8(0xF, SOUTHWEST, -448.0f, 0.0f, 0.0f);
+            }
+
+            if (gSeason < AUTUMN && gWeather != RAIN && 8 < gHour && gHour < 16 && gBirds[5].unk_16 == 1 && gPlayer.heldItem < LADYBUG_HELD_ITEM) {
+                func_8008A4A8(0x10, SOUTHWEST, -448.0f, 0.0f, 64.0f);
+            }
+        
+            break;
+
+        case VILLAGE_2:
+
+            if (8 < gHour && gHour < 18) {
+
+                if (gWeather != RAIN && gSeason != WINTER) {
+                    
+                    if ((u8)(gPlayer.heldItem + 0x55) >= 8) {
+                        func_8008A4A8(0, SOUTHWEST, 400.0f, 0.0f, -160.0f);
+                    }
+    
+                    if (checkLifeEventBit(PUPPIES) && (u8)(gPlayer.heldItem - 0x7B) >= 8) {
+                        func_8008A4A8(1, SOUTHWEST, 432.0f, 0.0f, -160.0f);
+                    }
+                    
+                }
+
+                if (8 < gHour && gHour < 18 && !(SUNNY < gWeather && gWeather < 4)) {
+                    
+                    if ((u8)(gPlayer.heldItem + 0x7D) >= 8) {
+                        func_8008A4A8(2, SOUTHWEST, 32.0f, 0.0f, -96.0f);
+                    }
+                
+                    func_8008A4A8(2, SOUTHWEST, 0.0f, 0.0f, -64.0f);
+                
+                }
+                
+            }
+
+            break;
+
+        case POTION_SHOP:
+
+            if (gWeather == RAIN || gSeason == WINTER)  {
+
+                if ((u8)(gPlayer.heldItem + 0x55) >= 8) {
+                    func_8008A4A8(0, SOUTHWEST, -64.0f, 0.0f, -64.0f);
+                }
+
+                if (checkLifeEventBit(PUPPIES) && (u8)(gPlayer.heldItem - 0x7B) >= 8) {
+                    func_8008A4A8(1, SOUTHWEST, -96.0f, 0.0f, -64.0f);
+                }
+                
+            }
+            
+            break;
+        
+        case RANCH:
+
+            if (gBirds[0].unk_16 < 2 && gWeather != RAIN && gSeason != WINTER) {
+                func_8008A4A8(4, NORTHEAST, -384.0f, 0.0f, 32.0f);
+            }
+
+            if (gBirds[1].unk_16 < 2 && gWeather != RAIN && gSeason != WINTER) {
+                func_8008A4A8(3, SOUTHEAST, -320.0f, 0.0f, 0.0f);
+            }
+   
+            if (gBirds[2].unk_16 < 2 && gWeather != RAIN && gSeason != WINTER) {
+                func_8008A4A8(3, SOUTHWEST, -288.0f, 0.0f, 96.0f);
+            }         
+   
+            if (gBirds[3].unk_16 < 2 && gWeather != RAIN && gSeason != WINTER) {
+                func_8008A4A8(6, NORTHEAST, -288.0f, 0.0f, 128.0f);
+            }         
+   
+            if (gBirds[4].unk_16 < 2 && gWeather != RAIN && gSeason != WINTER) {
+                func_8008A4A8(5, SOUTHEAST, -352.0f, 0.0f, 80.0f);
+            }         
+
+            break;
+        
+        case RANCH_BARN:
+
+            if (gBirds[0].unk_16 >= 2 || gWeather == RAIN || gSeason == WINTER) {
+                func_8008A4A8(4, NORTHWEST, -96.0f, 0.0f, -192.0f);
+            }
+
+            if (gBirds[1].unk_16 >= 2 || gWeather == RAIN || gSeason == WINTER) {
+                func_8008A4A8(3, NORTHWEST, -96.0f, 0.0f, -128.0f);
+            }
+
+            if (gBirds[2].unk_16 >= 2 || gWeather == RAIN || gSeason == WINTER) {
+                func_8008A4A8(3, NORTHWEST, -96.0f, 0.0f, 64.0f);
+            }
+
+            if (gBirds[3].unk_16 >= 2 || gWeather == RAIN || gSeason == WINTER) {
+                func_8008A4A8(6, SOUTHEAST, 0.0f, 0.0f, 64.0f);
+            }
+
+            if (gBirds[4].unk_16 >= 2 || gWeather == RAIN || gSeason == WINTER) {
+                func_8008A4A8(5, SOUTHEAST, 0.0f, 0.0f, 128.0f);
+            }
+            
+            break;
+        
+    }
+    
+}
 
 //INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008A4A8);
 
@@ -907,6 +1197,7 @@ u8 func_8008A4A8(u8 birdIndex, u8 direction, f32 x, f32 y, f32 z) {
     }
         
     if (found != 0xFF) {
+
         gBirds[found].unk_15 = birdIndex;
         gBirds[found].direction = direction;
         gBirds[found].unk_F = 0;
@@ -936,82 +1227,120 @@ void func_8008A5F0(void) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008A650);
 
-void func_8008A650(u8 index)
-{
+void func_8008A650(u8 index) {
+    
     if ((gChickens[index].flags & 1) && !(gChickens[index].flags & 0x100)) {
-        if (gChickens[index].flags & 0x80) {
-            gChickens[index].flags &= ~(0x10);
-        } else {
-            if (gChickens[index].location != COOP) {
-                gChickens[index].flags &= ~(0x10);
-            }
-            if ((gChickens[index].location == FARM) && (gSeason != WINTER)) {
-                    gChickens[index].flags |= 0x10;
-            }
-        }
         
+        if (gChickens[index].flags & 0x80) {
+            
+            gChickens[index].flags &= ~0x10;
+
+        } else {
+
+            if (gChickens[index].location != COOP) {
+                gChickens[index].flags &= ~0x10;
+            }
+
+            if (gChickens[index].location == FARM) {
+                
+                if (gSeason != WINTER) {
+                    gChickens[index].flags |= 0x10;
+                } 
+
+            } 
+        }
+
         switch (gChickens[index].type) {
+        
             case 0:
+                
                 if (gChickens[index].flags & 0x20) {
+                    
                     gChickens[index].unk_1E++;
+                    
                     if (gChickens[index].unk_1E == 3) {
+                        
                         D_8016FFE8 = func_80087F28(1, 0xFF);
+                        
                         if (D_8016FFE8 != 0xFF) {
 
                             gChickens[D_8016FFE8].flags |= 0x100;
-                            gChickens[index].flags &= ~(1);
+                            gChickens[index].flags &= ~1;
                             setLifeEventBit(3);
-                        } else {
+                            
+                        } else {                        
                             gChickens[index].unk_1E--;
                         }
+                        
                     }
+                    
                 }
                 
                 break;
+            
             case CHICK:
+                
                 gChickens[index].unk_1E++;
+                
                 if (gChickens[index].unk_1E == 7) {
                     func_800861A4(1, index, 2, 0, 0);
                 }
                 
                 break;
+            
             case ADULT_CHICKEN:
+                
                 switch (gChickens[index].condition) {
+                    
                     case 0:
-                        if (gChickens[index].flags & 0x10) {
+                        
+                        if ((gChickens[index].flags & 0x10)) {
                             func_80087F28(0, index);
                         } else {
                             func_800861A4(1, index, 0xFF, 1, 0);
                         }
                         
                         break;
+                    
                     case 1:
+                        
                         if (gChickens[index].flags & 0x10) {
+                            
                             func_800861A4(1, index, 0xFF, 0, 0);
-                            break;
+                            
                         } else {
+                            
                             gChickens[index].starvedCounter++;
+                            
                             if (gChickens[index].starvedCounter == 3) {
+                                
                                 func_800861A4(1, index, 0xFF, 2, 0xFF);
+                                
                                 gChickens[index].flags = 0;
                                 setLifeEventBit(ANIMAL_DIED);
+                                
                                 D_8018985C[0] = gChickens[index].name[0];
                                 D_8018985C[1] = gChickens[index].name[1];
                                 D_8018985C[2] = gChickens[index].name[2];
                                 D_8018985C[3] = gChickens[index].name[3];
                                 D_8018985C[4] = gChickens[index].name[4];
                                 D_8018985C[5] = gChickens[index].name[5];
+
                             }
+                            
                         }
                         
                         break;
+                    
                 }
-                
-            break;
-        }
-    }
-}
 
+            break;
+            
+        }
+        
+    }
+    
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008A9E8);
 
@@ -1107,11 +1436,13 @@ void func_8008B2E8(u8 chickenIndex) {
 //INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008B55C);
 
 void func_8008B55C(u8 index) {
+
     if ((gFarmAnimals[index].flags & 1) && (D_80189054 != index) && (gFarmAnimals[index].location == gBaseMapIndex)) {
         
         gFarmAnimals[index].entityIndex = index + 21;
         
         switch (gFarmAnimals[index].type) {
+
             case 0:
                 initializeAnimalEntity(gFarmAnimals[index].entityIndex, (void*)0x802B1E40, (void*)0x802B1F40, (void*)0x802B2E40, (void*)0x802B2F40);
                 loadEntity(gFarmAnimals[index].entityIndex, 0x45, TRUE);
@@ -1137,6 +1468,7 @@ void func_8008B55C(u8 index) {
                 initializeAnimalEntity(gFarmAnimals[index].entityIndex, (void*)0x802B4540, (void*)0x802B4640, (void*)0x802B5640, (void*)0x802B5740);
                 loadEntity(gFarmAnimals[index].entityIndex, 0x49, TRUE);
                 break;
+
         }
 
         if (gFarmAnimals[index].location == BARN) {
@@ -1146,69 +1478,83 @@ void func_8008B55C(u8 index) {
         setEntityCollidable(gFarmAnimals[index].entityIndex, TRUE);
         setEntityYMovement(gFarmAnimals[index].entityIndex, TRUE);
         func_8002FF38(gFarmAnimals[index].entityIndex, FALSE);
+
         setEntityDirection(gFarmAnimals[index].entityIndex, convertSpriteToWorldDirection(gFarmAnimals[index].direction, MAIN_MAP_INDEX));
         setEntityCoordinates(gFarmAnimals[index].entityIndex, gFarmAnimals[index].coordinates.x, gFarmAnimals[index].coordinates.y, gFarmAnimals[index].coordinates.z);
+    
         func_800300F8(gFarmAnimals[index].entityIndex, FALSE);
-        gFarmAnimals[index].flags |=  0x4;
+    
+        gFarmAnimals[index].flags |= 0x4;
         gFarmAnimals[index].flags &= ~(0x200 | 0x400);
-
+        
         if ((gWeather == SUNNY) || !(getLevelFlags(gFarmAnimals[index].location) & 2)) {
             gFarmAnimals[index].unk_1B = 0;
         } else {
             gFarmAnimals[index].unk_1B = 19;
         }
+    
     }
+    
     func_8008DAA0(index);
+
 }
 
-
-// INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008B9AC);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008B9AC);
 
 void func_8008B9AC(void) {
-    if ((horseInfo.flags & 0x1) && (horseInfo.location == gBaseMapIndex) && !(horseInfo.flags & 0x8)) {
+
+    if ((horseInfo.flags & 1) && (horseInfo.location == gBaseMapIndex) && !(horseInfo.flags & 8)) {
+        
         horseInfo.entityIndex = 0x26;
         
-        switch (horseInfo.grown) {
-        case FALSE:
-            loadEntity(0x26, 0x41, 1);
-            break;
-        case TRUE:
-            loadEntity(0x26, 0x42, 1);
-            break;
+        switch (horseInfo.grown) {                      
+            case FALSE:
+                loadEntity(0x26, 0x41, TRUE);
+                break;
+            case TRUE:
+                loadEntity(0x26, 0x42, TRUE);
+                break;
         }
-
-        setEntityCollidable(horseInfo.entityIndex, 1);
-        setEntityYMovement(horseInfo.entityIndex, 1);
-        func_8002FF38(horseInfo.entityIndex, 0);
+        
+        setEntityCollidable(horseInfo.entityIndex, TRUE);
+        setEntityYMovement(horseInfo.entityIndex, TRUE);
+        func_8002FF38(horseInfo.entityIndex, FALSE);
+        
         setEntityDirection(horseInfo.entityIndex, convertSpriteToWorldDirection(horseInfo.direction, MAIN_MAP_INDEX));
         setEntityCoordinates(horseInfo.entityIndex, horseInfo.coordinates.x, horseInfo.coordinates.y, horseInfo.coordinates.z);
+        
         horseInfo.unk_17 = 0;
         horseInfo.flags |= 4;
+
     }
     
     updateHorse();
-}
 
+}
 
 //INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008BAF0);
 
 void func_8008BAF0(u8 index, u8 arg1) {
 
     if ((gBirds[index].flags & 1) && (index < 7)) {
-        switch(gBirds[index].unk_15) {
+        
+        switch (gBirds[index].unk_15) {
+    
             case 0:
                 initializeAnimalEntity(gBirds[index].entityIndex, (void*)0x80270210, (void*)0x80270410, (void*)0x80272000, (void*)0x80272200);
                 setEntityPaletteIndex(gBirds[index].entityIndex, 2);
-                
                 break;
+            
             case 5:
                 initializeAnimalEntity(gBirds[index].entityIndex, (void*)0x802779C0, (void*)0x80277AC0, (void*)0x8027A6C0, (void*)0x8027A8C0);
-                
                 break;
+            
             default:
+                
                 switch (index) {
+                    
                     case 0:
-                        initializeAnimalEntity(gBirds[index].entityIndex, (void*)0x80284130, (void*)0x80284230, (void*)0x802852B0 , (void*)0x802854B0);
+                        initializeAnimalEntity(gBirds[index].entityIndex, (void*)0x80284130, (void*)0x80284230, (void*)0x802852B0, (void*)0x802854B0);
                         break;
                     case 1:
                         initializeAnimalEntity(gBirds[index].entityIndex, (void*)0x80285930, (void*)0x80285A30, (void*)0x80286AB0, (void*)0x80286CB0);
@@ -1223,15 +1569,17 @@ void func_8008BAF0(u8 index, u8 arg1) {
                         initializeAnimalEntity(gBirds[index].entityIndex, (void*)0x8028A130, (void*)0x8028A230, (void*)0x8028B2B0, (void*)0x8028B4B0);
                         break;
                     }
-    
+
                 if (gBirds[index].unk_15 == 4) {
                     setEntityPaletteIndex(gBirds[index].entityIndex, 0);
                 }
                 
                 break;
+            
         }
-
+        
         switch (gBirds[index].unk_15) {
+        
             case 0:
                 loadEntity(gBirds[index].entityIndex, 0x40, TRUE);
                 break;
@@ -1302,14 +1650,18 @@ void func_8008BAF0(u8 index, u8 arg1) {
         setEntityCollidable(gBirds[index].entityIndex, TRUE);
         setEntityYMovement(gBirds[index].entityIndex, TRUE);
         func_8002FF38(gBirds[index].entityIndex, FALSE);
+        
         setEntityDirection(gBirds[index].entityIndex, convertSpriteToWorldDirection(gBirds[index].direction, MAIN_MAP_INDEX));
         setEntityCoordinates(gBirds[index].entityIndex, gBirds[index].coordinates.x, gBirds[index].coordinates.y, gBirds[index].coordinates.z);
         func_800300F8(gBirds[index].entityIndex, FALSE);
+        
         gBirds[index].unk_F = arg1;
         gBirds[index].flags |= 4;
+    
     }
     
     func_8009476C(index);
+    
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/animals", updateDog);
@@ -1342,15 +1694,20 @@ void updateDog(void) {
 
 INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008C358);
 
-// INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008CF94);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008CF94);
 
 void func_8008CF94(u8 index) {
+    
     Vec3f vec;
 
     if (gChickens[index].flags & 1 && gChickens[index].flags & 4) {
+    
         if ((checkEntityAnimationStateChanged(gChickens[index].entityIndex) || gChickens[index].flags & 0x40)) {
+    
             switch(gChickens[index].type) {
+    
                 case ADULT_CHICKEN:
+    
                     switch(gChickens[index].condition) {
                         case 0:
                                 func_8008D1C0(index);
@@ -1359,337 +1716,444 @@ void func_8008CF94(u8 index) {
                                 func_8008D650(index);
                             break;
                     }
+        
                     break;
+    
                 case CHICK:
                     func_8008D70C(index);
                     break;
+        
                 case 0:
                     func_8008DA00(index);
                     break;
-            }
+    
+                }
 
             gChickens[index].flags &= 0xFFBF;
+    
         }
 
         setEntityDirection(gChickens[index].entityIndex, convertSpriteToWorldDirection(gChickens[index].direction, MAIN_MAP_INDEX));
+        
         vec = getMovementVectorFromDirection(gChickens[index].unk_19, gChickens[index].direction, 0);
         setEntityMovementVector(gChickens[index].entityIndex, vec.x, vec.y, vec.z, gChickens[index].unk_19);
+    
     }
+
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008D1C0);
 
 void func_8008D1C0(u8 index) {
-    u16 randomNumber;
+
+    u16 temp;
 
     switch (gChickens[index].unk_17) {
-    case 0:
-        gChickens[index].unk_19 = 0;
-        gChickens[index].unk_1A = 0;
-        gChickens[index].unk_1B = 0;
-        setEntityAnimationWithDirectionChange(gChickens[index].entityIndex, 0);
-        if (getRandomNumberInRange(0, 100) < 40) {
-            gChickens[index].unk_17 = 0;
-        } else {
-            randomNumber = getRandomNumberInRange(0, 10);
-            if (randomNumber < 7) {
-                gChickens[index].direction = randomNumber;
+        
+        case 0:
+            
+            gChickens[index].unk_19 = 0;
+            gChickens[index].unk_1A = 0;
+            gChickens[index].unk_1B = 0;
+
+            setEntityAnimationWithDirectionChange(gChickens[index].entityIndex, 0);
+
+            if (getRandomNumberInRange(0, 100) < 40) {
+                gChickens[index].unk_17 = 0;
+            } else {
+
+                temp = getRandomNumberInRange(0, 10);
+                
+                if (temp < 7) {
+                    gChickens[index].direction = temp;
+                }
+                
+                temp = getRandomNumberInRange(0, 60);
+                
+                if (temp < 20) {
+                    gChickens[index].unk_17 = 1;
+                }
+                if (19 < temp && temp < 40) {
+                    gChickens[index].unk_17 = 2;
+                }
+                if (39 < temp && temp < 60) {
+                    gChickens[index].unk_17 = 3;
+                }
+            
             }
-            randomNumber = getRandomNumberInRange(0, 60);
-            if (randomNumber < 20) {
+
+            gChickens[index].flags |= 2;
+            
+            break;
+            
+        case 1:
+            gChickens[index].unk_19  = 1;
+            gChickens[index].unk_1A = 0;
+            gChickens[index].unk_1B = 0;
+            
+            setEntityAnimationWithDirectionChange(gChickens[index].entityIndex, 8);
+            
+            if (getRandomNumberInRange(0, 20) < 10) {
                 gChickens[index].unk_17 = 1;
-            }
-            if (19 < randomNumber && randomNumber < 40) {
-                gChickens[index].unk_17 = 2;
+            } else {
+                gChickens[index].unk_17 = 0;
             }
             
-            if (39 < randomNumber && randomNumber < 60) {
+            gChickens[index].flags |= 2;
+            setAudio(0x40);
+            
+            break;
+
+        case 2:
+            gChickens[index].unk_19 = 0;
+            gChickens[index].unk_1A = 0;
+            gChickens[index].unk_1B = 0;
+            
+            setEntityAnimationWithDirectionChange(gChickens[index].entityIndex, 0x10);
+
+            gChickens[index].unk_17 = 0;
+            gChickens[index].flags |= 2;
+            
+            break;
+
+        case 3:
+
+            gChickens[index].unk_19 = 0;
+            gChickens[index].unk_1A = 0;
+            gChickens[index].unk_1B = 0;
+
+            setEntityAnimationWithDirectionChange(gChickens[index].entityIndex, 0x20);
+        
+            if (getRandomNumberInRange(0,19) < 10) {
+                gChickens[index].unk_17 = 0;      
+            } else {
+                gChickens[index].unk_17 = 4;
+            }
+
+            gChickens[index].flags |= 2;
+            
+            break;
+
+        case 4:
+            gChickens[index].unk_19 = 0;
+            gChickens[index].unk_1A = 0;
+            gChickens[index].unk_1B = 0;
+
+            setEntityAnimationWithDirectionChange(gChickens[index].entityIndex, 0x18);
+            
+            if (getRandomNumberInRange(0, 19) < 10) {
+                gChickens[index].unk_17 = 4;
+            } else {
                 gChickens[index].unk_17 = 3;
             }
-        }
-        gChickens[index].flags |= 2;
+        
+            gChickens[index].flags |= 2;
+            
+            break;
+        
+        case 16:
+            gChickens[index].unk_19 = 0;
+            gChickens[index].unk_1A = 0;
+            gChickens[index].unk_1B = 0;
 
-        break;
-    case 1:
-        gChickens[index].unk_19  = 1;
-        gChickens[index].unk_1A = 0;
-        gChickens[index].unk_1B = 0;
-        setEntityAnimationWithDirectionChange(gChickens[index].entityIndex, 8);
-        if (getRandomNumberInRange(0, 20) < 10) {
-            gChickens[index].unk_17 = 1;
-        } else {
+            setEntityAnimationWithDirectionChange(gChickens[index].entityIndex, 0);
+            
+            gChickens[index].flags |= 2;
+
+            break;
+
+        case 17:
+            gChickens[index].unk_19 = 0;
+            gChickens[index].unk_1A = 0;
+            gChickens[index].unk_1B = 0;
+
+            setEntityAnimationWithDirectionChange(gChickens[index].entityIndex, 0x30);
+            
             gChickens[index].unk_17 = 0;
-        }
-        gChickens[index].flags |= 2;
-        setAudio(0x40);
+            gChickens[index].flags |=  2;
+            
+            setAudio(0x41);
+            
+            break;
         
-        break;
-    case 2:
-        gChickens[index].unk_19 = 0;
-        gChickens[index].unk_1A = 0;
-        gChickens[index].unk_1B = 0;
-        setEntityAnimationWithDirectionChange(gChickens[index].entityIndex, 0x10);
-        gChickens[index].unk_17 = 0;
-        gChickens[index].flags |= 2;
-        
-        break;
-    case 3:
-        gChickens[index].unk_19 = 0;
-        gChickens[index].unk_1A = 0;
-        gChickens[index].unk_1B = 0;
-        setEntityAnimationWithDirectionChange(gChickens[index].entityIndex, 0x20);
-        if (getRandomNumberInRange(0,19) < 10) {
-            gChickens[index].unk_17 = 0;      
-        } else {
-            gChickens[index].unk_17 = 4;
-        }
-        gChickens[index].flags |= 2;
-        
-        break;
-    case 4:
-        gChickens[index].unk_19 = 0;
-        gChickens[index].unk_1A = 0;
-        gChickens[index].unk_1B = 0;
-        setEntityAnimationWithDirectionChange(gChickens[index].entityIndex, 0x18);
-        
-        if (getRandomNumberInRange(0, 19) < 10) {
-            gChickens[index].unk_17 = 4;
-        } else {
-            gChickens[index].unk_17 = 3;
-        }
-        gChickens[index].flags |= 2;
-        
-        break;
-    case 16:
-        gChickens[index].unk_19 = 0;
-        gChickens[index].unk_1A = 0;
-        gChickens[index].unk_1B = 0;
-        setEntityAnimationWithDirectionChange(gChickens[index].entityIndex, 0);
-        gChickens[index].flags |= 2;
-        
-        break;
-    case 17:
-        gChickens[index].unk_19 = 0;
-        gChickens[index].unk_1A = 0;
-        gChickens[index].unk_1B = 0;
-        setEntityAnimationWithDirectionChange(gChickens[index].entityIndex, 0x30);
-        gChickens[index].unk_17 = 0;
-        gChickens[index].flags |=  2;
-        setAudio(0x41);
-        
-        break;
     }
-}
 
+}
 
 //INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008D650);
 
-void func_8008D650(u8 index) {
-    u16 randomDirection;
+void func_8008D650(u8 chickenIndex) {
 
-    gChickens[index].unk_19 = 0;
-    gChickens[index].unk_1A = 0;
-    gChickens[index].unk_1B = 0;
-    setEntityAnimationWithDirectionChange(gChickens[index].entityIndex, 0x28);
-    randomDirection = getRandomNumberInRange(0, 1000);
-    if (randomDirection < 7) {
-        gChickens[index].direction = randomDirection;
+    u16 temp;
+    
+    gChickens[chickenIndex].unk_19 = 0;
+    gChickens[chickenIndex].unk_1A = 0;
+    gChickens[chickenIndex].unk_1B = 0;
+
+    setEntityAnimationWithDirectionChange(gChickens[chickenIndex].entityIndex, 0x28);
+
+    temp = getRandomNumberInRange(0, 1000);
+    
+    if (temp < 7) {
+        gChickens[chickenIndex].direction = temp;
     }
     
-    gChickens[index].unk_17 = 0;
-    gChickens[index].flags |= 2;
+    gChickens[chickenIndex].unk_17 = 0;
+    gChickens[chickenIndex].flags |= 2;
+    
 }
-
 
 //INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008D70C);
 
 void func_8008D70C(u8 index) {
-    u16 randomNumber;
+
+    u16 temp ;
 
     switch (gChickens[index].unk_17) {
-    case 0:
-        gChickens[index].unk_19 = 0;
-        gChickens[index].unk_1A = 0;
-        gChickens[index].unk_1B = 0;
-        setEntityAnimationWithDirectionChange(gChickens[index].entityIndex, 0);
-        if (getRandomNumberInRange(0, 100) < 40) {
-            gChickens[index].unk_17 = 0;
-        } else {
-            randomNumber = getRandomNumberInRange(0, 10);
-            if (randomNumber < 7) {
-                gChickens[index].direction = randomNumber;
-            }
-            randomNumber = getRandomNumberInRange(0, 40);
-            if (randomNumber < 20) {
-                gChickens[index].unk_17 = 1;
-            }
-            if (19 < randomNumber && randomNumber < 40) {
-                gChickens[index].unk_17 = 2;
-            }
-        }
-        
-        gChickens[index].flags |= 2;
-        break;
 
-    case 1:
-        gChickens[index].unk_19 = 1;
-        gChickens[index].unk_1A = 0;
-        gChickens[index].unk_1B = 0;
-        setEntityAnimationWithDirectionChange(gChickens[index].entityIndex, 8);
-        if (getRandomNumberInRange(0, 20) < 10) {
-            gChickens[index].unk_17 = 1;
-        } else {
-            gChickens[index].unk_17 = 0;
-        }
-        gChickens[index].flags |= 2;
-        setAudio(0x42);
-        break;
-
-    case 2:
-        gChickens[index].unk_19 = 0;
-        gChickens[index].unk_1A = 0;
-        gChickens[index].unk_1B = 0;
-        setEntityAnimationWithDirectionChange(gChickens[index].entityIndex, 16);
-        gChickens[index].unk_17 = 0;
-        gChickens[index].flags |= 2;
-        break;
-
-    case 16:
-        gChickens[index].unk_19 = 0;
-        gChickens[index].unk_1A = 0;
-        gChickens[index].unk_1B = 0;
-        setEntityAnimationWithDirectionChange(gChickens[index].entityIndex, 0);
-        gChickens[index].flags |= 2;
-        break;
-    }
-}
-
-
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008DA00);
-
-void func_8008DA00(u8 index) {
-    switch(gChickens[index].unk_17)
-    {
         case 0:
-        case 0x10:
             gChickens[index].unk_19 = 0;
             gChickens[index].unk_1A = 0;
             gChickens[index].unk_1B = 0;
-            setEntityAnimation(gChickens[index].entityIndex, 0x13);
-            gChickens[index].flags |= 0x2;
+
+            setEntityAnimationWithDirectionChange(gChickens[index].entityIndex, 0);
+
+            if (getRandomNumberInRange(0, 100) < 40) {
+                gChickens[index].unk_17 = 0;
+            } else {
+                
+                temp = getRandomNumberInRange(0, 10);
+                
+                if (temp  < 7) {
+                    gChickens[index].direction = temp;
+                }
+                
+                temp = getRandomNumberInRange(0, 40);
+
+                if (temp  < 20) {
+                    gChickens[index].unk_17 = 1;
+                }
+                if (19 < temp  && temp  < 40) {
+                    gChickens[index].unk_17 = 2;
+                }
+            }
+            
+            gChickens[index].flags |= 2;
+
+            break;
+
+        case 1:
+            gChickens[index].unk_19 = 1;
+            gChickens[index].unk_1A = 0;
+            gChickens[index].unk_1B = 0;
+            
+            setEntityAnimationWithDirectionChange(gChickens[index].entityIndex, 8);
+            
+            if (getRandomNumberInRange(0, 20) < 10) {
+                gChickens[index].unk_17 = 1;
+            } else {
+                gChickens[index].unk_17 = 0;
+            }
+            
+            gChickens[index].flags |= 2;
+            
+            setAudio(0x42);
+            
+            break;
+
+        case 2:
+            gChickens[index].unk_19 = 0;
+            gChickens[index].unk_1A = 0;
+            gChickens[index].unk_1B = 0;
+        
+            setEntityAnimationWithDirectionChange(gChickens[index].entityIndex, 16);
+        
+            gChickens[index].unk_17 = 0;
+            gChickens[index].flags |= 2;
+        
+            break;
+
+        case 16:
+            gChickens[index].unk_19 = 0;
+            gChickens[index].unk_1A = 0;
+            gChickens[index].unk_1B = 0;
+            
+            setEntityAnimationWithDirectionChange(gChickens[index].entityIndex, 0);
+
+            gChickens[index].flags |= 2;
+        
+            break;
+        
     }
+
+}
+
+//INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008DA00);
+
+void func_8008DA00(u8 chickenIndex) {
+
+    switch (gChickens[chickenIndex].unk_17) {
+
+        case 0:
+        case 16:
+            gChickens[chickenIndex].unk_19 = 0;
+            gChickens[chickenIndex].unk_1A = 0;
+            gChickens[chickenIndex].unk_1B = 0;
+            setEntityAnimation(gChickens[chickenIndex].entityIndex, 0x13);
+            gChickens[chickenIndex].flags |= 2;
+            
+    }
+    
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008DAA0);
 
 void func_8008DAA0(u8 index) {
+
     Vec3f vec;
     u8 levelInteractionIndex;
 
     if ((gFarmAnimals[index].flags & 1) && (gFarmAnimals[index].flags & 4)) {
+
         if ((checkEntityAnimationStateChanged(gFarmAnimals[index].entityIndex)) || (gFarmAnimals[index].flags & 0x8000)) {
+            
             if (entities[gFarmAnimals[index].entityIndex].unk_5E == 0) {
+
                 if (!(gFarmAnimals[index].flags & 0x2000)) {
+
                     gFarmAnimals[index].direction = gPlayer.direction;
                     gFarmAnimals[index].unk_1B = 1;
+
                     gFarmAnimals[index].flags &= ~(0x200);
                     gFarmAnimals[index].flags |= (0x400 | 0x2000);
+
                 }
+
             }
             
             switch (gFarmAnimals[index].type) {
+
                 case 0:
                     func_80090DF8(index);
-                    
                     break;
+
                 case 1:
                     func_800904E4(index);
-                    
                     break;
+
                 case 2:
+
                     switch(gFarmAnimals[index].condition) {
+
                         case 0:
                             func_8008DF9C(index);
-                            
-                        break;
+                            break;
+
                         case 1:
                             func_8008E98C(index);
-                            
-                        break;
+                            break;
+
                         case 2:
                             func_8008F37C(index);
-                            
-                        break;
+                            break;
+
                         case 3:
                             func_8008FC68(index);
-                        break;
+                            break;
+
                     }
                     
                     break;
+
                 case 3:
                     func_8009170C(index);
-                    
                     break;
+
                 case 4:
                     func_80093434(index);
-                    
                     break;
+
                 case 5:
+
                     switch(gFarmAnimals[index].condition) {
+
                         case 0:
                             func_80092094(index);
-                            
-                        break;
+                            break;
+
                         case 3:
                             func_80092808(index);
-                            
-                        break;
+                            break;
+
                     }
     
                     break;
+
                 case 6:
+
                     switch(gFarmAnimals[index].condition) {
+
                         case 0:
                             func_80092A64(index);
-                            
-                        break;
+                            break;
+
                         case 3:
                             func_800931D8(index);
-                            
-                        break;
+                            break;
+
                     }
     
                     break;
+
                 }
+
             gFarmAnimals[index].flags &= ~(0x2000 | 0x8000);
+
         }
+       
         setEntityDirection(gFarmAnimals[index].entityIndex, convertSpriteToWorldDirection(gFarmAnimals[index].direction, MAIN_MAP_INDEX));
+        
         vec = getMovementVectorFromDirection(gFarmAnimals[index].unk_14, gFarmAnimals[index].direction, 0.0f);
         setEntityMovementVector(gFarmAnimals[index].entityIndex, vec.x, vec.y, vec.z, gFarmAnimals[index].unk_14);
+       
         levelInteractionIndex = getLevelInteractionIndexFromEntityPosition(gFarmAnimals[index].entityIndex, 0, 32);
+        
         switch(gFarmAnimals[index].location) {
+
             case FARM_SPRING:
+
                 if (levelInteractionIndex == 6) {
+
                     gFarmAnimals[index].location = BARN;
                     deactivateEntity(gFarmAnimals[index].entityIndex);
+
                     gFarmAnimals[index].flags &= ~(0x4);
                     func_80038990(MAIN_MAP_INDEX, 0x1B, 0);  
+
                 }
                 
-            break;
+                break;
+
             case BARN:
+
                 if (levelInteractionIndex == 1) {
+
                     gFarmAnimals[index].location = FARM_SPRING;
                     deactivateEntity(gFarmAnimals[index].entityIndex);
                     gFarmAnimals[index].flags &= ~(0x4);
+
                     gFarmAnimals[index].coordinates.x = -128.0f;
                     gFarmAnimals[index].coordinates.y = 0.0f;
                     gFarmAnimals[index].coordinates.z = -288.0f;
+
                 }
                 
-            break;
+                break;
+
         }
+
     }
+
 }
 
 INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008DF9C);

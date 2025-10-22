@@ -708,6 +708,7 @@ void togglePauseEntities(void) {
 
 //INCLUDE_ASM("asm/nonmatchings/system/entity", func_8002F770);
 
+// increment/decrement rotation; used by map controller
 void func_8002F770(s16 arg0) {
 
     u16 i;
@@ -716,6 +717,7 @@ void func_8002F770(s16 arg0) {
         entities[i].direction += arg0;
         entities[i].direction &= MAX_DIRECTIONS;
     }
+
 }
 
 //INCLUDE_ASM("asm/nonmatchings/system/entity", setEntitiesColor);

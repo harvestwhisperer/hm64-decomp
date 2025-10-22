@@ -80,8 +80,8 @@ extern void *D_80114C70[];
 extern void *D_80114D30[];
 // cutscene executor asset index
 extern u16 D_80114DF0[];
-extern u8 D_80113580[0x18][0x14];
-extern u8 D_80114E50[0x18][0x14];
+extern u8 D_80113580[FIELD_HEIGHT][FIELD_WIDTH];
+extern u8 D_80114E50[FIELD_HEIGHT][FIELD_WIDTH];
 extern u16 D_80114AF4[];
 
 //INCLUDE_ASM("asm/nonmatchings/game/setCutscenes", func_8009BF90);
@@ -207,10 +207,9 @@ u16 func_8009C054(u16 mapIndex) {
             }
         
         if (offset != 0xFFFF) {
-
             func_8009BF90(offset);
-
         }
+        
     }
     
     return offset;
