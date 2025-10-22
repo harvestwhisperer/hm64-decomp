@@ -961,9 +961,9 @@ void func_8008A650(u8 index)
                             gChickens[D_8016FFE8].flags |= 0x100;
                             gChickens[index].flags &= ~(1);
                             setLifeEventBit(3);
-                            break;
+                        } else {
+                            gChickens[index].unk_1E--;
                         }
-                        gChickens[index].unk_1E--;
                     }
                 }
                 
@@ -980,27 +980,28 @@ void func_8008A650(u8 index)
                     case 0:
                         if (gChickens[index].flags & 0x10) {
                             func_80087F28(0, index);
-                            break;
+                        } else {
+                            func_800861A4(1, index, 0xFF, 1, 0);
                         }
-                        func_800861A4(1, index, 0xFF, 1, 0);
                         
                         break;
                     case 1:
                         if (gChickens[index].flags & 0x10) {
                             func_800861A4(1, index, 0xFF, 0, 0);
                             break;
-                        }
-                        gChickens[index].starvedCounter++;
-                        if (gChickens[index].starvedCounter == 3) {
-                            func_800861A4(1, index, 0xFF, 2, 0xFF);
-                            gChickens[index].flags = 0;
-                            setLifeEventBit(ANIMAL_DIED);
-                            D_8018985C[0] = gChickens[index].name[0];
-                            D_8018985C[1] = gChickens[index].name[1];
-                            D_8018985C[2] = gChickens[index].name[2];
-                            D_8018985C[3] = gChickens[index].name[3];
-                            D_8018985C[4] = gChickens[index].name[4];
-                            D_8018985C[5] = gChickens[index].name[5];
+                        } else {
+                            gChickens[index].starvedCounter++;
+                            if (gChickens[index].starvedCounter == 3) {
+                                func_800861A4(1, index, 0xFF, 2, 0xFF);
+                                gChickens[index].flags = 0;
+                                setLifeEventBit(ANIMAL_DIED);
+                                D_8018985C[0] = gChickens[index].name[0];
+                                D_8018985C[1] = gChickens[index].name[1];
+                                D_8018985C[2] = gChickens[index].name[2];
+                                D_8018985C[3] = gChickens[index].name[3];
+                                D_8018985C[4] = gChickens[index].name[4];
+                                D_8018985C[5] = gChickens[index].name[5];
+                            }
                         }
                         
                         break;
@@ -1010,6 +1011,7 @@ void func_8008A650(u8 index)
         }
     }
 }
+
 
 INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008A9E8);
 
