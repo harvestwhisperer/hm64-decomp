@@ -483,19 +483,19 @@ void initializeGameVariables(void) {
         gFarmAnimals[i].goldenMilk = 0xFF;
     }
 
-    for (i = 0; i < MAX_CHICKEN_EGGS; i++) {
+    for (i = 0; i < MAX_MISC_ANIMALS; i++) {
 
-        gBirds[i].unk_15 = 0;
-        gBirds[i].mapIndex = 0;
-        gBirds[i].unk_F = 0;
-        gBirds[i].direction = 0;
-        gBirds[i].zDisplacement = 0;
-        gBirds[i].unk_13 = 0;
-        gBirds[i].unk_14 = 0;
-        gBirds[i].coordinates.x = 0;
-        gBirds[i].coordinates.y = 0;
-        gBirds[i].coordinates.z = 0;
-        gBirds[i].flags = 0;
+        gMiscAnimals[i].unk_15 = 0;
+        gMiscAnimals[i].mapIndex = 0;
+        gMiscAnimals[i].unk_F = 0;
+        gMiscAnimals[i].direction = 0;
+        gMiscAnimals[i].zDisplacement = 0;
+        gMiscAnimals[i].unk_13 = 0;
+        gMiscAnimals[i].unk_14 = 0;
+        gMiscAnimals[i].coordinates.x = 0;
+        gMiscAnimals[i].coordinates.y = 0;
+        gMiscAnimals[i].coordinates.z = 0;
+        gMiscAnimals[i].flags = 0;
 
     }
 
@@ -1457,8 +1457,7 @@ void initializeGameVariableStrings(void) {
     // prices
     setGameVariableString(0x12, D_801A8B50, 8);
 
-    // animal name
-    setGameVariableString(0x13, D_8018985C, 6);
+    setGameVariableString(0x13, deadAnimalName, 6);
 
     setGameVariableString(0x14, gCurrentSeasonName, 6);
     

@@ -249,8 +249,9 @@ extern u8 ranchFieldTiles[FIELD_HEIGHT][FIELD_WIDTH];
 extern u8 farmFieldTiles[FIELD_HEIGHT][FIELD_WIDTH];
 
 extern void setMapGroundObjects(u8);   
+extern bool func_800DB99C(void);               
 extern void func_800D9BFC(); 
-extern u8 getGroundObjectMapAdditionIndex(u8);                             
+extern u8 getGroundObjectMapAdditionIndex(u8);              
 extern u8 getHeldItemIndexFromGroundObject(u8);                 
 extern u8 getGroundObjectToolInteractionFlags(u8);
 extern u8 getGroundObjectPlayerInteractionsFlags(u8 index);     

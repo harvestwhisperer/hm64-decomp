@@ -51,7 +51,7 @@ typedef struct {
 	u16 actionPhaseFrameCounter; // 0x68
 	u8 actionPhase; // 0x6A 
 	u8 shopItemIndex; // 0x6B 
-	u8 heldChickenIndex; // 0x6C
+	u8 heldAnimalIndex; // 0x6C
 	u8 direction; // 0x6D
 	u8 unk_6E; // 0x6E
 	u8 actionTimer; // 0x6F

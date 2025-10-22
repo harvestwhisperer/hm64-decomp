@@ -2,6 +2,7 @@
 
 #include "game/animals.h"
 
+#include "system/controller.h"
 #include "system/entity.h"
 #include "system/graphic.h"
 #include "system/mapController.h"
@@ -17,11 +18,13 @@
 #include "game/player.h"
 #include "game/weather.h"
 
+#include "mainproc.h"
+
 #include "game/spriteInfo.h"
 
 // bss
 Chicken gChickens[MAX_CHICKENS];
-Bird gBirds[];
+MiscAnimal gMiscAnimals[];
 FarmAnimal gFarmAnimals[];
 u8 D_801886D4[6];
 Dog dogInfo;
@@ -78,7 +81,7 @@ void updateDog();
 void updateHorse();                                  
 void updateHorseGrown();                                 
 void updateHorseNotGrown();       
-u8 func_8008A4A8(u8 birdIndex, u8 direction, f32 x, f32 y, f32 z);          
+u8 func_8008A4A8(u8 index, u8 direction, f32 x, f32 y, f32 z);          
 void func_8008A5F0();
 void func_8008A650(u8);                               
 void func_8008A9E8(u8);                               
@@ -110,7 +113,8 @@ void func_80099548(u8);
 void func_800995F8(u8);                               
 void func_80099804(u8);                               
 void func_800999B0(u8);                               
-void func_80099B5C(u8);                               
+void func_8009B914(void);              
+void func_80099B5C(u8);                 
 void func_80099C94(u8);                         
 void func_8009BCC4(u8, u8, u8);
 
@@ -161,15 +165,15 @@ void deactivateAnimalEntities(void) {
     horseInfo.unk_1A = 0;
     horseInfo.flags &= ~4;
 
-    for (i = 0; i < MAX_CHICKEN_EGGS; i++) {
+    for (i = 0; i < MAX_MISC_ANIMALS; i++) {
         
-        if (gBirds[i].flags & 4) {
-            deactivateEntity(gBirds[i].entityIndex);
+        if (gMiscAnimals[i].flags & 4) {
+            deactivateEntity(gMiscAnimals[i].entityIndex);
         }
         
-        gBirds[i].flags = 0;
-        gBirds[i].unk_F = 0;
-        gBirds[i].unk_13 = 0;
+        gMiscAnimals[i].flags = 0;
+        gMiscAnimals[i].unk_F = 0;
+        gMiscAnimals[i].unk_13 = 0;
         
     }
     
@@ -321,7 +325,529 @@ inline u16 func_800866E0(u8 animalIndex, u8 arg1) {
     
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/animals", func_80086764);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", func_80086764);
+
+// player - animal interaction handler
+bool func_80086764(void) {
+
+    Vec3f vec;
+    
+    bool set = FALSE;
+    u8 i;
+    
+    u16 textIndex;
+    u16 tempFlags;
+    u8 groundObjectIndex;
+
+    if (!(gPlayer.flags & 1)) {
+
+        if (gPlayer.heldItem == 0) {
+
+            if ((dogInfo.flags & 4) && entities[dogInfo.entityIndex].entityCollidedWithIndex == ENTITY_PLAYER && entities[dogInfo.entityIndex].buttonPressed == BUTTON_A) {
+
+                // ???
+                if (!i) {
+                    gPlayer.heldItem = 0x58;
+                } else {
+                    gPlayer.heldItem = 0x7B;
+                }
+                
+                deactivateEntity(dogInfo.entityIndex);
+                setPlayerAction(4, 6);
+                dogInfo.flags &= ~(4 | 0x10);
+                dogInfo.flags |= 8;
+
+                if (!(dogInfo.flags & 0x40)) {
+
+                    if (dogInfo.flags & 1) {
+                        dogInfo.affection += adjustValue(dogInfo.affection, 1, MAX_AFFECTION);
+                    }
+
+                    dogInfo.flags |= 0x40;
+                    
+                }
+                
+                set = TRUE;
+                
+            }
+
+            for (i = 0; i < MAX_CHICKENS && !set; i++) {
+
+                if ((gChickens[i].flags & 4) && entities[gChickens[i].entityIndex].entityCollidedWithIndex == ENTITY_PLAYER && entities[gChickens[i].entityIndex].buttonPressed == BUTTON_A) {
+
+                    if (checkDailyEventBit(2) && getLevelFlags(gChickens[i].location) & 0x20) {
+
+                        if (gChickens[i].type == 2) {
+
+                            setGameVariableString(0xD, gChickens[i].name, 6);
+                            func_8005B09C(7);
+                            
+                            D_801C4216 = 4;
+                            D_801FC155 = i;
+                            
+                            func_8009B914();
+                            
+                            
+                        } else {
+                            showTextBox(0, 6, 0x5C, 0, 2);
+                        }
+                        
+                        set = TRUE;
+                        
+                    } else {
+
+                        switch (gChickens[i].type) {
+
+                            case 2:
+                                gPlayer.heldItem = 0x60;
+                                gChickens[i].flags |= 8;
+                                set = TRUE;
+                                break;
+                            
+                            case 1:
+                                gPlayer.heldItem = 0x68;
+                                gChickens[i].flags |= 8;
+                                set = TRUE;
+                                break;
+                            
+                            case 0:
+
+                                if (!(gChickens[i].flags & 0x20)) {
+                                    set = TRUE;
+                                    gPlayer.heldItem = 0x14;
+                                    gChickens[i].flags = 0;
+                                }
+                                
+                                break;
+                            
+                        }
+
+                        if (set) {
+                            
+                            deactivateEntity(gChickens[i].entityIndex);
+                            
+                            setPlayerAction(4, 6);
+                            
+                            gPlayer.heldAnimalIndex = i;
+                            
+                            gChickens[i].flags &= ~4;
+                            
+                        }
+                        
+                    }
+                    
+                    
+                }
+
+            }
+
+            for (i = 0; i < MAX_FARM_ANIMALS && !set; i++) {
+
+                if ((gFarmAnimals[i].flags & 4) && entities[gFarmAnimals[i].entityIndex].entityCollidedWithIndex == ENTITY_PLAYER) {
+
+                    if (entities[gFarmAnimals[i].entityIndex].buttonPressed == BUTTON_A) {
+                        
+                        if (checkDailyEventBit(2) && getLevelFlags(gFarmAnimals[i].location) & 0x20) {
+
+                            if ((gFarmAnimals[i].type == 2 || gFarmAnimals[i].type == 5) && (!(1 < gFarmAnimals[i].condition && gFarmAnimals[i].condition < 4))) {
+                                
+                                setGameVariableString(0xD, gFarmAnimals[i].name, 6);
+                                func_8005B09C(7);
+                                
+                                if (gFarmAnimals[i].type == 2) {
+                                    D_801C4216 = 2;
+                                } else {
+                                    D_801C4216 = 3;
+                                }
+                                
+                                D_801FC155 = i;
+                                
+                                func_8009B914();
+                                
+                            }  else {
+                                showTextBox(0, 6, 0x5C, 0, 2);
+                            }
+                        
+                        } else if (checkDailyEventBit(0x1F)) {
+    
+                            if (gFarmAnimals[i].type == 2 && !(1 < gFarmAnimals[i].condition && gFarmAnimals[i].condition < 4)) {
+                                
+                                func_8005B09C(8);
+                                
+                                setGameVariableString(0xD, gFarmAnimals[i].name, 6);
+                                D_801FC155 = i;
+                                
+                            }  else {
+                                
+                                showTextBox(0, 4, 0x35, 0, 0);
+                                
+                            }
+                            
+                        } else {
+    
+                            func_8003F360(0, -4, 2);
+                            setMessageBoxViewSpacePosition(0, 0.0f, -64.0f, 352.0f);
+                            setMessageBoxSpriteIndices(0, 1, 0, 0);
+                            
+                            setGameVariableString(0xD, gFarmAnimals[i].name, 6);
+    
+                            switch (gFarmAnimals[i].condition) {
+    
+                                case 0:
+                                    textIndex = 0;
+                                    break;
+                                
+                                case 1:
+                                    textIndex = 2;
+                                    break;
+    
+                                case 2:
+                                    textIndex = 1;
+                                    break;
+                                
+                                case 3:
+                                    textIndex = 3;
+                                    break;
+                                
+                                
+                            }
+    
+                            if (gFarmAnimals[i].type == 3) {
+    
+                                convertNumberToString(21, 21 - gFarmAnimals[i].age, 1);
+    
+                                switch (gFarmAnimals[i].age) {
+                                    
+                                    case 0:
+                                        textIndex = 4;
+                                        break;
+                                    case 21:
+                                        textIndex = 6;
+                                        break;
+                                    default:
+                                        textIndex = 5;
+                                        break;
+                                    
+                                }
+    
+                            }
+    
+                            showTextBox(1, 7, textIndex, 0, 2);
+    
+                            gFarmAnimals[i].flags |= (0x200 | 0x2000);
+                            
+                            if (!(gFarmAnimals[i].flags & 0x1000)) {
+                                
+                                func_80086458(i, 1);
+                                func_800861A4(2, i, 0xFF, 0xFF, 0x11);
+    
+                                gFarmAnimals[i].flags |= 0x8000;
+                                
+                                func_8009BCC4(2, i, 3);
+    
+                                gFarmAnimals[i].flags |= 0x1000;
+                                
+                            }
+                            
+                        }
+    
+                        gFarmAnimals[i].flags &= ~0x400;
+    
+                    }
+
+                    set = TRUE;
+                    
+                }
+                
+            }
+            
+            if (horseInfo.flags & 4 && entities[horseInfo.entityIndex].entityCollidedWithIndex == ENTITY_PLAYER && entities[horseInfo.entityIndex].buttonPressed == BUTTON_A) {
+
+                if (gPlayer.heldItem == 0) {
+
+                    if (horseInfo.grown == TRUE) {
+
+                        if (!checkTerrainCollisionInDirection(ENTITY_PLAYER, 0x18, convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, gMainMapIndex)) 
+                            && !checkTerrainCollisionInDirection(ENTITY_PLAYER, 0x10, convertWorldToSpriteDirection(gPlayer.direction, gMainMapIndex))) {
+                            
+                            vec = projectEntityPosition(ENTITY_PLAYER, 0x20, convertWorldToSpriteDirection(gPlayer.direction, MAIN_MAP_INDEX));
+                             
+                            groundObjectIndex = getGroundObjectIndexFromCoordinates(vec.x, vec.z);
+
+                            if (groundObjectIndex == 0xFF || (getGroundObjectPlayerInteractionsFlags(groundObjectIndex) & 8)) {
+                                
+                                setPlayerAction(0xD, 0xF);
+
+                                horseInfo.flags &= ~(4 | 0x10);
+
+                                if (!(horseInfo.flags & 0x400)) {
+
+                                    adjustHorseAffection(1);
+
+                                    horseInfo.flags |= 0x400;
+
+                                }
+                                
+                                set = TRUE;
+                                
+                            }
+                            
+                        }
+                        
+                    } else {
+
+                        func_8003F360(0, -4, 2);
+                        setMessageBoxViewSpacePosition(0, 0.0f, -64.0f, 352.0f);
+                        setMessageBoxSpriteIndices(0, 1, 0, 0);
+                        setGameVariableString(3, horseInfo.name, 6);
+                        
+                        if (horseInfo.age == 0) {
+                            showTextBox(1, 7, 7, 0, 2);
+                        } else {
+                            showTextBox(1, 7, 8, 0, 2);
+                        }
+
+
+                        horseInfo.flags |= 0x10;
+                            
+                        if (!(horseInfo.flags & 0x800)) {
+
+                            horseInfo.unk_17 = 17;
+
+                            if (checkHaveKeyItem(0x15)) {
+                                adjustHorseAffection(2);
+                            } else {
+                                adjustHorseAffection(1);
+                            }
+
+                            horseInfo.flags |= (0x20 | 0x800);
+                            
+                            func_8009BCC4(1, 0, 3);
+                            
+                        }
+                    
+                        set = TRUE;
+    
+                    }
+                    
+                }
+                
+            }
+
+            for (i = 0; i < MAX_MISC_ANIMALS && !set; i++) {
+
+                if (gMiscAnimals[i].flags & 4) {
+
+                    if (entities[gMiscAnimals[i].entityIndex].entityCollidedWithIndex == ENTITY_PLAYER && entities[gMiscAnimals[i].entityIndex].buttonPressed == BUTTON_A) {
+
+                        switch (gMiscAnimals[i].unk_15) {
+
+                            case 0:
+                                gPlayer.heldItem = DOG_2_HELD_ITEM;
+                                set = TRUE;
+                                break;
+                            
+                            case 1:
+                                gPlayer.heldItem = PUPPY_1_HELD_ITEM;
+                                set = TRUE;
+                                break;
+                            
+                            case 2:
+                                gPlayer.heldItem = CAT_HELD_ITEM;
+                                set = TRUE;
+                                break;
+                            
+                            case 7:
+                                gPlayer.heldItem = FOX_HELD_ITEM;
+                                set = TRUE;
+                                break;
+                            
+                            case 8:
+                                gPlayer.heldItem = RABBIT_HELD_ITEM;
+                                set = TRUE;
+                                break;
+                            
+                            case 9:
+
+                                if (!(15 < gMiscAnimals[i].unk_F && gMiscAnimals[i].unk_F < 18)) {
+                                    gPlayer.heldItem = SQUIRREL_HELD_ITEM;
+                                    set = TRUE;
+                                }
+                                
+                                break;
+                            
+                            case 10:
+                                
+                                if (!(15 < gMiscAnimals[i].unk_F && gMiscAnimals[i].unk_F < 18)) {
+                                    gPlayer.heldItem = MONKEY_HELD_ITEM;
+                                    set = TRUE;
+                                }
+                                
+                                break;
+
+                            case 16:
+
+                                if (gMiscAnimals[i].unk_F != 1) {
+                                    gPlayer.heldItem = LADYBUG_HELD_ITEM;
+                                    set = TRUE;
+                                }
+                                
+                                break;
+                            
+                            case 17:
+                                                                
+                                if (gMiscAnimals[i].unk_F != 1) {
+                                    gPlayer.heldItem = CICADA_HELD_ITEM;
+                                    set = TRUE;
+                                }
+                                
+                                break;
+                            
+                            case 18:
+                                                                
+                                if (gMiscAnimals[i].unk_F != 1) {
+                                    gPlayer.heldItem = HORNED_BEETLE_HELD_ITEM;
+                                    set = TRUE;
+                                }
+                                
+                                break;
+                            
+                            case 19:
+                                                                
+                                if (gMiscAnimals[i].unk_F != 1) {
+                                    gPlayer.heldItem = STAG_BEETLE_HELD_ITEM;
+                                    set = TRUE;
+                                }
+                                
+                                break;
+                            
+                            case 21:
+                                                                
+                                if (gMiscAnimals[i].unk_F != 1) {
+                                    gPlayer.heldItem = CRICKET_HELD_ITEM;
+                                    set = TRUE;
+                                }
+                                
+                                break;
+                            
+                            case 15:
+                                                                
+                                if (gMiscAnimals[i].unk_F != 1) {
+                                    gPlayer.heldItem = BUTTERFLY_HELD_ITEM;
+                                    set = TRUE;
+                                }
+                                
+                                break;
+                            
+                            case 20:
+
+                                if (gMiscAnimals[i].unk_F != 1) {
+                                    gPlayer.heldItem = RED_DRAGONFLY_HELD_ITEM;
+                                    set = TRUE;
+                                }
+                                
+                                break;
+                            
+                        }
+
+                        if (set) {
+
+                            deactivateEntity(gMiscAnimals[i].entityIndex);
+                            
+                            setPlayerAction(4, 6);
+                            gPlayer.heldAnimalIndex = i;
+
+                            gMiscAnimals[i].flags = 0;
+                            
+                        }
+
+                        if (!checkDailyEventBit(0x44)) {
+
+                            gHappiness += adjustValue(gHappiness, 1, MAX_HAPPINESS);
+                            setDailyEventBit(0x44);
+                            
+                        }
+                            
+                    } else {
+
+                        if (entities[gMiscAnimals[i].entityIndex].unk_5E == 0) {
+                            
+                            switch (gMiscAnimals[i].unk_15) {
+
+                                case 9:
+
+                                    if (15 < gMiscAnimals[i].unk_F && gMiscAnimals[i].unk_F < 18) {
+                                        gMiscAnimals[i].unk_F = 0x11;    
+                                    } else {
+                                        gMiscAnimals[i].unk_F = 0x20;
+                                        gMiscAnimals[i].flags |= 0x10;
+                                    }
+                                    
+                                    break;
+
+                                case 10:
+
+                                    if (15 < gMiscAnimals[i].unk_F && gMiscAnimals[i].unk_F < 18) {
+                                        gMiscAnimals[i].unk_F = 0x11;
+                                    } else {
+                                        gMiscAnimals[i].unk_F = 0x20;
+                                        gMiscAnimals[i].flags |= 0x10;
+                                    }
+                                    
+                                    break;
+
+                                case 7:
+                                    gMiscAnimals[i].unk_F = 0x20;
+                                    gMiscAnimals[i].flags |= 0x10;
+                                    break;
+
+                                case 8:
+                                    gMiscAnimals[i].unk_F = 0x20;
+                                    gMiscAnimals[i].flags |= 0x10;
+                                    break;
+
+                                case 11:
+                                    gMiscAnimals[i].unk_F = 0x20;
+                                    gMiscAnimals[i].flags |= 0x10;
+                                    break;
+
+                                case 12:
+                                    gMiscAnimals[i].unk_F = 0x20;
+                                    gMiscAnimals[i].flags |= 0x10;
+                                    break;
+
+                                case 13:
+                                    gMiscAnimals[i].unk_F = 0x20;
+                                    gMiscAnimals[i].flags |= 0x10;
+                                    break;
+
+                                case 14:
+                                    break;
+                                
+                            }
+                        
+                            if (!checkDailyEventBit(0x44)) {
+
+                                gHappiness += adjustValue(gHappiness, 1, MAX_HAPPINESS);
+                                setDailyEventBit(0x44);
+                                
+                            }
+                            
+                        }
+                        
+                    }
+                    
+                }
+                
+            }
+            
+        }
+        
+    }
+    
+    return set;
+    
+}
 
 //INCLUDE_ASM("asm/nonmatchings/game/animals", func_800876D0);
 
@@ -391,10 +917,10 @@ void func_8008779C(void) {
         }
     }
 
-    for (i = 0; i < MAX_CHICKEN_EGGS; i++) {
-        if (gBirds[i].flags & 4) {
-            if (entities[gBirds[i].entityIndex].flags & 8) {
-                deactivateEntity(gBirds[i].entityIndex);
+    for (i = 0; i < MAX_MISC_ANIMALS; i++) {
+        if (gMiscAnimals[i].flags & 4) {
+            if (entities[gMiscAnimals[i].entityIndex].flags & 8) {
+                deactivateEntity(gMiscAnimals[i].entityIndex);
             }
         }
     }
@@ -893,12 +1419,12 @@ void func_80088D54(void) {
 
             if (gSeason != WINTER && gWeather == SUNNY && 5 < gHour && gHour < 9) {
 
-                if (gBirds[4].unk_16 == 1) {
+                if (gMiscAnimals[4].unk_16 == 1) {
                     func_8008A4A8(0xB, SOUTHWEST, -336.0f, 0.0f, 0.0f);
                     func_8008A4A8(0xB, SOUTHWEST, -368.0f, 0.0f, 32.0f);
                 }
 
-                if (gBirds[4].unk_16 == 2) {
+                if (gMiscAnimals[4].unk_16 == 2) {
                     func_8008A4A8(0xB, SOUTHWEST, 320.0f, 0.0f, -352.0f);
                     func_8008A4A8(0xB, SOUTHWEST, 288.0f, 0.0f, -352.0f);
                 }
@@ -909,31 +1435,31 @@ void func_80088D54(void) {
         
         case POND:
 
-            if (gSeason == AUTUMN && 12 < gHour && gHour < 22 && gBirds[0].unk_16 >= 2 && (u8)(gPlayer.heldItem + 0x75) >= 8) {
+            if (gSeason == AUTUMN && 12 < gHour && gHour < 22 && gMiscAnimals[0].unk_16 >= 2 && (u8)(gPlayer.heldItem + 0x75) >= 8) {
                 func_8008A4A8(7, 6, -192.0f, 0.0f, -64.0f);
             }
 
-            if (gSeason == WINTER && 12 < gHour && gHour < 22 && gBirds[0].unk_16 == 1 && (u8)(gPlayer.heldItem + 0x75) >= 8) {
+            if (gSeason == WINTER && 12 < gHour && gHour < 22 && gMiscAnimals[0].unk_16 == 1 && (u8)(gPlayer.heldItem + 0x75) >= 8) {
                 func_8008A4A8(7, 6, -192.0f, 0.0f, -64.0f);
             }
             
-            if (gSeason == SPRING && 8 < gHour && gHour < 15 && gBirds[1].unk_16 == 1 && (u8)(gPlayer.heldItem + 0x65) >= 8) {
+            if (gSeason == SPRING && 8 < gHour && gHour < 15 && gMiscAnimals[1].unk_16 == 1 && (u8)(gPlayer.heldItem + 0x65) >= 8) {
                 func_8008A4A8(8, 4, -192.0f, 0.0f, -160.0f);
             }
 
-            if (gSeason == SUMMER && 10 < gHour && gHour < 17 && !(gBirds[1].unk_16 < 2) && (u8)(gPlayer.heldItem + 0x65) >= 8) {
+            if (gSeason == SUMMER && 10 < gHour && gHour < 17 && !(gMiscAnimals[1].unk_16 < 2) && (u8)(gPlayer.heldItem + 0x65) >= 8) {
                 func_8008A4A8(8, 4, -192.0f, 0.0f, -160.0f);
             }
 
-            if (gSeason == SUMMER && 10 < gHour && gHour < 17 && gBirds[2].unk_16 == 1 && (u8)(gPlayer.heldItem + 0x6D) >= 8) {
-                gBirds[func_8008A4A8(9, SOUTHWEST, 144.0f, 0.0f, -256.0f)].unk_F = 0x10;
+            if (gSeason == SUMMER && 10 < gHour && gHour < 17 && gMiscAnimals[2].unk_16 == 1 && (u8)(gPlayer.heldItem + 0x6D) >= 8) {
+                gMiscAnimals[func_8008A4A8(9, SOUTHWEST, 144.0f, 0.0f, -256.0f)].unk_F = 0x10;
             }
 
-            if (gSeason == WINTER && 10 < gHour && gHour < 17 && gBirds[3].unk_16 >= 2 && (u8)(gPlayer.heldItem + 0x5D) >= 8) {
+            if (gSeason == WINTER && 10 < gHour && gHour < 17 && gMiscAnimals[3].unk_16 >= 2 && (u8)(gPlayer.heldItem + 0x5D) >= 8) {
                 func_8008A4A8(0xA, SOUTHEAST, -192.0f, 0.0f, -224.0f);
             }
 
-            if (gSeason == SUMMER && gWeather != RAIN && 7 < gHour && gHour < 16 && gBirds[4].unk_16 < 2) {
+            if (gSeason == SUMMER && gWeather != RAIN && 7 < gHour && gHour < 16 && gMiscAnimals[4].unk_16 < 2) {
                 func_8008A4A8(0xE, SOUTHWEST, 96.0f, 0.0f, -64.0f);
             }
 
@@ -941,31 +1467,31 @@ void func_80088D54(void) {
 
         case MOUNTAIN_1:
 
-            if (gSeason == SUMMER && 10 < gHour && gHour < 17 && gBirds[1].unk_16 < 2 && (u8)(gPlayer.heldItem + 0x65) >= 8) {
+            if (gSeason == SUMMER && 10 < gHour && gHour < 17 && gMiscAnimals[1].unk_16 < 2 && (u8)(gPlayer.heldItem + 0x65) >= 8) {
                 func_8008A4A8(8, NORTHWEST, 128.0f, 0.0f, 64.0f);
             }
 
-            if (gSeason == SPRING && 6 < gHour && gHour < 16 && !(gBirds[2].unk_16 < 2) && (u8)(gPlayer.heldItem + 0x6D) >= 8) {
+            if (gSeason == SPRING && 6 < gHour && gHour < 16 && !(gMiscAnimals[2].unk_16 < 2) && (u8)(gPlayer.heldItem + 0x6D) >= 8) {
                 func_8008A4A8(9, SOUTHWEST, 256.0f, 0.0f, -416.0f);
             }
             
-            if (gSeason == SUMMER && 10 < gHour && gHour < 17 && gBirds[2].unk_16 < 1 && (u8)(gPlayer.heldItem + 0x6D) >= 8) {
+            if (gSeason == SUMMER && 10 < gHour && gHour < 17 && gMiscAnimals[2].unk_16 < 1 && (u8)(gPlayer.heldItem + 0x6D) >= 8) {
                 func_8008A4A8(9, SOUTHWEST, 160.0f, 0.0f, 128.0f);
             }
 
-            if (gSeason == AUTUMN && 10 < gHour && gHour < 17 && gBirds[3].unk_16 == 1 && (u8)(gPlayer.heldItem + 0x5D) >= 8) {
+            if (gSeason == AUTUMN && 10 < gHour && gHour < 17 && gMiscAnimals[3].unk_16 == 1 && (u8)(gPlayer.heldItem + 0x5D) >= 8) {
                 func_8008A4A8(0xA, SOUTHWEST, -96.0f, 0.0f, 128.0f);
             }
 
-            if (gSeason == SUMMER && gWeather != RAIN && 7 < gHour && gHour < 16 && !(gBirds[4].unk_16 < 2)) {
+            if (gSeason == SUMMER && gWeather != RAIN && 7 < gHour && gHour < 16 && !(gMiscAnimals[4].unk_16 < 2)) {
                 func_8008A4A8(0xE, SOUTHWEST, 160.0f, 0.0f, 128.0f);
             }
 
-            if (gSeason == AUTUMN && gWeather != RAIN && 8 < gHour && gHour < 16 && !(gBirds[5].unk_16 < 2) && gPlayer.heldItem != RED_DRAGONFLY_HELD_ITEM) {
+            if (gSeason == AUTUMN && gWeather != RAIN && 8 < gHour && gHour < 16 && !(gMiscAnimals[5].unk_16 < 2) && gPlayer.heldItem != RED_DRAGONFLY_HELD_ITEM) {
                 func_8008A4A8(0x14, SOUTHWEST, 0.0f, 0.0f, -128.0f);
             }
 
-            if (gSeason == AUTUMN && gWeather != RAIN && 8 < gHour && gHour < 16 && gBirds[4].unk_16 < 2 && gPlayer.heldItem != CRICKET_HELD_ITEM) {
+            if (gSeason == AUTUMN && gWeather != RAIN && 8 < gHour && gHour < 16 && gMiscAnimals[4].unk_16 < 2 && gPlayer.heldItem != CRICKET_HELD_ITEM) {
                 func_8008A4A8(0x15, SOUTHWEST, 128.0f, 0.0f, 64.0f);
             }
             
@@ -973,35 +1499,35 @@ void func_80088D54(void) {
 
         case MOUNTAIN_2:
 
-            if (gSeason == AUTUMN && 12 < gHour && gHour < 22 && gBirds[0].unk_16 < 2 && (u8)(gPlayer.heldItem + 0x75) >= 8) {
+            if (gSeason == AUTUMN && 12 < gHour && gHour < 22 && gMiscAnimals[0].unk_16 < 2 && (u8)(gPlayer.heldItem + 0x75) >= 8) {
                 func_8008A4A8(7, 6, -128.0f, 0.0f, 224.0f);
             }
 
-            if (gSeason == WINTER && 12 < gHour && gHour < 22 && gBirds[0].unk_16 == 0 && (u8)(gPlayer.heldItem + 0x75) >= 8) {
+            if (gSeason == WINTER && 12 < gHour && gHour < 22 && gMiscAnimals[0].unk_16 == 0 && (u8)(gPlayer.heldItem + 0x75) >= 8) {
                 func_8008A4A8(7, 6, -128.0f, 0.0f, 224.0f);
             }
             
-            if (gSeason == SPRING && 8 < gHour && gHour < 15 && gBirds[1].unk_16 < 1 && (u8)(gPlayer.heldItem + 0x65) >= 8) {
+            if (gSeason == SPRING && 8 < gHour && gHour < 15 && gMiscAnimals[1].unk_16 < 1 && (u8)(gPlayer.heldItem + 0x65) >= 8) {
                 func_8008A4A8(8, NORTHEAST, -192.0f, 0.0f, -192.0f);
             }
 
-            if (gSeason == SPRING && 6 < gHour && gHour < 16 && gBirds[2].unk_16 < 2 && (u8)(gPlayer.heldItem + 0x6D) >= 8) {
+            if (gSeason == SPRING && 6 < gHour && gHour < 16 && gMiscAnimals[2].unk_16 < 2 && (u8)(gPlayer.heldItem + 0x6D) >= 8) {
                 func_8008A4A8(9, SOUTHWEST, -224.0f, 0.0f, -160.0f);
             }
 
-            if (gSeason == SUMMER && 10 < gHour && gHour < 17 && gBirds[3].unk_16 < 2 && (u8)(gPlayer.heldItem + 0x5D) >= 8) {
+            if (gSeason == SUMMER && 10 < gHour && gHour < 17 && gMiscAnimals[3].unk_16 < 2 && (u8)(gPlayer.heldItem + 0x5D) >= 8) {
                 func_8008A4A8(0xA, SOUTHWEST, -320.0f, 0.0f, -320.0f);
             }
 
-            if (gSeason == SUMMER && 10 < gHour && gHour < 17 && !(gBirds[3].unk_16 < 2) && (u8)(gPlayer.heldItem + 0x5D) >= 8) {
+            if (gSeason == SUMMER && 10 < gHour && gHour < 17 && !(gMiscAnimals[3].unk_16 < 2) && (u8)(gPlayer.heldItem + 0x5D) >= 8) {
                 func_8008A4A8(0xA, SOUTHWEST, 0.0f, 0.0f, 288.0f);
             }
 
-            if (gSeason == AUTUMN && 10 < gHour && gHour < 17 && gBirds[3].unk_16 == 0 && (u8)(gPlayer.heldItem + 0x5D) >= 8) {
-                gBirds[func_8008A4A8(0xA, SOUTHWEST, -112.0f, 0.0f, -160.0f)].unk_F = 0x10;
+            if (gSeason == AUTUMN && 10 < gHour && gHour < 17 && gMiscAnimals[3].unk_16 == 0 && (u8)(gPlayer.heldItem + 0x5D) >= 8) {
+                gMiscAnimals[func_8008A4A8(0xA, SOUTHWEST, -112.0f, 0.0f, -160.0f)].unk_F = 0x10;
             }
 
-            if (gSeason != WINTER && gWeather != RAIN && 7 < gHour && gHour < 16 && gBirds[4].unk_16 < 2) {
+            if (gSeason != WINTER && gWeather != RAIN && 7 < gHour && gHour < 16 && gMiscAnimals[4].unk_16 < 2) {
                 func_8008A4A8(0xC, SOUTHWEST, -128.0f, 0.0f, 32.0f);
                 func_8008A4A8(0xC, SOUTHEAST, -96.0f, 0.0f, 64.0f);
             }
@@ -1010,7 +1536,7 @@ void func_80088D54(void) {
                 func_8008A4A8(0x10, SOUTHWEST, 96.0f, 0.0f, -96.0f);
             }
 
-            if (gSeason == SUMMER && gWeather != RAIN && 8 < gHour && gHour < 16 && gBirds[3].unk_16 < 2 && gPlayer.heldItem != CICADA_HELD_ITEM) {
+            if (gSeason == SUMMER && gWeather != RAIN && 8 < gHour && gHour < 16 && gMiscAnimals[3].unk_16 < 2 && gPlayer.heldItem != CICADA_HELD_ITEM) {
                 func_8008A4A8(0x11, SOUTHWEST, -112.0f, 0.0f, -160.0f);
             }
             
@@ -1018,11 +1544,11 @@ void func_80088D54(void) {
         
         case TOP_OF_MOUNTAIN_1:
 
-            if (gSeason == SUMMER && gWeather != RAIN && 8 < gHour && gHour < 16 && gBirds[0].unk_16 < 2 && gPlayer.heldItem != HORNED_BEETLE_HELD_ITEM) {
+            if (gSeason == SUMMER && gWeather != RAIN && 8 < gHour && gHour < 16 && gMiscAnimals[0].unk_16 < 2 && gPlayer.heldItem != HORNED_BEETLE_HELD_ITEM) {
                 func_8008A4A8(0x12, SOUTHWEST, 192.0f, 0.0f, -192.0f);
             }
 
-            if (gSeason == SUMMER && gWeather != RAIN && 8 < gHour && gHour < 16 && gBirds[1].unk_16 < 2 && gPlayer.heldItem != STAG_BEETLE_HELD_ITEM) {
+            if (gSeason == SUMMER && gWeather != RAIN && 8 < gHour && gHour < 16 && gMiscAnimals[1].unk_16 < 2 && gPlayer.heldItem != STAG_BEETLE_HELD_ITEM) {
                 func_8008A4A8(0x13, SOUTHWEST, 224.0f, 0.0f, 0.0f);
             }
 
@@ -1030,12 +1556,12 @@ void func_80088D54(void) {
         
         case MOON_MOUNTAIN:
 
-            if (gSeason != WINTER && gWeather != RAIN && 7 < gHour && gHour < 16 && !(gBirds[4].unk_16 < 2)) {
+            if (gSeason != WINTER && gWeather != RAIN && 7 < gHour && gHour < 16 && !(gMiscAnimals[4].unk_16 < 2)) {
                 func_8008A4A8(0xC, SOUTHWEST, 192.0f, 0.0f, -64.0f);
                 func_8008A4A8(0xC, SOUTHEAST, 224.0f, 0.0f, -96.0f);
             }
 
-            if (gSeason == AUTUMN && gWeather != RAIN && 8 < gHour && gHour < 16 && gBirds[5].unk_16 == 0 && gPlayer.heldItem != RED_DRAGONFLY_HELD_ITEM) {
+            if (gSeason == AUTUMN && gWeather != RAIN && 8 < gHour && gHour < 16 && gMiscAnimals[5].unk_16 == 0 && gPlayer.heldItem != RED_DRAGONFLY_HELD_ITEM) {
                 func_8008A4A8(0x14, SOUTHWEST, 128.0f, 0.0f, -256.0f);
             }
 
@@ -1043,7 +1569,7 @@ void func_80088D54(void) {
         
         case SQUARE:
 
-            if (gSeason != WINTER && gWeather == SUNNY && 5 < gHour && gHour < 9 && gBirds[4].unk_16 == 3) {
+            if (gSeason != WINTER && gWeather == SUNNY && 5 < gHour && gHour < 9 && gMiscAnimals[4].unk_16 == 3) {
                 func_8008A4A8(0xB, SOUTHWEST, -128.0f, 0.0f, 0.0f);
                 func_8008A4A8(0xB, SOUTHWEST, -96.0f, 0.0f, -32.0f);
             }
@@ -1060,15 +1586,15 @@ void func_80088D54(void) {
 
         case VILLAGE_1:
                 
-            if (gSeason < AUTUMN && gWeather != RAIN && 8 < gHour && gHour < 16 && gBirds[0].unk_16 == 0 && gPlayer.heldItem != BUTTERFLY_HELD_ITEM) {
+            if (gSeason < AUTUMN && gWeather != RAIN && 8 < gHour && gHour < 16 && gMiscAnimals[0].unk_16 == 0 && gPlayer.heldItem != BUTTERFLY_HELD_ITEM) {
                 func_8008A4A8(0xF, SOUTHWEST, 64.0f, 0.0f, -352.0f);
             }
 
-            if (gSeason < AUTUMN && gWeather != RAIN && 8 < gHour && gHour < 16 && gBirds[0].unk_16 == 1 && gPlayer.heldItem != BUTTERFLY_HELD_ITEM) {
+            if (gSeason < AUTUMN && gWeather != RAIN && 8 < gHour && gHour < 16 && gMiscAnimals[0].unk_16 == 1 && gPlayer.heldItem != BUTTERFLY_HELD_ITEM) {
                 func_8008A4A8(0xF, SOUTHWEST, -448.0f, 0.0f, 0.0f);
             }
 
-            if (gSeason < AUTUMN && gWeather != RAIN && 8 < gHour && gHour < 16 && gBirds[5].unk_16 == 1 && gPlayer.heldItem < LADYBUG_HELD_ITEM) {
+            if (gSeason < AUTUMN && gWeather != RAIN && 8 < gHour && gHour < 16 && gMiscAnimals[5].unk_16 == 1 && gPlayer.heldItem < LADYBUG_HELD_ITEM) {
                 func_8008A4A8(0x10, SOUTHWEST, -448.0f, 0.0f, 64.0f);
             }
         
@@ -1122,23 +1648,23 @@ void func_80088D54(void) {
         
         case RANCH:
 
-            if (gBirds[0].unk_16 < 2 && gWeather != RAIN && gSeason != WINTER) {
+            if (gMiscAnimals[0].unk_16 < 2 && gWeather != RAIN && gSeason != WINTER) {
                 func_8008A4A8(4, NORTHEAST, -384.0f, 0.0f, 32.0f);
             }
 
-            if (gBirds[1].unk_16 < 2 && gWeather != RAIN && gSeason != WINTER) {
+            if (gMiscAnimals[1].unk_16 < 2 && gWeather != RAIN && gSeason != WINTER) {
                 func_8008A4A8(3, SOUTHEAST, -320.0f, 0.0f, 0.0f);
             }
    
-            if (gBirds[2].unk_16 < 2 && gWeather != RAIN && gSeason != WINTER) {
+            if (gMiscAnimals[2].unk_16 < 2 && gWeather != RAIN && gSeason != WINTER) {
                 func_8008A4A8(3, SOUTHWEST, -288.0f, 0.0f, 96.0f);
             }         
    
-            if (gBirds[3].unk_16 < 2 && gWeather != RAIN && gSeason != WINTER) {
+            if (gMiscAnimals[3].unk_16 < 2 && gWeather != RAIN && gSeason != WINTER) {
                 func_8008A4A8(6, NORTHEAST, -288.0f, 0.0f, 128.0f);
             }         
    
-            if (gBirds[4].unk_16 < 2 && gWeather != RAIN && gSeason != WINTER) {
+            if (gMiscAnimals[4].unk_16 < 2 && gWeather != RAIN && gSeason != WINTER) {
                 func_8008A4A8(5, SOUTHEAST, -352.0f, 0.0f, 80.0f);
             }         
 
@@ -1146,23 +1672,23 @@ void func_80088D54(void) {
         
         case RANCH_BARN:
 
-            if (gBirds[0].unk_16 >= 2 || gWeather == RAIN || gSeason == WINTER) {
+            if (gMiscAnimals[0].unk_16 >= 2 || gWeather == RAIN || gSeason == WINTER) {
                 func_8008A4A8(4, NORTHWEST, -96.0f, 0.0f, -192.0f);
             }
 
-            if (gBirds[1].unk_16 >= 2 || gWeather == RAIN || gSeason == WINTER) {
+            if (gMiscAnimals[1].unk_16 >= 2 || gWeather == RAIN || gSeason == WINTER) {
                 func_8008A4A8(3, NORTHWEST, -96.0f, 0.0f, -128.0f);
             }
 
-            if (gBirds[2].unk_16 >= 2 || gWeather == RAIN || gSeason == WINTER) {
+            if (gMiscAnimals[2].unk_16 >= 2 || gWeather == RAIN || gSeason == WINTER) {
                 func_8008A4A8(3, NORTHWEST, -96.0f, 0.0f, 64.0f);
             }
 
-            if (gBirds[3].unk_16 >= 2 || gWeather == RAIN || gSeason == WINTER) {
+            if (gMiscAnimals[3].unk_16 >= 2 || gWeather == RAIN || gSeason == WINTER) {
                 func_8008A4A8(6, SOUTHEAST, 0.0f, 0.0f, 64.0f);
             }
 
-            if (gBirds[4].unk_16 >= 2 || gWeather == RAIN || gSeason == WINTER) {
+            if (gMiscAnimals[4].unk_16 >= 2 || gWeather == RAIN || gSeason == WINTER) {
                 func_8008A4A8(5, SOUTHEAST, 0.0f, 0.0f, 128.0f);
             }
             
@@ -1174,21 +1700,21 @@ void func_80088D54(void) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008A4A8);
 
-u8 func_8008A4A8(u8 birdIndex, u8 direction, f32 x, f32 y, f32 z) {
+u8 func_8008A4A8(u8 index, u8 direction, f32 x, f32 y, f32 z) {
 
     u32 padding[4];
     
     u8 i = 0;
-    u8 found = (birdIndex != 0) ? 0xFF : 6;
+    u8 found = (index != 0) ? 0xFF : 6;
     u8 temp;
     
-    if (birdIndex == MAX_BIRDS) {
-        found = MAX_BIRDS;    
+    if (index == 5) {
+        found = 5;    
     }
 
-    while (i < MAX_BIRDS && found == 0xFF) {
+    while (i < 5 && found == 0xFF) {
 
-        if (!(gBirds[i].flags & 1)) {
+        if (!(gMiscAnimals[i].flags & 1)) {
             found = i;
         }
         
@@ -1198,16 +1724,16 @@ u8 func_8008A4A8(u8 birdIndex, u8 direction, f32 x, f32 y, f32 z) {
         
     if (found != 0xFF) {
 
-        gBirds[found].unk_15 = birdIndex;
-        gBirds[found].direction = direction;
-        gBirds[found].unk_F = 0;
-        gBirds[found].yDisplacement = 0;
-        gBirds[found].flags = 1;
-        gBirds[found].coordinates.x = x;
-        gBirds[found].coordinates.y = y;
-        gBirds[found].coordinates.z = z;
-        gBirds[found].entityIndex = ENTITY_BIRD_BASE_INDEX + found;
-        gBirds[found].mapIndex = gBaseMapIndex;
+        gMiscAnimals[found].unk_15 = index;
+        gMiscAnimals[found].direction = direction;
+        gMiscAnimals[found].unk_F = 0;
+        gMiscAnimals[found].yDisplacement = 0;
+        gMiscAnimals[found].flags = 1;
+        gMiscAnimals[found].coordinates.x = x;
+        gMiscAnimals[found].coordinates.y = y;
+        gMiscAnimals[found].coordinates.z = z;
+        gMiscAnimals[found].entityIndex = ENTITY_MISC_ANIMAL_BASE_INDEX + found;
+        gMiscAnimals[found].mapIndex = gBaseMapIndex;
         
     }
 
@@ -1319,12 +1845,12 @@ void func_8008A650(u8 index) {
                                 gChickens[index].flags = 0;
                                 setLifeEventBit(ANIMAL_DIED);
                                 
-                                D_8018985C[0] = gChickens[index].name[0];
-                                D_8018985C[1] = gChickens[index].name[1];
-                                D_8018985C[2] = gChickens[index].name[2];
-                                D_8018985C[3] = gChickens[index].name[3];
-                                D_8018985C[4] = gChickens[index].name[4];
-                                D_8018985C[5] = gChickens[index].name[5];
+                                deadAnimalName[0] = gChickens[index].name[0];
+                                deadAnimalName[1] = gChickens[index].name[1];
+                                deadAnimalName[2] = gChickens[index].name[2];
+                                deadAnimalName[3] = gChickens[index].name[3];
+                                deadAnimalName[4] = gChickens[index].name[4];
+                                deadAnimalName[5] = gChickens[index].name[5];
 
                             }
                             
@@ -1536,17 +2062,17 @@ void func_8008B9AC(void) {
 
 void func_8008BAF0(u8 index, u8 arg1) {
 
-    if ((gBirds[index].flags & 1) && (index < 7)) {
+    if ((gMiscAnimals[index].flags & 1) && (index < 7)) {
         
-        switch (gBirds[index].unk_15) {
+        switch (gMiscAnimals[index].unk_15) {
     
             case 0:
-                initializeAnimalEntity(gBirds[index].entityIndex, (void*)0x80270210, (void*)0x80270410, (void*)0x80272000, (void*)0x80272200);
-                setEntityPaletteIndex(gBirds[index].entityIndex, 2);
+                initializeAnimalEntity(gMiscAnimals[index].entityIndex, (void*)0x80270210, (void*)0x80270410, (void*)0x80272000, (void*)0x80272200);
+                setEntityPaletteIndex(gMiscAnimals[index].entityIndex, 2);
                 break;
             
             case 5:
-                initializeAnimalEntity(gBirds[index].entityIndex, (void*)0x802779C0, (void*)0x80277AC0, (void*)0x8027A6C0, (void*)0x8027A8C0);
+                initializeAnimalEntity(gMiscAnimals[index].entityIndex, (void*)0x802779C0, (void*)0x80277AC0, (void*)0x8027A6C0, (void*)0x8027A8C0);
                 break;
             
             default:
@@ -1554,109 +2080,109 @@ void func_8008BAF0(u8 index, u8 arg1) {
                 switch (index) {
                     
                     case 0:
-                        initializeAnimalEntity(gBirds[index].entityIndex, (void*)0x80284130, (void*)0x80284230, (void*)0x802852B0, (void*)0x802854B0);
+                        initializeAnimalEntity(gMiscAnimals[index].entityIndex, (void*)0x80284130, (void*)0x80284230, (void*)0x802852B0, (void*)0x802854B0);
                         break;
                     case 1:
-                        initializeAnimalEntity(gBirds[index].entityIndex, (void*)0x80285930, (void*)0x80285A30, (void*)0x80286AB0, (void*)0x80286CB0);
+                        initializeAnimalEntity(gMiscAnimals[index].entityIndex, (void*)0x80285930, (void*)0x80285A30, (void*)0x80286AB0, (void*)0x80286CB0);
                         break;
                     case 2:
-                        initializeAnimalEntity(gBirds[index].entityIndex, (void*)0x80287130, (void*)0x80287230, (void*)0x802882B0, (void*)0x802884B0);
+                        initializeAnimalEntity(gMiscAnimals[index].entityIndex, (void*)0x80287130, (void*)0x80287230, (void*)0x802882B0, (void*)0x802884B0);
                         break;
                     case 3:
-                        initializeAnimalEntity(gBirds[index].entityIndex, (void*)0x80288930, (void*)0x80288A30, (void*)0x80289AB0, (void*)0x80289CB0);
+                        initializeAnimalEntity(gMiscAnimals[index].entityIndex, (void*)0x80288930, (void*)0x80288A30, (void*)0x80289AB0, (void*)0x80289CB0);
                         break;
                     case 4:
-                        initializeAnimalEntity(gBirds[index].entityIndex, (void*)0x8028A130, (void*)0x8028A230, (void*)0x8028B2B0, (void*)0x8028B4B0);
+                        initializeAnimalEntity(gMiscAnimals[index].entityIndex, (void*)0x8028A130, (void*)0x8028A230, (void*)0x8028B2B0, (void*)0x8028B4B0);
                         break;
                     }
 
-                if (gBirds[index].unk_15 == 4) {
-                    setEntityPaletteIndex(gBirds[index].entityIndex, 0);
+                if (gMiscAnimals[index].unk_15 == 4) {
+                    setEntityPaletteIndex(gMiscAnimals[index].entityIndex, 0);
                 }
                 
                 break;
             
         }
         
-        switch (gBirds[index].unk_15) {
+        switch (gMiscAnimals[index].unk_15) {
         
             case 0:
-                loadEntity(gBirds[index].entityIndex, 0x40, TRUE);
+                loadEntity(gMiscAnimals[index].entityIndex, 0x40, TRUE);
                 break;
             case 1:
-                loadEntity(gBirds[index].entityIndex, 0x3F, TRUE);
+                loadEntity(gMiscAnimals[index].entityIndex, 0x3F, TRUE);
                 break;
             case 2:
-                loadEntity(gBirds[index].entityIndex, 0x3E, TRUE);
+                loadEntity(gMiscAnimals[index].entityIndex, 0x3E, TRUE);
                 break;
             case 3:
             case 4:
-                loadEntity(gBirds[index].entityIndex, 0x58, TRUE);
+                loadEntity(gMiscAnimals[index].entityIndex, 0x58, TRUE);
                 break;
             case 6:
-                loadEntity(gBirds[index].entityIndex, 0x49, TRUE);
+                loadEntity(gMiscAnimals[index].entityIndex, 0x49, TRUE);
                 break;
             case 5:
-                loadEntity(gBirds[index].entityIndex, 0x47, TRUE);
+                loadEntity(gMiscAnimals[index].entityIndex, 0x47, TRUE);
                 break;
             case 7:
-                loadEntity(gBirds[index].entityIndex, 0x38, TRUE);
+                loadEntity(gMiscAnimals[index].entityIndex, 0x38, TRUE);
                 break;
             case 8:
-                loadEntity(gBirds[index].entityIndex, 0x36, TRUE);
+                loadEntity(gMiscAnimals[index].entityIndex, 0x36, TRUE);
                 break;
             case 9:
-                loadEntity(gBirds[index].entityIndex, 0x3C, TRUE);
+                loadEntity(gMiscAnimals[index].entityIndex, 0x3C, TRUE);
                 break;
             case 10:
-                loadEntity(gBirds[index].entityIndex, 0x39, TRUE);
+                loadEntity(gMiscAnimals[index].entityIndex, 0x39, TRUE);
                 break;
             case 11:
-                loadEntity(gBirds[index].entityIndex, 0x3D, TRUE);
-                setEntityPaletteIndex(gBirds[index].entityIndex, 0);
+                loadEntity(gMiscAnimals[index].entityIndex, 0x3D, TRUE);
+                setEntityPaletteIndex(gMiscAnimals[index].entityIndex, 0);
                 break;
             case 12:
-                loadEntity(gBirds[index].entityIndex, 0x3D, TRUE);
+                loadEntity(gMiscAnimals[index].entityIndex, 0x3D, TRUE);
                 break;
             case 13:
-                loadEntity(gBirds[index].entityIndex, 0x4B, TRUE);
+                loadEntity(gMiscAnimals[index].entityIndex, 0x4B, TRUE);
                 break;
             case 14:
-                loadEntity(gBirds[index].entityIndex, 0x54, TRUE);
+                loadEntity(gMiscAnimals[index].entityIndex, 0x54, TRUE);
                 break;
             case 15:
-                loadEntity(gBirds[index].entityIndex, 0x50, TRUE);
+                loadEntity(gMiscAnimals[index].entityIndex, 0x50, TRUE);
                 break;
             case 16:
-                loadEntity(gBirds[index].entityIndex, 0x51, TRUE);
+                loadEntity(gMiscAnimals[index].entityIndex, 0x51, TRUE);
                 break;
             case 17:
-                loadEntity(gBirds[index].entityIndex, 0x4F, TRUE);
+                loadEntity(gMiscAnimals[index].entityIndex, 0x4F, TRUE);
                 break;
             case 18:
-                loadEntity(gBirds[index].entityIndex, 0x4C, TRUE);
+                loadEntity(gMiscAnimals[index].entityIndex, 0x4C, TRUE);
                 break;
             case 19:
-                loadEntity(gBirds[index].entityIndex, 0x4D, TRUE);
+                loadEntity(gMiscAnimals[index].entityIndex, 0x4D, TRUE);
                 break;
             case 20:
-                loadEntity(gBirds[index].entityIndex, 0x52, TRUE);
+                loadEntity(gMiscAnimals[index].entityIndex, 0x52, TRUE);
                 break;
             case 21:
-                loadEntity(gBirds[index].entityIndex, 0x4E, TRUE);
+                loadEntity(gMiscAnimals[index].entityIndex, 0x4E, TRUE);
                 break;
         }
 
-        setEntityCollidable(gBirds[index].entityIndex, TRUE);
-        setEntityYMovement(gBirds[index].entityIndex, TRUE);
-        func_8002FF38(gBirds[index].entityIndex, FALSE);
+        setEntityCollidable(gMiscAnimals[index].entityIndex, TRUE);
+        setEntityYMovement(gMiscAnimals[index].entityIndex, TRUE);
+        func_8002FF38(gMiscAnimals[index].entityIndex, FALSE);
         
-        setEntityDirection(gBirds[index].entityIndex, convertSpriteToWorldDirection(gBirds[index].direction, MAIN_MAP_INDEX));
-        setEntityCoordinates(gBirds[index].entityIndex, gBirds[index].coordinates.x, gBirds[index].coordinates.y, gBirds[index].coordinates.z);
-        func_800300F8(gBirds[index].entityIndex, FALSE);
+        setEntityDirection(gMiscAnimals[index].entityIndex, convertSpriteToWorldDirection(gMiscAnimals[index].direction, MAIN_MAP_INDEX));
+        setEntityCoordinates(gMiscAnimals[index].entityIndex, gMiscAnimals[index].coordinates.x, gMiscAnimals[index].coordinates.y, gMiscAnimals[index].coordinates.z);
+        func_800300F8(gMiscAnimals[index].entityIndex, FALSE);
         
-        gBirds[index].unk_F = arg1;
-        gBirds[index].flags |= 4;
+        gMiscAnimals[index].unk_F = arg1;
+        gMiscAnimals[index].flags |= 4;
     
     }
     
@@ -5323,11 +5849,11 @@ void func_8009476C(u8 index) {
 
     Vec3f vec;
 
-    if ((gBirds[index].flags & 1) && (gBirds[index].flags & 4)) {
+    if ((gMiscAnimals[index].flags & 1) && (gMiscAnimals[index].flags & 4)) {
 
-        if (checkEntityAnimationStateChanged(gBirds[index].entityIndex) || gBirds[index].unk_F == 0x20) {
+        if (checkEntityAnimationStateChanged(gMiscAnimals[index].entityIndex) || gMiscAnimals[index].unk_F == 0x20) {
 
-            switch (gBirds[index].unk_15) {
+            switch (gMiscAnimals[index].unk_15) {
 
                 case 0:
                     func_80094A5C(index);
@@ -5403,12 +5929,12 @@ void func_8009476C(u8 index) {
 
         }
          
-        setEntityDirection(gBirds[index].entityIndex, convertSpriteToWorldDirection(gBirds[index].direction, MAIN_MAP_INDEX));
+        setEntityDirection(gMiscAnimals[index].entityIndex, convertSpriteToWorldDirection(gMiscAnimals[index].direction, MAIN_MAP_INDEX));
         
-        vec = getMovementVectorFromDirection(gBirds[index].zDisplacement, gBirds[index].direction, 0.0f);
-        vec.y = gBirds[index].yDisplacement;
+        vec = getMovementVectorFromDirection(gMiscAnimals[index].zDisplacement, gMiscAnimals[index].direction, 0.0f);
+        vec.y = gMiscAnimals[index].yDisplacement;
         
-        setEntityMovementVector(gBirds[index].entityIndex, vec.x, vec.y, vec.z, gBirds[index].zDisplacement);
+        setEntityMovementVector(gMiscAnimals[index].entityIndex, vec.x, vec.y, vec.z, gMiscAnimals[index].zDisplacement);
         
     }
     
@@ -5416,510 +5942,511 @@ void func_8009476C(u8 index) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/animals", func_80094A5C);
 
-void func_80094A5C(u8 birdIndex) {
+void func_80094A5C(u8 index) {
     
     u16 temp;
     
-    switch (gBirds[birdIndex].unk_F) {
+    switch (gMiscAnimals[index].unk_F) {
 
          case 0:
 
-            gBirds[birdIndex].zDisplacement = 0;
-            gBirds[birdIndex].unk_13 = 10;
-            gBirds[birdIndex].unk_14 = 0;
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 0);
+            gMiscAnimals[index].zDisplacement = 0;
+            gMiscAnimals[index].unk_13 = 10;
+            gMiscAnimals[index].unk_14 = 0;
+
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 0);
 
              if (getRandomNumberInRange(0, 60) < 40) {
-                gBirds[birdIndex].unk_F = 0;
+                gMiscAnimals[index].unk_F = 0;
             } else {
                  
                 temp = getRandomNumberInRange(0, 20);
 
                 if (temp < 7) {
-                    gBirds[birdIndex].direction = temp;
+                    gMiscAnimals[index].direction = temp;
                 }
 
                 temp = getRandomNumberInRange(0, 11);
 
                 if (temp == 0) {
-                    gBirds[birdIndex].unk_F = 1;
+                    gMiscAnimals[index].unk_F = 1;
                 }
                 
                 if (temp == 1) {
-                    gBirds[birdIndex].unk_F = 2;
+                    gMiscAnimals[index].unk_F = 2;
                 }
                 
                 if (temp == 2) {
-                    gBirds[birdIndex].unk_F = 3;
+                    gMiscAnimals[index].unk_F = 3;
                 }
 
                 if (temp == 3) {
-                    gBirds[birdIndex].unk_F = 4;
+                    gMiscAnimals[index].unk_F = 4;
                 }
                  
                 if (temp == 4) {
-                    gBirds[birdIndex].unk_F = 5;
+                    gMiscAnimals[index].unk_F = 5;
                 }
                 
                 if (temp == 5) {
-                    gBirds[birdIndex].unk_F = 6;
+                    gMiscAnimals[index].unk_F = 6;
                 }
                 
                 if (temp == 6) {
-                    gBirds[birdIndex].unk_F = 7;
+                    gMiscAnimals[index].unk_F = 7;
                 }
 
                 if (temp == 9) {
-                    gBirds[birdIndex].unk_F = 10;
+                    gMiscAnimals[index].unk_F = 10;
                 }
                  
                 if (temp == 10) {
-                    gBirds[birdIndex].unk_F = 24;
+                    gMiscAnimals[index].unk_F = 24;
                 }
                  
                 if (temp == 11) {
-                    gBirds[birdIndex].unk_F = 25;
+                    gMiscAnimals[index].unk_F = 25;
                 }             
                  
             }
 
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
         
             break;
 
         case 1:
-            gBirds[birdIndex].zDisplacement = 1;
-            gBirds[birdIndex].unk_13 = 10;
-            gBirds[birdIndex].unk_14 = 0;
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 8);
+            gMiscAnimals[index].zDisplacement = 1;
+            gMiscAnimals[index].unk_13 = 10;
+            gMiscAnimals[index].unk_14 = 0;
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 8);
 
             temp = getRandomNumberInRange(0, 19);
             
             if (temp < 10) {
-                gBirds[birdIndex].unk_F = 1;
+                gMiscAnimals[index].unk_F = 1;
             } else if (temp < 15) {
-                gBirds[birdIndex].unk_F = 0;
+                gMiscAnimals[index].unk_F = 0;
             } else {
-                gBirds[birdIndex].unk_F = 4;
+                gMiscAnimals[index].unk_F = 4;
             }
             
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
 
             break;
         
         case 2:
-            gBirds[birdIndex].zDisplacement = 0;
-            gBirds[birdIndex].unk_13 = 0;
-            gBirds[birdIndex].unk_14 = 0;
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 0x30);
+            gMiscAnimals[index].zDisplacement = 0;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 0x30);
             
-            gBirds[birdIndex].unk_F = 16;
+            gMiscAnimals[index].unk_F = 16;
             
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
         
             break;
 
         case 3:
-            gBirds[birdIndex].zDisplacement = 0;
-            gBirds[birdIndex].unk_13 = 10;
-            gBirds[birdIndex].unk_14 = 0;
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 0x20);
+            gMiscAnimals[index].zDisplacement = 0;
+            gMiscAnimals[index].unk_13 = 10;
+            gMiscAnimals[index].unk_14 = 0;
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 0x20);
 
             temp = getRandomNumberInRange(0, 20);
             
             if (temp >= 10) {
 
                 if (9 < temp && temp < 12) {
-                    gBirds[birdIndex].unk_F = 0;
+                    gMiscAnimals[index].unk_F = 0;
                 } 
                 if (11 < temp && temp < 14) {
-                    gBirds[birdIndex].unk_F = 11;
+                    gMiscAnimals[index].unk_F = 11;
                 }
                 if (13 < temp && temp < 16) {
-                    gBirds[birdIndex].unk_F = 12;   
+                    gMiscAnimals[index].unk_F = 12;   
                 }
                 if (15 < temp && temp < 18) {
-                    gBirds[birdIndex].unk_F = 13;   
+                    gMiscAnimals[index].unk_F = 13;   
                 }
                 if (17 < temp && temp < 20) {
-                    gBirds[birdIndex].unk_F = 14;   
+                    gMiscAnimals[index].unk_F = 14;   
                 }
                 
             } else {
-                gBirds[birdIndex].unk_F = 3;
+                gMiscAnimals[index].unk_F = 3;
             }
             
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
             break;
 
         case 4:
-            gBirds[birdIndex].zDisplacement = 2;
-            gBirds[birdIndex].unk_13 = 0;
-            gBirds[birdIndex].unk_14 = 0;
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 0x10);
+            gMiscAnimals[index].zDisplacement = 2;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 0x10);
 
             temp = getRandomNumberInRange(0, 19);
             
             if (temp >= 10) {
 
                 if (9 < temp && temp < 13) {
-                    gBirds[birdIndex].unk_F = 0;
+                    gMiscAnimals[index].unk_F = 0;
                 } 
                 if (12 < temp && temp < 16) {
-                    gBirds[birdIndex].unk_F = 1;
+                    gMiscAnimals[index].unk_F = 1;
                 }
                 if (15 < temp && temp < 19) {
-                    gBirds[birdIndex].unk_F = 21;   
+                    gMiscAnimals[index].unk_F = 21;   
                 }
 
             } else {
-                gBirds[birdIndex].unk_F = 4;
+                gMiscAnimals[index].unk_F = 4;
             }
             
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
 
             break;
 
         case 5:
-            gBirds[birdIndex].zDisplacement = 0;
-            gBirds[birdIndex].unk_13 = 0;
-            gBirds[birdIndex].unk_14 = 0;
+            gMiscAnimals[index].zDisplacement = 0;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
 
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 0x90);
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 0x90);
 
             if (!getRandomNumberInRange(0, 2)) {
-                gBirds[birdIndex].unk_F = 5;
+                gMiscAnimals[index].unk_F = 5;
             } else {
-                gBirds[birdIndex].unk_F = 3;
+                gMiscAnimals[index].unk_F = 3;
             }
             
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
             break;
 
         case 6:
-            gBirds[birdIndex].zDisplacement = 0;
-            gBirds[birdIndex].unk_13 = 0;
-            gBirds[birdIndex].unk_14 = 0;
+            gMiscAnimals[index].zDisplacement = 0;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
 
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 0xA0);
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 0xA0);
 
             if (getRandomNumberInRange(0, 2)) {
-                gBirds[birdIndex].unk_F = 0;
+                gMiscAnimals[index].unk_F = 0;
             } else {
-                gBirds[birdIndex].unk_F = 6;
+                gMiscAnimals[index].unk_F = 6;
             }
             
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
             break;
         
         case 7:
-            gBirds[birdIndex].zDisplacement = 0;
-            gBirds[birdIndex].unk_13 = 0;
-            gBirds[birdIndex].unk_14 = 0;
+            gMiscAnimals[index].zDisplacement = 0;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
 
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 0xA8);
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 0xA8);
 
             if (getRandomNumberInRange(0, 2)) {
-                gBirds[birdIndex].unk_F = 0;
+                gMiscAnimals[index].unk_F = 0;
             } else {
-                gBirds[birdIndex].unk_F = 7;
+                gMiscAnimals[index].unk_F = 7;
             }
             
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
             break;
 
         case 8:
-            gBirds[birdIndex].zDisplacement = 0;
-            gBirds[birdIndex].unk_13 = 0;
-            gBirds[birdIndex].unk_14 = 0;
+            gMiscAnimals[index].zDisplacement = 0;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
 
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 0xB0);
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 0xB0);
 
             if (getRandomNumberInRange(0, 2)) {
-                gBirds[birdIndex].unk_F = 0;
+                gMiscAnimals[index].unk_F = 0;
             } else {
-                gBirds[birdIndex].unk_F = 8;
+                gMiscAnimals[index].unk_F = 8;
             }
             
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
             break;
 
         case 9:
-            gBirds[birdIndex].zDisplacement = 0;
-            gBirds[birdIndex].unk_13 = 0;
-            gBirds[birdIndex].unk_14 = 0;
+            gMiscAnimals[index].zDisplacement = 0;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
 
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 0xB8);
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 0xB8);
 
-            gBirds[birdIndex].unk_F = 26;
+            gMiscAnimals[index].unk_F = 26;
             
             break;
 
         case 10:
-            gBirds[birdIndex].zDisplacement = 0;
-            gBirds[birdIndex].unk_13 = 10;
-            gBirds[birdIndex].unk_14 = 0;
+            gMiscAnimals[index].zDisplacement = 0;
+            gMiscAnimals[index].unk_13 = 10;
+            gMiscAnimals[index].unk_14 = 0;
 
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 0xC8);
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 0xC8);
 
             if (!getRandomNumberInRange(0, 2)) {
-                gBirds[birdIndex].unk_F = 10;
+                gMiscAnimals[index].unk_F = 10;
             } else {
-                gBirds[birdIndex].unk_F = 0;
+                gMiscAnimals[index].unk_F = 0;
             }
             
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
             break;
 
         case 11:
-            gBirds[birdIndex].zDisplacement = 0;
-            gBirds[birdIndex].unk_13 = 10;
-            gBirds[birdIndex].unk_14 = 0;
+            gMiscAnimals[index].zDisplacement = 0;
+            gMiscAnimals[index].unk_13 = 10;
+            gMiscAnimals[index].unk_14 = 0;
 
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 0x28);
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 0x28);
 
             if (!getRandomNumberInRange(0, 2)) {
-                gBirds[birdIndex].unk_F = 11;
+                gMiscAnimals[index].unk_F = 11;
             } else {
-                gBirds[birdIndex].unk_F = 3;
+                gMiscAnimals[index].unk_F = 3;
             }
             
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
             break;
 
         case 12:
-            gBirds[birdIndex].zDisplacement = 0;
-            gBirds[birdIndex].unk_13 = 10;
-            gBirds[birdIndex].unk_14 = 0;
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 0x50);
+            gMiscAnimals[index].zDisplacement = 0;
+            gMiscAnimals[index].unk_13 = 10;
+            gMiscAnimals[index].unk_14 = 0;
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 0x50);
 
             if (!getRandomNumberInRange(0, 2)) {
-                gBirds[birdIndex].unk_F = 12;
+                gMiscAnimals[index].unk_F = 12;
             } else {
-                gBirds[birdIndex].unk_F = 3;
+                gMiscAnimals[index].unk_F = 3;
             }
             
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
 
             break;
      
         case 13:
-            gBirds[birdIndex].zDisplacement = 0;
-            gBirds[birdIndex].unk_13 = 0;
-            gBirds[birdIndex].unk_14 = 0;
+            gMiscAnimals[index].zDisplacement = 0;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
 
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 0x58);
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 0x58);
 
             if (!getRandomNumberInRange(0, 2)) {
-                gBirds[birdIndex].unk_F = 13;
+                gMiscAnimals[index].unk_F = 13;
             } else {
-                gBirds[birdIndex].unk_F = 3;
+                gMiscAnimals[index].unk_F = 3;
             }
             
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
             break;
         
         case 14:
-            gBirds[birdIndex].zDisplacement = 0;
-            gBirds[birdIndex].unk_13 = 0;
-            gBirds[birdIndex].unk_14 = 0;
+            gMiscAnimals[index].zDisplacement = 0;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
 
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 0x60);
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 0x60);
 
             if (!getRandomNumberInRange(0, 2)) {
-                gBirds[birdIndex].unk_F = 14;
+                gMiscAnimals[index].unk_F = 14;
             } else {
-                gBirds[birdIndex].unk_F = 3;
+                gMiscAnimals[index].unk_F = 3;
             }
             
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
             break;
 
         case 16:
-            gBirds[birdIndex].zDisplacement = 0;
-            gBirds[birdIndex].unk_13 = 10;
-            gBirds[birdIndex].unk_14 = 0;
+            gMiscAnimals[index].zDisplacement = 0;
+            gMiscAnimals[index].unk_13 = 10;
+            gMiscAnimals[index].unk_14 = 0;
 
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 0x28);
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 0x28);
 
             temp = getRandomNumberInRange(0, 14);
             
             if (temp < 10) {
-                gBirds[birdIndex].unk_F = 16;
+                gMiscAnimals[index].unk_F = 16;
             } 
             if (temp == 10) {
-                gBirds[birdIndex].unk_F = 27;
+                gMiscAnimals[index].unk_F = 27;
             } 
             if (temp == 11) {
-                gBirds[birdIndex].unk_F = 17;
+                gMiscAnimals[index].unk_F = 17;
             }  
             if (temp == 12) {
-                gBirds[birdIndex].unk_F = 18;
+                gMiscAnimals[index].unk_F = 18;
             }
             if (temp == 13) {
-                gBirds[birdIndex].unk_F = 19;
+                gMiscAnimals[index].unk_F = 19;
             }
             if (temp == 14) {
-                gBirds[birdIndex].unk_F = 20;
+                gMiscAnimals[index].unk_F = 20;
             }
             
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
             break;
         
         case 17:
-            gBirds[birdIndex].zDisplacement = 0;
-            gBirds[birdIndex].unk_13 = 0;
-            gBirds[birdIndex].unk_14 = 0;
+            gMiscAnimals[index].zDisplacement = 0;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
 
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 0x68);
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 0x68);
 
             if (!getRandomNumberInRange(0, 2)) {
-                gBirds[birdIndex].unk_F = 17;
+                gMiscAnimals[index].unk_F = 17;
             } else {
-                gBirds[birdIndex].unk_F = 16;
+                gMiscAnimals[index].unk_F = 16;
             }
             
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
             break;
                 
         case 18:
-            gBirds[birdIndex].zDisplacement = 0;
-            gBirds[birdIndex].unk_13 = 0;
-            gBirds[birdIndex].unk_14 = 0;
+            gMiscAnimals[index].zDisplacement = 0;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
 
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 0x70);
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 0x70);
 
             if (!getRandomNumberInRange(0, 2)) {
-                gBirds[birdIndex].unk_F = 18;
+                gMiscAnimals[index].unk_F = 18;
             } else {
-                gBirds[birdIndex].unk_F = 16;
+                gMiscAnimals[index].unk_F = 16;
             }
             
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
             break;
                 
         case 19:
-            gBirds[birdIndex].zDisplacement = 0;
-            gBirds[birdIndex].unk_13 = 0;
-            gBirds[birdIndex].unk_14 = 0;
+            gMiscAnimals[index].zDisplacement = 0;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
 
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 0x78);
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 0x78);
 
             if (!getRandomNumberInRange(0, 2)) {
-                gBirds[birdIndex].unk_F = 19;
+                gMiscAnimals[index].unk_F = 19;
             } else {
-                gBirds[birdIndex].unk_F = 16;
+                gMiscAnimals[index].unk_F = 16;
             }
             
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
             break;
                 
         case 20:
-            gBirds[birdIndex].zDisplacement = 0;
-            gBirds[birdIndex].unk_13 = 10;
-            gBirds[birdIndex].unk_14 = 0;
+            gMiscAnimals[index].zDisplacement = 0;
+            gMiscAnimals[index].unk_13 = 10;
+            gMiscAnimals[index].unk_14 = 0;
 
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 0x80);
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 0x80);
 
             if (!getRandomNumberInRange(0, 2)) {
-                gBirds[birdIndex].unk_F = 20;
+                gMiscAnimals[index].unk_F = 20;
             } else {
-                gBirds[birdIndex].unk_F = 16;
+                gMiscAnimals[index].unk_F = 16;
             }
             
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
             break;
                  
         case 21:
-            gBirds[birdIndex].zDisplacement = 1;
-            gBirds[birdIndex].unk_13 = 0;
-            gBirds[birdIndex].unk_14 = 0;
+            gMiscAnimals[index].zDisplacement = 1;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
 
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 0x38);
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 0x38);
 
-            gBirds[birdIndex].unk_F = 22;
+            gMiscAnimals[index].unk_F = 22;
             
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
             break;       
                  
         case 22:
-            gBirds[birdIndex].zDisplacement = 2;
-            gBirds[birdIndex].unk_13 = 0;
-            gBirds[birdIndex].unk_14 = 0;
+            gMiscAnimals[index].zDisplacement = 2;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
 
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 0x40);
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 0x40);
 
-            gBirds[birdIndex].unk_F = 23;
+            gMiscAnimals[index].unk_F = 23;
             
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
             break;       
 
         case 23:
-            gBirds[birdIndex].zDisplacement = 1;
-            gBirds[birdIndex].unk_13 = 0;
-            gBirds[birdIndex].unk_14 = 0;
+            gMiscAnimals[index].zDisplacement = 1;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
 
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 0x48);
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 0x48);
 
-            gBirds[birdIndex].unk_F = 0;
+            gMiscAnimals[index].unk_F = 0;
             
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
             break;      
 
         case 24:
-            gBirds[birdIndex].zDisplacement = 0;
-            gBirds[birdIndex].unk_13 = 0;
-            gBirds[birdIndex].unk_14 = 0;
+            gMiscAnimals[index].zDisplacement = 0;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
 
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 0x88);
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 0x88);
 
             if (!getRandomNumberInRange(0, 2)) {
-                gBirds[birdIndex].unk_F = 24;
+                gMiscAnimals[index].unk_F = 24;
             } else {
-                gBirds[birdIndex].unk_F = 0;
+                gMiscAnimals[index].unk_F = 0;
             }
             
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
             break;      
 
         case 25:
-            gBirds[birdIndex].zDisplacement = 0;
-            gBirds[birdIndex].unk_13 = 0;
-            gBirds[birdIndex].unk_14 = 0;
+            gMiscAnimals[index].zDisplacement = 0;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
 
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 0x98);
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 0x98);
 
             if (!getRandomNumberInRange(0, 2)) {
-                gBirds[birdIndex].unk_F = 25;
+                gMiscAnimals[index].unk_F = 25;
             } else {
-                gBirds[birdIndex].unk_F = 0;
+                gMiscAnimals[index].unk_F = 0;
             }
             
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
             break;      
 
         case 26:
-            gBirds[birdIndex].zDisplacement = 0;
-            gBirds[birdIndex].unk_13 = 0;
-            gBirds[birdIndex].unk_14 = 0;
+            gMiscAnimals[index].zDisplacement = 0;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
 
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 0xC0);
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 0xC0);
 
-            gBirds[birdIndex].unk_F = 0;
+            gMiscAnimals[index].unk_F = 0;
             
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
             break;      
 
         case 27:
-            gBirds[birdIndex].zDisplacement = 0;
-            gBirds[birdIndex].unk_13 = 0;
-            gBirds[birdIndex].unk_14 = 0;
+            gMiscAnimals[index].zDisplacement = 0;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
 
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 0x30);
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 0x30);
 
-            gBirds[birdIndex].unk_F = 0;
+            gMiscAnimals[index].unk_F = 0;
             
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
             break;      
         
      }
@@ -5928,331 +6455,331 @@ void func_80094A5C(u8 birdIndex) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/animals", func_800958EC);
 
-void func_800958EC(u8 birdIndex) {
+void func_800958EC(u8 index) {
 
     u16 temp;
     
-    switch (gBirds[birdIndex].unk_F) {
+    switch (gMiscAnimals[index].unk_F) {
 
          case 0:
 
-            gBirds[birdIndex].zDisplacement = 0;
-            gBirds[birdIndex].unk_13 = 0;
-            gBirds[birdIndex].unk_14 = 0;
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 0);
+            gMiscAnimals[index].zDisplacement = 0;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 0);
 
              if (getRandomNumberInRange(0, 60) < 40) {
-                gBirds[birdIndex].unk_F = 0;
+                gMiscAnimals[index].unk_F = 0;
             } else {
                  
                 temp = getRandomNumberInRange(0, 20);
 
                 if (temp < 7) {
-                    gBirds[birdIndex].direction = temp;
+                    gMiscAnimals[index].direction = temp;
                 }
 
                 temp = getRandomNumberInRange(0, 8);
 
                 if (temp == 0) {
-                    gBirds[birdIndex].unk_F = 1;
+                    gMiscAnimals[index].unk_F = 1;
                 }
                 
                 if (temp == 1) {
-                    gBirds[birdIndex].unk_F = 2;
+                    gMiscAnimals[index].unk_F = 2;
                 }
                 
                 if (temp == 2) {
-                    gBirds[birdIndex].unk_F = 3;
+                    gMiscAnimals[index].unk_F = 3;
                 }
 
                 if (temp == 3) {
-                    gBirds[birdIndex].unk_F = 4;
+                    gMiscAnimals[index].unk_F = 4;
                 }
                  
                 if (temp == 4) {
-                    gBirds[birdIndex].unk_F = 5;
+                    gMiscAnimals[index].unk_F = 5;
                 }
                 
                 if (temp == 5) {
-                    gBirds[birdIndex].unk_F = 6;
+                    gMiscAnimals[index].unk_F = 6;
                 }
                 
                 if (temp == 6) {
-                    gBirds[birdIndex].unk_F = 7;
+                    gMiscAnimals[index].unk_F = 7;
                 }
 
                 if (temp == 7) {
-                    gBirds[birdIndex].unk_F = 8;
+                    gMiscAnimals[index].unk_F = 8;
                 }
                  
                 if (temp == 8) {
-                    gBirds[birdIndex].unk_F = 9;
+                    gMiscAnimals[index].unk_F = 9;
                 }
                  
             }
 
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
         
             break;
 
         case 1:
-            gBirds[birdIndex].zDisplacement = 1;
-            gBirds[birdIndex].unk_13 = 0;
-            gBirds[birdIndex].unk_14 = 0;
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 8);
+            gMiscAnimals[index].zDisplacement = 1;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 8);
 
             temp = getRandomNumberInRange(0, 19);
             
             if (temp < 10) {
-                gBirds[birdIndex].unk_F = 1;
+                gMiscAnimals[index].unk_F = 1;
             } else if (temp < 15) {
-                gBirds[birdIndex].unk_F = 0;
+                gMiscAnimals[index].unk_F = 0;
             } else {
-                gBirds[birdIndex].unk_F = 4;
+                gMiscAnimals[index].unk_F = 4;
             }
             
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
 
             break;
         
         case 2:
-            gBirds[birdIndex].zDisplacement = 0;
-            gBirds[birdIndex].unk_13 = 0;
-            gBirds[birdIndex].unk_14 = 0;
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 0x30);
+            gMiscAnimals[index].zDisplacement = 0;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 0x30);
             
-            gBirds[birdIndex].unk_F = 12;
+            gMiscAnimals[index].unk_F = 12;
             
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
         
             break;
 
         case 3:
-            gBirds[birdIndex].zDisplacement = 0;
-            gBirds[birdIndex].unk_13 = 0;
-            gBirds[birdIndex].unk_14 = 0;
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 0x20);
+            gMiscAnimals[index].zDisplacement = 0;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 0x20);
 
             temp = getRandomNumberInRange(0, 20);
             
             if (temp >= 10) {
 
                 if (9 < temp && temp < 13) {
-                    gBirds[birdIndex].unk_F = 0;
+                    gMiscAnimals[index].unk_F = 0;
                 } 
                 if (13 < temp && temp < 17) {
-                    gBirds[birdIndex].unk_F = 10;
+                    gMiscAnimals[index].unk_F = 10;
                 }
                 if (16 < temp && temp < 20) {
-                    gBirds[birdIndex].unk_F = 11;   
+                    gMiscAnimals[index].unk_F = 11;   
                 }
                 
             } else {
-                gBirds[birdIndex].unk_F = 3;
+                gMiscAnimals[index].unk_F = 3;
             }
             
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
             break;
 
         case 4:
-            gBirds[birdIndex].zDisplacement = 2;
-            gBirds[birdIndex].unk_13 = 0;
-            gBirds[birdIndex].unk_14 = 0;
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 0x10);
+            gMiscAnimals[index].zDisplacement = 2;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 0x10);
 
             temp = getRandomNumberInRange(0, 19);
             
             if (temp < 10) {
-                gBirds[birdIndex].unk_F = 4;
+                gMiscAnimals[index].unk_F = 4;
             } else if (temp < 15) {
-                gBirds[birdIndex].unk_F = 0;
+                gMiscAnimals[index].unk_F = 0;
             } else {
-                gBirds[birdIndex].unk_F = 1;
+                gMiscAnimals[index].unk_F = 1;
             }
             
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
 
             break;
 
         case 5:
-            gBirds[birdIndex].zDisplacement = 0;
-            gBirds[birdIndex].unk_13 = 0;
-            gBirds[birdIndex].unk_14 = 0;
+            gMiscAnimals[index].zDisplacement = 0;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
 
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 0x50);
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 0x50);
 
             if (!getRandomNumberInRange(0, 2)) {
-                gBirds[birdIndex].unk_F = 5;
+                gMiscAnimals[index].unk_F = 5;
             } else {
-                gBirds[birdIndex].unk_F = 3;
+                gMiscAnimals[index].unk_F = 3;
             }
             
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
             break;
 
         case 6:
-            gBirds[birdIndex].zDisplacement = 0;
-            gBirds[birdIndex].unk_13 = 0;
-            gBirds[birdIndex].unk_14 = 0;
+            gMiscAnimals[index].zDisplacement = 0;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
 
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 0x58);
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 0x58);
 
             if (!getRandomNumberInRange(0, 2)) {
-                gBirds[birdIndex].unk_F = 6;
+                gMiscAnimals[index].unk_F = 6;
             } else {
-                gBirds[birdIndex].unk_F = 0;
+                gMiscAnimals[index].unk_F = 0;
             }
             
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
             break;
         
         case 7:
-            gBirds[birdIndex].zDisplacement = 0;
-            gBirds[birdIndex].unk_13 = 0;
-            gBirds[birdIndex].unk_14 = 0;
+            gMiscAnimals[index].zDisplacement = 0;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
 
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 0x60);
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 0x60);
 
             if (!getRandomNumberInRange(0, 2)) {
-                gBirds[birdIndex].unk_F = 7;
+                gMiscAnimals[index].unk_F = 7;
             } else {
-                gBirds[birdIndex].unk_F = 0;
+                gMiscAnimals[index].unk_F = 0;
             }
             
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
             break;
 
         case 8:
-            gBirds[birdIndex].zDisplacement = 0;
-            gBirds[birdIndex].unk_13 = 0;
-            gBirds[birdIndex].unk_14 = 0;
+            gMiscAnimals[index].zDisplacement = 0;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
 
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 0x70);
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 0x70);
 
             if (!getRandomNumberInRange(0, 2)) {
-                gBirds[birdIndex].unk_F = 8;
+                gMiscAnimals[index].unk_F = 8;
             } else {
-                gBirds[birdIndex].unk_F = 0;
+                gMiscAnimals[index].unk_F = 0;
             }
             
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
             break;
 
         case 9:
-            gBirds[birdIndex].zDisplacement = 0;
-            gBirds[birdIndex].unk_13 = 0;
-            gBirds[birdIndex].unk_14 = 0;
+            gMiscAnimals[index].zDisplacement = 0;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
 
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 0x68);
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 0x68);
 
             if (!getRandomNumberInRange(0, 2)) {
-                gBirds[birdIndex].unk_F = 9;
+                gMiscAnimals[index].unk_F = 9;
             } else {
-                gBirds[birdIndex].unk_F = 0;
+                gMiscAnimals[index].unk_F = 0;
             }
             
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
             break;
 
         case 10:
-            gBirds[birdIndex].zDisplacement = 0;
-            gBirds[birdIndex].unk_13 = 0;
-            gBirds[birdIndex].unk_14 = 0;
+            gMiscAnimals[index].zDisplacement = 0;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
 
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 0x18);
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 0x18);
 
             if (!getRandomNumberInRange(0, 2)) {
-                gBirds[birdIndex].unk_F = 10;
+                gMiscAnimals[index].unk_F = 10;
             } else {
-                gBirds[birdIndex].unk_F = 3;
+                gMiscAnimals[index].unk_F = 3;
             }
             
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
             break;
 
         case 11:
-            gBirds[birdIndex].zDisplacement = 0;
-            gBirds[birdIndex].unk_13 = 0;
-            gBirds[birdIndex].unk_14 = 0;
+            gMiscAnimals[index].zDisplacement = 0;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
 
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 0x38);
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 0x38);
 
             if (!getRandomNumberInRange(0, 2)) {
-                gBirds[birdIndex].unk_F = 11;
+                gMiscAnimals[index].unk_F = 11;
             } else {
-                gBirds[birdIndex].unk_F = 3;
+                gMiscAnimals[index].unk_F = 3;
             }
             
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
             break;
 
         case 12:
-            gBirds[birdIndex].zDisplacement = 0;
-            gBirds[birdIndex].unk_13 = 0;
-            gBirds[birdIndex].unk_14 = 0;
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 0x28);
+            gMiscAnimals[index].zDisplacement = 0;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 0x28);
 
             temp = getRandomNumberInRange(0, 12);
             
             if (temp < 10) {
-                gBirds[birdIndex].unk_F = 12;
+                gMiscAnimals[index].unk_F = 12;
             } 
             if (temp == 10) {
-                gBirds[birdIndex].unk_F = 15;
+                gMiscAnimals[index].unk_F = 15;
             } 
             if (temp == 11) {
-                gBirds[birdIndex].unk_F = 13;
+                gMiscAnimals[index].unk_F = 13;
             }  
             if (temp == 12) {
-                gBirds[birdIndex].unk_F = 14;
+                gMiscAnimals[index].unk_F = 14;
             }
             
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
 
             break;
      
         case 13:
-            gBirds[birdIndex].zDisplacement = 0;
-            gBirds[birdIndex].unk_13 = 0;
-            gBirds[birdIndex].unk_14 = 0;
+            gMiscAnimals[index].zDisplacement = 0;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
 
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 0x40);
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 0x40);
 
             if (!getRandomNumberInRange(0, 2)) {
-                gBirds[birdIndex].unk_F = 13;
+                gMiscAnimals[index].unk_F = 13;
             } else {
-                gBirds[birdIndex].unk_F = 14;
+                gMiscAnimals[index].unk_F = 14;
             }
             
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
             break;
         
         case 14:
-            gBirds[birdIndex].zDisplacement = 0;
-            gBirds[birdIndex].unk_13 = 0;
-            gBirds[birdIndex].unk_14 = 0;
+            gMiscAnimals[index].zDisplacement = 0;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
 
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 0x48);
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 0x48);
 
             if (!getRandomNumberInRange(0, 2)) {
-                gBirds[birdIndex].unk_F = 14;
+                gMiscAnimals[index].unk_F = 14;
             } else {
-                gBirds[birdIndex].unk_F = 14;
+                gMiscAnimals[index].unk_F = 14;
             }
             
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
             break;
 
         case 15:
-            gBirds[birdIndex].zDisplacement = 0;
-            gBirds[birdIndex].unk_13 = 0;
-            gBirds[birdIndex].unk_14 = 0;
+            gMiscAnimals[index].zDisplacement = 0;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
 
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 0x30);
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 0x30);
 
-            gBirds[birdIndex].unk_F = 0;
+            gMiscAnimals[index].unk_F = 0;
             
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
             break;
         
      }
@@ -6261,23 +6788,23 @@ void func_800958EC(u8 birdIndex) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/animals", func_80096264);
 
-void func_80096264(u8 birdIndex) {
+void func_80096264(u8 index) {
     
     u32 temp;
     u16 temp2;
     u16 temp3;
     u8 tempDirection;
     
-    switch (gBirds[birdIndex].unk_F) {
+    switch (gMiscAnimals[index].unk_F) {
 
         case 0:
-            gBirds[birdIndex].zDisplacement = 0;
-            gBirds[birdIndex].unk_13 = 0;
-            gBirds[birdIndex].unk_14 = 0;
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 0);
+            gMiscAnimals[index].zDisplacement = 0;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 0);
 
             if (getRandomNumberInRange(0, 60) < 40) {
-                gBirds[birdIndex].unk_F = 0;
+                gMiscAnimals[index].unk_F = 0;
             } else {
 
                 temp = getRandomNumberInRange(0, 10);
@@ -6285,167 +6812,167 @@ void func_80096264(u8 birdIndex) {
                 if (temp < 7) {
                     temp &= 0xFFFE;
                     temp2 = temp;
-                    gBirds[birdIndex].direction = temp2;
+                    gMiscAnimals[index].direction = temp2;
                 }
 
                 temp = getRandomNumberInRange(0, 4);
 
                 if (temp == 0) {
-                    gBirds[birdIndex].unk_F = 1;
+                    gMiscAnimals[index].unk_F = 1;
                 }
                 
                 if (temp == 1) {
-                    gBirds[birdIndex].unk_F = 2;
+                    gMiscAnimals[index].unk_F = 2;
                 }
                 
                 if (temp == 2) {
-                    gBirds[birdIndex].unk_F = 3;
+                    gMiscAnimals[index].unk_F = 3;
                 }
 
                 if (temp == 3) {
-                    gBirds[birdIndex].unk_F = 4;
+                    gMiscAnimals[index].unk_F = 4;
                 }
 
             }
 
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
         
             break;
 
         case 1:
-            gBirds[birdIndex].zDisplacement = 1;
-            gBirds[birdIndex].unk_13 = 0;
-            gBirds[birdIndex].unk_14 = 0;
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 8);
+            gMiscAnimals[index].zDisplacement = 1;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 8);
 
             temp2 = getRandomNumberInRange(0, 19);
             
             if (temp2 < 10) {
-                gBirds[birdIndex].unk_F = 1;
+                gMiscAnimals[index].unk_F = 1;
             } else if (temp2 < 15) {
-                gBirds[birdIndex].unk_F = 0;
+                gMiscAnimals[index].unk_F = 0;
             } else {
-                gBirds[birdIndex].unk_F = 5;
+                gMiscAnimals[index].unk_F = 5;
             }
             
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
 
             setAudio(0x43);
             break;
 
         case 2:
-            gBirds[birdIndex].zDisplacement = 0;
-            gBirds[birdIndex].unk_13 = 0;
-            gBirds[birdIndex].unk_14 = 0;
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 0x20);
+            gMiscAnimals[index].zDisplacement = 0;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 0x20);
 
             temp3 = getRandomNumberInRange(0, 20);
             
             if (temp3 >= 10) {
 
                 if (9 < temp3 && temp3 < 13) {
-                    gBirds[birdIndex].unk_F = 0;
+                    gMiscAnimals[index].unk_F = 0;
                 } 
                 if (13 < temp3 && temp3 < 17) {
-                    gBirds[birdIndex].unk_F = 6;
+                    gMiscAnimals[index].unk_F = 6;
                 }
                 if (16 < temp3 && temp3 < 20) {
-                    gBirds[birdIndex].unk_F = 7;   
+                    gMiscAnimals[index].unk_F = 7;   
                 }
                 
             } else {
-                gBirds[birdIndex].unk_F = 2;
+                gMiscAnimals[index].unk_F = 2;
             }
             
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
             break;
 
         case 3:
-            gBirds[birdIndex].zDisplacement = 0;
-            gBirds[birdIndex].unk_13 = 0;
-            gBirds[birdIndex].unk_14 = 0;
+            gMiscAnimals[index].zDisplacement = 0;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
 
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 0x18);
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 0x18);
 
             temp = getRandomNumberInRange(0, 19);
 
             if (temp >= 10) {
 
                 if (temp >= 15) {
-                    gBirds[birdIndex].unk_F = 2;
+                    gMiscAnimals[index].unk_F = 2;
                 } else {
-                    gBirds[birdIndex].unk_F = 0;
+                    gMiscAnimals[index].unk_F = 0;
                 }
                 
             } else {
-                gBirds[birdIndex].unk_F = 3;
+                gMiscAnimals[index].unk_F = 3;
             }
             
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
             break;
         
         case 4:
-            gBirds[birdIndex].zDisplacement = 0;
-            gBirds[birdIndex].unk_13 = 0;
-            gBirds[birdIndex].unk_14 = 0;
+            gMiscAnimals[index].zDisplacement = 0;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
 
-            setEntityAnimation(gBirds[birdIndex].entityIndex, 0x38);
+            setEntityAnimation(gMiscAnimals[index].entityIndex, 0x38);
 
             if (!getRandomNumberInRange(0, 2)) {
-                gBirds[birdIndex].unk_F = 4;
+                gMiscAnimals[index].unk_F = 4;
             } else {
-                gBirds[birdIndex].unk_F = 0;
+                gMiscAnimals[index].unk_F = 0;
             }
             
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
             break;
         
         case 5:
-            gBirds[birdIndex].zDisplacement = 1;
-            gBirds[birdIndex].unk_13 = 0;
-            gBirds[birdIndex].unk_14 = 0;
+            gMiscAnimals[index].zDisplacement = 1;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
 
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 0x10);
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 0x10);
 
             if (!getRandomNumberInRange(0, 2)) {
-                gBirds[birdIndex].unk_F = 5;
+                gMiscAnimals[index].unk_F = 5;
             } else {
-                gBirds[birdIndex].unk_F = 1;
+                gMiscAnimals[index].unk_F = 1;
             }
             
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
             break;
         
        case 6:
-            gBirds[birdIndex].zDisplacement = 0;
-            gBirds[birdIndex].unk_13 = 0;
-            gBirds[birdIndex].unk_14 = 0;
+            gMiscAnimals[index].zDisplacement = 0;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
 
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 0x30);
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 0x30);
 
             if (!getRandomNumberInRange(0, 2)) {
-                gBirds[birdIndex].unk_F = 6;
+                gMiscAnimals[index].unk_F = 6;
             } else {
-                gBirds[birdIndex].unk_F = 2;
+                gMiscAnimals[index].unk_F = 2;
             }
             
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
             break;     
 
         case 7:
-            gBirds[birdIndex].zDisplacement = 0;
-            gBirds[birdIndex].unk_13 = 0;
-            gBirds[birdIndex].unk_14 = 0;
+            gMiscAnimals[index].zDisplacement = 0;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
 
-            setEntityAnimation(gBirds[birdIndex].entityIndex, 0x39);
+            setEntityAnimation(gMiscAnimals[index].entityIndex, 0x39);
 
             if (!getRandomNumberInRange(0, 2)) {
-                gBirds[birdIndex].unk_F = 7;
+                gMiscAnimals[index].unk_F = 7;
             } else {
-                gBirds[birdIndex].unk_F = 2;
+                gMiscAnimals[index].unk_F = 2;
             }
 
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
             break;
 
     }
@@ -6454,50 +6981,50 @@ void func_80096264(u8 birdIndex) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/animals", func_800967E0);
 
-void func_800967E0(u8 birdIndex) {
+void func_800967E0(u8 index) {
 
     u16 temp;
     
-    switch (gBirds[birdIndex].unk_F) {
+    switch (gMiscAnimals[index].unk_F) {
 
          case 0:
 
-            gBirds[birdIndex].zDisplacement = 0;
-            gBirds[birdIndex].unk_13 = 0;
-            gBirds[birdIndex].unk_14 = 0;
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 0);
+            gMiscAnimals[index].zDisplacement = 0;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 0);
 
              if (getRandomNumberInRange(0, 60) < 56) {
-                gBirds[birdIndex].unk_F = 0;
+                gMiscAnimals[index].unk_F = 0;
             } else {
                  
                 temp = getRandomNumberInRange(0, 8);
 
                 if (temp < 7) {
-                    gBirds[birdIndex].direction = temp;
+                    gMiscAnimals[index].direction = temp;
                 }
 
-                 gBirds[birdIndex].unk_F = 1;
+                 gMiscAnimals[index].unk_F = 1;
                  
             }
 
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
         
             break;
 
         case 1:
-            gBirds[birdIndex].zDisplacement = 1;
-            gBirds[birdIndex].unk_13 = 0;
-            gBirds[birdIndex].unk_14 = 0;
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 8);
+            gMiscAnimals[index].zDisplacement = 1;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 8);
             
             if (getRandomNumberInRange(0, 19) < 4) {
-                gBirds[birdIndex].unk_F = 1;
+                gMiscAnimals[index].unk_F = 1;
             } else {
-                gBirds[birdIndex].unk_F = 0;
+                gMiscAnimals[index].unk_F = 0;
             }
             
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
         
             break;
 
@@ -6507,143 +7034,143 @@ void func_800967E0(u8 birdIndex) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/animals", func_80096978);
 
-void func_80096978(u8 birdIndex) {
+void func_80096978(u8 index) {
 
     u16 temp;
     u8 tempDirection;
     
-    switch (gBirds[birdIndex].unk_F) {
+    switch (gMiscAnimals[index].unk_F) {
 
         case 0:
-            gBirds[birdIndex].zDisplacement = 0;
-            gBirds[birdIndex].unk_13 = 0;
-            gBirds[birdIndex].unk_14 = 0;
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 0);
+            gMiscAnimals[index].zDisplacement = 0;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 0);
 
             if (getRandomNumberInRange(0, 60) < 40) {
-                gBirds[birdIndex].unk_F = 0;
+                gMiscAnimals[index].unk_F = 0;
             } else {
 
                 temp = getRandomNumberInRange(0, 20);
 
                 if (temp < 7) {
-                    gBirds[birdIndex].direction = temp;
+                    gMiscAnimals[index].direction = temp;
                 }
 
                 temp = getRandomNumberInRange(0, 2);
 
                 if (temp == 0) {
-                    gBirds[birdIndex].unk_F = 1;
+                    gMiscAnimals[index].unk_F = 1;
                 }
                 
                 if (temp == 1) {
-                    gBirds[birdIndex].unk_F = 2;
+                    gMiscAnimals[index].unk_F = 2;
                 }
                 
                 if (temp == 2) {
-                    gBirds[birdIndex].unk_F = 3;
+                    gMiscAnimals[index].unk_F = 3;
                 }
 
             }
 
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
         
             break;
 
         case 1:
-            gBirds[birdIndex].zDisplacement = 1;
-            gBirds[birdIndex].unk_13 = 0;
-            gBirds[birdIndex].unk_14 = 0;
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 8);
+            gMiscAnimals[index].zDisplacement = 1;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 8);
 
             if (getRandomNumberInRange(0, 20) < 10) {
-                gBirds[birdIndex].unk_F = 1;
+                gMiscAnimals[index].unk_F = 1;
             } else {
-                gBirds[birdIndex].unk_F = 0;
+                gMiscAnimals[index].unk_F = 0;
             }
             
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
         
             break;
 
         case 2:
-            gBirds[birdIndex].zDisplacement = 0;
-            gBirds[birdIndex].unk_13 = 0;
-            gBirds[birdIndex].unk_14 = 0;
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 0x10);
+            gMiscAnimals[index].zDisplacement = 0;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 0x10);
 
             if (!getRandomNumberInRange(0, 2)) {
-                gBirds[birdIndex].unk_F = 2;
+                gMiscAnimals[index].unk_F = 2;
             } else {
-                gBirds[birdIndex].unk_F = 0;
+                gMiscAnimals[index].unk_F = 0;
             }
             
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
             break;
 
         case 3:
-            gBirds[birdIndex].zDisplacement = 0;
-            gBirds[birdIndex].unk_13 = 0;
-            gBirds[birdIndex].unk_14 = 0;
+            gMiscAnimals[index].zDisplacement = 0;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
 
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 0x18);
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 0x18);
 
-            gBirds[birdIndex].unk_F = 4;
+            gMiscAnimals[index].unk_F = 4;
             
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
             break;
         
         case 4:
-            gBirds[birdIndex].zDisplacement = 0;
-            gBirds[birdIndex].unk_13 = 0;
-            gBirds[birdIndex].unk_14 = 0;
+            gMiscAnimals[index].zDisplacement = 0;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
 
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 0x20);
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 0x20);
 
             temp = getRandomNumberInRange(0, 11);
             
             if (temp < 10) {
-                gBirds[birdIndex].unk_F = 4;
+                gMiscAnimals[index].unk_F = 4;
             }
             
             if (temp == 10) {
-                gBirds[birdIndex].unk_F = 4;
+                gMiscAnimals[index].unk_F = 4;
             }
             
             if (temp == 11) {
-                gBirds[birdIndex].unk_F = 6;
+                gMiscAnimals[index].unk_F = 6;
             }
 
             
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
             break;
         
         case 5:
-            gBirds[birdIndex].zDisplacement = 0;
-            gBirds[birdIndex].unk_13 = 0;
-            gBirds[birdIndex].unk_14 = 0;
+            gMiscAnimals[index].zDisplacement = 0;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
 
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 0x28);
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 0x28);
 
             if (getRandomNumberInRange(0, 4) < 4) {
-                gBirds[birdIndex].unk_F = 5;
+                gMiscAnimals[index].unk_F = 5;
             } else {
-                gBirds[birdIndex].unk_F = 4;
+                gMiscAnimals[index].unk_F = 4;
             }
             
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
             break;
         
        case 6:
-            gBirds[birdIndex].zDisplacement = 0;
-            gBirds[birdIndex].unk_13 = 0;
-            gBirds[birdIndex].unk_14 = 0;
+            gMiscAnimals[index].zDisplacement = 0;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
 
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 0x18);
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 0x18);
 
-            gBirds[birdIndex].unk_F = 0;
+            gMiscAnimals[index].unk_F = 0;
             
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
             break;     
 
     }
@@ -6652,210 +7179,210 @@ void func_80096978(u8 birdIndex) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/animals", func_80096DFC);
 
-void func_80096DFC(u8 birdIndex) {
+void func_80096DFC(u8 index) {
 
     u16 temp;
     u8 tempDirection;
     
-    switch (gBirds[birdIndex].unk_F) {
+    switch (gMiscAnimals[index].unk_F) {
 
         case 0:
-            gBirds[birdIndex].zDisplacement = 0;
-            gBirds[birdIndex].unk_13 = 0;
-            gBirds[birdIndex].unk_14 = 0;
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 0);
+            gMiscAnimals[index].zDisplacement = 0;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 0);
 
             if (getRandomNumberInRange(0, 60) < 40) {
-                gBirds[birdIndex].unk_F = 0;
+                gMiscAnimals[index].unk_F = 0;
             } else {
 
                 temp = getRandomNumberInRange(0, 20);
 
                 if (temp < 7) {
-                    gBirds[birdIndex].direction = temp;
+                    gMiscAnimals[index].direction = temp;
                 }
 
                 temp = getRandomNumberInRange(0, 5);
 
                 if (temp == 0) {
-                    gBirds[birdIndex].unk_F = 1;
+                    gMiscAnimals[index].unk_F = 1;
                 }
                 
                 if (temp == 1) {
-                    gBirds[birdIndex].unk_F = 2;
+                    gMiscAnimals[index].unk_F = 2;
                 }
                 
                 if (temp == 2) {
-                    gBirds[birdIndex].unk_F = 3;
+                    gMiscAnimals[index].unk_F = 3;
                 }
                 
                 if (temp == 3) {
-                    gBirds[birdIndex].unk_F = 4;
+                    gMiscAnimals[index].unk_F = 4;
                 }
 
                 if (temp == 4) {
-                    gBirds[birdIndex].unk_F = 5;
+                    gMiscAnimals[index].unk_F = 5;
                 }
                 
                 if (temp == 5) {
-                    gBirds[birdIndex].unk_F = 6;
+                    gMiscAnimals[index].unk_F = 6;
                 }
             }
 
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
         
             break;
 
         case 1:
-            gBirds[birdIndex].zDisplacement = 1;
-            gBirds[birdIndex].unk_13 = 0;
-            gBirds[birdIndex].unk_14 = 0;
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 8);
+            gMiscAnimals[index].zDisplacement = 1;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 8);
 
             if (getRandomNumberInRange(0, 20) < 10) {
-                gBirds[birdIndex].unk_F = 1;
+                gMiscAnimals[index].unk_F = 1;
             } else {
-                gBirds[birdIndex].unk_F = 0;
+                gMiscAnimals[index].unk_F = 0;
             }
             
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
         
             break;
 
         case 2:
-            gBirds[birdIndex].zDisplacement = 0;
-            gBirds[birdIndex].unk_13 = 0;
-            gBirds[birdIndex].unk_14 = 0;
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 0x20);
+            gMiscAnimals[index].zDisplacement = 0;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 0x20);
 
             temp = getRandomNumberInRange(0, 2);
             
             if (temp == 0) {
-                gBirds[birdIndex].unk_F = 2;
+                gMiscAnimals[index].unk_F = 2;
             }
             
             if (temp == 1) {
-                gBirds[birdIndex].unk_F = 0;
+                gMiscAnimals[index].unk_F = 0;
             }
             
             if (temp == 2) {
-                gBirds[birdIndex].unk_F = 9;
+                gMiscAnimals[index].unk_F = 9;
             }
             
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
             break;
 
         case 3:
-            gBirds[birdIndex].zDisplacement = 0;
-            gBirds[birdIndex].unk_13 = 0;
-            gBirds[birdIndex].unk_14 = 0;
+            gMiscAnimals[index].zDisplacement = 0;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
 
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 0x10);
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 0x10);
 
-            gBirds[birdIndex].unk_F = 7;
+            gMiscAnimals[index].unk_F = 7;
             
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
             break;
         
         case 4:
-            gBirds[birdIndex].zDisplacement = 0;
-            gBirds[birdIndex].unk_13 = 0;
-            gBirds[birdIndex].unk_14 = 0;
+            gMiscAnimals[index].zDisplacement = 0;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
 
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 0x38);
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 0x38);
 
-            gBirds[birdIndex].unk_F = 0;
+            gMiscAnimals[index].unk_F = 0;
             
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
             break;
         
         case 5:
-            gBirds[birdIndex].zDisplacement = 0;
-            gBirds[birdIndex].unk_13 = 0;
-            gBirds[birdIndex].unk_14 = 0;
+            gMiscAnimals[index].zDisplacement = 0;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
 
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 0x40);
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 0x40);
 
-            gBirds[birdIndex].unk_F = 0;
+            gMiscAnimals[index].unk_F = 0;
             
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
             break;
         
        case 6:
-            gBirds[birdIndex].zDisplacement = 0;
-            gBirds[birdIndex].unk_13 = 0;
-            gBirds[birdIndex].unk_14 = 0;
+            gMiscAnimals[index].zDisplacement = 0;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
 
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 0x48);
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 0x48);
 
-            gBirds[birdIndex].unk_F = 0;
+            gMiscAnimals[index].unk_F = 0;
             
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
             break;     
 
         case 7:
-            gBirds[birdIndex].zDisplacement = 0;
-            gBirds[birdIndex].unk_13 = 0;
-            gBirds[birdIndex].unk_14 = 0;
+            gMiscAnimals[index].zDisplacement = 0;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
 
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 0x18);
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 0x18);
 
             temp = getRandomNumberInRange(0, 11);
             
             if (temp < 10) {
-                gBirds[birdIndex].unk_F = 7;
+                gMiscAnimals[index].unk_F = 7;
             }
             
             if (temp == 10) {
-                gBirds[birdIndex].unk_F = 8;
+                gMiscAnimals[index].unk_F = 8;
             }
             
             if (temp == 11) {
-                gBirds[birdIndex].unk_F = 10;
+                gMiscAnimals[index].unk_F = 10;
             }
 
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
             
             break;
 
         case 8:
-            gBirds[birdIndex].zDisplacement = 0;
-            gBirds[birdIndex].unk_13 = 0;
-            gBirds[birdIndex].unk_14 = 0;
+            gMiscAnimals[index].zDisplacement = 0;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
 
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 0x28);
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 0x28);
 
             if (getRandomNumberInRange(0, 4) < 4) {
-                 gBirds[birdIndex].unk_F = 8;
+                 gMiscAnimals[index].unk_F = 8;
             } else {
-                 gBirds[birdIndex].unk_F = 7;
+                 gMiscAnimals[index].unk_F = 7;
             }
             
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
             break;
        
         case 9:
-            gBirds[birdIndex].zDisplacement = 0;
-            gBirds[birdIndex].unk_13 = 0;
-            gBirds[birdIndex].unk_14 = 0;
+            gMiscAnimals[index].zDisplacement = 0;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
 
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 0x30);
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 0x30);
 
-            gBirds[birdIndex].unk_F = 2;
+            gMiscAnimals[index].unk_F = 2;
             
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
             break;
 
         case 10:
-            gBirds[birdIndex].zDisplacement = 0;
-            gBirds[birdIndex].unk_13 = 0;
-            gBirds[birdIndex].unk_14 = 0;
+            gMiscAnimals[index].zDisplacement = 0;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
 
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 0x10);
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 0x10);
 
-            gBirds[birdIndex].unk_F = 0;
+            gMiscAnimals[index].unk_F = 0;
             
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
             break;
 
 
@@ -6865,113 +7392,113 @@ void func_80096DFC(u8 birdIndex) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/animals", func_800973F8);
 
-void func_800973F8(u8 birdIndex) {
+void func_800973F8(u8 index) {
     
     u16 temp;
     u8 tempDirection;
     
-    switch (gBirds[birdIndex].unk_F) {
+    switch (gMiscAnimals[index].unk_F) {
 
         case 0:
-            gBirds[birdIndex].zDisplacement = 0;
-            gBirds[birdIndex].unk_13 = 0;
-            gBirds[birdIndex].unk_14 = 0;
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 0);
+            gMiscAnimals[index].zDisplacement = 0;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 0);
 
             if (getRandomNumberInRange(0, 60) < 40) {
                 
-                gBirds[birdIndex].unk_F = 0;
+                gMiscAnimals[index].unk_F = 0;
                 
             } else {
                 temp = getRandomNumberInRange(0, 10);
 
                 if (temp < 7) {
-                    gBirds[birdIndex].direction = temp;
+                    gMiscAnimals[index].direction = temp;
                 }
 
                 temp = getRandomNumberInRange(0, 2);
 
                 if (temp == 0) {
-                    gBirds[birdIndex].unk_F = 1;
+                    gMiscAnimals[index].unk_F = 1;
                 }
                 
                 if (temp == 1) {
-                    gBirds[birdIndex].unk_F = 2;
+                    gMiscAnimals[index].unk_F = 2;
                 }
                 
                 if (temp == 2) {
-                    gBirds[birdIndex].unk_F = 3;
+                    gMiscAnimals[index].unk_F = 3;
                 }
                 
             }
 
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
         
             break;
 
         case 1:
-            gBirds[birdIndex].zDisplacement = 1;
-            gBirds[birdIndex].unk_13 = 0;
-            gBirds[birdIndex].unk_14 = 0;
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 8);
+            gMiscAnimals[index].zDisplacement = 1;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 8);
 
             if (getRandomNumberInRange(0, 19) < 10) {
-                gBirds[birdIndex].unk_F = 1;
+                gMiscAnimals[index].unk_F = 1;
             } else {
-                gBirds[birdIndex].unk_F = 0;
+                gMiscAnimals[index].unk_F = 0;
             }
             
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
         
             break;
 
         case 2:
-            gBirds[birdIndex].zDisplacement = 0;
-            gBirds[birdIndex].unk_13 = 0;
-            gBirds[birdIndex].unk_14 = 0;
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 0x10);
+            gMiscAnimals[index].zDisplacement = 0;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 0x10);
 
             if (getRandomNumberInRange(0, 20) < 10) {
-                gBirds[birdIndex].unk_F = 2;
+                gMiscAnimals[index].unk_F = 2;
             } else {
-                gBirds[birdIndex].unk_F = 0;
+                gMiscAnimals[index].unk_F = 0;
             }
             
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
             break;
 
         case 3:
-            gBirds[birdIndex].zDisplacement = 0;
-            gBirds[birdIndex].unk_13 = 0;
-            gBirds[birdIndex].unk_14 = 0;
+            gMiscAnimals[index].zDisplacement = 0;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
 
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 0x18);
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 0x18);
             
             if (getRandomNumberInRange(0, 19) < 10) {
-                gBirds[birdIndex].unk_F = 3;
+                gMiscAnimals[index].unk_F = 3;
             } else {
-                gBirds[birdIndex].unk_F = 0;
+                gMiscAnimals[index].unk_F = 0;
             }
 
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
             break;
 
         case 32:
-            gBirds[birdIndex].zDisplacement = 4;
-            gBirds[birdIndex].unk_13 = 0;
-            gBirds[birdIndex].unk_14 = 0;
+            gMiscAnimals[index].zDisplacement = 4;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
 
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 8);
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 8);
 
-            tempDirection = calculateAnimalDirectionToPlayer(entities[gBirds[birdIndex].entityIndex].coordinates.x, entities[gBirds[birdIndex].entityIndex].coordinates.z, entities[ENTITY_PLAYER].coordinates.x, entities[ENTITY_PLAYER].coordinates.z);
+            tempDirection = calculateAnimalDirectionToPlayer(entities[gMiscAnimals[index].entityIndex].coordinates.x, entities[gMiscAnimals[index].entityIndex].coordinates.z, entities[ENTITY_PLAYER].coordinates.x, entities[ENTITY_PLAYER].coordinates.z);
 
-            gBirds[birdIndex].direction = (tempDirection + 4) % 8;
+            gMiscAnimals[index].direction = (tempDirection + 4) % 8;
             
             if (!getRandomNumberInRange(0, 30)) {
-                gBirds[birdIndex].flags &= ~(0x10);
+                gMiscAnimals[index].flags &= ~(0x10);
             }
             
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
             
             break;
 
@@ -6981,112 +7508,112 @@ void func_800973F8(u8 birdIndex) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/animals", func_80097804);
 
-void func_80097804(u8 birdIndex) {
+void func_80097804(u8 index) {
 
     u16 temp;
     u8 tempDirection;
     
-    switch (gBirds[birdIndex].unk_F) {
+    switch (gMiscAnimals[index].unk_F) {
 
         case 0:
-            gBirds[birdIndex].zDisplacement = 0;
-            gBirds[birdIndex].unk_13 = 0;
-            gBirds[birdIndex].unk_14 = 0;
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 0);
+            gMiscAnimals[index].zDisplacement = 0;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 0);
 
             if (getRandomNumberInRange(0, 60) < 40) {
-                gBirds[birdIndex].unk_F = 0;
+                gMiscAnimals[index].unk_F = 0;
             } else {
 
                 temp = getRandomNumberInRange(0, 10);
 
                 if (temp < 7) {
-                    gBirds[birdIndex].direction = temp;
+                    gMiscAnimals[index].direction = temp;
                 }
 
                 temp = getRandomNumberInRange(0, 2);
 
                 if (temp == 0) {
-                    gBirds[birdIndex].unk_F = 1;
+                    gMiscAnimals[index].unk_F = 1;
                 }
                 
                 if (temp == 1) {
-                    gBirds[birdIndex].unk_F = 2;
+                    gMiscAnimals[index].unk_F = 2;
                 }
                 
                 if (temp == 2) {
-                    gBirds[birdIndex].unk_F = 3;
+                    gMiscAnimals[index].unk_F = 3;
                 }
                 
             }
 
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
         
             break;
 
         case 1:
-            gBirds[birdIndex].zDisplacement = 1;
-            gBirds[birdIndex].unk_13 = 0;
-            gBirds[birdIndex].unk_14 = 0;
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 8);
+            gMiscAnimals[index].zDisplacement = 1;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 8);
 
             if (getRandomNumberInRange(0, 19) < 10) {
-                gBirds[birdIndex].unk_F = 1;
+                gMiscAnimals[index].unk_F = 1;
             } else {
-                gBirds[birdIndex].unk_F = 0;
+                gMiscAnimals[index].unk_F = 0;
             }
             
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
         
             break;
 
         case 2:
-            gBirds[birdIndex].zDisplacement = 0;
-            gBirds[birdIndex].unk_13 = 0;
-            gBirds[birdIndex].unk_14 = 0;
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 0x10);
+            gMiscAnimals[index].zDisplacement = 0;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 0x10);
 
             if (getRandomNumberInRange(0, 20) < 10) {
-                gBirds[birdIndex].unk_F = 2;
+                gMiscAnimals[index].unk_F = 2;
             } else {
-                gBirds[birdIndex].unk_F = 0;
+                gMiscAnimals[index].unk_F = 0;
             }
             
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
             break;
 
         case 3:
-            gBirds[birdIndex].zDisplacement = 0;
-            gBirds[birdIndex].unk_13 = 0;
-            gBirds[birdIndex].unk_14 = 0;
+            gMiscAnimals[index].zDisplacement = 0;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
 
             if (getRandomNumberInRange(0, 1)) {
-                setEntityAnimation(gBirds[birdIndex].entityIndex, 0x18);
+                setEntityAnimation(gMiscAnimals[index].entityIndex, 0x18);
             } else {
-                setEntityAnimation(gBirds[birdIndex].entityIndex, 0x19);
+                setEntityAnimation(gMiscAnimals[index].entityIndex, 0x19);
             }
 
-            gBirds[birdIndex].unk_F = 0;
+            gMiscAnimals[index].unk_F = 0;
             
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
             break;
 
         case 32:
-            gBirds[birdIndex].zDisplacement = 4;
-            gBirds[birdIndex].unk_13 = 0;
-            gBirds[birdIndex].unk_14 = 0;
+            gMiscAnimals[index].zDisplacement = 4;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
 
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 8);
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 8);
 
-            tempDirection = calculateAnimalDirectionToPlayer(entities[gBirds[birdIndex].entityIndex].coordinates.x, entities[gBirds[birdIndex].entityIndex].coordinates.z, entities[ENTITY_PLAYER].coordinates.x, entities[ENTITY_PLAYER].coordinates.z);
+            tempDirection = calculateAnimalDirectionToPlayer(entities[gMiscAnimals[index].entityIndex].coordinates.x, entities[gMiscAnimals[index].entityIndex].coordinates.z, entities[ENTITY_PLAYER].coordinates.x, entities[ENTITY_PLAYER].coordinates.z);
 
-            gBirds[birdIndex].direction = (tempDirection + 4) % 8;
+            gMiscAnimals[index].direction = (tempDirection + 4) % 8;
             
             if (!getRandomNumberInRange(0, 30)) {
-                gBirds[birdIndex].flags &= ~(0x10);
+                gMiscAnimals[index].flags &= ~(0x10);
             }
             
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
             
             break;
 
@@ -7096,127 +7623,127 @@ void func_80097804(u8 birdIndex) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/animals", func_80097CB0);
 
-void func_80097CB0(u8 birdIndex) {
+void func_80097CB0(u8 index) {
 
     u16 temp;
     u8 tempDirection;
     
-    switch (gBirds[birdIndex].unk_F) {
+    switch (gMiscAnimals[index].unk_F) {
 
         case 0:
-            gBirds[birdIndex].zDisplacement = 0;
-            gBirds[birdIndex].unk_13 = 0;
-            gBirds[birdIndex].unk_14 = 0;
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 0);
+            gMiscAnimals[index].zDisplacement = 0;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 0);
 
             if (getRandomNumberInRange(0, 60) < 40) {
                 
-                gBirds[birdIndex].unk_F = 0;
+                gMiscAnimals[index].unk_F = 0;
                 
             } else {
                 
                 temp = getRandomNumberInRange(0, 10);
 
                 if (temp < 7) {
-                    gBirds[birdIndex].direction = temp;
+                    gMiscAnimals[index].direction = temp;
                 }
 
                 temp = getRandomNumberInRange(0, 1);
 
                 if (temp == 0) {
-                    gBirds[birdIndex].unk_F = 1;
+                    gMiscAnimals[index].unk_F = 1;
                 }
                 
                 if (temp == 1) {
-                    gBirds[birdIndex].unk_F = 2;
+                    gMiscAnimals[index].unk_F = 2;
                 }
                 
             } 
             
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
         
             break;
 
 
         case 1:
-            gBirds[birdIndex].zDisplacement = 1;
-            gBirds[birdIndex].unk_13 = 0;
-            gBirds[birdIndex].unk_14 = 0;
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 8);
+            gMiscAnimals[index].zDisplacement = 1;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 8);
 
             if (getRandomNumberInRange(0, 19) < 10) {
-                gBirds[birdIndex].unk_F = 1;
+                gMiscAnimals[index].unk_F = 1;
             } else {
-                gBirds[birdIndex].unk_F = 0;
+                gMiscAnimals[index].unk_F = 0;
             }
             
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
             
             break;
         
         case 2:
-            gBirds[birdIndex].zDisplacement = 0;
-            gBirds[birdIndex].unk_13 = 0;
-            gBirds[birdIndex].unk_14 = 0;
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 0x10);
+            gMiscAnimals[index].zDisplacement = 0;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 0x10);
 
             if (getRandomNumberInRange(0, 20) < 10) {
-                gBirds[birdIndex].unk_F = 2;
+                gMiscAnimals[index].unk_F = 2;
             } else {
-                gBirds[birdIndex].unk_F = 0;
+                gMiscAnimals[index].unk_F = 0;
             }
             
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
             break;
 
 
     
         case 16:
-            gBirds[birdIndex].zDisplacement = 0;
-            gBirds[birdIndex].unk_13 = 0;
-            gBirds[birdIndex].unk_14 = 0;
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 0);
+            gMiscAnimals[index].zDisplacement = 0;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 0);
 
-            gBirds[birdIndex].unk_F = 0x10;
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].unk_F = 0x10;
+            gMiscAnimals[index].flags |= 2;
             
             break;
 
         case 17:
-            setEntityCollidable(gBirds[birdIndex].entityIndex, 0);
-            setEntityYMovement(gBirds[birdIndex].entityIndex, 0);
-            setEntityShadow(gBirds[birdIndex].entityIndex, 0xFF);
+            setEntityCollidable(gMiscAnimals[index].entityIndex, 0);
+            setEntityYMovement(gMiscAnimals[index].entityIndex, 0);
+            setEntityShadow(gMiscAnimals[index].entityIndex, 0xFF);
 
-            gBirds[birdIndex].zDisplacement = 0;
-            gBirds[birdIndex].yDisplacement = 2;
+            gMiscAnimals[index].zDisplacement = 0;
+            gMiscAnimals[index].yDisplacement = 2;
 
-            setEntityAnimation(gBirds[birdIndex].entityIndex, 0x19);
+            setEntityAnimation(gMiscAnimals[index].entityIndex, 0x19);
 
-            gBirds[birdIndex].unk_13++;
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].unk_13++;
+            gMiscAnimals[index].flags |= 2;
 
-            if (gBirds[birdIndex].unk_13 == 6) {
-                deactivateEntity(gBirds[birdIndex].entityIndex);
-                gBirds[birdIndex].flags = 0;
+            if (gMiscAnimals[index].unk_13 == 6) {
+                deactivateEntity(gMiscAnimals[index].entityIndex);
+                gMiscAnimals[index].flags = 0;
             }
             
             break;
         
        case 32:
-            gBirds[birdIndex].zDisplacement = 4;
-            gBirds[birdIndex].unk_13 = 0;
-            gBirds[birdIndex].unk_14 = 0;
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 8);
+            gMiscAnimals[index].zDisplacement = 4;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 8);
             
-            tempDirection = calculateAnimalDirectionToPlayer(entities[gBirds[birdIndex].entityIndex].coordinates.x, entities[gBirds[birdIndex].entityIndex].coordinates.z, entities[ENTITY_PLAYER].coordinates.x, entities[ENTITY_PLAYER].coordinates.z);
+            tempDirection = calculateAnimalDirectionToPlayer(entities[gMiscAnimals[index].entityIndex].coordinates.x, entities[gMiscAnimals[index].entityIndex].coordinates.z, entities[ENTITY_PLAYER].coordinates.x, entities[ENTITY_PLAYER].coordinates.z);
 
-            gBirds[birdIndex].direction = (tempDirection + 4) % 8;
+            gMiscAnimals[index].direction = (tempDirection + 4) % 8;
             
             if (!getRandomNumberInRange(0, 30)) {
-                gBirds[birdIndex].flags &= ~(0x10);
+                gMiscAnimals[index].flags &= ~(0x10);
             }
             
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
             break;
 
     }
@@ -7225,142 +7752,142 @@ void func_80097CB0(u8 birdIndex) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/animals", func_80098188);
 
-void func_80098188(u8 birdIndex) {
+void func_80098188(u8 index) {
 
     u16 temp;
     u8 tempDirection;
     
-    switch (gBirds[birdIndex].unk_F) {
+    switch (gMiscAnimals[index].unk_F) {
 
         case 0:
-            gBirds[birdIndex].zDisplacement = 0;
-            gBirds[birdIndex].unk_13 = 0;
-            gBirds[birdIndex].unk_14 = 0;
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 0);
+            gMiscAnimals[index].zDisplacement = 0;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 0);
 
             if (getRandomNumberInRange(0, 60) >= 40) {
 
                 temp = getRandomNumberInRange(0, 10);
 
                 if (temp < 7) {
-                    gBirds[birdIndex].direction = temp;
+                    gMiscAnimals[index].direction = temp;
                 }
 
                 temp = getRandomNumberInRange(0, 2);
 
                 if (temp == 0) {
-                    gBirds[birdIndex].unk_F = 1;
+                    gMiscAnimals[index].unk_F = 1;
                 }
                 
                 if (temp == 1) {
-                    gBirds[birdIndex].unk_F = 2;
+                    gMiscAnimals[index].unk_F = 2;
                 }
                 
                 if (temp == 2) {
-                    gBirds[birdIndex].unk_F = 3;
+                    gMiscAnimals[index].unk_F = 3;
                 }
                 
             } else {
-                gBirds[birdIndex].unk_F = 0;
+                gMiscAnimals[index].unk_F = 0;
             }
 
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
         
             break;
 
 
         case 1:
-            gBirds[birdIndex].zDisplacement = 1;
-            gBirds[birdIndex].unk_13 = 0;
-            gBirds[birdIndex].unk_14 = 0;
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 8);
+            gMiscAnimals[index].zDisplacement = 1;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 8);
 
             if (getRandomNumberInRange(0, 19) < 10) {
-                gBirds[birdIndex].unk_F = 1;
+                gMiscAnimals[index].unk_F = 1;
             } else {
-                gBirds[birdIndex].unk_F = 0;
+                gMiscAnimals[index].unk_F = 0;
             }
             
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
             break;
 
 
 
         case 2:
-            gBirds[birdIndex].zDisplacement = 0;
-            gBirds[birdIndex].unk_13 = 0;
-            gBirds[birdIndex].unk_14 = 0;
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 0x10);
+            gMiscAnimals[index].zDisplacement = 0;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 0x10);
 
             if (getRandomNumberInRange(0, 20) < 10) {
-                gBirds[birdIndex].unk_F = 2;
+                gMiscAnimals[index].unk_F = 2;
             } else {
-                gBirds[birdIndex].unk_F = 0;
+                gMiscAnimals[index].unk_F = 0;
             }
             
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
             setAudio(0x4D);
             
             break;
 
 
         case 3:
-            gBirds[birdIndex].zDisplacement = 0;
-            gBirds[birdIndex].unk_13 = 0;
-            gBirds[birdIndex].unk_14 = 0;
-            setEntityAnimation(gBirds[birdIndex].entityIndex, 0x22);
+            gMiscAnimals[index].zDisplacement = 0;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
+            setEntityAnimation(gMiscAnimals[index].entityIndex, 0x22);
 
-            gBirds[birdIndex].unk_F = 0;
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].unk_F = 0;
+            gMiscAnimals[index].flags |= 2;
             break;
     
         case 16:
-            gBirds[birdIndex].zDisplacement = 0;
-            gBirds[birdIndex].unk_13 = 0;
-            gBirds[birdIndex].unk_14 = 0;
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 0);
+            gMiscAnimals[index].zDisplacement = 0;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 0);
 
-            gBirds[birdIndex].unk_F = 0x10;
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].unk_F = 0x10;
+            gMiscAnimals[index].flags |= 2;
             
             break;
 
         case 17:
 
-            setEntityCollidable(gBirds[birdIndex].entityIndex, 0);
-            setEntityYMovement(gBirds[birdIndex].entityIndex, 0);
-            setEntityShadow(gBirds[birdIndex].entityIndex, 0xFF);
+            setEntityCollidable(gMiscAnimals[index].entityIndex, 0);
+            setEntityYMovement(gMiscAnimals[index].entityIndex, 0);
+            setEntityShadow(gMiscAnimals[index].entityIndex, 0xFF);
 
-            gBirds[birdIndex].zDisplacement = 0;
-            gBirds[birdIndex].yDisplacement = 2;
+            gMiscAnimals[index].zDisplacement = 0;
+            gMiscAnimals[index].yDisplacement = 2;
 
-            setEntityAnimation(gBirds[birdIndex].entityIndex, 0x1D);
+            setEntityAnimation(gMiscAnimals[index].entityIndex, 0x1D);
 
-            gBirds[birdIndex].unk_13++;
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].unk_13++;
+            gMiscAnimals[index].flags |= 2;
 
-            if (gBirds[birdIndex].unk_13 == 6) {
-                deactivateEntity(gBirds[birdIndex].entityIndex);
-                gBirds[birdIndex].flags = 0;
+            if (gMiscAnimals[index].unk_13 == 6) {
+                deactivateEntity(gMiscAnimals[index].entityIndex);
+                gMiscAnimals[index].flags = 0;
             }
             
             break;
         
        case 32:
-            gBirds[birdIndex].zDisplacement = 4;
-            gBirds[birdIndex].unk_13 = 0;
-            gBirds[birdIndex].unk_14 = 0;
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 8);
+            gMiscAnimals[index].zDisplacement = 4;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 8);
             
-            tempDirection = calculateAnimalDirectionToPlayer(entities[gBirds[birdIndex].entityIndex].coordinates.x, entities[gBirds[birdIndex].entityIndex].coordinates.z, entities[ENTITY_PLAYER].coordinates.x, entities[ENTITY_PLAYER].coordinates.z);
+            tempDirection = calculateAnimalDirectionToPlayer(entities[gMiscAnimals[index].entityIndex].coordinates.x, entities[gMiscAnimals[index].entityIndex].coordinates.z, entities[ENTITY_PLAYER].coordinates.x, entities[ENTITY_PLAYER].coordinates.z);
 
-            gBirds[birdIndex].direction = (tempDirection + 4) % 8;
+            gMiscAnimals[index].direction = (tempDirection + 4) % 8;
             
             if (!getRandomNumberInRange(0, 30)) {
-                gBirds[birdIndex].flags &= ~(0x10);
+                gMiscAnimals[index].flags &= ~(0x10);
             }
             
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
             break;
 
 
@@ -7370,76 +7897,76 @@ void func_80098188(u8 birdIndex) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/animals", func_80098740);
 
-void func_80098740(u8 birdIndex) {
+void func_80098740(u8 index) {
 
     u16 temp;
     
-    switch (gBirds[birdIndex].unk_F) {
+    switch (gMiscAnimals[index].unk_F) {
 
         case 0:
 
-            gBirds[birdIndex].zDisplacement = 0;
-            gBirds[birdIndex].unk_13 = 0;
-            gBirds[birdIndex].unk_14 = 0;
+            gMiscAnimals[index].zDisplacement = 0;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
             
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 0);
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 0);
             
             if (getRandomNumberInRange(0, 60) < 40) {
 
-                gBirds[birdIndex].unk_F = 0;
+                gMiscAnimals[index].unk_F = 0;
             
             } else {
                 
                 temp = getRandomNumberInRange(0, 10);
                 
                 if (temp < 7) {
-                    gBirds[birdIndex].direction = temp;
+                    gMiscAnimals[index].direction = temp;
                 }
 
                 if (getRandomNumberInRange(0, 30) >= 28) {
-                    gBirds[birdIndex].unk_F = 32;
+                    gMiscAnimals[index].unk_F = 32;
                 } else {
-                    gBirds[birdIndex].unk_F = 1;
+                    gMiscAnimals[index].unk_F = 1;
                 }
                 
             }
             
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
 
             break;
 
         case 1:
 
-            gBirds[birdIndex].zDisplacement = 0;
-            gBirds[birdIndex].unk_13 = 0;
-            gBirds[birdIndex].unk_14 = 0;
+            gMiscAnimals[index].zDisplacement = 0;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
 
             temp = getRandomNumberInRange(0, 3); 
 
             switch (temp) {
 
                 case 0:
-                    setEntityAnimation(gBirds[birdIndex].entityIndex, 0x10);
+                    setEntityAnimation(gMiscAnimals[index].entityIndex, 0x10);
                     break;
                 case 1:
-                    setEntityAnimation(gBirds[birdIndex].entityIndex, 0x11);
+                    setEntityAnimation(gMiscAnimals[index].entityIndex, 0x11);
                     break;
                 case 2:
-                    setEntityAnimation(gBirds[birdIndex].entityIndex, 0x12);
+                    setEntityAnimation(gMiscAnimals[index].entityIndex, 0x12);
                     break;
                 
                 case 3:
-                    setEntityAnimation(gBirds[birdIndex].entityIndex, 0x13);
+                    setEntityAnimation(gMiscAnimals[index].entityIndex, 0x13);
                     break;
             } 
                 
             if (getRandomNumberInRange(0, 60) < 40) {
-                gBirds[birdIndex].unk_F = 1;
+                gMiscAnimals[index].unk_F = 1;
             } else {
-                gBirds[birdIndex].unk_F = 0;
+                gMiscAnimals[index].unk_F = 0;
             }
             
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
 
             setAudio(0x46);
             
@@ -7447,25 +7974,25 @@ void func_80098740(u8 birdIndex) {
 
         case 32:
 
-            setEntityCollidable(gBirds[birdIndex].entityIndex, FALSE);
-            setEntityTracksCollisions(gBirds[birdIndex].entityIndex, FALSE);
-            enableEntityMovement(gBirds[birdIndex].entityIndex, FALSE);
-            setEntityYMovement(gBirds[birdIndex].entityIndex, FALSE);
-            setEntityShadow(gBirds[birdIndex].entityIndex, 0xFF);
+            setEntityCollidable(gMiscAnimals[index].entityIndex, FALSE);
+            setEntityTracksCollisions(gMiscAnimals[index].entityIndex, FALSE);
+            enableEntityMovement(gMiscAnimals[index].entityIndex, FALSE);
+            setEntityYMovement(gMiscAnimals[index].entityIndex, FALSE);
+            setEntityShadow(gMiscAnimals[index].entityIndex, 0xFF);
             
-            entities[gBirds[birdIndex].entityIndex].yOffset = 0;
+            entities[gMiscAnimals[index].entityIndex].yOffset = 0;
             
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 8);
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 8);
             
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
 
-            if (gBirds[birdIndex].unk_13 < 129) {
-                gBirds[birdIndex].zDisplacement = 4;
-                gBirds[birdIndex].yDisplacement = 2;
-                gBirds[birdIndex].unk_13++;
+            if (gMiscAnimals[index].unk_13 < 129) {
+                gMiscAnimals[index].zDisplacement = 4;
+                gMiscAnimals[index].yDisplacement = 2;
+                gMiscAnimals[index].unk_13++;
             } else {
-                deactivateEntity(gBirds[birdIndex].entityIndex);
-                gBirds[birdIndex].flags = 0;
+                deactivateEntity(gMiscAnimals[index].entityIndex);
+                gMiscAnimals[index].flags = 0;
             }
             
     }
@@ -7474,76 +8001,76 @@ void func_80098740(u8 birdIndex) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/animals", func_80098B3C);
 
-void func_80098B3C(u8 birdIndex) {
+void func_80098B3C(u8 index) {
     
     u16 temp;
     
-    switch (gBirds[birdIndex].unk_F) {
+    switch (gMiscAnimals[index].unk_F) {
 
         case 0:
 
-            gBirds[birdIndex].zDisplacement = 0;
-            gBirds[birdIndex].unk_13 = 0;
-            gBirds[birdIndex].unk_14 = 0;
+            gMiscAnimals[index].zDisplacement = 0;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
             
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 0);
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 0);
             
             if (getRandomNumberInRange(0, 60) < 40) {
 
-                gBirds[birdIndex].unk_F = 0;
+                gMiscAnimals[index].unk_F = 0;
             
             } else {
                 
                 temp = getRandomNumberInRange(0, 10);
                 
                 if (temp < 7) {
-                    gBirds[birdIndex].direction = temp;
+                    gMiscAnimals[index].direction = temp;
                 }
 
                 if (getRandomNumberInRange(0, 30) >= 28) {
-                    gBirds[birdIndex].unk_F = 32;
+                    gMiscAnimals[index].unk_F = 32;
                 } else {
-                    gBirds[birdIndex].unk_F = 1;
+                    gMiscAnimals[index].unk_F = 1;
                 }
                 
             }
             
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
 
             break;
 
         case 1:
 
-            gBirds[birdIndex].zDisplacement = 0;
-            gBirds[birdIndex].unk_13 = 0;
-            gBirds[birdIndex].unk_14 = 0;
+            gMiscAnimals[index].zDisplacement = 0;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
 
             temp = getRandomNumberInRange(0, 3); 
 
             switch (temp) {
 
                 case 0:
-                    setEntityAnimation(gBirds[birdIndex].entityIndex, 0x10);
+                    setEntityAnimation(gMiscAnimals[index].entityIndex, 0x10);
                     break;
                 case 1:
-                    setEntityAnimation(gBirds[birdIndex].entityIndex, 0x11);
+                    setEntityAnimation(gMiscAnimals[index].entityIndex, 0x11);
                     break;
                 case 2:
-                    setEntityAnimation(gBirds[birdIndex].entityIndex, 0x12);
+                    setEntityAnimation(gMiscAnimals[index].entityIndex, 0x12);
                     break;
                 
                 case 3:
-                    setEntityAnimation(gBirds[birdIndex].entityIndex, 0x13);
+                    setEntityAnimation(gMiscAnimals[index].entityIndex, 0x13);
                     break;
             } 
                 
             if (getRandomNumberInRange(0, 60) < 40) {
-                gBirds[birdIndex].unk_F = 1;
+                gMiscAnimals[index].unk_F = 1;
             } else {
-                gBirds[birdIndex].unk_F = 0;
+                gMiscAnimals[index].unk_F = 0;
             }
             
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
 
             if (!getRandomNumberInRange(0, 1)) {
                 setAudio(0x48);
@@ -7555,19 +8082,19 @@ void func_80098B3C(u8 birdIndex) {
 
         case 32:
 
-            setEntityCollidable(gBirds[birdIndex].entityIndex, FALSE);
-            setEntityTracksCollisions(gBirds[birdIndex].entityIndex, FALSE);
-            enableEntityMovement(gBirds[birdIndex].entityIndex, FALSE);
-            setEntityYMovement(gBirds[birdIndex].entityIndex, FALSE);
-            setEntityShadow(gBirds[birdIndex].entityIndex, 0xFF);
-            entities[gBirds[birdIndex].entityIndex].yOffset = 0;
+            setEntityCollidable(gMiscAnimals[index].entityIndex, FALSE);
+            setEntityTracksCollisions(gMiscAnimals[index].entityIndex, FALSE);
+            enableEntityMovement(gMiscAnimals[index].entityIndex, FALSE);
+            setEntityYMovement(gMiscAnimals[index].entityIndex, FALSE);
+            setEntityShadow(gMiscAnimals[index].entityIndex, 0xFF);
+            entities[gMiscAnimals[index].entityIndex].yOffset = 0;
             
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 8);
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 8);
 
-            gBirds[birdIndex].zDisplacement = 4;
-            gBirds[birdIndex].yDisplacement = 2;
-            gBirds[birdIndex].flags |= 2;
-            gBirds[birdIndex].unk_13++;
+            gMiscAnimals[index].zDisplacement = 4;
+            gMiscAnimals[index].yDisplacement = 2;
+            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].unk_13++;
                     
             break;
 
@@ -7577,20 +8104,20 @@ void func_80098B3C(u8 birdIndex) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/animals", func_80098F24);
 
-void func_80098F24(u8 birdIndex) {
+void func_80098F24(u8 index) {
     
     u32 temp;
     u16 temp2;
     
-    switch (gBirds[birdIndex].unk_F) {
+    switch (gMiscAnimals[index].unk_F) {
 
         case 0:
 
-            gBirds[birdIndex].zDisplacement = 0;
-            gBirds[birdIndex].unk_13 = 0;
-            gBirds[birdIndex].unk_14 = 0;
+            gMiscAnimals[index].zDisplacement = 0;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
             
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 0);
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 0);
             
             if (getRandomNumberInRange(0, 60) >= 40) {
 
@@ -7600,53 +8127,53 @@ void func_80098F24(u8 birdIndex) {
                     // ???
                     temp &= ~3;
                     temp2 = temp;
-                    gBirds[birdIndex].direction = temp2;
+                    gMiscAnimals[index].direction = temp2;
                 } 
                 
-                gBirds[birdIndex].unk_F = 1;
+                gMiscAnimals[index].unk_F = 1;
             
             } else {
-                gBirds[birdIndex].unk_F = 0;
+                gMiscAnimals[index].unk_F = 0;
             }
             
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
 
             break;
 
         case 1:
 
-            gBirds[birdIndex].zDisplacement = 1;
-            gBirds[birdIndex].unk_13 = 0;
-            gBirds[birdIndex].unk_14 = 0;
+            gMiscAnimals[index].zDisplacement = 1;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
             
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 8);
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 8);
 
             if (getRandomNumberInRange(0, 19) < 10) {
-                gBirds[birdIndex].unk_F = 1;
+                gMiscAnimals[index].unk_F = 1;
             } else {
-                gBirds[birdIndex].unk_F = 0;
+                gMiscAnimals[index].unk_F = 0;
             }
             
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
 
             break;
 
         case 32:
 
-            setEntityCollidable(gBirds[birdIndex].entityIndex, 0);
-            setEntityYMovement(gBirds[birdIndex].entityIndex, 0);
-            gBirds[birdIndex].direction = SOUTHEAST;
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 8);
+            setEntityCollidable(gMiscAnimals[index].entityIndex, 0);
+            setEntityYMovement(gMiscAnimals[index].entityIndex, 0);
+            gMiscAnimals[index].direction = SOUTHEAST;
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 8);
             
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
 
-            if (gBirds[birdIndex].unk_13 < 17) {
-                gBirds[birdIndex].zDisplacement = 4;
-                gBirds[birdIndex].yDisplacement = 0;
-                gBirds[birdIndex].unk_13++;
+            if (gMiscAnimals[index].unk_13 < 17) {
+                gMiscAnimals[index].zDisplacement = 4;
+                gMiscAnimals[index].yDisplacement = 0;
+                gMiscAnimals[index].unk_13++;
             } else {
-                deactivateEntity(gBirds[birdIndex].entityIndex);
-                gBirds[birdIndex].flags = 0;
+                deactivateEntity(gMiscAnimals[index].entityIndex);
+                gMiscAnimals[index].flags = 0;
             }
                     
             break;
@@ -7656,69 +8183,69 @@ void func_80098F24(u8 birdIndex) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/animals", func_800991C0);
 
-void func_800991C0(u8 birdIndex) {
+void func_800991C0(u8 index) {
 
     u16 temp;
     
-    switch (gBirds[birdIndex].unk_F) {
+    switch (gMiscAnimals[index].unk_F) {
 
         case 0:
 
-            gBirds[birdIndex].zDisplacement = 0;
-            gBirds[birdIndex].unk_13 = 0;
-            gBirds[birdIndex].unk_14 = 0;
+            gMiscAnimals[index].zDisplacement = 0;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
             
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 0);
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 0);
             
             if (getRandomNumberInRange(0, 60) >= 40) {
                 
                 temp = getRandomNumberInRange(0, 10);
                 
                 if (temp < 7) {
-                    gBirds[birdIndex].direction = temp;
+                    gMiscAnimals[index].direction = temp;
                 }
                 
-                gBirds[birdIndex].unk_F = 1;
+                gMiscAnimals[index].unk_F = 1;
             
             } else {
-                gBirds[birdIndex].unk_F = 0;
+                gMiscAnimals[index].unk_F = 0;
             }
             
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
 
             break;
 
         case 1:
 
-            gBirds[birdIndex].zDisplacement = 1;
-            gBirds[birdIndex].unk_13 = 0;
-            gBirds[birdIndex].unk_14 = 0;
+            gMiscAnimals[index].zDisplacement = 1;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
             
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 8);
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 8);
 
             if (getRandomNumberInRange(0, 19) < 10) {
-                gBirds[birdIndex].unk_F = 1;
+                gMiscAnimals[index].unk_F = 1;
             } else {
-                gBirds[birdIndex].unk_F = 0;
+                gMiscAnimals[index].unk_F = 0;
             }
             
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
 
             break;
 
         case 32:
 
-            setEntityAnimationWithDirectionChange(gBirds[birdIndex].entityIndex, 8);
+            setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 8);
             
-            gBirds[birdIndex].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
 
-            if (gBirds[birdIndex].unk_13 < 33) {
-                gBirds[birdIndex].zDisplacement = 4;
-                gBirds[birdIndex].yDisplacement = 0;
-                gBirds[birdIndex].unk_13++;
+            if (gMiscAnimals[index].unk_13 < 33) {
+                gMiscAnimals[index].zDisplacement = 4;
+                gMiscAnimals[index].yDisplacement = 0;
+                gMiscAnimals[index].unk_13++;
             } else {
-                deactivateEntity(gBirds[birdIndex].entityIndex);
-                gBirds[birdIndex].flags = 0;
+                deactivateEntity(gMiscAnimals[index].entityIndex);
+                gMiscAnimals[index].flags = 0;
             }
                     
             break;
@@ -7731,25 +8258,25 @@ void func_800991C0(u8 birdIndex) {
 
 void func_80099424(u8 index) {
 
-    switch (gBirds[index].unk_F) {
+    switch (gMiscAnimals[index].unk_F) {
 
         case 0:
         case 1:
 
-            setEntityCollidable(gBirds[index].entityIndex, FALSE);
-            setEntityTracksCollisions(gBirds[index].entityIndex, FALSE);
+            setEntityCollidable(gMiscAnimals[index].entityIndex, FALSE);
+            setEntityTracksCollisions(gMiscAnimals[index].entityIndex, FALSE);
     
-            entities[gBirds[index].entityIndex].yOffset = 0x20;
+            entities[gMiscAnimals[index].entityIndex].yOffset = 0x20;
     
-            gBirds[index].zDisplacement = 1;
-            gBirds[index].unk_13 = 0;
-            gBirds[index].unk_14 = 0;
+            gMiscAnimals[index].zDisplacement = 1;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
     
-            setEntityAnimation(gBirds[index].entityIndex, 2);
+            setEntityAnimation(gMiscAnimals[index].entityIndex, 2);
     
-            gBirds[index].direction = getRandomNumberInRange(0, 7);
-            gBirds[index].unk_F = 0;
-            gBirds[index].flags |= 2;
+            gMiscAnimals[index].direction = getRandomNumberInRange(0, 7);
+            gMiscAnimals[index].unk_F = 0;
+            gMiscAnimals[index].flags |= 2;
             
             break;
         
@@ -7764,19 +8291,19 @@ void func_80099424(u8 index) {
 
 void func_80099548(u8 index) {
 
-    switch (gBirds[index].unk_F) {
+    switch (gMiscAnimals[index].unk_F) {
 
         case 0:
         case 1:
 
-            gBirds[index].zDisplacement = 0;
-            gBirds[index].unk_13 = 0;
-            gBirds[index].unk_14 = 0;
+            gMiscAnimals[index].zDisplacement = 0;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
     
-            setEntityAnimation(gBirds[index].entityIndex, 0);
+            setEntityAnimation(gMiscAnimals[index].entityIndex, 0);
 
-            gBirds[index].unk_F = 0;
-            gBirds[index].flags |= 2;
+            gMiscAnimals[index].unk_F = 0;
+            gMiscAnimals[index].flags |= 2;
 
             break;
         
@@ -7791,19 +8318,19 @@ void func_80099548(u8 index) {
 
 void func_800995F8(u8 index) {
 
-    switch (gBirds[index].unk_F) {
+    switch (gMiscAnimals[index].unk_F) {
 
         case 0:
 
-            gBirds[index].zDisplacement = 0;
-            gBirds[index].unk_13 = 0;
-            gBirds[index].unk_14 = 0;
+            gMiscAnimals[index].zDisplacement = 0;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
 
-            setEntityAnimation(gBirds[index].entityIndex, 0);
+            setEntityAnimation(gMiscAnimals[index].entityIndex, 0);
 
-            entities[gBirds[index].entityIndex].yOffset = 0x40;
+            entities[gMiscAnimals[index].entityIndex].yOffset = 0x40;
 
-            gBirds[index].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
 
             if (!(5 < gHour && gHour < 16)) {
                 setAudio(0x51);
@@ -7815,22 +8342,22 @@ void func_800995F8(u8 index) {
         
         case 1:
 
-            setEntityCollidable(gBirds[index].entityIndex, FALSE);
-            setEntityTracksCollisions(gBirds[index].entityIndex, FALSE);
-            enableEntityMovement(gBirds[index].entityIndex, FALSE);
-            setEntityYMovement(gBirds[index].entityIndex, FALSE);
-            setEntityShadow(gBirds[index].entityIndex, 0xFF);
+            setEntityCollidable(gMiscAnimals[index].entityIndex, FALSE);
+            setEntityTracksCollisions(gMiscAnimals[index].entityIndex, FALSE);
+            enableEntityMovement(gMiscAnimals[index].entityIndex, FALSE);
+            setEntityYMovement(gMiscAnimals[index].entityIndex, FALSE);
+            setEntityShadow(gMiscAnimals[index].entityIndex, 0xFF);
 
-            entities[gBirds[index].entityIndex].yOffset = 0;
+            entities[gMiscAnimals[index].entityIndex].yOffset = 0;
 
-            setEntityAnimation(gBirds[index].entityIndex, 2);
+            setEntityAnimation(gMiscAnimals[index].entityIndex, 2);
 
-            gBirds[index].zDisplacement = 4;
-            gBirds[index].yDisplacement = 2;
+            gMiscAnimals[index].zDisplacement = 4;
+            gMiscAnimals[index].yDisplacement = 2;
 
-            gBirds[index].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
 
-            gBirds[index].unk_13++;
+            gMiscAnimals[index].unk_13++;
             
             break;    
         
@@ -7842,38 +8369,38 @@ void func_800995F8(u8 index) {
 
 void func_80099804(u8 index) {
 
-     switch (gBirds[index].unk_F) {
+     switch (gMiscAnimals[index].unk_F) {
 
         case 0:
 
-            gBirds[index].zDisplacement = 0;
-            gBirds[index].unk_13 = 0;
-            gBirds[index].unk_14 = 0;
+            gMiscAnimals[index].zDisplacement = 0;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
 
-            setEntityAnimation(gBirds[index].entityIndex, 0);
+            setEntityAnimation(gMiscAnimals[index].entityIndex, 0);
 
-            gBirds[index].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
 
             break;
         
         case 1:
 
-            setEntityCollidable(gBirds[index].entityIndex, FALSE);
-            setEntityTracksCollisions(gBirds[index].entityIndex, FALSE);
-            enableEntityMovement(gBirds[index].entityIndex, FALSE);
-            setEntityYMovement(gBirds[index].entityIndex, FALSE);
-            setEntityShadow(gBirds[index].entityIndex, 0xFF);
+            setEntityCollidable(gMiscAnimals[index].entityIndex, FALSE);
+            setEntityTracksCollisions(gMiscAnimals[index].entityIndex, FALSE);
+            enableEntityMovement(gMiscAnimals[index].entityIndex, FALSE);
+            setEntityYMovement(gMiscAnimals[index].entityIndex, FALSE);
+            setEntityShadow(gMiscAnimals[index].entityIndex, 0xFF);
 
-            entities[gBirds[index].entityIndex].yOffset = 0;
+            entities[gMiscAnimals[index].entityIndex].yOffset = 0;
 
-            setEntityAnimation(gBirds[index].entityIndex, 4);
+            setEntityAnimation(gMiscAnimals[index].entityIndex, 4);
 
-            gBirds[index].zDisplacement = 4;
-            gBirds[index].yDisplacement = 2;
+            gMiscAnimals[index].zDisplacement = 4;
+            gMiscAnimals[index].yDisplacement = 2;
 
-            gBirds[index].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
 
-            gBirds[index].unk_13++;
+            gMiscAnimals[index].unk_13++;
             
             break;    
         
@@ -7885,38 +8412,38 @@ void func_80099804(u8 index) {
 
 void func_800999B0(u8 index) {
 
-    switch (gBirds[index].unk_F) {
+    switch (gMiscAnimals[index].unk_F) {
 
         case 0:
 
-            gBirds[index].zDisplacement = 0;
-            gBirds[index].unk_13 = 0;
-            gBirds[index].unk_14 = 0;
+            gMiscAnimals[index].zDisplacement = 0;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
 
-            setEntityAnimation(gBirds[index].entityIndex, 0);
+            setEntityAnimation(gMiscAnimals[index].entityIndex, 0);
 
-            gBirds[index].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
 
             break;
         
         case 1:
 
-            setEntityCollidable(gBirds[index].entityIndex, FALSE);
-            setEntityTracksCollisions(gBirds[index].entityIndex, FALSE);
-            enableEntityMovement(gBirds[index].entityIndex, FALSE);
-            setEntityYMovement(gBirds[index].entityIndex, FALSE);
-            setEntityShadow(gBirds[index].entityIndex, 0xFF);
+            setEntityCollidable(gMiscAnimals[index].entityIndex, FALSE);
+            setEntityTracksCollisions(gMiscAnimals[index].entityIndex, FALSE);
+            enableEntityMovement(gMiscAnimals[index].entityIndex, FALSE);
+            setEntityYMovement(gMiscAnimals[index].entityIndex, FALSE);
+            setEntityShadow(gMiscAnimals[index].entityIndex, 0xFF);
 
-            entities[gBirds[index].entityIndex].yOffset = 0;
+            entities[gMiscAnimals[index].entityIndex].yOffset = 0;
 
-            setEntityAnimation(gBirds[index].entityIndex, 4);
+            setEntityAnimation(gMiscAnimals[index].entityIndex, 4);
 
-            gBirds[index].zDisplacement = 4;
-            gBirds[index].yDisplacement = 2;
+            gMiscAnimals[index].zDisplacement = 4;
+            gMiscAnimals[index].yDisplacement = 2;
 
-            gBirds[index].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
 
-            gBirds[index].unk_13++;
+            gMiscAnimals[index].unk_13++;
             
             break;    
         
@@ -7930,30 +8457,30 @@ void func_80099B5C(u8 index) {
 
     u16 temp;
     
-    switch (gBirds[index].unk_F) {
+    switch (gMiscAnimals[index].unk_F) {
 
         case 0:
         case 1:
 
-            setEntityCollidable(gBirds[index].entityIndex, FALSE);
-            setEntityTracksCollisions(gBirds[index].entityIndex, FALSE);
+            setEntityCollidable(gMiscAnimals[index].entityIndex, FALSE);
+            setEntityTracksCollisions(gMiscAnimals[index].entityIndex, FALSE);
                         
-            entities[gBirds[index].entityIndex].yOffset = 0x20;
+            entities[gMiscAnimals[index].entityIndex].yOffset = 0x20;
 
-            gBirds[index].zDisplacement = 1;
-            gBirds[index].unk_13 = 0;
-            gBirds[index].unk_14 = 0;
+            gMiscAnimals[index].zDisplacement = 1;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
 
-            setEntityAnimation(gBirds[index].entityIndex, 2);
+            setEntityAnimation(gMiscAnimals[index].entityIndex, 2);
 
             temp = getRandomNumberInRange(0, 20);
 
             if (temp < 7) {
-                gBirds[index].direction = temp;
+                gMiscAnimals[index].direction = temp;
             }
             
-            gBirds[index].unk_F = 0;
-            gBirds[index].flags |= 2;
+            gMiscAnimals[index].unk_F = 0;
+            gMiscAnimals[index].flags |= 2;
             
             break;    
         
@@ -7965,32 +8492,32 @@ void func_80099B5C(u8 index) {
 
 void func_80099C94(u8 index) {
     
-    switch (gBirds[index].unk_F) {
+    switch (gMiscAnimals[index].unk_F) {
 
         case 0:
 
-            gBirds[index].zDisplacement = 0;
-            gBirds[index].unk_13 = 0;
-            gBirds[index].unk_14 = 0;
+            gMiscAnimals[index].zDisplacement = 0;
+            gMiscAnimals[index].unk_13 = 0;
+            gMiscAnimals[index].unk_14 = 0;
 
-            setEntityAnimation(gBirds[index].entityIndex, 0);
+            setEntityAnimation(gMiscAnimals[index].entityIndex, 0);
 
-            gBirds[index].flags |= 2;
+            gMiscAnimals[index].flags |= 2;
 
             break;
         
         case 1:
 
-            setEntityAnimation(gBirds[index].entityIndex, 2);
-            gBirds[index].flags |= 2;
+            setEntityAnimation(gMiscAnimals[index].entityIndex, 2);
+            gMiscAnimals[index].flags |= 2;
 
-            if (gBirds[index].unk_13 < 0x21) {
-                gBirds[index].zDisplacement = 2;
-                gBirds[index].yDisplacement = 0;
-                gBirds[index].unk_13++;
+            if (gMiscAnimals[index].unk_13 < 0x21) {
+                gMiscAnimals[index].zDisplacement = 2;
+                gMiscAnimals[index].yDisplacement = 0;
+                gMiscAnimals[index].unk_13++;
             } else {
-                deactivateEntity(gBirds[index].entityIndex);
-                gBirds[index].flags = 0;
+                deactivateEntity(gMiscAnimals[index].entityIndex);
+                gMiscAnimals[index].flags = 0;
             }
             
             break;    
@@ -9085,8 +9612,8 @@ void func_8009BC64(void) {
 
     u8 i;
 
-    for (i = 0; i < MAX_CHICKEN_EGGS; i++) {
-        gBirds[i].unk_16 = getRandomNumberInRange(0, 3);
+    for (i = 0; i < MAX_MISC_ANIMALS; i++) {
+        gMiscAnimals[i].unk_16 = getRandomNumberInRange(0, 3);
     }
     
 }

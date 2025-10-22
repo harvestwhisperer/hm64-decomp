@@ -4978,7 +4978,7 @@ segments:
     - [0xFFC530, bin, "audio/sequences/night-ambience-spring.sng"]
     - [0xFFC9F0, bin, "audio/sequences/night-ambience-summer.sng"]
     - [0xFFCC40, bin, "audio/sequences/night-ambience-autumn.sng"]
-    - [0xFFCE10, bin, "audio/sequences/starry-night-festival-.sng"]
+    - [0xFFCE10, bin, "audio/sequences/starry-night-festival.sng"]
     - [0xFFD490, bin, "audio/sequences/beach-ambience-1.sng"]
     - [0xFFD680, bin, "audio/sequences/beach-ambience-2.sng"]
     # sfx

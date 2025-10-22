@@ -2,11 +2,9 @@
 #define _ANIMALS_H_
 
 #include "common.h"
-#include "weather.h"
 
-#define MAX_BIRDS 5
 #define MAX_CHICKENS 12
-#define MAX_CHICKEN_EGGS 7
+#define MAX_MISC_ANIMALS 7
 #define MAX_FARM_ANIMALS 8
 
 #define CHICK 1
@@ -107,15 +105,6 @@ typedef struct {
 	u16 flags; // 20
 } Horse;
 
-typedef struct {
-	u8 unk_0;
-	u8 unk_1;
-	u8 unk_2;
-	u8 unk_3;
-	u8 unk_4;
-	u8 unk_5;
-} AnimalLocations;
-
 // 0x8016FB08
 typedef struct {
 	Vec3f coordinates; // 08
@@ -131,7 +120,7 @@ typedef struct {
 	u8 unk_16; // 1E
 	u8 unk_17; // 1F
 	u16 flags; // 20
-} Bird;
+} MiscAnimal;
 
 extern bool func_80086764();
 extern void func_800876D0();
@@ -192,14 +181,14 @@ extern void setAnimalLocations(u8);
 extern void setDogLocation(u8);
 extern void setHorseLocation(u8);
 
-extern Bird gBirds[MAX_CHICKEN_EGGS];
+extern MiscAnimal gMiscAnimals[MAX_MISC_ANIMALS];
 extern Chicken gChickens[MAX_CHICKENS];
 extern FarmAnimal gFarmAnimals[MAX_FARM_ANIMALS];
 extern u8 D_8016FBCC[1];
 extern u8 D_801886D4[6];
 // TODO: label
 // dead animal name for funeral
-extern u8 D_8018985C[6];
+extern u8 deadAnimalName[6];
 extern Dog dogInfo;
 extern Horse horseInfo;
 
