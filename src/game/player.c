@@ -1000,7 +1000,9 @@ void func_800664C8(void) {
     }
 
     if (!set) {
+        
         if (gBaseMapIndex == FARM && gPlayer.groundObjectIndex == 6) {
+
             if ((getStickYValueUnsigned(CONTROLLER_1) / 1.2f) > 4.6) {
                 
                 if (!checkTerrainCollisionInDirection(ENTITY_PLAYER, 0x34, convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX))) {
@@ -1021,6 +1023,7 @@ void func_800664C8(void) {
                 } 
             }
         }
+        
     }
 
     if (!set) {
@@ -1287,9 +1290,9 @@ void func_80067034(void) {
     
     while (direction < 8 && !set) {
     
-        if (checkTerrainCollisionInDirection(ENTITY_PLAYER, 8, convertWorldToSpriteDirection(direction, gMainMapIndex)) == 0) {
+        if (!checkTerrainCollisionInDirection(ENTITY_PLAYER, 8, convertWorldToSpriteDirection(direction, gMainMapIndex))) {
 
-            if (checkTerrainCollisionInDirection(ENTITY_PLAYER, 0x20, convertWorldToSpriteDirection(direction, gMainMapIndex)) == 0) {
+            if (!checkTerrainCollisionInDirection(ENTITY_PLAYER, 0x20, convertWorldToSpriteDirection(direction, gMainMapIndex))) {
 
                 vec1 = projectEntityPosition(ENTITY_PLAYER, 0x20, convertWorldToSpriteDirection(direction, MAIN_MAP_INDEX));
                 
@@ -1298,6 +1301,7 @@ void func_80067034(void) {
                 if (groundObjectIndex == 0xFF || (getGroundObjectPlayerInteractionsFlags(groundObjectIndex) & 8)) {
                     set = TRUE;
                 }
+
             }
 
         }

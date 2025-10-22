@@ -270,7 +270,7 @@ void setSeasonName(void) {
     gCurrentSeasonName[5] = gGlobalSeasonName[5];
     
     // message.c
-    convertNumberToString(0x15, gDayOfMonth, 1);
+    convertNumberToString(21, gDayOfMonth, 1);
 
 }
 

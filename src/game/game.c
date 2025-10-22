@@ -2743,7 +2743,7 @@ void func_800610DC(void) {
 
         switch (gPlayer.heldItem) {
             case 0x60 ... 0x6F:
-                func_80088C1C(0xFF, gPlayer.heldChickenIndex);
+                func_80088C1C(0xFF, gPlayer.heldAnimalIndex);
                 break;
             case 0x58 ... 0x5F:
                 setDogLocation(0xFF);

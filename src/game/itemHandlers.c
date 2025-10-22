@@ -2824,14 +2824,14 @@ bool func_800D5CC0(u8 itemIndex) {
 
             vec2 = projectEntityPosition(ENTITY_PLAYER, 0x20, convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX));
 
-            gChickens[gPlayer.heldChickenIndex].coordinates = vec2;
+            gChickens[gPlayer.heldAnimalIndex].coordinates = vec2;
 
-            gChickens[gPlayer.heldChickenIndex].direction = convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX);
-            gChickens[gPlayer.heldChickenIndex].location = gBaseMapIndex;
+            gChickens[gPlayer.heldAnimalIndex].direction = convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX);
+            gChickens[gPlayer.heldAnimalIndex].location = gBaseMapIndex;
 
-            gChickens[gPlayer.heldChickenIndex].flags &= ~8;
+            gChickens[gPlayer.heldAnimalIndex].flags &= ~8;
 
-            func_8008B2E8(gPlayer.heldChickenIndex);
+            func_8008B2E8(gPlayer.heldAnimalIndex);
             
             break;
 
@@ -2996,19 +2996,19 @@ bool func_800D5CC0(u8 itemIndex) {
 
        case EGG_HELD_ITEM:                              
 
-            gPlayer.heldChickenIndex = func_80087F28(0, 0xFF);
+            gPlayer.heldAnimalIndex = func_80087F28(0, 0xFF);
 
-            gChickens[gPlayer.heldChickenIndex].coordinates.x = 92.0f;
-            gChickens[gPlayer.heldChickenIndex].coordinates.y = 0;
-            gChickens[gPlayer.heldChickenIndex].coordinates.z = -148.0f;
+            gChickens[gPlayer.heldAnimalIndex].coordinates.x = 92.0f;
+            gChickens[gPlayer.heldAnimalIndex].coordinates.y = 0;
+            gChickens[gPlayer.heldAnimalIndex].coordinates.z = -148.0f;
             
-            gChickens[gPlayer.heldChickenIndex].direction = convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX);
-            gChickens[gPlayer.heldChickenIndex].location = gBaseMapIndex;
+            gChickens[gPlayer.heldAnimalIndex].direction = convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX);
+            gChickens[gPlayer.heldAnimalIndex].location = gBaseMapIndex;
             
-            gChickens[gPlayer.heldChickenIndex].flags &= ~8;
-            gChickens[gPlayer.heldChickenIndex].flags |= 0x20;
+            gChickens[gPlayer.heldAnimalIndex].flags &= ~8;
+            gChickens[gPlayer.heldAnimalIndex].flags |= 0x20;
 
-            func_8008B2E8(gPlayer.heldChickenIndex);
+            func_8008B2E8(gPlayer.heldAnimalIndex);
 
             break;
 
@@ -3108,7 +3108,7 @@ void func_800D67FC(u8 index) {
 
     switch (index) {
         case 0x60 ... 0x6F:
-            temp =  gPlayer.heldChickenIndex + 0xF5;
+            temp =  gPlayer.heldAnimalIndex + 0xF5;
             break;
         default:
             temp = D_80118000[index];
@@ -3129,7 +3129,7 @@ void func_800D67FC(u8 index) {
     
 //     if (temp < 0x70) {
 //         if (temp > 0x5F) {
-//             temp2 = gPlayer.heldChickenIndex + 0xF5;
+//             temp2 = gPlayer.heldAnimalIndex + 0xF5;
 //             goto func_end;
 //         } 
 //     } 

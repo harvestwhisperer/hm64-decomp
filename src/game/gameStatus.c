@@ -739,12 +739,12 @@ void func_80064814(void) {
 
                     setLifeEventBit(0x2B);
                     
-                    D_8018985C[0] = gChickens[i].name[0];
-                    D_8018985C[1] = gChickens[i].name[1];
-                    D_8018985C[2] = gChickens[i].name[2];
-                    D_8018985C[3] = gChickens[i].name[3];
-                    D_8018985C[4] = gChickens[i].name[4];
-                    D_8018985C[5] = gChickens[i].name[5];
+                    deadAnimalName[0] = gChickens[i].name[0];
+                    deadAnimalName[1] = gChickens[i].name[1];
+                    deadAnimalName[2] = gChickens[i].name[2];
+                    deadAnimalName[3] = gChickens[i].name[3];
+                    deadAnimalName[4] = gChickens[i].name[4];
+                    deadAnimalName[5] = gChickens[i].name[5];
 
                     break;
 
@@ -761,12 +761,12 @@ void func_80064814(void) {
         
                             setLifeEventBit(0x2B);
                             
-                            D_8018985C[0] = gChickens[i].name[0];
-                            D_8018985C[1] = gChickens[i].name[1];
-                            D_8018985C[2] = gChickens[i].name[2];
-                            D_8018985C[3] = gChickens[i].name[3];
-                            D_8018985C[4] = gChickens[i].name[4];
-                            D_8018985C[5] = gChickens[i].name[5];
+                            deadAnimalName[0] = gChickens[i].name[0];
+                            deadAnimalName[1] = gChickens[i].name[1];
+                            deadAnimalName[2] = gChickens[i].name[2];
+                            deadAnimalName[3] = gChickens[i].name[3];
+                            deadAnimalName[4] = gChickens[i].name[4];
+                            deadAnimalName[5] = gChickens[i].name[5];
         
                             break;
 
