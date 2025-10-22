@@ -131,6 +131,7 @@
 // multiple directions
 #define CHICKEN_HELD_ITEM 96
 // multiple directions
+#define CHICK_HELD_ITEM 104
 #define EMPTY_BOTTLE_HELD_ITEM 112
 #define BOTTLE_WITH_WATER_HELD_ITEM 113
 #define BOTTLE_WITH_WINE_HELD_ITEM 114

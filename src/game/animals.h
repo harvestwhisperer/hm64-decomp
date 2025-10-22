@@ -11,6 +11,7 @@
 #define ADULT_CHICKEN 2
 
 // TODO: finish adding animal types
+#define CHICKEN_EGG 0
 #define CALF 1
 #define CHICK 1
 #define ADULT_COW 2
@@ -186,8 +187,6 @@ extern Chicken gChickens[MAX_CHICKENS];
 extern FarmAnimal gFarmAnimals[MAX_FARM_ANIMALS];
 extern u8 D_8016FBCC[1];
 extern u8 D_801886D4[6];
-// TODO: label
-// dead animal name for funeral
 extern u8 deadAnimalName[6];
 extern Dog dogInfo;
 extern Horse horseInfo;

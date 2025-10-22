@@ -347,21 +347,20 @@ bool func_80086764(void) {
 
                 // ???
                 if (!i) {
-                    gPlayer.heldItem = 0x58;
+                    gPlayer.heldItem = DOG_HELD_ITEM;
                 } else {
-                    gPlayer.heldItem = 0x7B;
+                    gPlayer.heldItem = PUPPY_1_HELD_ITEM;
                 }
                 
                 deactivateEntity(dogInfo.entityIndex);
                 setPlayerAction(4, 6);
+
                 dogInfo.flags &= ~(4 | 0x10);
                 dogInfo.flags |= 8;
 
                 if (!(dogInfo.flags & 0x40)) {
 
-                    if (dogInfo.flags & 1) {
-                        dogInfo.affection += adjustValue(dogInfo.affection, 1, MAX_AFFECTION);
-                    }
+                    adjustDogAffection(1);
 
                     dogInfo.flags |= 0x40;
                     
@@ -377,7 +376,7 @@ bool func_80086764(void) {
 
                     if (checkDailyEventBit(2) && getLevelFlags(gChickens[i].location) & 0x20) {
 
-                        if (gChickens[i].type == 2) {
+                        if (gChickens[i].type == ADULT_CHICKEN) {
 
                             setGameVariableString(0xD, gChickens[i].name, 6);
                             func_8005B09C(7);
@@ -398,23 +397,23 @@ bool func_80086764(void) {
 
                         switch (gChickens[i].type) {
 
-                            case 2:
-                                gPlayer.heldItem = 0x60;
+                            case ADULT_CHICKEN:
+                                gPlayer.heldItem = CHICKEN_HELD_ITEM;
                                 gChickens[i].flags |= 8;
                                 set = TRUE;
                                 break;
                             
-                            case 1:
-                                gPlayer.heldItem = 0x68;
+                            case CHICK:
+                                gPlayer.heldItem = CHICK_HELD_ITEM;
                                 gChickens[i].flags |= 8;
                                 set = TRUE;
                                 break;
                             
-                            case 0:
+                            case CHICKEN_EGG:
 
                                 if (!(gChickens[i].flags & 0x20)) {
                                     set = TRUE;
-                                    gPlayer.heldItem = 0x14;
+                                    gPlayer.heldItem = EGG_HELD_ITEM;
                                     gChickens[i].flags = 0;
                                 }
                                 
@@ -1778,7 +1777,7 @@ void func_8008A650(u8 index) {
 
         switch (gChickens[index].type) {
         
-            case 0:
+            case CHICKEN_EGG:
                 
                 if (gChickens[index].flags & 0x20) {
                     
@@ -1792,6 +1791,7 @@ void func_8008A650(u8 index) {
 
                             gChickens[D_8016FFE8].flags |= 0x100;
                             gChickens[index].flags &= ~1;
+
                             setLifeEventBit(3);
                             
                         } else {                        
@@ -1933,7 +1933,7 @@ void func_8008B2E8(u8 chickenIndex) {
                 loadEntity(gChickens[chickenIndex].entityIndex, 0x43, TRUE);
                 break;
             
-            case 0:
+            case CHICKEN_EGG:
                 initializeAnimalEntity(chickenIndex + 2, (void*)0x8028DD50, (void*)0x80290550, (void*)0x80293A50, (void*)0x80293C50);
                 loadEntity(gChickens[chickenIndex].entityIndex, 0x5D, TRUE);
                 break;
@@ -2249,7 +2249,7 @@ void func_8008CF94(u8 index) {
                     func_8008D70C(index);
                     break;
         
-                case 0:
+                case CHICKEN_EGG:
                     func_8008DA00(index);
                     break;
     
@@ -9016,14 +9016,14 @@ bool func_8009AE7C(void) {
 
              switch (gChickens[i].type) { 
 
-                 case 2:
+                 case ADULT_CHICKEN:
                     func_800861A4(1, i, 0xFF, 0xFF, 0x11);
                     gChickens[i].flags |= 0x40;
                     func_8009BCC4(4, i, 0);
                     set = TRUE;
                     break;
                  
-                 case 1:
+                 case CHICK:
                     gChickens[i].flags |= 0x40;
                     func_8009BCC4(4, i, 0);
                     set = TRUE;
@@ -9221,6 +9221,7 @@ u8 func_8009B3DC(void) {
         
         if (gFarmAnimals[i].flags & 1) {
             
+            // FIXME: should be range
             if ((u8)(gFarmAnimals[i].type - 1) < 2U || (gFarmAnimals[i].type == 0 || gFarmAnimals[i].type == 3)) {
                 count++;
             }
@@ -9242,7 +9243,7 @@ u8 func_8009B464(void) {
 
     for (i = 0; i < MAX_FARM_ANIMALS; i++) {
         
-        if (gFarmAnimals[i].flags & 1 &&  gFarmAnimals[i].type == 2) {
+        if (gFarmAnimals[i].flags & 1 && gFarmAnimals[i].type == 2) {
 
             if (gFarmAnimals[i].affection >= temp) {
                 found = i;
@@ -9286,17 +9287,20 @@ u8 func_8009B564(void) {
     u8 count = 0;
 
     for (i = 0; i < MAX_CHICKENS; i++) {
+
         if (gChickens[i].flags & 1) {
             
+            // FIXME: should be range
             if ((gChickens[i].type - 1) < 2U) {
                 count++;
             }
 
-            if (gChickens[i].type == 0 && gChickens[i].flags & 0x20) {
+            if (gChickens[i].type == CHICKEN_EGG && gChickens[i].flags & 0x20) {
                 count++;
             }
             
         }  
+
     }
     
     return count;
@@ -9311,9 +9315,11 @@ u8 func_8009B5E0(void) {
     u8 count = 0;
 
     for (i = 0; i < MAX_CHICKENS; i++) {
-        if (gChickens[i].flags & 1 && gChickens[i].type == 2 && gChickens[i].condition == 0) {
+
+        if ((gChickens[i].flags & 1) && gChickens[i].type == ADULT_CHICKEN && gChickens[i].condition == 0) {
             count++;
         }
+
     }
     
     return count;
@@ -9328,9 +9334,11 @@ u8 func_8009B658(void) {
     u8 count = 0;
 
     for (i = 0; i < MAX_CHICKENS; i++) {
-        if (gChickens[i].flags & 1 && gChickens[i].type == 0) {
+
+        if ((gChickens[i].flags & 1) && gChickens[i].type == CHICKEN_EGG) {
             count++;
         }
+
     }
     
     return count;
@@ -9349,8 +9357,10 @@ void func_8009B6B8() {
     while (i < MAX_CHICKENS && !found) {
 
         if (!(gChickens[i].flags & 1)) {
+
             i++;
-        } else if (gChickens[i].type == 0) {
+
+        } else if (gChickens[i].type == CHICKEN_EGG) {
           
             if (!(gChickens[i].flags & 0x20)) {
                 found++;
@@ -9385,7 +9395,7 @@ u8 func_8009B7BC(void) {
 
     for (i = 0; i < MAX_CHICKENS; i++) {
 
-        if ((gChickens[i].flags & 1) && (gChickens[i].type == 0) && (gChickens[i].flags & 0x20)) {
+        if ((gChickens[i].flags & 1) && (gChickens[i].type == CHICKEN_EGG) && (gChickens[i].flags & 0x20)) {
             sum++;
         }
         
@@ -9575,7 +9585,7 @@ u8 func_8009BBAC(void) {
 
         if (gFarmAnimals[i].flags & 1) {
 
-            // FIXME
+            // FIXME: should be range
             if ((u8)(gFarmAnimals[i].type - 1) < 2U || (gFarmAnimals[i].type == 0 || gFarmAnimals[i].type == 3)) {
                 
                 temp = gFarmAnimals[i].goldenMilk;
