@@ -17,7 +17,7 @@
 #define ENTITY_MAP_SPACE_INDEPENDENT 0x100
 #define ENTITY_TRACKING_ACTIVE 0x200
 #define ENTITY_NON_COLLIDABLE 0x400
-#define ENTITY_UNKNOWN_FLAG_2 0x800 // used by item entities set when entity is touching ground
+#define ENTITY_UNKNOWN_FLAG_2 0x800 // used by item entities; set when entity is touching ground
 #define ENTITY_LOAD_PENDING 0x1000
 #define ENTITY_PALETTE_SET 0x2000
 #define ENTITY_COLLISION_EXEMPT 0x4000
@@ -122,17 +122,17 @@ extern bool setEntityPaletteIndex(u16 entityIndex, u16);
 extern bool func_8002FF38(u16, u16);
 extern bool setEntityCollisionBuffers(u16 entityIndex, u8 xValue, u8 yValue);
 extern bool setEntitySpriteDimensions(u16 index, u8 arg1, u8 arg2);
-extern bool setEntityYMovement(u16 entityIndex, bool flag);    
-extern bool func_800300F8(u16, u8);                                                 
+extern bool setEntityYMovement(u16 entityIndex, bool flag);                                                   
 extern bool checkEntityPaused(u16 entityIndex);        
 extern void updateEntities(void);                          
 extern bool setEntityCollidable(u16, u8);                            
-extern bool setEntityTracksCollisions(u16, u8);                          
+extern bool setEntityTracksCollisions(u16, u8);                            
 extern bool enableEntityMovement(u16, u8);         
 extern u16 func_800305CC(u16 entityIndex, f32, f32, u16);
 extern u8 getLevelInteractionIndexFromEntityPosition(u16, f32, f32);     
 extern u16 func_80030BA0(u16* ptr, u16 offset);  
 extern Vec3f func_80030EAC(u16, f32, f32);                  
+extern bool func_800300F8(u16 index, u8 flag);
 extern Vec3f getEntityTileCoordinates(u16 index);    
 extern u8 detectEntityOverlap(Entity* entity, u16 entityIndex, f32 deltaX, f32 deltaZ, u16 collisionWidth, u16 collisionHeight);
 extern bool checkEntityShouldPlaySoundEffect(u16 entityIndex);   

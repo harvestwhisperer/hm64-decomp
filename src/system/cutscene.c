@@ -1452,6 +1452,7 @@ void func_80048B90(u16 index) {
 
 //INCLUDE_ASM("asm/nonmatchings/system/cutscene", func_80048BEC);
 
+// sets D_80189824
 void func_80048BEC(u16 index) {
 
     CutsceneUnknownCmd2* ptr = (CutsceneUnknownCmd2*)cutsceneExecutors[index].bytecodePtr;
@@ -1615,6 +1616,7 @@ void func_80048E98(u16 index) {
 
 //INCLUDE_ASM("asm/nonmatchings/system/cutscene", cutsceneHandlerSetSpecialBit);
 
+// sets D_801891D4
 void cutsceneHandlerSetSpecialBit(u16 index) {
 
     CutsceneSetSpecialBitCmd* ptr = (CutsceneSetSpecialBitCmd*)cutsceneExecutors[index].bytecodePtr;

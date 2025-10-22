@@ -77,7 +77,9 @@ void updateAudio(void) {
                 gSongs[i].flags = 0;
                 MusHandleStop(gSongs[i].handle, 1);
             }
+
         }   
+        
     }
 
     for (j = 0; j < MAX_ACTIVE_SFX; j++) {
@@ -157,6 +159,7 @@ bool stopSongWithFadeOut(u16 index, u32 speed) {
             result = TRUE;
 
         }
+
     }
     
     return result;

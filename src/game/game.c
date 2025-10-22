@@ -2688,7 +2688,7 @@ u8 calculateAnimalDirectionToPlayer(f32 animalX, f32 animalZ, f32 playerX, f32 p
                 direction = ((s16)deltaX / 2) < (s16)deltaZ ? SOUTH : SOUTHEAST;
             }
             
-        } else if ((s16) deltaX <= (s16) deltaZ) {
+        } else if ((s16)deltaX <= (s16)deltaZ) {
 
             direction = (s16)deltaX > ((s16)deltaZ / 2) ? EAST : NORTHEAST;
 

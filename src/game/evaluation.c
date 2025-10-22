@@ -120,5 +120,5 @@ u8 calculateShippingScore(void) {
     }
 
     return score;
-}
 
+}
