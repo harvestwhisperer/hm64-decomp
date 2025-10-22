@@ -1591,7 +1591,7 @@ void func_8008DAA0(u8 index) {
                     gFarmAnimals[index].direction = gPlayer.direction;
                     gFarmAnimals[index].unk_1B = 1;
                     gFarmAnimals[index].flags &= ~(0x200);
-                    gFarmAnimals[index].flags |= 0x2400;
+                    gFarmAnimals[index].flags |= (0x400 | 0x2000);
                 }
             }
             
@@ -1659,7 +1659,7 @@ void func_8008DAA0(u8 index) {
     
                     break;
                 }
-            gFarmAnimals[index].flags &= ~(0xA000);
+            gFarmAnimals[index].flags &= ~(0x2000 | 0x8000);
         }
         setEntityDirection(gFarmAnimals[index].entityIndex, convertSpriteToWorldDirection(gFarmAnimals[index].direction, MAIN_MAP_INDEX));
         vec = getMovementVectorFromDirection(gFarmAnimals[index].unk_14, gFarmAnimals[index].direction, 0.0f);
