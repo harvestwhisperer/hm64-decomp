@@ -983,11 +983,11 @@ bool setGameVariableString(u16 index, u8* ptr, s8 length) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/message", convertNumberToString);
+//INCLUDE_ASM("asm/nonmatchings/system/message", convertNumberToGameVariableString);
 
 // set number string for game variables based on their current quantity
 // FIXME: fake matches, but need do {} while (0) to get registers right
-bool convertNumberToString(u16 index, u32 number, u8 terminatorType) {
+bool convertNumberToGameVariableString(u16 index, u32 number, u8 terminatorType) {
     
     u32 digitDivisorsBuffer[8];
     u8 digitCharacterCodesBuffer[16];

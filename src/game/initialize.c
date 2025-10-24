@@ -17,6 +17,7 @@
 
 #include "game/animals.h" 
 #include "game/evaluation.h"
+#include "game/fieldObjects.h"
 #include "game/game.h"
 #include "game/gameAudio.h"
 #include "game/gameStart.h"
@@ -425,7 +426,7 @@ void initializeGameVariables(void) {
         gChickens[i].unk_1B = 0;
         gChickens[i].type = 0;
         gChickens[i].condition = 0;
-        gChickens[i].unk_1E = 0;
+        gChickens[i].ageOrIncubationCounter = 0;
         gChickens[i].starvedCounter = 0;
 
         gChickens[i].coordinates.x = 0;
@@ -433,6 +434,7 @@ void initializeGameVariables(void) {
         gChickens[i].coordinates.z = 0;
         
         gChickens[i].flags = 0;
+
         gChickens[i].name[0] = 0xFF;
         gChickens[i].name[1] = 0xFF;
         gChickens[i].name[2] = 0xFF;
@@ -442,7 +444,7 @@ void initializeGameVariables(void) {
 
     }
 
-     for (i = 0; i < MAX_FARM_ANIMALS; i++) {
+    for (i = 0; i < MAX_FARM_ANIMALS; i++) {
          
         gFarmAnimals[i].location = 0;
          
@@ -454,7 +456,7 @@ void initializeGameVariables(void) {
          
         gFarmAnimals[i].type = 0;
         gFarmAnimals[i].condition = 0;
-        gFarmAnimals[i].age = 0;
+        gFarmAnimals[i].typeCounter = 0;
         gFarmAnimals[i].conditionCounter = 0;
          
         gFarmAnimals[i].coordinates.x = 0;
@@ -480,12 +482,12 @@ void initializeGameVariables(void) {
         gFarmAnimals[i].birthdaySeason = 0;
         gFarmAnimals[i].birthdayDayOfMonth = 0;
          
-        gFarmAnimals[i].goldenMilk = 0xFF;
+        gFarmAnimals[i].normalMilk = 0xFF;
     }
 
     for (i = 0; i < MAX_MISC_ANIMALS; i++) {
 
-        gMiscAnimals[i].unk_15 = 0;
+        gMiscAnimals[i].animalType = 0;
         gMiscAnimals[i].mapIndex = 0;
         gMiscAnimals[i].unk_F = 0;
         gMiscAnimals[i].direction = 0;
@@ -643,9 +645,8 @@ void initializeGameVariables(void) {
 
     setInitialSpecialDialogueBits();
     
-    memcpy(farmFieldTiles , D_80113580, 0x1E0);
-
-    memcpy(greenhouseFieldTiles, D_80113760, 0x1E0);
+    memcpy(farmFieldTiles , D_80113580, FIELD_WIDTH * FIELD_HEIGHT);
+    memcpy(greenhouseFieldTiles, D_80113760, FIELD_WIDTH * FIELD_HEIGHT);
         
     albumBits |= 1;
 
@@ -1614,7 +1615,7 @@ void func_80054734(void) {
 void initializeDialogueVariables(void) {
 
     // alcohol tolerance is first lol
-    setDialogueVariable(0, &gAlcoholTolerance, UNSIGNED_CHAR, MAX_ALCOHOL_TOLERANCE );
+    setDialogueVariable(0, &gAlcoholTolerance, UNSIGNED_CHAR, MAX_ALCOHOL_TOLERANCE);
 
     setDialogueVariable(1, &gSeason, UNSIGNED_CHAR, 4);
     setDialogueVariable(2, &gHour, UNSIGNED_CHAR, 23);

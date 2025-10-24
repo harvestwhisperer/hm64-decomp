@@ -269,8 +269,7 @@ void setSeasonName(void) {
     gCurrentSeasonName[4] = gGlobalSeasonName[4];
     gCurrentSeasonName[5] = gGlobalSeasonName[5];
     
-    // message.c
-    convertNumberToString(21, gDayOfMonth, 1);
+    convertNumberToGameVariableString(21, gDayOfMonth, 1);
 
 }
 

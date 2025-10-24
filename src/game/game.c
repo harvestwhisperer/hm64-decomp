@@ -114,8 +114,7 @@ extern u16 D_801FB686;
 
 extern u8 mariaHarrisNewlywedCounter;
 
-//extern u16 D_801C3F32;
-// TODO: identify this
+// extern u16 D_801C3F32;
 extern u8 D_801C4216;
 // cow festival winner affection (D_80189054)
 extern u16 D_801886D2;
@@ -1250,8 +1249,8 @@ void func_8005D0BC(void) {
     if (gBaseMapIndex == COOP && checkLifeEventBit(3)) {
         
         gNamingScreenIndex = 7;
-        D_801FC155 = D_8016FFE8;
-        gChickens[D_8016FFE8].flags &= ~0x100;
+        D_801FC155 = bornChickenIndex;
+        gChickens[bornChickenIndex].flags &= ~0x100;
         
         setMainLoopCallbackFunctionIndex(NAMING_SCREEN);
         toggleLifeEventBit(3);
@@ -1285,8 +1284,8 @@ void func_8005D0BC(void) {
     if (gBaseMapIndex == BARN && checkLifeEventBit(4)) {
         
         gNamingScreenIndex = 5;
-        D_801FC155 = D_80170464;
-        gFarmAnimals[D_80170464].flags &= ~0x800;
+        D_801FC155 = bornAnimalIndex;
+        gFarmAnimals[bornAnimalIndex].flags &= ~0x800;
             
         setMainLoopCallbackFunctionIndex(NAMING_SCREEN);
         toggleLifeEventBit(4);
@@ -2672,8 +2671,8 @@ u8 calculateAnimalDirectionToPlayer(f32 animalX, f32 animalZ, f32 playerX, f32 p
    
     u8 direction;
     
-    s32 deltaX;
-    s32 deltaZ;
+    s16 deltaX;
+    s16 deltaZ;
 
     deltaX = getAbsoluteValue((s32)(s16)(playerX - animalX));
     deltaZ = getAbsoluteValue((s32)(s16)(playerZ - animalZ));
@@ -2682,19 +2681,19 @@ u8 calculateAnimalDirectionToPlayer(f32 animalX, f32 animalZ, f32 playerX, f32 p
         
         if (animalZ <= playerZ) {
             
-            if ((s16)deltaX <= (s16)deltaZ) {
-                direction = ((s16)deltaZ / 2) < (s16)deltaX ? SOUTH : SOUTHWEST;
+            if (deltaX <= deltaZ) {
+                direction = (deltaZ / 2) < deltaX ? SOUTH : SOUTHWEST;
             } else {
-                direction = ((s16)deltaX / 2) < (s16)deltaZ ? SOUTH : SOUTHEAST;
+                direction = (deltaX / 2) < deltaZ ? SOUTH : SOUTHEAST;
             }
             
-        } else if ((s16)deltaX <= (s16)deltaZ) {
+        } else if (deltaX <= deltaZ) {
 
-            direction = (s16)deltaX > ((s16)deltaZ / 2) ? EAST : NORTHEAST;
+            direction = deltaX > (deltaZ / 2) ? EAST : NORTHEAST;
 
         } else {
 
-            if ((s16)deltaX / 2 >= (s16) deltaZ) {
+            if (deltaX / 2 >= deltaZ) {
                 direction = SOUTHEAST;
             } else {
                 direction = EAST;
@@ -2704,29 +2703,29 @@ u8 calculateAnimalDirectionToPlayer(f32 animalX, f32 animalZ, f32 playerX, f32 p
         
     } else if (animalZ <= playerZ) {
         
-        if ((s16)deltaX <= (s16)deltaZ) {
+        if (deltaX <= deltaZ) {
 
-            direction = ((s16)deltaZ / 2) < (s16) deltaX;
+            direction = (deltaZ / 2) < deltaX;
             
         } else {
 
-            if (((s16)deltaX / 2) >= (s16)deltaZ) {
+            if ((deltaX / 2) >= deltaZ) {
                 direction = NORTHWEST;
             } else {
                 direction = WEST;
             }
         }
         
-    } else if ((s16)deltaX <= (s16)deltaZ) {
+    } else if (deltaX <= deltaZ) {
         
-        if (((s16)deltaZ / 2) >= (s16) deltaX) {
+        if ((deltaZ / 2) >= deltaX) {
             direction = NORTHEAST;
         } else {
             direction = NORTH;
         }
         
     } else {
-        direction = ((s16)deltaZ > ((s16)deltaX / 2)) ? NORTH : NORTHWEST;
+        direction = (deltaZ > (deltaX / 2)) ? NORTH : NORTHWEST;
     }
     
     return direction;

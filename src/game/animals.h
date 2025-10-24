@@ -7,15 +7,13 @@
 #define MAX_MISC_ANIMALS 7
 #define MAX_FARM_ANIMALS 8
 
+#define CHICKEN_EGG 0
 #define CHICK 1
 #define ADULT_CHICKEN 2
 
-// TODO: finish adding animal types
-#define CHICKEN_EGG 0
+#define BABY_COW 0
 #define CALF 1
-#define CHICK 1
 #define ADULT_COW 2
-#define ADULT_CHICKEN 2
 #define PREGNANT_COW 3
 #define BABY_SHEEP 4
 #define ADULT_SHEEP 5
@@ -27,8 +25,35 @@
 #define SHEEP_TYPE 3
 #define CHICKEN_TYPE 4
 
+#define COW_INFANCY_DURATION 14
+#define COW_YOUTH_DURATION 21
+#define COW_PREGNANCY_DURATION 21
+#define SHEEP_YOUTH_DURATION 15
+#define WOOL_REGROW_DURATION 7
+#define CHICKEN_EGG_INCUBATION_DURATION 3
+#define CHICK_DURATION 7
+#define ANIMAL_DEATH_COUNT 7
+
+#define CHICKEN_NORMAL 0
+#define CHICKEN_STARVED 1
+#define CHICKEN_DEAD 2
+
+#define COW_NORMAL 0
+#define COW_HAPPY 1
+#define COW_MAD 2
+#define COW_SICK 3
+#define COW_DEAD 4
+
+#define SHEEP_NORMAL 0
+#define SHEEP_SICK 3
+#define SHEEP_DEAD 4
+
 /* flags */
 #define CHICKEN_FED 0x10
+
+#define ANIMAL_FED 0x8
+#define COW_PREGNANT 0x80
+
 
 // 0x801C3BF0
 typedef struct {
@@ -43,7 +68,7 @@ typedef struct {
 	u8 unk_1B;
 	u8 type;
 	u8 condition;
-	u8 unk_1E;
+	u8 ageOrIncubationCounter;
 	u8 starvedCounter;
 	u16 flags;
 } Chicken;
@@ -62,12 +87,12 @@ typedef struct {
 	u8 unk_1E;
 	u8 type; // 0x1F
 	u8 condition; // 0x20
-	u8 age; // 0x21
+	u8 typeCounter; // 0x21  overloaded field: age, pregnancy, sheared status
 	u8 conditionCounter; // 0x22
 	u8 unk_23[6];
 	u8 birthdaySeason; // 0x29
 	u8 birthdayDayOfMonth; // 0x2A
-	u8 goldenMilk; // 0x2B
+	u8 normalMilk; // 0x2B
 	u16 flags; // 0x2C
 } FarmAnimal;
 
@@ -106,6 +131,7 @@ typedef struct {
 	u16 flags; // 20
 } Horse;
 
+// birds, insects, dogs/cats
 // 0x8016FB08
 typedef struct {
 	Vec3f coordinates; // 08
@@ -117,11 +143,17 @@ typedef struct {
 	u8 yDisplacement; // 1A
 	u8 unk_13; // 1B
 	u8 unk_14; // 1C
-	u8 unk_15; // 1D
+	u8 animalType; // 1D
 	u8 unk_16; // 1E
 	u8 unk_17; // 1F
 	u16 flags; // 20
 } MiscAnimal;
+
+typedef struct {
+    u16 arr[3];
+    u16 arr2[3];
+    u16 arr3[3];
+} SheepItemInfo;
 
 extern bool func_80086764();
 extern void func_800876D0();
@@ -185,7 +217,7 @@ extern void setHorseLocation(u8);
 extern MiscAnimal gMiscAnimals[MAX_MISC_ANIMALS];
 extern Chicken gChickens[MAX_CHICKENS];
 extern FarmAnimal gFarmAnimals[MAX_FARM_ANIMALS];
-extern u8 D_8016FBCC[1];
+extern u8 D_8016FBCC[2];
 extern u8 D_801886D4[6];
 extern u8 deadAnimalName[6];
 extern Dog dogInfo;
@@ -197,9 +229,9 @@ extern u8 mrsManaCow1Index;
 extern u8 mrsManaCow2Index;
 
 extern u16 D_8016FDF0;
-extern u8 D_8016FFE8;
+extern u8 bornChickenIndex;
 // newest farm animal index?
-extern u8 D_80170464;
+extern u8 bornAnimalIndex;
 // cow festival stall
 extern u8 D_80189054;
 extern u8 D_801FC155;

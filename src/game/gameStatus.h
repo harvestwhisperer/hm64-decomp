@@ -29,6 +29,7 @@
 #define FESTIVAL_DAY_TYPE_2 0x30
 // 0x4B level audio set?; set by func_800AC21C
 #define FED_DOG 0x43
+#define HELD_ANIMAL 0x44
 #define FESTIVAL 0x4D
 #define FESTIVAL_2 0x4E
 // sick/sprained ankle
@@ -40,8 +41,8 @@
 #define MARRIED 0
 #define HAVE_BABY 1
 #define BOUGHT_BLUE_MIST_SEEDS 2
-// #define CHICKEN_BORN 3
-// #define FARM_ANIMAL_BORN 4
+#define CHICKEN_BORN 3
+#define FARM_ANIMAL_BORN 4
 #define HAVE_HORSE 5
 #define GIVE_RICK_RARE_METAL 6
 #define GAVE_BLUE_ROCK_TO_SAIBARA 7

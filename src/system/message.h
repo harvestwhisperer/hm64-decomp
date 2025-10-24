@@ -288,7 +288,7 @@ extern void func_8003FAE8(u8* arg0);
 extern bool setMessageBoxButtonMask(u16, u16);                    
 extern bool func_8003FB4C(u16, s16);                      
 extern bool setGameVariableString(u16, u8*, s8);  
-extern u8 convertNumberToString(u16 index, u32 arg1, u8 arg2);
+extern u8 convertNumberToGameVariableString(u16 index, u32 arg1, u8 arg2);
 extern bool func_8003FE9C(u16 index);
 extern bool func_8003FFF4(u16 index);
 extern void updateMessageBox();
