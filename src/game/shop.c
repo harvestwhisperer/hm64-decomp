@@ -607,7 +607,7 @@ void func_800DCAB8(void) {
                 }
                 
                 func_8003F360(0, -4, 2);
-                convertNumberToString(0x12, shopContext.quantity * prices[shopContext.storeItemIndex], 0);
+                convertNumberToGameVariableString(0x12, shopContext.quantity * prices[shopContext.storeItemIndex], 0);
                 setMessageBoxViewSpacePosition(0, 24.0f, -64.0f, 352.0f);
                 setMessageBoxSpriteIndices(0, 0, 0, 0);
                 initializeMessageBox(MAIN_DIALOGUE_BOX_INDEX, D_80118E80[shopContext.storeItemIndex], D_80118BE0[shopContext.storeItemIndex], 0x80000);
@@ -661,7 +661,7 @@ void func_800DCAB8(void) {
                         shopContext.quantity++;
                     
                         dmaPauseScreenSprites(0, shopContext.quantity, 1, 3);
-                        convertNumberToString(0x12, shopContext.quantity * prices[shopContext.storeItemIndex], 0);
+                        convertNumberToGameVariableString(0x12, shopContext.quantity * prices[shopContext.storeItemIndex], 0);
                     
                         if (D_80118F60[shopContext.storeItemIndex] >= 2) {
                             func_800B4238(D_80118F60[shopContext.storeItemIndex]);
@@ -687,7 +687,7 @@ void func_800DCAB8(void) {
                         shopContext.quantity--;
                     
                         dmaPauseScreenSprites(0, shopContext.quantity, 1, 3);
-                        convertNumberToString(0x12, shopContext.quantity * prices[shopContext.storeItemIndex], 0);
+                        convertNumberToGameVariableString(0x12, shopContext.quantity * prices[shopContext.storeItemIndex], 0);
 
                         if (D_80118F60[shopContext.storeItemIndex] >= 2) {
                             func_800B4238(D_80118F60[shopContext.storeItemIndex]);

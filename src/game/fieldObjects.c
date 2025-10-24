@@ -518,7 +518,7 @@ void func_800D9BFC(void) {
             }
     
             if (gBaseMapIndex != RANCH && npcAffection[GRAY] >= 150) {
-                memcpy((u32)&ranchFieldTiles, (u32)D_80113940, FIELD_SIZE);
+                memcpy((u32)&ranchFieldTiles, (u32)D_80113940, FIELD_WIDTH * FIELD_HEIGHT);
             }
 
         break;
@@ -601,7 +601,7 @@ void func_800D9BFC(void) {
             }
     
             if (gBaseMapIndex != RANCH && npcAffection[GRAY] >= 150) {
-                memcpy((u32)&ranchFieldTiles, (u32)D_80113940, FIELD_SIZE);
+                memcpy((u32)&ranchFieldTiles, (u32)D_80113940, FIELD_WIDTH * FIELD_HEIGHT);
             }
 
             break;
@@ -1456,6 +1456,7 @@ void updateCropsIfRain(void) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", func_800DB99C);
 
+// handle animals eating grass if outside
 bool func_800DB99C(void) {
 
     u8 i, j;

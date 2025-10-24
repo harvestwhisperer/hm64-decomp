@@ -340,7 +340,7 @@ segments:
       - [ 0xEF050, .data, game/player]
       - [ 0xEF680, .data, game/level]
       - [ 0xEFD00, .data, game/npc]
-      - [ 0xEFDC0, data, game/animals]
+      - [ 0xEFDC0, .data, game/animals]
       - [ 0xEFEF0, data, game/setCutscenes]
       - [ 0xF0250, data, game/cutsceneFieldTiles]
       - [ 0xF16F0, data, game/gameAudio] # wave table

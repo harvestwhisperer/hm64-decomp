@@ -3900,7 +3900,7 @@ void loadCutscene(u8 arg0) {
         D_8021E6D0 = 0;
         func_8003C084(0, 7);
 
-        memcpy((u32)&farmFieldTiles, (u32)D_80114E50, 0x1E0);
+        memcpy((u32)&farmFieldTiles, (u32)D_80114E50, FIELD_HEIGHT * FIELD_WIDTH);
 
         index = 0x20;
         
@@ -3912,7 +3912,7 @@ void loadCutscene(u8 arg0) {
         
         gSeason = 1;
 
-        memcpy((u32)farmFieldTiles,(u32)D_80113580, 0x1E0);
+        memcpy((u32)farmFieldTiles,(u32)D_80113580, FIELD_HEIGHT * FIELD_WIDTH);
 
         index = 0x1E;
         

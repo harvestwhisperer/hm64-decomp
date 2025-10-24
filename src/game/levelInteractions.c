@@ -691,7 +691,7 @@ bool func_800AD8D0(u16 mapIndex, u8 levelInteractionIndex) {
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
                 
                 if (gPlayer.direction == NORTHWEST) {
-                    convertNumberToString(0x18, gLumber, 0);
+                    convertNumberToGameVariableString(0x18, gLumber, 0);
                     showTextBox(1, 6, 0xA3, 0, 2);
                     result = TRUE;
                 }
@@ -702,7 +702,7 @@ bool func_800AD8D0(u16 mapIndex, u8 levelInteractionIndex) {
         case 20:
 
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
-                convertNumberToString(0x17, fodderQuantity, 0);
+                convertNumberToGameVariableString(0x17, fodderQuantity, 0);
                 showTextBox(1, 6, 0xA2, 0, 2);
                 result = TRUE;
             }
@@ -911,7 +911,7 @@ u8 func_800AE00C(u16 mapIndex, u8 levelInteractionIndex) {
             
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
                 
-                if (gPlayer.heldItem != FODDER_HELD_ITEM && gFarmAnimals[0].flags & 1) {
+                if (gPlayer.heldItem != FODDER_HELD_ITEM && (gFarmAnimals[0].flags & 1)) {
 
                     temp = gFarmAnimals[0].type;
                     
@@ -929,10 +929,10 @@ u8 func_800AE00C(u16 mapIndex, u8 levelInteractionIndex) {
                             gCurrentSeasonName[4] = gGlobalSeasonName[4];
                             gCurrentSeasonName[5] = gGlobalSeasonName[5];
 
-                            convertNumberToString(0x15, gFarmAnimals[0].birthdayDayOfMonth, 1);
+                            convertNumberToGameVariableString(0x15, gFarmAnimals[0].birthdayDayOfMonth, 1);
                             func_8009BA74(0);
                             setGameVariableString(0x26, gFarmAnimals[0].unk_23, 6);
-                            func_80061690(gFarmAnimals[0].goldenMilk);
+                            func_80061690(gFarmAnimals[0].normalMilk);
                             showTextBox(1, 6, 0xE5, 0, 2);
                             
                         } else if (temp < 7) {
@@ -970,10 +970,10 @@ u8 func_800AE00C(u16 mapIndex, u8 levelInteractionIndex) {
                             gCurrentSeasonName[4] = gGlobalSeasonName[4];
                             gCurrentSeasonName[5] = gGlobalSeasonName[5];
                         
-                            convertNumberToString(0x15, gFarmAnimals[1].birthdayDayOfMonth, 1);
+                            convertNumberToGameVariableString(0x15, gFarmAnimals[1].birthdayDayOfMonth, 1);
                             func_8009BA74(1);
                             setGameVariableString(0x26, gFarmAnimals[1].unk_23, 6);
-                            func_80061690(gFarmAnimals[1].goldenMilk);
+                            func_80061690(gFarmAnimals[1].normalMilk);
                             showTextBox(1, 6, 0xE6, 0, 2);
                     
                         } else if (temp < 7) {
@@ -1011,10 +1011,13 @@ u8 func_800AE00C(u16 mapIndex, u8 levelInteractionIndex) {
                             gCurrentSeasonName[4] = gGlobalSeasonName[4];
                             gCurrentSeasonName[5] = gGlobalSeasonName[5];
                         
-                            convertNumberToString(0x15, gFarmAnimals[2].birthdayDayOfMonth, 1);
+                            convertNumberToGameVariableString(0x15, gFarmAnimals[2].birthdayDayOfMonth, 1);
+                            
                             func_8009BA74(2);
+                            
                             setGameVariableString(0x26, gFarmAnimals[2].unk_23, 6);
-                            func_80061690(gFarmAnimals[2].goldenMilk);
+                            func_80061690(gFarmAnimals[2].normalMilk);
+
                             showTextBox(1, 6, 0xE7, 0, 2);
                             
                         } else if (temp < 7) {
@@ -1052,10 +1055,10 @@ u8 func_800AE00C(u16 mapIndex, u8 levelInteractionIndex) {
                             gCurrentSeasonName[4] = gGlobalSeasonName[4];
                             gCurrentSeasonName[5] = gGlobalSeasonName[5];
                         
-                            convertNumberToString(0x15, gFarmAnimals[3].birthdayDayOfMonth, 1);
+                            convertNumberToGameVariableString(0x15, gFarmAnimals[3].birthdayDayOfMonth, 1);
                             func_8009BA74(3);
                             setGameVariableString(0x26, gFarmAnimals[3].unk_23, 6);
-                            func_80061690(gFarmAnimals[3].goldenMilk);
+                            func_80061690(gFarmAnimals[3].normalMilk);
                             showTextBox(1, 6, 0xE8, 0, 2);
                             
                         } else if (temp < 7) {
@@ -1093,10 +1096,10 @@ u8 func_800AE00C(u16 mapIndex, u8 levelInteractionIndex) {
                             gCurrentSeasonName[4] = gGlobalSeasonName[4];
                             gCurrentSeasonName[5] = gGlobalSeasonName[5];
                         
-                            convertNumberToString(0x15, gFarmAnimals[4].birthdayDayOfMonth, 1);
+                            convertNumberToGameVariableString(0x15, gFarmAnimals[4].birthdayDayOfMonth, 1);
                             func_8009BA74(4);
                             setGameVariableString(0x26, gFarmAnimals[4].unk_23, 6);
-                            func_80061690(gFarmAnimals[4].goldenMilk);
+                            func_80061690(gFarmAnimals[4].normalMilk);
                             showTextBox(1, 6, 0xE9, 0, 2);
                             
                         } else if (temp < 7) {
@@ -1135,10 +1138,10 @@ u8 func_800AE00C(u16 mapIndex, u8 levelInteractionIndex) {
                             gCurrentSeasonName[4] = gGlobalSeasonName[4];
                             gCurrentSeasonName[5] = gGlobalSeasonName[5];
                         
-                            convertNumberToString(0x15, gFarmAnimals[5].birthdayDayOfMonth, 1);
+                            convertNumberToGameVariableString(0x15, gFarmAnimals[5].birthdayDayOfMonth, 1);
                             func_8009BA74(5);
                             setGameVariableString(0x26, gFarmAnimals[5].unk_23, 6);
-                            func_80061690(gFarmAnimals[5].goldenMilk);
+                            func_80061690(gFarmAnimals[5].normalMilk);
                             showTextBox(1, 6, 0xEA, 0, 2);
                             
                         } else if (temp < 7) {
@@ -1177,10 +1180,10 @@ u8 func_800AE00C(u16 mapIndex, u8 levelInteractionIndex) {
                             gCurrentSeasonName[4] = gGlobalSeasonName[4];
                             gCurrentSeasonName[5] = gGlobalSeasonName[5];
                         
-                            convertNumberToString(0x15, gFarmAnimals[6].birthdayDayOfMonth, 1);
+                            convertNumberToGameVariableString(0x15, gFarmAnimals[6].birthdayDayOfMonth, 1);
                             func_8009BA74(6);
                             setGameVariableString(0x26, gFarmAnimals[6].unk_23, 6);
-                            func_80061690(gFarmAnimals[6].goldenMilk);
+                            func_80061690(gFarmAnimals[6].normalMilk);
                             showTextBox(1, 6, 0xEB, 0, 2);
                             
                         } else if (temp < 7) {
@@ -1218,10 +1221,10 @@ u8 func_800AE00C(u16 mapIndex, u8 levelInteractionIndex) {
                             gCurrentSeasonName[4] = gGlobalSeasonName[4];
                             gCurrentSeasonName[5] = gGlobalSeasonName[5];
                         
-                            convertNumberToString(0x15, gFarmAnimals[7].birthdayDayOfMonth, 1);
+                            convertNumberToGameVariableString(0x15, gFarmAnimals[7].birthdayDayOfMonth, 1);
                             func_8009BA74(7);
                             setGameVariableString(0x26, gFarmAnimals[7].unk_23, 6);
-                            func_80061690(gFarmAnimals[7].goldenMilk);
+                            func_80061690(gFarmAnimals[7].normalMilk);
                             showTextBox(1, 6, 0xEC, 0, 2);
                             
                         } else if (temp < 7) {
@@ -1240,7 +1243,7 @@ u8 func_800AE00C(u16 mapIndex, u8 levelInteractionIndex) {
         case 27:
             
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
-                convertNumberToString(0x17, fodderQuantity, 0);
+                convertNumberToGameVariableString(0x17, fodderQuantity, 0);
                 showTextBox(1, 6, 0xA8, 0, 2);
                 result = 1;
             }

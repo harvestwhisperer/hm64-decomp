@@ -357,16 +357,16 @@ void func_800E3358(u8 arg0, u8 arg1, u8 arg2) {
 
                 switch (arg0) {
                     case 0:
-                        convertNumberToString(1, gYear, 1);
+                        convertNumberToGameVariableString(1, gYear, 1);
                         break;                  
                     case 1:
-                        convertNumberToString(5, gYear, 1);
+                        convertNumberToGameVariableString(5, gYear, 1);
                         break;
                     case 2:
-                        convertNumberToString(9, gYear, 1);
+                        convertNumberToGameVariableString(9, gYear, 1);
                         break;
                     case 3:
-                        convertNumberToString(13, gYear, 1);
+                        convertNumberToGameVariableString(13, gYear, 1);
                         break;                  
                     default:
                         break;

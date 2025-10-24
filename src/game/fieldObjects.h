@@ -5,7 +5,6 @@
 
 #define FIELD_HEIGHT 24
 #define FIELD_WIDTH 20
-#define FIELD_SIZE 480
 
 #define MAX_FIELD_OBJECTS 218
 
