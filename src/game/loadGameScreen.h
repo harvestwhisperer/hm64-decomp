@@ -12,12 +12,14 @@ typedef struct {
     u8 unk_15[20]; //  D_801D624D
     u8 unk_29; // D_801D6261
     u8 unk_2A[6]; // D_801D6262
-    u8 unk_2B;
-    u32 unk_2C;
+    u8 unk_30;
     u32 unk_34;
+    u16 unk_38;
     u16 unk_3A;
     u8 unk_3C;
     u8 gamePakEnabled; // 0x3D, D_801D6275
+    u8 unk_3E;
+    u8 unk_3F;
     u8 playerNames[4][6]; // D_801D6278
     u8 dateNumbers[4][2]; // D_801D6290
     u8 seasonNames[4][6]; // D_801D6298
@@ -38,5 +40,8 @@ extern u8 gCurrentGameIndex;
 extern u32 D_801654F4;
 
 extern LoadGameScreenContext loadGameScreenContext;
+
+extern u8 D_801FB80B[5];
+extern u8 D_801FB994[5];
 
 #endif
