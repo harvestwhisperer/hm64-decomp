@@ -349,7 +349,7 @@ segments:
       - [ 0xF3B00, .data, game/fieldObjects]
       - [ 0xF3F50, .data, game/weather]
       - [ 0xF3F70, .data, game/shop]
-      - [ 0xF4B40, data, game/loadGameScreen] # packinsoft farm string
+      - [ 0xF4B40, .data, game/loadGameScreen] # packinsoft farm string
       - [ 0xF4B50, .data, data/animationScripts/player]
       - [ 0xF50D0, .data, data/animationScripts/npc] #TODO: finish adding. Based on the splits, these unfortunately seem to all be in the same file 
       - [ 0xF5890, data, data/animationScripts/animationScripts]
