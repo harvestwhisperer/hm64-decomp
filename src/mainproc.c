@@ -7,7 +7,7 @@
 #include "system/globalSprites.h"
 #include "system/graphic.h"
 #include "system/message.h"
-#include "system/pauseScreen.h"
+#include "system/overlayScreenSprites.h"
 #include "system/sprite.h"
 #include "system/mapController.h"
 #include "system/sceneGraph.h"
@@ -113,7 +113,7 @@ void initializeEngine(void) {
     initializeMessageBoxes();
     // system/dialogue.c
     func_80042F60();
-    // system/pauseScreen.c
+    // system/overlayScreenSprits.c
     func_80045DE0();
     initializeCutsceneExecutors();
     // system/flags.c

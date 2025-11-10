@@ -68,8 +68,8 @@ typedef struct {
 	u8 unk_1B;
 	u8 type;
 	u8 condition;
-	u8 ageOrIncubationCounter;
-	u8 starvedCounter;
+	u8 typeCounter; // age or incubation counter
+	u8 conditionCounter;
 	u16 flags;
 } Chicken;
 

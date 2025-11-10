@@ -59,8 +59,7 @@ extern u16 D_8018981C;
 // likely bss
 extern u16 gCutsceneIndex;
 
-// shared globals   
-extern u8 gHouseExtensionSelection;
+// shared bss
 // bakery points
 extern u8 bakeryCardPoints;
 extern u8 D_801C4216;
@@ -3491,7 +3490,7 @@ u16 func_800A7DFC(void) {
             // dead animals
             D_801886A8 = D_8013DC2E;
             
-            D_801C3E1C = gTotalCropsShipped + gTotalGoldenMilkShipped + gTotalEggsShipped;
+            D_801C3E1C = gTotalCropsShipped + gTotalMilkShipped + gTotalEggsShipped;
             
             // fish caught
             D_801D62C4 = totalFishCaught; 

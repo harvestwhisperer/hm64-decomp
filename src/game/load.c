@@ -17,7 +17,6 @@ extern u8 gSumGirlsWithHighAffection;
 extern u8 gAverageFarmAnimalAffection;
 
 // shared
-extern u8 gHouseExtensionSelection;
 extern u8 mountainConstructionWorkDays;
 
 //INCLUDE_ASM("asm/nonmatchings/game/load", func_800598E0);

@@ -35,7 +35,7 @@ typedef struct {
     u8 strings3[3][6];
     u16 unk_54[9];
     u8 dialogueVariableIndices[6]; // 0x801C3E06
-    u8 unk_6A; // 0x801C3E0C, index into string10
+    u8 unk_6A;
     u8 unk_6B; // set from random number
     u8 unk_6C; // set from random number
     u8 unk_6D[3];
@@ -50,6 +50,10 @@ extern void func_800B4238(u8);
 extern void func_800B42E0(void);    
 extern void func_800B59AC(void);  
 extern void func_800B5BD4(void);
+extern void func_800B5DA8(void);
+extern void func_800B5FC4(u8 arg0, u8 arg1, u8 arg2);
+extern void func_800B60E4(u8 arg0, u8 arg1, u8 arg2);
+extern void func_800B64E4(u8 arg0, u8 arg1);
 extern void func_800B6674(void);
 extern void func_800B7070(u8);
 extern void func_800B7B34(void);
@@ -70,6 +74,8 @@ extern u8 D_80189108[5][7];
 // TODO: label
 // FIXME: should be 2D array with [4][8]
 extern u8 D_80237420[31];
+
+extern u32 D_80205204;
 
 extern OverlayScreenTable overlayScreenTable;
 extern OverlayScreenStrings overlayScreenStrings;

@@ -209,12 +209,12 @@ void func_800861A4(u8 animalType, u8 index, u8 type, u8 condition, u8 arg4) {
             
             if (type != 0xFF) {
                 gChickens[index].type = type;
-                gChickens[index].ageOrIncubationCounter = 0;
+                gChickens[index].typeCounter = 0;
             }
             
             if (condition != 0xFF) {
                 gChickens[index].condition = condition;
-                gChickens[index].starvedCounter = 0;
+                gChickens[index].conditionCounter = 0;
             }
             
             if (arg4 != 0xFF) {
@@ -1198,8 +1198,8 @@ void initializeChicken(u8 chickenIndex) {
 
     gChickens[chickenIndex].type = 0;
     gChickens[chickenIndex].condition = 0;
-    gChickens[chickenIndex].ageOrIncubationCounter = 0;
-    gChickens[chickenIndex].starvedCounter = 0;
+    gChickens[chickenIndex].typeCounter = 0;
+    gChickens[chickenIndex].conditionCounter = 0;
 
     gChickens[chickenIndex].coordinates.x = 0;
     gChickens[chickenIndex].coordinates.y = 0;
@@ -1872,9 +1872,9 @@ void func_8008A650(u8 index) {
                 
                 if (gChickens[index].flags & 0x20) {
                     
-                    gChickens[index].ageOrIncubationCounter++;
+                    gChickens[index].typeCounter++;
                     
-                    if (gChickens[index].ageOrIncubationCounter == CHICKEN_EGG_INCUBATION_DURATION) {
+                    if (gChickens[index].typeCounter == CHICKEN_EGG_INCUBATION_DURATION) {
                         
                         bornChickenIndex = func_80087F28(1, 0xFF);
                         
@@ -1886,7 +1886,7 @@ void func_8008A650(u8 index) {
                             setLifeEventBit(CHICKEN_BORN);
                             
                         } else {                        
-                            gChickens[index].ageOrIncubationCounter--;
+                            gChickens[index].typeCounter--;
                         }
                         
                     }
@@ -1897,9 +1897,9 @@ void func_8008A650(u8 index) {
             
             case CHICK:
                 
-                gChickens[index].ageOrIncubationCounter++;
+                gChickens[index].typeCounter++;
                 
-                if (gChickens[index].ageOrIncubationCounter == CHICK_DURATION) {
+                if (gChickens[index].typeCounter == CHICK_DURATION) {
                     func_800861A4(1, index, ADULT_CHICKEN, 0, 0);
                 }
                 
@@ -1925,9 +1925,9 @@ void func_8008A650(u8 index) {
                             func_800861A4(1, index, 0xFF, CHICKEN_NORMAL, 0);
                         } else {
                             
-                            gChickens[index].starvedCounter++;
+                            gChickens[index].conditionCounter++;
                             
-                            if (gChickens[index].starvedCounter == 3) {
+                            if (gChickens[index].conditionCounter == 3) {
                                 
                                 func_800861A4(1, index, 0xFF, CHICKEN_DEAD, 0xFF);
                                 

@@ -79,7 +79,7 @@ extern u16 gTotalPinkCatMintFlowersGrowing;
 
 extern u32 gTotalCropsShipped;
 extern u32 gTotalEggsShipped;
-extern u32 gTotalGoldenMilkShipped;
+extern u32 gTotalMilkShipped;
 
 extern u8 popuriGrayBabyAge;
 

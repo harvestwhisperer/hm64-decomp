@@ -24,7 +24,7 @@ typedef struct {
     u8 dateNumbers[4][2]; // D_801D6290
     u8 seasonNames[4][6]; // D_801D6298
     u8 dateEndings[4][2];  // "st" or "rd" strings /* 0x78 */ D_801D62B0
-    u8 fontLoadingFlags[4]; // D_801D62B8
+    u8 flags[4]; // D_801D62B8
     u8 diaryHighlighted; /* 0x84 */  // D_801D62BC
     u8 actionColumnHighlighted; /* 0x85 */
     u8 unk_86;
@@ -41,7 +41,14 @@ extern u32 D_801654F4;
 
 extern LoadGameScreenContext loadGameScreenContext;
 
+// FIXME: actually part of a struct
 extern u8 D_801FB80B[5];
+extern u8 D_801FB858[];
+extern u8 D_801FB85F[];
+extern u8 D_801FB866[];
+extern u8 D_801FB86D[];
+extern u8 D_801FB971[];
+extern u8 D_801FB994[];
 extern u8 D_801FB994[5];
 
 #endif

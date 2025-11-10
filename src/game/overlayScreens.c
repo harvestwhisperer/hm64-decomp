@@ -7,7 +7,7 @@
 #include "system/globalSprites.h"
 #include "system/math.h"
 #include "system/message.h"
-#include "system/pauseScreen.h"
+#include "system/overlayScreenSprites.h"
 
 #include "game/animals.h"
 #include "game/game.h"
@@ -28,18 +28,42 @@
 
 // bss
 extern OverlayScreenTable overlayScreenTable;
+extern u32 D_80189858;
 extern u32 D_80205204;
 extern u8 D_801890E8[31];
 extern u8 D_80189108[5][7];
- 
+
 // shared bss
 extern u8 D_801C3F70;
 extern u8 D_80205636;
 
 extern u8 D_8018A72C[6];
 extern u8 D_80205640[10];
+extern u8 D_80237420[31];
 
 // data
+extern f32 D_80116C80[];
+extern f32 D_80116C90;
+extern f32 D_80116C94[];
+extern f32 D_80116C9C;
+extern f32 D_80116CA0[];
+extern f32 D_80116CB0;
+extern f32 D_80116CB4[];
+extern f32 D_80116CBC;
+extern f32 D_80116CC0[];
+extern f32 D_80116CC8[];
+extern f32 D_80116CD8[];
+extern f32 D_80116CE8[];
+extern f32 D_80116CF0[];
+extern f32 D_80116D00;
+extern f32 D_80116D04[];
+extern f32 D_80116D0C;
+extern f32 D_80116D10[];
+extern f32 D_80116D20[];
+extern f32 D_80116D28[];
+extern f32 D_80116D3C[];
+extern f32 D_80116D38;
+extern f32 D_80116D44;
 extern f32 D_80116D80[];
 extern f32 D_80116D90[];
 extern f32 D_80116DA0[];
@@ -58,13 +82,18 @@ extern u16 D_80117148[];
 // forward declarations
 void func_800B2F34(void); 
 void func_800B4160(void);
-f32 func_800BA928(u8, u8);                          
-f32 func_800BA9E8(u8, u8);                
 void func_800B8844(void);
-f32 func_800BE3B8(u8, u8);                          
-f32 func_800BE428(u8, u8);
-f32 func_800C0238(u8, u8);                          
+void func_800B90E0(void);
+void func_800B99EC(void);
+f32 func_800BA928(u8, u32);                          
+f32 func_800BA9E8(u8, u32);                
+void func_800BB590(void);
+void func_800BBBC8(void);             
+f32 func_800BE3B8(u8, u32);                          
+f32 func_800BE428(u8, u32);
+f32 func_800C0238(u8, u8);             
 f32 func_800C02A8(u8, u8);    
+u8 func_800C0688(u8 tool);
 void func_800C0F24(void);                   
 void func_800C1710(void);               
 void func_800C2060(void);        
@@ -78,7 +107,11 @@ void func_800C4E90(void);
 void func_800C5080(void);
 void func_800C6E98(void);
 void func_800C5DA4(void);
+f32 func_800BC700(u8, u32);
+f32 func_800BC770(u8, u32);
 void func_800C7850(void);
+void func_800C7C88(f32 x, f32 y);
+void func_800C7CE4(f32 x, f32 y);
 void func_800C7DF8(void);
 void func_800C7E18(void);
 void func_800C7E38(void);
@@ -137,10 +170,10 @@ void func_800B2CE0(void) {
     deactivateSprite(0x8D);
     deactivateSprite(0x8B);
     deactivateSprite(0x8A);
-    deactivatePauseScreenSprites(0);
+    deactivateOverlayScreenSprites(0);
 
     deactivateSprite(0x8E);
-    deactivatePauseScreenSprites(1);
+    deactivateOverlayScreenSprites(1);
     
     deactivateSprite(0x86);
     deactivateSprite(0x82);
@@ -159,25 +192,25 @@ void func_800B2CE0(void) {
     deactivateSprite(0x85);
     deactivateSprite(0x86);
     
-    deactivatePauseScreenSprites(0);
-    deactivatePauseScreenSprites(2);
-    deactivatePauseScreenSprites(3);
-    deactivatePauseScreenSprites(4);
-    deactivatePauseScreenSprites(5);
-    deactivatePauseScreenSprites(6);
-    deactivatePauseScreenSprites(2);
-    deactivatePauseScreenSprites(3);
-    deactivatePauseScreenSprites(4);
-    deactivatePauseScreenSprites(5);
-    deactivatePauseScreenSprites(6);
-    deactivatePauseScreenSprites(7);
-    deactivatePauseScreenSprites(8);
-    deactivatePauseScreenSprites(9);
-    deactivatePauseScreenSprites(0xA);
-    deactivatePauseScreenSprites(0xB);
-    deactivatePauseScreenSprites(0xC);
-    deactivatePauseScreenSprites(0xD);
-    deactivatePauseScreenSprites(0xE);
+    deactivateOverlayScreenSprites(0);
+    deactivateOverlayScreenSprites(2);
+    deactivateOverlayScreenSprites(3);
+    deactivateOverlayScreenSprites(4);
+    deactivateOverlayScreenSprites(5);
+    deactivateOverlayScreenSprites(6);
+    deactivateOverlayScreenSprites(2);
+    deactivateOverlayScreenSprites(3);
+    deactivateOverlayScreenSprites(4);
+    deactivateOverlayScreenSprites(5);
+    deactivateOverlayScreenSprites(6);
+    deactivateOverlayScreenSprites(7);
+    deactivateOverlayScreenSprites(8);
+    deactivateOverlayScreenSprites(9);
+    deactivateOverlayScreenSprites(0xA);
+    deactivateOverlayScreenSprites(0xB);
+    deactivateOverlayScreenSprites(0xC);
+    deactivateOverlayScreenSprites(0xD);
+    deactivateOverlayScreenSprites(0xE);
 
     for (i = 0; i < 0x28; i++) {
         deactivateSprite(i + 0xA3);
@@ -192,11 +225,114 @@ void func_800B2CE0(void) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800B2F34);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800B2F34);
 
-INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800B3498);
+void func_800B2F34(void) {
 
-INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800B3694);
+    dmaSprite(0x89, (u32)&_timeUiTextureSegmentRomStart, (u32)&_timeUiTextureSegmentRomEnd, (u32)&_timeUiAssetsIndexSegmentRomStart, (u32)&_timeUiAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8027EC00, NULL, (u16*)0x80281E00, (u16*)0x80282200, (u8*)0x80282400, NULL, 0, 0);
+    setSpriteViewSpacePosition(0x89, 0.0f, 0.0f, 256.0f);
+    setBilinearFiltering(0x89, 1);
+    setSpriteColor(0x89, 0xFF, 0xFF, 0xFF, 0);
+    setSpriteRenderingLayer(0x89, 2);
+
+    if (checkLifeEventBit(0x59)) {
+        startSpriteAnimation(0x89, 6, 0);
+    } else {
+        startSpriteAnimation(0x89, 0, 0);
+    }
+
+    dmaSprite(0x8C, (u32)&_timeUiTextureSegmentRomStart, (u32)&_timeUiTextureSegmentRomEnd, (u32)&_timeUiAssetsIndexSegmentRomStart, (u32)&_timeUiAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8027EC00, NULL, (u16*)0x80281E00, (u16*)0x80282200, (u8*)0x80282400, NULL, 0, 0);
+    setSpriteViewSpacePosition(0x8C, -79.0f, 81.0f, 256.0f);
+    setSpriteRotation(0x8C, 0.0f, 0.0f, (360 - (gMinutes * 6)));
+    setBilinearFiltering(0x8C, 1);
+    setSpriteColor(0x8C, 0xFF, 0xFF, 0xFF, 0);
+    setSpriteRenderingLayer(0x8C, 2);
+    startSpriteAnimation(0x8C, 4, 0);
+    
+    dmaSprite(0x8D, (u32)&_timeUiTextureSegmentRomStart, (u32)&_timeUiTextureSegmentRomEnd, (u32)&_timeUiAssetsIndexSegmentRomStart, (u32)&_timeUiAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8027EC00, NULL, (u16*)0x80281E00, (u16*)0x80282200, (u8*)0x80282400, NULL, 0, 0);
+    setSpriteViewSpacePosition(0x8D, -80.0f, 80.0f, 256.0f);
+    setSpriteRotation(0x8D, 0.0f, 0.0f, ((360 - (gHour * 30)) - (gMinutes * 0.5)));
+    setBilinearFiltering(0x8D, 1);
+    setSpriteColor(0x8D, 0xFF, 0xFF, 0xFF, 0);
+    setSpriteRenderingLayer(0x8D, 2);
+    startSpriteAnimation(0x8D, 5, 0);
+    
+    dmaSprite(0x8B, (u32)&_timeUiTextureSegmentRomStart, (u32)&_timeUiTextureSegmentRomEnd, (u32)&_timeUiAssetsIndexSegmentRomStart, (u32)&_timeUiAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8027EC00, NULL, (u16*)0x80281E00, (u16*)0x80282200, (u8*)0x80282400, NULL, 0, 0);
+    setSpriteViewSpacePosition(0x8B, 0.0f, 0.0f, 256.0f);
+    setBilinearFiltering(0x8B, 1);
+    setSpriteColor(0x8B, 0xFF, 0xFF, 0xFF, 0);
+    setSpriteRenderingLayer(0x8B, 2);
+    startSpriteAnimation(0x8B, 1, gSeason - 1);
+    
+    dmaSprite(0x8A, (u32)&_timeUiTextureSegmentRomStart, (u32)&_timeUiTextureSegmentRomEnd, (u32)&_timeUiAssetsIndexSegmentRomStart, (u32)&_timeUiAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8027EC00, NULL, (u16*)0x80281E00, (u16*)0x80282200, (u8*)0x80282400, NULL, 0, 0);
+    setSpriteViewSpacePosition(0x8A, 0.0f, 0.0f, 256.0f);
+    setBilinearFiltering(0x8A, 1);
+    setSpriteColor(0x8A, 0xFF, 0xFF, 0xFF, 0);
+    setSpriteRenderingLayer(0x8A, 2);
+    startSpriteAnimation(0x8A, 3, gDayOfWeek);
+    func_80045E20(0, 0x8F, (u32)&_timeUiTextureSegmentRomStart, (u32)&_timeUiTextureSegmentRomEnd, (u32)&_timeUiAssetsIndexSegmentRomStart, (u32)&_timeUiAssetsIndexSegmentRomEnd, (void*)0x8027EC00, (void*)0x80281E00, (void*)0x80282200, (void*)0x80282400, 0, 2, 0, 0.0f, 0.0f, 256.0f, 8);
+    
+    dmaOverlayScreenSprites(0, (u32)gDayOfMonth, 1, 3);
+    setOverlayScreenSpritesRGBA(0, 0xFF, 0xFF, 0xFF, 0xFF);
+    
+}
+
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800B3498);
+
+// unused or inline
+void func_800B3498(f32 arg0, f32 arg1, f32 arg2, u16 arg3, u32 arg4) {
+
+    dmaSprite(0x8E, (u32)&_moneyTextureSegmentRomStart, (u32)&_moneyTextureSegmentRomEnd, (u32)&_moneyAssetsIndexSegmentRomStart, (u32)&_moneyAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x80253B00, NULL, (u16*)0x80254A00, (u16*)0x80254E00, (u8*)0x80254F00, NULL, 0, 0);
+    setSpriteViewSpacePosition(0x8E, arg0, arg1, arg2);
+    setBilinearFiltering(0x8E, 1);
+    setSpriteColor(0x8E, 0xFF, 0xFF, 0xFF, 0);
+    setSpriteRenderingLayer(0x8E, arg3 & 0xFFFF);
+    startSpriteAnimation(0x8E, 0, 0);
+
+    func_80045E20(1, 0x91, (u32)&_moneyTextureSegmentRomStart, (u32)&_moneyTextureSegmentRomEnd, (u32)&_moneyAssetsIndexSegmentRomStart, (u32)&_moneyAssetsIndexSegmentRomEnd, (void*)0x80253B00, (void*)0x80254A00, (void*)0x80254E00, (void*)0x80254F00, 0, 1, 0, arg0, arg1, arg2 + 64.0f, 0xA);
+
+    dmaOverlayScreenSprites(1, arg4, 5, 3);
+    setOverlayScreenSpritesRGBA(1, 0xFF, 0xFF, 0xFF, 0xFF);
+
+}
+
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800B3694);
+
+void func_800B3694(void) {
+
+    dmaSprite(0x86, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (u16*)0x8023CE00, (u8*)0x8023D200, NULL, 0, 0);
+    setSpriteViewSpacePosition(0x86, 80.0f, 32.0f, 256.0f);
+    setBilinearFiltering(0x86, 1);
+    setSpriteColor(0x86, 0xFF, 0xFF, 0xFF, 0xFF);
+    startSpriteAnimation(0x86, 0, 0);
+    
+    dmaSprite(0x82, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (u16*)0x8023CE00, (u8*)0x8023D200, NULL, 0, 0);
+    setSpriteViewSpacePosition(0x82, 80.0f, 32.0f, 256.0f);
+    setBilinearFiltering(0x82, 1);
+    setSpriteColor(0x82, 0xFF, 0xFF, 0xFF, 0xFF);
+    startSpriteAnimation(0x82, 0, 1);
+    
+    dmaSprite(0x83, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (u16*)0x8023CE00, (u8*)0x8023D200, NULL, 0, 0);
+    setSpriteViewSpacePosition(0x83, 80.0f, 32.0f, 256.0f);
+    setBilinearFiltering(0x83, 1);
+    setSpriteColor(0x83, 0xFF, 0xFF, 0xFF, 0xFF);
+    startSpriteAnimation(0x83, 0, 3);
+    
+    dmaSprite(0x84, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (u16*)0x8023CE00, (u8*)0x8023D200, NULL, 0, 0);
+    setSpriteViewSpacePosition(0x84, 80.0f, 32.0f, 256.0f);
+    setBilinearFiltering(0x84, 1);
+    setSpriteColor(0x84, 0xFF, 0xFF, 0xFF, 0xFF);
+    startSpriteAnimation(0x84, 0, 5);
+    
+    dmaSprite(0x85, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (u16*)0x8023CE00, (u8*)0x8023D200, NULL, 0, 0);
+    setSpriteViewSpacePosition(0x85, 80.0f, 32.0f, 256.0f);
+    setBilinearFiltering(0x85, 1);
+    setSpriteColor(0x85, 0xFF, 0xFF, 0xFF, 0xFF);
+    startSpriteAnimation(0x85, 0, 7);
+    
+    func_800B3A60();
+
+}
 
 //INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800B3A60);
 
@@ -255,8 +391,8 @@ void func_800B3BD8(void) {
     setMoneySprites();
     
     func_80045E20(1, 0x91, (u32)&_moneyTextureSegmentRomStart, (u32)&_moneyTextureSegmentRomEnd, (u32)&_moneyAssetsIndexSegmentRomStart, (u32)&_moneyAssetsIndexSegmentRomEnd, 0x80253B00, 0x80254A00, 0x80254E00, 0x80254F00, 0, 1, 0, 0, 0, 320.0f, 0xA);
-    dmaPauseScreenSprites(1, temp, 5, 3);
-    setPauseScreenSpritesRGBA(1, 0xFF, 0xFF, 0xFF, 0xFF);
+    dmaOverlayScreenSprites(1, temp, 5, 3);
+    setOverlayScreenSpritesRGBA(1, 0xFF, 0xFF, 0xFF, 0xFF);
     setSpriteAlpha(0x8E, 0xFF);
     
     dmaSprite(0x82, (u32)&_shopIconsTextureSegmentRomStart, (u32)&_shopIconsTextureSegmentRomEnd, (u32)&_shopIconsAssetsIndexSegmentRomStart, (u32)&_shopIconsAssetsIndexSegmentRomEnd, 0, 0, 0x802E0EC0, 0, 0x802E27C0, 0x802E28C0, 0x802E2BC0, 0, 0, 0);
@@ -339,7 +475,252 @@ void func_800B4238(u8 arg0) {
 
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800B42E0);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800B42E0);
+
+void func_800B42E0(void) {
+
+    dmaSprite(0x80, (u32)&_checkerboardBackgroundTextureSegmentRomStart, (u32)&_checkerboardBackgroundTextureSegmentRomEnd, (u32)&_checkerboardBackgroundAssetsIndexSegmentRomStart, (u32)&_checkerboardBackgroundAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x802DE5C0, NULL, (u16*)0x802E0BC0, (u16*)0x802E0CC0, (u8*)0x802E0DC0, NULL, 0, 0);
+    setSpriteViewSpacePosition(0x80, 0.0f, 0.0f, 0.0f);
+    setSpriteScale(0x80, 2.0f, 2.0f, 1.0f);
+    setBilinearFiltering(0x80, 1);
+    setSpriteColor(0x80, 0, 0, 0, 0);
+    startSpriteAnimation(0x80, 0, 0);
+    
+    if (loadGameScreenContext.showControllerPakScreen == FALSE) {
+        
+        dmaSprite(0x82, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+        setSpriteViewSpacePosition(0x82, 0.0f, 0.0f, 8.0f);
+        setSpriteColor(0x82, 0, 0, 0, 0);
+        setSpriteRenderingLayer(0x82, 3);
+        setBilinearFiltering(0x82, 1);
+        startSpriteAnimation(0x82, 0, 0);
+        
+        dmaSprite(0x83, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+        setSpriteViewSpacePosition(0x83, 0.0f, 0.0f, 8.0f);
+        setSpriteColor(0x83, 0, 0, 0, 0);
+        setSpriteRenderingLayer(0x83, 3);
+        setBilinearFiltering(0x83, 1);
+        startSpriteAnimation(0x83, 3, 0);
+        
+        dmaSprite(0x84, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+        setSpriteViewSpacePosition(0x84, 0.0f, 0.0f, 8.0f);
+        setSpriteColor(0x84, 0, 0, 0, 0);
+        setSpriteRenderingLayer(0x84, 3);
+        setBilinearFiltering(0x84, 1);
+        startSpriteAnimation(0x84, 1, 0);
+        
+        dmaSprite(0xA3, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+        setSpriteViewSpacePosition(0xA3, 0.0f, 0.0f, 8.0f);
+        setSpriteColor(0xA3, 0, 0, 0, 0);
+        setSpriteRenderingLayer(0xA3, 3);
+        setBilinearFiltering(0xA3, 1);
+        setSpritePaletteIndex(0xA3, 2);
+        startSpriteAnimation(0xA3, 4, 0);
+        
+        dmaSprite(0xA4, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+        setSpriteViewSpacePosition(0xA4, 0.0f, -44.0f, 8.0f);
+        setSpriteColor(0xA4, 0, 0, 0, 0);
+        setSpriteRenderingLayer(0xA4, 3);
+        setBilinearFiltering(0xA4, 1);
+        setSpritePaletteIndex(0xA4, 3);
+        startSpriteAnimation(0xA4, 4, 0);
+        
+        dmaSprite(0xA5, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+        setSpriteViewSpacePosition(0xA5, 0.0f, -88.0f, 8.0f);
+        setSpriteColor(0xA5, 0, 0, 0, 0);
+        setSpriteRenderingLayer(0xA5, 3);
+        setBilinearFiltering(0xA5, 1);
+        setSpritePaletteIndex(0xA5, 4);
+        startSpriteAnimation(0xA5, 4, 0);
+        
+        dmaSprite(0xA6, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+        setSpriteViewSpacePosition(0xA6, 0.0f, -132.0f, 8.0f);
+        setSpriteColor(0xA6, 0, 0, 0, 0);
+        setSpriteRenderingLayer(0xA6, 3);
+        setBilinearFiltering(0xA6, 1);
+        setSpritePaletteIndex(0xA6, 5);
+        startSpriteAnimation(0xA6, 4, 0);
+        
+        dmaSprite(0xA7, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+        setSpriteViewSpacePosition(0xA7, 0.0f, 0.0f, 16.0f);
+        setSpriteColor(0xA7, 0, 0, 0, 0);
+        setSpriteRenderingLayer(0xA7, 3);
+        setBilinearFiltering(0xA7, 1);
+        startSpriteAnimation(0xA7, 5, 0);
+        
+        dmaSprite(0xA8, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+        setSpriteViewSpacePosition(0xA8, 0.0f, 0.0f, 16.0f);
+        setSpriteColor(0xA8, 0, 0, 0, 0);
+        setSpriteRenderingLayer(0xA8, 3);
+        setBilinearFiltering(0xA8, 1);
+        startSpriteAnimation(0xA8, 5, 2);
+        
+        dmaSprite(0xA9, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+        setSpriteViewSpacePosition(0xA9, 0.0f, 0.0f, 16.0f);
+        setSpriteColor(0xA9, 0, 0, 0, 0);
+        setSpriteRenderingLayer(0xA9, 3);
+        setBilinearFiltering(0xA9, 1);
+        startSpriteAnimation(0xA9, 5, 4);
+        
+        
+        dmaSprite(0xAA, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+        setSpriteViewSpacePosition(0xAA, 0.0f, 0.0f, 16.0f);
+        setSpriteColor(0xAA, 0, 0, 0, 0);
+        setSpriteRenderingLayer(0xAA, 3);
+        setBilinearFiltering(0xAA, 1);
+        startSpriteAnimation(0xAA, 5, 6);
+        
+        dmaSprite(0x85, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+        setSpriteViewSpacePosition(0x85, 0.0f, 0.0f, 4.0f);
+        setSpriteColor(0x85, 0, 0, 0, 0);
+        setSpriteRenderingLayer(0x85, 3);
+        setBilinearFiltering(0x85, 1);
+        setSpritePaletteIndex(0x85, 1);
+        startSpriteAnimation(0x85, 2, 0);
+        
+        dmaSprite(0x86, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+        setSpriteViewSpacePosition(0x86, 0.0f, -44.0f, 4.0f);
+        setSpriteColor(0x86, 0, 0, 0, 0);
+        setSpriteRenderingLayer(0x86, 3);
+        setBilinearFiltering(0x86, 1);
+        setSpritePaletteIndex(0x86, 1);
+        startSpriteAnimation(0x86, 2, 0);
+        
+        dmaSprite(0x87, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+        setSpriteViewSpacePosition(0x87, 0.0f, -88.0f, 4.0f);
+        setSpriteColor(0x87, 0, 0, 0, 0);
+        setSpriteRenderingLayer(0x87, 3);
+        setBilinearFiltering(0x87, 1);
+        setSpritePaletteIndex(0x87, 1);
+        startSpriteAnimation(0x87, 2, 0);
+        
+        dmaSprite(0x88, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+        setSpriteViewSpacePosition(0x88, 0.0f, -132.0f, 4.0f);
+        setSpriteColor(0x88, 0, 0, 0, 0);
+        setSpriteRenderingLayer(0x88, 3);
+        setBilinearFiltering(0x88, 1);
+        setSpritePaletteIndex(0x88, 1);
+        startSpriteAnimation(0x88, 2, 0);
+        
+        dmaSprite(0x79, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (u16*)0x8023CE00, (u8*)0x8023D200, NULL, 0, 0);
+        setSpriteViewSpacePosition(0x79, 0.0f, 0.0f, 32.0f);
+        setBilinearFiltering(0x79, 1);
+        setSpriteColor(0x79, 0xFF, 0xFF, 0xFF, 0xFF);
+        setSpriteRenderingLayer(0x79, 3);
+        
+        dmaSprite(0xB2, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (u16*)0x8023CE00, (u8*)0x8023D200, NULL, 0, 0);
+        setSpriteViewSpacePosition(0xB2, 0.0f, 0.0f, 32.0f);
+        setBilinearFiltering(0xB2, 1);
+        setSpriteColor(0xB2, 0xFF, 0xFF, 0xFF, 0x80);
+        setSpriteRenderingLayer(0xB2, 2);
+
+        dmaSprite(0xAC, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (u16*)0x8023CE00, (u8*)0x8023D200, NULL, 0, 0);
+        setSpriteViewSpacePosition(0xAC, 0.0f, 0.0f, 32.0f);
+        setBilinearFiltering(0xAC, 1);
+        setSpriteColor(0xAC, 0xFF, 0xFF, 0xFF, 0xFF);
+        setSpriteRenderingLayer(0xAC, 3);
+        
+        func_800C7850();
+        
+    } else {
+        
+        dmaSprite(0x82, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+        setSpriteViewSpacePosition(0x82, 0.0f, 0.0f, 8.0f);
+        setSpriteColor(0x82, 0, 0, 0, 0);
+        setSpriteRenderingLayer(0x82, 3);
+        setBilinearFiltering(0x82, 1);
+        startSpriteAnimation(0x82, 7, 0);
+        
+        dmaSprite(0x83, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+        setSpriteViewSpacePosition(0x83, 0.0f, 0.0f, 8.0f);
+        setSpriteColor(0x83, 0, 0, 0, 0);
+        setSpriteRenderingLayer(0x83, 3);
+        setBilinearFiltering(0x83, 1);
+        startSpriteAnimation(0x83, 3, 0);
+        
+        dmaSprite(0x84, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+        setSpriteViewSpacePosition(0x84, 0.0f, 0.0f, 8.0f);
+        setSpriteColor(0x84, 0, 0, 0, 0);
+        setSpriteRenderingLayer(0x84, 3);
+        setBilinearFiltering(0x84, 1);
+        startSpriteAnimation(0x84, 1, 0);
+        
+        dmaSprite(0xA3, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+        setSpriteViewSpacePosition(0xA3, 0.0f, 0.0f, 8.0f);
+        setSpriteColor(0xA3, 0, 0, 0, 0);
+        setSpriteRenderingLayer(0xA3, 3);
+        setBilinearFiltering(0xA3, 1);
+        setSpritePaletteIndex(0xA3, 2);
+        startSpriteAnimation(0xA3, 8, 0);
+        
+        dmaSprite(0xA4, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+        setSpriteViewSpacePosition(0xA4, 0.0f, -44.0f, 8.0f);
+        setSpriteColor(0xA4, 0, 0, 0, 0);
+        setSpriteRenderingLayer(0xA4, 3);
+        setBilinearFiltering(0xA4, 1);
+        setSpritePaletteIndex(0xA4, 3);
+        startSpriteAnimation(0xA4, 8, 0);
+        
+        dmaSprite(0xA7, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+        setSpriteViewSpacePosition(0xA7, 0.0f, 0.0f, 16.0f);
+        setSpriteColor(0xA7, 0, 0, 0, 0);
+        setSpriteRenderingLayer(0xA7, 3);
+        setBilinearFiltering(0xA7, 1);
+        startSpriteAnimation(0xA7, 5, 0);
+        
+        dmaSprite(0xA8, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+        setSpriteViewSpacePosition(0xA8, 0.0f, 0.0f, 16.0f);
+        setSpriteColor(0xA8, 0, 0, 0, 0);
+        setSpriteRenderingLayer(0xA8, 3);
+        setBilinearFiltering(0xA8, 1);
+        startSpriteAnimation(0xA8, 5, 2);
+        
+        dmaSprite(0x85, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+        setSpriteViewSpacePosition(0x85, 0.0f, 0.0f, 4.0f);
+        setSpriteColor(0x85, 0, 0, 0, 0);
+        setSpriteRenderingLayer(0x85, 3);
+        setBilinearFiltering(0x85, 1);
+        setSpritePaletteIndex(0x85, 1);
+        startSpriteAnimation(0x85, 2, 0);
+        
+        dmaSprite(0x86, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+        setSpriteViewSpacePosition(0x86, 0.0f, -44.0f, 4.0f);
+        setSpriteColor(0x86, 0, 0, 0, 0);
+        setSpriteRenderingLayer(0x86, 3);
+        setBilinearFiltering(0x86, 1);
+        setSpritePaletteIndex(0x86, 1);
+        startSpriteAnimation(0x86, 2, 0);
+        
+        dmaSprite(0xAB, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+        setSpriteViewSpacePosition(0xAB, 0.0f, 0.0f, 8.0f);
+        setSpriteColor(0xAB, 0, 0, 0, 0);
+        setSpriteRenderingLayer(0xAB, 3);
+        setBilinearFiltering(0xAB, 1);
+        startSpriteAnimation(0xAB, 9, 0);
+        
+        dmaSprite(0x79, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (u16*)0x8023CE00, (u8*)0x8023D200, NULL, 0, 0);
+        setSpriteViewSpacePosition(0x79, 0.0f, 0.0f, 32.0f);
+        setBilinearFiltering(0x79, 1);
+        setSpriteColor(0x79, 0xFF, 0xFF, 0xFF, 0xFF);
+        setSpriteRenderingLayer(0x79, 3);
+        
+        dmaSprite(0xB2, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (u16*)0x8023CE00, (u8*)0x8023D200, NULL, 0, 0);
+        setSpriteViewSpacePosition(0xB2, 0.0f, 0.0f, 32.0f);
+        setBilinearFiltering(0xB2, 1);
+        setSpriteColor(0xB2, 0xFF, 0xFF, 0xFF, 0x80);
+        setSpriteRenderingLayer(0xB2, 2);
+
+        dmaSprite(0xAC, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (u16*)0x8023CE00, (u8*)0x8023D200, NULL, 0, 0);
+        setSpriteViewSpacePosition(0xAC, 0.0f, 0.0f, 32.0f);
+        setBilinearFiltering(0xAC, 1);
+        setSpriteColor(0xAC, 0xFF, 0xFF, 0xFF, 0xFF);
+        setSpriteRenderingLayer(0xAC, 3);
+        
+        func_800C7850();
+        
+    }
+    
+}
 
 //INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800B59AC);
 
@@ -456,7 +837,171 @@ void func_800B5FC4(u8 arg0, u8 arg1, u8 arg2) {
 
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800B60E4);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800B60E4);
+
+void func_800B60E4(u8 arg0, u8 arg1, u8 arg2) {
+
+    if (loadGameScreenContext.showControllerPakScreen == FALSE) {
+
+        if (arg0 != 0xFF) {
+
+            resetAnimationState(0xA3 + arg0);
+            resetAnimationState(0xA7 + arg0);
+
+            if (arg2) {
+
+                startSpriteAnimation(0xA3 + arg0, 4, 1);
+                setSpritePaletteIndex(0x85 + arg0, 0);
+
+                switch (arg0) {
+
+                    case 0:
+                        startSpriteAnimation(0xA7, 5, 1);
+                        break;
+                    case 1:
+                        startSpriteAnimation(0xA8, 5, 3);
+                        break;
+                    case 2:
+                        startSpriteAnimation(0xA9, 5, 5);
+                        break;
+                    case 3:
+                        startSpriteAnimation(0xAA, 5, 7);
+                        break;
+                    
+                }
+                
+            } else {
+
+                startSpriteAnimation(0xA3 + arg0, 4, 0);
+                setSpritePaletteIndex(0x85 + arg0, 1);
+
+                switch (arg0) {
+
+                    case 0:
+                        startSpriteAnimation(0xA7, 5, 0);
+                        break;
+                    case 1:
+                        startSpriteAnimation(0xA8, 5, 2);
+                        break;
+                    case 2:
+                        startSpriteAnimation(0xA9, 5, 4);
+                        break;
+                    case 3:
+                        startSpriteAnimation(0xAA, 5, 6);
+                        break;
+                    
+                }
+                
+            }
+            
+        }
+
+        if (loadGameScreenContext.gamePakEnabled) {
+            func_800C7C88(64.0f, -108.0f);
+        } else {
+            func_800C7DF8();
+        }
+        
+    } else {
+
+        if (arg0 != 0xFF)  {
+
+            resetAnimationState(0xA3 + arg0);
+            resetAnimationState(0xA7 + arg0);
+
+            if (arg2) {
+                
+                startSpriteAnimation(0xA3 + arg0, 8, 1);
+                setSpritePaletteIndex(0x85 + arg0, 0);
+
+                switch (arg0) {
+
+                    case 0:
+                        startSpriteAnimation(0xA7, 5, 1);
+                        break;
+                    case 1:
+                        startSpriteAnimation(0xA8, 5, 3);
+                        break;
+                    
+                }
+                
+            } else {
+
+                startSpriteAnimation(0xA3 + arg0, 8, 0);
+                setSpritePaletteIndex(0x85 + arg0, 1);
+
+                switch (arg0) {
+
+                    case 0:
+                        startSpriteAnimation(0xA7, 5, 0);
+                        break;
+                    case 1:
+                        startSpriteAnimation(0xA8, 5, 2);
+                        break;
+                    
+                }
+                
+            }
+
+        }
+        
+        if (loadGameScreenContext.gamePakEnabled) {
+            func_800C7CE4(64.0f, 80.0f);
+        } else {
+            func_800C7E18();
+        }
+
+    }
+    
+    if (arg1 != 0xFF) {
+
+        if (arg2) {
+
+            switch (arg1) {
+                
+                case 0:
+                    resetAnimationState(0x83);
+                    startSpriteAnimation(0x83, 3, 1);
+                    break;
+
+                case 1:
+                    resetAnimationState(0x84);
+                    startSpriteAnimation(0x84, 1, 1);
+                    break;
+
+                case 2:
+                    resetAnimationState(0xAD);
+                    startSpriteAnimation(0xAD, 6, 1);
+                    break;
+
+            }
+            
+        } else {
+
+            switch (arg1) {
+                
+                case 0:
+                    resetAnimationState(0x83);
+                    startSpriteAnimation(0x83, 3, 0);
+                    break;
+
+                case 1:
+                    resetAnimationState(0x84);
+                    startSpriteAnimation(0x84, 1, 0);
+                    break;
+
+                case 2:
+                    resetAnimationState(0xAD);
+                    startSpriteAnimation(0xAD, 6, 0);
+                    break;
+
+            }
+            
+        }
+        
+    }
+    
+}
 
 //INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800B64E4);
 
@@ -590,7 +1135,7 @@ void func_800B6674(void) {
         setSpriteColor(0xAE, 0, 0, 0, 0);
         setSpriteRenderingLayer(0xAE, 3);
         setBilinearFiltering(0xAE, 1);
-        startSpriteAnimation(0xAE, 7, (D_801FB80B[0] - 1) & 0xFF);
+        startSpriteAnimation(0xAE, 7, D_801FB80B[0] - 1);
     }
     
     if (D_801FB994[1] & 1) {
@@ -599,7 +1144,7 @@ void func_800B6674(void) {
         setSpriteColor(0xAF, 0, 0, 0, 0);
         setSpriteRenderingLayer(0xAF, 3);
         setBilinearFiltering(0xAF, 1);
-        startSpriteAnimation(0xAF, 7, (D_801FB80B[1] - 1) & 0xFF);
+        startSpriteAnimation(0xAF, 7, D_801FB80B[1] - 1);
     }
     
     if (D_801FB994[2] & 1) {
@@ -608,7 +1153,7 @@ void func_800B6674(void) {
         setSpriteColor(0xB0, 0, 0, 0, 0);
         setSpriteRenderingLayer(0xB0, 3);
         setBilinearFiltering(0xB0, 1);
-        startSpriteAnimation(0xB0, 7, (D_801FB80B[2]- 1) & 0xFF);
+        startSpriteAnimation(0xB0, 7, D_801FB80B[2]- 1);
     }
     
     if (D_801FB994[3] & 1) {
@@ -617,7 +1162,7 @@ void func_800B6674(void) {
         setSpriteColor(0xB1, 0, 0, 0, 0);
         setSpriteRenderingLayer(0xB1, 3);
         setBilinearFiltering(0xB1, 1);
-        startSpriteAnimation(0xB1, 7, (D_801FB80B[3] - 1) & 0xFF);
+        startSpriteAnimation(0xB1, 7, D_801FB80B[3] - 1);
     }
     
     if (D_801FB994[4] & 1) {
@@ -626,7 +1171,7 @@ void func_800B6674(void) {
         setSpriteColor(0xB2, 0, 0, 0, 0);
         setSpriteRenderingLayer(0xB2, 3);
         setBilinearFiltering(0xB2, 1);
-        startSpriteAnimation(0xB2, 7, (D_801FB80B[4] - 1) & 0xFF);
+        startSpriteAnimation(0xB2, 7, D_801FB80B[4] - 1);
     }
     
     dmaSprite(0x79, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, 0, 0, 0x8023B400, NULL, 0x8023CC00, 0x8023CE00, 0x8023D200, NULL, 0, 0);
@@ -637,7 +1182,122 @@ void func_800B6674(void) {
     
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800B7070);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800B7070);
+
+void func_800B7070(u8 arg0) {
+
+    dmaSprite(0x82, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+    setSpriteViewSpacePosition(0x82, 0.0f, 80.0f, 8.0f);
+    setSpriteColor(0x82, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteRenderingLayer(0x82, 3);
+    setBilinearFiltering(0x82, 1);
+    startSpriteAnimation(0x82, 1, arg0);
+    
+    dmaSprite(0x81, (u32)&_snapshotLargeTextureSegmentRomStart, (u32)&_snapshotLargeTextureSegmentRomEnd, (u32)&_snapshotLargeAssetsIndexSegmentRomStart, (u32)&_snapshotLargeAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x80289900, NULL, (u16*)0x8028EF00, (u16*)0x8028F000, (u8*)0x8028F100, NULL, 0, 0);
+    setSpriteViewSpacePosition(0x81, 0.0f, -16.0f, 8.0f);
+    setSpriteColor(0x81, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteRenderingLayer(0x81, 2);
+    setBilinearFiltering(0x81, 1);
+    startSpriteAnimation(0x81, 0, 0);
+    
+    dmaSprite(0x83, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+    setSpriteViewSpacePosition(0x83, 0.0f, 0.0f, 8.0f);
+    setSpriteColor(0x83, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteRenderingLayer(0x83, 2);
+    setBilinearFiltering(0x83, 1);
+    startSpriteAnimation(0x83, 2, 0);
+
+    if (D_801FB994[arg0] & 2) {
+        
+        dmaSprite(0x84, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+        setSpriteViewSpacePosition(0x84, 0.0f, 0.0f, 8.0f);
+        setSpriteColor(0x84, 0xFF, 0xFF, 0xFF, 0xFF);
+        setSpriteRenderingLayer(0x84, 3);
+        setBilinearFiltering(0x84, 1);
+        startSpriteAnimation(0x84, 3, D_801FB971[arg0]);
+        
+        dmaSprite(0xAE, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+        setSpriteViewSpacePosition(0xAE, 0.0f, 32.0f, 8.0f);
+        setSpriteColor(0xAE, 0xFF, 0xFF, 0xFF, 0xFF);
+        setSpriteRenderingLayer(0xAE, 3);
+        setBilinearFiltering(0xAE, 1);
+        
+        if (D_801FB858[arg0] == 0xFF) {
+            startSpriteAnimation(0xAE, 6, 0xFE);
+        } else {
+            startSpriteAnimation(0xAE, 5, (D_801FB858[arg0] * 9) / 255);
+        }
+        
+    }
+
+    if (D_801FB994[arg0] & 4) {
+        
+        dmaSprite(0x85, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+        setSpriteViewSpacePosition(0x85, 0.0f, 0.0f, 8.0f);
+        setSpriteColor(0x85, 0xFF, 0xFF, 0xFF, 0xFF);
+        setSpriteRenderingLayer(0x85, 3);
+        setBilinearFiltering(0x85, 1);
+        startSpriteAnimation(0x85, 3, 5);
+        
+        dmaSprite(0xAF, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+        setSpriteViewSpacePosition(0xAF, 0.0f, 16.0f, 8.0f);
+        setSpriteColor(0xAF, 0xFF, 0xFF, 0xFF, 0xFF);
+        setSpriteRenderingLayer(0xAF, 3);
+        setBilinearFiltering(0xAF, 1);
+
+        if (D_801FB85F[arg0] == 0xFF) {
+            startSpriteAnimation(0xAF, 6, 0xFE);
+        } else {
+            startSpriteAnimation(0xAF, 5, (D_801FB85F[arg0] * 9) / 255);
+        }
+    
+    }
+
+    if (D_801FB994[arg0] & 8) {
+        
+        dmaSprite(0x86, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+        setSpriteViewSpacePosition(0x86, 0.0f, 0.0f, 8.0f);
+        setSpriteColor(0x86, 0xFF, 0xFF, 0xFF, 0xFF);
+        setSpriteRenderingLayer(0x86, 3);
+        setBilinearFiltering(0x86, 1);
+        startSpriteAnimation(0x86, 3, 6);
+        
+        dmaSprite(0xB1, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+        setSpriteViewSpacePosition(0xB1, 0.0f, -16.0f, 8.0f);
+        setSpriteColor(0xB1, 0xFF, 0xFF, 0xFF, 0xFF);
+        setSpriteRenderingLayer(0xB1, 3);
+        setBilinearFiltering(0xB1, 1);
+        
+        if (D_801FB86D[arg0] == 0xFF) {
+            startSpriteAnimation(0xB1, 6, 0xFE);
+        } else {
+            startSpriteAnimation(0xB1, 5, (D_801FB86D[arg0] * 9) / 255);
+        }
+        
+    }
+    
+    dmaSprite(0xB0, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+    setSpriteViewSpacePosition(0xB0, 0.0f, 0.0f, 8.0f);
+    setSpriteColor(0xB0, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteRenderingLayer(0xB0, 3);
+    setBilinearFiltering(0xB0, 1);
+    
+    if (D_801FB866[arg0] == 0xFF) {
+        startSpriteAnimation(0xB0, 6, 0xFE);
+    } else {
+        startSpriteAnimation(0xB0, 5, (D_801FB866[arg0] * 9) / 255);
+    }
+
+    if (D_801FB994[arg0] & 1) {
+        dmaSprite(0xB2, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+        setSpriteViewSpacePosition(0xB2, -4.0f, 80.0f, 16.0f);
+        setSpriteColor(0xB2, 0xFF, 0xFF, 0xFF, 0xFF);
+        setSpriteRenderingLayer(0xB2, 3);
+        setBilinearFiltering(0xB2, 1);
+        startSpriteAnimation(0xB2, 7, D_801FB80B[arg0] - 1);
+    }
+    
+}
 
 //INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800B7B34);
 
@@ -699,6 +1359,7 @@ void func_800B7F6C(u8 arg0) {
     }
 
     startSpriteAnimation(0x79, 3, 0);
+
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800B7FC8);
@@ -712,6 +1373,7 @@ void func_800B7FC8(u8 arg0, u8 arg1) {
             setSpritePaletteIndex(arg0+ 0x83, 0xF);
         }
     }
+
 }
 
 static inline void initializeOverlayScreenTable(void) {
@@ -891,8 +1553,81 @@ void func_800B8844(void) {
     
 }
 
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800B8980);
 
-INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800B8980);
+void func_800B8980(void) {
+
+    u32 temp;
+
+    func_8005CDCC();
+    func_800B2F34();
+
+    temp = gGold;
+
+    setMoneySprites();
+    
+    func_80045E20(1, 0x91, (u32)&_moneyTextureSegmentRomStart, (u32)&_moneyTextureSegmentRomEnd, (u32)&_moneyAssetsIndexSegmentRomStart, (u32)&_moneyAssetsIndexSegmentRomEnd, (void*)0x80253B00, (void*)0x80254A00, (void*)0x80254E00, (void*)0x80254F00, 0, 1, 0, 0.0f, 0.0f, 320.0f, 0xA);
+    dmaOverlayScreenSprites(1, temp, 5, 3);
+    setOverlayScreenSpritesRGBA(1, 0xFF, 0xFF, 0xFF, 0xFF);
+
+    dmaSprite(0x83, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+    setSpriteViewSpacePosition(0x83, 0.0f, 0.0f, 8.0f);
+    setSpriteColor(0x83, 0xFF, 0xFF, 0xFF, 0);
+    setSpriteRenderingLayer(0x83, 2);
+    setBilinearFiltering(0x83, 1);
+    startSpriteAnimation(0x83, 0, 0);
+
+    dmaSprite(0x84, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+    setSpriteViewSpacePosition(0x84, 0.0f, -80.0f, 8.0f);
+    setSpriteColor(0x84, 0x80, 0x80, 0x80, 0);
+    setSpriteRenderingLayer(0x84, 2);
+    setBilinearFiltering(0x84, 1);
+    startSpriteAnimation(0x84, 0, 0);
+    
+    dmaSprite(0x85, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+    setSpriteViewSpacePosition(0x85, 0.0f, 0.0f, 8.0f);
+    setSpriteColor(0x85, 0x80, 0x80, 0x80, 0);
+    setSpriteRenderingLayer(0x85, 2);
+    setBilinearFiltering(0x85, 1);
+    startSpriteAnimation(0x85, 1, 0);
+    
+    dmaSprite(0x86, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+    setSpriteViewSpacePosition(0x86, 0.0f, 0.0f, 16.0f);
+    setSpriteColor(0x86, 0xFF, 0xFF, 0xFF, 0);
+    setSpriteRenderingLayer(0x86, 2);
+    setBilinearFiltering(0x86, 1);
+    startSpriteAnimation(0x86, 5, 0);
+    
+    dmaSprite(0x87, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+    setSpriteViewSpacePosition(0x87, -28.0f, 80.0f, 8.0f);
+    setSpriteColor(0x87, 0xFF, 0xFF, 0xFF, 0);
+    setSpriteRenderingLayer(0x87, 2);
+    setBilinearFiltering(0x87, 1);
+    startSpriteAnimation(0x87, 2, 0);
+    setSpritePaletteIndex(0x87, 3);
+    
+    dmaSprite(0x88, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+    setSpriteViewSpacePosition(0x88, 20.0f, 80.0f, 8.0f);
+    setSpriteColor(0x88, 0xFF, 0xFF, 0xFF, 0);
+    setSpriteRenderingLayer(0x88, 2);
+    setBilinearFiltering(0x88, 1);
+    startSpriteAnimation(0x88, 2, 0);
+    setSpritePaletteIndex(0x88, 2);
+    
+    dmaSprite(0x79, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (u16*)0x8023CE00, (u8*)0x8023D200, NULL, 0, 0);
+    setBilinearFiltering(0x79, 1);
+    setSpriteColor(0x79, 0xFF, 0xFF, 0xFF, 0xFF);
+    
+    dmaSprite(0x82, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+    setSpriteViewSpacePosition(0x82, 0.0f, 0.0f, 24.0f);
+    setBilinearFiltering(0x82, 1);
+    setSpriteColor(0x82, 0xFF, 0xFF, 0xFF, 0xFF);
+    
+    func_800C7850();
+    func_800B90E0();
+    func_800B99EC();
+    
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800B90E0);
 
@@ -937,7 +1672,44 @@ reset:
     
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800B99EC);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800B99EC);
+
+void func_800B99EC(void) {
+
+    u8 i;
+    
+    updateSpriteAlpha(0x89, 0xFF, 0x18);
+    updateSpriteAlpha(0x8C, 0xFF, 0x18);
+    updateSpriteAlpha(0x8D, 0xFF, 0x18);
+    updateSpriteAlpha(0x8B, 0xFF, 0x18);
+    updateSpriteAlpha(0x8A, 0xFF, 0x18);
+    updateSpriteAlpha(0x8E, 0xFF, 0x18);
+    updateSpriteAlpha(0x83, 0xFF, 0x18);
+    updateSpriteAlpha(0x84, 0xFF, 0x18);
+    updateSpriteAlpha(0x85, 0xFF, 0x18);
+    updateSpriteAlpha(0x86, 0xFF, 0x18);
+    updateSpriteAlpha(0x87, 0xFF, 0x18);
+    updateSpriteAlpha(0x88, 0xFF, 0x18);
+
+    for (i = 0; i < 9; i++) {
+        if (gPlayer.toolSlots[i]) {
+            updateSpriteAlpha(i + 0xA3, 0xFF, 0x18);
+        }
+    }
+
+    for (i = 0; i < 9; i++) {
+        if (gPlayer.belongingsSlots[i]) {
+            updateSpriteAlpha(i + 0xAC, 0xFF, 0x18);
+        }
+    }
+
+    for (i = 0; i < 9; i++) {
+        if (gPlayer.keyItemSlots[i]) {
+            updateSpriteAlpha(i + 0xB5, 0xFF, 0x18);
+        }
+    }
+    
+}
 
 //INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800B9B8C);
 
@@ -976,18 +1748,95 @@ void func_800B9B8C(void) {
         }
     }
     
-    deactivatePauseScreenSprites(0);
-    deactivatePauseScreenSprites(1);
+    deactivateOverlayScreenSprites(0);
+    deactivateOverlayScreenSprites(1);
     
 }
-
 
 // pause screen main loop callback
 INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800B9D3C);
 
-INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800BA928);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800BA928);
 
-INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800BA9E8);
+f32 func_800BA928(u8 arg0, u32 arg1) {
+
+    f32 res;
+    
+    switch (arg0) {
+
+        case 5:
+
+            arg1 &= 0xFF;
+
+            if (arg1 < 8) {
+                res = D_80116C80[arg1 & 0x3];
+            } else {
+                res = D_80116C90;
+            }
+            break;
+        
+        case 6:
+
+            arg1 &= 0xFF;
+
+            if (arg1 < 8) {
+                res = D_80116CA0[arg1 & 0x3];
+            } else {
+                res = D_80116CB0;
+            }
+            
+            break;
+
+        case 7:
+            res = D_80116CC0[arg1 & 1];
+            break;
+        
+    }
+
+    return res;
+    
+}
+
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800BA9E8);
+
+f32 func_800BA9E8(u8 arg0, u32 arg1) {
+
+    f32 res;
+    
+    switch (arg0) {
+
+        case 5:
+            
+            arg1 &= 0xFF;
+            
+            if (arg1 < 8) {
+                res = D_80116C94[(arg1 & 0xFC) / 4];
+            } else {
+                res = D_80116C9C;
+            }
+            break;
+        
+        case 6:
+
+            arg1 &= 0xFF;
+            
+            if (arg1 < 8) {
+                res = D_80116CB4[(arg1 & 0xFC) / 4];
+            } else {
+                res = D_80116CBC;
+            }
+            
+            break;
+
+        case 7:
+            res = D_80116CC8[(arg1 /2) & 0x7F];
+            break;
+        
+    }
+
+    return res;
+    
+}
 
 //INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800BAAA0);
 
@@ -1102,22 +1951,237 @@ void func_800BADD0(void) {
     
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800BAF1C);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800BAF1C);
+
+void func_800BAF1C(void) {
+
+    u32 temp;
+    
+    func_800B2F34();
+    
+    temp = gGold;
+
+    setMoneySprites();
+    
+    func_80045E20(1, 0x91, (u32)&_moneyTextureSegmentRomStart, (u32)&_moneyTextureSegmentRomEnd, (u32)&_moneyAssetsIndexSegmentRomStart, (u32)&_moneyAssetsIndexSegmentRomEnd, (void*)0x80253B00, (void*)0x80254A00, (void*)0x80254E00, (void*)0x80254F00, 0, 1, 0, 0.0f, 0.0f, 320.0f, 0xA);
+    dmaOverlayScreenSprites(1, temp, 5, 3);
+    setOverlayScreenSpritesRGBA(1, 0xFF, 0xFF, 0xFF, 0xFF);
+    
+    dmaSprite(0x83, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+    setSpriteViewSpacePosition(0x83, 42.0f, 0.0f, 8.0f);
+    setSpriteColor(0x83, 0xFF, 0xFF, 0xFF, 0);
+    setSpriteRenderingLayer(0x83, 2);
+    setBilinearFiltering(0x83, 1);
+    startSpriteAnimation(0x83, 0, 0);
+    
+    dmaSprite(0x84, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+    setSpriteViewSpacePosition(0x84, 42.0f, -80.0f, 8.0f);
+    setSpriteColor(0x84, 0xFF, 0xFF, 0xFF, 0);
+    setSpriteRenderingLayer(0x84, 2);
+    setBilinearFiltering(0x84, 1);
+    startSpriteAnimation(0x84, 0, 0);
+    
+    dmaSprite(0x86, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+    setSpriteViewSpacePosition(0x86, 0.0f, 0.0f, 16.0f);
+    setSpriteColor(0x86, 0xFF, 0xFF, 0xFF, 0);
+    setSpriteRenderingLayer(0x86, 2);
+    setBilinearFiltering(0x86, 1);
+    startSpriteAnimation(0x86, 5, 1);
+    
+    dmaSprite(0x87, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+    setSpriteViewSpacePosition(0x87, 0.0f, 80.0f, 8.0f);
+    setSpriteColor(0x87, 0xFF, 0xFF, 0xFF, 0);
+    setSpriteRenderingLayer(0x87, 2);
+    setBilinearFiltering(0x87, 1);
+    startSpriteAnimation(0x87, 2, 0);
+    setSpritePaletteIndex(0x87, 3);
+    
+    dmaSprite(0x79, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (u16*)0x8023CE00, (u8*)0x8023D200, NULL, 0, 0);
+    setSpriteViewSpacePosition(0x79, func_800BC700(overlayScreenTable.subscreen, overlayScreenTable.cellIndex) - 16.0f, func_800BC770(overlayScreenTable.subscreen, overlayScreenTable.cellIndex) - 8.0f, 32.0f);
+    setBilinearFiltering(0x79, 1);
+    setSpriteColor(0x79, 0xFF, 0xFF, 0xFF, 0xFF);
+    
+    dmaSprite(0x82, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+    setSpriteViewSpacePosition(0x82, 0.0f, 0.0f, 24.0f);
+    setBilinearFiltering(0x82, 1);
+    setSpriteColor(0x82, 0xFF, 0xFF, 0xFF, 0xFF);
+    
+    func_800C7850();
+    func_800BB590();
+    func_800BBBC8();
+    
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800BB590);
 
-INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800BBAF0);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800BBAF0);
 
-INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800BBBC8);
+void func_800BBAF0(void) {
 
-INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800BBD34);
+    f32 x;
+    
+    if (overlayScreenTable.unk_5 == 5) {
+
+        if (overlayScreenTable.unk_3 != 0xFF) {
+            
+            if (overlayScreenTable.unk_4 == overlayScreenTable.pageNumber) {
+                
+                x = func_800BC700(overlayScreenTable.unk_5, overlayScreenTable.unk_3);
+                setSpriteViewSpacePosition(0x82, x, func_800BC770(overlayScreenTable.unk_5, overlayScreenTable.unk_3), 16.0f);
+                startSpriteAnimation(0x82, 6, 0xFE);
+            
+            } else {
+                resetAnimationState(0x82);
+            }
+            
+        } else {
+            resetAnimationState(0x82);
+        }
+        
+    } else {
+
+        if (overlayScreenTable.unk_3 != 0xFF) {
+            
+            x = func_800BC700(overlayScreenTable.unk_5, overlayScreenTable.unk_3);
+            setSpriteViewSpacePosition(0x82, x, func_800BC770(overlayScreenTable.unk_5, overlayScreenTable.unk_3), 16.0f);
+            startSpriteAnimation(0x82, 6, 0xFE);
+            
+        } else {
+            resetAnimationState(0x82);
+        }
+        
+    } 
+    
+}
+
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800BBBC8);
+
+void func_800BBBC8(void) {
+    
+    u8 i;
+
+    updateSpriteAlpha(0x89, 0xFF, 0x18);
+    updateSpriteAlpha(0x8C, 0xFF, 0x18);
+    updateSpriteAlpha(0x8D, 0xFF, 0x18);
+    updateSpriteAlpha(0x8B, 0xFF, 0x18);
+    updateSpriteAlpha(0x8A, 0xFF, 0x18);
+    updateSpriteAlpha(0x8E, 0xFF, 0x18);
+    updateSpriteAlpha(0x83, 0xFF, 0x18);
+    updateSpriteAlpha(0x84, 0xFF, 0x18);
+    updateSpriteAlpha(0x86, 0xFF, 0x18);
+    updateSpriteAlpha(0x87, 0xFF, 0x18);
+    updateSpriteAlpha(0x88, 0xFF, 0x18);
+
+    for (i = 0; i < 9; i++) {
+        if (gToolchestSlots[(overlayScreenTable.pageNumber * 8) + i]) {
+            updateSpriteAlpha(0xA3 + i, 0xFF, 0x18);
+        }
+    }
+
+    for (i = 0; i < 9; i++) {
+        if (gPlayer.toolSlots[i]) {
+            updateSpriteAlpha(0xAC + i, 0xFF, 0x18);
+        }
+    }
+    
+}
+
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800BBD34);
+
+void func_800BBD34(void) {
+
+    u8 i;
+
+    updateSpriteAlpha(0x89, 0, 0x18);
+    updateSpriteAlpha(0x8C, 0, 0x18);
+    updateSpriteAlpha(0x8D, 0, 0x18);
+    updateSpriteAlpha(0x8B, 0, 0x18);
+    updateSpriteAlpha(0x8A, 0, 0x18);
+    updateSpriteAlpha(0x8E, 0, 0x18);
+    updateSpriteAlpha(0x83, 0, 0x18);
+    updateSpriteAlpha(0x84, 0, 0x18);
+    updateSpriteAlpha(0x85, 0, 0x18);
+    updateSpriteAlpha(0x86, 0, 0x18);
+    updateSpriteAlpha(0x87, 0, 0x18);
+    updateSpriteAlpha(0x88, 0, 0x18);
+
+    for (i = 0; i < 9; i++) {
+        if (gToolchestSlots[(overlayScreenTable.pageNumber * 8) + i]) {
+            updateSpriteAlpha(0xA3 + i, 0, 0x18);
+        }
+    }
+
+    for (i = 0; i < 9; i++) {
+        if (gPlayer.toolSlots[i]) {
+            updateSpriteAlpha(0xAC + i, 0, 0x18);
+        }
+    }
+
+    deactivateOverlayScreenSprites(0);
+    deactivateOverlayScreenSprites(1);
+    
+}
 
 // toolbox callback
 INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800BBEC0);
 
-INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800BC700);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800BC700);
 
-INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800BC770);
+f32 func_800BC700(u8 arg0, u32 arg1) {
+
+    f32 res;
+    
+    switch (arg0) {
+
+        case 5:
+            res = D_80116CD8[arg1 & 0x3];
+            break;
+        
+        case 6:
+
+            arg1 &= 0xFF;
+            if (arg1 < 8) {
+                res = D_80116CF0[arg1 & 0x3];
+            } else {
+                res = D_80116D00;
+            }
+            
+            break;
+        
+    }
+
+    return res;
+    
+}
+
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800BC770);
+
+f32 func_800BC770(u8 arg0, u32 arg1) {
+
+    f32 res;
+    
+    switch (arg0) {
+
+        case 5:
+            res = D_80116CE8[(arg1 & 0xFC) / 4];
+            break;
+        
+        case 6:
+
+            arg1 &= 0xFF;
+            if (arg1 < 8) {
+                res = D_80116D04[(arg1 & 0xFC) / 4];
+            } else {
+                res = D_80116D0C;
+            }
+            
+            break;
+        
+    }
+
+    return res;
+    
+}
 
 // rucksack
 INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800BC7D8);
@@ -1258,16 +2322,70 @@ void func_800BD998(void) {
         }
     }
 
-    deactivatePauseScreenSprites(0);
-    deactivatePauseScreenSprites(1);
+    deactivateOverlayScreenSprites(0);
+    deactivateOverlayScreenSprites(1);
     
 }
 
 INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800BDB24);
 
-INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800BE3B8);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800BE3B8);
 
-INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800BE428);
+inline f32 func_800BE3B8(u8 arg0, u32 arg1) {
+
+    f32 res;
+    
+    switch (arg0) {
+        
+        case 5:
+            arg1 &= 0xFF;
+            res = D_80116D10[arg1 & 3];
+            break;
+        
+        case 6:
+            arg1 &= 0xFF;
+            if (arg1 < 8) {
+                res = D_80116D28[arg1 & 3];
+            } else {
+                res = D_80116D38;
+            }
+            
+            break;
+        
+    }
+
+    return res;
+    
+}
+
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800BE428);
+
+f32 func_800BE428(u8 arg0, u32 arg1) {
+
+        f32 res;
+    
+    switch (arg0) {
+
+        case 5:
+            res = D_80116D20[(arg1 & 0xFC) / 4];
+            break;
+        
+        case 6:
+
+            arg1 &= 0xFF;
+            if (arg1 < 8) {
+                res = D_80116D3C[(arg1 & 0xFC) / 4];
+            } else {
+                res = D_80116D44;
+            }
+            
+            break;
+        
+    }
+
+    return res;
+    
+}
 
 //INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800BE490);
 
@@ -1328,7 +2446,45 @@ bool func_800BE5D0(u8 arg0) {
 
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800BE684);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800BE684);
+
+void func_800BE684(void) {
+
+    u8 temp;
+
+    switch (overlayScreenTable.subscreen) {
+
+        case 5:
+
+            temp = D_80237420[(overlayScreenTable.pageNumber * 8) + overlayScreenTable.cellIndex];
+            
+            if (overlayScreenTable.unk_5 == overlayScreenTable.subscreen) {
+                D_80237420[(overlayScreenTable.pageNumber * 8) + overlayScreenTable.cellIndex] = D_80237420[(overlayScreenTable.unk_4 * 8) + overlayScreenTable.unk_3];
+                D_80237420[(overlayScreenTable.unk_4 * 8) + overlayScreenTable.unk_3] = temp;
+            } else {
+                D_80237420[(overlayScreenTable.pageNumber * 8) + overlayScreenTable.cellIndex] = gPlayer.belongingsSlots[overlayScreenTable.unk_3];
+                gPlayer.belongingsSlots[overlayScreenTable.unk_3] = temp;
+            }
+
+            break;
+
+        case 6:
+
+            temp = gPlayer.belongingsSlots[overlayScreenTable.cellIndex];
+            
+            if (overlayScreenTable.unk_5 == overlayScreenTable.subscreen) {
+                gPlayer.belongingsSlots[overlayScreenTable.cellIndex] = gPlayer.belongingsSlots[overlayScreenTable.unk_3];
+                gPlayer.belongingsSlots[overlayScreenTable.unk_3] = temp;
+            } else {
+                gPlayer.belongingsSlots[overlayScreenTable.cellIndex] = D_80237420[(overlayScreenTable.unk_4 * 8) + overlayScreenTable.unk_3];
+                D_80237420[(overlayScreenTable.unk_4 * 8) + overlayScreenTable.unk_3] = temp;
+            }
+
+        break;
+        
+    }
+    
+}
 
 //INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800BE808);
 
@@ -1467,8 +2623,8 @@ void func_800BF804(void) {
         
     }
 
-    deactivatePauseScreenSprites(0);
-    deactivatePauseScreenSprites(1);
+    deactivateOverlayScreenSprites(0);
+    deactivateOverlayScreenSprites(1);
     
 }
 
@@ -1585,8 +2741,8 @@ void func_800C0714(void) {
     setMoneySprites();
     
     func_80045E20(1, 0x91, (u32)&_moneyTextureSegmentRomStart, (u32)&_moneyTextureSegmentRomEnd, (u32)&_moneyAssetsIndexSegmentRomStart, (u32)&_moneyAssetsIndexSegmentRomEnd, (void*)0x80253B00, (void*)0x80254A00, (void*)0x80254E00, (void*)0x80254F00, 0, 1, 0, 0.0f, 0.0f, 320.0f, 0xA);
-    dmaPauseScreenSprites(1, temp, 5, 3);
-    setPauseScreenSpritesRGBA(1, 0xFF, 0xFF, 0xFF, 0xFF);
+    dmaOverlayScreenSprites(1, temp, 5, 3);
+    setOverlayScreenSpritesRGBA(1, 0xFF, 0xFF, 0xFF, 0xFF);
 
     dmaSprite(0x82, (u32)&_annexExtensionSelectionTextureSegmentRomStart, (u32)&_annexExtensionSelectionTextureSegmentRomEnd, (u32)&_annexExtensionSelectionAssetsIndexSegmentRomStart, (u32)&_annexExtensionSelectionAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
     setSpriteViewSpacePosition(0x82, 0.0f, 0.0f, 8.0f);
@@ -1687,8 +2843,8 @@ void func_800C101C(void) {
     updateSpriteAlpha(0x86, 0, 24);
     updateSpriteAlpha(0x87, 0, 24);
     updateSpriteAlpha(0x88, 0, 24);
-    deactivatePauseScreenSprites(0);
-    deactivatePauseScreenSprites(1);
+    deactivateOverlayScreenSprites(0);
+    deactivateOverlayScreenSprites(1);
 }
 
 //INCLUDE_RODATA("asm/nonmatchings/game/overlayScreens", D_80121D74);
@@ -1713,8 +2869,8 @@ void func_800C1710(void) {
     setMoneySprites();
     
     func_80045E20(1, 0x91, (u32)&_moneyTextureSegmentRomStart, (u32)&_moneyTextureSegmentRomEnd, (u32)&_moneyAssetsIndexSegmentRomStart, (u32)&_moneyAssetsIndexSegmentRomEnd, (void*)0x80253B00, (void*)0x80254A00, (void*)0x80254E00, (void*)0x80254F00, 0, 1, 0, 0.0f, 0.0f, 320.0f, 0xA);
-    dmaPauseScreenSprites(1, temp, 5, 3);
-    setPauseScreenSpritesRGBA(1, 0xFF, 0xFF, 0xFF, 0xFF);
+    dmaOverlayScreenSprites(1, temp, 5, 3);
+    setOverlayScreenSpritesRGBA(1, 0xFF, 0xFF, 0xFF, 0xFF);
 
     dmaSprite(0x82, (u32)&_evaluationScreenTextureSegmentRomStart, (u32)&_evaluationScreenTextureSegmentRomEnd, (u32)&_evaluationScreenAssetsIndexSegmentRomStart, (u32)&_evaluationScreenAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
     setSpriteViewSpacePosition(0x82, 0.0f, 0.0f, 8.0f);
@@ -1764,24 +2920,24 @@ void func_800C1710(void) {
     }
     
     func_80045E20(2, 0x9A, (u32)&_bulletNumeralTextureSegmentRomStart, (u32)&_bulletNumeralTextureSegmentRomEnd, (u32)&_bulletNumeralAssetsIndexSegmentRomStart, (u32)&_bulletNumeralAssetsIndexSegmentRomEnd, (void*)0x8028F200, (void*)0x8028F880, (void*)0x8028F900, (void*)0x8028F9C0, 0, 1, 0, -60.0f, 4.0f, 256.0f, 8);
-    dmaPauseScreenSprites(2, func_8009B3DC() & 0xFF, 1, 3);
-    setPauseScreenSpritesRGBA(2, 0xFF, 0xFF, 0xFF, 0xFF);
+    dmaOverlayScreenSprites(2, func_8009B3DC() & 0xFF, 1, 3);
+    setOverlayScreenSpritesRGBA(2, 0xFF, 0xFF, 0xFF, 0xFF);
     
     func_80045E20(3, 0x9B, (u32)&_bulletNumeralTextureSegmentRomStart, (u32)&_bulletNumeralTextureSegmentRomEnd, (u32)&_bulletNumeralAssetsIndexSegmentRomStart, (u32)&_bulletNumeralAssetsIndexSegmentRomEnd, (void*)0x8028F200, (void*)0x8028F880, (void*)0x8028F900, (void*)0x8028F9C0, 0, 1, 0, -60.0f, -12.0f, 256.0f, 8);
-    dmaPauseScreenSprites(3, func_8009B4EC() & 0xFF, 1, 3);
-    setPauseScreenSpritesRGBA(3, 0xFF, 0xFF, 0xFF, 0xFF);
+    dmaOverlayScreenSprites(3, func_8009B4EC() & 0xFF, 1, 3);
+    setOverlayScreenSpritesRGBA(3, 0xFF, 0xFF, 0xFF, 0xFF);
     
     func_80045E20(4, 0x9C, (u32)&_bulletNumeralTextureSegmentRomStart, (u32)&_bulletNumeralTextureSegmentRomEnd, (u32)&_bulletNumeralAssetsIndexSegmentRomStart, (u32)&_bulletNumeralAssetsIndexSegmentRomEnd, (void*)0x8028F200, (void*)0x8028F880, (void*)0x8028F900, (void*)0x8028F9C0, 0, 1, 0, -60.0f, -28.0f, 256.0f, 8);
-    dmaPauseScreenSprites(4, func_8009B564() & 0xFF, 1, 3);
-    setPauseScreenSpritesRGBA(4, 0xFF, 0xFF, 0xFF, 0xFF);
+    dmaOverlayScreenSprites(4, func_8009B564() & 0xFF, 1, 3);
+    setOverlayScreenSpritesRGBA(4, 0xFF, 0xFF, 0xFF, 0xFF);
     
     func_80045E20(5, 0x9D, (u32)&_bulletNumeralTextureSegmentRomStart, (u32)&_bulletNumeralTextureSegmentRomEnd, (u32)&_bulletNumeralAssetsIndexSegmentRomStart, (u32)&_bulletNumeralAssetsIndexSegmentRomEnd, (void*)0x8028F200, (void*)0x8028F880, (void*)0x8028F900, (void*)0x8028F9C0, 0, 1, 0, -16.0f, -44.0f, 256.0f, 8);
-    dmaPauseScreenSprites(5, gLumber, 3, 3);
-    setPauseScreenSpritesRGBA(5, 0xFF, 0xFF, 0xFF, 0xFF);
+    dmaOverlayScreenSprites(5, gLumber, 3, 3);
+    setOverlayScreenSpritesRGBA(5, 0xFF, 0xFF, 0xFF, 0xFF);
     
     func_80045E20(6, 0xA0, (u32)&_bulletNumeralTextureSegmentRomStart, (u32)&_bulletNumeralTextureSegmentRomEnd, (u32)&_bulletNumeralAssetsIndexSegmentRomStart, (u32)&_bulletNumeralAssetsIndexSegmentRomEnd, (void*)0x8028F200, (void*)0x8028F880, (void*)0x8028F900, (void*)0x8028F9C0, 0, 1, 0, -16.0f, -60.0f, 256.0f, 8);
-    dmaPauseScreenSprites(6, fodderQuantity, 3, 3);
-    setPauseScreenSpritesRGBA(6, 0xFF, 0xFF, 0xFF, 0xFF);
+    dmaOverlayScreenSprites(6, fodderQuantity, 3, 3);
+    setOverlayScreenSpritesRGBA(6, 0xFF, 0xFF, 0xFF, 0xFF);
     
     setMessageBoxViewSpacePosition(0, 44.0f, 20.0f, 352.0f);
     setMessageBoxSpriteIndices(0, 0xFF, 0xFF, 0xFF);
@@ -1828,13 +2984,13 @@ void func_800C2128(void) {
     messageBoxes[0].flags &= ~0x8000;
     
     func_8003F130(0);
-    deactivatePauseScreenSprites(0);
-    deactivatePauseScreenSprites(1);
-    deactivatePauseScreenSprites(2);
-    deactivatePauseScreenSprites(3);
-    deactivatePauseScreenSprites(4);
-    deactivatePauseScreenSprites(5);
-    deactivatePauseScreenSprites(6);
+    deactivateOverlayScreenSprites(0);
+    deactivateOverlayScreenSprites(1);
+    deactivateOverlayScreenSprites(2);
+    deactivateOverlayScreenSprites(3);
+    deactivateOverlayScreenSprites(4);
+    deactivateOverlayScreenSprites(5);
+    deactivateOverlayScreenSprites(6);
     
 }
 
@@ -2000,8 +3156,8 @@ void func_800C2A54(void) {
     updateSpriteAlpha(0xAB, 0, 24);
     updateSpriteAlpha(0xAC, 0, 24);
 
-    deactivatePauseScreenSprites(0);
-    deactivatePauseScreenSprites(1);
+    deactivateOverlayScreenSprites(0);
+    deactivateOverlayScreenSprites(1);
 
 }
 
@@ -2174,8 +3330,8 @@ void func_800C3B1C(void) {
         updateSpriteAlpha(i + 0x8F, 0, 0x18);
     }
     
-    deactivatePauseScreenSprites(0);
-    deactivatePauseScreenSprites(1);
+    deactivateOverlayScreenSprites(0);
+    deactivateOverlayScreenSprites(1);
     
 }
 
@@ -2321,8 +3477,8 @@ void func_800C5218(void) {
     updateSpriteAlpha(0xB1, 0, 24);
     updateSpriteAlpha(0xB2, 0, 24);
 
-    deactivatePauseScreenSprites(0);
-    deactivatePauseScreenSprites(1);
+    deactivateOverlayScreenSprites(0);
+    deactivateOverlayScreenSprites(1);
 
 }
 
@@ -2611,8 +3767,8 @@ void func_800C6F70(void) {
     updateSpriteAlpha(0x85, 0, 24);
     updateSpriteAlpha(0x86, 0, 24);
 
-    deactivatePauseScreenSprites(0);
-    deactivatePauseScreenSprites(1);
+    deactivateOverlayScreenSprites(0);
+    deactivateOverlayScreenSprites(1);
 
 }
 
@@ -3128,25 +4284,246 @@ void func_800CA678(void) {
     func_8003DD14(3);
     func_8003DD14(4);
     func_8003DD14(5);
-    deactivatePauseScreenSprites(1);
-    deactivatePauseScreenSprites(2);
-    deactivatePauseScreenSprites(3);
-    deactivatePauseScreenSprites(4);
-    deactivatePauseScreenSprites(5);
-    deactivatePauseScreenSprites(6);
-    deactivatePauseScreenSprites(7);
-    deactivatePauseScreenSprites(8);
-    deactivatePauseScreenSprites(9);
-    deactivatePauseScreenSprites(0xA);
-    deactivatePauseScreenSprites(0xB);
-    deactivatePauseScreenSprites(0xC);
-    deactivatePauseScreenSprites(0xD);
-    deactivatePauseScreenSprites(0xE);
+    deactivateOverlayScreenSprites(1);
+    deactivateOverlayScreenSprites(2);
+    deactivateOverlayScreenSprites(3);
+    deactivateOverlayScreenSprites(4);
+    deactivateOverlayScreenSprites(5);
+    deactivateOverlayScreenSprites(6);
+    deactivateOverlayScreenSprites(7);
+    deactivateOverlayScreenSprites(8);
+    deactivateOverlayScreenSprites(9);
+    deactivateOverlayScreenSprites(0xA);
+    deactivateOverlayScreenSprites(0xB);
+    deactivateOverlayScreenSprites(0xC);
+    deactivateOverlayScreenSprites(0xD);
+    deactivateOverlayScreenSprites(0xE);
     func_80053088();
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800CA808);
- 
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800CA808);
+
+void func_800CA808(void) {
+
+    u8 temp = 0;
+    bool set = FALSE;
+    
+    switch (overlayScreenTable.subscreen) {
+        
+        case 0:
+            func_800C8B04();
+            overlayScreenTable.subscreen = 1;
+            break;
+        
+        case 1:
+            if (func_8002CBF8(0x82)) {
+                setSpriteViewSpacePosition(0x79, -112.0f, (-(overlayScreenTable.cellIndex * 0x10) + 0x18), 32.0f);
+                startSpriteAnimation(0x79, 3, 0);
+                overlayScreenTable.subscreen = 4;
+            }
+            
+            break;
+        
+        case 2:
+            if (func_8002CBF8(0x82)) {
+                func_800B2CE0();
+                overlayScreenTable.subscreen = 3;
+            }
+            break;
+        
+        case 3:
+            deactivateSprite(0x80);
+            func_80059368();
+            func_80059300();
+            break;
+        
+        case 4:
+
+            if (checkButtonRepeat(0, 0x100000) && !set) {
+                
+                if (overlayScreenTable.cellIndex) {
+                    overlayScreenTable.cellIndex--;
+                    setAudio(2);
+                    setSpriteViewSpacePosition(0x79, -112.0f, (f32) (-(overlayScreenTable.cellIndex * 0x10) + 0x18), 32.0f);
+                } else {
+                    overlayScreenTable.cellIndex = 0xFF;
+                    overlayScreenTable.subscreen = 6;
+                    setAudio(2);
+                    setSpriteViewSpacePosition(0x79, 96.0f, -96.0f, 32.0f);
+                }
+                
+                set = TRUE;
+                    
+                
+            }
+            
+            if (checkButtonRepeat(0, BUTTON_STICK_UP) && !set) {
+                
+                    if ((overlayScreenTable.cellIndex) != 5) {
+                        overlayScreenTable.cellIndex++;
+                        setAudio(2);
+                        setSpriteViewSpacePosition(0x79, -112.0f, (f32) (-(overlayScreenTable.cellIndex * 16) + 24), 32.0f);
+                    } else {
+                        overlayScreenTable.cellIndex = 0xFF;
+                        overlayScreenTable.subscreen = 6;
+                        setAudio(2);
+                        setSpriteViewSpacePosition(0x79, 96.0f, -96.0f, 32.0f);
+                    }
+                
+                    set = TRUE;
+                
+            }
+            
+            if (checkButtonPressed(CONTROLLER_1, BUTTON_A) && !set) {
+                overlayScreenTable.subscreen = 5;
+                setSpriteViewSpacePosition(0x79, 32.0f, (f32) (-(overlayScreenTable.cellIndex * 0x10) + 0x18), 32.0f);
+                set = TRUE;
+                setAudio(0);
+            }
+            
+            if ((checkButtonPressed(CONTROLLER_1, BUTTON_START)) && !set) {
+                overlayScreenTable.cellIndex = 0xFF;
+                overlayScreenTable.subscreen = 6;
+                setAudio(2);
+                setSpriteViewSpacePosition(0x79, 96.0f, -96.0f, 32.0f);
+            }
+            
+            break;
+
+        case 5:
+
+            if (checkButtonRepeat(CONTROLLER_1, 0x10000)) {
+                
+                if (!set) {
+                    
+                    if (adjustValue(D_80189858, 50, gGold) == 50) {
+                        
+                        if (overlayScreenStrings.strings2[(overlayScreenStrings.unk_6A)][overlayScreenTable.cellIndex]) {
+                            D_80189858 += adjustValue(D_80189858, 50, gGold);
+                            overlayScreenStrings.strings2[(overlayScreenStrings.unk_6A)][overlayScreenTable.cellIndex]--;
+                            setAudio(2);
+                        }
+                        
+                    }
+                    
+                    
+                    setSpriteViewSpacePosition(0x79, 32.0f, (f32) (-(overlayScreenTable.cellIndex * 16) + 24), 32.0f);
+                    
+                    set = TRUE;
+                    
+                }
+                
+            }
+
+            if (checkButtonRepeat(0, 0x100000)) {
+
+                if (!set) {
+
+                    if (adjustValue(D_80189858, -50, gGold) == -50) {
+
+                        if (overlayScreenStrings.strings2[(overlayScreenStrings.unk_6A)][overlayScreenTable.cellIndex] != 99) {
+                            D_80189858 += adjustValue(D_80189858, -50, gGold);
+                            overlayScreenStrings.strings2[(overlayScreenStrings.unk_6A)][overlayScreenTable.cellIndex]++;
+                            setAudio(2);
+                        }
+                    }
+                    
+                    
+                    setSpriteViewSpacePosition(0x79, 32.0f, (f32) (-(overlayScreenTable.cellIndex * 16) + 24), 32.0f);
+                    set = TRUE;
+                        
+                }
+                    
+            }
+
+            if ((checkButtonPressed(CONTROLLER_1, 0x4000 | 0x8000))) {
+
+                if (!set) {
+                    overlayScreenTable.subscreen = 4;
+                    setSpriteViewSpacePosition(0x79, -112.0f, (f32) (-(overlayScreenTable.cellIndex * 16) + 24), 32.0f);
+                    set = TRUE;
+                    setAudio(1);
+                }
+                
+            }
+
+            dmaOverlayScreenSprites(1, (u32) D_80189858, 5, 3);
+            dmaOverlayScreenSprites(overlayScreenTable.cellIndex + 3, overlayScreenStrings.strings2[(overlayScreenStrings.unk_6A)][overlayScreenTable.cellIndex], 1, 3);
+                
+            break;
+
+        case 6:
+
+            if (checkButtonRepeat(CONTROLLER_1, 0x100000)) {
+                
+                if (!set) {
+                    overlayScreenTable.cellIndex = 5;
+                    setAudio(2);
+                    setSpriteViewSpacePosition(0x79, -112.0f, (f32) (-(overlayScreenTable.cellIndex * 16) + 24), 32.0f);
+                    set = TRUE;
+                    overlayScreenTable.subscreen = 4;
+                }
+                
+            }
+
+            if (checkButtonRepeat(CONTROLLER_1, 0x10000)) {
+                
+                if (!set) {
+                    overlayScreenTable.cellIndex = 0;
+                    setAudio(2);
+                    setSpriteViewSpacePosition(0x79, -112.0f, (f32) (-(overlayScreenTable.cellIndex * 0x10) + 0x18), 32.0f);
+                    set = TRUE;
+                    overlayScreenTable.subscreen = 4;
+                }
+                
+            }
+
+            if ((checkButtonPressed(CONTROLLER_1, 0x8000))) {
+
+                if (!set) {
+                    
+                    if (overlayScreenStrings.strings2[(overlayScreenStrings.unk_6A)][0] 
+                        || overlayScreenStrings.strings2[(overlayScreenStrings.unk_6A)][1] 
+                        || overlayScreenStrings.strings2[(overlayScreenStrings.unk_6A)][2] 
+                        || overlayScreenStrings.strings2[(overlayScreenStrings.unk_6A)][3] 
+                        || overlayScreenStrings.strings2[(overlayScreenStrings.unk_6A)][4] 
+                        || overlayScreenStrings.strings2[(overlayScreenStrings.unk_6A)][5]) {
+                        
+                        overlayScreenStrings.unk_6D[overlayScreenStrings.unk_6A] = 0xFF;
+                        gGold = D_80189858;
+                        
+                        if (checkDailyEventBit(0x41)) {
+                            acquireKeyItem(0xE);
+                        } else {
+                            acquireKeyItem(0xF);
+                        }
+                        
+                    }
+                    
+                    resetAnimationState(0x79);
+                    set = TRUE;
+                    
+                    func_800CA678();
+                    overlayScreenTable.subscreen = 2;
+                    
+                    setAudio(0);
+                    
+                }
+            }
+
+            break;
+        
+        }
+    
+    if (overlayScreenTable.subscreen >= 4 && checkButtonPressed(CONTROLLER_1, BUTTON_B) && !set) {
+        resetAnimationState(0x79);
+        func_800CA678();
+        overlayScreenTable.subscreen = 2;
+        setAudio(1);
+    }
+    
+}
+
 // horse race
 // D_801220CC
 INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800CB0C4);
@@ -3325,10 +4702,10 @@ void func_800CD690(void) {
     func_8003DD14(4);
     func_8003DD14(5);
 
-    deactivatePauseScreenSprites(2);
-    deactivatePauseScreenSprites(3);
-    deactivatePauseScreenSprites(8);
-    deactivatePauseScreenSprites(9);
+    deactivateOverlayScreenSprites(2);
+    deactivateOverlayScreenSprites(3);
+    deactivateOverlayScreenSprites(8);
+    deactivateOverlayScreenSprites(9);
 
     func_80053088();
 
@@ -3391,10 +4768,10 @@ void func_800CD750(void) {
             func_8003DD14(3);
             func_8003DD14(4);
             func_8003DD14(5);
-            deactivatePauseScreenSprites(2);
-            deactivatePauseScreenSprites(3);
-            deactivatePauseScreenSprites(8);
-            deactivatePauseScreenSprites(9);
+            deactivateOverlayScreenSprites(2);
+            deactivateOverlayScreenSprites(3);
+            deactivateOverlayScreenSprites(8);
+            deactivateOverlayScreenSprites(9);
             func_80053088();
             
             overlayScreenTable.subscreen = 2;
@@ -3467,8 +4844,8 @@ void func_800CDA6C(void) {
     
     func_80045E20(2, 0x97, (u32)&_moneyTextureSegmentRomStart, (u32)&_moneyTextureSegmentRomEnd, (u32)&_moneyAssetsIndexSegmentRomStart, (u32)&_moneyAssetsIndexSegmentRomEnd, 0x80253B00, 0x80254A00, 0x80254E00, 0x80254F00, 0, 1, 0, -24.0f, 6.0f, 256.0f, 0xA);
     
-    dmaPauseScreenSprites(2, D_80205204, 3, 3);
-    setPauseScreenSpritesRGBA(2, 0xFF, 0xFF, 0xFF, 0xFF);
+    dmaOverlayScreenSprites(2, D_80205204, 3, 3);
+    setOverlayScreenSpritesRGBA(2, 0xFF, 0xFF, 0xFF, 0xFF);
     
     dmaSprite(0x79, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (u16*)0x8023CE00, (u8*)0x8023D200, NULL, 0, 0);
     setBilinearFiltering(0x79, 1);
@@ -3494,7 +4871,7 @@ void func_800CE008(void) {
     updateSpriteAlpha(0x82, 0, 24);
     updateSpriteAlpha(0x83, 0, 24);
     updateSpriteAlpha(0x84, 0, 24);
-    deactivatePauseScreenSprites(2);
+    deactivateOverlayScreenSprites(2);
 }
 
 //INCLUDE_RODATA("asm/nonmatchings/game/overlayScreens", D_801221CC);
@@ -4067,15 +5444,15 @@ void func_800CF544(u8 arg0) {
         
         case 3:
             
-            if (checkHaveTool(0x1D)) {
+            if (checkHaveTool(EMPTY_BOTTLE)) {
                 gPlayer.bottleContents = 7;
             } else {
-                gPlayer.heldItem = 9;
+                gPlayer.heldItem = COOKIES;
             }
             break;
         
         case 4:
-            gPlayer.heldItem = 9;
+            gPlayer.heldItem = COOKIES;
             break;
     
     }

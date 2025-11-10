@@ -9,7 +9,7 @@
 #include "system/globalSprites.h"
 #include "system/graphic.h"
 #include "system/message.h"
-#include "system/pauseScreen.h"
+#include "system/overlayScreenSprites.h"
 #include "system/sprite.h"
 #include "system/mapController.h"
 #include "system/sceneGraph.h"
@@ -77,7 +77,7 @@ void mainLoop(void) {
             updateEntities();
             updateMapController();
             updateMapGraphics();
-            updatePauseScreenSprites();
+            updateOverlayScreenSprites();
             updateSprites(); 
             dmaSprites(); 
             updateBitmaps(); 

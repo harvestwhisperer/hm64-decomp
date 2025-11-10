@@ -1634,7 +1634,6 @@ void func_800DBD88(u8 arg0) {
             temp3 = 8;
             temp4 = BOULDER;
             
-            // FIXME: probably ranged switch
             if (farmFieldTiles[i][j] >= temp3) {
                 if (farmFieldTiles[i][j] >= temp) {
                      if (farmFieldTiles[i][j] < temp4 && farmFieldTiles[i][j] >= temp2) {
