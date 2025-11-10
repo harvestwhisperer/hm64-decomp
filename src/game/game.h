@@ -274,7 +274,7 @@ extern u16 gLumber;
 extern u32 dailyShippingBinValue;
 extern u32 gTotalCropsShipped;
 extern u32 gTotalEggsShipped;
-extern u32 gTotalGoldenMilkShipped;
+extern u32 gTotalMilkShipped;
 
 extern u32 totalFishCaught;
 
@@ -323,6 +323,7 @@ extern u8 harvestKingName[6];
 
 extern u8 gHappiness;
 
+extern u8 mariaHarrisNewlywedCounter;
 extern u8 mariaHarrisPregnancyCounter;
 extern u8 mariaHarrisBabyAge;
 extern u8 popuriGrayNewlywedCounter;
@@ -347,6 +348,8 @@ extern u8 mountainConstructionWorkDays;
 
 extern u8 anniversarySeason;
 extern u8 anniversaryDate;
+
+extern u8 gHouseExtensionSelection;
 
 extern Vec4f unknownRGBA;
 

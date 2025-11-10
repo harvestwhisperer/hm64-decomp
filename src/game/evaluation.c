@@ -106,7 +106,7 @@ u8 calculateShippingScore(void) {
     u8 goldenMilkShipped;
     
     totalCropsShipped = (gTotalCropsShipped * 100) / MAX_TOTAL_CROPS_SHIPPED;
-    goldenMilkShipped = (gTotalGoldenMilkShipped * 100) / MAX_ANIMAL_ITEM_SHIPPED;
+    goldenMilkShipped = (gTotalMilkShipped * 100) / MAX_ANIMAL_ITEM_SHIPPED;
     eggsShipped = (gTotalEggsShipped * 100) / MAX_ANIMAL_ITEM_SHIPPED;
 
     if (eggsShipped >= goldenMilkShipped || totalCropsShipped >= goldenMilkShipped) {

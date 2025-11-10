@@ -3182,7 +3182,7 @@ void func_800D6868(u8 index) {
         case 22:
         case 23:
         case 24:
-            gTotalGoldenMilkShipped += adjustValue(gTotalGoldenMilkShipped, 1, MAX_ANIMAL_ITEM_SHIPPED);
+            gTotalMilkShipped += adjustValue(gTotalMilkShipped, 1, MAX_ANIMAL_ITEM_SHIPPED);
             break;
         case 20:
             gTotalEggsShipped += adjustValue(gTotalEggsShipped, 1, MAX_ANIMAL_ITEM_SHIPPED);

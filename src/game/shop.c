@@ -9,7 +9,7 @@
 #include "system/map.h"
 #include "system/mapController.h"
 #include "system/message.h"
-#include "system/pauseScreen.h"
+#include "system/overlayScreenSprites.h"
 #include "system/globalSprites.h"
 
 #include "game/animals.h"
@@ -602,7 +602,7 @@ void func_800DCAB8(void) {
 
                 if (D_80118F60[shopContext.storeItemIndex] >= 2) {
                     func_80045E20(0, 0x8F, &_shopIconsTextureSegmentRomStart, &_shopIconsTextureSegmentRomEnd, &_shopIconsAssetsIndexSegmentRomStart, &_shopIconsAssetsIndexSegmentRomEnd, (void*)SHOP_ICONS_TEXTURE_VADDR_START, (void*)SHOP_ICONS_TEXTURE_VADDR_END, (void* )SHOP_ICONS_ASSETS_INDEX_VADDR_START, (void* )SHOP_ICONS_ASSETS_INDEX_VADDR_END, 0, 2, 0, -16.0f, 64.0f, 256.0f, 0xA);
-                    dmaPauseScreenSprites(0, shopContext.quantity, 1, 3);
+                    dmaOverlayScreenSprites(0, shopContext.quantity, 1, 3);
                     func_800B4238(D_80118F60[shopContext.storeItemIndex]);
                 }
                 
@@ -660,7 +660,7 @@ void func_800DCAB8(void) {
                     
                         shopContext.quantity++;
                     
-                        dmaPauseScreenSprites(0, shopContext.quantity, 1, 3);
+                        dmaOverlayScreenSprites(0, shopContext.quantity, 1, 3);
                         convertNumberToGameVariableString(0x12, shopContext.quantity * prices[shopContext.storeItemIndex], 0);
                     
                         if (D_80118F60[shopContext.storeItemIndex] >= 2) {
@@ -686,7 +686,7 @@ void func_800DCAB8(void) {
                     
                         shopContext.quantity--;
                     
-                        dmaPauseScreenSprites(0, shopContext.quantity, 1, 3);
+                        dmaOverlayScreenSprites(0, shopContext.quantity, 1, 3);
                         convertNumberToGameVariableString(0x12, shopContext.quantity * prices[shopContext.storeItemIndex], 0);
 
                         if (D_80118F60[shopContext.storeItemIndex] >= 2) {
@@ -706,7 +706,7 @@ void func_800DCAB8(void) {
 
                 if (!set) {
 
-                    deactivatePauseScreenSprites(0);
+                    deactivateOverlayScreenSprites(0);
 
                     resetAnimationState(0x82);
                     resetAnimationState(0x83);
@@ -733,7 +733,7 @@ void func_800DCAB8(void) {
 
                 if (!set) {
                     
-                    deactivatePauseScreenSprites(0);
+                    deactivateOverlayScreenSprites(0);
 
                     deactivateSprite(0x82);
                     deactivateSprite(0x83);
@@ -757,7 +757,7 @@ void func_800DCAB8(void) {
 
             temp = handlePurchase(shopContext.storeItemIndex, shopContext.quantity);
 
-            dmaPauseScreenSprites(1, gGold, 8, 3);
+            dmaOverlayScreenSprites(1, gGold, 8, 3);
             setMessageBoxViewSpacePosition(0, 24.0f, -64.0f, 352.0f);
             setMessageBoxSpriteIndices(0, 0, 0, 0);
             func_8003F360(0, -4, 0);

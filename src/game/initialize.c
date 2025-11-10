@@ -426,8 +426,8 @@ void initializeGameVariables(void) {
         gChickens[i].unk_1B = 0;
         gChickens[i].type = 0;
         gChickens[i].condition = 0;
-        gChickens[i].ageOrIncubationCounter = 0;
-        gChickens[i].starvedCounter = 0;
+        gChickens[i].typeCounter = 0;
+        gChickens[i].conditionCounter = 0;
 
         gChickens[i].coordinates.x = 0;
         gChickens[i].coordinates.y = 0;
