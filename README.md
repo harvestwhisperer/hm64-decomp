@@ -72,6 +72,12 @@ As an example, opcode 88 corresponds to `cutsceneHandlerSetSong`, which is the 8
 
 Compared to the dialogue bytecode, the cutscene bytecode is much more sophisticated and involves multiple bytecode executors. I.e., the initial executor can spawn child executors that execute different segments of the bytecode and can spawn their own child executors as well.
 
+## Modding
+
+### Music
+
+See the README at `tools/modding/music` for more details for converting and inserting MIDI into existing song slots.
+
 ## Setting up
 1. Install [WSL2](https://learn.microsoft.com/en-us/windows/wsl/install)
 1. WSL: `sudo apt-get update && sudo apt install -y python3 pip binutils-mips-linux-gnu gcc-mips-linux-gnu build-essential wget`
