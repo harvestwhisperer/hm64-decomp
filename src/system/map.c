@@ -359,7 +359,6 @@ bool setupMap(u16 mapIndex,
         setMapGrid(&mainMap[mapIndex].mapGrid, grid);
 
         initializeMesh(&mainMap[mapIndex]);
-        // tiles
         setGridToTileTextureMappings(mapIndex);
         setCoreMapObjects(&mainMap[mapIndex]);
 

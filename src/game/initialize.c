@@ -1186,10 +1186,10 @@ void loadMapAddresses(void) {
     
     setMapDataAddresses(DUMPLING_HOUSE, &_dumplingHouseMapSegmentRomStart, &_dumplingHouseMapSegmentRomEnd);
 
-    setMapDataAddresses(POND_SPRING, &_springSpringMapSegmentRomStart, &_springSpringMapSegmentRomEnd);
-    setMapDataAddresses(POND_SUMMER, &_springSummerMapSegmentRomStart, &_springSummerMapSegmentRomEnd);
-    setMapDataAddresses(POND_AUTUMN, &_springFallMapSegmentRomStart, &_springFallMapSegmentRomEnd);
-    setMapDataAddresses(POND_WINTER, &_springWinterMapSegmentRomStart, &_springWinterMapSegmentRomEnd);
+    setMapDataAddresses(POND_SPRING, &_pondSpringMapSegmentRomStart, &_pondSpringMapSegmentRomEnd);
+    setMapDataAddresses(POND_SUMMER, &_pondSummerMapSegmentRomStart, &_pondSummerMapSegmentRomEnd);
+    setMapDataAddresses(POND_AUTUMN, &_pondFallMapSegmentRomStart, &_pondFallMapSegmentRomEnd);
+    setMapDataAddresses(POND_WINTER, &_pondWinterMapSegmentRomStart, &_pondWinterMapSegmentRomEnd);
 
     setMapDataAddresses(ELLI_ROOM, &_ellisRoomMapSegmentRomStart, &_ellisRoomMapSegmentRomEnd);
 

@@ -2339,24 +2339,24 @@ segments:
     dir: maps/dumpling-house
     start: 0x9FAA80
 
-  - name: springSpringMap
+  - name: pondSpringMap
     type: bin
-    dir: maps/spring
+    dir: maps/pond
     start: 0xA04C80
 
-  - name: springSummerMap
+  - name: pondSummerMap
     type: bin
-    dir: maps/spring
+    dir: maps/pond
     start: 0xA0CEC0
 
-  - name: springFallMap
+  - name: pondFallMap
     type: bin
-    dir: maps/spring
+    dir: maps/pond
     start: 0xA14F10
 
-  - name: springWinterMap
+  - name: pondWinterMap
     type: bin
-    dir: maps/spring
+    dir: maps/pond
     start: 0xA1CF60
 
   - name: ellisRoomMap
@@ -2893,6 +2893,7 @@ segments:
   #     ci4 textures
   #       header
   #       dimensions
+  #       texture
   #   palette
   #     index
   #     palettes
