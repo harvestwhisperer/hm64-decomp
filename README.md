@@ -44,7 +44,7 @@ Currently, the disassembly references game variables, special dialogue bits, and
 
 ### Maps
 
-Map tiles and "core map objects" can now be extracted via `make extract-map-sprites`. 
+Map tiles and "core map objects" can now be extracted via `make extract-map-sprites`, and maps can now be rendered in Blender via the `./tools/modding/map/blender_import.py` script (follow the README in that directory for more information).
 
 Map assets consist of 10 sub-assets:
 - 1.) The map grid information, which includes basic map metadata and a mapping between tile number and grid position.

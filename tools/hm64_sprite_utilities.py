@@ -5,12 +5,15 @@ from n64img.image import CI4, CI8, Image
 from pathlib import Path
 from typing import List, Tuple, Union
 import sys
+import argparse
 
 SPRITES_DIR = Path("../assets/sprites")
 SPRITE_ADDRESSES_CSV_PATH = Path("sprite_addresses.csv")
 ROM_PATH = Path("../baserom.us.z64")
 
 rom = None
+
+KEEP_INTERMEDIATE_FILES = False
 
 def set_rom():
     global rom
@@ -167,7 +170,7 @@ def get_texture_width_and_height(asset_addresses: List[str], sprite_index: int, 
     
     return (width, height)
 
-def get_texture(asset_addresses: List[str], sprite_index: int, asset_type: str) -> np.ndarray:
+def get_texture(asset_addresses: List[str], sprite_index: int, asset_type: str) -> bytes:
 
     spritesheet_base = int(asset_addresses[0], 16)
 
@@ -188,13 +191,11 @@ def get_texture(asset_addresses: List[str], sprite_index: int, asset_type: str) 
     texture_end = spritesheet_base + spritesheet_offsets_array[sprite_index + 1]  
 
     if (texture_start > texture_end):
-        return []
+        return bytes()
 
-    texture_length = texture_end - texture_start
+    return rom[texture_start:texture_end].tobytes()
 
-    return np.frombuffer(rom, dtype=np.dtype("u1"), count=texture_length, offset=texture_start)
-
-def get_palette(asset_addresses: List[str], sprite_index: int, asset_type: str) -> np.ndarray:
+def get_palette(asset_addresses: List[str], sprite_index: int, asset_type: str) -> bytes:
 
     sprite_base = int(asset_addresses[0], 16)
 
@@ -214,7 +215,7 @@ def get_palette(asset_addresses: List[str], sprite_index: int, asset_type: str) 
     palette_end_address = palette_index_base + palette_offsets_array[current_palette_index + 1]
 
     if palette_end_address != palette_start_address:
-        #skip header
+        # skip header
         palette_start_address += 4
         # subtract padding
         palette_end_address -= 4
@@ -234,7 +235,7 @@ def get_palette(asset_addresses: List[str], sprite_index: int, asset_type: str) 
 
     palette_length = int((palette_end_address - palette_start_address) // 2)
 
-    return np.frombuffer(rom, dtype=np.dtype("<u2"), count=palette_length, offset=palette_start_address)
+    return rom[palette_start_address:palette_end_address].tobytes()
 
 def write_all_textures() -> None:
 
@@ -311,7 +312,7 @@ def write_textures_for_sprite(sprite_name: str) -> None:
         # start count at 1    
         filename = sprite_name + '/texture-' + str(sprite_number + 1)
 
-        write_texture(texture, palette, width, height, texture_type, filename, SPRITES_DIR, False)
+        write_texture(texture, palette, width, height, texture_type, filename, SPRITES_DIR, keep_intermediate_files=KEEP_INTERMEDIATE_FILES)
     
     return
 
@@ -353,56 +354,60 @@ def write_texture_from_csv_row_and_index(row: int, sprite_index: int, filename: 
 
     return
 
-def write_texture(texture: np.ndarray, palette: np.ndarray, width: int, height: int, texture_type: str, filename: str, output_path: Path, keep_intermediate_files: bool = True) -> None:
+def write_texture(texture: bytes, palette: bytes, width: int, height: int, texture_type: str, filename: str, output_path: Path, keep_intermediate_files: bool = False) -> None:
 
-    # FIXME: see if it's possible to convert the texture and palette arrays to a binary blob in memory before passing to n64img  
-
-    tex_file = open(str(output_path) + '/%s.ci' % filename, 'wb')
-    tex_file.write(texture)
-    tex_file.close()
-
-    pal_file = open(str(output_path) + '/%s.pal' % filename, 'wb')
-    pal_file.write(palette)
-    pal_file.close()
-
-    tex_in = open(str(output_path) + '/%s.ci' % filename, 'rb')
-    tex_data = tex_in.read()
-    
-    pal_in = open(str(output_path) + '/%s.pal' % filename, 'rb')
-    pal_data = pal_in.read()
-
-    # write texture
-
+    # Initialize n64img object with raw bytes
     if texture_type == 'ci8':
-        img = CI8(tex_data, width, height)
+        img = CI8(texture, width, height)
     else:
-        img = CI4(tex_data, width, height)
+        img = CI4(texture, width, height)
 
-    img.set_palette(pal_data)
+    # Set palette with raw Big Endian bytes (fixes transparency)
+    img.set_palette(palette)
 
-    img.write(str(output_path) + '/%s.png' % filename)
+    # Ensure directory exists
+    full_output_dir = output_path / filename.rsplit('/', 1)[0] if '/' in filename else output_path
+    full_output_dir.mkdir(parents=True, exist_ok=True)
 
-    tex_in.close()
-    pal_in.close()
+    # Write PNG
+    out_file = output_path / f"{filename}.png"
+    img.write(str(out_file))
 
-    if keep_intermediate_files == False:
-        Path(str(output_path) + '/%s.ci' % filename).unlink()
-        Path(str(output_path) + '/%s.pal' % filename).unlink()
+    # Optional: Write raw dumps if requested
+    if keep_intermediate_files:
+        with open(output_path / f"{filename}.ci", 'wb') as f:
+            f.write(texture)
+        with open(output_path / f"{filename}.pal", 'wb') as f:
+            f.write(palette)
 
     return
 
 
 if __name__ == "__main__":
+
+    parser = argparse.ArgumentParser(description="HM64 Sprite Utilities")
     
-    if len(sys.argv) < 2:
-        print("Usage: python hm64_animation_utitilies.py write_all_textures | write_textures_for_sprite (sprite_name)")
-        sys.exit(1)
+    parser.add_argument("command", help="The operation to perform")
 
-    cmd = sys.argv[1]
+    parser.add_argument("target", nargs="?", help="The sprite name (required for write_textures_for_sprite)")
 
-    if cmd == "write_textures_for_sprite":
-        write_textures_for_sprite(sprite_name)
-    elif cmd == "write_all_textures":
+    parser.add_argument(
+        "--keep-intermediate-files", 
+        action="store_true", 
+        help="Keep intermediate .ci and .pal files"
+    )
+
+    args = parser.parse_args()
+
+    KEEP_INTERMEDIATE_FILES = args.keep_intermediate_files
+
+    if args.command == "write_textures_for_sprite":
+        if not args.target:
+            parser.error("The command 'write_textures_for_sprite' requires a sprite name.")
+        write_textures_for_sprite(args.target)
+        
+    elif args.command == "write_all_textures":
         write_all_textures()
+        
     else:
-        print(f"Unknown command: {cmd}")
+        print(f"Unknown command: {args.command}")

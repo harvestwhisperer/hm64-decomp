@@ -18,6 +18,9 @@ def set_rom():
     global rom
     rom = memoryview(ROM_PATH.read_bytes())
 
+def get_raw_bytes(start: int, end: int) -> bytes:
+    return rom[start:end].tobytes()
+
 def get_asset_offsets_array(asset_addresses: List[str]) -> np.ndarray:
     asset_index_base = int(asset_addresses[0], 16)
     # element 12 is always 0 padding
@@ -59,17 +62,18 @@ def get_map_sprite_palettes_offsets_array(map_start, tile_palette_offsets_start)
     # trim original array
     return offsets[:last+1]
 
-def get_map_sprite_texture(texture_start, texture_end) -> np.ndarray:
-    texture_length = texture_end - texture_start
-    return np.frombuffer(rom, dtype=np.dtype("u1"), count=texture_length, offset=texture_start)
+def get_map_sprite_texture(texture_start, texture_end) -> bytes:
+    # skip header + dimensions
+    return get_raw_bytes(texture_start + 8, texture_end)
 
-def get_map_sprite_palette(palette_start, palette_end) -> np.ndarray:
-    palette_length = palette_end - palette_start
-    palette = np.frombuffer(rom, dtype=np.dtype("<u2"), count=palette_length, offset=palette_start)
+def get_map_sprite_palette(palette_start, palette_end) -> bytes:
+    
+    # skip header
+    palette_bytes = get_raw_bytes(palette_start + 4, palette_end)
 
-    # some palettes have messed up data with a bunch of empty space
-    palette = palette[:255]
-    return palette
+    # Slice to 255 u16 entries to handle palettes with messed up data
+    # 255 * 2 = 510 bytes.
+    return palette_bytes[:510]
 
 def get_map_sprite_texture_width_and_height(texture_start):
 
@@ -103,6 +107,12 @@ def write_tile_textures() -> None:
 
     for idx, row in enumerate(addresses_list):
 
+        map_name = row[1]
+
+        # Skip empty maps and end marker
+        if map_name.startswith("empty-map") or map_name == "end":
+            continue
+
         map_base = int(row[0], 16)
         asset_offsets_array = get_asset_offsets_array(row)
 
@@ -112,7 +122,7 @@ def write_tile_textures() -> None:
         tile_textures_offsets_array = get_map_sprite_textures_offsets_array(map_base, tile_texture_start)
         tile_palette_offsets_array = get_map_sprite_palettes_offsets_array(map_base, tile_palette_start)
 
-        dir_name = f"{row[1]}"
+        dir_name = f"{map_name}"
         subdir_name = "tiles"
 
         outdir = basedir / dir_name / subdir_name
@@ -128,8 +138,8 @@ def write_tile_textures() -> None:
             palette_end = map_base + tile_palette_start + tile_palette_offsets_array[i + 1]
 
             tile_texture = get_map_sprite_texture(texture_start, texture_end)
-            tile_palette = get_map_sprite_texture(palette_start, palette_end)
-
+            tile_palette = get_map_sprite_palette(palette_start, palette_end)
+            
             width, height = get_map_sprite_texture_width_and_height(texture_start)
             texture_type = get_map_sprite_texture_type(texture_start)
 
@@ -153,6 +163,12 @@ def write_core_map_object_textures() -> None:
 
     for idx, row in enumerate(addresses_list):
 
+        map_name = row[1]
+
+        # Skip empty maps and end marker
+        if map_name.startswith("empty-map") or map_name == "end":
+            continue
+
         map_base = int(row[0], 16)
         asset_offsets_array = get_asset_offsets_array(row)
 
@@ -162,7 +178,7 @@ def write_core_map_object_textures() -> None:
         core_map_object_sprites_textures_offsets_array = get_map_sprite_textures_offsets_array(map_base, core_map_object_sprites_texture_start)
         core_map_object_sprites_palette_offsets_array = get_map_sprite_palettes_offsets_array(map_base, core_map_object_sprites_palette_start)
 
-        dir_name = f"{row[1]}"
+        dir_name = f"{map_name}"
         subdir_name = "core_map_objects"
 
         outdir = basedir / dir_name / subdir_name
