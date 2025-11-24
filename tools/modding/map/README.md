@@ -1,4 +1,4 @@
-# Blender Asset Preparation Tool
+# Blender Tooling
 
 This tool extracts all necessary map data from the rom for use with Blender rndering script.
 
