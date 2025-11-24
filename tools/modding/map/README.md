@@ -1,6 +1,6 @@
 # Blender Tooling
 
-This tool extracts all necessary map data from the rom for use with Blender rndering script.
+This tool extracts all necessary map data from the rom for use with Blender rendering script.
 
 ## Requirements
 
