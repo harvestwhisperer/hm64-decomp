@@ -74,9 +74,9 @@ typedef struct {
 } npcInfo;
 
 extern void deactivateNPCEntities();  
-extern u8 func_80075374(u8 npcIndex, int arg1);
+extern u8 setupNPCEntity(u8 npcIndex, int arg1);
 extern void func_80075A18(); 
-extern void func_800758B8();                                  
+extern void setupActiveNPCs();                                  
 extern void updateNPCCoordinates();  
 extern u8 func_800858D4();    
 extern bool func_80085D48(int index, u16 arg1); 

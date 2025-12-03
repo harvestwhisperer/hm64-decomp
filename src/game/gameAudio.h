@@ -92,13 +92,13 @@
 
 
 extern void initializeWaveTable(u16 waveTableIndex);
-extern void setCurrentSong(u16 songIndex);
-extern void stopCurrentSong(u16 songIndex);
-extern void stopSongWithDefaultFadeOut(u16 songIndex);
-extern u8 checkDefaultSongChannelOpen(u16 songIndex);
-extern void setSongVolume(u16 songIndex, u32 arg1);
-extern void func_800ACC1C(u16 songIndex);
-extern void setAudio(u16 index);
+extern void setCurrentAudioSequence(u16 sequenceIndex);
+extern void stopCurrentAudioSequence(u16 sequenceIndex);
+extern void stopAudioSequenceWithDefaultFadeOut(u16 sequenceIndex);
+extern u8 checkDefaultSequenceChannelOpen(u16 sequenceIndex);
+extern void setAudioSequenceVolume(u16 sequenceIndex, u32 arg1);
+extern void func_800ACC1C(u16 sequenceIndex);
+extern void playSfx(u16 index);
 extern u8 checkAllSfxInactive(void);
 
 extern int musPriorityList[];

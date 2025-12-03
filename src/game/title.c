@@ -301,8 +301,8 @@ void initializeTitleScreen(u8 arg0) {
     
     loadDogTitleSprite();
     
-    setCurrentSong(TITLE_THEME);
-    setSongVolume(TITLE_THEME, SONG_VOLUME);
+    setCurrentAudioSequence(TITLE_THEME);
+    setAudioSequenceVolume(TITLE_THEME, SEQUENCE_VOLUME);
 
 }
 
@@ -368,7 +368,7 @@ static inline bool inline1() {
     if (titleScreenContext.rowHighlighted != 1) {
         setSpriteViewSpacePosition(PUSH_THE_START_SIGN_2, -56.0f, -52.0f, 56.0f);
         titleScreenContext.rowHighlighted = 1;
-        setAudio(MOVE_CURSOR);
+        playSfx(MOVE_CURSOR);
     }
 
    return 1;
@@ -381,7 +381,7 @@ static inline bool inline2() {
     if (titleScreenContext.rowHighlighted != 0) {
         setSpriteViewSpacePosition(PUSH_THE_START_SIGN_2, -56.0f, -20.0f, 56.0f);
         titleScreenContext.rowHighlighted = 0;
-        setAudio(MOVE_CURSOR);
+        playSfx(MOVE_CURSOR);
     }
 
     return 1;
@@ -421,7 +421,7 @@ static inline bool handleFrameIncrement() {
         updateSpriteRGBA(CLOUD_3_2, 0, 0, 0, 0, 8);
         updateSpriteRGBA(CLOUD_2_2, 0, 0, 0, 0, 8);
 
-        stopSongWithDefaultFadeOut(TITLE_THEME);
+        stopAudioSequenceWithDefaultFadeOut(TITLE_THEME);
 
         titleScreenContext.mode = 5;
 
@@ -455,7 +455,7 @@ void titleScreenMainLoopCallback(void) {
                     startSpriteAnimation(DOG_TITLE_SPRITE, 8, 0xFE);
     
                     titleScreenContext.mode = 1;
-                    setAudio(0);
+                    playSfx(0);
 
                 }
             }
@@ -569,7 +569,7 @@ void titleScreenMainLoopCallback(void) {
     
                     titleScreenContext.mode = 4;
     
-                    setAudio(0);
+                    playSfx(0);
                     
                 }
                 
@@ -599,7 +599,7 @@ void titleScreenMainLoopCallback(void) {
 
         case 5:
             
-            if (func_8002CBF8(HARVEST_MOON_64_LOGO) && checkDefaultSongChannelOpen(TITLE_THEME)) {
+            if (func_8002CBF8(HARVEST_MOON_64_LOGO) && checkDefaultSequenceChannelOpen(TITLE_THEME)) {
                 
                 resetSpriteFlags();
  

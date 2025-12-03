@@ -434,22 +434,22 @@ void setLevelAudio(u16 mapIndex, u8 season, u8 hour) {
 
     u32 nightOffset;
     
-    gCurrentSongIndex = 0xFF;
+    gCurrentAudioSequenceIndex = 0xFF;
 
     if (gWeather == RAIN) {
         
-        gCurrentSongIndex = RAIN_SFX;
+        gCurrentAudioSequenceIndex = RAIN_SFX;
         
         if (getLevelFlags(mapIndex) & 0x10) {
-            gSongVolume = 64;
+            gAudioSequenceVolume = 64;
         } else {
-            gSongVolume = 128;
+            gAudioSequenceVolume = 128;
         }
         
     } else if (gWeather == TYPHOON) {
         
-        gCurrentSongIndex = TYPHOON_SFX;
-        gSongVolume = 128;
+        gCurrentAudioSequenceIndex = TYPHOON_SFX;
+        gAudioSequenceVolume = 128;
         
     } else {
 
@@ -462,23 +462,23 @@ void setLevelAudio(u16 mapIndex, u8 season, u8 hour) {
                 nightOffset = 4;
 
                 if (!(getLevelFlags(mapIndex) & 0x10)) {
-                    gSongVolume = 128;
+                    gAudioSequenceVolume = 128;
                 } else {
-                    gSongVolume = 64;
+                    gAudioSequenceVolume = 64;
                 }
 
              } else {
-                gSongVolume = 128;
+                gAudioSequenceVolume = 128;
              }
             
-            gCurrentSongIndex = levelToMusicMappings[mapIndex][nightOffset+(season-1)];
+            gCurrentAudioSequenceIndex = levelToMusicMappings[mapIndex][nightOffset+(season-1)];
             
         }   
         
     }
 
-    if (gCurrentSongIndex != 0xFF) {
-        setCurrentSong(gCurrentSongIndex);
+    if (gCurrentAudioSequenceIndex != 0xFF) {
+        setCurrentAudioSequence(gCurrentAudioSequenceIndex);
     }
 
 }
@@ -859,7 +859,6 @@ void func_8006F938(u16 levelIndex) {
             setMapObject(MAIN_MAP_INDEX, 1, MAP_OBJECT_2, 0, 192.0f, 0, 416.0f, 0, 0xFE, 0, 0);
         
             if (checkLifeEventBit(0x48)) {
-
 
                 if (gSeason != WINTER) {
                     dmaSprite(MAP_OBJECT_3, &_bridgeTextureSegmentRomStart, &_bridgeTextureSegmentRomEnd, &_bridgeAssetsIndexSegmentRomStart, &_bridgeAssetsIndexSegmentRomEnd, &_bridgeSpritesheetIndexSegmentRomStart, &_bridgeSpritesheetIndexSegmentRomEnd, (void*)0x802E7C00, (void*)0x802E8280, (void*)0x802EB400, (void*)0x802EB500, (void*)0x802EB600, (void*)0x802EB700, 1, 1);
@@ -1284,7 +1283,7 @@ void func_80073244(u8 itemIndex) {
     setSpriteBaseRGBA(itemIndex + MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
     setSpriteColor(itemIndex + MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
 
-    setMapObject(MAIN_MAP_INDEX, itemIndex, itemIndex + MAP_OBJECT_1, 0xC, arr[itemIndex].x, arr[itemIndex].y, arr[itemIndex].z, 0xFF, 0xFF, 0, 0);
+    setMapObject(MAIN_MAP_INDEX, itemIndex, MAP_OBJECT_1 + itemIndex, 0xC, arr[itemIndex].x, arr[itemIndex].y, arr[itemIndex].z, 0xFF, 0xFF, 0, 0);
     
 }
 
@@ -1313,7 +1312,7 @@ void func_8007341C(u8 itemIndex) {
     setSpriteBaseRGBA(itemIndex + MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
     setSpriteColor(itemIndex + MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
 
-    setMapObject(MAIN_MAP_INDEX, itemIndex, itemIndex + MAP_OBJECT_1, 0xB, arr[itemIndex].x, arr[itemIndex].y, arr[itemIndex].z, 0xFF, 0xFF, 0, 0);
+    setMapObject(MAIN_MAP_INDEX, itemIndex, MAP_OBJECT_1 + itemIndex, 0xB, arr[itemIndex].x, arr[itemIndex].y, arr[itemIndex].z, 0xFF, 0xFF, 0, 0);
 
 }
 

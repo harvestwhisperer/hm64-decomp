@@ -1002,7 +1002,7 @@ void func_800D0360(void) {
     memcpy(arr5, D_80122350, 9);
     memcpy(arr6, D_8012235C, 9);
 
-    direction = convertWorldToSpriteDirection(entities[PLAYER].direction, MAIN_MAP_INDEX);
+    direction = convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX);
 
     switch (gPlayer.currentToolLevel) {
 
@@ -1017,13 +1017,13 @@ void func_800D0360(void) {
             
             if (direction & 1) {
                 
-                if (entities[PLAYER].direction < 5) {
+                if (entities[ENTITY_PLAYER].direction < 5) {
                     temp2 = arr3[toolUse.stepIndex];
                 } else {
                     temp2 = arr4[toolUse.stepIndex]; 
                 }
                 
-            } else if (entities[PLAYER].direction < 5) {
+            } else if (entities[ENTITY_PLAYER].direction < 5) {
                 temp2 = arr1[toolUse.stepIndex];
             } else {
                 temp2 = arr2[toolUse.stepIndex];
@@ -1092,13 +1092,13 @@ void func_800D0360(void) {
         switch (gPlayer.currentToolLevel) {
 
             case 0:
-                setAudio(SICKLE_SFX);
+                playSfx(SICKLE_SFX);
                 break;
             case 1:
-                setAudio(SILVER_SICKLE_SFX);
+                playSfx(SILVER_SICKLE_SFX);
                 break;
             case 2:
-                setAudio(GOLDEN_SICKLE_SFX );
+                playSfx(GOLDEN_SICKLE_SFX );
                 break;
             
         }
@@ -1149,7 +1149,7 @@ void func_800D093C(void) {
     u8 temp;
     s32 tempX, tempZ;
     
-    u8 direction = convertWorldToSpriteDirection(entities[PLAYER].direction, MAIN_MAP_INDEX);
+    u8 direction = convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX);
 
     switch (gPlayer.currentToolLevel) {
 
@@ -1185,15 +1185,15 @@ void func_800D093C(void) {
                 tempZ = (s16)vec.z / 32;
 
                 func_800D0074(tempX, tempZ);
-                setAudio(HOE_SFX);
+                playSfx(HOE_SFX);
                 
             } else {
-                setAudio(HOE_SFX);
+                playSfx(HOE_SFX);
             }
             
         } else {
             toolUse.toolUseState = 0;
-            setAudio(0x1B);
+            playSfx(0x1B);
         }
 
         toolUse.stepIndex++;
@@ -1252,7 +1252,7 @@ void func_800D093C(void) {
 
     } else {
         toolUse.toolUseState = 0;
-        setAudio(0x1B);
+        playSfx(0x1B);
     }
 
     // hit animals
@@ -1353,13 +1353,13 @@ void func_800D0DD4(void) {
             switch (gPlayer.currentToolLevel) {
 
                 case 0:
-                    setAudio(AX_SFX);
+                    playSfx(AX_SFX);
                     break;
                 case 1:
-                    setAudio(SILVER_AX_SFX);
+                    playSfx(SILVER_AX_SFX);
                     break;
                 case 2:
-                    setAudio(GOLDEN_AX_SFX);
+                    playSfx(GOLDEN_AX_SFX);
                     break;
                 
             }
@@ -1527,13 +1527,13 @@ void func_800D1DB0(void) {
             switch (gPlayer.currentToolLevel) {
 
                 case 0:
-                    setAudio(HAMMER_SFX);
+                    playSfx(HAMMER_SFX);
                     break;
                 case 1:
-                    setAudio(SILVER_HAMMER_SFX);
+                    playSfx(SILVER_HAMMER_SFX);
                     break;
                 case 2:
-                    setAudio(GOLDEN_HAMMER_SFX);
+                    playSfx(GOLDEN_HAMMER_SFX);
                     break;
                 
             }
@@ -1603,7 +1603,7 @@ void func_800D304C(void) {
     memcpy(arr5, D_80122368, 9);
     memcpy(arr6, D_80122374, 9);
     
-    direction = convertWorldToSpriteDirection(entities[PLAYER].direction, MAIN_MAP_INDEX);
+    direction = convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX);
 
     switch (gPlayer.currentToolLevel) {
 
@@ -1618,13 +1618,13 @@ void func_800D304C(void) {
             
             if (direction & 1) {
                 
-                if (entities[PLAYER].direction < 5) {
+                if (entities[ENTITY_PLAYER].direction < 5) {
                     temp2 = arr3[toolUse.stepIndex];
                 } else {
                     temp2 = arr4[toolUse.stepIndex]; 
                 }
 
-            } else if (entities[PLAYER].direction < 5) {
+            } else if (entities[ENTITY_PLAYER].direction < 5) {
                 temp2 = arr1[toolUse.stepIndex];
             } else {
                 temp2 = arr2[toolUse.stepIndex];
@@ -1686,13 +1686,13 @@ void func_800D304C(void) {
             switch (gPlayer.currentToolLevel) {
 
                 case 0:
-                    setAudio(WATERING_CAN_SFX);
+                    playSfx(WATERING_CAN_SFX);
                     break;
                 case 1:
-                    setAudio(SILVER_WATERING_CAN_SFX);
+                    playSfx(SILVER_WATERING_CAN_SFX);
                     break;
                 case 2:
-                    setAudio(GOLDEN_WATERING_CAN_SFX);
+                    playSfx(GOLDEN_WATERING_CAN_SFX);
                     break;
                 
             }
@@ -1773,7 +1773,7 @@ void func_800D373C(void) {
 
     Vec3f vec;
 
-    direction = convertWorldToSpriteDirection(entities[PLAYER].direction, MAIN_MAP_INDEX);
+    direction = convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX);
     
     if (direction < EAST) {
         temp = D_80117180[toolUse.stepIndex];
@@ -1796,7 +1796,7 @@ void func_800D373C(void) {
     }
     
     if (toolUse.stepIndex == 0) {
-        setAudio(SEEDS_SFX);
+        playSfx(SEEDS_SFX);
     }
     
     toolUse.stepIndex++;
@@ -1818,7 +1818,7 @@ void func_800D3958(void) {
 
     Vec3f vec;
 
-    direction = convertWorldToSpriteDirection(entities[PLAYER].direction, MAIN_MAP_INDEX);
+    direction = convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX);
     
     if (direction < EAST) {
         temp = D_80117180[toolUse.stepIndex];
@@ -1841,7 +1841,7 @@ void func_800D3958(void) {
     }
     
     if (toolUse.stepIndex == 0) {
-        setAudio(SEEDS_SFX);
+        playSfx(SEEDS_SFX);
     }
     
     toolUse.stepIndex++;
@@ -1863,7 +1863,7 @@ void func_800D3B74(void) {
 
     Vec3f vec;
 
-    direction = convertWorldToSpriteDirection(entities[PLAYER].direction, MAIN_MAP_INDEX);
+    direction = convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX);
     
     if (direction < EAST) {
         temp = D_80117180[toolUse.stepIndex];
@@ -1886,7 +1886,7 @@ void func_800D3B74(void) {
     }
     
     if (toolUse.stepIndex == 0) {
-        setAudio(SEEDS_SFX);
+        playSfx(SEEDS_SFX);
     }
     
     toolUse.stepIndex++;
@@ -1908,7 +1908,7 @@ void func_800D3D90(void) {
 
     Vec3f vec;
 
-    direction = convertWorldToSpriteDirection(entities[PLAYER].direction, MAIN_MAP_INDEX);
+    direction = convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX);
     
     if (direction < EAST) {
         temp = D_80117180[toolUse.stepIndex];
@@ -1931,7 +1931,7 @@ void func_800D3D90(void) {
     }
     
     if (toolUse.stepIndex == 0) {
-        setAudio(SEEDS_SFX);
+        playSfx(SEEDS_SFX);
     }
     
     toolUse.stepIndex++;
@@ -1953,7 +1953,7 @@ void func_800D3FAC(void) {
 
     Vec3f vec;
 
-    direction = convertWorldToSpriteDirection(entities[PLAYER].direction, MAIN_MAP_INDEX);
+    direction = convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX);
     
     if (direction < EAST) {
         temp = D_80117180[toolUse.stepIndex];
@@ -1975,7 +1975,7 @@ void func_800D3FAC(void) {
     }
     
     if (toolUse.stepIndex == 0) {
-        setAudio(SEEDS_SFX);
+        playSfx(SEEDS_SFX);
     }
     
     toolUse.stepIndex++;
@@ -1997,7 +1997,7 @@ void func_800D41C8(void) {
 
     Vec3f vec;
 
-    direction = convertWorldToSpriteDirection(entities[PLAYER].direction, MAIN_MAP_INDEX);
+    direction = convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX);
     
     if (direction < EAST) {
         temp = D_80117180[toolUse.stepIndex];
@@ -2021,7 +2021,7 @@ void func_800D41C8(void) {
     }
     
     if (toolUse.stepIndex == 0) {
-        setAudio(SEEDS_SFX);
+        playSfx(SEEDS_SFX);
     }
     
     toolUse.stepIndex++;
@@ -2043,7 +2043,7 @@ void func_800D43E4(void) {
 
     Vec3f vec;
 
-    direction = convertWorldToSpriteDirection(entities[PLAYER].direction, MAIN_MAP_INDEX);
+    direction = convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX);
     
     if (direction < EAST) {
         temp = D_80117180[toolUse.stepIndex];
@@ -2066,7 +2066,7 @@ void func_800D43E4(void) {
     }
 
     if (toolUse.stepIndex == 0) {
-        setAudio(SEEDS_SFX);
+        playSfx(SEEDS_SFX);
     }
 
     toolUse.stepIndex++;
@@ -2088,7 +2088,7 @@ void func_800D45F4(void) {
 
     Vec3f vec;
 
-    direction = convertWorldToSpriteDirection(entities[PLAYER].direction, MAIN_MAP_INDEX);
+    direction = convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX);
     
     if (direction < EAST) {
         temp = D_80117180[toolUse.stepIndex];
@@ -2113,7 +2113,7 @@ void func_800D45F4(void) {
     }
     
     if (toolUse.stepIndex == 0) {
-        setAudio(SEEDS_SFX);
+        playSfx(SEEDS_SFX);
     }
     
     toolUse.stepIndex++;
@@ -2134,7 +2134,7 @@ void func_800D4814(void) {
 
     Vec3f vec;
 
-    direction = convertWorldToSpriteDirection(entities[PLAYER].direction, MAIN_MAP_INDEX);
+    direction = convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX);
     
     if (direction < EAST) {
         temp = D_80117180[toolUse.stepIndex];
@@ -2157,7 +2157,7 @@ void func_800D4814(void) {
     }
     
     if (toolUse.stepIndex == 0) {
-        setAudio(SEEDS_SFX);
+        playSfx(SEEDS_SFX);
     }
     
     toolUse.stepIndex++;
@@ -2177,7 +2177,7 @@ void func_800D4A34(void) {
 
     Vec3f vec;
 
-    direction = convertWorldToSpriteDirection(entities[PLAYER].direction, MAIN_MAP_INDEX);
+    direction = convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX);
     
     if (direction < EAST) {
         temp = D_80117180[toolUse.stepIndex];
@@ -2192,7 +2192,7 @@ void func_800D4A34(void) {
     }
     
     if (toolUse.stepIndex == 0) {
-        setAudio(SEEDS_SFX);
+        playSfx(SEEDS_SFX);
     }
     
     toolUse.stepIndex++;
@@ -2281,7 +2281,7 @@ void func_800D4D68(void) {
 
     Vec3f vec;
 
-    direction = convertWorldToSpriteDirection(entities[PLAYER].direction, MAIN_MAP_INDEX);
+    direction = convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX);
     
     if (direction < EAST) {
         temp = D_80117180[toolUse.stepIndex];
@@ -2301,7 +2301,7 @@ void func_800D4D68(void) {
     }
     
     if (toolUse.stepIndex == 0) {
-        setAudio(SEEDS_SFX);
+        playSfx(SEEDS_SFX);
     }
     
     toolUse.stepIndex++;
@@ -2866,7 +2866,7 @@ bool func_800D5CC0(u8 itemIndex) {
         case 0xB1:                                     
         case 0xB2:     
             vec = projectEntityPosition(ENTITY_PLAYER, 0x20, convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX));
-            direction = convertWorldToSpriteDirection(entities[PLAYER].direction, MAIN_MAP_INDEX);
+            direction = convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX);
             func_8008BAF0(func_8008A4A8(0, direction, vec.x, vec.y, vec.z), 0);
 
             break;
@@ -2880,7 +2880,7 @@ bool func_800D5CC0(u8 itemIndex) {
         case 0x81:                                     
         case 0x82: 
             vec = projectEntityPosition(ENTITY_PLAYER, 0x20, convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX));
-            direction = convertWorldToSpriteDirection(entities[PLAYER].direction, MAIN_MAP_INDEX);
+            direction = convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX);
             func_8008BAF0(func_8008A4A8(1, direction, vec.x, vec.y, vec.z), 0);
 
             break;
@@ -2894,7 +2894,7 @@ bool func_800D5CC0(u8 itemIndex) {
         case 0x89:                                     
         case 0x8A:        
             vec = projectEntityPosition(ENTITY_PLAYER, 0x20, convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX));
-            direction = convertWorldToSpriteDirection(entities[PLAYER].direction, MAIN_MAP_INDEX);
+            direction = convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX);
             func_8008BAF0(func_8008A4A8(2, direction, vec.x, vec.y, vec.z), 0);
 
             break;
@@ -2908,7 +2908,7 @@ bool func_800D5CC0(u8 itemIndex) {
         case 0x91:                                     
         case 0x92:   
             vec = projectEntityPosition(ENTITY_PLAYER, 0x20, convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX));
-            direction = convertWorldToSpriteDirection(entities[PLAYER].direction, MAIN_MAP_INDEX);
+            direction = convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX);
             func_8008BAF0(func_8008A4A8(7, direction, vec.x, vec.y, vec.z), 0);
 
             break;       
@@ -2922,7 +2922,7 @@ bool func_800D5CC0(u8 itemIndex) {
         case 0x99:                                     
         case 0x9A:  
             vec = projectEntityPosition(ENTITY_PLAYER, 0x20, convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX));
-            direction = convertWorldToSpriteDirection(entities[PLAYER].direction, MAIN_MAP_INDEX);
+            direction = convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX);
             func_8008BAF0(func_8008A4A8(9, direction, vec.x, vec.y, vec.z), 0);
 
             break;     
@@ -2936,7 +2936,7 @@ bool func_800D5CC0(u8 itemIndex) {
         case 0xA1:                                     
         case 0xA2:         
             vec = projectEntityPosition(ENTITY_PLAYER, 0x20, convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX));
-            direction = convertWorldToSpriteDirection(entities[PLAYER].direction, MAIN_MAP_INDEX);
+            direction = convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX);
             func_8008BAF0(func_8008A4A8(8, direction, vec.x, vec.y, vec.z), 0);
             break;     
         
@@ -2949,7 +2949,7 @@ bool func_800D5CC0(u8 itemIndex) {
         case 0xA9:                                     
         case 0xAA:    
             vec = projectEntityPosition(ENTITY_PLAYER, 0x20, convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX));
-            direction = convertWorldToSpriteDirection(entities[PLAYER].direction, MAIN_MAP_INDEX);
+            direction = convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX);
             func_8008BAF0(func_8008A4A8(10, direction, vec.x, vec.y, vec.z), 0);
             break;     
 
@@ -2987,7 +2987,7 @@ bool func_800D5CC0(u8 itemIndex) {
 
             vec = projectEntityPosition(ENTITY_PLAYER, 0x20, convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX));
 
-            direction = convertWorldToSpriteDirection(entities[PLAYER].direction, MAIN_MAP_INDEX);
+            direction = convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX);
             vec.y = entities[ENTITY_PLAYER].coordinates.y;
             
             func_8008BAF0(func_8008A4A8(temp, direction, vec.x, vec.y, vec.z), 1);
@@ -3055,8 +3055,8 @@ bool func_800D5CC0(u8 itemIndex) {
             
             npcs[BABY].flags |= 1;
             
-            setDailyEventBit(0x16);
-            func_80075374(BABY, 0);
+            setDailyEventBit(PICKED_UP_BABY);
+            setupNPCEntity(BABY, 0);
 
             break;
             
@@ -3081,8 +3081,8 @@ bool func_800D5CC0(u8 itemIndex) {
             npcs[BABY].animationIndex1 = 0x39;
             npcs[BABY].movingFlag = 3;
             
-            setDailyEventBit(0x16);
-            func_80075374(BABY, 0);
+            setDailyEventBit(PICKED_UP_BABY);
+            setupNPCEntity(BABY, 0);
             
             break;
         
@@ -3496,22 +3496,22 @@ void func_800D7010(void) {
 
                             case FARM:                     
                                 func_80038990(MAIN_MAP_INDEX, 0x12, 0);
-                                setAudio(ITEM_PLUCK_SFX);
+                                playSfx(ITEM_PLUCK_SFX);
                                 break;
                      
                             case BARN:
                                 func_80038990(MAIN_MAP_INDEX, 0, 0);
-                                setAudio(ITEM_PLUCK_SFX);
+                                playSfx(ITEM_PLUCK_SFX);
                                 break;
 
                             case COOP:
                                 func_80038990(MAIN_MAP_INDEX, 0, 0);
-                                setAudio(ITEM_PLUCK_SFX);
+                                playSfx(ITEM_PLUCK_SFX);
                                 break;
                             
                             case GREENHOUSE:                     
                                 func_80038990(MAIN_MAP_INDEX, 0, 0);
-                                setAudio(ITEM_PLUCK_SFX);
+                                playSfx(ITEM_PLUCK_SFX);
                                 break;
                             
                         }
@@ -3546,7 +3546,7 @@ void func_800D7010(void) {
                     
                     case 20:
                         func_800D6B58(itemInfo[i].heldItemIndex, i);
-                        setAudio(0x28);
+                        playSfx(0x28);
                         itemInfo[i].unk_2A = 1;
                         break;
                     

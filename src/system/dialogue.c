@@ -699,8 +699,9 @@ void parseDialogueBytecode(u16 index) {
             
             break;
     
-        case 11:
+        case DIALOGUE_OPCODE_HANDLE_MENU_SELECTION_BRANCH:
             
+            // row
             dialogues[index].bytecodeExecutor.unk_18 = *(u8*)dialogues[index].dialogueBytecodePointer++;
             
             byteswap.byte[1] = *(u8*)dialogues[index].dialogueBytecodePointer++;
@@ -714,6 +715,7 @@ void parseDialogueBytecode(u16 index) {
             break;
     
     }
+    
 }
 
 //INCLUDE_ASM("asm/nonmatchings/system/dialogue", setOverlayMessageBoxSprite);
@@ -951,6 +953,7 @@ void updateCurrentDialogue(u16 index) {
                         } else {
                             dialogues[index].bytecodeExecutor.currentOpcode = 0xFF;
                         }
+                        
                     }
                     
                 } else {
@@ -1148,7 +1151,7 @@ void updateCurrentDialogue(u16 index) {
             case DIALOGUE_OPCODE_UNUSED:
                 break;
 
-            case 11:
+            case DIALOGUE_OPCODE_HANDLE_MENU_SELECTION_BRANCH:
                 
                 temp6 = dialogues[index].sessionManager.unk_17;
                 

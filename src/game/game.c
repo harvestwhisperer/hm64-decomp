@@ -66,7 +66,7 @@ extern u8 houseExtensionConstructionCounter;
 
 extern u8 gItemBeingHeld;
 
-extern u16 gCurrentSongIndex;
+extern u16 gCurrentAudioSequenceIndex;
 extern u8 gNamingScreenIndex;
 
 extern u8 gFarmName[6];
@@ -82,11 +82,6 @@ extern u32 gTotalEggsShipped;
 extern u32 gTotalMilkShipped;
 
 extern u8 popuriGrayBabyAge;
-
-extern u8 D_801C3F96;
-extern u8 D_801C3F97;
-extern u8 D_801C3F98;
-extern u8 D_801C3F99;
 
 extern u8 numberOfSpiritFestivalAssistantsRecruited;
 extern u8 spiritFestivalAssistant1;
@@ -156,7 +151,6 @@ static const s16 houseExtensionLumberCosts[6];
 // forward declarations
 extern inline void showTextBox(u16 arg0, u16 arg1, u16 arg2, u32 flag, u16 arg4);
 extern void func_8005B09C(u8);
-extern void func_8005B09C(u8);        
 
 //INCLUDE_ASM("asm/nonmatchings/game/game", updateFamilyStates);
 
@@ -765,6 +759,7 @@ inline void showMessageBox(u16 arg0, u16 dialogueBytecodeAddressesIndex, u16 dia
 
 //INCLUDE_ASM("asm/nonmatchings/game/game", func_8005B09C);
 
+// show pink overlay texts basd on level interaction/animals/cutscene
 void func_8005B09C(u8 arg0) {
 
     gameLoopContext.unk_6 = arg0;
@@ -894,7 +889,7 @@ void func_8005B09C(u8 arg0) {
 
 void func_8005C00C(void) {
     
-    if (D_801891D4 < 0) {
+    if (gCutsceneCompletionFlags < 0) {
         setMainLoopCallbackFunctionIndex(MAIN_GAME);
         return;
     }
@@ -960,7 +955,7 @@ void func_8005C07C(s16 arg0, u16 arg1) {
         func_8003BF7C(0, globalLightingRGBA.r, globalLightingRGBA.g, globalLightingRGBA.b, globalLightingRGBA.a, arg0);
         
         if (!checkDailyEventBit(0x4B)) {
-            setSongVolume(gCurrentSongIndex, gSongVolume);
+            setAudioSequenceVolume(gCurrentAudioSequenceIndex, gAudioSequenceVolume);
         }
 
     }
@@ -988,7 +983,7 @@ inline void func_8005C940(u16 arg0, u16 callbackIndex) {
     func_8003BF7C(MAIN_MAP_INDEX, 0, 0, 0, 0, 8);
     updateEntitiesColor(0, 0, 0, 0, 8);
        
-    stopSongWithDefaultFadeOut(gCurrentSongIndex);
+    stopAudioSequenceWithDefaultFadeOut(gCurrentAudioSequenceIndex);
     
     gameLoopContext.callbackIndex = callbackIndex;
 
@@ -1028,7 +1023,7 @@ void func_8005CAA8(void) {
 
     func_800A8F74();
 
-    if (checkMapRGBADone(MAIN_MAP_INDEX) && checkDefaultSongChannelOpen(gCurrentSongIndex)) {
+    if (checkMapRGBADone(MAIN_MAP_INDEX) && checkDefaultSequenceChannelOpen(gCurrentAudioSequenceIndex)) {
 
         setEntitiesColor(0, 0, 0, 0);
         // map rgba
@@ -1037,7 +1032,7 @@ void func_8005CAA8(void) {
         deactivateCutsceneExecutors();
         initializeCutsceneExecutors();
 
-        D_801891D4 = 0;
+        gCutsceneCompletionFlags = 0;
 
         gCutsceneFlags = 0;
 
@@ -1155,6 +1150,7 @@ void func_8005CDCC(void) {
 
 void func_8005CEFC(void) {
     
+    // check if a message box has flag 4 set
     if (func_8003F0DC()) {
 
         setMainLoopCallbackFunctionIndex(MAIN_GAME);
@@ -1228,6 +1224,7 @@ void func_8005CF94(void) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/game", func_8005D0BC);
 
+// map load callback
 void func_8005D0BC(void) {
     
     bool set;
@@ -1406,7 +1403,7 @@ static inline void func_80055F08_2(u16 cutsceneIndex, u16 entranceIndex, u8 arg2
     gHour = 12;
 
     // set ptrs to rom addresses for sprites
-    func_800563D0(arg2);
+    initializeEntityInstances(arg2);
 
     setEntrance(entranceIndex);
 
@@ -1445,7 +1442,8 @@ void func_8005D2B0() {
 
             case 0:                                     
                 switch (temp) {                      
-                    case 0:                                 
+                    case 0:
+                        // show another message box                 
                         func_8005B09C(1);
                         break;
                     case 1:                                 
@@ -1502,7 +1500,8 @@ void func_8005D2B0() {
 
             case 5:                                     
                 switch (temp) {                    
-                    case 0:                                
+                    case 0:
+                        // show another message box               
                         func_8005B09C(6);
                         break;
                     case 1:                                
@@ -2386,7 +2385,9 @@ void func_800604B0(void) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/game", func_800605F0);
 
+// second end of festival day callback
 void func_800605F0(void) {
+    // check if a message box has flag 4 set
     if (func_8003F0DC()) {
         setMainLoopCallbackFunctionIndex(END_OF_DAY_1);
     }
@@ -2394,6 +2395,7 @@ void func_800605F0(void) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/game", func_80060624);
 
+// first end of day callback
 void func_80060624(void) {
     
     u8 tempTime;
@@ -2404,7 +2406,7 @@ void func_80060624(void) {
         
         // earthquake
         if (func_80060DC0()) {
-            setAudio(RUMBLE);
+            playSfx(RUMBLE);
             setMainLoopCallbackFunctionIndex(WAIT_AUDIO_FINISH);
             gameLoopContext.callbackIndex = END_OF_DAY_1;
             return;
@@ -2460,7 +2462,8 @@ void func_80060624(void) {
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/game", func_80060838);
- 
+
+// second end of day callback
 void func_80060838(void) {
     
     if (checkMapRGBADone(MAIN_MAP_INDEX) || !(mainMap[MAIN_MAP_INDEX].mapState.flags & MAP_ACTIVE)) {
@@ -2474,7 +2477,6 @@ void func_80060838(void) {
             toggleDailyEventBit(0x5C);
              
             setHorseLocation(0xFF);
-            
             horseInfo.flags &= ~0x8;
             
         }
@@ -2482,7 +2484,7 @@ void func_80060838(void) {
         // earthquake
         if (func_80060DC0()) {
             
-            setAudio(RUMBLE);
+            playSfx(RUMBLE);
             
             setMainLoopCallbackFunctionIndex(WAIT_AUDIO_FINISH);
             gameLoopContext.callbackIndex = END_OF_DAY_1;

@@ -36,6 +36,7 @@ extern u8 upgradedToolIndex;
 extern u8 upgradedToolLevelIndex;
 
 // data
+// indexed by gEntranceIndex
 Vec3f playerDefaultStartingCoordinates[] = {
     { -352.0f, 0.0f, -16.0f },
     { -544.0f, 0.0f, 144.0f },
@@ -153,6 +154,7 @@ Vec3f playerDefaultStartingCoordinates[] = {
     { 0.0f, 0.0f, 0.0f },
 };
 
+// indexed by gEntranceIndex
 u8 playerDefaultStartingDirections[] = {
     SOUTHWEST, 
     SOUTHEAST, 
@@ -442,7 +444,7 @@ static inline void reset() {
 
 //INCLUDE_ASM("asm/nonmatchings/game/player", setupPlayerEntity);
 
-void setupPlayerEntity(u16 arg0, u8 resetPlayer) {
+void setupPlayerEntity(u16 entranceIndex, u8 resetPlayer) {
  
     loadEntity(ENTITY_PLAYER, 0, TRUE);
 
@@ -455,10 +457,10 @@ void setupPlayerEntity(u16 arg0, u8 resetPlayer) {
     setEntityShadow(ENTITY_PLAYER, 0);
 
     if (resetPlayer) {
-        gPlayer.coordinates.x = playerDefaultStartingCoordinates[arg0].x;
-        gPlayer.coordinates.y = playerDefaultStartingCoordinates[arg0].y;
-        gPlayer.coordinates.z = playerDefaultStartingCoordinates[arg0].z;
-        gPlayer.direction = playerDefaultStartingDirections[arg0];
+        gPlayer.coordinates.x = playerDefaultStartingCoordinates[entranceIndex].x;
+        gPlayer.coordinates.y = playerDefaultStartingCoordinates[entranceIndex].y;
+        gPlayer.coordinates.z = playerDefaultStartingCoordinates[entranceIndex].z;
+        gPlayer.direction = playerDefaultStartingDirections[entranceIndex];
     }
 
     setEntityDirection(ENTITY_PLAYER, convertSpriteToWorldDirection(gPlayer.direction, MAIN_MAP_INDEX));
@@ -589,6 +591,7 @@ u8 func_80065BCC(u8 tool) {
     }
     
     return found;
+
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/player", removeTool);
@@ -704,9 +707,9 @@ inline bool checkHaveKeyItem(u8 item) {
 //INCLUDE_ASM("asm/nonmatchings/game/player", func_80065F5C);
 
 void func_80065F5C(void) {
-    gPlayer.coordinates.x = entities[PLAYER].coordinates.x;
-    gPlayer.coordinates.y = entities[PLAYER].coordinates.y;
-    gPlayer.coordinates.z = entities[PLAYER].coordinates.z;
+    gPlayer.coordinates.x = entities[ENTITY_PLAYER].coordinates.x;
+    gPlayer.coordinates.y = entities[ENTITY_PLAYER].coordinates.y;
+    gPlayer.coordinates.z = entities[ENTITY_PLAYER].coordinates.z;
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/player", getOffsetTileCoordinates );
@@ -725,13 +728,13 @@ Vec3f getOffsetTileCoordinates (f32 range, u8 directionalOffset) {
 
     if (tileCoordinates.y != 65535.0f) {
 
-        tileCoordinates.x += buffer[convertWorldToSpriteDirection(entities[PLAYER].direction, gMainMapIndex)] * range;
-        tileCoordinates.z += buffer2[convertWorldToSpriteDirection(entities[PLAYER].direction, gMainMapIndex)] * range;
+        tileCoordinates.x += buffer[convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, gMainMapIndex)] * range;
+        tileCoordinates.z += buffer2[convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, gMainMapIndex)] * range;
 
         if (directionalOffset != 8) {
             
-            tileCoordinates.x += buffer[((entities[PLAYER].direction + getCurrentMapRotation(gMainMapIndex) + directionalOffset) % 8)];
-            tileCoordinates.z += buffer2[((entities[PLAYER].direction + getCurrentMapRotation(gMainMapIndex) + directionalOffset) % 8)];
+            tileCoordinates.x += buffer[((entities[ENTITY_PLAYER].direction + getCurrentMapRotation(gMainMapIndex) + directionalOffset) % 8)];
+            tileCoordinates.z += buffer2[((entities[ENTITY_PLAYER].direction + getCurrentMapRotation(gMainMapIndex) + directionalOffset) % 8)];
             
         }
     }
@@ -761,13 +764,13 @@ Vec3f* getOffsetTileCoordinates (Vec3f *arg0, f32 arg1, u8 arg2) {
 
     if (vec.y != 65535.0f) {directionToTileDeltaX
 
-        vec.x += ptr[(entities[PLAYER].direction + getCurrentMapRotation(gMainMapIndex)) % 8] * arg1;
-        vec.z += ptr2[(entities[PLAYER].direction + getCurrentMapRotation(gMainMapIndex)) % 8] * arg1;
+        vec.x += ptr[(entities[ENTITY_PLAYER].direction + getCurrentMapRotation(gMainMapIndex)) % 8] * arg1;
+        vec.z += ptr2[(entities[ENTITY_PLAYER].direction + getCurrentMapRotation(gMainMapIndex)) % 8] * arg1;
 
         if (arg2 != 8) {
             
-            vec.x += ptr[((entities[PLAYER].direction + getCurrentMapRotation(gMainMapIndex) + arg2) % 8)];
-            vec.z += ptr2[((entities[PLAYER].direction + getCurrentMapRotation(gMainMapIndex) + arg2) % 8)];
+            vec.x += ptr[((entities[ENTITY_PLAYER].direction + getCurrentMapRotation(gMainMapIndex) + arg2) % 8)];
+            vec.z += ptr2[((entities[ENTITY_PLAYER].direction + getCurrentMapRotation(gMainMapIndex) + arg2) % 8)];
             
         }
     }
@@ -1151,7 +1154,7 @@ void func_800664C8(void) {
                 func_80059334();
                 // load overlay screen
                 func_8005CA2C(1, 0x14);
-                setAudio(MENU_OPEN_SFX);
+                playSfx(MENU_OPEN_SFX);
                 temp = 0xFF;
             }
         }
@@ -1256,7 +1259,7 @@ void func_800664C8(void) {
         
     }
 
-    gPlayer.direction = convertWorldToSpriteDirection(entities[PLAYER].direction, MAIN_MAP_INDEX);
+    gPlayer.direction = convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX);
     gPlayer.unk_60 = tempF;
     
 }
@@ -1317,7 +1320,7 @@ void func_80067034(void) {
         vec2 = projectEntityPosition(ENTITY_PLAYER, 0, direction);
         
         horseInfo.coordinates = vec2;
-        horseInfo.direction = convertWorldToSpriteDirection(entities[PLAYER].direction, MAIN_MAP_INDEX);
+        horseInfo.direction = convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX);
         horseInfo.location = gBaseMapIndex;
         horseInfo.flags &= ~0x8;     
 
@@ -1328,7 +1331,7 @@ void func_80067034(void) {
         // initialize animal locations
         func_8008B9AC();
         
-        entities[PLAYER].direction = direction;
+        entities[ENTITY_PLAYER].direction = direction;
 
         startAction(0xE, 0x10);
 
@@ -1645,7 +1648,7 @@ void func_80067E5C(void) {
     // FIXME: possibly a union. This matches:
     // if (!(gPlayer.actionUnion.actionPhaseFrameCounter & ~0xFF)) {
     if (!(*(s32*)&gPlayer.actionPhaseFrameCounter & ~0xFF)) {
-        setAudio(0x26);
+        playSfx(0x26);
         func_800D5548(gPlayer.itemInfoIndex);
         func_800D5390(1, 3, gPlayer.heldItem, 0, 8);
         gPlayer.heldItem = 0;
@@ -1675,7 +1678,7 @@ void func_80067F50(void) {
     // FIXME
     if (!(*(s32*)&gPlayer.actionPhaseFrameCounter & ~0xFF)) {
         
-        setAudio(PICKING_UP_SFX);
+        playSfx(PICKING_UP_SFX);
         startAction(PICKING_UP, 6);
 
         switch (gPlayer.heldItem) {
@@ -1713,7 +1716,7 @@ void func_8006807C(void) {
         if (gPlayer.actionPhase == 0) {
             func_800D55E4(gPlayer.itemInfoIndex, 9);
             gPlayer.heldItem = 0;
-            setAudio(PICKING_UP_SFX);
+            playSfx(PICKING_UP_SFX);
         }
 
         if (gPlayer.actionPhase != 1 || (gPlayer.actionPhaseFrameCounter++, gPlayer.actionPhaseFrameCounter == 2)) {
@@ -1736,7 +1739,7 @@ void func_80068120(void) {
             func_800D55E4(gPlayer.itemInfoIndex, 1);
             gPlayer.heldItem = 0;
             gPlayer.actionPhase++;
-            setAudio(0x25); 
+            playSfx(0x25); 
         }
 
         gPlayer.actionPhaseFrameCounter++;
@@ -1871,7 +1874,7 @@ void func_80068558(void) {
 
         if (gPlayer.actionPhaseFrameCounter == 0) {
 
-            setAudio(4);
+            playSfx(4);
             
             setEntityCollidable(ENTITY_PLAYER, 0);
             setEntityTracksCollisions(ENTITY_PLAYER, 0);
@@ -1928,7 +1931,7 @@ void func_80068738(void) {
 
         if (gPlayer.actionPhaseFrameCounter == 0) {
 
-            setAudio(4);
+            playSfx(4);
             
             setEntityCollidable(ENTITY_PLAYER, 0);
             setEntityTracksCollisions(ENTITY_PLAYER, 0);
@@ -2031,7 +2034,7 @@ void func_80068A98(void) {
 
         if (gPlayer.actionPhaseFrameCounter == 0) {
 
-            setAudio(4);
+            playSfx(4);
             setEntityCollidable(ENTITY_PLAYER, FALSE);
             setEntityYMovement(ENTITY_PLAYER, FALSE);
             vec = getMovementVectorFromDirection(4.0f, gPlayer.direction, 0.0f);
@@ -2083,7 +2086,7 @@ void func_80068C8C(void) {
 
         if (gPlayer.actionPhaseFrameCounter == 0) {
 
-            setAudio(4);
+            playSfx(4);
             setEntityCollidable(ENTITY_PLAYER, FALSE);
             setEntityYMovement(ENTITY_PLAYER, FALSE);
             vec = getMovementVectorFromDirection(4.0f, gPlayer.direction, 0.0f);
@@ -2223,7 +2226,7 @@ void func_80068FB0(void) {
                 
                 func_80038990(ENTITY_PLAYER, 0, 0);
 
-                setAudio(0x32);
+                playSfx(0x32);
                 
                 gPlayer.direction = SOUTHWEST;
                 gPlayer.actionTimer = 16;
@@ -2240,7 +2243,7 @@ void func_80068FB0(void) {
                 gPlayer.actionPhaseFrameCounter++;
                 
                 if (gPlayer.actionPhaseFrameCounter == 10) {
-                    setAudio(0x56);
+                    playSfx(0x56);
                 }
                 
             }
@@ -2386,7 +2389,7 @@ void func_800692E4(void) {
             if (gPlayer.actionTimer == 0) {
 
                 func_80038990(ENTITY_PLAYER, 1, 0);
-                setAudio(0x32);
+                playSfx(0x32);
                 gPlayer.direction = SOUTHEAST;
                 gPlayer.actionTimer = 16;
                 vec3 = getMovementVectorFromDirection(4.0f, 6, 0.0f);
@@ -2507,7 +2510,7 @@ void func_80069830(void) {
                 
                 func_80038990(ENTITY_PLAYER, 1, 0);
                 
-                setAudio(0x32);
+                playSfx(0x32);
                 
                 gPlayer.direction = SOUTHWEST;
                 gPlayer.actionTimer = 0x12;
@@ -2568,7 +2571,7 @@ void func_80069830(void) {
 void func_80069C5C(void) {
     
     if (checkEntityShouldPlaySoundEffect(ENTITY_PLAYER)) {
-        setAudio(0xA);
+        playSfx(0xA);
     }
 
 }
@@ -2578,7 +2581,7 @@ void func_80069C5C(void) {
 void func_80069C90(void) {
 
     if (checkEntityShouldPlaySoundEffect(ENTITY_PLAYER)) {
-        setAudio(0xA);
+        playSfx(0xA);
     }
 
 }
@@ -2669,7 +2672,7 @@ void func_80069E74(void) {
         
         if (gPlayer.actionPhaseFrameCounter == 0) {
             
-            setAudio(4);
+            playSfx(4);
 
             setEntityCollidable(ENTITY_PLAYER, FALSE);
             setEntityYMovement(ENTITY_PLAYER, FALSE);
@@ -2846,13 +2849,13 @@ void handlePlayerAnimation(void) {
 
                 if (gPlayer.flags & 1) { 
                     if (checkEntityShouldPlaySoundEffect(ENTITY_PLAYER)) {
-                        setAudio(9);
+                        playSfx(9);
                     }
                     setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x214);
 
                 } else {
                     if (checkEntityShouldPlaySoundEffect(ENTITY_PLAYER)) {
-                        setAudio(WALKING_SFX);
+                        playSfx(WALKING_SFX);
                     }
                     setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x10);
                 }
@@ -2860,7 +2863,7 @@ void handlePlayerAnimation(void) {
             } else {
 
                 if (checkEntityShouldPlaySoundEffect(ENTITY_PLAYER)) {
-                    setAudio(WALKING_SFX);
+                    playSfx(WALKING_SFX);
                 }
 
                 setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x28);
@@ -3408,7 +3411,7 @@ void func_8006B104(void) {
                     gPlayer.actionPhase = 3;
 
                     setEntityDirection(ENTITY_PLAYER, convertSpriteToWorldDirection(gPlayer.direction, MAIN_MAP_INDEX));
-                    setAudio(0x28);
+                    playSfx(0x28);
                       
                 } else if (gPlayer.flags & 8) {
                     
@@ -3436,7 +3439,7 @@ void func_8006B104(void) {
                     gPlayer.actionPhase = 2;
                     
                     setEntityDirection(ENTITY_PLAYER, convertSpriteToWorldDirection(gPlayer.direction, MAIN_MAP_INDEX));
-                    setAudio(0x28);
+                    playSfx(0x28);
                                         
                 } else if (gPlayer.flags & 0x40) {
                 
@@ -3701,7 +3704,7 @@ void func_8006BBC4(void) {
             func_800D55E4(gPlayer.itemInfoIndex, 1);
             gPlayer.heldItem = 0;
             gPlayer.actionPhase++;
-            setAudio(PICKING_UP_SFX);
+            playSfx(PICKING_UP_SFX);
             
         } else {
             resetAction();
@@ -3754,7 +3757,7 @@ void handleFishingRodUse(void) {
                     }
 
                     func_800CFB38(0, 0x9D, vec.x, vec.y, vec.z);
-                    setAudio(0x28);
+                    playSfx(0x28);
                     setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x17A);
                     gPlayer.actionPhase = 2;
                 
@@ -3845,7 +3848,7 @@ void handleFishingRodUse(void) {
     }
 
     if (checkEntityShouldPlaySoundEffect(ENTITY_PLAYER)) {
-        setAudio(0xB);
+        playSfx(0xB);
     }
     
 }
@@ -3903,7 +3906,7 @@ void func_8006C1DC(void) {
             
             case 2:
                 gPlayer.actionPhase = 3;
-                setAudio(0x5A);
+                playSfx(0x5A);
                 setMainLoopCallbackFunctionIndex(0xB);
                 func_80059334();
                 break;
@@ -4040,24 +4043,24 @@ void func_8006C384(void) {
             case WATERING_CAN:
                 break;
             case MILKER:                                     
-                setAudio(MILKER_SFX);
+                playSfx(MILKER_SFX);
                 break;
             case BELL:                                     
-                setAudio(0x20);
+                playSfx(0x20);
                 break;
             case BRUSH:                                     
-                setAudio(0x1F);
+                playSfx(0x1F);
                 break;
             case CLIPPERS:                                     
-                setAudio(0x22);
+                playSfx(0x22);
                 break;
             case CHICKEN_FEED:                                    
-                setAudio(0x1D);
+                playSfx(0x1D);
                 break;
             case MIRACLE_POTION:                                    
             case COW_MEDICINE:                                    
             case BLUE_FEATHER:                                    
-                setAudio(0x23);
+                playSfx(0x23);
                 break;
             case EMPTY_BOTTLE:
             default:

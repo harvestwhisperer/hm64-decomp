@@ -177,9 +177,9 @@ void deactivateNPCEntities(void) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/npc", ma);
 
-u8 func_80075374(u8 npcIndex, int arg1) {
+u8 setupNPCEntity(u8 npcIndex, int currentEntityOffset) {
 
-    int adjustedNPCIndex = arg1;
+    int currentEntityIndex = currentEntityOffset;
 
     if ((npcs[npcIndex].flags & 1) && npcs[npcIndex].levelIndex == gBaseMapIndex) {
         
@@ -193,8 +193,8 @@ u8 func_80075374(u8 npcIndex, int arg1) {
                         break;
                     } 
                 } 
-                npcs[npcIndex].entityIndex = (u8)adjustedNPCIndex + 0x15;
-                adjustedNPCIndex++;
+                npcs[npcIndex].entityIndex = ENTITY_NPC_BASE + (u8)currentEntityIndex;
+                currentEntityIndex++;
                 break;
             case POPURI:
                 if (checkLifeEventBit(MARRIED)) {
@@ -203,8 +203,8 @@ u8 func_80075374(u8 npcIndex, int arg1) {
                         break;
                     } 
                 }
-                npcs[npcIndex].entityIndex = (u8)adjustedNPCIndex + 0x15;
-                adjustedNPCIndex++;
+                npcs[npcIndex].entityIndex = ENTITY_NPC_BASE + (u8)currentEntityIndex;
+                currentEntityIndex++;
                 break;
             case ELLI:
                 if (checkLifeEventBit(MARRIED)) {
@@ -213,8 +213,8 @@ u8 func_80075374(u8 npcIndex, int arg1) {
                         break;
                     } 
                 }
-                npcs[npcIndex].entityIndex = (u8)adjustedNPCIndex + 0x15;
-                adjustedNPCIndex++;
+                npcs[npcIndex].entityIndex = ENTITY_NPC_BASE + (u8)currentEntityIndex;
+                currentEntityIndex++;
                 break;
             case ANN:
                 if (checkLifeEventBit(MARRIED)) {
@@ -223,8 +223,8 @@ u8 func_80075374(u8 npcIndex, int arg1) {
                         break;
                     } 
                 }
-                npcs[npcIndex].entityIndex = (u8)adjustedNPCIndex + 0x15;
-                adjustedNPCIndex++;
+                npcs[npcIndex].entityIndex = ENTITY_NPC_BASE + (u8)currentEntityIndex;
+                currentEntityIndex++;
                 break;
             case KAREN:
                 if (checkLifeEventBit(MARRIED)) {
@@ -233,14 +233,14 @@ u8 func_80075374(u8 npcIndex, int arg1) {
                         break;
                     } 
                 }
-                npcs[npcIndex].entityIndex = (u8)adjustedNPCIndex + 0x15;
-                adjustedNPCIndex++;
+                npcs[npcIndex].entityIndex = ENTITY_NPC_BASE + (u8)currentEntityIndex;
+                currentEntityIndex++;
                 break;
             case BABY:                               
-                npcs[npcIndex].entityIndex = 0x24;
+                npcs[npcIndex].entityIndex = ENTITY_BABY;
                 break;
             case PHOTOGRAPHER:
-                npcs[npcIndex].entityIndex = 0x1D;
+                npcs[npcIndex].entityIndex = ENTITY_PHOTOGRAPHER;
                 break;
             case HARRIS:                                 
             case GRAY:                                 
@@ -276,8 +276,8 @@ u8 func_80075374(u8 npcIndex, int arg1) {
             case BARLEY:                                
             case GOURMET_JUDGE:
             default:
-                npcs[npcIndex].entityIndex = (u8)adjustedNPCIndex + 0x15;
-                adjustedNPCIndex++;
+                npcs[npcIndex].entityIndex = ENTITY_NPC_BASE + (u8)currentEntityIndex;
+                currentEntityIndex++;
                 break;
         }
     
@@ -331,23 +331,25 @@ u8 func_80075374(u8 npcIndex, int arg1) {
         
     }
 
-    return adjustedNPCIndex;
+    return currentEntityIndex;
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/npc", func_800758B8);
+//INCLUDE_ASM("asm/nonmatchings/game/npc", setupActiveNPCs);
 
-void func_800758B8(void) {
+// called on map load
+void setupActiveNPCs(void) {
 
-    u8 npcIndex;
+    u8 entityIndexOffset;
     u8 i;
 
     setNPCSpawningLocations();
     
-    npcIndex = 0;
+    entityIndexOffset = 0;
     
     for (i = 0; i < MAX_NPCS; i++) {
-        npcIndex = func_80075374(i, npcIndex);
+        // loop through all NPCs but only increment entity index offset when active NPC is found
+        entityIndexOffset = setupNPCEntity(i, entityIndexOffset);
     }
     
     // handle all npc animations
@@ -404,10 +406,8 @@ void func_80075A78(u8 npcIndex) {
     }
 
     if (npcs[npcIndex].movingFlag == 0x20) {
-
         direction = (gPlayer.direction + 4) % 8;        
         setEntityAnimationWithDirectionChange(npcs[npcIndex].entityIndex, npcs[npcIndex].animationIndex1);
-        
     }
 
     npcs[npcIndex].currentCoordinates.x = entities[npcs[npcIndex].entityIndex].coordinates.x;

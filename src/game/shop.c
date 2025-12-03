@@ -550,7 +550,7 @@ void func_800DC9FC(u8 arg0) {
     if (func_800DCAA0(arg0)) {
 
         gPlayer.itemInfoIndex = func_800D5308(D_80119548[arg0], 6, D_80118FD0[arg0], 0, 0);
-        setAudio(PICKING_UP_SFX);
+        playSfx(PICKING_UP_SFX);
 
         if (D_801194A0[arg0] != 0xFF) {
             deactivateMapObject(MAIN_MAP_INDEX, D_801194A0[arg0]);
@@ -624,7 +624,7 @@ void func_800DCAB8(void) {
                 if (!set) {
                     
                     if (shopContext.unk_5) {
-                        setAudio(2);
+                        playSfx(2);
                     }
                     
                     shopContext.unk_5 = 0;
@@ -640,7 +640,7 @@ void func_800DCAB8(void) {
                 if (!set) {
 
                     if (shopContext.unk_5 == 0) {
-                        setAudio(2);
+                        playSfx(2);
                     }
                     
                     shopContext.unk_5 = 1;
@@ -665,7 +665,7 @@ void func_800DCAB8(void) {
                     
                         if (D_80118F60[shopContext.storeItemIndex] >= 2) {
                             func_800B4238(D_80118F60[shopContext.storeItemIndex]);
-                            setAudio(2);                           
+                            playSfx(2);                           
                         }
                         
                     }
@@ -691,7 +691,7 @@ void func_800DCAB8(void) {
 
                         if (D_80118F60[shopContext.storeItemIndex] >= 2) {
                             func_800B4238(D_80118F60[shopContext.storeItemIndex]);
-                            setAudio(2);
+                            playSfx(2);
                         }
 
                     }
@@ -717,10 +717,10 @@ void func_800DCAB8(void) {
                     
                     if (shopContext.unk_5 == 0) {
                         shopContext.unk_3 = 3;
-                        setAudio(0);
+                        playSfx(0);
                     } else {
                         shopContext.unk_3 = 4;
-                        setAudio(1);
+                        playSfx(1);
                     }
                     
                     set = TRUE;
@@ -745,7 +745,7 @@ void func_800DCAB8(void) {
                     shopContext.unk_5 = 1;
                     shopContext.unk_3 = 4;
 
-                    setAudio(1);
+                    playSfx(1);
 
                 }
                 

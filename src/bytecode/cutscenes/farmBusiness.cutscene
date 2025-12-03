@@ -1,0 +1,338 @@
+; ============================================
+; BANK1 - Farm
+; ============================================
+
+; currently unfinished/not included in build
+
+; declare space for global variable
+.var buffer, u32
+
+; ============================================
+; Entry points
+; ============================================
+
+; 0xFF5C4
+.entry_1:
+    CMD_SPAWN_EXECUTOR 35, .executor_shipper
+    CMD_DEACTIVATE_SELF
+
+; 0xFF5D0
+.entry_2:
+    CMD_SPAWN_EXECUTOR 36, .executor_doug_1
+    CMD_DEACTIVATE_SELF
+
+; 0xFF5DC
+.entry_3:
+    CMD_SPAWN_EXECUTOR 36, .executor_doug_2
+    CMD_DEACTIVATE_SELF
+
+; 0xFF5E8
+.entry_4:
+    CMD_SPAWN_EXECUTOR 36, .executor_doug_3
+    CMD_BRANCH_U16_VAR_WITHIN_RANGE 0, 0, gCutsceneIndex,
+    CMD_BRANCH_U16_VAR_WITHIN_RANGE 1, 1, gCutsceneIndex,
+    CMD_BRANCH_U16_VAR_WITHIN_RANGE 2, 2, gCutsceneIndex,
+    CMD_DEACTIVATE_SELF
+
+; 0xFF624
+.entry_5:
+    CMD_SPAWN_EXECUTOR 37,
+    CMD_DEACTIVATE_SELF
+
+; 0x0FF630
+.entry_6:
+    CMD_SPAWN_EXECUTOR 37,
+    CMD_DEACTIVATE_SELF
+
+; 0x0FF63C
+.entry_7:
+    CMD_SPAWN_EXECUTOR 37,
+    CMD_DEACTIVATE_SELF
+
+; 0xFF648
+.entry_8:
+    CMD_SPAWN_EXECUTOR 38,
+    CMD_DEACTIVATE_SELF
+
+; 0xFF654
+.entry_9:
+    CMD_SPAWN_EXECUTOR 38,
+    CMD_SPAWN_EXECUTOR 39,
+    CMD_SPAWN_EXECUTOR 40,
+    CMD_DEACTIVATE_SELF
+
+; 0xFF670
+.entry_10:
+    CMD_SPAWN_EXECUTOR 38, .executor_master_carpenter
+    CMD_SPAWN_EXECUTOR 39, .executor_assistant_carpenter_1
+    CMD_SPAWN_EXECUTOR 40, .executor_assistant_carpenter_2
+    CMD_DEACTIVATE_SELF
+
+; 0xFF68C
+.entry_11:
+    CMD_SPAWN_EXECUTOR 36,
+    CMD_DEACTIVATE_SELF
+
+; 0xFF698
+.entry_12:
+    CMD_SPAWN_EXECUTOR 36,
+    CMD_SPAWN_EXECUTOR 37,
+    CMD_DEACTIVATE_SELF
+
+; ============================================
+; Shared routines
+; ============================================
+
+; 0xFF6AC
+.setup_message_box_1:
+    CMD_PAUSE_ALL_CHILD_EXECUTORS
+    CMD_PAUSE_ENTITIES
+    CMD_SET_MESSAGE_BOX_ASSETS 0, 0, 0, 0
+    CMD_SET_MESSAGE_INTERPOLATION -4, 0, 0
+    CMD_SET_MESSAGE_BOX_VIEW_POSITION 0, 24, -64, 352
+    CMD_RETURN_FROM_SUBROUTINE
+
+; 0xFF6D4
+.setup_message_box_2:
+    CMD_PAUSE_ALL_CHILD_EXECUTORS
+    CMD_PAUSE_ENTITIES
+    CMD_SET_MESSAGE_BOX_ASSETS 0, 1, 0, 0
+    CMD_SET_MESSAGE_INTERPOLATION -4, 0, 0
+    CMD_SET_MESSAGE_BOX_VIEW_POSITION 0, 0, -64, 352
+    CMD_RETURN_FROM_SUBROUTINE    
+
+; 0xFF6FC
+.wait_message_box_closed:
+    CMD_WAIT_MESSAGE_BOX_CLOSED 0
+    CMD_RESET_MESSAGE_BOX_AVATAR 0
+    CMD_TOGGLE_PAUSE_ALL_CHILDREN
+    CMD_RETURN_FROM_SUBROUTINE
+
+; ============================================
+; Shipper pickup
+; ============================================
+
+; 0xFF70C
+.executor_shipper:
+    CMD_SETUP_ENTITY 37, ENTITY_ASSET_SHIPPER, 1
+    CMD_SET_ENTITY_ANIMATION 37. 0, 8, 16, 24, 32, 40
+    CMD_SET_CAMERA_FLAGS 0
+    CMD_SET_ASSET_ROTATION SOUTHEAST
+    CMD_SET_ENTITY_PHYSICS_FLAGS 1
+    CMD_SET_COORDINATES -590, 0, 152
+    CMD_ENTITY_MOVE_AND_ANIMATE 124, SOUTHEAST, 2
+    CMD_SET_ASSET_ROTATION NORTHEAST
+    CMD_EXECUTE_SUBROUTINE .setup_message_box
+    CMD_BRANCH_U16_VAR_WITHIN_RANGE 0, 0, gCutsceneIndex, .shipping
+    CMD_BRANCH_U16_VAR_WITHIN_RANGE 1, 1, gCutsceneIndex, .nothing_to_ship
+    
+; 0xFF768
+.shipping:
+    CMD_INIT_MESSAGE_BOX_TYPE1 0, DIALOGUE_63_TEXT_INDEX, 116
+    CMD_EXECUTE_SUBROUTINE .unknown
+
+; 0xFF774
+.nothing_to_ship:
+    CMD_INIT_MESSAGE_BOX_TYPE1 0, SHOP_TEXT_INDEX, 358
+    CMD_EXECUTE_SUBROUTINE .shipper_leave
+
+; 0xFF780
+.shipper_leave:
+    CMD_EXECUTE_SUBROUTINE .wait_message_box_closed
+    CMD_TOGGLE_PAUSE_ENTITIES
+    CMD_ENTITY_MOVE_AND_ANIMATE 124, NORTHWEST, 2
+    CMD_SET_SPECIAL_BIT 0, gCutsceneCompletionFlags
+    CMD_DEACTIVATE_SELF
+
+; ============================================
+; Doug animal delivery
+; ============================================
+
+; 0xFF79C
+.executor_doug_1:
+    CMD_TOGGLE_SPECIAL_BIT 15, gCutsceneCompletionFlags
+    CMD_SETUP_ENTITY 35, ENTITY_ASSET_DOUG, 1
+    CMD_SET_ENTITY_ANIMATION 35, 0, 8, 16, 24, 32, 40
+    CMD_SET_CAMERA_FLAGS 0
+    CMD_SET_ASSET_ROTATION NORTHWEST
+    CMD_SET_COORDINATES -448, 0, 144 
+    CMD_UPDATE_RGBA 254, 254, 254, 254, 0
+    CMD_WAIT_RGBA_FINISHED
+    CMD_EXECUTE_SUBROUTINE .setup_message_box_1
+    CMD_INIT_MESSAGE_BOX_TYPE1 0, SHOP_TEXT_INDEX, 81
+    CMD_EXECUTE_SUBROUTINE .wait_message_box_closed
+    CMD_SET_SPECIAL_BIT 0, gCutsceneCompletionFlags
+; 0xFF7F0
+.idle:
+    CMD_SET_WAIT_FRAMES 1
+    CMD_EXECUTE_SUBROUTINE .idle
+
+; ============================================
+; Selling animal to Doug
+; ============================================
+
+; 0xFF7F8
+.executor_doug_2:
+    CMD_SETUP_ENTITY 35, ENTITY_ASSET_DOUG, 1
+    CMD_SET_ENTITY_ANIMATION 35, 0, 8, 16, 24, 32, 40
+    CMD_SET_CALLBACK_ROUTINE ENTITY_PLAYER, BUTTON_A, .show_doug_sell_animal_dialogue
+    CMD_SET_CAMERA_FLAGS 0
+    CMD_SET_ASSET_ROTATION NORTHWEST
+    CMD_SET_COORDINATES -448, 0, 144 
+    CMD_UPDATE_RGBA 254, 254, 254, 254, 0
+    CMD_WAIT_RGBA_FINISHED
+    CMD_BRANCH_U16_VAR_WITHIN_RANGE 1, 1, gCutsceneIndex, .idle_until_leave
+    CMD_EXECUTE_SUBROUTINE .setup_message_box_1
+    CMD_INIT_MESSAGE_BOX_TYPE1 0, SHOP_TEXT_INDEX, 87
+    CMD_EXECUTE_SUBROUTINE .wait_message_box_closed
+    CMD_TOGGLE_PAUSE_ENTITIES
+
+; 0xFF858
+.idle_until_leave:
+    CMD_BRANCH_U8_VAR_WITHIN_RANGE 16, 23, gHour, .doug_leaving
+    CMD_SET_WAIT_FRAMES 1
+    CMD_EXECUTE_SUBROUTINE .idle_until_leave
+
+.doug_leaving:
+    CMD_TOGGLE_SPECIAL_BIT 2, dailyEventBits[0]
+    CMD_SET_CALLBACK_ROUTINE 0xFFFF, BUTTON_A, .show_doug_sell_animal_dialogue
+    CMD_INIT_MESSAGE_BOX_TYPE1 0, SHOP_TEXT_INDEX, 93
+    CMD_EXECUTE_SUBROUTINE .wait_message_box_closed
+    CMD_TOGGLE_PAUSE_ENTITIES
+    CMD_SET_ENTITY_PHYSICS_FLAGS 1
+    CMD_ENTITY_MOVE_AND_ANIMATE 64, NORTHWEST, 2
+    CMD_SET_SPECIAL_BIT 0, gCutsceneCompletionFlags
+    CMD_DEACTIVATE_SELF
+
+; 0xFF8A8
+.show_doug_sell_animal_dialogue:
+    CMD_FLIP_ENTITY_DIRECTION ENTITY_PLAYER
+    CMD_EXECUTE_SUBROUTINE .setup_message_box_1
+    CMD_INIT_MESSAGE_BOX_TYPE1 0, SHOP_TEXT_INDEX, 87
+    CMD_EXECUTE_SUBROUTINE .wait_message_box_closed
+    CMD_TOGGLE_PAUSE_ENTITIES
+    CMD_SET_CALLBACK_ROUTINE ENTITY_PLAYER, BUTTON_A, .show_doug_sell_animal_dialogue
+    CMD_EXECUTE_SUBROUTINE .idle_until_leave
+
+; ============================================
+; Doug ?
+; ============================================
+
+; 0xFF8CC
+.executor_doug_3:
+    CMD_TOGGLE_SPECIAL_BIT 4, dailyEventBits[0]
+    CMD_SETUP_ENTITY 35, ENTITY_ASSET_DOUG, 1
+    CMD_SET_ENTITY_ANIMATION 35, 0, 8, 16, 24, 32, 40
+    CMD_SET_CAMERA_FLAGS 0
+    CMD_SET_ASSET_ROTATION NORTHWEST
+    CMD_SET_COORDINATES -448, 0, 144 
+    CMD_UPDATE_RGBA 254, 254, 254, 254, 0
+    CMD_WAIT_RGBA_FINISHED
+    CMD_SET_ENTITY_PHYSICS_FLAGS 1
+    CMD_ENTITY_MOVE_AND_ANIMATE 64, NORTHWEST, 2
+    CMD_SET_SPECIAL_BIT 0, gCutsceneCompletionFlags
+    CMD_DEACTIVATE_SELF
+
+; ============================================
+; Doug ?
+; ============================================
+
+; 0xFF920
+.executor_doug_4:
+    CMD_SETUP_ENTITY 35, ENTITY_ASSET_DOUG, 1
+    CMD_SET_ENTITY_ANIMATION 35, 0, 8, 16, 24, 32, 40
+    CMD_SET_CALLBACK_ROUTINE 0xFFFF, BUTTON_A, .start_dialogue
+    CMD_SET_CAMERA_FLAGS 0
+    CMD_SET_ENTITY_PHYSICS_FLAGS 1
+    CMD_BRANCH_U16_VAR_WITHIN_RANGE 1, 1, gCutsceneIndex, .update_position
+    CMD_SET_ASSET_ROTATION NORTHWEST
+    CMD_SET_COORDINATES -590, 0, 152 
+    CMD_UPDATE_RGBA 254, 254, 254, 254, 0
+    CMD_WAIT_RGBA_FINISHED
+    CMD_ENTITY_MOVE_AND_ANIMATE 34, NORTHWEST, 2
+    ; finish
+
+; 0xFF9A0
+.update_position:
+    CMD_SET_ASSET_ROTATION(NORTHEAST)
+    ; add rest
+
+; 0xFFA34
+.start_dialogue:
+    CMD_SET_SPECIAL_BIT 31, dailyEventBits[0]
+
+
+; TODO: match rest of segments
+
+
+; ============================================
+; House construction completed
+; ============================================
+
+; 0x100044
+.executor_master_carpenter:
+    CMD_TOGGLE_SPECIAL_BIT 11, dailyEventBits[0]
+    CMD_TOGGLE_SPECIAL_BIT 0, 0x802F4000
+    CMD_SETUP_ENTITY 32, ENTITY_ASSET_MASTER_CARPENTER, 1
+    CMD_SET_ENTITY_ANIMATIONS 32, 0, 8, 16, 24, 32, 40
+    CMD_SET_CAMERA_FLAGS 0
+    CMD_SET_ASSET_ROTATION NORTHEAST
+    CMD_UPDATE_RGBA 254, 254, 254, 254, 0
+    CMD_SET_COORDINATES -384, 0, 144
+    CMD_WAIT_RGBA_FINISHED
+    CMD_SET_ENTITY_PHYSICS_FLAGS 1
+    CMD_EXECUTE_SUBROUTINE .setup_message_box_1
+    CMD_INIT_MESSAGE_BOX_TYPE1 0, SHOP_TEXT_INDEX, 142
+    CMD_WAIT_MESSAGE_BOX_CLOSED 0
+    CMD_INIT_MESSAGE_BOX_TYPE1 0, SHOP_TEXT_INDEX, 144
+    CMD_EXECUTE_SUBROUTINE .wait_message_box_closed
+    CMD_TOGGLE_PAUSE_ENTITIES
+    CMD_SET_SPECIAL_BIT 0, 0x802F4000
+    CMD_ENTITY_MOVE_AND_ANIMATE 96, NORTHWEST, 2
+    CMD_DEACTIVATE_SELF
+
+; 0x1000C0
+.executor_assistant_carpenter_1:
+    CMD_SETUP_ENTITY 33, ENTITY_ASSET_ASSISTANT_CARPENTER, 1
+    CMD_SET_ENTITY_ANIMATIONS 33, 0, 8, 16, 24, 32, 40
+    CMD_SET_CAMERA_FLAGS 0
+    CMD_SET_ASSET_ROTATION NORTHEAST
+    CMD_UPDATE_RGBA 254, 254, 254, 254, 0
+    CMD_SET_COORDINATES -416, 0, 144
+    CMD_WAIT_RGBA_FINISHED
+    CMD_SET_ENTITY_PHYSICS_FLAGS 1
+
+; 0x1000F8
+.assistant_carpenter_1_idle:
+    CMD_BRANCH_ON_SPECIAL_BIT 0, 0x802F4000, .assistant_carpenter_1_leave
+    CMD_SET_WAIT_FRAMES 1
+    CMD_EXECUTE_SUBROUTINE .assistant_carpenter_1_idle
+
+; 0x10010C
+.assistant_carpenter_1_leave:
+    CMD_ENTITY_MOVE_AND_ANIMATE 80, NORTHWEST, 2
+    CMD_SET_SPECIAL_BIT 0, gCutsceneCompletionFlags
+    CMD_DEACTIVATE_SELF
+
+; 0x100118
+.executor_assistant_carpenter_2:
+    CMD_SETUP_ENTITY 34, ENTITY_ASSET_ASSISTANT_CARPENTER, 1
+    CMD_SET_ENTITY_ANIMATIONS 34, 0, 8, 16, 24, 32, 40
+    CMD_SET_CAMERA_FLAGS 0
+    CMD_SET_ASSET_ROTATION NORTHEAST
+    CMD_UPDATE_RGBA 254, 254, 254, 254, 0
+    CMD_SET_COORDINATES -352, 0, 144
+    CMD_WAIT_RGBA_FINISHED
+    CMD_SET_ENTITY_PHYSICS_FLAGS 1
+
+; 0x100150
+.assistant_carpenter_2_idle:
+    CMD_BRANCH_ON_SPECIAL_BIT 0, 0x802F4000, .assistant_carpenter_2_leave
+    CMD_SET_WAIT_FRAMES 1
+    CMD_EXECUTE_SUBROUTINE .assistant_carpenter_2_idle
+
+; 0x100164
+.assistant_carpenter_2_leave:
+    CMD_ENTITY_MOVE_AND_ANIMATE 112, NORTHWEST, 2
+    CMD_SET_SPECIAL_BIT 0, gCutsceneCompletionFlags
+    CMD_DEACTIVATE_SELF

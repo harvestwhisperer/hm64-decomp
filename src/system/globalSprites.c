@@ -1015,6 +1015,7 @@ bool setSpritePaletteIndex(u16 index, u16 paletteIndex) {
 
 //INCLUDE_ASM("asm/nonmatchings/system/globalSprites", func_8002CBF8);
 
+// seems like check fade out completed
 bool func_8002CBF8(u16 index) {
 
     bool result;
@@ -1240,6 +1241,7 @@ void setBitmapFromSpriteObject(u16 spriteIndex, AnimationFrameMetadata* animatio
     
     length = 0;
     
+    // virtual address; destination of DMA
     texturePtr = globalSprites[spriteIndex].texturePtr[gGraphicsBufferIndex];
 
     if (objectCount) {

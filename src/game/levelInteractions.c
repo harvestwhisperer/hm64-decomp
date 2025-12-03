@@ -30,8 +30,8 @@
 // bss
 static LevelInteractionsInfo levelInteractionsInfo;
 
-// non-contiguous bss
 u8 D_80189826; 
+// checked by cutscenes
 u8 D_801C3E2C;
 
 // forward declarations
@@ -293,9 +293,12 @@ bool handleLevelInteraction(u16 mapIndex) {
 
     levelInteractionIndex = getLevelInteractionIndexFromEntityPosition(ENTITY_PLAYER, 0.0f, 32.0f);
 
+    // checked by cutscene bytecode for triggering cutscene flows based on player position
     D_80189826 = levelInteractionIndex;
     
     if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
+        // checked by cutscene bytecode
+        // i.e., cutscene executor will idle until this value is set to a particular value 
         D_801C3E2C = D_80189826;
     } else {
         D_801C3E2C = 0xFF;
@@ -459,7 +462,7 @@ bool handleLevelInteraction(u16 mapIndex) {
     }
 
     if (levelInteractionsInfo.interactionSfxIndex != 0xFF) {
-        setAudio(levelInteractionsInfo.interactionSfxIndex);
+        playSfx(levelInteractionsInfo.interactionSfxIndex);
     }
 
     if (tempExit != gEntranceIndex) {
@@ -784,6 +787,7 @@ bool func_800ADCDC(u16 mapIndex, u8 levelInteractionIndex) {
 
         case 0x10:
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A) && gPlayer.heldItem == 0 && checkLifeEventBit(MAYOR_TOUR) && !checkDailyEventBit(0x15)) {
+                // show pink overlay message
                 func_8005B09C(0);
                 result = TRUE; 
             }
@@ -1427,7 +1431,7 @@ bool func_800AEE8C(u16 mapIndex, u8 levelInteractionIndex) {
         case 16:
 
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
-                if (gPlayer.heldItem == 0 && entities[PLAYER].coordinates.z >= -44.0f && entities[PLAYER].coordinates.z < -36.0f) {
+                if (gPlayer.heldItem == 0 && entities[ENTITY_PLAYER].coordinates.z >= -44.0f && entities[ENTITY_PLAYER].coordinates.z < -36.0f) {
                     setDailyEventBit(6);
                     setPlayerAction(0x11, 0);
                     levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN_SFX;
@@ -1440,7 +1444,7 @@ bool func_800AEE8C(u16 mapIndex, u8 levelInteractionIndex) {
         case 17:
 
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
-                if (gPlayer.heldItem == 0 && entities[PLAYER].coordinates.x >= 42.0f && entities[PLAYER].coordinates.x < 50.0f) {
+                if (gPlayer.heldItem == 0 && entities[ENTITY_PLAYER].coordinates.x >= 42.0f && entities[ENTITY_PLAYER].coordinates.x < 50.0f) {
                     setDailyEventBit(6);
                     setPlayerAction(0x10, 0);
                     gHappiness += adjustValue(gHappiness, 2, 0xFF);
@@ -2087,6 +2091,7 @@ bool func_800AFA7C(u16 mapIndex, u8 levelInteractionIndex) {
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) { 
                 
                 if (gPlayer.direction == NORTHEAST && gPlayer.heldItem == 0) {
+                    // show pink overlay message
                     func_8005B09C(2);
                     result = TRUE;
                 }
@@ -2100,6 +2105,7 @@ bool func_800AFA7C(u16 mapIndex, u8 levelInteractionIndex) {
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) { 
                 
                 if (gPlayer.heldItem == 0) {
+                    // show pink overlay message
                     func_8005B09C(3);
                     result = TRUE;
                 }
@@ -2412,6 +2418,7 @@ bool func_800B01EC(u16 arg0, u8 levelInteractionIndex) {
 
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {            
                 if (gPlayer.heldItem == 0) {
+                    // show pink overlay message
                     func_8005B09C(4);
                     result = TRUE;
                 }  
@@ -3220,6 +3227,7 @@ u8 func_800B106C(u16 mapIndex, u8 levelInteractionIndex) {
                 if (gPlayer.heldItem == 0) {
                     temp = 10;
 label3:
+                    // show pink overlay message
                     func_8005B09C(temp);
                     result = 1;
 label4:
@@ -3605,7 +3613,7 @@ u8 func_800B1808(u16 mapIndex, u8 levelInteractionIndex) {
                 if (!checkDailyEventBit(0x28)) {
 
                     if (gPlayer.heldItem == 0) {
-                        if (-48.0f <= entities[PLAYER].coordinates.x && entities[PLAYER].coordinates.x < -40.0f) {
+                        if (-48.0f <= entities[ENTITY_PLAYER].coordinates.x && entities[ENTITY_PLAYER].coordinates.x < -40.0f) {
                             setDailyEventBit(6);
                             setPlayerAction(0x1D, 0);
                             levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN_SFX;
@@ -4248,8 +4256,10 @@ bool func_800B256C(u16 mapIndex, u8 levelInteractionIndex) {
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) { 
                 if (gPlayer.heldItem == 0) {
                     if (checkDailyEventBit(0x41)) {
+                        // show pink overlay message
                         func_8005B09C(0xB);
                     } else {
+                        // show pink overlay message
                         func_8005B09C(0xC);
                     }
                     result = TRUE;
@@ -4454,6 +4464,7 @@ u8 handleRanchStoreLevelInteractions(u16 mapIndex, u8 collisionIndex) {
                          if (checkDailyEventBit(5)) {
                             showTextBox(0, 6, 0x165, 0, 0);
                         } else {
+                            // show pink overlay message
                             func_8005B09C(5);  
                         }
 

@@ -79,6 +79,7 @@ extern u8 acquireKeyItem(u8);
 extern u8 checkHaveKeyItem(u8);  
 extern u8 removeKeyItem(u8);    
 extern u8 checkHaveTool(u8); 
+extern u8 removeTool(u8 tool);
 
 extern u8 checkFatigueLevel(); 
 

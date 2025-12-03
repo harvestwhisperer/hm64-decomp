@@ -86,8 +86,8 @@ inline void func_80055F08(u16 cutsceneIndex, u16 entranceIndex, u8 arg2) {
 
     gHour = 12;
 
-    // set ptrs to rom addresses for sprites
-    func_800563D0(arg2);
+    
+    initializeEntityInstances(arg2);
 
     setEntrance(entranceIndex);
 
@@ -108,11 +108,13 @@ inline void func_80055F08(u16 cutsceneIndex, u16 entranceIndex, u8 arg2) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/transition", func_80056030);
 
+// arg0 = entering new location
+// called by map load callback, end of day callback, cutscene completion
 void func_80056030(u8 arg0) {
 
     u8 mapIndex;
 
-    D_801891D4 = 0;
+    gCutsceneCompletionFlags = 0;
 
     gCutsceneIndex = 0;
     
@@ -159,24 +161,30 @@ void func_80056030(u8 arg0) {
             // spirit festival
             case 0x546 ... 0x548:
             case NEW_YEAR_FESTIVAL:
-                func_800563D0(2);
+                initializeEntityInstances(2);
                 break;            
+
             default:
+
                 switch (gCutsceneIndex) {
+
                     case COW_FESTIVAL:
-                        func_800563D0(3);
+                        initializeEntityInstances(3);
                         break;
                     case HARVEST_FESTIVAL:
                     case SEA_FESTIVAL:
                     default:
-                        func_800563D0(1);
+                        initializeEntityInstances(1);
                         break;
+
                 }
+
                 break;
+
         }
         
     } else {
-        func_800563D0(0);
+        initializeEntityInstances(0);
     }
 
    if (checkDailyEventBit(0x54)) {
@@ -191,8 +199,9 @@ void func_80056030(u8 arg0) {
 
         // FIXME:
         if (!(gCutsceneFlagsHack[1] & 1) && func_8009B5E0()) {
-            setAudio(0x3F);
+            playSfx(0x3F);
         }
+
     }
     
     toggleDailyEventBit(0x53);
@@ -204,19 +213,25 @@ void func_80056030(u8 arg0) {
     func_800D5290();
 
     if (arg0 != 2) {
+        
         // FIXME: this should be just gCutsceneFlags, but need array/struct loading here, which breaks the match when used in other functions that reference gCutsceneFlags
-        if (!(gCutsceneFlagsHack[1] & 6)) {
+        if (!(gCutsceneFlagsHack[1] & (2 | 4))) {
+            
             if (!checkDailyEventBit(0x4D)) {
                 func_80088D54();
             }
-            if (!(gCutsceneFlagsHack[1] & 6)) {
+
+            if (!(gCutsceneFlagsHack[1] & (2 | 4))) {
                 func_8005AAE4();
-                func_800758B8();
+                // set NPC entity indices
+                setupActiveNPCs();
             }
         }
+
         if (!(gCutsceneFlagsHack[1] & 4)) {
             func_800876D0();
         }
+
     }
     
     handlePlayerAnimation();
@@ -236,16 +251,16 @@ void func_80056030(u8 arg0) {
 }
 
 
-//INCLUDE_ASM("asm/nonmatchings/game/transition", func_800563D0);
+//INCLUDE_ASM("asm/nonmatchings/game/transition", initializeEntityInstances);
 
-void func_800563D0(u8 arg0) {
+void initializeEntityInstances(u8 arg0) {
 
     switch (arg0) {       
         
         // farm or barn, how to play cutscene
         case 0:
             
-            initializeEntity(0, 0, 0x31, (void*)0x80240B00, (void*)0x80243B00, (void*)0x80246B00, (void*)0x8024AB00, (void*)0x80252300, (void*)0x80252b00);            
+            initializeEntity(ENTITY_PLAYER, 0, 0x31, (void*)0x80240B00, (void*)0x80243B00, (void*)0x80246B00, (void*)0x8024AB00, (void*)0x80252300, (void*)0x80252b00);            
             initializeEntity(1, 1, 0x32, (void*)0x8026F000, (void*)0x8026F908, (void*)0x80270210, (void*)0x80270410, (void*)0x80272000, (void*)0x80272200);
             initializeEntity(2, 2, 0x33, (void*)0x80272800, (void*)0x80272C80, (void*)0x80275E00, (void*)0x80275F00, (void*)0x80276700, (void*)0x80276800);
             initializeEntity(3, 3, 0x34, (void*)0x80273100, (void*)0x80273580, (void*)0x80275E00, (void*)0x80275F00, (void*)0x80276700, (void*)0x80276800);
@@ -267,7 +282,6 @@ void func_800563D0(u8 arg0) {
             initializeEntity(0x13, 0x13, 0x44, (void*)0x80281710, (void*)0x80282198, (void*)0x802779C0, (void*)0x80277AC0, (void*)0x8027A6C0, (void*)0x8027A8C0);
             initializeEntity(0x14, 0x14, 0x45, (void*)0x80282C20, (void*)0x802836A8, (void*)0x80270210, (void*)0x80270410, (void*)0x80272000, (void*)0x80272200);
             
-            // items and tools
             initializeEntity(0x27, 0x15, 0x46, (void*)0x8028B930, (void*)0x8028C730, (void*)0x8028DD50, (void*)0x80290550, (void*)0x80293A50, (void*)0x80293C50);
             initializeEntity(0x28, 0x16, 0x47, (void*)0x80294250, (void*)0x80295050, (void*)0x8028DD50, (void*)0x80290550, (void*)0x80293A50, (void*)0x80293C50);
             initializeEntity(0x29, 0x17, 0x48, (void*)0x80295E50, (void*)0x80296C50, (void*)0x8028DD50, (void*)0x80290550, (void*)0x80293A50, (void*)0x80293C50);
@@ -302,10 +316,10 @@ void func_800563D0(u8 arg0) {
             
             break;
         
-        // default, sea festival, demo cutscenes
+        // default, opening, demo cutscenes
         case 1:
             
-            initializeEntity(0, 0, 0x31, (void*)0x80240B00, (void*)0x80243B00, (void*)0x80246B00, (void*)0x8024AB00, (void*)0x80252300, (void*)0x80252B00);
+            initializeEntity(ENTITY_PLAYER, 0, 0x31, (void*)0x80240B00, (void*)0x80243B00, (void*)0x80246B00, (void*)0x8024AB00, (void*)0x80252300, (void*)0x80252B00);
             initializeEntity(1, 1, 0x32, (void*)0x8026F000, (void*)0x8026F908, (void*)0x80270210, (void*)0x80270410, (void*)0x80272000, (void*)0x80272200);
             initializeEntity(2, 2, 0x33, (void*)0x80272800, (void*)0x80272C80, (void*)0x80275E00, (void*)0x80275F00, (void*)0x80276700, (void*)0x80276800);
             initializeEntity(3, 3, 0x34, (void*)0x80273100, (void*)0x80273580, (void*)0x80275E00, (void*)0x80275F00, (void*)0x80276700, (void*)0x80276800);
@@ -327,7 +341,6 @@ void func_800563D0(u8 arg0) {
             initializeEntity(0x13, 0x13, 0x44, (void*)0x80281710, (void*)0x80282198, (void*)0x802779C0, (void*)0x80277AC0, (void*)0x8027A6C0, (void*)0x8027A8C0);
             initializeEntity(0x14, 0x14, 0x45, (void*)0x80282C20, (void*)0x802836A8, (void*)0x80270210, (void*)0x80270410, (void*)0x80272000, (void*)0x80272200);
             
-            // items and tools
             initializeEntity(0x27, 0x15, 0x46, (void*)0x8028B930, (void*)0x8028C730, (void*)0x8028DD50, (void*)0x80290550, (void*)0x80293A50, (void*)0x80293C50);
             initializeEntity(0x28, 0x16, 0x47, (void*)0x80294250, (void*)0x80295050, (void*)0x8028DD50, (void*)0x80290550, (void*)0x80293A50, (void*)0x80293C50);
             initializeEntity(0x29, 0x17, 0x48, (void*)0x80295E50, (void*)0x80296C50, (void*)0x8028DD50, (void*)0x80290550, (void*)0x80293A50, (void*)0x80293C50);
@@ -362,7 +375,7 @@ void func_800563D0(u8 arg0) {
         // new year's festival
         case 2:
             
-            initializeEntity(0, 0, 0x31, (void*)0x80240B00, (void*)0x80243B00, (void*)0x80246B00, (void*)0x8024AB00, (void*)0x80252300, (void*)0x80252B00);
+            initializeEntity(ENTITY_PLAYER, 0, 0x31, (void*)0x80240B00, (void*)0x80243B00, (void*)0x80246B00, (void*)0x8024AB00, (void*)0x80252300, (void*)0x80252B00);
             
             initializeEntity(0x27, 0x15, 0x46, (void*)0x8028B930, (void*)0x8028C730, (void*)0x8028DD50, (void*)0x80290550, (void*)0x80293A50, (void*)0x80293C50);
             
@@ -386,6 +399,7 @@ void func_800563D0(u8 arg0) {
             initializeEntity(0x12, 0x12, 0x3E, (void*)0x802B1F50, (void*)0x802B2BD0, (void*)0x802B3850, (void*)0x802B42D0, (void*)0x802B50D0, (void*)0x802B51D0);
             initializeEntity(0x13, 0x13, 0x3F, (void*)0x802B5450, (void*)0x802B60D0, (void*)0x802B6D50, (void*)0x802B77D0, (void*)0x802B85D0, (void*)0x802B86D0);
             initializeEntity(0x14, 0x14, 0x40, (void*)0x802B8950, (void*)0x802B95D0, (void*)0x802BA250, (void*)0x802BACD0, (void*)0x802BBAD0, (void*)0x802BBBD0);
+            
             initializeEntity(0x16, 0x16, 0x41, (void*)0x802BBE50, (void*)0x802BC250, (void*)0x802C8650, (void*)0x802CAE50, (void*)0x802CE350, (void*)0x802CE550);
             initializeEntity(0x17, 0x17, 0x42, (void*)0x802BC650, (void*)0x802BCA50, (void*)0x802C8650, (void*)0x802CAE50, (void*)0x802CE350, (void*)0x802CE550);
             initializeEntity(0x18, 0x18, 0x43, (void*)0x802BCE50, (void*)0x802BD250, (void*)0x802C8650, (void*)0x802CAE50, (void*)0x802CE350, (void*)0x802CE550);
@@ -420,7 +434,7 @@ void func_800563D0(u8 arg0) {
         // cow festival
         case 3:
             
-            initializeEntity(0, 0, 0x31, (void*)0x80240B00, (void*)0x80243B00, (void*)0x80246B00, (void*)0x8024AB00, (void*)0x80252300, (void*)0x80252B00);
+            initializeEntity(ENTITY_PLAYER, 0, 0x31, (void*)0x80240B00, (void*)0x80243B00, (void*)0x80246B00, (void*)0x8024AB00, (void*)0x80252300, (void*)0x80252B00);
             
             initializeEntity(6, 6, 0x32, (void*)0x80278D50, (void*)0x802799D0, (void*)0x8027A650, (void*)0x8027B0D0, (void*)0x8027BED0, (void*)0x8027BFD0);
             initializeEntity(7, 7, 0x33, (void*)0x8027C250, (void*)0x8027CED0, (void*)0x8027DB50, (void*)0x8027E5D0, (void*)0x8027F3D0, (void*)0x8027F4D0);
@@ -484,6 +498,7 @@ void inline func_80059334(void) {
 // overlay screen/naming screen transition
 void func_80059368(void) {
 
+    // load entities and entity global sprites
     func_8002FB7C();
     func_80046CF4();
     setEntityMapSpaceIndependent(ENTITY_PLAYER, TRUE);

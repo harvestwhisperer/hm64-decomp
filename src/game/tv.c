@@ -32,7 +32,7 @@ TVContext tvContext;
         tvContext.channelIndex = channel;                        \
         func_800B3A60();                       \
         func_800D8540();    \
-        setAudio(TV_OFF_SFX); \
+        playSfx(TV_OFF_SFX); \
         set = TRUE; \
     } while(0)
 
@@ -42,7 +42,7 @@ TVContext tvContext;
         deactivateMapObject(MAIN_MAP_INDEX, 9); \
         func_800B2CE0(); \
         setMainLoopCallbackFunctionIndex(MAIN_GAME); \
-        setAudio(TV_OFF_SFX); \
+        playSfx(TV_OFF_SFX); \
     } while(0)
 
 // alternate static inline version
@@ -50,7 +50,7 @@ static inline bool changeChannel(u8 channelIndex) {
     tvContext.channelIndex = channelIndex;
     func_800B3A60();
     func_800D8540();
-    setAudio(TV_OFF_SFX);
+    playSfx(TV_OFF_SFX);
     return TRUE;
 }
 
@@ -718,7 +718,7 @@ void setTVPictureIndex(void) {
 //                     deactivateMapObject(MAIN_MAP_INDEX, 9);
 //                     func_800B2CE0();
 //                     setMainLoopCallbackFunctionIndex(MAIN_GAME);
-//                     setAudio(TV_OFF_SFX);
+//                     playSfx(TV_OFF_SFX);
 //                 }
 //             }
 

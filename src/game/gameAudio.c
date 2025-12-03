@@ -6,11 +6,11 @@
 
 // bss or system/audio.c
 extern Sfx gSfx[4];
-extern SongInfo gSongs[4];
+extern SequenceInfo gAudioSequences[4];
 
 // data
 extern WaveTableInfo waveTableAddresses[1];
-extern Addresses songRomAddresses[0x40];
+extern Addresses sequenceRomAddresses[0x40];
 extern Addresses sfxRomAddresses[0x80];
 extern s32 volumesTable[];
 // 0x60 set elements, but takes up 0x180 bytes in rodata
@@ -20,49 +20,49 @@ extern u8 audioTypeTable[0x60];
 //INCLUDE_ASM("asm/nonmatchings/game/gameAudio", initializeWaveTable);
 
 void initializeWaveTable(u16 waveTableIndex) {
-    setSongBank(waveTableAddresses[waveTableIndex].pbk_addr, waveTableAddresses[waveTableIndex].pbk_end, waveTableAddresses[waveTableIndex].wbk_addr);
+    setAudioSequenceBank(waveTableAddresses[waveTableIndex].pbk_addr, waveTableAddresses[waveTableIndex].pbk_end, waveTableAddresses[waveTableIndex].wbk_addr);
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/gameAudio", setCurrentSong);
+//INCLUDE_ASM("asm/nonmatchings/game/gameAudio", setCurrentAudioSequence);
 
-void setCurrentSong(u16 songIndex) {
+void setCurrentAudioSequence(u16 sequenceIndex) {
 
-    if (songIndex < TOTAL_SONGS) {
-        setSong(0, (u8*)songRomAddresses[songIndex].romAddrStart, (u8*)songRomAddresses[songIndex].romAddrEnd);
+    if (sequenceIndex < TOTAL_SEQUENCES) {
+        setAudioSequence(0, (u8*)sequenceRomAddresses[sequenceIndex].romAddrStart, (u8*)sequenceRomAddresses[sequenceIndex].romAddrEnd);
     }
     
-    setSongVolumes(0, 0, 0);
+    setAudioSequenceVolumes(0, 0, 0);
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/gameAudio", stopSongWithDefaultFadeOut);
+//INCLUDE_ASM("asm/nonmatchings/game/gameAudio", stopAudioSequenceWithDefaultFadeOut);
 
-void stopSongWithDefaultFadeOut(u16 songIndex) {
-    if (songIndex < TOTAL_SONGS) {
-        stopSongWithFadeOut(0, 32);
+void stopAudioSequenceWithDefaultFadeOut(u16 sequenceIndex) {
+    if (sequenceIndex < TOTAL_SEQUENCES) {
+        stopAudioSequenceWithFadeOut(0, 32);
     }
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/gameAudio", stopCurrentSong);
+//INCLUDE_ASM("asm/nonmatchings/game/gameAudio", stopCurrentAudioSequence);
 
-void stopCurrentSong(u16 songIndex) {
-    if (songIndex  < TOTAL_SONGS) {
-        stopSong(0);
+void stopCurrentAudioSequence(u16 sequenceIndex) {
+    if (sequenceIndex  < TOTAL_SEQUENCES) {
+        stopAudioSequence(0);
     }
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/gameAudio", checkDefaultSongChannelOpen);
+//INCLUDE_ASM("asm/nonmatchings/game/gameAudio", checkDefaultSequenceChannelOpen);
 
-// check if first song is open/not set
-bool checkDefaultSongChannelOpen(u16 songIndex) {
+// check if first sequence slot is open/not set
+bool checkDefaultSequenceChannelOpen(u16 sequenceIndex) {
     
     u8 result = FALSE;
     
-    if (songIndex < TOTAL_SONGS) {
-        result = gSongs[0].flags == 0;
+    if (sequenceIndex < TOTAL_SEQUENCES) {
+        result = gAudioSequences[0].flags == 0;
     }
 
-    if (songIndex == 0xFF) {
+    if (sequenceIndex == 0xFF) {
         result = TRUE;
     }
     
@@ -70,26 +70,26 @@ bool checkDefaultSongChannelOpen(u16 songIndex) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/gameAudio", setSongVolume);
+//INCLUDE_ASM("asm/nonmatchings/game/gameAudio", setAudioSequenceVolume);
 
-void setSongVolume(u16 songIndex, u32 targetVolume) {
-    if (songIndex < TOTAL_SONGS) {
-        setSongVolumes(0, targetVolume, 32);
+void setAudioSequenceVolume(u16 sequenceIndex, u32 targetVolume) {
+    if (sequenceIndex < TOTAL_SEQUENCES) {
+        setAudioSequenceVolumes(0, targetVolume, 32);
     }
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/gameAudio", func_800ACC1C);
 
-void func_800ACC1C(u16 songIndex) {
-    if (songIndex < TOTAL_SONGS) {
-        setSongVolumes(0, 0, 32);
+void func_800ACC1C(u16 sequenceIndex) {
+    if (sequenceIndex < TOTAL_SEQUENCES) {
+        setAudioSequenceVolumes(0, 0, 32);
     }
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/gameAudio", setAudio);
+//INCLUDE_ASM("asm/nonmatchings/game/gameAudio", setSfx);
 
 // only used for sfx
-void setAudio(u16 index) {
+void playSfx(u16 index) {
     
   if (index < TOTAL_SFX) {
       
@@ -100,8 +100,8 @@ void setAudio(u16 index) {
 
     } else {
 
-        setSong(audioTypeTable[index], (u8*)sfxRomAddresses[index].romAddrStart, (u8*)sfxRomAddresses[index].romAddrEnd);
-        setSongVolumes(audioTypeTable[index], volumesTable[index], volumesTable[index]);
+        setAudioSequence(audioTypeTable[index], (u8*)sfxRomAddresses[index].romAddrStart, (u8*)sfxRomAddresses[index].romAddrEnd);
+        setAudioSequenceVolumes(audioTypeTable[index], volumesTable[index], volumesTable[index]);
     
     }
   }
