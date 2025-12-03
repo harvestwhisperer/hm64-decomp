@@ -34,7 +34,7 @@ class DialogueOpcode(IntEnum):
     JUMP_TO_DIALOGUE = 8
     UNUSED = 9
     SHOW_SUBDIALOGUE = 10
-    OPCODE_11 = 11
+    HANDLE_MENU_SELECTION_BRANCH = 11
     END_DIALOGUE = 12
 
 @dataclass
@@ -249,7 +249,7 @@ def parse_bytecode_stream(data: BinaryIO) -> List[DialogueInstruction]:
                 break
 
             var_index = var_data[0]
-            adjustment = struct.unpack('<H', var_data[1:3])[0]
+            adjustment = struct.unpack('<h', var_data[1:3])[0]  # signed 16-bit
             args = [var_index, adjustment]
             raw_bytes += var_data
             offset += 3
@@ -334,7 +334,7 @@ def parse_bytecode_stream(data: BinaryIO) -> List[DialogueInstruction]:
             raw_bytes += text_data
             offset += 3
             
-        elif opcode_enum == DialogueOpcode.OPCODE_11:
+        elif opcode_enum == DialogueOpcode.HANDLE_MENU_SELECTION_BRANCH:
 
             opcode11_data = data.read(3)
             
@@ -374,8 +374,6 @@ def generate_description(opcode: DialogueOpcode, args: List[int]) -> str:
         return f"Show text {args[0]}"
     elif opcode == DialogueOpcode.DIALOGUE_VARIABLE_BRANCH:
         
-        # TODO: map dialogue variable names to numbers before printing 
-
         # special value set on the text index field when only branching to another dialogue segment 
         # (most branching goes to another bytecode segment rather than a specific text)
         if args[3] == 65535:
@@ -415,7 +413,7 @@ def generate_description(opcode: DialogueOpcode, args: List[int]) -> str:
         return f"Branch to dialogue {args[0]}"
     elif opcode == DialogueOpcode.SHOW_SUBDIALOGUE:
         return f"Show sub-dialogue box with text {args[0]}"
-    elif opcode == DialogueOpcode.OPCODE_11:
+    elif opcode == DialogueOpcode.HANDLE_MENU_SELECTION_BRANCH:
         return f"Set unk_18={args[0]}, branching_dialogue={args[1]}"
     elif opcode == DialogueOpcode.END_DIALOGUE:
         return "End dialogue"
@@ -468,21 +466,140 @@ def generate_disassembly(segments_data):
 
     return "\n".join(lines)
 
+def json_to_dsl(json_data: dict) -> str:
+    """Convert parsed JSON dialogue data to DSL format for editing"""
+    lines = []
+    
+    # Header comment
+    if 'metadata' in json_data:
+        meta = json_data['metadata']
+        lines.append(f"; Dialogue Bank")
+        lines.append(f"; Index Start: {meta.get('index_start', 'unknown')}")
+        lines.append(f"; Bytecode Start: {meta.get('bytecode_start', 'unknown')}")
+        lines.append(f"; Segments: {meta.get('num_dialogue_segments', 'unknown')}")
+        lines.append("")
+    
+    for segment in json_data.get('segments', []):
+        seg_idx = segment['index']
+        rom_addr = segment.get('rom_address', '')
+        instructions = segment.get('instructions', [])
+        
+        # Detect padding segments: all SHOW_TEXT 0 with no END_DIALOGUE
+        # These are just null bytes being parsed as opcodes
+        is_padding = (
+            len(instructions) > 0 and
+            all(
+                instr['opcode_name'] == 'SHOW_TEXT' and 
+                instr.get('args', [0])[0] == 0 
+                for instr in instructions
+            )
+        )
+        
+        lines.append(f"; {rom_addr}")
+        
+        if is_padding:
+            lines.append(f".segment_{seg_idx}:  ; alignment padding")
+        else:
+            lines.append(f".segment_{seg_idx}:")
+            
+            for instr in instructions:
+
+                opcode_name = instr['opcode_name']
+                args = instr.get('args', [])
+                
+                # Format arguments based on opcode
+                if opcode_name == 'SHOW_TEXT':
+                    args_str = str(args[0]) if args else ''
+                    
+                elif opcode_name == 'DIALOGUE_VARIABLE_BRANCH':
+                    # var_index, min, max, text_index (true), segment_index (false)
+                    true_text = str(args[3]) if args[3] != 65535 else "NO_TEXT"
+                    false_seg = f".segment_{args[4]}" if args[4] != 65535 else "NO_BRANCH"
+                    args_str = f"{args[0]}, {args[1]}, {args[2]}, {true_text}, {false_seg}"
+                    
+                elif opcode_name == 'UPDATE_DIALOGUE_VARIABLE':
+                    args_str = f"{args[0]}, {args[1]}"
+                    
+                elif opcode_name == 'SET_DIALOGUE_VARIABLE':
+                    args_str = f"{args[0]}, {args[1]}"
+                    
+                elif opcode_name == 'SPECIAL_DIALOGUE_BIT_BRANCH':
+                    # bit_index, text_index (true), segment_index (false)
+                    true_text = str(args[1]) if args[1] != 65535 else "NO_TEXT"
+                    false_seg = f".segment_{args[2]}" if args[2] != 65535 else "NO_BRANCH"
+                    args_str = f"{args[0]}, {true_text}, {false_seg}"
+                    
+                elif opcode_name in ['SET_SPECIAL_DIALOGUE_BIT', 'TOGGLE_SPECIAL_DIALOGUE_BIT']:
+                    args_str = str(args[0]) if args else ''
+                    
+                elif opcode_name == 'RANDOM_BRANCH':
+                    # min, max, text_index (true), segment_index (false)
+                    true_text = str(args[2]) if args[2] != 65535 else "NO_TEXT"
+                    false_seg = f".segment_{args[3]}" if args[3] != 65535 else "NO_BRANCH"
+                    args_str = f"{args[0]}, {args[1]}, {true_text}, {false_seg}"
+                    
+                elif opcode_name == 'JUMP_TO_DIALOGUE':
+                    args_str = f".segment_{args[0]}" if args else ''
+                    
+                elif opcode_name == 'SHOW_SUBDIALOGUE':
+                    args_str = f"{args[0]}, {args[1]}" if len(args) >= 2 else str(args[0]) if args else ''
+                    
+                elif opcode_name == 'HANDLE_MENU_SELECTION_BRANCH':
+                    target_seg = f".segment_{args[1]}" if len(args) > 1 and args[1] != 65535 else "NO_BRANCH"
+                    args_str = f"{args[0]}, {target_seg}"
+                    
+                elif opcode_name in ['END_DIALOGUE', 'UNUSED']:
+                    args_str = ''
+                    
+                else:
+                    args_str = ', '.join(str(a) for a in args)
+                
+                # Emit instruction with proper indentation
+                if args_str:
+                    lines.append(f"    {opcode_name} {args_str}")
+                else:
+                    lines.append(f"    {opcode_name}")
+        
+        lines.append("")
+    
+    return '\n'.join(lines)
+
 def main():
         
     if len(sys.argv) < 2:
         print("Usage:")
         print("  python hm64_dialogue_utilities.py decode_all")
+        print("  python hm64_dialogue_utilities.py to_dsl <json_file> [output_file]")
         sys.exit(1)
 
     cmd = sys.argv[1]
 
     if cmd == "decode_all":
         parse_all()
+    
+    elif cmd == "to_dsl":
+        if len(sys.argv) < 3:
+            print("Usage: python hm64_dialogue_utilities.py to_dsl <json_file> [output_file]")
+            sys.exit(1)
+        
+        json_file = Path(sys.argv[2])
+        output_file = Path(sys.argv[3]) if len(sys.argv) > 3 else None
+        
+        with open(json_file) as f:
+            data = json.load(f)
+        
+        dsl_output = json_to_dsl(data)
+        
+        if output_file:
+            with open(output_file, 'w') as f:
+                f.write(dsl_output)
+            print(f"Wrote DSL to {output_file}")
+        else:
+            print(dsl_output)
         
     else:
         print(f"Unknown command: {cmd}")
-        print("Available commands: decode_all")
+        print("Available commands: decode_all, to_dsl")
 
 if __name__ == '__main__':
     main()

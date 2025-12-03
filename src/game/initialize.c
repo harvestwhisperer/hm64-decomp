@@ -288,9 +288,9 @@ void initializeGameVariables(void) {
     u8 i, j, k;
 
     gBaseMapIndex = 0xFF;
-    gCurrentSongIndex = 0xFF;
+    gCurrentAudioSequenceIndex = 0xFF;
     
-    gSongVolume = 128;
+    gAudioSequenceVolume = 128;
     
     previousMapIndex = 0xFF;
     gEntranceIndex = 0xFF;
@@ -724,413 +724,413 @@ void func_8004F768(void) {
     initializeShadowSprite(1, &_shadowsTextureSegmentRomStart, &_shadowsTextureSegmentRomEnd, &_shadowsIndexSegmentRomStart, &_shadowsIndexSegmentRomEnd, (void*)SHADOW_TEXTURE_VADDR_START, (void*)SHADOW_TEXTURE_VADDR_END, (void*)SHADOW_ASSETS_INDEX_VADDR_START, (void*)SHADOW_ASSETS_INDEX_VADDR_END, 1, 0);
     initializeShadowSprite(2, &_shadowsTextureSegmentRomStart, &_shadowsTextureSegmentRomEnd, &_shadowsIndexSegmentRomStart, &_shadowsIndexSegmentRomEnd, (void*)SHADOW_TEXTURE_VADDR_START, (void*)SHADOW_TEXTURE_VADDR_END, (void*)SHADOW_ASSETS_INDEX_VADDR_START, (void*)SHADOW_ASSETS_INDEX_VADDR_END, 2, 0);
  
-    initializeEntityAsset(ENTITY_PLAYER, &_playerTextureSegmentRomStart, &_playerTextureSegmentRomEnd, &_playerAssetsIndexSegmentRomStart, &_playerAssetsIndexSegmentRomEnd, &_playerSpritesheetIndexSegmentRomStart, &_playerSpritesheetIndexSegmentRomEnd, 1, 0, &playerAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_PLAYER, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_PLAYER, 0xC, 0xC);
-    
-    initializeEntityAsset(ENTITY_MARIA, &_mariaTextureSegmentRomStart, &_mariaTextureSegmentRomEnd, &_mariaAssetsIndexSegmentRomStart, &_mariaAssetsIndexSegmentRomEnd, &_mariaSpritesheetIndexSegmentRomStart, &_mariaSpritesheetIndexSegmentRomEnd, 1, 0, &mariaAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_MARIA, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_MARIA, 0xC, 0xC);
-    
-    initializeEntityAsset(ENTITY_POPURI, &_popuriTextureSegmentRomStart, &_popuriTextureSegmentRomEnd, &_popuriAssetsIndexSegmentRomStart, &_popuriAssetsIndexSegmentRomEnd, &_popuriSpritesheetIndexSegmentRomStart, &_popuriSpritesheetIndexSegmentRomEnd, 1, 0, &popuriAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_POPURI, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_POPURI, 0xC, 0xC);
-    
-    initializeEntityAsset(ENTITY_ELLI, &_elliTextureSegmentRomStart, &_elliTextureSegmentRomEnd, &_elliAssetsIndexSegmentRomStart, &_elliAssetsIndexSegmentRomEnd, &_elliSpritesheetIndexSegmentRomStart, &_elliSpritesheetIndexSegmentRomEnd, 1, 0, &elliAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_ELLI, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_ELLI, 0xC, 0xC);
-    
-    initializeEntityAsset(ENTITY_ANN, &_annTextureSegmentRomStart, &_annTextureSegmentRomEnd, &_annAssetsIndexSegmentRomStart, &_annAssetsIndexSegmentRomEnd, &_annSpritesheetIndexSegmentRomStart, &_annSpritesheetIndexSegmentRomEnd, 1, 0, &annAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_ANN, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_ANN, 0xC, 0xC); 
-    
-    initializeEntityAsset(ENTITY_KAREN, &_karenTextureSegmentRomStart, &_karenTextureSegmentRomEnd, &_karenAssetsIndexSegmentRomStart, &_karenAssetsIndexSegmentRomEnd, &_karenSpritesheetIndexSegmentRomStart, &_karenSpritesheetIndexSegmentRomEnd, 1, 0, &karenAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_KAREN, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_KAREN, 0xC, 0xC);
-    
-    initializeEntityAsset(ENTITY_BABY, &_babyTextureSegmentRomStart, &_babyTextureSegmentRomEnd, &_babyAssetsIndexSegmentRomStart, &_babyAssetsIndexSegmentRomEnd, &_babySpritesheetIndexSegmentRomStart, &_babySpritesheetIndexSegmentRomEnd, 1, 0, &babyAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_BABY, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_BABY, 0xC, 0xC);
-    
-    initializeEntityAsset(ENTITY_HARRIS, &_harrisTextureSegmentRomStart, &_harrisTextureSegmentRomEnd, &_harrisAssetsIndexSegmentRomStart, &_harrisAssetsIndexSegmentRomEnd, &_harrisSpritesheetIndexSegmentRomStart, &_harrisSpritesheetIndexSegmentRomEnd, 1, 0, &harrisAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_HARRIS, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_HARRIS, 0xC, 0xC);
-    
-    initializeEntityAsset(ENTITY_GRAY, &_grayTextureSegmentRomStart, &_grayTextureSegmentRomEnd, &_grayAssetsIndexSegmentRomStart, &_grayAssetsIndexSegmentRomEnd, &_graySpritesheetIndexSegmentRomStart, &_graySpritesheetIndexSegmentRomEnd, 1, 0, &grayAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_GRAY, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_GRAY, 0xC, 0xC);
-    
-    initializeEntityAsset(ENTITY_JEFF, &_jeffTextureSegmentRomStart, &_jeffTextureSegmentRomEnd, &_jeffAssetsIndexSegmentRomStart, &_jeffAssetsIndexSegmentRomEnd, &_jeffSpritesheetIndexSegmentRomStart, &_jeffSpritesheetIndexSegmentRomEnd, 1, 0, &jeffAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_JEFF, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_JEFF, 0xC, 0xC);
-    
-    initializeEntityAsset(ENTITY_CLIFF, &_cliffTextureSegmentRomStart, &_cliffTextureSegmentRomEnd, &_cliffAssetsIndexSegmentRomStart, &_cliffAssetsIndexSegmentRomEnd, &_cliffSpritesheetIndexSegmentRomStart, &_cliffSpritesheetIndexSegmentRomEnd, 1, 0, &cliffAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_CLIFF, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_CLIFF, 0xC, 0xC);
-    
-    initializeEntityAsset(ENTITY_KAI, &_kaiTextureSegmentRomStart, &_kaiTextureSegmentRomEnd, &_kaiAssetsIndexSegmentRomStart, &_kaiAssetsIndexSegmentRomEnd, &_kaiSpritesheetIndexSegmentRomStart, &_kaiSpritesheetIndexSegmentRomEnd, 1, 0, &kaiAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_KAI, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_KAI, 0xC, 0xC);
-    
-    initializeEntityAsset(ENTITY_MAYOR, &_mayorTextureSegmentRomStart, &_mayorTextureSegmentRomEnd, &_mayorAssetsIndexSegmentRomStart, &_mayorAssetsIndexSegmentRomEnd, &_mayorSpritesheetIndexSegmentRomStart, &_mayorSpritesheetIndexSegmentRomEnd, 1, 0, &mayorAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_MAYOR, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_MAYOR, 0xC, 0xC);
-    
-    initializeEntityAsset(ENTITY_MAYOR_WIFE, &_mayorWifeTextureSegmentRomStart, &_mayorWifeTextureSegmentRomEnd, &_mayorWifeAssetsIndexSegmentRomStart, &_mayorWifeAssetsIndexSegmentRomEnd, &_mayorWifeSpritesheetIndexSegmentRomStart, &_mayorWifeSpritesheetIndexSegmentRomEnd, 1, 0, &mayorWifeAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_MAYOR_WIFE, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_MAYOR_WIFE, 0xC, 0xC);
-    
-    initializeEntityAsset(ENTITY_LILIA, &_liliaTextureSegmentRomStart, &_liliaTextureSegmentRomEnd, &_liliaAssetsIndexSegmentRomStart, &_liliaAssetsIndexSegmentRomEnd, &_liliaSpritesheetIndexSegmentRomStart, &_liliaSpritesheetIndexSegmentRomEnd, 1, 0, &liliaAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_LILIA, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_LILIA, 0xC, 0xC);
-    
-    initializeEntityAsset(ENTITY_BASIL, &_basilTextureSegmentRomStart, &_basilTextureSegmentRomEnd, &_basilAssetsIndexSegmentRomStart, &_basilAssetsIndexSegmentRomEnd, &_basilSpritesheetIndexSegmentRomStart, &_basilSpritesheetIndexSegmentRomEnd, 1, 0, &basilAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_BASIL, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_BASIL, 0xC, 0xC);
-    
-    initializeEntityAsset(ENTITY_ELLEN, &_ellenTextureSegmentRomStart, &_ellenTextureSegmentRomEnd, &_ellenAssetsIndexSegmentRomStart, &_ellenAssetsIndexSegmentRomEnd, &_ellenSpritesheetIndexSegmentRomStart, &_ellenSpritesheetIndexSegmentRomEnd, 1, 0, &ellenAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_ELLEN, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_ELLEN, 0xC, 0xC);
-    
-    initializeEntityAsset(ENTITY_DOUG, &_dougTextureSegmentRomStart, &_dougTextureSegmentRomEnd, &_dougAssetsIndexSegmentRomStart, &_dougAssetsIndexSegmentRomEnd, &_dougSpritesheetIndexSegmentRomStart, &_dougSpritesheetIndexSegmentRomEnd, 1, 0, &dougAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_DOUG, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_DOUG, 0xC, 0xC);
-    
-    initializeEntityAsset(ENTITY_GOTZ, &_gotzTextureSegmentRomStart, &_gotzTextureSegmentRomEnd, &_gotzAssetsIndexSegmentRomStart, &_gotzAssetsIndexSegmentRomEnd, &_gotzSpritesheetIndexSegmentRomStart, &_gotzSpritesheetIndexSegmentRomEnd, 1, 0, &gotzAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_GOTZ, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_GOTZ, 0xC, 0xC);
-    
-    initializeEntityAsset(ENTITY_SASHA, &_sashaTextureSegmentRomStart, &_sashaTextureSegmentRomEnd, &_sashaAssetsIndexSegmentRomStart, &_sashaAssetsIndexSegmentRomEnd, &_sashaSpritesheetIndexSegmentRomStart, &_sashaSpritesheetIndexSegmentRomEnd, 1, 0, &sashaAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_SASHA, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_SASHA, 0xC, 0xC);
-    
-    initializeEntityAsset(ENTITY_POTION_SHOP_DEALER, &_potionShopDealerTextureSegmentRomStart, &_potionShopDealerTextureSegmentRomEnd, &_potionShopDealerAssetsIndexSegmentRomStart, &_potionShopDealerAssetsIndexSegmentRomEnd, &_potionShopDealerSpritesheetIndexSegmentRomStart, &_potionShopDealerSpritesheetIndexSegmentRomEnd, 1, 0, &potionShopDealerAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_POTION_SHOP_DEALER, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_POTION_SHOP_DEALER, 0xC, 0xC);
-    
-    initializeEntityAsset(ENTITY_KENT, &_kentTextureSegmentRomStart, &_kentTextureSegmentRomEnd, &_kentAssetsIndexSegmentRomStart, &_kentAssetsIndexSegmentRomEnd, &_kentSpritesheetIndexSegmentRomStart, &_kentSpritesheetIndexSegmentRomEnd, 1, 0, &kentAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_KENT, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_KENT, 0xC, 0xC);
-    
-    initializeEntityAsset(ENTITY_STU, &_stuTextureSegmentRomStart, &_stuTextureSegmentRomEnd, &_stuAssetsIndexSegmentRomStart, &_stuAssetsIndexSegmentRomEnd, &_stuSpritesheetIndexSegmentRomStart, &_stuSpritesheetIndexSegmentRomEnd, 1, 0, &stuAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_STU, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_STU, 0xC, 0xC);
-    
-    initializeEntityAsset(ENTITY_MIDWIFE, &_midwifeTextureSegmentRomStart, &_midwifeTextureSegmentRomEnd, &_midwifeAssetsIndexSegmentRomStart, &_midwifeAssetsIndexSegmentRomEnd, &_midwifeSpritesheetIndexSegmentRomStart, &_midwifeSpritesheetIndexSegmentRomEnd, 1, 0, &midwifeAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_MIDWIFE, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_MIDWIFE, 0xC, 0xC);
-    
-    initializeEntityAsset(ENTITY_MAY, &_mayTextureSegmentRomStart, &_mayTextureSegmentRomEnd, &_mayAssetsIndexSegmentRomStart, &_mayAssetsIndexSegmentRomEnd, &_maySpritesheetIndexSegmentRomStart, &_maySpritesheetIndexSegmentRomEnd, 1, 0, &mayAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_MAY, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_MAY, 0xC, 0xC);
-    
-    initializeEntityAsset(ENTITY_RICK, &_rickTextureSegmentRomStart, &_rickTextureSegmentRomEnd, &_rickAssetsIndexSegmentRomStart, &_rickAssetsIndexSegmentRomEnd, &_rickSpritesheetIndexSegmentRomStart, &_rickSpritesheetIndexSegmentRomEnd, 1, 0, &rickAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_RICK, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_RICK, 0xC, 0xC);
-    
-    initializeEntityAsset(ENTITY_PASTOR, &_pastorTextureSegmentRomStart, &_pastorTextureSegmentRomEnd, &_pastorAssetsIndexSegmentRomStart, &_pastorAssetsIndexSegmentRomEnd, &_pastorSpritesheetIndexSegmentRomStart, &_pastorSpritesheetIndexSegmentRomEnd, 1, 0, &pastorAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_PASTOR, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_PASTOR, 0xC, 0xC);
-    
-    initializeEntityAsset(ENTITY_SHIPPER, &_shipperTextureSegmentRomStart, &_shipperTextureSegmentRomEnd, &_shipperAssetsIndexSegmentRomStart, &_shipperAssetsIndexSegmentRomEnd, &_shipperSpritesheetIndexSegmentRomStart, &_shipperSpritesheetIndexSegmentRomEnd, 1, 0, &shipperAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_SHIPPER, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_SHIPPER, 0xC, 0xC);
-    
-    initializeEntityAsset(ENTITY_SAIBARA, &_saibaraTextureSegmentRomStart, &_saibaraTextureSegmentRomEnd, &_saibaraAssetsIndexSegmentRomStart, &_saibaraAssetsIndexSegmentRomEnd, &_saibaraSpritesheetIndexSegmentRomStart, &_saibaraSpritesheetIndexSegmentRomEnd, 1, 0, &saibaraAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_SAIBARA, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_SAIBARA, 0xC, 0xC);
-    
-    initializeEntityAsset(ENTITY_DUKE, &_dukeTextureSegmentRomStart, &_dukeTextureSegmentRomEnd, &_dukeAssetsIndexSegmentRomStart, &_dukeAssetsIndexSegmentRomEnd, &_dukeSpritesheetIndexSegmentRomStart, &_dukeSpritesheetIndexSegmentRomEnd, 1, 0, &dukeAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_DUKE, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_DUKE, 0xC, 0xC);
-    
-    initializeEntityAsset(ENTITY_GREG, &_gregTextureSegmentRomStart, &_gregTextureSegmentRomEnd, &_gregAssetsIndexSegmentRomStart, &_gregAssetsIndexSegmentRomEnd, &_gregSpritesheetIndexSegmentRomStart, &_gregSpritesheetIndexSegmentRomEnd, 1, 0, &gregAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_GREG, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_GREG, 0xC, 0xC);
-    
-    initializeEntityAsset(ENTITY_ASSISTANT_CARPENTER, &_assistantCarpenterTextureSegmentRomStart, &_assistantCarpenterTextureSegmentRomEnd, &_assistantCarpenterAssetsIndexSegmentRomStart, &_assistantCarpenterAssetsIndexSegmentRomEnd, &_assistantCarpenterSpritesheetIndexSegmentRomStart, &_assistantCarpenterSpritesheetIndexSegmentRomEnd, 1, 0, &assistantCarpenterAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_ASSISTANT_CARPENTER, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_ASSISTANT_CARPENTER, 0xC, 0xC);
-    
-    initializeEntityAsset(ENTITY_MASTER_CARPENTER, &_masterCarpenterTextureSegmentRomStart, &_masterCarpenterTextureSegmentRomEnd, &_masterCarpenterAssetsIndexSegmentRomStart, &_masterCarpenterAssetsIndexSegmentRomEnd, &_masterCarpenterSpritesheetIndexSegmentRomStart, &_masterCarpenterSpritesheetIndexSegmentRomEnd, 1, 0, &masterCarpenterAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_MASTER_CARPENTER, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_MASTER_CARPENTER, 0xC, 0xC);
-    
-    initializeEntityAsset(ENTITY_HARVEST_SPRITE, &_harvestSpriteTextureSegmentRomStart, &_harvestSpriteTextureSegmentRomEnd, &_harvestSpriteAssetsIndexSegmentRomStart, &_harvestSpriteAssetsIndexSegmentRomEnd, &_harvestSpriteSpritesheetIndexSegmentRomStart, &_harvestSpriteSpritesheetIndexSegmentRomEnd, 1, 0, &harvestSpriteAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_HARVEST_SPRITE, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_HARVEST_SPRITE, 0xC, 0xC);
-    
-    initializeEntityAsset(ENTITY_BARLEY, &_barleyTextureSegmentRomStart, &_barleyTextureSegmentRomEnd, &_barleyAssetsIndexSegmentRomStart, &_barleyAssetsIndexSegmentRomEnd, &_barleySpritesheetIndexSegmentRomStart, &_barleySpritesheetIndexSegmentRomEnd, 1, 0, &barleyAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_BARLEY, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_BARLEY, 0xC, 0xC);
-    
-    initializeEntityAsset(ENTITY_SYDNEY, &_sydneyTextureSegmentRomStart, &_sydneyTextureSegmentRomEnd, &_sydneyAssetsIndexSegmentRomStart, &_sydneyAssetsIndexSegmentRomEnd, &_sydneySpritesheetIndexSegmentRomStart, &_sydneySpritesheetIndexSegmentRomEnd, 1, 0, &sydneyAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_SYDNEY, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_SYDNEY, 0xC, 0xC);
-    
-    initializeEntityAsset(ENTITY_ENTOMOLOGIST, &_entomologistTextureSegmentRomStart, &_entomologistTextureSegmentRomEnd, &_entomologistAssetsIndexSegmentRomStart, &_entomologistAssetsIndexSegmentRomEnd, &_entomologistSpritesheetIndexSegmentRomStart, &_entomologistSpritesheetIndexSegmentRomEnd, 1, 0, &entomologistAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_ENTOMOLOGIST, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_ENTOMOLOGIST, 0xC, 0xC);
-    
-    initializeEntityAsset(ENTITY_GOURMET_JUDGE, &_gourmetJudgeTextureSegmentRomStart, &_gourmetJudgeTextureSegmentRomEnd, &_gourmetJudgeAssetsIndexSegmentRomStart, &_gourmetJudgeAssetsIndexSegmentRomEnd, &_gourmetJudgeSpritesheetIndexSegmentRomStart, &_gourmetJudgeSpritesheetIndexSegmentRomEnd, 1, 0, &gourmetJudgeAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_GOURMET_JUDGE, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_GOURMET_JUDGE, 0xC, 0xC);
-    
-    initializeEntityAsset(ENTITY_PHOTOGRAPHER, &_photographerTextureSegmentRomStart, &_photographerTextureSegmentRomEnd, &_photographerAssetsIndexSegmentRomStart, &_photographerAssetsIndexSegmentRomEnd, &_photographerSpritesheetIndexSegmentRomStart, &_photographerSpritesheetIndexSegmentRomEnd, 1, 0, &photographerAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_PHOTOGRAPHER, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_PHOTOGRAPHER, 0xC, 0xC);
-    
-    initializeEntityAsset(ENTITY_SHADY_SALESMAN, &_shadySalesmanTextureSegmentRomStart, &_shadySalesmanTextureSegmentRomEnd, &_shadySalesmanAssetsIndexSegmentRomStart, &_shadySalesmanAssetsIndexSegmentRomEnd, &_shadySalesmanSpritesheetIndexSegmentRomStart, &_shadySalesmanSpritesheetIndexSegmentRomEnd, 1, 0, &shadySalesmanAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_SHADY_SALESMAN, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_SHADY_SALESMAN, 0xC, 0xC);
-    
-    initializeEntityAsset(ENTITY_MRS_MANA_SON, &_mrsManaSonTextureSegmentRomStart, &_mrsManaSonTextureSegmentRomEnd, &_mrsManaSonAssetsIndexSegmentRomStart, &_mrsManaSonAssetsIndexSegmentRomEnd, &_mrsManaSonSpritesheetIndexSegmentRomStart, &_mrsManaSonSpritesheetIndexSegmentRomEnd, 1, 0, &mrsManaSonAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_MRS_MANA_SON, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_MRS_MANA_SON, 0xC, 0xC);
-    
-    initializeEntityAsset(ENTITY_MRS_MANA, &_mrsManaTextureSegmentRomStart, &_mrsManaTextureSegmentRomEnd, &_mrsManaAssetsIndexSegmentRomStart, &_mrsManaAssetsIndexSegmentRomEnd, &_mrsManaSpritesheetIndexSegmentRomStart, &_mrsManaSpritesheetIndexSegmentRomEnd, 1, 0, &mrsManaAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_MRS_MANA, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_MRS_MANA, 0xC, 0xC);
-    
-    initializeEntityAsset(ENTITY_OLD_MAN, &_oldManTextureSegmentRomStart, &_oldManTextureSegmentRomEnd, &_oldManAssetsIndexSegmentRomStart, &_oldManAssetsIndexSegmentRomEnd, &_oldManSpritesheetIndexSegmentRomStart, &_oldManSpritesheetIndexSegmentRomEnd, 1, 0, &oldManAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_OLD_MAN, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_OLD_MAN, 0xC, 0xC);
-    
-    initializeEntityAsset(ENTITY_OLD_WOMAN, &_oldWomanTextureSegmentRomStart, &_oldWomanTextureSegmentRomEnd, &_oldWomanAssetsIndexSegmentRomStart, &_oldWomanAssetsIndexSegmentRomEnd, &_oldWomanSpritesheetIndexSegmentRomStart, &_oldWomanSpritesheetIndexSegmentRomEnd, 1, 0, &oldWomanAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_OLD_WOMAN, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_OLD_WOMAN, 0xC, 0xC);
-    
-    initializeEntityAsset(ENTITY_TOURIST_COUPLE_MAN, &_touristCoupleManTextureSegmentRomStart, &_touristCoupleManTextureSegmentRomEnd, &_touristCoupleManAssetsIndexSegmentRomStart, &_touristCoupleManAssetsIndexSegmentRomEnd, &_touristCoupleManSpritesheetIndexSegmentRomStart, &_touristCoupleManSpritesheetIndexSegmentRomEnd, 1, 0, &touristCoupleManAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_TOURIST_COUPLE_MAN, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_TOURIST_COUPLE_MAN, 0xC, 0xC);
-    
-    initializeEntityAsset(ENTITY_TOURIST_COUPLE_WOMAN, &_touristCoupleWomanTextureSegmentRomStart, &_touristCoupleWomanTextureSegmentRomEnd, &_touristCoupleWomanAssetsIndexSegmentRomStart, &_touristCoupleWomanAssetsIndexSegmentRomEnd, &_touristCoupleWomanSpritesheetIndexSegmentRomStart, &_touristCoupleWomanSpritesheetIndexSegmentRomEnd, 1, 0, &touristCoupleWomanAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_TOURIST_COUPLE_WOMAN, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_TOURIST_COUPLE_WOMAN, 0xC, 0xC);
-    
-    initializeEntityAsset(ENTITY_FESTIVAL_GIRL1, &_festivalGirl1TextureSegmentRomStart, &_festivalGirl1TextureSegmentRomEnd, &_festivalGirl1AssetsIndexSegmentRomStart, &_festivalGirl1AssetsIndexSegmentRomEnd, &_festivalGirl1SpritesheetIndexSegmentRomStart, &_festivalGirl1SpritesheetIndexSegmentRomEnd, 1, 0, &festivalGirl1AnimationScripts);
-    setEntityCollisionBuffers(ENTITY_FESTIVAL_GIRL1, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_FESTIVAL_GIRL1, 0xC, 0xC);
-    
-    initializeEntityAsset(ENTITY_FESTIVAL_GIRL2, &_festivalGirl2TextureSegmentRomStart, &_festivalGirl2TextureSegmentRomEnd, &_festivalGirl2AssetsIndexSegmentRomStart, &_festivalGirl2AssetsIndexSegmentRomEnd, &_festivalGirl2SpritesheetIndexSegmentRomStart, &_festivalGirl2SpritesheetIndexSegmentRomEnd, 1, 0, &festivalGirl2AnimationScripts);
-    setEntityCollisionBuffers(ENTITY_FESTIVAL_GIRL2, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_FESTIVAL_GIRL2, 0xC, 0xC);
-    
-    initializeEntityAsset(ENTITY_FESTIVAL_GIRL3, &_festivalGirl3TextureSegmentRomStart, &_festivalGirl3TextureSegmentRomEnd, &_festivalGirl3AssetsIndexSegmentRomStart, &_festivalGirl3AssetsIndexSegmentRomEnd, &_festivalGirl3SpritesheetIndexSegmentRomStart, &_festivalGirl3SpritesheetIndexSegmentRomEnd, 1, 0, &festivalGirl3AnimationScripts);
-    setEntityCollisionBuffers(ENTITY_FESTIVAL_GIRL3, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_FESTIVAL_GIRL3, 0xC, 0xC);
-    
-    initializeEntityAsset(ENTITY_HARVEST_GODDESS, &_harvestGoddessTextureSegmentRomStart, &_harvestGoddessTextureSegmentRomEnd, &_harvestGoddessAssetsIndexSegmentRomStart, &_harvestGoddessAssetsIndexSegmentRomEnd, &_harvestGoddessSpritesheetIndexSegmentRomStart, &_harvestGoddessSpritesheetIndexSegmentRomEnd, 1, 0, &harvestGoddessAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_HARVEST_GODDESS, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_HARVEST_GODDESS, 0xC, 0xC);
-    
-    initializeEntityAsset(ENTITY_SPIRIT_FESTIVAL_OCARINA_PERFORMER, &_spiritFestivalOcarinaPerformerTextureSegmentRomStart, &_spiritFestivalOcarinaPerformerTextureSegmentRomEnd, &_spiritFestivalOcarinaPerformerAssetsIndexSegmentRomStart, &_spiritFestivalOcarinaPerformerAssetsIndexSegmentRomEnd, &_spiritFestivalOcarinaPerformerSpritesheetIndexSegmentRomStart, &_spiritFestivalOcarinaPerformerSpritesheetIndexSegmentRomEnd, 1, 0, &spiritFestivalOcarinaPerformerAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_SPIRIT_FESTIVAL_OCARINA_PERFORMER, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_SPIRIT_FESTIVAL_OCARINA_PERFORMER, 0xC, 0xC);
-    
-    initializeEntityAsset(ENTITY_KAPPA, &_kappaTextureSegmentRomStart, &_kappaTextureSegmentRomEnd, &_kappaAssetsIndexSegmentRomStart, &_kappaAssetsIndexSegmentRomEnd, &_kappaSpritesheetIndexSegmentRomStart, &_kappaSpritesheetIndexSegmentRomEnd, 1, 0, &kappaAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_KAPPA, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_KAPPA, 0xC, 0xC);
-    
-    initializeEntityAsset(ENTITY_PRINCESS, &_princessTextureSegmentRomStart, &_princessTextureSegmentRomEnd, &_princessAssetsIndexSegmentRomStart, &_princessAssetsIndexSegmentRomEnd, &_princessSpritesheetIndexSegmentRomStart, &_princessSpritesheetIndexSegmentRomEnd, 1, 0, &princessAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_PRINCESS, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_PRINCESS, 0xC, 0xC);
-    
-    initializeEntityAsset(ENTITY_EMPTY_NPC_SPRITE, &_emptyNPCTextureSegmentRomStart, &_emptyNPCTextureSegmentRomEnd, &_emptyNPCAssetsIndexSegmentRomStart, &_emptyNPCAssetsIndexSegmentRomEnd, &_emptyNPCSpritesheetIndexSegmentRomStart, &_emptyNPCSpritesheetIndexSegmentRomEnd, 1, 0, &playerAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_EMPTY_NPC_SPRITE, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_EMPTY_NPC_SPRITE, 0xC, 0xC);
-    
-    initializeEntityAsset(ENTITY_BUNNY, &_bunnyTextureSegmentRomStart, &_bunnyTextureSegmentRomEnd, &_bunnyAssetsIndexSegmentRomStart, &_bunnyAssetsIndexSegmentRomEnd, &_bunnySpritesheetIndexSegmentRomStart, &_bunnySpritesheetIndexSegmentRomEnd, 1, 0, &bunnyAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_BUNNY, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_BUNNY, 0xC, 0xC);
-    
-    initializeEntityAsset(ENTITY_MOUSE, &_mouseTextureSegmentRomStart, &_mouseTextureSegmentRomEnd, &_mouseAssetsIndexSegmentRomStart, &_mouseAssetsIndexSegmentRomEnd, &_mouseSpritesheetIndexSegmentRomStart, &_mouseSpritesheetIndexSegmentRomEnd, 1, 0, &mouseAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_MOUSE, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_MOUSE, 0xC, 0xC);
-    
-    initializeEntityAsset(ENTITY_FOX, &_foxTextureSegmentRomStart, &_foxTextureSegmentRomEnd, &_foxAssetsIndexSegmentRomStart, &_foxAssetsIndexSegmentRomEnd, &_foxSpritesheetIndexSegmentRomStart, &_foxSpritesheetIndexSegmentRomEnd, 1, 0, &foxAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_FOX, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_FOX, 0xC, 0xC);
-    
-    initializeEntityAsset(ENTITY_MONKEY, &_monkeyTextureSegmentRomStart, &_monkeyTextureSegmentRomEnd, &_monkeyAssetsIndexSegmentRomStart, &_monkeyAssetsIndexSegmentRomEnd, &_monkeySpritesheetIndexSegmentRomStart, &_monkeySpritesheetIndexSegmentRomEnd, 1, 0, &monkeyAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_MONKEY, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_MONKEY, 0xC, 0xC);
-    
-    initializeEntityAsset(ENTITY_HAWK, &_hawkTextureSegmentRomStart, &_hawkTextureSegmentRomEnd, &_hawkAssetsIndexSegmentRomStart, &_hawkAssetsIndexSegmentRomEnd, &_hawkSpritesheetIndexSegmentRomStart, &_hawkSpritesheetIndexSegmentRomEnd, 1, 0, &hawkAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_HAWK, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_HAWK, 0xC, 0xC);
-    
-    initializeEntityAsset(ENTITY_MOLE, &_moleTextureSegmentRomStart, &_moleTextureSegmentRomEnd, &_moleAssetsIndexSegmentRomStart, &_moleAssetsIndexSegmentRomEnd, &_moleSpritesheetIndexSegmentRomStart, &_moleSpritesheetIndexSegmentRomEnd, 1, 0, &playerAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_MOLE, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_MOLE, 0xC, 0xC);
-    
-    initializeEntityAsset(ENTITY_SQUIRREL, &_squirrelTextureSegmentRomStart, &_squirrelTextureSegmentRomEnd, &_squirrelAssetsIndexSegmentRomStart, &_squirrelAssetsIndexSegmentRomEnd, &_squirrelSpritesheetIndexSegmentRomStart, &_squirrelSpritesheetIndexSegmentRomEnd, 1, 0, &squirrelAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_SQUIRREL, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_SQUIRREL, 0xC, 0xC);
-    
-    initializeEntityAsset(ENTITY_DOG_RACE, &_dogRaceTextureSegmentRomStart, &_dogRaceTextureSegmentRomEnd, &_dogRaceAssetsIndexSegmentRomStart, &_dogRaceAssetsIndexSegmentRomEnd, &_dogRaceSpritesheetIndexSegmentRomStart, &_dogRaceSpritesheetIndexSegmentRomEnd, 1, 0, &dogRaceAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_DOG_RACE, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_DOG_RACE, 0xC, 0xC);
-    
-    initializeEntityAsset(ENTITY_CAT, &_catTextureSegmentRomStart, &_catTextureSegmentRomEnd, &_catAssetsIndexSegmentRomStart, &_catAssetsIndexSegmentRomEnd, &_catSpritesheetIndexSegmentRomStart, &_catSpritesheetIndexSegmentRomEnd, 1, 0, &catAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_CAT, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_CAT, 0xC, 0xC);
-    
-    initializeEntityAsset(ENTITY_DOG, &_dogTextureSegmentRomStart, &_dogTextureSegmentRomEnd, &_dogAssetsIndexSegmentRomStart, &_dogAssetsIndexSegmentRomEnd, &_dogSpritesheetIndexSegmentRomStart, &_dogSpritesheetIndexSegmentRomEnd, 1, 2, &dogAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_DOG, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_DOG, 0xC, 0xC);
-    
-    initializeEntityAsset(ENTITY_DOG_TITLE, &_dogTitleTextureSegmentRomStart, &_dogTitleTextureSegmentRomEnd, &_dogTitleAssetsIndexSegmentRomStart, &_dogTitleAssetsIndexSegmentRomEnd, &_dogTitleSpritesheetIndexSegmentRomStart, &_dogTitleSpritesheetIndexSegmentRomEnd, 1, 0, &dogTitleAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_DOG_TITLE, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_DOG_TITLE, 0xC, 0xC);
-    
-    initializeEntityAsset(ENTITY_HORSE_PONY, &_horsePonyTextureSegmentRomStart, &_horsePonyTextureSegmentRomEnd, &_horsePonyAssetsIndexSegmentRomStart, &_horsePonyAssetsIndexSegmentRomEnd, &_horsePonySpritesheetIndexSegmentRomStart, &_horsePonySpritesheetIndexSegmentRomEnd, 1, 0, &horsePonyAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_HORSE_PONY, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_HORSE_PONY, 0xC, 0xC);
-    
-    initializeEntityAsset(ENTITY_HORSE_GROWN, &_horseGrownTextureSegmentRomStart, &_horseGrownTextureSegmentRomEnd, &_horseGrownAssetsIndexSegmentRomStart, &_horseGrownAssetsIndexSegmentRomEnd, &_horseGrownSpritesheetIndexSegmentRomStart, &_horseGrownSpritesheetIndexSegmentRomEnd, 1, 0, &horseGrownAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_HORSE_GROWN, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_HORSE_GROWN, 0xC, 0xC);
-    
-    initializeEntityAsset(ENTITY_CHICK, &_chickTextureSegmentRomStart, &_chickTextureSegmentRomEnd, &_chickAssetsIndexSegmentRomStart, &_chickAssetsIndexSegmentRomEnd, &_chickSpritesheetIndexSegmentRomStart, &_chickSpritesheetIndexSegmentRomEnd, 1, 2, &chickAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_CHICK, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_CHICK, 0xC, 0xC);
-    
-    initializeEntityAsset(ENTITY_CHICKEN, &_chickenTextureSegmentRomStart, &_chickenTextureSegmentRomEnd, &_chickenAssetsIndexSegmentRomStart, &_chickenAssetsIndexSegmentRomEnd, &_chickenSpritesheetIndexSegmentRomStart, &_chickenSpritesheetIndexSegmentRomEnd, 1, 0, &chickenAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_CHICKEN, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_CHICKEN, 0xC, 0xC);
-    
-    initializeEntityAsset(ENTITY_CALF, &_calfTextureSegmentRomStart, &_calfTextureSegmentRomEnd, &_calfAssetsIndexSegmentRomStart, &_calfAssetsIndexSegmentRomEnd, &_calfSpritesheetIndexSegmentRomStart, &_calfSpritesheetIndexSegmentRomEnd, 1, 0, &calfAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_CALF, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_CALF, 0xC, 0xC);
-    
-    initializeEntityAsset(ENTITY_YOUNG_COW, &_youngCowTextureSegmentRomStart, &_youngCowTextureSegmentRomEnd, &_youngCowAssetsIndexSegmentRomStart, &_youngCowAssetsIndexSegmentRomEnd, &_youngCowSpritesheetIndexSegmentRomStart, &_youngCowSpritesheetIndexSegmentRomEnd, 1, 1, &youngCowAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_YOUNG_COW, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_YOUNG_COW, 0xC, 0xC);
-    
-    initializeEntityAsset(ENTITY_COW, &_cowTextureSegmentRomStart, &_cowTextureSegmentRomEnd, &_cowAssetsIndexSegmentRomStart, &_cowAssetsIndexSegmentRomEnd, &_cowSpritesheetIndexSegmentRomStart, &_cowSpritesheetIndexSegmentRomEnd, 1, 1, &cowAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_COW, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_COW, 0xC, 0xC);
-    
-    initializeEntityAsset(ENTITY_LAMB, &_lambTextureSegmentRomStart, &_lambTextureSegmentRomEnd, &_lambAssetsIndexSegmentRomStart, &_lambAssetsIndexSegmentRomEnd, &_lambSpritesheetIndexSegmentRomStart, &_lambSpritesheetIndexSegmentRomEnd, 1, 0, &lambAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_LAMB, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_LAMB, 0xC, 0xC);
-    
-    initializeEntityAsset(ENTITY_SHEEP, &_sheepTextureSegmentRomStart, &_sheepTextureSegmentRomEnd, &_sheepAssetsIndexSegmentRomStart, &_sheepAssetsIndexSegmentRomEnd, &_sheepSpritesheetIndexSegmentRomStart, &_sheepSpritesheetIndexSegmentRomEnd, 1, 0, &sheepAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_SHEEP, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_SHEEP, 0xC, 0xC);
-    
-    initializeEntityAsset(ENTITY_FROG, &_frogTextureSegmentRomStart, &_frogTextureSegmentRomEnd, &_frogAssetsIndexSegmentRomStart, &_frogAssetsIndexSegmentRomEnd, &_frogSpritesheetIndexSegmentRomStart, &_frogSpritesheetIndexSegmentRomEnd, 1, 0, &playerAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_FROG, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_FROG, 0xC, 0xC);
-    
-    initializeEntityAsset(ENTITY_CRAB, &_crabTextureSegmentRomStart, &_crabTextureSegmentRomEnd, &_crabAssetsIndexSegmentRomStart, &_crabAssetsIndexSegmentRomEnd, &_crabSpritesheetIndexSegmentRomStart, &_crabSpritesheetIndexSegmentRomEnd, 1, 0, &crabAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_CRAB, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_CRAB, 0xC, 0xC);
-    
-    initializeEntityAsset(ENTITY_HORNED_BEETLE, &_hornedBeetleTextureSegmentRomStart, &_hornedBeetleTextureSegmentRomEnd, &_hornedBeetleAssetsIndexSegmentRomStart, &_hornedBeetleAssetsIndexSegmentRomEnd, &_hornedBeetleSpritesheetIndexSegmentRomStart, &_hornedBeetleSpritesheetIndexSegmentRomEnd, 1, 0xFF, &hornedBeetleAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_HORNED_BEETLE, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_HORNED_BEETLE, 0xC, 0xC);
-    
-    initializeEntityAsset(ENTITY_STAG_BEETLE, &_stagBeetleTextureSegmentRomStart, &_stagBeetleTextureSegmentRomEnd, &_stagBeetleAssetsIndexSegmentRomStart, &_stagBeetleAssetsIndexSegmentRomEnd, &_stagBeetleSpritesheetIndexSegmentRomStart, &_stagBeetleSpritesheetIndexSegmentRomEnd, 1, 0xFF, &stagBeetleAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_STAG_BEETLE, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_STAG_BEETLE, 0xC, 0xC);
-    
-    initializeEntityAsset(ENTITY_BELL_RING_CRICKET, &_bellRingCricketTextureSegmentRomStart, &_bellRingCricketTextureSegmentRomEnd, &_bellRingCricketAssetsIndexSegmentRomStart, &_bellRingCricketAssetsIndexSegmentRomEnd, &_bellRingCricketSpritesheetIndexSegmentRomStart, &_bellRingCricketSpritesheetIndexSegmentRomEnd, 1, 0xFF, &bellRingCricketAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_BELL_RING_CRICKET, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_BELL_RING_CRICKET, 0xC, 0xC);
-    
-    initializeEntityAsset(ENTITY_CICADA, &_cicadaTextureSegmentRomStart, &_cicadaTextureSegmentRomEnd, &_cicadaAssetsIndexSegmentRomStart, &_cicadaAssetsIndexSegmentRomEnd, &_cicadaSpritesheetIndexSegmentRomStart, &_cicadaSpritesheetIndexSegmentRomEnd, 1, 0xFF, &cicadaAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_CICADA, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_CICADA, 0xC, 0xC);
-    
-    initializeEntityAsset(ENTITY_BIRD, &_birdTextureSegmentRomStart, &_birdTextureSegmentRomEnd, &_birdAssetsIndexSegmentRomStart, &_birdAssetsIndexSegmentRomEnd, &_birdSpritesheetIndexSegmentRomStart, &_birdSpritesheetIndexSegmentRomEnd, 1, 2, &birdAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_BIRD, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_BIRD, 0xC, 0xC);
-    
-    initializeEntityAsset(ENTITY_LADYBUG, &_ladybugTextureSegmentRomStart, &_ladybugTextureSegmentRomEnd, &_ladybugAssetsIndexSegmentRomStart, &_ladybugAssetsIndexSegmentRomEnd, &_ladybugSpritesheetIndexSegmentRomStart, &_ladybugSpritesheetIndexSegmentRomEnd, 1, 0xFF, &ladybugAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_LADYBUG, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_LADYBUG, 0xC, 0xC);
-    
-    initializeEntityAsset(ENTITY_DRAGONFLY, &_dragonflyTextureSegmentRomStart, &_dragonflyTextureSegmentRomEnd, &_dragonflyAssetsIndexSegmentRomStart, &_dragonflyAssetsIndexSegmentRomEnd, &_dragonflySpritesheetIndexSegmentRomStart, &_dragonflySpritesheetIndexSegmentRomEnd, 1, 2, &dragonflyAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_DRAGONFLY, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_DRAGONFLY, 0xC, 0xC);
-    
-    initializeEntityAsset(ENTITY_GRASSHOPPER, &_grasshopperTextureSegmentRomStart, &_grasshopperTextureSegmentRomEnd, &_grasshopperAssetsIndexSegmentRomStart, &_grasshopperAssetsIndexSegmentRomEnd, &_grasshopperSpritesheetIndexSegmentRomStart, &_grasshopperSpritesheetIndexSegmentRomEnd, 1, 0, &playerAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_GRASSHOPPER, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_GRASSHOPPER, 0xC, 0xC);
-    
-    initializeEntityAsset(ENTITY_SNAKE, &_snakeTextureSegmentRomStart, &_snakeTextureSegmentRomEnd, &_snakeAssetsIndexSegmentRomStart, &_snakeAssetsIndexSegmentRomEnd, &_snakeSpritesheetIndexSegmentRomStart, &_snakeSpritesheetIndexSegmentRomEnd, 1, 2, &snakeAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_SNAKE, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_SNAKE, 0xC, 0xC);
-    
-    initializeEntityAsset(ENTITY_PURPLE_BUTTERFLY, &_purpleButterflyTextureSegmentRomStart, &_purpleButterflyTextureSegmentRomEnd, &_purpleButterflyAssetsIndexSegmentRomStart, &_purpleButterflyAssetsIndexSegmentRomEnd, &_purpleButterflySpritesheetIndexSegmentRomStart, &_purpleButterflySpritesheetIndexSegmentRomEnd, 1, 0, &playerAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_PURPLE_BUTTERFLY, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_PURPLE_BUTTERFLY, 0xC, 0xC);
-    
-    initializeEntityAsset(ENTITY_DAD, &_dadTextureSegmentRomStart, &_dadTextureSegmentRomEnd, &_dadAssetsIndexSegmentRomStart, &_dadAssetsIndexSegmentRomEnd, &_dadSpritesheetIndexSegmentRomStart, &_dadSpritesheetIndexSegmentRomEnd, 1, 0, &playerAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_DAD, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_DAD, 0xC, 0xC);
-    
-    initializeEntityAsset(ENTITY_COW_INDOORS, &_cowIndoorsTextureSegmentRomStart, &_cowIndoorsTextureSegmentRomEnd, &_cowIndoorsAssetsIndexSegmentRomStart, &_cowIndoorsAssetsIndexSegmentRomEnd, &_cowIndoorsSpritesheetIndexSegmentRomStart, &_cowIndoorsSpritesheetIndexSegmentRomEnd, 1, 1, &cowIndoorsAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_COW_INDOORS, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_COW_INDOORS, 0xC, 0xC);
-    
-    initializeEntityAsset(ENTITY_HORSE_UNBRIDLED, &_horseUnbridledTextureSegmentRomStart, &_horseUnbridledTextureSegmentRomEnd, &_horseUnbridledAssetsIndexSegmentRomStart, &_horseUnbridledAssetsIndexSegmentRomEnd, &_horseUnbridledSpritesheetIndexSegmentRomStart, &_horseUnbridledSpritesheetIndexSegmentRomEnd, 1, 0, &horseUnbridledAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_HORSE_UNBRIDLED, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_HORSE_UNBRIDLED, 0xC, 0xC);
-    
-    initializeEntityAsset(ENTITY_HORSE_RACER, &_horseRacerTextureSegmentRomStart, &_horseRacerTextureSegmentRomEnd, &_horseRacerAssetsIndexSegmentRomStart, &_horseRacerAssetsIndexSegmentRomEnd, &_horseRacerSpritesheetIndexSegmentRomStart, &_horseRacerSpritesheetIndexSegmentRomEnd, 1, 0, &playerAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_HORSE_RACER, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_HORSE_RACER, 0xC, 0xC);
-    
-    initializeEntityAsset(ENTITY_EMPTY_ENTITY, &_emptyEntityTextureSegmentRomStart, &_emptyEntityTextureSegmentRomEnd, &_emptyEntityAssetsIndexSegmentRomStart, &_emptyEntityAssetsIndexSegmentRomEnd, &_emptyEntitySpritesheetIndexSegmentRomStart, &_emptyEntitySpritesheetIndexSegmentRomEnd, 1, 0, &playerAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_EMPTY_ENTITY, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_EMPTY_ENTITY, 0xC, 0xC);
-    
-    initializeEntityAsset(0x5B, &_holdableItemsTextureSegmentRomStart, &_holdableItemsTextureSegmentRomEnd, &_holdableItemsAssetsIndexSegmentRomStart, &_holdableItemsAssetsIndexSegmentRomEnd, &_holdableItemsSpritesheetIndexSegmentRomStart, &_holdableItemsSpritesheetIndexSegmentRomEnd, 1, 0xFF, &holdableItemsAnimationScripts1);
-    setEntityCollisionBuffers(0x5B, 0xF, 0xF);
-    setEntitySpriteDimensions(0x5B, 0xC, 0xC);
-    
-    initializeEntityAsset(0x5C, &_sowingFestivalTextureSegmentRomStart, &_sowingFestivalTextureSegmentRomEnd, &_sowingFestivalAssetsIndexSegmentRomStart, &_sowingFestivalAssetsIndexSegmentRomEnd, &_sowingFestivalSpritesheetIndexSegmentRomStart, &_sowingFestivalSpritesheetIndexSegmentRomEnd, 1, 0, &homeItemsAnimationScripts);
-    setEntityCollisionBuffers(0x5C, 0xF, 0xF);
-    setEntitySpriteDimensions(0x5C, 0xC, 0xC);
-    
-    initializeEntityAsset(0x5D, &_holdableItemsTextureSegmentRomStart, &_holdableItemsTextureSegmentRomEnd, &_holdableItemsAssetsIndexSegmentRomStart, &_holdableItemsAssetsIndexSegmentRomEnd, &_holdableItemsSpritesheetIndexSegmentRomStart, &_holdableItemsSpritesheetIndexSegmentRomEnd, 1, 2, &shopItemsAnimationScripts);
-    setEntityCollisionBuffers(0x5D, 0xF, 0xF);
-    setEntitySpriteDimensions(0x5D, 0xC, 0xC);
-    
-    initializeEntityAsset(0x5E, &_holdableItemsTextureSegmentRomStart, &_holdableItemsTextureSegmentRomEnd, &_holdableItemsAssetsIndexSegmentRomStart, &_holdableItemsAssetsIndexSegmentRomEnd, &_holdableItemsSpritesheetIndexSegmentRomStart, &_holdableItemsSpritesheetIndexSegmentRomEnd, 1, 0xFF, &holdableItemsAnimationScripts2);
-    setEntityCollisionBuffers(0x5E, 0xF, 0xF);
-    setEntitySpriteDimensions(0x5E, 0xC, 0xC);
-    
-    initializeEntityAsset(0x5F, &_toolsTextureSegmentRomStart, &_toolsTextureSegmentRomEnd, &_toolsAssetsIndexSegmentRomStart, &_toolsAssetsIndexSegmentRomEnd, &_toolsSpritesheetIndexSegmentRomStart, &_toolsSpritesheetIndexSegmentRomEnd, 1, 0xFF, &toolsAnimationScripts);
-    setEntityCollisionBuffers(0x5F, 0xF, 0xF);
-    setEntitySpriteDimensions(0x5F, 0xC, 0xC);
-    
-    initializeEntityAsset(0x60, &_holdableItemsTextureSegmentRomStart, &_holdableItemsTextureSegmentRomEnd, &_holdableItemsAssetsIndexSegmentRomStart, &_holdableItemsAssetsIndexSegmentRomEnd, &_holdableItemsSpritesheetIndexSegmentRomStart, &_holdableItemsSpritesheetIndexSegmentRomEnd, 1, 0xFF, &holdableItemsAnimationScripts3);
-    setEntityCollisionBuffers(0x60, 0xF, 0xF);
-    setEntitySpriteDimensions(0x60, 0xC, 0xC);
-    
-    initializeEntityAsset(ENTITY_MARIA_HARRIS_BABY, &_mariaHarrisBabyTextureSegmentRomStart, &_mariaHarrisBabyTextureSegmentRomEnd, &_mariaHarrisBabyAssetsIndexSegmentRomStart, &_mariaHarrisBabyAssetsIndexSegmentRomEnd, &_mariaHarrisBabySpritesheetIndexSegmentRomStart, &_mariaHarrisBabySpritesheetIndexSegmentRomEnd, 1, 0, &mariaHarrisBabyAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_MARIA_HARRIS_BABY, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_MARIA_HARRIS_BABY, 0xC, 0xC);
-    
-    initializeEntityAsset(ENTITY_POPURI_GRAY_BABY, &_popuriGrayBabyTextureSegmentRomStart, &_popuriGrayBabyTextureSegmentRomEnd, &_popuriGrayBabyAssetsIndexSegmentRomStart, &_popuriGrayBabyAssetsIndexSegmentRomEnd, &_popuriGrayBabySpritesheetIndexSegmentRomStart, &_popuriGrayBabySpritesheetIndexSegmentRomEnd, 1, 0, &popuriGrayBabyAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_POPURI_GRAY_BABY, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_POPURI_GRAY_BABY, 0xC, 0xC);
-    
-    initializeEntityAsset(ENTITY_ELLI_JEFF_BABY, &_elliJeffBabyTextureSegmentRomStart, &_elliJeffBabyTextureSegmentRomEnd, &_elliJeffBabyAssetsIndexSegmentRomStart, &_elliJeffBabyAssetsIndexSegmentRomEnd, &_elliJeffBabySpritesheetIndexSegmentRomStart, &_elliJeffBabySpritesheetIndexSegmentRomEnd, 1, 0, &elliJeffBabyAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_ELLI_JEFF_BABY, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_ELLI_JEFF_BABY, 0xC, 0xC);
-    
-    initializeEntityAsset(ENTITY_ANN_CLIFF_BABY, &_annCliffBabyTextureSegmentRomStart, &_annCliffBabyTextureSegmentRomEnd, &_annCliffBabyAssetsIndexSegmentRomStart, &_annCliffBabyAssetsIndexSegmentRomEnd, &_annCliffBabySpritesheetIndexSegmentRomStart, &_annCliffBabySpritesheetIndexSegmentRomEnd, 1, 0, &annCliffBabyAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_ANN_CLIFF_BABY, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_ANN_CLIFF_BABY, 0xC, 0xC);
-    
-    initializeEntityAsset(ENTITY_KAREN_KAI_BABY, &_karenKaiBabyTextureSegmentRomStart, &_karenKaiBabyTextureSegmentRomEnd, &_karenKaiBabyAssetsIndexSegmentRomStart, &_karenKaiBabyAssetsIndexSegmentRomEnd, &_karenKaiBabySpritesheetIndexSegmentRomStart, &_karenKaiBabySpritesheetIndexSegmentRomEnd, 1, 0, &karenKaiBabyAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_KAREN_KAI_BABY, 0xF, 0xF);
-    setEntitySpriteDimensions(ENTITY_KAREN_KAI_BABY, 0xC, 0xC);
+    initializeEntityAsset(ENTITY_ASSET_PLAYER, &_playerTextureSegmentRomStart, &_playerTextureSegmentRomEnd, &_playerAssetsIndexSegmentRomStart, &_playerAssetsIndexSegmentRomEnd, &_playerSpritesheetIndexSegmentRomStart, &_playerSpritesheetIndexSegmentRomEnd, 1, 0, &playerAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_PLAYER, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_PLAYER, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_MARIA, &_mariaTextureSegmentRomStart, &_mariaTextureSegmentRomEnd, &_mariaAssetsIndexSegmentRomStart, &_mariaAssetsIndexSegmentRomEnd, &_mariaSpritesheetIndexSegmentRomStart, &_mariaSpritesheetIndexSegmentRomEnd, 1, 0, &mariaAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_MARIA, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_MARIA, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_POPURI, &_popuriTextureSegmentRomStart, &_popuriTextureSegmentRomEnd, &_popuriAssetsIndexSegmentRomStart, &_popuriAssetsIndexSegmentRomEnd, &_popuriSpritesheetIndexSegmentRomStart, &_popuriSpritesheetIndexSegmentRomEnd, 1, 0, &popuriAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_POPURI, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_POPURI, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_ELLI, &_elliTextureSegmentRomStart, &_elliTextureSegmentRomEnd, &_elliAssetsIndexSegmentRomStart, &_elliAssetsIndexSegmentRomEnd, &_elliSpritesheetIndexSegmentRomStart, &_elliSpritesheetIndexSegmentRomEnd, 1, 0, &elliAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_ELLI, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_ELLI, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_ANN, &_annTextureSegmentRomStart, &_annTextureSegmentRomEnd, &_annAssetsIndexSegmentRomStart, &_annAssetsIndexSegmentRomEnd, &_annSpritesheetIndexSegmentRomStart, &_annSpritesheetIndexSegmentRomEnd, 1, 0, &annAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_ANN, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_ANN, 12, 12); 
+    
+    initializeEntityAsset(ENTITY_ASSET_KAREN, &_karenTextureSegmentRomStart, &_karenTextureSegmentRomEnd, &_karenAssetsIndexSegmentRomStart, &_karenAssetsIndexSegmentRomEnd, &_karenSpritesheetIndexSegmentRomStart, &_karenSpritesheetIndexSegmentRomEnd, 1, 0, &karenAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_KAREN, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_KAREN, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_BABY, &_babyTextureSegmentRomStart, &_babyTextureSegmentRomEnd, &_babyAssetsIndexSegmentRomStart, &_babyAssetsIndexSegmentRomEnd, &_babySpritesheetIndexSegmentRomStart, &_babySpritesheetIndexSegmentRomEnd, 1, 0, &babyAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_BABY, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_BABY, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_HARRIS, &_harrisTextureSegmentRomStart, &_harrisTextureSegmentRomEnd, &_harrisAssetsIndexSegmentRomStart, &_harrisAssetsIndexSegmentRomEnd, &_harrisSpritesheetIndexSegmentRomStart, &_harrisSpritesheetIndexSegmentRomEnd, 1, 0, &harrisAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_HARRIS, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_HARRIS, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_GRAY, &_grayTextureSegmentRomStart, &_grayTextureSegmentRomEnd, &_grayAssetsIndexSegmentRomStart, &_grayAssetsIndexSegmentRomEnd, &_graySpritesheetIndexSegmentRomStart, &_graySpritesheetIndexSegmentRomEnd, 1, 0, &grayAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_GRAY, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_GRAY, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_JEFF, &_jeffTextureSegmentRomStart, &_jeffTextureSegmentRomEnd, &_jeffAssetsIndexSegmentRomStart, &_jeffAssetsIndexSegmentRomEnd, &_jeffSpritesheetIndexSegmentRomStart, &_jeffSpritesheetIndexSegmentRomEnd, 1, 0, &jeffAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_JEFF, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_JEFF, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_CLIFF, &_cliffTextureSegmentRomStart, &_cliffTextureSegmentRomEnd, &_cliffAssetsIndexSegmentRomStart, &_cliffAssetsIndexSegmentRomEnd, &_cliffSpritesheetIndexSegmentRomStart, &_cliffSpritesheetIndexSegmentRomEnd, 1, 0, &cliffAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_CLIFF, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_CLIFF, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_KAI, &_kaiTextureSegmentRomStart, &_kaiTextureSegmentRomEnd, &_kaiAssetsIndexSegmentRomStart, &_kaiAssetsIndexSegmentRomEnd, &_kaiSpritesheetIndexSegmentRomStart, &_kaiSpritesheetIndexSegmentRomEnd, 1, 0, &kaiAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_KAI, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_KAI, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_MAYOR, &_mayorTextureSegmentRomStart, &_mayorTextureSegmentRomEnd, &_mayorAssetsIndexSegmentRomStart, &_mayorAssetsIndexSegmentRomEnd, &_mayorSpritesheetIndexSegmentRomStart, &_mayorSpritesheetIndexSegmentRomEnd, 1, 0, &mayorAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_MAYOR, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_MAYOR, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_MAYOR_WIFE, &_mayorWifeTextureSegmentRomStart, &_mayorWifeTextureSegmentRomEnd, &_mayorWifeAssetsIndexSegmentRomStart, &_mayorWifeAssetsIndexSegmentRomEnd, &_mayorWifeSpritesheetIndexSegmentRomStart, &_mayorWifeSpritesheetIndexSegmentRomEnd, 1, 0, &mayorWifeAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_MAYOR_WIFE, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_MAYOR_WIFE, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_LILIA, &_liliaTextureSegmentRomStart, &_liliaTextureSegmentRomEnd, &_liliaAssetsIndexSegmentRomStart, &_liliaAssetsIndexSegmentRomEnd, &_liliaSpritesheetIndexSegmentRomStart, &_liliaSpritesheetIndexSegmentRomEnd, 1, 0, &liliaAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_LILIA, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_LILIA, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_BASIL, &_basilTextureSegmentRomStart, &_basilTextureSegmentRomEnd, &_basilAssetsIndexSegmentRomStart, &_basilAssetsIndexSegmentRomEnd, &_basilSpritesheetIndexSegmentRomStart, &_basilSpritesheetIndexSegmentRomEnd, 1, 0, &basilAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_BASIL, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_BASIL, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_ELLEN, &_ellenTextureSegmentRomStart, &_ellenTextureSegmentRomEnd, &_ellenAssetsIndexSegmentRomStart, &_ellenAssetsIndexSegmentRomEnd, &_ellenSpritesheetIndexSegmentRomStart, &_ellenSpritesheetIndexSegmentRomEnd, 1, 0, &ellenAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_ELLEN, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_ELLEN, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_DOUG, &_dougTextureSegmentRomStart, &_dougTextureSegmentRomEnd, &_dougAssetsIndexSegmentRomStart, &_dougAssetsIndexSegmentRomEnd, &_dougSpritesheetIndexSegmentRomStart, &_dougSpritesheetIndexSegmentRomEnd, 1, 0, &dougAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_DOUG, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_DOUG, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_GOTZ, &_gotzTextureSegmentRomStart, &_gotzTextureSegmentRomEnd, &_gotzAssetsIndexSegmentRomStart, &_gotzAssetsIndexSegmentRomEnd, &_gotzSpritesheetIndexSegmentRomStart, &_gotzSpritesheetIndexSegmentRomEnd, 1, 0, &gotzAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_GOTZ, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_GOTZ, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_SASHA, &_sashaTextureSegmentRomStart, &_sashaTextureSegmentRomEnd, &_sashaAssetsIndexSegmentRomStart, &_sashaAssetsIndexSegmentRomEnd, &_sashaSpritesheetIndexSegmentRomStart, &_sashaSpritesheetIndexSegmentRomEnd, 1, 0, &sashaAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_SASHA, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_SASHA, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_POTION_SHOP_DEALER, &_potionShopDealerTextureSegmentRomStart, &_potionShopDealerTextureSegmentRomEnd, &_potionShopDealerAssetsIndexSegmentRomStart, &_potionShopDealerAssetsIndexSegmentRomEnd, &_potionShopDealerSpritesheetIndexSegmentRomStart, &_potionShopDealerSpritesheetIndexSegmentRomEnd, 1, 0, &potionShopDealerAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_POTION_SHOP_DEALER, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_POTION_SHOP_DEALER, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_KENT, &_kentTextureSegmentRomStart, &_kentTextureSegmentRomEnd, &_kentAssetsIndexSegmentRomStart, &_kentAssetsIndexSegmentRomEnd, &_kentSpritesheetIndexSegmentRomStart, &_kentSpritesheetIndexSegmentRomEnd, 1, 0, &kentAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_KENT, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_KENT, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_STU, &_stuTextureSegmentRomStart, &_stuTextureSegmentRomEnd, &_stuAssetsIndexSegmentRomStart, &_stuAssetsIndexSegmentRomEnd, &_stuSpritesheetIndexSegmentRomStart, &_stuSpritesheetIndexSegmentRomEnd, 1, 0, &stuAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_STU, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_STU, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_MIDWIFE, &_midwifeTextureSegmentRomStart, &_midwifeTextureSegmentRomEnd, &_midwifeAssetsIndexSegmentRomStart, &_midwifeAssetsIndexSegmentRomEnd, &_midwifeSpritesheetIndexSegmentRomStart, &_midwifeSpritesheetIndexSegmentRomEnd, 1, 0, &midwifeAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_MIDWIFE, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_MIDWIFE, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_MAY, &_mayTextureSegmentRomStart, &_mayTextureSegmentRomEnd, &_mayAssetsIndexSegmentRomStart, &_mayAssetsIndexSegmentRomEnd, &_maySpritesheetIndexSegmentRomStart, &_maySpritesheetIndexSegmentRomEnd, 1, 0, &mayAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_MAY, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_MAY, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_RICK, &_rickTextureSegmentRomStart, &_rickTextureSegmentRomEnd, &_rickAssetsIndexSegmentRomStart, &_rickAssetsIndexSegmentRomEnd, &_rickSpritesheetIndexSegmentRomStart, &_rickSpritesheetIndexSegmentRomEnd, 1, 0, &rickAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_RICK, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_RICK, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_PASTOR, &_pastorTextureSegmentRomStart, &_pastorTextureSegmentRomEnd, &_pastorAssetsIndexSegmentRomStart, &_pastorAssetsIndexSegmentRomEnd, &_pastorSpritesheetIndexSegmentRomStart, &_pastorSpritesheetIndexSegmentRomEnd, 1, 0, &pastorAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_PASTOR, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_PASTOR, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_SHIPPER, &_shipperTextureSegmentRomStart, &_shipperTextureSegmentRomEnd, &_shipperAssetsIndexSegmentRomStart, &_shipperAssetsIndexSegmentRomEnd, &_shipperSpritesheetIndexSegmentRomStart, &_shipperSpritesheetIndexSegmentRomEnd, 1, 0, &shipperAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_SHIPPER, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_SHIPPER, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_SAIBARA, &_saibaraTextureSegmentRomStart, &_saibaraTextureSegmentRomEnd, &_saibaraAssetsIndexSegmentRomStart, &_saibaraAssetsIndexSegmentRomEnd, &_saibaraSpritesheetIndexSegmentRomStart, &_saibaraSpritesheetIndexSegmentRomEnd, 1, 0, &saibaraAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_SAIBARA, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_SAIBARA, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_DUKE, &_dukeTextureSegmentRomStart, &_dukeTextureSegmentRomEnd, &_dukeAssetsIndexSegmentRomStart, &_dukeAssetsIndexSegmentRomEnd, &_dukeSpritesheetIndexSegmentRomStart, &_dukeSpritesheetIndexSegmentRomEnd, 1, 0, &dukeAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_DUKE, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_DUKE, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_GREG, &_gregTextureSegmentRomStart, &_gregTextureSegmentRomEnd, &_gregAssetsIndexSegmentRomStart, &_gregAssetsIndexSegmentRomEnd, &_gregSpritesheetIndexSegmentRomStart, &_gregSpritesheetIndexSegmentRomEnd, 1, 0, &gregAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_GREG, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_GREG, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_ASSISTANT_CARPENTER, &_assistantCarpenterTextureSegmentRomStart, &_assistantCarpenterTextureSegmentRomEnd, &_assistantCarpenterAssetsIndexSegmentRomStart, &_assistantCarpenterAssetsIndexSegmentRomEnd, &_assistantCarpenterSpritesheetIndexSegmentRomStart, &_assistantCarpenterSpritesheetIndexSegmentRomEnd, 1, 0, &assistantCarpenterAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_ASSISTANT_CARPENTER, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_ASSISTANT_CARPENTER, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_MASTER_CARPENTER, &_masterCarpenterTextureSegmentRomStart, &_masterCarpenterTextureSegmentRomEnd, &_masterCarpenterAssetsIndexSegmentRomStart, &_masterCarpenterAssetsIndexSegmentRomEnd, &_masterCarpenterSpritesheetIndexSegmentRomStart, &_masterCarpenterSpritesheetIndexSegmentRomEnd, 1, 0, &masterCarpenterAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_MASTER_CARPENTER, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_MASTER_CARPENTER, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_HARVEST_SPRITE, &_harvestSpriteTextureSegmentRomStart, &_harvestSpriteTextureSegmentRomEnd, &_harvestSpriteAssetsIndexSegmentRomStart, &_harvestSpriteAssetsIndexSegmentRomEnd, &_harvestSpriteSpritesheetIndexSegmentRomStart, &_harvestSpriteSpritesheetIndexSegmentRomEnd, 1, 0, &harvestSpriteAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_HARVEST_SPRITE, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_HARVEST_SPRITE, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_BARLEY, &_barleyTextureSegmentRomStart, &_barleyTextureSegmentRomEnd, &_barleyAssetsIndexSegmentRomStart, &_barleyAssetsIndexSegmentRomEnd, &_barleySpritesheetIndexSegmentRomStart, &_barleySpritesheetIndexSegmentRomEnd, 1, 0, &barleyAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_BARLEY, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_BARLEY, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_SYDNEY, &_sydneyTextureSegmentRomStart, &_sydneyTextureSegmentRomEnd, &_sydneyAssetsIndexSegmentRomStart, &_sydneyAssetsIndexSegmentRomEnd, &_sydneySpritesheetIndexSegmentRomStart, &_sydneySpritesheetIndexSegmentRomEnd, 1, 0, &sydneyAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_SYDNEY, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_SYDNEY, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_ENTOMOLOGIST, &_entomologistTextureSegmentRomStart, &_entomologistTextureSegmentRomEnd, &_entomologistAssetsIndexSegmentRomStart, &_entomologistAssetsIndexSegmentRomEnd, &_entomologistSpritesheetIndexSegmentRomStart, &_entomologistSpritesheetIndexSegmentRomEnd, 1, 0, &entomologistAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_ENTOMOLOGIST, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_ENTOMOLOGIST, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_GOURMET_JUDGE, &_gourmetJudgeTextureSegmentRomStart, &_gourmetJudgeTextureSegmentRomEnd, &_gourmetJudgeAssetsIndexSegmentRomStart, &_gourmetJudgeAssetsIndexSegmentRomEnd, &_gourmetJudgeSpritesheetIndexSegmentRomStart, &_gourmetJudgeSpritesheetIndexSegmentRomEnd, 1, 0, &gourmetJudgeAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_GOURMET_JUDGE, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_GOURMET_JUDGE, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_PHOTOGRAPHER, &_photographerTextureSegmentRomStart, &_photographerTextureSegmentRomEnd, &_photographerAssetsIndexSegmentRomStart, &_photographerAssetsIndexSegmentRomEnd, &_photographerSpritesheetIndexSegmentRomStart, &_photographerSpritesheetIndexSegmentRomEnd, 1, 0, &photographerAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_PHOTOGRAPHER, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_PHOTOGRAPHER, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_SHADY_SALESMAN, &_shadySalesmanTextureSegmentRomStart, &_shadySalesmanTextureSegmentRomEnd, &_shadySalesmanAssetsIndexSegmentRomStart, &_shadySalesmanAssetsIndexSegmentRomEnd, &_shadySalesmanSpritesheetIndexSegmentRomStart, &_shadySalesmanSpritesheetIndexSegmentRomEnd, 1, 0, &shadySalesmanAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_SHADY_SALESMAN, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_SHADY_SALESMAN, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_MRS_MANA_SON, &_mrsManaSonTextureSegmentRomStart, &_mrsManaSonTextureSegmentRomEnd, &_mrsManaSonAssetsIndexSegmentRomStart, &_mrsManaSonAssetsIndexSegmentRomEnd, &_mrsManaSonSpritesheetIndexSegmentRomStart, &_mrsManaSonSpritesheetIndexSegmentRomEnd, 1, 0, &mrsManaSonAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_MRS_MANA_SON, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_MRS_MANA_SON, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_MRS_MANA, &_mrsManaTextureSegmentRomStart, &_mrsManaTextureSegmentRomEnd, &_mrsManaAssetsIndexSegmentRomStart, &_mrsManaAssetsIndexSegmentRomEnd, &_mrsManaSpritesheetIndexSegmentRomStart, &_mrsManaSpritesheetIndexSegmentRomEnd, 1, 0, &mrsManaAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_MRS_MANA, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_MRS_MANA, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_OLD_MAN, &_oldManTextureSegmentRomStart, &_oldManTextureSegmentRomEnd, &_oldManAssetsIndexSegmentRomStart, &_oldManAssetsIndexSegmentRomEnd, &_oldManSpritesheetIndexSegmentRomStart, &_oldManSpritesheetIndexSegmentRomEnd, 1, 0, &oldManAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_OLD_MAN, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_OLD_MAN, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_OLD_WOMAN, &_oldWomanTextureSegmentRomStart, &_oldWomanTextureSegmentRomEnd, &_oldWomanAssetsIndexSegmentRomStart, &_oldWomanAssetsIndexSegmentRomEnd, &_oldWomanSpritesheetIndexSegmentRomStart, &_oldWomanSpritesheetIndexSegmentRomEnd, 1, 0, &oldWomanAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_OLD_WOMAN, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_OLD_WOMAN, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_TOURIST_COUPLE_MAN, &_touristCoupleManTextureSegmentRomStart, &_touristCoupleManTextureSegmentRomEnd, &_touristCoupleManAssetsIndexSegmentRomStart, &_touristCoupleManAssetsIndexSegmentRomEnd, &_touristCoupleManSpritesheetIndexSegmentRomStart, &_touristCoupleManSpritesheetIndexSegmentRomEnd, 1, 0, &touristCoupleManAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_TOURIST_COUPLE_MAN, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_TOURIST_COUPLE_MAN, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_TOURIST_COUPLE_WOMAN, &_touristCoupleWomanTextureSegmentRomStart, &_touristCoupleWomanTextureSegmentRomEnd, &_touristCoupleWomanAssetsIndexSegmentRomStart, &_touristCoupleWomanAssetsIndexSegmentRomEnd, &_touristCoupleWomanSpritesheetIndexSegmentRomStart, &_touristCoupleWomanSpritesheetIndexSegmentRomEnd, 1, 0, &touristCoupleWomanAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_TOURIST_COUPLE_WOMAN, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_TOURIST_COUPLE_WOMAN, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_FESTIVAL_GIRL1, &_festivalGirl1TextureSegmentRomStart, &_festivalGirl1TextureSegmentRomEnd, &_festivalGirl1AssetsIndexSegmentRomStart, &_festivalGirl1AssetsIndexSegmentRomEnd, &_festivalGirl1SpritesheetIndexSegmentRomStart, &_festivalGirl1SpritesheetIndexSegmentRomEnd, 1, 0, &festivalGirl1AnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_FESTIVAL_GIRL1, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_FESTIVAL_GIRL1, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_FESTIVAL_GIRL2, &_festivalGirl2TextureSegmentRomStart, &_festivalGirl2TextureSegmentRomEnd, &_festivalGirl2AssetsIndexSegmentRomStart, &_festivalGirl2AssetsIndexSegmentRomEnd, &_festivalGirl2SpritesheetIndexSegmentRomStart, &_festivalGirl2SpritesheetIndexSegmentRomEnd, 1, 0, &festivalGirl2AnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_FESTIVAL_GIRL2, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_FESTIVAL_GIRL2, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_FESTIVAL_GIRL3, &_festivalGirl3TextureSegmentRomStart, &_festivalGirl3TextureSegmentRomEnd, &_festivalGirl3AssetsIndexSegmentRomStart, &_festivalGirl3AssetsIndexSegmentRomEnd, &_festivalGirl3SpritesheetIndexSegmentRomStart, &_festivalGirl3SpritesheetIndexSegmentRomEnd, 1, 0, &festivalGirl3AnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_FESTIVAL_GIRL3, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_FESTIVAL_GIRL3, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_HARVEST_GODDESS, &_harvestGoddessTextureSegmentRomStart, &_harvestGoddessTextureSegmentRomEnd, &_harvestGoddessAssetsIndexSegmentRomStart, &_harvestGoddessAssetsIndexSegmentRomEnd, &_harvestGoddessSpritesheetIndexSegmentRomStart, &_harvestGoddessSpritesheetIndexSegmentRomEnd, 1, 0, &harvestGoddessAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_HARVEST_GODDESS, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_HARVEST_GODDESS, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_SPIRIT_FESTIVAL_OCARINA_PERFORMER, &_spiritFestivalOcarinaPerformerTextureSegmentRomStart, &_spiritFestivalOcarinaPerformerTextureSegmentRomEnd, &_spiritFestivalOcarinaPerformerAssetsIndexSegmentRomStart, &_spiritFestivalOcarinaPerformerAssetsIndexSegmentRomEnd, &_spiritFestivalOcarinaPerformerSpritesheetIndexSegmentRomStart, &_spiritFestivalOcarinaPerformerSpritesheetIndexSegmentRomEnd, 1, 0, &spiritFestivalOcarinaPerformerAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_SPIRIT_FESTIVAL_OCARINA_PERFORMER, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_SPIRIT_FESTIVAL_OCARINA_PERFORMER, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_KAPPA, &_kappaTextureSegmentRomStart, &_kappaTextureSegmentRomEnd, &_kappaAssetsIndexSegmentRomStart, &_kappaAssetsIndexSegmentRomEnd, &_kappaSpritesheetIndexSegmentRomStart, &_kappaSpritesheetIndexSegmentRomEnd, 1, 0, &kappaAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_KAPPA, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_KAPPA, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_PRINCESS, &_princessTextureSegmentRomStart, &_princessTextureSegmentRomEnd, &_princessAssetsIndexSegmentRomStart, &_princessAssetsIndexSegmentRomEnd, &_princessSpritesheetIndexSegmentRomStart, &_princessSpritesheetIndexSegmentRomEnd, 1, 0, &princessAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_PRINCESS, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_PRINCESS, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_EMPTY_NPC_SPRITE, &_emptyNPCTextureSegmentRomStart, &_emptyNPCTextureSegmentRomEnd, &_emptyNPCAssetsIndexSegmentRomStart, &_emptyNPCAssetsIndexSegmentRomEnd, &_emptyNPCSpritesheetIndexSegmentRomStart, &_emptyNPCSpritesheetIndexSegmentRomEnd, 1, 0, &playerAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_EMPTY_NPC_SPRITE, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_EMPTY_NPC_SPRITE, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_BUNNY, &_bunnyTextureSegmentRomStart, &_bunnyTextureSegmentRomEnd, &_bunnyAssetsIndexSegmentRomStart, &_bunnyAssetsIndexSegmentRomEnd, &_bunnySpritesheetIndexSegmentRomStart, &_bunnySpritesheetIndexSegmentRomEnd, 1, 0, &bunnyAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_BUNNY, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_BUNNY, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_MOUSE, &_mouseTextureSegmentRomStart, &_mouseTextureSegmentRomEnd, &_mouseAssetsIndexSegmentRomStart, &_mouseAssetsIndexSegmentRomEnd, &_mouseSpritesheetIndexSegmentRomStart, &_mouseSpritesheetIndexSegmentRomEnd, 1, 0, &mouseAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_MOUSE, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_MOUSE, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_FOX, &_foxTextureSegmentRomStart, &_foxTextureSegmentRomEnd, &_foxAssetsIndexSegmentRomStart, &_foxAssetsIndexSegmentRomEnd, &_foxSpritesheetIndexSegmentRomStart, &_foxSpritesheetIndexSegmentRomEnd, 1, 0, &foxAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_FOX, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_FOX, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_MONKEY, &_monkeyTextureSegmentRomStart, &_monkeyTextureSegmentRomEnd, &_monkeyAssetsIndexSegmentRomStart, &_monkeyAssetsIndexSegmentRomEnd, &_monkeySpritesheetIndexSegmentRomStart, &_monkeySpritesheetIndexSegmentRomEnd, 1, 0, &monkeyAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_MONKEY, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_MONKEY, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_HAWK, &_hawkTextureSegmentRomStart, &_hawkTextureSegmentRomEnd, &_hawkAssetsIndexSegmentRomStart, &_hawkAssetsIndexSegmentRomEnd, &_hawkSpritesheetIndexSegmentRomStart, &_hawkSpritesheetIndexSegmentRomEnd, 1, 0, &hawkAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_HAWK, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_HAWK, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_MOLE, &_moleTextureSegmentRomStart, &_moleTextureSegmentRomEnd, &_moleAssetsIndexSegmentRomStart, &_moleAssetsIndexSegmentRomEnd, &_moleSpritesheetIndexSegmentRomStart, &_moleSpritesheetIndexSegmentRomEnd, 1, 0, &playerAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_MOLE, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_MOLE, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_SQUIRREL, &_squirrelTextureSegmentRomStart, &_squirrelTextureSegmentRomEnd, &_squirrelAssetsIndexSegmentRomStart, &_squirrelAssetsIndexSegmentRomEnd, &_squirrelSpritesheetIndexSegmentRomStart, &_squirrelSpritesheetIndexSegmentRomEnd, 1, 0, &squirrelAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_SQUIRREL, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_SQUIRREL, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_DOG_RACE, &_dogRaceTextureSegmentRomStart, &_dogRaceTextureSegmentRomEnd, &_dogRaceAssetsIndexSegmentRomStart, &_dogRaceAssetsIndexSegmentRomEnd, &_dogRaceSpritesheetIndexSegmentRomStart, &_dogRaceSpritesheetIndexSegmentRomEnd, 1, 0, &dogRaceAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_DOG_RACE, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_DOG_RACE, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_CAT, &_catTextureSegmentRomStart, &_catTextureSegmentRomEnd, &_catAssetsIndexSegmentRomStart, &_catAssetsIndexSegmentRomEnd, &_catSpritesheetIndexSegmentRomStart, &_catSpritesheetIndexSegmentRomEnd, 1, 0, &catAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_CAT, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_CAT, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_DOG, &_dogTextureSegmentRomStart, &_dogTextureSegmentRomEnd, &_dogAssetsIndexSegmentRomStart, &_dogAssetsIndexSegmentRomEnd, &_dogSpritesheetIndexSegmentRomStart, &_dogSpritesheetIndexSegmentRomEnd, 1, 2, &dogAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_DOG, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_DOG, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_DOG_TITLE, &_dogTitleTextureSegmentRomStart, &_dogTitleTextureSegmentRomEnd, &_dogTitleAssetsIndexSegmentRomStart, &_dogTitleAssetsIndexSegmentRomEnd, &_dogTitleSpritesheetIndexSegmentRomStart, &_dogTitleSpritesheetIndexSegmentRomEnd, 1, 0, &dogTitleAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_DOG_TITLE, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_DOG_TITLE, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_HORSE_PONY, &_horsePonyTextureSegmentRomStart, &_horsePonyTextureSegmentRomEnd, &_horsePonyAssetsIndexSegmentRomStart, &_horsePonyAssetsIndexSegmentRomEnd, &_horsePonySpritesheetIndexSegmentRomStart, &_horsePonySpritesheetIndexSegmentRomEnd, 1, 0, &horsePonyAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_HORSE_PONY, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_HORSE_PONY, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_HORSE_GROWN, &_horseGrownTextureSegmentRomStart, &_horseGrownTextureSegmentRomEnd, &_horseGrownAssetsIndexSegmentRomStart, &_horseGrownAssetsIndexSegmentRomEnd, &_horseGrownSpritesheetIndexSegmentRomStart, &_horseGrownSpritesheetIndexSegmentRomEnd, 1, 0, &horseGrownAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_HORSE_GROWN, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_HORSE_GROWN, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_CHICK, &_chickTextureSegmentRomStart, &_chickTextureSegmentRomEnd, &_chickAssetsIndexSegmentRomStart, &_chickAssetsIndexSegmentRomEnd, &_chickSpritesheetIndexSegmentRomStart, &_chickSpritesheetIndexSegmentRomEnd, 1, 2, &chickAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_CHICK, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_CHICK, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_CHICKEN, &_chickenTextureSegmentRomStart, &_chickenTextureSegmentRomEnd, &_chickenAssetsIndexSegmentRomStart, &_chickenAssetsIndexSegmentRomEnd, &_chickenSpritesheetIndexSegmentRomStart, &_chickenSpritesheetIndexSegmentRomEnd, 1, 0, &chickenAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_CHICKEN, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_CHICKEN, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_CALF, &_calfTextureSegmentRomStart, &_calfTextureSegmentRomEnd, &_calfAssetsIndexSegmentRomStart, &_calfAssetsIndexSegmentRomEnd, &_calfSpritesheetIndexSegmentRomStart, &_calfSpritesheetIndexSegmentRomEnd, 1, 0, &calfAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_CALF, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_CALF, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_YOUNG_COW, &_youngCowTextureSegmentRomStart, &_youngCowTextureSegmentRomEnd, &_youngCowAssetsIndexSegmentRomStart, &_youngCowAssetsIndexSegmentRomEnd, &_youngCowSpritesheetIndexSegmentRomStart, &_youngCowSpritesheetIndexSegmentRomEnd, 1, 1, &youngCowAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_YOUNG_COW, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_YOUNG_COW, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_COW, &_cowTextureSegmentRomStart, &_cowTextureSegmentRomEnd, &_cowAssetsIndexSegmentRomStart, &_cowAssetsIndexSegmentRomEnd, &_cowSpritesheetIndexSegmentRomStart, &_cowSpritesheetIndexSegmentRomEnd, 1, 1, &cowAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_COW, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_COW, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_LAMB, &_lambTextureSegmentRomStart, &_lambTextureSegmentRomEnd, &_lambAssetsIndexSegmentRomStart, &_lambAssetsIndexSegmentRomEnd, &_lambSpritesheetIndexSegmentRomStart, &_lambSpritesheetIndexSegmentRomEnd, 1, 0, &lambAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_LAMB, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_LAMB, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_SHEEP, &_sheepTextureSegmentRomStart, &_sheepTextureSegmentRomEnd, &_sheepAssetsIndexSegmentRomStart, &_sheepAssetsIndexSegmentRomEnd, &_sheepSpritesheetIndexSegmentRomStart, &_sheepSpritesheetIndexSegmentRomEnd, 1, 0, &sheepAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_SHEEP, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_SHEEP, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_FROG, &_frogTextureSegmentRomStart, &_frogTextureSegmentRomEnd, &_frogAssetsIndexSegmentRomStart, &_frogAssetsIndexSegmentRomEnd, &_frogSpritesheetIndexSegmentRomStart, &_frogSpritesheetIndexSegmentRomEnd, 1, 0, &playerAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_FROG, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_FROG, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_CRAB, &_crabTextureSegmentRomStart, &_crabTextureSegmentRomEnd, &_crabAssetsIndexSegmentRomStart, &_crabAssetsIndexSegmentRomEnd, &_crabSpritesheetIndexSegmentRomStart, &_crabSpritesheetIndexSegmentRomEnd, 1, 0, &crabAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_CRAB, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_CRAB, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_HORNED_BEETLE, &_hornedBeetleTextureSegmentRomStart, &_hornedBeetleTextureSegmentRomEnd, &_hornedBeetleAssetsIndexSegmentRomStart, &_hornedBeetleAssetsIndexSegmentRomEnd, &_hornedBeetleSpritesheetIndexSegmentRomStart, &_hornedBeetleSpritesheetIndexSegmentRomEnd, 1, 0xFF, &hornedBeetleAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_HORNED_BEETLE, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_HORNED_BEETLE, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_STAG_BEETLE, &_stagBeetleTextureSegmentRomStart, &_stagBeetleTextureSegmentRomEnd, &_stagBeetleAssetsIndexSegmentRomStart, &_stagBeetleAssetsIndexSegmentRomEnd, &_stagBeetleSpritesheetIndexSegmentRomStart, &_stagBeetleSpritesheetIndexSegmentRomEnd, 1, 0xFF, &stagBeetleAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_STAG_BEETLE, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_STAG_BEETLE, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_BELL_RING_CRICKET, &_bellRingCricketTextureSegmentRomStart, &_bellRingCricketTextureSegmentRomEnd, &_bellRingCricketAssetsIndexSegmentRomStart, &_bellRingCricketAssetsIndexSegmentRomEnd, &_bellRingCricketSpritesheetIndexSegmentRomStart, &_bellRingCricketSpritesheetIndexSegmentRomEnd, 1, 0xFF, &bellRingCricketAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_BELL_RING_CRICKET, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_BELL_RING_CRICKET, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_CICADA, &_cicadaTextureSegmentRomStart, &_cicadaTextureSegmentRomEnd, &_cicadaAssetsIndexSegmentRomStart, &_cicadaAssetsIndexSegmentRomEnd, &_cicadaSpritesheetIndexSegmentRomStart, &_cicadaSpritesheetIndexSegmentRomEnd, 1, 0xFF, &cicadaAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_CICADA, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_CICADA, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_BIRD, &_birdTextureSegmentRomStart, &_birdTextureSegmentRomEnd, &_birdAssetsIndexSegmentRomStart, &_birdAssetsIndexSegmentRomEnd, &_birdSpritesheetIndexSegmentRomStart, &_birdSpritesheetIndexSegmentRomEnd, 1, 2, &birdAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_BIRD, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_BIRD, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_LADYBUG, &_ladybugTextureSegmentRomStart, &_ladybugTextureSegmentRomEnd, &_ladybugAssetsIndexSegmentRomStart, &_ladybugAssetsIndexSegmentRomEnd, &_ladybugSpritesheetIndexSegmentRomStart, &_ladybugSpritesheetIndexSegmentRomEnd, 1, 0xFF, &ladybugAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_LADYBUG, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_LADYBUG, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_DRAGONFLY, &_dragonflyTextureSegmentRomStart, &_dragonflyTextureSegmentRomEnd, &_dragonflyAssetsIndexSegmentRomStart, &_dragonflyAssetsIndexSegmentRomEnd, &_dragonflySpritesheetIndexSegmentRomStart, &_dragonflySpritesheetIndexSegmentRomEnd, 1, 2, &dragonflyAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_DRAGONFLY, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_DRAGONFLY, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_GRASSHOPPER, &_grasshopperTextureSegmentRomStart, &_grasshopperTextureSegmentRomEnd, &_grasshopperAssetsIndexSegmentRomStart, &_grasshopperAssetsIndexSegmentRomEnd, &_grasshopperSpritesheetIndexSegmentRomStart, &_grasshopperSpritesheetIndexSegmentRomEnd, 1, 0, &playerAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_GRASSHOPPER, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_GRASSHOPPER, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_SNAKE, &_snakeTextureSegmentRomStart, &_snakeTextureSegmentRomEnd, &_snakeAssetsIndexSegmentRomStart, &_snakeAssetsIndexSegmentRomEnd, &_snakeSpritesheetIndexSegmentRomStart, &_snakeSpritesheetIndexSegmentRomEnd, 1, 2, &snakeAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_SNAKE, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_SNAKE, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_PURPLE_BUTTERFLY, &_purpleButterflyTextureSegmentRomStart, &_purpleButterflyTextureSegmentRomEnd, &_purpleButterflyAssetsIndexSegmentRomStart, &_purpleButterflyAssetsIndexSegmentRomEnd, &_purpleButterflySpritesheetIndexSegmentRomStart, &_purpleButterflySpritesheetIndexSegmentRomEnd, 1, 0, &playerAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_PURPLE_BUTTERFLY, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_PURPLE_BUTTERFLY, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_DAD, &_dadTextureSegmentRomStart, &_dadTextureSegmentRomEnd, &_dadAssetsIndexSegmentRomStart, &_dadAssetsIndexSegmentRomEnd, &_dadSpritesheetIndexSegmentRomStart, &_dadSpritesheetIndexSegmentRomEnd, 1, 0, &playerAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_DAD, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_DAD, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_COW_INDOORS, &_cowIndoorsTextureSegmentRomStart, &_cowIndoorsTextureSegmentRomEnd, &_cowIndoorsAssetsIndexSegmentRomStart, &_cowIndoorsAssetsIndexSegmentRomEnd, &_cowIndoorsSpritesheetIndexSegmentRomStart, &_cowIndoorsSpritesheetIndexSegmentRomEnd, 1, 1, &cowIndoorsAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_COW_INDOORS, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_COW_INDOORS, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_HORSE_UNBRIDLED, &_horseUnbridledTextureSegmentRomStart, &_horseUnbridledTextureSegmentRomEnd, &_horseUnbridledAssetsIndexSegmentRomStart, &_horseUnbridledAssetsIndexSegmentRomEnd, &_horseUnbridledSpritesheetIndexSegmentRomStart, &_horseUnbridledSpritesheetIndexSegmentRomEnd, 1, 0, &horseUnbridledAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_HORSE_UNBRIDLED, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_HORSE_UNBRIDLED, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_HORSE_RACER, &_horseRacerTextureSegmentRomStart, &_horseRacerTextureSegmentRomEnd, &_horseRacerAssetsIndexSegmentRomStart, &_horseRacerAssetsIndexSegmentRomEnd, &_horseRacerSpritesheetIndexSegmentRomStart, &_horseRacerSpritesheetIndexSegmentRomEnd, 1, 0, &playerAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_HORSE_RACER, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_HORSE_RACER, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_EMPTY_ENTITY, &_emptyEntityTextureSegmentRomStart, &_emptyEntityTextureSegmentRomEnd, &_emptyEntityAssetsIndexSegmentRomStart, &_emptyEntityAssetsIndexSegmentRomEnd, &_emptyEntitySpritesheetIndexSegmentRomStart, &_emptyEntitySpritesheetIndexSegmentRomEnd, 1, 0, &playerAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_EMPTY_ENTITY, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_EMPTY_ENTITY, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_HOLDABLE_ITEMS_1, &_holdableItemsTextureSegmentRomStart, &_holdableItemsTextureSegmentRomEnd, &_holdableItemsAssetsIndexSegmentRomStart, &_holdableItemsAssetsIndexSegmentRomEnd, &_holdableItemsSpritesheetIndexSegmentRomStart, &_holdableItemsSpritesheetIndexSegmentRomEnd, 1, 0xFF, &holdableItemsAnimationScripts1);
+    setEntityCollisionBuffers(ENTITY_ASSET_HOLDABLE_ITEMS_1, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_HOLDABLE_ITEMS_1, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_EXTRA_FESTIVAL_ITEMS, &_extraFestivalTextureSegmentRomStart, &_extraFestivalTextureSegmentRomEnd, &_extraFestivalAssetsIndexSegmentRomStart, &_extraFestivalAssetsIndexSegmentRomEnd, &_extraFestivalSpritesheetIndexSegmentRomStart, &_extraFestivalSpritesheetIndexSegmentRomEnd, 1, 0, &homeItemsAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_EXTRA_FESTIVAL_ITEMS, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_EXTRA_FESTIVAL_ITEMS, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_HOLDABLE_ITEMS_2, &_holdableItemsTextureSegmentRomStart, &_holdableItemsTextureSegmentRomEnd, &_holdableItemsAssetsIndexSegmentRomStart, &_holdableItemsAssetsIndexSegmentRomEnd, &_holdableItemsSpritesheetIndexSegmentRomStart, &_holdableItemsSpritesheetIndexSegmentRomEnd, 1, 2, &shopItemsAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_HOLDABLE_ITEMS_2, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_HOLDABLE_ITEMS_2, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_HOLDABLE_ITEMS_3, &_holdableItemsTextureSegmentRomStart, &_holdableItemsTextureSegmentRomEnd, &_holdableItemsAssetsIndexSegmentRomStart, &_holdableItemsAssetsIndexSegmentRomEnd, &_holdableItemsSpritesheetIndexSegmentRomStart, &_holdableItemsSpritesheetIndexSegmentRomEnd, 1, 0xFF, &holdableItemsAnimationScripts2);
+    setEntityCollisionBuffers(ENTITY_ASSET_HOLDABLE_ITEMS_3, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_HOLDABLE_ITEMS_3, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_TOOLS, &_toolsTextureSegmentRomStart, &_toolsTextureSegmentRomEnd, &_toolsAssetsIndexSegmentRomStart, &_toolsAssetsIndexSegmentRomEnd, &_toolsSpritesheetIndexSegmentRomStart, &_toolsSpritesheetIndexSegmentRomEnd, 1, 0xFF, &toolsAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_TOOLS, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_TOOLS, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_HOLDABLE_ITEMS_4, &_holdableItemsTextureSegmentRomStart, &_holdableItemsTextureSegmentRomEnd, &_holdableItemsAssetsIndexSegmentRomStart, &_holdableItemsAssetsIndexSegmentRomEnd, &_holdableItemsSpritesheetIndexSegmentRomStart, &_holdableItemsSpritesheetIndexSegmentRomEnd, 1, 0xFF, &holdableItemsAnimationScripts3);
+    setEntityCollisionBuffers(ENTITY_ASSET_HOLDABLE_ITEMS_4, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_HOLDABLE_ITEMS_4, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_MARIA_HARRIS_BABY, &_mariaHarrisBabyTextureSegmentRomStart, &_mariaHarrisBabyTextureSegmentRomEnd, &_mariaHarrisBabyAssetsIndexSegmentRomStart, &_mariaHarrisBabyAssetsIndexSegmentRomEnd, &_mariaHarrisBabySpritesheetIndexSegmentRomStart, &_mariaHarrisBabySpritesheetIndexSegmentRomEnd, 1, 0, &mariaHarrisBabyAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_MARIA_HARRIS_BABY, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_MARIA_HARRIS_BABY, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_POPURI_GRAY_BABY, &_popuriGrayBabyTextureSegmentRomStart, &_popuriGrayBabyTextureSegmentRomEnd, &_popuriGrayBabyAssetsIndexSegmentRomStart, &_popuriGrayBabyAssetsIndexSegmentRomEnd, &_popuriGrayBabySpritesheetIndexSegmentRomStart, &_popuriGrayBabySpritesheetIndexSegmentRomEnd, 1, 0, &popuriGrayBabyAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_POPURI_GRAY_BABY, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_POPURI_GRAY_BABY, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_ELLI_JEFF_BABY, &_elliJeffBabyTextureSegmentRomStart, &_elliJeffBabyTextureSegmentRomEnd, &_elliJeffBabyAssetsIndexSegmentRomStart, &_elliJeffBabyAssetsIndexSegmentRomEnd, &_elliJeffBabySpritesheetIndexSegmentRomStart, &_elliJeffBabySpritesheetIndexSegmentRomEnd, 1, 0, &elliJeffBabyAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_ELLI_JEFF_BABY, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_ELLI_JEFF_BABY, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_ANN_CLIFF_BABY, &_annCliffBabyTextureSegmentRomStart, &_annCliffBabyTextureSegmentRomEnd, &_annCliffBabyAssetsIndexSegmentRomStart, &_annCliffBabyAssetsIndexSegmentRomEnd, &_annCliffBabySpritesheetIndexSegmentRomStart, &_annCliffBabySpritesheetIndexSegmentRomEnd, 1, 0, &annCliffBabyAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_ANN_CLIFF_BABY, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_ANN_CLIFF_BABY, 12, 12);
+    
+    initializeEntityAsset(ENTITY_ASSET_KAREN_KAI_BABY, &_karenKaiBabyTextureSegmentRomStart, &_karenKaiBabyTextureSegmentRomEnd, &_karenKaiBabyAssetsIndexSegmentRomStart, &_karenKaiBabyAssetsIndexSegmentRomEnd, &_karenKaiBabySpritesheetIndexSegmentRomStart, &_karenKaiBabySpritesheetIndexSegmentRomEnd, 1, 0, &karenKaiBabyAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_KAREN_KAI_BABY, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_KAREN_KAI_BABY, 12, 12);
     
 }
 
@@ -1334,99 +1334,99 @@ void func_80053088(void) {
 
 void func_800535DC(void) {
 
-    setTextAddresses(DIALOGUE_1_TEXT_INDEX, &_dialogue1TextIndexSegmentRomStart, &_dialogue1TextIndexSegmentRomEnd, &_dialogue1TextSegmentRomStart, (void*)DIALOGUE_TEXT_VADDR);
-    setTextAddresses(LIBRARY_TEXT_INDEX, &_libraryTextIndexSegmentRomStart, &_libraryTextIndexSegmentRomEnd, &_libraryTextSegmentRomStart, (void*)DIALOGUE_TEXT_VADDR);
-    setTextAddresses(DIARY_TEXT_INDEX, &_diaryTextIndexSegmentRomStart, &_diaryTextIndexSegmentRomEnd, &_diaryTextSegmentRomStart, (void*)DIALOGUE_TEXT_VADDR);
+    setTextAddresses(TEXT_1_TEXT_INDEX, &_text1TextIndexSegmentRomStart, &_text1TextIndexSegmentRomEnd, &_text1TextSegmentRomStart, (void*)TEXT_BANK_VADDR);
+    setTextAddresses(LIBRARY_TEXT_INDEX, &_libraryTextIndexSegmentRomStart, &_libraryTextIndexSegmentRomEnd, &_libraryTextSegmentRomStart, (void*)TEXT_BANK_VADDR);
+    setTextAddresses(DIARY_TEXT_INDEX, &_diaryTextIndexSegmentRomStart, &_diaryTextIndexSegmentRomEnd, &_diaryTextSegmentRomStart, (void*)TEXT_BANK_VADDR);
     
     // Japanese text
-    setTextAddresses(DIALOGUE_4_TEXT_INDEX, &_dialogue4TextIndexSegmentRomStart, &_dialogue4TextIndexSegmentRomEnd, &_dialogue4TextSegmentRomStart, (void*)DIALOGUE_TEXT_VADDR);
+    setTextAddresses(TEXT_4_TEXT_INDEX, &_text4TextIndexSegmentRomStart, &_text4TextIndexSegmentRomEnd, &_text4TextSegmentRomStart, (void*)TEXT_BANK_VADDR);
 
-    setTextAddresses(FESTIVAL_OVERLAY_SELECTIONS_TEXT_INDEX, &_festivalOverlaySelectionsTextIndexSegmentRomStart, &_festivalOverlaySelectionsTextIndexSegmentRomEnd, &_festivalOverlaySelectionsTextSegmentRomStart, (void*)DIALOGUE_TEXT_VADDR);
-    setTextAddresses(LETTERS_TEXT_INDEX, &_lettersTextIndexSegmentRomStart, &_lettersTextIndexSegmentRomEnd, &_lettersTextSegmentRomStart, (void*)DIALOGUE_TEXT_VADDR);
-    setTextAddresses(SHOP_TEXT_INDEX, &_shopTextIndexSegmentRomStart, &_shopTextIndexSegmentRomEnd, &_shopTextSegmentRomStart, (void*)DIALOGUE_TEXT_VADDR);
-    setTextAddresses(ANIMAL_INTERACTIONS_TEXT_INDEX, &_animalInteractionsTextIndexSegmentRomStart, &_animalInteractionsTextIndexSegmentRomEnd, &_animalInteractionsTextSegmentRomStart, (void*)DIALOGUE_TEXT_VADDR);
-    setTextAddresses(TV_TEXT_INDEX, &_tvTextIndexSegmentRomStart, &_tvTextIndexSegmentRomEnd, &_tvTextSegmentRomStart, (void*)DIALOGUE_TEXT_VADDR);
-    setTextAddresses(DIALOGUE_10_TEXT_INDEX, &_dialogue10TextIndexSegmentRomStart, &_dialogue10TextIndexSegmentRomEnd, &_dialogue10TextSegmentRomStart, (void*)DIALOGUE_TEXT_VADDR);
-    setTextAddresses(NAMING_SCREEN_TEXT_INDEX, &_namingScreenTextIndexSegmentRomStart, &_namingScreenTextIndexSegmentRomEnd, &_namingScreenTextSegmentRomStart, (void*)DIALOGUE_TEXT_VADDR);
+    setTextAddresses(FESTIVAL_OVERLAY_SELECTIONS_TEXT_INDEX, &_festivalOverlaySelectionsTextIndexSegmentRomStart, &_festivalOverlaySelectionsTextIndexSegmentRomEnd, &_festivalOverlaySelectionsTextSegmentRomStart, (void*)TEXT_BANK_VADDR);
+    setTextAddresses(LETTERS_TEXT_INDEX, &_lettersTextIndexSegmentRomStart, &_lettersTextIndexSegmentRomEnd, &_lettersTextSegmentRomStart, (void*)TEXT_BANK_VADDR);
+    setTextAddresses(SHOP_TEXT_INDEX, &_shopTextIndexSegmentRomStart, &_shopTextIndexSegmentRomEnd, &_shopTextSegmentRomStart, (void*)TEXT_BANK_VADDR);
+    setTextAddresses(ANIMAL_INTERACTIONS_TEXT_INDEX, &_animalInteractionsTextIndexSegmentRomStart, &_animalInteractionsTextIndexSegmentRomEnd, &_animalInteractionsTextSegmentRomStart, (void*)TEXT_BANK_VADDR);
+    setTextAddresses(TV_TEXT_INDEX, &_tvTextIndexSegmentRomStart, &_tvTextIndexSegmentRomEnd, &_tvTextSegmentRomStart, (void*)TEXT_BANK_VADDR);
+    setTextAddresses(TEXT_10_TEXT_INDEX, &_text10TextIndexSegmentRomStart, &_text10TextIndexSegmentRomEnd, &_text10TextSegmentRomStart, (void*)TEXT_BANK_VADDR);
+    setTextAddresses(NAMING_SCREEN_TEXT_INDEX, &_namingScreenTextIndexSegmentRomStart, &_namingScreenTextIndexSegmentRomEnd, &_namingScreenTextSegmentRomStart, (void*)TEXT_BANK_VADDR);
 
-    setTextAddresses(MARIA_TEXT_INDEX, &_mariaTextIndexSegmentRomStart, &_mariaTextIndexSegmentRomEnd, &_mariaTextSegmentRomStart, (void*)DIALOGUE_TEXT_VADDR);
-    setTextAddresses(POPURI_TEXT_INDEX, &_popuriTextIndexSegmentRomStart, &_popuriTextIndexSegmentRomEnd, &_popuriTextSegmentRomStart, (void*)DIALOGUE_TEXT_VADDR);
-    setTextAddresses(ELLI_TEXT_INDEX, &_elliTextIndexSegmentRomStart, &_elliTextIndexSegmentRomEnd, &_elliTextSegmentRomStart, (void*)DIALOGUE_TEXT_VADDR);
-    setTextAddresses(ANN_TEXT_INDEX, &_annTextIndexSegmentRomStart, &_annTextIndexSegmentRomEnd, &_annTextSegmentRomStart, (void*)DIALOGUE_TEXT_VADDR);
-    setTextAddresses(KAREN_TEXT_INDEX, &_karenTextIndexSegmentRomStart, &_karenTextIndexSegmentRomEnd, &_karenTextSegmentRomStart, (void*)DIALOGUE_TEXT_VADDR);
-    setTextAddresses(BABY_TEXT_INDEX, &_babyTextIndexSegmentRomStart, &_babyTextIndexSegmentRomEnd, &_babyTextSegmentRomStart, (void*)DIALOGUE_TEXT_VADDR);
-    setTextAddresses(HARRIS_TEXT_INDEX, &_harrisTextIndexSegmentRomStart, &_harrisTextIndexSegmentRomEnd, &_harrisTextSegmentRomStart, (void*)DIALOGUE_TEXT_VADDR);
-    setTextAddresses(GRAY_TEXT_INDEX, &_grayTextIndexSegmentRomStart, &_grayTextIndexSegmentRomEnd, &_grayTextSegmentRomStart, (void*)DIALOGUE_TEXT_VADDR);
-    setTextAddresses(JEFF_TEXT_INDEX, &_jeffTextIndexSegmentRomStart, &_jeffTextIndexSegmentRomEnd, &_jeffTextSegmentRomStart, (void*)DIALOGUE_TEXT_VADDR);
-    setTextAddresses(CLIFF_TEXT_INDEX, &_cliffTextIndexSegmentRomStart, &_cliffTextIndexSegmentRomEnd, &_cliffTextSegmentRomStart, (void*)DIALOGUE_TEXT_VADDR);
-    setTextAddresses(KAI_TEXT_INDEX, &_kaiTextIndexSegmentRomStart, &_kaiTextIndexSegmentRomEnd, &_kaiTextSegmentRomStart, (void*)DIALOGUE_TEXT_VADDR);
-    setTextAddresses(MAYOR_TEXT_INDEX, &_mayorTextIndexSegmentRomStart, &_mayorTextIndexSegmentRomEnd, &_mayorTextSegmentRomStart, (void*)DIALOGUE_TEXT_VADDR);
-    setTextAddresses(MAYOR_WIFE_TEXT_INDEX, &_mayorWifeTextIndexSegmentRomStart, &_mayorWifeTextIndexSegmentRomEnd, &_mayorWifeTextSegmentRomStart, (void*)DIALOGUE_TEXT_VADDR);
-    setTextAddresses(LILIA_TEXT_INDEX, &_liliaTextIndexSegmentRomStart, &_liliaTextIndexSegmentRomEnd, &_liliaTextSegmentRomStart, (void*)DIALOGUE_TEXT_VADDR);
-    setTextAddresses(BASIL_TEXT_INDEX, &_basilTextIndexSegmentRomStart, &_basilTextIndexSegmentRomEnd, &_basilTextSegmentRomStart, (void*)DIALOGUE_TEXT_VADDR);
-    setTextAddresses(ELLEN_TEXT_INDEX, &_ellenTextIndexSegmentRomStart, &_ellenTextIndexSegmentRomEnd, &_ellenTextSegmentRomStart, (void*)DIALOGUE_TEXT_VADDR);
-    setTextAddresses(DOUG_TEXT_INDEX, &_dougTextIndexSegmentRomStart, &_dougTextIndexSegmentRomEnd, &_dougTextSegmentRomStart, (void*)DIALOGUE_TEXT_VADDR);
-    setTextAddresses(GOTZ_TEXT_INDEX, &_gotzTextIndexSegmentRomStart, &_gotzTextIndexSegmentRomEnd, &_gotzTextSegmentRomStart, (void*)DIALOGUE_TEXT_VADDR);
-    setTextAddresses(SASHA_TEXT_INDEX, &_sashaTextIndexSegmentRomStart, &_sashaTextIndexSegmentRomEnd, &_sashaTextSegmentRomStart, (void*)DIALOGUE_TEXT_VADDR);
-    setTextAddresses(POTION_SHOP_DEALER_TEXT_INDEX, &_potionShopDealerTextIndexSegmentRomStart, &_potionShopDealerTextIndexSegmentRomEnd, &_potionShopDealerTextSegmentRomStart, (void*)DIALOGUE_TEXT_VADDR);
-    setTextAddresses(KENT_TEXT_INDEX, &_kentTextIndexSegmentRomStart, &_kentTextIndexSegmentRomEnd, &_kentTextSegmentRomStart, (void*)DIALOGUE_TEXT_VADDR);
-    setTextAddresses(STU_TEXT_INDEX, &_stuTextIndexSegmentRomStart, &_stuTextIndexSegmentRomEnd, &_stuTextSegmentRomStart, (void*)DIALOGUE_TEXT_VADDR);
-    setTextAddresses(MIDWIFE_TEXT_INDEX, &_midwifeTextIndexSegmentRomStart, &_midwifeTextIndexSegmentRomEnd, &_midwifeTextSegmentRomStart, (void*)DIALOGUE_TEXT_VADDR);
-    setTextAddresses(MAY_TEXT_INDEX, &_mayTextIndexSegmentRomStart, &_mayTextIndexSegmentRomEnd, &_mayTextSegmentRomStart, (void*)DIALOGUE_TEXT_VADDR);
-    setTextAddresses(RICK_TEXT_INDEX, &_rickTextIndexSegmentRomStart, &_rickTextIndexSegmentRomEnd, &_rickTextSegmentRomStart, (void*)DIALOGUE_TEXT_VADDR);
-    setTextAddresses(PASTOR_TEXT_INDEX, &_pastorTextIndexSegmentRomStart, &_pastorTextIndexSegmentRomEnd, &_pastorTextSegmentRomStart, (void*)DIALOGUE_TEXT_VADDR);
-    setTextAddresses(SHIPPER_TEXT_INDEX, &_shipperTextIndexSegmentRomStart, &_shipperTextIndexSegmentRomEnd, &_shipperTextSegmentRomStart, (void*)DIALOGUE_TEXT_VADDR);
-    setTextAddresses(SAIBARA_TEXT_INDEX, &_saibaraTextIndexSegmentRomStart, &_saibaraTextIndexSegmentRomEnd, &_saibaraTextSegmentRomStart, (void*)DIALOGUE_TEXT_VADDR);
-    setTextAddresses(DUKE_TEXT_INDEX, &_dukeTextIndexSegmentRomStart, &_dukeTextIndexSegmentRomEnd, &_dukeTextSegmentRomStart, (void*)DIALOGUE_TEXT_VADDR);
-    setTextAddresses(GREG_TEXT_INDEX, &_gregTextIndexSegmentRomStart, &_gregTextIndexSegmentRomEnd, &_gregTextSegmentRomStart, (void*)DIALOGUE_TEXT_VADDR);
-    setTextAddresses(ASSISTANT_CARPENTERS_TEXT_INDEX, &_assistantCarpentersTextIndexSegmentRomStart, &_assistantCarpentersTextIndexSegmentRomEnd, &_assistantCarpentersTextSegmentRomStart, (void*)DIALOGUE_TEXT_VADDR);
-    setTextAddresses(ASSISTANT_CARPENTERS_TEXT_INDEX, &_assistantCarpentersTextIndexSegmentRomStart, &_assistantCarpentersTextIndexSegmentRomEnd, &_assistantCarpentersTextSegmentRomStart, (void*)DIALOGUE_TEXT_VADDR);
-    setTextAddresses(MASTER_CARPENTER_TEXT_INDEX, &_masterCarpenterTextIndexSegmentRomStart, &_masterCarpenterTextIndexSegmentRomEnd, &_masterCarpenterTextSegmentRomStart, (void*)DIALOGUE_TEXT_VADDR);
-    setTextAddresses(HARVEST_SPRITES_TEXT_INDEX, &_harvestSpritesTextIndexSegmentRomStart, &_harvestSpritesTextIndexSegmentRomEnd, &_harvestSpritesTextSegmentRomStart, (void*)DIALOGUE_TEXT_VADDR);
-    setTextAddresses(HARVEST_SPRITES_TEXT_INDEX, &_harvestSpritesTextIndexSegmentRomStart, &_harvestSpritesTextIndexSegmentRomEnd, &_harvestSpritesTextSegmentRomStart, (void*)DIALOGUE_TEXT_VADDR);
-    setTextAddresses(HARVEST_SPRITES_TEXT_INDEX, &_harvestSpritesTextIndexSegmentRomStart, &_harvestSpritesTextIndexSegmentRomEnd, &_harvestSpritesTextSegmentRomStart, (void*)DIALOGUE_TEXT_VADDR);
-    setTextAddresses(BARLEY_TEXT_INDEX, &_barleyTextIndexSegmentRomStart, &_barleyTextIndexSegmentRomEnd, &_barleyTextSegmentRomStart, (void*)DIALOGUE_TEXT_VADDR);
-    setTextAddresses(SYDNEY_TEXT_INDEX, &_sydneyTextIndexSegmentRomStart, &_sydneyTextIndexSegmentRomEnd, &_sydneyTextSegmentRomStart, (void*)DIALOGUE_TEXT_VADDR);
-    setTextAddresses(MRS_MANA_AND_JOHN_TEXT_INDEX, &_mrsManaAndJohnTextIndexSegmentRomStart, &_mrsManaAndJohnTextIndexSegmentRomEnd, &_mrsManaAndJohnTextSegmentRomStart, (void*)DIALOGUE_TEXT_VADDR);
-    setTextAddresses(MRS_MANA_AND_JOHN_TEXT_INDEX, &_mrsManaAndJohnTextIndexSegmentRomStart, &_mrsManaAndJohnTextIndexSegmentRomEnd, &_mrsManaAndJohnTextSegmentRomStart, (void*)DIALOGUE_TEXT_VADDR);
-    setTextAddresses(ADDITIONAL_NPCS_TEXT_INDEX, &_additionalNpcsTextIndexSegmentRomStart, &_additionalNpcsTextIndexSegmentRomEnd, &_additionalNpcsTextSegmentRomStart, (void*)DIALOGUE_TEXT_VADDR);
+    setTextAddresses(MARIA_TEXT_INDEX, &_mariaTextIndexSegmentRomStart, &_mariaTextIndexSegmentRomEnd, &_mariaTextSegmentRomStart, (void*)TEXT_BANK_VADDR);
+    setTextAddresses(POPURI_TEXT_INDEX, &_popuriTextIndexSegmentRomStart, &_popuriTextIndexSegmentRomEnd, &_popuriTextSegmentRomStart, (void*)TEXT_BANK_VADDR);
+    setTextAddresses(ELLI_TEXT_INDEX, &_elliTextIndexSegmentRomStart, &_elliTextIndexSegmentRomEnd, &_elliTextSegmentRomStart, (void*)TEXT_BANK_VADDR);
+    setTextAddresses(ANN_TEXT_INDEX, &_annTextIndexSegmentRomStart, &_annTextIndexSegmentRomEnd, &_annTextSegmentRomStart, (void*)TEXT_BANK_VADDR);
+    setTextAddresses(KAREN_TEXT_INDEX, &_karenTextIndexSegmentRomStart, &_karenTextIndexSegmentRomEnd, &_karenTextSegmentRomStart, (void*)TEXT_BANK_VADDR);
+    setTextAddresses(BABY_TEXT_INDEX, &_babyTextIndexSegmentRomStart, &_babyTextIndexSegmentRomEnd, &_babyTextSegmentRomStart, (void*)TEXT_BANK_VADDR);
+    setTextAddresses(HARRIS_TEXT_INDEX, &_harrisTextIndexSegmentRomStart, &_harrisTextIndexSegmentRomEnd, &_harrisTextSegmentRomStart, (void*)TEXT_BANK_VADDR);
+    setTextAddresses(GRAY_TEXT_INDEX, &_grayTextIndexSegmentRomStart, &_grayTextIndexSegmentRomEnd, &_grayTextSegmentRomStart, (void*)TEXT_BANK_VADDR);
+    setTextAddresses(JEFF_TEXT_INDEX, &_jeffTextIndexSegmentRomStart, &_jeffTextIndexSegmentRomEnd, &_jeffTextSegmentRomStart, (void*)TEXT_BANK_VADDR);
+    setTextAddresses(CLIFF_TEXT_INDEX, &_cliffTextIndexSegmentRomStart, &_cliffTextIndexSegmentRomEnd, &_cliffTextSegmentRomStart, (void*)TEXT_BANK_VADDR);
+    setTextAddresses(KAI_TEXT_INDEX, &_kaiTextIndexSegmentRomStart, &_kaiTextIndexSegmentRomEnd, &_kaiTextSegmentRomStart, (void*)TEXT_BANK_VADDR);
+    setTextAddresses(MAYOR_TEXT_INDEX, &_mayorTextIndexSegmentRomStart, &_mayorTextIndexSegmentRomEnd, &_mayorTextSegmentRomStart, (void*)TEXT_BANK_VADDR);
+    setTextAddresses(MAYOR_WIFE_TEXT_INDEX, &_mayorWifeTextIndexSegmentRomStart, &_mayorWifeTextIndexSegmentRomEnd, &_mayorWifeTextSegmentRomStart, (void*)TEXT_BANK_VADDR);
+    setTextAddresses(LILIA_TEXT_INDEX, &_liliaTextIndexSegmentRomStart, &_liliaTextIndexSegmentRomEnd, &_liliaTextSegmentRomStart, (void*)TEXT_BANK_VADDR);
+    setTextAddresses(BASIL_TEXT_INDEX, &_basilTextIndexSegmentRomStart, &_basilTextIndexSegmentRomEnd, &_basilTextSegmentRomStart, (void*)TEXT_BANK_VADDR);
+    setTextAddresses(ELLEN_TEXT_INDEX, &_ellenTextIndexSegmentRomStart, &_ellenTextIndexSegmentRomEnd, &_ellenTextSegmentRomStart, (void*)TEXT_BANK_VADDR);
+    setTextAddresses(DOUG_TEXT_INDEX, &_dougTextIndexSegmentRomStart, &_dougTextIndexSegmentRomEnd, &_dougTextSegmentRomStart, (void*)TEXT_BANK_VADDR);
+    setTextAddresses(GOTZ_TEXT_INDEX, &_gotzTextIndexSegmentRomStart, &_gotzTextIndexSegmentRomEnd, &_gotzTextSegmentRomStart, (void*)TEXT_BANK_VADDR);
+    setTextAddresses(SASHA_TEXT_INDEX, &_sashaTextIndexSegmentRomStart, &_sashaTextIndexSegmentRomEnd, &_sashaTextSegmentRomStart, (void*)TEXT_BANK_VADDR);
+    setTextAddresses(POTION_SHOP_DEALER_TEXT_INDEX, &_potionShopDealerTextIndexSegmentRomStart, &_potionShopDealerTextIndexSegmentRomEnd, &_potionShopDealerTextSegmentRomStart, (void*)TEXT_BANK_VADDR);
+    setTextAddresses(KENT_TEXT_INDEX, &_kentTextIndexSegmentRomStart, &_kentTextIndexSegmentRomEnd, &_kentTextSegmentRomStart, (void*)TEXT_BANK_VADDR);
+    setTextAddresses(STU_TEXT_INDEX, &_stuTextIndexSegmentRomStart, &_stuTextIndexSegmentRomEnd, &_stuTextSegmentRomStart, (void*)TEXT_BANK_VADDR);
+    setTextAddresses(MIDWIFE_TEXT_INDEX, &_midwifeTextIndexSegmentRomStart, &_midwifeTextIndexSegmentRomEnd, &_midwifeTextSegmentRomStart, (void*)TEXT_BANK_VADDR);
+    setTextAddresses(MAY_TEXT_INDEX, &_mayTextIndexSegmentRomStart, &_mayTextIndexSegmentRomEnd, &_mayTextSegmentRomStart, (void*)TEXT_BANK_VADDR);
+    setTextAddresses(RICK_TEXT_INDEX, &_rickTextIndexSegmentRomStart, &_rickTextIndexSegmentRomEnd, &_rickTextSegmentRomStart, (void*)TEXT_BANK_VADDR);
+    setTextAddresses(PASTOR_TEXT_INDEX, &_pastorTextIndexSegmentRomStart, &_pastorTextIndexSegmentRomEnd, &_pastorTextSegmentRomStart, (void*)TEXT_BANK_VADDR);
+    setTextAddresses(SHIPPER_TEXT_INDEX, &_shipperTextIndexSegmentRomStart, &_shipperTextIndexSegmentRomEnd, &_shipperTextSegmentRomStart, (void*)TEXT_BANK_VADDR);
+    setTextAddresses(SAIBARA_TEXT_INDEX, &_saibaraTextIndexSegmentRomStart, &_saibaraTextIndexSegmentRomEnd, &_saibaraTextSegmentRomStart, (void*)TEXT_BANK_VADDR);
+    setTextAddresses(DUKE_TEXT_INDEX, &_dukeTextIndexSegmentRomStart, &_dukeTextIndexSegmentRomEnd, &_dukeTextSegmentRomStart, (void*)TEXT_BANK_VADDR);
+    setTextAddresses(GREG_TEXT_INDEX, &_gregTextIndexSegmentRomStart, &_gregTextIndexSegmentRomEnd, &_gregTextSegmentRomStart, (void*)TEXT_BANK_VADDR);
+    setTextAddresses(ASSISTANT_CARPENTERS_TEXT_INDEX, &_assistantCarpentersTextIndexSegmentRomStart, &_assistantCarpentersTextIndexSegmentRomEnd, &_assistantCarpentersTextSegmentRomStart, (void*)TEXT_BANK_VADDR);
+    setTextAddresses(ASSISTANT_CARPENTERS_TEXT_INDEX, &_assistantCarpentersTextIndexSegmentRomStart, &_assistantCarpentersTextIndexSegmentRomEnd, &_assistantCarpentersTextSegmentRomStart, (void*)TEXT_BANK_VADDR);
+    setTextAddresses(MASTER_CARPENTER_TEXT_INDEX, &_masterCarpenterTextIndexSegmentRomStart, &_masterCarpenterTextIndexSegmentRomEnd, &_masterCarpenterTextSegmentRomStart, (void*)TEXT_BANK_VADDR);
+    setTextAddresses(HARVEST_SPRITES_TEXT_INDEX, &_harvestSpritesTextIndexSegmentRomStart, &_harvestSpritesTextIndexSegmentRomEnd, &_harvestSpritesTextSegmentRomStart, (void*)TEXT_BANK_VADDR);
+    setTextAddresses(HARVEST_SPRITES_TEXT_INDEX, &_harvestSpritesTextIndexSegmentRomStart, &_harvestSpritesTextIndexSegmentRomEnd, &_harvestSpritesTextSegmentRomStart, (void*)TEXT_BANK_VADDR);
+    setTextAddresses(HARVEST_SPRITES_TEXT_INDEX, &_harvestSpritesTextIndexSegmentRomStart, &_harvestSpritesTextIndexSegmentRomEnd, &_harvestSpritesTextSegmentRomStart, (void*)TEXT_BANK_VADDR);
+    setTextAddresses(BARLEY_TEXT_INDEX, &_barleyTextIndexSegmentRomStart, &_barleyTextIndexSegmentRomEnd, &_barleyTextSegmentRomStart, (void*)TEXT_BANK_VADDR);
+    setTextAddresses(SYDNEY_TEXT_INDEX, &_sydneyTextIndexSegmentRomStart, &_sydneyTextIndexSegmentRomEnd, &_sydneyTextSegmentRomStart, (void*)TEXT_BANK_VADDR);
+    setTextAddresses(MRS_MANA_AND_JOHN_TEXT_INDEX, &_mrsManaAndJohnTextIndexSegmentRomStart, &_mrsManaAndJohnTextIndexSegmentRomEnd, &_mrsManaAndJohnTextSegmentRomStart, (void*)TEXT_BANK_VADDR);
+    setTextAddresses(MRS_MANA_AND_JOHN_TEXT_INDEX, &_mrsManaAndJohnTextIndexSegmentRomStart, &_mrsManaAndJohnTextIndexSegmentRomEnd, &_mrsManaAndJohnTextSegmentRomStart, (void*)TEXT_BANK_VADDR);
+    setTextAddresses(ADDITIONAL_NPCS_TEXT_INDEX, &_additionalNpcsTextIndexSegmentRomStart, &_additionalNpcsTextIndexSegmentRomEnd, &_additionalNpcsTextSegmentRomStart, (void*)TEXT_BANK_VADDR);
     
     // unnecessary setting for player baby and each NPC baby
-    setTextAddresses(NPC_BABY_TEXT_INDEX, &_babyTextIndexSegmentRomStart, &_babyTextIndexSegmentRomEnd, &_babyTextSegmentRomStart, (void*)DIALOGUE_TEXT_VADDR);
-    setTextAddresses(NPC_BABY_TEXT_INDEX, &_babyTextIndexSegmentRomStart, &_babyTextIndexSegmentRomEnd, &_babyTextSegmentRomStart, (void*)DIALOGUE_TEXT_VADDR);
-    setTextAddresses(NPC_BABY_TEXT_INDEX, &_babyTextIndexSegmentRomStart, &_babyTextIndexSegmentRomEnd, &_babyTextSegmentRomStart, (void*)DIALOGUE_TEXT_VADDR);
-    setTextAddresses(NPC_BABY_TEXT_INDEX, &_babyTextIndexSegmentRomStart, &_babyTextIndexSegmentRomEnd, &_babyTextSegmentRomStart, (void*)DIALOGUE_TEXT_VADDR);
-    setTextAddresses(NPC_BABY_TEXT_INDEX, &_babyTextIndexSegmentRomStart, &_babyTextIndexSegmentRomEnd, &_babyTextSegmentRomStart, (void*)DIALOGUE_TEXT_VADDR);
+    setTextAddresses(NPC_BABY_TEXT_INDEX, &_babyTextIndexSegmentRomStart, &_babyTextIndexSegmentRomEnd, &_babyTextSegmentRomStart, (void*)TEXT_BANK_VADDR);
+    setTextAddresses(NPC_BABY_TEXT_INDEX, &_babyTextIndexSegmentRomStart, &_babyTextIndexSegmentRomEnd, &_babyTextSegmentRomStart, (void*)TEXT_BANK_VADDR);
+    setTextAddresses(NPC_BABY_TEXT_INDEX, &_babyTextIndexSegmentRomStart, &_babyTextIndexSegmentRomEnd, &_babyTextSegmentRomStart, (void*)TEXT_BANK_VADDR);
+    setTextAddresses(NPC_BABY_TEXT_INDEX, &_babyTextIndexSegmentRomStart, &_babyTextIndexSegmentRomEnd, &_babyTextSegmentRomStart, (void*)TEXT_BANK_VADDR);
+    setTextAddresses(NPC_BABY_TEXT_INDEX, &_babyTextIndexSegmentRomStart, &_babyTextIndexSegmentRomEnd, &_babyTextSegmentRomStart, (void*)TEXT_BANK_VADDR);
     
     // unnecessary additional load
-    setTextAddresses(ADDITIONAL_NPCS_TEXT_INDEX, &_additionalNpcsTextIndexSegmentRomStart, &_additionalNpcsTextIndexSegmentRomEnd, &_additionalNpcsTextSegmentRomStart, (void*)DIALOGUE_TEXT_VADDR);
+    setTextAddresses(ADDITIONAL_NPCS_TEXT_INDEX, &_additionalNpcsTextIndexSegmentRomStart, &_additionalNpcsTextIndexSegmentRomEnd, &_additionalNpcsTextSegmentRomStart, (void*)TEXT_BANK_VADDR);
     
     // cutscenes and festivals
-    setTextAddresses(DIALOGUE_64_TEXT_INDEX, &_dialogue64TextIndexSegmentRomStart, &_dialogue64TextIndexSegmentRomEnd, &_dialogue64TextSegmentRomStart, (void*)DIALOGUE_TEXT_VADDR);
-    setTextAddresses(DIALOGUE_65_TEXT_INDEX, &_dialogue65TextIndexSegmentRomStart, &_dialogue65TextIndexSegmentRomEnd, &_dialogue65TextSegmentRomStart, (void*)DIALOGUE_TEXT_VADDR);
-    setTextAddresses(CUTSCENES_1_TEXT_INDEX, &_cutscenes1TextIndexSegmentRomStart, &_cutscenes1TextIndexSegmentRomEnd, &_cutscenes1TextSegmentRomStart, (void*)DIALOGUE_TEXT_VADDR);
-    setTextAddresses(DIALOGUE_54_TEXT_INDEX, &_dialogue54TextIndexSegmentRomStart, &_dialogue54TextIndexSegmentRomEnd, &_dialogue54TextSegmentRomStart, (void*)DIALOGUE_TEXT_VADDR);
-    setTextAddresses(MARRIED_DIALOGUES_TEXT_INDEX, &_marriedDialoguesTextIndexSegmentRomStart, &_marriedDialoguesTextIndexSegmentRomEnd, &_marriedDialoguesTextSegmentRomStart, (void*)DIALOGUE_TEXT_VADDR);
-    setTextAddresses(DIALOGUE_61_TEXT_INDEX, &_dialogue61TextIndexSegmentRomStart, &_dialogue61TextIndexSegmentRomEnd, &_dialogue61TextSegmentRomStart, (void*)DIALOGUE_TEXT_VADDR);
-    setTextAddresses(KAREN_CUTSCENES_1_TEXT_INDEX, &_karenCutscenes1TextIndexSegmentRomStart, &_karenCutscenes1TextIndexSegmentRomEnd, &_karenCutscenes1TextSegmentRomStart, (void*)DIALOGUE_TEXT_VADDR);
-    setTextAddresses(DIALOGUE_63_TEXT_INDEX, &_dialogue63TextIndexSegmentRomStart, &_dialogue63TextIndexSegmentRomEnd, &_dialogue63TextSegmentRomStart, (void*)DIALOGUE_TEXT_VADDR);
-    setTextAddresses(KAREN_CUTSCENES_2_TEXT_INDEX, &_karenCutscenes2TextIndexSegmentRomStart, &_karenCutscenes2TextIndexSegmentRomEnd, &_karenCutscenes2TextSegmentRomStart, (void*)DIALOGUE_TEXT_VADDR);
-    setTextAddresses(DIALOGUE_55_TEXT_INDEX, &_dialogue55TextIndexSegmentRomStart, &_dialogue55TextIndexSegmentRomEnd, &_dialogue55TextSegmentRomStart, (void*)DIALOGUE_TEXT_VADDR);
-    setTextAddresses(HORSE_RACE_TEXT_INDEX, &_horseRaceTextIndexSegmentRomStart, &_horseRaceTextIndexSegmentRomEnd, &_horseRaceTextSegmentRomStart, (void*)DIALOGUE_TEXT_VADDR);
-    setTextAddresses(DIALOGUE_49_TEXT_INDEX, &_dialogue49TextIndexSegmentRomStart, &_dialogue49TextIndexSegmentRomEnd, &_dialogue49TextSegmentRomStart, (void*)DIALOGUE_TEXT_VADDR);
-    setTextAddresses(VEGETABLE_FESTIVAL_TEXT_INDEX, &_vegetableFestivalTextIndexSegmentRomStart, &_vegetableFestivalTextIndexSegmentRomEnd, &_vegetableFestivalTextSegmentRomStart, (void*)DIALOGUE_TEXT_VADDR);
-    setTextAddresses(DIALOGUE_48_TEXT_INDEX, &_dialogue48TextIndexSegmentRomStart, &_dialogue48TextIndexSegmentRomEnd, &_dialogue48TextSegmentRomStart, (void*)DIALOGUE_TEXT_VADDR);
-    setTextAddresses(DIALOGUE_52_TEXT_INDEX, &_dialogue52TextIndexSegmentRomStart, &_dialogue52TextIndexSegmentRomEnd, &_dialogue52TextSegmentRomStart, (void*)DIALOGUE_TEXT_VADDR);
-    setTextAddresses(DIALOGUE_50_TEXT_INDEX, &_dialogue50TextIndexSegmentRomStart, &_dialogue50TextIndexSegmentRomEnd, &_dialogue50TextSegmentRomStart, (void*)DIALOGUE_TEXT_VADDR);
-    setTextAddresses(DIALOGUE_51_TEXT_INDEX, &_dialogue51TextIndexSegmentRomStart, &_dialogue51TextIndexSegmentRomEnd, &_dialogue51TextSegmentRomStart, (void*)DIALOGUE_TEXT_VADDR);
-    setTextAddresses(DIALOGUE_56_TEXT_INDEX, &_dialogue56TextIndexSegmentRomStart, &_dialogue56TextIndexSegmentRomEnd, &_dialogue56TextSegmentRomStart, (void*)DIALOGUE_TEXT_VADDR);
-    setTextAddresses(EGG_FESTIVAL_TEXT_INDEX, &_eggFestivalTextIndexSegmentRomStart, &_eggFestivalTextIndexSegmentRomEnd, &_eggFestivalTextSegmentRomStart, (void*)DIALOGUE_TEXT_VADDR);
-    setTextAddresses(DOG_RACE_TEXT_INDEX, &_dogRaceTextIndexSegmentRomStart, &_dogRaceTextIndexSegmentRomEnd, &_dogRaceTextSegmentRomStart, (void*)DIALOGUE_TEXT_VADDR);
-    setTextAddresses(SPIRIT_FESTIVAL_TEXT_INDEX, &_spiritFestivalTextIndexSegmentRomStart, &_spiritFestivalTextIndexSegmentRomEnd, &_spiritFestivalTextSegmentRomStart, (void*)DIALOGUE_TEXT_VADDR);
-    setTextAddresses(NEW_YEAR_FESTIVAL_TEXT_INDEX, &_newYearFestivalTextIndexSegmentRomStart, &_newYearFestivalTextIndexSegmentRomEnd, &_newYearFestivalTextSegmentRomStart, (void*)DIALOGUE_TEXT_VADDR);
-    setTextAddresses(FUNERAL_INTRO_TEXT_INDEX, &_funeralIntroTextIndexSegmentRomStart, &_funeralIntroTextIndexSegmentRomEnd, &_funeralIntroTextSegmentRomStart, (void*)DIALOGUE_TEXT_VADDR);
+    setTextAddresses(TEXT_64_TEXT_INDEX, &_text64TextIndexSegmentRomStart, &_text64TextIndexSegmentRomEnd, &_text64TextSegmentRomStart, (void*)TEXT_BANK_VADDR);
+    setTextAddresses(TEXT_65_TEXT_INDEX, &_text65TextIndexSegmentRomStart, &_text65TextIndexSegmentRomEnd, &_text65TextSegmentRomStart, (void*)TEXT_BANK_VADDR);
+    setTextAddresses(CUTSCENES_1_TEXT_INDEX, &_cutscenes1TextIndexSegmentRomStart, &_cutscenes1TextIndexSegmentRomEnd, &_cutscenes1TextSegmentRomStart, (void*)TEXT_BANK_VADDR);
+    setTextAddresses(TEXT_54_TEXT_INDEX, &_text54TextIndexSegmentRomStart, &_text54TextIndexSegmentRomEnd, &_text54TextSegmentRomStart, (void*)TEXT_BANK_VADDR);
+    setTextAddresses(MARRIED_DIALOGUES_TEXT_INDEX, &_marriedDialoguesTextIndexSegmentRomStart, &_marriedDialoguesTextIndexSegmentRomEnd, &_marriedDialoguesTextSegmentRomStart, (void*)TEXT_BANK_VADDR);
+    setTextAddresses(TEXT_61_TEXT_INDEX, &_text61TextIndexSegmentRomStart, &_text61TextIndexSegmentRomEnd, &_text61TextSegmentRomStart, (void*)TEXT_BANK_VADDR);
+    setTextAddresses(KAREN_CUTSCENES_1_TEXT_INDEX, &_karenCutscenes1TextIndexSegmentRomStart, &_karenCutscenes1TextIndexSegmentRomEnd, &_karenCutscenes1TextSegmentRomStart, (void*)TEXT_BANK_VADDR);
+    setTextAddresses(TEXT_63_TEXT_INDEX, &_text63TextIndexSegmentRomStart, &_text63TextIndexSegmentRomEnd, &_text63TextSegmentRomStart, (void*)TEXT_BANK_VADDR);
+    setTextAddresses(KAREN_CUTSCENES_2_TEXT_INDEX, &_karenCutscenes2TextIndexSegmentRomStart, &_karenCutscenes2TextIndexSegmentRomEnd, &_karenCutscenes2TextSegmentRomStart, (void*)TEXT_BANK_VADDR);
+    setTextAddresses(TEXT_55_TEXT_INDEX, &_text55TextIndexSegmentRomStart, &_text55TextIndexSegmentRomEnd, &_text55TextSegmentRomStart, (void*)TEXT_BANK_VADDR);
+    setTextAddresses(HORSE_RACE_TEXT_INDEX, &_horseRaceTextIndexSegmentRomStart, &_horseRaceTextIndexSegmentRomEnd, &_horseRaceTextSegmentRomStart, (void*)TEXT_BANK_VADDR);
+    setTextAddresses(TEXT_49_TEXT_INDEX, &_text49TextIndexSegmentRomStart, &_text49TextIndexSegmentRomEnd, &_text49TextSegmentRomStart, (void*)TEXT_BANK_VADDR);
+    setTextAddresses(VEGETABLE_FESTIVAL_TEXT_INDEX, &_vegetableFestivalTextIndexSegmentRomStart, &_vegetableFestivalTextIndexSegmentRomEnd, &_vegetableFestivalTextSegmentRomStart, (void*)TEXT_BANK_VADDR);
+    setTextAddresses(TEXT_48_TEXT_INDEX, &_text48TextIndexSegmentRomStart, &_text48TextIndexSegmentRomEnd, &_text48TextSegmentRomStart, (void*)TEXT_BANK_VADDR);
+    setTextAddresses(TEXT_52_TEXT_INDEX, &_text52TextIndexSegmentRomStart, &_text52TextIndexSegmentRomEnd, &_text52TextSegmentRomStart, (void*)TEXT_BANK_VADDR);
+    setTextAddresses(TEXT_50_TEXT_INDEX, &_text50TextIndexSegmentRomStart, &_text50TextIndexSegmentRomEnd, &_text50TextSegmentRomStart, (void*)TEXT_BANK_VADDR);
+    setTextAddresses(TEXT_51_TEXT_INDEX, &_text51TextIndexSegmentRomStart, &_text51TextIndexSegmentRomEnd, &_text51TextSegmentRomStart, (void*)TEXT_BANK_VADDR);
+    setTextAddresses(TEXT_56_TEXT_INDEX, &_text56TextIndexSegmentRomStart, &_text56TextIndexSegmentRomEnd, &_text56TextSegmentRomStart, (void*)TEXT_BANK_VADDR);
+    setTextAddresses(EGG_FESTIVAL_TEXT_INDEX, &_eggFestivalTextIndexSegmentRomStart, &_eggFestivalTextIndexSegmentRomEnd, &_eggFestivalTextSegmentRomStart, (void*)TEXT_BANK_VADDR);
+    setTextAddresses(DOG_RACE_TEXT_INDEX, &_dogRaceTextIndexSegmentRomStart, &_dogRaceTextIndexSegmentRomEnd, &_dogRaceTextSegmentRomStart, (void*)TEXT_BANK_VADDR);
+    setTextAddresses(SPIRIT_FESTIVAL_TEXT_INDEX, &_spiritFestivalTextIndexSegmentRomStart, &_spiritFestivalTextIndexSegmentRomEnd, &_spiritFestivalTextSegmentRomStart, (void*)TEXT_BANK_VADDR);
+    setTextAddresses(NEW_YEAR_FESTIVAL_TEXT_INDEX, &_newYearFestivalTextIndexSegmentRomStart, &_newYearFestivalTextIndexSegmentRomEnd, &_newYearFestivalTextSegmentRomStart, (void*)TEXT_BANK_VADDR);
+    setTextAddresses(FUNERAL_INTRO_TEXT_INDEX, &_funeralIntroTextIndexSegmentRomStart, &_funeralIntroTextIndexSegmentRomEnd, &_funeralIntroTextSegmentRomStart, (void*)TEXT_BANK_VADDR);
     
-    setTextAddresses(HOW_TO_PLAY_TEXT_INDEX, &_howToPlayTextIndexSegmentRomStart, &_howToPlayTextIndexSegmentRomEnd, &_howToPlayTextSegmentRomStart, (void*)DIALOGUE_TEXT_VADDR);
+    setTextAddresses(HOW_TO_PLAY_TEXT_INDEX, &_howToPlayTextIndexSegmentRomStart, &_howToPlayTextIndexSegmentRomEnd, &_howToPlayTextSegmentRomStart, (void*)TEXT_BANK_VADDR);
 
 }
 
@@ -1533,12 +1533,12 @@ void func_80054550(void) {
 
 void func_80054734(void) {
 
-    setDialogueBytecodeAddressInfo(0, DIALOGUE_1_TEXT_INDEX, 0, &_dialogueBytecodeSegment1IndexSegmentRomStart, &_dialogueBytecodeSegment1IndexSegmentRomEnd, (void*)DIALOGUE_BYTECODE_INDEX_VADDR, &_dialogueBytecodeSegment1SegmentRomStart, (void*)DIALOGUE_BYTECODE_VADDR);
+    setDialogueBytecodeAddressInfo(0, TEXT_1_TEXT_INDEX, 0, &_dialogueBytecodeSegment1IndexSegmentRomStart, &_dialogueBytecodeSegment1IndexSegmentRomEnd, (void*)DIALOGUE_BYTECODE_INDEX_VADDR, &_dialogueBytecodeSegment1SegmentRomStart, (void*)DIALOGUE_BYTECODE_VADDR);
     setDialogueBytecodeAddressInfo(1, DIARY_TEXT_INDEX, 2, &_dialogueBytecodeSegment2IndexSegmentRomStart, &_dialogueBytecodeSegment2IndexSegmentRomEnd, (void*)DIALOGUE_BYTECODE_INDEX_VADDR, &_dialogueBytecodeSegment2SegmentRomStart, (void*)DIALOGUE_BYTECODE_VADDR);
     setDialogueBytecodeAddressInfo(0x3D, SHOP_TEXT_INDEX, 6, &_dialogueBytecodeSegment62IndexSegmentRomStart, &_dialogueBytecodeSegment62IndexSegmentRomEnd, (void*)DIALOGUE_BYTECODE_INDEX_VADDR, &_dialogueBytecodeSegment62SegmentRomStart, (void*)DIALOGUE_BYTECODE_VADDR);
     setDialogueBytecodeAddressInfo(0x3E, FESTIVAL_OVERLAY_SELECTIONS_TEXT_INDEX, 4, &_dialogueBytecodeSegment63IndexSegmentRomStart, &_dialogueBytecodeSegment63IndexSegmentRomEnd, (void*)DIALOGUE_BYTECODE_INDEX_VADDR, &_dialogueBytecodeSegment63SegmentRomStart, (void*)DIALOGUE_BYTECODE_VADDR);
     setDialogueBytecodeAddressInfo(0x44, LIBRARY_TEXT_INDEX, 1, &_dialogueBytecodeSegment69IndexSegmentRomStart, &_dialogueBytecodeSegment69IndexSegmentRomEnd, (void*)DIALOGUE_BYTECODE_INDEX_VADDR, &_dialogueBytecodeSegment69SegmentRomStart, (void*)DIALOGUE_BYTECODE_VADDR);
-    setDialogueBytecodeAddressInfo(9, MARIA_TEXT_INDEX, 0x15, &_dialogueBytecodeSegment10IndexSegmentRomStart, &_dialogueBytecodeSegment10IndexSegmentRomEnd, (void*)DIALOGUE_BYTECODE_INDEX_VADDR, &_dialogueBytecodeSegment10SegmentRomStart, (void*)DIALOGUE_BYTECODE_VADDR);
+    setDialogueBytecodeAddressInfo(9, MARIA_TEXT_INDEX, 0x15, &_mariaDialogueBytecodeIndexSegmentRomStart, &_mariaDialogueBytecodeIndexSegmentRomEnd, (void*)DIALOGUE_BYTECODE_INDEX_VADDR, &_mariaDialogueBytecodeSegmentRomStart, (void*)DIALOGUE_BYTECODE_VADDR);
     setDialogueBytecodeAddressInfo(8, POPURI_TEXT_INDEX, 0x14, &_dialogueBytecodeSegment9IndexSegmentRomStart, &_dialogueBytecodeSegment9IndexSegmentRomEnd, (void*)DIALOGUE_BYTECODE_INDEX_VADDR, &_dialogueBytecodeSegment9SegmentRomStart, (void*)DIALOGUE_BYTECODE_VADDR);
     setDialogueBytecodeAddressInfo(2, ELLI_TEXT_INDEX, 0xB, &_dialogueBytecodeSegment3IndexSegmentRomStart, &_dialogueBytecodeSegment3IndexSegmentRomEnd, (void*)DIALOGUE_BYTECODE_INDEX_VADDR, &_dialogueBytecodeSegment3SegmentRomStart, (void*)DIALOGUE_BYTECODE_VADDR);
     setDialogueBytecodeAddressInfo(0xA, ANN_TEXT_INDEX, 0x17, &_dialogueBytecodeSegment11IndexSegmentRomStart, &_dialogueBytecodeSegment11IndexSegmentRomEnd, (void*)DIALOGUE_BYTECODE_INDEX_VADDR, &_dialogueBytecodeSegment11SegmentRomStart, (void*)DIALOGUE_BYTECODE_VADDR);
@@ -1585,24 +1585,24 @@ void func_80054734(void) {
     setDialogueBytecodeAddressInfo(0x43, NPC_BABY_TEXT_INDEX, 0x47, &_dialogueBytecodeSegment68IndexSegmentRomStart, &_dialogueBytecodeSegment68IndexSegmentRomEnd, (void*)DIALOGUE_BYTECODE_INDEX_VADDR, &_dialogueBytecodeSegment68SegmentRomStart, (void*)DIALOGUE_BYTECODE_VADDR);
     setDialogueBytecodeAddressInfo(0x43, NPC_BABY_TEXT_INDEX, 0x47, &_dialogueBytecodeSegment68IndexSegmentRomStart, &_dialogueBytecodeSegment68IndexSegmentRomEnd, (void*)DIALOGUE_BYTECODE_INDEX_VADDR, &_dialogueBytecodeSegment68SegmentRomStart, (void*)DIALOGUE_BYTECODE_VADDR);
     setDialogueBytecodeAddressInfo(0x45, ADDITIONAL_NPCS_TEXT_INDEX, 0x46, &_dialogueBytecodeSegment70IndexSegmentRomStart, &_dialogueBytecodeSegment70IndexSegmentRomEnd, (void*)DIALOGUE_BYTECODE_INDEX_VADDR, &_dialogueBytecodeSegment70SegmentRomStart, (void*)DIALOGUE_BYTECODE_VADDR);
-    setDialogueBytecodeAddressInfo(0x35, DIALOGUE_64_TEXT_INDEX, 0x3F, &_dialogueBytecodeSegment54IndexSegmentRomStart, &_dialogueBytecodeSegment54IndexSegmentRomEnd, (void*)DIALOGUE_BYTECODE_INDEX_VADDR, &_dialogueBytecodeSegment54SegmentRomStart, (void*)DIALOGUE_BYTECODE_VADDR);
-    setDialogueBytecodeAddressInfo(0x36, DIALOGUE_65_TEXT_INDEX, 0x40, &_dialogueBytecodeSegment55IndexSegmentRomStart, &_dialogueBytecodeSegment55IndexSegmentRomEnd, (void*)DIALOGUE_BYTECODE_INDEX_VADDR, &_dialogueBytecodeSegment55SegmentRomStart, (void*)DIALOGUE_BYTECODE_VADDR);
+    setDialogueBytecodeAddressInfo(0x35, TEXT_64_TEXT_INDEX, 0x3F, &_dialogueBytecodeSegment54IndexSegmentRomStart, &_dialogueBytecodeSegment54IndexSegmentRomEnd, (void*)DIALOGUE_BYTECODE_INDEX_VADDR, &_dialogueBytecodeSegment54SegmentRomStart, (void*)DIALOGUE_BYTECODE_VADDR);
+    setDialogueBytecodeAddressInfo(0x36, TEXT_65_TEXT_INDEX, 0x40, &_dialogueBytecodeSegment55IndexSegmentRomStart, &_dialogueBytecodeSegment55IndexSegmentRomEnd, (void*)DIALOGUE_BYTECODE_INDEX_VADDR, &_dialogueBytecodeSegment55SegmentRomStart, (void*)DIALOGUE_BYTECODE_VADDR);
     setDialogueBytecodeAddressInfo(0x27, CUTSCENES_1_TEXT_INDEX, 0x2D, &_dialogueBytecodeSegment40IndexSegmentRomStart, &_dialogueBytecodeSegment40IndexSegmentRomEnd, (void*)DIALOGUE_BYTECODE_INDEX_VADDR, &_dialogueBytecodeSegment40SegmentRomStart, (void*)DIALOGUE_BYTECODE_VADDR);
-    setDialogueBytecodeAddressInfo(0x2F, DIALOGUE_54_TEXT_INDEX, 0x35, &_dialogueBytecodeSegment48IndexSegmentRomStart, &_dialogueBytecodeSegment48IndexSegmentRomEnd, (void*)DIALOGUE_BYTECODE_INDEX_VADDR, &_dialogueBytecodeSegment48SegmentRomStart, (void*)DIALOGUE_BYTECODE_VADDR);
+    setDialogueBytecodeAddressInfo(0x2F, TEXT_54_TEXT_INDEX, 0x35, &_dialogueBytecodeSegment48IndexSegmentRomStart, &_dialogueBytecodeSegment48IndexSegmentRomEnd, (void*)DIALOGUE_BYTECODE_INDEX_VADDR, &_dialogueBytecodeSegment48SegmentRomStart, (void*)DIALOGUE_BYTECODE_VADDR);
     setDialogueBytecodeAddressInfo(0x38, MARRIED_DIALOGUES_TEXT_INDEX, 0x3B, &_dialogueBytecodeSegment57IndexSegmentRomStart, &_dialogueBytecodeSegment57IndexSegmentRomEnd, (void*)DIALOGUE_BYTECODE_INDEX_VADDR, &_dialogueBytecodeSegment57SegmentRomStart, (void*)DIALOGUE_BYTECODE_VADDR);
-    setDialogueBytecodeAddressInfo(0x39, DIALOGUE_61_TEXT_INDEX, 0x3C, &_dialogueBytecodeSegment58IndexSegmentRomStart, &_dialogueBytecodeSegment58IndexSegmentRomEnd, (void*)DIALOGUE_BYTECODE_INDEX_VADDR, &_dialogueBytecodeSegment58SegmentRomStart, (void*)DIALOGUE_BYTECODE_VADDR);
+    setDialogueBytecodeAddressInfo(0x39, TEXT_61_TEXT_INDEX, 0x3C, &_dialogueBytecodeSegment58IndexSegmentRomStart, &_dialogueBytecodeSegment58IndexSegmentRomEnd, (void*)DIALOGUE_BYTECODE_INDEX_VADDR, &_dialogueBytecodeSegment58SegmentRomStart, (void*)DIALOGUE_BYTECODE_VADDR);
     setDialogueBytecodeAddressInfo(0x33, KAREN_CUTSCENES_1_TEXT_INDEX, 0x3D, &_dialogueBytecodeSegment52IndexSegmentRomStart, &_dialogueBytecodeSegment52IndexSegmentRomEnd, (void*)DIALOGUE_BYTECODE_INDEX_VADDR, &_dialogueBytecodeSegment52SegmentRomStart, (void*)DIALOGUE_BYTECODE_VADDR);
-    setDialogueBytecodeAddressInfo(0x34, DIALOGUE_63_TEXT_INDEX, 0x3E, &_dialogueBytecodeSegment53IndexSegmentRomStart, &_dialogueBytecodeSegment53IndexSegmentRomEnd, (void*)DIALOGUE_BYTECODE_INDEX_VADDR, &_dialogueBytecodeSegment53SegmentRomStart, (void*)DIALOGUE_BYTECODE_VADDR);
+    setDialogueBytecodeAddressInfo(0x34, TEXT_63_TEXT_INDEX, 0x3E, &_dialogueBytecodeSegment53IndexSegmentRomStart, &_dialogueBytecodeSegment53IndexSegmentRomEnd, (void*)DIALOGUE_BYTECODE_INDEX_VADDR, &_dialogueBytecodeSegment53SegmentRomStart, (void*)DIALOGUE_BYTECODE_VADDR);
     setDialogueBytecodeAddressInfo(0x3C, KAREN_CUTSCENES_2_TEXT_INDEX, 0x42, &_dialogueBytecodeSegment61IndexSegmentRomStart, &_dialogueBytecodeSegment61IndexSegmentRomEnd, (void*)DIALOGUE_BYTECODE_INDEX_VADDR, &_dialogueBytecodeSegment61SegmentRomStart, (void*)DIALOGUE_BYTECODE_VADDR);
-    setDialogueBytecodeAddressInfo(0x30, DIALOGUE_55_TEXT_INDEX, 0x36, &_dialogueBytecodeSegment49IndexSegmentRomStart, &_dialogueBytecodeSegment49IndexSegmentRomEnd, (void*)DIALOGUE_BYTECODE_INDEX_VADDR, &_dialogueBytecodeSegment49SegmentRomStart, (void*)DIALOGUE_BYTECODE_VADDR);
+    setDialogueBytecodeAddressInfo(0x30, TEXT_55_TEXT_INDEX, 0x36, &_dialogueBytecodeSegment49IndexSegmentRomStart, &_dialogueBytecodeSegment49IndexSegmentRomEnd, (void*)DIALOGUE_BYTECODE_INDEX_VADDR, &_dialogueBytecodeSegment49SegmentRomStart, (void*)DIALOGUE_BYTECODE_VADDR);
     setDialogueBytecodeAddressInfo(0x32, HORSE_RACE_TEXT_INDEX, 0x3A, &_dialogueBytecodeSegment51IndexSegmentRomStart, &_dialogueBytecodeSegment51IndexSegmentRomEnd, (void*)DIALOGUE_BYTECODE_INDEX_VADDR, &_dialogueBytecodeSegment51SegmentRomStart, (void*)DIALOGUE_BYTECODE_VADDR);
-    setDialogueBytecodeAddressInfo(0x29, DIALOGUE_49_TEXT_INDEX, 0x30, &_dialogueBytecodeSegment42IndexSegmentRomStart, &_dialogueBytecodeSegment42IndexSegmentRomEnd, (void*)DIALOGUE_BYTECODE_INDEX_VADDR, &_dialogueBytecodeSegment42SegmentRomStart, (void*)DIALOGUE_BYTECODE_VADDR);
+    setDialogueBytecodeAddressInfo(0x29, TEXT_49_TEXT_INDEX, 0x30, &_dialogueBytecodeSegment42IndexSegmentRomStart, &_dialogueBytecodeSegment42IndexSegmentRomEnd, (void*)DIALOGUE_BYTECODE_INDEX_VADDR, &_dialogueBytecodeSegment42SegmentRomStart, (void*)DIALOGUE_BYTECODE_VADDR);
     setDialogueBytecodeAddressInfo(0x2E, VEGETABLE_FESTIVAL_TEXT_INDEX, 0x43, &_dialogueBytecodeSegment47IndexSegmentRomStart, &_dialogueBytecodeSegment47IndexSegmentRomEnd, (void*)DIALOGUE_BYTECODE_INDEX_VADDR, &_dialogueBytecodeSegment47SegmentRomStart, (void*)DIALOGUE_BYTECODE_VADDR);
-    setDialogueBytecodeAddressInfo(0x28, DIALOGUE_48_TEXT_INDEX, 0x2F, &_dialogueBytecodeSegment41IndexSegmentRomStart, &_dialogueBytecodeSegment41IndexSegmentRomEnd, (void*)DIALOGUE_BYTECODE_INDEX_VADDR, &_dialogueBytecodeSegment41SegmentRomStart, (void*)DIALOGUE_BYTECODE_VADDR);
-    setDialogueBytecodeAddressInfo(0x2C, DIALOGUE_52_TEXT_INDEX, 0x33, &_dialogueBytecodeSegment45IndexSegmentRomStart, &_dialogueBytecodeSegment45IndexSegmentRomEnd, (void*)DIALOGUE_BYTECODE_INDEX_VADDR, &_dialogueBytecodeSegment45SegmentRomStart, (void*)DIALOGUE_BYTECODE_VADDR);
-    setDialogueBytecodeAddressInfo(0x2A, DIALOGUE_50_TEXT_INDEX, 0x31, &_dialogueBytecodeSegment43IndexSegmentRomStart, &_dialogueBytecodeSegment43IndexSegmentRomEnd, (void*)DIALOGUE_BYTECODE_INDEX_VADDR, &_dialogueBytecodeSegment43SegmentRomStart, (void*)DIALOGUE_BYTECODE_VADDR);
-    setDialogueBytecodeAddressInfo(0x2B, DIALOGUE_51_TEXT_INDEX, 0x32, &_dialogueBytecodeSegment44IndexSegmentRomStart, &_dialogueBytecodeSegment44IndexSegmentRomEnd, (void*)DIALOGUE_BYTECODE_INDEX_VADDR, &_dialogueBytecodeSegment44SegmentRomStart, (void*)DIALOGUE_BYTECODE_VADDR);
-    setDialogueBytecodeAddressInfo(0x31, DIALOGUE_56_TEXT_INDEX, 0x37, &_dialogueBytecodeSegment50IndexSegmentRomStart, &_dialogueBytecodeSegment50IndexSegmentRomEnd, (void*)DIALOGUE_BYTECODE_INDEX_VADDR, &_dialogueBytecodeSegment50SegmentRomStart, (void*)DIALOGUE_BYTECODE_VADDR);
+    setDialogueBytecodeAddressInfo(0x28, TEXT_48_TEXT_INDEX, 0x2F, &_dialogueBytecodeSegment41IndexSegmentRomStart, &_dialogueBytecodeSegment41IndexSegmentRomEnd, (void*)DIALOGUE_BYTECODE_INDEX_VADDR, &_dialogueBytecodeSegment41SegmentRomStart, (void*)DIALOGUE_BYTECODE_VADDR);
+    setDialogueBytecodeAddressInfo(0x2C, TEXT_52_TEXT_INDEX, 0x33, &_dialogueBytecodeSegment45IndexSegmentRomStart, &_dialogueBytecodeSegment45IndexSegmentRomEnd, (void*)DIALOGUE_BYTECODE_INDEX_VADDR, &_dialogueBytecodeSegment45SegmentRomStart, (void*)DIALOGUE_BYTECODE_VADDR);
+    setDialogueBytecodeAddressInfo(0x2A, TEXT_50_TEXT_INDEX, 0x31, &_dialogueBytecodeSegment43IndexSegmentRomStart, &_dialogueBytecodeSegment43IndexSegmentRomEnd, (void*)DIALOGUE_BYTECODE_INDEX_VADDR, &_dialogueBytecodeSegment43SegmentRomStart, (void*)DIALOGUE_BYTECODE_VADDR);
+    setDialogueBytecodeAddressInfo(0x2B, TEXT_51_TEXT_INDEX, 0x32, &_dialogueBytecodeSegment44IndexSegmentRomStart, &_dialogueBytecodeSegment44IndexSegmentRomEnd, (void*)DIALOGUE_BYTECODE_INDEX_VADDR, &_dialogueBytecodeSegment44SegmentRomStart, (void*)DIALOGUE_BYTECODE_VADDR);
+    setDialogueBytecodeAddressInfo(0x31, TEXT_56_TEXT_INDEX, 0x37, &_dialogueBytecodeSegment50IndexSegmentRomStart, &_dialogueBytecodeSegment50IndexSegmentRomEnd, (void*)DIALOGUE_BYTECODE_INDEX_VADDR, &_dialogueBytecodeSegment50SegmentRomStart, (void*)DIALOGUE_BYTECODE_VADDR);
     setDialogueBytecodeAddressInfo(0x37, EGG_FESTIVAL_TEXT_INDEX, 0x41, &_dialogueBytecodeSegment56IndexSegmentRomStart, &_dialogueBytecodeSegment56IndexSegmentRomEnd, (void*)DIALOGUE_BYTECODE_INDEX_VADDR, &_dialogueBytecodeSegment56SegmentRomStart, (void*)DIALOGUE_BYTECODE_VADDR);
     setDialogueBytecodeAddressInfo(0x2D, DOG_RACE_TEXT_INDEX, 0x34, &_dialogueBytecodeSegment46IndexSegmentRomStart, &_dialogueBytecodeSegment46IndexSegmentRomEnd, (void*)DIALOGUE_BYTECODE_INDEX_VADDR, &_dialogueBytecodeSegment46SegmentRomStart, (void*)DIALOGUE_BYTECODE_VADDR);
     setDialogueBytecodeAddressInfo(0x3B, NEW_YEAR_FESTIVAL_TEXT_INDEX, 0x38, &_dialogueBytecodeSegment60IndexSegmentRomStart, &_dialogueBytecodeSegment60IndexSegmentRomEnd, (void*)DIALOGUE_BYTECODE_INDEX_VADDR, &_dialogueBytecodeSegment60SegmentRomStart, (void*)DIALOGUE_BYTECODE_VADDR);

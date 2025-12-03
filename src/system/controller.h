@@ -63,7 +63,7 @@ extern u32 checkButtonHeld(u8 contIndex, u32 buttonPattern);
 extern u32 checkButtonPressed(u8 contIndex, u32 buttonPattern);
 extern u32 checkButtonReleased(u8 contIndex, u32 buttonPattern);
 extern u32 checkButtonRepeat(u8 contIndex, u32 buttonPattern);
-extern s8 GetStickXValueSigned(u8 contIndex);
+extern s8 getStickXValueSigned(u8 contIndex);
 extern s8 getStickYValueSigned(u8 contIndex);
 extern u8 getStickXValueUnsigned(u8 contIndex);
 extern u8 getStickYValueUnsigned(u8 contIndex);

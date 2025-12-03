@@ -341,7 +341,7 @@ segments:
       - [ 0xEF680, .data, game/level]
       - [ 0xEFD00, .data, game/npc]
       - [ 0xEFDC0, .data, game/animals]
-      - [ 0xEFEF0, data, game/setCutscenes]
+      - [ 0xEFEF0, .data, game/setCutscenes]
       - [ 0xF0250, data, game/cutsceneFieldTiles]
       - [ 0xF16F0, data, game/gameAudio] # wave table
       - [ 0xF2080, data, game/overlayScreens]
@@ -509,39 +509,168 @@ segments:
       - [ 0xFF5C0, c, overlays/gamePakBuffer]
       - { start:  0xFF5C0, type: .bss, vram: 0x8030E000, name: overlays/gamePakBuffer }
 
-  - name: cutsceneBanks
+  # farm cutscenes: shipper, animal purchase
+  - name: cutsceneBank1 
     type: bin
     dir: cutscenes
     start: 0xFF5C0
-    follows_vram: gamePakBuffer
-    files:
-      - [0xFF5C0, bin, "cutscenes/cutsceneBank1"]
-      - [0x100180, bin, "cutscenes/cutsceneBank2"]
-      - [0x109920, bin, "cutscenes/cutsceneBank3"]
-      - [0x10EA80, bin, "cutscenes/cutsceneBank4"]
-      - [0x10F980, bin, "cutscenes/cutsceneBank5"]
-      - [0x115310, bin, "cutscenes/cutsceneBank6"]
-      - [0x1175F0, bin, "cutscenes/cutsceneBank7"]
-      - [0x118D70, bin, "cutscenes/cutsceneBank8"]
-      - [0x120910, bin, "cutscenes/cutsceneBank9"]
-      - [0x123CE0, bin, "cutscenes/cutsceneBank10"]
-      - [0x125200, bin, "cutscenes/cutsceneBank11"]
-      - [0x129760, bin, "cutscenes/cutsceneBank12"]
-      - [0x12FE90, bin, "cutscenes/cutsceneBank13"]
-      - [0x134510, bin, "cutscenes/cutsceneBank14"]
-      - [0x135F40, bin, "cutscenes/cutsceneBank15"]
-      - [0x136930, bin, "cutscenes/cutsceneBank16"]
-      - [0x1385E0, bin, "cutscenes/cutsceneBank17"]
-      - [0x139840, bin, "cutscenes/cutsceneBank18"]
-      - [0x13AFC0, bin, "cutscenes/cutsceneBank19"]
-      - [0x13D470, bin, "cutscenes/cutsceneBank20"]
-      - [0x13FAC0, bin, "cutscenes/cutsceneBank21"]
-      - [0x1485B0, bin, "cutscenes/cutsceneBank22"]
-      - [0x149CC0, bin, "cutscenes/cutsceneBank23"]
-      - [0x14B8F0, bin, "cutscenes/cutsceneBank24"]
-      - [0x150120, bin, "cutscenes/cutsceneBank25"]
-      - [0x1510B0, bin, "cutscenes/cutsceneBank26"]
 
+  # farm visits
+  - name: cutsceneBank2
+    type: bin
+    dir: cutscenes
+    start: 0x100180
+
+  # marriage, births
+  - name: cutsceneBank3
+    type: bin
+    dir: cutscenes
+    start: 0x109920
+    
+  # cliff leaving, shady salesman, ann sprained ankle
+  - name: cutsceneBank4
+    type: bin
+    dir: cutscenes
+    start: 0x10EA80
+
+  # girl cutscenes
+  - name: cutsceneBank5
+    type: bin
+    dir: cutscenes
+    start: 0x10F980
+
+  # ann cutscenes
+  - name: cutsceneBank6
+    type: bin
+    dir: cutscenes
+    start: 0x115310
+
+  # karen cutscenes
+  - name: cutsceneBank7
+    type: bin
+    dir: cutscenes
+    start: 0x1175F0 
+
+  # wedding, rival events, new year's, starry night festval
+  - name: cutsceneBank8
+    type: bin
+    dir: cutscenes
+    start: 0x118D70
+  
+  # maria cutscenes
+  - name: cutsceneBank9
+    type: bin
+    dir: cutscenes
+    start: 0x120910
+
+  # karen cutscenes 2 (beach fireworks, heart events)
+  - name: cutsceneBank10
+    type: bin
+    dir: cutscenes
+    start: 0x123CE0
+
+  # sowing festival
+  - name: cutsceneBank11
+    type: bin
+    dir: cutscenes
+    start: 0x125200
+
+  # horse race
+  - name: cutsceneBank12
+    type: bin
+    dir: cutscenes
+    start: 0x129760
+
+  # flower festival
+  - name: cutsceneBank13
+    type: bin
+    dir: cutscenes
+    start: 0x12FE90
+
+  # vegetable festival
+  - name: cutsceneBank14
+    type: bin
+    dir: cutscenes
+    start: 0x134510
+
+  # square fireworks
+  - name: fireworksFestival
+    type: bin
+    dir: cutscenes
+    start: 0x135F40
+
+  # firefly festival
+  - name: cutsceneBank16
+    type: bin
+    dir: cutscenes
+    start: 0x136930
+
+  # sea festival
+  - name: cutsceneBank17
+    type: bin
+    dir: cutscenes
+    start: 0x1385E0
+
+  # cow festival
+  - name: cutsceneBank18
+    type: bin
+    dir: cutscenes
+    start: 0x139840
+
+  # harvest festival
+  - name: cutsceneBank19
+    type: bin
+    dir: cutscenes
+    start: 0x13AFC0
+
+  # egg festival
+  - name: cutsceneBank20
+    type: bin
+    dir: cutscenes
+    start: 0x13D470
+
+  # dog race
+  - name: cutsceneBank21
+    type: bin
+    dir: cutscenes
+    start: 0x13FAC0
+
+  # spirit festival
+  - name: cutsceneBank22
+    type: bin
+    dir: cutscenes
+    start: 0x144F60
+
+  # new year festival
+  - name: cutsceneBank23
+    type: bin
+    dir: cutscenes
+    start: 0x1485B0
+
+  # intro/opening
+  - name: cutsceneBank24
+    type: bin
+    dir: cutscenes
+    start: 0x149CC0
+
+  # evaluation
+  - name: cutsceneBank25
+    type: bin
+    dir: cutscenes
+    start: 0x14B8F0
+
+  # demo cutscenes
+  - name: cutsceneBank26
+    type: bin
+    dir: cutscenes
+    start: 0x150120
+
+  # how to play
+  - name: cutsceneBank27
+    type: bin
+    dir: cutscenes
+    start: 0x1510B0
+    
   # ci8 spritesheet format:
   #   sprite1:
   #     header (4 bytes)
@@ -2957,12 +3086,12 @@ segments:
     dir: sprites/effects
     start: 0xCC0220
 
-  - name: chimnySmokeTexture
+  - name: chimneySmokeTexture
     type: bin
     dir: sprites/effects
     start: 0xCC0240
 
-  - name: chimnySmokeAssetsIndex
+  - name: chimneySmokeAssetsIndex
     type: bin
     dir: sprites/effects
     start: 0xCC1BB0
@@ -2987,12 +3116,12 @@ segments:
     dir: sprites/effects
     start: 0xCC3A50
 
-  - name: blueSparkleTexture
+  - name: fairiesTexture
     type: bin
     dir: sprites/effects
     start: 0xCC3A70
 
-  - name: blueSparkleAssetsIndex
+  - name: fairiesTextureAssetsIndex
     type: bin
     dir: sprites/effects
     start: 0xCC4600
@@ -3348,17 +3477,17 @@ segments:
     dir: sprites/objects
     start: 0xD82FF0
 
-  - name: sowingFestivalTexture
+  - name: extraFestivalTexture
     type: bin
     dir: sprites/festivals
     start: 0xD835A0
     
-  - name: sowingFestivalAssetsIndex
+  - name: extraFestivalAssetsIndex
     type: bin
     dir: sprites/festivals
     start: 0xD86D40
 
-  - name: sowingFestivalSpritesheetIndex
+  - name: extraFestivalSpritesheetIndex
     type: bin
     dir: sprites/festivals
     start: 0xD86D60
@@ -3505,724 +3634,725 @@ segments:
     dir: sprites/font
     start: 0xE137D0
 
-  - name: dialogue1Text
+  - name: text1Text
     type: bin
-    dir: text/dialogue0
+    dir: text
     start: 0xE13800
 
-  - name: dialogue1TextIndex
+  - name: text1TextIndex
     type: bin
-    dir: text/dialogue0
+    dir: text
     start: 0xE13920
 
   - name: libraryText
     type: bin
-    dir: text/library
+    dir: text
     start: 0xE13990
 
   - name: libraryTextIndex
     type: bin
-    dir: text/library
+    dir: text
     start: 0xE13C30
 
   - name: diaryText
     type: bin
-    dir: text/diary
+    dir: text
     start: 0xE13C60
 
   - name: diaryTextIndex
     type: bin
-    dir: text/diary
+    dir: text
     start: 0xE167C0
 
-  - name: dialogue4Text
+  # Japanese text
+  - name: text4Text
     type: bin
-    dir: text/dialogue3
+    dir: text
     start: 0xE16A90
 
-  - name: dialogue4TextIndex
+  - name: text4TextIndex
     type: bin
-    dir: text/dialogue3
+    dir: text
     start: 0xE19F60
 
   - name: festivalOverlaySelectionsText
     type: bin
-    dir: text/festival-overlay-selections
+    dir: text
     start: 0xE19FF0
 
   - name: festivalOverlaySelectionsTextIndex
     type: bin
-    dir: text/festival-overlay-selections
+    dir: text
     start: 0xE1B3A0
 
   - name: lettersText
     type: bin
-    dir: text/letters
+    dir: text
     start: 0xE1B4E0
 
   - name: lettersTextIndex
     type: bin
-    dir: text/letters
+    dir: text
     start: 0xE1C8C0
 
   - name: shopText
     type: bin
-    dir: text/shop
+    dir: text
     start: 0xE1C9C0
 
   - name: shopTextIndex
     type: bin
-    dir: text/shop
+    dir: text
     start: 0xE21150
 
   - name: animalInteractionsText
     type: bin
-    dir: text/animal-interactions
+    dir: text
     start: 0xE21700
 
   - name: animalInteractionsTextIndex
     type: bin
-    dir: text/animal-interactions
+    dir: text
     start: 0xE218A0
 
   - name: tvText
     type: bin
-    dir: text/tv
+    dir: text
     start: 0xE218D0
 
   - name: tvTextIndex
     type: bin
-    dir: text/tv
+    dir: text
     start: 0xE24E20
 
-  - name: dialogue10Text
+  - name: text10Text
     type: bin
-    dir: text/dialogue10
+    dir: text
     start: 0xE24F60
 
-  - name: dialogue10TextIndex
+  - name: text10TextIndex
     type: bin
-    dir: text/dialogue10
+    dir: text
     start: 0xE24F70
 
   - name: namingScreenText
     type: bin
-    dir: text/naming-screen
+    dir: text
     start: 0xE24F80
 
   - name: namingScreenTextIndex
     type: bin
-    dir: text/naming-screen
+    dir: text
     start: 0xE25170
 
   - name: elliText
     type: bin
-    dir: dialogue/npc/elli
+    dir: text
     start: 0xE251D0
 
   - name: elliTextIndex
     type: bin
-    dir: dialogue/npc/elli
+    dir: text
     start: 0xE28460
 
   - name: kaiText
     type: bin
-    dir: dialogue/npc/kai
+    dir: text
     start: 0xE28720
 
   - name: kaiTextIndex
     type: bin
-    dir: dialogue/npc/kai
+    dir: text
     start: 0xE2A230
 
   - name: karenText
     type: bin
-    dir: dialogue/npc/karen
+    dir: text
     start: 0xE2A380
 
   - name: karenTextIndex
     type: bin
-    dir: dialogue/npc/karen
+    dir: text
     start: 0xE2D080
 
   - name: gotzText
     type: bin
-    dir: dialogue/npc/gotz
+    dir: text
     start: 0xE2D330
 
   - name: gotzTextIndex
     type: bin
-    dir: dialogue/npc/gotz
+    dir: text
     start: 0xE2E500
 
   - name: sashaText
     type: bin
-    dir: dialogue/npc/sasha
+    dir: text
     start: 0xE2E600
 
   - name: sashaTextIndex
     type: bin
-    dir: dialogue/npc/sasha
+    dir: text
     start: 0xE2F650
 
   - name: cliffText
     type: bin
-    dir: dialogue/npc/cliff
+    dir: text
     start: 0xE2F730
 
   - name: cliffTextIndex
     type: bin
-    dir: dialogue/npc/cliff
+    dir: text
     start: 0xE30ED0
 
   - name: jeffText
     type: bin
-    dir: dialogue/npc/jeff
+    dir: text
     start: 0xE31010
 
   - name: jeffTextIndex
     type: bin
-    dir: dialogue/npc/jeff
+    dir: text
     start: 0xE33020
 
   - name: kentText
     type: bin
-    dir: dialogue/npc/kent
+    dir: text
     start: 0xE33190
 
   - name: kentTextIndex
     type: bin
-    dir: dialogue/npc/kent
+    dir: text
     start: 0xE34650
 
   - name: harrisText
     type: bin
-    dir: dialogue/npc/harris
+    dir: text
     start: 0xE34790
 
   - name: harrisTextIndex
     type: bin
-    dir: dialogue/npc/harris
+    dir: text
     start: 0xE36000
 
   - name: popuriText
     type: bin
-    dir: dialogue/npc/popuri
+    dir: text
     start: 0xE36150
 
   - name: popuriTextIndex
     type: bin
-    dir: dialogue/npc/popuri
+    dir: text
     start: 0xE39360
 
   - name: mariaText
     type: bin
-    dir: dialogue/npc/maria
+    dir: text
     start: 0xE39610
 
   - name: mariaTextIndex
     type: bin
-    dir: dialogue/npc/maria
+    dir: text
     start: 0xE3C700
 
   - name: mayText
     type: bin
-    dir: dialogue/npc/may
+    dir: text
     start: 0xE3C9A0
 
   - name: mayTextIndex
     type: bin
-    dir: dialogue/npc/may
+    dir: text
     start: 0xE3D600
 
   - name: annText
     type: bin
-    dir: dialogue/npc/ann
+    dir: text
     start: 0xE3D6D0
 
   - name: annTextIndex
     type: bin
-    dir: dialogue/npc/ann
+    dir: text
     start: 0xE40B90
 
   - name: dougText
     type: bin
-    dir: dialogue/npc/doug
+    dir: text
     start: 0xE40E50
 
   - name: dougTextIndex
     type: bin
-    dir: dialogue/npc/doug
+    dir: text
     start: 0xE42010
 
   - name: grayText
     type: bin
-    dir: dialogue/npc/gray
+    dir: text
     start: 0xE42100
 
   - name: grayTextIndex
     type: bin
-    dir: dialogue/npc/gray
+    dir: text
     start: 0xE42D50
 
   - name: basilText
     type: bin
-    dir: dialogue/npc/basil
+    dir: text
     start: 0xE42E60
 
   - name: basilTextIndex
     type: bin
-    dir: dialogue/npc/basil
+    dir: text
     start: 0xE43E80
 
   - name: liliaText
     type: bin
-    dir: dialogue/npc/lilia
+    dir: text
     start: 0xE43F60
 
   - name: liliaTextIndex
     type: bin
-    dir: dialogue/npc/lilia
+    dir: text
     start: 0xE45130
 
   - name: dukeText
     type: bin
-    dir: dialogue/npc/duke
+    dir: text
     start: 0xE45200
 
   - name: dukeTextIndex
     type: bin
-    dir: dialogue/npc/duke
+    dir: text
     start: 0xE461C0
 
   - name: shipperText
     type: bin
-    dir: dialogue/npc/shipper
+    dir: text
     start: 0xE46280
 
   - name: shipperTextIndex
     type: bin
-    dir: dialogue/npc/shipper
+    dir: text
     start: 0xE47140
 
   - name: harvestSpritesText
     type: bin
-    dir: dialogue/npc/harvest-sprites
+    dir: text
     start: 0xE471E0
 
   - name: harvestSpritesTextIndex
     type: bin
-    dir: dialogue/npc/harvest-sprites
+    dir: text
     start: 0xE485D0
 
   - name: assistantCarpentersText
     type: bin
-    dir: dialogue/npc/assistant-carpenters
+    dir: text
     start: 0xE48720
 
   - name: assistantCarpentersTextIndex
     type: bin
-    dir: dialogue/npc/assistant-carpenters
+    dir: text
     start: 0xE49480
 
   - name: masterCarpenterText
     type: bin
-    dir: dialogue/npc/master-carpenter
+    dir: text
     start: 0xE49540
 
   - name: masterCarpenterTextIndex
     type: bin
-    dir: dialogue/npc/master-carpenter
+    dir: text
     start: 0xE4A230
 
   - name: mayorText
     type: bin
-    dir: dialogue/npc/mayor
+    dir: text
     start: 0xE4A2D0
 
   - name: mayorTextIndex
     type: bin
-    dir: dialogue/npc/mayor
+    dir: text
     start: 0xE4B6E0
 
   - name: gregText
     type: bin
-    dir: dialogue/npc/greg
+    dir: text
     start: 0xE4B7D0
 
   - name: gregTextIndex
     type: bin
-    dir: dialogue/npc/greg
+    dir: text
     start: 0xE4C8D0
 
   - name: rickText
     type: bin
-    dir: dialogue/npc/rick
+    dir: text
     start: 0xE4C9B0
 
   - name: rickTextIndex
     type: bin
-    dir: dialogue/npc/rick
+    dir: text
     start: 0xE4E230
 
   - name: barleyText
     type: bin
-    dir: dialogue/npc/barley
+    dir: text
     start: 0xE4E320
 
   - name: barleyTextIndex
     type: bin
-    dir: dialogue/npc/barley
+    dir: text
     start: 0xE4EC70
 
   - name: sydneyText
     type: bin
-    dir: dialogue/npc/sydney
+    dir: text
     start: 0xE4ED10
 
   - name: sydneyTextIndex
     type: bin
-    dir: dialogue/npc/sydney
+    dir: text
     start: 0xE4F370
 
   - name: potionShopDealerText
     type: bin
-    dir: dialogue/npc/potion-shop-dealer
+    dir: text
     start: 0xE4F3F0
 
   - name: potionShopDealerTextIndex
     type: bin
-    dir: dialogue/npc/potion-shop-dealer
+    dir: text
     start: 0xE50520
 
   - name: mayorWifeText
     type: bin
-    dir: dialogue/npc/mayor-wife
+    dir: text
     start: 0xE50600
 
   - name: mayorWifeTextIndex
     type: bin
-    dir: dialogue/npc/mayor-wife
+    dir: text
     start: 0xE51A00
 
   - name: ellenText
     type: bin
-    dir: dialogue/npc/ellen
+    dir: text
     start: 0xE51AE0
 
   - name: ellenTextIndex
     type: bin
-    dir: dialogue/npc/ellen
+    dir: text
     start: 0xE52740
 
   - name: stuText
     type: bin
-    dir: dialogue/npc/stu
+    dir: text
     start: 0xE527E0
 
   - name: stuTextIndex
     type: bin
-    dir: dialogue/npc/stu
+    dir: text
     start: 0xE53450
 
   - name: midwifeText
     type: bin
-    dir: dialogue/npc/midwife
+    dir: text
     start: 0xE53540
 
   - name: midwifeTextIndex
     type: bin
-    dir: dialogue/npc/midwife
+    dir: text
     start: 0xE54C60
 
   - name: pastorText
     type: bin
-    dir: dialogue/npc/pastor
+    dir: text
     start: 0xE54D60
 
   - name: pastorTextIndex
     type: bin
-    dir: dialogue/npc/pastor
+    dir: text
     start: 0xE55AE0
 
   - name: saibaraText
     type: bin
-    dir: dialogue/npc/saibara
+    dir: text
     start: 0xE55BA0
 
   - name: saibaraTextIndex
     type: bin
-    dir: dialogue/npc/saibara
+    dir: text
     start: 0xE569C0
 
   - name: cutscenes1Text
     type: bin
-    dir: dialogue/cutscenes/cutscenes-1
+    dir: text
     start: 0xE56A80
 
   - name: cutscenes1TextIndex
     type: bin
-    dir: dialogue/cutscenes/cutscenes-1
+    dir: text
     start: 0xE58010
 
   - name: funeralIntroText
     type: bin
-    dir: dialogue/cutscenes/funeral-intro
+    dir: text
     start: 0xE58160
 
   - name: funeralIntroTextIndex
     type: bin
-    dir: dialogue/cutscenes/funeral-intro
+    dir: text
     start: 0xE583C0
 
-  - name: dialogue48Text
+  - name: text48Text
     type: bin
-    dir: text/dialogue48
+    dir: text
     start: 0xE583F0
 
-  - name: dialogue48TextIndex
+  - name: text48TextIndex
     type: bin
-    dir: text/dialogue48
+    dir: text
     start: 0xE58880
 
-  - name: dialogue49Text
+  - name: text49Text
     type: bin
-    dir: text/dialogue49
+    dir: text
     start: 0xE588D0
 
-  - name: dialogue49TextIndex
+  - name: text49TextIndex
     type: bin
-    dir: text/dialogue49
+    dir: text
     start: 0xE5A6D0
 
-  - name: dialogue50Text
+  - name: text50Text
     type: bin
-    dir: text/dialogue50
+    dir: text
     start: 0xE5A8C0
 
-  - name: dialogue50TextIndex
+  - name: text50TextIndex
     type: bin
-    dir: text/dialogue50
+    dir: text
     start: 0xE5D240
 
-  - name: dialogue51Text
+  - name: text51Text
     type: bin
-    dir: text/dialogue51
+    dir: text
     start: 0xE5D4C0
 
-  - name: dialogue51TextIndex
+  - name: text51TextIndex
     type: bin
-    dir: text/dialogue51
+    dir: text
     start: 0xE5E270
 
-  - name: dialogue52Text
+  - name: text52Text
     type: bin
-    dir: text/dialogue52
+    dir: text
     start: 0xE5E340
 
-  - name: dialogue52TextIndex
+  - name: text52TextIndex
     type: bin
-    dir: text/dialogue52
+    dir: text
     start: 0xE5F220
 
   - name: dogRaceText
     type: bin
-    dir: text/dog-race
+    dir: text
     start: 0xE5F300
 
   - name: dogRaceTextIndex
     type: bin
-    dir: text/dog-race
+    dir: text
     start: 0xE60080
 
-  - name: dialogue54Text
+  - name: text54Text
     type: bin
-    dir: text/dialogue54
+    dir: text
     start: 0xE60170
 
-  - name: dialogue54TextIndex
+  - name: text54TextIndex
     type: bin
-    dir: text/dialogue5
+    dir: text
     start: 0xE64680
 
-  - name: dialogue55Text
+  - name: text55Text
     type: bin
-    dir: text/dialogue55
+    dir: text
     start: 0xE64AF0
 
-  - name: dialogue55TextIndex
+  - name: text55TextIndex
     type: bin
-    dir: text/dialogue55
+    dir: text
     start: 0xE66260
 
-  - name: dialogue56Text
+  - name: text56Text
     type: bin
-    dir: text/dialogue56
+    dir: text
     start: 0xE663F0
 
-  - name: dialogue56TextIndex
+  - name: text56TextIndex
     type: bin
-    dir: text/dialogue56
+    dir: text
     start: 0xE677B0
 
   - name: newYearFestivalText
     type: bin
-    dir: text/new-year-festival
+    dir: text
     start: 0xE678E0
 
   - name: newYearFestivalTextIndex
     type: bin
-    dir: text/new-year-festival
+    dir: text
     start: 0xE68620
 
   - name: spiritFestivalText
     type: bin
-    dir: text/spirit-festival
+    dir: text
     start: 0xE68700
 
   - name: spiritFestivalTextIndex
     type: bin
-    dir: text/spirit-festival
+    dir: text
     start: 0xE68BA0
 
   - name: horseRaceText
     type: bin
-    dir: text/horse-race
+    dir: text
     start: 0xE68BF0
 
   - name: horseRaceTextIndex
     type: bin
-    dir: text/horse-race
+    dir: text
     start: 0xE6ADC0
 
   - name: marriedDialoguesText
     type: bin
-    dir: text/dialogue60
+    dir: text
     start: 0xE6AFE0
 
   - name: marriedDialoguesTextIndex
     type: bin
-    dir: text/dialogue60
+    dir: text
     start: 0xE6F1E0
 
-  - name: dialogue61Text
+  - name: text61Text
     type: bin
-    dir: text/dialogue61
+    dir: text
     start: 0xE6F5C0
 
-  - name: dialogue61TextIndex
+  - name: text61TextIndex
     type: bin
-    dir: text/dialogue61
+    dir: text
     start: 0xE714D0
 
   - name: karenCutscenes1Text
     type: bin
-    dir: text/dialogue62
+    dir: text
     start: 0xE71690
 
   - name: karenCutscenes1TextIndex
     type: bin
-    dir: text/dialogue62
+    dir: text
     start: 0xE72680
 
-  - name: dialogue63Text
+  - name: text63Text
     type: bin
-    dir: text/dialogue63
+    dir: text
     start: 0xE72780
 
-  - name: dialogue63TextIndex
+  - name: text63TextIndex
     type: bin
-    dir: text/dialogue63
+    dir: text
     start: 0xE73070
 
-  - name: dialogue64Text
+  - name: text64Text
     type: bin
-    dir: text/dialogue64
+    dir: text
     start: 0xE73110
 
-  - name: dialogue64TextIndex
+  - name: text64TextIndex
     type: bin
-    dir: text/dialogue64
+    dir: text
     start: 0xE7C7B0
 
-  - name: dialogue65Text
+  - name: text65Text
     type: bin
-    dir: text/dialogue65
+    dir: text
     start: 0xE7D1E0
 
-  - name: dialogue65TextIndex
+  - name: text65TextIndex
     type: bin
-    dir: text/dialogue65
+    dir: text
     start: 0xE81660
 
   - name: eggFestivalText
     type: bin
-    dir: text/egg-festival
+    dir: text
     start: 0xE81F50
 
   - name: eggFestivalTextIndex
     type: bin
-    dir: text/egg-festival
+    dir: text
     start: 0xE82B30
 
   - name: karenCutscenes2Text
     type: bin
-    dir: dialogue/cutscenes/karen-cutscenes
+    dir: text
     start: 0xE82C40
 
   - name: karenCutscenes2TextIndex
     type: bin
-    dir: dialogue/cutscenes/karen-cutscenes
+    dir: text
     start: 0xE83880
 
   - name: vegetableFestivalText
     type: bin
-    dir: text/vegetable-festival
+    dir: text
     start: 0xE83960
 
   - name: vegetableFestivalTextIndex
     type: bin
-    dir: text/vegetable-festival
+    dir: text
     start: 0xE84690
 
   - name: babyText
     type: bin
-    dir: dialogue/npc/baby
+    dir: text
     start: 0xE84760
 
   - name: babyTextIndex
     type: bin
-    dir: dialogue/npc/baby
+    dir: text
     start: 0xE84910
 
   - name: mrsManaAndJohnText
     type: bin
-    dir: dialogue/npc/mrs-mana-and-john
+    dir: text
     start: 0xE84990
 
   - name: mrsManaAndJohnTextIndex
     type: bin
-    dir: dialogue/npc/mrs-mana-and-john
+    dir: text
     start: 0xE84F50
 
   - name: additionalNpcsText
     type: bin
-    dir: dialogue/npc/additional-npcs
+    dir: text
     start: 0xE84FD0
 
   - name: additionalNpcsTextIndex
     type: bin
-    dir: dialogue/npc/additional-npcs
+    dir: text
     start: 0xE85730
 
   - name: howToPlayText
     type: bin
-    dir: text/how-to-play
+    dir: text
     start: 0xE857A0
 
   - name: howToPlayTextIndex
     type: bin
-    dir: text/how-to-play
+    dir: text
     start: 0xE87080
 
   - name: dialogueBytecodeSegment1
@@ -4315,12 +4445,12 @@ segments:
     dir: dialogues/bytecode
     start: 0xE8A460
 
-  - name: dialogueBytecodeSegment10
+  - name: mariaDialogueBytecode
     type: bin
     dir: dialogues/bytecode
     start: 0xE8A590
 
-  - name: dialogueBytecodeSegment10Index
+  - name: mariaDialogueBytecodeIndex
     type: bin
     dir: dialogues/bytecode
     start: 0xE8AE00
@@ -4935,76 +5065,344 @@ segments:
     type: bin
     start: 0xE99910
 
-  - name: sequences
+# music
+  - name: opening
     type: bin
     dir: audio/sequences
     start: 0xFD8510
-    subsegments:
-    # music
-    - [0xFD8510, bin, "audio/sequences/opening.sng"]
-    - [0xFDAD00, bin, "audio/sequences/title.sng"]
-    - [0xFDD6C0, bin, "audio/sequences/sports-festival-1.sng"]
-    - [0xFDFB50, bin, "audio/sequences/goodbye.sng"]
-    - [0xFE12F0, bin, "audio/sequences/spring.sng"]
-    - [0xFE27B0, bin, "audio/sequences/summer.sng"]
-    - [0xFE4D20, bin, "audio/sequences/autumn.sng"]
-    - [0xFE5E50, bin, "audio/sequences/winter.sng"]
-    - [0xFE6E60, bin, "audio/sequences/naming-screen.sng"]
-    - [0xFE7E00, bin, "audio/sequences/festival-theme.sng"]
-    - [0xFE9040, bin, "audio/sequences/sports-festival-2.sng"]
-    - [0xFEAB70, bin, "audio/sequences/spirit-festival.sng"]
-    - [0xFEB8F0, bin, "audio/sequences/dog-race.sng"]
-    - [0xFED5F0, bin, "audio/sequences/racing-festival.sng"]
-    - [0xFEEA40, bin, "audio/sequences/festival-dance.sng"]
-    - [0xFEF9F0, bin, "audio/sequences/mountain.sng"]
-    - [0xFF1CD0, bin, "audio/sequences/village.sng"]
-    - [0xFF3760, bin, "audio/sequences/pond.sng"]
-    - [0xFF4160, bin, "audio/sequences/church.sng"]
-    - [0xFF4750, bin, "audio/sequences/tavern.sng"]
-    - [0xFF6300, bin, "audio/sequences/wedding.sng"]
-    - [0xFF6ED0, bin, "audio/sequences/new-year-sunrise.sng"]
-    - [0xFF7D80, bin, "audio/sequences/credits.sng"]
-    - [0xFF9370, bin, "audio/sequences/broken-music-box.sng"]
-    - [0xFF95A0, bin, "audio/sequences/music-box.sng"]
-    - [0xFF9840, bin, "audio/sequences/flute-performance.sng"]
-    - [0xFF99F0, bin, "audio/sequences/organ-performance.sng"]
-    - [0xFF9BC0, bin, "audio/sequences/ocarina-performance.sng"]
-    - [0xFF9DC0, bin, "audio/sequences/sleigh-bells.sng"]
-    - [0xFF9F40, bin, "audio/sequences/bad-ending.sng"]
-    - [0xFFA7B0, bin, "audio/sequences/vocal-performance.sng"]
-    - [0xFFA950, bin, "audio/sequences/ensemble-performance.sng"]
-    - [0xFFAF80, bin, "audio/sequences/drum-performance.sng"]
-    - [0xFFB090, bin, "audio/sequences/typhoon-ambience-1.sng"]
-    - [0xFFB700, bin, "audio/sequences/typhoon-ambience-2.sng"]
-    - [0xFFC530, bin, "audio/sequences/night-ambience-spring.sng"]
-    - [0xFFC9F0, bin, "audio/sequences/night-ambience-summer.sng"]
-    - [0xFFCC40, bin, "audio/sequences/night-ambience-autumn.sng"]
-    - [0xFFCE10, bin, "audio/sequences/starry-night-festival.sng"]
-    - [0xFFD490, bin, "audio/sequences/beach-ambience-1.sng"]
-    - [0xFFD680, bin, "audio/sequences/beach-ambience-2.sng"]
-    # sfx
-    - [0xFFD820, bin, "audio/sequences/bird-1.sng"]
-    - [0xFFD920, bin, "audio/sequences/bird-2.sng"]
-    - [0xFFDA30, bin, "audio/sequences/cicada.sng"]
-    - [0xFFDBA0, bin, "audio/sequences/45.sng"]
-    - [0xFFDCF0, bin, "audio/sequences/fireworks.sng"]
-    - [0xFFDEF0, bin, "audio/sequences/horse-gallop-fast.sng"]
-    - [0xFFE520, bin, "audio/sequences/horse-gallop-1.sng"]
-    - [0xFFE620, bin, "audio/sequences/horse-gallop-2.sng"]
-    - [0xFFE720, bin, "audio/sequences/horse-gallop-3.sng"]
-    - [0xFFE820, bin, "audio/sequences/water-1.sng"]
-    - [0xFFE920, bin, "audio/sequences/water-2.sng"]
-    - [0xFFEA30, bin, "audio/sequences/hammer.sng"]
-    - [0xFFEB30, bin, "audio/sequences/54.sng"]
-    - [0xFFEC30, bin, "audio/sequences/55.sng"]
-    - [0xFFEE40, bin, "audio/sequences/shimmer.sng"] # blue feather/animal medicine
-    - [0xFFEF50, bin, "audio/sequences/seeds.sng"]
-    - [0xFFF070, bin, "audio/sequences/cow-bell.sng"]
-    # unused engine sfx?
-    - [0xFFF180, bin, "audio/sequences/59.sng"]
-    - [0xFFF350, bin, "audio/sequences/sickle.sng"]
-    - [0xFFF470, bin, "audio/sequences/hoe.sng"]
-    - [0xFFF580, bin, "audio/sequences/fanfare.sng"]
+
+  - name: title
+    type: bin
+    dir: audio/sequences
+    start: 0xFDAD00
+
+  - name: sports-festival-1
+    type: bin
+    dir: audio/sequences
+    start: 0xFDD6C0
+
+  - name: goodbye
+    type: bin
+    dir: audio/sequences
+    start: 0xFDFB50
+
+  - name: spring
+    type: bin
+    dir: audio/sequences
+    start: 0xFE12F0
+
+  - name: summer
+    type: bin
+    dir: audio/sequences
+    start: 0xFE27B0
+
+  - name: autumn
+    type: bin
+    dir: audio/sequences
+    start: 0xFE4D20
+
+  - name: winter
+    type: bin
+    dir: audio/sequences
+    start: 0xFE5E50
+
+  - name: naming-screen
+    type: bin
+    dir: audio/sequences
+    start: 0xFE6E60
+
+  - name: festival-theme
+    type: bin
+    dir: audio/sequences
+    start: 0xFE7E00
+
+  - name: sports-festival-2
+    type: bin
+    dir: audio/sequences
+    start: 0xFE9040
+
+  - name: spirit-festival
+    type: bin
+    dir: audio/sequences
+    start: 0xFEAB70
+
+  - name: dog-race
+    type: bin
+    dir: audio/sequences
+    start: 0xFEB8F0
+
+  - name: racing-festival
+    type: bin
+    dir: audio/sequences
+    start: 0xFED5F0
+
+  - name: festival-dance
+    type: bin
+    dir: audio/sequences
+    start: 0xFEEA40
+
+  - name: mountain
+    type: bin
+    dir: audio/sequences
+    start: 0xFEF9F0
+
+  - name: village
+    type: bin
+    dir: audio/sequences
+    start: 0xFF1CD0
+
+  - name: pond
+    type: bin
+    dir: audio/sequences
+    start: 0xFF3760
+
+  - name: church
+    type: bin
+    dir: audio/sequences
+    start: 0xFF4160
+
+  - name: tavern
+    type: bin
+    dir: audio/sequences
+    start: 0xFF4750
+
+  - name: wedding
+    type: bin
+    dir: audio/sequences
+    start: 0xFF6300
+
+  - name: new-year-sunrise
+    type: bin
+    dir: audio/sequences
+    start: 0xFF6ED0
+
+  - name: credits
+    type: bin
+    dir: audio/sequences
+    start: 0xFF7D80
+
+  - name: broken-music-box
+    type: bin
+    dir: audio/sequences
+    start: 0xFF9370
+
+  - name: music-box
+    type: bin
+    dir: audio/sequences
+    start: 0xFF95A0
+
+  - name: flute-performance
+    type: bin
+    dir: audio/sequences
+    start: 0xFF9840
+
+  - name: organ-performance
+    type: bin
+    dir: audio/sequences
+    start: 0xFF99F0
+
+  - name: ocarina-performance
+    type: bin
+    dir: audio/sequences
+    start: 0xFF9BC0
+
+  - name: sleigh-bells
+    type: bin
+    dir: audio/sequences
+    start: 0xFF9DC0
+
+  - name: bad-ending
+    type: bin
+    dir: audio/sequences
+    start: 0xFF9F40
+
+  - name: vocal-performance
+    type: bin
+    dir: audio/sequences
+    start: 0xFFA7B0
+
+  - name: ensemble-performance
+    type: bin
+    dir: audio/sequences
+    start: 0xFFA950
+
+  - name: drum-performance
+    type: bin
+    dir: audio/sequences
+    start: 0xFFAF80
+
+  - name: typhoon-ambience-1
+    type: bin
+    dir: audio/sequences
+    start: 0xFFB090
+
+  - name: typhoon-ambience-2
+    type: bin
+    dir: audio/sequences
+    start: 0xFFB700
+
+  - name: night-ambience-spring
+    type: bin
+    dir: audio/sequences
+    start: 0xFFC530
+
+  - name: night-ambience-summer
+    type: bin
+    dir: audio/sequences
+    start: 0xFFC9F0
+
+  - name: night-ambience-autumn
+    type: bin
+    dir: audio/sequences
+    start: 0xFFCC40
+
+  - name: starry-night-festival
+    type: bin
+    dir: audio/sequences
+    start: 0xFFCE10
+
+  - name: beach-ambience-1
+    type: bin
+    dir: audio/sequences
+    start: 0xFFD490
+
+  - name: beach-ambience-2
+    type: bin
+    dir: audio/sequences
+    start: 0xFFD680
+
+  # sfx
+  - name: bird-1
+    type: bin
+    dir: audio/sequences
+    start: 0xFFD820
+
+  - name: bird-2
+    type: bin
+    dir: audio/sequences
+    start: 0xFFD920
+
+  - name: seq44
+    type: bin
+    dir: audio/sequences
+    start: 0xFFDA20
+
+  - name: cicada
+    type: bin
+    dir: audio/sequences
+    start: 0xFFDA30
+
+  - name: seq46
+    type: bin
+    dir: audio/sequences
+    start: 0xFFDB80
+
+  - name: seq47
+    type: bin
+    dir: audio/sequences
+    start: 0xFFDBA0
+
+  - name: seq48
+    type: bin
+    dir: audio/sequences
+    start: 0xFFDCD0
+
+  - name: fireworksSfx
+    type: bin
+    dir: audio/sequences
+    start: 0xFFDCF0
+
+  - name: seq50
+    type: bin
+    dir: audio/sequences
+    start: 0xFFDEE0
+
+  - name: horse-gallop-fast
+    type: bin
+    dir: audio/sequences
+    start: 0xFFDEF0
+
+  - name: horse-gallop-1
+    type: bin
+    dir: audio/sequences
+    start: 0xFFE520
+
+  - name: horse-gallop-2
+    type: bin
+    dir: audio/sequences
+    start: 0xFFE620
+
+  - name: horse-gallop-3
+    type: bin
+    dir: audio/sequences
+    start: 0xFFE720
+
+  - name: water-1
+    type: bin
+    dir: audio/sequences
+    start: 0xFFE820
+
+  - name: water-2
+    type: bin
+    dir: audio/sequences
+    start: 0xFFE920
+
+  - name: hammer
+    type: bin
+    dir: audio/sequences
+    start: 0xFFEA30
+
+  - name: seq58
+    type: bin
+    dir: audio/sequences
+    start: 0xFFEB30
+
+  - name: seq59
+    type: bin
+    dir: audio/sequences
+    start: 0xFFEC30
+
+  - name: seq60
+    type: bin
+    dir: audio/sequences
+    start: 0xFFED40
+
+  # blue feather/animal medicine
+  - name: shimmer
+    type: bin
+    dir: audio/sequences
+    start: 0xFFEE40
+
+  - name: seeds
+    type: bin
+    dir: audio/sequences
+    start: 0xFFEF50
+
+  - name: cow-bell
+    type: bin
+    dir: audio/sequences
+    start: 0xFFF070
+
+  # unused engine sfx?
+  - name: seq64
+    type: bin
+    dir: audio/sequences
+    start: 0xFFF180
+
+  - name: sickle
+    type: bin
+    dir: audio/sequences
+    start: 0xFFF350
+
+  - name: hoe
+    type: bin
+    dir: audio/sequences
+    start: 0xFFF470
+
+  - name: fanfare
+    type: bin
+    dir: audio/sequences
+    start: 0xFFF580
 
   - name: padding
     type: bin

@@ -3028,7 +3028,7 @@ void func_800C224C(void) {
     if ((overlayScreenTable.subscreen >= 4) && (checkButtonPressed(CONTROLLER_1, BUTTON_B)) && (temp == 0)) {
         func_800C2128();
         overlayScreenTable.subscreen = 2;
-        setAudio(1);
+        playSfx(1);
     }
     
 }
@@ -4103,7 +4103,7 @@ void func_800C8784(void) {
                 updateSpriteRGBA(0x82, 0, 0, 0, 0, 0x18);
                 updateSpriteRGBA(0xA3, 0, 0, 0, 0, 0x18);
                 overlayScreenTable.subscreen = 3;
-                setAudio(1);
+                playSfx(1);
             }
             break;
             
@@ -4343,12 +4343,12 @@ void func_800CA808(void) {
                 
                 if (overlayScreenTable.cellIndex) {
                     overlayScreenTable.cellIndex--;
-                    setAudio(2);
+                    playSfx(2);
                     setSpriteViewSpacePosition(0x79, -112.0f, (f32) (-(overlayScreenTable.cellIndex * 0x10) + 0x18), 32.0f);
                 } else {
                     overlayScreenTable.cellIndex = 0xFF;
                     overlayScreenTable.subscreen = 6;
-                    setAudio(2);
+                    playSfx(2);
                     setSpriteViewSpacePosition(0x79, 96.0f, -96.0f, 32.0f);
                 }
                 
@@ -4361,12 +4361,12 @@ void func_800CA808(void) {
                 
                     if ((overlayScreenTable.cellIndex) != 5) {
                         overlayScreenTable.cellIndex++;
-                        setAudio(2);
+                        playSfx(2);
                         setSpriteViewSpacePosition(0x79, -112.0f, (f32) (-(overlayScreenTable.cellIndex * 16) + 24), 32.0f);
                     } else {
                         overlayScreenTable.cellIndex = 0xFF;
                         overlayScreenTable.subscreen = 6;
-                        setAudio(2);
+                        playSfx(2);
                         setSpriteViewSpacePosition(0x79, 96.0f, -96.0f, 32.0f);
                     }
                 
@@ -4378,13 +4378,13 @@ void func_800CA808(void) {
                 overlayScreenTable.subscreen = 5;
                 setSpriteViewSpacePosition(0x79, 32.0f, (f32) (-(overlayScreenTable.cellIndex * 0x10) + 0x18), 32.0f);
                 set = TRUE;
-                setAudio(0);
+                playSfx(0);
             }
             
             if ((checkButtonPressed(CONTROLLER_1, BUTTON_START)) && !set) {
                 overlayScreenTable.cellIndex = 0xFF;
                 overlayScreenTable.subscreen = 6;
-                setAudio(2);
+                playSfx(2);
                 setSpriteViewSpacePosition(0x79, 96.0f, -96.0f, 32.0f);
             }
             
@@ -4401,7 +4401,7 @@ void func_800CA808(void) {
                         if (overlayScreenStrings.strings2[(overlayScreenStrings.unk_6A)][overlayScreenTable.cellIndex]) {
                             D_80189858 += adjustValue(D_80189858, 50, gGold);
                             overlayScreenStrings.strings2[(overlayScreenStrings.unk_6A)][overlayScreenTable.cellIndex]--;
-                            setAudio(2);
+                            playSfx(2);
                         }
                         
                     }
@@ -4424,7 +4424,7 @@ void func_800CA808(void) {
                         if (overlayScreenStrings.strings2[(overlayScreenStrings.unk_6A)][overlayScreenTable.cellIndex] != 99) {
                             D_80189858 += adjustValue(D_80189858, -50, gGold);
                             overlayScreenStrings.strings2[(overlayScreenStrings.unk_6A)][overlayScreenTable.cellIndex]++;
-                            setAudio(2);
+                            playSfx(2);
                         }
                     }
                     
@@ -4442,7 +4442,7 @@ void func_800CA808(void) {
                     overlayScreenTable.subscreen = 4;
                     setSpriteViewSpacePosition(0x79, -112.0f, (f32) (-(overlayScreenTable.cellIndex * 16) + 24), 32.0f);
                     set = TRUE;
-                    setAudio(1);
+                    playSfx(1);
                 }
                 
             }
@@ -4458,7 +4458,7 @@ void func_800CA808(void) {
                 
                 if (!set) {
                     overlayScreenTable.cellIndex = 5;
-                    setAudio(2);
+                    playSfx(2);
                     setSpriteViewSpacePosition(0x79, -112.0f, (f32) (-(overlayScreenTable.cellIndex * 16) + 24), 32.0f);
                     set = TRUE;
                     overlayScreenTable.subscreen = 4;
@@ -4470,7 +4470,7 @@ void func_800CA808(void) {
                 
                 if (!set) {
                     overlayScreenTable.cellIndex = 0;
-                    setAudio(2);
+                    playSfx(2);
                     setSpriteViewSpacePosition(0x79, -112.0f, (f32) (-(overlayScreenTable.cellIndex * 0x10) + 0x18), 32.0f);
                     set = TRUE;
                     overlayScreenTable.subscreen = 4;
@@ -4506,7 +4506,7 @@ void func_800CA808(void) {
                     func_800CA678();
                     overlayScreenTable.subscreen = 2;
                     
-                    setAudio(0);
+                    playSfx(0);
                     
                 }
             }
@@ -4519,7 +4519,7 @@ void func_800CA808(void) {
         resetAnimationState(0x79);
         func_800CA678();
         overlayScreenTable.subscreen = 2;
-        setAudio(1);
+        playSfx(1);
     }
     
 }
@@ -4776,7 +4776,7 @@ void func_800CD750(void) {
             
             overlayScreenTable.subscreen = 2;
             
-            setAudio(1);
+            playSfx(1);
             
         }
     
@@ -5051,6 +5051,7 @@ void func_800CEDA8(void) {
 void func_800CEDF0(void) {
 
     switch (overlayScreenTable.subscreen) {
+
         case 0:
             func_800CEA74();
             overlayScreenTable.subscreen = 1;
@@ -5071,6 +5072,7 @@ void func_800CEDF0(void) {
                 }
                 
                 overlayScreenTable.subscreen = 4;
+
             }
             
             break;
@@ -5086,7 +5088,7 @@ void func_800CEDF0(void) {
                     func_80043AD8(0);
                     overlayScreenTable.subscreen = 6;
                     
-                    setAudio(0x20);
+                    playSfx(0x20);
                     
                     if (gBaseMapIndex == 0x32) {
                         flowerShopPoints += adjustValue(flowerShopPoints, -10, 100);
@@ -5104,6 +5106,7 @@ void func_800CEDF0(void) {
                     }
                 
                     overlayScreenTable.subscreen = 3;
+
                 }
                 
             
@@ -5113,6 +5116,7 @@ void func_800CEDF0(void) {
         
         case 3:
 
+            // check if a message box has flag 4 set
             if (func_8003F0DC()) {
                 
                 func_8003F130(0);
@@ -5124,6 +5128,7 @@ void func_800CEDF0(void) {
                 updateSpriteAlpha(0x83, 0, 0x18);
                 
                 overlayScreenTable.subscreen = 2;
+
             }
             
             break;
@@ -5134,18 +5139,19 @@ void func_800CEDF0(void) {
                 func_800B2CE0();
                 overlayScreenTable.subscreen = 5;
             }
+
             break;
         
         case 5:
-        
             deactivateSprite(0x80);
             func_80059368();
             func_80059300();
+
             break;
         
         case 6:
             
-            if (gSongs[1].flags == 0) {
+            if (gAudioSequences[1].flags == 0) {
 
                 if (gBaseMapIndex == FLOWER_SHOP) {
 
@@ -5206,10 +5212,12 @@ void func_800CEDF0(void) {
                         }
                         
                         break;
+
                     case 4:   
                         initializeMessageBox(0, 4, 0x3C, 0);
                         overlayScreenTable.subscreen = 3;
                         func_800CF3C4(4);
+                        
                         break;                        
                     
                     }
@@ -5278,7 +5286,9 @@ void func_800CEDF0(void) {
                             initializeMessageBox(0, 4, 0x44, 0);
                             overlayScreenTable.subscreen = 3;
                             func_800CF544(4);
+
                             break;
+                            
                         }
                 }
                 

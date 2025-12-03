@@ -55,7 +55,7 @@ void func_800D7C20(void) {
         
         toggleDailyEventBit(0xE);
 
-        if (D_801891D4 >= 0) {
+        if (gCutsceneCompletionFlags >= 0) {
             // do global lighting
             func_8005C07C(1, 0);
         }
@@ -66,13 +66,13 @@ void func_800D7C20(void) {
         
         if (!checkDailyEventBit(0xF)) {
 
-            stopSongWithDefaultFadeOut(gCurrentSongIndex);
+            stopAudioSequenceWithDefaultFadeOut(gCurrentAudioSequenceIndex);
             setDailyEventBit(0xF);
 
-        } else if (!checkDailyEventBit(0x10) && gCurrentSongIndex != 0xFF && checkDefaultSongChannelOpen(gCurrentSongIndex)) {
+        } else if (!checkDailyEventBit(0x10) && gCurrentAudioSequenceIndex != 0xFF && checkDefaultSequenceChannelOpen(gCurrentAudioSequenceIndex)) {
 
             setLevelAudio(gBaseMapIndex, gSeason, gHour);
-            setSongVolume(gCurrentSongIndex, gSongVolume);
+            setAudioSequenceVolume(gCurrentAudioSequenceIndex, gAudioSequenceVolume);
  
             setDailyEventBit(0x10);
 
@@ -81,7 +81,7 @@ void func_800D7C20(void) {
     }
     
     if (gHour < 6 && gWeather != RAIN && gBaseMapIndex != BEACH && !checkDailyEventBit(0x11)) {
-        stopSongWithDefaultFadeOut(gCurrentSongIndex);
+        stopAudioSequenceWithDefaultFadeOut(gCurrentAudioSequenceIndex);
         setDailyEventBit(0x11);
     }
     

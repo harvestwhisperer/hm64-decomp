@@ -12,6 +12,7 @@
 *.png
 *.ci
 *.pal
+*.gif
 *.txt
 !tools/requirements.txt
 *.mid

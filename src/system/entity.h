@@ -37,7 +37,7 @@ typedef struct {
 	void *vaddrTextureToPaletteLookup; // 10
 	void *vaddrSpritesheetIndex; // 14
 	Vec3f attachmentOffset; // 18-20
-	u16 targetSpriteIndex; // 24, for tracking one sprite to another (holdable items, expression bubbles, etc.)
+	u16 targetEntityIndex; // 24, for tracking one sprite to another (holdable items, expression bubbles, etc.)
 	u8 trackingMode; // 26
 	Vec3f coordinates; // 28-30
 	Vec3f movementVector; // 34-3C

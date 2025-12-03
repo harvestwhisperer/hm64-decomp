@@ -34,7 +34,7 @@ bool setSpriteAssetDescriptors(u8 *romAddr, u8 *vaddr, u32 length) {
             spriteAssetDescriptors[spritesToLoadCounter].romAddr = romAddr;
             spriteAssetDescriptors[spritesToLoadCounter].vaddr = vaddr;
             spriteAssetDescriptors[spritesToLoadCounter].length = length;
-            spriteAssetDescriptors[spritesToLoadCounter].flags = 1;
+            spriteAssetDescriptors[spritesToLoadCounter].flags = NEED_DMA;
             
             spritesToLoadCounter++;
 

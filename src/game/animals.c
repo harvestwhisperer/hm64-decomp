@@ -474,6 +474,7 @@ bool func_80086764(void) {
                         if (gChickens[i].type == ADULT_CHICKEN) {
 
                             setGameVariableString(0xD, gChickens[i].name, 6);
+                            // pink overlay message
                             func_8005B09C(7);
                             
                             D_801C4216 = 4;
@@ -544,6 +545,7 @@ bool func_80086764(void) {
                             if ((gFarmAnimals[i].type == ADULT_COW || gFarmAnimals[i].type == ADULT_SHEEP) && (!(COW_HAPPY < gFarmAnimals[i].condition && gFarmAnimals[i].condition < COW_DEAD))) {
                                 
                                 setGameVariableString(0xD, gFarmAnimals[i].name, 6);
+                                // pink overlay message
                                 func_8005B09C(7);
                                 
                                 if (gFarmAnimals[i].type == ADULT_COW) {
@@ -564,6 +566,7 @@ bool func_80086764(void) {
     
                             if (gFarmAnimals[i].type == ADULT_COW && !(COW_HAPPY < gFarmAnimals[i].condition && gFarmAnimals[i].condition < COW_DEAD)) {
                                 
+                                // pink overlay message
                                 func_8005B09C(8);
                                 
                                 setGameVariableString(0xD, gFarmAnimals[i].name, 6);
@@ -3188,7 +3191,7 @@ void func_8008C358(void) {
             dogInfo.unk_17 = 0;
             dogInfo.flags |=  2;
             
-            setAudio(0x3C);
+            playSfx(0x3C);
             
             break;
         
@@ -3302,7 +3305,7 @@ void func_8008D1C0(u8 index) {
             }
             
             gChickens[index].flags |= 2;
-            setAudio(0x40);
+            playSfx(0x40);
             
             break;
 
@@ -3374,7 +3377,7 @@ void func_8008D1C0(u8 index) {
             gChickens[index].unk_17 = 0;
             gChickens[index].flags |=  2;
             
-            setAudio(0x41);
+            playSfx(0x41);
             
             break;
         
@@ -3459,7 +3462,7 @@ void func_8008D70C(u8 index) {
             
             gChickens[index].flags |= 2;
             
-            setAudio(0x42);
+            playSfx(0x42);
             
             break;
 
@@ -3676,7 +3679,7 @@ void func_8008DF9C(u8 index) {
             
             if ((gFarmAnimals[index].flags & 0x200) || (gFarmAnimals[index].flags & 0x400)) {
                 
-                gFarmAnimals[index].direction = calculateAnimalDirectionToPlayer(entities[gFarmAnimals[index].entityIndex].coordinates.x, entities[gFarmAnimals[index].entityIndex].coordinates.z, entities[PLAYER].coordinates.x, entities[PLAYER].coordinates.z);
+                gFarmAnimals[index].direction = calculateAnimalDirectionToPlayer(entities[gFarmAnimals[index].entityIndex].coordinates.x, entities[gFarmAnimals[index].entityIndex].coordinates.z, entities[ENTITY_PLAYER].coordinates.x, entities[ENTITY_PLAYER].coordinates.z);
                 gFarmAnimals[index].unk_1B = 1;
                 
             } else {
@@ -3736,7 +3739,7 @@ void func_8008DF9C(u8 index) {
             if (gFarmAnimals[index].flags & 0x200) {
             
                 gFarmAnimals[index].flags &= ~0x400;
-                gFarmAnimals[index].direction = calculateAnimalDirectionToPlayer(entities[gFarmAnimals[index].entityIndex].coordinates.x, entities[gFarmAnimals[index].entityIndex].coordinates.z, entities[PLAYER].coordinates.x, entities[PLAYER].coordinates.z);
+                gFarmAnimals[index].direction = calculateAnimalDirectionToPlayer(entities[gFarmAnimals[index].entityIndex].coordinates.x, entities[gFarmAnimals[index].entityIndex].coordinates.z, entities[ENTITY_PLAYER].coordinates.x, entities[ENTITY_PLAYER].coordinates.z);
                 
                 if (!(getRandomNumberInRange(0, 20))) {
                     gFarmAnimals[index].flags &= ~(0x200);
@@ -3933,7 +3936,7 @@ void func_8008DF9C(u8 index) {
             gFarmAnimals[index].flags |= (2 | 0x2000);
             gFarmAnimals[index].flags &= ~0x400;
             
-            setAudio(0x36);
+            playSfx(0x36);
             
             break;
             
@@ -3950,7 +3953,7 @@ void func_8008DF9C(u8 index) {
             gFarmAnimals[index].flags |= (2 | 0x2000);
             gFarmAnimals[index].flags &= ~0x400;
             
-            setAudio(0x37);
+            playSfx(0x37);
             
             break;
             
@@ -3994,8 +3997,8 @@ void func_8008E98C(u8 index) {
                 gFarmAnimals[index].direction = calculateAnimalDirectionToPlayer(
                     entities[gFarmAnimals[index].entityIndex].coordinates.x,
                     entities[gFarmAnimals[index].entityIndex].coordinates.z,
-                    entities[PLAYER].coordinates.x, 
-                    entities[PLAYER].coordinates.z);
+                    entities[ENTITY_PLAYER].coordinates.x, 
+                    entities[ENTITY_PLAYER].coordinates.z);
 
                 gFarmAnimals[index].unk_1B = 1;
                 
@@ -4061,8 +4064,8 @@ void func_8008E98C(u8 index) {
                 gFarmAnimals[index].direction = calculateAnimalDirectionToPlayer(
                     entities[gFarmAnimals[index].entityIndex].coordinates.x,
                     entities[gFarmAnimals[index].entityIndex].coordinates.z,
-                    entities[PLAYER].coordinates.x, 
-                    entities[PLAYER].coordinates.z);
+                    entities[ENTITY_PLAYER].coordinates.x, 
+                    entities[ENTITY_PLAYER].coordinates.z);
 
                 if (getRandomNumberInRange(0, 20) == 0) {
                     gFarmAnimals[index].flags &= ~0x200;
@@ -4257,7 +4260,7 @@ void func_8008E98C(u8 index) {
             gFarmAnimals[index].flags |= (2 | 0x2000);
             gFarmAnimals[index].flags &= ~(0x400);
 
-            setAudio(0x36);
+            playSfx(0x36);
             
             break;
         
@@ -4274,7 +4277,7 @@ void func_8008E98C(u8 index) {
             gFarmAnimals[index].flags |= (2 | 0x2000);
             gFarmAnimals[index].flags &= ~(0x400);
 
-            setAudio(0x37);
+            playSfx(0x37);
 
             break;
         
@@ -4321,8 +4324,8 @@ void func_8008F37C(u8 index) {
                 gFarmAnimals[index].direction = calculateAnimalDirectionToPlayer(
                     entities[gFarmAnimals[index].entityIndex].coordinates.x,
                     entities[gFarmAnimals[index].entityIndex].coordinates.z,
-                    entities[PLAYER].coordinates.x, 
-                    entities[PLAYER].coordinates.z);
+                    entities[ENTITY_PLAYER].coordinates.x, 
+                    entities[ENTITY_PLAYER].coordinates.z);
 
                 gFarmAnimals[index].unk_1B = 1;
                 
@@ -4381,8 +4384,8 @@ void func_8008F37C(u8 index) {
                 gFarmAnimals[index].direction = calculateAnimalDirectionToPlayer(
                     entities[gFarmAnimals[index].entityIndex].coordinates.x,
                     entities[gFarmAnimals[index].entityIndex].coordinates.z,
-                    entities[PLAYER].coordinates.x, 
-                    entities[PLAYER].coordinates.z);
+                    entities[ENTITY_PLAYER].coordinates.x, 
+                    entities[ENTITY_PLAYER].coordinates.z);
 
                 if (getRandomNumberInRange(0, 20) == 0) {
                     gFarmAnimals[index].flags &= ~0x200;
@@ -4551,7 +4554,7 @@ void func_8008F37C(u8 index) {
             gFarmAnimals[index].flags |= (2 | 0x2000);
             gFarmAnimals[index].flags &= ~(0x400);
 
-            setAudio(0x36);
+            playSfx(0x36);
             
             break;
         
@@ -4568,7 +4571,7 @@ void func_8008F37C(u8 index) {
             gFarmAnimals[index].flags |= (2 | 0x2000);
             gFarmAnimals[index].flags &= ~(0x400);
 
-            setAudio(0x37);
+            playSfx(0x37);
 
             break;
         
@@ -4613,8 +4616,8 @@ void func_8008FC68(u8 index) {
                 gFarmAnimals[index].direction = calculateAnimalDirectionToPlayer(
                     entities[gFarmAnimals[index].entityIndex].coordinates.x,
                     entities[gFarmAnimals[index].entityIndex].coordinates.z,
-                    entities[PLAYER].coordinates.x, 
-                    entities[PLAYER].coordinates.z);
+                    entities[ENTITY_PLAYER].coordinates.x, 
+                    entities[ENTITY_PLAYER].coordinates.z);
 
                 gFarmAnimals[index].unk_1B = 1;
                 
@@ -4673,8 +4676,8 @@ void func_8008FC68(u8 index) {
                 gFarmAnimals[index].direction = calculateAnimalDirectionToPlayer(
                     entities[gFarmAnimals[index].entityIndex].coordinates.x,
                     entities[gFarmAnimals[index].entityIndex].coordinates.z,
-                    entities[PLAYER].coordinates.x, 
-                    entities[PLAYER].coordinates.z);
+                    entities[ENTITY_PLAYER].coordinates.x, 
+                    entities[ENTITY_PLAYER].coordinates.z);
 
                 if (getRandomNumberInRange(0, 20) == 0) {
                     gFarmAnimals[index].flags &= ~0x200;
@@ -4826,7 +4829,7 @@ void func_8008FC68(u8 index) {
             gFarmAnimals[index].flags |= (2 | 0x2000);
             gFarmAnimals[index].flags &= ~(0x400);
 
-            setAudio(0x36);
+            playSfx(0x36);
             
             break;
         
@@ -4886,8 +4889,8 @@ void func_800904E4(u8 index) {
                 gFarmAnimals[index].direction = calculateAnimalDirectionToPlayer(
                     entities[gFarmAnimals[index].entityIndex].coordinates.x,
                     entities[gFarmAnimals[index].entityIndex].coordinates.z,
-                    entities[PLAYER].coordinates.x, 
-                    entities[PLAYER].coordinates.z);
+                    entities[ENTITY_PLAYER].coordinates.x, 
+                    entities[ENTITY_PLAYER].coordinates.z);
 
                 gFarmAnimals[index].unk_1B = 1;
                 
@@ -4952,8 +4955,8 @@ void func_800904E4(u8 index) {
                 gFarmAnimals[index].direction = calculateAnimalDirectionToPlayer(
                     entities[gFarmAnimals[index].entityIndex].coordinates.x,
                     entities[gFarmAnimals[index].entityIndex].coordinates.z,
-                    entities[PLAYER].coordinates.x, 
-                    entities[PLAYER].coordinates.z);
+                    entities[ENTITY_PLAYER].coordinates.x, 
+                    entities[ENTITY_PLAYER].coordinates.z);
 
                 if (getRandomNumberInRange(0, 20) == 0) {
                     gFarmAnimals[index].flags &= ~0x200;
@@ -5120,7 +5123,7 @@ void func_800904E4(u8 index) {
             gFarmAnimals[index].flags |= (2 | 0x2000);
             gFarmAnimals[index].flags &= ~(0x400);
 
-            setAudio(0x36);
+            playSfx(0x36);
             
             break;
         
@@ -5137,7 +5140,7 @@ void func_800904E4(u8 index) {
             gFarmAnimals[index].flags |= (2 | 0x2000);
             gFarmAnimals[index].flags &= ~(0x400);
 
-            setAudio(0x37);
+            playSfx(0x37);
             
             break;
         
@@ -5182,8 +5185,8 @@ void func_80090DF8(u8 index) {
                 gFarmAnimals[index].direction = calculateAnimalDirectionToPlayer(
                     entities[gFarmAnimals[index].entityIndex].coordinates.x,
                     entities[gFarmAnimals[index].entityIndex].coordinates.z,
-                    entities[PLAYER].coordinates.x, 
-                    entities[PLAYER].coordinates.z);
+                    entities[ENTITY_PLAYER].coordinates.x, 
+                    entities[ENTITY_PLAYER].coordinates.z);
 
                 gFarmAnimals[index].unk_1B = 1;
                 
@@ -5248,8 +5251,8 @@ void func_80090DF8(u8 index) {
                 gFarmAnimals[index].direction = calculateAnimalDirectionToPlayer(
                     entities[gFarmAnimals[index].entityIndex].coordinates.x,
                     entities[gFarmAnimals[index].entityIndex].coordinates.z,
-                    entities[PLAYER].coordinates.x, 
-                    entities[PLAYER].coordinates.z);
+                    entities[ENTITY_PLAYER].coordinates.x, 
+                    entities[ENTITY_PLAYER].coordinates.z);
 
                 if (getRandomNumberInRange(0, 20) == 0) {
                     gFarmAnimals[index].flags &= ~0x200;
@@ -5416,7 +5419,7 @@ void func_80090DF8(u8 index) {
             gFarmAnimals[index].flags |= (2 | 0x2000);
             gFarmAnimals[index].flags &= ~(0x400);
 
-            setAudio(0x36);
+            playSfx(0x36);
             
             break;
         
@@ -5433,7 +5436,7 @@ void func_80090DF8(u8 index) {
             gFarmAnimals[index].flags |= (2 | 0x2000);
             gFarmAnimals[index].flags &= ~(0x400);
 
-            setAudio(0x37);
+            playSfx(0x37);
             
             break;
         
@@ -5478,8 +5481,8 @@ void func_8009170C(u8 index) {
                 gFarmAnimals[index].direction = calculateAnimalDirectionToPlayer(
                     entities[gFarmAnimals[index].entityIndex].coordinates.x,
                     entities[gFarmAnimals[index].entityIndex].coordinates.z,
-                    entities[PLAYER].coordinates.x, 
-                    entities[PLAYER].coordinates.z);
+                    entities[ENTITY_PLAYER].coordinates.x, 
+                    entities[ENTITY_PLAYER].coordinates.z);
 
                 gFarmAnimals[index].unk_1B = 1;
                 
@@ -5543,8 +5546,8 @@ void func_8009170C(u8 index) {
                 gFarmAnimals[index].direction = calculateAnimalDirectionToPlayer(
                     entities[gFarmAnimals[index].entityIndex].coordinates.x,
                     entities[gFarmAnimals[index].entityIndex].coordinates.z,
-                    entities[PLAYER].coordinates.x, 
-                    entities[PLAYER].coordinates.z);
+                    entities[ENTITY_PLAYER].coordinates.x, 
+                    entities[ENTITY_PLAYER].coordinates.z);
 
                 if (getRandomNumberInRange(0, 20) == 0) {
                     gFarmAnimals[index].flags &= ~0x200;
@@ -5723,7 +5726,7 @@ void func_8009170C(u8 index) {
             gFarmAnimals[index].flags |= (2 | 0x2000);
             gFarmAnimals[index].flags &= ~(0x400);
 
-            setAudio(0x36);
+            playSfx(0x36);
             
             break;
         
@@ -5740,7 +5743,7 @@ void func_8009170C(u8 index) {
             gFarmAnimals[index].flags |= (2 | 0x2000);
             gFarmAnimals[index].flags &= ~(0x400);
 
-            setAudio(0x37);
+            playSfx(0x37);
             
             break;
         
@@ -5785,8 +5788,8 @@ void func_80092094(u8 index) {
                 gFarmAnimals[index].direction = calculateAnimalDirectionToPlayer(
                     entities[gFarmAnimals[index].entityIndex].coordinates.x,
                     entities[gFarmAnimals[index].entityIndex].coordinates.z,
-                    entities[PLAYER].coordinates.x, 
-                    entities[PLAYER].coordinates.z);
+                    entities[ENTITY_PLAYER].coordinates.x, 
+                    entities[ENTITY_PLAYER].coordinates.z);
 
                 gFarmAnimals[index].unk_1B = 1;
                 
@@ -5838,8 +5841,8 @@ void func_80092094(u8 index) {
                 gFarmAnimals[index].direction = calculateAnimalDirectionToPlayer(
                     entities[gFarmAnimals[index].entityIndex].coordinates.x,
                     entities[gFarmAnimals[index].entityIndex].coordinates.z,
-                    entities[PLAYER].coordinates.x, 
-                    entities[PLAYER].coordinates.z);
+                    entities[ENTITY_PLAYER].coordinates.x, 
+                    entities[ENTITY_PLAYER].coordinates.z);
 
                 if (getRandomNumberInRange(0, 20) == 0) {
                     gFarmAnimals[index].flags &= ~0x200;
@@ -5978,7 +5981,7 @@ void func_80092094(u8 index) {
             gFarmAnimals[index].flags |= (2 | 0x2000);
             gFarmAnimals[index].flags &= ~(0x400);
 
-            setAudio(0x3A);
+            playSfx(0x3A);
             
             break;
         
@@ -5995,7 +5998,7 @@ void func_80092094(u8 index) {
             gFarmAnimals[index].flags |= (2 | 0x2000);
             gFarmAnimals[index].flags &= ~(0x400);
 
-            setAudio(0x3A);
+            playSfx(0x3A);
             
             break;
         
@@ -6115,7 +6118,7 @@ void func_80092A64(u8 index) {
 
             if (gFarmAnimals[index].flags & 0x200 || gFarmAnimals[index].flags & 0x400) {
                 
-                gFarmAnimals[index].direction = calculateAnimalDirectionToPlayer(entities[gFarmAnimals[index].entityIndex].coordinates.x, entities[gFarmAnimals[index].entityIndex].coordinates.z, entities[PLAYER].coordinates.x, entities[PLAYER].coordinates.z);
+                gFarmAnimals[index].direction = calculateAnimalDirectionToPlayer(entities[gFarmAnimals[index].entityIndex].coordinates.x, entities[gFarmAnimals[index].entityIndex].coordinates.z, entities[ENTITY_PLAYER].coordinates.x, entities[ENTITY_PLAYER].coordinates.z);
                 gFarmAnimals[index].unk_1B = 1;
             
             } else if (getRandomNumberInRange(0, 60) < 40) {
@@ -6160,7 +6163,7 @@ void func_80092A64(u8 index) {
             if (gFarmAnimals[index].flags & 0x200) {
 
                 gFarmAnimals[index].flags &= ~0x400;
-                gFarmAnimals[index].direction = calculateAnimalDirectionToPlayer(entities[gFarmAnimals[index].entityIndex].coordinates.x, entities[gFarmAnimals[index].entityIndex].coordinates.z, entities[PLAYER].coordinates.x, entities[PLAYER].coordinates.z);
+                gFarmAnimals[index].direction = calculateAnimalDirectionToPlayer(entities[gFarmAnimals[index].entityIndex].coordinates.x, entities[gFarmAnimals[index].entityIndex].coordinates.z, entities[ENTITY_PLAYER].coordinates.x, entities[ENTITY_PLAYER].coordinates.z);
 
                 if (!getRandomNumberInRange(0, 20)) {
                     gFarmAnimals[index].flags &= ~0x200;
@@ -6281,7 +6284,7 @@ void func_80092A64(u8 index) {
             gFarmAnimals[index].unk_1B = 0;
             gFarmAnimals[index].flags |= (0x2 | 0x2000);
             gFarmAnimals[index].flags &= ~0x400;
-            setAudio(0x3A);
+            playSfx(0x3A);
         
             break;
 
@@ -6293,7 +6296,7 @@ void func_80092A64(u8 index) {
             gFarmAnimals[index].unk_1B = 0;
             gFarmAnimals[index].flags |= (0x2 | 0x2000);
             gFarmAnimals[index].flags &= ~0x400;
-            setAudio(0x3A);
+            playSfx(0x3A);
             break;
 
         case 19:
@@ -6588,7 +6591,7 @@ void func_80093434(u8 farmAnimalIndex) {
 
             gFarmAnimals[farmAnimalIndex].flags |= (2 | 0x2000);
             gFarmAnimals[farmAnimalIndex].flags &= ~0x400;
-            setAudio(0x3AU);
+            playSfx(0x3A);
             
             break;
 
@@ -6659,7 +6662,7 @@ void updateHorseGrown(void) {
             
             if (horseInfo.flags & 0x10) {
 
-                horseInfo.direction = calculateAnimalDirectionToPlayer(entities[horseInfo.entityIndex].coordinates.x, entities[horseInfo.entityIndex].coordinates.z, entities[PLAYER].coordinates.x, entities[PLAYER].coordinates.z);
+                horseInfo.direction = calculateAnimalDirectionToPlayer(entities[horseInfo.entityIndex].coordinates.x, entities[horseInfo.entityIndex].coordinates.z, entities[ENTITY_PLAYER].coordinates.x, entities[ENTITY_PLAYER].coordinates.z);
                 horseInfo.unk_17 = 4;
                 
             } else {
@@ -6766,7 +6769,7 @@ void updateHorseGrown(void) {
 
             if (horseInfo.flags & 0x10) {
                 
-                horseInfo.direction = calculateAnimalDirectionToPlayer(entities[horseInfo.entityIndex].coordinates.x, entities[horseInfo.entityIndex].coordinates.z, entities[PLAYER].coordinates.x, entities[PLAYER].coordinates.z);
+                horseInfo.direction = calculateAnimalDirectionToPlayer(entities[horseInfo.entityIndex].coordinates.x, entities[horseInfo.entityIndex].coordinates.z, entities[ENTITY_PLAYER].coordinates.x, entities[ENTITY_PLAYER].coordinates.z);
                 
                 if (getRandomNumberInRange(0, 20) == 0) {
                     horseInfo.flags &= ~(0x10);
@@ -6879,7 +6882,7 @@ void updateHorseGrown(void) {
             horseInfo.flags |= (0x2 | 0x80); 
             horseInfo.flags &= ~(0x40);
             
-            setAudio(0x39);
+            playSfx(0x39);
             
             break;
 
@@ -6895,7 +6898,7 @@ void updateHorseGrown(void) {
             horseInfo.flags |= (0x2 | 0x80); 
             horseInfo.flags &= ~(0x40);
             
-            setAudio(0x38);
+            playSfx(0x38);
             
             break;
 
@@ -6925,7 +6928,7 @@ void updateHorseNotGrown(void) {
             
             if (horseInfo.flags & 0x10) {
 
-                horseInfo.direction = calculateAnimalDirectionToPlayer(entities[horseInfo.entityIndex].coordinates.x, entities[horseInfo.entityIndex].coordinates.z, entities[PLAYER].coordinates.x, entities[PLAYER].coordinates.z);
+                horseInfo.direction = calculateAnimalDirectionToPlayer(entities[horseInfo.entityIndex].coordinates.x, entities[horseInfo.entityIndex].coordinates.z, entities[ENTITY_PLAYER].coordinates.x, entities[ENTITY_PLAYER].coordinates.z);
                 horseInfo.unk_17 = 4;
                 
             } else {
@@ -7028,7 +7031,7 @@ void updateHorseNotGrown(void) {
 
             if (horseInfo.flags & 0x10) {
                 
-                horseInfo.direction = calculateAnimalDirectionToPlayer(entities[horseInfo.entityIndex].coordinates.x, entities[horseInfo.entityIndex].coordinates.z, entities[PLAYER].coordinates.x, entities[PLAYER].coordinates.z);
+                horseInfo.direction = calculateAnimalDirectionToPlayer(entities[horseInfo.entityIndex].coordinates.x, entities[horseInfo.entityIndex].coordinates.z, entities[ENTITY_PLAYER].coordinates.x, entities[ENTITY_PLAYER].coordinates.z);
                 
                 if (getRandomNumberInRange(0, 20) == 0) {
                     horseInfo.flags &= ~(0x10);
@@ -7106,7 +7109,7 @@ void updateHorseNotGrown(void) {
             horseInfo.flags |= (0x2 | 0x80); 
             horseInfo.flags &= ~(0x40);
             
-            setAudio(0x39);
+            playSfx(0x39);
             
             break;
 
@@ -7122,7 +7125,7 @@ void updateHorseNotGrown(void) {
             horseInfo.flags |= (0x2 | 0x80); 
             horseInfo.flags &= ~(0x40);
             
-            setAudio(0x38);
+            playSfx(0x38);
             
             break;
 
@@ -8149,7 +8152,7 @@ void func_80096264(u8 index) {
             
             gMiscAnimals[index].flags |= 2;
 
-            setAudio(0x43);
+            playSfx(0x43);
             break;
 
         case 2:
@@ -9118,7 +9121,7 @@ void func_80098188(u8 index) {
             }
             
             gMiscAnimals[index].flags |= 2;
-            setAudio(0x4D);
+            playSfx(0x4D);
             
             break;
 
@@ -9260,7 +9263,7 @@ void func_80098740(u8 index) {
             
             gMiscAnimals[index].flags |= 2;
 
-            setAudio(0x46);
+            playSfx(0x46);
             
             break;
 
@@ -9365,9 +9368,9 @@ void func_80098B3C(u8 index) {
             gMiscAnimals[index].flags |= 2;
 
             if (!getRandomNumberInRange(0, 1)) {
-                setAudio(0x48);
+                playSfx(0x48);
             } else {
-                setAudio(0x49);
+                playSfx(0x49);
             }
             
             break;
@@ -9625,9 +9628,9 @@ void func_800995F8(u8 index) {
             gMiscAnimals[index].flags |= 2;
 
             if (!(5 < gHour && gHour < 16)) {
-                setAudio(0x51);
+                playSfx(0x51);
             } else {
-                setAudio(0x4E);
+                playSfx(0x4E);
             }
             
             break;
@@ -10400,7 +10403,7 @@ void func_8009B11C(void) {
     if (dogInfo.flags & 4) {
         dogInfo.flags |= 0x10;
         dogInfo.unk_17 = 0;
-        setAudio(0x3B);
+        playSfx(0x3B);
     }
 
     if (!(dogInfo.flags & 0x80)) {
@@ -10417,7 +10420,7 @@ void func_8009B1BC(void) {
     if (horseInfo.flags & 4) {
         horseInfo.flags |= 0x10;
         horseInfo.unk_17 = 0;
-        setAudio(0x38);
+        playSfx(0x38);
     }
     
     if (!(horseInfo.flags & 0x200)) {

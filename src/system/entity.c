@@ -360,7 +360,7 @@ bool initializeShadowSprite(u16 index, u32 arg1, u32 arg2, u32 arg3, u32 arg4, u
 
 //INCLUDE_ASM("asm/nonmatchings/system/entity", setEntityTrackingTarget);
 
-bool setEntityTrackingTarget(u16 index, u16 targetSpriteIndex, u16 trackingMode) {
+bool setEntityTrackingTarget(u16 index, u16 targetEntityIndex, u16 trackingMode) {
 
     bool result = FALSE;
 
@@ -368,10 +368,10 @@ bool setEntityTrackingTarget(u16 index, u16 targetSpriteIndex, u16 trackingMode)
 
         if ((entities[index].flags & ENTITY_ACTIVE) && (entities[index].flags & ENTITY_INITIALIZED)) {
 
-            entities[index].targetSpriteIndex = targetSpriteIndex;
+            entities[index].targetEntityIndex = targetEntityIndex;
             entities[index].trackingMode = trackingMode;
 
-            if (targetSpriteIndex == 0xFFFF) {
+            if (targetEntityIndex == 0xFFFF) {
                 entities[index].flags &= ~ENTITY_TRACKING_ACTIVE;
             } else {
                 entities[index].flags |= ENTITY_TRACKING_ACTIVE;
@@ -598,6 +598,7 @@ bool setEntityAnimationWithDirectionChange(u16 index, u16 animationIndex) {
             globalSprites[entities[index].globalSpriteIndex].audioTrigger = FALSE;
     
         }
+        
     }
     
     return result;
@@ -620,7 +621,9 @@ bool func_8002F4E0(u16 index) {
             entities[index].flags &= ~ENTITY_LOAD_PENDING;
 
             result = TRUE;
+
         } 
+        
     }
     
     return result;
@@ -2127,7 +2130,7 @@ void updateEntityPhysics(u16 index) {
             if (((entities[index].trackingMode + 2) & 0xFF) < 2U) {
                 
                 rotation.x = 0.0f;
-                rotation.y = getSpriteYValueFromDirection((entities[entities[index].targetSpriteIndex].direction + mapControllers[gMainMapIndex].rotation) % 8);
+                rotation.y = getSpriteYValueFromDirection((entities[entities[index].targetEntityIndex].direction + mapControllers[gMainMapIndex].rotation) % 8);
                 rotation.z = 0.0f;
                 
             } else {
@@ -2140,13 +2143,13 @@ void updateEntityPhysics(u16 index) {
 
             rotateVector3D(entities[index].attachmentOffset, &rotatedPosition, rotation);
 
-            entities[index].viewSpacePosition.x = entities[entities[index].targetSpriteIndex].viewSpacePosition.x + rotatedPosition.x;
-            entities[index].viewSpacePosition.y = entities[entities[index].targetSpriteIndex].viewSpacePosition.y + rotatedPosition.y;
-            entities[index].viewSpacePosition.z = entities[entities[index].targetSpriteIndex].viewSpacePosition.z + rotatedPosition.z;
+            entities[index].viewSpacePosition.x = entities[entities[index].targetEntityIndex].viewSpacePosition.x + rotatedPosition.x;
+            entities[index].viewSpacePosition.y = entities[entities[index].targetEntityIndex].viewSpacePosition.y + rotatedPosition.y;
+            entities[index].viewSpacePosition.z = entities[entities[index].targetEntityIndex].viewSpacePosition.z + rotatedPosition.z;
 
-            entities[index].coordinates.x = entities[entities[index].targetSpriteIndex].coordinates.x + rotatedPosition.x;
-            entities[index].coordinates.y = entities[entities[index].targetSpriteIndex].coordinates.y + rotatedPosition.y;
-            entities[index].coordinates.z = entities[entities[index].targetSpriteIndex].coordinates.z + rotatedPosition.z;
+            entities[index].coordinates.x = entities[entities[index].targetEntityIndex].coordinates.x + rotatedPosition.x;
+            entities[index].coordinates.y = entities[entities[index].targetEntityIndex].coordinates.y + rotatedPosition.y;
+            entities[index].coordinates.z = entities[entities[index].targetEntityIndex].coordinates.z + rotatedPosition.z;
 
         }
         
@@ -2280,7 +2283,7 @@ void updateEntities(void) {
 
                  if (entities[i].flags & 0x200) {
                     if (entities[i].trackingMode == 0xFE) {
-                        entities[i].direction = entities[entities[i].targetSpriteIndex].direction;
+                        entities[i].direction = entities[entities[i].targetEntityIndex].direction;
                     }
                 }
                 

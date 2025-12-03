@@ -17,6 +17,7 @@
 // 0xF and 0x10 = night time
 // 0x11 = music started?
 #define SUCCESSFUL_PROPOSAL 0x14
+#define PICKED_UP_BABY 0x16
 // 0x18 = thanksgiving mayor house
 #define FARM_MORNING_VISIT 0x17
 #define MARIA_MARRIAGE_CUTSCENE 0x18

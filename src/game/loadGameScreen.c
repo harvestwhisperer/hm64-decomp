@@ -1569,7 +1569,7 @@ void func_800E8F08(void) {
                     
                     if (D_801FB99B[0]) {
                         D_801FB99B[0]--;
-                        setAudio(2);
+                        playSfx(2);
                     }
                     
                     set = TRUE;
@@ -1582,7 +1582,7 @@ void func_800E8F08(void) {
                 
                 if (D_801FB99B[0] != 4) {
                     D_801FB99B[0]++;
-                    setAudio(2);
+                    playSfx(2);
                 }
                 
                 set = TRUE;
@@ -1626,7 +1626,7 @@ void func_800E8F08(void) {
                     deactivateOverlayScreenSprites(9);
                     
                     D_801FB9A0 = 2;
-                    setAudio(0);
+                    playSfx(0);
                     
                 }
             
@@ -1657,7 +1657,7 @@ void func_800E8F08(void) {
                 func_8004635C(9, 0, 0, 0, 0, 24);
                 
                 D_801FB9A0 = 5;
-                setAudio(0);
+                playSfx(0);
                 
             }
 
@@ -1705,7 +1705,7 @@ void func_800E8F08(void) {
                 deactivateOverlayScreenSprites(0xA);
                 
                 D_801FB9A0 = 4;
-                setAudio(0);
+                playSfx(0);
                 
             }
             

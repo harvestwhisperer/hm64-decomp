@@ -152,9 +152,9 @@ inline void initializeNamingScreen(u8* arg0, u8 arg1) {
     
     namingScreenContext.dialogueIndex = arg1;
     
-    stopCurrentSong(NAMING_SCREEN_THEME);
-    setCurrentSong(NAMING_SCREEN_THEME);
-    setSongVolume(NAMING_SCREEN_THEME, SONG_VOLUME);
+    stopCurrentAudioSequence(NAMING_SCREEN_THEME);
+    setCurrentAudioSequence(NAMING_SCREEN_THEME);
+    setAudioSequenceVolume(NAMING_SCREEN_THEME, SEQUENCE_VOLUME);
     
     setMainLoopCallbackFunctionIndex(0x34);
     
@@ -421,7 +421,7 @@ void func_800ED974(void) {
     
                                 if (namingScreenContext.screenType != 1) {
                                     
-                                    stopSongWithDefaultFadeOut(NAMING_SCREEN_THEME);
+                                    stopAudioSequenceWithDefaultFadeOut(NAMING_SCREEN_THEME);
                                     
                                     namingScreenContext.flags &= ~(0x800);
                                     namingScreenContext.flags |= 0x1000;

@@ -75,16 +75,6 @@ typedef struct {
 
 typedef struct {
     u16 functionIndex;
-    u16 cutsceneIndex1;
-    u16 cutsceneIndex2;
-    u16 unk_6;
-    u16* cutsceneIndexPtr;
-    s16 offset;
-    u16 unused;
-} CutsceneIndexCheckCmd;
-
-typedef struct {
-    u16 functionIndex;
     s16 offset;
 } CutsceneJumpCmd;
 
@@ -123,6 +113,19 @@ typedef struct {
     u16 bit;
     u32* bitfield;
 } CutsceneToggleSpecialBitToggleCmd;
+
+typedef struct {
+    u8 variablePtr;
+    u8 unk_1;
+    u8 unk_2;
+    u8 value;
+} CutsceneSetU8Value;
+
+typedef struct {
+    u16 functionIndex;
+    u16 unk_2;
+    u16* unk_4;
+} CutsceneSetU16Value;
 
 // func_8004AB04
 typedef struct {
@@ -179,28 +182,28 @@ typedef struct {
 
 typedef struct {
     u16 functionIndex;
-    u16 songIndex;
-    u8 *songStart;
-    u8 *songEnd;
-} CutsceneAudioSetSongCmd;
+    u16 sequenceIndex;
+    u8 *sequenceStart;
+    u8 *sequenceEnd;
+} CutsceneAudioSetAudioSequenceCmd;
 
 typedef struct {
     u16 functionIndex;
-    u16 songIndex;
+    u16 sequenceIndex;
 } CutsceneAudioIdleWhilePlayingCmd;
 
 typedef struct {
     u16 functionIndex;
-    u16 songIndex;
+    u16 sequenceIndex;
     u16 speed;
-} CutsceneAudioStopSongWithFadeOutCmd;
+} CutsceneAudioStopAudioSequenceWithFadeOutCmd;
 
 typedef struct {
     u16 functionIndex;
-    u16 songIndex;
+    u16 sequenceIndex;
     u16 targetVolume;
     s16 volume;
-} CutsceneAudioSetSongVolumeCmd;
+} CutsceneAudioSetAudioSequenceVolumeCmd;
 
 typedef struct {
     u16 functionIndex;
@@ -397,7 +400,7 @@ typedef struct {
 // func_8004B7B8
 typedef struct {
     u16 functionIndex;
-    u16 targetSpriteIndex;
+    u16 targetEntityIndex;
     s16 arg1;
     s16 arg2;
     s16 arg3;
@@ -537,54 +540,60 @@ typedef struct  {
 } CutsceneSpriteDMAManagerCmd;
 */
 
-/* unknown */
-
-typedef struct {
-    u8 functionIndex;
-    u8 unk_1;
-    u8 unk_2;
-    u8 nextFunctionIndex;
-} CutsceneUnknownCmd1;
+/* Branch on value */
 
 typedef struct {
     u16 functionIndex;
     u16 unk_2;
-    u16* unk_4;
-} CutsceneUnknownCmd2;
+    u16 unk_4;
+} CutsceneBranchOnRandomValue;
 
 typedef struct {
     u16 functionIndex;
     u16 unk_2;
     u32 unk_4;
     u32 unk_8;
-    u32* unk_C;
-} CutsceneUnknownCmd3;
-
-typedef struct {
-    u16 functionIndex;
-    u16 unk_2;
-    u16 unk_4;
-} CutsceneUnknownCmd4;
+    u32 unk_C;
+} CutsceneBranchOnU8Value;
 
 typedef struct {
     u16 functionIndex;
     u16* unk_4;
     u16* unk_8;
     u32 unk_C;
-} CutsceneUnknownCmd5;
+} CutsceneBranchOnU16Value;
+
+typedef struct {
+    u16 functionIndex;
+    u8 min;
+    u8 max;
+    u8* variablePtr;
+    s16 offset;
+    u16 unused;
+} CutsceneBranchU8VariableWithinRange;
+
+typedef struct {
+    u16 functionIndex;
+    u16 min;
+    u16 max;
+    u16 unk_6;
+    u16* variablePtr;
+    s16 offset;
+    u16 unused;
+} CutsceneBranchU16VariableWithinRange;
 
 typedef struct {
     u16 functionIndex;
     u16 unk_2;
-    u32 unk_4;
-    u32 unk_8;
-    u32 unk_C;
-} CutsceneUnknownCmd7;
+    u32 min;
+    u32 max;
+    u32* variablePtr;
+} CutsceneBranchU32VariableWithinRange;
 
 // 0x801808B0
 typedef struct {
     void *bytecodePtr;
-    void *subroutineBytecodePtr;
+    void *animationDataPtr;
     void *returnPtr;
     Vec3f targetPosition;
     u32 callbackBytecodePtr; // when branching based on button interaction with entity

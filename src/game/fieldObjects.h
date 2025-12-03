@@ -263,6 +263,7 @@ extern void func_800DB424();
 extern void updateCropsIfRain();                                   
 extern void randomlyAddWeedsToFarmField();     
 extern void randomlyBreakLogPieces(u8);             
+extern void clearForagableObjects(u8 mapIndex);
 extern void func_800DBC9C(u8);       
 extern void func_800DBD88(u8);   
 extern void func_800DBE8C(u8);         

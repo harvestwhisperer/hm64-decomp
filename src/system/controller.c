@@ -166,9 +166,9 @@ u32 checkButtonRepeat(u8 contIndex, u32 buttonPattern) {
     return controllers[contIndex].buttonRepeat & buttonPattern;
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/controller", GetStickXValueSigned);
+//INCLUDE_ASM("asm/nonmatchings/system/controller", getStickXValueSigned);
 
-s8 GetStickXValueSigned(u8 contIndex) {
+s8 getStickXValueSigned(u8 contIndex) {
     return controllers[contIndex].sticks.s_stick_x;
 }
 

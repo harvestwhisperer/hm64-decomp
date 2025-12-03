@@ -11,6 +11,7 @@ ROM_PATH = Path(__file__).parent / "../baserom.us.z64"
 CSV_PATH = Path(__file__).parent / "text_addresses.csv"
 
 VERBOSE = "--verbose" in sys.argv
+LITERAL_MODE = "--literal" in sys.argv  # Output exact control codes for recompilation
 
 rom = None
 
@@ -103,9 +104,9 @@ CHAR_MAP = {
 
 CONTROL_CODES = {
     0: 'LINEBREAK',
-    1: 'SOFTBREAK', 
+    1: 'SOFTBREAK',
     2: 'TEXTEND',
-    3: 'WAITINPUT',
+    3: 'WAIT',  # Followed by 1-byte duration parameter
     4: 'WAIT_WITH_ICON',
     5: 'LOAD_TEXT',  # Followed by 2-byte text index
     6: 'RESERVED',
@@ -155,6 +156,7 @@ def set_text_segments(index_start: int, index_end: int, text_start: int) -> dict
     
     # Calculate start addresses and sizes for each valid text segment
     segments = []
+
     for idx, offset in enumerate(offsets):
 
         offset = offset
@@ -199,7 +201,16 @@ class TextDecoder:
         self.char_counter = 0
         self.control_byte = 0
         
-    def decode_stream(self, byte_data):
+    def decode_stream(self, byte_data, literal_mode=False):
+        """
+        Decode a byte stream into a list of decoded items.
+        
+        Args:
+            byte_data: Bytes, hex string, or list of bytes
+            literal_mode: If True, parse entire segment including content after TEXTEND
+                         (needed for byte-perfect round-trip recompilation).
+                         If False, stop at TEXTEND for human-readable output.
+        """
 
         if isinstance(byte_data, str):
             # Convert hex string to bytes
@@ -221,14 +232,25 @@ class TextDecoder:
             if decoded_value is not None:
                 result.append(decoded_value)
 
-                # Check if this is a segment-ending control code
+                # In non-literal mode, stop at TEXTEND for readability
+                # In literal mode, continue parsing to capture trailing content for byte-matching
+                if not literal_mode and isinstance(decoded_value, dict):
+                    if decoded_value.get('type') == 'control' and decoded_value.get('name') == 'TEXTEND':
+                        if VERBOSE:
+                            remaining = byte_data[self.position:]
+                            print(f"    Stopping at TEXTEND. Remaining bytes: {remaining.hex()}")
+                        break
+
+                # Check if this is a segment-ending control code (legacy behavior)
                 if isinstance(decoded_value, dict) and decoded_value.get('segment_end'):
                     if VERBOSE == True:
                         print(f"    Decode stopped at WAITINPUT at position {self.position}/{len(byte_data)}")
                     break
             
             else:
+
                 if VERBOSE == True:
+                
                     # stop if next character can't be decoded
                     print(f"    Decode stopped at position {self.position}/{len(byte_data)}")
                     
@@ -349,20 +371,20 @@ class TextDecoder:
     
                 return param    
         
-        elif control_code in [7, 9]:  # INSERT_GAMEVAR, CHAR_ANIMATION - 1-byte parameter
-        
+        elif control_code in [3, 7, 9]:  # WAIT, INSERT_GAMEVAR, CHAR_ANIMATION - 1-byte parameter
+
             if hasattr(self, '_current_data') and self.position < len(self._current_data):
-    
+
                 param = self._current_data[self.position]
                 self.position += 1
-    
+
                 # don't increment char_counter here
-    
+
                 if VERBOSE == True:
                     print(f"      Extracted 1-byte parameter: 0x{param:02X}")
-    
+
                 return param
-        
+
         return None
     
     def _decode_character(self, value):
@@ -377,11 +399,7 @@ class TextDecoder:
             if param is not None:
                 return {'type': 'control', 'code': value, 'name': control_name, 'parameter': param}
             else:
-                # WAITINPUT marks the end of current segment
-                if value == 3:  # WAITINPUT
-                    return {'type': 'control', 'code': value, 'name': control_name, 'segment_end': True}
-                else:
-                    return {'type': 'control', 'code': value, 'name': control_name}
+                return {'type': 'control', 'code': value, 'name': control_name}
             
         elif value in CHAR_MAP:
             return {'type': 'character', 'value': CHAR_MAP[value]}
@@ -390,10 +408,19 @@ class TextDecoder:
             font_index = value - 0xB if value >= 0xB else value
             return {'type': 'unknown', 'raw': value, 'font_index': font_index}
     
-    def decode_and_format(self, byte_data):
-        """Decode and format as readable text with enhanced control code handling"""
+    def decode_and_format(self, byte_data, literal_mode=False):
+        """
+        Decode and format as readable text with enhanced control code handling.
+        
+        Args:
+            byte_data: The binary data to decode
+            literal_mode: If True, output exact control codes and parse entire segment
+                         (for byte-perfect recompilation).
+                         If False, stop at TEXTEND and use friendly formatting with 
+                         newlines (for human reading).
+        """
 
-        decoded = self.decode_stream(byte_data)
+        decoded = self.decode_stream(byte_data, literal_mode=literal_mode)
         result = []
         
         for item in decoded:
@@ -405,14 +432,19 @@ class TextDecoder:
                     if 'parameter' in item:
                         result.append(f"[{item['name']}:{item['parameter']:02X}]")
                     else:
-                        if item['name'] == 'LINEBREAK':
-                            result.append('\n')
-                        elif item['name'] == 'SOFTBREAK':
-                            result.append('\n')
-                        elif item['name'] == 'TEXTEND':
-                            result.append('\n[END]')
-                        else:
+                        if literal_mode:
+                            # Literal mode: just the control code, no extra formatting
                             result.append(f"[{item['name']}]")
+                        else:
+                            # Friendly mode: add newlines for readability
+                            if item['name'] == 'LINEBREAK':
+                                result.append('[LINEBREAK]\n')
+                            elif item['name'] == 'SOFTBREAK':
+                                result.append('[SOFTBREAK]\n')
+                            elif item['name'] == 'TEXTEND':
+                                result.append('\n[TEXTEND]')
+                            else:
+                                result.append(f"[{item['name']}]")
         
                 elif item['type'] == 'character':
                     result.append(item['value'])
@@ -426,8 +458,18 @@ class TextDecoder:
         
         return ''.join(result)
 
-def decode_text_bank(index_start: int, index_end: int, text_start: int) -> list:
-
+def decode_text_bank(index_start: int, index_end: int, text_start: int, literal_mode: bool = False) -> list:
+    """
+    Decode a text bank from ROM.
+    
+    Args:
+        index_start: ROM address of index table start
+        index_end: ROM address of index table end  
+        text_start: ROM address of text data start
+        literal_mode: If True, output exact control codes for recompilation.
+                     If False, output friendly format with newlines for reading.
+    """
+    
     if rom is None:
         set_rom()
     
@@ -453,7 +495,7 @@ def decode_text_bank(index_start: int, index_end: int, text_start: int) -> list:
             if VERBOSE == True:
                 print(f"  Starting decode for segment {segment['index']}...")
     
-            decoded = decoder.decode_and_format(segment_data)
+            decoded = decoder.decode_and_format(segment_data, literal_mode=literal_mode)
     
             if VERBOSE == True:
                 print(f"  Successfully decoded segment {segment['index']}")
@@ -480,8 +522,18 @@ def decode_text_bank(index_start: int, index_end: int, text_start: int) -> list:
     
     return decoded_texts
 
-def write_text_bank_to_files(index_start: int, index_end: int, text_start: int, output_dir: str = None) -> str:
-
+def write_text_bank_to_files(index_start: int, index_end: int, text_start: int, output_dir: str = None, literal_mode: bool = False) -> str:
+    """
+    Extract a text bank from ROM and write to individual text files.
+    
+    Args:
+        index_start: ROM address of index table start
+        index_end: ROM address of index table end
+        text_start: ROM address of text data start
+        output_dir: Output directory name (optional)
+        literal_mode: If True, output exact control codes for recompilation.
+                     If False, output friendly format with newlines for reading.
+    """
     if rom is None:
         set_rom()
     
@@ -493,7 +545,7 @@ def write_text_bank_to_files(index_start: int, index_end: int, text_start: int, 
     
     output_path.mkdir(parents=True, exist_ok=True)
     
-    decoded_texts = decode_text_bank(index_start, index_end, text_start)
+    decoded_texts = decode_text_bank(index_start, index_end, text_start, literal_mode=literal_mode)
     
     for text_info in decoded_texts:
 
@@ -506,7 +558,7 @@ def write_text_bank_to_files(index_start: int, index_end: int, text_start: int, 
             f.write(f"# Address: {text_info['start_address']}\n")
             f.write(f"# Size: {text_info['size']} bytes\n")
             f.write(f"# Raw data: {text_info['raw_data']}\n")
-            f.write("# " + "="*60 + "\n\n")
+            f.write("# " + "="*60 + "\n")
             
             if 'error' in text_info:
                 f.write(f"ERROR: {text_info['error']}\n")
@@ -572,11 +624,11 @@ def process_all_text_banks(command: str = 'write_files'):
         try:
 
             if command == 'write_files':
-                output_path = write_text_bank_to_files(bank['index_start'], bank['index_end'], bank['text_start'], bank['name'])
+                output_path = write_text_bank_to_files(bank['index_start'], bank['index_end'], bank['text_start'], bank['name'], literal_mode=LITERAL_MODE)
                 print(f"Files written to: {output_path}")
                 
             elif command == 'decode_bank':
-                decoded_texts = decode_text_bank(bank['index_start'], bank['index_end'], bank['text_start'])
+                decoded_texts = decode_text_bank(bank['index_start'], bank['index_end'], bank['text_start'], literal_mode=LITERAL_MODE)
                 
             elif command == 'analyze_bank':
                 set_rom()
@@ -592,16 +644,65 @@ def main():
 
     if len(sys.argv) < 2:
         print("Usage:")
-        print("  python hm64_text_utilities.py decode_bank <index_start> <index_end> <text_start>")
+        print("  python hm64_text_utilities.py extract_bank <bank_name> [--literal]")
+        print("  python hm64_text_utilities.py decode_bank <index_start> <index_end> <text_start> [--literal]")
         print("  python hm64_text_utilities.py analyze_bank <index_start> <index_end> <text_start>")
-        print("  python hm64_text_utilities.py write_files <index_start> <index_end> <text_start> [output_dir]")
-        print("  python hm64_text_utilities.py process_all [write_files|decode_bank|analyze_bank]")
+        print("  python hm64_text_utilities.py write_files <index_start> <index_end> <text_start> [output_dir] [--literal]")
+        print("  python hm64_text_utilities.py process_all [write_files|decode_bank|analyze_bank] [--literal]")
         print("  python hm64_text_utilities.py list_banks")
+        print("")
+        print("Options:")
+        print("  --verbose   Enable verbose output")
+        print("  --literal   Output exact control codes for recompilation (vs friendly for reading)")
         sys.exit(1)
 
     cmd = sys.argv[1]
 
-    if cmd == "decode_bank":
+    if cmd == "extract_bank":
+        # Extract a single bank by name (looks up addresses in CSV)
+        if len(sys.argv) >= 3:
+            bank_name = sys.argv[2]
+            
+            text_banks = load_text_addresses()
+            
+            if not text_banks:
+                print("ERROR: Could not load text bank addresses from CSV")
+                sys.exit(1)
+            
+            # Find the requested bank
+            bank_info = None
+            for bank in text_banks:
+                if bank['name'] == bank_name:
+                    bank_info = bank
+                    break
+            
+            if bank_info is None:
+                print(f"ERROR: Text bank '{bank_name}' not found in CSV")
+                print("Available banks:")
+                for bank in text_banks:
+                    print(f"  - {bank['name']}")
+                sys.exit(1)
+            
+            if VERBOSE:
+                print(f"Extracting text bank '{bank_name}':")
+                print(f"  Index: 0x{bank_info['index_start']:08X} - 0x{bank_info['index_end']:08X}")
+                print(f"  Text:  0x{bank_info['text_start']:08X}")
+            
+            output_path = write_text_bank_to_files(
+                bank_info['index_start'],
+                bank_info['index_end'],
+                bank_info['text_start'],
+                bank_name,
+                literal_mode=LITERAL_MODE
+            )
+            print(f"Extracted to: {output_path}")
+            
+        else:
+            print("Please provide a bank name")
+            print("Use 'list_banks' to see available banks")
+            sys.exit(1)
+
+    elif cmd == "decode_bank":
 
         if len(sys.argv) >= 5:
 
@@ -613,7 +714,7 @@ def main():
             print(f"Index: 0x{index_start:08X} - 0x{index_end:08X}")
             print(f"Text:  0x{text_start:08X}")
             
-            decoded_texts = decode_text_bank(index_start, index_end, text_start)
+            decoded_texts = decode_text_bank(index_start, index_end, text_start, literal_mode=LITERAL_MODE)
             
             for text_info in decoded_texts:
                 
@@ -671,7 +772,7 @@ def main():
             print(f"Index: 0x{index_start:08X} - 0x{index_end:08X}")
             print(f"Text:  0x{text_start:08X}")
             
-            output_path = write_text_bank_to_files(index_start, index_end, text_start, output_dir)
+            output_path = write_text_bank_to_files(index_start, index_end, text_start, output_dir, literal_mode=LITERAL_MODE)
             print(f"Files written to: {output_path}")
             
         else:
@@ -703,7 +804,7 @@ def main():
     
     else:
         print(f"Unknown command: {cmd}")
-        print("Available commands: decode_bank, analyze_bank, write_files, process_all, list_banks")
+        print("Available commands: extract_bank, decode_bank, analyze_bank, write_files, process_all, list_banks")
 
 if __name__ == "__main__":
     main()

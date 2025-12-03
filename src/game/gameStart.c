@@ -27,9 +27,7 @@ void func_8004DF10(void) {
     func_8004E160(); 
     
     if (contPattern & 1) {
-        
         func_80055F08(INTRO, 0x61, 1);
-
     } else {
 
         setMainLoopCallbackFunctionIndex(NO_OP);

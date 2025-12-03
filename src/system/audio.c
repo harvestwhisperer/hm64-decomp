@@ -15,17 +15,17 @@ void initializeAudio(musConfig *config) {
     u16 i;
     u16 j;
 
-    for (i = 0; i < MAX_ACTIVE_SONGS; i++) {
+    for (i = 0; i < MAX_ACTIVE_SEQUENCES; i++) {
         
-        gSongs[i].flags = 0;
-        gSongs[i].handle = 0;
-        gSongs[i].numChannelsPlaying = 0;
-        gSongs[i].unused1 = 0;
-        gSongs[i].unused2 = 0;
+        gAudioSequences[i].flags = 0;
+        gAudioSequences[i].handle = 0;
+        gAudioSequences[i].numChannelsPlaying = 0;
+        gAudioSequences[i].unused1 = 0;
+        gAudioSequences[i].unused2 = 0;
         gSfx[i].volume = 0;
-        gSongs[i].speed = 0;
+        gAudioSequences[i].speed = 0;
         
-        func_800266C0(&gSongs[i].volumes, 0, 0, 0, 0);
+        func_800266C0(&gAudioSequences[i].volumes, 0, 0, 0, 0);
         
     }
 
@@ -52,30 +52,30 @@ void updateAudio(void) {
     u16 i, j;
     u8 current;
 
-    for (i = 0; i < MAX_ACTIVE_SONGS; i++) {
+    for (i = 0; i < MAX_ACTIVE_SEQUENCES; i++) {
 
-        if (gSongs[i].flags & AUDIO_ACTIVE) {
+        if (gAudioSequences[i].flags & AUDIO_ACTIVE) {
 
-            if (gSongs[i].flags & AUDIO_START) {
+            if (gAudioSequences[i].flags & AUDIO_START) {
                 current = i;
-                nuAuStlSeqPlayerDataSet(current, gSongs[i].currentSongRomAddrStart, gSongs[i].currentSongRomAddrEnd - gSongs[i].currentSongRomAddrStart);
-                gSongs[i].handle = nuAuStlSeqPlayerPlay2(current);
-                gSongs[i].flags &= ~AUDIO_START;
+                nuAuStlSeqPlayerDataSet(current, gAudioSequences[i].currentAudioSequenceRomAddrStart, gAudioSequences[i].currentAudioSequenceRomAddrEnd - gAudioSequences[i].currentAudioSequenceRomAddrStart);
+                gAudioSequences[i].handle = nuAuStlSeqPlayerPlay2(current);
+                gAudioSequences[i].flags &= ~AUDIO_START;
             }
             
-            if (gSongs[i].flags & AUDIO_STOP) {
-                MusHandleStop(gSongs[i].handle, gSongs[i].speed);
-                gSongs[i].flags &= ~AUDIO_STOP;
+            if (gAudioSequences[i].flags & AUDIO_STOP) {
+                MusHandleStop(gAudioSequences[i].handle, gAudioSequences[i].speed);
+                gAudioSequences[i].flags &= ~AUDIO_STOP;
             }
             
-            interpolateToTarget(&gSongs[i].volumes);
-            MusHandleSetVolume(gSongs[i].handle, gSongs[i].volumes.currentValue);
+            interpolateToTarget(&gAudioSequences[i].volumes);
+            MusHandleSetVolume(gAudioSequences[i].handle, gAudioSequences[i].volumes.currentValue);
             
-            gSongs[i].numChannelsPlaying = MusHandleAsk(gSongs[i].handle);
+            gAudioSequences[i].numChannelsPlaying = MusHandleAsk(gAudioSequences[i].handle);
             
-            if (!gSongs[i].numChannelsPlaying) {
-                gSongs[i].flags = 0;
-                MusHandleStop(gSongs[i].handle, 1);
+            if (!gAudioSequences[i].numChannelsPlaying) {
+                gAudioSequences[i].flags = 0;
+                MusHandleStop(gAudioSequences[i].handle, 1);
             }
 
         }   
@@ -110,29 +110,29 @@ void updateAudio(void) {
     }
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/audio", setSongBank);
+//INCLUDE_ASM("asm/nonmatchings/system/audio", setAudioSequenceBank);
 
-void setSongBank(u8 *pBankStart, u8 *pBankEnd, u8 *wBankStart) {
+void setAudioSequenceBank(u8 *pBankStart, u8 *pBankEnd, u8 *wBankStart) {
     nuAuStlBankSet(pBankStart, pBankEnd - pBankStart, wBankStart);
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/audio", setSong);
+//INCLUDE_ASM("asm/nonmatchings/system/audio", setAudioSequence);
 
-bool setSong(u16 songIndex, u8 *songAddrStart, u8 *songAddrEnd) {
+bool setAudioSequence(u16 sequenceIndex, u8 *sequenceAddrStart, u8 *sequenceAddrEnd) {
     
     bool result = FALSE;
     
-    if (songIndex < MAX_ACTIVE_SONGS) {
+    if (sequenceIndex < MAX_ACTIVE_SEQUENCES) {
 
-        if (!(gSongs[songIndex].flags & AUDIO_ACTIVE)) {
+        if (!(gAudioSequences[sequenceIndex].flags & AUDIO_ACTIVE)) {
 
-            func_800266C0(&gSongs[songIndex].volumes, 0, 0, 0, 0);
+            func_800266C0(&gAudioSequences[sequenceIndex].volumes, 0, 0, 0, 0);
 
-            gSongs[songIndex].unused1 = 128;
-            gSongs[songIndex].unused2 = 128;
-            gSongs[songIndex].currentSongRomAddrStart = songAddrStart;
-            gSongs[songIndex].currentSongRomAddrEnd = songAddrEnd;
-            gSongs[songIndex].flags = (AUDIO_ACTIVE | AUDIO_START);
+            gAudioSequences[sequenceIndex].unused1 = 128;
+            gAudioSequences[sequenceIndex].unused2 = 128;
+            gAudioSequences[sequenceIndex].currentAudioSequenceRomAddrStart = sequenceAddrStart;
+            gAudioSequences[sequenceIndex].currentAudioSequenceRomAddrEnd = sequenceAddrEnd;
+            gAudioSequences[sequenceIndex].flags = (AUDIO_ACTIVE | AUDIO_START);
 
             result = TRUE;
             
@@ -143,41 +143,18 @@ bool setSong(u16 songIndex, u8 *songAddrStart, u8 *songAddrEnd) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/audio", stopSongWithFadeOut);
+//INCLUDE_ASM("asm/nonmatchings/system/audio", stopAudioSequenceWithFadeOut);
 
-bool stopSongWithFadeOut(u16 index, u32 speed) {
+bool stopAudioSequenceWithFadeOut(u16 index, u32 speed) {
 
     bool result = FALSE;
 
-    if (index < MAX_ACTIVE_SONGS) {
+    if (index < MAX_ACTIVE_SEQUENCES) {
         
-        if (gSongs[index].flags & AUDIO_ACTIVE) {
+        if (gAudioSequences[index].flags & AUDIO_ACTIVE) {
             
-            gSongs[index].speed = speed;
-            gSongs[index].flags |= AUDIO_STOP;
-            
-            result = TRUE;
-
-        }
-
-    }
-    
-    return result;
-
-}
-
-//INCLUDE_ASM("asm/nonmatchings/system/audio", stopSong);
-
-bool stopSong(u16 songIndex) {
-
-    bool result = FALSE;
-
-    if (songIndex < MAX_ACTIVE_SONGS) {
-    
-        if (gSongs[songIndex].flags & AUDIO_ACTIVE) {
-            
-            MusHandleStop(gSongs[songIndex].handle, 0);
-            gSongs[songIndex].flags = 0;
+            gAudioSequences[index].speed = speed;
+            gAudioSequences[index].flags |= AUDIO_STOP;
             
             result = TRUE;
 
@@ -189,15 +166,38 @@ bool stopSong(u16 songIndex) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/audio", setSongVolumes);
+//INCLUDE_ASM("asm/nonmatchings/system/audio", stopAudioSequence);
 
-bool setSongVolumes(u16 index, s32 targetVolume, s16 fadeInRate) {
+bool stopAudioSequence(u16 sequenceIndex) {
+
+    bool result = FALSE;
+
+    if (sequenceIndex < MAX_ACTIVE_SEQUENCES) {
+    
+        if (gAudioSequences[sequenceIndex].flags & AUDIO_ACTIVE) {
+            
+            MusHandleStop(gAudioSequences[sequenceIndex].handle, 0);
+            gAudioSequences[sequenceIndex].flags = 0;
+            
+            result = TRUE;
+
+        }
+
+    }
+    
+    return result;
+
+}
+
+//INCLUDE_ASM("asm/nonmatchings/system/audio", setAudioSequenceVolumes);
+
+bool setAudioSequenceVolumes(u16 index, s32 targetVolume, s16 fadeInRate) {
     
     bool result = FALSE;
     
-    if (index < MAX_ACTIVE_SONGS) {
+    if (index < MAX_ACTIVE_SEQUENCES) {
          
-        if (gSongs[index].flags & AUDIO_ACTIVE) {
+        if (gAudioSequences[index].flags & AUDIO_ACTIVE) {
 
             targetVolume &= (~targetVolume >> 0x1F);
             
@@ -205,9 +205,9 @@ bool setSongVolumes(u16 index, s32 targetVolume, s16 fadeInRate) {
                 targetVolume = MAX_VOLUME;
             }
             
-            gSongs[index].volumes.targetValue = targetVolume;
+            gAudioSequences[index].volumes.targetValue = targetVolume;
             
-            initializeInterpolator(&gSongs[index].volumes, fadeInRate, targetVolume);
+            initializeInterpolator(&gAudioSequences[index].volumes, fadeInRate, targetVolume);
             
             result = TRUE;
 
@@ -221,24 +221,24 @@ bool setSongVolumes(u16 index, s32 targetVolume, s16 fadeInRate) {
 //INCLUDE_ASM("asm/nonmatchings/system/audio", func_8003D4E4);
 
 // unused
-bool func_8003D4E4(u16 songIndex, s32 arg1) {
+bool func_8003D4E4(u16 sequenceIndex, s32 arg1) {
     
     bool result = FALSE;
 
-    if (songIndex < MAX_ACTIVE_SONGS) {
+    if (sequenceIndex < MAX_ACTIVE_SEQUENCES) {
         
-        if (gSongs[songIndex].flags & AUDIO_ACTIVE) {
+        if (gAudioSequences[sequenceIndex].flags & AUDIO_ACTIVE) {
         
-            gSongs[songIndex].unused1 = arg1;
+            gAudioSequences[sequenceIndex].unused1 = arg1;
         
             if (arg1 < 0) {
-                 gSongs[songIndex].unused1 = 0;
+                 gAudioSequences[sequenceIndex].unused1 = 0;
             }
         
             result = TRUE;
         
-            if (gSongs[songIndex].unused1 >= 257) {
-                 gSongs[songIndex].unused1 = 256;
+            if (gAudioSequences[sequenceIndex].unused1 >= 257) {
+                 gAudioSequences[sequenceIndex].unused1 = 256;
             }
         }
     }
@@ -250,22 +250,22 @@ bool func_8003D4E4(u16 songIndex, s32 arg1) {
 //INCLUDE_ASM("asm/nonmatchings/system/audio", func_8003D570);
 
 // unused
-bool func_8003D570(u16 songIndex, s32 arg1) {
+bool func_8003D570(u16 sequenceIndex, s32 arg1) {
     
     bool result = FALSE;
 
-    if (songIndex < MAX_ACTIVE_SONGS) {
+    if (sequenceIndex < MAX_ACTIVE_SEQUENCES) {
         
-        if (gSongs[songIndex].flags & AUDIO_ACTIVE) {
+        if (gAudioSequences[sequenceIndex].flags & AUDIO_ACTIVE) {
             
-            gSongs[songIndex].unused2 = arg1;
+            gAudioSequences[sequenceIndex].unused2 = arg1;
             
             if (arg1 < 0) {
-                 gSongs[songIndex].unused2 = 0;
+                 gAudioSequences[sequenceIndex].unused2 = 0;
             }
             
-            if (gSongs[songIndex].unused2 >= 257) {
-                 gSongs[songIndex].unused2 = 256;
+            if (gAudioSequences[sequenceIndex].unused2 >= 257) {
+                 gAudioSequences[sequenceIndex].unused2 = 256;
             }
 
             result = TRUE;
