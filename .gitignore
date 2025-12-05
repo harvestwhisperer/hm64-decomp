@@ -5,6 +5,7 @@
 *.map
 *.o
 *.s
+*.inc.c
 *.bin
 *.elf
 *.d

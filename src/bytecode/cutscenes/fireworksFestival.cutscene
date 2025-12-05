@@ -613,5 +613,5 @@
 
 ; 0x13691C
 .smoke_animation:
-    .anim_frame 0x0000, 0xFE, (0, 0, 0), 255, 0x0
+    .anim_frame 0x0000, 0xFE, (0, 0, 0), 0xFF, 0x0
     .anim_end

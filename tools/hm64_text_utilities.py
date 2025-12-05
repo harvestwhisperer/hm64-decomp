@@ -659,8 +659,10 @@ def main():
     cmd = sys.argv[1]
 
     if cmd == "extract_bank":
+
         # Extract a single bank by name (looks up addresses in CSV)
         if len(sys.argv) >= 3:
+            
             bank_name = sys.argv[2]
             
             text_banks = load_text_addresses()
@@ -695,6 +697,7 @@ def main():
                 bank_name,
                 literal_mode=LITERAL_MODE
             )
+
             print(f"Extracted to: {output_path}")
             
         else:
