@@ -2,9 +2,12 @@ BASENAME := hm64
 TARGET := $(BASENAME).z64
 BASEROM = baserom.us.z64
 
-VERBOSE := 0
+# Options
 
+VERBOSE := 0
 PERMUTER ?= 0
+
+# Directories
 
 SRC_DIRS := src
 BIN_DIRS := bin
@@ -12,12 +15,17 @@ BIN_DIRS := bin
 BUILD_DIR := build
 TOOLS_DIR := tools
 
+# Files
+
 C_FILES = $(foreach dir, $(SRC_DIRS), $(wildcard $(dir)/*.c))
 BIN_FILES=$(foreach dir, $(BIN_DIRS), $(wildcard $(dir)/*.bin))
 
 LD_SCRIPT := $(BASENAME).ld
+LD_MAP := $(BASENAME).map
 	
 OBJECTS := $(shell grep -E 'build.+\.o' $(LD_SCRIPT) -o)
+
+# Tools
 
 KMC_PATH := tools/gcc-2.7.2/
 
@@ -28,6 +36,8 @@ AS := $(CROSS)as
 LD := $(CROSS)ld
 OBJCOPY := $(CROSS)objcopy
 STRIP := $(CROSS)strip
+
+# Flags
 
 MACROS := -D_LANGUAGE_C -D_MIPS_SZLONG=32 -D_MIPS_SZINT=32 -DSUPPORT_NAUDIO -DNU_SYSTEM -DF3DEX_GBI_2 -DN_MICRO -DLANG_JAPANESE=0 -DUSE_EPI -DNDEBUG -D_AUDIOVISIBLE -DN_AUDIO
 CFLAGS_COMMON := -G0 -mips3 -mgp32 -mfp32 -Wa,-Iinclude -funsigned-char
@@ -45,8 +55,6 @@ NU_OPTFLAGS := -O3
 
 ULTRALIBVER := -DBUILD_VERSION=7
 
-LD_MAP := $(BASENAME).map
-
 LDFLAGS := -T undefined_funcs.txt -T undefined_syms.txt -T undefined_funcs_auto.txt -T undefined_syms_auto.txt -T $(LD_SCRIPT) -Map $(LD_MAP) --no-check-sections
 
 # Binary asset matching (cutscenes, dialogues, texts)
@@ -61,7 +69,7 @@ CUTSCENE_TRANSPILER := python3 tools/hm64_cutscene_transpiler.py
 
 CUTSCENE_DSL := $(foreach bank,$(DECOMPILED_CUTSCENES),$(CUTSCENE_SRC_DIR)/$(bank).cutscene)
 CUTSCENE_ASM := $(foreach bank,$(DECOMPILED_CUTSCENES),$(CUTSCENE_SRC_DIR)/$(bank).s)
-CUTSCENE_OBJ := $(foreach bank,$(DECOMPILED_CUTSCENES),$(CUTSCENE_BUILD_DIR)/$(bank).s.o)
+CUTSCENE_OBJ := $(foreach bank,$(DECOMPILED_CUTSCENES),$(CUTSCENE_BUILD_DIR)/$(bank).bin.o)
 
 DECOMPILED_DIALOGUES := mariaDialogueBytecode
 
@@ -72,7 +80,7 @@ DIALOGUE_TRANSPILER := python3 tools/hm64_dialogue_transpiler.py
 
 DIALOGUE_DSL := $(foreach bank,$(DECOMPILED_DIALOGUES),$(DIALOGUE_SRC_DIR)/$(bank).dialogue)
 DIALOGUE_ASM := $(foreach bank,$(DECOMPILED_DIALOGUES),$(DIALOGUE_SRC_DIR)/$(bank).s $(DIALOGUE_SRC_DIR)/$(bank)Index.s)
-DIALOGUE_OBJ := $(foreach bank,$(DECOMPILED_DIALOGUES),$(DIALOGUE_BUILD_DIR)/$(bank).s.o $(DIALOGUE_BUILD_DIR)/$(bank)Index.s.o)
+DIALOGUE_OBJ := $(foreach bank,$(DECOMPILED_DIALOGUES),$(DIALOGUE_BUILD_DIR)/$(bank).bin.o $(DIALOGUE_BUILD_DIR)/$(bank)Index.bin.o)
 
 DECOMPILED_TEXTS := text1 library diary animalInteractions namingScreen kai gotz sasha cliff funeralIntro howToPlay
 
@@ -82,7 +90,7 @@ TEXT_BUILD_DIR := $(BUILD_DIR)/bin/text
 TEXT_TRANSPILER := python3 tools/hm64_text_transpiler.py
 
 TEXT_ASM := $(foreach bank,$(DECOMPILED_TEXTS),$(TEXT_ASSETS_DIR)/$(bank)Text.s $(TEXT_ASSETS_DIR)/$(bank)TextIndex.s)
-TEXT_OBJ := $(foreach bank,$(DECOMPILED_TEXTS),$(TEXT_BUILD_DIR)/$(bank)Text.s.o $(TEXT_BUILD_DIR)/$(bank)TextIndex.s.o)
+TEXT_OBJ := $(foreach bank,$(DECOMPILED_TEXTS),$(TEXT_BUILD_DIR)/$(bank)Text.bin.o $(TEXT_BUILD_DIR)/$(bank)TextIndex.bin.o)
 
 ifeq ($(VERBOSE),0)
 V := @
@@ -92,12 +100,15 @@ ifeq ($(PERMUTER),1)
 MACROS += -D_PERMUTER=1
 endif
 
-dir_guard = @mkdir -p $(@D)
+# Create all output directories upfront
+$(shell mkdir -p $(sort $(dir $(OBJECTS))))
 
 build/src/lib/nusys-1/nuboot.c.o: NU_OPTFLAGS := -O0
 build/src/lib/nusys-1/nupakmenu.c.o: NU_OPTFLAGS += -g2
 build/src/lib/nusys-1/nupakmenuloadfont.c.o: NU_OPTFLAGS += -g2
 build/src/lib/os/libultra/io/aisetnextbuf.c.o: ULTRALIBVER := -DBUILD_VERSION=6
+
+# Targets
 
 all: check
 
@@ -127,13 +138,16 @@ clean-artifacts:
 submodules:
 	git submodule update
 
-split: $(LD_SCRIPT)
+split: 
+	$(V)python3 -m splat split ./tools/splat.yaml
 
 setup: clean split
 
 rebuild: clean-artifacts $(LD_SCRIPT) check
 
 rerun: clean $(LD_SCRIPT) check
+
+# Asset extraction
 
 extract-sprites:
 	@rm -rf assets/sprites
@@ -151,7 +165,7 @@ extract-animation-sprites:
 extract-animations:
 	@cd tools && python3 ./hm64_animation_utilities.py extract_all
 
-gifs:
+extract-gifs:
 	@cd tools && python3 ./hm64_animation_utilities.py make_gifs_from_animations
 
 extract-texts:
@@ -168,115 +182,83 @@ extract-cutscenes:
 	@cd tools && python3 hm64_cutscene_utilities.py --all --labels --graph
 	@cd tools && python3 hm64_cutscene_utilities.py --all --labels --asm
 
-build:
-	@mkdir $@
-
-# Generate linker script via splat after assembling bytecode DSL and texts
-# Then patch linker script to use decompiled segments instead of extracted binaries
-# 
-# For cutscenes: cutsceneBankN.bin.o -> cutsceneBankN.s.o
-# For dialogue bytecode: <bank>.bin.o -> <bank>.s.o, <bank>Index.bin.o -> <bank>Index.s.o  
-# For dialogue text: <bank>.bin.o -> <bank>.s.o, <bank>Index.bin.o -> <bank>Index.s.o
-$(LD_SCRIPT): $(CUTSCENE_ASM) $(DIALOGUE_ASM) $(TEXT_ASM)
-	$(V)python3 -m splat split ./tools/splat.yaml
-	$(V)$(foreach bank,$(DECOMPILED_CUTSCENES),\
-		sed -i 's|$(bank).bin.o|$(bank).s.o|g' $(LD_SCRIPT);)
-	$(V)$(foreach bank,$(DECOMPILED_DIALOGUES),\
-		sed -i 's|$(bank).bin.o|$(bank).s.o|g' $(LD_SCRIPT);\
-		sed -i 's|$(bank)Index.bin.o|$(bank)Index.s.o|g' $(LD_SCRIPT);)
-	$(V)$(foreach bank,$(DECOMPILED_TEXTS),\
-    	sed -i 's|$(bank)Text.bin.o|$(bank)Text.s.o|g' $(LD_SCRIPT);\
-    	sed -i 's|$(bank)TextIndex.bin.o|$(bank)TextIndex.s.o|g' $(LD_SCRIPT);)
-
 # Main code segment
 
 # need to pass -B <dir> to gcc to prevent it from fetching system default cc1
 $(BUILD_DIR)/src/%.c.o: src/%.c
-	$(dir_guard) 
 	$(CC) -B $(KMC_PATH) $(OPTFLAGS) $(CFLAGS) $(DEBUG_FLAGS) $(CPPFLAGS) -c -o $@ $<
 
-$(BUILD_DIR)/src/game/%.c.o: src/game/%.c
-	$(dir_guard) 
-	$(CC) -B $(KMC_PATH) $(OPTFLAGS) $(CFLAGS) $(DEBUG_FLAGS) $(CPPFLAGS) -c -o $@ $<
-
-$(BUILD_DIR)/src/system/%.c.o: src/system/%.c
-	$(dir_guard)
-	$(CC) -B $(KMC_PATH) $(OPTFLAGS) $(CFLAGS) $(DEBUG_FLAGS) $(CPPFLAGS) -c -o $@ $<
-
-$(BUILD_DIR)/src/data/animation/%.c.o: src/data/animation/%.c
-	$(dir_guard) 
-	$(CC) -B $(KMC_PATH) $(OPTFLAGS) $(CFLAGS) $(DEBUG_FLAGS) $(CPPFLAGS) -c -o $@ $<
-	
-$(BUILD_DIR)/src/overlays/%.c.o : src/overlays/%.c build
-	$(dir_guard)
+$(BUILD_DIR)/src/overlays/%.c.o: src/overlays/%.c
 	$(CC) -B $(KMC_PATH) $(NU_OPTFLAGS) $(CFLAGS) $(ULTRALIBVER) $(CPPFLAGS) -c -o $@ $< 
 
 # Lib
 
-$(BUILD_DIR)/src/lib/libmus/player.c.o : src/lib/libmus/player.c build
-	$(dir_guard)
-	$(CC) -B $(KMC_PATH) $(LIBMUS_OPTFLAGS) $(CFLAGS) $(ULTRALIBVER) $(CPPFLAGS) -c -o $@ $< 
+$(BUILD_DIR)/src/lib/libmus/player.c.o: src/lib/libmus/player.c
+	$(CC) -B $(KMC_PATH) $(LIBMUS_OPTFLAGS) $(CFLAGS) $(ULTRALIBVER) $(CPPFLAGS) -c -o $@ $<
 
-$(BUILD_DIR)/src/lib/nusys-1/%.c.o : src/lib/nusys-1/%.c build
-	$(dir_guard)
-	$(CC) -B $(KMC_PATH) $(NU_OPTFLAGS) $(CFLAGS) $(ULTRALIBVER) $(CPPFLAGS) -c -o $@ $< 
-	
-$(BUILD_DIR)/src/lib/os/libultra/%.c.o : src/lib/os/libultra/%.c build
-	$(dir_guard)
-	$(CC) -B $(KMC_PATH) $(LIBULTRA_OPTFLAGS) $(CFLAGS) $(ULTRALIBVER) $(CPPFLAGS) -c -o $@ $< 
+$(BUILD_DIR)/src/lib/nusys-1/%.c.o: src/lib/nusys-1/%.c
+	$(CC) -B $(KMC_PATH) $(NU_OPTFLAGS) $(CFLAGS) $(ULTRALIBVER) $(CPPFLAGS) -c -o $@ $<
 
-$(BUILD_DIR)/src/lib/libkmc/%.c.o : src/lib/libkmc/%.c build
-	$(dir_guard)
-	$(CC) -B $(KMC_PATH) $(LIBKMC_OPTFLAGS) $(CFLAGS) $(CPPFLAGS) -c -o $@ $< 
+$(BUILD_DIR)/src/lib/os/libultra/%.c.o: src/lib/os/libultra/%.c
+	$(CC) -B $(KMC_PATH) $(LIBULTRA_OPTFLAGS) $(CFLAGS) $(ULTRALIBVER) $(CPPFLAGS) -c -o $@ $<
 
-$(BUILD_DIR)/asm/lib/os/libultra/gu/%.s.o : src/lib/os/libultra/gu/%.s build
-	$(dir_guard)
+$(BUILD_DIR)/src/lib/libkmc/%.c.o: src/lib/libkmc/%.c
+	$(CC) -B $(KMC_PATH) $(LIBKMC_OPTFLAGS) $(CFLAGS) $(CPPFLAGS) -c -o $@ $<
+
+$(BUILD_DIR)/asm/lib/os/libultra/gu/%.s.o: src/lib/os/libultra/gu/%.s
 	$(V)$(AS) $(ASFLAGS) -o $@ $<
 
 # Asset building
 
 # transpile cutscene DSL to assembly
 $(CUTSCENE_SRC_DIR)/%.s: $(CUTSCENE_SRC_DIR)/%.cutscene
-	$(dir_guard)
 	$(V)$(CUTSCENE_TRANSPILER) $< -o $@
 
-$(CUTSCENE_BUILD_DIR)/%.s.o: $(CUTSCENE_SRC_DIR)/%.s
-	$(dir_guard)
+$(CUTSCENE_BUILD_DIR)/%.bin.o: $(CUTSCENE_SRC_DIR)/%.s
 	$(V)$(AS) $(ASFLAGS) -o $@ $<
 
 # transpile dialogue DSL to assembly (generates two files: bytecode and index)
-$(DIALOGUE_SRC_DIR)/%.s $(DIALOGUE_SRC_DIR)/%Index.s: $(DIALOGUE_SRC_DIR)/%.dialogue
+# The transpiler produces both .s and Index.s
+$(DIALOGUE_SRC_DIR)/%.s: $(DIALOGUE_SRC_DIR)/%.dialogue
 	$(V)$(DIALOGUE_TRANSPILER) transpile $< -n $* -o $(DIALOGUE_SRC_DIR)/
 
-$(DIALOGUE_BUILD_DIR)/%.s.o: $(DIALOGUE_SRC_DIR)/%.s
-	$(dir_guard)
+# Mark dependency
+$(DIALOGUE_SRC_DIR)/%Index.s: $(DIALOGUE_SRC_DIR)/%.s
+	@:
+
+$(DIALOGUE_BUILD_DIR)/%.bin.o: $(DIALOGUE_SRC_DIR)/%.s
 	$(V)$(AS) $(ASFLAGS) -o $@ $<
 
 # Extract texts to assets directory and transpile to assembly (generates two files: bytecode and index)
-$(TEXT_ASSETS_DIR)/%Text.s $(TEXT_ASSETS_DIR)/%TextIndex.s: $(BASEROM)
-	$(dir_guard)
+# The transpiler produces both Text.s and TextIndex.s
+$(TEXT_ASSETS_DIR)/%Text.s:
 	$(V)cd $(TOOLS_DIR) && python3 hm64_text_utilities.py extract_bank $* --literal
 	$(V)$(TEXT_TRANSPILER) transpile $(TEXT_ASSETS_DIR)/$* -n $*Text -o $(TEXT_ASSETS_DIR)/ --literal
 
-$(TEXT_BUILD_DIR)/%Text.s.o: $(TEXT_ASSETS_DIR)/%Text.s
-	$(dir_guard)
+# Mark dependency
+$(TEXT_ASSETS_DIR)/%TextIndex.s: $(TEXT_ASSETS_DIR)/%Text.s
+	@:
+
+$(TEXT_BUILD_DIR)/%Text.bin.o: $(TEXT_ASSETS_DIR)/%Text.s
 	$(V)$(AS) $(ASFLAGS) -o $@ $<
 
-$(TEXT_BUILD_DIR)/%TextIndex.s.o: $(TEXT_ASSETS_DIR)/%TextIndex.s
-	$(dir_guard)
+$(TEXT_BUILD_DIR)/%TextIndex.bin.o: $(TEXT_ASSETS_DIR)/%TextIndex.s
 	$(V)$(AS) $(ASFLAGS) -o $@ $<
+
+# $(TEXT_ASSETS_DIR)/%Text.s:
+# 	$(V)$(TEXT_TRANSPILER) transpile $(TEXT_ASSETS_DIR)/$* -n $*Text -o $(TEXT_ASSETS_DIR)/ --literal
 
 # Rest of code and extracted binary files
 
-$(BUILD_DIR)/%.s.o : %.s build
-	$(dir_guard)
+$(BUILD_DIR)/%.s.o: %.s
 	$(V)$(AS) $(ASFLAGS) -o $@ $<
 
-$(BUILD_DIR)/%.bin.o: %.bin build
-	$(dir_guard)
+$(BUILD_DIR)/%.bin.o: %.bin
 	$(V)$(LD) -r -b binary -o $@ $<
+	
+# Final binary
 
-$(BASENAME).elf: $(OBJECTS) 
+$(BASENAME).elf: $(OBJECTS)
 	$(V)$(LD) $(LDFLAGS) -o $@
 
 $(TARGET): $(BASENAME).elf
@@ -286,6 +268,12 @@ check: $(TARGET)
 	$(V)diff $(TARGET) $(BASEROM) && echo "OK"
 
 
-.PHONY: all clean setup split submodules
+.PHONY: all clean clean-artifacts setup split submodules rebuild rerun check
+.PHONY: extract-sprites extract-animation-metadata extract-animation-scripts
+.PHONY: extract-animation-sprites extract-animations gifs
+.PHONY: extract-texts extract-dialogues extract-map-sprites extract-cutscenes
+
+# If needed, prevent Make from deleting intermediate .s files
+# .SECONDARY: $(CUTSCENE_ASM) $(DIALOGUE_ASM) $(TEXT_ASM)
 
 MAKEFLAGS += --no-builtin-rules

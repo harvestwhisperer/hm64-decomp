@@ -18,6 +18,7 @@ options:
   asm_data_macro: dlabel
   asm_emit_size_directive: true
   generate_asm_macros_files: false
+  extensions_path: tools/splat_ext
   symbol_addrs_path: symbol_addrs.txt
   segment_symbols_style: makerom
   migrate_rodata_to_functions: true
@@ -26,7 +27,6 @@ options:
   ld_symbol_header_path: include/ld_symbols.h
   disassemble_all: true
   # dump_symbols: True
-  # extensions_path: tools/splat_ext
   
 segments:
   - name: header
@@ -350,12 +350,107 @@ segments:
       - [ 0xF3F50, .data, game/weather]
       - [ 0xF3F70, .data, game/shop]
       - [ 0xF4B40, .data, game/loadGameScreen] # packinsoft farm string
-      - [ 0xF4B50, .data, data/animationScripts/player]
-      - [ 0xF50D0, .data, data/animationScripts/npc] #TODO: finish adding. Based on the splits, these unfortunately seem to all be in the same file 
-      - [ 0xF5890, data, data/animationScripts/animationScripts]
-      - [ 0xF6240, data, data/animationScripts/animals]
-      - [ 0xF63D0, data, data/animationScripts/animationScripts2]
-      # - [ 0xF7118, data, data/message/unknownMessageData]
+
+      - name: data/animationScripts/animationScripts
+        type: animationScripts
+        start: 0xF4B50
+        subsegments:
+          - { start: 0xF4B50, type: animationScriptData, name: data/animationScripts/player }
+          - { start: 0xF50D0, type: animationScriptData, name: data/animationScripts/maria }
+          - { start: 0xF51D0, type: animationScriptData, name: data/animationScripts/popuri }
+          - { start: 0xF52F0, type: animationScriptData, name: data/animationScripts/elli }
+          - { start: 0xF53F0, type: animationScriptData, name: data/animationScripts/ann }
+          - { start: 0xF5500, type: animationScriptData, name: data/animationScripts/karen }
+          - { start: 0xF55F4, type: animationScriptData, name: data/animationScripts/gray }
+          - { start: 0xF5660, type: animationScriptData, name: data/animationScripts/jeff }
+          - { start: 0xF56C8, type: animationScriptData, name: data/animationScripts/cliff }
+          - { start: 0xF5718, type: animationScriptData, name: data/animationScripts/kai }
+          - { start: 0xF5778, type: animationScriptData, name: data/animationScripts/rick }
+          - { start: 0xF57A8, type: animationScriptData, name: data/animationScripts/masterCarpenter }
+          - { start: 0xF57CC, type: animationScriptData, name: data/animationScripts/shadySalesman }
+          - { start: 0xF57FC, type: animationScriptData, name: data/animationScripts/duke }
+          - { start: 0xF5820, type: animationScriptData, name: data/animationScripts/harvestSprite }
+          - { start: 0xF5870, type: animationScriptData, name: data/animationScripts/princess }
+          - { start: 0xF5890, type: animationScriptData, name: data/animationScripts/may }
+          - { start: 0xF58BC, type: animationScriptData, name: data/animationScripts/touristCoupleMan }
+          - { start: 0xF58E0, type: animationScriptData, name: data/animationScripts/touristCoupleWoman }
+          - { start: 0xF5900, type: animationScriptData, name: data/animationScripts/oldMan }
+          - { start: 0xF5920, type: animationScriptData, name: data/animationScripts/oldWoman }
+          - { start: 0xF5940, type: animationScriptData, name: data/animationScripts/festivalGirl1 }
+          - { start: 0xF5960, type: animationScriptData, name: data/animationScripts/festivalGirl2 }
+          - { start: 0xF5980, type: animationScriptData, name: data/animationScripts/festivalGirl3 }
+          - { start: 0xF59A0, type: animationScriptData, name: data/animationScripts/midwife }
+          - { start: 0xF59E4, type: animationScriptData, name: data/animationScripts/mayorWife }
+          - { start: 0xF5A0C, type: animationScriptData, name: data/animationScripts/lilia }
+          - { start: 0xF5A34, type: animationScriptData, name: data/animationScripts/mariaHarrisBaby }
+          - { start: 0xF5A54, type: animationScriptData, name: data/animationScripts/popuriGrayBaby }
+          - { start: 0xF5A74, type: animationScriptData, name: data/animationScripts/elliJeffBaby }
+          - { start: 0xF5A94, type: animationScriptData, name: data/animationScripts/annCliffBaby }
+          - { start: 0xF5AB4, type: animationScriptData, name: data/animationScripts/karenKaiBaby }
+          - { start: 0xF5AD4, type: animationScriptData, name: data/animationScripts/baby }
+          - { start: 0xF5BF4, type: animationScriptData, name: data/animationScripts/pastor }
+          - { start: 0xF5C1C, type: animationScriptData, name: data/animationScripts/sasha }
+          - { start: 0xF5C40, type: animationScriptData, name: data/animationScripts/potionShopDealer }
+          - { start: 0xF5C6C, type: animationScriptData, name: data/animationScripts/harris }
+          - { start: 0xF5CC4, type: animationScriptData, name: data/animationScripts/mayor }
+          - { start: 0xF5CF8, type: animationScriptData, name: data/animationScripts/doug }
+          - { start: 0xF5D1C, type: animationScriptData, name: data/animationScripts/gotz }
+          - { start: 0xF5D40, type: animationScriptData, name: data/animationScripts/shipper }
+          - { start: 0xF5D74, type: animationScriptData, name: data/animationScripts/basil }
+          - { start: 0xF5DA0, type: animationScriptData, name: data/animationScripts/kent }
+          - { start: 0xF5E00, type: animationScriptData, name: data/animationScripts/stu }
+          - { start: 0xF5E5C, type: animationScriptData, name: data/animationScripts/assistantCarpenter }
+          - { start: 0xF5ECC, type: animationScriptData, name: data/animationScripts/entomologist }
+          - { start: 0xF5EF0, type: animationScriptData, name: data/animationScripts/greg }
+          - { start: 0xF5F24, type: animationScriptData, name: data/animationScripts/photographer }
+          - { start: 0xF5F54, type: animationScriptData, name: data/animationScripts/saibara }
+          - { start: 0xF5F84, type: animationScriptData, name: data/animationScripts/ellen }
+          - { start: 0xF5F98, type: animationScriptData, name: data/animationScripts/barley }
+          - { start: 0xF5FB8, type: animationScriptData, name: data/animationScripts/sydney }
+          - { start: 0xF5FF8, type: animationScriptData, name: data/animationScripts/spiritFestivalOcarinaPerformer }
+          - { start: 0xF6004, type: animationScriptData, name: data/animationScripts/gourmetJudge }
+          - { start: 0xF6028, type: animationScriptData, name: data/animationScripts/mrsMana }
+          - { start: 0xF6048, type: animationScriptData, name: data/animationScripts/mrsManaSon }
+          - { start: 0xF6068, type: animationScriptData, name: data/animationScripts/kappa }
+          - { start: 0xF606C, type: animationScriptData, name: data/animationScripts/harvestGoddess }
+          - { start: 0xF6090, type: animationScriptData, name: data/animationScripts/dogTitle }
+          - { start: 0xF6240, type: animationScriptData, name: data/animationScripts/dog }
+          - { start: 0xF6330, type: animationScriptData, name: data/animationScripts/chicken }
+          - { start: 0xF63A0, type: animationScriptData, name: data/animationScripts/chick }
+          - { start: 0xF63D0, type: animationScriptData, name: data/animationScripts/cow }
+          - { start: 0xF6650, type: animationScriptData, name: data/animationScripts/calf }
+          - { start: 0xF6710, type: animationScriptData, name: data/animationScripts/youngCow }
+          - { start: 0xF67D0, type: animationScriptData, name: data/animationScripts/cowIndoors }
+          - { start: 0xF68A0, type: animationScriptData, name: data/animationScripts/sheep }
+          - { start: 0xF69A0, type: animationScriptData, name: data/animationScripts/lamb }
+          - { start: 0xF6A00, type: animationScriptData, name: data/animationScripts/horseGrown }
+          - { start: 0xF6AB0, type: animationScriptData, name: data/animationScripts/horsePony }
+          - { start: 0xF6B20, type: animationScriptData, name: data/animationScripts/cat }
+          - { start: 0xF6BA0, type: animationScriptData, name: data/animationScripts/horseUnbridled }
+          - { start: 0xF6BC0, type: animationScriptData, name: data/animationScripts/fox }
+          - { start: 0xF6C00, type: animationScriptData, name: data/animationScripts/squirrel }
+          - { start: 0xF6C40, type: animationScriptData, name: data/animationScripts/monkey }
+          - { start: 0xF6C90, type: animationScriptData, name: data/animationScripts/hawk }
+          - { start: 0xF6CD0, type: animationScriptData, name: data/animationScripts/bunny }
+          - { start: 0xF6D10, type: animationScriptData, name: data/animationScripts/mouse }
+          - { start: 0xF6D34, type: animationScriptData, name: data/animationScripts/dogRace }
+          - { start: 0xF6D64, type: animationScriptData, name: data/animationScripts/crab }
+          - { start: 0xF6D84, type: animationScriptData, name: data/animationScripts/snake }
+          - { start: 0xF6DA4, type: animationScriptData, name: data/animationScripts/bird }
+          - { start: 0xF6DB4, type: animationScriptData, name: data/animationScripts/ladybug }
+          - { start: 0xF6DBC, type: animationScriptData, name: data/animationScripts/cicada }
+          - { start: 0xF6DC4, type: animationScriptData, name: data/animationScripts/hornedBeetle }
+          - { start: 0xF6DD4, type: animationScriptData, name: data/animationScripts/stagBeetle }
+          - { start: 0xF6DE4, type: animationScriptData, name: data/animationScripts/dragonfly }
+          - { start: 0xF6DEC, type: animationScriptData, name: data/animationScripts/bellRingCricket }
+          - { start: 0xF6DF4, type: animationScriptData, name: data/animationScripts/homeItems }
+          - { start: 0xF6DFC, type: animationScriptData, name: data/animationScripts/holdableItems1 }
+          - { start: 0xF6E10, type: animationScriptData, name: data/animationScripts/shopItems }
+          - { start: 0xF7010, type: animationScriptData, name: data/animationScripts/holdableItems2 }
+          - { start: 0xF70A0, type: animationScriptData, name: data/animationScripts/tools }
+          - { start: 0xF7100, type: animationScriptData, name: data/animationScripts/holdableItems3 }
+          - { start: 0xF7118, type: animationScriptData, name: data/animationScripts/characterAvatar }
+
       - [ 0xF71B0, data, data/sfx]
       - [ 0xF7A80, .data, game/namingScreen]
       - [ 0xF7BF0, .data, lib/nusys-1/nupakmenu]
@@ -598,6 +693,7 @@ segments:
     type: bin
     dir: cutscenes
     start: 0x135F40
+    extract: false
 
   # firefly festival
   - name: cutsceneBank16
@@ -3637,23 +3733,27 @@ segments:
   - name: text1Text
     type: bin
     dir: text
+    extract: false
     start: 0xE13800
 
   - name: text1TextIndex
     type: bin
     dir: text
+    extract: false
     start: 0xE13920
 
   - name: libraryText
     type: bin
     dir: text
+    extract: false
     start: 0xE13990
 
   - name: libraryTextIndex
     type: bin
     dir: text
+    extract: false
     start: 0xE13C30
-
+    
   - name: diaryText
     type: bin
     dir: text
@@ -3708,11 +3808,13 @@ segments:
   - name: animalInteractionsText
     type: bin
     dir: text
+    extract: false
     start: 0xE21700
 
   - name: animalInteractionsTextIndex
     type: bin
     dir: text
+    extract: false
     start: 0xE218A0
 
   - name: tvText
@@ -3738,11 +3840,13 @@ segments:
   - name: namingScreenText
     type: bin
     dir: text
+    extract: false
     start: 0xE24F80
 
   - name: namingScreenTextIndex
     type: bin
     dir: text
+    extract: false
     start: 0xE25170
 
   - name: elliText
@@ -3758,11 +3862,13 @@ segments:
   - name: kaiText
     type: bin
     dir: text
+    extract: false
     start: 0xE28720
 
   - name: kaiTextIndex
     type: bin
     dir: text
+    extract: false
     start: 0xE2A230
 
   - name: karenText
@@ -3778,31 +3884,37 @@ segments:
   - name: gotzText
     type: bin
     dir: text
+    extract: false
     start: 0xE2D330
 
   - name: gotzTextIndex
     type: bin
     dir: text
+    extract: false
     start: 0xE2E500
 
   - name: sashaText
     type: bin
     dir: text
+    extract: false
     start: 0xE2E600
 
   - name: sashaTextIndex
     type: bin
     dir: text
+    extract: false
     start: 0xE2F650
 
   - name: cliffText
     type: bin
     dir: text
+    extract: false
     start: 0xE2F730
 
   - name: cliffTextIndex
     type: bin
     dir: text
+    extract: false
     start: 0xE30ED0
 
   - name: jeffText
@@ -4098,11 +4210,13 @@ segments:
   - name: funeralIntroText
     type: bin
     dir: text
+    extract: false
     start: 0xE58160
 
   - name: funeralIntroTextIndex
     type: bin
     dir: text
+    extract: false
     start: 0xE583C0
 
   - name: text48Text
@@ -4348,11 +4462,13 @@ segments:
   - name: howToPlayText
     type: bin
     dir: text
+    extract: false
     start: 0xE857A0
 
   - name: howToPlayTextIndex
     type: bin
     dir: text
+    extract: false
     start: 0xE87080
 
   - name: dialogueBytecodeSegment1
@@ -4448,11 +4564,13 @@ segments:
   - name: mariaDialogueBytecode
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE8A590
 
   - name: mariaDialogueBytecodeIndex
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE8AE00
 
   - name: dialogueBytecodeSegment11
