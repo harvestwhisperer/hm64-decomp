@@ -18,8 +18,9 @@
 #include "game/itemHandlers.h"
 #include "game/level.h"
 #include "game/player.h"
-#include "game/spriteInfo.h"
 #include "game/weather.h"
+
+#include "buffers/buffers.h"
 
 #include "ld_symbols.h"
 
@@ -27,12 +28,9 @@
 npcInfo npcs[MAX_NPCS];
 
 u8 npcTalkingTo;
-u16 D_801FBE2E;  
-u16 D_801FBFBE;
-u16 D_801FBFE6;
 
 // data
-u16 npcToEntityIndex[] = { 
+u16 npcToEntityAssetIndex[] = { 
     1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 
     11, 12, 13, 14, 15, 16, 17, 18, 
     19, 20, 21, 22, 23, 24, 25, 26, 
@@ -285,7 +283,7 @@ u8 setupNPCEntity(u8 npcIndex, int currentEntityOffset) {
         npcs[npcIndex].currentCoordinates.y = npcs[npcIndex].startingCoordinates.y;
         npcs[npcIndex].currentCoordinates.z = npcs[npcIndex].startingCoordinates.z;
     
-        loadEntity(npcs[npcIndex].entityIndex, npcToEntityIndex[npcIndex], TRUE);
+        loadEntity(npcs[npcIndex].entityIndex, npcToEntityAssetIndex[npcIndex], TRUE);
         setEntityCollidable(npcs[npcIndex].entityIndex, TRUE);
         setEntityYMovement(npcs[npcIndex].entityIndex, TRUE);
         func_8002FF38(npcs[npcIndex].entityIndex, FALSE);

@@ -24,7 +24,7 @@
 #include "game/overlayScreens.h"
 #include "game/player.h"
 #include "game/setCutscenes.h"
-#include "game/spriteInfo.h"
+#include "game/spriteIndices.h"
 #include "game/weather.h"    
       
 // bss
@@ -260,7 +260,7 @@ void initializeEntityInstances(u8 arg0) {
         // farm or barn, how to play cutscene
         case 0:
             
-            initializeEntity(ENTITY_PLAYER, 0, 0x31, (void*)0x80240B00, (void*)0x80243B00, (void*)0x80246B00, (void*)0x8024AB00, (void*)0x80252300, (void*)0x80252b00);            
+            initializeEntity(ENTITY_PLAYER, 0, 0x31, (void*)0x80240B00, (void*)0x80243B00, (void*)0x80246B00, (void*)0x8024AB00, (void*)0x80252300, (void*)0x80252B00);            
             initializeEntity(1, 1, 0x32, (void*)0x8026F000, (void*)0x8026F908, (void*)0x80270210, (void*)0x80270410, (void*)0x80272000, (void*)0x80272200);
             initializeEntity(2, 2, 0x33, (void*)0x80272800, (void*)0x80272C80, (void*)0x80275E00, (void*)0x80275F00, (void*)0x80276700, (void*)0x80276800);
             initializeEntity(3, 3, 0x34, (void*)0x80273100, (void*)0x80273580, (void*)0x80275E00, (void*)0x80275F00, (void*)0x80276700, (void*)0x80276800);

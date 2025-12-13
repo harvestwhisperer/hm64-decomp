@@ -18,20 +18,19 @@
 #include "game/npc.h"
 #include "game/setCutscenes.h"        
 #include "game/shop.h"            
-#include "game/spriteInfo.h"                                                 
+#include "game/spriteIndices.h"                                                 
 #include "game/weather.h"      
 
+// shared bss
 extern u8 groundObjectsGridX;
 extern u8 groundObjectsGridZ;
                              
-// likely bss
 extern u8 previousEntranceIndex;
 extern u8 gEntranceIndex;
 extern u8 gBaseMapIndex;
 extern u8 gMapWithSeasonIndex;
 // global rotation
 extern u8 D_8021E6D0;
-
 
 // data
 // rotations for map controller
@@ -354,7 +353,7 @@ volatile u8 exitsToMapIndices[] = {
 };
 
 // FIXME: needs to be Vec3f
-static const f32 D_8011FB28[];
+static const Vec3f D_8011FB28[];
 static const Vec3f D_8011FB70[];
 
 // forward declaration
@@ -1262,20 +1261,7 @@ void func_80073244(u8 itemIndex) {
 
     Vec3f arr[6];
 
-    // FIXME: this should just be memcpy(arr, D_8011FB28, 0x40);
-
-    MemoryRead_32 *ptr = (MemoryRead_32*)arr;
-    MemoryRead_32 *ptr2 = (MemoryRead_32*)D_8011FB28;
-
-    do {
-        *(Aligned32*)ptr++ = *(Aligned32*)ptr2++;
-    } while (ptr2 != (D_8011FB28 + 0x10));    
-
-    // ??
-    *(Vec2f*)ptr = *(Vec2f*)ptr2;
-
-    //
-    
+    memcpy(arr, D_8011FB28, 72);
 
     dmaSprite(itemIndex + MAP_OBJECT_1, &_homeItemsTextureSegmentRomStart, &_homeItemsTextureSegmentRomEnd, &_homeItemsAssetsIndexSegmentRomStart, &_homeItemsAssetsIndexSegmentRomEnd, &_homeItemsSpritesheetIndexSegmentRomStart, &_homeItemsSpritesheetIndexSegmentRomEnd, (void*)0x802E4000, (void*)0x802E4D00, (void*)0x802E7400, (void*)0x802E7700, (void*)0x802E7A00, (void*)0x802E7B00, 1, 1);
     setSpriteScale(itemIndex + MAP_OBJECT_1, 1.0f, 1.0f, 1.0f);
@@ -1293,18 +1279,7 @@ void func_8007341C(u8 itemIndex) {
 
     Vec3f arr[9];
     
-    // FIXME: should be memcpy call
-
-    Vec* ptr = arr;
-    Vec* ptr2 = D_8011FB70;
-
-    do {    
-        *(Vec4f*)ptr++ = *(Vec4f*)ptr2++;
-    } while (ptr2 != (D_8011FB70 + 0x8));
-
-    *(Vec3f*)ptr = *(Vec3f*)ptr2;
-
-    //
+    memcpy(arr, D_8011FB70, 108);
 
     dmaSprite(itemIndex + MAP_OBJECT_1, &_homeItemsTextureSegmentRomStart, &_homeItemsTextureSegmentRomEnd, &_homeItemsAssetsIndexSegmentRomStart, &_homeItemsAssetsIndexSegmentRomEnd, &_homeItemsSpritesheetIndexSegmentRomStart, &_homeItemsSpritesheetIndexSegmentRomEnd, (void* )0x802E4000, (void* )0x802E4D00, (void* )0x802E7400, (void* )0x802E7700, (void* )0x802E7A00, (void* )0x802E7B00, (void* )1, (u8) (void* )1);
     setSpriteScale(itemIndex + MAP_OBJECT_1, 1.0f, 1.0f, 1.0f);
@@ -1346,13 +1321,13 @@ void func_8007341C(u8 arg0) {
 */
 
 // FIXME: should be Vec3f
-static const f32 D_8011FB28[] = {
-    -120, 0, 56,
-    -120, 0, 24,
-    -120, 0, -8,
-    -120, 0, -40,
-    -120, 0, -72,
-    -120, 0, -104,
+static const Vec3f D_8011FB28[] = {
+    { -120, 0, 56 },
+    { -120, 0, 24 },
+    { -120, 0, -8 },
+    { -120, 0, -40 },
+    { -120, 0, -72 },
+    { -120, 0, -104 },
 };
 
 //INCLUDE_RODATA("asm/nonmatchings/game/level", D_8011FB28);
@@ -1360,15 +1335,15 @@ static const f32 D_8011FB28[] = {
 //INCLUDE_RODATA("asm/nonmatchings/game/level", D_8011FB70);
 
 static const Vec3f D_8011FB70[] = {
-    -136.0f, 0.0f, 88.0f,
-    -136.0f, 0.0f, 24.0f,
-    -136.0f, 0.0f, -40.0f,
-    -136.0f, 0.0f, -104.0f,
-    120.0f, 0.0f, 88.0f,
-    120.0f, 0.0f, 24.0f,
-    120.0f, 0.0f, -40.0f,
-    120.0f, 0.0f, -104.0f,
-    220.0f, 0.0f, -264.0f,
+    { -136.0f, 0.0f, 88.0f },
+    { -136.0f, 0.0f, 24.0f },
+    { -136.0f, 0.0f, -40.0f },
+    { -136.0f, 0.0f, -104.0f },
+    { 120.0f, 0.0f, 88.0f },
+    { 120.0f, 0.0f, 24.0f },
+    { 120.0f, 0.0f, -40.0f },
+    { 120.0f, 0.0f, -104.0f },
+    { 220.0f, 0.0f, -264.0f },
 };
 
 //INCLUDE_ASM("asm/nonmatchings/game/level", func_800735FC);

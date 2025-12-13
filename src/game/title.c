@@ -15,7 +15,9 @@
 #include "game/loadGameScreen.h"      
 #include "mainLoop.h" 
 #include "game/setCutscenes.h"         
-#include "game/spriteInfo.h"            
+#include "game/spriteIndices.h"     
+
+#include "buffers/buffers.h"
 
 
 // bss
@@ -514,18 +516,20 @@ void titleScreenMainLoopCallback(void) {
         
         case 3:
 
-            if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_UP)) {        
+            if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_SOUTHWEST)) {        
 
                 if (!set) {
                     set = inline1();
                 }
+                
             }
             
-            if (checkButtonRepeat(CONTROLLER_1, 0x100000)) {
+            if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_NORTHEAST)) {
 
                 if (!set) {
                     set = inline2();
                 }
+
             }
             
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A | BUTTON_START)) {

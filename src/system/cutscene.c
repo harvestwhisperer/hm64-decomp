@@ -225,6 +225,7 @@ void (*cutsceneCommandHandlers[])(u16) = {
 // unused
 u32 D_80113558[] = { NULL, NULL, 0x802E2CC0, 0x802EE000, 0x802F3200, 0x802B9F40, 0x802C08C0, 0x8030F800, NULL, NULL };
 
+// bss
 CutsceneExecutor cutsceneExecutors[MAX_BYTECODE_EXECUTORS];
 
 //INCLUDE_ASM("asm/nonmatchings/system/cutscene", initializeCutsceneExecutors);

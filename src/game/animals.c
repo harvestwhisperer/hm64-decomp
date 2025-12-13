@@ -20,7 +20,7 @@
 
 #include "mainproc.h"
 
-#include "game/spriteInfo.h"
+#include "game/spriteIndices.h"
 
 // bss
 Chicken gChickens[MAX_CHICKENS];
@@ -29,26 +29,39 @@ FarmAnimal gFarmAnimals[MAX_FARM_ANIMALS];
 Dog dogInfo;
 Horse horseInfo;
 
-u8 D_801886D4[6];
-
-// watched cow stall #3
-u8 mrsManaCow3Index;
-// watched cow stall #1
+// watched cow stalls
 u8 mrsManaCow1Index;
-// watched cow stall #2
 u8 mrsManaCow2Index;
+u8 mrsManaCow3Index;
 
-extern u16 D_8016FDF0;
+// shared bss
+
 extern u8 bornChickenIndex;
 extern u8 bornAnimalIndex;
-
-extern u8 D_8016FBCC[2];
-
 extern u8 D_80189054;
-extern u8 D_8018908C;
+// price
 extern u32 D_801890E0;
+
+// game variable strings
+extern u8 D_8016FBCC[2];
+extern u8 D_801886D4[6];
+extern u8 deadAnimalName[6];
+
+extern u8 bornChickenIndex;
+// newest farm animal index?
+extern u8 bornAnimalIndex;
+// cow festival stall
+extern u8 D_80189054;
 // newest animal index (generic)?
 extern u8 D_801FC155;
+// dead animal count
+// TODO: label
+extern u16 D_8013DC2E;
+// purchased animal type
+extern u8 D_801C4216;
+
+
+// data
 
 Vec3f chickenStartingCoordinates[] = {
     { -96.0f, 0.0f, 48.0f },

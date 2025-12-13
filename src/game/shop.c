@@ -21,16 +21,22 @@
 #include "game/overlayScreens.h"
 #include "game/player.h"
 #include "game/setCutscenes.h"
-#include "game/spriteInfo.h"
+
+#include "buffers/buffers.h"
+#include "data/animationScripts/animationScripts.h"
  
 #include "mainLoop.h"
 
-#include "data/animationScripts/animationScripts.h"
 
 // bss
-extern ShopContext shopContext;
+ShopContext shopContext;
 // offset to dialogue
-extern u16 D_801FB9CC;
+u16 D_801FB9CC;
+
+// shared bss
+extern u8 flowerShopPoints;
+extern u8 bakeryCardPoints;
+
 
 // text indices for items
 u16 D_80118B70[TOTAL_SHOP_ITEMS] = {
@@ -495,8 +501,6 @@ AnimationIndices D_80119660[TOTAL_SHOP_ITEMS] = {
 };
 
 
-extern u16 shopItemsAnimationScripts[];
-
 // forward declarations
 u8 handlePurchase(u16 storeItemIndex, s32 quantity);
 
@@ -635,7 +639,7 @@ void func_800DCAB8(void) {
                 }
             }
             
-            if (checkButtonRepeat(CONTROLLER_1, 0x400000)) {
+            if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_SOUTHEAST)) {
 
                 if (!set) {
 
@@ -652,7 +656,7 @@ void func_800DCAB8(void) {
                 
             }
             
-            if (checkButtonRepeat(CONTROLLER_1, 0x100000)) {
+            if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_NORTHEAST)) {
 
                 if (!set) {
 
@@ -676,7 +680,7 @@ void func_800DCAB8(void) {
 
             }
             
-            if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_UP)) {
+            if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_SOUTHWEST)) {
 
                 if (!set) {
 

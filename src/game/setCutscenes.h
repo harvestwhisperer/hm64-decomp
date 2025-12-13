@@ -169,7 +169,6 @@ extern u16 gCutsceneIndex;
 extern u32 gCutsceneFlags;
 extern u32 cutsceneFlagsHack[2];
 
-extern u8 D_80113580[0x18][0x14];
 
 // flags
 extern s32 gCutsceneCompletionFlags;

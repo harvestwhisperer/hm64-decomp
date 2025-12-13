@@ -26,6 +26,7 @@
 .define .new_years_invitation 45
 .define .starry_night_festival_invitation 50
 .define .increment_affection 69
+.define .typhoon 71
 .define .end_section 74
 
 ; 0xE8A590
@@ -623,7 +624,7 @@
     END_DIALOGUE
 
 ; 0xE8ADD8
-.segment_71:
+.typhoon:
     SHOW_TEXT 78
     END_DIALOGUE
 

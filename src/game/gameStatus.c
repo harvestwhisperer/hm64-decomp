@@ -4,21 +4,23 @@
 #include "system/math.h"
 
 #include "game/animals.h"
+#include "game/fieldTiles.h"
 #include "game/game.h"
 #include "game/level.h"
 #include "game/fieldObjects.h"
+#include "game/fieldTiles.h"
 #include "game/npc.h"
 #include "game/player.h"
 
 // bss
-u32 dailyEventBits[];
-u32 lifeEventBits[];
-u32 specialDialogueBits[];
+u32 dailyEventBits[32];
+u32 lifeEventBits[32];
+u32 specialDialogueBits[16];
 u32 readMailBits[];
 u32 mailboxBits[];
-
-// album bits
-extern u32 albumBits;
+u32 recipesBits[1];
+u32 albumBits;
+u32 powerNutBits;
 
 // forward declaration
 void toggleSpecialDialogueBit(u16);

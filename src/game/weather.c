@@ -12,14 +12,18 @@
 #include "game/game.h"
 #include "game/gameStatus.h"
 
+#include "buffers/buffers.h"
+
+// bss
 u8 gWeather;
+u8 gForecast;
 
 u8 weatherLightingAdjustments[5][4] = { 
-    { 0xFF, 0xFF, 0xFF, 0xFF }, // sunny
-    { 0xB0, 0xB0, 0xC0, 0xB0 }, // rain
-    { 0xFF, 0xFF, 0xFF, 0xFF }, // rain alternate
-    { 0xB0, 0xB0, 0xC0, 0xB0 }, // snow
-    { 0xFF, 0xFF, 0xFF, 0xFF } // typhoon
+    { 255, 255, 255, 255 }, // sunny
+    { 176, 176, 192, 176 }, // rain
+    { 255, 255, 255, 255 }, // rain alternate
+    { 176, 176, 192, 176 }, // snow
+    { 255, 255, 255, 255 } // typhoon
 };
 
 static const u8 weatherForecastProbabilities[4][5];
@@ -42,12 +46,12 @@ void setWeatherSprites(void) {
 
         for (i = 0; i < 10; i++) {
         
-            dmaSprite(i + 0x6B, &_rainTextureSegmentRomStart, &_rainTextureSegmentRomEnd, &_rainAssetsIndexSegmentRomStart, &_rainAssetsIndexSegmentRomEnd, 0, 0, (void*)RAIN_TEXTURE_VADDR, NULL, 0x802A5DC0, 0x802A5EC0, 0x802A5FC0, 0, 0, 1);
-            setSpriteScale(i + 0x6B, 1.0f, 1.0f, 1.0f);
-            setSpriteRenderingLayer(i + 0x6B, 4);
-            setSpriteColor(i + 0x6B, 0xFF, 0xFF, 0xFF, 0xFF);
+            dmaSprite(0x6B + i, &_rainTextureSegmentRomStart, &_rainTextureSegmentRomEnd, &_rainAssetsIndexSegmentRomStart, &_rainAssetsIndexSegmentRomEnd, 0, 0, (void*)WEATHER_SPRITE_BUFFER, NULL, 0x802A5DC0, 0x802A5EC0, 0x802A5FC0, NULL, 0, TRUE);
+            setSpriteScale(0x6B + i, 1.0f, 1.0f, 1.0f);
+            setSpriteRenderingLayer(0x6B + i, 4);
+            setSpriteColor(0x6B + i, 0xFF, 0xFF, 0xFF, 0xFF);
             
-            setMapWeatherSprite(MAIN_MAP_INDEX, i + 3, i + 0x6B, animationIndex);
+            setMapWeatherSprite(MAIN_MAP_INDEX, i + 3, 0x6B + i, animationIndex);
 
         }
     }

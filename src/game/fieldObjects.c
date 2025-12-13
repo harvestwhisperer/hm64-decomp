@@ -6,6 +6,7 @@
 #include "system/mapController.h"
 #include "system/math.h"
 
+#include "game/fieldTiles.h"
 #include "game/game.h"
 #include "game/gameStatus.h"
 #include "game/itemHandlers.h"
@@ -14,20 +15,19 @@
 #include "game/player.h"
 #include "game/weather.h"
 
-// TODO: put this in a header for field tiles data
-extern u8 D_80113940[FIELD_HEIGHT][FIELD_WIDTH];
-
-
 // bss
-extern u8 topOfMountain1FieldTiles[FIELD_HEIGHT][FIELD_WIDTH];
-extern u8 moonMountainFieldTiles[FIELD_HEIGHT][FIELD_WIDTH];
-extern u8 pondFieldTiles[FIELD_HEIGHT][FIELD_WIDTH];
-extern u8 caveFieldTiles[FIELD_HEIGHT][FIELD_WIDTH];
-extern u8 mineFieldTiles[FIELD_HEIGHT][FIELD_WIDTH];
-extern u8 greenhouseFieldTiles[FIELD_HEIGHT][FIELD_WIDTH];
-extern u8 mountain1FieldTiles[FIELD_HEIGHT][FIELD_WIDTH];
-extern u8 mountain2FieldTiles[FIELD_HEIGHT][FIELD_WIDTH];
-extern u8 ranchFieldTiles[FIELD_HEIGHT][FIELD_WIDTH];
+u8 topOfMountain1FieldTiles[FIELD_HEIGHT][FIELD_WIDTH];
+u8 moonMountainFieldTiles[FIELD_HEIGHT][FIELD_WIDTH];
+u8 pondFieldTiles[FIELD_HEIGHT][FIELD_WIDTH];
+u8 caveFieldTiles[FIELD_HEIGHT][FIELD_WIDTH];
+u8 mineFieldTiles[FIELD_HEIGHT][FIELD_WIDTH];
+u8 greenhouseFieldTiles[FIELD_HEIGHT][FIELD_WIDTH];
+u8 mountain1FieldTiles[FIELD_HEIGHT][FIELD_WIDTH];
+u8 mountain2FieldTiles[FIELD_HEIGHT][FIELD_WIDTH];
+u8 ranchFieldTiles[FIELD_HEIGHT][FIELD_WIDTH];
+
+// shared bss
+extern u8 blueMistFlowerPlot;
 
 // data
 GroundObjectInfo groundObjectsInfo[MAX_FIELD_OBJECTS] = {

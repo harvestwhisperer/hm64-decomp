@@ -15,8 +15,10 @@
 #include "game/gameAudio.h"
 #include "mainLoop.h"
 #include "game/overlayScreens.h"
-#include "game/spriteInfo.h"
+#include "game/spriteIndices.h"
 #include "game/weather.h"
+
+#include "buffers/buffers.h"
        
 // forward declarations   
 void setTVContentIndex();                                  

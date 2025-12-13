@@ -24,21 +24,28 @@ typedef struct {
     NUDMABuffer*  firstFree;    /* head of free DMABuffer link list */
 } NUDMAState;
 
+static OSThread	auMgrThread;
+static u64		auMgrStack[NU_AU_STACK_SIZE/sizeof(u64)];
 
-/*static*/extern OSThread	auMgrThread;
-/*static*/extern u64		auMgrStack[NU_AU_STACK_SIZE];
+static Acmd*    auCmdList_ptr[2]; /* pointer of command list */
+static NUScTask	auTask[2];		/* audio task buffer */
+static s16*     auBuffer_ptr[3];	/* audio buffer */
 
-/*static*/extern Acmd*    auCmdList_ptr[2]; /* pointer of command list */
-/*static*/extern NUScTask	auTask[2];		/* audio task buffer */
-/*static*/extern s16*     auBuffer_ptr[3];	/* audio buffer */
+// unused padding; probably indicates different struct layout
+static s32         D_801287F4; 
+static OSMesgQueue	auDmaMesgQ;
 
+static OSMesg		auDmaMesgBuf[NU_AU_DMA_QUEUE_NUM];
+static OSIoMesg		auDmaIOMesgBuf[NU_AU_DMA_QUEUE_NUM];
 
-/*static*/extern OSMesgQueue	auDmaMesgQ;
-/*static*/extern OSMesg		auDmaMesgBuf[NU_AU_DMA_QUEUE_NUM];
-/*static*/extern OSIoMesg		auDmaIOMesgBuf[NU_AU_DMA_QUEUE_NUM];
-/*static*/extern NUDMAState	auDmaState;
-/*static*/extern NUDMABuffer	auDmaBuf[NU_AU_DMA_BUFFER_NUM];
-/*static*/extern s32			auDmaNext;
+static NUDMAState	auDmaState;
+// unused padding; probably indicates different struct layout
+static s32           D_80128F1C;
+
+static NUDMABuffer	auDmaBuf[NU_AU_DMA_BUFFER_NUM];
+static s32			auDmaNext;
+// unused padding; probably indicates different struct layout
+static s32            D_80129424; 
 
 static ALDMAproc auDmaNew(NUDMAState** state);
 static void nuAuMgr(void);
@@ -48,8 +55,9 @@ ALHeap		    nuAuHeap;			/* Heap structure */
 N_ALGlobals		auGlobal;
 NUAuSeqPlayer	nuAuSeqPlayer[2];
 ALBankFile*     nuAuSeqBank_ptr;
-extern ALSeqFile*      nuAuSeqFile_ptr;
-extern ALSndPlayer		nuAuSndPlayer;
+// unused
+// ALSeqFile*      nuAuSeqFile_ptr;
+// ALSndPlayer		nuAuSndPlayer;
 ALBankFile*     nuAuSndBank_ptr = NULL;
 ALSndId*        nuAuSndId = NULL;
 u8			    nuAuTaskStop = 1;

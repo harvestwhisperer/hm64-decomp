@@ -17,7 +17,9 @@
 #include "game/level.h"
 #include "game/npc.h"
 #include "game/player.h"
-#include "game/spriteInfo.h"
+#include "game/spriteIndices.h"
+
+#include "buffers/buffers.h"
 
 // FIXME:
 // instead of including the header, defining here because loadCutscene(u32) doesn't match in func_800ED974
@@ -1160,7 +1162,7 @@ void func_800F03C4(void) {
         namingScreenContext.flags &= ~(0x80);
     }
 
-    if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_LEFT)) {
+    if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_NORTHWEST)) {
         set = TRUE;
         func_800EFADC();
         setSfx(3);
@@ -1168,7 +1170,7 @@ void func_800F03C4(void) {
     }
 
     if (!set) {
-        if (checkButtonRepeat(CONTROLLER_1, 0x400000)) {
+        if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_SOUTHEAST)) {
             set = TRUE;
             func_800EFBEC();
             setSfx(3);
@@ -1177,7 +1179,7 @@ void func_800F03C4(void) {
     }
 
     if (!set) {
-        if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_UP)) {
+        if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_SOUTHWEST)) {
             set = TRUE;
             func_800EFE84();
             setSfx(3);
@@ -1187,7 +1189,7 @@ void func_800F03C4(void) {
         
     if (!set) {
         
-        if (checkButtonRepeat(CONTROLLER_1, 0x100000)) {
+        if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_NORTHEAST)) {
             func_800EFCF8();
             set = TRUE;
             setSfx(3);
@@ -1349,7 +1351,7 @@ void func_800F0F84(void) {
     
     bool set = FALSE;
 
-    if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_UP) || checkButtonRepeat(CONTROLLER_1, 0x100000)) {
+    if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_SOUTHWEST) || checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_NORTHEAST)) {
     
         set = TRUE;
         
@@ -1362,7 +1364,7 @@ void func_800F0F84(void) {
 
     if (!set) {
 
-        if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_LEFT) || checkButtonRepeat(CONTROLLER_1, 0x400000)) {
+        if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_NORTHWEST) || checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_SOUTHEAST)) {
             
             set = TRUE;
             
@@ -1376,7 +1378,7 @@ void func_800F0F84(void) {
 
     if (!set) {
 
-        if (checkButtonRepeat(CONTROLLER_1, 0x200000) || checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_RIGHT) || checkButtonRepeat(CONTROLLER_1, 0x800000) || checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_DOWN)) {
+        if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_EAST) || checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_NORTH) || checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_SOUTH) || checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_WEST)) {
             
             set = TRUE;
             

@@ -10,6 +10,7 @@
 #include "game/animals.h"
 #include "game/fieldObjects.h"
 #include "game/game.h"
+#include "game/gameAudio.h"
 #include "game/gameStart.h"
 #include "game/gameStatus.h"
 #include "game/itemHandlers.h"
@@ -19,8 +20,10 @@
 #include "game/player.h"
 #include "game/shop.h"
 #include "game/tv.h"
-#include "game/updateGame.h"
+#include "game/time.h"
 #include "game/weather.h"
+
+#include "buffers/buffers.h"
 
 #include "mainLoop.h"
 
@@ -51,6 +54,7 @@ u8 func_800EBCD8();
  
 // bss
 extern LoadGameScreenContext loadGameScreenContext;
+extern u8 gCurrentGameIndex;
 
 // unused
 extern u32 D_8018A080;
@@ -529,7 +533,720 @@ void func_800E1A94(void) {
 
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/loadGameScreen", func_800E1FAC);
+//INCLUDE_ASM("asm/nonmatchings/game/loadGameScreen", func_800E1FAC);
+
+void func_800E1FAC(void) {
+
+    bool set = FALSE;
+    u8 temp;
+
+    switch (loadGameScreenContext.action) {
+
+        case 0:
+            
+            if (func_8002CBF8(0x80)) {
+                func_800B5FC4(0, loadGameScreenContext.diaryHighlighted, 0xFF);
+                loadGameScreenContext.action = 1;
+            }
+            
+            break;
+
+        case 1:
+
+            if (loadGameScreenContext.showControllerPakScreen == FALSE) {
+                
+                if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_NORTHEAST)) {
+                    
+                    if (!set) {
+                        if (loadGameScreenContext.diaryHighlighted) {
+                            loadGameScreenContext.diaryHighlighted--;
+                            playSfx(2);
+                        }
+                        set = TRUE;
+                    }
+                    
+                }
+                 
+                if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_SOUTHWEST)) {
+                    
+                    if (!set) {
+
+                        if (loadGameScreenContext.diaryHighlighted == 3) {
+                            
+                            if (loadGameScreenContext.gamePakEnabled) {
+                                
+                                loadGameScreenContext.showControllerPakScreen = TRUE;
+                                set = TRUE;
+                                
+                                func_800B2CE0();
+                                deactivateSprite(0x80);
+                                func_8003DD14(0);
+                                func_8003DD14(1);
+                                func_8003DD14(2);
+                                func_8003DD14(3);
+                                func_800E16D0(0, 0);
+                                
+                            } else {
+                                set = TRUE;
+                            }
+                        } else {
+                            loadGameScreenContext.diaryHighlighted++;
+                            playSfx(2);
+                        }
+                    
+                        set = TRUE;
+                    
+                    }
+                }
+                
+            } else {
+                
+                if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_NORTHEAST)) {
+                    
+                    if (!set) {
+                        
+                        if (loadGameScreenContext.diaryHighlighted) {
+                            loadGameScreenContext.diaryHighlighted--;
+                            playSfx(2);
+                            set = TRUE;
+                        } else {
+                            loadGameScreenContext.showControllerPakScreen = FALSE;
+                            func_800B2CE0();
+                            deactivateSprite(0x80);
+                            func_8003DD14(0);
+                            func_8003DD14(1);
+                            func_8003DD14(2);
+                            func_8003DD14(3);
+                            func_800E16D0(0, 3);
+                            set = TRUE;
+                        }
+                    }
+                }
+                
+                if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_SOUTHWEST)) {
+                    if (!set) {
+                        if (loadGameScreenContext.diaryHighlighted != 1) {
+                            loadGameScreenContext.diaryHighlighted++;
+                            playSfx(2);
+                        }
+                        set = TRUE;
+                    }
+                }
+            }
+            
+            if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_SOUTHEAST)) {
+                
+                if (!set) {
+                    if (loadGameScreenContext.action != 2) {
+                        loadGameScreenContext.action = 2;
+                        playSfx(2);
+                    }
+                    set = TRUE;
+                }
+            }
+            
+            func_800B60E4(0, 0xFF, 0);
+            func_800B60E4(1, 0xFF, 0);
+            func_800B60E4(2, 0xFF, 0);
+            func_800B60E4(3, 0xFF, 0);
+            func_800B60E4(0xFF, 0, 0);
+            func_800B60E4(0xFF, 1, 0);
+            func_800B60E4(0xFF, 2, 0);
+            
+            func_800B60E4(loadGameScreenContext.diaryHighlighted, 0xFF, 1);
+            func_800B5FC4(0, loadGameScreenContext.diaryHighlighted, 0xFF);
+            
+            if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
+                
+                if (!set) {
+                    
+                    if (loadGameScreenContext.showControllerPakScreen == FALSE) {
+                        func_800B64E4(loadGameScreenContext.diaryHighlighted, 0xFF);
+                        deactivateSprite(0x79);
+                        func_800C7DF8();
+                        func_800C7E18();
+                        func_800B5DA8();
+                        func_8003EA1C(0, 0, 0, 0, 0, 0x18);
+                        func_8003EA1C(1, 0, 0, 0, 0, 0x18);
+                        func_8003EA1C(2, 0, 0, 0, 0, 0x18);
+                        func_8003EA1C(3, 0, 0, 0, 0, 0x18);
+                        loadGameScreenContext.action = 6;
+                        playSfx(0);
+                        stopAudioSequenceWithDefaultFadeOut(1);
+                    } 
+                    
+                    set = TRUE;
+                
+                }
+            }
+            
+            if ((checkButtonPressed(CONTROLLER_1, BUTTON_B)) && !set) {
+                
+                deactivateSprite(0x79);
+                func_800C7DF8();
+                func_800C7E18();
+                func_800B5DA8();
+                func_8003EA1C(0, 0, 0, 0, 0, 0x18);
+                func_8003EA1C(1, 0, 0, 0, 0, 0x18);
+                func_8003EA1C(2, 0, 0, 0, 0, 0x18);
+                func_8003EA1C(3, 0, 0, 0, 0, 0x18);
+                loadGameScreenContext.action = 7;
+                stopAudioSequenceWithDefaultFadeOut(1);
+                playSfx(1);
+                
+            }
+    
+            break;
+
+        case 2:
+            
+            if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_NORTHEAST)) {
+                if (!set) {
+                    if (loadGameScreenContext.actionColumnHighlighted) {
+                        loadGameScreenContext.actionColumnHighlighted--;
+                        playSfx(2);
+                    }
+                    set = TRUE;
+                }
+            }
+            
+            if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_SOUTHWEST)) {
+                if (!set) {
+                    if (loadGameScreenContext.actionColumnHighlighted != 1) {
+                        loadGameScreenContext.actionColumnHighlighted++;
+                        playSfx(2);
+                    }
+                    set = TRUE;
+                }
+            }
+            
+            if (checkButtonRepeat(CONTROLLER_1, 0x40000)) {
+                if (!set) {
+                    if (loadGameScreenContext.action != 1) {
+                        loadGameScreenContext.action = 1;
+                        playSfx(2);
+                    }
+                    set = TRUE;
+                }
+            }
+            
+            func_800B60E4(0, 0xFF, 0);
+            func_800B60E4(1, 0xFF, 0);
+            func_800B60E4(2, 0xFF, 0);
+            func_800B60E4(3, 0xFF, 0);
+            func_800B60E4(0xFF, 0, 0);
+            func_800B60E4(0xFF, 1, 0);
+            func_800B60E4(0xFF, 2, 0);
+            
+            func_800B60E4(0xFF, loadGameScreenContext.actionColumnHighlighted, 1);
+            func_800B5FC4(0, 0xFF, loadGameScreenContext.actionColumnHighlighted);
+            
+            if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
+                
+                if (!set) {
+                    
+                    func_800B64E4(0xFF, loadGameScreenContext.actionColumnHighlighted);
+                    
+                    switch (loadGameScreenContext.actionColumnHighlighted) {                
+                        case 0:                             
+                            loadGameScreenContext.action = 3;
+                            break;
+                        case 1:                             
+                            loadGameScreenContext.action = 4;
+                            break;
+                        case 2:                             
+                            deactivateSprite(0x79);
+                            func_800C7DF8();
+                            func_800C7E18();
+                            func_800B5DA8();
+                            func_8003EA1C(0, 0, 0, 0, 0, 0x18);
+                            func_8003EA1C(1, 0, 0, 0, 0, 0x18);
+                            func_8003EA1C(2, 0, 0, 0, 0, 0x18);
+                            func_8003EA1C(3, 0, 0, 0, 0, 0x18);
+                            loadGameScreenContext.action = 10;
+                            playSfx(0);
+                            break;
+                    }
+                    
+                    playSfx(0);
+                    set = TRUE;
+                
+                }
+            }
+            
+            if ((checkButtonPressed(CONTROLLER_1, BUTTON_B)) && !set) {
+                deactivateSprite(0x79);
+                func_800C7DF8();
+                func_800C7E18();
+                func_800B5DA8();
+                func_8003EA1C(0, 0, 0, 0, 0, 0x18);
+                func_8003EA1C(1, 0, 0, 0, 0, 0x18);
+                func_8003EA1C(2, 0, 0, 0, 0, 0x18);
+                func_8003EA1C(3, 0, 0, 0, 0, 0x18);
+                loadGameScreenContext.action = 7;
+                stopAudioSequenceWithDefaultFadeOut(1);
+                playSfx(1);
+            }
+            
+            break;
+
+        case 3:
+
+            if (loadGameScreenContext.showControllerPakScreen == FALSE) {
+
+                if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_NORTHEAST)) {
+                    if (!set) {
+                        if (loadGameScreenContext.diaryHighlighted) {
+                            loadGameScreenContext.diaryHighlighted--;
+                            playSfx(2);
+                        }
+                        set = TRUE;
+                    }
+                }
+
+                if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_SOUTHWEST)) {
+                    
+                    if (!set) {
+                        
+                        if (loadGameScreenContext.diaryHighlighted == 3) {
+                            
+                            if (loadGameScreenContext.gamePakEnabled) {
+                                loadGameScreenContext.showControllerPakScreen = TRUE;
+                                set = TRUE;
+                                func_800B2CE0();
+                                deactivateSprite(0x80);
+                                func_8003DD14(0);
+                                func_8003DD14(1);
+                                func_8003DD14(2);
+                                func_8003DD14(3);
+                                func_800E16D0(0, 0);
+                            } else {
+                                set = TRUE;
+                            }
+                        } else {
+                            loadGameScreenContext.diaryHighlighted++;
+                            playSfx(2);
+                        }
+                        
+                        set = TRUE;
+                        
+                    }
+                }
+                
+            } else {
+        
+                if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_NORTHEAST)) {
+                    
+                    if (!set) {
+                        if (loadGameScreenContext.diaryHighlighted) {
+                            loadGameScreenContext.diaryHighlighted--;
+                            playSfx(2);
+                            set = TRUE;
+                        } else {
+                            loadGameScreenContext.showControllerPakScreen = FALSE;
+                            func_800B2CE0();
+                            deactivateSprite(0x80);
+                            func_8003DD14(0);
+                            func_8003DD14(1);
+                            func_8003DD14(2);
+                            func_8003DD14(3);
+                            func_800E16D0(0, 3);
+                            set = TRUE;
+                        }
+                    }
+                }
+            
+                if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_SOUTHWEST)) {
+                    
+                    if (!set) {
+    
+                        if (loadGameScreenContext.diaryHighlighted != 1) {
+                            loadGameScreenContext.diaryHighlighted++;
+                            playSfx(2);
+                        }
+                        set = TRUE;
+                    }
+                }
+                
+            }
+    
+            func_800B60E4(0, 0xFF, 0);
+            func_800B60E4(1, 0xFF, 0);
+            func_800B60E4(2, 0xFF, 0);
+            func_800B60E4(3, 0xFF, 0);
+            func_800B60E4(loadGameScreenContext.diaryHighlighted, 0xFF, 1);
+            func_800B5FC4(0, loadGameScreenContext.diaryHighlighted, 0xFF);
+
+            if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
+                if (!set) {
+                    if (loadGameScreenContext.flags[loadGameScreenContext.diaryHighlighted] & 2) {
+                        startSpriteAnimation(0xAC, 2, 0);
+                        loadGameScreenContext.action = 8;
+                        playSfx(0);
+                    }
+                    set = TRUE;
+                }
+            }
+            
+            if (checkButtonPressed(CONTROLLER_1, BUTTON_B)) {
+                if (!set) {
+                    loadGameScreenContext.action = 2;
+                    playSfx(1);
+                }
+            }
+            
+            break;
+
+        case 4:
+
+            if (loadGameScreenContext.showControllerPakScreen == FALSE) {
+
+                if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_NORTHEAST)) {
+                    if (!set) {
+                        if (loadGameScreenContext.diaryHighlighted) {
+                            loadGameScreenContext.diaryHighlighted--;
+                            playSfx(2);
+                        }
+                        set = TRUE;
+                    }
+                }
+
+                if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_SOUTHWEST)) {
+                    
+                    if (!set) {
+                    
+                        if ((loadGameScreenContext.diaryHighlighted) == 3) {
+                            if (loadGameScreenContext.gamePakEnabled) {
+                                loadGameScreenContext.showControllerPakScreen = TRUE;
+                                set = TRUE;
+                                func_800B2CE0();
+                                deactivateSprite(0x80);
+                                func_8003DD14(0);
+                                func_8003DD14(1);
+                                func_8003DD14(2);
+                                func_8003DD14(3);
+                                func_800E16D0(0, 0);
+                            } else {
+                                set = TRUE;
+                            }
+                        } else {
+                            loadGameScreenContext.diaryHighlighted++;
+                            playSfx(2);
+                        }
+
+                        set = TRUE;
+                        
+                    }
+                }
+                
+            } else {
+
+                if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_NORTHEAST)) {
+                    
+                    if (!set) {
+                        
+                        if (loadGameScreenContext.diaryHighlighted) {
+                            loadGameScreenContext.diaryHighlighted--;
+                            playSfx(2);
+                            set = TRUE;
+                        } else {
+                            loadGameScreenContext.showControllerPakScreen = FALSE;
+                            func_800B2CE0();
+                            deactivateSprite(0x80);
+                            func_8003DD14(0);
+                            func_8003DD14(1);
+                            func_8003DD14(2);
+                            func_8003DD14(3);
+                            func_800E16D0(0, 3);
+                            set = TRUE;
+                        }
+                    }
+                    
+                }
+
+                if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_SOUTHWEST)) {
+                    
+                    if (!set) {
+                        if (loadGameScreenContext.diaryHighlighted != 1) {
+                            loadGameScreenContext.diaryHighlighted++;
+                            playSfx(2);
+                        }
+                        set = TRUE;
+                    }
+                    
+                }
+                
+            }
+
+            func_800B60E4(0, 0xFF, 0);
+            func_800B60E4(1, 0xFF, 0);
+            func_800B60E4(2, 0xFF, 0);
+            func_800B60E4(3, 0xFF, 0);
+            func_800B60E4(loadGameScreenContext.diaryHighlighted, 0xFF, 1);
+            func_800B5FC4(0, loadGameScreenContext.diaryHighlighted, 0xFF);
+            
+            if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
+                
+                if (!set) {
+                    
+                    if (loadGameScreenContext.flags[loadGameScreenContext.diaryHighlighted] & 2) {
+                        func_800B5FC4(1, loadGameScreenContext.diaryHighlighted, 0xFF);
+                        loadGameScreenContext.action = 5;
+                        loadGameScreenContext.unk_86 = loadGameScreenContext.diaryHighlighted;
+                        loadGameScreenContext.unk_88 = loadGameScreenContext.showControllerPakScreen;
+                        playSfx(0);
+                    
+                    }
+                    
+                    set = TRUE;
+                    
+                }
+                
+            }
+                
+            if (checkButtonPressed(CONTROLLER_1, BUTTON_B)) {
+                
+                if (!set) {
+                    loadGameScreenContext.action = 2;
+                    playSfx(1);
+                }
+                
+            }
+                
+            break;
+
+        case 5:
+
+            if (loadGameScreenContext.showControllerPakScreen == FALSE) {
+                
+                if (loadGameScreenContext.unk_88 == FALSE) {
+                    func_800B5FC4(1, loadGameScreenContext.unk_86, 0xFF);
+                }
+                
+                if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_NORTHEAST)) {
+                    
+                    if (!set) {
+                        if (loadGameScreenContext.diaryHighlighted) {
+                            loadGameScreenContext.diaryHighlighted--;
+                            playSfx(2);
+                        }
+                        set = TRUE;
+                    }
+
+                }
+                
+                if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_SOUTHWEST)) {
+                    
+                    if (!set) {
+
+                        if (loadGameScreenContext.diaryHighlighted == 3) {
+                        
+                            if (loadGameScreenContext.gamePakEnabled) {
+                                loadGameScreenContext.showControllerPakScreen = TRUE;
+                                set = TRUE;
+                                func_800B2CE0();
+                                deactivateSprite(0x80);
+                                func_8003DD14(0);
+                                func_8003DD14(1);
+                                func_8003DD14(2);
+                                func_8003DD14(3);
+                                func_800E16D0(0, 0);
+                            } else {
+                                set = TRUE;
+                            }
+
+                        } else {
+                            loadGameScreenContext.diaryHighlighted++;
+                            playSfx(2);
+                        }
+                        
+                        set = TRUE;
+                        
+                    }
+                }
+            } else {
+                
+                if (loadGameScreenContext.showControllerPakScreen == loadGameScreenContext.unk_88) {
+                    func_800B5FC4(1, loadGameScreenContext.unk_86, 0xFF);
+                }
+                
+                if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_NORTHEAST)) {
+                    
+                    if (!set) {
+                    
+                        if (loadGameScreenContext.diaryHighlighted) {
+                            loadGameScreenContext.diaryHighlighted--;
+                            playSfx(2);
+                            set = TRUE;
+                        } else {
+                            loadGameScreenContext.showControllerPakScreen = FALSE;
+                            func_800B2CE0();
+                            deactivateSprite(0x80);
+                            func_8003DD14(0);
+                            func_8003DD14(1);
+                            func_8003DD14(2);
+                            func_8003DD14(3);
+                            func_800E16D0(0, 3);
+                            set = TRUE;
+                        }
+                    
+                    }
+                }
+            
+                if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_SOUTHWEST)) {
+                    if (!set) {
+                        if (loadGameScreenContext.diaryHighlighted != 1) {
+                            loadGameScreenContext.diaryHighlighted++;
+                            playSfx(2);
+                        }
+                        set = TRUE;
+                    }
+                }
+            
+            }
+            
+            func_800B60E4(0, 0xFF, 0);
+            func_800B60E4(1, 0xFF, 0);
+            func_800B60E4(2, 0xFF, 0);
+            func_800B60E4(3, 0xFF, 0);
+            func_800B60E4(loadGameScreenContext.diaryHighlighted, 0xFF, 1);
+            func_800B5FC4(0, loadGameScreenContext.diaryHighlighted, 0xFF);
+            
+            if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
+                
+                if (!set) {
+                    
+                    if (loadGameScreenContext.flags[loadGameScreenContext.diaryHighlighted] & 1) {
+                        startSpriteAnimation(0xAC, 2, 0);
+                        loadGameScreenContext.action = 9;
+                        playSfx(0);
+                    }
+                    set = TRUE;
+                }
+            }
+            
+            if (checkButtonPressed(CONTROLLER_1, BUTTON_B) && !set) {
+                resetAnimationState(0xB2);
+                loadGameScreenContext.action = 2;
+                playSfx(1);
+            }
+
+            break;
+
+        case 6:
+            
+            if (func_8002CBF8(0x80) && checkDefaultSequenceChannelOpen(1)) {
+                
+                func_800B2CE0();
+                deactivateSprite(0x80);
+                func_8003DD14(0);
+                func_8003DD14(1);
+                func_8003DD14(2);
+                func_8003DD14(3);
+                
+                temp = loadGameScreenContext.diaryHighlighted;
+                gCurrentGameIndex = temp;
+                
+                func_80053088();
+                
+                if (loadGameScreenContext.flags[gCurrentGameIndex] & 2) {
+                    func_800E4424(gCurrentGameIndex, 0);
+                    startGame();
+                } else {
+                    func_800E39D0();
+                    initializeGameVariables();
+                    initializeNamingScreen(gPlayer.name, 0);
+                }
+            }
+            
+            break;
+        
+        case 7:
+            
+            if (func_8002CBF8(0x80) && checkDefaultSequenceChannelOpen(1)) {
+                func_800B2CE0();
+                deactivateSprite(0x80);
+                func_8003DD14(0);
+                func_8003DD14(1);
+                func_8003DD14(2);
+                func_8003DD14(3);
+                initializeTitleScreen(1);
+            }
+            
+            break;
+
+        case 8:
+            
+            func_800B5FC4(0, 0xFF, 3);
+            
+            if (checkButtonPressed(CONTROLLER_1, BUTTON_A) && !set) {
+                resetAnimationState(0xAC);
+                set = TRUE;
+                func_800E67E4(loadGameScreenContext.diaryHighlighted, loadGameScreenContext.showControllerPakScreen);
+                func_800E1998();
+                loadGameScreenContext.action = 2;
+                playSfx(0);
+            }
+            
+            if (checkButtonPressed(CONTROLLER_1, BUTTON_B) && !set) {
+                resetAnimationState(0xAC);
+                loadGameScreenContext.action = 3;
+                playSfx(1);
+            }
+            
+            break;
+
+        case 9:
+            
+            func_800B5FC4(0, 0xFF, 3);
+            
+            if (checkButtonPressed(CONTROLLER_1, BUTTON_A) && !set) {
+                
+                resetAnimationState(0xAC);
+                resetAnimationState(0xB2);
+                
+                set = TRUE;
+                func_800E66A0(loadGameScreenContext.unk_86, loadGameScreenContext.unk_88, loadGameScreenContext.diaryHighlighted, loadGameScreenContext.showControllerPakScreen);
+                func_800E1998();
+                loadGameScreenContext.action = 2;
+                playSfx(0);
+
+            }
+            
+            if (checkButtonPressed(CONTROLLER_1, BUTTON_B) && !set) {
+                resetAnimationState(0xAC);
+                loadGameScreenContext.action = 5;
+                playSfx(1);
+            }
+            
+            break;
+            
+        case 10:
+            
+            if (func_8002CBF8(0x80)) {
+                func_800B2CE0();
+                deactivateSprite(0x80);
+                func_8003DD14(0);
+                func_8003DD14(1);
+                func_8003DD14(2);
+                func_8003DD14(3);
+                func_800E68F4();
+            }
+            
+            break;
+            
+        case 11:
+            
+            if (func_8002CBF8(0x80)) {
+                func_800B5FC4(0, 0xFF, loadGameScreenContext.actionColumnHighlighted);
+                loadGameScreenContext.action = 2; 
+            }
+            
+            break;
+            
+    }
+    
+}
 
 //INCLUDE_ASM("asm/nonmatchings/game/loadGameScreen", func_800E3300);
 
@@ -1396,7 +2113,7 @@ void func_800E6FB4(u8 arg0) {
     func_8003F464(0, 14, 14, (u8*)0x802FF000, (u16*)0x8030A000);
     func_8003F360(0, -4, 2);
     setMessageBoxSpriteIndices(0, 0xFF, 0, 0);
-    setMessageBoxButtonMask(0, 0x8000);
+    setMessageBoxButtonMask(0, BUTTON_A);
     func_8003FB4C(0, 1);
     initializeMessageBox(0, 0, 7, 0x80000);
     
@@ -1408,7 +2125,7 @@ void func_800E6FB4(u8 arg0) {
     func_8003F464(1, 14, 14, (u8*)0x802FF000, (u16*)0x8030A000);
     func_8003F360(1, -4, 2);
     setMessageBoxSpriteIndices(1, 0xFF, 0, 0);
-    setMessageBoxButtonMask(1, 0x8000);
+    setMessageBoxButtonMask(1, BUTTON_A);
     func_8003FB4C(1, 1);
     initializeMessageBox(1, 0, 8, 0x80000);
     
@@ -1420,7 +2137,7 @@ void func_800E6FB4(u8 arg0) {
     func_8003F464(2, 14, 14, (u8*)0x802FF000, (u16*)0x8030A000);
     func_8003F360(2, -4, 2);
     setMessageBoxSpriteIndices(2, 0xFF, 0, 0);
-    setMessageBoxButtonMask(2, 0x8000);
+    setMessageBoxButtonMask(2, BUTTON_A);
     func_8003FB4C(2, 1);
     initializeMessageBox(2, 0, 9, 0x80000);
     
@@ -1432,7 +2149,7 @@ void func_800E6FB4(u8 arg0) {
     func_8003F464(3, 14, 14, (u8*)0x802FF000, (u16*)0x8030A000);
     func_8003F360(3, -4, 2);
     setMessageBoxSpriteIndices(3, 0xFF, 0, 0);
-    setMessageBoxButtonMask(3, 0x8000);
+    setMessageBoxButtonMask(3, BUTTON_A);
     func_8003FB4C(3, 1);
     initializeMessageBox(3, 0, 10, 0x80000);
     
@@ -1444,7 +2161,7 @@ void func_800E6FB4(u8 arg0) {
     func_8003F464(4, 14, 14, (u8*)0x802FF000, (u16*)0x8030A000);
     func_8003F360(4, -4, 2);
     setMessageBoxSpriteIndices(4, 0xFF, 0, 0);
-    setMessageBoxButtonMask(4, 0x8000);
+    setMessageBoxButtonMask(4, BUTTON_A);
     func_8003FB4C(4, 1);
     initializeMessageBox(4, 0, 11, 0x80000);
 
@@ -1563,7 +2280,7 @@ void func_800E8F08(void) {
 
         case 1:
             
-            if (checkButtonRepeat(CONTROLLER_1, 0x100000)) {
+            if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_NORTHEAST)) {
                 
                 if (!set) {
                     
@@ -1578,7 +2295,7 @@ void func_800E8F08(void) {
                 
             }
             
-            if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_UP) && !set) {
+            if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_SOUTHWEST) && !set) {
                 
                 if (D_801FB99B[0] != 4) {
                     D_801FB99B[0]++;

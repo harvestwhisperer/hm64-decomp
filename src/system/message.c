@@ -10,14 +10,16 @@
 #include "system/sceneGraph.h"
 #include "system/sprite.h"
 
+#include "buffers/buffers.h"
+
 #include "mainproc.h"
 
 #include "ld_symbols.h"
 
 // bss
-
 MessageBox messageBoxes[MAX_DIALOGUE_BOXES];
 GameVariableString gameVariableStrings[64];
+TextAddresses textAddresses[MAX_TEXT_BANKS];
 
 // text buffer of current displayed lines in game string characters; each line is size 0x20 (0x10 u16s)
 // u16 linesBuffer[8][0x10]
@@ -29,6 +31,10 @@ Vtx fontVertices[2][512][4];
 Gfx messageBoxDisplayList[2][3072];
 
 u8* characterAvatarsAnimationsPtr;
+
+CharacterAvatar characterAvatars[1];
+DialogueWindow dialogueWindows[3];
+OverlayIcon overlayIcons[2];
 
 // rodata
 static const u32 powersOfTen[8];

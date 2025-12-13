@@ -10,6 +10,11 @@ u16 sceneNodeCounter;
 // unused
 u8 D_80189135[9];
 SceneNode sceneNodes[MAX_SCENE_NODES];
+SceneMatrices sceneMatrices[2];
+
+// shared bss
+extern Vec3f previousWorldRotationAngles;
+extern Vec3f currentWorldRotationAngles;
 
 
 //INCLUDE_ASM("asm/nonmatchings/system/sceneGraph", initializeSceneNodes);

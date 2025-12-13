@@ -45,7 +45,7 @@ typedef struct {
     u8 unk_47;
 	Vec3f coordinates; // 0x48
 	Vec3f movementVector; // 0x54
-	f32 unk_60; // 0x60, likely speed/velocity
+	f32 velocity; // 0x60
 	u16 actionHandler; // 0x64
 	u16 animationHandler; // 0x66
 	u16 actionPhaseFrameCounter; // 0x68

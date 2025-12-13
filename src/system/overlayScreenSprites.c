@@ -5,7 +5,7 @@
 #include "system/globalSprites.h"
 
 // bss
-extern OverlayScreenSprite overlayScreenSprites[MAX_PAUSE_SCREEN_SPRITES];
+OverlayScreenSprite overlayScreenSprites[MAX_PAUSE_SCREEN_SPRITES];
 
 u32 D_801133B0[] = {
     1, 10, 100, 1000, 

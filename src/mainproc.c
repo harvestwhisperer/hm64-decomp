@@ -18,40 +18,37 @@
 #include "mainLoop.h"                        
 
 // bss
-extern volatile u16 unknownFlag;
-extern volatile u8 drawnFrameCount;
-extern volatile u8 D_8013DC30;
-extern volatile u8 drawnFrameCount;
-extern volatile u8 retraceCount;
-extern volatile u8 loopStepsPerCycle;
-extern volatile u8 framebufferCount;
-extern volatile u8 D_801C4215;
-extern volatile u8 D_80204B38;
-extern volatile u8 stepMainLoop;
-extern volatile u32 pendingGfxNum;
-extern volatile u8 D_802226E2;
-extern volatile u8 D_80222730;
+volatile u16 unknownFlag;
+volatile u8 drawnFrameCount;
+volatile u8 D_8013DC30;
+volatile u8 drawnFrameCount;
+volatile u8 retraceCount;
+volatile u8 loopStepsPerCycle;
+volatile u8 framebufferCount;
+volatile u8 D_801C4215;
+volatile u8 D_80204B38;
+volatile u8 stepMainLoop;
+volatile u32 pendingGfxNum;
+volatile u8 D_802226E2;
+volatile u8 D_80222730;
 
 // per 60; 1 = 60 fps
-extern volatile u8 frameRate;
-extern volatile u8 D_80237A04;
+volatile u8 frameRate;
+volatile u8 D_80237A04;
 
-extern u16 gMainMapIndex;
+u16 gMainMapIndex;
 
-extern volatile u32 gGraphicsBufferIndex;
-extern volatile u8 gfxTaskNo;
-extern volatile u8 frameCount;
+volatile u32 gGraphicsBufferIndex;
+volatile u8 gfxTaskNo;
+volatile u8 frameCount;
 
-extern volatile u32 D_801C3B68[4];
-extern volatile u8 loopStepsPerCycle;
-extern volatile u8 framebufferCount;
-extern volatile u8 currentFramebufferIndex;
-
-// shared
-extern volatile u16 mainLoopCallbackCurrentIndex;
+volatile u32 D_801C3B68[4];
+volatile u8 loopStepsPerCycle;
+volatile u8 framebufferCount;
+volatile u8 currentFramebufferIndex;
 
 // internal variable
-extern volatile u8 D_80237408;
+volatile u8 D_80237408;
 
 // forward declarations
 void initializeEngine(void);

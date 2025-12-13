@@ -8,14 +8,14 @@
 #include "system/sceneGraph.h"
 
 // bss
-extern Vec4f D_8013D248;
-extern Vec4f D_802373F8;
+Vec4f D_8013D248;
+Vec4f D_802373F8;
 
 // RGBA update rate
-extern s16 D_8017045A;
+s16 D_8017045A;
 
-extern MapController mapControllers[1];
-extern MapDataAddress mapDataAddresses[96];
+MapController mapControllers[1];
+MapDataAddress mapDataAddresses[96];
 
 // forward declarations
 void func_8003C8D4(MapController*); 

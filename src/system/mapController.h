@@ -5,7 +5,7 @@
 #include "common.h"
 
 #define MAX_MAP_ADDRESSES 96
-#define MAP_DATA_VADDR 0x80255000
+
 
 #define MAIN_MAP_INDEX 0
 
