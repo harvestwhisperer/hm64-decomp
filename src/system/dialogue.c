@@ -11,8 +11,11 @@
 #include "ld_symbols.h"
 
 
+// bss
+Dialogue dialogues[MAX_DIALOGUES];
 // game state updated by/talked about in dialogues
 DialogueVariable dialogueVariables[MAX_DIALOGUE_VARIABLES];
+DialogueBytecodeAddressInfo dialogueBytecodeAddresses[MAX_DIALOGUE_BYTECODE_BANKS];
 
 u32* specialDialogueBitsPointer;
 
@@ -789,7 +792,7 @@ void func_80044D78(u16 index) {
 
     if (!(messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].flags & (0x40 | 0x80))) { 
 
-        if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_UP)) {
+        if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_SOUTHWEST)) {
 
             if (dialogues[index].sessionManager.unk_17 < (dialogues[index].sessionManager.unk_16 - 1)) {
 
@@ -813,7 +816,7 @@ void func_80044D78(u16 index) {
             }
         }
 
-        if (checkButtonRepeat(CONTROLLER_1, 0x100000)) {
+        if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_NORTHEAST)) {
 
             if (!set) {
 

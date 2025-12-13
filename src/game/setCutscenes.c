@@ -9,7 +9,9 @@
 #include "system/message.h"
 
 #include "game/animals.h"
+#include "game/cutsceneFieldTiles.h"
 #include "game/evaluation.h"
+#include "game/fieldTiles.h"
 #include "game/game.h"
 #include "game/gameStatus.h"
 #include "game/itemHandlers.h"
@@ -18,7 +20,7 @@
 #include "game/npc.h"
 #include "game/overlayScreens.h"
 #include "game/player.h"
-#include "game/spriteInfo.h"
+#include "game/spriteIndices.h"
 #include "game/weather.h"
                                   
 // forward declarations
@@ -53,8 +55,8 @@ u16 func_800A6A14(void);
 u16 func_800A6EE4(void);
 
 // bss
-extern s32 gCutsceneCompletionFlags;
-extern u16 D_8018981C;
+s32 gCutsceneCompletionFlags;
+u16 D_8018981C;
 
 // likely bss
 extern u16 gCutsceneIndex;
@@ -71,10 +73,6 @@ extern u16 D_801D62C4;
 // evaluation: animals
 extern u8 D_801D62C6;
 
-// field tile data
-extern u8 D_80113580[FIELD_HEIGHT][FIELD_WIDTH];
-extern u8 D_80114E50[FIELD_HEIGHT][FIELD_WIDTH];
- 
 // data 
 Addresses cutsceneBytecodeAddresses[] = {
       { 0xFF5C0, 0x100180 },   

@@ -222,6 +222,4 @@ extern u32 mailboxBits[];
 extern u32 albumBits;
 extern u32 powerNutBits;
 
-extern u8 D_80113760[0x14][0x18];
-
 #endif

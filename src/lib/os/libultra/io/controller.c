@@ -7,7 +7,9 @@ OSPifRam __osContPifRam ALIGNED(16);
 u8 __osContLastCmd;
 u8 __osMaxControllers;
 
-OSTimer __osEepromTimer;
+// unused BSS
+// OSTimer __osEepromTimer;
+
 OSMesgQueue __osEepromTimerQ ALIGNED(8);
 OSMesg __osEepromTimerMsg;
 

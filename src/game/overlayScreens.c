@@ -22,23 +22,26 @@
 #include "game/shop.h"
 #include "game/tv.h"
 
+#include "buffers/buffers.h"
+
 #include "mainLoop.h"
 
 #include "ld_symbols.h"
 
 // bss
-extern OverlayScreenTable overlayScreenTable;
-extern u32 D_80189858;
-extern u32 D_80205204;
-extern u8 D_801890E8[31];
-extern u8 D_80189108[5][7];
+OverlayScreenTable overlayScreenTable;
+u32 D_80189858;
+
+u8 D_80205640[10];
 
 // shared bss
+extern u8 D_801890E8[31];
+extern u8 D_80189108[5][7];
 extern u8 D_801C3F70;
+extern u32 D_80205204;
 extern u8 D_80205636;
 
 extern u8 D_8018A72C[6];
-extern u8 D_80205640[10];
 extern u8 D_80237420[31];
 
 // data
@@ -229,7 +232,7 @@ void func_800B2CE0(void) {
 
 void func_800B2F34(void) {
 
-    dmaSprite(0x89, (u32)&_timeUiTextureSegmentRomStart, (u32)&_timeUiTextureSegmentRomEnd, (u32)&_timeUiAssetsIndexSegmentRomStart, (u32)&_timeUiAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8027EC00, NULL, (u16*)0x80281E00, (u16*)0x80282200, (u8*)0x80282400, NULL, 0, 0);
+    dmaSprite(0x89, (u32)&_timeUiTextureSegmentRomStart, (u32)&_timeUiTextureSegmentRomEnd, (u32)&_timeUiAssetsIndexSegmentRomStart, (u32)&_timeUiAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8027EC00, NULL, (u16*)0x80281E00, (u16*)0x80282200, (u8*)0x80282400, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x89, 0.0f, 0.0f, 256.0f);
     setBilinearFiltering(0x89, 1);
     setSpriteColor(0x89, 0xFF, 0xFF, 0xFF, 0);
@@ -241,7 +244,7 @@ void func_800B2F34(void) {
         startSpriteAnimation(0x89, 0, 0);
     }
 
-    dmaSprite(0x8C, (u32)&_timeUiTextureSegmentRomStart, (u32)&_timeUiTextureSegmentRomEnd, (u32)&_timeUiAssetsIndexSegmentRomStart, (u32)&_timeUiAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8027EC00, NULL, (u16*)0x80281E00, (u16*)0x80282200, (u8*)0x80282400, NULL, 0, 0);
+    dmaSprite(0x8C, (u32)&_timeUiTextureSegmentRomStart, (u32)&_timeUiTextureSegmentRomEnd, (u32)&_timeUiAssetsIndexSegmentRomStart, (u32)&_timeUiAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8027EC00, NULL, (u16*)0x80281E00, (u16*)0x80282200, (u8*)0x80282400, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x8C, -79.0f, 81.0f, 256.0f);
     setSpriteRotation(0x8C, 0.0f, 0.0f, (360 - (gMinutes * 6)));
     setBilinearFiltering(0x8C, 1);
@@ -249,7 +252,7 @@ void func_800B2F34(void) {
     setSpriteRenderingLayer(0x8C, 2);
     startSpriteAnimation(0x8C, 4, 0);
     
-    dmaSprite(0x8D, (u32)&_timeUiTextureSegmentRomStart, (u32)&_timeUiTextureSegmentRomEnd, (u32)&_timeUiAssetsIndexSegmentRomStart, (u32)&_timeUiAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8027EC00, NULL, (u16*)0x80281E00, (u16*)0x80282200, (u8*)0x80282400, NULL, 0, 0);
+    dmaSprite(0x8D, (u32)&_timeUiTextureSegmentRomStart, (u32)&_timeUiTextureSegmentRomEnd, (u32)&_timeUiAssetsIndexSegmentRomStart, (u32)&_timeUiAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8027EC00, NULL, (u16*)0x80281E00, (u16*)0x80282200, (u8*)0x80282400, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x8D, -80.0f, 80.0f, 256.0f);
     setSpriteRotation(0x8D, 0.0f, 0.0f, ((360 - (gHour * 30)) - (gMinutes * 0.5)));
     setBilinearFiltering(0x8D, 1);
@@ -257,14 +260,14 @@ void func_800B2F34(void) {
     setSpriteRenderingLayer(0x8D, 2);
     startSpriteAnimation(0x8D, 5, 0);
     
-    dmaSprite(0x8B, (u32)&_timeUiTextureSegmentRomStart, (u32)&_timeUiTextureSegmentRomEnd, (u32)&_timeUiAssetsIndexSegmentRomStart, (u32)&_timeUiAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8027EC00, NULL, (u16*)0x80281E00, (u16*)0x80282200, (u8*)0x80282400, NULL, 0, 0);
+    dmaSprite(0x8B, (u32)&_timeUiTextureSegmentRomStart, (u32)&_timeUiTextureSegmentRomEnd, (u32)&_timeUiAssetsIndexSegmentRomStart, (u32)&_timeUiAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8027EC00, NULL, (u16*)0x80281E00, (u16*)0x80282200, (u8*)0x80282400, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x8B, 0.0f, 0.0f, 256.0f);
     setBilinearFiltering(0x8B, 1);
     setSpriteColor(0x8B, 0xFF, 0xFF, 0xFF, 0);
     setSpriteRenderingLayer(0x8B, 2);
     startSpriteAnimation(0x8B, 1, gSeason - 1);
     
-    dmaSprite(0x8A, (u32)&_timeUiTextureSegmentRomStart, (u32)&_timeUiTextureSegmentRomEnd, (u32)&_timeUiAssetsIndexSegmentRomStart, (u32)&_timeUiAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8027EC00, NULL, (u16*)0x80281E00, (u16*)0x80282200, (u8*)0x80282400, NULL, 0, 0);
+    dmaSprite(0x8A, (u32)&_timeUiTextureSegmentRomStart, (u32)&_timeUiTextureSegmentRomEnd, (u32)&_timeUiAssetsIndexSegmentRomStart, (u32)&_timeUiAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8027EC00, NULL, (u16*)0x80281E00, (u16*)0x80282200, (u8*)0x80282400, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x8A, 0.0f, 0.0f, 256.0f);
     setBilinearFiltering(0x8A, 1);
     setSpriteColor(0x8A, 0xFF, 0xFF, 0xFF, 0);
@@ -282,7 +285,7 @@ void func_800B2F34(void) {
 // unused or inline
 void func_800B3498(f32 arg0, f32 arg1, f32 arg2, u16 arg3, u32 arg4) {
 
-    dmaSprite(0x8E, (u32)&_moneyTextureSegmentRomStart, (u32)&_moneyTextureSegmentRomEnd, (u32)&_moneyAssetsIndexSegmentRomStart, (u32)&_moneyAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x80253B00, NULL, (u16*)0x80254A00, (u16*)0x80254E00, (u8*)0x80254F00, NULL, 0, 0);
+    dmaSprite(0x8E, (u32)&_moneyTextureSegmentRomStart, (u32)&_moneyTextureSegmentRomEnd, (u32)&_moneyAssetsIndexSegmentRomStart, (u32)&_moneyAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x80253B00, NULL, (u16*)0x80254A00, (u16*)0x80254E00, (u8*)0x80254F00, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x8E, arg0, arg1, arg2);
     setBilinearFiltering(0x8E, 1);
     setSpriteColor(0x8E, 0xFF, 0xFF, 0xFF, 0);
@@ -300,31 +303,31 @@ void func_800B3498(f32 arg0, f32 arg1, f32 arg2, u16 arg3, u32 arg4) {
 
 void func_800B3694(void) {
 
-    dmaSprite(0x86, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (u16*)0x8023CE00, (u8*)0x8023D200, NULL, 0, 0);
+    dmaSprite(0x86, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (u16*)0x8023CE00, (u8*)0x8023D200, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x86, 80.0f, 32.0f, 256.0f);
     setBilinearFiltering(0x86, 1);
     setSpriteColor(0x86, 0xFF, 0xFF, 0xFF, 0xFF);
     startSpriteAnimation(0x86, 0, 0);
     
-    dmaSprite(0x82, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (u16*)0x8023CE00, (u8*)0x8023D200, NULL, 0, 0);
+    dmaSprite(0x82, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (u16*)0x8023CE00, (u8*)0x8023D200, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x82, 80.0f, 32.0f, 256.0f);
     setBilinearFiltering(0x82, 1);
     setSpriteColor(0x82, 0xFF, 0xFF, 0xFF, 0xFF);
     startSpriteAnimation(0x82, 0, 1);
     
-    dmaSprite(0x83, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (u16*)0x8023CE00, (u8*)0x8023D200, NULL, 0, 0);
+    dmaSprite(0x83, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (u16*)0x8023CE00, (u8*)0x8023D200, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x83, 80.0f, 32.0f, 256.0f);
     setBilinearFiltering(0x83, 1);
     setSpriteColor(0x83, 0xFF, 0xFF, 0xFF, 0xFF);
     startSpriteAnimation(0x83, 0, 3);
     
-    dmaSprite(0x84, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (u16*)0x8023CE00, (u8*)0x8023D200, NULL, 0, 0);
+    dmaSprite(0x84, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (u16*)0x8023CE00, (u8*)0x8023D200, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x84, 80.0f, 32.0f, 256.0f);
     setBilinearFiltering(0x84, 1);
     setSpriteColor(0x84, 0xFF, 0xFF, 0xFF, 0xFF);
     startSpriteAnimation(0x84, 0, 5);
     
-    dmaSprite(0x85, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (u16*)0x8023CE00, (u8*)0x8023D200, NULL, 0, 0);
+    dmaSprite(0x85, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (u16*)0x8023CE00, (u8*)0x8023D200, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x85, 80.0f, 32.0f, 256.0f);
     setBilinearFiltering(0x85, 1);
     setSpriteColor(0x85, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -479,7 +482,7 @@ void func_800B4238(u8 arg0) {
 
 void func_800B42E0(void) {
 
-    dmaSprite(0x80, (u32)&_checkerboardBackgroundTextureSegmentRomStart, (u32)&_checkerboardBackgroundTextureSegmentRomEnd, (u32)&_checkerboardBackgroundAssetsIndexSegmentRomStart, (u32)&_checkerboardBackgroundAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x802DE5C0, NULL, (u16*)0x802E0BC0, (u16*)0x802E0CC0, (u8*)0x802E0DC0, NULL, 0, 0);
+    dmaSprite(0x80, (u32)&_checkerboardBackgroundTextureSegmentRomStart, (u32)&_checkerboardBackgroundTextureSegmentRomEnd, (u32)&_checkerboardBackgroundAssetsIndexSegmentRomStart, (u32)&_checkerboardBackgroundAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x802DE5C0, NULL, (u16*)0x802E0BC0, (u16*)0x802E0CC0, (u8*)0x802E0DC0, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x80, 0.0f, 0.0f, 0.0f);
     setSpriteScale(0x80, 2.0f, 2.0f, 1.0f);
     setBilinearFiltering(0x80, 1);
@@ -488,28 +491,28 @@ void func_800B42E0(void) {
     
     if (loadGameScreenContext.showControllerPakScreen == FALSE) {
         
-        dmaSprite(0x82, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+        dmaSprite(0x82, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0x82, 0.0f, 0.0f, 8.0f);
         setSpriteColor(0x82, 0, 0, 0, 0);
         setSpriteRenderingLayer(0x82, 3);
         setBilinearFiltering(0x82, 1);
         startSpriteAnimation(0x82, 0, 0);
         
-        dmaSprite(0x83, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+        dmaSprite(0x83, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0x83, 0.0f, 0.0f, 8.0f);
         setSpriteColor(0x83, 0, 0, 0, 0);
         setSpriteRenderingLayer(0x83, 3);
         setBilinearFiltering(0x83, 1);
         startSpriteAnimation(0x83, 3, 0);
         
-        dmaSprite(0x84, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+        dmaSprite(0x84, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0x84, 0.0f, 0.0f, 8.0f);
         setSpriteColor(0x84, 0, 0, 0, 0);
         setSpriteRenderingLayer(0x84, 3);
         setBilinearFiltering(0x84, 1);
         startSpriteAnimation(0x84, 1, 0);
         
-        dmaSprite(0xA3, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+        dmaSprite(0xA3, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xA3, 0.0f, 0.0f, 8.0f);
         setSpriteColor(0xA3, 0, 0, 0, 0);
         setSpriteRenderingLayer(0xA3, 3);
@@ -517,7 +520,7 @@ void func_800B42E0(void) {
         setSpritePaletteIndex(0xA3, 2);
         startSpriteAnimation(0xA3, 4, 0);
         
-        dmaSprite(0xA4, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+        dmaSprite(0xA4, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xA4, 0.0f, -44.0f, 8.0f);
         setSpriteColor(0xA4, 0, 0, 0, 0);
         setSpriteRenderingLayer(0xA4, 3);
@@ -525,7 +528,7 @@ void func_800B42E0(void) {
         setSpritePaletteIndex(0xA4, 3);
         startSpriteAnimation(0xA4, 4, 0);
         
-        dmaSprite(0xA5, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+        dmaSprite(0xA5, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xA5, 0.0f, -88.0f, 8.0f);
         setSpriteColor(0xA5, 0, 0, 0, 0);
         setSpriteRenderingLayer(0xA5, 3);
@@ -533,7 +536,7 @@ void func_800B42E0(void) {
         setSpritePaletteIndex(0xA5, 4);
         startSpriteAnimation(0xA5, 4, 0);
         
-        dmaSprite(0xA6, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+        dmaSprite(0xA6, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xA6, 0.0f, -132.0f, 8.0f);
         setSpriteColor(0xA6, 0, 0, 0, 0);
         setSpriteRenderingLayer(0xA6, 3);
@@ -541,21 +544,21 @@ void func_800B42E0(void) {
         setSpritePaletteIndex(0xA6, 5);
         startSpriteAnimation(0xA6, 4, 0);
         
-        dmaSprite(0xA7, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+        dmaSprite(0xA7, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xA7, 0.0f, 0.0f, 16.0f);
         setSpriteColor(0xA7, 0, 0, 0, 0);
         setSpriteRenderingLayer(0xA7, 3);
         setBilinearFiltering(0xA7, 1);
         startSpriteAnimation(0xA7, 5, 0);
         
-        dmaSprite(0xA8, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+        dmaSprite(0xA8, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xA8, 0.0f, 0.0f, 16.0f);
         setSpriteColor(0xA8, 0, 0, 0, 0);
         setSpriteRenderingLayer(0xA8, 3);
         setBilinearFiltering(0xA8, 1);
         startSpriteAnimation(0xA8, 5, 2);
         
-        dmaSprite(0xA9, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+        dmaSprite(0xA9, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xA9, 0.0f, 0.0f, 16.0f);
         setSpriteColor(0xA9, 0, 0, 0, 0);
         setSpriteRenderingLayer(0xA9, 3);
@@ -563,14 +566,14 @@ void func_800B42E0(void) {
         startSpriteAnimation(0xA9, 5, 4);
         
         
-        dmaSprite(0xAA, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+        dmaSprite(0xAA, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xAA, 0.0f, 0.0f, 16.0f);
         setSpriteColor(0xAA, 0, 0, 0, 0);
         setSpriteRenderingLayer(0xAA, 3);
         setBilinearFiltering(0xAA, 1);
         startSpriteAnimation(0xAA, 5, 6);
         
-        dmaSprite(0x85, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+        dmaSprite(0x85, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0x85, 0.0f, 0.0f, 4.0f);
         setSpriteColor(0x85, 0, 0, 0, 0);
         setSpriteRenderingLayer(0x85, 3);
@@ -578,7 +581,7 @@ void func_800B42E0(void) {
         setSpritePaletteIndex(0x85, 1);
         startSpriteAnimation(0x85, 2, 0);
         
-        dmaSprite(0x86, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+        dmaSprite(0x86, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0x86, 0.0f, -44.0f, 4.0f);
         setSpriteColor(0x86, 0, 0, 0, 0);
         setSpriteRenderingLayer(0x86, 3);
@@ -586,7 +589,7 @@ void func_800B42E0(void) {
         setSpritePaletteIndex(0x86, 1);
         startSpriteAnimation(0x86, 2, 0);
         
-        dmaSprite(0x87, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+        dmaSprite(0x87, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0x87, 0.0f, -88.0f, 4.0f);
         setSpriteColor(0x87, 0, 0, 0, 0);
         setSpriteRenderingLayer(0x87, 3);
@@ -594,7 +597,7 @@ void func_800B42E0(void) {
         setSpritePaletteIndex(0x87, 1);
         startSpriteAnimation(0x87, 2, 0);
         
-        dmaSprite(0x88, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+        dmaSprite(0x88, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0x88, 0.0f, -132.0f, 4.0f);
         setSpriteColor(0x88, 0, 0, 0, 0);
         setSpriteRenderingLayer(0x88, 3);
@@ -602,19 +605,19 @@ void func_800B42E0(void) {
         setSpritePaletteIndex(0x88, 1);
         startSpriteAnimation(0x88, 2, 0);
         
-        dmaSprite(0x79, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (u16*)0x8023CE00, (u8*)0x8023D200, NULL, 0, 0);
+        dmaSprite(0x79, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (u16*)0x8023CE00, (u8*)0x8023D200, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0x79, 0.0f, 0.0f, 32.0f);
         setBilinearFiltering(0x79, 1);
         setSpriteColor(0x79, 0xFF, 0xFF, 0xFF, 0xFF);
         setSpriteRenderingLayer(0x79, 3);
         
-        dmaSprite(0xB2, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (u16*)0x8023CE00, (u8*)0x8023D200, NULL, 0, 0);
+        dmaSprite(0xB2, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (u16*)0x8023CE00, (u8*)0x8023D200, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xB2, 0.0f, 0.0f, 32.0f);
         setBilinearFiltering(0xB2, 1);
         setSpriteColor(0xB2, 0xFF, 0xFF, 0xFF, 0x80);
         setSpriteRenderingLayer(0xB2, 2);
 
-        dmaSprite(0xAC, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (u16*)0x8023CE00, (u8*)0x8023D200, NULL, 0, 0);
+        dmaSprite(0xAC, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (u16*)0x8023CE00, (u8*)0x8023D200, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xAC, 0.0f, 0.0f, 32.0f);
         setBilinearFiltering(0xAC, 1);
         setSpriteColor(0xAC, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -624,28 +627,28 @@ void func_800B42E0(void) {
         
     } else {
         
-        dmaSprite(0x82, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+        dmaSprite(0x82, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0x82, 0.0f, 0.0f, 8.0f);
         setSpriteColor(0x82, 0, 0, 0, 0);
         setSpriteRenderingLayer(0x82, 3);
         setBilinearFiltering(0x82, 1);
         startSpriteAnimation(0x82, 7, 0);
         
-        dmaSprite(0x83, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+        dmaSprite(0x83, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0x83, 0.0f, 0.0f, 8.0f);
         setSpriteColor(0x83, 0, 0, 0, 0);
         setSpriteRenderingLayer(0x83, 3);
         setBilinearFiltering(0x83, 1);
         startSpriteAnimation(0x83, 3, 0);
         
-        dmaSprite(0x84, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+        dmaSprite(0x84, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0x84, 0.0f, 0.0f, 8.0f);
         setSpriteColor(0x84, 0, 0, 0, 0);
         setSpriteRenderingLayer(0x84, 3);
         setBilinearFiltering(0x84, 1);
         startSpriteAnimation(0x84, 1, 0);
         
-        dmaSprite(0xA3, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+        dmaSprite(0xA3, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xA3, 0.0f, 0.0f, 8.0f);
         setSpriteColor(0xA3, 0, 0, 0, 0);
         setSpriteRenderingLayer(0xA3, 3);
@@ -653,7 +656,7 @@ void func_800B42E0(void) {
         setSpritePaletteIndex(0xA3, 2);
         startSpriteAnimation(0xA3, 8, 0);
         
-        dmaSprite(0xA4, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+        dmaSprite(0xA4, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xA4, 0.0f, -44.0f, 8.0f);
         setSpriteColor(0xA4, 0, 0, 0, 0);
         setSpriteRenderingLayer(0xA4, 3);
@@ -661,21 +664,21 @@ void func_800B42E0(void) {
         setSpritePaletteIndex(0xA4, 3);
         startSpriteAnimation(0xA4, 8, 0);
         
-        dmaSprite(0xA7, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+        dmaSprite(0xA7, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xA7, 0.0f, 0.0f, 16.0f);
         setSpriteColor(0xA7, 0, 0, 0, 0);
         setSpriteRenderingLayer(0xA7, 3);
         setBilinearFiltering(0xA7, 1);
         startSpriteAnimation(0xA7, 5, 0);
         
-        dmaSprite(0xA8, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+        dmaSprite(0xA8, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xA8, 0.0f, 0.0f, 16.0f);
         setSpriteColor(0xA8, 0, 0, 0, 0);
         setSpriteRenderingLayer(0xA8, 3);
         setBilinearFiltering(0xA8, 1);
         startSpriteAnimation(0xA8, 5, 2);
         
-        dmaSprite(0x85, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+        dmaSprite(0x85, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0x85, 0.0f, 0.0f, 4.0f);
         setSpriteColor(0x85, 0, 0, 0, 0);
         setSpriteRenderingLayer(0x85, 3);
@@ -683,7 +686,7 @@ void func_800B42E0(void) {
         setSpritePaletteIndex(0x85, 1);
         startSpriteAnimation(0x85, 2, 0);
         
-        dmaSprite(0x86, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+        dmaSprite(0x86, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0x86, 0.0f, -44.0f, 4.0f);
         setSpriteColor(0x86, 0, 0, 0, 0);
         setSpriteRenderingLayer(0x86, 3);
@@ -691,26 +694,26 @@ void func_800B42E0(void) {
         setSpritePaletteIndex(0x86, 1);
         startSpriteAnimation(0x86, 2, 0);
         
-        dmaSprite(0xAB, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+        dmaSprite(0xAB, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xAB, 0.0f, 0.0f, 8.0f);
         setSpriteColor(0xAB, 0, 0, 0, 0);
         setSpriteRenderingLayer(0xAB, 3);
         setBilinearFiltering(0xAB, 1);
         startSpriteAnimation(0xAB, 9, 0);
         
-        dmaSprite(0x79, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (u16*)0x8023CE00, (u8*)0x8023D200, NULL, 0, 0);
+        dmaSprite(0x79, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (u16*)0x8023CE00, (u8*)0x8023D200, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0x79, 0.0f, 0.0f, 32.0f);
         setBilinearFiltering(0x79, 1);
         setSpriteColor(0x79, 0xFF, 0xFF, 0xFF, 0xFF);
         setSpriteRenderingLayer(0x79, 3);
         
-        dmaSprite(0xB2, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (u16*)0x8023CE00, (u8*)0x8023D200, NULL, 0, 0);
+        dmaSprite(0xB2, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (u16*)0x8023CE00, (u8*)0x8023D200, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xB2, 0.0f, 0.0f, 32.0f);
         setBilinearFiltering(0xB2, 1);
         setSpriteColor(0xB2, 0xFF, 0xFF, 0xFF, 0x80);
         setSpriteRenderingLayer(0xB2, 2);
 
-        dmaSprite(0xAC, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (u16*)0x8023CE00, (u8*)0x8023D200, NULL, 0, 0);
+        dmaSprite(0xAC, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (u16*)0x8023CE00, (u8*)0x8023D200, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xAC, 0.0f, 0.0f, 32.0f);
         setBilinearFiltering(0xAC, 1);
         setSpriteColor(0xAC, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -1080,49 +1083,49 @@ void func_800B64E4(u8 arg0, u8 arg1) {
 
 void func_800B6674(void) {
     
-    dmaSprite(0x80, (u32)&_namingScreenBackgroundTextureSegmentRomStart, (u32)&_namingScreenBackgroundTextureSegmentRomEnd, (u32)&_namingScreenBackgroundAssetsIndexSegmentRomStart, (u32)&_namingScreenBackgroundAssetsIndexSegmentRomEnd, 0, 0, 0x802DE5C0, NULL, 0x802E0BC0, 0x802E0CC0, 0x802E0DC0, NULL, 0, 0);
+    dmaSprite(0x80, (u32)&_namingScreenBackgroundTextureSegmentRomStart, (u32)&_namingScreenBackgroundTextureSegmentRomEnd, (u32)&_namingScreenBackgroundAssetsIndexSegmentRomStart, (u32)&_namingScreenBackgroundAssetsIndexSegmentRomEnd, 0, 0, 0x802DE5C0, NULL, 0x802E0BC0, 0x802E0CC0, 0x802E0DC0, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x80, 0.0f, 0.0f, 0.0f);
     setSpriteScale(0x80, 2.0f, 2.0f, 1.0f);
     setBilinearFiltering(0x80, 1);
     setSpriteColor(0x80, 0, 0, 0, 0);
     startSpriteAnimation(0x80, 0, 0);
     
-    dmaSprite(0x82, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, 0, 0, 0x8026F000, NULL, 0x8027E200, 0x8027E700, 0x8027EB00, NULL, 0, 0);
+    dmaSprite(0x82, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, 0, 0, 0x8026F000, NULL, 0x8027E200, 0x8027E700, 0x8027EB00, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x82, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0x82, 0, 0, 0, 0);
     setSpriteRenderingLayer(0x82, 2);
     setBilinearFiltering(0x82, 1);
     startSpriteAnimation(0x82, 0, 0);
     
-    dmaSprite(0x83, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, 0, 0, 0x8026F000, NULL, 0x8027E200, 0x8027E700, 0x8027EB00, NULL, 0, 0);
+    dmaSprite(0x83, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, 0, 0, 0x8026F000, NULL, 0x8027E200, 0x8027E700, 0x8027EB00, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x83, 0.0f, 40.0f, 8.0f);
     setSpriteColor(0x83, 0, 0, 0, 0);
     setSpriteRenderingLayer(0x83, 3);
     setBilinearFiltering(0x83, 1);
     startSpriteAnimation(0x83, 1, 0);
     
-    dmaSprite(0x84, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, 0, 0, 0x8026F000, NULL, 0x8027E200, 0x8027E700, 0x8027EB00, NULL, 0, 0);
+    dmaSprite(0x84, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, 0, 0, 0x8026F000, NULL, 0x8027E200, 0x8027E700, 0x8027EB00, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x84, 0.0f, 8.0f, 8.0f);
     setSpriteColor(0x84, 0, 0, 0, 0);
     setSpriteRenderingLayer(0x84, 3);
     setBilinearFiltering(0x84, 1);
     startSpriteAnimation(0x84, 1, 1);
     
-    dmaSprite(0x85, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, 0, 0, 0x8026F000, NULL, 0x8027E200, 0x8027E700, 0x8027EB00, NULL, 0, 0);
+    dmaSprite(0x85, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, 0, 0, 0x8026F000, NULL, 0x8027E200, 0x8027E700, 0x8027EB00, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x85, 0.0f, -24.0f, 8.0f);
     setSpriteColor(0x85, 0, 0, 0, 0);
     setSpriteRenderingLayer(0x85, 3);
     setBilinearFiltering(0x85, 1);
     startSpriteAnimation(0x85, 1, 2);
     
-    dmaSprite(0x86, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, 0, 0, 0x8026F000, NULL, 0x8027E200, 0x8027E700, 0x8027EB00, NULL, 0, 0);
+    dmaSprite(0x86, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, 0, 0, 0x8026F000, NULL, 0x8027E200, 0x8027E700, 0x8027EB00, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x86, 0.0f, -56.0f, 8.0f);
     setSpriteColor(0x86, 0, 0, 0, 0);
     setSpriteRenderingLayer(0x86, 3);
     setBilinearFiltering(0x86, 1);
     startSpriteAnimation(0x86, 1, 3);
     
-    dmaSprite(0x87, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, 0, 0, 0x8026F000, NULL, 0x8027E200, 0x8027E700, 0x8027EB00, NULL, 0, 0);
+    dmaSprite(0x87, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, 0, 0, 0x8026F000, NULL, 0x8027E200, 0x8027E700, 0x8027EB00, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x87, 0.0f, -88.0f, 8.0f);
     setSpriteColor(0x87, 0, 0, 0, 0);
     setSpriteRenderingLayer(0x87, 3);
@@ -1130,7 +1133,7 @@ void func_800B6674(void) {
     startSpriteAnimation(0x87, 1, 4);
     
     if (D_801FB994[0] & 1) {
-        dmaSprite(0xAE, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, 0, 0, 0x8026F000, NULL, 0x8027E200, 0x8027E700, 0x8027EB00, NULL, 0, 0);
+        dmaSprite(0xAE, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, 0, 0, 0x8026F000, NULL, 0x8027E200, 0x8027E700, 0x8027EB00, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xAE, -4.0f, 40.0f, 16.0f);
         setSpriteColor(0xAE, 0, 0, 0, 0);
         setSpriteRenderingLayer(0xAE, 3);
@@ -1139,7 +1142,7 @@ void func_800B6674(void) {
     }
     
     if (D_801FB994[1] & 1) {
-        dmaSprite(0xAF, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, 0, 0, 0x8026F000, NULL, 0x8027E200, 0x8027E700, 0x8027EB00, NULL, 0, 0);
+        dmaSprite(0xAF, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, 0, 0, 0x8026F000, NULL, 0x8027E200, 0x8027E700, 0x8027EB00, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xAF, -4.0f, 8.0f, 16.0f);
         setSpriteColor(0xAF, 0, 0, 0, 0);
         setSpriteRenderingLayer(0xAF, 3);
@@ -1148,7 +1151,7 @@ void func_800B6674(void) {
     }
     
     if (D_801FB994[2] & 1) {
-        dmaSprite(0xB0, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, 0, 0, 0x8026F000, NULL, 0x8027E200, 0x8027E700, 0x8027EB00, NULL, 0, 0);
+        dmaSprite(0xB0, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, 0, 0, 0x8026F000, NULL, 0x8027E200, 0x8027E700, 0x8027EB00, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xB0, -4.0f, -24.0f, 16.0f);
         setSpriteColor(0xB0, 0, 0, 0, 0);
         setSpriteRenderingLayer(0xB0, 3);
@@ -1157,7 +1160,7 @@ void func_800B6674(void) {
     }
     
     if (D_801FB994[3] & 1) {
-        dmaSprite(0xB1, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, 0, 0, 0x8026F000, NULL, 0x8027E200, 0x8027E700, 0x8027EB00, NULL, 0, 0);
+        dmaSprite(0xB1, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, 0, 0, 0x8026F000, NULL, 0x8027E200, 0x8027E700, 0x8027EB00, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xB1, -4.0f, -56.0f, 16.0f);
         setSpriteColor(0xB1, 0, 0, 0, 0);
         setSpriteRenderingLayer(0xB1, 3);
@@ -1166,7 +1169,7 @@ void func_800B6674(void) {
     }
     
     if (D_801FB994[4] & 1) {
-        dmaSprite(0xB2, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, 0, 0, 0x8026F000, NULL, 0x8027E200, 0x8027E700, 0x8027EB00, NULL, 0, 0);
+        dmaSprite(0xB2, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, 0, 0, 0x8026F000, NULL, 0x8027E200, 0x8027E700, 0x8027EB00, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xB2, -4.0f, -88.0f, 16.0f);
         setSpriteColor(0xB2, 0, 0, 0, 0);
         setSpriteRenderingLayer(0xB2, 3);
@@ -1174,7 +1177,7 @@ void func_800B6674(void) {
         startSpriteAnimation(0xB2, 7, D_801FB80B[4] - 1);
     }
     
-    dmaSprite(0x79, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, 0, 0, 0x8023B400, NULL, 0x8023CC00, 0x8023CE00, 0x8023D200, NULL, 0, 0);
+    dmaSprite(0x79, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, 0, 0, 0x8023B400, NULL, 0x8023CC00, 0x8023CE00, 0x8023D200, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x79, 0.0f, 0.0f, 32.0f);
     setBilinearFiltering(0x79, 1);
     setSpriteColor(0x79, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -1186,21 +1189,21 @@ void func_800B6674(void) {
 
 void func_800B7070(u8 arg0) {
 
-    dmaSprite(0x82, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+    dmaSprite(0x82, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x82, 0.0f, 80.0f, 8.0f);
     setSpriteColor(0x82, 0xFF, 0xFF, 0xFF, 0xFF);
     setSpriteRenderingLayer(0x82, 3);
     setBilinearFiltering(0x82, 1);
     startSpriteAnimation(0x82, 1, arg0);
     
-    dmaSprite(0x81, (u32)&_snapshotLargeTextureSegmentRomStart, (u32)&_snapshotLargeTextureSegmentRomEnd, (u32)&_snapshotLargeAssetsIndexSegmentRomStart, (u32)&_snapshotLargeAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x80289900, NULL, (u16*)0x8028EF00, (u16*)0x8028F000, (u8*)0x8028F100, NULL, 0, 0);
+    dmaSprite(0x81, (u32)&_snapshotLargeTextureSegmentRomStart, (u32)&_snapshotLargeTextureSegmentRomEnd, (u32)&_snapshotLargeAssetsIndexSegmentRomStart, (u32)&_snapshotLargeAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x80289900, NULL, (u16*)0x8028EF00, (u16*)0x8028F000, (u8*)0x8028F100, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x81, 0.0f, -16.0f, 8.0f);
     setSpriteColor(0x81, 0xFF, 0xFF, 0xFF, 0xFF);
     setSpriteRenderingLayer(0x81, 2);
     setBilinearFiltering(0x81, 1);
     startSpriteAnimation(0x81, 0, 0);
     
-    dmaSprite(0x83, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+    dmaSprite(0x83, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x83, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0x83, 0xFF, 0xFF, 0xFF, 0xFF);
     setSpriteRenderingLayer(0x83, 2);
@@ -1209,14 +1212,14 @@ void func_800B7070(u8 arg0) {
 
     if (D_801FB994[arg0] & 2) {
         
-        dmaSprite(0x84, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+        dmaSprite(0x84, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0x84, 0.0f, 0.0f, 8.0f);
         setSpriteColor(0x84, 0xFF, 0xFF, 0xFF, 0xFF);
         setSpriteRenderingLayer(0x84, 3);
         setBilinearFiltering(0x84, 1);
         startSpriteAnimation(0x84, 3, D_801FB971[arg0]);
         
-        dmaSprite(0xAE, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+        dmaSprite(0xAE, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xAE, 0.0f, 32.0f, 8.0f);
         setSpriteColor(0xAE, 0xFF, 0xFF, 0xFF, 0xFF);
         setSpriteRenderingLayer(0xAE, 3);
@@ -1232,14 +1235,14 @@ void func_800B7070(u8 arg0) {
 
     if (D_801FB994[arg0] & 4) {
         
-        dmaSprite(0x85, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+        dmaSprite(0x85, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0x85, 0.0f, 0.0f, 8.0f);
         setSpriteColor(0x85, 0xFF, 0xFF, 0xFF, 0xFF);
         setSpriteRenderingLayer(0x85, 3);
         setBilinearFiltering(0x85, 1);
         startSpriteAnimation(0x85, 3, 5);
         
-        dmaSprite(0xAF, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+        dmaSprite(0xAF, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xAF, 0.0f, 16.0f, 8.0f);
         setSpriteColor(0xAF, 0xFF, 0xFF, 0xFF, 0xFF);
         setSpriteRenderingLayer(0xAF, 3);
@@ -1255,14 +1258,14 @@ void func_800B7070(u8 arg0) {
 
     if (D_801FB994[arg0] & 8) {
         
-        dmaSprite(0x86, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+        dmaSprite(0x86, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0x86, 0.0f, 0.0f, 8.0f);
         setSpriteColor(0x86, 0xFF, 0xFF, 0xFF, 0xFF);
         setSpriteRenderingLayer(0x86, 3);
         setBilinearFiltering(0x86, 1);
         startSpriteAnimation(0x86, 3, 6);
         
-        dmaSprite(0xB1, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+        dmaSprite(0xB1, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xB1, 0.0f, -16.0f, 8.0f);
         setSpriteColor(0xB1, 0xFF, 0xFF, 0xFF, 0xFF);
         setSpriteRenderingLayer(0xB1, 3);
@@ -1276,7 +1279,7 @@ void func_800B7070(u8 arg0) {
         
     }
     
-    dmaSprite(0xB0, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+    dmaSprite(0xB0, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0xB0, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0xB0, 0xFF, 0xFF, 0xFF, 0xFF);
     setSpriteRenderingLayer(0xB0, 3);
@@ -1289,7 +1292,7 @@ void func_800B7070(u8 arg0) {
     }
 
     if (D_801FB994[arg0] & 1) {
-        dmaSprite(0xB2, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+        dmaSprite(0xB2, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xB2, -4.0f, 80.0f, 16.0f);
         setSpriteColor(0xB2, 0xFF, 0xFF, 0xFF, 0xFF);
         setSpriteRenderingLayer(0xB2, 3);
@@ -1503,7 +1506,7 @@ void func_800B86B8(void) {
     
     func_800593EC();
     
-    dmaSprite(0x80, (u32)&_checkerboardBackgroundTextureSegmentRomStart, (u32)&_checkerboardBackgroundTextureSegmentRomEnd, (u32)&_checkerboardBackgroundAssetsIndexSegmentRomStart, (u32)&_checkerboardBackgroundAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x802DE5C0, NULL, (u16*)0x802E0BC0, (u16*)0x802E0CC0, (u8*)0x802E0DC0, NULL, 0, 0);
+    dmaSprite(0x80, (u32)&_checkerboardBackgroundTextureSegmentRomStart, (u32)&_checkerboardBackgroundTextureSegmentRomEnd, (u32)&_checkerboardBackgroundAssetsIndexSegmentRomStart, (u32)&_checkerboardBackgroundAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x802DE5C0, NULL, (u16*)0x802E0BC0, (u16*)0x802E0CC0, (u8*)0x802E0DC0, NULL, 0, FALSE);
     
     setSpriteViewSpacePosition(0x80, 0.0f, 0.0f, 0.0f);
     setSpriteScale(0x80, 2.0f, 2.0f, 1.0f);
@@ -1536,7 +1539,7 @@ void func_800B881C(void) {
 
 void func_800B8844(void) {
     
-    dmaSprite(0x80, (u32)&_checkerboardBackgroundTextureSegmentRomStart, (u32)&_checkerboardBackgroundTextureSegmentRomEnd, (u32)&_checkerboardBackgroundAssetsIndexSegmentRomStart, (u32)&_checkerboardBackgroundAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x802DE5C0, NULL, (u16*)0x802E0BC0, (u16*)0x802E0CC0, (u8*)0x802E0DC0, NULL, 0, 0);
+    dmaSprite(0x80, (u32)&_checkerboardBackgroundTextureSegmentRomStart, (u32)&_checkerboardBackgroundTextureSegmentRomEnd, (u32)&_checkerboardBackgroundAssetsIndexSegmentRomStart, (u32)&_checkerboardBackgroundAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x802DE5C0, NULL, (u16*)0x802E0BC0, (u16*)0x802E0CC0, (u8*)0x802E0DC0, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x80, 0.0f, 0.0f, 0.0f);
     setSpriteScale(0x80, 2.0f, 2.0f, 1.0f);
     setBilinearFiltering(0x80, 1);
@@ -1570,35 +1573,35 @@ void func_800B8980(void) {
     dmaOverlayScreenSprites(1, temp, 5, 3);
     setOverlayScreenSpritesRGBA(1, 0xFF, 0xFF, 0xFF, 0xFF);
 
-    dmaSprite(0x83, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+    dmaSprite(0x83, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x83, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0x83, 0xFF, 0xFF, 0xFF, 0);
     setSpriteRenderingLayer(0x83, 2);
     setBilinearFiltering(0x83, 1);
     startSpriteAnimation(0x83, 0, 0);
 
-    dmaSprite(0x84, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+    dmaSprite(0x84, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x84, 0.0f, -80.0f, 8.0f);
     setSpriteColor(0x84, 0x80, 0x80, 0x80, 0);
     setSpriteRenderingLayer(0x84, 2);
     setBilinearFiltering(0x84, 1);
     startSpriteAnimation(0x84, 0, 0);
     
-    dmaSprite(0x85, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+    dmaSprite(0x85, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x85, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0x85, 0x80, 0x80, 0x80, 0);
     setSpriteRenderingLayer(0x85, 2);
     setBilinearFiltering(0x85, 1);
     startSpriteAnimation(0x85, 1, 0);
     
-    dmaSprite(0x86, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+    dmaSprite(0x86, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x86, 0.0f, 0.0f, 16.0f);
     setSpriteColor(0x86, 0xFF, 0xFF, 0xFF, 0);
     setSpriteRenderingLayer(0x86, 2);
     setBilinearFiltering(0x86, 1);
     startSpriteAnimation(0x86, 5, 0);
     
-    dmaSprite(0x87, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+    dmaSprite(0x87, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x87, -28.0f, 80.0f, 8.0f);
     setSpriteColor(0x87, 0xFF, 0xFF, 0xFF, 0);
     setSpriteRenderingLayer(0x87, 2);
@@ -1606,7 +1609,7 @@ void func_800B8980(void) {
     startSpriteAnimation(0x87, 2, 0);
     setSpritePaletteIndex(0x87, 3);
     
-    dmaSprite(0x88, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+    dmaSprite(0x88, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x88, 20.0f, 80.0f, 8.0f);
     setSpriteColor(0x88, 0xFF, 0xFF, 0xFF, 0);
     setSpriteRenderingLayer(0x88, 2);
@@ -1614,11 +1617,11 @@ void func_800B8980(void) {
     startSpriteAnimation(0x88, 2, 0);
     setSpritePaletteIndex(0x88, 2);
     
-    dmaSprite(0x79, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (u16*)0x8023CE00, (u8*)0x8023D200, NULL, 0, 0);
+    dmaSprite(0x79, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (u16*)0x8023CE00, (u8*)0x8023D200, NULL, 0, FALSE);
     setBilinearFiltering(0x79, 1);
     setSpriteColor(0x79, 0xFF, 0xFF, 0xFF, 0xFF);
     
-    dmaSprite(0x82, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+    dmaSprite(0x82, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x82, 0.0f, 0.0f, 24.0f);
     setBilinearFiltering(0x82, 1);
     setSpriteColor(0x82, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -1967,28 +1970,28 @@ void func_800BAF1C(void) {
     dmaOverlayScreenSprites(1, temp, 5, 3);
     setOverlayScreenSpritesRGBA(1, 0xFF, 0xFF, 0xFF, 0xFF);
     
-    dmaSprite(0x83, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+    dmaSprite(0x83, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x83, 42.0f, 0.0f, 8.0f);
     setSpriteColor(0x83, 0xFF, 0xFF, 0xFF, 0);
     setSpriteRenderingLayer(0x83, 2);
     setBilinearFiltering(0x83, 1);
     startSpriteAnimation(0x83, 0, 0);
     
-    dmaSprite(0x84, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+    dmaSprite(0x84, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x84, 42.0f, -80.0f, 8.0f);
     setSpriteColor(0x84, 0xFF, 0xFF, 0xFF, 0);
     setSpriteRenderingLayer(0x84, 2);
     setBilinearFiltering(0x84, 1);
     startSpriteAnimation(0x84, 0, 0);
     
-    dmaSprite(0x86, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+    dmaSprite(0x86, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x86, 0.0f, 0.0f, 16.0f);
     setSpriteColor(0x86, 0xFF, 0xFF, 0xFF, 0);
     setSpriteRenderingLayer(0x86, 2);
     setBilinearFiltering(0x86, 1);
     startSpriteAnimation(0x86, 5, 1);
     
-    dmaSprite(0x87, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+    dmaSprite(0x87, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x87, 0.0f, 80.0f, 8.0f);
     setSpriteColor(0x87, 0xFF, 0xFF, 0xFF, 0);
     setSpriteRenderingLayer(0x87, 2);
@@ -1996,12 +1999,12 @@ void func_800BAF1C(void) {
     startSpriteAnimation(0x87, 2, 0);
     setSpritePaletteIndex(0x87, 3);
     
-    dmaSprite(0x79, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (u16*)0x8023CE00, (u8*)0x8023D200, NULL, 0, 0);
+    dmaSprite(0x79, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (u16*)0x8023CE00, (u8*)0x8023D200, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x79, func_800BC700(overlayScreenTable.subscreen, overlayScreenTable.cellIndex) - 16.0f, func_800BC770(overlayScreenTable.subscreen, overlayScreenTable.cellIndex) - 8.0f, 32.0f);
     setBilinearFiltering(0x79, 1);
     setSpriteColor(0x79, 0xFF, 0xFF, 0xFF, 0xFF);
     
-    dmaSprite(0x82, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+    dmaSprite(0x82, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x82, 0.0f, 0.0f, 24.0f);
     setBilinearFiltering(0x82, 1);
     setSpriteColor(0x82, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -2194,7 +2197,7 @@ void func_800BCA9C(void) {
     
     func_800593EC();
     
-    dmaSprite(0x80, (u32)&_checkerboardBackgroundTextureSegmentRomStart, (u32)&_checkerboardBackgroundTextureSegmentRomEnd, (u32)&_checkerboardBackgroundAssetsIndexSegmentRomStart, (u32)&_checkerboardBackgroundAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x802DE5C0, NULL, (u16*)0x802E0BC0, (u16*)0x802E0CC0, (u8*)0x802E0DC0, NULL, 0, 0);
+    dmaSprite(0x80, (u32)&_checkerboardBackgroundTextureSegmentRomStart, (u32)&_checkerboardBackgroundTextureSegmentRomEnd, (u32)&_checkerboardBackgroundAssetsIndexSegmentRomStart, (u32)&_checkerboardBackgroundAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x802DE5C0, NULL, (u16*)0x802E0BC0, (u16*)0x802E0CC0, (u8*)0x802E0DC0, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x80, 0.0f, 0.0f, 0.0f);
     setSpriteScale(0x80, 2.0f, 2.0f, 1.0f);
     setBilinearFiltering(0x80, TRUE);
@@ -2492,7 +2495,7 @@ void func_800BE808(void) {
     
     func_800593EC();
     
-    dmaSprite(0x80, (u32)&_checkerboardBackgroundTextureSegmentRomStart, (u32)&_checkerboardBackgroundTextureSegmentRomEnd, (u32)&_checkerboardBackgroundAssetsIndexSegmentRomStart, (u32)&_checkerboardBackgroundAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x802DE5C0, NULL, (u16*)0x802E0BC0, (u16*)0x802E0CC0, (u8*)0x802E0DC0, NULL, 0, 0);
+    dmaSprite(0x80, (u32)&_checkerboardBackgroundTextureSegmentRomStart, (u32)&_checkerboardBackgroundTextureSegmentRomEnd, (u32)&_checkerboardBackgroundAssetsIndexSegmentRomStart, (u32)&_checkerboardBackgroundAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x802DE5C0, NULL, (u16*)0x802E0BC0, (u16*)0x802E0CC0, (u8*)0x802E0DC0, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x80, 0.0f, 0.0f, 0.0f);
     setSpriteScale(0x80, 2.0f, 2.0f, 1.0f);
     setBilinearFiltering(0x80, 1);
@@ -2744,63 +2747,63 @@ void func_800C0714(void) {
     dmaOverlayScreenSprites(1, temp, 5, 3);
     setOverlayScreenSpritesRGBA(1, 0xFF, 0xFF, 0xFF, 0xFF);
 
-    dmaSprite(0x82, (u32)&_annexExtensionSelectionTextureSegmentRomStart, (u32)&_annexExtensionSelectionTextureSegmentRomEnd, (u32)&_annexExtensionSelectionAssetsIndexSegmentRomStart, (u32)&_annexExtensionSelectionAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+    dmaSprite(0x82, (u32)&_annexExtensionSelectionTextureSegmentRomStart, (u32)&_annexExtensionSelectionTextureSegmentRomEnd, (u32)&_annexExtensionSelectionAssetsIndexSegmentRomStart, (u32)&_annexExtensionSelectionAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x82, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0x82, 0xFF, 0xFF, 0xFF, 0);
     setSpriteRenderingLayer(0x82, 2);
     setBilinearFiltering(0x82, 1);
     startSpriteAnimation(0x82, 0, 0);
 
-    dmaSprite(0x83, (u32)&_annexExtensionSelectionTextureSegmentRomStart, (u32)&_annexExtensionSelectionTextureSegmentRomEnd, (u32)&_annexExtensionSelectionAssetsIndexSegmentRomStart, (u32)&_annexExtensionSelectionAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+    dmaSprite(0x83, (u32)&_annexExtensionSelectionTextureSegmentRomStart, (u32)&_annexExtensionSelectionTextureSegmentRomEnd, (u32)&_annexExtensionSelectionAssetsIndexSegmentRomStart, (u32)&_annexExtensionSelectionAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x83, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0x83, 0xFF, 0xFF, 0xFF, 0);
     setSpriteRenderingLayer(0x83, 2);
     setBilinearFiltering(0x83, 1);
     startSpriteAnimation(0x83, 1, 0);
     
-    dmaSprite(0x84, (u32)&_annexExtensionSelectionTextureSegmentRomStart, (u32)&_annexExtensionSelectionTextureSegmentRomEnd, (u32)&_annexExtensionSelectionAssetsIndexSegmentRomStart, (u32)&_annexExtensionSelectionAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+    dmaSprite(0x84, (u32)&_annexExtensionSelectionTextureSegmentRomStart, (u32)&_annexExtensionSelectionTextureSegmentRomEnd, (u32)&_annexExtensionSelectionAssetsIndexSegmentRomStart, (u32)&_annexExtensionSelectionAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x84, 0.0f, -16.0f, 8.0f);
     setSpriteColor(0x84, 0xFF, 0xFF, 0xFF, 0);
     setSpriteRenderingLayer(0x84, 2);
     setBilinearFiltering(0x84, 1);
     startSpriteAnimation(0x84, 1, 0);
     
-    dmaSprite(0x85, (u32)&_annexExtensionSelectionTextureSegmentRomStart, (u32)&_annexExtensionSelectionTextureSegmentRomEnd, (u32)&_annexExtensionSelectionAssetsIndexSegmentRomStart, (u32)&_annexExtensionSelectionAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+    dmaSprite(0x85, (u32)&_annexExtensionSelectionTextureSegmentRomStart, (u32)&_annexExtensionSelectionTextureSegmentRomEnd, (u32)&_annexExtensionSelectionAssetsIndexSegmentRomStart, (u32)&_annexExtensionSelectionAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x85, 0.0f, -32.0f, 8.0f);
     setSpriteColor(0x85, 0xFF, 0xFF, 0xFF, 0);
     setSpriteRenderingLayer(0x85, 2);
     setBilinearFiltering(0x85, 1);
     startSpriteAnimation(0x85, 1, 0);
     
-    dmaSprite(0x86, (u32)&_annexExtensionSelectionTextureSegmentRomStart, (u32)&_annexExtensionSelectionTextureSegmentRomEnd, (u32)&_annexExtensionSelectionAssetsIndexSegmentRomStart, (u32)&_annexExtensionSelectionAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+    dmaSprite(0x86, (u32)&_annexExtensionSelectionTextureSegmentRomStart, (u32)&_annexExtensionSelectionTextureSegmentRomEnd, (u32)&_annexExtensionSelectionAssetsIndexSegmentRomStart, (u32)&_annexExtensionSelectionAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x86, 0.0f, -48.0f, 8.0f);
     setSpriteColor(0x86, 0xFF, 0xFF, 0xFF, 0);
     setSpriteRenderingLayer(0x86, 2);
     setBilinearFiltering(0x86, 1);
     startSpriteAnimation(0x86, 1, 0);
     
-    dmaSprite(0x87, (u32)&_annexExtensionSelectionTextureSegmentRomStart, (u32)&_annexExtensionSelectionTextureSegmentRomEnd, (u32)&_annexExtensionSelectionAssetsIndexSegmentRomStart, (u32)&_annexExtensionSelectionAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+    dmaSprite(0x87, (u32)&_annexExtensionSelectionTextureSegmentRomStart, (u32)&_annexExtensionSelectionTextureSegmentRomEnd, (u32)&_annexExtensionSelectionAssetsIndexSegmentRomStart, (u32)&_annexExtensionSelectionAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x87, 0.0f, -64.0f, 8.0f);
     setSpriteColor(0x87, 0xFF, 0xFF, 0xFF, 0);
     setSpriteRenderingLayer(0x87, 2);
     setBilinearFiltering(0x87, 1);
     startSpriteAnimation(0x87, 1, 0);
     
-    dmaSprite(0x88, (u32)&_annexExtensionSelectionTextureSegmentRomStart, (u32)&_annexExtensionSelectionTextureSegmentRomEnd, (u32)&_annexExtensionSelectionAssetsIndexSegmentRomStart, (u32)&_annexExtensionSelectionAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+    dmaSprite(0x88, (u32)&_annexExtensionSelectionTextureSegmentRomStart, (u32)&_annexExtensionSelectionTextureSegmentRomEnd, (u32)&_annexExtensionSelectionAssetsIndexSegmentRomStart, (u32)&_annexExtensionSelectionAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x88, 0.0f, -80.0f, 8.0f);
     setSpriteColor(0x88, 0xFF, 0xFF, 0xFF, 0);
     setSpriteRenderingLayer(0x88, 2);
     setBilinearFiltering(0x88, 1);
     startSpriteAnimation(0x88, 1, 0);
         
-    dmaSprite(0x81, (u32)&_photoSmallTextureSegmentRomStart, (u32)&_photoSmallTextureSegmentRomEnd, (u32)&_photoSmallAssetsIndexSegmentRomStart, (u32)&_photoSmallAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x80289900, NULL, (u16*)0x8028EF00, (u16*)0x8028F000, (u8*)0x8028F100, NULL, 0, 0);
+    dmaSprite(0x81, (u32)&_photoSmallTextureSegmentRomStart, (u32)&_photoSmallTextureSegmentRomEnd, (u32)&_photoSmallAssetsIndexSegmentRomStart, (u32)&_photoSmallAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x80289900, NULL, (u16*)0x8028EF00, (u16*)0x8028F000, (u8*)0x8028F100, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x81, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0x81, 0xFF, 0xFF, 0xFF, 0);
     setSpriteRenderingLayer(0x81, 2);
     setBilinearFiltering(0x81, 1);
     startSpriteAnimation(0x81, 0, 0);
 
-    dmaSprite(0x79, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (u16*)0x8023CE00, (u8*)0x8023D200, NULL, 0, 0);
+    dmaSprite(0x79, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (u16*)0x8023CE00, (u8*)0x8023D200, NULL, 0, FALSE);
     setBilinearFiltering(0x79, 1);
     setSpriteColor(0x79, 0xFF, 0xFF, 0xFF, 0xFF);
     func_800C0F24();
@@ -2872,14 +2875,14 @@ void func_800C1710(void) {
     dmaOverlayScreenSprites(1, temp, 5, 3);
     setOverlayScreenSpritesRGBA(1, 0xFF, 0xFF, 0xFF, 0xFF);
 
-    dmaSprite(0x82, (u32)&_evaluationScreenTextureSegmentRomStart, (u32)&_evaluationScreenTextureSegmentRomEnd, (u32)&_evaluationScreenAssetsIndexSegmentRomStart, (u32)&_evaluationScreenAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+    dmaSprite(0x82, (u32)&_evaluationScreenTextureSegmentRomStart, (u32)&_evaluationScreenTextureSegmentRomEnd, (u32)&_evaluationScreenAssetsIndexSegmentRomStart, (u32)&_evaluationScreenAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x82, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0x82, 0xFF, 0xFF, 0xFF, 0);
     setSpriteRenderingLayer(0x82, 2);
     setBilinearFiltering(0x82, 1);
     startSpriteAnimation(0x82, 0, 0);
 
-    dmaSprite(0x81, (u32)&_snapshotLargeTextureSegmentRomStart, (u32)&_snapshotLargeTextureSegmentRomEnd, (u32)&_snapshotLargeAssetsIndexSegmentRomStart, (u32)&_snapshotLargeAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x80289900, NULL, (u16*)0x8028EF00, (u16*)0x8028F000, (u8*)0x8028F100, NULL, 0, 0);
+    dmaSprite(0x81, (u32)&_snapshotLargeTextureSegmentRomStart, (u32)&_snapshotLargeTextureSegmentRomEnd, (u32)&_snapshotLargeAssetsIndexSegmentRomStart, (u32)&_snapshotLargeAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x80289900, NULL, (u16*)0x8028EF00, (u16*)0x8028F000, (u8*)0x8028F100, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x81, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0x81, 0xFF, 0xFF, 0xFF, 0);
     setSpriteRenderingLayer(0x81, 2);
@@ -2889,7 +2892,7 @@ void func_800C1710(void) {
     temp2 = func_8009BC44();
     
     if (temp2 != 0xFF) {
-        dmaSprite(0x83, (u32)&_evaluationScreenTextureSegmentRomStart, (u32)&_evaluationScreenTextureSegmentRomEnd, (u32)&_evaluationScreenAssetsIndexSegmentRomStart, (u32)&_evaluationScreenAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, 0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+        dmaSprite(0x83, (u32)&_evaluationScreenTextureSegmentRomStart, (u32)&_evaluationScreenTextureSegmentRomEnd, (u32)&_evaluationScreenAssetsIndexSegmentRomStart, (u32)&_evaluationScreenAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, 0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0x83, 32.0f, 36.0f, 16.0f);
         setSpriteColor(0x83, 0xFF, 0xFF, 0xFF, 0);
         setSpriteRenderingLayer(0x83, 2);
@@ -2900,7 +2903,7 @@ void func_800C1710(void) {
     temp2 = func_8009BC54();
     
     if (temp2 != 0xFF) {
-        dmaSprite(0x84, (u32)&_evaluationScreenTextureSegmentRomStart, (u32)&_evaluationScreenTextureSegmentRomEnd, (u32)&_evaluationScreenAssetsIndexSegmentRomStart, (u32)&_evaluationScreenAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, 0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+        dmaSprite(0x84, (u32)&_evaluationScreenTextureSegmentRomStart, (u32)&_evaluationScreenTextureSegmentRomEnd, (u32)&_evaluationScreenAssetsIndexSegmentRomStart, (u32)&_evaluationScreenAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, 0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0x84, 32.0f, 20.0f, 8.0f);
         setSpriteColor(0x84, 0xFF, 0xFF, 0xFF, 0);
         setSpriteRenderingLayer(0x84, 2);
@@ -2911,7 +2914,7 @@ void func_800C1710(void) {
     temp2 = func_8009BBAC();
     
     if (temp2 != 0xFF) {
-        dmaSprite(0x85, (u32)&_evaluationScreenTextureSegmentRomStart, (u32)&_evaluationScreenTextureSegmentRomEnd, (u32)&_evaluationScreenAssetsIndexSegmentRomStart, (u32)&_evaluationScreenAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, 0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+        dmaSprite(0x85, (u32)&_evaluationScreenTextureSegmentRomStart, (u32)&_evaluationScreenTextureSegmentRomEnd, (u32)&_evaluationScreenAssetsIndexSegmentRomStart, (u32)&_evaluationScreenAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, 0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0x85, -24.0f, 4.0f, 8.0f);
         setSpriteColor(0x85, 0xFF, 0xFF, 0xFF, 0);
         setSpriteRenderingLayer(0x85, 2);
@@ -3040,14 +3043,14 @@ void func_800C2364(void) {
     
     func_800B2F34();
     
-    dmaSprite(0x82, (u32)&_powerNutTreeDrawingTextureSegmentRomStart, (u32)&_powerNutTreeDrawingTextureSegmentRomEnd, (u32)&_powerNutTreeDrawingAssetsIndexSegmentRomStart, (u32)&_powerNutTreeDrawingAssetsIndexSegmentRomEnd,  0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+    dmaSprite(0x82, (u32)&_powerNutTreeDrawingTextureSegmentRomStart, (u32)&_powerNutTreeDrawingTextureSegmentRomEnd, (u32)&_powerNutTreeDrawingAssetsIndexSegmentRomStart, (u32)&_powerNutTreeDrawingAssetsIndexSegmentRomEnd,  0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x82, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0x82, 0xFF, 0xFF, 0xFF, 0);
     setSpriteRenderingLayer(0x82, 2);
     setBilinearFiltering(0x82, 1);
     startSpriteAnimation(0x82, 0, 0);
     
-    dmaSprite(0x79, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (u16*)0x8023CE00, (u8*)0x8023D200, NULL, 0, 0);
+    dmaSprite(0x79, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (u16*)0x8023CE00, (u8*)0x8023D200, NULL, 0, FALSE);
     setBilinearFiltering(0x79, 1);
     setSpriteColor(0x79, 0xFF, 0xFF, 0xFF, 0xFF);
     
@@ -3066,7 +3069,7 @@ void func_800C2504(void) {
 
         if (powerNutBits & D_80116F24[i]) {
 
-            dmaSprite(i + 0xA3, (u32)&_powerNutTreeDrawingTextureSegmentRomStart, (u32)&_powerNutTreeDrawingTextureSegmentRomEnd, (u32)&_powerNutTreeDrawingAssetsIndexSegmentRomStart, (u32)&_powerNutTreeDrawingAssetsIndexSegmentRomEnd, 0, 0, (u8* )0x8026F000, NULL, (u16* )0x8027E200, (u16* )0x8027E700, (u8* )0x8027EB00, NULL, 0, 0);
+            dmaSprite(i + 0xA3, (u32)&_powerNutTreeDrawingTextureSegmentRomStart, (u32)&_powerNutTreeDrawingTextureSegmentRomEnd, (u32)&_powerNutTreeDrawingAssetsIndexSegmentRomStart, (u32)&_powerNutTreeDrawingAssetsIndexSegmentRomEnd, 0, 0, (u8* )0x8026F000, NULL, (u16* )0x8027E200, (u16* )0x8027E700, (u8* )0x8027EB00, NULL, 0, FALSE);
             
             setSpriteViewSpacePosition(i + 0xA3, D_80116E18[i], D_80116E40[i], 8.0f);
             setSpriteColor(i + 0xA3, 0xFF, 0xFF, 0xFF, 0);
@@ -3167,14 +3170,14 @@ INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800C2B8C);
 
 void func_800C2F50(void) {
     
-    dmaSprite(0x82, (u32)&_calendarTextureSegmentRomStart, (u32)&_calendarTextureSegmentRomEnd, (u32)&_calendarAssetsIndexSegmentRomStart, (u32)&_calendarAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+    dmaSprite(0x82, (u32)&_calendarTextureSegmentRomStart, (u32)&_calendarTextureSegmentRomEnd, (u32)&_calendarAssetsIndexSegmentRomStart, (u32)&_calendarAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x82, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0x82, 0xFF, 0xFF, 0xFF, 0);
     setSpriteRenderingLayer(0x82, 2);
     setBilinearFiltering(0x82, 1);
     startSpriteAnimation(0x82, 0, 0);
     
-    dmaSprite(0x79, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (u16*)0x8023CE00, (u8*)0x8023D200, NULL, 0, 0);
+    dmaSprite(0x79, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (u16*)0x8023CE00, (u8*)0x8023D200, NULL, 0, FALSE);
     setBilinearFiltering(0x79, 1);
     setSpriteColor(0x79, 0xFF, 0xFF, 0xFF, 0xFF);
     
@@ -3221,7 +3224,7 @@ void func_800C3108(void) {
 
                 D_80205640[temp] = 0xFF;
                 
-                dmaSprite(temp + 0xAD, (u32)&_calendarTextureSegmentRomStart, (u32)&_calendarTextureSegmentRomEnd, (u32)&_calendarAssetsIndexSegmentRomStart, (u32)&_calendarAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+                dmaSprite(temp + 0xAD, (u32)&_calendarTextureSegmentRomStart, (u32)&_calendarTextureSegmentRomEnd, (u32)&_calendarAssetsIndexSegmentRomStart, (u32)&_calendarAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
                 setSpriteViewSpacePosition(temp + 0xAD, D_80116E68[0], D_80116E90[0], 8.0f);
                 setSpriteViewSpacePosition(temp + 0xAD, (j << 5) - 0x7A, -(i * 0x18) + 0x1A, 4.0f);
                 setSpriteColor(temp + 0xAD, 0xFF, 0xFF, 0xFF, 0);
@@ -3240,7 +3243,7 @@ void func_800C3108(void) {
 
         if (D_80205640[k] != 0xFF) {
 
-            dmaSprite(k + 0xAD, (u32)&_calendarTextureSegmentRomStart, (u32)&_calendarTextureSegmentRomEnd, (u32)&_calendarAssetsIndexSegmentRomStart, (u32)&_calendarAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+            dmaSprite(k + 0xAD, (u32)&_calendarTextureSegmentRomStart, (u32)&_calendarTextureSegmentRomEnd, (u32)&_calendarAssetsIndexSegmentRomStart, (u32)&_calendarAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
             setSpriteViewSpacePosition(k + 0xAD, D_80116E68[k], D_80116E90[k], 8.0f);
             setSpriteColor(k + 0xAD, 0xFF, 0xFF, 0xFF, 0);
             setSpriteRenderingLayer(k + 0xAD, 2);
@@ -3341,21 +3344,21 @@ INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800C3D20);
 
 void func_800C4A74(void) {
     
-    dmaSprite(0x81, (u32)&_bookTextureSegmentRomStart, (u32)&_bookTextureSegmentRomEnd, (u32)&_bookAssetsIndexSegmentRomStart, (u32)&_bookAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x80289900, NULL, (u16*)0x8028EF00, (u16*)0x8028F000, (u8*)0x8028F100, NULL, 0, 0);
+    dmaSprite(0x81, (u32)&_bookTextureSegmentRomStart, (u32)&_bookTextureSegmentRomEnd, (u32)&_bookAssetsIndexSegmentRomStart, (u32)&_bookAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x80289900, NULL, (u16*)0x8028EF00, (u16*)0x8028F000, (u8*)0x8028F100, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x81, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0x81, 0xFF, 0xFF, 0xFF, 0);
     setSpriteRenderingLayer(0x81, 2);
     setBilinearFiltering(0x81, 1);
     startSpriteAnimation(0x81, 0, 0);
     
-    dmaSprite(0x82, (u32)&_diaryOptionsTextureSegmentRomStart, (u32)&_diaryOptionsTextureSegmentRomEnd, (u32)&_diaryOptionsAssetsIndexSegmentRomStart, (u32)&_diaryOptionsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+    dmaSprite(0x82, (u32)&_diaryOptionsTextureSegmentRomStart, (u32)&_diaryOptionsTextureSegmentRomEnd, (u32)&_diaryOptionsAssetsIndexSegmentRomStart, (u32)&_diaryOptionsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x82, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0x82, 0xFF, 0xFF, 0xFF, 0);
     setSpriteRenderingLayer(0x82, 2);
     setBilinearFiltering(0x82, 1);
     startSpriteAnimation(0x82, 1, 0);
     
-    dmaSprite(0x79, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (u16*)0x8023CE00, (u8*)0x8023D200, NULL, 0, 0);
+    dmaSprite(0x79, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (u16*)0x8023CE00, (u8*)0x8023D200, NULL, 0, FALSE);
     setBilinearFiltering(0x79, 1);
     setSpriteColor(0x79, 0xFF, 0xFF, 0xFF, 0xFF);
     
@@ -3402,7 +3405,7 @@ void func_800C4E90(void) {
 
             if (checkRecipe(overlayScreenTable.pageNumber * 0x10 + i)) {
 
-                dmaSprite(i + 0xA3, (u32)&_overlayScreenNamesTextureSegmentRomStart, (u32)&_overlayScreenNamesTextureSegmentRomEnd, (u32)&_overlayScreenNamesAssetsIndexSegmentRomStart, (u32)&_overlayScreenNamesAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8027EC00, NULL, (u16*)0x80289400, (u16*)0x80289500, (u8*)0x80289800, NULL, 0, 0);
+                dmaSprite(i + 0xA3, (u32)&_overlayScreenNamesTextureSegmentRomStart, (u32)&_overlayScreenNamesTextureSegmentRomEnd, (u32)&_overlayScreenNamesAssetsIndexSegmentRomStart, (u32)&_overlayScreenNamesAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8027EC00, NULL, (u16*)0x80289400, (u16*)0x80289500, (u8*)0x80289800, NULL, 0, FALSE);
                 setSpriteViewSpacePosition(i + 0xA3, (k  << 7) + -120.0f, 64.0f - (j * 0x10), 8.0f);
                 setSpriteColor(i + 0xA3, 0xFF, 0xFF, 0xFF, 0xFF);
                 setSpriteRenderingLayer(i + 0xA3, 2);
@@ -3488,7 +3491,7 @@ INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800C53C0);
 
 void func_800C5AA4(void) {
     
-    dmaSprite(0x81, (u32)&_bookTextureSegmentRomStart, (u32)&_bookTextureSegmentRomEnd, (u32)&_bookAssetsIndexSegmentRomStart, (u32)&_bookAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x80289900, NULL, (u16*)0x8028EF00, (u16*)0x8028F000, (u8*)0x8028F100, NULL, 0, 0);
+    dmaSprite(0x81, (u32)&_bookTextureSegmentRomStart, (u32)&_bookTextureSegmentRomEnd, (u32)&_bookAssetsIndexSegmentRomStart, (u32)&_bookAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x80289900, NULL, (u16*)0x8028EF00, (u16*)0x8028F000, (u8*)0x8028F100, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x81, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0x81, 0xFF, 0xFF, 0xFF, 0);
     setSpriteRenderingLayer(0x81, 2);
@@ -3496,14 +3499,14 @@ void func_800C5AA4(void) {
     setSpritePaletteIndex(0x81, 1);
     startSpriteAnimation(0x81, 0, 0);
     
-    dmaSprite(0x82, (u32)&_diaryOptionsTextureSegmentRomStart, (u32)&_diaryOptionsTextureSegmentRomEnd, (u32)&_diaryOptionsAssetsIndexSegmentRomStart, (u32)&_diaryOptionsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+    dmaSprite(0x82, (u32)&_diaryOptionsTextureSegmentRomStart, (u32)&_diaryOptionsTextureSegmentRomEnd, (u32)&_diaryOptionsAssetsIndexSegmentRomStart, (u32)&_diaryOptionsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x82, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0x82, 0xFF, 0xFF, 0xFF, 0);
     setSpriteRenderingLayer(0x82, 2);
     setBilinearFiltering(0x82, 1);
     startSpriteAnimation(0x82, 3, 0);
     
-    dmaSprite(0x79, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (u16*)0x8023CE00, (u8*)0x8023D200, NULL, 0, 0);
+    dmaSprite(0x79, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (u16*)0x8023CE00, (u8*)0x8023D200, NULL, 0, FALSE);
     setBilinearFiltering(0x79, 1);
     setSpriteColor(0x79, 0xFF, 0xFF, 0xFF, 0xFF);
     
@@ -3807,7 +3810,7 @@ u32 checkRecipe(u16 bitIndex) {
 
 void func_800C7850(void) {
 
-    dmaSprite(0x7C, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (u16*)0x8023CE00, (u8*)0x8023D200, NULL, 0, 0);
+    dmaSprite(0x7C, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (u16*)0x8023CE00, (u8*)0x8023D200, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x7C, 0.0f, 0.0f, 0.0f);
     setSpriteScale(0x7C, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(0x7C, 0.0f, 0.0f, 0.0f);
@@ -3816,7 +3819,7 @@ void func_800C7850(void) {
     func_8002C680(0x7C, 2, 2);
     setSpriteRenderingLayer(0x7C, 3);
     
-    dmaSprite(0x7D, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (u16*)0x8023CE00, (u8*)0x8023D200, NULL, 0, 0);
+    dmaSprite(0x7D, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (u16*)0x8023CE00, (u8*)0x8023D200, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x7D, 0.0f, 0.0f, 0.0f);
     setSpriteScale(0x7D, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(0x7D, 0.0f, 0.0f, 0.0f);
@@ -3825,7 +3828,7 @@ void func_800C7850(void) {
     func_8002C680(0x7D, 2, 2);
     setSpriteRenderingLayer(0x7D, 3);
     
-    dmaSprite(0x7E, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (u16*)0x8023CE00, (u8*)0x8023D200, NULL, 0, 0);
+    dmaSprite(0x7E, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (u16*)0x8023CE00, (u8*)0x8023D200, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x7E, 0.0f, 0.0f, 0.0f);
     setSpriteScale(0x7E, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(0x7E, 0.0f, 0.0f, 0.0f);
@@ -3834,7 +3837,7 @@ void func_800C7850(void) {
     func_8002C680(0x7E, 2, 2);
     setSpriteRenderingLayer(0x7E, 3);
     
-    dmaSprite(0x7F, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (u16*)0x8023CE00, (u8*)0x8023D200, NULL, 0, 0);
+    dmaSprite(0x7F, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (u16*)0x8023CE00, (u8*)0x8023D200, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x7F, 0.0f, 0.0f, 0.0f);
     setSpriteScale(0x7F, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(0x7F, 0.0f, 0.0f, 0.0f);
@@ -3901,7 +3904,7 @@ void func_800C7E58(void) {
 
 void func_800C7E78(void) {
     
-    dmaSprite(0x7A, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (u16*)0x8023CE00, (u8*)0x8023D200, NULL, 0, 0);
+    dmaSprite(0x7A, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (u16*)0x8023CE00, (u8*)0x8023D200, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x7A, 0.0f, 0.0f, 0.0f);
     setSpriteScale(0x7A, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(0x7A, 0.0f, 0.0f, 0.0f);
@@ -3910,7 +3913,7 @@ void func_800C7E78(void) {
     func_8002C680(0x7A, 2, 2);
     setSpriteRenderingLayer(0x7A, 3);
 
-    dmaSprite(0x7B, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (u16*)0x8023CE00, (u8*)0x8023D200, NULL, 0, 0);
+    dmaSprite(0x7B, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (u16*)0x8023CE00, (u8*)0x8023D200, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x7B, 0.0f, 0.0f, 0.0f);
     setSpriteScale(0x7B, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(0x7B, 0.0f, 0.0f, 0.0f);
@@ -3953,14 +3956,14 @@ INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800C81E8);
 
 void func_800C8424(void) {
     
-    dmaSprite(0x82, (u32)&_emptyTexture2SegmentRomStart, (u32)&_emptyTexture2SegmentRomEnd, (u32)&_emptyTexture2AssetsIndexSegmentRomStart, (u32)&_emptyTexture2AssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x80282000, (u16*)0x80282300, (u8*)0x80282400, NULL, 0, 0);
+    dmaSprite(0x82, (u32)&_emptyTexture2SegmentRomStart, (u32)&_emptyTexture2SegmentRomEnd, (u32)&_emptyTexture2AssetsIndexSegmentRomStart, (u32)&_emptyTexture2AssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x80282000, (u16*)0x80282300, (u8*)0x80282400, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x82, 0.0f, 0.0f, 0.0f);
     setSpriteScale(0x82, 1.0f, 1.0f, 1.0f);
     setBilinearFiltering(0x82, 1);
     setSpriteColor(0x82, 0, 0, 0, 0);
     startSpriteAnimation(0x82, 0, 0);
     
-    dmaSprite(0xA3, (u32)&_emptyTexture2SegmentRomStart, (u32)&_emptyTexture2SegmentRomEnd, (u32)&_emptyTexture2AssetsIndexSegmentRomStart, (u32)&_emptyTexture2AssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x80282000, (u16*)0x80282300, (u8*)0x80282400, NULL, 0, 0);
+    dmaSprite(0xA3, (u32)&_emptyTexture2SegmentRomStart, (u32)&_emptyTexture2SegmentRomEnd, (u32)&_emptyTexture2AssetsIndexSegmentRomStart, (u32)&_emptyTexture2AssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x80282000, (u16*)0x80282300, (u8*)0x80282400, NULL, 0, FALSE);
     setSpriteScale(0xA3, 1.0f, 1.0f, 1.0f);
     setBilinearFiltering(0xA3, 1);
     setSpriteColor(0xA3, 0, 0, 0, 0);
@@ -4133,7 +4136,7 @@ void func_800C88F4(void) {
     } else {
         removeKeyItem(0xF);
     }
-    dmaSprite(0x80, (u32)&_checkerboardBackgroundTextureSegmentRomStart, (u32)&_checkerboardBackgroundTextureSegmentRomEnd, (u32)&_checkerboardBackgroundAssetsIndexSegmentRomStart, (u32)&_checkerboardBackgroundAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x802DE5C0, NULL, (u16*)0x802E0BC0, (u16*)0x802E0CC0, (u8*)0x802E0DC0, NULL, 0, 0);
+    dmaSprite(0x80, (u32)&_checkerboardBackgroundTextureSegmentRomStart, (u32)&_checkerboardBackgroundTextureSegmentRomEnd, (u32)&_checkerboardBackgroundAssetsIndexSegmentRomStart, (u32)&_checkerboardBackgroundAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x802DE5C0, NULL, (u16*)0x802E0BC0, (u16*)0x802E0CC0, (u8*)0x802E0DC0, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x80, 0.0f, 0.0f, 0.0f);
     setSpriteScale(0x80, 2.0f, 2.0f, 1.0f);
     setBilinearFiltering(0x80, 1);
@@ -4339,7 +4342,7 @@ void func_800CA808(void) {
         
         case 4:
 
-            if (checkButtonRepeat(0, 0x100000) && !set) {
+            if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_NORTHEAST) && !set) {
                 
                 if (overlayScreenTable.cellIndex) {
                     overlayScreenTable.cellIndex--;
@@ -4357,7 +4360,7 @@ void func_800CA808(void) {
                 
             }
             
-            if (checkButtonRepeat(0, BUTTON_STICK_UP) && !set) {
+            if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_SOUTHWEST) && !set) {
                 
                     if ((overlayScreenTable.cellIndex) != 5) {
                         overlayScreenTable.cellIndex++;
@@ -4376,7 +4379,7 @@ void func_800CA808(void) {
             
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A) && !set) {
                 overlayScreenTable.subscreen = 5;
-                setSpriteViewSpacePosition(0x79, 32.0f, (f32) (-(overlayScreenTable.cellIndex * 0x10) + 0x18), 32.0f);
+                setSpriteViewSpacePosition(0x79, 32.0f, (f32) (-(overlayScreenTable.cellIndex * 16) + 24), 32.0f);
                 set = TRUE;
                 playSfx(0);
             }
@@ -4415,7 +4418,7 @@ void func_800CA808(void) {
                 
             }
 
-            if (checkButtonRepeat(0, 0x100000)) {
+            if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_NORTHEAST)) {
 
                 if (!set) {
 
@@ -4436,7 +4439,7 @@ void func_800CA808(void) {
                     
             }
 
-            if ((checkButtonPressed(CONTROLLER_1, 0x4000 | 0x8000))) {
+            if ((checkButtonPressed(CONTROLLER_1, BUTTON_B | BUTTON_A))) {
 
                 if (!set) {
                     overlayScreenTable.subscreen = 4;
@@ -4447,14 +4450,14 @@ void func_800CA808(void) {
                 
             }
 
-            dmaOverlayScreenSprites(1, (u32) D_80189858, 5, 3);
+            dmaOverlayScreenSprites(1, (u32)D_80189858, 5, 3);
             dmaOverlayScreenSprites(overlayScreenTable.cellIndex + 3, overlayScreenStrings.strings2[(overlayScreenStrings.unk_6A)][overlayScreenTable.cellIndex], 1, 3);
                 
             break;
 
         case 6:
 
-            if (checkButtonRepeat(CONTROLLER_1, 0x100000)) {
+            if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_NORTHEAST)) {
                 
                 if (!set) {
                     overlayScreenTable.cellIndex = 5;
@@ -4466,7 +4469,7 @@ void func_800CA808(void) {
                 
             }
 
-            if (checkButtonRepeat(CONTROLLER_1, 0x10000)) {
+            if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_SOUTHWEST)) {
                 
                 if (!set) {
                     overlayScreenTable.cellIndex = 0;
@@ -4478,7 +4481,7 @@ void func_800CA808(void) {
                 
             }
 
-            if ((checkButtonPressed(CONTROLLER_1, 0x8000))) {
+            if ((checkButtonPressed(CONTROLLER_1, BUTTON_A))) {
 
                 if (!set) {
                     
@@ -4564,7 +4567,7 @@ void func_800CC518(void) {
         removeKeyItem(0xF);
     }
     
-    dmaSprite(0x80, (u32)&_checkerboardBackgroundTextureSegmentRomStart, (u32)&_checkerboardBackgroundTextureSegmentRomEnd, (u32)&_checkerboardBackgroundAssetsIndexSegmentRomStart, (u32)&_checkerboardBackgroundAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x802DE5C0, NULL, (u16*)0x802E0BC0, (u16*)0x802E0CC0, (u8*)0x802E0DC0, NULL, 0, 0);
+    dmaSprite(0x80, (u32)&_checkerboardBackgroundTextureSegmentRomStart, (u32)&_checkerboardBackgroundTextureSegmentRomEnd, (u32)&_checkerboardBackgroundAssetsIndexSegmentRomStart, (u32)&_checkerboardBackgroundAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x802DE5C0, NULL, (u16*)0x802E0BC0, (u16*)0x802E0CC0, (u8*)0x802E0DC0, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x80, 0.0f, 0.0f, 0.0f);
     setSpriteScale(0x80, 2.0f, 2.0f, 1.0f);
     setBilinearFiltering(0x80, 1);
@@ -4788,7 +4791,7 @@ void func_800CD928(void) {
     
     func_800593EC();
     
-    dmaSprite(0x80, (u32)&_checkerboardBackgroundTextureSegmentRomStart, (u32)&_checkerboardBackgroundTextureSegmentRomEnd, (u32)&_checkerboardBackgroundAssetsIndexSegmentRomStart, (u32)&_checkerboardBackgroundAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x802DE5C0, NULL, (u16*)0x802E0BC0, (u16*)0x802E0CC0, (u8*)0x802E0DC0, NULL, 0, 0);
+    dmaSprite(0x80, (u32)&_checkerboardBackgroundTextureSegmentRomStart, (u32)&_checkerboardBackgroundTextureSegmentRomEnd, (u32)&_checkerboardBackgroundAssetsIndexSegmentRomStart, (u32)&_checkerboardBackgroundAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x802DE5C0, NULL, (u16*)0x802E0BC0, (u16*)0x802E0CC0, (u8*)0x802E0DC0, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x80, 0.0f, 0.0f, 0.0f);
     setSpriteScale(0x80, 2.0f, 2.0f, 1.0f);
     setBilinearFiltering(0x80, 1);
@@ -4809,14 +4812,14 @@ void func_800CD928(void) {
 
 void func_800CDA6C(void) {
 
-    dmaSprite(0x81, (u32)&_snapshotLargeTextureSegmentRomStart, (u32)&_snapshotLargeTextureSegmentRomEnd, (u32)&_snapshotLargeAssetsIndexSegmentRomStart, (u32)&_snapshotLargeAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x80289900, NULL, (u16*)0x8028EF00, (u16*)0x8028F000, (u8*)0x8028F100, NULL, 0, 0);
+    dmaSprite(0x81, (u32)&_snapshotLargeTextureSegmentRomStart, (u32)&_snapshotLargeTextureSegmentRomEnd, (u32)&_snapshotLargeAssetsIndexSegmentRomStart, (u32)&_snapshotLargeAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x80289900, NULL, (u16*)0x8028EF00, (u16*)0x8028F000, (u8*)0x8028F100, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x81, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0x81, 0xFF, 0xFF, 0xFF, 0);
     setSpriteRenderingLayer(0x81, 2);
     setBilinearFiltering(0x81, 1);
     startSpriteAnimation(0x81, 0, 0);
     
-    dmaSprite(0x82, (u32)&_prizeScreenTextureSegmentRomStart, (u32)&_prizeScreenTextureSegmentRomEnd, (u32)&_prizeScreenAssetsIndexSegmentRomStart, (u32)&_prizeScreenAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+    dmaSprite(0x82, (u32)&_prizeScreenTextureSegmentRomStart, (u32)&_prizeScreenTextureSegmentRomEnd, (u32)&_prizeScreenAssetsIndexSegmentRomStart, (u32)&_prizeScreenAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x82, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0x82, 0xFF, 0xFF, 0xFF, 0);
     setSpriteRenderingLayer(0x82, 2);
@@ -4828,14 +4831,14 @@ void func_800CDA6C(void) {
         startSpriteAnimation(0x82, 5, 0);
     }
     
-    dmaSprite(0x83, (u32)&_prizeScreenTextureSegmentRomStart, (u32)&_prizeScreenTextureSegmentRomEnd, (u32)&_prizeScreenAssetsIndexSegmentRomStart, (u32)&_prizeScreenAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+    dmaSprite(0x83, (u32)&_prizeScreenTextureSegmentRomStart, (u32)&_prizeScreenTextureSegmentRomEnd, (u32)&_prizeScreenAssetsIndexSegmentRomStart, (u32)&_prizeScreenAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x83, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0x83, 0xFF, 0xFF, 0xFF, 0);
     setSpriteRenderingLayer(0x83, 2);
     setBilinearFiltering(0x83, 1);
     startSpriteAnimation(0x83, 4, 0);
     
-    dmaSprite(0x84, (u32)&_prizeScreenTextureSegmentRomStart, (u32)&_prizeScreenTextureSegmentRomEnd, (u32)&_prizeScreenAssetsIndexSegmentRomStart, (u32)&_prizeScreenAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+    dmaSprite(0x84, (u32)&_prizeScreenTextureSegmentRomStart, (u32)&_prizeScreenTextureSegmentRomEnd, (u32)&_prizeScreenAssetsIndexSegmentRomStart, (u32)&_prizeScreenAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x84, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0x84, 0xFF, 0xFF, 0xFF, 0);
     setSpriteRenderingLayer(0x84, 2);
@@ -4847,7 +4850,7 @@ void func_800CDA6C(void) {
     dmaOverlayScreenSprites(2, D_80205204, 3, 3);
     setOverlayScreenSpritesRGBA(2, 0xFF, 0xFF, 0xFF, 0xFF);
     
-    dmaSprite(0x79, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (u16*)0x8023CE00, (u8*)0x8023D200, NULL, 0, 0);
+    dmaSprite(0x79, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (u16*)0x8023CE00, (u8*)0x8023D200, NULL, 0, FALSE);
     setBilinearFiltering(0x79, 1);
     setSpriteColor(0x79, 0xFF, 0xFF, 0xFF, 0xFF);
     
@@ -4979,7 +4982,7 @@ void func_800CE930(void) {
     
     func_800593EC();
     
-    dmaSprite(0x80, (u32)&_checkerboardBackgroundTextureSegmentRomStart, (u32)&_checkerboardBackgroundTextureSegmentRomEnd, (u32)&_checkerboardBackgroundAssetsIndexSegmentRomStart, (u32)&_checkerboardBackgroundAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x802DE5C0, NULL, (u16*)0x802E0BC0, (u16*)0x802E0CC0, (u8*)0x802E0DC0, NULL, 0, 0);
+    dmaSprite(0x80, (u32)&_checkerboardBackgroundTextureSegmentRomStart, (u32)&_checkerboardBackgroundTextureSegmentRomEnd, (u32)&_checkerboardBackgroundAssetsIndexSegmentRomStart, (u32)&_checkerboardBackgroundAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x802DE5C0, NULL, (u16*)0x802E0BC0, (u16*)0x802E0CC0, (u8*)0x802E0DC0, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x80, 0.0f, 0.0f, 0.0f);
     setSpriteScale(0x80, 2.0f, 2.0f, 1.0f);
     setBilinearFiltering(0x80, 1);
@@ -5000,21 +5003,21 @@ void func_800CE930(void) {
 
 void func_800CEA74(void) {
     
-    dmaSprite(0x81, (u32)&_snapshotLargeTextureSegmentRomStart, (u32)&_snapshotLargeTextureSegmentRomEnd, (u32)&_snapshotLargeAssetsIndexSegmentRomStart, (u32)&_snapshotLargeAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x80289900, NULL, (u16*)0x8028EF00, (u16*)0x8028F000, (u8*)0x8028F100, NULL, 0, 0);
+    dmaSprite(0x81, (u32)&_snapshotLargeTextureSegmentRomStart, (u32)&_snapshotLargeTextureSegmentRomEnd, (u32)&_snapshotLargeAssetsIndexSegmentRomStart, (u32)&_snapshotLargeAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x80289900, NULL, (u16*)0x8028EF00, (u16*)0x8028F000, (u8*)0x8028F100, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x81, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0x81, 0xFF, 0xFF, 0xFF, 0);
     setSpriteRenderingLayer(0x81, 2);
     setBilinearFiltering(0x81, 1);
     startSpriteAnimation(0x81, 0, 0);
     
-    dmaSprite(0x82, (u32)&_prizeScreenTextureSegmentRomStart, (u32)&_prizeScreenTextureSegmentRomEnd, (u32)&_prizeScreenAssetsIndexSegmentRomStart, (u32)&_prizeScreenAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+    dmaSprite(0x82, (u32)&_prizeScreenTextureSegmentRomStart, (u32)&_prizeScreenTextureSegmentRomEnd, (u32)&_prizeScreenAssetsIndexSegmentRomStart, (u32)&_prizeScreenAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x82, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0x82, 0xFF, 0xFF, 0xFF, 0);
     setSpriteRenderingLayer(0x82, 2);
     setBilinearFiltering(0x82, 1);
     startSpriteAnimation(0x82, 3, 0);
     
-    dmaSprite(0x83, (u32)&_prizeScreenTextureSegmentRomStart, (u32)&_prizeScreenTextureSegmentRomEnd, (u32)&_prizeScreenAssetsIndexSegmentRomStart, (u32)&_prizeScreenAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+    dmaSprite(0x83, (u32)&_prizeScreenTextureSegmentRomStart, (u32)&_prizeScreenTextureSegmentRomEnd, (u32)&_prizeScreenAssetsIndexSegmentRomStart, (u32)&_prizeScreenAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x83, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0x83, 0xFF, 0xFF, 0xFF, 0);
     setSpriteRenderingLayer(0x83, 2);

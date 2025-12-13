@@ -1,10 +1,9 @@
 #include "common.h"
 
-#include "game/updateGame.h"
+#include "game/time.h"
 
 #include "system/message.h"
 
-#include "mainLoop.h"
 #include "game/game.h"
 #include "game/gameStatus.h"
 #include "game/gameAudio.h"
@@ -12,11 +11,13 @@
 #include "game/player.h"
 #include "game/setCutscenes.h"
 #include "game/weather.h"
+
+#include "mainLoop.h"
                     
 // forward declarations           
 void setGlobalSeasonName(u8);
 
-// likely bss
+// shared bss
 extern u8 gSeconds;
 extern u8 gHour;
 extern u8 gMinutes;
@@ -29,7 +30,7 @@ extern u8 gYear;
 extern u8 gCurrentSeasonName[6];
 extern u8 gGlobalSeasonName[6];
 
-//INCLUDE_ASM("asm/nonmatchings/game/updateGame", func_800D7C20);
+//INCLUDE_ASM("asm/nonmatchings/game/time", func_800D7C20);
 
 void func_800D7C20(void) {
     
@@ -90,7 +91,7 @@ void func_800D7C20(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/updateGame", updateClock);
+//INCLUDE_ASM("asm/nonmatchings/game/time", updateClock);
 
 void updateClock(u8 incrementSeconds) {
 
@@ -147,7 +148,7 @@ void updateClock(u8 incrementSeconds) {
     }
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/updateGame", setupNewYear);
+//INCLUDE_ASM("asm/nonmatchings/game/time", setupNewYear);
 
 void setupNewYear(void) {
 
@@ -199,14 +200,14 @@ void setupNewYear(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/updateGame", toggleMonthlyLetterBits);
+//INCLUDE_ASM("asm/nonmatchings/game/time", toggleMonthlyLetterBits);
 
 void toggleMonthlyLetterBits(void) {
     toggleReadLetterBit(0x3C);
     toggleReadLetterBit(0x40);
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/updateGame", setClockNewDay);
+//INCLUDE_ASM("asm/nonmatchings/game/time", setClockNewDay);
 
 void setClockNewDay(void) {
     
@@ -221,7 +222,7 @@ void setClockNewDay(void) {
 
 }
  
-//INCLUDE_ASM("asm/nonmatchings/game/updateGame", checkFestivalDay);
+//INCLUDE_ASM("asm/nonmatchings/game/time", checkFestivalDay);
 
 // unused
 bool checkFestivalDay(void) {
@@ -256,7 +257,7 @@ bool checkFestivalDay(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/updateGame", setSeasonName);
+//INCLUDE_ASM("asm/nonmatchings/game/time", setSeasonName);
 
 void setSeasonName(void) {
 
@@ -273,7 +274,7 @@ void setSeasonName(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/updateGame", setGlobalSeasonName);
+//INCLUDE_ASM("asm/nonmatchings/game/time", setGlobalSeasonName);
 
 void setGlobalSeasonName(u8 season) {
 

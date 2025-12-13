@@ -5,6 +5,7 @@
 #include "ld_symbols.h"
 
 #include "data/animationScripts/animationScripts.h"
+#include "data/audio/sfx.h"
 
 #include "system/audio.h"
 #include "system/controller.h"
@@ -18,6 +19,7 @@
 #include "game/animals.h" 
 #include "game/evaluation.h"
 #include "game/fieldObjects.h"
+#include "game/fieldTiles.h"
 #include "game/game.h"
 #include "game/gameAudio.h"
 #include "game/gameStart.h"
@@ -33,13 +35,15 @@
 #include "game/player.h"
 #include "game/setCutscenes.h"
 #include "game/shop.h"
-#include "game/spriteInfo.h"
+#include "game/spriteIndices.h"
 #include "game/title.h"
 #include "game/tv.h"
-#include "game/updateGame.h"
+#include "game/time.h"
 #include "game/weather.h"
 
-// unused variables
+#include "buffers/buffers.h"
+
+// unused dialogue variables
 extern u8 D_8017044B;
 extern u8 D_80180712;
 extern u8 D_801890D8;
@@ -113,7 +117,7 @@ static inline void initializePlayer() {
     gPlayer.actionPhase = 0;
     gPlayer.fishingSpotType = 0;
     gPlayer.flags = 0;
-    gPlayer.unk_60 = 0.0f;
+    gPlayer.velocity = 0.0f;
     gPlayer.toolHeldCounter = 0;
     gPlayer.currentToolLevel = 0;
     gPlayer.bottleContents = 0;

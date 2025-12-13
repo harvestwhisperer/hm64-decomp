@@ -4,7 +4,7 @@ sha1: 90631460f1876a14849df0541d534012b410a34c
 options:
   basename: hm64
   target_path: baserom.us.z64
-  base_path: ..
+  base_path: ../..
   compiler: GCC
   find_file_boundaries: True
   header_encoding: ASCII
@@ -19,7 +19,9 @@ options:
   asm_emit_size_directive: true
   generate_asm_macros_files: false
   extensions_path: tools/splat_ext
-  symbol_addrs_path: symbol_addrs.txt
+  symbol_addrs_path: config/us/symbol_addrs.txt
+  undefined_funcs_auto_path: config/us/undefined_funcs_auto.txt
+  undefined_syms_auto_path: config/us/undefined_syms_auto.txt
   segment_symbols_style: makerom
   migrate_rodata_to_functions: true
   libultra_symbols: True
@@ -46,6 +48,7 @@ segments:
     start: 0x1000
     vram: 0x80025C00
     bss_size: 0x113870
+    bss_contains_common: true
     subalign: 8
     subsegments:
       - [ 0x1000, hasm, entry]
@@ -86,7 +89,7 @@ segments:
       - [ 0x88170, c, game/levelInteractions]
       - [ 0x8E0E0, c, game/overlayScreens]
       - [ 0xAAC50, c, game/itemHandlers]
-      - [ 0xB3020, c, game/updateGame]
+      - [ 0xB3020, c, game/time]
       - [ 0xB3940, c, game/tv]
       - [ 0xB4A00, c, game/fieldObjects]
       - [ 0xB7760, c, game/weather]
@@ -335,15 +338,15 @@ segments:
       - [ 0xEE110, .data, system/map]
       - [ 0xEE7B0, .data, system/overlayScreenSprites]
       - [ 0xEE7D0, .data, system/cutscene]
-      - [ 0xEE980, data, game/fieldTiles]
-      - [ 0xEEF20, data, game/game]
+      - [ 0xEE980, .data, game/fieldTiles]
+      - [ 0xEEF20, .data, game/game]
       - [ 0xEF050, .data, game/player]
       - [ 0xEF680, .data, game/level]
       - [ 0xEFD00, .data, game/npc]
       - [ 0xEFDC0, .data, game/animals]
       - [ 0xEFEF0, .data, game/setCutscenes]
       - [ 0xF0250, data, game/cutsceneFieldTiles]
-      - [ 0xF16F0, data, game/gameAudio] # wave table
+      - [ 0xF16F0, .data, game/gameAudio]
       - [ 0xF2080, data, game/overlayScreens]
       - [ 0xF2580, .data, game/itemHandlers]
       - [ 0xF3B00, .data, game/fieldObjects]
@@ -451,7 +454,7 @@ segments:
           - { start: 0xF7100, type: animationScriptData, name: data/animationScripts/holdableItems3 }
           - { start: 0xF7118, type: animationScriptData, name: data/animationScripts/characterAvatar }
 
-      - [ 0xF71B0, data, data/sfx]
+      - [ 0xF71B0, .data, data/audio/sfx]
       - [ 0xF7A80, .data, game/namingScreen]
       - [ 0xF7BF0, .data, lib/nusys-1/nupakmenu]
       - [ 0xF7C20, .data, lib/nusys-1/nupakmenuloadfont]
@@ -559,11 +562,12 @@ segments:
       - [ 0xFF4D8, .rodata, lib/os/libultra/rmon/rmonmem]
       - [ 0xFF4F0, .rodata, lib/os/libultra/libc/xldtob]
       - [ 0xFF560, .rodata, lib/os/libultra/rmon/rmonbrk]
+      # Static BSS
       - { start: 0xFF5C0, type: .bss, vram: 0x801241C0, name: lib/nusys-1/nuboot }
       - { start: 0xFF5C0, type: .bss, vram: 0x80126520, name: system/graphic }
       - { start: 0xFF5C0, type: .bss, vram: 0x80126560, name: game/levelInteractions }
       - { start: 0xFF5C0, type: .bss, vram: 0x80126570, name: game/title }
-      - { start: 0xFF5C0, type: bss, vram: 0x80126580, name: bss1 }
+      - { start: 0xFF5C0, type: .bss, vram: 0x80126580, name: lib/nusys-1/nuaustlmgr }
       - { start: 0xFF5C0, type: .bss, vram: 0x80129430, name: lib/nusys-1/nusched }
       - { start: 0xFF5C0, type: .bss, vram: 0x8012F430, name: lib/nusys-1/nugfxthread }
       - { start: 0xFF5C0, type: .bss, vram: 0x80131600, name: lib/nusys-1/nugfxtaskmgr }
@@ -584,16 +588,129 @@ segments:
       - { start: 0xFF5C0, type: .bss, vram: 0x8013C860, name: lib/os/libultra/rmon/rmonmain }
       - { start: 0xFF5C0, type: .bss, vram: 0x8013CCE0, name: lib/os/libultra/rmon/rmonbrk }
       - { start: 0xFF5C0, type: .bss, vram: 0x8013CDF0, name: lib/libkmc/rand }
-      - { start: 0xFF5C0, type: bss, vram: 0x8013CE00, name: bss2 }
+      # Common
+      # Add files that only have common BSS so they get linked
+      # This does nothing at the moment, but preps for removing the commonBSS section once all BSS is properly declared in the right files
+      - { start: 0xFF5C0, type: .bss, vram: 0x8013CE00, name: mainproc }
+      - { start: 0xFF5C0, type: .bss, vram: 0x8013CE00, name: mainLoop }
+      - { start: 0xFF5C0, type: .bss, vram: 0x8013CE00, name: system/spriteDMAManager }
+      - { start: 0xFF5C0, type: .bss, vram: 0x8013CE00, name: system/sceneGraph }
+      - { start: 0xFF5C0, type: .bss, vram: 0x8013CE00, name: system/sprite }
+      - { start: 0xFF5C0, type: .bss, vram: 0x8013CE00, name: system/globalSprites }
+      - { start: 0xFF5C0, type: .bss, vram: 0x8013CE00, name: system/entity }
+      - { start: 0xFF5C0, type: .bss, vram: 0x8013CE00, name: system/map }
+      - { start: 0xFF5C0, type: .bss, vram: 0x8013CE00, name: system/mapController }
+      - { start: 0xFF5C0, type: .bss, vram: 0x8013CE00, name: system/message }
+      - { start: 0xFF5C0, type: .bss, vram: 0x8013CE00, name: system/dialogue }
+      - { start: 0xFF5C0, type: .bss, vram: 0x8013CE00, name: system/overlayScreenSprites }
+      - { start: 0xFF5C0, type: .bss, vram: 0x8013CE00, name: system/cutscene }
+      - { start: 0xFF5C0, type: .bss, vram: 0x8013CE00, name: system/controller }
+      - { start: 0xFF5C0, type: .bss, vram: 0x8013CE00, name: system/memory }
+      - { start: 0xFF5C0, type: .bss, vram: 0x8013CE00, name: system/flags }
+      # TODO: finish adding files that have common BSS declarations
+      - { start: 0xFF5C0, type: bss, vram: 0x8013CE00, name: commonBSS }
       
+  - name: dialogueWindowSpriteBuffer
+    type: code
+    start: 0xFF5C0
+    bss_size: 0x2B00
+    vram: 0x80238800
+    subsegments:
+      - [ 0xFF5C0, c, buffers/dialogueWindowSpriteBuffer]
+      - { start:  0xFF5C0, type: .bss, vram: 0x80238800, name: buffers/dialogueWindowSpriteBuffer }
+
+  - name: dialogueIconSpriteBuffer
+    type: code
+    start: 0xFF5C0
+    bss_size: 0x1F00
+    vram: 0x8023B400
+    subsegments:
+      - [ 0xFF5C0, c, buffers/dialogueIconSpriteBuffer]
+      - { start:  0xFF5C0, type: .bss, vram: 0x8023B400, name: buffers/dialogueIconSpriteBuffer }
+
+  - name: characterAvatarsSpriteBuffer
+    type: code
+    start: 0xFF5C0
+    bss_size: 0x3800
+    vram: 0x8023D300
+    subsegments:
+      - [ 0xFF5C0, c, buffers/characterAvatarsSpriteBuffer]
+      - { start:  0xFF5C0, type: .bss, vram: 0x8023D300, name: buffers/characterAvatarsSpriteBuffer }
+
+  - name: playerSpriteBuffer
+    type: code
+    start: 0xFF5C0
+    bss_size: 0x13000
+    vram: 0x80240B00
+    subsegments:
+      - [ 0xFF5C0, c, buffers/playerSpriteBuffer]
+      - { start:  0xFF5C0, type: .bss, vram: 0x80240B00, name: buffers/playerSpriteBuffer }
+
+  # TODO: add rest buffers
+  # entity textures, load game screen, naming screen textures, animals, shop, map objects
+
+  - name: weatherSpritesBuffer
+    type: code
+    start: 0xFF5C0
+    bss_size: 0x600
+    vram: 0x802A5AC0
+    subsegments:
+      - [ 0xFF5C0, c, buffers/weatherSpritesBuffer]
+      - { start:  0xFF5C0, type: .bss, vram: 0x802A5AC0, name: buffers/weatherSpritesBuffer }
+
+  - name: cutsceneBytecodeBuffer
+    type: code
+    start: 0xFF5C0
+    bss_size: 0xB000
+    vram: 0x802F4000
+    subsegments:
+      - [ 0xFF5C0, c, buffers/cutsceneBytecodeBuffer]
+      - { start:  0xFF5C0, type: .bss, vram: 0x802F4000, name: buffers/cutsceneBytecodeBuffer }
+
+  - name: fontBuffer
+    type: code
+    start: 0xFF5C0
+    bss_size: 0xB800
+    vram: 0x802FF000
+    subsegments:
+      - [ 0xFF5C0, c, buffers/fontBuffer]
+      - { start:  0xFF5C0, type: .bss, vram: 0x802FF000, name: buffers/fontBuffer }
+
+  - name: textBuffer
+    type: code
+    start: 0xFF5C0
+    bss_size: 0x800
+    vram: 0x8030A800
+    subsegments:
+      - [ 0xFF5C0, c, buffers/textBuffer]
+      - { start:  0xFF5C0, type: .bss, vram: 0x8030A800, name: buffers/textBuffer }
+
+  - name: messageBoxesBuffer
+    type: code
+    start: 0xFF5C0
+    bss_size: 0x1800
+    vram: 0x8030B000
+    subsegments:
+      - [ 0xFF5C0, c, buffers/messageBoxesBuffer]
+      - { start:  0xFF5C0, type: .bss, vram: 0x8030B000, name: buffers/messageBoxesBuffer }
+
+  - name: dialogueBytecodeBuffer
+    type: code
+    start: 0xFF5C0
+    bss_size: 0x800
+    vram: 0x8030C800
+    subsegments:
+      - [ 0xFF5C0, c, buffers/dialogueBytecodeBuffer]
+      - { start:  0xFF5C0, type: .bss, vram: 0x8030C800, name: buffers/dialogueBytecodeBuffer }
+
   - name: sramBuffer
     type: code
     start: 0xFF5C0
     bss_size: 0x1000
     vram: 0x8030D000
     subsegments:
-      - [ 0xFF5C0, c, overlays/sramBuffer]
-      - { start:  0xFF5C0, type: .bss, vram: 0x8030D000, name: overlays/sramBuffer }
+      - [ 0xFF5C0, c, buffers/sramBuffer]
+      - { start:  0xFF5C0, type: .bss, vram: 0x8030D000, name: buffers/sramBuffer }
 
   - name: gamePakBuffer
     type: code
@@ -601,8 +718,8 @@ segments:
     bss_size: 0x100
     vram: 0x8030E000
     subsegments:
-      - [ 0xFF5C0, c, overlays/gamePakBuffer]
-      - { start:  0xFF5C0, type: .bss, vram: 0x8030E000, name: overlays/gamePakBuffer }
+      - [ 0xFF5C0, c, buffers/gamePakBuffer]
+      - { start:  0xFF5C0, type: .bss, vram: 0x8030E000, name: buffers/gamePakBuffer }
 
   # farm cutscenes: shipper, animal purchase
   - name: cutsceneBank1 
@@ -3753,7 +3870,7 @@ segments:
     dir: text
     extract: false
     start: 0xE13C30
-    
+
   - name: diaryText
     type: bin
     dir: text

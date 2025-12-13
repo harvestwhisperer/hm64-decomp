@@ -101,7 +101,4 @@ extern void func_800ACC1C(u16 sequenceIndex);
 extern void playSfx(u16 index);
 extern u8 checkAllSfxInactive(void);
 
-extern int musPriorityList[];
-extern char *sfxList[];
-
 #endif

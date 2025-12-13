@@ -4,6 +4,7 @@
 
 #include "system/sprite.h"
 #include "system/sceneGraph.h"
+#include "system/staticGfx.h"
 
 #include "mainproc.h"
 
@@ -21,36 +22,27 @@ void setCameraLookAt(Camera*, f32, f32, f32, f32, f32, f32, f32, f32, f32);
 void setCameraOrthographicValues(Camera*, f32, f32, f32, f32, f32, f32); 
 void setCameraPerspectiveValues(Camera*, f32, f32, f32, f32);    
 
+
 // bss
 static LookAt gSPLookAtBufferA;
 static LookAt gSPLookAtBufferB;
 
-// non-contigous bss
 Camera gCamera;
 Gfx initGfxList[2][0x20];
 Gfx sceneGraphDisplayList[2][0x500];
 Gfx D_80205000[2][0x20];
-extern Gfx viewportDL[3];
                         
-// data, possibly external
-extern Gfx setup_rdpstate[];
-extern Gfx setup_rspstate[];
-extern Gfx rdpstateinit_dl[];
-
-// data
-extern NUUcode nugfx_ucode[];
-extern u16*	FrameBuf[3];
-
-// rodata
-static const char gfxExceptionStr1[] = "EX";
-static const char gfxExceptionStr2[] = "s:/system/graphic.c";
-
-// shared globals
+// shared bss
 // also used by mapContext.c, map.c, and sceneGraph.c
 extern Vec3f previousWorldRotationAngles;
 extern Vec3f currentWorldRotationAngles;
 extern f32 D_80170450;
 extern f32 D_80170454;
+
+
+// rodata
+static const char gfxExceptionStr1[] = "EX";
+static const char gfxExceptionStr2[] = "s:/system/graphic.c";
 
 
 //INCLUDE_RODATA("asm/nonmatchings/systemgraphic", D_8011EC40);

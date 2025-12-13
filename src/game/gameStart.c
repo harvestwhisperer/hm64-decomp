@@ -16,7 +16,7 @@
 #include "game/player.h"
 #include "game/setCutscenes.h"
 
-// possible bss
+// shared bss
 extern u32 D_8016FB00;
 
 //INCLUDE_ASM("asm/nonmatchings/game/gameStart", func_8004DF10);

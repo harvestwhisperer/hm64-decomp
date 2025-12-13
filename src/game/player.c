@@ -21,17 +21,26 @@
 #include "game/npc.h"
 #include "game/setCutscenes.h"
 #include "game/shop.h"
-#include "game/spriteInfo.h"
+#include "game/spriteIndices.h"
 #include "game/weather.h"
 
-
 // bss
+
+Player gPlayer;
+// counter until napping animation
+u16 playerIdleCounter;
+
+// shared bss
+extern u8 gAlcoholTolerance;
+extern u8 gHappiness;
+extern u8 gMaximumStamina;
+extern u8 gPlayerBirthdaySeason;
+extern u8 gToolchestSlots[];
+extern u16 gSickDays;
 // consumable tool counters (seeds, feed)
 extern u8 D_802373A8;
 extern u16 chickenFeedQuantity;
 extern u32 totalFishCaught;
-extern u8 gMaximumStamina;
-extern u8 gToolchestSlots[];   
 extern u8 upgradedToolIndex;
 extern u8 upgradedToolLevelIndex;
 
@@ -935,7 +944,7 @@ void func_800664C8(void) {
     Vec3f vec3;
     
     u8 temp;
-    f32 tempF;
+    f32 tempAnalogStickMagnitude;
     f32 temp2;
     
     u8 horseResult;
@@ -1006,7 +1015,7 @@ void func_800664C8(void) {
         
         if (gBaseMapIndex == FARM && gPlayer.groundObjectIndex == 6) {
 
-            if ((getStickYValueUnsigned(CONTROLLER_1) / 1.2f) > 4.6) {
+            if ((getAnalogStickMagnitude(CONTROLLER_1) / 1.2f) > 4.6) {
                 
                 if (!checkTerrainCollisionInDirection(ENTITY_PLAYER, 0x34, convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX))) {
 
@@ -1211,14 +1220,14 @@ void func_800664C8(void) {
         }
     }
 
-    tempF = 0.0f;
+    tempAnalogStickMagnitude = 0.0f;
 
     if (!set) {
 
         if (!temp) {
 
-            temp = getStickXValueUnsigned(CONTROLLER_1);
-            tempF = getStickYValueUnsigned(CONTROLLER_1);
+            temp = getAnalogStickDirection(CONTROLLER_1);
+            tempAnalogStickMagnitude = getAnalogStickMagnitude(CONTROLLER_1);
             
         }
 
@@ -1226,11 +1235,13 @@ void func_800664C8(void) {
 
             temp = convertWorldToSpriteDirection(temp, MAIN_MAP_INDEX);
             
-            if (tempF >= 4.0f) {
+            // running
+            if (tempAnalogStickMagnitude >= 4.0f) {
                 gPlayer.actionPhaseFrameCounter = 0;
                 gPlayer.actionPhase = 0;
                 gPlayer.actionHandler = 0;
                 gPlayer.animationHandler = 2;
+            // walking
             } else {
                 gPlayer.actionPhaseFrameCounter = 0;
                 gPlayer.actionPhase = 0;
@@ -1246,21 +1257,21 @@ void func_800664C8(void) {
             
         } else {
             
-            tempF = 0.0f;
+            tempAnalogStickMagnitude = 0.0f;
             resetAction();
             
         }
         
-        tempF = (s8)tempF;
+        tempAnalogStickMagnitude = (s8)tempAnalogStickMagnitude;
 
-        vec = getMovementVectorFromDirection(tempF, temp, temp2);
+        vec = getMovementVectorFromDirection(tempAnalogStickMagnitude, temp, temp2);
         
-        setEntityMovementVector(ENTITY_PLAYER, vec.x, vec.y, vec.z, tempF);
+        setEntityMovementVector(ENTITY_PLAYER, vec.x, vec.y, vec.z, tempAnalogStickMagnitude);
         
     }
 
     gPlayer.direction = convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX);
-    gPlayer.unk_60 = tempF;
+    gPlayer.velocity = tempAnalogStickMagnitude;
     
 }
 

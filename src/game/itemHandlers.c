@@ -19,7 +19,7 @@
 #include "game/npc.h"
 #include "game/player.h"
 #include "game/setCutscenes.h"
-#include "game/spriteInfo.h"
+#include "game/spriteIndices.h"
 
 
 // bss

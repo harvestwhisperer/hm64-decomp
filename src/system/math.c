@@ -1,9 +1,6 @@
 #include "common.h"
 #include "gcc/stdlib.h"
 
-// libmkc
-extern int rand(void);
-
 //INCLUDE_ASM("asm/nonmatchings/system/utility", func_80026850);
 
 s32 getAbsoluteValue(s32 number) {

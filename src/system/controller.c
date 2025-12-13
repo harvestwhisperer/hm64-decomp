@@ -8,12 +8,19 @@
 #include "mainproc.h"
 
 // bss
-u16 D_80182FBA;
-u16 D_801FADB0;
+u16 buttonRepeatRate;
+u16 buttonRepeatModeTriggerDelayFrames;
 u8 contPattern;
 
+NUContDataPatch contData[NU_CONT_MAXCONTROLLERS];
+OSContStatus nuContStatus[NU_CONT_MAXCONTROLLERS];
+
+Controller controllers[NU_CONT_MAXCONTROLLERS];
+Controller gControllers[NU_CONT_MAXCONTROLLERS];
+
+
 // forward declaration
-void convertAnalogSticksToDirections(u8);                         
+void calculateAnalogStickDirection(u8);                         
       
 
 //INCLUDE_ASM("asm/nonmatchings/system/controller", controllerInit);
@@ -31,10 +38,10 @@ void controllerInit(void) {
         controllers[i].buttonRepeat = 0;
         controllers[i].buttonRepeatState = 0;
         
-        controllers[i].sticks.s_stick_x = 0;
-        controllers[i].sticks.s_stick_y = 0;
-        controllers[i].sticks.u_stick_x = 0;
-        controllers[i].sticks.u_stick_y = 0;
+        controllers[i].analogStick.rawX = 0;
+        controllers[i].analogStick.rawY = 0;
+        controllers[i].analogStick.direction = 0;
+        controllers[i].analogStick.magnitude = 0;
 
         for (j = 0; j < 24; j++) {
             controllers[i].buttonFrameCounters[j] = 0;
@@ -47,18 +54,18 @@ void controllerInit(void) {
         gControllers[i].buttonRepeat = 0;
         gControllers[i].buttonRepeatState = 0;
         
-        gControllers[i].sticks.s_stick_x = 0;
-        gControllers[i].sticks.s_stick_y = 0;
-        gControllers[i].sticks.u_stick_x = 0;
-        gControllers[i].sticks.u_stick_y = 0;
+        gControllers[i].analogStick.rawX = 0;
+        gControllers[i].analogStick.rawY = 0;
+        gControllers[i].analogStick.direction = 0;
+        gControllers[i].analogStick.magnitude = 0;
 
         for (j = 0; j < 24; j++) {
             gControllers[i].buttonFrameCounters[j] = 0;
         }
     }
     
-    D_80182FBA = 4;
-    D_801FADB0 = 0x10;
+    buttonRepeatRate = 4;
+    buttonRepeatModeTriggerDelayFrames = 16;
 
     contPattern = nuContInit();
     
@@ -79,12 +86,12 @@ void readControllerData(void) {
             
             if ((frameCount % D_802226E2) == 0) {
                 
-                controllers[i].sticks.s_stick_x = contData[i].stick_x;
-                controllers[i].sticks.s_stick_y = contData[i].stick_y;
+                controllers[i].analogStick.rawX = contData[i].stick_x;
+                controllers[i].analogStick.rawY = contData[i].stick_y;
                 
                 controllers[i].button = contData[i].button;
                 
-                convertAnalogSticksToDirections(i);
+                calculateAnalogStickDirection(i);
                 
                 controllers[i].buttonPressed = (controllers[i].button ^ controllers[i].buttonHeld) & controllers[i].button;
                 controllers[i].buttonReleased =  (controllers[i].button ^ controllers[i].buttonHeld) & controllers[i].buttonHeld;
@@ -95,18 +102,22 @@ void readControllerData(void) {
                     // if bit set
                     if ((controllers[i].button >> j) & 1) {
                         
+                        // check button mask is in button repeat mode
                         if ((controllers[i].buttonRepeatState >> j) & 1) {
                             
                             // > 4
-                            if (controllers[i].buttonFrameCounters[j] > D_80182FBA) {
+                            // in button repeat mode
+                            if (controllers[i].buttonFrameCounters[j] > buttonRepeatRate) {
                                 controllers[i].buttonRepeat |= ((controllers[i].button >> j) & 1) << j;
                                 controllers[i].buttonFrameCounters[j] = 0;
                             } else {
                                 controllers[i].buttonRepeat &= ~(1 << j);
                             }
                             
-                            // > 16
-                        } else if (controllers[i].buttonFrameCounters[j] > D_801FADB0) {
+                        // > 16
+                        // 16 frame delay to trigger button repeat
+                        } else if (controllers[i].buttonFrameCounters[j] > buttonRepeatModeTriggerDelayFrames) {
+                            // enable button repeat mode for specific button bit
                             controllers[i].buttonRepeat |= ((controllers[i].button >> j) & 1) << j;
                             controllers[i].buttonRepeatState |= ((controllers[i].button >> j) & 1) << j;
                             controllers[i].buttonFrameCounters[j] = 0;
@@ -122,6 +133,7 @@ void readControllerData(void) {
                         controllers[i].buttonRepeat &= ~(1 << j);
                         controllers[i].buttonRepeatState &= ~(1 << j);
                     }
+                
                 }
 
             } else {
@@ -133,8 +145,8 @@ void readControllerData(void) {
                 
                 gControllers[i].buttonHeld = gControllers[i].button;
                 
-                gControllers[i].sticks.s_stick_x = contData[i].stick_x;
-                gControllers[i].sticks.s_stick_y = contData[i].stick_y;
+                gControllers[i].analogStick.rawX = contData[i].stick_x;
+                gControllers[i].analogStick.rawY = contData[i].stick_y;
                 
             }
         }
@@ -166,112 +178,112 @@ u32 checkButtonRepeat(u8 contIndex, u32 buttonPattern) {
     return controllers[contIndex].buttonRepeat & buttonPattern;
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/controller", getStickXValueSigned);
+//INCLUDE_ASM("asm/nonmatchings/system/controller", getAnalogStickRawX);
 
-s8 getStickXValueSigned(u8 contIndex) {
-    return controllers[contIndex].sticks.s_stick_x;
+s8 getAnalogStickRawX(u8 contIndex) {
+    return controllers[contIndex].analogStick.rawX;
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/controller", getStickYValueSigned);
+//INCLUDE_ASM("asm/nonmatchings/system/controller", getAnalogStickRawY);
 
-s8 getStickYValueSigned(u8 contIndex) {
-    return controllers[contIndex].sticks.s_stick_y;
+s8 getAnalogStickRawY(u8 contIndex) {
+    return controllers[contIndex].analogStick.rawY;
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/controller", getStickXValueUnsigned);
+//INCLUDE_ASM("asm/nonmatchings/system/controller", getAnalogStickDirection);
 
-u8 getStickXValueUnsigned(u8 contIndex) {
-    return controllers[contIndex].sticks.u_stick_x;
+u8 getAnalogStickDirection(u8 contIndex) {
+    return controllers[contIndex].analogStick.direction;
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/controller", getStickYValueUnsigned);
+//INCLUDE_ASM("asm/nonmatchings/system/controller", getAnalogStickMagnitude);
 
-u8 getStickYValueUnsigned(u8 contIndex) {
-    return controllers[contIndex].sticks.u_stick_y;
+u8 getAnalogStickMagnitude(u8 contIndex) {
+    return controllers[contIndex].analogStick.magnitude;
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/controller", convertAnalogSticksToDirections);
+//INCLUDE_ASM("asm/nonmatchings/system/controller", calculateAnalogStickDirection);
 
-void convertAnalogSticksToDirections(u8 controllerIndex) {
+void calculateAnalogStickDirection(u8 controllerIndex) {
 
-    volatile Sticks sticks;
+    volatile AnalogStick analogStick;
 
-    sticks.s_stick_x = controllers[controllerIndex].sticks.s_stick_x;
-    sticks.s_stick_y = controllers[controllerIndex].sticks.s_stick_y;
+    analogStick.rawX = controllers[controllerIndex].analogStick.rawX;
+    analogStick.rawY = controllers[controllerIndex].analogStick.rawY;
 
     // deadzone
-    sticks.u_stick_x = (s16)(getAbsoluteValue(sticks.s_stick_x)) / 10;
-    sticks.u_stick_y = (s16)(getAbsoluteValue(sticks.s_stick_y)) / 10;
+    analogStick.direction = (s16)(getAbsoluteValue(analogStick.rawX)) / 10;
+    analogStick.magnitude = (s16)(getAbsoluteValue(analogStick.rawY)) / 10;
     
-    controllers[controllerIndex].sticks.u_stick_x = 0;
+    controllers[controllerIndex].analogStick.direction = 0;
 
-    if (sticks.u_stick_x < NORTH && sticks.u_stick_y < NORTH) {
+    if (analogStick.direction < 3 && analogStick.magnitude < 3) {
         
-        controllers[controllerIndex].sticks.u_stick_x = 0xFF;
+        controllers[controllerIndex].analogStick.direction = 0xFF;
         
     } else {
         
-        if (sticks.u_stick_x > sticks.u_stick_y) {
+        if (analogStick.direction > analogStick.magnitude) {
                     
-            controllers[controllerIndex].sticks.u_stick_y = sticks.u_stick_x - sticks.u_stick_y;
+            controllers[controllerIndex].analogStick.magnitude = analogStick.direction - analogStick.magnitude;
             
-            if ((sticks.u_stick_x / 2) < controllers[controllerIndex].sticks.u_stick_y) {
-                if ((sticks.s_stick_x << 0x18) < 0) {
-                    controllers[controllerIndex].sticks.u_stick_x = NORTHWEST;
+            if ((analogStick.direction / 2) < controllers[controllerIndex].analogStick.magnitude) {
+                if ((analogStick.rawX << 0x18) < 0) {
+                    controllers[controllerIndex].analogStick.direction = NORTHWEST;
                 } else {
-                    controllers[controllerIndex].sticks.u_stick_x = SOUTHEAST;
+                    controllers[controllerIndex].analogStick.direction = SOUTHEAST;
                 }
-            } else if ((sticks.s_stick_y << 0x18) < 0) {
-                if ((sticks.s_stick_x << 0x18) < 0) {
-                    controllers[controllerIndex].sticks.u_stick_x = WEST;
+            } else if ((analogStick.rawY << 0x18) < 0) {
+                if ((analogStick.rawX << 0x18) < 0) {
+                    controllers[controllerIndex].analogStick.direction = WEST;
                 } else {
-                    controllers[controllerIndex].sticks.u_stick_x = SOUTH;
+                    controllers[controllerIndex].analogStick.direction = SOUTH;
                 }
             } else {
-                if ((sticks.s_stick_x << 0x18) < 0) {
-                    controllers[controllerIndex].sticks.u_stick_x = NORTH;
+                if ((analogStick.rawX << 0x18) < 0) {
+                    controllers[controllerIndex].analogStick.direction = NORTH;
                 } else {
-                    controllers[controllerIndex].sticks.u_stick_x = EAST;
+                    controllers[controllerIndex].analogStick.direction = EAST;
                 }
     
             }
             
-            controllers[controllerIndex].sticks.u_stick_y = sticks.u_stick_x;
+            controllers[controllerIndex].analogStick.magnitude = analogStick.direction;
             
         } else {
 
-            controllers[controllerIndex].sticks.u_stick_y = sticks.u_stick_y - sticks.u_stick_x;
+            controllers[controllerIndex].analogStick.magnitude = analogStick.magnitude - analogStick.direction;
             
-            if ((sticks.u_stick_y / 2) < controllers[controllerIndex].sticks.u_stick_y) {
-                if ((sticks.s_stick_y << 0x18) < 0) {
-                    controllers[controllerIndex].sticks.u_stick_x = SOUTHWEST;
+            if ((analogStick.magnitude / 2) < controllers[controllerIndex].analogStick.magnitude) {
+                if ((analogStick.rawY << 24) < 0) {
+                    controllers[controllerIndex].analogStick.direction = SOUTHWEST;
                 } else {
-                    controllers[controllerIndex].sticks.u_stick_x = NORTHEAST;
+                    controllers[controllerIndex].analogStick.direction = NORTHEAST;
                 } 
-            } else if ((sticks.s_stick_x << 0x18) < 0) {
-                if ((sticks.s_stick_y << 0x18) < 0) {
-                    controllers[controllerIndex].sticks.u_stick_x = WEST;
+            } else if ((analogStick.rawX << 24) < 0) {
+                if ((analogStick.rawY << 24) < 0) {
+                    controllers[controllerIndex].analogStick.direction = WEST;
                 } else {
-                    controllers[controllerIndex].sticks.u_stick_x = NORTH;
+                    controllers[controllerIndex].analogStick.direction = NORTH;
                 }
             } else {
-                if ((sticks.s_stick_y << 0x18) < 0) { 
-                    controllers[controllerIndex].sticks.u_stick_x = SOUTH;
+                if ((analogStick.rawY << 24) < 0) { 
+                    controllers[controllerIndex].analogStick.direction = SOUTH;
                 } else {
-                    controllers[controllerIndex].sticks.u_stick_x = EAST;
+                    controllers[controllerIndex].analogStick.direction = EAST;
                 }
             }
     
-            controllers[controllerIndex].sticks.u_stick_y = sticks.u_stick_y;
+            controllers[controllerIndex].analogStick.magnitude = analogStick.magnitude;
             
         }
      }
     
-    if (controllers[controllerIndex].sticks.u_stick_y >= MAX_DIRECTIONS) {
-        controllers[controllerIndex].sticks.u_stick_y = SOUTHEAST;
+    if (controllers[controllerIndex].analogStick.magnitude >= MAX_DIRECTIONS) {
+        controllers[controllerIndex].analogStick.magnitude = SOUTHEAST;
     }
     
-    controllers[controllerIndex].button |= (0x10000 << (controllers[controllerIndex].sticks.u_stick_x)); 
+    controllers[controllerIndex].button |= (0x10000 << (controllers[controllerIndex].analogStick.direction)); 
    
 }
 

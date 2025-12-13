@@ -9,8 +9,6 @@
 // 4 = unused rain
 #define TYPHOON 5
 
-#define RAIN_TEXTURE_VADDR 0x802A5AC0
-
 extern void setWeatherSprites(void);
 
 extern void setForecast(void);

@@ -5,38 +5,40 @@
 
 #define CONTROLLER_1 0
 
-#define BUTTON_C_RIGHT       0x00000001
-#define BUTTON_C_LEFT        0x00000002
-#define BUTTON_C_DOWN        0x00000004
-#define BUTTON_C_UP          0x00000008
-#define BUTTON_R             0x00000010
-#define BUTTON_L             0x00000020
-#define BUTTON_D_RIGHT       0x00000100
-#define BUTTON_D_LEFT        0x00000200
-#define BUTTON_D_DOWN        0x00000400
-#define BUTTON_D_UP          0x00000800
-#define BUTTON_START         0x00001000
-#define BUTTON_Z             0x00002000
-#define BUTTON_B             0x00004000
-#define BUTTON_A             0x00008000
-#define BUTTON_STICK_UP      0x00010000
-#define BUTTON_STICK_DOWN    0x00020000
-#define BUTTON_STICK_LEFT    0x00040000
-#define BUTTON_STICK_RIGHT   0x00080000
-
-// TODO: find what 0x200000, 0x400000, 0x800000, and 0x100000 are
+#define BUTTON_C_RIGHT       1
+#define BUTTON_C_LEFT        2
+#define BUTTON_C_DOWN        4
+#define BUTTON_C_UP          8
+#define BUTTON_R             0x10
+#define BUTTON_L             0x20
+#define BUTTON_D_RIGHT       0x100
+#define BUTTON_D_LEFT        0x200
+#define BUTTON_D_DOWN        0x400
+#define BUTTON_D_UP          0x800
+#define BUTTON_START         0x1000
+#define BUTTON_Z             0x2000
+#define BUTTON_B             0x4000
+#define BUTTON_A             0x8000
+#define BUTTON_STICK_SOUTHWEST   0x10000  
+#define BUTTON_STICK_WEST        0x20000  
+#define BUTTON_STICK_NORTHWEST   0x40000  
+#define BUTTON_STICK_NORTH       0x80000  
+#define BUTTON_STICK_NORTHEAST   0x100000  
+#define BUTTON_STICK_EAST        0x200000  
+#define BUTTON_STICK_SOUTHEAST   0x400000  
+#define BUTTON_STICK_SOUTH       0x800000
 
 typedef struct {
-    s8 s_stick_x;
-    s8 s_stick_y;
-    u8 u_stick_x;
-    u8 u_stick_y;
-} Sticks;
+    s8 rawX;
+    s8 rawY;
+    u8 direction;
+    u8 magnitude;
+} AnalogStick;
 
 // 0x8013D440
 typedef struct {
     NUContPakFile pak;
-    Sticks sticks;
+    AnalogStick analogStick;
     u32 button;
     u32 buttonHeld;
     u32 buttonPressed;
@@ -63,12 +65,12 @@ extern u32 checkButtonHeld(u8 contIndex, u32 buttonPattern);
 extern u32 checkButtonPressed(u8 contIndex, u32 buttonPattern);
 extern u32 checkButtonReleased(u8 contIndex, u32 buttonPattern);
 extern u32 checkButtonRepeat(u8 contIndex, u32 buttonPattern);
-extern s8 getStickXValueSigned(u8 contIndex);
-extern s8 getStickYValueSigned(u8 contIndex);
-extern u8 getStickXValueUnsigned(u8 contIndex);
-extern u8 getStickYValueUnsigned(u8 contIndex);
+extern s8 getAnalogStickRawX(u8 contIndex);
+extern s8 getAnalogStickRawY(u8 contIndex);
+extern u8 getAnalogStickDirection(u8 contIndex);
+extern u8 getAnalogStickMagnitude(u8 contIndex);
 
-extern void convertAnalogSticksToDirections(u8 controllerIndex);
+extern void calculateAnalogStickDirection(u8 controllerIndex);
 
 /* mem pak */
 extern u8 func_8004D788(u8 contIndex);

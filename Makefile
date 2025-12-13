@@ -1,6 +1,9 @@
 BASENAME := hm64
 TARGET := $(BASENAME).z64
-BASEROM = baserom.us.z64
+
+# one region for now
+REGION := us
+BASEROM := baserom.$(REGION).z64
 
 # Options
 
@@ -27,15 +30,14 @@ OBJECTS := $(shell grep -E 'build.+\.o' $(LD_SCRIPT) -o)
 
 # Tools
 
-KMC_PATH := tools/gcc-2.7.2/
+KMC_PATH := $(TOOLS_DIR)/gcc-2.7.2/
 
 CROSS := mips-linux-gnu-
 
-CC = $(KMC_PATH)gcc
+CC := $(KMC_PATH)gcc
 AS := $(CROSS)as
 LD := $(CROSS)ld
 OBJCOPY := $(CROSS)objcopy
-STRIP := $(CROSS)strip
 
 # Flags
 
@@ -55,7 +57,7 @@ NU_OPTFLAGS := -O3
 
 ULTRALIBVER := -DBUILD_VERSION=7
 
-LDFLAGS := -T undefined_funcs.txt -T undefined_syms.txt -T undefined_funcs_auto.txt -T undefined_syms_auto.txt -T $(LD_SCRIPT) -Map $(LD_MAP) --no-check-sections
+LDFLAGS := -T config/$(REGION)/undefined_funcs.txt -T config/$(REGION)/undefined_syms.txt -T config/$(REGION)/undefined_funcs_auto.txt -T config/$(REGION)/undefined_syms_auto.txt -T $(LD_SCRIPT) -Map $(LD_MAP) --no-check-sections
 
 # Binary asset matching (cutscenes, dialogues, texts)
 
@@ -65,7 +67,7 @@ DECOMPILED_CUTSCENES := fireworksFestival
 CUTSCENE_SRC_DIR := $(SRC_DIRS)/bytecode/cutscenes
 CUTSCENE_BUILD_DIR := $(BUILD_DIR)/bin/cutscenes
 
-CUTSCENE_TRANSPILER := python3 tools/hm64_cutscene_transpiler.py
+CUTSCENE_TRANSPILER := python3 $(TOOLS_DIR)/hm64_cutscene_transpiler.py
 
 CUTSCENE_DSL := $(foreach bank,$(DECOMPILED_CUTSCENES),$(CUTSCENE_SRC_DIR)/$(bank).cutscene)
 CUTSCENE_ASM := $(foreach bank,$(DECOMPILED_CUTSCENES),$(CUTSCENE_SRC_DIR)/$(bank).s)
@@ -76,7 +78,7 @@ DECOMPILED_DIALOGUES := mariaDialogueBytecode
 DIALOGUE_SRC_DIR := $(SRC_DIRS)/bytecode/dialogues
 DIALOGUE_BUILD_DIR := $(BUILD_DIR)/bin/dialogues/bytecode
 
-DIALOGUE_TRANSPILER := python3 tools/hm64_dialogue_transpiler.py
+DIALOGUE_TRANSPILER := python3 $(TOOLS_DIR)/hm64_dialogue_transpiler.py
 
 DIALOGUE_DSL := $(foreach bank,$(DECOMPILED_DIALOGUES),$(DIALOGUE_SRC_DIR)/$(bank).dialogue)
 DIALOGUE_ASM := $(foreach bank,$(DECOMPILED_DIALOGUES),$(DIALOGUE_SRC_DIR)/$(bank).s $(DIALOGUE_SRC_DIR)/$(bank)Index.s)
@@ -87,7 +89,7 @@ DECOMPILED_TEXTS := text1 library diary animalInteractions namingScreen kai gotz
 TEXT_ASSETS_DIR := assets/text
 TEXT_BUILD_DIR := $(BUILD_DIR)/bin/text
 
-TEXT_TRANSPILER := python3 tools/hm64_text_transpiler.py
+TEXT_TRANSPILER := python3 $(TOOLS_DIR)/hm64_text_transpiler.py
 
 TEXT_ASM := $(foreach bank,$(DECOMPILED_TEXTS),$(TEXT_ASSETS_DIR)/$(bank)Text.s $(TEXT_ASSETS_DIR)/$(bank)TextIndex.s)
 TEXT_OBJ := $(foreach bank,$(DECOMPILED_TEXTS),$(TEXT_BUILD_DIR)/$(bank)Text.bin.o $(TEXT_BUILD_DIR)/$(bank)TextIndex.bin.o)
@@ -102,6 +104,8 @@ endif
 
 # Create all output directories upfront
 $(shell mkdir -p $(sort $(dir $(OBJECTS))))
+
+# Flag overrides
 
 build/src/lib/nusys-1/nuboot.c.o: NU_OPTFLAGS := -O0
 build/src/lib/nusys-1/nupakmenu.c.o: NU_OPTFLAGS += -g2
@@ -139,7 +143,7 @@ submodules:
 	git submodule update
 
 split: 
-	$(V)python3 -m splat split ./tools/splat.yaml
+	$(V)python3 -m splat split ./config/$(REGION)/splat.us.yaml
 
 setup: clean split
 

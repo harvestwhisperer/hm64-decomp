@@ -6,7 +6,7 @@
 #include "game/npc.h"
 #include "game/fieldObjects.h"
 #include "game/overlayScreens.h"
-#include "game/updateGame.h"     
+#include "game/time.h"     
 #include "game/weather.h"       
 
 // bss
