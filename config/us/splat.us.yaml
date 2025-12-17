@@ -2,32 +2,38 @@ name: Harvestmoon64 (North America)
 sha1: 90631460f1876a14849df0541d534012b410a34c
 
 options:
+  # base settings
   basename: hm64
   target_path: baserom.us.z64
-  base_path: ../..
-  compiler: GCC
-  find_file_boundaries: True
-  header_encoding: ASCII
   platform: n64
+  compiler: GCC
+  base_path: ../..
+  find_file_boundaries: True
+  # paths  
   asm_path: asm
   src_path: src
   build_path: build
   asset_path: bin
-  asm_inc_header: ".include \"macro.inc\"\n.set noat\n.set noreorder\n"
-  asm_function_macro: glabel
-  asm_data_macro: dlabel
-  asm_emit_size_directive: true
-  generate_asm_macros_files: false
   extensions_path: tools/splat_ext
   symbol_addrs_path: config/us/symbol_addrs.txt
   undefined_funcs_auto_path: config/us/undefined_funcs_auto.txt
   undefined_syms_auto_path: config/us/undefined_syms_auto.txt
-  segment_symbols_style: makerom
-  migrate_rodata_to_functions: true
-  libultra_symbols: True
-  gfx_ucode: f3dex2
   ld_symbol_header_path: include/ld_symbols.h
-  disassemble_all: true
+  # header
+  header_encoding: ASCII
+  # asm settings
+  asm_inc_header: ".include \"macro.inc\"\n.set noat\n.set noreorder\n"
+  asm_function_macro: glabel
+  asm_data_macro: dlabel
+  asm_emit_size_directive: True
+  generate_asm_macros_files: False
+  # disassembly settings
+  migrate_rodata_to_functions: True
+  # misc.
+  gfx_ucode: f3dex2
+  segment_symbols_style: makerom
+  libultra_symbols: True
+  disassemble_all: True
   # dump_symbols: True
   
 segments:
@@ -43,15 +49,21 @@ segments:
     - [ 0x0040, hasm, boot/ipl3_boot]
     - [ 0x0B70, bin, rspboot_font]
 
-  - name: main
+  - name: entry
     type: code
     start: 0x1000
     vram: 0x80025C00
+    subsegments:
+      - [0x1000, hasm]
+
+  - name: main
+    type: code
+    start: 0x1050
+    vram: 0x80025C50
     bss_size: 0x113870
-    bss_contains_common: true
+    bss_contains_common: True
     subalign: 8
     subsegments:
-      - [ 0x1000, hasm, entry]
       - [ 0x1050, c, lib/nusys-1/nuboot]
       - [ 0x1190, c, mainproc]
       - [ 0x13F0, c, mainLoop]
@@ -332,7 +344,7 @@ segments:
       - [ 0xEBCF0, textbin, ucode/n_aspMain]
       - [ 0xEC950, textbin, ucode/gspF3DEX2.fifo]
       - [ 0xECAB0, .data, system/unknownData]
-      - [ 0xECAC0, .data, system/unknownData2] # unused
+      - [ 0xECAC0, .data, system/unknownData2]
       - [ 0xEDD00, .data, system/staticGfx]
       - [ 0xEDE80, data, system/paddingData]
       - [ 0xEE110, .data, system/map]
@@ -352,7 +364,7 @@ segments:
       - [ 0xF3B00, .data, game/fieldObjects]
       - [ 0xF3F50, .data, game/weather]
       - [ 0xF3F70, .data, game/shop]
-      - [ 0xF4B40, .data, game/loadGameScreen] # packinsoft farm string
+      - [ 0xF4B40, .data, game/loadGameScreen]
 
       - name: data/animationScripts/animationScripts
         type: animationScripts
@@ -617,7 +629,7 @@ segments:
     vram: 0x80238800
     subsegments:
       - [ 0xFF5C0, c, buffers/dialogueWindowSpriteBuffer]
-      - { start:  0xFF5C0, type: .bss, vram: 0x80238800, name: buffers/dialogueWindowSpriteBuffer }
+      - { start: 0xFF5C0, type: .bss, vram: 0x80238800, name: buffers/dialogueWindowSpriteBuffer }
 
   - name: dialogueIconSpriteBuffer
     type: code
@@ -626,7 +638,7 @@ segments:
     vram: 0x8023B400
     subsegments:
       - [ 0xFF5C0, c, buffers/dialogueIconSpriteBuffer]
-      - { start:  0xFF5C0, type: .bss, vram: 0x8023B400, name: buffers/dialogueIconSpriteBuffer }
+      - { start: 0xFF5C0, type: .bss, vram: 0x8023B400, name: buffers/dialogueIconSpriteBuffer }
 
   - name: characterAvatarsSpriteBuffer
     type: code
@@ -635,7 +647,7 @@ segments:
     vram: 0x8023D300
     subsegments:
       - [ 0xFF5C0, c, buffers/characterAvatarsSpriteBuffer]
-      - { start:  0xFF5C0, type: .bss, vram: 0x8023D300, name: buffers/characterAvatarsSpriteBuffer }
+      - { start: 0xFF5C0, type: .bss, vram: 0x8023D300, name: buffers/characterAvatarsSpriteBuffer }
 
   - name: playerSpriteBuffer
     type: code
@@ -644,7 +656,7 @@ segments:
     vram: 0x80240B00
     subsegments:
       - [ 0xFF5C0, c, buffers/playerSpriteBuffer]
-      - { start:  0xFF5C0, type: .bss, vram: 0x80240B00, name: buffers/playerSpriteBuffer }
+      - { start: 0xFF5C0, type: .bss, vram: 0x80240B00, name: buffers/playerSpriteBuffer }
 
   # TODO: add rest buffers
   # entity textures, load game screen, naming screen textures, animals, shop, map objects
@@ -656,7 +668,7 @@ segments:
     vram: 0x802A5AC0
     subsegments:
       - [ 0xFF5C0, c, buffers/weatherSpritesBuffer]
-      - { start:  0xFF5C0, type: .bss, vram: 0x802A5AC0, name: buffers/weatherSpritesBuffer }
+      - { start: 0xFF5C0, type: .bss, vram: 0x802A5AC0, name: buffers/weatherSpritesBuffer }
 
   - name: cutsceneBytecodeBuffer
     type: code
@@ -665,7 +677,7 @@ segments:
     vram: 0x802F4000
     subsegments:
       - [ 0xFF5C0, c, buffers/cutsceneBytecodeBuffer]
-      - { start:  0xFF5C0, type: .bss, vram: 0x802F4000, name: buffers/cutsceneBytecodeBuffer }
+      - { start: 0xFF5C0, type: .bss, vram: 0x802F4000, name: buffers/cutsceneBytecodeBuffer }
 
   - name: fontBuffer
     type: code
@@ -674,7 +686,7 @@ segments:
     vram: 0x802FF000
     subsegments:
       - [ 0xFF5C0, c, buffers/fontBuffer]
-      - { start:  0xFF5C0, type: .bss, vram: 0x802FF000, name: buffers/fontBuffer }
+      - { start: 0xFF5C0, type: .bss, vram: 0x802FF000, name: buffers/fontBuffer }
 
   - name: textBuffer
     type: code
@@ -683,7 +695,7 @@ segments:
     vram: 0x8030A800
     subsegments:
       - [ 0xFF5C0, c, buffers/textBuffer]
-      - { start:  0xFF5C0, type: .bss, vram: 0x8030A800, name: buffers/textBuffer }
+      - { start: 0xFF5C0, type: .bss, vram: 0x8030A800, name: buffers/textBuffer }
 
   - name: messageBoxesBuffer
     type: code
@@ -692,7 +704,7 @@ segments:
     vram: 0x8030B000
     subsegments:
       - [ 0xFF5C0, c, buffers/messageBoxesBuffer]
-      - { start:  0xFF5C0, type: .bss, vram: 0x8030B000, name: buffers/messageBoxesBuffer }
+      - { start: 0xFF5C0, type: .bss, vram: 0x8030B000, name: buffers/messageBoxesBuffer }
 
   - name: dialogueBytecodeBuffer
     type: code
@@ -701,7 +713,7 @@ segments:
     vram: 0x8030C800
     subsegments:
       - [ 0xFF5C0, c, buffers/dialogueBytecodeBuffer]
-      - { start:  0xFF5C0, type: .bss, vram: 0x8030C800, name: buffers/dialogueBytecodeBuffer }
+      - { start: 0xFF5C0, type: .bss, vram: 0x8030C800, name: buffers/dialogueBytecodeBuffer }
 
   - name: sramBuffer
     type: code
@@ -710,7 +722,7 @@ segments:
     vram: 0x8030D000
     subsegments:
       - [ 0xFF5C0, c, buffers/sramBuffer]
-      - { start:  0xFF5C0, type: .bss, vram: 0x8030D000, name: buffers/sramBuffer }
+      - { start: 0xFF5C0, type: .bss, vram: 0x8030D000, name: buffers/sramBuffer }
 
   - name: gamePakBuffer
     type: code
@@ -719,7 +731,7 @@ segments:
     vram: 0x8030E000
     subsegments:
       - [ 0xFF5C0, c, buffers/gamePakBuffer]
-      - { start:  0xFF5C0, type: .bss, vram: 0x8030E000, name: buffers/gamePakBuffer }
+      - { start: 0xFF5C0, type: .bss, vram: 0x8030E000, name: buffers/gamePakBuffer }
 
   # farm cutscenes: shipper, animal purchase
   - name: cutsceneBank1 
@@ -884,6 +896,7 @@ segments:
     dir: cutscenes
     start: 0x1510B0
     
+  # entity sprites
   # ci8 spritesheet format:
   #   sprite1:
   #     header (4 bytes)
@@ -2505,6 +2518,7 @@ segments:
   #     grid to tile index values (for appending to the main grid to tile index array)
   #     grid to level interaction index (for appending to main grid to level interaction index array)
   #   padding/end, 8 bytes
+  
   - name: ranchSpringMap
     type: bin
     dir: maps/ranch
@@ -2967,7 +2981,7 @@ segments:
     dir: maps/house
     start: 0xC8D5C0
 
-  # map textures
+  # map sprites
 
   - name: wavesTexture
     type: bin
@@ -3228,6 +3242,8 @@ segments:
     type: bin
     dir: maps/farm/sprites
     start: 0xCAD600
+
+  # misc. sprites (fx, ui, overlay screens, map addons etc.)
 
   # ci4 format
   #   spritesheet
@@ -3559,7 +3575,6 @@ segments:
     dir: sprites/naming-screen
     start: 0xD2D600
 
-  # estimate/evaluation screen
   - name: evaluationScreenTexture
     type: bin
     dir: sprites/overlay-screens/evaluation
@@ -3760,7 +3775,6 @@ segments:
     dir: sprites/dialogue-icons
     start: 0xDB9EC0
 
-  # ci4
   - name: titleSpritesTexture
     type: bin
     dir: sprites/title
@@ -3826,6 +3840,8 @@ segments:
     dir: sprites/misc
     start: 0xE08860
 
+  # font
+
   # 16x11200, i2
   - name: fontTexture
     type: bin
@@ -3846,6 +3862,8 @@ segments:
     type: bin
     dir: sprites/font
     start: 0xE137D0
+
+  # texts
 
   - name: text1Text
     type: bin
@@ -4588,6 +4606,8 @@ segments:
     extract: false
     start: 0xE87080
 
+  # dialogue bytecode
+
   - name: dialogueBytecodeSegment1
     type: bin
     dir: dialogues/bytecode
@@ -5290,6 +5310,8 @@ segments:
     dir: dialogues/bytecode
     start: 0xE93060
 
+  # audio
+
   - name: ptr_table
     type: bin
     dir: audio
@@ -5300,7 +5322,7 @@ segments:
     type: bin
     start: 0xE99910
 
-# music
+  # music
   - name: opening
     type: bin
     dir: audio/sequences

@@ -2,3 +2,5 @@ osTvType 									= 0x80000300;
 osRomBase 									= 0x80000308;
 osResetType 								= 0x8000030C;
 osAppNMIBuffer 								= 0x8000031C;
+sramBuffer                                  = 0x8030D000;
+gamePakBuffer                               = 0x8030E000;

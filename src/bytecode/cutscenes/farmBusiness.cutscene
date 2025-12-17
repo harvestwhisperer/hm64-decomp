@@ -2,8 +2,6 @@
 ; BANK1 - Farm
 ; ============================================
 
-; currently unfinished/not included in build
-
 ; declare space for global variable
 .var buffer, u32
 
@@ -261,8 +259,6 @@
 .start_dialogue:
     CMD_SET_SPECIAL_BIT 31, dailyEventBits[0]
 
-
-; TODO: match rest of segments
 
 
 ; ============================================

@@ -26,9 +26,9 @@
 #include "buffers/buffers.h"
 
 #include "mainLoop.h"
-
+ 
 #include "ld_symbols.h"
-                                                                         
+
 // foward declarations
 u8 func_800E4424(u8, u8);                 
 void func_800E16A0(void);
@@ -69,11 +69,12 @@ extern u32 D_8016FFF4;
 // FIXME: convert to struct
 // evaluation screen struct
 // strings
+// player abbreviated name
 extern u8 D_801FB708[5][6];
-// farm name
 extern u8 D_801FB726[6];
 extern u8 D_801FB72C[];
 extern u8 D_801FB730[];
+// player name in individual farm completion screen
 extern u8 D_801FB732[5][6];
 // player name
 extern u8 D_801FB750[6];
@@ -83,15 +84,15 @@ extern u8 D_801FB75C[5][6];
 extern u8 D_801FB77A[6];
 extern u8 D_801FB780[6];
 extern u8 D_801FB786[5][6];
-// baby name
+// dog name
 extern u8 D_801FB7A4[6];
 extern u8 D_801FB7AA[6];
 extern u8 D_801FB7B0[5][6];
-// dog name
+// horse name
 extern u8 D_801FB7CE[6];
 extern u8 D_801FB7D4[6];
 extern u8 D_801FB7DA[5][6];
-// horse name
+// baby name
 extern u8 D_801FB7F8[6];
 extern u8 D_801FB7FE[6];
 // pause screen sprite variable values
@@ -228,11 +229,6 @@ extern u32 D_802226E4;
 extern u32 D_801654F4;
 extern u8 gGlobalSeasonName[6];
 
-// buffer bss
-// sram memory
-extern u8 D_8030D000[16];
-extern u8 D_8030E000[16];
-
 // data
 // "PACKINSOFT FARM2" in ASCII
 u8 D_80119740[16] = { 0x50, 0x41, 0x43, 0x4B, 0x49, 0x4E, 0x53, 0x4F, 0x46, 0x54, 0x20, 0x46, 0x41, 0x52, 0x4D, 0x32 };
@@ -353,7 +349,7 @@ void func_800E16D0(u8 arg0, u8 arg1) {
         func_800B5BD4();
     }
     
-    if (loadGameScreenContext.showControllerPakScreen == 0) {
+    if (loadGameScreenContext.showControllerPakScreen == FALSE) {
         
         if (arg0) {
             
@@ -445,11 +441,11 @@ void func_800E1A94(void) {
 
         if (loadGameScreenContext.flags[0] & 1) { 
             func_8003DD14(0);
-            initializeEmptyMessageBox(0, (void*)0x8030B000);
+            initializeEmptyMessageBox(0, (u8*)MESSAGE_BOX_1_TEXT_BUFFER);
             setMessageBoxViewSpacePosition(0, 16.0f, 52.0f, 0);
             func_8003F5D0(0, 12, 2);
             func_8003F630(0, 0, 2);
-            func_8003F464(0, 14, 14, (u8*)COMPRESSED_FONT_VADDR, (u16*)FONT_PALETTE_1_VADDR);
+            func_8003F464(0, 14, 14, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
             func_8003F360(0, -4, 2);
             setMessageBoxSpriteIndices(0, 0xFF, 0, 0);
             setMessageBoxButtonMask(0, BUTTON_A);
@@ -459,11 +455,11 @@ void func_800E1A94(void) {
 
         if (loadGameScreenContext.flags[1] & 1) {
             func_8003DD14(1);
-            initializeEmptyMessageBox(1, (void*)0x8030B400);
+            initializeEmptyMessageBox(1, (u8*)MESSAGE_BOX_2_TEXT_BUFFER);
             setMessageBoxViewSpacePosition(1, 16.0f, 8.0f, 0);
             func_8003F5D0(1, 12, 2);
             func_8003F630(1, 0, 2);
-            func_8003F464(1, 14, 14, (u8*)COMPRESSED_FONT_VADDR, (u16*)FONT_PALETTE_1_VADDR);
+            func_8003F464(1, 14, 14, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
             func_8003F360(1, -4, 2);
             setMessageBoxSpriteIndices(1, 0xFF, 0, 0);
             setMessageBoxButtonMask(1, BUTTON_A);
@@ -473,11 +469,11 @@ void func_800E1A94(void) {
 
         if (loadGameScreenContext.flags[2] & 1) {
             func_8003DD14(2);
-            initializeEmptyMessageBox(2, (void*)0x8030B800);
+            initializeEmptyMessageBox(2, (u8*)MESSAGE_BOX_3_TEXT_BUFFER);
             setMessageBoxViewSpacePosition(2, 16.0f, -36.0f, 0);
             func_8003F5D0(2, 12, 2);
             func_8003F630(2, 0, 2);
-            func_8003F464(2, 14, 14, (u8*)COMPRESSED_FONT_VADDR, (u16*)FONT_PALETTE_1_VADDR);
+            func_8003F464(2, 14, 14, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
             func_8003F360(2, -4, 2);
             setMessageBoxSpriteIndices(2, 0xFF, 0, 0);
             setMessageBoxButtonMask(2, BUTTON_A);
@@ -487,11 +483,11 @@ void func_800E1A94(void) {
 
         if (loadGameScreenContext.flags[3] & 1) {
             func_8003DD14(3);
-            initializeEmptyMessageBox(3, (void*)0x8030BC00);
+            initializeEmptyMessageBox(3, (u8*)MESSAGE_BOX_4_TEXT_BUFFER);
             setMessageBoxViewSpacePosition(3, 16.0f, -80.0f, 0);
             func_8003F5D0(3, 12, 2);
             func_8003F630(3, 0, 2);
-            func_8003F464(3, 14, 14, (u8*)COMPRESSED_FONT_VADDR, (u16*)FONT_PALETTE_1_VADDR);
+            func_8003F464(3, 14, 14, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
             func_8003F360(3, -4, 2);
             setMessageBoxSpriteIndices(3, 0xFF, 0, 0);
             setMessageBoxButtonMask(3, BUTTON_A);
@@ -503,11 +499,11 @@ void func_800E1A94(void) {
 
         if (loadGameScreenContext.flags[0] & 1) {
             func_8003DD14(0);
-            initializeEmptyMessageBox(0, (void*)0x8030B000);
+            initializeEmptyMessageBox(0, (u8*)MESSAGE_BOX_1_TEXT_BUFFER);
             setMessageBoxViewSpacePosition(0, 16.0f, 52.0f, 0);
             func_8003F5D0(0, 12, 2);
             func_8003F630(0, 0, 2);
-            func_8003F464(0, 14, 14, (u8*)COMPRESSED_FONT_VADDR, (u16*)FONT_PALETTE_1_VADDR);
+            func_8003F464(0, 14, 14, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
             func_8003F360(0, -4, 2);
             setMessageBoxSpriteIndices(0, 0xFF, 0, 0);
             setMessageBoxButtonMask(0, BUTTON_A);
@@ -517,11 +513,11 @@ void func_800E1A94(void) {
         
         if (loadGameScreenContext.flags[1] & 1) {
             func_8003DD14(1);
-            initializeEmptyMessageBox(1, (void*)0x8030B400);
+            initializeEmptyMessageBox(1, (u8*)MESSAGE_BOX_2_TEXT_BUFFER);
             setMessageBoxViewSpacePosition(1, 16.0f, 8.0f, 0);
             func_8003F5D0(1, 12, 2);
             func_8003F630(1, 0, 2);
-            func_8003F464(1, 14, 14, (u8*)COMPRESSED_FONT_VADDR, (u16*)FONT_PALETTE_1_VADDR);
+            func_8003F464(1, 14, 14, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
             func_8003F360(1, -4, 2);
             setMessageBoxSpriteIndices(1, 0xFF, 0, 0);
             setMessageBoxButtonMask(1, BUTTON_A);
@@ -542,6 +538,7 @@ void func_800E1FAC(void) {
 
     switch (loadGameScreenContext.action) {
 
+        // load
         case 0:
             
             if (func_8002CBF8(0x80)) {
@@ -551,6 +548,7 @@ void func_800E1FAC(void) {
             
             break;
 
+        // default/select
         case 1:
 
             if (loadGameScreenContext.showControllerPakScreen == FALSE) {
@@ -660,6 +658,7 @@ void func_800E1FAC(void) {
                 
                 if (!set) {
                     
+                    // select diary
                     if (loadGameScreenContext.showControllerPakScreen == FALSE) {
                         func_800B64E4(loadGameScreenContext.diaryHighlighted, 0xFF);
                         deactivateSprite(0x79);
@@ -748,10 +747,12 @@ void func_800E1FAC(void) {
                     func_800B64E4(0xFF, loadGameScreenContext.actionColumnHighlighted);
                     
                     switch (loadGameScreenContext.actionColumnHighlighted) {                
-                        case 0:                             
+                        case 0:                          
+                            // delete   
                             loadGameScreenContext.action = 3;
                             break;
-                        case 1:                             
+                        case 1:                            
+                            // move 
                             loadGameScreenContext.action = 4;
                             break;
                         case 2:                             
@@ -763,6 +764,7 @@ void func_800E1FAC(void) {
                             func_8003EA1C(1, 0, 0, 0, 0, 0x18);
                             func_8003EA1C(2, 0, 0, 0, 0, 0x18);
                             func_8003EA1C(3, 0, 0, 0, 0, 0x18);
+                            // load completion screen
                             loadGameScreenContext.action = 10;
                             playSfx(0);
                             break;
@@ -790,6 +792,7 @@ void func_800E1FAC(void) {
             
             break;
 
+        // select diary to delete
         case 3:
 
             if (loadGameScreenContext.showControllerPakScreen == FALSE) {
@@ -897,6 +900,7 @@ void func_800E1FAC(void) {
             
             break;
 
+        // select diary to move
         case 4:
 
             if (loadGameScreenContext.showControllerPakScreen == FALSE) {
@@ -919,6 +923,7 @@ void func_800E1FAC(void) {
                             if (loadGameScreenContext.gamePakEnabled) {
                                 loadGameScreenContext.showControllerPakScreen = TRUE;
                                 set = TRUE;
+                                // show extra game pak diaries
                                 func_800B2CE0();
                                 deactivateSprite(0x80);
                                 func_8003DD14(0);
@@ -991,6 +996,7 @@ void func_800E1FAC(void) {
                     
                     if (loadGameScreenContext.flags[loadGameScreenContext.diaryHighlighted] & 2) {
                         func_800B5FC4(1, loadGameScreenContext.diaryHighlighted, 0xFF);
+                        // move/copy to other diary
                         loadGameScreenContext.action = 5;
                         loadGameScreenContext.unk_86 = loadGameScreenContext.diaryHighlighted;
                         loadGameScreenContext.unk_88 = loadGameScreenContext.showControllerPakScreen;
@@ -1015,6 +1021,7 @@ void func_800E1FAC(void) {
                 
             break;
 
+        // select move to destination
         case 5:
 
             if (loadGameScreenContext.showControllerPakScreen == FALSE) {
@@ -1064,6 +1071,7 @@ void func_800E1FAC(void) {
                         
                     }
                 }
+
             } else {
                 
                 if (loadGameScreenContext.showControllerPakScreen == loadGameScreenContext.unk_88) {
@@ -1133,6 +1141,7 @@ void func_800E1FAC(void) {
 
             break;
 
+        // load selected diary
         case 6:
             
             if (func_8002CBF8(0x80) && checkDefaultSequenceChannelOpen(1)) {
@@ -1149,11 +1158,14 @@ void func_800E1FAC(void) {
                 
                 func_80053088();
                 
+                // start existing game
                 if (loadGameScreenContext.flags[gCurrentGameIndex] & 2) {
+                    // set game state from sram
                     func_800E4424(gCurrentGameIndex, 0);
                     startGame();
                 } else {
-                    func_800E39D0();
+                    // start new game
+                    initializeNewGameState();
                     initializeGameVariables();
                     initializeNamingScreen(gPlayer.name, 0);
                 }
@@ -1161,6 +1173,7 @@ void func_800E1FAC(void) {
             
             break;
         
+        // go back to title
         case 7:
             
             if (func_8002CBF8(0x80) && checkDefaultSequenceChannelOpen(1)) {
@@ -1175,6 +1188,7 @@ void func_800E1FAC(void) {
             
             break;
 
+        // perform delete
         case 8:
             
             func_800B5FC4(0, 0xFF, 3);
@@ -1196,6 +1210,7 @@ void func_800E1FAC(void) {
             
             break;
 
+        // perform move
         case 9:
             
             func_800B5FC4(0, 0xFF, 3);
@@ -1221,20 +1236,28 @@ void func_800E1FAC(void) {
             
             break;
             
+        // completion screen
         case 10:
             
             if (func_8002CBF8(0x80)) {
+
+                // deactivate overlay screen sprites
                 func_800B2CE0();
                 deactivateSprite(0x80);
+
+                // message boxes
                 func_8003DD14(0);
                 func_8003DD14(1);
                 func_8003DD14(2);
                 func_8003DD14(3);
-                func_800E68F4();
+
+                loadCompletionScreen();
+
             }
             
             break;
             
+        // controller pak load
         case 11:
             
             if (func_8002CBF8(0x80)) {
@@ -1250,13 +1273,13 @@ void func_800E1FAC(void) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/loadGameScreen", func_800E3300);
 
-// unused
-bool func_800E3300(u8 arg0[]) {
+// verify signature
+inline bool func_800E3300(u8 arg0[]) {
 
     u8 i = 0;
     bool result = 0;
 
-    if (*arg0 == D_80119740[0]) {
+    if (arg0[0] == D_80119740[0]) {
 
         do {
             i++;
@@ -1421,8 +1444,8 @@ void func_800E3358(u8 arg0, u8 arg1, u8 arg2) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/loadGameScreen", func_800E38E8);
 
-// unused
-u16 func_800E38E8(u8 arg0[]) {
+// calculate
+inline u16 func_800E38E8(u8 arg0[]) {
 
     u16 result = 0;
     u16 i = 0;
@@ -1440,8 +1463,8 @@ u16 func_800E38E8(u8 arg0[]) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/loadGameScreen", func_800E391C);
 
-// unused
-u16 func_800E391C(u8* arg0) {
+// verify checksum
+inline u16 func_800E391C(u8* arg0) {
 
     u16 result = 0;
     u16 i = 0;
@@ -1451,7 +1474,7 @@ u16 func_800E391C(u8* arg0) {
         result += arg0[i];
         i++;
         
-    } while (i < 0xFFE);
+    } while (i < 4094);
 
     return result == *(u16*)(arg0 + 4094);
 
@@ -1459,8 +1482,8 @@ u16 func_800E391C(u8* arg0) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/loadGameScreen", func_800E395C);
 
-// unused
-u16 func_800E395C(u8 arg0[]) {
+// calculate checksum
+inline u16 func_800E395C(u8 arg0[]) {
 
     u16 result = 0;
     u16 i = 0;
@@ -1478,8 +1501,8 @@ u16 func_800E395C(u8 arg0[]) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/loadGameScreen", func_800E3990);
 
-// unused
-u16 func_800E3990(u8 arg0[]) {
+// verify checksum
+inline u16 func_800E3990(u8 arg0[]) {
 
     u16 result = 0;
     u16 i = 0;
@@ -1495,9 +1518,9 @@ u16 func_800E3990(u8 arg0[]) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/loadGameScreen", func_800E39D0);
+//INCLUDE_ASM("asm/nonmatchings/game/loadGameScreen", initializeNewGameState);
 
-void func_800E39D0(void) {
+void initializeNewGameState(void) {
 
     u8 i, j;
     
@@ -1837,22 +1860,770 @@ void func_800E39D0(void) {
     
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/loadGameScreen", func_800E4424);
+//INCLUDE_ASM("asm/nonmatchings/game/loadGameScreen", func_800E4424);
 
-INCLUDE_ASM("asm/nonmatchings/game/loadGameScreen", func_800E53E8);
+// set game state globals from sram
+bool func_800E4424(u8 saveSlot, u8 arg1) {
+
+    u32 devAddr;
+    u32 vaddr;
+    u8 signatureValid;
+    u8 checksumValid;
+    u16 checksum;
+    SramBuffer* buff;
+    
+    u8 i, j;
+    u8 row, col;
+    u16 idx;
+    
+    bool result;
+
+    // Get SRAM address (each save is 0x1000 bytes)
+    devAddr = (saveSlot << 12) + 0x08000000;
+    vaddr = SRAM_BUFFER;
+    buff = (SramBuffer*)vaddr;
+
+    if (arg1 == 0) {
+        func_8004DC48(devAddr, vaddr, 0x1000);
+    } else {
+        func_800E16A0();
+        if (loadGameScreenContext.gamePakEnabled) {
+            func_8004D9AC(CONTROLLER_1,
+                &loadGameScreenContext.unk_0[(saveSlot * 4 + saveSlot) * 4 + saveSlot],
+                &loadGameScreenContext.unk_15[(saveSlot * 4 + saveSlot) * 4 + saveSlot - 5],
+                0, 0x1000, vaddr);
+        }
+    }
+
+    gYear = buff->year;
+    gSeason = buff->season;
+    gDayOfWeek = buff->dayOfWeek;
+    gDayOfMonth = buff->dayOfMonth;
+
+    gPlayer.name[0] = buff->playerName[0];
+    gPlayer.name[1] = buff->playerName[1];
+    gPlayer.name[2] = buff->playerName[2];
+    gPlayer.name[3] = buff->playerName[3];
+    gPlayer.name[4] = buff->playerName[4];
+    gPlayer.name[5] = buff->playerName[5];
+
+    gFarmName[0] = buff->farmName[0];
+    gFarmName[1] = buff->farmName[1];
+    gFarmName[2] = buff->farmName[2];
+    gFarmName[3] = buff->farmName[3];
+    gFarmName[4] = buff->farmName[4];
+    gFarmName[5] = buff->farmName[5];
+
+    gGold = buff->gold;
+    gWeather = buff->weather;
+    gForecast = buff->forecast;
+    gPlayerBirthdaySeason = buff->playerBirthdaySeason;
+    wateringCanUses = buff->wateringCanUses;
+    gLumber = buff->lumber;
+    fodderQuantity = buff->fodderQuantity;
+    gSeasonTomorrow = buff->seasonTomorrow;
+
+    D_801FC154 = buff->unk_2D;
+    D_80204DF4 = buff->unk_2E;
+    D_80237458 = buff->unk_2F;
+    D_8018A725 = buff->unk_30;
+    D_802373E8 = buff->unk_31;
+    D_8013DC2C = buff->unk_32;
+    D_801FAD91 = buff->unk_33;
+    D_801C3E28 = buff->unk_34;
+    D_801C3F70 = buff->unk_35;
+    D_80205636 = buff->unk_36;
+    D_802373A8 = buff->unk_37;
+
+    gMaximumStamina = buff->maximumStamina;
+    gPlayer.currentStamina = buff->currentStamina;
+    gPlayer.fatigueCounter = buff->fatigueCounter;
+    gPlayer.staminaExhaustionLevel = buff->staminaExhaustionLevel;
+
+    gAlcoholTolerance = buff->alcoholTolerance;
+    gHouseExtensionSelection = buff->houseExtensionSelection;
+    houseExtensionConstructionCounter = buff->houseExtensionConstructionCounter;
+    chickenFeedQuantity = buff->chickenFeedQuantity;
+    D_8021E6D0 = buff->unk_42;
+
+    gHarvestKing = buff->harvestKing;
+    gHarvestCoinFinder = buff->harvestCoinFinder;
+    gFlowerFestivalGoddess = buff->flowerFestivalGoddess;
+    D_80189054 = buff->cowFestivalStall;
+    gVoteForFlowerFestivalGoddess = buff->voteForFlowerFestivalGoddess;
+
+    deadAnimalName[0] = buff->deadAnimalName[0];
+    deadAnimalName[1] = buff->deadAnimalName[1];
+    deadAnimalName[2] = buff->deadAnimalName[2];
+    deadAnimalName[3] = buff->deadAnimalName[3];
+    deadAnimalName[4] = buff->deadAnimalName[4];
+    deadAnimalName[5] = buff->deadAnimalName[5];
+
+    gHappiness = buff->happiness;
+    blueMistFlowerPlot = buff->blueMistFlowerPlot;
+    anniversarySeason = buff->anniversarySeason;
+    anniversaryDate = buff->anniversaryDate;
+    babyBirthdaySeason = buff->babyBirthdaySeason;
+    babyBirthdayDate = buff->babyBirthdayDate;
+
+    powerNutBits = buff->powerNutBits;
+    D_80205204 = buff->unk_58;
+    flowerShopPoints = buff->flowerShopPoints;
+    bakeryCardPoints = buff->bakeryCardPoints;
+    gElliGrievingCounter = buff->elliGrievingCounter;
+
+    D_801654F4 = buff->unk_60;
+    D_80237414 = buff->unk_64;
+    D_801FB6FC = buff->unk_68;
+    D_801C3F80 = buff->unk_6C;
+    D_801806C0 = buff->unk_70;
+    D_80188F60 = buff->unk_74;
+    D_801FB5D0 = buff->unk_78;
+
+    gTotalMilkShipped = buff->totalMilkShipped;
+    gTotalEggsShipped = buff->totalEggsShipped;
+    gTotalCropsShipped = buff->totalCropsShipped;
+    totalFishCaught = buff->totalFishCaught;
+
+    gBabyName[0] = buff->babyName[0];
+    gBabyName[1] = buff->babyName[1];
+    gBabyName[2] = buff->babyName[2];
+    gBabyName[3] = buff->babyName[3];
+    gBabyName[4] = buff->babyName[4];
+    gBabyName[5] = buff->babyName[5];
+
+    gSickDays = buff->sickDays;
+    D_8013DC2E = buff->deadAnimalCount;
+
+    mrsManaCow1Index = buff->mrsManaCow1Index;
+    mrsManaCow2Index = buff->mrsManaCow2Index;
+    mrsManaCow3Index = buff->mrsManaCow3Index;
+
+    gPlayer.toolUseCounters[0] = buff->toolUseCounters[0];
+    gPlayer.toolUseCounters[1] = buff->toolUseCounters[1];
+    gPlayer.toolUseCounters[2] = buff->toolUseCounters[2];
+    gPlayer.toolUseCounters[3] = buff->toolUseCounters[3];
+    gPlayer.toolUseCounters[4] = buff->toolUseCounters[4];
+
+    gPlayer.toolLevels[0] = buff->toolLevels[0];
+    gPlayer.toolLevels[1] = buff->toolLevels[1];
+    gPlayer.toolLevels[2] = buff->toolLevels[2];
+    gPlayer.toolLevels[3] = buff->toolLevels[3];
+    gPlayer.toolLevels[4] = buff->toolLevels[4];
+
+    gPlayer.bottleContents = buff->bottleContents;
+
+    tvContext.channelIndex = buff->tvChannelIndex;
+    tvContext.varietyShowEpisodeCounters[0] = buff->varietyShowEpisodeCounters[0];
+    tvContext.varietyShowEpisodeCounters[1] = buff->varietyShowEpisodeCounters[1];
+    tvContext.varietyShowEpisodeCounters[2] = buff->varietyShowEpisodeCounters[2];
+    tvContext.varietyShowEpisodeCounters[3] = buff->varietyShowEpisodeCounters[3];
+    tvContext.varietyShowEpisodeCounters[4] = buff->varietyShowEpisodeCounters[4];
+    tvContext.varietyShowEpisodeCounters[5] = buff->varietyShowEpisodeCounters[5];
+    tvContext.varietyShowEpisodeCounters[6] = buff->varietyShowEpisodeCounters[6];
+
+    recipesBits[0] = buff->recipesBits;
+    D_8016FB00 = buff->unk_DC;
+    albumBits = buff->albumBits;
+
+    bornChickenIndex = buff->bornChickenIndex;
+    bornAnimalIndex = buff->bornAnimalIndex;
+
+    gWife = buff->wife;
+    gBabyAge = buff->babyAge;
+    gWifeConceptionCounter = buff->wifeConceptionCounter;
+    gWifePregnancyCounter = buff->wifePregnancyCounter;
+
+    mariaHarrisBabyAge = buff->mariaHarrisBabyAge;
+    mariaHarrisNewlywedCounter = buff->mariaHarrisNewlywedCounter;
+    mariaHarrisPregnancyCounter = buff->mariaHarrisPregnancyCounter;
+    popuriGrayBabyAge = buff->popuriGrayBabyAge;
+    popuriGrayNewlywedCounter = buff->popuriGrayNewlywedCounter;
+    popuriGrayPregnancyCounter = buff->popuriGrayPregnancyCounter;
+    elliJeffBabyAge = buff->elliJeffBabyAge;
+    elliJeffNewlywedCounter = buff->elliJeffNewlywedCounter;
+    elliJeffPregnancyCounter = buff->elliJeffPregnancyCounter;
+    annCliffBabyAge = buff->annCliffBabyAge;
+    annCliffNewlywedCounter = buff->annCliffNewlywedCounter;
+    annPregnancyCounter = buff->annPregnancyCounter;
+    karenKaiBabyAge = buff->karenKaiBabyAge;
+    karenKaiNewlywedCounter = buff->karenKaiNewlywedCounter;
+    karenPregnancyCounter = buff->karenPregnancyCounter;
+
+    dailyShippingBinValue = buff->dailyShippingBinValue;
+    readMailBits[0] = buff->readMailBits;
+    D_801C3F3C = buff->unk_104;
+    D_801C3F40 = buff->unk_108;
+    mailboxBits[0] = buff->mailboxBits;
+    D_8016FFF0 = buff->unk_110;
+    D_8016FFF4 = buff->unk_114;
+
+    for (i = 0; i < 32; i++) {
+        gToolchestSlots[i] = *((u8*)buff + 0x380 + i);
+    }
+
+    for (i = 0; i < 32; i++) {
+        D_80237420[i] = *((u8*)buff + 0x3A0 + i);
+    }
+
+    for (i = 0; i < 32; i++) {
+        D_801890E8[i] = *((u8*)buff + 0x3C0 + i);
+    }
+ 
+    for (i = 0; i < 9; i++) {
+        gPlayer.belongingsSlots[i] = *((u8*)buff + 0x400 + i);
+    }
+
+    for (i = 0; i < 9; i++) {
+        gPlayer.toolSlots[i] = *((u8*)buff + 0x410 + i);
+    }
+
+    for (i = 0; i < 24; i++) {
+        gPlayer.keyItemSlots[i] = *((u8*)buff + 0x420 + i);
+    } 
+
+    for (i = 0; i < MAX_NPCS; i++) {
+        npcAffection[i] =  *((u8*)buff + 0x480 + i);
+    } 
+    
+    row = 0;
+    i = 0;
+
+    for (row = 0; row < 5; row++) {
+        for (col = 0; col < 7; col++) {
+            D_80189108[row][col] = ((u8*)&buff->D_80189108)[i];
+            i++;
+        }
+    }
+
+    dogInfo.name[0] = buff->dogName[0];
+    dogInfo.name[1] = buff->dogName[1];
+    dogInfo.name[2] = buff->dogName[2];
+    dogInfo.name[3] = buff->dogName[3];
+    dogInfo.name[4] = buff->dogName[4];
+    dogInfo.name[5] = buff->dogName[5];
+    dogInfo.affection = buff->dogAffection;
+    dogInfo.location = buff->dogLocation;
+    dogInfo.coordinates.x = buff->dogCoordX;
+    dogInfo.coordinates.z = buff->dogCoordZ;
+    dogInfo.unk_1C = buff->dogUnk_1C;
+
+    horseInfo.name[0] = buff->horseName[0];
+    horseInfo.name[1] = buff->horseName[1];
+    horseInfo.name[2] = buff->horseName[2];
+    horseInfo.name[3] = buff->horseName[3];
+    horseInfo.name[4] = buff->horseName[4];
+    horseInfo.name[5] = buff->horseName[5];
+    horseInfo.affection = buff->horseAffection;
+    horseInfo.location = buff->horseLocation;
+    horseInfo.coordinates.x = buff->horseCoordX;
+    horseInfo.coordinates.z = buff->horseCoordZ;
+    horseInfo.grown = buff->horseGrown;
+    horseInfo.age = buff->horseAge;
+    horseInfo.unk_1E = buff->horseUnk_1E;
+    horseInfo.flags = buff->horseFlags;
+
+    for (i = 0; i < MAX_CHICKENS; i++) {
+        gChickens[i].name[0] = *((u8*)buff + 0x600 + (i << 5));
+        gChickens[i].name[1] = *((u8*)buff + 0x601 + (i << 5));
+        gChickens[i].name[2] = *((u8*)buff + 0x602 + (i << 5));
+        gChickens[i].name[3] = *((u8*)buff + 0x603 + (i << 5));
+        gChickens[i].name[4] = *((u8*)buff + 0x604 + (i << 5));
+        gChickens[i].name[5] = *((u8*)buff + 0x605 + (i << 5));
+        gChickens[i].location = *((u8*)buff + 0x607 + (i << 5));
+        gChickens[i].coordinates.x = *(f32*)((u8*)buff + (i << 5) + 0x608);
+        gChickens[i].coordinates.z = *(f32*)((u8*)buff + (i << 5) + 0x60C);
+        gChickens[i].type = *((u8*)buff + 0x610 + (i << 5));
+        gChickens[i].condition = *((u8*)buff + 0x611 + (i << 5));
+        gChickens[i].typeCounter = *((u8*)buff + 0x612 + (i << 5));
+        gChickens[i].conditionCounter = *((u8*)buff + 0x613 + (i << 5));
+        gChickens[i].flags = *(u16*)((u8*)buff + (i << 5) + 0x614);
+    } 
+
+    for (i = 0; i < MAX_FARM_ANIMALS; i++) {
+        gFarmAnimals[i].name[0] = *((u8*)buff + 0x800 + (i << 5));
+        gFarmAnimals[i].name[1] = *((u8*)buff + 0x801 + (i << 5));
+        gFarmAnimals[i].name[2] = *((u8*)buff + 0x802 + (i << 5));
+        gFarmAnimals[i].name[3] = *((u8*)buff + 0x803 + (i << 5));
+        gFarmAnimals[i].name[4] = *((u8*)buff + 0x804 + (i << 5));
+        gFarmAnimals[i].name[5] = *((u8*)buff + 0x805 + (i << 5));
+        gFarmAnimals[i].affection = *((u8*)buff + 0x806 + (i << 5));
+        gFarmAnimals[i].location = *((u8*)buff + 0x807 + (i << 5));
+        gFarmAnimals[i].coordinates.x = *(f32*)((u8*)buff + (i << 5) + 0x808);
+        gFarmAnimals[i].coordinates.z = *(f32*)((u8*)buff + (i << 5) + 0x80C);
+        gFarmAnimals[i].type = *((u8*)buff + 0x810 + (i << 5));
+        gFarmAnimals[i].condition = *((u8*)buff + 0x811 + (i << 5));
+        gFarmAnimals[i].typeCounter = *((u8*)buff + 0x812 + (i << 5));
+        gFarmAnimals[i].conditionCounter = *((u8*)buff + 0x813 + (i << 5));
+        gFarmAnimals[i].flags = *(u16*)((u8*)buff + 0x814 + (i << 5));
+        gFarmAnimals[i].unk_23[0] = *((u8*)buff + 0x816 + (i << 5));
+        gFarmAnimals[i].unk_23[1] = *((u8*)buff + 0x817 + (i << 5));
+        gFarmAnimals[i].unk_23[2] = *((u8*)buff + 0x818 + (i << 5));
+        gFarmAnimals[i].unk_23[3] = *((u8*)buff + 0x819 + (i << 5));
+        gFarmAnimals[i].unk_23[4] = *((u8*)buff + 0x81A + (i << 5));
+        gFarmAnimals[i].unk_23[5] = *((u8*)buff + 0x81B + (i << 5));
+        gFarmAnimals[i].birthdaySeason = *((u8*)buff + 0x81C + (i << 5));
+        gFarmAnimals[i].birthdayDayOfMonth = *((u8*)buff + 0x81D + (i << 5));
+        gFarmAnimals[i].normalMilk = *((u8*)buff + 0x81E + (i << 5));
+    }
+
+    row = 0;
+    idx = 0;
+    
+    for (row = 0; row < FIELD_HEIGHT; row++) {
+        for (col = 0; col < FIELD_WIDTH; col++) {
+            farmFieldTiles[row][col] = ((u8*)&buff->farmFieldTiles)[idx];
+            idx++;
+        }
+    }
+
+    row = 0;
+    idx = 0;
+    
+    for (row = 0; row < FIELD_HEIGHT; row++) {
+        for (col = 0; col < FIELD_WIDTH; col++) {
+            greenhouseFieldTiles[row][col] = ((u8*)&buff->greenhouseFieldTiles)[idx];
+            idx++;
+        }
+    }
+        
+    result = FALSE;
+    
+    lifeEventBits[0] = buff->lifeEventBits[0];
+    lifeEventBits[1] = buff->lifeEventBits[1];
+    lifeEventBits[2] = buff->lifeEventBits[2];
+    lifeEventBits[3] = buff->lifeEventBits[3];
+    lifeEventBits[4] = buff->lifeEventBits[4];
+    lifeEventBits[5] = buff->lifeEventBits[5];
+    lifeEventBits[6] = buff->lifeEventBits[6];
+    lifeEventBits[7] = buff->lifeEventBits[7];
+    lifeEventBits[8] = buff->lifeEventBits[8];
+    lifeEventBits[9] = buff->lifeEventBits[9];
+    lifeEventBits[10] = buff->lifeEventBits[10];
+    lifeEventBits[11] = buff->lifeEventBits[11];
+    lifeEventBits[12] = buff->lifeEventBits[12];
+    lifeEventBits[13] = buff->lifeEventBits[13];
+    lifeEventBits[14] = buff->lifeEventBits[14];
+    lifeEventBits[15] = buff->lifeEventBits[15];
+
+    specialDialogueBits[0] = buff->specialDialogueBits[0];
+    specialDialogueBits[1] = buff->specialDialogueBits[1];
+    specialDialogueBits[2] = buff->specialDialogueBits[2];
+    specialDialogueBits[3] = buff->specialDialogueBits[3];
+    specialDialogueBits[4] = buff->specialDialogueBits[4];
+    specialDialogueBits[5] = buff->specialDialogueBits[5];
+    specialDialogueBits[6] = buff->specialDialogueBits[6];
+    specialDialogueBits[7] = buff->specialDialogueBits[7];
+    specialDialogueBits[8] = buff->specialDialogueBits[8];
+    specialDialogueBits[9] = buff->specialDialogueBits[9];
+    specialDialogueBits[10] = buff->specialDialogueBits[10];
+    specialDialogueBits[11] = buff->specialDialogueBits[11];
+    specialDialogueBits[12] = buff->specialDialogueBits[12];
+    specialDialogueBits[13] = buff->specialDialogueBits[13];
+    specialDialogueBits[14] = buff->specialDialogueBits[14];
+    specialDialogueBits[15] = buff->specialDialogueBits[15];
+
+    if (func_800E3300(buff->signature) ) {
+        if (func_800E391C(buff)) {
+            result = TRUE;
+        }
+    } 
+
+    return result;
+
+}
+
+//INCLUDE_ASM("asm/nonmatchings/game/loadGameScreen", func_800E53E8);
+
+// save game state to sram
+bool func_800E53E8(u8 saveSlot) {
+
+    SramBuffer* buff = (SramBuffer*)SRAM_BUFFER;
+    u32 temp = saveSlot << 12;
+    u32 devAddr = temp + 0x08000000;
+    
+    bool result = FALSE;
+
+    u8 i, j;
+    u8 row, col;
+    u16 idx;
+    u8 idx2;
+    
+    // ?
+    buff->signature[0] = D_80119740[0];
+    sramBuffer.signature[1] = D_80119740[1];
+    sramBuffer.signature[2] = D_80119740[2];
+    sramBuffer.signature[3] = D_80119740[3];
+    sramBuffer.signature[4] = D_80119740[4];
+    sramBuffer.signature[5] = D_80119740[5];
+    sramBuffer.signature[6] = D_80119740[6];
+    sramBuffer.signature[7] = D_80119740[7];
+    sramBuffer.signature[8] = D_80119740[8];
+    sramBuffer.signature[9] = D_80119740[9];
+    sramBuffer.signature[10] = D_80119740[10];
+    sramBuffer.signature[11] = D_80119740[11];
+    sramBuffer.signature[12] = D_80119740[12];
+    sramBuffer.signature[13] = D_80119740[13];
+    sramBuffer.signature[14] = D_80119740[14];
+    sramBuffer.signature[15] = D_80119740[15];
+
+    sramBuffer.year = gYear;
+    sramBuffer.season = gSeason;
+    sramBuffer.dayOfWeek = gDayOfWeek;
+    sramBuffer.dayOfMonth = gDayOfMonth;
+
+    sramBuffer.playerName[0] = gPlayer.name[0];
+    sramBuffer.playerName[1] = gPlayer.name[1];
+    sramBuffer.playerName[2] = gPlayer.name[2];
+    sramBuffer.playerName[3] = gPlayer.name[3];
+    sramBuffer.playerName[4] = gPlayer.name[4];
+    sramBuffer.playerName[5] = gPlayer.name[5];
+
+    sramBuffer.farmName[0] = gFarmName[0];
+    sramBuffer.farmName[1] = gFarmName[1];
+    sramBuffer.farmName[2] = gFarmName[2];
+    sramBuffer.farmName[3] = gFarmName[3];
+    sramBuffer.farmName[4] = gFarmName[4];
+    sramBuffer.farmName[5] = gFarmName[5];
+
+    sramBuffer.gold = gGold;
+    sramBuffer.weather = gWeather;
+    sramBuffer.forecast = gForecast;
+    sramBuffer.playerBirthdaySeason = gPlayerBirthdaySeason;
+    sramBuffer.wateringCanUses = wateringCanUses;
+    sramBuffer.lumber = gLumber;
+    sramBuffer.fodderQuantity = fodderQuantity;
+    sramBuffer.seasonTomorrow = gSeasonTomorrow;
+
+    sramBuffer.unk_2D = D_801FC154;
+    sramBuffer.unk_2E = D_80204DF4;
+    sramBuffer.unk_2F = D_80237458;
+    sramBuffer.unk_30 = D_8018A725;
+    sramBuffer.unk_31 = D_802373E8;
+    sramBuffer.unk_32 = D_8013DC2C;
+    sramBuffer.unk_33 = D_801FAD91;
+    sramBuffer.unk_34 = D_801C3E28;
+    sramBuffer.unk_35 = D_801C3F70;
+    sramBuffer.unk_36 = D_80205636;
+    sramBuffer.unk_37 = D_802373A8;
+
+    sramBuffer.maximumStamina = gMaximumStamina;
+    sramBuffer.currentStamina = gPlayer.currentStamina;
+    sramBuffer.fatigueCounter = gPlayer.fatigueCounter;
+    sramBuffer.staminaExhaustionLevel = gPlayer.staminaExhaustionLevel;
+
+    sramBuffer.alcoholTolerance = gAlcoholTolerance;
+    sramBuffer.houseExtensionSelection = gHouseExtensionSelection;
+    sramBuffer.houseExtensionConstructionCounter = houseExtensionConstructionCounter;
+    sramBuffer.chickenFeedQuantity = chickenFeedQuantity;
+    sramBuffer.unk_42 = D_8021E6D0;
+
+    sramBuffer.harvestKing = gHarvestKing;
+    sramBuffer.harvestCoinFinder = gHarvestCoinFinder;
+    sramBuffer.flowerFestivalGoddess = gFlowerFestivalGoddess;
+    sramBuffer.cowFestivalStall = D_80189054;
+    sramBuffer.voteForFlowerFestivalGoddess = gVoteForFlowerFestivalGoddess;
+
+    sramBuffer.deadAnimalName[0] = deadAnimalName[0];
+    sramBuffer.deadAnimalName[1] = deadAnimalName[1];
+    sramBuffer.deadAnimalName[2] = deadAnimalName[2];
+    sramBuffer.deadAnimalName[3] = deadAnimalName[3];
+    sramBuffer.deadAnimalName[4] = deadAnimalName[4];
+    sramBuffer.deadAnimalName[5] = deadAnimalName[5];
+
+    sramBuffer.happiness = gHappiness;
+    sramBuffer.blueMistFlowerPlot = blueMistFlowerPlot;
+    sramBuffer.anniversarySeason = anniversarySeason;
+    sramBuffer.anniversaryDate = anniversaryDate;
+    sramBuffer.babyBirthdaySeason = babyBirthdaySeason;
+    sramBuffer.babyBirthdayDate = babyBirthdayDate;
+
+    sramBuffer.powerNutBits = powerNutBits;
+    sramBuffer.unk_58 = D_80205204;
+    sramBuffer.flowerShopPoints = flowerShopPoints;
+    sramBuffer.bakeryCardPoints = bakeryCardPoints;
+    sramBuffer.elliGrievingCounter = gElliGrievingCounter;
+
+    sramBuffer.unk_60 = D_801654F4;
+    sramBuffer.unk_64 = D_80237414;
+    sramBuffer.unk_68 = D_801FB6FC;
+    sramBuffer.unk_6C = D_801C3F80;
+    sramBuffer.unk_70 = D_801806C0;
+    sramBuffer.unk_74 = D_80188F60;
+    sramBuffer.unk_78 = D_801FB5D0;
+
+    sramBuffer.totalMilkShipped = gTotalMilkShipped;
+    sramBuffer.totalEggsShipped = gTotalEggsShipped;
+    sramBuffer.totalCropsShipped = gTotalCropsShipped;
+    sramBuffer.totalFishCaught = totalFishCaught;
+
+    sramBuffer.babyName[0] = gBabyName[0];
+    sramBuffer.babyName[1] = gBabyName[1];
+    sramBuffer.babyName[2] = gBabyName[2];
+    sramBuffer.babyName[3] = gBabyName[3];
+    sramBuffer.babyName[4] = gBabyName[4];
+    sramBuffer.babyName[5] = gBabyName[5];
+
+    sramBuffer.sickDays = gSickDays;
+    sramBuffer.deadAnimalCount = D_8013DC2E;
+
+    sramBuffer.mrsManaCow1Index = mrsManaCow1Index;
+    sramBuffer.mrsManaCow2Index = mrsManaCow2Index;
+    sramBuffer.mrsManaCow3Index = mrsManaCow3Index;
+
+    sramBuffer.toolUseCounters[0] = gPlayer.toolUseCounters[0];
+    sramBuffer.toolUseCounters[1] = gPlayer.toolUseCounters[1];
+    sramBuffer.toolUseCounters[2] = gPlayer.toolUseCounters[2];
+    sramBuffer.toolUseCounters[3] = gPlayer.toolUseCounters[3];
+    sramBuffer.toolUseCounters[4] = gPlayer.toolUseCounters[4];
+
+    sramBuffer.toolLevels[0] = gPlayer.toolLevels[0];
+    sramBuffer.toolLevels[1] = gPlayer.toolLevels[1];
+    sramBuffer.toolLevels[2] = gPlayer.toolLevels[2];
+    sramBuffer.toolLevels[3] = gPlayer.toolLevels[3];
+    sramBuffer.toolLevels[4] = gPlayer.toolLevels[4];
+
+    sramBuffer.bottleContents = gPlayer.bottleContents;
+
+    sramBuffer.tvChannelIndex = tvContext.channelIndex;
+    sramBuffer.varietyShowEpisodeCounters[0] = tvContext.varietyShowEpisodeCounters[0];
+    sramBuffer.varietyShowEpisodeCounters[1] = tvContext.varietyShowEpisodeCounters[1];
+    sramBuffer.varietyShowEpisodeCounters[2] = tvContext.varietyShowEpisodeCounters[2];
+    sramBuffer.varietyShowEpisodeCounters[3] = tvContext.varietyShowEpisodeCounters[3];
+    sramBuffer.varietyShowEpisodeCounters[4] = tvContext.varietyShowEpisodeCounters[4];
+    sramBuffer.varietyShowEpisodeCounters[5] = tvContext.varietyShowEpisodeCounters[5];
+    sramBuffer.varietyShowEpisodeCounters[6] = tvContext.varietyShowEpisodeCounters[6];
+
+    sramBuffer.recipesBits = recipesBits[0];
+    sramBuffer.unk_DC = D_8016FB00;
+    sramBuffer.albumBits = albumBits;
+
+    sramBuffer.bornChickenIndex = bornChickenIndex;
+    sramBuffer.bornAnimalIndex = bornAnimalIndex;
+
+    sramBuffer.wife = gWife; 
+    sramBuffer.babyAge = gBabyAge;
+    sramBuffer.wifeConceptionCounter = gWifeConceptionCounter;
+    sramBuffer.wifePregnancyCounter = gWifePregnancyCounter;
+
+    sramBuffer.mariaHarrisBabyAge = mariaHarrisBabyAge;
+    sramBuffer.mariaHarrisNewlywedCounter = mariaHarrisNewlywedCounter;
+    sramBuffer.mariaHarrisPregnancyCounter = mariaHarrisPregnancyCounter;
+    sramBuffer.popuriGrayBabyAge = popuriGrayBabyAge;
+    sramBuffer.popuriGrayNewlywedCounter = popuriGrayNewlywedCounter;
+    sramBuffer.popuriGrayPregnancyCounter = popuriGrayPregnancyCounter;
+    sramBuffer.elliJeffBabyAge = elliJeffBabyAge;
+    sramBuffer.elliJeffNewlywedCounter = elliJeffNewlywedCounter;
+    sramBuffer.elliJeffPregnancyCounter = elliJeffPregnancyCounter;
+    sramBuffer.annCliffBabyAge = annCliffBabyAge;
+    sramBuffer.annCliffNewlywedCounter = annCliffNewlywedCounter;
+    sramBuffer.annPregnancyCounter = annPregnancyCounter;
+    sramBuffer.karenKaiBabyAge = karenKaiBabyAge;
+    sramBuffer.karenKaiNewlywedCounter = karenKaiNewlywedCounter;
+    sramBuffer.karenPregnancyCounter = karenPregnancyCounter;
+    
+    sramBuffer.dailyShippingBinValue = dailyShippingBinValue;
+    sramBuffer.readMailBits = readMailBits[0];
+    sramBuffer.unk_104 = D_801C3F3C;
+    sramBuffer.unk_108 = D_801C3F40;
+    sramBuffer.mailboxBits = mailboxBits[0];
+    sramBuffer.unk_110 = D_8016FFF0;
+    sramBuffer.unk_114 = D_8016FFF4;
+
+    for (i = 0; i < 32; i++) {
+        *((u8*)buff + 0x380 + i) = gToolchestSlots[i];
+    }
+
+    for (i = 0; i < 32; i++) {
+        *((u8*)buff + 0x3A0 + i) = D_80237420[i];
+    }
+
+    for (i = 0; i < 32; i++) {
+        *((u8*)buff + 0x3C0 + i) = D_801890E8[i];
+    }
+
+    for (i = 0; i < 9; i++) {
+        *((u8*)buff + 0x400 + i) = gPlayer.belongingsSlots[i];
+    }
+
+    for (i = 0; i < 9; i++) {
+        *((u8*)buff + 0x410 + i) = gPlayer.toolSlots[i];
+    }
+
+    for (i = 0; i < 24; i++) {
+        *((u8*)buff + 0x420 + i) = gPlayer.keyItemSlots[i];
+    }
+
+    for (i = 0; i < MAX_NPCS; i++) {
+        *((u8*)buff + 0x480 + i) = npcAffection[i];
+    }
+
+    row = 0;
+    i = 0;
+
+    for (row = 0; row < 5; row++) {
+        for (col = 0; col < 7; col++) {
+            ((u8*)buff->D_80189108)[i] = D_80189108[row][col];
+            i++;
+        }
+    } 
+
+    buff->dogName[0] = dogInfo.name[0];
+    buff->dogName[1] = dogInfo.name[1];
+    buff->dogName[2] = dogInfo.name[2];
+    buff->dogName[3] = dogInfo.name[3];
+    buff->dogName[4] = dogInfo.name[4];
+    buff->dogName[5] = dogInfo.name[5];
+    buff->dogAffection = dogInfo.affection;
+    buff->dogLocation = dogInfo.location;
+    buff->dogCoordX = dogInfo.coordinates.x;
+    buff->dogCoordZ = dogInfo.coordinates.z;
+    buff->dogUnk_1C = dogInfo.unk_1C;
+
+    buff->horseName[0] = horseInfo.name[0];
+    buff->horseName[1] = horseInfo.name[1];
+    buff->horseName[2] = horseInfo.name[2];
+    buff->horseName[3] = horseInfo.name[3];
+    buff->horseName[4] = horseInfo.name[4];
+    buff->horseName[5] = horseInfo.name[5];
+    buff->horseAffection = horseInfo.affection;
+    buff->horseLocation = horseInfo.location;
+    buff->horseCoordX = horseInfo.coordinates.x;
+    buff->horseCoordZ = horseInfo.coordinates.z;
+    buff->horseGrown = horseInfo.grown;
+    buff->horseAge = horseInfo.age;
+    buff->horseUnk_1E = horseInfo.unk_1E;
+    buff->horseFlags = horseInfo.flags;
+    
+    for (i = 0; i < MAX_CHICKENS; i++) {
+        *((u8*)buff + 0x600 + (i << 5)) = gChickens[i].name[0];
+        *((u8*)buff + 0x601 + (i << 5)) = gChickens[i].name[1];
+        *((u8*)buff + 0x602 + (i << 5)) = gChickens[i].name[2];
+        *((u8*)buff + 0x603 + (i << 5)) = gChickens[i].name[3];
+        *((u8*)buff + 0x604 + (i << 5)) = gChickens[i].name[4];
+        *((u8*)buff + 0x605 + (i << 5)) = gChickens[i].name[5];
+        *((u8*)buff + 0x607 + (i << 5)) = gChickens[i].location;
+        *(f32*)((u8*)buff + (i << 5) + 0x608) = gChickens[i].coordinates.x;
+        *(f32*)((u8*)buff + (i << 5) + 0x60C) = gChickens[i].coordinates.z;
+        *((u8*)buff + 0x610 + (i << 5)) = gChickens[i].type;
+        *((u8*)buff + 0x611 + (i << 5)) = gChickens[i].condition;
+        *((u8*)buff + 0x612 + (i << 5)) = gChickens[i].typeCounter;
+        *((u8*)buff + 0x613 + (i << 5)) = gChickens[i].conditionCounter;
+        *(u16*)((u8*)buff + (i << 5) + 0x614) = gChickens[i].flags;
+    }
+
+    for (i = 0; i < MAX_FARM_ANIMALS; i++) {
+        *((u8*)buff + 0x800 + (i << 5)) = gFarmAnimals[i].name[0];
+        *((u8*)buff + 0x801 + (i << 5)) = gFarmAnimals[i].name[1];
+        *((u8*)buff + 0x802 + (i << 5)) = gFarmAnimals[i].name[2];
+        *((u8*)buff + 0x803 + (i << 5)) = gFarmAnimals[i].name[3];
+        *((u8*)buff + 0x804 + (i << 5)) = gFarmAnimals[i].name[4];
+        *((u8*)buff + 0x805 + (i << 5)) = gFarmAnimals[i].name[5];
+        *((u8*)buff + 0x806 + (i << 5)) = gFarmAnimals[i].affection;
+        *((u8*)buff + 0x807 + (i << 5)) = gFarmAnimals[i].location;
+        *(f32*)((u8*)buff + (i << 5) + 0x808) = gFarmAnimals[i].coordinates.x;
+        *(f32*)((u8*)buff + (i << 5) + 0x80C) = gFarmAnimals[i].coordinates.z;
+        *((u8*)buff + 0x810 + (i << 5)) = gFarmAnimals[i].type;
+        *((u8*)buff + 0x811 + (i << 5)) = gFarmAnimals[i].condition;
+        *((u8*)buff + 0x812 + (i << 5)) = gFarmAnimals[i].typeCounter;
+        *((u8*)buff + 0x813 + (i << 5)) = gFarmAnimals[i].conditionCounter;
+        *(u16*)((u8*)buff + 0x814 + (i << 5)) = gFarmAnimals[i].flags;
+        *((u8*)buff + 0x816 + (i << 5)) = gFarmAnimals[i].unk_23[0];
+        *((u8*)buff + 0x817 + (i << 5)) = gFarmAnimals[i].unk_23[1];
+        *((u8*)buff + 0x818 + (i << 5)) = gFarmAnimals[i].unk_23[2];
+        *((u8*)buff + 0x819 + (i << 5)) = gFarmAnimals[i].unk_23[3];
+        *((u8*)buff + 0x81A + (i << 5)) = gFarmAnimals[i].unk_23[4];
+        *((u8*)buff + 0x81B + (i << 5)) = gFarmAnimals[i].unk_23[5];
+        *((u8*)buff + 0x81C + (i << 5)) = gFarmAnimals[i].birthdaySeason;
+        *((u8*)buff + 0x81D + (i << 5)) = gFarmAnimals[i].birthdayDayOfMonth;
+        *((u8*)buff + 0x81E + (i << 5)) = gFarmAnimals[i].normalMilk;
+    }
+
+    row = 0;
+    idx = 0;
+
+    for (row = 0; row < FIELD_HEIGHT; row++) {
+        for (col = 0; col < FIELD_WIDTH; col++) {
+            ((u8*)buff->farmFieldTiles)[idx] = farmFieldTiles[row][col];
+            idx++;
+        }
+    }
+
+    row = 0;
+    idx = 0;
+
+    for (row = 0; row < FIELD_HEIGHT; row++) {
+        for (col = 0; col < FIELD_WIDTH; col++) {
+            ((u8*)buff->greenhouseFieldTiles)[idx] = greenhouseFieldTiles[row][col];
+            idx++;
+        }
+    }
+
+    buff->lifeEventBits[0] = lifeEventBits[0];
+    buff->lifeEventBits[1] = lifeEventBits[1];
+    buff->lifeEventBits[2] = lifeEventBits[2];
+    buff->lifeEventBits[3] = lifeEventBits[3];
+    buff->lifeEventBits[4] = lifeEventBits[4];
+    buff->lifeEventBits[5] = lifeEventBits[5];
+    buff->lifeEventBits[6] = lifeEventBits[6];
+    buff->lifeEventBits[7] = lifeEventBits[7];
+    buff->lifeEventBits[8] = lifeEventBits[8];
+    buff->lifeEventBits[9] = lifeEventBits[9];
+    buff->lifeEventBits[10] = lifeEventBits[10];
+    buff->lifeEventBits[11] = lifeEventBits[11];
+    buff->lifeEventBits[12] = lifeEventBits[12];
+    buff->lifeEventBits[13] = lifeEventBits[13];
+    buff->lifeEventBits[14] = lifeEventBits[14];
+    buff->lifeEventBits[15] = lifeEventBits[15];
+
+    buff->specialDialogueBits[0] = specialDialogueBits[0];
+    buff->specialDialogueBits[1] = specialDialogueBits[1];
+    buff->specialDialogueBits[2] = specialDialogueBits[2];
+    buff->specialDialogueBits[3] = specialDialogueBits[3];
+    buff->specialDialogueBits[4] = specialDialogueBits[4];
+    buff->specialDialogueBits[5] = specialDialogueBits[5];
+    buff->specialDialogueBits[6] = specialDialogueBits[6];
+    buff->specialDialogueBits[7] = specialDialogueBits[7];
+    buff->specialDialogueBits[8] = specialDialogueBits[8];
+    buff->specialDialogueBits[9] = specialDialogueBits[9];
+    buff->specialDialogueBits[10] = specialDialogueBits[10];
+    buff->specialDialogueBits[11] = specialDialogueBits[11];
+    buff->specialDialogueBits[12] = specialDialogueBits[12];
+    buff->specialDialogueBits[13] = specialDialogueBits[13];
+    buff->specialDialogueBits[14] = specialDialogueBits[14];
+    buff->specialDialogueBits[15] = specialDialogueBits[15];
+
+    // calculate and write checksum
+    buff->checksum = func_800E38E8(buff);
+
+    // write to memory
+    func_8004DD7C(devAddr, buff, 0x1000);
+
+    result = FALSE;
+
+    // verify save (signature and checksum)
+    if (func_800E3300(buff->signature)) {
+        if (func_800E391C(buff)) {
+            result = TRUE;
+        }
+    }
+
+    return result;
+    
+}
 
 //INCLUDE_ASM("asm/nonmatchings/game/loadGameScreen", func_800E66A0);
 
-void func_800E66A0(u8 arg0, u8 arg1, u8 arg2, u8 arg3) {
+void func_800E66A0(u8 saveSlot, u8 arg1, u8 arg2, u8 arg3) {
 
     u32 devAddr;
     u32 vaddr;
     u32 temp;
 
-    temp =  arg0 << 12;
+    temp =  saveSlot << 12;
     
     devAddr = temp + 0x08000000;
-    vaddr = 0x8030D000;
+    vaddr = SRAM_BUFFER;
      
     if (arg1 == 0) {
         func_8004DC48(devAddr, vaddr, 0x1000);
@@ -1861,7 +2632,7 @@ void func_800E66A0(u8 arg0, u8 arg1, u8 arg2, u8 arg3) {
         func_800E16A0();
 
         if (loadGameScreenContext.gamePakEnabled) {
-            func_8004D9AC(CONTROLLER_1, &loadGameScreenContext.unk_0[(arg0 * 4 + arg0) * 4 + arg0], &loadGameScreenContext.unk_15[(arg0 * 4 + arg0) * 4 + arg0 - 5], 0, 0x1000, vaddr);
+            func_8004D9AC(CONTROLLER_1, &loadGameScreenContext.unk_0[(saveSlot * 4 + saveSlot) * 4 + saveSlot], &loadGameScreenContext.unk_15[(saveSlot * 4 + saveSlot) * 4 + saveSlot - 5], 0, 0x1000, vaddr);
         }
         
     }
@@ -1887,32 +2658,32 @@ void func_800E66A0(u8 arg0, u8 arg1, u8 arg2, u8 arg3) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/loadGameScreen", func_800E67E4);
 
-void func_800E67E4(u8 arg0, u8 arg1) {
+void func_800E67E4(u8 saveSlot, u8 arg1) {
 
     u32 devAddr;
     u32 vaddr;
     u32 temp;
 
-    D_8030D000[0] = 0;
-    D_8030D000[1] = 0;
-    D_8030D000[2] = 0;
-    D_8030D000[3] = 0;
-    D_8030D000[4] = 0;
-    D_8030D000[5] = 0;
-    D_8030D000[6] = 0;
-    D_8030D000[7] = 0;
-    D_8030D000[8] = 0;
-    D_8030D000[9] = 0;
-    D_8030D000[10] = 0;
-    D_8030D000[11] = 0;
-    D_8030D000[12] = 0;
-    D_8030D000[13] = 0;
-    D_8030D000[14] = 0;
-    D_8030D000[15] = 0;
+    sramBuffer.signature[0] = 0;
+    sramBuffer.signature[1] = 0;
+    sramBuffer.signature[2] = 0;
+    sramBuffer.signature[3] = 0;
+    sramBuffer.signature[4] = 0;
+    sramBuffer.signature[5] = 0;
+    sramBuffer.signature[6] = 0;
+    sramBuffer.signature[7] = 0;
+    sramBuffer.signature[8] = 0;
+    sramBuffer.signature[9] = 0;
+    sramBuffer.signature[10] = 0;
+    sramBuffer.signature[11] = 0;
+    sramBuffer.signature[12] = 0;
+    sramBuffer.signature[13] = 0;
+    sramBuffer.signature[14] = 0;
+    sramBuffer.signature[15] = 0;
 
-    temp =  arg0 << 12;
+    temp =  saveSlot << 12;
     devAddr = temp + 0x08000000;
-    vaddr = 0x8030D000;
+    vaddr = SRAM_BUFFER;
 
     if (arg1 == 0) {
         func_8004DD7C(devAddr, vaddr, 0x10);
@@ -1921,52 +2692,67 @@ void func_800E67E4(u8 arg0, u8 arg1) {
         func_800E16A0();
 
         if (loadGameScreenContext.gamePakEnabled) {
-            func_8004DAF4(CONTROLLER_1, &loadGameScreenContext.unk_0[(arg0 * 4 + arg0) * 4 + arg0], &loadGameScreenContext.unk_15[(arg0 * 4 + arg0) * 4 + arg0 - 5]);
+            func_8004DAF4(CONTROLLER_1, &loadGameScreenContext.unk_0[(saveSlot * 4 + saveSlot) * 4 + saveSlot], &loadGameScreenContext.unk_15[(saveSlot * 4 + saveSlot) * 4 + saveSlot - 5]);
         }
         
     }
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/loadGameScreen", func_800E68F4);
+//INCLUDE_ASM("asm/nonmatchings/game/loadGameScreen", loadCompletionScreen);
 
-void func_800E68F4(void) {
+void loadCompletionScreen(void) {
 
     u8 i = 0;
 
+    // 0 initialize strings
     for (i = 0; i < 7; i++) {
         func_800E6C08(i);
-    }
+    } 
     
+    // abbreviated player names on first screen
     setGameVariableString(0, (u8*)&D_801FB708[0], 6);
     setGameVariableString(1, (u8*)&D_801FB708[1], 6);
     setGameVariableString(2, (u8*)&D_801FB708[2], 6);
     setGameVariableString(3, (u8*)&D_801FB708[3], 6);
     setGameVariableString(4, (u8*)&D_801FB708[4], 6);
     
+    // load game state from sram and write completion screen strings
     func_800E9550(0);
     func_800E9550(1);
     func_800E9550(2);
     func_800E9550(3);
     func_800E9550(4);
+
+    // set strings from game state
     func_800EA3AC(0, 0);
     func_800EA3AC(1, 0);
     func_800EA3AC(2, 0);
     func_800EA3AC(3, 0);
+    // game pak
     func_800EA3AC(0, 1);
     func_800EA3AC(1, 1);
+
+    // save/cache completion state into sram?
     func_800E9B2C(0);
     func_800E9B2C(1);
     func_800E9B2C(2);
     func_800E9B2C(3);
     func_800E9B2C(4);
+
+    // set up sprites and message boxes
     func_800E6FB4(0);
+
+    // overlay screen rankings sprites
     func_800B6674();
+    // update sprite rgba
     func_800B7B34();
 
-    setMainLoopCallbackFunctionIndex(0x36);
+    setMainLoopCallbackFunctionIndex(COMPLETION_SCREEN);
     
+    // completion screen action index
     D_801FB9A0 = 0;
+    // row index
     D_801FB99B[0] = 0;
 
     // unused
@@ -1980,6 +2766,7 @@ void func_800E68F4(void) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/loadGameScreen", func_800E6C08);
 
+// setup/reset completion screen strings
 void func_800E6C08(u8 arg0) {
 
     u32 *ptr;
@@ -2103,14 +2890,15 @@ void func_800E6C08(u8 arg0) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/loadGameScreen", func_800E6FB4);
 
+// set up completion screen sprites and message boxes
 void func_800E6FB4(u8 arg0) {
 
     func_8003DD14(0);
-    initializeEmptyMessageBox(0, (u8*)0x8030B000);
+    initializeEmptyMessageBox(0, (u8*)MESSAGE_BOX_1_TEXT_BUFFER);
     setMessageBoxViewSpacePosition(0, -28.0f, 32.0f, 0.0f);
     func_8003F5D0(0, 10, 2);
     func_8003F630(0, 0, 2);
-    func_8003F464(0, 14, 14, (u8*)0x802FF000, (u16*)0x8030A000);
+    func_8003F464(0, 14, 14, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
     func_8003F360(0, -4, 2);
     setMessageBoxSpriteIndices(0, 0xFF, 0, 0);
     setMessageBoxButtonMask(0, BUTTON_A);
@@ -2118,11 +2906,11 @@ void func_800E6FB4(u8 arg0) {
     initializeMessageBox(0, 0, 7, 0x80000);
     
     func_8003DD14(1);
-    initializeEmptyMessageBox(1, (u8*)0x8030B400);
+    initializeEmptyMessageBox(1, (u8*)MESSAGE_BOX_2_TEXT_BUFFER);
     setMessageBoxViewSpacePosition(1, -28.0f, 0.0f, 0.0f);
     func_8003F5D0(1, 10, 2);
     func_8003F630(1, 0, 2);
-    func_8003F464(1, 14, 14, (u8*)0x802FF000, (u16*)0x8030A000);
+    func_8003F464(1, 14, 14, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
     func_8003F360(1, -4, 2);
     setMessageBoxSpriteIndices(1, 0xFF, 0, 0);
     setMessageBoxButtonMask(1, BUTTON_A);
@@ -2130,11 +2918,11 @@ void func_800E6FB4(u8 arg0) {
     initializeMessageBox(1, 0, 8, 0x80000);
     
     func_8003DD14(2);
-    initializeEmptyMessageBox(2, (u8*)0x8030B800);
+    initializeEmptyMessageBox(2, (u8*)MESSAGE_BOX_3_TEXT_BUFFER);
     setMessageBoxViewSpacePosition(2, -28.0f, -32.0f, 0.0f);
     func_8003F5D0(2, 10, 2);
     func_8003F630(2, 0, 2);
-    func_8003F464(2, 14, 14, (u8*)0x802FF000, (u16*)0x8030A000);
+    func_8003F464(2, 14, 14, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
     func_8003F360(2, -4, 2);
     setMessageBoxSpriteIndices(2, 0xFF, 0, 0);
     setMessageBoxButtonMask(2, BUTTON_A);
@@ -2142,11 +2930,11 @@ void func_800E6FB4(u8 arg0) {
     initializeMessageBox(2, 0, 9, 0x80000);
     
     func_8003DD14(3);
-    initializeEmptyMessageBox(3, (u8*)0x8030BC00);
+    initializeEmptyMessageBox(3, (u8*)MESSAGE_BOX_4_TEXT_BUFFER);
     setMessageBoxViewSpacePosition(3, -28.0f, -64.0f, 0.0f);
     func_8003F5D0(3, 10, 2);
     func_8003F630(3, 0, 2);
-    func_8003F464(3, 14, 14, (u8*)0x802FF000, (u16*)0x8030A000);
+    func_8003F464(3, 14, 14, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
     func_8003F360(3, -4, 2);
     setMessageBoxSpriteIndices(3, 0xFF, 0, 0);
     setMessageBoxButtonMask(3, BUTTON_A);
@@ -2154,11 +2942,11 @@ void func_800E6FB4(u8 arg0) {
     initializeMessageBox(3, 0, 10, 0x80000);
     
     func_8003DD14(4);
-    initializeEmptyMessageBox(4, (u8*)0x8030C000);
+    initializeEmptyMessageBox(4, (u8*)MESSAGE_BOX_5_TEXT_BUFFER);
     setMessageBoxViewSpacePosition(4, -28.0f, -96.0f, 0.0f);
     func_8003F5D0(4, 10, 2);
     func_8003F630(4, 0, 2);
-    func_8003F464(4, 14, 14, (u8*)0x802FF000, (u16*)0x8030A000);
+    func_8003F464(4, 14, 14, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
     func_8003F360(4, -4, 2);
     setMessageBoxSpriteIndices(4, 0xFF, 0, 0);
     setMessageBoxButtonMask(4, BUTTON_A);
@@ -2471,30 +3259,32 @@ void func_800E8F08(void) {
     
 }
 
+// load game state from sram and write completion screen strings
 INCLUDE_ASM("asm/nonmatchings/game/loadGameScreen", func_800E9550);
 
+// save/cache completion state into sram?
 INCLUDE_ASM("asm/nonmatchings/game/loadGameScreen", func_800E9B2C);
 
 //INCLUDE_ASM("asm/nonmatchings/game/loadGameScreen", func_800EA2A4);
 
 void func_800EA2A4(u8 arg0) {
     
-    D_8030E000[0] = 0;
-    D_8030E000[1] = 0;
-    D_8030E000[2] = 0;
-    D_8030E000[3] = 0;
-    D_8030E000[4] = 0;
-    D_8030E000[5] = 0;
-    D_8030E000[6] = 0;
-    D_8030E000[7] = 0;
-    D_8030E000[8] = 0;
-    D_8030E000[9] = 0;
-    D_8030E000[10] = 0;
-    D_8030E000[11] = 0;
-    D_8030E000[12] = 0;
-    D_8030E000[13] = 0;
-    D_8030E000[14] = 0;
-    D_8030E000[15] = 0;
+    gamePakBuffer[0] = 0;
+    gamePakBuffer[1] = 0;
+    gamePakBuffer[2] = 0;
+    gamePakBuffer[3] = 0;
+    gamePakBuffer[4] = 0;
+    gamePakBuffer[5] = 0;
+    gamePakBuffer[6] = 0;
+    gamePakBuffer[7] = 0;
+    gamePakBuffer[8] = 0;
+    gamePakBuffer[9] = 0;
+    gamePakBuffer[10] = 0;
+    gamePakBuffer[11] = 0;
+    gamePakBuffer[12] = 0;
+    gamePakBuffer[13] = 0;
+    gamePakBuffer[14] = 0;
+    gamePakBuffer[15] = 0;
 
     func_8004DD7C(((arg0 * 0x100) + 0x4000) | 0x08000000, 0x8030E000, 0x10);
 
@@ -2544,8 +3334,10 @@ static inline void setHorseAffection() {
 
 //INCLUDE_ASM("asm/nonmatchings/game/loadGameScreen", func_800EA3AC);
 
+// set strings from game state
 void func_800EA3AC(u8 arg0, u8 arg1) {
 
+    // set game state from sram
     if (func_800E4424(arg0, arg1)) {
 
         D_801FB999[0] = 1;
@@ -2708,6 +3500,7 @@ void func_800EA3AC(u8 arg0, u8 arg1) {
     
 }
 
+// completion score calculation
 INCLUDE_ASM("asm/nonmatchings/game/loadGameScreen", func_800EAA9C);
 
 //INCLUDE_ASM("asm/nonmatchings/game/loadGameScreen", func_800EB74C);

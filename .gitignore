@@ -18,6 +18,9 @@
 !config/us/symbol_addrs.txt
 !config/us/undefined_funcs.txt
 !config/us/undefined_syms.txt
+!config/jp/symbol_addrs.txt
+!config/jp/undefined_funcs.txt
+!config/jp/undefined_syms.txt
 !tools/requirements.txt
 *.mid
 !mozart-sample.mid

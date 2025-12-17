@@ -1,4 +1,6 @@
 #include "common.h"
 
-// TODO: actually a struct (stores different types and accessed contiguously)
-u8 D_8030D000[0x1000];
+#include "sramBuffer.h"
+
+// 0x8030D000
+SramBuffer sramBuffer;

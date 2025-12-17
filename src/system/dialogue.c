@@ -29,9 +29,9 @@ void func_80044D78(u16);
 void updateCurrentDialogue(u16);
 
 
-//INCLUDE_ASM("asm/nonmatchings/system/dialogue", func_80042F60);
+//INCLUDE_ASM("asm/nonmatchings/system/dialogue", initializeDialogueSessionManagers);
 
-void func_80042F60(void) {
+void initializeDialogueSessionManagers(void) {
  
     u16 i;
  

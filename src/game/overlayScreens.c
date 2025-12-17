@@ -4,6 +4,7 @@
 
 #include "system/audio.h"
 #include "system/controller.h"
+#include "system/entity.h"
 #include "system/globalSprites.h"
 #include "system/math.h"
 #include "system/message.h"
@@ -11,6 +12,7 @@
 
 #include "game/animals.h"
 #include "game/game.h"
+#include "game/gameAudio.h"
 #include "game/gameStatus.h"
 #include "game/initialize.h"
 #include "game/level.h"
@@ -23,6 +25,7 @@
 #include "game/tv.h"
 
 #include "buffers/buffers.h"
+#include "data/animationScripts/animationScripts.h"
 
 #include "mainLoop.h"
 
@@ -45,18 +48,20 @@ extern u8 D_8018A72C[6];
 extern u8 D_80237420[31];
 
 // data
-extern f32 D_80116C80[];
-extern f32 D_80116C90;
-extern f32 D_80116C94[];
-extern f32 D_80116C9C;
-extern f32 D_80116CA0[];
-extern f32 D_80116CB0;
-extern f32 D_80116CB4[];
-extern f32 D_80116CBC;
-extern f32 D_80116CC0[];
-extern f32 D_80116CC8[];
-extern f32 D_80116CD8[];
-extern f32 D_80116CE8[];
+extern f32 toolXPositions[];
+extern f32 currentToolXPosition;
+extern f32 toolYPositions[];
+extern f32 currentToolYPosition;
+extern f32 belongingsXPosition[];
+extern f32 heldItemXPosition;
+extern f32 belongingsYPosition[];
+extern f32 heldItemYPosition;
+extern f32 keyItemsXPosition[];
+extern f32 keyItemsYPosition[];
+
+extern f32 toolchestXPosition[];
+extern f32 toolchestYPosition[];
+
 extern f32 D_80116CF0[];
 extern f32 D_80116D00;
 extern f32 D_80116D04[];
@@ -64,19 +69,32 @@ extern f32 D_80116D0C;
 extern f32 D_80116D10[];
 extern f32 D_80116D20[];
 extern f32 D_80116D28[];
-extern f32 D_80116D3C[];
 extern f32 D_80116D38;
+extern f32 D_80116D3C[];
 extern f32 D_80116D44;
+extern f32 D_80116D48[];
+extern f32 D_80116D58[];
+extern f32 D_80116D60[];
+extern f32 D_80116D70;
+extern f32 D_80116D74[];
+extern f32 D_80116D7C;
 extern f32 D_80116D80[];
 extern f32 D_80116D90[];
 extern f32 D_80116DA0[];
 extern f32 D_80116DB0[];
 extern f32 D_80116DC0[5];
 extern f32 D_80116DD4[5];
+extern f32 D_80116DE8[];
+extern f32 D_80116E00[];
 extern f32 D_80116E18[];
 extern f32 D_80116E40[];
 extern f32 D_80116E68[];
 extern f32 D_80116E90[];
+
+// animation indices
+extern u16 D_80116EB8[];
+extern u16 D_80116EF4[];
+
 extern u32 D_80116F24[];
 extern u16 D_80116F4C[];
 extern u16 D_80116F88[];
@@ -86,19 +104,29 @@ extern u16 D_80117148[];
 void func_800B2F34(void); 
 void func_800B4160(void);
 void func_800B8844(void);
+void func_800B8980(void);
 void func_800B90E0(void);
+void func_800B9914(void);
+void func_800B9B8C(void);
 void func_800B99EC(void);
 f32 func_800BA928(u8, u32);                          
-f32 func_800BA9E8(u8, u32);                
+f32 func_800BA9E8(u8, u32);     
+void func_800BAAA0(void);         
+void func_800BAC7C(void);
+void func_800BAF1C(void);
 void func_800BB590(void);
+void func_800BBAF0(void);
 void func_800BBBC8(void);             
+void func_800BBD34(void);
+void func_800BC7D8(void);  
+void func_800BC918(void);
 f32 func_800BE3B8(u8, u32);                          
 f32 func_800BE428(u8, u32);
-f32 func_800C0238(u8, u8);             
-f32 func_800C02A8(u8, u8);    
+f32 func_800C0238(u8, u32);             
+f32 func_800C02A8(u8, u32);    
 u8 func_800C0688(u8 tool);
-void func_800C0F24(void);                   
-void func_800C1710(void);               
+void func_800C0F24(void);         
+void func_800C1710(void);             
 void func_800C2060(void);        
 void func_800C2128(void);           
 void func_800C2504(void);
@@ -106,25 +134,37 @@ inline void func_800C292C(void);
 void func_800C3108(void);
 void func_800C34C0(u8, u8, u8); 
 void func_800C39A0(void);
+void func_800C4A74(void);
 void func_800C4E90(void);
 void func_800C5080(void);
-void func_800C6E98(void);
+void func_800C5218(void);
+void func_800C5AA4(void);
 void func_800C5DA4(void);
+void func_800C6E98(void);
 f32 func_800BC700(u8, u32);
 f32 func_800BC770(u8, u32);
 void func_800C7850(void);
 void func_800C7C88(f32 x, f32 y);
 void func_800C7CE4(f32 x, f32 y);
+void func_800C7D40(f32 x, f32 y);      
+void func_800C7D9C(f32 x, f32 y);  
 void func_800C7DF8(void);
 void func_800C7E18(void);
 void func_800C7E38(void);
 void func_800C7E58(void);
 void func_800C7E78(void);
+void func_800C80F0(f32 x, f32 y);
+void func_800C814C(f32 x, f32 y);
+void func_800C81A8(void);
 void func_800C81C8(void);
+void func_800C81E8(u8 arg0, u8 arg1);
 void func_800CC6F0(void);
 void func_800CCFC8(void);
 void func_800CD628(void);
+void func_800CDA6C(void);
+void func_800CE7A8(u8 arg0);
 void func_800CEA74(void);
+void func_800CE894(u8 arg0);
 bool func_800CF34C(u8 arg0);
 void func_800CF3C4(u8 arg0);
 bool func_800CF498(u8 arg0);
@@ -215,17 +255,18 @@ void func_800B2CE0(void) {
     deactivateOverlayScreenSprites(0xD);
     deactivateOverlayScreenSprites(0xE);
 
-    for (i = 0; i < 0x28; i++) {
-        deactivateSprite(i + 0xA3);
+    for (i = 0; i < 40; i++) {
+        deactivateSprite(0xA3 + i);
     }
 
-    for (j = 0; j < 0x1E; j++) {
-        deactivateSprite(j + 0x8F);
+    for (j = 0; j < 30; j++) {
+        deactivateSprite(0x8F + j);
     }
 
-    for (k = 0; k < 0xA; k++) {
-        deactivateSprite(k + 0xAD);
+    for (k = 0; k < 10; k++) {
+        deactivateSprite(0xAD + k);
     }
+
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800B2F34);
@@ -797,6 +838,8 @@ void func_800B5DA8(void) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800B5FC4);
 
+// load game screen
+
 void func_800B5FC4(u8 arg0, u8 arg1, u8 arg2) {
 
     // FIXME: shouldn't be necessary
@@ -1040,8 +1083,8 @@ void func_800B64E4(u8 arg0, u8 arg1) {
 
         if (arg0 != 0xFF) {
 
-            resetAnimationState(arg0 + 0xA3);
-            startSpriteAnimation(arg0 + 0xA3, 8, 0xFF);
+            resetAnimationState(0xA3 + arg0);
+            startSpriteAnimation(0xA3 + arg0, 8, 0xFF);
             
             switch (arg0) {
 
@@ -1371,9 +1414,9 @@ void func_800B7FC8(u8 arg0, u8 arg1) {
 
     if (arg0 != 0xFF) {
         if (arg1) {
-            setSpritePaletteIndex(arg0 + 0x83, 1);
+            setSpritePaletteIndex(0x83 + arg0, 1);
         } else {
-            setSpritePaletteIndex(arg0+ 0x83, 0xF);
+            setSpritePaletteIndex(0x83 + arg0, 15);
         }
     }
 
@@ -1535,6 +1578,9 @@ void func_800B881C(void) {
     func_800B8844();
 }
 
+
+/* pause screen functions */
+
 //INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800B8844);
 
 void func_800B8844(void) {
@@ -1632,7 +1678,125 @@ void func_800B8980(void) {
     
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800B90E0);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800B90E0);
+
+void func_800B90E0(void) {
+
+    u8 i;
+    u32 j, k;
+    
+    u8 temp;
+    u16 temp2;
+    u16 temp3;
+    
+    u16* ptr;
+    u16* ptr2;
+    
+    for (i = 0; i < 9; i++) {
+        resetAnimationState(0xA3 + i);
+    }
+
+    for (i = 0; i < 8; i++) {
+    
+        f32* toolXCoords = toolXPositions;
+        f32* toolYCoords = toolYPositions;
+        j = i;
+
+        if (gPlayer.toolSlots[i]) {
+             
+            dmaSprite(0xA3 + i, (u32)&_toolsTextureSegmentRomStart, (u32)&_toolsTextureSegmentRomEnd, (u32)&_toolsAssetsIndexSegmentRomStart, (u32)&_toolsAssetsIndexSegmentRomEnd, (u32) &_toolsSpritesheetIndexSegmentRomStart, (u32)&_toolsSpritesheetIndexSegmentRomEnd, (i * 0x600) + 0x8028FA00, (i * 0x600) + 0x8028FD00, (u16*)0x80299600, (u16*)0x8029BE00, (u8*)0x8029EE00, (u32*)0x8029F000, 1, 0);
+            setSpriteViewSpacePosition(0xA3 + i, toolXCoords[j & 3], *(f32*)((u8*)toolYCoords + (j & 0xFC)), 256.0f);
+            setSpriteColor(0xA3 + i, 0xFF, 0xFF, 0xFF, 0);
+            setSpriteRenderingLayer(0xA3 + i, 2);
+            setBilinearFiltering(0xA3 + i, 1);
+            startSpriteAnimation(0xA3 + i, func_80030BA0(toolsAnimationScripts, D_80116EB8[gPlayer.toolSlots[i]] + func_800C0688(gPlayer.toolSlots[i])), 0);
+        
+        }
+        
+    }
+
+    if (gPlayer.currentTool) {
+
+        dmaSprite(0xA3 + i, (u32)&_toolsTextureSegmentRomStart, (u32)&_toolsTextureSegmentRomEnd, (u32)&_toolsAssetsIndexSegmentRomStart, (u32)&_toolsAssetsIndexSegmentRomEnd, (u32) &_toolsSpritesheetIndexSegmentRomStart, (u32)&_toolsSpritesheetIndexSegmentRomEnd, (i * 0x600) + 0x8028FA00, (i * 0x600) + 0x8028FD00, (u16*)0x80299600, (u16*)0x8029BE00, (u8*)0x8029EE00, (u32*)0x8029F000, 1, 0);
+        setSpriteViewSpacePosition(0xA3 + i, currentToolXPosition, currentToolYPosition, 256.0f);
+        setSpriteColor(0xA3 + i, 0xFF, 0xFF, 0xFF, 0);
+        setSpriteRenderingLayer(0xA3 + i, 2);
+        setBilinearFiltering(0xA3 + i, 1);
+        
+        temp = func_800C0688(gPlayer.currentTool);
+        ptr = &D_80116EB8[gPlayer.currentTool];
+        
+        __asm__ __volatile__("" : : : "memory");
+        
+        temp2 = *ptr + temp;
+        ptr2 = toolsAnimationScripts;
+        
+        __asm__ __volatile__("" : : : "memory");
+
+        startSpriteAnimation(0xA3 + i, func_80030BA0(ptr2, temp2), 0);
+
+    }
+    
+    for (i = 0; i < 9; i++) {
+        resetAnimationState(0xAC + i);
+    }
+
+    for (i = 0; i < 8; i++) {
+
+        f32* belongingXCoords = belongingsXPosition;
+        f32* belongingYCoords = belongingsYPosition;
+        j = i;
+
+        if (gPlayer.belongingsSlots[i]) {
+            
+            dmaSprite(0xAC + i, (u32)&_holdableItemsTextureSegmentRomStart, (u32)&_holdableItemsTextureSegmentRomEnd, (u32)&_holdableItemsAssetsIndexSegmentRomStart, (u32)&_holdableItemsAssetsIndexSegmentRomEnd, (u32) &_holdableItemsSpritesheetIndexSegmentRomStart, (u32)&_holdableItemsSpritesheetIndexSegmentRomEnd, (i * 0x600) + 0x80293000, (i * 0x600) + 0x80293300, (u16*)0x8029F600, (u16*)0x802A1E00, (u8*)0x802A5300, (u32*)0x802A5500, 1, 0);
+            setSpriteViewSpacePosition(0xAC + i, belongingXCoords[j & 3], *(f32*)((u8*)belongingYCoords + (j & 0xFC)), 256.0f);
+            setSpriteColor(0xAC + i, 0xFF, 0xFF, 0xFF, 0);
+            setSpriteRenderingLayer(0xAC + i, 2);
+            setBilinearFiltering(0xAC + i, 1);
+            startSpriteAnimation(0xAC + i, func_80030BA0(shopItemsAnimationScripts, func_800D5A88(gPlayer.belongingsSlots[i])), 0);
+        
+        }
+        
+    }
+
+    if (gPlayer.heldItem) {
+        dmaSprite(0xAC + i, (u32)&_holdableItemsTextureSegmentRomStart, (u32)&_holdableItemsTextureSegmentRomEnd, (u32)&_holdableItemsAssetsIndexSegmentRomStart, (u32)&_holdableItemsAssetsIndexSegmentRomEnd, (u32) &_holdableItemsSpritesheetIndexSegmentRomStart, (u32)&_holdableItemsSpritesheetIndexSegmentRomEnd, (i * 0x600) + 0x80293000, (i * 0x600) + 0x80293300, (u16*)0x8029F600, (u16*)0x802A1E00, (u8*)0x802A5300, (u32*)0x802A5500, 1, 0);
+        setSpriteViewSpacePosition(0xAC + i, heldItemXPosition, heldItemYPosition, 256.0f);
+        setSpriteColor(0xAC + i, 0xFF, 0xFF, 0xFF, 0);
+        setSpriteRenderingLayer(0xAC + i, 2);
+        setBilinearFiltering(0xAC + i, 1);
+        startSpriteAnimation(0xAC + i, func_80030BA0(shopItemsAnimationScripts, func_800D5A88(gPlayer.heldItem)), 0);
+    }
+
+    for (i = 0; i < 8; i++) {
+        resetAnimationState(0xB5 + i);
+    }
+
+    for (i = 0; i < 8; i++) {
+
+        k = i;
+        
+        if (gPlayer.keyItemSlots[overlayScreenTable.pageNumber * 8 + i]) {
+            
+            dmaSprite(0xB5 + i, (u32)&_holdableItemsTextureSegmentRomStart, (u32)&_holdableItemsTextureSegmentRomEnd, (u32)&_holdableItemsAssetsIndexSegmentRomStart, (u32)&_holdableItemsAssetsIndexSegmentRomEnd, (u32) &_holdableItemsSpritesheetIndexSegmentRomStart, (u32)&_holdableItemsSpritesheetIndexSegmentRomEnd, (i * 0x600) + 0x80296600, (i * 0x600) + 0x80296900, (u16*)0x8029F600, (u16*)0x802A1E00, (u8*)0x802A5300, (u32*)0x802A5500, 1, 0);
+            setSpriteViewSpacePosition(0xB5 + i, keyItemsXPosition [k & 1], keyItemsYPosition[k >> 1], 256.0f);
+            setSpriteColor(0xB5 + i, 0xFF, 0xFF, 0xFF, 0);
+            setSpriteRenderingLayer(0xB5 + i, 2);
+            setBilinearFiltering(0xB5 + i, 1);
+
+            temp3 = gPlayer.keyItemSlots[overlayScreenTable.pageNumber * 8 + i];
+            ptr = &D_80116EF4;
+
+            __asm__ __volatile__("" : : : "memory");
+            
+            startSpriteAnimation(0xB5 + i, func_80030BA0(shopItemsAnimationScripts, ptr[temp3]), 0);
+        
+        }
+        
+    }
+    
+}
 
 //INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800B9914);
 
@@ -1756,8 +1920,545 @@ void func_800B9B8C(void) {
     
 }
 
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800B9D3C);
+
 // pause screen main loop callback
-INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800B9D3C);
+void func_800B9D3C(void) {
+
+    bool set = FALSE;
+    bool flag;
+
+    u8 tempItem;
+    u32 temp2;
+
+    switch (overlayScreenTable.subscreen) {
+
+        case 0:
+            func_800B8980();
+            overlayScreenTable.subscreen = 1;
+            break;
+
+        case 1:
+            if (func_8002CBF8(0x86)) {
+                startSpriteAnimation(0x79, 3, 0);
+                overlayScreenTable.subscreen = 5;
+            }
+            break;
+
+        case 2:
+            if (func_8002CBF8(0x86)) {
+                func_800B2CE0();
+                overlayScreenTable.subscreen = 3;
+            }
+            break;
+        
+        case 3:
+            deactivateSprite(0x80);
+            func_80059368();
+            func_80059300();
+            break;    
+
+        case 4:
+            if (func_8003F0DC()) {
+                overlayScreenTable.subscreen = overlayScreenTable.unk_7;
+            }
+            break;
+
+        case 5:
+            
+            if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_SOUTHWEST)) {
+            
+                if (!set) {
+                    
+                    if (overlayScreenTable.cellIndex == 8) {
+                        
+                        overlayScreenTable.cellIndex = overlayScreenTable.unk_3;
+                        playSfx(2);
+                        
+                    } else {
+                        
+                        overlayScreenTable.previousCellIndex = overlayScreenTable.cellIndex;
+                        
+                        if (overlayScreenTable.cellIndex < 4) {
+                            overlayScreenTable.cellIndex += 4;
+                            playSfx(2);
+                        } else if (overlayScreenTable.unk_3 == 0xFF) {
+                            overlayScreenTable.cellIndex -= 4;
+                            overlayScreenTable.subscreen = 6;
+                            playSfx(2);
+                        }
+                    
+                    }
+                    
+                    set = TRUE;
+                    
+                }
+                
+            }
+
+            if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_NORTHEAST)) {
+                
+                if (!set) {
+                    
+                    if (overlayScreenTable.cellIndex != 8) {
+                        
+                        overlayScreenTable.previousCellIndex = overlayScreenTable.cellIndex;
+                        
+                        if (overlayScreenTable.cellIndex >= 4) {
+                            overlayScreenTable.cellIndex -= 4;
+                            playSfx(2);
+                        }
+                    
+                        set = TRUE;
+                        
+                    }
+                        
+                }
+            }
+            
+            if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_SOUTHEAST)) {
+                
+                if (!set) {
+                    
+                    if (overlayScreenTable.cellIndex != 8) {
+                        
+                        overlayScreenTable.previousCellIndex = overlayScreenTable.cellIndex;
+                        
+                        if ((overlayScreenTable.cellIndex != 3) && (overlayScreenTable.cellIndex != 7)) {
+                            
+                            overlayScreenTable.cellIndex++;
+                            playSfx(2);
+                            
+                        } else if (overlayScreenTable.unk_3 == 0xFF) {
+                            
+                            if (overlayScreenTable.cellIndex == 3) {
+                                overlayScreenTable.cellIndex = 0;
+                            }
+                            
+                            if (overlayScreenTable.cellIndex == 7) {
+                                overlayScreenTable.cellIndex = 2;
+                            }
+                        
+                            overlayScreenTable.subscreen = 7;
+                            playSfx(2);
+                        
+                        }
+                        
+                        set = TRUE;
+                        
+                    }
+                }
+                
+            }
+            
+            if ((checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_NORTHWEST))) {
+
+                if (!set) {
+                    
+                    if (overlayScreenTable.cellIndex != 8) {
+                    
+                        overlayScreenTable.previousCellIndex = overlayScreenTable.cellIndex;
+                        
+                        if (overlayScreenTable.cellIndex && (overlayScreenTable.cellIndex != 4)) {
+                            overlayScreenTable.cellIndex = overlayScreenTable.cellIndex - 1;
+                            playSfx(2);
+                        }
+                        
+                        set = TRUE;
+                    
+                    }
+                }
+                
+            }
+            
+            if (overlayScreenTable.pageNumber != 2) {
+                func_800C7C88(96.0f, -104.0f);
+            } else {
+                func_800C7DF8();
+            }
+            
+            if (overlayScreenTable.pageNumber) {
+                func_800C7CE4(96.0f, 56.0f);
+            } else {
+                func_800C7E18();
+            }
+            
+            break;
+
+        case 6:
+
+            if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_SOUTHWEST)) {
+                
+                if (!set) {
+                    
+                    if (overlayScreenTable.cellIndex == 8) {
+                        overlayScreenTable.cellIndex = overlayScreenTable.unk_3;
+                        playSfx(2);
+                    } else if (overlayScreenTable.cellIndex < 4) {
+                        overlayScreenTable.cellIndex += 4;
+                        playSfx(2);
+                    }
+                    
+                    set = TRUE;
+                    
+                }
+                
+            }
+            
+            if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_NORTHEAST)) {
+                
+                if (!set) {
+                    
+                    if (overlayScreenTable.cellIndex != 8) {
+                    
+                        if (overlayScreenTable.cellIndex >= 4) {
+                            
+                            overlayScreenTable.cellIndex -= 4;
+                            playSfx(2);
+                        
+                        } else if (overlayScreenTable.unk_3 == 0xFF) {
+                            overlayScreenTable.cellIndex += 4;
+                            overlayScreenTable.subscreen = 5;
+                            playSfx(2);
+                        }
+                        
+                        set = TRUE;
+                        
+                    }
+                    
+                }
+                
+            }
+            
+            if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_SOUTHEAST)) {
+                
+                if (!set) {
+                    
+                    if (overlayScreenTable.cellIndex != 8) {
+                        
+                        if (overlayScreenTable.cellIndex != 3 && overlayScreenTable.cellIndex != 7) {
+                            
+                            overlayScreenTable.cellIndex++;
+                            playSfx(2);
+                            
+                        } else if (overlayScreenTable.unk_3 == 0xFF) {
+                            
+                            if (overlayScreenTable.cellIndex == 3) {
+                                overlayScreenTable.cellIndex = 4;
+                            }
+                            if (overlayScreenTable.cellIndex == 7) {
+                                overlayScreenTable.cellIndex = 6;
+                            }
+                            
+                            overlayScreenTable.subscreen = 7;
+                            playSfx(2);
+                            
+                        }
+                        
+                        set = TRUE;
+                        
+                    }
+                    
+                }
+                
+            }
+            
+            if ((checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_NORTHWEST))) {
+
+                if (!set) {
+                    
+                    if (overlayScreenTable.cellIndex != 8) {
+                        
+                        if (overlayScreenTable.cellIndex && overlayScreenTable.cellIndex != 4) {
+                            overlayScreenTable.cellIndex--;
+                            playSfx(2);
+                        }
+                        
+                        set = TRUE;
+                        
+                    }
+                    
+                }
+                
+            }
+
+            if (overlayScreenTable.pageNumber != 2) {
+                func_800C7C88(96.0f, -104.0f);
+            } else {
+                func_800C7DF8();
+            }
+            
+            if (overlayScreenTable.pageNumber) {
+                func_800C7CE4(96.0f, 56.0f);
+            } else {
+                func_800C7E18();
+            }
+            
+            break;
+
+        case 7:
+            
+            if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_SOUTHWEST)) {
+                
+                if (!set) {
+                
+                    if (overlayScreenTable.cellIndex < 6) {
+                        overlayScreenTable.cellIndex += 2;
+                        playSfx(2);
+                    } else if (overlayScreenTable.pageNumber != 2) {
+                        overlayScreenTable.pageNumber++;
+                        overlayScreenTable.cellIndex -= 6;
+                        func_800B90E0();
+                        func_800B9914();
+                        playSfx(2);
+                    }
+                        
+                    set = TRUE;
+                
+                }
+                
+            }
+            
+            if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_NORTHEAST)) {
+                
+                if (!set) {
+                    
+                    if (overlayScreenTable.cellIndex >= 2) {
+                        overlayScreenTable.cellIndex -= 2;
+                        playSfx(2);
+                    } else if (overlayScreenTable.pageNumber) {
+                        overlayScreenTable.pageNumber--;
+                        overlayScreenTable.cellIndex += 6;
+                        func_800B90E0();
+                        func_800B9914();
+                        playSfx(2);
+                    }
+                    
+                    set = TRUE;
+                    
+                }
+            }
+            
+            if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_SOUTHEAST)) {
+                
+                if (!set) {
+                
+                    if (!(overlayScreenTable.cellIndex & 1)) {
+                        overlayScreenTable.cellIndex++;
+                        playSfx(2);
+                    }
+                    
+                    set = TRUE;
+                
+                }
+            }
+            
+            if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_NORTHWEST)) {
+
+                if (!set) {
+
+                    temp2 = overlayScreenTable.cellIndex;
+
+                    if (temp2 & 1) {
+                        
+                        overlayScreenTable.cellIndex--;
+                        playSfx(2);
+                        
+                    } else if (overlayScreenTable.unk_3 == 0xFF) {
+                        
+                        if (overlayScreenTable.cellIndex < 4) {
+                            
+                            if (overlayScreenTable.cellIndex == 0) {
+                                overlayScreenTable.cellIndex = 3;
+                            } else {
+                                overlayScreenTable.cellIndex = 7;
+                            }
+                            
+                            overlayScreenTable.subscreen = 5;
+                                
+                        } else {
+                            if (overlayScreenTable.cellIndex == 4) {
+                                overlayScreenTable.cellIndex = 3;
+                                overlayScreenTable.subscreen = 6;
+                            }  else {
+                                overlayScreenTable.cellIndex = 7;
+                                overlayScreenTable.subscreen = 6;
+                            }
+                        }
+                        
+                        playSfx(2);
+                        
+                    }
+                    
+                    set = TRUE;
+
+                }
+                
+            }
+            
+            if (overlayScreenTable.pageNumber != 2) {
+                func_800C7C88(96.0f, -104.0f);
+            } else {
+                func_800C7DF8();
+            }
+            
+            if (overlayScreenTable.pageNumber) {
+                func_800C7CE4(96.0f, 56.0f);
+            } else {
+                func_800C7E18();
+            }
+            
+            break;
+        
+        case 8:
+            if (func_8002CBF8(0x86)) {
+                func_800B2CE0();
+                overlayScreenTable.subscreen = 9;
+            }
+            break;
+        
+        case 9:
+            deactivateSprite(0x80);
+            setMainLoopCallbackFunctionIndex(0x1E);
+            break;
+        
+    }
+
+    if (4 < overlayScreenTable.subscreen && overlayScreenTable.subscreen < 8) {
+
+        if (checkButtonPressed(CONTROLLER_1, BUTTON_B)) {
+            
+            if (!set) {
+                
+                if (overlayScreenTable.unk_3 != 0xFF) {
+                    
+                    overlayScreenTable.cellIndex = overlayScreenTable.unk_3;
+                    overlayScreenTable.unk_3 = 0xFF;
+                    overlayScreenTable.subscreen = overlayScreenTable.unk_5;
+                    overlayScreenTable.pageNumber = overlayScreenTable.unk_4;
+                    func_800B9914();
+                    
+                } else {
+                    func_800B9B8C();
+                    resetAnimationState(0x79);
+                    func_800C7DF8();
+                    func_800C7E18();
+                    deactivateSprite(0x82);
+                    overlayScreenTable.subscreen = 2;
+                }
+                
+                playSfx(1);
+                set = TRUE;
+
+            }
+            
+        }
+
+        if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
+            
+            if (!set) {
+                
+                if (overlayScreenTable.unk_3 != 0xFF) {
+                
+                    tempItem = 0xFF;
+                    
+                    if (overlayScreenTable.subscreen == 6) {
+                        if (gPlayer.belongingsSlots[overlayScreenTable.cellIndex]) {
+                            tempItem = gPlayer.belongingsSlots[overlayScreenTable.cellIndex];
+                        }
+                    }
+                    
+                    if ((tempItem == 0xFF) || (getItemFlags(tempItem) & 2)) {
+                        
+                        func_800BAC7C();
+                        
+                        overlayScreenTable.cellIndex = overlayScreenTable.unk_3;
+                        overlayScreenTable.unk_3 = 0xFF;
+                        overlayScreenTable.subscreen = overlayScreenTable.unk_5;
+                        overlayScreenTable.pageNumber = overlayScreenTable.unk_4;
+    
+                        func_800B90E0();
+                        func_800B9914();
+                    
+                    }
+                    
+                } else {
+                    
+                    tempItem = 0xFF;
+
+                    if (overlayScreenTable.subscreen == 6) {
+                        if (gPlayer.belongingsSlots[overlayScreenTable.cellIndex]) {
+                            tempItem = gPlayer.belongingsSlots[overlayScreenTable.cellIndex];
+                        }
+                    }
+                    
+                    if ((tempItem == 0xFF) || (getItemFlags(tempItem) & 2)) {
+
+                        overlayScreenTable.unk_3 = overlayScreenTable.cellIndex;
+                        overlayScreenTable.unk_4 = overlayScreenTable.pageNumber;
+                        overlayScreenTable.unk_5 = overlayScreenTable.subscreen; 
+                        
+                        if (4 < overlayScreenTable.subscreen && overlayScreenTable.subscreen < 7) {
+                            overlayScreenTable.cellIndex = 8;
+                        }
+                        
+                        func_800B9914();
+                        
+                    }
+                    
+                }
+                
+                playSfx(0);
+                set = TRUE;
+                
+            }
+
+        }
+        
+        if (checkButtonPressed(CONTROLLER_1, BUTTON_Z)) {
+    
+            if (!set) {
+
+                tempItem = 0;
+                
+                switch (overlayScreenTable.subscreen) {
+
+                    case 5:
+                        tempItem = gPlayer.toolSlots[overlayScreenTable.cellIndex];
+                        flag = 0;
+                        break;
+                    case 6:
+                        tempItem = gPlayer.belongingsSlots[overlayScreenTable.cellIndex];
+                        flag = 1;
+                        break;
+                    case 7:
+                        tempItem = gPlayer.keyItemSlots[(overlayScreenTable.pageNumber * 8) + overlayScreenTable.cellIndex];
+                        flag = 2;
+                        break;
+                    
+                }
+
+                if (tempItem) {
+                    
+                    func_800C81E8(flag, tempItem);
+
+                    overlayScreenTable.unk_7 = overlayScreenTable.subscreen;
+                    overlayScreenTable.subscreen = 4;
+                    
+                }
+
+            }
+            
+        }
+        
+        if (4 < overlayScreenTable.subscreen && overlayScreenTable.subscreen < 8) {
+            setSpriteViewSpacePosition(0x79, (func_800BA928(overlayScreenTable.subscreen, overlayScreenTable.cellIndex) - 16.0f), func_800BA9E8(overlayScreenTable.subscreen, overlayScreenTable.cellIndex) - 8.0f, 256.0f);
+            func_800BAAA0();
+        }
+        
+    }
+
+}
 
 //INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800BA928);
 
@@ -1772,9 +2473,9 @@ f32 func_800BA928(u8 arg0, u32 arg1) {
             arg1 &= 0xFF;
 
             if (arg1 < 8) {
-                res = D_80116C80[arg1 & 0x3];
+                res = toolXPositions[arg1 & 0x3];
             } else {
-                res = D_80116C90;
+                res = currentToolXPosition;
             }
             break;
         
@@ -1783,15 +2484,15 @@ f32 func_800BA928(u8 arg0, u32 arg1) {
             arg1 &= 0xFF;
 
             if (arg1 < 8) {
-                res = D_80116CA0[arg1 & 0x3];
+                res = belongingsXPosition[arg1 & 0x3];
             } else {
-                res = D_80116CB0;
+                res = heldItemXPosition;
             }
             
             break;
 
         case 7:
-            res = D_80116CC0[arg1 & 1];
+            res = keyItemsXPosition[arg1 & 1];
             break;
         
     }
@@ -1813,9 +2514,9 @@ f32 func_800BA9E8(u8 arg0, u32 arg1) {
             arg1 &= 0xFF;
             
             if (arg1 < 8) {
-                res = D_80116C94[(arg1 & 0xFC) / 4];
+                res = toolYPositions[(arg1 & 0xFC) / 4];
             } else {
-                res = D_80116C9C;
+                res = currentToolYPosition;
             }
             break;
         
@@ -1824,15 +2525,15 @@ f32 func_800BA9E8(u8 arg0, u32 arg1) {
             arg1 &= 0xFF;
             
             if (arg1 < 8) {
-                res = D_80116CB4[(arg1 & 0xFC) / 4];
+                res = belongingsYPosition[(arg1 & 0xFC) / 4];
             } else {
-                res = D_80116CBC;
+                res = heldItemYPosition;
             }
             
             break;
 
         case 7:
-            res = D_80116CC8[(arg1 /2) & 0x7F];
+            res = keyItemsYPosition[(arg1 /2) & 0x7F];
             break;
         
     }
@@ -2015,6 +2716,11 @@ void func_800BAF1C(void) {
     
 }
 
+/* end pause screen functions */
+
+
+/* toolchest functions */
+
 INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800BB590);
 
 //INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800BBAF0);
@@ -2125,8 +2831,365 @@ void func_800BBD34(void) {
     
 }
 
-// toolbox callback
-INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800BBEC0);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800BBEC0);
+
+// toolchest callback
+void func_800BBEC0(void) {
+
+    bool set = FALSE;
+
+    u8 tempTool;
+    
+    switch (overlayScreenTable.subscreen) {
+        
+        case 0:
+            func_800BAF1C();
+            overlayScreenTable.subscreen = 1;
+            break;
+        
+        case 1:
+            if (func_8002CBF8(0x86)) {
+                startSpriteAnimation(0x79, 3, 0);
+                overlayScreenTable.subscreen = 6;
+            }
+            break;
+        
+        case 2:
+            if (func_8002CBF8(0x86)) {
+                func_800B2CE0();
+                overlayScreenTable.subscreen = 3;
+            }
+            break;
+        
+        case 3:
+            deactivateSprite(0x80);
+            func_80059300();
+            func_80059368();
+            break;
+        
+        case 4:
+            if (func_8003F0DC()) {
+                overlayScreenTable.subscreen = overlayScreenTable.unk_7;
+            }
+            break;
+
+        case 5:
+            
+            if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_SOUTHWEST)) {
+                
+                if (!set) {
+                    
+                    overlayScreenTable.previousCellIndex = overlayScreenTable.cellIndex;
+                    
+                    if (overlayScreenTable.cellIndex < 4) {
+                        overlayScreenTable.cellIndex += 4;
+                        playSfx(2);
+                    }
+
+                    set = TRUE;
+                    
+                }
+                
+            }
+            
+            if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_NORTHEAST)) {
+                
+                if (!set) {
+                    
+                    overlayScreenTable.previousCellIndex = overlayScreenTable.cellIndex;
+                    
+                    if (overlayScreenTable.cellIndex >= 4) {
+                        overlayScreenTable.cellIndex -= 4;
+                    } else {
+                        overlayScreenTable.cellIndex += + 4;
+                        overlayScreenTable.subscreen = 6;
+                    }
+                
+                    playSfx(2);
+                    set = TRUE;
+                
+                }
+                
+            }
+            
+            if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_SOUTHEAST)) {
+                
+                if (!set) {
+                    
+                    overlayScreenTable.previousCellIndex = overlayScreenTable.cellIndex;
+                    
+                    if ((overlayScreenTable.cellIndex != 3) && (overlayScreenTable.cellIndex != 7)) {
+                        
+                        overlayScreenTable.cellIndex++;
+                        playSfx(2);
+                        
+                    } else if (overlayScreenTable.pageNumber != 3) {
+                        
+                        if (overlayScreenTable.cellIndex == 3) {
+                            overlayScreenTable.cellIndex = 0;
+                        } else {
+                            overlayScreenTable.cellIndex = 4;
+                        }
+                        
+                        overlayScreenTable.pageNumber++;
+                        
+                        func_800BB590();
+                        func_800BBAF0();
+                        
+                        playSfx(2);
+                        
+                    }
+                    
+                    set = TRUE;
+                    
+                }
+                
+            }
+            
+            if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_NORTHWEST)) {
+
+                if (!set) {
+
+                    if (overlayScreenTable.cellIndex != 8) {
+
+                       overlayScreenTable.previousCellIndex = overlayScreenTable.cellIndex;
+                        
+                        if (overlayScreenTable.cellIndex && overlayScreenTable.cellIndex != 4) {
+                            
+                            overlayScreenTable.cellIndex--;
+                            playSfx(2);
+                            
+                        } else if (overlayScreenTable.pageNumber) {
+
+                            if (overlayScreenTable.cellIndex == 0) {
+                                overlayScreenTable.cellIndex = 3;
+                            } else {
+                                overlayScreenTable.cellIndex = 7;
+                            }
+
+                            overlayScreenTable.pageNumber--;
+                            func_800BB590();
+                            func_800BBAF0();
+
+                            playSfx(2);
+                            
+                        }
+
+                        set = TRUE;
+                        
+                    }
+                
+                }
+                    
+            }
+
+            if (overlayScreenTable.pageNumber) {
+                func_800C7D40(-96.0f, -64.0f);
+            } else {
+                func_800C7E38();
+            }
+            if (overlayScreenTable.pageNumber != 3) {
+                func_800C7D9C(96.0f, -64.0f);
+            } else {
+                func_800C7E58();
+            }
+    
+            break;
+
+        case 6:
+
+            if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_SOUTHWEST)) {
+                
+                if (!set) {
+                    
+                    if (overlayScreenTable.cellIndex == 8) {
+                        overlayScreenTable.cellIndex = 1;
+                    } else if (overlayScreenTable.cellIndex < 4) {
+                        overlayScreenTable.cellIndex += 4;
+                    } else {
+                        overlayScreenTable.cellIndex -= 4;
+                        overlayScreenTable.subscreen = 5;
+                    }
+                    
+                    playSfx(2);
+                    set = TRUE;
+                
+                }
+                
+            }
+
+            if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_NORTHEAST)) {
+                
+                if (!set) {
+                    
+                    if (overlayScreenTable.cellIndex != 8) {
+                        
+                        if (overlayScreenTable.cellIndex >= 4) {
+                            overlayScreenTable.cellIndex -= 4;
+                        } else {
+                            overlayScreenTable.cellIndex = 8;
+                        }
+                        
+                        playSfx(2);
+                        set = TRUE;
+                    
+                    }
+                }
+                
+            }
+    
+            if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_SOUTHEAST)) {
+                    
+                if (!set) {
+                    
+                    if (overlayScreenTable.cellIndex != 8) {
+                        
+                        if ((overlayScreenTable.cellIndex != 3) && (overlayScreenTable.cellIndex != 7)) {
+                            overlayScreenTable.cellIndex++;
+                            playSfx(2);
+                        }
+                    
+                        set = TRUE;
+                    
+                    }
+                    
+                }
+            }
+    
+            if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_NORTHWEST)) {
+    
+                if (!set) {
+                    
+                    if (overlayScreenTable.cellIndex != 8) {
+                        
+                        if (overlayScreenTable.cellIndex && overlayScreenTable.cellIndex != 4) {
+                            overlayScreenTable.cellIndex--;
+                            playSfx(2);
+                        }
+                        
+                        set = TRUE;
+                        
+                    }
+                    
+                }
+                        
+            }
+ 
+            if (overlayScreenTable.pageNumber) {
+                func_800C7D40(-96.0f, -64.0f);
+            } else {
+                func_800C7E38();
+            }
+            if (overlayScreenTable.pageNumber != 3) {
+                func_800C7D9C(96.0f, -64.0f);
+            } else {
+                func_800C7E58();
+            }
+            
+            
+        
+        break;
+    
+    }
+
+    if (4 < overlayScreenTable.subscreen && overlayScreenTable.subscreen < 7) {
+                
+        if (checkButtonPressed(CONTROLLER_1, BUTTON_B)) {
+        
+            if (!set) {
+                
+                if (overlayScreenTable.unk_3 != 0xFF) {
+                    
+                    overlayScreenTable.cellIndex = overlayScreenTable.unk_3;
+                    overlayScreenTable.unk_3 = 0xFF;
+                    overlayScreenTable.subscreen = overlayScreenTable.unk_5;
+                    overlayScreenTable.pageNumber = overlayScreenTable.unk_4;
+
+                    func_800BB590();
+                    func_800BBAF0();
+                    
+                } else {
+                    func_800BBD34();
+                    resetAnimationState(0x79);
+                    func_800C7E38();
+                    func_800C7E58();
+                    deactivateSprite(0x82);
+                    overlayScreenTable.subscreen = 2;
+                }
+    
+                playSfx(1);
+                set = TRUE;
+            }
+            
+        }
+    
+        if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
+            
+            if (!set) {
+                
+                if (overlayScreenTable.unk_3 != 0xFF) {
+                    
+                    func_800BC918();
+                    
+                    overlayScreenTable.cellIndex = overlayScreenTable.unk_3;
+                    overlayScreenTable.unk_3 = 0xFF;
+                    overlayScreenTable.subscreen =overlayScreenTable.unk_5;
+                    overlayScreenTable.pageNumber = overlayScreenTable.unk_4;
+
+                    func_800BB590();
+                    
+                } else {
+                    overlayScreenTable.unk_3 = overlayScreenTable.cellIndex;
+                    overlayScreenTable.unk_5 = overlayScreenTable.subscreen;
+                    overlayScreenTable.unk_4 = overlayScreenTable.pageNumber;
+                }
+                
+                func_800BBAF0();
+                
+                playSfx(0);
+                set = TRUE;
+            
+            }
+            
+        }
+        
+        if (checkButtonPressed(CONTROLLER_1, BUTTON_Z)) {
+
+            if (!set) {
+
+                tempTool = 0;
+                
+                if (overlayScreenTable.subscreen != 5) {
+                    if (overlayScreenTable.subscreen == 6) {
+                        tempTool = gPlayer.toolSlots[overlayScreenTable.cellIndex];
+                    }
+                } else {
+                    tempTool = gToolchestSlots[(overlayScreenTable.pageNumber * 8) + overlayScreenTable.cellIndex];
+                }
+                
+                if (tempTool) {
+                    
+                    func_800C81E8(0, tempTool);
+
+                    __asm__ __volatile__("" : : : "memory");
+                    
+                    overlayScreenTable.unk_7 = overlayScreenTable.subscreen;
+                    overlayScreenTable.subscreen = 4;
+                    
+                }
+                
+            }
+            
+        }
+    
+        if (4 < overlayScreenTable.subscreen && overlayScreenTable.subscreen < 7) {
+            setSpriteViewSpacePosition(0x79, func_800BC700(overlayScreenTable.subscreen, overlayScreenTable.cellIndex) - 16.0f, func_800BC770(overlayScreenTable.subscreen, overlayScreenTable.cellIndex) - 8.0f, 256.0f);
+            func_800BC7D8();
+        }
+    
+    }
+    
+}
 
 //INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800BC700);
 
@@ -2137,7 +3200,7 @@ f32 func_800BC700(u8 arg0, u32 arg1) {
     switch (arg0) {
 
         case 5:
-            res = D_80116CD8[arg1 & 0x3];
+            res = toolchestXPosition[arg1 & 0x3];
             break;
         
         case 6:
@@ -2166,7 +3229,7 @@ f32 func_800BC770(u8 arg0, u32 arg1) {
     switch (arg0) {
 
         case 5:
-            res = D_80116CE8[(arg1 & 0xFC) / 4];
+            res = toolchestYPosition[(arg1 & 0xFC) / 4];
             break;
         
         case 6:
@@ -2186,10 +3249,86 @@ f32 func_800BC770(u8 arg0, u32 arg1) {
     
 }
 
-// rucksack
-INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800BC7D8);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800BC7D8);
 
-INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800BC918);
+void func_800BC7D8(void) {
+
+    u8 i;
+
+    setSpriteColor(0x83, 0x80, 0x80, 0x80, 0xFF);
+    setSpriteColor(0x84, 0x80, 0x80, 0x80, 0xFF);
+    setSpriteColor(0x83, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteColor(0x84, 0xFF, 0xFF, 0xFF, 0xFF);
+    
+    for (i = 0; i < 9; i++) {
+
+        if (gToolchestSlots[(overlayScreenTable.pageNumber * 8) + i]) {
+            setSpriteColor(0xA3 + i, 0xFF, 0xFF, 0xFF, 0xFF);
+        }
+        
+    }
+
+    for (i = 0; i < 9; i++) {
+
+        if (gPlayer.toolSlots[i]) {
+            setSpriteColor(0xAC + i, 0xFF, 0xFF, 0xFF, 0xFF);
+        }
+        
+    }
+    
+    
+}
+
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800BC918);
+
+// swap tools
+void func_800BC918(void) {
+
+    u8 temp;
+    
+    switch (overlayScreenTable.subscreen) {
+
+        case 5:
+            
+            temp = gToolchestSlots[(overlayScreenTable.pageNumber * 8) + overlayScreenTable.cellIndex];
+            
+            if (overlayScreenTable.unk_5 == overlayScreenTable.subscreen) {
+                
+                gToolchestSlots[(overlayScreenTable.pageNumber * 8) + overlayScreenTable.cellIndex] = 
+                    gToolchestSlots[(overlayScreenTable.unk_4 * 8) + overlayScreenTable.unk_3];
+                
+                gToolchestSlots[(overlayScreenTable.unk_4 * 8) + overlayScreenTable.unk_3] = temp;
+                
+            } else {
+                gToolchestSlots[(overlayScreenTable.pageNumber * 8) + overlayScreenTable.cellIndex] = gPlayer.toolSlots[overlayScreenTable.unk_3];
+                gPlayer.toolSlots[overlayScreenTable.unk_3] = temp;
+            }
+
+            break;
+
+        case 6:
+
+            temp = gPlayer.toolSlots[overlayScreenTable.cellIndex];
+            
+            if (overlayScreenTable.unk_5 == overlayScreenTable.subscreen) {
+                
+                gPlayer.toolSlots[overlayScreenTable.cellIndex] = gPlayer.toolSlots[overlayScreenTable.unk_3];
+                gPlayer.toolSlots[overlayScreenTable.unk_3] = temp;
+                
+            } else {
+                gPlayer.toolSlots[overlayScreenTable.cellIndex] = gToolchestSlots[(overlayScreenTable.unk_4 * 8) + overlayScreenTable.unk_3];
+                gToolchestSlots[(overlayScreenTable.unk_4 * 8) + overlayScreenTable.unk_3] = temp;
+            }
+            
+            break;
+        
+    }
+    
+}
+
+/* end toolchest funcs */
+
+
 
 //INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800BCA9C);
 
@@ -2214,7 +3353,6 @@ void func_800BCA9C(void) {
     setMainLoopCallbackFunctionIndex(0x25);
     
 }
-
 
 INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800BCBE8);
 
@@ -2330,6 +3468,7 @@ void func_800BD998(void) {
     
 }
 
+// freezer callback function
 INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800BDB24);
 
 //INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800BE3B8);
@@ -2365,7 +3504,7 @@ inline f32 func_800BE3B8(u8 arg0, u32 arg1) {
 
 f32 func_800BE428(u8 arg0, u32 arg1) {
 
-        f32 res;
+    f32 res;
     
     switch (arg0) {
 
@@ -2376,6 +3515,7 @@ f32 func_800BE428(u8 arg0, u32 arg1) {
         case 6:
 
             arg1 &= 0xFF;
+
             if (arg1 < 8) {
                 res = D_80116D3C[(arg1 & 0xFC) / 4];
             } else {
@@ -2633,9 +3773,71 @@ void func_800BF804(void) {
 
 INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800BF990);
 
-INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800C0238);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800C0238);
 
-INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800C02A8);
+f32 func_800C0238(u8 arg0, u32 arg1) {
+
+   f32 res;
+    
+    switch (arg0) {
+
+        case 5:
+
+            arg1 &= 0xFF;
+            res = D_80116D48[arg1 & 0x3];
+            
+            break;
+        
+        case 101:
+
+            arg1 &= 0xFF;
+
+            if (arg1 < 8) {
+                res = D_80116D60[arg1 & 0x3];
+            } else {
+                res = D_80116D70;
+            }
+            
+            break;
+
+    }
+
+    return res;
+
+}
+
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800C02A8);
+
+f32 func_800C02A8(u8 arg0, u32 arg1) {
+
+   f32 res;
+    
+    switch (arg0) {
+
+        case 5:
+
+            arg1 &= 0xFF;
+            res = D_80116D58[(arg1 & 0xFC) / 4];
+            
+            break;
+        
+        case 101:
+
+            arg1 &= 0xFF;
+
+            if (arg1 < 8) {
+                res = D_80116D74[(arg1 & 0xFC) / 4];
+            } else {
+                res = D_80116D7C;
+            }
+            
+            break;
+
+    }
+
+    return res;
+    
+}
 
 //INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800C0310);
 
@@ -2678,7 +3880,7 @@ bool func_800C0450(u8 arg0) {
         case 5:
             temp = D_801890E8[(overlayScreenTable.pageNumber * 8) + overlayScreenTable.cellIndex];
             break;
-        case 0x65:
+        case 101:
             temp = gPlayer.belongingsSlots[overlayScreenTable.cellIndex];
             break;
         
@@ -2696,7 +3898,51 @@ bool func_800C0450(u8 arg0) {
     
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800C0504);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800C0504);
+
+void func_800C0504(void) {
+
+    u8 temp;
+    
+    switch (overlayScreenTable.subscreen) {
+
+        case 5:
+            
+            temp = D_801890E8[(overlayScreenTable.pageNumber * 8) + overlayScreenTable.cellIndex];
+            
+            if (overlayScreenTable.unk_5 == overlayScreenTable.subscreen) {
+                
+                D_801890E8[(overlayScreenTable.pageNumber * 8) + overlayScreenTable.cellIndex] = 
+                    D_801890E8[(overlayScreenTable.unk_4 * 8) + overlayScreenTable.unk_3];
+                
+                D_801890E8[(overlayScreenTable.unk_4 * 8) + overlayScreenTable.unk_3] = temp;
+                
+            } else {
+                D_801890E8[(overlayScreenTable.pageNumber * 8) + overlayScreenTable.cellIndex] = gPlayer.belongingsSlots[overlayScreenTable.unk_3];
+                gPlayer.belongingsSlots[overlayScreenTable.unk_3] = temp;
+            }
+
+            break;
+
+        case 101:
+
+            temp = gPlayer.belongingsSlots[overlayScreenTable.cellIndex];
+            
+            if (overlayScreenTable.unk_5 == overlayScreenTable.subscreen) {
+                
+                gPlayer.belongingsSlots[overlayScreenTable.cellIndex] = gPlayer.belongingsSlots[overlayScreenTable.unk_3];
+                gPlayer.belongingsSlots[overlayScreenTable.unk_3] = temp;
+                
+            } else {
+                gPlayer.belongingsSlots[overlayScreenTable.cellIndex] = D_801890E8[(overlayScreenTable.unk_4 * 8) + overlayScreenTable.unk_3];
+                D_801890E8[(overlayScreenTable.unk_4 * 8) + overlayScreenTable.unk_3] = temp;
+            }
+            
+            break;
+        
+    }
+    
+}
 
 //INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800C0688);
 
@@ -3403,14 +4649,14 @@ void func_800C4E90(void) {
         
         for (j = 0; j < 8; j++) {
 
-            if (checkRecipe(overlayScreenTable.pageNumber * 0x10 + i)) {
+            if (checkRecipe(overlayScreenTable.pageNumber * 16 + i)) {
 
                 dmaSprite(i + 0xA3, (u32)&_overlayScreenNamesTextureSegmentRomStart, (u32)&_overlayScreenNamesTextureSegmentRomEnd, (u32)&_overlayScreenNamesAssetsIndexSegmentRomStart, (u32)&_overlayScreenNamesAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8027EC00, NULL, (u16*)0x80289400, (u16*)0x80289500, (u8*)0x80289800, NULL, 0, FALSE);
-                setSpriteViewSpacePosition(i + 0xA3, (k  << 7) + -120.0f, 64.0f - (j * 0x10), 8.0f);
+                setSpriteViewSpacePosition(i + 0xA3, (k * 128) + -120.0f, 64.0f - (j * 16), 8.0f);
                 setSpriteColor(i + 0xA3, 0xFF, 0xFF, 0xFF, 0xFF);
                 setSpriteRenderingLayer(i + 0xA3, 2);
                 setBilinearFiltering(i + 0xA3, 1);
-                startSpriteAnimation(i + 0xA3, 1, (i + (overlayScreenTable.pageNumber * 0x10)));
+                startSpriteAnimation(i + 0xA3, 1, (i + (overlayScreenTable.pageNumber * 16)));
                 
             }
 
@@ -3485,7 +4731,210 @@ void func_800C5218(void) {
 
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800C53C0);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800C53C0);
+
+// recipe book callback
+void func_800C53C0(void) {
+
+    bool set = FALSE;
+    
+    switch (overlayScreenTable.subscreen) {
+        
+        case 0:
+            func_800C4A74();
+            overlayScreenTable.subscreen = 1;
+            break;
+        
+        case 1:
+            if (func_8002CBF8(0x82)) {
+                setSpriteViewSpacePosition(0x79, (f32)((overlayScreenTable.unk_8 * 128) - 128), (f32)(56 - (overlayScreenTable.unk_9 * 16)), 32.0f);
+                startSpriteAnimation(0x79, 3, 0);
+                overlayScreenTable.subscreen = 5;
+            }
+            break;
+        
+        case 2:
+            if (func_8002CBF8(0x82)) {
+                func_800B2CE0();
+                overlayScreenTable.subscreen = 3;
+            }
+            break;
+        
+        case 3:
+            deactivateSprite(0x80);
+            func_80059368();
+            func_80059300();
+            break;
+        
+        case 4:
+            
+            if (!(messageBoxes[0].flags & (0x40 | 0x80))) {
+                
+                if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_SOUTHWEST)) {
+                    
+                    if (!set) {
+                        if (func_8003FE9C(0)) {
+                            playSfx(2);
+                        }
+                        set = TRUE;
+                    }
+                
+                }
+                
+                if ((checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_NORTHEAST))) {
+                    
+                    if (!set) {
+                        
+                        if (func_8003FFF4(0)) {
+                            playSfx(2);
+                        }
+                        
+                        set = TRUE;
+                        
+                    }
+                }
+                
+                if (func_80040140(0)) {
+                    func_800C80F0(0, -40.0f);
+                } else {
+                    func_800C81A8();
+                }
+                if (func_800401C8(0)) {
+                    func_800C814C(0, 40.0f);
+                } else {
+                    func_800C81C8();
+                }
+                
+                if (checkButtonPressed(CONTROLLER_1, (BUTTON_B | BUTTON_A))) {
+
+                    if (!set) {
+
+                        messageBoxes[0].flags &= ~0x8000;
+                        
+                        func_8003F130(0);
+                        
+                        set = TRUE;
+                        
+                        func_800C81A8();
+                        func_800C81C8();
+                        func_8003FB4C(0, 1);
+                        overlayScreenTable.subscreen = 5;
+                        
+                        playSfx(0);
+                        
+                        setSpriteViewSpacePosition(0x79, (f32)((overlayScreenTable.unk_8 * 128) - 128), (f32)(56 - (overlayScreenTable.unk_9 * 16)), 32.0f);
+                        startSpriteAnimation(0x79, 3, 0);
+                        
+                    }
+                    
+                }
+            
+            }
+            
+            break;
+
+        case 5:
+            
+            if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_NORTHWEST)) {
+                
+                if (!set) {
+                    if (overlayScreenTable.unk_8) {
+                        overlayScreenTable.unk_8--;
+                        playSfx(2);
+                    } else if (overlayScreenTable.pageNumber) {
+                        overlayScreenTable.pageNumber--;
+                        func_800C4E90();
+                        overlayScreenTable.unk_8 = 1;
+                        playSfx(2);
+                    }
+                    
+                    setSpriteViewSpacePosition(0x79, (f32)((overlayScreenTable.unk_8* 128) - 128), (f32)(56 - (overlayScreenTable.unk_9 * 16)), 32.0f);
+                    set = TRUE;
+                
+                }
+            
+            }
+
+            if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_SOUTHEAST)) {
+                
+                if (!set) {
+                    
+                    if (overlayScreenTable.unk_8 != 1) {
+                        overlayScreenTable.unk_8++;
+                        playSfx(2);
+                    } else if (overlayScreenTable.pageNumber != 2) {
+                        overlayScreenTable.pageNumber++;
+                        func_800C4E90();
+                        overlayScreenTable.unk_8 = 0;
+                        playSfx(2);
+                    }
+                
+                    setSpriteViewSpacePosition(0x79, (f32)((overlayScreenTable.unk_8* 128) - 128), (f32)(56 - (overlayScreenTable.unk_9 * 16)), 32.0f);
+                    set = TRUE;
+                
+                }
+            }
+            
+
+            if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_NORTHEAST)) {
+                
+                if (!set) {
+                    
+                    if (overlayScreenTable.unk_9) {
+                        overlayScreenTable.unk_9--;
+                        playSfx(2);
+                    }
+                
+                    setSpriteViewSpacePosition(0x79, (f32)((overlayScreenTable.unk_8* 128) - 128), (f32)(56 - (overlayScreenTable.unk_9 * 16)), 32.0f);
+                    set = TRUE;
+               
+                }
+                
+                
+            }
+            
+            if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_SOUTHWEST)) {
+
+                if (!set) {
+                    
+                    if (overlayScreenTable.unk_9 != 7) {
+                        overlayScreenTable.unk_9++;
+                        playSfx(2);
+                    }
+                    
+                    setSpriteViewSpacePosition(0x79, (f32)((overlayScreenTable.unk_8* 128) - 128), (f32)(56 - (overlayScreenTable.unk_9 * 16)), 32.0f);
+                    set = TRUE;
+                    
+                }
+                
+            }
+            
+            if (overlayScreenTable.pageNumber) {
+                func_800C7D40(-128.0f, 0);
+            } else {
+                func_800C7E38();
+            }
+            if (overlayScreenTable.pageNumber != 2) {
+                func_800C7D9C(128.0f, 0);
+            } else {
+                func_800C7E58();
+            }
+
+            break;
+    
+    
+    }
+
+    if (overlayScreenTable.subscreen >= 5 && checkButtonPressed(CONTROLLER_1, BUTTON_B) && !set) {
+        func_800C7E58();
+        func_800C7E38();
+        resetAnimationState(0x79);
+        func_800C5218();
+        overlayScreenTable.subscreen = 2;
+        playSfx(1);
+    }
+    
+}
 
 //INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800C5AA4);
 
@@ -3779,8 +5228,200 @@ void func_800C6F70(void) {
 
 static const u8 D_80121E34[20] = { 0x15, 0x16, 0x17, 0x18, 0x19, 0x1A, 0x1B, 0x1C, 0x1D, 0x1E, 0x1F, 0x20, 0x21, 0x22, 0x2D, 0x2E, 0, 0, 0, 0 };
 
-// D_80121E34
-INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800C7058);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800C7058);
+
+// album callback
+void func_800C7058(void) {
+
+    bool set;
+    u8 *ptr = D_80121E34;
+    
+    u8 buff[16];
+
+    memcpy(buff, ptr, 16);
+    
+    set = FALSE;
+    
+    switch (overlayScreenTable.subscreen) {
+
+        case 0:
+            func_800C5AA4();
+            overlayScreenTable.subscreen = 1;
+            break;
+        
+        case 1:
+            if (func_8002CBF8(0x82)) {
+                setSpriteViewSpacePosition(0x79, (f32)((overlayScreenTable.unk_8 * 128) - 120), (f32)(40 - (overlayScreenTable.unk_9 * 80)), 32.0f);
+                startSpriteAnimation(0x79, 3, 0);
+                overlayScreenTable.subscreen = 5;
+            }
+            break;
+        
+        case 2:
+            if (func_8002CBF8(0x82)) {
+                func_800B2CE0();
+                overlayScreenTable.subscreen = 3;
+            }
+            break;
+        
+        case 3:
+            deactivateSprite(0x80);
+            func_80059368();
+            func_80059300();
+            break;
+        
+        case 4:
+            if (func_8003F0DC()) {
+                overlayScreenTable.subscreen = 5;
+            }
+            break;
+
+        case 5:
+
+            if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_NORTHWEST)) {
+                
+                if (!set) {
+                    
+                    if (overlayScreenTable.unk_8) {
+                        overlayScreenTable.unk_8--;
+                        playSfx(2);
+                    } else if (overlayScreenTable.pageNumber) {
+                        overlayScreenTable.pageNumber--;
+                        func_800C5DA4();
+                        overlayScreenTable.unk_8 = 1;
+                        playSfx(2);
+                    
+                    }
+                    
+                    
+                    setSpriteViewSpacePosition(0x79, (f32)((overlayScreenTable.unk_8 * 128) - 120), (f32)(40 - (overlayScreenTable.unk_9 * 80)), 32.0f);
+                    set = TRUE;
+                    
+                }
+                
+            }
+
+            if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_SOUTHEAST)) {
+                
+                if (!set) {
+                
+                    if (overlayScreenTable.unk_8 != 1) {
+                        overlayScreenTable.unk_8++;
+                        playSfx(2);
+                    } else if (overlayScreenTable.pageNumber != 3) {
+                        overlayScreenTable.pageNumber++;
+                        func_800C5DA4();
+                        overlayScreenTable.unk_8 = 0;
+                        playSfx(2);
+                    }
+                    
+                    setSpriteViewSpacePosition(0x79, (f32)((overlayScreenTable.unk_8 * 128) - 120), (f32)(40 - (overlayScreenTable.unk_9 * 80)), 32.0f);
+                    set = TRUE;
+                    
+                }
+            
+            }
+
+            if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_NORTHEAST)) {
+                
+                if (!set) {
+                    
+                    if (overlayScreenTable.unk_9) {
+                        overlayScreenTable.unk_9--;
+                        playSfx(2);
+                    }
+                    
+                    setSpriteViewSpacePosition(0x79, (f32)((overlayScreenTable.unk_8 * 128) - 120), (f32)(40 - (overlayScreenTable.unk_9 * 80)), 32.0f);
+                    set = TRUE;
+                
+                }
+                
+            }
+
+            if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_SOUTHWEST)) {
+                
+                if (!set) {
+                
+                    if (overlayScreenTable.unk_9 != 1) {
+                        overlayScreenTable.unk_9++;
+                        playSfx(2);
+                    }
+                    
+                    setSpriteViewSpacePosition(0x79, (f32)((overlayScreenTable.unk_8 * 128) - 120), (f32)(40 - (overlayScreenTable.unk_9 * 80)), 32.0f);
+                    set = TRUE;
+                
+                }
+            
+            }
+
+            if ((checkButtonPressed(0, BUTTON_A))) {
+
+                if (!set) {
+
+                    // TODO: probably can refactor this
+                    if (albumBits & (1 << ((overlayScreenTable.unk_8 * 2) + overlayScreenTable.unk_9 + (overlayScreenTable.pageNumber * 4)))) {
+                        
+                        setMessageBoxViewSpacePosition(0, 0.0f, -64.0f, 352.0f);
+                        setMessageBoxSpriteIndices(0, 1, 0, 0);
+                        func_8003F5D0(0, 0x10, 3);
+                        func_8003F360(0, -4, 2);
+    
+                        // TODO: probably can refactor this
+                        initializeMessageBox(0, 2, buff[overlayScreenTable.pageNumber * 4 + ((overlayScreenTable.unk_8 * 2) + overlayScreenTable.unk_9)], 0);
+                        
+                        controllers->buttonPressed = 0;
+                        overlayScreenTable.subscreen = 4;
+                        
+                        playSfx(0);
+                        
+                    }
+                    
+                    set = TRUE;
+
+                }
+            
+            
+            }
+
+            if (overlayScreenTable.pageNumber) {
+                func_800C7D40(-128.0f, 8.0f);
+            } else {
+                func_800C7E38();
+            }
+                
+            if (overlayScreenTable.pageNumber != 3) {
+                func_800C7D9C(128.0f, 8.0f);
+            } else {
+                func_800C7E58();
+            }
+            
+            break;
+    
+    }
+    
+    if (overlayScreenTable.subscreen >= 5 && checkButtonPressed(CONTROLLER_1, 0x4000) && !set) {
+        func_800C7E58();
+        func_800C7E38();
+        resetAnimationState(0x79);
+        updateSpriteAlpha(0x89, 0, 0x18);
+        updateSpriteAlpha(0x8C, 0, 0x18);
+        updateSpriteAlpha(0x8D, 0, 0x18);
+        updateSpriteAlpha(0x8B, 0, 0x18);
+        updateSpriteAlpha(0x8A, 0, 0x18);
+        updateSpriteAlpha(0x8E, 0, 0x18);
+        updateSpriteAlpha(0x81, 0, 0x18);
+        updateSpriteAlpha(0x82, 0, 0x18);
+        updateSpriteAlpha(0x83, 0, 0x18);
+        updateSpriteAlpha(0x84, 0, 0x18);
+        updateSpriteAlpha(0x85, 0, 0x18);
+        updateSpriteAlpha(0x86, 0, 0x18);
+        deactivateOverlayScreenSprites(0);
+        deactivateOverlayScreenSprites(1);
+        overlayScreenTable.subscreen = 2;
+        playSfx(1);
+    }
+    
+}
 
 //INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", addRecipe);
 
@@ -4173,74 +5814,74 @@ void func_800C9FF0(void) {
     setGameVariableString(0x2E, overlayScreenStrings.dialogueVariableStrings[4], 6);
     setGameVariableString(0x2F, overlayScreenStrings.dialogueVariableStrings[5], 6);
     
-    initializeEmptyMessageBox(0, 0x8030B000);
+    initializeEmptyMessageBox(0, (u8*)MESSAGE_BOX_1_TEXT_BUFFER);
     setMessageBoxViewSpacePosition(0, -22.0f, 24.0f, 0);
     func_8003F5D0(0, 0xA, 2);
     func_8003F630(0, 0, 2);
-    func_8003F464(0, 0xE, 0xE, (u8*)0x802FF000, (u16*)0x8030A000);
+    func_8003F464(0, 0xE, 0xE, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
     func_8003F360(0, -4, 2);
     setMessageBoxSpriteIndices(0, 0xFF, 0, 0);
-    setMessageBoxButtonMask(0, 0x8000);
+    setMessageBoxButtonMask(0, BUTTON_A);
     func_8003FB4C(0, 1);
     initializeMessageBox(0, 0, 0x12, 0x80000);
     func_8003E77C(0, 0xFF, 0xFF, 0xFF, 0xFF);
     
-    initializeEmptyMessageBox(1, 0x8030B400);
+    initializeEmptyMessageBox(1, (u8*)MESSAGE_BOX_2_TEXT_BUFFER);
     setMessageBoxViewSpacePosition(1, -22.0f, 8.0f, 0);
     func_8003F5D0(1, 0xA, 2);
     func_8003F630(1, 0, 2);
-    func_8003F464(1, 0xE, 0xE, (u8*)0x802FF000, (u16*)0x8030A000);
+    func_8003F464(1, 0xE, 0xE, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
     func_8003F360(1, -4, 2);
     setMessageBoxSpriteIndices(1, 0xFF, 0, 0);
-    setMessageBoxButtonMask(1, 0x8000);
+    setMessageBoxButtonMask(1, BUTTON_A);
     func_8003FB4C(1, 1);
     initializeMessageBox(1, 0, 0x13, 0x80000);
     func_8003E77C(1, 0xFF, 0xFF, 0xFF, 0xFF);
     
-    initializeEmptyMessageBox(2, 0x8030B800);
+    initializeEmptyMessageBox(2, (u8*)MESSAGE_BOX_3_TEXT_BUFFER);
     setMessageBoxViewSpacePosition(2, -22.0f, -8.0f, 0);
     func_8003F5D0(2, 0xA, 2);
     func_8003F630(2, 0, 2);
-    func_8003F464(2, 0xE, 0xE, (u8*)0x802FF000, (u16*)0x8030A000);
+    func_8003F464(2, 0xE, 0xE, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
     func_8003F360(2, -4, 2);
     setMessageBoxSpriteIndices(2, 0xFF, 0, 0);
-    setMessageBoxButtonMask(2, 0x8000);
+    setMessageBoxButtonMask(2, BUTTON_A);
     func_8003FB4C(2, 1);
     initializeMessageBox(2, 0, 0x14, 0x80000);
     func_8003E77C(2, 0xFF, 0xFF, 0xFF, 0xFF);
     
-    initializeEmptyMessageBox(3, 0x8030BC00);
+    initializeEmptyMessageBox(3, (u8*)MESSAGE_BOX_4_TEXT_BUFFER);
     setMessageBoxViewSpacePosition(3, -22.0f, -24.0f, 0);
     func_8003F5D0(3, 0xA, 2);
     func_8003F630(3, 0, 2);
-    func_8003F464(3, 0xE, 0xE, (u8*)0x802FF000, (u16*)0x8030A000);
+    func_8003F464(3, 0xE, 0xE, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
     func_8003F360(3, -4, 2);
     setMessageBoxSpriteIndices(3, 0xFF, 0, 0);
-    setMessageBoxButtonMask(3, 0x8000);
+    setMessageBoxButtonMask(3, BUTTON_A);
     func_8003FB4C(3, 1);
     initializeMessageBox(3, 0, 0x15, 0x80000);
     func_8003E77C(3, 0xFF, 0xFF, 0xFF, 0xFF);
     
-    initializeEmptyMessageBox(4, 0x8030C000);
+    initializeEmptyMessageBox(4, (u8*)MESSAGE_BOX_5_TEXT_BUFFER);
     setMessageBoxViewSpacePosition(4, -22.0f, -40.0f, 0);
     func_8003F5D0(4, 0xA, 2);
     func_8003F630(4, 0, 2);
-    func_8003F464(4, 0xE, 0xE, (u8*)0x802FF000, (u16*)0x8030A000);
+    func_8003F464(4, 0xE, 0xE, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
     func_8003F360(4, -4, 2);
     setMessageBoxSpriteIndices(4, 0xFF, 0, 0);
-    setMessageBoxButtonMask(4, 0x8000);
+    setMessageBoxButtonMask(4, BUTTON_A);
     func_8003FB4C(4, 1);
     initializeMessageBox(4, 0, 0x16, 0x80000);
     func_8003E77C(4, 0xFF, 0xFF, 0xFF, 0xFF);
     
-    initializeEmptyMessageBox(5, 0x8030C400);
+    initializeEmptyMessageBox(5, (u8*)MESSAGE_BOX_6_TEXT_BUFFER);
     setMessageBoxViewSpacePosition(5, -22.0f, -56.0f, 0);
     func_8003F5D0(5, 0xA, 2);
     func_8003F630(5, 0, 2);
-    func_8003F464(5, 0xE, 0xE, (u8*)0x802FF000, (u16*)0x8030A000);
+    func_8003F464(5, 0xE, 0xE, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
     func_8003F360(5, -4, 2);
     setMessageBoxSpriteIndices(5, 0xFF, 0, 0);
-    setMessageBoxButtonMask(5, 0x8000);
+    setMessageBoxButtonMask(5, BUTTON_A);
     func_8003FB4C(5, 1);
     initializeMessageBox(5, 0, 0x17, 0x80000);
     func_8003E77C(5, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -4320,7 +5961,7 @@ void func_800CA808(void) {
         
         case 1:
             if (func_8002CBF8(0x82)) {
-                setSpriteViewSpacePosition(0x79, -112.0f, (-(overlayScreenTable.cellIndex * 0x10) + 0x18), 32.0f);
+                setSpriteViewSpacePosition(0x79, -112.0f, (-(overlayScreenTable.cellIndex * 16) + 24), 32.0f);
                 startSpriteAnimation(0x79, 3, 0);
                 overlayScreenTable.subscreen = 4;
             }
@@ -4347,7 +5988,7 @@ void func_800CA808(void) {
                 if (overlayScreenTable.cellIndex) {
                     overlayScreenTable.cellIndex--;
                     playSfx(2);
-                    setSpriteViewSpacePosition(0x79, -112.0f, (f32) (-(overlayScreenTable.cellIndex * 0x10) + 0x18), 32.0f);
+                    setSpriteViewSpacePosition(0x79, -112.0f, (f32)(-(overlayScreenTable.cellIndex * 16) + 24), 32.0f);
                 } else {
                     overlayScreenTable.cellIndex = 0xFF;
                     overlayScreenTable.subscreen = 6;
@@ -4365,7 +6006,7 @@ void func_800CA808(void) {
                     if ((overlayScreenTable.cellIndex) != 5) {
                         overlayScreenTable.cellIndex++;
                         playSfx(2);
-                        setSpriteViewSpacePosition(0x79, -112.0f, (f32) (-(overlayScreenTable.cellIndex * 16) + 24), 32.0f);
+                        setSpriteViewSpacePosition(0x79, -112.0f, (f32)(-(overlayScreenTable.cellIndex * 16) + 24), 32.0f);
                     } else {
                         overlayScreenTable.cellIndex = 0xFF;
                         overlayScreenTable.subscreen = 6;
@@ -4379,7 +6020,7 @@ void func_800CA808(void) {
             
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A) && !set) {
                 overlayScreenTable.subscreen = 5;
-                setSpriteViewSpacePosition(0x79, 32.0f, (f32) (-(overlayScreenTable.cellIndex * 16) + 24), 32.0f);
+                setSpriteViewSpacePosition(0x79, 32.0f, (f32)(-(overlayScreenTable.cellIndex * 16) + 24), 32.0f);
                 set = TRUE;
                 playSfx(0);
             }
@@ -4395,7 +6036,7 @@ void func_800CA808(void) {
 
         case 5:
 
-            if (checkButtonRepeat(CONTROLLER_1, 0x10000)) {
+            if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_SOUTHWEST)) {
                 
                 if (!set) {
                     
@@ -4410,7 +6051,7 @@ void func_800CA808(void) {
                     }
                     
                     
-                    setSpriteViewSpacePosition(0x79, 32.0f, (f32) (-(overlayScreenTable.cellIndex * 16) + 24), 32.0f);
+                    setSpriteViewSpacePosition(0x79, 32.0f, (f32)(-(overlayScreenTable.cellIndex * 16) + 24), 32.0f);
                     
                     set = TRUE;
                     
@@ -4432,7 +6073,7 @@ void func_800CA808(void) {
                     }
                     
                     
-                    setSpriteViewSpacePosition(0x79, 32.0f, (f32) (-(overlayScreenTable.cellIndex * 16) + 24), 32.0f);
+                    setSpriteViewSpacePosition(0x79, 32.0f, (f32)(-(overlayScreenTable.cellIndex * 16) + 24), 32.0f);
                     set = TRUE;
                         
                 }
@@ -4443,7 +6084,7 @@ void func_800CA808(void) {
 
                 if (!set) {
                     overlayScreenTable.subscreen = 4;
-                    setSpriteViewSpacePosition(0x79, -112.0f, (f32) (-(overlayScreenTable.cellIndex * 16) + 24), 32.0f);
+                    setSpriteViewSpacePosition(0x79, -112.0f, (f32)(-(overlayScreenTable.cellIndex * 16) + 24), 32.0f);
                     set = TRUE;
                     playSfx(1);
                 }
@@ -4462,7 +6103,7 @@ void func_800CA808(void) {
                 if (!set) {
                     overlayScreenTable.cellIndex = 5;
                     playSfx(2);
-                    setSpriteViewSpacePosition(0x79, -112.0f, (f32) (-(overlayScreenTable.cellIndex * 16) + 24), 32.0f);
+                    setSpriteViewSpacePosition(0x79, -112.0f, (f32)(-(overlayScreenTable.cellIndex * 16) + 24), 32.0f);
                     set = TRUE;
                     overlayScreenTable.subscreen = 4;
                 }
@@ -4474,7 +6115,7 @@ void func_800CA808(void) {
                 if (!set) {
                     overlayScreenTable.cellIndex = 0;
                     playSfx(2);
-                    setSpriteViewSpacePosition(0x79, -112.0f, (f32) (-(overlayScreenTable.cellIndex * 0x10) + 0x18), 32.0f);
+                    setSpriteViewSpacePosition(0x79, -112.0f, (f32)(-(overlayScreenTable.cellIndex * 16) + 24), 32.0f);
                     set = TRUE;
                     overlayScreenTable.subscreen = 4;
                 }
@@ -4604,11 +6245,11 @@ void func_800CCFC8(void) {
     setGameVariableString(0x2E, overlayScreenStrings.dialogueVariableStrings[overlayScreenStrings.dialogueVariableIndices[4]], 6);
     setGameVariableString(0x2F, overlayScreenStrings.dialogueVariableStrings[overlayScreenStrings.dialogueVariableIndices[5]], 6);
     
-    initializeEmptyMessageBox(0, (u8*)0x8030B000);
+    initializeEmptyMessageBox(0, (u8*)MESSAGE_BOX_1_TEXT_BUFFER);
     setMessageBoxViewSpacePosition(0, -32.0f, 32.0f, 0.0f);
     func_8003F5D0(0, 0xA, 2);
     func_8003F630(0, 0, 2);
-    func_8003F464(0, 0xE, 0xE, (u8*)COMPRESSED_FONT_VADDR, (u16*)FONT_PALETTE_1_VADDR);
+    func_8003F464(0, 0xE, 0xE, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
     func_8003F360(0, -4, 2);
     setMessageBoxSpriteIndices(0, 0xFF, 0, 0);
     setMessageBoxButtonMask(0, BUTTON_A);
@@ -4616,11 +6257,11 @@ void func_800CCFC8(void) {
     initializeMessageBox(0, 0, 0x12, 0x80000);
     func_8003E77C(0, 0xFF, 0xFF, 0xFF, 0xFF);
     
-    initializeEmptyMessageBox(1, (u8*)0x8030B400);
+    initializeEmptyMessageBox(1, (u8*)MESSAGE_BOX_2_TEXT_BUFFER);
     setMessageBoxViewSpacePosition(1, -32.0f, 16.0f, 0.0f);
     func_8003F5D0(1, 0xA, 2);
     func_8003F630(1, 0, 2);
-    func_8003F464(1, 0xE, 0xE, (u8*)COMPRESSED_FONT_VADDR, (u16*)FONT_PALETTE_1_VADDR);
+    func_8003F464(1, 0xE, 0xE, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
     func_8003F360(1, -4, 2);
     setMessageBoxSpriteIndices(1, 0xFF, 0, 0);
     setMessageBoxButtonMask(1, BUTTON_A);
@@ -4628,11 +6269,11 @@ void func_800CCFC8(void) {
     initializeMessageBox(1, 0, 0x13, 0x80000);
     func_8003E77C(1, 0xFF, 0xFF, 0xFF, 0xFF);
     
-    initializeEmptyMessageBox(2, (u8*)0x8030B800);
+    initializeEmptyMessageBox(2, (u8*)MESSAGE_BOX_3_TEXT_BUFFER);
     setMessageBoxViewSpacePosition(2, -32.0f, 0.0f, 0.0f);
     func_8003F5D0(2, 0xA, 2);
     func_8003F630(2, 0, 2);
-    func_8003F464(2, 0xE, 0xE, (u8*)COMPRESSED_FONT_VADDR, (u16*)FONT_PALETTE_1_VADDR);
+    func_8003F464(2, 0xE, 0xE, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
     func_8003F360(2, -4, 2);
     setMessageBoxSpriteIndices(2, 0xFF, 0, 0);
     setMessageBoxButtonMask(2, BUTTON_A);
@@ -4640,11 +6281,11 @@ void func_800CCFC8(void) {
     initializeMessageBox(2, 0, 0x14, 0x80000);
     func_8003E77C(2, 0xFF, 0xFF, 0xFF, 0xFF);
     
-    initializeEmptyMessageBox(3, (u8*)0x8030BC00);
+    initializeEmptyMessageBox(3, (u8*)MESSAGE_BOX_4_TEXT_BUFFER);
     setMessageBoxViewSpacePosition(3, 96.0f, 32.0f, 0.0f);
     func_8003F5D0(3, 0xA, 2);
     func_8003F630(3, 0, 2);
-    func_8003F464(3, 0xE, 0xE, (u8*)COMPRESSED_FONT_VADDR, (u16*)FONT_PALETTE_1_VADDR);
+    func_8003F464(3, 0xE, 0xE, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
     func_8003F360(3, -4, 2);
     setMessageBoxSpriteIndices(3, 0xFF, 0, 0);
     setMessageBoxButtonMask(3, BUTTON_A);
@@ -4652,11 +6293,11 @@ void func_800CCFC8(void) {
     initializeMessageBox(3, 0, 0x15, 0x80000);
     func_8003E77C(3, 0xFF, 0xFF, 0xFF, 0xFF);
     
-    initializeEmptyMessageBox(4, (u8*)0x8030C000);
+    initializeEmptyMessageBox(4, (u8*)MESSAGE_BOX_5_TEXT_BUFFER);
     setMessageBoxViewSpacePosition(4, 96.0f, 16.0f, 0.0f);
     func_8003F5D0(4, 0xA, 2);
     func_8003F630(4, 0, 2);
-    func_8003F464(4, 0xE, 0xE, (u8*)COMPRESSED_FONT_VADDR, (u16*)FONT_PALETTE_1_VADDR);
+    func_8003F464(4, 0xE, 0xE, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
     func_8003F360(4, -4, 2);
     setMessageBoxSpriteIndices(4, 0xFF, 0, 0);
     setMessageBoxButtonMask(4, BUTTON_A);
@@ -4664,11 +6305,11 @@ void func_800CCFC8(void) {
     initializeMessageBox(4, 0, 0x16, 0x80000);
     func_8003E77C(4, 0xFF, 0xFF, 0xFF, 0xFF);
     
-    initializeEmptyMessageBox(5, (u8*)0x8030C400);
+    initializeEmptyMessageBox(5, (u8*)MESSAGE_BOX_6_TEXT_BUFFER);
     setMessageBoxViewSpacePosition(5, 96.0f, 0.0f, 0.0f);
     func_8003F5D0(5, 0xA, 2);
     func_8003F630(5, 0, 2);
-    func_8003F464(5, 0xE, 0xE, (u8*)COMPRESSED_FONT_VADDR, (u16*)FONT_PALETTE_1_VADDR);
+    func_8003F464(5, 0xE, 0xE, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
     func_8003F360(5, -4, 2);
     setMessageBoxSpriteIndices(5, 0xFF, 0, 0);
     setMessageBoxButtonMask(5, BUTTON_A);
@@ -4735,7 +6376,7 @@ void func_800CD750(void) {
             break;
         
         case 1:
-            if (func_8002CBF8(0x82) & 0xFF) {
+            if (func_8002CBF8(0x82)) {
                 overlayScreenTable.subscreen = 4;
             }
             break;
@@ -4879,10 +6520,225 @@ void func_800CE008(void) {
 
 //INCLUDE_RODATA("asm/nonmatchings/game/overlayScreens", D_801221CC);
 
-static const s16 D_801221CC[6] = { 3000, 1000, 500, 0, 0, 0 };
+static const u16 D_801221CC[6] = { 3000, 1000, 500, 0, 0, 0 };
 
-// D_801221CC
-INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800CE068);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800CE068);
+
+// horse race gifts callback
+void func_800CE068(void) {
+
+    u16 buff[4];
+    u16 buff2[4];
+
+    u16* ptr = D_801221CC;
+
+    bool set;
+
+    memcpy(buff, ptr, 6);
+    memcpy(buff2, ptr, 6);
+
+    set = FALSE;
+    
+    switch (overlayScreenTable.subscreen) {
+
+        case 0:
+            func_800CDA6C();
+            overlayScreenTable.subscreen = 1;
+            break;
+
+        case 1:
+            if (func_8002CBF8(0x82)) {
+                setMessageBoxViewSpacePosition(0, 24.0f, -64.0f, 352.0f);
+                setMessageBoxSpriteIndices(0, 0, 0, 0);
+                func_8003F360(0, -4, 0);
+                initializeDialogueSession(0, 0x3E, 5, 0x40);
+                overlayScreenTable.subscreen = 5;
+            }
+            break;
+
+        case 5:    
+            
+            if (func_80043A88()) {
+            
+                if (!(func_80043C6C(0))) {
+                    
+                    dialogues[0].sessionManager.flags &= ~0x40;
+                    func_80043AD8(0);
+                    setSpriteViewSpacePosition(0x79, -104.0f, (f32)(-(overlayScreenTable.cellIndex * 16) + 16), 32.0f);
+                    startSpriteAnimation(0x79, 3, 0);
+                    overlayScreenTable.subscreen = 9;
+                    
+                } else {
+                    initializeMessageBox(0, 4, 15, 0);
+                    overlayScreenTable.subscreen = 3;
+                }
+                
+            }
+
+            break;
+
+        case 3:
+            
+            if (func_8003F0DC()) {
+                func_8003F130(0);
+                resetAnimationState(0x79);
+                updateSpriteAlpha(0x81, 0, 0x18);
+                updateSpriteAlpha(0x82, 0, 0x18);
+                updateSpriteAlpha(0x83, 0, 0x18);
+                updateSpriteAlpha(0x84, 0, 0x18);
+                deactivateOverlayScreenSprites(2);
+                overlayScreenTable.subscreen = 2;
+            }
+            
+            break;
+
+        case 4:
+            if (func_8003F0DC()) {
+                overlayScreenTable.subscreen = 9;
+            }
+            break;
+        
+        case 2:
+            if (func_8002CBF8(0x82)) {
+                func_800B2CE0();
+                overlayScreenTable.subscreen = 6;
+            }
+            break;
+        
+        case 6:
+            deactivateSprite(0x80);
+            func_80059368();
+            func_80059300();
+            break;
+
+        case 7:
+            
+            if (func_80043A88()) {
+                
+                if (!(func_80043C6C(0))) {
+                    
+                    resetAnimationState(0x86);
+                    overlayScreenTable.subscreen = 8;
+                    goto label3;
+                    
+                } else {
+                    func_80043AD8(0);
+                    setSpriteViewSpacePosition(0x79, -104.0f, (f32)(-(overlayScreenTable.cellIndex * 16) + 16), 32.0f);
+                    startSpriteAnimation(0x79, 3, 0);
+                    overlayScreenTable.subscreen = 9;
+                }
+                
+            }
+            
+            break;
+
+        case 8:
+            
+            if (checkDailyEventBit(0x41)) {
+                
+                if (adjustValue(D_80205204, -buff[overlayScreenTable.cellIndex], 9999) == -buff[overlayScreenTable.cellIndex]) {
+                    D_80205204 += adjustValue(D_80205204, -buff[overlayScreenTable.cellIndex], 9999);
+                    initializeMessageBox(0, 4, 13, 0);
+                    overlayScreenTable.subscreen = 3;
+                    func_800CE7A8(overlayScreenTable.cellIndex);
+                } else {
+                    initializeMessageBox(0, 4, 14, 0);
+                    overlayScreenTable.subscreen = 3;
+                }
+                
+            } else {
+
+                if (adjustValue(D_80205204, -buff2[overlayScreenTable.cellIndex ], 9999) == -buff2[overlayScreenTable.cellIndex]) {
+                    D_80205204 += adjustValue(D_80205204, -buff2[overlayScreenTable.cellIndex], 9999);
+                    initializeMessageBox(0, 4, 13, 0);
+                    overlayScreenTable.subscreen = 3;
+                    func_800CE894(overlayScreenTable.cellIndex);
+                } else {
+                    initializeMessageBox(0, 4, 14, 0);
+                    overlayScreenTable.subscreen = 3;
+                }
+            
+            }
+            
+            break;
+
+        case 9:
+            
+            if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_NORTHEAST)) {
+                
+                if (!set) {
+                    
+                    if (overlayScreenTable.cellIndex) {
+                        overlayScreenTable.cellIndex--;
+                        playSfx(2);
+                        setSpriteViewSpacePosition(0x79, -104.0f, (f32)(-(overlayScreenTable.cellIndex * 16) + 16), 32.0f);
+                    }
+                    
+                    set = TRUE;
+                    
+                }
+            }
+            
+            if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_SOUTHWEST)) {
+                if (!set) {
+                    if (overlayScreenTable.cellIndex != 2) {
+                        overlayScreenTable.cellIndex++;
+                        playSfx(2);
+                        setSpriteViewSpacePosition(0x79, -104.0f, (f32)(-(overlayScreenTable.cellIndex * 16) + 16), 32.0f);
+                    }
+                    set = TRUE;
+                }
+            }
+        
+            if ((checkButtonPressed(CONTROLLER_1, BUTTON_A))) {
+
+                if (!set) {
+                    
+                    if (checkDailyEventBit(0x41)) {
+                        
+                        if (!func_800CE714(overlayScreenTable.cellIndex)) {
+                            goto label1;
+                        } else {
+                            goto label2;
+                        }
+                        
+                    }
+                    
+                    if (!(func_800CE828(overlayScreenTable.cellIndex))) {
+label1:
+                        initializeDialogueSession(0, 0x3E, 0xB, 0x40);
+                        overlayScreenTable.subscreen = 7;
+label3:
+                        playSfx(0);
+                        set = TRUE;
+                        
+                    } else {
+label2:
+                        initializeMessageBox(0, 4, 0x24, 0);
+                        overlayScreenTable.subscreen = 4;
+                        set = TRUE;
+                    }
+                    
+                }
+                
+            }
+            
+            break;
+                
+    }
+
+    if (overlayScreenTable.subscreen >= 9 && checkButtonPressed(CONTROLLER_1, BUTTON_B) && !set) {
+        resetAnimationState(0x79);
+        updateSpriteAlpha(0x81, 0, 0x18);
+        updateSpriteAlpha(0x82, 0, 0x18);
+        updateSpriteAlpha(0x83, 0, 0x18);
+        updateSpriteAlpha(0x84, 0, 0x18);
+        deactivateOverlayScreenSprites(2);
+        overlayScreenTable.subscreen = 2;
+        playSfx(1);
+    }
+    
+}
 
 //INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800CE714);
 

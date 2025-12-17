@@ -28,7 +28,7 @@ typedef struct {
 } OverlayScreenSprite;
 
 extern bool dmaOverlayScreenSprites(u16 index, u32 arg1, u8 arg2, u16 flag);
-extern void func_80045DE0();  
+extern void initializeOverlayScreenSprites();  
 extern bool func_80045E20(u16 index, u16 spriteIndex, u32 romSpritesheetStart, u32 romSpritesheetEnd, u32 romAssetsIndexStart, u32 romAssetsIndexEnd, void *vaddrSpritesheet, void *vaddrPalette, void *vaddrUnknownAssetSheet, void *vaddrUnknownAsset2, u32 argA, u16 argB, u8 argC, f32 x, f32 y, f32 z, u8 arg10);
 extern bool func_80045F5C(u16 index, u32 arg1, u8 arg2, u16 flag);
 extern bool func_8004635C(u16 spriteIndex, u8 arg1, u8 arg2, u8 arg3, u8 arg4, u16 arg5);

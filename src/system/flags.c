@@ -6,10 +6,10 @@
 // never read from
 u16 D_80181B8C;
 
-//INCLUDE_ASM("asm/nonmatchings/system/flags", func_8004DEB0);
+//INCLUDE_ASM("asm/nonmatchings/system/flags", initializeFlags);
 
 // used by mainproc
-void func_8004DEB0(void) {
+void initializeFlags(void) {
     D_80222730 = 0;
     D_80181B8C = 0;
 }

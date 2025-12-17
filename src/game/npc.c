@@ -9043,8 +9043,8 @@ u8 func_800858D4(void) {
 
                         if (!(i2 < 0)) {
 
-                            func_8003F910(0, 0x78, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsAssetsIndexSegmentRomStart, &_dialogueIconsAssetsIndexSegmentRomEnd, (void*)DIALOGUE_ICONS_TEXTURE_VADDR_START, (void*)DIALOGUE_ICONS_TEXTURE_VADDR_END, (void*)DIALOGUE_ICONS_ASSETS_INDEX_VADDR_START, DIALOGUE_ICONS_ASSETS_INDEX_VADDR_END, 0, (npcAffection[i] / 52) + 5, 0xFE, 106.0f, -15.0f, 0.0f);
-                            func_8003F910(1, 0x78, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsAssetsIndexSegmentRomStart, &_dialogueIconsAssetsIndexSegmentRomEnd, (void*)DIALOGUE_ICONS_TEXTURE_VADDR_START, (void*)DIALOGUE_ICONS_TEXTURE_VADDR_END, (void*)DIALOGUE_ICONS_ASSETS_INDEX_VADDR_START, DIALOGUE_ICONS_ASSETS_INDEX_VADDR_END, 0, (npcAffection[i] / 52) + 5, 0xFE, 106.0f, -15.0f, 0.0f);
+                            func_8003F910(0, 0x78, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsAssetsIndexSegmentRomStart, &_dialogueIconsAssetsIndexSegmentRomEnd, (void*)DIALOGUE_ICON_TEXTURE_BUFFER, (void*)DIALOGUE_ICON_PALETTE_BUFFER, (void*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, DIALOGUE_ICON_SPRITESHEET_INDEX_BUFFER, 0, (npcAffection[i] / 52) + 5, 0xFE, 106.0f, -15.0f, 0.0f);
+                            func_8003F910(1, 0x78, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsAssetsIndexSegmentRomStart, &_dialogueIconsAssetsIndexSegmentRomEnd, (void*)DIALOGUE_ICON_TEXTURE_BUFFER, (void*)DIALOGUE_ICON_PALETTE_BUFFER, (void*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, DIALOGUE_ICON_SPRITESHEET_INDEX_BUFFER, 0, (npcAffection[i] / 52) + 5, 0xFE, 106.0f, -15.0f, 0.0f);
                        
                         }
                         
@@ -9117,8 +9117,8 @@ bool func_80085D48(int index, u16 arg1) {
         // FIXME: fake match
         // check if girl and load heart icon
         if ((index < 5) && (index >= (result = 0))) {
-            func_8003F910(0, 0x78, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsAssetsIndexSegmentRomStart, &_dialogueIconsAssetsIndexSegmentRomEnd, (void*)DIALOGUE_ICONS_TEXTURE_VADDR_START, (void*)DIALOGUE_ICONS_TEXTURE_VADDR_END, (void*)DIALOGUE_ICONS_ASSETS_INDEX_VADDR_START, (void*)DIALOGUE_ICONS_ASSETS_INDEX_VADDR_END, 0, (npcAffection[index] / 52) + 5, 0xFE, 106.0f, -15.0f, 0);
-            func_8003F910(1, 0x78, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsAssetsIndexSegmentRomStart, &_dialogueIconsAssetsIndexSegmentRomEnd, (void*)DIALOGUE_ICONS_TEXTURE_VADDR_START, (void*)DIALOGUE_ICONS_TEXTURE_VADDR_END, (void*)DIALOGUE_ICONS_ASSETS_INDEX_VADDR_START, (void*)DIALOGUE_ICONS_ASSETS_INDEX_VADDR_END, 0, (npcAffection[index] / 52) + 5, 0xFE, 106.0f, -15.0f, 0);
+            func_8003F910(0, 0x78, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsAssetsIndexSegmentRomStart, &_dialogueIconsAssetsIndexSegmentRomEnd, (void*)DIALOGUE_ICON_TEXTURE_BUFFER, (void*)DIALOGUE_ICON_PALETTE_BUFFER, (void*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, (void*)DIALOGUE_ICON_SPRITESHEET_INDEX_BUFFER, 0, (npcAffection[index] / 52) + 5, 0xFE, 106.0f, -15.0f, 0);
+            func_8003F910(1, 0x78, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsAssetsIndexSegmentRomStart, &_dialogueIconsAssetsIndexSegmentRomEnd, (void*)DIALOGUE_ICON_TEXTURE_BUFFER, (void*)DIALOGUE_ICON_PALETTE_BUFFER, (void*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, (void*)DIALOGUE_ICON_SPRITESHEET_INDEX_BUFFER, 0, (npcAffection[index] / 52) + 5, 0xFE, 106.0f, -15.0f, 0);
         }
 
         showMessageBox(0, npcToDialogueBytecodeIndex[arr[7]], arg1, 0, 0);

@@ -1,0 +1,84 @@
+name: ﾎﾞｸｼﾞｮｳﾓﾉｶﾞﾀﾘ2 (Japanese)
+sha1: e41d15c394b5fefd4016add3883a794c48e7e232
+options:
+  # base settings
+  basename: hm64-jp
+  target_path: baserom.jp.z64
+  platform: n64
+  compiler: GCC
+  base_path: ../..
+  find_file_boundaries: True
+  # paths  
+  asm_path: asm
+  src_path: src
+  build_path: build
+  asset_path: bin
+  elf_path: hm64.elf
+  extensions_path: tools/splat_ext
+  symbol_addrs_path: config/jp/symbol_addrs.txt
+  undefined_funcs_auto_path: config/jp/undefined_funcs_auto.txt
+  undefined_syms_auto_path: config/jp/undefined_syms_auto.txt
+  ld_symbol_header_path: include/ld_symbols_jp.h
+  ld_script_path: hm64-jp.ld
+  # ld_dependencies: True
+  # header
+  header_encoding: word
+  # asm settings
+  asm_inc_header: ".include \"macro.inc\"\n.set noat\n.set noreorder\n"
+  asm_function_macro: glabel
+  asm_data_macro: dlabel
+  asm_emit_size_directive: True
+  generate_asm_macros_files: False
+  # create_asm_dependencies: True
+  # disassembly settings
+  migrate_rodata_to_functions: True
+  # misc.
+  find_file_boundaries: True
+  rodata_string_guesser_level: 2
+  data_string_guesser_level: 2
+  libultra_symbols: True
+  disassemble_all: True
+  segment_symbols_style: makerom
+  # hardware_regs: True
+  gfx_ucode: f3dex2
+
+segments:
+  - name: header
+    type: header
+    start: 0x0
+
+  - name: boot
+    type: bin
+    start: 0x40
+    subsegments:
+    - [ 0x0040, hasm, boot/ipl3_boot]
+    - [ 0x0B70, bin, rspboot_font]
+
+  - name: entry
+    type: code
+    start: 0x1000
+    vram: 0x80025C00
+    subsegments:
+      - [0x1000, hasm]
+
+  - name: main
+    type: code
+    start: 0x1050
+    vram: 0x80025C50
+    follows_vram: entry
+    bss_size: 0x113860
+    subalign: 8
+    subsegments:
+      - [ 0x1050, c, lib/nusys-1/nuboot]
+      - [ 0x1190, asm]
+      # - [ 0x1190, c, mainproc]
+      # - [ 0x13A0, asm]
+      - [0xEBD80, data]
+      - { start: 0xFFA60, type: .bss, vram: 0x80124660, name: lib/nusys-1/nuboot }
+      - { start: 0xFFA60, type: bss, vram: 0x801269C0 }
+
+  - type: bin
+    start: 0xFFA60
+    follows_vram: main
+
+  - [0x1000000]

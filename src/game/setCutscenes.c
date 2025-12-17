@@ -4567,8 +4567,8 @@ block_141:
             case 31:                                /* switch 1 */
                 if (gCutsceneIndex == 0x611) {
                     // fontPalette1
-                    nuPiReadRom(&D_E13770, 0x8030A000, &D_E137A0 - &D_E13770);
-                    func_8003F464(0, 0xE, 0xE, 0x802FF000, 0x8030A000);
+                    nuPiReadRom(&D_E13770, FONT_PALETTE_1_BUFFER, &D_E137A0 - &D_E13770);
+                    func_8003F464(0, 0xE, 0xE, FONT_TEXTURE_BUFFER, FONT_PALETTE_1_BUFFER);
                     func_8003F360(0, -4, 0);
                     setMessageBoxSfx(0, 0x57, 8, 1);
                     var_a0_2 = 0x5AA;
@@ -5555,8 +5555,8 @@ block_359:
         }
         if (gCutsceneCompletionFlags & 0x100) {
             // fontPalette3
-            nuPiReadRom(&D_E137D0, 0x8030A000, &D_E13800 - &D_E137D0);
-            func_8003F464(0, 0xE, 0xE, 0x802FF000, 0x8030A000);
+            nuPiReadRom(&D_E137D0, FONT_PALETTE_1_BUFFER, &D_E13800 - &D_E137D0);
+            func_8003F464(0, 0xE, 0xE, FONT_TEXTURE_BUFFER, FONT_PALETTE_1_BUFFER);
             func_8003F360(0, 1, 1);
             setMessageBoxSfx(0, 0xFF, 0xFF, 0xFF);
             gCutsceneCompletionFlags &= ~0x100;

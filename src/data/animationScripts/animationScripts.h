@@ -1,3 +1,8 @@
+#ifndef _ANIMATON_SCRIPTS_H_
+#define _ANIMATON_SCRIPTS_H_
+
+#include "common.h"
+
 #define ANIM_TYPE_ONE_SHOT           0x0000  // type 0xFF
 #define ANIM_TYPE_LOOP               0x2000  // type 0xFE
 #define ANIM_TYPE_DESTROY_ON_END     0x4000  // type 0xFD
@@ -103,3 +108,5 @@ extern u16 holdableItemsAnimationScripts2[];
 extern u16 holdableItemsAnimationScripts3[];
 extern u16 toolsAnimationScripts[];
 extern u16 characterAvatarAnimationScripts[];
+
+#endif
