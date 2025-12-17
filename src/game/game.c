@@ -1415,8 +1415,8 @@ void func_8005CBF0(void) {
             gItemBeingHeld = 0xFF;
         }
          
-        func_8003F910(0, 0x78, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsAssetsIndexSegmentRomStart, &_dialogueIconsAssetsIndexSegmentRomEnd, (void*)DIALOGUE_ICONS_TEXTURE_VADDR_START, (void*)DIALOGUE_ICONS_TEXTURE_VADDR_END, (void*)DIALOGUE_ICONS_ASSETS_INDEX_VADDR_START, (void*)DIALOGUE_ICONS_ASSETS_INDEX_VADDR_END, 0, 4, 0xFE, 106.0f, -15.0f, 0.0f);
-        func_8003F910(1, 0x78, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsAssetsIndexSegmentRomStart, &_dialogueIconsAssetsIndexSegmentRomEnd, (void*)DIALOGUE_ICONS_TEXTURE_VADDR_START, (void*)DIALOGUE_ICONS_TEXTURE_VADDR_END, (void*)DIALOGUE_ICONS_ASSETS_INDEX_VADDR_START, (void*)DIALOGUE_ICONS_ASSETS_INDEX_VADDR_END, 0, 0xD, 0xFE, 106.0f, -15.0f, 0.0f);
+        func_8003F910(0, 0x78, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsAssetsIndexSegmentRomStart, &_dialogueIconsAssetsIndexSegmentRomEnd, (void*)DIALOGUE_ICON_TEXTURE_BUFFER, (void*)DIALOGUE_ICON_PALETTE_BUFFER, (void*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, (void*)DIALOGUE_ICON_SPRITESHEET_INDEX_BUFFER, 0, 4, 0xFE, 106.0f, -15.0f, 0.0f);
+        func_8003F910(1, 0x78, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsAssetsIndexSegmentRomStart, &_dialogueIconsAssetsIndexSegmentRomEnd, (void*)DIALOGUE_ICON_TEXTURE_BUFFER, (void*)DIALOGUE_ICON_PALETTE_BUFFER, (void*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, (void*)DIALOGUE_ICON_SPRITESHEET_INDEX_BUFFER, 0, 0xD, 0xFE, 106.0f, -15.0f, 0.0f);
        
         // update stuff after closing dialogue 
         func_8005CDCC();

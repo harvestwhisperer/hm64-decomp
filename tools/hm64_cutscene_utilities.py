@@ -221,7 +221,7 @@ ASM_COMMAND_SPECS = {
     92: ("CMD_UPDATE_MESSAGE_BOX_RGBA", ['u16', 'u8', 'u8', 'u8', 'u8', 'u16', 'pad16']),
     93: ("CMD_WAIT_MESSAGE_BOX_READY", ['u16']), # func_8004CA80
     94: ("CMD_SET_SPRITE_BILINEAR", ['u16']),
-    95: ("CMD_SET_MAP_ADDITION", ['u16', 'u8', 'u8', 'pad16']), # u16, u8, u8, pad
+    95: ("CMD_SET_MAP_ADDITION", ['u16', 'u8', 'u8', 'pad16']),
     96: ("CMD_SET_MAP_GROUND_OBJECT", ['u16', 'u16', 'u16']),
     97: ("CMD_SET_MESSAGE_INTERPOLATION", ['s16', 's16', 's16']), # func_8004CCF0
 }
@@ -622,9 +622,9 @@ VARIABLE_ADDRESSES = {
 
 # Array variables: (base_address, element_size, element_count, var_name, index_constants)
 ARRAY_VARIABLES = [
-    (0x8013D1C8, 4, 0x80, "lifeEventBits", None),      # u32 array
-    (0x80189140, 4, 0x80, "dailyEventBits", None),     # u32 array
-    (0x801C3F90, 1, 0x30, "npcAffection", NPC_CONSTANTS),  # u8 array with NPC indices
+    (0x8013D1C8, 4, 0x80, "lifeEventBits", None),      
+    (0x80189140, 4, 0x80, "dailyEventBits", None),   
+    (0x801C3F90, 1, 0x30, "npcAffection", NPC_CONSTANTS),
 ]
 
 AUDIO_SEQUENCES = {

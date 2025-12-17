@@ -218,21 +218,21 @@ void func_800ED974(void) {
             namingScreenContext.flags &= ~(0x20 | 0x40);
             namingScreenContext.flags |= 0x40;
 
-            initializeEmptyMessageBox(3, (void*)0x8030B800);
+            initializeEmptyMessageBox(3, (void*)MESSAGE_BOX_3_TEXT_BUFFER);
             setMessageBoxViewSpacePosition(3, 4.0f, 56.0f, 30.0f);
             func_8003F5D0(3, 6, 1);
             func_8003F630(3, 0, 2);
-            func_8003F464(3, 0xE, 0xE, (u8*)COMPRESSED_FONT_VADDR, FONT_PALETTE_1_VADDR);
+            func_8003F464(3, 0xE, 0xE, (u8*)FONT_TEXTURE_BUFFER, FONT_PALETTE_1_BUFFER);
             func_8003F360(3, 1, 1);
             setMessageBoxSpriteIndices(3, 0xFF, 0xFF, 0xFF);
             initializeMessageBox(3, 0xA, 0xD, 0x80000);
             func_8003E77C(3, 0, 0, 0, 0);
             func_8003EA1C(3, 0xFF, 0xFF, 0xFF, 0xFF, 8);
-            initializeEmptyMessageBox(4, (void*)0x8030BC00);
+            initializeEmptyMessageBox(4, (void*)MESSAGE_BOX_4_TEXT_BUFFER);
             setMessageBoxViewSpacePosition(4, 4.0f, -10.0f, 30.0f);
             func_8003F5D0(4, 6, 1);
             func_8003F630(4, 0, 2);
-            func_8003F464(4, 0xE, 0xE, (u8*)COMPRESSED_FONT_VADDR, FONT_PALETTE_1_VADDR);
+            func_8003F464(4, 0xE, 0xE, (u8*)FONT_TEXTURE_BUFFER, FONT_PALETTE_1_BUFFER);
             func_8003F360(4, 1, 1);
             setMessageBoxSpriteIndices(4, 0xFF, 0xFF, 0xFF);
             initializeMessageBox(4, 0xA, temp2 + 0xE, 0x80000);
@@ -588,12 +588,12 @@ void loadNameSelectionSprites(void) {
     
     setGameVariableString(0, namingScreenContext.name, 6);
     
-    initializeEmptyMessageBox(3, (void*)0x8030B800);
+    initializeEmptyMessageBox(3, (void*)MESSAGE_BOX_3_TEXT_BUFFER);
     setMessageBoxViewSpacePosition(3, 48.0f, 72.0f, 30.0f);
     
     func_8003F5D0(3, 6, 1);
     func_8003F630(3, 2, 2);
-    func_8003F464(3, 0xE, 0xE, (u8*)COMPRESSED_FONT_VADDR, FONT_PALETTE_1_VADDR);
+    func_8003F464(3, 0xE, 0xE, (u8*)FONT_TEXTURE_BUFFER, FONT_PALETTE_1_BUFFER);
     func_8003F360(3, 1, 1);
     setMessageBoxSpriteIndices(3, 0xFF, 0xFF, 0xFF);
     initializeMessageBox(3, 0xA, 0xD, 0x80000);

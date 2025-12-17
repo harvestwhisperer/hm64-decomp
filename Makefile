@@ -1,8 +1,8 @@
 BASENAME := hm64
 TARGET := $(BASENAME).z64
 
-# one region for now
-REGION := us
+# default to US
+REGION ?= us
 BASEROM := baserom.$(REGION).z64
 
 # Options
@@ -23,7 +23,12 @@ TOOLS_DIR := tools
 C_FILES = $(foreach dir, $(SRC_DIRS), $(wildcard $(dir)/*.c))
 BIN_FILES=$(foreach dir, $(BIN_DIRS), $(wildcard $(dir)/*.bin))
 
+ifeq ($(REGION), jp)
+LD_SCRIPT := $(BASENAME)-$(REGION).ld
+else
 LD_SCRIPT := $(BASENAME).ld
+endif
+
 LD_MAP := $(BASENAME).map
 	
 OBJECTS := $(shell grep -E 'build.+\.o' $(LD_SCRIPT) -o)
@@ -62,7 +67,12 @@ LDFLAGS := -T config/$(REGION)/undefined_funcs.txt -T config/$(REGION)/undefined
 # Binary asset matching (cutscenes, dialogues, texts)
 
 # List of matching cutscene bytecode segments
+
+ifeq ($(REGION),us)
 DECOMPILED_CUTSCENES := fireworksFestival
+else
+DECOMPILED_CUTSCENES := 
+endif
 
 CUTSCENE_SRC_DIR := $(SRC_DIRS)/bytecode/cutscenes
 CUTSCENE_BUILD_DIR := $(BUILD_DIR)/bin/cutscenes
@@ -75,6 +85,12 @@ CUTSCENE_OBJ := $(foreach bank,$(DECOMPILED_CUTSCENES),$(CUTSCENE_BUILD_DIR)/$(b
 
 DECOMPILED_DIALOGUES := mariaDialogueBytecode
 
+ifeq ($(REGION),us)
+DECOMPILED_DIALOGUES := mariaDialogueBytecode
+else
+DECOMPILED_DIALOGUES :=
+endif
+
 DIALOGUE_SRC_DIR := $(SRC_DIRS)/bytecode/dialogues
 DIALOGUE_BUILD_DIR := $(BUILD_DIR)/bin/dialogues/bytecode
 
@@ -84,7 +100,11 @@ DIALOGUE_DSL := $(foreach bank,$(DECOMPILED_DIALOGUES),$(DIALOGUE_SRC_DIR)/$(ban
 DIALOGUE_ASM := $(foreach bank,$(DECOMPILED_DIALOGUES),$(DIALOGUE_SRC_DIR)/$(bank).s $(DIALOGUE_SRC_DIR)/$(bank)Index.s)
 DIALOGUE_OBJ := $(foreach bank,$(DECOMPILED_DIALOGUES),$(DIALOGUE_BUILD_DIR)/$(bank).bin.o $(DIALOGUE_BUILD_DIR)/$(bank)Index.bin.o)
 
+ifeq ($(REGION),us)
 DECOMPILED_TEXTS := text1 library diary animalInteractions namingScreen kai gotz sasha cliff funeralIntro howToPlay
+else
+DECOMPILED_TEXTS :=
+endif
 
 TEXT_ASSETS_DIR := assets/text
 TEXT_BUILD_DIR := $(BUILD_DIR)/bin/text
@@ -100,6 +120,10 @@ endif
 
 ifeq ($(PERMUTER),1)
 MACROS += -D_PERMUTER=1
+endif
+
+ifeq ($(REGION),jp)
+MACROS += -D_JP=1
 endif
 
 # Create all output directories upfront
@@ -143,7 +167,7 @@ submodules:
 	git submodule update
 
 split: 
-	$(V)python3 -m splat split ./config/$(REGION)/splat.us.yaml
+	$(V)python3 -m splat split ./config/$(REGION)/splat.$(REGION).yaml
 
 setup: clean split
 

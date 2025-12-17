@@ -104,7 +104,7 @@ typedef struct {
 } DialogueVariable;
 
 extern bool setDialogueVariable(u16 index, void *address, u8 numSet, s32 max);
-extern void func_80042F60();   
+extern void initializeDialogueSessionManagers();   
 extern bool func_80042FEC(u16, u16, u16);
 extern bool setDialogueBytecodeAddressInfo(u16 index, u16 arg1, u16 arg2, u32 romStart, u32 romEnd, void* vaddr, u32 romIndex, void* vaddrIndex);
 extern bool setSpecialDialogueBitsPointer(u32[]);

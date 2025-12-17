@@ -7,9 +7,9 @@ SpriteAssetDescriptor spriteAssetDescriptors[MAX_SPRITE_ASSET_DESCRIPTORS];
 u16 spritesToLoadCounter;
 
 
-//INCLUDE_ASM("asm/nonmatchings/system/spriteDMAManager", resetSpriteAssetDescriptorFlags);
+//INCLUDE_ASM("asm/nonmatchings/system/spriteDMAManager", initializeSpriteAssetDescriptorFlags);
 
-void resetSpriteAssetDescriptorFlags(void) {
+void initializeSpriteAssetDescriptorFlags(void) {
 
     u16 i;
 

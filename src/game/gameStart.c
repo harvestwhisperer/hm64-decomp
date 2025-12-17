@@ -19,9 +19,9 @@
 // shared bss
 extern u32 D_8016FB00;
 
-//INCLUDE_ASM("asm/nonmatchings/game/gameStart", func_8004DF10);
+//INCLUDE_ASM("asm/nonmatchings/game/gameStart", setupGameStart);
 
-void func_8004DF10(void) {
+void setupGameStart(void) {
     
     // set up game
     func_8004E160(); 

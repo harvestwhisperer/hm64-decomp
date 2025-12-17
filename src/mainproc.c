@@ -47,18 +47,17 @@ volatile u8 loopStepsPerCycle;
 volatile u8 framebufferCount;
 volatile u8 currentFramebufferIndex;
 
-// internal variable
 volatile u8 D_80237408;
 
 // forward declarations
 void initializeEngine(void);
-void func_80025F04(void);
-
+void initializeMainProcess(void);
 
 //INCLUDE_ASM("asm/nonmatchings/mainproc", func_80025D90);
 
 void mainproc(void *arg) {
     
+    #ifndef JP
     OSViMode *mode;
 
     nuGfxDisplayOff();
@@ -82,10 +81,14 @@ void mainproc(void *arg) {
 
     nuGfxDisplayOff();
 
+    #else
+    nuPakMenu(&frameBuffer, &fontBuffer);
+    #endif
+
     initializeEngine();
     
     // load "no controller" screen or intro cutscene
-    func_8004DF10();
+    setupGameStart();
 
     mainLoop();
 
@@ -96,25 +99,22 @@ void mainproc(void *arg) {
 void initializeEngine(void) {
 
     // initialize mainproc and main loop variables
-    func_80025F04();
+    initializeMainProcess();
 
     controllerInit();
     graphicsInit();
 
-    resetSpriteAssetDescriptorFlags();
+    initializeSpriteAssetDescriptorFlags();
     
     initializeSceneNodes();
     initializeBitmaps();
     initializeGlobalSprites();
     initializeMap();
     initializeMessageBoxes();
-    // system/dialogue.c
-    func_80042F60();
-    // system/overlayScreenSprits.c
-    func_80045DE0();
+    initializeDialogueSessionManagers();
+    initializeOverlayScreenSprites();
     initializeCutsceneExecutors();
-    // system/flags.c
-    func_8004DEB0();
+    initializeFlags();
     initializeEntities();
     initializeMapControllers();
 
@@ -129,9 +129,9 @@ void initializeEngine(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/mainproc", func_80025F04);
+//INCLUDE_ASM("asm/nonmatchings/mainproc", initializeMainProcess);
 
-void func_80025F04(void) {
+void initializeMainProcess(void) {
     
     u8 i;
     
@@ -146,22 +146,50 @@ void func_80025F04(void) {
     currentFramebufferIndex = 0;
     loopStepsPerCycle = 0;
     retraceCount = 0;
+    #ifndef JP
     D_80237A04 = 0;
+    #else
+    D_80237E94 = 0;
+    #endif
 
     gfxTaskNo = 0xFF;
 
+    #ifndef JP
     D_80237408 = 0;
+    #else
+    D_80237898 = 0;
+    #endif
+
     frameRate = 1;
+
+    #ifndef JP
     D_802226E2 = 1;
-    
+    #else
+    D_80222B72 = 1;
+    #endif
+
+    #ifndef JP
+
     D_801C3B68[0] = 0;
     D_801C3B68[1] = 0;
     D_801C3B68[2] = 0;
     D_801C3B68[3] = 0;
 
+    #else
+    D_801C4008[0] = 0;
+    D_801C4008[1] = 0;
+    D_801C4008[2] = 0;
+    D_801C4008[3] = 0;
+    #endif
+
     gGraphicsBufferIndex = 0;
-    
+
+    #ifndef JP
     D_80204B38 = 0;
+    #else
+    D_80204FC8 = 0;
+    #endif
+    
     gMainMapIndex = 0;
     
     for (i = 0; i < MAIN_LOOP_CALLBACK_FUNCTION_TABLE_SIZE; i++) {

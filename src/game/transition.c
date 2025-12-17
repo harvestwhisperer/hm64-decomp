@@ -25,7 +25,9 @@
 #include "game/player.h"
 #include "game/setCutscenes.h"
 #include "game/spriteIndices.h"
-#include "game/weather.h"    
+#include "game/weather.h"
+
+#include "buffers/buffers.h"
       
 // bss
 // unused: likely to show player coordinates on screen for debugging
@@ -260,7 +262,7 @@ void initializeEntityInstances(u8 arg0) {
         // farm or barn, how to play cutscene
         case 0:
             
-            initializeEntity(ENTITY_PLAYER, 0, 0x31, (void*)0x80240B00, (void*)0x80243B00, (void*)0x80246B00, (void*)0x8024AB00, (void*)0x80252300, (void*)0x80252B00);            
+            initializeEntity(ENTITY_PLAYER, 0, 0x31, (void*)PLAYER_TEXTURE_1_BUFFER, (void*)PLAYER_TEXTURE_2_BUFFER, (void*)PLAYER_PALETTE_BUFFER, (void*)PLAYER_ANIMATION_METADATA_BUFFER, (void*)PLAYER_SPRITESHEET_INDEX_BUFFER, (void*)PLAYER_TEXTURE_TO_PALETTE_LOOKUP_BUFFER);            
             initializeEntity(1, 1, 0x32, (void*)0x8026F000, (void*)0x8026F908, (void*)0x80270210, (void*)0x80270410, (void*)0x80272000, (void*)0x80272200);
             initializeEntity(2, 2, 0x33, (void*)0x80272800, (void*)0x80272C80, (void*)0x80275E00, (void*)0x80275F00, (void*)0x80276700, (void*)0x80276800);
             initializeEntity(3, 3, 0x34, (void*)0x80273100, (void*)0x80273580, (void*)0x80275E00, (void*)0x80275F00, (void*)0x80276700, (void*)0x80276800);
@@ -319,7 +321,7 @@ void initializeEntityInstances(u8 arg0) {
         // default, opening, demo cutscenes
         case 1:
             
-            initializeEntity(ENTITY_PLAYER, 0, 0x31, (void*)0x80240B00, (void*)0x80243B00, (void*)0x80246B00, (void*)0x8024AB00, (void*)0x80252300, (void*)0x80252B00);
+            initializeEntity(ENTITY_PLAYER, 0, 0x31, (void*)PLAYER_TEXTURE_1_BUFFER, (void*)0x80243B00, (void*)PLAYER_PALETTE_BUFFER, (void*)PLAYER_ANIMATION_METADATA_BUFFER, (void*)PLAYER_SPRITESHEET_INDEX_BUFFER, (void*)PLAYER_TEXTURE_TO_PALETTE_LOOKUP_BUFFER);
             initializeEntity(1, 1, 0x32, (void*)0x8026F000, (void*)0x8026F908, (void*)0x80270210, (void*)0x80270410, (void*)0x80272000, (void*)0x80272200);
             initializeEntity(2, 2, 0x33, (void*)0x80272800, (void*)0x80272C80, (void*)0x80275E00, (void*)0x80275F00, (void*)0x80276700, (void*)0x80276800);
             initializeEntity(3, 3, 0x34, (void*)0x80273100, (void*)0x80273580, (void*)0x80275E00, (void*)0x80275F00, (void*)0x80276700, (void*)0x80276800);
@@ -375,7 +377,7 @@ void initializeEntityInstances(u8 arg0) {
         // new year's festival
         case 2:
             
-            initializeEntity(ENTITY_PLAYER, 0, 0x31, (void*)0x80240B00, (void*)0x80243B00, (void*)0x80246B00, (void*)0x8024AB00, (void*)0x80252300, (void*)0x80252B00);
+            initializeEntity(ENTITY_PLAYER, 0, 0x31, (void*)PLAYER_TEXTURE_1_BUFFER, (void*)0x80243B00, (void*)PLAYER_PALETTE_BUFFER, (void*)PLAYER_ANIMATION_METADATA_BUFFER, (void*)PLAYER_SPRITESHEET_INDEX_BUFFER, (void*)PLAYER_TEXTURE_TO_PALETTE_LOOKUP_BUFFER);
             
             initializeEntity(0x27, 0x15, 0x46, (void*)0x8028B930, (void*)0x8028C730, (void*)0x8028DD50, (void*)0x80290550, (void*)0x80293A50, (void*)0x80293C50);
             
@@ -434,7 +436,7 @@ void initializeEntityInstances(u8 arg0) {
         // cow festival
         case 3:
             
-            initializeEntity(ENTITY_PLAYER, 0, 0x31, (void*)0x80240B00, (void*)0x80243B00, (void*)0x80246B00, (void*)0x8024AB00, (void*)0x80252300, (void*)0x80252B00);
+            initializeEntity(ENTITY_PLAYER, 0, 0x31, (void*)PLAYER_TEXTURE_1_BUFFER, (void*)0x80243B00, (void*)PLAYER_PALETTE_BUFFER, (void*)PLAYER_ANIMATION_METADATA_BUFFER, (void*)PLAYER_SPRITESHEET_INDEX_BUFFER, (void*)PLAYER_TEXTURE_TO_PALETTE_LOOKUP_BUFFER);
             
             initializeEntity(6, 6, 0x32, (void*)0x80278D50, (void*)0x802799D0, (void*)0x8027A650, (void*)0x8027B0D0, (void*)0x8027BED0, (void*)0x8027BFD0);
             initializeEntity(7, 7, 0x33, (void*)0x8027C250, (void*)0x8027CED0, (void*)0x8027DB50, (void*)0x8027E5D0, (void*)0x8027F3D0, (void*)0x8027F4D0);

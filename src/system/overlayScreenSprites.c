@@ -16,9 +16,9 @@ u32 D_801133B0[] = {
 bool func_80046504(u16 spriteIndex);
 bool func_80046650(u16 spriteIndex, u8 arg1, u8 arg2);
 
-//INCLUDE_ASM("asm/nonmatchings/system/overlayScreenSprites", func_80045DE0);
+//INCLUDE_ASM("asm/nonmatchings/system/overlayScreenSprites", initializeOverlayScreenSprites);
 
-void func_80045DE0(void) {
+void initializeOverlayScreenSprites(void) {
 
     u16 i;
 

@@ -287,6 +287,8 @@ extern bool setGameVariableString(u16, u8*, s8);
 extern u8 convertNumberToGameVariableString(u16 index, u32 arg1, u8 arg2);
 extern bool func_8003FE9C(u16 index);
 extern bool func_8003FFF4(u16 index);
+extern bool func_80040140(u16 index);
+extern u8 func_800401C8(u16 index);
 extern void updateMessageBox();
 extern void updateDialogues();
 

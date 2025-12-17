@@ -14,7 +14,7 @@ typedef struct {
 	u16 flags;
 } SpriteAssetDescriptor;
 
-extern void resetSpriteAssetDescriptorFlags(void);
+extern void initializeSpriteAssetDescriptorFlags(void);
 extern bool setSpriteAssetDescriptors(u8 *romAddr, u8 *vaddr, u32 length);
 extern void dmaSprites();
 

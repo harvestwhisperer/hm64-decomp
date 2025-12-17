@@ -56,7 +56,7 @@
 #define NAMING_SCREEN 0x33
 // 0x34 naming screen 2
 #define SELECT_GAME 0x35
-#define ESTIMATE_SCREEN 0x36
+#define COMPLETION_SCREEN 0x36
 // 0x37 unknown
 // 0x38 unknown
 
