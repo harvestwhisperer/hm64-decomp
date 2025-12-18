@@ -58,7 +58,6 @@ extern f32 belongingsYPosition[];
 extern f32 heldItemYPosition;
 extern f32 keyItemsXPosition[];
 extern f32 keyItemsYPosition[];
-
 extern f32 toolchestXPosition[];
 extern f32 toolchestYPosition[];
 
@@ -95,7 +94,11 @@ extern f32 D_80116E90[];
 extern u16 D_80116EB8[];
 extern u16 D_80116EF4[];
 
+// power nut bits
 extern u32 D_80116F24[];
+
+// u32 D_80116F24[] = { 1, 2, 4, 8, 0x10, 0x20, 0x40, 0x80, 0x100, 0x200 };
+
 extern u16 D_80116F4C[];
 extern u16 D_80116F88[];
 extern u16 D_80117148[];
@@ -6355,6 +6358,7 @@ void func_800CD690(void) {
 
 }
 
+// horse race strings
 INCLUDE_RODATA("asm/nonmatchings/game/overlayScreens", D_801220CC);
 
 INCLUDE_RODATA("asm/nonmatchings/game/overlayScreens", D_80122140);

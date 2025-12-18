@@ -35,7 +35,8 @@ __pycache__
 undefined_syms_auto.txt
 undefined_funcs_auto.txt
 *Zone.Identifier
-!/src/lib/gcc/*.s
-!/src/lib/os/libultra/gu/*.s
-!/src/lib/os/libultra/libc/*.s
-!/src/lib/os/libultra/rmon/*.s
+!/lib/libkmc/src/*.s
+!/lib/libultra/src/gu/*.s
+!/lib/libultra/src/libc/*.s
+!/lib/libultra/src/os/*.s
+!/lib/libultra/src/rmon/*.s

@@ -69,12 +69,12 @@ segments:
     bss_size: 0x113860
     subalign: 8
     subsegments:
-      - [ 0x1050, c, lib/nusys-1/nuboot]
+      - [ 0x1050, c, lib/nusys-1/src/nusys/nuboot]
       - [ 0x1190, asm]
       # - [ 0x1190, c, mainproc]
       # - [ 0x13A0, asm]
       - [0xEBD80, data]
-      - { start: 0xFFA60, type: .bss, vram: 0x80124660, name: lib/nusys-1/nuboot }
+      - { start: 0xFFA60, type: .bss, vram: 0x80124660, name: lib/nusys-1/src/nusys/nuboot }
       - { start: 0xFFA60, type: bss, vram: 0x801269C0 }
 
   - type: bin

@@ -437,7 +437,7 @@ void func_800E1998(void) {
 
 void func_800E1A94(void) {
 
-    if (loadGameScreenContext.showControllerPakScreen == 0) {
+    if (loadGameScreenContext.showControllerPakScreen == FALSE) {
 
         if (loadGameScreenContext.flags[0] & 1) { 
             func_8003DD14(0);
@@ -3262,7 +3262,7 @@ void func_800E8F08(void) {
 // load game state from sram and write completion screen strings
 INCLUDE_ASM("asm/nonmatchings/game/loadGameScreen", func_800E9550);
 
-// save/cache completion state into sram?
+// save/cache top completion state into sram
 INCLUDE_ASM("asm/nonmatchings/game/loadGameScreen", func_800E9B2C);
 
 //INCLUDE_ASM("asm/nonmatchings/game/loadGameScreen", func_800EA2A4);

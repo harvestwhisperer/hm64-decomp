@@ -50,8 +50,17 @@ MACROS := -D_LANGUAGE_C -D_MIPS_SZLONG=32 -D_MIPS_SZINT=32 -DSUPPORT_NAUDIO -DNU
 CFLAGS_COMMON := -G0 -mips3 -mgp32 -mfp32 -Wa,-Iinclude -funsigned-char
 
 CFLAGS := $(CFLAGS_COMMON) $(MACROS)
-ASFLAGS := -G 0 -I include -mips3 -mabi=32
-CPPFLAGS := -I. -I include -I src -I include/libmus -I include/PR -I include/gcc -I include/nusys
+HASM_ASFLAGS := -mips3 -nostdinc -fno-PIC -mno-abicalls -G 0 -mgp32 -mfp32 -mabi32
+ASFLAGS := -G 0 -I include -mips3
+CPPFLAGS := -I. -I include -I src -I lib/nusys-1/include -I lib/libultra/include -I lib/libmus/include/PR -I lib/gcc/include
+
+HASM_AS_DEFINES := -D_LANGUAGE_ASSEMBLY -DMIPSEB -D_ULTRA64 -D_MIPS_SIM=1
+
+LIBULTRA_CPP_FLAGS := -I lib/libultra/include -I lib/libultra/include/PR -I lib/gcc/include
+LIBMUS_CPP_FLAGS := -I lib/libmus/include/PR -I lib/nusys-1/include -I lib/libultra/include -I lib/libultra/include/PR -I lib/libultra/src/libnaudio
+NUSYS_CPP_FLAGS := -I lib/nusys-1/include -I lib/libultra/include
+NUALSTL_CPP_FLAGS := -I lib/nusys-1/include -I lib/libultra/include -I lib/libultra/include/PR -I lib/libultra/src/libnaudio -I lib/libmus/include/PR
+LIBKMC_CPP_FLAGS := -I include -I lib/libkmc/include -I lib/gcc/include -I lib/nusys-1/include -I lib/libultra/include -I lib/libmus/include/PR
 
 DEBUG_FLAGS := -g2
 OPTFLAGS := -O2
@@ -131,10 +140,10 @@ $(shell mkdir -p $(sort $(dir $(OBJECTS))))
 
 # Flag overrides
 
-build/src/lib/nusys-1/nuboot.c.o: NU_OPTFLAGS := -O0
-build/src/lib/nusys-1/nupakmenu.c.o: NU_OPTFLAGS += -g2
-build/src/lib/nusys-1/nupakmenuloadfont.c.o: NU_OPTFLAGS += -g2
-build/src/lib/os/libultra/io/aisetnextbuf.c.o: ULTRALIBVER := -DBUILD_VERSION=6
+build/lib/nusys-1/src/nusys/nuboot.c.o: NU_OPTFLAGS := -O0
+build/lib/nusys-1/src/sample/nunospak/nupakmenu.c.o: NU_OPTFLAGS += -g2
+build/lib/nusys-1/src/sample/nunospak/nupakmenuloadfont.c.o: NU_OPTFLAGS += -g2
+build/lib/libultra/src/io/aisetnextbuf.c.o: ULTRALIBVER := -DBUILD_VERSION=6
 
 # Targets
 
@@ -213,28 +222,111 @@ extract-cutscenes:
 # Main code segment
 
 # need to pass -B <dir> to gcc to prevent it from fetching system default cc1
-$(BUILD_DIR)/src/%.c.o: src/%.c
+$(BUILD_DIR)/src/mainproc.c.o: src/mainproc.c
 	$(CC) -B $(KMC_PATH) $(OPTFLAGS) $(CFLAGS) $(DEBUG_FLAGS) $(CPPFLAGS) -c -o $@ $<
 
-$(BUILD_DIR)/src/overlays/%.c.o: src/overlays/%.c
+$(BUILD_DIR)/src/mainLoop.c.o: src/mainLoop.c
+	$(CC) -B $(KMC_PATH) $(OPTFLAGS) $(CFLAGS) $(DEBUG_FLAGS) $(CPPFLAGS) -c -o $@ $<
+
+$(BUILD_DIR)/src/game/%.c.o: src/game/%.c
+	$(CC) -B $(KMC_PATH) $(OPTFLAGS) $(CFLAGS) $(DEBUG_FLAGS) $(CPPFLAGS) -c -o $@ $<
+
+$(BUILD_DIR)/src/system/%.c.o: src/system/%.c
+	$(CC) -B $(KMC_PATH) $(OPTFLAGS) $(CFLAGS) $(DEBUG_FLAGS) $(CPPFLAGS) -c -o $@ $<
+
+$(BUILD_DIR)/src/buffers/%.c.o: src/buffers/%.c
+	$(CC) -B $(KMC_PATH) $(NU_OPTFLAGS) $(CFLAGS) $(ULTRALIBVER) $(CPPFLAGS) -c -o $@ $<
+
+$(BUILD_DIR)/src/data/%.c.o: src/data/%.c
 	$(CC) -B $(KMC_PATH) $(NU_OPTFLAGS) $(CFLAGS) $(ULTRALIBVER) $(CPPFLAGS) -c -o $@ $< 
 
 # Lib
 
-$(BUILD_DIR)/src/lib/libmus/player.c.o: src/lib/libmus/player.c
-	$(CC) -B $(KMC_PATH) $(LIBMUS_OPTFLAGS) $(CFLAGS) $(ULTRALIBVER) $(CPPFLAGS) -c -o $@ $<
+$(BUILD_DIR)/lib/libmus/src/player.c.o: lib/libmus/src/player.c
+	$(CC) -B $(KMC_PATH) $(LIBMUS_OPTFLAGS) $(CFLAGS) $(ULTRALIBVER) $(LIBMUS_CPP_FLAGS) -c -o $@ $<
 
-$(BUILD_DIR)/src/lib/nusys-1/%.c.o: src/lib/nusys-1/%.c
-	$(CC) -B $(KMC_PATH) $(NU_OPTFLAGS) $(CFLAGS) $(ULTRALIBVER) $(CPPFLAGS) -c -o $@ $<
+# nusys
 
-$(BUILD_DIR)/src/lib/os/libultra/%.c.o: src/lib/os/libultra/%.c
-	$(CC) -B $(KMC_PATH) $(LIBULTRA_OPTFLAGS) $(CFLAGS) $(ULTRALIBVER) $(CPPFLAGS) -c -o $@ $<
+$(BUILD_DIR)/lib/nusys-1/src/nusys/%.c.o: lib/nusys-1/src/nusys/%.c
+	$(CC) -B $(KMC_PATH) $(NU_OPTFLAGS) $(CFLAGS) $(ULTRALIBVER) $(NUSYS_CPP_FLAGS) -c -o $@ $<
 
-$(BUILD_DIR)/src/lib/libkmc/%.c.o: src/lib/libkmc/%.c
-	$(CC) -B $(KMC_PATH) $(LIBKMC_OPTFLAGS) $(CFLAGS) $(CPPFLAGS) -c -o $@ $<
+$(BUILD_DIR)/lib/nusys-1/src/nualstl/%.c.o: lib/nusys-1/src/nualstl/%.c
+	$(CC) -B $(KMC_PATH) $(NU_OPTFLAGS) $(CFLAGS) $(ULTRALIBVER) $(NUALSTL_CPP_FLAGS) -c -o $@ $<
 
-$(BUILD_DIR)/asm/lib/os/libultra/gu/%.s.o: src/lib/os/libultra/gu/%.s
-	$(V)$(AS) $(ASFLAGS) -o $@ $<
+$(BUILD_DIR)/lib/nusys-1/src/sample/nunospak/%.c.o: lib/nusys-1/src/sample/nunospak/%.c
+	$(CC) -B $(KMC_PATH) $(NU_OPTFLAGS) $(CFLAGS) $(ULTRALIBVER) $(NUSYS_CPP_FLAGS) -c -o $@ $<
+
+# libkmc
+
+$(BUILD_DIR)/lib/libkmc/src/%.c.o: lib/libkmc/src/%.c 
+	$(CC) -B $(KMC_PATH) $(LIBKMC_OPTFLAGS) $(CFLAGS) $(LIBKMC_CPP_FLAGS) -c -o $@ $<
+
+$(BUILD_DIR)/lib/libkmc/src/%.s.o: lib/libkmc/src/%.s 
+	$(CC) -B $(KMC_PATH) -c $(LIBKMC_CPP_FLAGS) $(HASM_AS_DEFINES) $(HASM_ASFLAGS) -x assembler-with-cpp -o $@ $<
+
+# libultra
+
+$(BUILD_DIR)/lib/libultra/src/%.c.o: lib/libultra/src/%.c
+	$(CC) -B $(KMC_PATH) $(LIBULTRA_OPTFLAGS) $(CFLAGS) $(ULTRALIBVER) $(LIBULTRA_CPP_FLAGS) -c -o $@ $<
+
+$(BUILD_DIR)/lib/libultra/src/gu/%.s.o: lib/libultra/src/gu/%.s
+	$(CC) -B $(KMC_PATH) -c $(LIBULTRA_CPP_FLAGS) $(HASM_AS_DEFINES) $(HASM_ASFLAGS) $(ULTRALIBVER) -x assembler-with-cpp -o $@ $<
+
+$(BUILD_DIR)/lib/libultra/src/libc/%.s.o: lib/libultra/src/libc/%.s
+	$(CC) -B $(KMC_PATH) -c $(LIBULTRA_CPP_FLAGS) $(HASM_AS_DEFINES) $(HASM_ASFLAGS) $(ULTRALIBVER) -x assembler-with-cpp -o $@ $<
+
+# For now, assemble each matchng hasm file
+
+# $(BUILD_DIR)/lib/libultra/src/os/exceptasm.s.o: lib/libultra/src/os/exceptasm.s
+# 	$(CC) -B $(KMC_PATH) -c $(LIBULTRA_CPP_FLAGS) $(HASM_AS_DEFINES) $(HASM_ASFLAGS) $(ULTRALIBVER) -mips3 -o32 -x assembler-with-cpp -o $@ $<
+
+$(BUILD_DIR)/lib/libultra/src/os/getcause.s.o: lib/libultra/src/os/getcause.s
+	$(CC) -B $(KMC_PATH) -c $(LIBULTRA_CPP_FLAGS) $(HASM_AS_DEFINES) $(HASM_ASFLAGS) $(ULTRALIBVER) -x assembler-with-cpp -o $@ $<
+
+$(BUILD_DIR)/lib/libultra/src/os/getcount.s.o: lib/libultra/src/os/getcount.s
+	$(CC) -B $(KMC_PATH) -c $(LIBULTRA_CPP_FLAGS) $(HASM_AS_DEFINES) $(HASM_ASFLAGS) $(ULTRALIBVER) -x assembler-with-cpp -o $@ $<
+
+$(BUILD_DIR)/lib/libultra/src/os/getsr.s.o: lib/libultra/src/os/getsr.s
+	$(CC) -B $(KMC_PATH) -c $(LIBULTRA_CPP_FLAGS) $(HASM_AS_DEFINES) $(HASM_ASFLAGS) $(ULTRALIBVER) -x assembler-with-cpp -o $@ $<
+
+$(BUILD_DIR)/lib/libultra/src/os/interrupt.s.o: lib/libultra/src/os/interrupt.s
+	$(CC) -B $(KMC_PATH) -c $(LIBULTRA_CPP_FLAGS) $(HASM_AS_DEFINES) $(HASM_ASFLAGS) $(ULTRALIBVER) -x assembler-with-cpp -o $@ $<
+
+$(BUILD_DIR)/lib/libultra/src/os/invaldcache.s.o: lib/libultra/src/os/invaldcache.s
+	$(CC) -B $(KMC_PATH) -c $(LIBULTRA_CPP_FLAGS) $(HASM_AS_DEFINES) $(HASM_ASFLAGS) $(ULTRALIBVER) -x assembler-with-cpp -o $@ $<
+
+$(BUILD_DIR)/lib/libultra/src/os/invalicache.s.o: lib/libultra/src/os/invalicache.s
+	$(CC) -B $(KMC_PATH) -c $(LIBULTRA_CPP_FLAGS) $(HASM_AS_DEFINES) $(HASM_ASFLAGS) $(ULTRALIBVER) -x assembler-with-cpp -o $@ $<
+
+$(BUILD_DIR)/lib/libultra/src/os/maptlbrdb.s.o: lib/libultra/src/os/maptlbrdb.s
+	$(CC) -B $(KMC_PATH) -c $(LIBULTRA_CPP_FLAGS) $(HASM_AS_DEFINES) $(HASM_ASFLAGS) $(ULTRALIBVER) -x assembler-with-cpp -o $@ $<
+
+$(BUILD_DIR)/lib/libultra/src/os/probetlb.s.o: lib/libultra/src/os/probetlb.s
+	$(CC) -B $(KMC_PATH) -c $(LIBULTRA_CPP_FLAGS) $(HASM_AS_DEFINES) $(HASM_ASFLAGS) $(ULTRALIBVER) -x assembler-with-cpp -o $@ $<
+
+$(BUILD_DIR)/lib/libultra/src/os/setcompare.s.o: lib/libultra/src/os/setcompare.s
+	$(CC) -B $(KMC_PATH) -c $(LIBULTRA_CPP_FLAGS) $(HASM_AS_DEFINES) $(HASM_ASFLAGS) $(ULTRALIBVER) -x assembler-with-cpp -o $@ $<
+
+# $(BUILD_DIR)/lib/libultra/src/os/setintmask.s.o: lib/libultra/src/os/setintmask.s
+# 	$(CC) -B $(KMC_PATH) -c $(LIBULTRA_CPP_FLAGS) $(HASM_AS_DEFINES) $(HASM_ASFLAGS) $(ULTRALIBVER) -x assembler-with-cpp -o $@ $<
+
+$(BUILD_DIR)/lib/libultra/src/os/setfpcsr.s.o: lib/libultra/src/os/setfpcsr.s
+	$(CC) -B $(KMC_PATH) -c $(LIBULTRA_CPP_FLAGS) $(HASM_AS_DEFINES) $(HASM_ASFLAGS) $(ULTRALIBVER) -x assembler-with-cpp -o $@ $<
+
+$(BUILD_DIR)/lib/libultra/src/os/setsr.s.o: lib/libultra/src/os/setsr.s
+	$(CC) -B $(KMC_PATH) -c $(LIBULTRA_CPP_FLAGS) $(HASM_AS_DEFINES) $(HASM_ASFLAGS) $(ULTRALIBVER) -x assembler-with-cpp -o $@ $<
+
+$(BUILD_DIR)/lib/libultra/src/os/unmaptlball.s.o: lib/libultra/src/os/unmaptlball.s
+	$(CC) -B $(KMC_PATH) -c $(LIBULTRA_CPP_FLAGS) $(HASM_AS_DEFINES) $(HASM_ASFLAGS) $(ULTRALIBVER) -x assembler-with-cpp -o $@ $<
+
+$(BUILD_DIR)/lib/libultra/src/os/writebackdcache.s.o: lib/libultra/src/os/writebackdcache.s
+	$(CC) -B $(KMC_PATH) -c $(LIBULTRA_CPP_FLAGS) $(HASM_AS_DEFINES) $(HASM_ASFLAGS) $(ULTRALIBVER) -x assembler-with-cpp -o $@ $<
+
+$(BUILD_DIR)/lib/libultra/src/os/writebackdcacheall.s.o: lib/libultra/src/os/writebackdcacheall.s
+	$(CC) -B $(KMC_PATH) -c $(LIBULTRA_CPP_FLAGS) $(HASM_AS_DEFINES) $(HASM_ASFLAGS) $(ULTRALIBVER) -x assembler-with-cpp -o $@ $<
+
+$(BUILD_DIR)/lib/libultra/src/rmon/%.s.o: lib/libultra/src/rmon/%.s
+	$(CC) -B $(KMC_PATH) -c $(LIBULTRA_CPP_FLAGS) $(HASM_AS_DEFINES) $(HASM_ASFLAGS) $(ULTRALIBVER) -x assembler-with-cpp -o $@ $<
 
 # Asset building
 

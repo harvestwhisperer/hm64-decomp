@@ -1,5 +1,4 @@
 #include "common.h"
-#include "nusys.h"
 
 #define SCREEN_WD	320
 #define SCREEN_HT	240
