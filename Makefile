@@ -275,56 +275,12 @@ $(BUILD_DIR)/lib/libultra/src/gu/%.s.o: lib/libultra/src/gu/%.s
 $(BUILD_DIR)/lib/libultra/src/libc/%.s.o: lib/libultra/src/libc/%.s
 	$(CC) -B $(KMC_PATH) -c $(LIBULTRA_CPP_FLAGS) $(HASM_AS_DEFINES) $(HASM_ASFLAGS) $(ULTRALIBVER) -x assembler-with-cpp -o $@ $<
 
-# For now, assemble each matchng hasm file
+$(BUILD_DIR)/lib/libultra/src/os/%.s.o: lib/libultra/src/os/%.s
+	$(CC) -B $(KMC_PATH) -c $(LIBULTRA_CPP_FLAGS) $(HASM_AS_DEFINES) $(HASM_ASFLAGS) $(ULTRALIBVER) -o32 -x assembler-with-cpp -o $@ $<
 
-# $(BUILD_DIR)/lib/libultra/src/os/exceptasm.s.o: lib/libultra/src/os/exceptasm.s
-# 	$(CC) -B $(KMC_PATH) -c $(LIBULTRA_CPP_FLAGS) $(HASM_AS_DEFINES) $(HASM_ASFLAGS) $(ULTRALIBVER) -mips3 -o32 -x assembler-with-cpp -o $@ $<
-
-$(BUILD_DIR)/lib/libultra/src/os/getcause.s.o: lib/libultra/src/os/getcause.s
-	$(CC) -B $(KMC_PATH) -c $(LIBULTRA_CPP_FLAGS) $(HASM_AS_DEFINES) $(HASM_ASFLAGS) $(ULTRALIBVER) -x assembler-with-cpp -o $@ $<
-
-$(BUILD_DIR)/lib/libultra/src/os/getcount.s.o: lib/libultra/src/os/getcount.s
-	$(CC) -B $(KMC_PATH) -c $(LIBULTRA_CPP_FLAGS) $(HASM_AS_DEFINES) $(HASM_ASFLAGS) $(ULTRALIBVER) -x assembler-with-cpp -o $@ $<
-
-$(BUILD_DIR)/lib/libultra/src/os/getsr.s.o: lib/libultra/src/os/getsr.s
-	$(CC) -B $(KMC_PATH) -c $(LIBULTRA_CPP_FLAGS) $(HASM_AS_DEFINES) $(HASM_ASFLAGS) $(ULTRALIBVER) -x assembler-with-cpp -o $@ $<
-
-$(BUILD_DIR)/lib/libultra/src/os/interrupt.s.o: lib/libultra/src/os/interrupt.s
-	$(CC) -B $(KMC_PATH) -c $(LIBULTRA_CPP_FLAGS) $(HASM_AS_DEFINES) $(HASM_ASFLAGS) $(ULTRALIBVER) -x assembler-with-cpp -o $@ $<
-
-$(BUILD_DIR)/lib/libultra/src/os/invaldcache.s.o: lib/libultra/src/os/invaldcache.s
-	$(CC) -B $(KMC_PATH) -c $(LIBULTRA_CPP_FLAGS) $(HASM_AS_DEFINES) $(HASM_ASFLAGS) $(ULTRALIBVER) -x assembler-with-cpp -o $@ $<
-
-$(BUILD_DIR)/lib/libultra/src/os/invalicache.s.o: lib/libultra/src/os/invalicache.s
-	$(CC) -B $(KMC_PATH) -c $(LIBULTRA_CPP_FLAGS) $(HASM_AS_DEFINES) $(HASM_ASFLAGS) $(ULTRALIBVER) -x assembler-with-cpp -o $@ $<
-
-$(BUILD_DIR)/lib/libultra/src/os/maptlbrdb.s.o: lib/libultra/src/os/maptlbrdb.s
-	$(CC) -B $(KMC_PATH) -c $(LIBULTRA_CPP_FLAGS) $(HASM_AS_DEFINES) $(HASM_ASFLAGS) $(ULTRALIBVER) -x assembler-with-cpp -o $@ $<
-
-$(BUILD_DIR)/lib/libultra/src/os/probetlb.s.o: lib/libultra/src/os/probetlb.s
-	$(CC) -B $(KMC_PATH) -c $(LIBULTRA_CPP_FLAGS) $(HASM_AS_DEFINES) $(HASM_ASFLAGS) $(ULTRALIBVER) -x assembler-with-cpp -o $@ $<
-
-$(BUILD_DIR)/lib/libultra/src/os/setcompare.s.o: lib/libultra/src/os/setcompare.s
-	$(CC) -B $(KMC_PATH) -c $(LIBULTRA_CPP_FLAGS) $(HASM_AS_DEFINES) $(HASM_ASFLAGS) $(ULTRALIBVER) -x assembler-with-cpp -o $@ $<
-
-# $(BUILD_DIR)/lib/libultra/src/os/setintmask.s.o: lib/libultra/src/os/setintmask.s
-# 	$(CC) -B $(KMC_PATH) -c $(LIBULTRA_CPP_FLAGS) $(HASM_AS_DEFINES) $(HASM_ASFLAGS) $(ULTRALIBVER) -x assembler-with-cpp -o $@ $<
-
-$(BUILD_DIR)/lib/libultra/src/os/setfpcsr.s.o: lib/libultra/src/os/setfpcsr.s
-	$(CC) -B $(KMC_PATH) -c $(LIBULTRA_CPP_FLAGS) $(HASM_AS_DEFINES) $(HASM_ASFLAGS) $(ULTRALIBVER) -x assembler-with-cpp -o $@ $<
-
-$(BUILD_DIR)/lib/libultra/src/os/setsr.s.o: lib/libultra/src/os/setsr.s
-	$(CC) -B $(KMC_PATH) -c $(LIBULTRA_CPP_FLAGS) $(HASM_AS_DEFINES) $(HASM_ASFLAGS) $(ULTRALIBVER) -x assembler-with-cpp -o $@ $<
-
-$(BUILD_DIR)/lib/libultra/src/os/unmaptlball.s.o: lib/libultra/src/os/unmaptlball.s
-	$(CC) -B $(KMC_PATH) -c $(LIBULTRA_CPP_FLAGS) $(HASM_AS_DEFINES) $(HASM_ASFLAGS) $(ULTRALIBVER) -x assembler-with-cpp -o $@ $<
-
-$(BUILD_DIR)/lib/libultra/src/os/writebackdcache.s.o: lib/libultra/src/os/writebackdcache.s
-	$(CC) -B $(KMC_PATH) -c $(LIBULTRA_CPP_FLAGS) $(HASM_AS_DEFINES) $(HASM_ASFLAGS) $(ULTRALIBVER) -x assembler-with-cpp -o $@ $<
-
-$(BUILD_DIR)/lib/libultra/src/os/writebackdcacheall.s.o: lib/libultra/src/os/writebackdcacheall.s
-	$(CC) -B $(KMC_PATH) -c $(LIBULTRA_CPP_FLAGS) $(HASM_AS_DEFINES) $(HASM_ASFLAGS) $(ULTRALIBVER) -x assembler-with-cpp -o $@ $<
-
+$(BUILD_DIR)/lib/libultra/src/os/unusedPadding.s.o: lib/libultra/src/os/unusedPadding.s
+	$(V)$(AS) $(ASFLAGS) -o $@ $<
+	
 $(BUILD_DIR)/lib/libultra/src/rmon/%.s.o: lib/libultra/src/rmon/%.s
 	$(CC) -B $(KMC_PATH) -c $(LIBULTRA_CPP_FLAGS) $(HASM_AS_DEFINES) $(HASM_ASFLAGS) $(ULTRALIBVER) -x assembler-with-cpp -o $@ $<
 
