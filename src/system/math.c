@@ -1,5 +1,5 @@
 #include "common.h"
-#include "gcc/stdlib.h"
+#include <stdlib.h>
 
 //INCLUDE_ASM("asm/nonmatchings/system/utility", func_80026850);
 

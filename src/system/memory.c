@@ -1,5 +1,5 @@
 #include "common.h"
-#include "PR/os.h"
+#include <PR/os.h>
 
 #include "system/memory.h"
 
