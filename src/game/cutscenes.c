@@ -1,6 +1,6 @@
 #include "common.h"
 
-#include "game/setCutscenes.h"
+#include "game/cutscenes.h"
 
 #include "system/cutscene.h"
 #include "system/entity.h"
@@ -9,19 +9,24 @@
 #include "system/message.h"
 
 #include "game/animals.h"
-#include "game/cutsceneFieldTiles.h"
+#include "data/fieldTileMaps/cutsceneFieldTiles.h"
 #include "game/evaluation.h"
-#include "game/fieldTiles.h"
+#include "data/fieldTileMaps/fieldTiles.h"
 #include "game/game.h"
 #include "game/gameStatus.h"
-#include "game/itemHandlers.h"
+#include "game/items.h"
 #include "game/level.h"
 #include "game/fieldObjects.h"
 #include "game/npc.h"
 #include "game/overlayScreens.h"
 #include "game/player.h"
-#include "game/spriteIndices.h"
+#include "game/time.h"
 #include "game/weather.h"
+
+#include "assetIndices/cutscenes.h"
+#include "assetIndices/entities.h"
+#include "assetIndices/maps.h"
+#include "assetIndices/sprites.h"
                                   
 // forward declarations
 u16 setBeachCutscenes(void);                         
@@ -38,7 +43,7 @@ u16 setRoadCutscenes(void);
 u16 setSpringCutscenes(void);                        
 u16 setVineyardCellarCutscenes(void);                
 u16 setVineyardHouseCutscenes(void); 
-// TODO: label
+// TODO: finish labeling
 u16 func_800A1C04(void);
 u16 func_800A2250(void);
 u16 func_800A29B0(void);
@@ -56,7 +61,7 @@ u16 func_800A6EE4(void);
 
 // bss
 s32 gCutsceneCompletionFlags;
-u16 D_8018981C;
+u16 gCutsceneBytecodeSegmentIndex;
 
 // likely bss
 extern u16 gCutsceneIndex;
@@ -269,21 +274,21 @@ u16 cutsceneExecutorIndices[] = {
     0
 };
 
-//INCLUDE_ASM("asm/nonmatchings/game/setCutscenes", func_8009BF90);
+//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", func_8009BF90);
 
 // sets initial cutscene executor object
-inline void func_8009BF90(u16 arg0) {
+inline void func_8009BF90(u16 bankIndex) {
 
-    nuPiReadRom(cutsceneBytecodeAddresses[arg0].romAddrStart, cutsceneBankLoadAddresses[arg0], cutsceneBytecodeAddresses[arg0].romAddrEnd - cutsceneBytecodeAddresses[arg0].romAddrStart);
+    nuPiReadRom(cutsceneBytecodeAddresses[bankIndex].romAddrStart, cutsceneBankLoadAddresses[bankIndex], cutsceneBytecodeAddresses[bankIndex].romAddrEnd - cutsceneBytecodeAddresses[bankIndex].romAddrStart);
 
     gCutsceneCompletionFlags = 0;
 
     // param 1 = 0, 20, 21, or 22
-    spawnCutsceneExecutor(cutsceneExecutorIndices[arg0], cutsceneEntryPointAddresses[arg0]);
+    spawnCutsceneExecutor(cutsceneExecutorIndices[bankIndex], cutsceneEntryPointAddresses[bankIndex]);
     
     togglePauseEntities();
     
-    D_8018981C = arg0;
+    gCutsceneBytecodeSegmentIndex = bankIndex;
 
     gCutsceneFlags |= 1;
 
@@ -291,7 +296,7 @@ inline void func_8009BF90(u16 arg0) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/setCutscenes", func_8009C054);
+//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", func_8009C054);
 
 u16 func_8009C054(u16 mapIndex) {
     
@@ -401,7 +406,7 @@ u16 func_8009C054(u16 mapIndex) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/setCutscenes", func_8009C324);
+//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", func_8009C324);
 
 // arg0 = cutscene type; 0 = show up while working; 1 = morning/show up on map entry
 u16 func_8009C324(u8 arg0) {
@@ -1700,7 +1705,7 @@ u16 func_8009C324(u8 arg0) {
 }
 
 
-//INCLUDE_ASM("asm/nonmatchings/game/setCutscenes", setFarmCutscenes);
+//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", setFarmCutscenes);
 
 u16 setFarmCutscenes(void) {
 
@@ -1816,7 +1821,7 @@ u16 setFarmCutscenes(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/setCutscenes", setMountain1Cutscenes);
+//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", setMountain1Cutscenes);
 
 u16 setMountain1Cutscenes(void) {
 
@@ -1907,7 +1912,7 @@ u16 setMountain1Cutscenes(void) {
 }
 
 // mountain 2
-//INCLUDE_ASM("asm/nonmatchings/game/setCutscenes", func_800A1C04);
+//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", func_800A1C04);
 
 u16 func_800A1C04(void) {
 
@@ -1984,7 +1989,7 @@ u16 func_800A1C04(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/setCutscenes", func_800A2250);
+//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", func_800A2250);
 
 // TODO: label; top of mountain 1
 u16 func_800A2250(void) {
@@ -2023,7 +2028,7 @@ u16 func_800A2250(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/setCutscenes", setMoonMountainCutscenes);
+//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", setMoonMountainCutscenes);
 
 // mountain 2
 u16 setMoonMountainCutscenes(void) {
@@ -2049,7 +2054,7 @@ u16 setMoonMountainCutscenes(void) {
     return index;
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/setCutscenes", setSpringCutscenes);
+//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", setSpringCutscenes);
 
 u16 setSpringCutscenes(void) {
 
@@ -2089,7 +2094,7 @@ u16 setSpringCutscenes(void) {
     return index;
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/setCutscenes", setHarvestSpriteCaveCutscenes);
+//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", setHarvestSpriteCaveCutscenes);
 
 u16 setHarvestSpriteCaveCutscenes(void) {
 
@@ -2105,7 +2110,7 @@ u16 setHarvestSpriteCaveCutscenes(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/setCutscenes", setCaveCutscenes);
+//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", setCaveCutscenes);
 
 u16 setCaveCutscenes(void) {
 
@@ -2120,7 +2125,7 @@ u16 setCaveCutscenes(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/setCutscenes", func_800A29B0);
+//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", func_800A29B0);
 
 // house
 u16 func_800A29B0(void) {
@@ -2243,7 +2248,7 @@ u16 func_800A29B0(void) {
 }
 
 // kitchen
-//INCLUDE_ASM("asm/nonmatchings/game/setCutscenes", func_800A2FA8);
+//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", func_800A2FA8);
 
 u16 func_800A2FA8(void) {
 
@@ -2415,7 +2420,7 @@ u16 func_800A2FA8(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/setCutscenes", func_800A3F04);
+//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", func_800A3F04);
 
 // ranch
 u16 func_800A3F04(void) {
@@ -2556,7 +2561,7 @@ u16 func_800A3F04(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/setCutscenes", setRanchStoreCutscenes);
+//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", setRanchStoreCutscenes);
 
 u16 setRanchStoreCutscenes(void) {
 
@@ -2580,7 +2585,7 @@ u16 setRanchStoreCutscenes(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/setCutscenes", func_800A4878);
+//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", func_800A4878);
 
 // vineyard
 u16 func_800A4878(void) {
@@ -2630,7 +2635,7 @@ u16 func_800A4878(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/setCutscenes", setVineyardHouseCutscenes);
+//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", setVineyardHouseCutscenes);
 
 u16 setVineyardHouseCutscenes(void) {
     
@@ -2653,7 +2658,7 @@ u16 setVineyardHouseCutscenes(void) {
     return index;
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/setCutscenes", setVineyardCellarCutscenes);
+//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", setVineyardCellarCutscenes);
 
 u16 setVineyardCellarCutscenes(void) {
     
@@ -2685,7 +2690,7 @@ u16 setVineyardCellarCutscenes(void) {
     return index;
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/setCutscenes", func_800A4E50);
+//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", func_800A4E50);
 
 // village 1
 u16 func_800A4E50(void) {
@@ -2772,7 +2777,7 @@ u16 func_800A4E50(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/setCutscenes", func_800A5314);
+//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", func_800A5314);
 
 // village 2
 u16 func_800A5314(void) {
@@ -2986,7 +2991,7 @@ u16 func_800A5314(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/setCutscenes", setRickStoreCutscenes);
+//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", setRickStoreCutscenes);
 
 u16 setRickStoreCutscenes(void) {
     
@@ -3003,7 +3008,7 @@ u16 setRickStoreCutscenes(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/setCutscenes", setFlowerShopCutscenes);
+//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", setFlowerShopCutscenes);
 
 u16 setFlowerShopCutscenes(void) {
     
@@ -3027,7 +3032,7 @@ u16 setFlowerShopCutscenes(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/setCutscenes", func_800A5F48);
+//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", func_800A5F48);
 
 // bakery
 u16 func_800A5F48(void) {
@@ -3116,7 +3121,7 @@ u16 func_800A5F48(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/setCutscenes", func_800A6440);
+//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", func_800A6440);
 
 // mayor house
 u16 func_800A6440(void) {
@@ -3151,7 +3156,7 @@ u16 func_800A6440(void) {
 
 }    
 
-//INCLUDE_ASM("asm/nonmatchings/game/setCutscenes", func_800A6634);
+//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", func_800A6634);
 
 // library
 u16 func_800A6634(void) {
@@ -3181,7 +3186,7 @@ u16 func_800A6634(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/setCutscenes", setChurchCutscenes);
+//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", setChurchCutscenes);
 
 u16 setChurchCutscenes(void) {
 
@@ -3206,7 +3211,7 @@ u16 setChurchCutscenes(void) {
     return index;
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/setCutscenes", func_800A68C0);
+//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", func_800A68C0);
 
 // tavern
 u16 func_800A68C0(void) {
@@ -3233,7 +3238,7 @@ u16 func_800A68C0(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/setCutscenes", func_800A6A14);
+//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", func_800A6A14);
 
 // square
 u16 func_800A6A14(void) {
@@ -3342,7 +3347,7 @@ u16 func_800A6A14(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/setCutscenes", func_800A6EE4);
+//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", func_800A6EE4);
 
 // race track
 u16 func_800A6EE4(void) {
@@ -3404,7 +3409,7 @@ u16 func_800A6EE4(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/setCutscenes", setBeachCutscenes);
+//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", setBeachCutscenes);
 
 u16 setBeachCutscenes(void) {
     
@@ -3499,7 +3504,7 @@ u16 setBeachCutscenes(void) {
     return index;
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/setCutscenes", setRoadCutscenes);
+//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", setRoadCutscenes);
 
 u16 setRoadCutscenes(void) {
     
@@ -3559,7 +3564,7 @@ u16 setRoadCutscenes(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/setCutscenes", func_800A7AE8);
+//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", func_800A7AE8);
  
 // time-based daily cutscenes/update game
 u16 func_800A7AE8(u8 arg0) {
@@ -3650,7 +3655,7 @@ u16 func_800A7AE8(u8 arg0) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/setCutscenes", func_800A7DFC);
+//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", func_800A7DFC);
 
 // cutscenes on wake up: evaluation, wedding, rivals' weddings, animal funeral, sick days
 u16 func_800A7DFC(void) {
@@ -3953,7 +3958,7 @@ u16 func_800A7DFC(void) {
     return result;
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/setCutscenes", func_800A87C4);
+//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", func_800A87C4);
 
 // dreams
 u16 func_800A87C4(void) {
@@ -4153,630 +4158,754 @@ void func_800A8F74(void) {
     void* temp_t0_8;
     void* temp_t0_9;
 
-    temp_a0 = gCutsceneFlags;
-    if (temp_a0 & 1) {
+    if (gCutsceneFlags & 1) {
+    
         if (gCutsceneCompletionFlags & 1) {
-            gCutsceneFlags = temp_a0 & ~1;
-            switch (D_8018981C) {                   /* switch 1 */
-            case 1:                                 /* switch 1 */
-                toggleDailyEventBit(1);
-                switch (D_801C4216) {               /* switch 2 */
-                case 0:                             /* switch 2 */
-                    var_v0 = 2;
-block_40:
-                    gNamingScreenIndex = var_v0;
-                default:                            /* switch 2 */
-                    break;
-                case 1:                             /* switch 2 */
-                    setLifeEventBit(0x3A);
-                    var_v0 = 3;
-                    goto block_40;
-                case 2:                             /* switch 2 */
-                    setLifeEventBit(0x36);
-                    gNamingScreenIndex = 5;
-                    var_v0_2 = initializeNewFarmAnimal(1, 0);
-block_11:
-                    D_801FC155 = var_v0_2;
-                    break;
-                case 3:                             /* switch 2 */
-                    setLifeEventBit(0x34);
-                    gNamingScreenIndex = 6;
-                    var_v0_2 = initializeNewFarmAnimal(4, 0);
-                    goto block_11;
-                case 4:                             /* switch 2 */
-                    setLifeEventBit(0x32);
-                    gNamingScreenIndex = 7;
-                    // initialize chicken
-                    var_v0_2 = func_80087F28(2, 0xFF);
-                    goto block_11;
-                }
-                func_8005C940(1, NAMING_SCREEN);
-                break;
-            case 7:                                 /* switch 1 */
-            case 8:                                 /* switch 1 */
-                if (gCutsceneIndex != 0xAA) {
-                    if ((s32) gCutsceneIndex < 0xAB) {
-                        if ((s32) gCutsceneIndex < 0x83) {
-                            if ((s32) gCutsceneIndex < 0x81) {
-                                var_a0 = 0;
-                                if (gCutsceneIndex != 0x71) {
 
+    
+            gCutsceneFlags &= ~1;
+
+            // switch on bytecode bank index
+            
+            switch (gCutsceneBytecodeSegmentIndex) {                   /* switch 1 */
+
+                case 1:                                 /* switch 1 */
+
+                    toggleDailyEventBit(1);
+                
+                    // switch on acquired animal
+                    switch (D_801C4216) {               /* switch 2 */
+
+                        case 0:                             /* switch 2 */
+                            var_v0 = 2;
+        block_40:
+                            gNamingScreenIndex = var_v0;
+
+                        default:                            /* switch 2 */
+                            break;
+
+                        case 1:                             /* switch 2 */
+                            setLifeEventBit(0x3A);
+                            var_v0 = 3;
+                            goto block_40;
+                        case 2:                             /* switch 2 */
+                            setLifeEventBit(0x36);
+                            gNamingScreenIndex = 5;
+                            var_v0_2 = initializeNewFarmAnimal(1, 0);
+        block_11:
+                            D_801FC155 = var_v0_2;
+                            break;
+                            
+                        case 3:                             /* switch 2 */
+                            setLifeEventBit(0x34);
+                            gNamingScreenIndex = 6;
+                            var_v0_2 = initializeNewFarmAnimal(4, 0);
+                            goto block_11;
+
+                        case 4:                             /* switch 2 */
+                            setLifeEventBit(0x32);
+                            gNamingScreenIndex = 7;
+                            // initialize chicken
+                            var_v0_2 = func_80087F28(2, 0xFF);
+                            goto block_11;
+                    }
+                    
+                    func_8005C940(1, NAMING_SCREEN);
+                    break;
+
+
+                case 7:                                 /* switch 1 */
+                case 8:                                 /* switch 1 */
+                
+                    if (gCutsceneIndex != 0xAA) {
+
+                        if ((s32) gCutsceneIndex < 0xAB) {
+                            if ((s32) gCutsceneIndex < DOUG_FARM_FAVOR) {
+
+                                if ((s32) gCutsceneIndex < 0x81) {
+                                    var_a0 = 0;
+                                    if (gCutsceneIndex != KENT_AND_STU_FARM_PUPPIES) {
+
+                                    } else {
+    block_105:
+                                        setEntrance(var_a0);
+                                        setMainLoopCallbackFunctionIndex(MAP_LOAD);
+                                    }
                                 } else {
-block_105:
-                                    setEntrance(var_a0);
-                                    setMainLoopCallbackFunctionIndex(MAP_LOAD);
+                                    goto block_27;
                                 }
+                            } else if (gCutsceneIndex != 0x8B) {
+
                             } else {
                                 goto block_27;
                             }
-                        } else if (gCutsceneIndex != 0x8B) {
 
-                        } else {
-                            goto block_27;
+                        } else if ((s32) gCutsceneIndex < 0xF4) {
+
+                            if ((s32) gCutsceneIndex < 0xEF) {
+
+                            } else {
+    block_27:
+                                if (gCutsceneCompletionFlags & 0x40000000) {
+                                    goto block_142;
+                                }
+                            }
+
+                        } else if ((s32) gCutsceneIndex < 0x101) {
+
+                            if ((s32) gCutsceneIndex < 0xFA) {
+
+                            } else {
+
+                                case 17:                    /* switch 1 */
+                                case 19:                    /* switch 1 */
+                                case 22:                    /* switch 1 */
+                                case 23:                    /* switch 1 */
+                                case 25:                    /* switch 1 */
+                                case 26:                    /* switch 1 */
+                                case 28:                    /* switch 1 */
+                                case 29:                    /* switch 1 */
+                                case 0x130:                 /* switch 4 */
+                                case 0x131:                 /* switch 4 */
+                                case 0x293:                 /* switch 5 */
+                                case 0x195:                 /* switch 6 */
+                                case 0x196:                 /* switch 6 */
+                                case 0x197:                 /* switch 6 */
+                                case 0x198:                 /* switch 6 */
+                                case 0x199:                 /* switch 6 */
+                                case 0x1A2:                 /* switch 6 */
+                                case 0x1A4:                 /* switch 6 */
+                                case 0x1AD:                 /* switch 6 */
+                                case 0x1AE:                 /* switch 6 */
+                                case 0x1AF:                 /* switch 6 */
+                                case 0x1B3:                 /* switch 6 */
+                                case 0x1B4:                 /* switch 6 */
+        block_142:
+                                    setMainLoopCallbackFunctionIndex(END_OF_FESTIVAL_DAY_1);
+                            
+                                }
                         }
-                    } else if ((s32) gCutsceneIndex < 0xF4) {
-                        if ((s32) gCutsceneIndex < 0xEF) {
 
-                        } else {
-block_27:
+                    } else {
+
+                        // initialize chickens
+                        // unrolled loop?
+                        func_8009B6B8();
+                        func_8009B6B8();
+                        func_8009B6B8();
+                        func_8009B6B8();
+                        func_8009B6B8();
+                        func_8009B6B8();
+                    
+                    }
+
+                    break;
+
+                case 9:                                 /* switch 1 */
+
+                    switch (gCutsceneIndex) {           /* switch 3 */
+
+                        case 0x1:                           /* switch 3 */
+                        case 0x2:                           /* switch 3 */
+                            setLifeEventBit(0x61);
+                            break;
+                        case 0x26:                          /* switch 3 */
+                        case 0x27:                          /* switch 3 */
+                            setLifeEventBit(0x62);
+                            break;
+                        case 0x28:                          /* switch 3 */
+                            setLifeEventBit(0x96);
+                        case 0x0:                           /* switch 3 */
+                        case MARIA_VISIT_PLAYER_SICK:                           /* switch 3 */
+                        case 0x5:                           /* switch 3 */
+                        case 0x9:                           /* switch 3 */
+                        case 0xA:                           /* switch 3 */
+                        case 0xC:                           /* switch 3 */
+                        case 0x10:                          /* switch 3 */
+                        case 0x11:                          /* switch 3 */
+                        case 0x13:                          /* switch 3 */
+                        case 0x17:                          /* switch 3 */
+                        case 0x18:                          /* switch 3 */
+                        case 0x1A:                          /* switch 3 */
+                        case 0x1E:                          /* switch 3 */
+                        case 0x1F:                          /* switch 3 */
+                        case 0x21:                          /* switch 3 */
+                        case 0x25:                          /* switch 3 */
+                        case 0x33:                          /* switch 3 */
+                        case MARIA_WEDDING:                         /* switch 6 */
+                        case 0x191:                         /* switch 6 */
+                        case 0x192:                         /* switch 6 */
+                        case ANN_WEDDING:                         /* switch 6 */
+                        case KAREN_WEDDING:                         /* switch 6 */
+                        case 0x20B:                         /* switch 12 */
+        block_108:
+                            setMainLoopCallbackFunctionIndex(END_OF_DAY_1);
+                            break;
+                        case 0x29:                          /* switch 3 */
+                            setLifeEventBit(0x63);
+                            goto block_108;
+                        case 0x2A:                          /* switch 3 */
+                            setLifeEventBit(0x64);
+                            goto block_108;
+                        case 0x2B:                          /* switch 3 */
+                            setLifeEventBit(0x65);
+                            goto block_108;
+                        case 0x2C:                          /* switch 3 */
+                            setLifeEventBit(0x66);
+                            goto block_108;
+                        case 0x2D:                          /* switch 3 */
+                            setLifeEventBit(0x67);
+                            goto block_108;
+                        case 0x4:                           /* switch 3 */
+                        case 0xB:                           /* switch 3 */
+                        case 0x12:                          /* switch 3 */
+                        case 0x19:                          /* switch 3 */
+                        case 0x20:                          /* switch 3 */
+                            var_v0 = 4;
+                            if ((u8) gHour >= 6) {
+                                goto block_40;
+                            }
+                            goto block_108;
+                        }
+
+                    break;
+
+                case 10:                                /* switch 1 */
+
+                    // ann sprained ankle
+
+                    if ((gCutsceneIndex == ANN_SPRAINED_ANKLE) && (gCutsceneCompletionFlags & 0x40000000)) {
+                        gHour += 2;
+                        setEntrance(RANCH_FROM_RANCH_STORE);
+                        setMainLoopCallbackFunctionIndex(MAP_LOAD);
+                    }
+                    /* fallthrough */
+
+                case 11:                                /* switch 1 */
+
+                    switch (gCutsceneIndex) {           /* switch 4 */
+
+                        case 0x12E:                         /* switch 4 */
                             if (gCutsceneCompletionFlags & 0x40000000) {
+                                var_a0 = 0x34;
+        block_104:
+                                gHour += 2;
+                                goto block_105;
+                            }
+                            break;
+
+                        case ELLI_SPRAINED_ANKLE:                         /* switch 4 */
+                            if (gCutsceneCompletionFlags & 0x40000000) {
+                                var_a0 = 0x35;
+                                goto block_104;
+                            }
+                            break;
+                        case 0x13E:                         /* switch 4 */
+                            // store tool
+                            func_80065BCC(FISHING_POLE);
+                            break;
+                        case 0x144:                         /* switch 4 */
+                        case 0x148:                         /* switch 4 */
+                            setDailyEventBit(0x2C);
+                            break;
+                        case 0x147:                         /* switch 4 */
+                            if ((gSeason == AUTUMN) && (gDayOfMonth == 27)) {
+                                setLifeEventBit(BRIDGE_COMPLETED);
+                            }
+                            break;
+                        case 0x14A:                         /* switch 4 */
+                            if ((gSeason == WINTER) && (gDayOfMonth == 16)) {
+                                setLifeEventBit(HOT_SPRINGS_COMPLETED);
+                                setDailyEventBit(0x5B);
+                            }
+                            clearForagableObjects(TOP_OF_MOUNTAIN_1);
+                            break;
+                        case 0x150:                         /* switch 4 */
+                            toggleDailyEventBit(0x47);
+                            setLifeEventBit(0x5E);
+                            break;
+                        case 0x151:                         /* switch 4 */
+                            toggleDailyEventBit(0x48);
+                            setLifeEventBit(0x5F);
+                            break;
+                        case 0x155:                         /* switch 4 */
+                        case 0x158:                         /* switch 4 */
+                            toggleDailyEventBit(0x45);
+                            setDailyEventBit(0x46);
+                            break;
+                        case 0x159:                         /* switch 4 */
+                            setSpecialDialogueBit(0x14B);
+                            goto block_142;
+                    }
+                    break;
+
+                case 12:            
+                                    /* switch 1 */
+                    switch (gCutsceneIndex) {           /* switch 5 */
+
+                        // get horse at ranch
+                        case RANCH_GET_HORSE:                         /* switch 5 */
+                        case 0x299:                         /* switch 5 */
+                            gNamingScreenIndex = 3;
+                            func_8005C940(1, NAMING_SCREEN);
+                            setLifeEventBit(HAVE_HORSE);
+                            break;
+                        case 0x28B:                         /* switch 5 */
+                            func_80056030(0);
+                            setMainLoopCallbackFunctionIndex(4);
+                            initializeHorse();
+                            break;
+                        case 0x297:                         /* switch 5 */
+                            var_a0 = 0x4C;
+                            goto block_105;
+                        case 0x298:                         /* switch 5 */
+                            // Ann
+                            (&npcAffection)[3] = 120;
+        block_107:
+                            toggleLifeEventBit(WIFE_LEFT);
+                            goto block_108;
+                        }
+
+                    break;
+
+                case 13:          
+                                    /* switch 1 */
+                    switch (gCutsceneIndex) {           /* switch 11; irregular */
+
+                        case 0x2BD:                         /* switch 11 */
+                            if (gCutsceneCompletionFlags & 0x40000000) {
+                                var_a0 = 0x2F;
+                                goto block_104;
+                            }
+                            break;
+                        case 0x2C0:                         /* switch 11 */
+                            var_a0 = 0x50;
+                            goto block_105;
+                        case KAREN_YELLOW_HEART_EVENT_1:                         /* switch 11 */
+                            if (gCutsceneCompletionFlags & 0x40000000) {
+                                toggleDailyEventBit(0x4F);
+                                var_a0 = 0x30;
+                                goto block_105;
+                            }
+                            break;
+                        case 0x2C6:                         /* switch 11 */
+                            // Karen
+                            (&npcAffection)[4] = 0x78;
+                            goto block_107;
+                    }
+                    break;
+
+                case 14:                                /* switch 1 */
+
+                    switch (gCutsceneIndex) {           /* switch 6 */
+
+                        case 0x19B:                         /* switch 6 */
+                            setEntrance(0x1F);
+                            setMainLoopCallbackFunctionIndex(MAP_LOAD);
+                            D_802373A8 += adjustValue(D_802373A8, -1, 1);
+                            removeTool(BLUE_MIST_SEEDS);
+                            blueMistFlowerPlot = 0xB3;
+                            D_8016FE6F = 0xB3;
+                            break;
+                            
+                        case 0x1A0:                         /* switch 6 */
+                            setLifeEventBit(0x31);
+                            setSpecialDialogueBit(0x43);
+                            goto block_142;
+
+                        case STARRY_NIGHT_FESTIVAL:                         /* switch 6 */
+                            if (gCutsceneCompletionFlags & 2) {
+
+                            } else {
                                 goto block_142;
                             }
-                        }
-                    } else if ((s32) gCutsceneIndex < 0x101) {
-                        if ((s32) gCutsceneIndex < 0xFA) {
+                            break;
 
-                        } else {
-                        case 17:                    /* switch 1 */
-                        case 19:                    /* switch 1 */
-                        case 22:                    /* switch 1 */
-                        case 23:                    /* switch 1 */
-                        case 25:                    /* switch 1 */
-                        case 26:                    /* switch 1 */
-                        case 28:                    /* switch 1 */
-                        case 29:                    /* switch 1 */
-                        case 0x130:                 /* switch 4 */
-                        case 0x131:                 /* switch 4 */
-                        case 0x293:                 /* switch 5 */
-                        case 0x195:                 /* switch 6 */
-                        case 0x196:                 /* switch 6 */
-                        case 0x197:                 /* switch 6 */
-                        case 0x198:                 /* switch 6 */
-                        case 0x199:                 /* switch 6 */
-                        case 0x1A2:                 /* switch 6 */
-                        case 0x1A4:                 /* switch 6 */
-                        case 0x1AD:                 /* switch 6 */
-                        case 0x1AE:                 /* switch 6 */
-                        case 0x1AF:                 /* switch 6 */
-                        case 0x1B3:                 /* switch 6 */
-                        case 0x1B4:                 /* switch 6 */
-block_142:
-                            setMainLoopCallbackFunctionIndex(END_OF_FESTIVAL_DAY_1);
+                        case 0x1B5:                         /* switch 6 */
+                            // flower shop entrance
+                            var_a0 = 0x57;
+                            goto block_105;
+                        case 0x1B6:                         /* switch 6 */
+                            var_a0 = 0x5A;
+                            goto block_105;
+                        case 0x1B7:                         /* switch 6 */
+                            // Popuri
+                            (&npcAffection)[1] = 120;
+                            goto block_107;
+                        case 0x1B8:                         /* switch 6 */
+                            // Elli
+                            (&npcAffection)[2] = 120;
+                            goto block_107;
+                    
                         }
-                    }
-                } else {
-                    func_8009B6B8(temp_a0);
-                    func_8009B6B8();
-                    func_8009B6B8();
-                    func_8009B6B8();
-                    func_8009B6B8();
-                    func_8009B6B8();
-                }
-                break;
-            case 9:                                 /* switch 1 */
-                switch (gCutsceneIndex) {           /* switch 3 */
-                case 0x1:                           /* switch 3 */
-                case 0x2:                           /* switch 3 */
-                    setLifeEventBit(0x61);
-                    break;
-                case 0x26:                          /* switch 3 */
-                case 0x27:                          /* switch 3 */
-                    setLifeEventBit(0x62);
-                    break;
-                case 0x28:                          /* switch 3 */
-                    setLifeEventBit(0x96);
-                case 0x0:                           /* switch 3 */
-                case 0x3:                           /* switch 3 */
-                case 0x5:                           /* switch 3 */
-                case 0x9:                           /* switch 3 */
-                case 0xA:                           /* switch 3 */
-                case 0xC:                           /* switch 3 */
-                case 0x10:                          /* switch 3 */
-                case 0x11:                          /* switch 3 */
-                case 0x13:                          /* switch 3 */
-                case 0x17:                          /* switch 3 */
-                case 0x18:                          /* switch 3 */
-                case 0x1A:                          /* switch 3 */
-                case 0x1E:                          /* switch 3 */
-                case 0x1F:                          /* switch 3 */
-                case 0x21:                          /* switch 3 */
-                case 0x25:                          /* switch 3 */
-                case 0x33:                          /* switch 3 */
-                case 0x190:                         /* switch 6 */
-                case 0x191:                         /* switch 6 */
-                case 0x192:                         /* switch 6 */
-                case 0x193:                         /* switch 6 */
-                case 0x194:                         /* switch 6 */
-                case 0x20B:                         /* switch 12 */
-block_108:
-                    setMainLoopCallbackFunctionIndex(END_OF_DAY_1);
-                    break;
-                case 0x29:                          /* switch 3 */
-                    setLifeEventBit(0x63);
-                    goto block_108;
-                case 0x2A:                          /* switch 3 */
-                    setLifeEventBit(0x64);
-                    goto block_108;
-                case 0x2B:                          /* switch 3 */
-                    setLifeEventBit(0x65);
-                    goto block_108;
-                case 0x2C:                          /* switch 3 */
-                    setLifeEventBit(0x66);
-                    goto block_108;
-                case 0x2D:                          /* switch 3 */
-                    setLifeEventBit(0x67);
-                    goto block_108;
-                case 0x4:                           /* switch 3 */
-                case 0xB:                           /* switch 3 */
-                case 0x12:                          /* switch 3 */
-                case 0x19:                          /* switch 3 */
-                case 0x20:                          /* switch 3 */
-                    var_v0 = 4;
-                    if ((u8) gHour >= 6) {
-                        goto block_40;
-                    }
-                    goto block_108;
-                }
-                break;
-            case 10:                                /* switch 1 */
-                if ((gCutsceneIndex == 0x324) && (gCutsceneCompletionFlags & 0x40000000)) {
-                    gHour += 2;
-                    setEntrance(RANCH_FROM_RANCH_STORE);
-                    setMainLoopCallbackFunctionIndex(MAP_LOAD);
-                }
-                /* fallthrough */
-            case 11:                                /* switch 1 */
-                switch (gCutsceneIndex) {           /* switch 4 */
-                case 0x12E:                         /* switch 4 */
-                    if (gCutsceneCompletionFlags & 0x40000000) {
-                        var_a0 = 0x34;
-block_104:
-                        gHour += 2;
-                        goto block_105;
-                    }
-                    break;
-                case 0x157:                         /* switch 4 */
-                    if (gCutsceneCompletionFlags & 0x40000000) {
-                        var_a0 = 0x35;
-                        goto block_104;
-                    }
-                    break;
-                case 0x13E:                         /* switch 4 */
-                    // store tool
-                    func_80065BCC(FISHING_POLE);
-                    break;
-                case 0x144:                         /* switch 4 */
-                case 0x148:                         /* switch 4 */
-                    setDailyEventBit(0x2C);
-                    break;
-                case 0x147:                         /* switch 4 */
-                    if ((gSeason == AUTUMN) && (gDayOfMonth == 27)) {
-                        setLifeEventBit(BRIDGE_COMPLETED);
-                    }
-                    break;
-                case 0x14A:                         /* switch 4 */
-                    if ((gSeason == WINTER) && (gDayOfMonth == 16)) {
-                        setLifeEventBit(HOT_SPRINGS_COMPLETED);
-                        setDailyEventBit(0x5B);
-                    }
-                    clearForagableObjects(TOP_OF_MOUNTAIN_1);
-                    break;
-                case 0x150:                         /* switch 4 */
-                    toggleDailyEventBit(0x47);
-                    setLifeEventBit(0x5E);
-                    break;
-                case 0x151:                         /* switch 4 */
-                    toggleDailyEventBit(0x48);
-                    setLifeEventBit(0x5F);
-                    break;
-                case 0x155:                         /* switch 4 */
-                case 0x158:                         /* switch 4 */
-                    toggleDailyEventBit(0x45);
-                    setDailyEventBit(0x46);
-                    break;
-                case 0x159:                         /* switch 4 */
-                    setSpecialDialogueBit(0x14B);
-                    goto block_142;
-                }
-                break;
-            case 12:                                /* switch 1 */
-                switch (gCutsceneIndex) {           /* switch 5 */
 
-                    // get horse at ranch
-                case 0x28A:                         /* switch 5 */
-                case 0x299:                         /* switch 5 */
-                    gNamingScreenIndex = 3;
-                    func_8005C940(1, NAMING_SCREEN);
-                    setLifeEventBit(HAVE_HORSE);
                     break;
-                case 0x28B:                         /* switch 5 */
-                    func_80056030(0);
-                    setMainLoopCallbackFunctionIndex(4);
-                    initializeHorse();
+
+                case 15:                                /* switch 1 */
+
+                    switch (gCutsceneIndex) {           /* switch 12; irregular */
+
+                        case 0x20C:                         /* switch 12 */
+                            var_a0 = 0x66;
+                            goto block_105;
+                            
+                        case 0x20E:                         /* switch 12 */
+                            if (gCutsceneCompletionFlags & 0x40000000) {
+                                var_a0 = 0x41;
+                                goto block_104;
+                            }
+                            break;
+
+                        case 0x211:                         /* switch 12 */
+                            npcAffection[MARIA] = 120;
+                            goto block_107;
+                        }
                     break;
-                case 0x297:                         /* switch 5 */
-                    var_a0 = 0x4C;
-                    goto block_105;
-                case 0x298:                         /* switch 5 */
-                    // Ann
-                    (&npcAffection)[3] = 120;
-block_107:
-                    toggleLifeEventBit(WIFE_LEFT);
-                    goto block_108;
-                }
-                break;
-            case 13:                                /* switch 1 */
-                switch (gCutsceneIndex) {           /* switch 11; irregular */
-                case 0x2BD:                         /* switch 11 */
-                    if (gCutsceneCompletionFlags & 0x40000000) {
-                        var_a0 = 0x2F;
-                        goto block_104;
+
+                case 16:                                /* switch 1 */
+
+                    if ((gCutsceneIndex != BEACH_FIREWORKS) && (gCutsceneIndex != 0x2F4)) {
+
+                    } else {
+                        goto block_142;
                     }
+
                     break;
-                case 0x2C0:                         /* switch 11 */
-                    var_a0 = 0x50;
-                    goto block_105;
-                case 0x2C1:                         /* switch 11 */
-                    if (gCutsceneCompletionFlags & 0x40000000) {
-                        toggleDailyEventBit(0x4F);
-                        var_a0 = 0x30;
-                        goto block_105;
+                
+                case 18:                                /* switch 1 */
+
+                    // horse race: set rank
+
+                    if (((s32) gCutsceneIndex < 0x388) && ((s32) gCutsceneIndex >= 0x386)) {
+                        
+                        if (*(&overlayScreenStrings + 0x6D) == *(&overlayScreenStrings + 0x6C)) {
+                            
+                            if (((D_8018A72C[2] - 1) == 2) && ((u8) (&horseInfo)[0x1E] >= 3)) {
+                                (&horseInfo)[0x1E] = 2;
+                            }
+                            if (((D_8018A72C[1] - 1) == 2) && ((u8) (&horseInfo)[0x1E] >= 2)) {
+                                (&horseInfo)[0x1E] = 1;
+                            }
+                            if ((D_8018A72C[0] - 1) == 2) {
+                                var_v1 = &horseInfo + 0x1E;
+    block_139:
+                                if (*var_v1 ) {
+                                    *var_v1 = 0;
+                                }
+                            
+                            }
+
+                        }
+    block_141:
+                        setMainLoopCallbackFunctionIndex(HORSE_RACE_RESULTS_LOAD);
+                        gCutsceneCompletionFlags = 0;
+                    
                     }
+                    
                     break;
-                case 0x2C6:                         /* switch 11 */
-                    // Karen
-                    (&npcAffection)[4] = 0x78;
-                    goto block_107;
-                }
-                break;
-            case 14:                                /* switch 1 */
-                switch (gCutsceneIndex) {           /* switch 6 */
-                case 0x19B:                         /* switch 6 */
-                    setEntrance(0x1F);
-                    setMainLoopCallbackFunctionIndex(MAP_LOAD);
-                    D_802373A8 += adjustValue(D_802373A8, -1, 1);
-                    removeTool(BLUE_MIST_SEEDS);
-                    blueMistFlowerPlot = 0xB3;
-                    D_8016FE6F = 0xB3;
-                    break;
-                case 0x1A0:                         /* switch 6 */
-                    setLifeEventBit(0x31);
-                    setSpecialDialogueBit(0x43);
-                    goto block_142;
-                case 0x1AC:                         /* switch 6 */
-                    if (gCutsceneCompletionFlags & 2) {
+
+                case 20:                                /* switch 1 */
+                    if (gCutsceneIndex != VEGETABLE_FESTIVAL_SQUARE) {
 
                     } else {
                         goto block_142;
                     }
                     break;
-                case 0x1B5:                         /* switch 6 */
-                    // flower shop entrance
-                    var_a0 = 0x57;
-                    goto block_105;
-                case 0x1B6:                         /* switch 6 */
-                    var_a0 = 0x5A;
-                    goto block_105;
-                case 0x1B7:                         /* switch 6 */
-                    // Popuri
-                    (&npcAffection)[1] = 120;
-                    goto block_107;
-                case 0x1B8:                         /* switch 6 */
-                    // Elli
-                    (&npcAffection)[2] = 120;
-                    goto block_107;
-                }
-                break;
-            case 15:                                /* switch 1 */
-                switch (gCutsceneIndex) {           /* switch 12; irregular */
-                case 0x20C:                         /* switch 12 */
-                    var_a0 = 0x66;
-                    goto block_105;
-                case 0x20E:                         /* switch 12 */
-                    if (gCutsceneCompletionFlags & 0x40000000) {
-                        var_a0 = 0x41;
-                        goto block_104;
+
+                case 21:                                /* switch 1 */
+                    if (gCutsceneIndex != SQUARE_FIREWORKS) {
+
+                    } else {
+                        goto block_142;
                     }
                     break;
-                case 0x211:                         /* switch 12 */
-                    npcAffection[MARIA] = 120;
-                    goto block_107;
-                }
-                break;
-            case 16:                                /* switch 1 */
-                if ((gCutsceneIndex != 0x2EE) && (gCutsceneIndex != 0x2F4)) {
 
-                } else {
+                case 24:                                /* switch 1 */
+
+                    if (checkLifeEventBit(0x91)) {
+                        *(&gFarmAnimals + 0x2B + (D_80189054 * 0x30)) = (s8) D_80180710;
+                    }
                     goto block_142;
-                }
-                break;
-            case 18:                                /* switch 1 */
-                if (((s32) gCutsceneIndex < 0x388) && ((s32) gCutsceneIndex >= 0x386)) {
-                    if (*(&overlayScreenStrings + 0x6D) == *(&overlayScreenStrings + 0x6C)) {
-                        if (((D_8018A72E - 1) == 2) && ((u8) (&horseInfo)[0x1E] >= 3)) {
-                            (&horseInfo)[0x1E] = 2;
-                        }
-                        if (((D_8018A72D - 1) == 2) && ((u8) (&horseInfo)[0x1E] >= 2)) {
-                            (&horseInfo)[0x1E] = 1;
-                        }
-                        if ((D_8018A72C - 1) == 2) {
-                            var_v1 = &horseInfo + 0x1E;
-block_139:
-                            if (*var_v1 ) {
-                                *var_v1 = 0;
-                            }
-                        }
-                    }
-block_141:
-                    setMainLoopCallbackFunctionIndex(HORSE_RACE_RESULTS_LOAD);
-                    gCutsceneCompletionFlags = 0;
-                }
-                break;
-            case 20:                                /* switch 1 */
-                if (gCutsceneIndex != 0x3E9) {
 
-                } else {
-                    goto block_142;
-                }
-                break;
-            case 21:                                /* switch 1 */
-                if (gCutsceneIndex != 0x258) {
+                case 27:                                /* switch 1 */
 
-                } else {
-                    goto block_142;
-                }
-                break;
-            case 24:                                /* switch 1 */
-                if (checkLifeEventBit(0x91)) {
-                    *(&gFarmAnimals + 0x2B + (D_80189054 * 0x30)) = (s8) D_80180710;
-                }
-                goto block_142;
-            case 27:                                /* switch 1 */
-                if (gCutsceneIndex == 0x516) {
-                    if (*(&overlayScreenStrings + 0x6D) == *(&overlayScreenStrings + 0x6C)) {
-                        if (D_8018A72E == 1) {
-                            temp_v1 = &dogInfo + 0x1C;
-                            if ((u8) *temp_v1 >= 3) {
-                                *temp_v1 = 2;
-                            }
-                        }
-                        if (D_8018A72D == 1) {
-                            temp_v1_2 = &dogInfo + 0x1C;
-                            if ((u8) *temp_v1_2 >= 2) {
-                                *temp_v1_2 = 1;
-                            }
-                        }
-                        if (D_8018A72C == 1) {
-                            var_v1 = &dogInfo + 0x1C;
-                            goto block_139;
-                        }
-                    }
-                    goto block_141;
-                }
-                break;
-            case 31:                                /* switch 1 */
-                if (gCutsceneIndex == 0x611) {
-                    // fontPalette1
-                    nuPiReadRom(&D_E13770, FONT_PALETTE_1_BUFFER, &D_E137A0 - &D_E13770);
-                    func_8003F464(0, 0xE, 0xE, FONT_TEXTURE_BUFFER, FONT_PALETTE_1_BUFFER);
-                    func_8003F360(0, -4, 0);
-                    setMessageBoxSfx(0, 0x57, 8, 1);
-                    var_a0_2 = 0x5AA;
-                    if (D_80180710 == 0) {
-                        // show pink overlay message
-                        func_8005B09C(23);
-                    } else {
-block_153:
-                        var_a1 = 0x61;
-block_154:
-                        func_80055F08(var_a0_2, var_a1, 1);
-                    }
-                }
-                break;
-            case 32:                                /* switch 1 */
-                var_a0_2 = 0x5DE;
-                if (gCutsceneIndex == 0x5DD) {
-                    var_a1 = 0x1A;
-                } else {
+                    // dog race
 
-                    // memcpy
-                    var_a3 = &farmFieldTiles;
-                    var_a2 = &D_80113580;
-                    temp_t0 = &D_80113580 + 0x1E0;
-                    if (((s32) &D_80113580 | (s32) &farmFieldTiles) & 3) {
-                        do {
-                            var_a3->unk0 = (unaligned s32) var_a2->unk0;
-                            var_a3->unk4 = (unaligned s32) var_a2->unk4;
-                            var_a3->unk8 = (unaligned s32) var_a2->unk8;
-                            var_a3->unkC = (unaligned s32) var_a2->unkC;
-                            var_a2 += 0x10;
-                            var_a3 += 0x10;
-                        } while (var_a2 != temp_t0);
-                        var_a0_2 = 0x5AA;
-                    } else {
-                        do {
-                            var_a3->unk0 = (s32) var_a2->unk0;
-                            var_a3->unk4 = (s32) var_a2->unk4;
-                            var_a3->unk8 = (s32) var_a2->unk8;
-                            var_a3->unkC = (s32) var_a2->unkC;
-                            var_a2 += 0x10;
-                            var_a3 += 0x10;
-                        } while (var_a2 != temp_t0);
-                        var_a0_2 = 0x5AA;
-                    }
-
-
-                    goto block_153;
-                }
-                goto block_154;
-            case 35:                                /* switch 1 */
-                if ((gCutsceneIndex == 0x640) && !(gCutsceneCompletionFlags & 2)) {
-
-                    // memcpy
-                    var_a3_2 = &farmFieldTiles;
-                    var_a2_2 = &D_80113580;
-                    temp_t0_2 = &D_80113580 + 0x1E0;
-                    if (((s32) &D_80113580 | (s32) &farmFieldTiles) & 3) {
-                        do {
-                            var_a1_2 = (unaligned s32) var_a2_2->unkC;
-                            var_a3_2->unk0 = (unaligned s32) var_a2_2->unk0;
-                            var_a3_2->unk4 = (unaligned s32) var_a2_2->unk4;
-                            var_a3_2->unk8 = (unaligned s32) var_a2_2->unk8;
-                            var_a3_2->unkC = var_a1_2;
-                            var_a2_2 += 0x10;
-                            var_a3_2 += 0x10;
-                        } while (var_a2_2 != temp_t0_2);
-                    } else {
-                        do {
-                            var_a1_2 = var_a2_2->unkC;
-                            var_a3_2->unk0 = (s32) var_a2_2->unk0;
-                            var_a3_2->unk4 = (s32) var_a2_2->unk4;
-                            var_a3_2->unk8 = (s32) var_a2_2->unk8;
-                            var_a3_2->unkC = var_a1_2;
-                            var_a2_2 += 0x10;
-                            var_a3_2 += 0x10;
-                        } while (var_a2_2 != temp_t0_2);
-                    }
-
+                    if (gCutsceneIndex == 0x516) {
                 
-                    initializeTitleScreen(1, var_a1_2, var_a2_2, var_a3_2);
+                        if (*(&overlayScreenStrings + 0x6D) == *(&overlayScreenStrings + 0x6C)) {
+                            
+                            if (D_8018A72C[3] == 1) {
+                                temp_v1 = &dogInfo + 0x1C;
+                                if ((u8) *temp_v1 >= 3) {
+                                    *temp_v1 = 2;
+                                }
+                            }
+                            if (D_8018A72C[1] == 1) {
+                                temp_v1_2 = &dogInfo + 0x1C;
+                                if ((u8) *temp_v1_2 >= 2) {
+                                    *temp_v1_2 = 1;
+                                }
+                            }
+                            if (D_8018A72C[0] == 1) {
+                                var_v1 = &dogInfo + 0x1C;
+                                goto block_139;
+                            }
+                        }
+
+                        goto block_141;
+                    
+                    }
+
+                    break;
+
+                case 31:                                /* switch 1 */
+
+                    if (gCutsceneIndex == 0x611) {
                 
-                }
-                break;
+                        // fontPalette1
+                        nuPiReadRom(&D_E13770, FONT_PALETTE_1_BUFFER, &D_E137A0 - &D_E13770);
+                        func_8003F464(0, 0xE, 0xE, FONT_TEXTURE_BUFFER, FONT_PALETTE_1_BUFFER);
+                        func_8003F360(0, -4, 0);
+                        setMessageBoxSfx(0, 0x57, 8, 1);
+
+                        var_a0_2 = 0x5AA;
+
+                        if (D_80180710 == 0) {
+                            // show pink overlay message
+                            func_8005B09C(23);
+                        } else {
+    block_153:
+                            var_a1 = 0x61;
+    block_154:
+                            func_80055F08(var_a0_2, var_a1, 1);
+
+                        }
+                    }
+
+                    break;
+
+                case 32:                                /* switch 1 */
+
+                    var_a0_2 = 0x5DE;
+
+                    if (gCutsceneIndex == DEMO_CUTSCENE_2) {
+                        var_a1 = 0x1A;
+                    } else {
+
+                        // base farm tile map
+
+                        // memcpy
+                        var_a3 = &farmFieldTiles;
+                        var_a2 = &D_80113580;
+                        temp_t0 = &D_80113580 + 0x1E0;
+                        if (((s32) &D_80113580 | (s32) &farmFieldTiles) & 3) {
+                            do {
+                                var_a3->unk0 = (unaligned s32) var_a2->unk0;
+                                var_a3->unk4 = (unaligned s32) var_a2->unk4;
+                                var_a3->unk8 = (unaligned s32) var_a2->unk8;
+                                var_a3->unkC = (unaligned s32) var_a2->unkC;
+                                var_a2 += 0x10;
+                                var_a3 += 0x10;
+                            } while (var_a2 != temp_t0);
+                            var_a0_2 = 0x5AA;
+                        } else {
+                            do {
+                                var_a3->unk0 = (s32) var_a2->unk0;
+                                var_a3->unk4 = (s32) var_a2->unk4;
+                                var_a3->unk8 = (s32) var_a2->unk8;
+                                var_a3->unkC = (s32) var_a2->unkC;
+                                var_a2 += 0x10;
+                                var_a3 += 0x10;
+                            } while (var_a2 != temp_t0);
+                            var_a0_2 = 0x5AA;
+                        }
+
+                        goto block_153;
+                    }
+
+                    goto block_154;
+
+                case 35:                                /* switch 1 */
+
+                    if ((gCutsceneIndex == 0x640) && !(gCutsceneCompletionFlags & 2)) {
+
+                        // base farm tile map
+
+                        // memcpy
+                        var_a3_2 = &farmFieldTiles;
+                        var_a2_2 = &D_80113580;
+                        temp_t0_2 = &D_80113580 + 0x1E0;
+                        if (((s32) &D_80113580 | (s32) &farmFieldTiles) & 3) {
+                            do {
+                                var_a1_2 = (unaligned s32) var_a2_2->unkC;
+                                var_a3_2->unk0 = (unaligned s32) var_a2_2->unk0;
+                                var_a3_2->unk4 = (unaligned s32) var_a2_2->unk4;
+                                var_a3_2->unk8 = (unaligned s32) var_a2_2->unk8;
+                                var_a3_2->unkC = var_a1_2;
+                                var_a2_2 += 0x10;
+                                var_a3_2 += 0x10;
+                            } while (var_a2_2 != temp_t0_2);
+                        } else {
+                            do {
+                                var_a1_2 = var_a2_2->unkC;
+                                var_a3_2->unk0 = (s32) var_a2_2->unk0;
+                                var_a3_2->unk4 = (s32) var_a2_2->unk4;
+                                var_a3_2->unk8 = (s32) var_a2_2->unk8;
+                                var_a3_2->unkC = var_a1_2;
+                                var_a2_2 += 0x10;
+                                var_a3_2 += 0x10;
+                            } while (var_a2_2 != temp_t0_2);
+                        }
+                    
+                        initializeTitleScreen(1);
+                    
+                    }
+                    
+                    break;
+
             }
-            if ((gCutsceneCompletionFlags & 0x800) && (D_8018981C == 0x1E)) {
-                func_80046BB8();
+
+            // end of switch
+
+
+            // check for bank index 30
+            if ((gCutsceneCompletionFlags & 0x800) && (gCutsceneBytecodeSegmentIndex == 30)) {
+                deactivateCutsceneExecutors();
                 deactivateSprites();
-                func_8003C504(0);
+                func_8003C504(MAIN_MAP_INDEX);
                 initializeTitleScreen(0);
             }
+
+            // handle bit 2 (cutscene end: deactivate map load, set strings, etc.)
             if (gCutsceneCompletionFlags & 2) {
+
                 updateAnimalCoordinates();
                 deactivateAnimalEntities();
-                if (gCutsceneIndex != 0x1AC) {
+                
+                if (gCutsceneIndex != STARRY_NIGHT_FESTIVAL) {
+
                     if ((s32) gCutsceneIndex < 0x1AD) {
+                    
                         if (gCutsceneIndex != 0xCE) {
+                            
                             if ((s32) gCutsceneIndex < 0xCF) {
+
                                 switch (gCutsceneIndex) { /* switch 18; irregular */
-                                case 0x1:           /* switch 18 */
-                                    setEntrance(0x3E);
-                                    var_v0_3 = 2;
-                                    goto block_372;
-                                case 0x26:          /* switch 18 */
-                                    setEntrance(HOUSE_EXIT);
-                                    var_v0_4 = 0x27;
-                                    goto block_374;
-                                case 0x93:          /* switch 18 */
-                                    deactivateSprites();
-                                    deactivateGlobalSprites();
-                                    initializeCutsceneExecutors();
-                                    deactivateNPCEntities();
-                                    deactivateAnimalEntities();
-                                    func_800D51B0();
-                                    initializeEntityInstances(1);
-                                    setEntrance(SPRING_ENTER);
-                                    var_v0_5 = 0xFA;
-                                    goto block_322;
-                                case 0xC5:          /* switch 18 */
-                                case 0xB8:          /* switch 18 */
-                                case 0xAD:          /* switch 18 */
-                                case 0x96:          /* switch 18 */
-                                case 0xA1:          /* switch 18 */
-                                    deactivateSprites();
-                                    deactivateGlobalSprites();
-                                    initializeCutsceneExecutors();
-                                    deactivateNPCEntities();
-                                    deactivateAnimalEntities();
-                                    func_800D51B0();
-                                    initializeEntityInstances(1);
-                                    setEntrance(0x1A);
-                                    var_v0_6 = 0xFB;
-                                    goto block_376;
-                                case 0xB9:          /* switch 18 */
-                                case 0xC6:          /* switch 18 */
-                                case 0xAE:          /* switch 18 */
-                                case 0xA2:          /* switch 18 */
-                                case 0x97:          /* switch 18 */
-                                    deactivateSprites();
-                                    deactivateGlobalSprites();
-                                    initializeCutsceneExecutors();
-                                    deactivateNPCEntities();
-                                    deactivateAnimalEntities();
-                                    func_800D51B0();
-                                    initializeEntityInstances(1);
-                                    setEntrance(0x25);
-                                    var_v0_7 = 0xFC;
-                                    goto block_305;
-                                case 0x9E:          /* switch 18 */
-                                    deactivateSprites();
-                                    deactivateGlobalSprites();
-                                    initializeCutsceneExecutors();
-                                    deactivateNPCEntities();
-                                    deactivateAnimalEntities();
-                                    func_800D51B0();
-                                    initializeEntityInstances(1);
-                                    setEntrance(SPRING_ENTER);
-                                    var_v0_5 = 0xFD;
-                                    goto block_322;
-                                case 0xA9:          /* switch 18 */
-                                    deactivateSprites();
-                                    deactivateGlobalSprites();
-                                    initializeCutsceneExecutors();
-                                    deactivateNPCEntities();
-                                    deactivateAnimalEntities();
-                                    func_800D51B0();
-                                    initializeEntityInstances(1);
-                                    setEntrance(SPRING_ENTER);
-                                    var_v0_5 = 0xFE;
-                                    goto block_322;
-                                case 0xB5:          /* switch 18 */
-                                    deactivateSprites();
-                                    deactivateGlobalSprites();
-                                    initializeCutsceneExecutors();
-                                    deactivateNPCEntities();
-                                    deactivateAnimalEntities();
-                                    func_800D51B0();
-                                    initializeEntityInstances(1);
-                                    setEntrance(SPRING_ENTER);
-                                    var_v0_5 = 0xFF;
-                                    goto block_322;
-                                case 0xC1:          /* switch 18 */
-                                    deactivateSprites();
-                                    deactivateGlobalSprites();
-                                    initializeCutsceneExecutors();
-                                    deactivateNPCEntities();
-                                    deactivateAnimalEntities();
-                                    func_800D51B0();
-                                    initializeEntityInstances(1);
-                                    setEntrance(0x2E);
-                                    var_v0_8 = 0x100;
-                                    goto block_347;
-                                case 0xCB:          /* switch 18 */
-                                    deactivateSprites();
-                                    deactivateGlobalSprites();
-                                    initializeCutsceneExecutors();
-                                    deactivateNPCEntities();
-                                    deactivateAnimalEntities();
-                                    func_800D51B0();
-                                    initializeEntityInstances(1);
-                                    setEntrance(0x32);
-                                    var_v0_9 = 0x195;
-                                    goto block_324;
-                                }
+                               
+                                    case 0x1:           /* switch 18 */
+                                        setEntrance(0x3E);
+                                        var_v0_3 = 2;
+                                        goto block_372;
+                                    case 0x26:          /* switch 18 */
+                                        setEntrance(HOUSE_EXIT);
+                                        var_v0_4 = 0x27;
+                                        goto block_374;
+                                    case 0x93:          /* switch 18 */
+                                        deactivateSprites();
+                                        deactivateGlobalSprites();
+                                        initializeCutsceneExecutors();
+                                        deactivateNPCEntities();
+                                        deactivateAnimalEntities();
+                                        func_800D51B0();
+                                        initializeEntityInstances(1);
+                                        setEntrance(SPRING_ENTER);
+                                        var_v0_5 = 0xFA;
+                                        goto block_322;
+                                    case 0xC5:          /* switch 18 */
+                                    case 0xB8:          /* switch 18 */
+                                    case 0xAD:          /* switch 18 */
+                                    case 0x96:          /* switch 18 */
+                                    case 0xA1:          /* switch 18 */
+                                        deactivateSprites();
+                                        deactivateGlobalSprites();
+                                        initializeCutsceneExecutors();
+                                        deactivateNPCEntities();
+                                        deactivateAnimalEntities();
+                                        func_800D51B0();
+                                        initializeEntityInstances(1);
+                                        setEntrance(0x1A);
+                                        var_v0_6 = 0xFB;
+                                        goto block_376;
+                                    case 0xB9:          /* switch 18 */
+                                    case 0xC6:          /* switch 18 */
+                                    case 0xAE:          /* switch 18 */
+                                    case 0xA2:          /* switch 18 */
+                                    case 0x97:          /* switch 18 */
+                                        deactivateSprites();
+                                        deactivateGlobalSprites();
+                                        initializeCutsceneExecutors();
+                                        deactivateNPCEntities();
+                                        deactivateAnimalEntities();
+                                        func_800D51B0();
+                                        initializeEntityInstances(1);
+                                        setEntrance(0x25);
+                                        var_v0_7 = 0xFC;
+                                        goto block_305;
+                                    case 0x9E:          /* switch 18 */
+                                        deactivateSprites();
+                                        deactivateGlobalSprites();
+                                        initializeCutsceneExecutors();
+                                        deactivateNPCEntities();
+                                        deactivateAnimalEntities();
+                                        func_800D51B0();
+                                        initializeEntityInstances(1);
+                                        setEntrance(SPRING_ENTER);
+                                        var_v0_5 = 0xFD;
+                                        goto block_322;
+                                    case 0xA9:          /* switch 18 */
+                                        deactivateSprites();
+                                        deactivateGlobalSprites();
+                                        initializeCutsceneExecutors();
+                                        deactivateNPCEntities();
+                                        deactivateAnimalEntities();
+                                        func_800D51B0();
+                                        initializeEntityInstances(1);
+                                        setEntrance(SPRING_ENTER);
+                                        var_v0_5 = 0xFE;
+                                        goto block_322;
+                                    case 0xB5:          /* switch 18 */
+                                        deactivateSprites();
+                                        deactivateGlobalSprites();
+                                        initializeCutsceneExecutors();
+                                        deactivateNPCEntities();
+                                        deactivateAnimalEntities();
+                                        func_800D51B0();
+                                        initializeEntityInstances(1);
+                                        setEntrance(SPRING_ENTER);
+                                        var_v0_5 = 0xFF;
+                                        goto block_322;
+                                    case 0xC1:          /* switch 18 */
+                                        deactivateSprites();
+                                        deactivateGlobalSprites();
+                                        initializeCutsceneExecutors();
+                                        deactivateNPCEntities();
+                                        deactivateAnimalEntities();
+                                        func_800D51B0();
+                                        initializeEntityInstances(1);
+                                        setEntrance(0x2E);
+                                        var_v0_8 = 0x100;
+                                        goto block_347;
+                                    case 0xCB:          /* switch 18 */
+                                        deactivateSprites();
+                                        deactivateGlobalSprites();
+                                        initializeCutsceneExecutors();
+                                        deactivateNPCEntities();
+                                        deactivateAnimalEntities();
+                                        func_800D51B0();
+                                        initializeEntityInstances(1);
+                                        setEntrance(0x32);
+                                        var_v0_9 = 0x195;
+                                        goto block_324;
+                                    }
+
                             } else if (gCutsceneIndex != 0x144) {
+
                                 if ((s32) gCutsceneIndex < 0x145) {
+                                
                                     switch (gCutsceneIndex) { /* switch 17; irregular */
-                                    case 0xD0:      /* switch 17 */
+                                
+                                        case 0xD0:      /* switch 17 */
                                         deactivateSprites();
                                         deactivateGlobalSprites();
                                         initializeCutsceneExecutors();
@@ -4818,92 +4947,101 @@ block_154:
                                         func_800D51B0();
                                         initializeEntityInstances(1);
                                         setEntrance(0x5F);
-                                        gCutsceneIndex = 0x1AC;
-                                        loadCutscene(0);
-                                        func_8006E840(0x5F);
-                                        break;
-                                    case 0xF5:      /* switch 17 */
-                                        setEntrance(0x25);
-                                        var_v0_7 = 0x131;
-block_305:
-                                        gCutsceneIndex = var_v0_7;
-                                        loadCutscene(0);
-                                        func_8006E840(0x25);
-                                        break;
-                                    case 0xF8:      /* switch 17 */
-                                        setEntrance(0x27);
-                                        gCutsceneIndex = 0x2F4;
-                                        loadCutscene(0);
-                                        func_8006E840(0x27);
-                                        break;
-                                    }
-                                } else {
-                                    switch (gCutsceneIndex) { /* switch 16; irregular */
-                                    case 0x146:     /* switch 16 */
-                                        setEntrance(0x1A);
-                                        var_v0_6 = 0x147;
-                                        goto block_376;
-                                    case 0x148:     /* switch 16 */
-                                        setEntrance(0x23);
-                                        var_v0_10 = 0x149;
-                                        goto block_310;
-                                    case 0x149:     /* switch 16 */
-                                        setEntrance(0x1A);
-                                        var_v0_6 = 0x14A;
-                                        goto block_376;
-                                    case 0x158:     /* switch 16 */
-                                        setEntrance(0x2E);
-                                        var_v0_8 = 0x159;
-                                        goto block_347;
-                                    case 0x15A:     /* switch 16 */
-                                        D_801886D2 = getRandomNumberInRange(0, 9);
-                                        D_80180710 = getRandomNumberInRange(0, 9);
-                                        clearForagableObjects(MINE_2);
-                                        setEntrance(0x71);
-                                        gCutsceneIndex = 0x15B;
-                                        loadCutscene(0);
-                                        func_8006E840(0x71);
-                                        break;
-                                    default:        /* switch 16 */
-                                        if (((u8) gHour >= 0x11) || ((u8) gPlayer < 2)) {
-                                            gCutsceneIndex = 0x15D;
-                                            // MINE_EXIT
-                                            var_s0 = 0x47;
-                                            goto block_444;
+                                        gCutsceneIndex = STARRY_NIGHT_FESTIVAL;
+                                            loadCutscene(0);
+                                            func_8006E840(0x5F);
+                                            break;
+                                        case 0xF5:      /* switch 17 */
+                                            setEntrance(0x25);
+                                            var_v0_7 = 0x131;
+    block_305:
+                                            gCutsceneIndex = var_v0_7;
+                                            loadCutscene(0);
+                                            func_8006E840(0x25);
+                                            break;
+                                        case 0xF8:      /* switch 17 */
+                                            setEntrance(0x27);
+                                            gCutsceneIndex = 0x2F4;
+                                            loadCutscene(0);
+                                            func_8006E840(0x27);
+                                            break;
                                         }
-                                        if ((u16) D_80189824 < 0xA) {
+                                } else {
+
+                                    switch (gCutsceneIndex) { /* switch 16; irregular */
+                                    
+                                        case 0x146:     /* switch 16 */
+                                            setEntrance(0x1A);
+                                            var_v0_6 = 0x147;
+                                            goto block_376;
+                                        case 0x148:     /* switch 16 */
+                                            setEntrance(0x23);
+                                            var_v0_10 = 0x149;
+                                            goto block_310;
+                                        case 0x149:     /* switch 16 */
+                                            setEntrance(0x1A);
+                                            var_v0_6 = 0x14A;
+                                            goto block_376;
+                                        case 0x158:     /* switch 16 */
+                                            setEntrance(0x2E);
+                                            var_v0_8 = 0x159;
+                                            goto block_347;
+                                        case 0x15A:     /* switch 16 */
                                             D_801886D2 = getRandomNumberInRange(0, 9);
                                             D_80180710 = getRandomNumberInRange(0, 9);
-                                        } else {
-                                            D_80180710 = 0xFF;
-                                            D_801886D2 = 0xFF;
+                                            clearForagableObjects(MINE_2);
+                                            setEntrance(0x71);
+                                            gCutsceneIndex = 0x15B;
+                                            loadCutscene(0);
+                                            func_8006E840(0x71);
+                                            break;
+
+                                        default:        /* switch 16 */
+                                            if (((u8) gHour >= 0x11) || ((u8) gPlayer.currentStamina < 2)) {
+                                                gCutsceneIndex = 0x15D;
+                                                // MINE_EXIT
+                                                var_s0 = 0x47;
+                                                goto block_444;
+                                            }
+
+                                            if ((u16) D_80189824 < 0xA) {
+                                                D_801886D2 = getRandomNumberInRange(0, 9);
+                                                D_80180710 = getRandomNumberInRange(0, 9);
+                                            } else {
+                                                D_80180710 = 0xFF;
+                                                D_801886D2 = 0xFF;
+                                            }
+
+                                            gCutsceneIndex = 0x15C;
+                                            clearForagableObjects(0x45);
+                                            var_s0_2 = 0x71;
+                                            goto block_445;
+                                        case 0x19A:     /* switch 16 */
+                                            setEntrance(SPRING_ENTER);
+                                            var_v0_5 = 0x19B;
+    block_322:
+                                            gCutsceneIndex = var_v0_5;
+                                            loadCutscene(0);
+                                            func_8006E840(SPRING_ENTER);
+                                            break;
+                                        case 0x1AA:     /* switch 16 */
+                                            setEntrance(0x32);
+                                            var_v0_9 = 0x1BB;
+                                            goto block_324;
                                         }
-                                        gCutsceneIndex = 0x15C;
-                                        clearForagableObjects(0x45);
-                                        var_s0_2 = 0x71;
-                                        goto block_445;
-                                    case 0x19A:     /* switch 16 */
-                                        setEntrance(SPRING_ENTER);
-                                        var_v0_5 = 0x19B;
-block_322:
-                                        gCutsceneIndex = var_v0_5;
-                                        loadCutscene(0);
-                                        func_8006E840(SPRING_ENTER);
-                                        break;
-                                    case 0x1AA:     /* switch 16 */
-                                        setEntrance(0x32);
-                                        var_v0_9 = 0x1BB;
-                                        goto block_324;
                                     }
-                                }
+
                             } else {
+
                                 setEntrance(0x23);
                                 var_v0_10 = 0x146;
 block_310:
                                 gCutsceneIndex = var_v0_10;
                                 loadCutscene(0);
                                 func_8006E840(0x23);
+
                             }
+
                         } else {
                             deactivateSprites();
                             deactivateGlobalSprites();
@@ -4919,46 +5057,54 @@ block_324:
                             loadCutscene(0);
                             func_8006E840(0x32);
                         }
+
+
                     } else if ((s32) gCutsceneIndex < 0x386) {
+
                         if ((s32) gCutsceneIndex < 0x384) {
+                        
                             if ((s32) gCutsceneIndex < 0x214) {
+                        
                                 if ((s32) gCutsceneIndex < 0x212) {
+                        
                                     switch (gCutsceneIndex) { /* switch 15; irregular */
-                                    case 0x1BC:     /* switch 15 */
-                                    case 0x1B9:     /* switch 15 */
-                                        setEntrance(0x58);
-                                        var_v0_11 = 0x1B7;
-                                        if (gCutsceneIndex == 0x1B9) {
-                                            var_v0_11 = 0x1B5;
+                        
+                                        case 0x1BC:     /* switch 15 */
+                                        case 0x1B9:     /* switch 15 */
+                                            setEntrance(0x58);
+                                            var_v0_11 = 0x1B7;
+                                            if (gCutsceneIndex == 0x1B9) {
+                                                var_v0_11 = 0x1B5;
+                                            }
+                                            gCutsceneIndex = var_v0_11;
+                                            loadCutscene(0);
+                                            func_8006E840(0x58);
+                                            break;
+                                        case 0x1BD:     /* switch 15 */
+                                        case 0x1BA:     /* switch 15 */
+                                            setEntrance(0x5C);
+                                            var_v0_12 = 0x1B8;
+                                            if (gCutsceneIndex == 0x1BA) {
+                                                var_v0_12 = 0x1B6;
+                                            }
+                                            gCutsceneIndex = var_v0_12;
+                                            loadCutscene(0);
+                                            func_8006E840(0x5C);
+                                            break;
+                                        case 0x20D:     /* switch 15 */
+                                            setEntrance(0x3E);
+                                            var_v0_3 = 0x20E;
+                                            goto block_372;
+                                        case 0x20E:     /* switch 15 */
+                                            setEntrance(0x41);
+                                            func_8006E840(0x41);
+                                            break;
+                                        case 0x20F:     /* switch 15 */
+                                            setEntrance(0x3E);
+                                            var_v0_3 = 0x210;
+                                            goto block_372;
                                         }
-                                        gCutsceneIndex = var_v0_11;
-                                        loadCutscene(0);
-                                        func_8006E840(0x58);
-                                        break;
-                                    case 0x1BD:     /* switch 15 */
-                                    case 0x1BA:     /* switch 15 */
-                                        setEntrance(0x5C);
-                                        var_v0_12 = 0x1B8;
-                                        if (gCutsceneIndex == 0x1BA) {
-                                            var_v0_12 = 0x1B6;
-                                        }
-                                        gCutsceneIndex = var_v0_12;
-                                        loadCutscene(0);
-                                        func_8006E840(0x5C);
-                                        break;
-                                    case 0x20D:     /* switch 15 */
-                                        setEntrance(0x3E);
-                                        var_v0_3 = 0x20E;
-                                        goto block_372;
-                                    case 0x20E:     /* switch 15 */
-                                        setEntrance(0x41);
-                                        func_8006E840(0x41);
-                                        break;
-                                    case 0x20F:     /* switch 15 */
-                                        setEntrance(0x3E);
-                                        var_v0_3 = 0x210;
-                                        goto block_372;
-                                    }
+
                                 } else {
                                     setEntrance(0x67);
                                     var_v0_13 = 0x211;
@@ -4969,6 +5115,7 @@ block_324:
                                     loadCutscene(0);
                                     func_8006E840(0x67);
                                 }
+
                             } else if ((s32) gCutsceneIndex < 0x2C5) {
                                 if ((s32) gCutsceneIndex < 0x2C3) {
                                     if (gCutsceneIndex != 0x2C1) {
@@ -5026,16 +5173,22 @@ block_347:
                                     loadCutscene(0);
                                     func_8006E840(0x52);
                                 }
+
                             } else {
 block_449:
                                 gCutsceneIndex = 0xFFFF;
                             }
+                            
                         } else {
+
+                            // horse race
+
                             if ((u8) gHour >= 0x11) {
                                 setEntrance(0x61);
                                 var_v0_16 = 0x388;
                                 goto block_359;
                             }
+
                             var_v0_17 = 0x386;
                             if (*(&overlayScreenStrings + 0x6D) == *(&overlayScreenStrings + 0x6C)) {
                                 gCutsceneIndex = 0x387;
@@ -5047,504 +5200,577 @@ block_449:
                             }
                             goto block_447;
                         }
-                    } else if (gCutsceneIndex != 0x5AD) {
-                        if ((s32) gCutsceneIndex < 0x5AE) {
-                            switch ((s32) gCutsceneIndex) { /* switch 14; irregular */
-                            case 0x3E8:             /* switch 14 */
-                                deactivateSprites();
-                                deactivateGlobalSprites();
-                                initializeCutsceneExecutors();
-                                deactivateNPCEntities();
-                                deactivateAnimalEntities();
-                                func_800D51B0();
-                                initializeEntityInstances(2);
-                                setEntrance(0x61);
-                                var_v0_16 = 0x3E9;
-                                goto block_359;
-                            default:                /* switch 14 */
-                                if ((u8) gHour >= 0x11) {
-                                    setEntrance(0x61);
-                                    var_v0_16 = 0x517;
-                                    goto block_359;
-                                }
-                                if (*(&overlayScreenStrings + 0x6D) == *(&overlayScreenStrings + 0x6C)) {
-                                    var_v0_18 = D_801C3F78 | 0x20;
-                                } else {
-                                    var_v0_18 = D_801C3F78 & ~0x20;
-                                }
-                                D_801C3F78 = var_v0_18;
-                                if (*(&overlayScreenStrings + 0x6E) == *(&overlayScreenStrings + 0x6C)) {
-                                    var_v0_19 = D_801C3F78 | 0x40;
-                                } else {
-                                    var_v0_19 = D_801C3F78 & ~0x40;
-                                }
-                                D_801C3F78 = var_v0_19;
-                                var_v0_17 = 0x516;
-                                goto block_446;
-                            case 0x516:             /* switch 14 */
-                                setupPlayerEntity(0x6C, 1);
-                                func_8006A2E8();
-                                setEntitiesColor(0, 0, 0, 0);
-                                setEntrance(0x6C);
-                                gCutsceneIndex = 0x515;
-                                loadCutscene(0);
-                                func_8006E840(0x6C);
-                                break;
-                            case 0x5AA:             /* switch 14 */
-                                setEntrance(0);
-                                var_v0_20 = 0x5AB;
-                                goto block_379;
-                            case 0x5AB:             /* switch 14 */
-                                setEntrance(0x14);
-                                gCutsceneIndex = 0x5AC;
-                                loadCutscene(0);
-                                func_8006E840(0x14);
-                                break;
-                            }
-                        } else {
-                            switch (gCutsceneIndex) { /* switch 13; irregular */
-                            default:                /* switch 13 */
-                                var_v0_17 = 0x640;
-block_446:
-                                gCutsceneIndex = var_v0_17;
-block_447:
-                                loadCutscene(0);
-                                break;
-                            case 0x5AE:             /* switch 13 */
-                                setEntrance(0);
-                                var_v0_4 = 0x5AF;
-block_374:
-                                gCutsceneIndex = var_v0_4;
-                                loadCutscene(0);
-                                func_8006E840(0);
-                                gCutsceneFlags = (gCutsceneFlags & ~0x10) | 8;
-                                break;
-                            case 0x60E:             /* switch 13 */
-                                setEntrance(0x1A);
-                                var_v0_6 = 0x60F;
-block_376:
-                                gCutsceneIndex = var_v0_6;
-                                loadCutscene(0);
-                                func_8006E840(0x1A);
-                                break;
-                            case 0x60F:             /* switch 13 */
-                                setEntrance(0xA);
-                                gCutsceneIndex = 0x610;
-                                loadCutscene(0);
-                                func_8006E840(0xA);
-                                break;
-                            case 0x610:             /* switch 13 */
-                                setEntrance(0);
-                                var_v0_20 = 0x611;
-block_379:
-                                gCutsceneIndex = var_v0_20;
-                                loadCutscene(0);
-                                func_8006E840(0);
-                                break;
-                            case 0x640:             /* switch 13 */
-                                deactivateSprites();
-                                deactivateGlobalSprites();
-                                initializeCutsceneExecutors();
-                                deactivateNPCEntities();
-                                deactivateAnimalEntities();
-                                func_800D51B0();
-                                initializeEntityInstances(0);
-                                if (D_80189824 == 0) {
-                                    gSeason = SUMMER;
 
-                                    // memcpy
-                                    var_a3_3 = &farmFieldTiles;
-                                    var_a2_3 = &D_80115030;
-                                    temp_t0_3 = &D_80115030 + 0x1E0;
-                                    if (((s32) &D_80115030 | (s32) &farmFieldTiles) & 3) {
-                                        do {
-                                            var_a3_3->unk0 = (unaligned s32) var_a2_3->unk0;
-                                            var_a3_3->unk4 = (unaligned s32) var_a2_3->unk4;
-                                            var_a3_3->unk8 = (unaligned s32) var_a2_3->unk8;
-                                            var_a3_3->unkC = (unaligned s32) var_a2_3->unkC;
-                                            var_a2_3 += 0x10;
-                                            var_a3_3 += 0x10;
-                                        } while (var_a2_3 != temp_t0_3);
-                                        var_s0 = 0;
+                    } else if (gCutsceneIndex != MAYOR_VILLAGE_TOUR) {
+
+                        if ((s32) gCutsceneIndex < 0x5AE) {
+
+                            switch ((s32) gCutsceneIndex) { /* switch 14; irregular */
+                         
+                                case VEGETABLE_FESTIVAL_VILLAGE:             /* switch 14 */
+                                    deactivateSprites();
+                                    deactivateGlobalSprites();
+                                    initializeCutsceneExecutors();
+                                    deactivateNPCEntities();
+                                    deactivateAnimalEntities();
+                                    func_800D51B0();
+                                    initializeEntityInstances(2);
+                                    setEntrance(0x61);
+                                    var_v0_16 = VEGETABLE_FESTIVAL_SQUARE;
+                                    goto block_359;
+
+                                default:                /* switch 14 */
+
+                                    // handle dog race
+        
+                                    if ((u8) gHour >= 0x11) {
+                                        setEntrance(0x61);
+                                        var_v0_16 = 0x517;
+                                        goto block_359;
+                                    }
+
+                                    if (*(&overlayScreenStrings + 0x6D) == *(&overlayScreenStrings + 0x6C)) {
+                                        var_v0_18 = D_801C3F78 | 0x20;
                                     } else {
-                                        do {
-                                            var_a3_3->unk0 = (s32) var_a2_3->unk0;
-                                            var_a3_3->unk4 = (s32) var_a2_3->unk4;
-                                            var_a3_3->unk8 = (s32) var_a2_3->unk8;
-                                            var_a3_3->unkC = (s32) var_a2_3->unkC;
-                                            var_a2_3 += 0x10;
-                                            var_a3_3 += 0x10;
-                                        } while (var_a2_3 != temp_t0_3);
+                                        var_v0_18 = D_801C3F78 & ~0x20;
+                                    }
+                                    D_801C3F78 = var_v0_18;
+                                    if (*(&overlayScreenStrings + 0x6E) == *(&overlayScreenStrings + 0x6C)) {
+                                        var_v0_19 = D_801C3F78 | 0x40;
+                                    } else {
+                                        var_v0_19 = D_801C3F78 & ~0x40;
+                                    }
+                                    D_801C3F78 = var_v0_19;
+                                    var_v0_17 = DOG_RACE_AFTER_RACE;
+
+                                    goto block_446;
+
+                                case DOG_RACE_AFTER_RACE:             /* switch 14 */
+                                    setupPlayerEntity(0x6C, 1);
+                                    func_8006A2E8();
+                                    setEntitiesColor(0, 0, 0, 0);
+                                    setEntrance(0x6C);
+                                    gCutsceneIndex = 0x515;
+                                    loadCutscene(0);
+                                    func_8006E840(0x6C);
+                                    break;
+
+                                case 0x5AA:             /* switch 14 */
+                                    setEntrance(0);
+                                    var_v0_20 = 0x5AB;
+                                    goto block_379;
+
+                                case 0x5AB:             /* switch 14 */
+                                    setEntrance(0x14);
+                                    gCutsceneIndex = 0x5AC;
+                                    loadCutscene(0);
+                                    func_8006E840(0x14);
+                                    break;
+                                }
+
+                        } else {
+
+                            switch (gCutsceneIndex) { /* switch 13; irregular */
+                                
+                                default:                /* switch 13 */
+                                
+                                    // HOW_TO_PLAY_CUTSCENE
+                                    var_v0_17 = 0x640;
+    block_446:
+                                    gCutsceneIndex = var_v0_17;
+    block_447:
+                                    loadCutscene(0);
+                                    break;
+
+                                case 0x5AE:             /* switch 13 */
+                                    setEntrance(0);
+                                    var_v0_4 = 0x5AF;
+    block_374:
+                                    gCutsceneIndex = var_v0_4;
+                                    loadCutscene(0);
+                                    func_8006E840(0);
+                                    gCutsceneFlags = (gCutsceneFlags & ~0x10) | 8;
+                                    break;
+
+                                case EVALUATION:             /* switch 13 */
+                                    setEntrance(0x1A);
+                                    var_v0_6 = 0x60F;
+    block_376:
+                                    gCutsceneIndex = var_v0_6;
+                                    loadCutscene(0);
+                                    func_8006E840(0x1A);
+                                    break;
+
+                                case 0x60F:             /* switch 13 */
+                                    setEntrance(0xA);
+                                    gCutsceneIndex = 0x610;
+                                    loadCutscene(0);
+                                    func_8006E840(0xA);
+                                    break;
+
+                                case 0x610:             /* switch 13 */
+                                    setEntrance(0);
+                                    var_v0_20 = 0x611;
+    block_379:
+                                    gCutsceneIndex = var_v0_20;
+                                    loadCutscene(0);
+                                    func_8006E840(0);
+                                    break;
+
+                                case HOW_TO_PLAY_CUTSCENE:             /* switch 13 */
+                                    
+                                    deactivateSprites();
+                                    deactivateGlobalSprites();
+                                    initializeCutsceneExecutors();
+                                    deactivateNPCEntities();
+                                    deactivateAnimalEntities();
+                                    func_800D51B0();
+                                    initializeEntityInstances(0);
+
+                                    if (D_80189824 == 0) {
+
+                                        gSeason = SUMMER;
+
+                                        // memcpy
+                                        var_a3_3 = &farmFieldTiles;
+                                        var_a2_3 = &D_80115030;
+                                        temp_t0_3 = &D_80115030 + 0x1E0;
+                                        if (((s32) &D_80115030 | (s32) &farmFieldTiles) & 3) {
+                                            do {
+                                                var_a3_3->unk0 = (unaligned s32) var_a2_3->unk0;
+                                                var_a3_3->unk4 = (unaligned s32) var_a2_3->unk4;
+                                                var_a3_3->unk8 = (unaligned s32) var_a2_3->unk8;
+                                                var_a3_3->unkC = (unaligned s32) var_a2_3->unkC;
+                                                var_a2_3 += 0x10;
+                                                var_a3_3 += 0x10;
+                                            } while (var_a2_3 != temp_t0_3);
+                                            var_s0 = 0;
+                                        } else {
+                                            do {
+                                                var_a3_3->unk0 = (s32) var_a2_3->unk0;
+                                                var_a3_3->unk4 = (s32) var_a2_3->unk4;
+                                                var_a3_3->unk8 = (s32) var_a2_3->unk8;
+                                                var_a3_3->unkC = (s32) var_a2_3->unkC;
+                                                var_a2_3 += 0x10;
+                                                var_a3_3 += 0x10;
+                                            } while (var_a2_3 != temp_t0_3);
+                                            // HOUSE_EXIT
+                                            var_s0 = 0;
+                                        }
+                                        var_v0_21 = 0x641;
+                                        goto block_443;
+                                    }
+
+                                    if (D_80189824 == 1) {
+
+                                        gSeason = SPRING;
                                         // HOUSE_EXIT
                                         var_s0 = 0;
+
+                                        switch (D_801886D2) { /* switch 7 */
+
+                                            case 0:         /* switch 7 */
+
+                                                // memcpy
+                                                var_a3_4 = &farmFieldTiles;
+                                                var_a2_4 = &D_80115210;
+                                                temp_t0_4 = &D_80115210 + 0x1E0;
+                                                if (((s32) &D_80115210 | (s32) &farmFieldTiles) & 3) {
+                                                    do {
+                                                        var_a3_4->unk0 = (unaligned s32) var_a2_4->unk0;
+                                                        var_a3_4->unk4 = (unaligned s32) var_a2_4->unk4;
+                                                        var_a3_4->unk8 = (unaligned s32) var_a2_4->unk8;
+                                                        var_a3_4->unkC = (unaligned s32) var_a2_4->unkC;
+                                                        var_a2_4 += 0x10;
+                                                        var_a3_4 += 0x10;
+                                                    } while (var_a2_4 != temp_t0_4);
+                                                    var_v0_21 = 0x642;
+                                                } else {
+                                                    do {
+                                                        var_a3_4->unk0 = (s32) var_a2_4->unk0;
+                                                        var_a3_4->unk4 = (s32) var_a2_4->unk4;
+                                                        var_a3_4->unk8 = (s32) var_a2_4->unk8;
+                                                        var_a3_4->unkC = (s32) var_a2_4->unkC;
+                                                        var_a2_4 += 0x10;
+                                                        var_a3_4 += 0x10;
+                                                    } while (var_a2_4 != temp_t0_4);
+                                                    var_v0_21 = 0x642;
+                                                }
+
+                                                goto block_443;
+                                            case 1:         /* switch 7 */
+
+                                                // memcpy
+                                                var_a3_5 = &farmFieldTiles;
+                                                var_a2_5 = &D_801153F0;
+                                                temp_t0_5 = &D_801153F0 + 0x1E0;
+                                                if (((s32) &D_801153F0 | (s32) &farmFieldTiles) & 3) {
+                                                    do {
+                                                        var_a3_5->unk0 = (unaligned s32) var_a2_5->unk0;
+                                                        var_a3_5->unk4 = (unaligned s32) var_a2_5->unk4;
+                                                        var_a3_5->unk8 = (unaligned s32) var_a2_5->unk8;
+                                                        var_a3_5->unkC = (unaligned s32) var_a2_5->unkC;
+                                                        var_a2_5 += 0x10;
+                                                        var_a3_5 += 0x10;
+                                                    } while (var_a2_5 != temp_t0_5);
+                                                    var_v0_21 = 0x643;
+                                                } else {
+                                                    do {
+                                                        var_a3_5->unk0 = (s32) var_a2_5->unk0;
+                                                        var_a3_5->unk4 = (s32) var_a2_5->unk4;
+                                                        var_a3_5->unk8 = (s32) var_a2_5->unk8;
+                                                        var_a3_5->unkC = (s32) var_a2_5->unkC;
+                                                        var_a2_5 += 0x10;
+                                                        var_a3_5 += 0x10;
+                                                    } while (var_a2_5 != temp_t0_5);
+                                                    var_v0_21 = 0x643;
+                                                }
+                                                goto block_443;
+
+
+                                            case 2:         /* switch 7 */
+
+                                                // memcpy
+                                                var_a3_6 = &farmFieldTiles;
+                                                var_a2_6 = &D_801155D0;
+                                                temp_t0_6 = &D_801155D0 + 0x1E0;
+                                                if (((s32) &D_801155D0 | (s32) &farmFieldTiles) & 3) {
+                                                    do {
+                                                        var_a3_6->unk0 = (unaligned s32) var_a2_6->unk0;
+                                                        var_a3_6->unk4 = (unaligned s32) var_a2_6->unk4;
+                                                        var_a3_6->unk8 = (unaligned s32) var_a2_6->unk8;
+                                                        var_a3_6->unkC = (unaligned s32) var_a2_6->unkC;
+                                                        var_a2_6 += 0x10;
+                                                        var_a3_6 += 0x10;
+                                                    } while (var_a2_6 != temp_t0_6);
+                                                    var_v0_21 = 0x644;
+                                                } else {
+                                                    do {
+                                                        var_a3_6->unk0 = (s32) var_a2_6->unk0;
+                                                        var_a3_6->unk4 = (s32) var_a2_6->unk4;
+                                                        var_a3_6->unk8 = (s32) var_a2_6->unk8;
+                                                        var_a3_6->unkC = (s32) var_a2_6->unkC;
+                                                        var_a2_6 += 0x10;
+                                                        var_a3_6 += 0x10;
+                                                    } while (var_a2_6 != temp_t0_6);
+                                                    var_v0_21 = 0x644;
+                                                }
+                                                goto block_443;
+                                            
+                                            case 3:         /* switch 7 */
+                                            
+                                                // memcpy
+                                                var_a3_7 = &farmFieldTiles;
+                                                var_a2_7 = &D_801157B0;
+                                                temp_t0_7 = &D_801157B0 + 0x1E0;
+                                                if (((s32) &D_801157B0 | (s32) &farmFieldTiles) & 3) {
+                                                    do {
+                                                        var_a3_7->unk0 = (unaligned s32) var_a2_7->unk0;
+                                                        var_a3_7->unk4 = (unaligned s32) var_a2_7->unk4;
+                                                        var_a3_7->unk8 = (unaligned s32) var_a2_7->unk8;
+                                                        var_a3_7->unkC = (unaligned s32) var_a2_7->unkC;
+                                                        var_a2_7 += 0x10;
+                                                        var_a3_7 += 0x10;
+                                                    } while (var_a2_7 != temp_t0_7);
+                                                    var_v0_21 = 0x645;
+                                                } else {
+                                                    do {
+                                                        var_a3_7->unk0 = (s32) var_a2_7->unk0;
+                                                        var_a3_7->unk4 = (s32) var_a2_7->unk4;
+                                                        var_a3_7->unk8 = (s32) var_a2_7->unk8;
+                                                        var_a3_7->unkC = (s32) var_a2_7->unkC;
+                                                        var_a2_7 += 0x10;
+                                                        var_a3_7 += 0x10;
+                                                    } while (var_a2_7 != temp_t0_7);
+                                                    var_v0_21 = 0x645;
+                                                }
+                                                goto block_443;
+
+                                            case 4:         /* switch 7 */
+
+                                                // memcpy
+                                                var_a3_8 = &farmFieldTiles;
+                                                var_a2_8 = &D_80115990;
+                                                temp_t0_8 = &D_80115990 + 0x1E0;
+                                                if (((s32) &D_80115990 | (s32) &farmFieldTiles) & 3) {
+                                                    do {
+                                                        var_a3_8->unk0 = (unaligned s32) var_a2_8->unk0;
+                                                        var_a3_8->unk4 = (unaligned s32) var_a2_8->unk4;
+                                                        var_a3_8->unk8 = (unaligned s32) var_a2_8->unk8;
+                                                        var_a3_8->unkC = (unaligned s32) var_a2_8->unkC;
+                                                        var_a2_8 += 0x10;
+                                                        var_a3_8 += 0x10;
+                                                    } while (var_a2_8 != temp_t0_8);
+                                                    var_v0_21 = 0x646;
+                                                } else {
+                                                    do {
+                                                        var_a3_8->unk0 = (s32) var_a2_8->unk0;
+                                                        var_a3_8->unk4 = (s32) var_a2_8->unk4;
+                                                        var_a3_8->unk8 = (s32) var_a2_8->unk8;
+                                                        var_a3_8->unkC = (s32) var_a2_8->unkC;
+                                                        var_a2_8 += 0x10;
+                                                        var_a3_8 += 0x10;
+                                                    } while (var_a2_8 != temp_t0_8);
+                                                    var_v0_21 = 0x646;
+                                                }
+                                                
+                                                goto block_443;
+
+                                            }
+
+
+                                    } else {
+
+                                        gSeason = SUMMER;
+                                        // HOUSE_EXIT
+                                        var_s0 = 0;
+
+                                        switch (D_801886D2) { /* switch 8 */
+
+                                            case 0:         /* switch 8 */
+
+                                                // memcpy
+                                                var_a3_9 = &farmFieldTiles;
+                                                var_a2_9 = &D_80115B70;
+                                                temp_t0_9 = &D_80115B70 + 0x1E0;
+
+                                                if (((s32) &D_80115B70 | (s32) &farmFieldTiles) & 3) {
+                                                    do {
+                                                        var_a3_9->unk0 = (unaligned s32) var_a2_9->unk0;
+                                                        var_a3_9->unk4 = (unaligned s32) var_a2_9->unk4;
+                                                        var_a3_9->unk8 = (unaligned s32) var_a2_9->unk8;
+                                                        var_a3_9->unkC = (unaligned s32) var_a2_9->unkC;
+                                                        var_a2_9 += 0x10;
+                                                        var_a3_9 += 0x10;
+                                                    } while (var_a2_9 != temp_t0_9);
+                                                    var_v0_21 = 0x647;
+                                                } else {
+                                                    do {
+                                                        var_a3_9->unk0 = (s32) var_a2_9->unk0;
+                                                        var_a3_9->unk4 = (s32) var_a2_9->unk4;
+                                                        var_a3_9->unk8 = (s32) var_a2_9->unk8;
+                                                        var_a3_9->unkC = (s32) var_a2_9->unkC;
+                                                        var_a2_9 += 0x10;
+                                                        var_a3_9 += 0x10;
+                                                    } while (var_a2_9 != temp_t0_9);
+                                                    var_v0_21 = 0x647;
+                                                }
+        block_443:
+                                                gCutsceneIndex = var_v0_21;
+                                                break;
+
+                                            case 1:         /* switch 8 */
+
+                                                // memcpy
+                                                var_a3_10 = &farmFieldTiles;
+                                                var_a2_10 = &D_80115D50;
+                                                temp_t0_10 = &D_80115D50 + 0x1E0;
+                                                if (((s32) &D_80115D50 | (s32) &farmFieldTiles) & 3) {
+                                                    do {
+                                                        var_a3_10->unk0 = (unaligned s32) var_a2_10->unk0;
+                                                        var_a3_10->unk4 = (unaligned s32) var_a2_10->unk4;
+                                                        var_a3_10->unk8 = (unaligned s32) var_a2_10->unk8;
+                                                        var_a3_10->unkC = (unaligned s32) var_a2_10->unkC;
+                                                        var_a2_10 += 0x10;
+                                                        var_a3_10 += 0x10;
+                                                    } while (var_a2_10 != temp_t0_10);
+                                                    var_v0_21 = 0x648;
+                                                } else {
+                                                    do {
+                                                        var_a3_10->unk0 = (s32) var_a2_10->unk0;
+                                                        var_a3_10->unk4 = (s32) var_a2_10->unk4;
+                                                        var_a3_10->unk8 = (s32) var_a2_10->unk8;
+                                                        var_a3_10->unkC = (s32) var_a2_10->unkC;
+                                                        var_a2_10 += 0x10;
+                                                        var_a3_10 += 0x10;
+                                                    } while (var_a2_10 != temp_t0_10);
+                                                    var_v0_21 = 0x648;
+                                                }
+
+                                                goto block_443;
+
+                                            case 2:         /* switch 8 */
+
+                                                // memcpy
+                                                var_a3_11 = &farmFieldTiles;
+                                                var_a2_11 = &D_80115F30;
+                                                temp_t0_11 = &D_80115F30 + 0x1E0;
+                                                if (((s32) &D_80115F30 | (s32) &farmFieldTiles) & 3) {
+                                                    do {
+                                                        var_a3_11->unk0 = (unaligned s32) var_a2_11->unk0;
+                                                        var_a3_11->unk4 = (unaligned s32) var_a2_11->unk4;
+                                                        var_a3_11->unk8 = (unaligned s32) var_a2_11->unk8;
+                                                        var_a3_11->unkC = (unaligned s32) var_a2_11->unkC;
+                                                        var_a2_11 += 0x10;
+                                                        var_a3_11 += 0x10;
+                                                    } while (var_a2_11 != temp_t0_11);
+                                                    var_s0 = 0x11;
+                                                } else {
+                                                    do {
+                                                        var_a3_11->unk0 = (s32) var_a2_11->unk0;
+                                                        var_a3_11->unk4 = (s32) var_a2_11->unk4;
+                                                        var_a3_11->unk8 = (s32) var_a2_11->unk8;
+                                                        var_a3_11->unkC = (s32) var_a2_11->unkC;
+                                                        var_a2_11 += 0x10;
+                                                        var_a3_11 += 0x10;
+                                                    } while (var_a2_11 != temp_t0_11);
+                                                    var_s0 = 0x11;
+                                                }
+                                                var_v0_21 = 0x649;
+                                                goto block_443;
+
+
+                                            case 3:         /* switch 8 */
+
+                                                // memcpy
+                                                var_a3_12 = &farmFieldTiles;
+                                                var_a2_12 = &D_80116110;
+                                                temp_t0_12 = &D_80116110 + 0x1E0;
+                                                if (((s32) &D_80116110 | (s32) &farmFieldTiles) & 3) {
+                                                    do {
+                                                        var_a3_12->unk0 = (unaligned s32) var_a2_12->unk0;
+                                                        var_a3_12->unk4 = (unaligned s32) var_a2_12->unk4;
+                                                        var_a3_12->unk8 = (unaligned s32) var_a2_12->unk8;
+                                                        var_a3_12->unkC = (unaligned s32) var_a2_12->unkC;
+                                                        var_a2_12 += 0x10;
+                                                        var_a3_12 += 0x10;
+                                                    } while (var_a2_12 != temp_t0_12);
+                                                    var_v0_21 = 0x64A;
+                                                } else {
+                                                    do {
+                                                        var_a3_12->unk0 = (s32) var_a2_12->unk0;
+                                                        var_a3_12->unk4 = (s32) var_a2_12->unk4;
+                                                        var_a3_12->unk8 = (s32) var_a2_12->unk8;
+                                                        var_a3_12->unkC = (s32) var_a2_12->unkC;
+                                                        var_a2_12 += 0x10;
+                                                        var_a3_12 += 0x10;
+                                                    } while (var_a2_12 != temp_t0_12);
+                                                    var_v0_21 = 0x64A;
+                                                }
+                                                goto block_443;
+
+
+                                            case 4:         /* switch 8 */
+                                                
+                                                // memcpy
+                                                var_a3_13 = &farmFieldTiles;
+                                                var_a2_13 = &D_80116110;
+                                                temp_t0_13 = &D_80116110 + 0x1E0;
+                                                if (((s32) &D_80116110 | (s32) &farmFieldTiles) & 3) {
+                                                    do {
+                                                        var_a3_13->unk0 = (unaligned s32) var_a2_13->unk0;
+                                                        var_a3_13->unk4 = (unaligned s32) var_a2_13->unk4;
+                                                        var_a3_13->unk8 = (unaligned s32) var_a2_13->unk8;
+                                                        var_a3_13->unkC = (unaligned s32) var_a2_13->unkC;
+                                                        var_a2_13 += 0x10;
+                                                        var_a3_13 += 0x10;
+                                                    } while (var_a2_13 != temp_t0_13);
+                                                    var_v0_21 = 0x64B;
+                                                } else {
+                                                    do {
+                                                        var_a3_13->unk0 = (s32) var_a2_13->unk0;
+                                                        var_a3_13->unk4 = (s32) var_a2_13->unk4;
+                                                        var_a3_13->unk8 = (s32) var_a2_13->unk8;
+                                                        var_a3_13->unkC = (s32) var_a2_13->unkC;
+                                                        var_a2_13 += 0x10;
+                                                        var_a3_13 += 0x10;
+                                                    } while (var_a2_13 != temp_t0_13);
+
+                                                    // last cutscene
+                                                    var_v0_21 = 0x64B;
+
+                                                }
+
+                                                goto block_443;
+
+                                            }
+
                                     }
-                                    var_v0_21 = 0x641;
-                                    goto block_443;
+    block_444:
+                                    var_s0_2 = var_s0;
+    block_445:
+                                    setEntrance(var_s0_2);
+                                    loadCutscene(0);
+                                    func_8006E840(var_s0_2);
+                                    break;
+                            
                                 }
 
-                                if (D_80189824 == 1) {
-                                    gSeason = SPRING;
-                                    // HOUSE_EXIT
-                                    var_s0 = 0;
-                                    switch (D_801886D2) { /* switch 7 */
-                                    case 0:         /* switch 7 */
-
-                                        // memcpy
-                                        var_a3_4 = &farmFieldTiles;
-                                        var_a2_4 = &D_80115210;
-                                        temp_t0_4 = &D_80115210 + 0x1E0;
-                                        if (((s32) &D_80115210 | (s32) &farmFieldTiles) & 3) {
-                                            do {
-                                                var_a3_4->unk0 = (unaligned s32) var_a2_4->unk0;
-                                                var_a3_4->unk4 = (unaligned s32) var_a2_4->unk4;
-                                                var_a3_4->unk8 = (unaligned s32) var_a2_4->unk8;
-                                                var_a3_4->unkC = (unaligned s32) var_a2_4->unkC;
-                                                var_a2_4 += 0x10;
-                                                var_a3_4 += 0x10;
-                                            } while (var_a2_4 != temp_t0_4);
-                                            var_v0_21 = 0x642;
-                                        } else {
-                                            do {
-                                                var_a3_4->unk0 = (s32) var_a2_4->unk0;
-                                                var_a3_4->unk4 = (s32) var_a2_4->unk4;
-                                                var_a3_4->unk8 = (s32) var_a2_4->unk8;
-                                                var_a3_4->unkC = (s32) var_a2_4->unkC;
-                                                var_a2_4 += 0x10;
-                                                var_a3_4 += 0x10;
-                                            } while (var_a2_4 != temp_t0_4);
-                                            var_v0_21 = 0x642;
-                                        }
-
-                                        goto block_443;
-                                    case 1:         /* switch 7 */
-
-                                        // memcpy
-                                        var_a3_5 = &farmFieldTiles;
-                                        var_a2_5 = &D_801153F0;
-                                        temp_t0_5 = &D_801153F0 + 0x1E0;
-                                        if (((s32) &D_801153F0 | (s32) &farmFieldTiles) & 3) {
-                                            do {
-                                                var_a3_5->unk0 = (unaligned s32) var_a2_5->unk0;
-                                                var_a3_5->unk4 = (unaligned s32) var_a2_5->unk4;
-                                                var_a3_5->unk8 = (unaligned s32) var_a2_5->unk8;
-                                                var_a3_5->unkC = (unaligned s32) var_a2_5->unkC;
-                                                var_a2_5 += 0x10;
-                                                var_a3_5 += 0x10;
-                                            } while (var_a2_5 != temp_t0_5);
-                                            var_v0_21 = 0x643;
-                                        } else {
-                                            do {
-                                                var_a3_5->unk0 = (s32) var_a2_5->unk0;
-                                                var_a3_5->unk4 = (s32) var_a2_5->unk4;
-                                                var_a3_5->unk8 = (s32) var_a2_5->unk8;
-                                                var_a3_5->unkC = (s32) var_a2_5->unkC;
-                                                var_a2_5 += 0x10;
-                                                var_a3_5 += 0x10;
-                                            } while (var_a2_5 != temp_t0_5);
-                                            var_v0_21 = 0x643;
-                                        }
-                                        goto block_443;
-
-
-                                    case 2:         /* switch 7 */
-
-                                        // memcpy
-                                        var_a3_6 = &farmFieldTiles;
-                                        var_a2_6 = &D_801155D0;
-                                        temp_t0_6 = &D_801155D0 + 0x1E0;
-                                        if (((s32) &D_801155D0 | (s32) &farmFieldTiles) & 3) {
-                                            do {
-                                                var_a3_6->unk0 = (unaligned s32) var_a2_6->unk0;
-                                                var_a3_6->unk4 = (unaligned s32) var_a2_6->unk4;
-                                                var_a3_6->unk8 = (unaligned s32) var_a2_6->unk8;
-                                                var_a3_6->unkC = (unaligned s32) var_a2_6->unkC;
-                                                var_a2_6 += 0x10;
-                                                var_a3_6 += 0x10;
-                                            } while (var_a2_6 != temp_t0_6);
-                                            var_v0_21 = 0x644;
-                                        } else {
-                                            do {
-                                                var_a3_6->unk0 = (s32) var_a2_6->unk0;
-                                                var_a3_6->unk4 = (s32) var_a2_6->unk4;
-                                                var_a3_6->unk8 = (s32) var_a2_6->unk8;
-                                                var_a3_6->unkC = (s32) var_a2_6->unkC;
-                                                var_a2_6 += 0x10;
-                                                var_a3_6 += 0x10;
-                                            } while (var_a2_6 != temp_t0_6);
-                                            var_v0_21 = 0x644;
-                                        }
-                                        goto block_443;
-                                    
-                                    case 3:         /* switch 7 */
-                                    
-                                        // memcpy
-                                        var_a3_7 = &farmFieldTiles;
-                                        var_a2_7 = &D_801157B0;
-                                        temp_t0_7 = &D_801157B0 + 0x1E0;
-                                        if (((s32) &D_801157B0 | (s32) &farmFieldTiles) & 3) {
-                                            do {
-                                                var_a3_7->unk0 = (unaligned s32) var_a2_7->unk0;
-                                                var_a3_7->unk4 = (unaligned s32) var_a2_7->unk4;
-                                                var_a3_7->unk8 = (unaligned s32) var_a2_7->unk8;
-                                                var_a3_7->unkC = (unaligned s32) var_a2_7->unkC;
-                                                var_a2_7 += 0x10;
-                                                var_a3_7 += 0x10;
-                                            } while (var_a2_7 != temp_t0_7);
-                                            var_v0_21 = 0x645;
-                                        } else {
-                                            do {
-                                                var_a3_7->unk0 = (s32) var_a2_7->unk0;
-                                                var_a3_7->unk4 = (s32) var_a2_7->unk4;
-                                                var_a3_7->unk8 = (s32) var_a2_7->unk8;
-                                                var_a3_7->unkC = (s32) var_a2_7->unkC;
-                                                var_a2_7 += 0x10;
-                                                var_a3_7 += 0x10;
-                                            } while (var_a2_7 != temp_t0_7);
-                                            var_v0_21 = 0x645;
-                                        }
-                                        goto block_443;
-
-                                    case 4:         /* switch 7 */
-
-                                        // memcpy
-                                        var_a3_8 = &farmFieldTiles;
-                                        var_a2_8 = &D_80115990;
-                                        temp_t0_8 = &D_80115990 + 0x1E0;
-                                        if (((s32) &D_80115990 | (s32) &farmFieldTiles) & 3) {
-                                            do {
-                                                var_a3_8->unk0 = (unaligned s32) var_a2_8->unk0;
-                                                var_a3_8->unk4 = (unaligned s32) var_a2_8->unk4;
-                                                var_a3_8->unk8 = (unaligned s32) var_a2_8->unk8;
-                                                var_a3_8->unkC = (unaligned s32) var_a2_8->unkC;
-                                                var_a2_8 += 0x10;
-                                                var_a3_8 += 0x10;
-                                            } while (var_a2_8 != temp_t0_8);
-                                            var_v0_21 = 0x646;
-                                        } else {
-                                            do {
-                                                var_a3_8->unk0 = (s32) var_a2_8->unk0;
-                                                var_a3_8->unk4 = (s32) var_a2_8->unk4;
-                                                var_a3_8->unk8 = (s32) var_a2_8->unk8;
-                                                var_a3_8->unkC = (s32) var_a2_8->unkC;
-                                                var_a2_8 += 0x10;
-                                                var_a3_8 += 0x10;
-                                            } while (var_a2_8 != temp_t0_8);
-                                            var_v0_21 = 0x646;
-                                        }
-                                        goto block_443;
-                                    }
-
-
-                                } else {
-                                    gSeason = SUMMER;
-                                    // HOUSE_EXIT
-                                    var_s0 = 0;
-                                    switch (D_801886D2) { /* switch 8 */
-                                    case 0:         /* switch 8 */
-
-                                        // memcpy
-                                        var_a3_9 = &farmFieldTiles;
-                                        var_a2_9 = &D_80115B70;
-                                        temp_t0_9 = &D_80115B70 + 0x1E0;
-                                        if (((s32) &D_80115B70 | (s32) &farmFieldTiles) & 3) {
-                                            do {
-                                                var_a3_9->unk0 = (unaligned s32) var_a2_9->unk0;
-                                                var_a3_9->unk4 = (unaligned s32) var_a2_9->unk4;
-                                                var_a3_9->unk8 = (unaligned s32) var_a2_9->unk8;
-                                                var_a3_9->unkC = (unaligned s32) var_a2_9->unkC;
-                                                var_a2_9 += 0x10;
-                                                var_a3_9 += 0x10;
-                                            } while (var_a2_9 != temp_t0_9);
-                                            var_v0_21 = 0x647;
-                                        } else {
-                                            do {
-                                                var_a3_9->unk0 = (s32) var_a2_9->unk0;
-                                                var_a3_9->unk4 = (s32) var_a2_9->unk4;
-                                                var_a3_9->unk8 = (s32) var_a2_9->unk8;
-                                                var_a3_9->unkC = (s32) var_a2_9->unkC;
-                                                var_a2_9 += 0x10;
-                                                var_a3_9 += 0x10;
-                                            } while (var_a2_9 != temp_t0_9);
-                                            var_v0_21 = 0x647;
-                                        }
-block_443:
-                                        gCutsceneIndex = var_v0_21;
-                                        break;
-                                    case 1:         /* switch 8 */
-
-                                        // memcpy
-                                        var_a3_10 = &farmFieldTiles;
-                                        var_a2_10 = &D_80115D50;
-                                        temp_t0_10 = &D_80115D50 + 0x1E0;
-                                        if (((s32) &D_80115D50 | (s32) &farmFieldTiles) & 3) {
-                                            do {
-                                                var_a3_10->unk0 = (unaligned s32) var_a2_10->unk0;
-                                                var_a3_10->unk4 = (unaligned s32) var_a2_10->unk4;
-                                                var_a3_10->unk8 = (unaligned s32) var_a2_10->unk8;
-                                                var_a3_10->unkC = (unaligned s32) var_a2_10->unkC;
-                                                var_a2_10 += 0x10;
-                                                var_a3_10 += 0x10;
-                                            } while (var_a2_10 != temp_t0_10);
-                                            var_v0_21 = 0x648;
-                                        } else {
-                                            do {
-                                                var_a3_10->unk0 = (s32) var_a2_10->unk0;
-                                                var_a3_10->unk4 = (s32) var_a2_10->unk4;
-                                                var_a3_10->unk8 = (s32) var_a2_10->unk8;
-                                                var_a3_10->unkC = (s32) var_a2_10->unkC;
-                                                var_a2_10 += 0x10;
-                                                var_a3_10 += 0x10;
-                                            } while (var_a2_10 != temp_t0_10);
-                                            var_v0_21 = 0x648;
-                                        }
-
-                                        goto block_443;
-                                    case 2:         /* switch 8 */
-
-                                        // memcpy
-                                        var_a3_11 = &farmFieldTiles;
-                                        var_a2_11 = &D_80115F30;
-                                        temp_t0_11 = &D_80115F30 + 0x1E0;
-                                        if (((s32) &D_80115F30 | (s32) &farmFieldTiles) & 3) {
-                                            do {
-                                                var_a3_11->unk0 = (unaligned s32) var_a2_11->unk0;
-                                                var_a3_11->unk4 = (unaligned s32) var_a2_11->unk4;
-                                                var_a3_11->unk8 = (unaligned s32) var_a2_11->unk8;
-                                                var_a3_11->unkC = (unaligned s32) var_a2_11->unkC;
-                                                var_a2_11 += 0x10;
-                                                var_a3_11 += 0x10;
-                                            } while (var_a2_11 != temp_t0_11);
-                                            var_s0 = 0x11;
-                                        } else {
-                                            do {
-                                                var_a3_11->unk0 = (s32) var_a2_11->unk0;
-                                                var_a3_11->unk4 = (s32) var_a2_11->unk4;
-                                                var_a3_11->unk8 = (s32) var_a2_11->unk8;
-                                                var_a3_11->unkC = (s32) var_a2_11->unkC;
-                                                var_a2_11 += 0x10;
-                                                var_a3_11 += 0x10;
-                                            } while (var_a2_11 != temp_t0_11);
-                                            var_s0 = 0x11;
-                                        }
-                                        var_v0_21 = 0x649;
-                                        goto block_443;
-
-
-                                    case 3:         /* switch 8 */
-
-                                        // memcpy
-                                        var_a3_12 = &farmFieldTiles;
-                                        var_a2_12 = &D_80116110;
-                                        temp_t0_12 = &D_80116110 + 0x1E0;
-                                        if (((s32) &D_80116110 | (s32) &farmFieldTiles) & 3) {
-                                            do {
-                                                var_a3_12->unk0 = (unaligned s32) var_a2_12->unk0;
-                                                var_a3_12->unk4 = (unaligned s32) var_a2_12->unk4;
-                                                var_a3_12->unk8 = (unaligned s32) var_a2_12->unk8;
-                                                var_a3_12->unkC = (unaligned s32) var_a2_12->unkC;
-                                                var_a2_12 += 0x10;
-                                                var_a3_12 += 0x10;
-                                            } while (var_a2_12 != temp_t0_12);
-                                            var_v0_21 = 0x64A;
-                                        } else {
-                                            do {
-                                                var_a3_12->unk0 = (s32) var_a2_12->unk0;
-                                                var_a3_12->unk4 = (s32) var_a2_12->unk4;
-                                                var_a3_12->unk8 = (s32) var_a2_12->unk8;
-                                                var_a3_12->unkC = (s32) var_a2_12->unkC;
-                                                var_a2_12 += 0x10;
-                                                var_a3_12 += 0x10;
-                                            } while (var_a2_12 != temp_t0_12);
-                                            var_v0_21 = 0x64A;
-                                        }
-                                        goto block_443;
-
-
-                                    case 4:         /* switch 8 */
-                                        
-                                        // memcpy
-                                        var_a3_13 = &farmFieldTiles;
-                                        var_a2_13 = &D_80116110;
-                                        temp_t0_13 = &D_80116110 + 0x1E0;
-                                        if (((s32) &D_80116110 | (s32) &farmFieldTiles) & 3) {
-                                            do {
-                                                var_a3_13->unk0 = (unaligned s32) var_a2_13->unk0;
-                                                var_a3_13->unk4 = (unaligned s32) var_a2_13->unk4;
-                                                var_a3_13->unk8 = (unaligned s32) var_a2_13->unk8;
-                                                var_a3_13->unkC = (unaligned s32) var_a2_13->unkC;
-                                                var_a2_13 += 0x10;
-                                                var_a3_13 += 0x10;
-                                            } while (var_a2_13 != temp_t0_13);
-                                            var_v0_21 = 0x64B;
-                                        } else {
-                                            do {
-                                                var_a3_13->unk0 = (s32) var_a2_13->unk0;
-                                                var_a3_13->unk4 = (s32) var_a2_13->unk4;
-                                                var_a3_13->unk8 = (s32) var_a2_13->unk8;
-                                                var_a3_13->unkC = (s32) var_a2_13->unkC;
-                                                var_a2_13 += 0x10;
-                                                var_a3_13 += 0x10;
-                                            } while (var_a2_13 != temp_t0_13);
-                                            var_v0_21 = 0x64B;
-                                        }
-                                        goto block_443;
-                                    }
-                                }
-block_444:
-                                var_s0_2 = var_s0;
-block_445:
-                                setEntrance(var_s0_2);
-                                loadCutscene(0);
-                                func_8006E840(var_s0_2);
-                                break;
                             }
-                        }
+
                     } else {
+
                         setEntrance(0x3E);
                         var_v0_3 = 0x5AE;
 block_372:
                         gCutsceneIndex = var_v0_3;
                         loadCutscene(0);
                         func_8006E840(0x3E);
+
                     }
+
                 } else {
+
                     setEntrance(0x61);
                     var_v0_16 = 0x1AD;
+
                     if (!(gCutsceneCompletionFlags & 8) && (var_v0_16 = 0x1AE, ((gCutsceneCompletionFlags & 0x10) == 0))) {
+                        
                         var_v0_16 = 0x1AF;
                         if (gCutsceneCompletionFlags & 0x20) {
                             goto block_359;
                         }
+
                     } else {
 block_359:
                         gCutsceneIndex = var_v0_16;
+
                     }
+                    
                     loadCutscene(0);
+                    // prep and load map
                     func_8006E840(0x61);
+
                 }
+
                 if (gCutsceneIndex != 0xFFFF) {
-                    *(&unknownRGBA + 0xC) = 0.0f;
-                    *(&unknownRGBA + 8) = 0.0f;
-                    *(&unknownRGBA + 4) = 0.0f;
-                    unknownRGBA = 0.0f;
+                    unknownRGBA.r  = 0.0f;
+                    unknownRGBA.g  = 0.0f;
+                    unknownRGBA.b = 0.0f;
+                    unknownRGBA.a = 0.0f;
                     setMainLoopCallbackFunctionIndex(4);
                 }
+            
             }
-            if (((gCutsceneIndex == 0x4B0) || (gCutsceneIndex == 0x578))) {
-                setEntitySpriteDimensions(ENTITY_ASSET_SHIPPER, 0xC, 0xC);
-                setEntitySpriteDimensions(ENTITY_ASSET_ASSISTANT_CARPENTER, 0xC, 0xC);
+
+            if (((gCutsceneIndex == 0x4B0) || (gCutsceneIndex == NEW_YEAR_FESTIVAL))) {
+                setEntitySpriteDimensions(ENTITY_ASSET_SHIPPER, 12, 12);
+                setEntitySpriteDimensions(ENTITY_ASSET_ASSISTANT_CARPENTER, 12, 12);
             }
+
             if (checkDailyEventBit(0x5F)) {
+                // empty function 
                 func_800657BC();
             }
+
             gCutsceneCompletionFlags = 0;
+
         }
+
+        // end handle bit 2
+
+
+        // UI strings flags
+
         if (gCutsceneCompletionFlags & 4) {
             temp_s0 = &overlayScreenStrings + 6;
             setGameVariableString(0x28, (D_8018A72C * 6) + temp_s0, 6);
             setGameVariableString(0x29, (D_8018A72D * 6) + temp_s0, 6);
             gCutsceneCompletionFlags &= ~4;
         }
+
+        // sprite color flags
+
         if (gCutsceneCompletionFlags & 0x40) {
             setSpritePaletteIndex(0x62, 0);
             gCutsceneCompletionFlags &= ~0x40;
@@ -5553,6 +5779,9 @@ block_359:
             setSpritePaletteIndex(0x62, 1);
             gCutsceneCompletionFlags &= ~0x80;
         }
+
+        // message flags
+
         if (gCutsceneCompletionFlags & 0x100) {
             // fontPalette3
             nuPiReadRom(&D_E137D0, FONT_PALETTE_1_BUFFER, &D_E13800 - &D_E137D0);
@@ -5561,168 +5790,239 @@ block_359:
             setMessageBoxSfx(0, 0xFF, 0xFF, 0xFF);
             gCutsceneCompletionFlags &= ~0x100;
         }
+
+        // map flags
+
         if (gCutsceneCompletionFlags & 0x20000) {
             setEntrance(HOUSE_EXIT);
+            // prep map
             func_8006E840(0);
             func_8003BE98(0, 0xFF, 0xFF, 0xFF, 0xFF);
             gCutsceneCompletionFlags &= 0xFFFDFFFF;
         }
         if (gCutsceneCompletionFlags & 0x40000) {
+            // load map object
             func_80073244(0);
             gCutsceneCompletionFlags &= 0xFFFBFFFF;
         }
         if (gCutsceneCompletionFlags & 0x80000) {
+            // load map object
             func_80073244(1);
             gCutsceneCompletionFlags &= 0xFFF7FFFF;
         }
         if (gCutsceneCompletionFlags & 0x100000) {
+            // load map object
             func_80073244(2);
             gCutsceneCompletionFlags &= 0xFFEFFFFF;
         }
+
         if (gCutsceneCompletionFlags & 0x200000) {
             setEntrance(0x12);
+            // prep map
             func_8006E840(0x12);
             func_8003BE98(0, 0, 0, 0, 0);
             gCutsceneCompletionFlags &= 0xFFDFFFFF;
         }
+
         if (gCutsceneCompletionFlags & 0x400000) {
             setEntrance(0x11);
+            // prep map
             func_8006E840(0x11);
             func_8003BE98(0, 0, 0, 0, 0);
             gCutsceneCompletionFlags &= 0xFFBFFFFF;
         }
+
         if (gCutsceneCompletionFlags & 0x800000) {
+            // map object
             func_8007341C(0);
             gCutsceneCompletionFlags &= 0xFF7FFFFF;
         }
+
         if (gCutsceneCompletionFlags & 0x01000000) {
             func_8007341C(2);
             gCutsceneCompletionFlags &= 0xFEFFFFFF;
         }
+
         if (gCutsceneCompletionFlags & 0x02000000) {
+            // map objects
             func_80034DC8(0, 0, 0x13);
             gCutsceneCompletionFlags &= 0xFDFFFFFF;
         }
+
+        
+        // mining
+
+        // check range of entities[ENTITY_PLAYER].animationIndices.animationIndex
         if ((gCutsceneCompletionFlags & 0x04000000) && ((u32) (*(&entities + 0x54) - 0x98) < 0x18)) {
+
+            // entities[ENTITY_PLAYER].coordinates.x
             temp_f2 = (s32) *(&entities + 0x28);
             var_v0_22 = (s16) temp_f2 + 0xF0;
+            
             if (var_v0_22 < 0) {
                 var_v0_22 = (s16) temp_f2 + 0x10F;
             }
+
             var_a2_14 = (var_v0_22 >> 5) - 2;
+            // entities[ENTITY_PLAYER].coordinates.z
             temp_f2_2 = (s32) *(&entities + 0x30);
             var_v0_23 = (s16) temp_f2_2 + 0xF0;
+            
             if (var_v0_23 < 0) {
                 var_v0_23 = (s16) temp_f2_2 + 0x10F;
             }
+
             // gPlayer.direction
             temp_v1_3 = (&gPlayer)[0x6D];
             var_a3_14 = (var_v0_23 >> 5) - 2;
+
             switch (temp_v1_3) {                    /* switch 9 */
-            case 1:                                 /* switch 9 */
-                var_a2_14 -= 1;
-            case 0:                                 /* switch 9 */
+
+                case 1:                                 /* switch 9 */
+                    var_a2_14 -= 1;
+                case 0:                                 /* switch 9 */
 block_498:
-                var_a3_14 += 1;
-                break;
-            case 2:                                 /* switch 9 */
-                var_a2_14 -= 1;
-                break;
-            case 3:                                 /* switch 9 */
-                var_a2_14 -= 1;
-                /* fallthrough */
-            case 4:                                 /* switch 9 */
+                    var_a3_14 += 1;
+                    break;
+                case 2:                                 /* switch 9 */
+                    var_a2_14 -= 1;
+                    break;
+                case 3:                                 /* switch 9 */
+                    var_a2_14 -= 1;
+                    /* fallthrough */
+                case 4:                                 /* switch 9 */
 block_494:
-                var_a3_14 -= 1;
-                break;
-            case 5:                                 /* switch 9 */
-                var_a2_14 += 1;
-                goto block_494;
-            case 6:                                 /* switch 9 */
-                var_a2_14 += 1;
-                break;
-            case 7:                                 /* switch 9 */
-                var_a2_14 += 1;
-                goto block_498;
+                    var_a3_14 -= 1;
+                    break;
+                case 5:                                 /* switch 9 */
+                    var_a2_14 += 1;
+                    goto block_494;
+                case 6:                                 /* switch 9 */
+                    var_a2_14 += 1;
+                    break;
+                case 7:                                 /* switch 9 */
+                    var_a2_14 += 1;
+                    goto block_498;
+
             }
+
             if (((var_a2_14 < 0xA) & (var_a3_14 < 0xA)) && (((u32) ~var_a2_14 >> 0x1F) & ((u32) ~var_a3_14 >> 0x1F))) {
-                temp_s3 = (var_a3_14 * 0x14) + &D_80170468 + var_a2_14;
+
+                temp_s3 = (var_a3_14 * 0x14) + &mineFieldTiles + var_a2_14;
+
                 if (*temp_s3 == 0) {
+
                     var_s2 = 0;
+                    
+                    // compare x and z coordinates to cutscene wildcard variables
                     if (var_a2_14 == D_801886D2) {
+
                         var_v0_24 = var_a3_14 << 0x10;
+
                         if (var_a3_14 == D_80180710) {
                             func_80038B58(0, 0, (var_a2_14 + 2) & 0xFF, (var_a3_14 + 2) & 0xFF);
                             func_80036C08(0);
                             func_800CF8F8(1, 0, (f32) ((var_a2_14 << 5) - 0xA0), 0, (f32) ((var_a3_14 << 5) - 0xA0));
                             var_s2 = 1;
+                            // set tile
                             *temp_s3 = 0xD9;
                         } else {
                             goto block_506;
                         }
+
                     } else {
                         var_v0_24 = var_a3_14 << 0x10;
 block_506:
-                        *(((var_v0_24 >> 0x10) * 0x14) + &D_80170468 + var_a2_14) = 2;
+                        *(((var_v0_24 >> 0x10) * 0x14) + &mineFieldTiles + var_a2_14) = 2;
                     }
+
                     if (!(var_s2 & 0xFF)) {
+                    
                         var_v0_25 = var_s2 & 0xFF;
+
                         if ((u16) D_80189824 >= 3) {
+
                             if (!(powerNutBits & 0x20) && (gItemBeingHeld == 0xFF) && !(getRandomNumberInRange(0, 100))) {
                                 gItemBeingHeld = 0xFE;
                                 powerNutBits |= 0x20;
                             }
+
                             var_v0_25 = var_s2 & 0xFF;
+                            
                             if (checkSpecialDialogueBit(0x15) == 0) {
+
                                 var_v0_25 = var_s2 & 0xFF;
+
                                 if (gItemBeingHeld == 0xFF) {
+                                
                                     var_v0_25 = var_s2 & 0xFF;
+                                
+                                    // acquire weather vane
                                     if (!(getRandomNumberInRange(0, 100))) {
                                         gItemBeingHeld = 0xFD;
                                         setSpecialDialogueBit(0x15);
-                                        acquireKeyItem(7);
+                                        acquireKeyItem(WEATHER_VANE);
                                         var_v0_25 = var_s2 & 0xFF;
                                     }
                                 }
                             }
+
                         }
+
                         if (var_v0_25 == 0) {
+
                             var_v0_26 = var_s2 & 0xFF;
+                            
                             if ((u16) D_80189824 >= 2) {
+
                                 temp_s1 = gItemBeingHeld;
                                 var_v0_26 = var_s2 & 0xFF;
+
                                 if (temp_s1 == 0xFF) {
+
+                                    // acquire blue rock
                                     if ((u32) (getRandomNumberInRange(0, 100)) < 4) {
-                                        (&gPlayer)[0x2C] = 0x2F;
-                                        gItemBeingHeld = 0x2F;
+                                        (&gPlayer)[0x2C] = BLUE_ROCK;
+                                        gItemBeingHeld = BLUE_ROCK;
                                     }
+
                                     temp_s0_2 = gItemBeingHeld;
                                     var_v0_26 = var_s2 & 0xFF;
+
                                     if (temp_s0_2 == temp_s1) {
+
                                         if ((u32) (getRandomNumberInRange(0, 100)) < 2) {
-                                            (&gPlayer)[0x2C] = 0x30;
-                                            gItemBeingHeld = 0x30;
+                                            (&gPlayer)[0x2C] = RARE_METAL;
+                                            gItemBeingHeld = RARE_METAL;
                                         }
+
                                         var_v0_26 = var_s2 & 0xFF;
                                         if (gItemBeingHeld == temp_s0_2) {
                                             if ((u32) (getRandomNumberInRange(0, 100)) < 3) {
-                                                (&gPlayer)[0x2C] = 0x32;
-                                                gItemBeingHeld = 0x32;
+                                                (&gPlayer)[0x2C] = PONTANA_ROOT;
+                                                gItemBeingHeld = PONTANA_ROOT;
                                             }
+
                                             var_v0_26 = var_s2 & 0xFF;
+
                                         }
                                     }
                                 }
                             }
+
                             if (var_v0_26 == 0) {
+
                                 var_v0_27 = var_s2 & 0xFF;
+
                                 if (gItemBeingHeld == 0xFF) {
                                     if ((u32) (getRandomNumberInRange(0, 100)) < 0xA) {
                                         gItemBeingHeld = 0xFC;
                                     }
                                     var_v0_27 = var_s2 & 0xFF;
                                 }
+
                                 if (var_v0_27 == 0) {
+
                                     var_v0_28 = var_s2 & 0xFF;
                                     if (gItemBeingHeld == 0xFF) {
                                         if ((u32) (getRandomNumberInRange(0, 100)) < 8) {
@@ -5731,130 +6031,165 @@ block_506:
                                         }
                                         var_v0_28 = var_s2 & 0xFF;
                                     }
+
                                     if ((var_v0_28 == 0) && (gItemBeingHeld == 0xFF) && ((u32) (getRandomNumberInRange(0, 100)) < 5)) {
                                         (&gPlayer)[0x2C] = 0x31;
                                         gItemBeingHeld = 0x31;
                                     }
+
                                 }
+
                             }
                         }
                     }
                 }
             }
+
             gCutsceneCompletionFlags &= 0xFBFFFFFF;
+       
         }
+
+        //
+
+
         if ((gCutsceneCompletionFlags & 0x08000000) && ((u8) gItemBeingHeld < 0xFC)) {
             handleEatingAndDrinking();
         }
+
         temp_v1_4 = gCutsceneCompletionFlags & 0x1000;
         gCutsceneCompletionFlags &= 0xF7FFFFFF;
+
         if (temp_v1_4) {
             setDailyEventBit(6);
         } else {
             toggleDailyEventBit(6);
         }
+
         if (gCutsceneCompletionFlags & 0x2000) {
             setDailyEventBit(0x13);
         } else {
             toggleDailyEventBit(0x13);
         }
+
         if (gCutsceneCompletionFlags & 0x4000) {
             setDailyEventBit(0x12);
         } else {
             toggleDailyEventBit(0x12);
         }
+
         if (gCutsceneCompletionFlags & 0x400) {
             setDailyEventBit(0x15);
         } else {
             toggleDailyEventBit(0x15);
         }
+
         if (gCutsceneCompletionFlags & 0x200) {
             setDailyEventBit(0x28);
         }
+
         if (checkDailyEventBit(0x2B)) {
             toggleDailyEventBit(0x2B);
             gPlayer.currentStamina += adjustValue(gPlayer.currentStamina, 50, gMaximumStamina);
         }
+
         if (checkDailyEventBit(0x2A)) {
             toggleDailyEventBit(0x2A);
             func_8008634C(5);
         }
+
         if (gCutsceneCompletionFlags & 0x8000) {
             func_800610DC();
             gCutsceneCompletionFlags &= 0xFFFF7FFF;
         }
+
         if (gCutsceneFlags & 8) {
             func_800876D0();
             gCutsceneFlags &= ~8;
         }
+
         if (gCutsceneFlags & 0x10) {
             func_8008779C();
             gCutsceneFlags &= ~0x10;
         }
+
         if (gCutsceneCompletionFlags & 0x10000000) {
             func_800876D0();
             gCutsceneCompletionFlags &= 0xEFFFFFFF;
         }
+
         if (gCutsceneCompletionFlags & 0x20000000) {
             func_8008779C();
             gCutsceneCompletionFlags &= 0xDFFFFFFF;
         }
+
+
+        // handle life event bit updates
+
         if (checkLifeEventBit(0x4B)) {
             toggleLifeEventBit(0x4B);
-            acquireKeyItem(0xB);
+            acquireKeyItem(MARBLES);
             func_800DC1E8();
         }
+        
         if (checkLifeEventBit(0x82)) {
             toggleLifeEventBit(0x82);
-            removeKeyItem(0xB);
+            removeKeyItem(MARBLES);
             setSpecialDialogueBit(0x1F);
         }
+        
         if (checkLifeEventBit(0x49)) {
             toggleLifeEventBit(0x49);
             func_80065BCC(0x14);
             chickenFeedQuantity += adjustValue((u8) chickenFeedQuantity, 0xA, 0x3E7);
         }
+
+        // seeds
         if (checkLifeEventBit(0x4A)) {
+
             toggleLifeEventBit(0x4A);
             temp_v1_5 = getRandomNumberInRange(0, 5);
+            
             switch (temp_v1_5) {                    /* switch 10 */
-            case 0:                                 /* switch 10 */
-                func_80065BCC(0xA);
-                D_801FC154 += adjustValue(D_801FC154, 1, 0x14);
-                return;
-            case 1:                                 /* switch 10 */
-                func_80065BCC(0xB);
-                D_80204DF4 += adjustValue(D_80204DF4, 1, 0x14);
-                return;
-            case 2:                                 /* switch 10 */
-                func_80065BCC(0xC);
-                D_8018A725 += adjustValue(D_8018A725, 1, 0x14);
-                return;
-            case 3:                                 /* switch 10 */
-                func_80065BCC(0xD);
-                D_8013DC2C += adjustValue(D_8013DC2C, 1, 0x14);
-                return;
-            case 4:                                 /* switch 10 */
-                func_80065BCC(0xE);
-                D_801FAD91 += adjustValue(D_801FAD91, 1, 0x14);
-                return;
-            case 5:                                 /* switch 10 */
-                func_80065BCC(0xF);
-                D_80237458 += adjustValue(D_80237458, 1, 0x14);
-                break;
+                case 0:                                 /* switch 10 */
+                    func_80065BCC(0xA);
+                    D_801FC154 += adjustValue(D_801FC154, 1, 0x14);
+                    return;
+                case 1:                                 /* switch 10 */
+                    func_80065BCC(0xB);
+                    D_80204DF4 += adjustValue(D_80204DF4, 1, 0x14);
+                    return;
+                case 2:                                 /* switch 10 */
+                    func_80065BCC(0xC);
+                    D_8018A725 += adjustValue(D_8018A725, 1, 0x14);
+                    return;
+                case 3:                                 /* switch 10 */
+                    func_80065BCC(0xD);
+                    D_8013DC2C += adjustValue(D_8013DC2C, 1, 0x14);
+                    return;
+                case 4:                                 /* switch 10 */
+                    func_80065BCC(0xE);
+                    D_801FAD91 += adjustValue(D_801FAD91, 1, 0x14);
+                    return;
+                case 5:                                 /* switch 10 */
+                    func_80065BCC(0xF);
+                    D_80237458 += adjustValue(D_80237458, 1, 0x14);
+                    break;
+                }
             }
-        }
+
     } else {
+
     default:                                        /* switch 10 */
 
     }
+
 }
 
 #else
-INCLUDE_ASM("asm/nonmatchings/game/setCutscenes", func_800A8F74);
+INCLUDE_ASM("asm/nonmatchings/game/cutscenes", func_800A8F74);
 #endif
 
-//INCLUDE_ASM("asm/nonmatchings/game/setCutscenes", loadCutscene);
+//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", loadCutscene);
 
 void loadCutscene(u8 arg0) {
     
@@ -6004,7 +6339,7 @@ void loadCutscene(u8 arg0) {
     spawnCutsceneExecutor(cutsceneExecutorIndices[index], cutsceneEntryPointAddresses[index]);
     togglePauseEntities();
     
-    D_8018981C = index;
+    gCutsceneBytecodeSegmentIndex = index;
     
     gCutsceneFlags |= 1;
     

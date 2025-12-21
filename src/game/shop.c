@@ -13,20 +13,26 @@
 #include "system/globalSprites.h"
 
 #include "game/animals.h"
+#include "game/cutscenes.h"
 #include "game/game.h"
 #include "game/gameAudio.h"
 #include "game/gameStatus.h"
-#include "game/itemHandlers.h"
+#include "game/items.h"
 #include "game/level.h"
 #include "game/overlayScreens.h"
 #include "game/player.h"
-#include "game/setCutscenes.h"
+#include "game/time.h"
 
-#include "buffers/buffers.h"
-#include "data/animationScripts/animationScripts.h"
- 
 #include "mainLoop.h"
 
+#include "assetIndices/cutscenes.h"
+#include "assetIndices/maps.h"
+#include "assetIndices/sfxs.h"
+#include "assetIndices/sprites.h"
+
+#include "buffers/buffers.h"
+
+#include "data/animationScripts/animationScripts.h"
 
 // bss
 ShopContext shopContext;
@@ -37,6 +43,7 @@ u16 D_801FB9CC;
 extern u8 flowerShopPoints;
 extern u8 bakeryCardPoints;
 
+// data
 
 // text indices for items
 u16 D_80118B70[TOTAL_SHOP_ITEMS] = {
@@ -73,6 +80,7 @@ u16 D_80118BE0[TOTAL_SHOP_ITEMS] = {
     0x00, 0x28, 0x4E, 0x4E
 };
 
+// text index
 u16 D_80118C50[TOTAL_SHOP_ITEMS] = {
     0x22, 0x22, 0x22, 0x22,
     0x22, 0x22, 0x22, 0x22,
@@ -90,6 +98,7 @@ u16 D_80118C50[TOTAL_SHOP_ITEMS] = {
     0x00, 0x2A, 0x2C, 0x2C
 };
 
+// text index
 u16 D_80118CC0[TOTAL_SHOP_ITEMS] = {
     0x21, 0x21, 0x21, 0x21,
     0x21, 0x21, 0x21, 0x21,
@@ -107,6 +116,7 @@ u16 D_80118CC0[TOTAL_SHOP_ITEMS] = {
     0x1E, 0x2E, 0x2F, 0x2F
 };
 
+// text index
 u16 D_80118D30[TOTAL_SHOP_ITEMS] = {
     0x23, 0x23, 0x23, 0x23,
     0x23, 0x23, 0x23, 0x23,
@@ -124,6 +134,7 @@ u16 D_80118D30[TOTAL_SHOP_ITEMS] = {
     0x20, 0x2B, 0x29, 0x29
 };
 
+// text index
 u16 D_80118DA0[TOTAL_SHOP_ITEMS] = {
     0x158, 0x158, 0x158, 0x158,
     0x158, 0x158, 0x158, 0x158,
@@ -141,6 +152,7 @@ u16 D_80118DA0[TOTAL_SHOP_ITEMS] = {
     0x00, 0x2D, 0x00, 0x00
 };
 
+// text index
 u16 D_80118E10[TOTAL_SHOP_ITEMS] = {
     0x15A, 0x15A, 0x15A, 0x15A,
     0x15A, 0x15A, 0x15A, 0x15A,
@@ -158,7 +170,7 @@ u16 D_80118E10[TOTAL_SHOP_ITEMS] = {
     0x00, 0x2E, 0x2F, 0x2F
 };
 
-// dialogue info indices
+// text address index
 u16 D_80118E80[TOTAL_SHOP_ITEMS] = {
     0x06, 0x06, 0x06, 0x06,
     0x06, 0x06, 0x06, 0x06,
@@ -193,6 +205,7 @@ u16 prices[TOTAL_SHOP_ITEMS] = {
     250, 300, 200, 200
 };
 
+// max quantity for UI animation
 u16 D_80118F60[TOTAL_SHOP_ITEMS] = {
     0x14, 0x14, 0x14, 0x14, 
     0x14, 0x14, 0x14, 0x14, 
@@ -227,126 +240,128 @@ u16 D_80118FD0[TOTAL_SHOP_ITEMS] = {
     0x00, 0x43, 0x70, 0x70
 };
 
+// map object coordinates
 Vec3f D_80119040[TOTAL_SHOP_ITEMS] = {
-    {-16.0f, 32.0f, -144.0f}, 
-    {-48.0f, 32.0f, -144.0f},
-    {-80.0f, 32.0f, -144.0f}, 
-    {-112.0f, 32.0f, -16.0f},
-    {-112.0f, 32.0f, -112.0f}, 
-    {-112.0f, 32.0f, -80.0f}, 
-    {-112.0f, 32.0f, -48.0f}, 
-    {-112.0f, 32.0f, 16.0f},
-    {-112.0f, 32.0f, 16.0f},
-    {0.0f, 0.0f, 0.0f},
-    {-112.0f, 32.0f, 48.0f},
-    {0.0f, 0.0f, 0.0f}, 
-    {0.0f, 0.0f, 0.0f}, 
-    {0.0f, 0.0f, 0.0f}, 
-    {0.0f, 0.0f, 0.0f}, 
-    {0.0f, 0.0f, 0.0f},
-    {0.0f, 0.0f, 0.0f}, 
-    {0.0f, 0.0f, 0.0f}, 
-    {0.0f, 0.0f, 0.0f}, 
-    {-112.0f, 32.0f, 80.0f}, 
-    {-112.0f, 32.0f, 48.0f}, 
-    {-112.0f, 32.0f, 16.0f}, 
-    {-112.0f, 32.0f, 112.0f},
-    {-112.0f, 16.0f, -24.0f}, 
-    {-48.0f, 32.0f, -52.0f}, 
-    {-48.0f, 32.0f, -52.0f},
-    {16.0f, 32.0f, -144.0f}, 
-    {-48.0f, 32.0f, -144.0f}, 
-    {-80.0f, 32.0f, -144.0f}, 
-    {-16.0f, 32.0f, -144.0f},
-    {0.0f, 0.0f, 0.0f}, 
-    {0.0f, 0.0f, 0.0f}, 
-    {0.0f, 0.0f, 0.0f}, 
-    {0.0f, 0.0f, 0.0f}, 
-    {0.0f, 0.0f, 0.0f},
-    {0.0f, 0.0f, 0.0f}, 
-    {0.0f, 0.0f, 0.0f},
-    {-16.0f, 32.0f, -112.0f}, 
-    {-48.0f, 32.0f, -112.0f}, 
-    {-48.0f, 32.0f, -112.0f},
-    {0.0f, 0.0f, 0.0f}, 
-    {0.0f, 0.0f, 0.0f}, 
-    {0.0f, 0.0f, 0.0f},
-    {0.0f, 0.0f, 0.0f}, 
-    {0.0f, 0.0f, 0.0f},
-    {0.0f, 0.0f, 0.0f}, 
-    {0.0f, 0.0f, 0.0f}, 
-    {0.0f, 0.0f, 0.0f}, 
-    {0.0f, 0.0f, 0.0f}, 
-    {0.0f, 0.0f, 0.0f},
-    {0.0f, 0.0f, 0.0f}, 
-    {0.0f, 0.0f, 0.0f}, 
-    {0.0f, 0.0f, 0.0f}, 
-    {-160.0f, 96.0f, -192.0f}, 
-    {80.0f, 128.0f, 208.0f}, 
-    {80.0f, 128.0f, -240.0f}
+    { -16.0f, 32.0f, -144.0f }, 
+    { -48.0f, 32.0f, -144.0f },
+    { -80.0f, 32.0f, -144.0f }, 
+    { -112.0f, 32.0f, -16.0f },
+    { -112.0f, 32.0f, -112.0f }, 
+    { -112.0f, 32.0f, -80.0f }, 
+    { -112.0f, 32.0f, -48.0f }, 
+    { -112.0f, 32.0f, 16.0f },
+    { -112.0f, 32.0f, 16.0f },
+    { 0.0f, 0.0f, 0.0f },
+    { -112.0f, 32.0f, 48.0f },
+    { 0.0f, 0.0f, 0.0f }, 
+    { 0.0f, 0.0f, 0.0f }, 
+    { 0.0f, 0.0f, 0.0f }, 
+    { 0.0f, 0.0f, 0.0f }, 
+    { 0.0f, 0.0f, 0.0f },
+    { 0.0f, 0.0f, 0.0f }, 
+    { 0.0f, 0.0f, 0.0f }, 
+    { 0.0f, 0.0f, 0.0f }, 
+    { -112.0f, 32.0f, 80.0f }, 
+    { -112.0f, 32.0f, 48.0f }, 
+    { -112.0f, 32.0f, 16.0f }, 
+    { -112.0f, 32.0f, 112.0f },
+    { -112.0f, 16.0f, -24.0f }, 
+    { -48.0f, 32.0f, -52.0f }, 
+    { -48.0f, 32.0f, -52.0f },
+    { 16.0f, 32.0f, -144.0f }, 
+    { -48.0f, 32.0f, -144.0f }, 
+    { -80.0f, 32.0f, -144.0f }, 
+    { -16.0f, 32.0f, -144.0f },
+    { 0.0f, 0.0f, 0.0f }, 
+    { 0.0f, 0.0f, 0.0f }, 
+    { 0.0f, 0.0f, 0.0f }, 
+    { 0.0f, 0.0f, 0.0f }, 
+    { 0.0f, 0.0f, 0.0f },
+    { 0.0f, 0.0f, 0.0f }, 
+    { 0.0f, 0.0f, 0.0f },
+    { -16.0f, 32.0f, -112.0f }, 
+    { -48.0f, 32.0f, -112.0f }, 
+    { -48.0f, 32.0f, -112.0f },
+    { 0.0f, 0.0f, 0.0f }, 
+    { 0.0f, 0.0f, 0.0f }, 
+    { 0.0f, 0.0f, 0.0f },
+    { 0.0f, 0.0f, 0.0f }, 
+    { 0.0f, 0.0f, 0.0f },
+    { 0.0f, 0.0f, 0.0f }, 
+    { 0.0f, 0.0f, 0.0f }, 
+    { 0.0f, 0.0f, 0.0f }, 
+    { 0.0f, 0.0f, 0.0f }, 
+    { 0.0f, 0.0f, 0.0f },
+    { 0.0f, 0.0f, 0.0f }, 
+    { 0.0f, 0.0f, 0.0f }, 
+    { 0.0f, 0.0f, 0.0f }, 
+    { -160.0f, 96.0f, -192.0f }, 
+    { 80.0f, 128.0f, 208.0f }, 
+    { 80.0f, 128.0f, -240.0f}
 };
 
-void *D_801192E0[TOTAL_SHOP_ITEMS][2] = {
-    {(void*)0x8028D530, (void*)0x8028D738}, 
-    {(void*)0x8028D940, (void*)0x8028DB48}, 
-    {(void*)0x802A3E50, (void*)0x802A4058}, 
-    {(void*)0x802A4260, (void*)0x802A4468},
-    {(void*)0x802A4670, (void*)0x802A4878},
-    {(void*)0x802A4A80, (void*)0x802A4C88}, 
-    {(void*)0x802A4E90, (void*)0x802A5098}, 
-    {(void*)0x802A52A0, (void*)0x802A54A8},
-    {(void*)0x802A52A0, (void*)0x802A54A8}, 
-    {(void*)0x00000000, (void*)0x00000000}, 
-    {(void*)0x802A56B0, (void*)0x802A58B8},
-    {(void*)0x00000000, (void*)0x00000000}, 
-    {(void*)0x00000000, (void*)0x00000000}, 
-    {(void*)0x00000000, (void*)0x00000000}, 
-    {(void*)0x00000000, (void*)0x00000000}, 
-    {(void*)0x00000000, (void*)0x00000000}, 
-    {(void*)0x00000000, (void*)0x00000000}, 
-    {(void*)0x00000000, (void*)0x00000000}, 
-    {(void*)0x00000000, (void*)0x00000000}, 
-    {(void*)0x8028D530, (void*)0x8028D738}, 
-    {(void*)0x8028D940, (void*)0x8028DB48}, 
-    {(void*)0x802A3E50, (void*)0x802A4058}, 
-    {(void*)0x802A4260, (void*)0x802A4468},
-    {(void*)0x802A4A80, (void*)0x802A4E90}, 
-    {(void*)0x802A4670, (void*)0x802A4878}, 
-    {(void*)0x802A4670, (void*)0x802A4878},
-    {(void*)0x8028D530, (void*)0x8028D738}, 
-    {(void*)0x8028D940, (void*)0x8028DB48}, 
-    {(void*)0x802A3E50, (void*)0x802A4058}, 
-    {(void*)0x802A4260, (void*)0x802A4468},
-    {(void*)0x00000000, (void*)0x00000000}, 
-    {(void*)0x00000000, (void*)0x00000000}, 
-    {(void*)0x00000000, (void*)0x00000000}, 
-    {(void*)0x00000000, (void*)0x00000000}, 
-    {(void*)0x00000000, (void*)0x00000000}, 
-    {(void*)0x00000000, (void*)0x00000000},
-    {(void*)0x00000000, (void*)0x00000000},
-    {(void*)0x8028D530, (void*)0x8028D738}, 
-    {(void*)0x8028D940, (void*)0x8028DB48}, 
-    {(void*)0x8028D940, (void*)0x8028DB48},
-    {(void*)0x00000000, (void*)0x00000000},
-    {(void*)0x00000000, (void*)0x00000000}, 
-    {(void*)0x00000000, (void*)0x00000000}, 
-    {(void*)0x00000000, (void*)0x00000000}, 
-    {(void*)0x00000000, (void*)0x00000000}, 
-    {(void*)0x00000000, (void*)0x00000000},
-    {(void*)0x00000000, (void*)0x00000000}, 
-    {(void*)0x00000000, (void*)0x00000000}, 
-    {(void*)0x00000000, (void*)0x00000000}, 
-    {(void*)0x00000000, (void*)0x00000000}, 
-    {(void*)0x00000000, (void*)0x00000000}, 
-    {(void*)0x00000000, (void*)0x00000000},
-    {(void*)0x00000000, (void*)0x00000000}, 
-    {(void*)0x8028D530, (void*)0x8028D738}, 
-    {(void*)0x8028D940, (void*)0x8028DB48}, 
-    {(void*)0x8028D940, (void*)0x8028DB48}
+// TODO: finish replacing with macros
+void *shopItemTextureBuffers[TOTAL_SHOP_ITEMS][2] = { 
+    { SHOP_ITEM_1_TEXTURE_1_BUFFER, SHOP_ITEM_1_TEXTURE_2_BUFFER }, 
+    { SHOP_ITEM_2_TEXTURE_1_BUFFER, SHOP_ITEM_2_TEXTURE_2_BUFFER }, 
+    { SHOP_ITEM_3_TEXTURE_1_BUFFER, SHOP_ITEM_3_TEXTURE_2_BUFFER }, 
+    { SHOP_ITEM_4_TEXTURE_1_BUFFER, SHOP_ITEM_4_TEXTURE_2_BUFFER },
+    { SHOP_ITEM_5_TEXTURE_1_BUFFER, SHOP_ITEM_5_TEXTURE_2_BUFFER },
+    { SHOP_ITEM_6_TEXTURE_1_BUFFER, SHOP_ITEM_6_TEXTURE_2_BUFFER }, 
+    { SHOP_ITEM_7_TEXTURE_1_BUFFER, SHOP_ITEM_7_TEXTURE_2_BUFFER }, 
+    { SHOP_ITEM_8_TEXTURE_1_BUFFER, SHOP_ITEM_8_TEXTURE_2_BUFFER },
+    { SHOP_ITEM_8_TEXTURE_1_BUFFER, SHOP_ITEM_8_TEXTURE_2_BUFFER }, 
+    { 0, 0 }, 
+    { SHOP_ITEM_9_TEXTURE_1_BUFFER, SHOP_ITEM_9_TEXTURE_2_BUFFER },
+    { 0, 0 }, 
+    { 0, 0 }, 
+    { 0, 0 }, 
+    { 0, 0 }, 
+    { 0, 0 }, 
+    { 0, 0 }, 
+    { 0, 0 }, 
+    { 0, 0 }, 
+    { SHOP_ITEM_1_TEXTURE_1_BUFFER, SHOP_ITEM_1_TEXTURE_2_BUFFER }, 
+    { SHOP_ITEM_2_TEXTURE_1_BUFFER, SHOP_ITEM_2_TEXTURE_2_BUFFER }, 
+    { SHOP_ITEM_3_TEXTURE_1_BUFFER, SHOP_ITEM_3_TEXTURE_2_BUFFER }, 
+    { SHOP_ITEM_4_TEXTURE_1_BUFFER, SHOP_ITEM_4_TEXTURE_2_BUFFER },
+    { SHOP_ITEM_6_TEXTURE_1_BUFFER, SHOP_ITEM_7_TEXTURE_1_BUFFER }, 
+    { SHOP_ITEM_5_TEXTURE_1_BUFFER, SHOP_ITEM_5_TEXTURE_2_BUFFER }, 
+    { SHOP_ITEM_5_TEXTURE_1_BUFFER, SHOP_ITEM_5_TEXTURE_2_BUFFER },
+    { SHOP_ITEM_1_TEXTURE_1_BUFFER, SHOP_ITEM_1_TEXTURE_2_BUFFER }, 
+    { SHOP_ITEM_2_TEXTURE_1_BUFFER, SHOP_ITEM_2_TEXTURE_2_BUFFER }, 
+    { SHOP_ITEM_3_TEXTURE_1_BUFFER, SHOP_ITEM_3_TEXTURE_2_BUFFER }, 
+    { SHOP_ITEM_4_TEXTURE_1_BUFFER, SHOP_ITEM_4_TEXTURE_2_BUFFER },
+    { 0, 0 }, 
+    { 0, 0 }, 
+    { 0, 0 }, 
+    { 0, 0 }, 
+    { 0, 0 }, 
+    { 0, 0 },
+    { 0, 0 },
+    { SHOP_ITEM_1_TEXTURE_1_BUFFER, SHOP_ITEM_1_TEXTURE_2_BUFFER }, 
+    { SHOP_ITEM_2_TEXTURE_1_BUFFER, SHOP_ITEM_2_TEXTURE_2_BUFFER }, 
+    { SHOP_ITEM_2_TEXTURE_1_BUFFER, SHOP_ITEM_2_TEXTURE_2_BUFFER },
+    { 0, 0 },
+    { 0, 0 }, 
+    { 0, 0 }, 
+    { 0, 0 }, 
+    { 0, 0 }, 
+    { 0, 0 },
+    { 0, 0 }, 
+    { 0, 0 }, 
+    { 0, 0 }, 
+    { 0, 0 }, 
+    { 0, 0 }, 
+    { 0, 0 },
+    { 0, 0 }, 
+    { SHOP_ITEM_1_TEXTURE_1_BUFFER, SHOP_ITEM_1_TEXTURE_2_BUFFER }, 
+    { SHOP_ITEM_2_TEXTURE_1_BUFFER, SHOP_ITEM_2_TEXTURE_2_BUFFER }, 
+    { SHOP_ITEM_2_TEXTURE_1_BUFFER, SHOP_ITEM_2_TEXTURE_2_BUFFER}
 };
 
 // sprite index offsets for shop items
-u8 D_801194A0[TOTAL_SHOP_ITEMS] = {
+u8 shopItemSpriteIndexOffsets[TOTAL_SHOP_ITEMS] = {
     0x00, 0x01, 0x02, 0x03,
     0x04, 0x05, 0x06, 0x07,
     0x07, 0xFF, 0x08, 0xFF,
@@ -364,37 +379,37 @@ u8 D_801194A0[TOTAL_SHOP_ITEMS] = {
 };
 
 u8 D_801194D8[TOTAL_SHOP_ITEMS] = {
-    0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x01, 0x00,
-    0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x01,
-    0x01, 0x01, 0x01, 0x00,
-    0x01, 0x01, 0x00, 0x01,
-    0x01, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00,
-    0x00, 0x01, 0x00, 0x01,
-    0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x01, 0x01
+    FALSE, FALSE, FALSE, FALSE,
+    FALSE, FALSE, FALSE, FALSE,
+    FALSE, FALSE, TRUE, FALSE,
+    FALSE, FALSE, FALSE, FALSE,
+    FALSE, FALSE, FALSE, TRUE,
+    TRUE, TRUE, TRUE, FALSE,
+    TRUE, TRUE, FALSE, TRUE,
+    TRUE, FALSE, FALSE, FALSE,
+    FALSE, FALSE, FALSE, FALSE,
+    FALSE, TRUE, FALSE, TRUE,
+    FALSE, FALSE, FALSE, FALSE,
+    FALSE, FALSE, FALSE, FALSE,
+    FALSE, FALSE, FALSE, FALSE,
+    FALSE, FALSE, TRUE, TRUE
 };
 
 u8 D_80119510[TOTAL_SHOP_ITEMS] = {
-    0x01, 0x01, 0x01, 0x01,
-    0x01, 0x01, 0x01, 0x01,
-    0x01, 0x01, 0x01, 0x00,
-    0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x01,
-    0x01, 0x01, 0x01, 0x00,
-    0x00, 0x00, 0x01, 0x01,
-    0x01, 0x01, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00,
-    0x00, 0x01, 0x01, 0x01,
-    0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00,
-    0x00, 0x01, 0x01, 0x01
+    TRUE, TRUE, TRUE, TRUE,
+    TRUE, TRUE, TRUE, TRUE,
+    TRUE, TRUE, TRUE, FALSE,
+    FALSE, FALSE, FALSE, FALSE,
+    FALSE, FALSE, FALSE, TRUE,
+    TRUE, TRUE, TRUE, FALSE,
+    FALSE, FALSE, TRUE, TRUE,
+    TRUE, TRUE, FALSE, FALSE,
+    FALSE, FALSE, FALSE, FALSE,
+    FALSE, TRUE, TRUE, TRUE,
+    FALSE, FALSE, FALSE, FALSE,
+    FALSE, FALSE, FALSE, FALSE,
+    FALSE, FALSE, FALSE, FALSE,
+    FALSE, TRUE, TRUE, TRUE
 };
 
 u8 D_80119548[TOTAL_SHOP_ITEMS] = {
@@ -414,23 +429,25 @@ u8 D_80119548[TOTAL_SHOP_ITEMS] = {
     0x09, 0x00, 0x00, 0x00
 };
 
+// check if need message box flag 0x8000
 u8 D_80119580[TOTAL_SHOP_ITEMS] = {
-    0x01, 0x01, 0x01, 0x01,
-    0x01, 0x01, 0x01, 0x01,
-    0x01, 0x01, 0x01, 0x01,
-    0x01, 0x01, 0x01, 0x01,
-    0x01, 0x01, 0x01, 0x01,
-    0x01, 0x01, 0x01, 0x01,
-    0x01, 0x01, 0x01, 0x01,
-    0x01, 0x01, 0x01, 0x01,
-    0x01, 0x01, 0x01, 0x01,
-    0x01, 0x01, 0x00, 0x01,
-    0x01, 0x01, 0x01, 0x01,
-    0x01, 0x01, 0x01, 0x01,
-    0x01, 0x01, 0x01, 0x01,
-    0x01, 0x01, 0x01, 0x01
+    TRUE, TRUE, TRUE, TRUE,
+    TRUE, TRUE, TRUE, TRUE,
+    TRUE, TRUE, TRUE, TRUE,
+    TRUE, TRUE, TRUE, TRUE,
+    TRUE, TRUE, TRUE, TRUE,
+    TRUE, TRUE, TRUE, TRUE,
+    TRUE, TRUE, TRUE, TRUE,
+    TRUE, TRUE, TRUE, TRUE,
+    TRUE, TRUE, TRUE, TRUE,
+    TRUE, TRUE, FALSE, TRUE,
+    TRUE, TRUE, TRUE, TRUE,
+    TRUE, TRUE, TRUE, TRUE,
+    TRUE, TRUE, TRUE, TRUE,
+    TRUE, TRUE, TRUE, TRUE
 };
 
+// unk_3
 u8 D_801195B8[TOTAL_SHOP_ITEMS] = {
     0x00, 0x00, 0x00, 0x00,
     0x00, 0x00, 0x00, 0x00,
@@ -448,6 +465,7 @@ u8 D_801195B8[TOTAL_SHOP_ITEMS] = {
     0x03, 0x00, 0x00, 0x00
 };
 
+// player action phase
 u8 D_801195F0[TOTAL_SHOP_ITEMS] = {
     0x02, 0x02, 0x02, 0x02,
     0x02, 0x02, 0x02, 0x02,
@@ -484,20 +502,20 @@ u8 D_80119628[TOTAL_SHOP_ITEMS] = {
 
 // player animations table when interacting with shop items
 AnimationIndices D_80119660[TOTAL_SHOP_ITEMS] = {
-    {0x0B, 0x0D}, {0x0B, 0x0D}, {0x0B, 0x0D}, {0x0B, 0x0D},
-    {0x0B, 0x0D}, {0x0B, 0x0D}, {0x0B, 0x0D}, {0x0B, 0x0D},
-    {0x0B, 0x0D}, {0x0B, 0x0D}, {0x0B, 0x0D}, {0x00, 0x00},
-    {0x00, 0x00}, {0x00, 0x00}, {0x06, 0x08}, {0x06, 0x08},
-    {0x14, 0x15}, {0x14, 0x15}, {0x00, 0x00}, {0x0B, 0x0D},
-    {0x0B, 0x0D}, {0x0B, 0x0D}, {0x0B, 0x0D}, {0x0B, 0x0D},
-    {0x0B, 0x0D}, {0x0B, 0x0D}, {0x0B, 0x0D}, {0x0B, 0x0D},
-    {0x0B, 0x0D}, {0x0B, 0x0D}, {0x00, 0x00}, {0x00, 0x00},
-    {0x00, 0x00}, {0x00, 0x00}, {0x00, 0x00}, {0x00, 0x00},
-    {0x00, 0x00}, {0x0B, 0x0D}, {0x0B, 0x0D}, {0x0B, 0x0D},
-    {0x14, 0x15}, {0x14, 0x15}, {0x14, 0x15}, {0x14, 0x15},
-    {0x14, 0x15}, {0x14, 0x15}, {0x14, 0x15}, {0x14, 0x15},
-    {0x14, 0x15}, {0x06, 0x08}, {0x06, 0x08}, {0x06, 0x08},
-    {0x06, 0x08}, {0x0B, 0x0D}, {0x0B, 0x0D}, {0x0B, 0x0D}
+    { 0x0B, 0x0D }, { 0x0B, 0x0D }, { 0x0B, 0x0D }, { 0x0B, 0x0D },
+    { 0x0B, 0x0D }, { 0x0B, 0x0D }, { 0x0B, 0x0D }, { 0x0B, 0x0D },
+    { 0x0B, 0x0D }, { 0x0B, 0x0D }, { 0x0B, 0x0D }, { 0x00, 0x00 },
+    { 0x00, 0x00 }, { 0x00, 0x00 }, { 0x06, 0x08 }, { 0x06, 0x08 },
+    { 0x14, 0x15 }, { 0x14, 0x15 }, { 0x00, 0x00 }, { 0x0B, 0x0D },
+    { 0x0B, 0x0D }, { 0x0B, 0x0D }, { 0x0B, 0x0D }, { 0x0B, 0x0D },
+    { 0x0B, 0x0D }, { 0x0B, 0x0D }, { 0x0B, 0x0D }, { 0x0B, 0x0D },
+    { 0x0B, 0x0D }, { 0x0B, 0x0D }, { 0x00, 0x00 }, { 0x00, 0x00 },
+    { 0x00, 0x00 }, { 0x00, 0x00 }, { 0x00, 0x00 }, { 0x00, 0x00 },
+    { 0x00, 0x00 }, { 0x0B, 0x0D }, { 0x0B, 0x0D }, { 0x0B, 0x0D },
+    { 0x14, 0x15 }, { 0x14, 0x15 }, { 0x14, 0x15 }, { 0x14, 0x15 },
+    { 0x14, 0x15 }, { 0x14, 0x15 }, { 0x14, 0x15 }, { 0x14, 0x15 },
+    { 0x14, 0x15 }, { 0x06, 0x08 }, { 0x06, 0x08 }, { 0x06, 0x08 },
+    { 0x06, 0x08 }, { 0x0B, 0x0D }, { 0x0B, 0x0D }, { 0x0B, 0x0D}
 };
 
 
@@ -516,7 +534,7 @@ void func_800DC750(u8 storeItemIndex) {
     shopContext.itemTextIndex = D_80118B70[storeItemIndex];
     
     shopContext.quantity = 1;
-    shopContext.unk_5 = 0;
+    shopContext.buySelected = FALSE;
 
     setMainLoopCallbackFunctionIndex(SHOP_DIALOGUE);
 
@@ -526,13 +544,23 @@ void func_800DC750(u8 storeItemIndex) {
 
 void loadShopItemSprite(u8 index) {
     
-    dmaSprite(D_801194A0[index] + 0x62, &_holdableItemsTextureSegmentRomStart, &_holdableItemsTextureSegmentRomEnd, &_holdableItemsAssetsIndexSegmentRomStart, &_holdableItemsAssetsIndexSegmentRomEnd, &_holdableItemsSpritesheetIndexSegmentRomStart, &_holdableItemsSpritesheetIndexSegmentRomEnd, D_801192E0[index][0], D_801192E0[index][1], 0x8028DD50, 0x80290550, 0x80293A50, 0x80293C50, 1, 1);
-    setSpriteScale(D_801194A0[index] + 0x62, 1.0f, 1.0f, 1.0f);
-    setSpriteRenderingLayer(D_801194A0[index] + 0x62, (1 | 2));
-    setSpriteBaseRGBA(D_801194A0[index] + 0x62, 0xFF, 0xFF, 0xFF, 0xFF);
-    setSpriteColor(D_801194A0[index] + 0x62, 0xFF, 0xFF, 0xFF, 0xFF);
+    dmaSprite(0x62 + shopItemSpriteIndexOffsets[index], 
+        &_holdableItemsTextureSegmentRomStart, &_holdableItemsTextureSegmentRomEnd, 
+        &_holdableItemsAssetsIndexSegmentRomStart, &_holdableItemsAssetsIndexSegmentRomEnd, 
+        &_holdableItemsSpritesheetIndexSegmentRomStart, &_holdableItemsSpritesheetIndexSegmentRomEnd, 
+        shopItemTextureBuffers[index][0], shopItemTextureBuffers[index][1], 
+        (u16*)SHOP_ITEM_PALETTE_BUFFER, 
+        (AnimationFrameMetadata*)SHOP_ITEM_ANIMATION_METADATA_BUFFER, 
+        (u32*)SHOP_ITEM_SPRITE_TO_PALETTE_BUFFER, 
+        (u32*)SHOP_ITEM_SPRITESHEET_INDEX_BUFFER, 
+        1, TRUE);
 
-    setMapObject(MAIN_MAP_INDEX, D_801194A0[index], D_801194A0[index] + 0x62, func_80030BA0(&shopItemsAnimationScripts, func_800D5A88(D_80118FD0[index])), D_80119040[index].x, D_80119040[index].y, D_80119040[index].z, 0xFF, 0xFF, 0, 0);
+    setSpriteScale(SHOP_ITEMS + shopItemSpriteIndexOffsets[index], 1.0f, 1.0f, 1.0f);
+    setSpriteRenderingLayer(SHOP_ITEMS + shopItemSpriteIndexOffsets[index], (1 | 2));
+    setSpriteBaseRGBA(SHOP_ITEMS + shopItemSpriteIndexOffsets[index], 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteColor(SHOP_ITEMS + shopItemSpriteIndexOffsets[index], 0xFF, 0xFF, 0xFF, 0xFF);
+
+    setMapObject(MAIN_MAP_INDEX, shopItemSpriteIndexOffsets[index], SHOP_ITEMS + shopItemSpriteIndexOffsets[index], func_80030BA0(&shopItemsAnimationScripts, func_800D5A88(D_80118FD0[index])), D_80119040[index].x, D_80119040[index].y, D_80119040[index].z, 0xFF, 0xFF, 0, 0);
 
 }
 
@@ -540,13 +568,15 @@ void loadShopItemSprite(u8 index) {
 
 void func_800DC9C0(u8 index) {
 
-    if (D_801194A0[index] != 0xFF) {
-        deactivateMapObject(MAIN_MAP_INDEX, D_801194A0[index]);
+    if (shopItemSpriteIndexOffsets[index] != 0xFF) {
+        deactivateMapObject(MAIN_MAP_INDEX, shopItemSpriteIndexOffsets[index]);
     }
+
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/shop", func_800DC9FC);
 
+// handle picking up shop item
 void func_800DC9FC(u8 arg0) {
     
     gPlayer.shopItemIndex = arg0;
@@ -556,8 +586,8 @@ void func_800DC9FC(u8 arg0) {
         gPlayer.itemInfoIndex = func_800D5308(D_80119548[arg0], 6, D_80118FD0[arg0], 0, 0);
         playSfx(PICKING_UP_SFX);
 
-        if (D_801194A0[arg0] != 0xFF) {
-            deactivateMapObject(MAIN_MAP_INDEX, D_801194A0[arg0]);
+        if (shopItemSpriteIndexOffsets[arg0] != 0xFF) {
+            deactivateMapObject(MAIN_MAP_INDEX, shopItemSpriteIndexOffsets[arg0]);
         }
     }
 
@@ -573,6 +603,7 @@ u8 func_800DCAA0(u8 index) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/shop", func_800DCAB8);
 
+// main loop callback
 void func_800DCAB8(void) {
 
     bool set = FALSE;
@@ -588,11 +619,11 @@ void func_800DCAB8(void) {
             setMessageBoxSpriteIndices(0, 0, 0, 0);
             func_8003F360(0, -4, 0);
             
-            if (D_80119580[shopContext.storeItemIndex] == 0) {
-                initializeMessageBox(MAIN_DIALOGUE_BOX_INDEX, D_80118E80[shopContext.storeItemIndex], shopContext.itemTextIndex, 0);
+            if (D_80119580[shopContext.storeItemIndex] == FALSE) {
+                initializeMessageBox(MAIN_MESSAGE_BOX_INDEX, D_80118E80[shopContext.storeItemIndex], shopContext.itemTextIndex, 0);
                 shopContext.unk_3 = 3;
             } else {
-                initializeMessageBox(MAIN_DIALOGUE_BOX_INDEX, D_80118E80[shopContext.storeItemIndex], shopContext.itemTextIndex, 0x8000);
+                initializeMessageBox(MAIN_MESSAGE_BOX_INDEX, D_80118E80[shopContext.storeItemIndex], shopContext.itemTextIndex, 0x8000);
                 shopContext.unk_3++;
             }
             
@@ -600,12 +631,12 @@ void func_800DCAB8(void) {
         
         case 1:
             
-            if (messageBoxes[0].flags & 4) {
+            if (messageBoxes[MAIN_MESSAGE_BOX_INDEX].flags & 4) {
                 
                 func_800B3BD8();
 
                 if (D_80118F60[shopContext.storeItemIndex] >= 2) {
-                    func_80045E20(0, 0x8F, &_shopIconsTextureSegmentRomStart, &_shopIconsTextureSegmentRomEnd, &_shopIconsAssetsIndexSegmentRomStart, &_shopIconsAssetsIndexSegmentRomEnd, (void*)SHOP_ICONS_TEXTURE_VADDR_START, (void*)SHOP_ICONS_TEXTURE_VADDR_END, (void* )SHOP_ICONS_ASSETS_INDEX_VADDR_START, (void* )SHOP_ICONS_ASSETS_INDEX_VADDR_END, 0, 2, 0, -16.0f, 64.0f, 256.0f, 0xA);
+                    func_80045E20(0, 0x8F, &_shopIconsTextureSegmentRomStart, &_shopIconsTextureSegmentRomEnd, &_shopIconsAssetsIndexSegmentRomStart, &_shopIconsAssetsIndexSegmentRomEnd, SHOP_ICONS_TEXTURE_BUFFER, SHOP_ICONS_PALETTE_BUFFER, (void* )SHOP_ICONS_ANIMATION_METADATA_BUFFER, (void* )SHOP_ICONS_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 2, 0, -16.0f, 64.0f, 256.0f, 0xA);
                     dmaOverlayScreenSprites(0, shopContext.quantity, 1, 3);
                     func_800B4238(D_80118F60[shopContext.storeItemIndex]);
                 }
@@ -614,7 +645,7 @@ void func_800DCAB8(void) {
                 convertNumberToGameVariableString(0x12, shopContext.quantity * prices[shopContext.storeItemIndex], 0);
                 setMessageBoxViewSpacePosition(0, 24.0f, -64.0f, 352.0f);
                 setMessageBoxSpriteIndices(0, 0, 0, 0);
-                initializeMessageBox(MAIN_DIALOGUE_BOX_INDEX, D_80118E80[shopContext.storeItemIndex], D_80118BE0[shopContext.storeItemIndex], 0x80000);
+                initializeMessageBox(MAIN_MESSAGE_BOX_INDEX, D_80118E80[shopContext.storeItemIndex], D_80118BE0[shopContext.storeItemIndex], 0x80000);
                 
                 shopContext.unk_3++;         
             }
@@ -627,11 +658,11 @@ void func_800DCAB8(void) {
 
                 if (!set) {
                     
-                    if (shopContext.unk_5) {
+                    if (shopContext.buySelected) {
                         playSfx(2);
                     }
                     
-                    shopContext.unk_5 = 0;
+                    shopContext.buySelected = FALSE;
                     
                     func_800B4160();
                     set = TRUE;
@@ -643,11 +674,11 @@ void func_800DCAB8(void) {
 
                 if (!set) {
 
-                    if (shopContext.unk_5 == 0) {
+                    if (shopContext.buySelected == FALSE) {
                         playSfx(2);
                     }
                     
-                    shopContext.unk_5 = 1;
+                    shopContext.buySelected = TRUE;
                     
                     func_800B4160();
                     set = TRUE;
@@ -719,7 +750,7 @@ void func_800DCAB8(void) {
                     deactivateSprite(0x86);
                     deactivateSprite(0x87);
                     
-                    if (shopContext.unk_5 == 0) {
+                    if (shopContext.buySelected == FALSE) {
                         shopContext.unk_3 = 3;
                         playSfx(0);
                     } else {
@@ -746,7 +777,7 @@ void func_800DCAB8(void) {
                     deactivateSprite(0x86);
                     deactivateSprite(0x87);
                     
-                    shopContext.unk_5 = 1;
+                    shopContext.buySelected = TRUE;
                     shopContext.unk_3 = 4;
 
                     playSfx(1);
@@ -769,32 +800,32 @@ void func_800DCAB8(void) {
             switch (temp) {                        
                 
                 case 0:                                     
-                    initializeMessageBox(MAIN_DIALOGUE_BOX_INDEX, D_80118E80[shopContext.storeItemIndex], D_80118D30[shopContext.storeItemIndex], 0);
+                    initializeMessageBox(MAIN_MESSAGE_BOX_INDEX, D_80118E80[shopContext.storeItemIndex], D_80118D30[shopContext.storeItemIndex], 0);
                     shopContext.unk_3 = 7;
                     return;
                 
                 case 1:
-                    // FIXME: this is a hack to force match
+                    // FIXME: fake
                     temp2 = &shopContext.storeItemIndex;
-                    initializeMessageBox(MAIN_DIALOGUE_BOX_INDEX, D_80118E80[temp2[0]], D_80118CC0[shopContext.storeItemIndex], 0);
+                    initializeMessageBox(MAIN_MESSAGE_BOX_INDEX, D_80118E80[temp2[0]], D_80118CC0[shopContext.storeItemIndex], 0);
                     break;
                 
                 case 2:                
                     temp2 = &shopContext.storeItemIndex;
                     if (D_80118E10[temp2[0]]) {
-                        initializeMessageBox(MAIN_DIALOGUE_BOX_INDEX, D_80118E80[temp2[0]], D_80118E10[shopContext.storeItemIndex], 0);
+                        initializeMessageBox(MAIN_MESSAGE_BOX_INDEX, D_80118E80[temp2[0]], D_80118E10[shopContext.storeItemIndex], 0);
                     } 
                     
                     break;
                 
                 case 3:
-                    initializeMessageBox(MAIN_DIALOGUE_BOX_INDEX, D_80118E80[shopContext.storeItemIndex], D_80118DA0[shopContext.storeItemIndex], 0);
+                    initializeMessageBox(MAIN_MESSAGE_BOX_INDEX, D_80118E80[shopContext.storeItemIndex], D_80118DA0[shopContext.storeItemIndex], 0);
                     shopContext.unk_3 = 5;
                     return;
                 
                 case 4:
                     temp2 = &shopContext.storeItemIndex;
-                    initializeMessageBox(MAIN_DIALOGUE_BOX_INDEX, D_80118E80[temp2[0]], D_801FB9CC, 0);
+                    initializeMessageBox(MAIN_MESSAGE_BOX_INDEX, D_80118E80[temp2[0]], D_801FB9CC, 0);
                     break;
                 
                 default:
@@ -809,19 +840,19 @@ void func_800DCAB8(void) {
 
             break;
 
-       case 4:        
+        case 4:        
 
             setMessageBoxViewSpacePosition(0, 24.0f, -64.0f, 352.0f);
             setMessageBoxSpriteIndices(0, 0, 0, 0);
             func_8003F360(0, -4, 0);
-            initializeMessageBox(MAIN_DIALOGUE_BOX_INDEX, D_80118E80[shopContext.storeItemIndex], D_80118C50[shopContext.storeItemIndex], 0);
+            initializeMessageBox(MAIN_MESSAGE_BOX_INDEX, D_80118E80[shopContext.storeItemIndex], D_80118C50[shopContext.storeItemIndex], 0);
             shopContext.unk_3 = 5;
 
             break;
         
         case 5:         
 
-            if (messageBoxes[0].flags & 4) {
+            if (messageBoxes[MAIN_MESSAGE_BOX_INDEX].flags & 4) {
                 func_800B2CE0();
                 setMainLoopCallbackFunctionIndex(MAIN_GAME);
                 setPlayerAction(D_80119660[shopContext.storeItemIndex].animationIndex, D_80119660[shopContext.storeItemIndex].nextAnimationIndex);
@@ -834,7 +865,7 @@ void func_800DCAB8(void) {
 
         case 6:             
 
-            if (messageBoxes[0].flags & 4) {
+            if (messageBoxes[MAIN_MESSAGE_BOX_INDEX].flags & 4) {
                 func_800B2CE0();
                 setMainLoopCallbackFunctionIndex(MAIN_GAME);
                 setPlayerAction(D_80119660[shopContext.storeItemIndex].animationIndex, D_80119660[shopContext.storeItemIndex].nextAnimationIndex);
@@ -847,7 +878,7 @@ void func_800DCAB8(void) {
 
         case 7:             
 
-            if (messageBoxes[0].flags & 4) {
+            if (messageBoxes[MAIN_MESSAGE_BOX_INDEX].flags & 4) {
                 func_800B2CE0();
                 setMainLoopCallbackFunctionIndex(MAIN_GAME);
                 setPlayerAction(D_80119660[shopContext.storeItemIndex].animationIndex, D_80119660[shopContext.storeItemIndex].nextAnimationIndex);
@@ -866,6 +897,7 @@ void func_800DCAB8(void) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/shop", handlePurchase);
 
+// TODO: label shop item indices
 u8 handlePurchase(u16 storeItemIndex, s32 quantity) {
 
     u8 result = 0;
@@ -887,7 +919,6 @@ u8 handlePurchase(u16 storeItemIndex, s32 quantity) {
                 }
                 
                 break;
-
             
             case 1:
 
@@ -1423,7 +1454,7 @@ u8 handlePurchase(u16 storeItemIndex, s32 quantity) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/shop", checkShopItemShouldBeDisplayed);
 
-// check if should be selling items
+// TODO: label store item indices
 bool checkShopItemShouldBeDisplayed(u16 itemIndex) {
 
     bool result = FALSE;
@@ -1560,13 +1591,8 @@ bool checkShopItemShouldBeDisplayed(u16 itemIndex) {
         case 0x13:
             
             if (!func_8009B2BC(2) && !func_8009B2BC(1) && !func_8009B2BC(0) && !func_8009B2BC(3)) {
-
-                break;
-                
-            }
-            
-            if (!checkHaveTool(MILKER)) {
-                
+                // removed code
+            } else if (!checkHaveTool(MILKER)) {
                 result = 1;
             }
 
@@ -1583,10 +1609,8 @@ bool checkShopItemShouldBeDisplayed(u16 itemIndex) {
         case 0x15:
 
             if (!func_8009B2BC(5) && !func_8009B2BC(4) && !func_8009B2BC(6)) {
-                break;
-            }
-            
-            if (!checkHaveTool(CLIPPERS)) {
+                // removed code
+            } else if (!checkHaveTool(CLIPPERS)) {
                 result = 1;
             }
 

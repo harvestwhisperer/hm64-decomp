@@ -9,18 +9,17 @@
 
 #include "structs.h"
 
-typedef u8 bool;
-
 #ifndef NULL
 #define NULL ((void *)0)
 #endif
-
-// FIXME: signature from ultra64.h; not getting picked up by sprite.c
-void __assert(const char* exp, const char* filename, int line);     
 
 #define TRUE 1
 #define FALSE 0
 
 typedef u32 Addr;
+typedef u8 bool;
+
+// FIXME: signature from ultra64.h; not getting picked up by sprite.c
+void __assert(const char* exp, const char* filename, int line);     
 
 #endif

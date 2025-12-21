@@ -29,6 +29,7 @@
 #define FESTIVAL_DAY_TYPE_1 0x2D
 #define FESTIVAL_DAY_TYPE_2 0x30
 // 0x4B level audio set?; set by func_800AC21C
+#define HORSE_RACE 0x41
 #define FED_DOG 0x43
 #define HELD_ANIMAL 0x44
 #define FESTIVAL 0x4D
@@ -212,6 +213,9 @@ extern void func_80064814(void);
 extern u8 func_80065518(void);
 extern u8 func_8006536C();
 extern s32 getSumNpcAffection(void);
+
+extern void func_800657B4();
+extern void func_800657C4();
 
 extern u32 dailyEventBits[0x20];
 extern u32 lifeEventBits[0x20];

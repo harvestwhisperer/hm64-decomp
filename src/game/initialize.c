@@ -17,31 +17,38 @@
 #include "system/message.h"
 
 #include "game/animals.h" 
+#include "game/cutscenes.h"
 #include "game/evaluation.h"
 #include "game/fieldObjects.h"
-#include "game/fieldTiles.h"
+#include "data/fieldTileMaps/fieldTiles.h"
 #include "game/game.h"
 #include "game/gameAudio.h"
+#include "game/gameFile.h"
 #include "game/gameStart.h"
 #include "game/gameStatus.h"
-#include "game/transition.h"
-#include "game/itemHandlers.h"
+#include "game/items.h"
 #include "game/level.h" 
-#include "game/loadGameScreen.h"
-#include "mainLoop.h"
 #include "game/fieldObjects.h"
+#include "game/namingScreen.h"
 #include "game/npc.h"
 #include "game/overlayScreens.h"
 #include "game/player.h"
-#include "game/setCutscenes.h"
 #include "game/shop.h"
-#include "game/spriteIndices.h"
 #include "game/title.h"
+#include "game/transition.h"
 #include "game/tv.h"
 #include "game/time.h"
 #include "game/weather.h"
 
+#include "mainLoop.h"
+
 #include "buffers/buffers.h"
+
+#include "assetIndices/entities.h"
+#include "assetIndices/maps.h"
+#include "assetIndices/sequences.h"
+#include "assetIndices/sprites.h"
+#include "assetIndices/texts.h"
 
 // unused dialogue variables
 extern u8 D_8017044B;
@@ -222,36 +229,36 @@ static inline void setInitialSpecialDialogueBits() {
 }
 
 // experiment with loop unrolling
-static inline void initializeToolchestSlots() {
+static inline void initializeToolboxSlots() {
 
-    gToolchestSlots[0] = 0;
-    gToolchestSlots[1] = 0;
-    gToolchestSlots[2] = 0;
-    gToolchestSlots[3] = 0;
-    gToolchestSlots[4] = 0;
-    gToolchestSlots[5] = 0;
-    gToolchestSlots[6] = 0;
-    gToolchestSlots[7] = 0;
-    gToolchestSlots[8] = 0;
-    gToolchestSlots[9] = 0;
-    gToolchestSlots[10] = 0;
-    gToolchestSlots[11] = 0;
-    gToolchestSlots[12] = 0;
-    gToolchestSlots[13] = 0;
-    gToolchestSlots[14] = 0;
-    gToolchestSlots[15] = 0;
-    gToolchestSlots[16] = 0;
-    gToolchestSlots[17] = 0;
-    gToolchestSlots[18] = 0;
-    gToolchestSlots[19] = 0;
-    gToolchestSlots[20] = 0;
-    gToolchestSlots[21] = 0;    
-    gToolchestSlots[22] = 0;
-    gToolchestSlots[23] = 0;
-    gToolchestSlots[24] = 0;
-    gToolchestSlots[25] = 0;
-    gToolchestSlots[26] = 0;
-    gToolchestSlots[27] = 0;
+    gToolboxSlots[0] = 0;
+    gToolboxSlots[1] = 0;
+    gToolboxSlots[2] = 0;
+    gToolboxSlots[3] = 0;
+    gToolboxSlots[4] = 0;
+    gToolboxSlots[5] = 0;
+    gToolboxSlots[6] = 0;
+    gToolboxSlots[7] = 0;
+    gToolboxSlots[8] = 0;
+    gToolboxSlots[9] = 0;
+    gToolboxSlots[10] = 0;
+    gToolboxSlots[11] = 0;
+    gToolboxSlots[12] = 0;
+    gToolboxSlots[13] = 0;
+    gToolboxSlots[14] = 0;
+    gToolboxSlots[15] = 0;
+    gToolboxSlots[16] = 0;
+    gToolboxSlots[17] = 0;
+    gToolboxSlots[18] = 0;
+    gToolboxSlots[19] = 0;
+    gToolboxSlots[20] = 0;
+    gToolboxSlots[21] = 0;    
+    gToolboxSlots[22] = 0;
+    gToolboxSlots[23] = 0;
+    gToolboxSlots[24] = 0;
+    gToolboxSlots[25] = 0;
+    gToolboxSlots[26] = 0;
+    gToolboxSlots[27] = 0;
        
 }
 
@@ -320,7 +327,7 @@ void initializeGameVariables(void) {
     gameLoopContext.unk_2 = 0;
     gameLoopContext.unk_4 = 0;
 
-    D_8018981C = 0xFFFF;
+    gCutsceneBytecodeSegmentIndex = 0xFFFF;
     gItemBeingHeld = 0xFF;
 
     gCutsceneFlags = 0;
@@ -533,7 +540,7 @@ void initializeGameVariables(void) {
     overlayScreenTable.cellIndex = 0;
     overlayScreenTable.previousCellIndex = 0;
     overlayScreenTable.unk_3 = 0;
-    overlayScreenTable.subscreen = 0;
+    overlayScreenTable.currentAction = 0;
 
     initializeTV();
 
@@ -553,7 +560,7 @@ void initializeGameVariables(void) {
     fodderQuantity = 0;
     chickenFeedQuantity = 0;
 
-    initializeToolchestSlots();
+    initializeToolboxSlots();
 
     // freezer pages 1-4
     D_80237420[0] = 0;
@@ -660,6 +667,7 @@ void initializeGameVariables(void) {
 
 void registerMainLoopCallbacks(void) {
 
+    // game.c
     registerMainLoopCallback(MAIN_GAME, mainGameLoopCallback);
     registerMainLoopCallback(MAP_LOAD, func_8005D0BC);
     // cutscene prep
@@ -671,14 +679,18 @@ void registerMainLoopCallbacks(void) {
     registerMainLoopCallback(ROTATING, func_8005CBA4);
     registerMainLoopCallback(DIALOGUE, func_8005CBF0);
     registerMainLoopCallback(TEXT, func_8005CEFC);
-    registerMainLoopCallback(0xB, func_8005CF4C);
+    registerMainLoopCallback(END_CUTSCENE, func_8005CF4C);
     registerMainLoopCallback(PINK_OVERLAY_TEXT, func_8005D2B0);
     registerMainLoopCallback(END_OF_DAY_1, func_80060624);
     registerMainLoopCallback(END_OF_FESTIVAL_DAY_1, func_800604B0);
     registerMainLoopCallback(END_OF_FESTIVAL_DAY_2, func_800605F0);
     registerMainLoopCallback(END_OF_DAY_2, func_80060838);
     registerMainLoopCallback(WAIT_AUDIO_FINISH, func_80060454);
+
+    // tv
     registerMainLoopCallback(TV, tvMainLoopCallback);
+
+    // overlay screens
     registerMainLoopCallback(SHOP_DIALOGUE, func_800DCAB8); 
     registerMainLoopCallback(PAUSE_SCREEN_LOAD, func_800B881C);
     registerMainLoopCallback(TOOLBOX_LOAD, func_800BADD0);
@@ -689,9 +701,9 @@ void registerMainLoopCallbacks(void) {
     registerMainLoopCallback(KITCHEN_PICTURE_LOAD, func_800B815C);
     registerMainLoopCallback(CALENDAR_LOAD, func_800B83F0);
     registerMainLoopCallback(RECIPE_BOOK_LOAD, func_800B8554);
-    registerMainLoopCallback(0x1D, func_800B86B8);
-    registerMainLoopCallback(0x1E, func_800C8424);
-    registerMainLoopCallback(0x1F, func_800C88F4);
+    registerMainLoopCallback(ALBUM_LOAD, func_800B86B8);
+    registerMainLoopCallback(PAUSE_SCREEN_MAP_LOAD_1, func_800C8424);
+    registerMainLoopCallback(PAUSE_SCREEN_MAP_LOAD_2, func_800C88F4);
     registerMainLoopCallback(HORSE_RACE_RESULTS_LOAD, func_800CC518);
     registerMainLoopCallback(HORSE_RACE_GIFTS_LOAD, func_800CD928);
     registerMainLoopCallback(LOTTERY_LOAD, func_800CE930);
@@ -705,16 +717,25 @@ void registerMainLoopCallbacks(void) {
     registerMainLoopCallback(CALENDAR, func_800C3D20);
     registerMainLoopCallback(RECIPE_BOOK, func_800C53C0);
     registerMainLoopCallback(ALBUM, func_800C7058);
-    registerMainLoopCallback(0x2D, func_800C8784);
+    registerMainLoopCallback(PAUSE_SCREEN_MAP, func_800C8784);
     registerMainLoopCallback(HORSE_RACE_BETTING, func_800CA808);
     registerMainLoopCallback(HORSE_RACE_RESULTS, func_800CD750);
     registerMainLoopCallback(HORSE_RACE_GIFTS, func_800CE068);
-    registerMainLoopCallback(LOTTERY_2, func_800CEDF0);
+    registerMainLoopCallback(LOTTERY, func_800CEDF0);
+
+    // title
     registerMainLoopCallback(TITLE_SCREEN, titleScreenMainLoopCallback);
+
+    // naming screen
     registerMainLoopCallback(NAMING_SCREEN, func_8005CF94);
-    registerMainLoopCallback(0x34, func_800ED974);
+    registerMainLoopCallback(NAMING_SCREEN_LOAD, func_800ED974);
+
+    // game file
     registerMainLoopCallback(SELECT_GAME, func_800E1FAC);
-    registerMainLoopCallback(COMPLETION_SCREEN, func_800E8F08);
+    registerMainLoopCallback(FARM_RANKING_SCREEN, func_800E8F08);
+
+    // game status
+    // empty funtions
     registerMainLoopCallback(0x37, func_800657B4);
     registerMainLoopCallback(0x38, func_800657C4);
     
@@ -724,9 +745,9 @@ void registerMainLoopCallbacks(void) {
 
 void func_8004F768(void) {
     
-    initializeShadowSprite(0, &_shadowsTextureSegmentRomStart, &_shadowsTextureSegmentRomEnd, &_shadowsIndexSegmentRomStart, &_shadowsIndexSegmentRomEnd, (void*)SHADOW_TEXTURE_VADDR_START, (void*)SHADOW_TEXTURE_VADDR_END, (void*)SHADOW_ASSETS_INDEX_VADDR_START, (void*)SHADOW_ASSETS_INDEX_VADDR_END, 0, 0);
-    initializeShadowSprite(1, &_shadowsTextureSegmentRomStart, &_shadowsTextureSegmentRomEnd, &_shadowsIndexSegmentRomStart, &_shadowsIndexSegmentRomEnd, (void*)SHADOW_TEXTURE_VADDR_START, (void*)SHADOW_TEXTURE_VADDR_END, (void*)SHADOW_ASSETS_INDEX_VADDR_START, (void*)SHADOW_ASSETS_INDEX_VADDR_END, 1, 0);
-    initializeShadowSprite(2, &_shadowsTextureSegmentRomStart, &_shadowsTextureSegmentRomEnd, &_shadowsIndexSegmentRomStart, &_shadowsIndexSegmentRomEnd, (void*)SHADOW_TEXTURE_VADDR_START, (void*)SHADOW_TEXTURE_VADDR_END, (void*)SHADOW_ASSETS_INDEX_VADDR_START, (void*)SHADOW_ASSETS_INDEX_VADDR_END, 2, 0);
+    initializeShadowSprite(0, &_shadowsTextureSegmentRomStart, &_shadowsTextureSegmentRomEnd, &_shadowsIndexSegmentRomStart, &_shadowsIndexSegmentRomEnd, (void*)SHADOW_TEXTURE_BUFFER, (void*)SHADOW_PALETTE_BUFFER, (void*)SHADOW_ANIMATION_METADATA_BUFFER, (void*)SHADOW_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 0);
+    initializeShadowSprite(1, &_shadowsTextureSegmentRomStart, &_shadowsTextureSegmentRomEnd, &_shadowsIndexSegmentRomStart, &_shadowsIndexSegmentRomEnd, (void*)SHADOW_TEXTURE_BUFFER, (void*)SHADOW_PALETTE_BUFFER, (void*)SHADOW_ANIMATION_METADATA_BUFFER, (void*)SHADOW_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 1, 0);
+    initializeShadowSprite(2, &_shadowsTextureSegmentRomStart, &_shadowsTextureSegmentRomEnd, &_shadowsIndexSegmentRomStart, &_shadowsIndexSegmentRomEnd, (void*)SHADOW_TEXTURE_BUFFER, (void*)SHADOW_PALETTE_BUFFER, (void*)SHADOW_ANIMATION_METADATA_BUFFER, (void*)SHADOW_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 2, 0);
  
     initializeEntityAsset(ENTITY_ASSET_PLAYER, &_playerTextureSegmentRomStart, &_playerTextureSegmentRomEnd, &_playerAssetsIndexSegmentRomStart, &_playerAssetsIndexSegmentRomEnd, &_playerSpritesheetIndexSegmentRomStart, &_playerSpritesheetIndexSegmentRomEnd, 1, 0, &playerAnimationScripts);
     setEntityCollisionBuffers(ENTITY_ASSET_PLAYER, 15, 15);
@@ -1300,12 +1321,12 @@ void func_80053088(void) {
     nuPiReadRom(ptr3, (u16*)FONT_PALETTE_1_BUFFER, ptr4 - ptr3);
     nuPiReadRom(ptr5, (u16*)FONT_PALETTE_2_BUFFER, ptr6 - ptr5);
 
-    func_8003F80C(0, 0x76, &_dialogueWindowTextureSegmentRomStart, &_dialogueWindowTextureSegmentRomEnd, &_dialogueWindowAssetsIndexSegmentRomStart, &_dialogueWindowAssetsIndexSegmentRomEnd, DIALOGUE_WINDOW_TEXTURE_BUFFER, 0x8023B100, DIALOGUE_WINDOW_ASSETS_INDEX_BUFFER, 0x8023B300, 0, 0, 1, -24.0f, 0, 0);
-    func_8003F80C(1, 0x76, &_dialogueWindowTextureSegmentRomStart, &_dialogueWindowTextureSegmentRomEnd, &_dialogueWindowAssetsIndexSegmentRomStart, &_dialogueWindowAssetsIndexSegmentRomEnd, DIALOGUE_WINDOW_TEXTURE_BUFFER, 0x8023B100, DIALOGUE_WINDOW_ASSETS_INDEX_BUFFER, 0x8023B300, 0, 0, 0, 0, 0, 0);
-    func_8003F80C(2, 0x77, &_dialogueWindowTextureSegmentRomStart, &_dialogueWindowTextureSegmentRomEnd, &_dialogueWindowAssetsIndexSegmentRomStart, &_dialogueWindowAssetsIndexSegmentRomEnd, DIALOGUE_WINDOW_TEXTURE_BUFFER, 0x8023B100, DIALOGUE_WINDOW_ASSETS_INDEX_BUFFER, 0x8023B300, 0, 1, 0, 0, 0, 0);
+    func_8003F80C(0, 0x76, &_dialogueWindowTextureSegmentRomStart, &_dialogueWindowTextureSegmentRomEnd, &_dialogueWindowAssetsIndexSegmentRomStart, &_dialogueWindowAssetsIndexSegmentRomEnd, MESSAGE_BOX_TEXTURE_BUFFER, 0x8023B100, MESSAGE_BOX_ASSETS_INDEX_BUFFER, 0x8023B300, 0, 0, 1, -24.0f, 0, 0);
+    func_8003F80C(1, 0x76, &_dialogueWindowTextureSegmentRomStart, &_dialogueWindowTextureSegmentRomEnd, &_dialogueWindowAssetsIndexSegmentRomStart, &_dialogueWindowAssetsIndexSegmentRomEnd, MESSAGE_BOX_TEXTURE_BUFFER, 0x8023B100, MESSAGE_BOX_ASSETS_INDEX_BUFFER, 0x8023B300, 0, 0, 0, 0, 0, 0);
+    func_8003F80C(2, 0x77, &_dialogueWindowTextureSegmentRomStart, &_dialogueWindowTextureSegmentRomEnd, &_dialogueWindowAssetsIndexSegmentRomStart, &_dialogueWindowAssetsIndexSegmentRomEnd, MESSAGE_BOX_TEXTURE_BUFFER, 0x8023B100, MESSAGE_BOX_ASSETS_INDEX_BUFFER, 0x8023B300, 0, 1, 0, 0, 0, 0);
   
-    func_8003F910(0, 0x78, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsAssetsIndexSegmentRomStart, &_dialogueIconsAssetsIndexSegmentRomEnd, (void* )DIALOGUE_ICON_TEXTURE_BUFFER, (void* )DIALOGUE_ICON_PALETTE_BUFFER, (void* )DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, DIALOGUE_ICON_SPRITESHEET_INDEX_BUFFER, 0, 4, 0xFE, 106.0f, -15.0f, 0.0f);
-    func_8003F910(1, 0x78, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsAssetsIndexSegmentRomStart, &_dialogueIconsAssetsIndexSegmentRomEnd, (void* )DIALOGUE_ICON_TEXTURE_BUFFER, (void* )DIALOGUE_ICON_PALETTE_BUFFER, (void* )DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, DIALOGUE_ICON_SPRITESHEET_INDEX_BUFFER, 0, 0xD, 0xFE, 106.0f, -15.0f, 0.0f);
+    func_8003F910(0, 0x78, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsAssetsIndexSegmentRomStart, &_dialogueIconsAssetsIndexSegmentRomEnd, (void* )DIALOGUE_ICON_TEXTURE_BUFFER, (void* )DIALOGUE_ICON_PALETTE_BUFFER, (void* )DIALOGUE_ICON_ANIMATION_METADATA_BUFFER, DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 4, 0xFE, 106.0f, -15.0f, 0.0f);
+    func_8003F910(1, 0x78, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsAssetsIndexSegmentRomStart, &_dialogueIconsAssetsIndexSegmentRomEnd, (void* )DIALOGUE_ICON_TEXTURE_BUFFER, (void* )DIALOGUE_ICON_PALETTE_BUFFER, (void* )DIALOGUE_ICON_ANIMATION_METADATA_BUFFER, DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 0xD, 0xFE, 106.0f, -15.0f, 0.0f);
     func_8003FA1C(0, 0x75, &_characterDialogueIconsTextureSegmentRomStart, &_characterDialogueIconsTextureSegmentRomEnd, &_characterDialogueIconsAssetsIndexSegmentRomStart, &_characterDialogueIconsAssetsIndexSegmentRomEnd, &_characterDialogueIconsSpritesheetIndexSegmentRomStart, &_characterDialogueIconsSpritesheetIndexSegmentRomEnd, (void*)0x8023D300, (void*)0x8023DB00, (void*)0x8023E300, (void*)0x8023EF00, (void*)0x8023FF00, (void*)0x80240000, -139.0f, 1.0f, 0);
  
     initializeEmptyMessageBox(0, (u8*)MESSAGE_BOX_1_TEXT_BUFFER);
@@ -1525,9 +1546,9 @@ void func_80054550(void) {
 
     func_80042FEC(0, 0, 1);
 
-    func_8004318C(0, DIALOGUE_ICONS_1, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsAssetsIndexSegmentRomStart, &_dialogueIconsAssetsIndexSegmentRomEnd, DIALOGUE_ICON_TEXTURE_BUFFER, DIALOGUE_ICON_PALETTE_BUFFER, DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, DIALOGUE_ICON_SPRITESHEET_INDEX_BUFFER, NULL, 3, 0, 8.0f, -16.0f, 0);
-    func_80043260(0, DIALOGUE_ICONS_2, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsAssetsIndexSegmentRomStart, &_dialogueIconsAssetsIndexSegmentRomEnd, DIALOGUE_ICON_TEXTURE_BUFFER, DIALOGUE_ICON_PALETTE_BUFFER, DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, DIALOGUE_ICON_SPRITESHEET_INDEX_BUFFER, NULL, 0xA, 0xFE, 0, 40.0f, 0);
-    func_80043334(0, DIALOGUE_ICONS_3, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsAssetsIndexSegmentRomStart, &_dialogueIconsAssetsIndexSegmentRomEnd, DIALOGUE_ICON_TEXTURE_BUFFER, DIALOGUE_ICON_PALETTE_BUFFER, DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, DIALOGUE_ICON_SPRITESHEET_INDEX_BUFFER, NULL, 0xB, 0xFE, 0, -40.0f, 0);
+    func_8004318C(0, DIALOGUE_ICONS_1, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsAssetsIndexSegmentRomStart, &_dialogueIconsAssetsIndexSegmentRomEnd, DIALOGUE_ICON_TEXTURE_BUFFER, DIALOGUE_ICON_PALETTE_BUFFER, DIALOGUE_ICON_ANIMATION_METADATA_BUFFER, DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 3, 0, 8.0f, -16.0f, 0);
+    func_80043260(0, DIALOGUE_ICONS_2, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsAssetsIndexSegmentRomStart, &_dialogueIconsAssetsIndexSegmentRomEnd, DIALOGUE_ICON_TEXTURE_BUFFER, DIALOGUE_ICON_PALETTE_BUFFER, DIALOGUE_ICON_ANIMATION_METADATA_BUFFER, DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0xA, 0xFE, 0, 40.0f, 0);
+    func_80043334(0, DIALOGUE_ICONS_3, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsAssetsIndexSegmentRomStart, &_dialogueIconsAssetsIndexSegmentRomEnd, DIALOGUE_ICON_TEXTURE_BUFFER, DIALOGUE_ICON_PALETTE_BUFFER, DIALOGUE_ICON_ANIMATION_METADATA_BUFFER, DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0xB, 0xFE, 0, -40.0f, 0);
    
     func_80043148(0, 2, 0, 8);
 

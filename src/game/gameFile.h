@@ -33,8 +33,10 @@ typedef struct {
     u8 action; // move/delete /* 0x89 */
 } LoadGameScreenContext;
 
-void func_800E1380(u8);            
+extern void func_800E1380(u8);            
 extern bool func_800E53E8(u8);    
+extern void func_800E1FAC(void);
+extern void func_800E8F08(void);
 
 extern u8 gCurrentGameIndex;
 extern u32 D_801654F4;

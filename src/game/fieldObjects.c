@@ -6,14 +6,17 @@
 #include "system/mapController.h"
 #include "system/math.h"
 
-#include "game/fieldTiles.h"
+#include "data/fieldTileMaps/fieldTiles.h"
 #include "game/game.h"
 #include "game/gameStatus.h"
-#include "game/itemHandlers.h"
+#include "game/items.h"
 #include "game/level.h"
 #include "game/npc.h"
 #include "game/player.h"
+#include "game/time.h"
 #include "game/weather.h"
+
+#include "assetIndices/maps.h"
 
 // bss
 u8 topOfMountain1FieldTiles[FIELD_HEIGHT][FIELD_WIDTH];

@@ -8,7 +8,7 @@
 #define MAX_STAMINA 250
 #define MAX_RUCKSACK_SLOTS 9
 #define MAX_TOOL_SLOTS_RUCKSACK 9
-#define MAX_TOOLCHEST_SLOTS 8 * 4
+#define MAX_TOOLBOX_SLOTS 8 * 4
 
 // TODO: finish adding actions
 /* actions */
@@ -90,7 +90,7 @@ extern u8 gHappiness;
 extern u8 gMaximumStamina;
 extern u8 gPlayerBirthdaySeason;
 
-extern u8 gToolchestSlots[];
+extern u8 gToolboxSlots[];
 
 // counter until napping animation
 extern u16 playerIdleCounter;

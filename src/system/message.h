@@ -3,18 +3,21 @@
 
 #include "common.h"
 
-#define MAX_DIALOGUE_BOXES 6
-#define MAX_TEXT_BANKS 73
+#include "system/globalSprites.h"
+
+#include "assetIndices/texts.h"
+
+#define MAX_MESSAGE_BOXES 6
 #define MAX_GAME_VARIABLE_STRINGS 64
 
-#define MAIN_DIALOGUE_BOX_INDEX 0
+#define MAIN_MESSAGE_BOX_INDEX 0
 
 /* flags */
-#define DIALOGUE_BOX_ACTIVE 1
-#define DIALOGUE_BOX_INITIALIZED 2
-#define DIALOGUE_BOX_HAS_DIALOGUE_WINDOW 0x200
-#define DIALOGUE_BOX_HAS_OVERLAY_ICON 0x400
-#define DIALOGUE_BOX_HAS_CHARACTER_AVATAR 0x10000
+#define MESSAGE_BOX_ACTIVE 1
+#define MESSAGE_BOX_INITIALIZED 2
+#define MESSAGE_BOX_HAS_DIALOGUE_WINDOW 0x200
+#define MESSAGE_BOX_HAS_OVERLAY_ICON 0x400
+#define MESSAGE_BOX_HAS_CHARACTER_AVATAR 0x10000
 // 0x100 need to update length of game variable string 
 // 0x200000 = need to do rgba
 
@@ -151,10 +154,10 @@ typedef struct {
     u32 romTextureEnd;
     u32 romIndexStart;
     u32 romIndexEnd;
-    void* vaddrTextureStart;
-    void* vaddrTextureEnd;
-    void* vaddrIndexStart;
-    void* vaddrIndexEnd;
+    u8* vaddrTexture;
+    u16* vaddrPalette;
+    AnimationFrameMetadata* vaddrAnimationFrameMetadata;;
+    u8* vaddrTextureToPaletteLookup;
     u32 unk_20;
     Vec3f coordinates;
     u16 spriteIndex;
@@ -169,12 +172,12 @@ typedef struct {
 	u32 romAssetsIndexEnd;
 	u32 romSpritesheetIndexStart;
 	u32 romSpritesheetIndexEnd;
-	void* vaddrTexture;
-	void* vaddrSpritesheet;
-	void* vaddrPalette;
-	void* vaddrAnimation;
-	void* vaddrSpriteToPalette;
-	void* vaddrSpritesheetIndex;
+	u8* vaddrTexture1;
+	u32* vaddrTexture2;
+	u16* vaddrPalette;
+	AnimationFrameMetadata* vaddrAnimation;
+	u32* vaddrSpriteToPalette;
+	u32* vaddrSpritesheetIndex;
 	Vec3f coordinates;
 	u16 spriteIndex;
 } CharacterAvatar;
@@ -185,10 +188,10 @@ typedef struct {
     u32 romTextureEnd;
     u32 romIndexStart;
     u32 romIndexEnd;
-    void* vaddrTextureStart;
-    void* vaddrTextureEnd;
-    void* vaddrIndexStart;
-    void* vaddrIndexEnd;
+    u8* vaddrTexture;
+    u16* vaddrPalette;
+    AnimationFrameMetadata* vaddrAnimationFrameMetadata;
+    u32* vaddrTextureToPaletteLookup;
     u32 unk_20;
     u32 unused[0x11];
     Vec3f coordinates;
@@ -277,9 +280,9 @@ extern bool setMessageBoxViewSpacePosition(u16, f32, f32, f32);
 extern bool func_8003F5D0(u16, u8, u8);                           
 extern bool func_8003F630(u16, u8, u8);                           
 extern bool setMessageBoxSpriteIndices(u16, u8, u8, u8);    
-extern bool func_8003F80C(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextureEnd, u32 romIndexStart, u32 romIndexEnd, void* vaddrTextureStart, void* vaddrTextureEnd, void* vaddrIndexStart, void* vaddrIndexEnd, u32 argA, u16 spriteOffset, u8 flag, f32 x, f32 y, f32 z);                    
-extern bool func_8003F910(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextureEnd, u32 romIndexStart, u32 romIndexEnd, void* vaddrTextureStart, void* vaddrTextureEnd, void* vaddrIndexStart, void* vaddrIndexEnd, u32 argA, u16 offset, u8 flag, f32 x, f32 y, f32 z);
-extern bool func_8003FA1C(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextureEnd, u32 romAssetsIndexStart, u32 romAssetsIndexEnd, u32 romSpritesheetIndexStart, u32 romSpritesheetIndexEnd, void* vaddrTexture, void* vaddrTexture2, void* vaddrPalette, void* vaddrAnimation, void* vaddrSpriteToPalette, void* vaddrSpritesheetIndex, f32 x, f32 y, f32 z);          
+extern bool func_8003F80C(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextureEnd, u32 romIndexStart, u32 romIndexEnd, u8* vaddrTexture, u16* vaddrPalette, AnimationFrameMetadata* vaddrAnimationFrameMetadata, u8* vaddrTextureToPaletteLookup, u32 argA, u16 spriteOffset, u8 flag, f32 x, f32 y, f32 z);                    
+extern bool func_8003F910(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextureEnd, u32 romIndexStart, u32 romIndexEnd, u8* vaddrTexture, u16* vaddrPalette, AnimationFrameMetadata* vaddrAnimationFrameMetadata, u8* vaddrTextureToPaletteLookup, u32 argA, u16 offset, u8 flag, f32 x, f32 y, f32 z);
+extern bool func_8003FA1C(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextureEnd, u32 romAssetsIndexStart, u32 romAssetsIndexEnd, u32 romSpritesheetIndexStart, u32 romSpritesheetIndexEnd, u8* vaddrTexture, u8* vaddrTexture2, u16* vaddrPalette, void* vaddrAnimation, void* vaddrSpriteToPalette, void* vaddrSpritesheetIndex, f32 x, f32 y, f32 z);          
 extern void func_8003FAE8(u8* arg0);
 extern bool setMessageBoxButtonMask(u16, u16);                    
 extern bool func_8003FB4C(u16, s16);                      
@@ -293,8 +296,8 @@ extern void updateMessageBox();
 extern void updateDialogues();
 
 
-extern MessageBox messageBoxes[MAX_DIALOGUE_BOXES];
-extern TextAddresses textAddresses[MAX_TEXT_BANKS];
+extern MessageBox messageBoxes[MAX_MESSAGE_BOXES];
+extern TextAddresses textAddresses[TOTAL_TEXTS];
 
 extern CharacterAvatar characterAvatars[1];
 extern DialogueWindow dialogueWindows[3];

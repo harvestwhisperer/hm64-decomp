@@ -11,6 +11,9 @@
 
 #include "game/game.h"
 #include "game/gameStatus.h"
+#include "game/time.h"
+
+#include "assetIndices/sprites.h"
 
 #include "buffers/buffers.h"
 
@@ -31,7 +34,6 @@ static const u8 weatherForecastProbabilitiesAlternate[4][5];
 
 //INCLUDE_ASM("asm/nonmatchings/game/weather", setWeatherSprites);
 
-// load rain/snow sprites
 void setWeatherSprites(void) {
     
     u8 i;
@@ -44,14 +46,14 @@ void setWeatherSprites(void) {
     
     if (animationIndex != 0xFF) {
 
-        for (i = 0; i < 10; i++) {
+        for (i = 0; i < MAX_WEATHER_TEXTURES; i++) {
         
-            dmaSprite(0x6B + i, &_rainTextureSegmentRomStart, &_rainTextureSegmentRomEnd, &_rainAssetsIndexSegmentRomStart, &_rainAssetsIndexSegmentRomEnd, 0, 0, (void*)WEATHER_SPRITE_BUFFER, NULL, 0x802A5DC0, 0x802A5EC0, 0x802A5FC0, NULL, 0, TRUE);
-            setSpriteScale(0x6B + i, 1.0f, 1.0f, 1.0f);
-            setSpriteRenderingLayer(0x6B + i, 4);
-            setSpriteColor(0x6B + i, 0xFF, 0xFF, 0xFF, 0xFF);
+            dmaSprite(WEATHER_SPRITES_BASE + i, &_rainTextureSegmentRomStart, &_rainTextureSegmentRomEnd, &_rainAssetsIndexSegmentRomStart, &_rainAssetsIndexSegmentRomEnd, 0, 0, (void*)WEATHER_SPRITE_TEXTURE_BUFFER, NULL, WEATHER_SPRITE_PALETTE_BUFFER, WEATHER_SPRITE_ANIMATION_METADATA_BUFFER, WEATHER_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, TRUE);
+            setSpriteScale(WEATHER_SPRITES_BASE + i, 1.0f, 1.0f, 1.0f);
+            setSpriteRenderingLayer(WEATHER_SPRITES_BASE + i, 4);
+            setSpriteColor(WEATHER_SPRITES_BASE + i, 0xFF, 0xFF, 0xFF, 0xFF);
             
-            setMapWeatherSprite(MAIN_MAP_INDEX, i + 3, 0x6B + i, animationIndex);
+            setMapWeatherSprite(MAIN_MAP_INDEX, i + 3, WEATHER_SPRITES_BASE + i, animationIndex);
 
         }
     }

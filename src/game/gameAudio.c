@@ -355,6 +355,7 @@ void playSfx(u16 index) {
         setAudioSequenceVolumes(audioTypeTable[index], volumesTable[index], volumesTable[index]);
     
     }
+    
   }
   
 }

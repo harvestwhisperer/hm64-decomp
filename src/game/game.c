@@ -3,6 +3,7 @@
 #include "system/controller.h"
 #include "system/dialogue.h"
 #include "system/entity.h"
+#include "system/globalSprites.h"
 #include "system/graphic.h"
 #include "system/map.h"
 #include "system/mapController.h"
@@ -11,25 +12,31 @@
 #include "system/message.h"
 
 #include "game/animals.h"
+#include "game/cutscenes.h"
 #include "game/evaluation.h"
+#include "game/fieldObjects.h"
 #include "game/game.h"
 #include "game/gameAudio.h"
 #include "game/gameStatus.h"
-#include "game/transition.h"
-#include "game/itemHandlers.h"
+#include "game/items.h"
 #include "game/level.h"
-#include "mainLoop.h"
-#include "game/fieldObjects.h"
 #include "game/namingScreen.h"
 #include "game/npc.h"
 #include "game/player.h"
-#include "game/setCutscenes.h"
 #include "game/shop.h"
-#include "game/spriteIndices.h"
 #include "game/time.h"
+#include "game/transition.h"
 #include "game/weather.h"
 
+#include "mainLoop.h"
+
 #include "buffers/buffers.h"
+
+#include "assetIndices/cutscenes.h"
+#include "assetIndices/entities.h"
+#include "assetIndices/maps.h"
+#include "assetIndices/sfxs.h"
+#include "assetIndices/sprites.h"
 
 #include "ld_symbols.h"
 
@@ -122,7 +129,8 @@ extern u32 D_801890E0;
 
 // lighting values based on hour
 
-// FIXME: these could be D_80113B20[4][24] or struct { r[24]; g[24]; b[24]; a[24]; }
+// FIXME: these could be D_80113B20[4][24] or struct { r[24]; g[24]; b[24]; a[24]; 
+// TODO: label
 
 // sunny, weather type 4, typhoon
 // r values
@@ -1050,7 +1058,7 @@ inline void showTextBox(u16 messageBoxType, u16 dialogueInfoIndex, u16 dialogueI
 
     func_8003F360(0, -4, flags);
   
-    initializeMessageBox(MAIN_DIALOGUE_BOX_INDEX, dialogueInfoIndex, dialogueIndex, flag);
+    initializeMessageBox(MAIN_MESSAGE_BOX_INDEX, dialogueInfoIndex, dialogueIndex, flag);
   
     setMainLoopCallbackFunctionIndex(TEXT);
     
@@ -1343,6 +1351,7 @@ void func_8005CA2C(u16 arg0, u16 arg1) {
 
 void func_8005CA64(void) {
 
+    // handle cutscene completion
     func_800A8F74();
 
     if (checkMapRGBADone(MAIN_MAP_INDEX)) {
@@ -1355,6 +1364,7 @@ void func_8005CA64(void) {
 
 void func_8005CAA8(void) {
 
+    // handle cutscene completion
     func_800A8F74();
 
     if (checkMapRGBADone(MAIN_MAP_INDEX) && checkDefaultSequenceChannelOpen(gCurrentAudioSequenceIndex)) {
@@ -1415,8 +1425,8 @@ void func_8005CBF0(void) {
             gItemBeingHeld = 0xFF;
         }
          
-        func_8003F910(0, 0x78, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsAssetsIndexSegmentRomStart, &_dialogueIconsAssetsIndexSegmentRomEnd, (void*)DIALOGUE_ICON_TEXTURE_BUFFER, (void*)DIALOGUE_ICON_PALETTE_BUFFER, (void*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, (void*)DIALOGUE_ICON_SPRITESHEET_INDEX_BUFFER, 0, 4, 0xFE, 106.0f, -15.0f, 0.0f);
-        func_8003F910(1, 0x78, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsAssetsIndexSegmentRomStart, &_dialogueIconsAssetsIndexSegmentRomEnd, (void*)DIALOGUE_ICON_TEXTURE_BUFFER, (void*)DIALOGUE_ICON_PALETTE_BUFFER, (void*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, (void*)DIALOGUE_ICON_SPRITESHEET_INDEX_BUFFER, 0, 0xD, 0xFE, 106.0f, -15.0f, 0.0f);
+        func_8003F910(0, 0x78, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsAssetsIndexSegmentRomStart, &_dialogueIconsAssetsIndexSegmentRomEnd, (u8*)DIALOGUE_ICON_TEXTURE_BUFFER, (u16*)DIALOGUE_ICON_PALETTE_BUFFER, (AnimationFrameMetadata*)DIALOGUE_ICON_ANIMATION_METADATA_BUFFER, (u32*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 4, 0xFE, 106.0f, -15.0f, 0.0f);
+        func_8003F910(1, 0x78, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsAssetsIndexSegmentRomStart, &_dialogueIconsAssetsIndexSegmentRomEnd, (u8*)DIALOGUE_ICON_TEXTURE_BUFFER, (u16*)DIALOGUE_ICON_PALETTE_BUFFER, (AnimationFrameMetadata*)DIALOGUE_ICON_ANIMATION_METADATA_BUFFER, (u32*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 0xD, 0xFE, 106.0f, -15.0f, 0.0f);
        
         // update stuff after closing dialogue 
         func_8005CDCC();
@@ -1784,10 +1794,10 @@ void func_8005D2B0() {
                         showMessageBox(1, 1, 2, 0x80, 2);
                         break;
                     case 2:                                 
-                        setMainLoopCallbackFunctionIndex(0x19);
+                        setMainLoopCallbackFunctionIndex(ESTIMATE_LOAD);
                         break;
                     case 3:                                 
-                        setMainLoopCallbackFunctionIndex(0x1D);
+                        setMainLoopCallbackFunctionIndex(ALBUM_LOAD);
                         break;
                     case 4:                                 
                         setMainLoopCallbackFunctionIndex(MAIN_GAME);
@@ -2648,6 +2658,7 @@ void func_8005D2B0() {
 
                 case 0:                 
                 
+                    // TODO: could move this condition to a macro
                     if (calculateHouseExtensionScore() == 6 && checkLifeEventBit(MARRIED) && npcAffection[gWife] >= 250 && checkLifeEventBit(HAVE_BABY) && dogInfo.affection >= 200 && getSumNpcAffection() >= 2500 && getFarmGrassTilesSum() >= 384 && gMaximumStamina >= 190 && gHappiness >= 250 && func_8009B5E0() && D_801886D2 >= 10) {          
                         albumBits |= 0x8000;  
                     }
@@ -2677,8 +2688,9 @@ void func_80060454(void) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/game", func_80060490);
 
-// main loop callback; set cutscene prep
+// main loop callback
 void func_80060490(void) {
+    // handle cutscene completion
     func_800A8F74();
 } 
 
@@ -2689,26 +2701,26 @@ void func_800604B0(void) {
 
     if (checkMapRGBADone(MAIN_MAP_INDEX) || !(mainMap[MAIN_MAP_INDEX].mapState.flags & MAP_ACTIVE)) {
         
-        setMessageBoxViewSpacePosition(MAIN_DIALOGUE_BOX_INDEX, 0, -64.0f, 352.0f);
-        setMessageBoxSpriteIndices(MAIN_DIALOGUE_BOX_INDEX, 1, 0, 0);
-        func_8003F360(MAIN_DIALOGUE_BOX_INDEX, -4, 0);
+        setMessageBoxViewSpacePosition(MAIN_MESSAGE_BOX_INDEX, 0, -64.0f, 352.0f);
+        setMessageBoxSpriteIndices(MAIN_MESSAGE_BOX_INDEX, 1, 0, 0);
+        func_8003F360(MAIN_MESSAGE_BOX_INDEX, -4, 0);
         
         switch (gCutsceneIndex) {
             case 0x81 ... 0x82:
             case 0x8B:              
             case 0x195 ... 0x199:
-                initializeMessageBox(MAIN_DIALOGUE_BOX_INDEX, 4, 0x4D, 0);
+                initializeMessageBox(MAIN_MESSAGE_BOX_INDEX, 4, 0x4D, 0);
                 break;
             case SEA_FESTIVAL:
             case EGG_FESTIVAL:
             case NEW_YEAR_FESTIVAL:
-                initializeMessageBox(MAIN_DIALOGUE_BOX_INDEX, 4, 0x4A, 0);
+                initializeMessageBox(MAIN_MESSAGE_BOX_INDEX, 4, 0x4A, 0);
                 break;
             case 0x1A0:
-                initializeMessageBox(MAIN_DIALOGUE_BOX_INDEX, 4, 0x4C, 0);
+                initializeMessageBox(MAIN_MESSAGE_BOX_INDEX, 4, 0x4C, 0);
                 break;
             default:
-                initializeMessageBox(MAIN_DIALOGUE_BOX_INDEX, 4, 0x4B, 0);
+                initializeMessageBox(MAIN_MESSAGE_BOX_INDEX, 4, 0x4B, 0);
                 break;
         }
         

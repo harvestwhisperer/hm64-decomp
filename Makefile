@@ -346,7 +346,7 @@ check: $(TARGET)
 
 .PHONY: all clean clean-artifacts setup split submodules rebuild rerun check
 .PHONY: extract-sprites extract-animation-metadata extract-animation-scripts
-.PHONY: extract-animation-sprites extract-animations gifs
+.PHONY: extract-animation-sprites extract-animations extract-gifs
 .PHONY: extract-texts extract-dialogues extract-map-sprites extract-cutscenes
 
 # If needed, prevent Make from deleting intermediate .s files

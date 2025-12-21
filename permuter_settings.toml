@@ -1,4 +1,4 @@
-compiler_command = "./tools/gcc-2.7.2/gcc -B ./tools/gcc-2.7.2/ -O2 -G0 -mips3 -mgp32 -mfp32 -Wa,-Iinclude -D_LANGUAGE_C -D_MIPS_SZLONG=32 -D_MIPS_SZINT=32 -D_FINALROM -DSUPPORT_NAUDIO -DF3DEX_GBI_2 -g2 -I. -I include -I src -c"
+compiler_command = "./tools/gcc-2.7.2/gcc -B ./tools/gcc-2.7.2/ -O2 -G0 -mips3 -mgp32 -mfp32 -Wa,-Iinclude -D_LANGUAGE_C -D_MIPS_SZLONG=32 -D_MIPS_SZINT=32 -D_FINALROM -DSUPPORT_NAUDIO -DF3DEX_GBI_2 -g2 -nostdinc -I. -I include -I src -I lib/nusys-1/include -I lib/libultra/include -I lib/libultra/include/PR -I lib/libmus/include/PR -I lib/gcc/include -c"
 assembler_command = "mips-linux-gnu-as -G 0 -Iinclude -mips3 -mabi=32"
 
 compiler_type = "gcc"

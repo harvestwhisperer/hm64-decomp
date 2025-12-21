@@ -141,7 +141,7 @@ typedef struct {
 
     u8 padding_118[0x268];      // 0x118-0x37F
 
-    u8 toolchestSlots[32];      // 0x380-0x39F
+    u8 toolboxSlots[32];      // 0x380-0x39F
     u8 unk_3A0[32];             // 0x3A0-0x3BF (D_80237420)
     u8 unk_3C0[32];             // 0x3C0-0x3DF (D_801890E8)
 

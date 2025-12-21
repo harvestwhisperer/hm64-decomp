@@ -133,7 +133,7 @@ bool dmaSprite(u16 index,
     u32 romAssetsIndexStart, u32 romAssetsIndexEnd, 
     u32 romSpritesheetIndexStart, u32 romSpritesheetIndexEnd, 
     u8* texture1Vaddr, u8* texture2Vaddr, 
-    u16* paletteVaddr, u16* animationVaddr, 
+    u16* paletteVaddr, AnimationFrameMetadata* animationVaddr, 
     u8* spriteToPaletteVaddr, u32* spritesheetIndexVaddr, 
     u8 assetType, bool transformExempt) {
 
