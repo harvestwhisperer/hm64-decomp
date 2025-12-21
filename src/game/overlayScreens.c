@@ -9577,7 +9577,7 @@ void func_800CE894(u8 arg0) {
 /* end horse/dog race functions */
 
 
-/* lottery/raffle */
+/* lottery/raffle */ 
 
 //INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800CE930);
 

@@ -31,8 +31,8 @@ void initializeOverlayScreenSprites(void) {
 //INCLUDE_ASM("asm/nonmatchings/system/overlayScreenSprites", func_80045E20);
 
 bool func_80045E20(u16 index, u16 spriteIndex, u32 romSpritesheetStart, u32 romSpritesheetEnd, u32 romAssetsIndexStart, u32 romAssetsIndexEnd, 
-    void *vaddrSpritesheet, void *vaddrPalette, void *vaddrUnknownAssetSheet, void *vaddrUnknownAsset2, 
-    u32 argA, u16 argB, u8 argC, f32 x, f32 y, f32 z, u8 arg10) {
+    u8 *vaddrTexture, u16 *vaddrPalette, AnimationFrameMetadata *vaddrAnimationFrameMetadata, u32 *spriteToPaletteVaddr, 
+    u32 *spritesheetIndexVaddr, u16 argB, u8 argC, f32 x, f32 y, f32 z, u8 arg10) {
     
     bool result = FALSE;
                     
@@ -47,12 +47,11 @@ bool func_80045E20(u16 index, u16 spriteIndex, u32 romSpritesheetStart, u32 romS
             overlayScreenSprites[index].romAssetsIndexStart = romAssetsIndexStart;
             overlayScreenSprites[index].romAssetsIndexEnd = romAssetsIndexEnd;
 
-            overlayScreenSprites[index].vaddrSpritesheet = vaddrSpritesheet;
+            overlayScreenSprites[index].vaddrTexture = vaddrTexture;
             overlayScreenSprites[index].vaddrPalette = vaddrPalette;
-            overlayScreenSprites[index].vaddrUnknownAssetSheet = vaddrUnknownAssetSheet;
-            overlayScreenSprites[index].vaddrUnknownAsset2 = vaddrUnknownAsset2;
-
-            overlayScreenSprites[index].unk_20 = argA;
+            overlayScreenSprites[index].vaddrAnimationFrameMetadata = vaddrAnimationFrameMetadata;
+            overlayScreenSprites[index].spriteToPaletteVaddr = spriteToPaletteVaddr;
+            overlayScreenSprites[index].spritesheetIndexVaddr = spritesheetIndexVaddr;
             
             overlayScreenSprites[index].specialItemPages = argB;
             
@@ -101,16 +100,16 @@ bool dmaOverlayScreenSprites(u16 index, u32 arg1, u8 arg2, u16 flag) {
                     overlayScreenSprites[index].romSpritesheetEnd, 
                     overlayScreenSprites[index].romAssetsIndexStart, 
                     overlayScreenSprites[index].romAssetsIndexEnd, 
-                    0, 
-                    0, 
-                    overlayScreenSprites[index].vaddrSpritesheet, 
+                    NULL, 
+                    NULL, 
+                    overlayScreenSprites[index].vaddrTexture, 
                     0, 
                     overlayScreenSprites[index].vaddrPalette, 
-                    overlayScreenSprites[index].vaddrUnknownAssetSheet, 
-                    overlayScreenSprites[index].vaddrUnknownAsset2, 
-                    overlayScreenSprites[index].unk_20, 
+                    overlayScreenSprites[index].vaddrAnimationFrameMetadata, 
+                    overlayScreenSprites[index].spriteToPaletteVaddr, 
+                    overlayScreenSprites[index].spritesheetIndexVaddr, 
                     0, 
-                    0);
+                    FALSE);
                 
                 check = count--;
                 
