@@ -5,7 +5,7 @@
 #include "game/fieldObjects.h"
 #include "game/npc.h"
 
-// bss
+// bss (shared)
 
 extern u16 D_8013D438;
 // field score
@@ -13,6 +13,7 @@ extern u16 D_8013D438;
 // grass score
 extern u16 D_80205638;
 
+// cutscene wildcard variable
 // shipping score
 extern u16 D_80189824;
 // combined shipping totals
@@ -104,7 +105,7 @@ u16 calculateGrassScore(void) {
         }
     }
 
-  return score;
+    return score;
 
 }
 

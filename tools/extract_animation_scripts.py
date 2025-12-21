@@ -39,6 +39,7 @@ def read_slice_as_u16(romf, start: int, end: int) -> np.ndarray:
     return np.frombuffer(buf, dtype=dtype)
 
 def write_c_file(label: str, entries: List[str], out_dir: str):
+    
     body_lines = []
     line_buf = []
 
@@ -63,6 +64,7 @@ def write_c_file(label: str, entries: List[str], out_dir: str):
     print(f"Wrote {out_path}")
 
 def decode_values(u16s: np.ndarray) -> List[str]:
+
     total = len(u16s)
 
     metadata_offsets = (u16s & MASK_METADATA_OFFSET).astype(np.uint16)
@@ -91,6 +93,7 @@ def decode_values(u16s: np.ndarray) -> List[str]:
     return out
 
 def main():
+
     with open(rom, "rb") as f, open(animation_addresses_csv, newline="") as csvf:
 
         reader = csv.reader(csvf)

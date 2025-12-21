@@ -9,6 +9,8 @@
 // 4 = unused rain
 #define TYPHOON 5
 
+#define MAX_WEATHER_TEXTURES 10
+
 extern void setWeatherSprites(void);
 
 extern void setForecast(void);

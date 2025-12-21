@@ -7,6 +7,7 @@
 #define BELONGINGS 6
 #define KEY_ITEMS 7
 
+// 0x801FB6F0
 typedef struct {
     u8 cellIndex;
     u8 previousCellIndex;
@@ -14,12 +15,13 @@ typedef struct {
     u8 unk_3;
     u8 unk_4;
     u8 unk_5;
-    u8 subscreen;
+    u8 currentAction;
     u8 unk_7;
     u8 unk_8;
     u8 unk_9;
     u8 unk_A;
     u8 unk_B;
+    u8 unk_C;
 } OverlayScreenTable;
 
 // 0x801C3DA0
@@ -64,7 +66,39 @@ extern void func_800CB0C4(void);
 extern void func_800CB8F0(void);
 extern void func_800CC17C(void); 
 extern bool func_800CE714(bool);
-extern bool func_800CE828(bool);  
+extern bool func_800CE828(bool); 
+
+// main loop callback functions
+extern void func_800B8018();
+extern void func_800B815C();
+extern void func_800B82AC();
+extern void func_800B83F0();
+extern void func_800B8554();
+extern void func_800B86B8();
+extern void func_800B881C();
+extern void func_800B9D3C();
+extern void func_800BADD0();
+extern void func_800BBEC0();
+extern void func_800BCA9C();
+extern void func_800BDB24();
+extern void func_800BE808();
+extern void func_800BF990();
+extern void func_800C1124();
+extern void func_800C224C();
+extern void func_800C2B8C();
+extern void func_800C3D20();
+extern void func_800C53C0();
+extern void func_800C7058();
+extern void func_800C8424();
+extern void func_800C8784();
+extern void func_800C88F4();
+extern void func_800CA808();
+extern void func_800CC518();
+extern void func_800CD750();
+extern void func_800CD928();
+extern void func_800CE068();
+extern void func_800CE930();
+extern void func_800CEDF0();
 
 extern u8 D_801890E8[31];
 // calendar

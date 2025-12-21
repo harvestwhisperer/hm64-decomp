@@ -5,21 +5,29 @@
 #include "ld_symbols.h"
 
 #include "system/entity.h"
+#include "system/globalSprites.h"
 #include "system/map.h"
 #include "system/memory.h"
-#include "system/globalSprites.h"
 #include "system/mapController.h"
 
 #include "game/animals.h"
+#include "game/cutscenes.h"      
 #include "game/game.h"
 #include "game/gameAudio.h"
 #include "game/gameStatus.h"
 #include "game/fieldObjects.h"   
 #include "game/npc.h"
-#include "game/setCutscenes.h"        
-#include "game/shop.h"            
-#include "game/spriteIndices.h"                                                 
+#include "game/shop.h"
+#include "game/time.h"     
 #include "game/weather.h"      
+
+#include "buffers/buffers.h"
+
+#include "assetIndices/cutscenes.h"
+#include "assetIndices/maps.h"
+#include "assetIndices/sequences.h"
+#include "assetIndices/sfxs.h"
+#include "assetIndices/sprites.h"  
 
 // shared bss
 extern u8 groundObjectsGridX;
@@ -516,54 +524,55 @@ void func_8006EC58(u16 mapIndex) {
         case FARM:
             groundObjectsGridX = 0xE;
             groundObjectsGridZ = 0xB;
-            loadGroundObjects(MAIN_MAP_INDEX, 0xE, 0xB, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &_groundObjectsTextureSegmentRomStart, &_groundObjectsTextureSegmentRomEnd, &_groundObjectsIndexSegmentRomStart, &_groundObjectsIndexSegmentRomEnd, 0x60); 
+            loadGroundObjects(MAIN_MAP_INDEX, 0xE, 0xB, (u8*)GROUND_OBJECT_1_TEXTURE_BUFFER, (u16*)GROUND_OBJECT_1_PALETTE_BUFFER, (u32*)GROUND_OBJECT_1_SPRITE_TO_PALETTE_LOOKUP_BUFFER, &_groundObjectsTextureSegmentRomStart, &_groundObjectsTextureSegmentRomEnd, &_groundObjectsIndexSegmentRomStart, &_groundObjectsIndexSegmentRomEnd, 0x60); 
             break;
         case GREENHOUSE:
             groundObjectsGridX = 1;
             groundObjectsGridZ = 1;
-            loadGroundObjects(MAIN_MAP_INDEX, 1, 1, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &_groundObjectsTextureSegmentRomStart, &_groundObjectsTextureSegmentRomEnd, &_groundObjectsIndexSegmentRomStart, &_groundObjectsIndexSegmentRomEnd, 2); 
+            loadGroundObjects(MAIN_MAP_INDEX, 1, 1, (u8*)GROUND_OBJECT_1_TEXTURE_BUFFER, (u16*)GROUND_OBJECT_1_PALETTE_BUFFER, (u32*)GROUND_OBJECT_1_SPRITE_TO_PALETTE_LOOKUP_BUFFER, &_groundObjectsTextureSegmentRomStart, &_groundObjectsTextureSegmentRomEnd, &_groundObjectsIndexSegmentRomStart, &_groundObjectsIndexSegmentRomEnd, 2); 
             break;            
         case MOUNTAIN_1:
             groundObjectsGridX = 5;
             groundObjectsGridZ = 0;
-            loadGroundObjects(MAIN_MAP_INDEX, 5, 0, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &_groundObjectsTextureSegmentRomStart, &_groundObjectsTextureSegmentRomEnd, &_groundObjectsIndexSegmentRomStart, &_groundObjectsIndexSegmentRomEnd, 0); 
+            loadGroundObjects(MAIN_MAP_INDEX, 5, 0, (u8*)GROUND_OBJECT_1_TEXTURE_BUFFER, (u16*)GROUND_OBJECT_1_PALETTE_BUFFER, (u32*)GROUND_OBJECT_1_SPRITE_TO_PALETTE_LOOKUP_BUFFER, &_groundObjectsTextureSegmentRomStart, &_groundObjectsTextureSegmentRomEnd, &_groundObjectsIndexSegmentRomStart, &_groundObjectsIndexSegmentRomEnd, 0); 
             break;    
         case MOUNTAIN_2:
             groundObjectsGridX = 3;
             groundObjectsGridZ = 5;
-            loadGroundObjects(MAIN_MAP_INDEX, 3, 5, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &_groundObjectsTextureSegmentRomStart, &_groundObjectsTextureSegmentRomEnd, &_groundObjectsIndexSegmentRomStart, &_groundObjectsIndexSegmentRomEnd, 0); 
+            loadGroundObjects(MAIN_MAP_INDEX, 3, 5, (u8*)GROUND_OBJECT_1_TEXTURE_BUFFER, (u16*)GROUND_OBJECT_1_PALETTE_BUFFER, (u32*)GROUND_OBJECT_1_SPRITE_TO_PALETTE_LOOKUP_BUFFER, &_groundObjectsTextureSegmentRomStart, &_groundObjectsTextureSegmentRomEnd, &_groundObjectsIndexSegmentRomStart, &_groundObjectsIndexSegmentRomEnd, 0); 
             break;  
         case TOP_OF_MOUNTAIN_1:
             groundObjectsGridX = 5;
             groundObjectsGridZ = 0;
-            loadGroundObjects(MAIN_MAP_INDEX, 5, 0, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &_groundObjectsTextureSegmentRomStart, &_groundObjectsTextureSegmentRomEnd, &_groundObjectsIndexSegmentRomStart, &_groundObjectsIndexSegmentRomEnd, 0); 
+            loadGroundObjects(MAIN_MAP_INDEX, 5, 0, (u8*)GROUND_OBJECT_1_TEXTURE_BUFFER, (u16*)GROUND_OBJECT_1_PALETTE_BUFFER, (u32*)GROUND_OBJECT_1_SPRITE_TO_PALETTE_LOOKUP_BUFFER, &_groundObjectsTextureSegmentRomStart, &_groundObjectsTextureSegmentRomEnd, &_groundObjectsIndexSegmentRomStart, &_groundObjectsIndexSegmentRomEnd, 0); 
             break;  
         case MOON_MOUNTAIN:
             groundObjectsGridX = 5;
             groundObjectsGridZ = 0;
-            loadGroundObjects(MAIN_MAP_INDEX, 5, 0, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &_groundObjectsTextureSegmentRomStart, &_groundObjectsTextureSegmentRomEnd, &_groundObjectsIndexSegmentRomStart, &_groundObjectsIndexSegmentRomEnd, 0); 
+            loadGroundObjects(MAIN_MAP_INDEX, 5, 0, (u8*)GROUND_OBJECT_1_TEXTURE_BUFFER, (u16*)GROUND_OBJECT_1_PALETTE_BUFFER, (u32*)GROUND_OBJECT_1_SPRITE_TO_PALETTE_LOOKUP_BUFFER, &_groundObjectsTextureSegmentRomStart, &_groundObjectsTextureSegmentRomEnd, &_groundObjectsIndexSegmentRomStart, &_groundObjectsIndexSegmentRomEnd, 0); 
             break;                            
         case POND:
             groundObjectsGridX = 5;
             groundObjectsGridZ = 0;
-            loadGroundObjects(MAIN_MAP_INDEX, 5, 0, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &_groundObjectsTextureSegmentRomStart, &_groundObjectsTextureSegmentRomEnd, &_groundObjectsIndexSegmentRomStart, &_groundObjectsIndexSegmentRomEnd, 0); 
+            loadGroundObjects(MAIN_MAP_INDEX, 5, 0, (u8*)GROUND_OBJECT_1_TEXTURE_BUFFER, (u16*)GROUND_OBJECT_1_PALETTE_BUFFER, (u32*)GROUND_OBJECT_1_SPRITE_TO_PALETTE_LOOKUP_BUFFER, &_groundObjectsTextureSegmentRomStart, &_groundObjectsTextureSegmentRomEnd, &_groundObjectsIndexSegmentRomStart, &_groundObjectsIndexSegmentRomEnd, 0); 
             break;          
         case CAVE:
             groundObjectsGridX = 0;
             groundObjectsGridZ = 0;
-            loadGroundObjects(MAIN_MAP_INDEX, 0, 0, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &_groundObjectsTextureSegmentRomStart, &_groundObjectsTextureSegmentRomEnd, &_groundObjectsIndexSegmentRomStart, &_groundObjectsIndexSegmentRomEnd, 0); 
+            loadGroundObjects(MAIN_MAP_INDEX, 0, 0, (u8*)GROUND_OBJECT_1_TEXTURE_BUFFER, (u16*)GROUND_OBJECT_1_PALETTE_BUFFER, (u32*)GROUND_OBJECT_1_SPRITE_TO_PALETTE_LOOKUP_BUFFER, &_groundObjectsTextureSegmentRomStart, &_groundObjectsTextureSegmentRomEnd, &_groundObjectsIndexSegmentRomStart, &_groundObjectsIndexSegmentRomEnd, 0); 
             break;    
         case MINE:                                      
         case MINE_2:        
             groundObjectsGridX = 2;
             groundObjectsGridZ = 2;
-            loadGroundObjects(MAIN_MAP_INDEX, 2, 2, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &_groundObjectsTextureSegmentRomStart, &_groundObjectsTextureSegmentRomEnd, &_groundObjectsIndexSegmentRomStart, &_groundObjectsIndexSegmentRomEnd, 0); 
+            loadGroundObjects(MAIN_MAP_INDEX, 2, 2, (u8*)GROUND_OBJECT_1_TEXTURE_BUFFER, (u16*)GROUND_OBJECT_1_PALETTE_BUFFER, (u32*)GROUND_OBJECT_1_SPRITE_TO_PALETTE_LOOKUP_BUFFER, &_groundObjectsTextureSegmentRomStart, &_groundObjectsTextureSegmentRomEnd, &_groundObjectsIndexSegmentRomStart, &_groundObjectsIndexSegmentRomEnd, 0); 
             break;    
         case RANCH:
             groundObjectsGridX = 0x10;
             groundObjectsGridZ = 0xA;
-            loadGroundObjects(MAIN_MAP_INDEX, 0x10, 0xA, (void*)0x802EB800, (void*)0x802F2800, (void*)0x802F3100, &_groundObjectsTextureSegmentRomStart, &_groundObjectsTextureSegmentRomEnd, &_groundObjectsIndexSegmentRomStart, &_groundObjectsIndexSegmentRomEnd, 0); 
+            loadGroundObjects(MAIN_MAP_INDEX, 0x10, 0xA, (u8*)GROUND_OBJECT_1_TEXTURE_BUFFER, (u16*)GROUND_OBJECT_1_PALETTE_BUFFER, (u32*)GROUND_OBJECT_1_SPRITE_TO_PALETTE_LOOKUP_BUFFER, &_groundObjectsTextureSegmentRomStart, &_groundObjectsTextureSegmentRomEnd, &_groundObjectsIndexSegmentRomStart, &_groundObjectsIndexSegmentRomEnd, 0); 
             break;   
+            
     }
 
     switch (mapIndex) {

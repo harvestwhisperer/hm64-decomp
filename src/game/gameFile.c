@@ -1,6 +1,6 @@
 #include "common.h"
 
-#include "game/loadGameScreen.h"
+#include "game/gameFile.h"
 
 #include "system/controller.h"
 #include "system/globalSprites.h"
@@ -13,7 +13,7 @@
 #include "game/gameAudio.h"
 #include "game/gameStart.h"
 #include "game/gameStatus.h"
-#include "game/itemHandlers.h"
+#include "game/items.h"
 #include "game/level.h"
 #include "game/npc.h"
 #include "game/overlayScreens.h"
@@ -67,14 +67,14 @@ extern u32 D_8016FFF0;
 extern u32 D_8016FFF4;
 
 // FIXME: convert to struct
-// evaluation screen struct
+// farm ranking screen struct
 // strings
 // player abbreviated name
 extern u8 D_801FB708[5][6];
 extern u8 D_801FB726[6];
 extern u8 D_801FB72C[];
 extern u8 D_801FB730[];
-// player name in individual farm completion screen
+// player name in individual farm farm ranking screen
 extern u8 D_801FB732[5][6];
 // player name
 extern u8 D_801FB750[6];
@@ -99,7 +99,7 @@ extern u8 D_801FB7FE[6];
 extern u8 D_801FB804[5];
 // year
 extern u8 D_801FB809;
-// sprite animation mode (animationModeOrFrameIndex)
+// season
 extern u8 D_801FB80B[5];
 // season
 extern u8 D_801FB810;
@@ -145,7 +145,7 @@ extern u8 D_801FB864;
 extern u8 D_801FB866[];
 // dog affection
 extern u8 D_801FB86B;
-// sprite animation mode (animationModeOrFrameIndex)
+// affection level to show number of hearts (for finding animation frame)
 extern u8 D_801FB86D[];
 extern u8 D_801FB971[];
 // horse affection
@@ -189,23 +189,27 @@ extern u8 D_801FB94E[];
 extern u8 D_801FB953;
 // album bits
 extern u8 D_801FB955[];
-// sprite animation mode (animationModeOrFrameIndex)
+// wife affection
 extern u8 D_801FB858[];
 // recipe count
 extern u8 D_801FB95C[];
+// baby affection level
 extern u8 D_801FB85F[];
 // house extension count
 extern u8 D_801FB963[];
 // sprite animation mode (animationModeOrFrameIndex)
 extern u8 D_801FB866[];
 extern u8 D_801FB96A[];
+// horse affection level
 extern u8 D_801FB86D[];
 // happiness
 extern u8 D_801FB96F;
-// sprite animation mode (animationModeOrFrameIndex)
+// wife
+// frame index
 extern u8 D_801FB971[];
 // wife index
 extern u8 D_801FB976;
+// scores/percents
 extern f32 D_801FB978[5];
 // flags
 extern u8 D_801FB994[];
@@ -213,11 +217,11 @@ extern u8 D_801FB994[];
 extern u8 D_801FB999[];
 // UI element index
 // index into D_801FB994
-// param for func_800B7F6C; index into D_80116DC0
+// param for func_800B7F6C; index into farmRankingsCursorHandXPositions
 // param for func_800E80AC
 // param for func_800B7070
 extern u8 D_801FB99B[];
-// evaluation screen handler mode
+// farm ranking screen handler mode
 extern u8 D_801FB9A0;
 
 // unused
@@ -233,7 +237,7 @@ extern u8 gGlobalSeasonName[6];
 // "PACKINSOFT FARM2" in ASCII
 u8 D_80119740[16] = { 0x50, 0x41, 0x43, 0x4B, 0x49, 0x4E, 0x53, 0x4F, 0x46, 0x54, 0x20, 0x46, 0x41, 0x52, 0x4D, 0x32 };
 
-//INCLUDE_ASM("asm/nonmatchings/game/loadGameScreen", func_800E1380);
+//INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800E1380);
 
 void func_800E1380(u8 controllerPakEnabled) {
     
@@ -321,7 +325,7 @@ void func_800E1380(u8 controllerPakEnabled) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/loadGameScreen", func_800E16A0);
+//INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800E16A0);
 
 void func_800E16A0(void) {
 
@@ -334,7 +338,7 @@ void func_800E16A0(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/loadGameScreen", func_800E16D0);
+//INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800E16D0);
 
 void func_800E16D0(u8 arg0, u8 arg1) {
 
@@ -397,7 +401,7 @@ void func_800E16D0(u8 arg0, u8 arg1) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/loadGameScreen", func_800E1998);
+//INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800E1998);
 
 void func_800E1998(void) {
 
@@ -433,7 +437,7 @@ void func_800E1998(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/loadGameScreen", func_800E1A94);
+//INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800E1A94);
 
 void func_800E1A94(void) {
 
@@ -450,7 +454,7 @@ void func_800E1A94(void) {
             setMessageBoxSpriteIndices(0, 0xFF, 0, 0);
             setMessageBoxButtonMask(0, BUTTON_A);
             func_8003FB4C(0, 1);
-            initializeMessageBox(MAIN_DIALOGUE_BOX_INDEX, 0, 1, 0x80000);
+            initializeMessageBox(MAIN_MESSAGE_BOX_INDEX, 0, 1, 0x80000);
         }
 
         if (loadGameScreenContext.flags[1] & 1) {
@@ -508,7 +512,7 @@ void func_800E1A94(void) {
             setMessageBoxSpriteIndices(0, 0xFF, 0, 0);
             setMessageBoxButtonMask(0, BUTTON_A);
             func_8003FB4C(0, 1);
-            initializeMessageBox(MAIN_DIALOGUE_BOX_INDEX, 0, 1, 0x80000);
+            initializeMessageBox(MAIN_MESSAGE_BOX_INDEX, 0, 1, 0x80000);
         }
         
         if (loadGameScreenContext.flags[1] & 1) {
@@ -529,8 +533,9 @@ void func_800E1A94(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/loadGameScreen", func_800E1FAC);
+//INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800E1FAC);
 
+// load game/select game screen callback
 void func_800E1FAC(void) {
 
     bool set = FALSE;
@@ -643,15 +648,15 @@ void func_800E1FAC(void) {
                 }
             }
             
-            func_800B60E4(0, 0xFF, 0);
-            func_800B60E4(1, 0xFF, 0);
-            func_800B60E4(2, 0xFF, 0);
-            func_800B60E4(3, 0xFF, 0);
-            func_800B60E4(0xFF, 0, 0);
-            func_800B60E4(0xFF, 1, 0);
-            func_800B60E4(0xFF, 2, 0);
+            func_800B60E4(0, 0xFF, FALSE);
+            func_800B60E4(1, 0xFF, FALSE);
+            func_800B60E4(2, 0xFF, FALSE);
+            func_800B60E4(3, 0xFF, FALSE);
+            func_800B60E4(0xFF, 0, FALSE);
+            func_800B60E4(0xFF, 1, FALSE);
+            func_800B60E4(0xFF, 2, FALSE);
             
-            func_800B60E4(loadGameScreenContext.diaryHighlighted, 0xFF, 1);
+            func_800B60E4(loadGameScreenContext.diaryHighlighted, 0xFF, TRUE);
             func_800B5FC4(0, loadGameScreenContext.diaryHighlighted, 0xFF);
             
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
@@ -729,15 +734,15 @@ void func_800E1FAC(void) {
                 }
             }
             
-            func_800B60E4(0, 0xFF, 0);
-            func_800B60E4(1, 0xFF, 0);
-            func_800B60E4(2, 0xFF, 0);
-            func_800B60E4(3, 0xFF, 0);
-            func_800B60E4(0xFF, 0, 0);
-            func_800B60E4(0xFF, 1, 0);
-            func_800B60E4(0xFF, 2, 0);
+            func_800B60E4(0, 0xFF, FALSE);
+            func_800B60E4(1, 0xFF, FALSE);
+            func_800B60E4(2, 0xFF, FALSE);
+            func_800B60E4(3, 0xFF, FALSE);
+            func_800B60E4(0xFF, 0, FALSE);
+            func_800B60E4(0xFF, 1, FALSE);
+            func_800B60E4(0xFF, 2, FALSE);
             
-            func_800B60E4(0xFF, loadGameScreenContext.actionColumnHighlighted, 1);
+            func_800B60E4(0xFF, loadGameScreenContext.actionColumnHighlighted, TRUE);
             func_800B5FC4(0, 0xFF, loadGameScreenContext.actionColumnHighlighted);
             
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
@@ -764,7 +769,7 @@ void func_800E1FAC(void) {
                             func_8003EA1C(1, 0, 0, 0, 0, 0x18);
                             func_8003EA1C(2, 0, 0, 0, 0, 0x18);
                             func_8003EA1C(3, 0, 0, 0, 0, 0x18);
-                            // load completion screen
+                            // load farm ranking screen
                             loadGameScreenContext.action = 10;
                             playSfx(0);
                             break;
@@ -873,11 +878,11 @@ void func_800E1FAC(void) {
                 
             }
     
-            func_800B60E4(0, 0xFF, 0);
-            func_800B60E4(1, 0xFF, 0);
-            func_800B60E4(2, 0xFF, 0);
-            func_800B60E4(3, 0xFF, 0);
-            func_800B60E4(loadGameScreenContext.diaryHighlighted, 0xFF, 1);
+            func_800B60E4(0, 0xFF, FALSE);
+            func_800B60E4(1, 0xFF, FALSE);
+            func_800B60E4(2, 0xFF, FALSE);
+            func_800B60E4(3, 0xFF, FALSE);
+            func_800B60E4(loadGameScreenContext.diaryHighlighted, 0xFF, TRUE);
             func_800B5FC4(0, loadGameScreenContext.diaryHighlighted, 0xFF);
 
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
@@ -983,11 +988,11 @@ void func_800E1FAC(void) {
                 
             }
 
-            func_800B60E4(0, 0xFF, 0);
-            func_800B60E4(1, 0xFF, 0);
-            func_800B60E4(2, 0xFF, 0);
-            func_800B60E4(3, 0xFF, 0);
-            func_800B60E4(loadGameScreenContext.diaryHighlighted, 0xFF, 1);
+            func_800B60E4(0, 0xFF, FALSE);
+            func_800B60E4(1, 0xFF, FALSE);
+            func_800B60E4(2, 0xFF, FALSE);
+            func_800B60E4(3, 0xFF, FALSE);
+            func_800B60E4(loadGameScreenContext.diaryHighlighted, 0xFF, TRUE);
             func_800B5FC4(0, loadGameScreenContext.diaryHighlighted, 0xFF);
             
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
@@ -1113,11 +1118,11 @@ void func_800E1FAC(void) {
             
             }
             
-            func_800B60E4(0, 0xFF, 0);
-            func_800B60E4(1, 0xFF, 0);
-            func_800B60E4(2, 0xFF, 0);
-            func_800B60E4(3, 0xFF, 0);
-            func_800B60E4(loadGameScreenContext.diaryHighlighted, 0xFF, 1);
+            func_800B60E4(0, 0xFF, FALSE);
+            func_800B60E4(1, 0xFF, FALSE);
+            func_800B60E4(2, 0xFF, FALSE);
+            func_800B60E4(3, 0xFF, FALSE);
+            func_800B60E4(loadGameScreenContext.diaryHighlighted, 0xFF, TRUE);
             func_800B5FC4(0, loadGameScreenContext.diaryHighlighted, 0xFF);
             
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
@@ -1236,7 +1241,7 @@ void func_800E1FAC(void) {
             
             break;
             
-        // completion screen
+        // farm ranking screen
         case 10:
             
             if (func_8002CBF8(0x80)) {
@@ -1251,7 +1256,7 @@ void func_800E1FAC(void) {
                 func_8003DD14(2);
                 func_8003DD14(3);
 
-                loadCompletionScreen();
+                loadFarmRankingScreen();
 
             }
             
@@ -1271,7 +1276,7 @@ void func_800E1FAC(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/loadGameScreen", func_800E3300);
+//INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800E3300);
 
 // verify signature
 inline bool func_800E3300(u8 arg0[]) {
@@ -1295,7 +1300,7 @@ inline bool func_800E3300(u8 arg0[]) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/loadGameScreen", func_800E3358);
+//INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800E3358);
 
 void func_800E3358(u8 arg0, u8 arg1, u8 arg2) {
 
@@ -1442,7 +1447,7 @@ void func_800E3358(u8 arg0, u8 arg1, u8 arg2) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/loadGameScreen", func_800E38E8);
+//INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800E38E8);
 
 // calculate
 inline u16 func_800E38E8(u8 arg0[]) {
@@ -1461,7 +1466,7 @@ inline u16 func_800E38E8(u8 arg0[]) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/loadGameScreen", func_800E391C);
+//INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800E391C);
 
 // verify checksum
 inline u16 func_800E391C(u8* arg0) {
@@ -1480,7 +1485,7 @@ inline u16 func_800E391C(u8* arg0) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/loadGameScreen", func_800E395C);
+//INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800E395C);
 
 // calculate checksum
 inline u16 func_800E395C(u8 arg0[]) {
@@ -1499,7 +1504,7 @@ inline u16 func_800E395C(u8 arg0[]) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/loadGameScreen", func_800E3990);
+//INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800E3990);
 
 // verify checksum
 inline u16 func_800E3990(u8 arg0[]) {
@@ -1518,7 +1523,7 @@ inline u16 func_800E3990(u8 arg0[]) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/loadGameScreen", initializeNewGameState);
+//INCLUDE_ASM("asm/nonmatchings/game/gameFile", initializeNewGameState);
 
 void initializeNewGameState(void) {
 
@@ -1697,7 +1702,7 @@ void initializeNewGameState(void) {
     D_8016FFF4 = 0;
 
     for (j = 0; j < 32; j++) {
-        gToolchestSlots[j] = 0;
+        gToolboxSlots[j] = 0;
     }
 
     for (j = 0; j < 32; j++) {
@@ -1860,7 +1865,7 @@ void initializeNewGameState(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/loadGameScreen", func_800E4424);
+//INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800E4424);
 
 // set game state globals from sram
 bool func_800E4424(u8 saveSlot, u8 arg1) {
@@ -2059,7 +2064,7 @@ bool func_800E4424(u8 saveSlot, u8 arg1) {
     D_8016FFF4 = buff->unk_114;
 
     for (i = 0; i < 32; i++) {
-        gToolchestSlots[i] = *((u8*)buff + 0x380 + i);
+        gToolboxSlots[i] = *((u8*)buff + 0x380 + i);
     }
 
     for (i = 0; i < 32; i++) {
@@ -2233,7 +2238,7 @@ bool func_800E4424(u8 saveSlot, u8 arg1) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/loadGameScreen", func_800E53E8);
+//INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800E53E8);
 
 // save game state to sram
 bool func_800E53E8(u8 saveSlot) {
@@ -2431,7 +2436,7 @@ bool func_800E53E8(u8 saveSlot) {
     sramBuffer.unk_114 = D_8016FFF4;
 
     for (i = 0; i < 32; i++) {
-        *((u8*)buff + 0x380 + i) = gToolchestSlots[i];
+        *((u8*)buff + 0x380 + i) = gToolboxSlots[i];
     }
 
     for (i = 0; i < 32; i++) {
@@ -2612,7 +2617,7 @@ bool func_800E53E8(u8 saveSlot) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/loadGameScreen", func_800E66A0);
+//INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800E66A0);
 
 void func_800E66A0(u8 saveSlot, u8 arg1, u8 arg2, u8 arg3) {
 
@@ -2656,7 +2661,7 @@ void func_800E66A0(u8 saveSlot, u8 arg1, u8 arg2, u8 arg3) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/loadGameScreen", func_800E67E4);
+//INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800E67E4);
 
 void func_800E67E4(u8 saveSlot, u8 arg1) {
 
@@ -2699,9 +2704,9 @@ void func_800E67E4(u8 saveSlot, u8 arg1) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/loadGameScreen", loadCompletionScreen);
+//INCLUDE_ASM("asm/nonmatchings/game/gameFile", loadFarmRankingScreen);
 
-void loadCompletionScreen(void) {
+void loadFarmRankingScreen(void) {
 
     u8 i = 0;
 
@@ -2717,7 +2722,7 @@ void loadCompletionScreen(void) {
     setGameVariableString(3, (u8*)&D_801FB708[3], 6);
     setGameVariableString(4, (u8*)&D_801FB708[4], 6);
     
-    // load game state from sram and write completion screen strings
+    // load game state from sram and write farm ranking screen strings
     func_800E9550(0);
     func_800E9550(1);
     func_800E9550(2);
@@ -2748,14 +2753,15 @@ void loadCompletionScreen(void) {
     // update sprite rgba
     func_800B7B34();
 
-    setMainLoopCallbackFunctionIndex(COMPLETION_SCREEN);
+    setMainLoopCallbackFunctionIndex(FARM_RANKING_SCREEN);
     
-    // completion screen action index
+    // farm ranking screen action index
     D_801FB9A0 = 0;
     // row index
     D_801FB99B[0] = 0;
 
     // unused
+    // copies of scores
     D_8018A728 = D_801FB978[0];
     D_801D6F2C = D_801FB978[1];
     D_8018A080 = D_801FB978[2];
@@ -2764,9 +2770,9 @@ void loadCompletionScreen(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/loadGameScreen", func_800E6C08);
+//INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800E6C08);
 
-// setup/reset completion screen strings
+// setup/reset farm ranking screen strings
 void func_800E6C08(u8 arg0) {
 
     u32 *ptr;
@@ -2888,9 +2894,9 @@ void func_800E6C08(u8 arg0) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/loadGameScreen", func_800E6FB4);
+//INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800E6FB4);
 
-// set up completion screen sprites and message boxes
+// set up farm ranking screen sprites and message boxes
 void func_800E6FB4(u8 arg0) {
 
     func_8003DD14(0);
@@ -2953,7 +2959,9 @@ void func_800E6FB4(u8 arg0) {
     func_8003FB4C(4, 1);
     initializeMessageBox(4, 0, 11, 0x80000);
 
-     if (D_801FB994[0] & 1) {
+
+    // render percentages
+    if (D_801FB994[0] & 1) {
         func_80045E20(0, 0x89, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, (void*)0x8026F000, (void*)0x8027E200, (void*)0x8027E700, (void*)0x8027EB00, 0, 4, 0, 48.0f, 40.0f, 16.0f, 0xA);
         dmaOverlayScreenSprites(0, D_801FB804[0], 1, 3);
         func_80045E20(5, 0x8B, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, (void*)0x8026F000, (void*)0x8027E200, (void*)0x8027E700, (void*)0x8027EB00, 0, 4, 0, 116.0f, 40.0f, 16.0f, 0xA);
@@ -3046,11 +3054,11 @@ void func_800E6FB4(u8 arg0) {
     
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/loadGameScreen", func_800E80AC);
+INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800E80AC);
 
-//INCLUDE_ASM("asm/nonmatchings/game/loadGameScreen", func_800E8F08);
+//INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800E8F08);
 
-// evaluation screen main loop callback
+// farm ranking screen main loop callback
 void func_800E8F08(void) {
 
     bool set = FALSE;
@@ -3259,13 +3267,13 @@ void func_800E8F08(void) {
     
 }
 
-// load game state from sram and write completion screen strings
-INCLUDE_ASM("asm/nonmatchings/game/loadGameScreen", func_800E9550);
+// load game state from sram and write farm ranking screen strings
+INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800E9550);
 
 // save/cache top completion state into sram
-INCLUDE_ASM("asm/nonmatchings/game/loadGameScreen", func_800E9B2C);
+INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800E9B2C);
 
-//INCLUDE_ASM("asm/nonmatchings/game/loadGameScreen", func_800EA2A4);
+//INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800EA2A4);
 
 void func_800EA2A4(u8 arg0) {
     
@@ -3290,7 +3298,7 @@ void func_800EA2A4(u8 arg0) {
 
 } 
 
-//INCLUDE_ASM("asm/nonmatchings/game/loadGameScreen", func_800EA360);
+//INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800EA360);
 
 u8 func_800EA360(void) {
 
@@ -3332,7 +3340,7 @@ static inline void setHorseAffection() {
     }
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/loadGameScreen", func_800EA3AC);
+//INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800EA3AC);
 
 // set strings from game state
 void func_800EA3AC(u8 arg0, u8 arg1) {
@@ -3501,15 +3509,15 @@ void func_800EA3AC(u8 arg0, u8 arg1) {
 }
 
 // completion score calculation
-INCLUDE_ASM("asm/nonmatchings/game/loadGameScreen", func_800EAA9C);
+INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800EAA9C);
 
-//INCLUDE_ASM("asm/nonmatchings/game/loadGameScreen", func_800EB74C);
+//INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800EB74C);
 
 void func_800EB74C(u8 arg0) {
     D_801FB940[arg0] = getFarmGrassTilesSum();
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/loadGameScreen", func_800EB788);
+//INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800EB788);
 
 void func_800EB788(u8 arg0) {
 
@@ -3581,13 +3589,13 @@ void func_800EB788(u8 arg0) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/loadGameScreen", func_800EBA90);
+//INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800EBA90);
 
 void func_800EBA90(u8 arg0) {
     D_801FB95C[arg0] = func_80065518();
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/loadGameScreen", func_800EBAC8);
+//INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800EBAC8);
 
 void func_800EBAC8(u8 arg0) {
 
@@ -3614,8 +3622,9 @@ void func_800EBAC8(u8 arg0) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/loadGameScreen", func_800EBC00);
+//INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800EBC00);
 
+// get highest percentage
 void func_800EBC00(void) {
 
     f32 f1, f2;
@@ -3644,6 +3653,7 @@ void func_800EBC00(void) {
 
         } 
         
+        // swap highest
         func_800EBEAC(i, temp);
 
         i++;
@@ -3652,8 +3662,8 @@ void func_800EBC00(void) {
     
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/loadGameScreen", func_800EBCD8);
+INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800EBCD8);
 
-INCLUDE_ASM("asm/nonmatchings/game/loadGameScreen", func_800EBEAC);
+INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800EBEAC);
 
-INCLUDE_ASM("asm/nonmatchings/game/loadGameScreen", func_800ED160);
+INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800ED160);

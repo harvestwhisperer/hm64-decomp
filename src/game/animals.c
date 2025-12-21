@@ -13,14 +13,17 @@
 #include "game/game.h"
 #include "game/gameAudio.h"
 #include "game/gameStatus.h"
-#include "game/itemHandlers.h"
+#include "game/items.h"
 #include "game/level.h"
 #include "game/player.h"
+#include "game/time.h"
 #include "game/weather.h"
 
 #include "mainproc.h"
 
-#include "game/spriteIndices.h"
+#include "assetIndices/entities.h"
+#include "assetIndices/maps.h"
+#include "assetIndices/sprites.h"
 
 // bss
 Chicken gChickens[MAX_CHICKENS];
@@ -3247,7 +3250,7 @@ void func_8008CF94(u8 index) {
     
                 }
 
-            gChickens[index].flags &= 0xFFBF;
+            gChickens[index].flags &= ~0x40;
     
         }
 

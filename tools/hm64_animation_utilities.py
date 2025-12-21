@@ -124,7 +124,7 @@ def extract(label: str, table_base: int) -> None:
     # last address is the end address, not a valid animation, and some assets use the last address as padding
     offsets = [offset for offset in offsets if offset != offsets[-1]]
 
-    for idx, off in enumerate(offsets, start=1):
+    for idx, off in enumerate(offsets):
 
         # skip repeats
         if (off == previous_off):

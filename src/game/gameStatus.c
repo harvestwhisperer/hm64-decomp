@@ -4,13 +4,15 @@
 #include "system/math.h"
 
 #include "game/animals.h"
-#include "game/fieldTiles.h"
 #include "game/game.h"
 #include "game/level.h"
 #include "game/fieldObjects.h"
-#include "game/fieldTiles.h"
+#include "data/fieldTileMaps/fieldTiles.h"
 #include "game/npc.h"
 #include "game/player.h"
+#include "game/time.h"
+
+#include "assetIndices/maps.h"
 
 // bss
 u32 dailyEventBits[32];
@@ -1306,11 +1308,13 @@ s32 getSumNpcAffection(void) {
 // empty function
 void func_800657AC(void) {}
 
+// main loop callback function
 // empty function
 void func_800657B4(void) {}
 
 // empty function
 void func_800657BC(void) {}
 
+// main loop callback function
 // empty function
 void func_800657C4(void) {}

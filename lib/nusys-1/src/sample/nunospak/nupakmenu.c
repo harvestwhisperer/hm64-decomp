@@ -150,8 +150,8 @@ s32 nuPakMenu(void* frameBuffer, void* fontBuffer) {
     nuPakMenuLoadFont((u16*)fontBuffer);
     
     bzero(frameBuffer, FBUF_SIZE);
-    
-    bzero(0x8038f800, 0x70800); 
+    bzero(NU_GFX_FRAMEBUFFER0_ADDR, 0x70800);
+
     nuGfxRetraceWait(1);
 
     funcBack = nuGfxSwapCfbFunc;	

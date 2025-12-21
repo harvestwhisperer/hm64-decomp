@@ -16,7 +16,7 @@
 #define ROTATING 8
 #define DIALOGUE 9
 #define TEXT 0xA
-// 0xb unknown
+#define END_CUTSCENE 0xB
 #define PINK_OVERLAY_TEXT 0xC
 #define END_OF_DAY_1 0xD
 #define END_OF_DAY_2 0xE
@@ -34,6 +34,9 @@
 #define KITCHEN_PICTURE_LOAD 0x1A
 #define CALENDAR_LOAD 0x1B
 #define RECIPE_BOOK_LOAD 0x1C
+#define ALBUM_LOAD 0x1D
+#define PAUSE_SCREEN_MAP_LOAD_1 0x1E
+#define PAUSE_SCREEN_MAP_LOAD_2 0x1F
 #define HORSE_RACE_RESULTS_LOAD 0x20
 #define HORSE_RACE_GIFTS_LOAD 0x21
 #define LOTTERY_LOAD 0x22
@@ -47,16 +50,16 @@
 #define CALENDAR 0x2A
 #define RECIPE_BOOK 0x2B
 #define ALBUM 0x2C
-// 0x2d unknown
+#define PAUSE_SCREEN_MAP 0x2D
 #define HORSE_RACE_BETTING 0x2E
 #define HORSE_RACE_RESULTS 0x2F
 #define HORSE_RACE_GIFTS 0x30
-#define LOTTERY_2 0x31
+#define LOTTERY 0x31
 #define TITLE_SCREEN 0x32
 #define NAMING_SCREEN 0x33
-// 0x34 naming screen 2
+#define NAMING_SCREEN_LOAD 0x34
 #define SELECT_GAME 0x35
-#define COMPLETION_SCREEN 0x36
+#define FARM_RANKING_SCREEN 0x36
 // 0x37 unknown
 // 0x38 unknown
 

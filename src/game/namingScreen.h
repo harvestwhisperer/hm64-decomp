@@ -28,4 +28,7 @@ extern NamingScreenContext namingScreenContext;
 
 inline void initializeNamingScreen(u8*, u8);
 
+// main loop callback
+extern void func_800ED974();
+
 #endif

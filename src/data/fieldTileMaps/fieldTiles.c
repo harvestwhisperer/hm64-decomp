@@ -1,4 +1,4 @@
-#include "game/fieldTiles.h"
+#include "fieldTiles.h"
 
 // base farm
 u8 D_80113580[FIELD_HEIGHT][FIELD_WIDTH] = {

@@ -287,4 +287,6 @@ extern u16 fodderQuantity;
 extern u16 chickenFeedQuantity;
 extern u8 wateringCanUses;
 
+extern u8 gItemBeingHeld;
+
 #endif

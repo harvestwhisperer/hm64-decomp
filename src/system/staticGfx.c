@@ -16,6 +16,9 @@ NUUcode nugfx_ucode[] = {
     {(u64*)gspF3DEX2_fifoTextStart, (u64*)gspF3DEX2_fifoDataStart}
 };
 
+// 0x8038F800
+// 0x803B5000
+// 0x803DA800
 u16* FrameBuf[3] = {
     (u16*)NU_GFX_FRAMEBUFFER0_ADDR,
     (u16*)NU_GFX_FRAMEBUFFER1_ADDR,

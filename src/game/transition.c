@@ -5,29 +5,36 @@
 #include "system/audio.h"
 #include "system/controller.h"
 #include "system/entity.h"
+#include "system/globalSprites.h"
 #include "system/map.h"
 #include "system/math.h"
 #include "system/message.h"
 #include "system/mapController.h"
 
 #include "game/animals.h"
+#include "game/cutscenes.h"
 #include "game/game.h"
 #include "game/gameAudio.h"
+#include "game/gameFile.h"
 #include "game/gameStatus.h"
 #include "game/initialize.h"
-#include "game/itemHandlers.h"
+#include "game/items.h"
 #include "game/level.h"
 #include "game/load.h"
-#include "game/loadGameScreen.h"
-#include "mainLoop.h"
 #include "game/npc.h"
 #include "game/overlayScreens.h"
 #include "game/player.h"
-#include "game/setCutscenes.h"
-#include "game/spriteIndices.h"
+#include "game/time.h"
 #include "game/weather.h"
 
+#include "mainLoop.h"
+
 #include "buffers/buffers.h"
+
+#include "assetIndices/cutscenes.h"
+#include "assetIndices/entities.h"
+#include "assetIndices/maps.h"
+#include "assetIndices/sprites.h"
       
 // bss
 // unused: likely to show player coordinates on screen for debugging
@@ -59,7 +66,7 @@ void mainGameLoopCallback(void) {
 
     }
 
-    // set additional info if needed for cutscene/end cutscene
+    // handle cutscene completion
     func_800A8F74();
 
     // dead code
@@ -87,7 +94,6 @@ inline void func_80055F08(u16 cutsceneIndex, u16 entranceIndex, u8 arg2) {
     func_8003BE98(MAIN_MAP_INDEX, 0, 0, 0, 0);
 
     gHour = 12;
-
     
     initializeEntityInstances(arg2);
 
@@ -201,7 +207,7 @@ void func_80056030(u8 arg0) {
 
         // FIXME:
         if (!(gCutsceneFlagsHack[1] & 1) && func_8009B5E0()) {
-            playSfx(0x3F);
+            playSfx(63);
         }
 
     }
@@ -262,7 +268,7 @@ void initializeEntityInstances(u8 arg0) {
         // farm or barn, how to play cutscene
         case 0:
             
-            initializeEntity(ENTITY_PLAYER, 0, 0x31, (void*)PLAYER_TEXTURE_1_BUFFER, (void*)PLAYER_TEXTURE_2_BUFFER, (void*)PLAYER_PALETTE_BUFFER, (void*)PLAYER_ANIMATION_METADATA_BUFFER, (void*)PLAYER_SPRITESHEET_INDEX_BUFFER, (void*)PLAYER_TEXTURE_TO_PALETTE_LOOKUP_BUFFER);            
+            initializeEntity(ENTITY_PLAYER, 0, 0x31, (u8*)PLAYER_TEXTURE_1_BUFFER, (u8*)PLAYER_TEXTURE_2_BUFFER, (u16*)PLAYER_PALETTE_BUFFER, (AnimationFrameMetadata*)PLAYER_ANIMATION_METADATA_BUFFER, (u32*)PLAYER_SPRITESHEET_INDEX_BUFFER, (u32*)PLAYER_TEXTURE_TO_PALETTE_LOOKUP_BUFFER);            
             initializeEntity(1, 1, 0x32, (void*)0x8026F000, (void*)0x8026F908, (void*)0x80270210, (void*)0x80270410, (void*)0x80272000, (void*)0x80272200);
             initializeEntity(2, 2, 0x33, (void*)0x80272800, (void*)0x80272C80, (void*)0x80275E00, (void*)0x80275F00, (void*)0x80276700, (void*)0x80276800);
             initializeEntity(3, 3, 0x34, (void*)0x80273100, (void*)0x80273580, (void*)0x80275E00, (void*)0x80275F00, (void*)0x80276700, (void*)0x80276800);
@@ -521,6 +527,7 @@ void func_80059368(void) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/transition", func_800593EC);
 
+// pause before going to overlay screen or naming screen
 void inline func_800593EC(void) {
     func_8002FB3C();
     pauseAllCutsceneExecutors();

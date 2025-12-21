@@ -13,10 +13,14 @@
 
 #include "game/game.h"
 #include "game/gameAudio.h"
-#include "mainLoop.h"
 #include "game/overlayScreens.h"
-#include "game/spriteIndices.h"
+#include "game/time.h"
 #include "game/weather.h"
+
+#include "mainLoop.h"
+
+#include "assetIndices/sfxs.h"
+#include "assetIndices/sprites.h"
 
 #include "buffers/buffers.h"
        
@@ -66,7 +70,18 @@ void func_800D8540(void) {
     
     deactivateMapObject(MAIN_MAP_INDEX, 9);
 
-    dmaSprite(TV_CONTENT, &_tvContentTextureSegmentRomStart, &_tvContentTextureSegmentRomEnd, &_tvContentAssetsIndexSegmentRomStart, &_tvContentAssetsIndexSegmentRomEnd, &_tvContentSpritesheetIndexSegmentRomStart, &_tvContentSpritesheetIndexSegmentRomEnd, (void*)MAP_OBJECTS_TEXTURE_VADDR_START, (void*)MAP_OBJECTS_TEXTURE_VADDR_END, (void*)MAP_OBJECTS_ASSETS_INDEX_VADDR_START, (void*)MAP_OBJECTS_ASSETS_INDEX_VADDR_END, (void*)MAP_OBJECTS_SPRITESHEET_INDEX_VADDR_START, MAP_OBJECTS_SPRITESHEET_INDEX_VADDR_END, 1, 1);
+    dmaSprite(TV_CONTENT, 
+        &_tvContentTextureSegmentRomStart, &_tvContentTextureSegmentRomEnd, 
+        &_tvContentAssetsIndexSegmentRomStart, &_tvContentAssetsIndexSegmentRomEnd, 
+        &_tvContentSpritesheetIndexSegmentRomStart, &_tvContentSpritesheetIndexSegmentRomEnd, 
+        (u8*)MAP_OBJECT_1_TEXTURE_1_BUFFER, 
+        (u8*)MAP_OBJECT_1_TEXTURE_2_BUFFER, 
+        (u16*)MAP_OBJECT_1_PALETTE_BUFFER, 
+        (AnimationFrameMetadata*)MAP_OBJECT_1_ANIMATION_METADATA_BUFFER, 
+        (u32*)MAP_OBJECT_1_SPRITESHEET_INDEX_BUFFER, 
+        (u32*)MAP_OBJECT_1_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 
+        1, TRUE);
+
     setSpriteScale(TV_CONTENT, 2.0f, 2.0f, 1.0f);
     setSpriteRotation(TV_CONTENT, 45.0f, -45.0f, 0.0f);
     setSpriteRenderingLayer(TV_CONTENT, 3);
@@ -137,7 +152,9 @@ void incrementVarietyShowCounter(void) {
 
         default:
             break;
+
     }
+
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/tv", setTVContentIndex);
@@ -170,6 +187,7 @@ void setTVContentIndex(void) {
                     case TYPHOON:
                         tvContext.contentIndex = TYPHOON_FORECAST;
                         break;
+
                 }
 
                 break;
@@ -190,6 +208,7 @@ void setTVContentIndex(void) {
                     case WINTER:
                         tvContext.contentIndex = NEWS_WINTER;
                         break;
+
                 }
 
                 break;
@@ -230,6 +249,7 @@ void setTVContentIndex(void) {
 
                     default:
                         return;
+
                 }
                 
                 tvContext.contentIndex = 11;
@@ -239,9 +259,11 @@ void setTVContentIndex(void) {
                 tvContext.contentIndex = STATIC;
                 break;
         }
+
     } else {
         tvContext.contentIndex = 19;
     }
+
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/tv", setTVDialogueIndex );
@@ -463,83 +485,83 @@ void setTVDialogueIndex (void) {
         case 9:
             if (gDayOfWeek == SUNDAY) {
                 tvContext.dialogueIndex = 0x4D;
-                break;
-            }
-            switch (getRandomNumberInRange(0, 2)) {    
-                case 0:
-                    tvContext.dialogueIndex = 0x3C;
-                    break;
-                case 1:
-                    tvContext.dialogueIndex = 0x3D;
-                    break;
-                case 2:
-                    tvContext.dialogueIndex = 0x3E;
-                    break;
-                default:
-                    return;
+            } else {
+                switch (getRandomNumberInRange(0, 2)) {    
+                    case 0:
+                        tvContext.dialogueIndex = 0x3C;
+                        break;
+                    case 1:
+                        tvContext.dialogueIndex = 0x3D;
+                        break;
+                    case 2:
+                        tvContext.dialogueIndex = 0x3E;
+                        break;
+                    default:
+                        return;
+                }
             }
             break;
         case 10:                                 
             if (gDayOfWeek == 0) {
                 tvContext.dialogueIndex = 0x4E;
-                break;
-            }
-            switch (gSeason) {                          
-                case 1:                          
-                    if (gDayOfWeek == WEDNESDAY) {
-                        tvContext.dialogueIndex = 0x3F;
-                    } else {
-                        tvContext.dialogueIndex = 0x40;
-                    }
-                    break;
-                case 2:                                     
-                    if (gDayOfWeek == WEDNESDAY) {
-                        tvContext.dialogueIndex = 0x41;
-                    } else {
-                        tvContext.dialogueIndex = 0x42;
-                    }
-                    break;
-                case 3:                                     
-                    if (gDayOfWeek == WEDNESDAY) {
-                        tvContext.dialogueIndex = 0x43;
-                    } else {
-                        tvContext.dialogueIndex = 0x44;
-                    }
-                    break;
-                case 4:                                     
-                    if (gDayOfWeek == WEDNESDAY) {
-                        tvContext.dialogueIndex = 0x45;
-                    } else {
-                        tvContext.dialogueIndex = 0x46;
-                    }
-                    break;
+            } else {
+                switch (gSeason) {                          
+                    case 1:                          
+                        if (gDayOfWeek == WEDNESDAY) {
+                            tvContext.dialogueIndex = 0x3F;
+                        } else {
+                            tvContext.dialogueIndex = 0x40;
+                        }
+                        break;
+                    case 2:                                     
+                        if (gDayOfWeek == WEDNESDAY) {
+                            tvContext.dialogueIndex = 0x41;
+                        } else {
+                            tvContext.dialogueIndex = 0x42;
+                        }
+                        break;
+                    case 3:                                     
+                        if (gDayOfWeek == WEDNESDAY) {
+                            tvContext.dialogueIndex = 0x43;
+                        } else {
+                            tvContext.dialogueIndex = 0x44;
+                        }
+                        break;
+                    case 4:                                     
+                        if (gDayOfWeek == WEDNESDAY) {
+                            tvContext.dialogueIndex = 0x45;
+                        } else {
+                            tvContext.dialogueIndex = 0x46;
+                        }
+                        break;
                 }
+            }
             break;
         case 11:
-            if (gDayOfWeek == 0) {
+            if (gDayOfWeek == SUNDAY) {
                 tvContext.dialogueIndex = 0x4F;
-                break;
-            }
-            switch (getRandomNumberInRange(0, 5)) {                        
-                case 0:                                     
-                    tvContext.dialogueIndex = 0x47;
-                    break;
-                case 1:                                     
-                    tvContext.dialogueIndex = 0x48;
-                    break;
-                case 2:                                     
-                    tvContext.dialogueIndex = 0x49;
-                    break;
-                case 3:                                     
-                    tvContext.dialogueIndex = 0x4A;
-                    break;
-                case 4:                                     
-                    tvContext.dialogueIndex = 0x4B;
-                    break;
-                case 5:                                     
-                    tvContext.dialogueIndex = 0x4C;
-                    break;
+            } else {
+                switch (getRandomNumberInRange(0, 5)) {                        
+                    case 0:                                     
+                        tvContext.dialogueIndex = 0x47;
+                        break;
+                    case 1:                                     
+                        tvContext.dialogueIndex = 0x48;
+                        break;
+                    case 2:                                     
+                        tvContext.dialogueIndex = 0x49;
+                        break;
+                    case 3:                                     
+                        tvContext.dialogueIndex = 0x4A;
+                        break;
+                    case 4:                                     
+                        tvContext.dialogueIndex = 0x4B;
+                        break;
+                    case 5:                                     
+                        tvContext.dialogueIndex = 0x4C;
+                        break;
                 }
+            }
             break;
         case 12:
             tvContext.dialogueIndex = tvContext.varietyShowEpisodeCounters[0] + 0x50;
@@ -619,14 +641,14 @@ void setTVPictureIndex(void) {
         case 13:
             if (tvContext.varietyShowEpisodeCounters[1] == 3 || tvContext.varietyShowEpisodeCounters[1] == 6) {
                 tvContext.pictureIndex = 13;
-                break;
-            }
-            if (tvContext.varietyShowEpisodeCounters[1] == 7) {
+            } else if (tvContext.varietyShowEpisodeCounters[1] == 7) {
                 tvContext.pictureIndex = 13;
                 break;
+            } else {
+                tvContext.pictureIndex = 12;
             }
-            tvContext.pictureIndex = 12;
             break;
+            
         case 14:
             tvContext.pictureIndex = 14;
             break;        
@@ -637,8 +659,9 @@ void setTVPictureIndex(void) {
             if (!getRandomNumberInRange(0, 1)) {
                 tvContext.pictureIndex = 17;
                 break;
+            } else {
+                tvContext.pictureIndex = 16;
             }
-            tvContext.pictureIndex = 16;
             break;
         case 17:
             tvContext.pictureIndex = 18;
@@ -669,7 +692,7 @@ void setTVPictureIndex(void) {
 //                 setMessageBoxViewSpacePosition(0, 0, -64.0f, 352.0f);
 //                 setMessageBoxSpriteIndices(0, 1, 0, 0);
 //                 func_8003F360(0, -4, 0);
-//                 initializeMessageBox(MAIN_DIALOGUE_BOX_INDEX, 8, tvContext.dialogueIndex, 0);
+//                 initializeMessageBox(MAIN_MESSAGE_BOX_INDEX, 8, tvContext.dialogueIndex, 0);
 
 //                 tvContext.mode++;
 
@@ -682,7 +705,7 @@ void setTVPictureIndex(void) {
 
 //         case TV_MODE_DIALOGUE:
 
-//             if (messageBoxes[0].flags & 4) {
+//             if (messageBoxes[MAIN_MESSAGE_BOX_INDEX].flags & 4) {
 //                 tvContext.mode++;
 //             }
 
@@ -741,7 +764,7 @@ void tvMainLoopCallback(void) {
                 setMessageBoxViewSpacePosition(0, 0, -64.0f, 352.0f);
                 setMessageBoxSpriteIndices(0, 1, 0, 0);
                 func_8003F360(0, -4, 0);
-                initializeMessageBox(MAIN_DIALOGUE_BOX_INDEX, 8, tvContext.dialogueIndex, 0);
+                initializeMessageBox(MAIN_MESSAGE_BOX_INDEX, 8, tvContext.dialogueIndex, 0);
 
                 tvContext.mode++;
 
@@ -754,7 +777,7 @@ void tvMainLoopCallback(void) {
 
         case TV_MODE_DIALOGUE:
 
-            if (messageBoxes[0].flags & 4) {
+            if (messageBoxes[MAIN_MESSAGE_BOX_INDEX].flags & 4) {
                 tvContext.mode++;
             }
 

@@ -5,27 +5,32 @@
 #include "system/controller.h"
 #include "system/dialogue.h"
 #include "system/entity.h"
+#include "system/globalSprites.h"
 #include "system/graphic.h"
 #include "system/map.h"
 #include "system/math.h"
 #include "system/message.h"
-#include "system/globalSprites.h"
 
 #include "game/animals.h"
 #include "game/game.h"
 #include "game/gameAudio.h"
 #include "game/gameStatus.h"
-#include "game/transition.h"
-#include "game/itemHandlers.h"
+#include "game/items.h"
 #include "game/level.h"
-#include "mainLoop.h"
 #include "game/overlayScreens.h"
 #include "game/npc.h"
 #include "game/player.h"
 #include "game/shop.h"
-#include "game/spriteIndices.h"
 #include "game/time.h"
+#include "game/transition.h"
 #include "game/weather.h"
+
+#include "mainLoop.h"
+
+#include "assetIndices/entities.h"
+#include "assetIndices/maps.h"
+#include "assetIndices/sfxs.h"
+#include "assetIndices/sprites.h"
 
 // bss
 static LevelInteractionsInfo levelInteractionsInfo;
@@ -35,6 +40,7 @@ u8 D_80189826;
 u8 D_801C3E2C;
 
 // forward declarations
+// TODO: label
 bool func_800AD8D0(u16, u8);
 bool func_800ADCDC(u16, u8);
 bool func_800AE00C(u16, u8);
@@ -520,6 +526,7 @@ bool handleLevelInteraction(u16 mapIndex) {
                     }
                     
                 gEntranceIndex = tempExit;
+
             }
 
         } else {
@@ -796,6 +803,7 @@ bool func_800ADCDC(u16 mapIndex, u8 levelInteractionIndex) {
         // TV
         case 0x12:
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A) && gPlayer.direction == NORTHEAST) {
+                // c button sprites
                 func_800B3694();
                 // turn on TV
                 func_800D8540();
@@ -865,6 +873,7 @@ bool func_800ADCDC(u16 mapIndex, u8 levelInteractionIndex) {
         case 0x21:
         default:
             break;
+            
     }
 
     return result;
@@ -3302,6 +3311,7 @@ label:
                 
                     if (checkShopItemShouldBeDisplayed(0x35)) {
                         pauseAllCutsceneExecutors();
+                        // pick up shop item
                         func_800DC9FC(0x35);
                     }
                     

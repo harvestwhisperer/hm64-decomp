@@ -9,20 +9,26 @@
 #include "system/math.h"
 
 #include "game/animals.h"
+#include "game/cutscenes.h"
 #include "game/game.h"
 #include "game/gameAudio.h"
 #include "game/gameStatus.h"
-#include "game/itemHandlers.h"
+#include "game/items.h"
 #include "game/level.h"
 #include "game/levelInteractions.h"
-#include "mainLoop.h"
-#include "mainproc.h"
 #include "game/fieldObjects.h"
 #include "game/npc.h"
-#include "game/setCutscenes.h"
 #include "game/shop.h"
-#include "game/spriteIndices.h"
+#include "game/time.h"
 #include "game/weather.h"
+
+#include "mainLoop.h"
+#include "mainproc.h"
+
+#include "assetIndices/entities.h"
+#include "assetIndices/maps.h"
+#include "assetIndices/sfxs.h"
+#include "assetIndices/sprites.h"
 
 // bss
 
@@ -35,7 +41,7 @@ extern u8 gAlcoholTolerance;
 extern u8 gHappiness;
 extern u8 gMaximumStamina;
 extern u8 gPlayerBirthdaySeason;
-extern u8 gToolchestSlots[];
+extern u8 gToolboxSlots[];
 extern u16 gSickDays;
 // consumable tool counters (seeds, feed)
 extern u8 D_802373A8;
@@ -320,6 +326,7 @@ volatile u8 D_8011421C[MAX_TOOLS][3] = {
 };
 
 // rodata
+// forward declaration
 extern const s8 directionToTileDeltaX[12];
 extern const s8 directionToTileDeltaZ[12]; 
 static const u8 toolHeldItemIndices[5][3];
@@ -446,6 +453,7 @@ static inline void resetMovement() {
     gPlayer.actionPhaseFrameCounter = 0;
 }
 
+// TODO: improve label
 static inline void reset() {
     gPlayer.actionPhaseFrameCounter = 0;
     gPlayer.actionPhase = 0;
@@ -574,8 +582,8 @@ u8 func_80065BCC(u8 tool) {
     }
 
     if (found == 0xFF) {
-        for (i = 0; i < MAX_TOOLCHEST_SLOTS && found == 0xFF; i++) {
-            if (gToolchestSlots[i] == tool) {
+        for (i = 0; i < MAX_TOOLBOX_SLOTS && found == 0xFF; i++) {
+            if (gToolboxSlots[i] == tool) {
                 found = 2;
             }
         }
@@ -591,9 +599,9 @@ u8 func_80065BCC(u8 tool) {
     }
 
     if (found == 0xFF) {
-        for (i = 0; i < MAX_TOOLCHEST_SLOTS && found == 0xFF; i++) {
-            if (gToolchestSlots[i] == 0) {
-                gToolchestSlots[i] = tool;
+        for (i = 0; i < MAX_TOOLBOX_SLOTS && found == 0xFF; i++) {
+            if (gToolboxSlots[i] == 0) {
+                gToolboxSlots[i] = tool;
                 found = 2;
             }
         }
@@ -618,15 +626,16 @@ u8 removeTool(u8 tool) {
     }
 
     if (found == 0xFF) {
-        for (i = 0; i < MAX_TOOLCHEST_SLOTS && found == 0xFF; i++) {
-            if (gToolchestSlots[i] == tool) {
-                gToolchestSlots[i] = 0;
+        for (i = 0; i < MAX_TOOLBOX_SLOTS && found == 0xFF; i++) {
+            if (gToolboxSlots[i] == tool) {
+                gToolboxSlots[i] = 0;
                 found = 2;
             }
         }
     }
 
-    return found; 
+    return found;
+
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/player", acquireKeyItem);
@@ -682,8 +691,8 @@ bool checkHaveTool(u8 tool) {
 
     if (!found) {
 
-        for (i = 0; i < MAX_TOOLCHEST_SLOTS && !found; i++) {
-            if (gToolchestSlots[i] == tool) {
+        for (i = 0; i < MAX_TOOLBOX_SLOTS && !found; i++) {
+            if (gToolboxSlots[i] == tool) {
                 found = 2;
             }
         }
@@ -823,6 +832,7 @@ void func_8006623C(void) {
         func_800664C8();
     }
     
+    // TODO: label actions
     switch (gPlayer.actionHandler - 1) {
         case 0:
             func_80067BC4();
@@ -1074,7 +1084,9 @@ void func_800664C8(void) {
     }
 
     if (!set) {
+
         if (!(gPlayer.flags & 1) && !checkDailyEventBit(0x12)) {
+        
             if (checkButtonPressed(CONTROLLER_1, BUTTON_B)) {
                 
                 if (gPlayer.heldItem == 0 && gPlayer.currentTool) {
@@ -1102,8 +1114,11 @@ void func_800664C8(void) {
                     temp = 0xFF;
                     
                 }
+        
             }
+        
         }
+
     }
 
     if (!set) {
@@ -1754,6 +1769,7 @@ void func_80068120(void) {
         }
 
         gPlayer.actionPhaseFrameCounter++;
+
     }
 
     if (gPlayer.actionPhase == 0) {
@@ -1806,6 +1822,7 @@ void func_800682F8(void) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/player", func_80068340);
 
+// turn on tv
 void func_80068340(void) {
 
     if (gPlayer.actionPhase == 0) {
@@ -1829,7 +1846,7 @@ void func_80068340(void) {
     }
 
     if (gPlayer.actionPhase == 2) {
-        setMainLoopCallbackFunctionIndex(0x12);
+        setMainLoopCallbackFunctionIndex(TV);
         gPlayer.actionPhaseFrameCounter = 0;
         gPlayer.actionPhase++;
     }
@@ -3959,10 +3976,10 @@ void func_8006C384(void) {
             case HOE:                                     
                 func_8006CDF8();
                 break;
-            case 3:                                     
+            case AX:                                     
                 func_8006CE6C();
                 break;
-            case 4:                                     
+            case HAMMER:                                     
                 func_8006CEE0();
                 break;
             case WATERING_CAN:                                     
@@ -3983,7 +4000,7 @@ void func_8006C384(void) {
             case 10:                                    
                 func_8006D56C();
                 break;
-            case 11:                                    
+            case POTATO_SEEDS:                                    
                 func_8006D690();
                 break;
             case 12:                                    

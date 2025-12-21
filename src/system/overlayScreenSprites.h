@@ -12,7 +12,7 @@ typedef struct {
     u32 romAssetsIndexStart;
     u32 romAssetsIndexEnd;
     void* vaddrSpritesheet;
-    void* vaddrPalette;
+    u16* vaddrPalette;
     void* vaddrUnknownAssetSheet;
     void* vaddrUnknownAsset2;
     u32 unk_20;

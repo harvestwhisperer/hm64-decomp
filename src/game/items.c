@@ -1,6 +1,6 @@
 #include "common.h"
 
-#include "game/itemHandlers.h"
+#include "game/items.h"
 
 #include "system/controller.h"
 #include "system/entity.h"
@@ -9,18 +9,22 @@
 #include "system/mapController.h"
 
 #include "game/animals.h"
+#include "game/cutscenes.h"
+#include "game/fieldObjects.h"
 #include "game/game.h"
 #include "game/gameAudio.h"
+#include "game/gameFile.h"
 #include "game/gameStatus.h"
 #include "game/level.h"
 #include "game/levelInteractions.h"
-#include "game/loadGameScreen.h"
-#include "game/fieldObjects.h"
 #include "game/npc.h"
 #include "game/player.h"
-#include "game/setCutscenes.h"
-#include "game/spriteIndices.h"
+#include "game/time.h"
 
+#include "assetIndices/entities.h"
+#include "assetIndices/maps.h"
+#include "assetIndices/sfxs.h"
+#include "assetIndices/sprites.h"
 
 // bss
 extern ToolUse toolUse;

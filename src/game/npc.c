@@ -5,6 +5,7 @@
 #include "system/controller.h"
 #include "system/dialogue.h"
 #include "system/entity.h"
+#include "system/globalSprites.h"
 #include "system/graphic.h"
 #include "system/map.h"
 #include "system/mapController.h"
@@ -15,10 +16,14 @@
 #include "game/animals.h"
 #include "game/game.h"
 #include "game/gameStatus.h"
-#include "game/itemHandlers.h"
+#include "game/items.h"
 #include "game/level.h"
 #include "game/player.h"
+#include "game/time.h"
 #include "game/weather.h"
+
+#include "assetIndices/entities.h"
+#include "assetIndices/maps.h"
 
 #include "buffers/buffers.h"
 
@@ -185,54 +190,44 @@ u8 setupNPCEntity(u8 npcIndex, int currentEntityOffset) {
 
         switch (npcIndex) {
             case MARIA:
-                if (checkLifeEventBit(MARRIED)) {
-                    if (gWife == MARIA) {
-                        npcs[npcIndex].entityIndex = ENTITY_WIFE; 
-                        break;
-                    } 
-                } 
-                npcs[npcIndex].entityIndex = ENTITY_NPC_BASE + (u8)currentEntityIndex;
-                currentEntityIndex++;
+                if (checkLifeEventBit(MARRIED) && gWife == MARIA) {
+                    npcs[npcIndex].entityIndex = ENTITY_WIFE; 
+                } else {
+                    npcs[npcIndex].entityIndex = ENTITY_NPC_BASE + (u8)currentEntityIndex;
+                    currentEntityIndex++;
+                }
                 break;
             case POPURI:
-                if (checkLifeEventBit(MARRIED)) {
-                    if (gWife == POPURI) {
-                        npcs[npcIndex].entityIndex = ENTITY_WIFE;
-                        break;
-                    } 
+                if (checkLifeEventBit(MARRIED) && gWife == POPURI) {
+                    npcs[npcIndex].entityIndex = ENTITY_WIFE;
+                } else {
+                    npcs[npcIndex].entityIndex = ENTITY_NPC_BASE + (u8)currentEntityIndex;
+                    currentEntityIndex++;
                 }
-                npcs[npcIndex].entityIndex = ENTITY_NPC_BASE + (u8)currentEntityIndex;
-                currentEntityIndex++;
                 break;
             case ELLI:
-                if (checkLifeEventBit(MARRIED)) {
-                    if (gWife == ELLI) {
-                        npcs[npcIndex].entityIndex = ENTITY_WIFE;
-                        break;
-                    } 
+                if (checkLifeEventBit(MARRIED) && gWife == ELLI) {
+                    npcs[npcIndex].entityIndex = ENTITY_WIFE;
+                } else {
+                    npcs[npcIndex].entityIndex = ENTITY_NPC_BASE + (u8)currentEntityIndex;
+                    currentEntityIndex++;
                 }
-                npcs[npcIndex].entityIndex = ENTITY_NPC_BASE + (u8)currentEntityIndex;
-                currentEntityIndex++;
                 break;
             case ANN:
-                if (checkLifeEventBit(MARRIED)) {
-                    if (gWife == ANN) {
-                        npcs[npcIndex].entityIndex = ENTITY_WIFE;
-                        break;
-                    } 
+                if (checkLifeEventBit(MARRIED) && gWife == ANN) {
+                    npcs[npcIndex].entityIndex = ENTITY_WIFE;
+                } else {
+                    npcs[npcIndex].entityIndex = ENTITY_NPC_BASE + (u8)currentEntityIndex;
+                    currentEntityIndex++;
                 }
-                npcs[npcIndex].entityIndex = ENTITY_NPC_BASE + (u8)currentEntityIndex;
-                currentEntityIndex++;
                 break;
             case KAREN:
-                if (checkLifeEventBit(MARRIED)) {
-                    if (gWife == KAREN) {
-                        npcs[npcIndex].entityIndex = ENTITY_WIFE;
-                        break;
-                    } 
+                if (checkLifeEventBit(MARRIED) && gWife == KAREN) {
+                    npcs[npcIndex].entityIndex = ENTITY_WIFE;
+                } else {
+                    npcs[npcIndex].entityIndex = ENTITY_NPC_BASE + (u8)currentEntityIndex;
+                    currentEntityIndex++;
                 }
-                npcs[npcIndex].entityIndex = ENTITY_NPC_BASE + (u8)currentEntityIndex;
-                currentEntityIndex++;
                 break;
             case BABY:                               
                 npcs[npcIndex].entityIndex = ENTITY_BABY;
@@ -433,9 +428,6 @@ void func_80075A78(u8 npcIndex) {
     }
     
 }
-
-
-/* inlines */
 
 //INCLUDE_ASM("asm/nonmatchings/game/npc", func_80075E28);
 
@@ -9043,8 +9035,8 @@ u8 func_800858D4(void) {
 
                         if (!(i2 < 0)) {
 
-                            func_8003F910(0, 0x78, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsAssetsIndexSegmentRomStart, &_dialogueIconsAssetsIndexSegmentRomEnd, (void*)DIALOGUE_ICON_TEXTURE_BUFFER, (void*)DIALOGUE_ICON_PALETTE_BUFFER, (void*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, DIALOGUE_ICON_SPRITESHEET_INDEX_BUFFER, 0, (npcAffection[i] / 52) + 5, 0xFE, 106.0f, -15.0f, 0.0f);
-                            func_8003F910(1, 0x78, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsAssetsIndexSegmentRomStart, &_dialogueIconsAssetsIndexSegmentRomEnd, (void*)DIALOGUE_ICON_TEXTURE_BUFFER, (void*)DIALOGUE_ICON_PALETTE_BUFFER, (void*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, DIALOGUE_ICON_SPRITESHEET_INDEX_BUFFER, 0, (npcAffection[i] / 52) + 5, 0xFE, 106.0f, -15.0f, 0.0f);
+                            func_8003F910(0, 0x78, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsAssetsIndexSegmentRomStart, &_dialogueIconsAssetsIndexSegmentRomEnd, (u8*)DIALOGUE_ICON_TEXTURE_BUFFER, (u16*)DIALOGUE_ICON_PALETTE_BUFFER, (AnimationFrameMetadata*)DIALOGUE_ICON_ANIMATION_METADATA_BUFFER, DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, (npcAffection[i] / 52) + 5, 0xFE, 106.0f, -15.0f, 0.0f);
+                            func_8003F910(1, 0x78, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsAssetsIndexSegmentRomStart, &_dialogueIconsAssetsIndexSegmentRomEnd, (u8*)DIALOGUE_ICON_TEXTURE_BUFFER, (u16*)DIALOGUE_ICON_PALETTE_BUFFER, (AnimationFrameMetadata*)DIALOGUE_ICON_ANIMATION_METADATA_BUFFER, DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, (npcAffection[i] / 52) + 5, 0xFE, 106.0f, -15.0f, 0.0f);
                        
                         }
                         
@@ -9117,8 +9109,8 @@ bool func_80085D48(int index, u16 arg1) {
         // FIXME: fake match
         // check if girl and load heart icon
         if ((index < 5) && (index >= (result = 0))) {
-            func_8003F910(0, 0x78, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsAssetsIndexSegmentRomStart, &_dialogueIconsAssetsIndexSegmentRomEnd, (void*)DIALOGUE_ICON_TEXTURE_BUFFER, (void*)DIALOGUE_ICON_PALETTE_BUFFER, (void*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, (void*)DIALOGUE_ICON_SPRITESHEET_INDEX_BUFFER, 0, (npcAffection[index] / 52) + 5, 0xFE, 106.0f, -15.0f, 0);
-            func_8003F910(1, 0x78, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsAssetsIndexSegmentRomStart, &_dialogueIconsAssetsIndexSegmentRomEnd, (void*)DIALOGUE_ICON_TEXTURE_BUFFER, (void*)DIALOGUE_ICON_PALETTE_BUFFER, (void*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, (void*)DIALOGUE_ICON_SPRITESHEET_INDEX_BUFFER, 0, (npcAffection[index] / 52) + 5, 0xFE, 106.0f, -15.0f, 0);
+            func_8003F910(0, 0x78, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsAssetsIndexSegmentRomStart, &_dialogueIconsAssetsIndexSegmentRomEnd, (u8*)DIALOGUE_ICON_TEXTURE_BUFFER, (u16*)DIALOGUE_ICON_PALETTE_BUFFER, (AnimationFrameMetadata*)DIALOGUE_ICON_ANIMATION_METADATA_BUFFER, (u32*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, (npcAffection[index] / 52) + 5, 0xFE, 106.0f, -15.0f, 0);
+            func_8003F910(1, 0x78, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsAssetsIndexSegmentRomStart, &_dialogueIconsAssetsIndexSegmentRomEnd, (u8*)DIALOGUE_ICON_TEXTURE_BUFFER, (u16*)DIALOGUE_ICON_PALETTE_BUFFER, (AnimationFrameMetadata*)DIALOGUE_ICON_ANIMATION_METADATA_BUFFER, (u32*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, (npcAffection[index] / 52) + 5, 0xFE, 106.0f, -15.0f, 0);
         }
 
         showMessageBox(0, npcToDialogueBytecodeIndex[arr[7]], arg1, 0, 0);

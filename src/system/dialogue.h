@@ -3,6 +3,7 @@
 
 #include "common.h"
 
+#include "system/globalSprites.h"
 #include "system/message.h"
 
 #define MAX_DIALOGUES 1
@@ -19,7 +20,7 @@
 /* sessionManager flags */
 #define DIALOGUE_ACTIVE 1
 #define DIALOGUE_INITIALIZED 2
-#define DIALOGUE_WAIT_FOR_DIALOGUE_BOX 0x10
+#define DIALOGUE_WAIT_FOR_MESSAGE_BOX 0x10
 #define DIALOGUE_PAUSE_FOR_USER_INPUT 0x20
 
 /* dialogue bytecode opcodes */
@@ -33,7 +34,7 @@
 #define DIALOGUE_OPCODE_RANDOM_BRANCH 7
 #define DIALOGUE_OPCODE_BRANCH 8
 #define DIALOGUE_OPCODE_UNUSED 9
-#define DIALOGUE_OPCODE_SHOW_SUBDIALOGUE_BOX 10
+#define DIALOGUE_OPCODE_SHOW_SUBMESSAGE_BOX 10
 #define DIALOGUE_OPCODE_HANDLE_MENU_SELECTION_BRANCH 11
 #define DIALOGUE_OPCODE_END_DIALOGUE 12
 
@@ -109,9 +110,9 @@ extern bool func_80042FEC(u16, u16, u16);
 extern bool setDialogueBytecodeAddressInfo(u16 index, u16 arg1, u16 arg2, u32 romStart, u32 romEnd, void* vaddr, u32 romIndex, void* vaddrIndex);
 extern bool setSpecialDialogueBitsPointer(u32[]);
 extern bool func_80043148(u16, u32, u32, u32);
-extern bool func_8004318C(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextureEnd, u32 romIndexStart, u32 romIndexEnd, void* vaddrTextureStart, void* vaddrTextureEnd, void* vaddrIndexStart, void* vaddrIndexEnd, u32 argA, u16 spriteOffset, u8 flag, f32 x, f32 y, f32 z);
-extern bool func_80043260(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextureEnd, u32 romIndexStart, u32 romIndexEnd, void* vaddrTextureStart, void* vaddrTextureEnd, void* vaddrIndexStart, void* vaddrIndexEnd, u32 argA, u16 spriteOffset, u8 flag, f32 x, f32 y, f32 z);
-extern bool func_80043334(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextureEnd, u32 romIndexStart, u32 romIndexEnd, void* vaddrTextureStart, void* vaddrTextureEnd, void* vaddrIndexStart, void* vaddrIndexEnd, u32 argA, u16 spriteOffset, u8 flag, f32 x, f32 y, f32 z);
+extern bool func_8004318C(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextureEnd, u32 romIndexStart, u32 romIndexEnd, u8* vaddrTexture, u8* vaddrTextureEnd, AnimationFrameMetadata* vaddrAnimationFrameMetadata, u8* vaddrTextureToPaletteLookup, u32 argA, u16 spriteOffset, u8 flag, f32 x, f32 y, f32 z);
+extern bool func_80043260(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextureEnd, u32 romIndexStart, u32 romIndexEnd, u8* vaddrTexture, u8* vaddrTextureEnd, AnimationFrameMetadata* vaddrAnimationFrameMetadata, u8* vaddrTextureToPaletteLookup, u32 argA, u16 spriteOffset, u8 flag, f32 x, f32 y, f32 z);
+extern bool func_80043334(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextureEnd, u32 romIndexStart, u32 romIndexEnd, u8* vaddrTexture, u8* vaddrTextureEnd, AnimationFrameMetadata* vaddrAnimationFrameMetadata, u8* vaddrTextureToPaletteLookup, u32 argA, u16 spriteOffset, u8 flag, f32 x, f32 y, f32 z);
 extern bool initializeDialogueSession(u16 dialogueIndex, u16, u16, u16);
 extern u8 func_80043A88();  
 extern bool func_80043AD8(u16);

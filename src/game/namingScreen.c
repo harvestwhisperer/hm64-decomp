@@ -13,13 +13,18 @@
 #include "game/animals.h"
 #include "game/game.h"
 #include "game/gameAudio.h"
-#include "game/transition.h"
 #include "game/level.h"
 #include "game/npc.h"
 #include "game/player.h"
-#include "game/spriteIndices.h"
+#include "game/time.h"
+#include "game/transition.h"
 
 #include "buffers/buffers.h"
+
+#include "assetIndices/sequences.h"
+#include "assetIndices/sfxs.h"
+#include "assetIndices/sprites.h"
+
 
 // FIXME:
 // instead of including the header, defining here because loadCutscene(u32) doesn't match in func_800ED974

@@ -149,7 +149,7 @@ bool func_80043148(u16 index, u32 scrollSfxIndex, u32 closeSfxIndex, u32 sfxInde
 //INCLUDE_ASM("asm/nonmatchings/system/dialogue", func_8004318C);
 
 bool func_8004318C(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextureEnd, u32 romIndexStart, u32 romIndexEnd, 
-    void* vaddrTextureStart, void* vaddrTextureEnd, void* vaddrIndexStart, void* vaddrIndexEnd, u32 argA, 
+    u8* vaddrTexture, u8* vaddrTextureEnd, AnimationFrameMetadata* vaddrAnimationFrameMetadata, u8* vaddrTextureToPaletteLookup, u32 argA, 
     u16 spriteOffset, u8 flag, f32 x, f32 y, f32 z) {
 
     bool result = FALSE;
@@ -161,10 +161,10 @@ bool func_8004318C(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextu
         dialogues[index].dialogueButtonIcon1.romIndexStart = romIndexStart;
         dialogues[index].dialogueButtonIcon1.romIndexEnd = romIndexEnd;
   
-        dialogues[index].dialogueButtonIcon1.vaddrTextureStart = vaddrTextureStart;
-        dialogues[index].dialogueButtonIcon1.vaddrTextureEnd = vaddrTextureEnd;
-        dialogues[index].dialogueButtonIcon1.vaddrIndexStart = vaddrIndexStart;
-        dialogues[index].dialogueButtonIcon1.vaddrIndexEnd = vaddrIndexEnd;
+        dialogues[index].dialogueButtonIcon1.vaddrTexture = vaddrTexture;
+        dialogues[index].dialogueButtonIcon1.vaddrPalette = vaddrTextureEnd;
+        dialogues[index].dialogueButtonIcon1.vaddrAnimationFrameMetadata = vaddrAnimationFrameMetadata;
+        dialogues[index].dialogueButtonIcon1.vaddrTextureToPaletteLookup = vaddrTextureToPaletteLookup;
         dialogues[index].dialogueButtonIcon1.unk_20 = argA;
  
         dialogues[index].dialogueButtonIcon1.spriteIndex = spriteIndex;
@@ -186,7 +186,7 @@ bool func_8004318C(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextu
 //INCLUDE_ASM("asm/nonmatchings/system/dialogue", func_80043260);
 
 bool func_80043260(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextureEnd, u32 romIndexStart, u32 romIndexEnd, 
-    void* vaddrTextureStart, void* vaddrTextureEnd, void* vaddrIndexStart, void* vaddrIndexEnd, u32 argA, 
+    u8* vaddrTexture, u8* vaddrTextureEnd, AnimationFrameMetadata* vaddrAnimationFrameMetadata, u8* vaddrTextureToPaletteLookup, u32 argA, 
     u16 spriteOffset, u8 flag, f32 x, f32 y, f32 z) {
 
     bool result = FALSE;
@@ -198,10 +198,10 @@ bool func_80043260(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextu
         dialogues[index].dialogueButtonIcon2.romIndexStart = romIndexStart;
         dialogues[index].dialogueButtonIcon2.romIndexEnd = romIndexEnd;
   
-        dialogues[index].dialogueButtonIcon2.vaddrTextureStart = vaddrTextureStart;
-        dialogues[index].dialogueButtonIcon2.vaddrTextureEnd = vaddrTextureEnd;
-        dialogues[index].dialogueButtonIcon2.vaddrIndexStart = vaddrIndexStart;
-        dialogues[index].dialogueButtonIcon2.vaddrIndexEnd = vaddrIndexEnd;
+        dialogues[index].dialogueButtonIcon2.vaddrTexture = vaddrTexture;
+        dialogues[index].dialogueButtonIcon2.vaddrPalette = vaddrTextureEnd;
+        dialogues[index].dialogueButtonIcon2.vaddrAnimationFrameMetadata = vaddrAnimationFrameMetadata;
+        dialogues[index].dialogueButtonIcon2.vaddrTextureToPaletteLookup = vaddrTextureToPaletteLookup;
         dialogues[index].dialogueButtonIcon2.unk_20 = argA;
  
         dialogues[index].dialogueButtonIcon2.spriteIndex = spriteIndex;
@@ -223,7 +223,7 @@ bool func_80043260(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextu
 //INCLUDE_ASM("asm/nonmatchings/system/dialogue", func_80043334);
  
 bool func_80043334(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextureEnd, u32 romIndexStart, u32 romIndexEnd, 
-    void* vaddrTextureStart, void* vaddrTextureEnd, void* vaddrIndexStart, void* vaddrIndexEnd, u32 argA, 
+    u8* vaddrTexture, u8* vaddrTextureEnd, AnimationFrameMetadata* vaddrAnimationFrameMetadata, u8* vaddrTextureToPaletteLookup, u32 argA, 
     u16 spriteOffset, u8 flag, f32 x, f32 y, f32 z) {
 
     bool result = FALSE;
@@ -235,10 +235,10 @@ bool func_80043334(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextu
         dialogues[index].dialogueButtonIcon3.romIndexStart = romIndexStart;
         dialogues[index].dialogueButtonIcon3.romIndexEnd = romIndexEnd;
   
-        dialogues[index].dialogueButtonIcon3.vaddrTextureStart = vaddrTextureStart;
-        dialogues[index].dialogueButtonIcon3.vaddrTextureEnd = vaddrTextureEnd;
-        dialogues[index].dialogueButtonIcon3.vaddrIndexStart = vaddrIndexStart;
-        dialogues[index].dialogueButtonIcon3.vaddrIndexEnd = vaddrIndexEnd;
+        dialogues[index].dialogueButtonIcon3.vaddrTexture = vaddrTexture;
+        dialogues[index].dialogueButtonIcon3.vaddrPalette = vaddrTextureEnd;
+        dialogues[index].dialogueButtonIcon3.vaddrAnimationFrameMetadata = vaddrAnimationFrameMetadata;
+        dialogues[index].dialogueButtonIcon3.vaddrTextureToPaletteLookup = vaddrTextureToPaletteLookup;
         dialogues[index].dialogueButtonIcon3.unk_20 = argA;
  
         dialogues[index].dialogueButtonIcon3.spriteIndex = spriteIndex;
@@ -298,11 +298,11 @@ bool initializeDialogueSession(u16 index, u16 dialogueBytecodeAddressesIndex, u1
             dialogues[index].dialogueButtonIcon1.romIndexEnd, 
             NULL, 
             NULL, 
-            dialogues[index].dialogueButtonIcon1.vaddrTextureStart,
+            dialogues[index].dialogueButtonIcon1.vaddrTexture,
             NULL,
-            dialogues[index].dialogueButtonIcon1.vaddrTextureEnd,
-            dialogues[index].dialogueButtonIcon1.vaddrIndexStart,
-            dialogues[index].dialogueButtonIcon1.vaddrIndexEnd,
+            dialogues[index].dialogueButtonIcon1.vaddrPalette,
+            dialogues[index].dialogueButtonIcon1.vaddrAnimationFrameMetadata,
+            dialogues[index].dialogueButtonIcon1.vaddrTextureToPaletteLookup,
             dialogues[index].dialogueButtonIcon1.unk_20,
             0,
             0);
@@ -322,11 +322,11 @@ bool initializeDialogueSession(u16 index, u16 dialogueBytecodeAddressesIndex, u1
             dialogues[index].dialogueButtonIcon2.romIndexEnd, 
             NULL, 
             NULL, 
-            dialogues[index].dialogueButtonIcon2.vaddrTextureStart,
+            dialogues[index].dialogueButtonIcon2.vaddrTexture,
             NULL,
-            dialogues[index].dialogueButtonIcon2.vaddrTextureEnd,
-            dialogues[index].dialogueButtonIcon2.vaddrIndexStart,
-            dialogues[index].dialogueButtonIcon2.vaddrIndexEnd,
+            dialogues[index].dialogueButtonIcon2.vaddrPalette,
+            dialogues[index].dialogueButtonIcon2.vaddrAnimationFrameMetadata,
+            dialogues[index].dialogueButtonIcon2.vaddrTextureToPaletteLookup,
             dialogues[index].dialogueButtonIcon2.unk_20,
             0,
             0);
@@ -346,11 +346,11 @@ bool initializeDialogueSession(u16 index, u16 dialogueBytecodeAddressesIndex, u1
             dialogues[index].dialogueButtonIcon3.romIndexEnd, 
             NULL, 
             NULL, 
-            dialogues[index].dialogueButtonIcon3.vaddrTextureStart,
+            dialogues[index].dialogueButtonIcon3.vaddrTexture,
             NULL,
-            dialogues[index].dialogueButtonIcon3.vaddrTextureEnd,
-            dialogues[index].dialogueButtonIcon3.vaddrIndexStart,
-            dialogues[index].dialogueButtonIcon3.vaddrIndexEnd,
+            dialogues[index].dialogueButtonIcon3.vaddrPalette,
+            dialogues[index].dialogueButtonIcon3.vaddrAnimationFrameMetadata,
+            dialogues[index].dialogueButtonIcon3.vaddrTextureToPaletteLookup,
             dialogues[index].dialogueButtonIcon3.unk_20,
             0,
             0);
@@ -691,7 +691,7 @@ void parseDialogueBytecode(u16 index) {
             
             break;
         
-        case DIALOGUE_OPCODE_SHOW_SUBDIALOGUE_BOX:
+        case DIALOGUE_OPCODE_SHOW_SUBMESSAGE_BOX:
             
             byteswap.byte[1] = *(u8*)dialogues[index].dialogueBytecodePointer++;
             byteswap.byte[0] = *(u8*)dialogues[index].dialogueBytecodePointer++;
@@ -920,7 +920,7 @@ void updateCurrentDialogue(u16 index) {
                 finishCurrentDialogueBlockProcessing = TRUE;
 
                 dialogues[index].bytecodeExecutor.currentOpcode = 0xFF;
-                dialogues[index].sessionManager.flags |= DIALOGUE_WAIT_FOR_DIALOGUE_BOX;
+                dialogues[index].sessionManager.flags |= DIALOGUE_WAIT_FOR_MESSAGE_BOX;
                 
                 break;
 
@@ -944,7 +944,7 @@ void updateCurrentDialogue(u16 index) {
                         finishCurrentDialogueBlockProcessing = TRUE;
                         
                         dialogues[index].bytecodeExecutor.textIndex = 0xFFFF;
-                        dialogues[index].sessionManager.flags |= DIALOGUE_WAIT_FOR_DIALOGUE_BOX;
+                        dialogues[index].sessionManager.flags |= DIALOGUE_WAIT_FOR_MESSAGE_BOX;
                         
                     // branch to another bytecode segment
                     } else {
@@ -1045,7 +1045,7 @@ void updateCurrentDialogue(u16 index) {
                         
                         finishCurrentDialogueBlockProcessing = TRUE;
                         dialogues[index].bytecodeExecutor.textIndex = 0xFFFF;
-                        dialogues[index].sessionManager.flags |= DIALOGUE_WAIT_FOR_DIALOGUE_BOX;
+                        dialogues[index].sessionManager.flags |= DIALOGUE_WAIT_FOR_MESSAGE_BOX;
                     
                     // branch to another bytecode segment
                     } else {
@@ -1095,7 +1095,7 @@ void updateCurrentDialogue(u16 index) {
                         finishCurrentDialogueBlockProcessing = TRUE;
 
                         dialogues[index].bytecodeExecutor.textIndex = 0xFFFF;
-                        dialogues[index].sessionManager.flags |= DIALOGUE_WAIT_FOR_DIALOGUE_BOX;
+                        dialogues[index].sessionManager.flags |= DIALOGUE_WAIT_FOR_MESSAGE_BOX;
                         
                     } else {
                         
@@ -1118,7 +1118,7 @@ void updateCurrentDialogue(u16 index) {
                 initializeDialogueSession(index, dialogues[index].sessionManager.dialogueBytecodeAddressesIndex, dialogues[index].bytecodeExecutor.branchingDialogueIndex, dialogues[index].sessionManager.flags & (0x40 | 0x80));
                 break;
 
-            case DIALOGUE_OPCODE_SHOW_SUBDIALOGUE_BOX:
+            case DIALOGUE_OPCODE_SHOW_SUBMESSAGE_BOX:
                 
                 dialogues[index].bytecodeExecutor.currentOpcode = 0xFF;
                 dialogues[index].sessionManager.unk_17 = 0;
@@ -1193,10 +1193,10 @@ void updateDialogues(void) {
             
             skipDialogueUpdate = FALSE;
             
-            if (dialogues[i].sessionManager.flags & DIALOGUE_WAIT_FOR_DIALOGUE_BOX) {
+            if (dialogues[i].sessionManager.flags & DIALOGUE_WAIT_FOR_MESSAGE_BOX) {
                 
                 if ((messageBoxes[dialogues[i].sessionManager.mainMessageBoxIndex].flags & 4) || (messageBoxes[dialogues[i].sessionManager.mainMessageBoxIndex].flags & 0x20000)) {
-                    dialogues[i].sessionManager.flags &= ~DIALOGUE_WAIT_FOR_DIALOGUE_BOX;
+                    dialogues[i].sessionManager.flags &= ~DIALOGUE_WAIT_FOR_MESSAGE_BOX;
                 }
                 
                 skipDialogueUpdate = TRUE;

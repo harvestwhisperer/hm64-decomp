@@ -4,15 +4,17 @@
 
 #include "system/message.h"
 
+#include "game/cutscenes.h"
 #include "game/game.h"
-#include "game/gameStatus.h"
 #include "game/gameAudio.h"
+#include "game/gameStatus.h"
 #include "game/level.h"
 #include "game/player.h"
-#include "game/setCutscenes.h"
 #include "game/weather.h"
 
 #include "mainLoop.h"
+
+#include "assetIndices/maps.h"
                     
 // forward declarations           
 void setGlobalSeasonName(u8);

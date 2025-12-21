@@ -659,6 +659,7 @@ bool func_8002F594(u16 index) {
             }
 
         }
+
     }
     
     return result;
@@ -811,6 +812,7 @@ void deactivateEntities(void) {
 
 //INCLUDE_ASM("asm/nonmatchings/system/entity", func_8002FB3C);
 
+// called by pause function
 void func_8002FB3C(void) {
 
     u16 i;

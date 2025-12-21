@@ -95,19 +95,19 @@ segments:
       - [ 0x49C20, c, game/level]
       - [ 0x506C0, c, game/npc]
       - [ 0x61370, c, game/animals]
-      - [ 0x77390, c, game/setCutscenes]
+      - [ 0x77390, c, game/cutscenes]
       - [ 0x87C20, c, game/evaluation]
       - [ 0x87EB0, c, game/gameAudio]
       - [ 0x88170, c, game/levelInteractions]
       - [ 0x8E0E0, c, game/overlayScreens]
-      - [ 0xAAC50, c, game/itemHandlers]
+      - [ 0xAAC50, c, game/items]
       - [ 0xB3020, c, game/time]
       - [ 0xB3940, c, game/tv]
       - [ 0xB4A00, c, game/fieldObjects]
       - [ 0xB7760, c, game/weather]
       - [ 0xB7B50, c, game/shop]
       - [ 0xB97C0, c, game/title]
-      - [ 0xBC780, c, game/loadGameScreen]
+      - [ 0xBC780, c, game/gameFile]
       - [ 0xC8CA0, c, game/namingScreen]
       # start of libraries
       - [ 0xCC770, c, ../lib/nusys-1/src/sample/nunospak/nupakmenu]
@@ -354,21 +354,21 @@ segments:
       - [ 0xEE110, .data, system/map]
       - [ 0xEE7B0, .data, system/overlayScreenSprites]
       - [ 0xEE7D0, .data, system/cutscene]
-      - [ 0xEE980, .data, game/fieldTiles]
+      - [ 0xEE980, .data, data/fieldTileMaps/fieldTiles]
       - [ 0xEEF20, .data, game/game]
       - [ 0xEF050, .data, game/player]
       - [ 0xEF680, .data, game/level]
       - [ 0xEFD00, .data, game/npc]
       - [ 0xEFDC0, .data, game/animals]
-      - [ 0xEFEF0, .data, game/setCutscenes]
-      - [ 0xF0250, data, game/cutsceneFieldTiles]
+      - [ 0xEFEF0, .data, game/cutscenes]
+      - [ 0xF0250, .data, data/fieldTileMaps/cutsceneFieldTiles]
       - [ 0xF16F0, .data, game/gameAudio]
-      - [ 0xF2080, data, game/overlayScreens]
-      - [ 0xF2580, .data, game/itemHandlers]
+      - [ 0xF2080, .data, game/overlayScreens]
+      - [ 0xF2580, .data, game/items]
       - [ 0xF3B00, .data, game/fieldObjects]
       - [ 0xF3F50, .data, game/weather]
       - [ 0xF3F70, .data, game/shop]
-      - [ 0xF4B40, .data, game/loadGameScreen]
+      - [ 0xF4B40, .data, game/gameFile]
 
       - name: data/animationScripts/animationScripts
         type: animationScripts
@@ -537,16 +537,16 @@ segments:
       - [ 0xFAB10, .rodata, game/level]
       - [ 0xFB410, .rodata, game/npc]
       - [ 0xFB720, .rodata, game/animals]
-      - [ 0xFC2C0, .rodata, game/setCutscenes]
+      - [ 0xFC2C0, .rodata, game/cutscenes]
       - [ 0xFC808, .rodata, game/levelInteractions]
       - [ 0xFD090, .rodata, game/overlayScreens]
-      - [ 0xFD6B0, .rodata, game/itemHandlers]
+      - [ 0xFD6B0, .rodata, game/items]
       - [ 0xFDB60, .rodata, game/tv]
       - [ 0xFDC58, .rodata, game/fieldObjects]
       - [ 0xFE838, .rodata, game/weather]
       - [ 0xFE860, .rodata, game/shop]
       - [ 0xFEA58, .rodata, game/title]
-      - [ 0xFEA90, .rodata, game/loadGameScreen]
+      - [ 0xFEA90, .rodata, game/gameFile]
       - [ 0xFEBF0, .rodata, game/namingScreen]
       # library rodata
       - [ 0xFEC40, .rodata, ../lib/nusys-1/src/sample/nunospak/nupakmenu]
@@ -663,6 +663,15 @@ segments:
       - [ 0xFF5C0, c, buffers/playerSpriteBuffer]
       - { start: 0xFF5C0, type: .bss, vram: 0x80240B00, name: buffers/playerSpriteBuffer }
 
+  - name: mapDataBuffer
+    type: code
+    start: 0xFF5C0
+    bss_size: 0x19100
+    vram: 0x80255000
+    subsegments:
+      - [ 0xFF5C0, c, buffers/mapDataBuffer]
+      - { start: 0xFF5C0, type: .bss, vram: 0x80255000, name: buffers/mapDataBuffer }
+
   # TODO: add rest buffers
   # entity textures, load game screen, naming screen textures, animals, shop, map objects
 
@@ -738,11 +747,33 @@ segments:
       - [ 0xFF5C0, c, buffers/gamePakBuffer]
       - { start: 0xFF5C0, type: .bss, vram: 0x8030E000, name: buffers/gamePakBuffer }
 
+  - name: unknownBuffer
+    type: code
+    start: 0xFF5C0
+    bss_size: 0x8000
+    vram: 0x8030F800
+    subsegments:
+      - [ 0xFF5C0, c, buffers/unknownBuffer]
+      - { start: 0xFF5C0, type: .bss, vram: 0x8030F800, name: buffers/unknownBuffer }
+
+  # 0x8038F800
+  # 0x803B5000
+  # 0x803DA800
+  - name: frameBuffer
+    type: code
+    start: 0xFF5C0
+    vram: 0x8038F800
+    bss_size: 0x70800
+    subsegments:
+      - [ 0xFF5C0, c, buffers/frameBuffer ]
+      - { start: 0xFF5C0, type: .bss, vram: 0x8038F800, name: buffers/frameBuffer }
+
   # farm cutscenes: shipper, animal purchase
   - name: cutsceneBank1 
     type: bin
     dir: cutscenes
     start: 0xFF5C0
+    vram: 0x802F4000
 
   # farm visits
   - name: cutsceneBank2
@@ -778,13 +809,14 @@ segments:
   - name: cutsceneBank7
     type: bin
     dir: cutscenes
-    start: 0x1175F0 
+    start: 0x1175F0
 
   # wedding, rival events, new year's, starry night festval
   - name: cutsceneBank8
     type: bin
     dir: cutscenes
     start: 0x118D70
+    vram: 0x802F5000
   
   # maria cutscenes
   - name: cutsceneBank9
@@ -957,13 +989,12 @@ segments:
     type: bin
     dir: sprites/entity-sprites/player
     start: 0x159330
-    vram: 0x80180290
+    vram: 0x80240B00
 
   - name: playerAssetsIndex
     type: bin
     dir: sprites/entity-sprites/player
     start: 0x2D0660
-    vram: 0x802F75C0
     
   - name: playerSpritesheetIndex
     type: bin
@@ -3480,12 +3511,12 @@ segments:
     dir: sprites/overlay-screens
     start: 0xCF1020
 
-  - name: diaryOptionsTexture
+  - name: bookScreenLabelsTexture
     type: bin
     dir: sprites/overlay-screens
     start: 0xCF1040
 
-  - name: diaryOptionsAssetsIndex
+  - name: bookScreenLabelsAssetsIndex
     type: bin
     dir: sprites/overlay-screens
     start: 0xCF2840
@@ -3580,14 +3611,14 @@ segments:
     dir: sprites/naming-screen
     start: 0xD2D600
 
-  - name: evaluationScreenTexture
+  - name: estimateScreenTexture
     type: bin
-    dir: sprites/overlay-screens/evaluation
+    dir: sprites/overlay-screens/estimateScreen
     start: 0xD2D620
 
-  - name: evaluationScreenAssetsIndex
+  - name: estimateScreenAssetsIndex
     type: bin
-    dir: sprites/overlay-screens/evaluation
+    dir: sprites/overlay-screens/estimateScreen
     start: 0xD2EBA0
 
   - name: raceBettingUiTexture
@@ -3615,12 +3646,12 @@ segments:
     dir: sprites/overlay-screens
     start: 0xD38A20
 
-  - name: annexExtensionSelectionTexture
+  - name: houseExtensionSelectionTexture
     type: bin
     dir: sprites/overlay-screens
     start: 0xD38A40
 
-  - name: annexExtensionSelectionAssetsIndex
+  - name: houseExtensionSelectionAssetsIndex
     type: bin
     dir: sprites/overlay-screens
     start: 0xD3BFC0
@@ -3835,6 +3866,7 @@ segments:
     dir: sprites/album-photos
     start: 0xE087D0
 
+  # village map (cut from NA release)
   - name: emptyTexture2
     type: bin
     dir: sprites/misc

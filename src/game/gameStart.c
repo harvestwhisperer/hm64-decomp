@@ -4,17 +4,22 @@
 #include "system/message.h"
 
 #include "game/animals.h"
+#include "game/cutscenes.h"
 #include "game/game.h"
 #include "game/gameStatus.h"
 #include "game/initialize.h"
-#include "game/transition.h"
-#include "game/itemHandlers.h"
+#include "game/items.h"
 #include "game/level.h"
 #include "game/load.h"
-#include "mainLoop.h"
 #include "game/npc.h"
 #include "game/player.h"
-#include "game/setCutscenes.h"
+#include "game/time.h"
+#include "game/transition.h"
+
+#include "mainLoop.h"
+
+#include "assetIndices/cutscenes.h"
+#include "assetIndices/maps.h"
 
 // shared bss
 extern u32 D_8016FB00;
@@ -36,7 +41,7 @@ void setupGameStart(void) {
         func_8003F360(0, -4, 2);
 
         // load "no controller" dialogue
-        initializeMessageBox(MAIN_DIALOGUE_BOX_INDEX, 0, 0x19, 0x80000);
+        initializeMessageBox(MAIN_MESSAGE_BOX_INDEX, 0, 0x19, 0x80000);
 
     }
 }
