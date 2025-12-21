@@ -138,8 +138,6 @@
 #define SEASON_NAME 0x8B
 #define DAY_OF_WEEK 0x8A
 
-// 0x89 start of clock sprites
-
 #define DIARY_1_ICON 0xA3
 #define DIARY_2_ICON 0xA4
 #define DIARY_3_ICON 0xA5

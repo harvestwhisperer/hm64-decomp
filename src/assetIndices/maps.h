@@ -4,7 +4,6 @@
 
 #define TOTAL_MAPS 96
 
-// TODO: finish adding map indices
 /* map indices */
 #define RANCH 0
 #define RANCH_SPRING 0
