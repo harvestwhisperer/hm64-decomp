@@ -19,5 +19,6 @@ typedef struct {
 extern u8 demoCutsceneIndex;
 
 extern void titleScreenMainLoopCallback();
+extern void initializeTitleScreen(u8 arg0);
 
 #endif

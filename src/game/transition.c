@@ -42,9 +42,6 @@ s16 D_80182D8C;
 s16 D_8018A062;
 s16 D_80237A20; 
 
-// FIXME:
-extern u32 gCutsceneFlagsHack[2];
-
 //INCLUDE_ASM("asm/nonmatchings/game/transition", mainGameLoopCallback);
 
 void mainGameLoopCallback(void) {
@@ -121,13 +118,11 @@ inline void func_80055F08(u16 cutsceneIndex, u16 entranceIndex, u8 arg2) {
 void func_80056030(u8 arg0) {
 
     u8 mapIndex;
+    u32 *ptr;
 
     gCutsceneCompletionFlags = 0;
-
     gCutsceneIndex = 0;
-    
-    // FIXME: 
-    gCutsceneFlagsHack[1] = 0;    
+    gCutsceneFlags = 0;    
     
     toggleDailyEventBit(0x28);
     toggleDailyEventBit(0x4B);
@@ -205,8 +200,7 @@ void func_80056030(u8 arg0) {
             gPlayer.heldItem = 0;
         }
 
-        // FIXME:
-        if (!(gCutsceneFlagsHack[1] & 1) && func_8009B5E0()) {
+        if (!(gCutsceneFlags & 1) && func_8009B5E0()) {
             playSfx(63);
         }
 
@@ -221,22 +215,23 @@ void func_80056030(u8 arg0) {
     func_800D5290();
 
     if (arg0 != 2) {
+
+        ptr = &gCutsceneFlags;
         
-        // FIXME: this should be just gCutsceneFlags, but need array/struct loading here, which breaks the match when used in other functions that reference gCutsceneFlags
-        if (!(gCutsceneFlagsHack[1] & (2 | 4))) {
+        if (!(*ptr & (2 | 4))) {
             
             if (!checkDailyEventBit(0x4D)) {
                 func_80088D54();
             }
 
-            if (!(gCutsceneFlagsHack[1] & (2 | 4))) {
+            if (!(*ptr & (2 | 4))) {
                 func_8005AAE4();
                 // set NPC entity indices
                 setupActiveNPCs();
             }
         }
 
-        if (!(gCutsceneFlagsHack[1] & 4)) {
+        if (!(gCutsceneFlags & 4)) {
             func_800876D0();
         }
 

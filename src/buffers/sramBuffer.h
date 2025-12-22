@@ -74,7 +74,7 @@ typedef struct {
     u32 unk_60;                 // D_801654F4
     u32 unk_64;                 // D_80237414
     u32 unk_68;                 // D_801FB6FC
-    u32 unk_6C;                 // D_801C3F80
+    u32 unk_6E;                 // D_801C3F80
     u32 unk_70;                 // D_801806C0
     u32 unk_74;                 // D_80188F60
     u32 unk_78;                 // D_801FB5D0

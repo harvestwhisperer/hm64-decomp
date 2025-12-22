@@ -155,8 +155,10 @@ typedef struct {
     u16 arr3[3];
 } SheepItemInfo;
 
+extern void func_8008634C(s8 amount);
 extern bool func_80086764();
 extern void func_800876D0();
+extern void func_8008779C(void);
 extern void updateAnimalCoordinates();
 extern void updateAnimals();
 extern void func_80087D5C();
@@ -244,5 +246,8 @@ extern u16 D_8013DC2E;
 
 // purchased animal type
 extern u8 D_801C4216;
+
+// animal price?
+extern u32 D_801890E0;
 
 #endif

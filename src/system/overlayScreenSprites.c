@@ -28,11 +28,11 @@ void initializeOverlayScreenSprites(void) {
     }
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/overlayScreenSprites", func_80045E20);
+//INCLUDE_ASM("asm/nonmatchings/system/overlayScreenSprites", setOverlayScreenSprites);
 
-bool func_80045E20(u16 index, u16 spriteIndex, u32 romSpritesheetStart, u32 romSpritesheetEnd, u32 romAssetsIndexStart, u32 romAssetsIndexEnd, 
+bool setOverlayScreenSprites(u16 index, u16 spriteIndex, u32 romSpritesheetStart, u32 romSpritesheetEnd, u32 romAssetsIndexStart, u32 romAssetsIndexEnd, 
     u8 *vaddrTexture, u16 *vaddrPalette, AnimationFrameMetadata *vaddrAnimationFrameMetadata, u32 *spriteToPaletteVaddr, 
-    u32 *spritesheetIndexVaddr, u16 argB, u8 argC, f32 x, f32 y, f32 z, u8 arg10) {
+    u32 *spritesheetIndexVaddr, u16 animationIndex, u8 animationBaseFrame, f32 x, f32 y, f32 z, u8 arg10) {
     
     bool result = FALSE;
                     
@@ -53,9 +53,8 @@ bool func_80045E20(u16 index, u16 spriteIndex, u32 romSpritesheetStart, u32 romS
             overlayScreenSprites[index].spriteToPaletteVaddr = spriteToPaletteVaddr;
             overlayScreenSprites[index].spritesheetIndexVaddr = spritesheetIndexVaddr;
             
-            overlayScreenSprites[index].specialItemPages = argB;
-            
-            overlayScreenSprites[index].unk_26 = argC;
+            overlayScreenSprites[index].animationIndex = animationIndex;
+            overlayScreenSprites[index].animationBaseFrame = animationBaseFrame;
             
             overlayScreenSprites[index].coordinates.x = x;
             overlayScreenSprites[index].coordinates.y = y;
@@ -76,7 +75,7 @@ bool func_80045E20(u16 index, u16 spriteIndex, u32 romSpritesheetStart, u32 romS
 
 //INCLUDE_ASM("asm/nonmatchings/system/overlayScreenSprites", dmaOverlayScreenSprites);
 
-bool dmaOverlayScreenSprites(u16 index, u32 arg1, u8 arg2, u16 flag) {
+bool dmaOverlayScreenSprites(u16 index, u32 value, u8 arg2, u16 flag) {
     
     bool result = FALSE;
     u8 count;
@@ -87,7 +86,7 @@ bool dmaOverlayScreenSprites(u16 index, u32 arg1, u8 arg2, u16 flag) {
         if (overlayScreenSprites[index].flags & 1) {
             
             overlayScreenSprites[index].count = arg2;
-            overlayScreenSprites[index].value = arg1;
+            overlayScreenSprites[index].value = value;
 
             count = overlayScreenSprites[index].count;
             
@@ -103,7 +102,7 @@ bool dmaOverlayScreenSprites(u16 index, u32 arg1, u8 arg2, u16 flag) {
                     NULL, 
                     NULL, 
                     overlayScreenSprites[index].vaddrTexture, 
-                    0, 
+                    NULL, 
                     overlayScreenSprites[index].vaddrPalette, 
                     overlayScreenSprites[index].vaddrAnimationFrameMetadata, 
                     overlayScreenSprites[index].spriteToPaletteVaddr, 
@@ -122,7 +121,9 @@ bool dmaOverlayScreenSprites(u16 index, u32 arg1, u8 arg2, u16 flag) {
             if (flag == 3) {
                 overlayScreenSprites[index].flags |= 4;
             }
+
         }
+
     }
 
     return result;
@@ -334,7 +335,7 @@ bool func_80046650(u16 spriteIndex, u8 arg1, u8 arg2) {
                 setSpriteRenderingLayer(tempIndex, 2);
             }
 
-            startSpriteAnimation(tempIndex, overlayScreenSprites[spriteIndex].specialItemPages, overlayScreenSprites[spriteIndex].unk_26 + arg1);
+            startSpriteAnimation(tempIndex, overlayScreenSprites[spriteIndex].animationIndex, overlayScreenSprites[spriteIndex].animationBaseFrame + arg1);
             
             result = TRUE;
         }

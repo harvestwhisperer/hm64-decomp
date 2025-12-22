@@ -47,9 +47,12 @@ u8 D_80205640[10];
 extern u8 D_801890E8[31];
 extern u8 D_80189108[5][7];
 extern u8 D_801C3F70;
+extern u32 D_801C3F78;
 extern u32 D_80205204;
 extern u8 D_80205636;
 
+// game variable string indices
+// set by cutscenes
 extern u8 D_8018A72C[6];
 extern u8 D_80237420[31];
 
@@ -657,6 +660,10 @@ u16 D_80117148[] = {
     0x0000,
 };
 
+// rodata forward declarations
+static const u8 D_801220CC[19][6];
+static const u8 D_80122140[19][6];
+
 // forward declarations
 void func_800B2F34(void); 
 void func_800B4160(void);
@@ -667,7 +674,7 @@ void func_800B9914(void);
 void func_800B9B8C(void);
 void func_800B99EC(void);
 f32 func_800BA928(u8, u32);                          
-f32 func_800BA9E8(u8, u32);     
+f32 func_800BA9E8(u8, u8);     
 void func_800BAAA0(void);         
 void func_800BAC7C(void);
 void func_800BAF1C(void);
@@ -682,8 +689,8 @@ void func_800BD25C(void);
 void func_800BD754(void);
 void func_800BD82C(void);
 void func_800BD998(void);
-f32 func_800BE3B8(u8, u32);                          
-f32 func_800BE428(u8, u32);
+f32 func_800BE3B8(u8, u8);                          
+f32 func_800BE428(u8, u8);
 void func_800BE490(void);           
 bool func_800BE5D0(void);
 void func_800BE684(void);
@@ -692,8 +699,8 @@ void func_800BF0C8(void);
 void func_800BF5C0(void);
 void func_800BF698(void);
 void func_800BF804(void);
-f32 func_800C0238(u8, u32);             
-f32 func_800C02A8(u8, u32);    
+f32 func_800C0238(u8, u8);             
+f32 func_800C02A8(u8, u8);    
 void func_800C0310(void);
 bool func_800C0450(void);
 void func_800C0504(void);
@@ -722,7 +729,7 @@ void func_800C5AA4(void);
 void func_800C5DA4(void);
 void func_800C6E98(void);
 f32 func_800BC700(u8, u32);
-f32 func_800BC770(u8, u32);
+f32 func_800BC770(u8, u8);
 void func_800C7850(void);
 void func_800C7C88(f32 x, f32 y);
 void func_800C7CE4(f32 x, f32 y);
@@ -902,10 +909,10 @@ void func_800B2F34(void) {
     setSpriteColor(0x8A, 0xFF, 0xFF, 0xFF, 0);
     setSpriteRenderingLayer(0x8A, 2);
     startSpriteAnimation(0x8A, 3, gDayOfWeek);
-    func_80045E20(0, 0x8F, (u32)&_timeUiTextureSegmentRomStart, (u32)&_timeUiTextureSegmentRomEnd, (u32)&_timeUiAssetsIndexSegmentRomStart, (u32)&_timeUiAssetsIndexSegmentRomEnd, (void*)0x8027EC00, (void*)0x80281E00, (void*)0x80282200, (void*)0x80282400, 0, 2, 0, 0.0f, 0.0f, 256.0f, 8);
+    setOverlayScreenSprites(0, 0x8F, (u32)&_timeUiTextureSegmentRomStart, (u32)&_timeUiTextureSegmentRomEnd, (u32)&_timeUiAssetsIndexSegmentRomStart, (u32)&_timeUiAssetsIndexSegmentRomEnd, (void*)0x8027EC00, (void*)0x80281E00, (void*)0x80282200, (void*)0x80282400, 0, 2, 0, 0.0f, 0.0f, 256.0f, 8);
     
     dmaOverlayScreenSprites(0, (u32)gDayOfMonth, 1, 3);
-    setOverlayScreenSpritesRGBA(0, 0xFF, 0xFF, 0xFF, 0xFF);
+    setOverlayScreenSpritesRGBA(0, 255, 255, 255, 255);
     
 }
 
@@ -930,20 +937,24 @@ static inline void fadeOutClock() {
 //INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800B3498);
 
 // unused or inline
-void func_800B3498(f32 arg0, f32 arg1, f32 arg2, u16 arg3, u32 arg4) {
+void func_800B3498(f32 x, f32 y, f32 z, u16 arg3, u32 arg4) {
 
     // background and "g"
     dmaSprite(0x8E, (u32)&_moneyTextureSegmentRomStart, (u32)&_moneyTextureSegmentRomEnd, (u32)&_moneyAssetsIndexSegmentRomStart, (u32)&_moneyAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x80253B00, NULL, (u16*)0x80254A00, (u16*)0x80254E00, (u8*)0x80254F00, NULL, 0, FALSE);
-    setSpriteViewSpacePosition(0x8E, arg0, arg1, arg2);
+    setSpriteViewSpacePosition(0x8E, x, y, z);
     setBilinearFiltering(0x8E, 1);
     setSpriteColor(0x8E, 0xFF, 0xFF, 0xFF, 0);
     setSpriteRenderingLayer(0x8E, arg3);
     startSpriteAnimation(0x8E, 0, 0);
 
-    func_80045E20(1, 0x91, (u32)&_moneyTextureSegmentRomStart, (u32)&_moneyTextureSegmentRomEnd, (u32)&_moneyAssetsIndexSegmentRomStart, (u32)&_moneyAssetsIndexSegmentRomEnd, (void*)0x80253B00, (void*)0x80254A00, (void*)0x80254E00, (void*)0x80254F00, 0, 1, 0, arg0, arg1, arg2 + 64.0f, 0xA);
+    setOverlayScreenSprites(1, 0x91, (u32)&_moneyTextureSegmentRomStart, (u32)&_moneyTextureSegmentRomEnd, (u32)&_moneyAssetsIndexSegmentRomStart, (u32)&_moneyAssetsIndexSegmentRomEnd, 
+        (u8*)0x80253B00, (u16*)0x80254A00, (AnimationFrameMetadata*)0x80254E00, (u32*)0x80254F00, 
+        0, 1, 0, 
+        x, y, z + 64.0f, 
+        10);
 
     dmaOverlayScreenSprites(1, arg4, 5, 3);
-    setOverlayScreenSpritesRGBA(1, 0xFF, 0xFF, 0xFF, 0xFF);
+    setOverlayScreenSpritesRGBA(1, 255, 255, 255, 255);
 
 }
 
@@ -955,34 +966,34 @@ void func_800B3498(f32 arg0, f32 arg1, f32 arg2, u16 arg3, u32 arg4) {
 // c buttons while watching TV
 void func_800B3694(void) {
 
-    dmaSprite(0x86, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (AnimationFrameMetadata*)0x8023CE00, (u8*)0x8023D200, NULL, 0, FALSE);
+    dmaSprite(0x86, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (AnimationFrameMetadata*)0x8023CE00, (u32*)0x8023D200, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x86, 80.0f, 32.0f, 256.0f);
     setBilinearFiltering(0x86, 1);
-    setSpriteColor(0x86, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteColor(0x86, 255, 255, 255, 255);
     startSpriteAnimation(0x86, 0, 0);
     
-    dmaSprite(0x82, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (AnimationFrameMetadata*)0x8023CE00, (u8*)0x8023D200, NULL, 0, FALSE);
+    dmaSprite(0x82, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (AnimationFrameMetadata*)0x8023CE00, (u32*)0x8023D200, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x82, 80.0f, 32.0f, 256.0f);
     setBilinearFiltering(0x82, 1);
-    setSpriteColor(0x82, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteColor(0x82, 255, 255, 255, 255);
     startSpriteAnimation(0x82, 0, 1);
     
-    dmaSprite(0x83, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (AnimationFrameMetadata*)0x8023CE00, (u8*)0x8023D200, NULL, 0, FALSE);
+    dmaSprite(0x83, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (AnimationFrameMetadata*)0x8023CE00, (u32*)0x8023D200, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x83, 80.0f, 32.0f, 256.0f);
     setBilinearFiltering(0x83, 1);
-    setSpriteColor(0x83, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteColor(0x83, 255, 255, 255, 255);
     startSpriteAnimation(0x83, 0, 3);
     
-    dmaSprite(0x84, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (AnimationFrameMetadata*)0x8023CE00, (u8*)0x8023D200, NULL, 0, FALSE);
+    dmaSprite(0x84, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (AnimationFrameMetadata*)0x8023CE00, (u32*)0x8023D200, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x84, 80.0f, 32.0f, 256.0f);
     setBilinearFiltering(0x84, 1);
-    setSpriteColor(0x84, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteColor(0x84, 255, 255, 255, 255);
     startSpriteAnimation(0x84, 0, 5);
     
-    dmaSprite(0x85, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (AnimationFrameMetadata*)0x8023CE00, (u8*)0x8023D200, NULL, 0, FALSE);
+    dmaSprite(0x85, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (AnimationFrameMetadata*)0x8023CE00, (u32*)0x8023D200, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x85, 80.0f, 32.0f, 256.0f);
     setBilinearFiltering(0x85, 1);
-    setSpriteColor(0x85, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteColor(0x85, 255, 255, 255, 255);
     startSpriteAnimation(0x85, 0, 7);
     
     func_800B3A60();
@@ -1044,10 +1055,16 @@ static inline void setMoneySprites() {
     setSpriteRenderingLayer(0x8E, 2);
     startSpriteAnimation(0x8E, 0, 0);
 
-    func_80045E20(1, 0x91, (u32)&_moneyTextureSegmentRomStart, (u32)&_moneyTextureSegmentRomEnd, (u32)&_moneyAssetsIndexSegmentRomStart, (u32)&_moneyAssetsIndexSegmentRomEnd, (u32*)0x80253B00, (u16*)0x80254A00, (void*)0x80254E00, (void*)0x80254F00, 0, 1, 0, 0, 0, 320.0f, 10);
+    setOverlayScreenSprites(1, 0x91, 
+        (u32)&_moneyTextureSegmentRomStart, (u32)&_moneyTextureSegmentRomEnd, (u32)&_moneyAssetsIndexSegmentRomStart, (u32)&_moneyAssetsIndexSegmentRomEnd, 
+        (u8*)0x80253B00, (u16*)0x80254A00, (AnimationFrameMetadata*)0x80254E00, (u32*)0x80254F00, 
+        0, 1, 0, 
+        0.0f, 0.0f, 320.0f, 
+        10
+    );
     
     dmaOverlayScreenSprites(1, temp, 5, 3);
-    setOverlayScreenSpritesRGBA(1, 0xFF, 0xFF, 0xFF, 0xFF);
+    setOverlayScreenSpritesRGBA(1, 255, 255, 255, 255);
 
 }
 
@@ -1068,36 +1085,36 @@ void func_800B3BD8(void) {
     dmaSprite(0x82, (u32)&_shopIconsTextureSegmentRomStart, (u32)&_shopIconsTextureSegmentRomEnd, (u32)&_shopIconsAssetsIndexSegmentRomStart, (u32)&_shopIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x802E0EC0, NULL, (u16*)0x802E27C0, (u32*)0x802E28C0, (u32*)0x802E2BC0, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x82, -96.0f, 64.0f, 256.0f);
     setBilinearFiltering(0x82, TRUE);
-    setSpriteColor(0x82, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteColor(0x82, 255, 255, 255, 255);
     startSpriteAnimation(0x82, 0, 0);
     
     // head shaking no
     dmaSprite(0x83, (u32)&_shopIconsTextureSegmentRomStart, (u32)&_shopIconsTextureSegmentRomEnd, (u32)&_shopIconsAssetsIndexSegmentRomStart, (u32)&_shopIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x802E0EC0, NULL, (u16*)0x802E27C0, (u32*)0x802E28C0, (u32*)0x802E2BC0, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x83, -56.0f, 64.0f, 256.0f);
     setBilinearFiltering(0x83, TRUE);
-    setSpriteColor(0x83, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteColor(0x83, 255, 255, 255, 255);
     startSpriteAnimation(0x83, 1, 0);
     
     dmaSprite(0x84, (u32)&_shopIconsTextureSegmentRomStart, (u32)&_shopIconsTextureSegmentRomEnd, (u32)&_shopIconsAssetsIndexSegmentRomStart, (u32)&_shopIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x802E0EC0, NULL, (u16*)0x802E27C0, (u32*)0x802E28C0, (u32*)0x802E2BC0, NULL, 0, FALSE);
     setBilinearFiltering(0x84, TRUE);
-    setSpriteColor(0x84, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteColor(0x84, 255, 255, 255, 255);
     
     // quantity arrows
     dmaSprite(0x85, (u32)&_shopIconsTextureSegmentRomStart, (u32)&_shopIconsTextureSegmentRomEnd, (u32)&_shopIconsAssetsIndexSegmentRomStart, (u32)&_shopIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x802E0EC0, NULL, (u16*)0x802E27C0, (u32*)0x802E28C0, (u32*)0x802E2BC0, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x85, -12.0f, 13.0f, 256.0f);
     setBilinearFiltering(0x85, TRUE);
-    setSpriteColor(0x85, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteColor(0x85, 255, 255, 255, 255);
     
     dmaSprite(0x86, (u32)&_shopIconsTextureSegmentRomStart, (u32)&_shopIconsTextureSegmentRomEnd, (u32)&_shopIconsAssetsIndexSegmentRomStart, (u32)&_shopIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x802E0EC0, NULL, (u16*)0x802E27C0, (u32*)0x802E28C0, (u32*)0x802E2BC0, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x86, -12.0f, 13.0f, 256.0f);
     setBilinearFiltering(0x86, TRUE);
-    setSpriteColor(0x86, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteColor(0x86, 255, 255, 255, 255);
     
     // background
     dmaSprite(0x87, (u32)&_shopIconsTextureSegmentRomStart, (u32)&_shopIconsTextureSegmentRomEnd, (u32)&_shopIconsAssetsIndexSegmentRomStart, (u32)&_shopIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x802E0EC0, NULL, (u16*)0x802E27C0, (u32*)0x802E28C0, (u32*)0x802E2BC0, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x87, -16.0f, 11.0f, 224.0f);
     setBilinearFiltering(0x87, TRUE);
-    setSpriteColor(0x87, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteColor(0x87, 255, 255, 255, 255);
 
     func_800B4160();
     
@@ -1169,7 +1186,7 @@ void func_800B42E0(void) {
     if (loadGameScreenContext.showControllerPakScreen == FALSE) {
         
         // select a diary
-        dmaSprite(0x82, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (AnimationFrameMetadata*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
+        dmaSprite(0x82, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (AnimationFrameMetadata*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0x82, 0.0f, 0.0f, 8.0f);
         setSpriteColor(0x82, 0, 0, 0, 0);
         setSpriteRenderingLayer(0x82, 3);
@@ -1177,7 +1194,7 @@ void func_800B42E0(void) {
         startSpriteAnimation(0x82, 0, 0);
         
         // DELETE button
-        dmaSprite(0x83, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
+        dmaSprite(0x83, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0x83, 0.0f, 0.0f, 8.0f);
         setSpriteColor(0x83, 0, 0, 0, 0);
         setSpriteRenderingLayer(0x83, 3);
@@ -1185,7 +1202,7 @@ void func_800B42E0(void) {
         startSpriteAnimation(0x83, 3, 0);
         
         // MOVE button
-        dmaSprite(0x84, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
+        dmaSprite(0x84, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0x84, 0.0f, 0.0f, 8.0f);
         setSpriteColor(0x84, 0, 0, 0, 0);
         setSpriteRenderingLayer(0x84, 3);
@@ -1193,7 +1210,7 @@ void func_800B42E0(void) {
         startSpriteAnimation(0x84, 1, 0);
         
         // diary book 1
-        dmaSprite(0xA3, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
+        dmaSprite(0xA3, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xA3, 0.0f, 0.0f, 8.0f);
         setSpriteColor(0xA3, 0, 0, 0, 0);
         setSpriteRenderingLayer(0xA3, 3);
@@ -1202,7 +1219,7 @@ void func_800B42E0(void) {
         startSpriteAnimation(0xA3, 4, 0);
         
         // diary book
-        dmaSprite(0xA4, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
+        dmaSprite(0xA4, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xA4, 0.0f, -44.0f, 8.0f);
         setSpriteColor(0xA4, 0, 0, 0, 0);
         setSpriteRenderingLayer(0xA4, 3);
@@ -1211,7 +1228,7 @@ void func_800B42E0(void) {
         startSpriteAnimation(0xA4, 4, 0);
         
         // diary book
-        dmaSprite(0xA5, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
+        dmaSprite(0xA5, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xA5, 0.0f, -88.0f, 8.0f);
         setSpriteColor(0xA5, 0, 0, 0, 0);
         setSpriteRenderingLayer(0xA5, 3);
@@ -1220,7 +1237,7 @@ void func_800B42E0(void) {
         startSpriteAnimation(0xA5, 4, 0);
         
         // diary book
-        dmaSprite(0xA6, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
+        dmaSprite(0xA6, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xA6, 0.0f, -132.0f, 8.0f);
         setSpriteColor(0xA6, 0, 0, 0, 0);
         setSpriteRenderingLayer(0xA6, 3);
@@ -1229,7 +1246,7 @@ void func_800B42E0(void) {
         startSpriteAnimation(0xA6, 4, 0);
         
         // numbers
-        dmaSprite(0xA7, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
+        dmaSprite(0xA7, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xA7, 0.0f, 0.0f, 16.0f);
         setSpriteColor(0xA7, 0, 0, 0, 0);
         setSpriteRenderingLayer(0xA7, 3);
@@ -1237,7 +1254,7 @@ void func_800B42E0(void) {
         startSpriteAnimation(0xA7, 5, 0);
         
         // numbers
-        dmaSprite(0xA8, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
+        dmaSprite(0xA8, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xA8, 0.0f, 0.0f, 16.0f);
         setSpriteColor(0xA8, 0, 0, 0, 0);
         setSpriteRenderingLayer(0xA8, 3);
@@ -1245,7 +1262,7 @@ void func_800B42E0(void) {
         startSpriteAnimation(0xA8, 5, 2);
         
         // numbers
-        dmaSprite(0xA9, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
+        dmaSprite(0xA9, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xA9, 0.0f, 0.0f, 16.0f);
         setSpriteColor(0xA9, 0, 0, 0, 0);
         setSpriteRenderingLayer(0xA9, 3);
@@ -1253,7 +1270,7 @@ void func_800B42E0(void) {
         startSpriteAnimation(0xA9, 5, 4);
 
         // numbers
-        dmaSprite(0xAA, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
+        dmaSprite(0xAA, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xAA, 0.0f, 0.0f, 16.0f);
         setSpriteColor(0xAA, 0, 0, 0, 0);
         setSpriteRenderingLayer(0xAA, 3);
@@ -1261,7 +1278,7 @@ void func_800B42E0(void) {
         startSpriteAnimation(0xAA, 5, 6);
         
         // row background
-        dmaSprite(0x85, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
+        dmaSprite(0x85, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0x85, 0.0f, 0.0f, 4.0f);
         setSpriteColor(0x85, 0, 0, 0, 0);
         setSpriteRenderingLayer(0x85, 3);
@@ -1270,7 +1287,7 @@ void func_800B42E0(void) {
         startSpriteAnimation(0x85, 2, 0);
         
         // row background
-        dmaSprite(0x86, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
+        dmaSprite(0x86, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0x86, 0.0f, -44.0f, 4.0f);
         setSpriteColor(0x86, 0, 0, 0, 0);
         setSpriteRenderingLayer(0x86, 3);
@@ -1279,7 +1296,7 @@ void func_800B42E0(void) {
         startSpriteAnimation(0x86, 2, 0);
         
         // row background
-        dmaSprite(0x87, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
+        dmaSprite(0x87, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0x87, 0.0f, -88.0f, 4.0f);
         setSpriteColor(0x87, 0, 0, 0, 0);
         setSpriteRenderingLayer(0x87, 3);
@@ -1288,7 +1305,7 @@ void func_800B42E0(void) {
         startSpriteAnimation(0x87, 2, 0);
         
         // row background
-        dmaSprite(0x88, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
+        dmaSprite(0x88, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0x88, 0.0f, -132.0f, 4.0f);
         setSpriteColor(0x88, 0, 0, 0, 0);
         setSpriteRenderingLayer(0x88, 3);
@@ -1296,22 +1313,22 @@ void func_800B42E0(void) {
         setSpritePaletteIndex(0x88, 1);
         startSpriteAnimation(0x88, 2, 0);
         
-        dmaSprite(CURSOR_HAND, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (AnimationFrameMetadata*)0x8023CE00, (u8*)0x8023D200, NULL, 0, FALSE);
+        dmaSprite(CURSOR_HAND, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (AnimationFrameMetadata*)0x8023CE00, (u32*)0x8023D200, NULL, 0, FALSE);
         setSpriteViewSpacePosition(CURSOR_HAND, 0.0f, 0.0f, 32.0f);
         setBilinearFiltering(CURSOR_HAND, 1);
-        setSpriteColor(CURSOR_HAND, 0xFF, 0xFF, 0xFF, 0xFF);
+        setSpriteColor(CURSOR_HAND, 255, 255, 255, 255);
         setSpriteRenderingLayer(CURSOR_HAND, 3);
         
-        dmaSprite(0xB2, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (AnimationFrameMetadata*)0x8023CE00, (u8*)0x8023D200, NULL, 0, FALSE);
+        dmaSprite(0xB2, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (AnimationFrameMetadata*)0x8023CE00, (u32*)0x8023D200, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xB2, 0.0f, 0.0f, 32.0f);
         setBilinearFiltering(0xB2, 1);
         setSpriteColor(0xB2, 0xFF, 0xFF, 0xFF, 0x80);
         setSpriteRenderingLayer(0xB2, 2);
 
-        dmaSprite(0xAC, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (AnimationFrameMetadata*)0x8023CE00, (u8*)0x8023D200, NULL, 0, FALSE);
+        dmaSprite(0xAC, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (AnimationFrameMetadata*)0x8023CE00, (u32*)0x8023D200, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xAC, 0.0f, 0.0f, 32.0f);
         setBilinearFiltering(0xAC, 1);
-        setSpriteColor(0xAC, 0xFF, 0xFF, 0xFF, 0xFF);
+        setSpriteColor(0xAC, 255, 255, 255, 255);
         setSpriteRenderingLayer(0xAC, 3);
         
         // arrows
@@ -1320,7 +1337,7 @@ void func_800B42E0(void) {
     } else {
         
         // "data" book icon
-        dmaSprite(0x82, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
+        dmaSprite(0x82, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0x82, 0.0f, 0.0f, 8.0f);
         setSpriteColor(0x82, 0, 0, 0, 0);
         setSpriteRenderingLayer(0x82, 3);
@@ -1328,7 +1345,7 @@ void func_800B42E0(void) {
         startSpriteAnimation(0x82, 7, 0);
         
         // DELETE button
-        dmaSprite(0x83, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
+        dmaSprite(0x83, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0x83, 0.0f, 0.0f, 8.0f);
         setSpriteColor(0x83, 0, 0, 0, 0);
         setSpriteRenderingLayer(0x83, 3);
@@ -1336,7 +1353,7 @@ void func_800B42E0(void) {
         startSpriteAnimation(0x83, 3, 0);
         
         // MOVE button
-        dmaSprite(0x84, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
+        dmaSprite(0x84, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0x84, 0.0f, 0.0f, 8.0f);
         setSpriteColor(0x84, 0, 0, 0, 0);
         setSpriteRenderingLayer(0x84, 3);
@@ -1345,7 +1362,7 @@ void func_800B42E0(void) {
         
         // data book icons
 
-        dmaSprite(0xA3, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
+        dmaSprite(0xA3, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xA3, 0.0f, 0.0f, 8.0f);
         setSpriteColor(0xA3, 0, 0, 0, 0);
         setSpriteRenderingLayer(0xA3, 3);
@@ -1353,7 +1370,7 @@ void func_800B42E0(void) {
         setSpritePaletteIndex(0xA3, 2);
         startSpriteAnimation(0xA3, 8, 0);
         
-        dmaSprite(0xA4, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
+        dmaSprite(0xA4, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xA4, 0.0f, -44.0f, 8.0f);
         setSpriteColor(0xA4, 0, 0, 0, 0);
         setSpriteRenderingLayer(0xA4, 3);
@@ -1363,14 +1380,14 @@ void func_800B42E0(void) {
         
         // numbers
 
-        dmaSprite(0xA7, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
+        dmaSprite(0xA7, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xA7, 0.0f, 0.0f, 16.0f);
         setSpriteColor(0xA7, 0, 0, 0, 0);
         setSpriteRenderingLayer(0xA7, 3);
         setBilinearFiltering(0xA7, 1);
         startSpriteAnimation(0xA7, 5, 0);
         
-        dmaSprite(0xA8, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
+        dmaSprite(0xA8, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xA8, 0.0f, 0.0f, 16.0f);
         setSpriteColor(0xA8, 0, 0, 0, 0);
         setSpriteRenderingLayer(0xA8, 3);
@@ -1378,7 +1395,7 @@ void func_800B42E0(void) {
         startSpriteAnimation(0xA8, 5, 2);
         
         // extra rows for game pak
-        dmaSprite(0x85, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
+        dmaSprite(0x85, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0x85, 0.0f, 0.0f, 4.0f);
         setSpriteColor(0x85, 0, 0, 0, 0);
         setSpriteRenderingLayer(0x85, 3);
@@ -1386,7 +1403,7 @@ void func_800B42E0(void) {
         setSpritePaletteIndex(0x85, 1);
         startSpriteAnimation(0x85, 2, 0);
         
-        dmaSprite(0x86, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
+        dmaSprite(0x86, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0x86, 0.0f, -44.0f, 4.0f);
         setSpriteColor(0x86, 0, 0, 0, 0);
         setSpriteRenderingLayer(0x86, 3);
@@ -1395,29 +1412,29 @@ void func_800B42E0(void) {
         startSpriteAnimation(0x86, 2, 0);
         
         // "game will not start" message
-        dmaSprite(0xAB, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
+        dmaSprite(0xAB, (u32)&_diaryTextureSegmentRomStart, (u32)&_diaryTextureSegmentRomEnd, (u32)&_diaryAssetsIndexSegmentRomStart, (u32)&_diaryAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xAB, 0.0f, 0.0f, 8.0f);
         setSpriteColor(0xAB, 0, 0, 0, 0);
         setSpriteRenderingLayer(0xAB, 3);
         setBilinearFiltering(0xAB, 1);
         startSpriteAnimation(0xAB, 9, 0);
         
-        dmaSprite(CURSOR_HAND, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (AnimationFrameMetadata*)0x8023CE00, (u8*)0x8023D200, NULL, 0, FALSE);
+        dmaSprite(CURSOR_HAND, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (AnimationFrameMetadata*)0x8023CE00, (u32*)0x8023D200, NULL, 0, FALSE);
         setSpriteViewSpacePosition(CURSOR_HAND, 0.0f, 0.0f, 32.0f);
         setBilinearFiltering(CURSOR_HAND, 1);
-        setSpriteColor(CURSOR_HAND, 0xFF, 0xFF, 0xFF, 0xFF);
+        setSpriteColor(CURSOR_HAND, 255, 255, 255, 255);
         setSpriteRenderingLayer(CURSOR_HAND, 3);
         
-        dmaSprite(0xB2, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (AnimationFrameMetadata*)0x8023CE00, (u8*)0x8023D200, NULL, 0, FALSE);
+        dmaSprite(0xB2, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (AnimationFrameMetadata*)0x8023CE00, (u32*)0x8023D200, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xB2, 0.0f, 0.0f, 32.0f);
         setBilinearFiltering(0xB2, 1);
         setSpriteColor(0xB2, 0xFF, 0xFF, 0xFF, 0x80);
         setSpriteRenderingLayer(0xB2, 2);
 
-        dmaSprite(0xAC, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (AnimationFrameMetadata*)0x8023CE00, (u8*)0x8023D200, NULL, 0, FALSE);
+        dmaSprite(0xAC, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (AnimationFrameMetadata*)0x8023CE00, (u32*)0x8023D200, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xAC, 0.0f, 0.0f, 32.0f);
         setBilinearFiltering(0xAC, 1);
-        setSpriteColor(0xAC, 0xFF, 0xFF, 0xFF, 0xFF);
+        setSpriteColor(0xAC, 255, 255, 255, 255);
         setSpriteRenderingLayer(0xAC, 3);
         
         func_800C7850();
@@ -1430,47 +1447,47 @@ void func_800B42E0(void) {
 
 // fade in
 void func_800B59AC(void) {
-    updateSpriteRGBA(0x80, 0xFF, 0xFF, 0xFF, 0xFF, 24);
-    updateSpriteRGBA(0x82, 0xFF, 0xFF, 0xFF, 0xFF, 24);
-    updateSpriteRGBA(0x83, 0xFF, 0xFF, 0xFF, 0xFF, 24);
-    updateSpriteRGBA(0x84, 0xFF, 0xFF, 0xFF, 0xFF, 24);
-    updateSpriteRGBA(0xA3, 0xFF, 0xFF, 0xFF, 0xFF, 24);
-    updateSpriteRGBA(0xA4, 0xFF, 0xFF, 0xFF, 0xFF, 24);
-    updateSpriteRGBA(0xA5, 0xFF, 0xFF, 0xFF, 0xFF, 24);
-    updateSpriteRGBA(0xA6, 0xFF, 0xFF, 0xFF, 0xFF, 24);
-    updateSpriteRGBA(0xA7, 0xFF, 0xFF, 0xFF, 0xFF, 24);
-    updateSpriteRGBA(0xA8, 0xFF, 0xFF, 0xFF, 0xFF, 24);
-    updateSpriteRGBA(0xA9, 0xFF, 0xFF, 0xFF, 0xFF, 24);
-    updateSpriteRGBA(0xAA, 0xFF, 0xFF, 0xFF, 0xFF, 24);
-    updateSpriteRGBA(0x85, 0xFF, 0xFF, 0xFF, 0xFF, 24);
-    updateSpriteRGBA(0x86, 0xFF, 0xFF, 0xFF, 0xFF, 24);
-    updateSpriteRGBA(0x87, 0xFF, 0xFF, 0xFF, 0xFF, 24);
-    updateSpriteRGBA(0x88, 0xFF, 0xFF, 0xFF, 0xFF, 24);
-    updateSpriteRGBA(0xAB, 0xFF, 0xFF, 0xFF, 0xFF, 24);
-    updateSpriteRGBA(0xAD, 0xFF, 0xFF, 0xFF, 0xFF, 24);
+    updateSpriteRGBA(0x80, 255, 255, 255, 255, 24);
+    updateSpriteRGBA(0x82, 255, 255, 255, 255, 24);
+    updateSpriteRGBA(0x83, 255, 255, 255, 255, 24);
+    updateSpriteRGBA(0x84, 255, 255, 255, 255, 24);
+    updateSpriteRGBA(0xA3, 255, 255, 255, 255, 24);
+    updateSpriteRGBA(0xA4, 255, 255, 255, 255, 24);
+    updateSpriteRGBA(0xA5, 255, 255, 255, 255, 24);
+    updateSpriteRGBA(0xA6, 255, 255, 255, 255, 24);
+    updateSpriteRGBA(0xA7, 255, 255, 255, 255, 24);
+    updateSpriteRGBA(0xA8, 255, 255, 255, 255, 24);
+    updateSpriteRGBA(0xA9, 255, 255, 255, 255, 24);
+    updateSpriteRGBA(0xAA, 255, 255, 255, 255, 24);
+    updateSpriteRGBA(0x85, 255, 255, 255, 255, 24);
+    updateSpriteRGBA(0x86, 255, 255, 255, 255, 24);
+    updateSpriteRGBA(0x87, 255, 255, 255, 255, 24);
+    updateSpriteRGBA(0x88, 255, 255, 255, 255, 24);
+    updateSpriteRGBA(0xAB, 255, 255, 255, 255, 24);
+    updateSpriteRGBA(0xAD, 255, 255, 255, 255, 24);
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800B5BD4);
 
 void func_800B5BD4(void) {
-    setSpriteColor(0x80, 0xFF, 0xFF, 0xFF, 0xFF);
-    setSpriteColor(0x82, 0xFF, 0xFF, 0xFF, 0xFF);
-    setSpriteColor(0x83, 0xFF, 0xFF, 0xFF, 0xFF);
-    setSpriteColor(0x84, 0xFF, 0xFF, 0xFF, 0xFF);
-    setSpriteColor(0xA3, 0xFF, 0xFF, 0xFF, 0xFF);
-    setSpriteColor(0xA4, 0xFF, 0xFF, 0xFF, 0xFF);
-    setSpriteColor(0xA5, 0xFF, 0xFF, 0xFF, 0xFF);
-    setSpriteColor(0xA6, 0xFF, 0xFF, 0xFF, 0xFF);
-    setSpriteColor(0xA7, 0xFF, 0xFF, 0xFF, 0xFF);
-    setSpriteColor(0xA8, 0xFF, 0xFF, 0xFF, 0xFF);
-    setSpriteColor(0xA9, 0xFF, 0xFF, 0xFF, 0xFF);
-    setSpriteColor(0xAA, 0xFF, 0xFF, 0xFF, 0xFF);
-    setSpriteColor(0x85, 0xFF, 0xFF, 0xFF, 0xFF);
-    setSpriteColor(0x86, 0xFF, 0xFF, 0xFF, 0xFF);
-    setSpriteColor(0x87, 0xFF, 0xFF, 0xFF, 0xFF);
-    setSpriteColor(0x88, 0xFF, 0xFF, 0xFF, 0xFF);
-    setSpriteColor(0xAB, 0xFF, 0xFF, 0xFF, 0xFF);
-    setSpriteColor(0xAD, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteColor(0x80, 255, 255, 255, 255);
+    setSpriteColor(0x82, 255, 255, 255, 255);
+    setSpriteColor(0x83, 255, 255, 255, 255);
+    setSpriteColor(0x84, 255, 255, 255, 255);
+    setSpriteColor(0xA3, 255, 255, 255, 255);
+    setSpriteColor(0xA4, 255, 255, 255, 255);
+    setSpriteColor(0xA5, 255, 255, 255, 255);
+    setSpriteColor(0xA6, 255, 255, 255, 255);
+    setSpriteColor(0xA7, 255, 255, 255, 255);
+    setSpriteColor(0xA8, 255, 255, 255, 255);
+    setSpriteColor(0xA9, 255, 255, 255, 255);
+    setSpriteColor(0xAA, 255, 255, 255, 255);
+    setSpriteColor(0x85, 255, 255, 255, 255);
+    setSpriteColor(0x86, 255, 255, 255, 255);
+    setSpriteColor(0x87, 255, 255, 255, 255);
+    setSpriteColor(0x88, 255, 255, 255, 255);
+    setSpriteColor(0xAB, 255, 255, 255, 255);
+    setSpriteColor(0xAD, 255, 255, 255, 255);
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800B5DA8);
@@ -1777,7 +1794,7 @@ void func_800B64E4(u8 diaryHighlighted, u8 actionColumnHighlighted) {
 
 /* farm ranking functions */
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800B6674);
+// INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800B6674);
 
 // farm ranking general screen
 void func_800B6674(void) {
@@ -1836,188 +1853,184 @@ void func_800B6674(void) {
 
     // if slot has active game, load sprite
 
-    // current game season
-    if (D_801FB994[0] & 1) {
+    if (gFarmRankingData.flags[0] & 1) {
         dmaSprite(0xAE, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u32*)0x8027E700, (u32*)0x8027EB00, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xAE, -4.0f, 40.0f, 16.0f);
         setSpriteColor(0xAE, 0, 0, 0, 0);
         setSpriteRenderingLayer(0xAE, 3);
         setBilinearFiltering(0xAE, 1);
-        startSpriteAnimation(0xAE, 7, D_801FB80B[0] - 1);
+        startSpriteAnimation(0xAE, 7, gFarmRankingData.seasons[0] - 1);
     }
     
-    if (D_801FB994[1] & 1) {
+    if (gFarmRankingData.flags[1] & 1) {
         dmaSprite(0xAF, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u32*)0x8027E700, (u32*)0x8027EB00, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xAF, -4.0f, 8.0f, 16.0f);
         setSpriteColor(0xAF, 0, 0, 0, 0);
         setSpriteRenderingLayer(0xAF, 3);
         setBilinearFiltering(0xAF, 1);
-        startSpriteAnimation(0xAF, 7, D_801FB80B[1] - 1);
+        startSpriteAnimation(0xAF, 7, gFarmRankingData.seasons[1] - 1);
     }
     
-    if (D_801FB994[2] & 1) {
+    if (gFarmRankingData.flags[2] & 1) {
         dmaSprite(0xB0, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u32*)0x8027E700, (u32*)0x8027EB00, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xB0, -4.0f, -24.0f, 16.0f);
         setSpriteColor(0xB0, 0, 0, 0, 0);
         setSpriteRenderingLayer(0xB0, 3);
         setBilinearFiltering(0xB0, 1);
-        startSpriteAnimation(0xB0, 7, D_801FB80B[2] - 1);
+        startSpriteAnimation(0xB0, 7, gFarmRankingData.seasons[2] - 1);
     }
     
-    if (D_801FB994[3] & 1) {
+    if (gFarmRankingData.flags[3] & 1) {
         dmaSprite(0xB1, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u32*)0x8027E700, (u32*)0x8027EB00, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xB1, -4.0f, -56.0f, 16.0f);
         setSpriteColor(0xB1, 0, 0, 0, 0);
         setSpriteRenderingLayer(0xB1, 3);
         setBilinearFiltering(0xB1, 1);
-        startSpriteAnimation(0xB1, 7, D_801FB80B[3] - 1);
+        startSpriteAnimation(0xB1, 7, gFarmRankingData.seasons[3] - 1);
     }
     
-    if (D_801FB994[4] & 1) {
+    if (gFarmRankingData.flags[4] & 1) {
         dmaSprite(0xB2, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u32*)0x8027E700, (u32*)0x8027EB00, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xB2, -4.0f, -88.0f, 16.0f);
         setSpriteColor(0xB2, 0, 0, 0, 0);
         setSpriteRenderingLayer(0xB2, 3);
         setBilinearFiltering(0xB2, 1);
-        startSpriteAnimation(0xB2, 7, D_801FB80B[4] - 1);
+        startSpriteAnimation(0xB2, 7, gFarmRankingData.seasons[4] - 1);
     }
     
     dmaSprite(CURSOR_HAND, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, NULL, NULL, 0x8023B400, NULL, 0x8023CC00, 0x8023CE00, 0x8023D200, NULL, 0, FALSE);
     setSpriteViewSpacePosition(CURSOR_HAND, 0.0f, 0.0f, 32.0f);
     setBilinearFiltering(CURSOR_HAND, 1);
-    setSpriteColor(CURSOR_HAND, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteColor(CURSOR_HAND, 255, 255, 255, 255);
     setSpriteRenderingLayer(CURSOR_HAND, 3);
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800B7070);
+// INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800B7070);
 
 // individual ranking screen
 void func_800B7070(u8 arg0) {
 
     // slot
-    dmaSprite(0x82, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
+    dmaSprite(0x82, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x82, 0.0f, 80.0f, 8.0f);
-    setSpriteColor(0x82, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteColor(0x82, 255, 255, 255, 255);
     setSpriteRenderingLayer(0x82, 3);
     setBilinearFiltering(0x82, 1);
     startSpriteAnimation(0x82, 1, arg0);
     
     // "Farm ranking" and background
-    dmaSprite(0x81, (u32)&_snapshotLargeTextureSegmentRomStart, (u32)&_snapshotLargeTextureSegmentRomEnd, (u32)&_snapshotLargeAssetsIndexSegmentRomStart, (u32)&_snapshotLargeAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x80289900, NULL, (u16*)0x8028EF00, (u16*)0x8028F000, (u8*)0x8028F100, NULL, 0, FALSE);
+    dmaSprite(0x81, (u32)&_snapshotLargeTextureSegmentRomStart, (u32)&_snapshotLargeTextureSegmentRomEnd, (u32)&_snapshotLargeAssetsIndexSegmentRomStart, (u32)&_snapshotLargeAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x80289900, NULL, (u16*)0x8028EF00, (u16*)0x8028F000, (u32*)0x8028F100, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x81, 0.0f, -16.0f, 8.0f);
-    setSpriteColor(0x81, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteColor(0x81, 255, 255, 255, 255);
     setSpriteRenderingLayer(0x81, 2);
     setBilinearFiltering(0x81, 1);
     startSpriteAnimation(0x81, 0, 0);
     
     // player icon
-    dmaSprite(0x83, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
+    dmaSprite(0x83, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x83, 0.0f, 0.0f, 8.0f);
-    setSpriteColor(0x83, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteColor(0x83, 255, 255, 255, 255);
     setSpriteRenderingLayer(0x83, 2);
     setBilinearFiltering(0x83, 1);
     startSpriteAnimation(0x83, 2, 0);
 
-    // married
-    if (D_801FB994[arg0] & 2) {
+    if (gFarmRankingData.flags[arg0] & RANKING_FLAG_MARRIED) {
         
-        dmaSprite(0x84, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
+        dmaSprite(0x84, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0x84, 0.0f, 0.0f, 8.0f);
-        setSpriteColor(0x84, 0xFF, 0xFF, 0xFF, 0xFF);
+        setSpriteColor(0x84, 255, 255, 255, 255);
         setSpriteRenderingLayer(0x84, 3);
         setBilinearFiltering(0x84, 1);
         // get frame based on wife
-        startSpriteAnimation(0x84, 3, D_801FB971[arg0]);
+        startSpriteAnimation(0x84, 3, gFarmRankingData.wife[arg0]);
         
-        dmaSprite(0xAE, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
+        dmaSprite(0xAE, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xAE, 0.0f, 32.0f, 8.0f);
-        setSpriteColor(0xAE, 0xFF, 0xFF, 0xFF, 0xFF);
+        setSpriteColor(0xAE, 255, 255, 255, 255);
         setSpriteRenderingLayer(0xAE, 3);
         setBilinearFiltering(0xAE, 1);
         
-        if (D_801FB858[arg0] == 0xFF) {
+        if (gFarmRankingData.wifeAffection[arg0] == 0xFF) {
             startSpriteAnimation(0xAE, 6, 0xFE);
         } else {
-            startSpriteAnimation(0xAE, 5, (D_801FB858[arg0] * 9) / 255);
+            startSpriteAnimation(0xAE, 5, (gFarmRankingData.wifeAffection[arg0] * 9) / 255);
         }
         
     }
 
-    // have baby
-    if (D_801FB994[arg0] & 4) {
+    if (gFarmRankingData.flags[arg0] & RANKING_FLAG_HAVE_BABY) {
         
         // baby icon
-        dmaSprite(0x85, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
+        dmaSprite(0x85, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0x85, 0.0f, 0.0f, 8.0f);
-        setSpriteColor(0x85, 0xFF, 0xFF, 0xFF, 0xFF);
+        setSpriteColor(0x85, 255, 255, 255, 255);
         setSpriteRenderingLayer(0x85, 3);
         setBilinearFiltering(0x85, 1);
         startSpriteAnimation(0x85, 3, 5);
         
         // heart
-        dmaSprite(0xAF, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
+        dmaSprite(0xAF, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xAF, 0.0f, 16.0f, 8.0f);
-        setSpriteColor(0xAF, 0xFF, 0xFF, 0xFF, 0xFF);
+        setSpriteColor(0xAF, 255, 255, 255, 255);
         setSpriteRenderingLayer(0xAF, 3);
         setBilinearFiltering(0xAF, 1);
 
-        if (D_801FB85F[arg0] == 0xFF) {
+        if (gFarmRankingData.babyAffection[arg0] == 0xFF) {
             startSpriteAnimation(0xAF, 6, 0xFE);
         } else {
-            startSpriteAnimation(0xAF, 5, (D_801FB85F[arg0] * 9) / 255);
+            startSpriteAnimation(0xAF, 5, (gFarmRankingData.babyAffection[arg0] * 9) / 255);
         }
     
     }
 
-    // have horse
-    if (D_801FB994[arg0] & 8) {
+    if (gFarmRankingData.flags[arg0] & RANKING_FLAG_HAVE_HORSE) {
         
         // horse icon
-        dmaSprite(0x86, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
+        dmaSprite(0x86, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0x86, 0.0f, 0.0f, 8.0f);
-        setSpriteColor(0x86, 0xFF, 0xFF, 0xFF, 0xFF);
+        setSpriteColor(0x86, 255, 255, 255, 255);
         setSpriteRenderingLayer(0x86, 3);
         setBilinearFiltering(0x86, 1);
         startSpriteAnimation(0x86, 3, 6);
         
         // heart
-        dmaSprite(0xB1, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
+        dmaSprite(0xB1, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xB1, 0.0f, -16.0f, 8.0f);
-        setSpriteColor(0xB1, 0xFF, 0xFF, 0xFF, 0xFF);
+        setSpriteColor(0xB1, 255, 255, 255, 255);
         setSpriteRenderingLayer(0xB1, 3);
         setBilinearFiltering(0xB1, 1);
         
         // hearts
-        if (D_801FB86D[arg0] == 0xFF) {
+        if (gFarmRankingData.horseAffection[arg0] == 0xFF) {
             // "MAX" heart
             startSpriteAnimation(0xB1, 6, 0xFE);
         } else {
             // get number of hearts
-            startSpriteAnimation(0xB1, 5, (D_801FB86D[arg0] * 9) / 255);
+            startSpriteAnimation(0xB1, 5, (gFarmRankingData.horseAffection[arg0] * 9) / 255);
         }
         
     }
     
     dmaSprite(0xB0, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0xB0, 0.0f, 0.0f, 8.0f);
-    setSpriteColor(0xB0, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteColor(0xB0, 255, 255, 255, 255);
     setSpriteRenderingLayer(0xB0, 3);
     setBilinearFiltering(0xB0, 1);
     
-    if (D_801FB866[arg0] == 0xFF) {
+    if (gFarmRankingData.dogAffection[arg0] == 0xFF) {
         startSpriteAnimation(0xB0, 6, 0xFE);
     } else {
-        startSpriteAnimation(0xB0, 5, (D_801FB866[arg0] * 9) / 255);
+        startSpriteAnimation(0xB0, 5, (gFarmRankingData.dogAffection[arg0] * 9) / 255);
     }
 
-    if (D_801FB994[arg0] & 1) {
+    if (gFarmRankingData.flags[arg0] & 1) {
         dmaSprite(0xB2, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xB2, -4.0f, 80.0f, 16.0f);
-        setSpriteColor(0xB2, 0xFF, 0xFF, 0xFF, 0xFF);
+        setSpriteColor(0xB2, 255, 255, 255, 255);
         setSpriteRenderingLayer(0xB2, 3);
         setBilinearFiltering(0xB2, 1);
-        startSpriteAnimation(0xB2, 7, D_801FB80B[arg0] - 1);
+        startSpriteAnimation(0xB2, 7, gFarmRankingData.seasons[arg0] - 1);
     }
     
 }
@@ -2025,18 +2038,18 @@ void func_800B7070(u8 arg0) {
 //INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800B7B34);
 
 void func_800B7B34(void) {
-    updateSpriteRGBA(0x80, 0xFF, 0xFF, 0xFF, 0xFF, 24);
-    updateSpriteRGBA(0x82, 0xFF, 0xFF, 0xFF, 0xFF, 24);
-    updateSpriteRGBA(0x83, 0xFF, 0xFF, 0xFF, 0xFF, 24);
-    updateSpriteRGBA(0x84, 0xFF, 0xFF, 0xFF, 0xFF, 24);
-    updateSpriteRGBA(0x85, 0xFF, 0xFF, 0xFF, 0xFF, 24);
-    updateSpriteRGBA(0x86, 0xFF, 0xFF, 0xFF, 0xFF, 24);
-    updateSpriteRGBA(0x87, 0xFF, 0xFF, 0xFF, 0xFF, 24);
-    updateSpriteRGBA(0xAE, 0xFF, 0xFF, 0xFF, 0xFF, 24);
-    updateSpriteRGBA(0xAF, 0xFF, 0xFF, 0xFF, 0xFF, 24);
-    updateSpriteRGBA(0xB0, 0xFF, 0xFF, 0xFF, 0xFF, 24);
-    updateSpriteRGBA(0xB1, 0xFF, 0xFF, 0xFF, 0xFF, 24);
-    updateSpriteRGBA(0xB2, 0xFF, 0xFF, 0xFF, 0xFF, 24);
+    updateSpriteRGBA(0x80, 255, 255, 255, 255, 24);
+    updateSpriteRGBA(0x82, 255, 255, 255, 255, 24);
+    updateSpriteRGBA(0x83, 255, 255, 255, 255, 24);
+    updateSpriteRGBA(0x84, 255, 255, 255, 255, 24);
+    updateSpriteRGBA(0x85, 255, 255, 255, 255, 24);
+    updateSpriteRGBA(0x86, 255, 255, 255, 255, 24);
+    updateSpriteRGBA(0x87, 255, 255, 255, 255, 24);
+    updateSpriteRGBA(0xAE, 255, 255, 255, 255, 24);
+    updateSpriteRGBA(0xAF, 255, 255, 255, 255, 24);
+    updateSpriteRGBA(0xB0, 255, 255, 255, 255, 24);
+    updateSpriteRGBA(0xB1, 255, 255, 255, 255, 24);
+    updateSpriteRGBA(0xB2, 255, 255, 255, 255, 24);
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800B7CB4);
@@ -2059,18 +2072,18 @@ void func_800B7CB4(void) {
 //INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800B7E28);
 
 void func_800B7E28(void) {
-    setSpriteColor(0x80, 0xFF, 0xFF, 0xFF, 0xFF);
-    setSpriteColor(0x82, 0xFF, 0xFF, 0xFF, 0xFF);
-    setSpriteColor(0x83, 0xFF, 0xFF, 0xFF, 0xFF);
-    setSpriteColor(0x84, 0xFF, 0xFF, 0xFF, 0xFF);
-    setSpriteColor(0x85, 0xFF, 0xFF, 0xFF, 0xFF);
-    setSpriteColor(0x86, 0xFF, 0xFF, 0xFF, 0xFF);
-    setSpriteColor(0x87, 0xFF, 0xFF, 0xFF, 0xFF);
-    setSpriteColor(0xAE, 0xFF, 0xFF, 0xFF, 0xFF);
-    setSpriteColor(0xAF, 0xFF, 0xFF, 0xFF, 0xFF);
-    setSpriteColor(0xB0, 0xFF, 0xFF, 0xFF, 0xFF);
-    setSpriteColor(0xB1, 0xFF, 0xFF, 0xFF, 0xFF);
-    setSpriteColor(0xB2, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteColor(0x80, 255, 255, 255, 255);
+    setSpriteColor(0x82, 255, 255, 255, 255);
+    setSpriteColor(0x83, 255, 255, 255, 255);
+    setSpriteColor(0x84, 255, 255, 255, 255);
+    setSpriteColor(0x85, 255, 255, 255, 255);
+    setSpriteColor(0x86, 255, 255, 255, 255);
+    setSpriteColor(0x87, 255, 255, 255, 255);
+    setSpriteColor(0xAE, 255, 255, 255, 255);
+    setSpriteColor(0xAF, 255, 255, 255, 255);
+    setSpriteColor(0xB0, 255, 255, 255, 255);
+    setSpriteColor(0xB1, 255, 255, 255, 255);
+    setSpriteColor(0xB2, 255, 255, 255, 255);
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800B7F6C);
@@ -2107,7 +2120,7 @@ static inline void initializeOverlayScreenTable(void) {
     overlayScreenTable.previousCellIndex = 0;
     overlayScreenTable.pageNumber = 0;
     overlayScreenTable.unk_3 = 0xFF;
-    overlayScreenTable.currentAction = 0;
+    overlayScreenTable.screenState = 0;
 
 }
 
@@ -2125,7 +2138,7 @@ void func_800B8018(void) {
     setSpriteViewSpacePosition(CHECKERBOARD_BACKGROUND, 0, 0, 0);
     setSpriteScale(CHECKERBOARD_BACKGROUND, 2.0f, 2.0f, 1.0f);
     setBilinearFiltering(CHECKERBOARD_BACKGROUND, TRUE);
-    setSpriteColor(CHECKERBOARD_BACKGROUND, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteColor(CHECKERBOARD_BACKGROUND, 255, 255, 255, 255);
     startSpriteAnimation(CHECKERBOARD_BACKGROUND, 0, 0); 
      
     initializeOverlayScreenTable();
@@ -2145,14 +2158,14 @@ void func_800B815C(void) {
     setSpriteViewSpacePosition(CHECKERBOARD_BACKGROUND, 0.0f, 0.0f, 0.0f);
     setSpriteScale(CHECKERBOARD_BACKGROUND, 2.0f, 2.0f, 1.0f);
     setBilinearFiltering(CHECKERBOARD_BACKGROUND, TRUE);
-    setSpriteColor(CHECKERBOARD_BACKGROUND, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteColor(CHECKERBOARD_BACKGROUND, 255, 255, 255, 255);
     startSpriteAnimation(CHECKERBOARD_BACKGROUND, 0, 0);
 
     overlayScreenTable.cellIndex = func_800C2780(0, 0);
     overlayScreenTable.previousCellIndex = 0;
     overlayScreenTable.pageNumber = 0;
     overlayScreenTable.unk_3 = 0xFF;
-    overlayScreenTable.currentAction = 0;
+    overlayScreenTable.screenState = 0;
     
     setMainLoopCallbackFunctionIndex(KITCHEN_PICTURE);
 
@@ -2168,7 +2181,7 @@ void func_800B82AC(void) {
     setSpriteViewSpacePosition(CHECKERBOARD_BACKGROUND, 0.0f, 0.0f, 0.0f);
     setSpriteScale(CHECKERBOARD_BACKGROUND, 2.0f, 2.0f, 1.0f);
     setBilinearFiltering(CHECKERBOARD_BACKGROUND, TRUE);
-    setSpriteColor(CHECKERBOARD_BACKGROUND, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteColor(CHECKERBOARD_BACKGROUND, 255, 255, 255, 255);
     startSpriteAnimation(CHECKERBOARD_BACKGROUND, 0, 0);
 
     initializeOverlayScreenTable();
@@ -2187,7 +2200,7 @@ void func_800B83F0(void) {
     setSpriteViewSpacePosition(CHECKERBOARD_BACKGROUND, 0.0f, 0.0f, 0.0f);
     setSpriteScale(CHECKERBOARD_BACKGROUND, 2.0f, 2.0f, 1.0f);
     setBilinearFiltering(CHECKERBOARD_BACKGROUND, TRUE);
-    setSpriteColor(CHECKERBOARD_BACKGROUND, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteColor(CHECKERBOARD_BACKGROUND, 255, 255, 255, 255);
     startSpriteAnimation(CHECKERBOARD_BACKGROUND, 0, 0);
 
     initializeOverlayScreenTable();
@@ -2211,7 +2224,7 @@ void func_800B8554(void) {
     setSpriteViewSpacePosition(CHECKERBOARD_BACKGROUND, 0.0f, 0.0f, 0.0f);
     setSpriteScale(CHECKERBOARD_BACKGROUND, 2.0f, 2.0f, 1.0f);
     setBilinearFiltering(CHECKERBOARD_BACKGROUND, TRUE);
-    setSpriteColor(CHECKERBOARD_BACKGROUND, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteColor(CHECKERBOARD_BACKGROUND, 255, 255, 255, 255);
     startSpriteAnimation(CHECKERBOARD_BACKGROUND, 0, 0);
 
     initializeOverlayScreenTable();
@@ -2237,20 +2250,20 @@ void func_800B86B8(void) {
     setSpriteViewSpacePosition(CHECKERBOARD_BACKGROUND, 0.0f, 0.0f, 0.0f);
     setSpriteScale(CHECKERBOARD_BACKGROUND, 2.0f, 2.0f, 1.0f);
     setBilinearFiltering(CHECKERBOARD_BACKGROUND, TRUE);
-    setSpriteColor(CHECKERBOARD_BACKGROUND, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteColor(CHECKERBOARD_BACKGROUND, 255, 255, 255, 255);
     startSpriteAnimation(CHECKERBOARD_BACKGROUND, 0, 0);
     
     overlayScreenTable.cellIndex = 0;
     overlayScreenTable.previousCellIndex = 0;
     overlayScreenTable.pageNumber = 0;
     overlayScreenTable.unk_3 = 0xFF;
-    overlayScreenTable.currentAction = 0;
+    overlayScreenTable.screenState = 0;
     overlayScreenTable.unk_8 = 0;
     overlayScreenTable.unk_9 = 0;
     overlayScreenTable.unk_A = 0;
     overlayScreenTable.unk_B = 0;
     
-    setMainLoopCallbackFunctionIndex(0x2C);
+    setMainLoopCallbackFunctionIndex(ALBUM);
     
 }
 
@@ -2274,16 +2287,16 @@ void func_800B8844(void) {
     setSpriteViewSpacePosition(CHECKERBOARD_BACKGROUND, 0.0f, 0.0f, 0.0f);
     setSpriteScale(CHECKERBOARD_BACKGROUND, 2.0f, 2.0f, 1.0f);
     setBilinearFiltering(CHECKERBOARD_BACKGROUND, TRUE);
-    setSpriteColor(CHECKERBOARD_BACKGROUND, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteColor(CHECKERBOARD_BACKGROUND, 255, 255, 255, 255);
     startSpriteAnimation(CHECKERBOARD_BACKGROUND, 0, 0);
     
     overlayScreenTable.cellIndex = 0;
     overlayScreenTable.previousCellIndex = 0;
     overlayScreenTable.pageNumber = 0;
     overlayScreenTable.unk_3 = 0xFF;
-    overlayScreenTable.currentAction = 0;
+    overlayScreenTable.screenState = 0;
     
-    setMainLoopCallbackFunctionIndex(0x23);
+    setMainLoopCallbackFunctionIndex(PAUSE_SCREEN);
     
 }
 
@@ -2298,7 +2311,7 @@ void func_800B8980(void) {
     setMoneySprites();
 
     // tool/item slots
-    dmaSprite(0x83, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
+    dmaSprite(0x83, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x83, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0x83, 0xFF, 0xFF, 0xFF, 0);
     setSpriteRenderingLayer(0x83, 2);
@@ -2306,7 +2319,7 @@ void func_800B8980(void) {
     startSpriteAnimation(0x83, 0, 0);
 
     // tool/item slots
-    dmaSprite(0x84, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
+    dmaSprite(0x84, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x84, 0.0f, -80.0f, 8.0f);
     setSpriteColor(0x84, 0x80, 0x80, 0x80, 0);
     setSpriteRenderingLayer(0x84, 2);
@@ -2314,7 +2327,7 @@ void func_800B8980(void) {
     startSpriteAnimation(0x84, 0, 0);
     
     // key item slots
-    dmaSprite(0x85, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
+    dmaSprite(0x85, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x85, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0x85, 0x80, 0x80, 0x80, 0);
     setSpriteRenderingLayer(0x85, 2);
@@ -2322,7 +2335,7 @@ void func_800B8980(void) {
     startSpriteAnimation(0x85, 1, 0);
     
     // tool and belongings labels
-    dmaSprite(TOOL_AND_BELONGINGS_LABELS, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
+    dmaSprite(TOOL_AND_BELONGINGS_LABELS, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, NULL, 0, FALSE);
     setSpriteViewSpacePosition(TOOL_AND_BELONGINGS_LABELS, 0.0f, 0.0f, 16.0f);
     setSpriteColor(TOOL_AND_BELONGINGS_LABELS, 0xFF, 0xFF, 0xFF, 0);
     setSpriteRenderingLayer(TOOL_AND_BELONGINGS_LABELS, 2);
@@ -2330,7 +2343,7 @@ void func_800B8980(void) {
     startSpriteAnimation(TOOL_AND_BELONGINGS_LABELS, 5, 0);
     
     // highlighted square borders
-    dmaSprite(0x87, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
+    dmaSprite(0x87, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x87, -28.0f, 80.0f, 8.0f);
     setSpriteColor(0x87, 0xFF, 0xFF, 0xFF, 0);
     setSpriteRenderingLayer(0x87, 2);
@@ -2338,7 +2351,7 @@ void func_800B8980(void) {
     startSpriteAnimation(0x87, 2, 0);
     setSpritePaletteIndex(0x87, 3);
     
-    dmaSprite(0x88, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
+    dmaSprite(0x88, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x88, 20.0f, 80.0f, 8.0f);
     setSpriteColor(0x88, 0xFF, 0xFF, 0xFF, 0);
     setSpriteRenderingLayer(0x88, 2);
@@ -2346,15 +2359,15 @@ void func_800B8980(void) {
     startSpriteAnimation(0x88, 2, 0);
     setSpritePaletteIndex(0x88, 2);
     
-    dmaSprite(CURSOR_HAND, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (AnimationFrameMetadata*)0x8023CE00, (u8*)0x8023D200, NULL, 0, FALSE);
+    dmaSprite(CURSOR_HAND, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (AnimationFrameMetadata*)0x8023CE00, (u32*)0x8023D200, NULL, 0, FALSE);
     setBilinearFiltering(CURSOR_HAND, 1);
-    setSpriteColor(CURSOR_HAND, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteColor(CURSOR_HAND, 255, 255, 255, 255);
     
     // selected tool/item
-    dmaSprite(0x82, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
+    dmaSprite(0x82, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x82, 0.0f, 0.0f, 24.0f);
     setBilinearFiltering(0x82, 1);
-    setSpriteColor(0x82, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteColor(0x82, 255, 255, 255, 255);
     
     func_800C7850();
     func_800B90E0();
@@ -2382,7 +2395,10 @@ void func_800B90E0(void) {
         if (gPlayer.toolSlots[i]) {
              
             dmaSprite(TOOL_SPRITES_BASE + i, (u32)&_toolsTextureSegmentRomStart, (u32)&_toolsTextureSegmentRomEnd, (u32)&_toolsAssetsIndexSegmentRomStart, (u32)&_toolsAssetsIndexSegmentRomEnd, (u32) &_toolsSpritesheetIndexSegmentRomStart, (u32)&_toolsSpritesheetIndexSegmentRomEnd, (i * 0x600) + 0x8028FA00, (i * 0x600) + 0x8028FD00, (u16*)0x80299600, (u16*)0x8029BE00, (u8*)0x8029EE00, (u32*)0x8029F000, 1, 0);
-            setSpriteViewSpacePosition(TOOL_SPRITES_BASE + i, toolXCoords[j & 3], *(f32*)((u8*)toolYCoords + (j & 0xFC)), 256.0f);
+            
+            // FIXME: should be / 4 instead of & 0xFC
+            setSpriteViewSpacePosition(TOOL_SPRITES_BASE + i, toolXCoords[j % 4], *(f32*)((u8*)toolYCoords + (j & 0xFC)), 256.0f);
+
             setSpriteColor(TOOL_SPRITES_BASE + i, 0xFF, 0xFF, 0xFF, 0);
             setSpriteRenderingLayer(TOOL_SPRITES_BASE + i, 2);
             setBilinearFiltering(TOOL_SPRITES_BASE + i, 1);
@@ -2417,7 +2433,10 @@ void func_800B90E0(void) {
         if (gPlayer.belongingsSlots[i]) {
             
             dmaSprite(HOLDABLE_ITEMS_BASE + i, (u32)&_holdableItemsTextureSegmentRomStart, (u32)&_holdableItemsTextureSegmentRomEnd, (u32)&_holdableItemsAssetsIndexSegmentRomStart, (u32)&_holdableItemsAssetsIndexSegmentRomEnd, (u32) &_holdableItemsSpritesheetIndexSegmentRomStart, (u32)&_holdableItemsSpritesheetIndexSegmentRomEnd, (i * 0x600) + 0x80293000, (i * 0x600) + 0x80293300, (u16*)0x8029F600, (u16*)0x802A1E00, (u8*)0x802A5300, (u32*)0x802A5500, 1, 0);
-            setSpriteViewSpacePosition(HOLDABLE_ITEMS_BASE + i, belongingXCoords[j & 3], *(f32*)((u8*)belongingYCoords + (j & 0xFC)), 256.0f);
+            
+            // FIXME: should be / 4 instead of & 0xFC
+            setSpriteViewSpacePosition(HOLDABLE_ITEMS_BASE + i, belongingXCoords[j % 4], *(f32*)((u8*)belongingYCoords + (j & 0xFC)), 256.0f);
+
             setSpriteColor(HOLDABLE_ITEMS_BASE + i, 0xFF, 0xFF, 0xFF, 0);
             setSpriteRenderingLayer(HOLDABLE_ITEMS_BASE + i, 2);
             setBilinearFiltering(HOLDABLE_ITEMS_BASE + i, 1);
@@ -2592,24 +2611,24 @@ void func_800B9D3C(void) {
     u8 tempItem;
     u32 temp2;
 
-    switch (overlayScreenTable.currentAction) {
+    switch (overlayScreenTable.screenState) {
 
         case 0:
             func_800B8980();
-            overlayScreenTable.currentAction = 1;
+            overlayScreenTable.screenState = 1;
             break;
 
         case 1:
             if (func_8002CBF8(TOOL_AND_BELONGINGS_LABELS)) {
                 startSpriteAnimation(CURSOR_HAND, 3, 0);
-                overlayScreenTable.currentAction = 5;
+                overlayScreenTable.screenState = 5;
             }
             break;
 
         case 2:
             if (func_8002CBF8(TOOL_AND_BELONGINGS_LABELS)) {
                 func_800B2CE0();
-                overlayScreenTable.currentAction = 3;
+                overlayScreenTable.screenState = 3;
             }
             break;
         
@@ -2621,7 +2640,7 @@ void func_800B9D3C(void) {
 
         case 4:
             if (func_8003F0DC()) {
-                overlayScreenTable.currentAction = overlayScreenTable.unk_7;
+                overlayScreenTable.screenState = overlayScreenTable.unk_7;
             }
             break;
 
@@ -2645,7 +2664,7 @@ void func_800B9D3C(void) {
                             playSfx(2);
                         } else if (overlayScreenTable.unk_3 == 0xFF) {
                             overlayScreenTable.cellIndex -= 4;
-                            overlayScreenTable.currentAction = 6;
+                            overlayScreenTable.screenState = 6;
                             playSfx(2);
                         }
                     
@@ -2700,7 +2719,7 @@ void func_800B9D3C(void) {
                                 overlayScreenTable.cellIndex = 2;
                             }
                         
-                            overlayScreenTable.currentAction = 7;
+                            overlayScreenTable.screenState = 7;
                             playSfx(2);
                         
                         }
@@ -2779,7 +2798,7 @@ void func_800B9D3C(void) {
                         
                         } else if (overlayScreenTable.unk_3 == 0xFF) {
                             overlayScreenTable.cellIndex += 4;
-                            overlayScreenTable.currentAction = 5;
+                            overlayScreenTable.screenState = 5;
                             playSfx(2);
                         }
                         
@@ -2811,7 +2830,7 @@ void func_800B9D3C(void) {
                                 overlayScreenTable.cellIndex = 6;
                             }
                             
-                            overlayScreenTable.currentAction = 7;
+                            overlayScreenTable.screenState = 7;
                             playSfx(2);
                             
                         }
@@ -2935,15 +2954,15 @@ void func_800B9D3C(void) {
                                 overlayScreenTable.cellIndex = 7;
                             }
                             
-                            overlayScreenTable.currentAction = 5;
+                            overlayScreenTable.screenState = 5;
                                 
                         } else {
                             if (overlayScreenTable.cellIndex == 4) {
                                 overlayScreenTable.cellIndex = 3;
-                                overlayScreenTable.currentAction = 6;
+                                overlayScreenTable.screenState = 6;
                             }  else {
                                 overlayScreenTable.cellIndex = 7;
-                                overlayScreenTable.currentAction = 6;
+                                overlayScreenTable.screenState = 6;
                             }
                         }
                         
@@ -2974,19 +2993,19 @@ void func_800B9D3C(void) {
         case 8:
             if (func_8002CBF8(TOOL_AND_BELONGINGS_LABELS)) {
                 func_800B2CE0();
-                overlayScreenTable.currentAction = 9;
+                overlayScreenTable.screenState = 9;
             }
             break;
         
         // load village map (cut from NA release)
         case 9:
             deactivateSprite(0x80);
-            setMainLoopCallbackFunctionIndex(0x1E);
+            setMainLoopCallbackFunctionIndex(PAUSE_SCREEN_MAP_LOAD_1);
             break;
         
     }
 
-    if (4 < overlayScreenTable.currentAction && overlayScreenTable.currentAction < 8) {
+    if (4 < overlayScreenTable.screenState && overlayScreenTable.screenState < 8) {
 
         if (checkButtonPressed(CONTROLLER_1, BUTTON_B)) {
             
@@ -2996,7 +3015,7 @@ void func_800B9D3C(void) {
                     
                     overlayScreenTable.cellIndex = overlayScreenTable.unk_3;
                     overlayScreenTable.unk_3 = 0xFF;
-                    overlayScreenTable.currentAction = overlayScreenTable.unk_5;
+                    overlayScreenTable.screenState = overlayScreenTable.unk_5;
                     overlayScreenTable.pageNumber = overlayScreenTable.unk_4;
                     func_800B9914();
                     
@@ -3006,7 +3025,7 @@ void func_800B9D3C(void) {
                     func_800C7DF8();
                     func_800C7E18();
                     deactivateSprite(0x82);
-                    overlayScreenTable.currentAction = 2;
+                    overlayScreenTable.screenState = 2;
                 }
                 
                 playSfx(1);
@@ -3024,7 +3043,7 @@ void func_800B9D3C(void) {
                 
                     tempItem = 0xFF;
                     
-                    if (overlayScreenTable.currentAction == 6) {
+                    if (overlayScreenTable.screenState == 6) {
                         if (gPlayer.belongingsSlots[overlayScreenTable.cellIndex]) {
                             tempItem = gPlayer.belongingsSlots[overlayScreenTable.cellIndex];
                         }
@@ -3037,7 +3056,7 @@ void func_800B9D3C(void) {
                         
                         overlayScreenTable.cellIndex = overlayScreenTable.unk_3;
                         overlayScreenTable.unk_3 = 0xFF;
-                        overlayScreenTable.currentAction = overlayScreenTable.unk_5;
+                        overlayScreenTable.screenState = overlayScreenTable.unk_5;
                         overlayScreenTable.pageNumber = overlayScreenTable.unk_4;
     
                         func_800B90E0();
@@ -3049,7 +3068,7 @@ void func_800B9D3C(void) {
                     
                     tempItem = 0xFF;
 
-                    if (overlayScreenTable.currentAction == 6) {
+                    if (overlayScreenTable.screenState == 6) {
                         if (gPlayer.belongingsSlots[overlayScreenTable.cellIndex]) {
                             tempItem = gPlayer.belongingsSlots[overlayScreenTable.cellIndex];
                         }
@@ -3059,9 +3078,9 @@ void func_800B9D3C(void) {
 
                         overlayScreenTable.unk_3 = overlayScreenTable.cellIndex;
                         overlayScreenTable.unk_4 = overlayScreenTable.pageNumber;
-                        overlayScreenTable.unk_5 = overlayScreenTable.currentAction; 
+                        overlayScreenTable.unk_5 = overlayScreenTable.screenState; 
                         
-                        if (4 < overlayScreenTable.currentAction && overlayScreenTable.currentAction < 7) {
+                        if (4 < overlayScreenTable.screenState && overlayScreenTable.screenState < 7) {
                             overlayScreenTable.cellIndex = 8;
                         }
                         
@@ -3084,7 +3103,7 @@ void func_800B9D3C(void) {
 
                 tempItem = 0;
                 
-                switch (overlayScreenTable.currentAction) {
+                switch (overlayScreenTable.screenState) {
 
                     case 5:
                         tempItem = gPlayer.toolSlots[overlayScreenTable.cellIndex];
@@ -3105,8 +3124,8 @@ void func_800B9D3C(void) {
                     
                     func_800C81E8(flag, tempItem);
 
-                    overlayScreenTable.unk_7 = overlayScreenTable.currentAction;
-                    overlayScreenTable.currentAction = 4;
+                    overlayScreenTable.unk_7 = overlayScreenTable.screenState;
+                    overlayScreenTable.screenState = 4;
                     
                 }
 
@@ -3114,8 +3133,8 @@ void func_800B9D3C(void) {
             
         }
         
-        if (4 < overlayScreenTable.currentAction && overlayScreenTable.currentAction < 8) {
-            setSpriteViewSpacePosition(CURSOR_HAND, (func_800BA928(overlayScreenTable.currentAction, overlayScreenTable.cellIndex) - 16.0f), func_800BA9E8(overlayScreenTable.currentAction, overlayScreenTable.cellIndex) - 8.0f, 256.0f);
+        if (4 < overlayScreenTable.screenState && overlayScreenTable.screenState < 8) {
+            setSpriteViewSpacePosition(CURSOR_HAND, (func_800BA928(overlayScreenTable.screenState, overlayScreenTable.cellIndex) - 16.0f), func_800BA9E8(overlayScreenTable.screenState, overlayScreenTable.cellIndex) - 8.0f, 256.0f);
             func_800BAAA0();
         }
         
@@ -3166,7 +3185,7 @@ f32 func_800BA928(u8 arg0, u32 arg1) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800BA9E8);
 
-f32 func_800BA9E8(u8 arg0, u32 arg1) {
+f32 func_800BA9E8(u8 arg0, u8 arg1) {
 
     f32 res;
     
@@ -3174,10 +3193,8 @@ f32 func_800BA9E8(u8 arg0, u32 arg1) {
 
         case 5:
             
-            arg1 &= 0xFF;
-            
             if (arg1 < 8) {
-                res = pauseScreenToolYPositions[(arg1 & 0xFC) / 4];
+                res = pauseScreenToolYPositions[arg1 / 4];
             } else {
                 res = pauseScreenCurrentToolYPosition;
             }
@@ -3185,10 +3202,8 @@ f32 func_800BA9E8(u8 arg0, u32 arg1) {
         
         case 6:
 
-            arg1 &= 0xFF;
-            
             if (arg1 < 8) {
-                res = pauseScreenBelongingsYPosition[(arg1 & 0xFC) / 4];
+                res = pauseScreenBelongingsYPosition[arg1 / 4];
             } else {
                 res = pauseScreenHeldItemYPosition;
             }
@@ -3196,7 +3211,7 @@ f32 func_800BA9E8(u8 arg0, u32 arg1) {
             break;
 
         case 7:
-            res = pauseScreenKeyItemsYPosition[(arg1 /2) & LEFT_ARROW];
+            res = pauseScreenKeyItemsYPosition[(arg1 / 2) & LEFT_ARROW];
             break;
         
     }
@@ -3215,34 +3230,34 @@ void func_800BAAA0(void) {
     setSpriteColor(0x84, 0x80, 0x80, 0x80, 0xFF);
     setSpriteColor(0x85, 0x80, 0x80, 0x80, 0xFF);
 
-    switch (overlayScreenTable.currentAction) {
+    switch (overlayScreenTable.screenState) {
 
         case 5:
-            setSpriteColor(0x83, 0xFF, 0xFF, 0xFF, 0xFF);
+            setSpriteColor(0x83, 255, 255, 255, 255);
             break;
         case 6:
-            setSpriteColor(0x84, 0xFF, 0xFF, 0xFF, 0xFF);
+            setSpriteColor(0x84, 255, 255, 255, 255);
             break;
         case 7:
-            setSpriteColor(0x85, 0xFF, 0xFF, 0xFF, 0xFF);
+            setSpriteColor(0x85, 255, 255, 255, 255);
             break;
     }
 
     for (i = 0; i < 9; i++) {
          if (gPlayer.toolSlots[i]) {
-             setSpriteColor(TOOL_SPRITES_BASE + i, 0xFF, 0xFF, 0xFF, 0xFF);
+             setSpriteColor(TOOL_SPRITES_BASE + i, 255, 255, 255, 255);
          }
     }
 
     for (i = 0; i < 9; i++) {
          if (gPlayer.belongingsSlots[i]) {
-             setSpriteColor(HOLDABLE_ITEMS_BASE + i, 0xFF, 0xFF, 0xFF, 0xFF);
+             setSpriteColor(HOLDABLE_ITEMS_BASE + i, 255, 255, 255, 255);
          }
     }
 
     for (i = 0; i < 9; i++) {
          if (gPlayer.keyItemSlots[(overlayScreenTable.pageNumber * 8) + i]) {
-             setSpriteColor(KEY_ITEMS_BASE + i, 0xFF, 0xFF, 0xFF, 0xFF);
+             setSpriteColor(KEY_ITEMS_BASE + i, 255, 255, 255, 255);
          }
     }
     
@@ -3255,7 +3270,7 @@ void func_800BAC7C(void) {
     
     u8 temp;
 
-    switch (overlayScreenTable.currentAction) {          
+    switch (overlayScreenTable.screenState) {          
         
         case TOOL_SLOTS:
             temp = gPlayer.toolSlots[overlayScreenTable.unk_3];
@@ -3312,7 +3327,7 @@ void func_800BADD0(void) {
     setSpriteViewSpacePosition(CHECKERBOARD_BACKGROUND, 0.0f, 0.0f, 0.0f);
     setSpriteScale(CHECKERBOARD_BACKGROUND, 2.0f, 2.0f, 1.0f);
     setBilinearFiltering(CHECKERBOARD_BACKGROUND, 1);
-    setSpriteColor(CHECKERBOARD_BACKGROUND, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteColor(CHECKERBOARD_BACKGROUND, 255, 255, 255, 255);
     startSpriteAnimation(CHECKERBOARD_BACKGROUND, 0, 0);
     
     overlayScreenTable.cellIndex = 0;
@@ -3320,9 +3335,9 @@ void func_800BADD0(void) {
     overlayScreenTable.pageNumber = 0;
     overlayScreenTable.unk_3 = 0xFF;
     overlayScreenTable.unk_4 = 0;
-    overlayScreenTable.currentAction = 0;
+    overlayScreenTable.screenState = 0;
         
-    setMainLoopCallbackFunctionIndex(0x24);
+    setMainLoopCallbackFunctionIndex(TOOLBOX);
     
 }
 
@@ -3337,14 +3352,14 @@ void func_800BAF1C(void) {
     
     // tool and item slots
 
-    dmaSprite(0x83, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
+    dmaSprite(0x83, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x83, 42.0f, 0.0f, 8.0f);
     setSpriteColor(0x83, 0xFF, 0xFF, 0xFF, 0);
     setSpriteRenderingLayer(0x83, 2);
     setBilinearFiltering(0x83, 1);
     startSpriteAnimation(0x83, 0, 0);
 
-    dmaSprite(0x84, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
+    dmaSprite(0x84, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x84, 42.0f, -80.0f, 8.0f);
     setSpriteColor(0x84, 0xFF, 0xFF, 0xFF, 0);
     setSpriteRenderingLayer(0x84, 2);
@@ -3352,7 +3367,7 @@ void func_800BAF1C(void) {
     startSpriteAnimation(0x84, 0, 0);
     
     // toolbox and rucksack labels
-    dmaSprite(TOOL_AND_RUCKSACK_LABELS, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
+    dmaSprite(TOOL_AND_RUCKSACK_LABELS, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, NULL, 0, FALSE);
     setSpriteViewSpacePosition(TOOL_AND_RUCKSACK_LABELS, 0.0f, 0.0f, 16.0f);
     setSpriteColor(TOOL_AND_RUCKSACK_LABELS, 0xFF, 0xFF, 0xFF, 0);
     setSpriteRenderingLayer(TOOL_AND_RUCKSACK_LABELS, 2);
@@ -3360,7 +3375,7 @@ void func_800BAF1C(void) {
     startSpriteAnimation(TOOL_AND_RUCKSACK_LABELS, 5, 1);
 
     // selected square
-    dmaSprite(0x87, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
+    dmaSprite(0x87, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x87, 0.0f, 80.0f, 8.0f);
     setSpriteColor(0x87, 0xFF, 0xFF, 0xFF, 0);
     setSpriteRenderingLayer(0x87, 2);
@@ -3368,15 +3383,15 @@ void func_800BAF1C(void) {
     startSpriteAnimation(0x87, 2, 0);
     setSpritePaletteIndex(0x87, 3);
     
-    dmaSprite(CURSOR_HAND, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (AnimationFrameMetadata*)0x8023CE00, (u8*)0x8023D200, NULL, 0, FALSE);
-    setSpriteViewSpacePosition(CURSOR_HAND, func_800BC700(overlayScreenTable.currentAction, overlayScreenTable.cellIndex) - 16.0f, func_800BC770(overlayScreenTable.currentAction, overlayScreenTable.cellIndex) - 8.0f, 32.0f);
+    dmaSprite(CURSOR_HAND, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (AnimationFrameMetadata*)0x8023CE00, (u32*)0x8023D200, NULL, 0, FALSE);
+    setSpriteViewSpacePosition(CURSOR_HAND, func_800BC700(overlayScreenTable.screenState, overlayScreenTable.cellIndex) - 16.0f, func_800BC770(overlayScreenTable.screenState, overlayScreenTable.cellIndex) - 8.0f, 32.0f);
     setBilinearFiltering(CURSOR_HAND, 1);
-    setSpriteColor(CURSOR_HAND, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteColor(CURSOR_HAND, 255, 255, 255, 255);
     
-    dmaSprite(0x82, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
+    dmaSprite(0x82, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x82, 0.0f, 0.0f, 24.0f);
     setBilinearFiltering(0x82, 1);
-    setSpriteColor(0x82, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteColor(0x82, 255, 255, 255, 255);
     
     // up and down arrows
     func_800C7850();
@@ -3406,7 +3421,10 @@ void func_800BB590(void) {
         if (gToolboxSlots[(overlayScreenTable.pageNumber * 8) + i]) {
              
             dmaSprite(TOOL_SPRITES_BASE + i, (u32)&_toolsTextureSegmentRomStart, (u32)&_toolsTextureSegmentRomEnd, (u32)&_toolsAssetsIndexSegmentRomStart, (u32)&_toolsAssetsIndexSegmentRomEnd, (u32) &_toolsSpritesheetIndexSegmentRomStart, (u32)&_toolsSpritesheetIndexSegmentRomEnd, (u8*)((i * 0x600) + 0x8028FA00), (u8*)((i * 0x600) + 0x8028FD00), (u16*)0x80299600, (u16*)0x8029BE00, (u8*)0x8029EE00, (u32*)0x8029F000, 1, 0);
-            setSpriteViewSpacePosition(TOOL_SPRITES_BASE + i, toolboxToolSlotsXPosition[j & 3], *(f32*)((u8*)toolboxToolSlotsYPosition + (j & 0xFC)), 256.0f);
+            
+            // FIXME: should be / 4 instead of & 0xFC
+            setSpriteViewSpacePosition(TOOL_SPRITES_BASE + i, toolboxToolSlotsXPosition[j % 4], *(f32*)((u8*)toolboxToolSlotsYPosition + (j & 0xFC)), 256.0f);
+
             setSpriteColor(TOOL_SPRITES_BASE + i, 0xFF, 0xFF, 0xFF, 0);
             setSpriteRenderingLayer(TOOL_SPRITES_BASE + i, 2);
             setBilinearFiltering(TOOL_SPRITES_BASE + i, 1);
@@ -3430,7 +3448,10 @@ void func_800BB590(void) {
         if (gPlayer.toolSlots[i]) {
              
             dmaSprite(0xAC + i, (u32)&_toolsTextureSegmentRomStart, (u32)&_toolsTextureSegmentRomEnd, (u32)&_toolsAssetsIndexSegmentRomStart, (u32)&_toolsAssetsIndexSegmentRomEnd, (u32) &_toolsSpritesheetIndexSegmentRomStart, (u32)&_toolsSpritesheetIndexSegmentRomEnd, (i * 0x600) + 0x80293000, (i * 0x600) + 0x80293300, (u16*)0x8029F600, (u16*)0x802A1E00, (u8*)0x802A5300, (u32*)0x802A5500, 1, 0);
-            setSpriteViewSpacePosition(0xAC + i, toolXCoords[j & 3], *(f32*)((u8*)toolYCoords + (j & 0xFC)), 256.0f);
+            
+            // FIXME: should be / 4 instead of & 0xFC
+            setSpriteViewSpacePosition(0xAC + i, toolXCoords[j % 4], *(f32*)((u8*)toolYCoords + (j & 0xFC)), 256.0f);
+
             setSpriteColor(0xAC + i, 0xFF, 0xFF, 0xFF, 0);
             setSpriteRenderingLayer(0xAC + i, 2);
             setBilinearFiltering(0xAC + i, 1);
@@ -3567,24 +3588,24 @@ void func_800BBEC0(void) {
 
     u8 tempTool;
     
-    switch (overlayScreenTable.currentAction) {
+    switch (overlayScreenTable.screenState) {
         
         case 0:
             func_800BAF1C();
-            overlayScreenTable.currentAction = 1;
+            overlayScreenTable.screenState = 1;
             break;
         
         case 1:
             if (func_8002CBF8(TOOL_AND_RUCKSACK_LABELS)) {
                 startSpriteAnimation(CURSOR_HAND, 3, 0);
-                overlayScreenTable.currentAction = 6;
+                overlayScreenTable.screenState = 6;
             }
             break;
         
         case 2:
             if (func_8002CBF8(TOOL_AND_RUCKSACK_LABELS)) {
                 func_800B2CE0();
-                overlayScreenTable.currentAction = 3;
+                overlayScreenTable.screenState = 3;
             }
             break;
         
@@ -3596,7 +3617,7 @@ void func_800BBEC0(void) {
         
         case 4:
             if (func_8003F0DC()) {
-                overlayScreenTable.currentAction = overlayScreenTable.unk_7;
+                overlayScreenTable.screenState = overlayScreenTable.unk_7;
             }
             break;
 
@@ -3629,7 +3650,7 @@ void func_800BBEC0(void) {
                         overlayScreenTable.cellIndex -= 4;
                     } else {
                         overlayScreenTable.cellIndex += 4;
-                        overlayScreenTable.currentAction = 6;
+                        overlayScreenTable.screenState = 6;
                     }
                 
                     playSfx(2);
@@ -3735,7 +3756,7 @@ void func_800BBEC0(void) {
                         overlayScreenTable.cellIndex += 4;
                     } else {
                         overlayScreenTable.cellIndex -= 4;
-                        overlayScreenTable.currentAction = 5;
+                        overlayScreenTable.screenState = 5;
                     }
                     
                     playSfx(2);
@@ -3818,7 +3839,7 @@ void func_800BBEC0(void) {
     
     }
 
-    if (4 < overlayScreenTable.currentAction && overlayScreenTable.currentAction < 7) {
+    if (4 < overlayScreenTable.screenState && overlayScreenTable.screenState < 7) {
                 
         if (checkButtonPressed(CONTROLLER_1, BUTTON_B)) {
         
@@ -3828,7 +3849,7 @@ void func_800BBEC0(void) {
                     
                     overlayScreenTable.cellIndex = overlayScreenTable.unk_3;
                     overlayScreenTable.unk_3 = 0xFF;
-                    overlayScreenTable.currentAction = overlayScreenTable.unk_5;
+                    overlayScreenTable.screenState = overlayScreenTable.unk_5;
                     overlayScreenTable.pageNumber = overlayScreenTable.unk_4;
 
                     func_800BB590();
@@ -3840,7 +3861,7 @@ void func_800BBEC0(void) {
                     func_800C7E38();
                     func_800C7E58();
                     deactivateSprite(0x82);
-                    overlayScreenTable.currentAction = 2;
+                    overlayScreenTable.screenState = 2;
                 }
     
                 playSfx(1);
@@ -3859,14 +3880,14 @@ void func_800BBEC0(void) {
                     
                     overlayScreenTable.cellIndex = overlayScreenTable.unk_3;
                     overlayScreenTable.unk_3 = 0xFF;
-                    overlayScreenTable.currentAction =overlayScreenTable.unk_5;
+                    overlayScreenTable.screenState =overlayScreenTable.unk_5;
                     overlayScreenTable.pageNumber = overlayScreenTable.unk_4;
 
                     func_800BB590();
                     
                 } else {
                     overlayScreenTable.unk_3 = overlayScreenTable.cellIndex;
-                    overlayScreenTable.unk_5 = overlayScreenTable.currentAction;
+                    overlayScreenTable.unk_5 = overlayScreenTable.screenState;
                     overlayScreenTable.unk_4 = overlayScreenTable.pageNumber;
                 }
                 
@@ -3885,8 +3906,8 @@ void func_800BBEC0(void) {
 
                 tempTool = 0;
                 
-                if (overlayScreenTable.currentAction != 5) {
-                    if (overlayScreenTable.currentAction == 6) {
+                if (overlayScreenTable.screenState != 5) {
+                    if (overlayScreenTable.screenState == 6) {
                         tempTool = gPlayer.toolSlots[overlayScreenTable.cellIndex];
                     }
                 } else {
@@ -3897,8 +3918,8 @@ void func_800BBEC0(void) {
                     
                     func_800C81E8(0, tempTool);
                     
-                    overlayScreenTable.unk_7 = overlayScreenTable.currentAction;
-                    overlayScreenTable.currentAction = 4;
+                    overlayScreenTable.unk_7 = overlayScreenTable.screenState;
+                    overlayScreenTable.screenState = 4;
                     
                 }
                 
@@ -3906,8 +3927,8 @@ void func_800BBEC0(void) {
             
         }
     
-        if (4 < overlayScreenTable.currentAction && overlayScreenTable.currentAction < 7) {
-            setSpriteViewSpacePosition(CURSOR_HAND, func_800BC700(overlayScreenTable.currentAction, overlayScreenTable.cellIndex) - 16.0f, func_800BC770(overlayScreenTable.currentAction, overlayScreenTable.cellIndex) - 8.0f, 256.0f);
+        if (4 < overlayScreenTable.screenState && overlayScreenTable.screenState < 7) {
+            setSpriteViewSpacePosition(CURSOR_HAND, func_800BC700(overlayScreenTable.screenState, overlayScreenTable.cellIndex) - 16.0f, func_800BC770(overlayScreenTable.screenState, overlayScreenTable.cellIndex) - 8.0f, 256.0f);
             func_800BC7D8();
         }
     
@@ -3946,21 +3967,20 @@ f32 func_800BC700(u8 arg0, u32 arg1) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800BC770);
 
-f32 func_800BC770(u8 arg0, u32 arg1) {
+f32 func_800BC770(u8 arg0, u8 arg1) {
 
     f32 res;
     
     switch (arg0) {
 
         case 5:
-            res = toolboxToolSlotsYPosition[(arg1 & 0xFC) / 4];
+            res = toolboxToolSlotsYPosition[arg1 / 4];
             break;
         
         case 6:
 
-            arg1 &= 0xFF;
             if (arg1 < 8) {
-                res = toolboxPlayerToolSlotsYPosition[(arg1 & 0xFC) / 4];
+                res = toolboxPlayerToolSlotsYPosition[arg1 / 4];
             } else {
                 res = toolboxCurrentToolYPosition;
             }
@@ -3981,13 +4001,13 @@ void func_800BC7D8(void) {
 
     setSpriteColor(0x83, 0x80, 0x80, 0x80, 0xFF);
     setSpriteColor(0x84, 0x80, 0x80, 0x80, 0xFF);
-    setSpriteColor(0x83, 0xFF, 0xFF, 0xFF, 0xFF);
-    setSpriteColor(0x84, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteColor(0x83, 255, 255, 255, 255);
+    setSpriteColor(0x84, 255, 255, 255, 255);
     
     for (i = 0; i < 9; i++) {
 
         if (gToolboxSlots[(overlayScreenTable.pageNumber * 8) + i]) {
-            setSpriteColor(TOOL_SPRITES_BASE + i, 0xFF, 0xFF, 0xFF, 0xFF);
+            setSpriteColor(TOOL_SPRITES_BASE + i, 255, 255, 255, 255);
         }
         
     }
@@ -3995,7 +4015,7 @@ void func_800BC7D8(void) {
     for (i = 0; i < 9; i++) {
 
         if (gPlayer.toolSlots[i]) {
-            setSpriteColor(0xAC + i, 0xFF, 0xFF, 0xFF, 0xFF);
+            setSpriteColor(0xAC + i, 255, 255, 255, 255);
         }
         
     }
@@ -4010,13 +4030,13 @@ void func_800BC918(void) {
 
     u8 temp;
     
-    switch (overlayScreenTable.currentAction) {
+    switch (overlayScreenTable.screenState) {
 
         case 5:
             
             temp = gToolboxSlots[(overlayScreenTable.pageNumber * 8) + overlayScreenTable.cellIndex];
             
-            if (overlayScreenTable.unk_5 == overlayScreenTable.currentAction) {
+            if (overlayScreenTable.unk_5 == overlayScreenTable.screenState) {
                 
                 gToolboxSlots[(overlayScreenTable.pageNumber * 8) + overlayScreenTable.cellIndex] = 
                     gToolboxSlots[(overlayScreenTable.unk_4 * 8) + overlayScreenTable.unk_3];
@@ -4034,7 +4054,7 @@ void func_800BC918(void) {
 
             temp = gPlayer.toolSlots[overlayScreenTable.cellIndex];
             
-            if (overlayScreenTable.unk_5 == overlayScreenTable.currentAction) {
+            if (overlayScreenTable.unk_5 == overlayScreenTable.screenState) {
                 
                 gPlayer.toolSlots[overlayScreenTable.cellIndex] = gPlayer.toolSlots[overlayScreenTable.unk_3];
                 gPlayer.toolSlots[overlayScreenTable.unk_3] = temp;
@@ -4066,7 +4086,7 @@ void func_800BCA9C(void) {
     setSpriteViewSpacePosition(CHECKERBOARD_BACKGROUND, 0.0f, 0.0f, 0.0f);
     setSpriteScale(CHECKERBOARD_BACKGROUND, 2.0f, 2.0f, 1.0f);
     setBilinearFiltering(CHECKERBOARD_BACKGROUND, TRUE);
-    setSpriteColor(CHECKERBOARD_BACKGROUND, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteColor(CHECKERBOARD_BACKGROUND, 255, 255, 255, 255);
     startSpriteAnimation(CHECKERBOARD_BACKGROUND, 0, 0);
     
     overlayScreenTable.cellIndex = 0;
@@ -4074,9 +4094,9 @@ void func_800BCA9C(void) {
     overlayScreenTable.pageNumber = 0;
     overlayScreenTable.unk_3 = 0xFF;
     overlayScreenTable.unk_4 = 0;
-    overlayScreenTable.currentAction = 0;
+    overlayScreenTable.screenState = 0;
     
-    setMainLoopCallbackFunctionIndex(0x25);
+    setMainLoopCallbackFunctionIndex(FREEZER);
     
 }
 
@@ -4122,14 +4142,14 @@ void func_800BCBE8(void) {
     setSpritePaletteIndex(0x87, 2);
     
     dmaSprite(CURSOR_HAND, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsAssetsIndexSegmentRomStart, &_dialogueIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8* )0x8023B400, NULL, (u16* )0x8023CC00, (u16* )0x8023CE00, (u8* )0x8023D200, NULL, 0, 0);
-    setSpriteViewSpacePosition(CURSOR_HAND, func_800BE3B8(overlayScreenTable.currentAction, overlayScreenTable.cellIndex) - 16.0f, func_800BE428(overlayScreenTable.currentAction, overlayScreenTable.cellIndex) - 8.0f, 32.0f);
+    setSpriteViewSpacePosition(CURSOR_HAND, func_800BE3B8(overlayScreenTable.screenState, overlayScreenTable.cellIndex) - 16.0f, func_800BE428(overlayScreenTable.screenState, overlayScreenTable.cellIndex) - 8.0f, 32.0f);
     setBilinearFiltering(CURSOR_HAND, 1);
-    setSpriteColor(CURSOR_HAND, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteColor(CURSOR_HAND, 255, 255, 255, 255);
     
     dmaSprite(0x82, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd,  (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8* )0x8026F000, NULL, (u16* )0x8027E200, (u16* )0x8027E700, (u8* )0x8027EB00, NULL, 0, 0);
     setSpriteViewSpacePosition(0x82, 0.0f, 0.0f, 24.0f);
     setBilinearFiltering(0x82, 1);
-    setSpriteColor(0x82, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteColor(0x82, 255, 255, 255, 255);
     
     func_800C7850();
     func_800BD25C();
@@ -4158,7 +4178,10 @@ void func_800BD25C(void) {
             f32* yCoords = D_80116D20;
              
             dmaSprite(0xA3 + i, (u32)&_holdableItemsTextureSegmentRomStart, (u32)&_holdableItemsTextureSegmentRomEnd, (u32)&_holdableItemsAssetsIndexSegmentRomStart, (u32)&_holdableItemsAssetsIndexSegmentRomEnd, (u32) &_holdableItemsSpritesheetIndexSegmentRomStart, (u32)&_holdableItemsSpritesheetIndexSegmentRomEnd, (((i * 2) + i) << 9) + 0x8028FA00, (((i * 2) + i) << 9) + 0x8028FD00, (u16* )0x80299600, (u16* )0x8029BE00, (u8* )0x8029EE00, (u32* )0x8029F000, 1, 0);
-            setSpriteViewSpacePosition(0xA3 + i, xCoords[j & 3], *(f32*)((u8*)yCoords + (j & 0xFC)), 256.0f);
+            
+            // FIXME: should be / 4 instead of & 0xFC
+            setSpriteViewSpacePosition(0xA3 + i, xCoords[j % 4], *(f32*)((u8*)yCoords + (j & 0xFC)), 256.0f);
+
             setSpriteColor(0xA3 + i, 0xFF, 0xFF, 0xFF, 0);
             setSpriteRenderingLayer(0xA3 + i, 2);
             setBilinearFiltering(0xA3 + i, 1);
@@ -4181,7 +4204,7 @@ void func_800BD25C(void) {
         if (gPlayer.belongingsSlots[i]) {
             
             dmaSprite(HOLDABLE_ITEMS_BASE + i, (u32)&_holdableItemsTextureSegmentRomStart, (u32)&_holdableItemsTextureSegmentRomEnd, (u32)&_holdableItemsAssetsIndexSegmentRomStart, (u32)&_holdableItemsAssetsIndexSegmentRomEnd, (u32) &_holdableItemsSpritesheetIndexSegmentRomStart, (u32)&_holdableItemsSpritesheetIndexSegmentRomEnd, (i * 0x600) + 0x80293000, (i * 0x600) + 0x80293300, (u16*)0x8029F600, (u16*)0x802A1E00, (u8*)0x802A5300, (u32*)0x802A5500, 1, 0);
-            setSpriteViewSpacePosition(HOLDABLE_ITEMS_BASE + i, belongingXCoords[j & 3], *(f32*)((u8*)belongingYCoords + (j & 0xFC)), 256.0f);
+            setSpriteViewSpacePosition(HOLDABLE_ITEMS_BASE + i, belongingXCoords[j % 4], *(f32*)((u8*)belongingYCoords + (j & 0xFC)), 256.0f);
             setSpriteColor(HOLDABLE_ITEMS_BASE + i, 0xFF, 0xFF, 0xFF, 0);
             setSpriteRenderingLayer(HOLDABLE_ITEMS_BASE + i, 2);
             setBilinearFiltering(HOLDABLE_ITEMS_BASE + i, 1);
@@ -4314,24 +4337,24 @@ void func_800BDB24(void) {
     u8 temp;
     u8 type;
     
-    switch (overlayScreenTable.currentAction) {
+    switch (overlayScreenTable.screenState) {
         
         case 0:
             func_800BCBE8();
-            overlayScreenTable.currentAction = 1;
+            overlayScreenTable.screenState = 1;
             break;
         
         case 1:
             if (func_8002CBF8(FREEZER_AND_RUCKSACK_LABELS)) {
                 startSpriteAnimation(CURSOR_HAND, 3, 0);
-                overlayScreenTable.currentAction = 5;
+                overlayScreenTable.screenState = 5;
             }
             break;
         
         case 2:
             if (func_8002CBF8(FREEZER_AND_RUCKSACK_LABELS)) {
                 func_800B2CE0();
-                overlayScreenTable.currentAction = 3;
+                overlayScreenTable.screenState = 3;
             }
             break;
         
@@ -4343,7 +4366,7 @@ void func_800BDB24(void) {
         
         case 4:
             if (func_8003F0DC()) {
-                overlayScreenTable.currentAction = overlayScreenTable.unk_7;
+                overlayScreenTable.screenState = overlayScreenTable.unk_7;
             }
             break;
 
@@ -4359,7 +4382,7 @@ void func_800BDB24(void) {
                         overlayScreenTable.cellIndex += 4;
                     } else {
                         overlayScreenTable.cellIndex -= 4;
-                        overlayScreenTable.currentAction = 6;
+                        overlayScreenTable.screenState = 6;
                     }
 
                     playSfx(2);
@@ -4379,7 +4402,7 @@ void func_800BDB24(void) {
                         overlayScreenTable.cellIndex -= 4;
                     } else {
                         overlayScreenTable.cellIndex = 8;
-                        overlayScreenTable.currentAction = 6;
+                        overlayScreenTable.screenState = 6;
                     }
                 
                     playSfx(2);
@@ -4482,7 +4505,7 @@ void func_800BDB24(void) {
                     
                     if (overlayScreenTable.cellIndex == 8) {
                         overlayScreenTable.cellIndex = 1;
-                        overlayScreenTable.currentAction = 5;
+                        overlayScreenTable.screenState = 5;
                     } else if (overlayScreenTable.cellIndex < 4) {
                         overlayScreenTable.cellIndex += 4;
                     }
@@ -4504,7 +4527,7 @@ void func_800BDB24(void) {
                             overlayScreenTable.cellIndex -= 4;
                         } else {
                             overlayScreenTable.cellIndex += 4;
-                            overlayScreenTable.currentAction = 5;
+                            overlayScreenTable.screenState = 5;
                         }
                         
                         playSfx(2);
@@ -4567,7 +4590,7 @@ void func_800BDB24(void) {
     
     }
 
-    if (4 < overlayScreenTable.currentAction && overlayScreenTable.currentAction < 7) {
+    if (4 < overlayScreenTable.screenState && overlayScreenTable.screenState < 7) {
                 
         if (checkButtonPressed(CONTROLLER_1, BUTTON_B)) {
         
@@ -4576,7 +4599,7 @@ void func_800BDB24(void) {
                 if (overlayScreenTable.unk_3 != 0xFF) {
                     overlayScreenTable.cellIndex = overlayScreenTable.unk_3;
                     overlayScreenTable.unk_3 = 0xFF;
-                    overlayScreenTable.currentAction = overlayScreenTable.unk_5;
+                    overlayScreenTable.screenState = overlayScreenTable.unk_5;
                     overlayScreenTable.pageNumber = overlayScreenTable.unk_4;
                     func_800BD25C();
                     func_800BD754();
@@ -4586,7 +4609,7 @@ void func_800BDB24(void) {
                     func_800C7E38();
                     func_800C7E58();
                     deactivateSprite(0x82);
-                    overlayScreenTable.currentAction = 2;
+                    overlayScreenTable.screenState = 2;
                 }
     
                 playSfx(1);
@@ -4606,7 +4629,7 @@ void func_800BDB24(void) {
                         func_800BE684();
                         overlayScreenTable.cellIndex = overlayScreenTable.unk_3;
                         overlayScreenTable.unk_3 = 0xFF;
-                        overlayScreenTable.currentAction = overlayScreenTable.unk_5;
+                        overlayScreenTable.screenState = overlayScreenTable.unk_5;
                         overlayScreenTable.pageNumber = overlayScreenTable.unk_4;
                         func_800BD25C();
                         func_800BD754();
@@ -4619,7 +4642,7 @@ void func_800BDB24(void) {
 
                     if (func_800BE5D0()) {
                         overlayScreenTable.unk_3 = overlayScreenTable.cellIndex;
-                        overlayScreenTable.unk_5 = overlayScreenTable.currentAction;
+                        overlayScreenTable.unk_5 = overlayScreenTable.screenState;
                         overlayScreenTable.unk_4 = overlayScreenTable.pageNumber;
                         func_800BD754();
                         playSfx(0);
@@ -4643,7 +4666,7 @@ void func_800BDB24(void) {
                 temp = 0;
                 type = 1;
                 
-                switch (overlayScreenTable.currentAction) {
+                switch (overlayScreenTable.screenState) {
 
                     case 6:
                         temp = gPlayer.belongingsSlots[overlayScreenTable.cellIndex];
@@ -4657,16 +4680,16 @@ void func_800BDB24(void) {
 
                 if (temp) {
                     func_800C81E8(type, temp);
-                    overlayScreenTable.unk_7 = overlayScreenTable.currentAction;
-                    overlayScreenTable.currentAction = 4;
+                    overlayScreenTable.unk_7 = overlayScreenTable.screenState;
+                    overlayScreenTable.screenState = 4;
                 }
                  
             }
             
         }
     
-        if (4 < overlayScreenTable.currentAction && overlayScreenTable.currentAction < 7) {
-            setSpriteViewSpacePosition(CURSOR_HAND, func_800BE3B8(overlayScreenTable.currentAction, overlayScreenTable.cellIndex) - 16.0f, func_800BE428(overlayScreenTable.currentAction, overlayScreenTable.cellIndex) - 8.0f, 256.0f);
+        if (4 < overlayScreenTable.screenState && overlayScreenTable.screenState < 7) {
+            setSpriteViewSpacePosition(CURSOR_HAND, func_800BE3B8(overlayScreenTable.screenState, overlayScreenTable.cellIndex) - 16.0f, func_800BE428(overlayScreenTable.screenState, overlayScreenTable.cellIndex) - 8.0f, 256.0f);
             func_800BE490();
         }
     
@@ -4676,21 +4699,20 @@ void func_800BDB24(void) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800BE3B8);
 
-inline f32 func_800BE3B8(u8 arg0, u32 arg1) {
+inline f32 func_800BE3B8(u8 arg0, u8 arg1) {
 
     f32 res;
     
     switch (arg0) {
         
         case 5:
-            arg1 &= 0xFF;
-            res = D_80116D10[arg1 & 3];
+            res = D_80116D10[arg1 % 4];
             break;
         
         case 6:
-            arg1 &= 0xFF;
+            
             if (arg1 < 8) {
-                res = D_80116D28[arg1 & 3];
+                res = D_80116D28[arg1 % 4];
             } else {
                 res = D_80116D38;
             }
@@ -4705,22 +4727,20 @@ inline f32 func_800BE3B8(u8 arg0, u32 arg1) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800BE428);
 
-inline f32 func_800BE428(u8 arg0, u32 arg1) {
+inline f32 func_800BE428(u8 arg0, u8 arg1) {
 
     f32 res;
     
     switch (arg0) {
 
         case 5:
-            res = D_80116D20[(arg1 & 0xFC) / 4];
+            res = D_80116D20[arg1 / 4];
             break;
         
         case 6:
 
-            arg1 &= 0xFF;
-
             if (arg1 < 8) {
-                res = D_80116D3C[(arg1 & 0xFC) / 4];
+                res = D_80116D3C[arg1 / 4];
             } else {
                 res = D_80116D44;
             }
@@ -4741,13 +4761,13 @@ void func_800BE490(void) {
 
     setSpriteColor(0x83, 0x80, 0x80, 0x80, 0xFF);
     setSpriteColor(0x84, 0x80, 0x80, 0x80, 0xFF);
-    setSpriteColor(0x83, 0xFF, 0xFF, 0xFF, 0xFF);
-    setSpriteColor(0x84, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteColor(0x83, 255, 255, 255, 255);
+    setSpriteColor(0x84, 255, 255, 255, 255);
 
     for (i = 0; i < 9; i++) {
 
         if (D_80237420[(overlayScreenTable.pageNumber * 8) + i]) {
-            setSpriteColor(0xA3 + i, 0xFF, 0xFF, 0xFF, 0xFF);
+            setSpriteColor(0xA3 + i, 255, 255, 255, 255);
         }
         
     }
@@ -4755,7 +4775,7 @@ void func_800BE490(void) {
     for (i = 0; i < 9; i++) {
         
         if (gPlayer.belongingsSlots[i] != 0) {
-            setSpriteColor(HOLDABLE_ITEMS_BASE + i, 0xFF, 0xFF, 0xFF, 0xFF);
+            setSpriteColor(HOLDABLE_ITEMS_BASE + i, 255, 255, 255, 255);
         }
         
     }
@@ -4769,7 +4789,7 @@ bool func_800BE5D0(void) {
     bool result = FALSE;
     u8 temp;
     
-    switch (overlayScreenTable.currentAction) {
+    switch (overlayScreenTable.screenState) {
 
         case 5:
             temp = D_80237420[(overlayScreenTable.pageNumber * 8) + overlayScreenTable.cellIndex];
@@ -4798,13 +4818,13 @@ void func_800BE684(void) {
 
     u8 temp;
 
-    switch (overlayScreenTable.currentAction) {
+    switch (overlayScreenTable.screenState) {
 
         case 5:
 
             temp = D_80237420[(overlayScreenTable.pageNumber * 8) + overlayScreenTable.cellIndex];
             
-            if (overlayScreenTable.unk_5 == overlayScreenTable.currentAction) {
+            if (overlayScreenTable.unk_5 == overlayScreenTable.screenState) {
                 D_80237420[(overlayScreenTable.pageNumber * 8) + overlayScreenTable.cellIndex] = D_80237420[(overlayScreenTable.unk_4 * 8) + overlayScreenTable.unk_3];
                 D_80237420[(overlayScreenTable.unk_4 * 8) + overlayScreenTable.unk_3] = temp;
             } else {
@@ -4818,7 +4838,7 @@ void func_800BE684(void) {
 
             temp = gPlayer.belongingsSlots[overlayScreenTable.cellIndex];
             
-            if (overlayScreenTable.unk_5 == overlayScreenTable.currentAction) {
+            if (overlayScreenTable.unk_5 == overlayScreenTable.screenState) {
                 gPlayer.belongingsSlots[overlayScreenTable.cellIndex] = gPlayer.belongingsSlots[overlayScreenTable.unk_3];
                 gPlayer.belongingsSlots[overlayScreenTable.unk_3] = temp;
             } else {
@@ -4848,7 +4868,7 @@ void func_800BE808(void) {
     setSpriteViewSpacePosition(CHECKERBOARD_BACKGROUND, 0.0f, 0.0f, 0.0f);
     setSpriteScale(CHECKERBOARD_BACKGROUND, 2.0f, 2.0f, 1.0f);
     setBilinearFiltering(CHECKERBOARD_BACKGROUND, 1);
-    setSpriteColor(CHECKERBOARD_BACKGROUND, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteColor(CHECKERBOARD_BACKGROUND, 255, 255, 255, 255);
     startSpriteAnimation(CHECKERBOARD_BACKGROUND, 0, 0);
     
     overlayScreenTable.cellIndex = 0;
@@ -4856,16 +4876,14 @@ void func_800BE808(void) {
     overlayScreenTable.pageNumber = 0;
     overlayScreenTable.unk_3 = 0xFF;
     overlayScreenTable.unk_4 = 0;
-    overlayScreenTable.currentAction = 0;
+    overlayScreenTable.screenState = 0;
     
-    setMainLoopCallbackFunctionIndex(0x26);
+    setMainLoopCallbackFunctionIndex(CABINET);
     
 }
 
-// cabinet
+// INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800BE954);
 
-// inline calls don't match
-#ifdef PERMUTER
 void func_800BE954(void) {
 
     // clock
@@ -4873,28 +4891,28 @@ void func_800BE954(void) {
 
     setMoneySprites();
     
-    dmaSprite(0x83, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
+    dmaSprite(0x83, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x83, 42.0f, 0.0f, 8.0f);
     setSpriteColor(0x83, 0xFF, 0xFF, 0xFF, 0);
     setSpriteRenderingLayer(0x83, 2);
     setBilinearFiltering(0x83, TRUE);
     startSpriteAnimation(0x83, 0, 0);
     
-    dmaSprite(0x84, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
+    dmaSprite(0x84, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x84, 42.0f, -80.0f, 8.0f);
     setSpriteColor(0x84, 0xFF, 0xFF, 0xFF, 0);
     setSpriteRenderingLayer(0x84, 2);
     setBilinearFiltering(0x84, TRUE);
     startSpriteAnimation(0x84, 0, 0);
 
-    dmaSprite(CABINET_AND_RUCKSACK_LABELS, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
+    dmaSprite(CABINET_AND_RUCKSACK_LABELS, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, NULL, 0, FALSE);
     setSpriteViewSpacePosition(CABINET_AND_RUCKSACK_LABELS, 0.0f, 0.0f, 16.0f);
     setSpriteColor(CABINET_AND_RUCKSACK_LABELS, 0xFF, 0xFF, 0xFF, 0);
     setSpriteRenderingLayer(CABINET_AND_RUCKSACK_LABELS, 2);
     setBilinearFiltering(CABINET_AND_RUCKSACK_LABELS, 1);
     startSpriteAnimation(CABINET_AND_RUCKSACK_LABELS, 5, 3);
     
-    dmaSprite(0x87, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
+    dmaSprite(0x87, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x87, 0.0f, 80.0f, 8.0f);
     setSpriteColor(0x87, 0xFF, 0xFF, 0xFF, 0);
     setSpriteRenderingLayer(0x87, 2);
@@ -4902,26 +4920,23 @@ void func_800BE954(void) {
     startSpriteAnimation(0x87, 2, 0);
     setSpritePaletteIndex(0x87, 2);
     
-    dmaSprite(CURSOR_HAND, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (AnimationFrameMetadata*)0x8023CE00, (u8*)0x8023D200, NULL, 0, FALSE);
-    setSpriteViewSpacePosition(CURSOR_HAND, func_800BE3B8(overlayScreenTable.currentAction, overlayScreenTable.cellIndex) - 16.0f, func_800BE428(overlayScreenTable.currentAction, overlayScreenTable.cellIndex) - 8.0f, 32.0f);
+    dmaSprite(CURSOR_HAND, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (AnimationFrameMetadata*)0x8023CE00, (u32*)0x8023D200, NULL, 0, FALSE);
+    setSpriteViewSpacePosition(CURSOR_HAND, func_800BE3B8(overlayScreenTable.screenState, overlayScreenTable.cellIndex) - 16.0f, func_800BE428(overlayScreenTable.screenState, overlayScreenTable.cellIndex) - 8.0f, 32.0f);
     setBilinearFiltering(CURSOR_HAND, TRUE);
-    setSpriteColor(CURSOR_HAND, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteColor(CURSOR_HAND, 255, 255, 255, 255);
     
     dmaSprite(0x82, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, 
               (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, 
-              NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
+              NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x82, 0.0f, 0.0f, 24.0f);
     setBilinearFiltering(0x82, TRUE);
-    setSpriteColor(0x82, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteColor(0x82, 255, 255, 255, 255);
     
     func_800C7850();
     func_800BF0C8();
     func_800BF698();
     
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800BE954);
-#endif
 
 //INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800BF0C8);
 
@@ -4945,7 +4960,10 @@ void func_800BF0C8(void) {
             f32* yCoords = D_80116D58;
              
             dmaSprite(0xA3 + i, (u32)&_holdableItemsTextureSegmentRomStart, (u32)&_holdableItemsTextureSegmentRomEnd, (u32)&_holdableItemsAssetsIndexSegmentRomStart, (u32)&_holdableItemsAssetsIndexSegmentRomEnd, (u32) &_holdableItemsSpritesheetIndexSegmentRomStart, (u32)&_holdableItemsSpritesheetIndexSegmentRomEnd, (((i * 2) + i) << 9) + 0x8028FA00, (((i * 2) + i) << 9) + 0x8028FD00, (u16* )0x80299600, (u16* )0x8029BE00, (u8* )0x8029EE00, (u32* )0x8029F000, 1, 0);
-            setSpriteViewSpacePosition(0xA3 + i, xCoords[j & 3], *(f32*)((u8*)yCoords + (j & 0xFC)), 256.0f);
+            
+            // FIXME: should be / 4 instead of & 0xFC
+            setSpriteViewSpacePosition(0xA3 + i, xCoords[j % 4], *(f32*)((u8*)yCoords + (j & 0xFC)), 256.0f);
+
             setSpriteColor(0xA3 + i, 0xFF, 0xFF, 0xFF, 0);
             setSpriteRenderingLayer(0xA3 + i, 2);
             setBilinearFiltering(0xA3 + i, 1);
@@ -4968,7 +4986,10 @@ void func_800BF0C8(void) {
         if (gPlayer.belongingsSlots[i]) {
             
             dmaSprite(HOLDABLE_ITEMS_BASE + i, (u32)&_holdableItemsTextureSegmentRomStart, (u32)&_holdableItemsTextureSegmentRomEnd, (u32)&_holdableItemsAssetsIndexSegmentRomStart, (u32)&_holdableItemsAssetsIndexSegmentRomEnd, (u32) &_holdableItemsSpritesheetIndexSegmentRomStart, (u32)&_holdableItemsSpritesheetIndexSegmentRomEnd, (i * 0x600) + 0x80293000, (i * 0x600) + 0x80293300, (u16*)0x8029F600, (u16*)0x802A1E00, (u8*)0x802A5300, (u32*)0x802A5500, 1, 0);
-            setSpriteViewSpacePosition(HOLDABLE_ITEMS_BASE + i, belongingXCoords[j & 3], *(f32*)((u8*)belongingYCoords + (j & 0xFC)), 256.0f);
+            
+            // FIXME: should be / 4 instead of & 0xFC
+            setSpriteViewSpacePosition(HOLDABLE_ITEMS_BASE + i, belongingXCoords[j % 4], *(f32*)((u8*)belongingYCoords + (j & 0xFC)), 256.0f);
+
             setSpriteColor(HOLDABLE_ITEMS_BASE + i, 0xFF, 0xFF, 0xFF, 0);
             setSpriteRenderingLayer(HOLDABLE_ITEMS_BASE + i, 2);
             setBilinearFiltering(HOLDABLE_ITEMS_BASE + i, 1);
@@ -5108,24 +5129,24 @@ void func_800BF990(void) {
     u8 temp;
     u8 type;
 
-    switch (overlayScreenTable.currentAction) {
+    switch (overlayScreenTable.screenState) {
 
         case 0:
             func_800BE954();
-            overlayScreenTable.currentAction = 1;
+            overlayScreenTable.screenState = 1;
             break;
             
         case 1:
             if (func_8002CBF8(CABINET_AND_RUCKSACK_LABELS)) {
                 startSpriteAnimation(0x79, 3, 0);
-                overlayScreenTable.currentAction = 5;
+                overlayScreenTable.screenState = 5;
             }
             break;
             
         case 2:
             if (func_8002CBF8(CABINET_AND_RUCKSACK_LABELS)) {
                 func_800B2CE0();
-                overlayScreenTable.currentAction = 3;
+                overlayScreenTable.screenState = 3;
             }
             break;
             
@@ -5137,7 +5158,7 @@ void func_800BF990(void) {
             
         case 4:
             if (func_8003F0DC()) {
-                overlayScreenTable.currentAction = overlayScreenTable.unk_7;
+                overlayScreenTable.screenState = overlayScreenTable.unk_7;
             }
             break;
     
@@ -5153,7 +5174,7 @@ void func_800BF990(void) {
                         overlayScreenTable.cellIndex += 4;
                     } else {
                         overlayScreenTable.cellIndex -= 4;
-                        overlayScreenTable.currentAction = 101;
+                        overlayScreenTable.screenState = 101;
                     }
 
                     playSfx(2);
@@ -5173,7 +5194,7 @@ void func_800BF990(void) {
                         overlayScreenTable.cellIndex -= 4;
                     } else {
                         overlayScreenTable.cellIndex = 8;
-                        overlayScreenTable.currentAction = 101;
+                        overlayScreenTable.screenState = 101;
                     }
                 
                     playSfx(2);
@@ -5275,7 +5296,7 @@ void func_800BF990(void) {
                     
                     if (overlayScreenTable.cellIndex == 8) {
                         overlayScreenTable.cellIndex = 1;
-                        overlayScreenTable.currentAction = 5;
+                        overlayScreenTable.screenState = 5;
                         playSfx(2);
                     } else if (overlayScreenTable.cellIndex < 4) {
                         overlayScreenTable.cellIndex += 4;
@@ -5299,7 +5320,7 @@ void func_800BF990(void) {
                             overlayScreenTable.cellIndex -= 4;
                         } else {
                             overlayScreenTable.cellIndex += 4;
-                            overlayScreenTable.currentAction = 5;
+                            overlayScreenTable.screenState = 5;
                         }
                         
                         playSfx(2);
@@ -5364,7 +5385,7 @@ void func_800BF990(void) {
     
     }
 
-    if (4 < overlayScreenTable.currentAction && overlayScreenTable.currentAction < 102) {
+    if (4 < overlayScreenTable.screenState && overlayScreenTable.screenState < 102) {
 
         if (checkButtonPressed(CONTROLLER_1, BUTTON_B)) {
             
@@ -5374,7 +5395,7 @@ void func_800BF990(void) {
 
                     overlayScreenTable.cellIndex = overlayScreenTable.unk_3;
                     overlayScreenTable.unk_3 = 0xFF;
-                    overlayScreenTable.currentAction = overlayScreenTable.unk_5;
+                    overlayScreenTable.screenState = overlayScreenTable.unk_5;
                     overlayScreenTable.pageNumber = overlayScreenTable.unk_4;
                     func_800BF0C8();
                     func_800BF5C0();
@@ -5385,7 +5406,7 @@ void func_800BF990(void) {
                     func_800C7E38();
                     func_800C7E58();
                     deactivateSprite(0x82);
-                    overlayScreenTable.currentAction = 2;
+                    overlayScreenTable.screenState = 2;
                 }
 
                 playSfx(1);
@@ -5407,7 +5428,7 @@ void func_800BF990(void) {
                         
                         overlayScreenTable.cellIndex = overlayScreenTable.unk_3;
                         overlayScreenTable.unk_3 = 0xFF;
-                        overlayScreenTable.currentAction = overlayScreenTable.unk_5;
+                        overlayScreenTable.screenState = overlayScreenTable.unk_5;
                         overlayScreenTable.pageNumber = overlayScreenTable.unk_4;
                         
                         func_800BF0C8();
@@ -5421,7 +5442,7 @@ void func_800BF990(void) {
                     
                 } else if (func_800C0450()) {
                     overlayScreenTable.unk_3 = overlayScreenTable.cellIndex;
-                    overlayScreenTable.unk_5 = overlayScreenTable.currentAction;
+                    overlayScreenTable.unk_5 = overlayScreenTable.screenState;
                     overlayScreenTable.unk_4 = overlayScreenTable.pageNumber;
                     func_800BF5C0();
                     playSfx(0);
@@ -5442,9 +5463,9 @@ void func_800BF990(void) {
                 temp = 0;
                 type = 1;
 
-                if (overlayScreenTable.currentAction != 5) {
+                if (overlayScreenTable.screenState != 5) {
 
-                    if (overlayScreenTable.currentAction == 101) {
+                    if (overlayScreenTable.screenState == 101) {
                         temp = gPlayer.belongingsSlots[overlayScreenTable.cellIndex];
                     }
                     
@@ -5454,8 +5475,8 @@ void func_800BF990(void) {
 
                 if (temp) {
                     func_800C81E8(type, temp);
-                    overlayScreenTable.unk_7 = overlayScreenTable.currentAction;
-                    overlayScreenTable.currentAction = 4;
+                    overlayScreenTable.unk_7 = overlayScreenTable.screenState;
+                    overlayScreenTable.screenState = 4;
                 }
                 
             }
@@ -5464,8 +5485,8 @@ void func_800BF990(void) {
 
     }
     
-    if (4 < overlayScreenTable.currentAction && overlayScreenTable.currentAction < 102) {
-        setSpriteViewSpacePosition(0x79, func_800C0238(overlayScreenTable.currentAction, overlayScreenTable.cellIndex) - 16.0f, func_800C02A8(overlayScreenTable.currentAction, overlayScreenTable.cellIndex) - 8.0f, 256.0f);
+    if (4 < overlayScreenTable.screenState && overlayScreenTable.screenState < 102) {
+        setSpriteViewSpacePosition(0x79, func_800C0238(overlayScreenTable.screenState, overlayScreenTable.cellIndex) - 16.0f, func_800C02A8(overlayScreenTable.screenState, overlayScreenTable.cellIndex) - 8.0f, 256.0f);
         func_800C0310();
     }
     
@@ -5473,7 +5494,7 @@ void func_800BF990(void) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800C0238);
 
-f32 func_800C0238(u8 arg0, u32 arg1) {
+f32 func_800C0238(u8 arg0, u8 arg1) {
 
    f32 res;
     
@@ -5482,16 +5503,14 @@ f32 func_800C0238(u8 arg0, u32 arg1) {
         case 5:
 
             arg1 &= 0xFF;
-            res = D_80116D48[arg1 & 0x3];
+            res = D_80116D48[arg1 % 4];
             
             break;
         
         case 101:
 
-            arg1 &= 0xFF;
-
             if (arg1 < 8) {
-                res = D_80116D60[arg1 & 0x3];
+                res = D_80116D60[arg1 % 4];
             } else {
                 res = D_80116D70;
             }
@@ -5506,25 +5525,20 @@ f32 func_800C0238(u8 arg0, u32 arg1) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800C02A8);
 
-f32 func_800C02A8(u8 arg0, u32 arg1) {
+f32 func_800C02A8(u8 arg0, u8 arg1) {
 
    f32 res;
     
     switch (arg0) {
 
         case 5:
-
-            arg1 &= 0xFF;
-            res = D_80116D58[(arg1 & 0xFC) / 4];
-            
+            res = D_80116D58[arg1 / 4];
             break;
         
         case 101:
 
-            arg1 &= 0xFF;
-
             if (arg1 < 8) {
-                res = D_80116D74[(arg1 & 0xFC) / 4];
+                res = D_80116D74[arg1 / 4];
             } else {
                 res = D_80116D7C;
             }
@@ -5545,13 +5559,13 @@ void func_800C0310(void) {
 
     setSpriteColor(0x83, 0x80, 0x80, 0x80, 0xFF);
     setSpriteColor(0x84, 0x80, 0x80, 0x80, 0xFF);
-    setSpriteColor(0x83, 0xFF, 0xFF, 0xFF, 0xFF);
-    setSpriteColor(0x84, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteColor(0x83, 255, 255, 255, 255);
+    setSpriteColor(0x84, 255, 255, 255, 255);
 
     for (i = 0; i < 9; i++) {
 
         if (D_801890E8[(overlayScreenTable.pageNumber * 8) + i]) {
-            setSpriteColor(0xA3 + i, 0xFF, 0xFF, 0xFF, 0xFF);
+            setSpriteColor(0xA3 + i, 255, 255, 255, 255);
         }
         
     }
@@ -5559,7 +5573,7 @@ void func_800C0310(void) {
     for (i = 0; i < 9; i++) {
         
         if (gPlayer.belongingsSlots[i] != 0) {
-            setSpriteColor(HOLDABLE_ITEMS_BASE + i, 0xFF, 0xFF, 0xFF, 0xFF);
+            setSpriteColor(HOLDABLE_ITEMS_BASE + i, 255, 255, 255, 255);
         }
         
     }
@@ -5573,7 +5587,7 @@ bool func_800C0450(void) {
     bool result = FALSE;
     u8 temp;
     
-    switch (overlayScreenTable.currentAction) {
+    switch (overlayScreenTable.screenState) {
 
         case 5:
             temp = D_801890E8[(overlayScreenTable.pageNumber * 8) + overlayScreenTable.cellIndex];
@@ -5602,13 +5616,13 @@ void func_800C0504(void) {
 
     u8 temp;
     
-    switch (overlayScreenTable.currentAction) {
+    switch (overlayScreenTable.screenState) {
 
         case 5:
             
             temp = D_801890E8[(overlayScreenTable.pageNumber * 8) + overlayScreenTable.cellIndex];
             
-            if (overlayScreenTable.unk_5 == overlayScreenTable.currentAction) {
+            if (overlayScreenTable.unk_5 == overlayScreenTable.screenState) {
                 
                 D_801890E8[(overlayScreenTable.pageNumber * 8) + overlayScreenTable.cellIndex] = 
                     D_801890E8[(overlayScreenTable.unk_4 * 8) + overlayScreenTable.unk_3];
@@ -5626,7 +5640,7 @@ void func_800C0504(void) {
 
             temp = gPlayer.belongingsSlots[overlayScreenTable.cellIndex];
             
-            if (overlayScreenTable.unk_5 == overlayScreenTable.currentAction) {
+            if (overlayScreenTable.unk_5 == overlayScreenTable.screenState) {
                 
                 gPlayer.belongingsSlots[overlayScreenTable.cellIndex] = gPlayer.belongingsSlots[overlayScreenTable.unk_3];
                 gPlayer.belongingsSlots[overlayScreenTable.unk_3] = temp;
@@ -5693,7 +5707,7 @@ void func_800C0714(void) {
     setMoneySprites();
 
     // extensions list
-    dmaSprite(HOUSE_EXTENSIONS_LIST, (u32)&_houseExtensionSelectionTextureSegmentRomStart, (u32)&_houseExtensionSelectionTextureSegmentRomEnd, (u32)&_houseExtensionSelectionAssetsIndexSegmentRomStart, (u32)&_houseExtensionSelectionAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
+    dmaSprite(HOUSE_EXTENSIONS_LIST, (u32)&_houseExtensionSelectionTextureSegmentRomStart, (u32)&_houseExtensionSelectionTextureSegmentRomEnd, (u32)&_houseExtensionSelectionAssetsIndexSegmentRomStart, (u32)&_houseExtensionSelectionAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, NULL, 0, FALSE);
     setSpriteViewSpacePosition(HOUSE_EXTENSIONS_LIST, 0.0f, 0.0f, 8.0f);
     setSpriteColor(HOUSE_EXTENSIONS_LIST, 0xFF, 0xFF, 0xFF, 0);
     setSpriteRenderingLayer(HOUSE_EXTENSIONS_LIST, 2);
@@ -5701,58 +5715,58 @@ void func_800C0714(void) {
     startSpriteAnimation(HOUSE_EXTENSIONS_LIST, 0, 0);
 
     // price labels
-    dmaSprite(0x83, (u32)&_houseExtensionSelectionTextureSegmentRomStart, (u32)&_houseExtensionSelectionTextureSegmentRomEnd, (u32)&_houseExtensionSelectionAssetsIndexSegmentRomStart, (u32)&_houseExtensionSelectionAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
+    dmaSprite(0x83, (u32)&_houseExtensionSelectionTextureSegmentRomStart, (u32)&_houseExtensionSelectionTextureSegmentRomEnd, (u32)&_houseExtensionSelectionAssetsIndexSegmentRomStart, (u32)&_houseExtensionSelectionAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x83, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0x83, 0xFF, 0xFF, 0xFF, 0);
     setSpriteRenderingLayer(0x83, 2);
     setBilinearFiltering(0x83, TRUE);
     startSpriteAnimation(0x83, 1, 0);
     
-    dmaSprite(0x84, (u32)&_houseExtensionSelectionTextureSegmentRomStart, (u32)&_houseExtensionSelectionTextureSegmentRomEnd, (u32)&_houseExtensionSelectionAssetsIndexSegmentRomStart, (u32)&_houseExtensionSelectionAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
+    dmaSprite(0x84, (u32)&_houseExtensionSelectionTextureSegmentRomStart, (u32)&_houseExtensionSelectionTextureSegmentRomEnd, (u32)&_houseExtensionSelectionAssetsIndexSegmentRomStart, (u32)&_houseExtensionSelectionAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x84, 0.0f, -16.0f, 8.0f);
     setSpriteColor(0x84, 0xFF, 0xFF, 0xFF, 0);
     setSpriteRenderingLayer(0x84, 2);
     setBilinearFiltering(0x84, TRUE);
     startSpriteAnimation(0x84, 1, 0);
     
-    dmaSprite(0x85, (u32)&_houseExtensionSelectionTextureSegmentRomStart, (u32)&_houseExtensionSelectionTextureSegmentRomEnd, (u32)&_houseExtensionSelectionAssetsIndexSegmentRomStart, (u32)&_houseExtensionSelectionAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
+    dmaSprite(0x85, (u32)&_houseExtensionSelectionTextureSegmentRomStart, (u32)&_houseExtensionSelectionTextureSegmentRomEnd, (u32)&_houseExtensionSelectionAssetsIndexSegmentRomStart, (u32)&_houseExtensionSelectionAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x85, 0.0f, -32.0f, 8.0f);
     setSpriteColor(0x85, 0xFF, 0xFF, 0xFF, 0);
     setSpriteRenderingLayer(0x85, 2);
     setBilinearFiltering(0x85, TRUE);
     startSpriteAnimation(0x85, 1, 0);
     
-    dmaSprite(0x86, (u32)&_houseExtensionSelectionTextureSegmentRomStart, (u32)&_houseExtensionSelectionTextureSegmentRomEnd, (u32)&_houseExtensionSelectionAssetsIndexSegmentRomStart, (u32)&_houseExtensionSelectionAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
+    dmaSprite(0x86, (u32)&_houseExtensionSelectionTextureSegmentRomStart, (u32)&_houseExtensionSelectionTextureSegmentRomEnd, (u32)&_houseExtensionSelectionAssetsIndexSegmentRomStart, (u32)&_houseExtensionSelectionAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x86, 0.0f, -48.0f, 8.0f);
     setSpriteColor(0x86, 0xFF, 0xFF, 0xFF, 0);
     setSpriteRenderingLayer(0x86, 2);
     setBilinearFiltering(0x86, TRUE);
     startSpriteAnimation(0x86, 1, 0);
     
-    dmaSprite(0x87, (u32)&_houseExtensionSelectionTextureSegmentRomStart, (u32)&_houseExtensionSelectionTextureSegmentRomEnd, (u32)&_houseExtensionSelectionAssetsIndexSegmentRomStart, (u32)&_houseExtensionSelectionAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
+    dmaSprite(0x87, (u32)&_houseExtensionSelectionTextureSegmentRomStart, (u32)&_houseExtensionSelectionTextureSegmentRomEnd, (u32)&_houseExtensionSelectionAssetsIndexSegmentRomStart, (u32)&_houseExtensionSelectionAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x87, 0.0f, -64.0f, 8.0f);
     setSpriteColor(0x87, 0xFF, 0xFF, 0xFF, 0);
     setSpriteRenderingLayer(0x87, 2);
     setBilinearFiltering(0x87, TRUE);
     startSpriteAnimation(0x87, 1, 0);
     
-    dmaSprite(0x88, (u32)&_houseExtensionSelectionTextureSegmentRomStart, (u32)&_houseExtensionSelectionTextureSegmentRomEnd, (u32)&_houseExtensionSelectionAssetsIndexSegmentRomStart, (u32)&_houseExtensionSelectionAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
+    dmaSprite(0x88, (u32)&_houseExtensionSelectionTextureSegmentRomStart, (u32)&_houseExtensionSelectionTextureSegmentRomEnd, (u32)&_houseExtensionSelectionAssetsIndexSegmentRomStart, (u32)&_houseExtensionSelectionAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x88, 0.0f, -80.0f, 8.0f);
     setSpriteColor(0x88, 0xFF, 0xFF, 0xFF, 0);
     setSpriteRenderingLayer(0x88, 2);
     setBilinearFiltering(0x88, TRUE);
     startSpriteAnimation(0x88, 1, 0);
         
-    dmaSprite(HOUSE_EXTENSIONS_BACKGROUND, (u32)&_photoSmallTextureSegmentRomStart, (u32)&_photoSmallTextureSegmentRomEnd, (u32)&_photoSmallAssetsIndexSegmentRomStart, (u32)&_photoSmallAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x80289900, NULL, (u16*)0x8028EF00, (u16*)0x8028F000, (u8*)0x8028F100, NULL, 0, FALSE);
+    dmaSprite(HOUSE_EXTENSIONS_BACKGROUND, (u32)&_photoSmallTextureSegmentRomStart, (u32)&_photoSmallTextureSegmentRomEnd, (u32)&_photoSmallAssetsIndexSegmentRomStart, (u32)&_photoSmallAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x80289900, NULL, (u16*)0x8028EF00, (u16*)0x8028F000, (u32*)0x8028F100, NULL, 0, FALSE);
     setSpriteViewSpacePosition(HOUSE_EXTENSIONS_BACKGROUND, 0.0f, 0.0f, 8.0f);
     setSpriteColor(HOUSE_EXTENSIONS_BACKGROUND, 0xFF, 0xFF, 0xFF, 0);
     setSpriteRenderingLayer(HOUSE_EXTENSIONS_BACKGROUND, 2);
     setBilinearFiltering(HOUSE_EXTENSIONS_BACKGROUND, TRUE);
     startSpriteAnimation(HOUSE_EXTENSIONS_BACKGROUND, 0, 0);
 
-    dmaSprite(CURSOR_HAND, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (AnimationFrameMetadata*)0x8023CE00, (u8*)0x8023D200, NULL, 0, FALSE);
+    dmaSprite(CURSOR_HAND, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (AnimationFrameMetadata*)0x8023CE00, (u32*)0x8023D200, NULL, 0, FALSE);
     setBilinearFiltering(CURSOR_HAND, TRUE);
-    setSpriteColor(CURSOR_HAND, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteColor(CURSOR_HAND, 255, 255, 255, 255);
 
     func_800C0F24();
     
@@ -5818,24 +5832,24 @@ void func_800C1124(void) {
 
     set = FALSE;
     
-    switch (overlayScreenTable.currentAction) {
+    switch (overlayScreenTable.screenState) {
 
         case 0:
             func_800C0714();
-            overlayScreenTable.currentAction = 1;
+            overlayScreenTable.screenState = 1;
             break;
         case 1:
             if (func_8002CBF8(CLOCK)) {
                 setSpriteViewSpacePosition(CURSOR_HAND, houseExtensionCursorHandXPositions[overlayScreenTable.cellIndex], houseExtensionCursorHandYPositions[overlayScreenTable.cellIndex], 32.0f);
                 startSpriteAnimation(CURSOR_HAND, 3, 0);
-                overlayScreenTable.currentAction = 7;
+                overlayScreenTable.screenState = 7;
             }
             break;
         
         case 2:
             if (func_8002CBF8(CLOCK)) {
                 func_800B2CE0();
-                overlayScreenTable.currentAction = 3;
+                overlayScreenTable.screenState = 3;
             }
             break;
         
@@ -5860,7 +5874,7 @@ void func_800C1124(void) {
                         initializeMessageBox(0, 6, 0x84, 0);
                     }
                 
-                overlayScreenTable.currentAction = 5;
+                overlayScreenTable.screenState = 5;
             
             }
             
@@ -5885,7 +5899,7 @@ void func_800C1124(void) {
                         deactivateOverlayScreenSprites(0);
                         deactivateOverlayScreenSprites(1);
                         resetAnimationState(CURSOR_HAND);
-                        overlayScreenTable.currentAction = 2;
+                        overlayScreenTable.screenState = 2;
                         gHouseExtensionSelection = overlayScreenTable.cellIndex;
                         setDailyEventBit(8);
                         break;
@@ -5893,7 +5907,7 @@ void func_800C1124(void) {
                     case 1:
                         setSpriteViewSpacePosition(CURSOR_HAND, houseExtensionCursorHandXPositions[overlayScreenTable.cellIndex], houseExtensionCursorHandYPositions[overlayScreenTable.cellIndex], 32.0f);
                         startSpriteAnimation(CURSOR_HAND, 3, 0);
-                        overlayScreenTable.currentAction = 7;
+                        overlayScreenTable.screenState = 7;
                         break;
                     
                 }
@@ -5906,7 +5920,7 @@ void func_800C1124(void) {
             if (func_8003F0DC()) {
                 setSpriteViewSpacePosition(CURSOR_HAND, houseExtensionCursorHandXPositions[overlayScreenTable.cellIndex], houseExtensionCursorHandYPositions[overlayScreenTable.cellIndex], 32.0f);
                 startSpriteAnimation(CURSOR_HAND, 3, 0);
-                overlayScreenTable.currentAction = 7;
+                overlayScreenTable.screenState = 7;
             }
             break;
 
@@ -5950,10 +5964,10 @@ void func_800C1124(void) {
                 
                 if (checkLifeEventBit(buff[overlayScreenTable.cellIndex])) {
                     initializeMessageBox(0, 6, 0x6D, 0);
-                    overlayScreenTable.currentAction = 6;
+                    overlayScreenTable.screenState = 6;
                 } else {
                     initializeDialogueSession(0, 0x3D, 0x21, 0x40);
-                    overlayScreenTable.currentAction = 4;
+                    overlayScreenTable.screenState = 4;
                 }
                 
                 playSfx(0);
@@ -5967,7 +5981,7 @@ void func_800C1124(void) {
         
     }
 
-    if (overlayScreenTable.currentAction >= 7 && checkButtonPressed(CONTROLLER_1, BUTTON_B) && !set) {
+    if (overlayScreenTable.screenState >= 7 && checkButtonPressed(CONTROLLER_1, BUTTON_B) && !set) {
         fadeOutClock();
         updateSpriteAlpha(HOUSE_EXTENSIONS_BACKGROUND, 0, 24);
         updateSpriteAlpha(HOUSE_EXTENSIONS_LIST, 0, 24);
@@ -5980,7 +5994,7 @@ void func_800C1124(void) {
         deactivateOverlayScreenSprites(0);
         deactivateOverlayScreenSprites(1);
         resetAnimationState(CURSOR_HAND);
-        overlayScreenTable.currentAction = 2;
+        overlayScreenTable.screenState = 2;
         playSfx(1);
     }
     
@@ -6000,14 +6014,14 @@ void func_800C1710(void) {
     setMoneySprites();
 
     // labels
-    dmaSprite(0x82, (u32)&_estimateScreenTextureSegmentRomStart, (u32)&_estimateScreenTextureSegmentRomEnd, (u32)&_estimateScreenAssetsIndexSegmentRomStart, (u32)&_estimateScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
+    dmaSprite(0x82, (u32)&_estimateScreenTextureSegmentRomStart, (u32)&_estimateScreenTextureSegmentRomEnd, (u32)&_estimateScreenAssetsIndexSegmentRomStart, (u32)&_estimateScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x82, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0x82, 0xFF, 0xFF, 0xFF, 0);
     setSpriteRenderingLayer(0x82, 2);
     setBilinearFiltering(0x82, 1);
     startSpriteAnimation(0x82, 0, 0);
 
-    dmaSprite(ESTIMATE_BACKGROUND, (u32)&_snapshotLargeTextureSegmentRomStart, (u32)&_snapshotLargeTextureSegmentRomEnd, (u32)&_snapshotLargeAssetsIndexSegmentRomStart, (u32)&_snapshotLargeAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x80289900, NULL, (u16*)0x8028EF00, (u16*)0x8028F000, (u8*)0x8028F100, NULL, 0, FALSE);
+    dmaSprite(ESTIMATE_BACKGROUND, (u32)&_snapshotLargeTextureSegmentRomStart, (u32)&_snapshotLargeTextureSegmentRomEnd, (u32)&_snapshotLargeAssetsIndexSegmentRomStart, (u32)&_snapshotLargeAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x80289900, NULL, (u16*)0x8028EF00, (u16*)0x8028F000, (u32*)0x8028F100, NULL, 0, FALSE);
     setSpriteViewSpacePosition(ESTIMATE_BACKGROUND, 0.0f, 0.0f, 8.0f);
     setSpriteColor(ESTIMATE_BACKGROUND, 0xFF, 0xFF, 0xFF, 0);
     setSpriteRenderingLayer(ESTIMATE_BACKGROUND, 2);
@@ -6017,7 +6031,7 @@ void func_800C1710(void) {
     temp = func_8009BC44();
     
     if (temp != 0xFF) {
-        dmaSprite(0x83, (u32)&_estimateScreenTextureSegmentRomStart, (u32)&_estimateScreenTextureSegmentRomEnd, (u32)&_estimateScreenAssetsIndexSegmentRomStart, (u32)&_estimateScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, 0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
+        dmaSprite(0x83, (u32)&_estimateScreenTextureSegmentRomStart, (u32)&_estimateScreenTextureSegmentRomEnd, (u32)&_estimateScreenAssetsIndexSegmentRomStart, (u32)&_estimateScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, 0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0x83, 32.0f, 36.0f, 16.0f);
         setSpriteColor(0x83, 0xFF, 0xFF, 0xFF, 0);
         setSpriteRenderingLayer(0x83, 2);
@@ -6028,7 +6042,7 @@ void func_800C1710(void) {
     temp = func_8009BC54();
     
     if (temp != 0xFF) {
-        dmaSprite(0x84, (u32)&_estimateScreenTextureSegmentRomStart, (u32)&_estimateScreenTextureSegmentRomEnd, (u32)&_estimateScreenAssetsIndexSegmentRomStart, (u32)&_estimateScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, 0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
+        dmaSprite(0x84, (u32)&_estimateScreenTextureSegmentRomStart, (u32)&_estimateScreenTextureSegmentRomEnd, (u32)&_estimateScreenAssetsIndexSegmentRomStart, (u32)&_estimateScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, 0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0x84, 32.0f, 20.0f, 8.0f);
         setSpriteColor(0x84, 0xFF, 0xFF, 0xFF, 0);
         setSpriteRenderingLayer(0x84, 2);
@@ -6039,7 +6053,7 @@ void func_800C1710(void) {
     temp = func_8009BBAC();
     
     if (temp != 0xFF) {
-        dmaSprite(0x85, (u32)&_estimateScreenTextureSegmentRomStart, (u32)&_estimateScreenTextureSegmentRomEnd, (u32)&_estimateScreenAssetsIndexSegmentRomStart, (u32)&_estimateScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, 0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
+        dmaSprite(0x85, (u32)&_estimateScreenTextureSegmentRomStart, (u32)&_estimateScreenTextureSegmentRomEnd, (u32)&_estimateScreenAssetsIndexSegmentRomStart, (u32)&_estimateScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, 0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0x85, -24.0f, 4.0f, 8.0f);
         setSpriteColor(0x85, 0xFF, 0xFF, 0xFF, 0);
         setSpriteRenderingLayer(0x85, 2);
@@ -6047,25 +6061,25 @@ void func_800C1710(void) {
         startSpriteAnimation(0x85, temp + 1, 0);
     }
     
-    func_80045E20(2, 0x9A, (u32)&_bulletNumeralTextureSegmentRomStart, (u32)&_bulletNumeralTextureSegmentRomEnd, (u32)&_bulletNumeralAssetsIndexSegmentRomStart, (u32)&_bulletNumeralAssetsIndexSegmentRomEnd, (void*)0x8028F200, (void*)0x8028F880, (void*)0x8028F900, (void*)0x8028F9C0, 0, 1, 0, -60.0f, 4.0f, 256.0f, 8);
-    dmaOverlayScreenSprites(2, func_8009B3DC() & 0xFF, 1, 3);
-    setOverlayScreenSpritesRGBA(2, 0xFF, 0xFF, 0xFF, 0xFF);
+    setOverlayScreenSprites(2, 0x9A, (u32)&_bulletNumeralTextureSegmentRomStart, (u32)&_bulletNumeralTextureSegmentRomEnd, (u32)&_bulletNumeralAssetsIndexSegmentRomStart, (u32)&_bulletNumeralAssetsIndexSegmentRomEnd, (u8*)0x8028F200, (u16*)0x8028F880, (AnimationFrameMetadata*)0x8028F900, (u32*)0x8028F9C0, 0, 1, 0, -60.0f, 4.0f, 256.0f, 8);
+    dmaOverlayScreenSprites(2, func_8009B3DC(), 1, 3);
+    setOverlayScreenSpritesRGBA(2, 255, 255, 255, 255);
     
-    func_80045E20(3, 0x9B, (u32)&_bulletNumeralTextureSegmentRomStart, (u32)&_bulletNumeralTextureSegmentRomEnd, (u32)&_bulletNumeralAssetsIndexSegmentRomStart, (u32)&_bulletNumeralAssetsIndexSegmentRomEnd, (void*)0x8028F200, (void*)0x8028F880, (void*)0x8028F900, (void*)0x8028F9C0, 0, 1, 0, -60.0f, -12.0f, 256.0f, 8);
-    dmaOverlayScreenSprites(3, func_8009B4EC() & 0xFF, 1, 3);
-    setOverlayScreenSpritesRGBA(3, 0xFF, 0xFF, 0xFF, 0xFF);
+    setOverlayScreenSprites(3, 0x9B, (u32)&_bulletNumeralTextureSegmentRomStart, (u32)&_bulletNumeralTextureSegmentRomEnd, (u32)&_bulletNumeralAssetsIndexSegmentRomStart, (u32)&_bulletNumeralAssetsIndexSegmentRomEnd, (u8*)0x8028F200, (u16*)0x8028F880, (AnimationFrameMetadata*)0x8028F900, (u32*)0x8028F9C0, 0, 1, 0, -60.0f, -12.0f, 256.0f, 8);
+    dmaOverlayScreenSprites(3, func_8009B4EC(), 1, 3);
+    setOverlayScreenSpritesRGBA(3, 255, 255, 255, 255);
     
-    func_80045E20(4, 0x9C, (u32)&_bulletNumeralTextureSegmentRomStart, (u32)&_bulletNumeralTextureSegmentRomEnd, (u32)&_bulletNumeralAssetsIndexSegmentRomStart, (u32)&_bulletNumeralAssetsIndexSegmentRomEnd, (void*)0x8028F200, (void*)0x8028F880, (void*)0x8028F900, (void*)0x8028F9C0, 0, 1, 0, -60.0f, -28.0f, 256.0f, 8);
-    dmaOverlayScreenSprites(4, func_8009B564() & 0xFF, 1, 3);
-    setOverlayScreenSpritesRGBA(4, 0xFF, 0xFF, 0xFF, 0xFF);
+    setOverlayScreenSprites(4, 0x9C, (u32)&_bulletNumeralTextureSegmentRomStart, (u32)&_bulletNumeralTextureSegmentRomEnd, (u32)&_bulletNumeralAssetsIndexSegmentRomStart, (u32)&_bulletNumeralAssetsIndexSegmentRomEnd, (u8*)0x8028F200, (u16*)0x8028F880, (AnimationFrameMetadata*)0x8028F900, (u32*)0x8028F9C0, 0, 1, 0, -60.0f, -28.0f, 256.0f, 8);
+    dmaOverlayScreenSprites(4, func_8009B564(), 1, 3);
+    setOverlayScreenSpritesRGBA(4, 255, 255, 255, 255);
     
-    func_80045E20(5, 0x9D, (u32)&_bulletNumeralTextureSegmentRomStart, (u32)&_bulletNumeralTextureSegmentRomEnd, (u32)&_bulletNumeralAssetsIndexSegmentRomStart, (u32)&_bulletNumeralAssetsIndexSegmentRomEnd, (void*)0x8028F200, (void*)0x8028F880, (void*)0x8028F900, (void*)0x8028F9C0, 0, 1, 0, -16.0f, -44.0f, 256.0f, 8);
+    setOverlayScreenSprites(5, 0x9D, (u32)&_bulletNumeralTextureSegmentRomStart, (u32)&_bulletNumeralTextureSegmentRomEnd, (u32)&_bulletNumeralAssetsIndexSegmentRomStart, (u32)&_bulletNumeralAssetsIndexSegmentRomEnd, (u8*)0x8028F200, (u16*)0x8028F880, (AnimationFrameMetadata*)0x8028F900, (u32*)0x8028F9C0, 0, 1, 0, -16.0f, -44.0f, 256.0f, 8);
     dmaOverlayScreenSprites(5, gLumber, 3, 3);
-    setOverlayScreenSpritesRGBA(5, 0xFF, 0xFF, 0xFF, 0xFF);
+    setOverlayScreenSpritesRGBA(5, 255, 255, 255, 255);
     
-    func_80045E20(6, 0xA0, (u32)&_bulletNumeralTextureSegmentRomStart, (u32)&_bulletNumeralTextureSegmentRomEnd, (u32)&_bulletNumeralAssetsIndexSegmentRomStart, (u32)&_bulletNumeralAssetsIndexSegmentRomEnd, (void*)0x8028F200, (void*)0x8028F880, (void*)0x8028F900, (void*)0x8028F9C0, 0, 1, 0, -16.0f, -60.0f, 256.0f, 8);
+    setOverlayScreenSprites(6, 0xA0, (u32)&_bulletNumeralTextureSegmentRomStart, (u32)&_bulletNumeralTextureSegmentRomEnd, (u32)&_bulletNumeralAssetsIndexSegmentRomStart, (u32)&_bulletNumeralAssetsIndexSegmentRomEnd, (u8*)0x8028F200, (u16*)0x8028F880, (AnimationFrameMetadata*)0x8028F900, (u32*)0x8028F9C0, 0, 1, 0, -16.0f, -60.0f, 256.0f, 8);
     dmaOverlayScreenSprites(6, fodderQuantity, 3, 3);
-    setOverlayScreenSpritesRGBA(6, 0xFF, 0xFF, 0xFF, 0xFF);
+    setOverlayScreenSpritesRGBA(6, 255, 255, 255, 255);
     
     setMessageBoxViewSpacePosition(0, 44.0f, 20.0f, 352.0f);
     setMessageBoxSpriteIndices(0, 0xFF, 0xFF, 0xFF);
@@ -6122,22 +6136,22 @@ void func_800C224C(void) {
 
     u8 temp = 0;
 
-    switch (overlayScreenTable.currentAction) {
+    switch (overlayScreenTable.screenState) {
         case 4:
             break;
         case 0:
             func_800C1710();
-            overlayScreenTable.currentAction = 1;
+            overlayScreenTable.screenState = 1;
             break;
         case 1:
             if (func_8002CBF8(CLOCK)) {
-                overlayScreenTable.currentAction = 4;
+                overlayScreenTable.screenState = 4;
             }
             break;
         case 2:
             if (func_8002CBF8(CLOCK)) {
                 func_800B2CE0();
-                overlayScreenTable.currentAction = 3;
+                overlayScreenTable.screenState = 3;
             }
             break;
         case 3:
@@ -6147,9 +6161,9 @@ void func_800C224C(void) {
             break;
     }
     
-    if ((overlayScreenTable.currentAction >= 4) && (checkButtonPressed(CONTROLLER_1, BUTTON_B)) && (temp == 0)) {
+    if ((overlayScreenTable.screenState >= 4) && (checkButtonPressed(CONTROLLER_1, BUTTON_B)) && (temp == 0)) {
         func_800C2128();
-        overlayScreenTable.currentAction = 2;
+        overlayScreenTable.screenState = 2;
         playSfx(1);
     }
     
@@ -6165,16 +6179,16 @@ void func_800C2364(void) {
     // clock
     func_800B2F34();
     
-    dmaSprite(0x82, (u32)&_powerNutTreeDrawingTextureSegmentRomStart, (u32)&_powerNutTreeDrawingTextureSegmentRomEnd, (u32)&_powerNutTreeDrawingAssetsIndexSegmentRomStart, (u32)&_powerNutTreeDrawingAssetsIndexSegmentRomEnd,  0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
+    dmaSprite(0x82, (u32)&_powerNutTreeDrawingTextureSegmentRomStart, (u32)&_powerNutTreeDrawingTextureSegmentRomEnd, (u32)&_powerNutTreeDrawingAssetsIndexSegmentRomStart, (u32)&_powerNutTreeDrawingAssetsIndexSegmentRomEnd,  0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x82, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0x82, 0xFF, 0xFF, 0xFF, 0);
     setSpriteRenderingLayer(0x82, 2);
     setBilinearFiltering(0x82, TRUE);
     startSpriteAnimation(0x82, 0, 0);
     
-    dmaSprite(CURSOR_HAND, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (AnimationFrameMetadata*)0x8023CE00, (u8*)0x8023D200, NULL, 0, FALSE);
+    dmaSprite(CURSOR_HAND, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (AnimationFrameMetadata*)0x8023CE00, (u32*)0x8023D200, NULL, 0, FALSE);
     setBilinearFiltering(CURSOR_HAND, TRUE);
-    setSpriteColor(CURSOR_HAND, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteColor(CURSOR_HAND, 255, 255, 255, 255);
     
     func_800C2504();
     func_800C292C();
@@ -6234,8 +6248,73 @@ void func_800C2660(void) {
     
 }
 
-// kitchen picture
-INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800C2780);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800C2780);
+
+u8 func_800C2780(u8 cellIndex, u8 arg1) {
+
+    u8 result = 0xFF;
+    
+    s8 temp;
+    
+    switch (arg1) {
+
+        case 0:
+
+            temp = cellIndex;
+
+            while (temp < 10 && result == 0xFF) {
+
+                if (powerNutBits & D_80116F24[temp]) {
+                    result = temp;
+                }
+
+                temp++;
+                
+            }
+            
+            break;
+        
+        case 1:
+
+            temp = cellIndex;
+
+            temp++;
+
+            while (temp < 10 && result == 0xFF) {
+
+                if (powerNutBits & D_80116F24[temp]) {
+                    result = temp;
+                }
+
+                temp++;
+                
+            }
+            
+            break;
+
+        case 2:
+
+            temp = cellIndex;
+            temp--;
+
+            while (temp >= 0 && result == 0xFF) {
+
+                if (powerNutBits & D_80116F24[temp]) {
+                    result = temp;
+                }
+                
+                temp--;
+            
+            }
+                
+            
+            break;
+        
+    }
+
+    return result;
+    
+}
 
 //INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800C292C);
 
@@ -6289,11 +6368,11 @@ void func_800C2B8C(void) {
     bool set = FALSE;
     u8 temp;
 
-    switch (overlayScreenTable.currentAction) {
+    switch (overlayScreenTable.screenState) {
 
         case 0:
             func_800C2364();
-            overlayScreenTable.currentAction = 1;
+            overlayScreenTable.screenState = 1;
             break;
 
         case 1:
@@ -6305,7 +6384,7 @@ void func_800C2B8C(void) {
                     func_800C2660();
                 } 
                 
-                overlayScreenTable.currentAction = 5;
+                overlayScreenTable.screenState = 5;
                 
             }
             
@@ -6314,7 +6393,7 @@ void func_800C2B8C(void) {
         case 2:
             if (func_8002CBF8(CLOCK)) {
                 func_800B2CE0();
-                overlayScreenTable.currentAction = 3;
+                overlayScreenTable.screenState = 3;
             }
             break;
 
@@ -6326,7 +6405,7 @@ void func_800C2B8C(void) {
 
         case 4:
             if (func_8003F0DC()) {
-                overlayScreenTable.currentAction = 5;
+                overlayScreenTable.screenState = 5;
             }
             break;
 
@@ -6386,7 +6465,7 @@ void func_800C2B8C(void) {
 
                 if (!set) {
                     
-                    if ((func_800C2780(overlayScreenTable.cellIndex, 0) & 0xFF) != 0xFF) {
+                    if (func_800C2780(overlayScreenTable.cellIndex, 0) != 0xFF) {
                         
                         setMessageBoxViewSpacePosition(0, 0.0f, -64.0f, 352.0f);
                         setMessageBoxSpriteIndices(0, 1, 0, 0);
@@ -6394,7 +6473,7 @@ void func_800C2B8C(void) {
                         initializeMessageBox(0, 2, overlayScreenTable.cellIndex + 0x23, 0);
                         
                         controllers[CONTROLLER_1].buttonPressed = 0;
-                        overlayScreenTable.currentAction = 4;
+                        overlayScreenTable.screenState = 4;
                         
                         playSfx(0);
                         
@@ -6410,10 +6489,10 @@ void func_800C2B8C(void) {
             
     }
 
-    if (overlayScreenTable.currentAction >= 5 && checkButtonPressed(CONTROLLER_1, BUTTON_B) && !set) {
+    if (overlayScreenTable.screenState >= 5 && checkButtonPressed(CONTROLLER_1, BUTTON_B) && !set) {
         resetAnimationState(CURSOR_HAND);
         func_800C2A54();
-        overlayScreenTable.currentAction = 2;
+        overlayScreenTable.screenState = 2;
         playSfx(1);
     }
     
@@ -6429,16 +6508,16 @@ void func_800C2B8C(void) {
 void func_800C2F50(void) {
     
     // main calendar components
-    dmaSprite(CALENDAR_BACKGROUND, (u32)&_calendarTextureSegmentRomStart, (u32)&_calendarTextureSegmentRomEnd, (u32)&_calendarAssetsIndexSegmentRomStart, (u32)&_calendarAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
+    dmaSprite(CALENDAR_BACKGROUND, (u32)&_calendarTextureSegmentRomStart, (u32)&_calendarTextureSegmentRomEnd, (u32)&_calendarAssetsIndexSegmentRomStart, (u32)&_calendarAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, NULL, 0, FALSE);
     setSpriteViewSpacePosition(CALENDAR_BACKGROUND, 0.0f, 0.0f, 8.0f);
     setSpriteColor(CALENDAR_BACKGROUND, 0xFF, 0xFF, 0xFF, 0);
     setSpriteRenderingLayer(CALENDAR_BACKGROUND, 2);
     setBilinearFiltering(CALENDAR_BACKGROUND, TRUE);
     startSpriteAnimation(CALENDAR_BACKGROUND, 0, 0);
     
-    dmaSprite(CURSOR_HAND, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (AnimationFrameMetadata*)0x8023CE00, (u8*)0x8023D200, NULL, 0, FALSE);
+    dmaSprite(CURSOR_HAND, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (AnimationFrameMetadata*)0x8023CE00, (u32*)0x8023D200, NULL, 0, FALSE);
     setBilinearFiltering(CURSOR_HAND, TRUE);
-    setSpriteColor(CURSOR_HAND, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteColor(CURSOR_HAND, 255, 255, 255, 255);
     
     func_800C3108();
     func_800C34C0(gYear, gSeason, gDayOfMonth);
@@ -6483,7 +6562,7 @@ void func_800C3108(void) {
 
                 D_80205640[temp] = 0xFF;
                 
-                dmaSprite(CALENDAR_STICKERS_BASE + temp, (u32)&_calendarTextureSegmentRomStart, (u32)&_calendarTextureSegmentRomEnd, (u32)&_calendarAssetsIndexSegmentRomStart, (u32)&_calendarAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
+                dmaSprite(CALENDAR_STICKERS_BASE + temp, (u32)&_calendarTextureSegmentRomStart, (u32)&_calendarTextureSegmentRomEnd, (u32)&_calendarAssetsIndexSegmentRomStart, (u32)&_calendarAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, NULL, 0, FALSE);
                 setSpriteViewSpacePosition(CALENDAR_STICKERS_BASE + temp, D_80116E68[0], D_80116E90[0], 8.0f);
                 setSpriteViewSpacePosition(CALENDAR_STICKERS_BASE + temp, (j << 5) - 122, -(i * 24) + 0x1A, 4.0f);
                 setSpriteColor(CALENDAR_STICKERS_BASE + temp, 0xFF, 0xFF, 0xFF, 0);
@@ -6502,7 +6581,7 @@ void func_800C3108(void) {
 
         if (D_80205640[k] != 0xFF) {
 
-            dmaSprite(CALENDAR_STICKERS_BASE + k, (u32)&_calendarTextureSegmentRomStart, (u32)&_calendarTextureSegmentRomEnd, (u32)&_calendarAssetsIndexSegmentRomStart, (u32)&_calendarAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
+            dmaSprite(CALENDAR_STICKERS_BASE + k, (u32)&_calendarTextureSegmentRomStart, (u32)&_calendarTextureSegmentRomEnd, (u32)&_calendarAssetsIndexSegmentRomStart, (u32)&_calendarAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, NULL, 0, FALSE);
             setSpriteViewSpacePosition(CALENDAR_STICKERS_BASE + k, D_80116E68[k], D_80116E90[k], 8.0f);
             setSpriteColor(CALENDAR_STICKERS_BASE + k, 0xFF, 0xFF, 0xFF, 0);
             setSpriteRenderingLayer(CALENDAR_STICKERS_BASE + k, 2);
@@ -6515,7 +6594,85 @@ void func_800C3108(void) {
 
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800C34C0);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800C34C0);
+
+void func_800C34C0(u8 year, u8 season, u8 dayOfMonth) {
+    
+    u8 row, col;
+    
+    u8 dayIndex;
+    u8 startingWeekday;
+    u8 skipCount;
+    bool isSaturdayStart;
+    
+    dmaSprite(0x83, (u32)&_calendarTextureSegmentRomStart, (u32)&_calendarTextureSegmentRomEnd, 
+          (u32)&_calendarAssetsIndexSegmentRomStart, (u32)&_calendarAssetsIndexSegmentRomEnd, 
+          NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, 
+          (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, NULL, 0, FALSE);
+    
+    setSpriteViewSpacePosition(0x83, 0.0f, 0.0f, 8.0f);
+    setSpriteColor(0x83, 255, 255, 255, 0);
+    setSpriteRenderingLayer(0x83, 2);
+    setBilinearFiltering(0x83, 1);
+    startSpriteAnimation(0x83, 4, season - 1);
+
+    skipCount = 0;
+    dayIndex = 0;
+
+    startingWeekday = (year % 7 + ((season - 1) * 30) % 7) % 7;
+    isSaturdayStart = (startingWeekday == 6); 
+
+    for (row = 0; row < 5; row++) {
+
+        for (col = 0; col < 7; col++) {
+
+            if (skipCount == startingWeekday && dayIndex < 30) {
+                
+                dmaSprite(0x8F + dayIndex, (u32)&_calendarTextureSegmentRomStart, (u32)&_calendarTextureSegmentRomEnd, 
+                          (u32)&_calendarAssetsIndexSegmentRomStart, (u32)&_calendarAssetsIndexSegmentRomEnd, 
+                          NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, 
+                          (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, NULL, 0, FALSE);
+
+                setSpriteViewSpacePosition(0x8F + dayIndex, (f32)(col * 32), (f32)(-row * 24), 16.0f);
+                setSpriteColor(0x8F + dayIndex, 255, 255, 255, 0);
+                setSpriteRenderingLayer(0x8F + dayIndex, 2);
+                setBilinearFiltering(0x8F + dayIndex, 1);
+
+                if (isSaturdayStart) {
+                    if (dayIndex == 22) {
+                        startSpriteAnimation(0x8F + dayIndex, 2, 30);
+                    } else {
+                        startSpriteAnimation(0x8F + dayIndex, 2, dayIndex);
+                    }
+                } else {
+                    startSpriteAnimation(0x8F + dayIndex, 2, dayIndex);
+                }
+
+                if (dayIndex == dayOfMonth - 1 || (isSaturdayStart && dayIndex == 22 && dayOfMonth == 30)) {
+
+                    dmaSprite(0xB7, (u32)&_calendarTextureSegmentRomStart, (u32)&_calendarTextureSegmentRomEnd, 
+                        (u32)&_calendarAssetsIndexSegmentRomStart, (u32)&_calendarAssetsIndexSegmentRomEnd, 
+                        NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, 
+                        (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, NULL, 0, FALSE);
+                    
+                    setSpriteViewSpacePosition(0xB7, (f32)(col * 32), (f32)(-row * 24), 32.0f);
+                    setSpriteColor(0xB7, 255, 255, 255, 0);
+                    setSpriteRenderingLayer(0xB7, 2);
+                    setBilinearFiltering(0xB7, 1);
+                    startSpriteAnimation(0xB7, 3, 0);
+                }
+
+                dayIndex++;
+                
+            } else {
+                skipCount++;
+            }
+            
+        }
+        
+    }
+    
+}
 
 //INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800C39A0);
 
@@ -6600,11 +6757,11 @@ void func_800C3D20(void) {
     bool set = FALSE;
     u8 temp;
 
-    switch (overlayScreenTable.currentAction) {
+    switch (overlayScreenTable.screenState) {
 
         case 0:
             func_800C2F50();
-            overlayScreenTable.currentAction = 1;
+            overlayScreenTable.screenState = 1;
             break;
         
         case 1:
@@ -6622,7 +6779,7 @@ void func_800C3D20(void) {
                 setSpriteRenderingLayer(CALENDAR_STICKERS_BASE + 8, 3);
                 setSpriteRenderingLayer(CALENDAR_STICKERS_BASE + 9, 3);
 
-                overlayScreenTable.currentAction = 5;
+                overlayScreenTable.screenState = 5;
                 
                 setSpriteViewSpacePosition(CURSOR_HAND, 
                     (f32)((overlayScreenTable.unk_8 * 18) + 100), 
@@ -6638,7 +6795,7 @@ void func_800C3D20(void) {
         case 2:
             if (func_8002CBF8(CALENDAR_BACKGROUND)) {
                 func_800B2CE0();
-                overlayScreenTable.currentAction = 3;
+                overlayScreenTable.screenState = 3;
             }
             break;
         
@@ -6650,7 +6807,7 @@ void func_800C3D20(void) {
 
         case 4:
             if (func_8003F0DC()) {
-                overlayScreenTable.currentAction = 5;
+                overlayScreenTable.screenState = 5;
             }
             break;
 
@@ -6756,7 +6913,7 @@ void func_800C3D20(void) {
                     
                     if (D_80205640[overlayScreenTable.cellIndex] != 0xFF) {
                         
-                        overlayScreenTable.currentAction = 6;
+                        overlayScreenTable.screenState = 6;
                         
                         setSpriteViewSpacePosition(CURSOR_HAND, 
                             (f32)((overlayScreenTable.unk_A * 32) - 136), 
@@ -6922,7 +7079,7 @@ void func_800C3D20(void) {
                         D_80189108[overlayScreenTable.unk_B][overlayScreenTable.unk_A] = overlayScreenTable.cellIndex;
                         D_80205640[overlayScreenTable.cellIndex] = 0xFF;
                         
-                        overlayScreenTable.currentAction = 5;
+                        overlayScreenTable.screenState = 5;
                         playSfx(0);
                         
                     }
@@ -6943,9 +7100,9 @@ void func_800C3D20(void) {
                         32.0f);
                     
                     setSpriteViewSpacePosition(CALENDAR_STICKERS_BASE + overlayScreenTable.cellIndex, D_80116E68[overlayScreenTable.cellIndex], D_80116E90[overlayScreenTable.cellIndex], 8.0f);
-                    setSpriteColor(CALENDAR_STICKERS_BASE + overlayScreenTable.cellIndex, 0xFF, 0xFF, 0xFF, 0xFF);
+                    setSpriteColor(CALENDAR_STICKERS_BASE + overlayScreenTable.cellIndex, 255, 255, 255, 255);
                     setSpriteRenderingLayer(CALENDAR_STICKERS_BASE + overlayScreenTable.cellIndex, 3);
-                    overlayScreenTable.currentAction = 5;
+                    overlayScreenTable.screenState = 5;
         
                     playSfx(1);
             
@@ -6959,10 +7116,10 @@ void func_800C3D20(void) {
         
     }
 
-    if (overlayScreenTable.currentAction >= 5 && checkButtonPressed(CONTROLLER_1, BUTTON_B) && !set) {
+    if (overlayScreenTable.screenState >= 5 && checkButtonPressed(CONTROLLER_1, BUTTON_B) && !set) {
         resetAnimationState(CURSOR_HAND);
         func_800C3B1C();
-        overlayScreenTable.currentAction = 2;
+        overlayScreenTable.screenState = 2;
         playSfx(1);
     }
     
@@ -6975,7 +7132,7 @@ void func_800C3D20(void) {
 
 void func_800C4A74(void) {
     
-    dmaSprite(RECIPES_BACKGROUNDS, (u32)&_bookTextureSegmentRomStart, (u32)&_bookTextureSegmentRomEnd, (u32)&_bookAssetsIndexSegmentRomStart, (u32)&_bookAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x80289900, NULL, (u16*)0x8028EF00, (u16*)0x8028F000, (u8*)0x8028F100, NULL, 0, FALSE);
+    dmaSprite(RECIPES_BACKGROUNDS, (u32)&_bookTextureSegmentRomStart, (u32)&_bookTextureSegmentRomEnd, (u32)&_bookAssetsIndexSegmentRomStart, (u32)&_bookAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x80289900, NULL, (u16*)0x8028EF00, (u16*)0x8028F000, (u32*)0x8028F100, NULL, 0, FALSE);
     setSpriteViewSpacePosition(RECIPES_BACKGROUNDS, 0.0f, 0.0f, 8.0f);
     setSpriteColor(RECIPES_BACKGROUNDS, 0xFF, 0xFF, 0xFF, 0);
     setSpriteRenderingLayer(RECIPES_BACKGROUNDS, 2);
@@ -6983,16 +7140,16 @@ void func_800C4A74(void) {
     startSpriteAnimation(RECIPES_BACKGROUNDS, 0, 0);
     
     // "Recipe" label
-    dmaSprite(0x82, (u32)&_bookScreenLabelsTextureSegmentRomStart, (u32)&_bookScreenLabelsTextureSegmentRomEnd, (u32)&_bookScreenLabelsAssetsIndexSegmentRomStart, (u32)&_bookScreenLabelsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
+    dmaSprite(0x82, (u32)&_bookScreenLabelsTextureSegmentRomStart, (u32)&_bookScreenLabelsTextureSegmentRomEnd, (u32)&_bookScreenLabelsAssetsIndexSegmentRomStart, (u32)&_bookScreenLabelsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x82, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0x82, 0xFF, 0xFF, 0xFF, 0);
     setSpriteRenderingLayer(0x82, 2);
     setBilinearFiltering(0x82, TRUE);
     startSpriteAnimation(0x82, 1, 0);
     
-    dmaSprite(CURSOR_HAND, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (AnimationFrameMetadata*)0x8023CE00, (u8*)0x8023D200, NULL, 0, FALSE);
+    dmaSprite(CURSOR_HAND, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (AnimationFrameMetadata*)0x8023CE00, (u32*)0x8023D200, NULL, 0, FALSE);
     setBilinearFiltering(CURSOR_HAND, TRUE);
-    setSpriteColor(CURSOR_HAND, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteColor(CURSOR_HAND, 255, 255, 255, 255);
     
     // up and down arrows
     func_800C7850();
@@ -7041,7 +7198,7 @@ void func_800C4E90(void) {
 
                 dmaSprite(0xA3 + i, (u32)&_overlayScreenNamesTextureSegmentRomStart, (u32)&_overlayScreenNamesTextureSegmentRomEnd, (u32)&_overlayScreenNamesAssetsIndexSegmentRomStart, (u32)&_overlayScreenNamesAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8027EC00, NULL, (u16*)0x80289400, (u16*)0x80289500, (u8*)0x80289800, NULL, 0, FALSE);
                 setSpriteViewSpacePosition(0xA3 + i, (k * 128) + -120.0f, 64.0f - (j * 16), 8.0f);
-                setSpriteColor(0xA3 + i, 0xFF, 0xFF, 0xFF, 0xFF);
+                setSpriteColor(0xA3 + i, 255, 255, 255, 255);
                 setSpriteRenderingLayer(0xA3 + i, 2);
                 setBilinearFiltering(0xA3 + i, 1);
                 startSpriteAnimation(0xA3 + i, 1, (i + (overlayScreenTable.pageNumber * 16)));
@@ -7122,25 +7279,25 @@ void func_800C53C0(void) {
 
     bool set = FALSE;
     
-    switch (overlayScreenTable.currentAction) {
+    switch (overlayScreenTable.screenState) {
         
         case 0:
             func_800C4A74();
-            overlayScreenTable.currentAction = 1;
+            overlayScreenTable.screenState = 1;
             break;
         
         case 1:
             if (func_8002CBF8(0x82)) {
                 setSpriteViewSpacePosition(CURSOR_HAND, (f32)((overlayScreenTable.unk_8 * 128) - 128), (f32)(56 - (overlayScreenTable.unk_9 * 16)), 32.0f);
                 startSpriteAnimation(CURSOR_HAND, 3, 0);
-                overlayScreenTable.currentAction = 5;
+                overlayScreenTable.screenState = 5;
             }
             break;
         
         case 2:
             if (func_8002CBF8(0x82)) {
                 func_800B2CE0();
-                overlayScreenTable.currentAction = 3;
+                overlayScreenTable.screenState = 3;
             }
             break;
         
@@ -7202,7 +7359,7 @@ void func_800C53C0(void) {
                         func_800C81A8();
                         func_800C81C8();
                         func_8003FB4C(0, 1);
-                        overlayScreenTable.currentAction = 5;
+                        overlayScreenTable.screenState = 5;
                         
                         playSfx(0);
                         
@@ -7309,12 +7466,12 @@ void func_800C53C0(void) {
     
     }
 
-    if (overlayScreenTable.currentAction >= 5 && checkButtonPressed(CONTROLLER_1, BUTTON_B) && !set) {
+    if (overlayScreenTable.screenState >= 5 && checkButtonPressed(CONTROLLER_1, BUTTON_B) && !set) {
         func_800C7E58();
         func_800C7E38();
         resetAnimationState(CURSOR_HAND);
         func_800C5218();
-        overlayScreenTable.currentAction = 2;
+        overlayScreenTable.screenState = 2;
         playSfx(1);
     }
     
@@ -7327,7 +7484,7 @@ void func_800C53C0(void) {
 
 void func_800C5AA4(void) {
     
-    dmaSprite(ALBUM_BACKGROUND, (u32)&_bookTextureSegmentRomStart, (u32)&_bookTextureSegmentRomEnd, (u32)&_bookAssetsIndexSegmentRomStart, (u32)&_bookAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x80289900, NULL, (u16*)0x8028EF00, (u16*)0x8028F000, (u8*)0x8028F100, NULL, 0, FALSE);
+    dmaSprite(ALBUM_BACKGROUND, (u32)&_bookTextureSegmentRomStart, (u32)&_bookTextureSegmentRomEnd, (u32)&_bookAssetsIndexSegmentRomStart, (u32)&_bookAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x80289900, NULL, (u16*)0x8028EF00, (u16*)0x8028F000, (u32*)0x8028F100, NULL, 0, FALSE);
     setSpriteViewSpacePosition(ALBUM_BACKGROUND, 0.0f, 0.0f, 8.0f);
     setSpriteColor(ALBUM_BACKGROUND, 0xFF, 0xFF, 0xFF, 0);
     setSpriteRenderingLayer(ALBUM_BACKGROUND, 2);
@@ -7336,16 +7493,16 @@ void func_800C5AA4(void) {
     startSpriteAnimation(ALBUM_BACKGROUND, 0, 0);
     
     // "Album" label
-    dmaSprite(0x82, (u32)&_bookScreenLabelsTextureSegmentRomStart, (u32)&_bookScreenLabelsTextureSegmentRomEnd, (u32)&_bookScreenLabelsAssetsIndexSegmentRomStart, (u32)&_bookScreenLabelsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
+    dmaSprite(0x82, (u32)&_bookScreenLabelsTextureSegmentRomStart, (u32)&_bookScreenLabelsTextureSegmentRomEnd, (u32)&_bookScreenLabelsAssetsIndexSegmentRomStart, (u32)&_bookScreenLabelsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x82, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0x82, 0xFF, 0xFF, 0xFF, 0);
     setSpriteRenderingLayer(0x82, 2);
     setBilinearFiltering(0x82, TRUE);
     startSpriteAnimation(0x82, 3, 0);
     
-    dmaSprite(CURSOR_HAND, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (AnimationFrameMetadata*)0x8023CE00, (u8*)0x8023D200, NULL, 0, FALSE);
+    dmaSprite(CURSOR_HAND, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (AnimationFrameMetadata*)0x8023CE00, (u32*)0x8023D200, NULL, 0, FALSE);
     setBilinearFiltering(CURSOR_HAND, TRUE);
-    setSpriteColor(CURSOR_HAND, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteColor(CURSOR_HAND, 255, 255, 255, 255);
     
     // arrows
     func_800C7850();
@@ -7376,7 +7533,7 @@ void func_800C5DA4(void) {
             if (albumBits & 1) {
                 dmaSprite(0x83, (u32)&_albumPhotosTextureSegmentRomStart, (u32)&_albumPhotosTextureSegmentRomEnd, (u32)&_albumPhotosAssetsIndexSegmentRomStart, (u32)&_albumPhotosAssetsIndexSegmentRomEnd, (u32)&_albumPhotosSpritesheetIndexSegmentRomStart, (u32)&_albumPhotosSpritesheetIndexSegmentRomEnd, (u8*)0x8028FA00, (u8*)0x80292A00, (u16*)0x802A7A00, (u16*)0x802AA200, (u8*)0x802AA600, (u32*)0x802AA800, 1, 0);
                 setSpriteViewSpacePosition(0x83, -64.0f, 40.0f, 8.0f);
-                setSpriteColor(0x83, 0xFF, 0xFF, 0xFF, 0xFF);
+                setSpriteColor(0x83, 255, 255, 255, 255);
                 setSpriteRenderingLayer(0x83, 2);
                 setBilinearFiltering(0x83, 1);
                 startSpriteAnimation(0x83, 0, 0);
@@ -7385,7 +7542,7 @@ void func_800C5DA4(void) {
             if (albumBits & 2) {
                 dmaSprite(0x84, (u32)&_albumPhotosTextureSegmentRomStart, (u32)&_albumPhotosTextureSegmentRomEnd, (u32)&_albumPhotosAssetsIndexSegmentRomStart, (u32)&_albumPhotosAssetsIndexSegmentRomEnd, (u32)&_albumPhotosSpritesheetIndexSegmentRomStart, (u32)&_albumPhotosSpritesheetIndexSegmentRomEnd, (u8*)0x80295A00, (u8*)0x80298A00, (u16*)0x802A7A00, (u16*)0x802AA200, (u8*)0x802AA600, (u32*)0x802AA800, 1, 0);
                 setSpriteViewSpacePosition(0x84, -64.0f, -30.0f, 8.0f);
-                setSpriteColor(0x84, 0xFF, 0xFF, 0xFF, 0xFF);
+                setSpriteColor(0x84, 255, 255, 255, 255);
                 setSpriteRenderingLayer(0x84, 2);
                 setBilinearFiltering(0x84, 1);
                 startSpriteAnimation(0x84, 1, 0);
@@ -7394,7 +7551,7 @@ void func_800C5DA4(void) {
             if (albumBits & 4) {
                 dmaSprite(0x85, (u32)&_albumPhotosTextureSegmentRomStart, (u32)&_albumPhotosTextureSegmentRomEnd, (u32)&_albumPhotosAssetsIndexSegmentRomStart, (u32)&_albumPhotosAssetsIndexSegmentRomEnd, (u32)&_albumPhotosSpritesheetIndexSegmentRomStart, (u32)&_albumPhotosSpritesheetIndexSegmentRomEnd, (u8*)0x8029BA00, (u8*)0x8029EA00, (u16*)0x802A7A00, (u16*)0x802AA200, (u8*)0x802AA600, (u32*)0x802AA800, 1, 0);
                 setSpriteViewSpacePosition(0x85, 64.0f, 40.0f, 8.0f);
-                setSpriteColor(0x85, 0xFF, 0xFF, 0xFF, 0xFF);
+                setSpriteColor(0x85, 255, 255, 255, 255);
                 setSpriteRenderingLayer(0x85, 2);
                 setBilinearFiltering(0x85, 1);
                 startSpriteAnimation(0x85, 2, 0);
@@ -7403,7 +7560,7 @@ void func_800C5DA4(void) {
             if (albumBits & 8) {
                 dmaSprite(0x86, (u32)&_albumPhotosTextureSegmentRomStart, (u32)&_albumPhotosTextureSegmentRomEnd, (u32)&_albumPhotosAssetsIndexSegmentRomStart, (u32)&_albumPhotosAssetsIndexSegmentRomEnd, (u32)&_albumPhotosSpritesheetIndexSegmentRomStart, (u32)&_albumPhotosSpritesheetIndexSegmentRomEnd, (u8*)0x802A1A00, (u8*)0x802A4A00, (u16*)0x802A7A00, (u16*)0x802AA200, (u8*)0x802AA600, (u32*)0x802AA800, 1, 0);
                 setSpriteViewSpacePosition(0x86, 64.0f, -30.0f, 8.0f);
-                setSpriteColor(0x86, 0xFF, 0xFF, 0xFF, 0xFF);
+                setSpriteColor(0x86, 255, 255, 255, 255);
                 setSpriteRenderingLayer(0x86, 2);
                 setBilinearFiltering(0x86, 1);
                 startSpriteAnimation(0x86, 3, 0);
@@ -7416,7 +7573,7 @@ void func_800C5DA4(void) {
             if (albumBits & 0x10) {
                 dmaSprite(0x83, (u32)&_albumPhotosTextureSegmentRomStart, (u32)&_albumPhotosTextureSegmentRomEnd, (u32)&_albumPhotosAssetsIndexSegmentRomStart, (u32)&_albumPhotosAssetsIndexSegmentRomEnd, (u32)&_albumPhotosSpritesheetIndexSegmentRomStart, (u32)&_albumPhotosSpritesheetIndexSegmentRomEnd, (u8*)0x8028FA00, (u8*)0x80292A00, (u16*)0x802A7A00, (u16*)0x802AA200, (u8*)0x802AA600, (u32*)0x802AA800, 1, 0);
                 setSpriteViewSpacePosition(0x83, -64.0f, 40.0f, 8.0f);
-                setSpriteColor(0x83, 0xFF, 0xFF, 0xFF, 0xFF);
+                setSpriteColor(0x83, 255, 255, 255, 255);
                 setSpriteRenderingLayer(0x83, 2);
                 setBilinearFiltering(0x83, 1);
                 startSpriteAnimation(0x83, 4, 0);
@@ -7425,7 +7582,7 @@ void func_800C5DA4(void) {
             if (albumBits & 0x20) {
                 dmaSprite(0x84, (u32)&_albumPhotosTextureSegmentRomStart, (u32)&_albumPhotosTextureSegmentRomEnd, (u32)&_albumPhotosAssetsIndexSegmentRomStart, (u32)&_albumPhotosAssetsIndexSegmentRomEnd, (u32)&_albumPhotosSpritesheetIndexSegmentRomStart, (u32)&_albumPhotosSpritesheetIndexSegmentRomEnd, (u8*)0x80295A00, (u8*)0x80298A00, (u16*)0x802A7A00, (u16*)0x802AA200, (u8*)0x802AA600, (u32*)0x802AA800, 1, 0);
                 setSpriteViewSpacePosition(0x84, -64.0f, -30.0f, 8.0f);
-                setSpriteColor(0x84, 0xFF, 0xFF, 0xFF, 0xFF);
+                setSpriteColor(0x84, 255, 255, 255, 255);
                 setSpriteRenderingLayer(0x84, 2);
                 setBilinearFiltering(0x84, 1);
                 startSpriteAnimation(0x84, 5, 0);
@@ -7434,7 +7591,7 @@ void func_800C5DA4(void) {
             if (albumBits & 0x40) {
                 dmaSprite(0x85, (u32)&_albumPhotosTextureSegmentRomStart, (u32)&_albumPhotosTextureSegmentRomEnd, (u32)&_albumPhotosAssetsIndexSegmentRomStart, (u32)&_albumPhotosAssetsIndexSegmentRomEnd, (u32)&_albumPhotosSpritesheetIndexSegmentRomStart, (u32)&_albumPhotosSpritesheetIndexSegmentRomEnd, (u8*)0x8029BA00, (u8*)0x8029EA00, (u16*)0x802A7A00, (u16*)0x802AA200, (u8*)0x802AA600, (u32*)0x802AA800, 1, 0);
                 setSpriteViewSpacePosition(0x85, 64.0f, 40.0f, 8.0f);
-                setSpriteColor(0x85, 0xFF, 0xFF, 0xFF, 0xFF);
+                setSpriteColor(0x85, 255, 255, 255, 255);
                 setSpriteRenderingLayer(0x85, 2);
                 setBilinearFiltering(0x85, 1);
                 startSpriteAnimation(0x85, 6, 0);
@@ -7444,7 +7601,7 @@ void func_800C5DA4(void) {
                 
                 dmaSprite(0x86, (u32)&_albumPhotosTextureSegmentRomStart, (u32)&_albumPhotosTextureSegmentRomEnd, (u32)&_albumPhotosAssetsIndexSegmentRomStart, (u32)&_albumPhotosAssetsIndexSegmentRomEnd, (u32)&_albumPhotosSpritesheetIndexSegmentRomStart, (u32)&_albumPhotosSpritesheetIndexSegmentRomEnd, (u8*)0x802A1A00, (u8*)0x802A4A00, (u16*)0x802A7A00, (u16*)0x802AA200, (u8*)0x802AA600, (u32*)0x802AA800, 1, 0);
                 setSpriteViewSpacePosition(0x86, 64.0f, -30.0f, 8.0f);
-                setSpriteColor(0x86, 0xFF, 0xFF, 0xFF, 0xFF);
+                setSpriteColor(0x86, 255, 255, 255, 255);
                 setSpriteRenderingLayer(0x86, 2);
                 setBilinearFiltering(0x86, 1);
                 
@@ -7476,7 +7633,7 @@ void func_800C5DA4(void) {
                 
                 dmaSprite(0x83, (u32)&_albumPhotosTextureSegmentRomStart, (u32)&_albumPhotosTextureSegmentRomEnd, (u32)&_albumPhotosAssetsIndexSegmentRomStart, (u32)&_albumPhotosAssetsIndexSegmentRomEnd, (u32)&_albumPhotosSpritesheetIndexSegmentRomStart, (u32)&_albumPhotosSpritesheetIndexSegmentRomEnd, (u8*)0x8028FA00, (u8*)0x80292A00, (u16*)0x802A7A00, (u16*)0x802AA200, (u8*)0x802AA600, (u32*)0x802AA800, 1, 0);
                 setSpriteViewSpacePosition(0x83, -64.0f, 40.0f, 8.0f);
-                setSpriteColor(0x83, 0xFF, 0xFF, 0xFF, 0xFF);
+                setSpriteColor(0x83, 255, 255, 255, 255);
                 setSpriteRenderingLayer(0x83, 2);
                 setBilinearFiltering(0x83, 1);
 
@@ -7504,7 +7661,7 @@ void func_800C5DA4(void) {
             if (albumBits & 0x200) {
                 dmaSprite(0x84, (u32)&_albumPhotosTextureSegmentRomStart, (u32)&_albumPhotosTextureSegmentRomEnd, (u32)&_albumPhotosAssetsIndexSegmentRomStart, (u32)&_albumPhotosAssetsIndexSegmentRomEnd, (u32)&_albumPhotosSpritesheetIndexSegmentRomStart, (u32)&_albumPhotosSpritesheetIndexSegmentRomEnd, (u8*)0x80295A00, (u8*)0x80298A00, (u16*)0x802A7A00, (u16*)0x802AA200, (u8*)0x802AA600, (u32*)0x802AA800, 1, 0);
                 setSpriteViewSpacePosition(0x84, -64.0f, -30.0f, 8.0f);
-                setSpriteColor(0x84, 0xFF, 0xFF, 0xFF, 0xFF);
+                setSpriteColor(0x84, 255, 255, 255, 255);
                 setSpriteRenderingLayer(0x84, 2);
                 setBilinearFiltering(0x84, 1);
                 startSpriteAnimation(0x84, 0x11, 0);
@@ -7513,7 +7670,7 @@ void func_800C5DA4(void) {
             if (albumBits & 0x400) {
                 dmaSprite(0x85, (u32)&_albumPhotosTextureSegmentRomStart, (u32)&_albumPhotosTextureSegmentRomEnd, (u32)&_albumPhotosAssetsIndexSegmentRomStart, (u32)&_albumPhotosAssetsIndexSegmentRomEnd, (u32)&_albumPhotosSpritesheetIndexSegmentRomStart, (u32)&_albumPhotosSpritesheetIndexSegmentRomEnd, (u8*)0x8029BA00, (u8*)0x8029EA00, (u16*)0x802A7A00, (u16*)0x802AA200, (u8*)0x802AA600, (u32*)0x802AA800, 1, 0);
                 setSpriteViewSpacePosition(0x85, 64.0f, 40.0f, 8.0f);
-                setSpriteColor(0x85, 0xFF, 0xFF, 0xFF, 0xFF);
+                setSpriteColor(0x85, 255, 255, 255, 255);
                 setSpriteRenderingLayer(0x85, 2);
                 setBilinearFiltering(0x85, 1);
                 startSpriteAnimation(0x85, 0x12, 0);
@@ -7522,7 +7679,7 @@ void func_800C5DA4(void) {
             if (albumBits & 0x800) {
                 dmaSprite(0x86, (u32)&_albumPhotosTextureSegmentRomStart, (u32)&_albumPhotosTextureSegmentRomEnd, (u32)&_albumPhotosAssetsIndexSegmentRomStart, (u32)&_albumPhotosAssetsIndexSegmentRomEnd, (u32)&_albumPhotosSpritesheetIndexSegmentRomStart, (u32)&_albumPhotosSpritesheetIndexSegmentRomEnd, (u8*)0x802A1A00, (u8*)0x802A4A00, (u16*)0x802A7A00, (u16*)0x802AA200, (u8*)0x802AA600, (u32*)0x802AA800, 1, 0);
                 setSpriteViewSpacePosition(0x86, 64.0f, -30.0f, 8.0f);
-                setSpriteColor(0x86, 0xFF, 0xFF, 0xFF, 0xFF);
+                setSpriteColor(0x86, 255, 255, 255, 255);
                 setSpriteRenderingLayer(0x86, 2);
                 setBilinearFiltering(0x86, 1);
                 startSpriteAnimation(0x86, 0x13, 0);
@@ -7535,7 +7692,7 @@ void func_800C5DA4(void) {
             if (albumBits & 0x1000) {
                 dmaSprite(0x83, (u32)&_albumPhotosTextureSegmentRomStart, (u32)&_albumPhotosTextureSegmentRomEnd, (u32)&_albumPhotosAssetsIndexSegmentRomStart, (u32)&_albumPhotosAssetsIndexSegmentRomEnd, (u32)&_albumPhotosSpritesheetIndexSegmentRomStart, (u32)&_albumPhotosSpritesheetIndexSegmentRomEnd, (u8*)0x8028FA00, (u8*)0x80292A00, (u16*)0x802A7A00, (u16*)0x802AA200, (u8*)0x802AA600, (u32*)0x802AA800, 1, 0);
                 setSpriteViewSpacePosition(0x83, -64.0f, 40.0f, 8.0f);
-                setSpriteColor(0x83, 0xFF, 0xFF, 0xFF, 0xFF);
+                setSpriteColor(0x83, 255, 255, 255, 255);
                 setSpriteRenderingLayer(0x83, 2);
                 setBilinearFiltering(0x83, 1);
                 startSpriteAnimation(0x83, 0x14, 0);
@@ -7544,7 +7701,7 @@ void func_800C5DA4(void) {
             if (albumBits & 0x2000) {
                 dmaSprite(0x84, (u32)&_albumPhotosTextureSegmentRomStart, (u32)&_albumPhotosTextureSegmentRomEnd, (u32)&_albumPhotosAssetsIndexSegmentRomStart, (u32)&_albumPhotosAssetsIndexSegmentRomEnd, (u32)&_albumPhotosSpritesheetIndexSegmentRomStart, (u32)&_albumPhotosSpritesheetIndexSegmentRomEnd, (u8*)0x80295A00, (u8*)0x80298A00, (u16*)0x802A7A00, (u16*)0x802AA200, (u8*)0x802AA600, (u32*)0x802AA800, 1, 0);
                 setSpriteViewSpacePosition(0x84, -64.0f, -30.0f, 8.0f);
-                setSpriteColor(0x84, 0xFF, 0xFF, 0xFF, 0xFF);
+                setSpriteColor(0x84, 255, 255, 255, 255);
                 setSpriteRenderingLayer(0x84, 2);
                 setBilinearFiltering(0x84, 1);
                 startSpriteAnimation(0x84, 0x15, 0);
@@ -7553,7 +7710,7 @@ void func_800C5DA4(void) {
             if (albumBits & 0x4000) {
                 dmaSprite(0x85, (u32)&_albumPhotosTextureSegmentRomStart, (u32)&_albumPhotosTextureSegmentRomEnd, (u32)&_albumPhotosAssetsIndexSegmentRomStart, (u32)&_albumPhotosAssetsIndexSegmentRomEnd, (u32)&_albumPhotosSpritesheetIndexSegmentRomStart, (u32)&_albumPhotosSpritesheetIndexSegmentRomEnd, (u8*)0x8029BA00, (u8*)0x8029EA00, (u16*)0x802A7A00, (u16*)0x802AA200, (u8*)0x802AA600, (u32*)0x802AA800, 1, 0);
                 setSpriteViewSpacePosition(0x85, 64.0f, 40.0f, 8.0f);
-                setSpriteColor(0x85, 0xFF, 0xFF, 0xFF, 0xFF);
+                setSpriteColor(0x85, 255, 255, 255, 255);
                 setSpriteRenderingLayer(0x85, 2);
                 setBilinearFiltering(0x85, 1);
                 startSpriteAnimation(0x85, 0x16, 0);
@@ -7562,7 +7719,7 @@ void func_800C5DA4(void) {
             if (albumBits & 0x8000) {
                 dmaSprite(0x86, (u32)&_albumPhotosTextureSegmentRomStart, (u32)&_albumPhotosTextureSegmentRomEnd, (u32)&_albumPhotosAssetsIndexSegmentRomStart, (u32)&_albumPhotosAssetsIndexSegmentRomEnd, (u32)&_albumPhotosSpritesheetIndexSegmentRomStart, (u32)&_albumPhotosSpritesheetIndexSegmentRomEnd, (u8*)0x802A1A00, (u8*)0x802A4A00, (u16*)0x802A7A00, (u16*)0x802AA200, (u8*)0x802AA600, (u32*)0x802AA800, 1, 0);
                 setSpriteViewSpacePosition(0x86, 64.0f, -30.0f, 8.0f);
-                setSpriteColor(0x86, 0xFF, 0xFF, 0xFF, 0xFF);
+                setSpriteColor(0x86, 255, 255, 255, 255);
                 setSpriteRenderingLayer(0x86, 2);
                 setBilinearFiltering(0x86, 1);
                 startSpriteAnimation(0x86, 0x17, 0);
@@ -7626,25 +7783,25 @@ void func_800C7058(void) {
     
     set = FALSE;
     
-    switch (overlayScreenTable.currentAction) {
+    switch (overlayScreenTable.screenState) {
 
         case 0:
             func_800C5AA4();
-            overlayScreenTable.currentAction = 1;
+            overlayScreenTable.screenState = 1;
             break;
         
         case 1:
             if (func_8002CBF8(0x82)) {
                 setSpriteViewSpacePosition(CURSOR_HAND, (f32)((overlayScreenTable.unk_8 * 128) - 120), (f32)(40 - (overlayScreenTable.unk_9 * 80)), 32.0f);
                 startSpriteAnimation(CURSOR_HAND, 3, 0);
-                overlayScreenTable.currentAction = 5;
+                overlayScreenTable.screenState = 5;
             }
             break;
         
         case 2:
             if (func_8002CBF8(0x82)) {
                 func_800B2CE0();
-                overlayScreenTable.currentAction = 3;
+                overlayScreenTable.screenState = 3;
             }
             break;
         
@@ -7656,7 +7813,7 @@ void func_800C7058(void) {
         
         case 4:
             if (func_8003F0DC()) {
-                overlayScreenTable.currentAction = 5;
+                overlayScreenTable.screenState = 5;
             }
             break;
 
@@ -7757,7 +7914,7 @@ void func_800C7058(void) {
                         initializeMessageBox(0, 2, buff[overlayScreenTable.pageNumber * 4 + ((overlayScreenTable.unk_8 * 2) + overlayScreenTable.unk_9)], 0);
                         
                         controllers[CONTROLLER_1].buttonPressed = 0;
-                        overlayScreenTable.currentAction = 4;
+                        overlayScreenTable.screenState = 4;
                         
                         playSfx(0);
                         
@@ -7785,7 +7942,7 @@ void func_800C7058(void) {
     
     }
     
-    if (overlayScreenTable.currentAction >= 5 && checkButtonPressed(CONTROLLER_1, BUTTON_B) && !set) {
+    if (overlayScreenTable.screenState >= 5 && checkButtonPressed(CONTROLLER_1, BUTTON_B) && !set) {
         func_800C7E58();
         func_800C7E38();
         resetAnimationState(CURSOR_HAND);
@@ -7798,7 +7955,7 @@ void func_800C7058(void) {
         updateSpriteAlpha(0x86, 0, 24);
         deactivateOverlayScreenSprites(0);
         deactivateOverlayScreenSprites(1);
-        overlayScreenTable.currentAction = 2;
+        overlayScreenTable.screenState = 2;
         playSfx(1);
     }
     
@@ -7837,39 +7994,39 @@ u32 checkRecipe(u16 bitIndex) {
 
 void func_800C7850(void) {
 
-    dmaSprite(DOWN_ARROW, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (AnimationFrameMetadata*)0x8023CE00, (u8*)0x8023D200, NULL, 0, FALSE);
+    dmaSprite(DOWN_ARROW, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (AnimationFrameMetadata*)0x8023CE00, (u32*)0x8023D200, NULL, 0, FALSE);
     setSpriteViewSpacePosition(DOWN_ARROW, 0.0f, 0.0f, 0.0f);
     setSpriteScale(DOWN_ARROW, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(DOWN_ARROW, 0.0f, 0.0f, 0.0f);
     setBilinearFiltering(DOWN_ARROW, 1);
-    setSpriteColor(DOWN_ARROW, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteColor(DOWN_ARROW, 255, 255, 255, 255);
     func_8002C680(DOWN_ARROW, 2, 2);
     setSpriteRenderingLayer(DOWN_ARROW, 3);
     
-    dmaSprite(UP_ARROW, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (AnimationFrameMetadata*)0x8023CE00, (u8*)0x8023D200, NULL, 0, FALSE);
+    dmaSprite(UP_ARROW, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (AnimationFrameMetadata*)0x8023CE00, (u32*)0x8023D200, NULL, 0, FALSE);
     setSpriteViewSpacePosition(UP_ARROW, 0.0f, 0.0f, 0.0f);
     setSpriteScale(UP_ARROW, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(UP_ARROW, 0.0f, 0.0f, 0.0f);
     setBilinearFiltering(UP_ARROW, 1);
-    setSpriteColor(UP_ARROW, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteColor(UP_ARROW, 255, 255, 255, 255);
     func_8002C680(UP_ARROW, 2, 2);
     setSpriteRenderingLayer(UP_ARROW, 3);
     
-    dmaSprite(RIGHT_ARROW, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (AnimationFrameMetadata*)0x8023CE00, (u8*)0x8023D200, NULL, 0, FALSE);
+    dmaSprite(RIGHT_ARROW, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (AnimationFrameMetadata*)0x8023CE00, (u32*)0x8023D200, NULL, 0, FALSE);
     setSpriteViewSpacePosition(RIGHT_ARROW, 0.0f, 0.0f, 0.0f);
     setSpriteScale(RIGHT_ARROW, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(RIGHT_ARROW, 0.0f, 0.0f, 0.0f);
     setBilinearFiltering(RIGHT_ARROW, 1);
-    setSpriteColor(RIGHT_ARROW, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteColor(RIGHT_ARROW, 255, 255, 255, 255);
     func_8002C680(RIGHT_ARROW, 2, 2);
     setSpriteRenderingLayer(RIGHT_ARROW, 3);
     
-    dmaSprite(LEFT_ARROW, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (AnimationFrameMetadata*)0x8023CE00, (u8*)0x8023D200, NULL, 0, FALSE);
+    dmaSprite(LEFT_ARROW, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (AnimationFrameMetadata*)0x8023CE00, (u32*)0x8023D200, NULL, 0, FALSE);
     setSpriteViewSpacePosition(LEFT_ARROW, 0.0f, 0.0f, 0.0f);
     setSpriteScale(LEFT_ARROW, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(LEFT_ARROW, 0.0f, 0.0f, 0.0f);
     setBilinearFiltering(LEFT_ARROW, 1);
-    setSpriteColor(LEFT_ARROW, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteColor(LEFT_ARROW, 255, 255, 255, 255);
     func_8002C680(LEFT_ARROW, 2, 2);
     setSpriteRenderingLayer(LEFT_ARROW, 3);
 
@@ -7934,21 +8091,21 @@ void func_800C7E58(void) {
 
 void func_800C7E78(void) {
     
-    dmaSprite(0x7A, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (AnimationFrameMetadata*)0x8023CE00, (u8*)0x8023D200, NULL, 0, FALSE);
+    dmaSprite(0x7A, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (AnimationFrameMetadata*)0x8023CE00, (u32*)0x8023D200, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x7A, 0.0f, 0.0f, 0.0f);
     setSpriteScale(0x7A, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(0x7A, 0.0f, 0.0f, 0.0f);
     setBilinearFiltering(0x7A, 1);
-    setSpriteColor(0x7A, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteColor(0x7A, 255, 255, 255, 255);
     func_8002C680(0x7A, 2, 2);
     setSpriteRenderingLayer(0x7A, 3);
 
-    dmaSprite(0x7B, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (AnimationFrameMetadata*)0x8023CE00, (u8*)0x8023D200, NULL, 0, FALSE);
+    dmaSprite(0x7B, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (AnimationFrameMetadata*)0x8023CE00, (u32*)0x8023D200, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x7B, 0.0f, 0.0f, 0.0f);
     setSpriteScale(0x7B, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(0x7B, 0.0f, 0.0f, 0.0f);
     setBilinearFiltering(0x7B, 1);
-    setSpriteColor(0x7B, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteColor(0x7B, 255, 255, 255, 255);
     func_8002C680(0x7B, 2, 2);
     setSpriteRenderingLayer(0x7B, 3);
     
@@ -7983,7 +8140,7 @@ void func_800C81C8(void) {
 /* end of shared arrow functions */
 
 
-/* shared tool helper */
+/* shared helper */
 
 //INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800C81E8);
 
@@ -8216,13 +8373,13 @@ void func_800C8424(void) {
     overlayScreenTable.previousCellIndex = 0;
     overlayScreenTable.pageNumber = 0;
     overlayScreenTable.unk_3 = 0xFF;
-    overlayScreenTable.currentAction = 0;
+    overlayScreenTable.screenState = 0;
     overlayScreenTable.unk_8 = 0;
     overlayScreenTable.unk_9 = 0;
     overlayScreenTable.unk_A = 0;
     overlayScreenTable.unk_B = 0;
     
-    setMainLoopCallbackFunctionIndex(0x2D);
+    setMainLoopCallbackFunctionIndex(PAUSE_SCREEN_MAP);
 
 }
 
@@ -8234,17 +8391,17 @@ void func_800C8784(void) {
 
     u8 temp = 0;
 
-    switch (overlayScreenTable.currentAction) {
+    switch (overlayScreenTable.screenState) {
         
         case 0:
-            updateSpriteRGBA(0x82, 0xFF, 0xFF, 0xFF, 0xFF, 24);
-            updateSpriteRGBA(0xA3, 0xFF, 0xFF, 0xFF, 0xFF, 24);
-            overlayScreenTable.currentAction = 1;
+            updateSpriteRGBA(0x82, 255, 255, 255, 255, 24);
+            updateSpriteRGBA(0xA3, 255, 255, 255, 255, 24);
+            overlayScreenTable.screenState = 1;
             break;
             
         case 1:
             if (func_8002CBF8(0x82)) {
-                overlayScreenTable.currentAction = 2;
+                overlayScreenTable.screenState = 2;
             }
             break;
             
@@ -8252,7 +8409,7 @@ void func_800C8784(void) {
             if ((checkButtonPressed(CONTROLLER_1, BUTTON_B)) && (temp == 0)) {
                 updateSpriteRGBA(0x82, 0, 0, 0, 0, 24);
                 updateSpriteRGBA(0xA3, 0, 0, 0, 0, 24);
-                overlayScreenTable.currentAction = 3;
+                overlayScreenTable.screenState = 3;
                 playSfx(1);
             }
             break;
@@ -8260,7 +8417,7 @@ void func_800C8784(void) {
         case 3:
             if (func_8002CBF8(0x82)) {
                 func_800B2CE0();
-                overlayScreenTable.currentAction = 4;
+                overlayScreenTable.screenState = 4;
             }
             break;
             
@@ -8295,23 +8452,23 @@ void func_800C88F4(void) {
     setSpriteViewSpacePosition(CHECKERBOARD_BACKGROUND, 0.0f, 0.0f, 0.0f);
     setSpriteScale(CHECKERBOARD_BACKGROUND, 2.0f, 2.0f, 1.0f);
     setBilinearFiltering(CHECKERBOARD_BACKGROUND, 1);
-    setSpriteColor(CHECKERBOARD_BACKGROUND, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteColor(CHECKERBOARD_BACKGROUND, 255, 255, 255, 255);
     startSpriteAnimation(CHECKERBOARD_BACKGROUND, 0, 0);
     
     overlayScreenTable.cellIndex = 0;
     overlayScreenTable.previousCellIndex = 0;
     overlayScreenTable.pageNumber = 0;
     overlayScreenTable.unk_3 = 0xFF;
-    overlayScreenTable.currentAction = 0;
+    overlayScreenTable.screenState = 0;
     
-    overlayScreenStrings.strings2[(overlayScreenStrings.unk_6A)][0] = 0;
-    overlayScreenStrings.strings2[(overlayScreenStrings.unk_6A)][1] = 0;
-    overlayScreenStrings.strings2[(overlayScreenStrings.unk_6A)][2] = 0;
-    overlayScreenStrings.strings2[(overlayScreenStrings.unk_6A)][3] = 0;
-    overlayScreenStrings.strings2[(overlayScreenStrings.unk_6A)][4] = 0;
-    overlayScreenStrings.strings2[(overlayScreenStrings.unk_6A)][5] = 0;
+    overlayScreenStrings.strings2[overlayScreenStrings.unk_6C][0] = 0;
+    overlayScreenStrings.strings2[overlayScreenStrings.unk_6C][1] = 0;
+    overlayScreenStrings.strings2[overlayScreenStrings.unk_6C][2] = 0;
+    overlayScreenStrings.strings2[overlayScreenStrings.unk_6C][3] = 0;
+    overlayScreenStrings.strings2[overlayScreenStrings.unk_6C][4] = 0;
+    overlayScreenStrings.strings2[overlayScreenStrings.unk_6C][5] = 0;
 
-    setMainLoopCallbackFunctionIndex(0x2E);
+    setMainLoopCallbackFunctionIndex(HORSE_RACE_BETTING);
     
 }
 
@@ -8324,14 +8481,14 @@ void func_800C8B04(void) {
 
     setMoneySprites();
     
-    dmaSprite(0x81, (u32)&_photoSmallTextureSegmentRomStart, (u32)&_photoSmallTextureSegmentRomEnd, (u32)&_photoSmallAssetsIndexSegmentRomStart, (u32)&_photoSmallAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x80289900, NULL, (u16*)0x8028EF00, (u16*)0x8028F000, (u8*)0x8028F100, NULL, 0, FALSE);
+    dmaSprite(0x81, (u32)&_photoSmallTextureSegmentRomStart, (u32)&_photoSmallTextureSegmentRomEnd, (u32)&_photoSmallAssetsIndexSegmentRomStart, (u32)&_photoSmallAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x80289900, NULL, (u16*)0x8028EF00, (u16*)0x8028F000, (u32*)0x8028F100, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x81, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0x81, 0xFF, 0xFF, 0xFF, 0);
     setSpriteRenderingLayer(0x81, 2);
     setBilinearFiltering(0x81, 1);
     startSpriteAnimation(0x81, 0, 0);
 
-    dmaSprite(0x82, &_raceBettingUiTextureSegmentRomStart, &_raceBettingUiTextureSegmentRomEnd, &_raceBettingUiAssetsIndexSegmentRomStart, &_raceBettingUiAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
+    dmaSprite(0x82, &_raceBettingUiTextureSegmentRomStart, &_raceBettingUiTextureSegmentRomEnd, &_raceBettingUiAssetsIndexSegmentRomStart, &_raceBettingUiAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x82, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0x82, 0xFF, 0xFF, 0xFF, 0);
     setSpriteRenderingLayer(0x82, 2);
@@ -8344,7 +8501,7 @@ void func_800C8B04(void) {
         startSpriteAnimation(0x82, 0, 1);
     }
     
-    dmaSprite(0x83, &_raceBettingUiTextureSegmentRomStart, &_raceBettingUiTextureSegmentRomEnd, &_raceBettingUiAssetsIndexSegmentRomStart, &_raceBettingUiAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
+    dmaSprite(0x83, &_raceBettingUiTextureSegmentRomStart, &_raceBettingUiTextureSegmentRomEnd, &_raceBettingUiAssetsIndexSegmentRomStart, &_raceBettingUiAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, NULL, 0, FALSE);
 
     setSpriteViewSpacePosition(0x83, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0x83, 0xFF, 0xFF, 0xFF, 0);
@@ -8352,137 +8509,136 @@ void func_800C8B04(void) {
     setBilinearFiltering(0x83, 1);
     startSpriteAnimation(0x83, 1, 0);
 
-    dmaSprite(0x84, &_raceBettingUiTextureSegmentRomStart, &_raceBettingUiTextureSegmentRomEnd, &_raceBettingUiAssetsIndexSegmentRomStart, &_raceBettingUiAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
+    dmaSprite(0x84, &_raceBettingUiTextureSegmentRomStart, &_raceBettingUiTextureSegmentRomEnd, &_raceBettingUiAssetsIndexSegmentRomStart, &_raceBettingUiAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x84, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0x84, 0xFF, 0xFF, 0xFF, 0);
     setSpriteRenderingLayer(0x84, 2);
     setBilinearFiltering(0x84, 1);
     startSpriteAnimation(0x84, 2, 0);
     
-    dmaSprite(0xB9, &_raceBettingUiTextureSegmentRomStart, &_raceBettingUiTextureSegmentRomEnd, &_raceBettingUiAssetsIndexSegmentRomStart, &_raceBettingUiAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
+    dmaSprite(0xB9, &_raceBettingUiTextureSegmentRomStart, &_raceBettingUiTextureSegmentRomEnd, &_raceBettingUiAssetsIndexSegmentRomStart, &_raceBettingUiAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0xB9, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0xB9, 0xFF, 0xFF, 0xFF, 0);
     setSpriteRenderingLayer(0xB9, 2);
     setBilinearFiltering(0xB9, 1);
     startSpriteAnimation(0xB9, 1, 1);
 
-    dmaSprite(0xBA, &_raceBettingUiTextureSegmentRomStart, &_raceBettingUiTextureSegmentRomEnd, &_raceBettingUiAssetsIndexSegmentRomStart, &_raceBettingUiAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
+    dmaSprite(0xBA, &_raceBettingUiTextureSegmentRomStart, &_raceBettingUiTextureSegmentRomEnd, &_raceBettingUiAssetsIndexSegmentRomStart, &_raceBettingUiAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0xBA, 0.0f, -16.0f, 8.0f);
     setSpriteColor(0xBA, 0xFF, 0xFF, 0xFF, 0);
     setSpriteRenderingLayer(0xBA, 2);
     setBilinearFiltering(0xBA, 1);
     startSpriteAnimation(0xBA, 1, 1);
     
-    dmaSprite(0xBB, &_raceBettingUiTextureSegmentRomStart, &_raceBettingUiTextureSegmentRomEnd, &_raceBettingUiAssetsIndexSegmentRomStart, &_raceBettingUiAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
+    dmaSprite(0xBB, &_raceBettingUiTextureSegmentRomStart, &_raceBettingUiTextureSegmentRomEnd, &_raceBettingUiAssetsIndexSegmentRomStart, &_raceBettingUiAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0xBB, 0.0f, -32.0f, 8.0f);
     setSpriteColor(0xBB, 0xFF, 0xFF, 0xFF, 0);
     setSpriteRenderingLayer(0xBB, 2);
     setBilinearFiltering(0xBB, 1);
     startSpriteAnimation(0xBB, 1, 1);
     
-    dmaSprite(0xBC, &_raceBettingUiTextureSegmentRomStart, &_raceBettingUiTextureSegmentRomEnd, &_raceBettingUiAssetsIndexSegmentRomStart, &_raceBettingUiAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
+    dmaSprite(0xBC, &_raceBettingUiTextureSegmentRomStart, &_raceBettingUiTextureSegmentRomEnd, &_raceBettingUiAssetsIndexSegmentRomStart, &_raceBettingUiAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0xBC, 0.0f, -48.0f, 8.0f);
     setSpriteColor(0xBC, 0xFF, 0xFF, 0xFF, 0);
     setSpriteRenderingLayer(0xBC, 2);
     setBilinearFiltering(0xBC, 1);
     startSpriteAnimation(0xBC, 1, 1);
     
-    dmaSprite(0xBD, &_raceBettingUiTextureSegmentRomStart, &_raceBettingUiTextureSegmentRomEnd, &_raceBettingUiAssetsIndexSegmentRomStart, &_raceBettingUiAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
+    dmaSprite(0xBD, &_raceBettingUiTextureSegmentRomStart, &_raceBettingUiTextureSegmentRomEnd, &_raceBettingUiAssetsIndexSegmentRomStart, &_raceBettingUiAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0xBD, 0.0f, -64.0f, 8.0f);
     setSpriteColor(0xBD, 0xFF, 0xFF, 0xFF, 0);
     setSpriteRenderingLayer(0xBD, 2);
     setBilinearFiltering(0xBD, 1);
     startSpriteAnimation(0xBD, 1, 1);
     
-    dmaSprite(0xBE, &_raceBettingUiTextureSegmentRomStart, &_raceBettingUiTextureSegmentRomEnd, &_raceBettingUiAssetsIndexSegmentRomStart, &_raceBettingUiAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
+    dmaSprite(0xBE, &_raceBettingUiTextureSegmentRomStart, &_raceBettingUiTextureSegmentRomEnd, &_raceBettingUiAssetsIndexSegmentRomStart, &_raceBettingUiAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0xBE, 0.0f, -80.0f, 8.0f);
     setSpriteColor(0xBE, 0xFF, 0xFF, 0xFF, 0);
     setSpriteRenderingLayer(0xBE, 2);
     setBilinearFiltering(0xBE, 1);
     startSpriteAnimation(0xBE, 1, 1);
     
-    dmaSprite(0x85, &_raceBettingUiTextureSegmentRomStart, &_raceBettingUiTextureSegmentRomEnd, &_raceBettingUiAssetsIndexSegmentRomStart, &_raceBettingUiAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
+    dmaSprite(0x85, &_raceBettingUiTextureSegmentRomStart, &_raceBettingUiTextureSegmentRomEnd, &_raceBettingUiAssetsIndexSegmentRomStart, &_raceBettingUiAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x85, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0x85, 0xFF, 0xFF, 0xFF, 0);
     setSpriteRenderingLayer(0x85, 2);
     setBilinearFiltering(0x85, 1);
     startSpriteAnimation(0x85, 2, 1);
 
-    dmaSprite(0x86, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsAssetsIndexSegmentRomStart, &_dialogueIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (AnimationFrameMetadata*)0x8023CE00, (u8*)0x8023D200, NULL, 0, FALSE);
+    dmaSprite(0x86, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsAssetsIndexSegmentRomStart, &_dialogueIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (AnimationFrameMetadata*)0x8023CE00, (u32*)0x8023D200, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x86, 0.0f, 0.0f, 32.0f);
     setSpriteColor(0x86, 0xFF, 0xFF, 0xFF, 0);
     setSpriteRenderingLayer(0x86, 2);
     setBilinearFiltering(0x86, 1);
     startSpriteAnimation(0x86, 2, 0);
 
-    dmaSprite(CURSOR_HAND, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsAssetsIndexSegmentRomStart, &_dialogueIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (AnimationFrameMetadata*)0x8023CE00, (u8*)0x8023D200, NULL, 0, FALSE);
+    dmaSprite(CURSOR_HAND, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsAssetsIndexSegmentRomStart, &_dialogueIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (AnimationFrameMetadata*)0x8023CE00, (u32*)0x8023D200, NULL, 0, FALSE);
     setBilinearFiltering(CURSOR_HAND, 1);
-    setSpriteColor(CURSOR_HAND, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteColor(CURSOR_HAND, 255, 255, 255, 255);
     
-    func_80045E20(2, 0x97, &_moneyTextureSegmentRomStart, &_moneyTextureSegmentRomEnd, &_moneyAssetsIndexSegmentRomStart, &_moneyAssetsIndexSegmentRomEnd, (void*)0x80253B00, (void*)0x80254A00, (void*)0x80254E00, (void*)0x80254F00, 0, 1, 0, -98.0f, -153.0f, 256.0f, 0xA);
-    
+    setOverlayScreenSprites(2, 0x97, &_moneyTextureSegmentRomStart, &_moneyTextureSegmentRomEnd, &_moneyAssetsIndexSegmentRomStart, &_moneyAssetsIndexSegmentRomEnd, (u8*)0x80253B00, (u16*)0x80254A00, (AnimationFrameMetadata*)0x80254E00, (u32*)0x80254F00, 0, 1, 0, -98.0f, -153.0f, 256.0f, 10);
     dmaOverlayScreenSprites(2, D_80205204, 3, 3);
-    setOverlayScreenSpritesRGBA(2, 0xFF, 0xFF, 0xFF, 0xFF);
+    setOverlayScreenSpritesRGBA(2, 255, 255, 255, 255);
 
-    func_80045E20(3, 0x9B, &_moneyTextureSegmentRomStart, &_moneyTextureSegmentRomEnd, &_moneyAssetsIndexSegmentRomStart, &_moneyAssetsIndexSegmentRomEnd, (void*)0x80253B00, (void*)0x80254A00, (void*)0x80254E00, (void*)0x80254F00, 0, 1, 0, -48.0f, -48.0f, 256.0f, 0xA);
+    setOverlayScreenSprites(3, 0x9B, &_moneyTextureSegmentRomStart, &_moneyTextureSegmentRomEnd, &_moneyAssetsIndexSegmentRomStart, &_moneyAssetsIndexSegmentRomEnd, (u8*)0x80253B00, (u16*)0x80254A00, (AnimationFrameMetadata*)0x80254E00, (u32*)0x80254F00, 0, 1, 0, -48.0f, -48.0f, 256.0f, 10);
     
-    dmaOverlayScreenSprites(3, overlayScreenStrings.strings2[overlayScreenStrings.unk_6A][0], 1, 3);
-    setOverlayScreenSpritesRGBA(3, 0xFF, 0xFF, 0xFF, 0xFF);
+    dmaOverlayScreenSprites(3, overlayScreenStrings.strings2[overlayScreenStrings.unk_6C][0], 1, 3);
+    setOverlayScreenSpritesRGBA(3, 255, 255, 255, 255);
 
-    func_80045E20(4, 0x9D, &_moneyTextureSegmentRomStart, &_moneyTextureSegmentRomEnd, &_moneyAssetsIndexSegmentRomStart, &_moneyAssetsIndexSegmentRomEnd, (void*)0x80253B00, (void*)0x80254A00, (void*)0x80254E00, (void*)0x80254F00, 0, 1, 0, -48.0f, -64.0f, 256.0f, 0xA);
+    setOverlayScreenSprites(4, 0x9D, &_moneyTextureSegmentRomStart, &_moneyTextureSegmentRomEnd, &_moneyAssetsIndexSegmentRomStart, &_moneyAssetsIndexSegmentRomEnd, (u8*)0x80253B00, (u16*)0x80254A00, (AnimationFrameMetadata*)0x80254E00, (u32*)0x80254F00, 0, 1, 0, -48.0f, -64.0f, 256.0f, 10);
     
-    dmaOverlayScreenSprites(4, overlayScreenStrings.strings2[overlayScreenStrings.unk_6A][1], 1, 3);
-    setOverlayScreenSpritesRGBA(4, 0xFF, 0xFF, 0xFF, 0xFF);
+    dmaOverlayScreenSprites(4, overlayScreenStrings.strings2[overlayScreenStrings.unk_6C][1], 1, 3);
+    setOverlayScreenSpritesRGBA(4, 255, 255, 255, 255);
     
-    func_80045E20(5, 0x9F, &_moneyTextureSegmentRomStart, &_moneyTextureSegmentRomEnd, &_moneyAssetsIndexSegmentRomStart, &_moneyAssetsIndexSegmentRomEnd, (void*)0x80253B00, (void*)0x80254A00, (void*)0x80254E00, (void*)0x80254F00, 0, 1, 0, -48.0f, -80.0f, 256.0f, 0xA);
+    setOverlayScreenSprites(5, 0x9F, &_moneyTextureSegmentRomStart, &_moneyTextureSegmentRomEnd, &_moneyAssetsIndexSegmentRomStart, &_moneyAssetsIndexSegmentRomEnd, (u8*)0x80253B00, (u16*)0x80254A00, (AnimationFrameMetadata*)0x80254E00, (u32*)0x80254F00, 0, 1, 0, -48.0f, -80.0f, 256.0f, 10);
     
-    dmaOverlayScreenSprites(5, overlayScreenStrings.strings2[overlayScreenStrings.unk_6A][2], 1, 3);
-    setOverlayScreenSpritesRGBA(5, 0xFF, 0xFF, 0xFF, 0xFF);
+    dmaOverlayScreenSprites(5, overlayScreenStrings.strings2[overlayScreenStrings.unk_6C][2], 1, 3);
+    setOverlayScreenSpritesRGBA(5, 255, 255, 255, 255);
     
-    func_80045E20(6, 0xA1, &_moneyTextureSegmentRomStart, &_moneyTextureSegmentRomEnd, &_moneyAssetsIndexSegmentRomStart, &_moneyAssetsIndexSegmentRomEnd, (void*)0x80253B00, (void*)0x80254A00, (void*)0x80254E00, (void*)0x80254F00, 0, 1, 0, -48.0f, -96.0f, 256.0f, 0xA);
+    setOverlayScreenSprites(6, 0xA1, &_moneyTextureSegmentRomStart, &_moneyTextureSegmentRomEnd, &_moneyAssetsIndexSegmentRomStart, &_moneyAssetsIndexSegmentRomEnd, (u8*)0x80253B00, (u16*)0x80254A00, (AnimationFrameMetadata*)0x80254E00, (u32*)0x80254F00, 0, 1, 0, -48.0f, -96.0f, 256.0f, 10);
     
-    dmaOverlayScreenSprites(6, overlayScreenStrings.strings2[overlayScreenStrings.unk_6A][3], 1, 3);
-    setOverlayScreenSpritesRGBA(6, 0xFF, 0xFF, 0xFF, 0xFF);
+    dmaOverlayScreenSprites(6, overlayScreenStrings.strings2[overlayScreenStrings.unk_6C][3], 1, 3);
+    setOverlayScreenSpritesRGBA(6, 255, 255, 255, 255);
     
-    func_80045E20(7, 0xA3, &_moneyTextureSegmentRomStart, &_moneyTextureSegmentRomEnd, &_moneyAssetsIndexSegmentRomStart, &_moneyAssetsIndexSegmentRomEnd, (void*)0x80253B00, (void*)0x80254A00, (void*)0x80254E00, (void*)0x80254F00, 0, 1, 0, -48.0f, -112.0f, 256.0f, 0xA);
+    setOverlayScreenSprites(7, 0xA3, &_moneyTextureSegmentRomStart, &_moneyTextureSegmentRomEnd, &_moneyAssetsIndexSegmentRomStart, &_moneyAssetsIndexSegmentRomEnd, (u8*)0x80253B00, (u16*)0x80254A00, (AnimationFrameMetadata*)0x80254E00, (u32*)0x80254F00, 0, 1, 0, -48.0f, -112.0f, 256.0f, 10);
     
-    dmaOverlayScreenSprites(7, overlayScreenStrings.strings2[overlayScreenStrings.unk_6A][4], 1, 3);
-    setOverlayScreenSpritesRGBA(7, 0xFF, 0xFF, 0xFF, 0xFF);
+    dmaOverlayScreenSprites(7, overlayScreenStrings.strings2[overlayScreenStrings.unk_6C][4], 1, 3);
+    setOverlayScreenSpritesRGBA(7, 255, 255, 255, 255);
     
-    func_80045E20(8, 0xA5, &_moneyTextureSegmentRomStart, &_moneyTextureSegmentRomEnd, &_moneyAssetsIndexSegmentRomStart, &_moneyAssetsIndexSegmentRomEnd, (void*)0x80253B00, (void*)0x80254A00, (void*)0x80254E00, (void*)0x80254F00, 0, 1, 0, -48.0f, -128.0f, 256.0f, 0xA);
+    setOverlayScreenSprites(8, 0xA5, &_moneyTextureSegmentRomStart, &_moneyTextureSegmentRomEnd, &_moneyAssetsIndexSegmentRomStart, &_moneyAssetsIndexSegmentRomEnd, (u8*)0x80253B00, (u16*)0x80254A00, (AnimationFrameMetadata*)0x80254E00, (u32*)0x80254F00, 0, 1, 0, -48.0f, -128.0f, 256.0f, 10);
     
-    dmaOverlayScreenSprites(8, overlayScreenStrings.strings2[overlayScreenStrings.unk_6A][5], 1, 3);
-    setOverlayScreenSpritesRGBA(8, 0xFF, 0xFF, 0xFF, 0xFF);
+    dmaOverlayScreenSprites(8, overlayScreenStrings.strings2[overlayScreenStrings.unk_6C][5], 1, 3);
+    setOverlayScreenSpritesRGBA(8, 255, 255, 255, 255);
 
-    func_80045E20(9, 0xA7, &_raceBettingUiTextureSegmentRomStart, &_raceBettingUiTextureSegmentRomEnd, &_raceBettingUiAssetsIndexSegmentRomStart, &_raceBettingUiAssetsIndexSegmentRomEnd, (void*)0x8026F000, (void*)0x8027E200, (void*)0x8027E700, (void*)0x8027EB00, 0, 6, 0, 14.0f, 34.0f, 256.0f, 8);
+    setOverlayScreenSprites(9, 0xA7, &_raceBettingUiTextureSegmentRomStart, &_raceBettingUiTextureSegmentRomEnd, &_raceBettingUiAssetsIndexSegmentRomStart, &_raceBettingUiAssetsIndexSegmentRomEnd, (u8*)0x8026F000, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, 0, 6, 0, 14.0f, 34.0f, 256.0f, 8);
     
-    dmaOverlayScreenSprites(9, overlayScreenStrings.unk_0, 2, 3);
-    setOverlayScreenSpritesRGBA(9, 0xFF, 0xFF, 0xFF, 0xFF);
+    dmaOverlayScreenSprites(9, overlayScreenStrings.unk_0[0], 2, 3);
+    setOverlayScreenSpritesRGBA(9, 255, 255, 255, 255);
     
-    func_80045E20(0xA, 0xAA, &_raceBettingUiTextureSegmentRomStart, &_raceBettingUiTextureSegmentRomEnd, &_raceBettingUiAssetsIndexSegmentRomStart, &_raceBettingUiAssetsIndexSegmentRomEnd, (void*)0x8026F000, (void*)0x8027E200, (void*)0x8027E700, (void*)0x8027EB00, 0, 6, 0, 14.0f, 18.0f, 256.0f, 8);
+    setOverlayScreenSprites(0xA, 0xAA, &_raceBettingUiTextureSegmentRomStart, &_raceBettingUiTextureSegmentRomEnd, &_raceBettingUiAssetsIndexSegmentRomStart, &_raceBettingUiAssetsIndexSegmentRomEnd, (u8*)0x8026F000, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, 0, 6, 0, 14.0f, 18.0f, 256.0f, 8);
     
-    dmaOverlayScreenSprites(0xA, overlayScreenStrings.unk_2, 2, 3);
-    setOverlayScreenSpritesRGBA(0xA, 0xFF, 0xFF, 0xFF, 0xFF);
+    dmaOverlayScreenSprites(0xA, overlayScreenStrings.unk_0[1], 2, 3);
+    setOverlayScreenSpritesRGBA(0xA, 255, 255, 255, 255);
     
-    func_80045E20(0xB, 0xAD, &_raceBettingUiTextureSegmentRomStart, &_raceBettingUiTextureSegmentRomEnd, &_raceBettingUiAssetsIndexSegmentRomStart, &_raceBettingUiAssetsIndexSegmentRomEnd, (void*)0x8026F000, (void*)0x8027E200, (void*)0x8027E700, (void*)0x8027EB00, 0, 6, 0, 14.0f, 2.0f, 256.0f, 8);
+    setOverlayScreenSprites(0xB, 0xAD, &_raceBettingUiTextureSegmentRomStart, &_raceBettingUiTextureSegmentRomEnd, &_raceBettingUiAssetsIndexSegmentRomStart, &_raceBettingUiAssetsIndexSegmentRomEnd, (u8*)0x8026F000, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, 0, 6, 0, 14.0f, 2.0f, 256.0f, 8);
     
-    dmaOverlayScreenSprites(0xB, overlayScreenStrings.unk_4, 2, 3);
-    setOverlayScreenSpritesRGBA(0xB, 0xFF, 0xFF, 0xFF, 0xFF);
+    dmaOverlayScreenSprites(0xB, overlayScreenStrings.unk_0[2], 2, 3);
+    setOverlayScreenSpritesRGBA(0xB, 255, 255, 255, 255);
     
-    func_80045E20(0xC, 0xB0, &_raceBettingUiTextureSegmentRomStart, &_raceBettingUiTextureSegmentRomEnd, &_raceBettingUiAssetsIndexSegmentRomStart, &_raceBettingUiAssetsIndexSegmentRomEnd, (void*)0x8026F000, (void*)0x8027E200, (void*)0x8027E700, (void*)0x8027EB00, 0, 6, 0, 14.0f, -14.0f, 256.0f, 8);
+    setOverlayScreenSprites(0xC, 0xB0, &_raceBettingUiTextureSegmentRomStart, &_raceBettingUiTextureSegmentRomEnd, &_raceBettingUiAssetsIndexSegmentRomStart, &_raceBettingUiAssetsIndexSegmentRomEnd, (u8*)0x8026F000, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, 0, 6, 0, 14.0f, -14.0f, 256.0f, 8);
     
-    dmaOverlayScreenSprites(0xC, overlayScreenStrings.unk_6, 2, 3);
-    setOverlayScreenSpritesRGBA(0xC, 0xFF, 0xFF, 0xFF, 0xFF);
+    dmaOverlayScreenSprites(0xC, overlayScreenStrings.unk_0[3], 2, 3);
+    setOverlayScreenSpritesRGBA(0xC, 255, 255, 255, 255);
     
-    func_80045E20(0xD, 0xB3, &_raceBettingUiTextureSegmentRomStart, &_raceBettingUiTextureSegmentRomEnd, &_raceBettingUiAssetsIndexSegmentRomStart, &_raceBettingUiAssetsIndexSegmentRomEnd, (void*)0x8026F000, (void*)0x8027E200, (void*)0x8027E700, (void*)0x8027EB00, 0, 6, 0, 14.0f, -30.0f, 256.0f, 8);
+    setOverlayScreenSprites(0xD, 0xB3, &_raceBettingUiTextureSegmentRomStart, &_raceBettingUiTextureSegmentRomEnd, &_raceBettingUiAssetsIndexSegmentRomStart, &_raceBettingUiAssetsIndexSegmentRomEnd, (u8*)0x8026F000, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, 0, 6, 0, 14.0f, -30.0f, 256.0f, 8);
     
-    dmaOverlayScreenSprites(0xD, overlayScreenStrings.unk_8, 2, 3);
-    setOverlayScreenSpritesRGBA(0xD, 0xFF, 0xFF, 0xFF, 0xFF);
+    dmaOverlayScreenSprites(0xD, overlayScreenStrings.unk_0[4], 2, 3);
+    setOverlayScreenSpritesRGBA(0xD, 255, 255, 255, 255);
     
-    func_80045E20(0xE, 0xB6, &_raceBettingUiTextureSegmentRomStart, &_raceBettingUiTextureSegmentRomEnd, &_raceBettingUiAssetsIndexSegmentRomStart, &_raceBettingUiAssetsIndexSegmentRomEnd, (void*)0x8026F000, (void*)0x8027E200, (void*)0x8027E700, (void*)0x8027EB00, 0, 6, 0, 14.0f, -46.0f, 256.0f, 8);
+    setOverlayScreenSprites(0xE, 0xB6, &_raceBettingUiTextureSegmentRomStart, &_raceBettingUiTextureSegmentRomEnd, &_raceBettingUiAssetsIndexSegmentRomStart, &_raceBettingUiAssetsIndexSegmentRomEnd, (u8*)0x8026F000, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, 0, 6, 0, 14.0f, -46.0f, 256.0f, 8);
     
-    dmaOverlayScreenSprites(0xE, overlayScreenStrings.unk_A, 2, 3);
-    setOverlayScreenSpritesRGBA(0xE, 0xFF, 0xFF, 0xFF, 0xFF);
+    dmaOverlayScreenSprites(0xE, overlayScreenStrings.unk_0[5], 2, 3);
+    setOverlayScreenSpritesRGBA(0xE, 255, 255, 255, 255);
     
     func_800C9FF0();
     func_800CA590();
@@ -8494,12 +8650,12 @@ void func_800C8B04(void) {
 // initialize race betting screen message boxes
 void func_800C9FF0(void) {
     
-    setGameVariableString(0x2A, overlayScreenStrings.dialogueVariableStrings[0], 6);
-    setGameVariableString(0x2B, overlayScreenStrings.dialogueVariableStrings[1], 6);
-    setGameVariableString(0x2C, overlayScreenStrings.dialogueVariableStrings[2], 6);
-    setGameVariableString(0x2D, overlayScreenStrings.dialogueVariableStrings[3], 6);
-    setGameVariableString(0x2E, overlayScreenStrings.dialogueVariableStrings[4], 6);
-    setGameVariableString(0x2F, overlayScreenStrings.dialogueVariableStrings[5], 6);
+    setGameVariableString(0x2A, overlayScreenStrings.gameVariableStrings[0], 6);
+    setGameVariableString(0x2B, overlayScreenStrings.gameVariableStrings[1], 6);
+    setGameVariableString(0x2C, overlayScreenStrings.gameVariableStrings[2], 6);
+    setGameVariableString(0x2D, overlayScreenStrings.gameVariableStrings[3], 6);
+    setGameVariableString(0x2E, overlayScreenStrings.gameVariableStrings[4], 6);
+    setGameVariableString(0x2F, overlayScreenStrings.gameVariableStrings[5], 6);
     
     initializeEmptyMessageBox(0, (u8*)MESSAGE_BOX_1_TEXT_BUFFER);
     setMessageBoxViewSpacePosition(0, -22.0f, 24.0f, 0);
@@ -8511,7 +8667,7 @@ void func_800C9FF0(void) {
     setMessageBoxButtonMask(0, BUTTON_A);
     func_8003FB4C(0, 1);
     initializeMessageBox(0, 0, 0x12, 0x80000);
-    func_8003E77C(0, 0xFF, 0xFF, 0xFF, 0xFF);
+    func_8003E77C(0, 255, 255, 255, 255);
     
     initializeEmptyMessageBox(1, (u8*)MESSAGE_BOX_2_TEXT_BUFFER);
     setMessageBoxViewSpacePosition(1, -22.0f, 8.0f, 0);
@@ -8523,7 +8679,7 @@ void func_800C9FF0(void) {
     setMessageBoxButtonMask(1, BUTTON_A);
     func_8003FB4C(1, 1);
     initializeMessageBox(1, 0, 0x13, 0x80000);
-    func_8003E77C(1, 0xFF, 0xFF, 0xFF, 0xFF);
+    func_8003E77C(1, 255, 255, 255, 255);
     
     initializeEmptyMessageBox(2, (u8*)MESSAGE_BOX_3_TEXT_BUFFER);
     setMessageBoxViewSpacePosition(2, -22.0f, -8.0f, 0);
@@ -8535,7 +8691,7 @@ void func_800C9FF0(void) {
     setMessageBoxButtonMask(2, BUTTON_A);
     func_8003FB4C(2, 1);
     initializeMessageBox(2, 0, 0x14, 0x80000);
-    func_8003E77C(2, 0xFF, 0xFF, 0xFF, 0xFF);
+    func_8003E77C(2, 255, 255, 255, 255);
     
     initializeEmptyMessageBox(3, (u8*)MESSAGE_BOX_4_TEXT_BUFFER);
     setMessageBoxViewSpacePosition(3, -22.0f, -24.0f, 0);
@@ -8547,7 +8703,7 @@ void func_800C9FF0(void) {
     setMessageBoxButtonMask(3, BUTTON_A);
     func_8003FB4C(3, 1);
     initializeMessageBox(3, 0, 0x15, 0x80000);
-    func_8003E77C(3, 0xFF, 0xFF, 0xFF, 0xFF);
+    func_8003E77C(3, 255, 255, 255, 255);
     
     initializeEmptyMessageBox(4, (u8*)MESSAGE_BOX_5_TEXT_BUFFER);
     setMessageBoxViewSpacePosition(4, -22.0f, -40.0f, 0);
@@ -8559,7 +8715,7 @@ void func_800C9FF0(void) {
     setMessageBoxButtonMask(4, BUTTON_A);
     func_8003FB4C(4, 1);
     initializeMessageBox(4, 0, 0x16, 0x80000);
-    func_8003E77C(4, 0xFF, 0xFF, 0xFF, 0xFF);
+    func_8003E77C(4, 255, 255, 255, 255);
     
     initializeEmptyMessageBox(5, (u8*)MESSAGE_BOX_6_TEXT_BUFFER);
     setMessageBoxViewSpacePosition(5, -22.0f, -56.0f, 0);
@@ -8571,7 +8727,7 @@ void func_800C9FF0(void) {
     setMessageBoxButtonMask(5, BUTTON_A);
     func_8003FB4C(5, 1);
     initializeMessageBox(5, 0, 0x17, 0x80000);
-    func_8003E77C(5, 0xFF, 0xFF, 0xFF, 0xFF);
+    func_8003E77C(5, 255, 255, 255, 255);
     
 }
 
@@ -8640,18 +8796,18 @@ void func_800CA808(void) {
     u8 temp = 0;
     bool set = FALSE;
     
-    switch (overlayScreenTable.currentAction) {
+    switch (overlayScreenTable.screenState) {
         
         case 0:
             func_800C8B04();
-            overlayScreenTable.currentAction = 1;
+            overlayScreenTable.screenState = 1;
             break;
         
         case 1:
             if (func_8002CBF8(0x82)) {
                 setSpriteViewSpacePosition(CURSOR_HAND, -112.0f, (-(overlayScreenTable.cellIndex * 16) + 24), 32.0f);
                 startSpriteAnimation(CURSOR_HAND, 3, 0);
-                overlayScreenTable.currentAction = 4;
+                overlayScreenTable.screenState = 4;
             }
             
             break;
@@ -8659,7 +8815,7 @@ void func_800CA808(void) {
         case 2:
             if (func_8002CBF8(0x82)) {
                 func_800B2CE0();
-                overlayScreenTable.currentAction = 3;
+                overlayScreenTable.screenState = 3;
             }
             break;
         
@@ -8679,7 +8835,7 @@ void func_800CA808(void) {
                     setSpriteViewSpacePosition(CURSOR_HAND, -112.0f, (f32)(-(overlayScreenTable.cellIndex * 16) + 24), 32.0f);
                 } else {
                     overlayScreenTable.cellIndex = 0xFF;
-                    overlayScreenTable.currentAction = 6;
+                    overlayScreenTable.screenState = 6;
                     playSfx(2);
                     setSpriteViewSpacePosition(CURSOR_HAND, 96.0f, -96.0f, 32.0f);
                 }
@@ -8697,7 +8853,7 @@ void func_800CA808(void) {
                         setSpriteViewSpacePosition(CURSOR_HAND, -112.0f, (f32)(-(overlayScreenTable.cellIndex * 16) + 24), 32.0f);
                     } else {
                         overlayScreenTable.cellIndex = 0xFF;
-                        overlayScreenTable.currentAction = 6;
+                        overlayScreenTable.screenState = 6;
                         playSfx(2);
                         setSpriteViewSpacePosition(CURSOR_HAND, 96.0f, -96.0f, 32.0f);
                     }
@@ -8707,7 +8863,7 @@ void func_800CA808(void) {
             }
             
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A) && !set) {
-                overlayScreenTable.currentAction = 5;
+                overlayScreenTable.screenState = 5;
                 setSpriteViewSpacePosition(CURSOR_HAND, 32.0f, (f32)(-(overlayScreenTable.cellIndex * 16) + 24), 32.0f);
                 set = TRUE;
                 playSfx(0);
@@ -8715,7 +8871,7 @@ void func_800CA808(void) {
             
             if ((checkButtonPressed(CONTROLLER_1, BUTTON_START)) && !set) {
                 overlayScreenTable.cellIndex = 0xFF;
-                overlayScreenTable.currentAction = 6;
+                overlayScreenTable.screenState = 6;
                 playSfx(2);
                 setSpriteViewSpacePosition(CURSOR_HAND, 96.0f, -96.0f, 32.0f);
             }
@@ -8730,9 +8886,9 @@ void func_800CA808(void) {
                     
                     if (adjustValue(D_80189858, 50, gGold) == 50) {
                         
-                        if (overlayScreenStrings.strings2[(overlayScreenStrings.unk_6A)][overlayScreenTable.cellIndex]) {
+                        if (overlayScreenStrings.strings2[overlayScreenStrings.unk_6C][overlayScreenTable.cellIndex]) {
                             D_80189858 += adjustValue(D_80189858, 50, gGold);
-                            overlayScreenStrings.strings2[(overlayScreenStrings.unk_6A)][overlayScreenTable.cellIndex]--;
+                            overlayScreenStrings.strings2[overlayScreenStrings.unk_6C][overlayScreenTable.cellIndex]--;
                             playSfx(2);
                         }
                         
@@ -8753,9 +8909,9 @@ void func_800CA808(void) {
 
                     if (adjustValue(D_80189858, -50, gGold) == -50) {
 
-                        if (overlayScreenStrings.strings2[(overlayScreenStrings.unk_6A)][overlayScreenTable.cellIndex] != 99) {
+                        if (overlayScreenStrings.strings2[overlayScreenStrings.unk_6C][overlayScreenTable.cellIndex] != 99) {
                             D_80189858 += adjustValue(D_80189858, -50, gGold);
-                            overlayScreenStrings.strings2[(overlayScreenStrings.unk_6A)][overlayScreenTable.cellIndex]++;
+                            overlayScreenStrings.strings2[overlayScreenStrings.unk_6C][overlayScreenTable.cellIndex]++;
                             playSfx(2);
                         }
                     }
@@ -8771,7 +8927,7 @@ void func_800CA808(void) {
             if ((checkButtonPressed(CONTROLLER_1, BUTTON_B | BUTTON_A))) {
 
                 if (!set) {
-                    overlayScreenTable.currentAction = 4;
+                    overlayScreenTable.screenState = 4;
                     setSpriteViewSpacePosition(CURSOR_HAND, -112.0f, (f32)(-(overlayScreenTable.cellIndex * 16) + 24), 32.0f);
                     set = TRUE;
                     playSfx(1);
@@ -8780,7 +8936,7 @@ void func_800CA808(void) {
             }
 
             dmaOverlayScreenSprites(1, (u32)D_80189858, 5, 3);
-            dmaOverlayScreenSprites(overlayScreenTable.cellIndex + 3, overlayScreenStrings.strings2[(overlayScreenStrings.unk_6A)][overlayScreenTable.cellIndex], 1, 3);
+            dmaOverlayScreenSprites(overlayScreenTable.cellIndex + 3, overlayScreenStrings.strings2[overlayScreenStrings.unk_6C][overlayScreenTable.cellIndex], 1, 3);
                 
             break;
 
@@ -8793,7 +8949,7 @@ void func_800CA808(void) {
                     playSfx(2);
                     setSpriteViewSpacePosition(CURSOR_HAND, -112.0f, (f32)(-(overlayScreenTable.cellIndex * 16) + 24), 32.0f);
                     set = TRUE;
-                    overlayScreenTable.currentAction = 4;
+                    overlayScreenTable.screenState = 4;
                 }
                 
             }
@@ -8805,7 +8961,7 @@ void func_800CA808(void) {
                     playSfx(2);
                     setSpriteViewSpacePosition(CURSOR_HAND, -112.0f, (f32)(-(overlayScreenTable.cellIndex * 16) + 24), 32.0f);
                     set = TRUE;
-                    overlayScreenTable.currentAction = 4;
+                    overlayScreenTable.screenState = 4;
                 }
                 
             }
@@ -8814,14 +8970,14 @@ void func_800CA808(void) {
 
                 if (!set) {
                     
-                    if (overlayScreenStrings.strings2[(overlayScreenStrings.unk_6A)][0] 
-                        || overlayScreenStrings.strings2[(overlayScreenStrings.unk_6A)][1] 
-                        || overlayScreenStrings.strings2[(overlayScreenStrings.unk_6A)][2] 
-                        || overlayScreenStrings.strings2[(overlayScreenStrings.unk_6A)][3] 
-                        || overlayScreenStrings.strings2[(overlayScreenStrings.unk_6A)][4] 
-                        || overlayScreenStrings.strings2[(overlayScreenStrings.unk_6A)][5]) {
+                    if (overlayScreenStrings.strings2[overlayScreenStrings.unk_6C][0] 
+                        || overlayScreenStrings.strings2[overlayScreenStrings.unk_6C][1] 
+                        || overlayScreenStrings.strings2[overlayScreenStrings.unk_6C][2] 
+                        || overlayScreenStrings.strings2[overlayScreenStrings.unk_6C][3] 
+                        || overlayScreenStrings.strings2[overlayScreenStrings.unk_6C][4] 
+                        || overlayScreenStrings.strings2[overlayScreenStrings.unk_6C][5]) {
                         
-                        overlayScreenStrings.unk_6D[overlayScreenStrings.unk_6A] = 0xFF;
+                        overlayScreenStrings.unk_6F[overlayScreenStrings.unk_6C] = 0xFF;
                         gGold = D_80189858;
                         
                         if (checkDailyEventBit(HORSE_RACE)) {
@@ -8836,7 +8992,7 @@ void func_800CA808(void) {
                     set = TRUE;
                     
                     func_800CA678();
-                    overlayScreenTable.currentAction = 2;
+                    overlayScreenTable.screenState = 2;
                     
                     playSfx(0);
                     
@@ -8847,21 +9003,202 @@ void func_800CA808(void) {
         
         }
     
-    if (overlayScreenTable.currentAction >= 4 && checkButtonPressed(CONTROLLER_1, BUTTON_B) && !set) {
+    if (overlayScreenTable.screenState >= 4 && checkButtonPressed(CONTROLLER_1, BUTTON_B) && !set) {
         resetAnimationState(CURSOR_HAND);
         func_800CA678();
-        overlayScreenTable.currentAction = 2;
+        overlayScreenTable.screenState = 2;
         playSfx(1);
     }
     
 }
 
-// race
-// D_801220CC
-INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800CB0C4);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800CB0C4);
 
-// D_80122140
-INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800CB8F0);
+void func_800CB0C4(void) {
+
+    u8 buffer[20][6];
+    u8 temp;
+
+    memcpy(buffer, D_801220CC, 114);
+
+    if (gHour < 24) {
+        overlayScreenStrings.unk_6C = 3;
+    }
+    if (gHour < 16) {
+        overlayScreenStrings.unk_6C = 2;
+    }
+    if (gHour < 13) {
+        overlayScreenStrings.unk_6C = 1;
+    }
+    if (gHour < 10) {
+        overlayScreenStrings.unk_6C = 0;
+    }
+
+    overlayScreenStrings.gameVariableStrings[0][0] = buffer[overlayScreenStrings.unk_54[overlayScreenStrings.unk_6C * 2][0]][0];
+    overlayScreenStrings.gameVariableStrings[0][1] = buffer[overlayScreenStrings.unk_54[overlayScreenStrings.unk_6C * 2][0]][1];
+    overlayScreenStrings.gameVariableStrings[0][2] = buffer[overlayScreenStrings.unk_54[overlayScreenStrings.unk_6C * 2][0]][2];
+    overlayScreenStrings.gameVariableStrings[0][3] = buffer[overlayScreenStrings.unk_54[overlayScreenStrings.unk_6C * 2][0]][3];
+    overlayScreenStrings.gameVariableStrings[0][4] = buffer[overlayScreenStrings.unk_54[overlayScreenStrings.unk_6C * 2][0]][4];
+    overlayScreenStrings.gameVariableStrings[0][5] = buffer[overlayScreenStrings.unk_54[overlayScreenStrings.unk_6C * 2][0]][5];
+
+    overlayScreenStrings.gameVariableStrings[1][0] = buffer[overlayScreenStrings.unk_54[overlayScreenStrings.unk_6C * 2][1]][0];
+    overlayScreenStrings.gameVariableStrings[1][1] = buffer[overlayScreenStrings.unk_54[overlayScreenStrings.unk_6C * 2][1]][1];
+    overlayScreenStrings.gameVariableStrings[1][2] = buffer[overlayScreenStrings.unk_54[overlayScreenStrings.unk_6C * 2][1]][2];
+    overlayScreenStrings.gameVariableStrings[1][3] = buffer[overlayScreenStrings.unk_54[overlayScreenStrings.unk_6C * 2][1]][3];
+    overlayScreenStrings.gameVariableStrings[1][4] = buffer[overlayScreenStrings.unk_54[overlayScreenStrings.unk_6C * 2][1]][4];
+    overlayScreenStrings.gameVariableStrings[1][5] = buffer[overlayScreenStrings.unk_54[overlayScreenStrings.unk_6C * 2][1]][5];
+
+    overlayScreenStrings.gameVariableStrings[2][0] = buffer[overlayScreenStrings.unk_54[overlayScreenStrings.unk_6C * 2][2]][0];
+    overlayScreenStrings.gameVariableStrings[2][1] = buffer[overlayScreenStrings.unk_54[overlayScreenStrings.unk_6C * 2][2]][1];
+    overlayScreenStrings.gameVariableStrings[2][2] = buffer[overlayScreenStrings.unk_54[overlayScreenStrings.unk_6C * 2][2]][2];
+    overlayScreenStrings.gameVariableStrings[2][3] = buffer[overlayScreenStrings.unk_54[overlayScreenStrings.unk_6C * 2][2]][3];
+    overlayScreenStrings.gameVariableStrings[2][4] = buffer[overlayScreenStrings.unk_54[overlayScreenStrings.unk_6C * 2][2]][4];
+    overlayScreenStrings.gameVariableStrings[2][5] = buffer[overlayScreenStrings.unk_54[overlayScreenStrings.unk_6C * 2][2]][5];
+
+    overlayScreenStrings.gameVariableStrings[3][0] = buffer[overlayScreenStrings.unk_54[overlayScreenStrings.unk_6C * 2][3]][0];
+    overlayScreenStrings.gameVariableStrings[3][1] = buffer[overlayScreenStrings.unk_54[overlayScreenStrings.unk_6C * 2][3]][1];
+    overlayScreenStrings.gameVariableStrings[3][2] = buffer[overlayScreenStrings.unk_54[overlayScreenStrings.unk_6C * 2][3]][2];
+    overlayScreenStrings.gameVariableStrings[3][3] = buffer[overlayScreenStrings.unk_54[overlayScreenStrings.unk_6C * 2][3]][3];
+    overlayScreenStrings.gameVariableStrings[3][4] = buffer[overlayScreenStrings.unk_54[overlayScreenStrings.unk_6C * 2][3]][4];
+    overlayScreenStrings.gameVariableStrings[3][5] = buffer[overlayScreenStrings.unk_54[overlayScreenStrings.unk_6C * 2][3]][5];
+
+    overlayScreenStrings.gameVariableStrings[4][0] = buffer[overlayScreenStrings.unk_54[overlayScreenStrings.unk_6C * 2][4]][0];
+    overlayScreenStrings.gameVariableStrings[4][1] = buffer[overlayScreenStrings.unk_54[overlayScreenStrings.unk_6C * 2][4]][1];
+    overlayScreenStrings.gameVariableStrings[4][2] = buffer[overlayScreenStrings.unk_54[overlayScreenStrings.unk_6C * 2][4]][2];
+    overlayScreenStrings.gameVariableStrings[4][3] = buffer[overlayScreenStrings.unk_54[overlayScreenStrings.unk_6C * 2][4]][3];
+    overlayScreenStrings.gameVariableStrings[4][4] = buffer[overlayScreenStrings.unk_54[overlayScreenStrings.unk_6C * 2][4]][4];
+    overlayScreenStrings.gameVariableStrings[4][5] = buffer[overlayScreenStrings.unk_54[overlayScreenStrings.unk_6C * 2][4]][5];
+
+    overlayScreenStrings.gameVariableStrings[5][0] = buffer[overlayScreenStrings.unk_54[overlayScreenStrings.unk_6C * 2][5]][0];
+    overlayScreenStrings.gameVariableStrings[5][1] = buffer[overlayScreenStrings.unk_54[overlayScreenStrings.unk_6C * 2][5]][1];
+    overlayScreenStrings.gameVariableStrings[5][2] = buffer[overlayScreenStrings.unk_54[overlayScreenStrings.unk_6C * 2][5]][2];
+    overlayScreenStrings.gameVariableStrings[5][3] = buffer[overlayScreenStrings.unk_54[overlayScreenStrings.unk_6C * 2][5]][3];
+    overlayScreenStrings.gameVariableStrings[5][4] = buffer[overlayScreenStrings.unk_54[overlayScreenStrings.unk_6C * 2][5]][4];
+    overlayScreenStrings.gameVariableStrings[5][5] = buffer[overlayScreenStrings.unk_54[overlayScreenStrings.unk_6C * 2][5]][5];
+
+    overlayScreenStrings.unk_0[0] = overlayScreenStrings.strings3[overlayScreenStrings.unk_6C][0];
+    overlayScreenStrings.unk_0[1] = overlayScreenStrings.strings3[overlayScreenStrings.unk_6C][1];
+    overlayScreenStrings.unk_0[2] = overlayScreenStrings.strings3[overlayScreenStrings.unk_6C][2];
+    overlayScreenStrings.unk_0[3] = overlayScreenStrings.strings3[overlayScreenStrings.unk_6C][3];
+    overlayScreenStrings.unk_0[4]= overlayScreenStrings.strings3[overlayScreenStrings.unk_6C][4];
+    overlayScreenStrings.unk_0[5] = overlayScreenStrings.strings3[overlayScreenStrings.unk_6C][5];
+
+    if (overlayScreenStrings.unk_6D == overlayScreenStrings.unk_6C) {
+        
+        overlayScreenStrings.gameVariableStrings[2][0] = horseInfo.name[0];
+        overlayScreenStrings.gameVariableStrings[2][1] = horseInfo.name[1];
+        overlayScreenStrings.gameVariableStrings[2][2] = horseInfo.name[2];
+        overlayScreenStrings.gameVariableStrings[2][3] = horseInfo.name[3];
+        overlayScreenStrings.gameVariableStrings[2][4] = horseInfo.name[4];
+        overlayScreenStrings.gameVariableStrings[2][5] = horseInfo.name[5];
+        
+        D_801C3F78 |= 0x20;
+        
+    } else {
+        D_801C3F78 &= ~0x20;
+    }
+    
+    if (overlayScreenStrings.unk_6E == overlayScreenStrings.unk_6C) {
+        D_801C3F78 |= 0x40;
+    } else {
+        D_801C3F78 &= ~0x40;
+    }
+    
+}
+
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800CB8F0);
+
+void func_800CB8F0(void) {
+
+    u8 buffer[20][6];
+    u8 temp;
+
+    memcpy(buffer, D_80122140, 114);
+
+    if (gHour < 24) {
+        overlayScreenStrings.unk_6C = 3;
+    }
+    if (gHour < 16) {
+        overlayScreenStrings.unk_6C = 2;
+    }
+    if (gHour < 13) {
+        overlayScreenStrings.unk_6C = 1;
+    }
+    if (gHour < 10) {
+        overlayScreenStrings.unk_6C = 0;
+    }
+
+    overlayScreenStrings.gameVariableStrings[0][0] = buffer[overlayScreenStrings.unk_54[overlayScreenStrings.unk_6C * 2][0]][0];
+    overlayScreenStrings.gameVariableStrings[0][1] = buffer[overlayScreenStrings.unk_54[overlayScreenStrings.unk_6C * 2][0]][1];
+    overlayScreenStrings.gameVariableStrings[0][2] = buffer[overlayScreenStrings.unk_54[overlayScreenStrings.unk_6C * 2][0]][2];
+    overlayScreenStrings.gameVariableStrings[0][3] = buffer[overlayScreenStrings.unk_54[overlayScreenStrings.unk_6C * 2][0]][3];
+    overlayScreenStrings.gameVariableStrings[0][4] = buffer[overlayScreenStrings.unk_54[overlayScreenStrings.unk_6C * 2][0]][4];
+    overlayScreenStrings.gameVariableStrings[0][5] = buffer[overlayScreenStrings.unk_54[overlayScreenStrings.unk_6C * 2][0]][5];
+
+    overlayScreenStrings.gameVariableStrings[1][0] = buffer[overlayScreenStrings.unk_54[overlayScreenStrings.unk_6C * 2][1]][0];
+    overlayScreenStrings.gameVariableStrings[1][1] = buffer[overlayScreenStrings.unk_54[overlayScreenStrings.unk_6C * 2][1]][1];
+    overlayScreenStrings.gameVariableStrings[1][2] = buffer[overlayScreenStrings.unk_54[overlayScreenStrings.unk_6C * 2][1]][2];
+    overlayScreenStrings.gameVariableStrings[1][3] = buffer[overlayScreenStrings.unk_54[overlayScreenStrings.unk_6C * 2][1]][3];
+    overlayScreenStrings.gameVariableStrings[1][4] = buffer[overlayScreenStrings.unk_54[overlayScreenStrings.unk_6C * 2][1]][4];
+    overlayScreenStrings.gameVariableStrings[1][5] = buffer[overlayScreenStrings.unk_54[overlayScreenStrings.unk_6C * 2][1]][5];
+
+    overlayScreenStrings.gameVariableStrings[2][0] = buffer[overlayScreenStrings.unk_54[overlayScreenStrings.unk_6C * 2][2]][0];
+    overlayScreenStrings.gameVariableStrings[2][1] = buffer[overlayScreenStrings.unk_54[overlayScreenStrings.unk_6C * 2][2]][1];
+    overlayScreenStrings.gameVariableStrings[2][2] = buffer[overlayScreenStrings.unk_54[overlayScreenStrings.unk_6C * 2][2]][2];
+    overlayScreenStrings.gameVariableStrings[2][3] = buffer[overlayScreenStrings.unk_54[overlayScreenStrings.unk_6C * 2][2]][3];
+    overlayScreenStrings.gameVariableStrings[2][4] = buffer[overlayScreenStrings.unk_54[overlayScreenStrings.unk_6C * 2][2]][4];
+    overlayScreenStrings.gameVariableStrings[2][5] = buffer[overlayScreenStrings.unk_54[overlayScreenStrings.unk_6C * 2][2]][5];
+
+    overlayScreenStrings.gameVariableStrings[3][0] = buffer[overlayScreenStrings.unk_54[overlayScreenStrings.unk_6C * 2][3]][0];
+    overlayScreenStrings.gameVariableStrings[3][1] = buffer[overlayScreenStrings.unk_54[overlayScreenStrings.unk_6C * 2][3]][1];
+    overlayScreenStrings.gameVariableStrings[3][2] = buffer[overlayScreenStrings.unk_54[overlayScreenStrings.unk_6C * 2][3]][2];
+    overlayScreenStrings.gameVariableStrings[3][3] = buffer[overlayScreenStrings.unk_54[overlayScreenStrings.unk_6C * 2][3]][3];
+    overlayScreenStrings.gameVariableStrings[3][4] = buffer[overlayScreenStrings.unk_54[overlayScreenStrings.unk_6C * 2][3]][4];
+    overlayScreenStrings.gameVariableStrings[3][5] = buffer[overlayScreenStrings.unk_54[overlayScreenStrings.unk_6C * 2][3]][5];
+
+    overlayScreenStrings.gameVariableStrings[4][0] = buffer[overlayScreenStrings.unk_54[overlayScreenStrings.unk_6C * 2][4]][0];
+    overlayScreenStrings.gameVariableStrings[4][1] = buffer[overlayScreenStrings.unk_54[overlayScreenStrings.unk_6C * 2][4]][1];
+    overlayScreenStrings.gameVariableStrings[4][2] = buffer[overlayScreenStrings.unk_54[overlayScreenStrings.unk_6C * 2][4]][2];
+    overlayScreenStrings.gameVariableStrings[4][3] = buffer[overlayScreenStrings.unk_54[overlayScreenStrings.unk_6C * 2][4]][3];
+    overlayScreenStrings.gameVariableStrings[4][4] = buffer[overlayScreenStrings.unk_54[overlayScreenStrings.unk_6C * 2][4]][4];
+    overlayScreenStrings.gameVariableStrings[4][5] = buffer[overlayScreenStrings.unk_54[overlayScreenStrings.unk_6C * 2][4]][5];
+
+    overlayScreenStrings.gameVariableStrings[5][0] = buffer[overlayScreenStrings.unk_54[overlayScreenStrings.unk_6C * 2][5]][0];
+    overlayScreenStrings.gameVariableStrings[5][1] = buffer[overlayScreenStrings.unk_54[overlayScreenStrings.unk_6C * 2][5]][1];
+    overlayScreenStrings.gameVariableStrings[5][2] = buffer[overlayScreenStrings.unk_54[overlayScreenStrings.unk_6C * 2][5]][2];
+    overlayScreenStrings.gameVariableStrings[5][3] = buffer[overlayScreenStrings.unk_54[overlayScreenStrings.unk_6C * 2][5]][3];
+    overlayScreenStrings.gameVariableStrings[5][4] = buffer[overlayScreenStrings.unk_54[overlayScreenStrings.unk_6C * 2][5]][4];
+    overlayScreenStrings.gameVariableStrings[5][5] = buffer[overlayScreenStrings.unk_54[overlayScreenStrings.unk_6C * 2][5]][5];
+
+    overlayScreenStrings.unk_0[0] = overlayScreenStrings.strings3[overlayScreenStrings.unk_6C][0];
+    overlayScreenStrings.unk_0[1] = overlayScreenStrings.strings3[overlayScreenStrings.unk_6C][1];
+    overlayScreenStrings.unk_0[2] = overlayScreenStrings.strings3[overlayScreenStrings.unk_6C][2];
+    overlayScreenStrings.unk_0[3] = overlayScreenStrings.strings3[overlayScreenStrings.unk_6C][3];
+    overlayScreenStrings.unk_0[4]= overlayScreenStrings.strings3[overlayScreenStrings.unk_6C][4];
+    overlayScreenStrings.unk_0[5] = overlayScreenStrings.strings3[overlayScreenStrings.unk_6C][5];
+
+    if (overlayScreenStrings.unk_6D == overlayScreenStrings.unk_6C) {
+        
+        overlayScreenStrings.gameVariableStrings[0][0] = dogInfo.name[0];
+        overlayScreenStrings.gameVariableStrings[0][1] = dogInfo.name[1];
+        overlayScreenStrings.gameVariableStrings[0][2] = dogInfo.name[2];
+        overlayScreenStrings.gameVariableStrings[0][3] = dogInfo.name[3];
+        overlayScreenStrings.gameVariableStrings[0][4] = dogInfo.name[4];
+        overlayScreenStrings.gameVariableStrings[0][5] = dogInfo.name[5];
+        
+        D_801C3F78 |= 0x20;
+        
+    } else {
+        D_801C3F78 &= ~0x20;
+    }
+    
+    if (overlayScreenStrings.unk_6E == overlayScreenStrings.unk_6C) {
+        D_801C3F78 |= 0x40;
+    } else {
+        D_801C3F78 &= ~0x40;
+    }
+    
+}
 
 //INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800CC11C);
 
@@ -8883,7 +9220,157 @@ bool func_800CC11C(u8 arg0, u8 arg1, u8 arg2) {
     
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800CC17C);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800CC17C);
+
+void func_800CC17C(void) {
+
+    u8 arr[19];
+    
+    u8 i;
+    
+    u8 temp;
+    u8 temp2;
+    u8 temp3;
+    u8 temp4;
+
+    for (i = 0; i < 19; i++) {
+        arr[i] = 0;
+    }
+
+    overlayScreenStrings.unk_6D = 0xFF;
+
+    if ((checkLifeEventBit(0x51)) || (checkLifeEventBit(0x52))) {
+        overlayScreenStrings.unk_6D = getRandomNumberInRange(0, 2);
+    }
+
+    i = 0;
+
+    temp4 = getRandomNumberInRange(40, 100);
+    
+    for (i = 0; i < 6; ) {
+
+        temp = getRandomNumberInRange(1, 18); 
+
+        if (arr[temp] == 0) {
+
+            overlayScreenStrings.unk_54[0][i] = temp;
+
+            temp2 = getRandomNumberInRange(1, temp4 / 2);
+
+            temp4 -= temp2;
+
+            overlayScreenStrings.strings2[3][i] = temp2;
+
+            if (temp4 < 2) {
+                temp4 = 2;
+            }
+
+            arr[temp] = 0xFF;
+
+            i++;
+            
+        }
+        
+    }
+
+    i = 0;
+
+    temp4 = getRandomNumberInRange(40, 100);
+    
+    for (i = 0; i < 6; ) {
+
+        temp = getRandomNumberInRange(1, 18);
+
+        if (arr[temp] == 0) {
+
+            overlayScreenStrings.unk_54[2][i] = temp;
+
+            temp2 = getRandomNumberInRange(1, temp4 / 2);
+
+            temp4 -= temp2;
+
+            overlayScreenStrings.strings2[4][i] = temp2;
+
+            if (temp4 < 2) {
+                temp4 = 2;
+            }
+
+            arr[temp] = 0xFF;
+
+            i++;
+            
+        }
+        
+    }
+
+    i = 0;
+
+    temp4 = getRandomNumberInRange(40, 100);
+    
+    for (i = 0; i < 6; ) {
+
+        temp = getRandomNumberInRange(1, 18);
+        
+        if (arr[temp] == 0) {
+
+            overlayScreenStrings.unk_54[4][i] = temp;
+
+            temp2 = getRandomNumberInRange(1, temp4 / 2);
+
+            temp4 -= temp2;
+
+            overlayScreenStrings.strings2[5][i] = temp2;
+
+            if (temp4 < 2) {
+                temp4 = 2;
+            }
+
+            arr[temp] = 0xFF;
+
+            i++;
+            
+        }
+        
+    }
+
+    if (checkLifeEventBit(0x51)) {
+        temp3 = getRandomNumberInRange(0, 2);
+        overlayScreenStrings.unk_54[1][temp3 * 6] = 0;
+        overlayScreenStrings.unk_6E = temp3;
+    }
+
+    if (checkLifeEventBit(0x52)) {
+        temp3 = getRandomNumberInRange(0, 2);
+        overlayScreenStrings.unk_54[0][temp3 * 6 + 1] = 0;
+        overlayScreenStrings.unk_6E = temp3;
+    }
+    
+    overlayScreenStrings.strings2[0][0] = 0;
+    overlayScreenStrings.strings2[0][1] = 0;
+    overlayScreenStrings.strings2[0][2] = 0;
+    overlayScreenStrings.strings2[0][3] = 0;
+    overlayScreenStrings.strings2[0][4] = 0;
+    overlayScreenStrings.strings2[0][5] = 0;
+    
+    overlayScreenStrings.strings2[1][0] = 0;
+    overlayScreenStrings.strings2[1][1] = 0;
+    overlayScreenStrings.strings2[1][2] = 0;
+    overlayScreenStrings.strings2[1][3] = 0;
+    overlayScreenStrings.strings2[1][4] = 0;
+    overlayScreenStrings.strings2[1][5] = 0;
+    
+    overlayScreenStrings.strings2[2][0] = 0;
+    overlayScreenStrings.strings2[2][1] = 0;
+    overlayScreenStrings.strings2[2][2] = 0;
+    overlayScreenStrings.strings2[2][3] = 0;
+    overlayScreenStrings.strings2[2][4] = 0;
+    overlayScreenStrings.strings2[2][5] = 0;
+    
+    overlayScreenStrings.unk_6F[0] = 0;
+    overlayScreenStrings.unk_6F[1] = 0;
+    overlayScreenStrings.unk_6F[2] = 0;
+    
+}
 
 //INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800CC518);
 
@@ -8902,40 +9389,107 @@ void func_800CC518(void) {
     setSpriteViewSpacePosition(CHECKERBOARD_BACKGROUND, 0.0f, 0.0f, 0.0f);
     setSpriteScale(CHECKERBOARD_BACKGROUND, 2.0f, 2.0f, 1.0f);
     setBilinearFiltering(CHECKERBOARD_BACKGROUND, 1);
-    setSpriteColor(CHECKERBOARD_BACKGROUND, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteColor(CHECKERBOARD_BACKGROUND, 255, 255, 255, 255);
     startSpriteAnimation(CHECKERBOARD_BACKGROUND, 0, 0);
     
     overlayScreenTable.cellIndex = 0;
     overlayScreenTable.previousCellIndex = 0;
     overlayScreenTable.pageNumber = 0;
     overlayScreenTable.unk_3 = 0xFF;
-    overlayScreenTable.currentAction = 0;
+    overlayScreenTable.screenState = 0;
     
-    setMainLoopCallbackFunctionIndex(0x2F);
+    setMainLoopCallbackFunctionIndex(HORSE_RACE_RESULTS);
     
-    overlayScreenStrings.dialogueVariableIndices[0] = D_8018A72C[0] - 1;
-    overlayScreenStrings.dialogueVariableIndices[1] = D_8018A72C[1] - 1;
-    overlayScreenStrings.dialogueVariableIndices[2] = D_8018A72C[2] - 1;
-    overlayScreenStrings.dialogueVariableIndices[3] = D_8018A72C[3] - 1;
-    overlayScreenStrings.dialogueVariableIndices[4] = D_8018A72C[4] - 1;
-    overlayScreenStrings.dialogueVariableIndices[5] = D_8018A72C[5] - 1;
+    overlayScreenStrings.gameVariableStringsIndices[0] = D_8018A72C[0] - 1;
+    overlayScreenStrings.gameVariableStringsIndices[1] = D_8018A72C[1] - 1;
+    overlayScreenStrings.gameVariableStringsIndices[2] = D_8018A72C[2] - 1;
+    overlayScreenStrings.gameVariableStringsIndices[3] = D_8018A72C[3] - 1;
+    overlayScreenStrings.gameVariableStringsIndices[4] = D_8018A72C[4] - 1;
+    overlayScreenStrings.gameVariableStringsIndices[5] = D_8018A72C[5] - 1;
     
 }
 
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800CC6F0);
+
 // load race results sprites
-INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800CC6F0);
+void func_800CC6F0(void) {
+
+    dmaSprite(0x81, (u32)&_snapshotLargeTextureSegmentRomStart, (u32)&_snapshotLargeTextureSegmentRomEnd, (u32)&_snapshotLargeAssetsIndexSegmentRomStart, (u32)&_snapshotLargeAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x80289900, NULL, (u16*)0x8028EF00, (u16*)0x8028F000, (u8*)0x8028F100, NULL, 0, 0);
+    setSpriteViewSpacePosition(0x81, 0.0f, -16.0f, 8.0f);
+    setSpriteColor(0x81, 0xFF, 0xFF, 0xFF, 0);
+    setSpriteRenderingLayer(0x81, 2);
+    setBilinearFiltering(0x81, 1);
+    startSpriteAnimation(0x81, 0, 0);
+    
+    dmaSprite(0x82, (u32)&_raceBettingUiTextureSegmentRomStart, (u32)&_raceBettingUiTextureSegmentRomEnd, (u32)&_raceBettingUiAssetsIndexSegmentRomStart, (u32)&_raceBettingUiAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+    setSpriteViewSpacePosition(0x82, 0.0f, 0.0f, 8.0f);
+    setSpriteColor(0x82, 0xFF, 0xFF, 0xFF, 0);
+    setSpriteRenderingLayer(0x82, 2);
+    setBilinearFiltering(0x82, 1);
+    startSpriteAnimation(0x82, 3, overlayScreenStrings.unk_6C);
+    
+    dmaSprite(0x83, (u32)&_raceBettingUiTextureSegmentRomStart, (u32)&_raceBettingUiTextureSegmentRomEnd, (u32)&_raceBettingUiAssetsIndexSegmentRomStart, (u32)&_raceBettingUiAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+    setSpriteViewSpacePosition(0x83, 0.0f, 0.0f, 8.0f);
+    setSpriteColor(0x83, 0xFF, 0xFF, 0xFF, 0);
+    setSpriteRenderingLayer(0x83, 2);
+    setBilinearFiltering(0x83, 1);
+    startSpriteAnimation(0x83, 4, 0);
+    
+    dmaSprite(0x84, (u32)&_raceBettingUiTextureSegmentRomStart, (u32)&_raceBettingUiTextureSegmentRomEnd, (u32)&_raceBettingUiAssetsIndexSegmentRomStart, (u32)&_raceBettingUiAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+    setSpriteViewSpacePosition(0x84, 0.0f, 0.0f, 8.0f);
+    setSpriteColor(0x84, 0xFF, 0xFF, 0xFF, 0);
+    setSpriteRenderingLayer(0x84, 2);
+    setBilinearFiltering(0x84, 1);
+    startSpriteAnimation(0x84, 4, 1);
+    
+    dmaSprite(0x85, (u32)&_raceBettingUiTextureSegmentRomStart, (u32)&_raceBettingUiTextureSegmentRomEnd, (u32)&_raceBettingUiAssetsIndexSegmentRomStart, (u32)&_raceBettingUiAssetsIndexSegmentRomEnd, 0, 0, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (u16*)0x8027E700, (u8*)0x8027EB00, NULL, 0, 0);
+    setSpriteViewSpacePosition(0x85, 0.0f, -16.0f, 8.0f);
+    setSpriteColor(0x85, 0xFF, 0xFF, 0xFF, 0);
+    setSpriteRenderingLayer(0x85, 2);
+    setBilinearFiltering(0x85, 1);
+    startSpriteAnimation(0x85, 4, 1);
+    
+    setOverlayScreenSprites(2, 0x97, (u32)&_moneyTextureSegmentRomStart, (u32)&_moneyTextureSegmentRomEnd, (u32)&_moneyAssetsIndexSegmentRomStart, (u32)&_moneyAssetsIndexSegmentRomEnd, (u8*)0x80253B00, (u16*)0x80254A00, (AnimationFrameMetadata*)0x80254E00, (u32*)0x80254F00, 0, 1, 0, -48.0f, -153.0f, 256.0f, 10);
+    
+    D_80205204 += adjustValue(D_80205204, 
+          overlayScreenStrings.unk_0[overlayScreenStrings.gameVariableStringsIndices[0]] * overlayScreenStrings.strings2[overlayScreenStrings.unk_6C][overlayScreenStrings.gameVariableStringsIndices[0]], 
+          9999);
+    
+    dmaOverlayScreenSprites(2, D_80205204, 3, 3);
+    setOverlayScreenSpritesRGBA(2, 0xFF, 0xFF, 0xFF, 0xFF);
+    
+    setOverlayScreenSprites(3, 0x9B, (u32)&_moneyTextureSegmentRomStart, (u32)&_moneyTextureSegmentRomEnd, (u32)&_moneyAssetsIndexSegmentRomStart, (u32)&_moneyAssetsIndexSegmentRomEnd, (u8*)0x80253B00, (u16*)0x80254A00, (AnimationFrameMetadata*)0x80254E00, (u32*)0x80254F00, 0, 1, 0, -48.0f, -137.0f, 256.0f, 10);
+    dmaOverlayScreenSprites(3, overlayScreenStrings.unk_0[overlayScreenStrings.gameVariableStringsIndices[0]] * overlayScreenStrings.strings2[overlayScreenStrings.unk_6C][overlayScreenStrings.gameVariableStringsIndices[0]], 3, 3);
+    setOverlayScreenSpritesRGBA(3, 0xFF, 0xFF, 0xFF, 0xFF);
+    
+    setOverlayScreenSprites(8, 0xA5, (u32)&_moneyTextureSegmentRomStart, (u32)&_moneyTextureSegmentRomEnd, (u32)&_moneyAssetsIndexSegmentRomStart, (u32)&_moneyAssetsIndexSegmentRomEnd, (u8*)0x80253B00, (u16*)0x80254A00, (AnimationFrameMetadata*)0x80254E00, (u32*)0x80254F00, 0, 1, 0, -24.0f, -112.0f, 256.0f, 10);
+    dmaOverlayScreenSprites(8, overlayScreenStrings.strings2[overlayScreenStrings.unk_6C][overlayScreenStrings.gameVariableStringsIndices[0]], 1, 3);
+    setOverlayScreenSpritesRGBA(8, 0xFF, 0xFF, 0xFF, 0xFF);
+    
+    setOverlayScreenSprites(9, 0xA7, (u32)&_raceBettingUiTextureSegmentRomStart, (u32)&_raceBettingUiTextureSegmentRomEnd, (u32)&_raceBettingUiAssetsIndexSegmentRomStart, (u32)&_raceBettingUiAssetsIndexSegmentRomEnd, (void*)0x8026F000, (void*)0x8027E200, (void*)0x8027E700, (void*)0x8027EB00, 0, 6, 0, 40.0f, -28.0f, 256.0f, 8);
+    dmaOverlayScreenSprites(9, overlayScreenStrings.unk_0[overlayScreenStrings.gameVariableStringsIndices[0]], 2, 3);
+    setOverlayScreenSpritesRGBA(9, 0xFF, 0xFF, 0xFF, 0xFF);
+    
+    func_800CCFC8();
+    func_800CD628();
+    
+    if (overlayScreenStrings.strings2[overlayScreenStrings.unk_6C][overlayScreenStrings.gameVariableStringsIndices[0]] && !(checkHaveKeyItem(0xD))) {
+        acquireKeyItem(0xD);
+    }
+    
+}
 
 //INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800CCFC8);
 
 // race results initialization
 void func_800CCFC8(void) {
 
-    setGameVariableString(0x2A, overlayScreenStrings.dialogueVariableStrings[overlayScreenStrings.dialogueVariableIndices[0]], 6);
-    setGameVariableString(0x2B, overlayScreenStrings.dialogueVariableStrings[overlayScreenStrings.dialogueVariableIndices[1]], 6);
-    setGameVariableString(0x2C, overlayScreenStrings.dialogueVariableStrings[overlayScreenStrings.dialogueVariableIndices[2]], 6);
-    setGameVariableString(0x2D, overlayScreenStrings.dialogueVariableStrings[overlayScreenStrings.dialogueVariableIndices[3]], 6);
-    setGameVariableString(0x2E, overlayScreenStrings.dialogueVariableStrings[overlayScreenStrings.dialogueVariableIndices[4]], 6);
-    setGameVariableString(0x2F, overlayScreenStrings.dialogueVariableStrings[overlayScreenStrings.dialogueVariableIndices[5]], 6);
+    setGameVariableString(0x2A, overlayScreenStrings.gameVariableStrings[overlayScreenStrings.gameVariableStringsIndices[0]], 6);
+    setGameVariableString(0x2B, overlayScreenStrings.gameVariableStrings[overlayScreenStrings.gameVariableStringsIndices[1]], 6);
+    setGameVariableString(0x2C, overlayScreenStrings.gameVariableStrings[overlayScreenStrings.gameVariableStringsIndices[2]], 6);
+    setGameVariableString(0x2D, overlayScreenStrings.gameVariableStrings[overlayScreenStrings.gameVariableStringsIndices[3]], 6);
+    setGameVariableString(0x2E, overlayScreenStrings.gameVariableStrings[overlayScreenStrings.gameVariableStringsIndices[4]], 6);
+    setGameVariableString(0x2F, overlayScreenStrings.gameVariableStrings[overlayScreenStrings.gameVariableStringsIndices[5]], 6);
     
     initializeEmptyMessageBox(0, (u8*)MESSAGE_BOX_1_TEXT_BUFFER);
     setMessageBoxViewSpacePosition(0, -32.0f, 32.0f, 0.0f);
@@ -8947,7 +9501,7 @@ void func_800CCFC8(void) {
     setMessageBoxButtonMask(0, BUTTON_A);
     func_8003FB4C(0, 1);
     initializeMessageBox(0, 0, 0x12, 0x80000);
-    func_8003E77C(0, 0xFF, 0xFF, 0xFF, 0xFF);
+    func_8003E77C(0, 255, 255, 255, 255);
     
     initializeEmptyMessageBox(1, (u8*)MESSAGE_BOX_2_TEXT_BUFFER);
     setMessageBoxViewSpacePosition(1, -32.0f, 16.0f, 0.0f);
@@ -8959,7 +9513,7 @@ void func_800CCFC8(void) {
     setMessageBoxButtonMask(1, BUTTON_A);
     func_8003FB4C(1, 1);
     initializeMessageBox(1, 0, 0x13, 0x80000);
-    func_8003E77C(1, 0xFF, 0xFF, 0xFF, 0xFF);
+    func_8003E77C(1, 255, 255, 255, 255);
     
     initializeEmptyMessageBox(2, (u8*)MESSAGE_BOX_3_TEXT_BUFFER);
     setMessageBoxViewSpacePosition(2, -32.0f, 0.0f, 0.0f);
@@ -8971,7 +9525,7 @@ void func_800CCFC8(void) {
     setMessageBoxButtonMask(2, BUTTON_A);
     func_8003FB4C(2, 1);
     initializeMessageBox(2, 0, 0x14, 0x80000);
-    func_8003E77C(2, 0xFF, 0xFF, 0xFF, 0xFF);
+    func_8003E77C(2, 255, 255, 255, 255);
     
     initializeEmptyMessageBox(3, (u8*)MESSAGE_BOX_4_TEXT_BUFFER);
     setMessageBoxViewSpacePosition(3, 96.0f, 32.0f, 0.0f);
@@ -8983,7 +9537,7 @@ void func_800CCFC8(void) {
     setMessageBoxButtonMask(3, BUTTON_A);
     func_8003FB4C(3, 1);
     initializeMessageBox(3, 0, 0x15, 0x80000);
-    func_8003E77C(3, 0xFF, 0xFF, 0xFF, 0xFF);
+    func_8003E77C(3, 255, 255, 255, 255);
     
     initializeEmptyMessageBox(4, (u8*)MESSAGE_BOX_5_TEXT_BUFFER);
     setMessageBoxViewSpacePosition(4, 96.0f, 16.0f, 0.0f);
@@ -8995,7 +9549,7 @@ void func_800CCFC8(void) {
     setMessageBoxButtonMask(4, BUTTON_A);
     func_8003FB4C(4, 1);
     initializeMessageBox(4, 0, 0x16, 0x80000);
-    func_8003E77C(4, 0xFF, 0xFF, 0xFF, 0xFF);
+    func_8003E77C(4, 255, 255, 255, 255);
     
     initializeEmptyMessageBox(5, (u8*)MESSAGE_BOX_6_TEXT_BUFFER);
     setMessageBoxViewSpacePosition(5, 96.0f, 0.0f, 0.0f);
@@ -9007,7 +9561,7 @@ void func_800CCFC8(void) {
     setMessageBoxButtonMask(5, BUTTON_A);
     func_8003FB4C(5, 1);
     initializeMessageBox(5, 0, 0x17, 0x80000);
-    func_8003E77C(5, 0xFF, 0xFF, 0xFF, 0xFF);
+    func_8003E77C(5, 255, 255, 255, 255);
     
 }
 
@@ -9103,26 +9657,26 @@ void func_800CD750(void) {
     
     u16 temp = 0;
 
-    switch (overlayScreenTable.currentAction) {
+    switch (overlayScreenTable.screenState) {
         
         case 4:
             break;
         
         case 0:
             func_800CC6F0();
-            overlayScreenTable.currentAction = 1;
+            overlayScreenTable.screenState = 1;
             break;
         
         case 1:
             if (func_8002CBF8(0x82)) {
-                overlayScreenTable.currentAction = 4;
+                overlayScreenTable.screenState = 4;
             }
             break;
         
         case 2:
             if (func_8002CBF8(0x82)) {
                 func_800B2CE0();
-                overlayScreenTable.currentAction = 3;
+                overlayScreenTable.screenState = 3;
             }
             break;
         
@@ -9137,7 +9691,7 @@ void func_800CD750(void) {
             break;
         }
     
-        if (overlayScreenTable.currentAction >= 4 && checkButtonPressed(CONTROLLER_1, BUTTON_B) && temp == 0) {
+        if (overlayScreenTable.screenState >= 4 && checkButtonPressed(CONTROLLER_1, BUTTON_B) && temp == 0) {
             
             updateSpriteAlpha(0x81, 0, 24);
             updateSpriteAlpha(0x82, 0, 24);
@@ -9156,7 +9710,7 @@ void func_800CD750(void) {
             deactivateOverlayScreenSprites(9);
             func_80053088();
             
-            overlayScreenTable.currentAction = 2;
+            overlayScreenTable.screenState = 2;
             
             playSfx(1);
             
@@ -9174,16 +9728,16 @@ void func_800CD928(void) {
     setSpriteViewSpacePosition(CHECKERBOARD_BACKGROUND, 0.0f, 0.0f, 0.0f);
     setSpriteScale(CHECKERBOARD_BACKGROUND, 2.0f, 2.0f, 1.0f);
     setBilinearFiltering(CHECKERBOARD_BACKGROUND, 1);
-    setSpriteColor(CHECKERBOARD_BACKGROUND, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteColor(CHECKERBOARD_BACKGROUND, 255, 255, 255, 255);
     startSpriteAnimation(CHECKERBOARD_BACKGROUND, 0, 0);
     
     overlayScreenTable.cellIndex = 0;
     overlayScreenTable.previousCellIndex = 0;
     overlayScreenTable.pageNumber = 0;
     overlayScreenTable.unk_3 = 0xFF;
-    overlayScreenTable.currentAction = 0;
+    overlayScreenTable.screenState = 0;
     
-    setMainLoopCallbackFunctionIndex(0x30);
+    setMainLoopCallbackFunctionIndex(HORSE_RACE_GIFTS);
     
 }
 
@@ -9191,14 +9745,14 @@ void func_800CD928(void) {
 
 void func_800CDA6C(void) {
 
-    dmaSprite(0x81, (u32)&_snapshotLargeTextureSegmentRomStart, (u32)&_snapshotLargeTextureSegmentRomEnd, (u32)&_snapshotLargeAssetsIndexSegmentRomStart, (u32)&_snapshotLargeAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x80289900, NULL, (u16*)0x8028EF00, (u16*)0x8028F000, (u8*)0x8028F100, NULL, 0, FALSE);
+    dmaSprite(0x81, (u32)&_snapshotLargeTextureSegmentRomStart, (u32)&_snapshotLargeTextureSegmentRomEnd, (u32)&_snapshotLargeAssetsIndexSegmentRomStart, (u32)&_snapshotLargeAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x80289900, NULL, (u16*)0x8028EF00, (u16*)0x8028F000, (u32*)0x8028F100, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x81, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0x81, 0xFF, 0xFF, 0xFF, 0);
     setSpriteRenderingLayer(0x81, 2);
     setBilinearFiltering(0x81, 1);
     startSpriteAnimation(0x81, 0, 0);
     
-    dmaSprite(0x82, (u32)&_prizeScreenTextureSegmentRomStart, (u32)&_prizeScreenTextureSegmentRomEnd, (u32)&_prizeScreenAssetsIndexSegmentRomStart, (u32)&_prizeScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
+    dmaSprite(0x82, (u32)&_prizeScreenTextureSegmentRomStart, (u32)&_prizeScreenTextureSegmentRomEnd, (u32)&_prizeScreenAssetsIndexSegmentRomStart, (u32)&_prizeScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x82, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0x82, 0xFF, 0xFF, 0xFF, 0);
     setSpriteRenderingLayer(0x82, 2);
@@ -9212,7 +9766,7 @@ void func_800CDA6C(void) {
     }
     
     // medal count display
-    dmaSprite(0x83, (u32)&_prizeScreenTextureSegmentRomStart, (u32)&_prizeScreenTextureSegmentRomEnd, (u32)&_prizeScreenAssetsIndexSegmentRomStart, (u32)&_prizeScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
+    dmaSprite(0x83, (u32)&_prizeScreenTextureSegmentRomStart, (u32)&_prizeScreenTextureSegmentRomEnd, (u32)&_prizeScreenAssetsIndexSegmentRomStart, (u32)&_prizeScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x83, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0x83, 0xFF, 0xFF, 0xFF, 0);
     setSpriteRenderingLayer(0x83, 2);
@@ -9220,21 +9774,21 @@ void func_800CDA6C(void) {
     startSpriteAnimation(0x83, 4, 0);
     
     // medal count display 2
-    dmaSprite(0x84, (u32)&_prizeScreenTextureSegmentRomStart, (u32)&_prizeScreenTextureSegmentRomEnd, (u32)&_prizeScreenAssetsIndexSegmentRomStart, (u32)&_prizeScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
+    dmaSprite(0x84, (u32)&_prizeScreenTextureSegmentRomStart, (u32)&_prizeScreenTextureSegmentRomEnd, (u32)&_prizeScreenAssetsIndexSegmentRomStart, (u32)&_prizeScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x84, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0x84, 0xFF, 0xFF, 0xFF, 0);
     setSpriteRenderingLayer(0x84, 2);
     setBilinearFiltering(0x84, 1);
     startSpriteAnimation(0x84, 4, 1);
     
-    func_80045E20(2, 0x97, (u32)&_moneyTextureSegmentRomStart, (u32)&_moneyTextureSegmentRomEnd, (u32)&_moneyAssetsIndexSegmentRomStart, (u32)&_moneyAssetsIndexSegmentRomEnd, 0x80253B00, 0x80254A00, 0x80254E00, 0x80254F00, 0, 1, 0, -24.0f, 6.0f, 256.0f, 0xA);
+    setOverlayScreenSprites(2, 0x97, (u32)&_moneyTextureSegmentRomStart, (u32)&_moneyTextureSegmentRomEnd, (u32)&_moneyAssetsIndexSegmentRomStart, (u32)&_moneyAssetsIndexSegmentRomEnd, 0x80253B00, 0x80254A00, 0x80254E00, 0x80254F00, 0, 1, 0, -24.0f, 6.0f, 256.0f, 0xA);
     
     dmaOverlayScreenSprites(2, D_80205204, 3, 3);
-    setOverlayScreenSpritesRGBA(2, 0xFF, 0xFF, 0xFF, 0xFF);
+    setOverlayScreenSpritesRGBA(2, 255, 255, 255, 255);
     
-    dmaSprite(CURSOR_HAND, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (AnimationFrameMetadata*)0x8023CE00, (u8*)0x8023D200, NULL, 0, FALSE);
+    dmaSprite(CURSOR_HAND, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8023B400, NULL, (u16*)0x8023CC00, (AnimationFrameMetadata*)0x8023CE00, (u32*)0x8023D200, NULL, 0, FALSE);
     setBilinearFiltering(CURSOR_HAND, 1);
-    setSpriteColor(CURSOR_HAND, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteColor(CURSOR_HAND, 255, 255, 255, 255);
     
     // fade in
     func_800CDFB0();
@@ -9281,11 +9835,11 @@ void func_800CE068(void) {
 
     set = FALSE;
     
-    switch (overlayScreenTable.currentAction) {
+    switch (overlayScreenTable.screenState) {
 
         case 0:
             func_800CDA6C();
-            overlayScreenTable.currentAction = 1;
+            overlayScreenTable.screenState = 1;
             break;
 
         case 1:
@@ -9294,7 +9848,7 @@ void func_800CE068(void) {
                 setMessageBoxSpriteIndices(0, 0, 0, 0);
                 func_8003F360(0, -4, 0);
                 initializeDialogueSession(0, 0x3E, 5, 0x40);
-                overlayScreenTable.currentAction = 5;
+                overlayScreenTable.screenState = 5;
             }
             break;
 
@@ -9308,11 +9862,11 @@ void func_800CE068(void) {
                     func_80043AD8(0);
                     setSpriteViewSpacePosition(CURSOR_HAND, -104.0f, (f32)(-(overlayScreenTable.cellIndex * 16) + 16), 32.0f);
                     startSpriteAnimation(CURSOR_HAND, 3, 0);
-                    overlayScreenTable.currentAction = 9;
+                    overlayScreenTable.screenState = 9;
                     
                 } else {
                     initializeMessageBox(0, 4, 15, 0);
-                    overlayScreenTable.currentAction = 3;
+                    overlayScreenTable.screenState = 3;
                 }
                 
             }
@@ -9329,21 +9883,21 @@ void func_800CE068(void) {
                 updateSpriteAlpha(0x83, 0, 24);
                 updateSpriteAlpha(0x84, 0, 24);
                 deactivateOverlayScreenSprites(2);
-                overlayScreenTable.currentAction = 2;
+                overlayScreenTable.screenState = 2;
             }
             
             break;
 
         case 4:
             if (func_8003F0DC()) {
-                overlayScreenTable.currentAction = 9;
+                overlayScreenTable.screenState = 9;
             }
             break;
         
         case 2:
             if (func_8002CBF8(0x82)) {
                 func_800B2CE0();
-                overlayScreenTable.currentAction = 6;
+                overlayScreenTable.screenState = 6;
             }
             break;
         
@@ -9360,14 +9914,14 @@ void func_800CE068(void) {
                 if (!(func_80043C6C(0))) {
                     
                     resetAnimationState(0x86);
-                    overlayScreenTable.currentAction = 8;
+                    overlayScreenTable.screenState = 8;
                     goto label3;
                     
                 } else {
                     func_80043AD8(0);
                     setSpriteViewSpacePosition(CURSOR_HAND, -104.0f, (f32)(-(overlayScreenTable.cellIndex * 16) + 16), 32.0f);
                     startSpriteAnimation(CURSOR_HAND, 3, 0);
-                    overlayScreenTable.currentAction = 9;
+                    overlayScreenTable.screenState = 9;
                 }
                 
             }
@@ -9381,11 +9935,11 @@ void func_800CE068(void) {
                 if (adjustValue(D_80205204, -buff[overlayScreenTable.cellIndex], 9999) == -buff[overlayScreenTable.cellIndex]) {
                     D_80205204 += adjustValue(D_80205204, -buff[overlayScreenTable.cellIndex], 9999);
                     initializeMessageBox(0, 4, 13, 0);
-                    overlayScreenTable.currentAction = 3;
+                    overlayScreenTable.screenState = 3;
                     func_800CE7A8(overlayScreenTable.cellIndex);
                 } else {
                     initializeMessageBox(0, 4, 14, 0);
-                    overlayScreenTable.currentAction = 3;
+                    overlayScreenTable.screenState = 3;
                 }
                 
             } else {
@@ -9393,11 +9947,11 @@ void func_800CE068(void) {
                 if (adjustValue(D_80205204, -buff2[overlayScreenTable.cellIndex ], 9999) == -buff2[overlayScreenTable.cellIndex]) {
                     D_80205204 += adjustValue(D_80205204, -buff2[overlayScreenTable.cellIndex], 9999);
                     initializeMessageBox(0, 4, 13, 0);
-                    overlayScreenTable.currentAction = 3;
+                    overlayScreenTable.screenState = 3;
                     func_800CE894(overlayScreenTable.cellIndex);
                 } else {
                     initializeMessageBox(0, 4, 14, 0);
-                    overlayScreenTable.currentAction = 3;
+                    overlayScreenTable.screenState = 3;
                 }
             
             }
@@ -9449,7 +10003,7 @@ void func_800CE068(void) {
                     if (!(func_800CE828(overlayScreenTable.cellIndex))) {
 label1:
                         initializeDialogueSession(0, 0x3E, 0xB, 0x40);
-                        overlayScreenTable.currentAction = 7;
+                        overlayScreenTable.screenState = 7;
 label3:
                         playSfx(0);
                         set = TRUE;
@@ -9457,7 +10011,7 @@ label3:
                     } else {
 label2:
                         initializeMessageBox(0, 4, 0x24, 0);
-                        overlayScreenTable.currentAction = 4;
+                        overlayScreenTable.screenState = 4;
                         set = TRUE;
                     }
                     
@@ -9469,14 +10023,14 @@ label2:
                 
     }
 
-    if (overlayScreenTable.currentAction >= 9 && checkButtonPressed(CONTROLLER_1, BUTTON_B) && !set) {
+    if (overlayScreenTable.screenState >= 9 && checkButtonPressed(CONTROLLER_1, BUTTON_B) && !set) {
         resetAnimationState(CURSOR_HAND);
         updateSpriteAlpha(0x81, 0, 24);
         updateSpriteAlpha(0x82, 0, 24);
         updateSpriteAlpha(0x83, 0, 24);
         updateSpriteAlpha(0x84, 0, 24);
         deactivateOverlayScreenSprites(2);
-        overlayScreenTable.currentAction = 2;
+        overlayScreenTable.screenState = 2;
         playSfx(1);
     }
     
@@ -9589,16 +10143,16 @@ void func_800CE930(void) {
     setSpriteViewSpacePosition(CHECKERBOARD_BACKGROUND, 0.0f, 0.0f, 0.0f);
     setSpriteScale(CHECKERBOARD_BACKGROUND, 2.0f, 2.0f, 1.0f);
     setBilinearFiltering(CHECKERBOARD_BACKGROUND, 1);
-    setSpriteColor(CHECKERBOARD_BACKGROUND, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteColor(CHECKERBOARD_BACKGROUND, 255, 255, 255, 255);
     startSpriteAnimation(CHECKERBOARD_BACKGROUND, 0, 0);
     
     overlayScreenTable.cellIndex = 0;
     overlayScreenTable.previousCellIndex = 0;
     overlayScreenTable.pageNumber = 0;
     overlayScreenTable.unk_3 = 0xFF;
-    overlayScreenTable.currentAction = 0;
+    overlayScreenTable.screenState = 0;
     
-    setMainLoopCallbackFunctionIndex(0x31);
+    setMainLoopCallbackFunctionIndex(LOTTERY);
     
 }
 
@@ -9608,21 +10162,21 @@ void func_800CE930(void) {
 
 void func_800CEA74(void) {
     
-    dmaSprite(0x81, (u32)&_snapshotLargeTextureSegmentRomStart, (u32)&_snapshotLargeTextureSegmentRomEnd, (u32)&_snapshotLargeAssetsIndexSegmentRomStart, (u32)&_snapshotLargeAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x80289900, NULL, (u16*)0x8028EF00, (u16*)0x8028F000, (u8*)0x8028F100, NULL, 0, FALSE);
+    dmaSprite(0x81, (u32)&_snapshotLargeTextureSegmentRomStart, (u32)&_snapshotLargeTextureSegmentRomEnd, (u32)&_snapshotLargeAssetsIndexSegmentRomStart, (u32)&_snapshotLargeAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x80289900, NULL, (u16*)0x8028EF00, (u16*)0x8028F000, (u32*)0x8028F100, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x81, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0x81, 0xFF, 0xFF, 0xFF, 0);
     setSpriteRenderingLayer(0x81, 2);
     setBilinearFiltering(0x81, 1);
     startSpriteAnimation(0x81, 0, 0);
     
-    dmaSprite(0x82, (u32)&_prizeScreenTextureSegmentRomStart, (u32)&_prizeScreenTextureSegmentRomEnd, (u32)&_prizeScreenAssetsIndexSegmentRomStart, (u32)&_prizeScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
+    dmaSprite(0x82, (u32)&_prizeScreenTextureSegmentRomStart, (u32)&_prizeScreenTextureSegmentRomEnd, (u32)&_prizeScreenAssetsIndexSegmentRomStart, (u32)&_prizeScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x82, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0x82, 0xFF, 0xFF, 0xFF, 0);
     setSpriteRenderingLayer(0x82, 2);
     setBilinearFiltering(0x82, 1);
     startSpriteAnimation(0x82, 3, 0);
     
-    dmaSprite(0x83, (u32)&_prizeScreenTextureSegmentRomStart, (u32)&_prizeScreenTextureSegmentRomEnd, (u32)&_prizeScreenAssetsIndexSegmentRomStart, (u32)&_prizeScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u8*)0x8027EB00, NULL, 0, FALSE);
+    dmaSprite(0x83, (u32)&_prizeScreenTextureSegmentRomStart, (u32)&_prizeScreenTextureSegmentRomEnd, (u32)&_prizeScreenAssetsIndexSegmentRomStart, (u32)&_prizeScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)0x8026F000, NULL, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x83, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0x83, 0xFF, 0xFF, 0xFF, 0);
     setSpriteRenderingLayer(0x83, 2);
@@ -9659,11 +10213,11 @@ void func_800CEDA8(void) {
 // lottery callback
 void func_800CEDF0(void) {
 
-    switch (overlayScreenTable.currentAction) {
+    switch (overlayScreenTable.screenState) {
 
         case 0:
             func_800CEA74();
-            overlayScreenTable.currentAction = 1;
+            overlayScreenTable.screenState = 1;
             break;
         
         case 1:
@@ -9680,7 +10234,7 @@ void func_800CEDF0(void) {
                     initializeDialogueSession(0, 0x3E, 0xA, 0x40);
                 }
                 
-                overlayScreenTable.currentAction = 4;
+                overlayScreenTable.screenState = 4;
 
             }
             
@@ -9695,7 +10249,7 @@ void func_800CEDF0(void) {
                     dialogues[0].sessionManager.flags &= ~0x40;
                     
                     func_80043AD8(0);
-                    overlayScreenTable.currentAction = 6;
+                    overlayScreenTable.screenState = 6;
                     
                     playSfx(0x20);
                     
@@ -9714,7 +10268,7 @@ void func_800CEDF0(void) {
                         initializeMessageBox(0, 4, 0x45, 0);
                     }
                 
-                    overlayScreenTable.currentAction = 3;
+                    overlayScreenTable.screenState = 3;
 
                 }
                 
@@ -9736,7 +10290,7 @@ void func_800CEDF0(void) {
                 updateSpriteAlpha(0x82, 0, 24);
                 updateSpriteAlpha(0x83, 0, 24);
                 
-                overlayScreenTable.currentAction = 2;
+                overlayScreenTable.screenState = 2;
 
             }
             
@@ -9746,7 +10300,7 @@ void func_800CEDF0(void) {
         
             if (func_8002CBF8(0x82)) {
                 func_800B2CE0();
-                overlayScreenTable.currentAction = 5;
+                overlayScreenTable.screenState = 5;
             }
 
             break;
@@ -9770,11 +10324,11 @@ void func_800CEDF0(void) {
                             
                             if (!(func_800CF34C(0))) {
                                 initializeMessageBox(0, 4, 0x38, 0);
-                                overlayScreenTable.currentAction = 3;
+                                overlayScreenTable.screenState = 3;
                                 func_800CF3C4(0);
                             } else {
                                 initializeMessageBox(0, 4, 0x3C, 0);
-                                overlayScreenTable.currentAction = 3;
+                                overlayScreenTable.screenState = 3;
                                 func_800CF3C4(4);
                             }
                             
@@ -9784,11 +10338,11 @@ void func_800CEDF0(void) {
                         
                         if (!(func_800CF34C(1))) {
                             initializeMessageBox(0, 4, 0x39, 0);
-                            overlayScreenTable.currentAction = 3;
+                            overlayScreenTable.screenState = 3;
                             func_800CF3C4(1);
                         } else {
                             initializeMessageBox(0, 4, 0x3C, 0);
-                            overlayScreenTable.currentAction = 3;
+                            overlayScreenTable.screenState = 3;
                             func_800CF3C4(4);
                         }
                         
@@ -9798,11 +10352,11 @@ void func_800CEDF0(void) {
                         
                         if (!(func_800CF34C(2))) {
                             initializeMessageBox(0, 4, 0x3A, 0);
-                            overlayScreenTable.currentAction = 3;
+                            overlayScreenTable.screenState = 3;
                             func_800CF3C4(2);
                         } else {
                             initializeMessageBox(0, 4, 0x3C, 0);
-                            overlayScreenTable.currentAction = 3;
+                            overlayScreenTable.screenState = 3;
                             func_800CF3C4(4);
                         }
                         
@@ -9812,11 +10366,11 @@ void func_800CEDF0(void) {
                         
                         if (!(func_800CF34C(3))) {
                             initializeMessageBox(0, 4, 0x3B, 0);
-                            overlayScreenTable.currentAction = 3;
+                            overlayScreenTable.screenState = 3;
                             func_800CF3C4(3);
                         } else {
                             initializeMessageBox(0, 4, 0x3C, 0);
-                            overlayScreenTable.currentAction = 3;
+                            overlayScreenTable.screenState = 3;
                             func_800CF3C4(4);
                         }
                         
@@ -9824,7 +10378,7 @@ void func_800CEDF0(void) {
 
                     case 4:   
                         initializeMessageBox(0, 4, 0x3C, 0);
-                        overlayScreenTable.currentAction = 3;
+                        overlayScreenTable.screenState = 3;
                         func_800CF3C4(4);
                         
                         break;                        
@@ -9839,11 +10393,11 @@ void func_800CEDF0(void) {
                             
                             if (!(func_800CF498(0))) {
                                 initializeMessageBox(0, 4, 0x40, 0);
-                                overlayScreenTable.currentAction = 3;
+                                overlayScreenTable.screenState = 3;
                                 func_800CF544(0);
                             } else {
                                 initializeMessageBox(0, 4, 0x44, 0);
-                                overlayScreenTable.currentAction = 3;
+                                overlayScreenTable.screenState = 3;
                                 func_800CF544(4);
                             }
                             
@@ -9853,11 +10407,11 @@ void func_800CEDF0(void) {
                             
                             if (!(func_800CF498(1))) {
                                 initializeMessageBox(0, 4, 0x41, 0);
-                                overlayScreenTable.currentAction = 3;
+                                overlayScreenTable.screenState = 3;
                                 func_800CF544(1);
                             } else {
                                 initializeMessageBox(0, 4, 0x44, 0);
-                                overlayScreenTable.currentAction = 3;
+                                overlayScreenTable.screenState = 3;
                                 func_800CF544(4);
                             }
                         
@@ -9867,11 +10421,11 @@ void func_800CEDF0(void) {
                             
                             if (!(func_800CF498(2))) {
                                 initializeMessageBox(0, 4, 0x42, 0);
-                                overlayScreenTable.currentAction = 3;
+                                overlayScreenTable.screenState = 3;
                                 func_800CF544(2);
                             } else {
                                 initializeMessageBox(0, 4, 0x44, 0);
-                                overlayScreenTable.currentAction = 3;
+                                overlayScreenTable.screenState = 3;
                                 func_800CF544(4);
                             }
                             
@@ -9881,11 +10435,11 @@ void func_800CEDF0(void) {
                             
                             if (!(func_800CF498(3))) {
                                 initializeMessageBox(0, 4, 0x43, 0);
-                                overlayScreenTable.currentAction = 3;
+                                overlayScreenTable.screenState = 3;
                                 func_800CF544(3);
                             } else {
                                 initializeMessageBox(0, 4, 0x44, 0);
-                                overlayScreenTable.currentAction = 3;
+                                overlayScreenTable.screenState = 3;
                                 func_800CF544(4);
                             }
                         
@@ -9893,7 +10447,7 @@ void func_800CEDF0(void) {
                         
                         case 4:                             
                             initializeMessageBox(0, 4, 0x44, 0);
-                            overlayScreenTable.currentAction = 3;
+                            overlayScreenTable.screenState = 3;
                             func_800CF544(4);
 
                             break;

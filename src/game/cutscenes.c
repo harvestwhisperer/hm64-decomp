@@ -9,9 +9,7 @@
 #include "system/message.h"
 
 #include "game/animals.h"
-#include "data/fieldTileMaps/cutsceneFieldTiles.h"
 #include "game/evaluation.h"
-#include "data/fieldTileMaps/fieldTiles.h"
 #include "game/game.h"
 #include "game/gameStatus.h"
 #include "game/items.h"
@@ -21,7 +19,11 @@
 #include "game/overlayScreens.h"
 #include "game/player.h"
 #include "game/time.h"
+#include "game/title.h"
 #include "game/weather.h"
+
+#include "data/fieldTileMaps/cutsceneFieldTiles.h"
+#include "data/fieldTileMaps/fieldTiles.h"
 
 #include "assetIndices/cutscenes.h"
 #include "assetIndices/entities.h"
@@ -62,9 +64,43 @@ u16 func_800A6EE4(void);
 // bss
 s32 gCutsceneCompletionFlags;
 u16 gCutsceneBytecodeSegmentIndex;
+u16 gCutsceneIndex;
 
-// likely bss
-extern u16 gCutsceneIndex;
+// shipping score
+// horse affection (horse race)
+u16 D_80189824;
+
+u16 D_80180710;
+
+// evaluation
+// field score
+u16 D_8013D438;
+// animal scores
+u8 D_801886D0;
+// house extension score
+u8 D_8017026E;
+// dead animals
+u16 D_801886A8;
+u16 D_801886D2;
+// sick days total
+u16 D_801886E0;
+// recipes
+u8 D_80188F68;
+// npc affection score
+u16 D_801C3B62;
+// combined shipping totals
+u32 D_801C3E1C;
+// fish score
+u16 D_801D62C4;
+// animal score
+u8 D_801D62C6;
+u8 D_80205209;
+// grass score
+u16 D_80205638;
+// sum of girls' affection
+u16 D_80215DF0;
+
+extern u8 D_8018A72C[6];
 
 // shared bss
 // bakery points
@@ -72,11 +108,6 @@ extern u8 bakeryCardPoints;
 extern u8 D_801C4216;
 // chicken feed count
 extern u16 chickenFeedQuantity;
-
-// evaluation fish caught score
-extern u16 D_801D62C4;
-// evaluation: animals
-extern u8 D_801D62C6;
 
 // data 
 Addresses cutsceneBytecodeAddresses[] = {
@@ -4068,6 +4099,7 @@ u16 func_800A87C4(void) {
 
 #ifdef PERMUTER
 void func_800A8F74(void) {
+
     // ? var_a0_2;
     // ? var_a1;
     // ?* var_a2;
@@ -4164,6 +4196,9 @@ void func_800A8F74(void) {
 
     
             gCutsceneFlags &= ~1;
+
+
+
 
             // switch on bytecode bank index
             
@@ -4769,6 +4804,10 @@ void func_800A8F74(void) {
             // end of switch
 
 
+
+
+
+
             // check for bank index 30
             if ((gCutsceneCompletionFlags & 0x800) && (gCutsceneBytecodeSegmentIndex == 30)) {
                 deactivateCutsceneExecutors();
@@ -4776,6 +4815,7 @@ void func_800A8F74(void) {
                 func_8003C504(MAIN_MAP_INDEX);
                 initializeTitleScreen(0);
             }
+
 
             // handle bit 2 (cutscene end: deactivate map load, set strings, etc.)
             if (gCutsceneCompletionFlags & 2) {
@@ -5760,6 +5800,7 @@ block_359:
         // end handle bit 2
 
 
+
         // UI strings flags
 
         if (gCutsceneCompletionFlags & 4) {
@@ -5864,6 +5905,8 @@ block_359:
             }
 
             var_a2_14 = (var_v0_22 >> 5) - 2;
+
+
             // entities[ENTITY_PLAYER].coordinates.z
             temp_f2_2 = (s32) *(&entities + 0x30);
             var_v0_23 = (s16) temp_f2_2 + 0xF0;
@@ -6043,6 +6086,7 @@ block_506:
                         }
                     }
                 }
+
             }
 
             gCutsceneCompletionFlags &= 0xFBFFFFFF;
@@ -6193,153 +6237,132 @@ INCLUDE_ASM("asm/nonmatchings/game/cutscenes", func_800A8F74);
 
 void loadCutscene(u8 arg0) {
     
-    u16 index;
+    u16 bytecodeSegmentIndex;
 
     if (gCutsceneIndex >= 0x640) {
         
         D_8021E6D0 = 0;
         func_8003C084(0, 7);
-        index = 35;
+        bytecodeSegmentIndex = 35;
         
     } else if (gCutsceneIndex >= 0x60E) {
     
         D_8021E6D0 = 0;
         func_8003C084(0, 7);
-        index = 31;        
+        bytecodeSegmentIndex = 31;        
     
     } else if (gCutsceneIndex >= 0x5DC) {
              
         D_8021E6D0 = 0;
         func_8003C084(0, 7);
 
-        memcpy((u32)&farmFieldTiles, (u32)D_80114E50, FIELD_HEIGHT * FIELD_WIDTH);
+        memcpy(farmFieldTiles, D_80114E50, FIELD_HEIGHT * FIELD_WIDTH);
 
-        index = 32;
+        bytecodeSegmentIndex = 32;
         
     } else if (gCutsceneIndex >= 0x5AA) {
         
         D_8021E6D0 = 0;
-        
         func_8003C084(0, 7);
         
-        gSeason = 1;
+        gSeason = SPRING;
 
-        memcpy((u32)farmFieldTiles,(u32)D_80113580, FIELD_HEIGHT * FIELD_WIDTH);
+        memcpy(farmFieldTiles, D_80113580, FIELD_HEIGHT * FIELD_WIDTH);
 
-        index = 30;
+        bytecodeSegmentIndex = 30;
         
     } else if (gCutsceneIndex >= 0x578) {
     
-        index = 29;
+        bytecodeSegmentIndex = 29;
         setEntitySpriteDimensions(ENTITY_ASSET_SHIPPER, 12, 24);
         setEntitySpriteDimensions(ENTITY_ASSET_ASSISTANT_CARPENTER, 12, 24);
     
     } else if (gCutsceneIndex >= 0x546) {
-    
-        index = 28;
-    }
-    else if (gCutsceneIndex >= 0x514) {
-    
-        index = 27;  
-    }
-    else if (gCutsceneIndex >= 0x4E2) {
-    
-        index = 26;
-    
+        bytecodeSegmentIndex = 28;
+    } else if (gCutsceneIndex >= 0x514) {
+        bytecodeSegmentIndex = 27;  
+    } else if (gCutsceneIndex >= 0x4E2) {
+        bytecodeSegmentIndex = 26;
     } else if (gCutsceneIndex >= 0x4B0) {
         
-        index = 25;
+        bytecodeSegmentIndex = 25;
         setEntitySpriteDimensions(ENTITY_ASSET_SHIPPER, 12, 24);
         setEntitySpriteDimensions(ENTITY_ASSET_ASSISTANT_CARPENTER, 12, 24);
         
-    } else  {
-
-        index = 24;
+    } else if (gCutsceneIndex >= 0x47E) {
+        bytecodeSegmentIndex = 24;
+    } else if (gCutsceneIndex >= 0x44C) {
+        bytecodeSegmentIndex = 23;
+    } else if (gCutsceneIndex >= 0x41A) {
+        bytecodeSegmentIndex = 22;
+    } else if (gCutsceneIndex >= 0x3E8) {
+        bytecodeSegmentIndex = 20;    
+    } else if (gCutsceneIndex >= 0x3B6) {
+        bytecodeSegmentIndex = 19;
+    } else if (gCutsceneIndex >= 0x384) {
+        bytecodeSegmentIndex = 18;  
+    } else if (gCutsceneIndex >= 0x352) {
+        bytecodeSegmentIndex = 17;  
+    } else if (gCutsceneIndex >= 0x320) {
+        bytecodeSegmentIndex = 10;  
+    } else if (gCutsceneIndex >= 0x2EE) {
+        bytecodeSegmentIndex = 16;  
+    } else if (gCutsceneIndex >= 0x2BC) {
+        bytecodeSegmentIndex = 13;  
+    } else if (gCutsceneIndex > 0x289) {
+        bytecodeSegmentIndex = 12;
+    } else if (gCutsceneIndex >= 0x258) {
+        bytecodeSegmentIndex = 21;
+    } else if (gCutsceneIndex >= 0x1F4) {
+        bytecodeSegmentIndex = 15;    
+    } else if (gCutsceneIndex >= 0x190) {
+        bytecodeSegmentIndex = 14;
+    } else if (gCutsceneIndex >= 0x12C) {
+        bytecodeSegmentIndex = 11;
+    } else if (gCutsceneIndex >= 0x64) {
         
-        // COW_FESTIVAL
-        if (gCutsceneIndex < 0x47E) {
+        if (arg0) {
+            bytecodeSegmentIndex = 7;
+        } else  {
+
+            bytecodeSegmentIndex = 8;
+
+            switch (gCutsceneIndex) {
+
+                case 0xDC:
+                    D_8021E6D0 = 0;
+                    func_8003C084(0, 7);
+                    break;
+                case 0xE4 ... 0xEE:
+                    D_8021E6D0 = 0;
+                    func_8003C084(0, 7);
+                    break;
+                default:
+                    break;
             
-            // FIXME: fake match
-            __asm__ __volatile__("" : : : "memory");
-
-            // constants should probably be macros designating bytecode bank boundaries
-            // SEA_FESTIVAL
-            if (gCutsceneIndex >= 0x44C) {
-                index = 23;
-            } else if (gCutsceneIndex >= 0x41A) {
-                index = 22;
-            } else if (gCutsceneIndex >= 0x3E8) {
-                index = 20;    
-            } else if (gCutsceneIndex >= 0x3B6) {
-                index = 19;
-            } else if (gCutsceneIndex >= 0x384) {
-                index = 18;  
-            } else if (gCutsceneIndex >= 0x352) {
-                index = 17;  
-            } else if (gCutsceneIndex >= 0x320) {
-                index = 10;  
-            } else if (gCutsceneIndex >= 0x2EE) {
-                index = 16;  
-            } else if (gCutsceneIndex >= 0x2BC) {
-                index = 13;  
-            } else if (gCutsceneIndex > 0x289) {
-                index = 12;
-            } else if (gCutsceneIndex >= 0x258) {
-                index = 21;
-            } else if (gCutsceneIndex >= 0x1F4) {
-                index = 15;    
-            } else if (gCutsceneIndex >= 0x190) {
-                index = 14;
-            } else if (gCutsceneIndex >= 0x12C) {
-                index = 11;
-            } else if (gCutsceneIndex >= 0x64) {
-                
-                if (arg0) {
-                    index = 7;
-                } else  {
-
-                    index = 8;
-
-                    switch (gCutsceneIndex) {
-
-                        case 0xDC:
-                            D_8021E6D0 = 0;
-                            func_8003C084(0, 7);
-                            break;
-                        case 0xE4 ... 0xEE:
-                            D_8021E6D0 = 0;
-                            func_8003C084(0, 7);
-                            break;
-                        default:
-                            break;
-                    
-                    }
-                    
-                } 
-                
-            } else if (gCutsceneIndex != 0x27) {
-                
-                index = 9;
-                
-            } else {
-                
-                index = 9;
-                D_8021E6D0 = 0;
-                func_8003C084(0, 7);
-                
             }
-                
-        }
-    } 
-    
-    nuPiReadRom(cutsceneBytecodeAddresses[index].romAddrStart, cutsceneBankLoadAddresses[index], cutsceneBytecodeAddresses[index].romAddrEnd - cutsceneBytecodeAddresses[index].romAddrStart);
+            
+        } 
+        
+    } else {
+        
+        bytecodeSegmentIndex = 9;
+        
+        if (gCutsceneIndex == 0x27) {
+            D_8021E6D0 = 0;
+            func_8003C084(0, 7);
+        } 
+        
+    }
+
+    nuPiReadRom(cutsceneBytecodeAddresses[bytecodeSegmentIndex].romAddrStart, cutsceneBankLoadAddresses[bytecodeSegmentIndex], cutsceneBytecodeAddresses[bytecodeSegmentIndex].romAddrEnd - cutsceneBytecodeAddresses[bytecodeSegmentIndex].romAddrStart);
     
     gCutsceneCompletionFlags = 0;
     
-    spawnCutsceneExecutor(cutsceneExecutorIndices[index], cutsceneEntryPointAddresses[index]);
+    spawnCutsceneExecutor(cutsceneExecutorIndices[bytecodeSegmentIndex], cutsceneEntryPointAddresses[bytecodeSegmentIndex]);
     togglePauseEntities();
     
-    gCutsceneBytecodeSegmentIndex = index;
+    gCutsceneBytecodeSegmentIndex = bytecodeSegmentIndex;
     
     gCutsceneFlags |= 1;
     

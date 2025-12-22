@@ -118,13 +118,6 @@ extern u16 D_801FB686;
 
 extern u8 mariaHarrisNewlywedCounter;
 
-extern u8 D_801C4216;
-// cow festival winner affection (D_80189054)
-extern u16 D_801886D2;
-extern u8 D_80189054;
-// animal price?
-extern u32 D_801890E0;
-
 // data
 
 // lighting values based on hour

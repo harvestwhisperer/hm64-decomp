@@ -3,6 +3,18 @@
 
 #include "common.h"
 
+#define FARM_RANKING_SLOTS 5
+#define FARM_RANKING_SLOTS_WITH_TEMP 7
+#define FARM_RANKING_NAME_LENGTH 6
+#define RANKING_TEMP_SLOT 5
+// Swap slot index for sorting operations
+#define RANKING_SWAP_SLOT 6
+
+#define RANKING_FLAG_ACTIVE   1  
+#define RANKING_FLAG_MARRIED  2  
+#define RANKING_FLAG_HAVE_BABY 4  
+#define RANKING_FLAG_HAVE_HORSE 8
+
 // D_801D6238
 typedef struct {
     u8 unk_0[15];
@@ -33,6 +45,71 @@ typedef struct {
     u8 action; // move/delete /* 0x89 */
 } LoadGameScreenContext;
 
+
+// 0x801FB708
+typedef struct {
+    u8 farmNames[FARM_RANKING_SLOTS][FARM_RANKING_NAME_LENGTH];   
+    u8 tempFarmName[FARM_RANKING_NAME_LENGTH];                    
+    u8 swapFarmName[FARM_RANKING_NAME_LENGTH];                    
+    u8 playerNames[FARM_RANKING_SLOTS][FARM_RANKING_NAME_LENGTH];        
+    u8 tempPlayerName[FARM_RANKING_NAME_LENGTH];                         
+    u8 swapPlayerName[FARM_RANKING_NAME_LENGTH];                         
+    u8 wifeNames[FARM_RANKING_SLOTS][FARM_RANKING_NAME_LENGTH];          
+    u8 tempWifeName[FARM_RANKING_NAME_LENGTH];                           
+    u8 swapWifeName[FARM_RANKING_NAME_LENGTH];                           
+    u8 babyNames[FARM_RANKING_SLOTS][FARM_RANKING_NAME_LENGTH];          
+    u8 tempBabyName[FARM_RANKING_NAME_LENGTH];                           
+    u8 swapBabyName[FARM_RANKING_NAME_LENGTH];                           
+    u8 dogNames[FARM_RANKING_SLOTS][FARM_RANKING_NAME_LENGTH];           
+    u8 tempDogName[FARM_RANKING_NAME_LENGTH];                            
+    u8 swapDogName[FARM_RANKING_NAME_LENGTH];                            
+    u8 horseNames[FARM_RANKING_SLOTS][FARM_RANKING_NAME_LENGTH];         
+    u8 tempHorseName[FARM_RANKING_NAME_LENGTH];                          
+    u8 swapHorseName[FARM_RANKING_NAME_LENGTH];                          
+    u8 years[FARM_RANKING_SLOTS_WITH_TEMP];                              
+    u8 seasons[FARM_RANKING_SLOTS_WITH_TEMP];                            
+    u8 mariaAffection[FARM_RANKING_SLOTS_WITH_TEMP];                     
+    u8 popuriAffection[FARM_RANKING_SLOTS_WITH_TEMP];                    
+    u8 elliAffection[FARM_RANKING_SLOTS_WITH_TEMP];                      
+    u8 annAffection[FARM_RANKING_SLOTS_WITH_TEMP];                       
+    u8 karenAffection[FARM_RANKING_SLOTS_WITH_TEMP];                     
+    u8 harrisAffection[FARM_RANKING_SLOTS_WITH_TEMP];                    
+    u8 grayAffection[FARM_RANKING_SLOTS_WITH_TEMP];                      
+    u8 jeffAffection[FARM_RANKING_SLOTS_WITH_TEMP];                      
+    u8 cliffAffection[FARM_RANKING_SLOTS_WITH_TEMP];                     
+    u8 kaiAffection[FARM_RANKING_SLOTS_WITH_TEMP];                       
+    u8 wifeAffection[FARM_RANKING_SLOTS_WITH_TEMP];               
+    u8 babyAffection[FARM_RANKING_SLOTS_WITH_TEMP];                      
+    u8 dogAffection[FARM_RANKING_SLOTS_WITH_TEMP];                       
+    u8 horseAffection[FARM_RANKING_SLOTS_WITH_TEMP];                     
+    u8 farmAnimalAffection[FARM_RANKING_SLOTS][8];                       
+    u8 tempFarmAnimalAffection[8];                                       
+    u8 swapFarmAnimalAffection1[4];                                      
+    u8 swapFarmAnimalAffection2[4];                                      
+    u8 chickenCounts[FARM_RANKING_SLOTS_WITH_TEMP];                      
+    u32 cropsShipped[FARM_RANKING_SLOTS_WITH_TEMP];                      
+    u32 eggsShipped[FARM_RANKING_SLOTS_WITH_TEMP];                       
+    u32 milkShipped[FARM_RANKING_SLOTS_WITH_TEMP];                       
+    u32 fishCaught[FARM_RANKING_SLOTS_WITH_TEMP];                        
+    u32 gold[FARM_RANKING_SLOTS_WITH_TEMP];                              
+    u16 grassTiles[FARM_RANKING_SLOTS_WITH_TEMP];                        
+    u8 maxStamina[FARM_RANKING_SLOTS_WITH_TEMP];                         
+    u8 photoCount[FARM_RANKING_SLOTS_WITH_TEMP];                         
+    u8 recipeCount[FARM_RANKING_SLOTS_WITH_TEMP];                        
+    u8 houseExtensions[FARM_RANKING_SLOTS_WITH_TEMP];                    
+    u8 happiness[FARM_RANKING_SLOTS_WITH_TEMP];                          
+    u8 wife[FARM_RANKING_SLOTS_WITH_TEMP];                          
+    f32 scores[FARM_RANKING_SLOTS_WITH_TEMP];                            
+    u8 flags[FARM_RANKING_SLOTS];                                        
+    u8 tempFlags;                                                        
+    u8 swapFlags;                                                        
+    u8 cursorIndex;                                                      
+    u8 pad2[4];                                                          
+    u8 screenState;                                                      
+} FarmRankingData;
+
+extern FarmRankingData gFarmRankingData;
+
 extern void func_800E1380(u8);            
 extern bool func_800E53E8(u8);    
 extern void func_800E1FAC(void);
@@ -42,15 +119,5 @@ extern u8 gCurrentGameIndex;
 extern u32 D_801654F4;
 
 extern LoadGameScreenContext loadGameScreenContext;
-
-// FIXME: actually part of a struct
-extern u8 D_801FB80B[5];
-extern u8 D_801FB858[];
-extern u8 D_801FB85F[];
-extern u8 D_801FB866[];
-extern u8 D_801FB86D[];
-extern u8 D_801FB971[];
-extern u8 D_801FB994[];
-extern u8 D_801FB994[5];
 
 #endif

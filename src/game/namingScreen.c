@@ -19,6 +19,8 @@
 #include "game/time.h"
 #include "game/transition.h"
 
+#include "mainLoop.h"
+
 #include "buffers/buffers.h"
 
 #include "assetIndices/sequences.h"
@@ -163,7 +165,7 @@ inline void initializeNamingScreen(u8* arg0, u8 arg1) {
     setCurrentAudioSequence(NAMING_SCREEN_THEME);
     setAudioSequenceVolume(NAMING_SCREEN_THEME, SEQUENCE_VOLUME);
     
-    setMainLoopCallbackFunctionIndex(0x34);
+    setMainLoopCallbackFunctionIndex(NAMING_SCREEN_LOAD);
     
 }
 
