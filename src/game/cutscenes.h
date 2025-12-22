@@ -21,16 +21,14 @@ extern u16 func_800A87C4();
 extern void func_800A8F74();   
 extern void loadCutscene(u8);  
 
-// maybe game.c bss
 extern u16 gCutsceneIndex;
-
-// can't get a consistent match across files for this variable; some functions need array/struct loading, which breaks the match in other functions
 extern u32 gCutsceneFlags;
-extern u32 cutsceneFlagsHack[2];
-
-
-// flags
 extern s32 gCutsceneCompletionFlags;
 extern u16 gCutsceneBytecodeSegmentIndex;
+
+// sum of girls' affection
+extern u16 D_80215DF0;
+// cow festival winner affection (D_80189054)
+extern u16 D_801886D2;
 
 #endif

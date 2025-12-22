@@ -738,14 +738,14 @@ segments:
       - [ 0xFF5C0, c, buffers/sramBuffer]
       - { start: 0xFF5C0, type: .bss, vram: 0x8030D000, name: buffers/sramBuffer }
 
-  - name: gamePakBuffer
+  - name: farmRankingsBuffer
     type: code
     start: 0xFF5C0
     bss_size: 0x100
     vram: 0x8030E000
     subsegments:
-      - [ 0xFF5C0, c, buffers/gamePakBuffer]
-      - { start: 0xFF5C0, type: .bss, vram: 0x8030E000, name: buffers/gamePakBuffer }
+      - [ 0xFF5C0, c, buffers/farmRankingsBuffer]
+      - { start: 0xFF5C0, type: .bss, vram: 0x8030E000, name: buffers/farmRankingsBuffer }
 
   - name: unknownBuffer
     type: code

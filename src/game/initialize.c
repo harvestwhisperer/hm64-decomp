@@ -18,7 +18,6 @@
 
 #include "game/animals.h" 
 #include "game/cutscenes.h"
-#include "game/evaluation.h"
 #include "game/fieldObjects.h"
 #include "data/fieldTileMaps/fieldTiles.h"
 #include "game/game.h"
@@ -540,7 +539,7 @@ void initializeGameVariables(void) {
     overlayScreenTable.cellIndex = 0;
     overlayScreenTable.previousCellIndex = 0;
     overlayScreenTable.unk_3 = 0;
-    overlayScreenTable.currentAction = 0;
+    overlayScreenTable.screenState = 0;
 
     initializeTV();
 
@@ -1317,7 +1316,7 @@ void func_80053088(void) {
     initializeGameVariableStrings();
     func_8003FAE8((u8*)&characterAvatarAnimationScripts);
 
-    nuPiReadRom(ptr, (void*)FONT_TEXTURE_BUFFER, ptr2 - ptr);
+    nuPiReadRom(ptr, (u8*)FONT_TEXTURE_BUFFER, ptr2 - ptr);
     nuPiReadRom(ptr3, (u16*)FONT_PALETTE_1_BUFFER, ptr4 - ptr3);
     nuPiReadRom(ptr5, (u16*)FONT_PALETTE_2_BUFFER, ptr6 - ptr5);
 
@@ -1516,6 +1515,8 @@ void initializeGameVariableStrings(void) {
     setGameVariableString(0x24, D_80204B3C, 6);
     setGameVariableString(0x25, D_8016FBCC, 1);
     setGameVariableString(0x27, D_801886D4, 6);
+
+    // 0x2A-0x2F set by overlay screens (horse/dog race)
 
     // unused
     setGameVariableString(0x30, D_801594E6, 3);

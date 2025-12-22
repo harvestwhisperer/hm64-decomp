@@ -601,7 +601,7 @@ void func_80064814(void) {
 
         if (!getRandomNumberInRange(0, 3)) {
 
-            memcpy((u32)&greenhouseFieldTiles, (u32)D_80113760, FIELD_HEIGHT * FIELD_WIDTH);
+            memcpy(greenhouseFieldTiles, D_80113760, FIELD_HEIGHT * FIELD_WIDTH);
 
             setLifeEventBit(0xD7);
             toggleLifeEventBit(HAVE_GREENHOUSE);

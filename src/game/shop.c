@@ -636,7 +636,7 @@ void func_800DCAB8(void) {
                 func_800B3BD8();
 
                 if (D_80118F60[shopContext.storeItemIndex] >= 2) {
-                    func_80045E20(0, 0x8F, &_shopIconsTextureSegmentRomStart, &_shopIconsTextureSegmentRomEnd, &_shopIconsAssetsIndexSegmentRomStart, &_shopIconsAssetsIndexSegmentRomEnd, SHOP_ICONS_TEXTURE_BUFFER, SHOP_ICONS_PALETTE_BUFFER, (void* )SHOP_ICONS_ANIMATION_METADATA_BUFFER, (void* )SHOP_ICONS_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 2, 0, -16.0f, 64.0f, 256.0f, 0xA);
+                    setOverlayScreenSprites(0, 0x8F, &_shopIconsTextureSegmentRomStart, &_shopIconsTextureSegmentRomEnd, &_shopIconsAssetsIndexSegmentRomStart, &_shopIconsAssetsIndexSegmentRomEnd, SHOP_ICONS_TEXTURE_BUFFER, SHOP_ICONS_PALETTE_BUFFER, (void* )SHOP_ICONS_ANIMATION_METADATA_BUFFER, (void* )SHOP_ICONS_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 2, 0, -16.0f, 64.0f, 256.0f, 0xA);
                     dmaOverlayScreenSprites(0, shopContext.quantity, 1, 3);
                     func_800B4238(D_80118F60[shopContext.storeItemIndex]);
                 }

@@ -1770,7 +1770,7 @@ u8 func_800AF494(u16 mapIndex, u8 levelInteractionIndex) {
                     if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) { 
                         if (gPlayer.heldItem == 0) {
                             if (adjustValue(flowerShopPoints, -10, 100) == -10) {
-                                setMainLoopCallbackFunctionIndex(0x22);
+                                setMainLoopCallbackFunctionIndex(LOTTERY_LOAD);
                                 result = 1; 
                             } else {
                                 showTextBox(0, 4, 0x3E, 0, 0);
@@ -2074,7 +2074,7 @@ bool func_800AFA7C(u16 mapIndex, u8 levelInteractionIndex) {
                     if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) { 
                         if (gPlayer.heldItem == 0) {
                             if (adjustValue(bakeryCardPoints, -10, 100) == -10) {
-                                setMainLoopCallbackFunctionIndex(0x22);
+                                setMainLoopCallbackFunctionIndex(LOTTERY_LOAD);
                                 result = TRUE; 
                             } else {
                                 showTextBox(0, 4, 0x46, 0, 0);
@@ -3262,7 +3262,7 @@ label4:
                         
                     } else {
                         pauseAllCutsceneExecutors();
-                        setMainLoopCallbackFunctionIndex(0x21);
+                        setMainLoopCallbackFunctionIndex(HORSE_RACE_GIFTS_LOAD);
                     }
                     
                 } else if (func_800CE828(0) && func_800CE828(1) && func_800CE828(2)) {
@@ -3272,7 +3272,7 @@ label2:
                 } else {
 label:
                     pauseAllCutsceneExecutors();
-                    setMainLoopCallbackFunctionIndex(0x21);
+                    setMainLoopCallbackFunctionIndex(HORSE_RACE_GIFTS_LOAD);
                     
                 }
                 
@@ -3286,13 +3286,13 @@ label:
 
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {  
 
-                if (overlayScreenStrings.unk_6B == overlayScreenStrings.unk_6A) {
+                if (overlayScreenStrings.unk_6D == overlayScreenStrings.unk_6C) {
                     showTextBox(0, 4, 10, 0, 0);
-                } else if (overlayScreenStrings.unk_6A == 3) {
+                } else if (overlayScreenStrings.unk_6C == 3) {
                     showTextBox(0, 4, 8, 0, 0);
-                } else if (!overlayScreenStrings.unk_6D[overlayScreenStrings.unk_6A]) {
+                } else if (!overlayScreenStrings.unk_6F[overlayScreenStrings.unk_6C]) {
                     pauseAllCutsceneExecutors();
-                    setMainLoopCallbackFunctionIndex(0x1F);
+                    setMainLoopCallbackFunctionIndex(PAUSE_SCREEN_MAP_LOAD_2);
                 } else {
                     showTextBox(0, 4, 7, 0, 0);
                 }

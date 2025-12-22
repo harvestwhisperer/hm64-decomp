@@ -184,8 +184,6 @@
 
 #define MAX_LETTERS 80
 
-// TODO: add mail bits
-
 extern u32 checkDailyEventBit(u16 bitIndex);
 extern void setDailyEventBit(u16 bitIndex);
 extern void toggleDailyEventBit(u16 bitIndex);   
@@ -206,12 +204,12 @@ void setAlbumPicture(u8 pictureBitIndex);
 extern void setRecipes(void);  
 
 extern void handleWifeMorningHelp(void); 
+extern u8 func_8006536C();
+extern u8 func_80065518(void);
+extern void func_800657BC(void);
 extern void func_80064114(void);
 extern void func_800644B0(void);     
 extern void func_80064814(void);     
-// recipes
-extern u8 func_80065518(void);
-extern u8 func_8006536C();
 extern s32 getSumNpcAffection(void);
 
 extern void func_800657B4();

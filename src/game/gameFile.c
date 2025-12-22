@@ -21,12 +21,13 @@
 #include "game/shop.h"
 #include "game/tv.h"
 #include "game/time.h"
+#include "game/title.h"
 #include "game/weather.h"
 
 #include "buffers/buffers.h"
 
 #include "mainLoop.h"
- 
+
 #include "ld_symbols.h"
 
 // foward declarations
@@ -47,14 +48,16 @@ void func_800EB74C(u8 arg0);
 void func_800EB788(u8);                                 
 void func_800EBA90(u8 arg0);
 void func_800EBAC8(u8 arg0);                       
-void func_800EBEAC(u8, u8);
-
 void func_800EBC00();                                  
 u8 func_800EBCD8();      
+void func_800ED160(u8 arg0, u8 arg1);
+void func_800EBEAC(u8, u8);
  
 // bss
-extern LoadGameScreenContext loadGameScreenContext;
-extern u8 gCurrentGameIndex;
+LoadGameScreenContext loadGameScreenContext;
+FarmRankingData gFarmRankingData;
+u8 gCurrentGameIndex;
+s32 D_8016FDFC;
 
 // unused
 extern u32 D_8018A080;
@@ -66,163 +69,6 @@ extern u32 D_801C3F40;
 extern u32 D_8016FFF0;
 extern u32 D_8016FFF4;
 
-// FIXME: convert to struct
-// farm ranking screen struct
-// strings
-// player abbreviated name
-extern u8 D_801FB708[5][6];
-extern u8 D_801FB726[6];
-extern u8 D_801FB72C[];
-extern u8 D_801FB730[];
-// player name in individual farm farm ranking screen
-extern u8 D_801FB732[5][6];
-// player name
-extern u8 D_801FB750[6];
-extern u8 D_801FB756[];
-extern u8 D_801FB75C[5][6];
-// wife name
-extern u8 D_801FB77A[6];
-extern u8 D_801FB780[6];
-extern u8 D_801FB786[5][6];
-// dog name
-extern u8 D_801FB7A4[6];
-extern u8 D_801FB7AA[6];
-extern u8 D_801FB7B0[5][6];
-// horse name
-extern u8 D_801FB7CE[6];
-extern u8 D_801FB7D4[6];
-extern u8 D_801FB7DA[5][6];
-// baby name
-extern u8 D_801FB7F8[6];
-extern u8 D_801FB7FE[6];
-// pause screen sprite variable values
-extern u8 D_801FB804[5];
-// year
-extern u8 D_801FB809;
-// season
-extern u8 D_801FB80B[5];
-// season
-extern u8 D_801FB810;
-extern u8 D_801FB812[];
-// maria affection
-extern u8 D_801FB817;
-extern u8 D_801FB819[];
-// popuri affection
-extern u8 D_801FB81E;
-extern u8 D_801FB820[];
-// elli affction
-extern u8 D_801FB825;
-extern u8 D_801FB827[];
-// ann affection
-extern u8 D_801FB82C;
-extern u8 D_801FB82E[];
-// karen affection
-extern u8 D_801FB833;
-extern u8 D_801FB835[];
-// harris affection
-extern u8 D_801FB83A;
-extern u8 D_801FB83C[];
-// gray affection
-extern u8 D_801FB841;
-extern u8 D_801FB843[];
-// jeff affection
-extern u8 D_801FB848;
-extern u8 D_801FB84A[];
-// cliff affection
-extern u8 D_801FB84F;
-extern u8 D_801FB851[];
-// kai affection
-extern u8 D_801FB856;
-// sprite animation mode (animationModeOrFrameIndex)
-extern u8 D_801FB858[];
-// wife affection
-extern u8 D_801FB85D;
-// sprite animation mode (animationModeOrFrameIndex)
-extern u8 D_801FB85F[];
-// baby affection
-extern u8 D_801FB864;
-// sprite animation mode (animationModeOrFrameIndex)
-extern u8 D_801FB866[];
-// dog affection
-extern u8 D_801FB86B;
-// affection level to show number of hearts (for finding animation frame)
-extern u8 D_801FB86D[];
-extern u8 D_801FB971[];
-// horse affection
-extern u8 D_801FB872;
-extern u8 D_801FB874[5][8];
-// farm animal 1 affection
-extern u8 D_801FB89C;
-// farm animal 2 affection
-extern u8 D_801FB89D;
-// farm animal 3 affection
-extern u8 D_801FB89E;
-// farm animal 4 affection
-extern u8 D_801FB89F;
-// farm animal 5 affection
-extern u8 D_801FB8A0;
-// farm animal 6 affection
-extern u8 D_801FB8A1;
-// farm animal 7 affection
-extern u8 D_801FB8A2;
-// farm animal 8 affection
-extern u8 D_801FB8A3;
-extern u8 D_801FB8AC[];
-// chickens count
-extern u8 D_801FB8B1;
-extern u32 D_801FB8B4[5];
-// total crops shipped
-extern u32 D_801FB8C8;
-extern u32 D_801FB8D0[5][3];
-// eggs shipped
-extern u32 D_801FB8E4;
-// milk shipped
-extern u32 D_801FB900;
-// fish caught
-extern u32 D_801FB91C;
-// gold
-extern u32 D_801FB938;
-// grass tiles
-extern u16 D_801FB940[];
-extern u8 D_801FB94E[];
-// max stamina
-extern u8 D_801FB953;
-// album bits
-extern u8 D_801FB955[];
-// wife affection
-extern u8 D_801FB858[];
-// recipe count
-extern u8 D_801FB95C[];
-// baby affection level
-extern u8 D_801FB85F[];
-// house extension count
-extern u8 D_801FB963[];
-// sprite animation mode (animationModeOrFrameIndex)
-extern u8 D_801FB866[];
-extern u8 D_801FB96A[];
-// horse affection level
-extern u8 D_801FB86D[];
-// happiness
-extern u8 D_801FB96F;
-// wife
-// frame index
-extern u8 D_801FB971[];
-// wife index
-extern u8 D_801FB976;
-// scores/percents
-extern f32 D_801FB978[5];
-// flags
-extern u8 D_801FB994[];
-// flags
-extern u8 D_801FB999[];
-// UI element index
-// index into D_801FB994
-// param for func_800B7F6C; index into farmRankingsCursorHandXPositions
-// param for func_800E80AC
-// param for func_800B7070
-extern u8 D_801FB99B[];
-// farm ranking screen handler mode
-extern u8 D_801FB9A0;
 
 // unused
 extern u32 D_80204DF0;
@@ -237,8 +83,12 @@ extern u8 gGlobalSeasonName[6];
 // "PACKINSOFT FARM2" in ASCII
 u8 D_80119740[16] = { 0x50, 0x41, 0x43, 0x4B, 0x49, 0x4E, 0x53, 0x4F, 0x46, 0x54, 0x20, 0x46, 0x41, 0x52, 0x4D, 0x32 };
 
+
+/* helpers */
+
 //INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800E1380);
 
+// close farm ranking screen
 void func_800E1380(u8 controllerPakEnabled) {
     
     if (!controllerPakEnabled) {
@@ -337,6 +187,9 @@ void func_800E16A0(void) {
     loadGameScreenContext.unk_3C = 0;
 
 }
+
+
+/* select game functions */
 
 //INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800E16D0);
 
@@ -1980,7 +1833,7 @@ bool func_800E4424(u8 saveSlot, u8 arg1) {
     D_801654F4 = buff->unk_60;
     D_80237414 = buff->unk_64;
     D_801FB6FC = buff->unk_68;
-    D_801C3F80 = buff->unk_6C;
+    D_801C3F80 = buff->unk_6E;
     D_801806C0 = buff->unk_70;
     D_80188F60 = buff->unk_74;
     D_801FB5D0 = buff->unk_78;
@@ -2352,7 +2205,7 @@ bool func_800E53E8(u8 saveSlot) {
     sramBuffer.unk_60 = D_801654F4;
     sramBuffer.unk_64 = D_80237414;
     sramBuffer.unk_68 = D_801FB6FC;
-    sramBuffer.unk_6C = D_801C3F80;
+    sramBuffer.unk_6E = D_801C3F80;
     sramBuffer.unk_70 = D_801806C0;
     sramBuffer.unk_74 = D_80188F60;
     sramBuffer.unk_78 = D_801FB5D0;
@@ -2704,7 +2557,10 @@ void func_800E67E4(u8 saveSlot, u8 arg1) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/gameFile", loadFarmRankingScreen);
+
+/* farm ranking screen functions */
+
+// INCLUDE_ASM("asm/nonmatchings/game/gameFile", loadFarmRankingScreen);
 
 void loadFarmRankingScreen(void) {
 
@@ -2716,11 +2572,11 @@ void loadFarmRankingScreen(void) {
     } 
     
     // abbreviated player names on first screen
-    setGameVariableString(0, (u8*)&D_801FB708[0], 6);
-    setGameVariableString(1, (u8*)&D_801FB708[1], 6);
-    setGameVariableString(2, (u8*)&D_801FB708[2], 6);
-    setGameVariableString(3, (u8*)&D_801FB708[3], 6);
-    setGameVariableString(4, (u8*)&D_801FB708[4], 6);
+    setGameVariableString(0, (u8*)&gFarmRankingData.farmNames[0], 6);
+    setGameVariableString(1, (u8*)&gFarmRankingData.farmNames[1], 6);
+    setGameVariableString(2, (u8*)&gFarmRankingData.farmNames[2], 6);
+    setGameVariableString(3, (u8*)&gFarmRankingData.farmNames[3], 6);
+    setGameVariableString(4, (u8*)&gFarmRankingData.farmNames[4], 6);
     
     // load game state from sram and write farm ranking screen strings
     func_800E9550(0);
@@ -2755,22 +2611,19 @@ void loadFarmRankingScreen(void) {
 
     setMainLoopCallbackFunctionIndex(FARM_RANKING_SCREEN);
     
-    // farm ranking screen action index
-    D_801FB9A0 = 0;
-    // row index
-    D_801FB99B[0] = 0;
+    gFarmRankingData.screenState = 0;
+    gFarmRankingData.cursorIndex = 0;
 
-    // unused
-    // copies of scores
-    D_8018A728 = D_801FB978[0];
-    D_801D6F2C = D_801FB978[1];
-    D_8018A080 = D_801FB978[2];
-    D_802226E4 = D_801FB978[3];
-    D_80204DF0 = D_801FB978[4];
+    // unused  copies of scores
+    D_8018A728 = gFarmRankingData.scores[0];
+    D_801D6F2C = gFarmRankingData.scores[1];
+    D_8018A080 = gFarmRankingData.scores[2];
+    D_802226E4 = gFarmRankingData.scores[3];
+    D_80204DF0 = gFarmRankingData.scores[4];
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800E6C08);
+// INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800E6C08);
 
 // setup/reset farm ranking screen strings
 void func_800E6C08(u8 arg0) {
@@ -2781,120 +2634,98 @@ void func_800E6C08(u8 arg0) {
     u32 *ptr4;
     u32 *ptr5;
 
-    D_801FB994[arg0] = 0;
+    gFarmRankingData.flags[arg0] = 0;
 
-    D_801FB708[arg0][0] = 0xF6;
-    D_801FB708[arg0][1] = 0xF6;
-    D_801FB708[arg0][2] = 0xF6;
-    D_801FB708[arg0][3] = 0xF6;
-    D_801FB708[arg0][4] = 0xF6;
-    D_801FB708[arg0][5] = 0xF6;
+    gFarmRankingData.farmNames[arg0][0] = 0xF6;
+    gFarmRankingData.farmNames[arg0][1] = 0xF6;
+    gFarmRankingData.farmNames[arg0][2] = 0xF6;
+    gFarmRankingData.farmNames[arg0][3] = 0xF6;
+    gFarmRankingData.farmNames[arg0][4] = 0xF6;
+    gFarmRankingData.farmNames[arg0][5] = 0xF6;
 
-    D_801FB732[arg0][0] = 0xF6;
-    D_801FB732[arg0][1] = 0xF6;
-    D_801FB732[arg0][2] = 0xF6;
-    D_801FB732[arg0][3] = 0xF6;
-    D_801FB732[arg0][4] = 0xF6;
-    D_801FB732[arg0][5] = 0xF6;
+    gFarmRankingData.playerNames[arg0][0] = 0xF6;
+    gFarmRankingData.playerNames[arg0][1] = 0xF6;
+    gFarmRankingData.playerNames[arg0][2] = 0xF6;
+    gFarmRankingData.playerNames[arg0][3] = 0xF6;
+    gFarmRankingData.playerNames[arg0][4] = 0xF6;
+    gFarmRankingData.playerNames[arg0][5] = 0xF6;
     
-    D_801FB75C[arg0][0] = 0xF6;
-    D_801FB75C[arg0][1] = 0xF6;
-    D_801FB75C[arg0][2] = 0xF6;
-    D_801FB75C[arg0][3] = 0xF6;
-    D_801FB75C[arg0][4] = 0xF6;
-    D_801FB75C[arg0][5] = 0xF6;
+    gFarmRankingData.wifeNames[arg0][0] = 0xF6;
+    gFarmRankingData.wifeNames[arg0][1] = 0xF6;
+    gFarmRankingData.wifeNames[arg0][2] = 0xF6;
+    gFarmRankingData.wifeNames[arg0][3] = 0xF6;
+    gFarmRankingData.wifeNames[arg0][4] = 0xF6;
+    gFarmRankingData.wifeNames[arg0][5] = 0xF6;
         
-    D_801FB786[arg0][0] = 0xF6;
-    D_801FB786[arg0][1] = 0xF6;
-    D_801FB786[arg0][2] = 0xF6;
-    D_801FB786[arg0][3] = 0xF6;
-    D_801FB786[arg0][4] = 0xF6;
-    D_801FB786[arg0][5] = 0xF6;
+    gFarmRankingData.babyNames[arg0][0] = 0xF6;
+    gFarmRankingData.babyNames[arg0][1] = 0xF6;
+    gFarmRankingData.babyNames[arg0][2] = 0xF6;
+    gFarmRankingData.babyNames[arg0][3] = 0xF6;
+    gFarmRankingData.babyNames[arg0][4] = 0xF6;
+    gFarmRankingData.babyNames[arg0][5] = 0xF6;
+    
+    gFarmRankingData.dogNames[arg0][0] = 0xF6;
+    gFarmRankingData.dogNames[arg0][1] = 0xF6;
+    gFarmRankingData.dogNames[arg0][2] = 0xF6;
+    gFarmRankingData.dogNames[arg0][3] = 0xF6;
+    gFarmRankingData.dogNames[arg0][4] = 0xF6;
+    gFarmRankingData.dogNames[arg0][5] = 0xF6;
 
-    D_801FB7B0[arg0][0] = 0xF6;
-    D_801FB7B0[arg0][1] = 0xF6;
-    D_801FB7B0[arg0][2] = 0xF6;
-    D_801FB7B0[arg0][3] = 0xF6;
-    D_801FB7B0[arg0][4] = 0xF6;
-    D_801FB7B0[arg0][5] = 0xF6;
+    gFarmRankingData.horseNames[arg0][0] = 0xF6;
+    gFarmRankingData.horseNames[arg0][1] = 0xF6;
+    gFarmRankingData.horseNames[arg0][2] = 0xF6;
+    gFarmRankingData.horseNames[arg0][3] = 0xF6;
+    gFarmRankingData.horseNames[arg0][4] = 0xF6;
+    gFarmRankingData.horseNames[arg0][5] = 0xF6;
 
-    D_801FB7DA[arg0][0] = 0xF6;
-    D_801FB7DA[arg0][1] = 0xF6;
-    D_801FB7DA[arg0][2] = 0xF6;
-    D_801FB7DA[arg0][3] = 0xF6;
-    D_801FB7DA[arg0][4] = 0xF6;
-    D_801FB7DA[arg0][5] = 0xF6;
+    gFarmRankingData.years[arg0] = 0;
+    gFarmRankingData.seasons[arg0] = 0;    
+    gFarmRankingData.mariaAffection[arg0] = 0;
+    gFarmRankingData.popuriAffection[arg0] = 0;
+    gFarmRankingData.elliAffection[arg0] = 0;    
+    gFarmRankingData.annAffection[arg0] = 0;
+    gFarmRankingData.karenAffection[arg0] = 0;
+    gFarmRankingData.harrisAffection[arg0] = 0;    
+    gFarmRankingData.grayAffection[arg0] = 0;
+    gFarmRankingData.jeffAffection[arg0] = 0;
+    gFarmRankingData.cliffAffection[arg0] = 0;    
+    gFarmRankingData.kaiAffection[arg0] = 0;
+    gFarmRankingData.wifeAffection[arg0] = 0;
+    gFarmRankingData.babyAffection[arg0] = 0;
+    gFarmRankingData.dogAffection[arg0] = 0;    
+    gFarmRankingData.horseAffection[arg0] = 0;
     
-    D_801FB804[arg0] = 0;
-    D_801FB80B[arg0] = 0;    
-    D_801FB812[arg0] = 0;
-    D_801FB819[arg0] = 0;
-    D_801FB820[arg0] = 0;    
-    D_801FB827[arg0] = 0;
-    D_801FB82E[arg0] = 0;
-    D_801FB835[arg0] = 0;    
-    D_801FB83C[arg0] = 0;
-    D_801FB843[arg0] = 0;
-    D_801FB84A[arg0] = 0;    
-    D_801FB851[arg0] = 0;
-    D_801FB858[arg0] = 0;
-    D_801FB85F[arg0] = 0;
-    D_801FB866[arg0] = 0;    
-    D_801FB86D[arg0] = 0;
+    gFarmRankingData.farmAnimalAffection[arg0][0] = 0;
+    gFarmRankingData.farmAnimalAffection[arg0][1] = 0;
+    gFarmRankingData.farmAnimalAffection[arg0][2] = 0;
+    gFarmRankingData.farmAnimalAffection[arg0][3] = 0;
+    gFarmRankingData.farmAnimalAffection[arg0][4] = 0;
+    gFarmRankingData.farmAnimalAffection[arg0][5] = 0;
+    gFarmRankingData.farmAnimalAffection[arg0][6] = 0;
+    gFarmRankingData.farmAnimalAffection[arg0][7] = 0;
     
-    D_801FB874[arg0][0] = 0;
-    D_801FB874[arg0][1] = 0;
-    D_801FB874[arg0][2] = 0;
-    D_801FB874[arg0][3] = 0;
-    D_801FB874[arg0][4] = 0;
-    D_801FB874[arg0][5] = 0;
-    D_801FB874[arg0][6] = 0;
-    D_801FB874[arg0][7] = 0;
+    gFarmRankingData.chickenCounts[arg0] = 0;
     
-    D_801FB8AC[arg0] = 0;
+    gFarmRankingData.cropsShipped[arg0] = 0;
+    gFarmRankingData.eggsShipped[arg0] = 0;
+    gFarmRankingData.milkShipped[arg0] = 0;
+    gFarmRankingData.fishCaught[arg0] = 0;
     
-    // FIXME: forced match
-    ptr5 = D_801FB8B4;
-    ptr = D_801FB8B4;
-    
-    ptr5[arg0] = 0;
-    
-    ptr4 = ptr + 7;
-    
-    ptr4[arg0] = 0;
+    gFarmRankingData.gold[arg0] = 0;
 
-    asm("");
+    gFarmRankingData.grassTiles[arg0] = 0;
 
-    ptr += 7 * 2;
-    ptr[arg0] = 0;
-    asm("");
-    
-    ptr += 7;
-    ptr[arg0] = 0;
-    asm("");
-    
-    ptr += 7;
-    ptr[arg0] = 0;
-    asm("");
-    
-    ptr += 7;
-    ptr2 = ptr;
-    ptr2[arg0] = 0;
+    gFarmRankingData.maxStamina[arg0] = 0;
+    gFarmRankingData.photoCount[arg0] = 0;
+    gFarmRankingData.recipeCount[arg0] = 0;
+    gFarmRankingData.houseExtensions[arg0] = 0;
+    gFarmRankingData.happiness[arg0] = 0;
 
-    D_801FB94E[arg0] = 0;
-    D_801FB955[arg0] = 0;
-    D_801FB95C[arg0] = 0;
-    D_801FB963[arg0] = 0;
-    D_801FB96A[arg0] = 0;
+    gFarmRankingData.scores[arg0] = 0;
 
-    ptr2 += 7 * 4;
-    ptr3 = ptr2;
-    
-    ptr3[arg0] = 0;
-    
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800E6FB4);
+// INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800E6FB4);
 
 // set up farm ranking screen sprites and message boxes
 void func_800E6FB4(u8 arg0) {
@@ -2959,40 +2790,39 @@ void func_800E6FB4(u8 arg0) {
     func_8003FB4C(4, 1);
     initializeMessageBox(4, 0, 11, 0x80000);
 
-
     // render percentages
-    if (D_801FB994[0] & 1) {
-        func_80045E20(0, 0x89, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, (void*)0x8026F000, (void*)0x8027E200, (void*)0x8027E700, (void*)0x8027EB00, 0, 4, 0, 48.0f, 40.0f, 16.0f, 0xA);
-        dmaOverlayScreenSprites(0, D_801FB804[0], 1, 3);
-        func_80045E20(5, 0x8B, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, (void*)0x8026F000, (void*)0x8027E200, (void*)0x8027E700, (void*)0x8027EB00, 0, 4, 0, 116.0f, 40.0f, 16.0f, 0xA);
-        dmaOverlayScreenSprites(5, D_801FB978[0], 2, 3);
+    if (gFarmRankingData.flags[0] & RANKING_FLAG_ACTIVE) {
+        setOverlayScreenSprites(0, 0x89, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, (void*)0x8026F000, (void*)0x8027E200, (void*)0x8027E700, (void*)0x8027EB00, 0, 4, 0, 48.0f, 40.0f, 16.0f, 0xA);
+        dmaOverlayScreenSprites(0, gFarmRankingData.years[0], 1, 3);
+        setOverlayScreenSprites(5, 0x8B, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, (void*)0x8026F000, (void*)0x8027E200, (void*)0x8027E700, (void*)0x8027EB00, 0, 4, 0, 116.0f, 40.0f, 16.0f, 0xA);
+        dmaOverlayScreenSprites(5, gFarmRankingData.scores[0], 2, 3);
     }
 
-    if (D_801FB994[1] & 1) {
-        func_80045E20(1, 0x8E, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, (void*)0x8026F000, (void*)0x8027E200, (void*)0x8027E700, (void*)0x8027EB00, 0, 4, 0, 48.0f, 8.0f, 16.0f, 0xA);
-        dmaOverlayScreenSprites(1, D_801FB804[1], 1, 3);
-        func_80045E20(6, 0x90, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, (void*)0x8026F000, (void*)0x8027E200, (void*)0x8027E700, (void*)0x8027EB00, 0, 4, 0, 116.0f, 8.0f, 16.0f, 0xA);
-        dmaOverlayScreenSprites(6, D_801FB978[1], 2, 3);
+    if (gFarmRankingData.flags[1] & RANKING_FLAG_ACTIVE) {
+        setOverlayScreenSprites(1, 0x8E, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, (void*)0x8026F000, (void*)0x8027E200, (void*)0x8027E700, (void*)0x8027EB00, 0, 4, 0, 48.0f, 8.0f, 16.0f, 0xA);
+        dmaOverlayScreenSprites(1, gFarmRankingData.years[1], 1, 3);
+        setOverlayScreenSprites(6, 0x90, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, (void*)0x8026F000, (void*)0x8027E200, (void*)0x8027E700, (void*)0x8027EB00, 0, 4, 0, 116.0f, 8.0f, 16.0f, 0xA);
+        dmaOverlayScreenSprites(6, gFarmRankingData.scores[1], 2, 3);
     }
     
-    if (D_801FB994[2] & 1) {
-        func_80045E20(2, 0x93, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, (void*)0x8026F000, (void*)0x8027E200, (void*)0x8027E700, (void*)0x8027EB00, 0, 4, 0, 48.0f, -24.0f, 16.0f, 0xA);
-        dmaOverlayScreenSprites(2, D_801FB804[2], 1, 3);
-        func_80045E20(7, 0x95, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, (void*)0x8026F000, (void*)0x8027E200, (void*)0x8027E700, (void*)0x8027EB00, 0, 4, 0, 116.0f, -24.0f, 16.0f, 0xA);
-        dmaOverlayScreenSprites(7, D_801FB978[2], 2, 3);
+    if (gFarmRankingData.flags[2] & RANKING_FLAG_ACTIVE) {
+        setOverlayScreenSprites(2, 0x93, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, (void*)0x8026F000, (void*)0x8027E200, (void*)0x8027E700, (void*)0x8027EB00, 0, 4, 0, 48.0f, -24.0f, 16.0f, 0xA);
+        dmaOverlayScreenSprites(2, gFarmRankingData.years[2], 1, 3);
+        setOverlayScreenSprites(7, 0x95, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, (void*)0x8026F000, (void*)0x8027E200, (void*)0x8027E700, (void*)0x8027EB00, 0, 4, 0, 116.0f, -24.0f, 16.0f, 0xA);
+        dmaOverlayScreenSprites(7, gFarmRankingData.scores[2], 2, 3);
     }
-    if (D_801FB994[3] & 1) {
-        func_80045E20(3, 0x98, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, (void*)0x8026F000, (void*)0x8027E200, (void*)0x8027E700, (void*)0x8027EB00, 0, 4, 0, 48.0f, -56.0f, 16.0f, 0xA);
-        dmaOverlayScreenSprites(3, D_801FB804[3], 1, 3);
-        func_80045E20(8, 0x9A, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, (void*)0x8026F000, (void*)0x8027E200, (void*)0x8027E700, (void*)0x8027EB00, 0, 4, 0, 116.0f, -56.0f, 16.0f, 0xA);
-        dmaOverlayScreenSprites(8, D_801FB978[3], 2, 3);
+    if (gFarmRankingData.flags[3] & RANKING_FLAG_ACTIVE) {
+        setOverlayScreenSprites(3, 0x98, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, (void*)0x8026F000, (void*)0x8027E200, (void*)0x8027E700, (void*)0x8027EB00, 0, 4, 0, 48.0f, -56.0f, 16.0f, 0xA);
+        dmaOverlayScreenSprites(3, gFarmRankingData.years[3], 1, 3);
+        setOverlayScreenSprites(8, 0x9A, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, (void*)0x8026F000, (void*)0x8027E200, (void*)0x8027E700, (void*)0x8027EB00, 0, 4, 0, 116.0f, -56.0f, 16.0f, 0xA);
+        dmaOverlayScreenSprites(8, gFarmRankingData.scores[3], 2, 3);
     }
     
-    if (D_801FB994[4] & 1) {
-        func_80045E20(4, 0x9D, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, (void*)0x8026F000, (void*)0x8027E200, (void*)0x8027E700, (void*)0x8027EB00, 0, 4, 0, 48.0f, -88.0f, 16.0f, 0xA);
-        dmaOverlayScreenSprites(4, D_801FB804[4], 1, 3);
-        func_80045E20(9, 0x9F, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, (void*)0x8026F000, (void*)0x8027E200, (void*)0x8027E700, (void*)0x8027EB00, 0, 4, 0, 116.0f, -88.0f, 16.0f, 0xA);
-        dmaOverlayScreenSprites(9, D_801FB978[4], 2, 3);
+    if (gFarmRankingData.flags[4] & RANKING_FLAG_ACTIVE) {
+        setOverlayScreenSprites(4, 0x9D, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, (void*)0x8026F000, (void*)0x8027E200, (void*)0x8027E700, (void*)0x8027EB00, 0, 4, 0, 48.0f, -88.0f, 16.0f, 0xA);
+        dmaOverlayScreenSprites(4, gFarmRankingData.years[4], 1, 3);
+        setOverlayScreenSprites(9, 0x9F, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, (void*)0x8026F000, (void*)0x8027E200, (void*)0x8027E700, (void*)0x8027EB00, 0, 4, 0, 116.0f, -88.0f, 16.0f, 0xA);
+        dmaOverlayScreenSprites(9, gFarmRankingData.scores[4], 2, 3);
     }
     
     func_8003E77C(0, 0, 0, 0, 0);
@@ -3054,22 +2884,165 @@ void func_800E6FB4(u8 arg0) {
     
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800E80AC);
+//INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800E80AC);
 
-//INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800E8F08);
+void func_800E80AC(u8 arg0) {
+
+    setGameVariableString(5, (u8*)&gFarmRankingData.farmNames[arg0], 6);
+    setGameVariableString(6, (u8*)&gFarmRankingData.farmNames[arg0 + 7], 6);
+    setGameVariableString(7, (u8*)&gFarmRankingData.farmNames[arg0 + 14], 6);
+    setGameVariableString(8, (u8*)&gFarmRankingData.farmNames[arg0 + 21], 6);
+    setGameVariableString(9, (u8*)&gFarmRankingData.farmNames[arg0 + 28], 6);
+    setGameVariableString(10, (u8*)&gFarmRankingData.farmNames[arg0 + 35], 6);
+
+    func_8003DD14(0);
+    initializeEmptyMessageBox(0, (u8*)0x8030B000);
+    setMessageBoxViewSpacePosition(0, -28.0f, 72.0f, 0.0f);
+    func_8003F5D0(0, 0xA, 2);
+    func_8003F630(0, 0, 2);
+    func_8003F464(0, 0xE, 0xE, (u8*)0x802FF000, (u16*)0x8030A000);
+    func_8003F360(0, -4, 2);
+
+    setMessageBoxSpriteIndices(0, 0xFF, 0, 0);
+    setMessageBoxButtonMask(0, 0x8000);
+    func_8003FB4C(0, 1);
+    initializeMessageBox(0, 0, 0xC, 0x80000);
+    func_8003DD14(1);
+    initializeEmptyMessageBox(1, (u8*)0x8030B400);
+    setMessageBoxViewSpacePosition(1, -40.0f, 40.0f, 0.0f);
+    func_8003F5D0(1, 0xA, 2);
+    func_8003F630(1, 0, 2);
+    func_8003F464(1, 0xE, 0xE, (u8*)0x802FF000, (u16*)0x8030A000);
+    func_8003F360(1, -4, 2);
+    setMessageBoxSpriteIndices(1, 0xFF, 0, 0);
+    setMessageBoxButtonMask(1, 0x8000);
+    func_8003FB4C(1, 1);
+    initializeMessageBox(1, 0, 0xD, 0x80000);
+
+    if (gFarmRankingData.flags[arg0] & 2) {
+        
+        func_8003DD14(2);
+        initializeEmptyMessageBox(2, (u8*)0x8030B800);
+        setMessageBoxViewSpacePosition(2, -40.0f, 24.0f, 0.0f);
+        func_8003F5D0(2, 0xA, 2);
+        func_8003F630(2, 0, 2);
+        func_8003F464(2, 0xE, 0xE, (u8*)0x802FF000, (u16*)0x8030A000);
+        func_8003F360(2, -4, 2);
+        setMessageBoxSpriteIndices(2, 0xFF, 0, 0);
+        setMessageBoxButtonMask(2, 0x8000);
+        func_8003FB4C(2, 1);
+        initializeMessageBox(2, 0, 0xE, 0x80000);
+    
+    }
+
+    if (gFarmRankingData.flags[arg0] & 4) {
+        func_8003DD14(3);
+        initializeEmptyMessageBox(3, (u8*)0x8030BC00);
+        setMessageBoxViewSpacePosition(3, -40.0f, 8.0f, 0.0f);
+        func_8003F5D0(3, 0xA, 2);
+        func_8003F630(3, 0, 2);
+        func_8003F464(3, 0xE, 0xE, (u8*)0x802FF000, (u16*)0x8030A000);
+        func_8003F360(3, -4, 2);
+        setMessageBoxSpriteIndices(3, 0xFF, 0, 0);
+        setMessageBoxButtonMask(3, 0x8000);
+        func_8003FB4C(3, 1);
+        initializeMessageBox(3, 0, 0xF, 0x80000);
+    }
+    
+    func_8003DD14(4);
+    initializeEmptyMessageBox(4, (u8*)0x8030C000);
+    setMessageBoxViewSpacePosition(4, -40.0f, -8.0f, 0.0f);
+    func_8003F5D0(4, 0xA, 2);
+    func_8003F630(4, 0, 2);
+    func_8003F464(4, 0xE, 0xE, (u8*)0x802FF000, (u16*)0x8030A000);
+    func_8003F360(4, -4, 2);
+    setMessageBoxSpriteIndices(4, 0xFF, 0, 0);
+    setMessageBoxButtonMask(4, 0x8000);
+    func_8003FB4C(4, 1);
+    initializeMessageBox(4, 0, 0x10, 0x80000);
+
+    if (gFarmRankingData.flags[arg0] & 8) {
+        func_8003DD14(5);
+        initializeEmptyMessageBox(5, (u8*)0x8030C400);
+        setMessageBoxViewSpacePosition(5, -40.0f, -24.0f, 0.0f);
+        func_8003F5D0(5, 0xA, 2);
+        func_8003F630(5, 0, 2);
+        func_8003F464(5, 0xE, 0xE, (u8*)0x802FF000, (u16*)0x8030A000);
+        func_8003F360(5, -4, 2);
+        setMessageBoxSpriteIndices(5, 0xFF, 0, 0);
+        setMessageBoxButtonMask(5, 0x8000);
+        func_8003FB4C(5, 1);
+        initializeMessageBox(5, 0, 0x11, 0x80000);
+    }
+    
+    setOverlayScreenSprites(0, 0x89, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, (void*)0x8026F000, (void*)0x8027E200, (void*)0x8027E700, (void*)0x8027EB00, 0, 4, 0, 48.0f, 80.0f, 16.0f, 0xA);
+    dmaOverlayScreenSprites(0, gFarmRankingData.years[arg0], 1, 3);
+    
+    setOverlayScreenSprites(1, 0x8B, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, (void*)0x8026F000, (void*)0x8027E200, (void*)0x8027E700, (void*)0x8027EB00, 0, 4, 0, 116.0f, 80.0f, 16.0f, 0xA);
+    dmaOverlayScreenSprites(1, gFarmRankingData.scores[arg0], 2, 3);
+
+    setOverlayScreenSprites(2, 0xA4, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, (void*)0x8026F000, (void*)0x8027E200, (void*)0x8027E700, (void*)0x8027EB00, 0, 4, 0, -26.0f, -32.0f, 16.0f, 0xA);
+    dmaOverlayScreenSprites(2, gFarmRankingData.photoCount[arg0], 1, 3);
+    
+    setOverlayScreenSprites(3, 0xA6, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, (void*)0x8026F000, (void*)0x8027E200, (void*)0x8027E700, (void*)0x8027EB00, 0, 4, 0, -26.0f, -48.0f, 16.0f, 0xA);
+    dmaOverlayScreenSprites(3, gFarmRankingData.recipeCount[arg0], 1, 3);
+    
+    setOverlayScreenSprites(4, 0xA8, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, (void*)0x8026F000, (void*)0x8027E200, (void*)0x8027E700, (void*)0x8027EB00, 0, 4, 0, -26.0f, -64.0f, 16.0f, 0xA);
+    dmaOverlayScreenSprites(4, (gFarmRankingData.houseExtensions[arg0] * 100) / 6, 2, 3);
+    
+    setOverlayScreenSprites(5, 0xAB, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, (void*)0x8026F000, (void*)0x8027E200, (void*)0x8027E700, (void*)0x8027EB00, 0, 4, 0, -26.0f, -80.0f, 16.0f, 0xA);
+    dmaOverlayScreenSprites(5, gFarmRankingData.grassTiles[arg0], 2, 3);
+    
+    setOverlayScreenSprites(6, 0x8E, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, (void*)0x8026F000, (void*)0x8027E200, (void*)0x8027E700, (void*)0x8027EB00, 0, 4, 0, 98.0f, 34.0f, 16.0f, 0xA);
+    dmaOverlayScreenSprites(6, gFarmRankingData.cropsShipped[arg0], 4, 3);
+    
+    setOverlayScreenSprites(7, 0x93, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, (void*)0x8026F000, (void*)0x8027E200, (void*)0x8027E700, (void*)0x8027EB00, 0, 4, 0, 98.0f, 6.0f, 16.0f, 0xA);
+    dmaOverlayScreenSprites(7, gFarmRankingData.milkShipped[arg0], 3, 3);
+    
+    setOverlayScreenSprites(8, 0x97, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, (void*)0x8026F000, (void*)0x8027E200, (void*)0x8027E700, (void*)0x8027EB00, 0, 4, 0, 98.0f, -22.0f, 16.0f, 0xA);
+    dmaOverlayScreenSprites(8, gFarmRankingData.eggsShipped[arg0], 3, 3);
+    
+    setOverlayScreenSprites(9, 0x9B, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, (void*)0x8026F000, (void*)0x8027E200, (void*)0x8027E700, (void*)0x8027EB00, 0, 4, 0, 98.0f, -50.0f, 16.0f, 0xA);
+    dmaOverlayScreenSprites(9, gFarmRankingData.fishCaught[arg0], 2, 3);
+    
+    setOverlayScreenSprites(0xA, 0x9E, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, (void*)0x8026F000, (void*)0x8027E200, (void*)0x8027E700, (void*)0x8027EB00, 0, 4, 0, 98.0f, -78.0f, 16.0f, 0xA);
+    dmaOverlayScreenSprites(0xA, gFarmRankingData.gold[arg0], 5, 3);
+
+    func_8003E77C(0, 0xFF, 0xFF, 0xFF, 0xFF);
+    func_8003E77C(1, 0xFF, 0xFF, 0xFF, 0xFF);
+    func_8003E77C(2, 0xFF, 0xFF, 0xFF, 0xFF);
+    func_8003E77C(3, 0xFF, 0xFF, 0xFF, 0xFF);
+    func_8003E77C(4, 0xFF, 0xFF, 0xFF, 0xFF);
+    func_8003E77C(5, 0xFF, 0xFF, 0xFF, 0xFF);
+    
+    setOverlayScreenSpritesRGBA(0, 0xFF, 0xFF, 0xFF, 0xFF);
+    setOverlayScreenSpritesRGBA(1, 0xFF, 0xFF, 0xFF, 0xFF);
+    setOverlayScreenSpritesRGBA(2, 0xFF, 0xFF, 0xFF, 0xFF);
+    setOverlayScreenSpritesRGBA(3, 0xFF, 0xFF, 0xFF, 0xFF);
+    setOverlayScreenSpritesRGBA(4, 0xFF, 0xFF, 0xFF, 0xFF);
+    setOverlayScreenSpritesRGBA(5, 0xFF, 0xFF, 0xFF, 0xFF);
+    setOverlayScreenSpritesRGBA(6, 0xFF, 0xFF, 0xFF, 0xFF);
+    setOverlayScreenSpritesRGBA(7, 0xFF, 0xFF, 0xFF, 0xFF);
+    setOverlayScreenSpritesRGBA(8, 0xFF, 0xFF, 0xFF, 0xFF);
+    setOverlayScreenSpritesRGBA(9, 0xFF, 0xFF, 0xFF, 0xFF);
+    setOverlayScreenSpritesRGBA(10, 0xFF, 0xFF, 0xFF, 0xFF);
+    
+}
+
+// INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800E8F08);
 
 // farm ranking screen main loop callback
 void func_800E8F08(void) {
 
     bool set = FALSE;
 
-    switch (D_801FB9A0) {
+    switch (gFarmRankingData.screenState) {
 
         case 0:
             
             if (func_8002CBF8(0x80)) {
-                func_800B7F6C(D_801FB99B[0]);
-                D_801FB9A0 = 1;
+                func_800B7F6C(gFarmRankingData.cursorIndex);
+                gFarmRankingData.screenState = 1;
             }
             
             break;
@@ -3080,8 +3053,8 @@ void func_800E8F08(void) {
                 
                 if (!set) {
                     
-                    if (D_801FB99B[0]) {
-                        D_801FB99B[0]--;
+                    if (gFarmRankingData.cursorIndex) {
+                        gFarmRankingData.cursorIndex--;
                         playSfx(2);
                     }
                     
@@ -3093,8 +3066,8 @@ void func_800E8F08(void) {
             
             if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_SOUTHWEST) && !set) {
                 
-                if (D_801FB99B[0] != 4) {
-                    D_801FB99B[0]++;
+                if (gFarmRankingData.cursorIndex != 4) {
+                    gFarmRankingData.cursorIndex++;
                     playSfx(2);
                 }
                 
@@ -3102,11 +3075,11 @@ void func_800E8F08(void) {
                 
             }
 
-            func_800B7F6C(D_801FB99B[0]);
+            func_800B7F6C(gFarmRankingData.cursorIndex);
             
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A) && !set) {
                 
-                if (D_801FB994[D_801FB99B[0]] & 1) {
+                if (gFarmRankingData.flags[gFarmRankingData.cursorIndex] & RANKING_FLAG_ACTIVE) {
                     
                     deactivateSprite(0x79);
                     deactivateSprite(0x82);
@@ -3138,7 +3111,7 @@ void func_800E8F08(void) {
                     deactivateOverlayScreenSprites(8);
                     deactivateOverlayScreenSprites(9);
                     
-                    D_801FB9A0 = 2;
+                    gFarmRankingData.screenState = 2;
                     playSfx(0);
                     
                 }
@@ -3169,7 +3142,7 @@ void func_800E8F08(void) {
                 func_8004635C(8, 0, 0, 0, 0, 24);
                 func_8004635C(9, 0, 0, 0, 0, 24);
                 
-                D_801FB9A0 = 5;
+                gFarmRankingData.screenState = 5;
                 playSfx(0);
                 
             }
@@ -3177,9 +3150,9 @@ void func_800E8F08(void) {
             break;
 
         case 2:
-            func_800E80AC(D_801FB99B[0]);
-            func_800B7070(D_801FB99B[0]);
-            D_801FB9A0 = 3;
+            func_800E80AC(gFarmRankingData.cursorIndex);
+            func_800B7070(gFarmRankingData.cursorIndex);
+            gFarmRankingData.screenState = 3;
             break;
 
         case 3:
@@ -3217,7 +3190,7 @@ void func_800E8F08(void) {
                 deactivateOverlayScreenSprites(9);
                 deactivateOverlayScreenSprites(0xA);
                 
-                D_801FB9A0 = 4;
+                gFarmRankingData.screenState = 4;
                 playSfx(0);
                 
             }
@@ -3229,7 +3202,7 @@ void func_800E8F08(void) {
             func_800B6674();
             func_800B7E28();
 
-            D_801FB9A0 = 1;
+            gFarmRankingData.screenState = 1;
             break;
 
         case 5:
@@ -3267,51 +3240,297 @@ void func_800E8F08(void) {
     
 }
 
-// load game state from sram and write farm ranking screen strings
-INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800E9550);
+//INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800E9550);
+
+void func_800E9550(u8 slot) {
+
+    FarmRankingsBuffer* buff = (FarmRankingsBuffer*)FARM_RANKINGS_BUFFER;
+    u32 devAddr = ((slot << 8) + 0x4000) | 0x08000000;
+
+    func_8004DC48(devAddr, FARM_RANKINGS_BUFFER, 0x100);
+
+    if (func_800E3300(buff->signature)) {
+        
+        if (func_800E3990((u8*)buff)) {
+
+            gFarmRankingData.flags[slot] = 1;
+            gFarmRankingData.flags[slot] = buff->flags;
+
+            gFarmRankingData.farmNames[slot][0] = buff->farmName[0];
+            gFarmRankingData.farmNames[slot][1] = buff->farmName[1];
+            gFarmRankingData.farmNames[slot][2] = buff->farmName[2];
+            gFarmRankingData.farmNames[slot][3] = buff->farmName[3];
+            gFarmRankingData.farmNames[slot][4] = buff->farmName[4];
+            gFarmRankingData.farmNames[slot][5] = buff->farmName[5];
+
+            gFarmRankingData.playerNames[slot][0] = buff->playerName[0];
+            gFarmRankingData.playerNames[slot][1] = buff->playerName[1];
+            gFarmRankingData.playerNames[slot][2] = buff->playerName[2];
+            gFarmRankingData.playerNames[slot][3] = buff->playerName[3];
+            gFarmRankingData.playerNames[slot][4] = buff->playerName[4];
+            gFarmRankingData.playerNames[slot][5] = buff->playerName[5];
+
+            gFarmRankingData.wifeNames[slot][0] = buff->wifeName[0];
+            gFarmRankingData.wifeNames[slot][1] = buff->wifeName[1];
+            gFarmRankingData.wifeNames[slot][2] = buff->wifeName[2];
+            gFarmRankingData.wifeNames[slot][3] = buff->wifeName[3];
+            gFarmRankingData.wifeNames[slot][4] = buff->wifeName[4];
+            gFarmRankingData.wifeNames[slot][5] = buff->wifeName[5];
+
+            gFarmRankingData.babyNames[slot][0] = buff->babyName[0];
+            gFarmRankingData.babyNames[slot][1] = buff->babyName[1];
+            gFarmRankingData.babyNames[slot][2] = buff->babyName[2];
+            gFarmRankingData.babyNames[slot][3] = buff->babyName[3];
+            gFarmRankingData.babyNames[slot][4] = buff->babyName[4];
+            gFarmRankingData.babyNames[slot][5] = buff->babyName[5];
+
+            gFarmRankingData.dogNames[slot][0] = buff->dogName[0];
+            gFarmRankingData.dogNames[slot][1] = buff->dogName[1];
+            gFarmRankingData.dogNames[slot][2] = buff->dogName[2];
+            gFarmRankingData.dogNames[slot][3] = buff->dogName[3];
+            gFarmRankingData.dogNames[slot][4] = buff->dogName[4];
+            gFarmRankingData.dogNames[slot][5] = buff->dogName[5];
+
+            gFarmRankingData.horseNames[slot][0] = buff->horseName[0];
+            gFarmRankingData.horseNames[slot][1] = buff->horseName[1];
+            gFarmRankingData.horseNames[slot][2] = buff->horseName[2];
+            gFarmRankingData.horseNames[slot][3] = buff->horseName[3];
+            gFarmRankingData.horseNames[slot][4] = buff->horseName[4];
+            gFarmRankingData.horseNames[slot][5] = buff->horseName[5];
+
+            gFarmRankingData.years[slot] = buff->year;
+            gFarmRankingData.seasons[slot] = buff->season;
+
+            gFarmRankingData.mariaAffection[slot] = buff->mariaAffection;
+            gFarmRankingData.popuriAffection[slot] = buff->popuriAffection;
+            gFarmRankingData.elliAffection[slot] = buff->elliAffection;
+            gFarmRankingData.annAffection[slot] = buff->annAffection;
+            gFarmRankingData.karenAffection[slot] = buff->karenAffection;
+            gFarmRankingData.harrisAffection[slot] = buff->harrisAffection;
+            gFarmRankingData.grayAffection[slot] = buff->grayAffection;
+            gFarmRankingData.jeffAffection[slot] = buff->jeffAffection;
+            gFarmRankingData.cliffAffection[slot] = buff->cliffAffection;
+            gFarmRankingData.kaiAffection[slot] = buff->kaiAffection;
+            gFarmRankingData.wifeAffection[slot] = buff->wifeAffection;
+            gFarmRankingData.babyAffection[slot] = buff->babyAffection;
+            gFarmRankingData.dogAffection[slot] = buff->dogAffection;
+            gFarmRankingData.horseAffection[slot] = buff->horseAffection;
+
+            gFarmRankingData.farmAnimalAffection[slot][0] = buff->farmAnimalAffection[0];
+            gFarmRankingData.farmAnimalAffection[slot][1] = buff->farmAnimalAffection[1];
+            gFarmRankingData.farmAnimalAffection[slot][2] = buff->farmAnimalAffection[2];
+            gFarmRankingData.farmAnimalAffection[slot][3] = buff->farmAnimalAffection[3];
+            gFarmRankingData.farmAnimalAffection[slot][4] = buff->farmAnimalAffection[4];
+            gFarmRankingData.farmAnimalAffection[slot][5] = buff->farmAnimalAffection[5];
+            gFarmRankingData.farmAnimalAffection[slot][6] = buff->farmAnimalAffection[6];
+            gFarmRankingData.farmAnimalAffection[slot][7] = buff->farmAnimalAffection[7];
+
+            gFarmRankingData.chickenCounts[slot] = buff->chickenCount;
+            gFarmRankingData.wife[slot] = buff->wife;
+
+            gFarmRankingData.cropsShipped[slot] = buff->cropsShipped;
+            gFarmRankingData.eggsShipped[slot] = buff->eggsShipped;
+            gFarmRankingData.milkShipped[slot] = buff->milkShipped;
+            gFarmRankingData.fishCaught[slot] = buff->fishCaught;
+            gFarmRankingData.gold[slot] = buff->gold;
+
+            gFarmRankingData.grassTiles[slot] = buff->grassTiles;
+            gFarmRankingData.maxStamina[slot] = buff->maxStamina;
+            gFarmRankingData.photoCount[slot] = buff->photoCount;
+            gFarmRankingData.recipeCount[slot] = buff->recipeCount;
+            gFarmRankingData.houseExtensions[slot] = buff->houseExtensions;
+            gFarmRankingData.happiness[slot] = buff->happiness;
+            gFarmRankingData.scores[slot] = buff->score;
+
+            return;
+            
+        }
+        
+    }
+
+    gFarmRankingData.flags[slot] = 0;
+
+}
 
 // save/cache top completion state into sram
-INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800E9B2C);
+//INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800E9B2C);
 
-//INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800EA2A4);
+void func_800E9B2C(u8 slot) {
 
-void func_800EA2A4(u8 arg0) {
+    u32 temp = (slot << 8) + 0x4000;
+    u32 devAddr = temp + 0x08000000;
+
+    u32 temp1;
+    u32 temp2;
+    u32 temp3;
+    u32 temp4;
+    u32 temp5;
+    u16 temp6;
     
-    gamePakBuffer[0] = 0;
-    gamePakBuffer[1] = 0;
-    gamePakBuffer[2] = 0;
-    gamePakBuffer[3] = 0;
-    gamePakBuffer[4] = 0;
-    gamePakBuffer[5] = 0;
-    gamePakBuffer[6] = 0;
-    gamePakBuffer[7] = 0;
-    gamePakBuffer[8] = 0;
-    gamePakBuffer[9] = 0;
-    gamePakBuffer[10] = 0;
-    gamePakBuffer[11] = 0;
-    gamePakBuffer[12] = 0;
-    gamePakBuffer[13] = 0;
-    gamePakBuffer[14] = 0;
-    gamePakBuffer[15] = 0;
+    FarmRankingsBuffer* buff = (FarmRankingsBuffer*)FARM_RANKINGS_BUFFER;
 
-    func_8004DD7C(((arg0 * 0x100) + 0x4000) | 0x08000000, 0x8030E000, 0x10);
+    // Write signature
+    buff->signature[0] = D_80119740[0];
+    farmRankingsBuffer.signature[1] = D_80119740[1];
+    farmRankingsBuffer.signature[2] = D_80119740[2];
+    farmRankingsBuffer.signature[3] = D_80119740[3];
+    farmRankingsBuffer.signature[4] = D_80119740[4];
+    farmRankingsBuffer.signature[5] = D_80119740[5];
+    farmRankingsBuffer.signature[6] = D_80119740[6];
+    farmRankingsBuffer.signature[7] = D_80119740[7];
+    farmRankingsBuffer.signature[8] = D_80119740[8];
+    farmRankingsBuffer.signature[9] = D_80119740[9];
+    farmRankingsBuffer.signature[10] = D_80119740[10];
+    farmRankingsBuffer.signature[11] = D_80119740[11];
+    farmRankingsBuffer.signature[12] = D_80119740[12];
+    farmRankingsBuffer.signature[13] = D_80119740[13];
+    farmRankingsBuffer.signature[14] = D_80119740[14];
+    farmRankingsBuffer.signature[15] = D_80119740[15];
+
+    farmRankingsBuffer.flags = gFarmRankingData.flags[slot];
+
+    farmRankingsBuffer.farmName[0] = gFarmRankingData.farmNames[slot][0];
+    farmRankingsBuffer.farmName[1] = gFarmRankingData.farmNames[slot][1];
+    farmRankingsBuffer.farmName[2] = gFarmRankingData.farmNames[slot][2];
+    farmRankingsBuffer.farmName[3] = gFarmRankingData.farmNames[slot][3];
+    farmRankingsBuffer.farmName[4] = gFarmRankingData.farmNames[slot][4];
+    farmRankingsBuffer.farmName[5] = gFarmRankingData.farmNames[slot][5];
+
+    farmRankingsBuffer.playerName[0] = gFarmRankingData.playerNames[slot][0];
+    farmRankingsBuffer.playerName[1] = gFarmRankingData.playerNames[slot][1];
+    farmRankingsBuffer.playerName[2] = gFarmRankingData.playerNames[slot][2];
+    farmRankingsBuffer.playerName[3] = gFarmRankingData.playerNames[slot][3];
+    farmRankingsBuffer.playerName[4] = gFarmRankingData.playerNames[slot][4];
+    farmRankingsBuffer.playerName[5] = gFarmRankingData.playerNames[slot][5];
+
+    farmRankingsBuffer.wifeName[0] = gFarmRankingData.wifeNames[slot][0];
+    farmRankingsBuffer.wifeName[1] = gFarmRankingData.wifeNames[slot][1];
+    farmRankingsBuffer.wifeName[2] = gFarmRankingData.wifeNames[slot][2];
+    farmRankingsBuffer.wifeName[3] = gFarmRankingData.wifeNames[slot][3];
+    farmRankingsBuffer.wifeName[4] = gFarmRankingData.wifeNames[slot][4];
+    farmRankingsBuffer.wifeName[5] = gFarmRankingData.wifeNames[slot][5];
+
+    farmRankingsBuffer.babyName[0] = gFarmRankingData.babyNames[slot][0];
+    farmRankingsBuffer.babyName[1] = gFarmRankingData.babyNames[slot][1];
+    farmRankingsBuffer.babyName[2] = gFarmRankingData.babyNames[slot][2];
+    farmRankingsBuffer.babyName[3] = gFarmRankingData.babyNames[slot][3];
+    farmRankingsBuffer.babyName[4] = gFarmRankingData.babyNames[slot][4];
+    farmRankingsBuffer.babyName[5] = gFarmRankingData.babyNames[slot][5];
+
+    farmRankingsBuffer.dogName[0] = gFarmRankingData.dogNames[slot][0];
+    farmRankingsBuffer.dogName[1] = gFarmRankingData.dogNames[slot][1];
+    farmRankingsBuffer.dogName[2] = gFarmRankingData.dogNames[slot][2];
+    farmRankingsBuffer.dogName[3] = gFarmRankingData.dogNames[slot][3];
+    farmRankingsBuffer.dogName[4] = gFarmRankingData.dogNames[slot][4];
+    farmRankingsBuffer.dogName[5] = gFarmRankingData.dogNames[slot][5];
+
+    farmRankingsBuffer.horseName[0] = gFarmRankingData.horseNames[slot][0];
+    farmRankingsBuffer.horseName[1] = gFarmRankingData.horseNames[slot][1];
+    farmRankingsBuffer.horseName[2] = gFarmRankingData.horseNames[slot][2];
+    farmRankingsBuffer.horseName[3] = gFarmRankingData.horseNames[slot][3];
+    farmRankingsBuffer.horseName[4] = gFarmRankingData.horseNames[slot][4];
+    farmRankingsBuffer.horseName[5] = gFarmRankingData.horseNames[slot][5];
+
+    farmRankingsBuffer.year = gFarmRankingData.years[slot];
+    farmRankingsBuffer.season = gFarmRankingData.seasons[slot];
+
+    farmRankingsBuffer.mariaAffection = gFarmRankingData.mariaAffection[slot];
+    farmRankingsBuffer.popuriAffection = gFarmRankingData.popuriAffection[slot];
+    farmRankingsBuffer.elliAffection = gFarmRankingData.elliAffection[slot];
+    farmRankingsBuffer.annAffection = gFarmRankingData.annAffection[slot];
+    farmRankingsBuffer.karenAffection = gFarmRankingData.karenAffection[slot];
+    farmRankingsBuffer.harrisAffection = gFarmRankingData.harrisAffection[slot];
+    farmRankingsBuffer.grayAffection = gFarmRankingData.grayAffection[slot];
+    farmRankingsBuffer.jeffAffection = gFarmRankingData.jeffAffection[slot];
+    farmRankingsBuffer.cliffAffection = gFarmRankingData.cliffAffection[slot];
+    farmRankingsBuffer.kaiAffection = gFarmRankingData.kaiAffection[slot];
+    farmRankingsBuffer.wifeAffection = gFarmRankingData.wifeAffection[slot];
+    farmRankingsBuffer.babyAffection = gFarmRankingData.babyAffection[slot];
+    farmRankingsBuffer.dogAffection = gFarmRankingData.dogAffection[slot];
+    farmRankingsBuffer.horseAffection = gFarmRankingData.horseAffection[slot];
+
+    farmRankingsBuffer.farmAnimalAffection[0] = gFarmRankingData.farmAnimalAffection[slot][0];
+    farmRankingsBuffer.farmAnimalAffection[1] = gFarmRankingData.farmAnimalAffection[slot][1];
+    farmRankingsBuffer.farmAnimalAffection[2] = gFarmRankingData.farmAnimalAffection[slot][2];
+    farmRankingsBuffer.farmAnimalAffection[3] = gFarmRankingData.farmAnimalAffection[slot][3];
+    farmRankingsBuffer.farmAnimalAffection[4] = gFarmRankingData.farmAnimalAffection[slot][4];
+    farmRankingsBuffer.farmAnimalAffection[5] = gFarmRankingData.farmAnimalAffection[slot][5];
+    farmRankingsBuffer.farmAnimalAffection[6] = gFarmRankingData.farmAnimalAffection[slot][6];
+    farmRankingsBuffer.farmAnimalAffection[7] = gFarmRankingData.farmAnimalAffection[slot][7];
+
+    farmRankingsBuffer.chickenCount = gFarmRankingData.chickenCounts[slot];
+    farmRankingsBuffer.wife = gFarmRankingData.wife[slot];
+
+    temp1 = gFarmRankingData.cropsShipped[slot];
+    temp2 = gFarmRankingData.eggsShipped[slot];
+    temp3 = gFarmRankingData.milkShipped[slot];
+    temp4 = gFarmRankingData.fishCaught[slot];
+    temp5 = gFarmRankingData.gold[slot];
+    temp6 = gFarmRankingData.grassTiles[slot];
+
+    farmRankingsBuffer.cropsShipped = temp1;
+    farmRankingsBuffer.eggsShipped = temp2;
+    farmRankingsBuffer.milkShipped  = temp3;
+    farmRankingsBuffer.fishCaught = temp4;
+    farmRankingsBuffer.gold = temp5;
+
+    farmRankingsBuffer.grassTiles = temp6;
+    
+    farmRankingsBuffer.maxStamina = gFarmRankingData.maxStamina[slot];
+    farmRankingsBuffer.photoCount = gFarmRankingData.photoCount[slot];
+    farmRankingsBuffer.recipeCount = gFarmRankingData.recipeCount[slot];
+    farmRankingsBuffer.houseExtensions = gFarmRankingData.houseExtensions[slot];
+    farmRankingsBuffer.happiness = gFarmRankingData.happiness[slot];
+    
+    farmRankingsBuffer.score = gFarmRankingData.scores[slot];
+    
+    // Calculate and store checksum
+    buff->checksum = func_800E395C(buff->signature);
+
+    // Write to SRAM
+    func_8004DD7C(devAddr, buff, 0x100);
+
+}
+
+// INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800EA2A4);
+
+void func_800EA2A4(u8 arg0) { 
+    
+    farmRankingsBuffer.signature[0] = 0;
+    farmRankingsBuffer.signature[1] = 0;
+    farmRankingsBuffer.signature[2] = 0;
+    farmRankingsBuffer.signature[3] = 0;
+    farmRankingsBuffer.signature[4] = 0;
+    farmRankingsBuffer.signature[5] = 0;
+    farmRankingsBuffer.signature[6] = 0;
+    farmRankingsBuffer.signature[7] = 0;
+    farmRankingsBuffer.signature[8] = 0;
+    farmRankingsBuffer.signature[9] = 0;
+    farmRankingsBuffer.signature[10] = 0;
+    farmRankingsBuffer.signature[11] = 0;
+    farmRankingsBuffer.signature[12] = 0;
+    farmRankingsBuffer.signature[13] = 0;
+    farmRankingsBuffer.signature[14] = 0;
+    farmRankingsBuffer.signature[15] = 0;
+
+    func_8004DD7C(((arg0 * 0x100) + 0x4000) | 0x08000000, (FarmRankingsBuffer*)FARM_RANKINGS_BUFFER, 0x10);
 
 } 
 
-//INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800EA360);
+// INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800EA360);
 
 u8 func_800EA360(void) {
 
     u8 count = 0;
 
-    if (D_801FB994[0] & 1) {
+    if (gFarmRankingData.flags[0] & RANKING_FLAG_ACTIVE) {
 
 loop:
         if (count < 5) {
             
             count++;
             
-            if (D_801FB994[count] & 1) {
+            if (gFarmRankingData.flags[count] & RANKING_FLAG_ACTIVE) {
                 goto loop;
             }
             
@@ -3324,23 +3543,23 @@ loop:
 
 static inline void setBabyAffection() {
     if (checkLifeEventBit(HAVE_BABY)) {
-        D_801FB864 = npcAffection[BABY];
-        D_801FB999[0] |= 4;
+        gFarmRankingData.babyAffection[RANKING_TEMP_SLOT] = npcAffection[BABY];
+        gFarmRankingData.tempFlags |= 4;
     } else {
-        D_801FB864 = 0;
+        gFarmRankingData.babyAffection[RANKING_TEMP_SLOT] = 0;
     }
 }
 
 static inline void setHorseAffection() {
     if (checkLifeEventBit(HAVE_HORSE)) {
-        D_801FB872 = horseInfo.affection;
-        D_801FB999[0] |= 8;
+        gFarmRankingData.horseAffection[RANKING_TEMP_SLOT] = horseInfo.affection;
+        gFarmRankingData.tempFlags |= 8;
     } else {
-        D_801FB872 = 0;
+        gFarmRankingData.horseAffection[RANKING_TEMP_SLOT] = 0;
     }
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800EA3AC);
+// INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800EA3AC);
 
 // set strings from game state
 void func_800EA3AC(u8 arg0, u8 arg1) {
@@ -3348,149 +3567,151 @@ void func_800EA3AC(u8 arg0, u8 arg1) {
     // set game state from sram
     if (func_800E4424(arg0, arg1)) {
 
-        D_801FB999[0] = 1;
+        gFarmRankingData.tempFlags = 1;
         
-        D_801FB726[0] = gFarmName[0];
-        D_801FB726[1] = gFarmName[1];
-        D_801FB726[2] = gFarmName[2];
-        D_801FB726[3] = gFarmName[3];
-        D_801FB726[4] = gFarmName[4];
-        D_801FB726[5] = gFarmName[5];
+        gFarmRankingData.tempFarmName[0] = gFarmName[0];
+        gFarmRankingData.tempFarmName[1] = gFarmName[1];
+        gFarmRankingData.tempFarmName[2] = gFarmName[2];
+        gFarmRankingData.tempFarmName[3] = gFarmName[3];
+        gFarmRankingData.tempFarmName[4] = gFarmName[4];
+        gFarmRankingData.tempFarmName[5] = gFarmName[5];
         
-        D_801FB750[0] = gPlayer.name[0];
-        D_801FB750[1] = gPlayer.name[1];
-        D_801FB750[2] = gPlayer.name[2];
-        D_801FB750[3] = gPlayer.name[3];
-        D_801FB750[4] = gPlayer.name[4];
-        D_801FB750[5] = gPlayer.name[5];
+        gFarmRankingData.tempPlayerName[0] = gPlayer.name[0];
+        gFarmRankingData.tempPlayerName[1] = gPlayer.name[1];
+        gFarmRankingData.tempPlayerName[2] = gPlayer.name[2];
+        gFarmRankingData.tempPlayerName[3] = gPlayer.name[3];
+        gFarmRankingData.tempPlayerName[4] = gPlayer.name[4];
+        gFarmRankingData.tempPlayerName[5] = gPlayer.name[5];
         
-        D_801FB976 = gWife;
+        gFarmRankingData.wife[RANKING_TEMP_SLOT] = gWife;
 
         if (checkLifeEventBit(MARRIED)) {
             
-            setWifeNameString(D_801FB976);
+            setWifeNameString(gFarmRankingData.wife[RANKING_TEMP_SLOT]);
             
-            D_801FB77A[0] = gWifeName[0];
-            D_801FB77A[1] = gWifeName[1];
-            D_801FB77A[2] = gWifeName[2];
-            D_801FB77A[3] = gWifeName[3];
-            D_801FB77A[4] = gWifeName[4];
-            D_801FB77A[5] = gWifeName[5];
+            gFarmRankingData.tempWifeName[0] = gWifeName[0];
+            gFarmRankingData.tempWifeName[1] = gWifeName[1];
+            gFarmRankingData.tempWifeName[2] = gWifeName[2];
+            gFarmRankingData.tempWifeName[3] = gWifeName[3];
+            gFarmRankingData.tempWifeName[4] = gWifeName[4];
+            gFarmRankingData.tempWifeName[5] = gWifeName[5];
             
         }
 
-        if (checkLifeEventBit(1)) {
+        if (checkLifeEventBit(HAVE_BABY)) {
                 
-            D_801FB7A4[0] = gBabyName[0];
-            D_801FB7A4[1] = gBabyName[1];
-            D_801FB7A4[2] = gBabyName[2];
-            D_801FB7A4[3] = gBabyName[3];
-            D_801FB7A4[4] = gBabyName[4];
-            D_801FB7A4[5] = gBabyName[5];
+            gFarmRankingData.tempBabyName[0] = gBabyName[0];
+            gFarmRankingData.tempBabyName[1] = gBabyName[1];
+            gFarmRankingData.tempBabyName[2] = gBabyName[2];
+            gFarmRankingData.tempBabyName[3] = gBabyName[3];
+            gFarmRankingData.tempBabyName[4] = gBabyName[4];
+            gFarmRankingData.tempBabyName[5] = gBabyName[5];
             
         }
 
-        D_801FB7CE[0] = dogInfo.name[0];
-        D_801FB7CE[1] = dogInfo.name[1];
-        D_801FB7CE[2] = dogInfo.name[2];
-        D_801FB7CE[3] = dogInfo.name[3];
-        D_801FB7CE[4] = dogInfo.name[4];
-        D_801FB7CE[5] = dogInfo.name[5];
+        gFarmRankingData.tempDogName[0] = dogInfo.name[0];
+        gFarmRankingData.tempDogName[1] = dogInfo.name[1];
+        gFarmRankingData.tempDogName[2] = dogInfo.name[2];
+        gFarmRankingData.tempDogName[3] = dogInfo.name[3];
+        gFarmRankingData.tempDogName[4] = dogInfo.name[4];
+        gFarmRankingData.tempDogName[5] = dogInfo.name[5];
 
         if (checkLifeEventBit(HAVE_HORSE)) {
             
-            D_801FB7F8[0] = horseInfo.name[0];
-            D_801FB7F8[1] = horseInfo.name[1];
-            D_801FB7F8[2] = horseInfo.name[2];
-            D_801FB7F8[3] = horseInfo.name[3];
-            D_801FB7F8[4] = horseInfo.name[4];
-            D_801FB7F8[5] = horseInfo.name[5];
+            gFarmRankingData.tempHorseName[0] = horseInfo.name[0];
+            gFarmRankingData.tempHorseName[1] = horseInfo.name[1];
+            gFarmRankingData.tempHorseName[2] = horseInfo.name[2];
+            gFarmRankingData.tempHorseName[3] = horseInfo.name[3];
+            gFarmRankingData.tempHorseName[4] = horseInfo.name[4];
+            gFarmRankingData.tempHorseName[5] = horseInfo.name[5];
             
         }
 
-        D_801FB809 = gYear;
-        D_801FB810 = gSeason;
+        gFarmRankingData.years[RANKING_TEMP_SLOT] = gYear;
+        gFarmRankingData.seasons[RANKING_TEMP_SLOT] = gSeason;
         
-        D_801FB817 = npcAffection[MARIA];
-        D_801FB81E = npcAffection[POPURI];
-        D_801FB825 = npcAffection[ELLI];
-        D_801FB82C = npcAffection[ANN];
-        D_801FB833 = npcAffection[KAREN];
-        D_801FB83A = npcAffection[HARRIS];
-        D_801FB841 = npcAffection[GRAY];
-        D_801FB848 = npcAffection[JEFF];
-        D_801FB84F = npcAffection[CLIFF];
-        D_801FB856 = npcAffection[KAI];
+        gFarmRankingData.mariaAffection[RANKING_TEMP_SLOT] = npcAffection[MARIA];
+        gFarmRankingData.popuriAffection[RANKING_TEMP_SLOT] = npcAffection[POPURI];
+        gFarmRankingData.elliAffection[RANKING_TEMP_SLOT] = npcAffection[ELLI];
+        gFarmRankingData.annAffection[RANKING_TEMP_SLOT] = npcAffection[ANN];
+        gFarmRankingData.karenAffection[RANKING_TEMP_SLOT] = npcAffection[KAREN];
+        gFarmRankingData.harrisAffection[RANKING_TEMP_SLOT] = npcAffection[HARRIS];
+        gFarmRankingData.grayAffection[RANKING_TEMP_SLOT] = npcAffection[GRAY];
+        gFarmRankingData.jeffAffection[RANKING_TEMP_SLOT] = npcAffection[JEFF];
+        gFarmRankingData.cliffAffection[RANKING_TEMP_SLOT] = npcAffection[CLIFF];
+        gFarmRankingData.kaiAffection[RANKING_TEMP_SLOT] = npcAffection[KAI];
 
         if (checkLifeEventBit(MARRIED)) {
-            D_801FB85D = npcAffection[D_801FB976];
-            D_801FB999[0] |= 2;
+            gFarmRankingData.wifeAffection[RANKING_TEMP_SLOT] = npcAffection[gFarmRankingData.wife[RANKING_TEMP_SLOT]];
+            gFarmRankingData.tempFlags |= 2;
         } else {
-            D_801FB85D = 0;
+            gFarmRankingData.wifeAffection[RANKING_TEMP_SLOT] = 0;
         }
 
         setBabyAffection();
         
-        D_801FB86B = dogInfo.affection;
+        gFarmRankingData.dogAffection[RANKING_TEMP_SLOT] = dogInfo.affection;
 
         setHorseAffection();
         
         if (gFarmAnimals[0].flags & 1) {
-            D_801FB89C = gFarmAnimals[0].affection;
+            gFarmRankingData.tempFarmAnimalAffection[0] = gFarmAnimals[0].affection;
         } else {
-            D_801FB89C = 0;
+            gFarmRankingData.tempFarmAnimalAffection[0] = 0;
         }
                 
         if (gFarmAnimals[1].flags & 1) {
-            D_801FB89D = gFarmAnimals[1].affection;
+            gFarmRankingData.tempFarmAnimalAffection[1] = gFarmAnimals[1].affection;
         } else {
-            D_801FB89D = 0;
+            gFarmRankingData.tempFarmAnimalAffection[1] = 0;
         }
                 
         if (gFarmAnimals[2].flags & 1) {
-            D_801FB89E = gFarmAnimals[2].affection;
+            gFarmRankingData.tempFarmAnimalAffection[2] = gFarmAnimals[2].affection;
         } else {
-            D_801FB89E = 0;
+            gFarmRankingData.tempFarmAnimalAffection[2] = 0;
         }
                 
         if (gFarmAnimals[3].flags & 1) {
-            D_801FB89F = gFarmAnimals[3].affection;
+            gFarmRankingData.tempFarmAnimalAffection[3] = gFarmAnimals[3].affection;
         } else {
-            D_801FB89F = 0;
+            gFarmRankingData.tempFarmAnimalAffection[3] = 0;
         }
                 
         if (gFarmAnimals[4].flags & 1) {
-            D_801FB8A0 = gFarmAnimals[4].affection;
+            gFarmRankingData.tempFarmAnimalAffection[4] = gFarmAnimals[4].affection;
         } else {
-            D_801FB8A0 = 0;
+            gFarmRankingData.tempFarmAnimalAffection[4] = 0;
         }
                 
         if (gFarmAnimals[5].flags & 1) {
-            D_801FB8A1 = gFarmAnimals[5].affection;
+            gFarmRankingData.tempFarmAnimalAffection[5] = gFarmAnimals[5].affection;
         } else {
-            D_801FB8A1 = 0;
+            gFarmRankingData.tempFarmAnimalAffection[5] = 0;
         }
                         
         if (gFarmAnimals[6].flags & 1) {
-            D_801FB8A2 = gFarmAnimals[6].affection;
+            gFarmRankingData.tempFarmAnimalAffection[6] = gFarmAnimals[6].affection;
         } else {
-            D_801FB8A2 = 0;
+            gFarmRankingData.tempFarmAnimalAffection[6] = 0;
         }
                 
         if (gFarmAnimals[7].flags & 1) {
-            D_801FB8A3 = gFarmAnimals[7].affection;
+            gFarmRankingData.tempFarmAnimalAffection[7] = gFarmAnimals[7].affection;
         } else {
-            D_801FB8A3 = 0;
+            gFarmRankingData.tempFarmAnimalAffection[7] = 0;
         }
 
-        D_801FB8B1 = func_8009B564();
-        D_801FB8C8 = gTotalCropsShipped;
-        D_801FB8E4 = gTotalEggsShipped;
-        D_801FB900 = gTotalMilkShipped;
-        D_801FB91C = totalFishCaught;
-        D_801FB938 = gGold;
-        D_801FB953 = gMaximumStamina;
-        D_801FB96F = gHappiness;
+        gFarmRankingData.chickenCounts[RANKING_TEMP_SLOT] = func_8009B564();
+
+        gFarmRankingData.cropsShipped[RANKING_TEMP_SLOT] = gTotalCropsShipped;
+        gFarmRankingData.eggsShipped[RANKING_TEMP_SLOT] = gTotalEggsShipped;
+        gFarmRankingData.milkShipped[RANKING_TEMP_SLOT] = gTotalMilkShipped;
+        gFarmRankingData.fishCaught[RANKING_TEMP_SLOT] = totalFishCaught;
+        gFarmRankingData.gold[RANKING_TEMP_SLOT] = gGold;
+
+        gFarmRankingData.maxStamina[RANKING_TEMP_SLOT] = gMaximumStamina;
+        gFarmRankingData.happiness[RANKING_TEMP_SLOT] = gHappiness;
         
         func_800EB74C(5);
         func_800EB788(5);
@@ -3503,126 +3724,199 @@ void func_800EA3AC(u8 arg0, u8 arg1) {
         }
         
     } else {
-        D_801FB999[0] = 0;
+        gFarmRankingData.tempFlags = 0;
     }
     
 }
 
-// completion score calculation
-INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800EAA9C);
+//INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800EAA9C);
 
-//INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800EB74C);
+void func_800EAA9C(u8 slot) {
+    
+    f32 totalScore;
+    s32 finalIntScore;
+    
+    gFarmRankingData.scores[slot] = 0.0f;
 
-void func_800EB74C(u8 arg0) {
-    D_801FB940[arg0] = getFarmGrassTilesSum();
+    totalScore = (f32)(f64)(((u32)gFarmRankingData.mariaAffection[slot] * 100) / 255);
+
+    totalScore += (f32)(f64)(((u32)gFarmRankingData.popuriAffection[slot] * 100) / 255);
+
+    totalScore += (f32)(f64)(((u32)gFarmRankingData.elliAffection[slot] * 100) / 255);
+
+    totalScore += (f32)(f64)(((u32)gFarmRankingData.annAffection[slot] * 100) / 255);
+
+    totalScore += (f32)(f64)(((u32)gFarmRankingData.karenAffection[slot] * 100) / 255);
+
+    totalScore += (f32)(f64)(((u32)gFarmRankingData.harrisAffection[slot] * 100) / 255);
+
+    totalScore += (f32)(f64)(((u32)gFarmRankingData.grayAffection[slot] * 100) / 255);
+
+    totalScore += (f32)(f64)(((u32)gFarmRankingData.jeffAffection[slot] * 100) / 255);
+
+    totalScore += (f32)(f64)(((u32)gFarmRankingData.cliffAffection[slot] * 100) / 255);
+
+    totalScore += (f32)(f64)(((u32)gFarmRankingData.kaiAffection[slot] * 100) / 255);
+
+    totalScore += (f32)(f64)(((u32)gFarmRankingData.kaiAffection[slot] * 100) / 255);
+
+    totalScore += (f32)(f64)(((u32)gFarmRankingData.babyAffection[slot] * 100) / 255);
+
+    totalScore += (f32)(f64)(((u32)gFarmRankingData.dogAffection[slot] * 100) / 255);
+
+    totalScore += (f32)(f64)(((u32)gFarmRankingData.horseAffection[slot] * 100) / 255);
+
+    totalScore += (f32)(f64)(((u32)gFarmRankingData.farmAnimalAffection[slot][0] * 100) / 255);
+    totalScore += (f32)(f64)(((u32)gFarmRankingData.farmAnimalAffection[slot][1] * 100) / 255);
+    totalScore += (f32)(f64)(((u32)gFarmRankingData.farmAnimalAffection[slot][2] * 100) / 255);
+    totalScore += (f32)(f64)(((u32)gFarmRankingData.farmAnimalAffection[slot][3] * 100) / 255);
+    totalScore += (f32)(f64)(((u32)gFarmRankingData.farmAnimalAffection[slot][4] * 100) / 255);
+    totalScore += (f32)(f64)(((u32)gFarmRankingData.farmAnimalAffection[slot][5] * 100) / 255);
+    totalScore += (f32)(f64)(((u32)gFarmRankingData.farmAnimalAffection[slot][6] * 100) / 255);
+    totalScore += (f32)(f64)(((u32)gFarmRankingData.farmAnimalAffection[slot][7] * 100) / 255);
+
+    totalScore += (f32)(f64)(((u32)gFarmRankingData.chickenCounts[slot] * 100) / 6);
+
+    totalScore += (f32)(f64)(((u32)gFarmRankingData.cropsShipped[slot] * 1000) / 99999);
+
+    totalScore += (f32)(f64)(((u32)gFarmRankingData.eggsShipped[slot] * 500) / 9999);
+
+    totalScore += (f32)(f64)(((u32)gFarmRankingData.milkShipped[slot] * 500) / 9999);
+
+    totalScore += (f32)(f64)(((u32)gFarmRankingData.fishCaught[slot] * 500) / 999);
+
+    totalScore += (f32)(f64)(((u32)gFarmRankingData.gold[slot] * 1000) / 999999);
+
+    totalScore += (f32)(f64)(((u32)gFarmRankingData.maxStamina[slot] * 100) / 250);
+
+    totalScore += (f32)(f64)(((u32)gFarmRankingData.photoCount[slot] * 25) / 4);
+
+    totalScore += (f32)(f64)(((u32)gFarmRankingData.recipeCount[slot] * 100) / 35);
+
+    totalScore += (f32)(f64)(((u32)gFarmRankingData.houseExtensions[slot] * 100) / 6);
+
+    totalScore += (f32)(f64)(((u32)gFarmRankingData.grassTiles[slot] * 400) / 480);
+
+    totalScore += (f32)(f64)(((u32)gFarmRankingData.happiness[slot] * 400) / 255);
+
+    D_8016FDFC = (s32)(u32)totalScore;
+    
+    gFarmRankingData.scores[slot] = totalScore / 70.0f;
+    
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800EB788);
+// INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800EB74C);
+
+void func_800EB74C(u8 arg0) {
+    gFarmRankingData.grassTiles[arg0] = getFarmGrassTilesSum();
+}
+
+// INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800EB788);
 
 void func_800EB788(u8 arg0) {
 
-    D_801FB955[arg0] = 0;
+    gFarmRankingData.photoCount[arg0] = 0;
 
     if (albumBits & 1) {
-        D_801FB955[arg0]++;
+        gFarmRankingData.photoCount[arg0]++;
     }
 
     if (albumBits & 2) {
-        D_801FB955[arg0]++;
+        gFarmRankingData.photoCount[arg0]++;
     }
 
     if (albumBits & 4) {
-        D_801FB955[arg0]++;
+        gFarmRankingData.photoCount[arg0]++;
     }
 
     if (albumBits & 8) {
-        D_801FB955[arg0]++;
+        gFarmRankingData.photoCount[arg0]++;
     }
 
     if (albumBits & 0x10) {
-        D_801FB955[arg0]++;
+        gFarmRankingData.photoCount[arg0]++;
     }
 
     if (albumBits & 0x20) {
-        D_801FB955[arg0]++;
+        gFarmRankingData.photoCount[arg0]++;
     }
 
     if (albumBits & 0x40) {
-        D_801FB955[arg0]++;
+        gFarmRankingData.photoCount[arg0]++;
     }
     
     if (albumBits & 0x80) {
-        D_801FB955[arg0]++;
+        gFarmRankingData.photoCount[arg0]++;
     }
 
     if (albumBits & 0x100) {
-        D_801FB955[arg0]++;
+        gFarmRankingData.photoCount[arg0]++;
     }
     
     if (albumBits & 0x200) {
-        D_801FB955[arg0]++;
+        gFarmRankingData.photoCount[arg0]++;
     }
     
     if (albumBits & 0x400) {
-        D_801FB955[arg0]++;
+        gFarmRankingData.photoCount[arg0]++;
     }
 
     if (albumBits & 0x800) {
-        D_801FB955[arg0]++;
+        gFarmRankingData.photoCount[arg0]++;
     }
 
     if (albumBits & 0x1000) {
-        D_801FB955[arg0]++;
+        gFarmRankingData.photoCount[arg0]++;
     }
     
     if (albumBits & 0x2000) {
-        D_801FB955[arg0]++;
+        gFarmRankingData.photoCount[arg0]++;
     }
 
     if (albumBits & 0x4000) {
-        D_801FB955[arg0]++;
+        gFarmRankingData.photoCount[arg0]++;
     }
 
     if (albumBits & 0x8000) {
-        D_801FB955[arg0]++;
+        gFarmRankingData.photoCount[arg0]++;
     }
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800EBA90);
+// INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800EBA90);
 
 void func_800EBA90(u8 arg0) {
-    D_801FB95C[arg0] = func_80065518();
+    gFarmRankingData.recipeCount[arg0] = func_80065518();
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800EBAC8);
+// INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800EBAC8);
 
 void func_800EBAC8(u8 arg0) {
 
-    D_801FB963[arg0] = 0;
+    gFarmRankingData.houseExtensions[arg0] = 0;
     
     if (checkLifeEventBit(HAVE_KITCHEN)) {
-        D_801FB963[arg0]++;
+        gFarmRankingData.houseExtensions[arg0]++;
     }
     if (checkLifeEventBit(HAVE_BATHROOM)) {
-        D_801FB963[arg0]++;
+        gFarmRankingData.houseExtensions[arg0]++;
     }
     if (checkLifeEventBit(HAVE_STAIRS)) {
-        D_801FB963[arg0]++;
+        gFarmRankingData.houseExtensions[arg0]++;
     }
     if (checkLifeEventBit(HAVE_GREENHOUSE)) {
-        D_801FB963[arg0]++;
+        gFarmRankingData.houseExtensions[arg0]++;
     }
     if (checkLifeEventBit(HAVE_LOG_TERRACE)) {
-        D_801FB963[arg0]++;
+        gFarmRankingData.houseExtensions[arg0]++;
     }
     if (checkLifeEventBit(HAVE_BABY_BED)) {
-        D_801FB963[arg0]++;
+        gFarmRankingData.houseExtensions[arg0]++;
     }
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800EBC00);
+// INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800EBC00);
 
 // get highest percentage
 void func_800EBC00(void) {
@@ -3636,15 +3930,15 @@ void func_800EBC00(void) {
         
         temp = i;
 
-        f1 = D_801FB978[i];
+        f1 = gFarmRankingData.scores[i];
 
         j = i + 1;
         
         while (j < 6) {
 
-            f2 = D_801FB978[j];
+            f2 = gFarmRankingData.scores[j];
 
-            if ((f1 < f2 || !(D_801FB994[temp] & 1)) && D_801FB994[j] & 1) {
+            if ((f1 < f2 || !(gFarmRankingData.flags[temp] & RANKING_FLAG_ACTIVE)) && gFarmRankingData.flags[j] & RANKING_FLAG_ACTIVE) {
                 temp = j;
                 f1 = f2;
             }
@@ -3662,8 +3956,413 @@ void func_800EBC00(void) {
     
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800EBCD8);
+// INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800EBCD8);
 
-INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800EBEAC);
+u8 func_800EBCD8(void) {
+    
+    bool found = FALSE;
+    u8 i = 0;
 
-INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800ED160);
+    while (i < FARM_RANKING_SLOTS && !found) {
+
+        if (gFarmRankingData.tempFarmName[0] == gFarmRankingData.farmNames[i][0] &&
+            gFarmRankingData.tempFarmName[1] == gFarmRankingData.farmNames[i][1] &&
+            gFarmRankingData.tempFarmName[2] == gFarmRankingData.farmNames[i][2] &&
+            gFarmRankingData.tempFarmName[3] == gFarmRankingData.farmNames[i][3] &&
+            gFarmRankingData.tempFarmName[4] == gFarmRankingData.farmNames[i][4] &&
+            gFarmRankingData.tempFarmName[5] == gFarmRankingData.farmNames[i][5] &&
+            gFarmRankingData.tempPlayerName[0] == gFarmRankingData.playerNames[i][0] &&
+            gFarmRankingData.tempPlayerName[1] == gFarmRankingData.playerNames[i][1] &&
+            gFarmRankingData.tempPlayerName[2] == gFarmRankingData.playerNames[i][2] &&
+            gFarmRankingData.tempPlayerName[3] == gFarmRankingData.playerNames[i][3] &&
+            gFarmRankingData.tempPlayerName[4] == gFarmRankingData.playerNames[i][4] &&
+            gFarmRankingData.tempPlayerName[5] == gFarmRankingData.playerNames[i][5]) {
+
+            if (gFarmRankingData.scores[RANKING_TEMP_SLOT] >= gFarmRankingData.scores[i]) {
+                func_800ED160(i, RANKING_TEMP_SLOT);
+            } else {
+                found = TRUE;
+            }
+            
+        }
+
+        i++;
+
+    } 
+
+    return found;
+    
+}
+
+//INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800EBEAC);
+
+void func_800EBEAC(u8 slotA, u8 slotB) {
+
+    gFarmRankingData.swapFlags = gFarmRankingData.flags[slotA];
+
+    gFarmRankingData.swapFarmName[0] = gFarmRankingData.farmNames[slotA][0];
+    gFarmRankingData.swapFarmName[1] = gFarmRankingData.farmNames[slotA][1];
+    gFarmRankingData.swapFarmName[2] = gFarmRankingData.farmNames[slotA][2];
+    gFarmRankingData.swapFarmName[3] = gFarmRankingData.farmNames[slotA][3];
+    gFarmRankingData.swapFarmName[4] = gFarmRankingData.farmNames[slotA][4];
+    gFarmRankingData.swapFarmName[5] = gFarmRankingData.farmNames[slotA][5];
+
+    gFarmRankingData.swapPlayerName[0] = gFarmRankingData.playerNames[slotA][0];
+    gFarmRankingData.swapPlayerName[1] = gFarmRankingData.playerNames[slotA][1];
+    gFarmRankingData.swapPlayerName[2] = gFarmRankingData.playerNames[slotA][2];
+    gFarmRankingData.swapPlayerName[3] = gFarmRankingData.playerNames[slotA][3];
+    gFarmRankingData.swapPlayerName[4] = gFarmRankingData.playerNames[slotA][4];
+    gFarmRankingData.swapPlayerName[5] = gFarmRankingData.playerNames[slotA][5];
+
+    gFarmRankingData.swapWifeName[0] = gFarmRankingData.wifeNames[slotA][0];
+    gFarmRankingData.swapWifeName[1] = gFarmRankingData.wifeNames[slotA][1];
+    gFarmRankingData.swapWifeName[2] = gFarmRankingData.wifeNames[slotA][2];
+    gFarmRankingData.swapWifeName[3] = gFarmRankingData.wifeNames[slotA][3];
+    gFarmRankingData.swapWifeName[4] = gFarmRankingData.wifeNames[slotA][4];
+    gFarmRankingData.swapWifeName[5] = gFarmRankingData.wifeNames[slotA][5];
+
+    gFarmRankingData.swapBabyName[0] = gFarmRankingData.babyNames[slotA][0];
+    gFarmRankingData.swapBabyName[1] = gFarmRankingData.babyNames[slotA][1];
+    gFarmRankingData.swapBabyName[2] = gFarmRankingData.babyNames[slotA][2];
+    gFarmRankingData.swapBabyName[3] = gFarmRankingData.babyNames[slotA][3];
+    gFarmRankingData.swapBabyName[4] = gFarmRankingData.babyNames[slotA][4];
+    gFarmRankingData.swapBabyName[5] = gFarmRankingData.babyNames[slotA][5];
+
+    gFarmRankingData.swapDogName[0] = gFarmRankingData.dogNames[slotA][0];
+    gFarmRankingData.swapDogName[1] = gFarmRankingData.dogNames[slotA][1];
+    gFarmRankingData.swapDogName[2] = gFarmRankingData.dogNames[slotA][2];
+    gFarmRankingData.swapDogName[3] = gFarmRankingData.dogNames[slotA][3];
+    gFarmRankingData.swapDogName[4] = gFarmRankingData.dogNames[slotA][4];
+    gFarmRankingData.swapDogName[5] = gFarmRankingData.dogNames[slotA][5];
+
+    gFarmRankingData.swapHorseName[0] = gFarmRankingData.horseNames[slotA][0];
+    gFarmRankingData.swapHorseName[1] = gFarmRankingData.horseNames[slotA][1];
+    gFarmRankingData.swapHorseName[2] = gFarmRankingData.horseNames[slotA][2];
+    gFarmRankingData.swapHorseName[3] = gFarmRankingData.horseNames[slotA][3];
+    gFarmRankingData.swapHorseName[4] = gFarmRankingData.horseNames[slotA][4];
+    gFarmRankingData.swapHorseName[5] = gFarmRankingData.horseNames[slotA][5];
+
+    gFarmRankingData.years[RANKING_SWAP_SLOT] = gFarmRankingData.years[slotA];
+    gFarmRankingData.seasons[RANKING_SWAP_SLOT] = gFarmRankingData.seasons[slotA];
+
+    gFarmRankingData.mariaAffection[RANKING_SWAP_SLOT] = gFarmRankingData.mariaAffection[slotA];
+    gFarmRankingData.popuriAffection[RANKING_SWAP_SLOT] = gFarmRankingData.popuriAffection[slotA];
+    gFarmRankingData.elliAffection[RANKING_SWAP_SLOT] = gFarmRankingData.elliAffection[slotA];
+    gFarmRankingData.annAffection[RANKING_SWAP_SLOT] = gFarmRankingData.annAffection[slotA];
+    gFarmRankingData.karenAffection[RANKING_SWAP_SLOT] = gFarmRankingData.karenAffection[slotA];
+    gFarmRankingData.harrisAffection[RANKING_SWAP_SLOT] = gFarmRankingData.harrisAffection[slotA];
+    gFarmRankingData.grayAffection[RANKING_SWAP_SLOT] = gFarmRankingData.grayAffection[slotA];
+    gFarmRankingData.jeffAffection[RANKING_SWAP_SLOT] = gFarmRankingData.jeffAffection[slotA];
+    gFarmRankingData.cliffAffection[RANKING_SWAP_SLOT] = gFarmRankingData.cliffAffection[slotA];
+    gFarmRankingData.kaiAffection[RANKING_SWAP_SLOT] = gFarmRankingData.kaiAffection[slotA];
+    gFarmRankingData.wifeAffection[RANKING_SWAP_SLOT] = gFarmRankingData.wifeAffection[slotA];
+    gFarmRankingData.babyAffection[RANKING_SWAP_SLOT] = gFarmRankingData.babyAffection[slotA];
+    gFarmRankingData.dogAffection[RANKING_SWAP_SLOT] = gFarmRankingData.dogAffection[slotA];
+    gFarmRankingData.horseAffection[RANKING_SWAP_SLOT] = gFarmRankingData.horseAffection[slotA];
+
+    gFarmRankingData.swapFarmAnimalAffection1[0] = gFarmRankingData.farmAnimalAffection[slotA][0];
+    gFarmRankingData.swapFarmAnimalAffection1[1] = gFarmRankingData.farmAnimalAffection[slotA][1];
+    gFarmRankingData.swapFarmAnimalAffection1[2] = gFarmRankingData.farmAnimalAffection[slotA][2];
+    gFarmRankingData.swapFarmAnimalAffection1[3] = gFarmRankingData.farmAnimalAffection[slotA][3];
+    gFarmRankingData.swapFarmAnimalAffection2[0] = gFarmRankingData.farmAnimalAffection[slotA][4];
+    gFarmRankingData.swapFarmAnimalAffection2[1] = gFarmRankingData.farmAnimalAffection[slotA][5];
+    gFarmRankingData.swapFarmAnimalAffection2[2] = gFarmRankingData.farmAnimalAffection[slotA][6];
+    gFarmRankingData.swapFarmAnimalAffection2[3] = gFarmRankingData.farmAnimalAffection[slotA][7];
+
+    gFarmRankingData.chickenCounts[RANKING_SWAP_SLOT] = gFarmRankingData.chickenCounts[slotA];
+    gFarmRankingData.wife[RANKING_SWAP_SLOT] = gFarmRankingData.wife[slotA];
+
+    gFarmRankingData.cropsShipped[RANKING_SWAP_SLOT] = gFarmRankingData.cropsShipped[slotA];
+    gFarmRankingData.eggsShipped[RANKING_SWAP_SLOT] = gFarmRankingData.eggsShipped[slotA];
+    gFarmRankingData.milkShipped[RANKING_SWAP_SLOT] = gFarmRankingData.milkShipped[slotA];
+    gFarmRankingData.fishCaught[RANKING_SWAP_SLOT] = gFarmRankingData.fishCaught[slotA];
+    gFarmRankingData.gold[RANKING_SWAP_SLOT] = gFarmRankingData.gold[slotA];
+
+    gFarmRankingData.grassTiles[RANKING_SWAP_SLOT] = gFarmRankingData.grassTiles[slotA];
+    gFarmRankingData.maxStamina[RANKING_SWAP_SLOT] = gFarmRankingData.maxStamina[slotA];
+    gFarmRankingData.photoCount[RANKING_SWAP_SLOT] = gFarmRankingData.photoCount[slotA];
+    gFarmRankingData.recipeCount[RANKING_SWAP_SLOT] = gFarmRankingData.recipeCount[slotA];
+    gFarmRankingData.houseExtensions[RANKING_SWAP_SLOT] = gFarmRankingData.houseExtensions[slotA];
+    gFarmRankingData.happiness[RANKING_SWAP_SLOT] = gFarmRankingData.happiness[slotA];
+    gFarmRankingData.scores[RANKING_SWAP_SLOT] = gFarmRankingData.scores[slotA];
+
+    // Step 2: Copy slotB to slotA
+    gFarmRankingData.flags[slotA] = gFarmRankingData.flags[slotB];
+
+    gFarmRankingData.farmNames[slotA][0] = gFarmRankingData.farmNames[slotB][0];
+    gFarmRankingData.farmNames[slotA][1] = gFarmRankingData.farmNames[slotB][1];
+    gFarmRankingData.farmNames[slotA][2] = gFarmRankingData.farmNames[slotB][2];
+    gFarmRankingData.farmNames[slotA][3] = gFarmRankingData.farmNames[slotB][3];
+    gFarmRankingData.farmNames[slotA][4] = gFarmRankingData.farmNames[slotB][4];
+    gFarmRankingData.farmNames[slotA][5] = gFarmRankingData.farmNames[slotB][5];
+
+    gFarmRankingData.playerNames[slotA][0] = gFarmRankingData.playerNames[slotB][0];
+    gFarmRankingData.playerNames[slotA][1] = gFarmRankingData.playerNames[slotB][1];
+    gFarmRankingData.playerNames[slotA][2] = gFarmRankingData.playerNames[slotB][2];
+    gFarmRankingData.playerNames[slotA][3] = gFarmRankingData.playerNames[slotB][3];
+    gFarmRankingData.playerNames[slotA][4] = gFarmRankingData.playerNames[slotB][4];
+    gFarmRankingData.playerNames[slotA][5] = gFarmRankingData.playerNames[slotB][5];
+
+    gFarmRankingData.wifeNames[slotA][0] = gFarmRankingData.wifeNames[slotB][0];
+    gFarmRankingData.wifeNames[slotA][1] = gFarmRankingData.wifeNames[slotB][1];
+    gFarmRankingData.wifeNames[slotA][2] = gFarmRankingData.wifeNames[slotB][2];
+    gFarmRankingData.wifeNames[slotA][3] = gFarmRankingData.wifeNames[slotB][3];
+    gFarmRankingData.wifeNames[slotA][4] = gFarmRankingData.wifeNames[slotB][4];
+    gFarmRankingData.wifeNames[slotA][5] = gFarmRankingData.wifeNames[slotB][5];
+
+    gFarmRankingData.babyNames[slotA][0] = gFarmRankingData.babyNames[slotB][0];
+    gFarmRankingData.babyNames[slotA][1] = gFarmRankingData.babyNames[slotB][1];
+    gFarmRankingData.babyNames[slotA][2] = gFarmRankingData.babyNames[slotB][2];
+    gFarmRankingData.babyNames[slotA][3] = gFarmRankingData.babyNames[slotB][3];
+    gFarmRankingData.babyNames[slotA][4] = gFarmRankingData.babyNames[slotB][4];
+    gFarmRankingData.babyNames[slotA][5] = gFarmRankingData.babyNames[slotB][5];
+
+    gFarmRankingData.dogNames[slotA][0] = gFarmRankingData.dogNames[slotB][0];
+    gFarmRankingData.dogNames[slotA][1] = gFarmRankingData.dogNames[slotB][1];
+    gFarmRankingData.dogNames[slotA][2] = gFarmRankingData.dogNames[slotB][2];
+    gFarmRankingData.dogNames[slotA][3] = gFarmRankingData.dogNames[slotB][3];
+    gFarmRankingData.dogNames[slotA][4] = gFarmRankingData.dogNames[slotB][4];
+    gFarmRankingData.dogNames[slotA][5] = gFarmRankingData.dogNames[slotB][5];
+
+    gFarmRankingData.horseNames[slotA][0] = gFarmRankingData.horseNames[slotB][0];
+    gFarmRankingData.horseNames[slotA][1] = gFarmRankingData.horseNames[slotB][1];
+    gFarmRankingData.horseNames[slotA][2] = gFarmRankingData.horseNames[slotB][2];
+    gFarmRankingData.horseNames[slotA][3] = gFarmRankingData.horseNames[slotB][3];
+    gFarmRankingData.horseNames[slotA][4] = gFarmRankingData.horseNames[slotB][4];
+    gFarmRankingData.horseNames[slotA][5] = gFarmRankingData.horseNames[slotB][5];
+
+    gFarmRankingData.years[slotA] = gFarmRankingData.years[slotB];
+    gFarmRankingData.seasons[slotA] = gFarmRankingData.seasons[slotB];
+
+    gFarmRankingData.mariaAffection[slotA] = gFarmRankingData.mariaAffection[slotB];
+    gFarmRankingData.popuriAffection[slotA] = gFarmRankingData.popuriAffection[slotB];
+    gFarmRankingData.elliAffection[slotA] = gFarmRankingData.elliAffection[slotB];
+    gFarmRankingData.annAffection[slotA] = gFarmRankingData.annAffection[slotB];
+    gFarmRankingData.karenAffection[slotA] = gFarmRankingData.karenAffection[slotB];
+    gFarmRankingData.harrisAffection[slotA] = gFarmRankingData.harrisAffection[slotB];
+    gFarmRankingData.grayAffection[slotA] = gFarmRankingData.grayAffection[slotB];
+    gFarmRankingData.jeffAffection[slotA] = gFarmRankingData.jeffAffection[slotB];
+    gFarmRankingData.cliffAffection[slotA] = gFarmRankingData.cliffAffection[slotB];
+    gFarmRankingData.kaiAffection[slotA] = gFarmRankingData.kaiAffection[slotB];
+    gFarmRankingData.wifeAffection[slotA] = gFarmRankingData.wifeAffection[slotB];
+    gFarmRankingData.babyAffection[slotA] = gFarmRankingData.babyAffection[slotB];
+    gFarmRankingData.dogAffection[slotA] = gFarmRankingData.dogAffection[slotB];
+    gFarmRankingData.horseAffection[slotA] = gFarmRankingData.horseAffection[slotB];
+
+    gFarmRankingData.farmAnimalAffection[slotA][0] = gFarmRankingData.farmAnimalAffection[slotB][0];
+    gFarmRankingData.farmAnimalAffection[slotA][1] = gFarmRankingData.farmAnimalAffection[slotB][1];
+    gFarmRankingData.farmAnimalAffection[slotA][2] = gFarmRankingData.farmAnimalAffection[slotB][2];
+    gFarmRankingData.farmAnimalAffection[slotA][3] = gFarmRankingData.farmAnimalAffection[slotB][3];
+    gFarmRankingData.farmAnimalAffection[slotA][4] = gFarmRankingData.farmAnimalAffection[slotB][4];
+    gFarmRankingData.farmAnimalAffection[slotA][5] = gFarmRankingData.farmAnimalAffection[slotB][5];
+    gFarmRankingData.farmAnimalAffection[slotA][6] = gFarmRankingData.farmAnimalAffection[slotB][6];
+    gFarmRankingData.farmAnimalAffection[slotA][7] = gFarmRankingData.farmAnimalAffection[slotB][7];
+
+    gFarmRankingData.chickenCounts[slotA] = gFarmRankingData.chickenCounts[slotB];
+    gFarmRankingData.wife[slotA] = gFarmRankingData.wife[slotB];
+
+    gFarmRankingData.cropsShipped[slotA] = gFarmRankingData.cropsShipped[slotB];
+    gFarmRankingData.eggsShipped[slotA] = gFarmRankingData.eggsShipped[slotB];
+    gFarmRankingData.milkShipped[slotA] = gFarmRankingData.milkShipped[slotB];
+    gFarmRankingData.fishCaught[slotA] = gFarmRankingData.fishCaught[slotB];
+    gFarmRankingData.gold[slotA] = gFarmRankingData.gold[slotB];
+
+    gFarmRankingData.grassTiles[slotA] = gFarmRankingData.grassTiles[slotB];
+    gFarmRankingData.maxStamina[slotA] = gFarmRankingData.maxStamina[slotB];
+    gFarmRankingData.photoCount[slotA] = gFarmRankingData.photoCount[slotB];
+    gFarmRankingData.recipeCount[slotA] = gFarmRankingData.recipeCount[slotB];
+    gFarmRankingData.houseExtensions[slotA] = gFarmRankingData.houseExtensions[slotB];
+    gFarmRankingData.happiness[slotA] = gFarmRankingData.happiness[slotB];
+    gFarmRankingData.scores[slotA] = gFarmRankingData.scores[slotB];
+
+    // Step 3: Copy swap slot to slotB
+    gFarmRankingData.flags[slotB] = gFarmRankingData.swapFlags;
+
+    gFarmRankingData.farmNames[slotB][0] = gFarmRankingData.swapFarmName[0];
+    gFarmRankingData.farmNames[slotB][1] = gFarmRankingData.swapFarmName[1];
+    gFarmRankingData.farmNames[slotB][2] = gFarmRankingData.swapFarmName[2];
+    gFarmRankingData.farmNames[slotB][3] = gFarmRankingData.swapFarmName[3];
+    gFarmRankingData.farmNames[slotB][4] = gFarmRankingData.swapFarmName[4];
+    gFarmRankingData.farmNames[slotB][5] = gFarmRankingData.swapFarmName[5];
+
+    gFarmRankingData.playerNames[slotB][0] = gFarmRankingData.swapPlayerName[0];
+    gFarmRankingData.playerNames[slotB][1] = gFarmRankingData.swapPlayerName[1];
+    gFarmRankingData.playerNames[slotB][2] = gFarmRankingData.swapPlayerName[2];
+    gFarmRankingData.playerNames[slotB][3] = gFarmRankingData.swapPlayerName[3];
+    gFarmRankingData.playerNames[slotB][4] = gFarmRankingData.swapPlayerName[4];
+    gFarmRankingData.playerNames[slotB][5] = gFarmRankingData.swapPlayerName[5];
+
+    gFarmRankingData.wifeNames[slotB][0] = gFarmRankingData.swapWifeName[0];
+    gFarmRankingData.wifeNames[slotB][1] = gFarmRankingData.swapWifeName[1];
+    gFarmRankingData.wifeNames[slotB][2] = gFarmRankingData.swapWifeName[2];
+    gFarmRankingData.wifeNames[slotB][3] = gFarmRankingData.swapWifeName[3];
+    gFarmRankingData.wifeNames[slotB][4] = gFarmRankingData.swapWifeName[4];
+    gFarmRankingData.wifeNames[slotB][5] = gFarmRankingData.swapWifeName[5];
+
+    gFarmRankingData.babyNames[slotB][0] = gFarmRankingData.swapBabyName[0];
+    gFarmRankingData.babyNames[slotB][1] = gFarmRankingData.swapBabyName[1];
+    gFarmRankingData.babyNames[slotB][2] = gFarmRankingData.swapBabyName[2];
+    gFarmRankingData.babyNames[slotB][3] = gFarmRankingData.swapBabyName[3];
+    gFarmRankingData.babyNames[slotB][4] = gFarmRankingData.swapBabyName[4];
+    gFarmRankingData.babyNames[slotB][5] = gFarmRankingData.swapBabyName[5];
+
+    gFarmRankingData.dogNames[slotB][0] = gFarmRankingData.swapDogName[0];
+    gFarmRankingData.dogNames[slotB][1] = gFarmRankingData.swapDogName[1];
+    gFarmRankingData.dogNames[slotB][2] = gFarmRankingData.swapDogName[2];
+    gFarmRankingData.dogNames[slotB][3] = gFarmRankingData.swapDogName[3];
+    gFarmRankingData.dogNames[slotB][4] = gFarmRankingData.swapDogName[4];
+    gFarmRankingData.dogNames[slotB][5] = gFarmRankingData.swapDogName[5];
+
+    gFarmRankingData.horseNames[slotB][0] = gFarmRankingData.swapHorseName[0];
+    gFarmRankingData.horseNames[slotB][1] = gFarmRankingData.swapHorseName[1];
+    gFarmRankingData.horseNames[slotB][2] = gFarmRankingData.swapHorseName[2];
+    gFarmRankingData.horseNames[slotB][3] = gFarmRankingData.swapHorseName[3];
+    gFarmRankingData.horseNames[slotB][4] = gFarmRankingData.swapHorseName[4];
+    gFarmRankingData.horseNames[slotB][5] = gFarmRankingData.swapHorseName[5];
+
+    gFarmRankingData.years[slotB] = gFarmRankingData.years[RANKING_SWAP_SLOT];
+    gFarmRankingData.seasons[slotB] = gFarmRankingData.seasons[RANKING_SWAP_SLOT];
+
+    gFarmRankingData.mariaAffection[slotB] = gFarmRankingData.mariaAffection[RANKING_SWAP_SLOT];
+    gFarmRankingData.popuriAffection[slotB] = gFarmRankingData.popuriAffection[RANKING_SWAP_SLOT];
+    gFarmRankingData.elliAffection[slotB] = gFarmRankingData.elliAffection[RANKING_SWAP_SLOT];
+    gFarmRankingData.annAffection[slotB] = gFarmRankingData.annAffection[RANKING_SWAP_SLOT];
+    gFarmRankingData.karenAffection[slotB] = gFarmRankingData.karenAffection[RANKING_SWAP_SLOT];
+    gFarmRankingData.harrisAffection[slotB] = gFarmRankingData.harrisAffection[RANKING_SWAP_SLOT];
+    gFarmRankingData.grayAffection[slotB] = gFarmRankingData.grayAffection[RANKING_SWAP_SLOT];
+    gFarmRankingData.jeffAffection[slotB] = gFarmRankingData.jeffAffection[RANKING_SWAP_SLOT];
+    gFarmRankingData.cliffAffection[slotB] = gFarmRankingData.cliffAffection[RANKING_SWAP_SLOT];
+    gFarmRankingData.kaiAffection[slotB] = gFarmRankingData.kaiAffection[RANKING_SWAP_SLOT];
+    gFarmRankingData.wifeAffection[slotB] = gFarmRankingData.wifeAffection[RANKING_SWAP_SLOT];
+    gFarmRankingData.babyAffection[slotB] = gFarmRankingData.babyAffection[RANKING_SWAP_SLOT];
+    gFarmRankingData.dogAffection[slotB] = gFarmRankingData.dogAffection[RANKING_SWAP_SLOT];
+    gFarmRankingData.horseAffection[slotB] = gFarmRankingData.horseAffection[RANKING_SWAP_SLOT];
+
+    gFarmRankingData.farmAnimalAffection[slotB][0] = gFarmRankingData.swapFarmAnimalAffection1[0];
+    gFarmRankingData.farmAnimalAffection[slotB][1] = gFarmRankingData.swapFarmAnimalAffection1[1];
+    gFarmRankingData.farmAnimalAffection[slotB][2] = gFarmRankingData.swapFarmAnimalAffection1[2];
+    gFarmRankingData.farmAnimalAffection[slotB][3] = gFarmRankingData.swapFarmAnimalAffection1[3];
+    gFarmRankingData.farmAnimalAffection[slotB][4] = gFarmRankingData.swapFarmAnimalAffection2[0];
+    gFarmRankingData.farmAnimalAffection[slotB][5] = gFarmRankingData.swapFarmAnimalAffection2[1];
+    gFarmRankingData.farmAnimalAffection[slotB][6] = gFarmRankingData.swapFarmAnimalAffection2[2];
+    gFarmRankingData.farmAnimalAffection[slotB][7] = gFarmRankingData.swapFarmAnimalAffection2[3];
+
+    gFarmRankingData.chickenCounts[slotB] = gFarmRankingData.chickenCounts[RANKING_SWAP_SLOT];
+    gFarmRankingData.wife[slotB] = gFarmRankingData.wife[RANKING_SWAP_SLOT];
+
+    gFarmRankingData.cropsShipped[slotB] = gFarmRankingData.cropsShipped[RANKING_SWAP_SLOT];
+    gFarmRankingData.eggsShipped[slotB] = gFarmRankingData.eggsShipped[RANKING_SWAP_SLOT];
+    gFarmRankingData.milkShipped[slotB] = gFarmRankingData.milkShipped[RANKING_SWAP_SLOT];
+    gFarmRankingData.fishCaught[slotB] = gFarmRankingData.fishCaught[RANKING_SWAP_SLOT];
+    gFarmRankingData.gold[slotB] = gFarmRankingData.gold[RANKING_SWAP_SLOT];
+
+    gFarmRankingData.grassTiles[slotB] = gFarmRankingData.grassTiles[RANKING_SWAP_SLOT];
+    gFarmRankingData.maxStamina[slotB] = gFarmRankingData.maxStamina[RANKING_SWAP_SLOT];
+    gFarmRankingData.photoCount[slotB] = gFarmRankingData.photoCount[RANKING_SWAP_SLOT];
+    gFarmRankingData.recipeCount[slotB] = gFarmRankingData.recipeCount[RANKING_SWAP_SLOT];
+    gFarmRankingData.houseExtensions[slotB] = gFarmRankingData.houseExtensions[RANKING_SWAP_SLOT];
+    gFarmRankingData.happiness[slotB] = gFarmRankingData.happiness[RANKING_SWAP_SLOT];
+    gFarmRankingData.scores[slotB] = gFarmRankingData.scores[RANKING_SWAP_SLOT];
+   
+}
+
+//INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800ED160);
+
+void func_800ED160(u8 arg0, u8 arg1) {
+
+    gFarmRankingData.flags[arg0] = gFarmRankingData.flags[arg1];
+
+    gFarmRankingData.farmNames[arg0][0] = gFarmRankingData.farmNames[arg1][0];
+    gFarmRankingData.farmNames[arg0][1] = gFarmRankingData.farmNames[arg1][1];
+    gFarmRankingData.farmNames[arg0][2] = gFarmRankingData.farmNames[arg1][2];
+    gFarmRankingData.farmNames[arg0][3] = gFarmRankingData.farmNames[arg1][3];
+    gFarmRankingData.farmNames[arg0][4] = gFarmRankingData.farmNames[arg1][4];
+    gFarmRankingData.farmNames[arg0][5] = gFarmRankingData.farmNames[arg1][5];
+
+    gFarmRankingData.playerNames[arg0][0] = gFarmRankingData.playerNames[arg1][0];
+    gFarmRankingData.playerNames[arg0][1] = gFarmRankingData.playerNames[arg1][1];
+    gFarmRankingData.playerNames[arg0][2] = gFarmRankingData.playerNames[arg1][2];
+    gFarmRankingData.playerNames[arg0][3] = gFarmRankingData.playerNames[arg1][3];
+    gFarmRankingData.playerNames[arg0][4] = gFarmRankingData.playerNames[arg1][4];
+    gFarmRankingData.playerNames[arg0][5] = gFarmRankingData.playerNames[arg1][5];
+
+    gFarmRankingData.wifeNames[arg0][0] = gFarmRankingData.wifeNames[arg1][0];
+    gFarmRankingData.wifeNames[arg0][1] = gFarmRankingData.wifeNames[arg1][1];
+    gFarmRankingData.wifeNames[arg0][2] = gFarmRankingData.wifeNames[arg1][2];
+    gFarmRankingData.wifeNames[arg0][3] = gFarmRankingData.wifeNames[arg1][3];
+    gFarmRankingData.wifeNames[arg0][4] = gFarmRankingData.wifeNames[arg1][4];
+    gFarmRankingData.wifeNames[arg0][5] = gFarmRankingData.wifeNames[arg1][5];
+
+    gFarmRankingData.babyNames[arg0][0] = gFarmRankingData.babyNames[arg1][0];
+    gFarmRankingData.babyNames[arg0][1] = gFarmRankingData.babyNames[arg1][1];
+    gFarmRankingData.babyNames[arg0][2] = gFarmRankingData.babyNames[arg1][2];
+    gFarmRankingData.babyNames[arg0][3] = gFarmRankingData.babyNames[arg1][3];
+    gFarmRankingData.babyNames[arg0][4] = gFarmRankingData.babyNames[arg1][4];
+    gFarmRankingData.babyNames[arg0][5] = gFarmRankingData.babyNames[arg1][5];
+
+    gFarmRankingData.dogNames[arg0][0] = gFarmRankingData.dogNames[arg1][0];
+    gFarmRankingData.dogNames[arg0][1] = gFarmRankingData.dogNames[arg1][1];
+    gFarmRankingData.dogNames[arg0][2] = gFarmRankingData.dogNames[arg1][2];
+    gFarmRankingData.dogNames[arg0][3] = gFarmRankingData.dogNames[arg1][3];
+    gFarmRankingData.dogNames[arg0][4] = gFarmRankingData.dogNames[arg1][4];
+    gFarmRankingData.dogNames[arg0][5] = gFarmRankingData.dogNames[arg1][5];
+
+    gFarmRankingData.horseNames[arg0][0] = gFarmRankingData.horseNames[arg1][0];
+    gFarmRankingData.horseNames[arg0][1] = gFarmRankingData.horseNames[arg1][1];
+    gFarmRankingData.horseNames[arg0][2] = gFarmRankingData.horseNames[arg1][2];
+    gFarmRankingData.horseNames[arg0][3] = gFarmRankingData.horseNames[arg1][3];
+    gFarmRankingData.horseNames[arg0][4] = gFarmRankingData.horseNames[arg1][4];
+    gFarmRankingData.horseNames[arg0][5] = gFarmRankingData.horseNames[arg1][5];
+
+    gFarmRankingData.years[arg0] = gFarmRankingData.years[arg1];
+    gFarmRankingData.seasons[arg0] = gFarmRankingData.seasons[arg1];
+    gFarmRankingData.mariaAffection[arg0] = gFarmRankingData.mariaAffection[arg1];
+    gFarmRankingData.popuriAffection[arg0] = gFarmRankingData.popuriAffection[arg1];
+    gFarmRankingData.elliAffection[arg0] = gFarmRankingData.elliAffection[arg1];
+    gFarmRankingData.annAffection[arg0] = gFarmRankingData.annAffection[arg1];
+    gFarmRankingData.karenAffection[arg0] = gFarmRankingData.karenAffection[arg1];
+    gFarmRankingData.harrisAffection[arg0] = gFarmRankingData.harrisAffection[arg1];
+    gFarmRankingData.grayAffection[arg0] = gFarmRankingData.grayAffection[arg1];
+    gFarmRankingData.jeffAffection[arg0] = gFarmRankingData.jeffAffection[arg1];
+    gFarmRankingData.cliffAffection[arg0] = gFarmRankingData.cliffAffection[arg1];
+    gFarmRankingData.kaiAffection[arg0] = gFarmRankingData.kaiAffection[arg1];
+    gFarmRankingData.wifeAffection[arg0] = gFarmRankingData.wifeAffection[arg1];
+    gFarmRankingData.babyAffection[arg0] = gFarmRankingData.babyAffection[arg1];
+    gFarmRankingData.dogAffection[arg0] = gFarmRankingData.dogAffection[arg1];
+
+    gFarmRankingData.horseAffection[arg0] = gFarmRankingData.horseAffection[arg1];
+
+    gFarmRankingData.farmAnimalAffection[arg0][0] = gFarmRankingData.farmAnimalAffection[arg1][0];
+    gFarmRankingData.farmAnimalAffection[arg0][1] = gFarmRankingData.farmAnimalAffection[arg1][1];
+    gFarmRankingData.farmAnimalAffection[arg0][2] = gFarmRankingData.farmAnimalAffection[arg1][2];
+    gFarmRankingData.farmAnimalAffection[arg0][3] = gFarmRankingData.farmAnimalAffection[arg1][3];
+    gFarmRankingData.farmAnimalAffection[arg0][4] = gFarmRankingData.farmAnimalAffection[arg1][4];
+    gFarmRankingData.farmAnimalAffection[arg0][5] = gFarmRankingData.farmAnimalAffection[arg1][5];
+    gFarmRankingData.farmAnimalAffection[arg0][6] = gFarmRankingData.farmAnimalAffection[arg1][6];
+    gFarmRankingData.farmAnimalAffection[arg0][7] = gFarmRankingData.farmAnimalAffection[arg1][7];
+
+    gFarmRankingData.chickenCounts[arg0] = gFarmRankingData.chickenCounts[arg1];
+
+    gFarmRankingData.wife[arg0] = gFarmRankingData.wife[arg1];
+    
+    gFarmRankingData.cropsShipped[arg0] = gFarmRankingData.cropsShipped[arg1];
+    gFarmRankingData.eggsShipped[arg0] = gFarmRankingData.eggsShipped[arg1];
+    gFarmRankingData.milkShipped[arg0] = gFarmRankingData.milkShipped[arg1];
+    gFarmRankingData.fishCaught[arg0] = gFarmRankingData.fishCaught[arg1];
+
+    gFarmRankingData.gold[arg0] = gFarmRankingData.gold[arg1];
+    
+    gFarmRankingData.grassTiles[arg0] = gFarmRankingData.grassTiles[arg1];
+    
+    gFarmRankingData.maxStamina[arg0] = gFarmRankingData.maxStamina[arg1];
+    gFarmRankingData.photoCount[arg0] = gFarmRankingData.photoCount[arg1];
+    gFarmRankingData.recipeCount[arg0] = gFarmRankingData.recipeCount[arg1];
+    gFarmRankingData.houseExtensions[arg0] = gFarmRankingData.houseExtensions[arg1];
+    gFarmRankingData.happiness[arg0] = gFarmRankingData.happiness[arg1];
+    
+    
+    gFarmRankingData.scores[arg0] = gFarmRankingData.scores[arg1];
+    
+    func_800E6C08(arg1);
+        
+}

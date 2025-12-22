@@ -3935,7 +3935,7 @@ void func_8006C1DC(void) {
             case 2:
                 gPlayer.actionPhase = 3;
                 playSfx(0x5A);
-                setMainLoopCallbackFunctionIndex(0xB);
+                setMainLoopCallbackFunctionIndex(END_CUTSCENE);
                 func_80059334();
                 break;
 

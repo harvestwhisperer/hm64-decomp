@@ -3,6 +3,7 @@
 
 #include "common.h"
 
+#include "buffers/farmRankingsBuffer.h" 
 #include "buffers/sramBuffer.h"
 
 #define DIALOGUE_ICON_TEXTURE_BUFFER 0x8023B400
@@ -249,10 +250,10 @@
 #define DIALOGUE_BYTECODE_INDEX_BUFFER 0x8030C800
 #define DIALOGUE_BYTECODE_BUFFER 0x8030CC00
 
+#define FARM_RANKING_BUFFER 0x8030E000
+
 // 0x8030F800
 
 #define FRAME_BUFFER 0x8038F800
-
-extern u8 gamePakBuffer[0x100];
 
 #endif

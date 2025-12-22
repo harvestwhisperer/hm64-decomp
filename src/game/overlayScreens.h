@@ -15,7 +15,7 @@ typedef struct {
     u8 unk_3;
     u8 unk_4;
     u8 unk_5;
-    u8 currentAction;
+    u8 screenState;
     u8 unk_7;
     u8 unk_8;
     u8 unk_9;
@@ -26,21 +26,16 @@ typedef struct {
 
 // 0x801C3DA0
 typedef struct {
-    u16 unk_0;
-    u16 unk_2;
-    u16 unk_4;
-    u16 unk_6;
-    u16 unk_8;
-    u16 unk_A;
-    u8 dialogueVariableStrings[6][6]; // dialogue variable 0x2A-0x2F, 0x801C3DAC
+    u16 unk_0[6];
+    u8 gameVariableStrings[6][6]; // game variable strings 0x2A-0x2F, 0x801C3DAC
     u8 strings2[3][6];
     u8 strings3[3][6];
-    u16 unk_54[9];
-    u8 dialogueVariableIndices[6]; // 0x801C3E06
-    u8 unk_6A;
-    u8 unk_6B; // set from random number
-    u8 unk_6C; // set from random number
-    u8 unk_6D[3];
+    u8 unk_54[6][3];
+    u8 gameVariableStringsIndices[6]; // 0x801C3E06
+    u8 unk_6C;
+    u8 unk_6D; // set from random number
+    u8 unk_6E; // set from random number
+    u8 unk_6F[3];
 } OverlayScreenStrings;
 
 extern void func_800B2CE0(void);
