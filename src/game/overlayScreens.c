@@ -8627,17 +8627,17 @@ void func_800C8B04(void) {
     
     setOverlayScreenSprites(0xC, 0xB0, &_raceBettingUiTextureSegmentRomStart, &_raceBettingUiTextureSegmentRomEnd, &_raceBettingUiAssetsIndexSegmentRomStart, &_raceBettingUiAssetsIndexSegmentRomEnd, (u8*)0x8026F000, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, 0, 6, 0, 14.0f, -14.0f, 256.0f, 8);
     
-    dmaOverlayScreenSprites(0xC, overlayScreenStrings.unk_0[3], 2, 3);
+    dmaOverlayScreenSprites(0xC, overlayScreenStrings.unk_6.unk_3[0], 2, 3);
     setOverlayScreenSpritesRGBA(0xC, 255, 255, 255, 255);
     
     setOverlayScreenSprites(0xD, 0xB3, &_raceBettingUiTextureSegmentRomStart, &_raceBettingUiTextureSegmentRomEnd, &_raceBettingUiAssetsIndexSegmentRomStart, &_raceBettingUiAssetsIndexSegmentRomEnd, (u8*)0x8026F000, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, 0, 6, 0, 14.0f, -30.0f, 256.0f, 8);
     
-    dmaOverlayScreenSprites(0xD, overlayScreenStrings.unk_0[4], 2, 3);
+    dmaOverlayScreenSprites(0xD, overlayScreenStrings.unk_6.unk_3[1], 2, 3);
     setOverlayScreenSpritesRGBA(0xD, 255, 255, 255, 255);
     
     setOverlayScreenSprites(0xE, 0xB6, &_raceBettingUiTextureSegmentRomStart, &_raceBettingUiTextureSegmentRomEnd, &_raceBettingUiAssetsIndexSegmentRomStart, &_raceBettingUiAssetsIndexSegmentRomEnd, (u8*)0x8026F000, (u16*)0x8027E200, (AnimationFrameMetadata*)0x8027E700, (u32*)0x8027EB00, 0, 6, 0, 14.0f, -46.0f, 256.0f, 8);
     
-    dmaOverlayScreenSprites(0xE, overlayScreenStrings.unk_0[5], 2, 3);
+    dmaOverlayScreenSprites(0xE, overlayScreenStrings.unk_6.unk_3[2], 2, 3);
     setOverlayScreenSpritesRGBA(0xE, 255, 255, 255, 255);
     
     func_800C9FF0();
@@ -9079,9 +9079,9 @@ void func_800CB0C4(void) {
     overlayScreenStrings.unk_0[0] = overlayScreenStrings.strings3[overlayScreenStrings.unk_6C][0];
     overlayScreenStrings.unk_0[1] = overlayScreenStrings.strings3[overlayScreenStrings.unk_6C][1];
     overlayScreenStrings.unk_0[2] = overlayScreenStrings.strings3[overlayScreenStrings.unk_6C][2];
-    overlayScreenStrings.unk_0[3] = overlayScreenStrings.strings3[overlayScreenStrings.unk_6C][3];
-    overlayScreenStrings.unk_0[4]= overlayScreenStrings.strings3[overlayScreenStrings.unk_6C][4];
-    overlayScreenStrings.unk_0[5] = overlayScreenStrings.strings3[overlayScreenStrings.unk_6C][5];
+    overlayScreenStrings.unk_6.unk_3[0] = overlayScreenStrings.strings3[overlayScreenStrings.unk_6C][3];
+    overlayScreenStrings.unk_6.unk_3[1]= overlayScreenStrings.strings3[overlayScreenStrings.unk_6C][4];
+    overlayScreenStrings.unk_6.unk_3[2] = overlayScreenStrings.strings3[overlayScreenStrings.unk_6C][5];
 
     if (overlayScreenStrings.unk_6D == overlayScreenStrings.unk_6C) {
         
@@ -9173,9 +9173,9 @@ void func_800CB8F0(void) {
     overlayScreenStrings.unk_0[0] = overlayScreenStrings.strings3[overlayScreenStrings.unk_6C][0];
     overlayScreenStrings.unk_0[1] = overlayScreenStrings.strings3[overlayScreenStrings.unk_6C][1];
     overlayScreenStrings.unk_0[2] = overlayScreenStrings.strings3[overlayScreenStrings.unk_6C][2];
-    overlayScreenStrings.unk_0[3] = overlayScreenStrings.strings3[overlayScreenStrings.unk_6C][3];
-    overlayScreenStrings.unk_0[4]= overlayScreenStrings.strings3[overlayScreenStrings.unk_6C][4];
-    overlayScreenStrings.unk_0[5] = overlayScreenStrings.strings3[overlayScreenStrings.unk_6C][5];
+    overlayScreenStrings.unk_6.unk_3[0] = overlayScreenStrings.strings3[overlayScreenStrings.unk_6C][3];
+    overlayScreenStrings.unk_6.unk_3[1]= overlayScreenStrings.strings3[overlayScreenStrings.unk_6C][4];
+    overlayScreenStrings.unk_6.unk_3[2] = overlayScreenStrings.strings3[overlayScreenStrings.unk_6C][5];
 
     if (overlayScreenStrings.unk_6D == overlayScreenStrings.unk_6C) {
         

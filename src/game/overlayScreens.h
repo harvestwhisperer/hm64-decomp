@@ -24,9 +24,15 @@ typedef struct {
     u8 unk_C;
 } OverlayScreenTable;
 
+typedef union {
+    u16 unk_3[3];
+    u8 strings[1][6];
+} OverlayScreenStringsUnion;
+
 // 0x801C3DA0
 typedef struct {
-    u16 unk_0[6];
+    u16 unk_0[3];
+    OverlayScreenStringsUnion unk_6;
     u8 gameVariableStrings[6][6]; // game variable strings 0x2A-0x2F, 0x801C3DAC
     u8 strings2[3][6];
     u8 strings3[3][6];
@@ -37,6 +43,8 @@ typedef struct {
     u8 unk_6E; // set from random number
     u8 unk_6F[3];
 } OverlayScreenStrings;
+
+
 
 extern void func_800B2CE0(void);
 extern void func_800B3694(void);
