@@ -1,4 +1,4 @@
-# WIP Harvest Moon 64 Decomp
+# Harvest Moon 64 Decomp
 
 ## Progress
 
