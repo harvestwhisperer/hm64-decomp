@@ -4,6 +4,7 @@
 
 #include "system/cutscene.h"
 #include "system/entity.h"
+#include "system/graphic.h"
 #include "system/mapController.h"
 #include "system/math.h"
 #include "system/message.h"
@@ -15,12 +16,18 @@
 #include "game/items.h"
 #include "game/level.h"
 #include "game/fieldObjects.h"
+#include "game/namingScreen.h"
 #include "game/npc.h"
 #include "game/overlayScreens.h"
 #include "game/player.h"
 #include "game/time.h"
 #include "game/title.h"
 #include "game/weather.h"
+
+#include "mainLoop.h"
+
+#include "buffers/buffers.h"
+#include "ld_symbols.h"
 
 #include "data/fieldTileMaps/cutsceneFieldTiles.h"
 #include "data/fieldTileMaps/fieldTiles.h"
@@ -31,7 +38,7 @@
 #include "assetIndices/sprites.h"
                                   
 // forward declarations
-u16 setBeachCutscenes(void);                         
+u16 setBeachCutscenes(void);                          
 u16 setCaveCutscenes(void);                          
 u16 setChurchCutscenes(void);                        
 u16 setFarmCutscenes(void);
@@ -99,6 +106,9 @@ u8 D_80205209;
 u16 D_80205638;
 // sum of girls' affection
 u16 D_80215DF0;
+
+// shared
+extern u32 D_801C3F78;
 
 extern u8 D_8018A72C[6];
 
@@ -304,6 +314,13 @@ u16 cutsceneExecutorIndices[] = {
     0,
     0
 };
+
+static inline void transitionCutscenes(u16 cutsceneIndex, u16 entranceIndex) {
+    setEntrance(entranceIndex);
+    gCutsceneIndex = cutsceneIndex;
+    loadCutscene(0);
+    func_8006E840(entranceIndex);
+}
 
 //INCLUDE_ASM("asm/nonmatchings/game/cutscenes", func_8009BF90);
 
@@ -4097,541 +4114,527 @@ u16 func_800A87C4(void) {
     
 }
 
-#ifdef PERMUTER
+// INCLUDE_ASM("asm/nonmatchings/game/cutscenes", func_800A8F74);
+
 void func_800A8F74(void) {
 
-    // ? var_a0_2;
-    // ? var_a1;
-    // ?* var_a2;
-    // ?* var_a2_10;
-    // ?* var_a2_11;
-    // ?* var_a2_12;
-    // ?* var_a2_13;
-    // ?* var_a2_2;
-    // ?* var_a2_3;
-    // ?* var_a2_4;
-    // ?* var_a2_5;
-    // ?* var_a2_6;
-    // ?* var_a2_7;
-    // ?* var_a2_8;
-    // ?* var_a2_9;
-    // ?* var_a3;
-    // ?* var_a3_10;
-    // ?* var_a3_11;
-    // ?* var_a3_12;
-    // ?* var_a3_13;
-    // ?* var_a3_2;
-    // ?* var_a3_3;
-    // ?* var_a3_4;
-    // ?* var_a3_5;
-    // ?* var_a3_6;
-    // ?* var_a3_7;
-    // ?* var_a3_8;
-    // ?* var_a3_9;
-    s16 var_a2_14;
-    s16 var_a3_14;
-    s32 temp_a0;
-    s32 temp_f2;
-    s32 temp_f2_2;
-    s32 temp_v1_4;
-    s32 var_a0;
-    s32 var_a1_2;
-    s32 var_s0;
-    s32 var_s0_2;
-    s32 var_s2;
-    s32 var_v0_18;
-    s32 var_v0_19;
-    s32 var_v0_22;
-    s32 var_v0_23;
-    s32 var_v0_24;
-    s32 var_v0_25;
-    s32 var_v0_26;
-    s32 var_v0_27;
-    s32 var_v0_28;
-    s8 var_v0;
-    s8 var_v0_2;
-    u16 var_v0_10;
-    u16 var_v0_11;
-    u16 var_v0_12;
-    u16 var_v0_13;
-    u16 var_v0_14;
-    u16 var_v0_15;
-    u16 var_v0_16;
-    u16 var_v0_17;
-    u16 var_v0_20;
-    u16 var_v0_21;
-    u16 var_v0_3;
-    u16 var_v0_4;
-    u16 var_v0_5;
-    u16 var_v0_6;
-    u16 var_v0_7;
-    u16 var_v0_8;
-    u16 var_v0_9;
-    u32 temp_v1_5;
-    u8 temp_s0_2;
-    u8 temp_s1;
-    u8 temp_v1_3;
-    u8* temp_s3;
-    u8* temp_v1;
-    u8* temp_v1_2;
-    u8* var_v1;
-    void* temp_s0;
-    void* temp_t0;
-    void* temp_t0_10;
-    void* temp_t0_11;
-    void* temp_t0_12;
-    void* temp_t0_13;
-    void* temp_t0_2;
-    void* temp_t0_3;
-    void* temp_t0_4;
-    void* temp_t0_5;
-    void* temp_t0_6;
-    void* temp_t0_7;
-    void* temp_t0_8;
-    void* temp_t0_9;
-
-    if (gCutsceneFlags & 1) {
+    bool found;
+    u16 tempEntrance;
     
+    if (gCutsceneFlags & 1) {
+
         if (gCutsceneCompletionFlags & 1) {
 
-    
             gCutsceneFlags &= ~1;
 
+            switch (gCutsceneBytecodeSegmentIndex) {
 
-
-
-            // switch on bytecode bank index
-            
-            switch (gCutsceneBytecodeSegmentIndex) {                   /* switch 1 */
-
-                case 1:                                 /* switch 1 */
+                case 1:                                 
 
                     toggleDailyEventBit(1);
                 
                     // switch on acquired animal
-                    switch (D_801C4216) {               /* switch 2 */
+                    switch (D_801C4216) {               
 
-                        case 0:                             /* switch 2 */
-                            var_v0 = 2;
-        block_40:
-                            gNamingScreenIndex = var_v0;
-
-                        default:                            /* switch 2 */
+                        case 0:                             
+                            gNamingScreenIndex = 2;
                             break;
-
-                        case 1:                             /* switch 2 */
+                        
+                        case 1:                             
                             setLifeEventBit(0x3A);
-                            var_v0 = 3;
-                            goto block_40;
-                        case 2:                             /* switch 2 */
+                            gNamingScreenIndex = 3;
+                            break;
+                        case 2:                             
                             setLifeEventBit(0x36);
                             gNamingScreenIndex = 5;
-                            var_v0_2 = initializeNewFarmAnimal(1, 0);
-        block_11:
-                            D_801FC155 = var_v0_2;
+                            D_801FC155 = initializeNewFarmAnimal(1, 0);
                             break;
                             
-                        case 3:                             /* switch 2 */
+                        case 3:                             
                             setLifeEventBit(0x34);
                             gNamingScreenIndex = 6;
-                            var_v0_2 = initializeNewFarmAnimal(4, 0);
-                            goto block_11;
+                            D_801FC155 = initializeNewFarmAnimal(4, 0);
+                            break;
 
-                        case 4:                             /* switch 2 */
+                        case 4:                             
                             setLifeEventBit(0x32);
                             gNamingScreenIndex = 7;
                             // initialize chicken
-                            var_v0_2 = func_80087F28(2, 0xFF);
-                            goto block_11;
+                            D_801FC155 = func_80087F28(2, 0xFF);
+                            break;
+
+                        default:
+                            break;
+                        
                     }
                     
                     func_8005C940(1, NAMING_SCREEN);
                     break;
 
+                case 7:
+                case 8:
 
-                case 7:                                 /* switch 1 */
-                case 8:                                 /* switch 1 */
-                
-                    if (gCutsceneIndex != 0xAA) {
+                    switch (gCutsceneIndex) {
 
-                        if ((s32) gCutsceneIndex < 0xAB) {
-                            if ((s32) gCutsceneIndex < DOUG_FARM_FAVOR) {
-
-                                if ((s32) gCutsceneIndex < 0x81) {
-                                    var_a0 = 0;
-                                    if (gCutsceneIndex != KENT_AND_STU_FARM_PUPPIES) {
-
-                                    } else {
-    block_105:
-                                        setEntrance(var_a0);
-                                        setMainLoopCallbackFunctionIndex(MAP_LOAD);
-                                    }
-                                } else {
-                                    goto block_27;
-                                }
-                            } else if (gCutsceneIndex != 0x8B) {
-
-                            } else {
-                                goto block_27;
+                        case 0xAA:
+                            func_8009B6B8();
+                            func_8009B6B8();
+                            func_8009B6B8();
+                            func_8009B6B8();
+                            func_8009B6B8();
+                            func_8009B6B8();
+                            break;    
+                        
+                        case 0x71:
+                            setEntrance(0);
+                            setMainLoopCallbackFunctionIndex(2);
+                            break;
+                        
+                        case 0x81:
+                        case 0x82:
+                        case 0x8B:
+                        case 0xEF ... 0xF3:
+                            if (gCutsceneCompletionFlags & 0x40000000) {
+                                setMainLoopCallbackFunctionIndex(END_OF_FESTIVAL_DAY_1);
                             }
-
-                        } else if ((s32) gCutsceneIndex < 0xF4) {
-
-                            if ((s32) gCutsceneIndex < 0xEF) {
-
-                            } else {
-    block_27:
-                                if (gCutsceneCompletionFlags & 0x40000000) {
-                                    goto block_142;
-                                }
-                            }
-
-                        } else if ((s32) gCutsceneIndex < 0x101) {
-
-                            if ((s32) gCutsceneIndex < 0xFA) {
-
-                            } else {
-
-                                case 17:                    /* switch 1 */
-                                case 19:                    /* switch 1 */
-                                case 22:                    /* switch 1 */
-                                case 23:                    /* switch 1 */
-                                case 25:                    /* switch 1 */
-                                case 26:                    /* switch 1 */
-                                case 28:                    /* switch 1 */
-                                case 29:                    /* switch 1 */
-                                case 0x130:                 /* switch 4 */
-                                case 0x131:                 /* switch 4 */
-                                case 0x293:                 /* switch 5 */
-                                case 0x195:                 /* switch 6 */
-                                case 0x196:                 /* switch 6 */
-                                case 0x197:                 /* switch 6 */
-                                case 0x198:                 /* switch 6 */
-                                case 0x199:                 /* switch 6 */
-                                case 0x1A2:                 /* switch 6 */
-                                case 0x1A4:                 /* switch 6 */
-                                case 0x1AD:                 /* switch 6 */
-                                case 0x1AE:                 /* switch 6 */
-                                case 0x1AF:                 /* switch 6 */
-                                case 0x1B3:                 /* switch 6 */
-                                case 0x1B4:                 /* switch 6 */
-        block_142:
-                                    setMainLoopCallbackFunctionIndex(END_OF_FESTIVAL_DAY_1);
-                            
-                                }
-                        }
-
-                    } else {
-
-                        // initialize chickens
-                        // unrolled loop?
-                        func_8009B6B8();
-                        func_8009B6B8();
-                        func_8009B6B8();
-                        func_8009B6B8();
-                        func_8009B6B8();
-                        func_8009B6B8();
-                    
+                            break;
+                        
+                        case 0xAB:
+                            break;
+                        
+                        case 0xFA ... 0x100:
+                            setMainLoopCallbackFunctionIndex(END_OF_FESTIVAL_DAY_1);
+                            break;
+                        
                     }
-
+                    
                     break;
 
-                case 9:                                 /* switch 1 */
+                case 9:
+                    
+                    switch (gCutsceneIndex) {           
 
-                    switch (gCutsceneIndex) {           /* switch 3 */
-
-                        case 0x1:                           /* switch 3 */
-                        case 0x2:                           /* switch 3 */
+                        case 0x1:                           
+                        case 0x2:                           
                             setLifeEventBit(0x61);
                             break;
-                        case 0x26:                          /* switch 3 */
-                        case 0x27:                          /* switch 3 */
+                        case 0x26:                          
+                        case 0x27:                          
                             setLifeEventBit(0x62);
                             break;
-                        case 0x28:                          /* switch 3 */
+                        case 0x28:                          
                             setLifeEventBit(0x96);
-                        case 0x0:                           /* switch 3 */
-                        case MARIA_VISIT_PLAYER_SICK:                           /* switch 3 */
-                        case 0x5:                           /* switch 3 */
-                        case 0x9:                           /* switch 3 */
-                        case 0xA:                           /* switch 3 */
-                        case 0xC:                           /* switch 3 */
-                        case 0x10:                          /* switch 3 */
-                        case 0x11:                          /* switch 3 */
-                        case 0x13:                          /* switch 3 */
-                        case 0x17:                          /* switch 3 */
-                        case 0x18:                          /* switch 3 */
-                        case 0x1A:                          /* switch 3 */
-                        case 0x1E:                          /* switch 3 */
-                        case 0x1F:                          /* switch 3 */
-                        case 0x21:                          /* switch 3 */
-                        case 0x25:                          /* switch 3 */
-                        case 0x33:                          /* switch 3 */
-                        case MARIA_WEDDING:                         /* switch 6 */
-                        case 0x191:                         /* switch 6 */
-                        case 0x192:                         /* switch 6 */
-                        case ANN_WEDDING:                         /* switch 6 */
-                        case KAREN_WEDDING:                         /* switch 6 */
-                        case 0x20B:                         /* switch 12 */
-        block_108:
+                        case 0x0:                           
+                        case MARIA_VISIT_PLAYER_SICK:                           
+                        case 0x5:                           
+                        case 0x9:                           
+                        case 0xA:                           
+                        case 0xC:                           
+                        case 0x10:                          
+                        case 0x11:                          
+                        case 0x13:                          
+                        case 0x17:                          
+                        case 0x18:                          
+                        case 0x1A:                          
+                        case 0x1E:                          
+                        case 0x1F:                          
+                        case 0x21:                          
+                        case 0x25:                          
+                        case 0x33:                          
                             setMainLoopCallbackFunctionIndex(END_OF_DAY_1);
                             break;
-                        case 0x29:                          /* switch 3 */
+                        case 0x29:                          
                             setLifeEventBit(0x63);
-                            goto block_108;
-                        case 0x2A:                          /* switch 3 */
+                            setMainLoopCallbackFunctionIndex(END_OF_DAY_1);
+                            break;
+                        case 0x2A:                          
                             setLifeEventBit(0x64);
-                            goto block_108;
-                        case 0x2B:                          /* switch 3 */
+                            setMainLoopCallbackFunctionIndex(END_OF_DAY_1);                             
+                            break;
+                        case 0x2B:                          
                             setLifeEventBit(0x65);
-                            goto block_108;
-                        case 0x2C:                          /* switch 3 */
+                            setMainLoopCallbackFunctionIndex(END_OF_DAY_1);                             
+                            break;
+                        case 0x2C:                          
                             setLifeEventBit(0x66);
-                            goto block_108;
-                        case 0x2D:                          /* switch 3 */
+                            setMainLoopCallbackFunctionIndex(END_OF_DAY_1);                             
+                            break;
+                        case 0x2D:                          
                             setLifeEventBit(0x67);
-                            goto block_108;
-                        case 0x4:                           /* switch 3 */
-                        case 0xB:                           /* switch 3 */
-                        case 0x12:                          /* switch 3 */
-                        case 0x19:                          /* switch 3 */
-                        case 0x20:                          /* switch 3 */
-                            var_v0 = 4;
-                            if ((u8) gHour >= 6) {
-                                goto block_40;
+                            setMainLoopCallbackFunctionIndex(END_OF_DAY_1);                             
+                            break;
+                        case 0x4:                           
+                        case 0xB:                           
+                        case 0x12:                          
+                        case 0x19:                          
+                        case 0x20:                          
+                            if (gHour >= 6) {
+                                gNamingScreenIndex = 4;
+                                func_8005C940(1, NAMING_SCREEN);
+                            } else {
+                                setMainLoopCallbackFunctionIndex(END_OF_DAY_1);                             
                             }
-                            goto block_108;
+                            break;
+                        
                         }
 
                     break;
 
-                case 10:                                /* switch 1 */
-
-                    // ann sprained ankle
-
-                    if ((gCutsceneIndex == ANN_SPRAINED_ANKLE) && (gCutsceneCompletionFlags & 0x40000000)) {
+                case 10:
+                    if (gCutsceneIndex == ANN_SPRAINED_ANKLE && (gCutsceneCompletionFlags & 0x40000000)) {
                         gHour += 2;
                         setEntrance(RANCH_FROM_RANCH_STORE);
                         setMainLoopCallbackFunctionIndex(MAP_LOAD);
                     }
-                    /* fallthrough */
+                
+                case 11:
 
-                case 11:                                /* switch 1 */
+                    switch (gCutsceneIndex) {
 
-                    switch (gCutsceneIndex) {           /* switch 4 */
-
-                        case 0x12E:                         /* switch 4 */
+                        case 0x12E:
                             if (gCutsceneCompletionFlags & 0x40000000) {
-                                var_a0 = 0x34;
-        block_104:
                                 gHour += 2;
-                                goto block_105;
+                                setEntrance(0x34);
+                                setMainLoopCallbackFunctionIndex(MAP_LOAD);
                             }
                             break;
 
-                        case ELLI_SPRAINED_ANKLE:                         /* switch 4 */
+                        case ELLI_SPRAINED_ANKLE:                         
                             if (gCutsceneCompletionFlags & 0x40000000) {
-                                var_a0 = 0x35;
-                                goto block_104;
+                                gHour += 2;
+                                setEntrance(0x35);
+                                setMainLoopCallbackFunctionIndex(MAP_LOAD);
                             }
                             break;
-                        case 0x13E:                         /* switch 4 */
+
+                        case 0x130:
+                        case 0x131:
+                            setMainLoopCallbackFunctionIndex(END_OF_FESTIVAL_DAY_1);
+                            break;
+
+                        case 0x13E:                         
                             // store tool
                             func_80065BCC(FISHING_POLE);
                             break;
-                        case 0x144:                         /* switch 4 */
-                        case 0x148:                         /* switch 4 */
+                        
+                        case 0x144:                         
+                        case 0x148:                         
                             setDailyEventBit(0x2C);
                             break;
-                        case 0x147:                         /* switch 4 */
-                            if ((gSeason == AUTUMN) && (gDayOfMonth == 27)) {
+                        
+                        case 0x147:                         
+                            if (gSeason == AUTUMN && gDayOfMonth == 27) {
                                 setLifeEventBit(BRIDGE_COMPLETED);
                             }
                             break;
-                        case 0x14A:                         /* switch 4 */
-                            if ((gSeason == WINTER) && (gDayOfMonth == 16)) {
+                        
+                        case 0x14A:                         
+                            if (gSeason == WINTER && gDayOfMonth == 16) {
                                 setLifeEventBit(HOT_SPRINGS_COMPLETED);
                                 setDailyEventBit(0x5B);
                             }
                             clearForagableObjects(TOP_OF_MOUNTAIN_1);
                             break;
-                        case 0x150:                         /* switch 4 */
+                        
+                        case 0x150:                         
                             toggleDailyEventBit(0x47);
                             setLifeEventBit(0x5E);
                             break;
-                        case 0x151:                         /* switch 4 */
+                        
+                        case 0x151:                         
                             toggleDailyEventBit(0x48);
                             setLifeEventBit(0x5F);
                             break;
-                        case 0x155:                         /* switch 4 */
-                        case 0x158:                         /* switch 4 */
+                        
+                        case 0x155:                         
+                        case 0x158:                         
                             toggleDailyEventBit(0x45);
                             setDailyEventBit(0x46);
                             break;
-                        case 0x159:                         /* switch 4 */
+                        
+                        case 0x159:                         
                             setSpecialDialogueBit(0x14B);
-                            goto block_142;
+                            setMainLoopCallbackFunctionIndex(END_OF_FESTIVAL_DAY_1);
+                            break;
+                        
                     }
+                    
                     break;
-
+                
                 case 12:            
-                                    /* switch 1 */
-                    switch (gCutsceneIndex) {           /* switch 5 */
+                                    
+                    switch (gCutsceneIndex) {           
+
+                        case 0x293:
+                            setMainLoopCallbackFunctionIndex(END_OF_FESTIVAL_DAY_1);
+                            break;
 
                         // get horse at ranch
-                        case RANCH_GET_HORSE:                         /* switch 5 */
-                        case 0x299:                         /* switch 5 */
+                        case RANCH_GET_HORSE:                         
+                        case 0x299:                         
                             gNamingScreenIndex = 3;
                             func_8005C940(1, NAMING_SCREEN);
                             setLifeEventBit(HAVE_HORSE);
                             break;
-                        case 0x28B:                         /* switch 5 */
+                        case 0x28B:                         
                             func_80056030(0);
                             setMainLoopCallbackFunctionIndex(4);
                             initializeHorse();
                             break;
-                        case 0x297:                         /* switch 5 */
-                            var_a0 = 0x4C;
-                            goto block_105;
-                        case 0x298:                         /* switch 5 */
-                            // Ann
-                            (&npcAffection)[3] = 120;
-        block_107:
+                        case 0x297:                         
+                            setEntrance(0x4C);
+                            setMainLoopCallbackFunctionIndex(MAP_LOAD);
+                            break;
+                        case 0x298:                         
+                            npcAffection[ANN] = 120;
                             toggleLifeEventBit(WIFE_LEFT);
-                            goto block_108;
+                            setMainLoopCallbackFunctionIndex(END_OF_DAY_1);
+                            break;
                         }
 
                     break;
 
-                case 13:          
-                                    /* switch 1 */
-                    switch (gCutsceneIndex) {           /* switch 11; irregular */
+                case 13:
+                    
+                    switch (gCutsceneIndex) {          
 
-                        case 0x2BD:                         /* switch 11 */
+                        case 0x2BD:                         
                             if (gCutsceneCompletionFlags & 0x40000000) {
-                                var_a0 = 0x2F;
-                                goto block_104;
+                                gHour += 2;
+                                setEntrance(0x2F);
+                                setMainLoopCallbackFunctionIndex(MAP_LOAD);
                             }
                             break;
-                        case 0x2C0:                         /* switch 11 */
-                            var_a0 = 0x50;
-                            goto block_105;
-                        case KAREN_YELLOW_HEART_EVENT_1:                         /* switch 11 */
+                        
+                        case 0x2C0:                         
+                            setEntrance(0x50);
+                            setMainLoopCallbackFunctionIndex(MAP_LOAD);
+                            break;
+                        
+                        case KAREN_YELLOW_HEART_EVENT_1:                         
                             if (gCutsceneCompletionFlags & 0x40000000) {
                                 toggleDailyEventBit(0x4F);
-                                var_a0 = 0x30;
-                                goto block_105;
+                                setEntrance(0x30);
+                                setMainLoopCallbackFunctionIndex(MAP_LOAD);                               
                             }
                             break;
-                        case 0x2C6:                         /* switch 11 */
-                            // Karen
-                            (&npcAffection)[4] = 0x78;
-                            goto block_107;
+                        
+                        case 0x2C6:                         
+                            npcAffection[KAREN] = 120;
+                            toggleLifeEventBit(WIFE_LEFT);
+                            setMainLoopCallbackFunctionIndex(END_OF_DAY_1);
+                            break;
                     }
+                    
                     break;
+                
+                case 14:
 
-                case 14:                                /* switch 1 */
-
-                    switch (gCutsceneIndex) {           /* switch 6 */
-
-                        case 0x19B:                         /* switch 6 */
+                    switch (gCutsceneIndex) {          
+                        
+                        case 0x190:
+                        case 0x191:
+                        case 0x192:
+                        case 0x193:
+                        case 0x194:
+                            setMainLoopCallbackFunctionIndex(0xD);
+                            break;
+                        case 0x195:                 
+                        case 0x196:                 
+                        case 0x197:                 
+                        case 0x198:                 
+                        case 0x199:        
+                            setMainLoopCallbackFunctionIndex(END_OF_FESTIVAL_DAY_1);
+                            break; 
+                        
+                        case 0x19B:                        
                             setEntrance(0x1F);
                             setMainLoopCallbackFunctionIndex(MAP_LOAD);
                             D_802373A8 += adjustValue(D_802373A8, -1, 1);
                             removeTool(BLUE_MIST_SEEDS);
                             blueMistFlowerPlot = 0xB3;
-                            D_8016FE6F = 0xB3;
+                            pondFieldTiles[5][3] = 0xB3;
                             break;
                             
-                        case 0x1A0:                         /* switch 6 */
+                        case 0x1A0:                        
                             setLifeEventBit(0x31);
                             setSpecialDialogueBit(0x43);
-                            goto block_142;
+                            setMainLoopCallbackFunctionIndex(END_OF_FESTIVAL_DAY_1);
+                            break;
+                        
+                        case 0x1A2:                 
+                        case 0x1A4:                 
+                        case 0x1AD:                 
+                        case 0x1AE:                 
+                        case 0x1AF:                 
+                        case 0x1B3:                 
+                        case 0x1B4:                 
+                            setMainLoopCallbackFunctionIndex(END_OF_FESTIVAL_DAY_1);
+                            break;
 
-                        case STARRY_NIGHT_FESTIVAL:                         /* switch 6 */
-                            if (gCutsceneCompletionFlags & 2) {
-
-                            } else {
-                                goto block_142;
+                        case STARRY_NIGHT_FESTIVAL:                        
+                            if (!(gCutsceneCompletionFlags & 2)) {
+                                setMainLoopCallbackFunctionIndex(END_OF_FESTIVAL_DAY_1);
                             }
                             break;
 
-                        case 0x1B5:                         /* switch 6 */
+                        case 0x1B5:                        
                             // flower shop entrance
-                            var_a0 = 0x57;
-                            goto block_105;
-                        case 0x1B6:                         /* switch 6 */
-                            var_a0 = 0x5A;
-                            goto block_105;
-                        case 0x1B7:                         /* switch 6 */
+                            setEntrance(0x57);
+                            setMainLoopCallbackFunctionIndex(MAP_LOAD);               
+                            break;
+                
+                        case 0x1B6:                        
+                            setEntrance(0x5A);
+                            setMainLoopCallbackFunctionIndex(MAP_LOAD);               
+                            break;
+                
+                        case 0x1B7:                        
                             // Popuri
-                            (&npcAffection)[1] = 120;
-                            goto block_107;
-                        case 0x1B8:                         /* switch 6 */
-                            // Elli
-                            (&npcAffection)[2] = 120;
-                            goto block_107;
-                    
-                        }
+                            npcAffection[POPURI] = 120;
+                            toggleLifeEventBit(WIFE_LEFT);
+                            setMainLoopCallbackFunctionIndex(END_OF_DAY_1);
+                            break;
+                
+                        case 0x1B8:                        
+                            npcAffection[ELLI] = 120;
+                            toggleLifeEventBit(WIFE_LEFT);
+                            setMainLoopCallbackFunctionIndex(END_OF_DAY_1);
+                            break;
 
+                        }
+                    
                     break;
 
-                case 15:                                /* switch 1 */
+                case 15:
 
-                    switch (gCutsceneIndex) {           /* switch 12; irregular */
+                    switch (gCutsceneIndex) {           
 
-                        case 0x20C:                         /* switch 12 */
-                            var_a0 = 0x66;
-                            goto block_105;
+                        case 0x20B:                        
+                            setMainLoopCallbackFunctionIndex(END_OF_DAY_1);
+                            break;
+
+                        case 0x20C:                         
+                            setEntrance(0x66);
+                            setMainLoopCallbackFunctionIndex(MAP_LOAD);
+                            break;
                             
-                        case 0x20E:                         /* switch 12 */
+                        case 0x20E:                         
                             if (gCutsceneCompletionFlags & 0x40000000) {
-                                var_a0 = 0x41;
-                                goto block_104;
+                                gHour += 2;
+                                setEntrance(0x41);
+                                setMainLoopCallbackFunctionIndex(MAP_LOAD);
                             }
                             break;
 
-                        case 0x211:                         /* switch 12 */
+                        case 0x211:                         
                             npcAffection[MARIA] = 120;
-                            goto block_107;
+                            toggleLifeEventBit(WIFE_LEFT);
+                            setMainLoopCallbackFunctionIndex(END_OF_DAY_1);
+                        
                         }
+                    
+                    break;
+                    
+                case 16:
+                    if (gCutsceneIndex != BEACH_FIREWORKS) {
+                        if (gCutsceneIndex != 0x2F4) {
+                            break;
+                        }
+                    } 
+                    setMainLoopCallbackFunctionIndex(END_OF_FESTIVAL_DAY_1);
                     break;
 
-                case 16:                                /* switch 1 */
-
-                    if ((gCutsceneIndex != BEACH_FIREWORKS) && (gCutsceneIndex != 0x2F4)) {
-
-                    } else {
-                        goto block_142;
-                    }
-
+                case 17:
+                    setMainLoopCallbackFunctionIndex(END_OF_FESTIVAL_DAY_1);
                     break;
                 
-                case 18:                                /* switch 1 */
+                case 18:
 
-                    // horse race: set rank
+                    switch (gCutsceneIndex) {
 
-                    if (((s32) gCutsceneIndex < 0x388) && ((s32) gCutsceneIndex >= 0x386)) {
-                        
-                        if (*(&overlayScreenStrings + 0x6D) == *(&overlayScreenStrings + 0x6C)) {
-                            
-                            if (((D_8018A72C[2] - 1) == 2) && ((u8) (&horseInfo)[0x1E] >= 3)) {
-                                (&horseInfo)[0x1E] = 2;
-                            }
-                            if (((D_8018A72C[1] - 1) == 2) && ((u8) (&horseInfo)[0x1E] >= 2)) {
-                                (&horseInfo)[0x1E] = 1;
-                            }
-                            if ((D_8018A72C[0] - 1) == 2) {
-                                var_v1 = &horseInfo + 0x1E;
-    block_139:
-                                if (*var_v1 ) {
-                                    *var_v1 = 0;
+                        case 0x386 ... 0x387:
+
+                            if (overlayScreenStrings.unk_6D == overlayScreenStrings.unk_6C) {
+                                
+                                if (((D_8018A72C[2] - 1) == 2) && horseInfo.unk_1E >= 3) {
+                                    horseInfo.unk_1E = 2;
                                 }
+                                
+                                if (((D_8018A72C[1] - 1) == 2) && horseInfo.unk_1E >= 2) {
+                                    horseInfo.unk_1E = 1;
+                                }
+                                
+                                if ((D_8018A72C[0] - 1) == 2 && horseInfo.unk_1E) {
+                                    horseInfo.unk_1E = 0;
+                                }
+     
+                            }
                             
+                            setMainLoopCallbackFunctionIndex(HORSE_RACE_RESULTS_LOAD);
+                            gCutsceneCompletionFlags = 0;
+                            break;
+                        
+                    }
+                    
+                    break;
+
+                case 19:
+                    setMainLoopCallbackFunctionIndex(END_OF_FESTIVAL_DAY_1);
+                    break;
+                
+                case 20:
+                    if (gCutsceneIndex == VEGETABLE_FESTIVAL_SQUARE) {
+                        setMainLoopCallbackFunctionIndex(END_OF_FESTIVAL_DAY_1);
+                    }  
+                    break;
+                
+                case 21:
+                    if (gCutsceneIndex == SQUARE_FIREWORKS) {
+                        setMainLoopCallbackFunctionIndex(END_OF_FESTIVAL_DAY_1);
+                    } 
+                    break;
+
+                case 22:
+                case 23:
+                    setMainLoopCallbackFunctionIndex(END_OF_FESTIVAL_DAY_1);
+                    break;
+                
+                case 24:   
+                    if (checkLifeEventBit(0x91)) {
+                        gFarmAnimals[D_80189054].normalMilk = D_80180710;
+                    }
+                    setMainLoopCallbackFunctionIndex(END_OF_FESTIVAL_DAY_1);
+                    break;
+
+                case 25:
+                    setMainLoopCallbackFunctionIndex(END_OF_FESTIVAL_DAY_1);
+                    break;
+
+                case 26:
+                    setMainLoopCallbackFunctionIndex(END_OF_FESTIVAL_DAY_1);
+                    break;
+                
+                case 27:
+                    
+                    if (gCutsceneIndex == 0x516) {
+                        
+                        if (overlayScreenStrings.unk_6D == overlayScreenStrings.unk_6C) {
+                            
+                            if (D_8018A72C[2] == 1 && dogInfo.unk_1C >= 3) {
+                                dogInfo.unk_1C = 2;
+                            }
+                            
+                            if (D_8018A72C[1] == 1 && dogInfo.unk_1C >= 2) {
+                                dogInfo.unk_1C = 1;
+                            }
+                            
+                            if (D_8018A72C[0] == 1 && dogInfo.unk_1C) {
+                                dogInfo.unk_1C = 0;
                             }
 
                         }
-    block_141:
+                        
                         setMainLoopCallbackFunctionIndex(HORSE_RACE_RESULTS_LOAD);
                         gCutsceneCompletionFlags = 0;
                     
@@ -4639,1150 +4642,657 @@ void func_800A8F74(void) {
                     
                     break;
 
-                case 20:                                /* switch 1 */
-                    if (gCutsceneIndex != VEGETABLE_FESTIVAL_SQUARE) {
-
-                    } else {
-                        goto block_142;
-                    }
+                case 28:
+                case 29:
+                    setMainLoopCallbackFunctionIndex(END_OF_FESTIVAL_DAY_1);
                     break;
 
-                case 21:                                /* switch 1 */
-                    if (gCutsceneIndex != SQUARE_FIREWORKS) {
-
-                    } else {
-                        goto block_142;
-                    }
-                    break;
-
-                case 24:                                /* switch 1 */
-
-                    if (checkLifeEventBit(0x91)) {
-                        *(&gFarmAnimals + 0x2B + (D_80189054 * 0x30)) = (s8) D_80180710;
-                    }
-                    goto block_142;
-
-                case 27:                                /* switch 1 */
-
-                    // dog race
-
-                    if (gCutsceneIndex == 0x516) {
-                
-                        if (*(&overlayScreenStrings + 0x6D) == *(&overlayScreenStrings + 0x6C)) {
-                            
-                            if (D_8018A72C[3] == 1) {
-                                temp_v1 = &dogInfo + 0x1C;
-                                if ((u8) *temp_v1 >= 3) {
-                                    *temp_v1 = 2;
-                                }
-                            }
-                            if (D_8018A72C[1] == 1) {
-                                temp_v1_2 = &dogInfo + 0x1C;
-                                if ((u8) *temp_v1_2 >= 2) {
-                                    *temp_v1_2 = 1;
-                                }
-                            }
-                            if (D_8018A72C[0] == 1) {
-                                var_v1 = &dogInfo + 0x1C;
-                                goto block_139;
-                            }
-                        }
-
-                        goto block_141;
+                case 31:
                     
-                    }
-
-                    break;
-
-                case 31:                                /* switch 1 */
-
                     if (gCutsceneIndex == 0x611) {
-                
+
+                        u32 ptr1 = (u32)&_fontPalette1SegmentRomStart;
+                        u32 ptr2 =  (u32)&_fontPalette1SegmentRomEnd;
+                    
                         // fontPalette1
-                        nuPiReadRom(&D_E13770, FONT_PALETTE_1_BUFFER, &D_E137A0 - &D_E13770);
+                        nuPiReadRom((u32)&_fontPalette1SegmentRomStart, FONT_PALETTE_1_BUFFER, ptr2 - ptr1);
                         func_8003F464(0, 0xE, 0xE, FONT_TEXTURE_BUFFER, FONT_PALETTE_1_BUFFER);
                         func_8003F360(0, -4, 0);
                         setMessageBoxSfx(0, 0x57, 8, 1);
-
-                        var_a0_2 = 0x5AA;
+ 
 
                         if (D_80180710 == 0) {
                             // show pink overlay message
                             func_8005B09C(23);
                         } else {
-    block_153:
-                            var_a1 = 0x61;
-    block_154:
-                            func_80055F08(var_a0_2, var_a1, 1);
+                            func_80055F08(0x5AA, 0x61, 1);
 
                         }
                     }
 
                     break;
-
-                case 32:                                /* switch 1 */
-
-                    var_a0_2 = 0x5DE;
-
+                
+                case 32:
                     if (gCutsceneIndex == DEMO_CUTSCENE_2) {
-                        var_a1 = 0x1A;
+                        func_80055F08(0x5DE, 0x1A, 1);
                     } else {
-
-                        // base farm tile map
-
-                        // memcpy
-                        var_a3 = &farmFieldTiles;
-                        var_a2 = &D_80113580;
-                        temp_t0 = &D_80113580 + 0x1E0;
-                        if (((s32) &D_80113580 | (s32) &farmFieldTiles) & 3) {
-                            do {
-                                var_a3->unk0 = (unaligned s32) var_a2->unk0;
-                                var_a3->unk4 = (unaligned s32) var_a2->unk4;
-                                var_a3->unk8 = (unaligned s32) var_a2->unk8;
-                                var_a3->unkC = (unaligned s32) var_a2->unkC;
-                                var_a2 += 0x10;
-                                var_a3 += 0x10;
-                            } while (var_a2 != temp_t0);
-                            var_a0_2 = 0x5AA;
-                        } else {
-                            do {
-                                var_a3->unk0 = (s32) var_a2->unk0;
-                                var_a3->unk4 = (s32) var_a2->unk4;
-                                var_a3->unk8 = (s32) var_a2->unk8;
-                                var_a3->unkC = (s32) var_a2->unkC;
-                                var_a2 += 0x10;
-                                var_a3 += 0x10;
-                            } while (var_a2 != temp_t0);
-                            var_a0_2 = 0x5AA;
-                        }
-
-                        goto block_153;
+                        memcpy(farmFieldTiles, D_80113580, FIELD_HEIGHT * FIELD_WIDTH);
+                        func_80055F08(0x5AA, 0x61, 1);
                     }
-
-                    goto block_154;
-
-                case 35:                                /* switch 1 */
-
-                    if ((gCutsceneIndex == 0x640) && !(gCutsceneCompletionFlags & 2)) {
-
-                        // base farm tile map
-
-                        // memcpy
-                        var_a3_2 = &farmFieldTiles;
-                        var_a2_2 = &D_80113580;
-                        temp_t0_2 = &D_80113580 + 0x1E0;
-                        if (((s32) &D_80113580 | (s32) &farmFieldTiles) & 3) {
-                            do {
-                                var_a1_2 = (unaligned s32) var_a2_2->unkC;
-                                var_a3_2->unk0 = (unaligned s32) var_a2_2->unk0;
-                                var_a3_2->unk4 = (unaligned s32) var_a2_2->unk4;
-                                var_a3_2->unk8 = (unaligned s32) var_a2_2->unk8;
-                                var_a3_2->unkC = var_a1_2;
-                                var_a2_2 += 0x10;
-                                var_a3_2 += 0x10;
-                            } while (var_a2_2 != temp_t0_2);
-                        } else {
-                            do {
-                                var_a1_2 = var_a2_2->unkC;
-                                var_a3_2->unk0 = (s32) var_a2_2->unk0;
-                                var_a3_2->unk4 = (s32) var_a2_2->unk4;
-                                var_a3_2->unk8 = (s32) var_a2_2->unk8;
-                                var_a3_2->unkC = var_a1_2;
-                                var_a2_2 += 0x10;
-                                var_a3_2 += 0x10;
-                            } while (var_a2_2 != temp_t0_2);
-                        }
-                    
-                        initializeTitleScreen(1);
-                    
-                    }
-                    
                     break;
 
+                case 35:
+                    if ((gCutsceneIndex == 0x640) && !(gCutsceneCompletionFlags & 2)) {
+                        memcpy(farmFieldTiles, D_80113580, FIELD_HEIGHT * FIELD_WIDTH);
+                        initializeTitleScreen(1);
+                    }
+                    break;
+                
             }
 
-            // end of switch
-
-
-
-
-
-
-            // check for bank index 30
-            if ((gCutsceneCompletionFlags & 0x800) && (gCutsceneBytecodeSegmentIndex == 30)) {
+            if ((gCutsceneCompletionFlags & 0x800) && gCutsceneBytecodeSegmentIndex == 30) {
                 deactivateCutsceneExecutors();
                 deactivateSprites();
                 func_8003C504(MAIN_MAP_INDEX);
                 initializeTitleScreen(0);
             }
 
-
-            // handle bit 2 (cutscene end: deactivate map load, set strings, etc.)
             if (gCutsceneCompletionFlags & 2) {
 
                 updateAnimalCoordinates();
                 deactivateAnimalEntities();
-                
-                if (gCutsceneIndex != STARRY_NIGHT_FESTIVAL) {
 
-                    if ((s32) gCutsceneIndex < 0x1AD) {
+                switch (gCutsceneIndex) {
+
+                    case 1:
+                        transitionCutscenes(2, 0x3E);
+                        break;
+
+                    case 0x26:         
+                        transitionCutscenes(0x27, 0);
+                        gCutsceneFlags &= ~0x10;
+                        gCutsceneFlags |= 8;
+                        break;
                     
-                        if (gCutsceneIndex != 0xCE) {
-                            
-                            if ((s32) gCutsceneIndex < 0xCF) {
+                    case 0x93:          
+                        deactivateSprites();
+                        deactivateGlobalSprites();
+                        initializeCutsceneExecutors();
+                        deactivateNPCEntities();
+                        deactivateAnimalEntities();
+                        func_800D51B0();
+                        initializeEntityInstances(1);
+                        transitionCutscenes(0xFA, SPRING_ENTER);
+                        break;
 
-                                switch (gCutsceneIndex) { /* switch 18; irregular */
-                               
-                                    case 0x1:           /* switch 18 */
-                                        setEntrance(0x3E);
-                                        var_v0_3 = 2;
-                                        goto block_372;
-                                    case 0x26:          /* switch 18 */
-                                        setEntrance(HOUSE_EXIT);
-                                        var_v0_4 = 0x27;
-                                        goto block_374;
-                                    case 0x93:          /* switch 18 */
-                                        deactivateSprites();
-                                        deactivateGlobalSprites();
-                                        initializeCutsceneExecutors();
-                                        deactivateNPCEntities();
-                                        deactivateAnimalEntities();
-                                        func_800D51B0();
-                                        initializeEntityInstances(1);
-                                        setEntrance(SPRING_ENTER);
-                                        var_v0_5 = 0xFA;
-                                        goto block_322;
-                                    case 0xC5:          /* switch 18 */
-                                    case 0xB8:          /* switch 18 */
-                                    case 0xAD:          /* switch 18 */
-                                    case 0x96:          /* switch 18 */
-                                    case 0xA1:          /* switch 18 */
-                                        deactivateSprites();
-                                        deactivateGlobalSprites();
-                                        initializeCutsceneExecutors();
-                                        deactivateNPCEntities();
-                                        deactivateAnimalEntities();
-                                        func_800D51B0();
-                                        initializeEntityInstances(1);
-                                        setEntrance(0x1A);
-                                        var_v0_6 = 0xFB;
-                                        goto block_376;
-                                    case 0xB9:          /* switch 18 */
-                                    case 0xC6:          /* switch 18 */
-                                    case 0xAE:          /* switch 18 */
-                                    case 0xA2:          /* switch 18 */
-                                    case 0x97:          /* switch 18 */
-                                        deactivateSprites();
-                                        deactivateGlobalSprites();
-                                        initializeCutsceneExecutors();
-                                        deactivateNPCEntities();
-                                        deactivateAnimalEntities();
-                                        func_800D51B0();
-                                        initializeEntityInstances(1);
-                                        setEntrance(0x25);
-                                        var_v0_7 = 0xFC;
-                                        goto block_305;
-                                    case 0x9E:          /* switch 18 */
-                                        deactivateSprites();
-                                        deactivateGlobalSprites();
-                                        initializeCutsceneExecutors();
-                                        deactivateNPCEntities();
-                                        deactivateAnimalEntities();
-                                        func_800D51B0();
-                                        initializeEntityInstances(1);
-                                        setEntrance(SPRING_ENTER);
-                                        var_v0_5 = 0xFD;
-                                        goto block_322;
-                                    case 0xA9:          /* switch 18 */
-                                        deactivateSprites();
-                                        deactivateGlobalSprites();
-                                        initializeCutsceneExecutors();
-                                        deactivateNPCEntities();
-                                        deactivateAnimalEntities();
-                                        func_800D51B0();
-                                        initializeEntityInstances(1);
-                                        setEntrance(SPRING_ENTER);
-                                        var_v0_5 = 0xFE;
-                                        goto block_322;
-                                    case 0xB5:          /* switch 18 */
-                                        deactivateSprites();
-                                        deactivateGlobalSprites();
-                                        initializeCutsceneExecutors();
-                                        deactivateNPCEntities();
-                                        deactivateAnimalEntities();
-                                        func_800D51B0();
-                                        initializeEntityInstances(1);
-                                        setEntrance(SPRING_ENTER);
-                                        var_v0_5 = 0xFF;
-                                        goto block_322;
-                                    case 0xC1:          /* switch 18 */
-                                        deactivateSprites();
-                                        deactivateGlobalSprites();
-                                        initializeCutsceneExecutors();
-                                        deactivateNPCEntities();
-                                        deactivateAnimalEntities();
-                                        func_800D51B0();
-                                        initializeEntityInstances(1);
-                                        setEntrance(0x2E);
-                                        var_v0_8 = 0x100;
-                                        goto block_347;
-                                    case 0xCB:          /* switch 18 */
-                                        deactivateSprites();
-                                        deactivateGlobalSprites();
-                                        initializeCutsceneExecutors();
-                                        deactivateNPCEntities();
-                                        deactivateAnimalEntities();
-                                        func_800D51B0();
-                                        initializeEntityInstances(1);
-                                        setEntrance(0x32);
-                                        var_v0_9 = 0x195;
-                                        goto block_324;
-                                    }
+                    case 0x96:          
+                    case 0xA1:          
+                    case 0xAD:          
+                    case 0xB8:          
+                    case 0xC5:          
+                        deactivateSprites();
+                        deactivateGlobalSprites();
+                        initializeCutsceneExecutors();
+                        deactivateNPCEntities();
+                        deactivateAnimalEntities();
+                        func_800D51B0();
+                        initializeEntityInstances(1);
+                        transitionCutscenes(0xFB, 0x1A);
+                        break; 
+                    
+                    case 0x97:          
+                    case 0xA2:          
+                    case 0xAE:          
+                    case 0xB9:          
+                    case 0xC6:          
+                        deactivateSprites();
+                        deactivateGlobalSprites();
+                        initializeCutsceneExecutors();
+                        deactivateNPCEntities();
+                        deactivateAnimalEntities();
+                        func_800D51B0();
+                        initializeEntityInstances(1);
+                        transitionCutscenes(0xFC, 0x25);
+                        break;
+                
+                    case 0x9E:          
+                        deactivateSprites();
+                        deactivateGlobalSprites();
+                        initializeCutsceneExecutors();
+                        deactivateNPCEntities();
+                        deactivateAnimalEntities();
+                        func_800D51B0();
+                        initializeEntityInstances(1);
+                        transitionCutscenes(0xFD, SPRING_ENTER);
+                        break;
 
-                            } else if (gCutsceneIndex != 0x144) {
+                    case 0xA9:          
+                        deactivateSprites();
+                        deactivateGlobalSprites();
+                        initializeCutsceneExecutors();
+                        deactivateNPCEntities();
+                        deactivateAnimalEntities();
+                        func_800D51B0();
+                        initializeEntityInstances(1);
+                        transitionCutscenes(0xFE, SPRING_ENTER);
+                        break;
+                    
+                    case 0xB5:          
+                        deactivateSprites();
+                        deactivateGlobalSprites();
+                        initializeCutsceneExecutors();
+                        deactivateNPCEntities();
+                        deactivateAnimalEntities();
+                        func_800D51B0();
+                        initializeEntityInstances(1);
+                        transitionCutscenes(0xFF, 0x48);
+                        break;
+                    
+                    case 0xC1:          
+                        deactivateSprites();
+                        deactivateGlobalSprites();
+                        initializeCutsceneExecutors();
+                        deactivateNPCEntities();
+                        deactivateAnimalEntities();
+                        func_800D51B0();
+                        initializeEntityInstances(1);
+                        transitionCutscenes(0x100, 0x2E);
+                        break;
+                    
+                    case 0xCB:          
+                        deactivateSprites();
+                        deactivateGlobalSprites();
+                        initializeCutsceneExecutors();
+                        deactivateNPCEntities();
+                        deactivateAnimalEntities();
+                        func_800D51B0();
+                        initializeEntityInstances(1);
+                        transitionCutscenes(0x195, 0x32);
+                        break;
 
-                                if ((s32) gCutsceneIndex < 0x145) {
-                                
-                                    switch (gCutsceneIndex) { /* switch 17; irregular */
-                                
-                                        case 0xD0:      /* switch 17 */
-                                        deactivateSprites();
-                                        deactivateGlobalSprites();
-                                        initializeCutsceneExecutors();
-                                        deactivateNPCEntities();
-                                        deactivateAnimalEntities();
-                                        func_800D51B0();
-                                        initializeEntityInstances(1);
-                                        setEntrance(0x32);
-                                        var_v0_9 = 0x197;
-                                        goto block_324;
-                                    case 0xD6:      /* switch 17 */
-                                        deactivateSprites();
-                                        deactivateGlobalSprites();
-                                        initializeCutsceneExecutors();
-                                        deactivateNPCEntities();
-                                        deactivateAnimalEntities();
-                                        func_800D51B0();
-                                        initializeEntityInstances(1);
-                                        setEntrance(0x32);
-                                        var_v0_9 = 0x198;
-                                        goto block_324;
-                                    case 0xD9:      /* switch 17 */
-                                        deactivateSprites();
-                                        deactivateGlobalSprites();
-                                        initializeCutsceneExecutors();
-                                        deactivateNPCEntities();
-                                        deactivateAnimalEntities();
-                                        func_800D51B0();
-                                        initializeEntityInstances(1);
-                                        setEntrance(0x32);
-                                        var_v0_9 = 0x199;
-                                        goto block_324;
-                                    default:        /* switch 17 */
-                                        deactivateSprites();
-                                        deactivateGlobalSprites();
-                                        initializeCutsceneExecutors();
-                                        deactivateNPCEntities();
-                                        deactivateAnimalEntities();
-                                        func_800D51B0();
-                                        initializeEntityInstances(1);
-                                        setEntrance(0x5F);
-                                        gCutsceneIndex = STARRY_NIGHT_FESTIVAL;
-                                            loadCutscene(0);
-                                            func_8006E840(0x5F);
-                                            break;
-                                        case 0xF5:      /* switch 17 */
-                                            setEntrance(0x25);
-                                            var_v0_7 = 0x131;
-    block_305:
-                                            gCutsceneIndex = var_v0_7;
-                                            loadCutscene(0);
-                                            func_8006E840(0x25);
-                                            break;
-                                        case 0xF8:      /* switch 17 */
-                                            setEntrance(0x27);
-                                            gCutsceneIndex = 0x2F4;
-                                            loadCutscene(0);
-                                            func_8006E840(0x27);
-                                            break;
-                                        }
-                                } else {
+                    case 0xCE:
+                        deactivateSprites();
+                        deactivateGlobalSprites();
+                        initializeCutsceneExecutors();
+                        deactivateNPCEntities();
+                        deactivateAnimalEntities();
+                        func_800D51B0();
+                        initializeEntityInstances(1);
+                        transitionCutscenes(0x196, 0x32); 
+                        break;
+                    
+                    case 0xD0:      
+                        deactivateSprites();
+                        deactivateGlobalSprites();
+                        initializeCutsceneExecutors();
+                        deactivateNPCEntities();
+                        deactivateAnimalEntities();
+                        func_800D51B0();
+                        initializeEntityInstances(1);
+                        transitionCutscenes(0x197, 0x32);
+                        break;
 
-                                    switch (gCutsceneIndex) { /* switch 16; irregular */
-                                    
-                                        case 0x146:     /* switch 16 */
-                                            setEntrance(0x1A);
-                                            var_v0_6 = 0x147;
-                                            goto block_376;
-                                        case 0x148:     /* switch 16 */
-                                            setEntrance(0x23);
-                                            var_v0_10 = 0x149;
-                                            goto block_310;
-                                        case 0x149:     /* switch 16 */
-                                            setEntrance(0x1A);
-                                            var_v0_6 = 0x14A;
-                                            goto block_376;
-                                        case 0x158:     /* switch 16 */
-                                            setEntrance(0x2E);
-                                            var_v0_8 = 0x159;
-                                            goto block_347;
-                                        case 0x15A:     /* switch 16 */
-                                            D_801886D2 = getRandomNumberInRange(0, 9);
-                                            D_80180710 = getRandomNumberInRange(0, 9);
-                                            clearForagableObjects(MINE_2);
-                                            setEntrance(0x71);
-                                            gCutsceneIndex = 0x15B;
-                                            loadCutscene(0);
-                                            func_8006E840(0x71);
-                                            break;
+                    case 0xD6:      
+                        deactivateSprites();
+                        deactivateGlobalSprites();
+                        initializeCutsceneExecutors();
+                        deactivateNPCEntities();
+                        deactivateAnimalEntities();
+                        func_800D51B0();
+                        initializeEntityInstances(1);
+                        transitionCutscenes(0x198, 0x32);
+                        break;
+                    
+                    case 0xD9:      
+                        deactivateSprites();
+                        deactivateGlobalSprites();
+                        initializeCutsceneExecutors();
+                        deactivateNPCEntities();
+                        deactivateAnimalEntities();
+                        func_800D51B0();
+                        initializeEntityInstances(1);
+                        transitionCutscenes(0x199, 0x32);
+                        break;
 
-                                        default:        /* switch 16 */
-                                            if (((u8) gHour >= 0x11) || ((u8) gPlayer.currentStamina < 2)) {
-                                                gCutsceneIndex = 0x15D;
-                                                // MINE_EXIT
-                                                var_s0 = 0x47;
-                                                goto block_444;
-                                            }
+                    case 0xF4:
+                    case 0xF6:
+                    case 0xF7:
+                        deactivateSprites();
+                        deactivateGlobalSprites();
+                        initializeCutsceneExecutors();
+                        deactivateNPCEntities();
+                        deactivateAnimalEntities();
+                        func_800D51B0();
+                        initializeEntityInstances(1);
+                        transitionCutscenes(STARRY_NIGHT_FESTIVAL, 0x5F);
+                        break;
+                    
+                    case 0xF5:      
+                        transitionCutscenes(0x131, 0x25);
+                        break;
+                    
+                    case 0xF8:      
+                        transitionCutscenes(0x2F4, 0x27);
+                        break;
+                    
+                    case 0x144:
+                        transitionCutscenes(0x146, 0x23);
+                        break;
 
-                                            if ((u16) D_80189824 < 0xA) {
-                                                D_801886D2 = getRandomNumberInRange(0, 9);
-                                                D_80180710 = getRandomNumberInRange(0, 9);
-                                            } else {
-                                                D_80180710 = 0xFF;
-                                                D_801886D2 = 0xFF;
-                                            }
+                    case 0x146:     
+                        transitionCutscenes(0x147, 0x1A);
+                        break;
+                    
+                    case 0x148:     
+                        transitionCutscenes(0x149, 0x23);
+                        break;
+                    
+                    case 0x149:     
+                        transitionCutscenes(0x14A, 0x1A);
+                        break;
+                    
+                    case 0x158:     
+                        transitionCutscenes(0x159, 0x2E);
+                        break;
 
-                                            gCutsceneIndex = 0x15C;
-                                            clearForagableObjects(0x45);
-                                            var_s0_2 = 0x71;
-                                            goto block_445;
-                                        case 0x19A:     /* switch 16 */
-                                            setEntrance(SPRING_ENTER);
-                                            var_v0_5 = 0x19B;
-    block_322:
-                                            gCutsceneIndex = var_v0_5;
-                                            loadCutscene(0);
-                                            func_8006E840(SPRING_ENTER);
-                                            break;
-                                        case 0x1AA:     /* switch 16 */
-                                            setEntrance(0x32);
-                                            var_v0_9 = 0x1BB;
-                                            goto block_324;
-                                        }
-                                    }
+                    case 0x15A:     
+                        D_801886D2 = getRandomNumberInRange(0, 9);
+                        D_80180710 = getRandomNumberInRange(0, 9);
+                        clearForagableObjects(MINE_2);
+                        transitionCutscenes(0x15B, 0x71);
+                        break;
 
+                    case 0x15B:
+                    case 0x15C:
+                        
+                        if (gHour >= 17 || gPlayer.currentStamina < 2) {
+                            gCutsceneIndex = 0x15D;
+                            tempEntrance = 0x47;
+                        } else {
+    
+                            if (D_80189824 < 0xA) {
+                                D_801886D2 = getRandomNumberInRange(0, 9);
+                                D_80180710 = getRandomNumberInRange(0, 9);
                             } else {
-
-                                setEntrance(0x23);
-                                var_v0_10 = 0x146;
-block_310:
-                                gCutsceneIndex = var_v0_10;
-                                loadCutscene(0);
-                                func_8006E840(0x23);
-
+                                D_80180710 = 0xFF;
+                                D_801886D2 = 0xFF;
                             }
 
-                        } else {
-                            deactivateSprites();
-                            deactivateGlobalSprites();
-                            initializeCutsceneExecutors();
-                            deactivateNPCEntities();
-                            deactivateAnimalEntities();
-                            func_800D51B0();
-                            initializeEntityInstances(1);
-                            setEntrance(0x32);
-                            var_v0_9 = 0x196;
-block_324:
-                            gCutsceneIndex = var_v0_9;
-                            loadCutscene(0);
-                            func_8006E840(0x32);
+                            gCutsceneIndex = 0x15C;
+                            tempEntrance = 0x71;
+                            
+                            clearForagableObjects(0x45);
+                 
                         }
-
-
-                    } else if ((s32) gCutsceneIndex < 0x386) {
-
-                        if ((s32) gCutsceneIndex < 0x384) {
                         
-                            if ((s32) gCutsceneIndex < 0x214) {
-                        
-                                if ((s32) gCutsceneIndex < 0x212) {
-                        
-                                    switch (gCutsceneIndex) { /* switch 15; irregular */
-                        
-                                        case 0x1BC:     /* switch 15 */
-                                        case 0x1B9:     /* switch 15 */
-                                            setEntrance(0x58);
-                                            var_v0_11 = 0x1B7;
-                                            if (gCutsceneIndex == 0x1B9) {
-                                                var_v0_11 = 0x1B5;
-                                            }
-                                            gCutsceneIndex = var_v0_11;
-                                            loadCutscene(0);
-                                            func_8006E840(0x58);
-                                            break;
-                                        case 0x1BD:     /* switch 15 */
-                                        case 0x1BA:     /* switch 15 */
-                                            setEntrance(0x5C);
-                                            var_v0_12 = 0x1B8;
-                                            if (gCutsceneIndex == 0x1BA) {
-                                                var_v0_12 = 0x1B6;
-                                            }
-                                            gCutsceneIndex = var_v0_12;
-                                            loadCutscene(0);
-                                            func_8006E840(0x5C);
-                                            break;
-                                        case 0x20D:     /* switch 15 */
-                                            setEntrance(0x3E);
-                                            var_v0_3 = 0x20E;
-                                            goto block_372;
-                                        case 0x20E:     /* switch 15 */
-                                            setEntrance(0x41);
-                                            func_8006E840(0x41);
-                                            break;
-                                        case 0x20F:     /* switch 15 */
-                                            setEntrance(0x3E);
-                                            var_v0_3 = 0x210;
-                                            goto block_372;
-                                        }
+                        setEntrance(tempEntrance);
+                        loadCutscene(0);
+                        func_8006E840(tempEntrance);
 
-                                } else {
-                                    setEntrance(0x67);
-                                    var_v0_13 = 0x211;
-                                    if (gCutsceneIndex == 0x212) {
-                                        var_v0_13 = 0x20C;
-                                    }
-                                    gCutsceneIndex = var_v0_13;
-                                    loadCutscene(0);
-                                    func_8006E840(0x67);
-                                }
+                        break;
 
-                            } else if ((s32) gCutsceneIndex < 0x2C5) {
-                                if ((s32) gCutsceneIndex < 0x2C3) {
-                                    if (gCutsceneIndex != 0x2C1) {
-                                        if ((s32) gCutsceneIndex < 0x2C2) {
-                                            if ((s32) gCutsceneIndex < 0x29C) {
-                                                if ((s32) gCutsceneIndex >= 0x29A) {
-                                                    setEntrance(0x4D);
-                                                    var_v0_14 = 0x298;
-                                                    if (gCutsceneIndex == 0x29A) {
-                                                        var_v0_14 = 0x297;
-                                                    }
-                                                    gCutsceneIndex = var_v0_14;
-                                                    loadCutscene(0);
-                                                    func_8006E840(0x4D);
-                                                } else {
-                                                    goto block_449;
-                                                }
-                                            } else {
-                                                goto block_449;
-                                            }
-                                        } else {
-                                            setEntrance(0x53);
-                                            gCutsceneIndex = 0x2C3;
-                                            loadCutscene(0);
-                                            func_8006E840(0x53);
-                                        }
-                                    } else {
-                                        gCutsceneIndex = 0x2C2;
-                                        loadCutscene(0);
-                                        func_8006E840(0x55);
-                                    }
-                                } else {
-                                    toggleDailyEventBit(0x4F);
-                                    setEntrance(0x2E);
-                                    var_v0_8 = 0x2C5;
-block_347:
-                                    gCutsceneIndex = var_v0_8;
-                                    loadCutscene(0);
-                                    func_8006E840(0x2E);
-                                }
-                            } else if ((s32) gCutsceneIndex >= 0x2C7) {
-                                if ((s32) gCutsceneIndex >= 0x2C9) {
-                                    if (gCutsceneIndex != 0x324) {
-                                        goto block_449;
-                                    }
-                                    setEntrance(0x2B);
-                                    func_8006E840(0x2B);
-                                } else {
-                                    setEntrance(0x52);
-                                    var_v0_15 = 0x2C6;
-                                    if (gCutsceneIndex == 0x2C7) {
-                                        var_v0_15 = 0x2C0;
-                                    }
-                                    gCutsceneIndex = var_v0_15;
-                                    loadCutscene(0);
-                                    func_8006E840(0x52);
-                                }
+                    case 0x19A:     
+                        transitionCutscenes(0x19B, SPRING_ENTER);
+                        break;
+                    
+                    case 0x1AA:     
+                        transitionCutscenes(0x1BB, 0x32);
+                        break;
 
+                    // 0x1AC
+                    case STARRY_NIGHT_FESTIVAL:
+
+                        setEntrance(0x61);
+    
+                        if (!(gCutsceneCompletionFlags & 8)) {
+
+                            if (!(gCutsceneCompletionFlags & 0x10)) {
+                                
+                                if ((gCutsceneCompletionFlags & 0x20)) {
+                                    gCutsceneIndex = 0x1AF;
+                                } 
+                                
                             } else {
-block_449:
-                                gCutsceneIndex = 0xFFFF;
+                                gCutsceneIndex = 0x1AE;
                             }
                             
                         } else {
-
-                            // horse race
-
-                            if ((u8) gHour >= 0x11) {
-                                setEntrance(0x61);
-                                var_v0_16 = 0x388;
-                                goto block_359;
-                            }
-
-                            var_v0_17 = 0x386;
-                            if (*(&overlayScreenStrings + 0x6D) == *(&overlayScreenStrings + 0x6C)) {
-                                gCutsceneIndex = 0x387;
-                                D_80189824 = (u16) horseInfo.affection;
-                                D_801886D2 = MULTU_HI(horseInfo.affection, 0xAAAAAAAB) & 0x1FE;
-                                D_80180710 = (horseInfo.affection / 3) & 0xFF;
-                            } else {
-                                goto block_446;
-                            }
-                            goto block_447;
+                            gCutsceneIndex = 0x1AD;
+    
                         }
-
-                    } else if (gCutsceneIndex != MAYOR_VILLAGE_TOUR) {
-
-                        if ((s32) gCutsceneIndex < 0x5AE) {
-
-                            switch ((s32) gCutsceneIndex) { /* switch 14; irregular */
-                         
-                                case VEGETABLE_FESTIVAL_VILLAGE:             /* switch 14 */
-                                    deactivateSprites();
-                                    deactivateGlobalSprites();
-                                    initializeCutsceneExecutors();
-                                    deactivateNPCEntities();
-                                    deactivateAnimalEntities();
-                                    func_800D51B0();
-                                    initializeEntityInstances(2);
-                                    setEntrance(0x61);
-                                    var_v0_16 = VEGETABLE_FESTIVAL_SQUARE;
-                                    goto block_359;
-
-                                default:                /* switch 14 */
-
-                                    // handle dog race
-        
-                                    if ((u8) gHour >= 0x11) {
-                                        setEntrance(0x61);
-                                        var_v0_16 = 0x517;
-                                        goto block_359;
-                                    }
-
-                                    if (*(&overlayScreenStrings + 0x6D) == *(&overlayScreenStrings + 0x6C)) {
-                                        var_v0_18 = D_801C3F78 | 0x20;
-                                    } else {
-                                        var_v0_18 = D_801C3F78 & ~0x20;
-                                    }
-                                    D_801C3F78 = var_v0_18;
-                                    if (*(&overlayScreenStrings + 0x6E) == *(&overlayScreenStrings + 0x6C)) {
-                                        var_v0_19 = D_801C3F78 | 0x40;
-                                    } else {
-                                        var_v0_19 = D_801C3F78 & ~0x40;
-                                    }
-                                    D_801C3F78 = var_v0_19;
-                                    var_v0_17 = DOG_RACE_AFTER_RACE;
-
-                                    goto block_446;
-
-                                case DOG_RACE_AFTER_RACE:             /* switch 14 */
-                                    setupPlayerEntity(0x6C, 1);
-                                    func_8006A2E8();
-                                    setEntitiesColor(0, 0, 0, 0);
-                                    setEntrance(0x6C);
-                                    gCutsceneIndex = 0x515;
-                                    loadCutscene(0);
-                                    func_8006E840(0x6C);
-                                    break;
-
-                                case 0x5AA:             /* switch 14 */
-                                    setEntrance(0);
-                                    var_v0_20 = 0x5AB;
-                                    goto block_379;
-
-                                case 0x5AB:             /* switch 14 */
-                                    setEntrance(0x14);
-                                    gCutsceneIndex = 0x5AC;
-                                    loadCutscene(0);
-                                    func_8006E840(0x14);
-                                    break;
-                                }
-
+                        
+                        loadCutscene(0);
+                        func_8006E840(0x61);
+                        break;
+                    
+                    case 0x1B9:     
+                    case 0x1BC:
+                        setEntrance(0x58);
+                        if (gCutsceneIndex == 0x1B9) {
+                            gCutsceneIndex = 0x1B5;
                         } else {
+                            gCutsceneIndex = 0x1B7;
+                        }
+                        loadCutscene(0);
+                        func_8006E840(0x58);
+                        break;
+                    
+                    case 0x1BA:     
+                    case 0x1BD:     
+                        setEntrance(0x5C);
+                        if (gCutsceneIndex == 0x1BA) {
+                            gCutsceneIndex = 0x1B6;
+                        } else {    
+                            gCutsceneIndex = 0x1B8;
+                        }
+                        loadCutscene(0);
+                        func_8006E840(0x5C);
+                        break;
 
-                            switch (gCutsceneIndex) { /* switch 13; irregular */
-                                
-                                default:                /* switch 13 */
-                                
-                                    // HOW_TO_PLAY_CUTSCENE
-                                    var_v0_17 = 0x640;
-    block_446:
-                                    gCutsceneIndex = var_v0_17;
-    block_447:
-                                    loadCutscene(0);
-                                    break;
-
-                                case 0x5AE:             /* switch 13 */
-                                    setEntrance(0);
-                                    var_v0_4 = 0x5AF;
-    block_374:
-                                    gCutsceneIndex = var_v0_4;
-                                    loadCutscene(0);
-                                    func_8006E840(0);
-                                    gCutsceneFlags = (gCutsceneFlags & ~0x10) | 8;
-                                    break;
-
-                                case EVALUATION:             /* switch 13 */
-                                    setEntrance(0x1A);
-                                    var_v0_6 = 0x60F;
-    block_376:
-                                    gCutsceneIndex = var_v0_6;
-                                    loadCutscene(0);
-                                    func_8006E840(0x1A);
-                                    break;
-
-                                case 0x60F:             /* switch 13 */
-                                    setEntrance(0xA);
-                                    gCutsceneIndex = 0x610;
-                                    loadCutscene(0);
-                                    func_8006E840(0xA);
-                                    break;
-
-                                case 0x610:             /* switch 13 */
-                                    setEntrance(0);
-                                    var_v0_20 = 0x611;
-    block_379:
-                                    gCutsceneIndex = var_v0_20;
-                                    loadCutscene(0);
-                                    func_8006E840(0);
-                                    break;
-
-                                case HOW_TO_PLAY_CUTSCENE:             /* switch 13 */
-                                    
-                                    deactivateSprites();
-                                    deactivateGlobalSprites();
-                                    initializeCutsceneExecutors();
-                                    deactivateNPCEntities();
-                                    deactivateAnimalEntities();
-                                    func_800D51B0();
-                                    initializeEntityInstances(0);
-
-                                    if (D_80189824 == 0) {
-
-                                        gSeason = SUMMER;
-
-                                        // memcpy
-                                        var_a3_3 = &farmFieldTiles;
-                                        var_a2_3 = &D_80115030;
-                                        temp_t0_3 = &D_80115030 + 0x1E0;
-                                        if (((s32) &D_80115030 | (s32) &farmFieldTiles) & 3) {
-                                            do {
-                                                var_a3_3->unk0 = (unaligned s32) var_a2_3->unk0;
-                                                var_a3_3->unk4 = (unaligned s32) var_a2_3->unk4;
-                                                var_a3_3->unk8 = (unaligned s32) var_a2_3->unk8;
-                                                var_a3_3->unkC = (unaligned s32) var_a2_3->unkC;
-                                                var_a2_3 += 0x10;
-                                                var_a3_3 += 0x10;
-                                            } while (var_a2_3 != temp_t0_3);
-                                            var_s0 = 0;
-                                        } else {
-                                            do {
-                                                var_a3_3->unk0 = (s32) var_a2_3->unk0;
-                                                var_a3_3->unk4 = (s32) var_a2_3->unk4;
-                                                var_a3_3->unk8 = (s32) var_a2_3->unk8;
-                                                var_a3_3->unkC = (s32) var_a2_3->unkC;
-                                                var_a2_3 += 0x10;
-                                                var_a3_3 += 0x10;
-                                            } while (var_a2_3 != temp_t0_3);
-                                            // HOUSE_EXIT
-                                            var_s0 = 0;
-                                        }
-                                        var_v0_21 = 0x641;
-                                        goto block_443;
-                                    }
-
-                                    if (D_80189824 == 1) {
-
-                                        gSeason = SPRING;
-                                        // HOUSE_EXIT
-                                        var_s0 = 0;
-
-                                        switch (D_801886D2) { /* switch 7 */
-
-                                            case 0:         /* switch 7 */
-
-                                                // memcpy
-                                                var_a3_4 = &farmFieldTiles;
-                                                var_a2_4 = &D_80115210;
-                                                temp_t0_4 = &D_80115210 + 0x1E0;
-                                                if (((s32) &D_80115210 | (s32) &farmFieldTiles) & 3) {
-                                                    do {
-                                                        var_a3_4->unk0 = (unaligned s32) var_a2_4->unk0;
-                                                        var_a3_4->unk4 = (unaligned s32) var_a2_4->unk4;
-                                                        var_a3_4->unk8 = (unaligned s32) var_a2_4->unk8;
-                                                        var_a3_4->unkC = (unaligned s32) var_a2_4->unkC;
-                                                        var_a2_4 += 0x10;
-                                                        var_a3_4 += 0x10;
-                                                    } while (var_a2_4 != temp_t0_4);
-                                                    var_v0_21 = 0x642;
-                                                } else {
-                                                    do {
-                                                        var_a3_4->unk0 = (s32) var_a2_4->unk0;
-                                                        var_a3_4->unk4 = (s32) var_a2_4->unk4;
-                                                        var_a3_4->unk8 = (s32) var_a2_4->unk8;
-                                                        var_a3_4->unkC = (s32) var_a2_4->unkC;
-                                                        var_a2_4 += 0x10;
-                                                        var_a3_4 += 0x10;
-                                                    } while (var_a2_4 != temp_t0_4);
-                                                    var_v0_21 = 0x642;
-                                                }
-
-                                                goto block_443;
-                                            case 1:         /* switch 7 */
-
-                                                // memcpy
-                                                var_a3_5 = &farmFieldTiles;
-                                                var_a2_5 = &D_801153F0;
-                                                temp_t0_5 = &D_801153F0 + 0x1E0;
-                                                if (((s32) &D_801153F0 | (s32) &farmFieldTiles) & 3) {
-                                                    do {
-                                                        var_a3_5->unk0 = (unaligned s32) var_a2_5->unk0;
-                                                        var_a3_5->unk4 = (unaligned s32) var_a2_5->unk4;
-                                                        var_a3_5->unk8 = (unaligned s32) var_a2_5->unk8;
-                                                        var_a3_5->unkC = (unaligned s32) var_a2_5->unkC;
-                                                        var_a2_5 += 0x10;
-                                                        var_a3_5 += 0x10;
-                                                    } while (var_a2_5 != temp_t0_5);
-                                                    var_v0_21 = 0x643;
-                                                } else {
-                                                    do {
-                                                        var_a3_5->unk0 = (s32) var_a2_5->unk0;
-                                                        var_a3_5->unk4 = (s32) var_a2_5->unk4;
-                                                        var_a3_5->unk8 = (s32) var_a2_5->unk8;
-                                                        var_a3_5->unkC = (s32) var_a2_5->unkC;
-                                                        var_a2_5 += 0x10;
-                                                        var_a3_5 += 0x10;
-                                                    } while (var_a2_5 != temp_t0_5);
-                                                    var_v0_21 = 0x643;
-                                                }
-                                                goto block_443;
-
-
-                                            case 2:         /* switch 7 */
-
-                                                // memcpy
-                                                var_a3_6 = &farmFieldTiles;
-                                                var_a2_6 = &D_801155D0;
-                                                temp_t0_6 = &D_801155D0 + 0x1E0;
-                                                if (((s32) &D_801155D0 | (s32) &farmFieldTiles) & 3) {
-                                                    do {
-                                                        var_a3_6->unk0 = (unaligned s32) var_a2_6->unk0;
-                                                        var_a3_6->unk4 = (unaligned s32) var_a2_6->unk4;
-                                                        var_a3_6->unk8 = (unaligned s32) var_a2_6->unk8;
-                                                        var_a3_6->unkC = (unaligned s32) var_a2_6->unkC;
-                                                        var_a2_6 += 0x10;
-                                                        var_a3_6 += 0x10;
-                                                    } while (var_a2_6 != temp_t0_6);
-                                                    var_v0_21 = 0x644;
-                                                } else {
-                                                    do {
-                                                        var_a3_6->unk0 = (s32) var_a2_6->unk0;
-                                                        var_a3_6->unk4 = (s32) var_a2_6->unk4;
-                                                        var_a3_6->unk8 = (s32) var_a2_6->unk8;
-                                                        var_a3_6->unkC = (s32) var_a2_6->unkC;
-                                                        var_a2_6 += 0x10;
-                                                        var_a3_6 += 0x10;
-                                                    } while (var_a2_6 != temp_t0_6);
-                                                    var_v0_21 = 0x644;
-                                                }
-                                                goto block_443;
-                                            
-                                            case 3:         /* switch 7 */
-                                            
-                                                // memcpy
-                                                var_a3_7 = &farmFieldTiles;
-                                                var_a2_7 = &D_801157B0;
-                                                temp_t0_7 = &D_801157B0 + 0x1E0;
-                                                if (((s32) &D_801157B0 | (s32) &farmFieldTiles) & 3) {
-                                                    do {
-                                                        var_a3_7->unk0 = (unaligned s32) var_a2_7->unk0;
-                                                        var_a3_7->unk4 = (unaligned s32) var_a2_7->unk4;
-                                                        var_a3_7->unk8 = (unaligned s32) var_a2_7->unk8;
-                                                        var_a3_7->unkC = (unaligned s32) var_a2_7->unkC;
-                                                        var_a2_7 += 0x10;
-                                                        var_a3_7 += 0x10;
-                                                    } while (var_a2_7 != temp_t0_7);
-                                                    var_v0_21 = 0x645;
-                                                } else {
-                                                    do {
-                                                        var_a3_7->unk0 = (s32) var_a2_7->unk0;
-                                                        var_a3_7->unk4 = (s32) var_a2_7->unk4;
-                                                        var_a3_7->unk8 = (s32) var_a2_7->unk8;
-                                                        var_a3_7->unkC = (s32) var_a2_7->unkC;
-                                                        var_a2_7 += 0x10;
-                                                        var_a3_7 += 0x10;
-                                                    } while (var_a2_7 != temp_t0_7);
-                                                    var_v0_21 = 0x645;
-                                                }
-                                                goto block_443;
-
-                                            case 4:         /* switch 7 */
-
-                                                // memcpy
-                                                var_a3_8 = &farmFieldTiles;
-                                                var_a2_8 = &D_80115990;
-                                                temp_t0_8 = &D_80115990 + 0x1E0;
-                                                if (((s32) &D_80115990 | (s32) &farmFieldTiles) & 3) {
-                                                    do {
-                                                        var_a3_8->unk0 = (unaligned s32) var_a2_8->unk0;
-                                                        var_a3_8->unk4 = (unaligned s32) var_a2_8->unk4;
-                                                        var_a3_8->unk8 = (unaligned s32) var_a2_8->unk8;
-                                                        var_a3_8->unkC = (unaligned s32) var_a2_8->unkC;
-                                                        var_a2_8 += 0x10;
-                                                        var_a3_8 += 0x10;
-                                                    } while (var_a2_8 != temp_t0_8);
-                                                    var_v0_21 = 0x646;
-                                                } else {
-                                                    do {
-                                                        var_a3_8->unk0 = (s32) var_a2_8->unk0;
-                                                        var_a3_8->unk4 = (s32) var_a2_8->unk4;
-                                                        var_a3_8->unk8 = (s32) var_a2_8->unk8;
-                                                        var_a3_8->unkC = (s32) var_a2_8->unkC;
-                                                        var_a2_8 += 0x10;
-                                                        var_a3_8 += 0x10;
-                                                    } while (var_a2_8 != temp_t0_8);
-                                                    var_v0_21 = 0x646;
-                                                }
-                                                
-                                                goto block_443;
-
-                                            }
-
-
-                                    } else {
-
-                                        gSeason = SUMMER;
-                                        // HOUSE_EXIT
-                                        var_s0 = 0;
-
-                                        switch (D_801886D2) { /* switch 8 */
-
-                                            case 0:         /* switch 8 */
-
-                                                // memcpy
-                                                var_a3_9 = &farmFieldTiles;
-                                                var_a2_9 = &D_80115B70;
-                                                temp_t0_9 = &D_80115B70 + 0x1E0;
-
-                                                if (((s32) &D_80115B70 | (s32) &farmFieldTiles) & 3) {
-                                                    do {
-                                                        var_a3_9->unk0 = (unaligned s32) var_a2_9->unk0;
-                                                        var_a3_9->unk4 = (unaligned s32) var_a2_9->unk4;
-                                                        var_a3_9->unk8 = (unaligned s32) var_a2_9->unk8;
-                                                        var_a3_9->unkC = (unaligned s32) var_a2_9->unkC;
-                                                        var_a2_9 += 0x10;
-                                                        var_a3_9 += 0x10;
-                                                    } while (var_a2_9 != temp_t0_9);
-                                                    var_v0_21 = 0x647;
-                                                } else {
-                                                    do {
-                                                        var_a3_9->unk0 = (s32) var_a2_9->unk0;
-                                                        var_a3_9->unk4 = (s32) var_a2_9->unk4;
-                                                        var_a3_9->unk8 = (s32) var_a2_9->unk8;
-                                                        var_a3_9->unkC = (s32) var_a2_9->unkC;
-                                                        var_a2_9 += 0x10;
-                                                        var_a3_9 += 0x10;
-                                                    } while (var_a2_9 != temp_t0_9);
-                                                    var_v0_21 = 0x647;
-                                                }
-        block_443:
-                                                gCutsceneIndex = var_v0_21;
-                                                break;
-
-                                            case 1:         /* switch 8 */
-
-                                                // memcpy
-                                                var_a3_10 = &farmFieldTiles;
-                                                var_a2_10 = &D_80115D50;
-                                                temp_t0_10 = &D_80115D50 + 0x1E0;
-                                                if (((s32) &D_80115D50 | (s32) &farmFieldTiles) & 3) {
-                                                    do {
-                                                        var_a3_10->unk0 = (unaligned s32) var_a2_10->unk0;
-                                                        var_a3_10->unk4 = (unaligned s32) var_a2_10->unk4;
-                                                        var_a3_10->unk8 = (unaligned s32) var_a2_10->unk8;
-                                                        var_a3_10->unkC = (unaligned s32) var_a2_10->unkC;
-                                                        var_a2_10 += 0x10;
-                                                        var_a3_10 += 0x10;
-                                                    } while (var_a2_10 != temp_t0_10);
-                                                    var_v0_21 = 0x648;
-                                                } else {
-                                                    do {
-                                                        var_a3_10->unk0 = (s32) var_a2_10->unk0;
-                                                        var_a3_10->unk4 = (s32) var_a2_10->unk4;
-                                                        var_a3_10->unk8 = (s32) var_a2_10->unk8;
-                                                        var_a3_10->unkC = (s32) var_a2_10->unkC;
-                                                        var_a2_10 += 0x10;
-                                                        var_a3_10 += 0x10;
-                                                    } while (var_a2_10 != temp_t0_10);
-                                                    var_v0_21 = 0x648;
-                                                }
-
-                                                goto block_443;
-
-                                            case 2:         /* switch 8 */
-
-                                                // memcpy
-                                                var_a3_11 = &farmFieldTiles;
-                                                var_a2_11 = &D_80115F30;
-                                                temp_t0_11 = &D_80115F30 + 0x1E0;
-                                                if (((s32) &D_80115F30 | (s32) &farmFieldTiles) & 3) {
-                                                    do {
-                                                        var_a3_11->unk0 = (unaligned s32) var_a2_11->unk0;
-                                                        var_a3_11->unk4 = (unaligned s32) var_a2_11->unk4;
-                                                        var_a3_11->unk8 = (unaligned s32) var_a2_11->unk8;
-                                                        var_a3_11->unkC = (unaligned s32) var_a2_11->unkC;
-                                                        var_a2_11 += 0x10;
-                                                        var_a3_11 += 0x10;
-                                                    } while (var_a2_11 != temp_t0_11);
-                                                    var_s0 = 0x11;
-                                                } else {
-                                                    do {
-                                                        var_a3_11->unk0 = (s32) var_a2_11->unk0;
-                                                        var_a3_11->unk4 = (s32) var_a2_11->unk4;
-                                                        var_a3_11->unk8 = (s32) var_a2_11->unk8;
-                                                        var_a3_11->unkC = (s32) var_a2_11->unkC;
-                                                        var_a2_11 += 0x10;
-                                                        var_a3_11 += 0x10;
-                                                    } while (var_a2_11 != temp_t0_11);
-                                                    var_s0 = 0x11;
-                                                }
-                                                var_v0_21 = 0x649;
-                                                goto block_443;
-
-
-                                            case 3:         /* switch 8 */
-
-                                                // memcpy
-                                                var_a3_12 = &farmFieldTiles;
-                                                var_a2_12 = &D_80116110;
-                                                temp_t0_12 = &D_80116110 + 0x1E0;
-                                                if (((s32) &D_80116110 | (s32) &farmFieldTiles) & 3) {
-                                                    do {
-                                                        var_a3_12->unk0 = (unaligned s32) var_a2_12->unk0;
-                                                        var_a3_12->unk4 = (unaligned s32) var_a2_12->unk4;
-                                                        var_a3_12->unk8 = (unaligned s32) var_a2_12->unk8;
-                                                        var_a3_12->unkC = (unaligned s32) var_a2_12->unkC;
-                                                        var_a2_12 += 0x10;
-                                                        var_a3_12 += 0x10;
-                                                    } while (var_a2_12 != temp_t0_12);
-                                                    var_v0_21 = 0x64A;
-                                                } else {
-                                                    do {
-                                                        var_a3_12->unk0 = (s32) var_a2_12->unk0;
-                                                        var_a3_12->unk4 = (s32) var_a2_12->unk4;
-                                                        var_a3_12->unk8 = (s32) var_a2_12->unk8;
-                                                        var_a3_12->unkC = (s32) var_a2_12->unkC;
-                                                        var_a2_12 += 0x10;
-                                                        var_a3_12 += 0x10;
-                                                    } while (var_a2_12 != temp_t0_12);
-                                                    var_v0_21 = 0x64A;
-                                                }
-                                                goto block_443;
-
-
-                                            case 4:         /* switch 8 */
-                                                
-                                                // memcpy
-                                                var_a3_13 = &farmFieldTiles;
-                                                var_a2_13 = &D_80116110;
-                                                temp_t0_13 = &D_80116110 + 0x1E0;
-                                                if (((s32) &D_80116110 | (s32) &farmFieldTiles) & 3) {
-                                                    do {
-                                                        var_a3_13->unk0 = (unaligned s32) var_a2_13->unk0;
-                                                        var_a3_13->unk4 = (unaligned s32) var_a2_13->unk4;
-                                                        var_a3_13->unk8 = (unaligned s32) var_a2_13->unk8;
-                                                        var_a3_13->unkC = (unaligned s32) var_a2_13->unkC;
-                                                        var_a2_13 += 0x10;
-                                                        var_a3_13 += 0x10;
-                                                    } while (var_a2_13 != temp_t0_13);
-                                                    var_v0_21 = 0x64B;
-                                                } else {
-                                                    do {
-                                                        var_a3_13->unk0 = (s32) var_a2_13->unk0;
-                                                        var_a3_13->unk4 = (s32) var_a2_13->unk4;
-                                                        var_a3_13->unk8 = (s32) var_a2_13->unk8;
-                                                        var_a3_13->unkC = (s32) var_a2_13->unkC;
-                                                        var_a2_13 += 0x10;
-                                                        var_a3_13 += 0x10;
-                                                    } while (var_a2_13 != temp_t0_13);
-
-                                                    // last cutscene
-                                                    var_v0_21 = 0x64B;
-
-                                                }
-
-                                                goto block_443;
-
-                                            }
-
-                                    }
-    block_444:
-                                    var_s0_2 = var_s0;
-    block_445:
-                                    setEntrance(var_s0_2);
-                                    loadCutscene(0);
-                                    func_8006E840(var_s0_2);
-                                    break;
-                            
-                                }
-
-                            }
-
-                    } else {
-
+                    case 0x20D:
                         setEntrance(0x3E);
-                        var_v0_3 = 0x5AE;
-block_372:
-                        gCutsceneIndex = var_v0_3;
+                        gCutsceneIndex = 0x20E;
                         loadCutscene(0);
                         func_8006E840(0x3E);
+                        break;
+                    
+                    case 0x20E:     
+                        setEntrance(0x41);
+                        func_8006E840(0x41);
+                        break;
+                    
+                    case 0x20F:
+                        transitionCutscenes(0x210, 0x3E);
+                        break;   
 
-                    }
+                    case 0x212:
+                    case 0x213:
+                        setEntrance(0x67);
+                        if (gCutsceneIndex == 0x212) {
+                            gCutsceneIndex = 0x20C;
+                        } else {
+                            gCutsceneIndex = 0x211;
+                        }
+                        loadCutscene(0);
+                        func_8006E840(0x67);
+                        break;
 
-                } else {
+                    // 0x29A
+                    case ANN_SICK_VISIT_CUTSCENE:
+                    case 0x29B:
+                        setEntrance(0x4D);
+                        if (gCutsceneIndex == 0x29A) {
+                            gCutsceneIndex = 0x297;
+                        } else {
+                            gCutsceneIndex = 0x298;
+                        }
+                        loadCutscene(0);
+                        func_8006E840(0x4D);
+                        break;
+                    
+                    // 0x2C1
+                    case KAREN_YELLOW_HEART_EVENT_1:
+                        gCutsceneIndex = 0x2C2;
+                        loadCutscene(0);
+                        func_8006E840(0x55);
+                        break;
 
-                    setEntrance(0x61);
-                    var_v0_16 = 0x1AD;
+                    case 0x2C2:
+                        transitionCutscenes(0x2C3, 0x53);
+                        break;
 
-                    if (!(gCutsceneCompletionFlags & 8) && (var_v0_16 = 0x1AE, ((gCutsceneCompletionFlags & 0x10) == 0))) {
+                    case 0x2C3:
+                    case 0x2C4:
+                        toggleDailyEventBit(0x4F);
+                        transitionCutscenes(0x2C5, 0x2E);
+                        break;
+                    
+                    case 0x2C7:
+                    case 0x2C8:
+                        setEntrance(0x52);
+                        if (gCutsceneIndex == 0x2C7) {
+                            gCutsceneIndex = 0x2C0;
+                        } else {
+                            gCutsceneIndex = 0x2C6;
+                        }
+                        loadCutscene(0);
+                        func_8006E840(0x52);
+                        break;
+                    
+                    // 0x324
+                    case ANN_SPRAINED_ANKLE:
+                        setEntrance(0x2B);
+                        func_8006E840(0x2B);
+                        break;
+                    
+                    case 0x386:
+                    case 0x387:
+                        break;
+                    
+                    case 0x384:
+                    // 0x385
+                    case HORSE_RACE_STARTING_ANNOUNCEMENT:
+                         
+                        if (gHour >= 17) {
+                            transitionCutscenes(0x388, 0x61);
+                        } else {
+
+                            if (overlayScreenStrings.unk_6D == overlayScreenStrings.unk_6C) {
+                                gCutsceneIndex = 0x387;
+                                D_80189824 = horseInfo.affection;
+                                D_801886D2 = (horseInfo.affection / 3) * 2;
+                                D_80180710 = horseInfo.affection / 3;
+                            } else {
+                                gCutsceneIndex = 0x386;
+                            }
+
+                            loadCutscene(0);
+                            
+                        }
                         
-                        var_v0_16 = 0x1AF;
-                        if (gCutsceneCompletionFlags & 0x20) {
-                            goto block_359;
+                        break;
+
+                    // 0x3E8
+                    case VEGETABLE_FESTIVAL_VILLAGE:
+                        deactivateSprites();
+                        deactivateGlobalSprites();
+                        initializeCutsceneExecutors();
+                        deactivateNPCEntities();
+                        deactivateAnimalEntities();
+                        func_800D51B0();
+                        initializeEntityInstances(2);
+                        transitionCutscenes(VEGETABLE_FESTIVAL_SQUARE, 0x61);
+                        break;
+
+                    case 0x514:
+                    case 0x515:
+                        if (gHour >= 17) {
+                            transitionCutscenes(0x517, 0x61);
+                        } else {
+                            if (overlayScreenStrings.unk_6D == overlayScreenStrings.unk_6C) {
+                                D_801C3F78 |= 0x20;
+                            } else {
+                                D_801C3F78 &= ~0x20;
+                            }
+                            if (overlayScreenStrings.unk_6E == overlayScreenStrings.unk_6C) {
+                                D_801C3F78 |= 0x40;
+                            } else {
+                                D_801C3F78 &= ~0x40;
+                            }
+                            
+                            gCutsceneIndex = 0x516;
+                            loadCutscene(0);
+                            
+                        }
+                        
+                        break;
+
+                    case 0x516:
+                        setupPlayerEntity(0x6C, 1);
+                        handlePlayerAnimation();
+                        setEntitiesColor(0, 0, 0, 0);
+                        setEntrance(0x6C);
+                        gCutsceneIndex = 0x515;
+                        loadCutscene(0);
+                        func_8006E840(0x6C);
+                        break;
+
+                    case 0x5AA:             
+                        transitionCutscenes(0x5AB, 0);
+                        break;
+
+                    case 0x5AB:             
+                        transitionCutscenes(0x5AC, 0x14);
+                        break;
+
+                    // 0x5AD
+                    case MAYOR_VILLAGE_TOUR:
+                        transitionCutscenes(0x5AE, 0x3E);
+                        break;
+                    
+                    case 0x5AE:            
+                        transitionCutscenes(0x5AF, 0);
+                        gCutsceneFlags &= ~0x10;
+                        gCutsceneFlags |= 8;
+                        break;
+
+
+                    case 0x5DD:
+                        break;
+
+                    // 0x60E
+                    case EVALUATION:             
+                        transitionCutscenes(0x60F, 0x1A);
+                        break;
+
+                    case 0x60F:             
+                        transitionCutscenes(0x610, 0xA);
+                        break;
+
+                    case 0x610:             
+                        transitionCutscenes(0x611, 0);
+                        break;
+
+                    // 0x640
+                    case HOW_TO_PLAY_CUTSCENE:     
+                        
+                        deactivateSprites();
+                        deactivateGlobalSprites();
+                        initializeCutsceneExecutors();
+                        deactivateNPCEntities();
+                        deactivateAnimalEntities();
+                        func_800D51B0();
+                        initializeEntityInstances(0);
+
+                        if (D_80189824 == 0) {
+
+                            gSeason = SUMMER;
+                            
+                            memcpy(farmFieldTiles, D_80115030, FIELD_HEIGHT * FIELD_WIDTH); 
+                            tempEntrance = 0;
+                            gCutsceneIndex = 0x641;
+                            
+                            
+                        } else if (D_80189824 == 1) {
+
+                            gSeason = SPRING;
+
+                            tempEntrance = 0;
+                            
+                            switch (D_801886D2) {
+
+                                case 0:
+                                    memcpy(farmFieldTiles, D_80115210, FIELD_HEIGHT * FIELD_WIDTH); 
+                                    gCutsceneIndex = 0x642;
+                                    break;
+
+                                case 1:
+                                    memcpy(farmFieldTiles, D_801153F0, FIELD_HEIGHT * FIELD_WIDTH); 
+                                    gCutsceneIndex = 0x643;
+                                    break;
+
+                                case 2:
+                                    memcpy(farmFieldTiles, D_801155D0, FIELD_HEIGHT * FIELD_WIDTH); 
+                                    gCutsceneIndex = 0x644;
+                                    break;
+
+                                case 3:
+                                    memcpy(farmFieldTiles, D_801157B0, FIELD_HEIGHT * FIELD_WIDTH); 
+                                    gCutsceneIndex = 0x645;
+                                    break;
+                                
+                                case 4:
+                                    memcpy(farmFieldTiles, D_80115990, FIELD_HEIGHT * FIELD_WIDTH); 
+                                    gCutsceneIndex = 0x646;
+                                    break;
+                                
+                            }
+
+                        } else {
+
+                            gSeason = SUMMER;
+                            tempEntrance = 0;
+                            
+                            switch (D_801886D2) {
+
+                                case 0:
+                                    memcpy(farmFieldTiles, D_80115B70, FIELD_HEIGHT * FIELD_WIDTH); 
+                                    gCutsceneIndex = 0x647;
+                                    break;
+
+                                case 1:
+                                    memcpy(farmFieldTiles, D_80115D50, FIELD_HEIGHT * FIELD_WIDTH); 
+                                    gCutsceneIndex = 0x648;
+                                    break;
+
+                                case 2:
+                                    memcpy(farmFieldTiles, D_80115F30, FIELD_HEIGHT * FIELD_WIDTH); 
+                                    tempEntrance = 0x11;
+                                    gCutsceneIndex = 0x649;
+                                    break;
+
+                                case 3:
+                                    memcpy(farmFieldTiles, D_80116110, FIELD_HEIGHT * FIELD_WIDTH); 
+                                    gCutsceneIndex = 0x64A;
+                                    break;
+                                
+                                case 4:
+                                    memcpy(farmFieldTiles, D_80116110, FIELD_HEIGHT * FIELD_WIDTH); 
+                                    gCutsceneIndex = 0x64B;
+                                    break;
+                                
+                            }
+                            
                         }
 
-                    } else {
-block_359:
-                        gCutsceneIndex = var_v0_16;
+                        setEntrance(tempEntrance);
+                        loadCutscene(0);
+                        func_8006E840(tempEntrance);
 
-                    }
+                        break;
+
+                    case 0x641 ... 0x64B:
+                        gCutsceneIndex = 0x640;
+                        loadCutscene(0); 
+                        break;
+
+                    default:
+                        gCutsceneIndex = 0xFFFF;
+                        break;
                     
-                    loadCutscene(0);
-                    // prep and load map
-                    func_8006E840(0x61);
-
                 }
 
                 if (gCutsceneIndex != 0xFFFF) {
-                    unknownRGBA.r  = 0.0f;
-                    unknownRGBA.g  = 0.0f;
-                    unknownRGBA.b = 0.0f;
-                    unknownRGBA.a = 0.0f;
+                    f32 temp = 0.0f;
+                    unknownRGBA.a = temp;
+                    unknownRGBA.b = temp;
+                    unknownRGBA.g = temp;
+                    unknownRGBA.r = temp;
                     setMainLoopCallbackFunctionIndex(4);
                 }
-            
+                
             }
-
+            
             if (((gCutsceneIndex == 0x4B0) || (gCutsceneIndex == NEW_YEAR_FESTIVAL))) {
                 setEntitySpriteDimensions(ENTITY_ASSET_SHIPPER, 12, 12);
                 setEntitySpriteDimensions(ENTITY_ASSET_ASSISTANT_CARPENTER, 12, 12);
@@ -5794,19 +5304,15 @@ block_359:
             }
 
             gCutsceneCompletionFlags = 0;
-
+            
         }
-
-        // end handle bit 2
-
-
 
         // UI strings flags
 
+        // FIXME: struct addressesing needs to be fixed
         if (gCutsceneCompletionFlags & 4) {
-            temp_s0 = &overlayScreenStrings + 6;
-            setGameVariableString(0x28, (D_8018A72C * 6) + temp_s0, 6);
-            setGameVariableString(0x29, (D_8018A72D * 6) + temp_s0, 6);
+            setGameVariableString(0x28, overlayScreenStrings.unk_6.strings[D_8018A72C[0]], 6);
+            setGameVariableString(0x29, overlayScreenStrings.unk_6.strings[D_8018A72C[1]], 6);
             gCutsceneCompletionFlags &= ~4;
         }
 
@@ -5821,11 +5327,13 @@ block_359:
             gCutsceneCompletionFlags &= ~0x80;
         }
 
-        // message flags
-
         if (gCutsceneCompletionFlags & 0x100) {
+
+            u32 ptr1 = (u32)&_fontPalette3SegmentRomStart;
+            u32 ptr2 =  (u32)&_fontPalette3SegmentRomEnd;
+            
             // fontPalette3
-            nuPiReadRom(&D_E137D0, FONT_PALETTE_1_BUFFER, &D_E13800 - &D_E137D0);
+            nuPiReadRom(ptr1, FONT_PALETTE_1_BUFFER, ptr2 - ptr1);
             func_8003F464(0, 0xE, 0xE, FONT_TEXTURE_BUFFER, FONT_PALETTE_1_BUFFER);
             func_8003F360(0, 1, 1);
             setMessageBoxSfx(0, 0xFF, 0xFF, 0xFF);
@@ -5839,22 +5347,22 @@ block_359:
             // prep map
             func_8006E840(0);
             func_8003BE98(0, 0xFF, 0xFF, 0xFF, 0xFF);
-            gCutsceneCompletionFlags &= 0xFFFDFFFF;
+            gCutsceneCompletionFlags &= ~0x20000;
         }
         if (gCutsceneCompletionFlags & 0x40000) {
             // load map object
             func_80073244(0);
-            gCutsceneCompletionFlags &= 0xFFFBFFFF;
+            gCutsceneCompletionFlags &= ~0x40000;
         }
         if (gCutsceneCompletionFlags & 0x80000) {
             // load map object
             func_80073244(1);
-            gCutsceneCompletionFlags &= 0xFFF7FFFF;
+            gCutsceneCompletionFlags &= ~0x80000;
         }
         if (gCutsceneCompletionFlags & 0x100000) {
             // load map object
             func_80073244(2);
-            gCutsceneCompletionFlags &= 0xFFEFFFFF;
+            gCutsceneCompletionFlags &= ~0x100000;
         }
 
         if (gCutsceneCompletionFlags & 0x200000) {
@@ -5862,7 +5370,7 @@ block_359:
             // prep map
             func_8006E840(0x12);
             func_8003BE98(0, 0, 0, 0, 0);
-            gCutsceneCompletionFlags &= 0xFFDFFFFF;
+            gCutsceneCompletionFlags &= ~0x200000;
         }
 
         if (gCutsceneCompletionFlags & 0x400000) {
@@ -5870,240 +5378,199 @@ block_359:
             // prep map
             func_8006E840(0x11);
             func_8003BE98(0, 0, 0, 0, 0);
-            gCutsceneCompletionFlags &= 0xFFBFFFFF;
+            gCutsceneCompletionFlags &= ~0x400000;
         }
 
         if (gCutsceneCompletionFlags & 0x800000) {
             // map object
             func_8007341C(0);
-            gCutsceneCompletionFlags &= 0xFF7FFFFF;
+            gCutsceneCompletionFlags &= ~0x800000;
         }
 
-        if (gCutsceneCompletionFlags & 0x01000000) {
+        if (gCutsceneCompletionFlags & 0x1000000) {
             func_8007341C(2);
-            gCutsceneCompletionFlags &= 0xFEFFFFFF;
+            gCutsceneCompletionFlags &= ~0x1000000;
         }
 
-        if (gCutsceneCompletionFlags & 0x02000000) {
+        if (gCutsceneCompletionFlags & 0x2000000) {
             // map objects
             func_80034DC8(0, 0, 0x13);
-            gCutsceneCompletionFlags &= 0xFDFFFFFF;
+            gCutsceneCompletionFlags &= ~0x2000000;
         }
 
-        
         // mining
+        if ((gCutsceneCompletionFlags & 0x4000000) && (151 < entities[ENTITY_PLAYER].animationIndices.animationIndex && entities[ENTITY_PLAYER].animationIndices.animationIndex < 176)) {
 
-        // check range of entities[ENTITY_PLAYER].animationIndices.animationIndex
-        if ((gCutsceneCompletionFlags & 0x04000000) && ((u32) (*(&entities + 0x54) - 0x98) < 0x18)) {
+            s16 tempX, tempZ;
 
-            // entities[ENTITY_PLAYER].coordinates.x
-            temp_f2 = (s32) *(&entities + 0x28);
-            var_v0_22 = (s16) temp_f2 + 0xF0;
-            
-            if (var_v0_22 < 0) {
-                var_v0_22 = (s16) temp_f2 + 0x10F;
+            tempX = ((s16)entities[ENTITY_PLAYER].coordinates.x + 240) / 32;
+            tempX -= 2; 
+
+            tempZ = ((s16)entities[ENTITY_PLAYER].coordinates.z + 240) / 32;
+            tempZ -= 2;
+
+            switch (gPlayer.direction) {
+
+                case WEST:
+                    tempX--;
+                case SOUTHWEST:
+                    tempZ++;
+                    break;
+                case NORTHWEST:
+                    tempX--;
+                    break;
+                case NORTH:
+                    tempX--;
+                    tempZ--;
+                    break;
+                case NORTHEAST:
+                    tempZ--;
+                    break;
+                case EAST:
+                    tempX++; 
+                    tempZ--;
+                    break;
+                case SOUTHEAST:
+                    tempX++;
+                    break;
+                case SOUTH:
+                    tempX++;
+                    tempZ++;
+                    break;
+                
             }
 
-            var_a2_14 = (var_v0_22 >> 5) - 2;
+            if (tempX < 10 && tempZ < 10 && tempX >= 0 && tempZ >= 0) {
 
+                if (mineFieldTiles[tempZ][tempX] == 0) {
 
-            // entities[ENTITY_PLAYER].coordinates.z
-            temp_f2_2 = (s32) *(&entities + 0x30);
-            var_v0_23 = (s16) temp_f2_2 + 0xF0;
-            
-            if (var_v0_23 < 0) {
-                var_v0_23 = (s16) temp_f2_2 + 0x10F;
-            }
+                    found = FALSE;
 
-            // gPlayer.direction
-            temp_v1_3 = (&gPlayer)[0x6D];
-            var_a3_14 = (var_v0_23 >> 5) - 2;
+                    if (tempX == D_801886D2 && tempZ == D_80180710) {
 
-            switch (temp_v1_3) {                    /* switch 9 */
+                        setMapAdditionIndexFromCoordinates(0, 0, tempX + 2, tempZ + 2);
+                        setGridToTileTextureMappings(MAIN_MAP_INDEX);
+                        func_800CF8F8(1, 0, (f32)((tempX * 32) - 160), 0, (f32)((tempZ * 32) - 160));
 
-                case 1:                                 /* switch 9 */
-                    var_a2_14 -= 1;
-                case 0:                                 /* switch 9 */
-block_498:
-                    var_a3_14 += 1;
-                    break;
-                case 2:                                 /* switch 9 */
-                    var_a2_14 -= 1;
-                    break;
-                case 3:                                 /* switch 9 */
-                    var_a2_14 -= 1;
-                    /* fallthrough */
-                case 4:                                 /* switch 9 */
-block_494:
-                    var_a3_14 -= 1;
-                    break;
-                case 5:                                 /* switch 9 */
-                    var_a2_14 += 1;
-                    goto block_494;
-                case 6:                                 /* switch 9 */
-                    var_a2_14 += 1;
-                    break;
-                case 7:                                 /* switch 9 */
-                    var_a2_14 += 1;
-                    goto block_498;
-
-            }
-
-            if (((var_a2_14 < 0xA) & (var_a3_14 < 0xA)) && (((u32) ~var_a2_14 >> 0x1F) & ((u32) ~var_a3_14 >> 0x1F))) {
-
-                temp_s3 = (var_a3_14 * 0x14) + &mineFieldTiles + var_a2_14;
-
-                if (*temp_s3 == 0) {
-
-                    var_s2 = 0;
-                    
-                    // compare x and z coordinates to cutscene wildcard variables
-                    if (var_a2_14 == D_801886D2) {
-
-                        var_v0_24 = var_a3_14 << 0x10;
-
-                        if (var_a3_14 == D_80180710) {
-                            func_80038B58(0, 0, (var_a2_14 + 2) & 0xFF, (var_a3_14 + 2) & 0xFF);
-                            func_80036C08(0);
-                            func_800CF8F8(1, 0, (f32) ((var_a2_14 << 5) - 0xA0), 0, (f32) ((var_a3_14 << 5) - 0xA0));
-                            var_s2 = 1;
-                            // set tile
-                            *temp_s3 = 0xD9;
-                        } else {
-                            goto block_506;
-                        }
-
+                        found = TRUE;
+                        mineFieldTiles[tempZ][tempX] = 0xD9;
+                            
                     } else {
-                        var_v0_24 = var_a3_14 << 0x10;
-block_506:
-                        *(((var_v0_24 >> 0x10) * 0x14) + &mineFieldTiles + var_a2_14) = 2;
+                        mineFieldTiles[tempZ][tempX] = 2;
                     }
-
-                    if (!(var_s2 & 0xFF)) {
                     
-                        var_v0_25 = var_s2 & 0xFF;
+                    if (!found) {
 
-                        if ((u16) D_80189824 >= 3) {
+                        if (D_80189824 >= 3) {
 
-                            if (!(powerNutBits & 0x20) && (gItemBeingHeld == 0xFF) && !(getRandomNumberInRange(0, 100))) {
-                                gItemBeingHeld = 0xFE;
+                            if (!(powerNutBits & 0x20) && gItemBeingHeld == 0xFF && !(getRandomNumberInRange(0, 100))) {
+                                gItemBeingHeld = 254;
                                 powerNutBits |= 0x20;
                             }
 
-                            var_v0_25 = var_s2 & 0xFF;
-                            
-                            if (checkSpecialDialogueBit(0x15) == 0) {
-
-                                var_v0_25 = var_s2 & 0xFF;
-
+                            if (!checkSpecialDialogueBit(0x15)) {
                                 if (gItemBeingHeld == 0xFF) {
-                                
-                                    var_v0_25 = var_s2 & 0xFF;
-                                
-                                    // acquire weather vane
                                     if (!(getRandomNumberInRange(0, 100))) {
                                         gItemBeingHeld = 0xFD;
                                         setSpecialDialogueBit(0x15);
                                         acquireKeyItem(WEATHER_VANE);
-                                        var_v0_25 = var_s2 & 0xFF;
                                     }
                                 }
                             }
-
+                                
                         }
-
-                        if (var_v0_25 == 0) {
-
-                            var_v0_26 = var_s2 & 0xFF;
-                            
-                            if ((u16) D_80189824 >= 2) {
-
-                                temp_s1 = gItemBeingHeld;
-                                var_v0_26 = var_s2 & 0xFF;
-
-                                if (temp_s1 == 0xFF) {
-
-                                    // acquire blue rock
-                                    if ((u32) (getRandomNumberInRange(0, 100)) < 4) {
-                                        (&gPlayer)[0x2C] = BLUE_ROCK;
-                                        gItemBeingHeld = BLUE_ROCK;
-                                    }
-
-                                    temp_s0_2 = gItemBeingHeld;
-                                    var_v0_26 = var_s2 & 0xFF;
-
-                                    if (temp_s0_2 == temp_s1) {
-
-                                        if ((u32) (getRandomNumberInRange(0, 100)) < 2) {
-                                            (&gPlayer)[0x2C] = RARE_METAL;
-                                            gItemBeingHeld = RARE_METAL;
-                                        }
-
-                                        var_v0_26 = var_s2 & 0xFF;
-                                        if (gItemBeingHeld == temp_s0_2) {
-                                            if ((u32) (getRandomNumberInRange(0, 100)) < 3) {
-                                                (&gPlayer)[0x2C] = PONTANA_ROOT;
-                                                gItemBeingHeld = PONTANA_ROOT;
-                                            }
-
-                                            var_v0_26 = var_s2 & 0xFF;
-
-                                        }
-                                    }
-                                }
-                            }
-
-                            if (var_v0_26 == 0) {
-
-                                var_v0_27 = var_s2 & 0xFF;
-
-                                if (gItemBeingHeld == 0xFF) {
-                                    if ((u32) (getRandomNumberInRange(0, 100)) < 0xA) {
-                                        gItemBeingHeld = 0xFC;
-                                    }
-                                    var_v0_27 = var_s2 & 0xFF;
-                                }
-
-                                if (var_v0_27 == 0) {
-
-                                    var_v0_28 = var_s2 & 0xFF;
-                                    if (gItemBeingHeld == 0xFF) {
-                                        if ((u32) (getRandomNumberInRange(0, 100)) < 8) {
-                                            (&gPlayer)[0x2C] = 0x2E;
-                                            gItemBeingHeld = 0x2E;
-                                        }
-                                        var_v0_28 = var_s2 & 0xFF;
-                                    }
-
-                                    if ((var_v0_28 == 0) && (gItemBeingHeld == 0xFF) && ((u32) (getRandomNumberInRange(0, 100)) < 5)) {
-                                        (&gPlayer)[0x2C] = 0x31;
-                                        gItemBeingHeld = 0x31;
-                                    }
-
-                                }
-
-                            }
-                        }
+                        
                     }
-                }
 
+                    if (!found) {
+
+                        if (D_80189824 >= 2) {
+
+                            u8 temp = gItemBeingHeld;
+                            u8 temp2;
+
+                            if (gItemBeingHeld == 0xFF) {
+
+                                if (getRandomNumberInRange(0, 100) < 4) {
+                                    gPlayer.heldItem = BLUE_ROCK;
+                                    gItemBeingHeld = BLUE_ROCK;
+                                }
+
+                                temp2 = gItemBeingHeld; 
+
+                                if (gItemBeingHeld == temp) {
+                                    
+                                    if (getRandomNumberInRange(0, 100) < 2) {
+                                        gPlayer.heldItem = RARE_METAL;
+                                        gItemBeingHeld = RARE_METAL;
+                                    }
+
+                                    if (gItemBeingHeld == temp2) {
+
+                                        if (getRandomNumberInRange(0, 100) < 3) {
+                                            gPlayer.heldItem = PONTANA_ROOT;
+                                            gItemBeingHeld = PONTANA_ROOT;
+                                        }
+                                        
+                                    }
+                                    
+                                }
+                                
+                            }
+                            
+                        }
+                        
+                    }
+
+                    if (!found) {
+
+                        if (gItemBeingHeld == 0xFF) {
+
+                            if (getRandomNumberInRange(0, 100) < 10) {
+                                gItemBeingHeld = 0xFC;
+                            }
+                            
+                        }
+                        
+                    }
+
+                    if (!found) {
+
+                        if (gItemBeingHeld == 0xFF) {
+                            if (getRandomNumberInRange(0, 100) < 8) {
+                                gPlayer.heldItem = 0x2E;
+                                gItemBeingHeld = 0x2E;
+                            }
+                        }
+                        
+                    }
+
+                    if (!found) {
+
+                        if (gItemBeingHeld == 0xFF) {
+                            if (getRandomNumberInRange(0, 100) < 5) {
+                                gPlayer.heldItem = 0x31;
+                                gItemBeingHeld = 0x31;
+                            }
+                        }
+                        
+                    }
+                    
+                } 
+                
             }
-
-            gCutsceneCompletionFlags &= 0xFBFFFFFF;
-       
+            
+            gCutsceneCompletionFlags &= ~0x4000000;
+        
         }
 
-        //
-
-
-        if ((gCutsceneCompletionFlags & 0x08000000) && ((u8) gItemBeingHeld < 0xFC)) {
-            handleEatingAndDrinking();
+        if ((gCutsceneCompletionFlags & 0x8000000) && gItemBeingHeld < 252) {
+            func_80065AA0();
         }
 
-        temp_v1_4 = gCutsceneCompletionFlags & 0x1000;
-        gCutsceneCompletionFlags &= 0xF7FFFFFF;
+        gCutsceneCompletionFlags &= ~0x8000000;
 
-        if (temp_v1_4) {
+        if (gCutsceneCompletionFlags & 0x1000) {
             setDailyEventBit(6);
         } else {
             toggleDailyEventBit(6);
@@ -6143,7 +5610,7 @@ block_506:
 
         if (gCutsceneCompletionFlags & 0x8000) {
             func_800610DC();
-            gCutsceneCompletionFlags &= 0xFFFF7FFF;
+            gCutsceneCompletionFlags &= ~0x8000;
         }
 
         if (gCutsceneFlags & 8) {
@@ -6158,14 +5625,13 @@ block_506:
 
         if (gCutsceneCompletionFlags & 0x10000000) {
             func_800876D0();
-            gCutsceneCompletionFlags &= 0xEFFFFFFF;
+            gCutsceneCompletionFlags &= ~0x10000000;
         }
 
         if (gCutsceneCompletionFlags & 0x20000000) {
             func_8008779C();
-            gCutsceneCompletionFlags &= 0xDFFFFFFF;
+            gCutsceneCompletionFlags &= ~0x20000000;
         }
-
 
         // handle life event bit updates
 
@@ -6183,55 +5649,49 @@ block_506:
         
         if (checkLifeEventBit(0x49)) {
             toggleLifeEventBit(0x49);
-            func_80065BCC(0x14);
-            chickenFeedQuantity += adjustValue((u8) chickenFeedQuantity, 0xA, 0x3E7);
+            func_80065BCC(CHICKEN_FEED);
+            chickenFeedQuantity += adjustValue(chickenFeedQuantity, 10, 999);
         }
 
         // seeds
         if (checkLifeEventBit(0x4A)) {
 
             toggleLifeEventBit(0x4A);
-            temp_v1_5 = getRandomNumberInRange(0, 5);
             
-            switch (temp_v1_5) {                    /* switch 10 */
-                case 0:                                 /* switch 10 */
+            switch (getRandomNumberInRange(0, 5)) {                    
+                
+                case 0:                                 
                     func_80065BCC(0xA);
-                    D_801FC154 += adjustValue(D_801FC154, 1, 0x14);
+                    D_801FC154 += adjustValue(D_801FC154, 1, 20);
                     return;
-                case 1:                                 /* switch 10 */
+                case 1:                                 
                     func_80065BCC(0xB);
-                    D_80204DF4 += adjustValue(D_80204DF4, 1, 0x14);
+                    D_80204DF4 += adjustValue(D_80204DF4, 1, 20);
                     return;
-                case 2:                                 /* switch 10 */
+                case 2:                                 
                     func_80065BCC(0xC);
-                    D_8018A725 += adjustValue(D_8018A725, 1, 0x14);
+                    D_8018A725 += adjustValue(D_8018A725, 1, 20);
                     return;
-                case 3:                                 /* switch 10 */
+                case 3:                                 
                     func_80065BCC(0xD);
-                    D_8013DC2C += adjustValue(D_8013DC2C, 1, 0x14);
+                    D_8013DC2C += adjustValue(D_8013DC2C, 1, 20);
                     return;
-                case 4:                                 /* switch 10 */
+                case 4:                                 
                     func_80065BCC(0xE);
-                    D_801FAD91 += adjustValue(D_801FAD91, 1, 0x14);
+                    D_801FAD91 += adjustValue(D_801FAD91, 1, 20);
                     return;
-                case 5:                                 /* switch 10 */
+                case 5:                                 
                     func_80065BCC(0xF);
-                    D_80237458 += adjustValue(D_80237458, 1, 0x14);
+                    D_80237458 += adjustValue(D_80237458, 1, 20);
                     break;
-                }
+                
             }
-
-    } else {
-
-    default:                                        /* switch 10 */
-
+            
+        }
+        
     }
-
+    
 }
-
-#else
-INCLUDE_ASM("asm/nonmatchings/game/cutscenes", func_800A8F74);
-#endif
 
 //INCLUDE_ASM("asm/nonmatchings/game/cutscenes", loadCutscene);
 

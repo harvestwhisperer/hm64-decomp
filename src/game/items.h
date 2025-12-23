@@ -219,6 +219,7 @@ typedef struct {
 } ItemEntityMetadata;
 
 extern void func_800CF850();     
+extern void func_800CF8F8(u8 itemOffset, u8 animationIndex, f32 x, f32 y, f32 z);
 extern void func_800CFB38(u8, u8, f32, f32, f32);   
 extern void func_800CFD78(u8, u8);                         
 extern void func_800CFDA0(u8);       
