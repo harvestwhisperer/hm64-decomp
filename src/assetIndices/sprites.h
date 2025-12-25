@@ -146,6 +146,8 @@
 #define TOOL_SPRITES_BASE 0xA3
 // 0xA3 is also pause screen map sprite (shows current location)
 
+#define RECIPE_LABELS_BASE 0xA3
+
 #define HOLDABLE_ITEMS_BASE 0xAC
 
 #define CALENDAR_STICKERS_BASE 0xAD

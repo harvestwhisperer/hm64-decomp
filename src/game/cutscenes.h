@@ -14,7 +14,7 @@
 #define ARE_MARRIED checkLifeEventBit(MARRIED)
 #define NOT_MARRIED !checkLifeEventBit(MARRIED)
 
-u16 func_8009C054(u16 mapIndex);
+extern u16 func_8009C054(u16 mapIndex);
 extern u16 func_800A7AE8(u8);  
 extern u16 func_800A7DFC();        
 extern u16 func_800A87C4();   
@@ -30,5 +30,8 @@ extern u16 gCutsceneBytecodeSegmentIndex;
 extern u16 D_80215DF0;
 // cow festival winner affection (D_80189054)
 extern u16 D_801886D2;
+
+extern u32 D_801C3F78;
+extern u8 D_8018A72C[6];
 
 #endif

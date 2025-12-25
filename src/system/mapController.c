@@ -17,6 +17,9 @@ s16 D_8017045A;
 MapController mapControllers[1];
 MapDataAddress mapDataAddresses[96];
 
+Vec3f previousWorldRotationAngles;
+Vec3f currentWorldRotationAngles;
+
 // forward declarations
 void func_8003C8D4(MapController*); 
  
@@ -193,6 +196,7 @@ bool dmaMapAssets(u16 mainMapIndex, u16 levelMapIndex) {
         
         mapControllers[mainMapIndex].mapIndex = levelMapIndex;
         
+        // mapDataIndex = virtual address of map data 
         nuPiReadRom(mapDataAddresses[levelMapIndex].romStart, mapControllers[mainMapIndex].mapDataIndex, mapDataAddresses[levelMapIndex].romEnd - mapDataAddresses[levelMapIndex].romStart);
  
         mapGrid = getAddress(mapControllers[mainMapIndex].mapDataIndex, 0);

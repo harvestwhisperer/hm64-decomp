@@ -1,5 +1,6 @@
 #include "common.h"
 
+#include "system/mapController.h"
 #include "system/sceneGraph.h"
 
 #include "system/graphic.h"
@@ -11,10 +12,6 @@ u16 sceneNodeCounter;
 u8 D_80189135[9];
 SceneNode sceneNodes[MAX_SCENE_NODES];
 SceneMatrices sceneMatrices[2];
-
-// shared bss
-extern Vec3f previousWorldRotationAngles;
-extern Vec3f currentWorldRotationAngles;
 
 
 //INCLUDE_ASM("asm/nonmatchings/system/sceneGraph", initializeSceneNodes);

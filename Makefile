@@ -331,6 +331,15 @@ $(BUILD_DIR)/%.s.o: %.s
 
 $(BUILD_DIR)/%.bin.o: %.bin
 	$(V)$(LD) -r -b binary -o $@ $<
+
+# Code segment for spec file
+
+CODE_OBJECTS := $(filter $(BUILD_DIR)/src/% $(BUILD_DIR)/lib/% $(BUILD_DIR)/asm/%,$(OBJECTS))
+
+$(BUILD_DIR)/codesegment.o: $(CODE_OBJECTS)
+	$(V)$(LD) -r -o $@ $^
+
+codesegment: $(BUILD_DIR)/codesegment.o
 	
 # Final binary
 
@@ -344,7 +353,7 @@ check: $(TARGET)
 	$(V)diff $(TARGET) $(BASEROM) && echo "OK"
 
 
-.PHONY: all clean clean-artifacts setup split submodules rebuild rerun check
+.PHONY: all clean clean-artifacts setup split submodules rebuild rerun check codesegment
 .PHONY: extract-sprites extract-animation-metadata extract-animation-scripts
 .PHONY: extract-animation-sprites extract-animations extract-gifs
 .PHONY: extract-texts extract-dialogues extract-map-sprites extract-cutscenes

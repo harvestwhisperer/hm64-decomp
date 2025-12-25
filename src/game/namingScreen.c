@@ -33,6 +33,7 @@
 extern void loadCutscene(void);
 extern u16 gCutsceneIndex;
 
+
 // bss
 NamingScreenContext namingScreenContext;
 
@@ -200,19 +201,18 @@ void func_800ED974(void) {
             temp2 = namingScreenContext.selectedSeason;
 
             deactivateNamingScreenSprites();
-            
-            dmaSprite(0x80, &_namingScreen1TextureSegmentRomStart, &_namingScreen1TextureSegmentRomEnd, &_namingScreen1AssetsIndexSegmentRomStart, &_namingScreen1AssetsIndexSegmentRomEnd, NULL, NULL, (void*)0x80263E00, NULL, (void*)0x80266E00, (void*)0x80267100, (void*)0x80267200, NULL, NULL, 0);
-            dmaSprite(0x84, &_namingScreen1TextureSegmentRomStart, &_namingScreen1TextureSegmentRomEnd, &_namingScreen1AssetsIndexSegmentRomStart, &_namingScreen1AssetsIndexSegmentRomEnd, NULL, NULL, (void*)0x80263E00, NULL, (void*)0x80266E00, (void*)0x80267100, (void*)0x80267200, NULL, NULL, 0);
-            dmaSprite(LANDSCAPE_BACKGROUND, &_namingScreenBackgroundTextureSegmentRomStart, &_namingScreenBackgroundTextureSegmentRomEnd, &_namingScreenBackgroundAssetsIndexSegmentRomStart, &_namingScreenBackgroundAssetsIndexSegmentRomEnd, NULL, NULL, (void*)0x8026AB00, NULL, (void*)0x8026DB00, (void*)0x8026DC00, (void*)0x8026DD00, NULL, NULL, 0);
+
+            dmaSprite(0x80, &_namingScreen1TextureSegmentRomStart, &_namingScreen1TextureSegmentRomEnd, &_namingScreen1AssetsIndexSegmentRomStart, &_namingScreen1AssetsIndexSegmentRomEnd, NULL, NULL, (u8*)NAMING_SCREEN_CONFIRMATION_SCREEN_TEXTURE_BUFFER, NULL, (u16*)NAMING_SCREEN_CONFIRMATION_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)NAMING_SCREEN_CONFIRMATION_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)NAMING_SCREEN_CONFIRMATION_SCREEN_TEXTURE_TO_PALETTE_BUFFER, NULL, 0, FALSE);
+            dmaSprite(0x84, &_namingScreen1TextureSegmentRomStart, &_namingScreen1TextureSegmentRomEnd, &_namingScreen1AssetsIndexSegmentRomStart, &_namingScreen1AssetsIndexSegmentRomEnd, NULL, NULL, (u8*)NAMING_SCREEN_CONFIRMATION_SCREEN_TEXTURE_BUFFER, NULL, (u16*)NAMING_SCREEN_CONFIRMATION_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)NAMING_SCREEN_CONFIRMATION_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)NAMING_SCREEN_CONFIRMATION_SCREEN_TEXTURE_TO_PALETTE_BUFFER, NULL, 0, FALSE);
+           
+            dmaSprite(LANDSCAPE_BACKGROUND, &_namingScreenBackgroundTextureSegmentRomStart, &_namingScreenBackgroundTextureSegmentRomEnd, &_namingScreenBackgroundAssetsIndexSegmentRomStart, &_namingScreenBackgroundAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)NAMING_SCREEN_BACKGROUND_TEXTURE_BUFFER, NULL, (u16*)NAMING_SCREEN_BACKGROUND_PALETTE_BUFFER, (AnimationFrameMetadata*)NAMING_SCREEN_BACKGROUND_ANIMATION_FRAME_METADATA_BUFFER, (u32*)NAMING_SCREEN_BACKGROUND_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
             setBilinearFiltering(LANDSCAPE_BACKGROUND, TRUE);
             setSpriteScale(LANDSCAPE_BACKGROUND, 2.0f, 2.0f, 1.0f);
 
-            // animation
             startSpriteAnimation(0x80, 1, 0);
             startSpriteAnimation(0x84, 2, 0);
             startSpriteAnimation(LANDSCAPE_BACKGROUND, 0, 0);
             
-            // rgba
             setSpriteColor(0x80, 0, 0, 0, 0);
             setSpriteColor(0x84, 0, 0, 0, 0);
             setSpriteColor(LANDSCAPE_BACKGROUND, 0, 0, 0, 0);
@@ -225,7 +225,7 @@ void func_800ED974(void) {
             namingScreenContext.flags &= ~(0x20 | 0x40);
             namingScreenContext.flags |= 0x40;
 
-            initializeEmptyMessageBox(3, (void*)MESSAGE_BOX_3_TEXT_BUFFER);
+            initializeEmptyMessageBox(3, (u8*)MESSAGE_BOX_3_TEXT_BUFFER);
             setMessageBoxViewSpacePosition(3, 4.0f, 56.0f, 30.0f);
             func_8003F5D0(3, 6, 1);
             func_8003F630(3, 0, 2);
@@ -235,7 +235,8 @@ void func_800ED974(void) {
             initializeMessageBox(3, 0xA, 0xD, 0x80000);
             func_8003E77C(3, 0, 0, 0, 0);
             func_8003EA1C(3, 0xFF, 0xFF, 0xFF, 0xFF, 8);
-            initializeEmptyMessageBox(4, (void*)MESSAGE_BOX_4_TEXT_BUFFER);
+            
+            initializeEmptyMessageBox(4, (u8*)MESSAGE_BOX_4_TEXT_BUFFER);
             setMessageBoxViewSpacePosition(4, 4.0f, -10.0f, 30.0f);
             func_8003F5D0(4, 6, 1);
             func_8003F630(4, 0, 2);
@@ -463,23 +464,26 @@ void loadNameSelectionSprites(void) {
 
     s32 i = 0;
 
-    dmaSprite(0x80, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsAssetsIndexSegmentRomStart, &_dialogueIconsAssetsIndexSegmentRomEnd, NULL, NULL, (void*)0x8023B400, NULL, (void*)0x8023CC00, (void*)0x8023CE00, (void*)0x8023D200, NULL, NULL, 0);
-    dmaSprite(0x81, &_namingScreen2TextureSegmentRomStart, &_namingScreen2TextureSegmentRomEnd, &_namingScreen2AssetsIndexSegmentRomStart, &_namingScreen2AssetsIndexSegmentRomEnd, NULL, NULL, (void*)0x80253B00, NULL, (void*)0x80263B00, (void*)0x80263C00, (void*)0x80263D00, NULL, NULL, 0);
-    dmaSprite(0x82, &_namingScreen2TextureSegmentRomStart, &_namingScreen2TextureSegmentRomEnd, &_namingScreen2AssetsIndexSegmentRomStart, &_namingScreen2AssetsIndexSegmentRomEnd, NULL, NULL, (void*)0x80253B00, NULL, (void*)0x80263B00, (void*)0x80263C00, (void*)0x80263D00, NULL, NULL, 0);
-    dmaSprite(0x83, &_namingScreen2TextureSegmentRomStart, &_namingScreen2TextureSegmentRomEnd, &_namingScreen2AssetsIndexSegmentRomStart, &_namingScreen2AssetsIndexSegmentRomEnd, NULL, NULL, (void*)0x80253B00, NULL, (void*)0x80263B00, (void*)0x80263C00, (void*)0x80263D00, NULL, NULL, 0);
-    dmaSprite(0x84, &_namingScreen2TextureSegmentRomStart, &_namingScreen2TextureSegmentRomEnd, &_namingScreen2AssetsIndexSegmentRomStart, &_namingScreen2AssetsIndexSegmentRomEnd, NULL, NULL, (void*)0x80253B00, NULL, (void*)0x80263B00, (void*)0x80263C00, (void*)0x80263D00, NULL, NULL, 0);
-    dmaSprite(0x85, &_namingScreen2TextureSegmentRomStart, &_namingScreen2TextureSegmentRomEnd, &_namingScreen2AssetsIndexSegmentRomStart, &_namingScreen2AssetsIndexSegmentRomEnd, NULL, NULL, (void*)0x80253B00, NULL, (void*)0x80263B00, (void*)0x80263C00, (void*)0x80263D00, NULL, NULL, 0);
-    dmaSprite(0x86, &_namingScreen2TextureSegmentRomStart, &_namingScreen2TextureSegmentRomEnd, &_namingScreen2AssetsIndexSegmentRomStart, &_namingScreen2AssetsIndexSegmentRomEnd, NULL, NULL, (void*)0x80253B00, NULL, (void*)0x80263B00, (void*)0x80263C00, (void*)0x80263D00, NULL, NULL, 0);
-    dmaSprite(0x87, &_namingScreen2TextureSegmentRomStart, &_namingScreen2TextureSegmentRomEnd, &_namingScreen2AssetsIndexSegmentRomStart, &_namingScreen2AssetsIndexSegmentRomEnd, NULL, NULL, (void*)0x80253B00, NULL, (void*)0x80263B00, (void*)0x80263C00, (void*)0x80263D00, NULL, NULL, 0);
-    dmaSprite(0x88, &_namingScreen2TextureSegmentRomStart, &_namingScreen2TextureSegmentRomEnd, &_namingScreen2AssetsIndexSegmentRomStart, &_namingScreen2AssetsIndexSegmentRomEnd, NULL, NULL, (void*)0x80253B00, NULL, (void*)0x80263B00, (void*)0x80263C00, (void*)0x80263D00, NULL, NULL, 0);
-    dmaSprite(0x8A, &_namingScreen2TextureSegmentRomStart, &_namingScreen2TextureSegmentRomEnd, &_namingScreen2AssetsIndexSegmentRomStart, &_namingScreen2AssetsIndexSegmentRomEnd, NULL, NULL, (void*)0x80253B00, NULL, (void*)0x80263B00, (void*)0x80263C00, (void*)0x80263D00, NULL, NULL, 0);
-    dmaSprite(0x8B, &_namingScreen2TextureSegmentRomStart, &_namingScreen2TextureSegmentRomEnd, &_namingScreen2AssetsIndexSegmentRomStart, &_namingScreen2AssetsIndexSegmentRomEnd, NULL, NULL, (void*)0x80253B00, NULL, (void*)0x80263B00, (void*)0x80263C00, (void*)0x80263D00, NULL, NULL, 0);
-    dmaSprite(0x8C, &_namingScreen2TextureSegmentRomStart, &_namingScreen2TextureSegmentRomEnd, &_namingScreen2AssetsIndexSegmentRomStart, &_namingScreen2AssetsIndexSegmentRomEnd, NULL, NULL, (void*)0x80253B00, NULL, (void*)0x80263B00, (void*)0x80263C00, (void*)0x80263D00, NULL, NULL, 0);
-    dmaSprite(0x8D, &_namingScreen2TextureSegmentRomStart, &_namingScreen2TextureSegmentRomEnd, &_namingScreen2AssetsIndexSegmentRomStart, &_namingScreen2AssetsIndexSegmentRomEnd, NULL, NULL, (void*)0x80253B00, NULL, (void*)0x80263B00, (void*)0x80263C00, (void*)0x80263D00, NULL, NULL, 0);
-    dmaSprite(0x8E, &_namingScreen2TextureSegmentRomStart, &_namingScreen2TextureSegmentRomEnd, &_namingScreen2AssetsIndexSegmentRomStart, &_namingScreen2AssetsIndexSegmentRomEnd, NULL, NULL, (void*)0x80253B00, NULL, (void*)0x80263B00, (void*)0x80263C00, (void*)0x80263D00, NULL, NULL, 0);
-    dmaSprite(0x8F, &_namingScreen2TextureSegmentRomStart, &_namingScreen2TextureSegmentRomEnd, &_namingScreen2AssetsIndexSegmentRomStart, &_namingScreen2AssetsIndexSegmentRomEnd, NULL, NULL, (void*)0x80253B00, NULL, (void*)0x80263B00, (void*)0x80263C00, (void*)0x80263D00, NULL, NULL, 0);
-    dmaSprite(LANDSCAPE_BACKGROUND, &_namingScreenBackgroundTextureSegmentRomStart, &_namingScreenBackgroundTextureSegmentRomEnd, &_namingScreenBackgroundAssetsIndexSegmentRomStart, &_namingScreenBackgroundAssetsIndexSegmentRomEnd, NULL, NULL, (void*)0x8026AB00, NULL, (void*)0x8026DB00, (void*)0x8026DC00, (void*)0x8026DD00, NULL, NULL, 0);
-    dmaSprite(0x91, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsAssetsIndexSegmentRomStart, &_dialogueIconsAssetsIndexSegmentRomEnd, NULL, NULL, (void*)0x8023B400, NULL, (void*)0x8023CC00, (void*)0x8023CE00, (void*)0x8023D200, NULL, NULL, 0);
+    dmaSprite(0x80, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsAssetsIndexSegmentRomStart, &_dialogueIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)DIALOGUE_ICON_TEXTURE_BUFFER, NULL, (u8*)DIALOGUE_ICON_PALETTE_BUFFER, (AnimationFrameMetadata*)DIALOGUE_ICON_ANIMATION_FRAME_METADATA_BUFFER, (u32*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
+    
+    dmaSprite(0x81, &_namingScreen2TextureSegmentRomStart, &_namingScreen2TextureSegmentRomEnd, &_namingScreen2AssetsIndexSegmentRomStart, &_namingScreen2AssetsIndexSegmentRomEnd, NULL, NULL, (u8*)NAMING_SCREEN_TEXTURE_BUFFER, NULL, (u16*)NAMING_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)NAMING_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)NAMING_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
+    dmaSprite(0x82, &_namingScreen2TextureSegmentRomStart, &_namingScreen2TextureSegmentRomEnd, &_namingScreen2AssetsIndexSegmentRomStart, &_namingScreen2AssetsIndexSegmentRomEnd, NULL, NULL, (u8*)NAMING_SCREEN_TEXTURE_BUFFER, NULL, (u16*)NAMING_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)NAMING_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)NAMING_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
+    dmaSprite(0x83, &_namingScreen2TextureSegmentRomStart, &_namingScreen2TextureSegmentRomEnd, &_namingScreen2AssetsIndexSegmentRomStart, &_namingScreen2AssetsIndexSegmentRomEnd, NULL, NULL, (u8*)NAMING_SCREEN_TEXTURE_BUFFER, NULL, (u16*)NAMING_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)NAMING_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)NAMING_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
+    dmaSprite(0x84, &_namingScreen2TextureSegmentRomStart, &_namingScreen2TextureSegmentRomEnd, &_namingScreen2AssetsIndexSegmentRomStart, &_namingScreen2AssetsIndexSegmentRomEnd, NULL, NULL, (u8*)NAMING_SCREEN_TEXTURE_BUFFER, NULL, (u16*)NAMING_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)NAMING_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)NAMING_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
+    dmaSprite(0x85, &_namingScreen2TextureSegmentRomStart, &_namingScreen2TextureSegmentRomEnd, &_namingScreen2AssetsIndexSegmentRomStart, &_namingScreen2AssetsIndexSegmentRomEnd, NULL, NULL, (u8*)NAMING_SCREEN_TEXTURE_BUFFER, NULL, (u16*)NAMING_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)NAMING_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)NAMING_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
+    dmaSprite(0x86, &_namingScreen2TextureSegmentRomStart, &_namingScreen2TextureSegmentRomEnd, &_namingScreen2AssetsIndexSegmentRomStart, &_namingScreen2AssetsIndexSegmentRomEnd, NULL, NULL, (u8*)NAMING_SCREEN_TEXTURE_BUFFER, NULL, (u16*)NAMING_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)NAMING_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)NAMING_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
+    dmaSprite(0x87, &_namingScreen2TextureSegmentRomStart, &_namingScreen2TextureSegmentRomEnd, &_namingScreen2AssetsIndexSegmentRomStart, &_namingScreen2AssetsIndexSegmentRomEnd, NULL, NULL, (u8*)NAMING_SCREEN_TEXTURE_BUFFER, NULL, (u16*)NAMING_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)NAMING_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)NAMING_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
+    dmaSprite(0x88, &_namingScreen2TextureSegmentRomStart, &_namingScreen2TextureSegmentRomEnd, &_namingScreen2AssetsIndexSegmentRomStart, &_namingScreen2AssetsIndexSegmentRomEnd, NULL, NULL, (u8*)NAMING_SCREEN_TEXTURE_BUFFER, NULL, (u16*)NAMING_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)NAMING_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)NAMING_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
+    dmaSprite(0x8A, &_namingScreen2TextureSegmentRomStart, &_namingScreen2TextureSegmentRomEnd, &_namingScreen2AssetsIndexSegmentRomStart, &_namingScreen2AssetsIndexSegmentRomEnd, NULL, NULL, (u8*)NAMING_SCREEN_TEXTURE_BUFFER, NULL, (u16*)NAMING_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)NAMING_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)NAMING_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
+    dmaSprite(0x8B, &_namingScreen2TextureSegmentRomStart, &_namingScreen2TextureSegmentRomEnd, &_namingScreen2AssetsIndexSegmentRomStart, &_namingScreen2AssetsIndexSegmentRomEnd, NULL, NULL, (u8*)NAMING_SCREEN_TEXTURE_BUFFER, NULL, (u16*)NAMING_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)NAMING_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)NAMING_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
+    dmaSprite(0x8C, &_namingScreen2TextureSegmentRomStart, &_namingScreen2TextureSegmentRomEnd, &_namingScreen2AssetsIndexSegmentRomStart, &_namingScreen2AssetsIndexSegmentRomEnd, NULL, NULL, (u8*)NAMING_SCREEN_TEXTURE_BUFFER, NULL, (u16*)NAMING_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)NAMING_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)NAMING_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
+    dmaSprite(0x8D, &_namingScreen2TextureSegmentRomStart, &_namingScreen2TextureSegmentRomEnd, &_namingScreen2AssetsIndexSegmentRomStart, &_namingScreen2AssetsIndexSegmentRomEnd, NULL, NULL, (u8*)NAMING_SCREEN_TEXTURE_BUFFER, NULL, (u16*)NAMING_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)NAMING_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)NAMING_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
+    dmaSprite(0x8E, &_namingScreen2TextureSegmentRomStart, &_namingScreen2TextureSegmentRomEnd, &_namingScreen2AssetsIndexSegmentRomStart, &_namingScreen2AssetsIndexSegmentRomEnd, NULL, NULL, (u8*)NAMING_SCREEN_TEXTURE_BUFFER, NULL, (u16*)NAMING_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)NAMING_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)NAMING_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
+    dmaSprite(0x8F, &_namingScreen2TextureSegmentRomStart, &_namingScreen2TextureSegmentRomEnd, &_namingScreen2AssetsIndexSegmentRomStart, &_namingScreen2AssetsIndexSegmentRomEnd, NULL, NULL, (u8*)NAMING_SCREEN_TEXTURE_BUFFER, NULL, (u16*)NAMING_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)NAMING_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)NAMING_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
+    
+    dmaSprite(LANDSCAPE_BACKGROUND, &_namingScreenBackgroundTextureSegmentRomStart, &_namingScreenBackgroundTextureSegmentRomEnd, &_namingScreenBackgroundAssetsIndexSegmentRomStart, &_namingScreenBackgroundAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)NAMING_SCREEN_BACKGROUND_TEXTURE_BUFFER, NULL, (u16*)NAMING_SCREEN_BACKGROUND_PALETTE_BUFFER, (AnimationFrameMetadata*)NAMING_SCREEN_BACKGROUND_ANIMATION_FRAME_METADATA_BUFFER, (u32*)NAMING_SCREEN_BACKGROUND_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
+    
+    dmaSprite(0x91, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsAssetsIndexSegmentRomStart, &_dialogueIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)DIALOGUE_ICON_TEXTURE_BUFFER, NULL, (u8*)DIALOGUE_ICON_PALETTE_BUFFER, (AnimationFrameMetadata*)DIALOGUE_ICON_ANIMATION_FRAME_METADATA_BUFFER, (u32*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     
     setBilinearFiltering(0x8F, TRUE);
     setBilinearFiltering(LANDSCAPE_BACKGROUND, TRUE);
@@ -1280,16 +1284,20 @@ void func_800F03C4(void) {
 
 void loadSeasonSelectionSprites(void) {
     
-    dmaSprite(0x80, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsAssetsIndexSegmentRomStart, &_dialogueIconsAssetsIndexSegmentRomEnd, 0, 0, 0x8023B400, 0, 0x8023CC00, 0x8023CE00, 0x8023D200, 0, 0, 0);
-    dmaSprite(0x83, &_calendarTextureSegmentRomStart, &_calendarTextureSegmentRomEnd, &_calendarAssetsIndexSegmentRomStart, &_calendarAssetsIndexSegmentRomEnd, 0, 0, 0x80267300, 0, 0x8026A300, 0x8026A700, 0x8026AA00, 0, 0, 0);
-    dmaSprite(0x84, &_calendarTextureSegmentRomStart, &_calendarTextureSegmentRomEnd, &_calendarAssetsIndexSegmentRomStart, &_calendarAssetsIndexSegmentRomEnd, 0, 0, 0x80267300, 0, 0x8026A300, 0x8026A700, 0x8026AA00, 0, 0, 0);
-    dmaSprite(0x85, &_calendarTextureSegmentRomStart, &_calendarTextureSegmentRomEnd, &_calendarAssetsIndexSegmentRomStart, &_calendarAssetsIndexSegmentRomEnd, 0, 0, 0x80267300, 0, 0x8026A300, 0x8026A700, 0x8026AA00, 0, 0, 0);
-    dmaSprite(0x86, &_calendarTextureSegmentRomStart, &_calendarTextureSegmentRomEnd, &_calendarAssetsIndexSegmentRomStart, &_calendarAssetsIndexSegmentRomEnd, 0, 0, 0x80267300, 0, 0x8026A300, 0x8026A700, 0x8026AA00, 0, 0, 0);
-    dmaSprite(0x89, &_namingScreen1TextureSegmentRomStart, &_namingScreen1TextureSegmentRomEnd, &_namingScreen1AssetsIndexSegmentRomStart, &_namingScreen1AssetsIndexSegmentRomEnd, 0, 0, 0x80263E00, 0, 0x80266E00, 0x80267100, 0x80267200, 0, 0, 0);
-    dmaSprite(0x8A, &_namingScreen1TextureSegmentRomStart, &_namingScreen1TextureSegmentRomEnd, &_namingScreen1AssetsIndexSegmentRomStart, &_namingScreen1AssetsIndexSegmentRomEnd, 0, 0, 0x80263E00, 0, 0x80266E00, 0x80267100, 0x80267200, 0, 0, 0);
-    dmaSprite(0x8B, &_namingScreen1TextureSegmentRomStart, &_namingScreen1TextureSegmentRomEnd, &_namingScreen1AssetsIndexSegmentRomStart, &_namingScreen1AssetsIndexSegmentRomEnd, 0, 0, 0x80263E00, 0, 0x80266E00, 0x80267100, 0x80267200, 0, 0, 0);
-    dmaSprite(0x8C, &_namingScreen1TextureSegmentRomStart, &_namingScreen1TextureSegmentRomEnd, &_namingScreen1AssetsIndexSegmentRomStart, &_namingScreen1AssetsIndexSegmentRomEnd, 0, 0, 0x80263E00, 0, 0x80266E00, 0x80267100, 0x80267200, 0, 0, 0);
-    dmaSprite(LANDSCAPE_BACKGROUND, &_namingScreenBackgroundTextureSegmentRomStart, &_namingScreenBackgroundTextureSegmentRomEnd, &_namingScreenBackgroundAssetsIndexSegmentRomStart, &_namingScreenBackgroundAssetsIndexSegmentRomEnd, NULL, NULL, 0x8026AB00, 0, 0x8026DB00, 0x8026DC00, 0x8026DD00, 0, 0, 0);
+    dmaSprite(0x80, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsAssetsIndexSegmentRomStart, &_dialogueIconsAssetsIndexSegmentRomEnd, NULL, NULL, DIALOGUE_ICON_TEXTURE_BUFFER, 0, (u16*)DIALOGUE_ICON_PALETTE_BUFFER, (AnimationFrameMetadata*)DIALOGUE_ICON_ANIMATION_FRAME_METADATA_BUFFER, (u32*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
+    
+    // season names
+    dmaSprite(0x83, &_calendarTextureSegmentRomStart, &_calendarTextureSegmentRomEnd, &_calendarAssetsIndexSegmentRomStart, &_calendarAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)NAMING_SCREEN_SEASONS_TEXTURE_BUFFER, NULL, (u16*)NAMING_SCREEN_SEASONS_PALETTE_BUFFER, (AnimationFrameMetadata*)NAMING_SCREEN_SEASONS_ANIMATION_FRAME_METADATA_BUFFER, (u32*)NAMING_SCREEN_SEASONS_TEXTURE_TO_PALETTE_BUFFER, NULL, 0, FALSE);
+    dmaSprite(0x84, &_calendarTextureSegmentRomStart, &_calendarTextureSegmentRomEnd, &_calendarAssetsIndexSegmentRomStart, &_calendarAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)NAMING_SCREEN_SEASONS_TEXTURE_BUFFER, NULL, (u16*)NAMING_SCREEN_SEASONS_PALETTE_BUFFER, (AnimationFrameMetadata*)NAMING_SCREEN_SEASONS_ANIMATION_FRAME_METADATA_BUFFER, (u32*)NAMING_SCREEN_SEASONS_TEXTURE_TO_PALETTE_BUFFER, NULL, 0, FALSE);
+    dmaSprite(0x85, &_calendarTextureSegmentRomStart, &_calendarTextureSegmentRomEnd, &_calendarAssetsIndexSegmentRomStart, &_calendarAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)NAMING_SCREEN_SEASONS_TEXTURE_BUFFER, NULL, (u16*)NAMING_SCREEN_SEASONS_PALETTE_BUFFER, (AnimationFrameMetadata*)NAMING_SCREEN_SEASONS_ANIMATION_FRAME_METADATA_BUFFER, (u32*)NAMING_SCREEN_SEASONS_TEXTURE_TO_PALETTE_BUFFER, NULL, 0, FALSE);
+    dmaSprite(0x86, &_calendarTextureSegmentRomStart, &_calendarTextureSegmentRomEnd, &_calendarAssetsIndexSegmentRomStart, &_calendarAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)NAMING_SCREEN_SEASONS_TEXTURE_BUFFER, NULL, (u16*)NAMING_SCREEN_SEASONS_PALETTE_BUFFER, (AnimationFrameMetadata*)NAMING_SCREEN_SEASONS_ANIMATION_FRAME_METADATA_BUFFER, (u32*)NAMING_SCREEN_SEASONS_TEXTURE_TO_PALETTE_BUFFER, NULL, 0, FALSE);
+    
+    dmaSprite(0x89, &_namingScreen1TextureSegmentRomStart, &_namingScreen1TextureSegmentRomEnd, &_namingScreen1AssetsIndexSegmentRomStart, &_namingScreen1AssetsIndexSegmentRomEnd, NULL, NULL, (u8*)NAMING_SCREEN_CONFIRMATION_SCREEN_TEXTURE_BUFFER, NULL, (u16*)NAMING_SCREEN_CONFIRMATION_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)NAMING_SCREEN_CONFIRMATION_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)NAMING_SCREEN_CONFIRMATION_SCREEN_TEXTURE_TO_PALETTE_BUFFER, NULL, 0, FALSE);
+    dmaSprite(0x8A, &_namingScreen1TextureSegmentRomStart, &_namingScreen1TextureSegmentRomEnd, &_namingScreen1AssetsIndexSegmentRomStart, &_namingScreen1AssetsIndexSegmentRomEnd, NULL, NULL, (u8*)NAMING_SCREEN_CONFIRMATION_SCREEN_TEXTURE_BUFFER, NULL, (u16*)NAMING_SCREEN_CONFIRMATION_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)NAMING_SCREEN_CONFIRMATION_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)NAMING_SCREEN_CONFIRMATION_SCREEN_TEXTURE_TO_PALETTE_BUFFER, NULL, 0, FALSE);
+    dmaSprite(0x8B, &_namingScreen1TextureSegmentRomStart, &_namingScreen1TextureSegmentRomEnd, &_namingScreen1AssetsIndexSegmentRomStart, &_namingScreen1AssetsIndexSegmentRomEnd, NULL, NULL, (u8*)NAMING_SCREEN_CONFIRMATION_SCREEN_TEXTURE_BUFFER, NULL, (u16*)NAMING_SCREEN_CONFIRMATION_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)NAMING_SCREEN_CONFIRMATION_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)NAMING_SCREEN_CONFIRMATION_SCREEN_TEXTURE_TO_PALETTE_BUFFER, NULL, 0, FALSE);
+    dmaSprite(0x8C, &_namingScreen1TextureSegmentRomStart, &_namingScreen1TextureSegmentRomEnd, &_namingScreen1AssetsIndexSegmentRomStart, &_namingScreen1AssetsIndexSegmentRomEnd, NULL, NULL, (u8*)NAMING_SCREEN_CONFIRMATION_SCREEN_TEXTURE_BUFFER, NULL, (u16*)NAMING_SCREEN_CONFIRMATION_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)NAMING_SCREEN_CONFIRMATION_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)NAMING_SCREEN_CONFIRMATION_SCREEN_TEXTURE_TO_PALETTE_BUFFER, NULL, 0, FALSE);
+
+    dmaSprite(LANDSCAPE_BACKGROUND, &_namingScreenBackgroundTextureSegmentRomStart, &_namingScreenBackgroundTextureSegmentRomEnd, &_namingScreenBackgroundAssetsIndexSegmentRomStart, &_namingScreenBackgroundAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)NAMING_SCREEN_BACKGROUND_TEXTURE_BUFFER, 0, (u16*)NAMING_SCREEN_BACKGROUND_PALETTE_BUFFER, (AnimationFrameMetadata*)NAMING_SCREEN_BACKGROUND_ANIMATION_FRAME_METADATA_BUFFER, (u32*)NAMING_SCREEN_BACKGROUND_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
 
     setSpriteViewSpacePosition(0x80, 0, 0, -1.0f);
 

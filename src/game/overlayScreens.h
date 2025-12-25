@@ -1,5 +1,5 @@
-#ifndef _OVERLAY_SCREENS_H
-#define _OVERLAY_SCREENS_H
+#ifndef _OVERLAY_SCREEN_H
+#define _OVERLAY_SCREEN_H
 
 #include "common.h"
 

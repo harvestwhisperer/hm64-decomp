@@ -5,10 +5,11 @@
 
 #include "system/interpolation.h"
 
-#define SONG_TYPE 1
+#define SEQUENCE_TYPE 1
 #define SFX_TYPE 0xFF
 #define MAX_ACTIVE_SEQUENCES 4
 #define MAX_ACTIVE_SFX 4
+
 #define TOTAL_SEQUENCES 64
 #define TOTAL_SFX 128
 

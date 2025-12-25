@@ -9,15 +9,10 @@
 #include "game/time.h"     
 #include "game/weather.h"       
 
-// bss
+// possible bss
 // unused scoring variables
-extern u16 gTotalGrassTiles;
-extern u16 gTotalPinkCatMintFlowersGrowing;
 extern u8 gSumGirlsWithHighAffection;
 extern u8 gAverageFarmAnimalAffection;
-
-// shared
-extern u8 mountainConstructionWorkDays;
 
 //INCLUDE_ASM("asm/nonmatchings/game/load", func_800598E0);
 

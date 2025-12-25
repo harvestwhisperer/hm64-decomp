@@ -22,7 +22,7 @@
 #include "assetIndices/maps.h"
 
 // shared bss
-extern u32 D_8016FB00;
+u32 D_8016FB00;
 
 //INCLUDE_ASM("asm/nonmatchings/game/gameStart", setupGameStart);
 

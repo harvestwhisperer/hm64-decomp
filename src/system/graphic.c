@@ -32,14 +32,6 @@ Gfx initGfxList[2][0x20];
 Gfx sceneGraphDisplayList[2][0x500];
 Gfx D_80205000[2][0x20];
                         
-// shared bss
-// also used by mapContext.c, map.c, and sceneGraph.c
-extern Vec3f previousWorldRotationAngles;
-extern Vec3f currentWorldRotationAngles;
-extern f32 D_80170450;
-extern f32 D_80170454;
-
-
 // rodata
 static const char gfxExceptionStr1[] = "EX";
 static const char gfxExceptionStr2[] = "s:/system/graphic.c";

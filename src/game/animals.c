@@ -25,6 +25,8 @@
 #include "assetIndices/maps.h"
 #include "assetIndices/sprites.h"
 
+#include "buffers/buffers.h"
+
 // bss
 Chicken gChickens[MAX_CHICKENS];
 MiscAnimal gMiscAnimals[MAX_MISC_ANIMALS];
@@ -38,30 +40,29 @@ u8 mrsManaCow2Index;
 u8 mrsManaCow3Index;
 
 // shared bss
-
-extern u8 bornChickenIndex;
-extern u8 bornAnimalIndex;
-extern u8 D_80189054;
+u8 bornChickenIndex;
+u8 bornAnimalIndex;
+u8 D_80189054;
 // price
-extern u32 D_801890E0;
+u32 D_801890E0;
 
 // game variable strings
-extern u8 D_8016FBCC[2];
-extern u8 D_801886D4[6];
-extern u8 deadAnimalName[6];
+u8 D_8016FBCC[2];
+u8 D_801886D4[6];
+u8 deadAnimalName[6];
 
-extern u8 bornChickenIndex;
+u8 bornChickenIndex;
 // newest farm animal index?
-extern u8 bornAnimalIndex;
+u8 bornAnimalIndex;
 // cow festival stall
-extern u8 D_80189054;
+u8 D_80189054;
 // newest animal index (generic)?
-extern u8 D_801FC155;
+u8 D_801FC155;
 // dead animal count
 // TODO: label
-extern u16 D_8013DC2E;
+u16 D_8013DC2E;
 // purchased animal type
-extern u8 D_801C4216;
+u8 D_801C4216;
 
 
 // data
@@ -958,7 +959,7 @@ bool func_80086764(void) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/animals", func_800876D0);
 
-// initialize animal locations on farm
+// initialize animals
 void func_800876D0(void) {
 
     u8 i;
@@ -981,6 +982,7 @@ void func_800876D0(void) {
         func_8008B9AC();
     }
 
+    // other animals
     for (i = 0; i < 7; i++) {
         func_8008BAF0(i, 0);
     }
@@ -2309,17 +2311,17 @@ void func_8008B2E8(u8 chickenIndex) {
         switch (gChickens[chickenIndex].type) {
 
             case ADULT_CHICKEN:
-                initializeAnimalEntity(chickenIndex + 2, (void*)0x80275E00, (void*)0x80275F00, (void*)0x80276700, (void*)0x80276800);
+                initializeAnimalEntity(chickenIndex + 2, (u16*)ENTITY_SLOTS_2_7_PALETTE, (AnimationFrameMetadata*)ENTITY_SLOTS_2_7_ANIM_METADATA, (u32*)ENTITY_SLOTS_2_7_SPRITESHEET_INDEX, (u32*)ENTITY_SLOTS_2_7_TEXTURE_TO_PALETTE_LOOKUP);
                 loadEntity(gChickens[chickenIndex].entityIndex, 0x44, TRUE);
                 break;         
             
             case CHICK:
-                initializeAnimalEntity(chickenIndex + 2, (void*)0x80276B00, (void*)0x80276C00, (void*)0x80277000, (void*)0x80277100);
+                initializeAnimalEntity(chickenIndex + 2, (u16*)ENTITY_CHICK_PALETTE, (AnimationFrameMetadata*)ENTITY_CHICK_ANIM_METADATA, (u32*)ENTITY_CHICK_SPRITESHEET_INDEX, (u32*)ENTITY_CHICK_TEXTURE_TO_PALETTE_LOOKUP);
                 loadEntity(gChickens[chickenIndex].entityIndex, 0x43, TRUE);
                 break;
             
             case CHICKEN_EGG:
-                initializeAnimalEntity(chickenIndex + 2, (void*)0x8028DD50, (void*)0x80290550, (void*)0x80293A50, (void*)0x80293C50);
+                initializeAnimalEntity(chickenIndex + 2, (u16*)ENTITY_SLOTS_8_13_PALETTE, (AnimationFrameMetadata*)ENTITY_SLOTS_8_13_ANIM_METADATA, (u32*)ENTITY_SLOTS_8_13_SPRITESHEET_INDEX, (u32*)ENTITY_SLOTS_8_13_TEXTURE_TO_PALETTE_LOOKUP);
                 loadEntity(gChickens[chickenIndex].entityIndex, 0x5D, TRUE);
                 break;
             
@@ -2355,28 +2357,28 @@ void func_8008B55C(u8 index) {
         switch (gFarmAnimals[index].type) {
 
             case BABY_COW:
-                initializeAnimalEntity(gFarmAnimals[index].entityIndex, (void*)0x802B1E40, (void*)0x802B1F40, (void*)0x802B2E40, (void*)0x802B2F40);
+                initializeAnimalEntity(gFarmAnimals[index].entityIndex, (u16*)ENTITY_BABY_COW_PALETTE, (AnimationFrameMetadata*)ENTITY_BABY_COW_ANIM_METADATA, (u32*)ENTITY_BABY_COW_SPRITESHEET_INDEX, (u32*)ENTITY_BABY_COW_TEXTURE_TO_PALETTE_LOOKUP);
                 loadEntity(gFarmAnimals[index].entityIndex, 0x45, TRUE);
                 break;
             case CALF:
-                initializeAnimalEntity(gFarmAnimals[index].entityIndex, (void*)0x802B0940, (void*)0x802B0A40, (void*)0x802B1940, (void*)0x802B1A40);
+                initializeAnimalEntity(gFarmAnimals[index].entityIndex, (u16*)ENTITY_CALF_PALETTE, (AnimationFrameMetadata*)ENTITY_CALF_ANIM_METADATA, (u32*)ENTITY_CALF_SPRITESHEET_INDEX, (u32*)ENTITY_CALF_TEXTURE_TO_PALETTE_LOOKUP);
                 loadEntity(gFarmAnimals[index].entityIndex, 0x46, TRUE);
                 break;
             case ADULT_COW:
-                initializeAnimalEntity(gFarmAnimals[index].entityIndex, (void*)0x802779C0, (void*)0x80277AC0, (void*)0x8027A6C0, (void*)0x8027A8C0);
+                initializeAnimalEntity(gFarmAnimals[index].entityIndex, (u16*)ENTITY_SLOTS_21_28_PALETTE, (AnimationFrameMetadata*)ENTITY_SLOTS_21_28_ANIM_METADATA, (u32*)ENTITY_SLOTS_21_28_SPRITESHEET_INDEX, (u32*)ENTITY_SLOTS_21_28_TEXTURE_TO_PALETTE_LOOKUP);
                 loadEntity(gFarmAnimals[index].entityIndex, 0x47, TRUE);
                 break;
             case PREGNANT_COW:
-                initializeAnimalEntity(gFarmAnimals[index].entityIndex, (void*)0x802B3140, (void*)0x802B3240, (void*)0x802B4240, (void*)0x802B4340);
+                initializeAnimalEntity(gFarmAnimals[index].entityIndex, (u16*)ENTITY_PREGNANT_COW_PALETTE, (AnimationFrameMetadata*)ENTITY_PREGNANT_COW_ANIM_METADATA, (u32*)ENTITY_PREGNANT_COW_SPRITESHEET_INDEX, (u32*)ENTITY_PREGNANT_COW_TEXTURE_TO_PALETTE_LOOKUP);
                 loadEntity(gFarmAnimals[index].entityIndex, 0x57, TRUE);
                 break;
             case BABY_SHEEP:
-                initializeAnimalEntity(gFarmAnimals[index].entityIndex, (void*)0x802B5A40, (void*)0x802B5B40, (void*)0x802B6240, (void*)0x802B6340);
+                initializeAnimalEntity(gFarmAnimals[index].entityIndex, (u16*)ENTITY_BABY_SHEEP_PALETTE, (AnimationFrameMetadata*)ENTITY_BABY_SHEEP_ANIM_METADATA, (u32*)ENTITY_BABY_SHEEP_SPRITESHEET_INDEX, (u32*)ENTITY_BABY_SHEEP_TEXTURE_TO_PALETTE_LOOKUP);
                 loadEntity(gFarmAnimals[index].entityIndex, 0x48, TRUE);
                 break;
             case ADULT_SHEEP:
             case SHEARED_SHEEP:
-                initializeAnimalEntity(gFarmAnimals[index].entityIndex, (void*)0x802B4540, (void*)0x802B4640, (void*)0x802B5640, (void*)0x802B5740);
+                initializeAnimalEntity(gFarmAnimals[index].entityIndex, (u16*)ENTITY_ADULT_SHEEP_PALETTE, (AnimationFrameMetadata*)ENTITY_ADULT_SHEEP_ANIM_METADATA, (u32*)ENTITY_ADULT_SHEEP_SPRITESHEET_INDEX, (u32*)ENTITY_ADULT_SHEEP_TEXTURE_TO_PALETTE_LOOKUP);
                 loadEntity(gFarmAnimals[index].entityIndex, 0x49, TRUE);
                 break;
 
@@ -2416,14 +2418,14 @@ void func_8008B9AC(void) {
 
     if ((horseInfo.flags & 1) && (horseInfo.location == gBaseMapIndex) && !(horseInfo.flags & 8)) {
         
-        horseInfo.entityIndex = 0x26;
+        horseInfo.entityIndex = 38;
         
         switch (horseInfo.grown) {                      
             case FALSE:
-                loadEntity(0x26, 0x41, TRUE);
+                loadEntity(0x26, ENTITY_ASSET_HORSE_PONY, TRUE);
                 break;
             case TRUE:
-                loadEntity(0x26, 0x42, TRUE);
+                loadEntity(0x26, ENTITY_ASSET_HORSE_GROWN, TRUE);
                 break;
         }
         
@@ -2449,38 +2451,43 @@ void func_8008BAF0(u8 index, u8 arg1) {
 
     if ((gMiscAnimals[index].flags & 1) && (index < 7)) {
         
+        // initialize entity objects if needed
         switch (gMiscAnimals[index].animalType) {
     
+            // player's dog
             case 0:
-                initializeAnimalEntity(gMiscAnimals[index].entityIndex, (void*)0x80270210, (void*)0x80270410, (void*)0x80272000, (void*)0x80272200);
+                initializeAnimalEntity(gMiscAnimals[index].entityIndex, (u16*)ENTITY_SLOTS_1_20_PALETTE, (AnimationFrameMetadata*)ENTITY_SLOTS_1_20_ANIM_METADATA, (u32*)ENTITY_SLOTS_1_20_SPRITESHEET_INDEX, (u32*)ENTITY_SLOTS_1_20_TEXTURE_TO_PALETTE_LOOKUP);
                 setEntityPaletteIndex(gMiscAnimals[index].entityIndex, 2);
                 break;
             
+            // player's horse
             case 5:
-                initializeAnimalEntity(gMiscAnimals[index].entityIndex, (void*)0x802779C0, (void*)0x80277AC0, (void*)0x8027A6C0, (void*)0x8027A8C0);
+                initializeAnimalEntity(gMiscAnimals[index].entityIndex, (u16*)ENTITY_SLOTS_21_28_PALETTE, (AnimationFrameMetadata*)ENTITY_SLOTS_21_28_ANIM_METADATA, (u32*)ENTITY_SLOTS_21_28_SPRITESHEET_INDEX, (u32*)ENTITY_SLOTS_21_28_TEXTURE_TO_PALETTE_LOOKUP);
                 break;
             
             default:
                 
                 switch (index) {
-                    
+
                     case 0:
-                        initializeAnimalEntity(gMiscAnimals[index].entityIndex, (void*)0x80284130, (void*)0x80284230, (void*)0x802852B0, (void*)0x802854B0);
+                        initializeAnimalEntity(gMiscAnimals[index].entityIndex, (u16*)ENTITY_SLOT_14_PALETTE, (AnimationFrameMetadata*)ENTITY_SLOT_14_ANIM_METADATA, (u32*)ENTITY_SLOT_14_SPRITESHEET_INDEX, (u32*)ENTITY_SLOT_14_TEXTURE_TO_PALETTE_LOOKUP);
                         break;
                     case 1:
-                        initializeAnimalEntity(gMiscAnimals[index].entityIndex, (void*)0x80285930, (void*)0x80285A30, (void*)0x80286AB0, (void*)0x80286CB0);
+                        initializeAnimalEntity(gMiscAnimals[index].entityIndex, (u16*)ENTITY_SLOT_15_PALETTE, (AnimationFrameMetadata*)ENTITY_SLOT_15_ANIM_METADATA, (u32*)ENTITY_SLOT_15_SPRITESHEET_INDEX, (u32*)ENTITY_SLOT_15_TEXTURE_TO_PALETTE_LOOKUP);
                         break;
                     case 2:
-                        initializeAnimalEntity(gMiscAnimals[index].entityIndex, (void*)0x80287130, (void*)0x80287230, (void*)0x802882B0, (void*)0x802884B0);
+                        initializeAnimalEntity(gMiscAnimals[index].entityIndex, (u16*)ENTITY_SLOT_16_PALETTE, (AnimationFrameMetadata*)ENTITY_SLOT_16_ANIM_METADATA, (u32*)ENTITY_SLOT_16_SPRITESHEET_INDEX, (u32*)ENTITY_SLOT_16_TEXTURE_TO_PALETTE_LOOKUP);
                         break;
                     case 3:
-                        initializeAnimalEntity(gMiscAnimals[index].entityIndex, (void*)0x80288930, (void*)0x80288A30, (void*)0x80289AB0, (void*)0x80289CB0);
+                        initializeAnimalEntity(gMiscAnimals[index].entityIndex, (u16*)ENTITY_SLOT_17_PALETTE, (AnimationFrameMetadata*)ENTITY_SLOT_17_ANIM_METADATA, (u32*)ENTITY_SLOT_17_SPRITESHEET_INDEX, (u32*)ENTITY_SLOT_17_TEXTURE_TO_PALETTE_LOOKUP);
                         break;
                     case 4:
-                        initializeAnimalEntity(gMiscAnimals[index].entityIndex, (void*)0x8028A130, (void*)0x8028A230, (void*)0x8028B2B0, (void*)0x8028B4B0);
+                        initializeAnimalEntity(gMiscAnimals[index].entityIndex, (u16*)ENTITY_SLOT_18_PALETTE, (AnimationFrameMetadata*)ENTITY_SLOT_18_ANIM_METADATA, (u32*)ENTITY_SLOT_18_SPRITESHEET_INDEX, (u32*)ENTITY_SLOT_18_TEXTURE_TO_PALETTE_LOOKUP);
                         break;
-                    }
 
+                }
+
+                // set different palette for horse 2
                 if (gMiscAnimals[index].animalType == 4) {
                     setEntityPaletteIndex(gMiscAnimals[index].entityIndex, 0);
                 }
@@ -2492,69 +2499,69 @@ void func_8008BAF0(u8 index, u8 arg1) {
         switch (gMiscAnimals[index].animalType) {
         
             case 0:
-                loadEntity(gMiscAnimals[index].entityIndex, 0x40, TRUE);
+                loadEntity(gMiscAnimals[index].entityIndex, ENTITY_ASSET_DOG_TITLE, TRUE);
                 break;
             case 1:
-                loadEntity(gMiscAnimals[index].entityIndex, 0x3F, TRUE);
+                loadEntity(gMiscAnimals[index].entityIndex, ENTITY_ASSET_DOG, TRUE);
                 break;
             case 2:
-                loadEntity(gMiscAnimals[index].entityIndex, 0x3E, TRUE);
+                loadEntity(gMiscAnimals[index].entityIndex, ENTITY_ASSET_CAT, TRUE);
                 break;
             case 3:
             case 4:
-                loadEntity(gMiscAnimals[index].entityIndex, 0x58, TRUE);
+                loadEntity(gMiscAnimals[index].entityIndex, ENTITY_ASSET_HORSE_UNBRIDLED, TRUE);
                 break;
             case 6:
-                loadEntity(gMiscAnimals[index].entityIndex, 0x49, TRUE);
+                loadEntity(gMiscAnimals[index].entityIndex, ENTITY_ASSET_SHEEP, TRUE);
                 break;
             case 5:
-                loadEntity(gMiscAnimals[index].entityIndex, 0x47, TRUE);
+                loadEntity(gMiscAnimals[index].entityIndex, ENTITY_ASSET_COW, TRUE);
                 break;
             case 7:
-                loadEntity(gMiscAnimals[index].entityIndex, 0x38, TRUE);
+                loadEntity(gMiscAnimals[index].entityIndex, ENTITY_ASSET_FOX, TRUE);
                 break;
             case 8:
-                loadEntity(gMiscAnimals[index].entityIndex, 0x36, TRUE);
+                loadEntity(gMiscAnimals[index].entityIndex, ENTITY_ASSET_BUNNY, TRUE);
                 break;
             case 9:
-                loadEntity(gMiscAnimals[index].entityIndex, 0x3C, TRUE);
+                loadEntity(gMiscAnimals[index].entityIndex, ENTITY_ASSET_SQUIRREL, TRUE);
                 break;
             case 10:
-                loadEntity(gMiscAnimals[index].entityIndex, 0x39, TRUE);
+                loadEntity(gMiscAnimals[index].entityIndex, ENTITY_ASSET_MONKEY, TRUE);
                 break;
             case 11:
-                loadEntity(gMiscAnimals[index].entityIndex, 0x3D, TRUE);
+                loadEntity(gMiscAnimals[index].entityIndex, ENTITY_ASSET_DOG_RACE, TRUE);
                 setEntityPaletteIndex(gMiscAnimals[index].entityIndex, 0);
                 break;
             case 12:
-                loadEntity(gMiscAnimals[index].entityIndex, 0x3D, TRUE);
+                loadEntity(gMiscAnimals[index].entityIndex, ENTITY_ASSET_DOG_RACE, TRUE);
                 break;
             case 13:
-                loadEntity(gMiscAnimals[index].entityIndex, 0x4B, TRUE);
+                loadEntity(gMiscAnimals[index].entityIndex, ENTITY_ASSET_CRAB, TRUE);
                 break;
             case 14:
-                loadEntity(gMiscAnimals[index].entityIndex, 0x54, TRUE);
+                loadEntity(gMiscAnimals[index].entityIndex, ENTITY_ASSET_SNAKE, TRUE);
                 break;
             case 15:
-                loadEntity(gMiscAnimals[index].entityIndex, 0x50, TRUE);
+                loadEntity(gMiscAnimals[index].entityIndex, ENTITY_ASSET_BIRD, TRUE);
                 break;
             case 16:
-                loadEntity(gMiscAnimals[index].entityIndex, 0x51, TRUE);
+                loadEntity(gMiscAnimals[index].entityIndex, ENTITY_ASSET_LADYBUG, TRUE);
                 break;
             case 17:
-                loadEntity(gMiscAnimals[index].entityIndex, 0x4F, TRUE);
+                loadEntity(gMiscAnimals[index].entityIndex, ENTITY_ASSET_CICADA, TRUE);
                 break;
             case 18:
-                loadEntity(gMiscAnimals[index].entityIndex, 0x4C, TRUE);
+                loadEntity(gMiscAnimals[index].entityIndex, ENTITY_ASSET_HORNED_BEETLE, TRUE);
                 break;
             case 19:
-                loadEntity(gMiscAnimals[index].entityIndex, 0x4D, TRUE);
+                loadEntity(gMiscAnimals[index].entityIndex, ENTITY_ASSET_STAG_BEETLE, TRUE);
                 break;
             case 20:
-                loadEntity(gMiscAnimals[index].entityIndex, 0x52, TRUE);
+                loadEntity(gMiscAnimals[index].entityIndex, ENTITY_ASSET_DRAGONFLY, TRUE);
                 break;
             case 21:
-                loadEntity(gMiscAnimals[index].entityIndex, 0x4E, TRUE);
+                loadEntity(gMiscAnimals[index].entityIndex, ENTITY_ASSET_BELL_RING_CRICKET, TRUE);
                 break;
         }
 

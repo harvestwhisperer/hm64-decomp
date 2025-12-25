@@ -290,4 +290,9 @@ extern u8 wateringCanUses;
 
 extern u8 gItemBeingHeld;
 
+extern u8 D_802373A8;
+extern u16 chickenFeedQuantity;
+extern u8 upgradedToolIndex;
+extern u8 upgradedToolLevelIndex;
+
 #endif

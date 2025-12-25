@@ -13,8 +13,8 @@ u16 gCurrentAudioSequenceIndex;
 s32 gAudioSequenceVolume;
 
 // shared bss (gameAudio.c)
-extern Sfx gSfx[4];
-extern SequenceInfo gAudioSequences[4];
+Sfx gSfx[4];
+SequenceInfo gAudioSequences[4];
 
 //INCLUDE_ASM("asm/nonmatchings/system/audio", initializeAudio);
 

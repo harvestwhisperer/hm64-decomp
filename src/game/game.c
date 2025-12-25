@@ -43,80 +43,98 @@
 // forward declaration
 u8 func_80060DC0();
 
-// shared bss
-extern u8 gSeconds;
-extern u8 gHour;
-extern u8 gMinutes;
-extern u8 gDayOfWeek;
-extern u8 gDayOfMonth;
-extern u8 gSeason;
-extern u8 gSeasonTomorrow;
-extern u8 gYear;
+Vec4f globalLightingRGBA;
 
-extern Vec4f globalLightingRGBA;
+u8 gHarvestKing;
+u8 gFlowerFestivalGoddess;
+u8 gVoteForFlowerFestivalGoddess;
 
-extern u8 gHarvestKing;
-extern u8 gFlowerFestivalGoddess;
-extern u8 gVoteForFlowerFestivalGoddess;
+u8 gHappiness;
 
-extern u8 gHappiness;
+u8 gWife;
+u8 gWifePregnancyCounter;
+u8 gWifeConceptionCounter;
 
-extern u8 gWife;
-extern u8 gWifePregnancyCounter;
-extern u8 gWifeConceptionCounter;
+u8 gBabyAge;
 
-extern u8 gBabyAge;
+u32 gGold;
+u16 gLumber;
+u32 dailyShippingBinValue;
 
-extern u32 gGold;
-extern u16 gLumber;
-extern u32 dailyShippingBinValue;
+u16 gSickDays;
+u32 totalFishCaught;
 
-extern u8 houseExtensionConstructionCounter;
+u8 houseExtensionConstructionCounter;
 
-extern u8 gItemBeingHeld;
+u8 gItemBeingHeld;
 
-extern u16 gCurrentAudioSequenceIndex;
-extern u8 gNamingScreenIndex;
+u16 gCurrentAudioSequenceIndex;
+u8 gNamingScreenIndex;
 
-extern u8 gFarmName[6];
-extern u8 gWifeName[6];
-extern u8 gBabyName[6];
-extern u8 harvestKingName[6];
+u8 gFarmName[6];
+u8 gWifeName[6];
+u8 gBabyName[6];
+u8 harvestKingName[6];
 
-extern u16 gTotalGrassTiles;
-extern u16 gTotalPinkCatMintFlowersGrowing;
+u16 gTotalGrassTiles;
+u16 gTotalPinkCatMintFlowersGrowing;
 
-extern u32 gTotalCropsShipped;
-extern u32 gTotalEggsShipped;
-extern u32 gTotalMilkShipped;
+u32 gTotalCropsShipped;
+u32 gTotalEggsShipped;
+u32 gTotalMilkShipped;
 
-extern u8 popuriGrayBabyAge;
+u8 popuriGrayBabyAge;
 
-extern u8 numberOfSpiritFestivalAssistantsRecruited;
-extern u8 spiritFestivalAssistant1;
-extern u8 spiritFestivalAssistant2;
-extern u8 spiritFestivalAssistant3;  
-extern u8 elliJeffBabyAge;
+u8 numberOfSpiritFestivalAssistantsRecruited;
+u8 spiritFestivalAssistant1;
+u8 spiritFestivalAssistant2;
+u8 spiritFestivalAssistant3;  
+u8 elliJeffBabyAge;
 
-extern u8 mariaHarrisPregnancyCounter;
-extern u8 mariaHarrisBabyAge;
-extern u8 popuriGrayNewlywedCounter;
-extern u8 popuriGrayPregnancyCounter;
-extern u8 elliJeffNewlywedCounter;
-extern u8 elliJeffPregnancyCounter;
-extern u8 karenKaiBabyAge;
-extern u8 karenKaiNewlywedCounter;
-extern u8 karenPregnancyCounter;
-extern u8 annCliffBabyAge;
-extern u8 annCliffNewlywedCounter;
-extern u8 annPregnancyCounter;
+u8 mariaHarrisNewlywedCounter;
+u8 mariaHarrisPregnancyCounter;
+u8 mariaHarrisBabyAge;
+u8 popuriGrayNewlywedCounter;
+u8 popuriGrayPregnancyCounter;
+u8 elliJeffNewlywedCounter;
+u8 elliJeffPregnancyCounter;
+u8 karenKaiBabyAge;
+u8 karenKaiNewlywedCounter;
+u8 karenPregnancyCounter;
+u8 annCliffBabyAge;
+u8 annCliffNewlywedCounter;
+u8 annPregnancyCounter;
 
-extern MainLoopCallbackInfo gameLoopContext;
+MainLoopCallbackInfo gameLoopContext;
 
 // unused
-extern u16 D_801FB686;   
+u16 D_801FB686;
 
-extern u8 mariaHarrisNewlywedCounter;
+// unused game dialogue variables
+u8 D_8017044B;
+u8 D_80180712;
+u8 D_801890D8;
+u8 D_80189A48;
+u8 D_801C3B64;
+u8 D_801C4214;
+
+// unused strings
+u8 D_801594E0[3];
+u8 D_801594E6[3];
+u8 D_8016F6E0[3];
+u8 D_80170268[6];
+u8 D_801806C8[2];
+u8 D_80182D90[10][3];
+u8 D_801A8B50[8];
+u8 D_801FB5C4[6];
+u8 D_801FC152[2];
+u8 D_801FC156[6];
+u8 D_80204B3C[6];
+u8 D_80205210[2];
+u8 D_8020563B[4];
+u8 D_80237380[6];
+u8 D_80237418[3];
+
 
 // data
 
@@ -1418,8 +1436,8 @@ void func_8005CBF0(void) {
             gItemBeingHeld = 0xFF;
         }
          
-        func_8003F910(0, 0x78, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsAssetsIndexSegmentRomStart, &_dialogueIconsAssetsIndexSegmentRomEnd, (u8*)DIALOGUE_ICON_TEXTURE_BUFFER, (u16*)DIALOGUE_ICON_PALETTE_BUFFER, (AnimationFrameMetadata*)DIALOGUE_ICON_ANIMATION_METADATA_BUFFER, (u32*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 4, 0xFE, 106.0f, -15.0f, 0.0f);
-        func_8003F910(1, 0x78, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsAssetsIndexSegmentRomStart, &_dialogueIconsAssetsIndexSegmentRomEnd, (u8*)DIALOGUE_ICON_TEXTURE_BUFFER, (u16*)DIALOGUE_ICON_PALETTE_BUFFER, (AnimationFrameMetadata*)DIALOGUE_ICON_ANIMATION_METADATA_BUFFER, (u32*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 0xD, 0xFE, 106.0f, -15.0f, 0.0f);
+        func_8003F910(0, 0x78, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsAssetsIndexSegmentRomStart, &_dialogueIconsAssetsIndexSegmentRomEnd, (u8*)DIALOGUE_ICON_TEXTURE_BUFFER, (u16*)DIALOGUE_ICON_PALETTE_BUFFER, (AnimationFrameMetadata*)DIALOGUE_ICON_ANIMATION_FRAME_METADATA_BUFFER, (u32*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 4, 0xFE, 106.0f, -15.0f, 0.0f);
+        func_8003F910(1, 0x78, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsAssetsIndexSegmentRomStart, &_dialogueIconsAssetsIndexSegmentRomEnd, (u8*)DIALOGUE_ICON_TEXTURE_BUFFER, (u16*)DIALOGUE_ICON_PALETTE_BUFFER, (AnimationFrameMetadata*)DIALOGUE_ICON_ANIMATION_FRAME_METADATA_BUFFER, (u32*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 0xD, 0xFE, 106.0f, -15.0f, 0.0f);
        
         // update stuff after closing dialogue 
         func_8005CDCC();

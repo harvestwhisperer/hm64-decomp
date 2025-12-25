@@ -11,7 +11,7 @@
 
 // 0x802055D8
 typedef struct {
-	u32 *mapDataIndex; // vaddr = 0x80255000
+	u32 *mapDataIndex; // virtual address for map data dma
 	Vec3f viewPosition;
 	Vec3f unk_10;
 	Vec3f unk_1C;
@@ -66,10 +66,12 @@ extern MapController mapControllers[1];
 //extern CurrentMapContext currentMapContext;
 
 extern Vec4f D_8013D248;
-// used by sprites
 extern Vec4f D_802373F8;
 
 // RGBA update rate
 extern s16 D_8017045A;
+
+extern Vec3f previousWorldRotationAngles;
+extern Vec3f currentWorldRotationAngles;
 
 #endif

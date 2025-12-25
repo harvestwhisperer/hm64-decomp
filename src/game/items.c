@@ -27,18 +27,24 @@
 #include "assetIndices/sprites.h"
 
 // bss
-extern ToolUse toolUse;
-extern ItemContext itemInfo[10];
+ToolUse toolUse;
+ItemContext itemInfo[10];
 
 // shared bss (load game screen)
 // items shippd
 // strawberries shipped
-extern u32 D_801806C0;
-extern u32 D_80188F60;
-extern u32 D_801C3F80;
-extern u32 D_801FB5D0;
-extern u32 D_801FB6FC;
-extern u32 D_80237414;
+u32 D_801806C0;
+u32 D_80188F60;
+u32 D_801C3F80;
+u32 D_801FB5D0;
+u32 D_801FB6FC;
+u32 D_80237414;
+
+// consumable tool counters (seeds, feed)
+u8 D_802373A8;
+u16 chickenFeedQuantity;
+u8 upgradedToolIndex;
+u8 upgradedToolLevelIndex;
 
 // data
 // offsets for tool sweeping effects (sickle and watering can)
@@ -377,7 +383,7 @@ u16 D_801174A0[224][5] = {
 };
 
 // entity palette index
-extern u16 D_80117D60[] = {
+u16 D_80117D60[] = {
     0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 
     0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 
     0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 
