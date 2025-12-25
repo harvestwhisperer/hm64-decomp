@@ -4,6 +4,7 @@
 
 // bss
 // never read from
+// might be from mainproc.c
 u16 D_80181B8C;
 
 //INCLUDE_ASM("asm/nonmatchings/system/flags", initializeFlags);

@@ -67,8 +67,11 @@ void mainLoop(void) {
             } 
             
             D_8020564C -= 1;    
-            // FIXME: ?
-            D_8020564C;
+
+            // dead code
+            if (D_8020564C) {
+
+            }
             
             resetBitmaps();
             updateAudio(); 
@@ -84,7 +87,8 @@ void mainLoop(void) {
             updateMessageBox(); 
             updateDialogues();
 
-            // no op/shelved/debug code
+            // no op
+            // shelved or debug code
             func_800293B8(); 
 
             stepMainLoop = FALSE; 

@@ -99,8 +99,8 @@ bool initializeEntityAsset(u16 entityAssetIndex, u32 arg1, u32 arg2, u32 arg3, u
 
 //INCLUDE_ASM("asm/nonmatchings/system/entity", initializeSpriteInstance);
 
-bool initializeEntity(u16 entityIndex, u16 globalSpriteIndex, u16 shadowSpriteIndex, u32 vaddrTexture1, u32 vaddrTexture2, 
-    u32 vaddrPalette, u32 vaddrAnimationMetadata, u32 vaddrTextureToPaletteLookup, u32 vaddrSpritesheetIndex) {
+bool initializeEntity(u16 entityIndex, u16 globalSpriteIndex, u16 shadowSpriteIndex, u8* vaddrTexture1, u8* vaddrTexture2, 
+    u16* vaddrPalette, AnimationFrameMetadata* vaddrAnimationMetadata, u32* vaddrTextureToPaletteLookup, u32* vaddrSpritesheetIndex) {
 
     bool set = FALSE;
     
@@ -145,7 +145,7 @@ bool initializeEntity(u16 entityIndex, u16 globalSpriteIndex, u16 shadowSpriteIn
 
 //INCLUDE_ASM("asm/nonmatchings/system/entity", initializeAnimalEntity);
 
-bool initializeAnimalEntity(u16 index, void* arg1, void* arg2, void* arg3, void* arg4) {
+bool initializeAnimalEntity(u16 index, u16* arg1, AnimationFrameMetadata* arg2, u32* arg3, u32* arg4) {
 
     bool result = FALSE;
     

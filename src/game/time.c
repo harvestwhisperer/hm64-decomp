@@ -20,24 +20,25 @@
 void setGlobalSeasonName(u8);
 
 // shared bss
-extern u8 gSeconds;
-extern u8 gHour;
-extern u8 gMinutes;
-extern u8 gDayOfWeek;
-extern u8 gDayOfMonth;
-extern u8 gSeason;
-extern u8 gSeasonTomorrow;
-extern u8 gYear;
+u8 gSeconds;
+u8 gHour;
+u8 gMinutes;
+u8 gDayOfWeek;
+u8 gDayOfMonth;
+u8 gSeason;
+u8 gSeasonTomorrow;
+u8 gYear;
 
-extern u8 gCurrentSeasonName[6];
-extern u8 gGlobalSeasonName[6];
+// shared bss
+u8 gCurrentSeasonName[6];
+u8 gGlobalSeasonName[6];
 
 //INCLUDE_ASM("asm/nonmatchings/game/time", func_800D7C20);
 
 void func_800D7C20(void) {
     
     if ((getLevelFlags(gBaseMapIndex) & 1) && !checkDailyEventBit(6)) {
-        updateClock(1);
+        updateClock(TRUE);
     }
     
     if (gHour == 0 && gMinutes == 0 && gSeconds == 0) {

@@ -31,24 +31,17 @@
 #include "assetIndices/sprites.h"
 
 // bss
-
 Player gPlayer;
 // counter until napping animation
 u16 playerIdleCounter;
 
 // shared bss
-extern u8 gAlcoholTolerance;
-extern u8 gHappiness;
-extern u8 gMaximumStamina;
-extern u8 gPlayerBirthdaySeason;
-extern u8 gToolboxSlots[];
-extern u16 gSickDays;
-// consumable tool counters (seeds, feed)
-extern u8 D_802373A8;
-extern u16 chickenFeedQuantity;
-extern u32 totalFishCaught;
-extern u8 upgradedToolIndex;
-extern u8 upgradedToolLevelIndex;
+u8 gAlcoholTolerance;
+u8 gHappiness;
+u8 gMaximumStamina;
+u8 gPlayerBirthdaySeason;
+u8 gToolboxSlots[];
+
 
 // data
 // indexed by gEntranceIndex
@@ -327,8 +320,8 @@ volatile u8 D_8011421C[MAX_TOOLS][3] = {
 
 // rodata
 // forward declaration
-extern const s8 directionToTileDeltaX[12];
-extern const s8 directionToTileDeltaZ[12]; 
+static const s8 directionToTileDeltaX[12];
+static const s8 directionToTileDeltaZ[12]; 
 static const u8 toolHeldItemIndices[5][3];
 
 // forward declarations
@@ -817,11 +810,11 @@ void setPlayerAction(u16 action, u16 animationHandler) {
 
 //INCLUDE_RODATA("asm/nonmatchings/game/player", directionToTileDeltaX);
  
-const s8 directionToTileDeltaX[12] = { 0, -1, -1, -1, 0, 1, 1, 1, 0, 0, 0, 0 };
+static const s8 directionToTileDeltaX[12] = { 0, -1, -1, -1, 0, 1, 1, 1, 0, 0, 0, 0 };
 
 //INCLUDE_RODATA("asm/nonmatchings/game/player", directionToTileDeltaZ);
  
-const s8 directionToTileDeltaZ[12] = { 1, 1, 0, -1, -1, -1, 0, 1, 0, 0, 0, 0 };
+static const s8 directionToTileDeltaZ[12] = { 1, 1, 0, -1, -1, -1, 0, 1, 0, 0, 0, 0 };
 
 //INCLUDE_ASM("asm/nonmatchings/game/player", func_8006623C);
 

@@ -73,7 +73,7 @@ bool func_80042FEC(u16 index, u16 mainMessageBoxIndex, u16 overlayMessageBoxInde
 
 //INCLUDE_ASM("asm/nonmatchings/system/dialogue", setDialogueBytecodeAddressInfo);
 
-bool setDialogueBytecodeAddressInfo(u16 index, u16 textAddressesIndex, u16 subdialogueTextAddressesIndex, u32 romIndexStart, u32 romIndexEnd, void* vaddrIndex, u32 romStart, void* vaddr) {
+bool setDialogueBytecodeAddressInfo(u16 index, u16 textAddressesIndex, u16 subdialogueTextAddressesIndex, u32 romIndexStart, u32 romIndexEnd, u32* vaddrIndex, u32 romStart, void* vaddr) {
 
     bool result = FALSE;
     

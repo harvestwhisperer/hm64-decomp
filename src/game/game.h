@@ -164,6 +164,33 @@ extern u8 gHouseExtensionSelection;
 
 extern Vec4f unknownRGBA;
 
+extern u8 gSumGirlsWithHighAffection;
+extern u8 gAverageFarmAnimalAffection;
+
+extern u8 D_8017044B;
+extern u8 D_80180712;
+extern u8 D_801890D8;
+extern u8 D_80189A48;
+extern u8 D_801C3B64;
+extern u8 D_801C4214;
+
+// unused strings
+extern u8 D_801594E0[3];
+extern u8 D_801594E6[3];
+extern u8 D_8016F6E0[3];
+extern u8 D_80170268[6];
+extern u8 D_801806C8[2];
+extern u8 D_80182D90[10][3];
+extern u8 D_801A8B50[8];
+extern u8 D_801FB5C4[6];
+extern u8 D_801FC152[2];
+extern u8 D_801FC156[6];
+extern u8 D_80204B3C[6];
+extern u8 D_80205210[2];
+extern u8 D_8020563B[4];
+extern u8 D_80237380[6];
+extern u8 D_80237418[3];
+
 static inline void resetGlobalLighting() {
 
     globalLightingRGBA.r = 0;

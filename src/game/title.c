@@ -44,7 +44,7 @@ void initializeTitleScreen(u8 arg0) {
     titleScreenContext.dogIdleCounter = 0;
     titleScreenContext.centerCoordinate = -160.0f;
 
-    dmaSprite(HARVEST_MOON_64_LOGO, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesAssetsIndexSegmentRomStart, &_titleSpritesAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)TITLE_SCREEN_SPRITES_TEXTURE_BUFFER, NULL, (u16*)TITLE_SCREEN_SPRITES_PALETTE_BUFFER, (AnimationFrameMetadata*)TITLE_SCREEN_SPRITE_ANIMATION_METADATA_BUFFER, (u32*)TITLE_SCREEN_SPRITES_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
+    dmaSprite(HARVEST_MOON_64_LOGO, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesAssetsIndexSegmentRomStart, &_titleSpritesAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)TITLE_SCREEN_SPRITES_TEXTURE_BUFFER, NULL, (u16*)TITLE_SCREEN_SPRITES_PALETTE_BUFFER, (AnimationFrameMetadata*)TITLE_SCREEN_SPRITE_ANIMATION_FRAME_METADATA_BUFFER, (u32*)TITLE_SCREEN_SPRITES_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(HARVEST_MOON_64_LOGO, 0.0f, 64.0f, 64.0f);
     setSpriteScale(HARVEST_MOON_64_LOGO, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(HARVEST_MOON_64_LOGO, 0.0f, 0.0f, 0.0f);
@@ -53,7 +53,7 @@ void initializeTitleScreen(u8 arg0) {
     setBilinearFiltering(HARVEST_MOON_64_LOGO, TRUE);
     startSpriteAnimation(HARVEST_MOON_64_LOGO, 0, 0xFE);
      
-    dmaSprite(MARVCOME_VICTOR_COPYRIGHT_INFO, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesAssetsIndexSegmentRomStart, &_titleSpritesAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)TITLE_SCREEN_SPRITES_TEXTURE_BUFFER, NULL, (u16*)TITLE_SCREEN_SPRITES_PALETTE_BUFFER, (AnimationFrameMetadata*)TITLE_SCREEN_SPRITE_ANIMATION_METADATA_BUFFER, (u32*)TITLE_SCREEN_SPRITES_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
+    dmaSprite(MARVCOME_VICTOR_COPYRIGHT_INFO, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesAssetsIndexSegmentRomStart, &_titleSpritesAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)TITLE_SCREEN_SPRITES_TEXTURE_BUFFER, NULL, (u16*)TITLE_SCREEN_SPRITES_PALETTE_BUFFER, (AnimationFrameMetadata*)TITLE_SCREEN_SPRITE_ANIMATION_FRAME_METADATA_BUFFER, (u32*)TITLE_SCREEN_SPRITES_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(MARVCOME_VICTOR_COPYRIGHT_INFO, 0.0f, -96.0f, 64.0f);
     setSpriteScale(MARVCOME_VICTOR_COPYRIGHT_INFO, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(MARVCOME_VICTOR_COPYRIGHT_INFO, 0.0f, 0.0f, 0.0f);
@@ -61,7 +61,7 @@ void initializeTitleScreen(u8 arg0) {
     setSpriteColor(MARVCOME_VICTOR_COPYRIGHT_INFO, 0xFF, 0xFF, 0xFF, 0xFF);
     startSpriteAnimation(MARVCOME_VICTOR_COPYRIGHT_INFO, 1, 0xFE);
     
-    dmaSprite(PUSH_THE_START_SIGN_1, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesAssetsIndexSegmentRomStart, &_titleSpritesAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)TITLE_SCREEN_SPRITES_TEXTURE_BUFFER, NULL, (u16*)TITLE_SCREEN_SPRITES_PALETTE_BUFFER, (AnimationFrameMetadata*)TITLE_SCREEN_SPRITE_ANIMATION_METADATA_BUFFER, (u32*)TITLE_SCREEN_SPRITES_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
+    dmaSprite(PUSH_THE_START_SIGN_1, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesAssetsIndexSegmentRomStart, &_titleSpritesAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)TITLE_SCREEN_SPRITES_TEXTURE_BUFFER, NULL, (u16*)TITLE_SCREEN_SPRITES_PALETTE_BUFFER, (AnimationFrameMetadata*)TITLE_SCREEN_SPRITE_ANIMATION_FRAME_METADATA_BUFFER, (u32*)TITLE_SCREEN_SPRITES_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(PUSH_THE_START_SIGN_1, titleScreenContext.centerCoordinate + 160.0f, -16.0f, 48.0f);
     setSpriteScale(PUSH_THE_START_SIGN_1, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(PUSH_THE_START_SIGN_1, 0.0f, 0.0f, 0.0f);
@@ -70,7 +70,7 @@ void initializeTitleScreen(u8 arg0) {
     setBilinearFiltering(PUSH_THE_START_SIGN_1, TRUE);
     startSpriteAnimation(PUSH_THE_START_SIGN_1, 3, 0xFE);
     
-    dmaSprite(HOW_TO_PLAY_SIGN, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesAssetsIndexSegmentRomStart, &_titleSpritesAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)TITLE_SCREEN_SPRITES_TEXTURE_BUFFER, NULL, (u16*)TITLE_SCREEN_SPRITES_PALETTE_BUFFER, (AnimationFrameMetadata*)TITLE_SCREEN_SPRITE_ANIMATION_METADATA_BUFFER, (u32*)TITLE_SCREEN_SPRITES_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
+    dmaSprite(HOW_TO_PLAY_SIGN, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesAssetsIndexSegmentRomStart, &_titleSpritesAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)TITLE_SCREEN_SPRITES_TEXTURE_BUFFER, NULL, (u16*)TITLE_SCREEN_SPRITES_PALETTE_BUFFER, (AnimationFrameMetadata*)TITLE_SCREEN_SPRITE_ANIMATION_FRAME_METADATA_BUFFER, (u32*)TITLE_SCREEN_SPRITES_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(HOW_TO_PLAY_SIGN, titleScreenContext.centerCoordinate - 160.0f, -12.0f, 48.0f);
     setSpriteScale(HOW_TO_PLAY_SIGN, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(HOW_TO_PLAY_SIGN, 0.0f, 0.0f, 0.0f);
@@ -79,7 +79,7 @@ void initializeTitleScreen(u8 arg0) {
     setBilinearFiltering(HOW_TO_PLAY_SIGN, TRUE);
     startSpriteAnimation(HOW_TO_PLAY_SIGN, 5, 0xFE);
 
-    dmaSprite(DIRT_ROAD, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesAssetsIndexSegmentRomStart, &_titleSpritesAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)TITLE_SCREEN_SPRITES_TEXTURE_BUFFER, NULL, (u16*)TITLE_SCREEN_SPRITES_PALETTE_BUFFER, (AnimationFrameMetadata*)TITLE_SCREEN_SPRITE_ANIMATION_METADATA_BUFFER, (u32*)TITLE_SCREEN_SPRITES_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
+    dmaSprite(DIRT_ROAD, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesAssetsIndexSegmentRomStart, &_titleSpritesAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)TITLE_SCREEN_SPRITES_TEXTURE_BUFFER, NULL, (u16*)TITLE_SCREEN_SPRITES_PALETTE_BUFFER, (AnimationFrameMetadata*)TITLE_SCREEN_SPRITE_ANIMATION_FRAME_METADATA_BUFFER, (u32*)TITLE_SCREEN_SPRITES_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(DIRT_ROAD, titleScreenContext.centerCoordinate - 160.0f, -44.0f, 48.0f);
     setSpriteScale(DIRT_ROAD, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(DIRT_ROAD, 0.0f, 0.0f, 0.0f);
@@ -88,7 +88,7 @@ void initializeTitleScreen(u8 arg0) {
     setBilinearFiltering(DIRT_ROAD, TRUE);
     startSpriteAnimation(DIRT_ROAD, 7, 0xFE);
 
-    dmaSprite(SIGN_POST_1, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesAssetsIndexSegmentRomStart, &_titleSpritesAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)TITLE_SCREEN_SPRITES_TEXTURE_BUFFER, NULL, (u16*)TITLE_SCREEN_SPRITES_PALETTE_BUFFER, (AnimationFrameMetadata*)TITLE_SCREEN_SPRITE_ANIMATION_METADATA_BUFFER, (u32*)TITLE_SCREEN_SPRITES_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
+    dmaSprite(SIGN_POST_1, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesAssetsIndexSegmentRomStart, &_titleSpritesAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)TITLE_SCREEN_SPRITES_TEXTURE_BUFFER, NULL, (u16*)TITLE_SCREEN_SPRITES_PALETTE_BUFFER, (AnimationFrameMetadata*)TITLE_SCREEN_SPRITE_ANIMATION_FRAME_METADATA_BUFFER, (u32*)TITLE_SCREEN_SPRITES_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(SIGN_POST_1, titleScreenContext.centerCoordinate + 160.0f, -32.0f, 40.0f);
     setSpriteScale(SIGN_POST_1, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(SIGN_POST_1, 0.0f, 0.0f, 0.0f);
@@ -97,7 +97,7 @@ void initializeTitleScreen(u8 arg0) {
     setBilinearFiltering(SIGN_POST_1, TRUE);
     startSpriteAnimation(SIGN_POST_1, 2, 0xFE);
 
-    dmaSprite(SIGN_POST_2, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesAssetsIndexSegmentRomStart, &_titleSpritesAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)TITLE_SCREEN_SPRITES_TEXTURE_BUFFER, NULL, (u16*)TITLE_SCREEN_SPRITES_PALETTE_BUFFER, (AnimationFrameMetadata*)TITLE_SCREEN_SPRITE_ANIMATION_METADATA_BUFFER, (u32*)TITLE_SCREEN_SPRITES_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
+    dmaSprite(SIGN_POST_2, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesAssetsIndexSegmentRomStart, &_titleSpritesAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)TITLE_SCREEN_SPRITES_TEXTURE_BUFFER, NULL, (u16*)TITLE_SCREEN_SPRITES_PALETTE_BUFFER, (AnimationFrameMetadata*)TITLE_SCREEN_SPRITE_ANIMATION_FRAME_METADATA_BUFFER, (u32*)TITLE_SCREEN_SPRITES_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(SIGN_POST_2, titleScreenContext.centerCoordinate - 192.0f, -32.0f, 40.0f);
     setSpriteScale(SIGN_POST_2, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(SIGN_POST_2, 0.0f, 0.0f, 0.0f);
@@ -106,7 +106,7 @@ void initializeTitleScreen(u8 arg0) {
     setBilinearFiltering(SIGN_POST_2, TRUE);
     startSpriteAnimation(SIGN_POST_2, 2, 0xFE);
 
-    dmaSprite(SIGN_POST_3, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesAssetsIndexSegmentRomStart, &_titleSpritesAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)TITLE_SCREEN_SPRITES_TEXTURE_BUFFER, NULL, (u16*)TITLE_SCREEN_SPRITES_PALETTE_BUFFER, (AnimationFrameMetadata*)TITLE_SCREEN_SPRITE_ANIMATION_METADATA_BUFFER, (u32*)TITLE_SCREEN_SPRITES_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
+    dmaSprite(SIGN_POST_3, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesAssetsIndexSegmentRomStart, &_titleSpritesAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)TITLE_SCREEN_SPRITES_TEXTURE_BUFFER, NULL, (u16*)TITLE_SCREEN_SPRITES_PALETTE_BUFFER, (AnimationFrameMetadata*)TITLE_SCREEN_SPRITE_ANIMATION_FRAME_METADATA_BUFFER, (u32*)TITLE_SCREEN_SPRITES_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(SIGN_POST_3, titleScreenContext.centerCoordinate - 128.0f, -32.0f, 40.0f);
     setSpriteScale(SIGN_POST_3, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(SIGN_POST_3, 0.0f, 0.0f, 0.0f);
@@ -115,7 +115,7 @@ void initializeTitleScreen(u8 arg0) {
     setBilinearFiltering(SIGN_POST_3, TRUE);
     startSpriteAnimation(SIGN_POST_3, 2, 0xFE);
 
-    dmaSprite(CLOUD_1_1, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesAssetsIndexSegmentRomStart, &_titleSpritesAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)TITLE_SCREEN_SPRITES_TEXTURE_BUFFER, NULL, (u16*)TITLE_SCREEN_SPRITES_PALETTE_BUFFER, (AnimationFrameMetadata*)TITLE_SCREEN_SPRITE_ANIMATION_METADATA_BUFFER, (u32*)TITLE_SCREEN_SPRITES_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
+    dmaSprite(CLOUD_1_1, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesAssetsIndexSegmentRomStart, &_titleSpritesAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)TITLE_SCREEN_SPRITES_TEXTURE_BUFFER, NULL, (u16*)TITLE_SCREEN_SPRITES_PALETTE_BUFFER, (AnimationFrameMetadata*)TITLE_SCREEN_SPRITE_ANIMATION_FRAME_METADATA_BUFFER, (u32*)TITLE_SCREEN_SPRITES_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(CLOUD_1_1, titleScreenContext.centerCoordinate + 160.0f, 0.0f, 56.0f);
     setSpriteScale(CLOUD_1_1, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(CLOUD_1_1, 0.0f, 0.0f, 0.0f);
@@ -124,7 +124,7 @@ void initializeTitleScreen(u8 arg0) {
     setBilinearFiltering(CLOUD_1_1, TRUE);
     startSpriteAnimation(CLOUD_1_1, 9, 0xFE);
 
-    dmaSprite(CLOUD_1_2, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesAssetsIndexSegmentRomStart, &_titleSpritesAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)TITLE_SCREEN_SPRITES_TEXTURE_BUFFER, NULL, (u16*)TITLE_SCREEN_SPRITES_PALETTE_BUFFER, (AnimationFrameMetadata*)TITLE_SCREEN_SPRITE_ANIMATION_METADATA_BUFFER, (u32*)TITLE_SCREEN_SPRITES_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
+    dmaSprite(CLOUD_1_2, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesAssetsIndexSegmentRomStart, &_titleSpritesAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)TITLE_SCREEN_SPRITES_TEXTURE_BUFFER, NULL, (u16*)TITLE_SCREEN_SPRITES_PALETTE_BUFFER, (AnimationFrameMetadata*)TITLE_SCREEN_SPRITE_ANIMATION_FRAME_METADATA_BUFFER, (u32*)TITLE_SCREEN_SPRITES_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(CLOUD_1_2, titleScreenContext.centerCoordinate - 160.0f, 0.0f, 56.0f);
     setSpriteScale(CLOUD_1_2, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(CLOUD_1_2, 0.0f, 0.0f, 0.0f);
@@ -133,7 +133,7 @@ void initializeTitleScreen(u8 arg0) {
     setBilinearFiltering(CLOUD_1_2, TRUE);
     startSpriteAnimation(CLOUD_1_2, 9, 0xFE);
     
-    dmaSprite(CLOUD_2_1, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesAssetsIndexSegmentRomStart, &_titleSpritesAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)TITLE_SCREEN_SPRITES_TEXTURE_BUFFER, NULL, (u16*)TITLE_SCREEN_SPRITES_PALETTE_BUFFER, (AnimationFrameMetadata*)TITLE_SCREEN_SPRITE_ANIMATION_METADATA_BUFFER, (u32*)TITLE_SCREEN_SPRITES_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
+    dmaSprite(CLOUD_2_1, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesAssetsIndexSegmentRomStart, &_titleSpritesAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)TITLE_SCREEN_SPRITES_TEXTURE_BUFFER, NULL, (u16*)TITLE_SCREEN_SPRITES_PALETTE_BUFFER, (AnimationFrameMetadata*)TITLE_SCREEN_SPRITE_ANIMATION_FRAME_METADATA_BUFFER, (u32*)TITLE_SCREEN_SPRITES_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(CLOUD_2_1, titleScreenContext.centerCoordinate + 160.0f, 64.0f, 64.0f);
     setSpriteScale(CLOUD_2_1, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(CLOUD_2_1, 0.0f, 0.0f, 0.0f);
@@ -142,7 +142,7 @@ void initializeTitleScreen(u8 arg0) {
     setBilinearFiltering(CLOUD_2_1, TRUE);
     startSpriteAnimation(CLOUD_2_1, 0x10, 0xFE);
     
-    dmaSprite(CLOUD_3_1, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesAssetsIndexSegmentRomStart, &_titleSpritesAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)TITLE_SCREEN_SPRITES_TEXTURE_BUFFER, NULL, (u16*)TITLE_SCREEN_SPRITES_PALETTE_BUFFER, (AnimationFrameMetadata*)TITLE_SCREEN_SPRITE_ANIMATION_METADATA_BUFFER, (u32*)TITLE_SCREEN_SPRITES_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
+    dmaSprite(CLOUD_3_1, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesAssetsIndexSegmentRomStart, &_titleSpritesAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)TITLE_SCREEN_SPRITES_TEXTURE_BUFFER, NULL, (u16*)TITLE_SCREEN_SPRITES_PALETTE_BUFFER, (AnimationFrameMetadata*)TITLE_SCREEN_SPRITE_ANIMATION_FRAME_METADATA_BUFFER, (u32*)TITLE_SCREEN_SPRITES_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(CLOUD_3_1, titleScreenContext.centerCoordinate + 32.0f, 96.0f, 64.0f);
     setSpriteScale(CLOUD_3_1, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(CLOUD_3_1, 0.0f, 0.0f, 0.0f);
@@ -151,7 +151,7 @@ void initializeTitleScreen(u8 arg0) {
     setBilinearFiltering(CLOUD_3_1, TRUE);
     startSpriteAnimation(CLOUD_3_1, 0x11, 0xFE);
     
-    dmaSprite(LICENSED_BY_NINTENDO_1, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesAssetsIndexSegmentRomStart, &_titleSpritesAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)TITLE_SCREEN_SPRITES_TEXTURE_BUFFER, NULL, (u16*)TITLE_SCREEN_SPRITES_PALETTE_BUFFER, (AnimationFrameMetadata*)TITLE_SCREEN_SPRITE_ANIMATION_METADATA_BUFFER, (u32*)TITLE_SCREEN_SPRITES_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
+    dmaSprite(LICENSED_BY_NINTENDO_1, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesAssetsIndexSegmentRomStart, &_titleSpritesAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)TITLE_SCREEN_SPRITES_TEXTURE_BUFFER, NULL, (u16*)TITLE_SCREEN_SPRITES_PALETTE_BUFFER, (AnimationFrameMetadata*)TITLE_SCREEN_SPRITE_ANIMATION_FRAME_METADATA_BUFFER, (u32*)TITLE_SCREEN_SPRITES_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(LICENSED_BY_NINTENDO_1, titleScreenContext.centerCoordinate + 224.0f, 80.0f, 64.0f);
     setSpriteScale(LICENSED_BY_NINTENDO_1, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(LICENSED_BY_NINTENDO_1, 0.0f, 0.0f, 0.0f);
@@ -160,7 +160,7 @@ void initializeTitleScreen(u8 arg0) {
     setBilinearFiltering(LICENSED_BY_NINTENDO_1, TRUE);
     startSpriteAnimation(LICENSED_BY_NINTENDO_1, 0x12, 0xFE);
     
-    dmaSprite(LICENSED_BY_NINTENDO_2, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesAssetsIndexSegmentRomStart, &_titleSpritesAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)TITLE_SCREEN_SPRITES_TEXTURE_BUFFER, NULL, (u16*)TITLE_SCREEN_SPRITES_PALETTE_BUFFER, (AnimationFrameMetadata*)TITLE_SCREEN_SPRITE_ANIMATION_METADATA_BUFFER, (u32*)TITLE_SCREEN_SPRITES_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
+    dmaSprite(LICENSED_BY_NINTENDO_2, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesAssetsIndexSegmentRomStart, &_titleSpritesAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)TITLE_SCREEN_SPRITES_TEXTURE_BUFFER, NULL, (u16*)TITLE_SCREEN_SPRITES_PALETTE_BUFFER, (AnimationFrameMetadata*)TITLE_SCREEN_SPRITE_ANIMATION_FRAME_METADATA_BUFFER, (u32*)TITLE_SCREEN_SPRITES_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(LICENSED_BY_NINTENDO_2, titleScreenContext.centerCoordinate - 64.0f, 72.0f, 64.0f);
     setSpriteScale(LICENSED_BY_NINTENDO_2, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(LICENSED_BY_NINTENDO_2, 0.0f, 0.0f, 0.0f);
@@ -169,7 +169,7 @@ void initializeTitleScreen(u8 arg0) {
     setBilinearFiltering(LICENSED_BY_NINTENDO_2, TRUE);
     startSpriteAnimation(LICENSED_BY_NINTENDO_2, 0x12, 0xFE);
 
-    dmaSprite(CLOUD_3_2, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesAssetsIndexSegmentRomStart, &_titleSpritesAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)TITLE_SCREEN_SPRITES_TEXTURE_BUFFER, NULL, (u16*)TITLE_SCREEN_SPRITES_PALETTE_BUFFER, (AnimationFrameMetadata*)TITLE_SCREEN_SPRITE_ANIMATION_METADATA_BUFFER, (u32*)TITLE_SCREEN_SPRITES_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
+    dmaSprite(CLOUD_3_2, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesAssetsIndexSegmentRomStart, &_titleSpritesAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)TITLE_SCREEN_SPRITES_TEXTURE_BUFFER, NULL, (u16*)TITLE_SCREEN_SPRITES_PALETTE_BUFFER, (AnimationFrameMetadata*)TITLE_SCREEN_SPRITE_ANIMATION_FRAME_METADATA_BUFFER, (u32*)TITLE_SCREEN_SPRITES_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(CLOUD_3_2, titleScreenContext.centerCoordinate - 192.0f, 108.0f, 64.0f);
     setSpriteScale(CLOUD_3_2, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(CLOUD_3_2, 0.0f, 0.0f, 0.0f);
@@ -178,7 +178,7 @@ void initializeTitleScreen(u8 arg0) {
     setBilinearFiltering(CLOUD_3_2, TRUE);
     startSpriteAnimation(CLOUD_3_2, 0x11, 0xFE);
 
-    dmaSprite(CLOUD_2_2, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesAssetsIndexSegmentRomStart, &_titleSpritesAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)TITLE_SCREEN_SPRITES_TEXTURE_BUFFER, NULL, (u16*)TITLE_SCREEN_SPRITES_PALETTE_BUFFER, (AnimationFrameMetadata*)TITLE_SCREEN_SPRITE_ANIMATION_METADATA_BUFFER, (u32*)TITLE_SCREEN_SPRITES_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
+    dmaSprite(CLOUD_2_2, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesAssetsIndexSegmentRomStart, &_titleSpritesAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)TITLE_SCREEN_SPRITES_TEXTURE_BUFFER, NULL, (u16*)TITLE_SCREEN_SPRITES_PALETTE_BUFFER, (AnimationFrameMetadata*)TITLE_SCREEN_SPRITE_ANIMATION_FRAME_METADATA_BUFFER, (u32*)TITLE_SCREEN_SPRITES_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(CLOUD_2_2, titleScreenContext.centerCoordinate - 288.0f, 88.0f, 64.0f);
     setSpriteScale(CLOUD_2_2, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(CLOUD_2_2, 0.0f, 0.0f, 0.0f);
@@ -187,7 +187,7 @@ void initializeTitleScreen(u8 arg0) {
     setBilinearFiltering(CLOUD_2_2, TRUE);
     startSpriteAnimation(CLOUD_2_2, 0x10, 0xFE);
     
-    dmaSprite(FAR_GRASS_1_1, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesAssetsIndexSegmentRomStart, &_titleSpritesAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)TITLE_SCREEN_SPRITES_TEXTURE_BUFFER, NULL, (u16*)TITLE_SCREEN_SPRITES_PALETTE_BUFFER, (AnimationFrameMetadata*)TITLE_SCREEN_SPRITE_ANIMATION_METADATA_BUFFER, (u32*)TITLE_SCREEN_SPRITES_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
+    dmaSprite(FAR_GRASS_1_1, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesAssetsIndexSegmentRomStart, &_titleSpritesAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)TITLE_SCREEN_SPRITES_TEXTURE_BUFFER, NULL, (u16*)TITLE_SCREEN_SPRITES_PALETTE_BUFFER, (AnimationFrameMetadata*)TITLE_SCREEN_SPRITE_ANIMATION_FRAME_METADATA_BUFFER, (u32*)TITLE_SCREEN_SPRITES_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(FAR_GRASS_1_1, titleScreenContext.centerCoordinate + 160.0f, 0.0f, 8.0f);
     setSpriteScale(FAR_GRASS_1_1, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(FAR_GRASS_1_1, 0.0f, 0.0f, 0.0f);
@@ -196,7 +196,7 @@ void initializeTitleScreen(u8 arg0) {
     setBilinearFiltering(FAR_GRASS_1_1, TRUE);
     startSpriteAnimation(FAR_GRASS_1_1, 0xA, 0xFE);
 
-    dmaSprite(FAR_GRASS_1_2, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesAssetsIndexSegmentRomStart, &_titleSpritesAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)TITLE_SCREEN_SPRITES_TEXTURE_BUFFER, NULL, (u16*)TITLE_SCREEN_SPRITES_PALETTE_BUFFER, (AnimationFrameMetadata*)TITLE_SCREEN_SPRITE_ANIMATION_METADATA_BUFFER, (u32*)TITLE_SCREEN_SPRITES_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
+    dmaSprite(FAR_GRASS_1_2, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesAssetsIndexSegmentRomStart, &_titleSpritesAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)TITLE_SCREEN_SPRITES_TEXTURE_BUFFER, NULL, (u16*)TITLE_SCREEN_SPRITES_PALETTE_BUFFER, (AnimationFrameMetadata*)TITLE_SCREEN_SPRITE_ANIMATION_FRAME_METADATA_BUFFER, (u32*)TITLE_SCREEN_SPRITES_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(FAR_GRASS_1_2, titleScreenContext.centerCoordinate - 160.0f, 0.0f, 8.0f);
     setSpriteScale(FAR_GRASS_1_2, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(FAR_GRASS_1_2, 0.0f, 0.0f, 0.0f);
@@ -205,7 +205,7 @@ void initializeTitleScreen(u8 arg0) {
     setBilinearFiltering(FAR_GRASS_1_2, TRUE);
     startSpriteAnimation(FAR_GRASS_1_2, 0xA, 0xFE);
     
-    dmaSprite(FAR_GRASS_2_1, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesAssetsIndexSegmentRomStart, &_titleSpritesAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)TITLE_SCREEN_SPRITES_TEXTURE_BUFFER, NULL, (u16*)TITLE_SCREEN_SPRITES_PALETTE_BUFFER, (AnimationFrameMetadata*)TITLE_SCREEN_SPRITE_ANIMATION_METADATA_BUFFER, (u32*)TITLE_SCREEN_SPRITES_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
+    dmaSprite(FAR_GRASS_2_1, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesAssetsIndexSegmentRomStart, &_titleSpritesAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)TITLE_SCREEN_SPRITES_TEXTURE_BUFFER, NULL, (u16*)TITLE_SCREEN_SPRITES_PALETTE_BUFFER, (AnimationFrameMetadata*)TITLE_SCREEN_SPRITE_ANIMATION_FRAME_METADATA_BUFFER, (u32*)TITLE_SCREEN_SPRITES_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(FAR_GRASS_2_1, titleScreenContext.centerCoordinate + 160.0f, 0.0f, 16.0f);
     setSpriteScale(FAR_GRASS_2_1, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(FAR_GRASS_2_1, 0.0f, 0.0f, 0.0f);
@@ -214,7 +214,7 @@ void initializeTitleScreen(u8 arg0) {
     setBilinearFiltering(FAR_GRASS_2_1, TRUE);
     startSpriteAnimation(FAR_GRASS_2_1, 0xB, 0xFE);
 
-    dmaSprite(FAR_GRASS_3_1, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesAssetsIndexSegmentRomStart, &_titleSpritesAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)TITLE_SCREEN_SPRITES_TEXTURE_BUFFER, NULL, (u16*)TITLE_SCREEN_SPRITES_PALETTE_BUFFER, (AnimationFrameMetadata*)TITLE_SCREEN_SPRITE_ANIMATION_METADATA_BUFFER, (u32*)TITLE_SCREEN_SPRITES_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
+    dmaSprite(FAR_GRASS_3_1, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesAssetsIndexSegmentRomStart, &_titleSpritesAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)TITLE_SCREEN_SPRITES_TEXTURE_BUFFER, NULL, (u16*)TITLE_SCREEN_SPRITES_PALETTE_BUFFER, (AnimationFrameMetadata*)TITLE_SCREEN_SPRITE_ANIMATION_FRAME_METADATA_BUFFER, (u32*)TITLE_SCREEN_SPRITES_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(FAR_GRASS_3_1, titleScreenContext.centerCoordinate + 160.0f, 0.0f, 24.0f);
     setSpriteScale(FAR_GRASS_3_1, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(FAR_GRASS_3_1, 0.0f, 0.0f, 0.0f);
@@ -223,7 +223,7 @@ void initializeTitleScreen(u8 arg0) {
     setBilinearFiltering(FAR_GRASS_3_1, TRUE);
     startSpriteAnimation(FAR_GRASS_3_1, 0xC, 0xFE);
 
-    dmaSprite(FRONT_GRASS_2_1, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesAssetsIndexSegmentRomStart, &_titleSpritesAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)TITLE_SCREEN_SPRITES_TEXTURE_BUFFER, NULL, (u16*)TITLE_SCREEN_SPRITES_PALETTE_BUFFER, (AnimationFrameMetadata*)TITLE_SCREEN_SPRITE_ANIMATION_METADATA_BUFFER, (u32*)TITLE_SCREEN_SPRITES_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
+    dmaSprite(FRONT_GRASS_2_1, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesAssetsIndexSegmentRomStart, &_titleSpritesAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)TITLE_SCREEN_SPRITES_TEXTURE_BUFFER, NULL, (u16*)TITLE_SCREEN_SPRITES_PALETTE_BUFFER, (AnimationFrameMetadata*)TITLE_SCREEN_SPRITE_ANIMATION_FRAME_METADATA_BUFFER, (u32*)TITLE_SCREEN_SPRITES_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(FRONT_GRASS_2_1, titleScreenContext.centerCoordinate + 160.0f, 0.0f, 32.0f);
     setSpriteScale(FRONT_GRASS_2_1, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(FRONT_GRASS_2_1, 0.0f, 0.0f, 0.0f);
@@ -232,7 +232,7 @@ void initializeTitleScreen(u8 arg0) {
     setBilinearFiltering(FRONT_GRASS_2_1, TRUE);
     startSpriteAnimation(FRONT_GRASS_2_1, 0xE, 0xFE);
     
-    dmaSprite(BACK_GRASS_2, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesAssetsIndexSegmentRomStart, &_titleSpritesAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)TITLE_SCREEN_SPRITES_TEXTURE_BUFFER, NULL, (u16*)TITLE_SCREEN_SPRITES_PALETTE_BUFFER, (AnimationFrameMetadata*)TITLE_SCREEN_SPRITE_ANIMATION_METADATA_BUFFER, (u32*)TITLE_SCREEN_SPRITES_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
+    dmaSprite(BACK_GRASS_2, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesAssetsIndexSegmentRomStart, &_titleSpritesAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)TITLE_SCREEN_SPRITES_TEXTURE_BUFFER, NULL, (u16*)TITLE_SCREEN_SPRITES_PALETTE_BUFFER, (AnimationFrameMetadata*)TITLE_SCREEN_SPRITE_ANIMATION_FRAME_METADATA_BUFFER, (u32*)TITLE_SCREEN_SPRITES_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(BACK_GRASS_2, titleScreenContext.centerCoordinate - 160.0f, 0.0f, 16.0f);
     setSpriteScale(BACK_GRASS_2, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(BACK_GRASS_2, 0.0f, 0.0f, 0.0f);
@@ -241,7 +241,7 @@ void initializeTitleScreen(u8 arg0) {
     setBilinearFiltering(BACK_GRASS_2, TRUE);
     startSpriteAnimation(BACK_GRASS_2, 0xB, 0xFE);
     
-    dmaSprite(BACK_GRASS_3_2, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesAssetsIndexSegmentRomStart, &_titleSpritesAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)TITLE_SCREEN_SPRITES_TEXTURE_BUFFER, NULL, (u16*)TITLE_SCREEN_SPRITES_PALETTE_BUFFER, (AnimationFrameMetadata*)TITLE_SCREEN_SPRITE_ANIMATION_METADATA_BUFFER, (u32*)TITLE_SCREEN_SPRITES_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
+    dmaSprite(BACK_GRASS_3_2, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesAssetsIndexSegmentRomStart, &_titleSpritesAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)TITLE_SCREEN_SPRITES_TEXTURE_BUFFER, NULL, (u16*)TITLE_SCREEN_SPRITES_PALETTE_BUFFER, (AnimationFrameMetadata*)TITLE_SCREEN_SPRITE_ANIMATION_FRAME_METADATA_BUFFER, (u32*)TITLE_SCREEN_SPRITES_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(BACK_GRASS_3_2, titleScreenContext.centerCoordinate - 160.0f, 0.0f, 24.0f);
     setSpriteScale(BACK_GRASS_3_2, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(BACK_GRASS_3_2, 0.0f, 0.0f, 0.0f);
@@ -250,7 +250,7 @@ void initializeTitleScreen(u8 arg0) {
     setBilinearFiltering(BACK_GRASS_3_2, TRUE);
     startSpriteAnimation(BACK_GRASS_3_2, 0xC, 0xFE);
     
-    dmaSprite(FRONT_GRASS_2_2, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesAssetsIndexSegmentRomStart, &_titleSpritesAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)TITLE_SCREEN_SPRITES_TEXTURE_BUFFER, NULL, (u16*)TITLE_SCREEN_SPRITES_PALETTE_BUFFER, (AnimationFrameMetadata*)TITLE_SCREEN_SPRITE_ANIMATION_METADATA_BUFFER, (u32*)TITLE_SCREEN_SPRITES_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
+    dmaSprite(FRONT_GRASS_2_2, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesAssetsIndexSegmentRomStart, &_titleSpritesAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)TITLE_SCREEN_SPRITES_TEXTURE_BUFFER, NULL, (u16*)TITLE_SCREEN_SPRITES_PALETTE_BUFFER, (AnimationFrameMetadata*)TITLE_SCREEN_SPRITE_ANIMATION_FRAME_METADATA_BUFFER, (u32*)TITLE_SCREEN_SPRITES_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(FRONT_GRASS_2_2, titleScreenContext.centerCoordinate - 160.0f, 0.0f, 32.0f);
     setSpriteScale(FRONT_GRASS_2_2, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(FRONT_GRASS_2_2, 0.0f, 0.0f, 0.0f);
@@ -259,7 +259,7 @@ void initializeTitleScreen(u8 arg0) {
     setBilinearFiltering(FRONT_GRASS_2_2, TRUE);
     startSpriteAnimation(FRONT_GRASS_2_2, 0xE, 0xFE);
     
-    dmaSprite(PUSH_THE_START_SIGN_2, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsAssetsIndexSegmentRomStart, &_dialogueIconsAssetsIndexSegmentRomEnd, NULL, NULL, (void*)0x8023B400, NULL, (void*)0x8023CC00, (void*)0x8023CE00, (void*)0x8023D200, NULL, 0, FALSE);
+    dmaSprite(PUSH_THE_START_SIGN_2, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsAssetsIndexSegmentRomStart, &_dialogueIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)DIALOGUE_ICON_TEXTURE_BUFFER, NULL, (u8*)DIALOGUE_ICON_PALETTE_BUFFER, (AnimationFrameMetadata*)DIALOGUE_ICON_ANIMATION_FRAME_METADATA_BUFFER, (u32*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(PUSH_THE_START_SIGN_2, -54.0f, -24.0f, 56.0f);
     setSpriteScale(PUSH_THE_START_SIGN_2, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(PUSH_THE_START_SIGN_2, 0.0f, 0.0f, 0.0f);
@@ -315,7 +315,7 @@ void initializeTitleScreen(u8 arg0) {
 //INCLUDE_ASM("asm/nonmatchings/game/title", loadDogTitleSprite);
 
 void loadDogTitleSprite(void) {
-    dmaSprite(DOG_TITLE_SPRITE, &_dogTitleTextureSegmentRomStart, &_dogTitleTextureSegmentRomEnd, &_dogTitleAssetsIndexSegmentRomStart, &_dogTitleAssetsIndexSegmentRomEnd, &_dogTitleSpritesheetIndexSegmentRomStart, &_dogTitleSpritesheetIndexSegmentRomEnd, (u8*)DOG_TITLE_TEXTURE_1_BUFFER, (u8*)DOG_TITLE_TEXTURE_2_BUFFER, (u16*)DOG_TITLE_PALETTE_BUFFER, (void*)DOG_TITLE_ANIMATION_METADATA_BUFFER, (u32*)DOG_TITLE_SPRITESHEET_INDEX_BUFFER, (u32*)DOG_TITLE_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 1, 0);
+    dmaSprite(DOG_TITLE_SPRITE, &_dogTitleTextureSegmentRomStart, &_dogTitleTextureSegmentRomEnd, &_dogTitleAssetsIndexSegmentRomStart, &_dogTitleAssetsIndexSegmentRomEnd, &_dogTitleSpritesheetIndexSegmentRomStart, &_dogTitleSpritesheetIndexSegmentRomEnd, (u8*)DOG_TITLE_TEXTURE_1_BUFFER, (u8*)DOG_TITLE_TEXTURE_2_BUFFER, (u16*)DOG_TITLE_PALETTE_BUFFER, (void*)DOG_TITLE_ANIMATION_FRAME_METADATA_BUFFER, (u32*)DOG_TITLE_SPRITESHEET_INDEX_BUFFER, (u32*)DOG_TITLE_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 1, 0);
     setSpriteViewSpacePosition(DOG_TITLE_SPRITE, 64.0f, -80.0f, 56.0f);
     setSpriteScale(DOG_TITLE_SPRITE, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(DOG_TITLE_SPRITE, 0, 0, 0);

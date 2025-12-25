@@ -30,7 +30,7 @@ u8 mountain2FieldTiles[FIELD_HEIGHT][FIELD_WIDTH];
 u8 ranchFieldTiles[FIELD_HEIGHT][FIELD_WIDTH];
 
 // shared bss
-extern u8 blueMistFlowerPlot;
+u8 blueMistFlowerPlot;
 
 // data
 GroundObjectInfo groundObjectsInfo[MAX_FIELD_OBJECTS] = {

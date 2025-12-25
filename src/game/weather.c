@@ -48,7 +48,7 @@ void setWeatherSprites(void) {
 
         for (i = 0; i < MAX_WEATHER_TEXTURES; i++) {
         
-            dmaSprite(WEATHER_SPRITES_BASE + i, &_rainTextureSegmentRomStart, &_rainTextureSegmentRomEnd, &_rainAssetsIndexSegmentRomStart, &_rainAssetsIndexSegmentRomEnd, 0, 0, (void*)WEATHER_SPRITE_TEXTURE_BUFFER, NULL, WEATHER_SPRITE_PALETTE_BUFFER, WEATHER_SPRITE_ANIMATION_METADATA_BUFFER, WEATHER_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, TRUE);
+            dmaSprite(WEATHER_SPRITES_BASE + i, &_rainTextureSegmentRomStart, &_rainTextureSegmentRomEnd, &_rainAssetsIndexSegmentRomStart, &_rainAssetsIndexSegmentRomEnd, 0, 0, (void*)WEATHER_SPRITE_TEXTURE_BUFFER, NULL, WEATHER_SPRITE_PALETTE_BUFFER, WEATHER_SPRITE_ANIMATION_FRAME_METADATA_BUFFER, WEATHER_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, TRUE);
             setSpriteScale(WEATHER_SPRITES_BASE + i, 1.0f, 1.0f, 1.0f);
             setSpriteRenderingLayer(WEATHER_SPRITES_BASE + i, 4);
             setSpriteColor(WEATHER_SPRITES_BASE + i, 0xFF, 0xFF, 0xFF, 0xFF);

@@ -70,17 +70,7 @@ void func_800D8540(void) {
     
     deactivateMapObject(MAIN_MAP_INDEX, 9);
 
-    dmaSprite(TV_CONTENT, 
-        &_tvContentTextureSegmentRomStart, &_tvContentTextureSegmentRomEnd, 
-        &_tvContentAssetsIndexSegmentRomStart, &_tvContentAssetsIndexSegmentRomEnd, 
-        &_tvContentSpritesheetIndexSegmentRomStart, &_tvContentSpritesheetIndexSegmentRomEnd, 
-        (u8*)MAP_OBJECT_1_TEXTURE_1_BUFFER, 
-        (u8*)MAP_OBJECT_1_TEXTURE_2_BUFFER, 
-        (u16*)MAP_OBJECT_1_PALETTE_BUFFER, 
-        (AnimationFrameMetadata*)MAP_OBJECT_1_ANIMATION_METADATA_BUFFER, 
-        (u32*)MAP_OBJECT_1_SPRITESHEET_INDEX_BUFFER, 
-        (u32*)MAP_OBJECT_1_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 
-        1, TRUE);
+    dmaSprite(TV_CONTENT, &_tvContentTextureSegmentRomStart, &_tvContentTextureSegmentRomEnd, &_tvContentAssetsIndexSegmentRomStart, &_tvContentAssetsIndexSegmentRomEnd, &_tvContentSpritesheetIndexSegmentRomStart, &_tvContentSpritesheetIndexSegmentRomEnd, (u8*)MAP_OBJECT_TV_TEXTURE_1, (u8*)MAP_OBJECT_TV_TEXTURE_2, (u16*)MAP_OBJECT_TV_PALETTE, (AnimationFrameMetadata*)MAP_OBJECT_TV_ANIM_METADATA, (u32*)MAP_OBJECT_TV_SPRITESHEET_INDEX, (u32*)MAP_OBJECT_TV_TEXTURE_TO_PALETTE_LOOKUP, 1, TRUE);
 
     setSpriteScale(TV_CONTENT, 2.0f, 2.0f, 1.0f);
     setSpriteRotation(TV_CONTENT, 45.0f, -45.0f, 0.0f);
