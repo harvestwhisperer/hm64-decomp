@@ -24,16 +24,22 @@ def check_asset_addresses_exist(label: str) -> Tuple[int, str]:
     with open("sprite_addresses.csv", newline="", encoding="utf-8") as f:
         reader = csv.reader(f)
         for idx, row in enumerate(reader, start=0):
-            if len(row) == 5:
+            if len(row) == 6:
                 if row[4] == label:
                     return (idx,"type-1")
-            elif len(row) == 4:
+            elif len(row) == 5:
                 if row[3] == label:
                     return (idx,"type-2")
             else:
                 continue
 
         return (-1, "none")
+
+def get_sprite_subdir(row: list) -> str:
+    """Get the subdirectory from the CSV row (last column)."""
+    if len(row) >= 5:
+        return row[-1]
+    return ""
 
 def get_spritesheet_offsets_array(asset_addresses: List[str], asset_type: str) -> np.ndarray:
 
@@ -250,16 +256,17 @@ def write_all_textures() -> None:
         addresses_list = list(tuple(line) for line in reader)
 
     for idx, row in enumerate(addresses_list):
-        if len(row) == 5:
-            write_textures_for_sprite(row[4])
-        elif len(row) == 4:
-            write_textures_for_sprite(row[3])
+        subdir = get_sprite_subdir(row)
+        if len(row) == 6:
+            write_textures_for_sprite(row[4], subdir)
+        elif len(row) == 5:
+            write_textures_for_sprite(row[3], subdir)
         else:
             continue
 
     return
 
-def write_textures_for_sprite(sprite_name: str) -> None:
+def write_textures_for_sprite(sprite_name: str, subdir: str = "") -> None:
 
     if rom == None:
         set_rom()
@@ -267,10 +274,14 @@ def write_textures_for_sprite(sprite_name: str) -> None:
     result, asset_type = check_asset_addresses_exist(sprite_name)
 
     if result == -1:
-        printf("Invalid sprite name: {sprite_name}")
+        print(f"Invalid sprite name: {sprite_name}")
         return
 
-    basedir = SPRITES_DIR
+    # Build output path: SPRITES_DIR / subdir / sprite_name
+    if subdir:
+        basedir = SPRITES_DIR / subdir
+    else:
+        basedir = SPRITES_DIR
     basedir.mkdir(parents=True, exist_ok=True)
 
     outdir = basedir / sprite_name
@@ -300,7 +311,7 @@ def write_textures_for_sprite(sprite_name: str) -> None:
         if width < 0 or height < 0:
             print(f"Invalid width or height: {asset_addresses}")
             print(f"Width: {width}")
-            pritn(f"Height: {height}")
+            print(f"Height: {height}")
             continue
 
         palette = get_palette(asset_addresses, sprite_number, asset_type)
@@ -309,11 +320,11 @@ def write_textures_for_sprite(sprite_name: str) -> None:
             print(f"Unable to fetch palette: {asset_addresses}")
             continue
 
-        # start count at 1    
+        # start count at 1
         filename = sprite_name + '/texture-' + str(sprite_number + 1)
 
-        write_texture(texture, palette, width, height, texture_type, filename, SPRITES_DIR, keep_intermediate_files=KEEP_INTERMEDIATE_FILES)
-    
+        write_texture(texture, palette, width, height, texture_type, filename, basedir, keep_intermediate_files=KEEP_INTERMEDIATE_FILES)
+
     return
 
 def write_texture_from_csv_row_and_index(row: int, sprite_index: int, filename: str, output_path: Path) -> None:
@@ -327,9 +338,9 @@ def write_texture_from_csv_row_and_index(row: int, sprite_index: int, filename: 
 
     asset_addresses = addresses_list[row]
 
-    if (len(asset_addresses) == 5):
+    if (len(asset_addresses) == 6):
         asset_type = "type-1"
-    elif (len(asset_addresses) == 4):
+    elif (len(asset_addresses) == 5):
         asset_type = "type-2"
     else:
         print(f"Invalid CSV row: {asset_addresses}")
@@ -404,10 +415,20 @@ if __name__ == "__main__":
     if args.command == "write_textures_for_sprite":
         if not args.target:
             parser.error("The command 'write_textures_for_sprite' requires a sprite name.")
-        write_textures_for_sprite(args.target)
-        
+        # Look up subdir from CSV for the given sprite name
+        with open(SPRITE_ADDRESSES_CSV_PATH) as f:
+            reader = csv.reader(f)
+            for row in reader:
+                sprite_name_idx = 4 if len(row) == 6 else 3 if len(row) == 5 else -1
+                if sprite_name_idx >= 0 and row[sprite_name_idx] == args.target:
+                    subdir = get_sprite_subdir(row)
+                    write_textures_for_sprite(args.target, subdir)
+                    break
+            else:
+                print(f"Sprite not found in CSV: {args.target}")
+
     elif args.command == "write_all_textures":
         write_all_textures()
-        
+
     else:
         print(f"Unknown command: {args.command}")

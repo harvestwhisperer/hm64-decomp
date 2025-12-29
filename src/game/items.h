@@ -259,6 +259,8 @@ extern u32 D_80237414;
 // strawberries shipped
 extern u32 D_801806C0;
 
+extern u32 D_801654F4;
+
 // TODO: labels
 // seed counters
 // turnip

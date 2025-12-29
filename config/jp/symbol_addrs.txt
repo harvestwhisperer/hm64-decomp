@@ -96,3 +96,4 @@ frameRate               = 0x80237881;
 
 frameBuffer             = 0x80238800;
 fontBuffer              = 0x80338800;
+nuGfxFameBuffer         = 0x8038F800;

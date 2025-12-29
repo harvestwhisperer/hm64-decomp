@@ -967,9 +967,9 @@ void func_8004F768(void) {
     setEntityCollisionBuffers(ENTITY_ASSET_SQUIRREL, 15, 15);
     setEntitySpriteDimensions(ENTITY_ASSET_SQUIRREL, 12, 12);
     
-    initializeEntityAsset(ENTITY_ASSET_DOG_RACE, &_dogRaceTextureSegmentRomStart, &_dogRaceTextureSegmentRomEnd, &_dogRaceAssetsIndexSegmentRomStart, &_dogRaceAssetsIndexSegmentRomEnd, &_dogRaceSpritesheetIndexSegmentRomStart, &_dogRaceSpritesheetIndexSegmentRomEnd, 1, 0, &dogRaceAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_ASSET_DOG_RACE, 15, 15);
-    setEntitySpriteDimensions(ENTITY_ASSET_DOG_RACE, 12, 12);
+    initializeEntityAsset(ENTITY_ASSET_BIRD, &_birdTextureSegmentRomStart, &_birdTextureSegmentRomEnd, &_birdAssetsIndexSegmentRomStart, &_birdAssetsIndexSegmentRomEnd, &_birdSpritesheetIndexSegmentRomStart, &_birdSpritesheetIndexSegmentRomEnd, 1, 0, &dogRaceAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_BIRD, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_BIRD, 12, 12);
     
     initializeEntityAsset(ENTITY_ASSET_CAT, &_catTextureSegmentRomStart, &_catTextureSegmentRomEnd, &_catAssetsIndexSegmentRomStart, &_catAssetsIndexSegmentRomEnd, &_catSpritesheetIndexSegmentRomStart, &_catSpritesheetIndexSegmentRomEnd, 1, 0, &catAnimationScripts);
     setEntityCollisionBuffers(ENTITY_ASSET_CAT, 15, 15);
@@ -1035,7 +1035,7 @@ void func_8004F768(void) {
     setEntityCollisionBuffers(ENTITY_ASSET_STAG_BEETLE, 15, 15);
     setEntitySpriteDimensions(ENTITY_ASSET_STAG_BEETLE, 12, 12);
     
-    initializeEntityAsset(ENTITY_ASSET_BELL_RING_CRICKET, &_bellRingCricketTextureSegmentRomStart, &_bellRingCricketTextureSegmentRomEnd, &_bellRingCricketAssetsIndexSegmentRomStart, &_bellRingCricketAssetsIndexSegmentRomEnd, &_bellRingCricketSpritesheetIndexSegmentRomStart, &_bellRingCricketSpritesheetIndexSegmentRomEnd, 1, 0xFF, &bellRingCricketAnimationScripts);
+    initializeEntityAsset(ENTITY_ASSET_BELL_RING_CRICKET, &_cricketTextureSegmentRomStart, &_cricketTextureSegmentRomEnd, &_cricketAssetsIndexSegmentRomStart, &_cricketAssetsIndexSegmentRomEnd, &_cricketSpritesheetIndexSegmentRomStart, &_cricketSpritesheetIndexSegmentRomEnd, 1, 0xFF, &bellRingCricketAnimationScripts);
     setEntityCollisionBuffers(ENTITY_ASSET_BELL_RING_CRICKET, 15, 15);
     setEntitySpriteDimensions(ENTITY_ASSET_BELL_RING_CRICKET, 12, 12);
     
@@ -1043,9 +1043,9 @@ void func_8004F768(void) {
     setEntityCollisionBuffers(ENTITY_ASSET_CICADA, 15, 15);
     setEntitySpriteDimensions(ENTITY_ASSET_CICADA, 12, 12);
     
-    initializeEntityAsset(ENTITY_ASSET_BIRD, &_birdTextureSegmentRomStart, &_birdTextureSegmentRomEnd, &_birdAssetsIndexSegmentRomStart, &_birdAssetsIndexSegmentRomEnd, &_birdSpritesheetIndexSegmentRomStart, &_birdSpritesheetIndexSegmentRomEnd, 1, 2, &birdAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_ASSET_BIRD, 15, 15);
-    setEntitySpriteDimensions(ENTITY_ASSET_BIRD, 12, 12);
+    initializeEntityAsset(ENTITY_ASSET_WHITE_BUTTERFLY, &_whiteButterflyTextureSegmentRomStart, &_whiteButterflyTextureSegmentRomEnd, &_whiteButterflyAssetsIndexSegmentRomStart, &_whiteButterflyAssetsIndexSegmentRomEnd, &_whiteButterflySpritesheetIndexSegmentRomStart, &_whiteButterflySpritesheetIndexSegmentRomEnd, 1, 2, &birdAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_WHITE_BUTTERFLY, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_WHITE_BUTTERFLY, 12, 12);
     
     initializeEntityAsset(ENTITY_ASSET_LADYBUG, &_ladybugTextureSegmentRomStart, &_ladybugTextureSegmentRomEnd, &_ladybugAssetsIndexSegmentRomStart, &_ladybugAssetsIndexSegmentRomEnd, &_ladybugSpritesheetIndexSegmentRomStart, &_ladybugSpritesheetIndexSegmentRomEnd, 1, 0xFF, &ladybugAnimationScripts);
     setEntityCollisionBuffers(ENTITY_ASSET_LADYBUG, 15, 15);
@@ -1337,10 +1337,7 @@ void func_800535DC(void) {
     setTextAddresses(TEXT_1_TEXT_INDEX, &_text1TextIndexSegmentRomStart, &_text1TextIndexSegmentRomEnd, &_text1TextSegmentRomStart, (u32*)TEXT_ADDRESSES_INDEX_BUFFER);
     setTextAddresses(LIBRARY_TEXT_INDEX, &_libraryTextIndexSegmentRomStart, &_libraryTextIndexSegmentRomEnd, &_libraryTextSegmentRomStart, (u32*)TEXT_ADDRESSES_INDEX_BUFFER);
     setTextAddresses(DIARY_TEXT_INDEX, &_diaryTextIndexSegmentRomStart, &_diaryTextIndexSegmentRomEnd, &_diaryTextSegmentRomStart, (u32*)TEXT_ADDRESSES_INDEX_BUFFER);
-    
-    // Japanese text
-    setTextAddresses(TEXT_4_TEXT_INDEX, &_text4TextIndexSegmentRomStart, &_text4TextIndexSegmentRomEnd, &_text4TextSegmentRomStart, (u32*)TEXT_ADDRESSES_INDEX_BUFFER);
-
+    setTextAddresses(RECIPES_JAPANESE_TEXT_INDEX, &_recipesJapaneseTextIndexSegmentRomStart, &_recipesJapaneseTextIndexSegmentRomEnd, &_recipesJapaneseTextSegmentRomStart, (u32*)TEXT_ADDRESSES_INDEX_BUFFER);
     setTextAddresses(FESTIVAL_OVERLAY_SELECTIONS_TEXT_INDEX, &_festivalOverlaySelectionsTextIndexSegmentRomStart, &_festivalOverlaySelectionsTextIndexSegmentRomEnd, &_festivalOverlaySelectionsTextSegmentRomStart, (u32*)TEXT_ADDRESSES_INDEX_BUFFER);
     setTextAddresses(LETTERS_TEXT_INDEX, &_lettersTextIndexSegmentRomStart, &_lettersTextIndexSegmentRomEnd, &_lettersTextSegmentRomStart, (u32*)TEXT_ADDRESSES_INDEX_BUFFER);
     setTextAddresses(SHOP_TEXT_INDEX, &_shopTextIndexSegmentRomStart, &_shopTextIndexSegmentRomEnd, &_shopTextSegmentRomStart, (u32*)TEXT_ADDRESSES_INDEX_BUFFER);

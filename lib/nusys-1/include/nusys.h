@@ -90,15 +90,28 @@ extern "C" {
 /*----------------------------------------------------------------------*/
 /* GRAFIC MANEGER DEFINE								*/
 /*----------------------------------------------------------------------*/
-#define	NU_GFX_UCODE_F3DEX	0		/* F3DEX micro code */
-#define	NU_GFX_UCODE_F3DEX_NON	1		/* F3DEX.NoN micro code */
-#define	NU_GFX_UCODE_F3DLX	2		/* F3DLX micro code */
-#define	NU_GFX_UCODE_F3DLX_NON	3		/* F3DLX.NoN micro code */
-#define	NU_GFX_UCODE_F3DLX_REJ	4		/* F3DEX.ReJ micro code */
-#define	NU_GFX_UCODE_F3DLP_REJ	5		/* F3DLP.Rej micro code */
-#define	NU_GFX_UCODE_L3DEX	6		/* L3DEX micro code */
-#define	NU_GFX_UCODE_S2DEX	7		/* S2DEX micro code */
-#define	NU_GFX_UCODE_S2DEX_D	8		/* S2DEX micro code */
+#define	NU_GFX_UCODE_F3DEX2	0		/* F3DEX microcode  */
+#define	NU_GFX_UCODE_F3DEX2_NON	1		/* F3DEX.NoN microcode  */
+#define	NU_GFX_UCODE_F3DEX2_REJ	2		/* F3DEX.NoN microcode  */
+#define	NU_GFX_UCODE_F3DLX2_REJ	3		/* F3DEX.ReJ microcode  */
+#define	NU_GFX_UCODE_L3DEX2	4		/* L3DEX microcode  */
+#define	NU_GFX_UCODE_S2DEX2	5		/* S2DEX microcode  */
+
+#define	NU_GFX_UCODE_F3DEX	0		/*  For compatibility		*/
+#define	NU_GFX_UCODE_F3DEX_NON	1		/*  For compatibility		*/
+#define	NU_GFX_UCODE_F3DLX	0		/*  For compatibility		*/
+#define	NU_GFX_UCODE_F3DLX_NON	1		/*  For compatibility		*/
+#define	NU_GFX_UCODE_F3DLX_REJ	4		/*  For compatibility		*/
+#define	NU_GFX_UCODE_F3DLP_REJ	3		/*  For compatibility		*/
+#define	NU_GFX_UCODE_L3DEX	4		/*  For compatibility		*/
+#define	NU_GFX_UCODE_S2DEX	5		/*  For compatibility		*/
+#define	NU_GFX_UCODE_S2DEX_D	5		/*  For compatibility		*/
+
+
+// #define	NU_GFX_UCODE_L3DEX	6		/* L3DEX micro code */
+// #define	NU_GFX_UCODE_S2DEX	7		/* S2DEX micro code */
+// #define	NU_GFX_UCODE_S2DEX_D	8		/* S2DEX micro code */
+
 /*--------------------------------------*/
 /* The number of graphic task structure */
 /* should be message buffer size of     */

@@ -2,7 +2,7 @@ index_start,index_end,text_start,name,game_index
 E13920,E13990,E13800,text1,0
 E13C30,E13C60,E13990,library,1
 E167C0,E16A90,E13C60,diary,2
-E19F60,E19FF0,E16A90,text4,3
+E19F60,E19FF0,E16A90,recipes-japanese,3
 E1B3A0,E1B4E0,E19FF0,festivalOverlaySelections,4
 E1C8C0,E1C9C0,E1B4E0,letters,5
 E21150,E21700,E1C9C0,shop,6

@@ -39,22 +39,24 @@ options:
 segments:
   - name: header
     type: header
-    start: 0x0000
+    start: 0x0
 
-  - name: boot
+  - name: ipl3
     type: bin
     start: 0x40
     vram: 0xA4000040
+    dir: makerom
     subsegments:
-    - [ 0x0040, hasm, boot/ipl3_boot]
-    - [ 0x0B70, bin, rspboot_font]
+    - [ 0x40, hasm, boot/ipl3_boot]
+    - [ 0xB70, bin, rspboot_font]
 
   - name: entry
     type: code
     start: 0x1000
     vram: 0x80025C00
+    dir: makerom
     subsegments:
-      - [0x1000, hasm]
+      - [0x1000, hasm, entry]
 
   - name: main
     type: code
@@ -344,13 +346,13 @@ segments:
       - [ 0xEB810, c, ../lib/libkmc/src/rand]
       - [ 0xEB850, hasm, ../lib/libkmc/src/mmuldi3]
       # end of functions/text, start of data
-      - [ 0xEBC20, textbin, ucode/rspboot]
-      - [ 0xEBCF0, textbin, ucode/n_aspMain]
-      - [ 0xEC950, textbin, ucode/gspF3DEX2.fifo]
+      - [ 0xEBC20, textbin, ../lib/ucode/rspboot]
+      - [ 0xEBCF0, textbin, ../lib/ucode/n_aspMain]
+      - [ 0xEC950, textbin, ../lib/ucode/gspF3DEX2.fifo]
       - [ 0xECAB0, .data, system/unknownData]
       - [ 0xECAC0, .data, system/unknownData2]
       - [ 0xEDD00, .data, system/staticGfx]
-      - [ 0xEDE80, data, system/paddingData]
+      - [ 0xEDE80, .data, system/paddingData]
       - [ 0xEE110, .data, system/map]
       - [ 0xEE7B0, .data, system/overlayScreenSprites]
       - [ 0xEE7D0, .data, system/cutscene]
@@ -521,8 +523,8 @@ segments:
       - [ 0xF9870, .data, ../lib/libultra/src/rmon/rmoncmds]
       - [ 0xF9950, .data, ../lib/libultra/src/rmon/rmonmain]
       - [ 0xF9960, .data, ../lib/libultra/src/libc/xlitob]
-      - [ 0xF9990, rodatabin, ucode/n_aspMain]
-      - [ 0xF9C40, rodatabin, ucode/gspF3DEX2.fifo]
+      - [ 0xF9990, databin, ../lib/ucode/n_aspMain]
+      - [ 0xF9C40, databin, ../lib/ucode/gspF3DEX2.fifo]
       # game rodata
       - [ 0xFA060, .rodata, system/graphic]
       - [ 0xFA0C0, .rodata, system/sprite]
@@ -827,48 +829,56 @@ segments:
   - name: cutsceneBank1 
     type: bin
     dir: cutscenes
+    extract: false
     start: 0xFF5C0
 
   # farm visits
   - name: cutsceneBank2
     type: bin
     dir: cutscenes
+    extract: false
     start: 0x100180
 
   # marriage, births
   - name: cutsceneBank3
     type: bin
     dir: cutscenes
+    extract: false
     start: 0x109920
     
   # cliff leaving, shady salesman, ann sprained ankle
   - name: cutsceneBank4
     type: bin
     dir: cutscenes
+    extract: false
     start: 0x10EA80
 
   # girl cutscenes
   - name: cutsceneBank5
     type: bin
     dir: cutscenes
+    extract: false
     start: 0x10F980
 
   # ann cutscenes
   - name: cutsceneBank6
     type: bin
     dir: cutscenes
+    extract: false
     start: 0x115310
 
   # karen cutscenes
   - name: cutsceneBank7
     type: bin
     dir: cutscenes
+    extract: false
     start: 0x1175F0
 
   # wedding, rival events, new year's, starry night festval
   - name: cutsceneBank8
     type: bin
     dir: cutscenes
+    extract: false
     start: 0x118D70
     vram: 0x802F5000
   
@@ -876,115 +886,133 @@ segments:
   - name: cutsceneBank9
     type: bin
     dir: cutscenes
+    extract: false
     start: 0x120910
 
   # karen cutscenes 2 (beach fireworks, heart events)
   - name: cutsceneBank10
     type: bin
     dir: cutscenes
+    extract: false
     start: 0x123CE0
 
   # sowing festival
   - name: cutsceneBank11
     type: bin
     dir: cutscenes
+    extract: false
     start: 0x125200
 
   # horse race
   - name: cutsceneBank12
     type: bin
     dir: cutscenes
+    extract: false
     start: 0x129760
 
   # flower festival
   - name: cutsceneBank13
     type: bin
     dir: cutscenes
+    extract: false
     start: 0x12FE90
 
   # vegetable festival
   - name: cutsceneBank14
     type: bin
     dir: cutscenes
+    extract: false
     start: 0x134510
 
   # square fireworks
   - name: fireworksFestival
     type: bin
     dir: cutscenes
-    start: 0x135F40
     extract: false
+    start: 0x135F40
 
   # firefly festival
   - name: cutsceneBank16
     type: bin
     dir: cutscenes
+    extract: false
     start: 0x136930
 
   # sea festival
   - name: cutsceneBank17
     type: bin
     dir: cutscenes
+    extract: false
     start: 0x1385E0
 
   # cow festival
   - name: cutsceneBank18
     type: bin
     dir: cutscenes
+    extract: false
     start: 0x139840
 
   # harvest festival
   - name: cutsceneBank19
     type: bin
     dir: cutscenes
+    extract: false
     start: 0x13AFC0
 
   # egg festival
   - name: cutsceneBank20
     type: bin
     dir: cutscenes
+    extract: false
     start: 0x13D470
 
   # dog race
   - name: cutsceneBank21
     type: bin
     dir: cutscenes
+    extract: false
     start: 0x13FAC0
 
   # spirit festival
   - name: cutsceneBank22
     type: bin
     dir: cutscenes
+    extract: false
     start: 0x144F60
 
   # new year festival
   - name: cutsceneBank23
     type: bin
     dir: cutscenes
+    extract: false
     start: 0x1485B0
 
   # intro/opening
   - name: cutsceneBank24
     type: bin
     dir: cutscenes
+    extract: false
     start: 0x149CC0
 
   # evaluation
   - name: cutsceneBank25
     type: bin
     dir: cutscenes
+    extract: false
     start: 0x14B8F0
 
   # demo cutscenes
   - name: cutsceneBank26
     type: bin
     dir: cutscenes
+    extract: false
     start: 0x150120
 
   # how to play
   - name: cutsceneBank27
     type: bin
     dir: cutscenes
+    extract: false
     start: 0x1510B0
     
   # entity sprites
@@ -1955,17 +1983,17 @@ segments:
     dir: sprites/entity-sprites/animals
     start: 0x5F1180
 
-  - name: dogRaceTexture
+  - name: birdTexture
     type: bin
     dir: sprites/entity-sprites/animals
     start: 0x5F1270
 
-  - name: dogRaceAssetsIndex
+  - name: birdAssetsIndex
     type: bin
     dir: sprites/entity-sprites/animals
     start: 0x5F5530
 
-  - name: dogRaceSpritesheetIndex
+  - name: birdSpritesheetIndex
     type: bin
     dir: sprites/entity-sprites/animals
     start: 0x5F5550
@@ -2210,17 +2238,17 @@ segments:
     dir: sprites/entity-sprites/animals
     start: 0x79B230
 
-  - name: bellRingCricketTexture
+  - name: cricketTexture
     type: bin
     dir: sprites/entity-sprites/animals
     start: 0x79B310
 
-  - name: bellRingCricketAssetsIndex
+  - name: cricketAssetsIndex
     type: bin
     dir: sprites/entity-sprites/animals
     start: 0x79B680
 
-  - name: bellRingCricketSpritesheetIndex
+  - name: cricketSpritesheetIndex
     type: bin
     dir: sprites/entity-sprites/animals
     start: 0x79B6A0
@@ -2240,17 +2268,17 @@ segments:
     dir: sprites/entity-sprites/animals
     start: 0x79BBA0
 
-  - name: birdTexture
+  - name: whiteButterflyTexture
     type: bin
     dir: sprites/entity-sprites/animals
     start: 0x79BEB0
 
-  - name: birdAssetsIndex
+  - name: whiteButterflyAssetsIndex
     type: bin
     dir: sprites/entity-sprites/animals
     start: 0x79C1D0
 
-  - name: birdSpritesheetIndex
+  - name: whiteButterflySpritesheetIndex
     type: bin
     dir: sprites/entity-sprites/animals
     start: 0x79C1F0
@@ -3990,13 +4018,12 @@ segments:
     dir: text
     start: 0xE167C0
 
-  # Japanese text
-  - name: text4Text
+  - name: recipesJapaneseText
     type: bin
     dir: text
     start: 0xE16A90
 
-  - name: text4TextIndex
+  - name: recipesJapaneseTextIndex
     type: bin
     dir: text
     start: 0xE19F60
@@ -5424,7 +5451,7 @@ segments:
     dir: audio/sequences
     start: 0xFDAD00
 
-  - name: sports-festival-1
+  - name: sportsFestival1
     type: bin
     dir: audio/sequences
     start: 0xFDD6C0
@@ -5454,37 +5481,37 @@ segments:
     dir: audio/sequences
     start: 0xFE5E50
 
-  - name: naming-screen
+  - name: namingScreen
     type: bin
     dir: audio/sequences
     start: 0xFE6E60
 
-  - name: festival-theme
+  - name: festivalTheme
     type: bin
     dir: audio/sequences
     start: 0xFE7E00
 
-  - name: sports-festival-2
+  - name: sportsFestival2
     type: bin
     dir: audio/sequences
     start: 0xFE9040
 
-  - name: spirit-festival
+  - name: spiritFestival
     type: bin
     dir: audio/sequences
     start: 0xFEAB70
 
-  - name: dog-race
+  - name: dogRace
     type: bin
     dir: audio/sequences
     start: 0xFEB8F0
 
-  - name: racing-festival
+  - name: racingFestival
     type: bin
     dir: audio/sequences
     start: 0xFED5F0
 
-  - name: festival-dance
+  - name: festivalDance
     type: bin
     dir: audio/sequences
     start: 0xFEEA40
@@ -5519,7 +5546,7 @@ segments:
     dir: audio/sequences
     start: 0xFF6300
 
-  - name: new-year-sunrise
+  - name: newYearSunrise
     type: bin
     dir: audio/sequences
     start: 0xFF6ED0
@@ -5529,103 +5556,103 @@ segments:
     dir: audio/sequences
     start: 0xFF7D80
 
-  - name: broken-music-box
+  - name: brokenMusicBox
     type: bin
     dir: audio/sequences
     start: 0xFF9370
 
-  - name: music-box
+  - name: musicBox
     type: bin
     dir: audio/sequences
     start: 0xFF95A0
 
-  - name: flute-performance
+  - name: flutePerformance
     type: bin
     dir: audio/sequences
     start: 0xFF9840
 
-  - name: organ-performance
+  - name: organPerformance
     type: bin
     dir: audio/sequences
     start: 0xFF99F0
 
-  - name: ocarina-performance
+  - name: ocarinaPerformance
     type: bin
     dir: audio/sequences
     start: 0xFF9BC0
 
-  - name: sleigh-bells
+  - name: sleighBells
     type: bin
     dir: audio/sequences
     start: 0xFF9DC0
 
-  - name: bad-ending
+  - name: badEnding
     type: bin
     dir: audio/sequences
     start: 0xFF9F40
 
-  - name: vocal-performance
+  - name: vocalPerformance
     type: bin
     dir: audio/sequences
     start: 0xFFA7B0
 
-  - name: ensemble-performance
+  - name: ensemblePerformance
     type: bin
     dir: audio/sequences
     start: 0xFFA950
 
-  - name: drum-performance
+  - name: drumPerformance
     type: bin
     dir: audio/sequences
     start: 0xFFAF80
 
-  - name: typhoon-ambience-1
+  - name: typhoonAmbience1
     type: bin
     dir: audio/sequences
     start: 0xFFB090
 
-  - name: typhoon-ambience-2
+  - name: typhoonAmbience2
     type: bin
     dir: audio/sequences
     start: 0xFFB700
 
-  - name: night-ambience-spring
+  - name: nightAmbienceSpring
     type: bin
     dir: audio/sequences
     start: 0xFFC530
 
-  - name: night-ambience-summer
+  - name: nightAmbienceSummer
     type: bin
     dir: audio/sequences
     start: 0xFFC9F0
 
-  - name: night-ambience-autumn
+  - name: nightAmbienceAutumn
     type: bin
     dir: audio/sequences
     start: 0xFFCC40
 
-  - name: starry-night-festival
+  - name: starryNightFestival
     type: bin
     dir: audio/sequences
     start: 0xFFCE10
 
-  - name: beach-ambience-1
+  - name: beachAmbience1
     type: bin
     dir: audio/sequences
     start: 0xFFD490
 
-  - name: beach-ambience-2
+  - name: beachAmbience2
     type: bin
     dir: audio/sequences
     start: 0xFFD680
 
   # sfx
-  - name: bird-1
+  - name: bird1
     type: bin
     dir: audio/sequences
     start: 0xFFD820
 
-  - name: bird-2
+  - name: bird2
     type: bin
     dir: audio/sequences
     start: 0xFFD920
@@ -5665,32 +5692,32 @@ segments:
     dir: audio/sequences
     start: 0xFFDEE0
 
-  - name: horse-gallop-fast
+  - name: horseGallopFast
     type: bin
     dir: audio/sequences
     start: 0xFFDEF0
 
-  - name: horse-gallop-1
+  - name: horseGallop1
     type: bin
     dir: audio/sequences
     start: 0xFFE520
 
-  - name: horse-gallop-2
+  - name: horseGallop2
     type: bin
     dir: audio/sequences
     start: 0xFFE620
 
-  - name: horse-gallop-3
+  - name: horseGallop3
     type: bin
     dir: audio/sequences
     start: 0xFFE720
 
-  - name: water-1
+  - name: water1
     type: bin
     dir: audio/sequences
     start: 0xFFE820
 
-  - name: water-2
+  - name: water2
     type: bin
     dir: audio/sequences
     start: 0xFFE920
@@ -5726,7 +5753,7 @@ segments:
     dir: audio/sequences
     start: 0xFFEF50
 
-  - name: cow-bell
+  - name: cowBell
     type: bin
     dir: audio/sequences
     start: 0xFFF070

@@ -68,7 +68,6 @@ u8 houseExtensionConstructionCounter;
 
 u8 gItemBeingHeld;
 
-u16 gCurrentAudioSequenceIndex;
 u8 gNamingScreenIndex;
 
 u8 gFarmName[6];
@@ -105,6 +104,22 @@ u8 annCliffBabyAge;
 u8 annCliffNewlywedCounter;
 u8 annPregnancyCounter;
 
+u8 gElliGrievingCounter;
+
+u8 anniversarySeason;
+u8 anniversaryDate;
+
+u8 babyBirthdaySeason;
+u8 babyBirthdayDate;
+
+u8 gHarvestCoinFinder;
+
+u8 gHouseExtensionSelection;
+u8 mountainConstructionWorkDays;
+
+u8 gSumGirlsWithHighAffection;
+u8 gAverageFarmAnimalAffection;
+
 MainLoopCallbackInfo gameLoopContext;
 
 // unused
@@ -134,6 +149,8 @@ u8 D_80205210[2];
 u8 D_8020563B[4];
 u8 D_80237380[6];
 u8 D_80237418[3];
+
+Vec4f unknownRGBA;
 
 
 // data

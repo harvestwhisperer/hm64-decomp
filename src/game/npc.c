@@ -31,7 +31,7 @@
 
 // bss
 npcInfo npcs[MAX_NPCS];
-
+u8 npcAffection[MAX_NPCS];
 u8 npcTalkingTo;
 
 // data

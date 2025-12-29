@@ -2,6 +2,8 @@
 ; BANK15 - Fireworks Festival
 ; ============================================
 
+#include "entityBuffers.h"
+
 ; pre-defined game variables
 .array npcAffection, u8
 
@@ -549,7 +551,7 @@
 
 ; 0x1367A4
 .play_smoke_sprite:
-    DMA_SPRITE 96, 0, _funeralSpritesTextureSegmentRomStart, _funeralSpritesTextureSegmentRomEnd, _funeralSpritesIndexSegmentRomStart, _funeralSpritesIndexSegmentRomEnd, 0, 0, 0x802BBE50, 0, 0x802C8650, 0x802CAE50, 0x802CE350, 0x802CE550
+    DMA_SPRITE 96, 0, _funeralSpritesTextureSegmentRomStart, _funeralSpritesTextureSegmentRomEnd, _funeralSpritesIndexSegmentRomStart, _funeralSpritesIndexSegmentRomEnd, 0, 0, ENTITY_REGION_SMALL_SPRITE_BASE, 0, ENTITY_SLOTS_FESTIVAL_PALETTE, ENTITY_SLOTS_FESTIVAL_ANIM_METADATA, ENTITY_SLOTS_FESTIVAL_SPRITESHEET, ENTITY_SLOTS_FESTIVAL_TEXTURE_TO_PALETTE_LOOKUP
     SET_ANIM_DATA_PTR_WITH_FLAG .smoke_animation
     SET_COORDINATES 0, 0, 254
     SET_SPRITE_SCALE 20, 20, 0

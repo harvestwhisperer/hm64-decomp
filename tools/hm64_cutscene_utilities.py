@@ -10,6 +10,12 @@ from typing import List, Tuple, Optional, Dict, Set
 from enum import IntEnum
 from collections import deque
 
+try:
+    from rom_segment_symbols import ROM_SEGMENT_START_SYMBOLS, ROM_SEGMENT_END_SYMBOLS
+except ImportError:
+        ROM_SEGMENT_START_SYMBOLS = {}
+        ROM_SEGMENT_END_SYMBOLS = {}
+
 ROM_PATH = Path("../baserom.us.z64")
 
 rom = None
@@ -140,9 +146,9 @@ ASM_COMMAND_SPECS = {
     11: ("CMD_SPAWN_EXECUTOR", ['u16', 'rel16', 'pad16']),
     12: ("CMD_SET_OTHER_EXECUTOR_PTR", ['u16', 'rel16', 'pad16']),
     13: ("CMD_DEACTIVATE_EXECUTOR", ['u16']),
-    14: ("CMD_DMA_SPRITE", ['u16', 'u16', 'pad16', 'u32', 'u32', 'u32', 'u32', 'u32', 'u32', 'u32', 'u32', 'u32', 'u32', 'u32', 'u32']),
+    14: ("CMD_DMA_SPRITE", ['u16', 'u16', 'pad16', 'rom_start32', 'rom_end32', 'rom_start32', 'rom_end32', 'rom_start32', 'rom_end32', 'addr32', 'addr32', 'addr32', 'addr32', 'addr32', 'addr32']),
     15: ("CMD_SET_ENTITY_ANIMATIONS", ['u16', 'u16', 'u16', 'u16', 'u16', 'u16', 'u16']),
-    16: ("CMD_DO_DMA", ['pad16', 'u32', 'u32', 'u32']),
+    16: ("CMD_DO_DMA", ['pad16', 'rom_start32', 'rom_end32', 'addr32']),
     17: ("CMD_SET_U8_VALUE", ['u8', 'pad8', 'addr32']), # func_80048B90
     18: ("CMD_SET_U16_VALUE", ['u16', 'addr32']), # func_80048BEC
     19: ("CMD_SET_U32_VALUEE", ['pad16', 'addr32', 'u32']), 
@@ -157,7 +163,7 @@ ASM_COMMAND_SPECS = {
     28: ("CMD_ENTITY_MOVE_AND_ANIMATE", ['u16', 'u8', 'u8', 'pad16']), # func_80049350
     29: ("CMD_SET_MAP_ROTATION_WITH_FLAG", ['u16', 'u8', 'u8', 'pad16']), # func_800495F0
     30: ("CMD_SET_CAMERA_TRACKING_FLAG", ['u8', 'pad8']), # func_8004969C
-    31: ("CMD_SET_MOVEMENT_INFO", ['u8', 'pad8', 'u16', 'u16']),
+    31: ("CMD_SET_MOVEMENT_INFO", ['pad8', 'u8', 'u16', 'u16']),
     32: ("CMD_INIT_MESSAGE_BOX_TYPE1", ['u16', 'u16', 'u16']),
     33: ("CMD_WAIT_MESSAGE_BOX_CLOSED", ['u16']), # func_800498B0
     34: ("CMD_SET_MESSAGE_BOX_VIEW_POSITION", ['u16', 's16', 's16', 's16', 'pad16']),
@@ -180,8 +186,8 @@ ASM_COMMAND_SPECS = {
     51: ("CMD_SET_RGBA", ['u8', 'u8', 'u8', 'u8', 'pad16']),
     52: ("CMD_UPDATE_RGBA", ['u8', 'u8', 'u8', 'u8', 's16']),
     53: ("CMD_UPDATE_U8_VALUE", ['pad8', 's8', 'pad8', 'u8', 'pad16', 'addr32']),
-    54: ("CMD_UPDATE_U16_VALUE", ['s16', 'addr32']),
-    55: ("CMD_UPDATE_U32_VALUE", ['pad16', 'addr32', 's32']),
+    54: ("CMD_UPDATE_U16_VALUE", ['s16', 'u16', 'pad16', 'addr32']),
+    55: ("CMD_UPDATE_U32_VALUE", ['pad16', 's32', 's32', 'addr32']),
     56: ("CMD_DEACTIVATE_MAP_OBJECTS", ['u16']), # func_8004ACE4
     57: ("CMD_UPDATE_GLOBAL_RGBA", ['u8', 'u8', 'u8', 'u8', 's16']),
     58: ("CMD_DEACTIVATE_SPRITES", ['pad16']),
@@ -190,7 +196,7 @@ ASM_COMMAND_SPECS = {
     61: ("CMD_CHECK_ENTITY_COLLISION", ['u16', 'rel16', 'pad16']),
     62: ("CMD_INIT_DIALOGUE_SESSION", ['u16', 'u16', 'u16']),
     63: ("CMD_WAIT_FOR_DIALOGUE_INPUT", ['u16']),
-    64: ("CMD_BRANCH_ON_DIALOGUE", ['u16', 'rel16', 'pad16']), # func_8004B538
+    64: ("CMD_BRANCH_ON_DIALOGUE", ['u16', 'u16', 'pad16', 'rel16', 'pad16']), # func_8004B538
     65: ("CMD_WAIT_ENTITY_ANIMATION", ['pad16']), # func_8004B5F0
     66: ("CMD_SET_MESSAGE_BOX_ASSETS", ['u16', 'u8', 'u8', 'u8', 'pad8']),
     67: ("CMD_SET_ENTITY_TRACKING_TARGET", ['u16', 's16', 's16', 's16', 'u8', 'pad8']),
@@ -206,14 +212,14 @@ ASM_COMMAND_SPECS = {
     77: ("CMD_INIT_MESSAGE_BOX_TYPE2", ['u16', 'u16', 'u16']),
     78: ("CMD_INIT_MAP_ADDITION", ['u16', 'u16', 'pad16']), # func_8004C0D0
     79: ("CMD_BRANCH_ON_RANDOM", ['u16', 'rel16', 'pad16']), # func_8004C148
-    80: ("CMD_BRANCH_IF_U16_PTR_IN_RANGE", ['u16', 'u16', 'addr32', 'rel16']), # func_8004C258
+    80: ("CMD_BRANCH_IF_U16_PTR_IN_RANGE", ['pad16', 'addr32', 'addr32', 'addr32', 'rel16', 'pad16']), # func_8004C258
     81: ("CMD_PAUSE_EXECUTOR", ['u16']),
     82: ("CMD_TOGGLE_PAUSE_EXECUTOR", ['u16']),
     83: ("CMD_PAUSE_ALL_CHILD_EXECUTORS", ['pad16']),
     84: ("CMD_TOGGLE_PAUSE_ALL_CHILDREN", ['pad16']),
     85: ("CMD_SET_SPRITE_PALETTE", ['u16']),
-    86: ("CMD_BRANCH_IF_U8_PTR_RANGE", ['u8', 'u8', 'addr32', 'rel16', 'pad16']), # func_8004C5D8
-    87: ("CMD_SET_AUDIO_SEQUENCE", ['u16', 'u32', 'u32']),
+    86: ("CMD_BRANCH_IF_U8_PTR_RANGE", ['u8', 'u8', 'addr32', 'addr32', 'addr32', 'rel16', 'pad16']), # func_8004C5D8
+    87: ("CMD_SET_AUDIO_SEQUENCE", ['u16', 'rom_start32', 'rom_end32']),
     88: ("CMD_STOP_SONG_WITH_FADE", ['u16', 'u16', 'pad16']),
     89: ('CMD_SET_AUDIO_SEQUENCE_VOLUME', ['u16', 'u16', 's16']),
     90: ("CMD_SET_SFX", ['u16', 'u16', 'pad16']),
@@ -600,7 +606,7 @@ NPC_CONSTANTS = {
 VARIABLE_ADDRESSES = {
     0x8017027F: "gMinutes",
     0x80182FB8: "gHappiness",
-    0x80189060: "gPlayer.currentStamina",
+    0x80189060: "gPlayer", # really gPlayer.currentFatigue
     0x801891D4: "gCutsceneCompletionFlags",
     0x80189826: "cutsceneLevelInteractionIndex",
     0x80189E50: "gLumber",
@@ -617,88 +623,75 @@ VARIABLE_ADDRESSES = {
     0x802373A9: "gWeather",
     0x802373C8: "gItemBeingHeld",
     0x802373E9: "gWife",
-    0x80237412: "spiritFestivalAssistant3"
+    0x80237412: "spiritFestivalAssistant3",
+    0x80158260: "gDayOfMonth",
+    0x801654F4: "D_801654F4",
+    0x8016F8BC: "specialDialogueBits + 0xC",
+    0x8016FDD0: "horseInfo",
+    0x8016FE00: "gCutsceneFlags",
+    0x8017026E: "D_8017026E",
+    0x801806C0: "D_801806C0",
+    0x80180710: "D_80180710",
+    0x80180714: "fodderQuantity",
+    0x80182DB1: "gSeason",
+    0x801886A8: "D_801886A8",
+    0x801886B0: "dogInfo",
+    0x801886D0: "D_801886D0",
+    0x801886D2: "D_801886D2",
+    0x801886E0: "D_801886E0",
+    0x80188F60: "D_80188F60",
+    0x80188F68: "D_80188F68",
+    0x80189134: "gBabyAge",
+    0x80189824: "D_80189824",
+    0x80189E52: "gAlcoholTolerance",
+    0x8018A72C: "D_8018A72C",
+    0x8018A72D: "D_8018A72C + 0x1",
+    0x8018A72E: "D_8018A72C + 0x2",
+    0x8018A72F: "D_8018A72C + 0x3",
+    0x8018A730: "D_8018A72C + 0x4",
+    0x8018A731: "D_8018A72C + 0x5",
+    0x801C3B60: "D_801C3B60",  # needs declaration
+    0x801C3B62: "D_801C3B62",
+    0x801C3DA0: "overlayScreenStrings",
+    0x801C3DA2: "overlayScreenStrings + 0x2",
+    0x801C3DA4: "overlayScreenStrings + 0x4",
+    0x801C3DA6: "overlayScreenStrings + 0x6",
+    0x801C3DA8: "overlayScreenStrings + 0x8",
+    0x801C3DAA: "overlayScreenStrings + 0xA",
+    0x801C3E1C: "D_801C3E1C",
+    0x801C3F44: "gFlowerFestivalGoddess",
+    0x801C3F4C: "D_801C3F4C",
+    0x801C3F78: "D_801C3F78",
+    0x801C3F80: "D_801C3F80",
+    0x801D62C4: "D_801D62C4",
+    0x801D62C6: "D_801D62C6",
+    0x801F6F30: "gYear",
+    0x801FB5D0: "D_801FB5D0",
+    0x801FB68C: "mountainConstructionWorkDays",
+    0x801FB6FC: "D_801FB6FC",
+    0x80204FB0: "gSumGirlsWithHighAffection",
+    0x80204FF8: "gHarvestKing",
+    0x80205209: "D_80205209",
+    0x80205638: "D_80205638",
+    0x8020563A: "gAverageFarmAnimalAffection",
+    0x80215DF0: "D_80215DF0",
+    0x80215EC0: "gElliGrievingCounter",
+    0x8021E6D0: "D_8021E6D0",
+    0x80237409: "gHarvestCoinFinder",
+    0x80237414: "D_80237414",
+    0x80237A00: "D_80237A00",
+
 }
 
 # Array variables: (base_address, element_size, element_count, var_name, index_constants)
 ARRAY_VARIABLES = [
-    (0x8013D1C8, 4, 0x80, "lifeEventBits", None),      
-    (0x80189140, 4, 0x80, "dailyEventBits", None),   
-    (0x801C3F90, 1, 0x30, "npcAffection", NPC_CONSTANTS),
+    (0x8013D1C8, 4, 0x80, "lifeEventBits", None),     
+    (0x80189140, 4, 0x80, "dailyEventBits", None),    
+    (0x801C3F90, 1, 0x30, "npcAffection", NPC_CONSTANTS), 
 ]
 
-AUDIO_SEQUENCES = {
-    0xFD8510: "OPENING",
-    0xFDAD00: "TITLE",
-    0xFDD6C0: "SPORTS_FESTIVAL_1",
-    0xFDFB50: "GOODBYE",
-    0xFE12F0: "SPRING",
-    0xFE27B0: "SUMMER",
-    0xFE4D20: "AUTUMN",
-    0xFE5E50: "WINTER",
-    0xFE6E60: "NAMING_SCREEN",
-    0xFE7E00: "FESTIVAL_THEME",
-    0xFE9040: "SPORTS_FESTIVAL_2",
-    0xFEAB70: "SPIRIT_FESTIVAL",
-    0xFEB8F0: "DOG_RACE",
-    0xFED5F0: "RACING_FESTIVAL",
-    0xFEEA40: "FESTIVAL_DANCE",
-    0xFEF9F0: "MOUNTAIN",
-    0xFF1CD0: "VILLAGE",
-    0xFF3760: "POND",
-    0xFF4160: "CHURCH",
-    0xFF4750: "TAVERN",
-    0xFF6300: "WEDDING",
-    0xFF6ED0: "NEW_YEAR_SUNRISE",
-    0xFF7D80: "CREDITS",
-    0xFF9370: "BROKEN_MUSIC_BOX",
-    0xFF95A0: "MUSIC_BOX",
-    0xFF9840: "FLUTE_PERFORMANCE",
-    0xFF99F0: "ORGAN_PERFORMANCE",
-    0xFF9BC0: "OCARINA_PERFORMANCE",
-    0xFF9DC0: "SLEIGH_BELLS",
-    0xFF9F40: "BAD_ENDING",
-    0xFFA7B0: "VOCAL_PERFORMANCE",
-    0xFFA950: "ENSEMBLE_PERFORMANCE",
-    0xFFAF80: "DRUM_PERFORMANCE",
-    0xFFB090: "TYPHOON_AMBIENCE_1",
-    0xFFB700: "TYPHOON_AMBIENCE_2",
-    0xFFC530: "NIGHT_AMBIENCE_SPRING",
-    0xFFC9F0: "NIGHT_AMBIENCE_SUMMER",
-    0xFFCC40: "NIGHT_AMBIENCE_AUTUMN",
-    0xFFCE10: "STARRY_NIGHT_FESTIVAL",
-    0xFFD490: "BEACH_AMBIENCE_1",
-    0xFFD680: "BEACH_AMBIENCE_2",
-    # SFX
-    0xFFD820: "BIRD_1",
-    0xFFD920: "BIRD_2",
-    0xFFDA20: "SFX_44",
-    0xFFDA30: "CICADA",
-    0xFFDB80: "SFX_46",
-    0xFFDBA0: "SFX_47",
-    0xFFDCD0: "SFX_48",
-    0xFFDCF0: "FIREWORKS",
-    0xFFDEE0: "SFX_50",
-    0xFFDEF0: "HORSE_GALLOP_FAST",
-    0xFFE520: "HORSE_GALLOP_1",
-    0xFFE620: "HORSE_GALLOP_2",
-    0xFFE720: "HORSE_GALLOP_3",
-    0xFFE820: "WATER_1",
-    0xFFE920: "WATER_2",
-    0xFFEA30: "HAMMER",
-    0xFFEB30: "SFX_58",
-    0xFFEC30: "SFX_59",
-    0xFFED40: "SFX_60",
-    0xFFEE40: "SHIMMER",
-    0xFFEF50: "SEEDS",
-    0xFFF070: "COW_BELL",
-    0xFFF180: "SFX_64",
-    0xFFF350: "SICKLE",
-    0xFFF470: "HOE",
-    0xFFF580: "FANFARE",
-}
 
-def format_variable_address(addr: int, use_labels: bool) -> str:
+def format_variable_address(addr: int, use_labels: bool, asm_mode: bool = False) -> str:
     """Formats a variable address, optionally using variable names and array indexing"""
 
     if not use_labels:
@@ -713,18 +706,49 @@ def format_variable_address(addr: int, use_labels: bool) -> str:
         end_addr = base_addr + (elem_size * elem_count)
         if base_addr <= addr < end_addr:
             offset = addr - base_addr
-            if offset % elem_size == 0:  # Valid array access
-                index = offset // elem_size
-                # Use index constant if available
-                if index_constants and index in index_constants:
-                    return f"{var_name}[{index_constants[index]}]"
-                else:
-                    return f"{var_name}[{index}]"
-            else:
-                # Unaligned access - show as offset
-                return f"{var_name} + 0x{offset:X}"
 
-    # Not a known variable
+            if asm_mode:
+                # ASM mode: use 'var + offset' syntax (valid in assembly)
+                if offset == 0:
+                    return var_name
+                else:
+                    return f"{var_name} + 0x{offset:X}"
+            else:
+                # Text mode: use 'var[index]' syntax (readable)
+                if offset % elem_size == 0:  # Valid array access
+                    index = offset // elem_size
+                    if index_constants and index in index_constants:
+                        return f"{var_name}[{index_constants[index]}]"
+                    else:
+                        return f"{var_name}[{index}]"
+                else:
+                    # Unaligned access - show as offset
+                    return f"{var_name} + 0x{offset:X}"
+
+
+    return f"0x{addr:X}"
+
+
+def format_rom_address(addr: int, use_labels: bool, is_end_symbol: bool = False) -> str:
+    """Formats a ROM address, optionally using segment symbols.
+
+    Args:
+        addr: The ROM address to format
+        use_labels: Whether to use symbolic names
+        is_end_symbol: If True, look up in ROM_SEGMENT_END_SYMBOLS instead of START
+    """
+
+    if not use_labels:
+        return f"0x{addr:X}"
+
+    # Choose the appropriate dictionary based on whether this is an end symbol
+    symbols_dict = ROM_SEGMENT_END_SYMBOLS if is_end_symbol else ROM_SEGMENT_START_SYMBOLS
+
+    # Check if it's a known ROM segment symbol
+    if addr in symbols_dict:
+        return symbols_dict[addr]
+
+
     return f"0x{addr:X}"
 
 def format_map_name(idx: int, use_labels: bool) -> str:
@@ -1179,14 +1203,14 @@ class CutsceneBytecodeParser:
                 sheet_idx_vaddr = self.read_u32()
                 
                 params = [
-                    ("sprite", sprite_idx), 
-                    ("type", asset_type), 
-                    ("rom_tex_start", f"0x{rom_tex_start:X}"),
-                    ("rom_tex_end", f"0x{rom_tex_end:X}"),
-                    ("rom_assets_start", f"0x{rom_assets_start:X}"),
-                    ("rom_assets_end", f"0x{rom_assets_end:X}"),
-                    ("rom_sheet_start", f"0x{rom_sheet_start:X}"),
-                    ("rom_sheet_end", f"0x{rom_sheet_end:X}"),
+                    ("sprite", sprite_idx),
+                    ("type", asset_type),
+                    ("rom_tex_start", format_rom_address(rom_tex_start, self.enable_labels, is_end_symbol=False)),
+                    ("rom_tex_end", format_rom_address(rom_tex_end, self.enable_labels, is_end_symbol=True)),
+                    ("rom_assets_start", format_rom_address(rom_assets_start, self.enable_labels, is_end_symbol=False)),
+                    ("rom_assets_end", format_rom_address(rom_assets_end, self.enable_labels, is_end_symbol=True)),
+                    ("rom_sheet_start", format_rom_address(rom_sheet_start, self.enable_labels, is_end_symbol=False)),
+                    ("rom_sheet_end", format_rom_address(rom_sheet_end, self.enable_labels, is_end_symbol=True)),
                     ("tex1", format_variable_address(tex1_vaddr, self.enable_labels)),
                     ("tex2", format_variable_address(tex2_vaddr, self.enable_labels)),
                     ("pal", format_variable_address(palette_vaddr, self.enable_labels)),
@@ -1206,7 +1230,11 @@ class CutsceneBytecodeParser:
                 rom_start = self.read_u32()
                 rom_end = self.read_u32()
                 vaddr = self.read_u32()
-                params = [("rom_start", f"0x{rom_start:X}"), ("rom_end", f"0x{rom_end:X}"), ("vaddr", f"0x{vaddr:X}")]
+                params = [
+                    ("rom_start", format_rom_address(rom_start, self.enable_labels, is_end_symbol=False)),
+                    ("rom_end", format_rom_address(rom_end, self.enable_labels, is_end_symbol=True)),
+                    ("vaddr", format_variable_address(vaddr, self.enable_labels))
+                ]
 
             elif opcode == 17:  # SET_U8_VALUE
                 value = self.read_u8()
@@ -1422,9 +1450,9 @@ class CutsceneBytecodeParser:
                 params = [("r", r), ("g", g), ("b", b), ("a", a), ("rate", rate)]
 
             elif opcode == 53: # UPDATE_U8
-                self.pos += 1 # padding
+                self.pos += 1
                 val = self.read_s8()
-                self.pos += 1 # padding
+                self.pos += 1
                 max_val = self.read_u8()
                 self.pos += 2 # padding/unused
                 ptr = self.read_u32()
@@ -1609,8 +1637,11 @@ class CutsceneBytecodeParser:
                 idx = self.read_u16()
                 start = self.read_u32()
                 end = self.read_u32()
-                sequence_str = format_audio_address(start, self.enable_labels)
-                params = [("idx", idx), ("start", f"{sequence_str}_START"), ("end", f"{sequence_str}_END")]
+                params = [
+                    ("idx", idx),
+                    ("start", format_rom_address(start, self.enable_labels, is_end_symbol=False)),
+                    ("end", format_rom_address(end, self.enable_labels, is_end_symbol=True))
+                ]
 
             elif opcode == 88: # STOP_SONG
                 idx = self.read_u16()
@@ -1895,7 +1926,7 @@ class CutsceneBytecodeParser:
                 
         return commands
     
-    def parse_linear_scan(self, start_offset: int, end_offset: int = None, max_commands: int = 5000, known_anim_offsets: Set[int] = None) -> List[ParsedCommand]:
+    def parse_linear_scan(self, start_offset: int, end_offset: int = None, max_commands: int = 50000, known_anim_offsets: Set[int] = None) -> List[ParsedCommand]:
         """Parse all commands linearly without stopping at DEACTIVATE_SELF."""
 
         self.seek(start_offset)
@@ -2261,10 +2292,12 @@ def format_asm_output(graph: CutsceneGraph, show_original_hex: bool = False) -> 
                 
                 for spec_type in specs:
                     if spec_type == 'pad8':
-                        lines.append(f"    .byte 0")
+                        val = cmd.raw_bytes[curr_byte_pos]
+                        lines.append(f"    .byte 0x{val:02X}")
                         curr_byte_pos += 1
                     elif spec_type == 'pad16':
-                        lines.append(f"    .half 0")
+                        val = struct.unpack_from('>H', cmd.raw_bytes, curr_byte_pos)[0]
+                        lines.append(f"    .half 0x{val:04X}")
                         curr_byte_pos += 2
                     elif spec_type == 'u8' or spec_type == 's8':
                         val = cmd.raw_bytes[curr_byte_pos]
@@ -2318,7 +2351,17 @@ def format_asm_output(graph: CutsceneGraph, show_original_hex: bool = False) -> 
                     elif spec_type == 'addr32':
                         val = struct.unpack_from('>I', cmd.raw_bytes, curr_byte_pos)[0]
                         # Use variable formatter but force label usage
-                        sym = format_variable_address(val, use_labels=True)
+                        sym = format_variable_address(val, use_labels=True, asm_mode=True)
+                        lines.append(f"    .word {sym}")
+                        curr_byte_pos += 4
+                    elif spec_type == 'rom_start32':
+                        val = struct.unpack_from('>I', cmd.raw_bytes, curr_byte_pos)[0]
+                        sym = format_rom_address(val, use_labels=True, is_end_symbol=False)
+                        lines.append(f"    .word {sym}")
+                        curr_byte_pos += 4
+                    elif spec_type == 'rom_end32':
+                        val = struct.unpack_from('>I', cmd.raw_bytes, curr_byte_pos)[0]
+                        sym = format_rom_address(val, use_labels=True, is_end_symbol=True)
                         lines.append(f"    .word {sym}")
                         curr_byte_pos += 4
                     else:
@@ -2389,7 +2432,7 @@ def format_asm_linear(commands: List[ParsedCommand], bank_name: str) -> str:
                  target = cmd.offset + 2 + val
                  label_mgr.get_or_create(target, "anim")
 
-    # Pass 2: Emission
+        # Pass 2: Emission
     for cmd in commands:
         
         # Emit Label if current offset is a known target
@@ -2403,12 +2446,9 @@ def format_asm_linear(commands: List[ParsedCommand], bank_name: str) -> str:
                 lines.append("    .half 0")
             elif cmd.name == "ANIM_LOOP":
                 lines.append("    .half 0xFFFE")
+                # Use raw offset for assemblability
                 val = struct.unpack_from('>h', cmd.raw_bytes, 2)[0]
-                target = cmd.offset + 2 + val
-                if target in label_mgr.labels:
-                    lines.append(f"    .half {label_mgr.labels[target]} - .")
-                else:
-                    lines.append(f"    .half {val}")
+                lines.append(f"    .half {val}")
             else:
                  # ANIM_FRAME (Standard 8-byte frame)
                  if len(cmd.raw_bytes) == 8:
@@ -2442,10 +2482,12 @@ def format_asm_linear(commands: List[ParsedCommand], bank_name: str) -> str:
              
              for spec_type in specs:
                 if spec_type == 'pad8':
-                    lines.append(f"    .byte 0")
+                    val = cmd.raw_bytes[curr_byte_pos]
+                    lines.append(f"    .byte 0x{val:02X}")
                     curr_byte_pos += 1
                 elif spec_type == 'pad16':
-                    lines.append(f"    .half 0")
+                    val = struct.unpack_from('>H', cmd.raw_bytes, curr_byte_pos)[0]
+                    lines.append(f"    .half 0x{val:04X}")
                     curr_byte_pos += 2
                 elif spec_type == 'u8' or spec_type == 's8':
                     val = cmd.raw_bytes[curr_byte_pos]
@@ -2460,27 +2502,26 @@ def format_asm_linear(commands: List[ParsedCommand], bank_name: str) -> str:
                     lines.append(f"    .word 0x{val:08X}")
                     curr_byte_pos += 4
                 elif spec_type == 'rel16':
-                    # Determine target address to resolve label
-                    target_addr = None
-                    if cmd.branch_target is not None:
-                        target_addr = cmd.branch_target
-                    elif cmd.spawn_target:
-                        target_addr = cmd.spawn_target[1]
-                    elif cmd.anim_target:
-                        target_addr = cmd.anim_target
-                    
-                    if target_addr is not None and target_addr in label_mgr.labels:
-                        label = label_mgr.labels[target_addr]
-                        lines.append(f"    .half {label} - .")
-                    else:
-                         raw_offset = struct.unpack_from('>h', cmd.raw_bytes, curr_byte_pos)[0]
-                         lines.append(f"    .half {raw_offset}")
-                    
+                    # For ASM output, use raw offset values to ensure assemblability
+                    # (label - . syntax requires labels to be defined, which isn't guaranteed
+                    # for all branch targets in linear scan mode)
+                    raw_offset = struct.unpack_from('>h', cmd.raw_bytes, curr_byte_pos)[0]
+                    lines.append(f"    .half {raw_offset}")
                     curr_byte_pos += 2
 
                 elif spec_type == 'addr32':
                     val = struct.unpack_from('>I', cmd.raw_bytes, curr_byte_pos)[0]
-                    sym = format_variable_address(val, use_labels=True)
+                    sym = format_variable_address(val, use_labels=True, asm_mode=True)
+                    lines.append(f"    .word {sym}")
+                    curr_byte_pos += 4
+                elif spec_type == 'rom_start32':
+                    val = struct.unpack_from('>I', cmd.raw_bytes, curr_byte_pos)[0]
+                    sym = format_rom_address(val, use_labels=True, is_end_symbol=False)
+                    lines.append(f"    .word {sym}")
+                    curr_byte_pos += 4
+                elif spec_type == 'rom_end32':
+                    val = struct.unpack_from('>I', cmd.raw_bytes, curr_byte_pos)[0]
+                    sym = format_rom_address(val, use_labels=True, is_end_symbol=True)
                     lines.append(f"    .word {sym}")
                     curr_byte_pos += 4
                 else:
@@ -2839,10 +2880,14 @@ def process_work_item(item: Dict, args, output_dir: Path) -> None:
         ext = ".txt"
     
     # Write output
-    out_file = output_dir / f"{item['name']}-{mode_suffix}{ext}"
+    # ASM mode uses simple names for build integration, other modes use descriptive suffixes
+    if args.asm:
+        out_file = output_dir / f"{item['name']}{ext}"
+    else:
+        out_file = output_dir / f"{item['name']}-{mode_suffix}{ext}"
     with open(out_file, 'w') as f:
         f.write(output_content)
-    print(f"  Wrote {item['name']}-{mode_suffix}{ext}")
+    print(f"  Wrote {out_file.name}")
 
 # =============================================================================
 # MAIN
@@ -2861,6 +2906,8 @@ def main():
                         help='Offset in file to start parsing')
     source_group.add_argument('--all', '-a', action='store_true',
                         help='Parse all banks from CSV')
+    source_group.add_argument('--bank', '-b', type=str,
+                        help='Parse a single bank by name (e.g., cutsceneBank1)')
 
     # Helpers
     parser.add_argument('--length', '-l', type=lambda x: int(x, 0),
@@ -2884,6 +2931,13 @@ def main():
     try:
         if args.all:
             work_items = build_work_items_from_csv(args.csv, args.entry_points_csv)
+        elif args.bank:
+            all_items = build_work_items_from_csv(args.csv, args.entry_points_csv)
+            work_items = [item for item in all_items if item['name'] == args.bank]
+            if not work_items:
+                available = [item['name'] for item in all_items]
+                print(f"Error: Bank '{args.bank}' not found. Available: {', '.join(available)}", file=sys.stderr)
+                sys.exit(1)
         elif args.offset is not None:
             if args.length is None:
                 print("Error: --length is required with --offset", file=sys.stderr)
@@ -2902,6 +2956,7 @@ def main():
             process_work_item(item, args, output_dir)
         except Exception as e:
             raise e
+
 
 if __name__ == '__main__':
     main()

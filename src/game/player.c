@@ -37,10 +37,10 @@ u16 playerIdleCounter;
 
 // shared bss
 u8 gAlcoholTolerance;
-u8 gHappiness;
+// u8 gHappiness;
 u8 gMaximumStamina;
 u8 gPlayerBirthdaySeason;
-u8 gToolboxSlots[];
+u8 gToolboxSlots[8 * 4];
 
 
 // data

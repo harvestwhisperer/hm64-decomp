@@ -31,6 +31,9 @@ extern u16 D_80215DF0;
 // cow festival winner affection (D_80189054)
 extern u16 D_801886D2;
 
+extern u8 cutsceneLevelInteractionIndex;
+extern u8 interactedWithLevelInteractionIndex;
+
 extern u32 D_801C3F78;
 extern u8 D_8018A72C[6];
 
