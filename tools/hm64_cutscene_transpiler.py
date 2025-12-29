@@ -1794,9 +1794,13 @@ Example:
                         help='Bank name for section and symbols (default: cutscene_bank)')
     
     args = parser.parse_args()
-    
-    with open(args.input, 'r') as f:
-        source = f.read()
+
+    # Support reading from stdin with '-'
+    if args.input == '-':
+        source = sys.stdin.read()
+    else:
+        with open(args.input, 'r') as f:
+            source = f.read()
     
     transpiler = CutsceneTranspiler(bank_name=args.name)
     output = transpiler.transpile(source)

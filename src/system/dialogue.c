@@ -10,14 +10,20 @@
 
 #include "ld_symbols.h"
 
-
 // bss
+// u32* specialDialogueBitsPointer;
+struct {
+    u32* ptr;
+    u32 pad;
+} specialDialogueBitsWrapper;
+
+#define specialDialogueBitsPointer (specialDialogueBitsWrapper.ptr)
+
+
 Dialogue dialogues[MAX_DIALOGUES];
 // game state updated by/talked about in dialogues
 DialogueVariable dialogueVariables[MAX_DIALOGUE_VARIABLES];
 DialogueBytecodeAddressInfo dialogueBytecodeAddresses[MAX_DIALOGUE_BYTECODE_BANKS];
-
-u32* specialDialogueBitsPointer;
 
 // forward declarations
 u32 func_80043C98(u16, u16);

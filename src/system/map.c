@@ -51,12 +51,13 @@ f32 frustumEdgeCoefficient1;
 f32 frustumEdgeCoefficient2;
 f32 frustumEdgeCoefficient3;
 
-CoreMapObject coreMapObjects[];
+CoreMapObject coreMapObjects[0x100];
+
 u8 globalBobbingYOffset;
 u8 globalBobbingFrameCounter;
 
-u8 gridPositionToX[];
-u8 gridPositionToZ[];
+u8 gridPositionToX[1596];
+u8 gridPositionToZ[1596];
 
 Gfx mapDisplayList[2][6912];
 Vtx tileVertices[2][2560];

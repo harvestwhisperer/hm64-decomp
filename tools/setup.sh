@@ -10,4 +10,7 @@ wget -c "https://github.com/decompals/mips-binutils-2.6/releases/latest/download
 
 sudo chmod -R +x tools/gcc-2.7.2
 
+gcc -o tools/build/mkldscript tools/build/mkldscript.c tools/build/spec.c tools/build/util.c
+chmod +x tools/build/mkldscript
+
 pip3 install -U -r tools/requirements.txt

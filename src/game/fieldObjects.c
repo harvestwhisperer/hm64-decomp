@@ -19,6 +19,7 @@
 #include "assetIndices/maps.h"
 
 // bss
+u8 farmFieldTiles[FIELD_HEIGHT][FIELD_WIDTH];
 u8 topOfMountain1FieldTiles[FIELD_HEIGHT][FIELD_WIDTH];
 u8 moonMountainFieldTiles[FIELD_HEIGHT][FIELD_WIDTH];
 u8 pondFieldTiles[FIELD_HEIGHT][FIELD_WIDTH];

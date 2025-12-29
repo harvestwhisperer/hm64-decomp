@@ -34,6 +34,7 @@ u8 groundObjectsGridX;
 u8 groundObjectsGridZ;
                              
 u8 previousEntranceIndex;
+u8 previousMapIndex;
 u8 gEntranceIndex;
 u8 gBaseMapIndex;
 u8 gMapWithSeasonIndex;

@@ -1,8 +1,3 @@
 #include "common.h"
 
-s16 unknownData[] = {
-    0xAC0B, 0x01EC,
-    0x9001, 0x00DE,
-    0x1020, 0x0370,
-    0x2021, 0xFFFC
-};
+s16 unknownData[] = { -21493, 492, -28671, 222, 4128, 880, 8225, -4 };

@@ -116,7 +116,6 @@ extern void func_800E1FAC(void);
 extern void func_800E8F08(void);
 
 extern u8 gCurrentGameIndex;
-extern u32 D_801654F4;
 
 extern LoadGameScreenContext loadGameScreenContext;
 

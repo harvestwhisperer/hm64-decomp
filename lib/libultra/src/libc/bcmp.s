@@ -27,7 +27,7 @@ LEAF(_bcmp)
     addu a1, a1, t8
     bne v0, v1, cmpne
 
-wordcmp:
+wordcmp: 
     and a3, a2, ~3
     subu a2, a2, a3
     beqz a3, bytecmp

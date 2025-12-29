@@ -73,6 +73,7 @@ u16 func_800A6EE4(void);
 s32 gCutsceneCompletionFlags;
 u16 gCutsceneBytecodeSegmentIndex;
 u16 gCutsceneIndex;
+u32 gCutsceneFlags;
 
 // shipping score
 // horse affection (horse race)
@@ -94,10 +95,12 @@ u16 D_801886D2;
 u16 D_801886E0;
 // recipes
 u8 D_80188F68;
+u8 D_801C3B60;
 // npc affection score
 u16 D_801C3B62;
 // combined shipping totals
 u32 D_801C3E1C;
+u32 D_801C3F4C;
 // fish score
 u16 D_801D62C4;
 // animal score
@@ -108,59 +111,65 @@ u16 D_80205638;
 // sum of girls' affection
 u16 D_80215DF0;
 
+u32 D_80237A00;
+
+u8 cutsceneLevelInteractionIndex;
+u8 interactedWithLevelInteractionIndex;
+
+
 // shared (with overlayScreens.c)
 u32 D_801C3F78;
 u8 D_8018A72C[6];
 
 // data 
 Addresses cutsceneBytecodeAddresses[] = {
-      { BYTECODE_SEGMENT_0_ROM_START, BYTECODE_SEGMENT_0_ROM_END },   
-      { BYTECODE_SEGMENT_1_ROM_START, BYTECODE_SEGMENT_1_ROM_END },   
-      { BYTECODE_SEGMENT_2_ROM_START, BYTECODE_SEGMENT_2_ROM_END },   
-      { BYTECODE_SEGMENT_3_ROM_START, BYTECODE_SEGMENT_3_ROM_END },   
-      { BYTECODE_SEGMENT_4_ROM_START, BYTECODE_SEGMENT_4_ROM_END },   
-      { BYTECODE_SEGMENT_5_ROM_START, BYTECODE_SEGMENT_5_ROM_END },   
-      { BYTECODE_SEGMENT_6_ROM_START, BYTECODE_SEGMENT_6_ROM_END },   
-      { BYTECODE_SEGMENT_7_ROM_START, BYTECODE_SEGMENT_7_ROM_END },  
-      { BYTECODE_SEGMENT_8_ROM_START, BYTECODE_SEGMENT_8_ROM_END },  
-      { BYTECODE_SEGMENT_9_ROM_START, BYTECODE_SEGMENT_9_ROM_END },  
-      { BYTECODE_SEGMENT_10_ROM_START, BYTECODE_SEGMENT_10_ROM_END },  
-      { BYTECODE_SEGMENT_11_ROM_START, BYTECODE_SEGMENT_11_ROM_END },  
-      { BYTECODE_SEGMENT_12_ROM_START, BYTECODE_SEGMENT_12_ROM_END },  
-      { BYTECODE_SEGMENT_13_ROM_START, BYTECODE_SEGMENT_13_ROM_END },  
-      { BYTECODE_SEGMENT_14_ROM_START, BYTECODE_SEGMENT_14_ROM_END },  
-      { BYTECODE_SEGMENT_15_ROM_START, BYTECODE_SEGMENT_15_ROM_END },  
-      { BYTECODE_SEGMENT_16_ROM_START, BYTECODE_SEGMENT_16_ROM_END },  
-      { BYTECODE_SEGMENT_17_ROM_START, BYTECODE_SEGMENT_17_ROM_END },  
-      { BYTECODE_SEGMENT_18_ROM_START, BYTECODE_SEGMENT_18_ROM_END },  
-      { BYTECODE_SEGMENT_19_ROM_START, BYTECODE_SEGMENT_19_ROM_END },  
-      { BYTECODE_SEGMENT_20_ROM_START, BYTECODE_SEGMENT_20_ROM_END },  
-      { BYTECODE_SEGMENT_21_ROM_START, BYTECODE_SEGMENT_21_ROM_END },  
-      { BYTECODE_SEGMENT_22_ROM_START, BYTECODE_SEGMENT_22_ROM_END },  
-      { BYTECODE_SEGMENT_23_ROM_START, BYTECODE_SEGMENT_23_ROM_END },  
-      { BYTECODE_SEGMENT_24_ROM_START, BYTECODE_SEGMENT_24_ROM_END },  
-      { BYTECODE_SEGMENT_25_ROM_START, BYTECODE_SEGMENT_25_ROM_END },  
-      { BYTECODE_SEGMENT_26_ROM_START, BYTECODE_SEGMENT_26_ROM_END },  
-      { BYTECODE_SEGMENT_27_ROM_START, BYTECODE_SEGMENT_27_ROM_END },  
-      { BYTECODE_SEGMENT_28_ROM_START, BYTECODE_SEGMENT_28_ROM_END },  
-      { BYTECODE_SEGMENT_29_ROM_START, BYTECODE_SEGMENT_29_ROM_END }, 
-      { BYTECODE_SEGMENT_30_ROM_START, BYTECODE_SEGMENT_30_ROM_END },  
-      { BYTECODE_SEGMENT_31_ROM_START, BYTECODE_SEGMENT_31_ROM_END },  
-      { BYTECODE_SEGMENT_32_ROM_START, BYTECODE_SEGMENT_32_ROM_END },  
-      { BYTECODE_SEGMENT_33_ROM_START, BYTECODE_SEGMENT_33_ROM_END },   
-      { BYTECODE_SEGMENT_34_ROM_START, BYTECODE_SEGMENT_34_ROM_END },   
-      { BYTECODE_SEGMENT_35_ROM_START, BYTECODE_SEGMENT_35_ROM_END },   
-      { 0, 0 },     
-      { 0, 0 },    
-      { 0, 0 },    
-      { 0, 0 },    
-      { 0, 0 },    
-      { 0, 0 },    
-      { 0, 0 },    
-      { 0, 0 },    
-      { 0, 0 },    
-      { 0, 0 },    
-      { 0, 0 },    
+      { &_cutsceneBank1SegmentRomStart, &_cutsceneBank1SegmentRomEnd },
+      { &_cutsceneBank1SegmentRomStart, &_cutsceneBank1SegmentRomEnd },
+      { &_cutsceneBank1SegmentRomStart, &_cutsceneBank1SegmentRomEnd },
+      { &_cutsceneBank1SegmentRomStart, &_cutsceneBank1SegmentRomEnd },
+      { &_cutsceneBank1SegmentRomStart, &_cutsceneBank1SegmentRomEnd },
+      { &_cutsceneBank1SegmentRomStart, &_cutsceneBank1SegmentRomEnd },
+      { &_cutsceneBank1SegmentRomStart, &_cutsceneBank1SegmentRomEnd },
+      { &_cutsceneBank2SegmentRomStart, &_cutsceneBank2SegmentRomEnd },
+      { &_cutsceneBank2SegmentRomStart, &_cutsceneBank2SegmentRomEnd },
+      { &_cutsceneBank3SegmentRomStart, &_cutsceneBank3SegmentRomEnd },
+      { &_cutsceneBank4SegmentRomStart, &_cutsceneBank4SegmentRomEnd },
+      { &_cutsceneBank5SegmentRomStart, &_cutsceneBank5SegmentRomEnd },
+      { &_cutsceneBank6SegmentRomStart, &_cutsceneBank6SegmentRomEnd },
+      { &_cutsceneBank7SegmentRomStart, &_cutsceneBank7SegmentRomEnd },
+      { &_cutsceneBank8SegmentRomStart, &_cutsceneBank8SegmentRomEnd },
+      { &_cutsceneBank9SegmentRomStart, &_cutsceneBank9SegmentRomEnd },
+      { &_cutsceneBank10SegmentRomStart, &_cutsceneBank10SegmentRomEnd },
+      { &_cutsceneBank11SegmentRomStart, &_cutsceneBank11SegmentRomEnd },
+      { &_cutsceneBank12SegmentRomStart, &_cutsceneBank12SegmentRomEnd },
+      { &_cutsceneBank13SegmentRomStart, &_cutsceneBank13SegmentRomEnd },
+      { &_cutsceneBank14SegmentRomStart, &_cutsceneBank14SegmentRomEnd },
+      { &_fireworksFestivalSegmentRomStart, &_fireworksFestivalSegmentRomEnd },
+      { &_cutsceneBank16SegmentRomStart, &_cutsceneBank16SegmentRomEnd },
+      { &_cutsceneBank17SegmentRomStart, &_cutsceneBank17SegmentRomEnd },
+      { &_cutsceneBank18SegmentRomStart, &_cutsceneBank18SegmentRomEnd },
+      { &_cutsceneBank19SegmentRomStart, &_cutsceneBank19SegmentRomEnd },
+      { &_cutsceneBank20SegmentRomStart, &_cutsceneBank20SegmentRomEnd },
+      { &_cutsceneBank21SegmentRomStart, &_cutsceneBank21SegmentRomEnd },
+      { &_cutsceneBank22SegmentRomStart, &_cutsceneBank22SegmentRomEnd },
+      { &_cutsceneBank23SegmentRomStart, &_cutsceneBank23SegmentRomEnd },
+      { &_cutsceneBank24SegmentRomStart, &_cutsceneBank24SegmentRomEnd },
+      { &_cutsceneBank25SegmentRomStart, &_cutsceneBank25SegmentRomEnd },
+      { &_cutsceneBank26SegmentRomStart, &_cutsceneBank26SegmentRomEnd },
+      { &_cutsceneBank1SegmentRomStart, &_cutsceneBank1SegmentRomEnd },
+      { &_cutsceneBank1SegmentRomStart, &_cutsceneBank1SegmentRomEnd },
+      { &_cutsceneBank27SegmentRomStart, &_cutsceneBank27SegmentRomEnd },
+      { 0, 0 },
+      { 0, 0 },
+      { 0, 0 },
+      { 0, 0 },
+      { 0, 0 },
+      { 0, 0 },
+      { 0, 0 },
+      { 0, 0 },
+      { 0, 0 },
+      { 0, 0 },
+      { 0, 0 },
       { 0, 0 }
 };
 

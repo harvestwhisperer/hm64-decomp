@@ -1,4 +1,4 @@
-#include "PR/os_version.h"
+#include <os_version.h>
 
 #if BUILD_VERSION < VERSION_J
 #ident "$Revision: 3.70 $"

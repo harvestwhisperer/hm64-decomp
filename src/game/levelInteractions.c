@@ -12,6 +12,7 @@
 #include "system/message.h"
 
 #include "game/animals.h"
+#include "game/cutscenes.h"
 #include "game/game.h"
 #include "game/gameAudio.h"
 #include "game/gameStatus.h"
@@ -35,9 +36,7 @@
 // bss
 static LevelInteractionsInfo levelInteractionsInfo;
 
-u8 D_80189826; 
-// checked by cutscenes
-u8 D_801C3E2C;
+
 
 // forward declarations
 // TODO: label
@@ -300,14 +299,14 @@ bool handleLevelInteraction(u16 mapIndex) {
     levelInteractionIndex = getLevelInteractionIndexFromEntityPosition(ENTITY_PLAYER, 0.0f, 32.0f);
 
     // checked by cutscene bytecode for triggering cutscene flows based on player position
-    D_80189826 = levelInteractionIndex;
+    cutsceneLevelInteractionIndex = levelInteractionIndex;
     
     if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
         // checked by cutscene bytecode
         // i.e., cutscene executor will idle until this value is set to a particular value 
-        D_801C3E2C = D_80189826;
+        interactedWithLevelInteractionIndex = cutsceneLevelInteractionIndex;
     } else {
-        D_801C3E2C = 0xFF;
+        interactedWithLevelInteractionIndex = 0xFF;
     }
 
     canEnter = FALSE;

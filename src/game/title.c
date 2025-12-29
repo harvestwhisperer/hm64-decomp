@@ -27,6 +27,8 @@
 // bss
 static TitleContext titleScreenContext;
 
+u8 demoCutsceneIndex;
+
 // forward declarations
 void func_800E0ED4();                                  
 void updateGrassAnimation();                                  

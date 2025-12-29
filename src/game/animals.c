@@ -52,8 +52,6 @@ u8 D_801886D4[6];
 u8 deadAnimalName[6];
 
 u8 bornChickenIndex;
-// newest farm animal index?
-u8 bornAnimalIndex;
 // cow festival stall
 u8 D_80189054;
 // newest animal index (generic)?
@@ -2530,11 +2528,11 @@ void func_8008BAF0(u8 index, u8 arg1) {
                 loadEntity(gMiscAnimals[index].entityIndex, ENTITY_ASSET_MONKEY, TRUE);
                 break;
             case 11:
-                loadEntity(gMiscAnimals[index].entityIndex, ENTITY_ASSET_DOG_RACE, TRUE);
+                loadEntity(gMiscAnimals[index].entityIndex, ENTITY_ASSET_BIRD, TRUE);
                 setEntityPaletteIndex(gMiscAnimals[index].entityIndex, 0);
                 break;
             case 12:
-                loadEntity(gMiscAnimals[index].entityIndex, ENTITY_ASSET_DOG_RACE, TRUE);
+                loadEntity(gMiscAnimals[index].entityIndex, ENTITY_ASSET_BIRD, TRUE);
                 break;
             case 13:
                 loadEntity(gMiscAnimals[index].entityIndex, ENTITY_ASSET_CRAB, TRUE);
@@ -2543,7 +2541,7 @@ void func_8008BAF0(u8 index, u8 arg1) {
                 loadEntity(gMiscAnimals[index].entityIndex, ENTITY_ASSET_SNAKE, TRUE);
                 break;
             case 15:
-                loadEntity(gMiscAnimals[index].entityIndex, ENTITY_ASSET_BIRD, TRUE);
+                loadEntity(gMiscAnimals[index].entityIndex, ENTITY_ASSET_WHITE_BUTTERFLY, TRUE);
                 break;
             case 16:
                 loadEntity(gMiscAnimals[index].entityIndex, ENTITY_ASSET_LADYBUG, TRUE);

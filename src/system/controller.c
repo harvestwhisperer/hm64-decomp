@@ -13,7 +13,9 @@ u16 buttonRepeatModeTriggerDelayFrames;
 u8 contPattern;
 
 NUContDataPatch contData[NU_CONT_MAXCONTROLLERS];
-OSContStatus nuContStatus[NU_CONT_MAXCONTROLLERS];
+
+// nucontmgr.c
+extern OSContStatus nuContStatus[NU_CONT_MAXCONTROLLERS];
 
 Controller controllers[NU_CONT_MAXCONTROLLERS];
 Controller gControllers[NU_CONT_MAXCONTROLLERS];

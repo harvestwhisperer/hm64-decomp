@@ -40,6 +40,7 @@
 
 // bss
 OverlayScreenTable overlayScreenTable;
+OverlayScreenStrings overlayScreenStrings;
 u32 D_80189858;
 
 u8 D_80205640[10];

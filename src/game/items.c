@@ -40,9 +40,25 @@ u32 D_801FB5D0;
 u32 D_801FB6FC;
 u32 D_80237414;
 
+u8 D_8013DC2C;
+u8 D_8018A725;
+u8 D_801C3E28;
+u8 D_801C3F70;
+u8 D_801FAD91;
+u8 D_801FC154;
+u8 D_80204DF4;
+u8 D_80205636;
+u8 D_802373E8;
+u8 D_80237458;
+
+u32 D_801654F4;
+
 // consumable tool counters (seeds, feed)
 u8 D_802373A8;
 u16 chickenFeedQuantity;
+u16 fodderQuantity;
+u8 wateringCanUses;
+
 u8 upgradedToolIndex;
 u8 upgradedToolLevelIndex;
 
