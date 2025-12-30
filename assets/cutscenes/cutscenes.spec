@@ -1,7 +1,7 @@
 beginseg
-    name "cutsceneBank1"
+    name "farmBusiness"
     flags OBJECT
-    include "build/bin/cutscenes/cutsceneBank1.bin.o"
+    include "build/bin/cutscenes/farmBusiness.bin.o"
 endseg
 
 beginseg

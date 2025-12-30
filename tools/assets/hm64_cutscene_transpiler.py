@@ -13,694 +13,15 @@ import sys
 import argparse
 from dataclasses import dataclass, field
 from typing import List, Dict, Optional, Tuple, TextIO
-from enum import IntEnum
 from pathlib import Path
 
-
-# =============================================================================
-# OPCODE DEFINITIONS (from decompiled game)
-# =============================================================================
-
-class CutsceneOpcode(IntEnum):
-    """Cutscene bytecode opcodes (indices into cutsceneCommandHandlers array)"""
-    SET_ANIM_DATA_PTR_WITH_FLAG = 0
-    SET_ANIM_DATA_PTR = 1
-    SET_COORDINATES = 2
-    SET_FRAME_DELTA = 3
-    SET_WAIT_FRAMES = 4
-    DEACTIVATE_SELF = 5
-    EXECUTE_SUBROUTINE = 6
-    RETURN_FROM_SUBROUTINE = 7
-    BRANCH_ON_CURRENT_BUTTON = 8
-    BRANCH_ON_BUTTON_PRESSED = 9
-    BRANCH_ON_BUTTON_REPEAT = 10
-    SPAWN_EXECUTOR = 11
-    SET_OTHER_EXECUTOR_PTR = 12
-    DEACTIVATE_EXECUTOR = 13
-    DMA_SPRITE = 14
-    SET_ENTITY_ANIMATIONS = 15
-    DO_DMA = 16
-    SET_U8_VALUE = 17
-    SET_U16_VALUE = 18
-    SET_U32_VALUE = 19
-    BRANCH_U8_VAR_WITHIN_RANGE = 20
-    BRANCH_U16_VAR_WITHIN_RANGE = 21
-    BRANCH_U32_VAR_WITHIN_RANGE = 22
-    SET_SPECIAL_BIT = 23
-    TOGGLE_SPECIAL_BIT = 24
-    BRANCH_ON_SPECIAL_BIT = 25
-    SET_ASSET_ROTATION = 26
-    SETUP_MAP_ASSET = 27
-    ENTITY_MOVE_AND_ANIMATE = 28
-    SET_MAP_ROTATION = 29
-    SET_CAMERA_TRACKING_FLAG = 30
-    SET_MOVEMENT_INFO = 31
-    INIT_MESSAGE_BOX_TYPE1 = 32
-    WAIT_MESSAGE_BOX_CLOSED = 33
-    SET_MESSAGE_BOX_VIEW_POSITION = 34
-    RESET_MESSAGE_BOX_AVATAR = 35
-    ENTITY_MOVE_AND_ANIMATE_2 = 36
-    SET_ENTITY_ANIMATION = 37
-    SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE = 38
-    SET_CALLBACK_ROUTINE = 39
-    PAUSE_ENTITY = 40
-    TOGGLE_PAUSE_ENTITY = 41
-    FLIP_ENTITY_DIRECTION = 42
-    PAUSE_ENTITIES = 43
-    TOGGLE_PAUSE_ENTITIES = 44
-    FLIP_ENTITY_ANIMATION = 45
-    SET_ENTITY_NON_COLLIDABLE = 46
-    SETUP_ENTITY = 47
-    SET_ENTITY_MAP_SPACE_INDEPENDENT_FLAG = 48
-    LOAD_MAP = 49
-    SET_ENTITY_MAP_SPACE_INDEPENDENT = 50
-    SET_RGBA = 51
-    UPDATE_RGBA = 52
-    UPDATE_U8_VALUE = 53
-    UPDATE_U16_VALUE = 54
-    UPDATE_U32_VALUE = 55
-    DEACTIVATE_MAP_OBJECTS = 56
-    UPDATE_GLOBAL_RGBA = 57
-    DEACTIVATE_SPRITES = 58
-    DEACTIVATE_MAP_CONTROLLERS = 59
-    WAIT_RGBA_FINISHED = 60
-    CHECK_ENTITY_COLLISION = 61
-    INIT_DIALOGUE_SESSION = 62
-    WAIT_FOR_DIALOGUE_INPUT = 63
-    BRANCH_ON_DIALOGUE = 64
-    WAIT_ENTITY_ANIMATION = 65
-    SET_MESSAGE_BOX_ASSETS = 66
-    SET_ENTITY_TRACKING_TARGET = 67
-    UPDATE_CAMERA_FLAGS = 68
-    WAIT_MAP_LOAD = 69
-    BRANCH_ON_ENTITY_DIR = 70
-    SET_ENTITY_PHYSICS_FLAGS = 71
-    SET_ENTITY_PALETTE = 72
-    SET_ENTITY_DIMENSIONS = 73
-    SET_SHADOW_FLAGS = 74
-    SET_SPRITE_SCALE = 75
-    SET_SPRITE_RENDERING_LAYER = 76
-    INIT_MESSAGE_BOX_TYPE2 = 77
-    INIT_MAP_ADDITION = 78
-    BRANCH_ON_RANDOM = 79
-    BRANCH_ON_U16_PTR_RANGE = 80
-    PAUSE_EXECUTOR = 81
-    TOGGLE_PAUSE_EXECUTOR = 82
-    PAUSE_ALL_CHILD_EXECUTORS = 83
-    TOGGLE_PAUSE_ALL_CHILDREN = 84
-    SET_SPRITE_PALETTE = 85
-    BRANCH_ON_U8_PTR_RANGE = 86
-    SET_AUDIO_SEQUENCE = 87
-    STOP_SONG_WITH_FADE = 88
-    SET_AUDIO_SEQUENCE_VOLUME = 89
-    SET_SFX = 90
-    IDLE_WHILE_SONG_PLAYING = 91
-    UPDATE_MESSAGE_BOX_RGBA = 92
-    WAIT_MESSAGE_BOX_READY = 93
-    SET_SPRITE_BILINEAR = 94
-    SET_MAP_ADDITION = 95
-    SET_MAP_GROUND_OBJECT = 96
-    SET_MESSAGE_INTERPOLATION = 97
+# Import shared command specs from utilities
+from hm64_cutscene_utilities import CutsceneOpcode, COMMAND_SPECS_BY_NAME
 
 
-# =============================================================================
-# COMMAND SPECSs
-# =============================================================================
-# Format: 'CMD_NAME': (opcode, total_size, [(param_name, param_type), ...])
-#
-# Parameter types:
-#   'u8', 's8'      - 8-bit unsigned/signed
-#   'u16', 's16'    - 16-bit unsigned/signed  
-#   'u32', 's32'    - 32-bit unsigned/signed
-#   'rel16'         - 16-bit relative offset (label - .)
-#   'addr32'        - 32-bit absolute address (linker-resolved symbol)
-#   'pad8', 'pad16' - Padding bytes (emit zeros)
-
-COMMAND_SPECS: Dict[str, Tuple[int, int, List[Tuple[str, str]]]] = {
-    # -------------------------------------------------------------------------
-    # Animation pointer commands (4 bytes)
-    # -------------------------------------------------------------------------
-    'CMD_SET_ANIM_DATA_PTR_WITH_FLAG': (
-        CutsceneOpcode.SET_ANIM_DATA_PTR_WITH_FLAG, 4,
-        [('target', 'rel16')]
-    ),
-    'CMD_SET_ANIM_DATA_PTR': (
-        CutsceneOpcode.SET_ANIM_DATA_PTR, 4,
-        [('target', 'rel16')]
-    ),
-    
-    # -------------------------------------------------------------------------
-    # Simple commands (4 bytes, no params or single u16)
-    # -------------------------------------------------------------------------
-    'CMD_DEACTIVATE_SELF': (
-        CutsceneOpcode.DEACTIVATE_SELF, 4,
-        [('pad', 'pad16')]
-    ),
-    'CMD_RETURN_FROM_SUBROUTINE': (
-        CutsceneOpcode.RETURN_FROM_SUBROUTINE, 4,
-        [('pad', 'pad16')]
-    ),
-    'CMD_PAUSE_ENTITIES': (
-        CutsceneOpcode.PAUSE_ENTITIES, 4,
-        [('pad', 'pad16')]
-    ),
-    'CMD_TOGGLE_PAUSE_ENTITIES': (
-        CutsceneOpcode.TOGGLE_PAUSE_ENTITIES, 4,
-        [('pad', 'pad16')]
-    ),
-    'CMD_PAUSE_ALL_CHILD_EXECUTORS': (
-        CutsceneOpcode.PAUSE_ALL_CHILD_EXECUTORS, 4,
-        [('pad', 'pad16')]
-    ),
-    'CMD_TOGGLE_PAUSE_ALL_CHILDREN': (
-        CutsceneOpcode.TOGGLE_PAUSE_ALL_CHILDREN, 4,
-        [('pad', 'pad16')]
-    ),
-    'CMD_WAIT_RGBA_FINISHED': (
-        CutsceneOpcode.WAIT_RGBA_FINISHED, 4,
-        [('pad', 'pad16')]
-    ),
-    'CMD_WAIT_ENTITY_ANIMATION': (
-        CutsceneOpcode.WAIT_ENTITY_ANIMATION, 4,
-        [('pad', 'pad16')]
-    ),
-    'CMD_DEACTIVATE_MAP_OBJECTS': (
-        CutsceneOpcode.DEACTIVATE_MAP_OBJECTS, 4,
-        [('pad', 'pad16')]
-    ),
-    'CMD_DEACTIVATE_SPRITES': (
-        CutsceneOpcode.DEACTIVATE_SPRITES, 4,
-        [('pad', 'pad16')]
-    ),
-    'CMD_DEACTIVATE_MAP_CONTROLLERS': (
-        CutsceneOpcode.DEACTIVATE_MAP_CONTROLLERS, 4,
-        [('pad', 'pad16')]
-    ),
-    
-    # -------------------------------------------------------------------------
-    # Single u16 parameter commands (4 bytes)
-    # -------------------------------------------------------------------------
-    'CMD_SET_WAIT_FRAMES': (
-        CutsceneOpcode.SET_WAIT_FRAMES, 4,
-        [('frames', 'u16')]
-    ),
-    'SET_CAMERA_TRACKING_FLAG': (
-        CutsceneOpcode.SET_CAMERA_TRACKING_FLAG, 4,
-        [('flag', 'u8'), ('pad', 'pad8')]
-    ),
-    'CMD_SET_ENTITY_ANIMATION': (
-        CutsceneOpcode.SET_ENTITY_ANIMATION, 4,
-        [('anim', 'u16')]
-    ),
-    'CMD_SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE': (
-        CutsceneOpcode.SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE, 4,
-        [('anim', 'u16')]
-    ),
-    'CMD_PAUSE_ENTITY': (
-        CutsceneOpcode.PAUSE_ENTITY, 4,
-        [('entity', 'u16')]
-    ),
-    'CMD_TOGGLE_PAUSE_ENTITY': (
-        CutsceneOpcode.TOGGLE_PAUSE_ENTITY, 4,
-        [('entity', 'u16')]
-    ),
-    'CMD_FLIP_ENTITY_DIRECTION': (
-        CutsceneOpcode.FLIP_ENTITY_DIRECTION, 4,
-        [('entity', 'u16')]
-    ),
-    'CMD_FLIP_ENTITY_ANIMATION': (
-        CutsceneOpcode.FLIP_ENTITY_ANIMATION, 4,
-        [('_pad', 'pad16')]
-    ),
-    'CMD_SET_ENTITY_NON_COLLIDABLE': (
-        CutsceneOpcode.SET_ENTITY_NON_COLLIDABLE, 4,
-        [('_pad', 'pad16')]
-    ),
-    'CMD_SET_ASSET_ROTATION': (
-        CutsceneOpcode.SET_ASSET_ROTATION, 4,
-        [('direction', 'u8'), ('_pad', 'pad8')]
-    ),
-    'CMD_SET_ENTITY_PHYSICS_FLAGS': (
-        CutsceneOpcode.SET_ENTITY_PHYSICS_FLAGS, 4,
-        [('flags', 'u16')]
-    ),
-    'CMD_SET_SPRITE_PALETTE': (
-        CutsceneOpcode.SET_SPRITE_PALETTE, 4,
-        [('palette', 'u16')]
-    ),
-    'CMD_SET_SPRITE_RENDERING_LAYER': (
-        CutsceneOpcode.SET_SPRITE_RENDERING_LAYER, 4,
-        [('layer', 'u16')]
-    ),
-    'CMD_SET_SPRITE_BILINEAR': (
-        CutsceneOpcode.SET_SPRITE_BILINEAR, 4,
-        [('flag', 'u16')]
-    ),
-    'CMD_DEACTIVATE_EXECUTOR': (
-        CutsceneOpcode.DEACTIVATE_EXECUTOR, 4,
-        [('executor', 'u16')]
-    ),
-    'CMD_PAUSE_EXECUTOR': (
-        CutsceneOpcode.PAUSE_EXECUTOR, 4,
-        [('executor', 'u16')]
-    ),
-    'CMD_TOGGLE_PAUSE_EXECUTOR': (
-        CutsceneOpcode.TOGGLE_PAUSE_EXECUTOR, 4,
-        [('executor', 'u16')]
-    ),
-    'CMD_WAIT_MESSAGE_BOX_CLOSED': (
-        CutsceneOpcode.WAIT_MESSAGE_BOX_CLOSED, 4,
-        [('box', 'u16')]
-    ),
-    'CMD_RESET_MESSAGE_BOX_AVATAR': (
-        CutsceneOpcode.RESET_MESSAGE_BOX_AVATAR, 4,
-        [('box', 'u16')]
-    ),
-    'CMD_WAIT_FOR_DIALOGUE_INPUT': (
-        CutsceneOpcode.WAIT_FOR_DIALOGUE_INPUT, 4,
-        [('box', 'u16')]
-    ),
-    'CMD_WAIT_MESSAGE_BOX_READY': (
-        CutsceneOpcode.WAIT_MESSAGE_BOX_READY, 4,
-        [('box', 'u16')]
-    ),
-    'CMD_IDLE_WHILE_SONG_PLAYING': (
-        CutsceneOpcode.IDLE_WHILE_SONG_PLAYING, 4,
-        [('channel', 'u16')]
-    ),
-    'CMD_WAIT_MAP_LOAD': (
-        CutsceneOpcode.WAIT_MAP_LOAD, 4,
-        [('map', 'u16')]
-    ),
-    'CMD_LOAD_MAP': (
-        CutsceneOpcode.LOAD_MAP, 4,
-        [('map', 'u16')]
-    ),
-    'CMD_SET_FRAME_DELTA': (
-        CutsceneOpcode.SET_FRAME_DELTA, 4,
-        [('delta', 's16')]
-    ),
-    
-    # -------------------------------------------------------------------------
-    # Subroutine/branch with relative offset (4 bytes)
-    # -------------------------------------------------------------------------
-    'CMD_EXECUTE_SUBROUTINE': (
-        CutsceneOpcode.EXECUTE_SUBROUTINE, 4,
-        [('target', 'rel16')]
-    ),
-    
-    # -------------------------------------------------------------------------
-    # Spawn/set executor pointer (8 bytes)
-    # Format: opcode(2) + executor_index(2) + relative_offset(2) + pad(2)
-    # -------------------------------------------------------------------------
-    'CMD_SPAWN_EXECUTOR': (
-        CutsceneOpcode.SPAWN_EXECUTOR, 8,
-        [('executor', 'u16'), ('target', 'rel16'), ('pad', 'pad16')]
-    ),
-    'CMD_SET_OTHER_EXECUTOR_PTR': (
-        CutsceneOpcode.SET_OTHER_EXECUTOR_PTR, 8,
-        [('executor', 'u16'), ('target', 'rel16'), ('pad', 'pad16')]
-    ),
-    
-    # -------------------------------------------------------------------------
-    # Coordinates (8 bytes)
-    # Format: opcode(2) + x(2) + y(2) + z(2)
-    # -------------------------------------------------------------------------
-    'CMD_SET_COORDINATES': (
-        CutsceneOpcode.SET_COORDINATES, 8,
-        [('x', 's16'), ('y', 's16'), ('z', 's16')]
-    ),
-    
-    # -------------------------------------------------------------------------
-    # Entity setup (8 bytes)
-    # Format: opcode(2) + entity(2) + asset(2) + variant(2)
-    # -------------------------------------------------------------------------
-    'CMD_SETUP_ENTITY': (
-        CutsceneOpcode.SETUP_ENTITY, 8,
-        [('entity', 'u16'), ('asset', 'u16'), ('variant', 'u16')]
-    ),
-    
-    # -------------------------------------------------------------------------
-    # Set special bit (8 bytes)
-    # Format: opcode(2) + bit_index(2) + address(4)
-    # -------------------------------------------------------------------------
-    'CMD_SET_SPECIAL_BIT': (
-        CutsceneOpcode.SET_SPECIAL_BIT, 8,
-        [('bit', 'u16'), ('address', 'addr32')]
-    ),
-    'CMD_TOGGLE_SPECIAL_BIT': (
-        CutsceneOpcode.TOGGLE_SPECIAL_BIT, 8,
-        [('bit', 'u16'), ('address', 'addr32')]
-    ),
-    
-    # -------------------------------------------------------------------------
-    # Callback routine (8 bytes)
-    # Format: opcode(2) + entity(2) + button(2) + relative_offset(2)
-    # -------------------------------------------------------------------------
-    'CMD_SET_CALLBACK_ROUTINE': (
-        CutsceneOpcode.SET_CALLBACK_ROUTINE, 8,
-        [('entity', 'u16'), ('button', 'u16'), ('target', 'rel16')]
-    ),
-    
-    # -------------------------------------------------------------------------
-    # Message box init (8 bytes)
-    # Format: opcode(2) + box(2) + bank(2) + index(2)
-    # -------------------------------------------------------------------------
-    'CMD_INIT_MESSAGE_BOX_TYPE1': (
-        CutsceneOpcode.INIT_MESSAGE_BOX_TYPE1, 8,
-        [('box', 'u16'), ('bank', 'u16'), ('index', 'u16')]
-    ),
-    'CMD_INIT_MESSAGE_BOX_TYPE2': (
-        CutsceneOpcode.INIT_MESSAGE_BOX_TYPE2, 8,
-        [('box', 'u16'), ('bank', 'u16'), ('index', 'u16')]
-    ),
-    'CMD_INIT_DIALOGUE_SESSION': (
-        CutsceneOpcode.INIT_DIALOGUE_SESSION, 8,
-        [('box', 'u16'), ('bank', 'u16'), ('index', 'u16')]
-    ),
-    
-    # -------------------------------------------------------------------------
-    # Message box assets (8 bytes)
-    # Format: opcode(2) + a(2) + b(2) + c(2)
-    # -------------------------------------------------------------------------
-    'CMD_SET_MESSAGE_BOX_ASSETS': (
-        CutsceneOpcode.SET_MESSAGE_BOX_ASSETS, 8,
-        [('spriteIndex', 'u16'), ('dialogueWindowIndex', 'u8'), ('overlayIconIndex', 'u8'), ('characterAvatarIndex', 'u8'), ('_pad', 'pad8')]
-    ),
-    
-    # -------------------------------------------------------------------------
-    # Message interpolation (8 bytes)
-    # Format: opcode(2) + a(2) + b(2) + c(2)
-    # -------------------------------------------------------------------------
-    'CMD_SET_MESSAGE_INTERPOLATION': (
-        CutsceneOpcode.SET_MESSAGE_INTERPOLATION, 8,
-        [('a', 's16'), ('b', 's16'), ('c', 's16')]
-    ),
-    
-    # -------------------------------------------------------------------------
-    # RGBA commands (8 bytes)
-    # Format: opcode(2) + r(1) + g(1) + b(1) + a(1) + speed(1) + pad(1)
-    # -------------------------------------------------------------------------
-    'CMD_SET_RGBA': (
-        CutsceneOpcode.SET_RGBA, 8,
-        [('r', 'u8'), ('g', 'u8'), ('b', 'u8'), ('a', 'u8'), ('pad', 'pad16')]
-    ),
-    'CMD_UPDATE_RGBA': (
-        CutsceneOpcode.UPDATE_RGBA, 8,
-        [('r', 'u8'), ('g', 'u8'), ('b', 'u8'), ('a', 'u8'), ('speed', 's16')]
-    ),
-    'CMD_UPDATE_GLOBAL_RGBA': (
-        CutsceneOpcode.UPDATE_GLOBAL_RGBA, 8,
-        [('r', 'u8'), ('g', 'u8'), ('b', 'u8'), ('a', 'u8'), ('speed', 's16')]
-    ),
-    'CMD_UPDATE_MESSAGE_BOX_RGBA': (
-        CutsceneOpcode.UPDATE_MESSAGE_BOX_RGBA, 8,
-        [('r', 'u8'), ('g', 'u8'), ('b', 'u8'), ('a', 'u8'), ('speed', 'u8'), ('pad', 'pad8')]
-    ),
-    
-    # -------------------------------------------------------------------------
-    # Audio commands (8 bytes)
-    # -------------------------------------------------------------------------
-    'CMD_SET_AUDIO_SEQUENCE_VOLUME': (
-        CutsceneOpcode.SET_AUDIO_SEQUENCE_VOLUME, 8,
-        [('songIndex', 'u16'), ('targetVolume', 'u16'), ('volume', 's16')]
-    ),
-    'CMD_SET_SFX': (
-        CutsceneOpcode.SET_SFX, 8,
-        [('sfx', 'u16'), ('volume', 'u16'), ('pad1', 'pad16')]
-    ),
-    'CMD_STOP_SONG_WITH_FADE': (
-        CutsceneOpcode.STOP_SONG_WITH_FADE, 8,
-        [('channel', 'u16'), ('speed', 'u16'), ('pad', 'pad16')]
-    ),
-    
-    # -------------------------------------------------------------------------
-    # Entity move and animate (8 bytes)
-    # Format: opcode(2) + distance(2) + pad(2) + direction(1) + speed(1)
-    # -------------------------------------------------------------------------
-    'CMD_ENTITY_MOVE_AND_ANIMATE': (
-        CutsceneOpcode.ENTITY_MOVE_AND_ANIMATE, 8,
-        [('distance', 'u16'), ('direction', 'u8'), ('speed', 'u8'), ('pad', 'pad16')]
-    ),
-    'CMD_ENTITY_MOVE_AND_ANIMATE_2': (
-        CutsceneOpcode.ENTITY_MOVE_AND_ANIMATE_2, 8,
-        [('distance', 'u16'), ('direction', 'u8'), ('speed', 'u8'), ('pad', 'pad16')]
-    ),
-    
-    # -------------------------------------------------------------------------
-    # Sprite scale (8 bytes)
-    # Format: opcode(2) + x(2) + y(2) + z(2)
-    # -------------------------------------------------------------------------
-    'CMD_SET_SPRITE_SCALE': (
-        CutsceneOpcode.SET_SPRITE_SCALE, 8,
-        [('x', 'u16'), ('y', 'u16'), ('z', 'u16')]
-    ),
-    
-    # -------------------------------------------------------------------------
-    # Set value commands (8 bytes)
-    # Format: opcode(2) + pad(2) + address(4), value in next word varies
-    # -------------------------------------------------------------------------
-    'CMD_SET_U8_VALUE': (
-        CutsceneOpcode.SET_U8_VALUE, 8,
-        [('value', 'u8'), ('pad', 'pad8'), ('address', 'addr32')]
-    ),
-    'CMD_SET_U16_VALUE': (
-        CutsceneOpcode.SET_U16_VALUE, 8,
-        [('value', 'u16'), ('address', 'addr32')]
-    ),
-    'CMD_SET_U32_VALUE': (
-        CutsceneOpcode.SET_U32_VALUE, 12,
-        [('pad', 'pad16'), ('address', 'addr32'), ('value', 'u32')]
-    ),
-    
-    # -------------------------------------------------------------------------
-    # Update value commands (8-12 bytes)
-    # -------------------------------------------------------------------------
-    'CMD_UPDATE_U8_VALUE': (
-        CutsceneOpcode.UPDATE_U8_VALUE, 12,
-        [('_pad1', 'pad8'), ('delta', 's8'), ('_pad2', 'pad8'), ('max', 'u8'), ('_pad3', 'pad16'), ('address', 'addr32')]
-    ),
-    'CMD_UPDATE_U16_VALUE': (
-        CutsceneOpcode.UPDATE_U16_VALUE, 12,
-        [('delta', 's16'), ('max', 'u16'), ('pad', 'pad16'), ('address', 'addr32')]
-    ),
-    'CMD_UPDATE_U32_VALUE': (
-        CutsceneOpcode.UPDATE_U32_VALUE, 16,
-        [('pad', 'pad16'), ('delta', 's32'), ('max', 's32'), ('address', 'addr32')]
-    ),
-    
-    # -------------------------------------------------------------------------
-    # Message box view position (12 bytes)
-    # Format: opcode(2) + box(2) + x(2) + y(2) + z(2) + pad(2)
-    # -------------------------------------------------------------------------
-    'CMD_SET_MESSAGE_BOX_VIEW_POSITION': (
-        CutsceneOpcode.SET_MESSAGE_BOX_VIEW_POSITION, 12,
-        [('box', 'u16'), ('x', 's16'), ('y', 's16'), ('z', 's16'), ('pad', 'pad16')]
-    ),
-    
-    # -------------------------------------------------------------------------
-    # Branch on special bit (12 bytes)
-    # Format: opcode(2) + bit(2) + address(4) + offset(2) + pad(2)
-    # -------------------------------------------------------------------------
-    'CMD_BRANCH_ON_SPECIAL_BIT': (
-        CutsceneOpcode.BRANCH_ON_SPECIAL_BIT, 12,
-        [('bit', 'u16'), ('address', 'addr32'), ('target', 'rel16'), ('pad', 'pad16')]
-    ),
-    
-    # -------------------------------------------------------------------------
-    # Audio set (12 bytes)
-    # Format: opcode(2) + channel(2) + start(4) + end(4) - but we'll simplify
-    # -------------------------------------------------------------------------
-    'CMD_SET_AUDIO_SEQUENCE': (
-        CutsceneOpcode.SET_AUDIO_SEQUENCE, 12,
-        [('channel', 'u16'), ('start', 'u32'), ('end', 'u32')]
-    ),
-    
-    # -------------------------------------------------------------------------
-    # Branch commands (12-16 bytes)
-    # -------------------------------------------------------------------------
-    'CMD_BRANCH_U8_VAR_WITHIN_RANGE': (
-        CutsceneOpcode.BRANCH_U8_VAR_WITHIN_RANGE, 12,
-        [('min', 'u8'), ('max', 'u8'), ('address', 'addr32'), ('target', 'rel16'), ('pad', 'pad16')]
-    ),
-    'CMD_BRANCH_U16_VAR_WITHIN_RANGE': (
-        CutsceneOpcode.BRANCH_U16_VAR_WITHIN_RANGE, 16,
-        [('min', 'u16'), ('max', 'u16'), ('pad', 'pad16'), ('address', 'addr32'), ('target', 'rel16'), ('pad2', 'pad16')]
-    ),
-    'CMD_BRANCH_U32_VAR_WITHIN_RANGE': (
-        CutsceneOpcode.BRANCH_U32_VAR_WITHIN_RANGE, 20,
-        [('min', 'u32'), ('max', 'u32'), ('address', 'addr32'), ('target', 'rel16'), ('pad', 'pad16')]
-    ),
-    'CMD_BRANCH_ON_RANDOM': (
-        CutsceneOpcode.BRANCH_ON_RANDOM, 8,
-        [('chance', 'u16'), ('target', 'rel16'), ('pad', 'pad16')]
-    ),
-    'CMD_BRANCH_ON_ENTITY_DIR': (
-        CutsceneOpcode.BRANCH_ON_ENTITY_DIR, 8,
-        [('entity', 'u16'), ('direction', 'u8'), ('pad', 'pad8'), ('target', 'rel16')]
-    ),
-    'CMD_BRANCH_ON_DIALOGUE': (
-        CutsceneOpcode.BRANCH_ON_DIALOGUE, 8,
-        [('choice', 'u16'), ('target', 'rel16'), ('pad', 'pad16')]
-    ),
-    
-    # -------------------------------------------------------------------------
-    # Button branch commands (12 bytes)
-    # Format: opcode(2) + entity(2) + button(4) + offset(2) + pad(2)
-    # -------------------------------------------------------------------------
-    'CMD_BRANCH_ON_BUTTON_PRESSED': (
-        CutsceneOpcode.BRANCH_ON_BUTTON_PRESSED, 12,
-        [('entity', 'u16'), ('button', 'u32'), ('target', 'rel16'), ('pad', 'pad16')]
-    ),
-    'CMD_BRANCH_ON_BUTTON_REPEAT': (
-        CutsceneOpcode.BRANCH_ON_BUTTON_REPEAT, 12,
-        [('entity', 'u16'), ('button', 'u32'), ('target', 'rel16'), ('pad', 'pad16')]
-    ),
-    'CMD_BRANCH_ON_CURRENT_BUTTON': (
-        CutsceneOpcode.BRANCH_ON_CURRENT_BUTTON, 12,
-        [('entity', 'u16'), ('button', 'u32'), ('target', 'rel16'), ('pad', 'pad16')]
-    ),
-    
-    # -------------------------------------------------------------------------
-    # Entity animations (16 bytes)
-    # Format: opcode(2) + entity(2) + anim0-5(2 each) = 14 + pad(2)
-    # -------------------------------------------------------------------------
-    'CMD_SET_ENTITY_ANIMATIONS': (
-        CutsceneOpcode.SET_ENTITY_ANIMATIONS, 16,
-        [('entity', 'u16'), ('a0', 'u16'), ('a1', 'u16'), ('a2', 'u16'), 
-         ('a3', 'u16'), ('a4', 'u16'), ('a5', 'u16')]
-    ),
-    
-    # -------------------------------------------------------------------------
-    # Movement info (16 bytes) - complex, placeholder
-    # -------------------------------------------------------------------------
-    'CMD_SET_MOVEMENT_INFO': (
-        CutsceneOpcode.SET_MOVEMENT_INFO, 16,
-        [('a', 'u16'), ('b', 'u16'), ('c', 'u16'), ('d', 'u16'),
-         ('e', 'u16'), ('f', 'u16'), ('g', 'u16')]
-    ),
-    
-    # -------------------------------------------------------------------------
-    # Entity tracking (8 bytes)
-    # -------------------------------------------------------------------------
-    'CMD_SET_ENTITY_TRACKING_TARGET': (
-        CutsceneOpcode.SET_ENTITY_TRACKING_TARGET, 12,
-        [('target_sprite', 'u16'), ('x', 's16'), ('y', 's16'), ('z', 's16'), ('tracking_mode', 'u8'), ('_pad', 'pad8')]
-    ),
-    
-    # -------------------------------------------------------------------------
-    # Map asset setup (variable, placeholder for now at 8 bytes)
-    # -------------------------------------------------------------------------
-    'CMD_SETUP_MAP_ASSET': (
-        CutsceneOpcode.SETUP_MAP_ASSET, 8,
-        [('asset', 'u16'), ('param', 'u16'), ('pad', 'pad16')]
-    ),
-    
-    # -------------------------------------------------------------------------
-    # Entity dimensions (8 bytes)
-    # -------------------------------------------------------------------------
-    'CMD_SET_ENTITY_DIMENSIONS': (
-        CutsceneOpcode.SET_ENTITY_DIMENSIONS, 8,
-        [('entity', 'u16'), ('width', 'u16'), ('height', 'u16')]
-    ),
-    
-    # -------------------------------------------------------------------------
-    # Entity palette (4 bytes)
-    # -------------------------------------------------------------------------
-    'CMD_SET_ENTITY_PALETTE': (
-        CutsceneOpcode.SET_ENTITY_PALETTE, 4,
-        [('palette', 'u16')]
-    ),
-    
-    # -------------------------------------------------------------------------
-    # Shadow flags (8 bytes)
-    # -------------------------------------------------------------------------
-    'CMD_SET_SHADOW_FLAGS': (
-        CutsceneOpcode.SET_SHADOW_FLAGS, 8,
-        [('entity', 'u16'), ('flags', 'u16'), ('pad', 'pad16')]
-    ),
-    
-    # -------------------------------------------------------------------------
-    # Map rotation (4 bytes)
-    # -------------------------------------------------------------------------
-    'CMD_SET_MAP_ROTATION': (
-        CutsceneOpcode.SET_MAP_ROTATION, 4,
-        [('rotation', 'u16')]
-    ),
-    
-    # -------------------------------------------------------------------------
-    # Check entity collision (8 bytes)
-    # -------------------------------------------------------------------------
-    'CMD_CHECK_ENTITY_COLLISION': (
-        CutsceneOpcode.CHECK_ENTITY_COLLISION, 8,
-        [('entity', 'u16'), ('target', 'rel16'), ('pad', 'pad16')]
-    ),
-    
-    # -------------------------------------------------------------------------
-    # Update camera flags (4 bytes)
-    # -------------------------------------------------------------------------
-    'CMD_UPDATE_CAMERA_FLAGS': (
-        CutsceneOpcode.UPDATE_CAMERA_FLAGS, 4,
-        [('flags', 'u16')]
-    ),
-    
-    # -------------------------------------------------------------------------
-    # Map additions (8 bytes)
-    # -------------------------------------------------------------------------
-    'CMD_INIT_MAP_ADDITION': (
-        CutsceneOpcode.INIT_MAP_ADDITION, 8,
-        [('a', 'u16'), ('b', 'u16'), ('c', 'u16')]
-    ),
-    'CMD_SET_MAP_ADDITION': (
-        CutsceneOpcode.SET_MAP_ADDITION, 8,
-        [('a', 'u16'), ('b', 'u16'), ('c', 'u16')]
-    ),
-    'CMD_SET_MAP_GROUND_OBJECT': (
-        CutsceneOpcode.SET_MAP_GROUND_OBJECT, 8,
-        [('a', 'u16'), ('b', 'u16'), ('c', 'u16')]
-    ),
-    
-    # -------------------------------------------------------------------------
-    # Pointer range branches (12 bytes)
-    # -------------------------------------------------------------------------
-    'CMD_BRANCH_ON_U16_PTR_RANGE': (
-        CutsceneOpcode.BRANCH_ON_U16_PTR_RANGE, 12,
-        [('min', 'u16'), ('max', 'u16'), ('ptr', 'addr32'), ('target', 'rel16')]
-    ),
-    'CMD_BRANCH_ON_U8_PTR_RANGE': (
-        CutsceneOpcode.BRANCH_ON_U8_PTR_RANGE, 12,
-        [('min', 'u8'), ('max', 'u8'), ('ptr', 'addr32'), ('target', 'rel16'), ('pad', 'pad16')]
-    ),
-    
-    # -------------------------------------------------------------------------
-    # Entity flags (4 bytes each)  
-    # These use the actual enum values from the game
-    # -------------------------------------------------------------------------
-    'CMD_SET_ENTITY_MAP_SPACE_INDEPENDENT_FLAG': (
-        CutsceneOpcode.SET_ENTITY_MAP_SPACE_INDEPENDENT_FLAG, 4,
-        [('flag', 'u16')]
-    ),
-    'CMD_SET_ENTITY_MAP_SPACE_INDEPENDENT': (
-        CutsceneOpcode.SET_ENTITY_MAP_SPACE_INDEPENDENT, 4,
-        [('flag', 'u16')]
-    ),
-    
-    # -------------------------------------------------------------------------
-    # DMA_SPRITE (56 bytes) - complex sprite DMA command
-    # opcode(2) + sprite(2) + asset_type(2) + pad(2) + 12 x u32 addresses
-    # -------------------------------------------------------------------------
-    'CMD_DMA_SPRITE': (
-        CutsceneOpcode.DMA_SPRITE, 56,
-        [('sprite', 'u16'), ('asset_type', 'u16'), ('pad', 'pad16'),
-         ('rom_tex_start', 'addr32'), ('rom_tex_end', 'addr32'),
-         ('rom_assets_start', 'addr32'), ('rom_assets_end', 'addr32'),
-         ('rom_sheet_start', 'addr32'), ('rom_sheet_end', 'addr32'),
-         ('tex1_vaddr', 'addr32'), ('tex2_vaddr', 'addr32'),
-         ('palette_vaddr', 'addr32'), ('anim_vaddr', 'addr32'),
-         ('s2p_vaddr', 'addr32'), ('sheet_idx_vaddr', 'addr32')]
-    ),
-    
-}
+# Command specs are imported from shared utilities
+# COMMAND_SPECS_BY_NAME format: 'CMD_NAME' or 'NAME' -> (opcode, size, [(param_name, param_type), ...])
+COMMAND_SPECS = COMMAND_SPECS_BY_NAME
 
 # =============================================================================
 # BUILT-IN CONSTANTS
@@ -802,7 +123,7 @@ BUILTIN_CONSTANTS = {
     'ENTITY_ASSET_DOG_RACE': 61,
     'ENTITY_ASSET_CAT': 62,
     'ENTITY_ASSET_DOG': 63,
-    'ENTITY_ASSET_DOG_TITLE': 64,
+    'ENTITY_ASSET_PLAYER_DOG': 64,
     'ENTITY_ASSET_HORSE_PONY': 65,
     'ENTITY_ASSET_HORSE_GROWN': 66,
     'ENTITY_ASSET_CHICK': 67,
@@ -1260,7 +581,13 @@ class DSLParser:
 
 class CutsceneTranspiler:
     """Transpiles cutscene DSL to GNU as syntax"""
-    
+
+    # Buffer base addresses
+    BUFFER_BASES = {
+        1: 0x802F4000,
+        2: 0x802F5000,
+    }
+
     def __init__(self, bank_name: str = "cutscene_bank"):
         self.bank_name = bank_name
         self.parser = DSLParser()
@@ -1270,6 +597,8 @@ class CutsceneTranspiler:
         self.current_line: int = 0
         self.arrays: Dict[str, int] = {}  # array_name -> element_size in bytes
         self.variables: List[Dict] = []   # [{name, type, values, line_num}]
+        self.buffer_base: Optional[int] = None  # Buffer base address from .buffer directive
+        self.locals: Dict[str, Dict] = {}  # name -> {offset, type, size} for buffer-local variables
         
     # Element sizes for array type specifiers
     ARRAY_TYPE_SIZES = {
@@ -1293,26 +622,35 @@ class CutsceneTranspiler:
         self.warnings = []
         self.variables = []
         self.arrays = {}
-        
+        self.buffer_base = None
+        self.locals = {}
+
         lines = self.parser.parse_file(source)
-        
-        # First pass: collect variables and arrays
+
+        # First pass: collect variables, arrays, buffer directive, and locals
         code_lines = []
 
         for line in lines:
             self.current_line = line.line_num
-            if line.is_directive and line.directive_name == '.var':
+            if line.is_directive and line.directive_name == '.buffer':
+                self._collect_buffer(line)
+            elif line.is_directive and line.directive_name == '.var':
                 self._collect_variable(line)
             elif line.is_directive and line.directive_name == '.array':
                 self._collect_array(line)
+            elif line.is_directive and line.directive_name == '.local':
+                self._collect_local(line)
             else:
                 code_lines.append(line)
         
         self._emit_header()
-        
+
         if self.variables:
             self._emit_variables()
-        
+
+        if self.locals:
+            self._emit_locals()
+
         # Process code lines
         for line in code_lines:
             self.current_line = line.line_num
@@ -1355,7 +693,73 @@ class CutsceneTranspiler:
                 self.errors.append(f"Line {line.line_num}: Unknown variable type '{var_type}'")
         else:
             self.errors.append(f"Line {line.line_num}: .var requires name and type (e.g., .var myCounter, u8, 0)")
-    
+
+    def _collect_buffer(self, line: SourceLine):
+        """Collect buffer directive - sets the base address for buffer references"""
+
+        args = line.directive_args
+
+        if len(args) >= 1:
+            buffer_arg = args[0].strip()
+
+            # Parse buffer number (1 or 2) or direct hex address
+            if buffer_arg.isdigit():
+                buffer_num = int(buffer_arg)
+                if buffer_num in self.BUFFER_BASES:
+                    self.buffer_base = self.BUFFER_BASES[buffer_num]
+                else:
+                    self.errors.append(f"Line {line.line_num}: Invalid buffer number '{buffer_num}' (use 1 or 2)")
+            elif buffer_arg.startswith('0x') or buffer_arg.startswith('0X'):
+                self.buffer_base = int(buffer_arg, 16)
+            else:
+                self.errors.append(f"Line {line.line_num}: Invalid buffer argument '{buffer_arg}' (use 1, 2, or hex address)")
+        else:
+            self.errors.append(f"Line {line.line_num}: .buffer requires buffer number (1 or 2) or hex address")
+
+    def _collect_local(self, line: SourceLine):
+        """Collect a local buffer variable declaration
+
+        Syntax: .local name, type, offset
+        Example: .local flags, u32, 0x00
+                 .local counter, u16, 0x04
+
+        The name can then be used in commands and will resolve to buffer_base + offset.
+        Space is reserved in the output (without a label).
+        """
+
+        args = line.directive_args
+
+        if len(args) >= 3:
+            var_name = args[0]
+            var_type = args[1].lower()
+            offset_str = args[2]
+
+            # Parse offset
+            if offset_str.startswith('0x') or offset_str.startswith('0X'):
+                offset = int(offset_str, 16)
+            elif offset_str.isdigit():
+                offset = int(offset_str)
+            else:
+                self.errors.append(f"Line {line.line_num}: Invalid offset '{offset_str}' in .local")
+                return
+
+            # Get size from type
+            if var_type in self.ARRAY_TYPE_SIZES:
+                size = self.ARRAY_TYPE_SIZES[var_type]
+            else:
+                self.errors.append(f"Line {line.line_num}: Unknown type '{var_type}' in .local")
+                return
+
+            # Store the local variable
+            self.locals[var_name] = {
+                'offset': offset,
+                'type': var_type,
+                'size': size,
+                'line_num': line.line_num
+            }
+        else:
+            self.errors.append(f"Line {line.line_num}: .local requires name, type, and offset (e.g., .local flags, u32, 0x00)")
+
     def _collect_array(self, line: SourceLine):
         """Collect an array declaration"""
 
@@ -1390,7 +794,42 @@ class CutsceneTranspiler:
         self._emit(".balign 4")
         self._emit("# --- Code ---")
         self._emit()
-    
+
+    def _emit_locals(self):
+        """Emit local buffer variable space (without labels)
+
+        Local variables are emitted as anonymous data at the start of the section.
+        They're sorted by offset to ensure proper layout.
+        """
+
+        self._emit("# --- Local Buffer Space ---")
+
+        # Sort locals by offset
+        sorted_locals = sorted(self.locals.items(), key=lambda x: x[1]['offset'])
+
+        current_offset = 0
+        for name, info in sorted_locals:
+            offset = info['offset']
+            size = info['size']
+            var_type = info['type']
+
+            # Emit padding if there's a gap
+            if offset > current_offset:
+                gap = offset - current_offset
+                self._emit(f"    .space  {gap}          # padding")
+                current_offset = offset
+
+            # Emit the variable space (no label, just a comment)
+            directive = self.VAR_TYPE_DIRECTIVES[var_type]
+            self._emit(f"    {directive}   0          # {name} @ buffer+0x{offset:X}")
+            current_offset += size
+
+        self._emit()
+        # Align before code starts
+        self._emit(".balign 4")
+        self._emit("# --- Code ---")
+        self._emit()
+
     def _emit(self, text: str = ""):
         """Emit a line to output"""
         
@@ -1519,6 +958,7 @@ class CutsceneTranspiler:
             
         elif directive == '.anim_loop':
             target = args[0] if args else '.'
+            target = self._transform_label(target)
             self._emit(f'    .half   0xFFFE              # ANIM_LOOP')
             self._emit(f'    .half   {target} - .')
             
@@ -1535,11 +975,19 @@ class CutsceneTranspiler:
         elif directive == '.array':
             # Handled in first pass by _collect_array - should not reach here
             pass
-        
+
         elif directive == '.var':
             # Handled in first pass by _collect_variable - should not reach here
             pass
-                
+
+        elif directive == '.buffer':
+            # Handled in first pass by _collect_buffer - should not reach here
+            pass
+
+        elif directive == '.local':
+            # Handled in first pass by _collect_local - should not reach here
+            pass
+
         else:
             self.warnings.append(f"Line {line.line_num}: Unknown directive {directive}")
             
@@ -1677,6 +1125,11 @@ class CutsceneTranspiler:
                 symbol = self._resolve_value(param_value)
                 self._emit(f'    .word   {symbol}')
                 bytes_emitted += 4
+
+            elif spec_type in ('rom_start32', 'rom_end32'):
+                symbol = self._resolve_value(param_value)
+                self._emit(f'    .word   {symbol}')
+                bytes_emitted += 4
                 
             else:
                 self.errors.append(f"Line {line.line_num}: Unknown param type '{spec_type}'")
@@ -1692,14 +1145,23 @@ class CutsceneTranspiler:
         Constants are resolved to numbers; symbols are passed through.
         Labels starting with . are transformed to avoid directive conflicts.
         Array indexing (e.g., npcAffection[MARIA]) is resolved to base + offset.
+        Buffer references (buffer, buffer+0x4) are resolved to absolute addresses.
         """
 
         s = s.strip()
-        
+
+        # Check for local buffer variable
+        if s in self.locals:
+            return self._resolve_local_var(s)
+
+        # Check for buffer reference (buffer or buffer+offset)
+        if s == 'buffer' or s.startswith('buffer+'):
+            return self._resolve_buffer_ref(s)
+
         # Check for array indexing syntax: arrayName[index]
         if '[' in s and s.endswith(']'):
             return self._resolve_array_access(s)
-        
+
         # Check built-in constants
         if s in BUILTIN_CONSTANTS:
             return str(BUILTIN_CONSTANTS[s])
@@ -1724,9 +1186,60 @@ class CutsceneTranspiler:
         # Labels starting with . need to be transformed to .L_ prefix
         if s.startswith('.'):
             return self._transform_label(s)
-            
+
         return s
-    
+
+    def _resolve_buffer_ref(self, s: str) -> str:
+        """
+        Resolve buffer reference: buffer or buffer+offset
+        Returns: absolute address as hex string
+
+        Example: buffer -> 0x802F4000 (if buffer 1)
+        Example: buffer+0x4 -> 0x802F4004
+        Example: buffer+4 -> 0x802F4004
+        """
+
+        if self.buffer_base is None:
+            self.errors.append(f"Line {self.current_line}: 'buffer' used but no .buffer directive found")
+            return "0x00000000"
+
+        if s == 'buffer':
+            return f"0x{self.buffer_base:08X}"
+
+        # Parse buffer+offset
+        if s.startswith('buffer+'):
+            offset_str = s[7:].strip()  # Remove 'buffer+'
+
+            # Parse offset (hex or decimal)
+            if offset_str.startswith('0x') or offset_str.startswith('0X'):
+                offset = int(offset_str, 16)
+            elif offset_str.isdigit():
+                offset = int(offset_str)
+            else:
+                self.errors.append(f"Line {self.current_line}: Invalid buffer offset '{offset_str}'")
+                return f"0x{self.buffer_base:08X}"
+
+            return f"0x{self.buffer_base + offset:08X}"
+
+        # Shouldn't reach here
+        return s
+
+    def _resolve_local_var(self, name: str) -> str:
+        """
+        Resolve a local buffer variable to its absolute address.
+
+        Example: flags (declared as .local flags, u32, 0x00 with .buffer 1)
+                 -> 0x802F4000
+        """
+
+        if self.buffer_base is None:
+            self.errors.append(f"Line {self.current_line}: Local variable '{name}' used but no .buffer directive found")
+            return "0x00000000"
+
+        local_info = self.locals[name]
+        addr = self.buffer_base + local_info['offset']
+        return f"0x{addr:08X}"
+
     def _resolve_array_access(self, s: str) -> str:
         """
         Resolve array access syntax: arrayName[index]

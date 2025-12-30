@@ -2497,7 +2497,7 @@ void func_8008BAF0(u8 index, u8 arg1) {
         switch (gMiscAnimals[index].animalType) {
         
             case 0:
-                loadEntity(gMiscAnimals[index].entityIndex, ENTITY_ASSET_DOG_TITLE, TRUE);
+                loadEntity(gMiscAnimals[index].entityIndex, ENTITY_ASSET_PLAYER_DOG, TRUE);
                 break;
             case 1:
                 loadEntity(gMiscAnimals[index].entityIndex, ENTITY_ASSET_DOG, TRUE);

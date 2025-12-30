@@ -10,7 +10,7 @@ from hm64_sprite_utilities import *
 
 MAPS_DIR = Path("../assets/maps")
 MAP_ADDRESSES_CSV_PATH = Path("map_addresses.csv")
-ROM_PATH = Path("../baserom.us.z64")
+ROM_PATH = Path("../../baserom.us.z64")
 
 rom = None
 

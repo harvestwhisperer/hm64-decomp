@@ -50,4 +50,5 @@ undefined_funcs_auto.txt
 !/lib/ucode/n_aspMain.s
 !/lib/ucode/rspboot.s
 !/config/us/common_bss.ld
+!/tools/build
 /tools/build/mkldscript

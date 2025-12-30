@@ -12,7 +12,7 @@ from enum import IntEnum
 
 CSV_PATH = Path(__file__).parent / "dialogue_bytecode_addresses.csv"
 DIALOGUES_DIR = Path(__file__).parent / "../assets/dialogue-bytecode"
-ROM_PATH = Path(__file__).parent / "../baserom.us.z64"
+ROM_PATH = Path(__file__).parent / "../../baserom.us.z64"
 rom = None
 
 VERBOSE = "--verbose" in sys.argv

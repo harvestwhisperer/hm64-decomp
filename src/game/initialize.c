@@ -979,9 +979,9 @@ void func_8004F768(void) {
     setEntityCollisionBuffers(ENTITY_ASSET_DOG, 15, 15);
     setEntitySpriteDimensions(ENTITY_ASSET_DOG, 12, 12);
     
-    initializeEntityAsset(ENTITY_ASSET_DOG_TITLE, &_dogTitleTextureSegmentRomStart, &_dogTitleTextureSegmentRomEnd, &_dogTitleAssetsIndexSegmentRomStart, &_dogTitleAssetsIndexSegmentRomEnd, &_dogTitleSpritesheetIndexSegmentRomStart, &_dogTitleSpritesheetIndexSegmentRomEnd, 1, 0, &dogTitleAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_ASSET_DOG_TITLE, 15, 15);
-    setEntitySpriteDimensions(ENTITY_ASSET_DOG_TITLE, 12, 12);
+    initializeEntityAsset(ENTITY_ASSET_PLAYER_DOG, &_dogTitleTextureSegmentRomStart, &_dogTitleTextureSegmentRomEnd, &_dogTitleAssetsIndexSegmentRomStart, &_dogTitleAssetsIndexSegmentRomEnd, &_dogTitleSpritesheetIndexSegmentRomStart, &_dogTitleSpritesheetIndexSegmentRomEnd, 1, 0, &dogTitleAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_PLAYER_DOG, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_PLAYER_DOG, 12, 12);
     
     initializeEntityAsset(ENTITY_ASSET_HORSE_PONY, &_horsePonyTextureSegmentRomStart, &_horsePonyTextureSegmentRomEnd, &_horsePonyAssetsIndexSegmentRomStart, &_horsePonyAssetsIndexSegmentRomEnd, &_horsePonySpritesheetIndexSegmentRomStart, &_horsePonySpritesheetIndexSegmentRomEnd, 1, 0, &horsePonyAnimationScripts);
     setEntityCollisionBuffers(ENTITY_ASSET_HORSE_PONY, 15, 15);

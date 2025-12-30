@@ -16,7 +16,7 @@ except ImportError:
         ROM_SEGMENT_START_SYMBOLS = {}
         ROM_SEGMENT_END_SYMBOLS = {}
 
-ROM_PATH = Path("../baserom.us.z64")
+ROM_PATH = Path("../../baserom.us.z64")
 
 rom = None
 
@@ -129,108 +129,143 @@ class CutsceneOpcode(IntEnum):
     SET_MAP_GROUND_OBJECT = 96
     SET_MESSAGE_INTERPOLATION = 97
 
-# Maps Opcode ID -> (Opcode Name, List of parameter types for ASM generation)
-# Types: 'u8', 'u16', 'u32', 's8', 's16', 's32', 'rel16' (label - .), 'addr32' (symbol), 'pad8', 'pad16'
-ASM_COMMAND_SPECS = {
-    0: ("CMD_SET_ANIM_DATA_PTR_WITH_FLAG", ['rel16']),
-    1: ("CMD_SET_ANIM_DATA_PTR", ['rel16']),
-    2: ("CMD_SET_COORDINATES", ['s16', 's16', 's16']),
-    3: ("CMD_SET_FRAME_DELTA", ['s8', 's8', 's8', 'u8', 'pad16']),
-    4: ("CMD_SET_WAIT_FRAMES", ['u16']),
-    5: ("CMD_DEACTIVATE_SELF", ['pad16']),
-    6: ("CMD_EXECUTE_SUBROUTINE", ['rel16']),
-    7: ("CMD_RETURN_FROM_SUBROUTINE", ['pad16']),
-    8: ("CMD_BRANCH_ON_CURRENT_BUTTON", ['u16', 'u32', 'rel16', 'pad16']),
-    9: ("CMD_BRANCH_ON_BUTTON_PRESSED", ['u16', 'u32', 'rel16', 'pad16']),
-    10: ("CMD_BRANCH_ON_BUTTON_REPEAT", ['u16', 'u32', 'rel16', 'pad16']),
-    11: ("CMD_SPAWN_EXECUTOR", ['u16', 'rel16', 'pad16']),
-    12: ("CMD_SET_OTHER_EXECUTOR_PTR", ['u16', 'rel16', 'pad16']),
-    13: ("CMD_DEACTIVATE_EXECUTOR", ['u16']),
-    14: ("CMD_DMA_SPRITE", ['u16', 'u16', 'pad16', 'rom_start32', 'rom_end32', 'rom_start32', 'rom_end32', 'rom_start32', 'rom_end32', 'addr32', 'addr32', 'addr32', 'addr32', 'addr32', 'addr32']),
-    15: ("CMD_SET_ENTITY_ANIMATIONS", ['u16', 'u16', 'u16', 'u16', 'u16', 'u16', 'u16']),
-    16: ("CMD_DO_DMA", ['pad16', 'rom_start32', 'rom_end32', 'addr32']),
-    17: ("CMD_SET_U8_VALUE", ['u8', 'pad8', 'addr32']), # func_80048B90
-    18: ("CMD_SET_U16_VALUE", ['u16', 'addr32']), # func_80048BEC
-    19: ("CMD_SET_U32_VALUEE", ['pad16', 'addr32', 'u32']), 
-    20: ("CMD_BRANCH_U8_VAR_WITHIN_RANGE", ['u8', 'u8', 'addr32', 'rel16', 'pad16']),  # func_80048CA4
-    21: ("CMD_BRANCH_U16_VAR_WITHIN_RANGE", ['u16', 'u16', 'pad16', 'addr32', 'rel16', 'pad16']), # func_80048DA8
-    22: ("CMD_BRANCH_U32_VAR_WITHIN_RANGE", ['pad16', 'u32', 'u32', 'addr32', 'rel16', 'pad16']), # func_80048E98
-    23: ("CMD_SET_SPECIAL_BIT", ['u16', 'addr32']),
-    24: ("CMD_TOGGLE_SPECIAL_BIT", ['u16', 'addr32']),
-    25: ("CMD_BRANCH_ON_SPECIAL_BIT", ['u16', 'addr32', 'rel16', 'pad16']),
-    26: ("CMD_SET_ASSET_ROTATION", ['u8', 'pad8']), # func_8004910C
-    27: ("CMD_SETUP_MAP_ASSET", ['u16']), # func_80049228
-    28: ("CMD_ENTITY_MOVE_AND_ANIMATE", ['u16', 'u8', 'u8', 'pad16']), # func_80049350
-    29: ("CMD_SET_MAP_ROTATION_WITH_FLAG", ['u16', 'u8', 'u8', 'pad16']), # func_800495F0
-    30: ("CMD_SET_CAMERA_TRACKING_FLAG", ['u8', 'pad8']), # func_8004969C
-    31: ("CMD_SET_MOVEMENT_INFO", ['pad8', 'u8', 'u16', 'u16']),
-    32: ("CMD_INIT_MESSAGE_BOX_TYPE1", ['u16', 'u16', 'u16']),
-    33: ("CMD_WAIT_MESSAGE_BOX_CLOSED", ['u16']), # func_800498B0
-    34: ("CMD_SET_MESSAGE_BOX_VIEW_POSITION", ['u16', 's16', 's16', 's16', 'pad16']),
-    35: ("CMD_RESET_MESSAGE_BOX_AVATAR", ['u16']), # func_80049A28
-    36: ("CMD_ENTITY_MOVE_AND_ANIMATE_2", ['u16', 'pad16', 'u8', 'u8']), # func_80049AC4
-    37: ("CMD_SET_ENTITY_ANIMATION", ['u16']),
-    38: ("CMD_SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE", ['u16']),
-    39: ("CMD_SET_CALLBACK_ROUTINE", ['u16', 'u16', 'rel16']),
-    40: ("CMD_PAUSE_ENTITY", ['u16']),
-    41: ("CMD_TOGGLE_PAUSE_ENTITY", ['u16']),
-    42: ("CMD_FLIP_ENTITY_DIRECTION", ['u16']),
-    43: ("CMD_PAUSE_ENTITIES", ['pad16']),
-    44: ("CMD_TOGGLE_PAUSE_ENTITIES", ['pad16']), # func_8004A0F4
-    45: ("CMD_FLIP_ENTITY_ANIMATION", ['pad16']), # func_8004A140
-    46: ("CMD_SET_ENTITY_NON_COLLIDABLE", ['pad16']), 
-    47: ("CMD_SETUP_ENTITY", ['u16', 'u16', 'u16']),
-    48: ("CMD_SET_ENTITY_MAP_SPACE_INDEPENDENT_FLAG", ['u16']), # func_8004A320
-    49: ("CMD_LOAD_MAP", ['u16', 'u16', 'pad16']),
-    50: ("CMD_SET_ENTITY_MAP_SPACE_INDEPENDENT", ['u16']),
-    51: ("CMD_SET_RGBA", ['u8', 'u8', 'u8', 'u8', 'pad16']),
-    52: ("CMD_UPDATE_RGBA", ['u8', 'u8', 'u8', 'u8', 's16']),
-    53: ("CMD_UPDATE_U8_VALUE", ['pad8', 's8', 'pad8', 'u8', 'pad16', 'addr32']),
-    54: ("CMD_UPDATE_U16_VALUE", ['s16', 'u16', 'pad16', 'addr32']),
-    55: ("CMD_UPDATE_U32_VALUE", ['pad16', 's32', 's32', 'addr32']),
-    56: ("CMD_DEACTIVATE_MAP_OBJECTS", ['u16']), # func_8004ACE4
-    57: ("CMD_UPDATE_GLOBAL_RGBA", ['u8', 'u8', 'u8', 'u8', 's16']),
-    58: ("CMD_DEACTIVATE_SPRITES", ['pad16']),
-    59: ("CMD_DEACTIVATE_MAP_CONTROLLERS", ['pad16']),
-    60: ("CMD_WAIT_RGBA_FINISHED", ['pad16']), # func_8004B0E8
-    61: ("CMD_CHECK_ENTITY_COLLISION", ['u16', 'rel16', 'pad16']),
-    62: ("CMD_INIT_DIALOGUE_SESSION", ['u16', 'u16', 'u16']),
-    63: ("CMD_WAIT_FOR_DIALOGUE_INPUT", ['u16']),
-    64: ("CMD_BRANCH_ON_DIALOGUE", ['u16', 'u16', 'pad16', 'rel16', 'pad16']), # func_8004B538
-    65: ("CMD_WAIT_ENTITY_ANIMATION", ['pad16']), # func_8004B5F0
-    66: ("CMD_SET_MESSAGE_BOX_ASSETS", ['u16', 'u8', 'u8', 'u8', 'pad8']),
-    67: ("CMD_SET_ENTITY_TRACKING_TARGET", ['u16', 's16', 's16', 's16', 'u8', 'pad8']),
-    68: ("CMD_UPDATE_CAMERA_FLAGS", ['u16']), # func_8004B920
-    69: ("CMD_WAIT_MAP_LOAD", ['u16']), # func_8004B9A0
-    70: ("CMD_BRANCH_ON_ENTITY_DIR", ['u16', 'u8', 'pad8', 'rel16']),
-    71: ("CMD_SET_ENTITY_PHYSICS_FLAGS", ['u16']),
-    72: ("CMD_SET_ENTITY_PALETTE", ['u16']),
-    73: ("CMD_SET_ENTITY_DIMENSIONS", ['u8', 'u8']),
-    74: ("CMD_SET_SHADOW_FLAGS", ['u16', 'u16', 'pad16']), # func_8004BE14
-    75: ("CMD_SET_SPRITE_SCALE", ['u16', 'u16', 'u16']),
-    76: ("CMD_SET_SPRITE_RENDERING_LAYER", ['u16']),
-    77: ("CMD_INIT_MESSAGE_BOX_TYPE2", ['u16', 'u16', 'u16']),
-    78: ("CMD_INIT_MAP_ADDITION", ['u16', 'u16', 'pad16']), # func_8004C0D0
-    79: ("CMD_BRANCH_ON_RANDOM", ['u16', 'rel16', 'pad16']), # func_8004C148
-    80: ("CMD_BRANCH_IF_U16_PTR_IN_RANGE", ['pad16', 'addr32', 'addr32', 'addr32', 'rel16', 'pad16']), # func_8004C258
-    81: ("CMD_PAUSE_EXECUTOR", ['u16']),
-    82: ("CMD_TOGGLE_PAUSE_EXECUTOR", ['u16']),
-    83: ("CMD_PAUSE_ALL_CHILD_EXECUTORS", ['pad16']),
-    84: ("CMD_TOGGLE_PAUSE_ALL_CHILDREN", ['pad16']),
-    85: ("CMD_SET_SPRITE_PALETTE", ['u16']),
-    86: ("CMD_BRANCH_IF_U8_PTR_RANGE", ['u8', 'u8', 'addr32', 'addr32', 'addr32', 'rel16', 'pad16']), # func_8004C5D8
-    87: ("CMD_SET_AUDIO_SEQUENCE", ['u16', 'rom_start32', 'rom_end32']),
-    88: ("CMD_STOP_SONG_WITH_FADE", ['u16', 'u16', 'pad16']),
-    89: ('CMD_SET_AUDIO_SEQUENCE_VOLUME', ['u16', 'u16', 's16']),
-    90: ("CMD_SET_SFX", ['u16', 'u16', 'pad16']),
-    91: ("CMD_IDLE_WHILE_SONG_PLAYING", ['u16']),
-    92: ("CMD_UPDATE_MESSAGE_BOX_RGBA", ['u16', 'u8', 'u8', 'u8', 'u8', 'u16', 'pad16']),
-    93: ("CMD_WAIT_MESSAGE_BOX_READY", ['u16']), # func_8004CA80
-    94: ("CMD_SET_SPRITE_BILINEAR", ['u16']),
-    95: ("CMD_SET_MAP_ADDITION", ['u16', 'u8', 'u8', 'pad16']),
-    96: ("CMD_SET_MAP_GROUND_OBJECT", ['u16', 'u16', 'u16']),
-    97: ("CMD_SET_MESSAGE_INTERPOLATION", ['s16', 's16', 's16']), # func_8004CCF0
+# =============================================================================
+# COMMAND SPECS - Single source of truth for both ASM-to-DSL and transpiler
+# =============================================================================
+# Format: opcode -> (name, size, [(param_name, param_type), ...])
+# Types: 'u8', 'u16', 'u32', 's8', 's16', 's32', 'rel16', 'addr32', 'pad8', 'pad16', 'rom_start32', 'rom_end32'
+COMMAND_SPECS = {
+    0: ("CMD_SET_ANIM_DATA_PTR_WITH_FLAG", 4, [('target', 'rel16')]),
+    1: ("CMD_SET_ANIM_DATA_PTR", 4, [('target', 'rel16')]),
+    2: ("CMD_SET_COORDINATES", 8, [('x', 's16'), ('y', 's16'), ('z', 's16')]),
+    3: ("CMD_SET_FRAME_DELTA", 8, [('x', 's8'), ('y', 's8'), ('z', 's8'), ('wait', 'u8'), ('pad', 'pad16')]),
+    4: ("CMD_SET_WAIT_FRAMES", 4, [('frames', 'u16')]),
+    5: ("CMD_DEACTIVATE_SELF", 4, [('pad', 'pad16')]),
+    6: ("CMD_EXECUTE_SUBROUTINE", 4, [('target', 'rel16')]),
+    7: ("CMD_RETURN_FROM_SUBROUTINE", 4, [('pad', 'pad16')]),
+    8: ("CMD_BRANCH_ON_CURRENT_BUTTON", 12, [('entity', 'u16'), ('button', 'u32'), ('target', 'rel16'), ('pad', 'pad16')]),
+    9: ("CMD_BRANCH_ON_BUTTON_PRESSED", 12, [('entity', 'u16'), ('button', 'u32'), ('target', 'rel16'), ('pad', 'pad16')]),
+    10: ("CMD_BRANCH_ON_BUTTON_REPEAT", 12, [('entity', 'u16'), ('button', 'u32'), ('target', 'rel16'), ('pad', 'pad16')]),
+    11: ("CMD_SPAWN_EXECUTOR", 8, [('executor', 'u16'), ('target', 'rel16'), ('pad', 'pad16')]),
+    12: ("CMD_SET_OTHER_EXECUTOR_PTR", 8, [('executor', 'u16'), ('target', 'rel16'), ('pad', 'pad16')]),
+    13: ("CMD_DEACTIVATE_EXECUTOR", 4, [('executor', 'u16')]),
+    14: ("CMD_DMA_SPRITE", 56, [('sprite', 'u16'), ('asset_type', 'u16'), ('pad', 'pad16'),
+         ('rom_tex_start', 'rom_start32'), ('rom_tex_end', 'rom_end32'),
+         ('rom_assets_start', 'rom_start32'), ('rom_assets_end', 'rom_end32'),
+         ('rom_sheet_start', 'rom_start32'), ('rom_sheet_end', 'rom_end32'),
+         ('tex1_vaddr', 'addr32'), ('tex2_vaddr', 'addr32'),
+         ('palette_vaddr', 'addr32'), ('anim_vaddr', 'addr32'),
+         ('s2p_vaddr', 'addr32'), ('sheet_idx_vaddr', 'addr32')]),
+    15: ("CMD_SET_ENTITY_ANIMATIONS", 16, [('entity', 'u16'), ('a0', 'u16'), ('a1', 'u16'), ('a2', 'u16'),
+         ('a3', 'u16'), ('a4', 'u16'), ('a5', 'u16')]),
+    16: ("CMD_DO_DMA", 16, [('pad', 'pad16'), ('start', 'rom_start32'), ('end', 'rom_end32'), ('dest', 'addr32')]),
+    17: ("CMD_SET_U8_VALUE", 8, [('pad', 'pad8'), ('value', 'u8'), ('address', 'addr32')]), # func_80048B90
+    18: ("CMD_SET_U16_VALUE", 8, [('value', 'u16'), ('address', 'addr32')]), # func_80048BEC
+    19: ("CMD_SET_U32_VALUE", 12, [('pad', 'pad16'), ('address', 'addr32'), ('value', 'u32')]),
+    20: ("CMD_BRANCH_U8_VAR_WITHIN_RANGE", 12, [('min', 'u8'), ('max', 'u8'), ('address', 'addr32'), ('target', 'rel16'), ('pad', 'pad16')]),
+    21: ("CMD_BRANCH_U16_VAR_WITHIN_RANGE", 16, [('min', 'u16'), ('max', 'u16'), ('pad', 'pad16'), ('address', 'addr32'), ('target', 'rel16'), ('pad2', 'pad16')]),
+    22: ("CMD_BRANCH_U32_VAR_WITHIN_RANGE", 20, [('pad', 'pad16'), ('min', 'u32'), ('max', 'u32'), ('address', 'addr32'), ('target', 'rel16'), ('pad2', 'pad16')]),
+    23: ("CMD_SET_SPECIAL_BIT", 8, [('bit', 'u16'), ('address', 'addr32')]),
+    24: ("CMD_TOGGLE_SPECIAL_BIT", 8, [('bit', 'u16'), ('address', 'addr32')]),
+    25: ("CMD_BRANCH_ON_SPECIAL_BIT", 12, [('bit', 'u16'), ('address', 'addr32'), ('target', 'rel16'), ('pad', 'pad16')]),
+    26: ("CMD_SET_ASSET_ROTATION", 4, [('direction', 'u8'), ('pad', 'pad8')]), # func_8004910C
+    27: ("CMD_SETUP_MAP_ASSET", 4, [('mapIndex', 'u16')]), # func_80049228
+    28: ("CMD_ENTITY_MOVE_AND_ANIMATE", 8, [('distance', 'u16'), ('direction', 'u8'), ('speed', 'u8'), ('pad', 'pad16')]), # func_80049350
+    29: ("CMD_SET_MAP_ROTATION", 8, [('mapIndex', 'u16'), ('arg1', 'u8'), ('rotation', 'u8'), ('pad', 'pad16')]), # func_800495F0
+    30: ("CMD_SET_CAMERA_TRACKING_FLAG", 4, [('flag', 'u8'), ('pad', 'pad8')]), # func_8004969C
+    31: ("CMD_SET_MOVEMENT_INFO", 8, [('movement_distance', 'u8'), ('pad', 'pad8'), ('collision_width', 'u16'), ('collision_height', 'u16')]),
+    32: ("CMD_INIT_MESSAGE_BOX_TYPE1", 8, [('box', 'u16'), ('bank', 'u16'), ('index', 'u16')]),
+    33: ("CMD_WAIT_MESSAGE_BOX_CLOSED", 4, [('box', 'u16')]), # func_800498B0
+    34: ("CMD_SET_MESSAGE_BOX_VIEW_POSITION", 12, [('box', 'u16'), ('x', 's16'), ('y', 's16'), ('z', 's16'), ('pad', 'pad16')]),
+    35: ("CMD_RESET_MESSAGE_BOX_AVATAR", 4, [('box', 'u16')]), # func_80049A28
+    36: ("CMD_ENTITY_MOVE_AND_ANIMATE_2", 8, [('distance', 'u16'), ('direction', 'u8'), ('speed', 'u8'), ('pad', 'pad16')]), # func_80049AC4
+    37: ("CMD_SET_ENTITY_ANIMATION", 4, [('anim', 'u16')]),
+    38: ("CMD_SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE", 4, [('anim', 'u16')]),
+    39: ("CMD_SET_CALLBACK_ROUTINE", 8, [('entity', 'u16'), ('button', 'u16'), ('target', 'rel16')]),
+    40: ("CMD_PAUSE_ENTITY", 4, [('entity', 'u16')]),
+    41: ("CMD_TOGGLE_PAUSE_ENTITY", 4, [('entity', 'u16')]),
+    42: ("CMD_FLIP_ENTITY_DIRECTION", 4, [('entity', 'u16')]),
+    43: ("CMD_PAUSE_ENTITIES", 4, [('pad', 'pad16')]),
+    44: ("CMD_TOGGLE_PAUSE_ENTITIES", 4, [('pad', 'pad16')]), # func_8004A0F4
+    45: ("CMD_FLIP_ENTITY_ANIMATION", 4, [('pad', 'pad16')]), # func_8004A140
+    46: ("CMD_SET_ENTITY_NON_COLLIDABLE", 4, [('pad', 'pad16')]),
+    47: ("CMD_SETUP_ENTITY", 8, [('entity', 'u16'), ('asset', 'u16'), ('variant', 'u16')]),
+    48: ("CMD_SET_ENTITY_MAP_SPACE_INDEPENDENT_FLAG", 4, [('flag', 'u16')]), # func_8004A320
+    49: ("CMD_LOAD_MAP", 8, [('mapControllerIndex', 'u16'), ('mapIndex', 'u16'), ('pad', 'pad16')]),
+    50: ("CMD_SET_ENTITY_MAP_SPACE_INDEPENDENT", 4, [('flag', 'u16')]),
+    51: ("CMD_SET_RGBA", 8, [('r', 'u8'), ('g', 'u8'), ('b', 'u8'), ('a', 'u8'), ('pad', 'pad16')]),
+    52: ("CMD_UPDATE_RGBA", 8, [('r', 'u8'), ('g', 'u8'), ('b', 'u8'), ('a', 'u8'), ('speed', 's16')]),
+    53: ("CMD_UPDATE_U8_VALUE", 12, [('delta', 's16'), ('pad2', 'pad8'), ('max', 'u8'), ('pad3', 'pad16'), ('address', 'addr32')]),
+    54: ("CMD_UPDATE_U16_VALUE", 12, [('delta', 's16'), ('max', 'u16'), ('pad', 'pad16'), ('address', 'addr32')]),
+    55: ("CMD_UPDATE_U32_VALUE", 16, [('pad', 'pad16'), ('delta', 's32'), ('max', 's32'), ('address', 'addr32')]),
+    56: ("CMD_DEACTIVATE_MAP_OBJECTS", 4, [('mapIndex', 'u16')]), # func_8004ACE4
+    57: ("CMD_UPDATE_GLOBAL_RGBA", 8, [('r', 'u8'), ('g', 'u8'), ('b', 'u8'), ('a', 'u8'), ('speed', 's16')]),
+    58: ("CMD_DEACTIVATE_SPRITES", 4, [('pad', 'pad16')]),
+    59: ("CMD_DEACTIVATE_MAP_CONTROLLERS", 4, [('pad', 'pad16')]),
+    60: ("CMD_WAIT_RGBA_FINISHED", 4, [('pad', 'pad16')]), # func_8004B0E8
+    61: ("CMD_CHECK_ENTITY_COLLISION", 8, [('entity', 'u16'), ('target', 'rel16'), ('pad', 'pad16')]),
+    62: ("CMD_INIT_DIALOGUE_SESSION", 8, [('box', 'u16'), ('bank', 'u16'), ('index', 'u16')]),
+    63: ("CMD_WAIT_FOR_DIALOGUE_INPUT", 4, [('box', 'u16')]),
+    64: ("CMD_BRANCH_ON_DIALOGUE", 12, [('dialogue_index', 'u16'), ('unk_17', 'u16'), ('pad', 'pad16'), ('target', 'rel16'), ('pad2', 'pad16')]), # func_8004B538
+    65: ("CMD_WAIT_ENTITY_ANIMATION", 4, [('pad', 'pad16')]), # func_8004B5F0
+    66: ("CMD_SET_MESSAGE_BOX_ASSETS", 8, [('spriteIndex', 'u16'), ('dialogueWindowIndex', 'u8'), ('overlayIconIndex', 'u8'), ('characterAvatarIndex', 'u8'), ('pad', 'pad8')]),
+    67: ("CMD_SET_ENTITY_TRACKING_TARGET", 12, [('target_sprite', 'u16'), ('x', 's16'), ('y', 's16'), ('z', 's16'), ('tracking_mode', 'u8'), ('pad', 'pad8')]),
+    68: ("CMD_UPDATE_CAMERA_FLAGS", 4, [('flags', 'u16')]), # func_8004B920
+    69: ("CMD_WAIT_MAP_LOAD", 4, [('map', 'u16')]), # func_8004B9A0
+    70: ("CMD_BRANCH_ON_ENTITY_DIR", 8, [('entity', 'u16'), ('direction', 'u8'), ('pad', 'pad8'), ('target', 'rel16')]),
+    71: ("CMD_SET_ENTITY_PHYSICS_FLAGS", 4, [('flags', 'u16')]),
+    72: ("CMD_SET_ENTITY_PALETTE", 4, [('palette', 'u16')]),
+    73: ("CMD_SET_ENTITY_DIMENSIONS", 4, [('width', 'u8'), ('height', 'u8')]),
+    74: ("CMD_SET_SHADOW_FLAGS", 8, [('entity', 'u16'), ('flags', 'u16'), ('pad', 'pad16')]), # func_8004BE14
+    75: ("CMD_SET_SPRITE_SCALE", 8, [('x', 'u16'), ('y', 'u16'), ('z', 'u16')]),
+    76: ("CMD_SET_SPRITE_RENDERING_LAYER", 4, [('layer', 'u16')]),
+    77: ("CMD_INIT_MESSAGE_BOX_TYPE2", 8, [('box', 'u16'), ('bank', 'u16'), ('index', 'u16')]),
+    78: ("CMD_INIT_MAP_ADDITION", 8, [('mapAdditionIndex', 'u16'), ('flag', 'u16'), ('pad', 'pad16')]), # func_8004C0D0
+    79: ("CMD_BRANCH_ON_RANDOM", 8, [('min', 'u16'), ('max', 'u16'), ('target', 'rel16')]), # func_8004C148
+    80: ("CMD_BRANCH_IF_U16_PTR_IN_RANGE", 24, [('pad', 'pad16'), ('ptr', 'addr32'), ('min_ptr', 'addr32'), ('max_ptr', 'addr32'), ('target', 'rel16'), ('pad2', 'pad16')]),
+    81: ("CMD_PAUSE_EXECUTOR", 4, [('executor', 'u16')]),
+    82: ("CMD_TOGGLE_PAUSE_EXECUTOR", 4, [('executor', 'u16')]),
+    83: ("CMD_PAUSE_ALL_CHILD_EXECUTORS", 4, [('pad', 'pad16')]),
+    84: ("CMD_TOGGLE_PAUSE_ALL_CHILDREN", 4, [('pad', 'pad16')]),
+    85: ("CMD_SET_SPRITE_PALETTE", 4, [('palette', 'u16')]),
+    86: ("CMD_BRANCH_IF_U8_PTR_RANGE", 28, [('min', 'u8'), ('max', 'u8'), ('ptr', 'addr32'), ('min_ptr', 'addr32'), ('max_ptr', 'addr32'), ('target', 'rel16'), ('pad', 'pad16')]),
+    87: ("CMD_SET_AUDIO_SEQUENCE", 12, [('channel', 'u16'), ('start', 'rom_start32'), ('end', 'rom_end32')]),
+    88: ("CMD_STOP_SONG_WITH_FADE", 8, [('channel', 'u16'), ('speed', 'u16'), ('pad', 'pad16')]),
+    89: ("CMD_SET_AUDIO_SEQUENCE_VOLUME", 8, [('songIndex', 'u16'), ('targetVolume', 'u16'), ('volume', 's16')]),
+    90: ("CMD_SET_SFX", 8, [('sfx', 'u16'), ('volume', 'u16'), ('pad', 'pad16')]),
+    91: ("CMD_IDLE_WHILE_SONG_PLAYING", 4, [('channel', 'u16')]),
+    92: ("CMD_UPDATE_MESSAGE_BOX_RGBA", 12, [('box', 'u16'), ('r', 'u8'), ('g', 'u8'), ('b', 'u8'), ('a', 'u8'), ('speed', 'u16'), ('pad', 'pad16')]),
+    93: ("CMD_WAIT_MESSAGE_BOX_READY", 4, [('box', 'u16')]), # func_8004CA80
+    94: ("CMD_SET_SPRITE_BILINEAR", 4, [('flag', 'u16')]),
+    95: ("CMD_SET_MAP_ADDITION", 8, [('a', 'u16'), ('b', 'u8'), ('c', 'u8'), ('pad', 'pad16')]),
+    96: ("CMD_SET_MAP_GROUND_OBJECT", 8, [('a', 'u16'), ('b', 'u16'), ('c', 'u16')]),
+    97: ("CMD_SET_MESSAGE_INTERPOLATION", 8, [('rate', 's16'), ('message_box_index', 's16'), ('flag', 'u8'), ('pad', 'pad8')]), # func_8004CCF0
 }
+
+# Helper to get type-only list (for backward compatibility with ASM-to-DSL)
+def get_asm_command_types(opcode: int) -> Tuple[str, List[str]]:
+    """Returns (name, [types]) for the given opcode"""
+    if opcode not in COMMAND_SPECS:
+        return None
+    name, size, params = COMMAND_SPECS[opcode]
+    return (name, [p[1] for p in params])
+
+# Build ASM_COMMAND_SPECS for backward compatibility
+ASM_COMMAND_SPECS = {
+    opcode: (name, [p[1] for p in params])
+    for opcode, (name, size, params) in COMMAND_SPECS.items()
+}
+
+# Build name-indexed COMMAND_SPECS_BY_NAME for transpiler use
+COMMAND_SPECS_BY_NAME = {
+    name: (opcode, size, params)
+    for opcode, (name, size, params) in COMMAND_SPECS.items()
+}
+
+# Also index without CMD_ prefix
+for opcode, (name, size, params) in COMMAND_SPECS.items():
+    if name.startswith('CMD_'):
+        COMMAND_SPECS_BY_NAME[name[4:]] = (opcode, size, params)
 
 OPCODE_NAMES = {k: v[0] for k, v in ASM_COMMAND_SPECS.items()}
 
@@ -324,7 +359,7 @@ ENTITY_ASSET_CONSTANTS = {
     61: "ENTITY_ASSET_DOG_RACE",
     62: "ENTITY_ASSET_CAT",
     63: "ENTITY_ASSET_DOG",
-    64: "ENTITY_ASSET_DOG_TITLE",
+    64: "ENTITY_ASSET_PLAYER_DOG",
     65: "ENTITY_ASSET_HORSE_PONY",
     66: "ENTITY_ASSET_HORSE_GROWN",
     67: "ENTITY_ASSET_CHICK",
@@ -1331,7 +1366,7 @@ class CutsceneBytecodeParser:
                 dir_str = format_direction(direction, self.enable_labels)
                 params = [("frames", frames), ("dir", dir_str), ("dist", distance)]
 
-            elif opcode == 29: # SET_MAP_ROTATION_WITH_FLAG
+            elif opcode == 29: # SET_MAP_ROTATION
                 idx = self.read_u16()
                 flag = self.read_u8() 
                 rot = self.read_u8()
@@ -1424,11 +1459,11 @@ class CutsceneBytecodeParser:
                 params = [("flag", flag)]
 
             elif opcode == 49: # LOAD_MAP
-                data_idx = self.read_u16()
+                controller_idx = self.read_u16()
                 map_idx = self.read_u16()
                 self.pos += 2 # Padding
                 map_str = format_map_name(map_idx, self.enable_labels)
-                params = [("data_idx", data_idx), ("map_idx", map_str)]
+                params = [("controller_idx", controller_idx), ("map_idx", map_str)]
 
             elif opcode == 50: # SET_ENTITY_MAP_SPACE_INDEPENDENT
                 self.pos += 2 # padding
@@ -1450,8 +1485,7 @@ class CutsceneBytecodeParser:
                 params = [("r", r), ("g", g), ("b", b), ("a", a), ("rate", rate)]
 
             elif opcode == 53: # UPDATE_U8
-                self.pos += 1
-                val = self.read_s8()
+                val = self.read_s16()
                 self.pos += 1
                 max_val = self.read_u8()
                 self.pos += 2 # padding/unused

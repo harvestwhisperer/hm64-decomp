@@ -87,17 +87,15 @@ LDFLAGS := -G 0 -T config/$(REGION)/undefined_funcs.txt -T config/$(REGION)/unde
 
 # Binary asset matching (cutscenes, dialogues, texts)
 
-# All cutscene banks in the game
-ALL_CUTSCENE_BANKS := cutsceneBank1 cutsceneBank2 cutsceneBank3 cutsceneBank4 cutsceneBank5 \
+ALL_CUTSCENE_BANKS := farmBusiness cutsceneBank2 cutsceneBank3 cutsceneBank4 cutsceneBank5 \
 	cutsceneBank6 cutsceneBank7 cutsceneBank8 cutsceneBank9 cutsceneBank10 \
 	cutsceneBank11 cutsceneBank12 cutsceneBank13 cutsceneBank14 fireworksFestival \
 	cutsceneBank16 cutsceneBank17 cutsceneBank18 cutsceneBank19 cutsceneBank20 \
 	cutsceneBank21 cutsceneBank22 cutsceneBank23 cutsceneBank24 cutsceneBank25 \
 	cutsceneBank26 cutsceneBank27
 
-# Cutscenes that have been manually decompiled (DSL in src/bytecode/cutscenes/)
 ifeq ($(REGION),us)
-DECOMPILED_CUTSCENES := fireworksFestival
+DECOMPILED_CUTSCENES := farmBusiness cutsceneBank2 fireworksFestival cutsceneBank24
 else
 DECOMPILED_CUTSCENES :=
 endif
@@ -111,8 +109,8 @@ CUTSCENE_ASSETS_DIR := assets/cutscenes
 CUTSCENE_BUILD_DIR := $(BUILD_DIR)/bin/cutscenes
 
 # Transpilers
-CUTSCENE_TRANSPILER := python3 $(TOOLS_DIR)/hm64_cutscene_transpiler.py
-CUTSCENE_UTILITIES := python3 $(TOOLS_DIR)/hm64_cutscene_utilities.py
+CUTSCENE_TRANSPILER := python3 $(TOOLS_DIR)/assets/hm64_cutscene_transpiler.py
+CUTSCENE_UTILITIES := python3 $(TOOLS_DIR)/assets/hm64_cutscene_utilities.py
 
 # Decompiled cutscene files (DSL -> ASM)
 CUTSCENE_DSL := $(foreach bank,$(DECOMPILED_CUTSCENES),$(CUTSCENE_SRC_DIR)/$(bank).cutscene)
@@ -134,7 +132,7 @@ endif
 DIALOGUE_SRC_DIR := $(SRC_DIRS)/bytecode/dialogues
 DIALOGUE_BUILD_DIR := $(BUILD_DIR)/bin/dialogues/bytecode
 
-DIALOGUE_TRANSPILER := python3 $(TOOLS_DIR)/hm64_dialogue_transpiler.py
+DIALOGUE_TRANSPILER := python3 $(TOOLS_DIR)/assets/hm64_dialogue_transpiler.py
 
 DIALOGUE_DSL := $(foreach bank,$(DECOMPILED_DIALOGUES),$(DIALOGUE_SRC_DIR)/$(bank).dialogue)
 DIALOGUE_ASM := $(foreach bank,$(DECOMPILED_DIALOGUES),$(DIALOGUE_SRC_DIR)/$(bank).s $(DIALOGUE_SRC_DIR)/$(bank)Index.s)
@@ -149,7 +147,7 @@ endif
 TEXT_ASSETS_DIR := assets/text
 TEXT_BUILD_DIR := $(BUILD_DIR)/bin/text
 
-TEXT_TRANSPILER := python3 $(TOOLS_DIR)/hm64_text_transpiler.py
+TEXT_TRANSPILER := python3 $(TOOLS_DIR)/assets/hm64_text_transpiler.py
 
 TEXT_ASM := $(foreach bank,$(DECOMPILED_TEXTS),$(TEXT_ASSETS_DIR)/$(bank)Text.s $(TEXT_ASSETS_DIR)/$(bank)TextIndex.s)
 TEXT_OBJ := $(foreach bank,$(DECOMPILED_TEXTS),$(TEXT_BUILD_DIR)/$(bank)Text.bin.o $(TEXT_BUILD_DIR)/$(bank)TextIndex.bin.o)
@@ -210,8 +208,13 @@ clean-artifacts:
 submodules:
 	git submodule update
 
+ifeq ($(REGION),jp)
 split:
 	$(V)python3 -m splat split ./config/$(REGION)/splat.$(REGION).yaml
+else
+split:
+	$(V)python3 -m splat split ./config/$(REGION)/splat.$(REGION).yaml --modes code bin animationScripts
+endif
 
 setup: clean split
 
@@ -226,40 +229,40 @@ extract-sprites:
 	@find assets/sprites -type f ! -name "*.spec" -delete 2>/dev/null || true
 # clean up empty directories
 	@find assets/sprites -type d -empty -delete 2>/dev/null || true
-	@cd tools && python3 ./hm64_sprite_utilities.py write_all_textures    
+	@cd tools/assets && python3 ./hm64_sprite_utilities.py write_all_textures    
 
 extract-animation-metadata:
-	@cd tools && python3 ./hm64_animation_utilities.py extract_animation_metadata
+	@cd tools/assets && python3 ./hm64_animation_utilities.py extract_animation_metadata
 
 extract-animation-scripts:
-	@cd tools && python3 ./extract_animation_scripts.py
+	@cd tools/assets && python3 ./extract_animation_scripts.py
 
 extract-animation-sprites:
-	@cd tools && python3 ./hm64_animation_utilities.py fetch_sprites_for_animations
+	@cd tools/assets && python3 ./hm64_animation_utilities.py fetch_sprites_for_animations
 	
 extract-animations:
-	@cd tools && python3 ./hm64_animation_utilities.py extract_all
+	@cd tools/assets && python3 ./hm64_animation_utilities.py extract_all
 
 extract-gifs:
-	@cd tools && python3 ./hm64_animation_utilities.py make_gifs_from_animations
+	@cd tools/assets && python3 ./hm64_animation_utilities.py make_gifs_from_animations
 
 extract-texts:
-	@cd tools && python3 ./hm64_text_utilities.py process_all write_files
+	@cd tools/assets && python3 ./hm64_text_utilities.py process_all write_files
 
 extract-dialogues:
-	@cd tools && python3 ./hm64_dialogue_utilities.py decode_all
+	@cd tools/assets && python3 ./hm64_dialogue_utilities.py decode_all
 
 extract-map-sprites:
-	@cd tools && python3 ./hm64_map_utilities.py write_all_textures
+	@cd tools/assets && python3 ./hm64_map_utilities.py write_all_textures
 
 extract-fonts:
-	@cd tools && python3 ./hm64_font_utilities.py extract_all
-	@cd tools && python3 ./hm64_font_utilities.py extract_all_palettes
+	@cd tools/assets && python3 ./hm64_font_utilities.py extract_all
+	@cd tools/assets && python3 ./hm64_font_utilities.py extract_all_palettes
 
 extract-cutscenes:
-	@cd tools && python3 hm64_cutscene_utilities.py --all --labels --scan --verbose-scan
-	@cd tools && python3 hm64_cutscene_utilities.py --all --labels --graph
-	@cd tools && python3 hm64_cutscene_utilities.py --all --labels --asm
+	@cd tools/assets && python3 hm64_cutscene_utilities.py --all --labels --scan --verbose-scan --output-dir ../../$(CUTSCENE_ASSETS_DIR)
+	@cd tools/assets && python3 hm64_cutscene_utilities.py --all --labels --graph --output-dir ../../$(CUTSCENE_ASSETS_DIR)
+	@cd tools/assets && python3 hm64_cutscene_utilities.py --all --labels --asm --output-dir ../../$(CUTSCENE_ASSETS_DIR)
 
 # Main code segment
 
@@ -372,7 +375,7 @@ $(BUILD_DIR)/makerom/entry.o: asm/makerom/entry.s
 
 # Decompiled cutscenes: transpile DSL to assembly
 $(CUTSCENE_SRC_DIR)/%.s: $(CUTSCENE_SRC_DIR)/%.cutscene
-	$(V)$(CPP) -I src/buffers $< | $(CUTSCENE_TRANSPILER) - -n $* -o $@
+	$(V)$(CPP) -I src/buffers -I src/game -I src/assetIndices $< | $(CUTSCENE_TRANSPILER) - -n $* -o $@
 
 # Decompiled cutscenes: assemble from src/bytecode/cutscenes/
 $(CUTSCENE_OBJ): $(CUTSCENE_BUILD_DIR)/%.bin.o: $(CUTSCENE_SRC_DIR)/%.s
@@ -380,9 +383,9 @@ $(CUTSCENE_OBJ): $(CUTSCENE_BUILD_DIR)/%.bin.o: $(CUTSCENE_SRC_DIR)/%.s
 	$(V)$(AS) $(ASFLAGS) -o $@ $<
 
 # Transpiled cutscenes: generate assembly from ROM
-$(CUTSCENE_ASSETS_DIR)/%.s: $(BASEROM) $(TOOLS_DIR)/hm64_cutscene_utilities.py $(TOOLS_DIR)/cutscene_addresses.csv
+$(CUTSCENE_ASSETS_DIR)/%.s: $(BASEROM) $(TOOLS_DIR)/assets/hm64_cutscene_utilities.py $(TOOLS_DIR)/assets/cutscene_addresses.csv
 	@mkdir -p $(CUTSCENE_ASSETS_DIR)
-	$(V)cd $(TOOLS_DIR) && python3 hm64_cutscene_utilities.py --bank $* --asm --output-dir ../$(CUTSCENE_ASSETS_DIR)
+	$(V)cd $(TOOLS_DIR)/assets && python3 hm64_cutscene_utilities.py --bank $* --asm --output-dir ../../$(CUTSCENE_ASSETS_DIR)
 
 # Transpiled cutscenes: assemble from assets/cutscenes/
 $(TRANSPILED_CUTSCENE_OBJ): $(CUTSCENE_BUILD_DIR)/%.bin.o: $(CUTSCENE_ASSETS_DIR)/%.s
@@ -404,7 +407,7 @@ $(DIALOGUE_BUILD_DIR)/%.bin.o: $(DIALOGUE_SRC_DIR)/%.s
 # Extract texts to assets directory and transpile to assembly (generates two files: bytecode and index)
 # The transpiler produces both Text.s and TextIndex.s
 $(TEXT_ASSETS_DIR)/%Text.s:
-	$(V)cd $(TOOLS_DIR) && python3 hm64_text_utilities.py extract_bank $* --literal
+	$(V)cd $(TOOLS_DIR)/assets && python3 hm64_text_utilities.py extract_bank $* --literal
 	$(V)$(TEXT_TRANSPILER) transpile $(TEXT_ASSETS_DIR)/$* -n $*Text -o $(TEXT_ASSETS_DIR)/ --literal
 
 # Mark dependency
