@@ -33,7 +33,7 @@ options:
   gfx_ucode: f3dex2
   segment_symbols_style: makerom
   libultra_symbols: True
-  disassemble_all: True
+  # disassemble_all: True
   # dump_symbols: True
   
 segments:
@@ -606,55 +606,7 @@ segments:
       - { start: 0xFF5C0, type: .bss, vram: 0x8013C860, name: ../lib/libultra/src/rmon/rmonmain }
       - { start: 0xFF5C0, type: .bss, vram: 0x8013CCE0, name: ../lib/libultra/src/rmon/rmonbrk }
       - { start: 0xFF5C0, type: .bss, vram: 0x8013CDF0, name: ../lib/libkmc/src/rand }
-      # Common
-      # Add files that only have common BSS so they get linked
-      # This does nothing at the moment, but preps for removing the commonBSS section once all BSS is properly declared in the right files
-      # - { start: 0xFF5C0, type: .bss, vram: 0x8013CE00, name: mainproc }
-      # - { start: 0xFF5C0, type: .bss, vram: 0x8013CE00, name: mainLoop }
-      # - { start: 0xFF5C0, type: .bss, vram: 0x8013CE00, name: system/sceneGraph }
-      # - { start: 0xFF5C0, type: .bss, vram: 0x8013CE00, name: system/sprite }
-      # - { start: 0xFF5C0, type: .bss, vram: 0x8013CE00, name: system/globalSprites }
-      # - { start: 0xFF5C0, type: .bss, vram: 0x8013CE00, name: system/entity }
-      # - { start: 0xFF5C0, type: .bss, vram: 0x8013CE00, name: system/map }
-      # - { start: 0xFF5C0, type: .bss, vram: 0x8013CE00, name: system/mapController }
-      # - { start: 0xFF5C0, type: .bss, vram: 0x8013CE00, name: system/audio }
-      # - { start: 0xFF5C0, type: .bss, vram: 0x8013CE00, name: system/message }
-      # - { start: 0xFF5C0, type: .bss, vram: 0x8013CE00, name: system/dialogue }
-      # - { start: 0xFF5C0, type: .bss, vram: 0x8013CE00, name: system/overlayScreenSprites }
-      # - { start: 0xFF5C0, type: .bss, vram: 0x8013CE00, name: system/cutscene }
-      # - { start: 0xFF5C0, type: .bss, vram: 0x8013CE00, name: system/controller }
-      # - { start: 0xFF5C0, type: .bss, vram: 0x8013CE00, name: system/memory }
-      # - { start: 0xFF5C0, type: .bss, vram: 0x8013CE00, name: system/flags }
-      # - { start: 0xFF5C0, type: .bss, vram: 0x8013CE00, name: game/gameStart }
-      # - { start: 0xFF5C0, type: .bss, vram: 0x8013CE00, name: game/transition }
-      # - { start: 0xFF5C0, type: .bss, vram: 0x8013CE00, name: game/game }
-      # - { start: 0xFF5C0, type: .bss, vram: 0x8013CE00, name: game/gameStatus }
-      # - { start: 0xFF5C0, type: .bss, vram: 0x8013CE00, name: game/player }
-      # - { start: 0xFF5C0, type: .bss, vram: 0x8013CE00, name: game/level }
-      # - { start: 0xFF5C0, type: .bss, vram: 0x8013CE00, name: game/npc }
-      # - { start: 0xFF5C0, type: .bss, vram: 0x8013CE00, name: game/animals }
-      # - { start: 0xFF5C0, type: .bss, vram: 0x8013CE00, name: game/cutscenes }
-      # - { start: 0xFF5C0, type: .bss, vram: 0x8013CE00, name: game/levelInteractions }
-      # - { start: 0xFF5C0, type: .bss, vram: 0x8013CE00, name: game/overlayScreens }
-      # - { start: 0xFF5C0, type: .bss, vram: 0x8013CE00, name: game/items }
-      # - { start: 0xFF5C0, type: .bss, vram: 0x8013CE00, name: game/time }
-      # - { start: 0xFF5C0, type: .bss, vram: 0x8013CE00, name: game/tv }
-      # - { start: 0xFF5C0, type: .bss, vram: 0x8013CE00, name: game/fieldObjects }
-      # - { start: 0xFF5C0, type: .bss, vram: 0x8013CE00, name: game/weather }
-      # - { start: 0xFF5C0, type: .bss, vram: 0x8013CE00, name: game/shop }
-      # - { start: 0xFF5C0, type: .bss, vram: 0x8013CE00, name: game/title }
-      # - { start: 0xFF5C0, type: .bss, vram: 0x8013CE00, name: game/gameFile }
-      # - { start: 0xFF5C0, type: .bss, vram: 0x8013CE00, name: game/namingScreen }
-      # - { start: 0xFF5C0, type: .bss, vram: 0x8013CE00, name: ../lib/nusys-1/src/sample/nunospak/nupakmenu }
-      # - { start: 0xFF5C0, type: .bss, vram: 0x8013CE00, name: ../lib/nusys-1/src/sample/nunospak/nupakmenuloadfont }
-      # - { start: 0xFF5C0, type: .bss, vram: 0x8013CE00, name: ../lib/nusys-1/src/nualstl/nuaustlinit }
-      # - { start: 0xFF5C0, type: .bss, vram: 0x8013CE00, name: ../lib/nusys-1/src/nualstl/nuaustlbankset }
-      # - { start: 0xFF5C0, type: .bss, vram: 0x8013CE00, name: ../lib/nusys-1/src/nualstl/nuaustlplayerinit }
-      # - { start: 0xFF5C0, type: .bss, vram: 0x8013CE00, name: ../lib/nusys-1/src/nualstl/nuaustlimgr }
-      # - { start: 0xFF5C0, type: .bss, vram: 0x8013CE00, name: ../lib/libmus/src/player }
-      # - { start: 0xFF5C0, type: .bss, vram: 0x8013CE00, name: ../lib/nusys-1/src/nualstl/../lib/libultra/src/libnaudio/n_sl }
-      # fill out rest
-      # - { start: 0xFF5C0, type: .bss, vram: 0x8013CE00, name: ../lib/libultra/src/os/osthreadsave }
+      # Common BSS
       - { start: 0xFF5C0, type: bss, vram: 0x8013CE00, name: commonBSS }
       
   - name: messageBoxBuffer
@@ -826,7 +778,7 @@ segments:
       - { start: 0xFF5C0, type: .bss, vram: 0x8038F800, name: buffers/frameBuffer }
 
   # farm cutscenes: shipper, animal purchase
-  - name: cutsceneBank1 
+  - name: farmBusiness
     type: bin
     dir: cutscenes
     extract: false

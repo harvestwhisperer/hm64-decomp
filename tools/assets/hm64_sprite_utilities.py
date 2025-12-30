@@ -7,9 +7,11 @@ from typing import List, Tuple, Union
 import sys
 import argparse
 
-SPRITES_DIR = Path("../assets/sprites")
-SPRITE_ADDRESSES_CSV_PATH = Path("sprite_addresses.csv")
-ROM_PATH = Path("../baserom.us.z64")
+# Make paths relative to this script's location
+SCRIPT_DIR = Path(__file__).parent.resolve()
+SPRITES_DIR = SCRIPT_DIR / "../../assets/sprites"
+SPRITE_ADDRESSES_CSV_PATH = SCRIPT_DIR / "sprite_addresses.csv"
+ROM_PATH = SCRIPT_DIR / "../../baserom.us.z64"
 
 rom = None
 
@@ -21,15 +23,17 @@ def set_rom():
 
 def check_asset_addresses_exist(label: str) -> Tuple[int, str]:
 
-    with open("sprite_addresses.csv", newline="", encoding="utf-8") as f:
+    with open(SPRITE_ADDRESSES_CSV_PATH, newline="", encoding="utf-8") as f:
         reader = csv.reader(f)
         for idx, row in enumerate(reader, start=0):
             if len(row) == 6:
+                # 6 columns (type-1): addr1, addr2, addr3, addr4, label, subdir
                 if row[4] == label:
-                    return (idx,"type-1")
+                    return (idx, "type-1")
             elif len(row) == 5:
+                # 5 columns (type-2): addr1, addr2, addr3, label, subdir
                 if row[3] == label:
-                    return (idx,"type-2")
+                    return (idx, "type-2")
             else:
                 continue
 
@@ -141,14 +145,13 @@ def get_sprite_address(asset_addresses: List[str], spritesheet_offsets_array: np
 
     sprite_asset_base = int(asset_addresses[0], 16)
 
-    if (sprite_index > len(spritesheet_offsets_array)):
+    if len(spritesheet_offsets_array) == 0:
         return -1
 
-    if (len(spritesheet_offsets_array) == 0):
+    if sprite_index >= len(spritesheet_offsets_array):
         return -1
-    
-    else:
-        return sprite_asset_base + spritesheet_offsets_array[sprite_index]
+
+    return sprite_asset_base + spritesheet_offsets_array[sprite_index]
 
 
 def get_texture_type(asset_addresses: List[str], sprite_index: int, asset_type: str) -> str:
@@ -188,13 +191,18 @@ def get_texture(asset_addresses: List[str], sprite_index: int, asset_type: str) 
     if width == -1 or height == -1:
         return []
 
+    # Check bounds before accessing sprite_index + 1
+    if sprite_index + 1 >= len(spritesheet_offsets_array):
+        # Last sprite - can't determine texture end from next offset
+        return []
+
     if spritesheet_offsets_array[sprite_index] == spritesheet_offsets_array[sprite_index + 1]:
         print(f"Duplicate sprite for: {asset_addresses}")
         print(f"Index: {sprite_index}")
-        return []  
+        return []
 
     texture_start = sprite_address + 8
-    texture_end = spritesheet_base + spritesheet_offsets_array[sprite_index + 1]  
+    texture_end = spritesheet_base + spritesheet_offsets_array[sprite_index + 1]
 
     if (texture_start > texture_end):
         return bytes()

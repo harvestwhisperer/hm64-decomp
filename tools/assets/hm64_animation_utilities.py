@@ -11,12 +11,14 @@ from n64img.image import CI4, CI8, Image
 from pathlib import Path
 from PIL import Image
 
-METADATA_DIR = Path("../assets/animations/")
-ROM_PATH = Path("../baserom.us.z64")
-SPRITE_ADDRESSES_CSV_PATH = Path("./sprite_addresses.csv")
+# Make paths relative to this script's location
+SCRIPT_DIR = Path(__file__).parent.resolve()
+METADATA_DIR = SCRIPT_DIR / "../../assets/animations/"
+ROM_PATH = SCRIPT_DIR / "../../baserom.us.z64"
+SPRITE_ADDRESSES_CSV_PATH = SCRIPT_DIR / "sprite_addresses.csv"
 
-BASE_DIR = Path("../assets/animations")
-OUTPUT_DIR = Path("../assets/animations" )
+BASE_DIR = SCRIPT_DIR / "../../assets/animations"
+OUTPUT_DIR = SCRIPT_DIR / "../../assets/animations"
 
 TICK_MS = 10   # multiply JSON frame_duration by this to get milliseconds (set 1 if already ms)
 LOOP = 0       # 0 = loop forever
@@ -48,10 +50,16 @@ def build_filename(base_filename: str, frame_count: int, bitmap_count: int) -> s
     return base_filename + f"-frame-{frame_count}" + f"-{bitmap_count}"
 
 def get_label(row: List[str]) -> str:
-    if len(row) == 5:
-        return row[4]    
-    
+    if len(row) == 6:
+        # 6 columns (type-1): addr1, addr2, addr3, addr4, label, subdir
+        return row[4]
+
+    elif len(row) == 5:
+        # 5 columns (type-2): addr1, addr2, addr3, label, subdir
+        return row[3]
+
     elif len(row) == 4:
+        # Legacy 4 columns: addr1, addr2, addr3, label
         return row[3]
 
     else:

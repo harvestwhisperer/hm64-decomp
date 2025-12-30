@@ -7,7 +7,7 @@ import sys
     
 from pathlib import Path
 
-ROM_PATH = Path(__file__).parent / "../baserom.us.z64"
+ROM_PATH = Path(__file__).parent / "../../baserom.us.z64"
 CSV_PATH = Path(__file__).parent / "text_addresses.csv"
 
 VERBOSE = "--verbose" in sys.argv
@@ -540,7 +540,7 @@ def write_text_bank_to_files(index_start: int, index_end: int, text_start: int, 
     if output_dir is None:
         output_dir = f"text-block-0x{text_start:08X}"
     
-    assets_path = Path(__file__).parent.parent / "assets" / "text"
+    assets_path = Path(__file__).parent.parent.parent / "assets" / "text"
     output_path = assets_path / output_dir
     
     output_path.mkdir(parents=True, exist_ok=True)

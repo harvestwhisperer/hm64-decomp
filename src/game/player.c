@@ -2831,7 +2831,8 @@ void handlePlayerAnimation(void) {
                 }
                 
             } else {
-                setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x18);
+                // running
+                setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 24);
             }
             
             if (!(gPlayer.flags & 1)) {
@@ -2853,12 +2854,14 @@ void handlePlayerAnimation(void) {
             
             if (!gPlayer.heldItem && !checkDailyEventBit(0xD)) {
                 if (gPlayer.flags & 1) {
-                   setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x20C);
+                   setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 524);
                 } else {
+                    // walking
                     setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 8);
                 }
             } else {
-                setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x20);
+                // standing + carrying
+                setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 32);
             }
             
             playerIdleCounter = 0;
@@ -2872,22 +2875,23 @@ void handlePlayerAnimation(void) {
                     if (checkEntityShouldPlaySoundEffect(ENTITY_PLAYER)) {
                         playSfx(9);
                     }
-                    setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x214);
+                    setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 532);
 
                 } else {
                     if (checkEntityShouldPlaySoundEffect(ENTITY_PLAYER)) {
                         playSfx(WALKING_SFX);
                     }
-                    setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x10);
+                    // running
+                    setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 16);
                 }
 
             } else {
-
                 if (checkEntityShouldPlaySoundEffect(ENTITY_PLAYER)) {
                     playSfx(WALKING_SFX);
                 }
+                // running + carrying
+                setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 40);
 
-                setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x28);
             }
 
             playerIdleCounter = 0;
@@ -4345,18 +4349,19 @@ void func_8006C628(u16 arg0, u16 arg1) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/player", func_8006CD84);
 
+// sickle
 void func_8006CD84(void) {
     
     switch(gPlayer.currentToolLevel) {
 
         case 0:
-            func_8006C628(0x50, 0x68);
+            func_8006C628(0x50, 104);
             break;
         case 1:
-            func_8006C628(0x58, 0x70);
+            func_8006C628(0x58, 112);
             break;
         case 2:
-            func_8006C628(0x60, 0x78);
+            func_8006C628(0x60, 120);
             break;
         
     }

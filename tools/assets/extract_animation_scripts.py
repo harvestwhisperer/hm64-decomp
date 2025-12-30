@@ -5,7 +5,7 @@ from typing import List
 
 import numpy as np
 
-rom = '../baserom.us.z64'
+rom = '../../baserom.us.z64'
 animation_addresses_csv = './animation_scripts_addresses.csv'
 output_dir  = "../src/data/animationScripts" 
 
