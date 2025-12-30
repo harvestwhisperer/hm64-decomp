@@ -1,5 +1,5 @@
 ; ============================================
-; Bank 24 - Opening (funeral)
+; Bank 24 - Opening (Funeral)
 ; ============================================
 
 #include "entities.h"
@@ -208,7 +208,7 @@ executor_white_background_1:
     EXECUTE_SUBROUTINE .sub_149D54
 
 ; ============================================
-; Pedals
+; Petals
 ; ============================================
 
 ; 0x14A0F4
