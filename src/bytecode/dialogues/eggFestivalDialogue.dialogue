@@ -1,0 +1,17 @@
+; Dialogue Bank
+; Index Start: 0xE92380
+; Bytecode Start: 0xE92370
+; Segments: 3
+
+; 0xE92370
+.segment_0:
+    END_DIALOGUE
+
+; 0xE92374
+.segment_1:
+    SHOW_TEXT 1
+    SHOW_SUBDIALOGUE 2, 2
+    END_DIALOGUE
+
+; 0xE9237C
+.segment_2:  ; alignment padding

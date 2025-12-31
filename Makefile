@@ -87,21 +87,19 @@ LDFLAGS := -G 0 -T config/$(REGION)/undefined_funcs.txt -T config/$(REGION)/unde
 
 # Binary asset matching (cutscenes, dialogues, texts)
 
-ALL_CUTSCENE_BANKS := farmBusiness cutsceneBank2 cutsceneBank3 cutsceneBank4 cutsceneBank5 \
-	cutsceneBank6 cutsceneBank7 cutsceneBank8 cutsceneBank9 cutsceneBank10 \
-	cutsceneBank11 cutsceneBank12 cutsceneBank13 cutsceneBank14 fireworksFestival \
-	cutsceneBank16 cutsceneBank17 cutsceneBank18 cutsceneBank19 cutsceneBank20 \
-	cutsceneBank21 cutsceneBank22 cutsceneBank23 cutsceneBank24 cutsceneBank25 \
-	cutsceneBank26 cutsceneBank27
+ALL_CUTSCENES := farmBusiness farmVisits familyCutscenes cutsceneBank4 cutsceneBank5 \
+	annCutscenes karenCutscenes1 cutsceneBank8 mariaCutscenes karenCutscenes2 \
+	sowingFestival horseRace flowerFestival squareFireworks fireworksFestival \
+	fireflyFestival seaFestival cowFestival harvestFestival eggFestival \
+	dogRace spiritFestival newYearFestival funeralIntro evaluationEnding \
+	demos howToPlay
 
 ifeq ($(REGION),us)
-DECOMPILED_CUTSCENES := farmBusiness cutsceneBank2 fireworksFestival cutsceneBank24
+# All US cutscenes are decompiled to DSL
+DECOMPILED_CUTSCENES := $(ALL_CUTSCENES)
 else
 DECOMPILED_CUTSCENES :=
 endif
-
-# Cutscenes that need auto-transpilation from ROM (all banks minus decompiled)
-TRANSPILED_CUTSCENES := $(filter-out $(DECOMPILED_CUTSCENES),$(ALL_CUTSCENE_BANKS))
 
 # Directories
 CUTSCENE_SRC_DIR := $(SRC_DIRS)/bytecode/cutscenes
@@ -113,33 +111,177 @@ CUTSCENE_TRANSPILER := python3 $(TOOLS_DIR)/assets/hm64_cutscene_transpiler.py
 CUTSCENE_UTILITIES := python3 $(TOOLS_DIR)/assets/hm64_cutscene_utilities.py
 
 # Decompiled cutscene files (DSL -> ASM)
+# DSL source in src/bytecode/cutscenes/, ASM output to assets/cutscenes/
 CUTSCENE_DSL := $(foreach bank,$(DECOMPILED_CUTSCENES),$(CUTSCENE_SRC_DIR)/$(bank).cutscene)
-CUTSCENE_ASM := $(foreach bank,$(DECOMPILED_CUTSCENES),$(CUTSCENE_SRC_DIR)/$(bank).s)
+CUTSCENE_ASM := $(foreach bank,$(DECOMPILED_CUTSCENES),$(CUTSCENE_ASSETS_DIR)/$(bank).s)
 CUTSCENE_OBJ := $(foreach bank,$(DECOMPILED_CUTSCENES),$(CUTSCENE_BUILD_DIR)/$(bank).bin.o)
 
-# Transpiled cutscene files (ROM -> ASM)
+# Non-decompiled cutscenes: extract ASM directly from ROM
+TRANSPILED_CUTSCENES := $(filter-out $(DECOMPILED_CUTSCENES),$(ALL_CUTSCENES))
 TRANSPILED_CUTSCENE_ASM := $(foreach bank,$(TRANSPILED_CUTSCENES),$(CUTSCENE_ASSETS_DIR)/$(bank).s)
 TRANSPILED_CUTSCENE_OBJ := $(foreach bank,$(TRANSPILED_CUTSCENES),$(CUTSCENE_BUILD_DIR)/$(bank).bin.o)
 
-DECOMPILED_DIALOGUES := mariaDialogueBytecode
-
 ifeq ($(REGION),us)
-DECOMPILED_DIALOGUES := mariaDialogueBytecode
+DECOMPILED_DIALOGUES := \
+	text1Dialogue \
+	diaryDialogue \
+	elliDialogue \
+	kaiDialogue \
+	karenDialogue \
+	cliffDialogue \
+	jeffDialogue \
+	harrisDialogue \
+	popuriDialogue \
+	mariaDialogue \
+	annDialogue \
+	grayDialogue \
+	ellenDialogue \
+	gotzDialogue \
+	sashaDialogue \
+	kentDialogue \
+	mayDialogue \
+	stuDialogue \
+	dougDialogue \
+	basilDialogue \
+	lilliaDialogue \
+	saibaraDialogue \
+	midwifeDialogue \
+	dukeDialogue \
+	shipperDialogue \
+	harvestSprites1Dialogue \
+	harvestSprites2Dialogue \
+	harvestSprites3Dialogue \
+	assistantCarpenters1Dialogue \
+	assistantCarpenters2Dialogue \
+	masterCarpenterDialogue \
+	mayorDialogue \
+	gregDialogue \
+	rickDialogue \
+	barleyDialogue \
+	sydneyDialogue \
+	mayorWifeDialogue \
+	pastorDialogue \
+	potionShopDealerDialogue \
+	cutscenes1Dialogue \
+	text48Dialogue \
+	text49Dialogue \
+	text50Dialogue \
+	text51Dialogue \
+	text52Dialogue \
+	dogRaceDialogue \
+	vegetableFestivalDialogue \
+	text54Dialogue \
+	text55Dialogue \
+	text56Dialogue \
+	horseRaceDialogue \
+	karenCutscenes1Dialogue \
+	text63Dialogue \
+	text64Dialogue \
+	text65Dialogue \
+	eggFestivalDialogue \
+	marriedDialogue \
+	text61Dialogue \
+	namingScreenDialogue \
+	newYearFestivalDialogue \
+	karenCutscenes2Dialogue \
+	shopDialogue \
+	festivalOverlaySelectionsDialogue \
+	babyDialogue \
+	mrsManaAndJohn1Dialogue \
+	mrsManaAndJohn2Dialogue \
+	libraryDialogue \
+	additionalNpcs1Dialogue \
+	npcBabyDialogue \
+	additionalNpcs2Dialogue
 else
 DECOMPILED_DIALOGUES :=
 endif
 
 DIALOGUE_SRC_DIR := $(SRC_DIRS)/bytecode/dialogues
+DIALOGUE_ASSETS_DIR := assets/dialogues
 DIALOGUE_BUILD_DIR := $(BUILD_DIR)/bin/dialogues/bytecode
 
 DIALOGUE_TRANSPILER := python3 $(TOOLS_DIR)/assets/hm64_dialogue_transpiler.py
 
 DIALOGUE_DSL := $(foreach bank,$(DECOMPILED_DIALOGUES),$(DIALOGUE_SRC_DIR)/$(bank).dialogue)
-DIALOGUE_ASM := $(foreach bank,$(DECOMPILED_DIALOGUES),$(DIALOGUE_SRC_DIR)/$(bank).s $(DIALOGUE_SRC_DIR)/$(bank)Index.s)
+DIALOGUE_ASM := $(foreach bank,$(DECOMPILED_DIALOGUES),$(DIALOGUE_ASSETS_DIR)/$(bank).s $(DIALOGUE_ASSETS_DIR)/$(bank)Index.s)
 DIALOGUE_OBJ := $(foreach bank,$(DECOMPILED_DIALOGUES),$(DIALOGUE_BUILD_DIR)/$(bank).bin.o $(DIALOGUE_BUILD_DIR)/$(bank)Index.bin.o)
 
 ifeq ($(REGION),us)
-DECOMPILED_TEXTS := text1 library diary animalInteractions namingScreen kai gotz sasha cliff funeralIntro howToPlay
+
+DECOMPILED_TEXTS := text1 \
+	library \
+	diary \
+	recipesJapanese \
+	festivalOverlaySelections \
+	letters \
+	shop \
+	animalInteractions \
+	tv \
+	text10 \
+	namingScreen \
+	elli \
+	kai \
+	karen \
+	gotz \
+	sasha \
+	cliff \
+	jeff \
+	kent \
+	harris \
+	popuri \
+	maria \
+	may \
+	ann \
+	doug \
+	gray \
+	basil \
+	lillia \
+	duke \
+	shipper \
+	harvestSprites \
+	assistantCarpenter \
+	masterCarpenter \
+	mayor \
+	greg \
+	rick \
+	barley \
+	sydney \
+	potionShopDealer \
+	mayorWife \
+	ellen \
+	stu \
+	midwife \
+	pastor \
+	saibara \
+	cutscenes1 \
+	funeralIntro \
+	text48 \
+	text49 \
+	text50 \
+	text51 \
+	text52 \
+	dogRace \
+	text54 \
+	text55 \
+	text56 \
+	newYearFestival \
+	spiritFestival \
+	horseRace \
+	marriedDialogues \
+	text61 \
+	karenCutscenes1 \
+	text63 \
+	text64 \
+	text65 \
+	eggFestival \
+	karenCutscenes2 \
+	vegetableFestival \
+	baby \
+	mrsManaAndJohn \
+	additionalNpcs \
+	howToPlay
+
 else
 DECOMPILED_TEXTS :=
 endif
@@ -182,17 +324,23 @@ clean:
 	@rm -rf build
 	@rm -rf asm
 	@rm -rf bin
-# don't remove spec files
-	@find assets -type f ! -name "*.spec" -delete 2>/dev/null || true
+# don't remove spec files or text source files (for modding workflow)
+	@find assets -type f ! -name "*.spec" ! -name "*.txt" -delete 2>/dev/null || true
 # clean up empty directories
 	@find assets -type d -empty -delete 2>/dev/null || true
 	@rm -f $(LD_SCRIPT)
 	@rm -f $(BASENAME).elf
 	@rm -f $(BASENAME).map
 	@rm -f $(TARGET)
-	@rm -f $(CUTSCENE_ASM)
 	@rm -f ${DIALOGUE_ASM}
 	@rm -f ${TEXT_ASM}
+
+# Explicitly clean extracted text source files (modding workflow)
+clean-texts:
+	@find $(TEXT_ASSETS_DIR) -name "text*.txt" -delete 2>/dev/null || true
+	@find $(TEXT_ASSETS_DIR) -name "_metadata.txt" -delete 2>/dev/null || true
+	@find $(TEXT_ASSETS_DIR) -type d -empty -delete 2>/dev/null || true
+	@echo "Cleaned extracted text files from $(TEXT_ASSETS_DIR)"
 
 clean-artifacts:
 	@rm -rf build
@@ -200,8 +348,7 @@ clean-artifacts:
 	@rm -f $(BASENAME).elf
 	@rm -f $(BASENAME).map
 	@rm -f $(TARGET)
-	@rm -f $(CUTSCENE_ASM)
-	@rm -f $(TRANSPILED_CUTSCENE_ASM)
+	@rm -f $(CUTSCENE_ASM) $(TRANSPILED_CUTSCENE_ASM)
 	@rm -f ${DIALOGUE_ASM}
 	@rm -f ${TEXT_ASM}
 
@@ -373,35 +520,33 @@ $(BUILD_DIR)/makerom/entry.o: asm/makerom/entry.s
 
 # Asset building
 
-# Decompiled cutscenes: transpile DSL to assembly
-$(CUTSCENE_SRC_DIR)/%.s: $(CUTSCENE_SRC_DIR)/%.cutscene
+# Decompiled cutscenes: transpile DSL to assembly (outputs to assets/cutscenes/)
+$(CUTSCENE_ASSETS_DIR)/%.s: $(CUTSCENE_SRC_DIR)/%.cutscene
+	@mkdir -p $(CUTSCENE_ASSETS_DIR)
 	$(V)$(CPP) -I src/buffers -I src/game -I src/assetIndices $< | $(CUTSCENE_TRANSPILER) - -n $* -o $@
 
-# Decompiled cutscenes: assemble from src/bytecode/cutscenes/
-$(CUTSCENE_OBJ): $(CUTSCENE_BUILD_DIR)/%.bin.o: $(CUTSCENE_SRC_DIR)/%.s
-	$(MKDIR)
-	$(V)$(AS) $(ASFLAGS) -o $@ $<
-
-# Transpiled cutscenes: generate assembly from ROM
-$(CUTSCENE_ASSETS_DIR)/%.s: $(BASEROM) $(TOOLS_DIR)/assets/hm64_cutscene_utilities.py $(TOOLS_DIR)/assets/cutscene_addresses.csv
+# Non-decompiled cutscenes: extract assembly from ROM (also outputs to assets/cutscenes/)
+$(TRANSPILED_CUTSCENE_ASM): $(CUTSCENE_ASSETS_DIR)/%.s: $(BASEROM)
 	@mkdir -p $(CUTSCENE_ASSETS_DIR)
 	$(V)cd $(TOOLS_DIR)/assets && python3 hm64_cutscene_utilities.py --bank $* --asm --output-dir ../../$(CUTSCENE_ASSETS_DIR)
 
-# Transpiled cutscenes: assemble from assets/cutscenes/
-$(TRANSPILED_CUTSCENE_OBJ): $(CUTSCENE_BUILD_DIR)/%.bin.o: $(CUTSCENE_ASSETS_DIR)/%.s
+# All cutscenes: assemble from assets/cutscenes/
+$(CUTSCENE_BUILD_DIR)/%.bin.o: $(CUTSCENE_ASSETS_DIR)/%.s
 	$(MKDIR)
 	$(V)$(AS) $(ASFLAGS) -o $@ $<
 
-# transpile dialogue DSL to assembly (generates two files: bytecode and index)
+# Transpile dialogue DSL to assembly (outputs to assets/dialogues/)
 # The transpiler produces both .s and Index.s
-$(DIALOGUE_SRC_DIR)/%.s: $(DIALOGUE_SRC_DIR)/%.dialogue
-	$(V)$(DIALOGUE_TRANSPILER) transpile $< -n $* -o $(DIALOGUE_SRC_DIR)/
+$(DIALOGUE_ASSETS_DIR)/%.s: $(DIALOGUE_SRC_DIR)/%.dialogue
+	@mkdir -p $(DIALOGUE_ASSETS_DIR)
+	$(V)$(DIALOGUE_TRANSPILER) transpile $< -n $* -o $(DIALOGUE_ASSETS_DIR)/
 
 # Mark dependency
-$(DIALOGUE_SRC_DIR)/%Index.s: $(DIALOGUE_SRC_DIR)/%.s
+$(DIALOGUE_ASSETS_DIR)/%Index.s: $(DIALOGUE_ASSETS_DIR)/%.s
 	@:
 
-$(DIALOGUE_BUILD_DIR)/%.bin.o: $(DIALOGUE_SRC_DIR)/%.s
+$(DIALOGUE_BUILD_DIR)/%.bin.o: $(DIALOGUE_ASSETS_DIR)/%.s
+	$(MKDIR)
 	$(V)$(AS) $(ASFLAGS) -o $@ $<
 
 # Extract texts to assets directory and transpile to assembly (generates two files: bytecode and index)
@@ -772,12 +917,12 @@ check: $(TARGET)
 	$(V)diff $(TARGET) $(BASEROM) && echo "OK"
 
 
-.PHONY: all clean clean-artifacts setup split submodules rebuild rerun check codesegment
+.PHONY: all clean clean-texts clean-artifacts setup split submodules rebuild rerun check codesegment
 .PHONY: extract-sprites extract-animation-metadata extract-animation-scripts
 .PHONY: extract-animation-sprites extract-animations extract-gifs
 .PHONY: extract-texts extract-dialogues extract-map-sprites extract-cutscenes
 
 # Prevent Make from deleting intermediate .s files
-# .SECONDARY: $(CUTSCENE_ASM) $(TRANSPILED_CUTSCENE_ASM) $(DIALOGUE_ASM) $(TEXT_ASM)
+.SECONDARY: $(CUTSCENE_ASM) $(TRANSPILED_CUTSCENE_ASM) $(DIALOGUE_ASM) $(TEXT_ASM)
 
 MAKEFLAGS += --no-builtin-rules

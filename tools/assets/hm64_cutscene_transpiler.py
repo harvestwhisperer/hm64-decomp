@@ -599,6 +599,7 @@ class CutsceneTranspiler:
         self.variables: List[Dict] = []   # [{name, type, values, line_num}]
         self.buffer_base: Optional[int] = None  # Buffer base address from .buffer directive
         self.locals: Dict[str, Dict] = {}  # name -> {offset, type, size} for buffer-local variables
+        self.next_local_offset: int = 0  # Next available offset for auto-allocated buffer-local vars
         
     # Element sizes for array type specifiers
     ARRAY_TYPE_SIZES = {
@@ -624,6 +625,7 @@ class CutsceneTranspiler:
         self.arrays = {}
         self.buffer_base = None
         self.locals = {}
+        self.next_local_offset = 0
 
         lines = self.parser.parse_file(source)
 
@@ -676,18 +678,31 @@ class CutsceneTranspiler:
                 values = args[2:]
             else:
                 values = ['0']
-            
-            if var_type in self.VAR_TYPE_DIRECTIVES:
 
-                self.variables.append({
-                    'name': var_name,
-                    'type': var_type,
-                    'values': values,
-                    'line_num': line.line_num
-                })
-                
-                # Also register as array if multiple values or for address resolution
-                self.arrays[var_name] = self.ARRAY_TYPE_SIZES.get(var_type, 1)
+            if var_type in self.VAR_TYPE_DIRECTIVES:
+                size = self.ARRAY_TYPE_SIZES.get(var_type, 1)
+
+                # If buffer is set, treat as buffer-local variable (resolve to buffer_base + offset)
+                if self.buffer_base is not None:
+                    # Add to locals for address resolution
+                    self.locals[var_name] = {
+                        'offset': self.next_local_offset,
+                        'type': var_type,
+                        'size': size,
+                        'line_num': line.line_num
+                    }
+                    self.next_local_offset += size
+                else:
+                    # No buffer set - treat as linker-resolved symbol
+                    self.variables.append({
+                        'name': var_name,
+                        'type': var_type,
+                        'values': values,
+                        'line_num': line.line_num
+                    })
+
+                # Also register as array for array indexing calculations
+                self.arrays[var_name] = size
 
             else:
                 self.errors.append(f"Line {line.line_num}: Unknown variable type '{var_type}'")
@@ -719,29 +734,34 @@ class CutsceneTranspiler:
     def _collect_local(self, line: SourceLine):
         """Collect a local buffer variable declaration
 
-        Syntax: .local name, type, offset
-        Example: .local flags, u32, 0x00
-                 .local counter, u16, 0x04
+        Syntax: .local name, type [, initial_value]
+        Example: .local flags, u32
+                 .local counter, u16, 0
+                 .local byte_val, u8, 255
 
         The name can then be used in commands and will resolve to buffer_base + offset.
-        Space is reserved in the output (without a label).
+        Offsets are auto-calculated. Space is reserved in the output (without a label).
         """
 
         args = line.directive_args
 
-        if len(args) >= 3:
+        if len(args) >= 2:
             var_name = args[0]
             var_type = args[1].lower()
-            offset_str = args[2]
 
-            # Parse offset
-            if offset_str.startswith('0x') or offset_str.startswith('0X'):
-                offset = int(offset_str, 16)
-            elif offset_str.isdigit():
-                offset = int(offset_str)
-            else:
-                self.errors.append(f"Line {line.line_num}: Invalid offset '{offset_str}' in .local")
-                return
+            # Parse initial value (optional, default 0)
+            initial_value = 0
+            if len(args) >= 3:
+                value_str = args[2]
+                if value_str.startswith('0x') or value_str.startswith('0X'):
+                    initial_value = int(value_str, 16)
+                elif value_str.startswith('-'):
+                    initial_value = int(value_str)
+                elif value_str.isdigit():
+                    initial_value = int(value_str)
+                else:
+                    self.errors.append(f"Line {line.line_num}: Invalid initial value '{value_str}' in .local")
+                    return
 
             # Get size from type
             if var_type in self.ARRAY_TYPE_SIZES:
@@ -750,15 +770,17 @@ class CutsceneTranspiler:
                 self.errors.append(f"Line {line.line_num}: Unknown type '{var_type}' in .local")
                 return
 
-            # Store the local variable
+            # Store the local variable with auto-calculated offset
             self.locals[var_name] = {
-                'offset': offset,
+                'offset': self.next_local_offset,
                 'type': var_type,
                 'size': size,
+                'value': initial_value,
                 'line_num': line.line_num
             }
+            self.next_local_offset += size
         else:
-            self.errors.append(f"Line {line.line_num}: .local requires name, type, and offset (e.g., .local flags, u32, 0x00)")
+            self.errors.append(f"Line {line.line_num}: .local requires name and type (e.g., .local flags, u32)")
 
     def _collect_array(self, line: SourceLine):
         """Collect an array declaration"""
@@ -799,7 +821,8 @@ class CutsceneTranspiler:
         """Emit local buffer variable space (without labels)
 
         Local variables are emitted as anonymous data at the start of the section.
-        They're sorted by offset to ensure proper layout.
+        They're sorted by offset to ensure proper layout, with initial values.
+        Aligned to 4 bytes before code starts.
         """
 
         self._emit("# --- Local Buffer Space ---")
@@ -812,6 +835,7 @@ class CutsceneTranspiler:
             offset = info['offset']
             size = info['size']
             var_type = info['type']
+            value = info.get('value', 0)
 
             # Emit padding if there's a gap
             if offset > current_offset:
@@ -819,13 +843,13 @@ class CutsceneTranspiler:
                 self._emit(f"    .space  {gap}          # padding")
                 current_offset = offset
 
-            # Emit the variable space (no label, just a comment)
+            # Emit the variable with its initial value
             directive = self.VAR_TYPE_DIRECTIVES[var_type]
-            self._emit(f"    {directive}   0          # {name} @ buffer+0x{offset:X}")
+            self._emit(f"    {directive}   {value}          # {name} @ buffer+0x{offset:X}")
             current_offset += size
 
         self._emit()
-        # Align before code starts
+        # Align to 4 bytes before code starts
         self._emit(".balign 4")
         self._emit("# --- Code ---")
         self._emit()
@@ -850,14 +874,15 @@ class CutsceneTranspiler:
     def _transform_label(self, label: str) -> str:
         """
         Transform label names to avoid conflicts with GNU as reserved directives.
-        
+
         Labels starting with '.' are transformed to use '.L_' prefix which is
         GNU's standard local label convention and won't conflict with directives.
-        
+
         Examples:
             .entry  -> .L_entry
             .end    -> .L_end
             .loop   -> .L_loop
+            .L_foo  -> .L_foo (already has prefix, unchanged)
             main    -> main (unchanged, no conflict)
         """
         if label.startswith('.'):

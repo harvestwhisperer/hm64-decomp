@@ -26,7 +26,7 @@ extern u16 cliffAnimationScripts[];
 extern u16 kaiAnimationScripts[];
 extern u16 mayorAnimationScripts[];
 extern u16 mayorWifeAnimationScripts[];
-extern u16 liliaAnimationScripts[];
+extern u16 lilliaAnimationScripts[];
 extern u16 basilAnimationScripts[];
 extern u16 ellenAnimationScripts[];
 extern u16 dougAnimationScripts[];

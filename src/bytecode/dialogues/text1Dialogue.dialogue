@@ -1,0 +1,10 @@
+; Dialogue Bank
+; Index Start: 0xE871B0
+; Bytecode Start: 0xE871A0
+; Segments: 1
+
+.bytecode_size 16
+.index_size 16
+
+; 0xE871A0
+.segment_0:  ; alignment padding

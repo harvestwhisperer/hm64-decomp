@@ -1,0 +1,53 @@
+; Dialogue Bank
+; Index Start: 0xE92C50
+; Bytecode Start: 0xE92B90
+; Segments: 7
+
+; 0xE92B90
+.segment_0:
+    SPECIAL_DIALOGUE_BIT_BRANCH 302, NO_TEXT, .segment_5
+    SPECIAL_DIALOGUE_BIT_BRANCH 309, 7, .segment_4
+    SPECIAL_DIALOGUE_BIT_BRANCH 303, NO_TEXT, .segment_3
+    SET_SPECIAL_DIALOGUE_BIT 303
+    DIALOGUE_VARIABLE_BRANCH 2, 18, 24, NO_TEXT, .segment_2
+    END_DIALOGUE
+
+; 0xE92BB4
+.segment_1:
+    SPECIAL_DIALOGUE_BIT_BRANCH 302, NO_TEXT, .segment_5
+    DIALOGUE_VARIABLE_BRANCH 6, 47, 49, 7, .segment_4
+    DIALOGUE_VARIABLE_BRANCH 6, 1, 40, 6, .segment_4
+    DIALOGUE_VARIABLE_BRANCH 6, 67, 67, 6, .segment_4
+    DIALOGUE_VARIABLE_BRANCH 6, 41, 46, 7, .segment_4
+    DIALOGUE_VARIABLE_BRANCH 6, 61, 61, 7, .segment_4
+    DIALOGUE_VARIABLE_BRANCH 6, 51, 51, 8, .segment_4
+    DIALOGUE_VARIABLE_BRANCH 6, 52, 52, 8, .segment_4
+    DIALOGUE_VARIABLE_BRANCH 6, 53, 60, 7, .segment_4
+    DIALOGUE_VARIABLE_BRANCH 6, 62, 66, 8, .segment_4
+    END_DIALOGUE
+
+; 0xE92C18
+.segment_2:
+    RANDOM_BRANCH 0, 25, 2, .segment_4
+    RANDOM_BRANCH 0, 25, 3, .segment_4
+    RANDOM_BRANCH 0, 25, 4, .segment_4
+    SHOW_TEXT 5
+    END_DIALOGUE
+
+; 0xE92C34
+.segment_3:
+    SHOW_TEXT 1
+    END_DIALOGUE
+
+; 0xE92C38
+.segment_4:
+    END_DIALOGUE
+
+; 0xE92C3C
+.segment_5:
+    SHOW_TEXT 0
+    TOGGLE_SPECIAL_DIALOGUE_BIT 302
+    END_DIALOGUE
+
+; 0xE92C44
+.segment_6:  ; alignment padding

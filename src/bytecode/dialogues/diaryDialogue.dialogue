@@ -1,0 +1,154 @@
+; Dialogue Bank
+; Index Start: 0xE872C0
+; Bytecode Start: 0xE871C0
+; Segments: 24
+
+; 0xE871C0
+.segment_0:
+    SHOW_SUBDIALOGUE 0, 5
+    END_DIALOGUE
+
+; 0xE871C8
+.segment_1:
+    SHOW_SUBDIALOGUE 1, 3
+    END_DIALOGUE
+
+; 0xE871D0
+.segment_2:
+    SHOW_SUBDIALOGUE 2, 3
+    HANDLE_MENU_SELECTION_BRANCH 0, .segment_3
+    HANDLE_MENU_SELECTION_BRANCH 1, .segment_4
+    END_DIALOGUE
+
+; 0xE871E0
+.segment_3:
+    SHOW_SUBDIALOGUE 3, 8
+    HANDLE_MENU_SELECTION_BRANCH 0, .segment_5
+    HANDLE_MENU_SELECTION_BRANCH 1, .segment_6
+    HANDLE_MENU_SELECTION_BRANCH 2, .segment_7
+    HANDLE_MENU_SELECTION_BRANCH 3, .segment_8
+    HANDLE_MENU_SELECTION_BRANCH 4, .segment_9
+    HANDLE_MENU_SELECTION_BRANCH 5, .segment_10
+    HANDLE_MENU_SELECTION_BRANCH 6, .segment_11
+    HANDLE_MENU_SELECTION_BRANCH 7, .segment_2
+    END_DIALOGUE
+
+; 0xE87208
+.segment_4:
+    SHOW_SUBDIALOGUE 4, 7
+    HANDLE_MENU_SELECTION_BRANCH 0, .segment_13
+    HANDLE_MENU_SELECTION_BRANCH 1, .segment_14
+    HANDLE_MENU_SELECTION_BRANCH 2, .segment_15
+    HANDLE_MENU_SELECTION_BRANCH 3, .segment_16
+    HANDLE_MENU_SELECTION_BRANCH 4, .segment_17
+    HANDLE_MENU_SELECTION_BRANCH 5, .segment_19
+    HANDLE_MENU_SELECTION_BRANCH 6, .segment_2
+    END_DIALOGUE
+
+; 0xE8722C
+.segment_5:
+    SHOW_TEXT 5
+    JUMP_TO_DIALOGUE .segment_3
+    END_DIALOGUE
+
+; 0xE87234
+.segment_6:
+    SHOW_TEXT 6
+    JUMP_TO_DIALOGUE .segment_3
+    END_DIALOGUE
+
+; 0xE8723C
+.segment_7:
+    SHOW_TEXT 7
+    JUMP_TO_DIALOGUE .segment_3
+    END_DIALOGUE
+
+; 0xE87244
+.segment_8:
+    SHOW_TEXT 8
+    JUMP_TO_DIALOGUE .segment_3
+    END_DIALOGUE
+
+; 0xE8724C
+.segment_9:
+    SHOW_TEXT 9
+    JUMP_TO_DIALOGUE .segment_3
+    END_DIALOGUE
+
+; 0xE87254
+.segment_10:
+    SHOW_TEXT 10
+    JUMP_TO_DIALOGUE .segment_3
+    END_DIALOGUE
+
+; 0xE8725C
+.segment_11:
+    SHOW_TEXT 11
+    JUMP_TO_DIALOGUE .segment_3
+    END_DIALOGUE
+
+; 0xE87264
+.segment_12:
+    SHOW_TEXT 15
+    END_DIALOGUE
+
+; 0xE87268
+.segment_13:
+    SHOW_TEXT 12
+    JUMP_TO_DIALOGUE .segment_4
+    END_DIALOGUE
+
+; 0xE87270
+.segment_14:
+    SHOW_TEXT 13
+    JUMP_TO_DIALOGUE .segment_4
+    END_DIALOGUE
+
+; 0xE87278
+.segment_15:
+    SHOW_TEXT 14
+    JUMP_TO_DIALOGUE .segment_4
+    END_DIALOGUE
+
+; 0xE87280
+.segment_16:
+    SHOW_TEXT 16
+    JUMP_TO_DIALOGUE .segment_4
+    END_DIALOGUE
+
+; 0xE87288
+.segment_17:
+    SHOW_TEXT 17
+    JUMP_TO_DIALOGUE .segment_4
+    END_DIALOGUE
+
+; 0xE87290
+.segment_18:
+    SHOW_TEXT 18
+    JUMP_TO_DIALOGUE .segment_4
+    END_DIALOGUE
+
+; 0xE87298
+.segment_19:
+    SHOW_TEXT 19
+    JUMP_TO_DIALOGUE .segment_4
+    END_DIALOGUE
+
+; 0xE872A0
+.segment_20:
+    SHOW_TEXT 20
+    JUMP_TO_DIALOGUE .segment_4
+    END_DIALOGUE
+
+; 0xE872A8
+.segment_21:
+    SHOW_TEXT 175
+    SHOW_SUBDIALOGUE 176, 2
+    END_DIALOGUE
+
+; 0xE872B0
+.segment_22:
+    END_DIALOGUE
+
+; 0xE872B4
+.segment_23:  ; alignment padding

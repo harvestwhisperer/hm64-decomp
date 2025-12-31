@@ -25,6 +25,10 @@ REVERSE_CHAR_MAP = {v: k for k, v in CHAR_MAP.items()}
 REVERSE_CONTROL_CODES = {v: k for k, v in CONTROL_CODES.items()}
 
 CONTROL_CODE_PATTERN = re.compile(r'\[([A-Z_]+)(?::([0-9A-Fa-f]+))?\]')
+
+RAW_CHAR_PATTERN = re.compile(r'\[CHAR:0x([0-9A-Fa-f]{2})(?:→0x[0-9A-Fa-f]{2})?\]')
+RAW_WORD_PATTERN = re.compile(r'\[WORD:0x([0-9A-Fa-f]{4})\]')
+RAWBYTES_PATTERN = re.compile(r'\[RAWBYTES:([0-9A-Fa-f]+)\]')
 METADATA_PATTERN = re.compile(r'^#\s*([A-Z_]+):\s*(.+)$')
 
 class TextEncoder:
@@ -62,6 +66,19 @@ class TextEncoder:
 
         if not text.strip():
             return b'\x00\x00\x00\x00'
+
+        # Check for [RAWBYTES:hex] directive for junk data - bypasses compression entirely
+        rawbytes_match = RAWBYTES_PATTERN.match(text.strip())
+        if rawbytes_match:
+            hex_string = rawbytes_match.group(1)
+            raw_data = bytes.fromhex(hex_string)
+            # Add padding to align to 4-byte boundary
+            padding_needed = (4 - (len(raw_data) % 4)) % 4
+            if padding_needed > 0:
+                raw_data += b'\x00' * padding_needed
+            if self.verbose:
+                print(f"RAWBYTES: emitting {len(raw_data)} bytes directly (no compression)")
+            return raw_data
 
         content_check = text
         content_check = re.sub(r'\[LINEBREAK\]', '', content_check)
@@ -138,25 +155,47 @@ class TextEncoder:
                     if self.verbose:
                         print(f"Found control code: {control_name} = {control_code}")
 
+                    i = match.end()
+                    continue
+
                 else:
                     raise ValueError(f"Unknown control code: {control_name}")
 
-                i = match.end()
+            # Check for raw 1-byte codes: [CHAR:0xXX] or [CHAR:0xXX→0xYY]
+            # The first hex value (XX) is the original ROM byte to preserve
+            char_match = RAW_CHAR_PATTERN.match(text, i)
+            if char_match:
+                raw_byte = int(char_match.group(1), 16)
+                codes.append(raw_byte)  # Add as 1-byte code
+                if self.verbose:
+                    print(f"Found raw CHAR: 0x{raw_byte:02X}")
+                i = char_match.end()
+                continue
 
+            # Check for raw 2-byte codes: [WORD:0xXXXX]
+            # Preserves 2-byte value (encoder will set control bit for 2-byte)
+            word_match = RAW_WORD_PATTERN.match(text, i)
+            if word_match:
+                raw_word = int(word_match.group(1), 16)
+                codes.append(raw_word)  # Add as 2-byte code (>= 0x100)
+                if self.verbose:
+                    print(f"Found raw WORD: 0x{raw_word:04X}")
+                i = word_match.end()
+                continue
+
+            # Regular character
+            char = text[i]
+
+            if char in REVERSE_CHAR_MAP:
+                codes.append(REVERSE_CHAR_MAP[char])
+            elif char == '\n':
+                codes.append(0)
+            elif char == '\r':
+                pass
             else:
-                # Regular character
-                char = text[i]
+                print(f"Warning: Unknown character '{char}' (0x{ord(char):02X}) at position {i}, skipping")
 
-                if char in REVERSE_CHAR_MAP:
-                    codes.append(REVERSE_CHAR_MAP[char])
-                elif char == '\n':
-                    codes.append(0)
-                elif char == '\r':
-                    pass
-                else:
-                    print(f"Warning: Unknown character '{char}' (0x{ord(char):02X}) at position {i}, skipping")
-
-                i += 1
+            i += 1
 
         return codes
 
@@ -463,17 +502,17 @@ class TextTranspiler:
         self.errors: List[str] = []
         self.warnings: List[str] = []
 
-    def transpile_directory(self, input_dir: Path, 
+    def transpile_directory(self, input_dir: Path,
                            auto_textend: bool = True,
                            convert_newlines: bool = True) -> Tuple[str, str]:
         """
         Transpile a directory of text files to assembly.
-        
+
         Args:
             input_dir: Directory containing text files (text000.txt, text001.txt, etc.)
             auto_textend: Automatically add [TEXTEND] if missing
             convert_newlines: Convert newlines to [LINEBREAK] codes
-            
+
         Returns:
             Tuple of (data_asm, index_asm) strings
         """
@@ -481,11 +520,62 @@ class TextTranspiler:
             self.errors.append(f"Input directory does not exist: {input_dir}")
             return "", ""
 
+        # Read metadata file first (contains terminator and padding info)
+        terminator_indices = []
+        padding_segments = {}  # idx -> size
+        total_segments = 0
+        metadata_path = input_dir / "_metadata.txt"
+        if metadata_path.exists():
+            with open(metadata_path, 'r', encoding='utf-8') as f:
+                for line in f:
+                    line = line.strip()
+                    if line.startswith('# TOTAL_SEGMENTS:'):
+                        try:
+                            total_segments = int(line.split(':')[1].strip())
+                        except (ValueError, IndexError):
+                            pass
+                    elif line.startswith('TERMINATOR:'):
+                        try:
+                            idx = int(line.split(':')[1].strip())
+                            terminator_indices.append(idx)
+                        except (ValueError, IndexError):
+                            pass
+                    elif line.startswith('PADDING:'):
+                        # Format: PADDING: {index} SIZE: {size}
+                        try:
+                            parts = line.split()
+                            idx = int(parts[1])
+                            size = int(parts[3])
+                            padding_segments[idx] = size
+                        except (ValueError, IndexError):
+                            pass
+            if self.verbose and terminator_indices:
+                print(f"  Found terminator segments: {terminator_indices}")
+            if self.verbose and padding_segments:
+                print(f"  Found padding segments: {padding_segments}")
+
         txt_files = sorted(input_dir.glob("text*.txt"))
-        
-        if not txt_files:
-            self.errors.append(f"No text files found in {input_dir}")
+
+        # Check if we have anything to process (text files OR padding/terminator segments)
+        if not txt_files and not padding_segments and not terminator_indices:
+            self.errors.append(f"No text files or metadata found in {input_dir}")
             return "", ""
+
+        # Handle empty text bank (only padding/terminators, no actual text)
+        if not txt_files:
+            if self.verbose:
+                print(f"  No text files - generating empty bank with {len(padding_segments)} padding and {len(terminator_indices)} terminator segments")
+            segments: List[Tuple[int, bytes]] = []
+            # Add padding segments
+            for idx, size in padding_segments.items():
+                segments.append((idx, b'\x00' * size))
+            segments.sort(key=lambda x: x[0])
+            # Generate assembly output
+            self._generate_data_file(segments, padding_segments)
+            self._generate_index_file(segments, terminator_indices, list(padding_segments.keys()))
+            data_output = '\n'.join(self.data_lines) + '\n'
+            index_output = '\n'.join(self.index_lines) + '\n'
+            return data_output, index_output
 
         encoder = TextEncoder()
         encoder.verbose = self.verbose
@@ -495,7 +585,7 @@ class TextTranspiler:
 
         # Compile all text segments
         segments: List[Tuple[int, bytes]] = []
-        
+
         for txt_file in txt_files:
 
             # Extract index from filename (text000.txt -> 0)
@@ -514,20 +604,26 @@ class TextTranspiler:
             try:
                 binary_data = encoder.encode_text(clean_text, metadata)
                 segments.append((idx, binary_data))
-                
+
                 if self.verbose:
                     print(f"  {txt_file.name}: {len(binary_data)} bytes")
-                    
+
             except Exception as e:
                 self.errors.append(f"Error compiling {txt_file.name}: {e}")
                 segments.append((idx, b''))
+
+        # Add padding segments (all-zero segments with no text files)
+        for idx, size in padding_segments.items():
+            segments.append((idx, b'\x00' * size))
+            if self.verbose:
+                print(f"  padding segment {idx}: {size} bytes (zeros)")
 
         # Sort segments by index
         segments.sort(key=lambda x: x[0])
 
         # Generate assembly output
-        self._generate_data_file(segments)
-        self._generate_index_file(segments)
+        self._generate_data_file(segments, padding_segments)
+        self._generate_index_file(segments, terminator_indices, list(padding_segments.keys()))
 
         data_output = '\n'.join(self.data_lines) + '\n'
         index_output = '\n'.join(self.index_lines) + '\n'
@@ -542,9 +638,12 @@ class TextTranspiler:
         """Emit a line to index output"""
         self.index_lines.append(text)
 
-    def _generate_data_file(self, segments: List[Tuple[int, bytes]]):
+    def _generate_data_file(self, segments: List[Tuple[int, bytes]], padding_segments: dict = None):
         """Generate the text data assembly file"""
-        
+
+        if padding_segments is None:
+            padding_segments = {}
+
         # Header
         self._emit_data(f"# Auto-generated text data: {self.bank_name}")
         self._emit_data("# Generated by hm64_text_transpiler.py")
@@ -558,28 +657,50 @@ class TextTranspiler:
         self.current_offset = 0
         self.segment_offsets = []
 
-        for idx, binary_data in segments:
-
-            self.segment_offsets.append((idx, self.current_offset))
-            
-            self._emit_data(f"# Text segment {idx} (offset 0x{self.current_offset:04X})")
-            self._emit_data(f"{self.bank_name}_text_{idx}:")
-            
-            # Emit bytes in groups of 16 for readability
-            for i in range(0, len(binary_data), 16):
-                chunk = binary_data[i:i+16]
-                hex_bytes = ', '.join(f'0x{b:02X}' for b in chunk)
-                self._emit_data(f"    .byte   {hex_bytes}")
-            
-            self.current_offset += len(binary_data)
+        # Handle empty bank case - emit 16-byte aligned zeros
+        if not segments:
+            self._emit_data("# Empty text bank - 16-byte aligned padding")
+            self._emit_data("    .balign 16")
+            self._emit_data("    .space  16")
+            self.current_offset = 16
             self._emit_data()
+        else:
+            for idx, binary_data in segments:
+
+                self.segment_offsets.append((idx, self.current_offset))
+
+                # Check if this is a padding segment (all zeros, no text file)
+                if idx in padding_segments:
+                    size = padding_segments[idx]
+                    self._emit_data(f"# Padding segment {idx} (offset 0x{self.current_offset:04X})")
+                    self._emit_data(f"{self.bank_name}_text_{idx}:")
+                    self._emit_data(f"    .space  {size}")
+                    self.current_offset += size
+                else:
+                    self._emit_data(f"# Text segment {idx} (offset 0x{self.current_offset:04X})")
+                    self._emit_data(f"{self.bank_name}_text_{idx}:")
+
+                    # Emit bytes in groups of 16 for readability
+                    for i in range(0, len(binary_data), 16):
+                        chunk = binary_data[i:i+16]
+                        hex_bytes = ', '.join(f'0x{b:02X}' for b in chunk)
+                        self._emit_data(f"    .byte   {hex_bytes}")
+
+                    self.current_offset += len(binary_data)
+
+                self._emit_data()
 
         # Footer
         self._emit_data(f"# End of {self.bank_name}")
         self._emit_data(f"# Total size: {self.current_offset} bytes")
 
-    def _generate_index_file(self, segments: List[Tuple[int, bytes]]):
+    def _generate_index_file(self, segments: List[Tuple[int, bytes]], terminator_indices: List[int] = None, padding_indices: List[int] = None):
         """Generate the index/offset table assembly file"""
+
+        if terminator_indices is None:
+            terminator_indices = []
+        if padding_indices is None:
+            padding_indices = []
 
         # Header
         self._emit_index(f"# Auto-generated text index: {self.index_name}")
@@ -590,23 +711,36 @@ class TextTranspiler:
         self._emit_index(f".global {self.index_name}")
         self._emit_index(f"{self.index_name}:")
 
-        if not self.segment_offsets:
-            self._emit_index("    # No segments defined")
+        if not self.segment_offsets and not terminator_indices:
+            # Empty bank - emit 16-byte aligned zeros for index
+            self._emit_index("# Empty text bank - 16-byte aligned padding")
+            self._emit_index("    .balign 16")
+            self._emit_index("    .space  16")
             self._emit_index()
             return
 
-        # Find max segment index to know table size
-        max_idx = max(idx for idx, _ in self.segment_offsets)
-        
         # Create a lookup dict for offsets
         offset_map = {idx: offset for idx, offset in self.segment_offsets}
+
+        # Add terminator entries - they point to the end of all text data
+        # (which is self.current_offset after all text is compiled)
+        for term_idx in terminator_indices:
+            offset_map[term_idx] = self.current_offset
+
+        # Find max segment index to know table size
+        max_idx = max(offset_map.keys()) if offset_map else 0
 
         # Emit entries for all indices 0 to max
         # Using .word for 4-byte big-endian values
         for i in range(max_idx + 1):
             if i in offset_map:
                 offset = offset_map[i]
-                self._emit_index(f"    .word   {offset}  # text {i}")
+                note = ""
+                if i in terminator_indices:
+                    note = " (terminator)"
+                elif i in padding_indices:
+                    note = " (padding)"
+                self._emit_index(f"    .word   {offset}  # text {i}{note}")
             else:
                 # Missing segment - emit 0 placeholder
                 self._emit_index(f"    .word   0  # text {i} (undefined)")

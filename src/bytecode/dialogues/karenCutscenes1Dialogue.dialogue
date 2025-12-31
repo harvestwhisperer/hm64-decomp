@@ -1,0 +1,47 @@
+; Dialogue Bank
+; Index Start: 0xE91FF0
+; Bytecode Start: 0xE91FB0
+; Segments: 8
+
+; 0xE91FB0
+.segment_0:
+    SHOW_TEXT 3
+    SHOW_SUBDIALOGUE 9, 2
+    END_DIALOGUE
+
+; 0xE91FB8
+.segment_1:
+    SHOW_TEXT 30
+    SHOW_SUBDIALOGUE 31, 2
+    END_DIALOGUE
+
+; 0xE91FC0
+.segment_2:
+    RANDOM_BRANCH 0, 50, 36, .segment_3
+    SHOW_TEXT 37
+    END_DIALOGUE
+
+; 0xE91FCC
+.segment_3:
+    END_DIALOGUE
+
+; 0xE91FD0
+.segment_4:
+    SHOW_TEXT 39
+    SHOW_SUBDIALOGUE 40, 2
+    END_DIALOGUE
+
+; 0xE91FD8
+.segment_5:
+    SHOW_TEXT 55
+    SHOW_SUBDIALOGUE 56, 2
+    END_DIALOGUE
+
+; 0xE91FE0
+.segment_6:
+    SHOW_TEXT 59
+    SHOW_SUBDIALOGUE 60, 2
+    END_DIALOGUE
+
+; 0xE91FE8
+.segment_7:  ; alignment padding

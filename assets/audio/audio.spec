@@ -83,15 +83,15 @@ beginseg
 endseg
 
 beginseg
-    name "spiritFestival"
+    name "spiritFestivalTheme"
     flags RAW
-    include "build/bin/audio/sequences/spiritFestival.bin.o"
+    include "build/bin/audio/sequences/spiritFestivalTheme.bin.o"
 endseg
 
 beginseg
-    name "dogRace"
+    name "dogRaceTheme"
     flags RAW
-    include "build/bin/audio/sequences/dogRace.bin.o"
+    include "build/bin/audio/sequences/dogRaceTheme.bin.o"
 endseg
 
 beginseg

@@ -5,15 +5,15 @@ beginseg
 endseg
 
 beginseg
-    name "cutsceneBank2"
+    name "farmVisits"
     flags OBJECT
-    include "build/bin/cutscenes/cutsceneBank2.bin.o"
+    include "build/bin/cutscenes/farmVisits.bin.o"
 endseg
 
 beginseg
-    name "cutsceneBank3"
+    name "familyCutscenes"
     flags OBJECT
-    include "build/bin/cutscenes/cutsceneBank3.bin.o"
+    include "build/bin/cutscenes/familyCutscenes.bin.o"
 endseg
 
 beginseg
@@ -29,15 +29,15 @@ beginseg
 endseg
 
 beginseg
-    name "cutsceneBank6"
+    name "annCutscenes"
     flags OBJECT
-    include "build/bin/cutscenes/cutsceneBank6.bin.o"
+    include "build/bin/cutscenes/annCutscenes.bin.o"
 endseg
 
 beginseg
-    name "cutsceneBank7"
+    name "karenCutscenes1"
     flags OBJECT
-    include "build/bin/cutscenes/cutsceneBank7.bin.o"
+    include "build/bin/cutscenes/karenCutscenes1.bin.o"
 endseg
 
 beginseg
@@ -47,39 +47,39 @@ beginseg
 endseg
 
 beginseg
-    name "cutsceneBank9"
+    name "mariaCutscenes"
     flags OBJECT
-    include "build/bin/cutscenes/cutsceneBank9.bin.o"
+    include "build/bin/cutscenes/mariaCutscenes.bin.o"
 endseg
 
 beginseg
-    name "cutsceneBank10"
+    name "karenCutscenes2"
     flags OBJECT
-    include "build/bin/cutscenes/cutsceneBank10.bin.o"
+    include "build/bin/cutscenes/karenCutscenes2.bin.o"
 endseg
 
 beginseg
-    name "cutsceneBank11"
+    name "sowingFestival"
     flags OBJECT
-    include "build/bin/cutscenes/cutsceneBank11.bin.o"
+    include "build/bin/cutscenes/sowingFestival.bin.o"
 endseg
 
 beginseg
-    name "cutsceneBank12"
+    name "horseRace"
     flags OBJECT
-    include "build/bin/cutscenes/cutsceneBank12.bin.o"
+    include "build/bin/cutscenes/horseRace.bin.o"
 endseg
 
 beginseg
-    name "cutsceneBank13"
+    name "flowerFestival"
     flags OBJECT
-    include "build/bin/cutscenes/cutsceneBank13.bin.o"
+    include "build/bin/cutscenes/flowerFestival.bin.o"
 endseg
 
 beginseg
-    name "cutsceneBank14"
+    name "squareFireworks"
     flags OBJECT
-    include "build/bin/cutscenes/cutsceneBank14.bin.o"
+    include "build/bin/cutscenes/squareFireworks.bin.o"
 endseg
 
 beginseg
@@ -89,73 +89,73 @@ beginseg
 endseg
 
 beginseg
-    name "cutsceneBank16"
+    name "fireflyFestival"
     flags OBJECT
-    include "build/bin/cutscenes/cutsceneBank16.bin.o"
+    include "build/bin/cutscenes/fireflyFestival.bin.o"
 endseg
 
 beginseg
-    name "cutsceneBank17"
+    name "seaFestival"
     flags OBJECT
-    include "build/bin/cutscenes/cutsceneBank17.bin.o"
+    include "build/bin/cutscenes/seaFestival.bin.o"
 endseg
 
 beginseg
-    name "cutsceneBank18"
+    name "cowFestival"
     flags OBJECT
-    include "build/bin/cutscenes/cutsceneBank18.bin.o"
+    include "build/bin/cutscenes/cowFestival.bin.o"
 endseg
 
 beginseg
-    name "cutsceneBank19"
+    name "harvestFestival"
     flags OBJECT
-    include "build/bin/cutscenes/cutsceneBank19.bin.o"
+    include "build/bin/cutscenes/harvestFestival.bin.o"
 endseg
 
 beginseg
-    name "cutsceneBank20"
+    name "eggFestival"
     flags OBJECT
-    include "build/bin/cutscenes/cutsceneBank20.bin.o"
+    include "build/bin/cutscenes/eggFestival.bin.o"
 endseg
 
 beginseg
-    name "cutsceneBank21"
+    name "dogRace"
     flags OBJECT
-    include "build/bin/cutscenes/cutsceneBank21.bin.o"
+    include "build/bin/cutscenes/dogRace.bin.o"
 endseg
 
 beginseg
-    name "cutsceneBank22"
+    name "spiritFestival"
     flags OBJECT
-    include "build/bin/cutscenes/cutsceneBank22.bin.o"
+    include "build/bin/cutscenes/spiritFestival.bin.o"
 endseg
 
 beginseg
-    name "cutsceneBank23"
+    name "newYearFestival"
     flags OBJECT
-    include "build/bin/cutscenes/cutsceneBank23.bin.o"
+    include "build/bin/cutscenes/newYearFestival.bin.o"
 endseg
 
 beginseg
-    name "cutsceneBank24"
+    name "funeralIntro"
     flags OBJECT
-    include "build/bin/cutscenes/cutsceneBank24.bin.o"
+    include "build/bin/cutscenes/funeralIntro.bin.o"
 endseg
 
 beginseg
-    name "cutsceneBank25"
+    name "evaluationEnding"
     flags OBJECT
-    include "build/bin/cutscenes/cutsceneBank25.bin.o"
+    include "build/bin/cutscenes/evaluationEnding.bin.o"
 endseg
 
 beginseg
-    name "cutsceneBank26"
+    name "demos"
     flags OBJECT
-    include "build/bin/cutscenes/cutsceneBank26.bin.o"
+    include "build/bin/cutscenes/demos.bin.o"
 endseg
 
 beginseg
-    name "cutsceneBank27"
+    name "howToPlay"
     flags OBJECT
-    include "build/bin/cutscenes/cutsceneBank27.bin.o"
+    include "build/bin/cutscenes/howToPlay.bin.o"
 endseg

@@ -402,7 +402,7 @@ segments:
           - { start: 0xF5980, type: animationScriptData, name: data/animationScripts/festivalGirl3 }
           - { start: 0xF59A0, type: animationScriptData, name: data/animationScripts/midwife }
           - { start: 0xF59E4, type: animationScriptData, name: data/animationScripts/mayorWife }
-          - { start: 0xF5A0C, type: animationScriptData, name: data/animationScripts/lilia }
+          - { start: 0xF5A0C, type: animationScriptData, name: data/animationScripts/lillia }
           - { start: 0xF5A34, type: animationScriptData, name: data/animationScripts/mariaHarrisBaby }
           - { start: 0xF5A54, type: animationScriptData, name: data/animationScripts/popuriGrayBaby }
           - { start: 0xF5A74, type: animationScriptData, name: data/animationScripts/elliJeffBaby }
@@ -785,14 +785,14 @@ segments:
     start: 0xFF5C0
 
   # farm visits
-  - name: cutsceneBank2
+  - name: farmVisits
     type: bin
     dir: cutscenes
     extract: false
     start: 0x100180
 
   # marriage, births
-  - name: cutsceneBank3
+  - name: familyCutscenes
     type: bin
     dir: cutscenes
     extract: false
@@ -813,14 +813,14 @@ segments:
     start: 0x10F980
 
   # ann cutscenes
-  - name: cutsceneBank6
+  - name: annCutscenes
     type: bin
     dir: cutscenes
     extract: false
     start: 0x115310
 
   # karen cutscenes
-  - name: cutsceneBank7
+  - name: karenCutscenes1
     type: bin
     dir: cutscenes
     extract: false
@@ -835,42 +835,42 @@ segments:
     vram: 0x802F5000
   
   # maria cutscenes
-  - name: cutsceneBank9
+  - name: mariaCutscenes
     type: bin
     dir: cutscenes
     extract: false
     start: 0x120910
 
   # karen cutscenes 2 (beach fireworks, heart events)
-  - name: cutsceneBank10
+  - name: karenCutscenes2
     type: bin
     dir: cutscenes
     extract: false
     start: 0x123CE0
 
   # sowing festival
-  - name: cutsceneBank11
+  - name: sowingFestival
     type: bin
     dir: cutscenes
     extract: false
     start: 0x125200
 
   # horse race
-  - name: cutsceneBank12
+  - name: horseRace
     type: bin
     dir: cutscenes
     extract: false
     start: 0x129760
 
   # flower festival
-  - name: cutsceneBank13
+  - name: flowerFestival
     type: bin
     dir: cutscenes
     extract: false
     start: 0x12FE90
 
   # vegetable festival
-  - name: cutsceneBank14
+  - name: squareFireworks
     type: bin
     dir: cutscenes
     extract: false
@@ -884,84 +884,84 @@ segments:
     start: 0x135F40
 
   # firefly festival
-  - name: cutsceneBank16
+  - name: fireflyFestival
     type: bin
     dir: cutscenes
     extract: false
     start: 0x136930
 
   # sea festival
-  - name: cutsceneBank17
+  - name: seaFestival
     type: bin
     dir: cutscenes
     extract: false
     start: 0x1385E0
 
   # cow festival
-  - name: cutsceneBank18
+  - name: cowFestival
     type: bin
     dir: cutscenes
     extract: false
     start: 0x139840
 
   # harvest festival
-  - name: cutsceneBank19
+  - name: harvestFestival
     type: bin
     dir: cutscenes
     extract: false
     start: 0x13AFC0
 
   # egg festival
-  - name: cutsceneBank20
+  - name: eggFestival
     type: bin
     dir: cutscenes
     extract: false
     start: 0x13D470
 
   # dog race
-  - name: cutsceneBank21
+  - name: dogRace
     type: bin
     dir: cutscenes
     extract: false
     start: 0x13FAC0
 
   # spirit festival
-  - name: cutsceneBank22
+  - name: spiritFestival
     type: bin
     dir: cutscenes
     extract: false
     start: 0x144F60
 
   # new year festival
-  - name: cutsceneBank23
+  - name: newYearFestival
     type: bin
     dir: cutscenes
     extract: false
     start: 0x1485B0
 
   # intro/opening
-  - name: cutsceneBank24
+  - name: funeralIntro
     type: bin
     dir: cutscenes
     extract: false
     start: 0x149CC0
 
   # evaluation
-  - name: cutsceneBank25
+  - name: evaluationEnding
     type: bin
     dir: cutscenes
     extract: false
     start: 0x14B8F0
 
   # demo cutscenes
-  - name: cutsceneBank26
+  - name: demos
     type: bin
     dir: cutscenes
     extract: false
     start: 0x150120
 
   # how to play
-  - name: cutsceneBank27
+  - name: howToPlay
     type: bin
     dir: cutscenes
     extract: false
@@ -1230,19 +1230,19 @@ segments:
     dir: sprites/entity-sprites/npc/mayorWife
     start: 0x48B590
 
-  - name: liliaTexture
+  - name: lilliaTexture
     type: bin
-    dir: sprites/entity-sprites/npc/lilia
+    dir: sprites/entity-sprites/npc/lillia
     start: 0x48B620
 
-  - name: liliaAssetsIndex
+  - name: lilliaAssetsIndex
     type: bin
-    dir: sprites/entity-sprites/npc/lilia
+    dir: sprites/entity-sprites/npc/lillia
     start: 0x4919B0
     
-  - name: liliaSpritesheetIndex
+  - name: lilliaSpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/npc/lilia
+    dir: sprites/entity-sprites/npc/lillia
     start: 0x4919D0
 
   - name: basilTexture
@@ -3963,51 +3963,61 @@ segments:
   - name: diaryText
     type: bin
     dir: text
+    extract: false
     start: 0xE13C60
 
   - name: diaryTextIndex
     type: bin
     dir: text
+    extract: false
     start: 0xE167C0
 
   - name: recipesJapaneseText
     type: bin
     dir: text
+    extract: false
     start: 0xE16A90
 
   - name: recipesJapaneseTextIndex
     type: bin
     dir: text
+    extract: false
     start: 0xE19F60
 
   - name: festivalOverlaySelectionsText
     type: bin
     dir: text
+    extract: false
     start: 0xE19FF0
 
   - name: festivalOverlaySelectionsTextIndex
     type: bin
     dir: text
+    extract: false
     start: 0xE1B3A0
 
   - name: lettersText
     type: bin
     dir: text
+    extract: false
     start: 0xE1B4E0
 
   - name: lettersTextIndex
     type: bin
     dir: text
+    extract: false
     start: 0xE1C8C0
 
   - name: shopText
     type: bin
     dir: text
+    extract: false
     start: 0xE1C9C0
 
   - name: shopTextIndex
     type: bin
     dir: text
+    extract: false
     start: 0xE21150
 
   - name: animalInteractionsText
@@ -4025,21 +4035,25 @@ segments:
   - name: tvText
     type: bin
     dir: text
+    extract: false
     start: 0xE218D0
 
   - name: tvTextIndex
     type: bin
     dir: text
+    extract: false
     start: 0xE24E20
 
   - name: text10Text
     type: bin
     dir: text
+    extract: false
     start: 0xE24F60
 
   - name: text10TextIndex
     type: bin
     dir: text
+    extract: false
     start: 0xE24F70
 
   - name: namingScreenText
@@ -4057,11 +4071,13 @@ segments:
   - name: elliText
     type: bin
     dir: text
+    extract: false
     start: 0xE251D0
 
   - name: elliTextIndex
     type: bin
     dir: text
+    extract: false
     start: 0xE28460
 
   - name: kaiText
@@ -4079,11 +4095,13 @@ segments:
   - name: karenText
     type: bin
     dir: text
+    extract: false
     start: 0xE2A380
 
   - name: karenTextIndex
     type: bin
     dir: text
+    extract: false
     start: 0xE2D080
 
   - name: gotzText
@@ -4125,291 +4143,349 @@ segments:
   - name: jeffText
     type: bin
     dir: text
+    extract: false
     start: 0xE31010
 
   - name: jeffTextIndex
     type: bin
     dir: text
+    extract: false
     start: 0xE33020
 
   - name: kentText
     type: bin
     dir: text
+    extract: false
     start: 0xE33190
 
   - name: kentTextIndex
     type: bin
     dir: text
+    extract: false
     start: 0xE34650
 
   - name: harrisText
     type: bin
     dir: text
+    extract: false
     start: 0xE34790
 
   - name: harrisTextIndex
     type: bin
     dir: text
+    extract: false
     start: 0xE36000
 
   - name: popuriText
     type: bin
     dir: text
+    extract: false
     start: 0xE36150
 
   - name: popuriTextIndex
     type: bin
     dir: text
+    extract: false
     start: 0xE39360
 
   - name: mariaText
     type: bin
     dir: text
+    extract: false
     start: 0xE39610
 
   - name: mariaTextIndex
     type: bin
     dir: text
+    extract: false
     start: 0xE3C700
 
   - name: mayText
     type: bin
     dir: text
+    extract: false
     start: 0xE3C9A0
 
   - name: mayTextIndex
     type: bin
     dir: text
+    extract: false
     start: 0xE3D600
 
   - name: annText
     type: bin
     dir: text
+    extract: false
     start: 0xE3D6D0
 
   - name: annTextIndex
     type: bin
     dir: text
+    extract: false
     start: 0xE40B90
 
   - name: dougText
     type: bin
     dir: text
+    extract: false
     start: 0xE40E50
 
   - name: dougTextIndex
     type: bin
     dir: text
+    extract: false
     start: 0xE42010
 
   - name: grayText
     type: bin
     dir: text
+    extract: false
     start: 0xE42100
 
   - name: grayTextIndex
     type: bin
     dir: text
+    extract: false
     start: 0xE42D50
 
   - name: basilText
     type: bin
     dir: text
+    extract: false
     start: 0xE42E60
 
   - name: basilTextIndex
     type: bin
     dir: text
+    extract: false
     start: 0xE43E80
 
-  - name: liliaText
+  - name: lilliaText
     type: bin
+    extract: false
     dir: text
     start: 0xE43F60
 
-  - name: liliaTextIndex
+  - name: lilliaTextIndex
     type: bin
     dir: text
+    extract: false
     start: 0xE45130
 
   - name: dukeText
     type: bin
     dir: text
+    extract: false
     start: 0xE45200
 
   - name: dukeTextIndex
     type: bin
     dir: text
+    extract: false
     start: 0xE461C0
 
   - name: shipperText
     type: bin
     dir: text
+    extract: false
     start: 0xE46280
 
   - name: shipperTextIndex
     type: bin
     dir: text
+    extract: false
     start: 0xE47140
 
   - name: harvestSpritesText
     type: bin
     dir: text
+    extract: false
     start: 0xE471E0
 
   - name: harvestSpritesTextIndex
     type: bin
     dir: text
+    extract: false
     start: 0xE485D0
 
   - name: assistantCarpentersText
     type: bin
     dir: text
+    extract: false
     start: 0xE48720
 
   - name: assistantCarpentersTextIndex
     type: bin
     dir: text
+    extract: false
     start: 0xE49480
 
   - name: masterCarpenterText
     type: bin
     dir: text
+    extract: false
     start: 0xE49540
 
   - name: masterCarpenterTextIndex
     type: bin
     dir: text
+    extract: false
     start: 0xE4A230
 
   - name: mayorText
     type: bin
     dir: text
+    extract: false
     start: 0xE4A2D0
 
   - name: mayorTextIndex
     type: bin
     dir: text
+    extract: false
     start: 0xE4B6E0
 
   - name: gregText
     type: bin
     dir: text
+    extract: false
     start: 0xE4B7D0
 
   - name: gregTextIndex
     type: bin
     dir: text
+    extract: false
     start: 0xE4C8D0
 
   - name: rickText
     type: bin
     dir: text
+    extract: false
     start: 0xE4C9B0
 
   - name: rickTextIndex
     type: bin
     dir: text
+    extract: false
     start: 0xE4E230
 
   - name: barleyText
     type: bin
     dir: text
+    extract: false
     start: 0xE4E320
 
   - name: barleyTextIndex
     type: bin
     dir: text
+    extract: false
     start: 0xE4EC70
 
   - name: sydneyText
     type: bin
     dir: text
+    extract: false
     start: 0xE4ED10
 
   - name: sydneyTextIndex
     type: bin
     dir: text
+    extract: false
     start: 0xE4F370
 
   - name: potionShopDealerText
     type: bin
     dir: text
+    extract: false
     start: 0xE4F3F0
 
   - name: potionShopDealerTextIndex
     type: bin
     dir: text
+    extract: false
     start: 0xE50520
 
   - name: mayorWifeText
     type: bin
     dir: text
+    extract: false
     start: 0xE50600
 
   - name: mayorWifeTextIndex
     type: bin
     dir: text
+    extract: false
     start: 0xE51A00
 
   - name: ellenText
     type: bin
     dir: text
+    extract: false
     start: 0xE51AE0
 
   - name: ellenTextIndex
     type: bin
     dir: text
+    extract: false
     start: 0xE52740
 
   - name: stuText
     type: bin
     dir: text
+    extract: false
     start: 0xE527E0
 
   - name: stuTextIndex
     type: bin
     dir: text
+    extract: false
     start: 0xE53450
 
   - name: midwifeText
     type: bin
     dir: text
+    extract: false
     start: 0xE53540
 
   - name: midwifeTextIndex
     type: bin
     dir: text
+    extract: false
     start: 0xE54C60
 
   - name: pastorText
     type: bin
     dir: text
+    extract: false
     start: 0xE54D60
 
   - name: pastorTextIndex
     type: bin
     dir: text
+    extract: false
     start: 0xE55AE0
 
   - name: saibaraText
     type: bin
     dir: text
+    extract: false
     start: 0xE55BA0
 
   - name: saibaraTextIndex
     type: bin
     dir: text
+    extract: false
     start: 0xE569C0
 
   - name: cutscenes1Text
     type: bin
     dir: text
+    extract: false
     start: 0xE56A80
 
   - name: cutscenes1TextIndex
     type: bin
     dir: text
+    extract: false
     start: 0xE58010
 
   - name: funeralIntroText
@@ -4427,241 +4503,289 @@ segments:
   - name: text48Text
     type: bin
     dir: text
+    extract: false
     start: 0xE583F0
 
   - name: text48TextIndex
     type: bin
     dir: text
+    extract: false
     start: 0xE58880
 
   - name: text49Text
     type: bin
     dir: text
+    extract: false
     start: 0xE588D0
 
   - name: text49TextIndex
     type: bin
     dir: text
+    extract: false
     start: 0xE5A6D0
 
   - name: text50Text
     type: bin
     dir: text
+    extract: false
     start: 0xE5A8C0
 
   - name: text50TextIndex
     type: bin
     dir: text
+    extract: false
     start: 0xE5D240
 
   - name: text51Text
     type: bin
     dir: text
+    extract: false
     start: 0xE5D4C0
 
   - name: text51TextIndex
     type: bin
     dir: text
+    extract: false
     start: 0xE5E270
 
   - name: text52Text
     type: bin
     dir: text
+    extract: false
     start: 0xE5E340
 
   - name: text52TextIndex
     type: bin
     dir: text
+    extract: false
     start: 0xE5F220
 
   - name: dogRaceText
     type: bin
     dir: text
+    extract: false
     start: 0xE5F300
 
   - name: dogRaceTextIndex
     type: bin
     dir: text
+    extract: false
     start: 0xE60080
 
   - name: text54Text
     type: bin
     dir: text
+    extract: false
     start: 0xE60170
 
   - name: text54TextIndex
     type: bin
     dir: text
+    extract: false
     start: 0xE64680
 
   - name: text55Text
     type: bin
     dir: text
+    extract: false
     start: 0xE64AF0
 
   - name: text55TextIndex
     type: bin
     dir: text
+    extract: false
     start: 0xE66260
 
   - name: text56Text
     type: bin
     dir: text
+    extract: false
     start: 0xE663F0
 
   - name: text56TextIndex
     type: bin
     dir: text
+    extract: false
     start: 0xE677B0
 
   - name: newYearFestivalText
     type: bin
     dir: text
+    extract: false
     start: 0xE678E0
 
   - name: newYearFestivalTextIndex
     type: bin
     dir: text
+    extract: false
     start: 0xE68620
 
   - name: spiritFestivalText
     type: bin
     dir: text
+    extract: false
     start: 0xE68700
 
   - name: spiritFestivalTextIndex
     type: bin
     dir: text
+    extract: false
     start: 0xE68BA0
 
   - name: horseRaceText
     type: bin
     dir: text
+    extract: false
     start: 0xE68BF0
 
   - name: horseRaceTextIndex
     type: bin
     dir: text
+    extract: false
     start: 0xE6ADC0
 
   - name: marriedDialoguesText
     type: bin
     dir: text
+    extract: false
     start: 0xE6AFE0
 
   - name: marriedDialoguesTextIndex
     type: bin
     dir: text
+    extract: false
     start: 0xE6F1E0
 
   - name: text61Text
     type: bin
     dir: text
+    extract: false
     start: 0xE6F5C0
 
   - name: text61TextIndex
     type: bin
     dir: text
+    extract: false
     start: 0xE714D0
 
   - name: karenCutscenes1Text
     type: bin
     dir: text
+    extract: false
     start: 0xE71690
 
   - name: karenCutscenes1TextIndex
     type: bin
     dir: text
+    extract: false
     start: 0xE72680
 
   - name: text63Text
     type: bin
     dir: text
+    extract: false
     start: 0xE72780
 
   - name: text63TextIndex
     type: bin
     dir: text
+    extract: false
     start: 0xE73070
 
   - name: text64Text
     type: bin
     dir: text
+    extract: false
     start: 0xE73110
 
   - name: text64TextIndex
     type: bin
     dir: text
+    extract: false
     start: 0xE7C7B0
 
   - name: text65Text
     type: bin
     dir: text
+    extract: false
     start: 0xE7D1E0
 
   - name: text65TextIndex
     type: bin
     dir: text
+    extract: false
     start: 0xE81660
 
   - name: eggFestivalText
     type: bin
     dir: text
+    extract: false
     start: 0xE81F50
 
   - name: eggFestivalTextIndex
     type: bin
     dir: text
+    extract: false
     start: 0xE82B30
 
   - name: karenCutscenes2Text
     type: bin
     dir: text
+    extract: false
     start: 0xE82C40
 
   - name: karenCutscenes2TextIndex
     type: bin
     dir: text
+    extract: false
     start: 0xE83880
 
   - name: vegetableFestivalText
     type: bin
     dir: text
+    extract: false
     start: 0xE83960
 
   - name: vegetableFestivalTextIndex
     type: bin
     dir: text
+    extract: false
     start: 0xE84690
 
   - name: babyText
     type: bin
     dir: text
+    extract: false
     start: 0xE84760
 
   - name: babyTextIndex
     type: bin
     dir: text
+    extract: false
     start: 0xE84910
 
   - name: mrsManaAndJohnText
     type: bin
     dir: text
+    extract: false
     start: 0xE84990
 
   - name: mrsManaAndJohnTextIndex
     type: bin
     dir: text
+    extract: false
     start: 0xE84F50
 
   - name: additionalNpcsText
     type: bin
     dir: text
+    extract: false
     start: 0xE84FD0
 
   - name: additionalNpcsTextIndex
     type: bin
     dir: text
+    extract: false
     start: 0xE85730
 
   - name: howToPlayText
@@ -4678,706 +4802,844 @@ segments:
 
   # dialogue bytecode
 
-  - name: dialogueBytecodeSegment1
+  - name: text1Dialogue
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE871A0
 
-  - name: dialogueBytecodeSegment1Index
+  - name: text1DialogueIndex
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE871B0
 
-  - name: dialogueBytecodeSegment2
+  - name: diaryDialogue
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE871C0
 
-  - name: dialogueBytecodeSegment2Index
+  - name: diaryDialogueIndex
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE872C0
 
-  - name: dialogueBytecodeSegment3
+  - name: elliDialogue
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE87320
 
-  - name: dialogueBytecodeSegment3Index
+  - name: elliDialogueIndex
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE87BB0
 
-  - name: dialogueBytecodeSegment4
+  - name: kaiDialogue
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE87CE0
 
-  - name: dialogueBytecodeSegment4Index
+  - name: kaiDialogueIndex
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE88190
 
-  - name: dialogueBytecodeSegment5
+  - name: karenDialogue
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE88240
 
-  - name: dialogueBytecodeSegment5Index
+  - name: karenDialogueIndex
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE88B20
 
-  - name: dialogueBytecodeSegment6
+  - name: cliffDialogue
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE88C60
 
-  - name: dialogueBytecodeSegment6Index
+  - name: cliffDialogueIndex
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE89070
 
-  - name: dialogueBytecodeSegment7
+  - name: jeffDialogue
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE89120
 
-  - name: dialogueBytecodeSegment7Index
+  - name: jeffDialogueIndex
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE89600
 
-  - name: dialogueBytecodeSegment8
+  - name: harrisDialogue
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE896B0
 
-  - name: dialogueBytecodeSegment8Index
+  - name: harrisDialogueIndex
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE89B60
 
-  - name: dialogueBytecodeSegment9
+  - name: popuriDialogue
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE89C00
 
-  - name: dialogueBytecodeSegment9Index
+  - name: popuriDialogueIndex
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE8A460
 
-  - name: mariaDialogueBytecode
+  - name: mariaDialogue
     type: bin
     dir: dialogues/bytecode
     extract: false
     start: 0xE8A590
 
-  - name: mariaDialogueBytecodeIndex
+  - name: mariaDialogueIndex
     type: bin
     dir: dialogues/bytecode
     extract: false
     start: 0xE8AE00
 
-  - name: dialogueBytecodeSegment11
+  - name: annDialogue
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE8AF30
 
-  - name: dialogueBytecodeSegment11Index
+  - name: annDialogueIndex
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE8B7A0
 
-  - name: dialogueBytecodeSegment12
+  - name: grayDialogue
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE8B8F0
 
-  - name: dialogueBytecodeSegment12Index
+  - name: grayDialogueIndex
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE8BCE0
 
-  - name: dialogueBytecodeSegment13
+  - name: ellenDialogue
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE8BD80
 
-  - name: dialogueBytecodeSegment13Index
+  - name: ellenDialogueIndex
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE8C000
 
-  - name: dialogueBytecodeSegment14
+  - name: gotzDialogue
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE8C070
 
-  - name: dialogueBytecodeSegment14Index
+  - name: gotzDialogueIndex
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE8C400
 
-  - name: dialogueBytecodeSegment15
+  - name: sashaDialogue
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE8C480
 
-  - name: dialogueBytecodeSegment15Index
+  - name: sashaDialogueIndex
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE8C750
 
-  - name: dialogueBytecodeSegment16
+  - name: kentDialogue
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE8C7D0
 
-  - name: dialogueBytecodeSegment16Index
+  - name: kentDialogueIndex
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE8CBA0
 
-  - name: dialogueBytecodeSegment17
+  - name: mayDialogue
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE8CC40
 
-  - name: dialogueBytecodeSegment17Index
+  - name: mayDialogueIndex
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE8CF90
 
-  - name: dialogueBytecodeSegment18
+  - name: stuDialogue
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE8D010
 
-  - name: dialogueBytecodeSegment18Index
+  - name: stuDialogueIndex
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE8D3F0
 
-  - name: dialogueBytecodeSegment19
+  - name: dougDialogue
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE8D470
 
-  - name: dialogueBytecodeSegment19Index
+  - name: dougDialogueIndex
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE8D7B0
 
-  - name: dialogueBytecodeSegment20
+  - name: basilDialogue
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE8D830
 
-  - name: dialogueBytecodeSegment20Index
+  - name: basilDialogueIndex
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE8DA90
 
-  - name: dialogueBytecodeSegment21
+  - name: lilliaDialogue
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE8DB00
 
-  - name: dialogueBytecodeSegment21Index
+  - name: lilliaDialogueIndex
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE8DDF0
 
-  - name: dialogueBytecodeSegment22
+  - name: saibaraDialogue
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE8DE60
 
-  - name: dialogueBytecodeSegment22Index
+  - name: saibaraDialogueIndex
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE8E0E0
 
-  - name: dialogueBytecodeSegment23
+  - name: midwifeDialogue
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE8E160
-    
-  - name: dialogueBytecodeSegment23Index
+
+  - name: midwifeDialogueIndex
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE8E490
 
-  - name: dialogueBytecodeSegment24
+  - name: dukeDialogue
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE8E520
 
-  - name: dialogueBytecodeSegment24Index
+  - name: dukeDialogueIndex
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE8E780
 
-  - name: dialogueBytecodeSegment25
+  - name: shipperDialogue
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE8E7F0
 
-  - name: dialogueBytecodeSegment25Index
+  - name: shipperDialogueIndex
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE8EAC0
 
-  - name: dialogueBytecodeSegment26
+  - name: harvestSprites1Dialogue
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE8EB30
 
-  - name: dialogueBytecodeSegment26Index
+  - name: harvestSprites1DialogueIndex
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE8EE50
-    
-  - name: dialogueBytecodeSegment27
+
+  - name: harvestSprites2Dialogue
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE8EEC0
 
-  - name: dialogueBytecodeSegment27Index
+  - name: harvestSprites2DialogueIndex
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE8F1E0
 
-  - name: dialogueBytecodeSegment28
+  - name: harvestSprites3Dialogue
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE8F250
 
-  - name: dialogueBytecodeSegment28Index
+  - name: harvestSprites3DialogueIndex
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE8F550
 
-  - name: dialogueBytecodeSegment29
+  - name: assistantCarpenters1Dialogue
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE8F5C0
 
-  - name: dialogueBytecodeSegment29Index
+  - name: assistantCarpenters1DialogueIndex
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE8F7A0
 
-  - name: dialogueBytecodeSegment30
+  - name: assistantCarpenters2Dialogue
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE8F810
 
-  - name: dialogueBytecodeSegment30Index
+  - name: assistantCarpenters2DialogueIndex
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE8FA00
 
-  - name: dialogueBytecodeSegment31
+  - name: masterCarpenterDialogue
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE8FA70
 
-  - name: dialogueBytecodeSegment31Index
+  - name: masterCarpenterDialogueIndex
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE8FC90
 
-  - name: dialogueBytecodeSegment32
+  - name: mayorDialogue
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE8FD00
 
-  - name: dialogueBytecodeSegment32Index
+  - name: mayorDialogueIndex
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE90000
 
-  - name: dialogueBytecodeSegment33
+  - name: gregDialogue
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE90080
 
-  - name: dialogueBytecodeSegment33Index
+  - name: gregDialogueIndex
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE903D0
 
-  - name: dialogueBytecodeSegment34
+  - name: rickDialogue
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE90460
 
-  - name: dialogueBytecodeSegment34Index
+  - name: rickDialogueIndex
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE90810
 
-  - name: dialogueBytecodeSegment35
+  - name: barleyDialogue
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE90890
 
-  - name: dialogueBytecodeSegment35Index
+  - name: barleyDialogueIndex
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE90B00
 
-  - name: dialogueBytecodeSegment36
+  - name: sydneyDialogue
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE90B70
 
-  - name: dialogueBytecodeSegment36Index
+  - name: sydneyDialogueIndex
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE90DD0
 
-  - name: dialogueBytecodeSegment37
+  - name: mayorWifeDialogue
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE90E40
 
-  - name: dialogueBytecodeSegment37Index
+  - name: mayorWifeDialogueIndex
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE91210
 
-  - name: dialogueBytecodeSegment38
+  - name: pastorDialogue
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE91290
 
-  - name: dialogueBytecodeSegment38Index
+  - name: pastorDialogueIndex
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE914C0
 
-  - name: dialogueBytecodeSegment39
+  - name: potionShopDealerDialogue
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE91520
 
-  - name: dialogueBytecodeSegment39Index
+  - name: potionShopDealerDialogueIndex
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE917E0
 
-  - name: dialogueBytecodeSegment40
+  - name: cutscenes1Dialogue
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE91860
 
-  - name: dialogueBytecodeSegment40Index
+  - name: cutscenes1DialogueIndex
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE918A0
 
-  - name: dialogueBytecodeSegment41
+  - name: text48Dialogue
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE918D0
 
-  - name: dialogueBytecodeSegment41Index
+  - name: text48DialogueIndex
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE91900
 
-  - name: dialogueBytecodeSegment42
+  - name: text49Dialogue
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE91920
 
-  - name: dialogueBytecodeSegment42Index
+  - name: text49DialogueIndex
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE91970
 
-  - name: dialogueBytecodeSegment43
+  - name: text50Dialogue
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE919A0
 
-  - name: dialogueBytecodeSegment43Index
+  - name: text50DialogueIndex
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE91A50
 
-  - name: dialogueBytecodeSegment44
+  - name: text51Dialogue
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE91AB0
 
-  - name: dialogueBytecodeSegment44Index
+  - name: text51DialogueIndex
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE91AD0
 
-  - name: dialogueBytecodeSegment45
+  - name: text52Dialogue
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE91AE0
 
-  - name: dialogueBytecodeSegment45Index
+  - name: text52DialogueIndex
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE91B50
 
-  - name: dialogueBytecodeSegment46
+  - name: dogRaceDialogue
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE91B80
 
-  - name: dialogueBytecodeSegment46Index
+  - name: dogRaceDialogueIndex
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE91B90
 
-  - name: dialogueBytecodeSegment47
+  - name: vegetableFestivalDialogue
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE91BA0
 
-  - name: dialogueBytecodeSegment47Index
+  - name: vegetableFestivalDialogueIndex
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE91BF0
 
-  - name: dialogueBytecodeSegment48
+  - name: text54Dialogue
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE91C20
 
-  - name: dialogueBytecodeSegment48Index
+  - name: text54DialogueIndex
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE91CE0
 
-  - name: dialogueBytecodeSegment49
+  - name: text55Dialogue
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE91D30
 
-  - name: dialogueBytecodeSegment49Index
+  - name: text55DialogueIndex
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE91DC0
 
-  - name: dialogueBytecodeSegment50
+  - name: text56Dialogue
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE91E00
 
-  - name: dialogueBytecodeSegment50Index
+  - name: text56DialogueIndex
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE91EF0
 
-  - name: dialogueBytecodeSegment51
+  - name: horseRaceDialogue
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE91F60
 
-  - name: dialogueBytecodeSegment51Index
+  - name: horseRaceDialogueIndex
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE91F90
 
-  - name: dialogueBytecodeSegment52
+  - name: karenCutscenes1Dialogue
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE91FB0
 
-  - name: dialogueBytecodeSegment52Index
+  - name: karenCutscenes1DialogueIndex
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE91FF0
 
-  - name: dialogueBytecodeSegment53
+  - name: text63Dialogue
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE92010
 
-  - name: dialogueBytecodeSegment53Index
+  - name: text63DialogueIndex
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE92030
 
-  - name: dialogueBytecodeSegment54
+  - name: text64Dialogue
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE92040
 
-  - name: dialogueBytecodeSegment54Index
+  - name: text64DialogueIndex
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE92180
 
-  - name: dialogueBytecodeSegment55
+  - name: text65Dialogue
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE92220
 
-  - name: dialogueBytecodeSegment55Index
+  - name: text65DialogueIndex
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE922E0
 
-  - name: dialogueBytecodeSegment56
+  - name: eggFestivalDialogue
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE92370
 
-  - name: dialogueBytecodeSegment56Index
+  - name: eggFestivalDialogueIndex
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE92380
 
-  - name: dialogueBytecodeSegment57
+  - name: marriedDialogue
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE92390
 
-  - name: dialogueBytecodeSegment57Index
+  - name: marriedDialogueIndex
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE924A0
 
-  - name: dialogueBytecodeSegment58
+  - name: text61Dialogue
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE92520
 
-  - name: dialogueBytecodeSegment58Index
+  - name: text61DialogueIndex
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE92550
 
-  - name: dialogueBytecodeSegment59
+  - name: namingScreenDialogue
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE92570
 
-  - name: dialogueBytecodeSegment59Index
+  - name: namingScreenDialogueIndex
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE925B0
 
-  - name: dialogueBytecodeSegment60
+  - name: newYearFestivalDialogue
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE925F0
 
-  - name: dialogueBytecodeSegment60Index
+  - name: newYearFestivalDialogueIndex
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE92600
 
-  - name: dialogueBytecodeSegment61
+  - name: karenCutscenes2Dialogue
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE92610
 
-  - name: dialogueBytecodeSegment61Index
+  - name: karenCutscenes2DialogueIndex
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE92630
 
-  - name: dialogueBytecodeSegment62
+  - name: shopDialogue
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE92640
 
-  - name: dialogueBytecodeSegment62Index
+  - name: shopDialogueIndex
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE92800
 
-  - name: dialogueBytecodeSegment63
+  - name: festivalOverlaySelectionsDialogue
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE928B0
 
-  - name: dialogueBytecodeSegment63Index
+  - name: festivalOverlaySelectionsDialogueIndex
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE92910
 
-  - name: dialogueBytecodeSegment64
+  - name: babyDialogue
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE92950
 
-  - name: dialogueBytecodeSegment64Index
+  - name: babyDialogueIndex
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE92B40
 
-  - name: dialogueBytecodeSegment65
+  - name: mrsManaAndJohn1Dialogue
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE92B90
 
-  - name: dialogueBytecodeSegment65Index
+  - name: mrsManaAndJohn1DialogueIndex
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE92C50
 
-  - name: dialogueBytecodeSegment66
+  - name: mrsManaAndJohn2Dialogue
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE92C70
 
-  - name: dialogueBytecodeSegment66Index
+  - name: mrsManaAndJohn2DialogueIndex
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE92DB0
 
-  - name: dialogueBytecodeSegment67
+  - name: additionalNpcs1Dialogue
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE92DE0
 
-  - name: dialogueBytecodeSegment67Index
+  - name: additionalNpcs1DialogueIndex
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE92E90
 
-  - name: dialogueBytecodeSegment68
+  - name: npcBabyDialogue
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE92EC0
 
-  - name: dialogueBytecodeSegment68Index
+  - name: npcBabyDialogueIndex
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE92EE0
 
-  - name: dialogueBytecodeSegment69
+  - name: libraryDialogue
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE92EF0
 
-  - name: dialogueBytecodeSegment69Index
+  - name: libraryDialogueIndex
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE92F90
 
-  - name: dialogueBytecodeSegment70
+  - name: additionalNpcs2Dialogue
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE92FF0
 
-  - name: dialogueBytecodeSegment70Index
+  - name: additionalNpcs2DialogueIndex
     type: bin
     dir: dialogues/bytecode
+    extract: false
     start: 0xE93060
 
   # audio
@@ -5448,12 +5710,12 @@ segments:
     dir: audio/sequences
     start: 0xFE9040
 
-  - name: spiritFestival
+  - name: spiritFestivalTheme
     type: bin
     dir: audio/sequences
     start: 0xFEAB70
 
-  - name: dogRace
+  - name: dogRaceTheme
     type: bin
     dir: audio/sequences
     start: 0xFEB8F0

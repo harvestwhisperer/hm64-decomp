@@ -1,0 +1,168 @@
+; Dialogue Bank
+; Index Start: 0xE922E0
+; Bytecode Start: 0xE92220
+; Segments: 35
+
+; 0xE92220
+.segment_0:
+    SHOW_TEXT 182
+    SHOW_SUBDIALOGUE 183, 4
+    END_DIALOGUE
+
+; 0xE92228
+.segment_1:
+    SHOW_TEXT 258
+    SHOW_SUBDIALOGUE 259, 4
+    END_DIALOGUE
+
+; 0xE92230
+.segment_2:
+    SHOW_TEXT 334
+    SHOW_SUBDIALOGUE 335, 4
+    END_DIALOGUE
+
+; 0xE92238
+.segment_3:
+    SHOW_TEXT 386
+    SHOW_SUBDIALOGUE 387, 4
+    END_DIALOGUE
+
+; 0xE92240
+.segment_4:
+    SHOW_TEXT 457
+    SHOW_SUBDIALOGUE 458, 4
+    END_DIALOGUE
+
+; 0xE92248
+.segment_5:
+    END_DIALOGUE
+
+; 0xE9224C
+.segment_6:
+    END_DIALOGUE
+
+; 0xE92250
+.segment_7:
+    END_DIALOGUE
+
+; 0xE92254
+.segment_8:
+    END_DIALOGUE
+
+; 0xE92258
+.segment_9:
+    END_DIALOGUE
+
+; 0xE9225C
+.segment_10:
+    END_DIALOGUE
+
+; 0xE92260
+.segment_11:
+    END_DIALOGUE
+
+; 0xE92264
+.segment_12:
+    SHOW_SUBDIALOGUE 206, 3
+    END_DIALOGUE
+
+; 0xE9226C
+.segment_13:
+    END_DIALOGUE
+
+; 0xE92270
+.segment_14:
+    END_DIALOGUE
+
+; 0xE92274
+.segment_15:
+    END_DIALOGUE
+
+; 0xE92278
+.segment_16:
+    END_DIALOGUE
+
+; 0xE9227C
+.segment_17:
+    END_DIALOGUE
+
+; 0xE92280
+.segment_18:
+    END_DIALOGUE
+
+; 0xE92284
+.segment_19:
+    END_DIALOGUE
+
+; 0xE92288
+.segment_20:
+    END_DIALOGUE
+
+; 0xE9228C
+.segment_21:
+    END_DIALOGUE
+
+; 0xE92290
+.segment_22:
+    END_DIALOGUE
+
+; 0xE92294
+.segment_23:
+    END_DIALOGUE
+
+; 0xE92298
+.segment_24:
+    END_DIALOGUE
+
+; 0xE9229C
+.segment_25:
+    END_DIALOGUE
+
+; 0xE922A0
+.segment_26:
+    END_DIALOGUE
+
+; 0xE922A4
+.segment_27:
+    SHOW_TEXT 30
+    SHOW_SUBDIALOGUE 32, 2
+    END_DIALOGUE
+
+; 0xE922AC
+.segment_28:
+    SHOW_TEXT 34
+    SHOW_SUBDIALOGUE 37, 2
+    END_DIALOGUE
+
+; 0xE922B4
+.segment_29:
+    SHOW_TEXT 204
+    SHOW_SUBDIALOGUE 206, 3
+    END_DIALOGUE
+
+; 0xE922BC
+.segment_30:
+    SHOW_TEXT 278
+    SHOW_SUBDIALOGUE 206, 3
+    END_DIALOGUE
+
+; 0xE922C4
+.segment_31:
+    SHOW_TEXT 351
+    SHOW_SUBDIALOGUE 352, 3
+    END_DIALOGUE
+
+; 0xE922CC
+.segment_32:
+    SHOW_TEXT 406
+    SHOW_SUBDIALOGUE 407, 3
+    END_DIALOGUE
+
+; 0xE922D4
+.segment_33:
+    SHOW_TEXT 474
+    SHOW_SUBDIALOGUE 206, 3
+    END_DIALOGUE
+
+; 0xE922DC
+.segment_34:  ; alignment padding

@@ -325,15 +325,15 @@ beginseg
 endseg
 
 beginseg
-    name "liliaText"
+    name "lilliaText"
     flags RAW
-    include "build/bin/text/liliaText.bin.o"
+    include "build/bin/text/lilliaText.bin.o"
 endseg
 
 beginseg
-    name "liliaTextIndex"
+    name "lilliaTextIndex"
     flags RAW
-    include "build/bin/text/liliaTextIndex.bin.o"
+    include "build/bin/text/lilliaTextIndex.bin.o"
 endseg
 
 beginseg

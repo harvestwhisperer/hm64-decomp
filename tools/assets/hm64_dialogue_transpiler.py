@@ -429,7 +429,7 @@ class DSLParser:
 class DialogueTranspiler:
     """Transpiles dialogue DSL to GNU as syntax (two separate files)"""
     
-    def __init__(self, bank_name: str = "dialogueBytecodeSegment1"):
+    def __init__(self, bank_name: str = "text1Dialogue"):
         self.bank_name = bank_name
         self.index_name = f"{bank_name}Index"
         self.parser = DSLParser()
@@ -440,6 +440,8 @@ class DialogueTranspiler:
         self.current_line: int = 0
         self.labels: Dict[str, int] = {}  # label -> segment index for offset table
         self.segment_labels: List[Tuple[int, str]] = []  # [(index, label), ...]
+        self.bytecode_size: Optional[int] = None  # Expected bytecode size for padding
+        self.index_size: Optional[int] = None  # Expected index size for padding
         
     def transpile(self, source: str) -> Tuple[str, str]:
         """
@@ -459,24 +461,41 @@ class DialogueTranspiler:
         self.current_byte_offset = 0  # Track current position in bytecode
         
         lines = self.parser.parse_file(source)
-        
-        # First pass: collect .define directives for segment aliases
+
+        # First pass: collect directives (.define, .bytecode_size, .index_size)
         for line in lines:
-            if line.is_directive and line.directive_name == '.define':
-                # Parse .define arguments - split on whitespace since they're space-separated
-                args = []
-                if line.directive_args:
-                    # The parser may have combined args into one string, so split them
-                    for arg in line.directive_args:
-                        args.extend(arg.split())
-                
-                if len(args) >= 2:
-                    alias_name = args[0]
-                    try:
-                        segment_idx = int(args[1])
-                        self.segment_aliases[alias_name] = segment_idx
-                    except ValueError:
-                        self.errors.append(f"Line {line.line_num}: .define requires numeric segment index, got '{args[1]}'")
+            if line.is_directive:
+                if line.directive_name == '.define':
+                    # Parse .define arguments - split on whitespace since they're space-separated
+                    args = []
+                    if line.directive_args:
+                        # The parser may have combined args into one string, so split them
+                        for arg in line.directive_args:
+                            args.extend(arg.split())
+
+                    if len(args) >= 2:
+                        alias_name = args[0]
+                        try:
+                            segment_idx = int(args[1])
+                            self.segment_aliases[alias_name] = segment_idx
+                        except ValueError:
+                            self.errors.append(f"Line {line.line_num}: .define requires numeric segment index, got '{args[1]}'")
+
+                elif line.directive_name == '.bytecode_size':
+                    # Parse expected bytecode size for padding
+                    if line.directive_args:
+                        try:
+                            self.bytecode_size = int(line.directive_args[0])
+                        except ValueError:
+                            self.errors.append(f"Line {line.line_num}: .bytecode_size requires numeric value")
+
+                elif line.directive_name == '.index_size':
+                    # Parse expected index size for padding
+                    if line.directive_args:
+                        try:
+                            self.index_size = int(line.directive_args[0])
+                        except ValueError:
+                            self.errors.append(f"Line {line.line_num}: .index_size requires numeric value")
         
         # Second pass: collect segment labels for offset table
         # Handle both .segment_X and custom names defined via .define
@@ -544,7 +563,19 @@ class DialogueTranspiler:
         for line in lines:
             self.current_line = line.line_num
             self._process_line(line)
-        
+
+        # Emit padding to reach expected bytecode size
+        if self.bytecode_size is not None and self.current_byte_offset < self.bytecode_size:
+            padding_needed = self.bytecode_size - self.current_byte_offset
+            self._emit_bytecode()
+            self._emit_bytecode(f"    # Padding to reach {self.bytecode_size} bytes (0x{self.bytecode_size:X})")
+            # Emit padding in chunks of 16 bytes for readability
+            while padding_needed > 0:
+                chunk = min(padding_needed, 16)
+                padding_bytes = ', '.join(['0x00'] * chunk)
+                self._emit_bytecode_data(f"    .byte   {padding_bytes}", chunk)
+                padding_needed -= chunk
+
         # Footer
         self._emit_bytecode()
         self._emit_bytecode(f"# End of {self.bank_name}")
@@ -558,27 +589,42 @@ class DialogueTranspiler:
         self._emit_index()
         self._emit_index(".section .data")
         self._emit_index()
-        
+
         self._emit_index(f".global {self.index_name}")
         self._emit_index(f"{self.index_name}:")
-        
-        if not self.segment_labels:
+
+        # Track how many bytes we've emitted
+        index_bytes_emitted = 0
+
+        if self.segment_labels:
+            # Find max segment index to know table size
+            max_idx = max(idx for idx, _ in self.segment_labels)
+
+            # Emit entries for all indices 0 to max using pre-computed offsets
+            for i in range(max_idx + 1):
+                if i in self.segment_offsets:
+                    offset = self.segment_offsets[i]
+                    self._emit_index(f"    .word   {offset}  # segment {i}")
+                else:
+                    # Missing segment - emit 0 placeholder
+                    self._emit_index(f"    .word   0  # segment {i} (undefined)")
+                index_bytes_emitted += 4
+
+        # Emit padding to reach expected index size
+        if self.index_size is not None and index_bytes_emitted < self.index_size:
+            padding_needed = self.index_size - index_bytes_emitted
+            if padding_needed > 0:
+                self._emit_index()
+                self._emit_index(f"    # Padding to reach {self.index_size} bytes (0x{self.index_size:X})")
+                # Emit padding in chunks of 16 bytes for readability
+                while padding_needed > 0:
+                    chunk = min(padding_needed, 16)
+                    padding_bytes = ', '.join(['0x00'] * chunk)
+                    self._emit_index(f"    .byte   {padding_bytes}")
+                    padding_needed -= chunk
+        elif not self.segment_labels and self.index_size is None:
             self._emit_index("    # No segments defined")
-            self._emit_index()
-            return
-            
-        # Find max segment index to know table size
-        max_idx = max(idx for idx, _ in self.segment_labels)
-        
-        # Emit entries for all indices 0 to max using pre-computed offsets
-        for i in range(max_idx + 1):
-            if i in self.segment_offsets:
-                offset = self.segment_offsets[i]
-                self._emit_index(f"    .word   {offset}  # segment {i}")
-            else:
-                # Missing segment - emit 0 placeholder
-                self._emit_index(f"    .word   0  # segment {i} (undefined)")
-        
+
         self._emit_index()
         self._emit_index(f"# End of {self.index_name}")
         
@@ -605,9 +651,9 @@ class DialogueTranspiler:
     
     def _process_line(self, line: SourceLine):
         """Process a single parsed line"""
-        
-        # Skip .define directives (already processed in first pass)
-        if line.is_directive and line.directive_name == '.define':
+
+        # Skip directives that were already processed in first pass
+        if line.is_directive and line.directive_name in ['.define', '.bytecode_size', '.index_size']:
             return
         
         if line.label:
@@ -887,11 +933,11 @@ Commands:
   decompile  - Convert JSON to DSL (for editing)
 
 Example:
-  %(prog)s transpile dialogue.dsl -n dialogueBytecodeSegment1
+  %(prog)s transpile dialogue.dsl -n text1Dialogue
   
   This generates two files:
-    - dialogueBytecodeSegment1.s       (bytecode)
-    - dialogueBytecodeSegment1Index.s  (offset table)
+    - text1Dialogue.s       (bytecode)
+    - text1DialogueIndex.s  (offset table)
     
   %(prog)s decompile dialogue.json -o dialogue.dsl
 """
@@ -901,8 +947,8 @@ Example:
                         help='Command to execute')
     parser.add_argument('input', help='Input file')
     parser.add_argument('-o', '--output', help='Output directory or file (default: same as input)')
-    parser.add_argument('-n', '--name', default='dialogueBytecodeSegment1',
-                        help='Bank name for symbols (default: dialogueBytecodeSegment1)')
+    parser.add_argument('-n', '--name', default='text1Dialogue',
+                        help='Bank name for symbols (default: text1Dialogue)')
     parser.add_argument('-q', '--quiet', action='store_true',
                         help='Suppress warnings about undefined segment labels')
     
