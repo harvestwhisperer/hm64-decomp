@@ -1,0 +1,129 @@
+; Dialogue Bank
+; Index Start: 0xE91A50
+; Bytecode Start: 0xE919A0
+; Segments: 22
+
+; 0xE919A0
+.segment_0:
+    END_DIALOGUE
+
+; 0xE919A4
+.segment_1:
+    RANDOM_BRANCH 0, 49, 7, .segment_0
+    SHOW_TEXT 8
+    END_DIALOGUE
+
+; 0xE919B0
+.segment_2:
+    RANDOM_BRANCH 0, 49, 12, .segment_0
+    SHOW_TEXT 13
+    END_DIALOGUE
+
+; 0xE919BC
+.segment_3:
+    SHOW_TEXT 30
+    SHOW_SUBDIALOGUE 31, 2
+    HANDLE_MENU_SELECTION_BRANCH 0, .segment_8
+    HANDLE_MENU_SELECTION_BRANCH 1, .segment_9
+    END_DIALOGUE
+
+; 0xE919CC
+.segment_4:
+    SHOW_TEXT 34
+    SHOW_SUBDIALOGUE 35, 2
+    HANDLE_MENU_SELECTION_BRANCH 0, .segment_10
+    HANDLE_MENU_SELECTION_BRANCH 1, .segment_11
+    END_DIALOGUE
+
+; 0xE919DC
+.segment_5:
+    SHOW_TEXT 38
+    SHOW_SUBDIALOGUE 39, 2
+    HANDLE_MENU_SELECTION_BRANCH 0, .segment_12
+    HANDLE_MENU_SELECTION_BRANCH 1, .segment_13
+    END_DIALOGUE
+
+; 0xE919EC
+.segment_6:
+    END_DIALOGUE
+
+; 0xE919F0
+.segment_7:
+    SHOW_TEXT 42
+    SHOW_SUBDIALOGUE 43, 2
+    HANDLE_MENU_SELECTION_BRANCH 0, .segment_14
+    HANDLE_MENU_SELECTION_BRANCH 1, .segment_15
+    END_DIALOGUE
+
+; 0xE91A00
+.segment_8:
+    SHOW_TEXT 32
+    END_DIALOGUE
+
+; 0xE91A04
+.segment_9:
+    SHOW_TEXT 33
+    END_DIALOGUE
+
+; 0xE91A08
+.segment_10:
+    SHOW_TEXT 36
+    END_DIALOGUE
+
+; 0xE91A0C
+.segment_11:
+    SHOW_TEXT 37
+    END_DIALOGUE
+
+; 0xE91A10
+.segment_12:
+    SHOW_TEXT 40
+    END_DIALOGUE
+
+; 0xE91A14
+.segment_13:
+    SHOW_TEXT 41
+    END_DIALOGUE
+
+; 0xE91A18
+.segment_14:
+    SHOW_TEXT 44
+    END_DIALOGUE
+
+; 0xE91A1C
+.segment_15:
+    SHOW_TEXT 45
+    END_DIALOGUE
+
+; 0xE91A20
+.segment_16:
+    SHOW_TEXT 71
+    SHOW_SUBDIALOGUE 72, 2
+    END_DIALOGUE
+
+; 0xE91A28
+.segment_17:
+    SHOW_TEXT 111
+    SHOW_SUBDIALOGUE 72, 2
+    END_DIALOGUE
+
+; 0xE91A30
+.segment_18:
+    SHOW_TEXT 120
+    SHOW_SUBDIALOGUE 72, 2
+    END_DIALOGUE
+
+; 0xE91A38
+.segment_19:
+    SHOW_TEXT 129
+    SHOW_SUBDIALOGUE 72, 2
+    END_DIALOGUE
+
+; 0xE91A40
+.segment_20:
+    SHOW_TEXT 138
+    SHOW_SUBDIALOGUE 72, 2
+    END_DIALOGUE
+
+; 0xE91A48
+.segment_21:  ; alignment padding

@@ -253,21 +253,21 @@ beginseg
 endseg
 
 beginseg
-    name "liliaTexture"
+    name "lilliaTexture"
     flags RAW
-    include "build/bin/sprites/entity-sprites/npc/lilia/liliaTexture.bin.o"
+    include "build/bin/sprites/entity-sprites/npc/lillia/lilliaTexture.bin.o"
 endseg
 
 beginseg
-    name "liliaAssetsIndex"
+    name "lilliaAssetsIndex"
     flags RAW
-    include "build/bin/sprites/entity-sprites/npc/lilia/liliaAssetsIndex.bin.o"
+    include "build/bin/sprites/entity-sprites/npc/lillia/lilliaAssetsIndex.bin.o"
 endseg
 
 beginseg
-    name "liliaSpritesheetIndex"
+    name "lilliaSpritesheetIndex"
     flags RAW
-    include "build/bin/sprites/entity-sprites/npc/lilia/liliaSpritesheetIndex.bin.o"
+    include "build/bin/sprites/entity-sprites/npc/lillia/lilliaSpritesheetIndex.bin.o"
 endseg
 
 beginseg

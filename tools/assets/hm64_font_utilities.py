@@ -58,7 +58,7 @@ CHAR_NAMES = {
 # Paths relative to script location
 SCRIPT_DIR = Path(__file__).resolve().parent
 ROM_PATH = SCRIPT_DIR / "../../baserom.us.z64"
-OUTPUT_DIR = SCRIPT_DIR / "../assets/font/sprites"
+OUTPUT_DIR = SCRIPT_DIR / "../../assets/font/sprites"
 
 rom = None
 

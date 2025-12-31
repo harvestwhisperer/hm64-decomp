@@ -1,5 +1,5 @@
 FF5C0,100180,farmBusiness
-100180,109920,cutsceneBank2
+100180,109920,farmVisits
 109920,10EA80,cutsceneBank3
 10EA80,10F980,cutsceneBank4
 10F980,115310,cutsceneBank5
@@ -21,7 +21,7 @@ FF5C0,100180,farmBusiness
 13FAC0,144F60,cutsceneBank21
 144F60,1485B0,cutsceneBank22
 1485B0,149CC0,cutsceneBank23
-149CC0,14B8F0,cutsceneBank24
+149CC0,14B8F0,funeralIntro
 14B8F0,150120,cutsceneBank25
 150120,1510B0,cutsceneBank26
 1510B0,159330,cutsceneBank27

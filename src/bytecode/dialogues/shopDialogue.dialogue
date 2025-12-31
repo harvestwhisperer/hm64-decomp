@@ -1,0 +1,268 @@
+; Dialogue Bank
+; Index Start: 0xE92800
+; Bytecode Start: 0xE92640
+; Segments: 43
+
+; 0xE92640
+.segment_0:
+    SHOW_SUBDIALOGUE 1, 4
+    HANDLE_MENU_SELECTION_BRANCH 0, .segment_1
+    HANDLE_MENU_SELECTION_BRANCH 1, .segment_2
+    HANDLE_MENU_SELECTION_BRANCH 2, .segment_3
+    HANDLE_MENU_SELECTION_BRANCH 3, .segment_4
+    END_DIALOGUE
+
+; 0xE92658
+.segment_1:
+    DIALOGUE_VARIABLE_BRANCH 1, 1, 1, NO_TEXT, .segment_5
+    DIALOGUE_VARIABLE_BRANCH 1, 2, 2, NO_TEXT, .segment_6
+    DIALOGUE_VARIABLE_BRANCH 1, 3, 3, NO_TEXT, .segment_7
+    DIALOGUE_VARIABLE_BRANCH 1, 4, 4, NO_TEXT, .segment_34
+    END_DIALOGUE
+
+; 0xE92684
+.segment_2:
+    RANDOM_BRANCH 0, 49, 11, .segment_0
+    SHOW_TEXT 12
+    JUMP_TO_DIALOGUE .segment_0
+    END_DIALOGUE
+
+; 0xE92694
+.segment_3:
+    SHOW_TEXT 13
+    JUMP_TO_DIALOGUE .segment_0
+    END_DIALOGUE
+
+; 0xE9269C
+.segment_4:
+    SHOW_TEXT 151
+    END_DIALOGUE
+
+; 0xE926A0
+.segment_5:
+    SHOW_SUBDIALOGUE 2, 4
+    HANDLE_MENU_SELECTION_BRANCH 0, .segment_32
+    HANDLE_MENU_SELECTION_BRANCH 1, .segment_36
+    HANDLE_MENU_SELECTION_BRANCH 2, .segment_35
+    HANDLE_MENU_SELECTION_BRANCH 3, .segment_0
+    END_DIALOGUE
+
+; 0xE926B8
+.segment_6:
+    SHOW_SUBDIALOGUE 3, 3
+    HANDLE_MENU_SELECTION_BRANCH 0, .segment_37
+    HANDLE_MENU_SELECTION_BRANCH 1, .segment_38
+    HANDLE_MENU_SELECTION_BRANCH 2, .segment_0
+    END_DIALOGUE
+
+; 0xE926CC
+.segment_7:
+    SHOW_TEXT 4
+    JUMP_TO_DIALOGUE .segment_0
+    END_DIALOGUE
+
+; 0xE926D4
+.segment_8:
+    END_DIALOGUE
+
+; 0xE926D8
+.segment_9:
+    END_DIALOGUE
+
+; 0xE926DC
+.segment_10:
+    SHOW_SUBDIALOGUE 38, 4
+    HANDLE_MENU_SELECTION_BRANCH 0, .segment_20
+    HANDLE_MENU_SELECTION_BRANCH 1, .segment_21
+    HANDLE_MENU_SELECTION_BRANCH 2, .segment_22
+    END_DIALOGUE
+
+; 0xE926F0
+.segment_11:
+    SHOW_TEXT 55
+    SHOW_SUBDIALOGUE 56, 4
+    END_DIALOGUE
+
+; 0xE926F8
+.segment_12:
+    SHOW_TEXT 60
+    SHOW_SUBDIALOGUE 61, 4
+    END_DIALOGUE
+
+; 0xE92700
+.segment_13:
+    SHOW_TEXT 76
+    SHOW_SUBDIALOGUE 77, 3
+    END_DIALOGUE
+
+; 0xE92708
+.segment_14:
+    SHOW_TEXT 78
+    SHOW_SUBDIALOGUE 79, 4
+    END_DIALOGUE
+
+; 0xE92710
+.segment_15:
+    SHOW_TEXT 88
+    SHOW_SUBDIALOGUE 89, 2
+    HANDLE_MENU_SELECTION_BRANCH 0, .segment_30
+    HANDLE_MENU_SELECTION_BRANCH 1, .segment_31
+    END_DIALOGUE
+
+; 0xE92720
+.segment_16:
+    SHOW_SUBDIALOGUE 95, 6
+    HANDLE_MENU_SELECTION_BRANCH 0, .segment_23
+    HANDLE_MENU_SELECTION_BRANCH 1, .segment_24
+    HANDLE_MENU_SELECTION_BRANCH 2, .segment_25
+    HANDLE_MENU_SELECTION_BRANCH 3, .segment_26
+    HANDLE_MENU_SELECTION_BRANCH 4, .segment_27
+    END_DIALOGUE
+
+; 0xE9273C
+.segment_17:
+    SHOW_TEXT 107
+    SHOW_SUBDIALOGUE 108, 2
+    END_DIALOGUE
+
+; 0xE92744
+.segment_18:
+    SHOW_TEXT 121
+    SHOW_SUBDIALOGUE 122, 5
+    END_DIALOGUE
+
+; 0xE9274C
+.segment_19:
+    SHOW_TEXT 214
+    SHOW_SUBDIALOGUE 215, 2
+    END_DIALOGUE
+
+; 0xE92754
+.segment_20:
+    SHOW_TEXT 39
+    JUMP_TO_DIALOGUE .segment_10
+    END_DIALOGUE
+
+; 0xE9275C
+.segment_21:
+    SHOW_TEXT 40
+    JUMP_TO_DIALOGUE .segment_10
+    END_DIALOGUE
+
+; 0xE92764
+.segment_22:
+    SHOW_TEXT 41
+    JUMP_TO_DIALOGUE .segment_10
+    END_DIALOGUE
+
+; 0xE9276C
+.segment_23:
+    SHOW_TEXT 96
+    JUMP_TO_DIALOGUE .segment_16
+    END_DIALOGUE
+
+; 0xE92774
+.segment_24:
+    SHOW_TEXT 97
+    JUMP_TO_DIALOGUE .segment_16
+    END_DIALOGUE
+
+; 0xE9277C
+.segment_25:
+    SHOW_TEXT 98
+    JUMP_TO_DIALOGUE .segment_16
+    END_DIALOGUE
+
+; 0xE92784
+.segment_26:
+    SHOW_TEXT 99
+    JUMP_TO_DIALOGUE .segment_16
+    END_DIALOGUE
+
+; 0xE9278C
+.segment_27:
+    SHOW_TEXT 100
+    JUMP_TO_DIALOGUE .segment_16
+    END_DIALOGUE
+
+; 0xE92794
+.segment_28:
+    SHOW_TEXT 85
+    END_DIALOGUE
+
+; 0xE92798
+.segment_29:
+    SHOW_TEXT 84
+    END_DIALOGUE
+
+; 0xE9279C
+.segment_30:
+    SHOW_TEXT 90
+    END_DIALOGUE
+
+; 0xE927A0
+.segment_31:
+    SHOW_TEXT 91
+    END_DIALOGUE
+
+; 0xE927A4
+.segment_32:
+    SHOW_TEXT 5
+    JUMP_TO_DIALOGUE .segment_1
+    END_DIALOGUE
+
+; 0xE927AC
+.segment_33:
+    SHOW_TEXT 129
+    SHOW_SUBDIALOGUE 130, 2
+    END_DIALOGUE
+
+; 0xE927B4
+.segment_34:
+    SHOW_TEXT 10
+    JUMP_TO_DIALOGUE .segment_0
+    END_DIALOGUE
+
+; 0xE927BC
+.segment_35:
+    SHOW_TEXT 7
+    JUMP_TO_DIALOGUE .segment_1
+    END_DIALOGUE
+
+; 0xE927C4
+.segment_36:
+    SHOW_TEXT 6
+    JUMP_TO_DIALOGUE .segment_1
+    END_DIALOGUE
+
+; 0xE927CC
+.segment_37:
+    SHOW_TEXT 8
+    JUMP_TO_DIALOGUE .segment_1
+    END_DIALOGUE
+
+; 0xE927D4
+.segment_38:
+    SHOW_TEXT 9
+    JUMP_TO_DIALOGUE .segment_1
+    END_DIALOGUE
+
+; 0xE927DC
+.segment_39:
+    SHOW_TEXT 0
+    JUMP_TO_DIALOGUE .segment_0
+    END_DIALOGUE
+
+; 0xE927E4
+.segment_40:
+    SHOW_TEXT 37
+    JUMP_TO_DIALOGUE .segment_10
+    END_DIALOGUE
+
+; 0xE927EC
+.segment_41:
+    SHOW_TEXT 94
+    JUMP_TO_DIALOGUE .segment_16
+
+; 0xE927F4
+.segment_42:  ; alignment padding

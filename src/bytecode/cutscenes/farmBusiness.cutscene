@@ -2,6 +2,8 @@
 ; Bank 1 - Farm Business
 ; ============================================
 
+#include "entities.h"
+
 #define SHOP_TEXT_INDEX 6
 #define TEXT_64_TEXT_INDEX 0x3F
 

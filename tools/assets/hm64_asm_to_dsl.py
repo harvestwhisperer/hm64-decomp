@@ -586,21 +586,18 @@ class CommandDecoder:
 
             # Parse regular animation frame (8 bytes total)
             # anim_id (2) + flag (1) + vec (3) + wait (1) + flip (1)
-            #
-            # Validation: Real animation data has .byte entries after the anim_id.
-            # If we see mostly .half entries, this is likely command data, not animation.
-            # Check next few entries to validate structure.
-            half_count = 0
+            has_non_byte = False
             byte_count = 0
             for i in range(1, min(7, len(self.bytes_data) - self.idx)):
                 check_bd = self.bytes_data[self.idx + i]
                 if check_bd.size == 1:
                     byte_count += 1
-                elif check_bd.size == 2:
-                    half_count += 1
+                else:
+                    # .half or .word in animation frame region = not animation data
+                    has_non_byte = True
+                    break
 
-            # If we see more .half entries than .byte entries, this is probably not animation data
-            if half_count > byte_count:
+            if has_non_byte or byte_count < 6:
                 break  # Exit without marking as animation
 
             # Mark all 8 bytes as animation data
@@ -609,7 +606,7 @@ class CommandDecoder:
 
             self.idx += 1  # consume anim_id
 
-            # Read remaining 6 bytes (should be .byte entries)
+            # Read remaining 6 bytes (must be .byte entries)
             frame_bytes = []
             bytes_needed = 6
             while bytes_needed > 0 and self.idx < len(self.bytes_data):
@@ -618,14 +615,8 @@ class CommandDecoder:
                     frame_bytes.append(bd.value.value if not bd.value.is_symbol else 0)
                     bytes_needed -= 1
                     self.idx += 1
-                elif bd.size == 2:
-                    # Two bytes packed
-                    val = bd.value.value if not bd.value.is_symbol else 0
-                    frame_bytes.append(val & 0xFF)
-                    frame_bytes.append((val >> 8) & 0xFF)
-                    bytes_needed -= 2
-                    self.idx += 1
                 else:
+                    # Unexpected non-.byte entry - should not happen after validation
                     break
 
             if len(frame_bytes) >= 6:
@@ -644,7 +635,6 @@ class CommandDecoder:
                     label=label
                 ))
             else:
-                # Not enough bytes, probably not animation data
                 break
 
 

@@ -1,0 +1,53 @@
+; Dialogue Bank
+; Index Start: 0xE91BF0
+; Bytecode Start: 0xE91BA0
+; Segments: 9
+
+; 0xE91BA0
+.segment_0:
+    SHOW_TEXT 0
+    SHOW_SUBDIALOGUE 1, 2
+    END_DIALOGUE
+
+; 0xE91BA8
+.segment_1:
+    END_DIALOGUE
+
+; 0xE91BAC
+.segment_2:
+    RANDOM_BRANCH 0, 49, 7, .segment_1
+    SHOW_TEXT 8
+    END_DIALOGUE
+
+; 0xE91BB8
+.segment_3:
+    RANDOM_BRANCH 0, 49, 9, .segment_1
+    SHOW_TEXT 10
+    END_DIALOGUE
+
+; 0xE91BC4
+.segment_4:
+    RANDOM_BRANCH 0, 49, 11, .segment_1
+    SHOW_TEXT 12
+    END_DIALOGUE
+
+; 0xE91BD0
+.segment_5:
+    RANDOM_BRANCH 0, 49, 13, .segment_1
+    SHOW_TEXT 14
+    END_DIALOGUE
+
+; 0xE91BDC
+.segment_6:
+    RANDOM_BRANCH 0, 49, 15, .segment_1
+    SHOW_TEXT 16
+    END_DIALOGUE
+
+; 0xE91BE8
+.segment_7:
+    SHOW_TEXT 20
+    SHOW_SUBDIALOGUE 21, 2
+    END_DIALOGUE
+
+; 0xE91BF0
+.segment_8:

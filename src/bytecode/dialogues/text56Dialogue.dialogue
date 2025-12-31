@@ -1,0 +1,154 @@
+; Dialogue Bank
+; Index Start: 0xE91EF0
+; Bytecode Start: 0xE91E00
+; Segments: 26
+
+; 0xE91E00
+.segment_0:
+    END_DIALOGUE
+
+; 0xE91E04
+.segment_1:
+    RANDOM_BRANCH 0, 49, 10, .segment_0
+    SHOW_TEXT 11
+    END_DIALOGUE
+
+; 0xE91E10
+.segment_2:
+    SHOW_TEXT 16
+    SHOW_SUBDIALOGUE 17, 2
+    END_DIALOGUE
+
+; 0xE91E18
+.segment_3:
+    SHOW_SUBDIALOGUE 68, 2
+    END_DIALOGUE
+
+; 0xE91E20
+.segment_4:
+    RANDOM_BRANCH 0, 49, 3, .segment_0
+    SHOW_TEXT 4
+    END_DIALOGUE
+
+; 0xE91E2C
+.segment_5:
+    RANDOM_BRANCH 0, 49, 5, .segment_0
+    SHOW_TEXT 6
+    END_DIALOGUE
+
+; 0xE91E38
+.segment_6:
+    RANDOM_BRANCH 0, 49, 7, .segment_0
+    SHOW_TEXT 8
+    END_DIALOGUE
+
+; 0xE91E44
+.segment_7:
+    RANDOM_BRANCH 0, 49, NO_TEXT, .segment_8
+    SHOW_TEXT 26
+    END_DIALOGUE
+
+; 0xE91E50
+.segment_8:
+    SHOW_TEXT 22
+    SHOW_SUBDIALOGUE 23, 2
+    HANDLE_MENU_SELECTION_BRANCH 0, .segment_9
+    HANDLE_MENU_SELECTION_BRANCH 1, .segment_10
+    END_DIALOGUE
+
+; 0xE91E60
+.segment_9:
+    SHOW_TEXT 24
+    END_DIALOGUE
+
+; 0xE91E64
+.segment_10:
+    SHOW_TEXT 25
+    END_DIALOGUE
+
+; 0xE91E68
+.segment_11:
+    RANDOM_BRANCH 0, 49, NO_TEXT, .segment_12
+    SHOW_TEXT 35
+    END_DIALOGUE
+
+; 0xE91E74
+.segment_12:
+    SHOW_TEXT 31
+    SHOW_SUBDIALOGUE 32, 2
+    HANDLE_MENU_SELECTION_BRANCH 0, .segment_13
+    HANDLE_MENU_SELECTION_BRANCH 1, .segment_14
+    END_DIALOGUE
+
+; 0xE91E84
+.segment_13:
+    SHOW_TEXT 33
+    END_DIALOGUE
+
+; 0xE91E88
+.segment_14:
+    SHOW_TEXT 34
+    END_DIALOGUE
+
+; 0xE91E8C
+.segment_15:
+    RANDOM_BRANCH 0, 49, NO_TEXT, .segment_16
+    SHOW_TEXT 44
+    END_DIALOGUE
+
+; 0xE91E98
+.segment_16:
+    SHOW_TEXT 40
+    SHOW_SUBDIALOGUE 41, 2
+    HANDLE_MENU_SELECTION_BRANCH 0, .segment_17
+    HANDLE_MENU_SELECTION_BRANCH 1, .segment_18
+    END_DIALOGUE
+
+; 0xE91EA8
+.segment_17:
+    SHOW_TEXT 42
+    END_DIALOGUE
+
+; 0xE91EAC
+.segment_18:
+    SHOW_TEXT 43
+    END_DIALOGUE
+
+; 0xE91EB0
+.segment_19:
+    RANDOM_BRANCH 0, 33, NO_TEXT, .segment_20
+    RANDOM_BRANCH 34, 66, NO_TEXT, .segment_21
+    SHOW_TEXT 51
+    END_DIALOGUE
+
+; 0xE91EC4
+.segment_20:
+    SHOW_TEXT 52
+    SHOW_SUBDIALOGUE 53, 2
+    HANDLE_MENU_SELECTION_BRANCH 0, .segment_22
+    HANDLE_MENU_SELECTION_BRANCH 1, .segment_23
+    END_DIALOGUE
+
+; 0xE91ED4
+.segment_21:
+    SHOW_TEXT 56
+    END_DIALOGUE
+
+; 0xE91ED8
+.segment_22:
+    SHOW_TEXT 54
+    END_DIALOGUE
+
+; 0xE91EDC
+.segment_23:
+    SHOW_TEXT 55
+    END_DIALOGUE
+
+; 0xE91EE0
+.segment_24:
+    RANDOM_BRANCH 0, 49, 69, .segment_0
+    SHOW_TEXT 70
+    END_DIALOGUE
+
+; 0xE91EEC
+.segment_25:  ; alignment padding

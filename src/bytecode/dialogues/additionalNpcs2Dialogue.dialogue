@@ -1,0 +1,44 @@
+; Dialogue Bank
+; Index Start: 0xE93060
+; Bytecode Start: 0xE92FF0
+; Segments: 7
+
+; 0xE92FF0
+.segment_0:
+    SPECIAL_DIALOGUE_BIT_BRANCH 329, NO_TEXT, .segment_5
+    SHOW_TEXT 19
+    SET_SPECIAL_DIALOGUE_BIT 329
+    END_DIALOGUE
+
+; 0xE93000
+.segment_1:
+    DIALOGUE_VARIABLE_BRANCH 6, 47, 49, 22, .segment_2
+    DIALOGUE_VARIABLE_BRANCH 6, 41, 46, 22, .segment_2
+    DIALOGUE_VARIABLE_BRANCH 6, 50, 66, 23, .segment_2
+    DIALOGUE_VARIABLE_BRANCH 6, 13, 14, 25, .segment_2
+    DIALOGUE_VARIABLE_BRANCH 6, 1, 67, 21, .segment_2
+    END_DIALOGUE
+
+; 0xE93034
+.segment_2:
+    END_DIALOGUE
+
+; 0xE93038
+.segment_3:
+    END_DIALOGUE
+
+; 0xE9303C
+.segment_4:
+    DIALOGUE_VARIABLE_BRANCH 3, 2, 2, 26, .segment_2
+    SHOW_TEXT 24
+    END_DIALOGUE
+
+; 0xE9304C
+.segment_5:
+    SPECIAL_DIALOGUE_BIT_BRANCH 330, NO_TEXT, .segment_4
+    SHOW_TEXT 20
+    SET_SPECIAL_DIALOGUE_BIT 330
+    END_DIALOGUE
+
+; 0xE9305C
+.segment_6:  ; alignment padding

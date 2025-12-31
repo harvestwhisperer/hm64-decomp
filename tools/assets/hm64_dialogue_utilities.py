@@ -564,42 +564,88 @@ def json_to_dsl(json_data: dict) -> str:
     
     return '\n'.join(lines)
 
+def extract_all_to_dsl(output_dir: Path = None):
+    """Extract all dialogue bytecode from ROM directly to DSL files"""
+    if rom is None:
+        set_rom()
+
+    if output_dir is None:
+        output_dir = Path(__file__).parent / "../../src/bytecode/dialogues"
+
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    with open(CSV_PATH) as f:
+        reader = csv.reader(f)
+        addresses_list = list(tuple(line) for line in reader)
+
+    for idx, row in enumerate(addresses_list):
+        game_index = row[3]
+        bank_name = row[4] if len(row) > 4 else None
+
+        # Parse the dialogue block from ROM
+        block = parse_dialogue_block(row)
+        serialized_data = serialize(block)
+
+        # Convert to DSL
+        dsl_output = json_to_dsl(serialized_data)
+
+        # Determine output filename
+        if bank_name:
+            filename = f"{bank_name}Dialogue.dialogue"
+        else:
+            filename = f"text{game_index}Dialogue.dialogue"
+
+        output_path = output_dir / filename
+
+        with open(output_path, 'w') as f:
+            f.write(dsl_output)
+
+        print(f"Wrote {output_path}")
+
+    print(f"\nExtracted {len(addresses_list)} dialogue banks to {output_dir}")
+
+
 def main():
-        
+
     if len(sys.argv) < 2:
         print("Usage:")
-        print("  python hm64_dialogue_utilities.py decode_all")
-        print("  python hm64_dialogue_utilities.py to_dsl <json_file> [output_file]")
+        print("  python hm64_dialogue_utilities.py decode_all              - Extract to JSON")
+        print("  python hm64_dialogue_utilities.py extract_all_dsl [dir]   - Extract directly to DSL")
+        print("  python hm64_dialogue_utilities.py to_dsl <json> [output]  - Convert JSON to DSL")
         sys.exit(1)
 
     cmd = sys.argv[1]
 
     if cmd == "decode_all":
         parse_all()
-    
+
+    elif cmd == "extract_all_dsl":
+        output_dir = Path(sys.argv[2]) if len(sys.argv) > 2 else None
+        extract_all_to_dsl(output_dir)
+
     elif cmd == "to_dsl":
         if len(sys.argv) < 3:
             print("Usage: python hm64_dialogue_utilities.py to_dsl <json_file> [output_file]")
             sys.exit(1)
-        
+
         json_file = Path(sys.argv[2])
         output_file = Path(sys.argv[3]) if len(sys.argv) > 3 else None
-        
+
         with open(json_file) as f:
             data = json.load(f)
-        
+
         dsl_output = json_to_dsl(data)
-        
+
         if output_file:
             with open(output_file, 'w') as f:
                 f.write(dsl_output)
             print(f"Wrote DSL to {output_file}")
         else:
             print(dsl_output)
-        
+
     else:
         print(f"Unknown command: {cmd}")
-        print("Available commands: decode_all, to_dsl")
+        print("Available commands: decode_all, extract_all_dsl, to_dsl")
 
 if __name__ == '__main__':
     main()

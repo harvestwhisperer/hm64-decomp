@@ -118,10 +118,10 @@ class CutsceneOpcode(IntEnum):
     SET_SPRITE_PALETTE = 85
     BRANCH_ON_U8_PTR_RANGE = 86
     SET_AUDIO_SEQUENCE = 87
-    STOP_SONG_WITH_FADE = 88
+    STOP_SEQUENCE_WITH_FADE = 88
     SET_AUDIO_SEQUENCE_VOLUME = 89
     SET_SFX = 90
-    IDLE_WHILE_SONG_PLAYING = 91
+    IDLE_WHILE_SEQUENCE_PLAYING = 91
     UPDATE_MESSAGE_BOX_RGBA = 92
     WAIT_MESSAGE_BOX_READY = 93
     SET_SPRITE_BILINEAR = 94
@@ -222,18 +222,18 @@ COMMAND_SPECS = {
     77: ("CMD_INIT_MESSAGE_BOX_TYPE2", 8, [('box', 'u16'), ('bank', 'u16'), ('index', 'u16')]),
     78: ("CMD_INIT_MAP_ADDITION", 8, [('mapAdditionIndex', 'u16'), ('flag', 'u16'), ('pad', 'pad16')]), # func_8004C0D0
     79: ("CMD_BRANCH_ON_RANDOM", 8, [('min', 'u16'), ('max', 'u16'), ('target', 'rel16')]), # func_8004C148
-    80: ("CMD_BRANCH_IF_U16_PTR_IN_RANGE", 24, [('pad', 'pad16'), ('ptr', 'addr32'), ('min_ptr', 'addr32'), ('max_ptr', 'addr32'), ('target', 'rel16'), ('pad2', 'pad16')]),
+    80: ("CMD_BRANCH_IF_U16_PTR_IN_RANGE", 20, [('pad', 'pad16'), ('ptr', 'addr32'), ('min_ptr', 'addr32'), ('max_ptr', 'addr32'), ('target', 'rel16'), ('pad2', 'pad16')]),
     81: ("CMD_PAUSE_EXECUTOR", 4, [('executor', 'u16')]),
     82: ("CMD_TOGGLE_PAUSE_EXECUTOR", 4, [('executor', 'u16')]),
     83: ("CMD_PAUSE_ALL_CHILD_EXECUTORS", 4, [('pad', 'pad16')]),
     84: ("CMD_TOGGLE_PAUSE_ALL_CHILDREN", 4, [('pad', 'pad16')]),
     85: ("CMD_SET_SPRITE_PALETTE", 4, [('palette', 'u16')]),
-    86: ("CMD_BRANCH_IF_U8_PTR_RANGE", 28, [('min', 'u8'), ('max', 'u8'), ('ptr', 'addr32'), ('min_ptr', 'addr32'), ('max_ptr', 'addr32'), ('target', 'rel16'), ('pad', 'pad16')]),
+    86: ("CMD_BRANCH_IF_U8_PTR_RANGE", 20, [('pad1', 'pad16'), ('ptr', 'addr32'), ('min_ptr', 'addr32'), ('max_ptr', 'addr32'), ('target', 'rel16'), ('pad2', 'pad16')]),
     87: ("CMD_SET_AUDIO_SEQUENCE", 12, [('channel', 'u16'), ('start', 'rom_start32'), ('end', 'rom_end32')]),
-    88: ("CMD_STOP_SONG_WITH_FADE", 8, [('channel', 'u16'), ('speed', 'u16'), ('pad', 'pad16')]),
+    88: ("CMD_STOP_SEQUENCE_WITH_FADE", 8, [('channel', 'u16'), ('speed', 'u16'), ('pad', 'pad16')]),
     89: ("CMD_SET_AUDIO_SEQUENCE_VOLUME", 8, [('songIndex', 'u16'), ('targetVolume', 'u16'), ('volume', 's16')]),
     90: ("CMD_SET_SFX", 8, [('sfx', 'u16'), ('volume', 'u16'), ('pad', 'pad16')]),
-    91: ("CMD_IDLE_WHILE_SONG_PLAYING", 4, [('channel', 'u16')]),
+    91: ("CMD_IDLE_WHILE_SEQUENCE_PLAYING", 4, [('channel', 'u16')]),
     92: ("CMD_UPDATE_MESSAGE_BOX_RGBA", 12, [('box', 'u16'), ('r', 'u8'), ('g', 'u8'), ('b', 'u8'), ('a', 'u8'), ('speed', 'u16'), ('pad', 'pad16')]),
     93: ("CMD_WAIT_MESSAGE_BOX_READY", 4, [('box', 'u16')]), # func_8004CA80
     94: ("CMD_SET_SPRITE_BILINEAR", 4, [('flag', 'u16')]),
@@ -1695,7 +1695,7 @@ class CutsceneBytecodeParser:
                 self.pos += 2 # Padding
                 params = [("idx", idx), ("vol", vol)]
 
-            elif opcode == 91: # IDLE_WHILE_SONG
+            elif opcode == 91: # IDLE_WHILE_SEQUENCE
                 idx = self.read_u16()
                 params = [("idx", idx)]
 

@@ -1,0 +1,140 @@
+; Dialogue Bank
+; Index Start: 0xE92B40
+; Bytecode Start: 0xE92950
+; Segments: 19
+
+; 0xE92950
+.segment_0:
+    SPECIAL_DIALOGUE_BIT_BRANCH 254, NO_TEXT, .segment_2
+    SET_SPECIAL_DIALOGUE_BIT 254
+    UPDATE_DIALOGUE_VARIABLE 37, 2
+    DIALOGUE_VARIABLE_BRANCH 2, 0, 6, 25, .segment_8
+    DIALOGUE_VARIABLE_BRANCH 2, 20, 24, 25, .segment_8
+    DIALOGUE_VARIABLE_BRANCH 63, 160, 255, NO_TEXT, .segment_12
+    DIALOGUE_VARIABLE_BRANCH 65, 160, 255, NO_TEXT, .segment_12
+    DIALOGUE_VARIABLE_BRANCH 58, 160, 255, NO_TEXT, .segment_12
+    DIALOGUE_VARIABLE_BRANCH 66, 160, 255, NO_TEXT, .segment_12
+    DIALOGUE_VARIABLE_BRANCH 61, 160, 255, NO_TEXT, .segment_12
+    DIALOGUE_VARIABLE_BRANCH 37, 0, 99, NO_TEXT, .segment_3
+    DIALOGUE_VARIABLE_BRANCH 37, 100, 179, NO_TEXT, .segment_4
+    DIALOGUE_VARIABLE_BRANCH 37, 180, 255, NO_TEXT, .segment_7
+    END_DIALOGUE
+
+; 0xE929C4
+.segment_1:
+    DIALOGUE_VARIABLE_BRANCH 6, 47, 49, 8, .segment_11
+    DIALOGUE_VARIABLE_BRANCH 6, 61, 61, 6, .segment_8
+    DIALOGUE_VARIABLE_BRANCH 6, 41, 46, 6, .segment_8
+    SPECIAL_DIALOGUE_BIT_BRANCH 291, 5, .segment_8
+    SET_SPECIAL_DIALOGUE_BIT 291
+    DIALOGUE_VARIABLE_BRANCH 6, 9, 12, 9, .segment_5
+    DIALOGUE_VARIABLE_BRANCH 6, 15, 17, 10, .segment_10
+    DIALOGUE_VARIABLE_BRANCH 6, 1, 40, 10, .segment_5
+    DIALOGUE_VARIABLE_BRANCH 6, 51, 67, 9, .segment_5
+    END_DIALOGUE
+
+; 0xE92A18
+.segment_2:
+    SHOW_TEXT 2
+    END_DIALOGUE
+
+; 0xE92A1C
+.segment_3:
+    RANDOM_BRANCH 0, 25, 8, .segment_8
+    RANDOM_BRANCH 0, 25, 2, .segment_8
+    RANDOM_BRANCH 0, 25, 4, .segment_8
+    SHOW_TEXT 11
+    END_DIALOGUE
+
+; 0xE92A38
+.segment_4:
+    RANDOM_BRANCH 0, 25, 0, .segment_8
+    RANDOM_BRANCH 0, 25, 2, .segment_8
+    RANDOM_BRANCH 0, 25, 1, .segment_8
+    SHOW_TEXT 3
+    END_DIALOGUE
+
+; 0xE92A54
+.segment_5:
+    UPDATE_DIALOGUE_VARIABLE 37, 2
+    END_DIALOGUE
+
+; 0xE92A5C
+.segment_6:
+    UPDATE_DIALOGUE_VARIABLE 37, -3
+    END_DIALOGUE
+
+; 0xE92A64
+.segment_7:
+    RANDOM_BRANCH 0, 20, 5, .segment_8
+    RANDOM_BRANCH 0, 20, 7, .segment_8
+    RANDOM_BRANCH 0, 20, 9, .segment_8
+    RANDOM_BRANCH 0, 20, 6, .segment_8
+    SHOW_TEXT 4
+    END_DIALOGUE
+
+; 0xE92A84
+.segment_8:
+    END_DIALOGUE
+
+; 0xE92A88
+.segment_9:
+    END_DIALOGUE
+
+; 0xE92A8C
+.segment_10:
+    UPDATE_DIALOGUE_VARIABLE 37, 5
+    END_DIALOGUE
+
+; 0xE92A94
+.segment_11:
+    UPDATE_DIALOGUE_VARIABLE 37, -5
+    END_DIALOGUE
+
+; 0xE92A9C
+.segment_12:
+    RANDOM_BRANCH 0, 49, NO_TEXT, .segment_17
+    DIALOGUE_VARIABLE_BRANCH 37, 0, 99, NO_TEXT, .segment_13
+    DIALOGUE_VARIABLE_BRANCH 37, 100, 179, NO_TEXT, .segment_14
+    DIALOGUE_VARIABLE_BRANCH 37, 180, 255, NO_TEXT, .segment_15
+    END_DIALOGUE
+
+; 0xE92AC4
+.segment_13:
+    RANDOM_BRANCH 0, 25, 12, .segment_8
+    RANDOM_BRANCH 0, 25, 23, .segment_8
+    RANDOM_BRANCH 0, 25, 24, .segment_8
+    SHOW_TEXT 11
+    END_DIALOGUE
+
+; 0xE92AE0
+.segment_14:
+    RANDOM_BRANCH 0, 25, 14, .segment_8
+    RANDOM_BRANCH 0, 25, 15, .segment_8
+    RANDOM_BRANCH 0, 25, 17, .segment_8
+    SHOW_TEXT 11
+    END_DIALOGUE
+
+; 0xE92AFC
+.segment_15:
+    RANDOM_BRANCH 0, 25, 16, .segment_8
+    RANDOM_BRANCH 0, 25, 20, .segment_8
+    RANDOM_BRANCH 0, 25, 21, .segment_8
+    SHOW_TEXT 22
+    END_DIALOGUE
+
+; 0xE92B18
+.segment_16:
+    SHOW_TEXT 13
+    END_DIALOGUE
+
+; 0xE92B1C
+.segment_17:
+    RANDOM_BRANCH 0, 25, 17, .segment_8
+    RANDOM_BRANCH 0, 25, 18, .segment_8
+    RANDOM_BRANCH 0, 25, 19, .segment_8
+    SHOW_TEXT 26
+    END_DIALOGUE
+
+; 0xE92B38
+.segment_18:  ; alignment padding
