@@ -75,7 +75,7 @@ extern u8 *getPalettePtrType1(u16 index, u32 *paletteLookup);
 extern u8* getPalettePtrType2(u16 index, u32 *paletteLookup, u8 *arg2);
 extern f32 getSpriteYValueFromDirection(u8 direction);    
 extern void setInitialWorldRotationAngles(f32 x, f32 y, f32 z);
-extern void func_80028EF8(f32 x, f32 y, f32 z);
 extern void drawFrame(void);  
+extern void adjustCurrentWorldRotationAngles(f32 x, f32 y, f32 z);
 
 #endif

@@ -34,9 +34,10 @@
 #define RAIN_SFX 32
 #define TYPHOON_SFX 34
 #define PICKING_UP_SFX 36
+#define FISHING_ROD_CAST 40
 #define TV_OFF_SFX 47
 #define DOOR_OPEN_SFX 50
-// 0x3F set by func_80056030
+// 0x3F set by loadLevel
 #define ROOSTER 63
 #define CHICKEN_CLUCK 64
 #define BIRD_CHIRP 66

@@ -46,7 +46,7 @@ u8 bakeryCardPoints;
 // data
 
 // text indices for items
-u16 D_80118B70[TOTAL_SHOP_ITEMS] = {
+u16 shopItemTextIndices[TOTAL_SHOP_ITEMS] = {
     0x15, 0x16, 0x17, 0x1C,
     0x18, 0x19, 0x1A, 0x1B,
     0x1D, 0x1E, 0x1F, 0x00,
@@ -205,8 +205,7 @@ u16 prices[TOTAL_SHOP_ITEMS] = {
     250, 300, 200, 200
 };
 
-// max quantity for UI animation
-u16 D_80118F60[TOTAL_SHOP_ITEMS] = {
+u16 shopItemMaxQuantities[TOTAL_SHOP_ITEMS] = {
     0x14, 0x14, 0x14, 0x14, 
     0x14, 0x14, 0x14, 0x14, 
     0x14, 0x14, 0x01, 0x01, 
@@ -394,7 +393,7 @@ u8 D_801194D8[TOTAL_SHOP_ITEMS] = {
     FALSE, FALSE, TRUE, TRUE
 };
 
-u8 D_80119510[TOTAL_SHOP_ITEMS] = {
+u8 shopItemPickUpEnabled[TOTAL_SHOP_ITEMS] = {
     TRUE, TRUE, TRUE, TRUE,
     TRUE, TRUE, TRUE, TRUE,
     TRUE, TRUE, TRUE, FALSE,
@@ -411,7 +410,7 @@ u8 D_80119510[TOTAL_SHOP_ITEMS] = {
     FALSE, TRUE, TRUE, TRUE
 };
 
-u8 D_80119548[TOTAL_SHOP_ITEMS] = {
+u8 shopItemToItemInfoIndices[TOTAL_SHOP_ITEMS] = {
     0x09, 0x09, 0x09, 0x09,
     0x09, 0x09, 0x09, 0x09,
     0x09, 0x09, 0x09, 0x09,
@@ -522,15 +521,15 @@ AnimationIndices D_80119660[TOTAL_SHOP_ITEMS] = {
 u8 handlePurchase(u16 storeItemIndex, s32 quantity);
 
 
-//INCLUDE_ASM("asm/nonmatchings/game/shop", func_800DC750);
- 
-void func_800DC750(u8 storeItemIndex) {
+//INCLUDE_ASM("asm/nonmatchings/game/shop", intializeShopDialogue);
+
+void intializeShopDialogue(u8 storeItemIndex) {
 
     shopContext.unk_3 = D_801195B8[storeItemIndex];
 
     shopContext.storeItemIndex = storeItemIndex;
     
-    shopContext.itemTextIndex = D_80118B70[storeItemIndex];
+    shopContext.itemTextIndex = shopItemTextIndices[storeItemIndex];
     
     shopContext.quantity = 1;
     shopContext.buySelected = FALSE;
@@ -555,17 +554,17 @@ void loadShopItemSprite(u8 index) {
         1, TRUE);
 
     setSpriteScale(SHOP_ITEMS + shopItemSpriteIndexOffsets[index], 1.0f, 1.0f, 1.0f);
-    setSpriteRenderingLayer(SHOP_ITEMS + shopItemSpriteIndexOffsets[index], (1 | 2));
+    setSpriteBlendMode(SHOP_ITEMS + shopItemSpriteIndexOffsets[index], (1 | 2));
     setSpriteBaseRGBA(SHOP_ITEMS + shopItemSpriteIndexOffsets[index], 0xFF, 0xFF, 0xFF, 0xFF);
     setSpriteColor(SHOP_ITEMS + shopItemSpriteIndexOffsets[index], 0xFF, 0xFF, 0xFF, 0xFF);
 
-    setMapObject(MAIN_MAP_INDEX, shopItemSpriteIndexOffsets[index], SHOP_ITEMS + shopItemSpriteIndexOffsets[index], func_80030BA0(&shopItemsAnimationScripts, func_800D5A88(D_80118FD0[index])), D_80119040[index].x, D_80119040[index].y, D_80119040[index].z, 0xFF, 0xFF, 0, 0);
+    setMapObject(MAIN_MAP_INDEX, shopItemSpriteIndexOffsets[index], SHOP_ITEMS + shopItemSpriteIndexOffsets[index], getAnimationOffsetFromScript(&shopItemsAnimationScripts, getItemAnimationIndex(D_80118FD0[index])), D_80119040[index].x, D_80119040[index].y, D_80119040[index].z, 0xFF, 0xFF, 0, 0);
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/shop", func_800DC9C0);
+//INCLUDE_ASM("asm/nonmatchings/game/shop", deactivateShopItemMapObject);
 
-void func_800DC9C0(u8 index) {
+void deactivateShopItemMapObject(u8 index) {
 
     if (shopItemSpriteIndexOffsets[index] != 0xFF) {
         deactivateMapObject(MAIN_MAP_INDEX, shopItemSpriteIndexOffsets[index]);
@@ -573,20 +572,19 @@ void func_800DC9C0(u8 index) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/shop", func_800DC9FC);
+//INCLUDE_ASM("asm/nonmatchings/game/shop", handlePickUpShopItem);
 
-// handle picking up shop item
-void func_800DC9FC(u8 arg0) {
+void handlePickUpShopItem(u8 shopItemIndex) {
     
-    gPlayer.shopItemIndex = arg0;
+    gPlayer.shopItemIndex = shopItemIndex;
 
-    if (func_800DCAA0(arg0)) {
+    if (checkCanPickUpShopItem(shopItemIndex)) {
 
-        gPlayer.itemInfoIndex = func_800D5308(D_80119548[arg0], 6, D_80118FD0[arg0], 0, 0);
+        gPlayer.itemInfoIndex = initializeHeldItem(shopItemToItemInfoIndices[shopItemIndex], 6, D_80118FD0[shopItemIndex], 0, 0);
         playSfx(PICKING_UP_SFX);
 
-        if (shopItemSpriteIndexOffsets[arg0] != 0xFF) {
-            deactivateMapObject(MAIN_MAP_INDEX, shopItemSpriteIndexOffsets[arg0]);
+        if (shopItemSpriteIndexOffsets[shopItemIndex] != 0xFF) {
+            deactivateMapObject(MAIN_MAP_INDEX, shopItemSpriteIndexOffsets[shopItemIndex]);
         }
     }
 
@@ -594,16 +592,15 @@ void func_800DC9FC(u8 arg0) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/shop", func_800DCAA0);
+//INCLUDE_ASM("asm/nonmatchings/game/shop", checkCanPickUpShopItem);
 
-u8 func_800DCAA0(u8 index) {
-    return D_80119510[index];
+u8 checkCanPickUpShopItem(u8 index) {
+    return shopItemPickUpEnabled[index];
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/shop", func_800DCAB8);
+//INCLUDE_ASM("asm/nonmatchings/game/shop", shopDialogueCallback);
 
-// main loop callback
-void func_800DCAB8(void) {
+void shopDialogueCallback(void) {
 
     bool set = FALSE;
     u8 temp;
@@ -616,7 +613,7 @@ void func_800DCAB8(void) {
             
             setMessageBoxViewSpacePosition(0, 24.0f, -64.0f, 352.0f);
             setMessageBoxSpriteIndices(0, 0, 0, 0);
-            func_8003F360(0, -4, 0);
+            setMessageBoxInterpolationWithFlags(0, -4, 0);
             
             if (D_80119580[shopContext.storeItemIndex] == FALSE) {
                 initializeMessageBox(MAIN_MESSAGE_BOX_INDEX, D_80118E80[shopContext.storeItemIndex], shopContext.itemTextIndex, 0);
@@ -632,19 +629,19 @@ void func_800DCAB8(void) {
             
             if (messageBoxes[MAIN_MESSAGE_BOX_INDEX].flags & 4) {
                 
-                func_800B3BD8();
+                loadShopIcons();
 
-                if (D_80118F60[shopContext.storeItemIndex] >= 2) {
+                if (shopItemMaxQuantities[shopContext.storeItemIndex] >= 2) {
                     setOverlayScreenSprites(0, 0x8F, &_shopIconsTextureSegmentRomStart, &_shopIconsTextureSegmentRomEnd, &_shopIconsAssetsIndexSegmentRomStart, &_shopIconsAssetsIndexSegmentRomEnd, (u8*)SHOP_ICONS_TEXTURE_BUFFER, (u16*)SHOP_ICONS_PALETTE_BUFFER, (AnimationFrameMetadata*)SHOP_ICONS_ANIMATION_FRAME_METADATA_BUFFER, (u32*)SHOP_ICONS_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 2, 0, -16.0f, 64.0f, 256.0f, 10);
                     dmaOverlayScreenSprites(0, shopContext.quantity, 1, 3);
-                    func_800B4238(D_80118F60[shopContext.storeItemIndex]);
+                    updateShopQuantityArrows(shopItemMaxQuantities[shopContext.storeItemIndex]);
                 }
                 
-                func_8003F360(0, -4, 2);
+                setMessageBoxInterpolationWithFlags(0, -4, 2);
                 convertNumberToGameVariableString(0x12, shopContext.quantity * prices[shopContext.storeItemIndex], 0);
                 setMessageBoxViewSpacePosition(0, 24.0f, -64.0f, 352.0f);
                 setMessageBoxSpriteIndices(0, 0, 0, 0);
-                initializeMessageBox(MAIN_MESSAGE_BOX_INDEX, D_80118E80[shopContext.storeItemIndex], D_80118BE0[shopContext.storeItemIndex], 0x80000);
+                initializeMessageBox(MAIN_MESSAGE_BOX_INDEX, D_80118E80[shopContext.storeItemIndex], D_80118BE0[shopContext.storeItemIndex], MESSAGE_BOX_MODE_NO_INPUT);
                 
                 shopContext.unk_3++;         
             }
@@ -663,7 +660,7 @@ void func_800DCAB8(void) {
                     
                     shopContext.buySelected = FALSE;
                     
-                    func_800B4160();
+                    updateShopBuyAnimation();
                     set = TRUE;
 
                 }
@@ -679,7 +676,7 @@ void func_800DCAB8(void) {
                     
                     shopContext.buySelected = TRUE;
                     
-                    func_800B4160();
+                    updateShopBuyAnimation();
                     set = TRUE;
                 
                 }
@@ -690,15 +687,15 @@ void func_800DCAB8(void) {
 
                 if (!set) {
 
-                    if (shopContext.quantity < D_80118F60[shopContext.storeItemIndex]) {
+                    if (shopContext.quantity < shopItemMaxQuantities[shopContext.storeItemIndex]) {
                     
                         shopContext.quantity++;
                     
                         dmaOverlayScreenSprites(0, shopContext.quantity, 1, 3);
                         convertNumberToGameVariableString(0x12, shopContext.quantity * prices[shopContext.storeItemIndex], 0);
                     
-                        if (D_80118F60[shopContext.storeItemIndex] >= 2) {
-                            func_800B4238(D_80118F60[shopContext.storeItemIndex]);
+                        if (shopItemMaxQuantities[shopContext.storeItemIndex] >= 2) {
+                            updateShopQuantityArrows(shopItemMaxQuantities[shopContext.storeItemIndex]);
                             playSfx(2);                           
                         }
                         
@@ -723,8 +720,8 @@ void func_800DCAB8(void) {
                         dmaOverlayScreenSprites(0, shopContext.quantity, 1, 3);
                         convertNumberToGameVariableString(0x12, shopContext.quantity * prices[shopContext.storeItemIndex], 0);
 
-                        if (D_80118F60[shopContext.storeItemIndex] >= 2) {
-                            func_800B4238(D_80118F60[shopContext.storeItemIndex]);
+                        if (shopItemMaxQuantities[shopContext.storeItemIndex] >= 2) {
+                            updateShopQuantityArrows(shopItemMaxQuantities[shopContext.storeItemIndex]);
                             playSfx(2);
                         }
 
@@ -794,7 +791,7 @@ void func_800DCAB8(void) {
             dmaOverlayScreenSprites(1, gGold, 8, 3);
             setMessageBoxViewSpacePosition(0, 24.0f, -64.0f, 352.0f);
             setMessageBoxSpriteIndices(0, 0, 0, 0);
-            func_8003F360(0, -4, 0);
+            setMessageBoxInterpolationWithFlags(0, -4, 0);
 
             switch (temp) {                        
                 
@@ -843,7 +840,7 @@ void func_800DCAB8(void) {
 
             setMessageBoxViewSpacePosition(0, 24.0f, -64.0f, 352.0f);
             setMessageBoxSpriteIndices(0, 0, 0, 0);
-            func_8003F360(0, -4, 0);
+            setMessageBoxInterpolationWithFlags(0, -4, 0);
             initializeMessageBox(MAIN_MESSAGE_BOX_INDEX, D_80118E80[shopContext.storeItemIndex], D_80118C50[shopContext.storeItemIndex], 0);
             shopContext.unk_3 = 5;
 
@@ -852,12 +849,12 @@ void func_800DCAB8(void) {
         case 5:         
 
             if (messageBoxes[MAIN_MESSAGE_BOX_INDEX].flags & 4) {
-                func_800B2CE0();
+                closeOverlayScreen();
                 setMainLoopCallbackFunctionIndex(MAIN_GAME);
                 setPlayerAction(D_80119660[shopContext.storeItemIndex].animationIndex, D_80119660[shopContext.storeItemIndex].nextAnimationIndex);
                 gPlayer.actionPhase = D_801195F0[shopContext.storeItemIndex];
                 shopContext.unk_3 = 0xFF;
-                func_80059300();
+                resumeGameplay();
             }
 
             break;    
@@ -865,12 +862,12 @@ void func_800DCAB8(void) {
         case 6:             
 
             if (messageBoxes[MAIN_MESSAGE_BOX_INDEX].flags & 4) {
-                func_800B2CE0();
+                closeOverlayScreen();
                 setMainLoopCallbackFunctionIndex(MAIN_GAME);
                 setPlayerAction(D_80119660[shopContext.storeItemIndex].animationIndex, D_80119660[shopContext.storeItemIndex].nextAnimationIndex);
                 gPlayer.actionPhase = 3;
                 shopContext.unk_3 = 0xFF;
-                func_80059300();
+                resumeGameplay();
             }
 
             break;
@@ -878,12 +875,12 @@ void func_800DCAB8(void) {
         case 7:             
 
             if (messageBoxes[MAIN_MESSAGE_BOX_INDEX].flags & 4) {
-                func_800B2CE0();
+                closeOverlayScreen();
                 setMainLoopCallbackFunctionIndex(MAIN_GAME);
                 setPlayerAction(D_80119660[shopContext.storeItemIndex].animationIndex, D_80119660[shopContext.storeItemIndex].nextAnimationIndex);
                 gPlayer.actionPhase = D_80119628[shopContext.storeItemIndex];
                 shopContext.unk_3 = 0xFF;
-                func_80059300();
+                resumeGameplay();
             }
 
             break;
@@ -913,7 +910,7 @@ u8 handlePurchase(u16 storeItemIndex, s32 quantity) {
                 result = 3;
                 
                 if ((D_801FC154 + quantity) < MAX_SEEDS + 1) {
-                    result = func_80065BCC(TURNIP_SEEDS);
+                    result = storeTool(TURNIP_SEEDS);
                     D_801FC154 += adjustValue(D_801FC154, quantity, MAX_SEEDS);
                 }
                 
@@ -924,7 +921,7 @@ u8 handlePurchase(u16 storeItemIndex, s32 quantity) {
                 result = 3;
                 
                 if ((D_80204DF4 + quantity) < MAX_SEEDS + 1) {
-                    result = func_80065BCC(POTATO_SEEDS);
+                    result = storeTool(POTATO_SEEDS);
                     D_80204DF4 += adjustValue(D_80204DF4, quantity, MAX_SEEDS);
                 }
                 
@@ -935,7 +932,7 @@ u8 handlePurchase(u16 storeItemIndex, s32 quantity) {
                 result = 3;
                 
                 if ((D_8018A725 + quantity) < MAX_SEEDS + 1) {
-                    result = func_80065BCC(CABBAGE_SEEDS);
+                    result = storeTool(CABBAGE_SEEDS);
                     D_8018A725 += adjustValue(D_8018A725, quantity, MAX_SEEDS);
                 }
                 
@@ -946,7 +943,7 @@ u8 handlePurchase(u16 storeItemIndex, s32 quantity) {
                 result = 3;
                 
                 if ((D_801C3E28 + quantity) < MAX_SEEDS + 1) {
-                    result = func_80065BCC(GRASS_SEEDS);
+                    result = storeTool(GRASS_SEEDS);
                     D_801C3E28 += adjustValue(D_801C3E28, quantity, MAX_SEEDS);
                 }
                 
@@ -957,7 +954,7 @@ u8 handlePurchase(u16 storeItemIndex, s32 quantity) {
                 result = 3;
                 
                 if ((D_8013DC2C + quantity) < MAX_SEEDS + 1) {
-                    result = func_80065BCC(TOMATO_SEEDS);
+                    result = storeTool(TOMATO_SEEDS);
                     D_8013DC2C += adjustValue(D_8013DC2C, quantity, MAX_SEEDS);
                 }
                 
@@ -968,7 +965,7 @@ u8 handlePurchase(u16 storeItemIndex, s32 quantity) {
                 result = 3;
                 
                 if ((D_801FAD91 + quantity) < MAX_SEEDS + 1) {
-                    result = func_80065BCC(CORN_SEEDS);
+                    result = storeTool(CORN_SEEDS);
                     D_801FAD91 += adjustValue(D_801FAD91, quantity, MAX_SEEDS);
                 }
 
@@ -979,7 +976,7 @@ u8 handlePurchase(u16 storeItemIndex, s32 quantity) {
                 result = 3;
                 
                 if ((D_80237458 + quantity) < MAX_SEEDS + 1) {
-                    result = func_80065BCC(EGGPLANT_SEEDS);
+                    result = storeTool(EGGPLANT_SEEDS);
                     D_80237458 += adjustValue(D_80237458, quantity, MAX_SEEDS);
                 }
                 
@@ -990,7 +987,7 @@ u8 handlePurchase(u16 storeItemIndex, s32 quantity) {
                 result = 3;
                 
                 if ((D_802373E8 + quantity) < MAX_SEEDS + 1) {
-                    result = func_80065BCC(STRAWBERRY_SEEDS);
+                    result = storeTool(STRAWBERRY_SEEDS);
                     D_802373E8 += adjustValue(D_802373E8, quantity, MAX_SEEDS);
                 }
                 
@@ -1002,7 +999,7 @@ u8 handlePurchase(u16 storeItemIndex, s32 quantity) {
                 
                 if ((D_801C3F70 + quantity) < MAX_SEEDS + 1) {
                     
-                    result = func_80065BCC(MOON_DROP_SEEDS);
+                    result = storeTool(MOON_DROP_SEEDS);
                     D_801C3F70 += adjustValue(D_801C3F70, quantity, MAX_SEEDS);
 
                     if (!checkLifeEventBit(HAVE_FLOWER_SHOP_GIFT_CARD)) {
@@ -1028,7 +1025,7 @@ u8 handlePurchase(u16 storeItemIndex, s32 quantity) {
                 
                 if ((D_802373A8 + quantity) < MAX_BLUE_MIST_SEEDS + 1) {
                     
-                    result = func_80065BCC(BLUE_MIST_SEEDS);
+                    result = storeTool(BLUE_MIST_SEEDS);
                     D_802373A8 += adjustValue(D_802373A8, quantity, MAX_BLUE_MIST_SEEDS);
 
                     if (!checkLifeEventBit(HAVE_FLOWER_SHOP_GIFT_CARD)) {
@@ -1137,22 +1134,22 @@ u8 handlePurchase(u16 storeItemIndex, s32 quantity) {
 
             case 0x13:
 
-                result = func_80065BCC(MILKER);            
+                result = storeTool(MILKER);            
                 break;
             
             case 0x14:
 
-                result = func_80065BCC(BRUSH);               
+                result = storeTool(BRUSH);               
                 break;
             
             case 0x15:
                 
-                result = func_80065BCC(CLIPPERS);              
+                result = storeTool(CLIPPERS);              
                 break;
             
             case 0x16:
                             
-                result = func_80065BCC(BLUE_FEATHER);                
+                result = storeTool(BLUE_FEATHER);                
                 break;
             
             case 0x17:
@@ -1187,18 +1184,18 @@ u8 handlePurchase(u16 storeItemIndex, s32 quantity) {
                 result = 3;
 
                 if ((chickenFeedQuantity + quantity) < MAX_CHICKEN_FEED + 1) {
-                    result = func_80065BCC(CHICKEN_FEED);
+                    result = storeTool(CHICKEN_FEED);
                     chickenFeedQuantity += adjustValue(chickenFeedQuantity, quantity, MAX_CHICKEN_FEED);
                 }
 
                 break;
 
             case 0x1B:
-                result = func_80065BCC(MIRACLE_POTION);
+                result = storeTool(MIRACLE_POTION);
                 break;
             
             case 0x1C:
-                result = func_80065BCC(COW_MEDICINE);            
+                result = storeTool(COW_MEDICINE);            
                 break;
             
             case 0x1D:
@@ -1238,7 +1235,7 @@ u8 handlePurchase(u16 storeItemIndex, s32 quantity) {
                     
                     if (!checkLifeEventBit(HAVE_BELL)) {
                         
-                        func_80065BCC(BELL);
+                        storeTool(BELL);
                         D_801FB9CC = 0x53;
                         result = 4;
                         setLifeEventBit(HAVE_BELL);
@@ -1265,7 +1262,7 @@ u8 handlePurchase(u16 storeItemIndex, s32 quantity) {
                     
                     if (!checkLifeEventBit(HAVE_BELL)) {
 
-                        func_80065BCC(BELL);
+                        storeTool(BELL);
                         D_801FB9CC = 0x53;
                         result = 4;
                         setLifeEventBit(HAVE_BELL);
@@ -1412,7 +1409,7 @@ u8 handlePurchase(u16 storeItemIndex, s32 quantity) {
 
                 if ((D_80205636 + quantity) < 20 + 1) {
                     
-                    result = func_80065BCC(PINK_CAT_MINT_SEEDS);
+                    result = storeTool(PINK_CAT_MINT_SEEDS);
                     D_80205636 += adjustValue(D_80205636, quantity, 20);
 
                     if (checkLifeEventBit(HAVE_FLOWER_SHOP_GIFT_CARD)) {
@@ -1428,7 +1425,7 @@ u8 handlePurchase(u16 storeItemIndex, s32 quantity) {
             case 0x36:
             case 0x37:
                 
-                result =  func_80065BCC(EMPTY_BOTTLE);           
+                result =  storeTool(EMPTY_BOTTLE);           
                 break;
 
             default:

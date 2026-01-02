@@ -257,7 +257,7 @@ void func_8004E160(void) {
     func_80053088();
     func_80054550();
     setEntitiesColor(0, 0, 0, 0);
-    func_8003BE98(MAIN_MAP_INDEX, 0, 0, 0, 0);
+    setMapControllerRGBA(MAIN_MAP_INDEX, 0, 0, 0, 0);
 
     setMainLoopCallbackFunctionIndex(MAIN_GAME);
     
@@ -386,7 +386,7 @@ void initializeGameVariables(void) {
     horseInfo.coordinates.y = 0;
     horseInfo.coordinates.z = 0;
     horseInfo.location = FARM;
-    horseInfo.unk_17 = 0;
+    horseInfo.actionState = 0;
     horseInfo.direction = SOUTHWEST;
     horseInfo.speed = 0;
     horseInfo.unk_1A = 0;
@@ -404,9 +404,9 @@ void initializeGameVariables(void) {
     for (i = 0; i < MAX_CHICKENS; i++) {
 
         gChickens[i].location = 0;
-        gChickens[i].unk_17 = 0;
+        gChickens[i].actionState = 0;
         gChickens[i].direction = SOUTHWEST;
-        gChickens[i].unk_19 = 0;
+        gChickens[i].speed = 0;
         gChickens[i].unk_1A = 0;
         gChickens[i].unk_1B = 0;
         gChickens[i].type = 0;
@@ -435,7 +435,7 @@ void initializeGameVariables(void) {
          
         gFarmAnimals[i].unk_1B = 0;
         gFarmAnimals[i].direction = 0;
-        gFarmAnimals[i].unk_14 = 0;
+        gFarmAnimals[i].speed = 0;
         gFarmAnimals[i].unk_1D = 0;
         gFarmAnimals[i].unk_1E = 0;
          
@@ -467,17 +467,17 @@ void initializeGameVariables(void) {
         gFarmAnimals[i].birthdaySeason = 0;
         gFarmAnimals[i].birthdayDayOfMonth = 0;
          
-        gFarmAnimals[i].normalMilk = 0xFF;
+        gFarmAnimals[i].milkType = 0xFF;
     }
 
     for (i = 0; i < MAX_MISC_ANIMALS; i++) {
 
         gMiscAnimals[i].animalType = 0;
         gMiscAnimals[i].mapIndex = 0;
-        gMiscAnimals[i].unk_F = 0;
+        gMiscAnimals[i].actionState = 0;
         gMiscAnimals[i].direction = 0;
         gMiscAnimals[i].zDisplacement = 0;
-        gMiscAnimals[i].unk_13 = 0;
+        gMiscAnimals[i].timer = 0;
         gMiscAnimals[i].unk_14 = 0;
         gMiscAnimals[i].coordinates.x = 0;
         gMiscAnimals[i].coordinates.y = 0;
@@ -486,27 +486,27 @@ void initializeGameVariables(void) {
 
     }
 
-   // func_800D51B0 from itemHandlers.c 
+   // clearAllItemContextSlots from itemHandlers.c 
 
     for (i = 0; i < 10; i++) {
 
-        itemInfo[i].unk_0.x = 0;
-        itemInfo[i].unk_0.y = 0;
-        itemInfo[i].unk_0.z = 0;
+        itemInfo[i].position.x = 0;
+        itemInfo[i].position.y = 0;
+        itemInfo[i].position.z = 0;
         
-        itemInfo[i].unk_C.x = 0;
-        itemInfo[i].unk_C.y = 0;
-        itemInfo[i].unk_C.z = 0;
+        itemInfo[i].movement.x = 0;
+        itemInfo[i].movement.y = 0;
+        itemInfo[i].movement.z = 0;
         
-        itemInfo[i].unk_18.x = 0;
-        itemInfo[i].unk_18.y = 0;
-        itemInfo[i].unk_18.z = 0;
+        itemInfo[i].attachmentOffset.x = 0;
+        itemInfo[i].attachmentOffset.y = 0;
+        itemInfo[i].attachmentOffset.z = 0;
         
         itemInfo[i].unk_24 = 0;
         itemInfo[i].itemAnimationFrameCounter = 0;
         itemInfo[i].heldItemIndex = 0;
         
-        itemInfo[i].unk_2A = 0;
+        itemInfo[i].stateIndex = 0;
         itemInfo[i].flags = 0;
 
     }
@@ -616,15 +616,15 @@ void initializeGameVariables(void) {
 
     albumBits = 0;
 
-    for (i = 0; i < 0x20; i++) {
+    for (i = 0; i < 32; i++) {
         lifeEventBits[i] = 0;
     }
 
-    for (i = 0; i < 0x20; i++) {
+    for (i = 0; i < 32; i++) {
         dailyEventBits[i] = 0;
     }
     
-    for (i = 0; i < 0x10; i++) {
+    for (i = 0; i < 16; i++) {
         specialDialogueBits[i] = 0;
     }    
 
@@ -643,75 +643,76 @@ void registerMainLoopCallbacks(void) {
 
     // game.c
     registerMainLoopCallback(MAIN_GAME, mainGameLoopCallback);
-    registerMainLoopCallback(MAP_LOAD, func_8005D0BC);
-    // cutscene prep
-    registerMainLoopCallback(3, func_80060490); 
-    registerMainLoopCallback(4, func_8005C00C);
-    registerMainLoopCallback(LEVEL_LOAD_1, func_8005CA64);
-    registerMainLoopCallback(LEVEL_LOAD_2, func_8005CAA8);
+    registerMainLoopCallback(MAP_LOAD, mapLoadCallback);
+    registerMainLoopCallback(3, cutsceneCompletionCallback); 
+    registerMainLoopCallback(SET_AUDIO_AND_LIGHTING, setMapAudioAndLighting);
+    registerMainLoopCallback(LEVEL_LOAD, levelLoadCallback);
+    registerMainLoopCallback(EXIT_LEVEL, exitLevelCallback);
     registerMainLoopCallback(OVERLAY_SCREEN_LOAD, func_8005CB50);
-    registerMainLoopCallback(ROTATING, func_8005CBA4);
-    registerMainLoopCallback(DIALOGUE, func_8005CBF0);
-    registerMainLoopCallback(TEXT, func_8005CEFC);
-    registerMainLoopCallback(END_CUTSCENE, func_8005CF4C);
-    registerMainLoopCallback(PINK_OVERLAY_TEXT, func_8005D2B0);
-    registerMainLoopCallback(END_OF_DAY_1, func_80060624);
-    registerMainLoopCallback(END_OF_FESTIVAL_DAY_1, func_800604B0);
-    registerMainLoopCallback(END_OF_FESTIVAL_DAY_2, func_800605F0);
-    registerMainLoopCallback(END_OF_DAY_2, func_80060838);
-    registerMainLoopCallback(WAIT_AUDIO_FINISH, func_80060454);
+    registerMainLoopCallback(ROTATING, handleRotationCallback);
+    registerMainLoopCallback(DIALOGUE, handleDialogueCallback);
+    registerMainLoopCallback(MESSAGE_BOX, messageBoxCallback);
+    registerMainLoopCallback(END_CUTSCENE, endCutsceneCallback);
+    registerMainLoopCallback(PINK_OVERLAY_TEXT, pinkOverlayMenuCallback);
+    registerMainLoopCallback(END_OF_DAY_1, endOfDayCallback1);
+    registerMainLoopCallback(END_OF_FESTIVAL_DAY_1, endOfFestivalDayCallback1);
+    registerMainLoopCallback(END_OF_FESTIVAL_DAY_2, endOfFestivalDayCallback2);
+    registerMainLoopCallback(END_OF_DAY_2, endOfDayCallback2);
+    registerMainLoopCallback(WAIT_AUDIO_FINISH, waitForAudioFinishCallback);
 
     // tv
     registerMainLoopCallback(TV, tvMainLoopCallback);
+    
+    // shop
+    registerMainLoopCallback(SHOP_DIALOGUE, shopDialogueCallback); 
 
     // overlay screens
-    registerMainLoopCallback(SHOP_DIALOGUE, func_800DCAB8); 
-    registerMainLoopCallback(PAUSE_SCREEN_LOAD, func_800B881C);
-    registerMainLoopCallback(TOOLBOX_LOAD, func_800BADD0);
-    registerMainLoopCallback(FREEZER_LOAD, func_800BCA9C);
-    registerMainLoopCallback(CABINET_LOAD, func_800BE808);
-    registerMainLoopCallback(HOME_EXTENSIONS_SELECT_LOAD, func_800B82AC);
-    registerMainLoopCallback(ESTIMATE_LOAD, func_800B8018);
-    registerMainLoopCallback(KITCHEN_PICTURE_LOAD, func_800B815C);
-    registerMainLoopCallback(CALENDAR_LOAD, func_800B83F0);
-    registerMainLoopCallback(RECIPE_BOOK_LOAD, func_800B8554);
-    registerMainLoopCallback(ALBUM_LOAD, func_800B86B8);
-    registerMainLoopCallback(PAUSE_SCREEN_MAP_LOAD_1, func_800C8424);
-    registerMainLoopCallback(PAUSE_SCREEN_MAP_LOAD_2, func_800C88F4);
-    registerMainLoopCallback(HORSE_RACE_RESULTS_LOAD, func_800CC518);
-    registerMainLoopCallback(HORSE_RACE_GIFTS_LOAD, func_800CD928);
-    registerMainLoopCallback(LOTTERY_LOAD, func_800CE930);
-    registerMainLoopCallback(PAUSE_SCREEN, func_800B9D3C);
-    registerMainLoopCallback(TOOLBOX, func_800BBEC0);
-    registerMainLoopCallback(FREEZER, func_800BDB24);
-    registerMainLoopCallback(CABINET, func_800BF990);
-    registerMainLoopCallback(HOME_EXTENSIONS_SELECT, func_800C1124);
-    registerMainLoopCallback(ESTIMATE, func_800C224C);
-    registerMainLoopCallback(KITCHEN_PICTURE, func_800C2B8C);
-    registerMainLoopCallback(CALENDAR, func_800C3D20);
-    registerMainLoopCallback(RECIPE_BOOK, func_800C53C0);
-    registerMainLoopCallback(ALBUM, func_800C7058);
-    registerMainLoopCallback(PAUSE_SCREEN_MAP, func_800C8784);
-    registerMainLoopCallback(HORSE_RACE_BETTING, func_800CA808);
-    registerMainLoopCallback(HORSE_RACE_RESULTS, func_800CD750);
-    registerMainLoopCallback(HORSE_RACE_GIFTS, func_800CE068);
-    registerMainLoopCallback(LOTTERY, func_800CEDF0);
+    registerMainLoopCallback(PAUSE_SCREEN_LOAD, loadPauseScreenCallback);
+    registerMainLoopCallback(TOOLBOX_LOAD, loadToolboxScreenCallback);
+    registerMainLoopCallback(FREEZER_LOAD, loadFreezerScreenCallback);
+    registerMainLoopCallback(CABINET_LOAD, loadCabinetScreenCallback);
+    registerMainLoopCallback(HOME_EXTENSIONS_SELECT_LOAD, loadHouseExtensionsSelectionCallback);
+    registerMainLoopCallback(ESTIMATE_LOAD, loadEstimateScreenCallback);
+    registerMainLoopCallback(KITCHEN_PICTURE_LOAD, loadKitchenPictureCallback);
+    registerMainLoopCallback(CALENDAR_LOAD, loadCalendarScreenCallback);
+    registerMainLoopCallback(RECIPE_BOOK_LOAD, loadRecipeBookScreenCallback);
+    registerMainLoopCallback(ALBUM_LOAD, loadAlbumScreenCallback);
+    registerMainLoopCallback(PAUSE_SCREEN_MAP_LOAD, loadPauseScreenMapScreenCallback);
+    registerMainLoopCallback(RACE_BETTING_LOAD, loadRaceBettingScreenCallback);
+    registerMainLoopCallback(RACE_RESULTS_LOAD, loadRaceResultsScreenCallback);
+    registerMainLoopCallback(RACE_GIFTS_LOAD, loadRaceGiftsScreenCallback);
+    registerMainLoopCallback(LOTTERY_LOAD, loadLotteryScreenCallback);
+    registerMainLoopCallback(PAUSE_SCREEN, pauseScreenCallback);
+    registerMainLoopCallback(TOOLBOX, toolboxScreenCallback);
+    registerMainLoopCallback(FREEZER, freezerScreenCallback);
+    registerMainLoopCallback(CABINET, cabinetScreenCallback);
+    registerMainLoopCallback(HOME_EXTENSIONS_SELECT, houseExtensionsSelectionScreenCallback);
+    registerMainLoopCallback(ESTIMATE, estimateScreenCallback);
+    registerMainLoopCallback(KITCHEN_PICTURE, kitchenPictureScreenCallback);
+    registerMainLoopCallback(CALENDAR, calendarScreenCallback);
+    registerMainLoopCallback(RECIPE_BOOK, recipeBookScreenCallback);
+    registerMainLoopCallback(ALBUM, albumScreenCallback);
+    registerMainLoopCallback(PAUSE_SCREEN_MAP, pauseScreenMapCallback);
+    registerMainLoopCallback(HORSE_RACE_BETTING, raceBettingScreenCallback);
+    registerMainLoopCallback(HORSE_RACE_RESULTS, raceResultsScreenCallback);
+    registerMainLoopCallback(HORSE_RACE_GIFTS, raceGiftsScreenCallback);
+    registerMainLoopCallback(LOTTERY, lotteryScreenCallback);
 
     // title
     registerMainLoopCallback(TITLE_SCREEN, titleScreenMainLoopCallback);
 
     // naming screen
-    registerMainLoopCallback(NAMING_SCREEN, func_8005CF94);
+    registerMainLoopCallback(NAMING_SCREEN, loadNamingScreenCallback);
     registerMainLoopCallback(NAMING_SCREEN_LOAD, func_800ED974);
 
     // game file
-    registerMainLoopCallback(SELECT_GAME, func_800E1FAC);
-    registerMainLoopCallback(FARM_RANKING_SCREEN, func_800E8F08);
+    registerMainLoopCallback(SELECT_GAME, gameSelectCallback);
+    registerMainLoopCallback(FARM_RANKING_SCREEN, farmRankingScreenCallback);
 
     // game status
     // empty funtions
-    registerMainLoopCallback(0x37, func_800657B4);
-    registerMainLoopCallback(0x38, func_800657C4);
+    registerMainLoopCallback(55, func_800657B4);
+    registerMainLoopCallback(56, func_800657C4);
     
 }
 
@@ -1232,7 +1233,7 @@ void loadMapAddresses(void) {
     setMapDataAddresses(POTION_SHOP_BEDROOM, &_potionShopBackroomMapSegmentRomStart, &_potionShopBackroomMapSegmentRomEnd);
     setMapDataAddresses(POTION_SHOP, &_potionShopMapSegmentRomStart, &_potionShopMapSegmentRomEnd);
 
-    // empty, referenced in func_80074C50 
+    // empty, referenced in getCantEnterDialogueInfoIndex 
     setMapDataAddresses(EMPTY_MAP_2, &_emptyMap2SegmentRomStart, &_emptyMap2SegmentRomEnd);
     
     setMapDataAddresses(HARVEST_SPRITE_CAVE, &_spriteCaveMapSegmentRomStart, &_spriteCaveMapSegmentRomEnd);
@@ -1289,42 +1290,42 @@ void func_80053088(void) {
 
     func_800535DC();
     initializeGameVariableStrings();
-    func_8003FAE8((u8*)&characterAvatarAnimationScripts);
+    setCharacterAvatarAnimationsPtr((u8*)&characterAvatarAnimationScripts);
 
     nuPiReadRom(ptr, (u8*)FONT_TEXTURE_BUFFER, ptr2 - ptr);
     nuPiReadRom(ptr3, (u16*)FONT_PALETTE_1_BUFFER, ptr4 - ptr3);
     nuPiReadRom(ptr5, (u16*)FONT_PALETTE_2_BUFFER, ptr6 - ptr5);
 
-    func_8003F80C(0, 0x76, &_messageBoxTextureSegmentRomStart, &_messageBoxTextureSegmentRomEnd, &_messageBoxAssetsIndexSegmentRomStart, &_messageBoxAssetsIndexSegmentRomEnd, (u8*)MESSAGE_BOX_TEXTURE_BUFFER, (u16*)MESSAGE_BOX_PALETTE_BUFFER, (u32*)MESSAGE_BOX_ANIMATION_FRAME_METADATA_BUFFER, (u32*)MESSAGE_BOX_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 0, 1, -24.0f, 0, 0);
-    func_8003F80C(1, 0x76, &_messageBoxTextureSegmentRomStart, &_messageBoxTextureSegmentRomEnd, &_messageBoxAssetsIndexSegmentRomStart, &_messageBoxAssetsIndexSegmentRomEnd, (u8*)MESSAGE_BOX_TEXTURE_BUFFER, (u16*)MESSAGE_BOX_PALETTE_BUFFER, (u32*)MESSAGE_BOX_ANIMATION_FRAME_METADATA_BUFFER, (u32*)MESSAGE_BOX_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 0, 0, 0, 0, 0);
-    func_8003F80C(2, 0x77, &_messageBoxTextureSegmentRomStart, &_messageBoxTextureSegmentRomEnd, &_messageBoxAssetsIndexSegmentRomStart, &_messageBoxAssetsIndexSegmentRomEnd, (u8*)MESSAGE_BOX_TEXTURE_BUFFER, (u16*)MESSAGE_BOX_PALETTE_BUFFER, (u32*)MESSAGE_BOX_ANIMATION_FRAME_METADATA_BUFFER, (u32*)MESSAGE_BOX_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 1, 0, 0, 0, 0);
+    setDialogueWindowSprite(0, 0x76, &_messageBoxTextureSegmentRomStart, &_messageBoxTextureSegmentRomEnd, &_messageBoxAssetsIndexSegmentRomStart, &_messageBoxAssetsIndexSegmentRomEnd, (u8*)MESSAGE_BOX_TEXTURE_BUFFER, (u16*)MESSAGE_BOX_PALETTE_BUFFER, (u32*)MESSAGE_BOX_ANIMATION_FRAME_METADATA_BUFFER, (u32*)MESSAGE_BOX_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 0, 1, -24.0f, 0, 0);
+    setDialogueWindowSprite(1, 0x76, &_messageBoxTextureSegmentRomStart, &_messageBoxTextureSegmentRomEnd, &_messageBoxAssetsIndexSegmentRomStart, &_messageBoxAssetsIndexSegmentRomEnd, (u8*)MESSAGE_BOX_TEXTURE_BUFFER, (u16*)MESSAGE_BOX_PALETTE_BUFFER, (u32*)MESSAGE_BOX_ANIMATION_FRAME_METADATA_BUFFER, (u32*)MESSAGE_BOX_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 0, 0, 0, 0, 0);
+    setDialogueWindowSprite(2, 0x77, &_messageBoxTextureSegmentRomStart, &_messageBoxTextureSegmentRomEnd, &_messageBoxAssetsIndexSegmentRomStart, &_messageBoxAssetsIndexSegmentRomEnd, (u8*)MESSAGE_BOX_TEXTURE_BUFFER, (u16*)MESSAGE_BOX_PALETTE_BUFFER, (u32*)MESSAGE_BOX_ANIMATION_FRAME_METADATA_BUFFER, (u32*)MESSAGE_BOX_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 1, 0, 0, 0, 0);
   
-    func_8003F910(0, 0x78, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsAssetsIndexSegmentRomStart, &_dialogueIconsAssetsIndexSegmentRomEnd, (u8*)DIALOGUE_ICON_TEXTURE_BUFFER, (u16*)DIALOGUE_ICON_PALETTE_BUFFER, (AnimationFrameMetadata*)DIALOGUE_ICON_ANIMATION_FRAME_METADATA_BUFFER, (u32*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 4, 0xFE, 106.0f, -15.0f, 0.0f);
-    func_8003F910(1, 0x78, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsAssetsIndexSegmentRomStart, &_dialogueIconsAssetsIndexSegmentRomEnd, (u8*)DIALOGUE_ICON_TEXTURE_BUFFER, (u16*)DIALOGUE_ICON_PALETTE_BUFFER, (AnimationFrameMetadata*)DIALOGUE_ICON_ANIMATION_FRAME_METADATA_BUFFER, (u32*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 0xD, 0xFE, 106.0f, -15.0f, 0.0f);
+    setOverlayIconSprite(0, 0x78, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsAssetsIndexSegmentRomStart, &_dialogueIconsAssetsIndexSegmentRomEnd, (u8*)DIALOGUE_ICON_TEXTURE_BUFFER, (u16*)DIALOGUE_ICON_PALETTE_BUFFER, (AnimationFrameMetadata*)DIALOGUE_ICON_ANIMATION_FRAME_METADATA_BUFFER, (u32*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 4, 0xFE, 106.0f, -15.0f, 0.0f);
+    setOverlayIconSprite(1, 0x78, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsAssetsIndexSegmentRomStart, &_dialogueIconsAssetsIndexSegmentRomEnd, (u8*)DIALOGUE_ICON_TEXTURE_BUFFER, (u16*)DIALOGUE_ICON_PALETTE_BUFFER, (AnimationFrameMetadata*)DIALOGUE_ICON_ANIMATION_FRAME_METADATA_BUFFER, (u32*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 0xD, 0xFE, 106.0f, -15.0f, 0.0f);
     
-    func_8003FA1C(0, 0x75, &_characterDialogueIconsTextureSegmentRomStart, &_characterDialogueIconsTextureSegmentRomEnd, &_characterDialogueIconsAssetsIndexSegmentRomStart, &_characterDialogueIconsAssetsIndexSegmentRomEnd, &_characterDialogueIconsSpritesheetIndexSegmentRomStart, &_characterDialogueIconsSpritesheetIndexSegmentRomEnd, (u8*)CHARACTER_AVATAR_TEXTURE_1_BUFFER, (u8*)CHARACTER_AVATAR_TEXTURE_2_BUFFER, (u16*)CHARACTER_AVATAR_PALETTE_BUFFER, (AnimationFrameMetadata*)CHARACTER_AVATAR_ANIMATION_FRAME_METADATA_BUFFER, (u32*)CHARACTER_AVATAR_SPRITESHEET_INDEX_BUFFER, (u32*)CHARACTER_AVATAR_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, -139.0f, 1.0f, 0);
+    setCharacterAvatarSprite(0, 0x75, &_characterDialogueIconsTextureSegmentRomStart, &_characterDialogueIconsTextureSegmentRomEnd, &_characterDialogueIconsAssetsIndexSegmentRomStart, &_characterDialogueIconsAssetsIndexSegmentRomEnd, &_characterDialogueIconsSpritesheetIndexSegmentRomStart, &_characterDialogueIconsSpritesheetIndexSegmentRomEnd, (u8*)CHARACTER_AVATAR_TEXTURE_1_BUFFER, (u8*)CHARACTER_AVATAR_TEXTURE_2_BUFFER, (u16*)CHARACTER_AVATAR_PALETTE_BUFFER, (AnimationFrameMetadata*)CHARACTER_AVATAR_ANIMATION_FRAME_METADATA_BUFFER, (u32*)CHARACTER_AVATAR_SPRITESHEET_INDEX_BUFFER, (u32*)CHARACTER_AVATAR_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, -139.0f, 1.0f, 0);
  
     initializeEmptyMessageBox(0, (u8*)MESSAGE_BOX_1_TEXT_BUFFER);
     setMessageBoxViewSpacePosition(0, 24.0f, -64.0f, 352.0f);
-    func_8003F5D0(0, 0x10, 3);
-    func_8003F630(0, 0, 2);
-    func_8003F464(0, 0xE, 0xE, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
+    setMessageBoxLineAndRowSizes(0, 0x10, 3);
+    setMessageBoxSpacing(0, 0, 2);
+    setMessageBoxFont(0, 0xE, 0xE, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
 
-    func_8003F360(0, -4, 0);
+    setMessageBoxInterpolationWithFlags(0, -4, 0);
     setMessageBoxSpriteIndices(0, 0, 0, 0);
     setMessageBoxSfx(0, 0x57, 8, 1);
     setMessageBoxButtonMask(0, (BUTTON_B | BUTTON_A));
-    func_8003FB4C(0, 1);
+    setMessageBoxScrollSpeed(0, 1);
     initializeEmptyMessageBox(1, (u8*)MESSAGE_BOX_2_TEXT_BUFFER);
 
     setMessageBoxViewSpacePosition(1, 64.0f, 32.0f, 352.0f);
-    func_8003F630(1, 0, 2);
-    func_8003F464(1, 0xE, 0xE, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_2_BUFFER);
+    setMessageBoxSpacing(1, 0, 2);
+    setMessageBoxFont(1, 0xE, 0xE, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_2_BUFFER);
 
-    func_8003F5D0(1, 0xB, 4);
-    func_8003F360(1, -4, 3);
+    setMessageBoxLineAndRowSizes(1, 0xB, 4);
+    setMessageBoxInterpolationWithFlags(1, -4, 3);
     setMessageBoxButtonMask(1, (BUTTON_B | BUTTON_A));
-    func_8003FB4C(1, 2);
+    setMessageBoxScrollSpeed(1, 2);
     setMessageBoxSpriteIndices(1, 2, 0xFF, 0xFF);
     setMessageBoxSfx(1, 0xFF, 0xFF, 0xFF);
     
@@ -1518,13 +1519,13 @@ void func_80054550(void) {
 
     setSpecialDialogueBitsPointer(specialDialogueBits);
 
-    func_80042FEC(0, 0, 1);
+    initializeDialogueSessionManager(0, 0, 1);
 
-    func_8004318C(0, DIALOGUE_ICONS_1, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsAssetsIndexSegmentRomStart, &_dialogueIconsAssetsIndexSegmentRomEnd, DIALOGUE_ICON_TEXTURE_BUFFER, DIALOGUE_ICON_PALETTE_BUFFER, DIALOGUE_ICON_ANIMATION_FRAME_METADATA_BUFFER, (u32*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 3, 0, 8.0f, -16.0f, 0);
-    func_80043260(0, DIALOGUE_ICONS_2, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsAssetsIndexSegmentRomStart, &_dialogueIconsAssetsIndexSegmentRomEnd, DIALOGUE_ICON_TEXTURE_BUFFER, DIALOGUE_ICON_PALETTE_BUFFER, DIALOGUE_ICON_ANIMATION_FRAME_METADATA_BUFFER, (u32*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0xA, 0xFE, 0, 40.0f, 0);
-    func_80043334(0, DIALOGUE_ICONS_3, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsAssetsIndexSegmentRomStart, &_dialogueIconsAssetsIndexSegmentRomEnd, DIALOGUE_ICON_TEXTURE_BUFFER, DIALOGUE_ICON_PALETTE_BUFFER, DIALOGUE_ICON_ANIMATION_FRAME_METADATA_BUFFER, (u32*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0xB, 0xFE, 0, -40.0f, 0);
+    setDialogueButtonIcon1(0, DIALOGUE_ICONS_1, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsAssetsIndexSegmentRomStart, &_dialogueIconsAssetsIndexSegmentRomEnd, DIALOGUE_ICON_TEXTURE_BUFFER, DIALOGUE_ICON_PALETTE_BUFFER, DIALOGUE_ICON_ANIMATION_FRAME_METADATA_BUFFER, (u32*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 3, 0, 8.0f, -16.0f, 0);
+    setDialogueButtonIcon2(0, DIALOGUE_ICONS_2, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsAssetsIndexSegmentRomStart, &_dialogueIconsAssetsIndexSegmentRomEnd, DIALOGUE_ICON_TEXTURE_BUFFER, DIALOGUE_ICON_PALETTE_BUFFER, DIALOGUE_ICON_ANIMATION_FRAME_METADATA_BUFFER, (u32*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0xA, 0xFE, 0, 40.0f, 0);
+    setDialogueButtonIcon3(0, DIALOGUE_ICONS_3, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsAssetsIndexSegmentRomStart, &_dialogueIconsAssetsIndexSegmentRomEnd, DIALOGUE_ICON_TEXTURE_BUFFER, DIALOGUE_ICON_PALETTE_BUFFER, DIALOGUE_ICON_ANIMATION_FRAME_METADATA_BUFFER, (u32*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0xB, 0xFE, 0, -40.0f, 0);
    
-    func_80043148(0, 2, 0, 8);
+    setDialogueSfxIndices(0, 2, 0, 8);
 
 }
  

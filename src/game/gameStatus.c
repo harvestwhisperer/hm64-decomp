@@ -594,8 +594,8 @@ void func_80064814(void) {
     u8 i;
 
     randomlyBreakLogPieces(8);
-    func_800DBC9C(4);
-    func_800DBD88(8);
+    randomlyCutGrass(4);
+    randomlyDestroyCrops(8);
 
     if (checkLifeEventBit(HAVE_GREENHOUSE)) {
 
@@ -1055,10 +1055,10 @@ static inline u32 getLetterBit(u32 mailBox) {
     return (1 << (mailBox & 0x1F));
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/gameStatus", func_8006536C);
+//INCLUDE_ASM("asm/nonmatchings/game/gameStatus", readMail);
 
 // get first unread leter index
-u8 func_8006536C(void) {
+u8 readMail(void) {
     
     u8 result = 0xFF;
     u8 i;
@@ -1143,10 +1143,9 @@ void setAlbumPicture(u8 pictureBitIndex) {
         }
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/gameStatus", func_80065518);
+//INCLUDE_ASM("asm/nonmatchings/game/gameStatus", getAcquiredRecipesTotal);
 
-// get sum of recipes
-u8 func_80065518(void) {
+u8 getAcquiredRecipesTotal(void) {
     
     u8 result = 0;
 

@@ -157,7 +157,7 @@ inline void initializeNamingScreen(u8* arg0, u8 arg1) {
     loadNameSelectionSprites();
 
     setMessageBoxViewSpacePosition(0, 0, -64.0f, 352.0f);
-    func_8003F360(0, -4, 0);
+    setMessageBoxInterpolationWithFlags(0, -4, 0);
     setMessageBoxSpriteIndices(0, 1, 0, 0);
     
     namingScreenContext.dialogueIndex = arg1;
@@ -186,7 +186,7 @@ void func_800ED974(void) {
             deactivateNamingScreenSprites();
 
             // message box
-            func_8003DD14(3);
+            deactivateMessageBox(3);
 
             loadSeasonSelectionSprites();
             
@@ -227,25 +227,25 @@ void func_800ED974(void) {
 
             initializeEmptyMessageBox(3, (u8*)MESSAGE_BOX_3_TEXT_BUFFER);
             setMessageBoxViewSpacePosition(3, 4.0f, 56.0f, 30.0f);
-            func_8003F5D0(3, 6, 1);
-            func_8003F630(3, 0, 2);
-            func_8003F464(3, 0xE, 0xE, (u8*)FONT_TEXTURE_BUFFER, FONT_PALETTE_1_BUFFER);
-            func_8003F360(3, 1, 1);
+            setMessageBoxLineAndRowSizes(3, 6, 1);
+            setMessageBoxSpacing(3, 0, 2);
+            setMessageBoxFont(3, 0xE, 0xE, (u8*)FONT_TEXTURE_BUFFER, FONT_PALETTE_1_BUFFER);
+            setMessageBoxInterpolationWithFlags(3, 1, 1);
             setMessageBoxSpriteIndices(3, 0xFF, 0xFF, 0xFF);
-            initializeMessageBox(3, 0xA, 0xD, 0x80000);
-            func_8003E77C(3, 0, 0, 0, 0);
-            func_8003EA1C(3, 0xFF, 0xFF, 0xFF, 0xFF, 8);
+            initializeMessageBox(3, 0xA, 0xD, MESSAGE_BOX_MODE_NO_INPUT);
+            setMessageBoxRGBA(3, 0, 0, 0, 0);
+            setMessageBoxRGBAWithTransition(3, 0xFF, 0xFF, 0xFF, 0xFF, 8);
             
             initializeEmptyMessageBox(4, (u8*)MESSAGE_BOX_4_TEXT_BUFFER);
             setMessageBoxViewSpacePosition(4, 4.0f, -10.0f, 30.0f);
-            func_8003F5D0(4, 6, 1);
-            func_8003F630(4, 0, 2);
-            func_8003F464(4, 0xE, 0xE, (u8*)FONT_TEXTURE_BUFFER, FONT_PALETTE_1_BUFFER);
-            func_8003F360(4, 1, 1);
+            setMessageBoxLineAndRowSizes(4, 6, 1);
+            setMessageBoxSpacing(4, 0, 2);
+            setMessageBoxFont(4, 0xE, 0xE, (u8*)FONT_TEXTURE_BUFFER, FONT_PALETTE_1_BUFFER);
+            setMessageBoxInterpolationWithFlags(4, 1, 1);
             setMessageBoxSpriteIndices(4, 0xFF, 0xFF, 0xFF);
-            initializeMessageBox(4, 0xA, temp2 + 0xE, 0x80000);
-            func_8003E77C(4, 0, 0, 0, 0);
-            func_8003EA1C(4, 0xFF, 0xFF, 0xFF, 0xFF, 8);
+            initializeMessageBox(4, 0xA, temp2 + 0xE, MESSAGE_BOX_MODE_NO_INPUT);
+            setMessageBoxRGBA(4, 0, 0, 0, 0);
+            setMessageBoxRGBAWithTransition(4, 0xFF, 0xFF, 0xFF, 0xFF, 8);
             
             namingScreenContext.flags &= ~0x200;
             
@@ -256,8 +256,8 @@ void func_800ED974(void) {
         if (namingScreenContext.flags & 0x400) {
             
             deactivateNamingScreenSprites();
-            func_8003DD14(3);
-            func_8003DD14(4);
+            deactivateMessageBox(3);
+            deactivateMessageBox(4);
             loadNameSelectionSprites();
             
             namingScreenContext.dialogueIndex = 12;
@@ -272,8 +272,8 @@ void func_800ED974(void) {
             setGameVariableString(0, gPlayer.name, 6);
             
             deactivateNamingScreenSprites();
-            func_8003DD14(3);
-            func_8003DD14(4);
+            deactivateMessageBox(3);
+            deactivateMessageBox(4);
             setMessageBoxSpriteIndices(0, 0, 0, 0);
             setMessageBoxViewSpacePosition(0, 24.0f, -64.0f, 352.0f);
 
@@ -299,8 +299,8 @@ void func_800ED974(void) {
                      
                     loadCutscene();
                      
-                    func_80059368();
-                    func_8005C07C(8, 1);
+                    exitOverlayScreen();
+                    setLevelLighting(8, 1);
                      
                     return;
                  
@@ -333,8 +333,8 @@ void func_800ED974(void) {
                      
                         loadCutscene();
 
-                        func_80059368();
-                        func_8005C07C(8, 1);
+                        exitOverlayScreen();
+                        setLevelLighting(8, 1);
                      
                     return;
                  
@@ -342,8 +342,8 @@ void func_800ED974(void) {
                  case 6:
                  case 7:
                     setLevelAudio(gBaseMapIndex, gSeason, gHour);
-                    func_80059368();
-                    func_8005C07C(8, 1);
+                    exitOverlayScreen();
+                    setLevelLighting(8, 1);
                     return;
                  
              }
@@ -376,12 +376,12 @@ void func_800ED974(void) {
     
                         case 2:
                             
-                            if (dialogues[0].sessionManager.unk_17 == 0) {
+                            if (dialogues[0].sessionManager.selectedMenuRow == 0) {
                                 
                                 namingScreenContext.flags |= 0x800;
                                 
-                                func_8003EA1C(3, 0, 0, 0, 0, 8);
-                                func_8003EA1C(4, 0, 0, 0, 0, 8);
+                                setMessageBoxRGBAWithTransition(3, 0, 0, 0, 0, 8);
+                                setMessageBoxRGBAWithTransition(4, 0, 0, 0, 0, 8);
                                 updateSpriteRGBA(0x80, 0, 0, 0, 0, 8);
                                 updateSpriteRGBA(0x84, 0, 0, 0, 0, 8);
                                 updateSpriteRGBA(LANDSCAPE_BACKGROUND, 0, 0, 0, 0, 8);
@@ -394,8 +394,8 @@ void func_800ED974(void) {
     
                             namingScreenContext.flags |= 0x400;
                             
-                            func_8003EA1C(3, 0, 0, 0, 0, 8);
-                            func_8003EA1C(4, 0, 0, 0, 0, 8);
+                            setMessageBoxRGBAWithTransition(3, 0, 0, 0, 0, 8);
+                            setMessageBoxRGBAWithTransition(4, 0, 0, 0, 0, 8);
                             updateSpriteRGBA(0x80, 0, 0, 0, 0, 8);
                             updateSpriteRGBA(0x84, 0, 0, 0, 0, 8);
                             updateSpriteRGBA(LANDSCAPE_BACKGROUND, 0, 0, 0, 0, 8);
@@ -404,11 +404,11 @@ void func_800ED974(void) {
     
                         case 3:
     
-                            if (dialogues[0].sessionManager.unk_17 == 0) {
+                            if (dialogues[0].sessionManager.selectedMenuRow == 0) {
                                 
                                 namingScreenContext.flags |= 0x800;
 
-                                func_8003EA1C(3, 0, 0, 0, 0, 8);
+                                setMessageBoxRGBAWithTransition(3, 0, 0, 0, 0, 8);
                                 
                                 updateSpriteRGBA(0x80, 0, 0, 0, 0, 8);
                                 updateSpriteRGBA(0x81, 0, 0, 0, 0, 8);
@@ -602,14 +602,14 @@ void loadNameSelectionSprites(void) {
     initializeEmptyMessageBox(3, (void*)MESSAGE_BOX_3_TEXT_BUFFER);
     setMessageBoxViewSpacePosition(3, 48.0f, 72.0f, 30.0f);
     
-    func_8003F5D0(3, 6, 1);
-    func_8003F630(3, 2, 2);
-    func_8003F464(3, 0xE, 0xE, (u8*)FONT_TEXTURE_BUFFER, FONT_PALETTE_1_BUFFER);
-    func_8003F360(3, 1, 1);
+    setMessageBoxLineAndRowSizes(3, 6, 1);
+    setMessageBoxSpacing(3, 2, 2);
+    setMessageBoxFont(3, 0xE, 0xE, (u8*)FONT_TEXTURE_BUFFER, FONT_PALETTE_1_BUFFER);
+    setMessageBoxInterpolationWithFlags(3, 1, 1);
     setMessageBoxSpriteIndices(3, 0xFF, 0xFF, 0xFF);
-    initializeMessageBox(3, 0xA, 0xD, 0x80000);
-    func_8003E77C(3, 0, 0, 0, 0);
-    func_8003EA1C(3, 0xFF, 0xFF, 0xFF, 0xFF, 8);
+    initializeMessageBox(3, 0xA, 0xD, MESSAGE_BOX_MODE_NO_INPUT);
+    setMessageBoxRGBA(3, 0, 0, 0, 0);
+    setMessageBoxRGBAWithTransition(3, 0xFF, 0xFF, 0xFF, 0xFF, 8);
     
 }
 
@@ -698,7 +698,7 @@ bool func_800EF578(void) {
             
             } else if (namingScreenContext.screenType == 0) {
             
-                func_8003EA1C(3, 0, 0, 0, 0, 8);
+                setMessageBoxRGBAWithTransition(3, 0, 0, 0, 0, 8);
                 updateSpriteRGBA(0x80, 0, 0, 0, 0, 8);
                 updateSpriteRGBA(0x81, 0, 0, 0, 0, 8);
                 updateSpriteRGBA(0x82, 0, 0, 0, 0, 8);

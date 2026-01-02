@@ -8,8 +8,8 @@
 #include "system/sceneGraph.h"
 
 // bss
-Vec4f D_8013D248;
-Vec4f D_802373F8;
+Vec4f targetMapLightingRGBA;
+Vec4f currentMapLightingRGBA;
 
 // RGBA update rate
 s16 D_8017045A;
@@ -21,10 +21,10 @@ Vec3f previousWorldRotationAngles;
 Vec3f currentWorldRotationAngles;
 
 // forward declarations
-void func_8003C8D4(MapController*); 
+void updateMapViewport(MapController*); 
  
 // y rotations for maps
-static const f32 D_8011EDE0[];
+static const f32 yRotationAngles[];
                     
 //INCLUDE_ASM("asm/nonmatchings/system/mapController", initializeMapControllers);
 
@@ -32,15 +32,15 @@ void initializeMapControllers(void) {
     
     u16 i;
     
-    D_802373F8.r = 0;
-    D_802373F8.g = 0;
-    D_802373F8.b = 0;
-    D_802373F8.a = 0;
+    currentMapLightingRGBA.r = 0;
+    currentMapLightingRGBA.g = 0;
+    currentMapLightingRGBA.b = 0;
+    currentMapLightingRGBA.a = 0;
     
-    D_8013D248.r = 0;
-    D_8013D248.g = 0;
-    D_8013D248.b = 0;
-    D_8013D248.a = 0;
+    targetMapLightingRGBA.r = 0;
+    targetMapLightingRGBA.g = 0;
+    targetMapLightingRGBA.b = 0;
+    targetMapLightingRGBA.a = 0;
     
     D_8017045A = 0;
     
@@ -104,7 +104,7 @@ bool initializeMapController(u16 index, u16 mapIndex, u32 *mapDataIndex) {
 
     result = FALSE;
     
-    if (index == MAIN_MAP_INDEX && !(mapControllers[index].flags & 1)) {
+    if (index == MAIN_MAP_INDEX && !(mapControllers[index].flags & MAP_CONTROLLER_INITIALIZED)) {
         
         result = TRUE;
         
@@ -112,7 +112,7 @@ bool initializeMapController(u16 index, u16 mapIndex, u32 *mapDataIndex) {
         
         mapControllers[index].mapDataIndex = mapDataIndex;
         
-        mapControllers[index].flags = 1;
+        mapControllers[index].flags = MAP_CONTROLLER_INITIALIZED;
 
         mapControllers[index].viewPosition.x = 0;
         mapControllers[index].viewPosition.y = 0;
@@ -148,7 +148,7 @@ bool loadMap(u16 index, u16 mapIndex) {
 
     bool result = FALSE;
     
-    if (index == MAIN_MAP_INDEX && (mapControllers[index].flags & 1)) {
+    if (index == MAIN_MAP_INDEX && (mapControllers[index].flags & MAP_CONTROLLER_INITIALIZED)) {
         
         dmaMapAssets(MAIN_MAP_INDEX, mapIndex);
         
@@ -159,8 +159,8 @@ bool loadMap(u16 index, u16 mapIndex) {
         mapControllers[index].rotation = 0;
         
         setMapControllerViewPosition(MAIN_MAP_INDEX, 0.0f, 0.0f, 0.0f);
-        func_8003C084(MAIN_MAP_INDEX, 0);
-        func_8003C1E0(MAIN_MAP_INDEX, 0.0f, 0.0f, 0.0f, 0, 0);
+        setInitialMapRotation(MAIN_MAP_INDEX, SOUTHWEST);
+        setMapViewPositionAndCurrentTile(MAIN_MAP_INDEX, 0.0f, 0.0f, 0.0f, 0, 0);
         setMapRGBA(mapControllers[index].mainMapIndex, 0, 0, 0, 0);
         
         result = TRUE; 
@@ -192,7 +192,7 @@ bool dmaMapAssets(u16 mainMapIndex, u16 levelMapIndex) {
     void *coreMapObjectsPalettes;
     u8 *mapAdditionsMetadata; 
  
-    if (mainMapIndex == MAIN_MAP_INDEX && mapControllers[mainMapIndex].flags & 1) {
+    if (mainMapIndex == MAIN_MAP_INDEX && mapControllers[mainMapIndex].flags & MAP_CONTROLLER_INITIALIZED) {
         
         mapControllers[mainMapIndex].mapIndex = levelMapIndex;
         
@@ -210,7 +210,7 @@ bool dmaMapAssets(u16 mainMapIndex, u16 levelMapIndex) {
         coreMapObjectsPalettes = getAddress(mapControllers[mainMapIndex].mapDataIndex, 8);
         mapAdditionsMetadata = getAddress(mapControllers[mainMapIndex].mapDataIndex, 9);
          
-        mapControllers[mainMapIndex].flags |= 2;
+        mapControllers[mainMapIndex].flags |= MAP_CONTROLLER_ASSETS_LOADED;
                 
         setupMap(mapControllers[mainMapIndex].mainMapIndex, 
             mapGrid, 
@@ -233,14 +233,14 @@ bool dmaMapAssets(u16 mainMapIndex, u16 levelMapIndex) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/mapController", func_8003BD60);
+//INCLUDE_ASM("asm/nonmatchings/system/mapController", enableMapController);
 
-bool func_8003BD60(u16 mapIndex) {
+bool enableMapController(u16 mapIndex) {
     
     bool result = FALSE;
     
-    if (mapIndex == MAIN_MAP_INDEX && (mapControllers[mapIndex].flags & 1) && (mapControllers[mapIndex].flags & 2)) {
-        mapControllers[mapIndex].flags |= 4;
+    if (mapIndex == MAIN_MAP_INDEX && (mapControllers[mapIndex].flags & MAP_CONTROLLER_INITIALIZED) && (mapControllers[mapIndex].flags & MAP_CONTROLLER_ASSETS_LOADED)) {
+        mapControllers[mapIndex].flags |= MAP_CONTROLLER_ACTIVE;
         result = TRUE;
     }
     
@@ -254,7 +254,7 @@ bool setMapControllerViewPosition(u16 mapIndex, f32 x, f32 y, f32 z) {
     
     bool result = FALSE;
     
-    if (mapIndex == MAIN_MAP_INDEX && (mapControllers[mapIndex].flags & 1) && (mapControllers[mapIndex].flags & 2)) {
+    if (mapIndex == MAIN_MAP_INDEX && (mapControllers[mapIndex].flags & MAP_CONTROLLER_INITIALIZED) && (mapControllers[mapIndex].flags & MAP_CONTROLLER_ASSETS_LOADED)) {
         
         mapControllers[mapIndex].viewPosition.x = x;
         mapControllers[mapIndex].viewPosition.y = y;
@@ -275,7 +275,7 @@ bool adjustMapControllerViewPosition(u16 mapIndex, f32 x, f32 y, f32 z) {
     
     bool result = FALSE;
     
-    if (mapIndex == MAIN_MAP_INDEX && (mapControllers[mapIndex].flags & 1) && (mapControllers[mapIndex].flags & 2)) {
+    if (mapIndex == MAIN_MAP_INDEX && (mapControllers[mapIndex].flags & MAP_CONTROLLER_INITIALIZED) && (mapControllers[mapIndex].flags & MAP_CONTROLLER_ASSETS_LOADED)) {
     
         mapControllers[mapIndex].viewPosition.x += x;
         mapControllers[mapIndex].viewPosition.y += y;
@@ -289,20 +289,20 @@ bool adjustMapControllerViewPosition(u16 mapIndex, f32 x, f32 y, f32 z) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/mapContext", func_8003BE98);
+//INCLUDE_ASM("asm/nonmatchings/system/mapContext", setMapControllerRGBA);
 
-bool func_8003BE98(u16 mapIndex, u8 r, u8 g, u8 b, u8 a) {
+bool setMapControllerRGBA(u16 mapIndex, u8 r, u8 g, u8 b, u8 a) {
     
     bool result = FALSE;
     
-    if (mapIndex == MAIN_MAP_INDEX && (mapControllers[mapIndex].flags & 1) && (mapControllers[mapIndex].flags & 2)) {
+    if (mapIndex == MAIN_MAP_INDEX && (mapControllers[mapIndex].flags & MAP_CONTROLLER_INITIALIZED) && (mapControllers[mapIndex].flags & MAP_CONTROLLER_ASSETS_LOADED)) {
     
         setMapRGBA(mapControllers[mapIndex].mainMapIndex, r, g, b, a);
     
-        D_802373F8.r = r;
-        D_802373F8.g = g;
-        D_802373F8.b = b;
-        D_802373F8.a = a;
+        currentMapLightingRGBA.r = r;
+        currentMapLightingRGBA.g = g;
+        currentMapLightingRGBA.b = b;
+        currentMapLightingRGBA.a = a;
 
         result = TRUE;
     
@@ -312,20 +312,20 @@ bool func_8003BE98(u16 mapIndex, u8 r, u8 g, u8 b, u8 a) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/mapContext", func_8003BF7C);
+//INCLUDE_ASM("asm/nonmatchings/system/mapContext", setMapControllerRGBAWithTransition);
 
-bool func_8003BF7C(u16 mapIndex, u8 r, u8 g, u8 b, u8 a, s16 rate) {
+bool setMapControllerRGBAWithTransition(u16 mapIndex, u8 r, u8 g, u8 b, u8 a, s16 rate) {
     
     bool result = FALSE;
     
-    if (mapIndex == MAIN_MAP_INDEX && (mapControllers[mapIndex].flags & 1) && (mapControllers[mapIndex].flags & 2)) {
+    if (mapIndex == MAIN_MAP_INDEX && (mapControllers[mapIndex].flags & MAP_CONTROLLER_INITIALIZED) && (mapControllers[mapIndex].flags & MAP_CONTROLLER_ASSETS_LOADED)) {
 
-        func_80034738(mapControllers[mapIndex].mainMapIndex, r, g, b, a, rate);
+        setMapRGBAWithTransition(mapControllers[mapIndex].mainMapIndex, r, g, b, a, rate);
 
-        D_8013D248.r = r;
-        D_8013D248.g = g;
-        D_8013D248.b = b;
-        D_8013D248.a = a;
+        targetMapLightingRGBA.r = r;
+        targetMapLightingRGBA.g = g;
+        targetMapLightingRGBA.b = b;
+        targetMapLightingRGBA.a = a;
         
         D_8017045A = rate;
         
@@ -337,9 +337,9 @@ bool func_8003BF7C(u16 mapIndex, u8 r, u8 g, u8 b, u8 a, s16 rate) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/mapContext", func_8003C084);
+//INCLUDE_ASM("asm/nonmatchings/system/mapContext", setInitialMapRotation);
 
-bool func_8003C084(u16 mapIndex, u8 rotationIndex) {
+bool setInitialMapRotation(u16 mapIndex, u8 rotationIndex) {
     
     bool result;
 
@@ -347,13 +347,13 @@ bool func_8003C084(u16 mapIndex, u8 rotationIndex) {
     f32 *ptr;
     f32 tempf;
     
-    memcpy(buffer, D_8011EDE0, 32);
+    memcpy(buffer, yRotationAngles, 32);
 
     result = FALSE;
 
-    if (mapIndex == MAIN_MAP_INDEX && mapControllers[mapIndex].flags & 1 && mapControllers[mapIndex].flags & 2) {
+    if (mapIndex == MAIN_MAP_INDEX && mapControllers[mapIndex].flags & MAP_CONTROLLER_INITIALIZED && mapControllers[mapIndex].flags & MAP_CONTROLLER_ASSETS_LOADED) {
 
-        if (!(mapControllers[mapIndex].flags & (0x8 | 0x10))) {
+        if (!(mapControllers[mapIndex].flags & (MAP_CONTROLLER_ROTATING_COUNTERCLOCKWISE | MAP_CONTROLLER_ROTATING_CLOCKWISE))) {
         
             mapControllers[mapIndex].rotation = rotationIndex;
             tempf = buffer[rotationIndex];
@@ -379,7 +379,7 @@ u8 getCurrentMapRotation(u16 mapIndex) {
     
     u8 rotation = 0;
 
-    if (mapIndex == MAIN_MAP_INDEX && (mapControllers[mapIndex].flags & 1)) {
+    if (mapIndex == MAIN_MAP_INDEX && (mapControllers[mapIndex].flags & MAP_CONTROLLER_INITIALIZED)) {
         rotation = mapControllers[mapIndex].rotation;
     }
 
@@ -387,13 +387,13 @@ u8 getCurrentMapRotation(u16 mapIndex) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/mapContext", func_8003C1E0);
+//INCLUDE_ASM("asm/nonmatchings/system/mapContext", setMapViewPositionAndCurrentTile);
 
-bool func_8003C1E0(u16 mapIndex, f32 x, f32 y, f32 z, u8 arg4, u8 arg5) {
+bool setMapViewPositionAndCurrentTile(u16 mapIndex, f32 x, f32 y, f32 z, u8 arg4, u8 arg5) {
 
     bool result = FALSE;
 
-    if (mapIndex == MAIN_MAP_INDEX && (mapControllers[mapIndex].flags & 1) && (mapControllers[mapIndex].flags & 2)) {
+    if (mapIndex == MAIN_MAP_INDEX && (mapControllers[mapIndex].flags & MAP_CONTROLLER_INITIALIZED) && (mapControllers[mapIndex].flags & MAP_CONTROLLER_ASSETS_LOADED)) {
         
         mapControllers[mapIndex].currentTileX = arg4;
         mapControllers[mapIndex].currentTileZ = arg5;
@@ -402,7 +402,7 @@ bool func_8003C1E0(u16 mapIndex, f32 x, f32 y, f32 z, u8 arg4, u8 arg5) {
         mapControllers[mapIndex].viewPosition.y = y;
         mapControllers[mapIndex].viewPosition.z = z;
 
-        func_8003C8D4(&mapControllers[mapIndex]);
+        updateMapViewport(&mapControllers[mapIndex]);
 
         result = TRUE;
 
@@ -412,13 +412,13 @@ bool func_8003C1E0(u16 mapIndex, f32 x, f32 y, f32 z, u8 arg4, u8 arg5) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/mapContext", func_8003C280);
+//INCLUDE_ASM("asm/nonmatchings/system/mapContext", setMapBoundaries);
 
-bool func_8003C280(u16 mapIndex, f32 arg1, f32 arg2, f32 arg3, f32 arg4, f32 arg5, f32 arg6, f32 arg7, f32 arg8) {
+bool setMapBoundaries(u16 mapIndex, f32 arg1, f32 arg2, f32 arg3, f32 arg4, f32 arg5, f32 arg6, f32 arg7, f32 arg8) {
 
     bool result = FALSE;
     
-    if (mapIndex == MAIN_MAP_INDEX && (mapControllers[mapIndex].flags & 1)) {
+    if (mapIndex == MAIN_MAP_INDEX && (mapControllers[mapIndex].flags & MAP_CONTROLLER_INITIALIZED)) {
 
         mapControllers[mapIndex].unk_10.x = arg1;
         mapControllers[mapIndex].unk_10.z = arg2;
@@ -439,14 +439,14 @@ bool func_8003C280(u16 mapIndex, f32 arg1, f32 arg2, f32 arg3, f32 arg4, f32 arg
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/mapContext", func_8003C318);
+//INCLUDE_ASM("asm/nonmatchings/system/mapContext", getClampedMapX);
 
 // unused or inline
-f32 func_8003C318(u16 mapIndex, f32 x) {
+f32 getClampedMapX(u16 mapIndex, f32 x) {
 
     f32 result = 0.0f;
 
-    if (mapIndex == MAIN_MAP_INDEX && (mapControllers[mapIndex].flags & 1)) { 
+    if (mapIndex == MAIN_MAP_INDEX && (mapControllers[mapIndex].flags & MAP_CONTROLLER_INITIALIZED)) { 
 
         if (mapControllers[mapIndex].unk_10.x < x && mapControllers[mapIndex].unk_34.x < x) {
             
@@ -463,14 +463,14 @@ f32 func_8003C318(u16 mapIndex, f32 x) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/mapContext", func_8003C3E4);
+//INCLUDE_ASM("asm/nonmatchings/system/mapContext", getClampedMapZ);
 
 // unused or inline
-f32 func_8003C3E4(u16 mapIndex, f32 z) {
+f32 getClampedMapZ(u16 mapIndex, f32 z) {
 
     f32 result = 0.0f;
     
-    if (mapIndex == MAIN_MAP_INDEX && mapControllers[mapIndex].flags & 1) {
+    if (mapIndex == MAIN_MAP_INDEX && mapControllers[mapIndex].flags & MAP_CONTROLLER_INITIALIZED) {
 
         if (z < mapControllers[mapIndex].unk_10.z && z < mapControllers[mapIndex].unk_1C.z) {
 
@@ -487,15 +487,15 @@ f32 func_8003C3E4(u16 mapIndex, f32 z) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/mapContext", func_8003C4B0);
+//INCLUDE_ASM("asm/nonmatchings/system/mapContext", shutdownMapController);
 
 // unused or inlne
-bool func_8003C4B0(u16 mapIndex) {
+bool shutdownMapController(u16 mapIndex) {
 
     bool result = FALSE;
 
-    if (mapIndex == MAIN_MAP_INDEX && (mapControllers[mapIndex].flags & 1)) {
-        func_80034090(mapControllers[mapIndex].mainMapIndex);
+    if (mapIndex == MAIN_MAP_INDEX && (mapControllers[mapIndex].flags & MAP_CONTROLLER_INITIALIZED)) {
+        deactivateMapSprites(mapControllers[mapIndex].mainMapIndex);
         mapControllers[mapIndex].flags = 0;
         result = TRUE;
     }
@@ -504,14 +504,14 @@ bool func_8003C4B0(u16 mapIndex) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/mapContext", func_8003C504);
+//INCLUDE_ASM("asm/nonmatchings/system/mapContext", unloadMapAssets);
 
-bool func_8003C504(u16 mapIndex) {
+bool unloadMapAssets(u16 mapIndex) {
 
     bool result = FALSE;
 
-    if (mapIndex == MAIN_MAP_INDEX && (mapControllers[mapIndex].flags & 1) && (mapControllers[mapIndex].flags & 4)) {
-        func_80034090(mapControllers[mapIndex].mainMapIndex);
+    if (mapIndex == MAIN_MAP_INDEX && (mapControllers[mapIndex].flags & MAP_CONTROLLER_INITIALIZED) && (mapControllers[mapIndex].flags & MAP_CONTROLLER_ACTIVE)) {
+        deactivateMapSprites(mapControllers[mapIndex].mainMapIndex);
         mapControllers[mapIndex].flags &= ~(2 | 4);
         result = TRUE;
     }
@@ -521,9 +521,9 @@ bool func_8003C504(u16 mapIndex) {
 }
 
 
-//INCLUDE_ASM("asm/nonmatchings/system/mapContext", func_8003C570);
+//INCLUDE_ASM("asm/nonmatchings/system/mapContext", deactivateAllMapControllers);
 
-void func_8003C570(void) {
+void deactivateAllMapControllers(void) {
 
     u16 i;
 
@@ -533,28 +533,28 @@ void func_8003C570(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/mapContext", func_8003C5C0);
+//INCLUDE_ASM("asm/nonmatchings/system/mapContext", startMapRotation);
 
-bool func_8003C5C0(u16 mapIndex, u8 arg1, u8 targetRotation) {
+bool startMapRotation(u16 mapIndex, u8 arg1, u8 targetRotation) {
 
     bool result = FALSE;
     u16 indexTemp;
 
-    if (mapIndex == MAIN_MAP_INDEX && (mapControllers[mapIndex].flags & 1) && (mapControllers[mapIndex].flags & 4)) { 
+    if (mapIndex == MAIN_MAP_INDEX && (mapControllers[mapIndex].flags & MAP_CONTROLLER_INITIALIZED) && (mapControllers[mapIndex].flags & MAP_CONTROLLER_ACTIVE)) { 
 
         // FIXME: this fixes regswap issue
         indexTemp = mapIndex;
 
-        if (!(mapControllers[mapIndex].flags & (0x8 | 0x10)) && targetRotation != mapControllers[mapIndex].rotation) {
+        if (!(mapControllers[mapIndex].flags & (MAP_CONTROLLER_ROTATING_COUNTERCLOCKWISE | MAP_CONTROLLER_ROTATING_CLOCKWISE)) && targetRotation != mapControllers[mapIndex].rotation) {
             
             if (arg1 == 0xFF) {
 
                 if (mapControllers[mapIndex].rotation < 4) {
 
                     if ((mapControllers[mapIndex].rotation + 4) >= targetRotation && targetRotation >= mapControllers[mapIndex].rotation) {
-                        mapControllers[mapIndex].flags |= 0x10;
+                        mapControllers[mapIndex].flags |= MAP_CONTROLLER_ROTATING_CLOCKWISE;
                     } else {
-                        mapControllers[indexTemp].flags |= 8;
+                        mapControllers[indexTemp].flags |= MAP_CONTROLLER_ROTATING_COUNTERCLOCKWISE;
                     }
                     
                 } else {
@@ -562,22 +562,22 @@ bool func_8003C5C0(u16 mapIndex, u8 arg1, u8 targetRotation) {
                     if (targetRotation < mapControllers[mapIndex].rotation) {
 
                         if ((mapControllers[mapIndex].rotation - 4) >= targetRotation) { 
-                            mapControllers[mapIndex].flags |= 0x10;
+                            mapControllers[mapIndex].flags |= MAP_CONTROLLER_ROTATING_CLOCKWISE;
                         } else {
-                            mapControllers[mapIndex].flags |= 8;
+                            mapControllers[mapIndex].flags |= MAP_CONTROLLER_ROTATING_COUNTERCLOCKWISE;
                         }
                         
                     } else {
-                        mapControllers[mapIndex].flags |= 0x10;
+                        mapControllers[mapIndex].flags |= MAP_CONTROLLER_ROTATING_CLOCKWISE;
                     }
                     
                 }
                 
             } else {
                 if (!arg1) {
-                    mapControllers[mapIndex].flags |= 8;
+                    mapControllers[mapIndex].flags |= MAP_CONTROLLER_ROTATING_COUNTERCLOCKWISE;
                 } else {
-                    mapControllers[mapIndex].flags |= 0x10;
+                    mapControllers[mapIndex].flags |= MAP_CONTROLLER_ROTATING_CLOCKWISE;
                 }
             }
 
@@ -602,19 +602,19 @@ void updateMapController(void) {
 
     for (i = 0; i < MAX_MAPS; i++) {
 
-        if ((mapControllers[i].flags & 1) && (mapControllers[i].flags & 4)) {
+        if ((mapControllers[i].flags & MAP_CONTROLLER_INITIALIZED) && (mapControllers[i].flags & MAP_CONTROLLER_ACTIVE)) {
             
             updateGroundObjects(mapControllers[i].mainMapIndex);
-            func_8003C8D4(&mapControllers[i]);
+            updateMapViewport(&mapControllers[i]);
             
-            if (mapControllers[i].flags & (0x8 | 0x10)) {
-                func_8003CB3C(i);
+            if (mapControllers[i].flags & (MAP_CONTROLLER_ROTATING_COUNTERCLOCKWISE | MAP_CONTROLLER_ROTATING_CLOCKWISE)) {
+                handleMapRotation(i);
             }
 
-            D_802373F8.r = mainMap[mapControllers[i].mainMapIndex].mapGlobals.currentRGBA.r;
-            D_802373F8.g = mainMap[mapControllers[i].mainMapIndex].mapGlobals.currentRGBA.g;
-            D_802373F8.b = mainMap[mapControllers[i].mainMapIndex].mapGlobals.currentRGBA.b;
-            D_802373F8.a = mainMap[mapControllers[i].mainMapIndex].mapGlobals.currentRGBA.a;
+            currentMapLightingRGBA.r = mainMap[mapControllers[i].mainMapIndex].mapGlobals.currentRGBA.r;
+            currentMapLightingRGBA.g = mainMap[mapControllers[i].mainMapIndex].mapGlobals.currentRGBA.g;
+            currentMapLightingRGBA.b = mainMap[mapControllers[i].mainMapIndex].mapGlobals.currentRGBA.b;
+            currentMapLightingRGBA.a = mainMap[mapControllers[i].mainMapIndex].mapGlobals.currentRGBA.a;
         
         }   
 
@@ -622,9 +622,9 @@ void updateMapController(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/mapContext", func_8003C8D4);
+//INCLUDE_ASM("asm/nonmatchings/system/mapContext", updateMapViewport);
 
-void func_8003C8D4(MapController* mapController) {
+void updateMapViewport(MapController* mapController) {
     
     f32 x;
     f32 y;
@@ -656,54 +656,55 @@ void func_8003C8D4(MapController* mapController) {
 
     param4 = z - temp2;
     
-    func_800343FC(mapController->mainMapIndex, param1, param2, mapController->currentTileX, mapController->currentTileZ, param3, y, param4, 1);
+    setMapCameraView(mapController->mainMapIndex, param1, param2, mapController->currentTileX, mapController->currentTileZ, param3, y, param4, 1);
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/mapController", func_8003CB3C);
+//INCLUDE_ASM("asm/nonmatchings/system/mapController", handleMapRotation);
 
-void func_8003CB3C(u16 mapIndex) {
+void handleMapRotation(u16 mapIndex) {
 
-    if (mapControllers[mapIndex].flags & 8) {
+    if (mapControllers[mapIndex].flags & MAP_CONTROLLER_ROTATING_COUNTERCLOCKWISE) {
         adjustMapRotation(mapControllers[mapIndex].mainMapIndex, 0, -1.0f, 0);
-        func_80028EF8(0, -1.0f, 0);
+        adjustCurrentWorldRotationAngles(0, -1.0f, 0);
     } else {
         adjustMapRotation(mapControllers[mapIndex].mainMapIndex, 0, 1.0f, 0);
-        func_80028EF8(0, 1.0f, 0);
-    }
+        adjustCurrentWorldRotationAngles(0, 1.0f, 0);
+    } 
 
     mapControllers[mapIndex].rotationFrameCounter++;
 
     if (mapControllers[mapIndex].rotationFrameCounter == 22) {
-        if (mapControllers[mapIndex].flags & 8) {
-            func_8002F770(1);
+        if (mapControllers[mapIndex].flags & MAP_CONTROLLER_ROTATING_COUNTERCLOCKWISE) {
+            rotateAllEntities(1);
         } else {
-            func_8002F770(-1);
+            rotateAllEntities(-1);
         }
     }
 
     if (mapControllers[mapIndex].rotationFrameCounter >= 45) { 
 
-        if (mapControllers[mapIndex].flags & 8) { 
+        if (mapControllers[mapIndex].flags & MAP_CONTROLLER_ROTATING_COUNTERCLOCKWISE) { 
             mapControllers[mapIndex].rotation = (mapControllers[mapIndex].rotation + 7) % 8; 
         } else {
             mapControllers[mapIndex].rotation = (mapControllers[mapIndex].rotation + 1) % 8;
         }
 
-        mapControllers[mapIndex].flags &= ~( 8 | 0x10);
+        mapControllers[mapIndex].flags &= ~( 8 | MAP_CONTROLLER_ROTATING_CLOCKWISE);
 
         if (mapControllers[mapIndex].targetRotation == 0xFF || mapControllers[mapIndex].rotation == mapControllers[mapIndex].targetRotation) {
             previousWorldRotationAngles.x = currentWorldRotationAngles.x;
             previousWorldRotationAngles.y = currentWorldRotationAngles.y;
             previousWorldRotationAngles.z = currentWorldRotationAngles.z;
         } else {
-            func_8003C5C0(mapIndex, 0xFF, mapControllers[mapIndex].targetRotation);
+            startMapRotation(mapIndex, 0xFF, mapControllers[mapIndex].targetRotation);
         }
         
     }
+    
 }
 
-//INCLUDE_RODATA("asm/nonmatchings/systemmapController", D_8011EDE0);
+//INCLUDE_RODATA("asm/nonmatchings/systemmapController", yRotationAngles);
 
 // y rotation values
-static const f32 D_8011EDE0[] = { 0, 45.0f, 90.0f, 135.0f, 180.0f, 225.0f, 270.0f, 315.0f };
+static const f32 yRotationAngles[] = { 0, 45.0f, 90.0f, 135.0f, 180.0f, 225.0f, 270.0f, 315.0f };

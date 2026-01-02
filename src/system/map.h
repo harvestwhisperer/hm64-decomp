@@ -12,16 +12,30 @@
 #define MAX_TILE_TEXTURES 80
 #define MAX_WEATHER_SPRITES 16
 
-/* flags */
+/* map state flags */
 #define MAP_ACTIVE 1
+#define MAP_GROUND_OBJECTS_LOADED 2
+#define MAP_CAMERA_BOUNDS_UPDATE 4
 #define MAP_RGBA_FINISHED 8
 
 #define MAP_ADDITION_ACTIVE 1
+#define MAP_ADDITION_OVERRIDE_POSITION 2
+#define MAP_ADDITION_LOOPING 4
 
 #define MAP_OBJECT_ACTIVE 1
-#define MAP_OBJECT_STATIC 2
+#define MAP_OBJECT_ANIMATION_INITIALIZED 2
+#define MAP_OBJECT_SCREEN_WRAP 4
+// 0x8
 
+/* core map object flags */
+#define CORE_MAP_OBJECT_ALPHA_BLEND 0x2
+#define CORE_MAP_OBJECT_SPRITE_MODE_MASK 0xC   // bits 2-3
+#define CORE_MAP_OBJECT_ROTATION_MODE_MASK 0x70 // bits 4-6
+#define CORE_MAP_OBJECT_APPLY_ROTATION 0x80
+
+/* weather sprite flags */
 #define MAP_WEATHER_SPRITE_ACTIVE 1
+#define MAP_WEATHER_SPRITE_ANIMATION_STARTED 2
 
 // 0x8013DC64
 typedef struct {
@@ -123,28 +137,28 @@ typedef struct {
 
 // 0x80142868
 typedef struct {
-    u16 arr1[0x10]; // 0x80142868
-    u16 arr2[0x10]; // 0x80142888
-    u16 unk_40; // 0x801428A8
-    u16 unk_42; // 0x801428AA, current index into arr1
-    u8 x; // 0x801428AC
-    u8 z; // 0x801428AD
-    u16 flags; // 0x801428AE
+    u16 modificationSequence[16];
+    u16 processingDelays[16];
+    u16 processingTimer; 
+    u16 currentStep;
+    u8 x;
+    u8 z;
+    u16 flags;
 } MapAdditions;
 
 // 0x8014198C
 // offset 0x3D4C
 typedef struct {
     Vec3f frustumCorner0;
-    Vec3f frustumCorner1; //0x998
-    Vec3f frustumCorner2; // 0x9A4
-    Vec3f frustumCorner3; // 0x9B0
-    Vec3f rotation; // 0x9BC // angles
-    Vec3f viewOffset; // 0x9C8
-    u8 cameraTileX; // 0x9D4
-    u8 cameraTileZ; // 0x9D5
-    u8 viewExtentX; // 0x9D6
-    u8 viewExtentZ; // 0x9D7
+    Vec3f frustumCorner1; 
+    Vec3f frustumCorner2;
+    Vec3f frustumCorner3;
+    Vec3f rotation;
+    Vec3f viewOffset; 
+    u8 cameraTileX; 
+    u8 cameraTileZ; 
+    u8 viewExtentX; 
+    u8 viewExtentZ;
 } MapCameraView;
 
 // D_801580A4
@@ -212,18 +226,18 @@ typedef struct  {
 
 extern void func_800337D0(void);    
 extern bool setupMap(u16 mapIndex, u8* grid, void* mesh, u8* terrainQuads, u8** gridToLevelInteractionIndex, u8* coreMapObjectsData, void* tileTextures, void* tilePalettes, void* coreMapObjectsTextures, void* coreMapObjectsPalettes, u8 *mapAdditionsMetadataPtr);
-extern bool func_80034090(u16 mapIndex);  
+extern bool deactivateMapSprites(u16 mapIndex);  
 extern bool setMapTranslation(u16, f32, f32, f32);
 extern bool func_80034298(u16, f32, f32, f32);   
 extern bool setMapScale(u16 mapIndex, f32 arg1, f32 arg2, f32 arg3);
 extern bool setMapRotation(u16, f32, f32, f32);     
 extern bool setMapRGBA(u16 arg0, u8 arg1, u8 arg2, u8 arg3, u8 arg4);
-extern bool func_800343FC(u16 mapIndex, u8 arg1, u8 arg2, u8 arg3, u8 arg4, f32 arg5, f32 arg6, f32 arg7, u8 arg8);
+extern bool setMapCameraView(u16 mapIndex, u8 arg1, u8 arg2, u8 arg3, u8 arg4, f32 arg5, f32 arg6, f32 arg7, u8 arg8);
 extern bool adjustMapRotation(u16 mapIndex, f32 arg1, f32 arg2, f32 arg3);
-extern bool func_80034738(u16 mapIndex, u8 r, u8 g, u8 b, u8 a, s16 arg5);
+extern bool setMapRGBAWithTransition(u16 mapIndex, u8 r, u8 g, u8 b, u8 a, s16 arg5);
 extern bool setMapObject(u16 mapIndex, u8 index, u16 spriteIndex, u16 arg3, f32 arg4, f32 arg5, f32 arg6, u8 arg7, u8 arg8, u8 arg9, u8 argA);
 extern bool setMapWeatherSprite(u16 arg0, u8 arg1, u16 arg2, u16 arg3);
-extern bool func_80034DC8(u16, u8, u16);
+extern bool setMapObjectAnimation(u16, u8, u16);
 extern bool deactivateMapObject(u16, u8);     
 extern bool loadGroundObjects(u16 mapIndex, u8 arg1, u8 arg2, u32* arg3, u32* arg4, u8* arg5, u32 arg6, u32 arg7, u32 arg8, u32 arg9, u8 argA);
 extern bool setMapGroundObjectSpriteIndex(u16 arg0, u16 arg1, u8 arg2, u8 arg3); 
@@ -241,13 +255,13 @@ extern void setGridToTileTextureMappings(u16 mapIndex);
 extern void setGroundObjects(u16 mapIndex); 
 extern u16 getTileIndexFromGrid(u16, u8, u8);
 extern bool updateGroundObjects(u16 mapIndex);
-extern bool func_80038900(u16 mapIndex, u16 arg1, u16 arg2, u16 arg3, u16 arg4); 
-extern bool func_80038990(u16, u16, u8);       
-extern bool func_80038A2C(u16 mapIndex, u16 arg1, u8 arg2, u8 arg3);
-extern bool setMapAddition(u16 mapIndex, u16 arg1);
+extern bool setMapAdditionSequenceStep(u16 mapIndex, u16 arg1, u16 arg2, u16 arg3, u16 arg4); 
+extern bool activateMapAddition(u16, u16, u8);       
+extern bool initializeMapAdditionAtPosition(u16 mapIndex, u16 arg1, u8 arg2, u8 arg3);
+extern bool setStaticMapAddition(u16 mapIndex, u16 arg1);
 extern bool setMapAdditionIndexFromCoordinates(u16, u16, u8, u8);   
 extern void updateMapGraphics(void);
-extern Vec3f func_8003AF58(u16, u8, u8); 
+extern Vec3f getGroundObjectWorldPosition(u16, u8, u8); 
 
 extern MainMap mainMap[1];
 

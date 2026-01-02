@@ -751,16 +751,20 @@ def decode_text_bank(index_start: int, index_end: int, text_start: int, literal_
 
             decoded = decoder.decode_and_format(segment_data, literal_mode=literal_mode)
 
-            # Check if this is a mid-stream loaded segment that won't round-trip correctly
-            # Two indicators: starts with [CHAR:0xXX], or re-encoding produces different bytes
+            # There are some junk data segments at the end of a few text banks
+            # Check if undecodable data or junk/padding with malformed control bytes
             needs_rawbytes = False
 
-            # Check 1: starts with [CHAR:0xXX] pattern
-            if re.match(r'^\[CHAR:0x[0-9A-Fa-f]{2}\]', decoded):
+            # Check contains unknown/invalid character codes
+            if re.search(r'\[CHAR:0x[0-9A-Fa-f]{2}\]', decoded) or re.search(r'\[WORD:0x[0-9A-Fa-f]{4}\]', decoded):
                 needs_rawbytes = True
+                if VERBOSE:
+                    print(f"  Segment {segment['index']} contains unknown character codes, using RAWBYTES")
 
-            # Check 2: try re-encoding and compare (only for small segments to avoid performance issues)
-            if not needs_rawbytes and len(segment_data) <= 64:
+            # Ugly hack to get last shop junk text to generate raw bytes
+            # Check small segments and verify round-trip to catch malformed control bytes
+            # Only do small size to not trigger on normal texts
+            if not needs_rawbytes and len(segment_data) <= 16:
                 try:
                     from hm64_text_transpiler import TextEncoder
                     test_encoder = TextEncoder()
@@ -773,25 +777,17 @@ def decode_text_bank(index_start: int, index_end: int, text_start: int, literal_
                     if original_trimmed != reencoded_trimmed:
                         needs_rawbytes = True
                         if VERBOSE:
-                            print(f"  Segment {segment['index']} round-trip mismatch: {original_trimmed.hex()} vs {reencoded_trimmed.hex()}")
+                            print(f"  Segment {segment['index']} round-trip mismatch (junk data): {original_trimmed.hex()} vs {reencoded_trimmed.hex()}")
                 except Exception as e:
                     if VERBOSE:
                         print(f"  Could not verify round-trip for segment {segment['index']}: {e}")
 
             if needs_rawbytes:
-                # Use RAWBYTES directive with commented interpretation
-                byte_interpretation = []
-                for b in segment_data:
-                    if b in CONTROL_CODES:
-                        byte_interpretation.append(f'[{CONTROL_CODES[b]}]')
-                    elif b in CHAR_MAP:
-                        byte_interpretation.append(CHAR_MAP[b])
-                    else:
-                        byte_interpretation.append(f'[0x{b:02X}]')
-                interpretation = ''.join(byte_interpretation)
-                decoded = f'[RAWBYTES:{segment_data.hex()}]\n# Byte interpretation: {interpretation}'
+                # Use RAWBYTES directive with the decoded text as interpretation
+                # This shows what the decoder was able to extract, even if imperfect
+                decoded = f'[RAWBYTES:{segment_data.hex()}]\n# Decoded interpretation: {decoded}'
                 if VERBOSE == True:
-                    print(f"  Segment {segment['index']} converted to RAWBYTES (mid-stream loaded)")
+                    print(f"  Segment {segment['index']} converted to RAWBYTES (contains unknown codes)")
 
             if VERBOSE == True:
                 print(f"  Successfully decoded segment {segment['index']}")

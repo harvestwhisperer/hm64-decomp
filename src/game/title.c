@@ -9,6 +9,7 @@
 #include "system/globalSprites.h"
 #include "system/math.h"
 #include "system/message.h"
+#include "system/sprite.h"
                                                         
 #include "game/cutscenes.h"         
 #include "game/gameAudio.h"
@@ -50,7 +51,7 @@ void initializeTitleScreen(u8 arg0) {
     setSpriteViewSpacePosition(HARVEST_MOON_64_LOGO, 0.0f, 64.0f, 64.0f);
     setSpriteScale(HARVEST_MOON_64_LOGO, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(HARVEST_MOON_64_LOGO, 0.0f, 0.0f, 0.0f);
-    setSpriteRenderingLayer(HARVEST_MOON_64_LOGO, (1 | 2));
+    setSpriteBlendMode(HARVEST_MOON_64_LOGO, SPRITE_BLEND_ALPHA_DECAL);
     setSpriteColor(HARVEST_MOON_64_LOGO, 0xFF, 0xFF, 0xFF, 0xFF);
     setBilinearFiltering(HARVEST_MOON_64_LOGO, TRUE);
     startSpriteAnimation(HARVEST_MOON_64_LOGO, 0, 0xFE);
@@ -59,7 +60,7 @@ void initializeTitleScreen(u8 arg0) {
     setSpriteViewSpacePosition(MARVCOME_VICTOR_COPYRIGHT_INFO, 0.0f, -96.0f, 64.0f);
     setSpriteScale(MARVCOME_VICTOR_COPYRIGHT_INFO, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(MARVCOME_VICTOR_COPYRIGHT_INFO, 0.0f, 0.0f, 0.0f);
-    setSpriteRenderingLayer(MARVCOME_VICTOR_COPYRIGHT_INFO, (1 | 2));
+    setSpriteBlendMode(MARVCOME_VICTOR_COPYRIGHT_INFO, SPRITE_BLEND_ALPHA_DECAL);
     setSpriteColor(MARVCOME_VICTOR_COPYRIGHT_INFO, 0xFF, 0xFF, 0xFF, 0xFF);
     startSpriteAnimation(MARVCOME_VICTOR_COPYRIGHT_INFO, 1, 0xFE);
     
@@ -67,7 +68,7 @@ void initializeTitleScreen(u8 arg0) {
     setSpriteViewSpacePosition(PUSH_THE_START_SIGN_1, titleScreenContext.centerCoordinate + 160.0f, -16.0f, 48.0f);
     setSpriteScale(PUSH_THE_START_SIGN_1, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(PUSH_THE_START_SIGN_1, 0.0f, 0.0f, 0.0f);
-    setSpriteRenderingLayer(PUSH_THE_START_SIGN_1, (1 | 2));
+    setSpriteBlendMode(PUSH_THE_START_SIGN_1, SPRITE_BLEND_ALPHA_DECAL);
     setSpriteColor(PUSH_THE_START_SIGN_1, 0xFF, 0xFF, 0xFF, 0xFF);
     setBilinearFiltering(PUSH_THE_START_SIGN_1, TRUE);
     startSpriteAnimation(PUSH_THE_START_SIGN_1, 3, 0xFE);
@@ -76,7 +77,7 @@ void initializeTitleScreen(u8 arg0) {
     setSpriteViewSpacePosition(HOW_TO_PLAY_SIGN, titleScreenContext.centerCoordinate - 160.0f, -12.0f, 48.0f);
     setSpriteScale(HOW_TO_PLAY_SIGN, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(HOW_TO_PLAY_SIGN, 0.0f, 0.0f, 0.0f);
-    setSpriteRenderingLayer(HOW_TO_PLAY_SIGN, (1 | 2));
+    setSpriteBlendMode(HOW_TO_PLAY_SIGN, SPRITE_BLEND_ALPHA_DECAL);
     setSpriteColor(HOW_TO_PLAY_SIGN, 0xFF, 0xFF, 0xFF, 0xFF);
     setBilinearFiltering(HOW_TO_PLAY_SIGN, TRUE);
     startSpriteAnimation(HOW_TO_PLAY_SIGN, 5, 0xFE);
@@ -85,7 +86,7 @@ void initializeTitleScreen(u8 arg0) {
     setSpriteViewSpacePosition(DIRT_ROAD, titleScreenContext.centerCoordinate - 160.0f, -44.0f, 48.0f);
     setSpriteScale(DIRT_ROAD, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(DIRT_ROAD, 0.0f, 0.0f, 0.0f);
-    setSpriteRenderingLayer(DIRT_ROAD, (1 | 2));
+    setSpriteBlendMode(DIRT_ROAD, SPRITE_BLEND_ALPHA_DECAL);
     setSpriteColor(DIRT_ROAD, 0xFF, 0xFF, 0xFF, 0xFF);
     setBilinearFiltering(DIRT_ROAD, TRUE);
     startSpriteAnimation(DIRT_ROAD, 7, 0xFE);
@@ -94,7 +95,7 @@ void initializeTitleScreen(u8 arg0) {
     setSpriteViewSpacePosition(SIGN_POST_1, titleScreenContext.centerCoordinate + 160.0f, -32.0f, 40.0f);
     setSpriteScale(SIGN_POST_1, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(SIGN_POST_1, 0.0f, 0.0f, 0.0f);
-    setSpriteRenderingLayer(SIGN_POST_1, (1 | 2));
+    setSpriteBlendMode(SIGN_POST_1, SPRITE_BLEND_ALPHA_DECAL);
     setSpriteColor(SIGN_POST_1, 0xFF, 0xFF, 0xFF, 0xFF);
     setBilinearFiltering(SIGN_POST_1, TRUE);
     startSpriteAnimation(SIGN_POST_1, 2, 0xFE);
@@ -103,7 +104,7 @@ void initializeTitleScreen(u8 arg0) {
     setSpriteViewSpacePosition(SIGN_POST_2, titleScreenContext.centerCoordinate - 192.0f, -32.0f, 40.0f);
     setSpriteScale(SIGN_POST_2, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(SIGN_POST_2, 0.0f, 0.0f, 0.0f);
-    setSpriteRenderingLayer(SIGN_POST_2, (1 | 2));
+    setSpriteBlendMode(SIGN_POST_2, SPRITE_BLEND_ALPHA_DECAL);
     setSpriteColor(SIGN_POST_2, 0xFF, 0xFF, 0xFF, 0xFF);
     setBilinearFiltering(SIGN_POST_2, TRUE);
     startSpriteAnimation(SIGN_POST_2, 2, 0xFE);
@@ -112,7 +113,7 @@ void initializeTitleScreen(u8 arg0) {
     setSpriteViewSpacePosition(SIGN_POST_3, titleScreenContext.centerCoordinate - 128.0f, -32.0f, 40.0f);
     setSpriteScale(SIGN_POST_3, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(SIGN_POST_3, 0.0f, 0.0f, 0.0f);
-    setSpriteRenderingLayer(SIGN_POST_3, (1 | 2));
+    setSpriteBlendMode(SIGN_POST_3, SPRITE_BLEND_ALPHA_DECAL);
     setSpriteColor(SIGN_POST_3, 0xFF, 0xFF, 0xFF, 0xFF);
     setBilinearFiltering(SIGN_POST_3, TRUE);
     startSpriteAnimation(SIGN_POST_3, 2, 0xFE);
@@ -121,7 +122,7 @@ void initializeTitleScreen(u8 arg0) {
     setSpriteViewSpacePosition(CLOUD_1_1, titleScreenContext.centerCoordinate + 160.0f, 0.0f, 56.0f);
     setSpriteScale(CLOUD_1_1, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(CLOUD_1_1, 0.0f, 0.0f, 0.0f);
-    setSpriteRenderingLayer(CLOUD_1_1, (1 | 2));
+    setSpriteBlendMode(CLOUD_1_1, SPRITE_BLEND_ALPHA_DECAL);
     setSpriteColor(CLOUD_1_1, 0xFF, 0xFF, 0xFF, 0xFF);
     setBilinearFiltering(CLOUD_1_1, TRUE);
     startSpriteAnimation(CLOUD_1_1, 9, 0xFE);
@@ -130,7 +131,7 @@ void initializeTitleScreen(u8 arg0) {
     setSpriteViewSpacePosition(CLOUD_1_2, titleScreenContext.centerCoordinate - 160.0f, 0.0f, 56.0f);
     setSpriteScale(CLOUD_1_2, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(CLOUD_1_2, 0.0f, 0.0f, 0.0f);
-    setSpriteRenderingLayer(CLOUD_1_2, (1 | 2));
+    setSpriteBlendMode(CLOUD_1_2, SPRITE_BLEND_ALPHA_DECAL);
     setSpriteColor(CLOUD_1_2, 0xFF, 0xFF, 0xFF, 0xFF);
     setBilinearFiltering(CLOUD_1_2, TRUE);
     startSpriteAnimation(CLOUD_1_2, 9, 0xFE);
@@ -139,7 +140,7 @@ void initializeTitleScreen(u8 arg0) {
     setSpriteViewSpacePosition(CLOUD_2_1, titleScreenContext.centerCoordinate + 160.0f, 64.0f, 64.0f);
     setSpriteScale(CLOUD_2_1, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(CLOUD_2_1, 0.0f, 0.0f, 0.0f);
-    setSpriteRenderingLayer(CLOUD_2_1, (1 | 2));
+    setSpriteBlendMode(CLOUD_2_1, SPRITE_BLEND_ALPHA_DECAL);
     setSpriteColor(CLOUD_2_1, 0xFF, 0xFF, 0xFF, 0xFF);
     setBilinearFiltering(CLOUD_2_1, TRUE);
     startSpriteAnimation(CLOUD_2_1, 0x10, 0xFE);
@@ -148,7 +149,7 @@ void initializeTitleScreen(u8 arg0) {
     setSpriteViewSpacePosition(CLOUD_3_1, titleScreenContext.centerCoordinate + 32.0f, 96.0f, 64.0f);
     setSpriteScale(CLOUD_3_1, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(CLOUD_3_1, 0.0f, 0.0f, 0.0f);
-    setSpriteRenderingLayer(CLOUD_3_1, (1 | 2));
+    setSpriteBlendMode(CLOUD_3_1, SPRITE_BLEND_ALPHA_DECAL);
     setSpriteColor(CLOUD_3_1, 0xFF, 0xFF, 0xFF, 0xFF);
     setBilinearFiltering(CLOUD_3_1, TRUE);
     startSpriteAnimation(CLOUD_3_1, 0x11, 0xFE);
@@ -157,7 +158,7 @@ void initializeTitleScreen(u8 arg0) {
     setSpriteViewSpacePosition(LICENSED_BY_NINTENDO_1, titleScreenContext.centerCoordinate + 224.0f, 80.0f, 64.0f);
     setSpriteScale(LICENSED_BY_NINTENDO_1, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(LICENSED_BY_NINTENDO_1, 0.0f, 0.0f, 0.0f);
-    setSpriteRenderingLayer(LICENSED_BY_NINTENDO_1, (1 | 2));
+    setSpriteBlendMode(LICENSED_BY_NINTENDO_1, SPRITE_BLEND_ALPHA_DECAL);
     setSpriteColor(LICENSED_BY_NINTENDO_1, 0xFF, 0xFF, 0xFF, 0xFF);
     setBilinearFiltering(LICENSED_BY_NINTENDO_1, TRUE);
     startSpriteAnimation(LICENSED_BY_NINTENDO_1, 0x12, 0xFE);
@@ -166,7 +167,7 @@ void initializeTitleScreen(u8 arg0) {
     setSpriteViewSpacePosition(LICENSED_BY_NINTENDO_2, titleScreenContext.centerCoordinate - 64.0f, 72.0f, 64.0f);
     setSpriteScale(LICENSED_BY_NINTENDO_2, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(LICENSED_BY_NINTENDO_2, 0.0f, 0.0f, 0.0f);
-    setSpriteRenderingLayer(LICENSED_BY_NINTENDO_2, (1 | 2));
+    setSpriteBlendMode(LICENSED_BY_NINTENDO_2, SPRITE_BLEND_ALPHA_DECAL);
     setSpriteColor(LICENSED_BY_NINTENDO_2, 0xFF, 0xFF, 0xFF, 0xFF);
     setBilinearFiltering(LICENSED_BY_NINTENDO_2, TRUE);
     startSpriteAnimation(LICENSED_BY_NINTENDO_2, 0x12, 0xFE);
@@ -175,7 +176,7 @@ void initializeTitleScreen(u8 arg0) {
     setSpriteViewSpacePosition(CLOUD_3_2, titleScreenContext.centerCoordinate - 192.0f, 108.0f, 64.0f);
     setSpriteScale(CLOUD_3_2, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(CLOUD_3_2, 0.0f, 0.0f, 0.0f);
-    setSpriteRenderingLayer(CLOUD_3_2, (1 | 2));
+    setSpriteBlendMode(CLOUD_3_2, SPRITE_BLEND_ALPHA_DECAL);
     setSpriteColor(CLOUD_3_2, 0xFF, 0xFF, 0xFF, 0xFF);
     setBilinearFiltering(CLOUD_3_2, TRUE);
     startSpriteAnimation(CLOUD_3_2, 0x11, 0xFE);
@@ -184,7 +185,7 @@ void initializeTitleScreen(u8 arg0) {
     setSpriteViewSpacePosition(CLOUD_2_2, titleScreenContext.centerCoordinate - 288.0f, 88.0f, 64.0f);
     setSpriteScale(CLOUD_2_2, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(CLOUD_2_2, 0.0f, 0.0f, 0.0f);
-    setSpriteRenderingLayer(CLOUD_2_2, (1 | 2));
+    setSpriteBlendMode(CLOUD_2_2, SPRITE_BLEND_ALPHA_DECAL);
     setSpriteColor(CLOUD_2_2, 0xFF, 0xFF, 0xFF, 0xFF);
     setBilinearFiltering(CLOUD_2_2, TRUE);
     startSpriteAnimation(CLOUD_2_2, 0x10, 0xFE);
@@ -193,7 +194,7 @@ void initializeTitleScreen(u8 arg0) {
     setSpriteViewSpacePosition(FAR_GRASS_1_1, titleScreenContext.centerCoordinate + 160.0f, 0.0f, 8.0f);
     setSpriteScale(FAR_GRASS_1_1, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(FAR_GRASS_1_1, 0.0f, 0.0f, 0.0f);
-    setSpriteRenderingLayer(FAR_GRASS_1_1, (1 | 2));
+    setSpriteBlendMode(FAR_GRASS_1_1, SPRITE_BLEND_ALPHA_DECAL);
     setSpriteColor(FAR_GRASS_1_1, 0xFF, 0xFF, 0xFF, 0xFF);
     setBilinearFiltering(FAR_GRASS_1_1, TRUE);
     startSpriteAnimation(FAR_GRASS_1_1, 0xA, 0xFE);
@@ -202,7 +203,7 @@ void initializeTitleScreen(u8 arg0) {
     setSpriteViewSpacePosition(FAR_GRASS_1_2, titleScreenContext.centerCoordinate - 160.0f, 0.0f, 8.0f);
     setSpriteScale(FAR_GRASS_1_2, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(FAR_GRASS_1_2, 0.0f, 0.0f, 0.0f);
-    setSpriteRenderingLayer(FAR_GRASS_1_2, (1 | 2));
+    setSpriteBlendMode(FAR_GRASS_1_2, SPRITE_BLEND_ALPHA_DECAL);
     setSpriteColor(FAR_GRASS_1_2, 0xFF, 0xFF, 0xFF, 0xFF);
     setBilinearFiltering(FAR_GRASS_1_2, TRUE);
     startSpriteAnimation(FAR_GRASS_1_2, 0xA, 0xFE);
@@ -211,7 +212,7 @@ void initializeTitleScreen(u8 arg0) {
     setSpriteViewSpacePosition(FAR_GRASS_2_1, titleScreenContext.centerCoordinate + 160.0f, 0.0f, 16.0f);
     setSpriteScale(FAR_GRASS_2_1, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(FAR_GRASS_2_1, 0.0f, 0.0f, 0.0f);
-    setSpriteRenderingLayer(FAR_GRASS_2_1, (1 | 2));
+    setSpriteBlendMode(FAR_GRASS_2_1, SPRITE_BLEND_ALPHA_DECAL);
     setSpriteColor(FAR_GRASS_2_1, 0xFF, 0xFF, 0xFF, 0xFF);
     setBilinearFiltering(FAR_GRASS_2_1, TRUE);
     startSpriteAnimation(FAR_GRASS_2_1, 0xB, 0xFE);
@@ -220,7 +221,7 @@ void initializeTitleScreen(u8 arg0) {
     setSpriteViewSpacePosition(FAR_GRASS_3_1, titleScreenContext.centerCoordinate + 160.0f, 0.0f, 24.0f);
     setSpriteScale(FAR_GRASS_3_1, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(FAR_GRASS_3_1, 0.0f, 0.0f, 0.0f);
-    setSpriteRenderingLayer(FAR_GRASS_3_1, (1 | 2));
+    setSpriteBlendMode(FAR_GRASS_3_1, SPRITE_BLEND_ALPHA_DECAL);
     setSpriteColor(FAR_GRASS_3_1, 0xFF, 0xFF, 0xFF, 0xFF);
     setBilinearFiltering(FAR_GRASS_3_1, TRUE);
     startSpriteAnimation(FAR_GRASS_3_1, 0xC, 0xFE);
@@ -229,7 +230,7 @@ void initializeTitleScreen(u8 arg0) {
     setSpriteViewSpacePosition(FRONT_GRASS_2_1, titleScreenContext.centerCoordinate + 160.0f, 0.0f, 32.0f);
     setSpriteScale(FRONT_GRASS_2_1, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(FRONT_GRASS_2_1, 0.0f, 0.0f, 0.0f);
-    setSpriteRenderingLayer(FRONT_GRASS_2_1, (1 | 2));
+    setSpriteBlendMode(FRONT_GRASS_2_1, SPRITE_BLEND_ALPHA_DECAL);
     setSpriteColor(FRONT_GRASS_2_1, 0xFF, 0xFF, 0xFF, 0xFF);
     setBilinearFiltering(FRONT_GRASS_2_1, TRUE);
     startSpriteAnimation(FRONT_GRASS_2_1, 0xE, 0xFE);
@@ -238,7 +239,7 @@ void initializeTitleScreen(u8 arg0) {
     setSpriteViewSpacePosition(BACK_GRASS_2, titleScreenContext.centerCoordinate - 160.0f, 0.0f, 16.0f);
     setSpriteScale(BACK_GRASS_2, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(BACK_GRASS_2, 0.0f, 0.0f, 0.0f);
-    setSpriteRenderingLayer(BACK_GRASS_2, (1 | 2));
+    setSpriteBlendMode(BACK_GRASS_2, SPRITE_BLEND_ALPHA_DECAL);
     setSpriteColor(BACK_GRASS_2, 0xFF, 0xFF, 0xFF, 0xFF);
     setBilinearFiltering(BACK_GRASS_2, TRUE);
     startSpriteAnimation(BACK_GRASS_2, 0xB, 0xFE);
@@ -247,7 +248,7 @@ void initializeTitleScreen(u8 arg0) {
     setSpriteViewSpacePosition(BACK_GRASS_3_2, titleScreenContext.centerCoordinate - 160.0f, 0.0f, 24.0f);
     setSpriteScale(BACK_GRASS_3_2, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(BACK_GRASS_3_2, 0.0f, 0.0f, 0.0f);
-    setSpriteRenderingLayer(BACK_GRASS_3_2, (1 | 2));
+    setSpriteBlendMode(BACK_GRASS_3_2, SPRITE_BLEND_ALPHA_DECAL);
     setSpriteColor(BACK_GRASS_3_2, 0xFF, 0xFF, 0xFF, 0xFF);
     setBilinearFiltering(BACK_GRASS_3_2, TRUE);
     startSpriteAnimation(BACK_GRASS_3_2, 0xC, 0xFE);
@@ -256,7 +257,7 @@ void initializeTitleScreen(u8 arg0) {
     setSpriteViewSpacePosition(FRONT_GRASS_2_2, titleScreenContext.centerCoordinate - 160.0f, 0.0f, 32.0f);
     setSpriteScale(FRONT_GRASS_2_2, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(FRONT_GRASS_2_2, 0.0f, 0.0f, 0.0f);
-    setSpriteRenderingLayer(FRONT_GRASS_2_2, (1 | 2));
+    setSpriteBlendMode(FRONT_GRASS_2_2, SPRITE_BLEND_ALPHA_DECAL);
     setSpriteColor(FRONT_GRASS_2_2, 0xFF, 0xFF, 0xFF, 0xFF);
     setBilinearFiltering(FRONT_GRASS_2_2, TRUE);
     startSpriteAnimation(FRONT_GRASS_2_2, 0xE, 0xFE);
@@ -265,7 +266,7 @@ void initializeTitleScreen(u8 arg0) {
     setSpriteViewSpacePosition(PUSH_THE_START_SIGN_2, -54.0f, -24.0f, 56.0f);
     setSpriteScale(PUSH_THE_START_SIGN_2, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(PUSH_THE_START_SIGN_2, 0.0f, 0.0f, 0.0f);
-    setSpriteRenderingLayer(PUSH_THE_START_SIGN_2, (1 | 2));
+    setSpriteBlendMode(PUSH_THE_START_SIGN_2, SPRITE_BLEND_ALPHA_DECAL);
     setSpriteColor(PUSH_THE_START_SIGN_2, 0xFF, 0xFF, 0xFF, 0xFF);
     setBilinearFiltering(PUSH_THE_START_SIGN_2, TRUE);
     startSpriteAnimation(PUSH_THE_START_SIGN_2, 3, 0xFE);
@@ -321,7 +322,7 @@ void loadDogTitleSprite(void) {
     setSpriteViewSpacePosition(DOG_TITLE_SPRITE, 64.0f, -80.0f, 56.0f);
     setSpriteScale(DOG_TITLE_SPRITE, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(DOG_TITLE_SPRITE, 0, 0, 0);
-    setSpriteRenderingLayer(DOG_TITLE_SPRITE, (1 | 2));
+    setSpriteBlendMode(DOG_TITLE_SPRITE, SPRITE_BLEND_ALPHA_DECAL);
     setSpriteColor(DOG_TITLE_SPRITE, 0xFF, 0xFF, 0xFF, 0xFF);
     startSpriteAnimation(DOG_TITLE_SPRITE, 0x1D, 0xFE);
 }
@@ -599,7 +600,7 @@ void titleScreenMainLoopCallback(void) {
         // leaving title screen
         case 4:
             
-            if (func_8002CBF8(HARVEST_MOON_64_LOGO)) {
+            if (checkSpriteRGBAUpdateFinished(HARVEST_MOON_64_LOGO)) {
 
                 deactivateTitleScreenSprites();
                 
@@ -615,7 +616,7 @@ void titleScreenMainLoopCallback(void) {
 
         case 5:
             
-            if (func_8002CBF8(HARVEST_MOON_64_LOGO) && checkDefaultSequenceChannelOpen(TITLE_THEME)) {
+            if (checkSpriteRGBAUpdateFinished(HARVEST_MOON_64_LOGO) && checkDefaultSequenceChannelOpen(TITLE_THEME)) {
                 
                 deactivateTitleScreenSprites();
  

@@ -1146,7 +1146,7 @@ u8 getGroundObjectIndexFromPlayerPosition(f32 arg0, u8 arg1) {
     if (gBaseMapIndex == FARM || gBaseMapIndex == GREENHOUSE || gBaseMapIndex == MOUNTAIN_1 | gBaseMapIndex == MOUNTAIN_2 || gBaseMapIndex == TOP_OF_MOUNTAIN_1 || gBaseMapIndex == MOON_MOUNTAIN || gBaseMapIndex == POND || gBaseMapIndex == CAVE || (CAVE < gBaseMapIndex && gBaseMapIndex < MINE_2 + 1) || gBaseMapIndex == RANCH) {
 
         vec = getOffsetTileCoordinates(arg0, arg1);
-        vec2 = func_8003AF58(0, vec.x, vec.z);
+        vec2 = getGroundObjectWorldPosition(0, vec.x, vec.z);
 
         if (vec2.y != 65535.0f) {
             groundObjectIndex = getGroundObjectIndexFromTilePosition(gBaseMapIndex, (u8)vec.x - groundObjectsGridX, (u8)vec.z - groundObjectsGridZ);
@@ -1171,7 +1171,7 @@ u8 getGroundObjectIndexFromCoordinates(f32 x, f32 z) {
     if (gBaseMapIndex == FARM || gBaseMapIndex == GREENHOUSE || gBaseMapIndex == MOUNTAIN_1 | gBaseMapIndex == MOUNTAIN_2 || gBaseMapIndex == TOP_OF_MOUNTAIN_1 || gBaseMapIndex == MOON_MOUNTAIN || gBaseMapIndex == POND || gBaseMapIndex == CAVE || (CAVE < gBaseMapIndex && gBaseMapIndex < MINE_2 + 1) || gBaseMapIndex == RANCH) {
 
         vec = convertWorldToTileCoordinates(0, x, z);
-        vec2 = func_8003AF58(0, vec.x, vec.z);
+        vec2 = getGroundObjectWorldPosition(0, vec.x, vec.z);
 
         if (vec2.y != 65535.0f) {
             mapIndex = gBaseMapIndex;
@@ -1458,10 +1458,9 @@ void updateCropsIfRain(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", func_800DB99C);
+//INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", checkAnimalCanEatGrass);
 
-// handle animals eating grass if outside
-bool func_800DB99C(void) {
+bool checkAnimalCanEatGrass(void) {
 
     u8 i, j;
     
@@ -1534,10 +1533,10 @@ void randomlyBreakLogPieces(u8 randomRange) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", func_800DBC9C);
+//INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", randomlyCutGrass);
 
 // randomly cut grass
-void func_800DBC9C(u8 randomRange) {
+void randomlyCutGrass(u8 randomRange) {
 
     u8 i;
     u8 j;
@@ -1565,7 +1564,7 @@ void func_800DBC9C(u8 randomRange) {
 
 // alternate
 /*
-void func_800DBC9C(u8 arg0) {
+void randomlyCutGrass(u8 arg0) {
 
     u8 i;
     u8 j;
@@ -1589,9 +1588,9 @@ void func_800DBC9C(u8 arg0) {
 }
 */
 
-//INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", func_800DBD88);
+//INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", randomlyDestroyCrops);
 
-void func_800DBD88(u8 randomRange) {
+void randomlyDestroyCrops(u8 randomRange) {
 
     u8 i;
     u8 j;
@@ -1619,7 +1618,7 @@ void func_800DBD88(u8 randomRange) {
 
 // alternate
 /*
-void func_800DBD88(u8 arg0) {
+void randomlyDestroyCrops(u8 arg0) {
 
     u8 i;
     u8 j;

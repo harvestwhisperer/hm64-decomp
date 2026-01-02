@@ -192,37 +192,37 @@ void func_800E16D0(u8 arg0, u8 arg1) {
     loadGameScreenContext.diaryHighlighted = arg1;
     
     func_800E1998();
-    func_800B42E0();
+    loadDiarySelectScreen();
     
     if (arg0) {
-        func_800B59AC();
+        fadeInLoadGameScreen();
     } else {
-        func_800B5BD4();
+        setLoadGameScreenFullAlpha();
     }
     
     if (loadGameScreenContext.showControllerPakScreen == FALSE) {
         
         if (arg0) {
             
-            func_8003E77C(0, 0, 0, 0, 0);
-            func_8003E77C(1, 0, 0, 0, 0);
-            func_8003E77C(2, 0, 0, 0, 0);
-            func_8003E77C(3, 0, 0, 0, 0);
-            func_8003EA1C(0, 0xFF, 0xFF, 0xFF, 0xFF, 24);
-            func_8003EA1C(1, 0xFF, 0xFF, 0xFF, 0xFF, 24);
-            func_8003EA1C(2, 0xFF, 0xFF, 0xFF, 0xFF, 24);
-            func_8003EA1C(3, 0xFF, 0xFF, 0xFF, 0xFF, 24);
+            setMessageBoxRGBA(0, 0, 0, 0, 0);
+            setMessageBoxRGBA(1, 0, 0, 0, 0);
+            setMessageBoxRGBA(2, 0, 0, 0, 0);
+            setMessageBoxRGBA(3, 0, 0, 0, 0);
+            setMessageBoxRGBAWithTransition(0, 0xFF, 0xFF, 0xFF, 0xFF, 24);
+            setMessageBoxRGBAWithTransition(1, 0xFF, 0xFF, 0xFF, 0xFF, 24);
+            setMessageBoxRGBAWithTransition(2, 0xFF, 0xFF, 0xFF, 0xFF, 24);
+            setMessageBoxRGBAWithTransition(3, 0xFF, 0xFF, 0xFF, 0xFF, 24);
 
         } else {
 
-            func_8003E77C(0, 0, 0, 0, 0);
-            func_8003E77C(1, 0, 0, 0, 0);
-            func_8003E77C(2, 0, 0, 0, 0);
-            func_8003E77C(3, 0, 0, 0, 0);
-            func_8003E77C(0, 0xFF, 0xFF, 0xFF, 0xFF);
-            func_8003E77C(1, 0xFF, 0xFF, 0xFF, 0xFF);
-            func_8003E77C(2, 0xFF, 0xFF, 0xFF, 0xFF);
-            func_8003E77C(3, 0xFF, 0xFF, 0xFF, 0xFF);
+            setMessageBoxRGBA(0, 0, 0, 0, 0);
+            setMessageBoxRGBA(1, 0, 0, 0, 0);
+            setMessageBoxRGBA(2, 0, 0, 0, 0);
+            setMessageBoxRGBA(3, 0, 0, 0, 0);
+            setMessageBoxRGBA(0, 0xFF, 0xFF, 0xFF, 0xFF);
+            setMessageBoxRGBA(1, 0xFF, 0xFF, 0xFF, 0xFF);
+            setMessageBoxRGBA(2, 0xFF, 0xFF, 0xFF, 0xFF);
+            setMessageBoxRGBA(3, 0xFF, 0xFF, 0xFF, 0xFF);
 
         }    
         
@@ -230,17 +230,17 @@ void func_800E16D0(u8 arg0, u8 arg1) {
 
         if (arg0) {
     
-            func_8003E77C(0, 0, 0, 0, 0);
-            func_8003E77C(1, 0, 0, 0, 0);
-            func_8003EA1C(0, 0xFF, 0xFF, 0xFF, 0xFF, 24);
-            func_8003EA1C(1, 0xFF, 0xFF, 0xFF, 0xFF, 24);
+            setMessageBoxRGBA(0, 0, 0, 0, 0);
+            setMessageBoxRGBA(1, 0, 0, 0, 0);
+            setMessageBoxRGBAWithTransition(0, 0xFF, 0xFF, 0xFF, 0xFF, 24);
+            setMessageBoxRGBAWithTransition(1, 0xFF, 0xFF, 0xFF, 0xFF, 24);
     
         } else {
     
-            func_8003E77C(0, 0, 0, 0, 0);
-            func_8003E77C(1, 0, 0, 0, 0);
-            func_8003E77C(0, 0xFF, 0xFF, 0xFF, 0xFF);
-            func_8003E77C(1, 0xFF, 0xFF, 0xFF, 0xFF);
+            setMessageBoxRGBA(0, 0, 0, 0, 0);
+            setMessageBoxRGBA(1, 0, 0, 0, 0);
+            setMessageBoxRGBA(0, 0xFF, 0xFF, 0xFF, 0xFF);
+            setMessageBoxRGBA(1, 0xFF, 0xFF, 0xFF, 0xFF);
     
         }
 
@@ -291,99 +291,98 @@ void func_800E1A94(void) {
     if (loadGameScreenContext.showControllerPakScreen == FALSE) {
 
         if (loadGameScreenContext.flags[0] & 1) { 
-            func_8003DD14(0);
+            deactivateMessageBox(0);
             initializeEmptyMessageBox(0, (u8*)MESSAGE_BOX_1_TEXT_BUFFER);
             setMessageBoxViewSpacePosition(0, 16.0f, 52.0f, 0);
-            func_8003F5D0(0, 12, 2);
-            func_8003F630(0, 0, 2);
-            func_8003F464(0, 14, 14, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
-            func_8003F360(0, -4, 2);
+            setMessageBoxLineAndRowSizes(0, 12, 2);
+            setMessageBoxSpacing(0, 0, 2);
+            setMessageBoxFont(0, 14, 14, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
+            setMessageBoxInterpolationWithFlags(0, -4, 2);
             setMessageBoxSpriteIndices(0, 0xFF, 0, 0);
             setMessageBoxButtonMask(0, BUTTON_A);
-            func_8003FB4C(0, 1);
-            initializeMessageBox(MAIN_MESSAGE_BOX_INDEX, 0, 1, 0x80000);
+            setMessageBoxScrollSpeed(0, 1);
+            initializeMessageBox(MAIN_MESSAGE_BOX_INDEX, 0, 1, MESSAGE_BOX_MODE_NO_INPUT);
         }
 
         if (loadGameScreenContext.flags[1] & 1) {
-            func_8003DD14(1);
+            deactivateMessageBox(1);
             initializeEmptyMessageBox(1, (u8*)MESSAGE_BOX_2_TEXT_BUFFER);
             setMessageBoxViewSpacePosition(1, 16.0f, 8.0f, 0);
-            func_8003F5D0(1, 12, 2);
-            func_8003F630(1, 0, 2);
-            func_8003F464(1, 14, 14, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
-            func_8003F360(1, -4, 2);
+            setMessageBoxLineAndRowSizes(1, 12, 2);
+            setMessageBoxSpacing(1, 0, 2);
+            setMessageBoxFont(1, 14, 14, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
+            setMessageBoxInterpolationWithFlags(1, -4, 2);
             setMessageBoxSpriteIndices(1, 0xFF, 0, 0);
             setMessageBoxButtonMask(1, BUTTON_A);
-            func_8003FB4C(1, 1);
-            initializeMessageBox(1, 0, 2, 0x80000);
+            setMessageBoxScrollSpeed(1, 1);
+            initializeMessageBox(1, 0, 2, MESSAGE_BOX_MODE_NO_INPUT);
         }
 
         if (loadGameScreenContext.flags[2] & 1) {
-            func_8003DD14(2);
+            deactivateMessageBox(2);
             initializeEmptyMessageBox(2, (u8*)MESSAGE_BOX_3_TEXT_BUFFER);
             setMessageBoxViewSpacePosition(2, 16.0f, -36.0f, 0);
-            func_8003F5D0(2, 12, 2);
-            func_8003F630(2, 0, 2);
-            func_8003F464(2, 14, 14, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
-            func_8003F360(2, -4, 2);
+            setMessageBoxLineAndRowSizes(2, 12, 2);
+            setMessageBoxSpacing(2, 0, 2);
+            setMessageBoxFont(2, 14, 14, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
+            setMessageBoxInterpolationWithFlags(2, -4, 2);
             setMessageBoxSpriteIndices(2, 0xFF, 0, 0);
             setMessageBoxButtonMask(2, BUTTON_A);
-            func_8003FB4C(2, 1);
-            initializeMessageBox(2, 0, 3, 0x80000);
+            setMessageBoxScrollSpeed(2, 1);
+            initializeMessageBox(2, 0, 3, MESSAGE_BOX_MODE_NO_INPUT);
         }
 
         if (loadGameScreenContext.flags[3] & 1) {
-            func_8003DD14(3);
+            deactivateMessageBox(3);
             initializeEmptyMessageBox(3, (u8*)MESSAGE_BOX_4_TEXT_BUFFER);
             setMessageBoxViewSpacePosition(3, 16.0f, -80.0f, 0);
-            func_8003F5D0(3, 12, 2);
-            func_8003F630(3, 0, 2);
-            func_8003F464(3, 14, 14, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
-            func_8003F360(3, -4, 2);
+            setMessageBoxLineAndRowSizes(3, 12, 2);
+            setMessageBoxSpacing(3, 0, 2);
+            setMessageBoxFont(3, 14, 14, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
+            setMessageBoxInterpolationWithFlags(3, -4, 2);
             setMessageBoxSpriteIndices(3, 0xFF, 0, 0);
             setMessageBoxButtonMask(3, BUTTON_A);
-            func_8003FB4C(3, 1);
-            initializeMessageBox(3, 0, 4, 0x80000);
+            setMessageBoxScrollSpeed(3, 1);
+            initializeMessageBox(3, 0, 4, MESSAGE_BOX_MODE_NO_INPUT);
         }
 
     } else {
 
         if (loadGameScreenContext.flags[0] & 1) {
-            func_8003DD14(0);
+            deactivateMessageBox(0);
             initializeEmptyMessageBox(0, (u8*)MESSAGE_BOX_1_TEXT_BUFFER);
             setMessageBoxViewSpacePosition(0, 16.0f, 52.0f, 0);
-            func_8003F5D0(0, 12, 2);
-            func_8003F630(0, 0, 2);
-            func_8003F464(0, 14, 14, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
-            func_8003F360(0, -4, 2);
+            setMessageBoxLineAndRowSizes(0, 12, 2);
+            setMessageBoxSpacing(0, 0, 2);
+            setMessageBoxFont(0, 14, 14, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
+            setMessageBoxInterpolationWithFlags(0, -4, 2);
             setMessageBoxSpriteIndices(0, 0xFF, 0, 0);
             setMessageBoxButtonMask(0, BUTTON_A);
-            func_8003FB4C(0, 1);
-            initializeMessageBox(MAIN_MESSAGE_BOX_INDEX, 0, 1, 0x80000);
+            setMessageBoxScrollSpeed(0, 1);
+            initializeMessageBox(MAIN_MESSAGE_BOX_INDEX, 0, 1, MESSAGE_BOX_MODE_NO_INPUT);
         }
         
         if (loadGameScreenContext.flags[1] & 1) {
-            func_8003DD14(1);
+            deactivateMessageBox(1);
             initializeEmptyMessageBox(1, (u8*)MESSAGE_BOX_2_TEXT_BUFFER);
             setMessageBoxViewSpacePosition(1, 16.0f, 8.0f, 0);
-            func_8003F5D0(1, 12, 2);
-            func_8003F630(1, 0, 2);
-            func_8003F464(1, 14, 14, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
-            func_8003F360(1, -4, 2);
+            setMessageBoxLineAndRowSizes(1, 12, 2);
+            setMessageBoxSpacing(1, 0, 2);
+            setMessageBoxFont(1, 14, 14, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
+            setMessageBoxInterpolationWithFlags(1, -4, 2);
             setMessageBoxSpriteIndices(1, 0xFF, 0, 0);
             setMessageBoxButtonMask(1, BUTTON_A);
-            func_8003FB4C(1, 1);
-            initializeMessageBox(1, 0, 2, 0x80000);
+            setMessageBoxScrollSpeed(1, 1);
+            initializeMessageBox(1, 0, 2, MESSAGE_BOX_MODE_NO_INPUT);
         }
 
     }
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800E1FAC);
+//INCLUDE_ASM("asm/nonmatchings/game/gameFile", gameSelectCallback);
 
-// load game/select game screen callback
-void func_800E1FAC(void) {
+void gameSelectCallback(void) {
 
     bool set = FALSE;
     u8 temp;
@@ -393,8 +392,8 @@ void func_800E1FAC(void) {
         // load
         case 0:
             
-            if (func_8002CBF8(0x80)) {
-                func_800B5FC4(0, loadGameScreenContext.diaryHighlighted, 0xFF);
+            if (checkSpriteRGBAUpdateFinished(0x80)) {
+                setDiaryCursorPosition(0, loadGameScreenContext.diaryHighlighted, 0xFF);
                 loadGameScreenContext.action = 1;
             }
             
@@ -428,12 +427,12 @@ void func_800E1FAC(void) {
                                 loadGameScreenContext.showControllerPakScreen = TRUE;
                                 set = TRUE;
                                 
-                                func_800B2CE0();
+                                closeOverlayScreen();
                                 deactivateSprite(0x80);
-                                func_8003DD14(0);
-                                func_8003DD14(1);
-                                func_8003DD14(2);
-                                func_8003DD14(3);
+                                deactivateMessageBox(0);
+                                deactivateMessageBox(1);
+                                deactivateMessageBox(2);
+                                deactivateMessageBox(3);
                                 func_800E16D0(0, 0);
                                 
                             } else {
@@ -461,12 +460,12 @@ void func_800E1FAC(void) {
                             set = TRUE;
                         } else {
                             loadGameScreenContext.showControllerPakScreen = FALSE;
-                            func_800B2CE0();
+                            closeOverlayScreen();
                             deactivateSprite(0x80);
-                            func_8003DD14(0);
-                            func_8003DD14(1);
-                            func_8003DD14(2);
-                            func_8003DD14(3);
+                            deactivateMessageBox(0);
+                            deactivateMessageBox(1);
+                            deactivateMessageBox(2);
+                            deactivateMessageBox(3);
                             func_800E16D0(0, 3);
                             set = TRUE;
                         }
@@ -495,16 +494,16 @@ void func_800E1FAC(void) {
                 }
             }
             
-            func_800B60E4(0, 0xFF, FALSE);
-            func_800B60E4(1, 0xFF, FALSE);
-            func_800B60E4(2, 0xFF, FALSE);
-            func_800B60E4(3, 0xFF, FALSE);
-            func_800B60E4(0xFF, 0, FALSE);
-            func_800B60E4(0xFF, 1, FALSE);
-            func_800B60E4(0xFF, 2, FALSE);
+            updateDiaryHighlighted(0, 0xFF, FALSE);
+            updateDiaryHighlighted(1, 0xFF, FALSE);
+            updateDiaryHighlighted(2, 0xFF, FALSE);
+            updateDiaryHighlighted(3, 0xFF, FALSE);
+            updateDiaryHighlighted(0xFF, 0, FALSE);
+            updateDiaryHighlighted(0xFF, 1, FALSE);
+            updateDiaryHighlighted(0xFF, 2, FALSE);
             
-            func_800B60E4(loadGameScreenContext.diaryHighlighted, 0xFF, TRUE);
-            func_800B5FC4(0, loadGameScreenContext.diaryHighlighted, 0xFF);
+            updateDiaryHighlighted(loadGameScreenContext.diaryHighlighted, 0xFF, TRUE);
+            setDiaryCursorPosition(0, loadGameScreenContext.diaryHighlighted, 0xFF);
             
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
                 
@@ -512,15 +511,15 @@ void func_800E1FAC(void) {
                     
                     // select diary
                     if (loadGameScreenContext.showControllerPakScreen == FALSE) {
-                        func_800B64E4(loadGameScreenContext.diaryHighlighted, 0xFF);
+                        animateDiarySelected(loadGameScreenContext.diaryHighlighted, 0xFF);
                         deactivateSprite(0x79);
-                        func_800C7DF8();
-                        func_800C7E18();
-                        func_800B5DA8();
-                        func_8003EA1C(0, 0, 0, 0, 0, 0x18);
-                        func_8003EA1C(1, 0, 0, 0, 0, 0x18);
-                        func_8003EA1C(2, 0, 0, 0, 0, 0x18);
-                        func_8003EA1C(3, 0, 0, 0, 0, 0x18);
+                        hideDownArrow();
+                        hideUpArrow();
+                        fadeOutLoadGameScreen();
+                        setMessageBoxRGBAWithTransition(0, 0, 0, 0, 0, 0x18);
+                        setMessageBoxRGBAWithTransition(1, 0, 0, 0, 0, 0x18);
+                        setMessageBoxRGBAWithTransition(2, 0, 0, 0, 0, 0x18);
+                        setMessageBoxRGBAWithTransition(3, 0, 0, 0, 0, 0x18);
                         loadGameScreenContext.action = 6;
                         playSfx(0);
                         stopAudioSequenceWithDefaultFadeOut(1);
@@ -534,13 +533,13 @@ void func_800E1FAC(void) {
             if ((checkButtonPressed(CONTROLLER_1, BUTTON_B)) && !set) {
                 
                 deactivateSprite(0x79);
-                func_800C7DF8();
-                func_800C7E18();
-                func_800B5DA8();
-                func_8003EA1C(0, 0, 0, 0, 0, 0x18);
-                func_8003EA1C(1, 0, 0, 0, 0, 0x18);
-                func_8003EA1C(2, 0, 0, 0, 0, 0x18);
-                func_8003EA1C(3, 0, 0, 0, 0, 0x18);
+                hideDownArrow();
+                hideUpArrow();
+                fadeOutLoadGameScreen();
+                setMessageBoxRGBAWithTransition(0, 0, 0, 0, 0, 0x18);
+                setMessageBoxRGBAWithTransition(1, 0, 0, 0, 0, 0x18);
+                setMessageBoxRGBAWithTransition(2, 0, 0, 0, 0, 0x18);
+                setMessageBoxRGBAWithTransition(3, 0, 0, 0, 0, 0x18);
                 loadGameScreenContext.action = 7;
                 stopAudioSequenceWithDefaultFadeOut(1);
                 playSfx(1);
@@ -581,22 +580,22 @@ void func_800E1FAC(void) {
                 }
             }
             
-            func_800B60E4(0, 0xFF, FALSE);
-            func_800B60E4(1, 0xFF, FALSE);
-            func_800B60E4(2, 0xFF, FALSE);
-            func_800B60E4(3, 0xFF, FALSE);
-            func_800B60E4(0xFF, 0, FALSE);
-            func_800B60E4(0xFF, 1, FALSE);
-            func_800B60E4(0xFF, 2, FALSE);
+            updateDiaryHighlighted(0, 0xFF, FALSE);
+            updateDiaryHighlighted(1, 0xFF, FALSE);
+            updateDiaryHighlighted(2, 0xFF, FALSE);
+            updateDiaryHighlighted(3, 0xFF, FALSE);
+            updateDiaryHighlighted(0xFF, 0, FALSE);
+            updateDiaryHighlighted(0xFF, 1, FALSE);
+            updateDiaryHighlighted(0xFF, 2, FALSE);
             
-            func_800B60E4(0xFF, loadGameScreenContext.actionColumnHighlighted, TRUE);
-            func_800B5FC4(0, 0xFF, loadGameScreenContext.actionColumnHighlighted);
+            updateDiaryHighlighted(0xFF, loadGameScreenContext.actionColumnHighlighted, TRUE);
+            setDiaryCursorPosition(0, 0xFF, loadGameScreenContext.actionColumnHighlighted);
             
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
                 
                 if (!set) {
                     
-                    func_800B64E4(0xFF, loadGameScreenContext.actionColumnHighlighted);
+                    animateDiarySelected(0xFF, loadGameScreenContext.actionColumnHighlighted);
                     
                     switch (loadGameScreenContext.actionColumnHighlighted) {                
                         case 0:                          
@@ -609,13 +608,13 @@ void func_800E1FAC(void) {
                             break;
                         case 2:                             
                             deactivateSprite(0x79);
-                            func_800C7DF8();
-                            func_800C7E18();
-                            func_800B5DA8();
-                            func_8003EA1C(0, 0, 0, 0, 0, 0x18);
-                            func_8003EA1C(1, 0, 0, 0, 0, 0x18);
-                            func_8003EA1C(2, 0, 0, 0, 0, 0x18);
-                            func_8003EA1C(3, 0, 0, 0, 0, 0x18);
+                            hideDownArrow();
+                            hideUpArrow();
+                            fadeOutLoadGameScreen();
+                            setMessageBoxRGBAWithTransition(0, 0, 0, 0, 0, 0x18);
+                            setMessageBoxRGBAWithTransition(1, 0, 0, 0, 0, 0x18);
+                            setMessageBoxRGBAWithTransition(2, 0, 0, 0, 0, 0x18);
+                            setMessageBoxRGBAWithTransition(3, 0, 0, 0, 0, 0x18);
                             // load farm ranking screen
                             loadGameScreenContext.action = 10;
                             playSfx(0);
@@ -630,13 +629,13 @@ void func_800E1FAC(void) {
             
             if ((checkButtonPressed(CONTROLLER_1, BUTTON_B)) && !set) {
                 deactivateSprite(0x79);
-                func_800C7DF8();
-                func_800C7E18();
-                func_800B5DA8();
-                func_8003EA1C(0, 0, 0, 0, 0, 0x18);
-                func_8003EA1C(1, 0, 0, 0, 0, 0x18);
-                func_8003EA1C(2, 0, 0, 0, 0, 0x18);
-                func_8003EA1C(3, 0, 0, 0, 0, 0x18);
+                hideDownArrow();
+                hideUpArrow();
+                fadeOutLoadGameScreen();
+                setMessageBoxRGBAWithTransition(0, 0, 0, 0, 0, 0x18);
+                setMessageBoxRGBAWithTransition(1, 0, 0, 0, 0, 0x18);
+                setMessageBoxRGBAWithTransition(2, 0, 0, 0, 0, 0x18);
+                setMessageBoxRGBAWithTransition(3, 0, 0, 0, 0, 0x18);
                 loadGameScreenContext.action = 7;
                 stopAudioSequenceWithDefaultFadeOut(1);
                 playSfx(1);
@@ -668,12 +667,12 @@ void func_800E1FAC(void) {
                             if (loadGameScreenContext.gamePakEnabled) {
                                 loadGameScreenContext.showControllerPakScreen = TRUE;
                                 set = TRUE;
-                                func_800B2CE0();
+                                closeOverlayScreen();
                                 deactivateSprite(0x80);
-                                func_8003DD14(0);
-                                func_8003DD14(1);
-                                func_8003DD14(2);
-                                func_8003DD14(3);
+                                deactivateMessageBox(0);
+                                deactivateMessageBox(1);
+                                deactivateMessageBox(2);
+                                deactivateMessageBox(3);
                                 func_800E16D0(0, 0);
                             } else {
                                 set = TRUE;
@@ -699,12 +698,12 @@ void func_800E1FAC(void) {
                             set = TRUE;
                         } else {
                             loadGameScreenContext.showControllerPakScreen = FALSE;
-                            func_800B2CE0();
+                            closeOverlayScreen();
                             deactivateSprite(0x80);
-                            func_8003DD14(0);
-                            func_8003DD14(1);
-                            func_8003DD14(2);
-                            func_8003DD14(3);
+                            deactivateMessageBox(0);
+                            deactivateMessageBox(1);
+                            deactivateMessageBox(2);
+                            deactivateMessageBox(3);
                             func_800E16D0(0, 3);
                             set = TRUE;
                         }
@@ -725,12 +724,12 @@ void func_800E1FAC(void) {
                 
             }
     
-            func_800B60E4(0, 0xFF, FALSE);
-            func_800B60E4(1, 0xFF, FALSE);
-            func_800B60E4(2, 0xFF, FALSE);
-            func_800B60E4(3, 0xFF, FALSE);
-            func_800B60E4(loadGameScreenContext.diaryHighlighted, 0xFF, TRUE);
-            func_800B5FC4(0, loadGameScreenContext.diaryHighlighted, 0xFF);
+            updateDiaryHighlighted(0, 0xFF, FALSE);
+            updateDiaryHighlighted(1, 0xFF, FALSE);
+            updateDiaryHighlighted(2, 0xFF, FALSE);
+            updateDiaryHighlighted(3, 0xFF, FALSE);
+            updateDiaryHighlighted(loadGameScreenContext.diaryHighlighted, 0xFF, TRUE);
+            setDiaryCursorPosition(0, loadGameScreenContext.diaryHighlighted, 0xFF);
 
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
                 if (!set) {
@@ -776,12 +775,12 @@ void func_800E1FAC(void) {
                                 loadGameScreenContext.showControllerPakScreen = TRUE;
                                 set = TRUE;
                                 // show extra game pak diaries
-                                func_800B2CE0();
+                                closeOverlayScreen();
                                 deactivateSprite(0x80);
-                                func_8003DD14(0);
-                                func_8003DD14(1);
-                                func_8003DD14(2);
-                                func_8003DD14(3);
+                                deactivateMessageBox(0);
+                                deactivateMessageBox(1);
+                                deactivateMessageBox(2);
+                                deactivateMessageBox(3);
                                 func_800E16D0(0, 0);
                             } else {
                                 set = TRUE;
@@ -808,12 +807,12 @@ void func_800E1FAC(void) {
                             set = TRUE;
                         } else {
                             loadGameScreenContext.showControllerPakScreen = FALSE;
-                            func_800B2CE0();
+                            closeOverlayScreen();
                             deactivateSprite(0x80);
-                            func_8003DD14(0);
-                            func_8003DD14(1);
-                            func_8003DD14(2);
-                            func_8003DD14(3);
+                            deactivateMessageBox(0);
+                            deactivateMessageBox(1);
+                            deactivateMessageBox(2);
+                            deactivateMessageBox(3);
                             func_800E16D0(0, 3);
                             set = TRUE;
                         }
@@ -835,19 +834,19 @@ void func_800E1FAC(void) {
                 
             }
 
-            func_800B60E4(0, 0xFF, FALSE);
-            func_800B60E4(1, 0xFF, FALSE);
-            func_800B60E4(2, 0xFF, FALSE);
-            func_800B60E4(3, 0xFF, FALSE);
-            func_800B60E4(loadGameScreenContext.diaryHighlighted, 0xFF, TRUE);
-            func_800B5FC4(0, loadGameScreenContext.diaryHighlighted, 0xFF);
+            updateDiaryHighlighted(0, 0xFF, FALSE);
+            updateDiaryHighlighted(1, 0xFF, FALSE);
+            updateDiaryHighlighted(2, 0xFF, FALSE);
+            updateDiaryHighlighted(3, 0xFF, FALSE);
+            updateDiaryHighlighted(loadGameScreenContext.diaryHighlighted, 0xFF, TRUE);
+            setDiaryCursorPosition(0, loadGameScreenContext.diaryHighlighted, 0xFF);
             
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
                 
                 if (!set) {
                     
                     if (loadGameScreenContext.flags[loadGameScreenContext.diaryHighlighted] & 2) {
-                        func_800B5FC4(1, loadGameScreenContext.diaryHighlighted, 0xFF);
+                        setDiaryCursorPosition(1, loadGameScreenContext.diaryHighlighted, 0xFF);
                         // move/copy to other diary
                         loadGameScreenContext.action = 5;
                         loadGameScreenContext.unk_86 = loadGameScreenContext.diaryHighlighted;
@@ -879,7 +878,7 @@ void func_800E1FAC(void) {
             if (loadGameScreenContext.showControllerPakScreen == FALSE) {
                 
                 if (loadGameScreenContext.unk_88 == FALSE) {
-                    func_800B5FC4(1, loadGameScreenContext.unk_86, 0xFF);
+                    setDiaryCursorPosition(1, loadGameScreenContext.unk_86, 0xFF);
                 }
                 
                 if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_NORTHEAST)) {
@@ -903,12 +902,12 @@ void func_800E1FAC(void) {
                             if (loadGameScreenContext.gamePakEnabled) {
                                 loadGameScreenContext.showControllerPakScreen = TRUE;
                                 set = TRUE;
-                                func_800B2CE0();
+                                closeOverlayScreen();
                                 deactivateSprite(0x80);
-                                func_8003DD14(0);
-                                func_8003DD14(1);
-                                func_8003DD14(2);
-                                func_8003DD14(3);
+                                deactivateMessageBox(0);
+                                deactivateMessageBox(1);
+                                deactivateMessageBox(2);
+                                deactivateMessageBox(3);
                                 func_800E16D0(0, 0);
                             } else {
                                 set = TRUE;
@@ -927,7 +926,7 @@ void func_800E1FAC(void) {
             } else {
                 
                 if (loadGameScreenContext.showControllerPakScreen == loadGameScreenContext.unk_88) {
-                    func_800B5FC4(1, loadGameScreenContext.unk_86, 0xFF);
+                    setDiaryCursorPosition(1, loadGameScreenContext.unk_86, 0xFF);
                 }
                 
                 if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_NORTHEAST)) {
@@ -940,12 +939,12 @@ void func_800E1FAC(void) {
                             set = TRUE;
                         } else {
                             loadGameScreenContext.showControllerPakScreen = FALSE;
-                            func_800B2CE0();
+                            closeOverlayScreen();
                             deactivateSprite(0x80);
-                            func_8003DD14(0);
-                            func_8003DD14(1);
-                            func_8003DD14(2);
-                            func_8003DD14(3);
+                            deactivateMessageBox(0);
+                            deactivateMessageBox(1);
+                            deactivateMessageBox(2);
+                            deactivateMessageBox(3);
                             func_800E16D0(0, 3);
                             set = TRUE;
                         }
@@ -965,12 +964,12 @@ void func_800E1FAC(void) {
             
             }
             
-            func_800B60E4(0, 0xFF, FALSE);
-            func_800B60E4(1, 0xFF, FALSE);
-            func_800B60E4(2, 0xFF, FALSE);
-            func_800B60E4(3, 0xFF, FALSE);
-            func_800B60E4(loadGameScreenContext.diaryHighlighted, 0xFF, TRUE);
-            func_800B5FC4(0, loadGameScreenContext.diaryHighlighted, 0xFF);
+            updateDiaryHighlighted(0, 0xFF, FALSE);
+            updateDiaryHighlighted(1, 0xFF, FALSE);
+            updateDiaryHighlighted(2, 0xFF, FALSE);
+            updateDiaryHighlighted(3, 0xFF, FALSE);
+            updateDiaryHighlighted(loadGameScreenContext.diaryHighlighted, 0xFF, TRUE);
+            setDiaryCursorPosition(0, loadGameScreenContext.diaryHighlighted, 0xFF);
             
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
                 
@@ -996,14 +995,14 @@ void func_800E1FAC(void) {
         // load selected diary
         case 6:
             
-            if (func_8002CBF8(0x80) && checkDefaultSequenceChannelOpen(1)) {
+            if (checkSpriteRGBAUpdateFinished(0x80) && checkDefaultSequenceChannelOpen(1)) {
                 
-                func_800B2CE0();
+                closeOverlayScreen();
                 deactivateSprite(0x80);
-                func_8003DD14(0);
-                func_8003DD14(1);
-                func_8003DD14(2);
-                func_8003DD14(3);
+                deactivateMessageBox(0);
+                deactivateMessageBox(1);
+                deactivateMessageBox(2);
+                deactivateMessageBox(3);
                 
                 temp = loadGameScreenContext.diaryHighlighted;
                 gCurrentGameIndex = temp;
@@ -1028,13 +1027,13 @@ void func_800E1FAC(void) {
         // go back to title
         case 7:
             
-            if (func_8002CBF8(0x80) && checkDefaultSequenceChannelOpen(1)) {
-                func_800B2CE0();
+            if (checkSpriteRGBAUpdateFinished(0x80) && checkDefaultSequenceChannelOpen(1)) {
+                closeOverlayScreen();
                 deactivateSprite(0x80);
-                func_8003DD14(0);
-                func_8003DD14(1);
-                func_8003DD14(2);
-                func_8003DD14(3);
+                deactivateMessageBox(0);
+                deactivateMessageBox(1);
+                deactivateMessageBox(2);
+                deactivateMessageBox(3);
                 initializeTitleScreen(1);
             }
             
@@ -1043,7 +1042,7 @@ void func_800E1FAC(void) {
         // perform delete
         case 8:
             
-            func_800B5FC4(0, 0xFF, 3);
+            setDiaryCursorPosition(0, 0xFF, 3);
             
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A) && !set) {
                 resetAnimationState(0xAC);
@@ -1065,7 +1064,7 @@ void func_800E1FAC(void) {
         // perform move
         case 9:
             
-            func_800B5FC4(0, 0xFF, 3);
+            setDiaryCursorPosition(0, 0xFF, 3);
             
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A) && !set) {
                 
@@ -1091,17 +1090,17 @@ void func_800E1FAC(void) {
         // farm ranking screen
         case 10:
             
-            if (func_8002CBF8(0x80)) {
+            if (checkSpriteRGBAUpdateFinished(0x80)) {
 
                 // deactivate overlay screen sprites
-                func_800B2CE0();
+                closeOverlayScreen();
                 deactivateSprite(0x80);
 
                 // message boxes
-                func_8003DD14(0);
-                func_8003DD14(1);
-                func_8003DD14(2);
-                func_8003DD14(3);
+                deactivateMessageBox(0);
+                deactivateMessageBox(1);
+                deactivateMessageBox(2);
+                deactivateMessageBox(3);
 
                 loadFarmRankingScreen();
 
@@ -1112,8 +1111,8 @@ void func_800E1FAC(void) {
         // controller pak load
         case 11:
             
-            if (func_8002CBF8(0x80)) {
-                func_800B5FC4(0, 0xFF, loadGameScreenContext.actionColumnHighlighted);
+            if (checkSpriteRGBAUpdateFinished(0x80)) {
+                setDiaryCursorPosition(0, 0xFF, loadGameScreenContext.actionColumnHighlighted);
                 loadGameScreenContext.action = 2; 
             }
             
@@ -1430,7 +1429,7 @@ void initializeNewGameState(void) {
     houseExtensionConstructionCounter = 0;
     
     chickenFeedQuantity = 0;
-    D_8021E6D0 = 0;
+    gCameraRotationOffset = 0;
     
     gHarvestCoinFinder = 0;
     gFlowerFestivalGoddess = 0;
@@ -1660,7 +1659,7 @@ void initializeNewGameState(void) {
         gFarmAnimals[j].unk_23[5] = 0;
         gFarmAnimals[j].birthdaySeason = 0;
         gFarmAnimals[j].birthdayDayOfMonth = 0;
-        gFarmAnimals[j].normalMilk = 0;
+        gFarmAnimals[j].milkType = 0;
         
     }
     
@@ -1796,7 +1795,7 @@ bool func_800E4424(u8 saveSlot, u8 arg1) {
     gHouseExtensionSelection = buff->houseExtensionSelection;
     houseExtensionConstructionCounter = buff->houseExtensionConstructionCounter;
     chickenFeedQuantity = buff->chickenFeedQuantity;
-    D_8021E6D0 = buff->unk_42;
+    gCameraRotationOffset = buff->unk_42;
 
     gHarvestKing = buff->harvestKing;
     gHarvestCoinFinder = buff->harvestCoinFinder;
@@ -2016,7 +2015,7 @@ bool func_800E4424(u8 saveSlot, u8 arg1) {
         gFarmAnimals[i].unk_23[5] = *((u8*)buff + 0x81B + (i << 5));
         gFarmAnimals[i].birthdaySeason = *((u8*)buff + 0x81C + (i << 5));
         gFarmAnimals[i].birthdayDayOfMonth = *((u8*)buff + 0x81D + (i << 5));
-        gFarmAnimals[i].normalMilk = *((u8*)buff + 0x81E + (i << 5));
+        gFarmAnimals[i].milkType = *((u8*)buff + 0x81E + (i << 5));
     }
 
     row = 0;
@@ -2168,7 +2167,7 @@ bool func_800E53E8(u8 saveSlot) {
     sramBuffer.houseExtensionSelection = gHouseExtensionSelection;
     sramBuffer.houseExtensionConstructionCounter = houseExtensionConstructionCounter;
     sramBuffer.chickenFeedQuantity = chickenFeedQuantity;
-    sramBuffer.unk_42 = D_8021E6D0;
+    sramBuffer.unk_42 = gCameraRotationOffset;
 
     sramBuffer.harvestKing = gHarvestKing;
     sramBuffer.harvestCoinFinder = gHarvestCoinFinder;
@@ -2388,7 +2387,7 @@ bool func_800E53E8(u8 saveSlot) {
         *((u8*)buff + 0x81B + (i << 5)) = gFarmAnimals[i].unk_23[5];
         *((u8*)buff + 0x81C + (i << 5)) = gFarmAnimals[i].birthdaySeason;
         *((u8*)buff + 0x81D + (i << 5)) = gFarmAnimals[i].birthdayDayOfMonth;
-        *((u8*)buff + 0x81E + (i << 5)) = gFarmAnimals[i].normalMilk;
+        *((u8*)buff + 0x81E + (i << 5)) = gFarmAnimals[i].milkType;
     }
 
     row = 0;
@@ -2599,9 +2598,9 @@ void loadFarmRankingScreen(void) {
     func_800E6FB4(0);
 
     // overlay screen rankings sprites
-    func_800B6674();
+    loadFarmRankingsListScreen();
     // update sprite rgba
-    func_800B7B34();
+    fadeInFarmRankingScreen();
 
     setMainLoopCallbackFunctionIndex(FARM_RANKING_SCREEN);
     
@@ -2724,65 +2723,65 @@ void func_800E6C08(u8 arg0) {
 // set up farm ranking screen sprites and message boxes
 void func_800E6FB4(u8 arg0) {
 
-    func_8003DD14(0);
+    deactivateMessageBox(0);
     initializeEmptyMessageBox(0, (u8*)MESSAGE_BOX_1_TEXT_BUFFER);
     setMessageBoxViewSpacePosition(0, -28.0f, 32.0f, 0.0f);
-    func_8003F5D0(0, 10, 2);
-    func_8003F630(0, 0, 2);
-    func_8003F464(0, 14, 14, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
-    func_8003F360(0, -4, 2);
+    setMessageBoxLineAndRowSizes(0, 10, 2);
+    setMessageBoxSpacing(0, 0, 2);
+    setMessageBoxFont(0, 14, 14, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
+    setMessageBoxInterpolationWithFlags(0, -4, 2);
     setMessageBoxSpriteIndices(0, 0xFF, 0, 0);
     setMessageBoxButtonMask(0, BUTTON_A);
-    func_8003FB4C(0, 1);
-    initializeMessageBox(0, 0, 7, 0x80000);
+    setMessageBoxScrollSpeed(0, 1);
+    initializeMessageBox(0, 0, 7, MESSAGE_BOX_MODE_NO_INPUT);
     
-    func_8003DD14(1);
+    deactivateMessageBox(1);
     initializeEmptyMessageBox(1, (u8*)MESSAGE_BOX_2_TEXT_BUFFER);
     setMessageBoxViewSpacePosition(1, -28.0f, 0.0f, 0.0f);
-    func_8003F5D0(1, 10, 2);
-    func_8003F630(1, 0, 2);
-    func_8003F464(1, 14, 14, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
-    func_8003F360(1, -4, 2);
+    setMessageBoxLineAndRowSizes(1, 10, 2);
+    setMessageBoxSpacing(1, 0, 2);
+    setMessageBoxFont(1, 14, 14, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
+    setMessageBoxInterpolationWithFlags(1, -4, 2);
     setMessageBoxSpriteIndices(1, 0xFF, 0, 0);
     setMessageBoxButtonMask(1, BUTTON_A);
-    func_8003FB4C(1, 1);
-    initializeMessageBox(1, 0, 8, 0x80000);
+    setMessageBoxScrollSpeed(1, 1);
+    initializeMessageBox(1, 0, 8, MESSAGE_BOX_MODE_NO_INPUT);
     
-    func_8003DD14(2);
+    deactivateMessageBox(2);
     initializeEmptyMessageBox(2, (u8*)MESSAGE_BOX_3_TEXT_BUFFER);
     setMessageBoxViewSpacePosition(2, -28.0f, -32.0f, 0.0f);
-    func_8003F5D0(2, 10, 2);
-    func_8003F630(2, 0, 2);
-    func_8003F464(2, 14, 14, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
-    func_8003F360(2, -4, 2);
+    setMessageBoxLineAndRowSizes(2, 10, 2);
+    setMessageBoxSpacing(2, 0, 2);
+    setMessageBoxFont(2, 14, 14, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
+    setMessageBoxInterpolationWithFlags(2, -4, 2);
     setMessageBoxSpriteIndices(2, 0xFF, 0, 0);
     setMessageBoxButtonMask(2, BUTTON_A);
-    func_8003FB4C(2, 1);
-    initializeMessageBox(2, 0, 9, 0x80000);
+    setMessageBoxScrollSpeed(2, 1);
+    initializeMessageBox(2, 0, 9, MESSAGE_BOX_MODE_NO_INPUT);
     
-    func_8003DD14(3);
+    deactivateMessageBox(3);
     initializeEmptyMessageBox(3, (u8*)MESSAGE_BOX_4_TEXT_BUFFER);
     setMessageBoxViewSpacePosition(3, -28.0f, -64.0f, 0.0f);
-    func_8003F5D0(3, 10, 2);
-    func_8003F630(3, 0, 2);
-    func_8003F464(3, 14, 14, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
-    func_8003F360(3, -4, 2);
+    setMessageBoxLineAndRowSizes(3, 10, 2);
+    setMessageBoxSpacing(3, 0, 2);
+    setMessageBoxFont(3, 14, 14, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
+    setMessageBoxInterpolationWithFlags(3, -4, 2);
     setMessageBoxSpriteIndices(3, 0xFF, 0, 0);
     setMessageBoxButtonMask(3, BUTTON_A);
-    func_8003FB4C(3, 1);
-    initializeMessageBox(3, 0, 10, 0x80000);
+    setMessageBoxScrollSpeed(3, 1);
+    initializeMessageBox(3, 0, 10, MESSAGE_BOX_MODE_NO_INPUT);
     
-    func_8003DD14(4);
+    deactivateMessageBox(4);
     initializeEmptyMessageBox(4, (u8*)MESSAGE_BOX_5_TEXT_BUFFER);
     setMessageBoxViewSpacePosition(4, -28.0f, -96.0f, 0.0f);
-    func_8003F5D0(4, 10, 2);
-    func_8003F630(4, 0, 2);
-    func_8003F464(4, 14, 14, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
-    func_8003F360(4, -4, 2);
+    setMessageBoxLineAndRowSizes(4, 10, 2);
+    setMessageBoxSpacing(4, 0, 2);
+    setMessageBoxFont(4, 14, 14, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
+    setMessageBoxInterpolationWithFlags(4, -4, 2);
     setMessageBoxSpriteIndices(4, 0xFF, 0, 0);
     setMessageBoxButtonMask(4, BUTTON_A);
-    func_8003FB4C(4, 1);
-    initializeMessageBox(4, 0, 11, 0x80000);
+    setMessageBoxScrollSpeed(4, 1);
+    initializeMessageBox(4, 0, 11, MESSAGE_BOX_MODE_NO_INPUT);
 
     // render percentages
     if (gFarmRankingData.flags[0] & RANKING_FLAG_ACTIVE) {
@@ -2819,11 +2818,11 @@ void func_800E6FB4(u8 arg0) {
         dmaOverlayScreenSprites(9, gFarmRankingData.scores[4], 2, 3);
     }
     
-    func_8003E77C(0, 0, 0, 0, 0);
-    func_8003E77C(1, 0, 0, 0, 0);
-    func_8003E77C(2, 0, 0, 0, 0);
-    func_8003E77C(3, 0, 0, 0, 0);
-    func_8003E77C(4, 0, 0, 0, 0);
+    setMessageBoxRGBA(0, 0, 0, 0, 0);
+    setMessageBoxRGBA(1, 0, 0, 0, 0);
+    setMessageBoxRGBA(2, 0, 0, 0, 0);
+    setMessageBoxRGBA(3, 0, 0, 0, 0);
+    setMessageBoxRGBA(4, 0, 0, 0, 0);
 
     setOverlayScreenSpritesRGBA(0, 0, 0, 0, 0);
     setOverlayScreenSpritesRGBA(1, 0, 0, 0, 0);
@@ -2838,11 +2837,11 @@ void func_800E6FB4(u8 arg0) {
     
     if (arg0 == 0) {
         
-        func_8003EA1C(0, 0xFF, 0xFF, 0xFF, 0xFF, 24);
-        func_8003EA1C(1, 0xFF, 0xFF, 0xFF, 0xFF, 24);
-        func_8003EA1C(2, 0xFF, 0xFF, 0xFF, 0xFF, 24);
-        func_8003EA1C(3, 0xFF, 0xFF, 0xFF, 0xFF, 24);
-        func_8003EA1C(4, 0xFF, 0xFF, 0xFF, 0xFF, 24);
+        setMessageBoxRGBAWithTransition(0, 0xFF, 0xFF, 0xFF, 0xFF, 24);
+        setMessageBoxRGBAWithTransition(1, 0xFF, 0xFF, 0xFF, 0xFF, 24);
+        setMessageBoxRGBAWithTransition(2, 0xFF, 0xFF, 0xFF, 0xFF, 24);
+        setMessageBoxRGBAWithTransition(3, 0xFF, 0xFF, 0xFF, 0xFF, 24);
+        setMessageBoxRGBAWithTransition(4, 0xFF, 0xFF, 0xFF, 0xFF, 24);
         func_8004635C(0, 0xFF, 0xFF, 0xFF, 0xFF, 24);
 
         func_8004635C(1, 0xFF, 0xFF, 0xFF, 0xFF, 24);
@@ -2857,11 +2856,11 @@ void func_800E6FB4(u8 arg0) {
         
     } else {
         
-        func_8003E77C(0, 0xFF, 0xFF, 0xFF, 0xFF);
-        func_8003E77C(1, 0xFF, 0xFF, 0xFF, 0xFF);
-        func_8003E77C(2, 0xFF, 0xFF, 0xFF, 0xFF);
-        func_8003E77C(3, 0xFF, 0xFF, 0xFF, 0xFF);
-        func_8003E77C(4, 0xFF, 0xFF, 0xFF, 0xFF);
+        setMessageBoxRGBA(0, 0xFF, 0xFF, 0xFF, 0xFF);
+        setMessageBoxRGBA(1, 0xFF, 0xFF, 0xFF, 0xFF);
+        setMessageBoxRGBA(2, 0xFF, 0xFF, 0xFF, 0xFF);
+        setMessageBoxRGBA(3, 0xFF, 0xFF, 0xFF, 0xFF);
+        setMessageBoxRGBA(4, 0xFF, 0xFF, 0xFF, 0xFF);
 
         setOverlayScreenSpritesRGBA(0, 0xFF, 0xFF, 0xFF, 0xFF);
         setOverlayScreenSpritesRGBA(1, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -2889,84 +2888,84 @@ void func_800E80AC(u8 arg0) {
     setGameVariableString(9, (u8*)&gFarmRankingData.farmNames[arg0 + 28], 6);
     setGameVariableString(10, (u8*)&gFarmRankingData.farmNames[arg0 + 35], 6);
 
-    func_8003DD14(0);
+    deactivateMessageBox(0);
     initializeEmptyMessageBox(0, (u8*)MESSAGE_BOX_1_TEXT_BUFFER);
     setMessageBoxViewSpacePosition(0, -28.0f, 72.0f, 0.0f);
-    func_8003F5D0(0, 0xA, 2);
-    func_8003F630(0, 0, 2);
-    func_8003F464(0, 0xE, 0xE, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
-    func_8003F360(0, -4, 2);
+    setMessageBoxLineAndRowSizes(0, 0xA, 2);
+    setMessageBoxSpacing(0, 0, 2);
+    setMessageBoxFont(0, 0xE, 0xE, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
+    setMessageBoxInterpolationWithFlags(0, -4, 2);
 
     setMessageBoxSpriteIndices(0, 0xFF, 0, 0);
     setMessageBoxButtonMask(0, 0x8000);
-    func_8003FB4C(0, 1);
-    initializeMessageBox(0, 0, 0xC, 0x80000);
-    func_8003DD14(1);
+    setMessageBoxScrollSpeed(0, 1);
+    initializeMessageBox(0, 0, 0xC, MESSAGE_BOX_MODE_NO_INPUT);
+    deactivateMessageBox(1);
     initializeEmptyMessageBox(1, (u8*)MESSAGE_BOX_2_TEXT_BUFFER);
     setMessageBoxViewSpacePosition(1, -40.0f, 40.0f, 0.0f);
-    func_8003F5D0(1, 0xA, 2);
-    func_8003F630(1, 0, 2);
-    func_8003F464(1, 0xE, 0xE, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
-    func_8003F360(1, -4, 2);
+    setMessageBoxLineAndRowSizes(1, 0xA, 2);
+    setMessageBoxSpacing(1, 0, 2);
+    setMessageBoxFont(1, 0xE, 0xE, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
+    setMessageBoxInterpolationWithFlags(1, -4, 2);
     setMessageBoxSpriteIndices(1, 0xFF, 0, 0);
     setMessageBoxButtonMask(1, 0x8000);
-    func_8003FB4C(1, 1);
-    initializeMessageBox(1, 0, 0xD, 0x80000);
+    setMessageBoxScrollSpeed(1, 1);
+    initializeMessageBox(1, 0, 0xD, MESSAGE_BOX_MODE_NO_INPUT);
 
     if (gFarmRankingData.flags[arg0] & 2) {
         
-        func_8003DD14(2);
+        deactivateMessageBox(2);
         initializeEmptyMessageBox(2, (u8*)MESSAGE_BOX_3_TEXT_BUFFER);
         setMessageBoxViewSpacePosition(2, -40.0f, 24.0f, 0.0f);
-        func_8003F5D0(2, 0xA, 2);
-        func_8003F630(2, 0, 2);
-        func_8003F464(2, 0xE, 0xE, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
-        func_8003F360(2, -4, 2);
+        setMessageBoxLineAndRowSizes(2, 0xA, 2);
+        setMessageBoxSpacing(2, 0, 2);
+        setMessageBoxFont(2, 0xE, 0xE, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
+        setMessageBoxInterpolationWithFlags(2, -4, 2);
         setMessageBoxSpriteIndices(2, 0xFF, 0, 0);
         setMessageBoxButtonMask(2, 0x8000);
-        func_8003FB4C(2, 1);
-        initializeMessageBox(2, 0, 0xE, 0x80000);
+        setMessageBoxScrollSpeed(2, 1);
+        initializeMessageBox(2, 0, 0xE, MESSAGE_BOX_MODE_NO_INPUT);
     
     }
 
     if (gFarmRankingData.flags[arg0] & 4) {
-        func_8003DD14(3);
+        deactivateMessageBox(3);
         initializeEmptyMessageBox(3, (u8*)MESSAGE_BOX_4_TEXT_BUFFER);
         setMessageBoxViewSpacePosition(3, -40.0f, 8.0f, 0.0f);
-        func_8003F5D0(3, 0xA, 2);
-        func_8003F630(3, 0, 2);
-        func_8003F464(3, 0xE, 0xE, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
-        func_8003F360(3, -4, 2);
+        setMessageBoxLineAndRowSizes(3, 0xA, 2);
+        setMessageBoxSpacing(3, 0, 2);
+        setMessageBoxFont(3, 0xE, 0xE, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
+        setMessageBoxInterpolationWithFlags(3, -4, 2);
         setMessageBoxSpriteIndices(3, 0xFF, 0, 0);
         setMessageBoxButtonMask(3, 0x8000);
-        func_8003FB4C(3, 1);
-        initializeMessageBox(3, 0, 0xF, 0x80000);
+        setMessageBoxScrollSpeed(3, 1);
+        initializeMessageBox(3, 0, 0xF, MESSAGE_BOX_MODE_NO_INPUT);
     }
     
-    func_8003DD14(4);
+    deactivateMessageBox(4);
     initializeEmptyMessageBox(4, (u8*)MESSAGE_BOX_5_TEXT_BUFFER);
     setMessageBoxViewSpacePosition(4, -40.0f, -8.0f, 0.0f);
-    func_8003F5D0(4, 0xA, 2);
-    func_8003F630(4, 0, 2);
-    func_8003F464(4, 0xE, 0xE, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
-    func_8003F360(4, -4, 2);
+    setMessageBoxLineAndRowSizes(4, 0xA, 2);
+    setMessageBoxSpacing(4, 0, 2);
+    setMessageBoxFont(4, 0xE, 0xE, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
+    setMessageBoxInterpolationWithFlags(4, -4, 2);
     setMessageBoxSpriteIndices(4, 0xFF, 0, 0);
     setMessageBoxButtonMask(4, 0x8000);
-    func_8003FB4C(4, 1);
-    initializeMessageBox(4, 0, 0x10, 0x80000);
+    setMessageBoxScrollSpeed(4, 1);
+    initializeMessageBox(4, 0, 0x10, MESSAGE_BOX_MODE_NO_INPUT);
 
     if (gFarmRankingData.flags[arg0] & 8) {
-        func_8003DD14(5);
+        deactivateMessageBox(5);
         initializeEmptyMessageBox(5, (u8*)MESSAGE_BOX_6_TEXT_BUFFER);
         setMessageBoxViewSpacePosition(5, -40.0f, -24.0f, 0.0f);
-        func_8003F5D0(5, 0xA, 2);
-        func_8003F630(5, 0, 2);
-        func_8003F464(5, 0xE, 0xE, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
-        func_8003F360(5, -4, 2);
+        setMessageBoxLineAndRowSizes(5, 0xA, 2);
+        setMessageBoxSpacing(5, 0, 2);
+        setMessageBoxFont(5, 0xE, 0xE, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
+        setMessageBoxInterpolationWithFlags(5, -4, 2);
         setMessageBoxSpriteIndices(5, 0xFF, 0, 0);
         setMessageBoxButtonMask(5, 0x8000);
-        func_8003FB4C(5, 1);
-        initializeMessageBox(5, 0, 0x11, 0x80000);
+        setMessageBoxScrollSpeed(5, 1);
+        initializeMessageBox(5, 0, 0x11, MESSAGE_BOX_MODE_NO_INPUT);
     }
     
     setOverlayScreenSprites(0, 0x89, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, (u8*)FARM_RANKINGS_TEXTURE_BUFFER, (u16*)FARM_RANKINGS_PALETTE_BUFFER, (AnimationFrameMetadata*)FARM_RANKINGS_ANIMATION_FRAME_METADATA_BUFFER, (u32*)FARM_RANKINGS_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 4, 0, 48.0f, 80.0f, 16.0f, 0xA);
@@ -3002,12 +3001,12 @@ void func_800E80AC(u8 arg0) {
     setOverlayScreenSprites(0xA, 0x9E, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, (u8*)FARM_RANKINGS_TEXTURE_BUFFER, (u16*)FARM_RANKINGS_PALETTE_BUFFER, (AnimationFrameMetadata*)FARM_RANKINGS_ANIMATION_FRAME_METADATA_BUFFER, (u32*)FARM_RANKINGS_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 4, 0, 98.0f, -78.0f, 16.0f, 0xA);
     dmaOverlayScreenSprites(0xA, gFarmRankingData.gold[arg0], 5, 3);
 
-    func_8003E77C(0, 0xFF, 0xFF, 0xFF, 0xFF);
-    func_8003E77C(1, 0xFF, 0xFF, 0xFF, 0xFF);
-    func_8003E77C(2, 0xFF, 0xFF, 0xFF, 0xFF);
-    func_8003E77C(3, 0xFF, 0xFF, 0xFF, 0xFF);
-    func_8003E77C(4, 0xFF, 0xFF, 0xFF, 0xFF);
-    func_8003E77C(5, 0xFF, 0xFF, 0xFF, 0xFF);
+    setMessageBoxRGBA(0, 0xFF, 0xFF, 0xFF, 0xFF);
+    setMessageBoxRGBA(1, 0xFF, 0xFF, 0xFF, 0xFF);
+    setMessageBoxRGBA(2, 0xFF, 0xFF, 0xFF, 0xFF);
+    setMessageBoxRGBA(3, 0xFF, 0xFF, 0xFF, 0xFF);
+    setMessageBoxRGBA(4, 0xFF, 0xFF, 0xFF, 0xFF);
+    setMessageBoxRGBA(5, 0xFF, 0xFF, 0xFF, 0xFF);
     
     setOverlayScreenSpritesRGBA(0, 0xFF, 0xFF, 0xFF, 0xFF);
     setOverlayScreenSpritesRGBA(1, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -3023,10 +3022,10 @@ void func_800E80AC(u8 arg0) {
     
 }
 
-// INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800E8F08);
+// INCLUDE_ASM("asm/nonmatchings/game/gameFile", farmRankingScreenCallback);
 
 // farm ranking screen main loop callback
-void func_800E8F08(void) {
+void farmRankingScreenCallback(void) {
 
     bool set = FALSE;
 
@@ -3034,8 +3033,8 @@ void func_800E8F08(void) {
 
         case 0:
             
-            if (func_8002CBF8(0x80)) {
-                func_800B7F6C(gFarmRankingData.cursorIndex);
+            if (checkSpriteRGBAUpdateFinished(0x80)) {
+                setFarmRankingCursorPosition(gFarmRankingData.cursorIndex);
                 gFarmRankingData.screenState = 1;
             }
             
@@ -3069,7 +3068,7 @@ void func_800E8F08(void) {
                 
             }
 
-            func_800B7F6C(gFarmRankingData.cursorIndex);
+            setFarmRankingCursorPosition(gFarmRankingData.cursorIndex);
             
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A) && !set) {
                 
@@ -3088,11 +3087,11 @@ void func_800E8F08(void) {
                     deactivateSprite(0xB1);
                     deactivateSprite(0xB2);
                     
-                    func_8003DD14(0);
-                    func_8003DD14(1);
-                    func_8003DD14(2);
-                    func_8003DD14(3);
-                    func_8003DD14(4);
+                    deactivateMessageBox(0);
+                    deactivateMessageBox(1);
+                    deactivateMessageBox(2);
+                    deactivateMessageBox(3);
+                    deactivateMessageBox(4);
                     
                     deactivateOverlayScreenSprites(0);
                     deactivateOverlayScreenSprites(1);
@@ -3118,13 +3117,13 @@ void func_800E8F08(void) {
                 
                 deactivateSprite(0x79);
                 
-                func_800B7CB4();
+                fadeOutFarmRankingScreen();
 
-                func_8003EA1C(0, 0, 0, 0, 0, 24);
-                func_8003EA1C(1, 0, 0, 0, 0, 24);
-                func_8003EA1C(2, 0, 0, 0, 0, 24);
-                func_8003EA1C(3, 0, 0, 0, 0, 24);
-                func_8003EA1C(4, 0, 0, 0, 0, 24);
+                setMessageBoxRGBAWithTransition(0, 0, 0, 0, 0, 24);
+                setMessageBoxRGBAWithTransition(1, 0, 0, 0, 0, 24);
+                setMessageBoxRGBAWithTransition(2, 0, 0, 0, 0, 24);
+                setMessageBoxRGBAWithTransition(3, 0, 0, 0, 0, 24);
+                setMessageBoxRGBAWithTransition(4, 0, 0, 0, 0, 24);
                 func_8004635C(0, 0, 0, 0, 0, 24);
                 func_8004635C(1, 0, 0, 0, 0, 24);
                 func_8004635C(2, 0, 0, 0, 0, 24);
@@ -3145,7 +3144,7 @@ void func_800E8F08(void) {
 
         case 2:
             func_800E80AC(gFarmRankingData.cursorIndex);
-            func_800B7070(gFarmRankingData.cursorIndex);
+            loadIndividualRankingScreen(gFarmRankingData.cursorIndex);
             gFarmRankingData.screenState = 3;
             break;
 
@@ -3165,12 +3164,12 @@ void func_800E8F08(void) {
                 deactivateSprite(0xB1);
                 deactivateSprite(0xB2);
                 
-                func_8003DD14(0);
-                func_8003DD14(1);
-                func_8003DD14(2);
-                func_8003DD14(3);
-                func_8003DD14(4);
-                func_8003DD14(5);
+                deactivateMessageBox(0);
+                deactivateMessageBox(1);
+                deactivateMessageBox(2);
+                deactivateMessageBox(3);
+                deactivateMessageBox(4);
+                deactivateMessageBox(5);
                 
                 deactivateOverlayScreenSprites(0);
                 deactivateOverlayScreenSprites(1);
@@ -3193,25 +3192,25 @@ void func_800E8F08(void) {
         
         case 4:
             func_800E6FB4(1);
-            func_800B6674();
-            func_800B7E28();
+            loadFarmRankingsListScreen();
+            setFarmRankingScreenFullAlpha();
 
             gFarmRankingData.screenState = 1;
             break;
 
         case 5:
             
-            if (func_8002CBF8(0x80)) {
+            if (checkSpriteRGBAUpdateFinished(0x80)) {
                 
-                func_800B2CE0();
+                closeOverlayScreen();
                 
                 deactivateSprite(0x80);
                 
-                func_8003DD14(0);
-                func_8003DD14(1);
-                func_8003DD14(2);
-                func_8003DD14(3);
-                func_8003DD14(4);
+                deactivateMessageBox(0);
+                deactivateMessageBox(1);
+                deactivateMessageBox(2);
+                deactivateMessageBox(3);
+                deactivateMessageBox(4);
                 
                 deactivateOverlayScreenSprites(0);
                 deactivateOverlayScreenSprites(1);
@@ -3880,7 +3879,7 @@ void func_800EB788(u8 arg0) {
 // INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800EBA90);
 
 void func_800EBA90(u8 arg0) {
-    gFarmRankingData.recipeCount[arg0] = func_80065518();
+    gFarmRankingData.recipeCount[arg0] = getAcquiredRecipesTotal();
 }
 
 // INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800EBAC8);

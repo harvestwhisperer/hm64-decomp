@@ -4,12 +4,12 @@
 #include "common.h"
 
 extern inline void func_80055F08(u16 cutsceneIndex, u16 exitIndex, u8 arg2);
-extern void func_80056030(u8);
-extern void func_80059300(void);
-extern void func_80059334();    
+extern void loadLevel(u8);
+extern void resumeGameplay(void);
+extern void pauseGameplay();    
 extern void initializeEntityInstances(u8);
-extern void func_80059368(void);
-extern void func_800593EC();   
+extern void exitOverlayScreen(void);
+extern void openOverlayScreen();   
 
 extern void startNewDay(void);
 extern void mainGameLoopCallback(void);

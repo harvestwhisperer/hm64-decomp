@@ -3,6 +3,7 @@
 #include "system/overlayScreenSprites.h"
 
 #include "system/globalSprites.h"
+#include "system/sprite.h"
 
 // bss
 OverlayScreenSprite overlayScreenSprites[MAX_PAUSE_SCREEN_SPRITES];
@@ -327,12 +328,12 @@ bool func_80046650(u16 spriteIndex, u8 arg1, u8 arg2) {
             setSpriteScale(tempIndex, 1.0f, 1.0f, 1.0f);
             setSpriteRotation(tempIndex, 0, 0, 0);
             
-            func_8002C680(tempIndex, 2, 2);
+            setSpriteAnchorAlignment(tempIndex, SPRITE_ANCHOR_CENTER, SPRITE_ANCHOR_CENTER);;
 
             if (overlayScreenSprites[spriteIndex].flags & 4) {
-                setSpriteRenderingLayer(tempIndex, (1 | 2));
+                setSpriteBlendMode(tempIndex, SPRITE_BLEND_ALPHA_DECAL);
             } else {
-                setSpriteRenderingLayer(tempIndex, 2);
+                setSpriteBlendMode(tempIndex, SPRITE_BLEND_ALPHA_MODULATED);
             }
 
             startSpriteAnimation(tempIndex, overlayScreenSprites[spriteIndex].animationIndex, overlayScreenSprites[spriteIndex].animationBaseFrame + arg1);

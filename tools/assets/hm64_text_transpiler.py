@@ -67,7 +67,8 @@ class TextEncoder:
         if not text.strip():
             return b'\x00\x00\x00\x00'
 
-        # Check for [RAWBYTES:hex] directive for junk data - bypasses compression entirely
+        # Check for [RAWBYTES:hex] directive - bypasses compression entirely
+        # Used for mid-stream loaded segments that shouldn't have control bytes
         rawbytes_match = RAWBYTES_PATTERN.match(text.strip())
         if rawbytes_match:
             hex_string = rawbytes_match.group(1)

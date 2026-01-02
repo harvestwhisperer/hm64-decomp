@@ -343,7 +343,7 @@ bool deactivateCutsceneExecutor(u16 index) {
         }
 
         if (cutsceneExecutors[index].flags & CUTSCENE_MAP_ASSET) {
-            func_8003C504(cutsceneExecutors[index].assetIndex);
+            unloadMapAssets(cutsceneExecutors[index].assetIndex);
         }
         
         result = TRUE;
@@ -420,9 +420,9 @@ void pauseAllCutsceneExecutors(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/cutscene", func_80046CF4);
+//INCLUDE_ASM("asm/nonmatchings/system/cutscene", resumeCutsceneExecutors);
 
-void func_80046CF4(void) {
+void resumeCutsceneExecutors(void) {
 
     u16 i = 0;
     u16 j;
@@ -633,7 +633,7 @@ label:
     
         if (cutsceneExecutors[index].animationFrameCounter == 0xFF) {
     
-            if (func_8002BCC8(cutsceneExecutors[index].assetIndex) && !(cutsceneExecutors[index].flags & 4)) {
+            if (getSpriteAnimationStateChangedFlag(cutsceneExecutors[index].assetIndex) && !(cutsceneExecutors[index].flags & 4)) {
                 cutsceneExecutors[index].animationFrameCounter = 0;
             } 
             
@@ -837,9 +837,9 @@ setMovementVector:
         }     
 end:
     if (cutsceneExecutors[index].cameraFlags & 1) {
-        func_8002FF38(cutsceneExecutors[index].assetIndex, TRUE);
+        setCameraTrackingEntity(cutsceneExecutors[index].assetIndex, TRUE);
     } else {
-        func_8002FF38(cutsceneExecutors[index].assetIndex, FALSE);
+        setCameraTrackingEntity(cutsceneExecutors[index].assetIndex, FALSE);
     }
 
 }
@@ -1709,7 +1709,7 @@ void func_8004910C(u16 index) {
     cutsceneExecutors[index].bytecodePtr += 2;
 
     if (cutsceneExecutors[index].flags & CUTSCENE_MAP_ASSET) {
-        func_8003C084(cutsceneExecutors[index].assetIndex, cutsceneExecutors[index].entityDirectionOrMapRotation);
+        setInitialMapRotation(cutsceneExecutors[index].assetIndex, cutsceneExecutors[index].entityDirectionOrMapRotation);
     }
 
     if (cutsceneExecutors[index].flags & CUTSCENE_ENTITY_ASSET) {
@@ -1731,8 +1731,8 @@ void func_80049228(u16 index) {
 
     cutsceneExecutors[index].bytecodePtr += 2;
 
-    func_8003C1E0(cutsceneExecutors[index].assetIndex, mapControllers[cutsceneExecutors[index].assetIndex].viewPosition.x, mapControllers[cutsceneExecutors[index].assetIndex].viewPosition.y, mapControllers[cutsceneExecutors[index].assetIndex].viewPosition.z, 8, 8);
-    func_8003BD60(cutsceneExecutors[index].assetIndex);
+    setMapViewPositionAndCurrentTile(cutsceneExecutors[index].assetIndex, mapControllers[cutsceneExecutors[index].assetIndex].viewPosition.x, mapControllers[cutsceneExecutors[index].assetIndex].viewPosition.y, mapControllers[cutsceneExecutors[index].assetIndex].viewPosition.z, 8, 8);
+    enableMapController(cutsceneExecutors[index].assetIndex);
     setMainMapIndex(cutsceneExecutors[index].assetIndex);
 
     cutsceneExecutors[index].flags |= 0x10;
@@ -1808,7 +1808,7 @@ void func_800495F0(u16 index) {
     
     cutsceneExecutors[index].bytecodePtr += 2;
 
-    func_8003C5C0(mapIndex, arg1, rotation);
+    startMapRotation(mapIndex, arg1, rotation);
     
 }
 
@@ -1959,7 +1959,7 @@ void func_80049A28(u16 index) {
 
     messageBoxes[messageBoxIndex].flags &= ~0x8000;
 
-    func_8003F130(messageBoxIndex);
+    resetMessageBoxAnimation(messageBoxIndex);
     
 }
 
@@ -2099,7 +2099,7 @@ void cutsceneHandlerTogglePauseEntity(u16 index) {
 
     cutsceneExecutors[index].bytecodePtr += 2;
     
-    func_8002FC38(entityIndex);
+    unpauseEntity(entityIndex);
     
 }
 
@@ -2282,10 +2282,10 @@ void cutsceneHandlerSetRGBA(u16 index) {
 
     if (r == 0xFE && g == 0xFE && b == 0xFE && a == 0xFE) {
 
-        r = D_802373F8.r;
-        g = D_802373F8.g;
-        b = D_802373F8.b;
-        a = D_802373F8.a;
+        r = currentMapLightingRGBA.r;
+        g = currentMapLightingRGBA.g;
+        b = currentMapLightingRGBA.b;
+        a = currentMapLightingRGBA.a;
 
     }
 
@@ -2296,7 +2296,7 @@ void cutsceneHandlerSetRGBA(u16 index) {
         setEntityColor(cutsceneExecutors[index].assetIndex, r, g, b, a);
     }
     if (cutsceneExecutors[index].flags & CUTSCENE_MAP_ASSET) {
-        func_8003BE98(cutsceneExecutors[index].assetIndex, r, g, b, a);
+        setMapControllerRGBA(cutsceneExecutors[index].assetIndex, r, g, b, a);
     }
     
 }
@@ -2332,10 +2332,10 @@ void cutsceneHandlerUpdateRGBA(u16 index) {
 
     if (r == 0xFE && g == 0xFE && b == 0xFE && a == 0xFE) {
 
-        r = D_8013D248.r;
-        g = D_8013D248.g;
-        b = D_8013D248.b;
-        a = D_8013D248.a;
+        r = targetMapLightingRGBA.r;
+        g = targetMapLightingRGBA.g;
+        b = targetMapLightingRGBA.b;
+        a = targetMapLightingRGBA.a;
 
         rate = D_8017045A;
         
@@ -2348,7 +2348,7 @@ void cutsceneHandlerUpdateRGBA(u16 index) {
         updateEntityRGBA(cutsceneExecutors[index].assetIndex, r, g, b, a, rate);
     }
     if (cutsceneExecutors[index].flags & CUTSCENE_MAP_ASSET) {
-        func_8003BF7C(cutsceneExecutors[index].assetIndex, r, g, b, a, rate);
+        setMapControllerRGBAWithTransition(cutsceneExecutors[index].assetIndex, r, g, b, a, rate);
     }
     
 }
@@ -2453,7 +2453,7 @@ void func_8004ACE4(u16 index) {
     
     cutsceneExecutors[index].bytecodePtr += 2;
 
-    func_8003C504(mapIndex);
+    unloadMapAssets(mapIndex);
 
 }
 
@@ -2490,10 +2490,10 @@ void cutsceneHandlerUpdateGlobalRGBA(u16 index) {
 
     if (r == 0xFE && g == 0xFE && b == 0xFE && a == 0xFE) {
 
-        r = D_8013D248.r;
-        g = D_8013D248.g;
-        b = D_8013D248.b;
-        a = D_8013D248.a;
+        r = targetMapLightingRGBA.r;
+        g = targetMapLightingRGBA.g;
+        b = targetMapLightingRGBA.b;
+        a = targetMapLightingRGBA.a;
 
         rate = D_8017045A;
         
@@ -2504,7 +2504,7 @@ void cutsceneHandlerUpdateGlobalRGBA(u16 index) {
    }
 
     for (i = 0; i < MAX_MAPS; i++) {
-        func_8003BF7C(i, r, g, b, a, rate);
+        setMapControllerRGBAWithTransition(i, r, g, b, a, rate);
     }
     
 }
@@ -2524,7 +2524,7 @@ void cutsceneHandlerDeactivateMapControllers(u16 index) {
     
     cutsceneExecutors[index].bytecodePtr += 4;
     // deactivate all map controllers
-    func_8003C570();
+    deactivateAllMapControllers();
 
 }
 
@@ -2536,7 +2536,7 @@ void func_8004B0E8(u16 index) {
     
     if (cutsceneExecutors[index].flags & CUTSCENE_SPRITE_ASSET) {
 
-        if (func_8002CBF8(cutsceneExecutors[index].assetIndex)) {
+        if (checkSpriteRGBAUpdateFinished(cutsceneExecutors[index].assetIndex)) {
             cutsceneExecutors[index].bytecodePtr += 2;
         } else {
             cutsceneExecutors[index].waitFrames = 1;
@@ -2546,7 +2546,7 @@ void func_8004B0E8(u16 index) {
     }
 
     if (cutsceneExecutors[index].flags & CUTSCENE_ENTITY_ASSET) {
-        if (func_8002CBF8(entities[cutsceneExecutors[index].assetIndex].globalSpriteIndex)) {
+        if (checkSpriteRGBAUpdateFinished(entities[cutsceneExecutors[index].assetIndex].globalSpriteIndex)) {
             cutsceneExecutors[index].bytecodePtr += 2;
         } else {
             cutsceneExecutors[index].waitFrames = 1;
@@ -2668,7 +2668,7 @@ void func_8004B538(u16 index) {
 
     cutsceneExecutors[index].bytecodePtr += 4;
 
-    if (dialogues[dialoguesIndex].sessionManager.unk_17 == unk) {
+    if (dialogues[dialoguesIndex].sessionManager.selectedMenuRow == unk) {
 
         cutsceneExecutors[index].returnPtr = cutsceneExecutors[index].bytecodePtr + 4;
         cutsceneExecutors[index].bytecodePtr += *(s16*)cutsceneExecutors[index].bytecodePtr;
@@ -3001,7 +3001,7 @@ void cutsceneHandlerSetSpriteRenderngLayer(u16 index) {
     cutsceneExecutors[index].bytecodePtr += 2;
 
     if (cutsceneExecutors[index].flags & CUTSCENE_SPRITE_ASSET) {
-        setSpriteRenderingLayer(cutsceneExecutors[index].assetIndex, renderingLayerFlags);
+        setSpriteBlendMode(cutsceneExecutors[index].assetIndex, renderingLayerFlags);
     }
     
 }
@@ -3054,7 +3054,7 @@ void func_8004C0D0(u16 index) {
     cutsceneExecutors[index].bytecodePtr += 4;
 
     // initialize mapAdditions struct
-    func_80038990(0, mapAdditionIndex, flag);
+    activateMapAddition(MAIN_MAP_INDEX, mapAdditionIndex, flag);
 
 }
 
@@ -3461,7 +3461,7 @@ void cutsceneHandlerUpdateMessageBoxRGBA(u16 index) {
 
     cutsceneExecutors[index].bytecodePtr += 4;
     
-    func_8003EA1C(messageBoxIndex, r, g, b, a, flags);
+    setMessageBoxRGBAWithTransition(messageBoxIndex, r, g, b, a, flags);
     
 }
 
@@ -3479,7 +3479,7 @@ void func_8004CA80(u16 index) {
 
     cutsceneExecutors[index].bytecodePtr += 2;
 
-    if (!func_8003EFD8(messageBoxIndex)) {
+    if (!checkMessageBoxRGBAComplete(messageBoxIndex)) {
 
         cutsceneExecutors[index].waitFrames = 1;
         cutsceneExecutors[index].bytecodePtr -= 4;
@@ -3591,6 +3591,6 @@ void func_8004CCF0(u16 index) {
 
     cutsceneExecutors[index].bytecodePtr += 2;
     
-    func_8003F360(messageBoxIndex, rate, flag);
+    setMessageBoxInterpolationWithFlags(messageBoxIndex, rate, flag);
     
 }

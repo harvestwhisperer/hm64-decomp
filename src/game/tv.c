@@ -10,6 +10,7 @@
 #include "system/mapController.h"
 #include "system/math.h"
 #include "system/message.h"
+#include "system/sprite.h"
 
 #include "game/game.h"
 #include "game/gameAudio.h"
@@ -36,7 +37,7 @@ TVContext tvContext;
     do {                                  \
         if (set) break; \
         tvContext.channelIndex = channel;                        \
-        func_800B3A60();                       \
+        updateTVCButtonsByChannel();                       \
         func_800D8540();    \
         playSfx(TV_OFF_SFX); \
         set = TRUE; \
@@ -46,7 +47,7 @@ TVContext tvContext;
     do { \
         if (set) break; \
         deactivateMapObject(MAIN_MAP_INDEX, 9); \
-        func_800B2CE0(); \
+        closeOverlayScreen(); \
         setMainLoopCallbackFunctionIndex(MAIN_GAME); \
         playSfx(TV_OFF_SFX); \
     } while(0)
@@ -54,7 +55,7 @@ TVContext tvContext;
 // alternate static inline version
 static inline bool changeChannel(u8 channelIndex) {
     tvContext.channelIndex = channelIndex;
-    func_800B3A60();
+    updateTVCButtonsByChannel();
     func_800D8540();
     playSfx(TV_OFF_SFX);
     return TRUE;
@@ -74,7 +75,7 @@ void func_800D8540(void) {
 
     setSpriteScale(TV_CONTENT, 2.0f, 2.0f, 1.0f);
     setSpriteRotation(TV_CONTENT, 45.0f, -45.0f, 0.0f);
-    setSpriteRenderingLayer(TV_CONTENT, 3);
+    setSpriteBlendMode(TV_CONTENT, SPRITE_BLEND_ALPHA_DECAL);
     setSpriteColor(TV_CONTENT, 0xFF, 0xFF, 0xFF, 0xFF);
     
     setMapObject(MAIN_MAP_INDEX, 9, TV_CONTENT, tvContext.pictureIndex, -12.0f, 36.0f, -154.0f, 0xFF, 0xFE, 0, 0);
@@ -681,7 +682,7 @@ void setTVPictureIndex(void) {
 //                 // set up dialogue box
 //                 setMessageBoxViewSpacePosition(0, 0, -64.0f, 352.0f);
 //                 setMessageBoxSpriteIndices(0, 1, 0, 0);
-//                 func_8003F360(0, -4, 0);
+//                 setMessageBoxInterpolationWithFlags(0, -4, 0);
 //                 initializeMessageBox(MAIN_MESSAGE_BOX_INDEX, 8, tvContext.dialogueIndex, 0);
 
 //                 tvContext.mode++;
@@ -731,7 +732,7 @@ void setTVPictureIndex(void) {
 //             if (checkButtonPressed(CONTROLLER_1, BUTTON_B)) {
 //                 if (!set) {
 //                     deactivateMapObject(MAIN_MAP_INDEX, 9);
-//                     func_800B2CE0();
+//                     closeOverlayScreen();
 //                     setMainLoopCallbackFunctionIndex(MAIN_GAME);
 //                     playSfx(TV_OFF_SFX);
 //                 }
@@ -753,7 +754,7 @@ void tvMainLoopCallback(void) {
                 
                 setMessageBoxViewSpacePosition(0, 0, -64.0f, 352.0f);
                 setMessageBoxSpriteIndices(0, 1, 0, 0);
-                func_8003F360(0, -4, 0);
+                setMessageBoxInterpolationWithFlags(0, -4, 0);
                 initializeMessageBox(MAIN_MESSAGE_BOX_INDEX, 8, tvContext.dialogueIndex, 0);
 
                 tvContext.mode++;

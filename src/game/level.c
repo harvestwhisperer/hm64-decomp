@@ -6,9 +6,11 @@
 
 #include "system/entity.h"
 #include "system/globalSprites.h"
+#include "system/graphic.h"
 #include "system/map.h"
 #include "system/memory.h"
 #include "system/mapController.h"
+#include "system/sprite.h"
 
 #include "game/animals.h"
 #include "game/cutscenes.h"      
@@ -39,28 +41,25 @@ u8 gEntranceIndex;
 u8 gBaseMapIndex;
 u8 gMapWithSeasonIndex;
 // global rotation
-u8 D_8021E6D0;
+u8 gCameraRotationOffset;
 
 // data
-// rotations for map controller
-u8 D_80114280[] = {
-    0x7, 0x7, 0x7, 0x7, 0x7, 0x7, 0x7, 0x7,
-    0x7, 0x7, 0x7, 0x7, 0x7, 0x7, 0x7, 0x7,
-    0x7, 0x7, 0x7, 0x7, 0x7, 0x7, 0x7, 0x7,
-    0x7, 0x7, 0x7, 0x7, 0x7, 0x7, 0x7, 0x7,
-    0x7, 0x7, 0x7, 0x7, 0x7, 0x7, 0x7, 0x7,
-    0x7, 0x7, 0x7, 0x7, 0x7, 0x7, 0x7, 0x7,
-    0x7, 0x7, 0x7, 0x7, 0x7, 0x7, 0x7, 0x7,
-    0x7, 0x7, 0x7, 0x7, 0x7, 0x7, 0x7, 0x7,
-    0x7, 0x7, 0x7, 0x7, 0x7, 0x7, 0x7, 0x7,
-    0x7, 0x7, 0x7, 0x7, 0x7, 0x7, 0x7, 0x7,
-    0x7, 0x7, 0x7, 0x7, 0x7, 0x7, 0x7, 0x7,
-    0x7, 0x7, 0x7, 0x7, 0, 0, 0, 0
+u8 defaultMapRotations[] = {
+    SOUTH, SOUTH, SOUTH, SOUTH, SOUTH, SOUTH, SOUTH, SOUTH,
+    SOUTH, SOUTH, SOUTH, SOUTH, SOUTH, SOUTH, SOUTH, SOUTH,
+    SOUTH, SOUTH, SOUTH, SOUTH, SOUTH, SOUTH, SOUTH, SOUTH,
+    SOUTH, SOUTH, SOUTH, SOUTH, SOUTH, SOUTH, SOUTH, SOUTH,
+    SOUTH, SOUTH, SOUTH, SOUTH, SOUTH, SOUTH, SOUTH, SOUTH,
+    SOUTH, SOUTH, SOUTH, SOUTH, SOUTH, SOUTH, SOUTH, SOUTH,
+    SOUTH, SOUTH, SOUTH, SOUTH, SOUTH, SOUTH, SOUTH, SOUTH,
+    SOUTH, SOUTH, SOUTH, SOUTH, SOUTH, SOUTH, SOUTH, SOUTH,
+    SOUTH, SOUTH, SOUTH, SOUTH, SOUTH, SOUTH, SOUTH, SOUTH,
+    SOUTH, SOUTH, SOUTH, SOUTH, SOUTH, SOUTH, SOUTH, SOUTH,
+    SOUTH, SOUTH, SOUTH, SOUTH, SOUTH, SOUTH, SOUTH, SOUTH,
+    SOUTH, SOUTH, SOUTH, SOUTH, 0, 0, 0, 0
 };
 
-
-// global lighting defaults based on map index
-Vec4c D_801142E0[] = {
+Vec4c defaultLevelLightingRGBA[] = {
     { 0xFF, 0xFF, 0xFF, 0xFF },
     { 0xFF, 0xFF, 0xFF, 0xFF },
     { 0xFF, 0xFF, 0xFF, 0xFF },
@@ -285,7 +284,7 @@ u8 levelToMusicMappings[TOTAL_MAPS][8] = {
     { 0, 0, 0, 0, 0, 0, 0, 0 },
 };
 
-// FIXME: probably shouldn't be volatile but need it for matching func_80074C50
+// FIXME: probably shouldn't be volatile but need it for matching
 volatile u8 exitsToMapIndices[] = {
     FARM, FARM, FARM, FARM, FARM, FARM, FARM, FARM, FARM, FARM, 
     HOUSE, HOUSE, HOUSE, 
@@ -366,8 +365,8 @@ static const Vec3f D_8011FB28[];
 static const Vec3f D_8011FB70[];
 
 // forward declaration
-void func_8006EC58(u16 mapIndex);
-void func_8007341C(u8 itemIndex);
+void loadLevelGroundObjects(u16 mapIndex);
+void setBarnFodderSprite(u8 itemIndex);
 
 //INCLUDE_ASM("asm/nonmatchings/game/level", setEntrance);
 
@@ -377,12 +376,12 @@ void setEntrance(u16 index) {
     previousEntranceIndex = temp;
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/level", func_8006E840);
+//INCLUDE_ASM("asm/nonmatchings/game/level", loadLevelFromEntrance);
 
-void func_8006E840(u16 entranceIndex) {
+void loadLevelFromEntrance(u16 entranceIndex) {
 
     if (gBaseMapIndex != 0xFF) {
-        func_8003C504(MAIN_MAP_INDEX);
+        unloadMapAssets(MAIN_MAP_INDEX);
     }
 
     previousMapIndex = gBaseMapIndex;
@@ -398,15 +397,15 @@ void func_8006E840(u16 entranceIndex) {
 
     // set rotation
     if (gBaseMapIndex == FARM) {
-        func_8003C084(MAIN_MAP_INDEX, (D_80114280[gMapWithSeasonIndex] + D_8021E6D0) % 8);
+        setInitialMapRotation(MAIN_MAP_INDEX, (defaultMapRotations[gMapWithSeasonIndex] + gCameraRotationOffset) % 8);
     } else {
-        func_8003C084(MAIN_MAP_INDEX, D_80114280[gMapWithSeasonIndex] % 8);
+        setInitialMapRotation(MAIN_MAP_INDEX, defaultMapRotations[gMapWithSeasonIndex] % 8);
     }
      
-    func_8003C1E0(MAIN_MAP_INDEX, 0, 0, 0, 8, 8);
-    func_8009C054(gBaseMapIndex);
+    setMapViewPositionAndCurrentTile(MAIN_MAP_INDEX, 0, 0, 0, 8, 8);
+    setLevelCutscene(gBaseMapIndex);
     setupLevelMap(gBaseMapIndex);
-    setMainMapIndex(0);
+    setMainMapIndex(MAIN_MAP_INDEX);
     
 }
 
@@ -414,14 +413,14 @@ void func_8006E840(u16 entranceIndex) {
 
 void setupLevelMap(u16 mapIndex) {
 
-    func_8003BD60(MAIN_MAP_INDEX);
-    
+    enableMapController(MAIN_MAP_INDEX);
+
     // set ground object sprites on map struct
-    func_8006EC58(mapIndex);
-    func_800735FC(mapIndex);
+    loadLevelGroundObjects(mapIndex);
+    initializeMapAdditionsForLevel(mapIndex);
 
     // load and setup map object sprites
-    func_8006F938(mapIndex); 
+    loadLevelMapObjects(mapIndex); 
 
     setAdditionalMapAdditionsForLevel(mapIndex);
 
@@ -491,17 +490,16 @@ void setLevelAudio(u16 mapIndex, u8 season, u8 hour) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/level", func_8006EB94);
+//INCLUDE_ASM("asm/nonmatchings/game/level", getDefaultLevelLighting);
 
-// param1 = globalLighting
-Vec4f* func_8006EB94(Vec4f* rgba, u16 mapIndex) {
+Vec4f* getDefaultLevelLighting(Vec4f* rgba, u16 mapIndex) {
 
     Vec4f vec;
 
-    vec.r = D_801142E0[mapIndex].r;
-    vec.g = D_801142E0[mapIndex].g;
-    vec.b = D_801142E0[mapIndex].b;
-    vec.a = D_801142E0[mapIndex].a;
+    vec.r = defaultLevelLightingRGBA[mapIndex].r;
+    vec.g = defaultLevelLightingRGBA[mapIndex].g;
+    vec.b = defaultLevelLightingRGBA[mapIndex].b;
+    vec.a = defaultLevelLightingRGBA[mapIndex].a;
 
     *rgba = vec;
     
@@ -515,10 +513,9 @@ u8 getLevelFlags(u16 mapIndex) {
     return levelFlags[mapIndex];
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/level", func_8006EC58);
+//INCLUDE_ASM("asm/nonmatchings/game/level", loadLevelGroundObjects);
 
-// call map.c functions for foragable maps
-void func_8006EC58(u16 mapIndex) {
+void loadLevelGroundObjects(u16 mapIndex) {
 
     switch (mapIndex) {
 
@@ -672,10 +669,9 @@ void func_8006EC58(u16 mapIndex) {
     }    
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/level", func_8006F938);
+//INCLUDE_ASM("asm/nonmatchings/game/level", loadLevelMapObjects);
 
-// do additional loading for assets per level
-void func_8006F938(u16 levelIndex) {
+void loadLevelMapObjects(u16 levelIndex) {
 
     u8 i;
     u8 j;
@@ -687,7 +683,7 @@ void func_8006F938(u16 levelIndex) {
             
             dmaSprite(MAP_OBJECT_1, &_homeItemsTextureSegmentRomStart, &_homeItemsTextureSegmentRomEnd, &_homeItemsAssetsIndexSegmentRomStart, &_homeItemsAssetsIndexSegmentRomEnd, &_homeItemsSpritesheetIndexSegmentRomStart, &_homeItemsSpritesheetIndexSegmentRomEnd, (u8*)MAP_OBJECT_SLOT_1_TEXTURE_1, (u8*)MAP_OBJECT_SLOT_1_TEXTURE_2, (u16*)MAP_OBJECT_METADATA_A_PALETTE, (AnimationFrameMetadata*)MAP_OBJECT_METADATA_A_ANIM_METADATA, (u32*)MAP_OBJECT_METADATA_A_SPRITESHEET_INDEX, (u32*)MAP_OBJECT_METADATA_A_TEXTURE_TO_PALETTE_LOOKUP, 1, 1);
             setSpriteScale(MAP_OBJECT_1, 1.0f, 1.0f, 1.0f);
-            setSpriteRenderingLayer(MAP_OBJECT_1, (1 | 2));
+            setSpriteBlendMode(MAP_OBJECT_1, SPRITE_BLEND_ALPHA_DECAL);
             setSpriteBaseRGBA(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
             setSpriteColor(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
 
@@ -699,9 +695,9 @@ void func_8006F938(u16 levelIndex) {
 
             dmaSprite(MAP_OBJECT_2, &_farmPondTextureSegmentRomStart, &_farmPondTextureSegmentRomEnd, &_farmPondAssetsIndexSegmentRomStart, &_farmPondAssetsIndexSegmentRomEnd, &_farmPondSpritesheetIndexSegmentRomStart, &_farmPondSpritesheetIndexSegmentRomEnd, (u8*)MAP_OBJECT_SLOT_3_TEXTURE_1, (u8*)MAP_OBJECT_SLOT_3_TEXTURE_2, (u16*)MAP_OBJECT_METADATA_B_PALETTE, (AnimationFrameMetadata*)MAP_OBJECT_METADATA_B_ANIM_METADATA, (u32*)MAP_OBJECT_METADATA_B_SPRITESHEET_INDEX, (u32*)MAP_OBJECT_METADATA_B_TEXTURE_TO_PALETTE_LOOKUP, 1,1);
             setSpriteScale(MAP_OBJECT_2, 6.0f, 1.0f, 6.0f);
-            func_8002C6F8(MAP_OBJECT_2, (1 | 2));
-            func_8002C768(MAP_OBJECT_2, 0x200);
-            setSpriteRenderingLayer(MAP_OBJECT_2, 2);
+            setSpriteAxisMapping(MAP_OBJECT_2, SPRITE_BILLBOARD_XZ);
+            setSpriteTriangleWinding(MAP_OBJECT_2, SPRITE_RENDERING_REVERSE_WINDING);
+            setSpriteBlendMode(MAP_OBJECT_2, SPRITE_BLEND_ALPHA_MODULATED);
             setSpriteBaseRGBA(MAP_OBJECT_2, 0xFF, 0xFF, 0xFF, 0x80);
             setSpriteColor(MAP_OBJECT_2, 0xFF, 0xFF, 0xFF, 0xFF);
             
@@ -713,7 +709,7 @@ void func_8006F938(u16 levelIndex) {
 
             dmaSprite(MAP_OBJECT_1, &_homeItemsTextureSegmentRomStart, &_homeItemsTextureSegmentRomEnd, &_homeItemsAssetsIndexSegmentRomStart, &_homeItemsAssetsIndexSegmentRomEnd, &_homeItemsSpritesheetIndexSegmentRomStart, &_homeItemsSpritesheetIndexSegmentRomEnd, (u8*)MAP_OBJECT_SLOT_1_TEXTURE_1, (u8*)MAP_OBJECT_SLOT_1_TEXTURE_2, (u16*)MAP_OBJECT_METADATA_A_PALETTE, (AnimationFrameMetadata*)MAP_OBJECT_METADATA_A_ANIM_METADATA, (u32*)MAP_OBJECT_METADATA_A_SPRITESHEET_INDEX, (u32*)MAP_OBJECT_METADATA_A_TEXTURE_TO_PALETTE_LOOKUP, 1, 1);
             setSpriteScale(MAP_OBJECT_1, 2.0f, 2.0f, 1.0f);
-            setSpriteRenderingLayer(MAP_OBJECT_1, (1 | 2));
+            setSpriteBlendMode(MAP_OBJECT_1, SPRITE_BLEND_ALPHA_DECAL);
             setSpriteBaseRGBA(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
             setSpriteColor(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
             setMapObject(MAIN_MAP_INDEX, 0, MAP_OBJECT_1, 6, -160.0f, 32.0f, -112.0f, 0xFF, 0xFF, 0, 0);
@@ -722,7 +718,7 @@ void func_8006F938(u16 levelIndex) {
 
                 dmaSprite(MAP_OBJECT_2, &_homeItemsTextureSegmentRomStart, &_homeItemsTextureSegmentRomEnd, &_homeItemsAssetsIndexSegmentRomStart, &_homeItemsAssetsIndexSegmentRomEnd, &_homeItemsSpritesheetIndexSegmentRomStart, &_homeItemsSpritesheetIndexSegmentRomEnd, (u8*)MAP_OBJECT_HOME_ITEM_SLOT_2_TEXTURE_1, (u8*)MAP_OBJECT_HOME_ITEM_SLOT_2_TEXTURE_2, (u16*)MAP_OBJECT_METADATA_A_PALETTE, (AnimationFrameMetadata*)MAP_OBJECT_METADATA_A_ANIM_METADATA, (u32*)MAP_OBJECT_METADATA_A_SPRITESHEET_INDEX, (u32*)MAP_OBJECT_METADATA_A_TEXTURE_TO_PALETTE_LOOKUP, 1, 1);
                 setSpriteScale(MAP_OBJECT_2, 1.0f, 1.0f, 1.0f);
-                setSpriteRenderingLayer(MAP_OBJECT_2, (1 | 2));
+                setSpriteBlendMode(MAP_OBJECT_2, SPRITE_BLEND_ALPHA_DECAL);
                 setSpriteBaseRGBA(MAP_OBJECT_2, 0xFF, 0xFF, 0xFF, 0xFF);
                 setSpriteColor(MAP_OBJECT_2, 0xFF, 0xFF, 0xFF, 0xFF);
                 setMapObject(MAIN_MAP_INDEX, 1, MAP_OBJECT_2, 0x10, 8.0f, 72.0f, -168.0f, 0xFF, 0xFF, 0, 0);
@@ -733,7 +729,7 @@ void func_8006F938(u16 levelIndex) {
 
                 dmaSprite(MAP_OBJECT_3, &_homeItemsTextureSegmentRomStart, &_homeItemsTextureSegmentRomEnd, &_homeItemsAssetsIndexSegmentRomStart, &_homeItemsAssetsIndexSegmentRomEnd, &_homeItemsSpritesheetIndexSegmentRomStart, &_homeItemsSpritesheetIndexSegmentRomEnd, (u8*)MAP_OBJECT_HOME_ITEM_SLOT_3_TEXTURE_1, (u8*)MAP_OBJECT_HOME_ITEM_SLOT_3_TEXTURE_2, (u16*)MAP_OBJECT_METADATA_A_PALETTE, (AnimationFrameMetadata*)MAP_OBJECT_METADATA_A_ANIM_METADATA, (u32*)MAP_OBJECT_METADATA_A_SPRITESHEET_INDEX, (u32*)MAP_OBJECT_METADATA_A_TEXTURE_TO_PALETTE_LOOKUP, 1, 1);
                 setSpriteScale(MAP_OBJECT_3, 1.0f, 1.0f, 1.0f);
-                setSpriteRenderingLayer(MAP_OBJECT_3, (1 | 2));
+                setSpriteBlendMode(MAP_OBJECT_3, SPRITE_BLEND_ALPHA_DECAL);
                 setSpriteBaseRGBA(MAP_OBJECT_3, 0xFF, 0xFF, 0xFF, 0xFF);
                 setSpriteColor(MAP_OBJECT_3, 0xFF, 0xFF, 0xFF, 0xFF);
                 setMapObject(MAIN_MAP_INDEX, 2, MAP_OBJECT_3, 9, 104.0f, 0, 24.0f, 0xFF, 0xFF, 0, 0);
@@ -745,7 +741,7 @@ void func_8006F938(u16 levelIndex) {
                 
                 dmaSprite(MAP_OBJECT_4, &_homeItemsTextureSegmentRomStart, &_homeItemsTextureSegmentRomEnd, &_homeItemsAssetsIndexSegmentRomStart, &_homeItemsAssetsIndexSegmentRomEnd, &_homeItemsSpritesheetIndexSegmentRomStart, &_homeItemsSpritesheetIndexSegmentRomEnd, (u8*)MAP_OBJECT_HOME_ITEM_SLOT_4_TEXTURE_1, (u8*)MAP_OBJECT_HOME_ITEM_SLOT_4_TEXTURE_2, (u16*)MAP_OBJECT_METADATA_A_PALETTE, (AnimationFrameMetadata*)MAP_OBJECT_METADATA_A_ANIM_METADATA, (u32*)MAP_OBJECT_METADATA_A_SPRITESHEET_INDEX, (u32*)MAP_OBJECT_METADATA_A_TEXTURE_TO_PALETTE_LOOKUP, 1, 1);
                 setSpriteScale(MAP_OBJECT_4, 1.0f, 1.0f, 1.0f);
-                setSpriteRenderingLayer(MAP_OBJECT_4, (1 | 2));
+                setSpriteBlendMode(MAP_OBJECT_4, SPRITE_BLEND_ALPHA_DECAL);
                 setSpriteBaseRGBA(MAP_OBJECT_4, 0xFF, 0xFF, 0xFF, 0xFF);
                 setSpriteColor(MAP_OBJECT_4, 0xFF, 0xFF, 0xFF, 0xFF);
 
@@ -762,7 +758,7 @@ void func_8006F938(u16 levelIndex) {
                 
                 dmaSprite(MAP_OBJECT_5, &_homeItemsTextureSegmentRomStart, &_homeItemsTextureSegmentRomEnd, &_homeItemsAssetsIndexSegmentRomStart, &_homeItemsAssetsIndexSegmentRomEnd, &_homeItemsSpritesheetIndexSegmentRomStart, &_homeItemsSpritesheetIndexSegmentRomEnd, (u8*)MAP_OBJECT_HOME_ITEM_SLOT_5_TEXTURE_1, (u8*)MAP_OBJECT_HOME_ITEM_SLOT_5_TEXTURE_2, (u16*)MAP_OBJECT_METADATA_A_PALETTE, (AnimationFrameMetadata*)MAP_OBJECT_METADATA_A_ANIM_METADATA, (u32*)MAP_OBJECT_METADATA_A_SPRITESHEET_INDEX, (u32*)MAP_OBJECT_METADATA_A_TEXTURE_TO_PALETTE_LOOKUP, 1, 1);
                 setSpriteScale(MAP_OBJECT_5, 1.0f, 1.0f, 1.0f);
-                setSpriteRenderingLayer(MAP_OBJECT_5, (1 | 2));
+                setSpriteBlendMode(MAP_OBJECT_5, SPRITE_BLEND_ALPHA_DECAL);
                 setSpriteBaseRGBA(MAP_OBJECT_5, 0xFF, 0xFF, 0xFF, 0xFF);
                 setSpriteColor(MAP_OBJECT_5, 0xFF, 0xFF, 0xFF, 0xFF);
                 setMapObject(MAIN_MAP_INDEX, 4, MAP_OBJECT_5, 0x11, -176.0f, 24.0f, -160.0f, 0xFF, 0xFF, 0, 0);
@@ -774,7 +770,7 @@ void func_8006F938(u16 levelIndex) {
                 
                 dmaSprite(MAP_OBJECT_6, &_homeItemsTextureSegmentRomStart, &_homeItemsTextureSegmentRomEnd, &_homeItemsAssetsIndexSegmentRomStart, &_homeItemsAssetsIndexSegmentRomEnd, &_homeItemsSpritesheetIndexSegmentRomStart, &_homeItemsSpritesheetIndexSegmentRomEnd, (u8*)MAP_OBJECT_HOME_ITEM_SLOT_6_TEXTURE_1, (u8*)MAP_OBJECT_HOME_ITEM_SLOT_6_TEXTURE_2, (u16*)MAP_OBJECT_METADATA_A_PALETTE, (AnimationFrameMetadata*)MAP_OBJECT_METADATA_A_ANIM_METADATA, (u32*)MAP_OBJECT_METADATA_A_SPRITESHEET_INDEX, (u32*)MAP_OBJECT_METADATA_A_TEXTURE_TO_PALETTE_LOOKUP, 1, 1);
                 setSpriteScale(MAP_OBJECT_6, 1.0f, 1.0f, 1.0f);
-                setSpriteRenderingLayer(MAP_OBJECT_6, (1 | 2));
+                setSpriteBlendMode(MAP_OBJECT_6, SPRITE_BLEND_ALPHA_DECAL);
                 setSpriteBaseRGBA(MAP_OBJECT_6, 0xFF, 0xFF, 0xFF, 0xFF);
                 setSpriteColor(MAP_OBJECT_6, 0xFF, 0xFF, 0xFF, 0xFF);
                 setMapObject(MAIN_MAP_INDEX, 5, MAP_OBJECT_6, 4, -40.0f, 8.0f, 8.0f, 0xFF, 0xFF, 0, 0);
@@ -790,7 +786,7 @@ void func_8006F938(u16 levelIndex) {
                 
                 dmaSprite(MAP_OBJECT_1, &_homeItemsTextureSegmentRomStart, &_homeItemsTextureSegmentRomEnd, &_homeItemsAssetsIndexSegmentRomStart, &_homeItemsAssetsIndexSegmentRomEnd, &_homeItemsSpritesheetIndexSegmentRomStart, &_homeItemsSpritesheetIndexSegmentRomEnd, (u8*)MAP_OBJECT_HOME_ITEM_SLOT_2_TEXTURE_1, (u8*)MAP_OBJECT_HOME_ITEM_SLOT_2_TEXTURE_2, (u16*)MAP_OBJECT_METADATA_A_PALETTE, (AnimationFrameMetadata*)MAP_OBJECT_METADATA_A_ANIM_METADATA, (u32*)MAP_OBJECT_METADATA_A_SPRITESHEET_INDEX, (u32*)MAP_OBJECT_METADATA_A_TEXTURE_TO_PALETTE_LOOKUP, 1, 1);
                 setSpriteScale(MAP_OBJECT_1, 1.0f, 1.0f, 1.0f);
-                setSpriteRenderingLayer(MAP_OBJECT_1, (1 | 2));
+                setSpriteBlendMode(MAP_OBJECT_1, SPRITE_BLEND_ALPHA_DECAL);
                 setSpriteBaseRGBA(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
                 setSpriteColor(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
                 setMapObject(MAIN_MAP_INDEX, 0, MAP_OBJECT_1, 10, -48.f, 16.0f, -80.0f, 0xFF, 0xFF, 0, 0);
@@ -803,27 +799,27 @@ void func_8006F938(u16 levelIndex) {
 
             dmaSprite(MAP_OBJECT_1, &_waterTilesTextureSegmentRomStart, &_waterTilesTextureSegmentRomEnd, &_waterTilesAssetsIndexSegmentRomStart, &_waterTilesAssetsIndexSegmentRomEnd, &_waterTilesSpritesheetIndexSegmentRomStart, &_waterTilesSpritesheetIndexSegmentRomEnd, (u8*)MAP_OBJECT_SLOT_1_TEXTURE_1, (u8*)MAP_OBJECT_SLOT_1_TEXTURE_2, (u16*)MAP_OBJECT_METADATA_A_PALETTE, (AnimationFrameMetadata*)MAP_OBJECT_METADATA_A_ANIM_METADATA, (u32*)MAP_OBJECT_METADATA_A_SPRITESHEET_INDEX, (u32*)MAP_OBJECT_METADATA_A_TEXTURE_TO_PALETTE_LOOKUP, 1, 1);
             setSpriteScale(MAP_OBJECT_1, 3.8f, 1.0f, 6.0f);
-            func_8002C6F8(MAP_OBJECT_1, (1 | 2));
-            func_8002C768(MAP_OBJECT_1, 0x200);
-            setSpriteRenderingLayer(MAP_OBJECT_1, 2);
+            setSpriteAxisMapping(MAP_OBJECT_1, SPRITE_BILLBOARD_XZ);
+            setSpriteTriangleWinding(MAP_OBJECT_1, SPRITE_RENDERING_REVERSE_WINDING);
+            setSpriteBlendMode(MAP_OBJECT_1, SPRITE_BLEND_ALPHA_MODULATED);
             setSpriteBaseRGBA(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0x80);
             setSpriteColor(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
             setMapObject(MAIN_MAP_INDEX, 0, MAP_OBJECT_1, 0, -288.0f, 0.0f, -140.0f, 0x5A, 0xFE, 0, 0);
 
             dmaSprite(MAP_OBJECT_2, &_waterTilesTextureSegmentRomStart, &_waterTilesTextureSegmentRomEnd, &_waterTilesAssetsIndexSegmentRomStart, &_waterTilesAssetsIndexSegmentRomEnd, &_waterTilesSpritesheetIndexSegmentRomStart, &_waterTilesSpritesheetIndexSegmentRomEnd, (u8*)MAP_OBJECT_SLOT_2_TEXTURE_1, (u8*)MAP_OBJECT_SLOT_2_TEXTURE_2, (u16*)MAP_OBJECT_METADATA_A_PALETTE, (AnimationFrameMetadata*)MAP_OBJECT_METADATA_A_ANIM_METADATA, (u32*)MAP_OBJECT_METADATA_A_SPRITESHEET_INDEX, (u32*)MAP_OBJECT_METADATA_A_TEXTURE_TO_PALETTE_LOOKUP, 1, 1);
             setSpriteScale(MAP_OBJECT_2, 6.0f, 1.0f, 6.0f);
-            func_8002C6F8(MAP_OBJECT_2, (1 | 2));
-            func_8002C768(MAP_OBJECT_2, 0x200);
-            setSpriteRenderingLayer(MAP_OBJECT_2, 2);
+            setSpriteAxisMapping(MAP_OBJECT_2, SPRITE_BILLBOARD_XZ);
+            setSpriteTriangleWinding(MAP_OBJECT_2, SPRITE_RENDERING_REVERSE_WINDING);
+            setSpriteBlendMode(MAP_OBJECT_2, SPRITE_BLEND_ALPHA_MODULATED);
             setSpriteBaseRGBA(MAP_OBJECT_2, 0xFF, 0xFF, 0xFF, 0x80);
             setSpriteColor(MAP_OBJECT_2, 0xFF, 0xFF, 0xFF, 0xFF);
             setMapObject(MAIN_MAP_INDEX, 1, MAP_OBJECT_2, 0, -224.0f, 0.0f, 320.0f, 0, 0xFE, 0, 0);
 
             dmaSprite(MAP_OBJECT_3, &_waterTilesTextureSegmentRomStart, &_waterTilesTextureSegmentRomEnd, &_waterTilesAssetsIndexSegmentRomStart, &_waterTilesAssetsIndexSegmentRomEnd, &_waterTilesSpritesheetIndexSegmentRomStart, &_waterTilesSpritesheetIndexSegmentRomEnd, (u8*)MAP_OBJECT_SLOT_3_TEXTURE_1, (u8*)MAP_OBJECT_SLOT_3_TEXTURE_2, (u16*)MAP_OBJECT_METADATA_B_PALETTE, (AnimationFrameMetadata*)MAP_OBJECT_METADATA_B_ANIM_METADATA, (u32*)MAP_OBJECT_METADATA_B_SPRITESHEET_INDEX, (u32*)MAP_OBJECT_METADATA_B_TEXTURE_TO_PALETTE_LOOKUP, 1, 1);
             setSpriteScale(MAP_OBJECT_3, 6.0f, 1.0f, 6.0f);
-            func_8002C6F8(MAP_OBJECT_3, (1 | 2));
-            func_8002C768(MAP_OBJECT_3, 0x200);
-            setSpriteRenderingLayer(MAP_OBJECT_3, 2);
+            setSpriteAxisMapping(MAP_OBJECT_3, SPRITE_BILLBOARD_XZ);
+            setSpriteTriangleWinding(MAP_OBJECT_3, SPRITE_RENDERING_REVERSE_WINDING);
+            setSpriteBlendMode(MAP_OBJECT_3, SPRITE_BLEND_ALPHA_MODULATED);
             setSpriteBaseRGBA(MAP_OBJECT_3, 0xFF, 0xFF, 0xFF, 0x80);
             setSpriteColor(MAP_OBJECT_3, 0xFF, 0xFF, 0xFF, 0xFF);
             setMapObject(MAIN_MAP_INDEX, 2, MAP_OBJECT_3, 1, 160.0f, 32.0f, -160.0f, 0, 0xFE, 0, 0);
@@ -832,7 +828,7 @@ void func_8006F938(u16 levelIndex) {
 
                 dmaSprite(MAP_OBJECT_4, &_boulderTextureSegmentRomStart, &_boulderTextureSegmentRomEnd, &_boulderAssetsIndexSegmentRomStart, &_boulderAssetsIndexSegmentRomEnd, &_boulderSpritesheetIndexSegmentRomStart, &_boulderSpritesheetIndexSegmentRomEnd, (u8*)MAP_OBJECT_SLOT_4_TEXTURE_1, (u8*)MAP_OBJECT_SLOT_4_TEXTURE_2, (u16*)MAP_OBJECT_METADATA_C_PALETTE, (AnimationFrameMetadata*)MAP_OBJECT_METADATA_C_ANIM_METADATA, (u32*)MAP_OBJECT_METADATA_C_SPRITESHEET_INDEX, (u32*)MAP_OBJECT_METADATA_C_TEXTURE_TO_PALETTE_LOOKUP, 1, 1);
                 setSpriteScale(MAP_OBJECT_4, 1.0f, 1.0f, 1.0f);
-                setSpriteRenderingLayer(MAP_OBJECT_4, (1 | 2));
+                setSpriteBlendMode(MAP_OBJECT_4, SPRITE_BLEND_ALPHA_DECAL);
                 setSpriteBaseRGBA(MAP_OBJECT_4, 0xFF, 0xFF, 0xFF, 0xFF);
                 setSpriteColor(MAP_OBJECT_4, 0xFF, 0xFF, 0xFF, 0xFF);
 
@@ -849,9 +845,9 @@ void func_8006F938(u16 levelIndex) {
 
             dmaSprite(MAP_OBJECT_1, &_waterTilesTextureSegmentRomStart, &_waterTilesTextureSegmentRomEnd, &_waterTilesAssetsIndexSegmentRomStart, &_waterTilesAssetsIndexSegmentRomEnd, &_waterTilesSpritesheetIndexSegmentRomStart, &_waterTilesSpritesheetIndexSegmentRomEnd, (u8*)MAP_OBJECT_SLOT_1_TEXTURE_1, (u8*)MAP_OBJECT_SLOT_1_TEXTURE_2, (u16*)MAP_OBJECT_METADATA_A_PALETTE, (AnimationFrameMetadata*)MAP_OBJECT_METADATA_A_ANIM_METADATA, (u32*)MAP_OBJECT_METADATA_A_SPRITESHEET_INDEX, (u32*)MAP_OBJECT_METADATA_A_TEXTURE_TO_PALETTE_LOOKUP, 1, 1);
             setSpriteScale(MAP_OBJECT_1, 6.0f, 1.0f, 6.0f);
-            func_8002C6F8(MAP_OBJECT_1, (1 | 2));
-            func_8002C768(MAP_OBJECT_1, 0x200);
-            setSpriteRenderingLayer(MAP_OBJECT_1, 2);
+            setSpriteAxisMapping(MAP_OBJECT_1, SPRITE_BILLBOARD_XZ);
+            setSpriteTriangleWinding(MAP_OBJECT_1, SPRITE_RENDERING_REVERSE_WINDING);
+            setSpriteBlendMode(MAP_OBJECT_1, SPRITE_BLEND_ALPHA_MODULATED);
             setSpriteBaseRGBA(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0x80);
             setSpriteColor(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
 
@@ -859,9 +855,9 @@ void func_8006F938(u16 levelIndex) {
 
             dmaSprite(MAP_OBJECT_2, &_waterTilesTextureSegmentRomStart, &_waterTilesTextureSegmentRomEnd, &_waterTilesAssetsIndexSegmentRomStart, &_waterTilesAssetsIndexSegmentRomEnd, &_waterTilesSpritesheetIndexSegmentRomStart, &_waterTilesSpritesheetIndexSegmentRomEnd, (u8*)MAP_OBJECT_SLOT_2_TEXTURE_1, (u8*)MAP_OBJECT_SLOT_2_TEXTURE_2, (u16*)MAP_OBJECT_METADATA_A_PALETTE, (AnimationFrameMetadata*)MAP_OBJECT_METADATA_A_ANIM_METADATA, (u32*)MAP_OBJECT_METADATA_A_SPRITESHEET_INDEX, (u32*)MAP_OBJECT_METADATA_A_TEXTURE_TO_PALETTE_LOOKUP, 1, 1);
             setSpriteScale(MAP_OBJECT_2, 6.0f, 1.0f, 6.0f);
-            func_8002C6F8(MAP_OBJECT_2, (1 | 2));
-            func_8002C768(MAP_OBJECT_2, 0x200);
-            setSpriteRenderingLayer(MAP_OBJECT_2, 2);
+            setSpriteAxisMapping(MAP_OBJECT_2, SPRITE_BILLBOARD_XZ);
+            setSpriteTriangleWinding(MAP_OBJECT_2, SPRITE_RENDERING_REVERSE_WINDING);
+            setSpriteBlendMode(MAP_OBJECT_2, SPRITE_BLEND_ALPHA_MODULATED);
             setSpriteBaseRGBA(MAP_OBJECT_2, 0xFF, 0xFF, 0xFF, 0x80);
             setSpriteColor(MAP_OBJECT_2, 0xFF, 0xFF, 0xFF, 0xFF);
             
@@ -876,7 +872,7 @@ void func_8006F938(u16 levelIndex) {
                 }
 
                 setSpriteScale(MAP_OBJECT_3, 1.0f, 1.0f, 1.0f);
-                setSpriteRenderingLayer(MAP_OBJECT_3, (1 | 2));
+                setSpriteBlendMode(MAP_OBJECT_3, SPRITE_BLEND_ALPHA_DECAL);
                 setSpriteBaseRGBA(MAP_OBJECT_3, 0xFF, 0xFF, 0xFF, 0xFF);
                 setSpriteColor(MAP_OBJECT_3, 0xFF, 0xFF, 0xFF, 0xFF);
 
@@ -889,7 +885,7 @@ void func_8006F938(u16 levelIndex) {
                 }
 
                 setSpriteScale(MAP_OBJECT_4, 1.0f, 1.0f, 1.0f);
-                setSpriteRenderingLayer(MAP_OBJECT_4, (1 | 2));
+                setSpriteBlendMode(MAP_OBJECT_4, SPRITE_BLEND_ALPHA_DECAL);
                 setSpriteBaseRGBA(MAP_OBJECT_4, 0xFF, 0xFF, 0xFF, 0xFF);
                 setSpriteColor(MAP_OBJECT_4, 0xFF, 0xFF, 0xFF, 0xFF);
                 setMapObject(MAIN_MAP_INDEX, 3, MAP_OBJECT_4, 0, 96.0f, 224.0f, -376, 0xFF, 0, 0, 0);
@@ -901,7 +897,7 @@ void func_8006F938(u16 levelIndex) {
                 }
 
                 setSpriteScale(MAP_OBJECT_5, 1.0f, 1.0f, 1.0f);
-                setSpriteRenderingLayer(MAP_OBJECT_5, (1 | 2));
+                setSpriteBlendMode(MAP_OBJECT_5, SPRITE_BLEND_ALPHA_DECAL);
                 setSpriteBaseRGBA(MAP_OBJECT_5, 0xFF, 0xFF, 0xFF, 0xFF);
                 setSpriteColor(MAP_OBJECT_5, 0xFF, 0xFF, 0xFF, 0xFF);
                 setMapObject(MAIN_MAP_INDEX, 4, MAP_OBJECT_5, 0, 304.0f, 224.0f, -432.0f, 0xFF, 0, 0, 0);
@@ -913,7 +909,7 @@ void func_8006F938(u16 levelIndex) {
                 }
 
                 setSpriteScale(MAP_OBJECT_6, 1.0f, 1.0f, 1.0f);
-                setSpriteRenderingLayer(MAP_OBJECT_6, (1 | 2));
+                setSpriteBlendMode(MAP_OBJECT_6, SPRITE_BLEND_ALPHA_DECAL);
                 setSpriteBaseRGBA(MAP_OBJECT_6, 0xFF, 0xFF, 0xFF, 0xFF);
                 setSpriteColor(MAP_OBJECT_6, 0xFF, 0xFF, 0xFF, 0xFF);
                 setMapObject(MAIN_MAP_INDEX, 5, MAP_OBJECT_6, 0, 304.0f, 224.0f, -368.0f, 0xFF, 0, 0, 0);
@@ -928,9 +924,9 @@ void func_8006F938(u16 levelIndex) {
 
                 dmaSprite(MAP_OBJECT_1, &_mountainPathTilesTextureSegmentRomStart, &_mountainPathTilesTextureSegmentRomEnd, &_mountainPathTilesAssetsIndexSegmentRomStart, &_mountainPathTilesAssetsIndexSegmentRomEnd, &_mountainPathTilesSpritesheetIndexSegmentRomStart, &_mountainPathTilesSpritesheetIndexSegmentRomEnd, (u8*)MAP_OBJECT_MOUNTAIN_PATH_TEXTURE_1, (u8*)MAP_OBJECT_MOUNTAIN_PATH_TEXTURE_2, (u16*)MAP_OBJECT_MOUNTAIN_PATH_PALETTE, (AnimationFrameMetadata*)MAP_OBJECT_MOUNTAIN_PATH_ANIM_METADATA, (u32*)MAP_OBJECT_MOUNTAIN_PATH_SPRITESHEET_INDEX, (u32*)MAP_OBJECT_MOUNTAIN_PATH_TEXTURE_TO_PALETTE_LOOKUP, 1, 1);
                 setSpriteScale(MAP_OBJECT_1, 6.0f, 1.0f, 6.0f);
-                func_8002C6F8(MAP_OBJECT_1, (1 | 2));
-                func_8002C768(MAP_OBJECT_1, 0x200);
-                setSpriteRenderingLayer(MAP_OBJECT_1, 2);
+                setSpriteAxisMapping(MAP_OBJECT_1, SPRITE_BILLBOARD_XZ);
+                setSpriteTriangleWinding(MAP_OBJECT_1, SPRITE_RENDERING_REVERSE_WINDING);
+                setSpriteBlendMode(MAP_OBJECT_1, SPRITE_BLEND_ALPHA_MODULATED);
                 setSpriteBaseRGBA(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0x80);
                 setSpriteColor(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
                 setMapObject(MAIN_MAP_INDEX, 0, MAP_OBJECT_1, 0, 0, 216.0f, -128.0f, 0, 0xFE, 0, 0);
@@ -942,7 +938,7 @@ void func_8006F938(u16 levelIndex) {
                 }
 
                 setSpriteScale(MAP_OBJECT_3, 1.0f, 1.0f, 1.0f);
-                setSpriteRenderingLayer(MAP_OBJECT_3, (1 | 2));
+                setSpriteBlendMode(MAP_OBJECT_3, SPRITE_BLEND_ALPHA_DECAL);
                 setSpriteBaseRGBA(MAP_OBJECT_3, 0xFF, 0xFF, 0xFF, 0xFF);
                 setSpriteColor(MAP_OBJECT_3, 0xFF, 0xFF, 0xFF, 0xFF);
                 setMapObject(MAIN_MAP_INDEX, 2, MAP_OBJECT_3, 0, -192.0f, 228.0f, 4.0f, 0xFF, 0, 0, 0);
@@ -954,7 +950,7 @@ void func_8006F938(u16 levelIndex) {
                 }
 
                 setSpriteScale(MAP_OBJECT_4, 1.0f, 1.0f, 1.0f);
-                setSpriteRenderingLayer(MAP_OBJECT_4, (1 | 2));
+                setSpriteBlendMode(MAP_OBJECT_4, SPRITE_BLEND_ALPHA_DECAL);
                 setSpriteBaseRGBA(MAP_OBJECT_4, 0xFF, 0xFF, 0xFF, 0xFF);
                 setSpriteColor(MAP_OBJECT_4, 0xFF, 0xFF, 0xFF, 0xFF);
                 setMapObject(MAIN_MAP_INDEX, 3, MAP_OBJECT_4, 0, -192.0f, 224.0f, 64.0f, 0xFF, 0, 0, 0);
@@ -966,7 +962,7 @@ void func_8006F938(u16 levelIndex) {
                 }
 
                 setSpriteScale(MAP_OBJECT_5, 1.0f, 1.0f, 1.0f);
-                setSpriteRenderingLayer(MAP_OBJECT_5, (1 | 2));
+                setSpriteBlendMode(MAP_OBJECT_5, SPRITE_BLEND_ALPHA_DECAL);
                 setSpriteBaseRGBA(MAP_OBJECT_5, 0xFF, 0xFF, 0xFF, 0xFF);
                 setSpriteColor(MAP_OBJECT_5, 0xFF, 0xFF, 0xFF, 0xFF);
                 setMapObject(MAIN_MAP_INDEX, 4, MAP_OBJECT_5, 0, -408.0f, 224.0f, -16.0f, 0xFF, 0, 0, 0);
@@ -978,7 +974,7 @@ void func_8006F938(u16 levelIndex) {
                 }
 
                 setSpriteScale(MAP_OBJECT_6, 1.0f, 1.0f, 1.0f);
-                setSpriteRenderingLayer(MAP_OBJECT_6, (1 | 2));
+                setSpriteBlendMode(MAP_OBJECT_6, SPRITE_BLEND_ALPHA_DECAL);
                 setSpriteBaseRGBA(MAP_OBJECT_6, 0xFF, 0xFF, 0xFF, 0xFF);
                 setSpriteColor(MAP_OBJECT_6, 0xFF, 0xFF, 0xFF, 0xFF);
                 setMapObject(MAIN_MAP_INDEX, 5, MAP_OBJECT_6, 0, -408.0f, 224.0f, 48.0f, 0xFF, 0, 0, 0);
@@ -987,7 +983,7 @@ void func_8006F938(u16 levelIndex) {
 
                 dmaSprite(MAP_OBJECT_1, &_bridgeTextureSegmentRomStart, &_bridgeTextureSegmentRomEnd, &_bridgeAssetsIndexSegmentRomStart, &_bridgeAssetsIndexSegmentRomEnd, &_bridgeSpritesheetIndexSegmentRomStart, &_bridgeSpritesheetIndexSegmentRomEnd, (u8*)MAP_OBJECT_SLOT_1_TEXTURE_1, (u8*)MAP_OBJECT_SLOT_1_TEXTURE_2, (u16*)MAP_OBJECT_METADATA_A_PALETTE, (AnimationFrameMetadata*)MAP_OBJECT_METADATA_A_ANIM_METADATA, (u32*)MAP_OBJECT_METADATA_A_SPRITESHEET_INDEX, (u32*)MAP_OBJECT_METADATA_A_TEXTURE_TO_PALETTE_LOOKUP, 1, 1);
                 setSpriteScale(MAP_OBJECT_1, 1.0f, 1.0f, 1.0f);
-                setSpriteRenderingLayer(MAP_OBJECT_1, (1 | 2));
+                setSpriteBlendMode(MAP_OBJECT_1, SPRITE_BLEND_ALPHA_DECAL);
                 setSpriteBaseRGBA(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
                 setSpriteColor(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
                 setMapObject(MAIN_MAP_INDEX, 0, MAP_OBJECT_1, 3, -160.0f, 224.0f, 8.0f, 0xFF, 0, 0, 0);
@@ -998,7 +994,7 @@ void func_8006F938(u16 levelIndex) {
 
                 dmaSprite(MAP_OBJECT_2, &_steamTextureSegmentRomStart, &_steamTextureSegmentRomEnd, &_steamAssetsIndexSegmentRomStart, &_steamAssetsIndexSegmentRomEnd, &_steamSpritesheetIndexSegmentRomStart, &_steamSpritesheetIndexSegmentRomEnd, (u8*)MAP_OBJECT_STEAM_TEXTURE_1, (u8*)MAP_OBJECT_STEAM_TEXTURE_2, (u16*)MAP_OBJECT_STEAM_PALETTE, (AnimationFrameMetadata*)MAP_OBJECT_STEAM_ANIM_METADATA, (u32*)MAP_OBJECT_STEAM_SPRITESHEET_INDEX, (u32*)MAP_OBJECT_STEAM_TEXTURE_TO_PALETTE_LOOKUP, 1, 1);
                 setSpriteScale(MAP_OBJECT_2, 2.0f, 2.0f, 1.0f);
-                setSpriteRenderingLayer(MAP_OBJECT_2, 2);
+                setSpriteBlendMode(MAP_OBJECT_2, SPRITE_BLEND_ALPHA_MODULATED);
                 setSpriteBaseRGBA(MAP_OBJECT_2, 0xFF, 0xFF, 0xFF, 0x60);
                 setSpriteColor(MAP_OBJECT_2, 0xFF, 0xFF, 0xFF, 0xFF);
                 setMapObject(MAIN_MAP_INDEX, 1, MAP_OBJECT_2, 0, 0.0f, 256.0f, -136.0f, 0xFF, 0xFE, 0, 0);
@@ -1011,9 +1007,9 @@ void func_8006F938(u16 levelIndex) {
             
             dmaSprite(MAP_OBJECT_1, &_pondWaterTextureSegmentRomStart, &_pondWaterTextureSegmentRomEnd, &_pondWaterAssetsIndexSegmentRomStart, &_pondWaterAssetsIndexSegmentRomEnd, &_pondWaterSpritesheetIndexSegmentRomStart, &_pondWaterSpritesheetIndexSegmentRomEnd, (u8*)MAP_OBJECT_SLOT_1_TEXTURE_1, (u8*)MAP_OBJECT_SLOT_1_TEXTURE_2, (u16*)MAP_OBJECT_METADATA_A_PALETTE, (AnimationFrameMetadata*)MAP_OBJECT_METADATA_A_ANIM_METADATA, (u32*)MAP_OBJECT_METADATA_A_SPRITESHEET_INDEX, (u32*)MAP_OBJECT_METADATA_A_TEXTURE_TO_PALETTE_LOOKUP, 1, 1);
             setSpriteScale(MAP_OBJECT_1, 6.0f, 1.0f, 6.0f);
-            func_8002C6F8(MAP_OBJECT_1, (1 | 2));
-            func_8002C768(MAP_OBJECT_1, 0x200);
-            setSpriteRenderingLayer(MAP_OBJECT_1, 2);
+            setSpriteAxisMapping(MAP_OBJECT_1, SPRITE_BILLBOARD_XZ);
+            setSpriteTriangleWinding(MAP_OBJECT_1, SPRITE_RENDERING_REVERSE_WINDING);
+            setSpriteBlendMode(MAP_OBJECT_1, SPRITE_BLEND_ALPHA_MODULATED);
             setSpriteBaseRGBA(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0x80);
             setSpriteColor(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
             setMapObject(MAIN_MAP_INDEX, 0, MAP_OBJECT_1, 0, 0.0f, 64.0f, -96.0f, 0x5A, 0xFE, 0, 0);
@@ -1024,9 +1020,9 @@ void func_8006F938(u16 levelIndex) {
 
             dmaSprite(MAP_OBJECT_1, &_wavesTextureSegmentRomStart, &_wavesTextureSegmentRomEnd, &_wavesAssetsIndexSegmentRomStart, &_wavesAssetsIndexSegmentRomEnd, &_wavesSpritesheetIndexSegmentRomStart, &_wavesSpritesheetIndexSegmentRomEnd, (u8*)MAP_OBJECT_WAVES_TEXTURE_1, (u8*)MAP_OBJECT_WAVES_TEXTURE_2, (u16*)MAP_OBJECT_WAVES_PALETTE, (AnimationFrameMetadata*)MAP_OBJECT_WAVES_ANIM_METADATA, (u32*)MAP_OBJECT_WAVES_SPRITESHEET_INDEX, (u32*)MAP_OBJECT_WAVES_TEXTURE_TO_PALETTE_LOOKUP, 1, 1);
             setSpriteScale(MAP_OBJECT_1, 6.0f, 1.0f, 5.4f);
-            func_8002C6F8(MAP_OBJECT_1, (1 | 2));
-            func_8002C768(MAP_OBJECT_1, 0x200);
-            setSpriteRenderingLayer(MAP_OBJECT_1, 2);
+            setSpriteAxisMapping(MAP_OBJECT_1, SPRITE_BILLBOARD_XZ);
+            setSpriteTriangleWinding(MAP_OBJECT_1, SPRITE_RENDERING_REVERSE_WINDING);
+            setSpriteBlendMode(MAP_OBJECT_1, SPRITE_BLEND_ALPHA_MODULATED);
             setSpriteBaseRGBA(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0x80);
             setSpriteColor(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
             setMapObject(MAIN_MAP_INDEX, 0, MAP_OBJECT_1, 0, 304.f, 112.0f, -10.0f, 0, 0xFE, 0, 1);
@@ -1037,9 +1033,9 @@ void func_8006F938(u16 levelIndex) {
 
             dmaSprite(MAP_OBJECT_1, &_village2WaterTextureSegmentRomStart, &_village2WaterTextureSegmentRomEnd, &_village2WaterAssetsIndexSegmentRomStart, &_village2WaterAssetsIndexSegmentRomEnd, &_village2WaterSpritesheetIndexSegmentRomStart, &_village2WaterSpritesheetIndexSegmentRomEnd, (u8*)MAP_OBJECT_SLOT_1_TEXTURE_1, (u8*)MAP_OBJECT_SLOT_1_TEXTURE_1, (u16*)MAP_OBJECT_METADATA_A_PALETTE, (AnimationFrameMetadata*)MAP_OBJECT_METADATA_A_ANIM_METADATA, (u32*)MAP_OBJECT_METADATA_A_SPRITESHEET_INDEX, (u32*)MAP_OBJECT_METADATA_A_TEXTURE_TO_PALETTE_LOOKUP, 1, 1);
             setSpriteScale(MAP_OBJECT_1, 6.0f, 1.0f, 6.0f);
-            func_8002C6F8(MAP_OBJECT_1, (1 | 2));
-            func_8002C768(MAP_OBJECT_1, 0x200);
-            setSpriteRenderingLayer(MAP_OBJECT_1, 2);
+            setSpriteAxisMapping(MAP_OBJECT_1, SPRITE_BILLBOARD_XZ);
+            setSpriteTriangleWinding(MAP_OBJECT_1, SPRITE_RENDERING_REVERSE_WINDING);
+            setSpriteBlendMode(MAP_OBJECT_1, SPRITE_BLEND_ALPHA_MODULATED);
             setSpriteBaseRGBA(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0x80);
             setSpriteColor(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
             setMapObject(MAIN_MAP_INDEX, 0, MAP_OBJECT_1, 0, -40.0f, 64.0f, -208.0f, 0, 0xFE, 0, 0);    
@@ -1050,9 +1046,9 @@ void func_8006F938(u16 levelIndex) {
 
             dmaSprite(MAP_OBJECT_1, &_squareFountainTextureSegmentRomStart, &_squareFountainTextureSegmentRomEnd, &_squareFountainAssetsIndexSegmentRomStart, &_squareFountainAssetsIndexSegmentRomEnd, &_squareFountainSpritesheetIndexSegmentRomStart, &_squareFountainSpritesheetIndexSegmentRomEnd, (u8*)MAP_OBJECT_SLOT_3_TEXTURE_1, (u8*)MAP_OBJECT_SLOT_3_TEXTURE_1, (u16*)MAP_OBJECT_METADATA_B_PALETTE, (AnimationFrameMetadata*)MAP_OBJECT_METADATA_B_ANIM_METADATA, (u32*)MAP_OBJECT_METADATA_B_SPRITESHEET_INDEX, (u32*)MAP_OBJECT_METADATA_B_TEXTURE_TO_PALETTE_LOOKUP, 1, 1);
             setSpriteScale(MAP_OBJECT_1, 5.0f, 1.0f, 5.0f);
-            func_8002C6F8(MAP_OBJECT_1, (1 | 2));
-            func_8002C768(MAP_OBJECT_1, 0x200);
-            setSpriteRenderingLayer(MAP_OBJECT_1, 2);
+            setSpriteAxisMapping(MAP_OBJECT_1, SPRITE_BILLBOARD_XZ);
+            setSpriteTriangleWinding(MAP_OBJECT_1, SPRITE_RENDERING_REVERSE_WINDING);
+            setSpriteBlendMode(MAP_OBJECT_1, SPRITE_BLEND_ALPHA_MODULATED);
             setSpriteBaseRGBA(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0x80);
             setSpriteColor(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
             setMapObject(MAIN_MAP_INDEX, 0, MAP_OBJECT_1, 0, -256.0f, 104.f, -24.0f, 0, 0xFE, 0, 0);
@@ -1062,7 +1058,7 @@ void func_8006F938(u16 levelIndex) {
                 if (18 < gDayOfMonth && gDayOfMonth < 23) {
                     dmaSprite(MAP_OBJECT_2, &_homeItemsTextureSegmentRomStart, &_homeItemsTextureSegmentRomEnd, &_homeItemsAssetsIndexSegmentRomStart, &_homeItemsAssetsIndexSegmentRomEnd, &_homeItemsSpritesheetIndexSegmentRomStart, &_homeItemsSpritesheetIndexSegmentRomEnd, (u8*)MAP_OBJECT_SLOT_1_TEXTURE_1, (u8*)MAP_OBJECT_SLOT_1_TEXTURE_2, (u16*)MAP_OBJECT_METADATA_A_PALETTE, (AnimationFrameMetadata*)MAP_OBJECT_METADATA_A_ANIM_METADATA, (u32*)MAP_OBJECT_METADATA_A_SPRITESHEET_INDEX, (u32*)MAP_OBJECT_METADATA_A_TEXTURE_TO_PALETTE_LOOKUP, 1, 1);
                     setSpriteScale(MAP_OBJECT_2, 1.0f, 1.0f, 1.0f);
-                    setSpriteRenderingLayer(MAP_OBJECT_2, (1 | 2));
+                    setSpriteBlendMode(MAP_OBJECT_2, SPRITE_BLEND_ALPHA_DECAL);
                     setSpriteBaseRGBA(MAP_OBJECT_2, 0xFF, 0xFF, 0xFF, 0xFF);
                     setSpriteColor(MAP_OBJECT_2, 0xFF, 0xFF, 0xFF, 0xFF);
                     setMapObject(MAIN_MAP_INDEX, 1, MAP_OBJECT_2, 0xD, 80.0f, 128.0f, 208.0f, 0xFF, 0xFF, 0, 0);
@@ -1075,7 +1071,7 @@ void func_8006F938(u16 levelIndex) {
                     
                         dmaSprite(j + MAP_OBJECT_2, &_festivalFlowersTextureSegmentRomStart, &_festivalFlowersTextureSegmentRomEnd, &_festivalFlowersAssetsIndexSegmentRomStart, &_festivalFlowersAssetsIndexSegmentRomEnd, &_festivalFlowersSpritesheetIndexSegmentRomStart, &_festivalFlowersSpritesheetIndexSegmentRomEnd, (u8*)MAP_OBJECT_SLOT_1_TEXTURE_1, NULL, (u16*)MAP_OBJECT_METADATA_A_PALETTE, (AnimationFrameMetadata*)MAP_OBJECT_METADATA_A_ANIM_METADATA, (u32*)MAP_OBJECT_METADATA_A_SPRITESHEET_INDEX, 0, 0, 1);
                         setSpriteScale(j + MAP_OBJECT_2, 1.0f, 1.0f, 1.0f);
-                        setSpriteRenderingLayer(j + MAP_OBJECT_2, (1 | 2));
+                        setSpriteBlendMode(j + MAP_OBJECT_2, SPRITE_BLEND_ALPHA_DECAL);
                         setSpriteBaseRGBA(j + MAP_OBJECT_2, 0xFF, 0xFF, 0xFF, 0xFF);
                         setSpriteColor(j + MAP_OBJECT_2, 0xFF, 0xFF, 0xFF, 0xFF);
                         
@@ -1110,9 +1106,9 @@ void func_8006F938(u16 levelIndex) {
 
             dmaSprite(MAP_OBJECT_1, &_stoneTextureSegmentRomStart, &_stoneTextureSegmentRomEnd, &_stoneAssetsIndexSegmentRomStart, &_stoneAssetsIndexSegmentRomEnd, &_stoneSpritesheetIndexSegmentRomStart, &_stoneSpritesheetIndexSegmentRomEnd, (u8*)MAP_OBJECT_SLOT_1_TEXTURE_1, (u8*)MAP_OBJECT_SLOT_1_TEXTURE_2, (u16*)MAP_OBJECT_METADATA_A_PALETTE, (AnimationFrameMetadata*)MAP_OBJECT_METADATA_A_ANIM_METADATA, (u32*)MAP_OBJECT_METADATA_A_SPRITESHEET_INDEX, (u32*)MAP_OBJECT_METADATA_A_TEXTURE_TO_PALETTE_LOOKUP, 1, 1);
             setSpriteScale(MAP_OBJECT_1, 6.0f, 1.0f, 6.0f);
-            func_8002C6F8(MAP_OBJECT_1, (1 | 2));
-            func_8002C768(MAP_OBJECT_1, 0x200);
-            setSpriteRenderingLayer(MAP_OBJECT_1, 2);
+            setSpriteAxisMapping(MAP_OBJECT_1, SPRITE_BILLBOARD_XZ);
+            setSpriteTriangleWinding(MAP_OBJECT_1, SPRITE_RENDERING_REVERSE_WINDING);
+            setSpriteBlendMode(MAP_OBJECT_1, SPRITE_BLEND_ALPHA_MODULATED);
             setSpriteBaseRGBA(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0x80);
             setSpriteColor(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
 
@@ -1120,7 +1116,7 @@ void func_8006F938(u16 levelIndex) {
 
             dmaSprite(MAP_OBJECT_2, &_steamTextureSegmentRomStart, &_steamTextureSegmentRomEnd, &_steamAssetsIndexSegmentRomStart, &_steamAssetsIndexSegmentRomEnd, &_steamSpritesheetIndexSegmentRomStart, &_steamSpritesheetIndexSegmentRomEnd, (u8*)MAP_OBJECT_SLOT_3_TEXTURE_1, (u8*)MAP_OBJECT_SLOT_3_TEXTURE_2, (u16*)MAP_OBJECT_METADATA_B_PALETTE, (AnimationFrameMetadata*)MAP_OBJECT_METADATA_B_ANIM_METADATA, (u32*)MAP_OBJECT_METADATA_B_SPRITESHEET_INDEX, (u32*)MAP_OBJECT_METADATA_B_TEXTURE_TO_PALETTE_LOOKUP, 1, 1);
             setSpriteScale(MAP_OBJECT_2, 1.6f, 1.6f, 1.0f);
-            setSpriteRenderingLayer(MAP_OBJECT_2, 2);
+            setSpriteBlendMode(MAP_OBJECT_2, SPRITE_BLEND_ALPHA_MODULATED);
             setSpriteBaseRGBA(MAP_OBJECT_2, 0xFF, 0xFF, 0xFF, 0x60);
             setSpriteColor(MAP_OBJECT_2, 0xFF, 0xFF, 0xFF, 0xFF);
 
@@ -1202,7 +1198,7 @@ void func_8006F938(u16 levelIndex) {
             }
             if (checkShopItemShouldBeDisplayed(0x17)) {
                 loadShopItemSprite(0x17);
-                setMapAddition(0, 0);
+                setStaticMapAddition(0, 0);
             }
             
             break;
@@ -1222,10 +1218,10 @@ void func_8006F938(u16 levelIndex) {
             break;
 
         case COOP:
-            
-            for (i = 0; i < 6; i++) { 
+
+            for (i = 0; i < 6; i++) {
                 if (gChickens[i].flags & 0x10) {
-                    func_80073244(i);
+                    setChickenFeedSprite(i);
                 }
             }
             
@@ -1234,14 +1230,14 @@ void func_8006F938(u16 levelIndex) {
         case BARN:
 
             for (i = 0; i < MAX_FARM_ANIMALS; i++) {
-                
+
                 if (gFarmAnimals[i].flags & 8) {
-                    func_8007341C(i);
+                    setBarnFodderSprite(i);
                 }
                 if (gFarmAnimals[i].flags & 0x10) {
-                    func_8007341C(8);
+                    setBarnFodderSprite(8);
                 }
-                
+
             }
             
             break;
@@ -1250,7 +1246,7 @@ void func_8006F938(u16 levelIndex) {
             
             dmaSprite(MAP_OBJECT_1, &_vineyardTreeTextureSegmentRomStart, &_vineyardTreeTextureSegmentRomEnd, &_vineyardTreeAssetsIndexSegmentRomStart, &_vineyardTreeAssetsIndexSegmentRomEnd, &_vineyardTreeSpritesheetIndexSegmentRomStart, &_vineyardTreeSpritesheetIndexSegmentRomEnd, (u8*)MAP_OBJECT_SLOT_1_TEXTURE_1, (u8*)MAP_OBJECT_SLOT_1_TEXTURE_2, (u16*)MAP_OBJECT_METADATA_A_PALETTE, (AnimationFrameMetadata*)MAP_OBJECT_METADATA_A_ANIM_METADATA, (u32*)MAP_OBJECT_METADATA_A_SPRITESHEET_INDEX, (u32*)MAP_OBJECT_METADATA_A_TEXTURE_TO_PALETTE_LOOKUP, 1, 1);
             setSpriteScale(MAP_OBJECT_1, 2.0f, 2.0f, 1.0f);
-            setSpriteRenderingLayer(MAP_OBJECT_1, (1 | 2));
+            setSpriteBlendMode(MAP_OBJECT_1, SPRITE_BLEND_ALPHA_DECAL);
             setSpriteBaseRGBA(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
             setSpriteColor(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
             
@@ -1266,9 +1262,9 @@ void func_8006F938(u16 levelIndex) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/level", func_80073244);
+//INCLUDE_ASM("asm/nonmatchings/game/level", setChickenFeedSprite);
 
-void func_80073244(u8 itemIndex) {
+void setChickenFeedSprite(u8 itemIndex) {
 
     Vec3f arr[6];
 
@@ -1276,7 +1272,7 @@ void func_80073244(u8 itemIndex) {
 
     dmaSprite(itemIndex + MAP_OBJECT_1, &_homeItemsTextureSegmentRomStart, &_homeItemsTextureSegmentRomEnd, &_homeItemsAssetsIndexSegmentRomStart, &_homeItemsAssetsIndexSegmentRomEnd, &_homeItemsSpritesheetIndexSegmentRomStart, &_homeItemsSpritesheetIndexSegmentRomEnd, (u8*)MAP_OBJECT_SLOT_1_TEXTURE_1, (u8*)MAP_OBJECT_SLOT_1_TEXTURE_2, (u16*)MAP_OBJECT_METADATA_A_PALETTE, (AnimationFrameMetadata*)MAP_OBJECT_METADATA_A_ANIM_METADATA, (u32*)MAP_OBJECT_METADATA_A_SPRITESHEET_INDEX, (u32*)MAP_OBJECT_METADATA_A_TEXTURE_TO_PALETTE_LOOKUP, 1, 1);
     setSpriteScale(itemIndex + MAP_OBJECT_1, 1.0f, 1.0f, 1.0f);
-    setSpriteRenderingLayer(itemIndex + MAP_OBJECT_1, (1 | 2));
+    setSpriteBlendMode(itemIndex + MAP_OBJECT_1, SPRITE_BLEND_ALPHA_DECAL);
     setSpriteBaseRGBA(itemIndex + MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
     setSpriteColor(itemIndex + MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
 
@@ -1284,9 +1280,9 @@ void func_80073244(u8 itemIndex) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/level", func_8007341C);
+//INCLUDE_ASM("asm/nonmatchings/game/level", setBarnFodderSprite);
 
-void func_8007341C(u8 itemIndex) {
+void setBarnFodderSprite(u8 itemIndex) {
 
     Vec3f arr[9];
     
@@ -1294,7 +1290,7 @@ void func_8007341C(u8 itemIndex) {
 
     dmaSprite(itemIndex + MAP_OBJECT_1, &_homeItemsTextureSegmentRomStart, &_homeItemsTextureSegmentRomEnd, &_homeItemsAssetsIndexSegmentRomStart, &_homeItemsAssetsIndexSegmentRomEnd, &_homeItemsSpritesheetIndexSegmentRomStart, &_homeItemsSpritesheetIndexSegmentRomEnd, (u8*)MAP_OBJECT_SLOT_1_TEXTURE_1, (u8*)MAP_OBJECT_SLOT_1_TEXTURE_2, (u16*)MAP_OBJECT_METADATA_A_PALETTE, (AnimationFrameMetadata*)MAP_OBJECT_METADATA_A_ANIM_METADATA, (u32*)MAP_OBJECT_METADATA_A_SPRITESHEET_INDEX, (u32*)MAP_OBJECT_METADATA_A_TEXTURE_TO_PALETTE_LOOKUP, 1, 1);
     setSpriteScale(itemIndex + MAP_OBJECT_1, 1.0f, 1.0f, 1.0f);
-    setSpriteRenderingLayer(itemIndex + MAP_OBJECT_1, (1 | 2));
+    setSpriteBlendMode(itemIndex + MAP_OBJECT_1, SPRITE_BLEND_ALPHA_DECAL);
     setSpriteBaseRGBA(itemIndex + MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
     setSpriteColor(itemIndex + MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
 
@@ -1304,8 +1300,8 @@ void func_8007341C(u8 itemIndex) {
 
 // alternate
 // Vec4f D_8011FB70[];
-/* 
-void func_8007341C(u8 arg0) {
+/*
+void setBarnFodderSprite(u8 arg0) {
 
     Vec3f arr[9];
     
@@ -1322,7 +1318,7 @@ void func_8007341C(u8 arg0) {
 
     dmaSprite(arg0 + MAP_OBJECT_1, &_homeItemsTextureSegmentRomStart, &_homeItemsTextureSegmentRomEnd, &_homeItemsAssetsIndexSegmentRomStart, &_homeItemsAssetsIndexSegmentRomEnd, &_homeItemsSpritesheetIndexSegmentRomStart, &_homeItemsSpritesheetIndexSegmentRomEnd, (u8*)MAP_OBJECT_SLOT_1_TEXTURE_1, (u8*)MAP_OBJECT_SLOT_1_TEXTURE_2, (u16*)MAP_OBJECT_METADATA_A_PALETTE, (AnimationFrameMetadata*)MAP_OBJECT_METADATA_A_ANIM_METADATA, (u32*)MAP_OBJECT_METADATA_A_SPRITESHEET_INDEX, (u32*)MAP_OBJECT_METADATA_A_TEXTURE_TO_PALETTE_LOOKUP, (void* )1, (u8) (void* )1);
     setSpriteScale(arg0 + MAP_OBJECT_1, 1.0f, 1.0f, 1.0f);
-    setSpriteRenderingLayer(arg0 + MAP_OBJECT_1, (1 | 2));
+    setSpriteBlendMode(arg0 + MAP_OBJECT_1, SPRITE_BLEND_ALPHA_DECAL);
     setSpriteBaseRGBA(arg0 + MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
     setSpriteColor(arg0 + MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
 
@@ -1357,249 +1353,250 @@ static const Vec3f D_8011FB70[] = {
     { 220.0f, 0.0f, -264.0f },
 };
 
-//INCLUDE_ASM("asm/nonmatchings/game/level", func_800735FC);
+//INCLUDE_ASM("asm/nonmatchings/game/level", initializeMapAdditionsForLevel);
 
 // map additions
-void func_800735FC(u16 levelIndex) {
+void initializeMapAdditionsForLevel(u16 levelIndex) {
 
     switch (levelIndex) {
         case FARM:
-            func_80038900(MAIN_MAP_INDEX, 9, 0, 0, 1);
-            func_80038900(MAIN_MAP_INDEX, 0xA, 0, 2, 3);
-            func_80038900(MAIN_MAP_INDEX, 0xA, 1, 3, 2);
-            func_80038900(MAIN_MAP_INDEX, 0xB, 0, 4, 1);
-            func_80038900(MAIN_MAP_INDEX, 0xC, 0, 1, 1);
-            func_80038900(MAIN_MAP_INDEX, 0xD, 0, 0xC, 1);
-            func_80038900(MAIN_MAP_INDEX, 0xE, 0, 0xA, 1);
-            func_80038900(MAIN_MAP_INDEX, 0xF, 0, 0xB, 1);
-            func_80038900(MAIN_MAP_INDEX, 0x10, 0, 0xD, 1);
-            func_80038900(MAIN_MAP_INDEX, 0x11, 0, 9, 1);
-            func_80038900(MAIN_MAP_INDEX, 0x13, 0, 0xE, 1);
-            func_80038900(MAIN_MAP_INDEX, 0x14, 0, 0xF, 1);
-            func_80038900(MAIN_MAP_INDEX, 0x12, 0, 0x11, 2);
-            func_80038900(MAIN_MAP_INDEX, 0x12, 1, 0x12, 2);
-            func_80038900(MAIN_MAP_INDEX, 0x12, 2, 0x11, 2);
-            func_80038900(MAIN_MAP_INDEX, 0x12, 3, 0x13, 2);
-            func_80038900(MAIN_MAP_INDEX, 0x12, 4, 0x14, 2);
-            func_80038900(MAIN_MAP_INDEX, 0x1A, 0, 0x1A, 1);
-            func_80038900(MAIN_MAP_INDEX, 0x1B, 0, 2, 3);
-            func_80038900(MAIN_MAP_INDEX, 0x1B, 1, 3, 8);
-            func_80038900(MAIN_MAP_INDEX, 0x1B, 2, 2, 2);
-            func_80038900(MAIN_MAP_INDEX, 0x1B, 3, 0x1B, 2);
-            func_80038900(MAIN_MAP_INDEX, 0x1C, 0, 0x1C, 1);
-            func_80038900(MAIN_MAP_INDEX, 0x1D, 0, 0x1D, 1);
-            func_80038900(MAIN_MAP_INDEX, 0x1E, 0, 0x1E, 1);
-            func_80038900(MAIN_MAP_INDEX, 0, 0, 0x20, 0);
-            func_80038900(MAIN_MAP_INDEX, 1, 0, 0x21, 0);
-            func_80038900(MAIN_MAP_INDEX, 2, 0, 0x22, 0);
-            func_80038900(MAIN_MAP_INDEX, 3, 0, 0x1F, 0);
-            func_80038900(MAIN_MAP_INDEX, 4, 0, 5, 0);
-            func_80038900(MAIN_MAP_INDEX, 5, 0, 6, 0);
-            func_80038900(MAIN_MAP_INDEX, 6, 0, 7, 0);
-            func_80038900(MAIN_MAP_INDEX, 7, 0, 8, 0);
-            func_80038900(MAIN_MAP_INDEX, 8, 0, 0x10, 0);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 9, 0, 0, 1);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 0xA, 0, 2, 3);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 0xA, 1, 3, 2);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 0xB, 0, 4, 1);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 0xC, 0, 1, 1);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 0xD, 0, 0xC, 1);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 0xE, 0, 0xA, 1);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 0xF, 0, 0xB, 1);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 0x10, 0, 0xD, 1);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 0x11, 0, 9, 1);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 0x13, 0, 0xE, 1);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 0x14, 0, 0xF, 1);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 0x12, 0, 0x11, 2);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 0x12, 1, 0x12, 2);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 0x12, 2, 0x11, 2);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 0x12, 3, 0x13, 2);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 0x12, 4, 0x14, 2);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 0x1A, 0, 0x1A, 1);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 0x1B, 0, 2, 3);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 0x1B, 1, 3, 8);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 0x1B, 2, 2, 2);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 0x1B, 3, 0x1B, 2);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 0x1C, 0, 0x1C, 1);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 0x1D, 0, 0x1D, 1);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 0x1E, 0, 0x1E, 1);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 0, 0, 0x20, 0);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 1, 0, 0x21, 0);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 2, 0, 0x22, 0);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 3, 0, 0x1F, 0);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 4, 0, 5, 0);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 5, 0, 6, 0);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 6, 0, 7, 0);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 7, 0, 8, 0);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 8, 0, 0x10, 0);
             break;
         default:
             break;
         case GREENHOUSE:
-            func_80038900(MAIN_MAP_INDEX, 0, 0, 0, 2);
-            func_80038900(MAIN_MAP_INDEX, 0, 1, 1, 2);
-            func_80038900(MAIN_MAP_INDEX, 0, 2, 0, 2);
-            func_80038900(MAIN_MAP_INDEX, 0, 3, 2, 2);
-            func_80038900(MAIN_MAP_INDEX, 0, 4, 3, 2);
-            func_80038900(MAIN_MAP_INDEX, 4, 0, 4, 0);
-            func_80038900(MAIN_MAP_INDEX, 5, 0, 5, 0);
-            func_80038900(MAIN_MAP_INDEX, 6, 0, 6, 0);
-            func_80038900(MAIN_MAP_INDEX, 7, 0, 7, 0);
-            func_80038900(MAIN_MAP_INDEX, 8, 0, 8, 0);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 0, 0, 0, 2);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 0, 1, 1, 2);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 0, 2, 0, 2);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 0, 3, 2, 2);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 0, 4, 3, 2);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 4, 0, 4, 0);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 5, 0, 5, 0);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 6, 0, 6, 0);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 7, 0, 7, 0);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 8, 0, 8, 0);
             break;
         case HOUSE:
-            func_80038900(MAIN_MAP_INDEX, 0, 0, 2, 1);
-            func_80038900(MAIN_MAP_INDEX, 1, 0, 9, 1);
-            func_80038900(MAIN_MAP_INDEX, 2, 0, 3, 1);
-            func_80038900(MAIN_MAP_INDEX, 3, 0, 0, 1);
-            func_80038900(MAIN_MAP_INDEX, 4, 0, 7, 1);
-            func_80038900(MAIN_MAP_INDEX, 5, 0, 6, 1);
-            func_80038900(MAIN_MAP_INDEX, 6, 0, 5, 1);
-            func_80038900(MAIN_MAP_INDEX, 7, 0, 4, 1);
-            func_80038900(MAIN_MAP_INDEX, 8, 0, 1, 1);
-            func_80038900(MAIN_MAP_INDEX, 9, 0, 8, 1);
-            func_80038900(MAIN_MAP_INDEX, 0xA, 0, 0xA, 1);
-            func_80038900(MAIN_MAP_INDEX, 0xB, 0, 0xB, 1);
-            func_80038900(MAIN_MAP_INDEX, 0xC, 0, 0xC, 1);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 0, 0, 2, 1);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 1, 0, 9, 1);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 2, 0, 3, 1);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 3, 0, 0, 1);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 4, 0, 7, 1);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 5, 0, 6, 1);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 6, 0, 5, 1);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 7, 0, 4, 1);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 8, 0, 1, 1);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 9, 0, 8, 1);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 10, 0, 10, 1);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 11, 0, 11, 1);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 12, 0, 12, 1);
             break;
         case KITCHEN:
-            func_80038900(MAIN_MAP_INDEX, 0, 0, 0, 1);
-            func_80038900(MAIN_MAP_INDEX, 1, 0, 1, 1);
-            func_80038900(MAIN_MAP_INDEX, 2, 0, 2, 1);
-            func_80038900(MAIN_MAP_INDEX, 3, 0, 3, 1);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 0, 0, 0, 1);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 1, 0, 1, 1);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 2, 0, 2, 1);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 3, 0, 3, 1);
             break;
         case BATHROOM:
-            func_80038900(MAIN_MAP_INDEX, 0, 0, 0, 1);
-            func_80038900(MAIN_MAP_INDEX, 1, 1, 1, 1);
-            func_80038900(MAIN_MAP_INDEX, 2, 2, 3, 1);
-            func_80038900(MAIN_MAP_INDEX, 3, 3, 2, 1);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 0, 0, 0, 1);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 1, 1, 1, 1);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 2, 2, 3, 1);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 3, 3, 2, 1);
             break;
         case COOP:
-            func_80038900(MAIN_MAP_INDEX, 0, 0, 0, 2);
-            func_80038900(MAIN_MAP_INDEX, 0, 1, 1, 2);
-            func_80038900(MAIN_MAP_INDEX, 0, 2, 0, 2);
-            func_80038900(MAIN_MAP_INDEX, 0, 3, 2, 2);
-            func_80038900(MAIN_MAP_INDEX, 0, 4, 3, 2);
-            func_80038900(MAIN_MAP_INDEX, 1, 0, 4, 1);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 0, 0, 0, 2);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 0, 1, 1, 2);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 0, 2, 0, 2);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 0, 3, 2, 2);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 0, 4, 3, 2);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 1, 0, 4, 1);
             break;
         case BARN:
-            func_80038900(MAIN_MAP_INDEX, 0, 0, 0, 2);
-            func_80038900(MAIN_MAP_INDEX, 0, 1, 1, 2);
-            func_80038900(MAIN_MAP_INDEX, 0, 2, 0, 2);
-            func_80038900(MAIN_MAP_INDEX, 0, 3, 2, 2);
-            func_80038900(MAIN_MAP_INDEX, 0, 4, 3, 2);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 0, 0, 0, 2);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 0, 1, 1, 2);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 0, 2, 0, 2);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 0, 3, 2, 2);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 0, 4, 3, 2);
             break;
         case VILLAGE_1:
-            func_80038900(MAIN_MAP_INDEX, 0, 0, 0, 1);
-            func_80038900(MAIN_MAP_INDEX, 1, 0, 1, 1);
-            func_80038900(MAIN_MAP_INDEX, 2, 0, 2, 1);
-            func_80038900(MAIN_MAP_INDEX, 3, 0, 4, 1);
-            func_80038900(MAIN_MAP_INDEX, 4, 0, 3, 1);
-            func_80038900(MAIN_MAP_INDEX, 5, 0, 5, 1);
-            func_80038900(MAIN_MAP_INDEX, 6, 0, 6, 1);
-            func_80038900(MAIN_MAP_INDEX, 7, 0, 7, 1);
-            func_80038900(MAIN_MAP_INDEX, 8, 0, 8, 1);
-            func_80038900(MAIN_MAP_INDEX, 9, 0, 9, 1);
-            func_80038900(MAIN_MAP_INDEX, 0xA, 0, 0xA, 1);
-            func_80038900(MAIN_MAP_INDEX, 0xB, 0, 0xB, 1);
-            func_80038900(MAIN_MAP_INDEX, 0xC, 0, 0xC, 1);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 0, 0, 0, 1);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 1, 0, 1, 1);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 2, 0, 2, 1);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 3, 0, 4, 1);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 4, 0, 3, 1);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 5, 0, 5, 1);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 6, 0, 6, 1);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 7, 0, 7, 1);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 8, 0, 8, 1);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 9, 0, 9, 1);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 10, 0, 10, 1);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 11, 0, 11, 1);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 12, 0, 12, 1);
             break;
         case VILLAGE_2:
-            func_80038900(MAIN_MAP_INDEX, 0, 0, 0, 1);
-            func_80038900(MAIN_MAP_INDEX, 1, 0, 1, 1);
-            func_80038900(MAIN_MAP_INDEX, 2, 0, 2, 1);
-            func_80038900(MAIN_MAP_INDEX, 3, 0, 3, 1);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 0, 0, 0, 1);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 1, 0, 1, 1);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 2, 0, 2, 1);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 3, 0, 3, 1);
             break;
 
         case SQUARE:
             switch (gSeason) {                          
                 case SPRING:                                     
-                    func_80038900(MAIN_MAP_INDEX, 0, 0, 0, 1);
-                    func_80038900(MAIN_MAP_INDEX, 1, 0, 1, 1);
-                    func_80038900(MAIN_MAP_INDEX, 2, 0, 2, 1);
-                    func_80038900(MAIN_MAP_INDEX, 3, 0, 3, 1);
-                    func_80038900(MAIN_MAP_INDEX, 4, 0, 4, 1);
-                    func_80038900(MAIN_MAP_INDEX, 5, 0, 5, 1);
-                    func_80038900(MAIN_MAP_INDEX, 6, 0, 6, 1);
-                    func_80038900(MAIN_MAP_INDEX, 7, 0, 7, 1);
-                    func_80038900(MAIN_MAP_INDEX, 8, 0, 8, 1);
-                    func_80038900(MAIN_MAP_INDEX, 9, 0, 9, 1);
-                    func_80038900(MAIN_MAP_INDEX, 0xA, 0, 0xA, 1);
+                    setMapAdditionSequenceStep(MAIN_MAP_INDEX, 0, 0, 0, 1);
+                    setMapAdditionSequenceStep(MAIN_MAP_INDEX, 1, 0, 1, 1);
+                    setMapAdditionSequenceStep(MAIN_MAP_INDEX, 2, 0, 2, 1);
+                    setMapAdditionSequenceStep(MAIN_MAP_INDEX, 3, 0, 3, 1);
+                    setMapAdditionSequenceStep(MAIN_MAP_INDEX, 4, 0, 4, 1);
+                    setMapAdditionSequenceStep(MAIN_MAP_INDEX, 5, 0, 5, 1);
+                    setMapAdditionSequenceStep(MAIN_MAP_INDEX, 6, 0, 6, 1);
+                    setMapAdditionSequenceStep(MAIN_MAP_INDEX, 7, 0, 7, 1);
+                    setMapAdditionSequenceStep(MAIN_MAP_INDEX, 8, 0, 8, 1);
+                    setMapAdditionSequenceStep(MAIN_MAP_INDEX, 9, 0, 9, 1);
+                    setMapAdditionSequenceStep(MAIN_MAP_INDEX, 10, 0, 10, 1);
                     break;
                 case SUMMER:                                     
-                    func_80038900(MAIN_MAP_INDEX, 0, 0, 0, 1);
-                    func_80038900(MAIN_MAP_INDEX, 1, 0, 1, 1);
-                    func_80038900(MAIN_MAP_INDEX, 2, 0, 2, 1);
-                    func_80038900(MAIN_MAP_INDEX, 3, 0, 3, 1);
-                    func_80038900(MAIN_MAP_INDEX, 4, 0, 4, 1);
-                    func_80038900(MAIN_MAP_INDEX, 5, 0, 5, 1);
-                    func_80038900(MAIN_MAP_INDEX, 6, 0, 6, 1);
+                    setMapAdditionSequenceStep(MAIN_MAP_INDEX, 0, 0, 0, 1);
+                    setMapAdditionSequenceStep(MAIN_MAP_INDEX, 1, 0, 1, 1);
+                    setMapAdditionSequenceStep(MAIN_MAP_INDEX, 2, 0, 2, 1);
+                    setMapAdditionSequenceStep(MAIN_MAP_INDEX, 3, 0, 3, 1);
+                    setMapAdditionSequenceStep(MAIN_MAP_INDEX, 4, 0, 4, 1);
+                    setMapAdditionSequenceStep(MAIN_MAP_INDEX, 5, 0, 5, 1);
+                    setMapAdditionSequenceStep(MAIN_MAP_INDEX, 6, 0, 6, 1);
                     break;
                 case AUTUMN:                                     
-                    func_80038900(MAIN_MAP_INDEX, 0, 0, 0, 1);
-                    func_80038900(MAIN_MAP_INDEX, 1, 0, 1, 1);
-                    func_80038900(MAIN_MAP_INDEX, 2, 0, 2, 1);
-                    func_80038900(MAIN_MAP_INDEX, 3, 0, 3, 1);
-                    func_80038900(MAIN_MAP_INDEX, 4, 0, 4, 1);
-                    func_80038900(MAIN_MAP_INDEX, 5, 0, 5, 1);
-                    func_80038900(MAIN_MAP_INDEX, 6, 0, 6, 1);
+                    setMapAdditionSequenceStep(MAIN_MAP_INDEX, 0, 0, 0, 1);
+                    setMapAdditionSequenceStep(MAIN_MAP_INDEX, 1, 0, 1, 1);
+                    setMapAdditionSequenceStep(MAIN_MAP_INDEX, 2, 0, 2, 1);
+                    setMapAdditionSequenceStep(MAIN_MAP_INDEX, 3, 0, 3, 1);
+                    setMapAdditionSequenceStep(MAIN_MAP_INDEX, 4, 0, 4, 1);
+                    setMapAdditionSequenceStep(MAIN_MAP_INDEX, 5, 0, 5, 1);
+                    setMapAdditionSequenceStep(MAIN_MAP_INDEX, 6, 0, 6, 1);
                     break;
                 case WINTER:                                     
-                    func_80038900(MAIN_MAP_INDEX, 0, 0, 0, 1);
-                    func_80038900(MAIN_MAP_INDEX, 1, 0, 1, 1);
+                    setMapAdditionSequenceStep(MAIN_MAP_INDEX, 0, 0, 0, 1);
+                    setMapAdditionSequenceStep(MAIN_MAP_INDEX, 1, 0, 1, 1);
                     break;
                 }
             break;
         case FLOWER_SHOP:
-            func_80038900(MAIN_MAP_INDEX, 0, 0, 0, 1);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 0, 0, 0, 1);
             break;
         case BAKERY:
-            func_80038900(MAIN_MAP_INDEX, 0, 0, 0, 1);
-            func_80038900(MAIN_MAP_INDEX, 1, 0, 1, 1);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 0, 0, 0, 1);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 1, 0, 1, 1);
             break;
         case MAYOR_HOUSE:
-            func_80038900(MAIN_MAP_INDEX, 0, 0, 0, 1);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 0, 0, 0, 1);
             break;
         case POTION_SHOP:
-            func_80038900(MAIN_MAP_INDEX, 0, 0, 0, 1);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 0, 0, 0, 1);
             break;
         case MOUNTAIN_1:
-            func_80038900(MAIN_MAP_INDEX, 0, 0, 0, 1);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 0, 0, 0, 1);
             break;
         case MOUNTAIN_2:
-            func_80038900(MAIN_MAP_INDEX, 0, 0, 0, 1);
-            func_80038900(MAIN_MAP_INDEX, 1, 0, 1, 1);
-            func_80038900(MAIN_MAP_INDEX, 2, 0, 2, 1);
-            func_80038900(MAIN_MAP_INDEX, 3, 0, 3, 1);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 0, 0, 0, 1);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 1, 0, 1, 1);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 2, 0, 2, 1);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 3, 0, 3, 1);
             break;
         case TOP_OF_MOUNTAIN_1:
-            func_80038900(MAIN_MAP_INDEX, 0, 0, 0, 1);
-            func_80038900(MAIN_MAP_INDEX, 1, 0, 1, 1);
-            func_80038900(MAIN_MAP_INDEX, 2, 0, 2, 1);
-            func_80038900(MAIN_MAP_INDEX, 3, 0, 3, 1);
-            func_80038900(MAIN_MAP_INDEX, 4, 0, 4, 1);
-            func_80038900(MAIN_MAP_INDEX, 5, 0, 5, 1);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 0, 0, 0, 1);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 1, 0, 1, 1);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 2, 0, 2, 1);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 3, 0, 3, 1);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 4, 0, 4, 1);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 5, 0, 5, 1);
             if (gSeason == WINTER) {
-                func_80038900(MAIN_MAP_INDEX, 6, 0, 6, 1);
+                setMapAdditionSequenceStep(MAIN_MAP_INDEX, 6, 0, 6, 1);
             }
             break;
         case MOON_MOUNTAIN:
-            func_80038900(MAIN_MAP_INDEX, 0, 0, 0, 1);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 0, 0, 0, 1);
             break;
         case POND:
-            func_80038900(MAIN_MAP_INDEX, 4, 0, 0, 0);
-            func_80038900(MAIN_MAP_INDEX, 5, 0, 1, 0);
-            func_80038900(MAIN_MAP_INDEX, 6, 0, 2, 0);
-            func_80038900(MAIN_MAP_INDEX, 7, 0, 3, 0);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 4, 0, 0, 0);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 5, 0, 1, 0);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 6, 0, 2, 0);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 7, 0, 3, 0);
             break;
         case VINEYARD:
-            func_80038900(MAIN_MAP_INDEX, 0, 0, 1, 1);
-            func_80038900(MAIN_MAP_INDEX, 1, 0, 0, 1);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 0, 0, 1, 1);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 1, 0, 0, 1);
             break;
         case RANCH:
-            func_80038900(MAIN_MAP_INDEX, 0, 0, 0, 1);
-            func_80038900(MAIN_MAP_INDEX, 1, 0, 1, 1);
-            func_80038900(MAIN_MAP_INDEX, 2, 0, 2, 1);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 0, 0, 0, 1);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 1, 0, 1, 1);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 2, 0, 2, 1);
             if (gSeason == AUTUMN) {
-                func_80038900(MAIN_MAP_INDEX, 3, 0, 3, 1);
+                setMapAdditionSequenceStep(MAIN_MAP_INDEX, 3, 0, 3, 1);
             }
             break;
         case RANCH_STORE:
-            func_80038900(MAIN_MAP_INDEX, 0, 0, 0, 1);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 0, 0, 0, 1);
             break;
         case RICK_STORE:
-            func_80038900(MAIN_MAP_INDEX, 0, 0, 0, 1);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 0, 0, 0, 1);
             break;
         case CAVE:
-            func_80038900(MAIN_MAP_INDEX, 0, 0, 0, 1);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 0, 0, 0, 1);
             break;
+        // waves animation
         case BEACH:
-            func_80038900(MAIN_MAP_INDEX, 0, 0, 0, 4);
-            func_80038900(MAIN_MAP_INDEX, 0, 1, 1, 4);
-            func_80038900(MAIN_MAP_INDEX, 0, 2, 2, 4);
-            func_80038900(MAIN_MAP_INDEX, 0, 3, 3, 4);
-            func_80038900(MAIN_MAP_INDEX, 0, 4, 4, 4);
-            func_80038900(MAIN_MAP_INDEX, 0, 5, 5, 4);
-            func_80038900(MAIN_MAP_INDEX, 0, 6, 6, 4);
-            func_80038900(MAIN_MAP_INDEX, 0, 7, 5, 4);
-            func_80038900(MAIN_MAP_INDEX, 0, 8, 4, 4);
-            func_80038900(MAIN_MAP_INDEX, 0, 9, 3, 4);
-            func_80038900(MAIN_MAP_INDEX, 0, 0xA, 2, 4);
-            func_80038900(MAIN_MAP_INDEX, 0, 0xB, 1, 4);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 0, 0, 0, 4);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 0, 1, 1, 4);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 0, 2, 2, 4);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 0, 3, 3, 4);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 0, 4, 4, 4);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 0, 5, 5, 4);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 0, 6, 6, 4);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 0, 7, 5, 4);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 0, 8, 4, 4);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 0, 9, 3, 4);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 0, 10, 2, 4);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 0, 11, 1, 4);
             break;
         case VINEYARD_CELLAR:
-            func_80038900(MAIN_MAP_INDEX, 0, 0, 0, 1);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 0, 0, 0, 1);
             break;
         case MINE:
         case MINE_2:
-            func_80038900(MAIN_MAP_INDEX, 4, 0, 0, 0);
-            func_80038900(MAIN_MAP_INDEX, 0, 0, 1, 0);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 4, 0, 0, 0);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 0, 0, 1, 0);
             break;
         
     }   
@@ -1614,134 +1611,134 @@ void setAdditionalMapAdditionsForLevel(u16 mapIndex) {
         case FARM:
             if (checkLifeEventBit(HAVE_KITCHEN)) {
                 if (checkLifeEventBit(HAVE_BATHROOM)) {
-                    setMapAddition(MAIN_MAP_INDEX, 0x10);
+                    setStaticMapAddition(MAIN_MAP_INDEX, 0x10);
                 } else {
-                    setMapAddition(MAIN_MAP_INDEX, 0xE);
+                    setStaticMapAddition(MAIN_MAP_INDEX, 0xE);
                 }
             } else if (checkLifeEventBit(HAVE_BATHROOM)) {
-                setMapAddition(MAIN_MAP_INDEX, 0xF);
+                setStaticMapAddition(MAIN_MAP_INDEX, 0xF);
             }
             if (checkLifeEventBit(HAVE_GREENHOUSE)) {
-                setMapAddition(MAIN_MAP_INDEX, 0x13);
+                setStaticMapAddition(MAIN_MAP_INDEX, 0x13);
             }
             if (checkLifeEventBit(HAVE_LOG_TERRACE)) {
-                setMapAddition(MAIN_MAP_INDEX, 0x11);
+                setStaticMapAddition(MAIN_MAP_INDEX, 0x11);
             }
             if (checkLifeEventBit(HAVE_STAIRS)) {
-                setMapAddition(MAIN_MAP_INDEX, 0x1A);
+                setStaticMapAddition(MAIN_MAP_INDEX, 0x1A);
             }
             if (checkLifeEventBit(0x57)) {
-                setMapAddition(MAIN_MAP_INDEX, 0x1C);
+                setStaticMapAddition(MAIN_MAP_INDEX, 0x1C);
             }
             if (checkLifeEventBit(0x56)) {
-                setMapAddition(MAIN_MAP_INDEX, 0x1D);
+                setStaticMapAddition(MAIN_MAP_INDEX, 0x1D);
             }
             if (checkLifeEventBit(0xD7)) {
-                setMapAddition(MAIN_MAP_INDEX, 0x1E);
+                setStaticMapAddition(MAIN_MAP_INDEX, 0x1E);
             }
             break;
         case HOUSE:
             if ((checkLifeEventBit(HAVE_KITCHEN)) || (checkLifeEventBit(HAVE_BATHROOM))) {
-                setMapAddition(MAIN_MAP_INDEX, 0);
+                setStaticMapAddition(MAIN_MAP_INDEX, 0);
             }
             if (checkLifeEventBit(HAVE_STAIRS)) {
-                setMapAddition(MAIN_MAP_INDEX, 7);
+                setStaticMapAddition(MAIN_MAP_INDEX, 7);
             }
             if (checkLifeEventBit(HAVE_BABY_BED)) {
-                setMapAddition(MAIN_MAP_INDEX, 8);
+                setStaticMapAddition(MAIN_MAP_INDEX, 8);
             }
             if (checkLifeEventBit(HAVE_CABINET)) {
-                 setMapAddition(MAIN_MAP_INDEX, 1);
+                 setStaticMapAddition(MAIN_MAP_INDEX, 1);
             } else if (checkLifeEventBit(0x58)) {
-                setMapAddition(MAIN_MAP_INDEX, 0xC);
+                setStaticMapAddition(MAIN_MAP_INDEX, 0xC);
             }
             if (checkLifeEventBit(0x3F)) {
-                setMapAddition(MAIN_MAP_INDEX, 9);
+                setStaticMapAddition(MAIN_MAP_INDEX, 9);
             }
             if (checkLifeEventBit(HAVE_TABLECLOTH)) {
                 if (checkLifeEventBit(HAVE_RUG)) {
-                    setMapAddition(MAIN_MAP_INDEX, 6);
+                    setStaticMapAddition(MAIN_MAP_INDEX, 6);
                 } else {
-                    setMapAddition(MAIN_MAP_INDEX, 4);
+                    setStaticMapAddition(MAIN_MAP_INDEX, 4);
                 }
             } else if (checkLifeEventBit(HAVE_RUG)) {
-                setMapAddition(MAIN_MAP_INDEX, 5);
+                setStaticMapAddition(MAIN_MAP_INDEX, 5);
             }
             if (checkLifeEventBit(0x47)) {
-                setMapAddition(MAIN_MAP_INDEX, 0xB);
+                setStaticMapAddition(MAIN_MAP_INDEX, 0xB);
             }
             break;
         case KITCHEN:
             if (checkLifeEventBit(HAVE_BATHROOM)) {
-                setMapAddition(MAIN_MAP_INDEX, 1);
+                setStaticMapAddition(MAIN_MAP_INDEX, 1);
             }
             if (checkLifeEventBit(0x5D)) {
-                setMapAddition(MAIN_MAP_INDEX, 3);
+                setStaticMapAddition(MAIN_MAP_INDEX, 3);
             }
             break;
         case COOP:
             if (func_8009B564() == 6 && !func_8009B7BC()) {
-                setMapAddition(MAIN_MAP_INDEX, 1);
+                setStaticMapAddition(MAIN_MAP_INDEX, 1);
             }
             break;
         case MOUNTAIN_1:
             if (checkLifeEventBit(0x45) && gSeason == WINTER) {
-                setMapAddition(MAIN_MAP_INDEX, 0);
+                setStaticMapAddition(MAIN_MAP_INDEX, 0);
             }
             break;
         case MOUNTAIN_2:
             if (checkLifeEventBit(BRIDGE_COMPLETED)) {
-                setMapAddition(MAIN_MAP_INDEX, 0);
-                setMapAddition(MAIN_MAP_INDEX, 1);
-                setMapAddition(MAIN_MAP_INDEX, 2);
+                setStaticMapAddition(MAIN_MAP_INDEX, 0);
+                setStaticMapAddition(MAIN_MAP_INDEX, 1);
+                setStaticMapAddition(MAIN_MAP_INDEX, 2);
             }
             break;
         case TOP_OF_MOUNTAIN_1:
             if (checkLifeEventBit(BRIDGE_COMPLETED)) {
-                setMapAddition(MAIN_MAP_INDEX, 2);
-                setMapAddition(MAIN_MAP_INDEX, 3);
-                setMapAddition(MAIN_MAP_INDEX, 4);
-                setMapAddition(MAIN_MAP_INDEX, 5);
+                setStaticMapAddition(MAIN_MAP_INDEX, 2);
+                setStaticMapAddition(MAIN_MAP_INDEX, 3);
+                setStaticMapAddition(MAIN_MAP_INDEX, 4);
+                setStaticMapAddition(MAIN_MAP_INDEX, 5);
             }
             if (checkLifeEventBit(HOT_SPRINGS_COMPLETED)) {
-                setMapAddition(MAIN_MAP_INDEX, 0);
+                setStaticMapAddition(MAIN_MAP_INDEX, 0);
                 break;
             }
             if (gYear == 1 && gSeason == WINTER && (11 < gDayOfMonth && gDayOfMonth < 17)) {
-                setMapAddition(MAIN_MAP_INDEX, 6);
+                setStaticMapAddition(MAIN_MAP_INDEX, 6);
             }
             break;
         case BEACH:
-            func_80038990(MAIN_MAP_INDEX, MAIN_MAP_INDEX, 1);
+            activateMapAddition(MAIN_MAP_INDEX, MAIN_MAP_INDEX, 1);
             break;
         case VINEYARD_CELLAR:
             // karen yellow heart event
             if (0x2C2 < gCutsceneIndex && gCutsceneIndex < 0x2C5) {
-                setMapAddition(MAIN_MAP_INDEX, 0);
+                setStaticMapAddition(MAIN_MAP_INDEX, 0);
             }
             break;
         case SQUARE:
             if (gSeason == SPRING) {
                 if (18 < gDayOfMonth && gDayOfMonth < 23) {
-                    setMapAddition(MAIN_MAP_INDEX, 4);
+                    setStaticMapAddition(MAIN_MAP_INDEX, 4);
                 }
             }
             if (gSeason == SUMMER && gDayOfMonth == 1 && (17 < gHour && gHour < 24) && !checkLifeEventBit(MARRIED) && !checkLifeEventBit(MARIA_HARRIS_MARRIED)) {
-                setMapAddition(MAIN_MAP_INDEX, 1);
-                setMapAddition(MAIN_MAP_INDEX, 2);
+                setStaticMapAddition(MAIN_MAP_INDEX, 1);
+                setStaticMapAddition(MAIN_MAP_INDEX, 2);
             }
             if (gSeason == SPRING) {
                 if (gDayOfMonth == 17 && (7 < gHour && gHour < 18) && gCutsceneFlags & 1) {
-                    setMapAddition(MAIN_MAP_INDEX, 3);
-                    setMapAddition(MAIN_MAP_INDEX, 5);
+                    setStaticMapAddition(MAIN_MAP_INDEX, 3);
+                    setStaticMapAddition(MAIN_MAP_INDEX, 5);
                 }
             }
             if (gSeason == AUTUMN && gDayOfMonth == 28 && (7 < gHour && gHour < 18) && gCutsceneFlags & 1) {
-                setMapAddition(MAIN_MAP_INDEX, 1);
-                setMapAddition(MAIN_MAP_INDEX, 6);
+                setStaticMapAddition(MAIN_MAP_INDEX, 1);
+                setStaticMapAddition(MAIN_MAP_INDEX, 6);
             }
             if (gSeason == WINTER && gDayOfMonth == 19 && (7 < gHour && gHour < 18) && gCutsceneFlags & 1) {
-                setMapAddition(MAIN_MAP_INDEX, 1);
+                setStaticMapAddition(MAIN_MAP_INDEX, 1);
             }
             break;
         case BATHROOM:
@@ -1756,9 +1753,10 @@ u8 getMapFromExit(u8 exitIndex) {
     return exitsToMapIndices[exitIndex];
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/level", func_80074C50);
+//INCLUDE_ASM("asm/nonmatchings/game/level", getCantEnterDialogueInfoIndex);
 
-u16 func_80074C50(u16 exitIndex) {
+// get dialogue info index when can't enter
+u16 getCantEnterDialogueInfoIndex(u16 exitIndex) {
 
     u16 index = 0xFFFF;
 
@@ -1861,8 +1859,8 @@ u16 func_80074C50(u16 exitIndex) {
                     break;
                 }
             }
-            
-            index = 0xD8;
+
+            index = 0xD8;            
             break;
 
         case BAKERY:

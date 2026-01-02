@@ -38,10 +38,10 @@ void setupGameStart(void) {
         setMainLoopCallbackFunctionIndex(NO_OP);
         setMessageBoxViewSpacePosition(0, 0, -64.0f, 352.0f);
         setMessageBoxSpriteIndices(0, 1, 0, 0);
-        func_8003F360(0, -4, 2);
+        setMessageBoxInterpolationWithFlags(0, -4, 2);
 
         // load "no controller" dialogue
-        initializeMessageBox(MAIN_MESSAGE_BOX_INDEX, 0, 0x19, 0x80000);
+        initializeMessageBox(MAIN_MESSAGE_BOX_INDEX, 0, 0x19, MESSAGE_BOX_MODE_NO_INPUT);
 
     }
 }

@@ -8,6 +8,7 @@
 #include "system/globalSprites.h"
 #include "system/graphic.h"
 #include "system/map.h"
+#include "system/mapController.h"
 #include "system/math.h"
 #include "system/message.h"
 
@@ -40,59 +41,58 @@ static LevelInteractionsInfo levelInteractionsInfo;
 
 // forward declarations
 // TODO: label
-bool func_800AD8D0(u16, u8);
-bool func_800ADCDC(u16, u8);
-bool func_800AE00C(u16, u8);
-bool func_800AEB54(u16, u8);
-bool func_800AED60(u16, u8);
-bool func_800AEE8C(u16, u8);
-bool func_800AF060(u16, u8);
-bool func_800AF0B0(u16, u8);
-bool func_800AF494(u16, u8);
-bool func_800AFA2C(u16, u8);
-bool func_800AFA7C(u16, u8);
-bool func_800AFCD0(u16, u8);
-bool func_800AFD20(u16, u8);
-bool func_800AFF9C(u16, u8);
-bool func_800B00E0(u16, u8);
-bool func_800B01EC(u16, u8);
-bool func_800B0378(u16, u8);
-bool func_800B0714(u16, u8);
-bool func_800B0A64(u16, u8);
-bool func_800B0AFC(u16, u8);
-bool func_800B0C48(u16, u8);
-bool func_800B0C98(u16, u8);
-bool func_800B0FB8(u16, u8);
-bool func_800B106C(u16, u8);
-bool func_800B1438(u16, u8);
-bool func_800B1540(u16, u8);
-bool func_800B1808(u16, u8);
-bool func_800B1994(u16, u8);
-bool func_800B1AC4(u16, u8);
+bool handleFarmLevelInteractions(u16, u8);
+bool handleHouseLevelInteractions(u16, u8);
+bool handleBarnLevelInteractions(u16, u8);
+bool handleCoopLevelInteractions(u16, u8);
+bool handleKitchenLevelInteractions(u16, u8);
+bool handleBathroomLevelInteractions(u16, u8);
+bool handleGreenhouseLevelInteractions(u16, u8);
+bool handleVillage1LevelInteractions(u16, u8);
+bool handleFlowerShopLevelInteractions(u16, u8);
+bool handlePopuriRoomLevelInteractions(u16, u8);
+bool handleBakeryLevelInteractions(u16, u8);
+bool handleElliRoomLevelInteractions(u16, u8);
+bool handleRickStoreLevelInteractions(u16, u8);
+bool handleSouvenirShopLevelInteractions(u16, u8);
+bool handleChurchLevelInteractions(u16, u8);
+bool handleTavernLevelInteractions(u16, u8);
+bool handleVillage2LevelInteractions(u16, u8);
+bool handleLibraryLevelInteractions(u16, u8);
+bool handleMidwifeHouseLevelInteractions(u16, u8);
+bool handleMayorHouseLevelInteractions(u16, u8);
+bool handleMariaRoomLevelInteractions(u16, u8);
+bool handlePotionShopLevelInteractions(u16, u8);
+bool handlePotionShopBedroomLevelInteractions(u16, u8);
+bool handleSquareLevelInteractions(u16, u8);
+bool handleMountain1LevelInteractions(u16, u8);
+bool handleMountain2LevelInteractions(u16, u8);
+bool handleTopOfMountain1LevelInteractions(u16, u8);
+bool handleMoonMountainLevelInteractions(u16, u8);
+bool handleRoadLevelInteractions(u16, u8);
 bool handleCarpenterHutLevelInteractions(u16, u8);
 bool handleDumplingHouseLevelInteractions(u16, u8);
-bool func_800B1DBC(u16, u8);
-bool func_800B20C8(u16, u8);
-bool func_800B2118(u16, u8);
-bool func_800B2264(u16, u8);
-bool func_800B2340(u16, u8);
-bool func_800B23A4(u16, u8);
-bool func_800B24D4(u16, u8);
-bool func_800B256C(u16, u8);
-bool func_800B2604(u16, u8);
-bool func_800B27CC(u16, u8);
+bool handleCaveLevelInteractions(u16, u8);
+bool handlePondLevelInteractions(u16, u8);
+bool handleVineyardLevelInteractions(u16, u8);
+bool handleVineyardHouseLevelInteractions(u16, u8);
+bool handleKarenRoomLevelInteractions(u16, u8);
+bool handleVineyardCellarLevelInteractions(u16, u8);
+bool handleVineyardCellarBasementLevelInteractions(u16, u8);
+bool handleRaceTrackLevelInteractions(u16, u8);
+bool handleRanchLevelInteractions(u16, u8);
+bool handleRanchHouseLevelInteractions(u16, u8);
 bool handleRanchStoreLevelInteractions(u16, u8);
-bool func_800B2B90(u16, u8);
-bool func_800B2C28(u16, u8);
-bool func_800B2C78(u16, u8);
-bool func_800B1EE4(u16, u8);
-bool func_800B2078(u16, u8);
+bool handleAnnRoomLevelInteractions(u16, u8);
+bool handleRanchBarnLevelInteractions(u16, u8);
+bool handleBeachLevelInteractions(u16, u8);
+bool handleHarvestSpriteCaveLevelInteractions(u16, u8);
+bool handleMineLevelInteractions(u16, u8);
 
                                                                   
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800ACD70);
+//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", checkShippingBinInteraction);
 
-// shipping bins
-u8 func_800ACD70(u16 mapIndex) {
+u8 checkShippingBinInteraction(u16 mapIndex) {
 
     u8 result = 0xFF;
     
@@ -110,9 +110,9 @@ u8 func_800ACD70(u16 mapIndex) {
     return result;
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800ACDF4);
+//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", checkBarnAnimalFeedInteraction);
 
-u8 func_800ACDF4(u16 mapIndex) {
+u8 checkBarnAnimalFeedInteraction(u16 mapIndex) {
 
     u8 result = 0xFF;
     
@@ -131,10 +131,9 @@ u8 func_800ACDF4(u16 mapIndex) {
     return result;
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800ACE50);
+//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", checkChickenFeedInteraction);
 
-// coop/chicken feed
-bool func_800ACE50(u16 mapIndex) {
+bool checkChickenFeedInteraction(u16 mapIndex) {
 
     u8 temp;
     u8 result = 0xFF;
@@ -153,9 +152,9 @@ bool func_800ACE50(u16 mapIndex) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800ACEAC);
+//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", checkFarmDogBowlInteraction);
 
-u8 func_800ACEAC(u16 mapIndex) {
+u8 checkFarmDogBowlInteraction(u16 mapIndex) {
 
     u8 result = 0xFF;
     
@@ -173,10 +172,9 @@ u8 func_800ACEAC(u16 mapIndex) {
     return result;
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800ACEF8);
+//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", checkWaterSourceInteraction);
 
-// water?
-u8 func_800ACEF8(u16 mapIndex) {
+u8 checkWaterSourceInteraction(u16 mapIndex) {
     
     u8 result;
     u8 temp;
@@ -204,9 +202,9 @@ u8 func_800ACEF8(u16 mapIndex) {
     return result;
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800ACFE8);
+//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", checkWaterableSoilInteraction);
 
-bool func_800ACFE8(u16 mapIndex) {
+bool checkWaterableSoilInteraction(u16 mapIndex) {
 
     bool result = FALSE;
     u8 temp;
@@ -240,10 +238,9 @@ bool checkWineBarrelInteraction(u16 mapIndex) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800AD0C4);
+//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", checkFishingSpotInteraction);
 
-// fishing
-bool func_800AD0C4(u16 mapIndex) {
+bool checkFishingSpotInteraction(u16 mapIndex) {
 
     bool result = FALSE;
     u8 levelInteractionIndex;
@@ -316,91 +313,91 @@ bool handleLevelInteraction(u16 mapIndex) {
         switch (mapIndex) {
 
             case FARM:
-                canEnter = func_800AD8D0(mapIndex, levelInteractionIndex);
+                canEnter = handleFarmLevelInteractions(mapIndex, levelInteractionIndex);
                 break;
             case HOUSE:
-                canEnter = func_800ADCDC(mapIndex, levelInteractionIndex);
+                canEnter = handleHouseLevelInteractions(mapIndex, levelInteractionIndex);
                 break;
             case BARN:
-                canEnter = func_800AE00C(mapIndex, levelInteractionIndex);
+                canEnter = handleBarnLevelInteractions(mapIndex, levelInteractionIndex);
                 break;
             case COOP:
-                canEnter = func_800AEB54(mapIndex, levelInteractionIndex);
+                canEnter = handleCoopLevelInteractions(mapIndex, levelInteractionIndex);
                 break;
             case KITCHEN:
-                canEnter = func_800AED60(mapIndex, levelInteractionIndex);
+                canEnter = handleKitchenLevelInteractions(mapIndex, levelInteractionIndex);
                 break;
             case BATHROOM:
-                canEnter = func_800AEE8C(mapIndex, levelInteractionIndex);
+                canEnter = handleBathroomLevelInteractions(mapIndex, levelInteractionIndex);
                 break;
             case GREENHOUSE:
-                canEnter = func_800AF060(mapIndex, levelInteractionIndex);
+                canEnter = handleGreenhouseLevelInteractions(mapIndex, levelInteractionIndex);
                 break;
             case VILLAGE_1:
-                canEnter = func_800AF0B0(mapIndex, levelInteractionIndex);
+                canEnter = handleVillage1LevelInteractions(mapIndex, levelInteractionIndex);
                 break;
             case FLOWER_SHOP:
-                canEnter = func_800AF494(mapIndex, levelInteractionIndex);
+                canEnter = handleFlowerShopLevelInteractions(mapIndex, levelInteractionIndex);
                 break;
             case POPURI_ROOM:
-                canEnter = func_800AFA2C(mapIndex, levelInteractionIndex);
+                canEnter = handlePopuriRoomLevelInteractions(mapIndex, levelInteractionIndex);
                 break;
             case BAKERY:
-                canEnter = func_800AFA7C(mapIndex, levelInteractionIndex);
+                canEnter = handleBakeryLevelInteractions(mapIndex, levelInteractionIndex);
                 break;
             case ELLI_ROOM:
-                canEnter = func_800AFCD0(mapIndex, levelInteractionIndex);
+                canEnter = handleElliRoomLevelInteractions(mapIndex, levelInteractionIndex);
                 break;
             case RICK_STORE:
-                canEnter = func_800AFD20(mapIndex, levelInteractionIndex);
+                canEnter = handleRickStoreLevelInteractions(mapIndex, levelInteractionIndex);
                 break;
             case SOUVENIR_SHOP:
-                canEnter = func_800AFF9C(mapIndex, levelInteractionIndex);
+                canEnter = handleSouvenirShopLevelInteractions(mapIndex, levelInteractionIndex);
                 break;
             case CHURCH:
-                canEnter = func_800B00E0(mapIndex, levelInteractionIndex);
+                canEnter = handleChurchLevelInteractions(mapIndex, levelInteractionIndex);
                 break;
             case TAVERN:
-                canEnter = func_800B01EC(mapIndex, levelInteractionIndex);
+                canEnter = handleTavernLevelInteractions(mapIndex, levelInteractionIndex);
                 break;
             case VILLAGE_2:
-                canEnter = func_800B0378(mapIndex, levelInteractionIndex);
+                canEnter = handleVillage2LevelInteractions(mapIndex, levelInteractionIndex);
                 break;
             case LIBRARY:
-                canEnter = func_800B0714(mapIndex, levelInteractionIndex);
+                canEnter = handleLibraryLevelInteractions(mapIndex, levelInteractionIndex);
                 break;
             case MIDWIFE_HOUSE:
-                canEnter = func_800B0A64(mapIndex, levelInteractionIndex);
+                canEnter = handleMidwifeHouseLevelInteractions(mapIndex, levelInteractionIndex);
                 break;
             case MAYOR_HOUSE:
-                canEnter = func_800B0AFC(mapIndex, levelInteractionIndex);
+                canEnter = handleMayorHouseLevelInteractions(mapIndex, levelInteractionIndex);
                 break;
             case MARIA_ROOM:
-                canEnter = func_800B0C48(mapIndex, levelInteractionIndex);
+                canEnter = handleMariaRoomLevelInteractions(mapIndex, levelInteractionIndex);
                 break;
             case POTION_SHOP:
-                canEnter = func_800B0C98(mapIndex, levelInteractionIndex);
+                canEnter = handlePotionShopLevelInteractions(mapIndex, levelInteractionIndex);
                 break;
             case POTION_SHOP_BEDROOM:
-                canEnter = func_800B0FB8(mapIndex, levelInteractionIndex);
+                canEnter = handlePotionShopBedroomLevelInteractions(mapIndex, levelInteractionIndex);
                 break;
             case SQUARE:
-                canEnter = func_800B106C(mapIndex, levelInteractionIndex);
+                canEnter = handleSquareLevelInteractions(mapIndex, levelInteractionIndex);
                 break;
             case MOUNTAIN_1:
-                canEnter = func_800B1438(mapIndex, levelInteractionIndex);
+                canEnter = handleMountain1LevelInteractions(mapIndex, levelInteractionIndex);
                 break;
             case MOUNTAIN_2:
-                canEnter = func_800B1540(mapIndex, levelInteractionIndex);
+                canEnter = handleMountain2LevelInteractions(mapIndex, levelInteractionIndex);
                 break;
             case TOP_OF_MOUNTAIN_1:
-                canEnter = func_800B1808(mapIndex, levelInteractionIndex);
+                canEnter = handleTopOfMountain1LevelInteractions(mapIndex, levelInteractionIndex);
                 break;
             case MOON_MOUNTAIN:
-                canEnter = func_800B1994(mapIndex, levelInteractionIndex);
+                canEnter = handleMoonMountainLevelInteractions(mapIndex, levelInteractionIndex);
                 break;
             case ROAD:
-                canEnter = func_800B1AC4(mapIndex, levelInteractionIndex);
+                canEnter = handleRoadLevelInteractions(mapIndex, levelInteractionIndex);
                 break;
             case CARPENTER_HUT:
                 canEnter = handleCarpenterHutLevelInteractions(mapIndex, levelInteractionIndex);
@@ -409,52 +406,52 @@ bool handleLevelInteraction(u16 mapIndex) {
                 canEnter = handleDumplingHouseLevelInteractions(mapIndex, levelInteractionIndex);
                 break;
             case CAVE:
-                canEnter = func_800B1DBC(mapIndex, levelInteractionIndex);
+                canEnter = handleCaveLevelInteractions(mapIndex, levelInteractionIndex);
                 break;
             case POND:
-                canEnter = func_800B20C8(mapIndex, levelInteractionIndex);
+                canEnter = handlePondLevelInteractions(mapIndex, levelInteractionIndex);
                 break;
             case VINEYARD:
-                canEnter = func_800B2118(mapIndex, levelInteractionIndex);
+                canEnter = handleVineyardLevelInteractions(mapIndex, levelInteractionIndex);
                 break;
             case VINEYARD_HOUSE:
-                canEnter = func_800B2264(mapIndex, levelInteractionIndex);
+                canEnter = handleVineyardHouseLevelInteractions(mapIndex, levelInteractionIndex);
                 break;
             case KAREN_ROOM:
-                canEnter = func_800B2340(mapIndex, levelInteractionIndex);
+                canEnter = handleKarenRoomLevelInteractions(mapIndex, levelInteractionIndex);
                 break;
             case VINEYARD_CELLAR:
-                canEnter = func_800B23A4(mapIndex, levelInteractionIndex);
+                canEnter = handleVineyardCellarLevelInteractions(mapIndex, levelInteractionIndex);
                 break;
             case VINEYARD_CELLAR_BASEMENT:
-                canEnter = func_800B24D4(mapIndex, levelInteractionIndex);
+                canEnter = handleVineyardCellarBasementLevelInteractions(mapIndex, levelInteractionIndex);
                 break;
             case RACE_TRACK:
-                canEnter = func_800B256C(mapIndex, levelInteractionIndex);
+                canEnter = handleRaceTrackLevelInteractions(mapIndex, levelInteractionIndex);
                 break;
             case RANCH:
-                canEnter = func_800B2604(mapIndex, levelInteractionIndex);
+                canEnter = handleRanchLevelInteractions(mapIndex, levelInteractionIndex);
                 break;
             case RANCH_HOUSE:
-                canEnter = func_800B27CC(mapIndex, levelInteractionIndex);
+                canEnter = handleRanchHouseLevelInteractions(mapIndex, levelInteractionIndex);
                 break;
             case RANCH_STORE:
                 canEnter = handleRanchStoreLevelInteractions(mapIndex, levelInteractionIndex);
                 break;
             case ANN_ROOM:
-                canEnter = func_800B2B90(mapIndex, levelInteractionIndex);
+                canEnter = handleAnnRoomLevelInteractions(mapIndex, levelInteractionIndex);
                 break;
             case RANCH_BARN:
-                canEnter = func_800B2C28(mapIndex, levelInteractionIndex);
+                canEnter = handleRanchBarnLevelInteractions(mapIndex, levelInteractionIndex);
                 break;
             case BEACH:
-                canEnter = func_800B2C78(mapIndex, levelInteractionIndex);
+                canEnter = handleBeachLevelInteractions(mapIndex, levelInteractionIndex);
                 break;
             case HARVEST_SPRITE_CAVE:
-                canEnter = func_800B1EE4(mapIndex, levelInteractionIndex);
+                canEnter = handleHarvestSpriteCaveLevelInteractions(mapIndex, levelInteractionIndex);
                 break;
             case MINE:
-                canEnter = func_800B2078(mapIndex, levelInteractionIndex);
+                canEnter = handleMineLevelInteractions(mapIndex, levelInteractionIndex);
                 break;
             default:
                 break;
@@ -472,12 +469,14 @@ bool handleLevelInteraction(u16 mapIndex) {
 
     if (tempExit != gEntranceIndex) {
         
-        if (!(gPlayer.flags & 1)) {
+        if (!(gPlayer.flags & PLAYER_RIDING_HORSE)) {
             
-            dialogueInfoIndex = func_80074C50(gEntranceIndex);
+            dialogueInfoIndex = getCantEnterDialogueInfoIndex(gEntranceIndex);
          
             if (gEntranceIndex == 0x5F) {
+
                 if (!checkLifeEventBit(MARRIED)) {
+
                     if (gSeason == WINTER) {
                         if (gDayOfMonth == 24 && (18 < gHour && gHour < 21)) {
                             dialogueInfoIndex = 0xFFFF;
@@ -486,12 +485,17 @@ bool handleLevelInteraction(u16 mapIndex) {
                             dialogueInfoIndex = 0xFFFF;
                         }
                     }
+
                 } else {
+
                     if (gSeason == WINTER && gDayOfMonth == 30 && (17 < gHour && gHour < 24)) {
                         dialogueInfoIndex = 0xFFFF;
                     }
+
                 }
+
             }
+
             if ((gEntranceIndex == 0x59 || gEntranceIndex == 0x5B) && !checkLifeEventBit(MARRIED) && gSeason == SUMMER && gDayOfMonth == 1 && (18 < gHour && gHour < 21)) {
                 dialogueInfoIndex = 0xFFFF;
             }
@@ -499,19 +503,20 @@ bool handleLevelInteraction(u16 mapIndex) {
             if (dialogueInfoIndex == 0xFFFF) {
 
                 if (levelInteractionsInfo.mapAdditionsIndex != 0xFF) {
-                    func_80038990(0, levelInteractionsInfo.mapAdditionsIndex, 0);
+                    activateMapAddition(MAIN_MAP_INDEX, levelInteractionsInfo.mapAdditionsIndex, 0);
                 }
                 
                 func_8005C940(8, MAP_LOAD);
                 return canEnter;
                 
             } else {
+
                 switch (getMapFromExit(gEntranceIndex)) {                           
                     case KAREN_ROOM:                                  
                         showTextBox(0, 6, dialogueInfoIndex, 0, 0);
                         setPlayerAction(0xF, 0);
-                        gPlayer.actionTimer = 0x20;
-                        gPlayer.unk_6E = 6;
+                        gPlayer.actionTimer = 32;
+                        gPlayer.savedDirection = 6;
                         break;
                     case POPURI_ROOM:                               
                     case MARIA_ROOM:                                
@@ -540,10 +545,9 @@ bool handleLevelInteraction(u16 mapIndex) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800AD8D0);
+//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handleFarmLevelInteractions);
 
-// farm
-bool func_800AD8D0(u16 mapIndex, u8 levelInteractionIndex) {
+bool handleFarmLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
     bool result = FALSE;
     u8 temp;
@@ -674,7 +678,7 @@ bool func_800AD8D0(u16 mapIndex, u8 levelInteractionIndex) {
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
                 
                 // check if receive photo or item in mail 
-                temp = func_8006536C(); 
+                temp = readMail(); 
  
                 if (temp != 0xFF) {
 
@@ -751,10 +755,9 @@ bool func_800AD8D0(u16 mapIndex, u8 levelInteractionIndex) {
    
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800ADCDC);
+//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handleHouseLevelInteractions);
 
-// house
-bool func_800ADCDC(u16 mapIndex, u8 levelInteractionIndex) {
+bool handleHouseLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
     bool result = FALSE;
     
@@ -794,7 +797,7 @@ bool func_800ADCDC(u16 mapIndex, u8 levelInteractionIndex) {
         case 0x10:
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A) && gPlayer.heldItem == 0 && checkLifeEventBit(MAYOR_TOUR) && !checkDailyEventBit(0x15)) {
                 // show pink overlay message
-                func_8005B09C(0);
+                showPinkOverlayText(0);
                 result = TRUE; 
             }
             break;
@@ -803,7 +806,7 @@ bool func_800ADCDC(u16 mapIndex, u8 levelInteractionIndex) {
         case 0x12:
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A) && gPlayer.direction == NORTHEAST) {
                 // c button sprites
-                func_800B3694();
+                loadTVCButtonIcons();
                 // turn on TV
                 func_800D8540();
                 setPlayerAction(0xA, 0xC);
@@ -814,8 +817,8 @@ bool func_800ADCDC(u16 mapIndex, u8 levelInteractionIndex) {
 
         case 0x13:
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
-                func_80038990(0, 3, 1);
-                func_8005CA2C(0xA, 0x15);
+                activateMapAddition(MAIN_MAP_INDEX, 3, 1);
+                loadOverlayScreen(0xA, 0x15);
                 levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN_SFX;
                 result = TRUE;
             }
@@ -831,8 +834,8 @@ bool func_800ADCDC(u16 mapIndex, u8 levelInteractionIndex) {
 
         case 0x15:
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A) != 0) {
-                func_80038990(0, 0xA, 1);
-                func_8005CA2C(0xA, 0x17);
+                activateMapAddition(MAIN_MAP_INDEX, 0xA, 1);
+                loadOverlayScreen(0xA, 0x17);
                 levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN_SFX;
                 result = TRUE;
             }
@@ -879,10 +882,9 @@ bool func_800ADCDC(u16 mapIndex, u8 levelInteractionIndex) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800AE00C);
+//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handleBarnLevelInteractions);
 
-// barn
-u8 func_800AE00C(u16 mapIndex, u8 levelInteractionIndex) {
+u8 handleBarnLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
     u8 result = 0;
     s32 temp;
@@ -942,9 +944,9 @@ u8 func_800AE00C(u16 mapIndex, u8 levelInteractionIndex) {
                             gCurrentSeasonName[5] = gGlobalSeasonName[5];
 
                             convertNumberToGameVariableString(0x15, gFarmAnimals[0].birthdayDayOfMonth, 1);
-                            func_8009BA74(0);
+                            generateMilkTypeString(0);
                             setGameVariableString(0x26, gFarmAnimals[0].unk_23, 6);
-                            func_80061690(gFarmAnimals[0].normalMilk);
+                            func_80061690(gFarmAnimals[0].milkType);
                             showTextBox(1, 6, 0xE5, 0, 2);
                             
                         } else if (temp < 7) {
@@ -983,9 +985,9 @@ u8 func_800AE00C(u16 mapIndex, u8 levelInteractionIndex) {
                             gCurrentSeasonName[5] = gGlobalSeasonName[5];
                         
                             convertNumberToGameVariableString(0x15, gFarmAnimals[1].birthdayDayOfMonth, 1);
-                            func_8009BA74(1);
+                            generateMilkTypeString(1);
                             setGameVariableString(0x26, gFarmAnimals[1].unk_23, 6);
-                            func_80061690(gFarmAnimals[1].normalMilk);
+                            func_80061690(gFarmAnimals[1].milkType);
                             showTextBox(1, 6, 0xE6, 0, 2);
                     
                         } else if (temp < 7) {
@@ -1025,10 +1027,10 @@ u8 func_800AE00C(u16 mapIndex, u8 levelInteractionIndex) {
                         
                             convertNumberToGameVariableString(0x15, gFarmAnimals[2].birthdayDayOfMonth, 1);
                             
-                            func_8009BA74(2);
+                            generateMilkTypeString(2);
                             
                             setGameVariableString(0x26, gFarmAnimals[2].unk_23, 6);
-                            func_80061690(gFarmAnimals[2].normalMilk);
+                            func_80061690(gFarmAnimals[2].milkType);
 
                             showTextBox(1, 6, 0xE7, 0, 2);
                             
@@ -1068,9 +1070,9 @@ u8 func_800AE00C(u16 mapIndex, u8 levelInteractionIndex) {
                             gCurrentSeasonName[5] = gGlobalSeasonName[5];
                         
                             convertNumberToGameVariableString(0x15, gFarmAnimals[3].birthdayDayOfMonth, 1);
-                            func_8009BA74(3);
+                            generateMilkTypeString(3);
                             setGameVariableString(0x26, gFarmAnimals[3].unk_23, 6);
-                            func_80061690(gFarmAnimals[3].normalMilk);
+                            func_80061690(gFarmAnimals[3].milkType);
                             showTextBox(1, 6, 0xE8, 0, 2);
                             
                         } else if (temp < 7) {
@@ -1109,9 +1111,9 @@ u8 func_800AE00C(u16 mapIndex, u8 levelInteractionIndex) {
                             gCurrentSeasonName[5] = gGlobalSeasonName[5];
                         
                             convertNumberToGameVariableString(0x15, gFarmAnimals[4].birthdayDayOfMonth, 1);
-                            func_8009BA74(4);
+                            generateMilkTypeString(4);
                             setGameVariableString(0x26, gFarmAnimals[4].unk_23, 6);
-                            func_80061690(gFarmAnimals[4].normalMilk);
+                            func_80061690(gFarmAnimals[4].milkType);
                             showTextBox(1, 6, 0xE9, 0, 2);
                             
                         } else if (temp < 7) {
@@ -1151,9 +1153,9 @@ u8 func_800AE00C(u16 mapIndex, u8 levelInteractionIndex) {
                             gCurrentSeasonName[5] = gGlobalSeasonName[5];
                         
                             convertNumberToGameVariableString(0x15, gFarmAnimals[5].birthdayDayOfMonth, 1);
-                            func_8009BA74(5);
+                            generateMilkTypeString(5);
                             setGameVariableString(0x26, gFarmAnimals[5].unk_23, 6);
-                            func_80061690(gFarmAnimals[5].normalMilk);
+                            func_80061690(gFarmAnimals[5].milkType);
                             showTextBox(1, 6, 0xEA, 0, 2);
                             
                         } else if (temp < 7) {
@@ -1193,9 +1195,9 @@ u8 func_800AE00C(u16 mapIndex, u8 levelInteractionIndex) {
                             gCurrentSeasonName[5] = gGlobalSeasonName[5];
                         
                             convertNumberToGameVariableString(0x15, gFarmAnimals[6].birthdayDayOfMonth, 1);
-                            func_8009BA74(6);
+                            generateMilkTypeString(6);
                             setGameVariableString(0x26, gFarmAnimals[6].unk_23, 6);
-                            func_80061690(gFarmAnimals[6].normalMilk);
+                            func_80061690(gFarmAnimals[6].milkType);
                             showTextBox(1, 6, 0xEB, 0, 2);
                             
                         } else if (temp < 7) {
@@ -1234,9 +1236,9 @@ u8 func_800AE00C(u16 mapIndex, u8 levelInteractionIndex) {
                             gCurrentSeasonName[5] = gGlobalSeasonName[5];
                         
                             convertNumberToGameVariableString(0x15, gFarmAnimals[7].birthdayDayOfMonth, 1);
-                            func_8009BA74(7);
+                            generateMilkTypeString(7);
                             setGameVariableString(0x26, gFarmAnimals[7].unk_23, 6);
-                            func_80061690(gFarmAnimals[7].normalMilk);
+                            func_80061690(gFarmAnimals[7].milkType);
                             showTextBox(1, 6, 0xEC, 0, 2);
                             
                         } else if (temp < 7) {
@@ -1280,10 +1282,9 @@ u8 func_800AE00C(u16 mapIndex, u8 levelInteractionIndex) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800AEB54);
+//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handleCoopLevelInteractions);
 
-// coop
-bool func_800AEB54(u16 mapIndex, u8 levelInteractionIndex) {
+bool handleCoopLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
     bool result = FALSE;
 
@@ -1362,10 +1363,9 @@ bool func_800AEB54(u16 mapIndex, u8 levelInteractionIndex) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800AED60);
+//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handleKitchenLevelInteractions);
 
-// kitchen
-bool func_800AED60(u16 mapIndex, u8 levelInteractionIndex) {
+bool handleKitchenLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
     bool result = FALSE;
 
@@ -1386,8 +1386,8 @@ bool func_800AED60(u16 mapIndex, u8 levelInteractionIndex) {
             break;
         case 16:
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
-                func_80038990(0, 0, 1);
-                func_8005CA2C(0xA, 0x16);
+                activateMapAddition(MAIN_MAP_INDEX, 0, 1);
+                loadOverlayScreen(0xA, 0x16);
                 levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN_SFX;
                 result = TRUE;
             }
@@ -1412,10 +1412,9 @@ bool func_800AED60(u16 mapIndex, u8 levelInteractionIndex) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800AEE8C);
+//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handleBathroomLevelInteractions);
 
-// bathroom
-bool func_800AEE8C(u16 mapIndex, u8 levelInteractionIndex) {
+bool handleBathroomLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
     bool result = FALSE;
 
@@ -1468,10 +1467,9 @@ bool func_800AEE8C(u16 mapIndex, u8 levelInteractionIndex) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800AF060);
+//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handleGreenhouseLevelInteractions);
 
-// greenhouse
-bool func_800AF060(u16 arg0, u8 levelInteractionIndex) {
+bool handleGreenhouseLevelInteractions(u16 arg0, u8 levelInteractionIndex) {
 
     bool result = FALSE;
 
@@ -1486,9 +1484,9 @@ bool func_800AF060(u16 arg0, u8 levelInteractionIndex) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800AF0B0);
+//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handleVillage1LevelInteractions);
 
-bool func_800AF0B0(u16 mapIndex, u8 levelInteractionIndex) {
+bool handleVillage1LevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
     bool result = FALSE;
 
@@ -1725,9 +1723,9 @@ bool func_800AF0B0(u16 mapIndex, u8 levelInteractionIndex) {
    
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800AF494);
+//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handleFlowerShopLevelInteractions);
 
-u8 func_800AF494(u16 mapIndex, u8 levelInteractionIndex) {
+u8 handleFlowerShopLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
     u8 result = 0;
     
@@ -1849,7 +1847,7 @@ u8 func_800AF494(u16 mapIndex, u8 levelInteractionIndex) {
 
                 if (gPlayer.heldItem == 0) {
                     if (checkShopItemShouldBeDisplayed(0)) {
-                        func_800DC9FC(0);
+                        handlePickUpShopItem(0);
                     }
                     result = 2;
                 }
@@ -1864,7 +1862,7 @@ u8 func_800AF494(u16 mapIndex, u8 levelInteractionIndex) {
 
                 if (gPlayer.heldItem == 0) {
                     if (checkShopItemShouldBeDisplayed(1)) {
-                        func_800DC9FC(1);
+                        handlePickUpShopItem(1);
                     }
                     result = 2;
                 }
@@ -1879,7 +1877,7 @@ u8 func_800AF494(u16 mapIndex, u8 levelInteractionIndex) {
 
                 if (gPlayer.heldItem == 0) {
                     if (checkShopItemShouldBeDisplayed(2)) {
-                        func_800DC9FC(2);
+                        handlePickUpShopItem(2);
                     }
                     result = 2;
                 }
@@ -1894,7 +1892,7 @@ u8 func_800AF494(u16 mapIndex, u8 levelInteractionIndex) {
 
                 if (gPlayer.heldItem == 0) {
                     if (checkShopItemShouldBeDisplayed(4)) {
-                        func_800DC9FC(4);
+                        handlePickUpShopItem(4);
                     }
                     result = 2;
                 }
@@ -1909,7 +1907,7 @@ u8 func_800AF494(u16 mapIndex, u8 levelInteractionIndex) {
 
                 if (gPlayer.heldItem == 0) {
                     if (checkShopItemShouldBeDisplayed(5)) {
-                        func_800DC9FC(5);
+                        handlePickUpShopItem(5);
                     }
                     result = 2;
                 }
@@ -1924,7 +1922,7 @@ u8 func_800AF494(u16 mapIndex, u8 levelInteractionIndex) {
 
                 if (gPlayer.heldItem == 0) {
                     if (checkShopItemShouldBeDisplayed(6)) {
-                        func_800DC9FC(6);
+                        handlePickUpShopItem(6);
                     }
                     result = 2;
                 }
@@ -1939,7 +1937,7 @@ u8 func_800AF494(u16 mapIndex, u8 levelInteractionIndex) {
 
                 if (gPlayer.heldItem == 0) {
                     if (checkShopItemShouldBeDisplayed(3)) {
-                        func_800DC9FC(3);
+                        handlePickUpShopItem(3);
                     }
                     result = 2;
                 }
@@ -1957,13 +1955,13 @@ u8 func_800AF494(u16 mapIndex, u8 levelInteractionIndex) {
                     if (!checkShopItemShouldBeDisplayed(7)) {
                         
                         if (checkShopItemShouldBeDisplayed(8)) {
-                            func_800DC9FC(8);
+                            handlePickUpShopItem(8);
                         }
 
                         result = 2;
                         
                     } else {
-                        func_800DC9FC(7);
+                        handlePickUpShopItem(7);
                         result = 2;
                     }
                     
@@ -1979,7 +1977,7 @@ u8 func_800AF494(u16 mapIndex, u8 levelInteractionIndex) {
 
                 if (gPlayer.heldItem == 0) {
                     if (checkShopItemShouldBeDisplayed(10)) {
-                        func_800DC9FC(10);
+                        handlePickUpShopItem(10);
                     }
                     result = 2;
                 }
@@ -2002,9 +2000,9 @@ u8 func_800AF494(u16 mapIndex, u8 levelInteractionIndex) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800AFA2C);
+//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handlePopuriRoomLevelInteractions);
 
-bool func_800AFA2C(u16 mapIndex, u8 levelInteractionIndex) {
+bool handlePopuriRoomLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
     
     bool result = FALSE;
     
@@ -2019,9 +2017,9 @@ bool func_800AFA2C(u16 mapIndex, u8 levelInteractionIndex) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800AFA7C);
+//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handleBakeryLevelInteractions);
 
-bool func_800AFA7C(u16 mapIndex, u8 levelInteractionIndex) {
+bool handleBakeryLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
     bool result = FALSE;
 
@@ -2100,7 +2098,7 @@ bool func_800AFA7C(u16 mapIndex, u8 levelInteractionIndex) {
                 
                 if (gPlayer.direction == NORTHEAST && gPlayer.heldItem == 0) {
                     // show pink overlay message
-                    func_8005B09C(2);
+                    showPinkOverlayText(2);
                     result = TRUE;
                 }
             
@@ -2114,7 +2112,7 @@ bool func_800AFA7C(u16 mapIndex, u8 levelInteractionIndex) {
                 
                 if (gPlayer.heldItem == 0) {
                     // show pink overlay message
-                    func_8005B09C(3);
+                    showPinkOverlayText(3);
                     result = TRUE;
                 }
             
@@ -2129,9 +2127,9 @@ bool func_800AFA7C(u16 mapIndex, u8 levelInteractionIndex) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800AFCD0);
+//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handleElliRoomLevelInteractions);
 
-bool func_800AFCD0(u16 mapIndex, u8 levelInteractionIndex) {
+bool handleElliRoomLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
     bool result = FALSE;
 
@@ -2146,9 +2144,9 @@ bool func_800AFCD0(u16 mapIndex, u8 levelInteractionIndex) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800AFD20);
+//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handleRickStoreLevelInteractions);
 
-bool func_800AFD20(u16 mapIndex, u8 levelInteractionIndex) {
+bool handleRickStoreLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
     bool result = FALSE;
 
@@ -2182,7 +2180,7 @@ bool func_800AFD20(u16 mapIndex, u8 levelInteractionIndex) {
 
                 if (gPlayer.heldItem == 0) {
                     if (checkShopItemShouldBeDisplayed(0x15)) {
-                        func_800DC9FC(0x15);
+                        handlePickUpShopItem(0x15);
                     }
                     result = 2;
                 }
@@ -2197,7 +2195,7 @@ bool func_800AFD20(u16 mapIndex, u8 levelInteractionIndex) {
 
                 if (gPlayer.heldItem == 0) {
                     if (checkShopItemShouldBeDisplayed(0x14)) {
-                        func_800DC9FC(0x14);
+                        handlePickUpShopItem(0x14);
                     }
                     result = 2;
                 }
@@ -2212,7 +2210,7 @@ bool func_800AFD20(u16 mapIndex, u8 levelInteractionIndex) {
 
                 if (gPlayer.heldItem == 0) {
                     if (checkShopItemShouldBeDisplayed(0x13)) {
-                        func_800DC9FC(0x13);
+                        handlePickUpShopItem(0x13);
                     }
                     result = 2;
                 }
@@ -2227,7 +2225,7 @@ bool func_800AFD20(u16 mapIndex, u8 levelInteractionIndex) {
 
                 if (gPlayer.heldItem == 0) {
                     if (checkShopItemShouldBeDisplayed(0x16)) {
-                        func_800DC9FC(0x16);
+                        handlePickUpShopItem(0x16);
                     }
                     result = 2;
                 }
@@ -2242,10 +2240,10 @@ bool func_800AFD20(u16 mapIndex, u8 levelInteractionIndex) {
 
                 if (gPlayer.heldItem == 0) {
                     if (checkShopItemShouldBeDisplayed(0x18)) {
-                        func_800DC9FC(0x18);
+                        handlePickUpShopItem(0x18);
                     }
                     if (checkShopItemShouldBeDisplayed(0x19)) {
-                        func_800DC9FC(0x19);
+                        handlePickUpShopItem(0x19);
                     }
                     result = 2;
                 }
@@ -2260,7 +2258,7 @@ bool func_800AFD20(u16 mapIndex, u8 levelInteractionIndex) {
 
                 if (gPlayer.heldItem == 0) {
                     if (checkShopItemShouldBeDisplayed(0x17)) {
-                        func_800DC9FC(0x17);
+                        handlePickUpShopItem(0x17);
                     }
                     result = 2;
                 }
@@ -2286,9 +2284,9 @@ bool func_800AFD20(u16 mapIndex, u8 levelInteractionIndex) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800AFF9C);
+//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handleSouvenirShopLevelInteractions);
 
-u8 func_800AFF9C(u16 arg0, u8 levelInteractionIndex) {
+u8 handleSouvenirShopLevelInteractions(u16 arg0, u8 levelInteractionIndex) {
 
     u8 result = 0;
     
@@ -2307,7 +2305,7 @@ u8 func_800AFF9C(u16 arg0, u8 levelInteractionIndex) {
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
                 if (gPlayer.heldItem == 0) {
                     if (checkShopItemShouldBeDisplayed(0x25)) {
-                        func_800DC9FC(0x25);
+                        handlePickUpShopItem(0x25);
                     }
                     result = 2;
                 }
@@ -2319,10 +2317,10 @@ u8 func_800AFF9C(u16 arg0, u8 levelInteractionIndex) {
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
                 if (gPlayer.heldItem == 0) {
                     if (checkShopItemShouldBeDisplayed(0x26)) {
-                        func_800DC9FC(0x26);
+                        handlePickUpShopItem(0x26);
                     }
                     if (checkShopItemShouldBeDisplayed(0x27)) {
-                        func_800DC9FC(0x27);
+                        handlePickUpShopItem(0x27);
                     }
                     result = 2;
                 }
@@ -2344,10 +2342,10 @@ u8 func_800AFF9C(u16 arg0, u8 levelInteractionIndex) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800B00E0);
+//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handleChurchLevelInteractions);
 
 // church
-bool func_800B00E0(u16 mapIndex, u8 levelInteractionIndex) {
+bool handleChurchLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
     bool result = FALSE;
 
@@ -2395,10 +2393,9 @@ bool func_800B00E0(u16 mapIndex, u8 levelInteractionIndex) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800B01EC);
+//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handleTavernLevelInteractions);
 
-// tavern
-bool func_800B01EC(u16 arg0, u8 levelInteractionIndex) {
+bool handleTavernLevelInteractions(u16 arg0, u8 levelInteractionIndex) {
 
     bool result = FALSE;
 
@@ -2427,7 +2424,7 @@ bool func_800B01EC(u16 arg0, u8 levelInteractionIndex) {
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {            
                 if (gPlayer.heldItem == 0) {
                     // show pink overlay message
-                    func_8005B09C(4);
+                    showPinkOverlayText(4);
                     result = TRUE;
                 }  
             }
@@ -2467,9 +2464,9 @@ bool func_800B01EC(u16 arg0, u8 levelInteractionIndex) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800B0378);
+//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handleVillage2LevelInteractions);
 
-bool func_800B0378(u16 mapIndex, u8 levelInteractionIndex) {
+bool handleVillage2LevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
     bool result = FALSE;
 
@@ -2678,9 +2675,9 @@ bool func_800B0378(u16 mapIndex, u8 levelInteractionIndex) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800B0714);
+//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handleLibraryLevelInteractions);
 
-bool func_800B0714(u16 mapIndex, u8 levelInteractionIndex) {
+bool handleLibraryLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
     bool result = FALSE;
 
@@ -2872,10 +2869,9 @@ bool func_800B0714(u16 mapIndex, u8 levelInteractionIndex) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800B0A64);
+//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handleMidwifeHouseLevelInteractions);
 
-// midwife
-bool func_800B0A64(u16 mapIndex, u8 levelInteractionIndex) {
+bool handleMidwifeHouseLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
     bool result = FALSE;
 
@@ -2905,9 +2901,9 @@ bool func_800B0A64(u16 mapIndex, u8 levelInteractionIndex) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800B0AFC);
+//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handleMayorHouseLevelInteractions);
 
-bool func_800B0AFC(u16 mapIndex, u8 levelInteractionIndex) {
+bool handleMayorHouseLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
     bool result = FALSE;
 
@@ -2968,9 +2964,9 @@ bool func_800B0AFC(u16 mapIndex, u8 levelInteractionIndex) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800B0C48);
+//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handleMariaRoomLevelInteractions);
 
-bool func_800B0C48(u16 mapIndex, u8 levelInteractionIndex) {
+bool handleMariaRoomLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
    bool result = FALSE;
 
@@ -2990,9 +2986,9 @@ bool func_800B0C48(u16 mapIndex, u8 levelInteractionIndex) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800B0C98);
+//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handlePotionShopLevelInteractions);
 
-u8 func_800B0C98(u16 mapIndex, u8 levelInteractionIndex) {
+u8 handlePotionShopLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
     bool result = 0;
 
@@ -3039,7 +3035,7 @@ u8 func_800B0C98(u16 mapIndex, u8 levelInteractionIndex) {
                             result = 1;
                             break;
                         case 1:
-                            func_800DC9FC(0x22);
+                            handlePickUpShopItem(0x22);
                             result = 2;
                             break;
                         case 2:
@@ -3073,7 +3069,7 @@ u8 func_800B0C98(u16 mapIndex, u8 levelInteractionIndex) {
                             result = 1;
                             break;
                         case 1:
-                            func_800DC9FC(0x23);
+                            handlePickUpShopItem(0x23);
                             result = 2;
                             break;
                         case 2:
@@ -3106,7 +3102,7 @@ u8 func_800B0C98(u16 mapIndex, u8 levelInteractionIndex) {
                             result = 1;
                             break;
                         case 1:
-                            func_800DC9FC(0x24);
+                            handlePickUpShopItem(0x24);
                             result = 2;
                             break;
                         case 2:
@@ -3143,10 +3139,10 @@ u8 func_800B0C98(u16 mapIndex, u8 levelInteractionIndex) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800B0FB8);
+//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handlePotionShopBedroomLevelInteractions);
 
 // potion shop bedroom
-bool func_800B0FB8(u16 mapIndex, u8 levelInteractionIndex) {
+bool handlePotionShopBedroomLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
     bool result = FALSE;
 
@@ -3185,11 +3181,10 @@ bool func_800B0FB8(u16 mapIndex, u8 levelInteractionIndex) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800B106C);
+//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handleSquareLevelInteractions);
 
-// square
 // FIXME: lots of unnecessary gotos
-u8 func_800B106C(u16 mapIndex, u8 levelInteractionIndex) {
+u8 handleSquareLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
     u8 result = 0;
     u8 temp;
@@ -3236,7 +3231,7 @@ u8 func_800B106C(u16 mapIndex, u8 levelInteractionIndex) {
                     temp = 10;
 label3:
                     // show pink overlay message
-                    func_8005B09C(temp);
+                    showPinkOverlayText(temp);
                     result = 1;
 label4:
                 }
@@ -3261,7 +3256,7 @@ label4:
                         
                     } else {
                         pauseAllCutsceneExecutors();
-                        setMainLoopCallbackFunctionIndex(HORSE_RACE_GIFTS_LOAD);
+                        setMainLoopCallbackFunctionIndex(RACE_GIFTS_LOAD);
                     }
                     
                 } else if (func_800CE828(0) && func_800CE828(1) && func_800CE828(2)) {
@@ -3271,7 +3266,7 @@ label2:
                 } else {
 label:
                     pauseAllCutsceneExecutors();
-                    setMainLoopCallbackFunctionIndex(HORSE_RACE_GIFTS_LOAD);
+                    setMainLoopCallbackFunctionIndex(RACE_GIFTS_LOAD);
                     
                 }
                 
@@ -3291,7 +3286,7 @@ label:
                     showTextBox(0, 4, 8, 0, 0);
                 } else if (!overlayScreenStrings.unk_6F[overlayScreenStrings.unk_6C]) {
                     pauseAllCutsceneExecutors();
-                    setMainLoopCallbackFunctionIndex(PAUSE_SCREEN_MAP_LOAD_2);
+                    setMainLoopCallbackFunctionIndex(RACE_BETTING_LOAD);
                 } else {
                     showTextBox(0, 4, 7, 0, 0);
                 }
@@ -3311,7 +3306,7 @@ label:
                     if (checkShopItemShouldBeDisplayed(0x35)) {
                         pauseAllCutsceneExecutors();
                         // pick up shop item
-                        func_800DC9FC(0x35);
+                        handlePickUpShopItem(0x35);
                     }
                     
                     result = 2;
@@ -3345,13 +3340,13 @@ label:
                     
                         if (checkShopItemShouldBeDisplayed(0x36)) {
                             pauseAllCutsceneExecutors();
-                            func_800DC9FC(0x36);
+                            handlePickUpShopItem(0x36);
                             goto label5;
                         }
                         
                         if (checkShopItemShouldBeDisplayed(0x37)) {
                             pauseAllCutsceneExecutors();   
-                            func_800DC9FC(0x37);
+                            handlePickUpShopItem(0x37);
 label5:
                         }
                         
@@ -3372,10 +3367,9 @@ label5:
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800B1438);
+//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handleMountain1LevelInteractions);
 
-// mountain 1
-bool func_800B1438(u16 mapIndex, u8 levelInteractionIndex) {
+bool handleMountain1LevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
     bool result = FALSE;
 
@@ -3421,9 +3415,9 @@ bool func_800B1438(u16 mapIndex, u8 levelInteractionIndex) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800B1540);
+//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handleMountain2LevelInteractions);
 
-u8 func_800B1540(u16 mapIndex, u8 levelInteractionIndex) {
+u8 handleMountain2LevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
     u8 result = 0;
     
@@ -3577,9 +3571,9 @@ u8 func_800B1540(u16 mapIndex, u8 levelInteractionIndex) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800B1808);
+//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handleTopOfMountain1LevelInteractions);
 
-u8 func_800B1808(u16 mapIndex, u8 levelInteractionIndex) {
+u8 handleTopOfMountain1LevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
     bool result = 0;
 
@@ -3651,10 +3645,9 @@ u8 func_800B1808(u16 mapIndex, u8 levelInteractionIndex) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800B1994);
+//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handleMoonMountainLevelInteractions);
 
-// moon mountain
-bool func_800B1994(u16 mapIndex, u8 levelInteractionIndex) {
+bool handleMoonMountainLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
     bool result = FALSE;
 
@@ -3699,9 +3692,9 @@ bool func_800B1994(u16 mapIndex, u8 levelInteractionIndex) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800B1AC4);
+//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handleRoadLevelInteractions);
 
-bool func_800B1AC4(u16 mapIndex, u8 levelInteractionIndex) {
+bool handleRoadLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
     bool result = FALSE;
 
@@ -3826,8 +3819,8 @@ bool handleCarpenterHutLevelInteractions(u16 mapIndex, u8 levelInteractionIndex)
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
 
                 if (!checkDailyEventBit(8)) {
-                    func_80059334();
-                    func_8005CA2C(1, 0x18);
+                    pauseGameplay();
+                    loadOverlayScreen(1, 0x18);
                     result = TRUE;
                 } else {
                     showTextBox(0, 6, 0x6E, 0, 0);
@@ -3875,9 +3868,9 @@ bool handleDumplingHouseLevelInteractions(u16 mapIndex, u8 levelInteractionIndex
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800B1DBC);
+//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handleCaveLevelInteractions);
 
-bool func_800B1DBC(u16 mapIndex, u8 levelInteractionIndex) {
+bool handleCaveLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
     bool result = FALSE;
 
@@ -3921,10 +3914,9 @@ bool func_800B1DBC(u16 mapIndex, u8 levelInteractionIndex) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800B1EE4);
+//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handleHarvestSpriteCaveLevelInteractions);
 
-// harvest sprite cave
-bool func_800B1EE4(u16 mapIndex, u8 levelInteractionIndex) {
+bool handleHarvestSpriteCaveLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
     bool result = FALSE;
 
@@ -3987,10 +3979,9 @@ bool func_800B1EE4(u16 mapIndex, u8 levelInteractionIndex) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800B2078);
+//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handleMineLevelInteractions);
 
-// mine
-bool func_800B2078(u16 mapIndex, u8 levelInteractionIndex) {
+bool handleMineLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
     bool result = FALSE;
 
@@ -4011,10 +4002,9 @@ bool func_800B2078(u16 mapIndex, u8 levelInteractionIndex) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800B20C8);
+//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handlePondLevelInteractions);
 
-// pond
-bool func_800B20C8(u16 mapIndex, u8 levelInteractionIndex) {
+bool handlePondLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
     
     bool result = FALSE;
 
@@ -4035,10 +4025,9 @@ bool func_800B20C8(u16 mapIndex, u8 levelInteractionIndex) {
 
 }
 
-// vineyard
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800B2118);
+//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handleVineyardLevelInteractions);
 
-bool func_800B2118(u16 mapIndex, u8 levelInteractionIndex) {
+bool handleVineyardLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
     bool result = FALSE;
 
@@ -4097,10 +4086,9 @@ bool func_800B2118(u16 mapIndex, u8 levelInteractionIndex) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800B2264);
+//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handleVineyardHouseLevelInteractions);
 
-// vineyard house
-bool func_800B2264(u16 mapIndex, u8 levelInteractionIndex) {
+bool handleVineyardHouseLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
     bool result = FALSE;
 
@@ -4138,9 +4126,9 @@ bool func_800B2264(u16 mapIndex, u8 levelInteractionIndex) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800B2340);
+//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handleKarenRoomLevelInteractions);
 
-bool func_800B2340(u16 mapIndex, u8 levelInteractionIndex) {
+bool handleKarenRoomLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
     bool result = FALSE;    
     
@@ -4165,10 +4153,9 @@ bool func_800B2340(u16 mapIndex, u8 levelInteractionIndex) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800B23A4);
+//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handleVineyardCellarLevelInteractions);
 
-// vineyard cellar
-bool func_800B23A4(u16 mapIndex, u8 levelInteractionIndex) {
+bool handleVineyardCellarLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
     bool result = FALSE;
     
@@ -4216,10 +4203,9 @@ bool func_800B23A4(u16 mapIndex, u8 levelInteractionIndex) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800B24D4);
+//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handleVineyardCellarBasementLevelInteractions);
 
-// vineyard cellar basement
-bool func_800B24D4(u16 mapIndex, u8 levelInteractionIndex) {
+bool handleVineyardCellarBasementLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
     bool result = FALSE; 
 
@@ -4249,10 +4235,9 @@ bool func_800B24D4(u16 mapIndex, u8 levelInteractionIndex) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800B256C);
+//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handleRaceTrackLevelInteractions);
 
-// race track
-bool func_800B256C(u16 mapIndex, u8 levelInteractionIndex) {
+bool handleRaceTrackLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
     bool result = FALSE; 
     
@@ -4266,10 +4251,10 @@ bool func_800B256C(u16 mapIndex, u8 levelInteractionIndex) {
                 if (gPlayer.heldItem == 0) {
                     if (checkDailyEventBit(0x41)) {
                         // show pink overlay message
-                        func_8005B09C(0xB);
+                        showPinkOverlayText(0xB);
                     } else {
                         // show pink overlay message
-                        func_8005B09C(0xC);
+                        showPinkOverlayText(0xC);
                     }
                     result = TRUE;
                 }            
@@ -4280,10 +4265,10 @@ bool func_800B256C(u16 mapIndex, u8 levelInteractionIndex) {
     return result;
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800B2604);
+//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handleRanchLevelInteractions);
 
 // FIXME: gotos
-bool func_800B2604(u16 mapIndex, u8 levelInteractionIndex) {
+bool handleRanchLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
     bool result = FALSE;
     
@@ -4378,10 +4363,9 @@ label:
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800B27CC);
+//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handleRanchHouseLevelInteractions);
 
-// ranch house
-bool func_800B27CC(u16 mapIndex, u8 collisionIndex) {
+bool handleRanchHouseLevelInteractions(u16 mapIndex, u8 collisionIndex) {
 
     bool result = FALSE;
 
@@ -4474,7 +4458,7 @@ u8 handleRanchStoreLevelInteractions(u16 mapIndex, u8 collisionIndex) {
                             showTextBox(0, 6, 0x165, 0, 0);
                         } else {
                             // show pink overlay message
-                            func_8005B09C(5);  
+                            showPinkOverlayText(5);  
                         }
 
                     } else {
@@ -4491,7 +4475,7 @@ u8 handleRanchStoreLevelInteractions(u16 mapIndex, u8 collisionIndex) {
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) { 
                 if (gPlayer.heldItem == 0) {
                     if (checkShopItemShouldBeDisplayed(0x1A)) {
-                        func_800DC9FC(0x1A);
+                        handlePickUpShopItem(0x1A);
                     }
                     result = 2;
                 }
@@ -4504,7 +4488,7 @@ u8 handleRanchStoreLevelInteractions(u16 mapIndex, u8 collisionIndex) {
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) { 
                 if (gPlayer.heldItem == 0) {
                     if (checkShopItemShouldBeDisplayed(0x1D)) {
-                        func_800DC9FC(0x1D);
+                        handlePickUpShopItem(0x1D);
                     }
                     result = 2;
                 }
@@ -4517,7 +4501,7 @@ u8 handleRanchStoreLevelInteractions(u16 mapIndex, u8 collisionIndex) {
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) { 
                 if (gPlayer.heldItem == 0) {
                      if (checkShopItemShouldBeDisplayed(0x1B)) {
-                        func_800DC9FC(0x1B);
+                        handlePickUpShopItem(0x1B);
                     }
                     result = 2;
                 }
@@ -4530,7 +4514,7 @@ u8 handleRanchStoreLevelInteractions(u16 mapIndex, u8 collisionIndex) {
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) { 
                 if (gPlayer.heldItem == 0) {
                      if (checkShopItemShouldBeDisplayed(0x1C)) {
-                        func_800DC9FC(0x1C);
+                        handlePickUpShopItem(0x1C);
                     }
                     result = 2;
                 }
@@ -4553,10 +4537,9 @@ u8 handleRanchStoreLevelInteractions(u16 mapIndex, u8 collisionIndex) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800B2B90);
+//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handleAnnRoomLevelInteractions);
 
-// ann's room
-bool func_800B2B90(u16 mapIndex, u8 levelInteractionIndex) {
+bool handleAnnRoomLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
     bool result = FALSE; 
 
@@ -4586,10 +4569,9 @@ bool func_800B2B90(u16 mapIndex, u8 levelInteractionIndex) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800B2C28);
+//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handleRanchBarnLevelInteractions);
 
-// ranch barn
-bool func_800B2C28(u16 mapIndex, u8 levelInteractionIndex) {
+bool handleRanchBarnLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
     bool result = FALSE;    
 
@@ -4604,10 +4586,9 @@ bool func_800B2C28(u16 mapIndex, u8 levelInteractionIndex) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", func_800B2C78);
+//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handleBeachLevelInteractions);
 
-// beach
-bool func_800B2C78(u16 mapIndex, u8 levelInteractionIndex) {
+bool handleBeachLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
     bool result = FALSE;    
     

@@ -13,7 +13,7 @@
 /* global sprite state flags */
 #define SPRITE_ACTIVE 0x1
 #define SPRITE_ANIMATION_HEADER_PROCESSED 0x2
-#define SPRITE_UNKNOWN_FLAG 0x4
+// 4
 #define SPRITE_ANIMATION_PLAYING 0x8
 #define SPRITE_ANIMATION_LOOPS 0x10
 #define SPRITE_ANIMATION_PAUSED 0x20
@@ -69,15 +69,15 @@ typedef struct {
 
 extern void initializeGlobalSprites(void); 
 extern bool dmaSprite(u16 index, u32 romTextureStart, u32 romTextureEnd, u32 romAssetsIndexStart, u32 romAssetsIndexEnd, u32 romSpritesheetIndexStart, u32 romSpritesheetIndexEnd, u8* texture1Vaddr, u8* texture2Vaddr, u16* paletteVaddr, AnimationFrameMetadata* animationVaddr, u8* spriteToPaletteVaddr, u32* spritesheetIndexVaddr, u8 assetType, u8 argE);
-extern bool func_8002B36C(u16 index, u32* animationIndexPtr, u32* spritesheetIndexPtr, u32* paletteIndexPtr, u8* spriteToPaletteMappingPtr);
-extern bool func_8002B50C(u16 index, u32* animationIndexPtr, u32* spritesheetIndexPtr, u32* paletteIndexPtr, u8* spriteToPaletteMappingPtr, u32 romTexturePtr, u8* texturePtr, u8* texture2Ptr);
+extern bool setSpriteType2(u16 index, u32* animationIndexPtr, u32* spritesheetIndexPtr, u32* paletteIndexPtr, u8* spriteToPaletteMappingPtr);
+extern bool setSpriteType1(u16 index, u32* animationIndexPtr, u32* spritesheetIndexPtr, u32* paletteIndexPtr, u8* spriteToPaletteMappingPtr, u32 romTexturePtr, u8* texturePtr, u8* texture2Ptr);
 extern bool deactivateSprite(u16 index);
 extern void deactivateGlobalSprites(void);
 extern bool startSpriteAnimation(u16 index, u16 offset, u8);
 extern bool resetAnimationState(u16);   
-extern bool func_8002BB30(u16);
-extern bool func_8002BB88(u16); 
-extern u16 func_8002BCC8(u16 index);
+extern bool resumeSpriteAnimation(u16);
+extern bool pauseSpriteAnimation(u16); 
+extern u16 getSpriteAnimationStateChangedFlag(u16 index);
 extern bool setSpriteFlip(u16 index, bool flipHorizontal, bool flipVertical);
 extern bool setSpriteViewSpacePosition(u16 index, f32 x, f32 y, f32 z);  
 extern bool setSpriteScale(u16, f32, f32, f32);                                                                                                        
@@ -85,16 +85,16 @@ extern bool adjustSpriteViewSpacePosition(u16, f32, f32, f32);
 extern bool setSpriteRotation(u16, f32, f32, f32);                        
 extern bool updateSpriteRGBA(u16 index, u8 r, u8 g, u8 b, u8 a, s16 arg5);
 extern bool updateSpriteAlpha(u16, u8, s16);
-extern bool func_8002C680(u16 index, u16, u16);
-extern bool func_8002C6F8(u16, u16);
-extern bool func_8002C768(u16, u16);
-extern bool setSpriteRenderingLayer(u16, u16);                              
+extern bool setSpriteAnchorAlignment(u16 index, u16, u16);
+extern bool setSpriteAxisMapping(u16, u16);
+extern bool setSpriteTriangleWinding(u16, u16);
+extern bool setSpriteBlendMode(u16, u16);                              
 extern bool setSpriteBaseRGBA(u16 index, u8 r, u8 g, u8 b, u8 a);
 extern bool setSpriteColor(u16, u8, u8, u8, u8);
 extern bool setSpriteAlpha(u16, u8);  
 extern bool setBilinearFiltering(u16 spriteIndex, bool useBilinearFiltering);     
 extern bool setSpritePaletteIndex(u16, u16);     
-extern bool func_8002CBF8(u16);   
+extern bool checkSpriteRGBAUpdateFinished(u16);   
 extern bool checkSpriteAnimationStateChanged(u16);
 extern void updateSprites(void);
 extern void deactivateSprites(void);

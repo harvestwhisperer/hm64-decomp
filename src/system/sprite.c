@@ -69,10 +69,10 @@ void resetBitmaps(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/sprite", func_80029CF4);
+//INCLUDE_ASM("asm/nonmatchings/system/sprite", setBitmapWithSize);
 
 // unused
-u16 func_80029CF4(u8 *timg, u8 *pal, s32 width, s32 height, s32 fmt, s32 size, u32 arg6, u32 arg7, u16 flags) {
+u16 setBitmapWithSize(u8 *timg, u8 *pal, s32 width, s32 height, s32 fmt, s32 size, u32 arg6, u32 arg7, u16 flags) {
     
     u16 result;
     
@@ -116,9 +116,9 @@ u16 setBitmap(u8 *timg, u16 *pal, u16 flags) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/sprite", func_80029E2C);
+//INCLUDE_ASM("asm/nonmatchings/system/sprite", setBitmapAnchorAlignment);
 
-bool func_80029E2C(u16 index, u16 arg1, u16 arg2) {
+bool setBitmapAnchorAlignment(u16 index, u16 arg1, u16 arg2) {
     
     bool result = FALSE;
 
@@ -129,7 +129,7 @@ bool func_80029E2C(u16 index, u16 arg1, u16 arg2) {
 
         if (bitmaps[index].flags & BITMAP_ACTIVE) {
 
-            bitmaps[index].renderingFlags &= ~(8 | 0x10 | 0x20 | 0x40);
+            bitmaps[index].renderingFlags &= ~BITMAP_ANCHOR_MASK;
 
             temp1 = arg1 << 3;
             bitmaps[index].renderingFlags |= temp1;
@@ -146,9 +146,9 @@ bool func_80029E2C(u16 index, u16 arg1, u16 arg2) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/sprite", func_80029EA4);
+//INCLUDE_ASM("asm/nonmatchings/system/sprite", setBitmapAxisMapping);
 
-bool func_80029EA4(u16 index, u16 arg1) {
+bool setBitmapAxisMapping(u16 index, u16 mode) {
     
     bool result = FALSE;
     int temp;
@@ -157,8 +157,8 @@ bool func_80029EA4(u16 index, u16 arg1) {
 
         if (bitmaps[index].flags & BITMAP_ACTIVE) {
             
-            bitmaps[index].renderingFlags &= ~(0x80 | 0x100);
-            temp = arg1 << 7;
+            bitmaps[index].renderingFlags &= ~BITMAP_AXIS_MAPPING_MASK;
+            temp = mode << 7;
             bitmaps[index].renderingFlags |= temp;
             
             result = TRUE;
@@ -170,9 +170,9 @@ bool func_80029EA4(u16 index, u16 arg1) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/sprite", func_80029F14);
+//INCLUDE_ASM("asm/nonmatchings/system/sprite", setBitmapTriangleWinding);
 
-bool func_80029F14(u16 index, u16 arg1) {
+bool setBitmapTriangleWinding(u16 index, u16 arg1) {
 
     bool result = FALSE;
     
@@ -181,9 +181,9 @@ bool func_80029F14(u16 index, u16 arg1) {
         if (bitmaps[index].flags & BITMAP_ACTIVE) {
             
             if (arg1) {
-                bitmaps[index].renderingFlags |= 0x200;
+                bitmaps[index].renderingFlags |= SPRITE_RENDERING_REVERSE_WINDING;
             } else {
-                bitmaps[index].renderingFlags &= ~0x200;
+                bitmaps[index].renderingFlags &= ~SPRITE_RENDERING_REVERSE_WINDING;
             }
             
             result = TRUE;
@@ -222,9 +222,9 @@ bool setBitmapFlip(u16 index, bool flipHorizontal, bool flipVertical) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/sprite", func_8002A02C);
+//INCLUDE_ASM("asm/nonmatchings/system/sprite", setBitmapBlendMode);
 
-bool func_8002A02C(u16 index, u16 flag) {
+bool setBitmapBlendMode(u16 index, u16 flag) {
 
     bool result = FALSE;
     int temp;
@@ -233,7 +233,7 @@ bool func_8002A02C(u16 index, u16 flag) {
 
         if (bitmaps[index].flags & BITMAP_ACTIVE) {
             
-            bitmaps[index].renderingFlags &= ~(0x400 | 0x800 | 0x1000);
+            bitmaps[index].renderingFlags &= ~BITMAP_BLEND_MODE_MASK;
             temp = flag << 10;
             bitmaps[index].renderingFlags |= temp;
             
@@ -409,26 +409,29 @@ static const Gfx D_8011ECE0 = gsDPSetRenderMode(G_RM_AA_TEX_EDGE, G_RM_AA_TEX_ED
 
 //INCLUDE_RODATA("asm/nonmatchings/systemsprite", D_8011ECE0);
 
-//INCLUDE_ASM("asm/nonmatchings/system/sprite", func_8002A410);
+//INCLUDE_ASM("asm/nonmatchings/system/sprite", setBitmapBlendModeDisplayList);
 
-inline Gfx* func_8002A410(Gfx* dl, u16 flag) {
+inline Gfx* setBitmapBlendModeDisplayList(Gfx* dl, u16 flag) {
 
     switch (flag) {
-        case 0:
+        case SPRITE_BLEND_DEFAULT:
             break;
-        case 1:
+        case SPRITE_BLEND_OPAQUE:
             gDPSetCombineMode(dl++, G_CC_MODULATEIDECALA, G_CC_MODULATEIDECALA);
             gDPSetRenderMode(dl++, G_RM_AA_ZB_OPA_SURF, G_RM_NOOP2);
             break;
-        case 2:
+        //  Alpha-modulated blending (for fading/transparency control)
+        case SPRITE_BLEND_ALPHA_MODULATED:
             *dl++ = D_8011ECC0;
             *dl++ = D_8011ECC8;
             break;
-        case 3:
+        // Alpha-decal with Z-buffer (for sprites with baked alpha)
+        case SPRITE_BLEND_ALPHA_DECAL:
             *dl++ = D_8011ECD0;
             *dl++ = D_8011ECD8;
             break;
-        case 4:
+        // Alpha-decal without Z-buffer
+        case SPRITE_BLEND_ALPHA_DECAL_NO_Z:
             *dl++ = D_8011ECD0;
             *dl++ = D_8011ECE0;
             break;
@@ -522,7 +525,7 @@ Gfx* generateBitmapDisplayList(Gfx* dl, BitmapObject* bitmap, u16 spriteNumber) 
     
     bitmap->spriteNumber = spriteNumber;
 
-    dl = func_8002A410(dl, (bitmap->renderingFlags >> 10) & 7);
+    dl = setBitmapBlendModeDisplayList(dl, (bitmap->renderingFlags >> 10) & 7);
 
     *dl++ = D_8011ED00;
 
@@ -596,7 +599,8 @@ Gfx* generateBitmapDisplayList(Gfx* dl, BitmapObject* bitmap, u16 spriteNumber) 
         *tempDl = *(tempDl + 1);
         *dl++ = *tempDl;
         
-        if (bitmap->renderingFlags & 0x200) {
+        // append triangle commands
+        if (bitmap->renderingFlags & SPRITE_RENDERING_REVERSE_WINDING) {
           *(dl++) = D_8011ED18;
         }
         else {
@@ -630,7 +634,7 @@ static void processBitmapSceneNode(BitmapObject* sprite, Gfx *dl) {
     // adjust scaling if needed
     calculateSceneNodePosition(&vec, sprite);
 
-    spriteIndex = addSceneNode(dl, (sprite->flags & (0x8 | 0x10 | 0x20 | 0x40)) | 0x80);
+    spriteIndex = addSceneNode(dl, (sprite->flags & (0x8 | SCENE_NODE_UPDATE_SCALE | SCENE_NODE_UPDATE_ROTATION | SCENE_NODE_TRANSFORM_EXEMPT)) | SCENE_NODE_Z_OFFSET);
 
     addSceneNodePosition(spriteIndex, vec.x, vec.y, vec.z);
     addSceneNodeScaling(spriteIndex, sprite->scaling.x, sprite->scaling.y, sprite->scaling.z);

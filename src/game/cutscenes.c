@@ -54,20 +54,20 @@ u16 setSpringCutscenes(void);
 u16 setVineyardCellarCutscenes(void);                
 u16 setVineyardHouseCutscenes(void); 
 // TODO: finish labeling
-u16 func_800A1C04(void);
-u16 func_800A2250(void);
-u16 func_800A29B0(void);
-u16 func_800A2FA8(void);
-u16 func_800A3F04(void);
-u16 func_800A4878(void);
-u16 func_800A4E50(void);
-u16 func_800A5314(void);
-u16 func_800A5F48(void);
-u16 func_800A6440(void);
-u16 func_800A6634(void);
-u16 func_800A68C0(void);
-u16 func_800A6A14(void);
-u16 func_800A6EE4(void);
+u16 setMountain2Cutscenes(void);
+u16 setTopOfMountain1Cutscenes(void);
+u16 setHouseCutscenes(void);
+u16 setKitchenCutscenes(void);
+u16 setRanchCutscenes(void);
+u16 setVineyardCutscenes(void);
+u16 setVillage1Cutscenes(void);
+u16 setVillage2Cutscenes(void);
+u16 setBakeryCutscenes(void);
+u16 setMayorHouseCutscenes(void);
+u16 setLibraryCutscenes(void);
+u16 setTavernCutscenes(void);
+u16 setSquareCutscenes(void);
+u16 setRaceTrackCutscenes(void);
 
 // bss
 s32 gCutsceneCompletionFlags;
@@ -320,7 +320,7 @@ static inline void transitionCutscenes(u16 cutsceneIndex, u16 entranceIndex) {
     setEntrance(entranceIndex);
     gCutsceneIndex = cutsceneIndex;
     loadCutscene(0);
-    func_8006E840(entranceIndex);
+    loadLevelFromEntrance(entranceIndex);
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/cutscenes", func_8009BF90);
@@ -339,19 +339,19 @@ inline void func_8009BF90(u16 bankIndex) {
     
     gCutsceneBytecodeSegmentIndex = bankIndex;
 
-    gCutsceneFlags |= 1;
+    gCutsceneFlags |= CUTSCENE_ACTIVE;
 
     toggleDailyEventBit(0x53);
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", func_8009C054);
+//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", setLevelCutscene);
 
-u16 func_8009C054(u16 mapIndex) {
+u16 setLevelCutscene(u16 mapIndex) {
     
     u16 offset = 0xFFFF;
     
-    // can't use array/struct here as required by func_80056030
+    // can't use array/struct here as required by loadLevel
     if (!(gCutsceneFlags & 1)) {
         
         gCutsceneFlags &= ~2;
@@ -364,10 +364,10 @@ u16 func_8009C054(u16 mapIndex) {
                 offset = setMountain1Cutscenes();
                 break;
             case MOUNTAIN_2:
-                offset = func_800A1C04();
+                offset = setMountain2Cutscenes();
                 break;
             case TOP_OF_MOUNTAIN_1:
-                offset = func_800A2250();
+                offset = setTopOfMountain1Cutscenes();
                 break;
             case MOON_MOUNTAIN:
                 offset = setMoonMountainCutscenes();
@@ -382,19 +382,19 @@ u16 func_8009C054(u16 mapIndex) {
                 offset = setCaveCutscenes();
                 break;
             case HOUSE:
-                offset = func_800A29B0();
+                offset = setHouseCutscenes();
                 break;
             case KITCHEN:
-                offset = func_800A2FA8();
+                offset = setKitchenCutscenes();
                 break;
             case RANCH:
-                offset = func_800A3F04();
+                offset = setRanchCutscenes();
                 break;
             case RANCH_STORE:
                 offset = setRanchStoreCutscenes();
                 break;
             case VINEYARD:
-                offset = func_800A4878();
+                offset = setVineyardCutscenes();
                 break;
             case VINEYARD_HOUSE:
                 offset = setVineyardHouseCutscenes();
@@ -403,10 +403,10 @@ u16 func_8009C054(u16 mapIndex) {
                 offset = setVineyardCellarCutscenes();
                 break;
             case VILLAGE_1:
-                offset = func_800A4E50();
+                offset = setVillage1Cutscenes();
                 break;
             case VILLAGE_2:
-                offset = func_800A5314();
+                offset = setVillage2Cutscenes();
                 break;
             case RICK_STORE:
                 offset = setRickStoreCutscenes();
@@ -415,25 +415,25 @@ u16 func_8009C054(u16 mapIndex) {
                 offset = setFlowerShopCutscenes();
                 break;
             case BAKERY:
-                offset = func_800A5F48();
+                offset = setBakeryCutscenes();
                 break;
             case MAYOR_HOUSE:
-                offset = func_800A6440();
+                offset = setMayorHouseCutscenes();
                 break;
             case LIBRARY:
-                offset = func_800A6634();
+                offset = setLibraryCutscenes();
                 break;
             case CHURCH:
                 offset = setChurchCutscenes();
                 break;
             case TAVERN:
-                offset = func_800A68C0();
+                offset = setTavernCutscenes();
                 break;
             case SQUARE:
-                offset = func_800A6A14();
+                offset = setSquareCutscenes();
                 break;
             case RACE_TRACK:
-                offset = func_800A6EE4();
+                offset = setRaceTrackCutscenes();
                 break;
             case BEACH:
                 offset = setBeachCutscenes();
@@ -1549,7 +1549,7 @@ u16 func_8009C324(u8 arg0) {
         }      
             
         if (!set && arg0 == 0) {
-            if (!checkDailyEventBit(MARIA_MARRIAGE_CUTSCENE) && gSeason == SUMMER && gDayOfMonth == 1 && gWeather == SUNNY && (17 < gHour && gHour < 21) && MARRIED_TO_MARIA) {
+            if (!checkDailyEventBit(MARIA_MARRIAGE_CUTSCENE) && gSeason == SUMMER && gDayOfMonth == 1 && gWeather == SUNNY && (17 < gHour && gHour < 21) && checkLifeEventBit(MARRIED) && gWife == MARIA) {
                 setDailyEventBit(MARIA_MARRIAGE_CUTSCENE);
                 gCutsceneIndex = 0xEF;
                 loadCutscene(arg0);
@@ -1599,7 +1599,7 @@ u16 func_8009C324(u8 arg0) {
         }
     
         if (!set && arg0 == 0) {
-            if (!checkDailyEventBit(MARIA_MARRIAGE_CUTSCENE) && gSeason == WINTER && gDayOfMonth == 24 && gWeather == SUNNY && (17 < gHour && gHour < 21) && MARRIED_TO_MARIA) {
+            if (!checkDailyEventBit(MARIA_MARRIAGE_CUTSCENE) && gSeason == WINTER && gDayOfMonth == 24 && gWeather == SUNNY && (17 < gHour && gHour < 21) && checkLifeEventBit(MARRIED) && gWife == MARIA) {
                 setDailyEventBit(MARIA_MARRIAGE_CUTSCENE);
                 gCutsceneIndex = 0xF4;
                 loadCutscene(arg0);
@@ -1649,7 +1649,7 @@ u16 func_8009C324(u8 arg0) {
         }
     
         if (!set && arg0 == 0) {
-            if (!checkDailyEventBit(MARIA_MARRIAGE_CUTSCENE) && gSeason == SUMMER && gDayOfMonth == 7 && gWeather == SUNNY && (16 < gHour && gHour < 21) && MARRIED_TO_MARIA && npcAffection[MARIA] >= 220) {
+            if (!checkDailyEventBit(MARIA_MARRIAGE_CUTSCENE) && gSeason == SUMMER && gDayOfMonth == 7 && gWeather == SUNNY && (16 < gHour && gHour < 21) && checkLifeEventBit(MARRIED) && gWife == MARIA && npcAffection[MARIA] >= 220) {
                 setDailyEventBit(MARIA_MARRIAGE_CUTSCENE);
                 gCutsceneIndex = 0x96;
                 loadCutscene(arg0);
@@ -1699,7 +1699,7 @@ u16 func_8009C324(u8 arg0) {
         }
             
         if (!set && arg0 == 0) {
-            if (!checkDailyEventBit(MARIA_MARRIAGE_CUTSCENE) && gSeason == AUTUMN && gDayOfMonth == 9 && gWeather == SUNNY && (16 < gHour && gHour < 21) && MARRIED_TO_MARIA && npcAffection[MARIA] >= 220) {
+            if (!checkDailyEventBit(MARIA_MARRIAGE_CUTSCENE) && gSeason == AUTUMN && gDayOfMonth == 9 && gWeather == SUNNY && (16 < gHour && gHour < 21) && checkLifeEventBit(MARRIED) && gWife == MARIA && npcAffection[MARIA] >= 220) {
                 setDailyEventBit(MARIA_MARRIAGE_CUTSCENE);
                 gCutsceneIndex = 0x97;
                 loadCutscene(arg0);
@@ -1839,7 +1839,7 @@ u16 setFarmCutscenes(void) {
 
     if (!set) {
         if (checkDailyEventBit(8)) {
-            gCutsceneIndex = func_800616CC(gHouseExtensionSelection);
+            gCutsceneIndex = handlePurchaseHouseExtension(gHouseExtensionSelection);
             gCutsceneFlags |= 2;
             index = 4;
             set = TRUE;
@@ -1961,9 +1961,9 @@ u16 setMountain1Cutscenes(void) {
 }
 
 // mountain 2
-//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", func_800A1C04);
+//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", setMountain2Cutscenes);
 
-u16 func_800A1C04(void) {
+u16 setMountain2Cutscenes(void) {
 
     bool set = FALSE;
     u16 index = 0xFFFF;
@@ -2038,10 +2038,10 @@ u16 func_800A1C04(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", func_800A2250);
+//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", setTopOfMountain1Cutscenes);
 
 // TODO: label; top of mountain 1
-u16 func_800A2250(void) {
+u16 setTopOfMountain1Cutscenes(void) {
 
     bool set = FALSE;
     u16 index = 0xFFFF;
@@ -2174,10 +2174,10 @@ u16 setCaveCutscenes(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", func_800A29B0);
+//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", setHouseCutscenes);
 
 // house
-u16 func_800A29B0(void) {
+u16 setHouseCutscenes(void) {
 
     u16 index = 0xFFFF;
     bool set = FALSE;
@@ -2238,7 +2238,7 @@ u16 func_800A29B0(void) {
     }
 
     if (!set) {
-        if (!checkDailyEventBit(FARM_MORNING_VISIT) && !checkLifeEventBit(WIFE_LEFT) && DAYTIME && MARRIED_TO_MARIA && npcAffection[MARIA] < 100) {
+        if (!checkDailyEventBit(FARM_MORNING_VISIT) && !checkLifeEventBit(WIFE_LEFT) && DAYTIME && checkLifeEventBit(MARRIED) && gWife == MARIA && npcAffection[MARIA] < 100) {
             setDailyEventBit(FARM_MORNING_VISIT);
             setLifeEventBit(WIFE_LEFT);
             gCutsceneIndex = MARIA_LEAVES_MARRIAGE;
@@ -2297,9 +2297,9 @@ u16 func_800A29B0(void) {
 }
 
 // kitchen
-//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", func_800A2FA8);
+//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", setKitchenCutscenes);
 
-u16 func_800A2FA8(void) {
+u16 setKitchenCutscenes(void) {
 
     u16 index = 0xFFFF;
     bool set = FALSE;
@@ -2469,10 +2469,10 @@ u16 func_800A2FA8(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", func_800A3F04);
+//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", setRanchCutscenes);
 
 // ranch
-u16 func_800A3F04(void) {
+u16 setRanchCutscenes(void) {
 
     u16 index = 0xFFFF;
     bool set = FALSE;
@@ -2634,10 +2634,10 @@ u16 setRanchStoreCutscenes(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", func_800A4878);
+//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", setVineyardCutscenes);
 
 // vineyard
-u16 func_800A4878(void) {
+u16 setVineyardCutscenes(void) {
 
     u16 index = 0xFFFF;
     bool set = FALSE;
@@ -2739,10 +2739,10 @@ u16 setVineyardCellarCutscenes(void) {
     return index;
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", func_800A4E50);
+//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", setVillage1Cutscenes);
 
 // village 1
-u16 func_800A4E50(void) {
+u16 setVillage1Cutscenes(void) {
 
     u16 index = 0xFFFF;
     bool set = FALSE;
@@ -2826,10 +2826,10 @@ u16 func_800A4E50(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", func_800A5314);
+//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", setVillage2Cutscenes);
 
 // village 2
-u16 func_800A5314(void) {
+u16 setVillage2Cutscenes(void) {
 
     u16 index = 0xFFFF;
     bool set = FALSE;
@@ -3081,10 +3081,10 @@ u16 setFlowerShopCutscenes(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", func_800A5F48);
+//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", setBakeryCutscenes);
 
 // bakery
-u16 func_800A5F48(void) {
+u16 setBakeryCutscenes(void) {
 
     bool set = FALSE;
     u16 index = 0xFFFF;
@@ -3170,10 +3170,10 @@ u16 func_800A5F48(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", func_800A6440);
+//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", setMayorHouseCutscenes);
 
 // mayor house
-u16 func_800A6440(void) {
+u16 setMayorHouseCutscenes(void) {
 
     u16 index = 0xFFFF;
     bool set = FALSE;
@@ -3205,10 +3205,10 @@ u16 func_800A6440(void) {
 
 }    
 
-//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", func_800A6634);
+//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", setLibraryCutscenes);
 
 // library
-u16 func_800A6634(void) {
+u16 setLibraryCutscenes(void) {
 
     u16 index = 0xFFFF;
     bool set = FALSE;
@@ -3260,10 +3260,10 @@ u16 setChurchCutscenes(void) {
     return index;
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", func_800A68C0);
+//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", setTavernCutscenes);
 
 // tavern
-u16 func_800A68C0(void) {
+u16 setTavernCutscenes(void) {
 
     u16 index = 0xFFFF;
     bool set = FALSE;
@@ -3287,10 +3287,10 @@ u16 func_800A68C0(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", func_800A6A14);
+//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", setSquareCutscenes);
 
 // square
-u16 func_800A6A14(void) {
+u16 setSquareCutscenes(void) {
 
     u16 index = 0xFFFF;
     bool set = FALSE;
@@ -3396,10 +3396,10 @@ u16 func_800A6A14(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", func_800A6EE4);
+//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", setRaceTrackCutscenes);
 
 // race track
-u16 func_800A6EE4(void) {
+u16 setRaceTrackCutscenes(void) {
 
     u16 index = 0xFFFF;
     bool set = FALSE;
@@ -3613,10 +3613,10 @@ u16 setRoadCutscenes(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", func_800A7AE8);
+//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", handleTimedDailyCutscenes);
  
 // time-based daily cutscenes/update game
-u16 func_800A7AE8(u8 arg0) {
+u16 handleTimedDailyCutscenes(u8 arg0) {
 
     u16 index = 0xFFFF;
     bool set = FALSE;
@@ -3704,10 +3704,10 @@ u16 func_800A7AE8(u8 arg0) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", func_800A7DFC);
+//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", handleEndOfDayCutscenes);
 
 // cutscenes on wake up: evaluation, wedding, rivals' weddings, animal funeral, sick days
-u16 func_800A7DFC(void) {
+u16 handleEndOfDayCutscenes(void) {
 
     bool set = FALSE;
     u16 result = 0xFFFF;
@@ -3747,7 +3747,7 @@ u16 func_800A7DFC(void) {
             D_801886D0 = func_8009B564();
 
             // recipes sum
-            D_80188F68 = func_80065518();
+            D_80188F68 = getAcquiredRecipesTotal();
 
             setEntrance(0x3E);
             gCutsceneIndex = EVALUATION;
@@ -4007,10 +4007,10 @@ u16 func_800A7DFC(void) {
     return result;
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", func_800A87C4);
+//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", setDreamCutscenes);
 
 // dreams
-u16 func_800A87C4(void) {
+u16 setDreamCutscenes(void) {
 
     bool set = FALSE;
 
@@ -4115,18 +4115,18 @@ u16 func_800A87C4(void) {
     
 }
 
-// INCLUDE_ASM("asm/nonmatchings/game/cutscenes", func_800A8F74);
+// INCLUDE_ASM("asm/nonmatchings/game/cutscenes", handleCutsceneCompletion);
 
-void func_800A8F74(void) {
+void handleCutsceneCompletion(void) {
 
     bool found;
     u16 tempEntrance;
     
-    if (gCutsceneFlags & 1) {
+    if (gCutsceneFlags & CUTSCENE_ACTIVE) {
 
         if (gCutsceneCompletionFlags & 1) {
 
-            gCutsceneFlags &= ~1;
+            gCutsceneFlags &= ~CUTSCENE_ACTIVE;
 
             switch (gCutsceneBytecodeSegmentIndex) {
 
@@ -4161,7 +4161,7 @@ void func_800A8F74(void) {
                             setLifeEventBit(0x32);
                             gNamingScreenIndex = 7;
                             // initialize chicken
-                            D_801FC155 = func_80087F28(2, 0xFF);
+                            D_801FC155 = initializeNewChicken(2, 0xFF);
                             break;
 
                         default:
@@ -4188,7 +4188,7 @@ void func_800A8F74(void) {
                         
                         case 0x71:
                             setEntrance(0);
-                            setMainLoopCallbackFunctionIndex(2);
+                            setMainLoopCallbackFunctionIndex(MAP_LOAD);
                             break;
                         
                         case 0x81:
@@ -4315,7 +4315,7 @@ void func_800A8F74(void) {
 
                         case 0x13E:                         
                             // store tool
-                            func_80065BCC(FISHING_POLE);
+                            storeTool(FISHING_POLE);
                             break;
                         
                         case 0x144:                         
@@ -4378,8 +4378,8 @@ void func_800A8F74(void) {
                             setLifeEventBit(HAVE_HORSE);
                             break;
                         case 0x28B:                         
-                            func_80056030(0);
-                            setMainLoopCallbackFunctionIndex(4);
+                            loadLevel(0);
+                            setMainLoopCallbackFunctionIndex(SET_AUDIO_AND_LIGHTING);
                             initializeHorse();
                             break;
                         case 0x297:                         
@@ -4438,7 +4438,7 @@ void func_800A8F74(void) {
                         case 0x192:
                         case 0x193:
                         case 0x194:
-                            setMainLoopCallbackFunctionIndex(0xD);
+                            setMainLoopCallbackFunctionIndex(END_OF_DAY_1);
                             break;
                         case 0x195:                 
                         case 0x196:                 
@@ -4572,7 +4572,7 @@ void func_800A8F74(void) {
      
                             }
                             
-                            setMainLoopCallbackFunctionIndex(HORSE_RACE_RESULTS_LOAD);
+                            setMainLoopCallbackFunctionIndex(RACE_RESULTS_LOAD);
                             gCutsceneCompletionFlags = 0;
                             break;
                         
@@ -4603,7 +4603,7 @@ void func_800A8F74(void) {
                 
                 case 24:   
                     if (checkLifeEventBit(0x91)) {
-                        gFarmAnimals[D_80189054].normalMilk = D_80180710;
+                        gFarmAnimals[D_80189054].milkType = D_80180710;
                     }
                     setMainLoopCallbackFunctionIndex(END_OF_FESTIVAL_DAY_1);
                     break;
@@ -4636,7 +4636,7 @@ void func_800A8F74(void) {
 
                         }
                         
-                        setMainLoopCallbackFunctionIndex(HORSE_RACE_RESULTS_LOAD);
+                        setMainLoopCallbackFunctionIndex(RACE_RESULTS_LOAD);
                         gCutsceneCompletionFlags = 0;
                     
                     }
@@ -4657,13 +4657,13 @@ void func_800A8F74(void) {
                     
                         // fontPalette1
                         nuPiReadRom((u32)&_fontPalette1SegmentRomStart, FONT_PALETTE_1_BUFFER, ptr2 - ptr1);
-                        func_8003F464(0, 0xE, 0xE, FONT_TEXTURE_BUFFER, FONT_PALETTE_1_BUFFER);
-                        func_8003F360(0, -4, 0);
+                        setMessageBoxFont(0, 0xE, 0xE, FONT_TEXTURE_BUFFER, FONT_PALETTE_1_BUFFER);
+                        setMessageBoxInterpolationWithFlags(0, -4, 0);
                         setMessageBoxSfx(0, 0x57, 8, 1);
  
                         if (D_80180710 == 0) {
                             // show pink overlay message
-                            func_8005B09C(23);
+                            showPinkOverlayText(23);
                         } else {
                             func_80055F08(0x5AA, 0x61, 1);
 
@@ -4693,7 +4693,7 @@ void func_800A8F74(void) {
             if ((gCutsceneCompletionFlags & 0x800) && gCutsceneBytecodeSegmentIndex == 30) {
                 deactivateCutsceneExecutors();
                 deactivateSprites();
-                func_8003C504(MAIN_MAP_INDEX);
+                unloadMapAssets(MAIN_MAP_INDEX);
                 initializeTitleScreen(0);
             }
 
@@ -4720,7 +4720,7 @@ void func_800A8F74(void) {
                         initializeCutsceneExecutors();
                         deactivateNPCEntities();
                         deactivateAnimalEntities();
-                        func_800D51B0();
+                        clearAllItemContextSlots();
                         initializeEntityInstances(1);
                         transitionCutscenes(0xFA, SPRING_ENTER);
                         break;
@@ -4735,7 +4735,7 @@ void func_800A8F74(void) {
                         initializeCutsceneExecutors();
                         deactivateNPCEntities();
                         deactivateAnimalEntities();
-                        func_800D51B0();
+                        clearAllItemContextSlots();
                         initializeEntityInstances(1);
                         transitionCutscenes(0xFB, 0x1A);
                         break; 
@@ -4750,7 +4750,7 @@ void func_800A8F74(void) {
                         initializeCutsceneExecutors();
                         deactivateNPCEntities();
                         deactivateAnimalEntities();
-                        func_800D51B0();
+                        clearAllItemContextSlots();
                         initializeEntityInstances(1);
                         transitionCutscenes(0xFC, 0x25);
                         break;
@@ -4761,7 +4761,7 @@ void func_800A8F74(void) {
                         initializeCutsceneExecutors();
                         deactivateNPCEntities();
                         deactivateAnimalEntities();
-                        func_800D51B0();
+                        clearAllItemContextSlots();
                         initializeEntityInstances(1);
                         transitionCutscenes(0xFD, SPRING_ENTER);
                         break;
@@ -4772,7 +4772,7 @@ void func_800A8F74(void) {
                         initializeCutsceneExecutors();
                         deactivateNPCEntities();
                         deactivateAnimalEntities();
-                        func_800D51B0();
+                        clearAllItemContextSlots();
                         initializeEntityInstances(1);
                         transitionCutscenes(0xFE, SPRING_ENTER);
                         break;
@@ -4783,7 +4783,7 @@ void func_800A8F74(void) {
                         initializeCutsceneExecutors();
                         deactivateNPCEntities();
                         deactivateAnimalEntities();
-                        func_800D51B0();
+                        clearAllItemContextSlots();
                         initializeEntityInstances(1);
                         transitionCutscenes(0xFF, 0x48);
                         break;
@@ -4794,7 +4794,7 @@ void func_800A8F74(void) {
                         initializeCutsceneExecutors();
                         deactivateNPCEntities();
                         deactivateAnimalEntities();
-                        func_800D51B0();
+                        clearAllItemContextSlots();
                         initializeEntityInstances(1);
                         transitionCutscenes(0x100, 0x2E);
                         break;
@@ -4805,7 +4805,7 @@ void func_800A8F74(void) {
                         initializeCutsceneExecutors();
                         deactivateNPCEntities();
                         deactivateAnimalEntities();
-                        func_800D51B0();
+                        clearAllItemContextSlots();
                         initializeEntityInstances(1);
                         transitionCutscenes(0x195, 0x32);
                         break;
@@ -4816,7 +4816,7 @@ void func_800A8F74(void) {
                         initializeCutsceneExecutors();
                         deactivateNPCEntities();
                         deactivateAnimalEntities();
-                        func_800D51B0();
+                        clearAllItemContextSlots();
                         initializeEntityInstances(1);
                         transitionCutscenes(0x196, 0x32); 
                         break;
@@ -4827,7 +4827,7 @@ void func_800A8F74(void) {
                         initializeCutsceneExecutors();
                         deactivateNPCEntities();
                         deactivateAnimalEntities();
-                        func_800D51B0();
+                        clearAllItemContextSlots();
                         initializeEntityInstances(1);
                         transitionCutscenes(0x197, 0x32);
                         break;
@@ -4838,7 +4838,7 @@ void func_800A8F74(void) {
                         initializeCutsceneExecutors();
                         deactivateNPCEntities();
                         deactivateAnimalEntities();
-                        func_800D51B0();
+                        clearAllItemContextSlots();
                         initializeEntityInstances(1);
                         transitionCutscenes(0x198, 0x32);
                         break;
@@ -4849,7 +4849,7 @@ void func_800A8F74(void) {
                         initializeCutsceneExecutors();
                         deactivateNPCEntities();
                         deactivateAnimalEntities();
-                        func_800D51B0();
+                        clearAllItemContextSlots();
                         initializeEntityInstances(1);
                         transitionCutscenes(0x199, 0x32);
                         break;
@@ -4862,7 +4862,7 @@ void func_800A8F74(void) {
                         initializeCutsceneExecutors();
                         deactivateNPCEntities();
                         deactivateAnimalEntities();
-                        func_800D51B0();
+                        clearAllItemContextSlots();
                         initializeEntityInstances(1);
                         transitionCutscenes(STARRY_NIGHT_FESTIVAL, 0x5F);
                         break;
@@ -4927,7 +4927,7 @@ void func_800A8F74(void) {
                         
                         setEntrance(tempEntrance);
                         loadCutscene(0);
-                        func_8006E840(tempEntrance);
+                        loadLevelFromEntrance(tempEntrance);
 
                         break;
 
@@ -4962,7 +4962,7 @@ void func_800A8F74(void) {
                         }
                         
                         loadCutscene(0);
-                        func_8006E840(0x61);
+                        loadLevelFromEntrance(0x61);
                         break;
                     
                     case 0x1B9:     
@@ -4974,7 +4974,7 @@ void func_800A8F74(void) {
                             gCutsceneIndex = 0x1B7;
                         }
                         loadCutscene(0);
-                        func_8006E840(0x58);
+                        loadLevelFromEntrance(0x58);
                         break;
                     
                     case 0x1BA:     
@@ -4986,19 +4986,19 @@ void func_800A8F74(void) {
                             gCutsceneIndex = 0x1B8;
                         }
                         loadCutscene(0);
-                        func_8006E840(0x5C);
+                        loadLevelFromEntrance(0x5C);
                         break;
 
                     case 0x20D:
                         setEntrance(0x3E);
                         gCutsceneIndex = 0x20E;
                         loadCutscene(0);
-                        func_8006E840(0x3E);
+                        loadLevelFromEntrance(0x3E);
                         break;
                     
                     case 0x20E:     
                         setEntrance(0x41);
-                        func_8006E840(0x41);
+                        loadLevelFromEntrance(0x41);
                         break;
                     
                     case 0x20F:
@@ -5014,7 +5014,7 @@ void func_800A8F74(void) {
                             gCutsceneIndex = 0x211;
                         }
                         loadCutscene(0);
-                        func_8006E840(0x67);
+                        loadLevelFromEntrance(0x67);
                         break;
 
                     // 0x29A
@@ -5027,14 +5027,14 @@ void func_800A8F74(void) {
                             gCutsceneIndex = 0x298;
                         }
                         loadCutscene(0);
-                        func_8006E840(0x4D);
+                        loadLevelFromEntrance(0x4D);
                         break;
                     
                     // 0x2C1
                     case KAREN_YELLOW_HEART_EVENT_1:
                         gCutsceneIndex = 0x2C2;
                         loadCutscene(0);
-                        func_8006E840(0x55);
+                        loadLevelFromEntrance(0x55);
                         break;
 
                     case 0x2C2:
@@ -5056,13 +5056,13 @@ void func_800A8F74(void) {
                             gCutsceneIndex = 0x2C6;
                         }
                         loadCutscene(0);
-                        func_8006E840(0x52);
+                        loadLevelFromEntrance(0x52);
                         break;
                     
                     // 0x324
                     case ANN_SPRAINED_ANKLE:
                         setEntrance(0x2B);
-                        func_8006E840(0x2B);
+                        loadLevelFromEntrance(0x2B);
                         break;
                     
                     case 0x384:
@@ -5097,7 +5097,7 @@ void func_800A8F74(void) {
                         initializeCutsceneExecutors();
                         deactivateNPCEntities();
                         deactivateAnimalEntities();
-                        func_800D51B0();
+                        clearAllItemContextSlots();
                         initializeEntityInstances(2);
                         transitionCutscenes(VEGETABLE_FESTIVAL_SQUARE, 0x61);
                         break;
@@ -5132,7 +5132,7 @@ void func_800A8F74(void) {
                         setEntrance(0x6C);
                         gCutsceneIndex = 0x515;
                         loadCutscene(0);
-                        func_8006E840(0x6C);
+                        loadLevelFromEntrance(0x6C);
                         break;
 
                     case 0x5AA:             
@@ -5179,7 +5179,7 @@ void func_800A8F74(void) {
                         initializeCutsceneExecutors();
                         deactivateNPCEntities();
                         deactivateAnimalEntities();
-                        func_800D51B0();
+                        clearAllItemContextSlots();
                         initializeEntityInstances(0);
 
                         if (D_80189824 == 0) {
@@ -5265,7 +5265,7 @@ void func_800A8F74(void) {
 
                         setEntrance(tempEntrance);
                         loadCutscene(0);
-                        func_8006E840(tempEntrance);
+                        loadLevelFromEntrance(tempEntrance);
 
                         break;
 
@@ -5286,7 +5286,7 @@ void func_800A8F74(void) {
                     unknownRGBA.b = temp;
                     unknownRGBA.g = temp;
                     unknownRGBA.r = temp;
-                    setMainLoopCallbackFunctionIndex(4);
+                    setMainLoopCallbackFunctionIndex(SET_AUDIO_AND_LIGHTING);
                 }
                 
             }
@@ -5332,8 +5332,8 @@ void func_800A8F74(void) {
             
             // fontPalette3
             nuPiReadRom(ptr1, FONT_PALETTE_1_BUFFER, ptr2 - ptr1);
-            func_8003F464(0, 0xE, 0xE, FONT_TEXTURE_BUFFER, FONT_PALETTE_1_BUFFER);
-            func_8003F360(0, 1, 1);
+            setMessageBoxFont(0, 0xE, 0xE, FONT_TEXTURE_BUFFER, FONT_PALETTE_1_BUFFER);
+            setMessageBoxInterpolationWithFlags(0, 1, 1);
             setMessageBoxSfx(0, 0xFF, 0xFF, 0xFF);
             gCutsceneCompletionFlags &= ~0x100;
         }
@@ -5343,56 +5343,54 @@ void func_800A8F74(void) {
         if (gCutsceneCompletionFlags & 0x20000) {
             setEntrance(HOUSE_EXIT);
             // prep map
-            func_8006E840(0);
-            func_8003BE98(0, 0xFF, 0xFF, 0xFF, 0xFF);
+            loadLevelFromEntrance(0);
+            setMapControllerRGBA(0, 0xFF, 0xFF, 0xFF, 0xFF);
             gCutsceneCompletionFlags &= ~0x20000;
         }
+
+        // feed chickens
         if (gCutsceneCompletionFlags & 0x40000) {
-            // load map object
-            func_80073244(0);
+            setChickenFeedSprite(0);
             gCutsceneCompletionFlags &= ~0x40000;
         }
         if (gCutsceneCompletionFlags & 0x80000) {
-            // load map object
-            func_80073244(1);
+            setChickenFeedSprite(1);
             gCutsceneCompletionFlags &= ~0x80000;
         }
         if (gCutsceneCompletionFlags & 0x100000) {
-            // load map object
-            func_80073244(2);
+            setChickenFeedSprite(2);
             gCutsceneCompletionFlags &= ~0x100000;
         }
 
         if (gCutsceneCompletionFlags & 0x200000) {
             setEntrance(0x12);
-            // prep map
-            func_8006E840(0x12);
-            func_8003BE98(0, 0, 0, 0, 0);
+            loadLevelFromEntrance(0x12);
+            setMapControllerRGBA(0, 0, 0, 0, 0);
             gCutsceneCompletionFlags &= ~0x200000;
         }
 
         if (gCutsceneCompletionFlags & 0x400000) {
             setEntrance(0x11);
             // prep map
-            func_8006E840(0x11);
-            func_8003BE98(0, 0, 0, 0, 0);
+            loadLevelFromEntrance(0x11);
+            setMapControllerRGBA(0, 0, 0, 0, 0);
             gCutsceneCompletionFlags &= ~0x400000;
         }
 
         if (gCutsceneCompletionFlags & 0x800000) {
             // map object
-            func_8007341C(0);
+            setBarnFodderSprite(0);
             gCutsceneCompletionFlags &= ~0x800000;
         }
 
         if (gCutsceneCompletionFlags & 0x1000000) {
-            func_8007341C(2);
+            setBarnFodderSprite(2);
             gCutsceneCompletionFlags &= ~0x1000000;
         }
 
         if (gCutsceneCompletionFlags & 0x2000000) {
             // map objects
-            func_80034DC8(0, 0, 0x13);
+            setMapObjectAnimation(0, 0, 0x13);
             gCutsceneCompletionFlags &= ~0x2000000;
         }
 
@@ -5448,7 +5446,7 @@ void func_800A8F74(void) {
 
                         setMapAdditionIndexFromCoordinates(0, 0, tempX + 2, tempZ + 2);
                         setGridToTileTextureMappings(MAIN_MAP_INDEX);
-                        func_800CF8F8(1, 0, (f32)((tempX * 32) - 160), 0, (f32)((tempZ * 32) - 160));
+                        spawnToolEffectEntity(1, 0, (f32)((tempX * 32) - 160), 0, (f32)((tempZ * 32) - 160));
 
                         found = TRUE;
                         mineFieldTiles[tempZ][tempX] = 0xD9;
@@ -5607,13 +5605,13 @@ void func_800A8F74(void) {
         }
 
         if (gCutsceneCompletionFlags & 0x8000) {
-            func_800610DC();
+            clearHeldItemsAtEndOfDay();
             gCutsceneCompletionFlags &= ~0x8000;
         }
 
         if (gCutsceneFlags & 8) {
             // initialize animal entities
-            func_800876D0();
+            initializeAnimalEntities();
             gCutsceneFlags &= ~8;
         }
 
@@ -5624,7 +5622,7 @@ void func_800A8F74(void) {
 
         if (gCutsceneCompletionFlags & 0x10000000) {
             // initialize animal entities
-            func_800876D0();
+            initializeAnimalEntities();
             gCutsceneCompletionFlags &= ~0x10000000;
         }
 
@@ -5649,7 +5647,7 @@ void func_800A8F74(void) {
         
         if (checkLifeEventBit(0x49)) {
             toggleLifeEventBit(0x49);
-            func_80065BCC(CHICKEN_FEED);
+            storeTool(CHICKEN_FEED);
             chickenFeedQuantity += adjustValue(chickenFeedQuantity, 10, 999);
         }
 
@@ -5661,27 +5659,27 @@ void func_800A8F74(void) {
             switch (getRandomNumberInRange(0, 5)) {                    
                 
                 case 0:                                 
-                    func_80065BCC(0xA);
+                    storeTool(0xA);
                     D_801FC154 += adjustValue(D_801FC154, 1, 20);
                     return;
                 case 1:                                 
-                    func_80065BCC(0xB);
+                    storeTool(0xB);
                     D_80204DF4 += adjustValue(D_80204DF4, 1, 20);
                     return;
                 case 2:                                 
-                    func_80065BCC(0xC);
+                    storeTool(0xC);
                     D_8018A725 += adjustValue(D_8018A725, 1, 20);
                     return;
                 case 3:                                 
-                    func_80065BCC(0xD);
+                    storeTool(0xD);
                     D_8013DC2C += adjustValue(D_8013DC2C, 1, 20);
                     return;
                 case 4:                                 
-                    func_80065BCC(0xE);
+                    storeTool(0xE);
                     D_801FAD91 += adjustValue(D_801FAD91, 1, 20);
                     return;
                 case 5:                                 
-                    func_80065BCC(0xF);
+                    storeTool(0xF);
                     D_80237458 += adjustValue(D_80237458, 1, 20);
                     break;
                 
@@ -5701,20 +5699,20 @@ void loadCutscene(u8 arg0) {
 
     if (gCutsceneIndex >= 0x640) {
         
-        D_8021E6D0 = 0;
-        func_8003C084(0, 7);
+        gCameraRotationOffset = 0;
+        setInitialMapRotation(MAIN_MAP_INDEX, 7);
         bytecodeSegmentIndex = 35;
         
     } else if (gCutsceneIndex >= 0x60E) {
     
-        D_8021E6D0 = 0;
-        func_8003C084(0, 7);
+        gCameraRotationOffset = 0;
+        setInitialMapRotation(MAIN_MAP_INDEX, 7);
         bytecodeSegmentIndex = 31;        
     
     } else if (gCutsceneIndex >= 0x5DC) {
              
-        D_8021E6D0 = 0;
-        func_8003C084(0, 7);
+        gCameraRotationOffset = 0;
+        setInitialMapRotation(MAIN_MAP_INDEX, 7);
 
         memcpy(farmFieldTiles, D_80114E50, FIELD_HEIGHT * FIELD_WIDTH);
 
@@ -5722,8 +5720,8 @@ void loadCutscene(u8 arg0) {
         
     } else if (gCutsceneIndex >= 0x5AA) {
         
-        D_8021E6D0 = 0;
-        func_8003C084(0, 7);
+        gCameraRotationOffset = 0;
+        setInitialMapRotation(MAIN_MAP_INDEX, 7);
         
         gSeason = SPRING;
 
@@ -5790,12 +5788,12 @@ void loadCutscene(u8 arg0) {
             switch (gCutsceneIndex) {
 
                 case 0xDC:
-                    D_8021E6D0 = 0;
-                    func_8003C084(0, 7);
+                    gCameraRotationOffset = 0;
+                    setInitialMapRotation(MAIN_MAP_INDEX, 7);
                     break;
                 case 0xE4 ... 0xEE:
-                    D_8021E6D0 = 0;
-                    func_8003C084(0, 7);
+                    gCameraRotationOffset = 0;
+                    setInitialMapRotation(MAIN_MAP_INDEX, 7);
                     break;
                 default:
                     break;
@@ -5809,8 +5807,8 @@ void loadCutscene(u8 arg0) {
         bytecodeSegmentIndex = 9;
         
         if (gCutsceneIndex == 0x27) {
-            D_8021E6D0 = 0;
-            func_8003C084(0, 7);
+            gCameraRotationOffset = 0;
+            setInitialMapRotation(MAIN_MAP_INDEX, 7);
         } 
         
     }
@@ -5824,7 +5822,7 @@ void loadCutscene(u8 arg0) {
     
     gCutsceneBytecodeSegmentIndex = bytecodeSegmentIndex;
     
-    gCutsceneFlags |= 1;
+    gCutsceneFlags |= CUTSCENE_ACTIVE;
     
     toggleDailyEventBit(0x53);
     

@@ -49,20 +49,20 @@ static const Gfx D_8011EEB8;
 static const Gfx D_8011EEC0;
 
 // forward delcarations
-bool func_8003F024(u16 index, u8 arg1, u8 arg2, u8 arg3, u8 arg4);
-bool func_8003E77C(u16 index, u8 arg1, u8 arg2, u8 arg3, u8 arg4);
-void func_8003FD74(void);
-bool func_8003FDB0(u16 index);
-void func_8004022C(u16 index);
-u8 func_800403F0(u16 index, u16 arg1);
+bool setMessageBoxBaseRGBA(u16 index, u8 arg1, u8 arg2, u8 arg3, u8 arg4);
+bool setMessageBoxRGBA(u16 index, u8 arg1, u8 arg2, u8 arg3, u8 arg4);
+void clearTextBuffer(void);
+bool clearMessageBoxTextBuffer(u16 index);
+void updateScrollDownAnimation(u16 index);
+u8 countTextLines(u16 index, u16 arg1);
 void advanceToLine(u16, u8); 
-void func_80040318(u16 index);
-void func_80040858(u16);                               
-void func_80040C38(u16);                               
-u16 func_80041850(u16 index);
-u8 func_800419C4(u16 index);
-Gfx* func_80041CD8(Gfx* dl, MessageBox* messageBox);
-Gfx* func_80042014(Gfx* dl, MessageBox* messageBox, u8 arg2, s32 arg3); 
+void updateScrollUpAnimation(u16 index);
+void processText(u16);                               
+void updateMessageBoxText(u16);                               
+u16 readCompressedCharacter(u16 index);
+u8 readGameVariableChar(u16 index);
+Gfx* setupMessageBoxScissor(Gfx* dl, MessageBox* messageBox);
+Gfx* renderMessageBoxLine(Gfx* dl, MessageBox* messageBox, u8 arg2, s32 arg3); 
 void addMessageCharSceneNode(MessageBox* messageBox, u8 line, Gfx* dl);    
 u32 getTextAddress(u16 index, u16 offset);
 void unpackFontCI2Data(u16, MessageBoxFont*, u8*);
@@ -113,15 +113,15 @@ void initializeMessageBoxes(void) {
         messageBoxes[i].textBoxLineCharWidth = 0;
         messageBoxes[i].textBoxVisibleRows = 0;
 
-        messageBoxes[i].unk_14.r = 255.0f;
-        messageBoxes[i].unk_14.g = 255.0f;
-        messageBoxes[i].unk_14.b = 255.0f;
-        messageBoxes[i].unk_14.a = 255.0f;
+        messageBoxes[i].targetRGBA.r = 255.0f;
+        messageBoxes[i].targetRGBA.g = 255.0f;
+        messageBoxes[i].targetRGBA.b = 255.0f;
+        messageBoxes[i].targetRGBA.a = 255.0f;
 
-        messageBoxes[i].unk_24.r = 255.0f;
-        messageBoxes[i].unk_24.g = 255.0f;
-        messageBoxes[i].unk_24.b = 255.0f;
-        messageBoxes[i].unk_24.a = 255.0f;
+        messageBoxes[i].currentRGBA.r = 255.0f;
+        messageBoxes[i].currentRGBA.g = 255.0f;
+        messageBoxes[i].currentRGBA.b = 255.0f;
+        messageBoxes[i].currentRGBA.a = 255.0f;
        
         initializeInterpolator((Interpolator*)&messageBoxes[i].unk_64, 0, 0);
         initializeInterpolator((Interpolator*)&messageBoxes[i].scrollInterpolator, 0, 0);
@@ -134,7 +134,7 @@ void initializeMessageBoxes(void) {
         
     }
 
-    func_8003FD74();
+    clearTextBuffer();
     
 }
 
@@ -162,10 +162,10 @@ bool initializeEmptyMessageBox(u16 messageBoxIndex, u8* textBufferAddr) {
 
             messageBoxes[messageBoxIndex].textBufferBase = textBufferAddr;
             
-            messageBoxes[messageBoxIndex].flags = 1;
+            messageBoxes[messageBoxIndex].flags = MESSAGE_BOX_ACTIVE;
 
             initializeInterpolator((Interpolator*)&messageBoxes[messageBoxIndex].scrollInterpolator, 0, 0);
-            func_8003F024(messageBoxIndex, 0xFF, 0xFF, 0xFF, 0xFF);
+            setMessageBoxBaseRGBA(messageBoxIndex, 0xFF, 0xFF, 0xFF, 0xFF);
             
             set = TRUE;        
 
@@ -177,9 +177,9 @@ bool initializeEmptyMessageBox(u16 messageBoxIndex, u8* textBufferAddr) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/message", func_8003DD14);
+//INCLUDE_ASM("asm/nonmatchings/system/message", deactivateMessageBox);
 
-bool func_8003DD14(u16 index) {
+bool deactivateMessageBox(u16 index) {
 
     bool result = FALSE;
     
@@ -187,7 +187,7 @@ bool func_8003DD14(u16 index) {
 
         if (messageBoxes[index].flags & MESSAGE_BOX_ACTIVE) {
             
-            messageBoxes[index].flags &= ~1;
+            messageBoxes[index].flags &= ~MESSAGE_BOX_ACTIVE;
             
             if (messageBoxes[index].flags & MESSAGE_BOX_HAS_DIALOGUE_WINDOW) {
                 resetAnimationState(dialogueWindows[messageBoxes[index].dialogueWindowIndex].spriteIndex);
@@ -209,7 +209,7 @@ bool func_8003DD14(u16 index) {
 
 //INCLUDE_ASM("asm/nonmatchings/system/message", initializeMessageBox);
 
-bool initializeMessageBox(u16 messageBoxIndex, u16 textAddressesIndex, u16 textIndex, u32 flag) {
+bool initializeMessageBox(u16 messageBoxIndex, u16 textAddressesIndex, u16 textIndex, u32 mode) {
 
     bool result = FALSE;
 
@@ -230,7 +230,7 @@ bool initializeMessageBox(u16 messageBoxIndex, u16 textAddressesIndex, u16 textI
             textAddress = getTextAddress(messageBoxIndex, messageBoxes[messageBoxIndex].textIndex);
             nuPiReadRom(textAddress, messageBoxes[messageBoxIndex].textBufferBase, getTextAddress(messageBoxIndex, messageBoxes[messageBoxIndex].textIndex + 1) - textAddress);
             
-            messageBoxes[messageBoxIndex].totalLinesToPrint = func_800403F0(messageBoxIndex, tempTextIndex);
+            messageBoxes[messageBoxIndex].totalLinesToPrint = countTextLines(messageBoxIndex, tempTextIndex);
             messageBoxes[messageBoxIndex].currentCompressionControlByte = 0;
             messageBoxes[messageBoxIndex].compressionBitIndex = 0;
             messageBoxes[messageBoxIndex].scrollCount = 0;
@@ -240,59 +240,59 @@ bool initializeMessageBox(u16 messageBoxIndex, u16 textAddressesIndex, u16 textI
 
             messageBoxes[messageBoxIndex].currentCharPtr = messageBoxes[messageBoxIndex].textBufferBase;
 
-            messageBoxes[messageBoxIndex].flags &= ~4;
+            messageBoxes[messageBoxIndex].flags &= ~MESSAGE_BOX_TEXT_COMPLETE;
             messageBoxes[messageBoxIndex].flags &= ~0x4000;
             messageBoxes[messageBoxIndex].flags |= MESSAGE_BOX_INITIALIZED;
 
-            messageBoxes[messageBoxIndex].flags &= ~0x8000;
-            messageBoxes[messageBoxIndex].flags &= ~0x40000;
-            messageBoxes[messageBoxIndex].flags &= ~0x80000;
-            messageBoxes[messageBoxIndex].flags &= ~0x100000;
+            messageBoxes[messageBoxIndex].flags &= ~MESSAGE_BOX_MODE_UNKNOWN;
+            messageBoxes[messageBoxIndex].flags &= ~MESSAGE_BOX_MODE_KEEP_ANIMATION;
+            messageBoxes[messageBoxIndex].flags &= ~MESSAGE_BOX_MODE_NO_INPUT;
+            messageBoxes[messageBoxIndex].flags &= ~MESSAGE_BOX_SILENT;
             messageBoxes[messageBoxIndex].flags &= ~0x20000;
 
-            if (flag == 0x8000) {
-                messageBoxes[messageBoxIndex].flags |= 0x8000;
+            if (mode == MESSAGE_BOX_MODE_UNKNOWN) {
+                messageBoxes[messageBoxIndex].flags |= MESSAGE_BOX_MODE_UNKNOWN;
             }
             
-            if (flag == 0x40000) {
-                messageBoxes[messageBoxIndex].flags |= flag;
+            if (mode == MESSAGE_BOX_MODE_KEEP_ANIMATION) {
+                messageBoxes[messageBoxIndex].flags |= mode;
             }
 
-            if (flag == 0x80000) {
-                messageBoxes[messageBoxIndex].flags |= flag;
+            if (mode == MESSAGE_BOX_MODE_NO_INPUT) {
+                messageBoxes[messageBoxIndex].flags |= mode;
             }
 
-            if (flag == 0x100000) {
-                messageBoxes[messageBoxIndex].flags |= flag;
+            if (mode == MESSAGE_BOX_SILENT) {
+                messageBoxes[messageBoxIndex].flags |= mode;
             }
 
             if (messageBoxes[messageBoxIndex].flags & MESSAGE_BOX_HAS_OVERLAY_ICON) {
                 dmaSprite(overlayIcons[messageBoxes[messageBoxIndex].overlayIconIndex].spriteIndex, overlayIcons[messageBoxes[messageBoxIndex].overlayIconIndex].romTextureStart, overlayIcons[messageBoxes[messageBoxIndex].overlayIconIndex].romTextureEnd, overlayIcons[messageBoxes[messageBoxIndex].overlayIconIndex].romIndexStart, overlayIcons[messageBoxes[messageBoxIndex].overlayIconIndex].romIndexEnd, NULL, NULL, overlayIcons[messageBoxes[messageBoxIndex].overlayIconIndex].vaddrTexture, NULL, overlayIcons[messageBoxes[messageBoxIndex].overlayIconIndex].vaddrPalette, overlayIcons[messageBoxes[messageBoxIndex].overlayIconIndex].vaddrAnimationFrameMetadata, overlayIcons[messageBoxes[messageBoxIndex].overlayIconIndex].vaddrTextureToPaletteLookup, overlayIcons[messageBoxes[messageBoxIndex].overlayIconIndex].unk_20, 0, 0);
                 setBilinearFiltering(overlayIcons[messageBoxes[messageBoxIndex].overlayIconIndex].spriteIndex, TRUE);
                 setSpriteColor(overlayIcons[messageBoxes[messageBoxIndex].overlayIconIndex].spriteIndex, 0xFF, 0xFF, 0xFF, 0xFF);
-                func_8002C680(overlayIcons[messageBoxes[messageBoxIndex].overlayIconIndex].spriteIndex, 2, 2);
-                setSpriteRenderingLayer(overlayIcons[messageBoxes[messageBoxIndex].overlayIconIndex].spriteIndex, (1 | 2));
+                setSpriteAnchorAlignment(overlayIcons[messageBoxes[messageBoxIndex].overlayIconIndex].spriteIndex, SPRITE_ANCHOR_CENTER, SPRITE_ANCHOR_CENTER);;
+                setSpriteBlendMode(overlayIcons[messageBoxes[messageBoxIndex].overlayIconIndex].spriteIndex, SPRITE_BLEND_ALPHA_DECAL);
             }
 
             if (messageBoxes[messageBoxIndex].flags & MESSAGE_BOX_HAS_CHARACTER_AVATAR) {
                 dmaSprite(characterAvatars[messageBoxes[messageBoxIndex].characterAvatarIndex].spriteIndex, characterAvatars[messageBoxes[messageBoxIndex].characterAvatarIndex].romTextureStart, characterAvatars[messageBoxes[messageBoxIndex].characterAvatarIndex].romTextureEnd, characterAvatars[messageBoxes[messageBoxIndex].characterAvatarIndex].romAssetsIndexStart, characterAvatars[messageBoxes[messageBoxIndex].characterAvatarIndex].romAssetsIndexEnd, characterAvatars[messageBoxes[messageBoxIndex].characterAvatarIndex].romSpritesheetIndexStart, characterAvatars[messageBoxes[messageBoxIndex].characterAvatarIndex].romSpritesheetIndexEnd, characterAvatars[messageBoxes[messageBoxIndex].characterAvatarIndex].vaddrTexture1, characterAvatars[messageBoxes[messageBoxIndex].characterAvatarIndex].vaddrTexture2, characterAvatars[messageBoxes[messageBoxIndex].characterAvatarIndex].vaddrPalette, characterAvatars[messageBoxes[messageBoxIndex].characterAvatarIndex].vaddrAnimation, characterAvatars[messageBoxes[messageBoxIndex].characterAvatarIndex].vaddrSpriteToPalette, characterAvatars[messageBoxes[messageBoxIndex].characterAvatarIndex].vaddrSpritesheetIndex, 1, 0);
                 setBilinearFiltering(characterAvatars[messageBoxes[messageBoxIndex].characterAvatarIndex].spriteIndex, TRUE);
                 setSpriteColor(characterAvatars[messageBoxes[messageBoxIndex].characterAvatarIndex].spriteIndex, 0xFF, 0xFF, 0xFF, 0xFF);
-                func_8002C680(characterAvatars[messageBoxes[messageBoxIndex].characterAvatarIndex].spriteIndex, 2, 2);
-                setSpriteRenderingLayer(characterAvatars[messageBoxes[messageBoxIndex].characterAvatarIndex].spriteIndex, (1 | 2));
+                setSpriteAnchorAlignment(characterAvatars[messageBoxes[messageBoxIndex].characterAvatarIndex].spriteIndex, SPRITE_ANCHOR_CENTER, SPRITE_ANCHOR_CENTER);;
+                setSpriteBlendMode(characterAvatars[messageBoxes[messageBoxIndex].characterAvatarIndex].spriteIndex, SPRITE_BLEND_ALPHA_DECAL);
             }
 
             if (messageBoxes[messageBoxIndex].flags & MESSAGE_BOX_HAS_DIALOGUE_WINDOW) {
                 dmaSprite(dialogueWindows[messageBoxes[messageBoxIndex].dialogueWindowIndex].spriteIndex, dialogueWindows[messageBoxes[messageBoxIndex].dialogueWindowIndex].romTextureStart, dialogueWindows[messageBoxes[messageBoxIndex].dialogueWindowIndex].romTextureEnd, dialogueWindows[messageBoxes[messageBoxIndex].dialogueWindowIndex].romIndexStart, dialogueWindows[messageBoxes[messageBoxIndex].dialogueWindowIndex].romIndexEnd, NULL, NULL, dialogueWindows[messageBoxes[messageBoxIndex].dialogueWindowIndex].vaddrTexture, NULL, dialogueWindows[messageBoxes[messageBoxIndex].dialogueWindowIndex].vaddrPalette, dialogueWindows[messageBoxes[messageBoxIndex].dialogueWindowIndex].vaddrAnimationFrameMetadata, dialogueWindows[messageBoxes[messageBoxIndex].dialogueWindowIndex].vaddrTextureToPaletteLookup, dialogueWindows[messageBoxes[messageBoxIndex].dialogueWindowIndex].unk_20, 0, 0);
                 setBilinearFiltering(dialogueWindows[messageBoxes[messageBoxIndex].dialogueWindowIndex].spriteIndex, TRUE);
                 setSpriteColor(dialogueWindows[messageBoxes[messageBoxIndex].dialogueWindowIndex].spriteIndex, 0xFF, 0xFF, 0xFF, 0xFF);
-                func_8002C680(dialogueWindows[messageBoxes[messageBoxIndex].dialogueWindowIndex].spriteIndex, 2, 2);
-                setSpriteRenderingLayer(dialogueWindows[messageBoxes[messageBoxIndex].dialogueWindowIndex].spriteIndex, (1 | 2));
+                setSpriteAnchorAlignment(dialogueWindows[messageBoxes[messageBoxIndex].dialogueWindowIndex].spriteIndex, SPRITE_ANCHOR_CENTER, SPRITE_ANCHOR_CENTER);;
+                setSpriteBlendMode(dialogueWindows[messageBoxes[messageBoxIndex].dialogueWindowIndex].spriteIndex, SPRITE_BLEND_ALPHA_DECAL);
                 startSpriteAnimation(dialogueWindows[messageBoxes[messageBoxIndex].dialogueWindowIndex].spriteIndex, dialogueWindows[messageBoxes[messageBoxIndex].dialogueWindowIndex].spriteOffset, dialogueWindows[messageBoxes[messageBoxIndex].dialogueWindowIndex].flag);
                 setSpriteViewSpacePosition(dialogueWindows[messageBoxes[messageBoxIndex].dialogueWindowIndex].spriteIndex, messageBoxes[messageBoxIndex].viewSpacePosition.x + dialogueWindows[messageBoxes[messageBoxIndex].dialogueWindowIndex].coordinates.x, messageBoxes[messageBoxIndex].viewSpacePosition.y + dialogueWindows[messageBoxes[messageBoxIndex].dialogueWindowIndex].coordinates.y, (messageBoxes[messageBoxIndex].viewSpacePosition.z + dialogueWindows[messageBoxes[messageBoxIndex].dialogueWindowIndex].coordinates.z) - 2.0f);
             }
 
-            func_8003E77C(messageBoxIndex, 0xFF, 0xFF, 0xFF, 0xFF);
+            setMessageBoxRGBA(messageBoxIndex, 0xFF, 0xFF, 0xFF, 0xFF);
 
             result = TRUE;
             
@@ -303,9 +303,9 @@ bool initializeMessageBox(u16 messageBoxIndex, u16 textAddressesIndex, u16 textI
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/message", func_8003E77C);
+//INCLUDE_ASM("asm/nonmatchings/system/message", setMessageBoxRGBA);
 
-bool func_8003E77C(u16 index, u8 r, u8 g, u8 b, u8 a) {
+bool setMessageBoxRGBA(u16 index, u8 r, u8 g, u8 b, u8 a) {
 
     bool result = FALSE;
     
@@ -313,15 +313,15 @@ bool func_8003E77C(u16 index, u8 r, u8 g, u8 b, u8 a) {
 
         if (messageBoxes[index].flags & MESSAGE_BOX_ACTIVE) {
             
-            messageBoxes[index].unk_14.r = (messageBoxes[index].unk_4.r * r) / 255.0f;
-            messageBoxes[index].unk_14.g = (messageBoxes[index].unk_4.g * g) / 255.0f;
-            messageBoxes[index].unk_14.b = (messageBoxes[index].unk_4.b * b) / 255.0f;
-            messageBoxes[index].unk_14.a = (messageBoxes[index].unk_4.a * a) / 255.0f;
+            messageBoxes[index].targetRGBA.r = (messageBoxes[index].baseRGBA.r * r) / 255.0f;
+            messageBoxes[index].targetRGBA.g = (messageBoxes[index].baseRGBA.g * g) / 255.0f;
+            messageBoxes[index].targetRGBA.b = (messageBoxes[index].baseRGBA.b * b) / 255.0f;
+            messageBoxes[index].targetRGBA.a = (messageBoxes[index].baseRGBA.a * a) / 255.0f;
     
-            messageBoxes[index].unk_24.r = (messageBoxes[index].unk_4.r * r) / 255.0f;
-            messageBoxes[index].unk_24.g = (messageBoxes[index].unk_4.g * g) / 255.0f;
-            messageBoxes[index].unk_24.b = (messageBoxes[index].unk_4.b * b) / 255.0f;
-            messageBoxes[index].unk_24.a = (messageBoxes[index].unk_4.a * a) / 255.0f;
+            messageBoxes[index].currentRGBA.r = (messageBoxes[index].baseRGBA.r * r) / 255.0f;
+            messageBoxes[index].currentRGBA.g = (messageBoxes[index].baseRGBA.g * g) / 255.0f;
+            messageBoxes[index].currentRGBA.b = (messageBoxes[index].baseRGBA.b * b) / 255.0f;
+            messageBoxes[index].currentRGBA.a = (messageBoxes[index].baseRGBA.a * a) / 255.0f;
     
             result = TRUE;
      
@@ -333,9 +333,9 @@ bool func_8003E77C(u16 index, u8 r, u8 g, u8 b, u8 a) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/message", func_8003E910);
+//INCLUDE_ASM("asm/nonmatchings/system/message", adjustMessageBoxTargetRGBA);
 
-bool func_8003E910(u16 index, s8 r, s8 g, s8 b, s8 a) {
+bool adjustMessageBoxTargetRGBA(u16 index, s8 r, s8 g, s8 b, s8 a) {
 
     bool result = FALSE;
     
@@ -343,10 +343,10 @@ bool func_8003E910(u16 index, s8 r, s8 g, s8 b, s8 a) {
 
         if (messageBoxes[index].flags & MESSAGE_BOX_ACTIVE) {
 
-            messageBoxes[index].unk_14.r += r;
-            messageBoxes[index].unk_14.g += g;
-            messageBoxes[index].unk_14.b += b;
-            messageBoxes[index].unk_14.a += a;
+            messageBoxes[index].targetRGBA.r += r;
+            messageBoxes[index].targetRGBA.g += g;
+            messageBoxes[index].targetRGBA.b += b;
+            messageBoxes[index].targetRGBA.a += a;
             
             result = TRUE;
             
@@ -357,9 +357,9 @@ bool func_8003E910(u16 index, s8 r, s8 g, s8 b, s8 a) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/message", func_8003EA1C);
+//INCLUDE_ASM("asm/nonmatchings/system/message", setMessageBoxRGBAWithTransition);
 
-bool func_8003EA1C(u16 index, u8 r, u8 g, u8 b, u8 a, s16 rate) {
+bool setMessageBoxRGBAWithTransition(u16 index, u8 r, u8 g, u8 b, u8 a, s16 rate) {
 
     f32 tempF;
     s16 temp = getAbsoluteValue(rate);
@@ -370,56 +370,56 @@ bool func_8003EA1C(u16 index, u8 r, u8 g, u8 b, u8 a, s16 rate) {
 
         if (messageBoxes[index].flags & MESSAGE_BOX_ACTIVE) {
 
-            messageBoxes[index].unk_24.r = (messageBoxes[index].unk_4.r * r) / 255.0f;
-            messageBoxes[index].unk_24.g = (messageBoxes[index].unk_4.g * g) / 255.0f;
-            messageBoxes[index].unk_24.b = (messageBoxes[index].unk_4.b * b) / 255.0f;
-            messageBoxes[index].unk_24.a = (messageBoxes[index].unk_4.a * a) / 255.0f;
+            messageBoxes[index].currentRGBA.r = (messageBoxes[index].baseRGBA.r * r) / 255.0f;
+            messageBoxes[index].currentRGBA.g = (messageBoxes[index].baseRGBA.g * g) / 255.0f;
+            messageBoxes[index].currentRGBA.b = (messageBoxes[index].baseRGBA.b * b) / 255.0f;
+            messageBoxes[index].currentRGBA.a = (messageBoxes[index].baseRGBA.a * a) / 255.0f;
             
-            messageBoxes[index].flags &= ~0x200000;
+            messageBoxes[index].flags &= ~MESSAGE_BOX_RGBA_COMPLETE;
 
-            if (messageBoxes[index].unk_24.r < messageBoxes[index].unk_14.r) {
-                tempF = messageBoxes[index].unk_14.r - messageBoxes[index].unk_24.r;
+            if (messageBoxes[index].currentRGBA.r < messageBoxes[index].targetRGBA.r) {
+                tempF = messageBoxes[index].targetRGBA.r - messageBoxes[index].currentRGBA.r;
             } else {
-                tempF = messageBoxes[index].unk_24.r - messageBoxes[index].unk_14.r;
+                tempF = messageBoxes[index].currentRGBA.r - messageBoxes[index].targetRGBA.r;
             }
 
-            messageBoxes[index].unk_34.r = (tempF * temp) / messageBoxes[index].unk_4.r;
+            messageBoxes[index].deltaRGBA.r = (tempF * temp) / messageBoxes[index].baseRGBA.r;
             
-            if (messageBoxes[index].unk_24.g < messageBoxes[index].unk_14.g) {
-                tempF = messageBoxes[index].unk_14.g - messageBoxes[index].unk_24.g;
+            if (messageBoxes[index].currentRGBA.g < messageBoxes[index].targetRGBA.g) {
+                tempF = messageBoxes[index].targetRGBA.g - messageBoxes[index].currentRGBA.g;
             } else {
-                tempF = messageBoxes[index].unk_24.g - messageBoxes[index].unk_14.g;
+                tempF = messageBoxes[index].currentRGBA.g - messageBoxes[index].targetRGBA.g;
             }
 
-            messageBoxes[index].unk_34.g = (tempF * temp) / messageBoxes[index].unk_4.g;
+            messageBoxes[index].deltaRGBA.g = (tempF * temp) / messageBoxes[index].baseRGBA.g;
             
-            if (messageBoxes[index].unk_24.b < messageBoxes[index].unk_14.b) {
-                tempF = messageBoxes[index].unk_14.b - messageBoxes[index].unk_24.b;
+            if (messageBoxes[index].currentRGBA.b < messageBoxes[index].targetRGBA.b) {
+                tempF = messageBoxes[index].targetRGBA.b - messageBoxes[index].currentRGBA.b;
             } else {
-                tempF = messageBoxes[index].unk_24.b - messageBoxes[index].unk_14.b;
+                tempF = messageBoxes[index].currentRGBA.b - messageBoxes[index].targetRGBA.b;
             }
 
-            messageBoxes[index].unk_34.b = (tempF * temp) / messageBoxes[index].unk_4.b;
+            messageBoxes[index].deltaRGBA.b = (tempF * temp) / messageBoxes[index].baseRGBA.b;
 
-            if (messageBoxes[index].unk_24.a < messageBoxes[index].unk_14.a) {
-                tempF = messageBoxes[index].unk_14.a - messageBoxes[index].unk_24.a;
+            if (messageBoxes[index].currentRGBA.a < messageBoxes[index].targetRGBA.a) {
+                tempF = messageBoxes[index].targetRGBA.a - messageBoxes[index].currentRGBA.a;
             } else {
-                tempF = messageBoxes[index].unk_24.a - messageBoxes[index].unk_14.a;
+                tempF = messageBoxes[index].currentRGBA.a - messageBoxes[index].targetRGBA.a;
             }
 
-            messageBoxes[index].unk_34.a = (tempF * temp) / messageBoxes[index].unk_4.a;
+            messageBoxes[index].deltaRGBA.a = (tempF * temp) / messageBoxes[index].baseRGBA.a;
         
-            if (messageBoxes[index].flags & 0x200) {
+            if (messageBoxes[index].flags & MESSAGE_BOX_HAS_DIALOGUE_WINDOW) {
                 updateSpriteRGBA(dialogueWindows[messageBoxes[index].dialogueWindowIndex].spriteIndex, 
                     r, g, b, a, temp);
             }
 
-            if (messageBoxes[index].flags & 0x10000) {
+            if (messageBoxes[index].flags & MESSAGE_BOX_HAS_CHARACTER_AVATAR) {
                 updateSpriteRGBA(characterAvatars[messageBoxes[index].characterAvatarIndex].spriteIndex, 
                     r, g, b, a, temp);
             }
 
-            if (messageBoxes[index].flags & 0x400) {
+            if (messageBoxes[index].flags & MESSAGE_BOX_HAS_OVERLAY_ICON) {
                 updateSpriteRGBA(overlayIcons[messageBoxes[index].overlayIconIndex].spriteIndex, 
                     r, g, b, a, temp);
             }
@@ -434,10 +434,10 @@ bool func_8003EA1C(u16 index, u8 r, u8 g, u8 b, u8 a, s16 rate) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/message", func_8003EE7C);
+//INCLUDE_ASM("asm/nonmatchings/system/message", setMessageBoxAlphaWithTransition);
 
-// update alpha
-bool func_8003EE7C(u16 index, u8 arg1, s16 arg2) {
+// unused
+bool setMessageBoxAlphaWithTransition(u16 index, u8 arg1, s16 arg2) {
 
     bool result;
     s16 temp;
@@ -451,17 +451,17 @@ bool func_8003EE7C(u16 index, u8 arg1, s16 arg2) {
 
         if (messageBoxes[index].flags & MESSAGE_BOX_ACTIVE) {
 
-            messageBoxes[index].unk_24.a = (messageBoxes[index].unk_4.a * arg1) / 255.0f;
+            messageBoxes[index].currentRGBA.a = (messageBoxes[index].baseRGBA.a * arg1) / 255.0f;
 
-            messageBoxes[index].flags &= ~(0x200000);
+            messageBoxes[index].flags &= ~(MESSAGE_BOX_RGBA_COMPLETE);
 
-            if (messageBoxes[index].unk_24.a < messageBoxes[index].unk_14.a) {
-                tempF = messageBoxes[index].unk_14.a - messageBoxes[index].unk_24.a;
+            if (messageBoxes[index].currentRGBA.a < messageBoxes[index].targetRGBA.a) {
+                tempF = messageBoxes[index].targetRGBA.a - messageBoxes[index].currentRGBA.a;
             } else {
-                tempF = messageBoxes[index].unk_24.a - messageBoxes[index].unk_14.a;
+                tempF = messageBoxes[index].currentRGBA.a - messageBoxes[index].targetRGBA.a;
             }
 
-            messageBoxes[index].unk_34.a = (tempF * temp) / messageBoxes[index].unk_4.a;
+            messageBoxes[index].deltaRGBA.a = (tempF * temp) / messageBoxes[index].baseRGBA.a;
 
             result = TRUE;
             
@@ -473,9 +473,9 @@ bool func_8003EE7C(u16 index, u8 arg1, s16 arg2) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/message", func_8003EFD8);
+//INCLUDE_ASM("asm/nonmatchings/system/message", checkMessageBoxRGBAComplete);
 
-bool func_8003EFD8(u16 index) {
+bool checkMessageBoxRGBAComplete(u16 index) {
 
     bool result = FALSE;
 
@@ -491,9 +491,9 @@ bool func_8003EFD8(u16 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/message", func_8003F024);
+//INCLUDE_ASM("asm/nonmatchings/system/message", setMessageBoxBaseRGBA);
 
-bool func_8003F024(u16 index, u8 r, u8 g, u8 b, u8 a) {
+bool setMessageBoxBaseRGBA(u16 index, u8 r, u8 g, u8 b, u8 a) {
 
     bool result = FALSE;
     
@@ -501,10 +501,10 @@ bool func_8003F024(u16 index, u8 r, u8 g, u8 b, u8 a) {
 
         if (messageBoxes[index].flags & MESSAGE_BOX_ACTIVE) {
 
-            messageBoxes[index].unk_4.r = r;
-            messageBoxes[index].unk_4.g = g;
-            messageBoxes[index].unk_4.b = b;
-            messageBoxes[index].unk_4.a = a;
+            messageBoxes[index].baseRGBA.r = r;
+            messageBoxes[index].baseRGBA.g = g;
+            messageBoxes[index].baseRGBA.b = b;
+            messageBoxes[index].baseRGBA.a = a;
 
             result = TRUE;
             
@@ -516,16 +516,16 @@ bool func_8003F024(u16 index, u8 r, u8 g, u8 b, u8 a) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/message", func_8003F0DC);
+//INCLUDE_ASM("asm/nonmatchings/system/message", checkAnyMessageBoxTextFinished);
 
-bool func_8003F0DC(void) {
+bool checkAnyMessageBoxTextFinished(void) {
 
     u16 i;
     bool result = FALSE;
 
     for (i = 0; i < MAX_MESSAGE_BOXES; i++) {
 
-        if (messageBoxes[i].flags & 4) {
+        if (messageBoxes[i].flags & MESSAGE_BOX_TEXT_COMPLETE) {
             result = TRUE;
         }
         
@@ -535,9 +535,9 @@ bool func_8003F0DC(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/message", func_8003F130);
+//INCLUDE_ASM("asm/nonmatchings/system/message", resetMessageBoxAnimation);
 
-bool func_8003F130(u16 index) {
+bool resetMessageBoxAnimation(u16 index) {
 
     bool result = FALSE;
     
@@ -545,15 +545,15 @@ bool func_8003F130(u16 index) {
 
         if (messageBoxes[index].flags & MESSAGE_BOX_ACTIVE) {
 
-            if (!(messageBoxes[index].flags & 0x8000) && !(messageBoxes[index].flags & 0x40000) && !(messageBoxes[index].flags & 0x80000)) {
-                messageBoxes[index].flags &= ~(2 | 8);
+            if (!(messageBoxes[index].flags & MESSAGE_BOX_MODE_UNKNOWN) && !(messageBoxes[index].flags & MESSAGE_BOX_MODE_KEEP_ANIMATION) && !(messageBoxes[index].flags & MESSAGE_BOX_MODE_NO_INPUT)) {
+                messageBoxes[index].flags &= ~(MESSAGE_BOX_INITIALIZED | MESSAGE_BOX_TEXT_END_REACHED);
             }
 
-            if ((messageBoxes[index].flags & 0x200) && !(messageBoxes[index].flags & 0x8000) && !(messageBoxes[index].flags & 0x40000) && !(messageBoxes[index].flags & 0x80000)) {
+            if ((messageBoxes[index].flags & MESSAGE_BOX_HAS_DIALOGUE_WINDOW) && !(messageBoxes[index].flags & MESSAGE_BOX_MODE_UNKNOWN) && !(messageBoxes[index].flags & MESSAGE_BOX_MODE_KEEP_ANIMATION) && !(messageBoxes[index].flags & MESSAGE_BOX_MODE_NO_INPUT)) {
 
                 resetAnimationState(dialogueWindows[messageBoxes[index].dialogueWindowIndex].spriteIndex);
 
-                if (messageBoxes[index].flags & 0x10000) {
+                if (messageBoxes[index].flags & MESSAGE_BOX_HAS_CHARACTER_AVATAR) {
                     resetAnimationState(characterAvatars[messageBoxes[index].characterAvatarIndex].spriteIndex);        
                 }
             
@@ -569,9 +569,10 @@ bool func_8003F130(u16 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/message", func_8003F28C);
+//INCLUDE_ASM("asm/nonmatchings/system/message", setMessageBoxInterpolationRate);
 
-bool func_8003F28C(u16 index, s16 rate) {
+// unused
+bool setMessageBoxInterpolationRate(u16 index, s16 rate) {
 
     bool result = FALSE;
     
@@ -610,9 +611,9 @@ bool setTextAddresses(u16 textAddressesIndex, u32 romIndexStart, u32 romIndexEnd
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/message", func_8003F360);
+//INCLUDE_ASM("asm/nonmatchings/system/message", setMessageBoxInterpolationWithFlags);
 
-bool func_8003F360(u16 index, s16 rate, u8 flags) {
+bool setMessageBoxInterpolationWithFlags(u16 index, s16 rate, u8 interpolationMode) {
     
     bool result = FALSE;
     
@@ -623,23 +624,23 @@ bool func_8003F360(u16 index, s16 rate, u8 flags) {
             messageBoxes[index].unk_7C = rate;
             initializeInterpolator((Interpolator*)&messageBoxes[index].unk_64, rate, 0);
 
-            messageBoxes[index].flags &= ~(0x10 | 0x20);
+            messageBoxes[index].flags &= ~(MESSAGE_BOX_INTERPOLATION_MODE_1 | MESSAGE_BOX_INTERPOLATION_MODE_2);
 
-            switch (flags) {
+            switch (interpolationMode) {
 
                 case 0:
                     break;
                 
                 case 1:
-                    messageBoxes[index].flags |= 0x10;
+                    messageBoxes[index].flags |= MESSAGE_BOX_INTERPOLATION_MODE_1;
                     break;
 
                 case 2:
-                    messageBoxes[index].flags |= 0x20;
+                    messageBoxes[index].flags |= MESSAGE_BOX_INTERPOLATION_MODE_2;
                     break;                    
 
                 case 3:
-                    messageBoxes[index].flags |= (0x10 | 0x20);
+                    messageBoxes[index].flags |= (MESSAGE_BOX_INTERPOLATION_MODE_1 | MESSAGE_BOX_INTERPOLATION_MODE_2);
                     break;               
                 
             }
@@ -654,9 +655,9 @@ bool func_8003F360(u16 index, s16 rate, u8 flags) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/message", func_8003F464);
+//INCLUDE_ASM("asm/nonmatchings/system/message", setMessageBoxFont);
 
-bool func_8003F464(u16 index, u8 arg1, u8 arg2, u8* compressedCI2FontData, u16* fontPalettePtr) {
+bool setMessageBoxFont(u16 index, u8 arg1, u8 arg2, u8* compressedCI2FontData, u16* fontPalettePtr) {
     
     bool result = FALSE;
     
@@ -727,9 +728,9 @@ bool setMessageBoxViewSpacePosition(u16 index, f32 x, f32 y, f32 z) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/message", func_8003F5D0);
+//INCLUDE_ASM("asm/nonmatchings/system/message", setMessageBoxLineAndRowSizes);
 
-bool func_8003F5D0(u16 index, u8 arg1, u8 arg2) {
+bool setMessageBoxLineAndRowSizes(u16 index, u8 arg1, u8 arg2) {
 
     bool result = FALSE;
     
@@ -749,9 +750,9 @@ bool func_8003F5D0(u16 index, u8 arg1, u8 arg2) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/message", func_8003F630);
+//INCLUDE_ASM("asm/nonmatchings/system/message", setMessageBoxSpacing);
 
-bool func_8003F630(u16 index, u8 arg1, u8 arg2) {
+bool setMessageBoxSpacing(u16 index, u8 charSpacing, u8 lineSpacing) {
 
     bool result = FALSE;
     
@@ -759,8 +760,8 @@ bool func_8003F630(u16 index, u8 arg1, u8 arg2) {
 
         if (messageBoxes[index].flags & MESSAGE_BOX_ACTIVE) {
 
-            messageBoxes[index].characterSpacing = arg1;
-            messageBoxes[index].lineSpacing = arg2;
+            messageBoxes[index].characterSpacing = charSpacing;
+            messageBoxes[index].lineSpacing = lineSpacing;
             
             result = TRUE;
             
@@ -814,9 +815,9 @@ bool setMessageBoxSpriteIndices(u16 index, u8 dialogueWindowIndex, u8 overlayIco
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/message", func_8003F80C);
+//INCLUDE_ASM("asm/nonmatchings/system/message", setDialogueWindowSprite);
 
-bool func_8003F80C(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextureEnd, u32 romIndexStart, u32 romIndexEnd, u8* vaddrTexture, u16* vaddrPalette, AnimationFrameMetadata* vaddrAnimationFrameMetadata, u8* vaddrTextureToPaletteLookup, u32 argA, u16 spriteOffset, u8 flag, f32 x, f32 y, f32 z) {
+bool setDialogueWindowSprite(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextureEnd, u32 romIndexStart, u32 romIndexEnd, u8* vaddrTexture, u16* vaddrPalette, AnimationFrameMetadata* vaddrAnimationFrameMetadata, u8* vaddrTextureToPaletteLookup, u32 argA, u16 spriteOffset, u8 flag, f32 x, f32 y, f32 z) {
 
     bool result = FALSE;
 
@@ -851,9 +852,9 @@ bool func_8003F80C(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextu
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/message", func_8003F910);
+//INCLUDE_ASM("asm/nonmatchings/system/message", setOverlayIconSprite);
 
-bool func_8003F910(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextureEnd, u32 romIndexStart, u32 romIndexEnd, 
+bool setOverlayIconSprite(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextureEnd, u32 romIndexStart, u32 romIndexEnd, 
     u8* vaddrTexture, u16* vaddrPalette, AnimationFrameMetadata* vaddrAnimationFrameMetadata, u8* vaddrTextureToPaletteLookup, 
     u32 argA, u16 offset, u8 flag, f32 x, f32 y, f32 z) {
 
@@ -890,9 +891,9 @@ bool func_8003F910(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextu
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/message", func_8003FA1C);
+//INCLUDE_ASM("asm/nonmatchings/system/message", setCharacterAvatarSprite);
 
-bool func_8003FA1C(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextureEnd, 
+bool setCharacterAvatarSprite(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextureEnd, 
     u32 romAssetsIndexStart, u32 romAssetsIndexEnd, 
     u32 romSpritesheetIndexStart, u32 romSpritesheetIndexEnd, 
     u8* vaddrTexture1, u8* vaddrTexture2, 
@@ -932,9 +933,9 @@ bool func_8003FA1C(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextu
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/message", func_8003FAE8);
+//INCLUDE_ASM("asm/nonmatchings/system/message", setCharacterAvatarAnimationsPtr);
 
-void func_8003FAE8(u8* arg0) {
+void setCharacterAvatarAnimationsPtr(u8* arg0) {
     characterAvatarsAnimationsPtr = arg0;
 }
 
@@ -955,9 +956,9 @@ bool setMessageBoxButtonMask(u16 index, u16 arg1) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/message", func_8003FB4C);
+//INCLUDE_ASM("asm/nonmatchings/system/message", setMessageBoxScrollSpeed);
 
-bool func_8003FB4C(u16 index, s16 speed) {
+bool setMessageBoxScrollSpeed(u16 index, s16 speed) {
 
     bool result = FALSE;
 
@@ -1068,9 +1069,9 @@ advancePosition:
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/message", func_8003FD74);
+//INCLUDE_ASM("asm/nonmatchings/system/message", clearTextBuffer);
 
-void func_8003FD74(void) {
+void clearTextBuffer(void) {
 
     u16 i;
 
@@ -1080,9 +1081,9 @@ void func_8003FD74(void) {
     
 }
  
-//INCLUDE_ASM("asm/nonmatchings/system/message", func_8003FDB0);
+//INCLUDE_ASM("asm/nonmatchings/system/message", clearMessageBoxTextBuffer);
 
-bool func_8003FDB0(u16 index) {
+bool clearMessageBoxTextBuffer(u16 index) {
 
     u16 i;
     u16 cellCount;
@@ -1114,23 +1115,22 @@ bool func_8003FDB0(u16 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/message", func_8003FE9C);
+//INCLUDE_ASM("asm/nonmatchings/system/message", scrollMessageBoxDown);
 
-// overlay dialogue boxes
-bool func_8003FE9C(u16 index) {
+bool scrollMessageBoxDown(u16 index) {
 
     bool result = FALSE;
 
     if (index < MAX_MESSAGE_BOXES) { 
 
-        if ((messageBoxes[index].flags & MESSAGE_BOX_ACTIVE) && (messageBoxes[index].flags & MESSAGE_BOX_INITIALIZED) && !(messageBoxes[index].flags & (0x40 | 0x80))) {
+        if ((messageBoxes[index].flags & MESSAGE_BOX_ACTIVE) && (messageBoxes[index].flags & MESSAGE_BOX_INITIALIZED) && !(messageBoxes[index].flags & (MESSAGE_BOX_SCROLLING_DOWN | MESSAGE_BOX_SCROLLING_UP))) {
 
             if (messageBoxes[index].totalLinesToPrint + 1 != messageBoxes[index].scrollCount + messageBoxes[index].textBoxVisibleRows) {
  
                 initializeInterpolator((Interpolator*)&messageBoxes[index].scrollInterpolator, messageBoxes[index].defaultScrollSpeed, 0);
 
-                messageBoxes[index].flags |= 0x40;
-                messageBoxes[index].flags &= ~8;
+                messageBoxes[index].flags |= MESSAGE_BOX_SCROLLING_DOWN;
+                messageBoxes[index].flags &= ~MESSAGE_BOX_TEXT_END_REACHED;
 
                 messageBoxes[index].currentLineBeingPrinted++;
                 
@@ -1149,9 +1149,9 @@ bool func_8003FE9C(u16 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/message", func_8003FFF4);
+//INCLUDE_ASM("asm/nonmatchings/system/message", scrollMessageBoxUp);
 
-bool func_8003FFF4(u16 index) {
+bool scrollMessageBoxUp(u16 index) {
 
     bool result = FALSE;
 
@@ -1163,8 +1163,8 @@ bool func_8003FFF4(u16 index) {
 
                 initializeInterpolator((Interpolator*)&messageBoxes[index].scrollInterpolator, messageBoxes[index].defaultScrollSpeed, 0);
 
-                messageBoxes[index].flags |= 0x80;
-                messageBoxes[index].flags &= ~8;
+                messageBoxes[index].flags |= MESSAGE_BOX_SCROLLING_UP;
+                messageBoxes[index].flags &= ~MESSAGE_BOX_TEXT_END_REACHED;
 
                 messageBoxes[index].scrollCount--;
                 messageBoxes[index].currentLineBeingPrinted++;
@@ -1186,9 +1186,9 @@ bool func_8003FFF4(u16 index) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/message", func_80040140);
+//INCLUDE_ASM("asm/nonmatchings/system/message", checkMoreLinesToPrint);
 
-bool func_80040140(u16 index) {
+bool checkMoreLinesToPrint(u16 index) {
 
     bool result = FALSE;
 
@@ -1204,9 +1204,9 @@ bool func_80040140(u16 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/message", func_800401C8);
+//INCLUDE_ASM("asm/nonmatchings/system/message", checkMessageBoxScrolled);
  
-u8 func_800401C8(u16 index) {
+u8 checkMessageBoxScrolled(u16 index) {
 
     u8 count = 0;
 
@@ -1220,17 +1220,16 @@ u8 func_800401C8(u16 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/message", func_8004022C);
+//INCLUDE_ASM("asm/nonmatchings/system/message", updateScrollDownAnimation);
 
-// handle text auto-scroll
-void func_8004022C(u16 index) {
+void updateScrollDownAnimation(u16 index) {
 
-    func_800267B4((Interpolator*)&messageBoxes[index].scrollInterpolator);
+    calculateInterpolatorStep((Interpolator*)&messageBoxes[index].scrollInterpolator);
 
     // FIXME: probably a u16 return value
     if ((u16)getInterpolatorValue((Interpolator*)&messageBoxes[index].scrollInterpolator) >= messageBoxes[index].fontContext.characterCellHeight + messageBoxes[index].lineSpacing) {
 
-        messageBoxes[index].flags &= ~0x40;
+        messageBoxes[index].flags &= ~MESSAGE_BOX_SCROLLING_DOWN;
          
         initializeInterpolator((Interpolator*)&messageBoxes[index].scrollInterpolator, 0, 0);
  
@@ -1241,15 +1240,15 @@ void func_8004022C(u16 index) {
        
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/message", func_80040318);
+//INCLUDE_ASM("asm/nonmatchings/system/message", updateScrollUpAnimation);
 
-void func_80040318(u16 index) {
+void updateScrollUpAnimation(u16 index) {
 
-    func_800267B4((Interpolator*)&messageBoxes[index].scrollInterpolator);
+    calculateInterpolatorStep((Interpolator*)&messageBoxes[index].scrollInterpolator);
 
     if ((u16)getInterpolatorValue((Interpolator*)&messageBoxes[index].scrollInterpolator) >= messageBoxes[index].fontContext.characterCellHeight + messageBoxes[index].lineSpacing) {
 
-        messageBoxes[index].flags &= ~0x80;
+        messageBoxes[index].flags &= ~MESSAGE_BOX_SCROLLING_UP;
         
         initializeInterpolator((Interpolator*)&messageBoxes[index].scrollInterpolator, 0, 0);
 
@@ -1272,10 +1271,9 @@ static const u8 digitCharacterCodes[16] = {
 
 //INCLUDE_RODATA("asm/nonmatchings/systemmessage", digitCharacterCodes);
 
-//INCLUDE_ASM("asm/nonmatchings/system/message", func_800403F0);
+//INCLUDE_ASM("asm/nonmatchings/system/message", countTextLines);
 
-// get total lines to print
-u8 func_800403F0(u16 index, u16 textIndex) {
+u8 countTextLines(u16 index, u16 textIndex) {
     
     u8 result = 0;
     
@@ -1289,18 +1287,18 @@ u8 func_800403F0(u16 index, u16 textIndex) {
     
     messageBoxes[index].currentCompressionControlByte = 0;
     messageBoxes[index].compressionBitIndex = 0;
-    messageBoxes[index].unk_A0 = 0;
-    messageBoxes[index].unk_A1 = 0;
+    messageBoxes[index].maxCharsPerLine = 0;
+    messageBoxes[index].totalLines = 0;
     messageBoxes[index].currentCharPtr = messageBoxes[index].textBufferBase;
     
     do {
 
-        switch (func_80041850(index)) {
+        switch (readCompressedCharacter(index)) {
 
             case CHARACTER_CONTROL_LINEBREAK:
 
-                if (messageBoxes[index].unk_A0 < count2) {
-                    messageBoxes[index].unk_A0 = count2;
+                if (messageBoxes[index].maxCharsPerLine < count2) {
+                    messageBoxes[index].maxCharsPerLine = count2;
                 }
 
                 count2 = 0;
@@ -1316,8 +1314,8 @@ u8 func_800403F0(u16 index, u16 textIndex) {
 
             case CHARACTER_CONTROL_TEXT_END:
 
-                if (messageBoxes[index].unk_A0 < count2) {
-                    messageBoxes[index].unk_A0 = count2;
+                if (messageBoxes[index].maxCharsPerLine < count2) {
+                    messageBoxes[index].maxCharsPerLine = count2;
                 }
 
                 done = TRUE;
@@ -1357,7 +1355,7 @@ u8 func_800403F0(u16 index, u16 textIndex) {
 
     } while (!done);
     
-    messageBoxes[index].unk_A1 = count;
+    messageBoxes[index].totalLines = count;
     
     return result;
     
@@ -1405,7 +1403,7 @@ void advanceToLine(u16 index, u8 linesToSkip) {
                 
             } else {
                 // loop back to here until done
-                character = func_80041850(index);
+                character = readCompressedCharacter(index);
             }
             
             // handle control character
@@ -1443,9 +1441,9 @@ void advanceToLine(u16 index, u8 linesToSkip) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/message", func_80040858);
+//INCLUDE_ASM("asm/nonmatchings/system/message", processText);
 
-void func_80040858(u16 index) {
+void processText(u16 index) {
     
     u8* originalCharPtr;
     
@@ -1510,7 +1508,7 @@ void func_80040858(u16 index) {
             }
             
         } else {
-            character = func_80041850(index);
+            character = readCompressedCharacter(index);
         }
 
         switch (character) {
@@ -1523,7 +1521,7 @@ void func_80040858(u16 index) {
             // clear and start new line (overwrite text box)
             case CHARACTER_CONTROL_SOFTBREAK:
 
-                func_8003FDB0(index);
+                clearMessageBoxTextBuffer(index);
                 characterPositionOnLine = 0;
                 currentLine = 0;
                 break;
@@ -1593,9 +1591,9 @@ void func_80040858(u16 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/message", func_80040C38);
+//INCLUDE_ASM("asm/nonmatchings/system/message", updateMessageBoxText);
 
-void func_80040C38(u16 index) {
+void updateMessageBoxText(u16 index) {
     
     Swap16 swap;
 
@@ -1634,9 +1632,9 @@ void func_80040C38(u16 index) {
     
     while (!continueProcessing) {
         
-        if (messageBoxes[index].flags & 0x100) {
+        if (messageBoxes[index].flags & MESSAGE_BOX_PROCESSING_GAME_VARIABLE) {
             
-            character = func_800419C4(index);
+            character = readGameVariableChar(index);
             
             if (character == 0xFF) {
                 character = 0xFFFF;
@@ -1644,16 +1642,16 @@ void func_80040C38(u16 index) {
                 character += 0xB;
             }
             
-        } else if ((messageBoxes[index].flags & 0x1000) || (messageBoxes[index].flags & 0x4000)) {
+        } else if ((messageBoxes[index].flags & MESSAGE_BOX_WAITING_WITH_ICON) || (messageBoxes[index].flags & 0x4000)) {
             
-            if (messageBoxes[index].flags & 0x1000) {
+            if (messageBoxes[index].flags & MESSAGE_BOX_WAITING_WITH_ICON) {
                 character = 4;
             } else {
                 character = 2;
             }
             
         } else {
-            character = func_80041850(index);
+            character = readCompressedCharacter(index);
         }
         
         switch (character) {
@@ -1675,12 +1673,11 @@ void func_80040C38(u16 index) {
                             initializeInterpolator(&messageBoxes[index].scrollInterpolator, messageBoxes[index].defaultScrollSpeed, 0);
                         }
                         
-                        // scrolling flag
-                        messageBoxes[index].flags |= 0x40;
+                        messageBoxes[index].flags |= MESSAGE_BOX_SCROLLING_DOWN;
                         messageBoxes[index].currentLineBeingPrinted++;
                                 
                     } else {
-                        messageBoxes[index].flags |= 8;
+                        messageBoxes[index].flags |= MESSAGE_BOX_TEXT_END_REACHED;
                     }
                         
                     temp2 = renderMode;
@@ -1704,7 +1701,7 @@ void func_80040C38(u16 index) {
                     
             case CHARACTER_CONTROL_SOFTBREAK:
                     
-                func_8003FDB0(index);
+                clearMessageBoxTextBuffer(index);
                 
                 messageBoxes[index].currentCharCountOnLine = 0;
                 messageBoxes[index].scrollCount += messageBoxes[index].currentLineBeingPrinted + 1;
@@ -1717,15 +1714,13 @@ void func_80040C38(u16 index) {
             case CHARACTER_CONTROL_TEXT_END:
                 
                 if (renderMode == 3) {
-                    
-                    messageBoxes[index].flags |= 8;
-                
+                    messageBoxes[index].flags |= MESSAGE_BOX_TEXT_END_REACHED;
                 } else {
                 
                     messageBoxes[index].flags |= 0x4000;
                     messageBoxes[index].savedCharPtr = messageBoxes[index].currentCharPtr;
                     
-                    if ((messageBoxes[index].flags & 0x400) && !(messageBoxes[index].flags & 0x80000)) {
+                    if ((messageBoxes[index].flags & MESSAGE_BOX_HAS_OVERLAY_ICON) && !(messageBoxes[index].flags & MESSAGE_BOX_MODE_NO_INPUT)) {
                         
                         startSpriteAnimation(overlayIcons[messageBoxes[index].overlayIconIndex].spriteIndex, 
                                 overlayIcons[messageBoxes[index].overlayIconIndex + 1].spriteOffset, 
@@ -1739,22 +1734,22 @@ void func_80040C38(u16 index) {
                             
                     }
                     
-                    if ((messageBoxes[index].flags & 0x800) || (messageBoxes[index].flags & 0x100000)) {
+                    if ((messageBoxes[index].flags & MESSAGE_BOX_BUTTON_PRESSED) || (messageBoxes[index].flags & MESSAGE_BOX_SILENT)) {
                         
                         // FIXME: dead code
                         __asm__ __volatile__("" : : : "memory");
                         
                         messageBoxes[index].flags &= ~0x4000;
-                        messageBoxes[index].flags |= 4;
+                        messageBoxes[index].flags |= MESSAGE_BOX_TEXT_COMPLETE;
                         
-                        if (!(messageBoxes[index].flags & 0x40000)) {
-                            func_8003F130(index);
+                        if (!(messageBoxes[index].flags & MESSAGE_BOX_MODE_KEEP_ANIMATION)) {
+                            resetMessageBoxAnimation(index);
                         }
                         
                         resetAnimationState(overlayIcons[messageBoxes[index].overlayIconIndex].spriteIndex);
                         
                         // play close sound effect
-                        if (!(messageBoxes[index].flags & 0x100000) && (messageBoxes[index].characterPrintSfx != 0xFF)) {
+                        if (!(messageBoxes[index].flags & MESSAGE_BOX_SILENT) && (messageBoxes[index].characterPrintSfx != 0xFF)) {
                             setSfx(messageBoxes[index].messageCloseSfx + 1);
                             setSfxVolume(messageBoxes[index].messageCloseSfx + 1, 0x80);
                         }
@@ -1772,17 +1767,17 @@ void func_80040C38(u16 index) {
                 initializeInterpolator(&messageBoxes[index].unk_64, -(s16)*messageBoxes[index].currentCharPtr, 0);
                 
                 messageBoxes[index].currentCharPtr++;
-                messageBoxes[index].flags |= 0x2000;
+                messageBoxes[index].flags |= MESSAGE_BOX_NEEDS_INTERPOLATOR_INIT;
                 continueProcessing = TRUE;
                 
                 break;
                 
             case CHARACTER_CONTROL_WAIT_WITH_ICON:
                 
-                messageBoxes[index].flags |= 0x1000;
+                messageBoxes[index].flags |= MESSAGE_BOX_WAITING_WITH_ICON;
                 messageBoxes[index].savedCharPtr = messageBoxes[index].currentCharPtr;
                 
-                if (messageBoxes[index].flags & 0x400) {
+                if (messageBoxes[index].flags & MESSAGE_BOX_HAS_OVERLAY_ICON) {
                     
                     startSpriteAnimation(overlayIcons[messageBoxes[index].overlayIconIndex].spriteIndex, overlayIcons[messageBoxes[index].overlayIconIndex].spriteOffset, overlayIcons[messageBoxes[index].overlayIconIndex].flag);
                     setSpriteViewSpacePosition(overlayIcons[messageBoxes[index].overlayIconIndex].spriteIndex,
@@ -1792,10 +1787,10 @@ void func_80040C38(u16 index) {
                 
                 }
                 
-                if (messageBoxes[index].flags & 0x800) {
+                if (messageBoxes[index].flags & MESSAGE_BOX_BUTTON_PRESSED) {
                     
-                    messageBoxes[index].flags &= ~0x800;
-                    messageBoxes[index].flags &= ~0x1000;
+                    messageBoxes[index].flags &= ~MESSAGE_BOX_BUTTON_PRESSED;
+                    messageBoxes[index].flags &= ~MESSAGE_BOX_WAITING_WITH_ICON;
                     
                     resetAnimationState(overlayIcons[messageBoxes[index].overlayIconIndex].spriteIndex);
                     
@@ -1847,7 +1842,7 @@ void func_80040C38(u16 index) {
                 
                 messageBoxes[index].gameVariableStringLength = 0;
                 
-                messageBoxes[index].flags |= 0x100;
+                messageBoxes[index].flags |= MESSAGE_BOX_PROCESSING_GAME_VARIABLE;
                 
                 break;
                 
@@ -1856,8 +1851,8 @@ void func_80040C38(u16 index) {
                 messageBoxes[index].flags |= 0x4000;
                 messageBoxes[index].savedCharPtr = messageBoxes[index].currentCharPtr;
                 
-                if (messageBoxes[index].flags & 0x800) {
-                    messageBoxes[index].flags = (messageBoxes[index].flags & ~0x4000) | 4;
+                if (messageBoxes[index].flags & MESSAGE_BOX_BUTTON_PRESSED) {
+                    messageBoxes[index].flags = (messageBoxes[index].flags & ~0x4000) | MESSAGE_BOX_TEXT_COMPLETE;
                 } else {
                     continueProcessing = TRUE;
                 }
@@ -1915,13 +1910,13 @@ void func_80040C38(u16 index) {
             
     } 
     
-    func_800267B4((Interpolator*)&messageBoxes[index].unk_64);
+    calculateInterpolatorStep((Interpolator*)&messageBoxes[index].unk_64);
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/message", func_80041850);
+//INCLUDE_ASM("asm/nonmatchings/system/message", readCompressedCharacter);
 
-u16 func_80041850(u16 index) {
+u16 readCompressedCharacter(u16 index) {
     
     u8 buffer[2];
     u32 padding[4];
@@ -1962,9 +1957,9 @@ u16 func_80041850(u16 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/message", func_800419C4);
+//INCLUDE_ASM("asm/nonmatchings/system/message", readGameVariableChar);
 
-u8 func_800419C4(u16 index) {
+u8 readGameVariableChar(u16 index) {
 
     u8 result;
 
@@ -1980,7 +1975,7 @@ u8 func_800419C4(u16 index) {
     } 
 
     if (messageBoxes[index].gameVariableStringLength == gameVariableStrings[messageBoxes[index].gameVariableStringIndex].maxLength) {
-        messageBoxes[index].flags &= ~0x100;
+        messageBoxes[index].flags &= ~MESSAGE_BOX_PROCESSING_GAME_VARIABLE;
     }
 
     return result;
@@ -2082,9 +2077,9 @@ void unpackFontCI2Data(u16 characterIndex, MessageBoxFont* fontContext, u8 outpu
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/message", func_80041CD8);
+//INCLUDE_ASM("asm/nonmatchings/system/message", setupMessageBoxScissor);
 
-Gfx* func_80041CD8(Gfx* dl, MessageBox* messageBox) {
+Gfx* setupMessageBoxScissor(Gfx* dl, MessageBox* messageBox) {
 
     u16 ulx, uly, lrx, lry;
     u16 temp;
@@ -2118,9 +2113,9 @@ Gfx* func_80041CD8(Gfx* dl, MessageBox* messageBox) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/message", func_80042014);
+//INCLUDE_ASM("asm/nonmatchings/system/message", renderMessageBoxLine);
 
-Gfx* func_80042014(Gfx* dl, MessageBox* messageBox, u8 lineNumber, s32 arg3) {
+Gfx* renderMessageBoxLine(Gfx* dl, MessageBox* messageBox, u8 lineNumber, s32 arg3) {
 
     FontBitmap sprite;
     
@@ -2147,9 +2142,9 @@ Gfx* func_80042014(Gfx* dl, MessageBox* messageBox, u8 lineNumber, s32 arg3) {
             fontTexturesBuffer[gGraphicsBufferIndex][messageBox->totalCharactersProcessed + charOffset].timg
         );
         
-        if (messageBox->flags & 2) {
+        if (messageBox->flags & MESSAGE_BOX_INITIALIZED) {
 
-            flags = (0x10 | 0x40 | 0x100 | 0x400);
+            flags = (BITMAP_ANCHOR_H(SPRITE_ANCHOR_CENTER) | BITMAP_ANCHOR_V(SPRITE_ANCHOR_CENTER) | BITMAP_AXIS(SPRITE_BILLBOARD_XY) | BITMAP_BLEND(SPRITE_BLEND_OPAQUE));
 
             setupBitmapVertices(
                 &fontVertices[gGraphicsBufferIndex][messageBox->totalCharactersProcessed + charOffset][0],
@@ -2162,10 +2157,10 @@ Gfx* func_80042014(Gfx* dl, MessageBox* messageBox, u8 lineNumber, s32 arg3) {
                 ((messageBox->fontContext.characterCellWidth + messageBox->characterSpacing)*i),
                 0,
                 flags,
-                messageBox->unk_14.r,
-                messageBox->unk_14.g,
-                messageBox->unk_14.b,
-                messageBox->unk_14.a
+                messageBox->targetRGBA.r,
+                messageBox->targetRGBA.g,
+                messageBox->targetRGBA.b,
+                messageBox->targetRGBA.a
             );
 
             sprite.timg = fontTexturesBuffer[gGraphicsBufferIndex][messageBox->totalCharactersProcessed + charOffset].timg;
@@ -2217,19 +2212,19 @@ void addMessageCharSceneNode(MessageBox* messageBox, u8 line, Gfx* dl) {
     f32 f1, f2;
     u16 sceneNodeIndex;
     
-    if (messageBox->flags & 0x80) {
+    if (messageBox->flags & MESSAGE_BOX_SCROLLING_UP) {
         f1 = messageBox->fontContext.characterCellHeight + messageBox->lineSpacing;
     } else {
         f1 = 0.0f;
     }
 
-    if (messageBox->flags & 0x80) {
+    if (messageBox->flags & MESSAGE_BOX_SCROLLING_UP) {
         f2 = -(f32)getInterpolatorValue((Interpolator*)&messageBox->scrollInterpolator);
     } else {
         f2 = getInterpolatorValue((Interpolator*)&messageBox->scrollInterpolator);
     }
     
-    sceneNodeIndex = addSceneNode(dl, (8 | 0x40));
+    sceneNodeIndex = addSceneNode(dl, (0x8 | SCENE_NODE_TRANSFORM_EXEMPT));
     
     vec.x = messageBox->viewSpacePosition.x 
         - ((messageBox->textBoxLineCharWidth * messageBox->fontContext.characterCellWidth) / 2) 
@@ -2282,96 +2277,96 @@ static inline u8 updateMessageBoxRGBA(u16 i) {
     // bug: never initialized
     u8 count;
 
-    if (messageBoxes[i].unk_14.r < messageBoxes[i].unk_24.r) {
+    if (messageBoxes[i].targetRGBA.r < messageBoxes[i].currentRGBA.r) {
 
-        messageBoxes[i].unk_14.r += messageBoxes[i].unk_34.r;
+        messageBoxes[i].targetRGBA.r += messageBoxes[i].deltaRGBA.r;
         
-            if (messageBoxes[i].unk_14.r >= messageBoxes[i].unk_24.r) {
-                messageBoxes[i].unk_14.r = messageBoxes[i].unk_24.r;
+            if (messageBoxes[i].targetRGBA.r >= messageBoxes[i].currentRGBA.r) {
+                messageBoxes[i].targetRGBA.r = messageBoxes[i].currentRGBA.r;
             } else {
                 count++;
         }
 
     }
 
-    if (messageBoxes[i].unk_14.r > messageBoxes[i].unk_24.r) {
+    if (messageBoxes[i].targetRGBA.r > messageBoxes[i].currentRGBA.r) {
         
-        messageBoxes[i].unk_14.r -= messageBoxes[i].unk_34.r;
+        messageBoxes[i].targetRGBA.r -= messageBoxes[i].deltaRGBA.r;
 
-        if (messageBoxes[i].unk_14.r <= messageBoxes[i].unk_24.r) {
-                messageBoxes[i].unk_14.r = messageBoxes[i].unk_24.r;
-            } else {
-                count++;
-            }
-            
-    }
-    
-    if (messageBoxes[i].unk_14.g < messageBoxes[i].unk_24.g) {
-        
-        messageBoxes[i].unk_14.g += messageBoxes[i].unk_34.g;
-        
-        if (messageBoxes[i].unk_14.g >= messageBoxes[i].unk_24.g) {
-            messageBoxes[i].unk_14.g = messageBoxes[i].unk_24.g;
+        if (messageBoxes[i].targetRGBA.r <= messageBoxes[i].currentRGBA.r) {
+                messageBoxes[i].targetRGBA.r = messageBoxes[i].currentRGBA.r;
             } else {
                 count++;
             }
             
     }
+    
+    if (messageBoxes[i].targetRGBA.g < messageBoxes[i].currentRGBA.g) {
+        
+        messageBoxes[i].targetRGBA.g += messageBoxes[i].deltaRGBA.g;
+        
+        if (messageBoxes[i].targetRGBA.g >= messageBoxes[i].currentRGBA.g) {
+            messageBoxes[i].targetRGBA.g = messageBoxes[i].currentRGBA.g;
+            } else {
+                count++;
+            }
+            
+    }
 
-    if (messageBoxes[i].unk_14.g > messageBoxes[i].unk_24.g) {
+    if (messageBoxes[i].targetRGBA.g > messageBoxes[i].currentRGBA.g) {
         
-        messageBoxes[i].unk_14.g -= messageBoxes[i].unk_34.g;
+        messageBoxes[i].targetRGBA.g -= messageBoxes[i].deltaRGBA.g;
         
-        if (messageBoxes[i].unk_14.g <= messageBoxes[i].unk_24.g) {
-            messageBoxes[i].unk_14.g = messageBoxes[i].unk_24.g;
+        if (messageBoxes[i].targetRGBA.g <= messageBoxes[i].currentRGBA.g) {
+            messageBoxes[i].targetRGBA.g = messageBoxes[i].currentRGBA.g;
         } else {
             count++;
         }
         
     }
 
-    if (messageBoxes[i].unk_14.b < messageBoxes[i].unk_24.b) {
+    if (messageBoxes[i].targetRGBA.b < messageBoxes[i].currentRGBA.b) {
         
-        messageBoxes[i].unk_14.b += messageBoxes[i].unk_34.b;
+        messageBoxes[i].targetRGBA.b += messageBoxes[i].deltaRGBA.b;
         
-        if (messageBoxes[i].unk_14.b >= messageBoxes[i].unk_24.b) {
-            messageBoxes[i].unk_14.b = messageBoxes[i].unk_24.b;
+        if (messageBoxes[i].targetRGBA.b >= messageBoxes[i].currentRGBA.b) {
+            messageBoxes[i].targetRGBA.b = messageBoxes[i].currentRGBA.b;
         } else {
             count++;
         }
     
     }
 
-    if (messageBoxes[i].unk_14.b > messageBoxes[i].unk_24.b) {
+    if (messageBoxes[i].targetRGBA.b > messageBoxes[i].currentRGBA.b) {
         
-        messageBoxes[i].unk_14.b -= messageBoxes[i].unk_34.b;
+        messageBoxes[i].targetRGBA.b -= messageBoxes[i].deltaRGBA.b;
         
-        if (messageBoxes[i].unk_14.b <= messageBoxes[i].unk_24.b) {
-            messageBoxes[i].unk_14.b = messageBoxes[i].unk_24.b;
+        if (messageBoxes[i].targetRGBA.b <= messageBoxes[i].currentRGBA.b) {
+            messageBoxes[i].targetRGBA.b = messageBoxes[i].currentRGBA.b;
         } else {
             count++;
         }
         
     }
     
-    if (messageBoxes[i].unk_14.a < messageBoxes[i].unk_24.a) {
+    if (messageBoxes[i].targetRGBA.a < messageBoxes[i].currentRGBA.a) {
 
-    messageBoxes[i].unk_14.a += messageBoxes[i].unk_34.a;
+    messageBoxes[i].targetRGBA.a += messageBoxes[i].deltaRGBA.a;
 
-        if (messageBoxes[i].unk_14.a >= messageBoxes[i].unk_24.a) {
-            messageBoxes[i].unk_14.a = messageBoxes[i].unk_24.a;
+        if (messageBoxes[i].targetRGBA.a >= messageBoxes[i].currentRGBA.a) {
+            messageBoxes[i].targetRGBA.a = messageBoxes[i].currentRGBA.a;
         } else {
             count++;
         }
         
     }
     
-    if (messageBoxes[i].unk_14.a > messageBoxes[i].unk_24.a) {
+    if (messageBoxes[i].targetRGBA.a > messageBoxes[i].currentRGBA.a) {
         
-        messageBoxes[i].unk_14.a -= messageBoxes[i].unk_34.a;
+        messageBoxes[i].targetRGBA.a -= messageBoxes[i].deltaRGBA.a;
 
-        if (messageBoxes[i].unk_14.a <= messageBoxes[i].unk_24.a) {
-            messageBoxes[i].unk_14.a = messageBoxes[i].unk_24.a;
+        if (messageBoxes[i].targetRGBA.a <= messageBoxes[i].currentRGBA.a) {
+            messageBoxes[i].targetRGBA.a = messageBoxes[i].currentRGBA.a;
         } else {
             count++;
     }
@@ -2407,56 +2402,54 @@ void updateMessageBox(void) {
         if (messageBoxes[i].flags & MESSAGE_BOX_ACTIVE) {
 
             if (updateMessageBoxRGBA(i) == 0) {
-                messageBoxes[i].flags |= 0x200000;
+                messageBoxes[i].flags |= MESSAGE_BOX_RGBA_COMPLETE;
             } 
 
             messageBoxes[i].totalCharactersProcessed = totalProcessedCharacterCount;
 
-            if (!(messageBoxes[i].flags & 4) && (messageBoxes[i].flags & 2)) {
+            if (!(messageBoxes[i].flags & MESSAGE_BOX_TEXT_COMPLETE) && (messageBoxes[i].flags & MESSAGE_BOX_INITIALIZED)) {
 
-                if (!(messageBoxes[i].flags & 8)) {
+                if (!(messageBoxes[i].flags & MESSAGE_BOX_TEXT_END_REACHED)) {
 
                     // reset message buffer
-                    func_8003FDB0(i);
+                    clearMessageBoxTextBuffer(i);
 
-                    // handle scroll
-                    if (messageBoxes[i].flags & 0x40) {
-                        func_8004022C(i);
+                    if (messageBoxes[i].flags & MESSAGE_BOX_SCROLLING_DOWN) {
+                        updateScrollDownAnimation(i);
                     }                    
 
-                    // handle scroll
-                    if (messageBoxes[i].flags & 0x80) {
-                        func_80040318(i);
+                    if (messageBoxes[i].flags & MESSAGE_BOX_SCROLLING_UP) {
+                        updateScrollUpAnimation(i);
                     }    
 
-                    func_80040858(i);
+                    processText(i);
 
-                    if (!(messageBoxes[i].flags & (0x40 | 0x80))) {
+                    if (!(messageBoxes[i].flags & (MESSAGE_BOX_SCROLLING_DOWN | MESSAGE_BOX_SCROLLING_UP))) {
 
-                        temp = func_800267B4((Interpolator*)&messageBoxes[i].unk_64);
+                        temp = calculateInterpolatorStep((Interpolator*)&messageBoxes[i].unk_64);
                         j = 0;
                         
                         if (checkButtonPressed(CONTROLLER_1, messageBoxes[i].buttonMask)) {
 
-                            if (!(messageBoxes[i].flags & 0x80000)) {
-                                messageBoxes[i].flags |= 0x800;
+                            if (!(messageBoxes[i].flags & MESSAGE_BOX_MODE_NO_INPUT)) {
+                                messageBoxes[i].flags |= MESSAGE_BOX_BUTTON_PRESSED;
                             }
                             
                         }
 
-                        if (checkButtonHeld(CONTROLLER_1, messageBoxes[i].buttonMask) && !(messageBoxes[i].flags & 0x100000)) {
+                        if (checkButtonHeld(CONTROLLER_1, messageBoxes[i].buttonMask) && !(messageBoxes[i].flags & MESSAGE_BOX_SILENT)) {
                             temp = 1;
                         }
 
                         while (j < temp) {
 
-                            if (messageBoxes[i].flags & 0x2000) {
+                            if (messageBoxes[i].flags & MESSAGE_BOX_NEEDS_INTERPOLATOR_INIT) {
                                 initializeInterpolator((Interpolator*)&messageBoxes[i].unk_64, messageBoxes[i].unk_7C, 0);
-                                messageBoxes[i].flags &= ~0x2000;    
+                                messageBoxes[i].flags &= ~MESSAGE_BOX_NEEDS_INTERPOLATOR_INIT;    
                             }
 
-                            func_80040C38(i);
-                            messageBoxes[i].flags &= ~0x800;    
+                            updateMessageBoxText(i);
+                            messageBoxes[i].flags &= ~MESSAGE_BOX_BUTTON_PRESSED;    
                             j++;
                             
                         }
@@ -2474,7 +2467,7 @@ void updateMessageBox(void) {
             extraLines = ((messageBoxes[i].flags >> 4) & 3) / 3;
 
             dlStartingPosition = dl;
-            dl = func_80041CD8(dl, &messageBoxes[i]);
+            dl = setupMessageBoxScissor(dl, &messageBoxes[i]);
 
             k = 0;
             
@@ -2482,7 +2475,7 @@ void updateMessageBox(void) {
 
                 do {
 
-                    dl = func_80042014(dl, &messageBoxes[i], k, totalProcessedCharacterCount);
+                    dl = renderMessageBoxLine(dl, &messageBoxes[i], k, totalProcessedCharacterCount);
                     addMessageCharSceneNode(&messageBoxes[i], k, dlStartingPosition);
                     
                     dlStartingPosition = dl;
@@ -2492,7 +2485,7 @@ void updateMessageBox(void) {
                 
             }
 
-            // updated by func_80042014
+            // updated by renderMessageBoxLine
             totalProcessedCharacterCount += messageBoxes[i].charactersProcessedPerLine;
             
         }

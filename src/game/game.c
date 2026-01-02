@@ -41,7 +41,7 @@
 #include "ld_symbols.h"
 
 // forward declaration
-u8 func_80060DC0();
+u8 checkEarthquakeShouldHappen();
 
 Vec4f globalLightingRGBA;
 
@@ -513,14 +513,14 @@ u8 D_80113C40[] = {
 static const u8 houseConstructionDays[6];
 static const u16 lifeEventHouseConstructionBits[6];
 static const u8 animalLocationsHouseConstruction[6];
-static const u16 D_8011F25C[79];
+static const u16 mailTextIndices[79];
 
 static const s16 houseExtensionPrices[6];     
 static const s16 houseExtensionLumberCosts[6];
 
 // forward declarations
 extern inline void showTextBox(u16 arg0, u16 arg1, u16 arg2, u32 flag, u16 arg4);
-extern void func_8005B09C(u8);
+extern void showPinkOverlayText(u8);
 
 //INCLUDE_ASM("asm/nonmatchings/game/game", updateFamilyStates);
 
@@ -735,9 +735,9 @@ not_married:
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/game", func_8005A60C);
+//INCLUDE_ASM("asm/nonmatchings/game/game", decrementFamilyAndPetAffection);
 
-void func_8005A60C(void) {
+void decrementFamilyAndPetAffection(void) {
 
     if (!checkLifeEventBit(MARRIED)) goto handle_animals;
 
@@ -901,9 +901,9 @@ void setSpecialDialogues(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/game", func_8005AAE4);
+//INCLUDE_ASM("asm/nonmatchings/game/game", clearTempSpecialDialogueBits);
 
-void func_8005AAE4(void) {
+void clearTempSpecialDialogueBits(void) {
 
     toggleSpecialDialogueBit(0x40);
     toggleSpecialDialogueBit(0x46);
@@ -1048,17 +1048,17 @@ inline int adjustValue(int initial, int value, int max) {
 
 // from transition.c
 
-static inline func_80059334_2(void) {
+static inline pauseGameplay_2(void) {
     pauseEntities();
     pauseAllCutsceneExecutors();
     setEntityMapSpaceIndependent(ENTITY_PLAYER, FALSE);
 }
 
-static inline func_800593EC_2(void) {
-    func_8002FB3C();
+static inline openOverlayScreen_2(void) {
+    pauseAllEntityLoads();
     pauseAllCutsceneExecutors();
     setEntityMapSpaceIndependent(ENTITY_PLAYER, FALSE);
-    func_8003C504(MAIN_MAP_INDEX);
+    unloadMapAssets(MAIN_MAP_INDEX);
 }
 
 
@@ -1066,7 +1066,7 @@ static inline func_800593EC_2(void) {
 
 inline void showTextBox(u16 messageBoxType, u16 dialogueInfoIndex, u16 dialogueIndex, u32 flag, u16 flags) {
   
-    func_80059334_2();
+    pauseGameplay_2();
     
     switch (messageBoxType) {
         
@@ -1084,11 +1084,11 @@ inline void showTextBox(u16 messageBoxType, u16 dialogueInfoIndex, u16 dialogueI
           break;
     }
 
-    func_8003F360(0, -4, flags);
+    setMessageBoxInterpolationWithFlags(0, -4, flags);
   
     initializeMessageBox(MAIN_MESSAGE_BOX_INDEX, dialogueInfoIndex, dialogueIndex, flag);
   
-    setMainLoopCallbackFunctionIndex(TEXT);
+    setMainLoopCallbackFunctionIndex(MESSAGE_BOX);
     
     controllers[CONTROLLER_1].buttonPressed = 0;
 
@@ -1098,10 +1098,9 @@ inline void showTextBox(u16 messageBoxType, u16 dialogueInfoIndex, u16 dialogueI
 
 //INCLUDE_ASM("asm/nonmatchings/game/game", showMessageBox);
 
-// show dialogue box
 inline void showMessageBox(u16 arg0, u16 dialogueBytecodeAddressesIndex, u16 dialogueIndex, u32 flag, u16 messageBoxFlags) {
     
-    func_80059334_2();
+    pauseGameplay_2();
     
     switch (arg0) {
         case 0:
@@ -1116,7 +1115,7 @@ inline void showMessageBox(u16 arg0, u16 dialogueBytecodeAddressesIndex, u16 dia
             break;
     }
 
-    func_8003F360(0, -4, messageBoxFlags);
+    setMessageBoxInterpolationWithFlags(0, -4, messageBoxFlags);
     initializeDialogueSession(0, dialogueBytecodeAddressesIndex, dialogueIndex, flag);
 
     setMainLoopCallbackFunctionIndex(DIALOGUE);
@@ -1127,10 +1126,10 @@ inline void showMessageBox(u16 arg0, u16 dialogueBytecodeAddressesIndex, u16 dia
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/game", func_8005B09C);
+//INCLUDE_ASM("asm/nonmatchings/game/game", showPinkOverlayText);
 
 // show pink overlay texts basd on level interaction/animals/cutscene
-void func_8005B09C(u8 arg0) {
+void showPinkOverlayText(u8 arg0) {
 
     gameLoopContext.unk_6 = arg0;
 
@@ -1255,28 +1254,30 @@ void func_8005B09C(u8 arg0) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/game", func_8005C00C);
+//INCLUDE_ASM("asm/nonmatchings/game/game", setMapAudioAndLighting);
 
-void func_8005C00C(void) {
+void setMapAudioAndLighting(void) {
     
+    // ?
     if (gCutsceneCompletionFlags < 0) {
         setMainLoopCallbackFunctionIndex(MAIN_GAME);
-        return;
-    }
+    } else {
+        
+        if (!checkDailyEventBit(0x4B)) {
+            setLevelAudio(gBaseMapIndex, gSeason, gHour);
+            //setLevelAudio(currentMapContext.currentMapIndex, gSeason, gHour);
+        }
+         
+        // set lighting for level based on weather
+        setLevelLighting(8, 1);
     
-    if (!checkDailyEventBit(0x4B)) {
-        setLevelAudio(gBaseMapIndex, gSeason, gHour);
-        //setLevelAudio(currentMapContext.currentMapIndex, gSeason, gHour);
     }
-     
-    // set lighting for level based on weather
-    func_8005C07C(8, 1);
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/game", func_8005C07C);
+//INCLUDE_ASM("asm/nonmatchings/game/game", setLevelLighting);
 
-void func_8005C07C(s16 arg0, u16 arg1) {
+void setLevelLighting(s16 arg0, u16 arg1) {
 
     Vec4f vec;
     
@@ -1311,18 +1312,18 @@ void func_8005C07C(s16 arg0, u16 arg1) {
         }
         
     } else {
-        func_8006EB94(&globalLightingRGBA, gBaseMapIndex);
+        getDefaultLevelLighting(&globalLightingRGBA, gBaseMapIndex);
     }
     
     if (arg0 == 0) {
         
         setEntitiesColor(globalLightingRGBA.r, globalLightingRGBA.g, globalLightingRGBA.b, globalLightingRGBA.a);
-        func_8003BE98(MAIN_MAP_INDEX, globalLightingRGBA.r, globalLightingRGBA.g, globalLightingRGBA.b, globalLightingRGBA.a);
+        setMapControllerRGBA(MAIN_MAP_INDEX, globalLightingRGBA.r, globalLightingRGBA.g, globalLightingRGBA.b, globalLightingRGBA.a);
         
     } else if (globalLightingRGBA.r != unknownRGBA.r || globalLightingRGBA.g != unknownRGBA.g || globalLightingRGBA.b != unknownRGBA.b || globalLightingRGBA.a != unknownRGBA.a) {
         
         updateEntitiesColor(globalLightingRGBA.r, globalLightingRGBA.g, globalLightingRGBA.b, globalLightingRGBA.a, arg0);
-        func_8003BF7C(0, globalLightingRGBA.r, globalLightingRGBA.g, globalLightingRGBA.b, globalLightingRGBA.a, arg0);
+        setMapControllerRGBAWithTransition(0, globalLightingRGBA.r, globalLightingRGBA.g, globalLightingRGBA.b, globalLightingRGBA.a, arg0);
         
         if (!checkDailyEventBit(0x4B)) {
             setAudioSequenceVolume(gCurrentAudioSequenceIndex, gAudioSequenceVolume);
@@ -1338,9 +1339,9 @@ void func_8005C07C(s16 arg0, u16 arg1) {
     gameLoopContext.callbackIndex = arg1;
     
     if (arg1) {
-        setMainLoopCallbackFunctionIndex(LEVEL_LOAD_1);
+        setMainLoopCallbackFunctionIndex(LEVEL_LOAD);
         togglePauseEntities();
-        func_80046CF4();
+        resumeCutsceneExecutors();
     }
     
 }
@@ -1350,7 +1351,7 @@ void func_8005C07C(s16 arg0, u16 arg1) {
 // arg0 = unused
 inline void func_8005C940(u16 arg0, u16 callbackIndex) {
     
-    func_8003BF7C(MAIN_MAP_INDEX, 0, 0, 0, 0, 8);
+    setMapControllerRGBAWithTransition(MAIN_MAP_INDEX, 0, 0, 0, 0, 8);
     updateEntitiesColor(0, 0, 0, 0, 8);
        
     stopAudioSequenceWithDefaultFadeOut(gCurrentAudioSequenceIndex);
@@ -1360,27 +1361,26 @@ inline void func_8005C940(u16 arg0, u16 callbackIndex) {
     resetGlobalLighting();
     
     if (gameLoopContext.callbackIndex) {
-        setMainLoopCallbackFunctionIndex(LEVEL_LOAD_2);
-        func_80059334_2();
+        setMainLoopCallbackFunctionIndex(EXIT_LEVEL);
+        pauseGameplay_2();
     }
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/game", func_8005CA2C);
+//INCLUDE_ASM("asm/nonmatchings/game/game", loadOverlayScreen);
 
-void func_8005CA2C(u16 arg0, u16 arg1) {
+void loadOverlayScreen(u16 arg0, u16 arg1) {
     gameLoopContext.unk_4 = arg0;
     gameLoopContext.unk_2 = 0;
     gameLoopContext.callbackIndex = arg1;
     setMainLoopCallbackFunctionIndex(OVERLAY_SCREEN_LOAD);
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/game", func_8005CA64);
+//INCLUDE_ASM("asm/nonmatchings/game/game", levelLoadCallback);
 
-void func_8005CA64(void) {
+void levelLoadCallback(void) {
 
-    // handle cutscene completion
-    func_800A8F74();
+    handleCutsceneCompletion();
 
     if (checkMapRGBADone(MAIN_MAP_INDEX)) {
         setMainLoopCallbackFunctionIndex(gameLoopContext.callbackIndex);
@@ -1388,24 +1388,20 @@ void func_8005CA64(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/game", func_8005CAA8);
+//INCLUDE_ASM("asm/nonmatchings/game/game", exitLevelCallback);
 
-void func_8005CAA8(void) {
+void exitLevelCallback(void) {
 
-    // handle cutscene completion
-    func_800A8F74();
+    handleCutsceneCompletion();
 
     if (checkMapRGBADone(MAIN_MAP_INDEX) && checkDefaultSequenceChannelOpen(gCurrentAudioSequenceIndex)) {
 
         setEntitiesColor(0, 0, 0, 0);
-        // map rgba
-        func_8003BE98(MAIN_MAP_INDEX, 0, 0, 0, 0);
-        // reset cutscene structs
+        setMapControllerRGBA(MAIN_MAP_INDEX, 0, 0, 0, 0);
         deactivateCutsceneExecutors();
         initializeCutsceneExecutors();
 
         gCutsceneCompletionFlags = 0;
-
         gCutsceneFlags = 0;
 
         setMainLoopCallbackFunctionIndex(gameLoopContext.callbackIndex);
@@ -1426,35 +1422,35 @@ void func_8005CB50(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/game", func_8005CBA4);
+//INCLUDE_ASM("asm/nonmatchings/game/game", handleRotationCallback);
 
-void func_8005CBA4(void) {
+void handleRotationCallback(void) {
 
-    if (!(mapControllers[MAIN_MAP_INDEX].flags & (0x8 | 0x10))) {
+    if (!(mapControllers[MAIN_MAP_INDEX].flags & (MAP_CONTROLLER_ROTATING_COUNTERCLOCKWISE | MAP_CONTROLLER_ROTATING_CLOCKWISE))) {
         togglePauseEntities();
-        func_80046CF4();
+        resumeCutsceneExecutors();
         setEntityMapSpaceIndependent(ENTITY_PLAYER, TRUE);
         setMainLoopCallbackFunctionIndex(MAIN_GAME);
     }
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/game", func_8005CBF0);
+//INCLUDE_ASM("asm/nonmatchings/game/game", handleDialogueCallback);
 
 // main loop callback for finishing dialogue
-void func_8005CBF0(void) {
+void handleDialogueCallback(void) {
     
     // check flag on dialogue box struct
-    if (func_80043A88()) {
+    if (isDialogueClosing()) {
         
         if (!(getItemFlags(gPlayer.heldItem) & (0x80 | 0x100 | 0x400 | 0x800))) {
-            func_800D55E4(gPlayer.itemInfoIndex, 1);
+            setItemState(gPlayer.itemInfoIndex, 1);
             gPlayer.heldItem = 0;
             gItemBeingHeld = 0xFF;
         }
          
-        func_8003F910(0, 0x78, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsAssetsIndexSegmentRomStart, &_dialogueIconsAssetsIndexSegmentRomEnd, (u8*)DIALOGUE_ICON_TEXTURE_BUFFER, (u16*)DIALOGUE_ICON_PALETTE_BUFFER, (AnimationFrameMetadata*)DIALOGUE_ICON_ANIMATION_FRAME_METADATA_BUFFER, (u32*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 4, 0xFE, 106.0f, -15.0f, 0.0f);
-        func_8003F910(1, 0x78, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsAssetsIndexSegmentRomStart, &_dialogueIconsAssetsIndexSegmentRomEnd, (u8*)DIALOGUE_ICON_TEXTURE_BUFFER, (u16*)DIALOGUE_ICON_PALETTE_BUFFER, (AnimationFrameMetadata*)DIALOGUE_ICON_ANIMATION_FRAME_METADATA_BUFFER, (u32*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 0xD, 0xFE, 106.0f, -15.0f, 0.0f);
+        setOverlayIconSprite(0, 0x78, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsAssetsIndexSegmentRomStart, &_dialogueIconsAssetsIndexSegmentRomEnd, (u8*)DIALOGUE_ICON_TEXTURE_BUFFER, (u16*)DIALOGUE_ICON_PALETTE_BUFFER, (AnimationFrameMetadata*)DIALOGUE_ICON_ANIMATION_FRAME_METADATA_BUFFER, (u32*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 4, 0xFE, 106.0f, -15.0f, 0.0f);
+        setOverlayIconSprite(1, 0x78, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsAssetsIndexSegmentRomStart, &_dialogueIconsAssetsIndexSegmentRomEnd, (u8*)DIALOGUE_ICON_TEXTURE_BUFFER, (u16*)DIALOGUE_ICON_PALETTE_BUFFER, (AnimationFrameMetadata*)DIALOGUE_ICON_ANIMATION_FRAME_METADATA_BUFFER, (u32*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 0xD, 0xFE, 106.0f, -15.0f, 0.0f);
        
         // update stuff after closing dialogue 
         func_8005CDCC();
@@ -1462,7 +1458,7 @@ void func_8005CBF0(void) {
         setMainLoopCallbackFunctionIndex(MAIN_GAME);
         
         togglePauseEntities();
-        func_80046CF4();
+        resumeCutsceneExecutors();
         setEntityMapSpaceIndependent(ENTITY_PLAYER, TRUE);
 
     }
@@ -1471,7 +1467,7 @@ void func_8005CBF0(void) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/game", func_8005CDCC);
 
-// update stuff after closing dialogue
+// update stuff after closing dialogue/overlay screen
 void func_8005CDCC(void) {
     
     npcAffection[HARVEST_SPRITE_2] = npcAffection[HARVEST_SPRITE_1];
@@ -1518,28 +1514,27 @@ void func_8005CDCC(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/game", func_8005CEFC);
+//INCLUDE_ASM("asm/nonmatchings/game/game", messageBoxCallback);
 
-void func_8005CEFC(void) {
+void messageBoxCallback(void) {
     
     // check if a message box has flag 4 set
-    if (func_8003F0DC()) {
+    if (checkAnyMessageBoxTextFinished()) {
 
         setMainLoopCallbackFunctionIndex(MAIN_GAME);
 
         togglePauseEntities();
-        func_80046CF4();
+        resumeCutsceneExecutors();
         setEntityMapSpaceIndependent(ENTITY_PLAYER, TRUE);
 
     }
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/game", func_8005CF4C);
+//INCLUDE_ASM("asm/nonmatchings/game/game", endCutsceneCallback);
 
-// unused main loop callback functions
 // ends cutscene
-void func_8005CF4C(void) {
+void endCutsceneCallback(void) {
 
     // unused variable
     if (D_801FB686 == 0) {
@@ -1547,20 +1542,20 @@ void func_8005CF4C(void) {
         setMainLoopCallbackFunctionIndex(MAIN_GAME);
         togglePauseEntities();
         // cutscene executor flags
-        func_80046CF4();
+        resumeCutsceneExecutors();
         setEntityMapSpaceIndependent(ENTITY_PLAYER, TRUE);
 
     }
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/game", func_8005CF94);
+//INCLUDE_ASM("asm/nonmatchings/game/game", loadNamingScreenCallback);
 
-void func_8005CF94(void) {
+void loadNamingScreenCallback(void) {
     
     u8* namePtr;
 
-    func_800593EC_2();
+    openOverlayScreen_2();
     
     // naming screen index
     switch (gNamingScreenIndex) {
@@ -1594,10 +1589,10 @@ void func_8005CF94(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/game", func_8005D0BC);
+//INCLUDE_ASM("asm/nonmatchings/game/game", mapLoadCallback);
 
 // map load callback
-void func_8005D0BC(void) {
+void mapLoadCallback(void) {
     
     bool set;
     int checkOverflow;
@@ -1610,7 +1605,7 @@ void func_8005D0BC(void) {
 
     setPlayerAction(0, 0);
 
-    func_80056030(1);
+    loadLevel(1);
     
     set = FALSE;
     
@@ -1649,9 +1644,11 @@ void func_8005D0BC(void) {
 
     }
     
-    // farm animal
+    // farm animal born
     if (gBaseMapIndex == BARN && checkLifeEventBit(4)) {
         
+        // TODO: this might be an inline function
+
         gNamingScreenIndex = 5;
         D_801FC155 = bornAnimalIndex;
         gFarmAnimals[bornAnimalIndex].flags &= ~0x800;
@@ -1690,7 +1687,7 @@ void func_8005D0BC(void) {
     }
     
     if (!set) {
-        setMainLoopCallbackFunctionIndex(4);
+        setMainLoopCallbackFunctionIndex(SET_AUDIO_AND_LIGHTING);
     }
 
 }
@@ -1701,19 +1698,19 @@ static inline void inline1(u8 arg0, u8 arg1, u8 arg2, u8 arg3, u8 arg4) {
 
     switch (arg0) {                   
         case 0:                                 
-            func_800DC9FC(arg1);
+            handlePickUpShopItem(arg1);
             setMainLoopCallbackFunctionIndex(MAIN_GAME);
             break;
         case 1:                                 
-            func_800DC9FC(arg2);
+            handlePickUpShopItem(arg2);
             setMainLoopCallbackFunctionIndex(MAIN_GAME);
             break;
         case 2:                                 
-            func_800DC9FC(arg3);
+            handlePickUpShopItem(arg3);
             setMainLoopCallbackFunctionIndex(MAIN_GAME);
             break;
         case 3:                                 
-            func_800DC9FC(arg4);
+            handlePickUpShopItem(arg4);
             setMainLoopCallbackFunctionIndex(MAIN_GAME);
             break;
     }
@@ -1723,23 +1720,23 @@ static inline void inline1(u8 arg0, u8 arg1, u8 arg2, u8 arg3, u8 arg4) {
 static inline void inline2(u8 arg0, u8 arg1, u8 arg2, u8 arg3, u8 arg4, u8 arg5) {
     switch (arg0) {                    
         case 0:                                 
-            func_800DC9FC(arg1);
+            handlePickUpShopItem(arg1);
             setMainLoopCallbackFunctionIndex(MAIN_GAME);
             break;
         case 1:                                 
-            func_800DC9FC(arg2);
+            handlePickUpShopItem(arg2);
             setMainLoopCallbackFunctionIndex(MAIN_GAME);
             break;
         case 2:                                 
-            func_800DC9FC(arg3);
+            handlePickUpShopItem(arg3);
             setMainLoopCallbackFunctionIndex(MAIN_GAME);
             break;
         case 3:                                 
-            func_800DC9FC(arg4);
+            handlePickUpShopItem(arg4);
             setMainLoopCallbackFunctionIndex(MAIN_GAME);
             break;
         case 4:                                 
-            func_800DC9FC(arg5);
+            handlePickUpShopItem(arg5);
             setMainLoopCallbackFunctionIndex(MAIN_GAME);
             break;
     }
@@ -1749,7 +1746,7 @@ static inline void inline3() {
 
     dialogues[0].sessionManager.flags &= ~0x40;
     
-    func_80043AD8(0);
+    closeDialogueSession(0);
 
     setPlayerAction(0, 0);
     setMainLoopCallbackFunctionIndex(MAIN_GAME);
@@ -1770,7 +1767,7 @@ static inline void func_80055F08_2(u16 cutsceneIndex, u16 entranceIndex, u8 arg2
     resetGlobalLighting();
 
     setEntitiesColor(0, 0, 0, 0);
-    func_8003BE98(MAIN_MAP_INDEX, 0, 0, 0, 0);
+    setMapControllerRGBA(MAIN_MAP_INDEX, 0, 0, 0, 0);
 
     gHour = 12;
 
@@ -1784,31 +1781,30 @@ static inline void func_80055F08_2(u16 cutsceneIndex, u16 entranceIndex, u8 arg2
     // trigger cutscene and load cutscene assets
     loadCutscene(0);
     
-    func_8006E840(gEntranceIndex);
+    loadLevelFromEntrance(gEntranceIndex);
     setupPlayerEntity(gEntranceIndex, 0);
 
     handlePlayerAnimation();
 
-    setMainLoopCallbackFunctionIndex(4);
+    setMainLoopCallbackFunctionIndex(SET_AUDIO_AND_LIGHTING);
 
 }
 
 // possible split
 
-//INCLUDE_ASM("asm/nonmatchings/game/game", func_8005D2B0);
+//INCLUDE_ASM("asm/nonmatchings/game/game", pinkOverlayMenuCallback);
 
-// pink overlay main loop callback
-void func_8005D2B0() {
+void pinkOverlayMenuCallback() {
 
     u8 temp;
 
     if (dialogues[0].sessionManager.flags & 4) {
         
         togglePauseEntities();
-        func_80046CF4();
+        resumeCutsceneExecutors();
         setEntityMapSpaceIndependent(ENTITY_PLAYER, TRUE);
 
-        temp = func_80043C6C(0);
+        temp = getSelectedMenuRow(0);
 
         switch (gameLoopContext.unk_6) {
 
@@ -1816,7 +1812,7 @@ void func_8005D2B0() {
                 switch (temp) {                      
                     case 0:
                         // show another message box                 
-                        func_8005B09C(1);
+                        showPinkOverlayText(1);
                         break;
                     case 1:                                 
                         showMessageBox(1, 1, 2, 0x80, 2);
@@ -1874,7 +1870,7 @@ void func_8005D2B0() {
                 switch (temp) {                    
                     case 0:
                         // show another message box               
-                        func_8005B09C(6);
+                        showPinkOverlayText(6);
                         break;
                     case 1:                                
                         showTextBox(0, 6, 0x55, 0, 0);
@@ -1882,7 +1878,7 @@ void func_8005D2B0() {
                         setDailyEventBit(5);
                         break;
                     case 2:                                
-                        func_800DC9FC(0x21);
+                        handlePickUpShopItem(0x21);
                         setMainLoopCallbackFunctionIndex(MAIN_GAME);
                         break;
                     }
@@ -1904,7 +1900,7 @@ void func_8005D2B0() {
                         D_801890E0 = 0;                        
                         dialogues[0].sessionManager.flags &= ~0x40;
                         
-                        func_80043AD8(0);
+                        closeDialogueSession(0);
                         setEntrance(9);
 
                         func_8005C940(0, 2);
@@ -1925,7 +1921,7 @@ void func_8005D2B0() {
                     
                     case 1:                                 
                         dialogues[0].sessionManager.flags &= ~0x40;
-                        func_80043AD8(0);
+                        closeDialogueSession(0);
                         setMainLoopCallbackFunctionIndex(MAIN_GAME);
                         
                         break;
@@ -1939,7 +1935,7 @@ void func_8005D2B0() {
                     case 0:                                 
                         
                         dialogues[0].sessionManager.flags &= ~0x40;
-                        func_80043AD8(0);
+                        closeDialogueSession(0);
                         setEntrance(9);
 
                         func_8005C940(0, 2);
@@ -1953,7 +1949,7 @@ void func_8005D2B0() {
                         
                     case 1:                                 
                         dialogues[0].sessionManager.flags &= ~0x40;
-                        func_80043AD8(0);
+                        closeDialogueSession(0);
                         setMainLoopCallbackFunctionIndex(MAIN_GAME);
                         break;
                     }
@@ -1968,22 +1964,22 @@ void func_8005D2B0() {
                 }
                 
                 dialogues[0].sessionManager.flags &= ~0x40;
-                func_80043AD8(0);
+                closeDialogueSession(0);
                 setMainLoopCallbackFunctionIndex(MAIN_GAME);
                 break;
             
             case 10:                                    
                 switch (temp) {                   
                     case 0:                                 
-                        func_800DC9FC(50);
+                        handlePickUpShopItem(50);
                         setMainLoopCallbackFunctionIndex(MAIN_GAME);
                         break;
                     case 1:                                 
-                        func_800DC9FC(51);
+                        handlePickUpShopItem(51);
                         setMainLoopCallbackFunctionIndex(MAIN_GAME);
                         break;    
                     case 2:                                 
-                        func_800DC9FC(52);
+                        handlePickUpShopItem(52);
                         setMainLoopCallbackFunctionIndex(MAIN_GAME);
                         break;    
                     case 3:                                 
@@ -1996,15 +1992,15 @@ void func_8005D2B0() {
             case 11:                     
                 switch (temp) {                     
                     case 0:                                 
-                        func_800DC9FC(45);
+                        handlePickUpShopItem(45);
                         setMainLoopCallbackFunctionIndex(MAIN_GAME);
                         break;    
                     case 1:                                 
-                        func_800DC9FC(46);
+                        handlePickUpShopItem(46);
                         setMainLoopCallbackFunctionIndex(MAIN_GAME);
                         break;    
                     case 2:                                 
-                        func_800DC9FC(49);
+                        handlePickUpShopItem(49);
                         setMainLoopCallbackFunctionIndex(MAIN_GAME);
                         break;    
                     case 3:
@@ -2017,15 +2013,15 @@ void func_8005D2B0() {
             case 12:                                    
                 switch (temp) {                     
                     case 0:                                 
-                        func_800DC9FC(47);
+                        handlePickUpShopItem(47);
                         setMainLoopCallbackFunctionIndex(MAIN_GAME);
                         break;    
                     case 1:                                 
-                        func_800DC9FC(48);
+                        handlePickUpShopItem(48);
                         setMainLoopCallbackFunctionIndex(MAIN_GAME);
                         break;    
                     case 2:                                 
-                        func_800DC9FC(49);
+                        handlePickUpShopItem(49);
                         setMainLoopCallbackFunctionIndex(MAIN_GAME);
                         break;    
                     case 3:
@@ -2050,13 +2046,13 @@ void func_8005D2B0() {
                                 break;
                             case 3:
                                 dialogues[0].sessionManager.flags &= ~0x40;
-                                func_80043AD8(0);
+                                closeDialogueSession(0);
                                 setPlayerAction(0, 0);
                                 setMainLoopCallbackFunctionIndex(MAIN_GAME);
                                 break;
                             }
                         
-                        func_800D55E4(gPlayer.itemInfoIndex, 1);
+                        setItemState(gPlayer.itemInfoIndex, 1);
                         gPlayer.heldItem = 0;
                         break;
                     }
@@ -2080,13 +2076,13 @@ void func_8005D2B0() {
                             break;
                         case 3:
                             dialogues[0].sessionManager.flags &= ~0x40;
-                            func_80043AD8(0);
+                            closeDialogueSession(0);
                             setPlayerAction(0, 0);
                             setMainLoopCallbackFunctionIndex(MAIN_GAME);
                             break;
                         }
                     
-                    func_800D55E4(gPlayer.itemInfoIndex, 1);
+                    setItemState(gPlayer.itemInfoIndex, 1);
                     gPlayer.heldItem = 0;
                     break;
                     
@@ -2111,13 +2107,13 @@ void func_8005D2B0() {
                                 break;
                             case 3:
                                 dialogues[0].sessionManager.flags &= ~0x40;
-                                func_80043AD8(0);
+                                closeDialogueSession(0);
                                 setPlayerAction(0, 0);
                                 setMainLoopCallbackFunctionIndex(MAIN_GAME);
                                 break;
                             }
                         
-                        func_800D55E4(gPlayer.itemInfoIndex, 1);
+                        setItemState(gPlayer.itemInfoIndex, 1);
                         gPlayer.heldItem = 0;
                         break;
                         
@@ -2141,13 +2137,13 @@ void func_8005D2B0() {
                             break;
                         case 3:
                             dialogues[0].sessionManager.flags &= ~0x40;
-                            func_80043AD8(0);
+                            closeDialogueSession(0);
                             setPlayerAction(0, 0);
                             setMainLoopCallbackFunctionIndex(MAIN_GAME);
                             break;
                     }
                 
-                    func_800D55E4(gPlayer.itemInfoIndex, 1);
+                    setItemState(gPlayer.itemInfoIndex, 1);
                     gPlayer.heldItem = 0;
                     break;
                     
@@ -2173,13 +2169,13 @@ void func_8005D2B0() {
                             break;
                         case 3:
                             dialogues[0].sessionManager.flags &= ~0x40;
-                            func_80043AD8(0);
+                            closeDialogueSession(0);
                             setPlayerAction(0, 0);
                             setMainLoopCallbackFunctionIndex(MAIN_GAME);
                             break;
                         }
                     
-                    func_800D55E4(gPlayer.itemInfoIndex, 1);
+                    setItemState(gPlayer.itemInfoIndex, 1);
                     gPlayer.heldItem = 0;
                     break;
                 }
@@ -2202,13 +2198,13 @@ void func_8005D2B0() {
                         break;
                     case 3:
                         dialogues[0].sessionManager.flags &= ~0x40;
-                        func_80043AD8(0);
+                        closeDialogueSession(0);
                         setPlayerAction(0, 0);
                         setMainLoopCallbackFunctionIndex(MAIN_GAME);
                         break;
                     }
                 
-                func_800D55E4(gPlayer.itemInfoIndex, 1);
+                setItemState(gPlayer.itemInfoIndex, 1);
                 gPlayer.heldItem = 0;
                 break;
                 
@@ -2233,13 +2229,13 @@ void func_8005D2B0() {
                             break;                        
                         case 3:
                             dialogues[0].sessionManager.flags &= ~0x40;
-                            func_80043AD8(0);
+                            closeDialogueSession(0);
                             setPlayerAction(0, 0);
                             setMainLoopCallbackFunctionIndex(MAIN_GAME);
                             break;
                         }
                     
-                        func_800D55E4(gPlayer.itemInfoIndex, 1);
+                        setItemState(gPlayer.itemInfoIndex, 1);
                         gPlayer.heldItem = 0;
                         break;
                     }
@@ -2262,13 +2258,13 @@ void func_8005D2B0() {
                         break;
                     case 3:
                         dialogues[0].sessionManager.flags &= ~0x40;
-                        func_80043AD8(0);
+                        closeDialogueSession(0);
                         setPlayerAction(0, 0);
                         setMainLoopCallbackFunctionIndex(MAIN_GAME);
                         break;
                     }
                 
-                    func_800D55E4(gPlayer.itemInfoIndex, 1);
+                    setItemState(gPlayer.itemInfoIndex, 1);
                     gPlayer.heldItem = 0;
                     break;
                 }
@@ -2295,13 +2291,13 @@ void func_8005D2B0() {
                             break;
                         case 4:
                             dialogues[0].sessionManager.flags &= ~0x40;
-                            func_80043AD8(0);
+                            closeDialogueSession(0);
                             setPlayerAction(0, 0);
                             setMainLoopCallbackFunctionIndex(MAIN_GAME);
                             break;
                         }
                     
-                    func_800D55E4(gPlayer.itemInfoIndex, 1);
+                    setItemState(gPlayer.itemInfoIndex, 1);
                     gPlayer.heldItem = 0;
                     break;
                 }
@@ -2327,13 +2323,13 @@ void func_8005D2B0() {
                         break;                       
                     case 4:        
                         dialogues[0].sessionManager.flags &= ~0x40;
-                        func_80043AD8(0);
+                        closeDialogueSession(0);
                         setPlayerAction(0, 0);
                         setMainLoopCallbackFunctionIndex(MAIN_GAME);
                         break;
                     }
             
-                    func_800D55E4(gPlayer.itemInfoIndex, 1);
+                    setItemState(gPlayer.itemInfoIndex, 1);
                     gPlayer.heldItem = 0;
                     break;
                 }
@@ -2360,14 +2356,14 @@ void func_8005D2B0() {
                             break;
                         case 4:
                             dialogues[0].sessionManager.flags &= ~0x40;
-                            func_80043AD8(0);
+                            closeDialogueSession(0);
                             setPlayerAction(0, 0);
                             setMainLoopCallbackFunctionIndex(MAIN_GAME);
                             break;
                             
                         }
                     
-                        func_800D55E4(gPlayer.itemInfoIndex, 1);
+                        setItemState(gPlayer.itemInfoIndex, 1);
                         gPlayer.heldItem = 0;
                         break;
                     }
@@ -2393,13 +2389,13 @@ void func_8005D2B0() {
                         break;
                     case 4:
                         dialogues[0].sessionManager.flags &= ~0x40;
-                        func_80043AD8(0);
+                        closeDialogueSession(0);
                         setPlayerAction(0, 0);
                         setMainLoopCallbackFunctionIndex(MAIN_GAME);
                         break;
                     }
                 
-                    func_800D55E4(gPlayer.itemInfoIndex, 1);
+                    setItemState(gPlayer.itemInfoIndex, 1);
                     gPlayer.heldItem = 0;
                     break;
                 }
@@ -2426,13 +2422,13 @@ void func_8005D2B0() {
                             break;
                         case 4:
                             dialogues[0].sessionManager.flags &= ~0x40;
-                            func_80043AD8(0);
+                            closeDialogueSession(0);
                             setPlayerAction(0, 0);
                             setMainLoopCallbackFunctionIndex(MAIN_GAME);
                             break;
                         }
                     
-                        func_800D55E4(gPlayer.itemInfoIndex, 1);
+                        setItemState(gPlayer.itemInfoIndex, 1);
                         gPlayer.heldItem = 0;
                         break;
                     }
@@ -2458,13 +2454,13 @@ void func_8005D2B0() {
                         break;
                     case 4:
                         dialogues[0].sessionManager.flags &= ~0x40;
-                        func_80043AD8(0);
+                        closeDialogueSession(0);
                         setPlayerAction(0, 0);
                         setMainLoopCallbackFunctionIndex(MAIN_GAME);
                         break;
                     }
                 
-                    func_800D55E4(gPlayer.itemInfoIndex, 1);
+                    setItemState(gPlayer.itemInfoIndex, 1);
                     gPlayer.heldItem = 0;
                     break;
                 }
@@ -2491,13 +2487,13 @@ void func_8005D2B0() {
                             break;
                         case 4:
                             dialogues[0].sessionManager.flags &= ~0x40;
-                            func_80043AD8(0);
+                            closeDialogueSession(0);
                             setPlayerAction(0, 0);
                             setMainLoopCallbackFunctionIndex(MAIN_GAME);
                             break;
                         }
                     
-                        func_800D55E4(gPlayer.itemInfoIndex, 1);
+                        setItemState(gPlayer.itemInfoIndex, 1);
                         gPlayer.heldItem = 0;
                         break;
                     }
@@ -2523,13 +2519,13 @@ void func_8005D2B0() {
                         break;
                     case 4:
                         dialogues[0].sessionManager.flags &= ~0x40;
-                        func_80043AD8(0);
+                        closeDialogueSession(0);
                         setPlayerAction(0, 0);
                         setMainLoopCallbackFunctionIndex(MAIN_GAME);
                         break;
                     }
                 
-                func_800D55E4(gPlayer.itemInfoIndex, 1);
+                setItemState(gPlayer.itemInfoIndex, 1);
                 gPlayer.heldItem = 0;
                 break;
             }
@@ -2556,13 +2552,13 @@ void func_8005D2B0() {
                             break;
                         case 4:
                             dialogues[0].sessionManager.flags &= ~0x40;
-                            func_80043AD8(0);
+                            closeDialogueSession(0);
                             setPlayerAction(0, 0);
                             setMainLoopCallbackFunctionIndex(MAIN_GAME);
                             break;
                         }
                 
-                    func_800D55E4(gPlayer.itemInfoIndex, 1);
+                    setItemState(gPlayer.itemInfoIndex, 1);
                     gPlayer.heldItem = 0;
                     break;
                 
@@ -2591,14 +2587,14 @@ void func_8005D2B0() {
                         break;
                     case 4:
                         dialogues[0].sessionManager.flags &= ~0x40;
-                        func_80043AD8(0);
+                        closeDialogueSession(0);
                         setPlayerAction(0, 0);
                         setMainLoopCallbackFunctionIndex(MAIN_GAME);
                         break;
 
                     }
                 
-                    func_800D55E4(gPlayer.itemInfoIndex, 1);
+                    setItemState(gPlayer.itemInfoIndex, 1);
                     gPlayer.heldItem = 0;
 
                     break;
@@ -2631,13 +2627,13 @@ void func_8005D2B0() {
                             break;
                         case 4:
                             dialogues[0].sessionManager.flags &= ~0x40;
-                            func_80043AD8(0);
+                            closeDialogueSession(0);
                             setPlayerAction(0, 0);
                             setMainLoopCallbackFunctionIndex(MAIN_GAME);
                             break;
                         }
                     
-                        func_800D55E4(gPlayer.itemInfoIndex, 1);
+                        setItemState(gPlayer.itemInfoIndex, 1);
                         gPlayer.heldItem = 0;
                         break;
                     }
@@ -2664,13 +2660,13 @@ void func_8005D2B0() {
                         break;
                     case 4:
                         dialogues[0].sessionManager.flags &= ~0x40;
-                        func_80043AD8(0);
+                        closeDialogueSession(0);
                         setPlayerAction(0, 0);
                         setMainLoopCallbackFunctionIndex(MAIN_GAME);
                         break;
                     }
                 
-                func_800D55E4(gPlayer.itemInfoIndex, 1);
+                setItemState(gPlayer.itemInfoIndex, 1);
                 gPlayer.heldItem = 0;
                 break;
                 
@@ -2705,33 +2701,30 @@ void func_8005D2B0() {
     }
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/game", func_80060454);
+//INCLUDE_ASM("asm/nonmatchings/game/game", waitForAudioFinishCallback);
 
-// main loop callback
-void func_80060454(void) {
+void waitForAudioFinishCallback(void) {
     if (checkAllSfxInactive()) {
         setMainLoopCallbackFunctionIndex(gameLoopContext.callbackIndex);
     }
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/game", func_80060490);
+//INCLUDE_ASM("asm/nonmatchings/game/game", cutsceneCompletionCallback);
 
-// main loop callback
-void func_80060490(void) {
-    // handle cutscene completion
-    func_800A8F74();
+void cutsceneCompletionCallback(void) {
+    handleCutsceneCompletion();
 } 
 
-//INCLUDE_ASM("asm/nonmatchings/game/game", func_800604B0);
+//INCLUDE_ASM("asm/nonmatchings/game/game", endOfFestivalDayCallback1);
 
 // show end of festival day dialogue box 
-void func_800604B0(void) {
+void endOfFestivalDayCallback1(void) {
 
     if (checkMapRGBADone(MAIN_MAP_INDEX) || !(mainMap[MAIN_MAP_INDEX].mapState.flags & MAP_ACTIVE)) {
         
         setMessageBoxViewSpacePosition(MAIN_MESSAGE_BOX_INDEX, 0, -64.0f, 352.0f);
         setMessageBoxSpriteIndices(MAIN_MESSAGE_BOX_INDEX, 1, 0, 0);
-        func_8003F360(MAIN_MESSAGE_BOX_INDEX, -4, 0);
+        setMessageBoxInterpolationWithFlags(MAIN_MESSAGE_BOX_INDEX, -4, 0);
         
         switch (gCutsceneIndex) {
             case 0x81 ... 0x82:
@@ -2757,29 +2750,29 @@ void func_800604B0(void) {
     }
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/game", func_800605F0);
+//INCLUDE_ASM("asm/nonmatchings/game/game", endOfFestivalDayCallback2);
 
 // second end of festival day callback
-void func_800605F0(void) {
+void endOfFestivalDayCallback2(void) {
     // check if a message box has flag 4 set
-    if (func_8003F0DC()) {
+    if (checkAnyMessageBoxTextFinished()) {
         setMainLoopCallbackFunctionIndex(END_OF_DAY_1);
     }
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/game", func_80060624);
+//INCLUDE_ASM("asm/nonmatchings/game/game", endOfDayCallback1);
 
 // first end of day callback
-void func_80060624(void) {
+void endOfDayCallback1(void) {
     
     u8 tempTime;
 
     if (checkMapRGBADone(MAIN_MAP_INDEX) || !(mainMap[MAIN_MAP_INDEX].mapState.flags & MAP_ACTIVE)) {
         
-        func_800610DC();
+        clearHeldItemsAtEndOfDay();
         
         // earthquake
-        if (func_80060DC0()) {
+        if (checkEarthquakeShouldHappen()) {
             playSfx(RUMBLE);
             setMainLoopCallbackFunctionIndex(WAIT_AUDIO_FINISH);
             gameLoopContext.callbackIndex = END_OF_DAY_1;
@@ -2787,10 +2780,10 @@ void func_80060624(void) {
         }
         
         setEntrance(MIDDLE_OF_HOUSE);
-        func_80056030(2);
+        loadLevel(2);
         
         // dream cutscenes
-        if (func_800A87C4()) {
+        if (setDreamCutscenes()) {
             setMainLoopCallbackFunctionIndex(3);
             return;
         }
@@ -2835,14 +2828,14 @@ void func_80060624(void) {
     }
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/game", func_80060838);
+//INCLUDE_ASM("asm/nonmatchings/game/game", endOfDayCallback2);
 
 // second end of day callback
-void func_80060838(void) {
+void endOfDayCallback2(void) {
     
     if (checkMapRGBADone(MAIN_MAP_INDEX) || !(mainMap[MAIN_MAP_INDEX].mapState.flags & MAP_ACTIVE)) {
 
-        func_800610DC();
+        clearHeldItemsAtEndOfDay();
 
         if (gPlayer.flags & 1) {
 
@@ -2856,7 +2849,7 @@ void func_80060838(void) {
         }
 
         // earthquake
-        if (func_80060DC0()) {
+        if (checkEarthquakeShouldHappen()) {
             
             playSfx(RUMBLE);
             
@@ -2870,10 +2863,10 @@ void func_80060838(void) {
         setEntrance(MIDDLE_OF_HOUSE);
         
         // setup/handle loading
-        func_80056030(2);
+        loadLevel(2);
 
         // dream cutscenes
-        if (func_800A87C4()) {
+        if (setDreamCutscenes()) {
             setMainLoopCallbackFunctionIndex(3);
             return;
         }
@@ -3010,10 +3003,10 @@ void setFestivalDailyBits(void) {
     }
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/game", func_80060DC0);
+//INCLUDE_ASM("asm/nonmatchings/game/game", checkEarthquakeShouldHappen);
 
 // earthquake
-bool func_80060DC0(void) {
+bool checkEarthquakeShouldHappen(void) {
 
     bool result = FALSE;
 
@@ -3108,13 +3101,13 @@ u8 calculateAnimalDirectionToPlayer(f32 animalX, f32 animalZ, f32 playerX, f32 p
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/game", func_800610DC);
+//INCLUDE_ASM("asm/nonmatchings/game/game", clearHeldItemsAtEndOfDay);
 
-void func_800610DC(void) {
+void clearHeldItemsAtEndOfDay(void) {
     
     if (gPlayer.heldItem) {
         
-        func_800D5548(gPlayer.itemInfoIndex);
+        clearHeldItemSlot(gPlayer.itemInfoIndex);
 
         switch (gPlayer.heldItem) {
             case 0x60 ... 0x6F:
@@ -3336,9 +3329,10 @@ void func_80061690(u8 arg0) {
     D_801886D4[5] = 0xF6;
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/game", func_800616CC);
+//INCLUDE_ASM("asm/nonmatchings/game/game", handlePurchaseHouseExtension);
 
-u8 func_800616CC(u8 houseExtensionIndex) {
+// returns cutscene index
+u8 handlePurchaseHouseExtension(u8 houseExtensionIndex) {
 
     s16 prices[6];
     s16 lumberCosts[6];
@@ -3362,6 +3356,7 @@ u8 func_800616CC(u8 houseExtensionIndex) {
         } else {
             return 1;
         }
+        
     }
 
     return 2;
@@ -4035,7 +4030,7 @@ void setLetters(void) {
 
 }
 
-// D_8011F25C
+// mailTextIndices
 //INCLUDE_ASM("asm/nonmatchings/game/game", func_80063A2C);
 
 // get text index for letter
@@ -4043,7 +4038,7 @@ u16 func_80063A2C(u8 index) {
 
     u16 arr[80];
     
-    memcpy(arr,  D_8011F25C, 0xA0);
+    memcpy(arr,  mailTextIndices, 0xA0);
 
     return arr[index];
 
@@ -4073,10 +4068,10 @@ static const u16 lifeEventHouseConstructionBits[6] = { 0x10, 0x11, 0x12, 0x13, 0
 
 static const u8 animalLocationsHouseConstruction[6] = { FARM, FARM, HOUSE, FARM, FARM, HOUSE };
 
-// INCLUDE_RODATA("asm/nonmatchings/game/game", D_8011F25C);
+// INCLUDE_RODATA("asm/nonmatchings/game/game", mailTextIndices);
 
 // text indices for letters
-static const u16 D_8011F25C[79] = { 
+static const u16 mailTextIndices[79] = { 
      0, 1, 2, 3, 4, 5, 
      6, 7, 8, 9, 10, 11, 
      12, 13, 14, 15, 16, 

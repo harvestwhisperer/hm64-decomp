@@ -51,7 +51,7 @@
 /* flags */
 #define CHICKEN_FED 0x10
 
-#define ANIMAL_FED 0x8
+#define FARM_ANIMAL_FED 0x8
 #define COW_PREGNANT 0x80
 
 
@@ -61,9 +61,9 @@ typedef struct {
 	Vec3f coordinates;
 	u16 entityIndex;
 	u8 location;
-	u8 unk_17;
+	u8 actionState;
 	u8 direction;
-	u8 unk_19;
+	u8 speed;
 	u8 unk_1A;
 	u8 unk_1B;
 	u8 type;
@@ -78,75 +78,75 @@ typedef struct {
 	u8 affection;
 	u8 name[6];
 	Vec3f coordinates;
-	f32 unk_14;
+	f32 speed;
 	u16 entityIndex;
 	u8 location;
 	u8 unk_1B;
 	u8 direction;
 	u8 unk_1D;
 	u8 unk_1E;
-	u8 type; // 0x1F
-	u8 condition; // 0x20
+	u8 type;
+	u8 condition;
 	u8 typeCounter; // 0x21  overloaded field: age, pregnancy, sheared status
-	u8 conditionCounter; // 0x22
+	u8 conditionCounter;
 	u8 unk_23[6];
-	u8 birthdaySeason; // 0x29
-	u8 birthdayDayOfMonth; // 0x2A
-	u8 normalMilk; // 0x2B
-	u16 flags; // 0x2C
+	u8 birthdaySeason;
+	u8 birthdayDayOfMonth;
+	u8 milkType;
+	u16 flags;
 } FarmAnimal;
 
 // 0x801886B0
 typedef struct {
-	u8 affection; // 00
-	u8 name[6]; // 01-07
-	Vec3f coordinates; // 8
-	u16 entityIndex; // 14
-	u8 location; // 16
-	u8 unk_17; // 17
-	u8 direction; // 18
-	u8 speed; // 19
-	u8 unk_1A; // 1A
-	u8 unk_1B; // 1B
-	u8 unk_1C; // 1C
-	u16 flags; // 1E
+	u8 affection;
+	u8 name[6];
+	Vec3f coordinates;
+	u16 entityIndex;
+	u8 location;
+	u8 unk_17;
+	u8 direction;
+	u8 speed;
+	u8 unk_1A;
+	u8 unk_1B;
+	u8 unk_1C;
+	u16 flags;
 } Dog;
 
 // 0x8016FDD0
 typedef struct {
-	u8 affection; // 00
-	u8 name[6]; // 01
-	Vec3f coordinates; // 08
-	u16 entityIndex; // 14
-	u8 location; // 16
-	u8 unk_17; // 17
-	u8 direction; // 18
-	u8 speed; // 19
-	u8 unk_1A; // 1A
-	u8 unk_1B; // 1B
-	u8 grown; // 1C
-	u8 age; // 1D
-	u8 unk_1E; // 1E
-	u8 unk_1F; //1F
-	u16 flags; // 20
+	u8 affection;
+	u8 name[6];
+	Vec3f coordinates;
+	u16 entityIndex;
+	u8 location;
+	u8 actionState;
+	u8 direction;
+	u8 speed;
+	u8 unk_1A;
+	u8 unk_1B;
+	u8 grown;
+	u8 age;
+	u8 unk_1E;
+	u8 unk_1F;
+	u16 flags;
 } Horse;
 
 // birds, insects, dogs/cats
 // 0x8016FB08
 typedef struct {
-	Vec3f coordinates; // 08
-	u16 entityIndex; // 14
-	u8 mapIndex; // 16
-	u8 unk_F; // 17
-	u8 direction; // 18
-	u8 zDisplacement; // 19
-	u8 yDisplacement; // 1A
-	u8 unk_13; // 1B
-	u8 unk_14; // 1C
-	u8 animalType; // 1D
-	u8 unk_16; // 1E
-	u8 unk_17; // 1F
-	u16 flags; // 20
+	Vec3f coordinates;
+	u16 entityIndex;
+	u8 mapIndex;
+	u8 actionState;
+	u8 direction; 
+	u8 zDisplacement; 
+	u8 yDisplacement; 
+	u8 timer; 
+	u8 unk_14; 
+	u8 animalType;
+	u8 unk_16; 
+	u8 unk_17; 
+	u16 flags; 
 } MiscAnimal;
 
 typedef struct {
@@ -156,22 +156,22 @@ typedef struct {
 } SheepItemInfo;
 
 extern void func_8008634C(s8 amount);
-extern bool func_80086764();
-extern void func_800876D0();
+extern bool handlePlayerAnimalInteraction();
+extern void initializeAnimalEntities();
 extern void func_8008779C(void);
 extern void updateAnimalCoordinates();
 extern void updateAnimals();
 extern void func_80087D5C();
 extern void resetAnimalStatuses();
-extern u8 func_80087F28(u8, u8);
+extern u8 initializeNewChicken(u8, u8);
 extern void setMrsManaCowsNames();
 extern void func_800886D0();
 extern void func_80088C1C(u8, u8);
 extern u8 func_8008A4A8(u8, u8, f32, f32, f32);
-extern void func_8008B1B8();
-extern void func_8008B2E8(u8);
-extern void func_8008B9AC();
-extern void func_8008BAF0(u8, u8);
+extern void initializeDogEntity();
+extern void initializeChickenEntity(u8);
+extern void initializeHorseEntity();
+extern void initializeMiscAnimalEntity(u8, u8);
 extern void func_80088D54();
 extern void func_80099DE8();
 extern void func_80099EEC();
@@ -202,7 +202,7 @@ extern void func_8009B6B8();
 extern u8 func_8009B7BC();
 extern void deactivateAnimalEntities(void);
 extern u8 func_8009B828(u8);
-extern void func_8009BA74(u8);
+extern void generateMilkTypeString(u8);
 extern u8 func_8009BBAC(void);
 extern u8 func_8009BC44(void);
 extern u8 func_8009BC54(void);
