@@ -112,8 +112,8 @@ extern FarmRankingData gFarmRankingData;
 
 extern void func_800E1380(u8);            
 extern bool func_800E53E8(u8);    
-extern void func_800E1FAC(void);
-extern void func_800E8F08(void);
+extern void gameSelectCallback(void);
+extern void farmRankingScreenCallback(void);
 
 extern u8 gCurrentGameIndex;
 

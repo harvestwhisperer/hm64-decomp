@@ -86,7 +86,7 @@ void readControllerData(void) {
         
         if (!nuContStatus[i].errno) {
             
-            if ((frameCount % D_802226E2) == 0) {
+            if ((frameCount % mainLoopUpdateRate) == 0) {
                 
                 controllers[i].analogStick.rawX = contData[i].stick_x;
                 controllers[i].analogStick.rawY = contData[i].stick_y;

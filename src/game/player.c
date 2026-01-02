@@ -327,9 +327,9 @@ static const u8 toolHeldItemIndices[5][3];
 // forward declarations
 u8 func_80067A24(u8);                 
 bool func_80067B38(void);
-void func_80067BC4(void);
-void func_80067E5C(void);
-void func_80067EE0(void);
+void handleToolCharging(void);
+void handleToolUseAction(void);
+void handleThrowingAction(void);
 void func_80067F50(void);
 void func_8006807C(void);
 void func_80068120(void);
@@ -345,11 +345,11 @@ void func_80068FB0(void);
 void func_800692E4(void);
 void func_80069830(void);
 void func_80069C5C(void);
-void func_80069C90(void);
-void func_80069CC4(void);
+void handleWhistleForDogAction(void);
+void handleWhistleForHorseAction(void);
 void func_80069DA8(void);
-void func_80069DB0(void);
-void func_80069E54(void);
+void handlePuttingItemInRucksackAction(void);
+void handleCastingFishingRodActionStub(void);
 void func_80069E5C(void);
 void func_80069E64(void);
 void func_80069E6C(void);
@@ -460,7 +460,7 @@ void setupPlayerEntity(u16 entranceIndex, u8 resetPlayer) {
 
     setEntityCollidable(ENTITY_PLAYER, TRUE);
     setEntityYMovement(ENTITY_PLAYER, TRUE);
-    func_8002FF38(ENTITY_PLAYER, TRUE);
+    setCameraTrackingEntity(ENTITY_PLAYER, TRUE);
     setEntityMapSpaceIndependent(ENTITY_PLAYER, TRUE);
 
     setEntityColor(ENTITY_PLAYER, globalLightingRGBA.r, globalLightingRGBA.g, globalLightingRGBA.b, globalLightingRGBA.a);
@@ -496,19 +496,19 @@ void func_80065AA0(void) {
             case DOG_HELD_ITEM ... 0x6F:
             case BABY_HELD_ITEM ... 0xC9:
             case PUPPY_1_HELD_ITEM ... 0xB2:
-                gPlayer.itemInfoIndex = func_800D5308(0, 2, gPlayer.heldItem, 4, 8);
+                gPlayer.itemInfoIndex = initializeHeldItem(0, 2, gPlayer.heldItem, ITEM_CONTEXT_HAS_DIRECTION_FRAME, ITEM_CONTEXT_USE_ATTACHMENT);
                 break;
             default:
-                gPlayer.itemInfoIndex = func_800D5308(0, 2, gPlayer.heldItem, 0, 8);
+                gPlayer.itemInfoIndex = initializeHeldItem(0, 2, gPlayer.heldItem, 0, ITEM_CONTEXT_USE_ATTACHMENT);
                 break;
             
         }
         
-        func_800D5688(0, 0, 14.0f, 20.0f);
+        setItemAttachmentOffset(0, 0, 14.0f, 20.0f);
         
     } else {
         gItemBeingHeld = 0xFF;
-        func_800D5548(gPlayer.itemInfoIndex);
+        clearHeldItemSlot(gPlayer.itemInfoIndex);
     }
     
 }
@@ -539,7 +539,7 @@ block_8:
 block_9:
             var_a3 = 0;
         }
-        D_8018908D = func_800D5308(0, 2, D_8018908C, var_a3, 8);
+        D_8018908D = initializeHeldItem(0, 2, D_8018908C, var_a3, 8);
 */
 
 //INCLUDE_ASM("asm/nonmatchings/game/player", addItemToRucksack);
@@ -560,10 +560,10 @@ inline u8 addItemToRucksack(u8 item) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", func_80065BCC);
+//INCLUDE_ASM("asm/nonmatchings/game/player", storeTool);
 
 // store tool
-u8 func_80065BCC(u8 tool) {
+u8 storeTool(u8 tool) {
 
     u8 i;
     u8 found = 0xFF;
@@ -715,9 +715,9 @@ inline bool checkHaveKeyItem(u8 item) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", func_80065F5C);
+//INCLUDE_ASM("asm/nonmatchings/game/player", syncPlayerCoordinatesFromEntity);
 
-void func_80065F5C(void) {
+void syncPlayerCoordinatesFromEntity(void) {
     gPlayer.coordinates.x = entities[ENTITY_PLAYER].coordinates.x;
     gPlayer.coordinates.y = entities[ENTITY_PLAYER].coordinates.y;
     gPlayer.coordinates.z = entities[ENTITY_PLAYER].coordinates.z;
@@ -816,25 +816,25 @@ static const s8 directionToTileDeltaX[12] = { 0, -1, -1, -1, 0, 1, 1, 1, 0, 0, 0
  
 static const s8 directionToTileDeltaZ[12] = { 1, 1, 0, -1, -1, -1, 0, 1, 0, 0, 0, 0 };
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", func_8006623C);
+//INCLUDE_ASM("asm/nonmatchings/game/player", updatePlayerAction);
 
-void func_8006623C(void) {
+void updatePlayerAction(void) {
 
     if (gPlayer.actionHandler == 0) {
         // handle button input
-        func_800664C8();
+        handlePlayerInput();
     }
     
     // TODO: label actions
     switch (gPlayer.actionHandler - 1) {
         case 0:
-            func_80067BC4();
+            handleToolCharging();
             break;
         case TOOL_USE:
-            func_80067E5C();
+            handleToolUseAction();
             break;
         case THROWING:
-            func_80067EE0();
+            handleThrowingAction();
             break;
         case 3:
             func_80067F50();
@@ -882,19 +882,19 @@ void func_8006623C(void) {
             func_80069C5C();
             break;
         case WHISTLE_FOR_DOG:
-            func_80069C90();
+            handleWhistleForDogAction();
             break;
         case WHISTLE_FOR_HORSE:
-            func_80069CC4();
+            handleWhistleForHorseAction();
             break;
         case DRINKING:
             func_80069DA8();
             break;
         case 21:
-            func_80069DB0();
+            handlePuttingItemInRucksackAction();
             break;
         case CASTING_FISHING_ROD:
-            func_80069E54();
+            handleCastingFishingRodActionStub();
             break;
         case 23:
             func_80069E5C();
@@ -932,15 +932,15 @@ void func_8006623C(void) {
     }
     
     // handle item state
-    func_800D7010();
+    updateHeldItemStates();
     // handle tool use
-    func_800D0318();
+    processToolUseState();
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", func_800664C8);
+//INCLUDE_ASM("asm/nonmatchings/game/player", handlePlayerInput);
 
-void func_800664C8(void) {
+void handlePlayerInput(void) {
 
     Vec3f vec;
     u32 padding[3];
@@ -976,14 +976,14 @@ void func_800664C8(void) {
         temp = 0xFF;
     }
 
-    func_800305CC(ENTITY_PLAYER, 0.0f, 8.0f, 0x8000);
+    func_800305CC(ENTITY_PLAYER, 0.0f, 8.0f, BUTTON_A);
 
     horseResult = func_8009A100();
     npcResult = func_800858D4();
 
     if (!set && npcResult == 1) {
         temp = 0xFF;
-        func_80059334();
+        pauseGameplay();
         setMainLoopCallbackFunctionIndex(DIALOGUE);
         set = TRUE;
         resetAction();
@@ -998,14 +998,14 @@ void func_800664C8(void) {
     }
 
     if (!set) {
-        if (func_80086764()) {
+        if (handlePlayerAnimalInteraction()) {
             set = TRUE;
             temp = 0xFF;
         }
     }
 
     if (!set) {
-        if (!(gPlayer.flags & 1) && func_800D5B30()) {
+        if (!(gPlayer.flags & PLAYER_RIDING_HORSE) && handlePickUpGroundItem()) {
             set = TRUE;
             temp = 0xFF;
             reset();
@@ -1016,7 +1016,8 @@ void func_800664C8(void) {
 
     if (!set) {
         
-        if (gBaseMapIndex == FARM && gPlayer.groundObjectIndex == 6) {
+        // jump over logs
+        if (gBaseMapIndex == FARM && gPlayer.groundObjectIndex == LOG) {
 
             if ((getAnalogStickMagnitude(CONTROLLER_1) / 1.2f) > 4.6) {
                 
@@ -1051,12 +1052,14 @@ void func_800664C8(void) {
     }
 
     if (!checkDailyEventBit(0xD)) {
+
         if (!set) {
+        
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
                 
                 if (entities[ENTITY_PLAYER].collision == 0xFFFF || horseResult > 0) {
                    
-                    if (!(gPlayer.flags & 1)) {
+                    if (!(gPlayer.flags & PLAYER_RIDING_HORSE)) {
                     
                         if (gPlayer.heldItem) {
                             set = TRUE; 
@@ -1065,7 +1068,7 @@ void func_800664C8(void) {
                         }
                         
                     } else {
-                        func_80067034();
+                        dismountHorse();
                         set = TRUE;
                         temp = 0xFF;
                     }
@@ -1073,12 +1076,14 @@ void func_800664C8(void) {
                 }
                 
             }
+
         }
+
     }
 
     if (!set) {
 
-        if (!(gPlayer.flags & 1) && !checkDailyEventBit(0x12)) {
+        if (!(gPlayer.flags & PLAYER_RIDING_HORSE) && !checkDailyEventBit(0x12)) {
         
             if (checkButtonPressed(CONTROLLER_1, BUTTON_B)) {
                 
@@ -1116,11 +1121,11 @@ void func_800664C8(void) {
 
     if (!set) {
         // show text for item being held
-        if (!(gPlayer.flags & 1) && !checkDailyEventBit(0x12)) {
+        if (!(gPlayer.flags & PLAYER_RIDING_HORSE) && !checkDailyEventBit(0x12)) {
             if (checkButtonPressed(CONTROLLER_1, BUTTON_Z)) {
                 if (gPlayer.heldItem != 0) {
                     set = TRUE;
-                    func_800D67FC(gPlayer.heldItem);
+                    showHeldItemText(gPlayer.heldItem);
                     temp = 0xFF;
                 }
             }
@@ -1128,7 +1133,7 @@ void func_800664C8(void) {
     }
 
     if (!set) {
-        if (!(gPlayer.flags & 1)) {
+        if (!(gPlayer.flags & PLAYER_RIDING_HORSE)) {
             // whistle for dog
             if (checkButtonPressed(CONTROLLER_1, BUTTON_C_RIGHT)) {
                 set = TRUE;
@@ -1139,7 +1144,7 @@ void func_800664C8(void) {
     }
 
     if (!set) {
-        if (!(gPlayer.flags & 1)) {
+        if (!(gPlayer.flags & PLAYER_RIDING_HORSE)) {
             // whistle for horse
             if (checkButtonPressed(CONTROLLER_1, BUTTON_C_LEFT)) {
                 set = TRUE;
@@ -1150,9 +1155,9 @@ void func_800664C8(void) {
     }
 
     if (!set) {
-        if (!(gPlayer.flags & 1)) {
+        if (!(gPlayer.flags & PLAYER_RIDING_HORSE)) {
             if (checkButtonPressed(CONTROLLER_1, BUTTON_C_UP)) {
-                if (gPlayer.heldItem != 0 && getItemFlags(gPlayer.heldItem) & ITEM_STORAGABLE_IN_RUCKSACK) {
+                if (gPlayer.heldItem != 0 && getItemFlags(gPlayer.heldItem) & ITEM_RUCKSACK_STORABLE) {
                     if (addItemToRucksack(gPlayer.heldItem) != 0xFF) {
                         set = TRUE;
                         temp = 0xFF;
@@ -1164,13 +1169,12 @@ void func_800664C8(void) {
     }
 
     if (!set) {
-        if (!(gPlayer.flags & 1) && !checkDailyEventBit(0x13)) {
+        if (!(gPlayer.flags & PLAYER_RIDING_HORSE) && !checkDailyEventBit(0x13)) {
             if (checkButtonPressed(CONTROLLER_1, BUTTON_START)) {
                 set = TRUE;
                 // pause everything
-                func_80059334();
-                // load overlay screen
-                func_8005CA2C(1, 0x14);
+                pauseGameplay();
+                loadOverlayScreen(1, 20);
                 playSfx(MENU_OPEN_SFX);
                 temp = 0xFF;
             }
@@ -1184,12 +1188,12 @@ void func_800664C8(void) {
             if (checkButtonPressed(CONTROLLER_1, BUTTON_R)) {
 
                 resetAction();
-                func_80059334();
-                func_8003C5C0(MAIN_MAP_INDEX, 0, 0xFF);
+                pauseGameplay();
+                startMapRotation(MAIN_MAP_INDEX, 0, 0xFF);
 
                 setMainLoopCallbackFunctionIndex(ROTATING);
 
-                D_8021E6D0 = (D_8021E6D0 + 7) % 8;
+                gCameraRotationOffset = (gCameraRotationOffset + 7) % 8;
 
                 set = TRUE;
                 temp = 0xFF;
@@ -1201,12 +1205,12 @@ void func_800664C8(void) {
                 if (checkButtonPressed(CONTROLLER_1, BUTTON_L)) {
 
                     resetAction();
-                    func_80059334();
-                    func_8003C5C0(MAIN_MAP_INDEX, 1, 0xFF);
+                    pauseGameplay();
+                    startMapRotation(MAIN_MAP_INDEX, 1, 0xFF);
     
                     setMainLoopCallbackFunctionIndex(ROTATING);
     
-                    D_8021E6D0 = (D_8021E6D0 + 1) % 8;
+                    gCameraRotationOffset = (gCameraRotationOffset + 1) % 8;
     
                     set = TRUE;
                     temp = 0xFF;
@@ -1283,16 +1287,15 @@ void func_800664C8(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", func_80066F98);
+//INCLUDE_ASM("asm/nonmatchings/game/player", mountHorse);
 
-// mount horse
-void func_80066F98(void) {
+inline void mountHorse(void) {
 
     deactivateEntity(horseInfo.entityIndex);
 
     horseInfo.flags &= ~4;
     horseInfo.flags |= 8;
-    gPlayer.flags |= 1;
+    gPlayer.flags |= PLAYER_RIDING_HORSE;
 
     setDailyEventBit(0x5C);
  
@@ -1300,9 +1303,9 @@ void func_80066F98(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", func_80067034);
+//INCLUDE_ASM("asm/nonmatchings/game/player", dismountHorse);
 
-void func_80067034(void) {
+void dismountHorse(void) {
 
     Vec3f vec1;
     Vec3f vec2;
@@ -1347,8 +1350,7 @@ void func_80067034(void) {
         
         toggleDailyEventBit(0x5C);
         
-        // initialize animal locations
-        func_8008B9AC();
+        initializeHorseEntity();
         
         entities[ENTITY_PLAYER].direction = direction;
 
@@ -1363,7 +1365,7 @@ void func_80067034(void) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/player", func_80067290);
 
-// handle dropping item?
+// item <-> level interaction 
 void func_80067290(u8 arg0) {
 
     bool set = FALSE;
@@ -1372,20 +1374,19 @@ void func_80067290(u8 arg0) {
     
     if (arg0 == 0) {
 
-        if ((getItemFlags(gPlayer.heldItem) & 0x20) && (getLevelInteractionIndexFromEntityPosition(ENTITY_PLAYER, 0.0f, 32.0f) == 0x11) && gBaseMapIndex == COOP && !func_8009B7BC()) {
+        if ((getItemFlags(gPlayer.heldItem) & ITEM_INCUBATOR_PLACEABLE) && (getLevelInteractionIndexFromEntityPosition(ENTITY_PLAYER, 0.0f, 32.0f) == 0x11) && gBaseMapIndex == COOP && !func_8009B7BC()) {
             set = TRUE;
             startAction(PUTTING_DOWN, PUTTING_DOWN + 2);
         }
 
-        if ((getItemFlags(gPlayer.heldItem) & 0x2000) && !set && (getLevelInteractionIndexFromEntityPosition(ENTITY_PLAYER, 0.0f, 32.0f) == 0x11) && gBaseMapIndex == FARM) {
+        if ((getItemFlags(gPlayer.heldItem) & ITEM_LUMBER_STORABLE) && !set && (getLevelInteractionIndexFromEntityPosition(ENTITY_PLAYER, 0.0f, 32.0f) == 0x11) && gBaseMapIndex == FARM) {
             set = TRUE;
             startAction(PUTTING_DOWN, PUTTING_DOWN + 2);
         }
 
-        // check level interaction 0x17 on farm
-        if (func_800ACEAC(gBaseMapIndex) != 0xFF) {
+        if (checkFarmDogBowlInteraction(gBaseMapIndex) != 0xFF) {
             
-            if (getItemFlags(gPlayer.heldItem) & 1 && !set) {    
+            if ((getItemFlags(gPlayer.heldItem) & ITEM_EATABLE) && !set) {    
                 startAction(0x1F, 0x20);
             }
             
@@ -1393,19 +1394,16 @@ void func_80067290(u8 arg0) {
 
         }
 
-        // drop into water
-        if ((getItemFlags(gPlayer.heldItem) & 2) && !set && func_800ACEF8(gBaseMapIndex) != 0xFF) {
+        if ((getItemFlags(gPlayer.heldItem) & ITEM_RUCKSACK_STORABLE) && !set && checkWaterSourceInteraction(gBaseMapIndex) != 0xFF) {
             set = TRUE;
             startAction(0x20, 0x21);
         }
         
     }
 
-    // add item to shipping bin
     if ((getItemFlags(gPlayer.heldItem) & ITEM_SHIPPABLE) && !set) {
 
-        // shipping bins
-        if (func_800ACD70(gBaseMapIndex) != 0xFF || arg0) {
+        if (checkShippingBinInteraction(gBaseMapIndex) != 0xFF || arg0) {
             startAction(3, 5);
         } else {
             startAction(THROWING, THROWING + 2);
@@ -1417,10 +1415,9 @@ void func_80067290(u8 arg0) {
 
     if (arg0 == 0) {
 
-        if ((getItemFlags(gPlayer.heldItem) & 0x40) && !set) {
+        if ((getItemFlags(gPlayer.heldItem) & ITEM_IS_ANIMAL_FEED) && !set) {
 
-            // check barn level interaction
-            if (func_800ACDF4(gBaseMapIndex) != 0xFF) {
+            if (checkBarnAnimalFeedInteraction(gBaseMapIndex) != 0xFF) {
                 startAction(PUTTING_DOWN, PUTTING_DOWN + 2);
             } else {
                 startAction(THROWING, THROWING + 2);
@@ -1441,7 +1438,6 @@ void func_80067290(u8 arg0) {
                 if (groundObjectIndex == 0xFF || getGroundObjectPlayerInteractionsFlags(groundObjectIndex) & 8) {
                     startAction(PUTTING_DOWN, PUTTING_DOWN + 2);
                 }
-                
             
             }
 
@@ -1454,7 +1450,7 @@ void func_80067290(u8 arg0) {
             set = TRUE;
         }
         
-        if ((getItemFlags(gPlayer.heldItem) & 0x400) && !set) {
+        if ((getItemFlags(gPlayer.heldItem) & ITEM_CRIB_PLACEABLE) && !set) {
             
             if (gBaseMapIndex == HOUSE) {
 
@@ -1487,7 +1483,7 @@ void func_80067290(u8 arg0) {
             
         }
 
-        if ((getItemFlags(gPlayer.heldItem) & ITEM_PLACEABLE_ON_GROUND) && !set) {
+        if ((getItemFlags(gPlayer.heldItem) & 0x10) && !set) {
 
             groundObjectIndex = getGroundObjectIndexFromPlayerPosition(1.0f, 8);
 
@@ -1595,9 +1591,9 @@ bool func_80067B38(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", func_80067BC4);
+//INCLUDE_ASM("asm/nonmatchings/game/player", handleToolCharging);
 
-void func_80067BC4(void) {
+void handleToolCharging(void) {
 
     s32 temp;
 
@@ -1660,15 +1656,15 @@ void func_80067BC4(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", func_80067E5C);
+//INCLUDE_ASM("asm/nonmatchings/game/player", handleToolUseAction);
 
-void func_80067E5C(void) {
+void handleToolUseAction(void) {
 
     // FIXME: possibly a union. This matches:
     // if (!(gPlayer.actionUnion.actionPhaseFrameCounter & ~0xFF)) {
     if (!(*(s32*)&gPlayer.actionPhaseFrameCounter & ~0xFF)) {
         playSfx(0x26);
-        func_800D5548(gPlayer.itemInfoIndex);
+        clearHeldItemSlot(gPlayer.itemInfoIndex);
         func_800D5390(1, 3, gPlayer.heldItem, 0, 8);
         gPlayer.heldItem = 0;
         gPlayer.actionPhaseFrameCounter = 1;
@@ -1676,12 +1672,12 @@ void func_80067E5C(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", func_80067EE0);
+//INCLUDE_ASM("asm/nonmatchings/game/player", handleThrowingAction);
 
-void func_80067EE0(void) {
+void handleThrowingAction(void) {
 
     if (gPlayer.actionPhaseFrameCounter == 3) {
-        func_800D55E4(gPlayer.itemInfoIndex, 0xE);
+        setItemState(gPlayer.itemInfoIndex, 0xE);
         gPlayer.heldItem = 0;
         gPlayer.actionPhase++;
     }
@@ -1705,10 +1701,10 @@ void func_80067F50(void) {
             case DOG_HELD_ITEM ... 0x6F:
             case BABY_HELD_ITEM ... 0xC9:
             case PUPPY_1_HELD_ITEM ... 0xB2:
-                gPlayer.itemInfoIndex = func_800D5308(0, 6, gPlayer.heldItem, 4, 8);
+                gPlayer.itemInfoIndex = initializeHeldItem(0, 6, gPlayer.heldItem, ITEM_CONTEXT_HAS_DIRECTION_FRAME, ITEM_CONTEXT_USE_ATTACHMENT);
                 break;
             default:
-                gPlayer.itemInfoIndex = func_800D5308(0, 6, gPlayer.heldItem, 0, 8);
+                gPlayer.itemInfoIndex = initializeHeldItem(0, 6, gPlayer.heldItem, 0, ITEM_CONTEXT_USE_ATTACHMENT);
                 break;
         
             }
@@ -1717,7 +1713,7 @@ void func_80067F50(void) {
     
     if (gPlayer.actionPhaseFrameCounter == 4) {
     
-        func_800D55E4(gPlayer.itemInfoIndex, 7);
+        setItemState(gPlayer.itemInfoIndex, 7);
         gPlayer.actionPhase++;
     
     }
@@ -1733,7 +1729,7 @@ void func_8006807C(void) {
     if (checkEntityAnimationStateChanged(ENTITY_PLAYER)) {
      
         if (gPlayer.actionPhase == 0) {
-            func_800D55E4(gPlayer.itemInfoIndex, 9);
+            setItemState(gPlayer.itemInfoIndex, 9);
             gPlayer.heldItem = 0;
             playSfx(PICKING_UP_SFX);
         }
@@ -1755,7 +1751,7 @@ void func_80068120(void) {
     if (gPlayer.actionPhase == 2) {
 
         if (gPlayer.actionPhaseFrameCounter == 10) {
-            func_800D55E4(gPlayer.itemInfoIndex, 1);
+            setItemState(gPlayer.itemInfoIndex, 1);
             gPlayer.heldItem = 0;
             gPlayer.actionPhase++;
             playSfx(0x25); 
@@ -1768,8 +1764,8 @@ void func_80068120(void) {
     if (gPlayer.actionPhase == 0) {
 
         if (gPlayer.actionPhaseFrameCounter == 0) {
-            gPlayer.currentStamina += adjustValue(gPlayer.currentStamina, func_800D5B00(gPlayer.heldItem), gMaximumStamina);
-            gPlayer.fatigueCounter += adjustValue(gPlayer.fatigueCounter, -func_800D5B18(gPlayer.heldItem), 100);
+            gPlayer.currentStamina += adjustValue(gPlayer.currentStamina, getItemStaminaIncreaseValue(gPlayer.heldItem), gMaximumStamina);
+            gPlayer.fatigueCounter += adjustValue(gPlayer.fatigueCounter, -getItemFatigueReductionValue(gPlayer.heldItem), 100);
         }
 
         if (gPlayer.actionPhaseFrameCounter == 30) {
@@ -1791,16 +1787,16 @@ void func_80068258(void) {
         setEntityCoordinates(ENTITY_PLAYER, -140.0f, 0.0f, -152.0f);
         setEntityCollidable(ENTITY_PLAYER, FALSE);
         setEntityYMovement(ENTITY_PLAYER, FALSE);
-        func_8002FF38(ENTITY_PLAYER, FALSE);
+        setCameraTrackingEntity(ENTITY_PLAYER, FALSE);
     
         gPlayer.actionPhase++;
 
-        func_80034DC8(MAIN_MAP_INDEX, 0, 7);
+        setMapObjectAnimation(MAIN_MAP_INDEX, 0, 7);
     
     }
 
     if (gPlayer.actionPhase == 3) {
-        func_80034DC8(MAIN_MAP_INDEX, 0, 8);
+        setMapObjectAnimation(MAIN_MAP_INDEX, 0, 8);
     }
 
 }
@@ -1852,8 +1848,8 @@ void func_80068410(void) {
 
     if (gPlayer.actionPhase == 0) {
         if (gPlayer.actionPhaseFrameCounter == 4) {
-            if (func_800DCAA0(gPlayer.shopItemIndex)) {
-                func_800D55E4(gPlayer.itemInfoIndex, 7);
+            if (checkCanPickUpShopItem(gPlayer.shopItemIndex)) {
+                setItemState(gPlayer.itemInfoIndex, 7);
             }
             gPlayer.actionPhase++;
         }
@@ -1861,18 +1857,18 @@ void func_80068410(void) {
     }
     
     if (gPlayer.actionPhase == 2) {
-        if (func_800DCAA0(gPlayer.shopItemIndex)) {
-            func_800D55E4(gPlayer.itemInfoIndex, 1);
+        if (checkCanPickUpShopItem(gPlayer.shopItemIndex)) {
+            setItemState(gPlayer.itemInfoIndex, 1);
         }
         loadShopItemSprite(gPlayer.shopItemIndex);
         gPlayer.actionPhase = 5;
     }
     
     if (gPlayer.actionPhase == 3) {
-        if (func_800DCAA0(gPlayer.shopItemIndex)) {
-            func_800D55E4(gPlayer.itemInfoIndex, 1);
+        if (checkCanPickUpShopItem(gPlayer.shopItemIndex)) {
+            setItemState(gPlayer.itemInfoIndex, 1);
         }
-        func_800DC9C0(gPlayer.shopItemIndex);
+        deactivateShopItemMapObject(gPlayer.shopItemIndex);
         gPlayer.actionPhase = 5;
     }
 
@@ -2000,7 +1996,7 @@ void func_80068918(void) {}
 void func_80068920(void) {
  
     if (gPlayer.actionPhaseFrameCounter == 3) {
-        func_800D55E4(gPlayer.itemInfoIndex, 0x12);
+        setItemState(gPlayer.itemInfoIndex, 0x12);
         gPlayer.heldItem = 0;
         gPlayer.actionPhase++;
     }
@@ -2014,7 +2010,7 @@ void func_80068920(void) {
 void func_80068990(void) {
 
     if (gPlayer.actionPhaseFrameCounter == 3) {
-        func_800D55E4(gPlayer.itemInfoIndex, 0x14);
+        setItemState(gPlayer.itemInfoIndex, 0x14);
         gPlayer.heldItem = 0;
         gPlayer.actionPhase++;
     }
@@ -2033,7 +2029,7 @@ void func_80068A08(void) {
     if (gPlayer.actionPhase == 0) {
         
         if (gPlayer.actionPhaseFrameCounter == 0) {
-            gPlayer.itemInfoIndex = func_800D5308(0, 2, gPlayer.heldItem, 0, 8);
+            gPlayer.itemInfoIndex = initializeHeldItem(0, 2, gPlayer.heldItem, 0, ITEM_CONTEXT_USE_ATTACHMENT);
         }
         
         if (gPlayer.actionPhaseFrameCounter >= 30) {
@@ -2083,15 +2079,7 @@ void func_80068A98(void) {
         
         resetAction();
 
-        deactivateEntity(horseInfo.entityIndex);
-
-        horseInfo.flags &= ~4;
-        horseInfo.flags |= 8;
-        gPlayer.flags |= 1;
-
-        setDailyEventBit(0x5C);
-
-        setEntityDirection(ENTITY_PLAYER, convertSpriteToWorldDirection(horseInfo.direction, MAIN_MAP_INDEX));
+        mountHorse();
         
     }
     
@@ -2154,7 +2142,7 @@ void func_80068DFC(void) {
         case 1:
 
             gPlayer.animationHandler = 1;
-            gPlayer.direction = gPlayer.unk_6E;
+            gPlayer.direction = gPlayer.savedDirection;
 
             setEntityDirection(ENTITY_PLAYER, convertSpriteToWorldDirection(gPlayer.direction, MAIN_MAP_INDEX));
 
@@ -2205,7 +2193,7 @@ void func_80068FB0(void) {
             setEntityCollidable(ENTITY_PLAYER, FALSE);
             setEntityYMovement(ENTITY_PLAYER, FALSE);
             
-            func_80038990(ENTITY_PLAYER, 0, 0);
+            activateMapAddition(MAIN_MAP_INDEX, 0, 0);
             
             gPlayer.direction = NORTHEAST;
             gPlayer.actionTimer = 16;
@@ -2228,7 +2216,7 @@ void func_80068FB0(void) {
                 gPlayer.movementVector.y = 0.0f;
                 gPlayer.movementVector.z = 0.0f;
 
-                func_80038990(ENTITY_PLAYER, 2, 0);
+                activateMapAddition(MAIN_MAP_INDEX, 2, 0);
                              
                 gPlayer.actionPhaseFrameCounter = 0;
                 gPlayer.animationHandler = 0;
@@ -2245,7 +2233,7 @@ void func_80068FB0(void) {
 
             if (gPlayer.actionPhaseFrameCounter == 90) {
                 
-                func_80038990(ENTITY_PLAYER, 0, 0);
+                activateMapAddition(MAIN_MAP_INDEX, 0, 0);
 
                 playSfx(0x32);
                 
@@ -2282,7 +2270,7 @@ void func_80068FB0(void) {
                 setEntityCollidable(ENTITY_PLAYER, TRUE);
                 setEntityYMovement(ENTITY_PLAYER, TRUE);
     
-                func_80038990(ENTITY_PLAYER, 2, 0);
+                activateMapAddition(MAIN_MAP_INDEX, 2, 0);
     
                 resetAction();
     
@@ -2324,7 +2312,7 @@ void func_800692E4(void) {
             setEntityTracksCollisions(ENTITY_PLAYER, FALSE);
             enableEntityMovement(ENTITY_PLAYER, FALSE);
             setEntityYMovement(ENTITY_PLAYER, FALSE);
-            func_80038990(ENTITY_PLAYER, 1, 0);
+            activateMapAddition(MAIN_MAP_INDEX, 1, 0);
             
             gPlayer.direction = NORTHWEST;
             gPlayer.actionTimer = 16;
@@ -2342,7 +2330,7 @@ void func_800692E4(void) {
 
             if (gPlayer.actionTimer == 0) {
                 
-                func_80038990(ENTITY_PLAYER, 3, 0);
+                activateMapAddition(MAIN_MAP_INDEX, 3, 0);
                 
                 gPlayer.direction = NORTHEAST;
                 gPlayer.actionTimer = 20;
@@ -2368,7 +2356,7 @@ void func_800692E4(void) {
                 resetMovement();
                 startAction(0xC, 0xE);
                 
-                gPlayer.flags |= 0x2;
+                gPlayer.flags |= PLAYER_BATH_POSE_1;
             
             } else {
                 gPlayer.actionTimer--;
@@ -2382,7 +2370,7 @@ void func_800692E4(void) {
                 
                 gPlayer.direction = SOUTHEAST;
                 startAction(0xC, 0xE);
-                gPlayer.flags |= 8;
+                gPlayer.flags |= PLAYER_BATH_POSE_3;
 
             } else {
                 gPlayer.actionPhaseFrameCounter++;
@@ -2409,7 +2397,7 @@ void func_800692E4(void) {
 
             if (gPlayer.actionTimer == 0) {
 
-                func_80038990(ENTITY_PLAYER, 1, 0);
+                activateMapAddition(MAIN_MAP_INDEX, 1, 0);
                 playSfx(0x32);
                 gPlayer.direction = SOUTHEAST;
                 gPlayer.actionTimer = 16;
@@ -2439,7 +2427,7 @@ void func_800692E4(void) {
                 enableEntityMovement(ENTITY_PLAYER, TRUE);
                 setEntityYMovement(ENTITY_PLAYER, TRUE);
     
-                func_80038990(ENTITY_PLAYER, 3, 0);
+                activateMapAddition(MAIN_MAP_INDEX, 3, 0);
     
                 resetAction();
     
@@ -2485,7 +2473,7 @@ void func_80069830(void) {
             setEntityTracksCollisions(ENTITY_PLAYER, FALSE);
             enableEntityMovement(ENTITY_PLAYER, FALSE);
             setEntityYMovement(ENTITY_PLAYER, FALSE);
-            func_80038990(ENTITY_PLAYER, 1, 0);
+            activateMapAddition(MAIN_MAP_INDEX, 1, 0);
             
             gPlayer.direction = NORTHEAST;
             gPlayer.actionTimer = 0x12;
@@ -2502,11 +2490,11 @@ void func_80069830(void) {
         case 1:
 
             if (gPlayer.actionTimer == 0) {
-                func_80038990(ENTITY_PLAYER, 0, 0);
+                activateMapAddition(MAIN_MAP_INDEX, 0, 0);
                 gPlayer.direction = EAST;
                 resetMovement();
                 startAction(0xC, 0xE);
-                gPlayer.flags |= 0x10;
+                gPlayer.flags |= PLAYER_HOT_SPRING_POSE_1;
             } else {
                 gPlayer.actionTimer--;
             }
@@ -2518,7 +2506,7 @@ void func_80069830(void) {
             if (gPlayer.actionPhaseFrameCounter == 60) {
                 gPlayer.direction = WEST;
                 startAction(0xC, 0xE);
-                gPlayer.flags |= 0x40;
+                gPlayer.flags |= PLAYER_HOT_SPRING_POSE_3;
             } else {
                 gPlayer.actionPhaseFrameCounter++;
             }
@@ -2529,7 +2517,7 @@ void func_80069830(void) {
 
             if (gPlayer.actionTimer == 0) {
                 
-                func_80038990(ENTITY_PLAYER, 1, 0);
+                activateMapAddition(MAIN_MAP_INDEX, 1, 0);
                 
                 playSfx(0x32);
                 
@@ -2563,7 +2551,7 @@ void func_80069830(void) {
                 setEntityTracksCollisions(ENTITY_PLAYER, TRUE);
                 enableEntityMovement(ENTITY_PLAYER, 1);
                 setEntityYMovement(ENTITY_PLAYER, TRUE);
-                func_80038990(ENTITY_PLAYER, 0, 0);
+                activateMapAddition(MAIN_MAP_INDEX, 0, 0);
 
                 resetAction();
 
@@ -2597,9 +2585,9 @@ void func_80069C5C(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", func_80069C90);
+//INCLUDE_ASM("asm/nonmatchings/game/player", handleWhistleForDogAction);
 
-void func_80069C90(void) {
+void handleWhistleForDogAction(void) {
 
     if (checkEntityShouldPlaySoundEffect(ENTITY_PLAYER)) {
         playSfx(0xA);
@@ -2607,19 +2595,19 @@ void func_80069C90(void) {
 
 }
  
-//INCLUDE_ASM("asm/nonmatchings/game/player", func_80069CC4);
+//INCLUDE_ASM("asm/nonmatchings/game/player", handleWhistleForHorseAction);
 
-void func_80069CC4(void) {
+void handleWhistleForHorseAction(void) {
 
     if (gPlayer.actionPhase == 0) {
 
         if (gPlayer.actionPhaseFrameCounter == 0) {
-            gPlayer.currentStamina += adjustValue(gPlayer.currentStamina, func_800D5B00(gPlayer.heldItem), gMaximumStamina);
-            gPlayer.fatigueCounter += adjustValue(gPlayer.fatigueCounter, -func_800D5B18(gPlayer.heldItem), MAX_FATIGUE_POINTS);
+            gPlayer.currentStamina += adjustValue(gPlayer.currentStamina, getItemStaminaIncreaseValue(gPlayer.heldItem), gMaximumStamina);
+            gPlayer.fatigueCounter += adjustValue(gPlayer.fatigueCounter, -getItemFatigueReductionValue(gPlayer.heldItem), MAX_FATIGUE_POINTS);
         }
         
         if (gPlayer.actionPhaseFrameCounter == 30) {
-            func_800D55E4(gPlayer.itemInfoIndex, 1);
+            setItemState(gPlayer.itemInfoIndex, 1);
             gPlayer.actionPhase++;
         }
         
@@ -2631,9 +2619,9 @@ void func_80069CC4(void) {
 // empty function
 void func_80069DA8(void) {}
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", func_80069DB0);
+//INCLUDE_ASM("asm/nonmatchings/game/player", handlePuttingItemInRucksackAction);
 
-void func_80069DB0(void) {
+void handlePuttingItemInRucksackAction(void) {
 
     if (gPlayer.actionPhase == 2) {
 
@@ -2660,7 +2648,7 @@ void func_80069DB0(void) {
 }
 
 // empty function
-void func_80069E54(void) {}
+void handleCastingFishingRodActionStub(void) {}
 
 // empty function
 void func_80069E5C(void) {}
@@ -2816,7 +2804,7 @@ void handlePlayerAnimation(void) {
             
             if (!gPlayer.heldItem && !checkDailyEventBit(0xD)) {
                 
-                if ((gPlayer.flags & 1)) {
+                if ((gPlayer.flags & PLAYER_RIDING_HORSE)) {
                     setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x204);    
                 } else {
                     if (gPlayer.flags & 4) {
@@ -2835,7 +2823,7 @@ void handlePlayerAnimation(void) {
                 setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 24);
             }
             
-            if (!(gPlayer.flags & 1)) {
+            if (!(gPlayer.flags & PLAYER_RIDING_HORSE)) {
 
                 if (playerIdleCounter == 1200) {
                     startAction(9, 0xB);
@@ -2853,7 +2841,7 @@ void handlePlayerAnimation(void) {
         case 1:
             
             if (!gPlayer.heldItem && !checkDailyEventBit(0xD)) {
-                if (gPlayer.flags & 1) {
+                if (gPlayer.flags & PLAYER_RIDING_HORSE) {
                    setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 524);
                 } else {
                     // walking
@@ -2871,7 +2859,7 @@ void handlePlayerAnimation(void) {
             
             if (!gPlayer.heldItem && !checkDailyEventBit(0xD)) {
 
-                if (gPlayer.flags & 1) { 
+                if (gPlayer.flags & PLAYER_RIDING_HORSE) { 
                     if (checkEntityShouldPlaySoundEffect(ENTITY_PLAYER)) {
                         playSfx(9);
                     }
@@ -3065,7 +3053,7 @@ static inline updateAnimation(u16 animation) {
     
      if (gPlayer.actionPhase == 0) {
         setEntityAnimationWithDirectionChange(ENTITY_PLAYER, animation);
-        func_800D55E4(gPlayer.itemInfoIndex, 0xD);
+        setItemState(gPlayer.itemInfoIndex, 0xD);
     } else {
         handleStopHolding();
     }
@@ -3103,7 +3091,7 @@ void func_8006A8C4(void) {
 
             case 0:
                 setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x1B7);
-                func_800D55E4(gPlayer.itemInfoIndex, 8);
+                setItemState(gPlayer.itemInfoIndex, 8);
                 break;
             case 1:
                 setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x1BF);
@@ -3132,7 +3120,7 @@ void func_8006A9A8(void) {
                 setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 24);
                 break;
             case 1:
-                func_800D55E4(gPlayer.itemInfoIndex, 10);
+                setItemState(gPlayer.itemInfoIndex, 10);
                 gPlayer.actionPhaseFrameCounter = 0;
                 gPlayer.actionPhase++;
                 break;
@@ -3343,25 +3331,25 @@ void func_8006AFE4(void) {
 
         switch (gPlayer.actionPhase) {  
             case 0:
-                if (!func_800DCAA0(gPlayer.shopItemIndex)) {
+                if (!checkCanPickUpShopItem(gPlayer.shopItemIndex)) {
                     setEntityAnimationWithDirectionChange(ENTITY_PLAYER, STANDING);
-                    break;
+                } else {
+                    setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x1AD);
                 }
-                setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x1AD);
                 break;
             case 1:
                 // shop.c
-                func_800DC750(gPlayer.shopItemIndex);
+                intializeShopDialogue(gPlayer.shopItemIndex);
                 gPlayer.actionPhaseFrameCounter = 0;
-                func_80059334();
+                pauseGameplay();
                 break;
             case 2:
-                if (func_800DCAA0(gPlayer.shopItemIndex)) {
+                if (checkCanPickUpShopItem(gPlayer.shopItemIndex)) {
                     setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x1AD);
                 }
                 break;
             case 3:
-                if (func_800DCAA0(gPlayer.shopItemIndex)) {
+                if (checkCanPickUpShopItem(gPlayer.shopItemIndex)) {
                     setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x1AD);
                 }
                 break;
@@ -3383,15 +3371,15 @@ void func_8006B104(void) {
                 
                 if (gPlayer.heldItem != 0) {
                     setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x40);
-                } else if (gPlayer.flags & 1) {
+                } else if (gPlayer.flags & PLAYER_RIDING_HORSE) {
                     setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x224);
-                } else if (gPlayer.flags & 2) {
+                } else if (gPlayer.flags & PLAYER_BATH_POSE_1) {
                     setEntityAnimation(ENTITY_PLAYER, 0x23C);
-                } else if (gPlayer.flags & 8) {
+                } else if (gPlayer.flags & PLAYER_BATH_POSE_3) {
                     setEntityAnimation(ENTITY_PLAYER, 0x241);
-                } else if (gPlayer.flags & 0x10) {
+                } else if (gPlayer.flags & PLAYER_HOT_SPRING_POSE_1) {
                     setEntityAnimation(ENTITY_PLAYER, 0x23D);
-                } else if (gPlayer.flags & 0x40) {
+                } else if (gPlayer.flags & PLAYER_HOT_SPRING_POSE_3) {
                     setEntityAnimation(ENTITY_PLAYER, 0x240);
                 } else {
                     setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x30);
@@ -3403,15 +3391,15 @@ void func_8006B104(void) {
                 
                 if (gPlayer.heldItem != 0) {
                     setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x48);
-                } else if (gPlayer.flags & 1) {
+                } else if (gPlayer.flags & PLAYER_RIDING_HORSE) {
                     setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x22C);
-                } else if (gPlayer.flags & 2) {
+                } else if (gPlayer.flags & PLAYER_BATH_POSE_1) {
                     setEntityAnimation(ENTITY_PLAYER, 0x23E);
-                } else if (gPlayer.flags & 8) {
+                } else if (gPlayer.flags & PLAYER_BATH_POSE_3) {
                     setEntityAnimation(ENTITY_PLAYER, 0x243);
-                } else if (gPlayer.flags & 0x10) {
+                } else if (gPlayer.flags & PLAYER_HOT_SPRING_POSE_1) {
                     setEntityAnimation(ENTITY_PLAYER, 0x23F);
-                } else if (gPlayer.flags & 0x40) {
+                } else if (gPlayer.flags & PLAYER_HOT_SPRING_POSE_3) {
                     setEntityAnimation(ENTITY_PLAYER, 0x242);
                 } else {
                     setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x38);
@@ -3421,14 +3409,14 @@ void func_8006B104(void) {
             
             default:
                 
-                if (gPlayer.flags & 2) {
+                if (gPlayer.flags & PLAYER_BATH_POSE_1) {
                     
                     startAction(0x11, 0);
 
                     gPlayer.direction = SOUTHWEST;
                     
-                    gPlayer.flags &= ~2; 
-                    gPlayer.flags |= 4;
+                    gPlayer.flags &= ~PLAYER_BATH_POSE_1; 
+                    gPlayer.flags |= PLAYER_BATH_POSE_2;
                     
                     gPlayer.movementVector.x = 0.0f;
                     gPlayer.movementVector.y = 0.0f;
@@ -3438,25 +3426,25 @@ void func_8006B104(void) {
                     setEntityDirection(ENTITY_PLAYER, convertSpriteToWorldDirection(gPlayer.direction, MAIN_MAP_INDEX));
                     playSfx(0x28);
                       
-                } else if (gPlayer.flags & 8) {
+                } else if (gPlayer.flags & PLAYER_BATH_POSE_3) {
                     
                     startAction(0x11, 0);
                     
-                    gPlayer.flags &= ~(4 | 8);
+                    gPlayer.flags &= ~(PLAYER_BATH_POSE_2 | PLAYER_BATH_POSE_3);
                                         
                     gPlayer.movementVector.x = 0.0f;
                     gPlayer.movementVector.y = 0.0f;
                     gPlayer.movementVector.z = 0.0f;
                     gPlayer.actionPhase = 4;
                     
-                } else if (gPlayer.flags & 0x10) {
+                } else if (gPlayer.flags & PLAYER_HOT_SPRING_POSE_1) {
                     
                     startAction(0x1D, 0);
 
                     gPlayer.direction = SOUTHWEST;
                     
-                    gPlayer.flags &= ~(0x10);
-                    gPlayer.flags |= 0x20;
+                    gPlayer.flags &= ~PLAYER_HOT_SPRING_POSE_1;
+                    gPlayer.flags |= PLAYER_HOT_SPRING_POSE_2;
                     
                     gPlayer.movementVector.x = 0.0f;
                     gPlayer.movementVector.y = 0.0f;
@@ -3466,11 +3454,11 @@ void func_8006B104(void) {
                     setEntityDirection(ENTITY_PLAYER, convertSpriteToWorldDirection(gPlayer.direction, MAIN_MAP_INDEX));
                     playSfx(0x28);
                                         
-                } else if (gPlayer.flags & 0x40) {
+                } else if (gPlayer.flags & PLAYER_HOT_SPRING_POSE_3) {
                 
                     startAction(0x1D, 0);
                     
-                    gPlayer.flags &= ~(0x20 | 0x40); 
+                    gPlayer.flags &= ~(PLAYER_HOT_SPRING_POSE_2 | PLAYER_HOT_SPRING_POSE_3); 
     
                     gPlayer.movementVector.x = 0.0f;
                     gPlayer.movementVector.y = 0.0f;
@@ -3507,7 +3495,7 @@ void func_8006B4DC(void) {
             
             gPlayer.actionPhase = 1;
             gPlayer.heldItem = 0xCA;
-            gPlayer.itemInfoIndex = func_800D5308(0, 0x10, 0xCA, 0, 8);
+            gPlayer.itemInfoIndex = initializeHeldItem(0, 0x10, 0xCA, 0, ITEM_CONTEXT_USE_ATTACHMENT);
             
         } else {
             
@@ -3526,7 +3514,7 @@ void func_8006B584(void) {
         if (gPlayer.actionPhase == 0) {
             
             setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x1B7);
-            func_800D55E4(gPlayer.itemInfoIndex, 0x11);
+            setItemState(gPlayer.itemInfoIndex, 0x11);
             
         } else {
             
@@ -3546,7 +3534,7 @@ void func_8006B61C(void) {
         if (gPlayer.actionPhase == 0) {
             
             setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x1A5);
-            func_800D55E4(gPlayer.itemInfoIndex, 0xD);
+            setItemState(gPlayer.itemInfoIndex, 0xD);
             
         } else {
 
@@ -3591,7 +3579,7 @@ void func_8006B77C(void) {
             
             case 1:
                 setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x26A);
-                func_800D55E4(gPlayer.itemInfoIndex, 1);
+                setItemState(gPlayer.itemInfoIndex, 1);
                 gPlayer.actionPhase++;
                 break;
             
@@ -3685,6 +3673,7 @@ void func_8006BA14(void) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/player", func_8006BAAC);
 
+// handle drinking
 void func_8006BAAC(void) {
 
     if ((checkEntityAnimationStateChanged(ENTITY_PLAYER)) || (gPlayer.actionPhase == 0)) {
@@ -3726,7 +3715,7 @@ void func_8006BBC4(void) {
         if (gPlayer.actionPhase == 0) {
             
             setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x26A);
-            func_800D55E4(gPlayer.itemInfoIndex, 1);
+            setItemState(gPlayer.itemInfoIndex, 1);
             gPlayer.heldItem = 0;
             gPlayer.actionPhase++;
             playSfx(PICKING_UP_SFX);
@@ -3761,10 +3750,10 @@ void handleFishingRodUse(void) {
             
             case 1:
                 
-                if (func_800AD0C4(gBaseMapIndex)) {
+                if (checkFishingSpotInteraction(gBaseMapIndex)) {
                 
                     vec = getOffsetTileCoordinates (2.0f, 8);
-                    vec = func_8003AF58(0, vec.x, vec.z);
+                    vec = getGroundObjectWorldPosition(0, vec.x, vec.z);
 
                     switch (gPlayer.fishingSpotType) {
                         case 0:
@@ -3778,11 +3767,11 @@ void handleFishingRodUse(void) {
                             break;
                         case 3:
                             vec.y = 128.0f;
-                            break;
-                    }
+                            break; 
+                    } 
 
-                    func_800CFB38(0, 0x9D, vec.x, vec.y, vec.z);
-                    playSfx(0x28);
+                    spawnFishingRodEntity(0, 0x9D, vec.x, vec.y, vec.z);
+                    playSfx(FISHING_ROD_CAST);
                     setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x17A);
                     gPlayer.actionPhase = 2;
                 
@@ -3793,7 +3782,7 @@ void handleFishingRodUse(void) {
                 break;
             
             case 3:
-                func_800CFD78(0, 0x9E);
+                setItemEntityAnimation(0, 0x9E);
                 setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x18A);
                 gPlayer.actionPhase = 4;
                 break;
@@ -3860,7 +3849,7 @@ void handleFishingRodUse(void) {
             
             case 6:
             case 8:
-                func_800CFDA0(0);
+                deactivateItemEntity(0);
                 setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x192);
                 gPlayer.actionPhase++;
                 break;
@@ -3922,7 +3911,7 @@ void func_8006C1DC(void) {
                 gPlayer.actionPhase = 1;
                 temp = buffer[upgradedToolIndex][upgradedToolLevelIndex - 3];
                 gPlayer.heldItem = temp;
-                gPlayer.itemInfoIndex = func_800D5308(0, 0x15, temp, 0, 8);
+                gPlayer.itemInfoIndex = initializeHeldItem(0, 0x15, temp, 0, ITEM_CONTEXT_USE_ATTACHMENT);
                 break;
             
             case 1:
@@ -3933,11 +3922,11 @@ void func_8006C1DC(void) {
                 gPlayer.actionPhase = 3;
                 playSfx(0x5A);
                 setMainLoopCallbackFunctionIndex(END_CUTSCENE);
-                func_80059334();
+                pauseGameplay();
                 break;
 
             default:
-                func_800D55E4(gPlayer.itemInfoIndex, 1);
+                setItemState(gPlayer.itemInfoIndex, 1);
                 gPlayer.heldItem = 0;
                 resetAction();
                 break;
@@ -4127,7 +4116,7 @@ void func_8006C628(u16 arg0, u16 arg1) {
         
         case 1:                                         
             setEntityAnimationWithDirectionChange(ENTITY_PLAYER, arg1);
-            func_800CF850();
+            resetToolUseState();
             break;
 
 
@@ -4489,7 +4478,7 @@ void func_8006CF54(void) {
         
         case 0:
 
-            if (func_800ACFE8(gBaseMapIndex)) {
+            if (checkWaterableSoilInteraction(gBaseMapIndex)) {
 
                 unknownInlineFunc();
                 
@@ -4532,7 +4521,7 @@ void func_8006D0AC(void) {
         
         case 2:
             // reset tool use struct
-            func_800CF850();
+            resetToolUseState();
             gPlayer.actionPhase++;
             break;
         
@@ -4551,7 +4540,7 @@ void func_8006D0AC(void) {
                     if (!(func_80067A24(0))) {
                         startAction(4, 6);
                     } else {
-                        gPlayer.itemInfoIndex = func_800D5308(0, 6, gPlayer.heldItem, 0, 8);
+                        gPlayer.itemInfoIndex = initializeHeldItem(0, 6, gPlayer.heldItem, 0, ITEM_CONTEXT_USE_ATTACHMENT);
                     }
                     
                 }
@@ -4579,7 +4568,7 @@ void func_8006D21C(void) {
             break;
         
         case 2:
-            func_800CF850();
+            resetToolUseState();
             gPlayer.actionPhase++;
             break;
         
@@ -4612,7 +4601,7 @@ void func_8006D304(void) {
             break;
         
         case 2:
-            func_800CF850();
+            resetToolUseState();
             gPlayer.actionPhase++;
             break;
         
@@ -4644,7 +4633,7 @@ void func_8006D3FC(void) {
             break;
     
         case 2:
-            func_800CF850();
+            resetToolUseState();
             gPlayer.actionPhase++;
             break;
         
@@ -4663,7 +4652,7 @@ void func_8006D3FC(void) {
                     if (!(func_80067A24(0))) {
                         startAction(PICKING_UP, PICKING_UP + 2);
                     } else {
-                        gPlayer.itemInfoIndex = func_800D5308(0, 6, gPlayer.heldItem, 0, 8);
+                        gPlayer.itemInfoIndex = initializeHeldItem(0, 6, gPlayer.heldItem, 0, ITEM_CONTEXT_USE_ATTACHMENT);
                     }
                     
                     
@@ -4692,7 +4681,7 @@ void func_8006D56C(void) {
             break;
         
         case 2:
-            func_800CF850();
+            resetToolUseState();
             gPlayer.actionPhase++;
             break;
         
@@ -4733,7 +4722,7 @@ void func_8006D690(void) {
             break;
         
         case 2:
-            func_800CF850();
+            resetToolUseState();
             gPlayer.actionPhase++;
             break;
         
@@ -4774,7 +4763,7 @@ void func_8006D7B4(void) {
             break;
         
         case 2:
-            func_800CF850();
+            resetToolUseState();
             gPlayer.actionPhase++;
             break;
         
@@ -4815,7 +4804,7 @@ void func_8006D8D8(void) {
             break;
         
         case 2:
-            func_800CF850();
+            resetToolUseState();
             gPlayer.actionPhase++;
             break;
         
@@ -4856,7 +4845,7 @@ void func_8006D9FC(void) {
             break;
         
         case 2:
-            func_800CF850();
+            resetToolUseState();
             gPlayer.actionPhase++;
             break;
         
@@ -4897,7 +4886,7 @@ void func_8006DB20(void) {
             break;
         
         case 2:
-            func_800CF850();
+            resetToolUseState();
             gPlayer.actionPhase++;
             break;
         
@@ -4938,7 +4927,7 @@ void func_8006DC44(void) {
             break;
         
         case 2:
-            func_800CF850();
+            resetToolUseState();
             gPlayer.actionPhase++;
             break;
         
@@ -4979,7 +4968,7 @@ void func_8006DD68(void) {
             break;
         
         case 2:
-            func_800CF850();
+            resetToolUseState();
             gPlayer.actionPhase++;
             break;
         
@@ -5020,7 +5009,7 @@ void func_8006DE8C(void) {
             break;
         
         case 2:
-            func_800CF850();
+            resetToolUseState();
             gPlayer.actionPhase++;
             break;
 
@@ -5058,7 +5047,7 @@ void func_8006DFB0(void) {
             setEntityAnimation(ENTITY_PLAYER, 0x148);
             break;
         case 2:
-            func_800CF850();
+            resetToolUseState();
             gPlayer.actionPhase++;
             break;
         case 3:            
@@ -5095,7 +5084,7 @@ void func_8006E0D4(void) {
             break;
 
         case 2:
-            func_800CF850();
+            resetToolUseState();
             gPlayer.actionPhase++;
             break;
 
@@ -5151,7 +5140,7 @@ void func_8006E240(void) {
             setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x234);
             break;
         case 2:
-            func_800CF850();
+            resetToolUseState();
             gPlayer.actionPhase++;
             break;
         case 3:
@@ -5186,7 +5175,7 @@ void func_8006E348(void) {
             break;
         
         case 2:
-            func_800CF850();
+            resetToolUseState();
             gPlayer.actionPhase++;
             break;
 
@@ -5225,7 +5214,7 @@ void func_8006E450(void) {
             break;
         
         case 2:
-            func_800CF850();
+            resetToolUseState();
             gPlayer.actionPhase++;
             break;
 
@@ -5266,7 +5255,7 @@ void func_8006E574(void) {
             setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x234);
             break;
         case 2:
-            func_800CF850();
+            resetToolUseState();
             gPlayer.actionPhase++;
             break;
         case 3:
@@ -5339,7 +5328,7 @@ void func_8006E678(void) {
             break;
 
         case 2:
-            func_800CF850();
+            resetToolUseState();
             gPlayer.actionPhase++;
             break;
 

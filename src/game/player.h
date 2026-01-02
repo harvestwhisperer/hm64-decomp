@@ -26,6 +26,14 @@
 #define PUTTING_ITEM_IN_RUCKSACK 21
 #define CASTING_FISHING_ROD 22
 
+#define PLAYER_RIDING_HORSE 0x1
+#define PLAYER_BATH_POSE_1 0x2
+#define PLAYER_BATH_POSE_2 0x4
+#define PLAYER_BATH_POSE_3 0x8
+#define PLAYER_HOT_SPRING_POSE_1 0x10
+#define PLAYER_HOT_SPRING_POSE_2 0x20
+#define PLAYER_HOT_SPRING_POSE_3 0x40
+
 // 0x80189060
 typedef struct {
 	u8 currentStamina; // 0
@@ -53,7 +61,7 @@ typedef struct {
 	u8 shopItemIndex; // 0x6B 
 	u8 heldAnimalIndex; // 0x6C
 	u8 direction; // 0x6D
-	u8 unk_6E; // 0x6E
+	u8 savedDirection; // 0x6E
 	u8 actionTimer; // 0x6F
 	u8 groundObjectIndex;
     u8 fatigueCounter;
@@ -67,10 +75,10 @@ typedef struct {
 extern void setupPlayerEntity(u16 arg0, u8 resetPlayer);
 
 extern void func_80065AA0();
-extern u8 func_80065BCC(u8 tool);
-extern void func_80065F5C();   
+extern u8 storeTool(u8 tool);
+extern void syncPlayerCoordinatesFromEntity();   
 extern Vec3f getOffsetTileCoordinates(f32 arg1, u8 arg2);
-extern void func_8006623C();  
+extern void updatePlayerAction();  
 extern void handlePlayerAnimation();   
 
 extern void setPlayerAction(u16, u16);

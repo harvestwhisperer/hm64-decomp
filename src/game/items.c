@@ -64,12 +64,12 @@ u8 upgradedToolLevelIndex;
 
 // data
 // offsets for tool sweeping effects (sickle and watering can)
-u8 D_80117180[] = { 8, 0, 7, 6, 5, 4, 3, 2, 1, 0, 0, 0 };
-u8 D_8011718C[] = { 8, 0, 1, 2, 3, 4, 5, 6, 7, 0, 0, 0 }; 
+u8 toolSweepOffsetsLeft[] = { 8, 0, 7, 6, 5, 4, 3, 2, 1, 0, 0, 0 };
+u8 toolSweepOffsetsRight[] = { 8, 0, 1, 2, 3, 4, 5, 6, 7, 0, 0, 0 }; 
 
 u8 unused[] = { 0, 0, 0, 0, 0, 0, 0, 0 };
 
-u16 D_801171A0[96][4] = {
+u16 itemSpriteAnimations[96][4] = {
     { 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF },
     { 0x0000, 0x003D, 0x003E, 0x003E },
     { 0x0001, 0x0001, 0x0001, 0x0042 },
@@ -171,7 +171,7 @@ u16 D_801171A0[96][4] = {
 // entity metadata struct
 //   entity asset index
 //   animation index per season
-u16 D_801174A0[224][5] = {
+u16 itemEntityMetadata[224][5] = {
     { 0x005D, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF },
     { 0x005D, 0x0000, 0x008B, 0x008C, 0x008C },
     { 0x005D, 0x0001, 0x0001, 0x0001, 0x0001 },
@@ -398,8 +398,8 @@ u16 D_801174A0[224][5] = {
     { 0x0000, 0x0000, 0x0000, 0x0000, 0x0000 },
 };
 
-// entity palette index
-u16 D_80117D60[] = {
+// entity palette index overrides (0xFFFF = use default)
+u16 itemPaletteOverrides[] = {
     0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 
     0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 
     0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 
@@ -430,8 +430,7 @@ u16 D_80117D60[] = {
     0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0x0000, 0x0000, 0x0000
 };
 
-// player fatigue
-u8 D_80117F20[] = {
+u8 heldItemIndices[] = {
     0x00, 0x30, 0x2F, 0x2A, 0x0D, 0x0E, 0x00, 0x0F, 0x10, 0x11, 0x32, 0x00, 0x00, 0x01, 0x02, 0x03, 
     0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 
     0x31, 0x00, 0x19, 0x1B, 0x1C, 0x1D, 0x1E, 0x1F, 0x1A, 0x20, 0x21, 0x00, 0x23, 0x22, 0x2B, 0x2D, 
@@ -448,8 +447,7 @@ u8 D_80117F20[] = {
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 };
 
-// dialogue indices
-u16 D_80118000[] = {
+u16 itemTextIndices[] = {
     0x0000, 0x013B, 0x013A, 0x0135, 0x011D, 0x011E, 0x0000, 0x011F, 
     0x0120, 0x0121, 0x013D, 0x0000, 0x0000, 0x0111, 0x0112, 0x0113, 
     0x0114, 0x0115, 0x0116, 0x0117, 0x0118, 0x0119, 0x011A, 0x011B, 
@@ -480,8 +478,7 @@ u16 D_80118000[] = {
     0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 
 };
 
-// shipping bin value
-u16 D_801181C0[] = {
+u16 itemShippingValues[] = {
     0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 
     0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x003C, 0x0050, 0x005A, 
     0x005A, 0x0078, 0x003C, 0x0096, 0x0032, 0x0064, 0x0096, 0x012C, 
@@ -543,8 +540,8 @@ u16 itemFlags[] = {
     0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000,
 };
 
-// player stamina increase
-u8 D_80118540[] = {
+// stamina restored when eating items
+u8 itemStaminaRestorationValue[] = {
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x14, 0x14, 0x14, 0x00, 0x00, 
     0x00, 0x08, 0x0A, 0x08, 0x08, 0x0A, 0x08, 0x0C, 0x08, 0x08, 0x0C, 0x10, 
     0x14, 0x00, 0x00, 0x06, 0x06, 0x06, 0x06, 0x06, 0x00, 0x00, 0x14, 0x00, 
@@ -566,8 +563,8 @@ u8 D_80118540[] = {
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 };
 
-// player fatigue counter decrease
-u8 D_80118620[] = {
+// fatigue reduced when consuming items
+u8 itemFatigueReductionValue[] = {
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
     0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
@@ -597,50 +594,50 @@ static const u8 D_80122374[];
 
 
 // forward declarations
-bool func_800CFDC4(u8 arg0, s16 arg1, s16 arg2);
-bool func_800CFF1C(u8 arg0, s16 arg1, s16 arg2);          
+bool processStumpHit(u8 arg0, s16 arg1, s16 arg2);
+bool processBoulderHit(u8 arg0, s16 arg1, s16 arg2);          
 void handleBlueFeatherUse();         
-void func_800D0360();                                  
-void func_800D093C();                                  
-void func_800D0DD4();                                  
-void func_800D1DB0();                                  
-void func_800D304C();                                  
-void func_800D3694();                                  
-void func_800D36BC();                                  
-void func_800D36E4();                                  
-void func_800D3714();                                                                   
-void func_800D373C(void);  
-void func_800D3958();                                  
-void func_800D3B74();                                  
-void func_800D3D90();                                  
-void func_800D3FAC();                                  
-void func_800D41C8();                                  
-void func_800D43E4();                                  
-void func_800D45F4();                                  
-void func_800D4814();                                  
-void func_800D4A34();                                  
-void func_800D4C28();                                  
-void func_800D4CA8();                                  
-void func_800D4CB0();                        
-void func_800D4CB8();                                  
-void func_800D4CC0();                                
-void func_800D4CD0();                                  
-void func_800D4D1C();                                  
-void func_800D4D68();                                  
-void func_800D5130();
+void useSickle();
+void useHoe();
+void useAx();
+void useHammer();
+void useWateringCan();
+void useMilker();
+void useCowBell();
+void useBrush();
+void useClippers();
+void useTurnipSeeds(void);
+void usePotatoSeeds();
+void useCabbageSeeds();
+void useTomatoSeeds();
+void useCornSeeds();
+void useEggplantSeeds();
+void useStrawberrySeeds();
+void useMoonDropSeeds();
+void usePinkCatMintSeeds();
+void useBlueMistSeeds();
+void useChickenFeed();
+void useBall();
+void useFeedingBottle();
+void useUnknownTool();
+void useFishingPole();
+void useMiraclePotion();
+void useCowMedicine();
+void useGrassSeeds();
+void useEmptyBottle();
 u8 func_800D5488(u8 index, u8 arg1, u32 arg2, u16 arg3, u8 arg4);
-void func_800D5628(u8 index, f32 arg1, f32 arg2, f32 arg3);
-void func_800D56E8(u8, u16);   
-bool func_800D5CC0(u8 itemIndex);
-void func_800D6868(u8 index);
+void setItemPosition(u8 index, f32 arg1, f32 arg2, f32 arg3);
+void loadHeldItemEntity(u8, u16);   
+bool handlePutDownHeldItem(u8 itemIndex);
+void processItemShipping(u8 index);
 void func_800D6B58(u8 arg0, u8 index);
-u8 func_800D67E4(u8);
+u8 getHeldItemIndex(u8);
 u16 getItemFlags(u16 index);
 
 
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800CF850);
+//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", resetToolUseState);
 
-void func_800CF850(void) {
+void resetToolUseState(void) {
     toolUse.unk_0 = 0;
     toolUse.stepIndex = 0;
     toolUse.toolUseState = 2;
@@ -667,12 +664,12 @@ u8 getToolLevel(u8 tool) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800CF8F8);
+//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", spawnToolEffectEntity);
 
-void func_800CF8F8(u8 itemOffset, u8 animationIndex, f32 x, f32 y, f32 z) {
+void spawnToolEffectEntity(u8 itemOffset, u8 animationIndex, f32 x, f32 y, f32 z) {
 
     loadEntity(ENTITY_ITEM_BASE_INDEX + itemOffset, 0x60, 1);
-    func_8002FF38(ENTITY_ITEM_BASE_INDEX + itemOffset, FALSE);
+    setCameraTrackingEntity(ENTITY_ITEM_BASE_INDEX + itemOffset, FALSE);
     setEntityTrackingTarget(ENTITY_ITEM_BASE_INDEX + itemOffset, 0xFFFF, 0xFF);
     setEntityCollidable(ENTITY_ITEM_BASE_INDEX + itemOffset, FALSE);
     setEntityYMovement(ENTITY_ITEM_BASE_INDEX + itemOffset, FALSE);
@@ -682,13 +679,13 @@ void func_800CF8F8(u8 itemOffset, u8 animationIndex, f32 x, f32 y, f32 z) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800CFB38);
+//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", spawnFishingRodEntity);
 
 // only used with fishing rod
-void func_800CFB38(u8 itemOffset, u8 animationIndex, f32 x, f32 y, f32 z) {
+void spawnFishingRodEntity(u8 itemOffset, u8 animationIndex, f32 x, f32 y, f32 z) {
 
     loadEntity(ENTITY_ITEM_BASE_INDEX + itemOffset, 0x5D, 1);
-    func_8002FF38(ENTITY_ITEM_BASE_INDEX + itemOffset, FALSE);
+    setCameraTrackingEntity(ENTITY_ITEM_BASE_INDEX + itemOffset, FALSE);
     setEntityTrackingTarget(ENTITY_ITEM_BASE_INDEX + itemOffset, 0xFFFF, 0xFF);
     setEntityCollidable(ENTITY_ITEM_BASE_INDEX + itemOffset, FALSE);
     setEntityYMovement(ENTITY_ITEM_BASE_INDEX + itemOffset, FALSE);
@@ -698,21 +695,21 @@ void func_800CFB38(u8 itemOffset, u8 animationIndex, f32 x, f32 y, f32 z) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800CFD78);
+//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", setItemEntityAnimation);
 
-void func_800CFD78(u8 itemOffset, u8 animationIndex) {
+void setItemEntityAnimation(u8 itemOffset, u8 animationIndex) {
     setEntityAnimation(ENTITY_ITEM_BASE_INDEX + itemOffset, animationIndex);
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800CFDA0);
+//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", deactivateItemEntity);
 
-void func_800CFDA0(u8 offset) {
+void deactivateItemEntity(u8 offset) {
     deactivateEntity(ENTITY_ITEM_BASE_INDEX + offset);
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800CFDC4);
+//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", processStumpHit);
 
-bool func_800CFDC4(u8 groundObjectIndex, s16 x, s16 z) {
+bool processStumpHit(u8 groundObjectIndex, s16 x, s16 z) {
 
     bool result = FALSE;
 
@@ -774,9 +771,9 @@ bool func_800CFDC4(u8 groundObjectIndex, s16 x, s16 z) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800CFF1C);
+//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", processBoulderHit);
 
-bool func_800CFF1C(u8 groundObjectIndex, s16 x, s16 z) {
+bool processBoulderHit(u8 groundObjectIndex, s16 x, s16 z) {
     
     bool result = FALSE;
 
@@ -863,106 +860,106 @@ inline u8 func_800D0074(s16 arg0, s16 arg1) {
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", handleToolUse);
 
 void handleToolUse(void) {
-    
+
     switch (gPlayer.currentTool) {
         case 0:
             return;
         case SICKLE:
-            func_800D0360();
+            useSickle();
             break;
         case HOE:
-            func_800D093C();
+            useHoe();
             break;
         case AX:
-            func_800D0DD4();
+            useAx();
             break;
         case HAMMER:
-            func_800D1DB0();
+            useHammer();
             break;
         case WATERING_CAN:
-            func_800D304C();
+            useWateringCan();
             break;
         case MILKER:
-            func_800D3694();
+            useMilker();
             break;
         case BELL:
-            func_800D36BC();
+            useCowBell();
             break;
         case BRUSH:
-            func_800D36E4();
+            useBrush();
             break;
         case CLIPPERS:
-            func_800D3714();
+            useClippers();
             break;
         case TURNIP_SEEDS:
-            func_800D373C();
+            useTurnipSeeds();
             break;
         case POTATO_SEEDS:
-            func_800D3958();
+            usePotatoSeeds();
             break;
         case CABBAGE_SEEDS:
-            func_800D3B74();
+            useCabbageSeeds();
             break;
         case TOMATO_SEEDS:
-            func_800D3D90();
+            useTomatoSeeds();
             break;
         case CORN_SEEDS:
-            func_800D3FAC();
+            useCornSeeds();
             break;
         case EGGPLANT_SEEDS:
-            func_800D41C8();
+            useEggplantSeeds();
             break;
         case STRAWBERRY_SEEDS:
-            func_800D43E4();
+            useStrawberrySeeds();
             break;
         case MOON_DROP_SEEDS:
-            func_800D45F4();
+            useMoonDropSeeds();
             break;
         case PINK_CAT_MINT_SEEDS:
-            func_800D4814();
+            usePinkCatMintSeeds();
             break;
         case BLUE_MIST_SEEDS:
-            func_800D4A34();
+            useBlueMistSeeds();
             break;
         case CHICKEN_FEED:
-            func_800D4C28();
+            useChickenFeed();
             break;
         case BALL:
-            func_800D4CA8();
+            useBall();
             break;
         case FEEDING_BOTTLE:
-            func_800D4CB0();
+            useFeedingBottle();
             break;
         case 23:
-            func_800D4CB8();
+            useUnknownTool();
             break;
         case FISHING_POLE:
-            func_800D4CC0();
+            useFishingPole();
             break;
         case MIRACLE_POTION:
-            func_800D4CD0();
+            useMiraclePotion();
             break;
         case COW_MEDICINE:
-            func_800D4D1C();
+            useCowMedicine();
             break;
         case GRASS_SEEDS:
-            func_800D4D68();
+            useGrassSeeds();
             break;
         case BLUE_FEATHER:
             handleBlueFeatherUse();
             break;
         case EMPTY_BOTTLE:
-            func_800D5130();
+            useEmptyBottle();
             break;
         default:
             return;
     }
-    
+
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D0318);
+//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", processToolUseState);
 
-void func_800D0318(void) {
+void processToolUseState(void) {
 
     if (toolUse.toolUseState) {
 
@@ -982,7 +979,7 @@ void func_800D0318(void) {
 }
 
 // alternate for reference
-// void func_800D0318(void) {
+// void processToolUseState(void) {
 
 //     int temp = toolUse.toolUseState; 
 
@@ -1000,7 +997,7 @@ void func_800D0318(void) {
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D0360);
 
 // sickle
-void func_800D0360(void) {
+void useSickle(void) {
 
     Vec3f vec;
     
@@ -1108,8 +1105,8 @@ void func_800D0360(void) {
            
         temp3 = func_800D5488(1, 12, temp4, 0, 8);
 
-        vec = func_8003AF58(0, (u8)vec.x, (u8)vec.z);
-        func_800D5628(temp3, vec.x, vec.y, vec.z);
+        vec = getGroundObjectWorldPosition(0, (u8)vec.x, (u8)vec.z);
+        setItemPosition(temp3, vec.x, vec.y, vec.z);
 
     }
 
@@ -1167,8 +1164,7 @@ void func_800D0360(void) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D093C);
 
-// hoe
-void func_800D093C(void) {
+void useHoe(void) {
 
     Vec3f vec;
     f32 tempF;
@@ -1201,9 +1197,9 @@ void func_800D093C(void) {
 
             addGroundObjectToMap(gBaseMapIndex, TILLED, (u8)vec.x - groundObjectsGridX, (u8)vec.z - groundObjectsGridZ);
             
-            vec = func_8003AF58(0, (u8)vec.x, (u8)vec.z);
+            vec = getGroundObjectWorldPosition(0, (u8)vec.x, (u8)vec.z);
             
-            func_800CF8F8(toolUse.stepIndex, 0, vec.x, vec.y, vec.z);
+            spawnToolEffectEntity(toolUse.stepIndex, 0, vec.x, vec.y, vec.z);
 
             if (toolUse.stepIndex == 0) {
 
@@ -1291,8 +1287,7 @@ void func_800D093C(void) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D0DD4);
 
-// ax
-void func_800D0DD4(void) {
+void useAx(void) {
     
     Vec3f vec;
     Vec3f vec2;
@@ -1306,7 +1301,7 @@ void func_800D0DD4(void) {
 
         if (getGroundObjectToolInteractionFlags(groundObjectIndex) & GROUND_OBJECT_CHOPPABLE) {
 
-            if (func_800CFDC4(groundObjectIndex, (s16)vec.x / 32, (s16)vec.z / 32)) {
+            if (processStumpHit(groundObjectIndex, (s16)vec.x / 32, (s16)vec.z / 32)) {
 
                 vec2.y = 0.0f;
 
@@ -1361,11 +1356,11 @@ void func_800D0DD4(void) {
 
                 groundObjectIndex = func_800D5488(1, 0xC, 0x3D, 0, 8);
 
-                vec = func_8003AF58(MAIN_MAP_INDEX, (u8)vec.x, (u8)vec.z);
+                vec = getGroundObjectWorldPosition(MAIN_MAP_INDEX, (u8)vec.x, (u8)vec.z);
                 vec.x += vec2.x;
                 vec.z += vec2.z;
                 
-                func_800D5628(groundObjectIndex, vec.x, vec.y, vec.z);
+                setItemPosition(groundObjectIndex, vec.x, vec.y, vec.z);
                 gLumber += adjustValue(gLumber, 6, MAX_LUMBER);
                 
             }
@@ -1424,8 +1419,7 @@ void func_800D0DD4(void) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D1DB0);
 
-// hammer
-void func_800D1DB0(void) {
+void useHammer(void) {
 
     Vec3f vec;
     Vec3f vec2;
@@ -1437,7 +1431,7 @@ void func_800D1DB0(void) {
     
     if (vec.y != 65535.0f) {
         
-        groundObjectIndex = getGroundObjectIndexFromPlayerPosition(1.0f, 8U);
+        groundObjectIndex = getGroundObjectIndexFromPlayerPosition(1.0f, 8);
     
         if (getGroundObjectToolInteractionFlags(groundObjectIndex) & GROUND_OBJECT_HAMMERABLE) {
 
@@ -1456,11 +1450,11 @@ void func_800D1DB0(void) {
                     
                     groundObjectIndex = func_800D5488(1, 12, 2, 0, 8);
                     
-                    vec = func_8003AF58(MAIN_MAP_INDEX, (u8)vec.x, (u8)vec.z);
+                    vec = getGroundObjectWorldPosition(MAIN_MAP_INDEX, (u8)vec.x, (u8)vec.z);
                     vec.x += vec2.x;
                     vec.z += vec2.z;
                 
-                    func_800D5628(groundObjectIndex, vec.x, vec.y, vec.z);
+                    setItemPosition(groundObjectIndex, vec.x, vec.y, vec.z);
                     break;
 
                 case TILLED:
@@ -1471,7 +1465,7 @@ void func_800D1DB0(void) {
                 
                 case BOULDER ... 0xC7:
                     
-                    if (func_800CFF1C(groundObjectIndex, (s16)vec.x / 32, (s16)vec.z / 32)) {
+                    if (processBoulderHit(groundObjectIndex, (s16)vec.x / 32, (s16)vec.z / 32)) {
 
                         switch (groundObjectIndex) {
 
@@ -1531,11 +1525,11 @@ void func_800D1DB0(void) {
 
                         groundObjectIndex = func_800D5488(1, 12, temp, 0, 8);
 
-                        vec = func_8003AF58(MAIN_MAP_INDEX, (u8)vec.x, (u8)vec.z);
+                        vec = getGroundObjectWorldPosition(MAIN_MAP_INDEX, (u8)vec.x, (u8)vec.z);
                         vec.x += vec2.x;
                         vec.z += vec2.z;
                     
-                        func_800D5628(groundObjectIndex, vec.x, vec.y, vec.z);
+                        setItemPosition(groundObjectIndex, vec.x, vec.y, vec.z);
                         break;
                     
                     }
@@ -1602,8 +1596,7 @@ void func_800D1DB0(void) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D304C);
 
-// watering can
-void func_800D304C(void) {
+void useWateringCan(void) {
     
     Vec3f vec;
     
@@ -1689,8 +1682,8 @@ void func_800D304C(void) {
             
             addGroundObjectToMap(gBaseMapIndex, temp2, (u8)vec.x - groundObjectsGridX, (u8)vec.z - groundObjectsGridZ);
 
-            vec = func_8003AF58(0, (u8)vec.x, (u8)vec.z);
-            func_800CF8F8(toolUse.stepIndex, 1, vec.x, vec.y, vec.z);
+            vec = getGroundObjectWorldPosition(0, (u8)vec.x, (u8)vec.z);
+            spawnToolEffectEntity(toolUse.stepIndex, 1, vec.x, vec.y, vec.z);
 
             if (gBaseMapIndex == POND) {
                 blueMistFlowerPlot = temp2;
@@ -1698,10 +1691,10 @@ void func_800D304C(void) {
             
         } else {
 
-            vec = func_8003AF58(0, (u8)vec.x, (u8)vec.z);
+            vec = getGroundObjectWorldPosition(0, (u8)vec.x, (u8)vec.z);
             vec.y = entities[ENTITY_PLAYER].coordinates.y;
 
-            func_800CF8F8(toolUse.stepIndex, 1, vec.x, vec.y, vec.z);
+            spawnToolEffectEntity(toolUse.stepIndex, 1, vec.x, vec.y, vec.z);
             
         } 
 
@@ -1757,24 +1750,21 @@ void func_800D304C(void) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D3694);
 
-// milker
-void func_800D3694(void) {
+void useMilker(void) {
     func_8009A53C();
     toolUse.toolUseState = 0;
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D36BC);
 
-// cow bell
-void func_800D36BC(void) {
+void useCowBell(void) {
     func_8009B25C();
     toolUse.toolUseState = 0;
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D36E4);
 
-// brush
-void func_800D36E4(void) {
+void useBrush(void) {
     func_8009A17C();
     func_8009A2D0();
     toolUse.toolUseState = 0;
@@ -1782,16 +1772,14 @@ void func_800D36E4(void) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D3714);
 
-// clippers
-void func_800D3714(void) {
+void useClippers(void) {
     func_8009AAC8();
     toolUse.toolUseState = 0;
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D373C);
 
-// turnip seeds
-void func_800D373C(void) {
+void useTurnipSeeds(void) {
 
     u8 direction;
     u8 temp;
@@ -1802,9 +1790,9 @@ void func_800D373C(void) {
     direction = convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX);
     
     if (direction < EAST) {
-        temp = D_80117180[toolUse.stepIndex];
+        temp = toolSweepOffsetsLeft[toolUse.stepIndex];
     } else {
-        temp = D_8011718C[toolUse.stepIndex];
+        temp = toolSweepOffsetsRight[toolUse.stepIndex];
     }
     
     vec = getOffsetTileCoordinates(0.0f, temp);
@@ -1835,8 +1823,7 @@ void func_800D373C(void) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D3958);
 
-// potato seeds
-void func_800D3958(void) {
+void usePotatoSeeds(void) {
 
     u8 direction;
     u8 temp;
@@ -1847,9 +1834,9 @@ void func_800D3958(void) {
     direction = convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX);
     
     if (direction < EAST) {
-        temp = D_80117180[toolUse.stepIndex];
+        temp = toolSweepOffsetsLeft[toolUse.stepIndex];
     } else {
-        temp = D_8011718C[toolUse.stepIndex];
+        temp = toolSweepOffsetsRight[toolUse.stepIndex];
     }
 
     vec = getOffsetTileCoordinates(0.0f, temp);
@@ -1880,8 +1867,7 @@ void func_800D3958(void) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D3B74);
 
-// cabbage seeds
-void func_800D3B74(void) {
+void useCabbageSeeds(void) {
  
     u8 direction;
     u8 temp;
@@ -1892,9 +1878,9 @@ void func_800D3B74(void) {
     direction = convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX);
     
     if (direction < EAST) {
-        temp = D_80117180[toolUse.stepIndex];
+        temp = toolSweepOffsetsLeft[toolUse.stepIndex];
     } else {
-        temp = D_8011718C[toolUse.stepIndex];
+        temp = toolSweepOffsetsRight[toolUse.stepIndex];
     }
     
     vec = getOffsetTileCoordinates(0.0f, temp);
@@ -1925,8 +1911,7 @@ void func_800D3B74(void) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D3D90);
 
-// tomato seeds
-void func_800D3D90(void) {
+void useTomatoSeeds(void) {
 
     u8 direction;
     u8 temp;
@@ -1937,9 +1922,9 @@ void func_800D3D90(void) {
     direction = convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX);
     
     if (direction < EAST) {
-        temp = D_80117180[toolUse.stepIndex];
+        temp = toolSweepOffsetsLeft[toolUse.stepIndex];
     } else {
-        temp = D_8011718C[toolUse.stepIndex];
+        temp = toolSweepOffsetsRight[toolUse.stepIndex];
     }
     
     vec = getOffsetTileCoordinates(0.0f, temp);
@@ -1970,8 +1955,7 @@ void func_800D3D90(void) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D3FAC);
 
-// corn seeds
-void func_800D3FAC(void) {
+void useCornSeeds(void) {
 
     u8 direction;
     u8 temp;
@@ -1982,9 +1966,9 @@ void func_800D3FAC(void) {
     direction = convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX);
     
     if (direction < EAST) {
-        temp = D_80117180[toolUse.stepIndex];
+        temp = toolSweepOffsetsLeft[toolUse.stepIndex];
     } else {
-        temp = D_8011718C[toolUse.stepIndex];
+        temp = toolSweepOffsetsRight[toolUse.stepIndex];
     }
     
     vec = getOffsetTileCoordinates(0.0f, temp);
@@ -2014,8 +1998,7 @@ void func_800D3FAC(void) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D41C8);
 
-// eggplant seeds
-void func_800D41C8(void) {
+void useEggplantSeeds(void) {
 
     u8 direction;
     u8 temp;
@@ -2026,10 +2009,10 @@ void func_800D41C8(void) {
     direction = convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX);
     
     if (direction < EAST) {
-        temp = D_80117180[toolUse.stepIndex];
+        temp = toolSweepOffsetsLeft[toolUse.stepIndex];
     }
     else {
-        temp = D_8011718C[toolUse.stepIndex];
+        temp = toolSweepOffsetsRight[toolUse.stepIndex];
     }
 
     vec = getOffsetTileCoordinates(0.0f, temp);
@@ -2060,8 +2043,7 @@ void func_800D41C8(void) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D43E4);
 
-// strawberry seeds
-void func_800D43E4(void) {
+void useStrawberrySeeds(void) {
     
     u8 direction;
     u8 temp;
@@ -2072,10 +2054,10 @@ void func_800D43E4(void) {
     direction = convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX);
     
     if (direction < EAST) {
-        temp = D_80117180[toolUse.stepIndex];
+        temp = toolSweepOffsetsLeft[toolUse.stepIndex];
     }
     else {
-        temp = D_8011718C[toolUse.stepIndex];
+        temp = toolSweepOffsetsRight[toolUse.stepIndex];
     }
 
     vec = getOffsetTileCoordinates(0.0f, temp);
@@ -2105,8 +2087,7 @@ void func_800D43E4(void) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D45F4);
 
-// moon drop seeds
-void func_800D45F4(void) {
+void useMoonDropSeeds(void) {
 
     u8 direction;
     u8 temp;
@@ -2117,10 +2098,10 @@ void func_800D45F4(void) {
     direction = convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX);
     
     if (direction < EAST) {
-        temp = D_80117180[toolUse.stepIndex];
+        temp = toolSweepOffsetsLeft[toolUse.stepIndex];
     }
     else {
-        temp = D_8011718C[toolUse.stepIndex];
+        temp = toolSweepOffsetsRight[toolUse.stepIndex];
     }
     
     vec = getOffsetTileCoordinates(0.0f, temp);
@@ -2152,7 +2133,7 @@ void func_800D45F4(void) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D4814);
 
-void func_800D4814(void) {
+void usePinkCatMintSeeds(void) {
 
     u8 direction;
     u8 temp;
@@ -2163,9 +2144,9 @@ void func_800D4814(void) {
     direction = convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX);
     
     if (direction < EAST) {
-        temp = D_80117180[toolUse.stepIndex];
+        temp = toolSweepOffsetsLeft[toolUse.stepIndex];
     } else {
-        temp = D_8011718C[toolUse.stepIndex];
+        temp = toolSweepOffsetsRight[toolUse.stepIndex];
     }
     
     vec = getOffsetTileCoordinates(0.0f, temp);
@@ -2196,7 +2177,7 @@ void func_800D4814(void) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D4A34);
 
-void func_800D4A34(void) {
+void useBlueMistSeeds(void) {
 
     u8 direction;
     u8 temp;
@@ -2206,9 +2187,9 @@ void func_800D4A34(void) {
     direction = convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX);
     
     if (direction < EAST) {
-        temp = D_80117180[toolUse.stepIndex];
+        temp = toolSweepOffsetsLeft[toolUse.stepIndex];
     } else {
-        temp = D_8011718C[toolUse.stepIndex];
+        temp = toolSweepOffsetsRight[toolUse.stepIndex];
     }
     
     vec = getOffsetTileCoordinates(0.0f, temp);
@@ -2231,16 +2212,14 @@ void func_800D4A34(void) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D4C28);
 
-// chicken feed
-void func_800D4C28(void) {
+void useChickenFeed(void) {
     
     u8 levelInteractionIndex;
     
-    levelInteractionIndex = func_800ACE50(gBaseMapIndex);
+    levelInteractionIndex = checkChickenFeedInteraction(gBaseMapIndex);
   
     if (levelInteractionIndex != 0xFF) {
-        // set map object for fodder
-        func_80073244(levelInteractionIndex - 0x13);
+        setChickenFeedSprite(levelInteractionIndex - 0x13);
         gChickens[levelInteractionIndex - 0x13].flags |= CHICKEN_FED;
     }
     
@@ -2248,29 +2227,21 @@ void func_800D4C28(void) {
 
 }
 
-// ball
-// empty function
-void func_800D4CA8(void) {}
+void useBall(void) {}
 
-// feeding bottle
-// empty function
-void func_800D4CB0(void) {}
+void useFeedingBottle(void) {}
 
-// unknown tool
-// empty function
-void func_800D4CB8(void) {}
+void useUnknownTool(void) {}
 
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D4CC0);
 
-// fishing pole
-void func_800D4CC0(void) {
+void useFishingPole(void) {
     toolUse.toolUseState = 0;
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D4CD0);
 
-// miracle potion
-void func_800D4CD0(void) {
+void useMiraclePotion(void) {
 
     if (func_8009A810()) {
         setDailyEventBit(0x14);
@@ -2284,8 +2255,7 @@ void func_800D4CD0(void) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D4D1C);
 
-// cow medicine
-void func_800D4D1C(void) {
+void useCowMedicine(void) {
 
     if (func_8009A400()) {
         setDailyEventBit(0x14);
@@ -2299,8 +2269,7 @@ void func_800D4D1C(void) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D4D68);
 
-// grass seeds
-void func_800D4D68(void) {
+void useGrassSeeds(void) {
 
     u8 direction;
     u8 temp;
@@ -2310,10 +2279,10 @@ void func_800D4D68(void) {
     direction = convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX);
     
     if (direction < EAST) {
-        temp = D_80117180[toolUse.stepIndex];
+        temp = toolSweepOffsetsLeft[toolUse.stepIndex];
     }
     else {
-        temp = D_8011718C[toolUse.stepIndex];
+        temp = toolSweepOffsetsRight[toolUse.stepIndex];
     }
     
     vec = getOffsetTileCoordinates(0.0f, temp);
@@ -2443,10 +2412,9 @@ func_end:
 
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D5130);
 
-// empty bottle
-void func_800D5130(void) {
+void useEmptyBottle(void) {
 
-    if (func_800ACFE8(gBaseMapIndex)) {
+    if (checkWaterableSoilInteraction(gBaseMapIndex)) {
         gPlayer.bottleContents = 1;
     } else if (checkWineBarrelInteraction(gBaseMapIndex) ) {
         gPlayer.bottleContents = 2;
@@ -2458,62 +2426,61 @@ void func_800D5130(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D51B0);
+//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", clearAllItemContextSlots);
 
 // inline, used by initializeGameVariables
-void func_800D51B0(void) {
+void clearAllItemContextSlots(void) {
 
     u8 i;
 
     for (i = 0; i < 10; i++) {
 
-        itemInfo[i].unk_0.x = 0;
-        itemInfo[i].unk_0.y = 0;
-        itemInfo[i].unk_0.z = 0;
+        itemInfo[i].position.x = 0;
+        itemInfo[i].position.y = 0;
+        itemInfo[i].position.z = 0;
 
-        itemInfo[i].unk_C.x = 0;
-        itemInfo[i].unk_C.y = 0;
-        itemInfo[i].unk_C.z = 0;
+        itemInfo[i].movement.x = 0;
+        itemInfo[i].movement.y = 0;
+        itemInfo[i].movement.z = 0;
 
-        itemInfo[i].unk_18.x = 0;
-        itemInfo[i].unk_18.y = 0;
-        itemInfo[i].unk_18.z = 0;
+        itemInfo[i].attachmentOffset.x = 0;
+        itemInfo[i].attachmentOffset.y = 0;
+        itemInfo[i].attachmentOffset.z = 0;
 
         itemInfo[i].unk_24 = 0;
         itemInfo[i].itemAnimationFrameCounter = 0;
         itemInfo[i].heldItemIndex = 0;
-        itemInfo[i].unk_2A = 0;
+        itemInfo[i].stateIndex = 0;
         itemInfo[i].flags = 0;
 
     }
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D5290);
+//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", loadActiveItemEntities);
 
-void func_800D5290(void) {
+void loadActiveItemEntities(void) {
 
     u8 i;
     
     for (i = 0; i < 10; i++) {
-        if (itemInfo[i].flags & 1) {
-            func_800D56E8(i, itemInfo[i].heldItemIndex);
+        if (itemInfo[i].flags & ITEM_CONTEXT_ACTIVE) {
+            loadHeldItemEntity(i, itemInfo[i].heldItemIndex);
         }    
     }
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D5308);
+//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", initializeHeldItem);
 
-// tool acquisition handler
-inline u8 func_800D5308(u8 index, u8 arg1, u32 heldItemIndex, s32 arg3, s32 arg4) {
+inline u8 initializeHeldItem(u8 index, u8 arg1, u32 heldItemIndex, s32 hasDirectionFrame, s32 useAttachment) {
 
-    itemInfo[index].unk_2A = arg1;
+    itemInfo[index].stateIndex = arg1;
     itemInfo[index].heldItemIndex = heldItemIndex;
     itemInfo[index].itemAnimationFrameCounter = 0;
-    itemInfo[index].flags = arg3 | (arg4 | 1);
+    itemInfo[index].flags = hasDirectionFrame | (useAttachment | 1);
     
-    gItemBeingHeld = func_800D67E4(heldItemIndex);
+    gItemBeingHeld = getHeldItemIndex(heldItemIndex);
     
     return index;
 
@@ -2528,7 +2495,7 @@ u8 func_800D5390(u8 index, u8 arg1, u32 heldItemIndex, u16 arg3, u8 arg4) {
     
     while (index < 10 && !found) {
         
-        if (!(itemInfo[index].flags & 1)) {
+        if (!(itemInfo[index].flags & ITEM_CONTEXT_ACTIVE)) {
           found = TRUE;
         }
         else {
@@ -2539,14 +2506,15 @@ u8 func_800D5390(u8 index, u8 arg1, u32 heldItemIndex, u16 arg3, u8 arg4) {
     
     if (found) {
         
-        // FIXME: inline func_800D5308 call
-        itemInfo[index].unk_2A = arg1;
+        // FIXME: inline initializeHeldItem call
+        itemInfo[index].stateIndex = arg1;
         itemInfo[index].heldItemIndex = heldItemIndex;
         itemInfo[index].flags = arg3 | (arg4 | tempBit);
         itemInfo[index].itemAnimationFrameCounter = 0;
-        gItemBeingHeld = func_800D67E4(heldItemIndex);
 
-        // index = func_800D5308(index, arg1, arg2, arg3, arg4);
+        gItemBeingHeld = getHeldItemIndex(heldItemIndex);
+
+        // index = initializeHeldItem(index, arg1, arg2, arg3, arg4);
 
     }
       
@@ -2565,7 +2533,7 @@ u8 func_800D5488(u8 index, u8 arg1, u32 heldItemIndex, u16 arg3, u8 arg4) {
     
     while (index < 10 && !found) {
 
-        if (!(itemInfo[index].flags & 1)) {
+        if (!(itemInfo[index].flags & ITEM_CONTEXT_ACTIVE)) {
           found = TRUE;
         }
         else {
@@ -2576,7 +2544,7 @@ u8 func_800D5488(u8 index, u8 arg1, u32 heldItemIndex, u16 arg3, u8 arg4) {
 
     if (found) {
         
-        itemInfo[index].unk_2A = arg1;
+        itemInfo[index].stateIndex = arg1;
         itemInfo[index].heldItemIndex = heldItemIndex;
         itemInfo[index].flags = arg3 | (arg4 | 1);
         itemInfo[index].itemAnimationFrameCounter = 0;
@@ -2589,13 +2557,13 @@ u8 func_800D5488(u8 index, u8 arg1, u32 heldItemIndex, u16 arg3, u8 arg4) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D5548);
+//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", clearHeldItemSlot);
 
-void func_800D5548(u8 index) {
+void clearHeldItemSlot(u8 index) {
 
-    if (itemInfo[index].flags & 1) {        
+    if (itemInfo[index].flags & ITEM_CONTEXT_ACTIVE) {        
         deactivateEntity(ENTITY_ITEM_BASE_INDEX + index);
-        itemInfo[index].unk_2A = 0;
+        itemInfo[index].stateIndex = 0;
         itemInfo[index].flags = 0;
     }
 
@@ -2607,48 +2575,48 @@ u16 func_800D55B8(u8 index) {
     return itemInfo[index].heldItemIndex;
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D55E4);
+//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", setItemState);
 
-void func_800D55E4(u8 index, u8 arg1) {
+void setItemState(u8 index, u8 arg1) {
 
-    if (itemInfo[index].flags & 1) {
-        itemInfo[index].unk_2A = arg1;
+    if (itemInfo[index].flags & ITEM_CONTEXT_ACTIVE) {
+        itemInfo[index].stateIndex = arg1;
     }
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D5628);
+//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", setItemPosition);
 
-void func_800D5628(u8 index, f32 arg1, f32 arg2, f32 arg3) {
+void setItemPosition(u8 index, f32 arg1, f32 arg2, f32 arg3) {
 
-    itemInfo[index].unk_0.x = arg1;
-    itemInfo[index].unk_0.y = arg2;
-    itemInfo[index].unk_0.z = arg3;
-    itemInfo[index].flags |= 2;
+    itemInfo[index].position.x = arg1;
+    itemInfo[index].position.y = arg2;
+    itemInfo[index].position.z = arg3;
+    itemInfo[index].flags |= ITEM_CONTEXT_USE_POSITION;
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D5688);
+//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", setItemAttachmentOffset);
 
-void func_800D5688(u8 index, f32 arg1, f32 arg2, f32 arg3) {
+void setItemAttachmentOffset(u8 index, f32 arg1, f32 arg2, f32 arg3) {
 
-    itemInfo[index].unk_18.x = arg1;
-    itemInfo[index].unk_18.y = arg2;
-    itemInfo[index].unk_18.z = arg3;
-    itemInfo[index].flags |= 8;
+    itemInfo[index].attachmentOffset.x = arg1;
+    itemInfo[index].attachmentOffset.y = arg2;
+    itemInfo[index].attachmentOffset.z = arg3;
+    itemInfo[index].flags |= ITEM_CONTEXT_USE_ATTACHMENT;
      
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D56E8);
+//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", loadHeldItemEntity);
 
-void func_800D56E8(u8 itemIndex, u16 heldItemIndex) {
+void loadHeldItemEntity(u8 itemIndex, u16 heldItemIndex) {
 
     itemInfo[itemIndex].heldItemIndex = heldItemIndex;
 
-    loadEntity(ENTITY_ITEM_BASE_INDEX + itemIndex, D_801174A0[heldItemIndex][0], TRUE);
-    func_8002FF38(ENTITY_ITEM_BASE_INDEX + itemIndex, FALSE);
+    loadEntity(ENTITY_ITEM_BASE_INDEX + itemIndex, itemEntityMetadata[heldItemIndex][0], TRUE);
+    setCameraTrackingEntity(ENTITY_ITEM_BASE_INDEX + itemIndex, FALSE);
 
-    if (itemInfo[itemIndex].flags & 8){
+    if (itemInfo[itemIndex].flags & ITEM_CONTEXT_USE_ATTACHMENT){
         setEntityTrackingTarget(ENTITY_ITEM_BASE_INDEX + itemIndex, 0, 0xFF);
     } else {
         setEntityTrackingTarget(ENTITY_ITEM_BASE_INDEX + itemIndex, 0xFFFF, 0xFF);
@@ -2663,19 +2631,19 @@ void func_800D56E8(u8 itemIndex, u16 heldItemIndex) {
 
     setEntityAttachmentOffset(ENTITY_ITEM_BASE_INDEX + itemIndex, 0, 0, 0);
 
-    if (itemInfo[itemIndex].flags & 4) {
-        setEntityAnimationWithDirectionChange(ENTITY_ITEM_BASE_INDEX + itemIndex, D_801174A0[heldItemIndex][gSeason]);
+    if (itemInfo[itemIndex].flags & ITEM_CONTEXT_HAS_DIRECTION_FRAME) {
+        setEntityAnimationWithDirectionChange(ENTITY_ITEM_BASE_INDEX + itemIndex, itemEntityMetadata[heldItemIndex][gSeason]);
     } else {
-        setEntityAnimation(ENTITY_ITEM_BASE_INDEX + itemIndex, D_801174A0[heldItemIndex][gSeason]);
+        setEntityAnimation(ENTITY_ITEM_BASE_INDEX + itemIndex, itemEntityMetadata[heldItemIndex][gSeason]);
     }
 
-    if (D_80117D60[heldItemIndex] != 0xFFFF) {
-        setEntityPaletteIndex(ENTITY_ITEM_BASE_INDEX + itemIndex, D_80117D60[heldItemIndex]);
+    if (itemPaletteOverrides[heldItemIndex] != 0xFFFF) {
+        setEntityPaletteIndex(ENTITY_ITEM_BASE_INDEX + itemIndex, itemPaletteOverrides[heldItemIndex]);
     }
 
     setEntityShadow(ENTITY_ITEM_BASE_INDEX + itemIndex, 2);
 
-    itemInfo[itemIndex].unk_2A = 0;
+    itemInfo[itemIndex].stateIndex = 0;
     
 }
 
@@ -2683,13 +2651,13 @@ u16 getItemFlags(u16 index) {
     return itemFlags[index];
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D5A88);
+//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", getItemAnimationIndex);
 
-u16 func_800D5A88(u16 index) {
+u16 getItemAnimationIndex(u16 index) {
 
   u16 result;
   
-  result = D_801174A0[index][gSeason];
+  result = itemEntityMetadata[index][gSeason];
 
   if (185 < index && index < 194) {
     result = 249;
@@ -2707,21 +2675,21 @@ u16 func_800D5A88(u16 index) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D5B00);
+//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", getItemStaminaIncreaseValue);
 
-u8 func_800D5B00(u16 index) {
-    return D_80118540[index];
+u8 getItemStaminaIncreaseValue(u16 index) {
+    return itemStaminaRestorationValue[index];
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D5B18);
+//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", getItemFatigueReductionValue);
 
-u8 func_800D5B18(u16 index) {
-    return D_80118620[index];
+u8 getItemFatigueReductionValue(u16 index) {
+    return itemFatigueReductionValue[index];
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D5B30);
+//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", handlePickUpGroundItem);
 
-u8 func_800D5B30(void) {
+bool handlePickUpGroundItem(void) {
 
     u32 padding[4];
     
@@ -2745,6 +2713,7 @@ u8 func_800D5B30(void) {
                 
                 switch (groundObjectIndex) {
 
+                    // replace with stalks
                     case TOMATO_RIPE ... TOMATO_RIPE_WATERED:
                         addGroundObjectToMapFromPlayerPosition(0x5F, 1.0f, 8);
                         break;
@@ -2787,10 +2756,10 @@ u8 func_800D5B30(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D5CC0);
+//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", handlePutDownHeldItem);
 
 // handle putting objects down
-bool func_800D5CC0(u8 itemIndex) {
+bool handlePutDownHeldItem(u8 itemIndex) {
 
     Vec3f vec;
     Vec3f vec2;
@@ -2857,7 +2826,7 @@ bool func_800D5CC0(u8 itemIndex) {
 
             gChickens[gPlayer.heldAnimalIndex].flags &= ~8;
 
-            func_8008B2E8(gPlayer.heldAnimalIndex);
+            initializeChickenEntity(gPlayer.heldAnimalIndex);
             
             break;
 
@@ -2879,7 +2848,7 @@ bool func_800D5CC0(u8 itemIndex) {
 
             dogInfo.flags &= ~8;
 
-            func_8008B1B8();
+            initializeDogEntity();
             
             break;
 
@@ -2893,7 +2862,7 @@ bool func_800D5CC0(u8 itemIndex) {
         case 0xB2:     
             vec = projectEntityPosition(ENTITY_PLAYER, 0x20, convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX));
             direction = convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX);
-            func_8008BAF0(func_8008A4A8(0, direction, vec.x, vec.y, vec.z), 0);
+            initializeMiscAnimalEntity(func_8008A4A8(0, direction, vec.x, vec.y, vec.z), 0);
 
             break;
         
@@ -2907,7 +2876,7 @@ bool func_800D5CC0(u8 itemIndex) {
         case 0x82: 
             vec = projectEntityPosition(ENTITY_PLAYER, 0x20, convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX));
             direction = convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX);
-            func_8008BAF0(func_8008A4A8(1, direction, vec.x, vec.y, vec.z), 0);
+            initializeMiscAnimalEntity(func_8008A4A8(1, direction, vec.x, vec.y, vec.z), 0);
 
             break;
 
@@ -2921,7 +2890,7 @@ bool func_800D5CC0(u8 itemIndex) {
         case 0x8A:        
             vec = projectEntityPosition(ENTITY_PLAYER, 0x20, convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX));
             direction = convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX);
-            func_8008BAF0(func_8008A4A8(2, direction, vec.x, vec.y, vec.z), 0);
+            initializeMiscAnimalEntity(func_8008A4A8(2, direction, vec.x, vec.y, vec.z), 0);
 
             break;
 
@@ -2935,7 +2904,7 @@ bool func_800D5CC0(u8 itemIndex) {
         case 0x92:   
             vec = projectEntityPosition(ENTITY_PLAYER, 0x20, convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX));
             direction = convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX);
-            func_8008BAF0(func_8008A4A8(7, direction, vec.x, vec.y, vec.z), 0);
+            initializeMiscAnimalEntity(func_8008A4A8(7, direction, vec.x, vec.y, vec.z), 0);
 
             break;       
                 
@@ -2949,7 +2918,7 @@ bool func_800D5CC0(u8 itemIndex) {
         case 0x9A:  
             vec = projectEntityPosition(ENTITY_PLAYER, 0x20, convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX));
             direction = convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX);
-            func_8008BAF0(func_8008A4A8(9, direction, vec.x, vec.y, vec.z), 0);
+            initializeMiscAnimalEntity(func_8008A4A8(9, direction, vec.x, vec.y, vec.z), 0);
 
             break;     
 
@@ -2963,7 +2932,7 @@ bool func_800D5CC0(u8 itemIndex) {
         case 0xA2:         
             vec = projectEntityPosition(ENTITY_PLAYER, 0x20, convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX));
             direction = convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX);
-            func_8008BAF0(func_8008A4A8(8, direction, vec.x, vec.y, vec.z), 0);
+            initializeMiscAnimalEntity(func_8008A4A8(8, direction, vec.x, vec.y, vec.z), 0);
             break;     
         
         case MONKEY_HELD_ITEM:                                     
@@ -2976,7 +2945,7 @@ bool func_800D5CC0(u8 itemIndex) {
         case 0xAA:    
             vec = projectEntityPosition(ENTITY_PLAYER, 0x20, convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX));
             direction = convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX);
-            func_8008BAF0(func_8008A4A8(10, direction, vec.x, vec.y, vec.z), 0);
+            initializeMiscAnimalEntity(func_8008A4A8(10, direction, vec.x, vec.y, vec.z), 0);
             break;     
 
         case BUTTERFLY_HELD_ITEM:                                     
@@ -3016,13 +2985,13 @@ bool func_800D5CC0(u8 itemIndex) {
             direction = convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX);
             vec.y = entities[ENTITY_PLAYER].coordinates.y;
             
-            func_8008BAF0(func_8008A4A8(temp, direction, vec.x, vec.y, vec.z), 1);
+            initializeMiscAnimalEntity(func_8008A4A8(temp, direction, vec.x, vec.y, vec.z), 1);
 
             break;
 
        case EGG_HELD_ITEM:                              
 
-            gPlayer.heldAnimalIndex = func_80087F28(0, 0xFF);
+            gPlayer.heldAnimalIndex = initializeNewChicken(0, 0xFF);
 
             gChickens[gPlayer.heldAnimalIndex].coordinates.x = 92.0f;
             gChickens[gPlayer.heldAnimalIndex].coordinates.y = 0;
@@ -3034,17 +3003,17 @@ bool func_800D5CC0(u8 itemIndex) {
             gChickens[gPlayer.heldAnimalIndex].flags &= ~8;
             gChickens[gPlayer.heldAnimalIndex].flags |= 0x20;
 
-            func_8008B2E8(gPlayer.heldAnimalIndex);
+            initializeChickenEntity(gPlayer.heldAnimalIndex);
 
             break;
 
         case FODDER_HELD_ITEM:                    
 
-            levelInteractionIndex = func_800ACDF4(gBaseMapIndex);
+            levelInteractionIndex = checkBarnAnimalFeedInteraction(gBaseMapIndex);
 
             if (levelInteractionIndex == 0x12) {
                 
-                func_8007341C(8);
+                setBarnFodderSprite(8);
 
                 for (i = 0; i < MAX_FARM_ANIMALS; i++) {
                     gFarmAnimals[i].flags |= 0x10;
@@ -3052,8 +3021,8 @@ bool func_800D5CC0(u8 itemIndex) {
 
             } else {
                 
-                func_8007341C(levelInteractionIndex - 0x13);
-                gFarmAnimals[levelInteractionIndex - 0x13].flags |= 0x8;
+                setBarnFodderSprite(levelInteractionIndex - 0x13);
+                gFarmAnimals[levelInteractionIndex - 0x13].flags |= FARM_ANIMAL_FED;
                 
             }
 
@@ -3119,16 +3088,15 @@ bool func_800D5CC0(u8 itemIndex) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D67E4);
+//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", getHeldItemIndex);
 
-u8 func_800D67E4(u8 index) {
-    return D_80117F20[index];
+u8 getHeldItemIndex(u8 index) {
+    return heldItemIndices[index];
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D67FC);
+//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", showHeldItemText);
 
-// show text for held item
-void func_800D67FC(u8 index) {
+void showHeldItemText(u8 index) {
 
     u16 temp;
 
@@ -3137,7 +3105,7 @@ void func_800D67FC(u8 index) {
             temp =  gPlayer.heldAnimalIndex + 0xF5;
             break;
         default:
-            temp = D_80118000[index];
+            temp = itemTextIndices[index];
             break;
     }
 
@@ -3146,7 +3114,7 @@ void func_800D67FC(u8 index) {
 }
 
 // alternate for reference
-// void func_800D67FC(u8 index) {
+// void showHeldItemText(u8 index) {
     
 //     s32 temp;
 //     u16 temp2;
@@ -3167,13 +3135,13 @@ void func_800D67FC(u8 index) {
 //     showTextBox(1, 6, temp2, 0, 2);
 // }
 
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D6868);
+//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", processItemShipping);
 
-void func_800D6868(u8 index) {
+void processItemShipping(u8 index) {
 
     u32 result;
     
-    dailyShippingBinValue += adjustValue(dailyShippingBinValue, D_801181C0[index], MAX_TOTAL_SHIPPING);
+    dailyShippingBinValue += adjustValue(dailyShippingBinValue, itemShippingValues[index], MAX_TOTAL_SHIPPING);
      
     switch (index) {
         case 13:
@@ -3225,7 +3193,7 @@ void func_800D6868(u8 index) {
 // put food in dog bowl
 void func_800D6B28(void) {
 
-    func_80034DC8(MAIN_MAP_INDEX, 0, 0x13);
+    setMapObjectAnimation(MAIN_MAP_INDEX, 0, 19);
     setDailyEventBit(FED_DOG);
 
 }
@@ -3234,9 +3202,9 @@ void func_800D6B28(void) {
 
 static inline void setVec3f(u8 index, f32 x, f32 y, f32 z) {
 
-    itemInfo[index].unk_0.x = x;
-    itemInfo[index].unk_0.y = y;
-    itemInfo[index].unk_0.z = z;
+    itemInfo[index].position.x = x;
+    itemInfo[index].position.y = y;
+    itemInfo[index].position.z = z;
 
 }
 
@@ -3248,10 +3216,10 @@ void func_800D6B58(u8 arg0, u8 itemIndex) {
     u8 temp2;
     u8 flags;
     
-    itemInfo[itemIndex].unk_18.x = 0;
-    itemInfo[itemIndex].unk_18.y = 0;
-    itemInfo[itemIndex].unk_18.z = 0;
-    itemInfo[itemIndex].flags |= 8;
+    itemInfo[itemIndex].attachmentOffset.x = 0;
+    itemInfo[itemIndex].attachmentOffset.y = 0;
+    itemInfo[itemIndex].attachmentOffset.z = 0;
+    itemInfo[itemIndex].flags |= ITEM_CONTEXT_USE_ATTACHMENT;
 
     setEntityMovementVector(ENTITY_ITEM_BASE_INDEX + itemIndex, 0.0f, 0.0f, 0.0f, 0.0f);
     setEntityTrackingTarget(ENTITY_ITEM_BASE_INDEX + itemIndex, 0xFFFF, 0xFF);
@@ -3269,7 +3237,7 @@ void func_800D6B58(u8 arg0, u8 itemIndex) {
         
         if (temp2 < 2 || temp == 0x1D) {
             setVec3f(itemIndex, 288.0f, 80.0f, -404.0f);
-            itemInfo[itemIndex].flags |= 2;
+            itemInfo[itemIndex].flags |= ITEM_CONTEXT_USE_POSITION;
             setEntityAnimation(ENTITY_ITEM_BASE_INDEX + itemIndex, 0xE9);
         } 
 
@@ -3281,7 +3249,7 @@ void func_800D6B58(u8 arg0, u8 itemIndex) {
         
         if (temp == 0x10 || temp == 0x14) {
             setVec3f(itemIndex, 160.0f, 64.0f, -128.0f);
-            itemInfo[itemIndex].flags |= 2;
+            itemInfo[itemIndex].flags |= ITEM_CONTEXT_USE_POSITION;
             setEntityAnimation(ENTITY_ITEM_BASE_INDEX + itemIndex, 0xE9);
         }
         
@@ -3308,8 +3276,8 @@ void func_800D6B58(u8 arg0, u8 itemIndex) {
         
         if (temp == 0x10) {
             setVec3f(itemIndex, -16.0f, 80.0f, -224.0f);
-            itemInfo[itemIndex].flags |= 2;
-            setEntityAnimation(ENTITY_ITEM_BASE_INDEX + itemIndex, 0xE9);
+            itemInfo[itemIndex].flags |= ITEM_CONTEXT_USE_POSITION;
+            setEntityAnimation(ENTITY_ITEM_BASE_INDEX + itemIndex, 233);
         }
         
         if (!(gCutsceneFlags & 1)) {
@@ -3322,11 +3290,10 @@ void func_800D6B58(u8 arg0, u8 itemIndex) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D7010);
+//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", updateHeldItemStates);
 
-// run held item state machine
 // handle thrown/dropped items
-void func_800D7010(void) {
+void updateHeldItemStates(void) {
 
     Vec3f vec;
     u8 i = 0;
@@ -3338,12 +3305,12 @@ void func_800D7010(void) {
 
     for (i = 0; i < 10; i++) {
 
-        if (itemInfo[i].flags & 1) {
+        if (itemInfo[i].flags & ITEM_CONTEXT_ACTIVE) {
             
             do {
 
                 // FIXME: fake match/likely dead code
-                if (itemInfo[i].unk_2A) {};
+                if (itemInfo[i].stateIndex) {};
                 
                 y = 14.0f;
                 z = 20.0f;
@@ -3354,41 +3321,41 @@ void func_800D7010(void) {
 
                 set = FALSE;
                 
-                switch (itemInfo[i].unk_2A) {
+                switch (itemInfo[i].stateIndex) {
 
                     case 2:
-                        func_800D56E8(i, itemInfo[i].heldItemIndex);
-                        itemInfo[i].unk_18.x = 0;
-                        itemInfo[i].unk_18.y = y;
-                        itemInfo[i].unk_18.z = z;
-                        itemInfo[i].flags |= 8;
+                        loadHeldItemEntity(i, itemInfo[i].heldItemIndex);
+                        itemInfo[i].attachmentOffset.x = 0;
+                        itemInfo[i].attachmentOffset.y = y;
+                        itemInfo[i].attachmentOffset.z = z;
+                        itemInfo[i].flags |= ITEM_CONTEXT_USE_ATTACHMENT;
                         break;
 
                     case 16:
-                        func_800D56E8(i, itemInfo[i].heldItemIndex);
+                        loadHeldItemEntity(i, itemInfo[i].heldItemIndex);
                         setEntityTrackingTarget(ENTITY_ITEM_BASE_INDEX + i, 0, 0);
-                        itemInfo[i].unk_18.x = x;
-                        itemInfo[i].unk_18.y = 24.0f;
-                        itemInfo[i].unk_18.z = z3;
-                        itemInfo[i].flags |= 8;
+                        itemInfo[i].attachmentOffset.x = x;
+                        itemInfo[i].attachmentOffset.y = 24.0f;
+                        itemInfo[i].attachmentOffset.z = z3;
+                        itemInfo[i].flags |= ITEM_CONTEXT_USE_ATTACHMENT;
                         break;
                     
                     case 21:
-                        func_800D56E8(i, itemInfo[i].heldItemIndex);
+                        loadHeldItemEntity(i, itemInfo[i].heldItemIndex);
                         setEntityTrackingTarget(ENTITY_ITEM_BASE_INDEX + i, 0, 0);
-                        itemInfo[i].unk_18.x = x;
-                        itemInfo[i].unk_18.y = 64.0f;
-                        itemInfo[i].unk_18.z = z3;
-                        itemInfo[i].flags |= 8;
+                        itemInfo[i].attachmentOffset.x = x;
+                        itemInfo[i].attachmentOffset.y = 64.0f;
+                        itemInfo[i].attachmentOffset.z = z3;
+                        itemInfo[i].flags |= ITEM_CONTEXT_USE_ATTACHMENT;
                         break;
 
                     case 3:
-                        func_800D56E8(i, itemInfo[i].heldItemIndex);
-                        itemInfo[i].unk_18.x = 0.0f;
-                        itemInfo[i].unk_18.y = y2;
-                        itemInfo[i].unk_18.z = z2;
-                        itemInfo[i].unk_2A = 4;
-                        itemInfo[i].flags |= 8;
+                        loadHeldItemEntity(i, itemInfo[i].heldItemIndex);
+                        itemInfo[i].attachmentOffset.x = 0.0f;
+                        itemInfo[i].attachmentOffset.y = y2;
+                        itemInfo[i].attachmentOffset.z = z2;
+                        itemInfo[i].stateIndex = 4;
+                        itemInfo[i].flags |= ITEM_CONTEXT_USE_ATTACHMENT;
                         break;                  
 
                     case 4:    
@@ -3397,12 +3364,12 @@ void func_800D7010(void) {
 
                         vec = getMovementVectorFromDirection(4.0f, convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX), 0.0f);
 
-                        itemInfo[i].unk_C = vec;
+                        itemInfo[i].movement = vec;
 
-                        itemInfo[i].unk_C.y = entities[ENTITY_ITEM_BASE_INDEX + i].coordinates.y;
+                        itemInfo[i].movement.y = entities[ENTITY_ITEM_BASE_INDEX + i].coordinates.y;
                         
                         itemInfo[i].itemAnimationFrameCounter = 0;
-                        itemInfo[i].unk_2A = 5;
+                        itemInfo[i].stateIndex = 5;
 
                         break;
 
@@ -3410,24 +3377,24 @@ void func_800D7010(void) {
                         
                         if (entities[ENTITY_ITEM_BASE_INDEX + i].flags & 0x800) {
                             
-                            itemInfo[i].unk_C.x = 0;
-                            itemInfo[i].unk_C.y = 0;
-                            itemInfo[i].unk_C.z = 0;
+                            itemInfo[i].movement.x = 0;
+                            itemInfo[i].movement.y = 0;
+                            itemInfo[i].movement.z = 0;
                             
-                            func_8002FF38(ENTITY_ITEM_BASE_INDEX + i, FALSE);
+                            setCameraTrackingEntity(ENTITY_ITEM_BASE_INDEX + i, FALSE);
                             setEntityCollidable(ENTITY_ITEM_BASE_INDEX + i, FALSE);
                             setEntityYMovement(ENTITY_ITEM_BASE_INDEX + i, FALSE);
                             setEntityTracksCollisions(ENTITY_ITEM_BASE_INDEX + i, FALSE);
                             enableEntityMovement(ENTITY_ITEM_BASE_INDEX + i, FALSE);
 
-                            itemInfo[i].unk_2A = 12;
+                            itemInfo[i].stateIndex = 12;
 
                             set = TRUE;
 
                         } else {
 
                             // parabolic equation for throwing items
-                            entities[ENTITY_ITEM_BASE_INDEX + i].coordinates.y = itemInfo[i].unk_C.y + (f32)(itemInfo[i].itemAnimationFrameCounter * itemInfo[i].itemAnimationFrameCounter) * -0.5f;
+                            entities[ENTITY_ITEM_BASE_INDEX + i].coordinates.y = itemInfo[i].movement.y + (f32)(itemInfo[i].itemAnimationFrameCounter * itemInfo[i].itemAnimationFrameCounter) * -0.5f;
                             itemInfo[i].itemAnimationFrameCounter++;
                             
                         }
@@ -3443,15 +3410,15 @@ void func_800D7010(void) {
                         loadEntity(ENTITY_ITEM_BASE_INDEX + i, 0x5E, 1);
                         setEntityColor(ENTITY_ITEM_BASE_INDEX + i, mainMap[MAIN_MAP_INDEX].mapGlobals.currentRGBA.r, mainMap[MAIN_MAP_INDEX].mapGlobals.currentRGBA.g, mainMap[MAIN_MAP_INDEX].mapGlobals.currentRGBA.b, mainMap[MAIN_MAP_INDEX].mapGlobals.currentRGBA.a);
                         setEntityMovementVector(ENTITY_ITEM_BASE_INDEX + i, 0.0f, 0.0f, 0.0f, 0.0f);
-                        func_8002FF38(ENTITY_ITEM_BASE_INDEX + i, FALSE);
+                        setCameraTrackingEntity(ENTITY_ITEM_BASE_INDEX + i, FALSE);
                         setEntityTrackingTarget(ENTITY_ITEM_BASE_INDEX + i, 0xFFFF, 0xFF);
                         setEntityCollidable(ENTITY_ITEM_BASE_INDEX + i, FALSE);
                         setEntityYMovement(ENTITY_ITEM_BASE_INDEX + i, FALSE);
                         setEntityTracksCollisions(ENTITY_ITEM_BASE_INDEX + i, FALSE);
                         enableEntityMovement(ENTITY_ITEM_BASE_INDEX + i, FALSE);
-                        setEntityAnimation(ENTITY_ITEM_BASE_INDEX + i, D_801171A0[itemInfo[i].heldItemIndex][gSeason-1]);
+                        setEntityAnimation(ENTITY_ITEM_BASE_INDEX + i, itemSpriteAnimations[itemInfo[i].heldItemIndex][gSeason-1]);
 
-                        itemInfo[i].unk_2A = 1;
+                        itemInfo[i].stateIndex = 1;
 
                         if (itemFlags[itemInfo[i].heldItemIndex] & ITEM_EATABLE) {
                             gHappiness += adjustValue(gHappiness, -1, MAX_HAPPINESS);
@@ -3462,42 +3429,42 @@ void func_800D7010(void) {
 
                     case 6:
 
-                        itemInfo[i].unk_18.x = 0;
-                        itemInfo[i].unk_18.y = z3;
-                        itemInfo[i].unk_18.z = z;
+                        itemInfo[i].attachmentOffset.x = 0;
+                        itemInfo[i].attachmentOffset.y = z3;
+                        itemInfo[i].attachmentOffset.z = z;
                         
-                        itemInfo[i].flags |= 8;
+                        itemInfo[i].flags |= ITEM_CONTEXT_USE_ATTACHMENT;
 
-                        func_800D56E8(i, itemInfo[i].heldItemIndex);
+                        loadHeldItemEntity(i, itemInfo[i].heldItemIndex);
 
                         break;
 
                     case 7:
-                        itemInfo[i].unk_18.x = 0;
-                        itemInfo[i].unk_18.y = y;
-                        itemInfo[i].unk_18.z = z;
-                        itemInfo[i].unk_2A = 0;
+                        itemInfo[i].attachmentOffset.x = 0;
+                        itemInfo[i].attachmentOffset.y = y;
+                        itemInfo[i].attachmentOffset.z = z;
+                        itemInfo[i].stateIndex = 0;
                         
-                        itemInfo[i].flags |= 8;
+                        itemInfo[i].flags |= ITEM_CONTEXT_USE_ATTACHMENT;
 
                         break;
                     
                     case 8:
-                        itemInfo[i].unk_18.x = 0;
-                        itemInfo[i].unk_18.y = z3;
-                        itemInfo[i].unk_18.z = z;
+                        itemInfo[i].attachmentOffset.x = 0;
+                        itemInfo[i].attachmentOffset.y = z3;
+                        itemInfo[i].attachmentOffset.z = z;
                     
-                        itemInfo[i].flags |= 8;
+                        itemInfo[i].flags |= ITEM_CONTEXT_USE_ATTACHMENT;
 
                         break;
                     
                     case 9:
                         
-                        func_800D5CC0(i);
+                        handlePutDownHeldItem(i);
        
-                        if (itemInfo[i].flags & 1) {
+                        if (itemInfo[i].flags & ITEM_CONTEXT_ACTIVE) {
                             deactivateEntity(ENTITY_ITEM_BASE_INDEX + i);
-                            itemInfo[i].unk_2A = 0;
+                            itemInfo[i].stateIndex = 0;
                             itemInfo[i].flags = 0;
                         }
                         
@@ -3507,73 +3474,72 @@ void func_800D7010(void) {
                         
                         setEntityTrackingTarget(ENTITY_ITEM_BASE_INDEX + i, 0, 0);
                         
-                        itemInfo[i].unk_18.x = x;
-                        itemInfo[i].unk_18.y = y2;
-                        itemInfo[i].unk_18.z = z3;
-                        itemInfo[i].flags |= 8;
+                        itemInfo[i].attachmentOffset.x = x;
+                        itemInfo[i].attachmentOffset.y = y2;
+                        itemInfo[i].attachmentOffset.z = z3;
+                        itemInfo[i].flags |= ITEM_CONTEXT_USE_ATTACHMENT;
 
                         break;
 
                     case 14:
                         
-                        func_800D6868(itemInfo[i].heldItemIndex);
+                        processItemShipping(itemInfo[i].heldItemIndex);
 
                         switch (gBaseMapIndex) {        
 
                             case FARM:                     
-                                func_80038990(MAIN_MAP_INDEX, 0x12, 0);
+                                activateMapAddition(MAIN_MAP_INDEX, 0x12, 0);
                                 playSfx(ITEM_PLUCK_SFX);
                                 break;
                      
                             case BARN:
-                                func_80038990(MAIN_MAP_INDEX, 0, 0);
+                                activateMapAddition(MAIN_MAP_INDEX, 0, 0);
                                 playSfx(ITEM_PLUCK_SFX);
                                 break;
 
                             case COOP:
-                                func_80038990(MAIN_MAP_INDEX, 0, 0);
+                                activateMapAddition(MAIN_MAP_INDEX, 0, 0);
                                 playSfx(ITEM_PLUCK_SFX);
                                 break;
                             
                             case GREENHOUSE:                     
-                                func_80038990(MAIN_MAP_INDEX, 0, 0);
+                                activateMapAddition(MAIN_MAP_INDEX, 0, 0);
                                 playSfx(ITEM_PLUCK_SFX);
                                 break;
                             
                         }
                         
                         deactivateEntity(ENTITY_ITEM_BASE_INDEX + i);
-                        itemInfo[i].unk_2A = 1;
+                        itemInfo[i].stateIndex = 1;
 
                         break;
 
-
                     case 17:
-                        itemInfo[i].unk_18.x = 0.0f;
-                        itemInfo[i].unk_18.y = 8.0f;
-                        itemInfo[i].unk_18.z = z;
-                        itemInfo[i].flags |= 8;
+                        itemInfo[i].attachmentOffset.x = 0.0f;
+                        itemInfo[i].attachmentOffset.y = 8.0f;
+                        itemInfo[i].attachmentOffset.z = z;
+                        itemInfo[i].flags |= ITEM_CONTEXT_USE_ATTACHMENT;
                         break;
                     
                     case 18:
-                        func_80034DC8(MAIN_MAP_INDEX, 0, 0x13);
+                        setMapObjectAnimation(MAIN_MAP_INDEX, 0, 19);
                         setDailyEventBit(0x43);
                         deactivateEntity(ENTITY_ITEM_BASE_INDEX + i);
-                        itemInfo[i].unk_2A = 1;
+                        itemInfo[i].stateIndex = 1;
                         break;
                     
                     case 13:
                     case 19:
-                        itemInfo[i].unk_18.x = 0.0f;
-                        itemInfo[i].unk_18.y = y2;
-                        itemInfo[i].unk_18.z = z2;
-                        itemInfo[i].flags |= 8;
+                        itemInfo[i].attachmentOffset.x = 0.0f;
+                        itemInfo[i].attachmentOffset.y = y2;
+                        itemInfo[i].attachmentOffset.z = z2;
+                        itemInfo[i].flags |= ITEM_CONTEXT_USE_ATTACHMENT;
                         break;
                     
                     case 20:
                         func_800D6B58(itemInfo[i].heldItemIndex, i);
                         playSfx(0x28);
-                        itemInfo[i].unk_2A = 1;
+                        itemInfo[i].stateIndex = 1;
                         break;
                     
                     case 1:
@@ -3581,15 +3547,15 @@ void func_800D7010(void) {
                         // wait 30 frames before removing item
                         if (checkEntityAnimationStateChanged(ENTITY_ITEM_BASE_INDEX + i) || !(itemInfo[i].itemAnimationFrameCounter < 30)) {
 
-                            if (itemInfo[i].flags & 1) {
+                            if (itemInfo[i].flags & ITEM_CONTEXT_ACTIVE) {
 
                                 deactivateEntity(ENTITY_ITEM_BASE_INDEX + i);
 
                                 // FIXME: fake match in order to get float registers right
                                 if (y2) {
-                                    itemInfo[i].unk_2A = 0;                                    
+                                    itemInfo[i].stateIndex = 0;                                    
                                 } else {
-                                    itemInfo[i].unk_2A = 0;
+                                    itemInfo[i].stateIndex = 0;
                                 }
                                 
                                 if (z2) {
@@ -3638,15 +3604,15 @@ void func_800D7010(void) {
                 
             } while (set);
 
-            if (itemInfo[i].flags & 2) {
-                setEntityCoordinates(ENTITY_ITEM_BASE_INDEX + i, itemInfo[i].unk_0.x, itemInfo[i].unk_0.y, itemInfo[i].unk_0.z);
+            if (itemInfo[i].flags & ITEM_CONTEXT_USE_POSITION) {
+                setEntityCoordinates(ENTITY_ITEM_BASE_INDEX + i, itemInfo[i].position.x, itemInfo[i].position.y, itemInfo[i].position.z);
             }
             
-            if (itemInfo[i].flags & 8) {
-                setEntityAttachmentOffset(ENTITY_ITEM_BASE_INDEX + i, itemInfo[i].unk_18.x, itemInfo[i].unk_18.y, itemInfo[i].unk_18.z);
+            if (itemInfo[i].flags & ITEM_CONTEXT_USE_ATTACHMENT) {
+                setEntityAttachmentOffset(ENTITY_ITEM_BASE_INDEX + i, itemInfo[i].attachmentOffset.x, itemInfo[i].attachmentOffset.y, itemInfo[i].attachmentOffset.z);
             }
             
-            setEntityMovementVector(ENTITY_ITEM_BASE_INDEX + i, itemInfo[i].unk_C.x, 0.0f, itemInfo[i].unk_C.z, 4.0f);
+            setEntityMovementVector(ENTITY_ITEM_BASE_INDEX + i, itemInfo[i].movement.x, 0.0f, itemInfo[i].movement.z, 4.0f);
             setEntityDirection(ENTITY_ITEM_BASE_INDEX + i, entities[ENTITY_PLAYER].direction);
             
         }

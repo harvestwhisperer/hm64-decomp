@@ -5,6 +5,7 @@
 #include "system/math.h"
 #include "system/message.h"
 #include "system/globalSprites.h"
+#include "system/sprite.h"
 
 #include "game/game.h"
 
@@ -26,12 +27,12 @@ DialogueVariable dialogueVariables[MAX_DIALOGUE_VARIABLES];
 DialogueBytecodeAddressInfo dialogueBytecodeAddresses[MAX_DIALOGUE_BYTECODE_BANKS];
 
 // forward declarations
-u32 func_80043C98(u16, u16);
-void func_80043B84(u16);
+u32 getDialogueBytecodeAddress(u16, u16);
+void cleanupDialogueOverlayBox(u16);
 void setOverlayMessageBoxSprite(u16 index);
-void func_800449C4(u16 index);
-void func_80044BF4(u16 index);
-void func_80044D78(u16);
+void updateDialogueButtonIcon2Display(u16 index);
+void updateDialogueButtonIcon3Display(u16 index);
+void handleMenuNavigation(u16);
 void updateCurrentDialogue(u16);
 
 
@@ -47,15 +48,15 @@ void initializeDialogueSessionManagers(void) {
         dialogues[i].sessionManager.mainMessageBoxIndex = 0;
         dialogues[i].sessionManager.scrollSfxIndex = 0xFF;
         dialogues[i].sessionManager.closeSfxIndex = 0xFF;
-        dialogues[i].sessionManager.unk_8 = 0xFF;
+        dialogues[i].sessionManager.buttonPressSfxIndex = 0xFF;
         dialogues[i].sessionManager.flags = 0;
     }
 
 } 
 
-//INCLUDE_ASM("asm/nonmatchings/system/dialogue", func_80042FEC);
+//INCLUDE_ASM("asm/nonmatchings/system/dialogue", initializeDialogueSessionManager);
 
-bool func_80042FEC(u16 index, u16 mainMessageBoxIndex, u16 overlayMessageBoxIndex) {
+bool initializeDialogueSessionManager(u16 index, u16 mainMessageBoxIndex, u16 overlayMessageBoxIndex) {
 
     bool result = FALSE;
  
@@ -63,7 +64,7 @@ bool func_80042FEC(u16 index, u16 mainMessageBoxIndex, u16 overlayMessageBoxInde
 
         dialogues[index].sessionManager.scrollSfxIndex = 0xFF;
         dialogues[index].sessionManager.closeSfxIndex = 0xFF;
-        dialogues[index].sessionManager.unk_8 = 0xFF;
+        dialogues[index].sessionManager.buttonPressSfxIndex = 0xFF;
         dialogues[index].sessionManager.mainMessageBoxIndex = mainMessageBoxIndex;
         dialogues[index].sessionManager.overlayMessageBoxIndex = overlayMessageBoxIndex;
 
@@ -132,9 +133,9 @@ bool setSpecialDialogueBitsPointer(u32* arg0) {
     return 0;
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/dialogue", func_80043148);
+//INCLUDE_ASM("asm/nonmatchings/system/dialogue", setDialogueSfxIndices);
 
-bool func_80043148(u16 index, u32 scrollSfxIndex, u32 closeSfxIndex, u32 sfxIndex) {
+bool setDialogueSfxIndices(u16 index, u32 scrollSfxIndex, u32 closeSfxIndex, u32 sfxIndex) {
 
     bool result = FALSE;
 
@@ -142,7 +143,7 @@ bool func_80043148(u16 index, u32 scrollSfxIndex, u32 closeSfxIndex, u32 sfxInde
         
         dialogues[index].sessionManager.scrollSfxIndex = scrollSfxIndex;
         dialogues[index].sessionManager.closeSfxIndex = closeSfxIndex;
-        dialogues[index].sessionManager.unk_8 = sfxIndex;
+        dialogues[index].sessionManager.buttonPressSfxIndex = sfxIndex;
         
         result = TRUE;
 
@@ -152,9 +153,9 @@ bool func_80043148(u16 index, u32 scrollSfxIndex, u32 closeSfxIndex, u32 sfxInde
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/dialogue", func_8004318C);
+//INCLUDE_ASM("asm/nonmatchings/system/dialogue", setDialogueButtonIcon1);
 
-bool func_8004318C(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextureEnd, u32 romIndexStart, u32 romIndexEnd, 
+bool setDialogueButtonIcon1(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextureEnd, u32 romIndexStart, u32 romIndexEnd, 
     u8* vaddrTexture, u8* vaddrTextureEnd, AnimationFrameMetadata* vaddrAnimationFrameMetadata, u8* vaddrTextureToPaletteLookup, u32 argA, 
     u16 spriteOffset, u8 flag, f32 x, f32 y, f32 z) {
 
@@ -189,9 +190,9 @@ bool func_8004318C(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextu
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/dialogue", func_80043260);
+//INCLUDE_ASM("asm/nonmatchings/system/dialogue", setDialogueButtonIcon2);
 
-bool func_80043260(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextureEnd, u32 romIndexStart, u32 romIndexEnd, 
+bool setDialogueButtonIcon2(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextureEnd, u32 romIndexStart, u32 romIndexEnd, 
     u8* vaddrTexture, u8* vaddrTextureEnd, AnimationFrameMetadata* vaddrAnimationFrameMetadata, u8* vaddrTextureToPaletteLookup, u32 argA, 
     u16 spriteOffset, u8 flag, f32 x, f32 y, f32 z) {
 
@@ -226,9 +227,9 @@ bool func_80043260(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextu
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/dialogue", func_80043334);
+//INCLUDE_ASM("asm/nonmatchings/system/dialogue", setDialogueButtonIcon3);
  
-bool func_80043334(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextureEnd, u32 romIndexStart, u32 romIndexEnd, 
+bool setDialogueButtonIcon3(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextureEnd, u32 romIndexStart, u32 romIndexEnd, 
     u8* vaddrTexture, u8* vaddrTextureEnd, AnimationFrameMetadata* vaddrAnimationFrameMetadata, u8* vaddrTextureToPaletteLookup, u32 argA, 
     u16 spriteOffset, u8 flag, f32 x, f32 y, f32 z) {
 
@@ -318,8 +319,8 @@ bool initializeDialogueSession(u16 index, u16 dialogueBytecodeAddressesIndex, u1
         setSpriteRotation(dialogues[index].dialogueButtonIcon1.spriteIndex, 0.0f, 0.0f, 0.0f);
         setBilinearFiltering(dialogues[index].dialogueButtonIcon1.spriteIndex, TRUE);
         setSpriteColor(dialogues[index].dialogueButtonIcon1.spriteIndex, 0xFF, 0xFF, 0xFF, 0xFF);
-        func_8002C680(dialogues[index].dialogueButtonIcon1.spriteIndex, 2, 2);
-        setSpriteRenderingLayer(dialogues[index].dialogueButtonIcon1.spriteIndex, (1 | 2));
+        setSpriteAnchorAlignment(dialogues[index].dialogueButtonIcon1.spriteIndex, SPRITE_ANCHOR_CENTER, SPRITE_ANCHOR_CENTER);;
+        setSpriteBlendMode(dialogues[index].dialogueButtonIcon1.spriteIndex, SPRITE_BLEND_ALPHA_DECAL);
 
         dmaSprite(dialogues[index].dialogueButtonIcon2.spriteIndex, 
             dialogues[index].dialogueButtonIcon2.romTextureStart, 
@@ -342,8 +343,8 @@ bool initializeDialogueSession(u16 index, u16 dialogueBytecodeAddressesIndex, u1
         setSpriteRotation(dialogues[index].dialogueButtonIcon2.spriteIndex, 0.0f, 0.0f, 0.0f);
         setBilinearFiltering(dialogues[index].dialogueButtonIcon2.spriteIndex, TRUE);
         setSpriteColor(dialogues[index].dialogueButtonIcon2.spriteIndex, 0xFF, 0xFF, 0xFF, 0xFF);
-        func_8002C680(dialogues[index].dialogueButtonIcon2.spriteIndex, 2, 2);
-        setSpriteRenderingLayer(dialogues[index].dialogueButtonIcon2.spriteIndex, (1 | 2));
+        setSpriteAnchorAlignment(dialogues[index].dialogueButtonIcon2.spriteIndex, SPRITE_ANCHOR_CENTER, SPRITE_ANCHOR_CENTER);;
+        setSpriteBlendMode(dialogues[index].dialogueButtonIcon2.spriteIndex, SPRITE_BLEND_ALPHA_DECAL);
 
         dmaSprite(dialogues[index].dialogueButtonIcon3.spriteIndex, 
             dialogues[index].dialogueButtonIcon3.romTextureStart, 
@@ -366,8 +367,8 @@ bool initializeDialogueSession(u16 index, u16 dialogueBytecodeAddressesIndex, u1
         setSpriteRotation(dialogues[index].dialogueButtonIcon3.spriteIndex, 0.0f, 0.0f, 0.0f);
         setBilinearFiltering(dialogues[index].dialogueButtonIcon3.spriteIndex, TRUE);
         setSpriteColor(dialogues[index].dialogueButtonIcon3.spriteIndex, 0xFF, 0xFF, 0xFF, 0xFF);
-        func_8002C680(dialogues[index].dialogueButtonIcon3.spriteIndex, 2, 2);
-        setSpriteRenderingLayer(dialogues[index].dialogueButtonIcon3.spriteIndex, (1 | 2));
+        setSpriteAnchorAlignment(dialogues[index].dialogueButtonIcon3.spriteIndex, SPRITE_ANCHOR_CENTER, SPRITE_ANCHOR_CENTER);;
+        setSpriteBlendMode(dialogues[index].dialogueButtonIcon3.spriteIndex, SPRITE_BLEND_ALPHA_DECAL);
         
         dialogues[index].bytecodeExecutor.currentOpcode = 0xFF;
         dialogues[index].sessionManager.dialogueBytecodeAddressesIndex = dialogueBytecodeAddressesIndex;
@@ -375,14 +376,14 @@ bool initializeDialogueSession(u16 index, u16 dialogueBytecodeAddressesIndex, u1
 
         nuPiReadRom(dialogueBytecodeAddresses[dialogueBytecodeAddressesIndex].romIndexStart, dialogueBytecodeAddresses[dialogueBytecodeAddressesIndex].vaddrIndex, dialogueBytecodeAddresses[dialogueBytecodeAddressesIndex].romIndexEnd - dialogueBytecodeAddresses[dialogueBytecodeAddressesIndex].romIndexStart);
 
-        romAddr = func_80043C98(0, dialogues[index].sessionManager.dialogueIndex);
+        romAddr = getDialogueBytecodeAddress(0, dialogues[index].sessionManager.dialogueIndex);
 
-        nuPiReadRom(romAddr, dialogueBytecodeAddresses[dialogues[index].sessionManager.dialogueBytecodeAddressesIndex].vaddr, func_80043C98(0, dialogues[index].sessionManager.dialogueIndex + 1) - romAddr);
+        nuPiReadRom(romAddr, dialogueBytecodeAddresses[dialogues[index].sessionManager.dialogueBytecodeAddressesIndex].vaddr, getDialogueBytecodeAddress(0, dialogues[index].sessionManager.dialogueIndex + 1) - romAddr);
 
         dialogues[index].dialogueBytecodePointer = dialogueBytecodeAddresses[dialogues[index].sessionManager.dialogueBytecodeAddressesIndex].vaddr;
         
-        dialogues[index].sessionManager.unk_16 = 0;
-        dialogues[index].sessionManager.unk_17 = 0;
+        dialogues[index].sessionManager.totalMenuRows = 0;
+        dialogues[index].sessionManager.selectedMenuRow = 0;
  
         dialogues[index].bytecodeExecutor.textIndex = 0;
         dialogues[index].bytecodeExecutor.branchingDialogueIndex = 0;
@@ -398,7 +399,7 @@ bool initializeDialogueSession(u16 index, u16 dialogueBytecodeAddressesIndex, u1
         dialogues[index].bytecodeExecutor.randomMaximumValue = 0;
         dialogues[index].bytecodeExecutor.unusedField = 0;
         dialogues[index].bytecodeExecutor.unusedField2 = 0;
-        dialogues[index].bytecodeExecutor.unk_18 = 0;
+        dialogues[index].bytecodeExecutor.targetMenuRow = 0;
         
         dialogues[index].sessionManager.flags &= ~4;
         dialogues[index].sessionManager.flags |= DIALOGUE_INITIALIZED;
@@ -423,9 +424,9 @@ bool initializeDialogueSession(u16 index, u16 dialogueBytecodeAddressesIndex, u1
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/dialogue", func_80043A88);
+//INCLUDE_ASM("asm/nonmatchings/system/dialogue", isDialogueClosing);
 
-bool func_80043A88(void) {
+bool isDialogueClosing(void) {
 
     bool result = FALSE;
     u16 i;
@@ -440,9 +441,9 @@ bool func_80043A88(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/dialogue", func_80043AD8);
+//INCLUDE_ASM("asm/nonmatchings/system/dialogue", closeDialogueSession);
 
-bool func_80043AD8(u16 index) {
+bool closeDialogueSession(u16 index) {
 
     bool result = FALSE;
 
@@ -452,8 +453,8 @@ bool func_80043AD8(u16 index) {
             messageBoxes[dialogues[index].sessionManager.mainMessageBoxIndex].flags &= ~0x8000;
         }
 
-        func_8003F130(dialogues[index].sessionManager.mainMessageBoxIndex);
-        func_80043B84(0);
+        resetMessageBoxAnimation(dialogues[index].sessionManager.mainMessageBoxIndex);
+        cleanupDialogueOverlayBox(0);
         
         dialogues[index].sessionManager.flags = (1 | 4);
         
@@ -465,13 +466,13 @@ bool func_80043AD8(u16 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/dialogue", func_80043B84);
+//INCLUDE_ASM("asm/nonmatchings/system/dialogue", cleanupDialogueOverlayBox);
 
-void func_80043B84(u16 index) {
+void cleanupDialogueOverlayBox(u16 index) {
 
     messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].flags &= ~0x8000;
     
-    func_8003F130(dialogues[index].sessionManager.overlayMessageBoxIndex);
+    resetMessageBoxAnimation(dialogues[index].sessionManager.overlayMessageBoxIndex);
     
     resetAnimationState(dialogues[index].dialogueButtonIcon1.spriteIndex);
     resetAnimationState(dialogues[index].dialogueButtonIcon2.spriteIndex);
@@ -481,15 +482,15 @@ void func_80043B84(u16 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/dialogue", func_80043C6C);
+//INCLUDE_ASM("asm/nonmatchings/system/dialogue", getSelectedMenuRow);
 
-u8 func_80043C6C(u16 index) {
-    return dialogues[index].sessionManager.unk_17;
+u8 getSelectedMenuRow(u16 index) {
+    return dialogues[index].sessionManager.selectedMenuRow;
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/dialogue", func_80043C98);
+//INCLUDE_ASM("asm/nonmatchings/system/dialogue", getDialogueBytecodeAddress);
 
-u32 func_80043C98(u16 index, u16 dialogueOffset) {
+u32 getDialogueBytecodeAddress(u16 index, u16 dialogueOffset) {
 
     u32 ptr = dialogueBytecodeAddresses[dialogues[index].sessionManager.dialogueBytecodeAddressesIndex].romStart;
     
@@ -711,7 +712,7 @@ void parseDialogueBytecode(u16 index) {
         case DIALOGUE_OPCODE_HANDLE_MENU_SELECTION_BRANCH:
             
             // row
-            dialogues[index].bytecodeExecutor.unk_18 = *(u8*)dialogues[index].dialogueBytecodePointer++;
+            dialogues[index].bytecodeExecutor.targetMenuRow = *(u8*)dialogues[index].dialogueBytecodePointer++;
             
             byteswap.byte[1] = *(u8*)dialogues[index].dialogueBytecodePointer++;
             byteswap.byte[0] = *(u8*)dialogues[index].dialogueBytecodePointer++;
@@ -743,11 +744,11 @@ void setOverlayMessageBoxSprite(u16 index) {
         + dialogues[index].dialogueButtonIcon1.coordinates.y;
 
     setSpriteScale(dialogueWindows[messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].dialogueWindowIndex].spriteIndex, 
-       messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].unk_A0 * 0.5f, 
+       messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].maxCharsPerLine * 0.5f, 
        messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].textBoxVisibleRows * 0.6f, 
        1.0f);
 
-    setSpriteRenderingLayer(dialogueWindows[messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].dialogueWindowIndex].spriteIndex, (1 | 2));
+    setSpriteBlendMode(dialogueWindows[messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].dialogueWindowIndex].spriteIndex, SPRITE_BLEND_ALPHA_DECAL);
     setSpriteColor(dialogueWindows[messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].dialogueWindowIndex].spriteIndex, 255, 255, 255, 192);
     setBilinearFiltering(dialogueWindows[messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].dialogueWindowIndex].spriteIndex, TRUE);
     startSpriteAnimation(dialogues[index].dialogueButtonIcon1.spriteIndex, dialogues[index].dialogueButtonIcon1.spriteOffset, dialogues[index].dialogueButtonIcon1.flag);
@@ -758,16 +759,16 @@ void setOverlayMessageBoxSprite(u16 index) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/dialogue", func_800449C4);
+//INCLUDE_ASM("asm/nonmatchings/system/dialogue", updateDialogueButtonIcon2Display);
 
-void func_800449C4(u16 index) {
+void updateDialogueButtonIcon2Display(u16 index) {
 
     f32 tempX = dialogues[index].dialogueButtonIcon2.coordinates.x;
     f32 tempY = dialogues[index].dialogueButtonIcon2.coordinates.y;
 
-    setSpriteScale(dialogueWindows[messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].dialogueWindowIndex].spriteIndex, messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].unk_A0 * 0.5f, messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].textBoxVisibleRows * 0.6f, 1.0f);
+    setSpriteScale(dialogueWindows[messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].dialogueWindowIndex].spriteIndex, messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].maxCharsPerLine * 0.5f, messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].textBoxVisibleRows * 0.6f, 1.0f);
     
-    setSpriteRenderingLayer(dialogueWindows[messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].dialogueWindowIndex].spriteIndex, (1 | 2));
+    setSpriteBlendMode(dialogueWindows[messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].dialogueWindowIndex].spriteIndex, SPRITE_BLEND_ALPHA_DECAL);
     setBilinearFiltering(dialogueWindows[messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].dialogueWindowIndex].spriteIndex, TRUE);
 
     startSpriteAnimation(dialogues[index].dialogueButtonIcon2.spriteIndex, dialogues[index].dialogueButtonIcon2.spriteOffset, dialogues[index].dialogueButtonIcon2.flag);
@@ -775,14 +776,14 @@ void func_800449C4(u16 index) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/dialogue", func_80044BF4);
+//INCLUDE_ASM("asm/nonmatchings/system/dialogue", updateDialogueButtonIcon3Display);
 
-void func_80044BF4(u16 index) {
+void updateDialogueButtonIcon3Display(u16 index) {
  
     f32 tempX = dialogues[index].dialogueButtonIcon3.coordinates.x;
     f32 tempY = dialogues[index].dialogueButtonIcon3.coordinates.y;
 
-    setSpriteRenderingLayer(dialogueWindows[messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].dialogueWindowIndex].spriteIndex, (1 | 2));
+    setSpriteBlendMode(dialogueWindows[messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].dialogueWindowIndex].spriteIndex, SPRITE_BLEND_ALPHA_DECAL);
     setBilinearFiltering(dialogueWindows[messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].dialogueWindowIndex].spriteIndex, 1);
 
     startSpriteAnimation(dialogues[index].dialogueButtonIcon3.spriteIndex, dialogues[index].dialogueButtonIcon3.spriteOffset, dialogues[index].dialogueButtonIcon3.flag);
@@ -790,9 +791,9 @@ void func_80044BF4(u16 index) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/dialogue", func_80044D78);
+//INCLUDE_ASM("asm/nonmatchings/system/dialogue", handleMenuNavigation);
 
-void func_80044D78(u16 index) {
+void handleMenuNavigation(u16 index) {
 
     bool set = FALSE;
 
@@ -800,16 +801,16 @@ void func_80044D78(u16 index) {
 
         if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_SOUTHWEST)) {
 
-            if (dialogues[index].sessionManager.unk_17 < (dialogues[index].sessionManager.unk_16 - 1)) {
+            if (dialogues[index].sessionManager.selectedMenuRow < (dialogues[index].sessionManager.totalMenuRows - 1)) {
 
-                dialogues[index].sessionManager.unk_17++;
+                dialogues[index].sessionManager.selectedMenuRow++;
 
-                if (dialogues[index].sessionManager.unk_18 != messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].textBoxVisibleRows - 1) {
-                    dialogues[index].sessionManager.unk_18++;
+                if (dialogues[index].sessionManager.visibleMenuCursorRow != messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].textBoxVisibleRows - 1) {
+                    dialogues[index].sessionManager.visibleMenuCursorRow++;
                     adjustSpriteViewSpacePosition(dialogues[index].dialogueButtonIcon1.spriteIndex, 0.0f, -messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].fontContext.characterCellHeight - messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].lineSpacing, 0.0f);
                 } else {
-                    func_8003FE9C(dialogues[index].sessionManager.overlayMessageBoxIndex);
-                    dialogues[index].sessionManager.unk_19++;
+                    scrollMessageBoxDown(dialogues[index].sessionManager.overlayMessageBoxIndex);
+                    dialogues[index].sessionManager.menuScrollOffset++;
                 }
 
                 if (dialogues[index].sessionManager.scrollSfxIndex != 0xFF) {
@@ -826,16 +827,16 @@ void func_80044D78(u16 index) {
 
             if (!set) {
 
-                if (dialogues[index].sessionManager.unk_17) {
+                if (dialogues[index].sessionManager.selectedMenuRow) {
 
-                    dialogues[index].sessionManager.unk_17--;
+                    dialogues[index].sessionManager.selectedMenuRow--;
                     
-                    if (dialogues[index].sessionManager.unk_18) {
-                        dialogues[index].sessionManager.unk_18--;
+                    if (dialogues[index].sessionManager.visibleMenuCursorRow) {
+                        dialogues[index].sessionManager.visibleMenuCursorRow--;
                         adjustSpriteViewSpacePosition(dialogues[index].dialogueButtonIcon1.spriteIndex, 0.0f, messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].fontContext.characterCellHeight + messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].lineSpacing, 0.0f);
                     } else {
-                        func_8003FFF4(dialogues[index].sessionManager.overlayMessageBoxIndex);
-                        dialogues[index].sessionManager.unk_19--;
+                        scrollMessageBoxUp(dialogues[index].sessionManager.overlayMessageBoxIndex);
+                        dialogues[index].sessionManager.menuScrollOffset--;
                     }
 
                     if (dialogues[index].sessionManager.scrollSfxIndex != 0xFF) {
@@ -850,16 +851,16 @@ void func_80044D78(u16 index) {
             }
         }
 
-        if (dialogues[index].sessionManager.unk_16 > messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].textBoxVisibleRows) { 
+        if (dialogues[index].sessionManager.totalMenuRows > messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].textBoxVisibleRows) { 
 
-            if (messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].textBoxVisibleRows < (dialogues[index].sessionManager.unk_16 - dialogues[index].sessionManager.unk_19)) {
-                func_80044BF4(index);
+            if (messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].textBoxVisibleRows < (dialogues[index].sessionManager.totalMenuRows - dialogues[index].sessionManager.menuScrollOffset)) {
+                updateDialogueButtonIcon3Display(index);
             } else {
                 resetAnimationState(dialogues[index].dialogueButtonIcon3.spriteIndex);
             }
 
-            if (dialogues[index].sessionManager.unk_19) {
-                func_800449C4(index);
+            if (dialogues[index].sessionManager.menuScrollOffset) {
+                updateDialogueButtonIcon2Display(index);
             } else {
                 resetAnimationState(dialogues[index].dialogueButtonIcon2.spriteIndex);
             }
@@ -870,7 +871,7 @@ void func_80044D78(u16 index) {
 
             if (!set) {
                 
-                func_80043B84(index);
+                cleanupDialogueOverlayBox(index);
                 dialogues[index].bytecodeExecutor.currentOpcode = 0xFF;
                 
                 if (dialogues[index].sessionManager.closeSfxIndex != 0xFF) {
@@ -1127,30 +1128,30 @@ void updateCurrentDialogue(u16 index) {
             case DIALOGUE_OPCODE_SHOW_SUBMESSAGE_BOX:
                 
                 dialogues[index].bytecodeExecutor.currentOpcode = 0xFF;
-                dialogues[index].sessionManager.unk_17 = 0;
-                dialogues[index].sessionManager.unk_18 = 0;
-                dialogues[index].sessionManager.unk_19 = 0;
-                dialogues[index].sessionManager.unk_14 = dialogues[index].bytecodeExecutor.textOffset;
+                dialogues[index].sessionManager.selectedMenuRow = 0;
+                dialogues[index].sessionManager.visibleMenuCursorRow = 0;
+                dialogues[index].sessionManager.menuScrollOffset = 0;
+                dialogues[index].sessionManager.overlayTextOffset = dialogues[index].bytecodeExecutor.textOffset;
                 dialogues[index].sessionManager.flags |= DIALOGUE_PAUSE_FOR_USER_INPUT;
                 
-                initializeMessageBox(dialogues[index].sessionManager.overlayMessageBoxIndex, dialogueBytecodeAddresses[dialogues[index].sessionManager.dialogueBytecodeAddressesIndex].subdialogueTextAddressesIndex, dialogues[index].sessionManager.unk_14, 0);
+                initializeMessageBox(dialogues[index].sessionManager.overlayMessageBoxIndex, dialogueBytecodeAddresses[dialogues[index].sessionManager.dialogueBytecodeAddressesIndex].subdialogueTextAddressesIndex, dialogues[index].sessionManager.overlayTextOffset, 0);
                 
                 // probably line height or selection count
-                temp2 = messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].unk_A1;
+                temp2 = messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].totalLines;
                 
                 if (temp2 >= 5) {
-                    func_8003F5D0(dialogues[index].sessionManager.overlayMessageBoxIndex, messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].unk_A0, 4);
+                    setMessageBoxLineAndRowSizes(dialogues[index].sessionManager.overlayMessageBoxIndex, messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].maxCharsPerLine, 4);
                 } else {
-                    func_8003F5D0(dialogues[index].sessionManager.overlayMessageBoxIndex, messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].unk_A0, temp2);
+                    setMessageBoxLineAndRowSizes(dialogues[index].sessionManager.overlayMessageBoxIndex, messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].maxCharsPerLine, temp2);
                 }
                 
-                dialogues[index].sessionManager.unk_16 = messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].unk_A1;
+                dialogues[index].sessionManager.totalMenuRows = messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].totalLines;
                 
                 setOverlayMessageBoxSprite(index);
                 
-                if (dialogues[index].sessionManager.unk_8 != 0xFF) {
-                    setSfx(dialogues[index].sessionManager.unk_8 + 1);
-                    setSfxVolume(dialogues[index].sessionManager.unk_8 + 1, DIALOGUE_SFX_VOLUME);
+                if (dialogues[index].sessionManager.buttonPressSfxIndex != 0xFF) {
+                    setSfx(dialogues[index].sessionManager.buttonPressSfxIndex + 1);
+                    setSfxVolume(dialogues[index].sessionManager.buttonPressSfxIndex + 1, DIALOGUE_SFX_VOLUME);
                 }
                 
                 finishCurrentDialogueBlockProcessing = TRUE;
@@ -1162,13 +1163,13 @@ void updateCurrentDialogue(u16 index) {
 
             case DIALOGUE_OPCODE_HANDLE_MENU_SELECTION_BRANCH:
                 
-                temp6 = dialogues[index].sessionManager.unk_17;
+                temp6 = dialogues[index].sessionManager.selectedMenuRow;
                 
-                if (dialogues[index].bytecodeExecutor.unk_18 == temp6) {
+                if (dialogues[index].bytecodeExecutor.targetMenuRow == temp6) {
                     
                     initializeDialogueSession(index, dialogues[index].sessionManager.dialogueBytecodeAddressesIndex, dialogues[index].bytecodeExecutor.branchingDialogueIndex, dialogues[index].sessionManager.flags & (0x40 | 0x80));
                     // ?
-                    dialogues[index].sessionManager.unk_17 = temp6;
+                    dialogues[index].sessionManager.selectedMenuRow = temp6;
 
                 } else {
                     dialogues[index].bytecodeExecutor.currentOpcode = 0xFF;
@@ -1178,7 +1179,7 @@ void updateCurrentDialogue(u16 index) {
 
             case DIALOGUE_OPCODE_END_DIALOGUE:
                 finishCurrentDialogueBlockProcessing = TRUE;
-                func_80043AD8(index);
+                closeDialogueSession(index);
                 break;
         
             }
@@ -1210,7 +1211,7 @@ void updateDialogues(void) {
             }
             
             if (dialogues[i].sessionManager.flags & DIALOGUE_PAUSE_FOR_USER_INPUT) {
-                func_80044D78(i);
+                handleMenuNavigation(i);
                 skipDialogueUpdate = TRUE;
             }
             

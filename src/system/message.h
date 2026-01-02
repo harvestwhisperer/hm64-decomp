@@ -15,11 +15,25 @@
 /* flags */
 #define MESSAGE_BOX_ACTIVE 1
 #define MESSAGE_BOX_INITIALIZED 2
+#define MESSAGE_BOX_TEXT_COMPLETE 4
+#define MESSAGE_BOX_TEXT_END_REACHED 8
+#define MESSAGE_BOX_INTERPOLATION_MODE_1 0x10 
+#define MESSAGE_BOX_INTERPOLATION_MODE_2 0x20
+#define MESSAGE_BOX_SCROLLING_DOWN 0x40 
+#define MESSAGE_BOX_SCROLLING_UP 0x80    
+#define MESSAGE_BOX_PROCESSING_GAME_VARIABLE 0x100
 #define MESSAGE_BOX_HAS_DIALOGUE_WINDOW 0x200
 #define MESSAGE_BOX_HAS_OVERLAY_ICON 0x400
+#define MESSAGE_BOX_BUTTON_PRESSED 0x800
+#define MESSAGE_BOX_WAITING_WITH_ICON 0x1000
+#define MESSAGE_BOX_NEEDS_INTERPOLATOR_INIT 0x2000
+// #define  0x4000
+#define MESSAGE_BOX_MODE_UNKNOWN 0x8000
 #define MESSAGE_BOX_HAS_CHARACTER_AVATAR 0x10000
-// 0x100 need to update length of game variable string 
-// 0x200000 = need to do rgba
+#define MESSAGE_BOX_MODE_KEEP_ANIMATION 0x40000
+#define MESSAGE_BOX_MODE_NO_INPUT 0x80000
+#define MESSAGE_BOX_SILENT 0x100000
+#define MESSAGE_BOX_RGBA_COMPLETE 0x200000
 
 #define INLINE_TEXT 0
 #define STANDALONE 1
@@ -202,9 +216,9 @@ typedef struct {
 } DialogueWindow;
 
 typedef struct {
-    u16 unk_0;
-    u16 unk_2;
-    u16 unk_4;
+    s16 rate;
+    s16 frameRate;
+    s16 accumulatedValue;
 } MessageBoxInterpolator;
 
 // 0x80188BC8
@@ -218,22 +232,22 @@ typedef struct {
 // 0x80188B70
 typedef struct {
     u8 *textBufferBase;
-    Vec4f unk_4;
-    Vec4f unk_14;
-    Vec4f unk_24;
-    Vec4f unk_34;
+    Vec4f baseRGBA; // Base color multiplier
+    Vec4f targetRGBA; // Target color for interpolation
+    Vec4f currentRGBA; // Current color value
+    Vec4f deltaRGBA; // Per-frame color delta
     u8 *savedCharPtr; // backup/store char
     u8 *gameVariableStringPtr;
     Vec3f viewSpacePosition;
     MessageBoxFont fontContext; // 0x58
-    u16 unk_64; // interpolator
+    u16 unk_64; // interpolator (FIXME: should be Interpolator rgbaInterpolator spanning 0x64-0x73)
     u16 frameCounter; // 0x66
     u16 unk_68; // counter
     MessageBoxInterpolator scrollInterpolator; // 0x6A
     u32 characterPrintSfx;
-    u32 unk_74;
+    u32 unk_74; // Unknown SFX (follows same pattern as other SFX fields)
     u32 messageCloseSfx;
-    s16 unk_7C; // interpolation value
+    s16 unk_7C; // interpolation rate value
     u16 textIndex;
     u16 totalCharactersProcessed;
     u16 charactersProcessedPerLine; // might be characters processed per message
@@ -254,44 +268,44 @@ typedef struct {
     u8 characterAvatarIndex; // 0x9A
     u8 characterSpacing; // 0x9B
     u8 lineSpacing; // 0x9C
-    u8 unk_9D;
+    u8 unk_9D; // Unknown counter (reset when printing starts)
     u8 gameVariableStringIndex; // index
     u8 gameVariableStringLength;
-    u8 unk_A0;
-    u8 unk_A1;
-    u16 unk_A2;
-    u32 flags; // 0xA4
+    u8 maxCharsPerLine; // Maximum characters on widest line
+    u8 totalLines; // Total number of lines in message
+    u16 unk_A2; // Unused
+    u32 flags;
 } MessageBox;
 
 extern void initializeMessageBoxes();  
 extern bool initializeEmptyMessageBox(u16 messageBoxIndex, u8* textBufferAddr);
-extern bool func_8003DD14(u16);                      
+extern bool deactivateMessageBox(u16);                      
 extern bool initializeMessageBox(u16 messageBoxIndex, u16, u16, u32 flag);     
-extern bool func_8003E77C(u16, u8, u8, u8, u8);        
-extern bool func_8003EA1C(u16 index, u8 r, u8 g, u8 b, u8 a, s16 rate);     
-extern bool func_8003EFD8(u16);           
-extern bool func_8003F130(u16);  
+extern bool setMessageBoxRGBA(u16, u8, u8, u8, u8);        
+extern bool setMessageBoxRGBAWithTransition(u16 index, u8 r, u8 g, u8 b, u8 a, s16 rate);     
+extern bool checkMessageBoxRGBAComplete(u16);           
+extern bool resetMessageBoxAnimation(u16);  
 extern bool setTextAddresses(u16 dialogueIndex, u32 romIndexStart, u32 romIndexEnd, u32 romTextStart, u32 textBufferVaddr) ; 
-extern bool func_8003F0DC();  
-extern bool func_8003F360(u16, s16, u8);                           
-extern bool func_8003F464(u16 index, u8 arg1, u8 arg2, u8* compressedCI2FontData, u16* fontPalettePtr);             
+extern bool checkAnyMessageBoxTextFinished();  
+extern bool setMessageBoxInterpolationWithFlags(u16, s16, u8);                           
+extern bool setMessageBoxFont(u16 index, u8 arg1, u8 arg2, u8* compressedCI2FontData, u16* fontPalettePtr);             
 extern bool setMessageBoxSfx(u16, u32, u32, u32);        
 extern bool setMessageBoxViewSpacePosition(u16, f32, f32, f32);                        
-extern bool func_8003F5D0(u16, u8, u8);                           
-extern bool func_8003F630(u16, u8, u8);                           
+extern bool setMessageBoxLineAndRowSizes(u16, u8, u8);                           
+extern bool setMessageBoxSpacing(u16, u8, u8);                        
 extern bool setMessageBoxSpriteIndices(u16, u8, u8, u8);    
-extern bool func_8003F80C(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextureEnd, u32 romIndexStart, u32 romIndexEnd, u8* vaddrTexture, u16* vaddrPalette, AnimationFrameMetadata* vaddrAnimationFrameMetadata, u8* vaddrTextureToPaletteLookup, u32 argA, u16 spriteOffset, u8 flag, f32 x, f32 y, f32 z);                    
-extern bool func_8003F910(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextureEnd, u32 romIndexStart, u32 romIndexEnd, u8* vaddrTexture, u16* vaddrPalette, AnimationFrameMetadata* vaddrAnimationFrameMetadata, u8* vaddrTextureToPaletteLookup, u32 argA, u16 offset, u8 flag, f32 x, f32 y, f32 z);
-extern bool func_8003FA1C(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextureEnd, u32 romAssetsIndexStart, u32 romAssetsIndexEnd, u32 romSpritesheetIndexStart, u32 romSpritesheetIndexEnd, u8* vaddrTexture, u8* vaddrTexture2, u16* vaddrPalette, void* vaddrAnimation, void* vaddrSpriteToPalette, void* vaddrSpritesheetIndex, f32 x, f32 y, f32 z);          
-extern void func_8003FAE8(u8* arg0);
+extern bool setDialogueWindowSprite(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextureEnd, u32 romIndexStart, u32 romIndexEnd, u8* vaddrTexture, u16* vaddrPalette, AnimationFrameMetadata* vaddrAnimationFrameMetadata, u8* vaddrTextureToPaletteLookup, u32 argA, u16 spriteOffset, u8 flag, f32 x, f32 y, f32 z);                    
+extern bool setOverlayIconSprite(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextureEnd, u32 romIndexStart, u32 romIndexEnd, u8* vaddrTexture, u16* vaddrPalette, AnimationFrameMetadata* vaddrAnimationFrameMetadata, u8* vaddrTextureToPaletteLookup, u32 argA, u16 offset, u8 flag, f32 x, f32 y, f32 z);
+extern bool setCharacterAvatarSprite(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextureEnd, u32 romAssetsIndexStart, u32 romAssetsIndexEnd, u32 romSpritesheetIndexStart, u32 romSpritesheetIndexEnd, u8* vaddrTexture, u8* vaddrTexture2, u16* vaddrPalette, void* vaddrAnimation, void* vaddrSpriteToPalette, void* vaddrSpritesheetIndex, f32 x, f32 y, f32 z);          
+extern void setCharacterAvatarAnimationsPtr(u8* arg0);
 extern bool setMessageBoxButtonMask(u16, u16);                    
-extern bool func_8003FB4C(u16, s16);                      
+extern bool setMessageBoxScrollSpeed(u16, s16);                      
 extern bool setGameVariableString(u16, u8*, s8);  
 extern u8 convertNumberToGameVariableString(u16 index, u32 arg1, u8 arg2);
-extern bool func_8003FE9C(u16 index);
-extern bool func_8003FFF4(u16 index);
-extern bool func_80040140(u16 index);
-extern u8 func_800401C8(u16 index);
+extern bool scrollMessageBoxDown(u16 index);
+extern bool scrollMessageBoxUp(u16 index);
+extern bool checkMoreLinesToPrint(u16 index);
+extern u8 checkMessageBoxScrolled(u16 index);
 extern void updateMessageBox();
 extern void updateDialogues();
 

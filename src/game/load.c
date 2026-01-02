@@ -82,7 +82,7 @@ void func_800598E0(void) {
     
     setSeasonName();
     // decrease wife/baby/horse/dog affection
-    func_8005A60C();
+    decrementFamilyAndPetAffection();
     setFestivalDailyBits();
     
     if (checkDailyEventBit(0x4E)) {

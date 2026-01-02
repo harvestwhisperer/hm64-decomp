@@ -5,6 +5,7 @@
 #include "system/memory.h"
 #include "system/sprite.h"
 #include "system/math.h"
+#include "system/sceneGraph.h"
 
 #include "mainproc.h"
 
@@ -171,7 +172,7 @@ bool dmaSprite(u16 index,
                 nuPiReadRom(romTextureStart + offset4, spriteToPaletteVaddr, offset5 - offset4);
                 nuPiReadRom(romSpritesheetIndexStart, spritesheetIndexVaddr, romSpritesheetIndexEnd - romSpritesheetIndexStart);
 
-                func_8002B50C(index, animationVaddr, spritesheetIndexVaddr, paletteVaddr, spriteToPaletteVaddr, romTextureStart, texture1Vaddr, texture2Vaddr);
+                setSpriteType1(index, animationVaddr, spritesheetIndexVaddr, paletteVaddr, spriteToPaletteVaddr, romTextureStart, texture1Vaddr, texture2Vaddr);
 
             // spritesheet index in spritesheet
             } else {
@@ -181,7 +182,7 @@ bool dmaSprite(u16 index,
                 nuPiReadRom(romTextureStart + offset3, animationVaddr, offset4 - offset3);
                 nuPiReadRom(romTextureStart + offset4, spriteToPaletteVaddr, offset5 - offset4);
                 
-                func_8002B36C(index, animationVaddr, texture1Vaddr, paletteVaddr, spriteToPaletteVaddr);
+                setSpriteType2(index, animationVaddr, texture1Vaddr, paletteVaddr, spriteToPaletteVaddr);
 
             }
 
@@ -201,9 +202,9 @@ bool dmaSprite(u16 index,
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", func_8002B36C);
+//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", setSpriteType2);
 
-bool func_8002B36C(u16 index, u32* animationIndexPtr, u32* spritesheetIndexPtr, u32* paletteIndexPtr, u8* spriteToPaletteMappingPtr) {
+bool setSpriteType2(u16 index, u32* animationIndexPtr, u32* spritesheetIndexPtr, u32* paletteIndexPtr, u8* spriteToPaletteMappingPtr) {
 
     bool result = FALSE;
 
@@ -215,9 +216,9 @@ bool func_8002B36C(u16 index, u32* animationIndexPtr, u32* spritesheetIndexPtr, 
             globalSprites[index].spritesheetIndexPtr = spritesheetIndexPtr;
             globalSprites[index].paletteIndexPtr = paletteIndexPtr;
             globalSprites[index].spriteToPaletteMappingPtr = spriteToPaletteMappingPtr;
-            globalSprites[index].texturePtr[0] = (void*)0;
-            globalSprites[index].texturePtr[1] = (void*)0;
-            globalSprites[index].romTexturePtr = (void*)0;
+            globalSprites[index].texturePtr[0] = NULL;
+            globalSprites[index].texturePtr[1] = NULL;
+            globalSprites[index].romTexturePtr = NULL;
 
             globalSprites[index].stateFlags = SPRITE_ACTIVE;
             globalSprites[index].renderingFlags = 0;
@@ -229,9 +230,9 @@ bool func_8002B36C(u16 index, u32* animationIndexPtr, u32* spritesheetIndexPtr, 
             setSpriteScale(index, 1.0f, 1.0f, 1.0f);
             setSpriteRotation(index, 0.0f, 0.0f, 0.0f);
             setSpriteBaseRGBA(index, 0xFF, 0xFF, 0xFF, 0xFF);
-            func_8002C680(index, 2, 2);
-            func_8002C6F8(index, 2);
-            setSpriteRenderingLayer(index, (1 | 2));
+            setSpriteAnchorAlignment(index, SPRITE_ANCHOR_CENTER, SPRITE_ANCHOR_CENTER);;
+            setSpriteAxisMapping(index, SPRITE_BILLBOARD_XY);
+            setSpriteBlendMode(index, SPRITE_BLEND_ALPHA_DECAL);
             
             result = TRUE;
             
@@ -242,9 +243,9 @@ bool func_8002B36C(u16 index, u32* animationIndexPtr, u32* spritesheetIndexPtr, 
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", func_8002B50C);
+//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", setSpriteType1);
 
-bool func_8002B50C(u16 spriteIndex, u32* animationIndexPtr, u32* spritesheetIndexPtr, u32* paletteIndexPtr, u8* spriteToPaletteMappingPtr, u32 romTexturePtr, u8* texturePtr, u8* texture2Ptr) {
+bool setSpriteType1(u16 spriteIndex, u32* animationIndexPtr, u32* spritesheetIndexPtr, u32* paletteIndexPtr, u8* spriteToPaletteMappingPtr, u32 romTexturePtr, u8* texturePtr, u8* texture2Ptr) {
     
     bool result = FALSE;
 
@@ -270,9 +271,9 @@ bool func_8002B50C(u16 spriteIndex, u32* animationIndexPtr, u32* spritesheetInde
             setSpriteScale(spriteIndex, 1.0f, 1.0f, 1.0f);
             setSpriteRotation(spriteIndex, 0, 0, 0);
             setSpriteBaseRGBA(spriteIndex, 0xFF, 0xFF, 0xFF, 0xFF);
-            func_8002C680(spriteIndex, 2, 2);
-            func_8002C6F8(spriteIndex, 2);
-            setSpriteRenderingLayer(spriteIndex, (1 | 2));
+            setSpriteAnchorAlignment(spriteIndex, SPRITE_ANCHOR_CENTER, SPRITE_ANCHOR_CENTER);;
+            setSpriteAxisMapping(spriteIndex, SPRITE_BILLBOARD_XY);
+            setSpriteBlendMode(spriteIndex, SPRITE_BLEND_ALPHA_DECAL);
             
             result = TRUE;
             
@@ -438,9 +439,9 @@ bool resetAnimationState(u16 index) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", func_8002BB30);
+//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", resumeSpriteAnimation);
 
-bool func_8002BB30(u16 index) {
+bool resumeSpriteAnimation(u16 index) {
 
     bool result = FALSE;
 
@@ -456,9 +457,9 @@ bool func_8002BB30(u16 index) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", func_8002BB88);
+//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", pauseSpriteAnimation);
 
-bool func_8002BB88(u16 index) {
+bool pauseSpriteAnimation(u16 index) {
 
     bool result = FALSE;
 
@@ -505,9 +506,9 @@ bool setSpriteFlip(u16 index, bool flipHorizontal, bool flipVertical) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", func_8002BCC8);
+//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", getSpriteAnimationStateChangedFlag);
 
-u16 func_8002BCC8(u16 index) {
+u16 getSpriteAnimationStateChangedFlag(u16 index) {
 
     u16 result = FALSE;
 
@@ -516,6 +517,7 @@ u16 func_8002BCC8(u16 index) {
         if (globalSprites[index].stateFlags & SPRITE_ACTIVE) {
             result = globalSprites[index].stateFlags & SPRITE_ANIMATION_STATE_CHANGED;
         }
+
     }
     
     return result;
@@ -638,7 +640,7 @@ bool adjustSpriteScale(u16 index, f32 x, f32 y, f32 z) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", func_8002C000);
+//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", adjustSpriteRotation);
 
 // unused or inline
 bool adjustSpriteRotation(u16 index, f32 x, f32 y, f32 z) {
@@ -662,7 +664,7 @@ bool adjustSpriteRotation(u16 index, f32 x, f32 y, f32 z) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", func_8002C0B4);
+//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", adjustSpriteRGBA);
 
 // unused or inline
 bool adjustSpriteRGBA(u16 index, s8 r, s8 g, s8 b, s8 a) {
@@ -788,9 +790,9 @@ bool updateSpriteAlpha(u16 index, u8 arg1, s16 rate) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", func_8002C680);
+//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", setSpriteAnchorAlignment);
 
-bool func_8002C680(u16 index, u16 arg1, u16 flags) {
+bool setSpriteAnchorAlignment(u16 index, u16 arg1, u16 flags) {
 
     bool result = FALSE;
     int temp;
@@ -816,9 +818,9 @@ bool func_8002C680(u16 index, u16 arg1, u16 flags) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", func_8002C6F8);
+//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", setSpriteAxisMapping);
 
-bool func_8002C6F8(u16 index, u16 arg1) {
+bool setSpriteAxisMapping(u16 index, u16 mode) {
     
     int temp;
 
@@ -829,7 +831,7 @@ bool func_8002C6F8(u16 index, u16 arg1) {
         if (globalSprites[index].stateFlags & SPRITE_ACTIVE) {
             
             globalSprites[index].renderingFlags &= ~(0x80 | 0x100);
-            temp = arg1 << 7;
+            temp = mode << 7;
             globalSprites[index].renderingFlags |= temp;
             
             result = TRUE;
@@ -841,9 +843,9 @@ bool func_8002C6F8(u16 index, u16 arg1) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", func_8002C768);
+//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", setSpriteTriangleWinding);
 
-bool func_8002C768(u16 index, u16 arg1) {
+bool setSpriteTriangleWinding(u16 index, u16 arg1) {
 
     bool result = FALSE;
     
@@ -852,9 +854,9 @@ bool func_8002C768(u16 index, u16 arg1) {
         if (globalSprites[index].stateFlags & SPRITE_ACTIVE) {
 
             if (arg1) {
-                globalSprites[index].renderingFlags |= 0x200;
+                globalSprites[index].renderingFlags |= SPRITE_RENDERING_REVERSE_WINDING;
             } else {
-                globalSprites[index].renderingFlags &= ~0x200;
+                globalSprites[index].renderingFlags &= ~SPRITE_RENDERING_REVERSE_WINDING;
             }
 
 
@@ -867,9 +869,9 @@ bool func_8002C768(u16 index, u16 arg1) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", setSpriteRenderingLayer);
+//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", setSpriteBlendMode);
 
-bool setSpriteRenderingLayer(u16 index, u16 flags) {
+bool setSpriteBlendMode(u16 index, u16 flags) {
     
     int temp;
 
@@ -879,7 +881,7 @@ bool setSpriteRenderingLayer(u16 index, u16 flags) {
         
         if (globalSprites[index].stateFlags & SPRITE_ACTIVE) {
             
-            globalSprites[index].renderingFlags &= ~(0x400 | 0x800 | 0x1000);
+            globalSprites[index].renderingFlags &= ~BITMAP_BLEND_MODE_MASK;
             temp = flags << 10;
             globalSprites[index].renderingFlags |= temp;
             
@@ -1013,10 +1015,10 @@ bool setSpritePaletteIndex(u16 index, u16 paletteIndex) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", func_8002CBF8);
+//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", checkSpriteRGBAUpdateFinished);
 
 // seems like check fade out completed
-bool func_8002CBF8(u16 index) {
+bool checkSpriteRGBAUpdateFinished(u16 index) {
 
     bool result;
 
@@ -1289,9 +1291,9 @@ void setBitmapFromSpriteObject(u16 spriteIndex, AnimationFrameMetadata* animatio
             viewSpacePositionZ = globalSprites[spriteIndex].viewSpacePosition.z;
 
             if (globalSprites[spriteIndex].stateFlags & SPRITE_NO_TRANSFORM) {
-                bitmapIndex = setBitmap(texturePtr, palettePtr, (0x8 | 0x10 | 0x20 | 0x40));
+                bitmapIndex = setBitmap(texturePtr, palettePtr, (0x8 | SCENE_NODE_UPDATE_SCALE | SCENE_NODE_UPDATE_ROTATION | SCENE_NODE_TRANSFORM_EXEMPT));
             } else {
-                bitmapIndex = setBitmap(texturePtr, palettePtr, (0x8 | 0x10 | 0x30));
+                bitmapIndex = setBitmap(texturePtr, palettePtr, (0x8 | SCENE_NODE_UPDATE_SCALE | SCENE_NODE_UPDATE_ROTATION));
             }
 
             setBitmapViewSpacePosition(bitmapIndex, viewSpacePositionX, viewSpacePositionY, viewSpacePositionZ);
@@ -1301,15 +1303,15 @@ void setBitmapFromSpriteObject(u16 spriteIndex, AnimationFrameMetadata* animatio
             setBitmapAnchor(bitmapIndex, bitmapMetadata.anchorX, bitmapMetadata.anchorY);
             
             setBitmapFlip(bitmapIndex, globalSprites[spriteIndex].renderingFlags & SPRITE_RENDERING_FLIP_HORIZONTAL, globalSprites[spriteIndex].renderingFlags & SPRITE_RENDERING_FLIP_VERTICAL);
-            func_80029E2C(bitmapIndex, (globalSprites[spriteIndex].renderingFlags >> 3) & 3, (globalSprites[spriteIndex].renderingFlags >> 5) & 3);
-            func_80029EA4(bitmapIndex, (globalSprites[spriteIndex].renderingFlags >> 7) & 3);
-            func_80029F14(bitmapIndex, globalSprites[spriteIndex].renderingFlags & 0x200);
-            func_8002A02C(bitmapIndex, (globalSprites[spriteIndex].renderingFlags >> 0xA) & 7);
+            setBitmapAnchorAlignment(bitmapIndex, (globalSprites[spriteIndex].renderingFlags >> 3) & 3, (globalSprites[spriteIndex].renderingFlags >> 5) & 3);
+            setBitmapAxisMapping(bitmapIndex, (globalSprites[spriteIndex].renderingFlags >> 7) & 3);
+            setBitmapTriangleWinding(bitmapIndex, globalSprites[spriteIndex].renderingFlags & SPRITE_RENDERING_REVERSE_WINDING);
+            setBitmapBlendMode(bitmapIndex, (globalSprites[spriteIndex].renderingFlags >> 10) & 7);
 
-            if (globalSprites[spriteIndex].stateFlags & 0x80) {
-                bitmaps[bitmapIndex].flags |= 4;
+            if (globalSprites[spriteIndex].stateFlags & SPRITE_ENABLE_BILINEAR_FILTERING) {
+                bitmaps[bitmapIndex].flags |= BITMAP_USE_BILINEAR_FILTERING;
             } else {
-                bitmaps[bitmapIndex].flags &= ~4;
+                bitmaps[bitmapIndex].flags &= ~BITMAP_USE_BILINEAR_FILTERING;
             }
 
             objectCount = ptrCopy->objectCount;
@@ -1423,7 +1425,7 @@ static inline u8 updateSpriteCurrentRGBA(u16 i) {
 void updateSprites(void) {
 
     AnimationFrameMetadata animationFrameMetadata;
-    u32 pad[4];
+    u32 pad[4]; 
     
     u16 i = 0;
     u16* ptr;

@@ -33,7 +33,7 @@ void initializeAudio(musConfig *config) {
         gSfx[i].volume = 0;
         gAudioSequences[i].speed = 0;
         
-        func_800266C0(&gAudioSequences[i].volumes, 0, 0, 0, 0);
+        setupInterpolator(&gAudioSequences[i].volumes, 0, 0, 0, 0);
         
     }
 
@@ -134,7 +134,7 @@ bool setAudioSequence(u16 sequenceIndex, u8 *sequenceAddrStart, u8 *sequenceAddr
 
         if (!(gAudioSequences[sequenceIndex].flags & AUDIO_ACTIVE)) {
 
-            func_800266C0(&gAudioSequences[sequenceIndex].volumes, 0, 0, 0, 0);
+            setupInterpolator(&gAudioSequences[sequenceIndex].volumes, 0, 0, 0, 0);
 
             gAudioSequences[sequenceIndex].unused1 = 128;
             gAudioSequences[sequenceIndex].unused2 = 128;

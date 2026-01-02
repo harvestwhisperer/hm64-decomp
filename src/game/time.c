@@ -61,7 +61,7 @@ void func_800D7C20(void) {
 
         if (gCutsceneCompletionFlags >= 0) {
             // do global lighting
-            func_8005C07C(1, 0);
+            setLevelLighting(1, 0);
         }
 
     }
@@ -90,7 +90,7 @@ void func_800D7C20(void) {
     }
     
     // check/load cutscenes
-    func_800A7AE8(gBaseMapIndex);
+    handleTimedDailyCutscenes(gBaseMapIndex);
     
 }
 

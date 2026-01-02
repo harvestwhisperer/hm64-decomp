@@ -323,13 +323,16 @@ void setupBitmapVertices(Vtx vtxs[],
     // coordinate mapping
     switch ((flags >> 7) & 3) {
 
-        case 2:
+        // Standard XY billboard (faces camera)
+        case SPRITE_BILLBOARD_XY:
             coordinate1 = 0;
             coordinate2 = 1;
             coordinate3 = 2;
             break;
 
-        case 3:
+        // XZ billboard (horizontal/ground-aligned)
+        // water/ground
+        case SPRITE_BILLBOARD_XZ:
             coordinate1 = 0;
             coordinate2 = 2;
             coordinate3 = 1;
@@ -1014,10 +1017,10 @@ void setInitialWorldRotationAngles(f32 x, f32 y, f32 z) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/graphic", func_80028EF8);
+//INCLUDE_ASM("asm/nonmatchings/system/graphic", adjustCurrentWorldRotationAngles);
 
 // mapContext.c --> increments/decrements 6 by 1
-void func_80028EF8(f32 x, f32 y, f32 z) {
+void adjustCurrentWorldRotationAngles(f32 x, f32 y, f32 z) {
     currentWorldRotationAngles.x += x;
     currentWorldRotationAngles.y += y;
     currentWorldRotationAngles.z += z;

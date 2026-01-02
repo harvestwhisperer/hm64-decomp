@@ -7,14 +7,29 @@
 #define MAX_KEY_ITEMS 24 
 #define MAX_TOOLS 30
 
-/* holdable item flags */
-#define ITEM_EATABLE 1
-#define ITEM_STORAGABLE_IN_RUCKSACK 2
-#define ITEM_SHIPPABLE 4
-#define ITEM_PLACEABLE_ON_GROUND 0x10
-// 0x200 = overlay screen flag
-// 0x1000 = overlay screen flag
-#define ITEM_HAS_ALCOHOL 0x4000
+  /* holdable item flags */
+#define ITEM_EATABLE                    0x0001  // Can eat / put in dog bowl
+#define ITEM_RUCKSACK_STORABLE          0x0002  // Can store in rucksack / throw at water
+#define ITEM_SHIPPABLE                  0x0004  // Can ship in shipping bin
+#define ITEM_THROWABLE                  0x0008  // General holdable item behavior
+#define ITEM_PLACEABLE_ON_GROUND        0x0010  // Can place on ground (rock, log)
+#define ITEM_INCUBATOR_PLACEABLE        0x0020  // Can place in incubator (egg)
+#define ITEM_IS_ANIMAL_FEED             0x0040  // Can place in feed trough (fodder)
+#define ITEM_IS_SMALL_ANIMAL            0x0080  // Small holdable animal
+#define ITEM_IS_BABY                    0x0100  // Baby that can be held
+#define ITEM_FREEZER_STORABLE           0x0200  // Can store in freezer
+#define ITEM_CRIB_PLACEABLE             0x0400
+#define ITEM_IS_TOOL                    0x0800  // Is a tool
+#define ITEM_CABINET_STORABLE           0x1000  // Can store in cabinet
+#define ITEM_LUMBER_STORABLE            0x2000
+#define ITEM_HAS_ALCOHOL                0x4000  // Has alcohol effect
+#define ITEM_SHIPPABLE_TIMED            0x8000  // Only shippable 8am-5pm
+
+/* ItemContext flags */
+#define ITEM_CONTEXT_ACTIVE             0x01  // Item slot is active/in use
+#define ITEM_CONTEXT_USE_POSITION       0x02  // Use explicit position field
+#define ITEM_CONTEXT_HAS_DIRECTION_FRAME     0x04  // Update frame based on rotation
+#define ITEM_CONTEXT_USE_ATTACHMENT     0x08  // Use attachment offset field
 
 /* tools */
 #define SICKLE 1
@@ -189,14 +204,14 @@
 
 // 0x80204DF8
 typedef struct {
-    Vec3f unk_0; // 0xDF8
-    Vec3f unk_C;  // DFC
-    Vec3f unk_18; // 0xE10
-    u16 unk_24; // 0xE1C
-    u16 itemAnimationFrameCounter; // 0xE1E
-    u16 heldItemIndex; // 0xE20
-    u8 unk_2A; // state machine index
-    u8 flags; // 0xE23
+    Vec3f position;              // 0x00 - World coordinates (used with flags & 2)
+    Vec3f movement;              // 0x0C - Movement vector for thrown items
+    Vec3f attachmentOffset;      // 0x18 - Offset when attached to player (flags & 8)
+    u16 unk_24;                  // 0x24 - Unknown, initialized to 0
+    u16 itemAnimationFrameCounter; // 0x26 - Frame counter for animations/physics
+    u16 heldItemIndex;           // 0x28 - Index into item arrays
+    u8 stateIndex;               // 0x2A - Current state (0=inactive, 1=animating, etc.)
+    u8 flags;                    // 0x2B - Active flags
 } ItemContext;
 
 // 0x80189828
@@ -218,27 +233,29 @@ typedef struct {
     u16 animationIndex[4];
 } ItemEntityMetadata;
 
-extern void func_800CF850();     
-extern void func_800CF8F8(u8 itemOffset, u8 animationIndex, f32 x, f32 y, f32 z);
-extern void func_800CFB38(u8, u8, f32, f32, f32);   
-extern void func_800CFD78(u8, u8);                         
-extern void func_800CFDA0(u8);       
-extern void func_800D0318(); 
-extern u8 func_800D5308(u8 index, u8 arg1, u32 arg2, s32 arg3, s32 arg4);     
-extern u8 func_800D5390(u8 index, u8 arg1, u32 arg2, u16 arg3, u8 arg4);
-extern void func_800D5548(u8);           
-extern void func_800D55E4(u8, u8);  
-extern void func_800D5688(u8 index, f32 arg1, f32 arg2, f32 arg3); 
-extern u16 func_800D5A88(u16 arg0);         
-extern u8 func_800D5B00(u16 index);                          
-extern u8 func_800D5B18(u16 index);   
-extern void func_800D51B0();                  
-extern void func_800D5290();  
-extern u16 getItemFlags(u16 index);   
-extern bool func_800D5B30();
-extern void func_800D67FC(u8 index);
-extern void func_800D7010();  
+extern void resetToolUseState(void);
+extern void spawnToolEffectEntity(u8 itemOffset, u8 animationIndex, f32 x, f32 y, f32 z);
+extern void spawnFishingRodEntity(u8, u8, f32, f32, f32);
+extern void setItemEntityAnimation(u8, u8);
+extern void deactivateItemEntity(u8);
+extern void processToolUseState();
+extern u8 initializeHeldItem(u8 index, u8 arg1, u32 arg2, s32 arg3, s32 arg4);
+extern u8 allocateHeldItemSlot(u8 index, u8 arg1, u32 arg2, u16 arg3, u8 arg4);
+extern void clearHeldItemSlot(u8);
+extern void setItemState(u8, u8);
+extern void setItemAttachmentOffset(u8 index, f32 arg1, f32 arg2, f32 arg3);
+extern u16 getItemAnimationIndex(u16 arg0);
+extern u8 getItemStaminaValue(u16 index);
+extern u8 getItemFatigueValue(u16 index);
+extern void clearAllItemContextSlots();
+extern void loadActiveItemEntities();
+extern u16 getItemFlags(u16 index);
+extern bool handlePickUpGroundItem();
+extern void showHeldItemText(u8 index);
+extern void updateHeldItemStates();
 extern u8 getToolLevel(u8 tool);
+extern u8 getItemStaminaIncreaseValue(u16 index);
+extern u8 getItemFatigueReductionValue(u16 index);
 
 extern ItemContext itemInfo[10];
 extern ToolUse toolUse;

@@ -1,8 +1,10 @@
+#include "nusys.h"
+
 .section .data
 
 .word 0x80371240                /* PI BSB Domain 1 register */
 .word 15                        /* Clockrate setting */
-.word 0x80025C00                /* Entrypoint address */
+.word 0x80025c00                /* Entrypoint address */
 .short 0
 .byte 20                        /* Revision */  
 .ascii "I"                      /* Libultra version */

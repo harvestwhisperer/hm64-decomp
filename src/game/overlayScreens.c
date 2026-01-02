@@ -10,6 +10,7 @@
 #include "system/math.h"
 #include "system/message.h"
 #include "system/overlayScreenSprites.h"
+#include "system/sprite.h"
 
 #include "game/animals.h"
 #include "game/cutscenes.h"
@@ -660,121 +661,121 @@ static const u8 D_801220CC[19][6];
 static const u8 D_80122140[19][6];
 
 // forward declarations
-void func_800B2F34(void); 
-void func_800B4160(void);
-void func_800B8844(void);
-void func_800B8980(void);
-void func_800B90E0(void);
-void func_800B9914(void);
-void func_800B9B8C(void);
-void func_800B99EC(void);
-f32 func_800BA928(u8, u32);                          
-f32 func_800BA9E8(u8, u8);     
-void func_800BAAA0(void);         
-void func_800BAC7C(void);
-void func_800BAF1C(void);
-void func_800BB590(void);
-void func_800BBAF0(void);
-void func_800BBBC8(void);
-void func_800BBD34(void);
-void func_800BC7D8(void);  
-void func_800BC918(void);
-void func_800BCBE8(void);
-void func_800BD25C(void);
-void func_800BD754(void);
-void func_800BD82C(void);
-void func_800BD998(void);
-f32 func_800BE3B8(u8, u8);                          
-f32 func_800BE428(u8, u8);
-void func_800BE490(void);           
-bool func_800BE5D0(void);
-void func_800BE684(void);
-void func_800BE954(void);
-void func_800BF0C8(void);
-void func_800BF5C0(void);
-void func_800BF698(void);
-void func_800BF804(void);
-f32 func_800C0238(u8, u8);             
-f32 func_800C02A8(u8, u8);    
-void func_800C0310(void);
-bool func_800C0450(void);
-void func_800C0504(void);
-u8 func_800C0688(u8 tool);
-void func_800C0714(void);
-void func_800C0F24(void);
-void func_800C1710(void);             
-void func_800C2060(void);        
-void func_800C2128(void);           
-void func_800C2364(void);
-void func_800C2504(void);
-void func_800C2660(void);
-u8 func_800C2780(u8 arg0, u8 arg1);
-inline void func_800C292C(void);
-void func_800C2A54(void);
-void func_800C2F50(void);
-void func_800C3108(void);
-void func_800C34C0(u8, u8, u8); 
-void func_800C39A0(void);
-void func_800C3B1C(void);         
-void func_800C4A74(void);
-void func_800C4E90(void);
-void func_800C5080(void);
-void func_800C5218(void);
-void func_800C5AA4(void);
-void func_800C5DA4(void);
-void func_800C6E98(void);
-f32 func_800BC700(u8, u32);
-f32 func_800BC770(u8, u8);
-void func_800C7850(void);
-void func_800C7C88(f32 x, f32 y);
-void func_800C7CE4(f32 x, f32 y);
-void func_800C7D40(f32 x, f32 y);      
-void func_800C7D9C(f32 x, f32 y);  
-void func_800C7DF8(void);
-void func_800C7E18(void);
-void func_800C7E38(void);
-void func_800C7E58(void);
-void func_800C7E78(void);
-void func_800C80F0(f32 x, f32 y);
-void func_800C814C(f32 x, f32 y);
-void func_800C81A8(void);
-void func_800C81C8(void);
-void func_800C81E8(u8 arg0, u32 arg1);
-void func_800C9FF0(void);
-void func_800CA590(void);
-void func_800CC6F0(void);
-void func_800CCFC8(void);
-void func_800CD628(void);
-void func_800CDA6C(void);
-void func_800CDFB0(void);
-void func_800CE894(u8 arg0);
-void func_800CE7A8(u8 arg0);
-void func_800CEA74(void);
-void func_800CED60(void);
-bool func_800CF34C(u8 arg0);
-void func_800CF3C4(u8 arg0);
-bool func_800CF498(u8 arg0);
-void func_800CF544(u8 arg0);
+void loadClockSprites(void);
+void updateShopBuyAnimation(void);
+void initializePauseScreenBackground(void);
+void loadPauseScreenSprites(void);
+void loadPauseScreenItemSprites(void);
+void updatePauseScreenSelectionHighlight(void);
+void fadeOutPauseScreenSprites(void);
+void fadeInPauseScreenSprites(void);
+f32 getPauseScreenItemXCoordinate(u8, u32);
+f32 getPauseScreenItemYCoordinate(u8, u8);
+void resetPauseScreenSpriteColors(void);
+void swapPauseScreenItems(void);
+void loadToolboxScreenSprites(void);
+void loadToolboxToolSprites(void);
+void updateToolboxSelectionHighlight(void);
+void fadeInToolboxSprites(void);
+void fadeOutToolboxSprites(void);
+void resetToolboxSpriteColors(void);  
+void swapToolboxTools(void);
+void loadFreezerScreenSprites(void);
+void loadFreezerItemSprites(void);
+void updateFreezerSelectionHighlight(void);
+void fadeInFreezerSprites(void);
+void fadeOutFreezerSprites(void);
+f32 getFreezerItemXCoordinate(u8, u8);                          
+f32 getFreezerItemYCoordinate(u8, u8);
+void resetFreezerSpriteColors(void);           
+bool isFreezerItemSwappable(void);
+void swapFreezerItems(void);
+void loadCabinetScreenSprites(void);
+void loadCabinetItemSprites(void);
+void updateCabinetSelectionHighlight(void);
+void fadeInCabinetSprites(void);
+void fadeOutCabinetSprites(void);
+f32 getCabinetItemXCoordinate(u8, u8);             
+f32 getCabinetItemYCoordinate(u8, u8);    
+void resetCabinetSpriteColors(void);
+bool isCabinetItemSwappable(void);
+void swapCabinetItems(void);
+u8 getToolLevelForAnimation(u8 tool);
+void loadHouseExtensionsScreenSprites(void);
+void fadeInHouseExtensionsSelectionSprites(void);
+void loadEstimateScreenSprites(void);
+void fadeInEstimateSprites(void);
+void fadeOutEstimateSprites(void);
+void loadKitchenPictureScreenSprites(void);
+void loadPowerNutTreeSprites(void);
+void updatePowerNutCellAnimations(void);
+u8 findPowerNutCellIndex(u8 arg0, u8 arg1);
+inline void fadeInKitchenPictureSprites(void);
+void fadeOutKitchenPictureSprites(void);
+void loadCalendarScreenSprites(void);
+void loadCalendarStickers(void);
+void loadCalendarDateNumbers(u8, u8, u8);
+void fadeInCalendarSprites(void);
+void fadeOutCalendarSprites(void);
+void loadRecipeBookScreenSprites(void);
+void loadRecipeBookLabels(void);
+void fadeInRecipeBookSprites(void);
+void fadeOutRecipeBookSprites(void);
+void loadAlbumScreenSprites(void);
+void loadAlbumPhotos(void);
+void fadeInAlbumSprites(void);
+f32 getToolboxItemXCoordinate(u8, u32);
+f32 getToolboxItemYCoordinate(u8, u8);
+void loadNavigationArrows(void);
+void showDownArrow(f32 x, f32 y);
+void showUpArrow(f32 x, f32 y);
+void showLeftArrow(f32 x, f32 y);      
+void showRightArrow(f32 x, f32 y);  
+void hideDownArrow(void);
+void hideUpArrow(void);
+void hideLeftArrow(void);
+void hideRightArrow(void);
+void loadDialogueArrowSprites(void);
+void showDialogueDownArrow(f32 x, f32 y);
+void showDialogueUpArrow(f32 x, f32 y);
+void hideDialogueDownArrow(void);
+void hideDialogueUpArrow(void);
+void setItemDescriptionVariable(u8 arg0, u32 arg1);
+void initializeRaceBettingMessageBoxes(void);
+void fadeInRaceBettingSprites(void);
+void loadRaceResultsScreenSprites(void);
+void initializeRaceResultsMessageBoxes(void);
+void fadeInRaceResultsSprites(void);
+void loadRaceGiftsScreenSprites(void);
+void fadeInRaceGiftsSprites(void);
+void handleGetDogRacePrize(u8 arg0);
+void handleGetHorseRacePrize(u8 arg0);
+void loadLotteryScreenSprites(void);
+void fadeInLotterySprites(void);
+bool checkAvailableFlowerShopPrize(u8 arg0);
+void handleGetFlowerShopPrize(u8 arg0);
+bool checkAvailableBakeryPrize(u8 arg0);
+void handleGetBakeryPrize(u8 arg0);
 u32 checkRecipe(u16 bitIndex);
 
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800B2CE0);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", closeOverlayScreen);
 
 // close overlay screen
 // TODO: seems to be static inline calls (repeated deactivations)
-void func_800B2CE0(void) {
+void closeOverlayScreen(void) {
 
     u8 i, j, k;
 
-    func_800C81A8();
+    hideDialogueDownArrow();
     
     i = 0;
     
-    func_800C81C8();
-    func_800C7DF8();
-    func_800C7E18();
-    func_800C7E58();
-    func_800C7E38();
+    hideDialogueUpArrow();
+    hideDownArrow();
+    hideUpArrow();
+    hideRightArrow();
+    hideLeftArrow();
 
     deactivateSprite(0x82);
     deactivateSprite(0x83);
@@ -788,7 +789,7 @@ void func_800B2CE0(void) {
     // cursor hand
     resetAnimationState(0x79);
 
-    // clock
+    
     deactivateSprite(0x89);
     deactivateSprite(0x8C);
     deactivateSprite(0x8D);
@@ -852,17 +853,16 @@ void func_800B2CE0(void) {
 
 }
  
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800B2F34);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", loadClockSprites);
 
-// clock
-void func_800B2F34(void) {
+void loadClockSprites(void) {
 
     // clock and background
     dmaSprite(CLOCK, (u32)&_timeUiTextureSegmentRomStart, (u32)&_timeUiTextureSegmentRomEnd, (u32)&_timeUiAssetsIndexSegmentRomStart, (u32)&_timeUiAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_CLOCK_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_CLOCK_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_CLOCK_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_CLOCK_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(CLOCK, 0.0f, 0.0f, 256.0f);
     setBilinearFiltering(CLOCK, 1);
     setSpriteColor(CLOCK, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteRenderingLayer(CLOCK, 2);
+    setSpriteBlendMode(CLOCK, 2);
 
     if (checkLifeEventBit(0x59)) {
         // cow skin background
@@ -877,7 +877,7 @@ void func_800B2F34(void) {
     setSpriteRotation(0x8C, 0.0f, 0.0f, (360 - (gMinutes * 6)));
     setBilinearFiltering(0x8C, 1);
     setSpriteColor(0x8C, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteRenderingLayer(0x8C, 2);
+    setSpriteBlendMode(0x8C, SPRITE_BLEND_ALPHA_MODULATED);
     startSpriteAnimation(0x8C, 4, 0);
     
     // hour hand
@@ -886,7 +886,7 @@ void func_800B2F34(void) {
     setSpriteRotation(0x8D, 0.0f, 0.0f, ((360 - (gHour * 30)) - (gMinutes * 0.5)));
     setBilinearFiltering(0x8D, 1);
     setSpriteColor(0x8D, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteRenderingLayer(0x8D, 2);
+    setSpriteBlendMode(0x8D, SPRITE_BLEND_ALPHA_MODULATED);
     startSpriteAnimation(0x8D, 5, 0);
     
     // season name
@@ -894,7 +894,7 @@ void func_800B2F34(void) {
     setSpriteViewSpacePosition(0x8B, 0.0f, 0.0f, 256.0f);
     setBilinearFiltering(0x8B, 1);
     setSpriteColor(0x8B, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteRenderingLayer(0x8B, 2);
+    setSpriteBlendMode(0x8B, SPRITE_BLEND_ALPHA_MODULATED);
     startSpriteAnimation(0x8B, 1, gSeason - 1);
     
     // day of week
@@ -902,7 +902,7 @@ void func_800B2F34(void) {
     setSpriteViewSpacePosition(0x8A, 0.0f, 0.0f, 256.0f);
     setBilinearFiltering(0x8A, 1);
     setSpriteColor(0x8A, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteRenderingLayer(0x8A, 2);
+    setSpriteBlendMode(0x8A, SPRITE_BLEND_ALPHA_MODULATED);
     startSpriteAnimation(0x8A, 3, gDayOfWeek);
     setOverlayScreenSprites(0, 0x8F, (u32)&_timeUiTextureSegmentRomStart, (u32)&_timeUiTextureSegmentRomEnd, (u32)&_timeUiAssetsIndexSegmentRomStart, (u32)&_timeUiAssetsIndexSegmentRomEnd, (u8*)OVERLAY_SCREEN_CLOCK_TEXTURE_BUFFER, (u16*)OVERLAY_SCREEN_CLOCK_PALETTE_BUFFER, (void*)OVERLAY_SCREEN_CLOCK_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_CLOCK_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 2, 0, 0.0f, 0.0f, 256.0f, 8);
     
@@ -929,17 +929,17 @@ static inline void fadeOutClock() {
     updateSpriteAlpha(0x8E, 0, 24);
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800B3498);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", loadMoneySprites);
 
 // unused or inline
-void func_800B3498(f32 x, f32 y, f32 z, u16 arg3, u32 arg4) {
+void loadMoneySprites(f32 x, f32 y, f32 z, u16 renderingLayer, u32 arg4) {
 
     // background and "g"
     dmaSprite(0x8E, (u32)&_moneyTextureSegmentRomStart, (u32)&_moneyTextureSegmentRomEnd, (u32)&_moneyAssetsIndexSegmentRomStart, (u32)&_moneyAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)GOLD_UI_TEXTURE_BUFFER, NULL, (u16*)GOLD_UI_PALETTE_BUFFER, (AnimationFrameMetadata*)GOLD_UI_ANIMATION_FRAME_METADATA_BUFFER, (u32*)GOLD_UI_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x8E, x, y, z);
     setBilinearFiltering(0x8E, 1);
     setSpriteColor(0x8E, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteRenderingLayer(0x8E, arg3);
+    setSpriteBlendMode(0x8E, renderingLayer);
     startSpriteAnimation(0x8E, 0, 0);
 
     setOverlayScreenSprites(1, 0x91, (u32)&_moneyTextureSegmentRomStart, (u32)&_moneyTextureSegmentRomEnd, (u32)&_moneyAssetsIndexSegmentRomStart, (u32)&_moneyAssetsIndexSegmentRomEnd, 
@@ -956,10 +956,9 @@ void func_800B3498(f32 x, f32 y, f32 z, u16 arg3, u32 arg4) {
 
 /* TV functions */
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800B3694);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", loadTVCButtonIcons);
 
-// c buttons while watching TV
-void func_800B3694(void) {
+void loadTVCButtonIcons(void) {
 
     dmaSprite(0x86, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)DIALOGUE_ICON_TEXTURE_BUFFER, NULL, (u16*)DIALOGUE_ICON_PALETTE_BUFFER, (AnimationFrameMetadata*)DIALOGUE_ICON_ANIMATION_FRAME_METADATA_BUFFER, (u32*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x86, 80.0f, 32.0f, 256.0f);
@@ -991,14 +990,14 @@ void func_800B3694(void) {
     setSpriteColor(0x85, 255, 255, 255, 255);
     startSpriteAnimation(0x85, 0, 7);
     
-    func_800B3A60();
+    updateTVCButtonsByChannel();
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800B3A60);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", updateTVCButtonsByChannel);
 
 // update C buttons based on channel currently being watched
-void func_800B3A60(void) {
+void updateTVCButtonsByChannel(void) {
 
     resetAnimationState(0x82);
     resetAnimationState(0x83);
@@ -1047,7 +1046,7 @@ static inline void setMoneySprites() {
     setSpriteViewSpacePosition(0x8E, 0, 0, 256.0f);
     setBilinearFiltering(0x8E, TRUE);
     setSpriteColor(0x8E, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteRenderingLayer(0x8E, 2);
+    setSpriteBlendMode(0x8E, SPRITE_BLEND_ALPHA_MODULATED);
     startSpriteAnimation(0x8E, 0, 0);
 
     setOverlayScreenSprites(1, 0x91, 
@@ -1066,9 +1065,9 @@ static inline void setMoneySprites() {
 
 /* shop functions */
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800B3BD8);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", loadShopIcons);
 
-void func_800B3BD8(void) {
+void loadShopIcons(void) {
     
     u32 temp = gGold;
 
@@ -1111,14 +1110,13 @@ void func_800B3BD8(void) {
     setBilinearFiltering(0x87, TRUE);
     setSpriteColor(0x87, 255, 255, 255, 255);
 
-    func_800B4160();
+    updateShopBuyAnimation();
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800B4160);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", updateShopBuyAnimation);
 
-// update animation for buy/don't buy
-void func_800B4160(void) {
+void updateShopBuyAnimation(void) {
 
     if (!shopContext.buySelected) {
         resetAnimationState(0x82);
@@ -1140,10 +1138,9 @@ void func_800B4160(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800B4238);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", updateShopQuantityArrows);
 
-// quantity increase/decrease arrows
-void func_800B4238(u8 arg0) {
+void updateShopQuantityArrows(u8 arg0) {
     
     // background
     startSpriteAnimation(0x87, 9, 0xFE);
@@ -1167,9 +1164,9 @@ void func_800B4238(u8 arg0) {
 
 /* load game/select game functions */
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800B42E0);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", loadDiarySelectScreen);
 
-void func_800B42E0(void) {
+void loadDiarySelectScreen(void) {
 
     dmaSprite(CHECKERBOARD_BACKGROUND, (u32)&_checkerboardBackgroundTextureSegmentRomStart, (u32)&_checkerboardBackgroundTextureSegmentRomEnd, (u32)&_checkerboardBackgroundAssetsIndexSegmentRomStart, (u32)&_checkerboardBackgroundAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_BACKGROUND_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_BACKGROUND_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_BACKGROUND_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_BACKGROUND_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(CHECKERBOARD_BACKGROUND, 0.0f, 0.0f, 0.0f);
@@ -1184,7 +1181,7 @@ void func_800B42E0(void) {
         dmaSprite(0x82, (u32)&_loadGameScreenTextureSegmentRomStart, (u32)&_loadGameScreenTextureSegmentRomEnd, (u32)&_loadGameScreenAssetsIndexSegmentRomStart, (u32)&_loadGameScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0x82, 0.0f, 0.0f, 8.0f);
         setSpriteColor(0x82, 0, 0, 0, 0);
-        setSpriteRenderingLayer(0x82, 3);
+        setSpriteBlendMode(0x82, 3);
         setBilinearFiltering(0x82, 1);
         startSpriteAnimation(0x82, 0, 0);
         
@@ -1192,7 +1189,7 @@ void func_800B42E0(void) {
         dmaSprite(0x83, (u32)&_loadGameScreenTextureSegmentRomStart, (u32)&_loadGameScreenTextureSegmentRomEnd, (u32)&_loadGameScreenAssetsIndexSegmentRomStart, (u32)&_loadGameScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0x83, 0.0f, 0.0f, 8.0f);
         setSpriteColor(0x83, 0, 0, 0, 0);
-        setSpriteRenderingLayer(0x83, 3);
+        setSpriteBlendMode(0x83, 3);
         setBilinearFiltering(0x83, 1);
         startSpriteAnimation(0x83, 3, 0);
         
@@ -1200,7 +1197,7 @@ void func_800B42E0(void) {
         dmaSprite(0x84, (u32)&_loadGameScreenTextureSegmentRomStart, (u32)&_loadGameScreenTextureSegmentRomEnd, (u32)&_loadGameScreenAssetsIndexSegmentRomStart, (u32)&_loadGameScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0x84, 0.0f, 0.0f, 8.0f);
         setSpriteColor(0x84, 0, 0, 0, 0);
-        setSpriteRenderingLayer(0x84, 3);
+        setSpriteBlendMode(0x84, 3);
         setBilinearFiltering(0x84, 1);
         startSpriteAnimation(0x84, 1, 0);
         
@@ -1208,7 +1205,7 @@ void func_800B42E0(void) {
         dmaSprite(0xA3, (u32)&_loadGameScreenTextureSegmentRomStart, (u32)&_loadGameScreenTextureSegmentRomEnd, (u32)&_loadGameScreenAssetsIndexSegmentRomStart, (u32)&_loadGameScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xA3, 0.0f, 0.0f, 8.0f);
         setSpriteColor(0xA3, 0, 0, 0, 0);
-        setSpriteRenderingLayer(0xA3, 3);
+        setSpriteBlendMode(0xA3, 3);
         setBilinearFiltering(0xA3, 1);
         setSpritePaletteIndex(0xA3, 2);
         startSpriteAnimation(0xA3, 4, 0);
@@ -1217,7 +1214,7 @@ void func_800B42E0(void) {
         dmaSprite(0xA4, (u32)&_loadGameScreenTextureSegmentRomStart, (u32)&_loadGameScreenTextureSegmentRomEnd, (u32)&_loadGameScreenAssetsIndexSegmentRomStart, (u32)&_loadGameScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xA4, 0.0f, -44.0f, 8.0f);
         setSpriteColor(0xA4, 0, 0, 0, 0);
-        setSpriteRenderingLayer(0xA4, 3);
+        setSpriteBlendMode(0xA4, 3);
         setBilinearFiltering(0xA4, 1);
         setSpritePaletteIndex(0xA4, 3);
         startSpriteAnimation(0xA4, 4, 0);
@@ -1226,7 +1223,7 @@ void func_800B42E0(void) {
         dmaSprite(0xA5, (u32)&_loadGameScreenTextureSegmentRomStart, (u32)&_loadGameScreenTextureSegmentRomEnd, (u32)&_loadGameScreenAssetsIndexSegmentRomStart, (u32)&_loadGameScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xA5, 0.0f, -88.0f, 8.0f);
         setSpriteColor(0xA5, 0, 0, 0, 0);
-        setSpriteRenderingLayer(0xA5, 3);
+        setSpriteBlendMode(0xA5, 3);
         setBilinearFiltering(0xA5, 1);
         setSpritePaletteIndex(0xA5, 4);
         startSpriteAnimation(0xA5, 4, 0);
@@ -1235,7 +1232,7 @@ void func_800B42E0(void) {
         dmaSprite(0xA6, (u32)&_loadGameScreenTextureSegmentRomStart, (u32)&_loadGameScreenTextureSegmentRomEnd, (u32)&_loadGameScreenAssetsIndexSegmentRomStart, (u32)&_loadGameScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xA6, 0.0f, -132.0f, 8.0f);
         setSpriteColor(0xA6, 0, 0, 0, 0);
-        setSpriteRenderingLayer(0xA6, 3);
+        setSpriteBlendMode(0xA6, 3);
         setBilinearFiltering(0xA6, 1);
         setSpritePaletteIndex(0xA6, 5);
         startSpriteAnimation(0xA6, 4, 0);
@@ -1244,7 +1241,7 @@ void func_800B42E0(void) {
         dmaSprite(0xA7, (u32)&_loadGameScreenTextureSegmentRomStart, (u32)&_loadGameScreenTextureSegmentRomEnd, (u32)&_loadGameScreenAssetsIndexSegmentRomStart, (u32)&_loadGameScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xA7, 0.0f, 0.0f, 16.0f);
         setSpriteColor(0xA7, 0, 0, 0, 0);
-        setSpriteRenderingLayer(0xA7, 3);
+        setSpriteBlendMode(0xA7, 3);
         setBilinearFiltering(0xA7, 1);
         startSpriteAnimation(0xA7, 5, 0);
         
@@ -1252,7 +1249,7 @@ void func_800B42E0(void) {
         dmaSprite(0xA8, (u32)&_loadGameScreenTextureSegmentRomStart, (u32)&_loadGameScreenTextureSegmentRomEnd, (u32)&_loadGameScreenAssetsIndexSegmentRomStart, (u32)&_loadGameScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xA8, 0.0f, 0.0f, 16.0f);
         setSpriteColor(0xA8, 0, 0, 0, 0);
-        setSpriteRenderingLayer(0xA8, 3);
+        setSpriteBlendMode(0xA8, 3);
         setBilinearFiltering(0xA8, 1);
         startSpriteAnimation(0xA8, 5, 2);
         
@@ -1260,7 +1257,7 @@ void func_800B42E0(void) {
         dmaSprite(0xA9, (u32)&_loadGameScreenTextureSegmentRomStart, (u32)&_loadGameScreenTextureSegmentRomEnd, (u32)&_loadGameScreenAssetsIndexSegmentRomStart, (u32)&_loadGameScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xA9, 0.0f, 0.0f, 16.0f);
         setSpriteColor(0xA9, 0, 0, 0, 0);
-        setSpriteRenderingLayer(0xA9, 3);
+        setSpriteBlendMode(0xA9, 3);
         setBilinearFiltering(0xA9, 1);
         startSpriteAnimation(0xA9, 5, 4);
 
@@ -1268,7 +1265,7 @@ void func_800B42E0(void) {
         dmaSprite(0xAA, (u32)&_loadGameScreenTextureSegmentRomStart, (u32)&_loadGameScreenTextureSegmentRomEnd, (u32)&_loadGameScreenAssetsIndexSegmentRomStart, (u32)&_loadGameScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xAA, 0.0f, 0.0f, 16.0f);
         setSpriteColor(0xAA, 0, 0, 0, 0);
-        setSpriteRenderingLayer(0xAA, 3);
+        setSpriteBlendMode(0xAA, 3);
         setBilinearFiltering(0xAA, 1);
         startSpriteAnimation(0xAA, 5, 6);
         
@@ -1276,7 +1273,7 @@ void func_800B42E0(void) {
         dmaSprite(0x85, (u32)&_loadGameScreenTextureSegmentRomStart, (u32)&_loadGameScreenTextureSegmentRomEnd, (u32)&_loadGameScreenAssetsIndexSegmentRomStart, (u32)&_loadGameScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0x85, 0.0f, 0.0f, 4.0f);
         setSpriteColor(0x85, 0, 0, 0, 0);
-        setSpriteRenderingLayer(0x85, 3);
+        setSpriteBlendMode(0x85, 3);
         setBilinearFiltering(0x85, 1);
         setSpritePaletteIndex(0x85, 1);
         startSpriteAnimation(0x85, 2, 0);
@@ -1285,7 +1282,7 @@ void func_800B42E0(void) {
         dmaSprite(0x86, (u32)&_loadGameScreenTextureSegmentRomStart, (u32)&_loadGameScreenTextureSegmentRomEnd, (u32)&_loadGameScreenAssetsIndexSegmentRomStart, (u32)&_loadGameScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0x86, 0.0f, -44.0f, 4.0f);
         setSpriteColor(0x86, 0, 0, 0, 0);
-        setSpriteRenderingLayer(0x86, 3);
+        setSpriteBlendMode(0x86, 3);
         setBilinearFiltering(0x86, 1);
         setSpritePaletteIndex(0x86, 1);
         startSpriteAnimation(0x86, 2, 0);
@@ -1294,7 +1291,7 @@ void func_800B42E0(void) {
         dmaSprite(0x87, (u32)&_loadGameScreenTextureSegmentRomStart, (u32)&_loadGameScreenTextureSegmentRomEnd, (u32)&_loadGameScreenAssetsIndexSegmentRomStart, (u32)&_loadGameScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0x87, 0.0f, -88.0f, 4.0f);
         setSpriteColor(0x87, 0, 0, 0, 0);
-        setSpriteRenderingLayer(0x87, 3);
+        setSpriteBlendMode(0x87, 3);
         setBilinearFiltering(0x87, 1);
         setSpritePaletteIndex(0x87, 1);
         startSpriteAnimation(0x87, 2, 0);
@@ -1303,7 +1300,7 @@ void func_800B42E0(void) {
         dmaSprite(0x88, (u32)&_loadGameScreenTextureSegmentRomStart, (u32)&_loadGameScreenTextureSegmentRomEnd, (u32)&_loadGameScreenAssetsIndexSegmentRomStart, (u32)&_loadGameScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0x88, 0.0f, -132.0f, 4.0f);
         setSpriteColor(0x88, 0, 0, 0, 0);
-        setSpriteRenderingLayer(0x88, 3);
+        setSpriteBlendMode(0x88, 3);
         setBilinearFiltering(0x88, 1);
         setSpritePaletteIndex(0x88, 1);
         startSpriteAnimation(0x88, 2, 0);
@@ -1312,22 +1309,22 @@ void func_800B42E0(void) {
         setSpriteViewSpacePosition(CURSOR_HAND, 0.0f, 0.0f, 32.0f);
         setBilinearFiltering(CURSOR_HAND, 1);
         setSpriteColor(CURSOR_HAND, 255, 255, 255, 255);
-        setSpriteRenderingLayer(CURSOR_HAND, 3);
+        setSpriteBlendMode(CURSOR_HAND, 3);
         
         dmaSprite(0xB2, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)DIALOGUE_ICON_TEXTURE_BUFFER, NULL, (u16*)DIALOGUE_ICON_PALETTE_BUFFER, (AnimationFrameMetadata*)DIALOGUE_ICON_ANIMATION_FRAME_METADATA_BUFFER, (u32*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xB2, 0.0f, 0.0f, 32.0f);
         setBilinearFiltering(0xB2, 1);
         setSpriteColor(0xB2, 0xFF, 0xFF, 0xFF, 0x80);
-        setSpriteRenderingLayer(0xB2, 2);
+        setSpriteBlendMode(0xB2, SPRITE_BLEND_ALPHA_MODULATED);
 
         dmaSprite(0xAC, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)DIALOGUE_ICON_TEXTURE_BUFFER, NULL, (u16*)DIALOGUE_ICON_PALETTE_BUFFER, (AnimationFrameMetadata*)DIALOGUE_ICON_ANIMATION_FRAME_METADATA_BUFFER, (u32*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xAC, 0.0f, 0.0f, 32.0f);
         setBilinearFiltering(0xAC, 1);
         setSpriteColor(0xAC, 255, 255, 255, 255);
-        setSpriteRenderingLayer(0xAC, 3);
+        setSpriteBlendMode(0xAC, 3);
         
         // arrows
-        func_800C7850();
+        loadNavigationArrows();
         
     } else {
         
@@ -1335,7 +1332,7 @@ void func_800B42E0(void) {
         dmaSprite(0x82, (u32)&_loadGameScreenTextureSegmentRomStart, (u32)&_loadGameScreenTextureSegmentRomEnd, (u32)&_loadGameScreenAssetsIndexSegmentRomStart, (u32)&_loadGameScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0x82, 0.0f, 0.0f, 8.0f);
         setSpriteColor(0x82, 0, 0, 0, 0);
-        setSpriteRenderingLayer(0x82, 3);
+        setSpriteBlendMode(0x82, 3);
         setBilinearFiltering(0x82, 1);
         startSpriteAnimation(0x82, 7, 0);
         
@@ -1343,7 +1340,7 @@ void func_800B42E0(void) {
         dmaSprite(0x83, (u32)&_loadGameScreenTextureSegmentRomStart, (u32)&_loadGameScreenTextureSegmentRomEnd, (u32)&_loadGameScreenAssetsIndexSegmentRomStart, (u32)&_loadGameScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0x83, 0.0f, 0.0f, 8.0f);
         setSpriteColor(0x83, 0, 0, 0, 0);
-        setSpriteRenderingLayer(0x83, 3);
+        setSpriteBlendMode(0x83, 3);
         setBilinearFiltering(0x83, 1);
         startSpriteAnimation(0x83, 3, 0);
         
@@ -1351,7 +1348,7 @@ void func_800B42E0(void) {
         dmaSprite(0x84, (u32)&_loadGameScreenTextureSegmentRomStart, (u32)&_loadGameScreenTextureSegmentRomEnd, (u32)&_loadGameScreenAssetsIndexSegmentRomStart, (u32)&_loadGameScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0x84, 0.0f, 0.0f, 8.0f);
         setSpriteColor(0x84, 0, 0, 0, 0);
-        setSpriteRenderingLayer(0x84, 3);
+        setSpriteBlendMode(0x84, 3);
         setBilinearFiltering(0x84, 1);
         startSpriteAnimation(0x84, 1, 0);
         
@@ -1360,7 +1357,7 @@ void func_800B42E0(void) {
         dmaSprite(0xA3, (u32)&_loadGameScreenTextureSegmentRomStart, (u32)&_loadGameScreenTextureSegmentRomEnd, (u32)&_loadGameScreenAssetsIndexSegmentRomStart, (u32)&_loadGameScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xA3, 0.0f, 0.0f, 8.0f);
         setSpriteColor(0xA3, 0, 0, 0, 0);
-        setSpriteRenderingLayer(0xA3, 3);
+        setSpriteBlendMode(0xA3, 3);
         setBilinearFiltering(0xA3, 1);
         setSpritePaletteIndex(0xA3, 2);
         startSpriteAnimation(0xA3, 8, 0);
@@ -1368,7 +1365,7 @@ void func_800B42E0(void) {
         dmaSprite(0xA4, (u32)&_loadGameScreenTextureSegmentRomStart, (u32)&_loadGameScreenTextureSegmentRomEnd, (u32)&_loadGameScreenAssetsIndexSegmentRomStart, (u32)&_loadGameScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xA4, 0.0f, -44.0f, 8.0f);
         setSpriteColor(0xA4, 0, 0, 0, 0);
-        setSpriteRenderingLayer(0xA4, 3);
+        setSpriteBlendMode(0xA4, 3);
         setBilinearFiltering(0xA4, 1);
         setSpritePaletteIndex(0xA4, 3);
         startSpriteAnimation(0xA4, 8, 0);
@@ -1378,14 +1375,14 @@ void func_800B42E0(void) {
         dmaSprite(0xA7, (u32)&_loadGameScreenTextureSegmentRomStart, (u32)&_loadGameScreenTextureSegmentRomEnd, (u32)&_loadGameScreenAssetsIndexSegmentRomStart, (u32)&_loadGameScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xA7, 0.0f, 0.0f, 16.0f);
         setSpriteColor(0xA7, 0, 0, 0, 0);
-        setSpriteRenderingLayer(0xA7, 3);
+        setSpriteBlendMode(0xA7, 3);
         setBilinearFiltering(0xA7, 1);
         startSpriteAnimation(0xA7, 5, 0);
         
         dmaSprite(0xA8, (u32)&_loadGameScreenTextureSegmentRomStart, (u32)&_loadGameScreenTextureSegmentRomEnd, (u32)&_loadGameScreenAssetsIndexSegmentRomStart, (u32)&_loadGameScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xA8, 0.0f, 0.0f, 16.0f);
         setSpriteColor(0xA8, 0, 0, 0, 0);
-        setSpriteRenderingLayer(0xA8, 3);
+        setSpriteBlendMode(0xA8, 3);
         setBilinearFiltering(0xA8, 1);
         startSpriteAnimation(0xA8, 5, 2);
         
@@ -1393,7 +1390,7 @@ void func_800B42E0(void) {
         dmaSprite(0x85, (u32)&_loadGameScreenTextureSegmentRomStart, (u32)&_loadGameScreenTextureSegmentRomEnd, (u32)&_loadGameScreenAssetsIndexSegmentRomStart, (u32)&_loadGameScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0x85, 0.0f, 0.0f, 4.0f);
         setSpriteColor(0x85, 0, 0, 0, 0);
-        setSpriteRenderingLayer(0x85, 3);
+        setSpriteBlendMode(0x85, 3);
         setBilinearFiltering(0x85, 1);
         setSpritePaletteIndex(0x85, 1);
         startSpriteAnimation(0x85, 2, 0);
@@ -1401,7 +1398,7 @@ void func_800B42E0(void) {
         dmaSprite(0x86, (u32)&_loadGameScreenTextureSegmentRomStart, (u32)&_loadGameScreenTextureSegmentRomEnd, (u32)&_loadGameScreenAssetsIndexSegmentRomStart, (u32)&_loadGameScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0x86, 0.0f, -44.0f, 4.0f);
         setSpriteColor(0x86, 0, 0, 0, 0);
-        setSpriteRenderingLayer(0x86, 3);
+        setSpriteBlendMode(0x86, 3);
         setBilinearFiltering(0x86, 1);
         setSpritePaletteIndex(0x86, 1);
         startSpriteAnimation(0x86, 2, 0);
@@ -1410,7 +1407,7 @@ void func_800B42E0(void) {
         dmaSprite(0xAB, (u32)&_loadGameScreenTextureSegmentRomStart, (u32)&_loadGameScreenTextureSegmentRomEnd, (u32)&_loadGameScreenAssetsIndexSegmentRomStart, (u32)&_loadGameScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xAB, 0.0f, 0.0f, 8.0f);
         setSpriteColor(0xAB, 0, 0, 0, 0);
-        setSpriteRenderingLayer(0xAB, 3);
+        setSpriteBlendMode(0xAB, 3);
         setBilinearFiltering(0xAB, 1);
         startSpriteAnimation(0xAB, 9, 0);
         
@@ -1418,30 +1415,29 @@ void func_800B42E0(void) {
         setSpriteViewSpacePosition(CURSOR_HAND, 0.0f, 0.0f, 32.0f);
         setBilinearFiltering(CURSOR_HAND, 1);
         setSpriteColor(CURSOR_HAND, 255, 255, 255, 255);
-        setSpriteRenderingLayer(CURSOR_HAND, 3);
+        setSpriteBlendMode(CURSOR_HAND, 3);
         
         dmaSprite(0xB2, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)DIALOGUE_ICON_TEXTURE_BUFFER, NULL, (u16*)DIALOGUE_ICON_PALETTE_BUFFER, (AnimationFrameMetadata*)DIALOGUE_ICON_ANIMATION_FRAME_METADATA_BUFFER, (u32*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xB2, 0.0f, 0.0f, 32.0f);
         setBilinearFiltering(0xB2, 1);
         setSpriteColor(0xB2, 0xFF, 0xFF, 0xFF, 0x80);
-        setSpriteRenderingLayer(0xB2, 2);
+        setSpriteBlendMode(0xB2, SPRITE_BLEND_ALPHA_MODULATED);
 
         dmaSprite(0xAC, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)DIALOGUE_ICON_TEXTURE_BUFFER, NULL, (u16*)DIALOGUE_ICON_PALETTE_BUFFER, (AnimationFrameMetadata*)DIALOGUE_ICON_ANIMATION_FRAME_METADATA_BUFFER, (u32*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xAC, 0.0f, 0.0f, 32.0f);
         setBilinearFiltering(0xAC, 1);
         setSpriteColor(0xAC, 255, 255, 255, 255);
-        setSpriteRenderingLayer(0xAC, 3);
+        setSpriteBlendMode(0xAC, 3);
         
-        func_800C7850();
+        loadNavigationArrows();
         
     }
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800B59AC);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", fadeInLoadGameScreen);
 
-// fade in
-void func_800B59AC(void) {
+void fadeInLoadGameScreen(void) {
     updateSpriteRGBA(0x80, 255, 255, 255, 255, 24);
     updateSpriteRGBA(0x82, 255, 255, 255, 255, 24);
     updateSpriteRGBA(0x83, 255, 255, 255, 255, 24);
@@ -1462,9 +1458,9 @@ void func_800B59AC(void) {
     updateSpriteRGBA(0xAD, 255, 255, 255, 255, 24);
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800B5BD4);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", setLoadGameScreenFullAlpha);
 
-void func_800B5BD4(void) {
+void setLoadGameScreenFullAlpha(void) {
     setSpriteColor(0x80, 255, 255, 255, 255);
     setSpriteColor(0x82, 255, 255, 255, 255);
     setSpriteColor(0x83, 255, 255, 255, 255);
@@ -1485,10 +1481,9 @@ void func_800B5BD4(void) {
     setSpriteColor(0xAD, 255, 255, 255, 255);
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800B5DA8);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", fadeOutLoadGameScreen);
 
-// fade out
-void func_800B5DA8(void) {
+void fadeOutLoadGameScreen(void) {
     updateSpriteRGBA(0x80, 0, 0, 0, 0, 24);
     updateSpriteRGBA(0x82, 0, 0, 0, 0, 24);
     updateSpriteRGBA(0x83, 0, 0, 0, 0, 24);
@@ -1509,9 +1504,9 @@ void func_800B5DA8(void) {
     updateSpriteRGBA(0xAD, 0, 0, 0, 0, 24);
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800B5FC4);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", setDiaryCursorPosition);
 
-void func_800B5FC4(u8 arg0, u8 diaryHighlighted, u8 actionColumnHighlighted) {
+void setDiaryCursorPosition(u8 arg0, u8 diaryHighlighted, u8 actionColumnHighlighted) {
 
     switch (arg0) {
 
@@ -1545,10 +1540,9 @@ void func_800B5FC4(u8 arg0, u8 diaryHighlighted, u8 actionColumnHighlighted) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800B60E4);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", updateDiaryHighlighted);
 
-// diary selection
-void func_800B60E4(u8 diaryHighlighted, u8 actionColumnHighlighted, bool arg2) {
+void updateDiaryHighlighted(u8 diaryHighlighted, u8 actionColumnHighlighted, bool arg2) {
 
     if (loadGameScreenContext.showControllerPakScreen == FALSE) {
 
@@ -1606,9 +1600,9 @@ void func_800B60E4(u8 diaryHighlighted, u8 actionColumnHighlighted, bool arg2) {
         }
 
         if (loadGameScreenContext.gamePakEnabled) {
-            func_800C7C88(64.0f, -108.0f);
+            showDownArrow(64.0f, -108.0f);
         } else {
-            func_800C7DF8();
+            hideDownArrow();
         }
         
     } else {
@@ -1655,9 +1649,9 @@ void func_800B60E4(u8 diaryHighlighted, u8 actionColumnHighlighted, bool arg2) {
         }
         
         if (loadGameScreenContext.gamePakEnabled) {
-            func_800C7CE4(64.0f, 80.0f);
+            showUpArrow(64.0f, 80.0f);
         } else {
-            func_800C7E18();
+            hideUpArrow();
         }
 
     }
@@ -1712,10 +1706,9 @@ void func_800B60E4(u8 diaryHighlighted, u8 actionColumnHighlighted, bool arg2) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800B64E4);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", animateDiarySelected);
 
-// select diary
-void func_800B64E4(u8 diaryHighlighted, u8 actionColumnHighlighted) {
+void animateDiarySelected(u8 diaryHighlighted, u8 actionColumnHighlighted) {
 
     if (!loadGameScreenContext.showControllerPakScreen) {
 
@@ -1789,10 +1782,9 @@ void func_800B64E4(u8 diaryHighlighted, u8 actionColumnHighlighted) {
 
 /* farm ranking functions */
 
-// INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800B6674);
+// INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", loadFarmRankingsListScreen);
 
-// farm ranking general screen
-void func_800B6674(void) {
+void loadFarmRankingsListScreen(void) {
     
     // cloud text backdrop
     dmaSprite(0x80, (u32)&_namingScreenBackgroundTextureSegmentRomStart, (u32)&_namingScreenBackgroundTextureSegmentRomEnd, (u32)&_namingScreenBackgroundAssetsIndexSegmentRomStart, (u32)&_namingScreenBackgroundAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_BACKGROUND_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_BACKGROUND_PALETTE_BUFFER, (u32*)OVERLAY_SCREEN_BACKGROUND_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_BACKGROUND_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
@@ -1806,7 +1798,7 @@ void func_800B6674(void) {
     dmaSprite(0x82, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x82, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0x82, 0, 0, 0, 0);
-    setSpriteRenderingLayer(0x82, 2);
+    setSpriteBlendMode(0x82, SPRITE_BLEND_ALPHA_MODULATED);
     setBilinearFiltering(0x82, 1);
     startSpriteAnimation(0x82, 0, 0);
     
@@ -1814,35 +1806,35 @@ void func_800B6674(void) {
     dmaSprite(0x83, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x83, 0.0f, 40.0f, 8.0f);
     setSpriteColor(0x83, 0, 0, 0, 0);
-    setSpriteRenderingLayer(0x83, 3);
+    setSpriteBlendMode(0x83, 3);
     setBilinearFiltering(0x83, 1);
     startSpriteAnimation(0x83, 1, 0);
     
     dmaSprite(0x84, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x84, 0.0f, 8.0f, 8.0f);
     setSpriteColor(0x84, 0, 0, 0, 0);
-    setSpriteRenderingLayer(0x84, 3);
+    setSpriteBlendMode(0x84, 3);
     setBilinearFiltering(0x84, 1);
     startSpriteAnimation(0x84, 1, 1);
     
     dmaSprite(0x85, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x85, 0.0f, -24.0f, 8.0f);
     setSpriteColor(0x85, 0, 0, 0, 0);
-    setSpriteRenderingLayer(0x85, 3);
+    setSpriteBlendMode(0x85, 3);
     setBilinearFiltering(0x85, 1);
     startSpriteAnimation(0x85, 1, 2);
     
     dmaSprite(0x86, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x86, 0.0f, -56.0f, 8.0f);
     setSpriteColor(0x86, 0, 0, 0, 0);
-    setSpriteRenderingLayer(0x86, 3);
+    setSpriteBlendMode(0x86, 3);
     setBilinearFiltering(0x86, 1);
     startSpriteAnimation(0x86, 1, 3);
     
     dmaSprite(0x87, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x87, 0.0f, -88.0f, 8.0f);
     setSpriteColor(0x87, 0, 0, 0, 0);
-    setSpriteRenderingLayer(0x87, 3);
+    setSpriteBlendMode(0x87, 3);
     setBilinearFiltering(0x87, 1);
     startSpriteAnimation(0x87, 1, 4);
 
@@ -1852,7 +1844,7 @@ void func_800B6674(void) {
         dmaSprite(0xAE, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xAE, -4.0f, 40.0f, 16.0f);
         setSpriteColor(0xAE, 0, 0, 0, 0);
-        setSpriteRenderingLayer(0xAE, 3);
+        setSpriteBlendMode(0xAE, 3);
         setBilinearFiltering(0xAE, 1);
         startSpriteAnimation(0xAE, 7, gFarmRankingData.seasons[0] - 1);
     }
@@ -1861,7 +1853,7 @@ void func_800B6674(void) {
         dmaSprite(0xAF, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xAF, -4.0f, 8.0f, 16.0f);
         setSpriteColor(0xAF, 0, 0, 0, 0);
-        setSpriteRenderingLayer(0xAF, 3);
+        setSpriteBlendMode(0xAF, 3);
         setBilinearFiltering(0xAF, 1);
         startSpriteAnimation(0xAF, 7, gFarmRankingData.seasons[1] - 1);
     }
@@ -1870,7 +1862,7 @@ void func_800B6674(void) {
         dmaSprite(0xB0, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xB0, -4.0f, -24.0f, 16.0f);
         setSpriteColor(0xB0, 0, 0, 0, 0);
-        setSpriteRenderingLayer(0xB0, 3);
+        setSpriteBlendMode(0xB0, 3);
         setBilinearFiltering(0xB0, 1);
         startSpriteAnimation(0xB0, 7, gFarmRankingData.seasons[2] - 1);
     }
@@ -1879,7 +1871,7 @@ void func_800B6674(void) {
         dmaSprite(0xB1, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xB1, -4.0f, -56.0f, 16.0f);
         setSpriteColor(0xB1, 0, 0, 0, 0);
-        setSpriteRenderingLayer(0xB1, 3);
+        setSpriteBlendMode(0xB1, 3);
         setBilinearFiltering(0xB1, 1);
         startSpriteAnimation(0xB1, 7, gFarmRankingData.seasons[3] - 1);
     }
@@ -1888,7 +1880,7 @@ void func_800B6674(void) {
         dmaSprite(0xB2, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xB2, -4.0f, -88.0f, 16.0f);
         setSpriteColor(0xB2, 0, 0, 0, 0);
-        setSpriteRenderingLayer(0xB2, 3);
+        setSpriteBlendMode(0xB2, 3);
         setBilinearFiltering(0xB2, 1);
         startSpriteAnimation(0xB2, 7, gFarmRankingData.seasons[4] - 1);
     }
@@ -1897,20 +1889,20 @@ void func_800B6674(void) {
     setSpriteViewSpacePosition(CURSOR_HAND, 0.0f, 0.0f, 32.0f);
     setBilinearFiltering(CURSOR_HAND, 1);
     setSpriteColor(CURSOR_HAND, 255, 255, 255, 255);
-    setSpriteRenderingLayer(CURSOR_HAND, 3);
+    setSpriteBlendMode(CURSOR_HAND, 3);
     
 }
 
-// INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800B7070);
+// INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", loadIndividualRankingScreen);
 
 // individual ranking screen
-void func_800B7070(u8 arg0) {
+void loadIndividualRankingScreen(u8 arg0) {
 
     // slot
     dmaSprite(0x82, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x82, 0.0f, 80.0f, 8.0f);
     setSpriteColor(0x82, 255, 255, 255, 255);
-    setSpriteRenderingLayer(0x82, 3);
+    setSpriteBlendMode(0x82, 3);
     setBilinearFiltering(0x82, 1);
     startSpriteAnimation(0x82, 1, arg0);
     
@@ -1918,7 +1910,7 @@ void func_800B7070(u8 arg0) {
     dmaSprite(0x81, (u32)&_snapshotLargeTextureSegmentRomStart, (u32)&_snapshotLargeTextureSegmentRomEnd, (u32)&_snapshotLargeAssetsIndexSegmentRomStart, (u32)&_snapshotLargeAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_SNAPSHOT_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_SNAPSHOT_PALETTE, (u16*)OVERLAY_SCREEN_SNAPSHOT_ANIM_METADATA, (u32*)OVERLAY_SCREEN_SNAPSHOT_SPRITESHEET_INDEX, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x81, 0.0f, -16.0f, 8.0f);
     setSpriteColor(0x81, 255, 255, 255, 255);
-    setSpriteRenderingLayer(0x81, 2);
+    setSpriteBlendMode(0x81, SPRITE_BLEND_ALPHA_MODULATED);
     setBilinearFiltering(0x81, 1);
     startSpriteAnimation(0x81, 0, 0);
     
@@ -1926,7 +1918,7 @@ void func_800B7070(u8 arg0) {
     dmaSprite(0x83, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x83, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0x83, 255, 255, 255, 255);
-    setSpriteRenderingLayer(0x83, 2);
+    setSpriteBlendMode(0x83, SPRITE_BLEND_ALPHA_MODULATED);
     setBilinearFiltering(0x83, 1);
     startSpriteAnimation(0x83, 2, 0);
 
@@ -1935,7 +1927,7 @@ void func_800B7070(u8 arg0) {
         dmaSprite(0x84, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0x84, 0.0f, 0.0f, 8.0f);
         setSpriteColor(0x84, 255, 255, 255, 255);
-        setSpriteRenderingLayer(0x84, 3);
+        setSpriteBlendMode(0x84, 3);
         setBilinearFiltering(0x84, 1);
         // get frame based on wife
         startSpriteAnimation(0x84, 3, gFarmRankingData.wife[arg0]);
@@ -1943,7 +1935,7 @@ void func_800B7070(u8 arg0) {
         dmaSprite(0xAE, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xAE, 0.0f, 32.0f, 8.0f);
         setSpriteColor(0xAE, 255, 255, 255, 255);
-        setSpriteRenderingLayer(0xAE, 3);
+        setSpriteBlendMode(0xAE, 3);
         setBilinearFiltering(0xAE, 1);
         
         if (gFarmRankingData.wifeAffection[arg0] == 0xFF) {
@@ -1960,7 +1952,7 @@ void func_800B7070(u8 arg0) {
         dmaSprite(0x85, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0x85, 0.0f, 0.0f, 8.0f);
         setSpriteColor(0x85, 255, 255, 255, 255);
-        setSpriteRenderingLayer(0x85, 3);
+        setSpriteBlendMode(0x85, 3);
         setBilinearFiltering(0x85, 1);
         startSpriteAnimation(0x85, 3, 5);
         
@@ -1968,7 +1960,7 @@ void func_800B7070(u8 arg0) {
         dmaSprite(0xAF, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xAF, 0.0f, 16.0f, 8.0f);
         setSpriteColor(0xAF, 255, 255, 255, 255);
-        setSpriteRenderingLayer(0xAF, 3);
+        setSpriteBlendMode(0xAF, 3);
         setBilinearFiltering(0xAF, 1);
 
         if (gFarmRankingData.babyAffection[arg0] == 0xFF) {
@@ -1985,7 +1977,7 @@ void func_800B7070(u8 arg0) {
         dmaSprite(0x86, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0x86, 0.0f, 0.0f, 8.0f);
         setSpriteColor(0x86, 255, 255, 255, 255);
-        setSpriteRenderingLayer(0x86, 3);
+        setSpriteBlendMode(0x86, 3);
         setBilinearFiltering(0x86, 1);
         startSpriteAnimation(0x86, 3, 6);
         
@@ -1993,7 +1985,7 @@ void func_800B7070(u8 arg0) {
         dmaSprite(0xB1, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xB1, 0.0f, -16.0f, 8.0f);
         setSpriteColor(0xB1, 255, 255, 255, 255);
-        setSpriteRenderingLayer(0xB1, 3);
+        setSpriteBlendMode(0xB1, 3);
         setBilinearFiltering(0xB1, 1);
         
         // hearts
@@ -2010,7 +2002,7 @@ void func_800B7070(u8 arg0) {
     dmaSprite(0xB0, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0xB0, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0xB0, 255, 255, 255, 255);
-    setSpriteRenderingLayer(0xB0, 3);
+    setSpriteBlendMode(0xB0, 3);
     setBilinearFiltering(0xB0, 1);
     
     if (gFarmRankingData.dogAffection[arg0] == 0xFF) {
@@ -2023,16 +2015,16 @@ void func_800B7070(u8 arg0) {
         dmaSprite(0xB2, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xB2, -4.0f, 80.0f, 16.0f);
         setSpriteColor(0xB2, 255, 255, 255, 255);
-        setSpriteRenderingLayer(0xB2, 3);
+        setSpriteBlendMode(0xB2, 3);
         setBilinearFiltering(0xB2, 1);
         startSpriteAnimation(0xB2, 7, gFarmRankingData.seasons[arg0] - 1);
     }
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800B7B34);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", fadeInFarmRankingScreen);
 
-void func_800B7B34(void) {
+void fadeInFarmRankingScreen(void) {
     updateSpriteRGBA(0x80, 255, 255, 255, 255, 24);
     updateSpriteRGBA(0x82, 255, 255, 255, 255, 24);
     updateSpriteRGBA(0x83, 255, 255, 255, 255, 24);
@@ -2047,9 +2039,9 @@ void func_800B7B34(void) {
     updateSpriteRGBA(0xB2, 255, 255, 255, 255, 24);
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800B7CB4);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", fadeOutFarmRankingScreen);
 
-void func_800B7CB4(void) {
+void fadeOutFarmRankingScreen(void) {
     updateSpriteRGBA(0x80, 0, 0, 0, 0, 24);
     updateSpriteRGBA(0x82, 0, 0, 0, 0, 24);
     updateSpriteRGBA(0x83, 0, 0, 0, 0, 24);
@@ -2064,9 +2056,9 @@ void func_800B7CB4(void) {
     updateSpriteRGBA(0xB2, 0, 0, 0, 0, 24);
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800B7E28);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", setFarmRankingScreenFullAlpha);
 
-void func_800B7E28(void) {
+void setFarmRankingScreenFullAlpha(void) {
     setSpriteColor(0x80, 255, 255, 255, 255);
     setSpriteColor(0x82, 255, 255, 255, 255);
     setSpriteColor(0x83, 255, 255, 255, 255);
@@ -2081,9 +2073,9 @@ void func_800B7E28(void) {
     setSpriteColor(0xB2, 255, 255, 255, 255);
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800B7F6C);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", setFarmRankingCursorPosition);
 
-void func_800B7F6C(u8 arg0) {
+void setFarmRankingCursorPosition(u8 arg0) {
 
     if (arg0 != 0xFF) {
         setSpriteViewSpacePosition(CURSOR_HAND, farmRankingsCursorHandXPositions[arg0], farmRankingsCursorHandYPositions[arg0], 32.0f);
@@ -2093,9 +2085,9 @@ void func_800B7F6C(u8 arg0) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800B7FC8);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", setFarmRankingItemPalette);
 
-void func_800B7FC8(u8 arg0, u8 arg1) {
+void setFarmRankingItemPalette(u8 arg0, u8 arg1) {
 
     if (arg0 != 0xFF) {
         if (arg1) {
@@ -2122,12 +2114,11 @@ static inline void initializeOverlayScreenTable(void) {
 
 /* main loop load screen callbacks */
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800B8018);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", loadEstimateScreenCallback);
  
-// farm ranking screen load callback
-void func_800B8018(void) {
+void loadEstimateScreenCallback(void) {
     
-    func_800593EC();
+    openOverlayScreen();
 
     dmaSprite(CHECKERBOARD_BACKGROUND, (u32)&_checkerboardBackgroundTextureSegmentRomStart, (u32)&_checkerboardBackgroundTextureSegmentRomEnd, (u32)&_checkerboardBackgroundAssetsIndexSegmentRomStart, (u32)&_checkerboardBackgroundAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_BACKGROUND_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_BACKGROUND_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_BACKGROUND_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_BACKGROUND_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(CHECKERBOARD_BACKGROUND, 0, 0, 0);
@@ -2142,12 +2133,11 @@ void func_800B8018(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800B815C);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", loadKitchenPictureCallback);
 
-// kitchen picture load main loop callback
-void func_800B815C(void) {
+void loadKitchenPictureCallback(void) {
 
-    func_800593EC();
+    openOverlayScreen();
 
     dmaSprite(CHECKERBOARD_BACKGROUND, (u32)&_checkerboardBackgroundTextureSegmentRomStart, (u32)&_checkerboardBackgroundTextureSegmentRomEnd, (u32)&_checkerboardBackgroundAssetsIndexSegmentRomStart, (u32)&_checkerboardBackgroundAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_BACKGROUND_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_BACKGROUND_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_BACKGROUND_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_BACKGROUND_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(CHECKERBOARD_BACKGROUND, 0.0f, 0.0f, 0.0f);
@@ -2156,7 +2146,7 @@ void func_800B815C(void) {
     setSpriteColor(CHECKERBOARD_BACKGROUND, 255, 255, 255, 255);
     startSpriteAnimation(CHECKERBOARD_BACKGROUND, 0, 0);
 
-    overlayScreenTable.cellIndex = func_800C2780(0, 0);
+    overlayScreenTable.cellIndex = findPowerNutCellIndex(0, 0);
     overlayScreenTable.previousCellIndex = 0;
     overlayScreenTable.pageNumber = 0;
     overlayScreenTable.unk_3 = 0xFF;
@@ -2166,12 +2156,12 @@ void func_800B815C(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800B82AC);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", loadHouseExtensionsSelectionCallback);
 
-// home extensions selection load callback
-void func_800B82AC(void) {
+void loadHouseExtensionsSelectionCallback(void) {
 
-    func_800593EC();
+    openOverlayScreen();
+
     dmaSprite(CHECKERBOARD_BACKGROUND, (u32)&_checkerboardBackgroundTextureSegmentRomStart, (u32)&_checkerboardBackgroundTextureSegmentRomEnd, (u32)&_checkerboardBackgroundAssetsIndexSegmentRomStart, (u32)&_checkerboardBackgroundAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_BACKGROUND_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_BACKGROUND_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_BACKGROUND_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_BACKGROUND_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(CHECKERBOARD_BACKGROUND, 0.0f, 0.0f, 0.0f);
     setSpriteScale(CHECKERBOARD_BACKGROUND, 2.0f, 2.0f, 1.0f);
@@ -2185,12 +2175,11 @@ void func_800B82AC(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800B83F0);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", loadCalendarScreenCallback);
 
-// calendar load main loop callback
-void func_800B83F0(void) {
+void loadCalendarScreenCallback(void) {
 
-    func_800593EC();
+    openOverlayScreen();
     dmaSprite(CHECKERBOARD_BACKGROUND, (u32)&_checkerboardBackgroundTextureSegmentRomStart, (u32)&_checkerboardBackgroundTextureSegmentRomEnd, (u32)&_checkerboardBackgroundAssetsIndexSegmentRomStart, (u32)&_checkerboardBackgroundAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_BACKGROUND_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_BACKGROUND_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_BACKGROUND_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_BACKGROUND_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(CHECKERBOARD_BACKGROUND, 0.0f, 0.0f, 0.0f);
     setSpriteScale(CHECKERBOARD_BACKGROUND, 2.0f, 2.0f, 1.0f);
@@ -2209,12 +2198,11 @@ void func_800B83F0(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800B8554);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", loadRecipeBookScreenCallback);
 
-// recipe book load main loop callback
-void func_800B8554(void) {
+void loadRecipeBookScreenCallback(void) {
     
-    func_800593EC();
+    openOverlayScreen();
     dmaSprite(CHECKERBOARD_BACKGROUND, (u32)&_checkerboardBackgroundTextureSegmentRomStart, (u32)&_checkerboardBackgroundTextureSegmentRomEnd, (u32)&_checkerboardBackgroundAssetsIndexSegmentRomStart, (u32)&_checkerboardBackgroundAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_BACKGROUND_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_BACKGROUND_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_BACKGROUND_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_BACKGROUND_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(CHECKERBOARD_BACKGROUND, 0.0f, 0.0f, 0.0f);
     setSpriteScale(CHECKERBOARD_BACKGROUND, 2.0f, 2.0f, 1.0f);
@@ -2233,12 +2221,11 @@ void func_800B8554(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800B86B8);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", loadAlbumScreenCallback);
 
-// album load callback
-void func_800B86B8(void) {
+void loadAlbumScreenCallback(void) {
     
-    func_800593EC();
+    openOverlayScreen();
     
     dmaSprite(CHECKERBOARD_BACKGROUND, (u32)&_checkerboardBackgroundTextureSegmentRomStart, (u32)&_checkerboardBackgroundTextureSegmentRomEnd, (u32)&_checkerboardBackgroundAssetsIndexSegmentRomStart, (u32)&_checkerboardBackgroundAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_BACKGROUND_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_BACKGROUND_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_BACKGROUND_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_BACKGROUND_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     
@@ -2266,17 +2253,17 @@ void func_800B86B8(void) {
 
 /* pause screen functions */
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800B881C);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", loadPauseScreenCallback);
 
 // pause screen load callback
-void func_800B881C(void) {
-    func_800593EC();
-    func_800B8844();
+void loadPauseScreenCallback(void) {
+    openOverlayScreen();
+    initializePauseScreenBackground();
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800B8844);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", initializePauseScreenBackground);
 
-void func_800B8844(void) {
+void initializePauseScreenBackground(void) {
     
     dmaSprite(CHECKERBOARD_BACKGROUND, (u32)&_checkerboardBackgroundTextureSegmentRomStart, (u32)&_checkerboardBackgroundTextureSegmentRomEnd, (u32)&_checkerboardBackgroundAssetsIndexSegmentRomStart, (u32)&_checkerboardBackgroundAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_BACKGROUND_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_BACKGROUND_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_BACKGROUND_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_BACKGROUND_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(CHECKERBOARD_BACKGROUND, 0.0f, 0.0f, 0.0f);
@@ -2295,21 +2282,20 @@ void func_800B8844(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800B8980);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", loadPauseScreenSprites);
 
-void func_800B8980(void) {
+void loadPauseScreenSprites(void) {
 
     func_8005CDCC();
-    // clock
-    func_800B2F34();
 
+    loadClockSprites();
     setMoneySprites();
 
     // tool/item slots
     dmaSprite(0x83, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x83, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0x83, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteRenderingLayer(0x83, 2);
+    setSpriteBlendMode(0x83, SPRITE_BLEND_ALPHA_MODULATED);
     setBilinearFiltering(0x83, 1);
     startSpriteAnimation(0x83, 0, 0);
 
@@ -2317,7 +2303,7 @@ void func_800B8980(void) {
     dmaSprite(0x84, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x84, 0.0f, -80.0f, 8.0f);
     setSpriteColor(0x84, 0x80, 0x80, 0x80, 0);
-    setSpriteRenderingLayer(0x84, 2);
+    setSpriteBlendMode(0x84, SPRITE_BLEND_ALPHA_MODULATED);
     setBilinearFiltering(0x84, 1);
     startSpriteAnimation(0x84, 0, 0);
     
@@ -2325,7 +2311,7 @@ void func_800B8980(void) {
     dmaSprite(0x85, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x85, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0x85, 0x80, 0x80, 0x80, 0);
-    setSpriteRenderingLayer(0x85, 2);
+    setSpriteBlendMode(0x85, SPRITE_BLEND_ALPHA_MODULATED);
     setBilinearFiltering(0x85, 1);
     startSpriteAnimation(0x85, 1, 0);
     
@@ -2333,7 +2319,7 @@ void func_800B8980(void) {
     dmaSprite(TOOL_AND_BELONGINGS_LABELS, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(TOOL_AND_BELONGINGS_LABELS, 0.0f, 0.0f, 16.0f);
     setSpriteColor(TOOL_AND_BELONGINGS_LABELS, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteRenderingLayer(TOOL_AND_BELONGINGS_LABELS, 2);
+    setSpriteBlendMode(TOOL_AND_BELONGINGS_LABELS, SPRITE_BLEND_ALPHA_MODULATED);
     setBilinearFiltering(TOOL_AND_BELONGINGS_LABELS, TRUE);
     startSpriteAnimation(TOOL_AND_BELONGINGS_LABELS, 5, 0);
     
@@ -2341,7 +2327,7 @@ void func_800B8980(void) {
     dmaSprite(0x87, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x87, -28.0f, 80.0f, 8.0f);
     setSpriteColor(0x87, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteRenderingLayer(0x87, 2);
+    setSpriteBlendMode(0x87, SPRITE_BLEND_ALPHA_MODULATED);
     setBilinearFiltering(0x87, 1);
     startSpriteAnimation(0x87, 2, 0);
     setSpritePaletteIndex(0x87, 3);
@@ -2349,7 +2335,7 @@ void func_800B8980(void) {
     dmaSprite(0x88, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x88, 20.0f, 80.0f, 8.0f);
     setSpriteColor(0x88, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteRenderingLayer(0x88, 2);
+    setSpriteBlendMode(0x88, SPRITE_BLEND_ALPHA_MODULATED);
     setBilinearFiltering(0x88, 1);
     startSpriteAnimation(0x88, 2, 0);
     setSpritePaletteIndex(0x88, 2);
@@ -2364,15 +2350,15 @@ void func_800B8980(void) {
     setBilinearFiltering(0x82, 1);
     setSpriteColor(0x82, 255, 255, 255, 255);
     
-    func_800C7850();
-    func_800B90E0();
-    func_800B99EC();
+    loadNavigationArrows();
+    loadPauseScreenItemSprites();
+    fadeInPauseScreenSprites();
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800B90E0);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", loadPauseScreenItemSprites);
 
-void func_800B90E0(void) {
+void loadPauseScreenItemSprites(void) {
 
     u8 i;
     u32 j, k;
@@ -2395,9 +2381,9 @@ void func_800B90E0(void) {
             setSpriteViewSpacePosition(TOOL_SPRITES_BASE + i, toolXCoords[j % 4], *(f32*)((u8*)toolYCoords + (j & 0xFC)), 256.0f);
 
             setSpriteColor(TOOL_SPRITES_BASE + i, 0xFF, 0xFF, 0xFF, 0);
-            setSpriteRenderingLayer(TOOL_SPRITES_BASE + i, 2);
+            setSpriteBlendMode(TOOL_SPRITES_BASE + i, 2);
             setBilinearFiltering(TOOL_SPRITES_BASE + i, 1);
-            startSpriteAnimation(TOOL_SPRITES_BASE + i, func_80030BA0(toolsAnimationScripts, D_80116EB8[gPlayer.toolSlots[i]] + func_800C0688(gPlayer.toolSlots[i])), 0);
+            startSpriteAnimation(TOOL_SPRITES_BASE + i, getAnimationOffsetFromScript(toolsAnimationScripts, D_80116EB8[gPlayer.toolSlots[i]] + getToolLevelForAnimation(gPlayer.toolSlots[i])), 0);
         
         }
         
@@ -2408,10 +2394,10 @@ void func_800B90E0(void) {
         dmaSprite(TOOL_SPRITES_BASE + i, (u32)&_toolsTextureSegmentRomStart, (u32)&_toolsTextureSegmentRomEnd, (u32)&_toolsAssetsIndexSegmentRomStart, (u32)&_toolsAssetsIndexSegmentRomEnd, (u32) &_toolsSpritesheetIndexSegmentRomStart, (u32)&_toolsSpritesheetIndexSegmentRomEnd, (i * (OVERLAY_SCREEN_TOOL_SPRITES_TEXTURE_SIZE * 2)) + OVERLAY_SCREEN_TOOL_SPRITES_TEXTURE_1_BASE, (i * (OVERLAY_SCREEN_TOOL_SPRITES_TEXTURE_SIZE * 2)) + OVERLAY_SCREEN_TOOL_SPRITES_TEXTURE_2_BASE, (u16*)OVERLAY_SCREEN_TOOL_SPRITES_PALETTE, (u16*)OVERLAY_SCREEN_TOOL_SPRITES_ANIM_METADATA, (u8*)OVERLAY_SCREEN_TOOL_SPRITES_SPRITESHEET_INDEX, (u32*)OVERLAY_SCREEN_TOOL_SPRITES_TEXTURE_TO_PALETTE_LOOKUP, 1, 0);
         setSpriteViewSpacePosition(TOOL_SPRITES_BASE + i, pauseScreenCurrentToolXPosition, pauseScreenCurrentToolYPosition, 256.0f);
         setSpriteColor(TOOL_SPRITES_BASE + i, 0xFF, 0xFF, 0xFF, 0);
-        setSpriteRenderingLayer(TOOL_SPRITES_BASE + i, 2);
+        setSpriteBlendMode(TOOL_SPRITES_BASE + i, 2);
         setBilinearFiltering(TOOL_SPRITES_BASE + i, 1);
         
-        startSpriteAnimation(TOOL_SPRITES_BASE + i, func_80030BA0(toolsAnimationScripts, D_80116EB8[gPlayer.currentTool] + func_800C0688(gPlayer.currentTool)), 0);
+        startSpriteAnimation(TOOL_SPRITES_BASE + i, getAnimationOffsetFromScript(toolsAnimationScripts, D_80116EB8[gPlayer.currentTool] + getToolLevelForAnimation(gPlayer.currentTool)), 0);
 
     }
     
@@ -2433,9 +2419,9 @@ void func_800B90E0(void) {
             setSpriteViewSpacePosition(HOLDABLE_ITEMS_BASE + i, belongingXCoords[j % 4], *(f32*)((u8*)belongingYCoords + (j & 0xFC)), 256.0f);
 
             setSpriteColor(HOLDABLE_ITEMS_BASE + i, 0xFF, 0xFF, 0xFF, 0);
-            setSpriteRenderingLayer(HOLDABLE_ITEMS_BASE + i, 2);
+            setSpriteBlendMode(HOLDABLE_ITEMS_BASE + i, 2);
             setBilinearFiltering(HOLDABLE_ITEMS_BASE + i, 1);
-            startSpriteAnimation(HOLDABLE_ITEMS_BASE + i, func_80030BA0(shopItemsAnimationScripts, func_800D5A88(gPlayer.belongingsSlots[i])), 0);
+            startSpriteAnimation(HOLDABLE_ITEMS_BASE + i, getAnimationOffsetFromScript(shopItemsAnimationScripts, getItemAnimationIndex(gPlayer.belongingsSlots[i])), 0);
         
         }
         
@@ -2445,9 +2431,9 @@ void func_800B90E0(void) {
         dmaSprite(HOLDABLE_ITEMS_BASE + i, (u32)&_holdableItemsTextureSegmentRomStart, (u32)&_holdableItemsTextureSegmentRomEnd, (u32)&_holdableItemsAssetsIndexSegmentRomStart, (u32)&_holdableItemsAssetsIndexSegmentRomEnd, (u32) &_holdableItemsSpritesheetIndexSegmentRomStart, (u32)&_holdableItemsSpritesheetIndexSegmentRomEnd, (i * (OVERLAY_SCREEN_HOLDABLE_ITEMS_TEXTURE_SIZE * 2)) + OVERLAY_SCREEN_HOLDABLE_ITEMS_TEXTURE_1_BASE, (i * (OVERLAY_SCREEN_HOLDABLE_ITEMS_TEXTURE_SIZE * 2)) + OVERLAY_SCREEN_HOLDABLE_ITEMS_TEXTURE_2_BASE, (u16*)OVERLAY_SCREEN_ITEMS_GRID_PALETTE, (u16*)OVERLAY_SCREEN_ITEMS_GRID_ANIM_METADATA, (u8*)OVERLAY_SCREEN_ITEMS_GRID_SPRITESHEET_INDEX, (u32*)OVERLAY_SCREEN_ITEMS_GRID_TEXTURE_TO_PALETTE_LOOKUP, 1, 0);
         setSpriteViewSpacePosition(HOLDABLE_ITEMS_BASE + i, pauseScreenHeldItemXPosition, pauseScreenHeldItemYPosition, 256.0f);
         setSpriteColor(HOLDABLE_ITEMS_BASE + i, 0xFF, 0xFF, 0xFF, 0);
-        setSpriteRenderingLayer(HOLDABLE_ITEMS_BASE + i, 2);
+        setSpriteBlendMode(HOLDABLE_ITEMS_BASE + i, 2);
         setBilinearFiltering(HOLDABLE_ITEMS_BASE + i, 1);
-        startSpriteAnimation(HOLDABLE_ITEMS_BASE + i, func_80030BA0(shopItemsAnimationScripts, func_800D5A88(gPlayer.heldItem)), 0);
+        startSpriteAnimation(HOLDABLE_ITEMS_BASE + i, getAnimationOffsetFromScript(shopItemsAnimationScripts, getItemAnimationIndex(gPlayer.heldItem)), 0);
     }
 
     for (i = 0; i < 8; i++) {
@@ -2463,10 +2449,10 @@ void func_800B90E0(void) {
             dmaSprite(KEY_ITEMS_BASE + i, (u32)&_holdableItemsTextureSegmentRomStart, (u32)&_holdableItemsTextureSegmentRomEnd, (u32)&_holdableItemsAssetsIndexSegmentRomStart, (u32)&_holdableItemsAssetsIndexSegmentRomEnd, (u32) &_holdableItemsSpritesheetIndexSegmentRomStart, (u32)&_holdableItemsSpritesheetIndexSegmentRomEnd, (i * (OVERLAY_SCREEN_HOLDABLE_ITEMS_TEXTURE_SIZE * 2)) + OVERLAY_SCREEN_KEY_ITEMS_TEXTURE_1_BASE, (i * (OVERLAY_SCREEN_HOLDABLE_ITEMS_TEXTURE_SIZE * 2)) + OVERLAY_SCREEN_KEY_ITEMS_TEXTURE_2_BASE, (u16*)OVERLAY_SCREEN_ITEMS_GRID_PALETTE, (u16*)OVERLAY_SCREEN_ITEMS_GRID_ANIM_METADATA, (u8*)OVERLAY_SCREEN_ITEMS_GRID_SPRITESHEET_INDEX, (u32*)OVERLAY_SCREEN_ITEMS_GRID_TEXTURE_TO_PALETTE_LOOKUP, 1, 0);
             setSpriteViewSpacePosition(KEY_ITEMS_BASE + i, pauseScreenKeyItemsXPosition [k & 1], pauseScreenKeyItemsYPosition[k >> 1], 256.0f);
             setSpriteColor(KEY_ITEMS_BASE + i, 0xFF, 0xFF, 0xFF, 0);
-            setSpriteRenderingLayer(KEY_ITEMS_BASE + i, 2);
+            setSpriteBlendMode(KEY_ITEMS_BASE + i, 2);
             setBilinearFiltering(KEY_ITEMS_BASE + i, 1);
 
-            startSpriteAnimation(KEY_ITEMS_BASE + i, func_80030BA0(shopItemsAnimationScripts, D_80116EF4[ gPlayer.keyItemSlots[overlayScreenTable.pageNumber * 8 + i]]), 0);
+            startSpriteAnimation(KEY_ITEMS_BASE + i, getAnimationOffsetFromScript(shopItemsAnimationScripts, D_80116EF4[ gPlayer.keyItemSlots[overlayScreenTable.pageNumber * 8 + i]]), 0);
         
         }
         
@@ -2474,10 +2460,10 @@ void func_800B90E0(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800B9914);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", updatePauseScreenSelectionHighlight);
 
 // FIXME: fake matches
-void func_800B9914(void) {
+void updatePauseScreenSelectionHighlight(void) {
     
     u32 temp;
     u32 temp2;
@@ -2493,7 +2479,7 @@ void func_800B9914(void) {
             
             if (overlayScreenTable.unk_4 == overlayScreenTable.pageNumber) {
                 // show item/tool selected
-                setSpriteViewSpacePosition(0x82, func_800BA928(temp2, temp), func_800BA9E8(*ptr, overlayScreenTable.unk_3), 16.0f);
+                setSpriteViewSpacePosition(0x82, getPauseScreenItemXCoordinate(temp2, temp), getPauseScreenItemYCoordinate(*ptr, overlayScreenTable.unk_3), 16.0f);
                 startSpriteAnimation(0x82, 6, 0xFE);
                 return;
             } else {
@@ -2510,7 +2496,7 @@ void func_800B9914(void) {
     
     if (overlayScreenTable.unk_3 != 0xFF) {
         // end animation by playing it one last time
-        setSpriteViewSpacePosition(0x82, func_800BA928(temp2, temp), func_800BA9E8(*ptr, overlayScreenTable.unk_3), 16.0f);
+        setSpriteViewSpacePosition(0x82, getPauseScreenItemXCoordinate(temp2, temp), getPauseScreenItemYCoordinate(*ptr, overlayScreenTable.unk_3), 16.0f);
         startSpriteAnimation(0x82, 6, 0xFE);
     } else {
 reset:
@@ -2519,9 +2505,9 @@ reset:
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800B99EC);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", fadeInPauseScreenElements);
 
-void func_800B99EC(void) {
+void fadeInPauseScreenSprites(void) {
 
     u8 i;
     
@@ -2555,9 +2541,9 @@ void func_800B99EC(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800B9B8C);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", fadeOutPauseScreenElements);
 
-void func_800B9B8C(void) {
+void fadeOutPauseScreenSprites(void) {
 
     u8 i;
     
@@ -2595,10 +2581,9 @@ void func_800B9B8C(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800B9D3C);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", pauseScreenCallback);
 
-// pause screen main loop callback
-void func_800B9D3C(void) {
+void pauseScreenCallback(void) {
 
     bool set = FALSE;
     bool flag;
@@ -2609,32 +2594,32 @@ void func_800B9D3C(void) {
     switch (overlayScreenTable.screenState) {
 
         case 0:
-            func_800B8980();
+            loadPauseScreenSprites();
             overlayScreenTable.screenState = 1;
             break;
 
         case 1:
-            if (func_8002CBF8(TOOL_AND_BELONGINGS_LABELS)) {
+            if (checkSpriteRGBAUpdateFinished(TOOL_AND_BELONGINGS_LABELS)) {
                 startSpriteAnimation(CURSOR_HAND, 3, 0);
                 overlayScreenTable.screenState = 5;
             }
             break;
 
         case 2:
-            if (func_8002CBF8(TOOL_AND_BELONGINGS_LABELS)) {
-                func_800B2CE0();
+            if (checkSpriteRGBAUpdateFinished(TOOL_AND_BELONGINGS_LABELS)) {
+                closeOverlayScreen();
                 overlayScreenTable.screenState = 3;
             }
             break;
         
         case 3:
             deactivateSprite(0x80);
-            func_80059368();
-            func_80059300();
+            exitOverlayScreen();
+            resumeGameplay();
             break;    
 
         case 4:
-            if (func_8003F0DC()) {
+            if (checkAnyMessageBoxTextFinished()) {
                 overlayScreenTable.screenState = overlayScreenTable.unk_7;
             }
             break;
@@ -2747,15 +2732,15 @@ void func_800B9D3C(void) {
             }
             
             if (overlayScreenTable.pageNumber != 2) {
-                func_800C7C88(96.0f, -104.0f);
+                showDownArrow(96.0f, -104.0f);
             } else {
-                func_800C7DF8();
+                hideDownArrow();
             }
             
             if (overlayScreenTable.pageNumber) {
-                func_800C7CE4(96.0f, 56.0f);
+                showUpArrow(96.0f, 56.0f);
             } else {
-                func_800C7E18();
+                hideUpArrow();
             }
             
             break;
@@ -2858,15 +2843,15 @@ void func_800B9D3C(void) {
             }
 
             if (overlayScreenTable.pageNumber != 2) {
-                func_800C7C88(96.0f, -104.0f);
+                showDownArrow(96.0f, -104.0f);
             } else {
-                func_800C7DF8();
+                hideDownArrow();
             }
             
             if (overlayScreenTable.pageNumber) {
-                func_800C7CE4(96.0f, 56.0f);
+                showUpArrow(96.0f, 56.0f);
             } else {
-                func_800C7E18();
+                hideUpArrow();
             }
             
             break;
@@ -2883,8 +2868,8 @@ void func_800B9D3C(void) {
                     } else if (overlayScreenTable.pageNumber != 2) {
                         overlayScreenTable.pageNumber++;
                         overlayScreenTable.cellIndex -= 6;
-                        func_800B90E0();
-                        func_800B9914();
+                        loadPauseScreenItemSprites();
+                        updatePauseScreenSelectionHighlight();
                         playSfx(2);
                     }
                         
@@ -2904,8 +2889,8 @@ void func_800B9D3C(void) {
                     } else if (overlayScreenTable.pageNumber) {
                         overlayScreenTable.pageNumber--;
                         overlayScreenTable.cellIndex += 6;
-                        func_800B90E0();
-                        func_800B9914();
+                        loadPauseScreenItemSprites();
+                        updatePauseScreenSelectionHighlight();
                         playSfx(2);
                     }
                     
@@ -2972,22 +2957,22 @@ void func_800B9D3C(void) {
             }
             
             if (overlayScreenTable.pageNumber != 2) {
-                func_800C7C88(96.0f, -104.0f);
+                showDownArrow(96.0f, -104.0f);
             } else {
-                func_800C7DF8();
+                hideDownArrow();
             }
             
             if (overlayScreenTable.pageNumber) {
-                func_800C7CE4(96.0f, 56.0f);
+                showUpArrow(96.0f, 56.0f);
             } else {
-                func_800C7E18();
+                hideUpArrow();
             }
             
             break;
         
         case 8:
-            if (func_8002CBF8(TOOL_AND_BELONGINGS_LABELS)) {
-                func_800B2CE0();
+            if (checkSpriteRGBAUpdateFinished(TOOL_AND_BELONGINGS_LABELS)) {
+                closeOverlayScreen();
                 overlayScreenTable.screenState = 9;
             }
             break;
@@ -2995,7 +2980,7 @@ void func_800B9D3C(void) {
         // load village map (cut from NA release)
         case 9:
             deactivateSprite(0x80);
-            setMainLoopCallbackFunctionIndex(PAUSE_SCREEN_MAP_LOAD_1);
+            setMainLoopCallbackFunctionIndex(PAUSE_SCREEN_MAP_LOAD);
             break;
         
     }
@@ -3012,13 +2997,13 @@ void func_800B9D3C(void) {
                     overlayScreenTable.unk_3 = 0xFF;
                     overlayScreenTable.screenState = overlayScreenTable.unk_5;
                     overlayScreenTable.pageNumber = overlayScreenTable.unk_4;
-                    func_800B9914();
+                    updatePauseScreenSelectionHighlight();
                     
                 } else {
-                    func_800B9B8C();
+                    fadeOutPauseScreenSprites();
                     resetAnimationState(CURSOR_HAND);
-                    func_800C7DF8();
-                    func_800C7E18();
+                    hideDownArrow();
+                    hideUpArrow();
                     deactivateSprite(0x82);
                     overlayScreenTable.screenState = 2;
                 }
@@ -3046,16 +3031,15 @@ void func_800B9D3C(void) {
                     
                     if ((tempItem == 0xFF) || (getItemFlags(tempItem) & 2)) {
                         
-                        // swap item position
-                        func_800BAC7C();
+                        swapPauseScreenItems();
                         
                         overlayScreenTable.cellIndex = overlayScreenTable.unk_3;
                         overlayScreenTable.unk_3 = 0xFF;
                         overlayScreenTable.screenState = overlayScreenTable.unk_5;
                         overlayScreenTable.pageNumber = overlayScreenTable.unk_4;
     
-                        func_800B90E0();
-                        func_800B9914();
+                        loadPauseScreenItemSprites();
+                        updatePauseScreenSelectionHighlight();
                     
                     }
                     
@@ -3079,7 +3063,7 @@ void func_800B9D3C(void) {
                             overlayScreenTable.cellIndex = 8;
                         }
                         
-                        func_800B9914();
+                        updatePauseScreenSelectionHighlight();
                         
                     }
                     
@@ -3117,7 +3101,7 @@ void func_800B9D3C(void) {
 
                 if (tempItem) {
                     
-                    func_800C81E8(flag, tempItem);
+                    setItemDescriptionVariable(flag, tempItem);
 
                     overlayScreenTable.unk_7 = overlayScreenTable.screenState;
                     overlayScreenTable.screenState = 4;
@@ -3129,17 +3113,17 @@ void func_800B9D3C(void) {
         }
         
         if (4 < overlayScreenTable.screenState && overlayScreenTable.screenState < 8) {
-            setSpriteViewSpacePosition(CURSOR_HAND, (func_800BA928(overlayScreenTable.screenState, overlayScreenTable.cellIndex) - 16.0f), func_800BA9E8(overlayScreenTable.screenState, overlayScreenTable.cellIndex) - 8.0f, 256.0f);
-            func_800BAAA0();
+            setSpriteViewSpacePosition(CURSOR_HAND, (getPauseScreenItemXCoordinate(overlayScreenTable.screenState, overlayScreenTable.cellIndex) - 16.0f), getPauseScreenItemYCoordinate(overlayScreenTable.screenState, overlayScreenTable.cellIndex) - 8.0f, 256.0f);
+            resetPauseScreenSpriteColors();
         }
         
     }
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800BA928);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", getPauseScreenItemXCoordinate);
 
-f32 func_800BA928(u8 arg0, u32 arg1) {
+f32 getPauseScreenItemXCoordinate(u8 arg0, u32 arg1) {
 
     f32 res;
     
@@ -3178,9 +3162,9 @@ f32 func_800BA928(u8 arg0, u32 arg1) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800BA9E8);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", getPauseScreenItemYCoordinate);
 
-f32 func_800BA9E8(u8 arg0, u8 arg1) {
+f32 getPauseScreenItemYCoordinate(u8 arg0, u8 arg1) {
 
     f32 res;
     
@@ -3215,9 +3199,9 @@ f32 func_800BA9E8(u8 arg0, u8 arg1) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800BAAA0);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", resetPauseScreenSpriteColors);
 
-void func_800BAAA0(void) {
+void resetPauseScreenSpriteColors(void) {
 
     u8 i;
     
@@ -3258,10 +3242,9 @@ void func_800BAAA0(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800BAC7C);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", wapPauseScreenItems);
 
-// swap item/tool positions
-void func_800BAC7C(void) {
+void swapPauseScreenItems(void) {
     
     u8 temp;
 
@@ -3295,12 +3278,11 @@ void func_800BAC7C(void) {
 
 /* toolbox functions */
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800BADD0);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", loadToolboxScreenCallback);
 
-// toolbox load callback
-void func_800BADD0(void) {
+void loadToolboxScreenCallback(void) {
     
-    func_800593EC();
+    openOverlayScreen();
     
     dmaSprite(CHECKERBOARD_BACKGROUND, (u32)&_checkerboardBackgroundTextureSegmentRomStart, (u32)&_checkerboardBackgroundTextureSegmentRomEnd, (u32)&_checkerboardBackgroundAssetsIndexSegmentRomStart, (u32)&_checkerboardBackgroundAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_BACKGROUND_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_BACKGROUND_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_BACKGROUND_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_BACKGROUND_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     
@@ -3321,12 +3303,12 @@ void func_800BADD0(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800BAF1C);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", loadToolboxScreenSprites);
 
-void func_800BAF1C(void) {
+void loadToolboxScreenSprites(void) {
 
-    // clock
-    func_800B2F34();
+    
+    loadClockSprites();
     
     setMoneySprites();
     
@@ -3335,14 +3317,14 @@ void func_800BAF1C(void) {
     dmaSprite(0x83, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x83, 42.0f, 0.0f, 8.0f);
     setSpriteColor(0x83, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteRenderingLayer(0x83, 2);
+    setSpriteBlendMode(0x83, 2);
     setBilinearFiltering(0x83, 1);
     startSpriteAnimation(0x83, 0, 0);
 
     dmaSprite(0x84, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x84, 42.0f, -80.0f, 8.0f);
     setSpriteColor(0x84, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteRenderingLayer(0x84, 2);
+    setSpriteBlendMode(0x84, 2);
     setBilinearFiltering(0x84, 1);
     startSpriteAnimation(0x84, 0, 0);
     
@@ -3350,7 +3332,7 @@ void func_800BAF1C(void) {
     dmaSprite(TOOL_AND_RUCKSACK_LABELS, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(TOOL_AND_RUCKSACK_LABELS, 0.0f, 0.0f, 16.0f);
     setSpriteColor(TOOL_AND_RUCKSACK_LABELS, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteRenderingLayer(TOOL_AND_RUCKSACK_LABELS, 2);
+    setSpriteBlendMode(TOOL_AND_RUCKSACK_LABELS, 2);
     setBilinearFiltering(TOOL_AND_RUCKSACK_LABELS, 1);
     startSpriteAnimation(TOOL_AND_RUCKSACK_LABELS, 5, 1);
 
@@ -3358,13 +3340,13 @@ void func_800BAF1C(void) {
     dmaSprite(0x87, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x87, 0.0f, 80.0f, 8.0f);
     setSpriteColor(0x87, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteRenderingLayer(0x87, 2);
+    setSpriteBlendMode(0x87, 2);
     setBilinearFiltering(0x87, 1);
     startSpriteAnimation(0x87, 2, 0);
     setSpritePaletteIndex(0x87, 3);
     
     dmaSprite(CURSOR_HAND, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)DIALOGUE_ICON_TEXTURE_BUFFER, NULL, (u16*)DIALOGUE_ICON_PALETTE_BUFFER, (AnimationFrameMetadata*)DIALOGUE_ICON_ANIMATION_FRAME_METADATA_BUFFER, (u32*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
-    setSpriteViewSpacePosition(CURSOR_HAND, func_800BC700(overlayScreenTable.screenState, overlayScreenTable.cellIndex) - 16.0f, func_800BC770(overlayScreenTable.screenState, overlayScreenTable.cellIndex) - 8.0f, 32.0f);
+    setSpriteViewSpacePosition(CURSOR_HAND, getToolboxItemXCoordinate(overlayScreenTable.screenState, overlayScreenTable.cellIndex) - 16.0f, getToolboxItemYCoordinate(overlayScreenTable.screenState, overlayScreenTable.cellIndex) - 8.0f, 32.0f);
     setBilinearFiltering(CURSOR_HAND, 1);
     setSpriteColor(CURSOR_HAND, 255, 255, 255, 255);
     
@@ -3374,18 +3356,18 @@ void func_800BAF1C(void) {
     setSpriteColor(0x82, 255, 255, 255, 255);
     
     // up and down arrows
-    func_800C7850();
+    loadNavigationArrows();
 
     // load tools
-    func_800BB590();
+    loadToolboxToolSprites();
     // fade in tools
-    func_800BBBC8();
+    fadeInToolboxSprites();
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800BB590);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", loadToolboxToolSprites);
 
-void func_800BB590(void) {
+void loadToolboxToolSprites(void) {
 
     u8 i;
     u32 j;
@@ -3406,10 +3388,10 @@ void func_800BB590(void) {
             setSpriteViewSpacePosition(TOOL_SPRITES_BASE + i, toolboxToolSlotsXPosition[j % 4], *(f32*)((u8*)toolboxToolSlotsYPosition + (j & 0xFC)), 256.0f);
 
             setSpriteColor(TOOL_SPRITES_BASE + i, 0xFF, 0xFF, 0xFF, 0);
-            setSpriteRenderingLayer(TOOL_SPRITES_BASE + i, 2);
+            setSpriteBlendMode(TOOL_SPRITES_BASE + i, 2);
             setBilinearFiltering(TOOL_SPRITES_BASE + i, 1);
             
-            startSpriteAnimation(TOOL_SPRITES_BASE + i, func_80030BA0(toolsAnimationScripts,  D_80116EB8[gToolboxSlots[(overlayScreenTable.pageNumber * 8) + i]] + func_800C0688(gToolboxSlots[(overlayScreenTable.pageNumber * 8) + i])), 0);
+            startSpriteAnimation(TOOL_SPRITES_BASE + i, getAnimationOffsetFromScript(toolsAnimationScripts,  D_80116EB8[gToolboxSlots[(overlayScreenTable.pageNumber * 8) + i]] + getToolLevelForAnimation(gToolboxSlots[(overlayScreenTable.pageNumber * 8) + i])), 0);
             
         }
         
@@ -3433,9 +3415,9 @@ void func_800BB590(void) {
             setSpriteViewSpacePosition(0xAC + i, toolXCoords[j % 4], *(f32*)((u8*)toolYCoords + (j & 0xFC)), 256.0f);
 
             setSpriteColor(0xAC + i, 0xFF, 0xFF, 0xFF, 0);
-            setSpriteRenderingLayer(0xAC + i, 2);
+            setSpriteBlendMode(0xAC + i, 2);
             setBilinearFiltering(0xAC + i, 1);
-            startSpriteAnimation(0xAC + i, func_80030BA0(toolsAnimationScripts, D_80116EB8[gPlayer.toolSlots[i]] + func_800C0688(gPlayer.toolSlots[i])), 0);
+            startSpriteAnimation(0xAC + i, getAnimationOffsetFromScript(toolsAnimationScripts, D_80116EB8[gPlayer.toolSlots[i]] + getToolLevelForAnimation(gPlayer.toolSlots[i])), 0);
         
         }
         
@@ -3446,18 +3428,18 @@ void func_800BB590(void) {
         dmaSprite(0xAC + i, (u32)&_toolsTextureSegmentRomStart, (u32)&_toolsTextureSegmentRomEnd, (u32)&_toolsAssetsIndexSegmentRomStart, (u32)&_toolsAssetsIndexSegmentRomEnd, (u32) &_toolsSpritesheetIndexSegmentRomStart, (u32)&_toolsSpritesheetIndexSegmentRomEnd, (i * (OVERLAY_SCREEN_HOLDABLE_ITEMS_TEXTURE_SIZE * 2)) + OVERLAY_SCREEN_HOLDABLE_ITEMS_TEXTURE_1_BASE, (i * (OVERLAY_SCREEN_HOLDABLE_ITEMS_TEXTURE_SIZE * 2)) + OVERLAY_SCREEN_HOLDABLE_ITEMS_TEXTURE_2_BASE, (u16*)OVERLAY_SCREEN_ITEMS_GRID_PALETTE, (u16*)OVERLAY_SCREEN_ITEMS_GRID_ANIM_METADATA, (u8*)OVERLAY_SCREEN_ITEMS_GRID_SPRITESHEET_INDEX, (u32*)OVERLAY_SCREEN_ITEMS_GRID_TEXTURE_TO_PALETTE_LOOKUP, 1, 0);
         setSpriteViewSpacePosition(0xAC + i, toolboxCurrentToolXPosition, toolboxCurrentToolYPosition, 256.0f);
         setSpriteColor(0xAC + i, 0xFF, 0xFF, 0xFF, 0);
-        setSpriteRenderingLayer(0xAC + i, 2);
+        setSpriteBlendMode(0xAC + i, 2);
         setBilinearFiltering(0xAC + i, 1);
 
-        startSpriteAnimation(0xAC + i, func_80030BA0(toolsAnimationScripts, D_80116EB8[gPlayer.currentTool] + func_800C0688(gPlayer.currentTool)), 0);
+        startSpriteAnimation(0xAC + i, getAnimationOffsetFromScript(toolsAnimationScripts, D_80116EB8[gPlayer.currentTool] + getToolLevelForAnimation(gPlayer.currentTool)), 0);
 
     }
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800BBAF0);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", updateToolboxSelectionHighlight);
 
-void func_800BBAF0(void) {
+void updateToolboxSelectionHighlight(void) {
 
     f32 x;
     
@@ -3467,8 +3449,8 @@ void func_800BBAF0(void) {
             
             if (overlayScreenTable.unk_4 == overlayScreenTable.pageNumber) {
                 
-                x = func_800BC700(overlayScreenTable.unk_5, overlayScreenTable.unk_3);
-                setSpriteViewSpacePosition(0x82, x, func_800BC770(overlayScreenTable.unk_5, overlayScreenTable.unk_3), 16.0f);
+                x = getToolboxItemXCoordinate(overlayScreenTable.unk_5, overlayScreenTable.unk_3);
+                setSpriteViewSpacePosition(0x82, x, getToolboxItemYCoordinate(overlayScreenTable.unk_5, overlayScreenTable.unk_3), 16.0f);
                 startSpriteAnimation(0x82, 6, 0xFE);
             
             } else {
@@ -3483,8 +3465,8 @@ void func_800BBAF0(void) {
 
         if (overlayScreenTable.unk_3 != 0xFF) {
             
-            x = func_800BC700(overlayScreenTable.unk_5, overlayScreenTable.unk_3);
-            setSpriteViewSpacePosition(0x82, x, func_800BC770(overlayScreenTable.unk_5, overlayScreenTable.unk_3), 16.0f);
+            x = getToolboxItemXCoordinate(overlayScreenTable.unk_5, overlayScreenTable.unk_3);
+            setSpriteViewSpacePosition(0x82, x, getToolboxItemYCoordinate(overlayScreenTable.unk_5, overlayScreenTable.unk_3), 16.0f);
             startSpriteAnimation(0x82, 6, 0xFE);
             
         } else {
@@ -3495,9 +3477,9 @@ void func_800BBAF0(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800BBBC8);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", fadeInToolboxElements);
 
-void func_800BBBC8(void) {
+void fadeInToolboxSprites(void) {
     
     u8 i;
 
@@ -3525,9 +3507,9 @@ void func_800BBBC8(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800BBD34);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", fadeOutToolboxElements);
 
-void func_800BBD34(void) {
+void fadeOutToolboxSprites(void) {
 
     u8 i;
 
@@ -3559,10 +3541,9 @@ void func_800BBD34(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800BBEC0);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", toolboxScreenCallback);
 
-// toolbox callback
-void func_800BBEC0(void) {
+void toolboxScreenCallback(void) {
 
     bool set = FALSE;
 
@@ -3571,32 +3552,32 @@ void func_800BBEC0(void) {
     switch (overlayScreenTable.screenState) {
         
         case 0:
-            func_800BAF1C();
+            loadToolboxScreenSprites();
             overlayScreenTable.screenState = 1;
             break;
         
         case 1:
-            if (func_8002CBF8(TOOL_AND_RUCKSACK_LABELS)) {
+            if (checkSpriteRGBAUpdateFinished(TOOL_AND_RUCKSACK_LABELS)) {
                 startSpriteAnimation(CURSOR_HAND, 3, 0);
                 overlayScreenTable.screenState = 6;
             }
             break;
         
         case 2:
-            if (func_8002CBF8(TOOL_AND_RUCKSACK_LABELS)) {
-                func_800B2CE0();
+            if (checkSpriteRGBAUpdateFinished(TOOL_AND_RUCKSACK_LABELS)) {
+                closeOverlayScreen();
                 overlayScreenTable.screenState = 3;
             }
             break;
         
         case 3:
             deactivateSprite(0x80);
-            func_80059300();
-            func_80059368();
+            resumeGameplay();
+            exitOverlayScreen();
             break;
         
         case 4:
-            if (func_8003F0DC()) {
+            if (checkAnyMessageBoxTextFinished()) {
                 overlayScreenTable.screenState = overlayScreenTable.unk_7;
             }
             break;
@@ -3661,8 +3642,8 @@ void func_800BBEC0(void) {
                         
                         overlayScreenTable.pageNumber++;
                         
-                        func_800BB590();
-                        func_800BBAF0();
+                        loadToolboxToolSprites();
+                        updateToolboxSelectionHighlight();
                         
                         playSfx(2);
                         
@@ -3696,8 +3677,8 @@ void func_800BBEC0(void) {
                             }
 
                             overlayScreenTable.pageNumber--;
-                            func_800BB590();
-                            func_800BBAF0();
+                            loadToolboxToolSprites();
+                            updateToolboxSelectionHighlight();
 
                             playSfx(2);
                             
@@ -3712,14 +3693,14 @@ void func_800BBEC0(void) {
             }
 
             if (overlayScreenTable.pageNumber) {
-                func_800C7D40(-96.0f, -64.0f);
+                showLeftArrow(-96.0f, -64.0f);
             } else {
-                func_800C7E38();
+                hideLeftArrow();
             }
             if (overlayScreenTable.pageNumber != 3) {
-                func_800C7D9C(96.0f, -64.0f);
+                showRightArrow(96.0f, -64.0f);
             } else {
-                func_800C7E58();
+                hideRightArrow();
             }
     
             break;
@@ -3805,14 +3786,14 @@ void func_800BBEC0(void) {
             }
  
             if (overlayScreenTable.pageNumber) {
-                func_800C7D40(-96.0f, -64.0f);
+                showLeftArrow(-96.0f, -64.0f);
             } else {
-                func_800C7E38();
+                hideLeftArrow();
             }
             if (overlayScreenTable.pageNumber != 3) {
-                func_800C7D9C(96.0f, -64.0f);
+                showRightArrow(96.0f, -64.0f);
             } else {
-                func_800C7E58();
+                hideRightArrow();
             }
             
         break;
@@ -3832,14 +3813,14 @@ void func_800BBEC0(void) {
                     overlayScreenTable.screenState = overlayScreenTable.unk_5;
                     overlayScreenTable.pageNumber = overlayScreenTable.unk_4;
 
-                    func_800BB590();
-                    func_800BBAF0();
+                    loadToolboxToolSprites();
+                    updateToolboxSelectionHighlight();
                     
                 } else {
-                    func_800BBD34();
+                    fadeOutToolboxSprites();
                     resetAnimationState(CURSOR_HAND);
-                    func_800C7E38();
-                    func_800C7E58();
+                    hideLeftArrow();
+                    hideRightArrow();
                     deactivateSprite(0x82);
                     overlayScreenTable.screenState = 2;
                 }
@@ -3856,14 +3837,14 @@ void func_800BBEC0(void) {
                 
                 if (overlayScreenTable.unk_3 != 0xFF) {
                     
-                    func_800BC918();
+                    swapToolboxTools();
                     
                     overlayScreenTable.cellIndex = overlayScreenTable.unk_3;
                     overlayScreenTable.unk_3 = 0xFF;
                     overlayScreenTable.screenState =overlayScreenTable.unk_5;
                     overlayScreenTable.pageNumber = overlayScreenTable.unk_4;
 
-                    func_800BB590();
+                    loadToolboxToolSprites();
                     
                 } else {
                     overlayScreenTable.unk_3 = overlayScreenTable.cellIndex;
@@ -3871,7 +3852,7 @@ void func_800BBEC0(void) {
                     overlayScreenTable.unk_4 = overlayScreenTable.pageNumber;
                 }
                 
-                func_800BBAF0();
+                updateToolboxSelectionHighlight();
                 
                 playSfx(0);
                 set = TRUE;
@@ -3896,7 +3877,7 @@ void func_800BBEC0(void) {
                 
                 if (tempTool) {
                     
-                    func_800C81E8(0, tempTool);
+                    setItemDescriptionVariable(0, tempTool);
                     
                     overlayScreenTable.unk_7 = overlayScreenTable.screenState;
                     overlayScreenTable.screenState = 4;
@@ -3908,17 +3889,17 @@ void func_800BBEC0(void) {
         }
     
         if (4 < overlayScreenTable.screenState && overlayScreenTable.screenState < 7) {
-            setSpriteViewSpacePosition(CURSOR_HAND, func_800BC700(overlayScreenTable.screenState, overlayScreenTable.cellIndex) - 16.0f, func_800BC770(overlayScreenTable.screenState, overlayScreenTable.cellIndex) - 8.0f, 256.0f);
-            func_800BC7D8();
+            setSpriteViewSpacePosition(CURSOR_HAND, getToolboxItemXCoordinate(overlayScreenTable.screenState, overlayScreenTable.cellIndex) - 16.0f, getToolboxItemYCoordinate(overlayScreenTable.screenState, overlayScreenTable.cellIndex) - 8.0f, 256.0f);
+            resetToolboxSpriteColors();
         }
     
     }
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800BC700);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", getToolboxItemXCoordinate);
 
-f32 func_800BC700(u8 arg0, u32 arg1) {
+f32 getToolboxItemXCoordinate(u8 arg0, u32 arg1) {
 
     f32 res;
     
@@ -3945,9 +3926,9 @@ f32 func_800BC700(u8 arg0, u32 arg1) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800BC770);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", getToolboxItemYCoordinate);
 
-f32 func_800BC770(u8 arg0, u8 arg1) {
+f32 getToolboxItemYCoordinate(u8 arg0, u8 arg1) {
 
     f32 res;
     
@@ -3973,9 +3954,9 @@ f32 func_800BC770(u8 arg0, u8 arg1) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800BC7D8);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", resetToolboxSpriteColors);
 
-void func_800BC7D8(void) {
+void resetToolboxSpriteColors(void) {
 
     u8 i;
 
@@ -4003,10 +3984,10 @@ void func_800BC7D8(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800BC918);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", swapToolboxTools);
 
 // swap tools
-void func_800BC918(void) {
+void swapToolboxTools(void) {
 
     u8 temp;
     
@@ -4055,12 +4036,12 @@ void func_800BC918(void) {
 
 /* freezer */
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800BCA9C);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", loadFreezerScreenCallback);
 
 // freezer load callback
-void func_800BCA9C(void) {
+void loadFreezerScreenCallback(void) {
     
-    func_800593EC();
+    openOverlayScreen();
     
     dmaSprite(CHECKERBOARD_BACKGROUND, (u32)&_checkerboardBackgroundTextureSegmentRomStart, (u32)&_checkerboardBackgroundTextureSegmentRomEnd, (u32)&_checkerboardBackgroundAssetsIndexSegmentRomStart, (u32)&_checkerboardBackgroundAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_BACKGROUND_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_BACKGROUND_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_BACKGROUND_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_BACKGROUND_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(CHECKERBOARD_BACKGROUND, 0.0f, 0.0f, 0.0f);
@@ -4080,12 +4061,11 @@ void func_800BCA9C(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800BCBE8);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", loadFreezerScreenSprites);
 
-void func_800BCBE8(void) {
-
-    // clock
-    func_800B2F34();
+void loadFreezerScreenSprites(void) {
+    
+    loadClockSprites();
     
     setMoneySprites();
 
@@ -4093,34 +4073,34 @@ void func_800BCBE8(void) {
 
     setSpriteViewSpacePosition(0x83, 42.0f, 0.0f, 8.0f);
     setSpriteColor(0x83, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteRenderingLayer(0x83, 2);
+    setSpriteBlendMode(0x83, 2);
     setBilinearFiltering(0x83, TRUE);
     startSpriteAnimation(0x83, 0, 0);
 
     dmaSprite(0x84, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, 0);
     setSpriteViewSpacePosition(0x84, 42.0f, -80.0f, 8.0f);
     setSpriteColor(0x84, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteRenderingLayer(0x84, 2);
+    setSpriteBlendMode(0x84, 2);
     setBilinearFiltering(0x84, 1);
     startSpriteAnimation(0x84, 0, 0);
     
     dmaSprite(FREEZER_AND_RUCKSACK_LABELS, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, 0);
     setSpriteViewSpacePosition(FREEZER_AND_RUCKSACK_LABELS, 0.0f, 0.0f, 16.0f);
     setSpriteColor(FREEZER_AND_RUCKSACK_LABELS, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteRenderingLayer(FREEZER_AND_RUCKSACK_LABELS, 2);
+    setSpriteBlendMode(FREEZER_AND_RUCKSACK_LABELS, 2);
     setBilinearFiltering(FREEZER_AND_RUCKSACK_LABELS, 1);
     startSpriteAnimation(FREEZER_AND_RUCKSACK_LABELS, 5, 2);
     
     dmaSprite(0x87, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, 0);
     setSpriteViewSpacePosition(0x87, 0.0f, 80.0f, 8.0f);
     setSpriteColor(0x87, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteRenderingLayer(0x87, 2);
+    setSpriteBlendMode(0x87, 2);
     setBilinearFiltering(0x87, 1);
     startSpriteAnimation(0x87, 2, 0);
     setSpritePaletteIndex(0x87, 2);
     
     dmaSprite(CURSOR_HAND, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsAssetsIndexSegmentRomStart, &_dialogueIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8* )DIALOGUE_ICON_TEXTURE_BUFFER, NULL, (u16* )(u16*)DIALOGUE_ICON_PALETTE_BUFFER, (u16* )(AnimationFrameMetadata*)DIALOGUE_ICON_ANIMATION_FRAME_METADATA_BUFFER, (u8* )DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, 0);
-    setSpriteViewSpacePosition(CURSOR_HAND, func_800BE3B8(overlayScreenTable.screenState, overlayScreenTable.cellIndex) - 16.0f, func_800BE428(overlayScreenTable.screenState, overlayScreenTable.cellIndex) - 8.0f, 32.0f);
+    setSpriteViewSpacePosition(CURSOR_HAND, getFreezerItemXCoordinate(overlayScreenTable.screenState, overlayScreenTable.cellIndex) - 16.0f, getFreezerItemYCoordinate(overlayScreenTable.screenState, overlayScreenTable.cellIndex) - 8.0f, 32.0f);
     setBilinearFiltering(CURSOR_HAND, 1);
     setSpriteColor(CURSOR_HAND, 255, 255, 255, 255);
     
@@ -4129,15 +4109,15 @@ void func_800BCBE8(void) {
     setBilinearFiltering(0x82, 1);
     setSpriteColor(0x82, 255, 255, 255, 255);
     
-    func_800C7850();
-    func_800BD25C();
-    func_800BD82C();
+    loadNavigationArrows();
+    loadFreezerItemSprites();
+    fadeInFreezerSprites();
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800BD25C);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", loadFreezerItemSprites);
 
-void func_800BD25C(void) {
+void loadFreezerItemSprites(void) {
 
     u8 i;
     u32 j, k;
@@ -4161,9 +4141,9 @@ void func_800BD25C(void) {
             setSpriteViewSpacePosition(0xA3 + i, xCoords[j % 4], *(f32*)((u8*)yCoords + (j & 0xFC)), 256.0f);
 
             setSpriteColor(0xA3 + i, 0xFF, 0xFF, 0xFF, 0);
-            setSpriteRenderingLayer(0xA3 + i, 2);
+            setSpriteBlendMode(0xA3 + i, 2);
             setBilinearFiltering(0xA3 + i, 1);
-            startSpriteAnimation(0xA3 + i, func_80030BA0(shopItemsAnimationScripts, func_800D5A88(D_80237420[(overlayScreenTable.pageNumber * 8) + i])), 0);
+            startSpriteAnimation(0xA3 + i, getAnimationOffsetFromScript(shopItemsAnimationScripts, getItemAnimationIndex(D_80237420[(overlayScreenTable.pageNumber * 8) + i])), 0);
         
         }
         
@@ -4184,9 +4164,9 @@ void func_800BD25C(void) {
             dmaSprite(HOLDABLE_ITEMS_BASE + i, (u32)&_holdableItemsTextureSegmentRomStart, (u32)&_holdableItemsTextureSegmentRomEnd, (u32)&_holdableItemsAssetsIndexSegmentRomStart, (u32)&_holdableItemsAssetsIndexSegmentRomEnd, (u32) &_holdableItemsSpritesheetIndexSegmentRomStart, (u32)&_holdableItemsSpritesheetIndexSegmentRomEnd, (i * (OVERLAY_SCREEN_HOLDABLE_ITEMS_TEXTURE_SIZE * 2)) + OVERLAY_SCREEN_HOLDABLE_ITEMS_TEXTURE_1_BASE, (i * (OVERLAY_SCREEN_HOLDABLE_ITEMS_TEXTURE_SIZE * 2)) + OVERLAY_SCREEN_HOLDABLE_ITEMS_TEXTURE_2_BASE, (u16*)OVERLAY_SCREEN_ITEMS_GRID_PALETTE, (u16*)OVERLAY_SCREEN_ITEMS_GRID_ANIM_METADATA, (u8*)OVERLAY_SCREEN_ITEMS_GRID_SPRITESHEET_INDEX, (u32*)OVERLAY_SCREEN_ITEMS_GRID_TEXTURE_TO_PALETTE_LOOKUP, 1, 0);
             setSpriteViewSpacePosition(HOLDABLE_ITEMS_BASE + i, belongingXCoords[j % 4], *(f32*)((u8*)belongingYCoords + (j & 0xFC)), 256.0f);
             setSpriteColor(HOLDABLE_ITEMS_BASE + i, 0xFF, 0xFF, 0xFF, 0);
-            setSpriteRenderingLayer(HOLDABLE_ITEMS_BASE + i, 2);
+            setSpriteBlendMode(HOLDABLE_ITEMS_BASE + i, 2);
             setBilinearFiltering(HOLDABLE_ITEMS_BASE + i, 1);
-            startSpriteAnimation(HOLDABLE_ITEMS_BASE + i, func_80030BA0(shopItemsAnimationScripts, func_800D5A88(gPlayer.belongingsSlots[i])), 0);
+            startSpriteAnimation(HOLDABLE_ITEMS_BASE + i, getAnimationOffsetFromScript(shopItemsAnimationScripts, getItemAnimationIndex(gPlayer.belongingsSlots[i])), 0);
         
         }
         
@@ -4196,16 +4176,16 @@ void func_800BD25C(void) {
         dmaSprite(HOLDABLE_ITEMS_BASE + i, (u32)&_holdableItemsTextureSegmentRomStart, (u32)&_holdableItemsTextureSegmentRomEnd, (u32)&_holdableItemsAssetsIndexSegmentRomStart, (u32)&_holdableItemsAssetsIndexSegmentRomEnd, (u32) &_holdableItemsSpritesheetIndexSegmentRomStart, (u32)&_holdableItemsSpritesheetIndexSegmentRomEnd, (i * (OVERLAY_SCREEN_HOLDABLE_ITEMS_TEXTURE_SIZE * 2)) + OVERLAY_SCREEN_HOLDABLE_ITEMS_TEXTURE_1_BASE, (i * (OVERLAY_SCREEN_HOLDABLE_ITEMS_TEXTURE_SIZE * 2)) + OVERLAY_SCREEN_HOLDABLE_ITEMS_TEXTURE_2_BASE, (u16*)OVERLAY_SCREEN_ITEMS_GRID_PALETTE, (u16*)OVERLAY_SCREEN_ITEMS_GRID_ANIM_METADATA, (u8*)OVERLAY_SCREEN_ITEMS_GRID_SPRITESHEET_INDEX, (u32*)OVERLAY_SCREEN_ITEMS_GRID_TEXTURE_TO_PALETTE_LOOKUP, 1, 0);
         setSpriteViewSpacePosition(HOLDABLE_ITEMS_BASE + i, D_80116D38, D_80116D44, 256.0f);
         setSpriteColor(HOLDABLE_ITEMS_BASE + i, 0xFF, 0xFF, 0xFF, 0);
-        setSpriteRenderingLayer(HOLDABLE_ITEMS_BASE + i, 2);
+        setSpriteBlendMode(HOLDABLE_ITEMS_BASE + i, 2);
         setBilinearFiltering(HOLDABLE_ITEMS_BASE + i, 1);
-        startSpriteAnimation(HOLDABLE_ITEMS_BASE + i, func_80030BA0(shopItemsAnimationScripts, func_800D5A88(gPlayer.heldItem)), 0);
+        startSpriteAnimation(HOLDABLE_ITEMS_BASE + i, getAnimationOffsetFromScript(shopItemsAnimationScripts, getItemAnimationIndex(gPlayer.heldItem)), 0);
     }
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800BD754);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", updateFreezerSelectionHighlight);
 
-void func_800BD754(void) {
+void updateFreezerSelectionHighlight(void) {
 
     u32 temp;
     u32 temp2;
@@ -4218,7 +4198,7 @@ void func_800BD754(void) {
         if (overlayScreenTable.unk_3 != 0xFF) {
             
             if (overlayScreenTable.unk_4 == overlayScreenTable.pageNumber) {
-                setSpriteViewSpacePosition(0x82, func_800BE3B8(temp2, temp), func_800BE428(*ptr, overlayScreenTable.unk_3), 16.0f);
+                setSpriteViewSpacePosition(0x82, getFreezerItemXCoordinate(temp2, temp), getFreezerItemYCoordinate(*ptr, overlayScreenTable.unk_3), 16.0f);
                 startSpriteAnimation(0x82, 6, 0xFE);
                 return;
             } else {
@@ -4235,7 +4215,7 @@ void func_800BD754(void) {
     
     if (overlayScreenTable.unk_3 != 0xFF) {
 startAnim:
-        setSpriteViewSpacePosition(0x82, func_800BE3B8(temp2, temp), func_800BE428(*ptr, overlayScreenTable.unk_3), 16.0f);
+        setSpriteViewSpacePosition(0x82, getFreezerItemXCoordinate(temp2, temp), getFreezerItemYCoordinate(*ptr, overlayScreenTable.unk_3), 16.0f);
         startSpriteAnimation(0x82, 6, 0xFE);
     } else {
 reset:
@@ -4244,9 +4224,9 @@ reset:
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800BD82C);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", fadeInFreezerElements);
 
-void func_800BD82C(void) {
+void fadeInFreezerSprites(void) {
     
     u8 i;
     
@@ -4274,9 +4254,9 @@ void func_800BD82C(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800BD998);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", fadeOutFreezerElements);
 
-void func_800BD998(void) {
+void fadeOutFreezerSprites(void) {
 
     u8 i;
 
@@ -4305,10 +4285,10 @@ void func_800BD998(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800BDB24);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", freezerScreenCallback);
 
 // freezer callback function
-void func_800BDB24(void) {
+void freezerScreenCallback(void) {
 
     bool set = FALSE;
 
@@ -4318,32 +4298,32 @@ void func_800BDB24(void) {
     switch (overlayScreenTable.screenState) {
         
         case 0:
-            func_800BCBE8();
+            loadFreezerScreenSprites();
             overlayScreenTable.screenState = 1;
             break;
         
         case 1:
-            if (func_8002CBF8(FREEZER_AND_RUCKSACK_LABELS)) {
+            if (checkSpriteRGBAUpdateFinished(FREEZER_AND_RUCKSACK_LABELS)) {
                 startSpriteAnimation(CURSOR_HAND, 3, 0);
                 overlayScreenTable.screenState = 5;
             }
             break;
         
         case 2:
-            if (func_8002CBF8(FREEZER_AND_RUCKSACK_LABELS)) {
-                func_800B2CE0();
+            if (checkSpriteRGBAUpdateFinished(FREEZER_AND_RUCKSACK_LABELS)) {
+                closeOverlayScreen();
                 overlayScreenTable.screenState = 3;
             }
             break;
         
         case 3:
             deactivateSprite(0x80);
-            func_80059300();
-            func_80059368();
+            resumeGameplay();
+            exitOverlayScreen();
             break;
         
         case 4:
-            if (func_8003F0DC()) {
+            if (checkAnyMessageBoxTextFinished()) {
                 overlayScreenTable.screenState = overlayScreenTable.unk_7;
             }
             break;
@@ -4411,8 +4391,8 @@ void func_800BDB24(void) {
                         
                         overlayScreenTable.pageNumber++;
                         
-                        func_800BD25C();
-                        func_800BD754();
+                        loadFreezerItemSprites();
+                        updateFreezerSelectionHighlight();
                         
                         playSfx(2);
                         
@@ -4447,8 +4427,8 @@ void func_800BDB24(void) {
 
                             overlayScreenTable.pageNumber--;
                             
-                            func_800BD25C();
-                            func_800BD754();
+                            loadFreezerItemSprites();
+                            updateFreezerSelectionHighlight();
 
                             playSfx(2);
                             
@@ -4463,14 +4443,14 @@ void func_800BDB24(void) {
             }
 
             if (overlayScreenTable.pageNumber) {
-                func_800C7D40(-96.0f, 16.0f);
+                showLeftArrow(-96.0f, 16.0f);
             } else {
-                func_800C7E38();
+                hideLeftArrow();
             }
             if (overlayScreenTable.pageNumber != 3) {
-                func_800C7D9C(96.0f, 16.0f);
+                showRightArrow(96.0f, 16.0f);
             } else {
-                func_800C7E58();
+                hideRightArrow();
             }
     
             break;
@@ -4554,14 +4534,14 @@ void func_800BDB24(void) {
             }
  
             if (overlayScreenTable.pageNumber) {
-                func_800C7D40(-96.0f, 16.0f);
+                showLeftArrow(-96.0f, 16.0f);
             } else {
-                func_800C7E38();
+                hideLeftArrow();
             }
             if (overlayScreenTable.pageNumber != 3) {
-                func_800C7D9C(96.0f, 16.0f);
+                showRightArrow(96.0f, 16.0f);
             } else {
-                func_800C7E58();
+                hideRightArrow();
             }
         
         break;
@@ -4579,13 +4559,13 @@ void func_800BDB24(void) {
                     overlayScreenTable.unk_3 = 0xFF;
                     overlayScreenTable.screenState = overlayScreenTable.unk_5;
                     overlayScreenTable.pageNumber = overlayScreenTable.unk_4;
-                    func_800BD25C();
-                    func_800BD754();
+                    loadFreezerItemSprites();
+                    updateFreezerSelectionHighlight();
                 } else {
-                    func_800BD998();
+                    fadeOutFreezerSprites();
                     resetAnimationState(CURSOR_HAND);
-                    func_800C7E38();
-                    func_800C7E58();
+                    hideLeftArrow();
+                    hideRightArrow();
                     deactivateSprite(0x82);
                     overlayScreenTable.screenState = 2;
                 }
@@ -4603,14 +4583,14 @@ void func_800BDB24(void) {
 
                 if (overlayScreenTable.unk_3 != 0xFF) {
                     
-                    if (func_800BE5D0()) {
-                        func_800BE684();
+                    if (isFreezerItemSwappable()) {
+                        swapFreezerItems();
                         overlayScreenTable.cellIndex = overlayScreenTable.unk_3;
                         overlayScreenTable.unk_3 = 0xFF;
                         overlayScreenTable.screenState = overlayScreenTable.unk_5;
                         overlayScreenTable.pageNumber = overlayScreenTable.unk_4;
-                        func_800BD25C();
-                        func_800BD754();
+                        loadFreezerItemSprites();
+                        updateFreezerSelectionHighlight();
                         playSfx(0);
                     } else {
                         playSfx(3);
@@ -4618,11 +4598,11 @@ void func_800BDB24(void) {
                     
                 } else {
 
-                    if (func_800BE5D0()) {
+                    if (isFreezerItemSwappable()) {
                         overlayScreenTable.unk_3 = overlayScreenTable.cellIndex;
                         overlayScreenTable.unk_5 = overlayScreenTable.screenState;
                         overlayScreenTable.unk_4 = overlayScreenTable.pageNumber;
-                        func_800BD754();
+                        updateFreezerSelectionHighlight();
                         playSfx(0);
                     } else {
                         playSfx(3);
@@ -4657,7 +4637,7 @@ void func_800BDB24(void) {
                 }
 
                 if (temp) {
-                    func_800C81E8(type, temp);
+                    setItemDescriptionVariable(type, temp);
                     overlayScreenTable.unk_7 = overlayScreenTable.screenState;
                     overlayScreenTable.screenState = 4;
                 }
@@ -4667,17 +4647,17 @@ void func_800BDB24(void) {
         }
     
         if (4 < overlayScreenTable.screenState && overlayScreenTable.screenState < 7) {
-            setSpriteViewSpacePosition(CURSOR_HAND, func_800BE3B8(overlayScreenTable.screenState, overlayScreenTable.cellIndex) - 16.0f, func_800BE428(overlayScreenTable.screenState, overlayScreenTable.cellIndex) - 8.0f, 256.0f);
-            func_800BE490();
+            setSpriteViewSpacePosition(CURSOR_HAND, getFreezerItemXCoordinate(overlayScreenTable.screenState, overlayScreenTable.cellIndex) - 16.0f, getFreezerItemYCoordinate(overlayScreenTable.screenState, overlayScreenTable.cellIndex) - 8.0f, 256.0f);
+            resetFreezerSpriteColors();
         }
     
     }
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800BE3B8);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", getFreezerItemXCoordinate);
 
-inline f32 func_800BE3B8(u8 arg0, u8 arg1) {
+inline f32 getFreezerItemXCoordinate(u8 arg0, u8 arg1) {
 
     f32 res;
     
@@ -4703,9 +4683,9 @@ inline f32 func_800BE3B8(u8 arg0, u8 arg1) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800BE428);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", getFreezerItemYCoordinate);
 
-inline f32 func_800BE428(u8 arg0, u8 arg1) {
+inline f32 getFreezerItemYCoordinate(u8 arg0, u8 arg1) {
 
     f32 res;
     
@@ -4731,9 +4711,9 @@ inline f32 func_800BE428(u8 arg0, u8 arg1) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800BE490);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", resetFreezerSpriteColors);
 
-void func_800BE490(void) {
+void resetFreezerSpriteColors(void) {
 
     u8 i;
 
@@ -4760,9 +4740,9 @@ void func_800BE490(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800BE5D0);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", isFreezerItemSwappable);
 
-bool func_800BE5D0(void) {
+bool isFreezerItemSwappable(void) {
     
     bool result = FALSE;
     u8 temp;
@@ -4790,9 +4770,9 @@ bool func_800BE5D0(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800BE684);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", swapFreezerItems);
 
-void func_800BE684(void) {
+void swapFreezerItems(void) {
 
     u8 temp;
 
@@ -4835,12 +4815,12 @@ void func_800BE684(void) {
 
 /* cabinet functions */
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800BE808);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", loadCabinetScreenCallback);
 
 // cabinet load callback
-void func_800BE808(void) {
+void loadCabinetScreenCallback(void) {
     
-    func_800593EC();
+    openOverlayScreen();
     
     dmaSprite(CHECKERBOARD_BACKGROUND, (u32)&_checkerboardBackgroundTextureSegmentRomStart, (u32)&_checkerboardBackgroundTextureSegmentRomEnd, (u32)&_checkerboardBackgroundAssetsIndexSegmentRomStart, (u32)&_checkerboardBackgroundAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_BACKGROUND_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_BACKGROUND_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_BACKGROUND_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_BACKGROUND_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(CHECKERBOARD_BACKGROUND, 0.0f, 0.0f, 0.0f);
@@ -4860,46 +4840,45 @@ void func_800BE808(void) {
     
 }
 
-// INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800BE954);
+// INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", loadCabinetScreenSprites);
 
-void func_800BE954(void) {
+void loadCabinetScreenSprites(void) {
 
-    // clock
-    func_800B2F34();
+    loadClockSprites();
 
     setMoneySprites();
     
     dmaSprite(0x83, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x83, 42.0f, 0.0f, 8.0f);
     setSpriteColor(0x83, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteRenderingLayer(0x83, 2);
+    setSpriteBlendMode(0x83, 2);
     setBilinearFiltering(0x83, TRUE);
     startSpriteAnimation(0x83, 0, 0);
     
     dmaSprite(0x84, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x84, 42.0f, -80.0f, 8.0f);
     setSpriteColor(0x84, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteRenderingLayer(0x84, 2);
+    setSpriteBlendMode(0x84, 2);
     setBilinearFiltering(0x84, TRUE);
     startSpriteAnimation(0x84, 0, 0);
 
     dmaSprite(CABINET_AND_RUCKSACK_LABELS, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(CABINET_AND_RUCKSACK_LABELS, 0.0f, 0.0f, 16.0f);
     setSpriteColor(CABINET_AND_RUCKSACK_LABELS, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteRenderingLayer(CABINET_AND_RUCKSACK_LABELS, 2);
+    setSpriteBlendMode(CABINET_AND_RUCKSACK_LABELS, 2);
     setBilinearFiltering(CABINET_AND_RUCKSACK_LABELS, 1);
     startSpriteAnimation(CABINET_AND_RUCKSACK_LABELS, 5, 3);
     
     dmaSprite(0x87, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x87, 0.0f, 80.0f, 8.0f);
     setSpriteColor(0x87, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteRenderingLayer(0x87, 2);
+    setSpriteBlendMode(0x87, 2);
     setBilinearFiltering(0x87, TRUE);
     startSpriteAnimation(0x87, 2, 0);
     setSpritePaletteIndex(0x87, 2);
     
     dmaSprite(CURSOR_HAND, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)DIALOGUE_ICON_TEXTURE_BUFFER, NULL, (u16*)DIALOGUE_ICON_PALETTE_BUFFER, (AnimationFrameMetadata*)DIALOGUE_ICON_ANIMATION_FRAME_METADATA_BUFFER, (u32*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
-    setSpriteViewSpacePosition(CURSOR_HAND, func_800BE3B8(overlayScreenTable.screenState, overlayScreenTable.cellIndex) - 16.0f, func_800BE428(overlayScreenTable.screenState, overlayScreenTable.cellIndex) - 8.0f, 32.0f);
+    setSpriteViewSpacePosition(CURSOR_HAND, getFreezerItemXCoordinate(overlayScreenTable.screenState, overlayScreenTable.cellIndex) - 16.0f, getFreezerItemYCoordinate(overlayScreenTable.screenState, overlayScreenTable.cellIndex) - 8.0f, 32.0f);
     setBilinearFiltering(CURSOR_HAND, TRUE);
     setSpriteColor(CURSOR_HAND, 255, 255, 255, 255);
     
@@ -4910,16 +4889,16 @@ void func_800BE954(void) {
     setBilinearFiltering(0x82, TRUE);
     setSpriteColor(0x82, 255, 255, 255, 255);
     
-    func_800C7850();
-    func_800BF0C8();
-    func_800BF698();
+    loadNavigationArrows();
+    loadCabinetItemSprites();
+    fadeInCabinetSprites();
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800BF0C8);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", loadCabinetItemSprites);
 
 // cabinet
-void func_800BF0C8(void) {
+void loadCabinetItemSprites(void) {
 
     u8 i;
     u32 j, k;
@@ -4943,9 +4922,9 @@ void func_800BF0C8(void) {
             setSpriteViewSpacePosition(0xA3 + i, xCoords[j % 4], *(f32*)((u8*)yCoords + (j & 0xFC)), 256.0f);
 
             setSpriteColor(0xA3 + i, 0xFF, 0xFF, 0xFF, 0);
-            setSpriteRenderingLayer(0xA3 + i, 2);
+            setSpriteBlendMode(0xA3 + i, 2);
             setBilinearFiltering(0xA3 + i, 1);
-            startSpriteAnimation(0xA3 + i, func_80030BA0(shopItemsAnimationScripts, func_800D5A88(D_801890E8[(overlayScreenTable.pageNumber * 8) + i])), 0);
+            startSpriteAnimation(0xA3 + i, getAnimationOffsetFromScript(shopItemsAnimationScripts, getItemAnimationIndex(D_801890E8[(overlayScreenTable.pageNumber * 8) + i])), 0);
         
         }
         
@@ -4969,9 +4948,9 @@ void func_800BF0C8(void) {
             setSpriteViewSpacePosition(HOLDABLE_ITEMS_BASE + i, belongingXCoords[j % 4], *(f32*)((u8*)belongingYCoords + (j & 0xFC)), 256.0f);
 
             setSpriteColor(HOLDABLE_ITEMS_BASE + i, 0xFF, 0xFF, 0xFF, 0);
-            setSpriteRenderingLayer(HOLDABLE_ITEMS_BASE + i, 2);
+            setSpriteBlendMode(HOLDABLE_ITEMS_BASE + i, 2);
             setBilinearFiltering(HOLDABLE_ITEMS_BASE + i, 1);
-            startSpriteAnimation(HOLDABLE_ITEMS_BASE + i, func_80030BA0(shopItemsAnimationScripts, func_800D5A88(gPlayer.belongingsSlots[i])), 0);
+            startSpriteAnimation(HOLDABLE_ITEMS_BASE + i, getAnimationOffsetFromScript(shopItemsAnimationScripts, getItemAnimationIndex(gPlayer.belongingsSlots[i])), 0);
         
         }
         
@@ -4981,16 +4960,16 @@ void func_800BF0C8(void) {
         dmaSprite(HOLDABLE_ITEMS_BASE + i, (u32)&_holdableItemsTextureSegmentRomStart, (u32)&_holdableItemsTextureSegmentRomEnd, (u32)&_holdableItemsAssetsIndexSegmentRomStart, (u32)&_holdableItemsAssetsIndexSegmentRomEnd, (u32) &_holdableItemsSpritesheetIndexSegmentRomStart, (u32)&_holdableItemsSpritesheetIndexSegmentRomEnd, (i * (OVERLAY_SCREEN_HOLDABLE_ITEMS_TEXTURE_SIZE * 2)) + OVERLAY_SCREEN_HOLDABLE_ITEMS_TEXTURE_1_BASE, (i * (OVERLAY_SCREEN_HOLDABLE_ITEMS_TEXTURE_SIZE * 2)) + OVERLAY_SCREEN_HOLDABLE_ITEMS_TEXTURE_2_BASE, (u16*)OVERLAY_SCREEN_ITEMS_GRID_PALETTE, (u16*)OVERLAY_SCREEN_ITEMS_GRID_ANIM_METADATA, (u8*)OVERLAY_SCREEN_ITEMS_GRID_SPRITESHEET_INDEX, (u32*)OVERLAY_SCREEN_ITEMS_GRID_TEXTURE_TO_PALETTE_LOOKUP, 1, 0);
         setSpriteViewSpacePosition(HOLDABLE_ITEMS_BASE + i, D_80116D70, D_80116D7C, 256.0f);
         setSpriteColor(HOLDABLE_ITEMS_BASE + i, 0xFF, 0xFF, 0xFF, 0);
-        setSpriteRenderingLayer(HOLDABLE_ITEMS_BASE + i, 2);
+        setSpriteBlendMode(HOLDABLE_ITEMS_BASE + i, 2);
         setBilinearFiltering(HOLDABLE_ITEMS_BASE + i, 1);
-        startSpriteAnimation(HOLDABLE_ITEMS_BASE + i, func_80030BA0(shopItemsAnimationScripts, func_800D5A88(gPlayer.heldItem)), 0);
+        startSpriteAnimation(HOLDABLE_ITEMS_BASE + i, getAnimationOffsetFromScript(shopItemsAnimationScripts, getItemAnimationIndex(gPlayer.heldItem)), 0);
     }
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800BF5C0);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", updateCabinetSelectionHighlight);
 
-void func_800BF5C0(void) {
+void updateCabinetSelectionHighlight(void) {
 
     u32 temp;
     u32 temp2;
@@ -5005,7 +4984,7 @@ void func_800BF5C0(void) {
         if (overlayScreenTable.unk_3 != 0xFF) {
             
             if (overlayScreenTable.unk_4 == overlayScreenTable.pageNumber) {
-                setSpriteViewSpacePosition(0x82, func_800C0238(temp2, temp), func_800C02A8(*ptr, overlayScreenTable.unk_3), 16.0f);
+                setSpriteViewSpacePosition(0x82, getCabinetItemXCoordinate(temp2, temp), getCabinetItemYCoordinate(*ptr, overlayScreenTable.unk_3), 16.0f);
                 startSpriteAnimation(0x82, 6, 0xFE);
                 return;
             } else {
@@ -5022,7 +5001,7 @@ void func_800BF5C0(void) {
     
     if (overlayScreenTable.unk_3 != 0xFF) {
 startAnim:
-        setSpriteViewSpacePosition(0x82, func_800C0238(temp2, temp), func_800C02A8(*ptr, overlayScreenTable.unk_3), 16.0f);
+        setSpriteViewSpacePosition(0x82, getCabinetItemXCoordinate(temp2, temp), getCabinetItemYCoordinate(*ptr, overlayScreenTable.unk_3), 16.0f);
         startSpriteAnimation(0x82, 6, 0xFE);
     } else {
 reset:
@@ -5031,9 +5010,9 @@ reset:
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800BF698);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", fadeInCabinetElements);
 
-void func_800BF698(void) {
+void fadeInCabinetSprites(void) {
     
     u8 i;
 
@@ -5061,9 +5040,9 @@ void func_800BF698(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800BF804);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", fadeOutCabinetElements);
 
-void func_800BF804(void) {
+void fadeOutCabinetSprites(void) {
 
     u8 i;
 
@@ -5097,10 +5076,10 @@ void func_800BF804(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800BF990);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", cabinetScreenCallback);
 
 // cabinet screen main loop callback
-void func_800BF990(void) {
+void cabinetScreenCallback(void) {
 
     bool set = FALSE;
     
@@ -5110,32 +5089,32 @@ void func_800BF990(void) {
     switch (overlayScreenTable.screenState) {
 
         case 0:
-            func_800BE954();
+            loadCabinetScreenSprites();
             overlayScreenTable.screenState = 1;
             break;
             
         case 1:
-            if (func_8002CBF8(CABINET_AND_RUCKSACK_LABELS)) {
+            if (checkSpriteRGBAUpdateFinished(CABINET_AND_RUCKSACK_LABELS)) {
                 startSpriteAnimation(0x79, 3, 0);
                 overlayScreenTable.screenState = 5;
             }
             break;
             
         case 2:
-            if (func_8002CBF8(CABINET_AND_RUCKSACK_LABELS)) {
-                func_800B2CE0();
+            if (checkSpriteRGBAUpdateFinished(CABINET_AND_RUCKSACK_LABELS)) {
+                closeOverlayScreen();
                 overlayScreenTable.screenState = 3;
             }
             break;
             
         case 3:
             deactivateSprite(0x80);
-            func_80059300();
-            func_80059368();
+            resumeGameplay();
+            exitOverlayScreen();
             break;
             
         case 4:
-            if (func_8003F0DC()) {
+            if (checkAnyMessageBoxTextFinished()) {
                 overlayScreenTable.screenState = overlayScreenTable.unk_7;
             }
             break;
@@ -5203,8 +5182,8 @@ void func_800BF990(void) {
                         
                         overlayScreenTable.pageNumber++;
                         
-                        func_800BF0C8();
-                        func_800BF5C0();
+                        loadCabinetItemSprites();
+                        updateCabinetSelectionHighlight();
                         
                         playSfx(2);
                         
@@ -5238,8 +5217,8 @@ void func_800BF990(void) {
                             }
 
                             overlayScreenTable.pageNumber--;
-                            func_800BF0C8();
-                            func_800BF5C0();
+                            loadCabinetItemSprites();
+                            updateCabinetSelectionHighlight();
 
                             playSfx(2);
                             
@@ -5254,14 +5233,14 @@ void func_800BF990(void) {
             }
 
             if (overlayScreenTable.pageNumber) {
-                func_800C7D40(-96.0f, 16.0f);
+                showLeftArrow(-96.0f, 16.0f);
             } else {
-                func_800C7E38();
+                hideLeftArrow();
             }
             if (overlayScreenTable.pageNumber != 3) {
-                func_800C7D9C(96.0f, 16.0f);
+                showRightArrow(96.0f, 16.0f);
             } else {
-                func_800C7E58();
+                hideRightArrow();
             }
     
             break;
@@ -5349,14 +5328,14 @@ void func_800BF990(void) {
             }
 
             if (overlayScreenTable.pageNumber) {
-                func_800C7D40(-96.0f, 16.0f);
+                showLeftArrow(-96.0f, 16.0f);
             } else {
-                func_800C7E38();
+                hideLeftArrow();
             }
             if (overlayScreenTable.pageNumber != 3) {
-                func_800C7D9C(96.0f, 16.0f);
+                showRightArrow(96.0f, 16.0f);
             } else {
-                func_800C7E58();
+                hideRightArrow();
             }
             
             break;
@@ -5375,14 +5354,14 @@ void func_800BF990(void) {
                     overlayScreenTable.unk_3 = 0xFF;
                     overlayScreenTable.screenState = overlayScreenTable.unk_5;
                     overlayScreenTable.pageNumber = overlayScreenTable.unk_4;
-                    func_800BF0C8();
-                    func_800BF5C0();
+                    loadCabinetItemSprites();
+                    updateCabinetSelectionHighlight();
                     
                 } else {
-                    func_800BF804();
+                    fadeOutCabinetSprites();
                     resetAnimationState(0x79);
-                    func_800C7E38();
-                    func_800C7E58();
+                    hideLeftArrow();
+                    hideRightArrow();
                     deactivateSprite(0x82);
                     overlayScreenTable.screenState = 2;
                 }
@@ -5400,17 +5379,17 @@ void func_800BF990(void) {
 
                 if (overlayScreenTable.unk_3 != 0xFF) {
 
-                    if (func_800C0450()) {
+                    if (isCabinetItemSwappable()) {
                         
-                        func_800C0504();
+                        swapCabinetItems();
                         
                         overlayScreenTable.cellIndex = overlayScreenTable.unk_3;
                         overlayScreenTable.unk_3 = 0xFF;
                         overlayScreenTable.screenState = overlayScreenTable.unk_5;
                         overlayScreenTable.pageNumber = overlayScreenTable.unk_4;
                         
-                        func_800BF0C8();
-                        func_800BF5C0();
+                        loadCabinetItemSprites();
+                        updateCabinetSelectionHighlight();
 
                         playSfx(0);
                         
@@ -5418,11 +5397,11 @@ void func_800BF990(void) {
                         playSfx(3);
                     }
                     
-                } else if (func_800C0450()) {
+                } else if (isCabinetItemSwappable()) {
                     overlayScreenTable.unk_3 = overlayScreenTable.cellIndex;
                     overlayScreenTable.unk_5 = overlayScreenTable.screenState;
                     overlayScreenTable.unk_4 = overlayScreenTable.pageNumber;
-                    func_800BF5C0();
+                    updateCabinetSelectionHighlight();
                     playSfx(0);
                 } else {
                     playSfx(3);
@@ -5452,7 +5431,7 @@ void func_800BF990(void) {
                 }
 
                 if (temp) {
-                    func_800C81E8(type, temp);
+                    setItemDescriptionVariable(type, temp);
                     overlayScreenTable.unk_7 = overlayScreenTable.screenState;
                     overlayScreenTable.screenState = 4;
                 }
@@ -5464,15 +5443,15 @@ void func_800BF990(void) {
     }
     
     if (4 < overlayScreenTable.screenState && overlayScreenTable.screenState < 102) {
-        setSpriteViewSpacePosition(0x79, func_800C0238(overlayScreenTable.screenState, overlayScreenTable.cellIndex) - 16.0f, func_800C02A8(overlayScreenTable.screenState, overlayScreenTable.cellIndex) - 8.0f, 256.0f);
-        func_800C0310();
+        setSpriteViewSpacePosition(0x79, getCabinetItemXCoordinate(overlayScreenTable.screenState, overlayScreenTable.cellIndex) - 16.0f, getCabinetItemYCoordinate(overlayScreenTable.screenState, overlayScreenTable.cellIndex) - 8.0f, 256.0f);
+        resetCabinetSpriteColors();
     }
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800C0238);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", getCabinetItemXCoordinate);
 
-f32 func_800C0238(u8 arg0, u8 arg1) {
+f32 getCabinetItemXCoordinate(u8 arg0, u8 arg1) {
 
    f32 res;
     
@@ -5501,9 +5480,9 @@ f32 func_800C0238(u8 arg0, u8 arg1) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800C02A8);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", getCabinetItemYCoordinate);
 
-f32 func_800C02A8(u8 arg0, u8 arg1) {
+f32 getCabinetItemYCoordinate(u8 arg0, u8 arg1) {
 
    f32 res;
     
@@ -5529,9 +5508,9 @@ f32 func_800C02A8(u8 arg0, u8 arg1) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800C0310);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", resetCabinetSpriteColors);
 
-void func_800C0310(void) {
+void resetCabinetSpriteColors(void) {
 
     u8 i;
 
@@ -5558,9 +5537,9 @@ void func_800C0310(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800C0450);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", isCabinetItemSwappable);
 
-bool func_800C0450(void) {
+bool isCabinetItemSwappable(void) {
 
     bool result = FALSE;
     u8 temp;
@@ -5588,9 +5567,9 @@ bool func_800C0450(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800C0504);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", swapCabinetItems);
 
-void func_800C0504(void) {
+void swapCabinetItems(void) {
 
     u8 temp;
     
@@ -5639,9 +5618,9 @@ void func_800C0504(void) {
 
 // misc. helper
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800C0688);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", getToolLevelForAnimation);
 
-u8 func_800C0688(u8 tool) {
+u8 getToolLevelForAnimation(u8 tool) {
     
     u8 level;
 
@@ -5675,12 +5654,11 @@ u8 func_800C0688(u8 tool) {
 
 /* house extension selection functions */
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800C0714);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", loadHouseExtensionsScreenSprites);
 
-void func_800C0714(void) {
+void loadHouseExtensionsScreenSprites(void) {
     
-    // clock
-    func_800B2F34();
+    loadClockSprites();
 
     setMoneySprites();
 
@@ -5688,7 +5666,7 @@ void func_800C0714(void) {
     dmaSprite(HOUSE_EXTENSIONS_LIST, (u32)&_houseExtensionSelectionTextureSegmentRomStart, (u32)&_houseExtensionSelectionTextureSegmentRomEnd, (u32)&_houseExtensionSelectionAssetsIndexSegmentRomStart, (u32)&_houseExtensionSelectionAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(HOUSE_EXTENSIONS_LIST, 0.0f, 0.0f, 8.0f);
     setSpriteColor(HOUSE_EXTENSIONS_LIST, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteRenderingLayer(HOUSE_EXTENSIONS_LIST, 2);
+    setSpriteBlendMode(HOUSE_EXTENSIONS_LIST, 2);
     setBilinearFiltering(HOUSE_EXTENSIONS_LIST, TRUE);
     startSpriteAnimation(HOUSE_EXTENSIONS_LIST, 0, 0);
 
@@ -5696,49 +5674,49 @@ void func_800C0714(void) {
     dmaSprite(0x83, (u32)&_houseExtensionSelectionTextureSegmentRomStart, (u32)&_houseExtensionSelectionTextureSegmentRomEnd, (u32)&_houseExtensionSelectionAssetsIndexSegmentRomStart, (u32)&_houseExtensionSelectionAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x83, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0x83, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteRenderingLayer(0x83, 2);
+    setSpriteBlendMode(0x83, 2);
     setBilinearFiltering(0x83, TRUE);
     startSpriteAnimation(0x83, 1, 0);
     
     dmaSprite(0x84, (u32)&_houseExtensionSelectionTextureSegmentRomStart, (u32)&_houseExtensionSelectionTextureSegmentRomEnd, (u32)&_houseExtensionSelectionAssetsIndexSegmentRomStart, (u32)&_houseExtensionSelectionAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x84, 0.0f, -16.0f, 8.0f);
     setSpriteColor(0x84, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteRenderingLayer(0x84, 2);
+    setSpriteBlendMode(0x84, 2);
     setBilinearFiltering(0x84, TRUE);
     startSpriteAnimation(0x84, 1, 0);
     
     dmaSprite(0x85, (u32)&_houseExtensionSelectionTextureSegmentRomStart, (u32)&_houseExtensionSelectionTextureSegmentRomEnd, (u32)&_houseExtensionSelectionAssetsIndexSegmentRomStart, (u32)&_houseExtensionSelectionAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x85, 0.0f, -32.0f, 8.0f);
     setSpriteColor(0x85, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteRenderingLayer(0x85, 2);
+    setSpriteBlendMode(0x85, 2);
     setBilinearFiltering(0x85, TRUE);
     startSpriteAnimation(0x85, 1, 0);
     
     dmaSprite(0x86, (u32)&_houseExtensionSelectionTextureSegmentRomStart, (u32)&_houseExtensionSelectionTextureSegmentRomEnd, (u32)&_houseExtensionSelectionAssetsIndexSegmentRomStart, (u32)&_houseExtensionSelectionAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x86, 0.0f, -48.0f, 8.0f);
     setSpriteColor(0x86, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteRenderingLayer(0x86, 2);
+    setSpriteBlendMode(0x86, 2);
     setBilinearFiltering(0x86, TRUE);
     startSpriteAnimation(0x86, 1, 0);
     
     dmaSprite(0x87, (u32)&_houseExtensionSelectionTextureSegmentRomStart, (u32)&_houseExtensionSelectionTextureSegmentRomEnd, (u32)&_houseExtensionSelectionAssetsIndexSegmentRomStart, (u32)&_houseExtensionSelectionAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x87, 0.0f, -64.0f, 8.0f);
     setSpriteColor(0x87, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteRenderingLayer(0x87, 2);
+    setSpriteBlendMode(0x87, 2);
     setBilinearFiltering(0x87, TRUE);
     startSpriteAnimation(0x87, 1, 0);
     
     dmaSprite(0x88, (u32)&_houseExtensionSelectionTextureSegmentRomStart, (u32)&_houseExtensionSelectionTextureSegmentRomEnd, (u32)&_houseExtensionSelectionAssetsIndexSegmentRomStart, (u32)&_houseExtensionSelectionAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x88, 0.0f, -80.0f, 8.0f);
     setSpriteColor(0x88, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteRenderingLayer(0x88, 2);
+    setSpriteBlendMode(0x88, 2);
     setBilinearFiltering(0x88, TRUE);
     startSpriteAnimation(0x88, 1, 0);
         
     dmaSprite(HOUSE_EXTENSIONS_BACKGROUND, (u32)&_photoSmallTextureSegmentRomStart, (u32)&_photoSmallTextureSegmentRomEnd, (u32)&_photoSmallAssetsIndexSegmentRomStart, (u32)&_photoSmallAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_SNAPSHOT_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_SNAPSHOT_PALETTE, (u16*)OVERLAY_SCREEN_SNAPSHOT_ANIM_METADATA, (u32*)OVERLAY_SCREEN_SNAPSHOT_SPRITESHEET_INDEX, NULL, 0, FALSE);
     setSpriteViewSpacePosition(HOUSE_EXTENSIONS_BACKGROUND, 0.0f, 0.0f, 8.0f);
     setSpriteColor(HOUSE_EXTENSIONS_BACKGROUND, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteRenderingLayer(HOUSE_EXTENSIONS_BACKGROUND, 2);
+    setSpriteBlendMode(HOUSE_EXTENSIONS_BACKGROUND, 2);
     setBilinearFiltering(HOUSE_EXTENSIONS_BACKGROUND, TRUE);
     startSpriteAnimation(HOUSE_EXTENSIONS_BACKGROUND, 0, 0);
 
@@ -5746,13 +5724,13 @@ void func_800C0714(void) {
     setBilinearFiltering(CURSOR_HAND, TRUE);
     setSpriteColor(CURSOR_HAND, 255, 255, 255, 255);
 
-    func_800C0F24();
+    fadeInHouseExtensionsSelectionSprites();
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800C0F24);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", fadeInHouseExtensionsSelectionSprites);
 
-void func_800C0F24(void) {
+void fadeInHouseExtensionsSelectionSprites(void) {
     
     fadeInClock();
 
@@ -5769,9 +5747,9 @@ void func_800C0F24(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800C101C);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", fadeOutHouseExtensionsSprites);
 
-void func_800C101C(void) {
+void fadeOutHouseExtensionsSprites(void) {
 
     fadeOutClock();
     
@@ -5795,10 +5773,9 @@ void func_800C101C(void) {
 
 static const u16 D_80121D74[6] = { 0x10, 0x11, 0x12, 0x13, 0x14, 0x15};
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800C1124);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", houseExtensionsSelectionScreenCallback);
 
-// house extension selection callback
-void func_800C1124(void) {
+void houseExtensionsSelectionScreenCallback(void) {
 
     u16 buff[6];
     u16* ptr = D_80121D74;
@@ -5813,11 +5790,11 @@ void func_800C1124(void) {
     switch (overlayScreenTable.screenState) {
 
         case 0:
-            func_800C0714();
+            loadHouseExtensionsScreenSprites();
             overlayScreenTable.screenState = 1;
             break;
         case 1:
-            if (func_8002CBF8(CLOCK)) {
+            if (checkSpriteRGBAUpdateFinished(CLOCK)) {
                 setSpriteViewSpacePosition(CURSOR_HAND, houseExtensionCursorHandXPositions[overlayScreenTable.cellIndex], houseExtensionCursorHandYPositions[overlayScreenTable.cellIndex], 32.0f);
                 startSpriteAnimation(CURSOR_HAND, 3, 0);
                 overlayScreenTable.screenState = 7;
@@ -5825,23 +5802,23 @@ void func_800C1124(void) {
             break;
         
         case 2:
-            if (func_8002CBF8(CLOCK)) {
-                func_800B2CE0();
+            if (checkSpriteRGBAUpdateFinished(CLOCK)) {
+                closeOverlayScreen();
                 overlayScreenTable.screenState = 3;
             }
             break;
         
         case 3:
             deactivateSprite(0x80);
-            func_80059368();
-            func_80059300();
+            exitOverlayScreen();
+            resumeGameplay();
             break;
 
         case 4:
             
-            if (func_80043A88()) {
+            if (isDialogueClosing()) {
                 
-                temp = func_80043C6C(0);
+                temp = getSelectedMenuRow(0);
                 overlayScreenTable.pageNumber = temp;
                 
                 switch (overlayScreenTable.pageNumber) {                      
@@ -5860,7 +5837,7 @@ void func_800C1124(void) {
 
         case 5:
 
-            if (func_8003F0DC()) {
+            if (checkAnyMessageBoxTextFinished()) {
                 
                 switch (overlayScreenTable.pageNumber) {                    
                 
@@ -5895,7 +5872,7 @@ void func_800C1124(void) {
             break;
 
         case 6:
-            if (func_8003F0DC()) {
+            if (checkAnyMessageBoxTextFinished()) {
                 setSpriteViewSpacePosition(CURSOR_HAND, houseExtensionCursorHandXPositions[overlayScreenTable.cellIndex], houseExtensionCursorHandYPositions[overlayScreenTable.cellIndex], 32.0f);
                 startSpriteAnimation(CURSOR_HAND, 3, 0);
                 overlayScreenTable.screenState = 7;
@@ -5938,7 +5915,7 @@ void func_800C1124(void) {
                 resetAnimationState(CURSOR_HAND);
                 setMessageBoxViewSpacePosition(0, 24.0f, -64.0f, 352.0f);
                 setMessageBoxSpriteIndices(0, 0, 0, 0);
-                func_8003F360(0, -4, 0);
+                setMessageBoxInterpolationWithFlags(0, -4, 0);
                 
                 if (checkLifeEventBit(buff[overlayScreenTable.cellIndex])) {
                     initializeMessageBox(0, 6, 0x6D, 0);
@@ -5980,14 +5957,13 @@ void func_800C1124(void) {
 
 /* estimate functions */
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800C1710);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens",  loadEstimateScreenSprites);
 
-void func_800C1710(void) {
+void loadEstimateScreenSprites(void) {
 
     u8 temp;
     
-    // clock
-    func_800B2F34();
+    loadClockSprites();
 
     setMoneySprites();
 
@@ -5995,14 +5971,14 @@ void func_800C1710(void) {
     dmaSprite(0x82, (u32)&_estimateScreenTextureSegmentRomStart, (u32)&_estimateScreenTextureSegmentRomEnd, (u32)&_estimateScreenAssetsIndexSegmentRomStart, (u32)&_estimateScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x82, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0x82, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteRenderingLayer(0x82, 2);
+    setSpriteBlendMode(0x82, 2);
     setBilinearFiltering(0x82, 1);
     startSpriteAnimation(0x82, 0, 0);
 
     dmaSprite(ESTIMATE_BACKGROUND, (u32)&_snapshotLargeTextureSegmentRomStart, (u32)&_snapshotLargeTextureSegmentRomEnd, (u32)&_snapshotLargeAssetsIndexSegmentRomStart, (u32)&_snapshotLargeAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_SNAPSHOT_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_SNAPSHOT_PALETTE, (u16*)OVERLAY_SCREEN_SNAPSHOT_ANIM_METADATA, (u32*)OVERLAY_SCREEN_SNAPSHOT_SPRITESHEET_INDEX, NULL, 0, FALSE);
     setSpriteViewSpacePosition(ESTIMATE_BACKGROUND, 0.0f, 0.0f, 8.0f);
     setSpriteColor(ESTIMATE_BACKGROUND, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteRenderingLayer(ESTIMATE_BACKGROUND, 2);
+    setSpriteBlendMode(ESTIMATE_BACKGROUND, 2);
     setBilinearFiltering(ESTIMATE_BACKGROUND, 1);
     startSpriteAnimation(ESTIMATE_BACKGROUND, 0, 0);
 
@@ -6012,7 +5988,7 @@ void func_800C1710(void) {
         dmaSprite(0x83, (u32)&_estimateScreenTextureSegmentRomStart, (u32)&_estimateScreenTextureSegmentRomEnd, (u32)&_estimateScreenAssetsIndexSegmentRomStart, (u32)&_estimateScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0x83, 32.0f, 36.0f, 16.0f);
         setSpriteColor(0x83, 0xFF, 0xFF, 0xFF, 0);
-        setSpriteRenderingLayer(0x83, 2);
+        setSpriteBlendMode(0x83, 2);
         setBilinearFiltering(0x83, 1);
         startSpriteAnimation(0x83, temp + 1, 0);
     }
@@ -6023,7 +5999,7 @@ void func_800C1710(void) {
         dmaSprite(0x84, (u32)&_estimateScreenTextureSegmentRomStart, (u32)&_estimateScreenTextureSegmentRomEnd, (u32)&_estimateScreenAssetsIndexSegmentRomStart, (u32)&_estimateScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0x84, 32.0f, 20.0f, 8.0f);
         setSpriteColor(0x84, 0xFF, 0xFF, 0xFF, 0);
-        setSpriteRenderingLayer(0x84, 2);
+        setSpriteBlendMode(0x84, 2);
         setBilinearFiltering(0x84, 1);
         startSpriteAnimation(0x84, temp + 1, 0);
     }
@@ -6034,7 +6010,7 @@ void func_800C1710(void) {
         dmaSprite(0x85, (u32)&_estimateScreenTextureSegmentRomStart, (u32)&_estimateScreenTextureSegmentRomEnd, (u32)&_estimateScreenAssetsIndexSegmentRomStart, (u32)&_estimateScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0x85, -24.0f, 4.0f, 8.0f);
         setSpriteColor(0x85, 0xFF, 0xFF, 0xFF, 0);
-        setSpriteRenderingLayer(0x85, 2);
+        setSpriteBlendMode(0x85, 2);
         setBilinearFiltering(0x85, 1);
         startSpriteAnimation(0x85, temp + 1, 0);
     }
@@ -6061,17 +6037,17 @@ void func_800C1710(void) {
     
     setMessageBoxViewSpacePosition(0, 44.0f, 20.0f, 352.0f);
     setMessageBoxSpriteIndices(0, 0xFF, 0xFF, 0xFF);
-    func_8003F360(0, -4, 2);
+    setMessageBoxInterpolationWithFlags(0, -4, 2);
     initializeMessageBox(0, 0, 5, 0x8000);
     
-    func_800C2060();
+    fadeInEstimateSprites();
     
 }
 
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800C2060);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", fadeInEstimateSprites);
 
-void func_800C2060(void) {
+void fadeInEstimateSprites(void) {
 
     fadeInClock();
 
@@ -6082,9 +6058,9 @@ void func_800C2060(void) {
     updateSpriteAlpha(0x85, 0xFF, 24);
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800C2128);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", fadeOutEstimateSprites);
 
-void func_800C2128(void) {
+void fadeOutEstimateSprites(void) {
 
     fadeOutClock();
 
@@ -6097,7 +6073,7 @@ void func_800C2128(void) {
     
     messageBoxes[MAIN_MESSAGE_BOX_INDEX].flags &= ~0x8000;
     
-    func_8003F130(0);
+    resetMessageBoxAnimation(0);
     deactivateOverlayScreenSprites(0);
     deactivateOverlayScreenSprites(1);
     deactivateOverlayScreenSprites(2);
@@ -6108,9 +6084,9 @@ void func_800C2128(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800C224C);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", estimateScreenCallback);
 
-void func_800C224C(void) {
+void estimateScreenCallback(void) {
 
     u8 temp = 0;
 
@@ -6118,29 +6094,29 @@ void func_800C224C(void) {
         case 4:
             break;
         case 0:
-            func_800C1710();
+             loadEstimateScreenSprites();
             overlayScreenTable.screenState = 1;
             break;
         case 1:
-            if (func_8002CBF8(CLOCK)) {
+            if (checkSpriteRGBAUpdateFinished(CLOCK)) {
                 overlayScreenTable.screenState = 4;
             }
             break;
         case 2:
-            if (func_8002CBF8(CLOCK)) {
-                func_800B2CE0();
+            if (checkSpriteRGBAUpdateFinished(CLOCK)) {
+                closeOverlayScreen();
                 overlayScreenTable.screenState = 3;
             }
             break;
         case 3:
             deactivateSprite(0x80);
-            func_80059368();
-            func_80059300();
+            exitOverlayScreen();
+            resumeGameplay();
             break;
     }
     
     if ((overlayScreenTable.screenState >= 4) && (checkButtonPressed(CONTROLLER_1, BUTTON_B)) && (temp == 0)) {
-        func_800C2128();
+        fadeOutEstimateSprites();
         overlayScreenTable.screenState = 2;
         playSfx(1);
     }
@@ -6150,17 +6126,16 @@ void func_800C224C(void) {
 
 /* kitchen picture functions */
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800C2364);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", loadKitchenPictureScreenSprites);
 
-void func_800C2364(void) {
+void loadKitchenPictureScreenSprites(void) {
     
-    // clock
-    func_800B2F34();
+    loadClockSprites();
     
     dmaSprite(0x82, (u32)&_powerNutTreeDrawingTextureSegmentRomStart, (u32)&_powerNutTreeDrawingTextureSegmentRomEnd, (u32)&_powerNutTreeDrawingAssetsIndexSegmentRomStart, (u32)&_powerNutTreeDrawingAssetsIndexSegmentRomEnd,  0, 0, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x82, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0x82, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteRenderingLayer(0x82, 2);
+    setSpriteBlendMode(0x82, 2);
     setBilinearFiltering(0x82, TRUE);
     startSpriteAnimation(0x82, 0, 0);
     
@@ -6168,14 +6143,14 @@ void func_800C2364(void) {
     setBilinearFiltering(CURSOR_HAND, TRUE);
     setSpriteColor(CURSOR_HAND, 255, 255, 255, 255);
     
-    func_800C2504();
-    func_800C292C();
+    loadPowerNutTreeSprites();
+    fadeInKitchenPictureSprites();
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800C2504);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", loadPowerNutTreeSprites);
 
-void func_800C2504(void) {
+void loadPowerNutTreeSprites(void) {
 
     u8 i;
 
@@ -6187,7 +6162,7 @@ void func_800C2504(void) {
             
             setSpriteViewSpacePosition(0xA3 + i, D_80116E18[i], D_80116E40[i], 8.0f);
             setSpriteColor(0xA3 + i, 0xFF, 0xFF, 0xFF, 0);
-            setSpriteRenderingLayer(0xA3 + i, 2);
+            setSpriteBlendMode(0xA3 + i, 2);
             setBilinearFiltering(0xA3 + i, 1);
             startSpriteAnimation(0xA3 + i, 1, 0);
             
@@ -6197,9 +6172,9 @@ void func_800C2504(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800C2660);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", updatePowerNutCellAnimations);
 
-void func_800C2660(void) {
+void updatePowerNutCellAnimations(void) {
     
     resetAnimationState(0xA3);
     resetAnimationState(0xA4);
@@ -6226,9 +6201,9 @@ void func_800C2660(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800C2780);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", findPowerNutCellIndex);
 
-u8 func_800C2780(u8 cellIndex, u8 arg1) {
+u8 findPowerNutCellIndex(u8 cellIndex, u8 arg1) {
 
     u8 result = 0xFF;
     
@@ -6294,9 +6269,9 @@ u8 func_800C2780(u8 cellIndex, u8 arg1) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800C292C);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", fadeInKitchenPictureSprites);
 
-inline void func_800C292C(void) {
+inline void fadeInKitchenPictureSprites(void) {
     
     fadeInClock();
 
@@ -6315,9 +6290,9 @@ inline void func_800C292C(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800C2A54);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", fadeOutKitchenPictureSprites);
 
-void func_800C2A54(void) {
+void fadeOutKitchenPictureSprites(void) {
 
     fadeOutClock();
 
@@ -6338,10 +6313,9 @@ void func_800C2A54(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800C2B8C);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", kitchenPictureScreenCallback);
 
-// kitchen picture main loop callbackk
-void func_800C2B8C(void) {
+void kitchenPictureScreenCallback(void) {
 
     bool set = FALSE;
     u8 temp;
@@ -6349,17 +6323,17 @@ void func_800C2B8C(void) {
     switch (overlayScreenTable.screenState) {
 
         case 0:
-            func_800C2364();
+            loadKitchenPictureScreenSprites();
             overlayScreenTable.screenState = 1;
             break;
 
         case 1:
-            if (func_8002CBF8(CLOCK)) {
+            if (checkSpriteRGBAUpdateFinished(CLOCK)) {
                 
                 if (overlayScreenTable.cellIndex != 0xFF) {
                     setSpriteViewSpacePosition(CURSOR_HAND, D_80116E18[overlayScreenTable.cellIndex] - 8.0f, D_80116E40[overlayScreenTable.cellIndex] - 8.0f, 32.0f);
                     startSpriteAnimation(CURSOR_HAND, 3, 0);
-                    func_800C2660();
+                    updatePowerNutCellAnimations();
                 } 
                 
                 overlayScreenTable.screenState = 5;
@@ -6369,20 +6343,20 @@ void func_800C2B8C(void) {
             break;
         
         case 2:
-            if (func_8002CBF8(CLOCK)) {
-                func_800B2CE0();
+            if (checkSpriteRGBAUpdateFinished(CLOCK)) {
+                closeOverlayScreen();
                 overlayScreenTable.screenState = 3;
             }
             break;
 
         case 3:
             deactivateSprite(0x80);
-            func_80059368();
-            func_80059300();
+            exitOverlayScreen();
+            resumeGameplay();
             break;
 
         case 4:
-            if (func_8003F0DC()) {
+            if (checkAnyMessageBoxTextFinished()) {
                 overlayScreenTable.screenState = 5;
             }
             break;
@@ -6396,12 +6370,12 @@ void func_800C2B8C(void) {
                     
                     if (overlayScreenTable.cellIndex != 0xFF) {
                         
-                        temp = func_800C2780(overlayScreenTable.cellIndex, 2);
+                        temp = findPowerNutCellIndex(overlayScreenTable.cellIndex, 2);
                         
                         if (temp != 0xFF) {
                             overlayScreenTable.cellIndex = temp;
                             setSpriteViewSpacePosition(CURSOR_HAND, D_80116E18[temp] - 8.0f, D_80116E40[temp] - 8.0f, 32.0f);
-                            func_800C2660();
+                            updatePowerNutCellAnimations();
                             playSfx(2);
                         }
     
@@ -6419,13 +6393,13 @@ void func_800C2B8C(void) {
                     
                     if (overlayScreenTable.cellIndex != 0xFF) {
 
-                        temp = func_800C2780(overlayScreenTable.cellIndex, 1);
+                        temp = findPowerNutCellIndex(overlayScreenTable.cellIndex, 1);
 
                         if (temp != 0xFF) {
                             
                             overlayScreenTable.cellIndex = temp;
                             setSpriteViewSpacePosition(CURSOR_HAND, D_80116E18[temp] - 8.0f, D_80116E40[temp] - 8.0f, 32.0f);
-                            func_800C2660();
+                            updatePowerNutCellAnimations();
                             playSfx(2);
                             
                         }
@@ -6443,11 +6417,11 @@ void func_800C2B8C(void) {
 
                 if (!set) {
                     
-                    if (func_800C2780(overlayScreenTable.cellIndex, 0) != 0xFF) {
+                    if (findPowerNutCellIndex(overlayScreenTable.cellIndex, 0) != 0xFF) {
                         
                         setMessageBoxViewSpacePosition(0, 0.0f, -64.0f, 352.0f);
                         setMessageBoxSpriteIndices(0, 1, 0, 0);
-                        func_8003F360(0, -4, 2);
+                        setMessageBoxInterpolationWithFlags(0, -4, 2);
                         initializeMessageBox(0, 2, overlayScreenTable.cellIndex + 0x23, 0);
                         
                         controllers[CONTROLLER_1].buttonPressed = 0;
@@ -6469,7 +6443,7 @@ void func_800C2B8C(void) {
 
     if (overlayScreenTable.screenState >= 5 && checkButtonPressed(CONTROLLER_1, BUTTON_B) && !set) {
         resetAnimationState(CURSOR_HAND);
-        func_800C2A54();
+        fadeOutKitchenPictureSprites();
         overlayScreenTable.screenState = 2;
         playSfx(1);
     }
@@ -6481,15 +6455,15 @@ void func_800C2B8C(void) {
 
 /* calendar functions */
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800C2F50);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", loadCalendarScreenSprites);
 
-void func_800C2F50(void) {
+void loadCalendarScreenSprites(void) {
     
     // main calendar components
     dmaSprite(CALENDAR_BACKGROUND, (u32)&_calendarTextureSegmentRomStart, (u32)&_calendarTextureSegmentRomEnd, (u32)&_calendarAssetsIndexSegmentRomStart, (u32)&_calendarAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(CALENDAR_BACKGROUND, 0.0f, 0.0f, 8.0f);
     setSpriteColor(CALENDAR_BACKGROUND, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteRenderingLayer(CALENDAR_BACKGROUND, 2);
+    setSpriteBlendMode(CALENDAR_BACKGROUND, 2);
     setBilinearFiltering(CALENDAR_BACKGROUND, TRUE);
     startSpriteAnimation(CALENDAR_BACKGROUND, 0, 0);
     
@@ -6497,15 +6471,15 @@ void func_800C2F50(void) {
     setBilinearFiltering(CURSOR_HAND, TRUE);
     setSpriteColor(CURSOR_HAND, 255, 255, 255, 255);
     
-    func_800C3108();
-    func_800C34C0(gYear, gSeason, gDayOfMonth);
-    func_800C39A0();
+    loadCalendarStickers();
+    loadCalendarDateNumbers(gYear, gSeason, gDayOfMonth);
+    fadeInCalendarSprites();
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800C3108);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", loadCalendarStickers);
 
-void func_800C3108(void) {
+void loadCalendarStickers(void) {
 
     u8 i, j, k;
     u8 temp;
@@ -6544,7 +6518,7 @@ void func_800C3108(void) {
                 setSpriteViewSpacePosition(CALENDAR_STICKERS_BASE + temp, D_80116E68[0], D_80116E90[0], 8.0f);
                 setSpriteViewSpacePosition(CALENDAR_STICKERS_BASE + temp, (j << 5) - 122, -(i * 24) + 0x1A, 4.0f);
                 setSpriteColor(CALENDAR_STICKERS_BASE + temp, 0xFF, 0xFF, 0xFF, 0);
-                setSpriteRenderingLayer(CALENDAR_STICKERS_BASE + temp, 2);
+                setSpriteBlendMode(CALENDAR_STICKERS_BASE + temp, 2);
                 setBilinearFiltering(CALENDAR_STICKERS_BASE + temp, 1);
                 startSpriteAnimation(CALENDAR_STICKERS_BASE + temp, 1, temp);
                 
@@ -6562,7 +6536,7 @@ void func_800C3108(void) {
             dmaSprite(CALENDAR_STICKERS_BASE + k, (u32)&_calendarTextureSegmentRomStart, (u32)&_calendarTextureSegmentRomEnd, (u32)&_calendarAssetsIndexSegmentRomStart, (u32)&_calendarAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
             setSpriteViewSpacePosition(CALENDAR_STICKERS_BASE + k, D_80116E68[k], D_80116E90[k], 8.0f);
             setSpriteColor(CALENDAR_STICKERS_BASE + k, 0xFF, 0xFF, 0xFF, 0);
-            setSpriteRenderingLayer(CALENDAR_STICKERS_BASE + k, 2);
+            setSpriteBlendMode(CALENDAR_STICKERS_BASE + k, 2);
             setBilinearFiltering(CALENDAR_STICKERS_BASE + k, 1);
             startSpriteAnimation(CALENDAR_STICKERS_BASE + k, 1, k);
             
@@ -6572,9 +6546,9 @@ void func_800C3108(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800C34C0);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", loadCalendarDateNumbers);
 
-void func_800C34C0(u8 year, u8 season, u8 dayOfMonth) {
+void loadCalendarDateNumbers(u8 year, u8 season, u8 dayOfMonth) {
     
     u8 row, col;
     
@@ -6587,7 +6561,7 @@ void func_800C34C0(u8 year, u8 season, u8 dayOfMonth) {
     
     setSpriteViewSpacePosition(0x83, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0x83, 255, 255, 255, 0);
-    setSpriteRenderingLayer(0x83, 2);
+    setSpriteBlendMode(0x83, 2);
     setBilinearFiltering(0x83, 1);
     startSpriteAnimation(0x83, 4, season - 1);
 
@@ -6607,7 +6581,7 @@ void func_800C34C0(u8 year, u8 season, u8 dayOfMonth) {
 
                 setSpriteViewSpacePosition(0x8F + dayIndex, (f32)(col * 32), (f32)(-row * 24), 16.0f);
                 setSpriteColor(0x8F + dayIndex, 255, 255, 255, 0);
-                setSpriteRenderingLayer(0x8F + dayIndex, 2);
+                setSpriteBlendMode(0x8F + dayIndex, 2);
                 setBilinearFiltering(0x8F + dayIndex, 1);
 
                 if (isSaturdayStart) {
@@ -6626,7 +6600,7 @@ void func_800C34C0(u8 year, u8 season, u8 dayOfMonth) {
                     
                     setSpriteViewSpacePosition(0xB7, (f32)(col * 32), (f32)(-row * 24), 32.0f);
                     setSpriteColor(0xB7, 255, 255, 255, 0);
-                    setSpriteRenderingLayer(0xB7, 2);
+                    setSpriteBlendMode(0xB7, 2);
                     setBilinearFiltering(0xB7, 1);
                     startSpriteAnimation(0xB7, 3, 0);
                 }
@@ -6643,9 +6617,9 @@ void func_800C34C0(u8 year, u8 season, u8 dayOfMonth) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800C39A0);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", fadeInCalendarElements);
 
-void func_800C39A0(void) {
+void fadeInCalendarSprites(void) {
     
     u8 i;
 
@@ -6674,9 +6648,9 @@ void func_800C39A0(void) {
 }
 
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800C3B1C);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", fadeOutCalendarElements);
 
-void func_800C3B1C(void) {
+void fadeOutCalendarSprites(void) {
 
     u8 i;
     
@@ -6687,16 +6661,16 @@ void func_800C3B1C(void) {
 
     updateSpriteAlpha(0xB7, 0, 24);
 
-    setSpriteRenderingLayer(CALENDAR_STICKERS_BASE, 2);
-    setSpriteRenderingLayer(CALENDAR_STICKERS_BASE + 1, 2);
-    setSpriteRenderingLayer(CALENDAR_STICKERS_BASE + 2, 2);
-    setSpriteRenderingLayer(CALENDAR_STICKERS_BASE + 3, 2);
-    setSpriteRenderingLayer(CALENDAR_STICKERS_BASE + 4, 2);
-    setSpriteRenderingLayer(CALENDAR_STICKERS_BASE + 5, 2);
-    setSpriteRenderingLayer(CALENDAR_STICKERS_BASE + 6, 2);
-    setSpriteRenderingLayer(CALENDAR_STICKERS_BASE + 7, 2);
-    setSpriteRenderingLayer(CALENDAR_STICKERS_BASE + 8, 2);
-    setSpriteRenderingLayer(CALENDAR_STICKERS_BASE + 9, 2);
+    setSpriteBlendMode(CALENDAR_STICKERS_BASE, 2);
+    setSpriteBlendMode(CALENDAR_STICKERS_BASE + 1, 2);
+    setSpriteBlendMode(CALENDAR_STICKERS_BASE + 2, 2);
+    setSpriteBlendMode(CALENDAR_STICKERS_BASE + 3, 2);
+    setSpriteBlendMode(CALENDAR_STICKERS_BASE + 4, 2);
+    setSpriteBlendMode(CALENDAR_STICKERS_BASE + 5, 2);
+    setSpriteBlendMode(CALENDAR_STICKERS_BASE + 6, 2);
+    setSpriteBlendMode(CALENDAR_STICKERS_BASE + 7, 2);
+    setSpriteBlendMode(CALENDAR_STICKERS_BASE + 8, 2);
+    setSpriteBlendMode(CALENDAR_STICKERS_BASE + 9, 2);
 
     updateSpriteAlpha(CALENDAR_STICKERS_BASE, 0, 24);
     updateSpriteAlpha(CALENDAR_STICKERS_BASE + 1, 0, 24);
@@ -6718,10 +6692,9 @@ void func_800C3B1C(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800C3D20);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", calendarScreenCallback);
 
-// calendar main loop callback
-void func_800C3D20(void) {
+void calendarScreenCallback(void) {
 
     bool set = FALSE;
     u8 temp;
@@ -6729,24 +6702,24 @@ void func_800C3D20(void) {
     switch (overlayScreenTable.screenState) {
 
         case 0:
-            func_800C2F50();
+            loadCalendarScreenSprites();
             overlayScreenTable.screenState = 1;
             break;
         
         case 1:
             
-            if (func_8002CBF8(CALENDAR_BACKGROUND)) {
+            if (checkSpriteRGBAUpdateFinished(CALENDAR_BACKGROUND)) {
 
-                setSpriteRenderingLayer(CALENDAR_STICKERS_BASE, 3);
-                setSpriteRenderingLayer(CALENDAR_STICKERS_BASE + 1, 3);
-                setSpriteRenderingLayer(CALENDAR_STICKERS_BASE + 2, 3);
-                setSpriteRenderingLayer(CALENDAR_STICKERS_BASE + 3, 3);
-                setSpriteRenderingLayer(CALENDAR_STICKERS_BASE + 4, 3);
-                setSpriteRenderingLayer(CALENDAR_STICKERS_BASE + 5, 3);
-                setSpriteRenderingLayer(CALENDAR_STICKERS_BASE + 6, 3);
-                setSpriteRenderingLayer(CALENDAR_STICKERS_BASE + 7, 3);
-                setSpriteRenderingLayer(CALENDAR_STICKERS_BASE + 8, 3);
-                setSpriteRenderingLayer(CALENDAR_STICKERS_BASE + 9, 3);
+                setSpriteBlendMode(CALENDAR_STICKERS_BASE, 3);
+                setSpriteBlendMode(CALENDAR_STICKERS_BASE + 1, 3);
+                setSpriteBlendMode(CALENDAR_STICKERS_BASE + 2, 3);
+                setSpriteBlendMode(CALENDAR_STICKERS_BASE + 3, 3);
+                setSpriteBlendMode(CALENDAR_STICKERS_BASE + 4, 3);
+                setSpriteBlendMode(CALENDAR_STICKERS_BASE + 5, 3);
+                setSpriteBlendMode(CALENDAR_STICKERS_BASE + 6, 3);
+                setSpriteBlendMode(CALENDAR_STICKERS_BASE + 7, 3);
+                setSpriteBlendMode(CALENDAR_STICKERS_BASE + 8, 3);
+                setSpriteBlendMode(CALENDAR_STICKERS_BASE + 9, 3);
 
                 overlayScreenTable.screenState = 5;
                 
@@ -6762,20 +6735,20 @@ void func_800C3D20(void) {
             break;
         
         case 2:
-            if (func_8002CBF8(CALENDAR_BACKGROUND)) {
-                func_800B2CE0();
+            if (checkSpriteRGBAUpdateFinished(CALENDAR_BACKGROUND)) {
+                closeOverlayScreen();
                 overlayScreenTable.screenState = 3;
             }
             break;
         
         case 3:
             deactivateSprite(0x80);
-            func_80059368();
-            func_80059300();
+            exitOverlayScreen();
+            resumeGameplay();
             break;
 
         case 4:
-            if (func_8003F0DC()) {
+            if (checkAnyMessageBoxTextFinished()) {
                 overlayScreenTable.screenState = 5;
             }
             break;
@@ -6894,7 +6867,7 @@ void func_800C3D20(void) {
                             32.0f);
                         
                         setSpriteColor(CALENDAR_STICKERS_BASE + overlayScreenTable.cellIndex, 0xFF, 0xFF, 0xFF, 0x80);
-                        setSpriteRenderingLayer(CALENDAR_STICKERS_BASE + overlayScreenTable.cellIndex, 3);
+                        setSpriteBlendMode(CALENDAR_STICKERS_BASE + overlayScreenTable.cellIndex, 3);
                         playSfx(0);
                     
                     }
@@ -7070,7 +7043,7 @@ void func_800C3D20(void) {
                     
                     setSpriteViewSpacePosition(CALENDAR_STICKERS_BASE + overlayScreenTable.cellIndex, D_80116E68[overlayScreenTable.cellIndex], D_80116E90[overlayScreenTable.cellIndex], 8.0f);
                     setSpriteColor(CALENDAR_STICKERS_BASE + overlayScreenTable.cellIndex, 255, 255, 255, 255);
-                    setSpriteRenderingLayer(CALENDAR_STICKERS_BASE + overlayScreenTable.cellIndex, 3);
+                    setSpriteBlendMode(CALENDAR_STICKERS_BASE + overlayScreenTable.cellIndex, 3);
                     overlayScreenTable.screenState = 5;
         
                     playSfx(1);
@@ -7087,7 +7060,7 @@ void func_800C3D20(void) {
 
     if (overlayScreenTable.screenState >= 5 && checkButtonPressed(CONTROLLER_1, BUTTON_B) && !set) {
         resetAnimationState(CURSOR_HAND);
-        func_800C3B1C();
+        fadeOutCalendarSprites();
         overlayScreenTable.screenState = 2;
         playSfx(1);
     }
@@ -7097,14 +7070,14 @@ void func_800C3D20(void) {
 
 /* recipe book functions */
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800C4A74);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", loadRecipeBookScreenSprites);
 
-void func_800C4A74(void) {
+void loadRecipeBookScreenSprites(void) {
     
     dmaSprite(RECIPES_BACKGROUNDS, (u32)&_bookTextureSegmentRomStart, (u32)&_bookTextureSegmentRomEnd, (u32)&_bookAssetsIndexSegmentRomStart, (u32)&_bookAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_SNAPSHOT_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_SNAPSHOT_PALETTE, (u16*)OVERLAY_SCREEN_SNAPSHOT_ANIM_METADATA, (u32*)OVERLAY_SCREEN_SNAPSHOT_SPRITESHEET_INDEX, NULL, 0, FALSE);
     setSpriteViewSpacePosition(RECIPES_BACKGROUNDS, 0.0f, 0.0f, 8.0f);
     setSpriteColor(RECIPES_BACKGROUNDS, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteRenderingLayer(RECIPES_BACKGROUNDS, 2);
+    setSpriteBlendMode(RECIPES_BACKGROUNDS, SPRITE_BLEND_ALPHA_MODULATED);
     setBilinearFiltering(RECIPES_BACKGROUNDS, TRUE);
     startSpriteAnimation(RECIPES_BACKGROUNDS, 0, 0);
     
@@ -7112,7 +7085,7 @@ void func_800C4A74(void) {
     dmaSprite(0x82, (u32)&_bookScreenLabelsTextureSegmentRomStart, (u32)&_bookScreenLabelsTextureSegmentRomEnd, (u32)&_bookScreenLabelsAssetsIndexSegmentRomStart, (u32)&_bookScreenLabelsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x82, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0x82, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteRenderingLayer(0x82, 2);
+    setSpriteBlendMode(0x82, SPRITE_BLEND_ALPHA_MODULATED);
     setBilinearFiltering(0x82, TRUE);
     startSpriteAnimation(0x82, 1, 0);
     
@@ -7121,10 +7094,10 @@ void func_800C4A74(void) {
     setSpriteColor(CURSOR_HAND, 255, 255, 255, 255);
     
     // up and down arrows
-    func_800C7850();
+    loadNavigationArrows();
     // up and down arrows
-    func_800C7E78();
-    func_800C4E90();
+    loadDialogueArrowSprites();
+    loadRecipeBookLabels();
     
     setSpriteColor(RECIPE_LABELS_BASE, 0xFF, 0xFF, 0xFF, 0);
     setSpriteColor(RECIPE_LABELS_BASE + 1, 0xFF, 0xFF, 0xFF, 0);
@@ -7143,14 +7116,14 @@ void func_800C4A74(void) {
     setSpriteColor(RECIPE_LABELS_BASE + 14, 0xFF, 0xFF, 0xFF, 0);
     setSpriteColor(RECIPE_LABELS_BASE + 15, 0xFF, 0xFF, 0xFF, 0);
     
-    func_800C5080();
+    fadeInRecipeBookSprites();
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800C4E90);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", loadRecipeBookLabels);
 
 // load recipe label sprites for obtained recipes
-void func_800C4E90(void) {
+void loadRecipeBookLabels(void) {
 
     u8 i, j, k;
 
@@ -7169,7 +7142,7 @@ void func_800C4E90(void) {
                 dmaSprite(RECIPE_LABELS_BASE + i, (u32)&_overlayScreenNamesTextureSegmentRomStart, (u32)&_overlayScreenNamesTextureSegmentRomEnd, (u32)&_overlayScreenNamesAssetsIndexSegmentRomStart, (u32)&_overlayScreenNamesAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_RECIPE_LABELS_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_RECIPE_LABELS_PALETTE_BUFFER, (u16*)OVERLAY_SCREEN_RECIPE_LABELS_ANIMATION_FRAME_METADATA_BUFFER, (u8*)OVERLAY_SCREEN_RECIPE_LABELS_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
                 setSpriteViewSpacePosition(RECIPE_LABELS_BASE + i, (k * 128) + -120.0f, 64.0f - (j * 16), 8.0f);
                 setSpriteColor(RECIPE_LABELS_BASE + i, 255, 255, 255, 255);
-                setSpriteRenderingLayer(RECIPE_LABELS_BASE + i, 2);
+                setSpriteBlendMode(RECIPE_LABELS_BASE + i, SPRITE_BLEND_ALPHA_MODULATED);
                 setBilinearFiltering(RECIPE_LABELS_BASE + i, 1);
                 startSpriteAnimation(RECIPE_LABELS_BASE + i, 1, (i + (overlayScreenTable.pageNumber * 16)));
                 
@@ -7183,9 +7156,9 @@ void func_800C4E90(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800C5080);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", fadeInRecipeBookElements);
 
-void func_800C5080(void) {
+void fadeInRecipeBookSprites(void) {
 
     fadeInClock();
 
@@ -7212,9 +7185,9 @@ void func_800C5080(void) {
 }
 
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800C5218);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", fadeOutRecipeBookElements);
 
-void func_800C5218(void) {
+void fadeOutRecipeBookSprites(void) {
 
     fadeOutClock();
 
@@ -7243,22 +7216,21 @@ void func_800C5218(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800C53C0);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", recipeBookScreenCallback);
 
-// recipe book callback
-void func_800C53C0(void) {
+void recipeBookScreenCallback(void) {
 
     bool set = FALSE;
     
     switch (overlayScreenTable.screenState) {
         
         case 0:
-            func_800C4A74();
+            loadRecipeBookScreenSprites();
             overlayScreenTable.screenState = 1;
             break;
         
         case 1:
-            if (func_8002CBF8(0x82)) {
+            if (checkSpriteRGBAUpdateFinished(0x82)) {
                 setSpriteViewSpacePosition(CURSOR_HAND, (f32)((overlayScreenTable.unk_8 * 128) - 128), (f32)(56 - (overlayScreenTable.unk_9 * 16)), 32.0f);
                 startSpriteAnimation(CURSOR_HAND, 3, 0);
                 overlayScreenTable.screenState = 5;
@@ -7266,16 +7238,16 @@ void func_800C53C0(void) {
             break;
         
         case 2:
-            if (func_8002CBF8(0x82)) {
-                func_800B2CE0();
+            if (checkSpriteRGBAUpdateFinished(0x82)) {
+                closeOverlayScreen();
                 overlayScreenTable.screenState = 3;
             }
             break;
         
         case 3:
             deactivateSprite(0x80);
-            func_80059368();
-            func_80059300();
+            exitOverlayScreen();
+            resumeGameplay();
             break;
         
         case 4:
@@ -7285,7 +7257,7 @@ void func_800C53C0(void) {
                 if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_SOUTHWEST)) {
                     
                     if (!set) {
-                        if (func_8003FE9C(0)) {
+                        if (scrollMessageBoxDown(0)) {
                             playSfx(2);
                         }
                         set = TRUE;
@@ -7297,7 +7269,7 @@ void func_800C53C0(void) {
                     
                     if (!set) {
                         
-                        if (func_8003FFF4(0)) {
+                        if (scrollMessageBoxUp(0)) {
                             playSfx(2);
                         }
                         
@@ -7306,15 +7278,15 @@ void func_800C53C0(void) {
                     }
                 }
                 
-                if (func_80040140(0)) {
-                    func_800C80F0(0, -40.0f);
+                if (checkMoreLinesToPrint(0)) {
+                    showDialogueDownArrow(0, -40.0f);
                 } else {
-                    func_800C81A8();
+                    hideDialogueDownArrow();
                 }
-                if (func_800401C8(0)) {
-                    func_800C814C(0, 40.0f);
+                if (checkMessageBoxScrolled(0)) {
+                    showDialogueUpArrow(0, 40.0f);
                 } else {
-                    func_800C81C8();
+                    hideDialogueUpArrow();
                 }
                 
                 if (checkButtonPressed(CONTROLLER_1, (BUTTON_B | BUTTON_A))) {
@@ -7323,13 +7295,13 @@ void func_800C53C0(void) {
 
                         messageBoxes[MAIN_MESSAGE_BOX_INDEX].flags &= ~0x8000;
                         
-                        func_8003F130(0);
+                        resetMessageBoxAnimation(0);
                         
                         set = TRUE;
                         
-                        func_800C81A8();
-                        func_800C81C8();
-                        func_8003FB4C(0, 1);
+                        hideDialogueDownArrow();
+                        hideDialogueUpArrow();
+                        setMessageBoxScrollSpeed(0, 1);
                         overlayScreenTable.screenState = 5;
                         
                         playSfx(0);
@@ -7355,7 +7327,7 @@ void func_800C53C0(void) {
                         playSfx(2);
                     } else if (overlayScreenTable.pageNumber) {
                         overlayScreenTable.pageNumber--;
-                        func_800C4E90();
+                        loadRecipeBookLabels();
                         overlayScreenTable.unk_8 = 1;
                         playSfx(2);
                     }
@@ -7376,7 +7348,7 @@ void func_800C53C0(void) {
                         playSfx(2);
                     } else if (overlayScreenTable.pageNumber != 2) {
                         overlayScreenTable.pageNumber++;
-                        func_800C4E90();
+                        loadRecipeBookLabels();
                         overlayScreenTable.unk_8 = 0;
                         playSfx(2);
                     }
@@ -7422,14 +7394,14 @@ void func_800C53C0(void) {
             }
             
             if (overlayScreenTable.pageNumber) {
-                func_800C7D40(-128.0f, 0);
+                showLeftArrow(-128.0f, 0);
             } else {
-                func_800C7E38();
+                hideLeftArrow();
             }
             if (overlayScreenTable.pageNumber != 2) {
-                func_800C7D9C(128.0f, 0);
+                showRightArrow(128.0f, 0);
             } else {
-                func_800C7E58();
+                hideRightArrow();
             }
 
             break;
@@ -7438,10 +7410,10 @@ void func_800C53C0(void) {
     }
 
     if (overlayScreenTable.screenState >= 5 && checkButtonPressed(CONTROLLER_1, BUTTON_B) && !set) {
-        func_800C7E58();
-        func_800C7E38();
+        hideRightArrow();
+        hideLeftArrow();
         resetAnimationState(CURSOR_HAND);
-        func_800C5218();
+        fadeOutRecipeBookSprites();
         overlayScreenTable.screenState = 2;
         playSfx(1);
     }
@@ -7451,14 +7423,14 @@ void func_800C53C0(void) {
 
 /* album functions */
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800C5AA4);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", loadAlbumScreenSprites);
 
-void func_800C5AA4(void) {
+void loadAlbumScreenSprites(void) {
     
     dmaSprite(ALBUM_BACKGROUND, (u32)&_bookTextureSegmentRomStart, (u32)&_bookTextureSegmentRomEnd, (u32)&_bookAssetsIndexSegmentRomStart, (u32)&_bookAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_SNAPSHOT_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_SNAPSHOT_PALETTE, (u16*)OVERLAY_SCREEN_SNAPSHOT_ANIM_METADATA, (u32*)OVERLAY_SCREEN_SNAPSHOT_SPRITESHEET_INDEX, NULL, 0, FALSE);
     setSpriteViewSpacePosition(ALBUM_BACKGROUND, 0.0f, 0.0f, 8.0f);
     setSpriteColor(ALBUM_BACKGROUND, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteRenderingLayer(ALBUM_BACKGROUND, 2);
+    setSpriteBlendMode(ALBUM_BACKGROUND, SPRITE_BLEND_ALPHA_MODULATED);
     setBilinearFiltering(ALBUM_BACKGROUND, TRUE);
     setSpritePaletteIndex(ALBUM_BACKGROUND, 1);
     startSpriteAnimation(ALBUM_BACKGROUND, 0, 0);
@@ -7467,7 +7439,7 @@ void func_800C5AA4(void) {
     dmaSprite(0x82, (u32)&_bookScreenLabelsTextureSegmentRomStart, (u32)&_bookScreenLabelsTextureSegmentRomEnd, (u32)&_bookScreenLabelsAssetsIndexSegmentRomStart, (u32)&_bookScreenLabelsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x82, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0x82, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteRenderingLayer(0x82, 2);
+    setSpriteBlendMode(0x82, SPRITE_BLEND_ALPHA_MODULATED);
     setBilinearFiltering(0x82, TRUE);
     startSpriteAnimation(0x82, 3, 0);
     
@@ -7476,21 +7448,21 @@ void func_800C5AA4(void) {
     setSpriteColor(CURSOR_HAND, 255, 255, 255, 255);
     
     // arrows
-    func_800C7850();
-    func_800C5DA4();
+    loadNavigationArrows();
+    loadAlbumPhotos();
     
     setSpriteColor(0x83, 0xFF, 0xFF, 0xFF, 0);
     setSpriteColor(0x84, 0xFF, 0xFF, 0xFF, 0);
     setSpriteColor(0x85, 0xFF, 0xFF, 0xFF, 0);
     setSpriteColor(0x86, 0xFF, 0xFF, 0xFF, 0);
     
-    func_800C6E98();
+    fadeInAlbumSprites();
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800C5DA4);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", loadAlbumPhotos);
 
-void func_800C5DA4(void) {
+void loadAlbumPhotos(void) {
 
     resetAnimationState(0x83);
     resetAnimationState(0x84);
@@ -7505,7 +7477,7 @@ void func_800C5DA4(void) {
                 dmaSprite(0x83, (u32)&_albumPhotosTextureSegmentRomStart, (u32)&_albumPhotosTextureSegmentRomEnd, (u32)&_albumPhotosAssetsIndexSegmentRomStart, (u32)&_albumPhotosAssetsIndexSegmentRomEnd, (u32)&_albumPhotosSpritesheetIndexSegmentRomStart, (u32)&_albumPhotosSpritesheetIndexSegmentRomEnd, (u8*)OVERLAY_SCREEN_ALBUM_PHOTO_SLOT_1_TEXTURE_1, (u8*)OVERLAY_SCREEN_ALBUM_PHOTO_SLOT_1_TEXTURE_2, (u16*)OVERLAY_SCREEN_ALBUM_PHOTOS_PALETTE, (u16*)OVERLAY_SCREEN_ALBUM_PHOTOS_ANIM_METADATA, (u8*)OVERLAY_SCREEN_ALBUM_PHOTOS_SPRITESHEET_INDEX, (u32*)OVERLAY_SCREEN_ALBUM_PHOTOS_TEXTURE_TO_PALETTE_LOOKUP, 1, 0);
                 setSpriteViewSpacePosition(0x83, -64.0f, 40.0f, 8.0f);
                 setSpriteColor(0x83, 255, 255, 255, 255);
-                setSpriteRenderingLayer(0x83, 2);
+                setSpriteBlendMode(0x83, SPRITE_BLEND_ALPHA_MODULATED);
                 setBilinearFiltering(0x83, 1);
                 startSpriteAnimation(0x83, 0, 0);
             }
@@ -7514,7 +7486,7 @@ void func_800C5DA4(void) {
                 dmaSprite(0x84, (u32)&_albumPhotosTextureSegmentRomStart, (u32)&_albumPhotosTextureSegmentRomEnd, (u32)&_albumPhotosAssetsIndexSegmentRomStart, (u32)&_albumPhotosAssetsIndexSegmentRomEnd, (u32)&_albumPhotosSpritesheetIndexSegmentRomStart, (u32)&_albumPhotosSpritesheetIndexSegmentRomEnd, (u8*)OVERLAY_SCREEN_ALBUM_PHOTO_SLOT_2_TEXTURE_1, (u8*)OVERLAY_SCREEN_ALBUM_PHOTO_SLOT_2_TEXTURE_2, (u16*)OVERLAY_SCREEN_ALBUM_PHOTOS_PALETTE, (u16*)OVERLAY_SCREEN_ALBUM_PHOTOS_ANIM_METADATA, (u8*)OVERLAY_SCREEN_ALBUM_PHOTOS_SPRITESHEET_INDEX, (u32*)OVERLAY_SCREEN_ALBUM_PHOTOS_TEXTURE_TO_PALETTE_LOOKUP, 1, 0);
                 setSpriteViewSpacePosition(0x84, -64.0f, -30.0f, 8.0f);
                 setSpriteColor(0x84, 255, 255, 255, 255);
-                setSpriteRenderingLayer(0x84, 2);
+                setSpriteBlendMode(0x84, SPRITE_BLEND_ALPHA_MODULATED);
                 setBilinearFiltering(0x84, 1);
                 startSpriteAnimation(0x84, 1, 0);
             }
@@ -7523,7 +7495,7 @@ void func_800C5DA4(void) {
                 dmaSprite(0x85, (u32)&_albumPhotosTextureSegmentRomStart, (u32)&_albumPhotosTextureSegmentRomEnd, (u32)&_albumPhotosAssetsIndexSegmentRomStart, (u32)&_albumPhotosAssetsIndexSegmentRomEnd, (u32)&_albumPhotosSpritesheetIndexSegmentRomStart, (u32)&_albumPhotosSpritesheetIndexSegmentRomEnd, (u8*)OVERLAY_SCREEN_ALBUM_PHOTO_SLOT_3_TEXTURE_1, (u8*)OVERLAY_SCREEN_ALBUM_PHOTO_SLOT_3_TEXTURE_2, (u16*)OVERLAY_SCREEN_ALBUM_PHOTOS_PALETTE, (u16*)OVERLAY_SCREEN_ALBUM_PHOTOS_ANIM_METADATA, (u8*)OVERLAY_SCREEN_ALBUM_PHOTOS_SPRITESHEET_INDEX, (u32*)OVERLAY_SCREEN_ALBUM_PHOTOS_TEXTURE_TO_PALETTE_LOOKUP, 1, 0);
                 setSpriteViewSpacePosition(0x85, 64.0f, 40.0f, 8.0f);
                 setSpriteColor(0x85, 255, 255, 255, 255);
-                setSpriteRenderingLayer(0x85, 2);
+                setSpriteBlendMode(0x85, SPRITE_BLEND_ALPHA_MODULATED);
                 setBilinearFiltering(0x85, 1);
                 startSpriteAnimation(0x85, 2, 0);
             }
@@ -7532,7 +7504,7 @@ void func_800C5DA4(void) {
                 dmaSprite(0x86, (u32)&_albumPhotosTextureSegmentRomStart, (u32)&_albumPhotosTextureSegmentRomEnd, (u32)&_albumPhotosAssetsIndexSegmentRomStart, (u32)&_albumPhotosAssetsIndexSegmentRomEnd, (u32)&_albumPhotosSpritesheetIndexSegmentRomStart, (u32)&_albumPhotosSpritesheetIndexSegmentRomEnd, (u8*)OVERLAY_SCREEN_ALBUM_PHOTO_SLOT_4_TEXTURE_1, (u8*)OVERLAY_SCREEN_ALBUM_PHOTO_SLOT_4_TEXTURE_2, (u16*)OVERLAY_SCREEN_ALBUM_PHOTOS_PALETTE, (u16*)OVERLAY_SCREEN_ALBUM_PHOTOS_ANIM_METADATA, (u8*)OVERLAY_SCREEN_ALBUM_PHOTOS_SPRITESHEET_INDEX, (u32*)OVERLAY_SCREEN_ALBUM_PHOTOS_TEXTURE_TO_PALETTE_LOOKUP, 1, 0);
                 setSpriteViewSpacePosition(0x86, 64.0f, -30.0f, 8.0f);
                 setSpriteColor(0x86, 255, 255, 255, 255);
-                setSpriteRenderingLayer(0x86, 2);
+                setSpriteBlendMode(0x86, SPRITE_BLEND_ALPHA_MODULATED);
                 setBilinearFiltering(0x86, 1);
                 startSpriteAnimation(0x86, 3, 0);
             }
@@ -7545,7 +7517,7 @@ void func_800C5DA4(void) {
                 dmaSprite(0x83, (u32)&_albumPhotosTextureSegmentRomStart, (u32)&_albumPhotosTextureSegmentRomEnd, (u32)&_albumPhotosAssetsIndexSegmentRomStart, (u32)&_albumPhotosAssetsIndexSegmentRomEnd, (u32)&_albumPhotosSpritesheetIndexSegmentRomStart, (u32)&_albumPhotosSpritesheetIndexSegmentRomEnd, (u8*)OVERLAY_SCREEN_ALBUM_PHOTO_SLOT_1_TEXTURE_1, (u8*)OVERLAY_SCREEN_ALBUM_PHOTO_SLOT_1_TEXTURE_2, (u16*)OVERLAY_SCREEN_ALBUM_PHOTOS_PALETTE, (u16*)OVERLAY_SCREEN_ALBUM_PHOTOS_ANIM_METADATA, (u8*)OVERLAY_SCREEN_ALBUM_PHOTOS_SPRITESHEET_INDEX, (u32*)OVERLAY_SCREEN_ALBUM_PHOTOS_TEXTURE_TO_PALETTE_LOOKUP, 1, 0);
                 setSpriteViewSpacePosition(0x83, -64.0f, 40.0f, 8.0f);
                 setSpriteColor(0x83, 255, 255, 255, 255);
-                setSpriteRenderingLayer(0x83, 2);
+                setSpriteBlendMode(0x83, SPRITE_BLEND_ALPHA_MODULATED);
                 setBilinearFiltering(0x83, 1);
                 startSpriteAnimation(0x83, 4, 0);
             }
@@ -7554,7 +7526,7 @@ void func_800C5DA4(void) {
                 dmaSprite(0x84, (u32)&_albumPhotosTextureSegmentRomStart, (u32)&_albumPhotosTextureSegmentRomEnd, (u32)&_albumPhotosAssetsIndexSegmentRomStart, (u32)&_albumPhotosAssetsIndexSegmentRomEnd, (u32)&_albumPhotosSpritesheetIndexSegmentRomStart, (u32)&_albumPhotosSpritesheetIndexSegmentRomEnd, (u8*)OVERLAY_SCREEN_ALBUM_PHOTO_SLOT_2_TEXTURE_1, (u8*)OVERLAY_SCREEN_ALBUM_PHOTO_SLOT_2_TEXTURE_2, (u16*)OVERLAY_SCREEN_ALBUM_PHOTOS_PALETTE, (u16*)OVERLAY_SCREEN_ALBUM_PHOTOS_ANIM_METADATA, (u8*)OVERLAY_SCREEN_ALBUM_PHOTOS_SPRITESHEET_INDEX, (u32*)OVERLAY_SCREEN_ALBUM_PHOTOS_TEXTURE_TO_PALETTE_LOOKUP, 1, 0);
                 setSpriteViewSpacePosition(0x84, -64.0f, -30.0f, 8.0f);
                 setSpriteColor(0x84, 255, 255, 255, 255);
-                setSpriteRenderingLayer(0x84, 2);
+                setSpriteBlendMode(0x84, SPRITE_BLEND_ALPHA_MODULATED);
                 setBilinearFiltering(0x84, 1);
                 startSpriteAnimation(0x84, 5, 0);
             }
@@ -7563,7 +7535,7 @@ void func_800C5DA4(void) {
                 dmaSprite(0x85, (u32)&_albumPhotosTextureSegmentRomStart, (u32)&_albumPhotosTextureSegmentRomEnd, (u32)&_albumPhotosAssetsIndexSegmentRomStart, (u32)&_albumPhotosAssetsIndexSegmentRomEnd, (u32)&_albumPhotosSpritesheetIndexSegmentRomStart, (u32)&_albumPhotosSpritesheetIndexSegmentRomEnd, (u8*)OVERLAY_SCREEN_ALBUM_PHOTO_SLOT_3_TEXTURE_1, (u8*)OVERLAY_SCREEN_ALBUM_PHOTO_SLOT_3_TEXTURE_2, (u16*)OVERLAY_SCREEN_ALBUM_PHOTOS_PALETTE, (u16*)OVERLAY_SCREEN_ALBUM_PHOTOS_ANIM_METADATA, (u8*)OVERLAY_SCREEN_ALBUM_PHOTOS_SPRITESHEET_INDEX, (u32*)OVERLAY_SCREEN_ALBUM_PHOTOS_TEXTURE_TO_PALETTE_LOOKUP, 1, 0);
                 setSpriteViewSpacePosition(0x85, 64.0f, 40.0f, 8.0f);
                 setSpriteColor(0x85, 255, 255, 255, 255);
-                setSpriteRenderingLayer(0x85, 2);
+                setSpriteBlendMode(0x85, SPRITE_BLEND_ALPHA_MODULATED);
                 setBilinearFiltering(0x85, 1);
                 startSpriteAnimation(0x85, 6, 0);
             }
@@ -7573,7 +7545,7 @@ void func_800C5DA4(void) {
                 dmaSprite(0x86, (u32)&_albumPhotosTextureSegmentRomStart, (u32)&_albumPhotosTextureSegmentRomEnd, (u32)&_albumPhotosAssetsIndexSegmentRomStart, (u32)&_albumPhotosAssetsIndexSegmentRomEnd, (u32)&_albumPhotosSpritesheetIndexSegmentRomStart, (u32)&_albumPhotosSpritesheetIndexSegmentRomEnd, (u8*)OVERLAY_SCREEN_ALBUM_PHOTO_SLOT_4_TEXTURE_1, (u8*)OVERLAY_SCREEN_ALBUM_PHOTO_SLOT_4_TEXTURE_2, (u16*)OVERLAY_SCREEN_ALBUM_PHOTOS_PALETTE, (u16*)OVERLAY_SCREEN_ALBUM_PHOTOS_ANIM_METADATA, (u8*)OVERLAY_SCREEN_ALBUM_PHOTOS_SPRITESHEET_INDEX, (u32*)OVERLAY_SCREEN_ALBUM_PHOTOS_TEXTURE_TO_PALETTE_LOOKUP, 1, 0);
                 setSpriteViewSpacePosition(0x86, 64.0f, -30.0f, 8.0f);
                 setSpriteColor(0x86, 255, 255, 255, 255);
-                setSpriteRenderingLayer(0x86, 2);
+                setSpriteBlendMode(0x86, SPRITE_BLEND_ALPHA_MODULATED);
                 setBilinearFiltering(0x86, 1);
                 
                 switch (gWife) {                        
@@ -7605,7 +7577,7 @@ void func_800C5DA4(void) {
                 dmaSprite(0x83, (u32)&_albumPhotosTextureSegmentRomStart, (u32)&_albumPhotosTextureSegmentRomEnd, (u32)&_albumPhotosAssetsIndexSegmentRomStart, (u32)&_albumPhotosAssetsIndexSegmentRomEnd, (u32)&_albumPhotosSpritesheetIndexSegmentRomStart, (u32)&_albumPhotosSpritesheetIndexSegmentRomEnd, (u8*)OVERLAY_SCREEN_ALBUM_PHOTO_SLOT_1_TEXTURE_1, (u8*)OVERLAY_SCREEN_ALBUM_PHOTO_SLOT_1_TEXTURE_2, (u16*)OVERLAY_SCREEN_ALBUM_PHOTOS_PALETTE, (u16*)OVERLAY_SCREEN_ALBUM_PHOTOS_ANIM_METADATA, (u8*)OVERLAY_SCREEN_ALBUM_PHOTOS_SPRITESHEET_INDEX, (u32*)OVERLAY_SCREEN_ALBUM_PHOTOS_TEXTURE_TO_PALETTE_LOOKUP, 1, 0);
                 setSpriteViewSpacePosition(0x83, -64.0f, 40.0f, 8.0f);
                 setSpriteColor(0x83, 255, 255, 255, 255);
-                setSpriteRenderingLayer(0x83, 2);
+                setSpriteBlendMode(0x83, SPRITE_BLEND_ALPHA_MODULATED);
                 setBilinearFiltering(0x83, 1);
 
                 switch (gWife) {           
@@ -7633,7 +7605,7 @@ void func_800C5DA4(void) {
                 dmaSprite(0x84, (u32)&_albumPhotosTextureSegmentRomStart, (u32)&_albumPhotosTextureSegmentRomEnd, (u32)&_albumPhotosAssetsIndexSegmentRomStart, (u32)&_albumPhotosAssetsIndexSegmentRomEnd, (u32)&_albumPhotosSpritesheetIndexSegmentRomStart, (u32)&_albumPhotosSpritesheetIndexSegmentRomEnd, (u8*)OVERLAY_SCREEN_ALBUM_PHOTO_SLOT_2_TEXTURE_1, (u8*)OVERLAY_SCREEN_ALBUM_PHOTO_SLOT_2_TEXTURE_2, (u16*)OVERLAY_SCREEN_ALBUM_PHOTOS_PALETTE, (u16*)OVERLAY_SCREEN_ALBUM_PHOTOS_ANIM_METADATA, (u8*)OVERLAY_SCREEN_ALBUM_PHOTOS_SPRITESHEET_INDEX, (u32*)OVERLAY_SCREEN_ALBUM_PHOTOS_TEXTURE_TO_PALETTE_LOOKUP, 1, 0);
                 setSpriteViewSpacePosition(0x84, -64.0f, -30.0f, 8.0f);
                 setSpriteColor(0x84, 255, 255, 255, 255);
-                setSpriteRenderingLayer(0x84, 2);
+                setSpriteBlendMode(0x84, SPRITE_BLEND_ALPHA_MODULATED);
                 setBilinearFiltering(0x84, 1);
                 startSpriteAnimation(0x84, 0x11, 0);
             }
@@ -7642,7 +7614,7 @@ void func_800C5DA4(void) {
                 dmaSprite(0x85, (u32)&_albumPhotosTextureSegmentRomStart, (u32)&_albumPhotosTextureSegmentRomEnd, (u32)&_albumPhotosAssetsIndexSegmentRomStart, (u32)&_albumPhotosAssetsIndexSegmentRomEnd, (u32)&_albumPhotosSpritesheetIndexSegmentRomStart, (u32)&_albumPhotosSpritesheetIndexSegmentRomEnd, (u8*)OVERLAY_SCREEN_ALBUM_PHOTO_SLOT_3_TEXTURE_1, (u8*)OVERLAY_SCREEN_ALBUM_PHOTO_SLOT_3_TEXTURE_2, (u16*)OVERLAY_SCREEN_ALBUM_PHOTOS_PALETTE, (u16*)OVERLAY_SCREEN_ALBUM_PHOTOS_ANIM_METADATA, (u8*)OVERLAY_SCREEN_ALBUM_PHOTOS_SPRITESHEET_INDEX, (u32*)OVERLAY_SCREEN_ALBUM_PHOTOS_TEXTURE_TO_PALETTE_LOOKUP, 1, 0);
                 setSpriteViewSpacePosition(0x85, 64.0f, 40.0f, 8.0f);
                 setSpriteColor(0x85, 255, 255, 255, 255);
-                setSpriteRenderingLayer(0x85, 2);
+                setSpriteBlendMode(0x85, SPRITE_BLEND_ALPHA_MODULATED);
                 setBilinearFiltering(0x85, 1);
                 startSpriteAnimation(0x85, 0x12, 0);
             }
@@ -7651,7 +7623,7 @@ void func_800C5DA4(void) {
                 dmaSprite(0x86, (u32)&_albumPhotosTextureSegmentRomStart, (u32)&_albumPhotosTextureSegmentRomEnd, (u32)&_albumPhotosAssetsIndexSegmentRomStart, (u32)&_albumPhotosAssetsIndexSegmentRomEnd, (u32)&_albumPhotosSpritesheetIndexSegmentRomStart, (u32)&_albumPhotosSpritesheetIndexSegmentRomEnd, (u8*)OVERLAY_SCREEN_ALBUM_PHOTO_SLOT_4_TEXTURE_1, (u8*)OVERLAY_SCREEN_ALBUM_PHOTO_SLOT_4_TEXTURE_2, (u16*)OVERLAY_SCREEN_ALBUM_PHOTOS_PALETTE, (u16*)OVERLAY_SCREEN_ALBUM_PHOTOS_ANIM_METADATA, (u8*)OVERLAY_SCREEN_ALBUM_PHOTOS_SPRITESHEET_INDEX, (u32*)OVERLAY_SCREEN_ALBUM_PHOTOS_TEXTURE_TO_PALETTE_LOOKUP, 1, 0);
                 setSpriteViewSpacePosition(0x86, 64.0f, -30.0f, 8.0f);
                 setSpriteColor(0x86, 255, 255, 255, 255);
-                setSpriteRenderingLayer(0x86, 2);
+                setSpriteBlendMode(0x86, SPRITE_BLEND_ALPHA_MODULATED);
                 setBilinearFiltering(0x86, 1);
                 startSpriteAnimation(0x86, 0x13, 0);
             }
@@ -7664,7 +7636,7 @@ void func_800C5DA4(void) {
                 dmaSprite(0x83, (u32)&_albumPhotosTextureSegmentRomStart, (u32)&_albumPhotosTextureSegmentRomEnd, (u32)&_albumPhotosAssetsIndexSegmentRomStart, (u32)&_albumPhotosAssetsIndexSegmentRomEnd, (u32)&_albumPhotosSpritesheetIndexSegmentRomStart, (u32)&_albumPhotosSpritesheetIndexSegmentRomEnd, (u8*)OVERLAY_SCREEN_ALBUM_PHOTO_SLOT_1_TEXTURE_1, (u8*)OVERLAY_SCREEN_ALBUM_PHOTO_SLOT_1_TEXTURE_2, (u16*)OVERLAY_SCREEN_ALBUM_PHOTOS_PALETTE, (u16*)OVERLAY_SCREEN_ALBUM_PHOTOS_ANIM_METADATA, (u8*)OVERLAY_SCREEN_ALBUM_PHOTOS_SPRITESHEET_INDEX, (u32*)OVERLAY_SCREEN_ALBUM_PHOTOS_TEXTURE_TO_PALETTE_LOOKUP, 1, 0);
                 setSpriteViewSpacePosition(0x83, -64.0f, 40.0f, 8.0f);
                 setSpriteColor(0x83, 255, 255, 255, 255);
-                setSpriteRenderingLayer(0x83, 2);
+                setSpriteBlendMode(0x83, SPRITE_BLEND_ALPHA_MODULATED);
                 setBilinearFiltering(0x83, 1);
                 startSpriteAnimation(0x83, 0x14, 0);
             }
@@ -7673,7 +7645,7 @@ void func_800C5DA4(void) {
                 dmaSprite(0x84, (u32)&_albumPhotosTextureSegmentRomStart, (u32)&_albumPhotosTextureSegmentRomEnd, (u32)&_albumPhotosAssetsIndexSegmentRomStart, (u32)&_albumPhotosAssetsIndexSegmentRomEnd, (u32)&_albumPhotosSpritesheetIndexSegmentRomStart, (u32)&_albumPhotosSpritesheetIndexSegmentRomEnd, (u8*)OVERLAY_SCREEN_ALBUM_PHOTO_SLOT_2_TEXTURE_1, (u8*)OVERLAY_SCREEN_ALBUM_PHOTO_SLOT_2_TEXTURE_2, (u16*)OVERLAY_SCREEN_ALBUM_PHOTOS_PALETTE, (u16*)OVERLAY_SCREEN_ALBUM_PHOTOS_ANIM_METADATA, (u8*)OVERLAY_SCREEN_ALBUM_PHOTOS_SPRITESHEET_INDEX, (u32*)OVERLAY_SCREEN_ALBUM_PHOTOS_TEXTURE_TO_PALETTE_LOOKUP, 1, 0);
                 setSpriteViewSpacePosition(0x84, -64.0f, -30.0f, 8.0f);
                 setSpriteColor(0x84, 255, 255, 255, 255);
-                setSpriteRenderingLayer(0x84, 2);
+                setSpriteBlendMode(0x84, SPRITE_BLEND_ALPHA_MODULATED);
                 setBilinearFiltering(0x84, 1);
                 startSpriteAnimation(0x84, 0x15, 0);
             }
@@ -7682,7 +7654,7 @@ void func_800C5DA4(void) {
                 dmaSprite(0x85, (u32)&_albumPhotosTextureSegmentRomStart, (u32)&_albumPhotosTextureSegmentRomEnd, (u32)&_albumPhotosAssetsIndexSegmentRomStart, (u32)&_albumPhotosAssetsIndexSegmentRomEnd, (u32)&_albumPhotosSpritesheetIndexSegmentRomStart, (u32)&_albumPhotosSpritesheetIndexSegmentRomEnd, (u8*)OVERLAY_SCREEN_ALBUM_PHOTO_SLOT_3_TEXTURE_1, (u8*)OVERLAY_SCREEN_ALBUM_PHOTO_SLOT_3_TEXTURE_2, (u16*)OVERLAY_SCREEN_ALBUM_PHOTOS_PALETTE, (u16*)OVERLAY_SCREEN_ALBUM_PHOTOS_ANIM_METADATA, (u8*)OVERLAY_SCREEN_ALBUM_PHOTOS_SPRITESHEET_INDEX, (u32*)OVERLAY_SCREEN_ALBUM_PHOTOS_TEXTURE_TO_PALETTE_LOOKUP, 1, 0);
                 setSpriteViewSpacePosition(0x85, 64.0f, 40.0f, 8.0f);
                 setSpriteColor(0x85, 255, 255, 255, 255);
-                setSpriteRenderingLayer(0x85, 2);
+                setSpriteBlendMode(0x85, SPRITE_BLEND_ALPHA_MODULATED);
                 setBilinearFiltering(0x85, 1);
                 startSpriteAnimation(0x85, 0x16, 0);
             }
@@ -7691,7 +7663,7 @@ void func_800C5DA4(void) {
                 dmaSprite(0x86, (u32)&_albumPhotosTextureSegmentRomStart, (u32)&_albumPhotosTextureSegmentRomEnd, (u32)&_albumPhotosAssetsIndexSegmentRomStart, (u32)&_albumPhotosAssetsIndexSegmentRomEnd, (u32)&_albumPhotosSpritesheetIndexSegmentRomStart, (u32)&_albumPhotosSpritesheetIndexSegmentRomEnd, (u8*)OVERLAY_SCREEN_ALBUM_PHOTO_SLOT_4_TEXTURE_1, (u8*)OVERLAY_SCREEN_ALBUM_PHOTO_SLOT_4_TEXTURE_2, (u16*)OVERLAY_SCREEN_ALBUM_PHOTOS_PALETTE, (u16*)OVERLAY_SCREEN_ALBUM_PHOTOS_ANIM_METADATA, (u8*)OVERLAY_SCREEN_ALBUM_PHOTOS_SPRITESHEET_INDEX, (u32*)OVERLAY_SCREEN_ALBUM_PHOTOS_TEXTURE_TO_PALETTE_LOOKUP, 1, 0);
                 setSpriteViewSpacePosition(0x86, 64.0f, -30.0f, 8.0f);
                 setSpriteColor(0x86, 255, 255, 255, 255);
-                setSpriteRenderingLayer(0x86, 2);
+                setSpriteBlendMode(0x86, SPRITE_BLEND_ALPHA_MODULATED);
                 setBilinearFiltering(0x86, 1);
                 startSpriteAnimation(0x86, 0x17, 0);
             }
@@ -7702,9 +7674,9 @@ void func_800C5DA4(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800C6E98);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", fadeInAlbumSprites);
 
-void func_800C6E98(void) {
+void fadeInAlbumSprites(void) {
 
     fadeInClock();
 
@@ -7718,9 +7690,9 @@ void func_800C6E98(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800C6F70);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", fadeOutAlbumSprites);
 
-void func_800C6F70(void) {
+void fadeOutAlbumSprites(void) {
 
     fadeOutClock();
 
@@ -7740,10 +7712,9 @@ void func_800C6F70(void) {
 
 static const u8 D_80121E34[20] = { 0x15, 0x16, 0x17, 0x18, 0x19, 0x1A, 0x1B, 0x1C, 0x1D, 0x1E, 0x1F, 0x20, 0x21, 0x22, 0x2D, 0x2E, 0, 0, 0, 0 };
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800C7058);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", albumScreenCallback);
 
-// album callback
-void func_800C7058(void) {
+void albumScreenCallback(void) {
 
     bool set;
     u8 *ptr = D_80121E34;
@@ -7757,12 +7728,12 @@ void func_800C7058(void) {
     switch (overlayScreenTable.screenState) {
 
         case 0:
-            func_800C5AA4();
+            loadAlbumScreenSprites();
             overlayScreenTable.screenState = 1;
             break;
         
         case 1:
-            if (func_8002CBF8(0x82)) {
+            if (checkSpriteRGBAUpdateFinished(0x82)) {
                 setSpriteViewSpacePosition(CURSOR_HAND, (f32)((overlayScreenTable.unk_8 * 128) - 120), (f32)(40 - (overlayScreenTable.unk_9 * 80)), 32.0f);
                 startSpriteAnimation(CURSOR_HAND, 3, 0);
                 overlayScreenTable.screenState = 5;
@@ -7770,20 +7741,20 @@ void func_800C7058(void) {
             break;
         
         case 2:
-            if (func_8002CBF8(0x82)) {
-                func_800B2CE0();
+            if (checkSpriteRGBAUpdateFinished(0x82)) {
+                closeOverlayScreen();
                 overlayScreenTable.screenState = 3;
             }
             break;
         
         case 3:
             deactivateSprite(0x80);
-            func_80059368();
-            func_80059300();
+            exitOverlayScreen();
+            resumeGameplay();
             break;
         
         case 4:
-            if (func_8003F0DC()) {
+            if (checkAnyMessageBoxTextFinished()) {
                 overlayScreenTable.screenState = 5;
             }
             break;
@@ -7799,7 +7770,7 @@ void func_800C7058(void) {
                         playSfx(2);
                     } else if (overlayScreenTable.pageNumber) {
                         overlayScreenTable.pageNumber--;
-                        func_800C5DA4();
+                        loadAlbumPhotos();
                         overlayScreenTable.unk_8 = 1;
                         playSfx(2);
                     
@@ -7822,7 +7793,7 @@ void func_800C7058(void) {
                         playSfx(2);
                     } else if (overlayScreenTable.pageNumber != 3) {
                         overlayScreenTable.pageNumber++;
-                        func_800C5DA4();
+                        loadAlbumPhotos();
                         overlayScreenTable.unk_8 = 0;
                         playSfx(2);
                     }
@@ -7878,8 +7849,8 @@ void func_800C7058(void) {
                         
                         setMessageBoxViewSpacePosition(0, 0.0f, -64.0f, 352.0f);
                         setMessageBoxSpriteIndices(0, 1, 0, 0);
-                        func_8003F5D0(0, 0x10, 3);
-                        func_8003F360(0, -4, 2);
+                        setMessageBoxLineAndRowSizes(0, 0x10, 3);
+                        setMessageBoxInterpolationWithFlags(0, -4, 2);
     
                         // TODO: probably can refactor this
                         initializeMessageBox(0, 2, buff[overlayScreenTable.pageNumber * 4 + ((overlayScreenTable.unk_8 * 2) + overlayScreenTable.unk_9)], 0);
@@ -7898,15 +7869,15 @@ void func_800C7058(void) {
             }
 
             if (overlayScreenTable.pageNumber) {
-                func_800C7D40(-128.0f, 8.0f);
+                showLeftArrow(-128.0f, 8.0f);
             } else {
-                func_800C7E38();
+                hideLeftArrow();
             }
                 
             if (overlayScreenTable.pageNumber != 3) {
-                func_800C7D9C(128.0f, 8.0f);
+                showRightArrow(128.0f, 8.0f);
             } else {
-                func_800C7E58();
+                hideRightArrow();
             }
             
             break;
@@ -7914,8 +7885,8 @@ void func_800C7058(void) {
     }
     
     if (overlayScreenTable.screenState >= 5 && checkButtonPressed(CONTROLLER_1, BUTTON_B) && !set) {
-        func_800C7E58();
-        func_800C7E38();
+        hideRightArrow();
+        hideLeftArrow();
         resetAnimationState(CURSOR_HAND);
         fadeOutClock();
         updateSpriteAlpha(ALBUM_BACKGROUND, 0, 24);
@@ -7961,9 +7932,9 @@ u32 checkRecipe(u16 bitIndex) {
 
 /* shared gold arrow functions */
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800C7850);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", loadNavigationArrows);
 
-void func_800C7850(void) {
+void loadNavigationArrows(void) {
 
     dmaSprite(DOWN_ARROW, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)DIALOGUE_ICON_TEXTURE_BUFFER, NULL, (u16*)DIALOGUE_ICON_PALETTE_BUFFER, (AnimationFrameMetadata*)DIALOGUE_ICON_ANIMATION_FRAME_METADATA_BUFFER, (u32*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(DOWN_ARROW, 0.0f, 0.0f, 0.0f);
@@ -7971,8 +7942,8 @@ void func_800C7850(void) {
     setSpriteRotation(DOWN_ARROW, 0.0f, 0.0f, 0.0f);
     setBilinearFiltering(DOWN_ARROW, 1);
     setSpriteColor(DOWN_ARROW, 255, 255, 255, 255);
-    func_8002C680(DOWN_ARROW, 2, 2);
-    setSpriteRenderingLayer(DOWN_ARROW, 3);
+    setSpriteAnchorAlignment(DOWN_ARROW, SPRITE_ANCHOR_CENTER, SPRITE_ANCHOR_CENTER);;
+    setSpriteBlendMode(DOWN_ARROW, 3);
     
     dmaSprite(UP_ARROW, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)DIALOGUE_ICON_TEXTURE_BUFFER, NULL, (u16*)DIALOGUE_ICON_PALETTE_BUFFER, (AnimationFrameMetadata*)DIALOGUE_ICON_ANIMATION_FRAME_METADATA_BUFFER, (u32*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(UP_ARROW, 0.0f, 0.0f, 0.0f);
@@ -7980,8 +7951,8 @@ void func_800C7850(void) {
     setSpriteRotation(UP_ARROW, 0.0f, 0.0f, 0.0f);
     setBilinearFiltering(UP_ARROW, 1);
     setSpriteColor(UP_ARROW, 255, 255, 255, 255);
-    func_8002C680(UP_ARROW, 2, 2);
-    setSpriteRenderingLayer(UP_ARROW, 3);
+    setSpriteAnchorAlignment(UP_ARROW, SPRITE_ANCHOR_CENTER, SPRITE_ANCHOR_CENTER);;
+    setSpriteBlendMode(UP_ARROW, 3);
     
     dmaSprite(RIGHT_ARROW, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)DIALOGUE_ICON_TEXTURE_BUFFER, NULL, (u16*)DIALOGUE_ICON_PALETTE_BUFFER, (AnimationFrameMetadata*)DIALOGUE_ICON_ANIMATION_FRAME_METADATA_BUFFER, (u32*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(RIGHT_ARROW, 0.0f, 0.0f, 0.0f);
@@ -7989,8 +7960,8 @@ void func_800C7850(void) {
     setSpriteRotation(RIGHT_ARROW, 0.0f, 0.0f, 0.0f);
     setBilinearFiltering(RIGHT_ARROW, 1);
     setSpriteColor(RIGHT_ARROW, 255, 255, 255, 255);
-    func_8002C680(RIGHT_ARROW, 2, 2);
-    setSpriteRenderingLayer(RIGHT_ARROW, 3);
+    setSpriteAnchorAlignment(RIGHT_ARROW, SPRITE_ANCHOR_CENTER, SPRITE_ANCHOR_CENTER);;
+    setSpriteBlendMode(RIGHT_ARROW, 3);
     
     dmaSprite(LEFT_ARROW, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)DIALOGUE_ICON_TEXTURE_BUFFER, NULL, (u16*)DIALOGUE_ICON_PALETTE_BUFFER, (AnimationFrameMetadata*)DIALOGUE_ICON_ANIMATION_FRAME_METADATA_BUFFER, (u32*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(LEFT_ARROW, 0.0f, 0.0f, 0.0f);
@@ -7998,69 +7969,69 @@ void func_800C7850(void) {
     setSpriteRotation(LEFT_ARROW, 0.0f, 0.0f, 0.0f);
     setBilinearFiltering(LEFT_ARROW, 1);
     setSpriteColor(LEFT_ARROW, 255, 255, 255, 255);
-    func_8002C680(LEFT_ARROW, 2, 2);
-    setSpriteRenderingLayer(LEFT_ARROW, 3);
+    setSpriteAnchorAlignment(LEFT_ARROW, SPRITE_ANCHOR_CENTER, SPRITE_ANCHOR_CENTER);;
+    setSpriteBlendMode(LEFT_ARROW, 3);
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800C7C88);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", showDownArrow);
 
-void func_800C7C88(f32 x, f32 y) {
+void showDownArrow(f32 x, f32 y) {
     startSpriteAnimation(DOWN_ARROW, 11, 0xFE);
     setSpriteViewSpacePosition(DOWN_ARROW, x, y, 32.0f);
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800C7CE4);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", showUpArrow);
 
-void func_800C7CE4(f32 x, f32 y) {
+void showUpArrow(f32 x, f32 y) {
     startSpriteAnimation(UP_ARROW, 10, 0xFE);
     setSpriteViewSpacePosition(UP_ARROW, x, y, 32.0f);
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800C7D40);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", showLeftArrow);
 
-void func_800C7D40(f32 x, f32 y) {
+void showLeftArrow(f32 x, f32 y) {
     startSpriteAnimation(LEFT_ARROW, 1, 0xFE);
     setSpriteViewSpacePosition(LEFT_ARROW, x, y, 32.0f);
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800C7D9C);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", showRightArrow);
 
-void func_800C7D9C(f32 x, f32 y) {
+void showRightArrow(f32 x, f32 y) {
     startSpriteAnimation(RIGHT_ARROW, 12, 0xFE);
     setSpriteViewSpacePosition(RIGHT_ARROW, x, y, 32.0f);
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800C7DF8);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", hideDownArrow);
 
-void func_800C7DF8(void) {
+void hideDownArrow(void) {
     resetAnimationState(DOWN_ARROW);
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800C7E18);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", hideUpArrow);
 
-void func_800C7E18(void) {
+void hideUpArrow(void) {
     resetAnimationState(UP_ARROW);
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800C7E38);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", hideLeftArrow);
 
-void func_800C7E38(void) {
+void hideLeftArrow(void) {
     resetAnimationState(LEFT_ARROW);
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800C7E58);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", hideRightArrow);
 
-void func_800C7E58(void) {
+void hideRightArrow(void) {
     resetAnimationState(RIGHT_ARROW);
 }
 
 
 // up and down arrows
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800C7E78);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", loadDialogueArrowSprites);
 
-void func_800C7E78(void) {
+void loadDialogueArrowSprites(void) {
     
     dmaSprite(0x7A, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)DIALOGUE_ICON_TEXTURE_BUFFER, NULL, (u16*)DIALOGUE_ICON_PALETTE_BUFFER, (AnimationFrameMetadata*)DIALOGUE_ICON_ANIMATION_FRAME_METADATA_BUFFER, (u32*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x7A, 0.0f, 0.0f, 0.0f);
@@ -8068,8 +8039,8 @@ void func_800C7E78(void) {
     setSpriteRotation(0x7A, 0.0f, 0.0f, 0.0f);
     setBilinearFiltering(0x7A, 1);
     setSpriteColor(0x7A, 255, 255, 255, 255);
-    func_8002C680(0x7A, 2, 2);
-    setSpriteRenderingLayer(0x7A, 3);
+    setSpriteAnchorAlignment(0x7A, SPRITE_ANCHOR_CENTER, SPRITE_ANCHOR_CENTER);;
+    setSpriteBlendMode(0x7A, 3);
 
     dmaSprite(0x7B, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)DIALOGUE_ICON_TEXTURE_BUFFER, NULL, (u16*)DIALOGUE_ICON_PALETTE_BUFFER, (AnimationFrameMetadata*)DIALOGUE_ICON_ANIMATION_FRAME_METADATA_BUFFER, (u32*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x7B, 0.0f, 0.0f, 0.0f);
@@ -8077,34 +8048,34 @@ void func_800C7E78(void) {
     setSpriteRotation(0x7B, 0.0f, 0.0f, 0.0f);
     setBilinearFiltering(0x7B, 1);
     setSpriteColor(0x7B, 255, 255, 255, 255);
-    func_8002C680(0x7B, 2, 2);
-    setSpriteRenderingLayer(0x7B, 3);
+    setSpriteAnchorAlignment(0x7B, SPRITE_ANCHOR_CENTER, SPRITE_ANCHOR_CENTER);;
+    setSpriteBlendMode(0x7B, 3);
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800C80F0);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", showDialogueDownArrow);
 
-void func_800C80F0(f32 x, f32 y) {
+void showDialogueDownArrow(f32 x, f32 y) {
     startSpriteAnimation(0x7B, 11, 0xFE);
     setSpriteViewSpacePosition(0x7B, x, y, 32.0f);
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800C814C);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", showDialogueUpArrow);
 
-void func_800C814C(f32 x, f32 y) {
+void showDialogueUpArrow(f32 x, f32 y) {
     startSpriteAnimation(0x7A, 10, 0xFE);
     setSpriteViewSpacePosition(0x7A, x, y, 32.0f);
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800C81A8);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", hideDialogueDownArrow);
 
-void func_800C81A8(void) {
+void hideDialogueDownArrow(void) {
     resetAnimationState(0x7B);
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800C81C8);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", hideDialogueUpArrow);
 
-void func_800C81C8(void) {
+void hideDialogueUpArrow(void) {
     resetAnimationState(0x7A);
 }
 
@@ -8113,9 +8084,9 @@ void func_800C81C8(void) {
 
 /* shared helper */
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800C81E8);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", setItemDescriptionVariable);
 
-void func_800C81E8(u8 type, u32 itemOrToolIndex) {
+void setItemDescriptionVariable(u8 type, u32 itemOrToolIndex) {
 
     u16 temp;
     u32 idx;
@@ -8212,8 +8183,8 @@ skip:
     
     setMessageBoxViewSpacePosition(0, 0, -64.0f, 352);
     setMessageBoxSpriteIndices(0, 1, 0, 0);
-    func_8003F5D0(0, 0x10, 3);
-    func_8003F360(0, -4, 2);
+    setMessageBoxLineAndRowSizes(0, 0x10, 3);
+    setMessageBoxInterpolationWithFlags(0, -4, 2);
     initializeMessageBox(0, 2, temp, 0);
     
     controllers[CONTROLLER_1].buttonPressed = 0;
@@ -8223,11 +8194,11 @@ skip:
 
 /* pause screen map functions */
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800C8424);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", loadPauseScreenMapScreenCallback);
 
 // main loop callback 30
 // seems like load village map (cut from NA release) 
-void func_800C8424(void) {
+void loadPauseScreenMapScreenCallback(void) {
     
     dmaSprite(0x82, (u32)&_villageMapScreenTextureSegmentRomStart, (u32)&_villageMapScreenTextureSegmentRomEnd, (u32)&_villageMapScreenAssetsIndexSegmentRomStart, (u32)&_villageMapScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_PAUSE_SCREEN_MAP_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PAUSE_SCREEN_MAP_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_PAUSE_SCREEN_MAP_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_PAUSE_SCREEN_MAP_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x82, 0.0f, 0.0f, 0.0f);
@@ -8354,11 +8325,9 @@ void func_800C8424(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800C8784);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", pauseScreenMapCallback);
 
-// main loop callback 45
-// handle map scren navigation
-void func_800C8784(void) {    
+void pauseScreenMapCallback(void) {    
 
     u8 temp = 0;
 
@@ -8371,7 +8340,7 @@ void func_800C8784(void) {
             break;
             
         case 1:
-            if (func_8002CBF8(0x82)) {
+            if (checkSpriteRGBAUpdateFinished(0x82)) {
                 overlayScreenTable.screenState = 2;
             }
             break;
@@ -8386,14 +8355,14 @@ void func_800C8784(void) {
             break;
             
         case 3:
-            if (func_8002CBF8(0x82)) {
-                func_800B2CE0();
+            if (checkSpriteRGBAUpdateFinished(0x82)) {
+                closeOverlayScreen();
                 overlayScreenTable.screenState = 4;
             }
             break;
             
         case 4:
-            func_800B8844();
+            initializePauseScreenBackground();
             break;
 
         }
@@ -8405,13 +8374,11 @@ void func_800C8784(void) {
 
 /* horse/dog race functions */
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800C88F4);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", loadRaceBettingScreenCallback);
 
-// main loop callback function number 31
-// triggered from square level interaction
-void func_800C88F4(void) {
+void loadRaceBettingScreenCallback(void) {
 
-    func_800593EC();
+    openOverlayScreen();
     
     if (checkDailyEventBit(HORSE_RACE)) {
         removeKeyItem(0xE);
@@ -8443,10 +8410,9 @@ void func_800C88F4(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800C8B04);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", loadRaceBettingScreenSprites);
 
-// load race betting sprites
-void func_800C8B04(void) {
+void loadRaceBettingScreenSprites(void) {
     
     D_80189858 = gGold;
 
@@ -8455,14 +8421,14 @@ void func_800C8B04(void) {
     dmaSprite(0x81, (u32)&_photoSmallTextureSegmentRomStart, (u32)&_photoSmallTextureSegmentRomEnd, (u32)&_photoSmallAssetsIndexSegmentRomStart, (u32)&_photoSmallAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_SNAPSHOT_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_SNAPSHOT_PALETTE, (u16*)OVERLAY_SCREEN_SNAPSHOT_ANIM_METADATA, (u32*)OVERLAY_SCREEN_SNAPSHOT_SPRITESHEET_INDEX, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x81, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0x81, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteRenderingLayer(0x81, 2);
+    setSpriteBlendMode(0x81, 2);
     setBilinearFiltering(0x81, 1);
     startSpriteAnimation(0x81, 0, 0);
 
     dmaSprite(0x82, &_raceBettingUiTextureSegmentRomStart, &_raceBettingUiTextureSegmentRomEnd, &_raceBettingUiAssetsIndexSegmentRomStart, &_raceBettingUiAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x82, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0x82, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteRenderingLayer(0x82, 2);
+    setSpriteBlendMode(0x82, SPRITE_BLEND_ALPHA_MODULATED);
     setBilinearFiltering(0x82, 1);
 
     // check horse or dog race
@@ -8476,70 +8442,70 @@ void func_800C8B04(void) {
 
     setSpriteViewSpacePosition(0x83, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0x83, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteRenderingLayer(0x83, 2);
+    setSpriteBlendMode(0x83, 2);
     setBilinearFiltering(0x83, 1);
     startSpriteAnimation(0x83, 1, 0);
 
     dmaSprite(0x84, &_raceBettingUiTextureSegmentRomStart, &_raceBettingUiTextureSegmentRomEnd, &_raceBettingUiAssetsIndexSegmentRomStart, &_raceBettingUiAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x84, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0x84, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteRenderingLayer(0x84, 2);
+    setSpriteBlendMode(0x84, 2);
     setBilinearFiltering(0x84, 1);
     startSpriteAnimation(0x84, 2, 0);
     
     dmaSprite(0xB9, &_raceBettingUiTextureSegmentRomStart, &_raceBettingUiTextureSegmentRomEnd, &_raceBettingUiAssetsIndexSegmentRomStart, &_raceBettingUiAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0xB9, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0xB9, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteRenderingLayer(0xB9, 2);
+    setSpriteBlendMode(0xB9, 2);
     setBilinearFiltering(0xB9, 1);
     startSpriteAnimation(0xB9, 1, 1);
 
     dmaSprite(0xBA, &_raceBettingUiTextureSegmentRomStart, &_raceBettingUiTextureSegmentRomEnd, &_raceBettingUiAssetsIndexSegmentRomStart, &_raceBettingUiAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0xBA, 0.0f, -16.0f, 8.0f);
     setSpriteColor(0xBA, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteRenderingLayer(0xBA, 2);
+    setSpriteBlendMode(0xBA, 2);
     setBilinearFiltering(0xBA, 1);
     startSpriteAnimation(0xBA, 1, 1);
     
     dmaSprite(0xBB, &_raceBettingUiTextureSegmentRomStart, &_raceBettingUiTextureSegmentRomEnd, &_raceBettingUiAssetsIndexSegmentRomStart, &_raceBettingUiAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0xBB, 0.0f, -32.0f, 8.0f);
     setSpriteColor(0xBB, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteRenderingLayer(0xBB, 2);
+    setSpriteBlendMode(0xBB, 2);
     setBilinearFiltering(0xBB, 1);
     startSpriteAnimation(0xBB, 1, 1);
     
     dmaSprite(0xBC, &_raceBettingUiTextureSegmentRomStart, &_raceBettingUiTextureSegmentRomEnd, &_raceBettingUiAssetsIndexSegmentRomStart, &_raceBettingUiAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0xBC, 0.0f, -48.0f, 8.0f);
     setSpriteColor(0xBC, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteRenderingLayer(0xBC, 2);
+    setSpriteBlendMode(0xBC, 2);
     setBilinearFiltering(0xBC, 1);
     startSpriteAnimation(0xBC, 1, 1);
     
     dmaSprite(0xBD, &_raceBettingUiTextureSegmentRomStart, &_raceBettingUiTextureSegmentRomEnd, &_raceBettingUiAssetsIndexSegmentRomStart, &_raceBettingUiAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0xBD, 0.0f, -64.0f, 8.0f);
     setSpriteColor(0xBD, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteRenderingLayer(0xBD, 2);
+    setSpriteBlendMode(0xBD, 2);
     setBilinearFiltering(0xBD, 1);
     startSpriteAnimation(0xBD, 1, 1);
     
     dmaSprite(0xBE, &_raceBettingUiTextureSegmentRomStart, &_raceBettingUiTextureSegmentRomEnd, &_raceBettingUiAssetsIndexSegmentRomStart, &_raceBettingUiAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0xBE, 0.0f, -80.0f, 8.0f);
     setSpriteColor(0xBE, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteRenderingLayer(0xBE, 2);
+    setSpriteBlendMode(0xBE, 2);
     setBilinearFiltering(0xBE, 1);
     startSpriteAnimation(0xBE, 1, 1);
     
     dmaSprite(0x85, &_raceBettingUiTextureSegmentRomStart, &_raceBettingUiTextureSegmentRomEnd, &_raceBettingUiAssetsIndexSegmentRomStart, &_raceBettingUiAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x85, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0x85, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteRenderingLayer(0x85, 2);
+    setSpriteBlendMode(0x85, 2);
     setBilinearFiltering(0x85, 1);
     startSpriteAnimation(0x85, 2, 1);
 
     dmaSprite(0x86, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsAssetsIndexSegmentRomStart, &_dialogueIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)DIALOGUE_ICON_TEXTURE_BUFFER, NULL, (u16*)DIALOGUE_ICON_PALETTE_BUFFER, (AnimationFrameMetadata*)DIALOGUE_ICON_ANIMATION_FRAME_METADATA_BUFFER, (u32*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x86, 0.0f, 0.0f, 32.0f);
     setSpriteColor(0x86, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteRenderingLayer(0x86, 2);
+    setSpriteBlendMode(0x86, 2);
     setBilinearFiltering(0x86, 1);
     startSpriteAnimation(0x86, 2, 0);
 
@@ -8611,15 +8577,14 @@ void func_800C8B04(void) {
     dmaOverlayScreenSprites(0xE, overlayScreenStrings.unk_6.unk_3[2], 2, 3);
     setOverlayScreenSpritesRGBA(0xE, 255, 255, 255, 255);
     
-    func_800C9FF0();
-    func_800CA590();
+    initializeRaceBettingMessageBoxes();
+    fadeInRaceBettingSprites();
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800C9FF0);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", initializeRaceBettingMessageBoxes);
 
-// initialize race betting screen message boxes
-void func_800C9FF0(void) {
+void initializeRaceBettingMessageBoxes(void) {
     
     setGameVariableString(0x2A, overlayScreenStrings.gameVariableStrings[0], 6);
     setGameVariableString(0x2B, overlayScreenStrings.gameVariableStrings[1], 6);
@@ -8630,81 +8595,81 @@ void func_800C9FF0(void) {
     
     initializeEmptyMessageBox(0, (u8*)MESSAGE_BOX_1_TEXT_BUFFER);
     setMessageBoxViewSpacePosition(0, -22.0f, 24.0f, 0);
-    func_8003F5D0(0, 0xA, 2);
-    func_8003F630(0, 0, 2);
-    func_8003F464(0, 0xE, 0xE, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
-    func_8003F360(0, -4, 2);
+    setMessageBoxLineAndRowSizes(0, 0xA, 2);
+    setMessageBoxSpacing(0, 0, 2);
+    setMessageBoxFont(0, 0xE, 0xE, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
+    setMessageBoxInterpolationWithFlags(0, -4, 2);
     setMessageBoxSpriteIndices(0, 0xFF, 0, 0);
     setMessageBoxButtonMask(0, BUTTON_A);
-    func_8003FB4C(0, 1);
-    initializeMessageBox(0, 0, 0x12, 0x80000);
-    func_8003E77C(0, 255, 255, 255, 255);
+    setMessageBoxScrollSpeed(0, 1);
+    initializeMessageBox(0, 0, 0x12, MESSAGE_BOX_MODE_NO_INPUT);
+    setMessageBoxRGBA(0, 255, 255, 255, 255);
     
     initializeEmptyMessageBox(1, (u8*)MESSAGE_BOX_2_TEXT_BUFFER);
     setMessageBoxViewSpacePosition(1, -22.0f, 8.0f, 0);
-    func_8003F5D0(1, 0xA, 2);
-    func_8003F630(1, 0, 2);
-    func_8003F464(1, 0xE, 0xE, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
-    func_8003F360(1, -4, 2);
+    setMessageBoxLineAndRowSizes(1, 0xA, 2);
+    setMessageBoxSpacing(1, 0, 2);
+    setMessageBoxFont(1, 0xE, 0xE, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
+    setMessageBoxInterpolationWithFlags(1, -4, 2);
     setMessageBoxSpriteIndices(1, 0xFF, 0, 0);
     setMessageBoxButtonMask(1, BUTTON_A);
-    func_8003FB4C(1, 1);
-    initializeMessageBox(1, 0, 0x13, 0x80000);
-    func_8003E77C(1, 255, 255, 255, 255);
+    setMessageBoxScrollSpeed(1, 1);
+    initializeMessageBox(1, 0, 0x13, MESSAGE_BOX_MODE_NO_INPUT);
+    setMessageBoxRGBA(1, 255, 255, 255, 255);
     
     initializeEmptyMessageBox(2, (u8*)MESSAGE_BOX_3_TEXT_BUFFER);
     setMessageBoxViewSpacePosition(2, -22.0f, -8.0f, 0);
-    func_8003F5D0(2, 0xA, 2);
-    func_8003F630(2, 0, 2);
-    func_8003F464(2, 0xE, 0xE, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
-    func_8003F360(2, -4, 2);
+    setMessageBoxLineAndRowSizes(2, 0xA, 2);
+    setMessageBoxSpacing(2, 0, 2);
+    setMessageBoxFont(2, 0xE, 0xE, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
+    setMessageBoxInterpolationWithFlags(2, -4, 2);
     setMessageBoxSpriteIndices(2, 0xFF, 0, 0);
     setMessageBoxButtonMask(2, BUTTON_A);
-    func_8003FB4C(2, 1);
-    initializeMessageBox(2, 0, 0x14, 0x80000);
-    func_8003E77C(2, 255, 255, 255, 255);
+    setMessageBoxScrollSpeed(2, 1);
+    initializeMessageBox(2, 0, 0x14, MESSAGE_BOX_MODE_NO_INPUT);
+    setMessageBoxRGBA(2, 255, 255, 255, 255);
     
     initializeEmptyMessageBox(3, (u8*)MESSAGE_BOX_4_TEXT_BUFFER);
     setMessageBoxViewSpacePosition(3, -22.0f, -24.0f, 0);
-    func_8003F5D0(3, 0xA, 2);
-    func_8003F630(3, 0, 2);
-    func_8003F464(3, 0xE, 0xE, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
-    func_8003F360(3, -4, 2);
+    setMessageBoxLineAndRowSizes(3, 0xA, 2);
+    setMessageBoxSpacing(3, 0, 2);
+    setMessageBoxFont(3, 0xE, 0xE, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
+    setMessageBoxInterpolationWithFlags(3, -4, 2);
     setMessageBoxSpriteIndices(3, 0xFF, 0, 0);
     setMessageBoxButtonMask(3, BUTTON_A);
-    func_8003FB4C(3, 1);
-    initializeMessageBox(3, 0, 0x15, 0x80000);
-    func_8003E77C(3, 255, 255, 255, 255);
+    setMessageBoxScrollSpeed(3, 1);
+    initializeMessageBox(3, 0, 0x15, MESSAGE_BOX_MODE_NO_INPUT);
+    setMessageBoxRGBA(3, 255, 255, 255, 255);
     
     initializeEmptyMessageBox(4, (u8*)MESSAGE_BOX_5_TEXT_BUFFER);
     setMessageBoxViewSpacePosition(4, -22.0f, -40.0f, 0);
-    func_8003F5D0(4, 0xA, 2);
-    func_8003F630(4, 0, 2);
-    func_8003F464(4, 0xE, 0xE, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
-    func_8003F360(4, -4, 2);
+    setMessageBoxLineAndRowSizes(4, 0xA, 2);
+    setMessageBoxSpacing(4, 0, 2);
+    setMessageBoxFont(4, 0xE, 0xE, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
+    setMessageBoxInterpolationWithFlags(4, -4, 2);
     setMessageBoxSpriteIndices(4, 0xFF, 0, 0);
     setMessageBoxButtonMask(4, BUTTON_A);
-    func_8003FB4C(4, 1);
-    initializeMessageBox(4, 0, 0x16, 0x80000);
-    func_8003E77C(4, 255, 255, 255, 255);
+    setMessageBoxScrollSpeed(4, 1);
+    initializeMessageBox(4, 0, 0x16, MESSAGE_BOX_MODE_NO_INPUT);
+    setMessageBoxRGBA(4, 255, 255, 255, 255);
     
     initializeEmptyMessageBox(5, (u8*)MESSAGE_BOX_6_TEXT_BUFFER);
     setMessageBoxViewSpacePosition(5, -22.0f, -56.0f, 0);
-    func_8003F5D0(5, 0xA, 2);
-    func_8003F630(5, 0, 2);
-    func_8003F464(5, 0xE, 0xE, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
-    func_8003F360(5, -4, 2);
+    setMessageBoxLineAndRowSizes(5, 0xA, 2);
+    setMessageBoxSpacing(5, 0, 2);
+    setMessageBoxFont(5, 0xE, 0xE, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
+    setMessageBoxInterpolationWithFlags(5, -4, 2);
     setMessageBoxSpriteIndices(5, 0xFF, 0, 0);
     setMessageBoxButtonMask(5, BUTTON_A);
-    func_8003FB4C(5, 1);
-    initializeMessageBox(5, 0, 0x17, 0x80000);
-    func_8003E77C(5, 255, 255, 255, 255);
+    setMessageBoxScrollSpeed(5, 1);
+    initializeMessageBox(5, 0, 0x17, MESSAGE_BOX_MODE_NO_INPUT);
+    setMessageBoxRGBA(5, 255, 255, 255, 255);
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800CA590);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", fadeInRaceBettingElements);
 
-void func_800CA590(void) {
+void fadeInRaceBettingSprites(void) {
     updateSpriteAlpha(0x8E, 0xFF, 24);
     updateSpriteAlpha(0x81, 0xFF, 24);
     updateSpriteAlpha(0x82, 0xFF, 24);
@@ -8720,9 +8685,10 @@ void func_800CA590(void) {
     updateSpriteAlpha(0xBE, 0xFF, 24);
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800CA678);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", fadeOutRaceBettingElements);
 
-void func_800CA678(void) {
+void fadeOutRaceBettingSprites(void) {
+
     updateSpriteAlpha(0x8E, 0, 24);
     updateSpriteAlpha(0x81, 0, 24);
     updateSpriteAlpha(0x82, 0, 24);
@@ -8736,12 +8702,14 @@ void func_800CA678(void) {
     updateSpriteAlpha(0xBC, 0, 24);
     updateSpriteAlpha(0xBD, 0, 24);
     updateSpriteAlpha(0xBE, 0, 24);
-    func_8003DD14(0);
-    func_8003DD14(1);
-    func_8003DD14(2);
-    func_8003DD14(3);
-    func_8003DD14(4);
-    func_8003DD14(5);
+
+    deactivateMessageBox(0);
+    deactivateMessageBox(1);
+    deactivateMessageBox(2);
+    deactivateMessageBox(3);
+    deactivateMessageBox(4);
+    deactivateMessageBox(5);
+
     deactivateOverlayScreenSprites(1);
     deactivateOverlayScreenSprites(2);
     deactivateOverlayScreenSprites(3);
@@ -8756,13 +8724,14 @@ void func_800CA678(void) {
     deactivateOverlayScreenSprites(0xC);
     deactivateOverlayScreenSprites(0xD);
     deactivateOverlayScreenSprites(0xE);
+
     func_80053088();
+
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800CA808);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", raceBettingScreenCallback);
 
-// race betting screen callback
-void func_800CA808(void) {
+void raceBettingScreenCallback(void) {
 
     u8 temp = 0;
     bool set = FALSE;
@@ -8770,12 +8739,12 @@ void func_800CA808(void) {
     switch (overlayScreenTable.screenState) {
         
         case 0:
-            func_800C8B04();
+            loadRaceBettingScreenSprites();
             overlayScreenTable.screenState = 1;
             break;
         
         case 1:
-            if (func_8002CBF8(0x82)) {
+            if (checkSpriteRGBAUpdateFinished(0x82)) {
                 setSpriteViewSpacePosition(CURSOR_HAND, -112.0f, (-(overlayScreenTable.cellIndex * 16) + 24), 32.0f);
                 startSpriteAnimation(CURSOR_HAND, 3, 0);
                 overlayScreenTable.screenState = 4;
@@ -8784,16 +8753,16 @@ void func_800CA808(void) {
             break;
         
         case 2:
-            if (func_8002CBF8(0x82)) {
-                func_800B2CE0();
+            if (checkSpriteRGBAUpdateFinished(0x82)) {
+                closeOverlayScreen();
                 overlayScreenTable.screenState = 3;
             }
             break;
         
         case 3:
             deactivateSprite(0x80);
-            func_80059368();
-            func_80059300();
+            exitOverlayScreen();
+            resumeGameplay();
             break;
         
         case 4:
@@ -8962,7 +8931,7 @@ void func_800CA808(void) {
                     resetAnimationState(CURSOR_HAND);
                     set = TRUE;
                     
-                    func_800CA678();
+                    fadeOutRaceBettingSprites();
                     overlayScreenTable.screenState = 2;
                     
                     playSfx(0);
@@ -8976,7 +8945,7 @@ void func_800CA808(void) {
     
     if (overlayScreenTable.screenState >= 4 && checkButtonPressed(CONTROLLER_1, BUTTON_B) && !set) {
         resetAnimationState(CURSOR_HAND);
-        func_800CA678();
+        fadeOutRaceBettingSprites();
         overlayScreenTable.screenState = 2;
         playSfx(1);
     }
@@ -9343,12 +9312,11 @@ void func_800CC17C(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800CC518);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", loadRaceResultsScreenCallback);
 
-// race results load callback
-void func_800CC518(void) {
+void loadRaceResultsScreenCallback(void) {
 
-    func_800593EC();
+    openOverlayScreen();
     
     if (checkDailyEventBit(HORSE_RACE)) {
         removeKeyItem(0xE);
@@ -9380,43 +9348,42 @@ void func_800CC518(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800CC6F0);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", loadRaceResultsScreenSprites);
 
-// load race results sprites
-void func_800CC6F0(void) {
+void loadRaceResultsScreenSprites(void) {
 
     dmaSprite(0x81, (u32)&_snapshotLargeTextureSegmentRomStart, (u32)&_snapshotLargeTextureSegmentRomEnd, (u32)&_snapshotLargeAssetsIndexSegmentRomStart, (u32)&_snapshotLargeAssetsIndexSegmentRomEnd, 0, 0, (u8*)OVERLAY_SCREEN_SNAPSHOT_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_SNAPSHOT_PALETTE, (u16*)OVERLAY_SCREEN_SNAPSHOT_ANIM_METADATA, (u8*)OVERLAY_SCREEN_SNAPSHOT_SPRITESHEET_INDEX, NULL, 0, 0);
     setSpriteViewSpacePosition(0x81, 0.0f, -16.0f, 8.0f);
     setSpriteColor(0x81, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteRenderingLayer(0x81, 2);
+    setSpriteBlendMode(0x81, 2);
     setBilinearFiltering(0x81, 1);
     startSpriteAnimation(0x81, 0, 0);
     
     dmaSprite(0x82, (u32)&_raceBettingUiTextureSegmentRomStart, (u32)&_raceBettingUiTextureSegmentRomEnd, (u32)&_raceBettingUiAssetsIndexSegmentRomStart, (u32)&_raceBettingUiAssetsIndexSegmentRomEnd, 0, 0, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, 0);
     setSpriteViewSpacePosition(0x82, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0x82, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteRenderingLayer(0x82, 2);
+    setSpriteBlendMode(0x82, 2);
     setBilinearFiltering(0x82, 1);
     startSpriteAnimation(0x82, 3, overlayScreenStrings.unk_6C);
     
     dmaSprite(0x83, (u32)&_raceBettingUiTextureSegmentRomStart, (u32)&_raceBettingUiTextureSegmentRomEnd, (u32)&_raceBettingUiAssetsIndexSegmentRomStart, (u32)&_raceBettingUiAssetsIndexSegmentRomEnd, 0, 0, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, 0);
     setSpriteViewSpacePosition(0x83, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0x83, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteRenderingLayer(0x83, 2);
+    setSpriteBlendMode(0x83, 2);
     setBilinearFiltering(0x83, 1);
     startSpriteAnimation(0x83, 4, 0);
     
     dmaSprite(0x84, (u32)&_raceBettingUiTextureSegmentRomStart, (u32)&_raceBettingUiTextureSegmentRomEnd, (u32)&_raceBettingUiAssetsIndexSegmentRomStart, (u32)&_raceBettingUiAssetsIndexSegmentRomEnd, 0, 0, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, 0);
     setSpriteViewSpacePosition(0x84, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0x84, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteRenderingLayer(0x84, 2);
+    setSpriteBlendMode(0x84, 2);
     setBilinearFiltering(0x84, 1);
     startSpriteAnimation(0x84, 4, 1);
     
     dmaSprite(0x85, (u32)&_raceBettingUiTextureSegmentRomStart, (u32)&_raceBettingUiTextureSegmentRomEnd, (u32)&_raceBettingUiAssetsIndexSegmentRomStart, (u32)&_raceBettingUiAssetsIndexSegmentRomEnd, 0, 0, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, 0);
     setSpriteViewSpacePosition(0x85, 0.0f, -16.0f, 8.0f);
     setSpriteColor(0x85, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteRenderingLayer(0x85, 2);
+    setSpriteBlendMode(0x85, 2);
     setBilinearFiltering(0x85, 1);
     startSpriteAnimation(0x85, 4, 1);
     
@@ -9441,8 +9408,8 @@ void func_800CC6F0(void) {
     dmaOverlayScreenSprites(9, overlayScreenStrings.unk_0[overlayScreenStrings.gameVariableStringsIndices[0]], 2, 3);
     setOverlayScreenSpritesRGBA(9, 0xFF, 0xFF, 0xFF, 0xFF);
     
-    func_800CCFC8();
-    func_800CD628();
+    initializeRaceResultsMessageBoxes();
+    fadeInRaceResultsSprites();
     
     if (overlayScreenStrings.strings2[overlayScreenStrings.unk_6C][overlayScreenStrings.gameVariableStringsIndices[0]] && !(checkHaveKeyItem(0xD))) {
         acquireKeyItem(0xD);
@@ -9450,10 +9417,9 @@ void func_800CC6F0(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800CCFC8);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", initializeRaceResultsMessageBoxes);
 
-// race results initialization
-void func_800CCFC8(void) {
+void initializeRaceResultsMessageBoxes(void) {
 
     setGameVariableString(0x2A, overlayScreenStrings.gameVariableStrings[overlayScreenStrings.gameVariableStringsIndices[0]], 6);
     setGameVariableString(0x2B, overlayScreenStrings.gameVariableStrings[overlayScreenStrings.gameVariableStringsIndices[1]], 6);
@@ -9464,81 +9430,81 @@ void func_800CCFC8(void) {
     
     initializeEmptyMessageBox(0, (u8*)MESSAGE_BOX_1_TEXT_BUFFER);
     setMessageBoxViewSpacePosition(0, -32.0f, 32.0f, 0.0f);
-    func_8003F5D0(0, 0xA, 2);
-    func_8003F630(0, 0, 2);
-    func_8003F464(0, 0xE, 0xE, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
-    func_8003F360(0, -4, 2);
+    setMessageBoxLineAndRowSizes(0, 0xA, 2);
+    setMessageBoxSpacing(0, 0, 2);
+    setMessageBoxFont(0, 0xE, 0xE, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
+    setMessageBoxInterpolationWithFlags(0, -4, 2);
     setMessageBoxSpriteIndices(0, 0xFF, 0, 0);
     setMessageBoxButtonMask(0, BUTTON_A);
-    func_8003FB4C(0, 1);
-    initializeMessageBox(0, 0, 0x12, 0x80000);
-    func_8003E77C(0, 255, 255, 255, 255);
+    setMessageBoxScrollSpeed(0, 1);
+    initializeMessageBox(0, 0, 0x12, MESSAGE_BOX_MODE_NO_INPUT);
+    setMessageBoxRGBA(0, 255, 255, 255, 255);
     
     initializeEmptyMessageBox(1, (u8*)MESSAGE_BOX_2_TEXT_BUFFER);
     setMessageBoxViewSpacePosition(1, -32.0f, 16.0f, 0.0f);
-    func_8003F5D0(1, 0xA, 2);
-    func_8003F630(1, 0, 2);
-    func_8003F464(1, 0xE, 0xE, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
-    func_8003F360(1, -4, 2);
+    setMessageBoxLineAndRowSizes(1, 0xA, 2);
+    setMessageBoxSpacing(1, 0, 2);
+    setMessageBoxFont(1, 0xE, 0xE, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
+    setMessageBoxInterpolationWithFlags(1, -4, 2);
     setMessageBoxSpriteIndices(1, 0xFF, 0, 0);
     setMessageBoxButtonMask(1, BUTTON_A);
-    func_8003FB4C(1, 1);
-    initializeMessageBox(1, 0, 0x13, 0x80000);
-    func_8003E77C(1, 255, 255, 255, 255);
+    setMessageBoxScrollSpeed(1, 1);
+    initializeMessageBox(1, 0, 0x13, MESSAGE_BOX_MODE_NO_INPUT);
+    setMessageBoxRGBA(1, 255, 255, 255, 255);
     
     initializeEmptyMessageBox(2, (u8*)MESSAGE_BOX_3_TEXT_BUFFER);
     setMessageBoxViewSpacePosition(2, -32.0f, 0.0f, 0.0f);
-    func_8003F5D0(2, 0xA, 2);
-    func_8003F630(2, 0, 2);
-    func_8003F464(2, 0xE, 0xE, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
-    func_8003F360(2, -4, 2);
+    setMessageBoxLineAndRowSizes(2, 0xA, 2);
+    setMessageBoxSpacing(2, 0, 2);
+    setMessageBoxFont(2, 0xE, 0xE, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
+    setMessageBoxInterpolationWithFlags(2, -4, 2);
     setMessageBoxSpriteIndices(2, 0xFF, 0, 0);
     setMessageBoxButtonMask(2, BUTTON_A);
-    func_8003FB4C(2, 1);
-    initializeMessageBox(2, 0, 0x14, 0x80000);
-    func_8003E77C(2, 255, 255, 255, 255);
+    setMessageBoxScrollSpeed(2, 1);
+    initializeMessageBox(2, 0, 0x14, MESSAGE_BOX_MODE_NO_INPUT);
+    setMessageBoxRGBA(2, 255, 255, 255, 255);
     
     initializeEmptyMessageBox(3, (u8*)MESSAGE_BOX_4_TEXT_BUFFER);
     setMessageBoxViewSpacePosition(3, 96.0f, 32.0f, 0.0f);
-    func_8003F5D0(3, 0xA, 2);
-    func_8003F630(3, 0, 2);
-    func_8003F464(3, 0xE, 0xE, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
-    func_8003F360(3, -4, 2);
+    setMessageBoxLineAndRowSizes(3, 0xA, 2);
+    setMessageBoxSpacing(3, 0, 2);
+    setMessageBoxFont(3, 0xE, 0xE, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
+    setMessageBoxInterpolationWithFlags(3, -4, 2);
     setMessageBoxSpriteIndices(3, 0xFF, 0, 0);
     setMessageBoxButtonMask(3, BUTTON_A);
-    func_8003FB4C(3, 1);
-    initializeMessageBox(3, 0, 0x15, 0x80000);
-    func_8003E77C(3, 255, 255, 255, 255);
+    setMessageBoxScrollSpeed(3, 1);
+    initializeMessageBox(3, 0, 0x15, MESSAGE_BOX_MODE_NO_INPUT);
+    setMessageBoxRGBA(3, 255, 255, 255, 255);
     
     initializeEmptyMessageBox(4, (u8*)MESSAGE_BOX_5_TEXT_BUFFER);
     setMessageBoxViewSpacePosition(4, 96.0f, 16.0f, 0.0f);
-    func_8003F5D0(4, 0xA, 2);
-    func_8003F630(4, 0, 2);
-    func_8003F464(4, 0xE, 0xE, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
-    func_8003F360(4, -4, 2);
+    setMessageBoxLineAndRowSizes(4, 0xA, 2);
+    setMessageBoxSpacing(4, 0, 2);
+    setMessageBoxFont(4, 0xE, 0xE, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
+    setMessageBoxInterpolationWithFlags(4, -4, 2);
     setMessageBoxSpriteIndices(4, 0xFF, 0, 0);
     setMessageBoxButtonMask(4, BUTTON_A);
-    func_8003FB4C(4, 1);
-    initializeMessageBox(4, 0, 0x16, 0x80000);
-    func_8003E77C(4, 255, 255, 255, 255);
+    setMessageBoxScrollSpeed(4, 1);
+    initializeMessageBox(4, 0, 0x16, MESSAGE_BOX_MODE_NO_INPUT);
+    setMessageBoxRGBA(4, 255, 255, 255, 255);
     
     initializeEmptyMessageBox(5, (u8*)MESSAGE_BOX_6_TEXT_BUFFER);
     setMessageBoxViewSpacePosition(5, 96.0f, 0.0f, 0.0f);
-    func_8003F5D0(5, 0xA, 2);
-    func_8003F630(5, 0, 2);
-    func_8003F464(5, 0xE, 0xE, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
-    func_8003F360(5, -4, 2);
+    setMessageBoxLineAndRowSizes(5, 0xA, 2);
+    setMessageBoxSpacing(5, 0, 2);
+    setMessageBoxFont(5, 0xE, 0xE, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
+    setMessageBoxInterpolationWithFlags(5, -4, 2);
     setMessageBoxSpriteIndices(5, 0xFF, 0, 0);
     setMessageBoxButtonMask(5, BUTTON_A);
-    func_8003FB4C(5, 1);
-    initializeMessageBox(5, 0, 0x17, 0x80000);
-    func_8003E77C(5, 255, 255, 255, 255);
+    setMessageBoxScrollSpeed(5, 1);
+    initializeMessageBox(5, 0, 0x17, MESSAGE_BOX_MODE_NO_INPUT);
+    setMessageBoxRGBA(5, 255, 255, 255, 255);
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800CD628);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", fadeInRaceResultsElements);
 
-void func_800CD628(void) {
+void fadeInRaceResultsSprites(void) {
     updateSpriteAlpha(0x81, 0xFF, 24);
     updateSpriteAlpha(0x82, 0xFF, 24);
     updateSpriteAlpha(0x83, 0xFF, 24);
@@ -9546,9 +9512,9 @@ void func_800CD628(void) {
     updateSpriteAlpha(0x85, 0xFF, 24);
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800CD690);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", fadeOutRaceResultsElements);
 
-void func_800CD690(void) {
+void fadeOutRaceResultsSprites(void) {
 
     updateSpriteAlpha(0x81, 0, 24);
     updateSpriteAlpha(0x82, 0, 24);
@@ -9556,12 +9522,12 @@ void func_800CD690(void) {
     updateSpriteAlpha(0x84, 0, 24);
     updateSpriteAlpha(0x85, 0, 24);
 
-    func_8003DD14(0);
-    func_8003DD14(1);
-    func_8003DD14(2);
-    func_8003DD14(3);
-    func_8003DD14(4);
-    func_8003DD14(5);
+    deactivateMessageBox(0);
+    deactivateMessageBox(1);
+    deactivateMessageBox(2);
+    deactivateMessageBox(3);
+    deactivateMessageBox(4);
+    deactivateMessageBox(5);
 
     deactivateOverlayScreenSprites(2);
     deactivateOverlayScreenSprites(3);
@@ -9621,10 +9587,9 @@ static const u8 D_80122140[19][6] = {
     { 0xB5, 0xC1, 0xCF, 0xC3, 0xCD, 0xCF } 
 };
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800CD750);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", raceResultsScreenCallback);
 
-// race results callback
-void func_800CD750(void) {
+void raceResultsScreenCallback(void) {
     
     u16 temp = 0;
 
@@ -9634,27 +9599,27 @@ void func_800CD750(void) {
             break;
         
         case 0:
-            func_800CC6F0();
+            loadRaceResultsScreenSprites();
             overlayScreenTable.screenState = 1;
             break;
         
         case 1:
-            if (func_8002CBF8(0x82)) {
+            if (checkSpriteRGBAUpdateFinished(0x82)) {
                 overlayScreenTable.screenState = 4;
             }
             break;
         
         case 2:
-            if (func_8002CBF8(0x82)) {
-                func_800B2CE0();
+            if (checkSpriteRGBAUpdateFinished(0x82)) {
+                closeOverlayScreen();
                 overlayScreenTable.screenState = 3;
             }
             break;
         
         case 3:
             deactivateSprite(0x80);
-            func_80059368();
-            func_80059300();
+            exitOverlayScreen();
+            resumeGameplay();
             setDailyEventBit(0x40);
             setEntrance(0x6C);
             setPlayerAction(0, 0);
@@ -9669,12 +9634,12 @@ void func_800CD750(void) {
             updateSpriteAlpha(0x83, 0, 24);
             updateSpriteAlpha(0x84, 0, 24);
             updateSpriteAlpha(0x85, 0, 24);
-            func_8003DD14(0);
-            func_8003DD14(1);
-            func_8003DD14(2);
-            func_8003DD14(3);
-            func_8003DD14(4);
-            func_8003DD14(5);
+            deactivateMessageBox(0);
+            deactivateMessageBox(1);
+            deactivateMessageBox(2);
+            deactivateMessageBox(3);
+            deactivateMessageBox(4);
+            deactivateMessageBox(5);
             deactivateOverlayScreenSprites(2);
             deactivateOverlayScreenSprites(3);
             deactivateOverlayScreenSprites(8);
@@ -9689,11 +9654,11 @@ void func_800CD750(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800CD928);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", loadRaceGiftsScreenCallback);
 
-void func_800CD928(void) {
+void loadRaceGiftsScreenCallback(void) {
     
-    func_800593EC();
+    openOverlayScreen();
     
     dmaSprite(CHECKERBOARD_BACKGROUND, (u32)&_checkerboardBackgroundTextureSegmentRomStart, (u32)&_checkerboardBackgroundTextureSegmentRomEnd, (u32)&_checkerboardBackgroundAssetsIndexSegmentRomStart, (u32)&_checkerboardBackgroundAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_BACKGROUND_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_BACKGROUND_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_BACKGROUND_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_BACKGROUND_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(CHECKERBOARD_BACKGROUND, 0.0f, 0.0f, 0.0f);
@@ -9712,21 +9677,21 @@ void func_800CD928(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800CDA6C);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", loadRaceGiftsScreenSprites);
 
-void func_800CDA6C(void) {
+void loadRaceGiftsScreenSprites(void) {
 
     dmaSprite(0x81, (u32)&_snapshotLargeTextureSegmentRomStart, (u32)&_snapshotLargeTextureSegmentRomEnd, (u32)&_snapshotLargeAssetsIndexSegmentRomStart, (u32)&_snapshotLargeAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_SNAPSHOT_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_SNAPSHOT_PALETTE, (u16*)OVERLAY_SCREEN_SNAPSHOT_ANIM_METADATA, (u32*)OVERLAY_SCREEN_SNAPSHOT_SPRITESHEET_INDEX, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x81, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0x81, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteRenderingLayer(0x81, 2);
+    setSpriteBlendMode(0x81, 2);
     setBilinearFiltering(0x81, 1);
     startSpriteAnimation(0x81, 0, 0);
     
     dmaSprite(0x82, (u32)&_prizeScreenTextureSegmentRomStart, (u32)&_prizeScreenTextureSegmentRomEnd, (u32)&_prizeScreenAssetsIndexSegmentRomStart, (u32)&_prizeScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x82, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0x82, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteRenderingLayer(0x82, 2);
+    setSpriteBlendMode(0x82, 2);
     setBilinearFiltering(0x82, 1);
     
     // horse or dog race
@@ -9740,7 +9705,7 @@ void func_800CDA6C(void) {
     dmaSprite(0x83, (u32)&_prizeScreenTextureSegmentRomStart, (u32)&_prizeScreenTextureSegmentRomEnd, (u32)&_prizeScreenAssetsIndexSegmentRomStart, (u32)&_prizeScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x83, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0x83, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteRenderingLayer(0x83, 2);
+    setSpriteBlendMode(0x83, 2);
     setBilinearFiltering(0x83, 1);
     startSpriteAnimation(0x83, 4, 0);
     
@@ -9748,7 +9713,7 @@ void func_800CDA6C(void) {
     dmaSprite(0x84, (u32)&_prizeScreenTextureSegmentRomStart, (u32)&_prizeScreenTextureSegmentRomEnd, (u32)&_prizeScreenAssetsIndexSegmentRomStart, (u32)&_prizeScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x84, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0x84, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteRenderingLayer(0x84, 2);
+    setSpriteBlendMode(0x84, 2);
     setBilinearFiltering(0x84, 1);
     startSpriteAnimation(0x84, 4, 1);
     
@@ -9762,22 +9727,22 @@ void func_800CDA6C(void) {
     setSpriteColor(CURSOR_HAND, 255, 255, 255, 255);
     
     // fade in
-    func_800CDFB0();
+    fadeInRaceGiftsSprites();
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800CDFB0);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", fadeInRaceGiftsElements);
 
-void func_800CDFB0(void) {
+void fadeInRaceGiftsSprites(void) {
     updateSpriteAlpha(0x81, 0xFF, 24);
     updateSpriteAlpha(0x82, 0xFF, 24);
     updateSpriteAlpha(0x83, 0xFF, 24);
     updateSpriteAlpha(0x84, 0xFF, 24);
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800CE008);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", fadeOutRaceGiftsElements);
 
-void func_800CE008(void) {
+void fadeOutRaceGiftsSprites(void) {
     updateSpriteAlpha(0x81, 0, 24);
     updateSpriteAlpha(0x82, 0, 24);
     updateSpriteAlpha(0x83, 0, 24);
@@ -9789,10 +9754,9 @@ void func_800CE008(void) {
 
 static const u16 D_801221CC[6] = { 3000, 1000, 500, 0, 0, 0 };
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800CE068);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", raceGiftsScreenCallback);
 
-// race gifts callback
-void func_800CE068(void) {
+void raceGiftsScreenCallback(void) {
 
     u16 buff[4];
     u16 buff2[4];
@@ -9809,15 +9773,15 @@ void func_800CE068(void) {
     switch (overlayScreenTable.screenState) {
 
         case 0:
-            func_800CDA6C();
+            loadRaceGiftsScreenSprites();
             overlayScreenTable.screenState = 1;
             break;
 
         case 1:
-            if (func_8002CBF8(0x82)) {
+            if (checkSpriteRGBAUpdateFinished(0x82)) {
                 setMessageBoxViewSpacePosition(0, 24.0f, -64.0f, 352.0f);
                 setMessageBoxSpriteIndices(0, 0, 0, 0);
-                func_8003F360(0, -4, 0);
+                setMessageBoxInterpolationWithFlags(0, -4, 0);
                 initializeDialogueSession(0, 0x3E, 5, 0x40);
                 overlayScreenTable.screenState = 5;
             }
@@ -9825,12 +9789,12 @@ void func_800CE068(void) {
 
         case 5:    
             
-            if (func_80043A88()) {
+            if (isDialogueClosing()) {
             
-                if (!(func_80043C6C(0))) {
+                if (!(getSelectedMenuRow(0))) {
                     
                     dialogues[0].sessionManager.flags &= ~0x40;
-                    func_80043AD8(0);
+                    closeDialogueSession(0);
                     setSpriteViewSpacePosition(CURSOR_HAND, -104.0f, (f32)(-(overlayScreenTable.cellIndex * 16) + 16), 32.0f);
                     startSpriteAnimation(CURSOR_HAND, 3, 0);
                     overlayScreenTable.screenState = 9;
@@ -9846,8 +9810,8 @@ void func_800CE068(void) {
 
         case 3:
             
-            if (func_8003F0DC()) {
-                func_8003F130(0);
+            if (checkAnyMessageBoxTextFinished()) {
+                resetMessageBoxAnimation(0);
                 resetAnimationState(CURSOR_HAND);
                 updateSpriteAlpha(0x81, 0, 24);
                 updateSpriteAlpha(0x82, 0, 24);
@@ -9860,36 +9824,36 @@ void func_800CE068(void) {
             break;
 
         case 4:
-            if (func_8003F0DC()) {
+            if (checkAnyMessageBoxTextFinished()) {
                 overlayScreenTable.screenState = 9;
             }
             break;
         
         case 2:
-            if (func_8002CBF8(0x82)) {
-                func_800B2CE0();
+            if (checkSpriteRGBAUpdateFinished(0x82)) {
+                closeOverlayScreen();
                 overlayScreenTable.screenState = 6;
             }
             break;
         
         case 6:
             deactivateSprite(0x80);
-            func_80059368();
-            func_80059300();
+            exitOverlayScreen();
+            resumeGameplay();
             break;
 
         case 7:
             
-            if (func_80043A88()) {
+            if (isDialogueClosing()) {
                 
-                if (!(func_80043C6C(0))) {
+                if (!(getSelectedMenuRow(0))) {
                     
                     resetAnimationState(0x86);
                     overlayScreenTable.screenState = 8;
                     goto label3;
                     
                 } else {
-                    func_80043AD8(0);
+                    closeDialogueSession(0);
                     setSpriteViewSpacePosition(CURSOR_HAND, -104.0f, (f32)(-(overlayScreenTable.cellIndex * 16) + 16), 32.0f);
                     startSpriteAnimation(CURSOR_HAND, 3, 0);
                     overlayScreenTable.screenState = 9;
@@ -9907,7 +9871,7 @@ void func_800CE068(void) {
                     D_80205204 += adjustValue(D_80205204, -buff[overlayScreenTable.cellIndex], 9999);
                     initializeMessageBox(0, 4, 13, 0);
                     overlayScreenTable.screenState = 3;
-                    func_800CE7A8(overlayScreenTable.cellIndex);
+                    handleGetHorseRacePrize(overlayScreenTable.cellIndex);
                 } else {
                     initializeMessageBox(0, 4, 14, 0);
                     overlayScreenTable.screenState = 3;
@@ -9919,7 +9883,7 @@ void func_800CE068(void) {
                     D_80205204 += adjustValue(D_80205204, -buff2[overlayScreenTable.cellIndex], 9999);
                     initializeMessageBox(0, 4, 13, 0);
                     overlayScreenTable.screenState = 3;
-                    func_800CE894(overlayScreenTable.cellIndex);
+                    handleGetDogRacePrize(overlayScreenTable.cellIndex);
                 } else {
                     initializeMessageBox(0, 4, 14, 0);
                     overlayScreenTable.screenState = 3;
@@ -10037,9 +10001,9 @@ bool func_800CE714(u8 arg0) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800CE7A8);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", handleGetHorseRacePrize);
 
-void func_800CE7A8(u8 arg0) {
+void handleGetHorseRacePrize(u8 arg0) {
 
     switch (arg0) {                              
         case 0:
@@ -10080,9 +10044,9 @@ bool func_800CE828(u8 arg0) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800CE894);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", handleGetDogRacePrize);
 
-void func_800CE894(u8 arg0) {
+void handleGetDogRacePrize(u8 arg0) {
 
     switch (arg0) {                              
         case 0:
@@ -10104,11 +10068,11 @@ void func_800CE894(u8 arg0) {
 
 /* lottery/raffle */ 
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800CE930);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", loadLotteryScreenCallback);
 
-void func_800CE930(void) {
+void loadLotteryScreenCallback(void) {
     
-    func_800593EC();
+    openOverlayScreen();
     
     dmaSprite(CHECKERBOARD_BACKGROUND, (u32)&_checkerboardBackgroundTextureSegmentRomStart, (u32)&_checkerboardBackgroundTextureSegmentRomEnd, (u32)&_checkerboardBackgroundAssetsIndexSegmentRomStart, (u32)&_checkerboardBackgroundAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_BACKGROUND_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_BACKGROUND_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_BACKGROUND_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_BACKGROUND_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(CHECKERBOARD_BACKGROUND, 0.0f, 0.0f, 0.0f);
@@ -10129,28 +10093,28 @@ void func_800CE930(void) {
 
 // winter lottery
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800CEA74);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", loadLotteryScreenSprites);
 
-void func_800CEA74(void) {
+void loadLotteryScreenSprites(void) {
     
     dmaSprite(0x81, (u32)&_snapshotLargeTextureSegmentRomStart, (u32)&_snapshotLargeTextureSegmentRomEnd, (u32)&_snapshotLargeAssetsIndexSegmentRomStart, (u32)&_snapshotLargeAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_SNAPSHOT_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_SNAPSHOT_PALETTE, (u16*)OVERLAY_SCREEN_SNAPSHOT_ANIM_METADATA, (u32*)OVERLAY_SCREEN_SNAPSHOT_SPRITESHEET_INDEX, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x81, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0x81, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteRenderingLayer(0x81, 2);
+    setSpriteBlendMode(0x81, 2);
     setBilinearFiltering(0x81, 1);
     startSpriteAnimation(0x81, 0, 0);
     
     dmaSprite(0x82, (u32)&_prizeScreenTextureSegmentRomStart, (u32)&_prizeScreenTextureSegmentRomEnd, (u32)&_prizeScreenAssetsIndexSegmentRomStart, (u32)&_prizeScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x82, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0x82, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteRenderingLayer(0x82, 2);
+    setSpriteBlendMode(0x82, 2);
     setBilinearFiltering(0x82, 1);
     startSpriteAnimation(0x82, 3, 0);
     
     dmaSprite(0x83, (u32)&_prizeScreenTextureSegmentRomStart, (u32)&_prizeScreenTextureSegmentRomEnd, (u32)&_prizeScreenAssetsIndexSegmentRomStart, (u32)&_prizeScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x83, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0x83, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteRenderingLayer(0x83, 2);
+    setSpriteBlendMode(0x83, 2);
     setBilinearFiltering(0x83, 1);
     
     if (gBaseMapIndex == FLOWER_SHOP) {
@@ -10159,45 +10123,44 @@ void func_800CEA74(void) {
         startSpriteAnimation(0x83, 1, 0);
     }
     
-    func_800CED60();
+    fadeInLotterySprites();
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800CED60);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", fadeInLotteryElements);
 
-void func_800CED60(void) {
+void fadeInLotterySprites(void) {
     updateSpriteAlpha(0x81, 0xFF, 24);
     updateSpriteAlpha(0x82, 0xFF, 24);
     updateSpriteAlpha(0x83, 0xFF, 24);
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800CEDA8);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", fadeOutLotteryElements);
 
-void func_800CEDA8(void) {
+void fadeOutLotterySprites(void) {
     updateSpriteAlpha(0x81, 0, 24);
     updateSpriteAlpha(0x82, 0, 24);
     updateSpriteAlpha(0x83, 0, 24);
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800CEDF0);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", lotteryScreenCallback);
 
-// lottery callback
-void func_800CEDF0(void) {
+void lotteryScreenCallback(void) {
 
     switch (overlayScreenTable.screenState) {
 
         case 0:
-            func_800CEA74();
+            loadLotteryScreenSprites();
             overlayScreenTable.screenState = 1;
             break;
         
         case 1:
             
-            if (func_8002CBF8(0x82)) {
+            if (checkSpriteRGBAUpdateFinished(0x82)) {
                 
                 setMessageBoxViewSpacePosition(0, 24.0f, -64.0f, 352.0f);
                 setMessageBoxSpriteIndices(0, 0, 0, 0);
-                func_8003F360(0, -4, 0);
+                setMessageBoxInterpolationWithFlags(0, -4, 0);
                 
                 if (gBaseMapIndex == 0x32) {
                     initializeDialogueSession(0, 0x3E, 4, 0x40);
@@ -10213,13 +10176,13 @@ void func_800CEDF0(void) {
         
         case 4:
 
-            if (func_80043A88()) {
+            if (isDialogueClosing()) {
                 
-                if (!(func_80043C6C(0))) {
+                if (!(getSelectedMenuRow(0))) {
                     
                     dialogues[0].sessionManager.flags &= ~0x40;
                     
-                    func_80043AD8(0);
+                    closeDialogueSession(0);
                     overlayScreenTable.screenState = 6;
                     
                     playSfx(0x20);
@@ -10251,9 +10214,9 @@ void func_800CEDF0(void) {
         case 3:
 
             // check if a message box has flag 4 set
-            if (func_8003F0DC()) {
+            if (checkAnyMessageBoxTextFinished()) {
                 
-                func_8003F130(0);
+                resetMessageBoxAnimation(0);
                 
                 resetAnimationState(CURSOR_HAND);
                 
@@ -10269,8 +10232,8 @@ void func_800CEDF0(void) {
         
         case 2:
         
-            if (func_8002CBF8(0x82)) {
-                func_800B2CE0();
+            if (checkSpriteRGBAUpdateFinished(0x82)) {
+                closeOverlayScreen();
                 overlayScreenTable.screenState = 5;
             }
 
@@ -10278,8 +10241,8 @@ void func_800CEDF0(void) {
         
         case 5:
             deactivateSprite(0x80);
-            func_80059368();
-            func_80059300();
+            exitOverlayScreen();
+            resumeGameplay();
 
             break;
         
@@ -10293,56 +10256,56 @@ void func_800CEDF0(void) {
 
                         case 0:     
                             
-                            if (!(func_800CF34C(0))) {
+                            if (!(checkAvailableFlowerShopPrize(0))) {
                                 initializeMessageBox(0, 4, 0x38, 0);
                                 overlayScreenTable.screenState = 3;
-                                func_800CF3C4(0);
+                                handleGetFlowerShopPrize(0);
                             } else {
                                 initializeMessageBox(0, 4, 0x3C, 0);
                                 overlayScreenTable.screenState = 3;
-                                func_800CF3C4(4);
+                                handleGetFlowerShopPrize(4);
                             }
                             
                             break;
                         
                     case 1:               
                         
-                        if (!(func_800CF34C(1))) {
+                        if (!(checkAvailableFlowerShopPrize(1))) {
                             initializeMessageBox(0, 4, 0x39, 0);
                             overlayScreenTable.screenState = 3;
-                            func_800CF3C4(1);
+                            handleGetFlowerShopPrize(1);
                         } else {
                             initializeMessageBox(0, 4, 0x3C, 0);
                             overlayScreenTable.screenState = 3;
-                            func_800CF3C4(4);
+                            handleGetFlowerShopPrize(4);
                         }
                         
                         break;
                         
                     case 2:                             
                         
-                        if (!(func_800CF34C(2))) {
+                        if (!(checkAvailableFlowerShopPrize(2))) {
                             initializeMessageBox(0, 4, 0x3A, 0);
                             overlayScreenTable.screenState = 3;
-                            func_800CF3C4(2);
+                            handleGetFlowerShopPrize(2);
                         } else {
                             initializeMessageBox(0, 4, 0x3C, 0);
                             overlayScreenTable.screenState = 3;
-                            func_800CF3C4(4);
+                            handleGetFlowerShopPrize(4);
                         }
                         
                         break;
                         
                     case 3: 
                         
-                        if (!(func_800CF34C(3))) {
+                        if (!(checkAvailableFlowerShopPrize(3))) {
                             initializeMessageBox(0, 4, 0x3B, 0);
                             overlayScreenTable.screenState = 3;
-                            func_800CF3C4(3);
+                            handleGetFlowerShopPrize(3);
                         } else {
                             initializeMessageBox(0, 4, 0x3C, 0);
                             overlayScreenTable.screenState = 3;
-                            func_800CF3C4(4);
+                            handleGetFlowerShopPrize(4);
                         }
                         
                         break;
@@ -10350,7 +10313,7 @@ void func_800CEDF0(void) {
                     case 4:   
                         initializeMessageBox(0, 4, 0x3C, 0);
                         overlayScreenTable.screenState = 3;
-                        func_800CF3C4(4);
+                        handleGetFlowerShopPrize(4);
                         
                         break;                        
                     
@@ -10362,56 +10325,56 @@ void func_800CEDF0(void) {
                         
                         case 0:                             
                             
-                            if (!(func_800CF498(0))) {
+                            if (!(checkAvailableBakeryPrize(0))) {
                                 initializeMessageBox(0, 4, 0x40, 0);
                                 overlayScreenTable.screenState = 3;
-                                func_800CF544(0);
+                                handleGetBakeryPrize(0);
                             } else {
                                 initializeMessageBox(0, 4, 0x44, 0);
                                 overlayScreenTable.screenState = 3;
-                                func_800CF544(4);
+                                handleGetBakeryPrize(4);
                             }
                             
                             break;
                         
                         case 1:                             
                             
-                            if (!(func_800CF498(1))) {
+                            if (!(checkAvailableBakeryPrize(1))) {
                                 initializeMessageBox(0, 4, 0x41, 0);
                                 overlayScreenTable.screenState = 3;
-                                func_800CF544(1);
+                                handleGetBakeryPrize(1);
                             } else {
                                 initializeMessageBox(0, 4, 0x44, 0);
                                 overlayScreenTable.screenState = 3;
-                                func_800CF544(4);
+                                handleGetBakeryPrize(4);
                             }
                         
                             break;
                         
                         case 2:                             
                             
-                            if (!(func_800CF498(2))) {
+                            if (!(checkAvailableBakeryPrize(2))) {
                                 initializeMessageBox(0, 4, 0x42, 0);
                                 overlayScreenTable.screenState = 3;
-                                func_800CF544(2);
+                                handleGetBakeryPrize(2);
                             } else {
                                 initializeMessageBox(0, 4, 0x44, 0);
                                 overlayScreenTable.screenState = 3;
-                                func_800CF544(4);
+                                handleGetBakeryPrize(4);
                             }
                             
                             break;
                         
                         case 3:            
                             
-                            if (!(func_800CF498(3))) {
+                            if (!(checkAvailableBakeryPrize(3))) {
                                 initializeMessageBox(0, 4, 0x43, 0);
                                 overlayScreenTable.screenState = 3;
-                                func_800CF544(3);
+                                handleGetBakeryPrize(3);
                             } else {
                                 initializeMessageBox(0, 4, 0x44, 0);
                                 overlayScreenTable.screenState = 3;
-                                func_800CF544(4);
+                                handleGetBakeryPrize(4);
                             }
                         
                             break;
@@ -10419,7 +10382,7 @@ void func_800CEDF0(void) {
                         case 4:                             
                             initializeMessageBox(0, 4, 0x44, 0);
                             overlayScreenTable.screenState = 3;
-                            func_800CF544(4);
+                            handleGetBakeryPrize(4);
 
                             break;
                             
@@ -10437,9 +10400,9 @@ void func_800CEDF0(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800CF34C);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", checkAvailableFlowerShopPrize);
 
-bool func_800CF34C(u8 arg0) {
+bool checkAvailableFlowerShopPrize(u8 arg0) {
 
     bool result = FALSE;
     
@@ -10468,9 +10431,9 @@ bool func_800CF34C(u8 arg0) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800CF3C4);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", handleGetFlowerShopPrize);
 
-void func_800CF3C4(u8 arg0) {
+void handleGetFlowerShopPrize(u8 arg0) {
 
     switch (arg0) {
         case 0:
@@ -10483,20 +10446,20 @@ void func_800CF3C4(u8 arg0) {
             setLifeEventBit(0x5B);
             break;
         case 3:
-            func_80065BCC(0x12);
+            storeTool(0x12);
             D_80205636 += adjustValue(D_80205636, 1, 20);
             break;
         case 4:
-            func_80065BCC(0x11);
+            storeTool(0x11);
             D_801C3F70 += adjustValue(D_801C3F70, 1, 20);
         default:
             break;
     }
 } 
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800CF498);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", checkAvailableBakeryPrize);
 
-bool func_800CF498(u8 arg0) {
+bool checkAvailableBakeryPrize(u8 arg0) {
 
     bool result = FALSE;
     
@@ -10532,9 +10495,9 @@ bool func_800CF498(u8 arg0) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800CF544);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", handleGetBakeryPrize);
 
-void func_800CF544(u8 arg0) {
+void handleGetBakeryPrize(u8 arg0) {
 
     switch (arg0) {
         

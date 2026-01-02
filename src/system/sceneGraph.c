@@ -63,7 +63,7 @@ u16 addSceneNode(Gfx *dl, u16 flags) {
     u16 index = sceneNodeCounter;
 
     sceneNodes[index].dl = dl;
-    sceneNodes[index].flags = flags | 1;
+    sceneNodes[index].flags = flags | SCENE_NODE_ACTIVE;
     
     sceneNodeCounter++;
     

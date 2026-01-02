@@ -35,9 +35,9 @@ void updateMainLoopTimer(int pendingGfx);
 void mainLoop(void) {
 
     stepMainLoop = FALSE;
-    unknownFlag = 1;
+    engineStateFlags = 1;
     
-    // wait 60 frames until unknownFlag |= 2
+    // wait 60 frames until engineStateFlags |= 2
     func_80026284();
 
     // toggle flags
@@ -51,7 +51,7 @@ void mainLoop(void) {
       
         nuGfxDisplayOn();
           
-        while (unknownFlag & 1) {
+        while (engineStateFlags & 1) {
             
             while (stepMainLoop == FALSE);
             
@@ -201,7 +201,7 @@ void func_80026284(void) {
     goto loop_end;
     
     // first 60 frames
-    while (!(unknownFlag & 2)) {
+    while (!(engineStateFlags & 2)) {
 
         func_80026248(1);
 
@@ -223,7 +223,7 @@ u8 gfxRetraceCallback(int pendingGfx) {
     
     pendingGfxNum = pendingGfx;
 
-    unknownFlag &= ~2;
+    engineStateFlags &= ~2;
     
     readControllerData();
 
@@ -232,7 +232,7 @@ u8 gfxRetraceCallback(int pendingGfx) {
     
     if (frameCount > 59) {
         frameCount = 0;
-        unknownFlag |= 2;
+        engineStateFlags |= 2;
     }
     
     // no op
@@ -259,11 +259,11 @@ void handleGraphicsUpdate(int pendingGfx) {
       
     if (frameCount > 59) {
 
-      D_801C4215 = drawnFrameCount;
+      previousDrawnFrameCount = drawnFrameCount;
       drawnFrameCount = 0;
 
       // < hz
-      if (D_801C4215 < (60 / frameRate)) {
+      if (previousDrawnFrameCount < (60 / frameRate)) {
         // unused
         D_80222730 = 2;
       }
@@ -294,15 +294,15 @@ void handleGraphicsUpdate(int pendingGfx) {
 
 void updateMainLoopTimer(int pendingGfx) {
     
-    if ((frameCount % D_802226E2) == 0) {
+    if ((frameCount % mainLoopUpdateRate) == 0) {
         
         if (frameCount > 59) {
 
-          D_8013DC30 = loopStepsPerCycle;
+          previousLoopStepsPerCycle = loopStepsPerCycle;
           loopStepsPerCycle = 0;
 
           // < hz
-          if (D_8013DC30 < (60 / D_802226E2)) {
+          if (previousLoopStepsPerCycle < (60 / mainLoopUpdateRate)) {
             // unused
             D_80222730 = 1;
           }

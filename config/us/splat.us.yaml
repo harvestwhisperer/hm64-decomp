@@ -2915,7 +2915,7 @@ segments:
     dir: maps/potion-shop
     start: 0xB60990
 
-  # referenced in func_80074C50
+  # referenced in getCantEnterDialogueInfoIndex
   - name: emptyMap2
     type: bin
     dir: maps/unknown

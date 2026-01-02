@@ -67,23 +67,23 @@ typedef struct {
     u8 randomMaximumValue;
 	u8 unusedField;
 	u8 unusedField2;
-	u8 unk_18;
+	u8 targetMenuRow;
 } DialogueBytecodeExecutor;
 
 // 0x801C3F18
 typedef struct {
 	u32 scrollSfxIndex;
 	u32 closeSfxIndex;
-	u32 unk_8; // maybe button press index
+	u32 buttonPressSfxIndex;
 	u16 dialogueIndex;
-	u16 dialogueBytecodeAddressesIndex; // 0xF26
-	u16 mainMessageBoxIndex; // 0xF28
+	u16 dialogueBytecodeAddressesIndex;
+	u16 mainMessageBoxIndex;
 	u16 overlayMessageBoxIndex;
-	u16 unk_14; // sets unk_7E on messageBox
-	u8 unk_16; // pink overlay max rows
-	u8 unk_17; // pink overlay current column
-	u8 unk_18;
-	u8 unk_19;
+	u16 overlayTextOffset; // sets unk_7E on messageBox
+	u8 totalMenuRows; // pink overlay max rows
+	u8 selectedMenuRow; // pink overlay current row
+	u8 visibleMenuCursorRow;
+	u8 menuScrollOffset;
     u16 flags; // 0x4 = dialogue finished/closing
 } DialogueSessionManager;
 
@@ -106,17 +106,17 @@ typedef struct {
 
 extern bool setDialogueVariable(u16 index, void *address, u8 numSet, s32 max);
 extern void initializeDialogueSessionManagers();   
-extern bool func_80042FEC(u16, u16, u16);
+extern bool initializeDialogueSessionManager(u16, u16, u16);
 extern bool setDialogueBytecodeAddressInfo(u16 index, u16 arg1, u16 arg2, u32 romStart, u32 romEnd, u32* vaddrIndex, u32 romIndex, void* vaddrBytecode);
 extern bool setSpecialDialogueBitsPointer(u32[]);
-extern bool func_80043148(u16, u32, u32, u32);
-extern bool func_8004318C(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextureEnd, u32 romIndexStart, u32 romIndexEnd, u8* vaddrTexture, u8* vaddrTextureEnd, AnimationFrameMetadata* vaddrAnimationFrameMetadata, u8* vaddrTextureToPaletteLookup, u32 argA, u16 spriteOffset, u8 flag, f32 x, f32 y, f32 z);
-extern bool func_80043260(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextureEnd, u32 romIndexStart, u32 romIndexEnd, u8* vaddrTexture, u8* vaddrTextureEnd, AnimationFrameMetadata* vaddrAnimationFrameMetadata, u8* vaddrTextureToPaletteLookup, u32 argA, u16 spriteOffset, u8 flag, f32 x, f32 y, f32 z);
-extern bool func_80043334(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextureEnd, u32 romIndexStart, u32 romIndexEnd, u8* vaddrTexture, u8* vaddrTextureEnd, AnimationFrameMetadata* vaddrAnimationFrameMetadata, u8* vaddrTextureToPaletteLookup, u32 argA, u16 spriteOffset, u8 flag, f32 x, f32 y, f32 z);
+extern bool setDialogueSfxIndices(u16, u32, u32, u32);
+extern bool setDialogueButtonIcon1(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextureEnd, u32 romIndexStart, u32 romIndexEnd, u8* vaddrTexture, u8* vaddrTextureEnd, AnimationFrameMetadata* vaddrAnimationFrameMetadata, u8* vaddrTextureToPaletteLookup, u32 argA, u16 spriteOffset, u8 flag, f32 x, f32 y, f32 z);
+extern bool setDialogueButtonIcon2(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextureEnd, u32 romIndexStart, u32 romIndexEnd, u8* vaddrTexture, u8* vaddrTextureEnd, AnimationFrameMetadata* vaddrAnimationFrameMetadata, u8* vaddrTextureToPaletteLookup, u32 argA, u16 spriteOffset, u8 flag, f32 x, f32 y, f32 z);
+extern bool setDialogueButtonIcon3(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextureEnd, u32 romIndexStart, u32 romIndexEnd, u8* vaddrTexture, u8* vaddrTextureEnd, AnimationFrameMetadata* vaddrAnimationFrameMetadata, u8* vaddrTextureToPaletteLookup, u32 argA, u16 spriteOffset, u8 flag, f32 x, f32 y, f32 z);
 extern bool initializeDialogueSession(u16 dialogueIndex, u16, u16, u16);
-extern u8 func_80043A88();  
-extern bool func_80043AD8(u16);
-extern u8 func_80043C6C(u16);
+extern u8 isDialogueClosing();  
+extern bool closeDialogueSession(u16);
+extern u8 getSelectedMenuRow(u16);
 
 extern Dialogue dialogues[MAX_DIALOGUES];
 extern DialogueBytecodeAddressInfo dialogueBytecodeAddresses[MAX_DIALOGUE_BYTECODE_BANKS];

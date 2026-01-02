@@ -8,6 +8,7 @@
 #include "system/map.h"
 #include "system/mapController.h"
 #include "system/math.h"
+#include "system/sprite.h"
 
 #include "game/game.h"
 #include "game/gameStatus.h"
@@ -50,7 +51,7 @@ void setWeatherSprites(void) {
         
             dmaSprite(WEATHER_SPRITES_BASE + i, &_rainTextureSegmentRomStart, &_rainTextureSegmentRomEnd, &_rainAssetsIndexSegmentRomStart, &_rainAssetsIndexSegmentRomEnd, 0, 0, (void*)WEATHER_SPRITE_TEXTURE_BUFFER, NULL, WEATHER_SPRITE_PALETTE_BUFFER, WEATHER_SPRITE_ANIMATION_FRAME_METADATA_BUFFER, WEATHER_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, TRUE);
             setSpriteScale(WEATHER_SPRITES_BASE + i, 1.0f, 1.0f, 1.0f);
-            setSpriteRenderingLayer(WEATHER_SPRITES_BASE + i, 4);
+            setSpriteBlendMode(WEATHER_SPRITES_BASE + i, SPRITE_BLEND_ALPHA_DECAL_NO_Z);
             setSpriteColor(WEATHER_SPRITES_BASE + i, 0xFF, 0xFF, 0xFF, 0xFF);
             
             setMapWeatherSprite(MAIN_MAP_INDEX, i + 3, WEATHER_SPRITES_BASE + i, animationIndex);

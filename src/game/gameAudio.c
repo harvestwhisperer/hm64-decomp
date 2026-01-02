@@ -333,6 +333,7 @@ void setAudioSequenceVolume(u16 sequenceIndex, u32 targetVolume) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/gameAudio", func_800ACC1C);
 
+// unused
 void func_800ACC1C(u16 sequenceIndex) {
     if (sequenceIndex < TOTAL_SEQUENCES) {
         setAudioSequenceVolumes(0, 0, 32);

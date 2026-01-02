@@ -240,7 +240,7 @@ DECOMPILED_TEXTS := text1 \
 	duke \
 	shipper \
 	harvestSprites \
-	assistantCarpenter \
+	assistantCarpenters \
 	masterCarpenter \
 	mayor \
 	greg \

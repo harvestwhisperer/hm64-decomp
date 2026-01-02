@@ -5,9 +5,9 @@
 // forward declaration
 void initializeInterpolator(Interpolator* interpolator, s16 rate, s16 frameCount);     
 
-//INCLUDE_ASM("asm/nonmatchings/system/interpolator", func_800266C0);
+//INCLUDE_ASM("asm/nonmatchings/system/interpolator", setupInterpolator);
 
-void func_800266C0(Interpolator* interpolator, u32 currentValue, u32 max, s16 rate, s16 frameRate) {
+void setupInterpolator(Interpolator* interpolator, u32 currentValue, u32 max, s16 rate, s16 frameRate) {
     interpolator->currentValue = currentValue;
     interpolator->targetValue = max;
     initializeInterpolator(interpolator, rate, frameRate);
@@ -22,7 +22,7 @@ bool interpolateToTarget(Interpolator* interpolator) {
 
     result = FALSE;
     
-    temp = func_800267B4(interpolator);
+    temp = calculateInterpolatorStep(interpolator);
 
     if (interpolator->currentValue < interpolator->targetValue) {
         
@@ -66,9 +66,9 @@ void initializeInterpolator(Interpolator* interpolator, s16 rate, s16 frameRate)
     interpolator->accumulatedValue = 0;
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/interpolator", func_800267B4);
+//INCLUDE_ASM("asm/nonmatchings/system/interpolator", calculateInterpolatorStep);
 
-s16 func_800267B4(Interpolator* interpolator) {
+s16 calculateInterpolatorStep(Interpolator* interpolator) {
 
     s16 temp = interpolator;
     

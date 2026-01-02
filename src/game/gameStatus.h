@@ -204,8 +204,8 @@ void setAlbumPicture(u8 pictureBitIndex);
 extern void setRecipes(void);  
 
 extern void handleWifeMorningHelp(void); 
-extern u8 func_8006536C();
-extern u8 func_80065518(void);
+extern u8 readMail(void);
+extern u8 getAcquiredRecipesTotal(void);
 extern void func_800657BC(void);
 extern void func_80064114(void);
 extern void func_800644B0(void);     

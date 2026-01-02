@@ -8,7 +8,7 @@
 
 #define MAX_FIELD_OBJECTS 218
 
-/* ground object flags */
+/* ground object tool interaction flags */
 #define GROUND_OBJECT_CUTTABLE 1
 #define GROUND_OBJECT_TILLABLE 2
 #define GROUND_OBJECT_CHOPPABLE 4
@@ -248,7 +248,7 @@ extern u8 ranchFieldTiles[FIELD_HEIGHT][FIELD_WIDTH];
 extern u8 farmFieldTiles[FIELD_HEIGHT][FIELD_WIDTH];
 
 extern void setMapGroundObjects(u8);   
-extern bool func_800DB99C(void);               
+extern bool checkAnimalCanEatGrass(void);               
 extern void func_800D9BFC(); 
 extern u8 getGroundObjectMapAdditionIndex(u8);              
 extern u8 getHeldItemIndexFromGroundObject(u8);                 
@@ -264,8 +264,8 @@ extern void updateCropsIfRain();
 extern void randomlyAddWeedsToFarmField();     
 extern void randomlyBreakLogPieces(u8);             
 extern void clearForagableObjects(u8 mapIndex);
-extern void func_800DBC9C(u8);       
-extern void func_800DBD88(u8);   
+extern void randomlyCutGrass(u8);       
+extern void randomlyDestroyCrops(u8);   
 extern void func_800DBE8C(u8);         
 extern u16 getFarmGrassTilesSum();     
 extern u16 func_800DC008();       

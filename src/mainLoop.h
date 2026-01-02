@@ -9,13 +9,13 @@
 #define MAIN_GAME 1
 #define MAP_LOAD 2
 // unsure: DREAM_CUTSCENES 3
-// unsure: INTRO_LOAD 4
-#define LEVEL_LOAD_1 5
-#define LEVEL_LOAD_2 6
+#define SET_AUDIO_AND_LIGHTING 4
+#define LEVEL_LOAD 5
+#define EXIT_LEVEL 6
 #define OVERLAY_SCREEN_LOAD 7
 #define ROTATING 8
 #define DIALOGUE 9
-#define TEXT 0xA
+#define MESSAGE_BOX 10
 #define END_CUTSCENE 0xB
 #define PINK_OVERLAY_TEXT 0xC
 #define END_OF_DAY_1 0xD
@@ -35,10 +35,10 @@
 #define CALENDAR_LOAD 0x1B
 #define RECIPE_BOOK_LOAD 0x1C
 #define ALBUM_LOAD 0x1D
-#define PAUSE_SCREEN_MAP_LOAD_1 0x1E
-#define PAUSE_SCREEN_MAP_LOAD_2 0x1F
-#define HORSE_RACE_RESULTS_LOAD 0x20
-#define HORSE_RACE_GIFTS_LOAD 0x21
+#define PAUSE_SCREEN_MAP_LOAD 0x1E
+#define RACE_BETTING_LOAD 0x1F
+#define RACE_RESULTS_LOAD 0x20
+#define RACE_GIFTS_LOAD 0x21
 #define LOTTERY_LOAD 0x22
 #define PAUSE_SCREEN 0x23
 #define TOOLBOX 0x24
@@ -82,59 +82,59 @@ extern void (*mainLoopCallbacksTable[MAIN_LOOP_CALLBACK_FUNCTION_TABLE_SIZE])();
 /*
 noOpCallback 
 mainGameLoopCallback
-func_8005D0BC 
-func_80060490 
-func_8005C00C 
-func_8005CA64 
-func_8005CAA8 
+mapLoadCallback 
+cutsceneCompletionCallback 
+setMapAudioAndLighting 
+levelLoadCallback 
+exitLevelCallback 
 func_8005CB50 
-func_8005CBA4 
-func_8005CBF0 
-func_8005CEFC 
-func_8005CF4C
-func_8005D2B0 
-func_80060624 
-func_80060838 
-func_80060454 
+handleRotationCallback 
+handleDialogueCallback 
+messageBoxCallback 
+endCutsceneCallback
+pinkOverlayMenuCallback 
+endOfDayCallback1 
+endOfDayCallback2 
+waitForAudioFinishCallback 
 tvMainLoopCallback 
-func_800605F0 
+endOfFestivalDayCallback2 
 func_800D93CC 
-func_800DCAB8 
-func_800B881C 
-func_800BADD0 
-func_800BCA9C 
-func_800BE808
-func_800B82AC 
-func_800B8018 
-func_800B815C 
-func_800B83F0 
-func_800B8554 
-func_800B86B8 
-func_800C8424 
-func_800C88F4 
-func_800CC518 
-func_800CD928 
-func_800CE930 
-func_800B9D3C
-func_800BBEC0 
-func_800BDB24 
-func_800BF990 
-func_800C1124 
-func_800C224C 
-func_800C2B8C 
-func_800C3D20 
-func_800C53C0 
-func_800C7058 
-func_800C8784 
-func_800CA808 
-func_800CD750
-func_800CE068 
-func_800CEDF0 
+shopDialogueCallback 
+loadPauseScreenCallback 
+loadToolboxScreenCallback 
+loadFreezerScreenCallback 
+loadCabinetScreenCallback
+loadHouseExtensionsSelectionCallback 
+loadEstimateScreenCallback 
+loadKitchenPictureCallback 
+loadCalendarScreenCallback 
+loadRecipeBookScreenCallback 
+loadAlbumScreenCallback 
+loadPauseScreenMapScreenCallback 
+loadRaceBettingScreenCallback 
+loadRaceResultsScreenCallback 
+loadRaceGiftsScreenCallback 
+loadLotteryScreenCallback 
+pauseScreenCallback
+toolboxScreenCallback 
+freezerScreenCallback 
+cabinetScreenCallback 
+houseExtensionsSelectionScreenCallback 
+estimateScreenCallback 
+kitchenPictureScreenCallback 
+calendarScreenCallback 
+recipeBookScreenCallback 
+albumScreenCallback 
+pauseScreenMapCallback 
+raceBettingScreenCallback 
+raceResultsScreenCallback
+raceGiftsScreenCallback 
+lotteryScreenCallback 
 titleScreenMainLoopCallback
-func_8005CF94 
+loadNamingScreenCallback 
 func_800ED974 
-func_800E1FAC 
-func_800E8F08 
+gameSelectCallback 
+farmRankingScreenCallback 
 func_800657B4 
 func_800657C4
 */

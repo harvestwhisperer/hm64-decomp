@@ -20,12 +20,12 @@ typedef struct {
     u8 buySelected;
 } ShopContext;
 
-extern void func_800DC750(u8 storeItemIndex);
+extern void intializeShopDialogue(u8 storeItemIndex);
 extern void loadShopItemSprite(u8);                            
-extern void func_800DC9C0(u8);
-extern void func_800DC9FC(u8);    
-extern u8 func_800DCAA0(u8 index);
-extern void func_800DCAB8(void);
+extern void deactivateShopItemMapObject(u8);
+extern void handlePickUpShopItem(u8);    
+extern u8 checkCanPickUpShopItem(u8 index);
+extern void shopDialogueCallback(void);
 extern u8 checkShopItemShouldBeDisplayed(u16);
 
 extern ShopContext shopContext;

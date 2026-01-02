@@ -178,10 +178,10 @@ bool initializeAnimalEntity(u16 index, u16* arg1, AnimationFrameMetadata* arg2, 
     return result;
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/entity", func_8002E108);
+//INCLUDE_ASM("asm/nonmatchings/system/entity", forceDeactivateEntity);
 
 // unused; deactivate sprite without checking flags
-bool func_8002E108(u16 index) {
+bool forceDeactivateEntity(u16 index) {
 
     bool result = FALSE;
     
@@ -303,7 +303,7 @@ bool loadEntity(u16 index, u16 entityAssetIndex, bool transformExempt) {
                     entities[index].transformExempt
                     );
 
-                setSpriteRenderingLayer(entities[index].shadowSpriteIndex, 2);
+                setSpriteBlendMode(entities[index].shadowSpriteIndex, SPRITE_BLEND_ALPHA_MODULATED);
             
             }
 
@@ -312,7 +312,7 @@ bool loadEntity(u16 index, u16 entityAssetIndex, bool transformExempt) {
 
             setBilinearFiltering(entities[index].globalSpriteIndex, TRUE);
             setEntityMovementVector(index, 0.0f, 0.0f, 0.0f, 0.0f);
-            setEntityColor(index, D_802373F8.r, D_802373F8.g, D_802373F8.b, D_802373F8.a);
+            setEntityColor(index, currentMapLightingRGBA.r, currentMapLightingRGBA.g, currentMapLightingRGBA.b, currentMapLightingRGBA.a);
 
             if (!(checkMapRGBADone(mapControllers[gMainMapIndex].mainMapIndex))) {
  
@@ -439,9 +439,9 @@ bool setMainMapIndex(u16 mapIndex) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/entity", func_8002EEE4);
+//INCLUDE_ASM("asm/nonmatchings/system/entity", setEntityViewSpacePosition);
 
-bool func_8002EEE4(u16 entityIndex, f32 x, f32 y, f32 z) {
+bool setEntityViewSpacePosition(u16 entityIndex, f32 x, f32 y, f32 z) {
 
     bool set = FALSE;
 
@@ -458,9 +458,9 @@ bool func_8002EEE4(u16 entityIndex, f32 x, f32 y, f32 z) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/entity", func_8002EF7C);
+//INCLUDE_ASM("asm/nonmatchings/system/entity", adjustEntityViewSpacePosition);
 
-bool func_8002EF7C(u16 index, f32 x, f32 y, f32 z) {
+bool adjustEntityViewSpacePosition(u16 index, f32 x, f32 y, f32 z) {
 
     bool result = FALSE;
 
@@ -605,9 +605,9 @@ bool setEntityAnimationWithDirectionChange(u16 index, u16 animationIndex) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/entity", func_8002F4E0);
+//INCLUDE_ASM("asm/nonmatchings/system/entity", loadPendingEntity);
 
-bool func_8002F4E0(u16 index) {
+bool loadPendingEntity(u16 index) {
 
     bool result = FALSE;
 
@@ -630,9 +630,9 @@ bool func_8002F4E0(u16 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/entity", func_8002F594);
+//INCLUDE_ASM("asm/nonmatchings/system/entity", pauseEntityLoad);
 
-bool func_8002F594(u16 index) {
+bool pauseEntityLoad(u16 index) {
 
     bool result = FALSE;
     u16 temp;
@@ -705,15 +705,15 @@ void togglePauseEntities(void) {
     u16 i;
 
     for (i = 0; i < MAX_ENTITIES; i++) {
-        func_8002FC38(i);
+        unpauseEntity(i);
     }
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/entity", func_8002F770);
+//INCLUDE_ASM("asm/nonmatchings/system/entity", rotateAllEntities);
 
 // increment/decrement rotation; used by map controller
-void func_8002F770(s16 arg0) {
+void rotateAllEntities(s16 arg0) {
 
     u16 i;
 
@@ -810,27 +810,27 @@ void deactivateEntities(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/entity", func_8002FB3C);
+//INCLUDE_ASM("asm/nonmatchings/system/entity", pauseAllEntityLoads);
 
 // called by pause function
-void func_8002FB3C(void) {
+void pauseAllEntityLoads(void) {
 
     u16 i;
 
     for (i = 0; i < MAX_ENTITIES; i++) {
-        func_8002F594(i);
+        pauseEntityLoad(i);
     }
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/entity", func_8002FB7C);
+//INCLUDE_ASM("asm/nonmatchings/system/entity", loadAllPendingEntities);
 
-void func_8002FB7C(void) {
+void loadAllPendingEntities(void) {
 
     u16 i;
 
     for (i = 0; i < MAX_ENTITIES; i++) {
-        func_8002F4E0(i);
+        loadPendingEntity(i);
     }
 
 }
@@ -847,7 +847,7 @@ bool pauseEntity(u16 index) {
         if (entities[index].flags & ENTITY_ACTIVE) {
             
             entities[index].flags |= ENTITY_PAUSED;
-            func_8002BB88(entities[index].globalSpriteIndex);
+            pauseSpriteAnimation(entities[index].globalSpriteIndex);
             
             result = TRUE;
 
@@ -858,9 +858,9 @@ bool pauseEntity(u16 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/entity", func_8002FC38);
+//INCLUDE_ASM("asm/nonmatchings/system/entity", unpauseEntity);
 
-bool func_8002FC38(u16 index) {
+bool unpauseEntity(u16 index) {
     
     bool result = FALSE;
     u16 temp;
@@ -870,7 +870,7 @@ bool func_8002FC38(u16 index) {
         if (entities[index].flags & ENTITY_ACTIVE) {
         
             entities[index].flags &= ~ENTITY_PAUSED;
-            func_8002BB30(entities[index].globalSpriteIndex);
+            resumeSpriteAnimation(entities[index].globalSpriteIndex);
         
             result = TRUE;
         
@@ -907,10 +907,10 @@ bool setEntityMapSpaceIndependent(u16 index, bool flag) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/entity", func_8002FD24);
+//INCLUDE_ASM("asm/nonmatchings/system/entity", checkEntityMapSpaceDependent);
 
 // only used by main game loop callback
-bool func_8002FD24(u16 index) {
+bool checkEntityMapSpaceDependent(u16 index) {
     
     bool result = FALSE;
     u16 temp;
@@ -995,9 +995,9 @@ bool checkEntityAnimationStateChanged(u16 index) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/entity", func_8002FF38);
+//INCLUDE_ASM("asm/nonmatchings/system/entity", setCameraTrackingEntity);
 
-bool func_8002FF38(u16 entityIndex, u16 flag) {
+bool setCameraTrackingEntity(u16 entityIndex, u16 flag) {
 
     bool result = FALSE;
 
@@ -1313,10 +1313,10 @@ u16 func_800305CC(u16 index, f32 x, f32 z, u16 buttonPressed) {
    
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/entity", func_800308E0);
+//INCLUDE_ASM("asm/nonmatchings/system/entity", checkEntityInteractionAtPosition);
 
 // unused; check if position has level interaction
-bool func_800308E0(u16 entityIndex, f32 arg1, f32 arg2) {
+bool checkEntityInteractionAtPosition(u16 entityIndex, f32 arg1, f32 arg2) {
     
     bool result = FALSE; 
 
@@ -1386,11 +1386,11 @@ inline u16 getEntityAnimationOffset(u16 entityIndex, u16 offset) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/entity", func_80030BA0);
+//INCLUDE_ASM("asm/nonmatchings/system/entity", getAnimationOffsetFromScript);
 
 // alternate get animation offset from animation scripts
 // used by shop and overlay screens
-u16 func_80030BA0(u16* vaddr, u16 offset) {
+u16 getAnimationOffsetFromScript(u16* vaddr, u16 offset) {
     return vaddr[offset] & 0x1FFF;
 }
 
@@ -1426,10 +1426,10 @@ inline u16 getEntityAnimationHorizontalFlip(u16 entityIndex, u16 offset) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/entity", func_80030CB0);
+//INCLUDE_ASM("asm/nonmatchings/system/entity", getGroundObjectAtEntityPosition);
 
 // unused or inline
-u16 func_80030CB0(u16 entityIndex, f32 x, f32 z) {
+u16 getGroundObjectAtEntityPosition(u16 entityIndex, f32 x, f32 z) {
 
     Vec3f padding[4];
     
@@ -1441,7 +1441,7 @@ u16 func_80030CB0(u16 entityIndex, f32 x, f32 z) {
         
         if ((entities[entityIndex].flags & ENTITY_ACTIVE) && !(entities[entityIndex].flags & ENTITY_PAUSED) && !(entities[entityIndex].flags & ENTITY_MAP_SPACE_INDEPENDENT)) {
             
-            vec = func_80030EAC(entityIndex, x, z);
+            vec = getEntityRelativeGroundObjectCoords(entityIndex, x, z);
 
             if (vec.y != 65535.0f) {
                 index = getMapGroundObjectSpriteIndex(mapControllers[gMainMapIndex].mainMapIndex, vec.x, vec.z);
@@ -1454,11 +1454,11 @@ u16 func_80030CB0(u16 entityIndex, f32 x, f32 z) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/entity", func_80030DB0);
+//INCLUDE_ASM("asm/nonmatchings/system/entity", setGroundObjectAtEntityPosition);
 
 // unused or inline
 // map ground objects
-bool func_80030DB0(u16 entityIndex, f32 arg1, f32 arg2, u16 spriteIndex) {
+bool setGroundObjectAtEntityPosition(u16 entityIndex, f32 arg1, f32 arg2, u16 spriteIndex) {
 
     // FIXME: shouldn't be necessary
     Vec3f padding[4];
@@ -1466,7 +1466,7 @@ bool func_80030DB0(u16 entityIndex, f32 arg1, f32 arg2, u16 spriteIndex) {
     
     if ((entityIndex < MAX_ENTITIES) && (entities[entityIndex].flags & ENTITY_ACTIVE) && !(entities[entityIndex].flags & ENTITY_PAUSED) && !(entities[entityIndex].flags & ENTITY_MAP_SPACE_INDEPENDENT)) {
             
-        vec = func_80030EAC(entityIndex, arg1, arg2);
+        vec = getEntityRelativeGroundObjectCoords(entityIndex, arg1, arg2);
         
         if (vec.y != 65535.0f) {
             setMapGroundObjectSpriteIndexFromFloat(mapControllers[gMainMapIndex].mainMapIndex, spriteIndex, vec.x, vec.z);
@@ -1478,9 +1478,9 @@ bool func_80030DB0(u16 entityIndex, f32 arg1, f32 arg2, u16 spriteIndex) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/entity", func_80030EAC);
+//INCLUDE_ASM("asm/nonmatchings/system/entity", getEntityRelativeGroundObjectCoords);
 
-Vec3f func_80030EAC(u16 entityIndex, f32 arg2, f32 arg3) {
+Vec3f getEntityRelativeGroundObjectCoords(u16 entityIndex, f32 arg2, f32 arg3) {
 
     Vec3f vec;
     Vec3f rotatedPosition;
@@ -1516,10 +1516,10 @@ Vec3f func_80030EAC(u16 entityIndex, f32 arg2, f32 arg3) {
 }
 
 
-//INCLUDE_ASM("asm/nonmatchings/system/entity", func_80031050);
+//INCLUDE_ASM("asm/nonmatchings/system/entity", getTerrainAtEntityPosition);
 
 // unused
-u16 func_80031050(u16 entityIndex, f32 x, f32 z) {
+u16 getTerrainAtEntityPosition(u16 entityIndex, f32 x, f32 z) {
 
     u32 padding[11];
 
@@ -1544,10 +1544,10 @@ u16 func_80031050(u16 entityIndex, f32 x, f32 z) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/entity", func_800311E0);
+//INCLUDE_ASM("asm/nonmatchings/system/entity", setMapAdditionAtEntityPosition);
 
 // unused or inline
-bool func_800311E0(u16 entityIndex, f32 arg1, f32 arg2, u16 arg3) {
+bool setMapAdditionAtEntityPosition(u16 entityIndex, f32 arg1, f32 arg2, u16 arg3) {
 
     // FIXME: shouldn't be necessary
     Vec3f padding[4];
@@ -1565,7 +1565,7 @@ bool func_800311E0(u16 entityIndex, f32 arg1, f32 arg2, u16 arg3) {
             if (tileCoordinates.y != 65535.0f) {
 
                 // set map additions
-                func_80038A2C(mapControllers[gMainMapIndex].mainMapIndex, arg3, tileCoordinates.x, tileCoordinates.z);
+                initializeMapAdditionAtPosition(mapControllers[gMainMapIndex].mainMapIndex, arg3, tileCoordinates.x, tileCoordinates.z);
                 set = TRUE;
 
             }
@@ -1675,10 +1675,10 @@ Vec3f getEntityTileCoordinates(u16 entityIndex) {
 //     return vec;
 // }
 
-//INCLUDE_ASM("asm/nonmatchings/system/entity", func_8003168C);
+//INCLUDE_ASM("asm/nonmatchings/system/entity", getEntityRelativeTileCoords);
 
 // unused
-Vec3f func_8003168C(u16 entityIndex, f32 x, f32 z) {
+Vec3f getEntityRelativeTileCoords(u16 entityIndex, f32 x, f32 z) {
 
     Vec3f position;
     Vec3f rotatedCoordinates;
@@ -2122,7 +2122,7 @@ void updateEntityPhysics(u16 index) {
     appliedMovement.y = 0.0f;
     appliedMovement.z = 0.0f;
 
-    entities[index].flags &= ~0x800;
+    entities[index].flags &= ~ENTITY_TOUCHING_GROUND;
 
     if (entities[index].flags & 0x200) {
 
@@ -2233,7 +2233,7 @@ void updateEntityPhysics(u16 index) {
                 shadowHeight = getTerrainHeightAtPosition(0, entities[index].coordinates.x, entities[index].coordinates.z);
 
                 if (entities[index].coordinates.y <= shadowHeight) {
-                    entities[index].flags |= 0x800;
+                    entities[index].flags |= ENTITY_TOUCHING_GROUND;
                 }
 
                 shadowHeight -= mapControllers[gMainMapIndex].viewPosition.y;

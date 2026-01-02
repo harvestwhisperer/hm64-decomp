@@ -18,18 +18,18 @@
 #include "mainLoop.h"                        
 
 // bss
-volatile u16 unknownFlag;
+volatile u16 engineStateFlags;
 volatile u8 drawnFrameCount;
-volatile u8 D_8013DC30;
+volatile u8 previousLoopStepsPerCycle;
 volatile u8 drawnFrameCount;
 volatile u8 retraceCount;
 volatile u8 loopStepsPerCycle;
 volatile u8 framebufferCount;
-volatile u8 D_801C4215;
+volatile u8 previousDrawnFrameCount;
 volatile u8 D_80204B38;
 volatile u8 stepMainLoop;
 volatile u32 pendingGfxNum;
-volatile u8 D_802226E2;
+volatile u8 mainLoopUpdateRate;
 volatile u8 D_80222730;
 
 // per 60; 1 = 60 fps
@@ -53,7 +53,7 @@ volatile u8 D_80237408;
 void initializeEngine(void);
 void initializeMainProcess(void);
 
-//INCLUDE_ASM("asm/nonmatchings/mainproc", func_80025D90);
+//INCLUDE_ASM("asm/nonmatchings/mainproc", mainproc);
 
 void mainproc(void *arg) {
     
@@ -136,7 +136,7 @@ void initializeMainProcess(void) {
     u8 i;
     
     stepMainLoop = 0;
-    unknownFlag = 0;
+    engineStateFlags = 0;
     mainLoopCallbackCurrentIndex = 0;
 
     frameCount = 0;
@@ -163,7 +163,7 @@ void initializeMainProcess(void) {
     frameRate = 1;
 
     #ifndef JP
-    D_802226E2 = 1;
+    mainLoopUpdateRate = 1;
     #else
     D_80222B72 = 1;
     #endif

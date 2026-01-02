@@ -625,7 +625,7 @@ extern void updateCutsceneExecutors(void);
 extern bool spawnCutsceneExecutor(u16 index, void *bytecodePtr);
 extern void deactivateCutsceneExecutors(void);   
 extern void pauseAllCutsceneExecutors(void);     
-extern void func_80046CF4(void);    
+extern void resumeCutsceneExecutors(void);    
 extern inline int func_80046D50(int adjustment, int value, int max);
 
 #endif

@@ -51,20 +51,19 @@ void mainGameLoopCallback(void) {
     D_80237A20 = (s16)entities[ENTITY_PLAYER].coordinates.y;
     D_80182D8C = (s16)entities[ENTITY_PLAYER].coordinates.z;
     
-    if (func_8002FD24(ENTITY_PLAYER) && !(checkEntityPaused(ENTITY_PLAYER))) {
+    if (checkEntityMapSpaceDependent(ENTITY_PLAYER) && !(checkEntityPaused(ENTITY_PLAYER))) {
 
         // increment clock and handle audio changes
         func_800D7C20();
         // handle button input and player animation
-        func_8006623C();
+        updatePlayerAction();
         setNpcAnimations();
         updateAnimals();
         handlePlayerAnimation();
 
     }
 
-    // handle cutscene completion
-    func_800A8F74();
+    handleCutsceneCompletion();
 
     // dead code
     checkButtonPressed(CONTROLLER_1, BUTTON_C_RIGHT);
@@ -88,7 +87,7 @@ inline void func_80055F08(u16 cutsceneIndex, u16 entranceIndex, u8 arg2) {
     resetGlobalLighting();
 
     setEntitiesColor(0, 0, 0, 0);
-    func_8003BE98(MAIN_MAP_INDEX, 0, 0, 0, 0);
+    setMapControllerRGBA(MAIN_MAP_INDEX, 0, 0, 0, 0);
 
     gHour = 12;
     
@@ -102,20 +101,20 @@ inline void func_80055F08(u16 cutsceneIndex, u16 entranceIndex, u8 arg2) {
     loadCutscene(0);
     
     // set up map/level
-    func_8006E840(gEntranceIndex);
+    loadLevelFromEntrance(gEntranceIndex);
  
     setupPlayerEntity(gEntranceIndex, FALSE);
     handlePlayerAnimation();
 
-    setMainLoopCallbackFunctionIndex(4);
+    setMainLoopCallbackFunctionIndex(SET_AUDIO_AND_LIGHTING);
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/transition", func_80056030);
+//INCLUDE_ASM("asm/nonmatchings/game/transition", loadLevel);
 
 // arg0 = entering new location
 // called by map load callback, end of day callback, cutscene completion
-void func_80056030(u8 arg0) {
+void loadLevel(u8 arg0) {
 
     u8 mapIndex;
     u32 *ptr;
@@ -128,7 +127,7 @@ void func_80056030(u8 arg0) {
     toggleDailyEventBit(0x4B);
 
     func_8005CDCC();
-    func_80065F5C();
+    syncPlayerCoordinatesFromEntity();
     updateAnimalCoordinates();
     updateNPCCoordinates();
     deactivateSprites();
@@ -136,16 +135,16 @@ void func_80056030(u8 arg0) {
     initializeCutsceneExecutors();
     deactivateNPCEntities();
     deactivateAnimalEntities();
-    func_800D51B0();
+    clearAllItemContextSlots();
     
     if (!checkDailyEventBit(0x2F)) {
-        func_800A7DFC();
+        handleEndOfDayCutscenes();
     }
 
     setDailyEventBit(0x2F);
     
     mapIndex = getMapFromExit(gEntranceIndex);
-    func_8006E840(gEntranceIndex);
+    loadLevelFromEntrance(gEntranceIndex);
 
     if ((mapIndex == FARM || mapIndex == BARN) == 0 && mapIndex != COOP) {
 
@@ -212,7 +211,7 @@ void func_80056030(u8 arg0) {
     setupPlayerEntity(gEntranceIndex, arg0);
     
     func_80065AA0();
-    func_800D5290();
+    loadActiveItemEntities();
 
     if (arg0 != 2) {
 
@@ -225,27 +224,25 @@ void func_80056030(u8 arg0) {
             }
 
             if (!(*ptr & (2 | 4))) {
-                func_8005AAE4();
-                // set NPC entity indices
+                clearTempSpecialDialogueBits();
                 setupActiveNPCs();
             }
         }
 
         if (!(gCutsceneFlags & 4)) {
-            // initialize animal entities
-            func_800876D0();
+            initializeAnimalEntities();
         }
 
     }
     
     handlePlayerAnimation();
     // handle item state
-    func_800D7010();
+    updateHeldItemStates();
     // handle tool use
-    func_800D0318();
+    processToolUseState();
 
     setEntitiesColor(0, 0, 0, 0);
-    func_8003BE98(MAIN_MAP_INDEX, 0, 0, 0, 0);
+    setMapControllerRGBA(MAIN_MAP_INDEX, 0, 0, 0, 0);
     
     unknownRGBA.r = 0;
     unknownRGBA.g = 0;
@@ -529,32 +526,28 @@ void initializeEntityInstances(u8 arg0) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/transition", func_80059300);
+//INCLUDE_ASM("asm/nonmatchings/game/transition", resumeGameplay);
 
-// resume everything
-void func_80059300(void) {
+void resumeGameplay(void) {
     togglePauseEntities();
-    func_80046CF4();
+    resumeCutsceneExecutors();
     setEntityMapSpaceIndependent(ENTITY_PLAYER, TRUE);
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/transition", func_80059334);
+//INCLUDE_ASM("asm/nonmatchings/game/transition", pauseGameplay);
 
-// pause everything
-void inline func_80059334(void) {
+void inline pauseGameplay(void) {
     pauseEntities();
     pauseAllCutsceneExecutors();
     setEntityMapSpaceIndependent(ENTITY_PLAYER, FALSE);
 }
  
-//INCLUDE_ASM("asm/nonmatchings/game/transition", func_80059368);
+//INCLUDE_ASM("asm/nonmatchings/game/transition", exitOverlayScreen);
 
-// overlay screen/naming screen transition
-void func_80059368(void) {
+void exitOverlayScreen(void) {
 
-    // load entities and entity global sprites
-    func_8002FB7C();
-    func_80046CF4();
+    loadAllPendingEntities();
+    resumeCutsceneExecutors();
     setEntityMapSpaceIndependent(ENTITY_PLAYER, TRUE);
     func_80065AA0();
 
@@ -564,21 +557,21 @@ void func_80059368(void) {
     //setupLevelMap(currentMapContext.currentMapIndex);
     
     setPlayerAction(0xFE, 0);
-    func_8006623C();
+    updatePlayerAction();
     
     setMainLoopCallbackFunctionIndex(MAIN_GAME);
     setPlayerAction(0, 0);
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/transition", func_800593EC);
+//INCLUDE_ASM("asm/nonmatchings/game/transition", openOverlayScreen);
 
 // pause before going to overlay screen or naming screen
-void inline func_800593EC(void) {
-    func_8002FB3C();
+void inline openOverlayScreen(void) {
+    pauseAllEntityLoads();
     pauseAllCutsceneExecutors();
     setEntityMapSpaceIndependent(ENTITY_PLAYER, FALSE);
-    func_8003C504(MAIN_MAP_INDEX);
+    unloadMapAssets(MAIN_MAP_INDEX);
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/transition", startNewDay);

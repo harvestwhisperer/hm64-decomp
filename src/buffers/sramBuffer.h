@@ -47,7 +47,7 @@ typedef struct {
     u8 houseExtensionConstructionCounter; // 0x3E
     u8 unk_3F;
     u16 chickenFeedQuantity;    // 0x40-0x41
-    u8 unk_42;                  // D_8021E6D0
+    u8 unk_42;                  // gCameraRotationOffset
 
     u8 harvestKing;             // 0x43
     u8 harvestCoinFinder;       // 0x44
@@ -221,7 +221,7 @@ typedef struct {
         u8 unk_1B;              // 0x1B
         u8 unk_1C;              // 0x1C
         u8 unk_1D;              // 0x1D
-        u8 normalMilk;          // 0x1E
+        u8 milkType;          // 0x1E
         u8 padding;             // 0x1F
     } farmAnimals[8];           // 0x800-0x8FF
 
