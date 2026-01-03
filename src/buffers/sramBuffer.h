@@ -52,10 +52,10 @@ typedef struct {
     u8 harvestKing;             // 0x43
     u8 harvestCoinFinder;       // 0x44
     u8 flowerFestivalGoddess;   // 0x45
-    u8 cowFestivalStall;        // 0x46 (D_80189054)
+    u8 cowFestivalEnteredCowIndex;        // 0x46 (gCowFestivalEnteredCowIndex)
     u8 voteForFlowerFestivalGoddess; // 0x47
 
-    u8 deadAnimalName[6];       // 0x48-0x4D
+    u8 gDeadAnimalName[6];       // 0x48-0x4D
 
     u8 happiness;               // 0x4E
     u8 blueMistFlowerPlot;      // 0x4F
@@ -87,7 +87,7 @@ typedef struct {
     u8 babyName[6];             // 0x8C-0x91
 
     u16 sickDays;               // 0x92-0x93
-    u16 deadAnimalCount;        // 0x94-0x95 (D_8013DC2E)
+    u16 deadAnimalCount;        // 0x94-0x95 (deadAnimalCount)
 
     u8 mrsManaCow1Index;        // 0x96
     u8 mrsManaCow2Index;        // 0x97
@@ -169,7 +169,7 @@ typedef struct {
     u8 dogLocation;             // 0x507
     f32 dogCoordX;              // 0x508-0x50B
     f32 dogCoordZ;              // 0x50C-0x50F
-    u8 dogUnk_1C;               // 0x510
+    u8 dogBestRacePlacement;    // 0x510
 
     u8 padding_511[0x6F];       // 0x511-0x57F
 
@@ -180,7 +180,7 @@ typedef struct {
     f32 horseCoordZ;            // 0x58C-0x58F
     u8 horseGrown;              // 0x590
     u8 horseAge;                // 0x591
-    u8 horseUnk_1E;             // 0x592
+    u8 horseBestRacePlacement;  // 0x592
     u8 padding_593;             // 0x593
     u16 horseFlags;             // 0x594-0x595
 

@@ -540,7 +540,6 @@ u16 itemFlags[] = {
     0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000,
 };
 
-// stamina restored when eating items
 u8 itemStaminaRestorationValue[] = {
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x14, 0x14, 0x14, 0x00, 0x00, 
     0x00, 0x08, 0x0A, 0x08, 0x08, 0x0A, 0x08, 0x0C, 0x08, 0x08, 0x0C, 0x10, 
@@ -563,7 +562,6 @@ u8 itemStaminaRestorationValue[] = {
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 };
 
-// fatigue reduced when consuming items
 u8 itemFatigueReductionValue[] = {
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
@@ -668,7 +666,7 @@ u8 getToolLevel(u8 tool) {
 
 void spawnToolEffectEntity(u8 itemOffset, u8 animationIndex, f32 x, f32 y, f32 z) {
 
-    loadEntity(ENTITY_ITEM_BASE_INDEX + itemOffset, 0x60, 1);
+    loadEntity(ENTITY_ITEM_BASE_INDEX + itemOffset, ENTITY_ASSET_HOLDABLE_ITEMS_4, 1);
     setCameraTrackingEntity(ENTITY_ITEM_BASE_INDEX + itemOffset, FALSE);
     setEntityTrackingTarget(ENTITY_ITEM_BASE_INDEX + itemOffset, 0xFFFF, 0xFF);
     setEntityCollidable(ENTITY_ITEM_BASE_INDEX + itemOffset, FALSE);
@@ -681,10 +679,9 @@ void spawnToolEffectEntity(u8 itemOffset, u8 animationIndex, f32 x, f32 y, f32 z
 
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", spawnFishingRodEntity);
 
-// only used with fishing rod
 void spawnFishingRodEntity(u8 itemOffset, u8 animationIndex, f32 x, f32 y, f32 z) {
 
-    loadEntity(ENTITY_ITEM_BASE_INDEX + itemOffset, 0x5D, 1);
+    loadEntity(ENTITY_ITEM_BASE_INDEX + itemOffset, ENTITY_ASSET_HOLDABLE_ITEMS_2, 1);
     setCameraTrackingEntity(ENTITY_ITEM_BASE_INDEX + itemOffset, FALSE);
     setEntityTrackingTarget(ENTITY_ITEM_BASE_INDEX + itemOffset, 0xFFFF, 0xFF);
     setEntityCollidable(ENTITY_ITEM_BASE_INDEX + itemOffset, FALSE);
@@ -761,10 +758,8 @@ bool processStumpHit(u8 groundObjectIndex, s16 x, s16 z) {
     
     // break stump after multiple hits
     if (toolUse.stumpHitCounter >= 6) {
-
         toolUse.stumpHitCounter = 0;
         result = TRUE;
-
     }
 
     return result;
@@ -825,19 +820,17 @@ bool processBoulderHit(u8 groundObjectIndex, s16 x, s16 z) {
     
     // break boulder after multiple hits
     if (toolUse.boulderHitCounter >= 6) {
-
         toolUse.boulderHitCounter = 0;
         result = TRUE;
-
     }
 
     return result;
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D0074);
+//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", handleMusicBoxDigging);
 
-inline u8 func_800D0074(s16 arg0, s16 arg1) {
+inline u8 handleMusicBoxDigging(s16 arg0, s16 arg1) {
     
     if (gBaseMapIndex == FARM) {
          
@@ -1154,11 +1147,10 @@ void useSickle(void) {
             
     }
 
-    // hit animals
-    func_8009AC54();
-    func_8009AE7C();
-    func_8009AFB4();
-    func_8009B068();
+    handleHitFarmAnimalWithTool();
+    handleHitChickenWithTool();
+    handleHitDogWithTool();
+    handleHitHorseWithTool();
     
 }
 
@@ -1206,7 +1198,7 @@ void useHoe(void) {
                 tempX = (s16)vec.x / 32;
                 tempZ = (s16)vec.z / 32;
 
-                func_800D0074(tempX, tempZ);
+                handleMusicBoxDigging(tempX, tempZ);
                 playSfx(HOE_SFX);
                 
             } else {
@@ -1274,14 +1266,13 @@ void useHoe(void) {
 
     } else {
         toolUse.toolUseState = 0;
-        playSfx(0x1B);
+        playSfx(27);
     }
 
-    // hit animals
-    func_8009AC54();
-    func_8009AE7C();
-    func_8009AFB4();
-    func_8009B068();
+    handleHitFarmAnimalWithTool();
+    handleHitChickenWithTool();
+    handleHitDogWithTool();
+    handleHitHorseWithTool();
     
 }
 
@@ -1409,11 +1400,10 @@ void useAx(void) {
         toolUse.toolUseState = 0;
     }
 
-    // hit animals
-    func_8009AC54();
-    func_8009AE7C();
-    func_8009AFB4();
-    func_8009B068();
+    handleHitFarmAnimalWithTool();
+    handleHitChickenWithTool();
+    handleHitDogWithTool();
+    handleHitHorseWithTool();
     
 }
 
@@ -1587,10 +1577,10 @@ void useHammer(void) {
         setDailyEventBit(0x29);
     }
     
-    func_8009AC54();
-    func_8009AE7C();
-    func_8009AFB4();
-    func_8009B068();
+    handleHitFarmAnimalWithTool();
+    handleHitChickenWithTool();
+    handleHitDogWithTool();
+    handleHitHorseWithTool();
     
 }
 
@@ -1751,29 +1741,29 @@ void useWateringCan(void) {
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D3694);
 
 void useMilker(void) {
-    func_8009A53C();
+    handleMilkCow();
     toolUse.toolUseState = 0;
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D36BC);
 
 void useCowBell(void) {
-    func_8009B25C();
+    handleCallFarmAnimalsWithCowBell();
     toolUse.toolUseState = 0;
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D36E4);
 
 void useBrush(void) {
-    func_8009A17C();
-    func_8009A2D0();
+    handleBrushFarmAnimal();
+    handleBrushHorse();
     toolUse.toolUseState = 0;
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D3714);
 
 void useClippers(void) {
-    func_8009AAC8();
+    handleShearSheep();
     toolUse.toolUseState = 0;
 }
 
@@ -2243,7 +2233,7 @@ void useFishingPole(void) {
 
 void useMiraclePotion(void) {
 
-    if (func_8009A810()) {
+    if (handleUseMiraclePotion()) {
         setDailyEventBit(0x14);
     } else {
         toggleDailyEventBit(0x14);
@@ -2257,7 +2247,7 @@ void useMiraclePotion(void) {
 
 void useCowMedicine(void) {
 
-    if (func_8009A400()) {
+    if (handleAnimalMedicineUse()) {
         setDailyEventBit(0x14);
     } else {
         toggleDailyEventBit(0x14);
@@ -2347,9 +2337,9 @@ void handleBlueFeatherUse(void) {
     
     if (npcTalkingTo == 0xFF) goto func_end;
 
-    func_80085D48(npcTalkingTo, 0);
+    getBlueFeatherResponse(npcTalkingTo, 0);
     
-    npcs[npcTalkingTo].movingFlag = npcs[npcTalkingTo].unk_1E;
+    npcs[npcTalkingTo].movingFlag = npcs[npcTalkingTo].behaviorMode;
     
     setSpecialDialogueBit(0x135);
     
@@ -2419,7 +2409,7 @@ void useEmptyBottle(void) {
     } else if (checkWineBarrelInteraction(gBaseMapIndex) ) {
         gPlayer.bottleContents = 2;
     } else {
-        func_8009A97C();
+        handleGetMilkWithBottle();
     }
 
     toolUse.toolUseState = 0;
@@ -2862,7 +2852,7 @@ bool handlePutDownHeldItem(u8 itemIndex) {
         case 0xB2:     
             vec = projectEntityPosition(ENTITY_PLAYER, 0x20, convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX));
             direction = convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX);
-            initializeMiscAnimalEntity(func_8008A4A8(0, direction, vec.x, vec.y, vec.z), 0);
+            initializeMiscAnimalEntity(spawnMiscAnimal(0, direction, vec.x, vec.y, vec.z), 0);
 
             break;
         
@@ -2876,7 +2866,7 @@ bool handlePutDownHeldItem(u8 itemIndex) {
         case 0x82: 
             vec = projectEntityPosition(ENTITY_PLAYER, 0x20, convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX));
             direction = convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX);
-            initializeMiscAnimalEntity(func_8008A4A8(1, direction, vec.x, vec.y, vec.z), 0);
+            initializeMiscAnimalEntity(spawnMiscAnimal(1, direction, vec.x, vec.y, vec.z), 0);
 
             break;
 
@@ -2890,7 +2880,7 @@ bool handlePutDownHeldItem(u8 itemIndex) {
         case 0x8A:        
             vec = projectEntityPosition(ENTITY_PLAYER, 0x20, convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX));
             direction = convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX);
-            initializeMiscAnimalEntity(func_8008A4A8(2, direction, vec.x, vec.y, vec.z), 0);
+            initializeMiscAnimalEntity(spawnMiscAnimal(2, direction, vec.x, vec.y, vec.z), 0);
 
             break;
 
@@ -2904,7 +2894,7 @@ bool handlePutDownHeldItem(u8 itemIndex) {
         case 0x92:   
             vec = projectEntityPosition(ENTITY_PLAYER, 0x20, convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX));
             direction = convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX);
-            initializeMiscAnimalEntity(func_8008A4A8(7, direction, vec.x, vec.y, vec.z), 0);
+            initializeMiscAnimalEntity(spawnMiscAnimal(7, direction, vec.x, vec.y, vec.z), 0);
 
             break;       
                 
@@ -2918,7 +2908,7 @@ bool handlePutDownHeldItem(u8 itemIndex) {
         case 0x9A:  
             vec = projectEntityPosition(ENTITY_PLAYER, 0x20, convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX));
             direction = convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX);
-            initializeMiscAnimalEntity(func_8008A4A8(9, direction, vec.x, vec.y, vec.z), 0);
+            initializeMiscAnimalEntity(spawnMiscAnimal(9, direction, vec.x, vec.y, vec.z), 0);
 
             break;     
 
@@ -2932,7 +2922,7 @@ bool handlePutDownHeldItem(u8 itemIndex) {
         case 0xA2:         
             vec = projectEntityPosition(ENTITY_PLAYER, 0x20, convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX));
             direction = convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX);
-            initializeMiscAnimalEntity(func_8008A4A8(8, direction, vec.x, vec.y, vec.z), 0);
+            initializeMiscAnimalEntity(spawnMiscAnimal(8, direction, vec.x, vec.y, vec.z), 0);
             break;     
         
         case MONKEY_HELD_ITEM:                                     
@@ -2945,7 +2935,7 @@ bool handlePutDownHeldItem(u8 itemIndex) {
         case 0xAA:    
             vec = projectEntityPosition(ENTITY_PLAYER, 0x20, convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX));
             direction = convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX);
-            initializeMiscAnimalEntity(func_8008A4A8(10, direction, vec.x, vec.y, vec.z), 0);
+            initializeMiscAnimalEntity(spawnMiscAnimal(10, direction, vec.x, vec.y, vec.z), 0);
             break;     
 
         case BUTTERFLY_HELD_ITEM:                                     
@@ -2985,7 +2975,7 @@ bool handlePutDownHeldItem(u8 itemIndex) {
             direction = convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX);
             vec.y = entities[ENTITY_PLAYER].coordinates.y;
             
-            initializeMiscAnimalEntity(func_8008A4A8(temp, direction, vec.x, vec.y, vec.z), 1);
+            initializeMiscAnimalEntity(spawnMiscAnimal(temp, direction, vec.x, vec.y, vec.z), 1);
 
             break;
 
@@ -3041,7 +3031,7 @@ bool handlePutDownHeldItem(u8 itemIndex) {
             npcs[BABY].levelIndex = HOUSE;
             npcs[BABY].startingCoordinates.y = 0;
             npcs[BABY].direction = SOUTHWEST;
-            npcs[BABY].unk_1E = 1;
+            npcs[BABY].behaviorMode = 1;
             npcs[BABY].animationIndex1 = 0;
             npcs[BABY].movingFlag = 1;
 
@@ -3072,7 +3062,7 @@ bool handlePutDownHeldItem(u8 itemIndex) {
             npcs[BABY].flags |= 1;
 
             npcs[BABY].direction = convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX);
-            npcs[BABY].unk_1E = 3;
+            npcs[BABY].behaviorMode = 3;
             npcs[BABY].animationIndex1 = 0x39;
             npcs[BABY].movingFlag = 3;
             
@@ -3184,7 +3174,7 @@ void processItemShipping(u8 index) {
             
     }
 
-    func_8009A398();
+    handleHorseShippingItem();
 
 }
 
@@ -3290,10 +3280,10 @@ void func_800D6B58(u8 arg0, u8 itemIndex) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", updateHeldItemStates);
+//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", updateHeldItemState);
 
 // handle thrown/dropped items
-void updateHeldItemStates(void) {
+void updateHeldItemState(void) {
 
     Vec3f vec;
     u8 i = 0;
@@ -3315,6 +3305,7 @@ void updateHeldItemStates(void) {
                 y = 14.0f;
                 z = 20.0f;
                 x = -16.0f;
+
                 z3 = 8.0f;
                 y2 = 32.0f;
                 z2 = 16.0f;
@@ -3426,7 +3417,6 @@ void updateHeldItemStates(void) {
 
                         break;
 
-
                     case 6:
 
                         itemInfo[i].attachmentOffset.x = 0;
@@ -3488,7 +3478,7 @@ void updateHeldItemStates(void) {
                         switch (gBaseMapIndex) {        
 
                             case FARM:                     
-                                activateMapAddition(MAIN_MAP_INDEX, 0x12, 0);
+                                activateMapAddition(MAIN_MAP_INDEX, 18, 0);
                                 playSfx(ITEM_PLUCK_SFX);
                                 break;
                      
@@ -3523,7 +3513,7 @@ void updateHeldItemStates(void) {
                     
                     case 18:
                         setMapObjectAnimation(MAIN_MAP_INDEX, 0, 19);
-                        setDailyEventBit(0x43);
+                        setDailyEventBit(FED_DOG);
                         deactivateEntity(ENTITY_ITEM_BASE_INDEX + i);
                         itemInfo[i].stateIndex = 1;
                         break;

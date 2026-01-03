@@ -29,7 +29,7 @@
 void setTVContentIndex();                                  
 void setTVDialogueIndex ();       
 void setTVPictureIndex();            
-void func_800D8540();      
+void initializeTVAssets();      
 
 TVContext tvContext;
 
@@ -38,7 +38,7 @@ TVContext tvContext;
         if (set) break; \
         tvContext.channelIndex = channel;                        \
         updateTVCButtonsByChannel();                       \
-        func_800D8540();    \
+        initializeTVAssets();    \
         playSfx(TV_OFF_SFX); \
         set = TRUE; \
     } while(0)
@@ -56,14 +56,14 @@ TVContext tvContext;
 static inline bool changeChannel(u8 channelIndex) {
     tvContext.channelIndex = channelIndex;
     updateTVCButtonsByChannel();
-    func_800D8540();
+    initializeTVAssets();
     playSfx(TV_OFF_SFX);
     return TRUE;
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/tv", func_800D8540);
+//INCLUDE_ASM("asm/nonmatchings/game/tv", initializeTVAssets);
 
-void func_800D8540(void) {
+void initializeTVAssets(void) {
 
     setTVContentIndex();
     setTVDialogueIndex ();

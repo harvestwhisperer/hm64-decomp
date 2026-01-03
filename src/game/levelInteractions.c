@@ -481,14 +481,14 @@ bool handleLevelInteraction(u16 mapIndex) {
                         if (gDayOfMonth == 24 && (18 < gHour && gHour < 21)) {
                             dialogueInfoIndex = 0xFFFF;
                         }
-                        if (gSeason == WINTER && gDayOfMonth == 30 && (17 < gHour && gHour < 24)) {
+                        if (gSeason == WINTER && gDayOfMonth == 30 && NIGHTTIME) {
                             dialogueInfoIndex = 0xFFFF;
                         }
                     }
 
                 } else {
 
-                    if (gSeason == WINTER && gDayOfMonth == 30 && (17 < gHour && gHour < 24)) {
+                    if (gSeason == WINTER && gDayOfMonth == 30 && NIGHTTIME) {
                         dialogueInfoIndex = 0xFFFF;
                     }
 
@@ -506,7 +506,7 @@ bool handleLevelInteraction(u16 mapIndex) {
                     activateMapAddition(MAIN_MAP_INDEX, levelInteractionsInfo.mapAdditionsIndex, 0);
                 }
                 
-                func_8005C940(8, MAP_LOAD);
+                handleExitLevel(8, MAP_LOAD);
                 return canEnter;
                 
             } else {
@@ -796,7 +796,6 @@ bool handleHouseLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
         case 0x10:
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A) && gPlayer.heldItem == 0 && checkLifeEventBit(MAYOR_TOUR) && !checkDailyEventBit(0x15)) {
-                // show pink overlay message
                 showPinkOverlayText(0);
                 result = TRUE; 
             }
@@ -805,10 +804,8 @@ bool handleHouseLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
         // TV
         case 0x12:
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A) && gPlayer.direction == NORTHEAST) {
-                // c button sprites
                 loadTVCButtonIcons();
-                // turn on TV
-                func_800D8540();
+                initializeTVAssets();
                 setPlayerAction(0xA, 0xC);
                 levelInteractionsInfo.interactionSfxIndex = 0x2F;
                 result = 2;
@@ -945,7 +942,7 @@ u8 handleBarnLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
                             convertNumberToGameVariableString(0x15, gFarmAnimals[0].birthdayDayOfMonth, 1);
                             generateMilkTypeString(0);
-                            setGameVariableString(0x26, gFarmAnimals[0].unk_23, 6);
+                            setGameVariableString(0x26, gFarmAnimals[0].motherName, 6);
                             func_80061690(gFarmAnimals[0].milkType);
                             showTextBox(1, 6, 0xE5, 0, 2);
                             
@@ -986,7 +983,7 @@ u8 handleBarnLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
                         
                             convertNumberToGameVariableString(0x15, gFarmAnimals[1].birthdayDayOfMonth, 1);
                             generateMilkTypeString(1);
-                            setGameVariableString(0x26, gFarmAnimals[1].unk_23, 6);
+                            setGameVariableString(0x26, gFarmAnimals[1].motherName, 6);
                             func_80061690(gFarmAnimals[1].milkType);
                             showTextBox(1, 6, 0xE6, 0, 2);
                     
@@ -1029,7 +1026,7 @@ u8 handleBarnLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
                             
                             generateMilkTypeString(2);
                             
-                            setGameVariableString(0x26, gFarmAnimals[2].unk_23, 6);
+                            setGameVariableString(38, gFarmAnimals[2].motherName, 6);
                             func_80061690(gFarmAnimals[2].milkType);
 
                             showTextBox(1, 6, 0xE7, 0, 2);
@@ -1071,7 +1068,7 @@ u8 handleBarnLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
                         
                             convertNumberToGameVariableString(0x15, gFarmAnimals[3].birthdayDayOfMonth, 1);
                             generateMilkTypeString(3);
-                            setGameVariableString(0x26, gFarmAnimals[3].unk_23, 6);
+                            setGameVariableString(38, gFarmAnimals[3].motherName, 6);
                             func_80061690(gFarmAnimals[3].milkType);
                             showTextBox(1, 6, 0xE8, 0, 2);
                             
@@ -1112,7 +1109,7 @@ u8 handleBarnLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
                         
                             convertNumberToGameVariableString(0x15, gFarmAnimals[4].birthdayDayOfMonth, 1);
                             generateMilkTypeString(4);
-                            setGameVariableString(0x26, gFarmAnimals[4].unk_23, 6);
+                            setGameVariableString(0x26, gFarmAnimals[4].motherName, 6);
                             func_80061690(gFarmAnimals[4].milkType);
                             showTextBox(1, 6, 0xE9, 0, 2);
                             
@@ -1154,7 +1151,7 @@ u8 handleBarnLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
                         
                             convertNumberToGameVariableString(0x15, gFarmAnimals[5].birthdayDayOfMonth, 1);
                             generateMilkTypeString(5);
-                            setGameVariableString(0x26, gFarmAnimals[5].unk_23, 6);
+                            setGameVariableString(0x26, gFarmAnimals[5].motherName, 6);
                             func_80061690(gFarmAnimals[5].milkType);
                             showTextBox(1, 6, 0xEA, 0, 2);
                             
@@ -1196,7 +1193,7 @@ u8 handleBarnLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
                         
                             convertNumberToGameVariableString(0x15, gFarmAnimals[6].birthdayDayOfMonth, 1);
                             generateMilkTypeString(6);
-                            setGameVariableString(0x26, gFarmAnimals[6].unk_23, 6);
+                            setGameVariableString(0x26, gFarmAnimals[6].motherName, 6);
                             func_80061690(gFarmAnimals[6].milkType);
                             showTextBox(1, 6, 0xEB, 0, 2);
                             
@@ -1237,7 +1234,7 @@ u8 handleBarnLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
                         
                             convertNumberToGameVariableString(0x15, gFarmAnimals[7].birthdayDayOfMonth, 1);
                             generateMilkTypeString(7);
-                            setGameVariableString(0x26, gFarmAnimals[7].unk_23, 6);
+                            setGameVariableString(38, gFarmAnimals[7].motherName, 6);
                             func_80061690(gFarmAnimals[7].milkType);
                             showTextBox(1, 6, 0xEC, 0, 2);
                             
@@ -3280,11 +3277,11 @@ label:
 
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {  
 
-                if (overlayScreenStrings.unk_6D == overlayScreenStrings.unk_6C) {
+                if (gRacingContext.playerRaceNumber == gRacingContext.currentRaceIndex) {
                     showTextBox(0, 4, 10, 0, 0);
-                } else if (overlayScreenStrings.unk_6C == 3) {
+                } else if (gRacingContext.currentRaceIndex == 3) {
                     showTextBox(0, 4, 8, 0, 0);
-                } else if (!overlayScreenStrings.unk_6F[overlayScreenStrings.unk_6C]) {
+                } else if (!gRacingContext.betPlacedFlags[gRacingContext.currentRaceIndex]) {
                     pauseAllCutsceneExecutors();
                     setMainLoopCallbackFunctionIndex(RACE_BETTING_LOAD);
                 } else {

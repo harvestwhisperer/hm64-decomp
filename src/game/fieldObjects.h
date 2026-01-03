@@ -249,7 +249,7 @@ extern u8 farmFieldTiles[FIELD_HEIGHT][FIELD_WIDTH];
 
 extern void setMapGroundObjects(u8);   
 extern bool checkAnimalCanEatGrass(void);               
-extern void func_800D9BFC(); 
+extern void setDefaultGroundObjectsForLevel(); 
 extern u8 getGroundObjectMapAdditionIndex(u8);              
 extern u8 getHeldItemIndexFromGroundObject(u8);                 
 extern u8 getGroundObjectToolInteractionFlags(u8);
@@ -259,19 +259,19 @@ extern void addGroundObjectToMap(u8, u8, u8, u8);
 extern void addGroundObjectToMapFromPlayerPosition(u8, f32, u8);    
 extern u8 getGroundObjectIndexFromPlayerPosition(f32, u8);  
 extern u8 getGroundObjectIndexFromCoordinates(f32, f32); 
-extern void func_800DB424();                
+extern void updateFieldObjectsOvernight();                
 extern void updateCropsIfRain();                                   
 extern void randomlyAddWeedsToFarmField();     
 extern void randomlyBreakLogPieces(u8);             
 extern void clearForagableObjects(u8 mapIndex);
 extern void randomlyCutGrass(u8);       
 extern void randomlyDestroyCrops(u8);   
-extern void func_800DBE8C(u8);         
+extern void randomlyResetGreenhouseTiles(u8);         
 extern u16 getFarmGrassTilesSum();     
-extern u16 func_800DC008();       
+extern u16 getFarmMoondropFlowerCount();       
 
-extern u16 getFarmPinkCatMintFlowersTilesSum(void);     
-extern u16 getGreenhousePinkCatMintFlowersTilesSum(void);  
+extern u16 getFarmPinkCatMintFlowersCount(void);     
+extern u16 getGreenhousePinkCatMintFlowersCount(void);  
 
 extern u8 blueMistFlowerPlot;
 

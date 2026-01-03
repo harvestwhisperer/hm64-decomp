@@ -12,7 +12,7 @@
 #define ENTITY_ACTIVE 1
 #define ENTITY_MOVEMENT_DISABLED 2
 #define ENTITY_INITIALIZED 0x4
-#define ENTITY_UNKNOWN_FLAG_1 0x8 // deactivating sprite
+#define ENTITY_IS_CURRENTLY_ANIMATED 0x8
 #define ENTITY_ANIMATION_DIRECTION_CHANGE 0x10
 #define ENTITY_PAUSED 0x40 
 #define ENTITY_Y_MOVEMENT 0x80
@@ -51,7 +51,7 @@ typedef struct {
 	u16 entityCollidedWithIndex; 
 	u16	buttonPressed;
 	u16 collision; // 0x5C
-	u16 unk_5E; // also tracks entity collided with, but never checked
+	u16 unk_5E; // also tracks entity collided with; used by animals
 	u16 shadowSpriteIndex; // 0x60;
 	u16 paletteIndex;
 	s16 yOffset;
@@ -109,8 +109,8 @@ extern bool setEntityDirection(u16, u8);
 extern void pauseEntities();    
 extern void togglePauseEntities();               
 extern void rotateAllEntities(s16); 
-extern void setEntitiesColor(u8, u8, u8, u8);               
-extern void updateEntitiesColor(u8 r, u8 g, u8 b, u8 a, s16);
+extern void setEntitiesRGBA(u8, u8, u8, u8);               
+extern void setEntitiesRGBAWithTransition(u8 r, u8 g, u8 b, u8 a, s16);
 extern bool deactivateEntity(u16);      
 extern bool setEntityCoordinates(u16, f32, f32, f32);   
 extern void pauseAllEntityLoads();
@@ -130,11 +130,11 @@ extern void updateEntities(void);
 extern bool setEntityCollidable(u16, u8);                            
 extern bool setEntityTracksCollisions(u16, u8);                            
 extern bool enableEntityMovement(u16, u8);         
-extern u16 func_800305CC(u16 entityIndex, f32, f32, u16);
+extern u16 checkEntityProximity(u16 entityIndex, f32, f32, u16);
 extern u8 getLevelInteractionIndexFromEntityPosition(u16, f32, f32);     
 extern u16 getAnimationOffsetFromScript(u16* ptr, u16 offset);  
 extern Vec3f getEntityRelativeGroundObjectCoords(u16, f32, f32);                  
-extern bool func_800300F8(u16 index, u8 flag);
+extern bool setEntityHandlesMultipleCollisions(u16 index, u8 flag);
 extern Vec3f getEntityTileCoordinates(u16 index);    
 extern u8 detectEntityOverlap(Entity* entity, u16 entityIndex, f32 deltaX, f32 deltaZ, u16 collisionWidth, u16 collisionHeight);
 extern bool checkEntityShouldPlaySoundEffect(u16 entityIndex);   

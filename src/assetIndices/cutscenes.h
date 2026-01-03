@@ -135,7 +135,7 @@
 
 #define DEMO_CUTSCENE_1 0x5DC
 #define DEMO_CUTSCENE_2 0x5DD
-// TODO: 0x5DE missing?
+// 0x5DE
 #define DEMO_CUTSCENE_3 0x5DF
 
 #define EVALUATION 0x60E

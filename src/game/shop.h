@@ -15,7 +15,7 @@
 typedef struct {
     u16 itemTextIndex;
     u8 quantity;
-    u8 unk_3; // index into dialogues for shops: 1 = item description, 2 = purchasing, 5 = decline/accept, 7 = not enough money, 0xFF = done
+    u8 mode; // index into dialogues for shops: 1 = item description, 2 = purchasing, 5 = decline/accept, 7 = not enough money, 0xFF = done
     u8 storeItemIndex;
     u8 buySelected;
 } ShopContext;

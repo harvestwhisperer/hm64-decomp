@@ -1316,12 +1316,12 @@
 
 .branch_12ADE8:
     TOGGLE_SPECIAL_BIT 0, D_801C3F78
-    SET_U8_VALUE 0, D_8018A72C
-    SET_U8_VALUE 0, D_8018A72C + 0x1
-    SET_U8_VALUE 0, D_8018A72C + 0x2
-    SET_U8_VALUE 0, D_8018A72C + 0x3
-    SET_U8_VALUE 0, D_8018A72C + 0x4
-    SET_U8_VALUE 0, D_8018A72C + 0x5
+    SET_U8_VALUE 0, gRaceFinishOrder
+    SET_U8_VALUE 0, gRaceFinishOrder + 0x1
+    SET_U8_VALUE 0, gRaceFinishOrder + 0x2
+    SET_U8_VALUE 0, gRaceFinishOrder + 0x3
+    SET_U8_VALUE 0, gRaceFinishOrder + 0x4
+    SET_U8_VALUE 0, gRaceFinishOrder + 0x5
     SPAWN_EXECUTOR 32, .executor_32_12B654
     SPAWN_EXECUTOR 16, .executor_16_12B64C
     SET_WAIT_FRAMES 2
@@ -1727,12 +1727,12 @@
 
 .sub_12B908:
     SET_ANIM_DATA_PTR .anim_12B8F4
-    BRANCH_U16_VAR_WITHIN_RANGE 1, 2, overlayScreenStrings, .branch_12B970
-    BRANCH_U16_VAR_WITHIN_RANGE 3, 6, overlayScreenStrings, .branch_12B974
-    BRANCH_U16_VAR_WITHIN_RANGE 9, 15, overlayScreenStrings, .branch_12B988
-    BRANCH_U16_VAR_WITHIN_RANGE 16, 30, overlayScreenStrings, .branch_12B99C
-    BRANCH_U16_VAR_WITHIN_RANGE 31, 50, overlayScreenStrings, .branch_12B9B0
-    BRANCH_U16_VAR_WITHIN_RANGE 51, 70, overlayScreenStrings, .branch_12B9C4
+    BRANCH_U16_VAR_WITHIN_RANGE 1, 2, gRacingContext, .branch_12B970
+    BRANCH_U16_VAR_WITHIN_RANGE 3, 6, gRacingContext, .branch_12B974
+    BRANCH_U16_VAR_WITHIN_RANGE 9, 15, gRacingContext, .branch_12B988
+    BRANCH_U16_VAR_WITHIN_RANGE 16, 30, gRacingContext, .branch_12B99C
+    BRANCH_U16_VAR_WITHIN_RANGE 31, 50, gRacingContext, .branch_12B9B0
+    BRANCH_U16_VAR_WITHIN_RANGE 51, 70, gRacingContext, .branch_12B9C4
     EXECUTE_SUBROUTINE .sub_12B9D8
 
 .branch_12B970:
@@ -1918,12 +1918,12 @@
 
 .sub_12BD34:
     SET_ANIM_DATA_PTR .anim_12B8F4
-    BRANCH_U16_VAR_WITHIN_RANGE 1, 2, overlayScreenStrings + 0x2, .branch_12BD9C
-    BRANCH_U16_VAR_WITHIN_RANGE 3, 6, overlayScreenStrings + 0x2, .branch_12BDA0
-    BRANCH_U16_VAR_WITHIN_RANGE 9, 15, overlayScreenStrings + 0x2, .branch_12BDB4
-    BRANCH_U16_VAR_WITHIN_RANGE 16, 30, overlayScreenStrings + 0x2, .branch_12BDC8
-    BRANCH_U16_VAR_WITHIN_RANGE 31, 50, overlayScreenStrings + 0x2, .branch_12BDDC
-    BRANCH_U16_VAR_WITHIN_RANGE 51, 70, overlayScreenStrings + 0x2, .branch_12BDF0
+    BRANCH_U16_VAR_WITHIN_RANGE 1, 2, gRacingContext + 0x2, .branch_12BD9C
+    BRANCH_U16_VAR_WITHIN_RANGE 3, 6, gRacingContext + 0x2, .branch_12BDA0
+    BRANCH_U16_VAR_WITHIN_RANGE 9, 15, gRacingContext + 0x2, .branch_12BDB4
+    BRANCH_U16_VAR_WITHIN_RANGE 16, 30, gRacingContext + 0x2, .branch_12BDC8
+    BRANCH_U16_VAR_WITHIN_RANGE 31, 50, gRacingContext + 0x2, .branch_12BDDC
+    BRANCH_U16_VAR_WITHIN_RANGE 51, 70, gRacingContext + 0x2, .branch_12BDF0
     EXECUTE_SUBROUTINE .sub_12BE04
 
 .branch_12BD9C:
@@ -2109,12 +2109,12 @@
 
 .sub_12C160:
     SET_ANIM_DATA_PTR .anim_12B8F4
-    BRANCH_U16_VAR_WITHIN_RANGE 1, 2, overlayScreenStrings + 0x4, .branch_12C1C8
-    BRANCH_U16_VAR_WITHIN_RANGE 3, 6, overlayScreenStrings + 0x4, .branch_12C1CC
-    BRANCH_U16_VAR_WITHIN_RANGE 9, 15, overlayScreenStrings + 0x4, .branch_12C1E0
-    BRANCH_U16_VAR_WITHIN_RANGE 16, 30, overlayScreenStrings + 0x4, .branch_12C1F4
-    BRANCH_U16_VAR_WITHIN_RANGE 31, 50, overlayScreenStrings + 0x4, .branch_12C208
-    BRANCH_U16_VAR_WITHIN_RANGE 51, 70, overlayScreenStrings + 0x4, .branch_12C21C
+    BRANCH_U16_VAR_WITHIN_RANGE 1, 2, gRacingContext + 0x4, .branch_12C1C8
+    BRANCH_U16_VAR_WITHIN_RANGE 3, 6, gRacingContext + 0x4, .branch_12C1CC
+    BRANCH_U16_VAR_WITHIN_RANGE 9, 15, gRacingContext + 0x4, .branch_12C1E0
+    BRANCH_U16_VAR_WITHIN_RANGE 16, 30, gRacingContext + 0x4, .branch_12C1F4
+    BRANCH_U16_VAR_WITHIN_RANGE 31, 50, gRacingContext + 0x4, .branch_12C208
+    BRANCH_U16_VAR_WITHIN_RANGE 51, 70, gRacingContext + 0x4, .branch_12C21C
     EXECUTE_SUBROUTINE .sub_12C230
 
 .branch_12C1C8:
@@ -2300,12 +2300,12 @@
 
 .sub_12C58C:
     SET_ANIM_DATA_PTR .anim_12B8F4
-    BRANCH_U16_VAR_WITHIN_RANGE 1, 2, overlayScreenStrings + 0x6, .branch_12C5F4
-    BRANCH_U16_VAR_WITHIN_RANGE 3, 6, overlayScreenStrings + 0x6, .branch_12C5F8
-    BRANCH_U16_VAR_WITHIN_RANGE 9, 15, overlayScreenStrings + 0x6, .branch_12C60C
-    BRANCH_U16_VAR_WITHIN_RANGE 16, 30, overlayScreenStrings + 0x6, .branch_12C620
-    BRANCH_U16_VAR_WITHIN_RANGE 31, 50, overlayScreenStrings + 0x6, .branch_12C634
-    BRANCH_U16_VAR_WITHIN_RANGE 51, 70, overlayScreenStrings + 0x6, .branch_12C648
+    BRANCH_U16_VAR_WITHIN_RANGE 1, 2, gRacingContext + 0x6, .branch_12C5F4
+    BRANCH_U16_VAR_WITHIN_RANGE 3, 6, gRacingContext + 0x6, .branch_12C5F8
+    BRANCH_U16_VAR_WITHIN_RANGE 9, 15, gRacingContext + 0x6, .branch_12C60C
+    BRANCH_U16_VAR_WITHIN_RANGE 16, 30, gRacingContext + 0x6, .branch_12C620
+    BRANCH_U16_VAR_WITHIN_RANGE 31, 50, gRacingContext + 0x6, .branch_12C634
+    BRANCH_U16_VAR_WITHIN_RANGE 51, 70, gRacingContext + 0x6, .branch_12C648
     EXECUTE_SUBROUTINE .sub_12C65C
 
 .branch_12C5F4:
@@ -2491,12 +2491,12 @@
 
 .sub_12C9B8:
     SET_ANIM_DATA_PTR .anim_12B8F4
-    BRANCH_U16_VAR_WITHIN_RANGE 1, 2, overlayScreenStrings + 0x8, .branch_12CA20
-    BRANCH_U16_VAR_WITHIN_RANGE 3, 6, overlayScreenStrings + 0x8, .branch_12CA24
-    BRANCH_U16_VAR_WITHIN_RANGE 9, 15, overlayScreenStrings + 0x8, .branch_12CA38
-    BRANCH_U16_VAR_WITHIN_RANGE 16, 30, overlayScreenStrings + 0x8, .branch_12CA4C
-    BRANCH_U16_VAR_WITHIN_RANGE 31, 50, overlayScreenStrings + 0x8, .branch_12CA60
-    BRANCH_U16_VAR_WITHIN_RANGE 51, 70, overlayScreenStrings + 0x8, .branch_12CA74
+    BRANCH_U16_VAR_WITHIN_RANGE 1, 2, gRacingContext + 0x8, .branch_12CA20
+    BRANCH_U16_VAR_WITHIN_RANGE 3, 6, gRacingContext + 0x8, .branch_12CA24
+    BRANCH_U16_VAR_WITHIN_RANGE 9, 15, gRacingContext + 0x8, .branch_12CA38
+    BRANCH_U16_VAR_WITHIN_RANGE 16, 30, gRacingContext + 0x8, .branch_12CA4C
+    BRANCH_U16_VAR_WITHIN_RANGE 31, 50, gRacingContext + 0x8, .branch_12CA60
+    BRANCH_U16_VAR_WITHIN_RANGE 51, 70, gRacingContext + 0x8, .branch_12CA74
     EXECUTE_SUBROUTINE .sub_12CA88
 
 .branch_12CA20:
@@ -2682,12 +2682,12 @@
 
 .sub_12CDE4:
     SET_ANIM_DATA_PTR .anim_12B8F4
-    BRANCH_U16_VAR_WITHIN_RANGE 1, 2, overlayScreenStrings + 0xA, .branch_12CE4C
-    BRANCH_U16_VAR_WITHIN_RANGE 3, 6, overlayScreenStrings + 0xA, .branch_12CE50
-    BRANCH_U16_VAR_WITHIN_RANGE 9, 15, overlayScreenStrings + 0xA, .branch_12CE64
-    BRANCH_U16_VAR_WITHIN_RANGE 16, 30, overlayScreenStrings + 0xA, .branch_12CE78
-    BRANCH_U16_VAR_WITHIN_RANGE 31, 50, overlayScreenStrings + 0xA, .branch_12CE8C
-    BRANCH_U16_VAR_WITHIN_RANGE 51, 70, overlayScreenStrings + 0xA, .branch_12CEA0
+    BRANCH_U16_VAR_WITHIN_RANGE 1, 2, gRacingContext + 0xA, .branch_12CE4C
+    BRANCH_U16_VAR_WITHIN_RANGE 3, 6, gRacingContext + 0xA, .branch_12CE50
+    BRANCH_U16_VAR_WITHIN_RANGE 9, 15, gRacingContext + 0xA, .branch_12CE64
+    BRANCH_U16_VAR_WITHIN_RANGE 16, 30, gRacingContext + 0xA, .branch_12CE78
+    BRANCH_U16_VAR_WITHIN_RANGE 31, 50, gRacingContext + 0xA, .branch_12CE8C
+    BRANCH_U16_VAR_WITHIN_RANGE 51, 70, gRacingContext + 0xA, .branch_12CEA0
     EXECUTE_SUBROUTINE .sub_12CEB4
 
 .branch_12CE4C:
@@ -2878,32 +2878,32 @@
 .branch_12D21C:
     UPDATE_U16_VALUE -8, 9999, var7
     SET_WAIT_FRAMES 1
-    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, D_8018A72C, .branch_12D24C
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gRaceFinishOrder, .branch_12D24C
     BRANCH_IF_U16_PTR_IN_RANGE var1, var7, var8, .branch_12D2F0
 
 .branch_12D24C:
-    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, D_8018A72C, .branch_12D26C
+    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gRaceFinishOrder, .branch_12D26C
     BRANCH_IF_U16_PTR_IN_RANGE var2, var7, var8, .branch_12D438
 
 .branch_12D26C:
-    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, D_8018A72C, .branch_12D28C
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gRaceFinishOrder, .branch_12D28C
     BRANCH_IF_U16_PTR_IN_RANGE var3, var7, var8, .branch_12D580
 
 .branch_12D28C:
-    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, D_8018A72C, .branch_12D2AC
+    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gRaceFinishOrder, .branch_12D2AC
     BRANCH_IF_U16_PTR_IN_RANGE var4, var7, var8, .branch_12D6C8
 
 .branch_12D2AC:
-    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, D_8018A72C, .branch_12D2CC
+    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, gRaceFinishOrder, .branch_12D2CC
     BRANCH_IF_U16_PTR_IN_RANGE var5, var7, var8, .branch_12D810
 
 .branch_12D2CC:
-    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, D_8018A72C, .branch_12D21C
+    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, gRaceFinishOrder, .branch_12D21C
     BRANCH_IF_U16_PTR_IN_RANGE var6, var7, var8, .branch_12D958
     EXECUTE_SUBROUTINE .branch_12D21C
 
 .branch_12D2F0:
-    BRANCH_U8_VAR_WITHIN_RANGE 1, 255, D_8018A72C, .branch_12DAA0
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 255, gRaceFinishOrder, .branch_12DAA0
     UPDATE_U16_VALUE 1, 9999, var1
     BRANCH_IF_U16_PTR_IN_RANGE var2, var1, var8, .branch_12D3E8
     BRANCH_IF_U16_PTR_IN_RANGE var3, var1, var8, .branch_12D3F8
@@ -2911,7 +2911,7 @@
     BRANCH_IF_U16_PTR_IN_RANGE var5, var1, var8, .branch_12D418
     BRANCH_IF_U16_PTR_IN_RANGE var6, var1, var8, .branch_12D428
     UPDATE_U16_VALUE -1, 9999, var1
-    SET_U8_VALUE 1, D_8018A72C
+    SET_U8_VALUE 1, gRaceFinishOrder
     BRANCH_IF_U16_PTR_IN_RANGE var2, var7, var8, .branch_12DBB4
     BRANCH_IF_U16_PTR_IN_RANGE var3, var7, var8, .branch_12DCC8
     BRANCH_IF_U16_PTR_IN_RANGE var4, var7, var8, .branch_12DDDC
@@ -2940,7 +2940,7 @@
     EXECUTE_SUBROUTINE .branch_12D958
 
 .branch_12D438:
-    BRANCH_U8_VAR_WITHIN_RANGE 1, 255, D_8018A72C, .branch_12DBB4
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 255, gRaceFinishOrder, .branch_12DBB4
     UPDATE_U16_VALUE 1, 9999, var2
     BRANCH_IF_U16_PTR_IN_RANGE var1, var2, var8, .branch_12D530
     BRANCH_IF_U16_PTR_IN_RANGE var3, var2, var8, .branch_12D540
@@ -2948,7 +2948,7 @@
     BRANCH_IF_U16_PTR_IN_RANGE var5, var2, var8, .branch_12D560
     BRANCH_IF_U16_PTR_IN_RANGE var6, var2, var8, .branch_12D570
     UPDATE_U16_VALUE -1, 9999, var2
-    SET_U8_VALUE 2, D_8018A72C
+    SET_U8_VALUE 2, gRaceFinishOrder
     BRANCH_IF_U16_PTR_IN_RANGE var1, var7, var8, .branch_12DAA0
     BRANCH_IF_U16_PTR_IN_RANGE var3, var7, var8, .branch_12DCC8
     BRANCH_IF_U16_PTR_IN_RANGE var4, var7, var8, .branch_12DDDC
@@ -2977,7 +2977,7 @@
     EXECUTE_SUBROUTINE .branch_12D958
 
 .branch_12D580:
-    BRANCH_U8_VAR_WITHIN_RANGE 1, 255, D_8018A72C, .branch_12DCC8
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 255, gRaceFinishOrder, .branch_12DCC8
     UPDATE_U16_VALUE 1, 9999, var3
     BRANCH_IF_U16_PTR_IN_RANGE var1, var3, var8, .branch_12D678
     BRANCH_IF_U16_PTR_IN_RANGE var2, var3, var8, .branch_12D688
@@ -2985,7 +2985,7 @@
     BRANCH_IF_U16_PTR_IN_RANGE var5, var3, var8, .branch_12D6A8
     BRANCH_IF_U16_PTR_IN_RANGE var6, var3, var8, .branch_12D6B8
     UPDATE_U16_VALUE -1, 9999, var3
-    SET_U8_VALUE 3, D_8018A72C
+    SET_U8_VALUE 3, gRaceFinishOrder
     BRANCH_IF_U16_PTR_IN_RANGE var1, var7, var8, .branch_12DAA0
     BRANCH_IF_U16_PTR_IN_RANGE var2, var7, var8, .branch_12DBB4
     BRANCH_IF_U16_PTR_IN_RANGE var4, var7, var8, .branch_12DDDC
@@ -3014,7 +3014,7 @@
     EXECUTE_SUBROUTINE .branch_12D958
 
 .branch_12D6C8:
-    BRANCH_U8_VAR_WITHIN_RANGE 1, 255, D_8018A72C, .branch_12DDDC
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 255, gRaceFinishOrder, .branch_12DDDC
     UPDATE_U16_VALUE 1, 9999, var4
     BRANCH_IF_U16_PTR_IN_RANGE var1, var4, var8, .branch_12D7C0
     BRANCH_IF_U16_PTR_IN_RANGE var2, var4, var8, .branch_12D7D0
@@ -3022,7 +3022,7 @@
     BRANCH_IF_U16_PTR_IN_RANGE var5, var4, var8, .branch_12D7F0
     BRANCH_IF_U16_PTR_IN_RANGE var6, var4, var8, .branch_12D800
     UPDATE_U16_VALUE -1, 9999, var4
-    SET_U8_VALUE 4, D_8018A72C
+    SET_U8_VALUE 4, gRaceFinishOrder
     BRANCH_IF_U16_PTR_IN_RANGE var1, var7, var8, .branch_12DAA0
     BRANCH_IF_U16_PTR_IN_RANGE var2, var7, var8, .branch_12DBB4
     BRANCH_IF_U16_PTR_IN_RANGE var3, var7, var8, .branch_12DCC8
@@ -3051,7 +3051,7 @@
     EXECUTE_SUBROUTINE .branch_12D958
 
 .branch_12D810:
-    BRANCH_U8_VAR_WITHIN_RANGE 1, 255, D_8018A72C, .branch_12DEF0
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 255, gRaceFinishOrder, .branch_12DEF0
     UPDATE_U16_VALUE 1, 9999, var5
     BRANCH_IF_U16_PTR_IN_RANGE var1, var5, var8, .branch_12D908
     BRANCH_IF_U16_PTR_IN_RANGE var2, var5, var8, .branch_12D918
@@ -3059,7 +3059,7 @@
     BRANCH_IF_U16_PTR_IN_RANGE var4, var5, var8, .branch_12D938
     BRANCH_IF_U16_PTR_IN_RANGE var6, var5, var8, .branch_12D948
     UPDATE_U16_VALUE -1, 9999, var5
-    SET_U8_VALUE 5, D_8018A72C
+    SET_U8_VALUE 5, gRaceFinishOrder
     BRANCH_IF_U16_PTR_IN_RANGE var1, var7, var8, .branch_12DAA0
     BRANCH_IF_U16_PTR_IN_RANGE var2, var7, var8, .branch_12DBB4
     BRANCH_IF_U16_PTR_IN_RANGE var3, var7, var8, .branch_12DCC8
@@ -3088,7 +3088,7 @@
     EXECUTE_SUBROUTINE .branch_12D958
 
 .branch_12D958:
-    BRANCH_U8_VAR_WITHIN_RANGE 1, 255, D_8018A72C, .branch_12E004
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 255, gRaceFinishOrder, .branch_12E004
     UPDATE_U16_VALUE 1, 9999, var6
     BRANCH_IF_U16_PTR_IN_RANGE var1, var6, var8, .branch_12DA50
     BRANCH_IF_U16_PTR_IN_RANGE var2, var6, var8, .branch_12DA60
@@ -3096,7 +3096,7 @@
     BRANCH_IF_U16_PTR_IN_RANGE var4, var6, var8, .branch_12DA80
     BRANCH_IF_U16_PTR_IN_RANGE var5, var6, var8, .branch_12DA90
     UPDATE_U16_VALUE -1, 9999, var6
-    SET_U8_VALUE 6, D_8018A72C
+    SET_U8_VALUE 6, gRaceFinishOrder
     BRANCH_IF_U16_PTR_IN_RANGE var1, var7, var8, .branch_12DAA0
     BRANCH_IF_U16_PTR_IN_RANGE var2, var7, var8, .branch_12DBB4
     BRANCH_IF_U16_PTR_IN_RANGE var3, var7, var8, .branch_12DCC8
@@ -3125,29 +3125,29 @@
     EXECUTE_SUBROUTINE .branch_12D810
 
 .branch_12DAA0:
-    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, D_8018A72C, .branch_12DACC
+    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gRaceFinishOrder, .branch_12DACC
     UPDATE_U16_VALUE 1, 9999, var1
     BRANCH_IF_U16_PTR_IN_RANGE var2, var1, var8, .branch_12DB64
 
 .branch_12DACC:
-    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, D_8018A72C, .branch_12DAEC
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gRaceFinishOrder, .branch_12DAEC
     BRANCH_IF_U16_PTR_IN_RANGE var3, var1, var8, .branch_12DB74
 
 .branch_12DAEC:
-    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, D_8018A72C, .branch_12DB0C
+    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gRaceFinishOrder, .branch_12DB0C
     BRANCH_IF_U16_PTR_IN_RANGE var4, var1, var8, .branch_12DB84
 
 .branch_12DB0C:
-    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, D_8018A72C, .branch_12DB2C
+    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, gRaceFinishOrder, .branch_12DB2C
     BRANCH_IF_U16_PTR_IN_RANGE var5, var1, var8, .branch_12DB94
 
 .branch_12DB2C:
-    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, D_8018A72C, .branch_12DB4C
+    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, gRaceFinishOrder, .branch_12DB4C
     BRANCH_IF_U16_PTR_IN_RANGE var6, var1, var8, .branch_12DBA4
 
 .branch_12DB4C:
     UPDATE_U16_VALUE -1, 9999, var1
-    SET_U8_VALUE 1, D_8018A72C + 0x1
+    SET_U8_VALUE 1, gRaceFinishOrder + 0x1
     DEACTIVATE_SELF
 
 .branch_12DB64:
@@ -3171,29 +3171,29 @@
     EXECUTE_SUBROUTINE .branch_12E004
 
 .branch_12DBB4:
-    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, D_8018A72C, .branch_12DBE0
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gRaceFinishOrder, .branch_12DBE0
     UPDATE_U16_VALUE 1, 9999, var2
     BRANCH_IF_U16_PTR_IN_RANGE var1, var2, var8, .branch_12DC78
 
 .branch_12DBE0:
-    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, D_8018A72C, .branch_12DC00
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gRaceFinishOrder, .branch_12DC00
     BRANCH_IF_U16_PTR_IN_RANGE var3, var2, var8, .branch_12DC88
 
 .branch_12DC00:
-    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, D_8018A72C, .branch_12DC20
+    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gRaceFinishOrder, .branch_12DC20
     BRANCH_IF_U16_PTR_IN_RANGE var4, var2, var8, .branch_12DC98
 
 .branch_12DC20:
-    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, D_8018A72C, .branch_12DC40
+    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, gRaceFinishOrder, .branch_12DC40
     BRANCH_IF_U16_PTR_IN_RANGE var5, var2, var8, .branch_12DCA8
 
 .branch_12DC40:
-    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, D_8018A72C, .branch_12DC60
+    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, gRaceFinishOrder, .branch_12DC60
     BRANCH_IF_U16_PTR_IN_RANGE var6, var2, var8, .branch_12DCB8
 
 .branch_12DC60:
     UPDATE_U16_VALUE -1, 9999, var2
-    SET_U8_VALUE 2, D_8018A72C + 0x1
+    SET_U8_VALUE 2, gRaceFinishOrder + 0x1
     DEACTIVATE_SELF
 
 .branch_12DC78:
@@ -3217,29 +3217,29 @@
     EXECUTE_SUBROUTINE .branch_12E004
 
 .branch_12DCC8:
-    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, D_8018A72C, .branch_12DCF4
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gRaceFinishOrder, .branch_12DCF4
     UPDATE_U16_VALUE 1, 9999, var3
     BRANCH_IF_U16_PTR_IN_RANGE var1, var3, var8, .branch_12DD8C
 
 .branch_12DCF4:
-    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, D_8018A72C, .branch_12DD14
+    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gRaceFinishOrder, .branch_12DD14
     BRANCH_IF_U16_PTR_IN_RANGE var2, var3, var8, .branch_12DD9C
 
 .branch_12DD14:
-    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, D_8018A72C, .branch_12DD34
+    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gRaceFinishOrder, .branch_12DD34
     BRANCH_IF_U16_PTR_IN_RANGE var4, var3, var8, .branch_12DDAC
 
 .branch_12DD34:
-    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, D_8018A72C, .branch_12DD54
+    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, gRaceFinishOrder, .branch_12DD54
     BRANCH_IF_U16_PTR_IN_RANGE var5, var3, var8, .branch_12DDBC
 
 .branch_12DD54:
-    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, D_8018A72C, .branch_12DD74
+    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, gRaceFinishOrder, .branch_12DD74
     BRANCH_IF_U16_PTR_IN_RANGE var6, var3, var8, .branch_12DDCC
 
 .branch_12DD74:
     UPDATE_U16_VALUE -1, 9999, var3
-    SET_U8_VALUE 3, D_8018A72C + 0x1
+    SET_U8_VALUE 3, gRaceFinishOrder + 0x1
     DEACTIVATE_SELF
 
 .branch_12DD8C:
@@ -3263,29 +3263,29 @@
     EXECUTE_SUBROUTINE .branch_12E004
 
 .branch_12DDDC:
-    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, D_8018A72C, .branch_12DE08
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gRaceFinishOrder, .branch_12DE08
     UPDATE_U16_VALUE 1, 9999, var4
     BRANCH_IF_U16_PTR_IN_RANGE var1, var4, var8, .branch_12DEA0
 
 .branch_12DE08:
-    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, D_8018A72C, .branch_12DE28
+    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gRaceFinishOrder, .branch_12DE28
     BRANCH_IF_U16_PTR_IN_RANGE var2, var4, var8, .branch_12DEB0
 
 .branch_12DE28:
-    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, D_8018A72C, .branch_12DE48
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gRaceFinishOrder, .branch_12DE48
     BRANCH_IF_U16_PTR_IN_RANGE var3, var4, var8, .branch_12DEC0
 
 .branch_12DE48:
-    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, D_8018A72C, .branch_12DE68
+    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, gRaceFinishOrder, .branch_12DE68
     BRANCH_IF_U16_PTR_IN_RANGE var5, var4, var8, .branch_12DED0
 
 .branch_12DE68:
-    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, D_8018A72C, .branch_12DE88
+    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, gRaceFinishOrder, .branch_12DE88
     BRANCH_IF_U16_PTR_IN_RANGE var6, var4, var8, .branch_12DEE0
 
 .branch_12DE88:
     UPDATE_U16_VALUE -1, 9999, var4
-    SET_U8_VALUE 4, D_8018A72C + 0x1
+    SET_U8_VALUE 4, gRaceFinishOrder + 0x1
     DEACTIVATE_SELF
 
 .branch_12DEA0:
@@ -3309,29 +3309,29 @@
     EXECUTE_SUBROUTINE .branch_12E004
 
 .branch_12DEF0:
-    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, D_8018A72C, .branch_12DF1C
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gRaceFinishOrder, .branch_12DF1C
     UPDATE_U16_VALUE 1, 9999, var5
     BRANCH_IF_U16_PTR_IN_RANGE var1, var5, var8, .branch_12DFB4
 
 .branch_12DF1C:
-    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, D_8018A72C, .branch_12DF3C
+    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gRaceFinishOrder, .branch_12DF3C
     BRANCH_IF_U16_PTR_IN_RANGE var2, var5, var8, .branch_12DFC4
 
 .branch_12DF3C:
-    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, D_8018A72C, .branch_12DF5C
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gRaceFinishOrder, .branch_12DF5C
     BRANCH_IF_U16_PTR_IN_RANGE var3, var5, var8, .branch_12DFD4
 
 .branch_12DF5C:
-    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, D_8018A72C, .branch_12DF7C
+    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gRaceFinishOrder, .branch_12DF7C
     BRANCH_IF_U16_PTR_IN_RANGE var4, var5, var8, .branch_12DFE4
 
 .branch_12DF7C:
-    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, D_8018A72C, .branch_12DF9C
+    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, gRaceFinishOrder, .branch_12DF9C
     BRANCH_IF_U16_PTR_IN_RANGE var6, var5, var8, .branch_12DFF4
 
 .branch_12DF9C:
     UPDATE_U16_VALUE -1, 9999, var5
-    SET_U8_VALUE 5, D_8018A72C + 0x1
+    SET_U8_VALUE 5, gRaceFinishOrder + 0x1
     DEACTIVATE_SELF
 
 .branch_12DFB4:
@@ -3355,29 +3355,29 @@
     EXECUTE_SUBROUTINE .branch_12E004
 
 .branch_12E004:
-    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, D_8018A72C, .branch_12E030
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gRaceFinishOrder, .branch_12E030
     UPDATE_U16_VALUE 1, 9999, var6
     BRANCH_IF_U16_PTR_IN_RANGE var1, var6, var8, .branch_12E0C8
 
 .branch_12E030:
-    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, D_8018A72C, .branch_12E050
+    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gRaceFinishOrder, .branch_12E050
     BRANCH_IF_U16_PTR_IN_RANGE var2, var6, var8, .branch_12E0D8
 
 .branch_12E050:
-    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, D_8018A72C, .branch_12E070
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gRaceFinishOrder, .branch_12E070
     BRANCH_IF_U16_PTR_IN_RANGE var3, var6, var8, .branch_12E0E8
 
 .branch_12E070:
-    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, D_8018A72C, .branch_12E090
+    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gRaceFinishOrder, .branch_12E090
     BRANCH_IF_U16_PTR_IN_RANGE var4, var6, var8, .branch_12E0F8
 
 .branch_12E090:
-    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, D_8018A72C, .branch_12E0B0
+    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, gRaceFinishOrder, .branch_12E0B0
     BRANCH_IF_U16_PTR_IN_RANGE var5, var6, var8, .branch_12E108
 
 .branch_12E0B0:
     UPDATE_U16_VALUE -1, 9999, var6
-    SET_U8_VALUE 6, D_8018A72C + 0x1
+    SET_U8_VALUE 6, gRaceFinishOrder + 0x1
     DEACTIVATE_SELF
 
 .branch_12E0C8:
@@ -3401,409 +3401,409 @@
     EXECUTE_SUBROUTINE .branch_12DEF0
 
 .executor_24_12E118:
-    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, D_8018A72C, .branch_12E158
-    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, D_8018A72C + 0x1, .branch_12E158
-    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, D_8018A72C + 0x2, .branch_12E158
-    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, D_8018A72C + 0x3, .branch_12E158
-    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, D_8018A72C + 0x4, .branch_12E158
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gRaceFinishOrder, .branch_12E158
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gRaceFinishOrder + 0x1, .branch_12E158
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gRaceFinishOrder + 0x2, .branch_12E158
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gRaceFinishOrder + 0x3, .branch_12E158
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gRaceFinishOrder + 0x4, .branch_12E158
     EXECUTE_SUBROUTINE .sub_12E258
 
 .branch_12E158:
-    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, D_8018A72C, .branch_12E198
-    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, D_8018A72C + 0x1, .branch_12E198
-    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, D_8018A72C + 0x2, .branch_12E198
-    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, D_8018A72C + 0x3, .branch_12E198
-    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, D_8018A72C + 0x4, .branch_12E198
+    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gRaceFinishOrder, .branch_12E198
+    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gRaceFinishOrder + 0x1, .branch_12E198
+    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gRaceFinishOrder + 0x2, .branch_12E198
+    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gRaceFinishOrder + 0x3, .branch_12E198
+    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gRaceFinishOrder + 0x4, .branch_12E198
     EXECUTE_SUBROUTINE .sub_12E454
 
 .branch_12E198:
-    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, D_8018A72C, .branch_12E1D8
-    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, D_8018A72C + 0x1, .branch_12E1D8
-    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, D_8018A72C + 0x2, .branch_12E1D8
-    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, D_8018A72C + 0x3, .branch_12E1D8
-    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, D_8018A72C + 0x4, .branch_12E1D8
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gRaceFinishOrder, .branch_12E1D8
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gRaceFinishOrder + 0x1, .branch_12E1D8
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gRaceFinishOrder + 0x2, .branch_12E1D8
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gRaceFinishOrder + 0x3, .branch_12E1D8
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gRaceFinishOrder + 0x4, .branch_12E1D8
     EXECUTE_SUBROUTINE .sub_12E650
 
 .branch_12E1D8:
-    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, D_8018A72C, .branch_12E218
-    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, D_8018A72C + 0x1, .branch_12E218
-    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, D_8018A72C + 0x2, .branch_12E218
-    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, D_8018A72C + 0x3, .branch_12E218
-    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, D_8018A72C + 0x4, .branch_12E218
+    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gRaceFinishOrder, .branch_12E218
+    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gRaceFinishOrder + 0x1, .branch_12E218
+    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gRaceFinishOrder + 0x2, .branch_12E218
+    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gRaceFinishOrder + 0x3, .branch_12E218
+    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gRaceFinishOrder + 0x4, .branch_12E218
     EXECUTE_SUBROUTINE .sub_12E84C
 
 .branch_12E218:
-    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, D_8018A72C, .branch_12EC44
-    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, D_8018A72C + 0x1, .branch_12EC44
-    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, D_8018A72C + 0x2, .branch_12EC44
-    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, D_8018A72C + 0x3, .branch_12EC44
-    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, D_8018A72C + 0x4, .branch_12EC44
+    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, gRaceFinishOrder, .branch_12EC44
+    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, gRaceFinishOrder + 0x1, .branch_12EC44
+    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, gRaceFinishOrder + 0x2, .branch_12EC44
+    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, gRaceFinishOrder + 0x3, .branch_12EC44
+    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, gRaceFinishOrder + 0x4, .branch_12EC44
     EXECUTE_SUBROUTINE .sub_12EA48
 
 .sub_12E258:
     UPDATE_U16_VALUE 1, 9999, var1
-    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, D_8018A72C, .branch_12E2B4
-    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, D_8018A72C + 0x1, .branch_12E2B4
-    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, D_8018A72C + 0x2, .branch_12E2B4
-    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, D_8018A72C + 0x3, .branch_12E2B4
-    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, D_8018A72C + 0x4, .branch_12E2B4
+    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gRaceFinishOrder, .branch_12E2B4
+    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gRaceFinishOrder + 0x1, .branch_12E2B4
+    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gRaceFinishOrder + 0x2, .branch_12E2B4
+    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gRaceFinishOrder + 0x3, .branch_12E2B4
+    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gRaceFinishOrder + 0x4, .branch_12E2B4
     BRANCH_IF_U16_PTR_IN_RANGE var2, var1, var8, .sub_12E454
 
 .branch_12E2B4:
-    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, D_8018A72C, .branch_12E304
-    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, D_8018A72C + 0x1, .branch_12E304
-    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, D_8018A72C + 0x2, .branch_12E304
-    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, D_8018A72C + 0x3, .branch_12E304
-    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, D_8018A72C + 0x4, .branch_12E304
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gRaceFinishOrder, .branch_12E304
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gRaceFinishOrder + 0x1, .branch_12E304
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gRaceFinishOrder + 0x2, .branch_12E304
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gRaceFinishOrder + 0x3, .branch_12E304
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gRaceFinishOrder + 0x4, .branch_12E304
     BRANCH_IF_U16_PTR_IN_RANGE var3, var1, var8, .sub_12E650
 
 .branch_12E304:
-    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, D_8018A72C, .branch_12E354
-    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, D_8018A72C + 0x1, .branch_12E354
-    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, D_8018A72C + 0x2, .branch_12E354
-    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, D_8018A72C + 0x3, .branch_12E354
-    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, D_8018A72C + 0x4, .branch_12E354
+    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gRaceFinishOrder, .branch_12E354
+    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gRaceFinishOrder + 0x1, .branch_12E354
+    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gRaceFinishOrder + 0x2, .branch_12E354
+    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gRaceFinishOrder + 0x3, .branch_12E354
+    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gRaceFinishOrder + 0x4, .branch_12E354
     BRANCH_IF_U16_PTR_IN_RANGE var4, var1, var8, .sub_12E84C
 
 .branch_12E354:
-    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, D_8018A72C, .branch_12E3A4
-    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, D_8018A72C + 0x1, .branch_12E3A4
-    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, D_8018A72C + 0x2, .branch_12E3A4
-    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, D_8018A72C + 0x3, .branch_12E3A4
-    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, D_8018A72C + 0x4, .branch_12E3A4
+    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, gRaceFinishOrder, .branch_12E3A4
+    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, gRaceFinishOrder + 0x1, .branch_12E3A4
+    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, gRaceFinishOrder + 0x2, .branch_12E3A4
+    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, gRaceFinishOrder + 0x3, .branch_12E3A4
+    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, gRaceFinishOrder + 0x4, .branch_12E3A4
     BRANCH_IF_U16_PTR_IN_RANGE var5, var1, var8, .sub_12EA48
 
 .branch_12E3A4:
-    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, D_8018A72C, .branch_12E3F4
-    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, D_8018A72C + 0x1, .branch_12E3F4
-    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, D_8018A72C + 0x2, .branch_12E3F4
-    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, D_8018A72C + 0x3, .branch_12E3F4
-    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, D_8018A72C + 0x4, .branch_12E3F4
+    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, gRaceFinishOrder, .branch_12E3F4
+    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, gRaceFinishOrder + 0x1, .branch_12E3F4
+    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, gRaceFinishOrder + 0x2, .branch_12E3F4
+    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, gRaceFinishOrder + 0x3, .branch_12E3F4
+    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, gRaceFinishOrder + 0x4, .branch_12E3F4
     BRANCH_IF_U16_PTR_IN_RANGE var6, var1, var8, .branch_12EC44
 
 .branch_12E3F4:
     UPDATE_U16_VALUE -1, 9999, var1
-    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, D_8018A72C + 0x2, .branch_12E430
-    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, D_8018A72C + 0x3, .branch_12E43C
-    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, D_8018A72C + 0x4, .branch_12E448
-    SET_U8_VALUE 1, D_8018A72C + 0x5
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, gRaceFinishOrder + 0x2, .branch_12E430
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, gRaceFinishOrder + 0x3, .branch_12E43C
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, gRaceFinishOrder + 0x4, .branch_12E448
+    SET_U8_VALUE 1, gRaceFinishOrder + 0x5
     DEACTIVATE_SELF
 
 .branch_12E430:
-    SET_U8_VALUE 1, D_8018A72C + 0x2
+    SET_U8_VALUE 1, gRaceFinishOrder + 0x2
     EXECUTE_SUBROUTINE .executor_24_12E118
 
 .branch_12E43C:
-    SET_U8_VALUE 1, D_8018A72C + 0x3
+    SET_U8_VALUE 1, gRaceFinishOrder + 0x3
     EXECUTE_SUBROUTINE .executor_24_12E118
 
 .branch_12E448:
-    SET_U8_VALUE 1, D_8018A72C + 0x4
+    SET_U8_VALUE 1, gRaceFinishOrder + 0x4
     EXECUTE_SUBROUTINE .executor_24_12E118
 
 .sub_12E454:
     UPDATE_U16_VALUE 1, 9999, var2
-    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, D_8018A72C, .branch_12E4B0
-    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, D_8018A72C + 0x1, .branch_12E4B0
-    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, D_8018A72C + 0x2, .branch_12E4B0
-    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, D_8018A72C + 0x3, .branch_12E4B0
-    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, D_8018A72C + 0x4, .branch_12E4B0
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gRaceFinishOrder, .branch_12E4B0
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gRaceFinishOrder + 0x1, .branch_12E4B0
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gRaceFinishOrder + 0x2, .branch_12E4B0
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gRaceFinishOrder + 0x3, .branch_12E4B0
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gRaceFinishOrder + 0x4, .branch_12E4B0
     BRANCH_IF_U16_PTR_IN_RANGE var1, var2, var8, .sub_12E258
 
 .branch_12E4B0:
-    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, D_8018A72C, .branch_12E500
-    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, D_8018A72C + 0x1, .branch_12E500
-    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, D_8018A72C + 0x2, .branch_12E500
-    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, D_8018A72C + 0x3, .branch_12E500
-    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, D_8018A72C + 0x4, .branch_12E500
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gRaceFinishOrder, .branch_12E500
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gRaceFinishOrder + 0x1, .branch_12E500
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gRaceFinishOrder + 0x2, .branch_12E500
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gRaceFinishOrder + 0x3, .branch_12E500
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gRaceFinishOrder + 0x4, .branch_12E500
     BRANCH_IF_U16_PTR_IN_RANGE var3, var2, var8, .sub_12E650
 
 .branch_12E500:
-    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, D_8018A72C, .branch_12E550
-    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, D_8018A72C + 0x1, .branch_12E550
-    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, D_8018A72C + 0x2, .branch_12E550
-    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, D_8018A72C + 0x3, .branch_12E550
-    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, D_8018A72C + 0x4, .branch_12E550
+    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gRaceFinishOrder, .branch_12E550
+    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gRaceFinishOrder + 0x1, .branch_12E550
+    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gRaceFinishOrder + 0x2, .branch_12E550
+    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gRaceFinishOrder + 0x3, .branch_12E550
+    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gRaceFinishOrder + 0x4, .branch_12E550
     BRANCH_IF_U16_PTR_IN_RANGE var4, var2, var8, .sub_12E84C
 
 .branch_12E550:
-    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, D_8018A72C, .branch_12E5A0
-    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, D_8018A72C + 0x1, .branch_12E5A0
-    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, D_8018A72C + 0x2, .branch_12E5A0
-    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, D_8018A72C + 0x3, .branch_12E5A0
-    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, D_8018A72C + 0x4, .branch_12E5A0
+    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, gRaceFinishOrder, .branch_12E5A0
+    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, gRaceFinishOrder + 0x1, .branch_12E5A0
+    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, gRaceFinishOrder + 0x2, .branch_12E5A0
+    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, gRaceFinishOrder + 0x3, .branch_12E5A0
+    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, gRaceFinishOrder + 0x4, .branch_12E5A0
     BRANCH_IF_U16_PTR_IN_RANGE var5, var2, var8, .sub_12EA48
 
 .branch_12E5A0:
-    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, D_8018A72C, .branch_12E5F0
-    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, D_8018A72C + 0x1, .branch_12E5F0
-    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, D_8018A72C + 0x2, .branch_12E5F0
-    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, D_8018A72C + 0x3, .branch_12E5F0
-    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, D_8018A72C + 0x4, .branch_12E5F0
+    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, gRaceFinishOrder, .branch_12E5F0
+    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, gRaceFinishOrder + 0x1, .branch_12E5F0
+    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, gRaceFinishOrder + 0x2, .branch_12E5F0
+    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, gRaceFinishOrder + 0x3, .branch_12E5F0
+    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, gRaceFinishOrder + 0x4, .branch_12E5F0
     BRANCH_IF_U16_PTR_IN_RANGE var6, var2, var8, .branch_12EC44
 
 .branch_12E5F0:
     UPDATE_U16_VALUE -1, 9999, var2
-    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, D_8018A72C + 0x2, .branch_12E62C
-    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, D_8018A72C + 0x3, .branch_12E638
-    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, D_8018A72C + 0x4, .branch_12E644
-    SET_U8_VALUE 2, D_8018A72C + 0x5
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, gRaceFinishOrder + 0x2, .branch_12E62C
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, gRaceFinishOrder + 0x3, .branch_12E638
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, gRaceFinishOrder + 0x4, .branch_12E644
+    SET_U8_VALUE 2, gRaceFinishOrder + 0x5
     DEACTIVATE_SELF
 
 .branch_12E62C:
-    SET_U8_VALUE 2, D_8018A72C + 0x2
+    SET_U8_VALUE 2, gRaceFinishOrder + 0x2
     EXECUTE_SUBROUTINE .executor_24_12E118
 
 .branch_12E638:
-    SET_U8_VALUE 2, D_8018A72C + 0x3
+    SET_U8_VALUE 2, gRaceFinishOrder + 0x3
     EXECUTE_SUBROUTINE .executor_24_12E118
 
 .branch_12E644:
-    SET_U8_VALUE 2, D_8018A72C + 0x4
+    SET_U8_VALUE 2, gRaceFinishOrder + 0x4
     EXECUTE_SUBROUTINE .executor_24_12E118
 
 .sub_12E650:
     UPDATE_U16_VALUE 1, 9999, var3
-    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, D_8018A72C, .branch_12E6AC
-    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, D_8018A72C + 0x1, .branch_12E6AC
-    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, D_8018A72C + 0x2, .branch_12E6AC
-    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, D_8018A72C + 0x3, .branch_12E6AC
-    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, D_8018A72C + 0x4, .branch_12E6AC
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gRaceFinishOrder, .branch_12E6AC
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gRaceFinishOrder + 0x1, .branch_12E6AC
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gRaceFinishOrder + 0x2, .branch_12E6AC
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gRaceFinishOrder + 0x3, .branch_12E6AC
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gRaceFinishOrder + 0x4, .branch_12E6AC
     BRANCH_IF_U16_PTR_IN_RANGE var1, var3, var8, .sub_12E258
 
 .branch_12E6AC:
-    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, D_8018A72C, .branch_12E6FC
-    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, D_8018A72C + 0x1, .branch_12E6FC
-    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, D_8018A72C + 0x2, .branch_12E6FC
-    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, D_8018A72C + 0x3, .branch_12E6FC
-    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, D_8018A72C + 0x4, .branch_12E6FC
+    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gRaceFinishOrder, .branch_12E6FC
+    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gRaceFinishOrder + 0x1, .branch_12E6FC
+    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gRaceFinishOrder + 0x2, .branch_12E6FC
+    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gRaceFinishOrder + 0x3, .branch_12E6FC
+    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gRaceFinishOrder + 0x4, .branch_12E6FC
     BRANCH_IF_U16_PTR_IN_RANGE var2, var3, var8, .sub_12E454
 
 .branch_12E6FC:
-    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, D_8018A72C, .branch_12E74C
-    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, D_8018A72C + 0x1, .branch_12E74C
-    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, D_8018A72C + 0x2, .branch_12E74C
-    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, D_8018A72C + 0x3, .branch_12E74C
-    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, D_8018A72C + 0x4, .branch_12E74C
+    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gRaceFinishOrder, .branch_12E74C
+    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gRaceFinishOrder + 0x1, .branch_12E74C
+    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gRaceFinishOrder + 0x2, .branch_12E74C
+    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gRaceFinishOrder + 0x3, .branch_12E74C
+    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gRaceFinishOrder + 0x4, .branch_12E74C
     BRANCH_IF_U16_PTR_IN_RANGE var4, var3, var8, .sub_12E84C
 
 .branch_12E74C:
-    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, D_8018A72C, .branch_12E79C
-    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, D_8018A72C + 0x1, .branch_12E79C
-    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, D_8018A72C + 0x2, .branch_12E79C
-    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, D_8018A72C + 0x3, .branch_12E79C
-    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, D_8018A72C + 0x4, .branch_12E79C
+    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, gRaceFinishOrder, .branch_12E79C
+    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, gRaceFinishOrder + 0x1, .branch_12E79C
+    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, gRaceFinishOrder + 0x2, .branch_12E79C
+    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, gRaceFinishOrder + 0x3, .branch_12E79C
+    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, gRaceFinishOrder + 0x4, .branch_12E79C
     BRANCH_IF_U16_PTR_IN_RANGE var5, var3, var8, .sub_12EA48
 
 .branch_12E79C:
-    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, D_8018A72C, .branch_12E7EC
-    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, D_8018A72C + 0x1, .branch_12E7EC
-    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, D_8018A72C + 0x2, .branch_12E7EC
-    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, D_8018A72C + 0x3, .branch_12E7EC
-    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, D_8018A72C + 0x4, .branch_12E7EC
+    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, gRaceFinishOrder, .branch_12E7EC
+    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, gRaceFinishOrder + 0x1, .branch_12E7EC
+    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, gRaceFinishOrder + 0x2, .branch_12E7EC
+    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, gRaceFinishOrder + 0x3, .branch_12E7EC
+    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, gRaceFinishOrder + 0x4, .branch_12E7EC
     BRANCH_IF_U16_PTR_IN_RANGE var6, var3, var8, .branch_12EC44
 
 .branch_12E7EC:
     UPDATE_U16_VALUE -1, 9999, var3
-    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, D_8018A72C + 0x2, .branch_12E828
-    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, D_8018A72C + 0x3, .branch_12E834
-    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, D_8018A72C + 0x4, .branch_12E840
-    SET_U8_VALUE 3, D_8018A72C + 0x5
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, gRaceFinishOrder + 0x2, .branch_12E828
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, gRaceFinishOrder + 0x3, .branch_12E834
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, gRaceFinishOrder + 0x4, .branch_12E840
+    SET_U8_VALUE 3, gRaceFinishOrder + 0x5
     DEACTIVATE_SELF
 
 .branch_12E828:
-    SET_U8_VALUE 3, D_8018A72C + 0x2
+    SET_U8_VALUE 3, gRaceFinishOrder + 0x2
     EXECUTE_SUBROUTINE .executor_24_12E118
 
 .branch_12E834:
-    SET_U8_VALUE 3, D_8018A72C + 0x3
+    SET_U8_VALUE 3, gRaceFinishOrder + 0x3
     EXECUTE_SUBROUTINE .executor_24_12E118
 
 .branch_12E840:
-    SET_U8_VALUE 3, D_8018A72C + 0x4
+    SET_U8_VALUE 3, gRaceFinishOrder + 0x4
     EXECUTE_SUBROUTINE .executor_24_12E118
 
 .sub_12E84C:
     UPDATE_U16_VALUE 1, 9999, var4
-    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, D_8018A72C, .branch_12E8A8
-    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, D_8018A72C + 0x1, .branch_12E8A8
-    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, D_8018A72C + 0x2, .branch_12E8A8
-    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, D_8018A72C + 0x3, .branch_12E8A8
-    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, D_8018A72C + 0x4, .branch_12E8A8
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gRaceFinishOrder, .branch_12E8A8
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gRaceFinishOrder + 0x1, .branch_12E8A8
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gRaceFinishOrder + 0x2, .branch_12E8A8
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gRaceFinishOrder + 0x3, .branch_12E8A8
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gRaceFinishOrder + 0x4, .branch_12E8A8
     BRANCH_IF_U16_PTR_IN_RANGE var1, var4, var8, .sub_12E258
 
 .branch_12E8A8:
-    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, D_8018A72C, .branch_12E8F8
-    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, D_8018A72C + 0x1, .branch_12E8F8
-    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, D_8018A72C + 0x2, .branch_12E8F8
-    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, D_8018A72C + 0x3, .branch_12E8F8
-    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, D_8018A72C + 0x4, .branch_12E8F8
+    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gRaceFinishOrder, .branch_12E8F8
+    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gRaceFinishOrder + 0x1, .branch_12E8F8
+    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gRaceFinishOrder + 0x2, .branch_12E8F8
+    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gRaceFinishOrder + 0x3, .branch_12E8F8
+    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gRaceFinishOrder + 0x4, .branch_12E8F8
     BRANCH_IF_U16_PTR_IN_RANGE var2, var4, var8, .sub_12E454
 
 .branch_12E8F8:
-    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, D_8018A72C, .branch_12E948
-    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, D_8018A72C + 0x1, .branch_12E948
-    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, D_8018A72C + 0x2, .branch_12E948
-    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, D_8018A72C + 0x3, .branch_12E948
-    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, D_8018A72C + 0x4, .branch_12E948
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gRaceFinishOrder, .branch_12E948
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gRaceFinishOrder + 0x1, .branch_12E948
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gRaceFinishOrder + 0x2, .branch_12E948
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gRaceFinishOrder + 0x3, .branch_12E948
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gRaceFinishOrder + 0x4, .branch_12E948
     BRANCH_IF_U16_PTR_IN_RANGE var3, var4, var8, .sub_12E650
 
 .branch_12E948:
-    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, D_8018A72C, .branch_12E998
-    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, D_8018A72C + 0x1, .branch_12E998
-    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, D_8018A72C + 0x2, .branch_12E998
-    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, D_8018A72C + 0x3, .branch_12E998
-    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, D_8018A72C + 0x4, .branch_12E998
+    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, gRaceFinishOrder, .branch_12E998
+    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, gRaceFinishOrder + 0x1, .branch_12E998
+    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, gRaceFinishOrder + 0x2, .branch_12E998
+    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, gRaceFinishOrder + 0x3, .branch_12E998
+    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, gRaceFinishOrder + 0x4, .branch_12E998
     BRANCH_IF_U16_PTR_IN_RANGE var5, var4, var8, .sub_12EA48
 
 .branch_12E998:
-    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, D_8018A72C, .branch_12E9E8
-    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, D_8018A72C + 0x1, .branch_12E9E8
-    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, D_8018A72C + 0x2, .branch_12E9E8
-    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, D_8018A72C + 0x3, .branch_12E9E8
-    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, D_8018A72C + 0x4, .branch_12E9E8
+    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, gRaceFinishOrder, .branch_12E9E8
+    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, gRaceFinishOrder + 0x1, .branch_12E9E8
+    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, gRaceFinishOrder + 0x2, .branch_12E9E8
+    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, gRaceFinishOrder + 0x3, .branch_12E9E8
+    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, gRaceFinishOrder + 0x4, .branch_12E9E8
     BRANCH_IF_U16_PTR_IN_RANGE var6, var4, var8, .branch_12EC44
 
 .branch_12E9E8:
     UPDATE_U16_VALUE -1, 9999, var4
-    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, D_8018A72C + 0x2, .branch_12EA24
-    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, D_8018A72C + 0x3, .branch_12EA30
-    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, D_8018A72C + 0x4, .branch_12EA3C
-    SET_U8_VALUE 4, D_8018A72C + 0x5
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, gRaceFinishOrder + 0x2, .branch_12EA24
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, gRaceFinishOrder + 0x3, .branch_12EA30
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, gRaceFinishOrder + 0x4, .branch_12EA3C
+    SET_U8_VALUE 4, gRaceFinishOrder + 0x5
     DEACTIVATE_SELF
 
 .branch_12EA24:
-    SET_U8_VALUE 4, D_8018A72C + 0x2
+    SET_U8_VALUE 4, gRaceFinishOrder + 0x2
     EXECUTE_SUBROUTINE .executor_24_12E118
 
 .branch_12EA30:
-    SET_U8_VALUE 4, D_8018A72C + 0x3
+    SET_U8_VALUE 4, gRaceFinishOrder + 0x3
     EXECUTE_SUBROUTINE .executor_24_12E118
 
 .branch_12EA3C:
-    SET_U8_VALUE 4, D_8018A72C + 0x4
+    SET_U8_VALUE 4, gRaceFinishOrder + 0x4
     EXECUTE_SUBROUTINE .executor_24_12E118
 
 .sub_12EA48:
     UPDATE_U16_VALUE 1, 9999, var5
-    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, D_8018A72C, .branch_12EAA4
-    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, D_8018A72C + 0x1, .branch_12EAA4
-    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, D_8018A72C + 0x2, .branch_12EAA4
-    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, D_8018A72C + 0x3, .branch_12EAA4
-    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, D_8018A72C + 0x4, .branch_12EAA4
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gRaceFinishOrder, .branch_12EAA4
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gRaceFinishOrder + 0x1, .branch_12EAA4
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gRaceFinishOrder + 0x2, .branch_12EAA4
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gRaceFinishOrder + 0x3, .branch_12EAA4
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gRaceFinishOrder + 0x4, .branch_12EAA4
     BRANCH_IF_U16_PTR_IN_RANGE var1, var5, var8, .sub_12E258
 
 .branch_12EAA4:
-    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, D_8018A72C, .branch_12EAF4
-    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, D_8018A72C + 0x1, .branch_12EAF4
-    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, D_8018A72C + 0x2, .branch_12EAF4
-    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, D_8018A72C + 0x3, .branch_12EAF4
-    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, D_8018A72C + 0x4, .branch_12EAF4
+    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gRaceFinishOrder, .branch_12EAF4
+    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gRaceFinishOrder + 0x1, .branch_12EAF4
+    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gRaceFinishOrder + 0x2, .branch_12EAF4
+    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gRaceFinishOrder + 0x3, .branch_12EAF4
+    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gRaceFinishOrder + 0x4, .branch_12EAF4
     BRANCH_IF_U16_PTR_IN_RANGE var2, var5, var8, .sub_12E454
 
 .branch_12EAF4:
-    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, D_8018A72C, .branch_12EB44
-    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, D_8018A72C + 0x1, .branch_12EB44
-    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, D_8018A72C + 0x2, .branch_12EB44
-    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, D_8018A72C + 0x3, .branch_12EB44
-    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, D_8018A72C + 0x4, .branch_12EB44
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gRaceFinishOrder, .branch_12EB44
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gRaceFinishOrder + 0x1, .branch_12EB44
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gRaceFinishOrder + 0x2, .branch_12EB44
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gRaceFinishOrder + 0x3, .branch_12EB44
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gRaceFinishOrder + 0x4, .branch_12EB44
     BRANCH_IF_U16_PTR_IN_RANGE var3, var5, var8, .sub_12E650
 
 .branch_12EB44:
-    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, D_8018A72C, .branch_12EB94
-    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, D_8018A72C + 0x1, .branch_12EB94
-    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, D_8018A72C + 0x2, .branch_12EB94
-    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, D_8018A72C + 0x3, .branch_12EB94
-    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, D_8018A72C + 0x4, .branch_12EB94
+    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gRaceFinishOrder, .branch_12EB94
+    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gRaceFinishOrder + 0x1, .branch_12EB94
+    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gRaceFinishOrder + 0x2, .branch_12EB94
+    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gRaceFinishOrder + 0x3, .branch_12EB94
+    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gRaceFinishOrder + 0x4, .branch_12EB94
     BRANCH_IF_U16_PTR_IN_RANGE var4, var5, var8, .sub_12E84C
 
 .branch_12EB94:
-    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, D_8018A72C, .branch_12EBE4
-    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, D_8018A72C + 0x1, .branch_12EBE4
-    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, D_8018A72C + 0x2, .branch_12EBE4
-    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, D_8018A72C + 0x3, .branch_12EBE4
-    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, D_8018A72C + 0x4, .branch_12EBE4
+    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, gRaceFinishOrder, .branch_12EBE4
+    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, gRaceFinishOrder + 0x1, .branch_12EBE4
+    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, gRaceFinishOrder + 0x2, .branch_12EBE4
+    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, gRaceFinishOrder + 0x3, .branch_12EBE4
+    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, gRaceFinishOrder + 0x4, .branch_12EBE4
     BRANCH_IF_U16_PTR_IN_RANGE var6, var5, var8, .branch_12EC44
 
 .branch_12EBE4:
     UPDATE_U16_VALUE -1, 9999, var5
-    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, D_8018A72C + 0x2, .branch_12EC20
-    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, D_8018A72C + 0x3, .branch_12EC2C
-    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, D_8018A72C + 0x4, .branch_12EC38
-    SET_U8_VALUE 5, D_8018A72C + 0x5
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, gRaceFinishOrder + 0x2, .branch_12EC20
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, gRaceFinishOrder + 0x3, .branch_12EC2C
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, gRaceFinishOrder + 0x4, .branch_12EC38
+    SET_U8_VALUE 5, gRaceFinishOrder + 0x5
     DEACTIVATE_SELF
 
 .branch_12EC20:
-    SET_U8_VALUE 5, D_8018A72C + 0x2
+    SET_U8_VALUE 5, gRaceFinishOrder + 0x2
     EXECUTE_SUBROUTINE .executor_24_12E118
 
 .branch_12EC2C:
-    SET_U8_VALUE 5, D_8018A72C + 0x3
+    SET_U8_VALUE 5, gRaceFinishOrder + 0x3
     EXECUTE_SUBROUTINE .executor_24_12E118
 
 .branch_12EC38:
-    SET_U8_VALUE 5, D_8018A72C + 0x4
+    SET_U8_VALUE 5, gRaceFinishOrder + 0x4
     EXECUTE_SUBROUTINE .executor_24_12E118
 
 .branch_12EC44:
     UPDATE_U16_VALUE 1, 9999, var6
-    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, D_8018A72C, .branch_12ECA0
-    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, D_8018A72C + 0x1, .branch_12ECA0
-    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, D_8018A72C + 0x2, .branch_12ECA0
-    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, D_8018A72C + 0x3, .branch_12ECA0
-    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, D_8018A72C + 0x4, .branch_12ECA0
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gRaceFinishOrder, .branch_12ECA0
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gRaceFinishOrder + 0x1, .branch_12ECA0
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gRaceFinishOrder + 0x2, .branch_12ECA0
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gRaceFinishOrder + 0x3, .branch_12ECA0
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gRaceFinishOrder + 0x4, .branch_12ECA0
     BRANCH_IF_U16_PTR_IN_RANGE var1, var6, var8, .sub_12E258
 
 .branch_12ECA0:
-    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, D_8018A72C, .branch_12ECF0
-    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, D_8018A72C + 0x1, .branch_12ECF0
-    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, D_8018A72C + 0x2, .branch_12ECF0
-    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, D_8018A72C + 0x3, .branch_12ECF0
-    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, D_8018A72C + 0x4, .branch_12ECF0
+    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gRaceFinishOrder, .branch_12ECF0
+    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gRaceFinishOrder + 0x1, .branch_12ECF0
+    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gRaceFinishOrder + 0x2, .branch_12ECF0
+    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gRaceFinishOrder + 0x3, .branch_12ECF0
+    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gRaceFinishOrder + 0x4, .branch_12ECF0
     BRANCH_IF_U16_PTR_IN_RANGE var2, var6, var8, .sub_12E454
 
 .branch_12ECF0:
-    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, D_8018A72C, .branch_12ED40
-    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, D_8018A72C + 0x1, .branch_12ED40
-    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, D_8018A72C + 0x2, .branch_12ED40
-    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, D_8018A72C + 0x3, .branch_12ED40
-    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, D_8018A72C + 0x4, .branch_12ED40
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gRaceFinishOrder, .branch_12ED40
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gRaceFinishOrder + 0x1, .branch_12ED40
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gRaceFinishOrder + 0x2, .branch_12ED40
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gRaceFinishOrder + 0x3, .branch_12ED40
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gRaceFinishOrder + 0x4, .branch_12ED40
     BRANCH_IF_U16_PTR_IN_RANGE var3, var6, var8, .sub_12E650
 
 .branch_12ED40:
-    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, D_8018A72C, .branch_12ED90
-    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, D_8018A72C + 0x1, .branch_12ED90
-    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, D_8018A72C + 0x2, .branch_12ED90
-    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, D_8018A72C + 0x3, .branch_12ED90
-    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, D_8018A72C + 0x4, .branch_12ED90
+    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gRaceFinishOrder, .branch_12ED90
+    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gRaceFinishOrder + 0x1, .branch_12ED90
+    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gRaceFinishOrder + 0x2, .branch_12ED90
+    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gRaceFinishOrder + 0x3, .branch_12ED90
+    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gRaceFinishOrder + 0x4, .branch_12ED90
     BRANCH_IF_U16_PTR_IN_RANGE var4, var6, var8, .sub_12E84C
 
 .branch_12ED90:
-    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, D_8018A72C, .branch_12EDE0
-    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, D_8018A72C + 0x1, .branch_12EDE0
-    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, D_8018A72C + 0x2, .branch_12EDE0
-    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, D_8018A72C + 0x3, .branch_12EDE0
-    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, D_8018A72C + 0x4, .branch_12EDE0
+    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, gRaceFinishOrder, .branch_12EDE0
+    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, gRaceFinishOrder + 0x1, .branch_12EDE0
+    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, gRaceFinishOrder + 0x2, .branch_12EDE0
+    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, gRaceFinishOrder + 0x3, .branch_12EDE0
+    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, gRaceFinishOrder + 0x4, .branch_12EDE0
     BRANCH_IF_U16_PTR_IN_RANGE var5, var6, var8, .sub_12EA48
 
 .branch_12EDE0:
     UPDATE_U16_VALUE -1, 9999, var6
-    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, D_8018A72C + 0x2, .branch_12EE1C
-    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, D_8018A72C + 0x3, .branch_12EE28
-    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, D_8018A72C + 0x4, .branch_12EE34
-    SET_U8_VALUE 6, D_8018A72C + 0x5
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, gRaceFinishOrder + 0x2, .branch_12EE1C
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, gRaceFinishOrder + 0x3, .branch_12EE28
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, gRaceFinishOrder + 0x4, .branch_12EE34
+    SET_U8_VALUE 6, gRaceFinishOrder + 0x5
     DEACTIVATE_SELF
 
 .branch_12EE1C:
-    SET_U8_VALUE 6, D_8018A72C + 0x2
+    SET_U8_VALUE 6, gRaceFinishOrder + 0x2
     EXECUTE_SUBROUTINE .executor_24_12E118
 
 .branch_12EE28:
-    SET_U8_VALUE 6, D_8018A72C + 0x3
+    SET_U8_VALUE 6, gRaceFinishOrder + 0x3
     EXECUTE_SUBROUTINE .executor_24_12E118
 
 .branch_12EE34:
-    SET_U8_VALUE 6, D_8018A72C + 0x4
+    SET_U8_VALUE 6, gRaceFinishOrder + 0x4
     EXECUTE_SUBROUTINE .executor_24_12E118
 
 .branch_12EE40:
@@ -3814,12 +3814,12 @@
 
 .executor_16_12EE58:
     TOGGLE_SPECIAL_BIT 0, D_801C3F78
-    SET_U8_VALUE 0, D_8018A72C
-    SET_U8_VALUE 0, D_8018A72C + 0x1
-    SET_U8_VALUE 0, D_8018A72C + 0x2
-    SET_U8_VALUE 0, D_8018A72C + 0x3
-    SET_U8_VALUE 0, D_8018A72C + 0x4
-    SET_U8_VALUE 0, D_8018A72C + 0x5
+    SET_U8_VALUE 0, gRaceFinishOrder
+    SET_U8_VALUE 0, gRaceFinishOrder + 0x1
+    SET_U8_VALUE 0, gRaceFinishOrder + 0x2
+    SET_U8_VALUE 0, gRaceFinishOrder + 0x3
+    SET_U8_VALUE 0, gRaceFinishOrder + 0x4
+    SET_U8_VALUE 0, gRaceFinishOrder + 0x5
     SET_WAIT_FRAMES 2
     SPAWN_EXECUTOR 21, .executor_21_12F230
     SPAWN_EXECUTOR 1, .executor_1_12B660
@@ -3910,7 +3910,7 @@
     SET_WAIT_FRAMES 20
     SET_SPECIAL_BIT 0, D_801C3F78
     SET_SPECIAL_BIT 10, D_801C3F78
-    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, D_8018A72C, .branch_12F160
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gRaceFinishOrder, .branch_12F160
     SET_OTHER_EXECUTOR_PTR 30, .executor_30_12B0C8
     SET_OTHER_EXECUTOR_PTR 31, .executor_30_12B0C8
     SET_OTHER_EXECUTOR_PTR 32, .executor_30_12B0C8

@@ -54,6 +54,7 @@
 #define CHICKEN_FEED 20
 #define BALL 21
 #define FEEDING_BOTTLE 22
+// 23
 #define FISHING_POLE 24
 #define MIRACLE_POTION 25
 #define COW_MEDICINE 26
@@ -252,7 +253,7 @@ extern void loadActiveItemEntities();
 extern u16 getItemFlags(u16 index);
 extern bool handlePickUpGroundItem();
 extern void showHeldItemText(u8 index);
-extern void updateHeldItemStates();
+extern void updateHeldItemState();
 extern u8 getToolLevel(u8 tool);
 extern u8 getItemStaminaIncreaseValue(u16 index);
 extern u8 getItemFatigueReductionValue(u16 index);

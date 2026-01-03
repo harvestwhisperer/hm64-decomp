@@ -2972,7 +2972,7 @@ void setupWeatherSprites(MainMap* mainMap) {
 
                 if (!(getRandomNumberInRange(0, 4))) {
                 
-                    globalSprites[mainMap->weatherSprites[i].spriteIndex].stateFlags &= ~0x40;
+                    globalSprites[mainMap->weatherSprites[i].spriteIndex].stateFlags &= ~SPRITE_ANIMATION_STATE_CHANGED;
                     startSpriteAnimation(mainMap->weatherSprites[i].spriteIndex, mainMap->weatherSprites[i].animationIndex, 0xFE);
                     
                     mainMap->weatherSprites[i].flags |= MAP_WEATHER_SPRITE_ANIMATION_STARTED;

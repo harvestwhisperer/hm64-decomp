@@ -29,7 +29,7 @@
 
 
 // FIXME:
-// instead of including the header, defining here because loadCutscene(u32) doesn't match in func_800ED974
+// instead of including the header, defining here because loadCutscene(u32) doesn't match in namingScreenCallback
 extern void loadCutscene(void);
 extern u16 gCutsceneIndex;
 
@@ -55,9 +55,8 @@ u8 D_8011C680[13][6] = {
     0x71, 0x51, 0xFF, 0xFF, 0xFF, 0xFF
 };
 
-// japanese character set 1 grid to char index
 // columns x rows
-u8 D_8011C6D0[15][6] = {
+u8 gridToCharacterMapJP1[15][6] = {
     { 0, 0x5, 0xA, 0xF, 0x14, 0x19 },
     { 0x1, 0x6, 0xB, 0x10, 0x15, 0x1A },
     { 0x2, 0x7, 0xC, 0x11, 0x16, 0x1B },
@@ -75,8 +74,7 @@ u8 D_8011C6D0[15][6] = {
     { 0x32, 0x37, 0x3C, 0x41, 0x46, 0xEE },
 };
 
-// japanese character set 2 grid to char index
-u8 D_8011C72C[15][6] = {
+u8 gridToCharacterMapJP2[15][6] = {
     { 0x50, 0x55, 0x5A, 0x5F, 0x64, 0x69 },
     { 0x51, 0x56, 0x5B, 0x60, 0x65, 0x6A },
     { 0x52, 0x57, 0x5C, 0x61, 0x66, 0x6B },
@@ -94,9 +92,7 @@ u8 D_8011C72C[15][6] = {
     { 0x82, 0x87, 0x8C, 0x91, 0x96, 0xEE },
 };
 
-// US grid to char index
-// columns x rows
-u8 D_8011C788[15][6] = {
+u8 gridToCharacterMapEN[15][6] = {
     { char_A, char_F, char_K,                char_P,      char_U,           char_Z     },
     { char_B, char_G, char_L,                char_Q,      char_V,           char_SPACE },
     { char_C, char_H, char_M,                char_R,      char_W,           char_SPACE },
@@ -116,27 +112,27 @@ u8 D_8011C788[15][6] = {
 
 // forward declarations
 void loadNameSelectionSprites(void);
-bool func_800EF578(void);
-void func_800EFADC(void);
-void func_800EFBEC(void);                                  
-void func_800EFCF8(void);                                  
-void func_800EFE84(void);   
+bool selectCharacterOrConfirm(void);
+void moveCursorLeft(void);
+void moveCursorRight(void);
+void moveCursorUp(void);
+void moveCursorDown(void);
 void deactivateNamingScreenSprites(void);
-void func_800F00D8(void);
-void func_800F0320(void);
+void updateBottomRowUI(void);
+void snapCursorToOKButton(void);
 void loadSeasonSelectionSprites(void);
-void func_800F0F84(void);
+void handleSeasonSelectionInput(void);
 
 
 static inline int getSpriteIndexFromFlags(u16 flags) {
-    int v = (flags & (0x4 | 0x8 | 0x10)) >> 2;
+    int v = (flags & NAMING_SCREEN_NAME_POSITION_MASK) >> NAMING_SCREEN_NAME_POSITION_SHIFT;
     v -= 1;
     return v;
 }
 
 static inline void setSpriteIndexOnFlags(s32 index) {
-    namingScreenContext.flags &= ~(0x4 | 0x8 | 0x10);
-    namingScreenContext.flags |= (index << 2);
+    namingScreenContext.flags &= ~NAMING_SCREEN_NAME_POSITION_MASK;
+    namingScreenContext.flags |= (index << NAMING_SCREEN_NAME_POSITION_SHIFT);
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/namingScreen", initializeNamingScreen);
@@ -170,18 +166,18 @@ inline void initializeNamingScreen(u8* arg0, u8 arg1) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/namingScreen", func_800ED974);
+//INCLUDE_ASM("asm/nonmatchings/game/namingScreen", namingScreenCallback);
 
 // main loop callback
-void func_800ED974(void) {
+void namingScreenCallback(void) {
 
     s32 i;
-    s32 temp = (namingScreenContext.flags & 0x60) >> 5;
+    s32 temp = (namingScreenContext.flags & NAMING_SCREEN_SCREEN_STATE_MASK) >> NAMING_SCREEN_SCREEN_STATE_SHIFT;
     s32 temp2;
 
     if (globalSprites[0x90].stateFlags & 0x400) {
         
-        if (namingScreenContext.flags & 0x100) {
+        if (namingScreenContext.flags & NAMING_SCREEN_GOTO_SEASON_SELECT) {
 
             deactivateNamingScreenSprites();
 
@@ -189,14 +185,14 @@ void func_800ED974(void) {
             deactivateMessageBox(3);
 
             loadSeasonSelectionSprites();
-            
-            namingScreenContext.flags &= ~0x100;
+
+            namingScreenContext.flags &= ~NAMING_SCREEN_GOTO_SEASON_SELECT;
 
             return;
 
         }
 
-        if (namingScreenContext.flags & 0x200) {
+        if (namingScreenContext.flags & NAMING_SCREEN_GOTO_SEASON_CONFIRM) {
 
             temp2 = namingScreenContext.selectedSeason;
 
@@ -204,7 +200,7 @@ void func_800ED974(void) {
 
             dmaSprite(0x80, &_namingScreen1TextureSegmentRomStart, &_namingScreen1TextureSegmentRomEnd, &_namingScreen1AssetsIndexSegmentRomStart, &_namingScreen1AssetsIndexSegmentRomEnd, NULL, NULL, (u8*)NAMING_SCREEN_CONFIRMATION_SCREEN_TEXTURE_BUFFER, NULL, (u16*)NAMING_SCREEN_CONFIRMATION_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)NAMING_SCREEN_CONFIRMATION_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)NAMING_SCREEN_CONFIRMATION_SCREEN_TEXTURE_TO_PALETTE_BUFFER, NULL, 0, FALSE);
             dmaSprite(0x84, &_namingScreen1TextureSegmentRomStart, &_namingScreen1TextureSegmentRomEnd, &_namingScreen1AssetsIndexSegmentRomStart, &_namingScreen1AssetsIndexSegmentRomEnd, NULL, NULL, (u8*)NAMING_SCREEN_CONFIRMATION_SCREEN_TEXTURE_BUFFER, NULL, (u16*)NAMING_SCREEN_CONFIRMATION_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)NAMING_SCREEN_CONFIRMATION_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)NAMING_SCREEN_CONFIRMATION_SCREEN_TEXTURE_TO_PALETTE_BUFFER, NULL, 0, FALSE);
-           
+
             dmaSprite(LANDSCAPE_BACKGROUND, &_namingScreenBackgroundTextureSegmentRomStart, &_namingScreenBackgroundTextureSegmentRomEnd, &_namingScreenBackgroundAssetsIndexSegmentRomStart, &_namingScreenBackgroundAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)NAMING_SCREEN_BACKGROUND_TEXTURE_BUFFER, NULL, (u16*)NAMING_SCREEN_BACKGROUND_PALETTE_BUFFER, (AnimationFrameMetadata*)NAMING_SCREEN_BACKGROUND_ANIMATION_FRAME_METADATA_BUFFER, (u32*)NAMING_SCREEN_BACKGROUND_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
             setBilinearFiltering(LANDSCAPE_BACKGROUND, TRUE);
             setSpriteScale(LANDSCAPE_BACKGROUND, 2.0f, 2.0f, 1.0f);
@@ -212,18 +208,18 @@ void func_800ED974(void) {
             startSpriteAnimation(0x80, 1, 0);
             startSpriteAnimation(0x84, 2, 0);
             startSpriteAnimation(LANDSCAPE_BACKGROUND, 0, 0);
-            
+
             setSpriteColor(0x80, 0, 0, 0, 0);
             setSpriteColor(0x84, 0, 0, 0, 0);
             setSpriteColor(LANDSCAPE_BACKGROUND, 0, 0, 0, 0);
-            
+
             updateSpriteRGBA(0x80, 0xFF, 0xFF, 0xFF, 0xFF, 8);
             updateSpriteRGBA(0x84, 0xFF, 0xFF, 0xFF, 0xFF, 8);
             updateSpriteRGBA(LANDSCAPE_BACKGROUND, 0xFF, 0xFF, 0xFF, 0xFF, 8);
 
             namingScreenContext.dialogueIndex = 10;
-            namingScreenContext.flags &= ~(0x20 | 0x40);
-            namingScreenContext.flags |= 0x40;
+            namingScreenContext.flags &= ~NAMING_SCREEN_SCREEN_STATE_MASK;
+            namingScreenContext.flags |= (NAMING_SCREEN_STATE_SEASON_CONFIRM << NAMING_SCREEN_SCREEN_STATE_SHIFT);
 
             initializeEmptyMessageBox(3, (u8*)MESSAGE_BOX_3_TEXT_BUFFER);
             setMessageBoxViewSpacePosition(3, 4.0f, 56.0f, 30.0f);
@@ -247,27 +243,27 @@ void func_800ED974(void) {
             setMessageBoxRGBA(4, 0, 0, 0, 0);
             setMessageBoxRGBAWithTransition(4, 0xFF, 0xFF, 0xFF, 0xFF, 8);
             
-            namingScreenContext.flags &= ~0x200;
-            
+            namingScreenContext.flags &= ~NAMING_SCREEN_GOTO_SEASON_CONFIRM;
+
             return;
-            
+
         }
 
-        if (namingScreenContext.flags & 0x400) {
-            
+        if (namingScreenContext.flags & NAMING_SCREEN_RETURN_TO_NAMING) {
+
             deactivateNamingScreenSprites();
             deactivateMessageBox(3);
             deactivateMessageBox(4);
             loadNameSelectionSprites();
-            
+
             namingScreenContext.dialogueIndex = 12;
-            namingScreenContext.flags &= ~0x400;
-            
+            namingScreenContext.flags &= ~NAMING_SCREEN_RETURN_TO_NAMING;
+
             return;
-            
+
         }
 
-         if (namingScreenContext.flags & 0x800) {
+         if (namingScreenContext.flags & NAMING_SCREEN_CONFIRM_AND_EXIT) {
 
             setGameVariableString(0, gPlayer.name, 6);
             
@@ -349,10 +345,10 @@ void func_800ED974(void) {
              }
 
         } else {
-             
-            if (namingScreenContext.flags & 0x1000) {
-                namingScreenContext.flags &= ~0x1000;
-                namingScreenContext.flags |= 0x800;
+
+            if (namingScreenContext.flags & NAMING_SCREEN_AUDIO_FADE_TRANSITION) {
+                namingScreenContext.flags &= ~NAMING_SCREEN_AUDIO_FADE_TRANSITION;
+                namingScreenContext.flags |= NAMING_SCREEN_CONFIRM_AND_EXIT;
                 return;
             }
     
@@ -367,18 +363,18 @@ void func_800ED974(void) {
                     switch (temp) {   
     
                         case 0:
-                            func_800F03C4();
+                            handleNamingGridInput();
                             return;
-    
+
                         case 1:
-                            func_800F0F84();
+                            handleSeasonSelectionInput();
                             return;
     
-                        case 2:
-                            
+                        case NAMING_SCREEN_STATE_SEASON_CONFIRM:
+
                             if (dialogues[0].sessionManager.selectedMenuRow == 0) {
-                                
-                                namingScreenContext.flags |= 0x800;
+
+                                namingScreenContext.flags |= NAMING_SCREEN_CONFIRM_AND_EXIT;
                                 
                                 setMessageBoxRGBAWithTransition(3, 0, 0, 0, 0, 8);
                                 setMessageBoxRGBAWithTransition(4, 0, 0, 0, 0, 8);
@@ -392,21 +388,21 @@ void func_800ED974(void) {
                                 
                             }
     
-                            namingScreenContext.flags |= 0x400;
-                            
+                            namingScreenContext.flags |= NAMING_SCREEN_RETURN_TO_NAMING;
+
                             setMessageBoxRGBAWithTransition(3, 0, 0, 0, 0, 8);
                             setMessageBoxRGBAWithTransition(4, 0, 0, 0, 0, 8);
                             updateSpriteRGBA(0x80, 0, 0, 0, 0, 8);
                             updateSpriteRGBA(0x84, 0, 0, 0, 0, 8);
                             updateSpriteRGBA(LANDSCAPE_BACKGROUND, 0, 0, 0, 0, 8);
-                            
+
                             return;
-    
-                        case 3:
-    
+
+                        case NAMING_SCREEN_STATE_ANIMAL_CONFIRM:
+
                             if (dialogues[0].sessionManager.selectedMenuRow == 0) {
-                                
-                                namingScreenContext.flags |= 0x800;
+
+                                namingScreenContext.flags |= NAMING_SCREEN_CONFIRM_AND_EXIT;
 
                                 setMessageBoxRGBAWithTransition(3, 0, 0, 0, 0, 8);
                                 
@@ -430,16 +426,16 @@ void func_800ED974(void) {
                                 updateSpriteRGBA(0x91, 0, 0, 0, 0, 8);
     
                                 if (namingScreenContext.screenType != 1) {
-                                    
+
                                     stopAudioSequenceWithDefaultFadeOut(NAMING_SCREEN_THEME);
-                                    
-                                    namingScreenContext.flags &= ~(0x800);
-                                    namingScreenContext.flags |= 0x1000;
-    
+
+                                    namingScreenContext.flags &= ~NAMING_SCREEN_CONFIRM_AND_EXIT;
+                                    namingScreenContext.flags |= NAMING_SCREEN_AUDIO_FADE_TRANSITION;
+
                                 }
-                                
+
                             } else {
-                                namingScreenContext.flags &= ~(0x20 | 0x40);
+                                namingScreenContext.flags &= ~NAMING_SCREEN_SCREEN_STATE_MASK;
                                 setSpritePaletteIndex(0x91, 4);
                             }
                             
@@ -567,7 +563,7 @@ void loadNameSelectionSprites(void) {
     namingScreenContext.gridY = 0;
     namingScreenContext.gridX = 0;
     namingScreenContext.unk_1C = 0;
-    namingScreenContext.flags = 2;
+    namingScreenContext.flags = NAMING_SCREEN_CHARSET_ENGLISH;
 
     namingScreenContext.cursor.x = -126.0f;
     namingScreenContext.cursor.y = 16.0f;
@@ -594,8 +590,7 @@ void loadNameSelectionSprites(void) {
         }
     } 
       
-    // store current character position
-    namingScreenContext.flags |= i << 2;
+    namingScreenContext.flags |= i << NAMING_SCREEN_NAME_POSITION_SHIFT;
     
     setGameVariableString(0, namingScreenContext.name, 6);
     
@@ -613,9 +608,9 @@ void loadNameSelectionSprites(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/namingScreen", func_800EF578);
+//INCLUDE_ASM("asm/nonmatchings/game/namingScreen", selectCharacterOrConfirm);
 
-bool func_800EF578(void) {
+bool selectCharacterOrConfirm(void) {
 
     bool result = FALSE; 
 
@@ -633,7 +628,7 @@ bool func_800EF578(void) {
 
     if (namingScreenContext.gridX >= 10 && namingScreenContext.gridY == 5) {
 
-        charsetFlags = namingScreenContext.flags & 3;
+        charsetFlags = namingScreenContext.flags & NAMING_SCREEN_CHARSET_MASK;
 
         // navigate to other charset (japanese version)
         if (namingScreenContext.gridX == 10) {
@@ -685,16 +680,16 @@ bool func_800EF578(void) {
         } else if (namingScreenContext.gridX == 12) {
 
             // get current character index
-            temp3 = (namingScreenContext.flags & 0x1C) >> 2;
+            temp3 = (namingScreenContext.flags & NAMING_SCREEN_NAME_POSITION_MASK) >> NAMING_SCREEN_NAME_POSITION_SHIFT;
                         
             resetAnimationState(0x91);
             startSpriteAnimation(0x91, 2, 2);
             setSpritePaletteIndex(0x91, 5);
             
             if (temp3 == 0) {
-                
+
                 initializeDialogueSession(0, 0x3A, 8, 0);
-                namingScreenContext.flags |= 0x80;
+                namingScreenContext.flags |= NAMING_SCREEN_EMPTY_NAME_ERROR;
             
             } else if (namingScreenContext.screenType == 0) {
             
@@ -718,44 +713,43 @@ bool func_800EF578(void) {
                 updateSpriteRGBA(0x8E, 0, 0, 0, 0, 8);
                 updateSpriteRGBA(0x91, 0, 0, 0, 0, 8);
                 
-                namingScreenContext.flags |= 0x100;
+                namingScreenContext.flags |= NAMING_SCREEN_GOTO_SEASON_SELECT;
                 result = TRUE;
-                
+
             } else {
-            
-                namingScreenContext.flags |= (0x20 | 0x40);
+
+                namingScreenContext.flags |= (NAMING_SCREEN_STATE_ANIMAL_CONFIRM << NAMING_SCREEN_SCREEN_STATE_SHIFT);
                 initializeDialogueSession(0, 0x3A, 0xB, 0);
             
             }
 
         }
 
-        namingScreenContext.flags &= ~(1 | 2);
-        namingScreenContext.flags |= (charsetFlags & 3);
+        namingScreenContext.flags &= ~NAMING_SCREEN_CHARSET_MASK;
+        namingScreenContext.flags |= (charsetFlags & NAMING_SCREEN_CHARSET_MASK);
 
     } else {
 
-        characterPosition = ((namingScreenContext.flags & 0x1C) >> 2);
+        characterPosition = ((namingScreenContext.flags & NAMING_SCREEN_NAME_POSITION_MASK) >> NAMING_SCREEN_NAME_POSITION_SHIFT);
         
         spriteIndex = NAMING_SCREEN_SPRITES_BASE + characterPosition;
         spriteIndex2 = 0x89 + characterPosition;
         
-        // get character sets
-        switch (namingScreenContext.flags & 3) {
+        switch (namingScreenContext.flags & NAMING_SCREEN_CHARSET_MASK) {
 
             // japanese 1
             case 0:
-                character = D_8011C6D0[namingScreenContext.gridX][namingScreenContext.gridY];
+                character = gridToCharacterMapJP1[namingScreenContext.gridX][namingScreenContext.gridY];
                 break;
 
             // japanese 2
             case 1:
-                character = D_8011C72C[namingScreenContext.gridX][namingScreenContext.gridY];
+                character = gridToCharacterMapJP2[namingScreenContext.gridX][namingScreenContext.gridY];
                 break;
 
             // english
             case 2:
-                character = D_8011C788[namingScreenContext.gridX][namingScreenContext.gridY];
+                character = gridToCharacterMapEN[namingScreenContext.gridX][namingScreenContext.gridY];
                 break;
             
         }
@@ -769,10 +763,9 @@ bool func_800EF578(void) {
         characterPosition++;
         
         if (characterPosition < 7) {
-            
-            namingScreenContext.flags &= ~(4 | 8 | 0x10);
-            // store current character position
-            namingScreenContext.flags |= (characterPosition << 2);
+
+            namingScreenContext.flags &= ~NAMING_SCREEN_NAME_POSITION_MASK;
+            namingScreenContext.flags |= (characterPosition << NAMING_SCREEN_NAME_POSITION_SHIFT);
             
             resetAnimationState(spriteIndex);
             
@@ -790,9 +783,9 @@ bool func_800EF578(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/namingScreen", func_800EFADC);
+//INCLUDE_ASM("asm/nonmatchings/game/namingScreen", moveCursorLeft);
 
-void func_800EFADC(void) {
+void moveCursorLeft(void) {
 
     namingScreenContext.cursor.x -= 16.0f;
     namingScreenContext.shadow.x -= 16.0f;
@@ -814,13 +807,13 @@ void func_800EFADC(void) {
         
     }
     
-    func_800F00D8();
-    
+    updateBottomRowUI();
+
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/namingScreen", func_800EFBEC);
+//INCLUDE_ASM("asm/nonmatchings/game/namingScreen", moveCursorRight);
 
-void func_800EFBEC(void) {
+void moveCursorRight(void) {
         
     namingScreenContext.cursor.x += 16.0f;
     namingScreenContext.shadow.x += 16.0f;
@@ -846,14 +839,14 @@ void func_800EFBEC(void) {
 
     }
 
-    func_800F00D8();
+    updateBottomRowUI();
 
 }
 
 
-//INCLUDE_ASM("asm/nonmatchings/game/namingScreen", func_800EFCF8);
+//INCLUDE_ASM("asm/nonmatchings/game/namingScreen", moveCursorUp);
 
-void func_800EFCF8(void) {
+void moveCursorUp(void) {
 
     namingScreenContext.cursor.y += 16.0f;
     namingScreenContext.shadow.y += 16.0f;
@@ -867,19 +860,19 @@ void func_800EFCF8(void) {
         namingScreenContext.cursor.y = -64.0f;
         namingScreenContext.shadow.y = -54.0f;
 
-        func_800F0320();
-        
+        snapCursorToOKButton();
+
     }
 
     if (namingScreenContext.gridX >= 10 && namingScreenContext.gridY == 4) {
 
-        namingScreenContext.gridX = namingScreenContext.unk_1A;
+        namingScreenContext.gridX = namingScreenContext.savedGridX;
 
         namingScreenContext.cursor.y = -48.0f;
         namingScreenContext.shadow.y = -38.0f;
 
-        namingScreenContext.cursor.x = (namingScreenContext.unk_1A * 16.0f) + -126.0f + 6.0f;
-        namingScreenContext.shadow.x = (namingScreenContext.unk_1A * 16.0f) + -116.0f + 6.0f;
+        namingScreenContext.cursor.x = (namingScreenContext.savedGridX * 16.0f) + -126.0f + 6.0f;
+        namingScreenContext.shadow.x = (namingScreenContext.savedGridX * 16.0f) + -116.0f + 6.0f;
         
         resetAnimationState(0x82);
         startSpriteAnimation(0x82, 2, 0);
@@ -893,9 +886,9 @@ void func_800EFCF8(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/namingScreen", func_800EFE84);
+//INCLUDE_ASM("asm/nonmatchings/game/namingScreen", moveCursorDown);
 
-void func_800EFE84(void) {
+void moveCursorDown(void) {
 
     namingScreenContext.cursor.y -= 16.0f;
     namingScreenContext.shadow.y -= 16.0f;
@@ -911,7 +904,7 @@ void func_800EFE84(void) {
 
         if (namingScreenContext.gridX >= 10) {
 
-            namingScreenContext.gridX = namingScreenContext.unk_1A;
+            namingScreenContext.gridX = namingScreenContext.savedGridX;
 
             namingScreenContext.cursor.x = (namingScreenContext.gridX * 16.0f);
             namingScreenContext.cursor.x += -126.0f;
@@ -928,17 +921,17 @@ void func_800EFE84(void) {
             setSpritePaletteIndex(0x91, 3);
             
         }
-        
+
     }
 
-    func_800F0320();
-    
+    snapCursorToOKButton();
+
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/namingScreen", func_800EFFDC);
+//INCLUDE_ASM("asm/nonmatchings/game/namingScreen", checkNameProhibited);
 
 // unused or inline
-bool func_800EFFDC(void) {
+bool checkNameProhibited(void) {
     
     bool processingChar;
     bool doneProcessingWord;
@@ -1054,9 +1047,9 @@ void deactivateNamingScreenSprites(void) {
 }
 */
 
-//INCLUDE_ASM("asm/nonmatchings/game/namingScreen", func_800F00D8);
+//INCLUDE_ASM("asm/nonmatchings/game/namingScreen", updateBottomRowUI);
 
-void func_800F00D8(void) {
+void updateBottomRowUI(void) {
 
     s8 temp;
 
@@ -1068,7 +1061,7 @@ void func_800F00D8(void) {
 
             case 0:
             case 2:
-                namingScreenContext.unk_1A = 10;
+                namingScreenContext.savedGridX = 10;
                 namingScreenContext.gridX = 9;
                 
                 resetAnimationState(0x91);
@@ -1090,7 +1083,7 @@ void func_800F00D8(void) {
 
             case 3:
 
-                namingScreenContext.unk_1A = 13;
+                namingScreenContext.savedGridX = 13;
 
                 namingScreenContext.cursor.x = 100.0f;
                 namingScreenContext.cursor.y = -95.0f;
@@ -1120,8 +1113,8 @@ void func_800F00D8(void) {
                 break;
             
             case 5:
-                
-                namingScreenContext.unk_1A = 13;
+
+                namingScreenContext.savedGridX = 13;
                 namingScreenContext.gridX = 12;
 
                 namingScreenContext.cursor.x = 100.0f;
@@ -1138,13 +1131,13 @@ void func_800F00D8(void) {
     }
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/namingScreen", func_800F0320);
+//INCLUDE_ASM("asm/nonmatchings/game/namingScreen", snapCursorToOKButton);
 
-void func_800F0320(void) {
+void snapCursorToOKButton(void) {
     
     if ((namingScreenContext.gridY == 5) && (namingScreenContext.gridX >= 10)) {
-        
-        namingScreenContext.unk_1A = namingScreenContext.gridX;
+
+        namingScreenContext.savedGridX = namingScreenContext.gridX;
         
         namingScreenContext.gridX = 12;
         namingScreenContext.cursor.x = 100.0f;
@@ -1159,23 +1152,23 @@ void func_800F0320(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/namingScreen", func_800F03C4);
+//INCLUDE_ASM("asm/nonmatchings/game/namingScreen", handleNamingGridInput);
 
-void func_800F03C4(void) {
+void handleNamingGridInput(void) {
         
     bool set = FALSE;
     s32 index;
 
-    if (namingScreenContext.flags & 0x80) {
+    if (namingScreenContext.flags & NAMING_SCREEN_EMPTY_NAME_ERROR) {
         resetAnimationState(0x91);
         startSpriteAnimation(0x91, 2, 1);
         setSpritePaletteIndex(0x91, 4);
-        namingScreenContext.flags &= ~(0x80);
+        namingScreenContext.flags &= ~NAMING_SCREEN_EMPTY_NAME_ERROR;
     }
 
     if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_NORTHWEST)) {
         set = TRUE;
-        func_800EFADC();
+        moveCursorLeft();
         setSfx(3);
         setSfxVolume(3, SFX_VOLUME);
     }
@@ -1183,7 +1176,7 @@ void func_800F03C4(void) {
     if (!set) {
         if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_SOUTHEAST)) {
             set = TRUE;
-            func_800EFBEC();
+            moveCursorRight();
             setSfx(3);
             setSfxVolume(3, SFX_VOLUME);
         }
@@ -1192,31 +1185,31 @@ void func_800F03C4(void) {
     if (!set) {
         if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_SOUTHWEST)) {
             set = TRUE;
-            func_800EFE84();
+            moveCursorDown();
             setSfx(3);
             setSfxVolume(3, SFX_VOLUME);
         }
     }
-        
+
     if (!set) {
-        
+
         if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_NORTHEAST)) {
-            func_800EFCF8();
+            moveCursorUp();
             set = TRUE;
             setSfx(3);
             setSfxVolume(3, SFX_VOLUME);
         }
-    }         
-    
+    }
+
     if (!set) {
-        
+
         if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
-            
+
             set = TRUE;
             setSfx(1);
             setSfxVolume(CLOSE, SFX_VOLUME);
-            
-            if (func_800EF578()) { 
+
+            if (selectCharacterOrConfirm()) {
                 return;
             }
             
@@ -1255,8 +1248,8 @@ void func_800F03C4(void) {
     if (!set) { 
         
         if (checkButtonPressed(CONTROLLER_1, BUTTON_START)) {
-            
-            namingScreenContext.unk_1A = 14;
+
+            namingScreenContext.savedGridX = 14;
             namingScreenContext.gridX = 12;
             namingScreenContext.gridY = 5;
                     
@@ -1355,23 +1348,23 @@ void loadSeasonSelectionSprites(void) {
     namingScreenContext.dialogueIndex = 9;
     namingScreenContext.cursor.x = -128.0f;
     namingScreenContext.cursor.y = 52.0f;
-    namingScreenContext.flags &= ~(0x20 | 0x40);
-    namingScreenContext.flags |= 0x20;
-    
+    namingScreenContext.flags &= ~NAMING_SCREEN_SCREEN_STATE_MASK;
+    namingScreenContext.flags |= (NAMING_SCREEN_STATE_SEASON_SELECT << NAMING_SCREEN_SCREEN_STATE_SHIFT);
+
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/namingScreen", func_800F0F84);
+//INCLUDE_ASM("asm/nonmatchings/game/namingScreen", handleSeasonSelectionInput);
 
-void func_800F0F84(void) {
+void handleSeasonSelectionInput(void) {
     
     bool set = FALSE;
 
     if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_SOUTHWEST) || checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_NORTHEAST)) {
-    
+
         set = TRUE;
-        
-        func_800F121C();
-        
+
+        moveSeasonCursorVertically();
+
         setSfx(3);
         setSfxVolume(3, SFX_VOLUME);
 
@@ -1380,25 +1373,25 @@ void func_800F0F84(void) {
     if (!set) {
 
         if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_NORTHWEST) || checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_SOUTHEAST)) {
-            
+
             set = TRUE;
-            
-            func_800F12C4();
+
+            moveSeasonCursorHorizontally();
 
             setSfx(3);
             setSfxVolume(3, SFX_VOLUME);
         }
-        
+
     }
 
     if (!set) {
 
         if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_EAST) || checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_NORTH) || checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_SOUTH) || checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_WEST)) {
-            
+
             set = TRUE;
-            
-            func_800F121C();
-            func_800F12C4();
+
+            moveSeasonCursorVertically();
+            moveSeasonCursorHorizontally();
 
             setSfx(3);
             setSfxVolume(3, SFX_VOLUME);
@@ -1425,7 +1418,7 @@ void func_800F0F84(void) {
             updateSpriteRGBA(0x8C, 0, 0, 0, 0, 8);
             updateSpriteRGBA(LANDSCAPE_BACKGROUND, 0, 0, 0, 0, 8);
 
-            namingScreenContext.flags |= 0x200;
+            namingScreenContext.flags |= NAMING_SCREEN_GOTO_SEASON_CONFIRM;
 
         }
     }
@@ -1434,9 +1427,9 @@ void func_800F0F84(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/namingScreen", func_800F121C);
+//INCLUDE_ASM("asm/nonmatchings/game/namingScreen", moveSeasonCursorVertically);
 
-void func_800F121C(void) {
+void moveSeasonCursorVertically(void) {
 
     u16 temp1;
     u16 temp2;
@@ -1459,9 +1452,9 @@ void func_800F121C(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/namingScreen", func_800F12C4);
+//INCLUDE_ASM("asm/nonmatchings/game/namingScreen", moveSeasonCursorHorizontally);
 
-void func_800F12C4(void) {
+void moveSeasonCursorHorizontally(void) {
 
     u16 temp1;
     u16 temp2;

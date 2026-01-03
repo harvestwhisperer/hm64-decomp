@@ -3,7 +3,7 @@
 
 #include "common.h"
 
-extern inline void func_80055F08(u16 cutsceneIndex, u16 exitIndex, u8 arg2);
+extern inline void launchIntroCutscene(u16 cutsceneIndex, u16 exitIndex, u8 arg2);
 extern void loadLevel(u8);
 extern void resumeGameplay(void);
 extern void pauseGameplay();    

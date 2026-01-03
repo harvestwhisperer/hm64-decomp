@@ -48,11 +48,80 @@
 #define SHEEP_SICK 3
 #define SHEEP_DEAD 4
 
-/* flags */
-#define CHICKEN_FED 0x10
+#define MISC_ANIMAL_PLAYER_DOG 0
+#define MISC_ANIMAL_NPC_DOG 1
+#define MISC_ANIMAL_CAT 2
+#define MISC_ANIMAL_HORSE 3
+#define MISC_ANIMAL_HORSE_2 4
+#define MISC_ANIMAL_COW 5
+#define MISC_ANIMAL_SHEEP 6
+#define MISC_ANIMAL_FOX 7
+#define MISC_ANIMAL_BUNNY 8
+#define MISC_ANIMAL_SQUIRREL 9
+#define MISC_ANIMAL_MONKEY 10
+#define MISC_ANIMAL_SPARROW 11
+#define MISC_ANIMAL_BIRD 12
+#define MISC_ANIMAL_CRAB 13
+#define MISC_ANIMAL_SNAKE 14
+#define MISC_ANIMAL_WHITE_BUTTERFLY 15
+#define MISC_ANIMAL_LADYBUG 16
+#define MISC_ANIMAL_CICADA 17
+#define MISC_ANIMAL_HORNED_BEETLE 18
+#define MISC_ANIMAL_STAG_BEETLE 19
+#define MISC_ANIMAL_DRAGONFLY 20
+#define MISC_ANIMAL_CRICKET 21
 
-#define FARM_ANIMAL_FED 0x8
-#define COW_PREGNANT 0x80
+#define DOG_ACTIVE 				1
+#define DOG_STATE_CHANGED 		2
+#define DOG_ENTITY_LOADED 		4
+#define DOG_HELD                8
+#define DOG_FOLLOWING           0x10
+#define DOG_COLLISION_WITH_PLAYER 0x20
+#define DOG_HELD_DAILY          0x40
+#define DOG_WHISTLED_FOR_DAILY  0x80
+
+#define HORSE_ACTIVE 			1
+#define HORSE_STATE_CHANGED		2
+#define HORSE_ENTITY_LOADED 	4
+// 8
+#define HORSE_FOLLOWING         0x10
+#define HORSE_COLLISION_WITH_PLAYER 0x20
+#define HORSE_BRUSHED_DAILY     0x100
+#define HORSE_WHISTLED_DAILY    0x200
+#define HORSE_JUMPED_DAILY      0x400
+#define HORSE_TALKED_TO_DAILY   0x800
+
+#define CHICKEN_ACTIVE 	     	1
+#define CHICKEN_STATE_CHANGED   2
+#define CHICKEN_ENTITY_LOADED   4
+#define CHICKEN_HELD 			8
+#define CHICKEN_FED             0x10
+#define CHICKEN_EGG_INCUBATING  0x20
+#define CHICKEN_COLLISION_WITH_PLAYER    0x40
+#define CHICKEN_LAID_EGG        0x80
+#define CHICKEN_NEWBORN         0x100
+
+#define FARM_ANIMAL_ACTIVE 		1
+#define FARM_ANIMAL_STATE_CHANGED 2
+#define FARM_ANIMAL_ENTITY_LOADED 4
+#define FARM_ANIMAL_FED         0x8
+#define FARM_ANIMAL_ATE_GRASS   0x10
+#define FARM_ANIMAL_BRUSHED     0x20
+#define FARM_ANIMAL_MILKED      0x40
+#define FARM_ANIMAL_PREGNANT    0x80
+#define FARM_ANIMAL_SHEARED     0x100
+#define FARM_ANIMAL_APPROACHING 0x200
+#define FARM_ANIMAL_LINGERING   0x400
+#define FARM_ANIMAL_NEWBORN     0x800
+#define FARM_ANIMAL_TALKED_TO 	0x1000
+#define FARM_ANIMAL_FOLLOWING   0x2000
+#define FARM_ANIMAL_INDOORS     0x4000
+#define FARM_ANIMAL_COLLISION_WITH_PLAYER 0x8000
+
+#define MISC_ANIMAL_ACTIVE 1
+#define MISC_ANIMAL_STATE_CHANGED 2
+#define MISC_ANIMAL_ENTITY_LOADED 4
+#define MISC_ANIMAL_RUNNING_AWAY 0x10
 
 
 // 0x801C3BF0
@@ -64,7 +133,7 @@ typedef struct {
 	u8 actionState;
 	u8 direction;
 	u8 speed;
-	u8 unk_1A;
+	u8 stateTimer;
 	u8 unk_1B;
 	u8 type;
 	u8 condition;
@@ -81,15 +150,15 @@ typedef struct {
 	f32 speed;
 	u16 entityIndex;
 	u8 location;
-	u8 unk_1B;
+	u8 actionState;
 	u8 direction;
-	u8 unk_1D;
+	u8 stateTimer;
 	u8 unk_1E;
 	u8 type;
 	u8 condition;
 	u8 typeCounter; // 0x21  overloaded field: age, pregnancy, sheared status
 	u8 conditionCounter;
-	u8 unk_23[6];
+	u8 motherName[6];
 	u8 birthdaySeason;
 	u8 birthdayDayOfMonth;
 	u8 milkType;
@@ -103,12 +172,12 @@ typedef struct {
 	Vec3f coordinates;
 	u16 entityIndex;
 	u8 location;
-	u8 unk_17;
+	u8 actionState;
 	u8 direction;
 	u8 speed;
-	u8 unk_1A;
+	u8 stateTimer;
 	u8 unk_1B;
-	u8 unk_1C;
+	u8 bestRacePlacement;
 	u16 flags;
 } Dog;
 
@@ -122,11 +191,11 @@ typedef struct {
 	u8 actionState;
 	u8 direction;
 	u8 speed;
-	u8 unk_1A;
+	u8 stateTimer;
 	u8 unk_1B;
 	u8 grown;
 	u8 age;
-	u8 unk_1E;
+	u8 bestRacePlacement;
 	u8 unk_1F;
 	u16 flags;
 } Horse;
@@ -138,15 +207,15 @@ typedef struct {
 	u16 entityIndex;
 	u8 mapIndex;
 	u8 actionState;
-	u8 direction; 
-	u8 zDisplacement; 
-	u8 yDisplacement; 
-	u8 timer; 
-	u8 unk_14; 
+	u8 direction;
+	u8 zDisplacement;
+	u8 yDisplacement;
+	u8 timer;
+	u8 unk_14;
 	u8 animalType;
-	u8 unk_16; 
-	u8 unk_17; 
-	u16 flags; 
+	u8 spawnVariant;
+	u8 unk_17;
+	u16 flags;
 } MiscAnimal;
 
 typedef struct {
@@ -155,58 +224,60 @@ typedef struct {
     u16 arr3[3];
 } SheepItemInfo;
 
-extern void func_8008634C(s8 amount);
+extern void adjustAllAnimalAffection(s8 amount);
+extern void adjustFarmAnimalAffection(u8, s8); 
+extern void setAnimalState(u8 animalType, u8 index, u8 type, u8 condition, u8 arg4);
 extern bool handlePlayerAnimalInteraction();
 extern void initializeAnimalEntities();
 extern void func_8008779C(void);
 extern void updateAnimalCoordinates();
 extern void updateAnimals();
-extern void func_80087D5C();
+extern void feedAllAnimals();
 extern void resetAnimalStatuses();
 extern u8 initializeNewChicken(u8, u8);
 extern void setMrsManaCowsNames();
-extern void func_800886D0();
-extern void func_80088C1C(u8, u8);
-extern u8 func_8008A4A8(u8, u8, f32, f32, f32);
+extern void initializeWatchedCows();
+extern void resetChickenLocation(u8, u8);
+extern u8 spawnMiscAnimal(u8, u8, f32, f32, f32);
 extern void initializeDogEntity();
 extern void initializeChickenEntity(u8);
 extern void initializeHorseEntity();
 extern void initializeMiscAnimalEntity(u8, u8);
-extern void func_80088D54();
-extern void func_80099DE8();
-extern void func_80099EEC();
-extern void func_80099FF0();
-extern bool func_8009A398(void);
-extern bool func_8009A074();
-extern bool func_8009A400();
-extern u8 func_8009A810();
-extern bool func_8009A100();
-extern bool func_8009A17C();
-extern bool func_8009A2D0();
-extern bool func_8009A53C();
-extern bool func_8009A97C();
-extern void func_8009AAC8();
-extern void func_8009B11C();
-extern void func_8009B1BC(void);
-extern void func_8009B25C();
-extern u8 func_8009B2BC(u8);
-extern u8 func_8009B320();
-extern u8 func_8009B374();
-extern u8 func_8009B3DC();
-extern u8 func_8009B464();
-extern u8 func_8009B4EC();
-extern u8 func_8009B564();
-extern u8 func_8009B5E0();
-extern u8 func_8009B658();
-extern void func_8009B6B8();
-extern u8 func_8009B7BC();
+extern void spawnWildAnimals();
+extern void handleFarmAnimalPlayerCollision();
+extern void handleChickenPlayerCollision();
+extern void handleDogPlayerCollision();
+extern bool handleHorseShippingItem(void);
+extern bool handleHorsePlayerInteraction();
+extern bool handleAnimalMedicineUse();
+extern u8 handleUseMiraclePotion();
+extern bool handleHorseGrownPlayerInteraction();
+extern bool handleBrushFarmAnimal();
+extern bool handleBrushHorse();
+extern bool handleMilkCow();
+extern bool handleGetMilkWithBottle();
+extern void handleShearSheep();
+extern void handleWhistleForDog();
+extern void handleWhistleForHorse(void);
+extern void handleCallFarmAnimalsWithCowBell();
+extern u8 getTotalFarmAnimalsByType(u8);
+extern u8 getTotalPregnantFamAnimals();
+extern u8 getTotalFarmAnimalsCount();
+extern u8 getTotalCowsCount();
+extern u8 getCowWithHighestAffection();
+extern u8 getTotalSheepCount();
+extern u8 getTotalChickenCount();
+extern u8 getHealthyChickenCount();
+extern u8 getChickenEggCount();
+extern void handleHatchChicken();
+extern u8 getIncubatingEggCount();
 extern void deactivateAnimalEntities(void);
 extern u8 func_8009B828(u8);
 extern void generateMilkTypeString(u8);
-extern u8 func_8009BBAC(void);
-extern u8 func_8009BC44(void);
-extern u8 func_8009BC54(void);
-extern void func_8009BC64();
+extern u8 getBestCowMilkType(void);
+extern u8 getDogBestRacePlacement(void);
+extern u8 getHorseBestRacePlacement(void);
+extern void randomizeMiscAnimalSpawnVariants();
 
 extern void initializeDog(void);
 extern void initializeHorse(void);
@@ -221,9 +292,9 @@ extern void setHorseLocation(u8);
 extern MiscAnimal gMiscAnimals[MAX_MISC_ANIMALS];
 extern Chicken gChickens[MAX_CHICKENS];
 extern FarmAnimal gFarmAnimals[MAX_FARM_ANIMALS];
-extern u8 D_8016FBCC[2];
+extern u8 gMilkTypeString[2];
 extern u8 D_801886D4[6];
-extern u8 deadAnimalName[6];
+extern u8 gDeadAnimalName[6];
 extern Dog dogInfo;
 extern Horse horseInfo;
 
@@ -237,17 +308,17 @@ extern u8 bornChickenIndex;
 // newest farm animal index?
 extern u8 bornAnimalIndex;
 // cow festival stall
-extern u8 D_80189054;
-extern u8 D_801FC155;
+extern u8 gCowFestivalEnteredCowIndex;
+extern u8 gSelectedAnimalIndex;
 
 // dead animal count
 // TODO: label
-extern u16 D_8013DC2E;
+extern u16 deadAnimalCount;
 
 // purchased animal type
-extern u8 D_801C4216;
+extern u8 selectedAnimalType;
 
 // animal price?
-extern u32 D_801890E0;
+extern u32 gAnimalSalePrice;
 
 #endif

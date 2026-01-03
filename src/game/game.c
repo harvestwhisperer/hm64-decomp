@@ -73,7 +73,7 @@ u8 gNamingScreenIndex;
 u8 gFarmName[6];
 u8 gWifeName[6];
 u8 gBabyName[6];
-u8 harvestKingName[6];
+u8 gHarvestKingName[6];
 
 u16 gTotalGrassTiles;
 u16 gTotalPinkCatMintFlowersGrowing;
@@ -150,7 +150,7 @@ u8 D_8020563B[4];
 u8 D_80237380[6];
 u8 D_80237418[3];
 
-Vec4f unknownRGBA;
+Vec4f previousLightingRGBA;
 
 
 // data
@@ -777,21 +777,21 @@ handle_animals:
 void setSpecialDialogues(void) {
 
     // have at least 1 house extensions
-    if (func_8009B3DC()) {
+    if (getTotalCowsCount()) {
         setSpecialDialogueBit(HAVE_HOUSE_EXTENSION);
     } else {
         toggleSpecialDialogueBit(HAVE_HOUSE_EXTENSION);
     }
 
     // cow and sheep status
-    if (func_8009B4EC()) {
+    if (getTotalSheepCount()) {
         setSpecialDialogueBit(0x28);
     } else {
         toggleSpecialDialogueBit(0x28);
     }
 
     // chicken status
-    if (func_8009B564()) {
+    if (getTotalChickenCount()) {
         setSpecialDialogueBit(0x2C);
     } else {
         toggleSpecialDialogueBit(0x2C);
@@ -1317,12 +1317,12 @@ void setLevelLighting(s16 arg0, u16 arg1) {
     
     if (arg0 == 0) {
         
-        setEntitiesColor(globalLightingRGBA.r, globalLightingRGBA.g, globalLightingRGBA.b, globalLightingRGBA.a);
+        setEntitiesRGBA(globalLightingRGBA.r, globalLightingRGBA.g, globalLightingRGBA.b, globalLightingRGBA.a);
         setMapControllerRGBA(MAIN_MAP_INDEX, globalLightingRGBA.r, globalLightingRGBA.g, globalLightingRGBA.b, globalLightingRGBA.a);
         
-    } else if (globalLightingRGBA.r != unknownRGBA.r || globalLightingRGBA.g != unknownRGBA.g || globalLightingRGBA.b != unknownRGBA.b || globalLightingRGBA.a != unknownRGBA.a) {
+    } else if (globalLightingRGBA.r != previousLightingRGBA.r || globalLightingRGBA.g != previousLightingRGBA.g || globalLightingRGBA.b != previousLightingRGBA.b || globalLightingRGBA.a != previousLightingRGBA.a) {
         
-        updateEntitiesColor(globalLightingRGBA.r, globalLightingRGBA.g, globalLightingRGBA.b, globalLightingRGBA.a, arg0);
+        setEntitiesRGBAWithTransition(globalLightingRGBA.r, globalLightingRGBA.g, globalLightingRGBA.b, globalLightingRGBA.a, arg0);
         setMapControllerRGBAWithTransition(0, globalLightingRGBA.r, globalLightingRGBA.g, globalLightingRGBA.b, globalLightingRGBA.a, arg0);
         
         if (!checkDailyEventBit(0x4B)) {
@@ -1331,10 +1331,10 @@ void setLevelLighting(s16 arg0, u16 arg1) {
 
     }
 
-    unknownRGBA.r = globalLightingRGBA.r;
-    unknownRGBA.g = globalLightingRGBA.g;
-    unknownRGBA.b = globalLightingRGBA.b;
-    unknownRGBA.a = globalLightingRGBA.a;
+    previousLightingRGBA.r = globalLightingRGBA.r;
+    previousLightingRGBA.g = globalLightingRGBA.g;
+    previousLightingRGBA.b = globalLightingRGBA.b;
+    previousLightingRGBA.a = globalLightingRGBA.a;
 
     gameLoopContext.callbackIndex = arg1;
     
@@ -1346,13 +1346,14 @@ void setLevelLighting(s16 arg0, u16 arg1) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/game", func_8005C940);
+//INCLUDE_ASM("asm/nonmatchings/game/game", handleExitLevel);
 
 // arg0 = unused
-inline void func_8005C940(u16 arg0, u16 callbackIndex) {
+inline void handleExitLevel(u16 arg0, u16 callbackIndex) {
     
+    // fade out map and entities
     setMapControllerRGBAWithTransition(MAIN_MAP_INDEX, 0, 0, 0, 0, 8);
-    updateEntitiesColor(0, 0, 0, 0, 8);
+    setEntitiesRGBAWithTransition(0, 0, 0, 0, 8);
        
     stopAudioSequenceWithDefaultFadeOut(gCurrentAudioSequenceIndex);
     
@@ -1396,7 +1397,7 @@ void exitLevelCallback(void) {
 
     if (checkMapRGBADone(MAIN_MAP_INDEX) && checkDefaultSequenceChannelOpen(gCurrentAudioSequenceIndex)) {
 
-        setEntitiesColor(0, 0, 0, 0);
+        setEntitiesRGBA(0, 0, 0, 0);
         setMapControllerRGBA(MAIN_MAP_INDEX, 0, 0, 0, 0);
         deactivateCutsceneExecutors();
         initializeCutsceneExecutors();
@@ -1575,13 +1576,13 @@ void loadNamingScreenCallback(void) {
             namePtr = &gBabyName;
             break;
         case 5:
-            namePtr = gFarmAnimals[D_801FC155].name;
+            namePtr = gFarmAnimals[gSelectedAnimalIndex].name;
             break;
         case 6:
-            namePtr = gFarmAnimals[D_801FC155].name;
+            namePtr = gFarmAnimals[gSelectedAnimalIndex].name;
             break;
         case 7:
-            namePtr = gChickens[D_801FC155].name;
+            namePtr = gChickens[gSelectedAnimalIndex].name;
             break;
         }
     
@@ -1613,7 +1614,7 @@ void mapLoadCallback(void) {
     if (gBaseMapIndex == COOP && checkLifeEventBit(3)) {
         
         gNamingScreenIndex = 7;
-        D_801FC155 = bornChickenIndex;
+        gSelectedAnimalIndex = bornChickenIndex;
         gChickens[bornChickenIndex].flags &= ~0x100;
         
         setMainLoopCallbackFunctionIndex(NAMING_SCREEN);
@@ -1650,7 +1651,7 @@ void mapLoadCallback(void) {
         // TODO: this might be an inline function
 
         gNamingScreenIndex = 5;
-        D_801FC155 = bornAnimalIndex;
+        gSelectedAnimalIndex = bornAnimalIndex;
         gFarmAnimals[bornAnimalIndex].flags &= ~0x800;
             
         setMainLoopCallbackFunctionIndex(NAMING_SCREEN);
@@ -1754,7 +1755,7 @@ static inline void inline3() {
 }
 
 // from transition.c
-static inline void func_80055F08_2(u16 cutsceneIndex, u16 entranceIndex, u8 arg2) {
+static inline void launchIntroCutscene_2(u16 cutsceneIndex, u16 entranceIndex, u8 arg2) {
     
     deactivateSprites();
     
@@ -1762,11 +1763,11 @@ static inline void func_80055F08_2(u16 cutsceneIndex, u16 entranceIndex, u8 arg2
     
     initializeMessageBoxes();
     initializeCutsceneExecutors();
-    func_80053088();
+    initializeMainMessageBoxes();
     
     resetGlobalLighting();
 
-    setEntitiesColor(0, 0, 0, 0);
+    setEntitiesRGBA(0, 0, 0, 0);
     setMapControllerRGBA(MAIN_MAP_INDEX, 0, 0, 0, 0);
 
     gHour = 12;
@@ -1895,25 +1896,25 @@ void pinkOverlayMenuCallback() {
 
                     case 0:                         
 
-                        gGold += adjustValue(gGold, D_801890E0, MAX_GOLD);
+                        gGold += adjustValue(gGold, gAnimalSalePrice, MAX_GOLD);
                         
-                        D_801890E0 = 0;                        
+                        gAnimalSalePrice = 0;                        
                         dialogues[0].sessionManager.flags &= ~0x40;
                         
                         closeDialogueSession(0);
                         setEntrance(9);
 
-                        func_8005C940(0, 2);
+                        handleExitLevel(0, MAP_LOAD);
 
                         toggleDailyEventBit(2);
                         setDailyEventBit(4);
 
-                        switch (D_801C4216) {
-                            case 4:
-                                initializeChicken(D_801FC155);
+                        switch (selectedAnimalType) {
+                            case CHICKEN_TYPE:
+                                initializeChicken(gSelectedAnimalIndex);
                                 break;
-                            case 2 ... 3:
-                                initializeFarmAnimal(D_801FC155);
+                            case COW_TYPE ... SHEEP_TYPE:
+                                initializeFarmAnimal(gSelectedAnimalIndex);
                                 break;
                         }
                         
@@ -1938,13 +1939,13 @@ void pinkOverlayMenuCallback() {
                         closeDialogueSession(0);
                         setEntrance(9);
 
-                        func_8005C940(0, 2);
+                        handleExitLevel(0, MAP_LOAD);
 
                         toggleDailyEventBit(0x1D);
                         setDailyEventBit(0x1E);
                         setDailyEventBit(0x20);
                         // cow festival
-                        D_80189054 = D_801FC155;
+                        gCowFestivalEnteredCowIndex= gSelectedAnimalIndex;
                         break;
                         
                     case 1:                                 
@@ -2683,7 +2684,7 @@ void pinkOverlayMenuCallback() {
                 case 0:                 
                 
                     // TODO: could move this condition to a macro
-                    if (calculateHouseExtensionScore() == 6 && checkLifeEventBit(MARRIED) && npcAffection[gWife] >= 250 && checkLifeEventBit(HAVE_BABY) && dogInfo.affection >= 200 && getSumNpcAffection() >= 2500 && getFarmGrassTilesSum() >= 384 && gMaximumStamina >= 190 && gHappiness >= 250 && func_8009B5E0() && D_801886D2 >= 10) {          
+                    if (calculateHouseExtensionScore() == 6 && checkLifeEventBit(MARRIED) && npcAffection[gWife] >= 250 && checkLifeEventBit(HAVE_BABY) && dogInfo.affection >= 200 && getSumNpcAffection() >= 2500 && getFarmGrassTilesSum() >= 384 && gMaximumStamina >= 190 && gHappiness >= 250 && getHealthyChickenCount() && D_801886D2 >= 10) {          
                         albumBits |= 0x8000;  
                     }
                     
@@ -2691,7 +2692,7 @@ void pinkOverlayMenuCallback() {
                     break;
                 
                 case 1:                      
-                    func_80055F08_2(0x5AA, 0x61, 1);
+                    launchIntroCutscene_2(0x5AA, 0x61, 1);
                     break;
                 }
             
@@ -3111,7 +3112,7 @@ void clearHeldItemsAtEndOfDay(void) {
 
         switch (gPlayer.heldItem) {
             case 0x60 ... 0x6F:
-                func_80088C1C(0xFF, gPlayer.heldAnimalIndex);
+                resetChickenLocation(0xFF, gPlayer.heldAnimalIndex);
                 break;
             case 0x58 ... 0x5F:
                 setDogLocation(0xFF);
@@ -3127,10 +3128,10 @@ void clearHeldItemsAtEndOfDay(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/game", func_80061178);
+//INCLUDE_ASM("asm/nonmatchings/game/game", checkBacheloretteReadyForMarriage);
 
 // check if girl is ready to get married for blue feather to appear
-bool func_80061178(void) {
+bool checkBacheloretteReadyForMarriage(void) {
     
     bool result;
 
@@ -3266,54 +3267,54 @@ void setHarvestKingName(u8 harvestKing) {
 
     switch (harvestKing) {
         case PLAYER:
-            harvestKingName[0] = gPlayer.name[0];
-            harvestKingName[1] = gPlayer.name[1];
-            harvestKingName[2] = gPlayer.name[2];
-            harvestKingName[3] = gPlayer.name[3];
-            harvestKingName[4] = gPlayer.name[4];
-            harvestKingName[5] = gPlayer.name[5];
+            gHarvestKingName[0] = gPlayer.name[0];
+            gHarvestKingName[1] = gPlayer.name[1];
+            gHarvestKingName[2] = gPlayer.name[2];
+            gHarvestKingName[3] = gPlayer.name[3];
+            gHarvestKingName[4] = gPlayer.name[4];
+            gHarvestKingName[5] = gPlayer.name[5];
             break;
         case 1:
-            harvestKingName[0] = char_H;
-            harvestKingName[1] = char_a;
-            harvestKingName[2] = char_r;
-            harvestKingName[3] = char_r;
-            harvestKingName[4] = char_i;
-            harvestKingName[5] = char_s;
+            gHarvestKingName[0] = char_H;
+            gHarvestKingName[1] = char_a;
+            gHarvestKingName[2] = char_r;
+            gHarvestKingName[3] = char_r;
+            gHarvestKingName[4] = char_i;
+            gHarvestKingName[5] = char_s;
             break;
         default:
             break;
         case 2:
-            harvestKingName[0] = char_G;
-            harvestKingName[1] = char_r;
-            harvestKingName[2] = char_a;
-            harvestKingName[3] = char_y;
-            harvestKingName[4] = 0xFF;
-            harvestKingName[5] = 0xFF;
+            gHarvestKingName[0] = char_G;
+            gHarvestKingName[1] = char_r;
+            gHarvestKingName[2] = char_a;
+            gHarvestKingName[3] = char_y;
+            gHarvestKingName[4] = 0xFF;
+            gHarvestKingName[5] = 0xFF;
             break;
         case 3:
-            harvestKingName[0] = char_J;
-            harvestKingName[1] = char_e;
-            harvestKingName[2] = char_f;
-            harvestKingName[3] = char_f;
-            harvestKingName[4] = 0xFF;
-            harvestKingName[5] = 0xFF;
+            gHarvestKingName[0] = char_J;
+            gHarvestKingName[1] = char_e;
+            gHarvestKingName[2] = char_f;
+            gHarvestKingName[3] = char_f;
+            gHarvestKingName[4] = 0xFF;
+            gHarvestKingName[5] = 0xFF;
             break;
         case 4:
-            harvestKingName[0] = char_C;
-            harvestKingName[1] = char_l;
-            harvestKingName[2] = char_i;
-            harvestKingName[3] = char_f;
-            harvestKingName[4] = char_f;
-            harvestKingName[5] = 0xFF;
+            gHarvestKingName[0] = char_C;
+            gHarvestKingName[1] = char_l;
+            gHarvestKingName[2] = char_i;
+            gHarvestKingName[3] = char_f;
+            gHarvestKingName[4] = char_f;
+            gHarvestKingName[5] = 0xFF;
             break;
         case 5:
-            harvestKingName[0] = char_K;
-            harvestKingName[1] = char_a;
-            harvestKingName[2] = char_i;
-            harvestKingName[3] = 0xFF;
-            harvestKingName[4] = 0xFF;
-            harvestKingName[5] = 0xFF;
+            gHarvestKingName[0] = char_K;
+            gHarvestKingName[1] = char_a;
+            gHarvestKingName[2] = char_i;
+            gHarvestKingName[3] = 0xFF;
+            gHarvestKingName[4] = 0xFF;
+            gHarvestKingName[5] = 0xFF;
             break;
         }
 }

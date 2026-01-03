@@ -29,10 +29,10 @@ u32 D_8016FB00;
 void setupGameStart(void) {
     
     // set up game
-    func_8004E160(); 
+    initializeAll(); 
     
     if (contPattern & 1) {
-        func_80055F08(INTRO, 0x61, 1);
+        launchIntroCutscene(INTRO, 0x61, 1);
     } else {
 
         setMainLoopCallbackFunctionIndex(NO_OP);
@@ -66,7 +66,7 @@ void startGame(void) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/gameStart", func_8004DFF8);
 
-// unused function: probably for sandboxing during development
+// unused function: probably for sandboxing during development or demos
 // not in JP version
 void func_8004DFF8(void) {
     

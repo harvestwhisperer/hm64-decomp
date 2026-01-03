@@ -4692,13 +4692,13 @@ segments:
     extract: false
     start: 0xE73070
 
-  - name: text64Text
+  - name: farmVisitsText
     type: bin
     dir: text
     extract: false
     start: 0xE73110
 
-  - name: text64TextIndex
+  - name: farmVisitsTextIndex
     type: bin
     dir: text
     extract: false
@@ -5438,13 +5438,13 @@ segments:
     extract: false
     start: 0xE92030
 
-  - name: text64Dialogue
+  - name: farmVisitsDialogue
     type: bin
     dir: dialogues/bytecode
     extract: false
     start: 0xE92040
 
-  - name: text64DialogueIndex
+  - name: farmVisitsDialogueIndex
     type: bin
     dir: dialogues/bytecode
     extract: false

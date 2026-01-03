@@ -119,7 +119,7 @@ u8 interactedWithLevelInteractionIndex;
 
 // shared (with overlayScreens.c)
 u32 D_801C3F78;
-u8 D_8018A72C[6];
+u8 gRaceFinishOrder[6];
 
 // data 
 Addresses cutsceneBytecodeAddresses[] = {
@@ -323,21 +323,19 @@ static inline void transitionCutscenes(u16 cutsceneIndex, u16 entranceIndex) {
     loadLevelFromEntrance(entranceIndex);
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", func_8009BF90);
+//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", initializeCutscene);
 
-// sets initial cutscene executor object
-inline void func_8009BF90(u16 bankIndex) {
+inline void initializeCutscene(u16 segmentIndex) {
 
-    nuPiReadRom(cutsceneBytecodeAddresses[bankIndex].romAddrStart, cutsceneBankLoadAddresses[bankIndex], cutsceneBytecodeAddresses[bankIndex].romAddrEnd - cutsceneBytecodeAddresses[bankIndex].romAddrStart);
+    nuPiReadRom(cutsceneBytecodeAddresses[segmentIndex].romAddrStart, cutsceneBankLoadAddresses[segmentIndex], cutsceneBytecodeAddresses[segmentIndex].romAddrEnd - cutsceneBytecodeAddresses[segmentIndex].romAddrStart);
 
     gCutsceneCompletionFlags = 0;
 
-    // param 1 = 0, 20, 21, or 22
-    spawnCutsceneExecutor(cutsceneExecutorIndices[bankIndex], cutsceneEntryPointAddresses[bankIndex]);
+    spawnCutsceneExecutor(cutsceneExecutorIndices[segmentIndex], cutsceneEntryPointAddresses[segmentIndex]);
     
     togglePauseEntities();
     
-    gCutsceneBytecodeSegmentIndex = bankIndex;
+    gCutsceneBytecodeSegmentIndex = segmentIndex;
 
     gCutsceneFlags |= CUTSCENE_ACTIVE;
 
@@ -351,7 +349,6 @@ u16 setLevelCutscene(u16 mapIndex) {
     
     u16 offset = 0xFFFF;
     
-    // can't use array/struct here as required by loadLevel
     if (!(gCutsceneFlags & 1)) {
         
         gCutsceneFlags &= ~2;
@@ -446,7 +443,7 @@ u16 setLevelCutscene(u16 mapIndex) {
             }
         
         if (offset != 0xFFFF) {
-            func_8009BF90(offset);
+            initializeCutscene(offset);
         }
         
     }
@@ -455,10 +452,10 @@ u16 setLevelCutscene(u16 mapIndex) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", func_8009C324);
+//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", setFarmVisitCutscenes);
 
 // arg0 = cutscene type; 0 = show up while working; 1 = morning/show up on map entry
-u16 func_8009C324(u8 arg0) {
+u16 setFarmVisitCutscenes(u8 arg0) {
 
     bool set = FALSE;
     u16 result = 0xFFFF;
@@ -475,7 +472,7 @@ u16 func_8009C324(u8 arg0) {
     if (gEntranceIndex != 0x6F) {
         
         if (!set) {
-            if (!checkDailyEventBit(FARM_MORNING_VISIT) && gYear == 1 && gSeason == AUTUMN && gDayOfMonth == 22 && DAYTIME) {
+            if (!checkDailyEventBit(FARM_MORNING_VISIT) && gYear == 1 && gSeason == AUTUMN && gDayOfMonth == 22 && (5 < gHour && gHour < 18)) {
                 setDailyEventBit(FARM_MORNING_VISIT);
                 gCutsceneIndex = 0xDF;
                 loadCutscene(arg0);
@@ -484,7 +481,7 @@ u16 func_8009C324(u8 arg0) {
         }
 
         if (!set) {
-            if (!checkDailyEventBit(FARM_MORNING_VISIT) && gYear == 1 && gSeason == WINTER && gDayOfMonth == 11 && DAYTIME) {
+            if (!checkDailyEventBit(FARM_MORNING_VISIT) && gYear == 1 && gSeason == WINTER && gDayOfMonth == 11 && (5 < gHour && gHour < 18)) {
                 setDailyEventBit(FARM_MORNING_VISIT);
                 gCutsceneIndex = 0xDE;
                 loadCutscene(arg0);
@@ -543,9 +540,9 @@ u16 func_8009C324(u8 arg0) {
             if (!checkDailyEventBit(FARM_MORNING_VISIT) && gSeason == AUTUMN && gDayOfMonth == 2 && (5 < gHour && gHour < 9) && npcAffection[KENT] >= 30) {
                 setDailyEventBit(FARM_MORNING_VISIT);
                 
-                if (func_8009B2BC(2)) {
+                if (getTotalFarmAnimalsByType(2)) {
                     gCutsceneIndex = 0x66;
-                    setGameVariableString(0xE, gFarmAnimals[func_8009B464()].name, 6);
+                    setGameVariableString(0xE, gFarmAnimals[getCowWithHighestAffection()].name, 6);
                 } else {
                     gCutsceneIndex = 0x65;
                 }
@@ -813,7 +810,7 @@ u16 func_8009C324(u8 arg0) {
 
        if (!set) {
            
-            if (!checkDailyEventBit(FARM_MORNING_VISIT) && gSeason == gPlayerBirthdaySeason && gDayOfMonth == 25 && DAYTIME) {
+            if (!checkDailyEventBit(FARM_MORNING_VISIT) && gSeason == gPlayerBirthdaySeason && gDayOfMonth == 25 && (5 < gHour && gHour < 18)) {
                 
                 tempGirl = getBacholeretteWithHighestAffection(120);
                 
@@ -962,7 +959,7 @@ u16 func_8009C324(u8 arg0) {
 
         // Cliff leaving
         if (!set) {
-            if (checkLifeEventBit(0x41) && !checkLifeEventBit(0x42) && gSeason == WINTER && DAYTIME && gHarvestKing != 4 && gHarvestCoinFinder != 4) {
+            if (checkLifeEventBit(0x41) && !checkLifeEventBit(0x42) && gSeason == WINTER && (5 < gHour && gHour < 18) && gHarvestKing != 4 && gHarvestCoinFinder != 4) {
                 
                 if (MARRIED_TO_ANN && npcAffection[CLIFF] >= 150 && !checkLifeEventBit(ANN_CLIFF_MARRIED)) {
                     setLifeEventBit(0x42);
@@ -1001,10 +998,12 @@ u16 func_8009C324(u8 arg0) {
         }
         
         if (!set) {
+
             if (!checkLifeEventBit(0x37) && checkDailyEventBit(0x24) && npcAffection[KENT] >= 5 && gWeather == SUNNY && (5 < gHour && gHour < 9)) {
                 
                 setLifeEventBit(0x37);
 
+                // get cow + grass count
                 if (!func_8009B828(0)) {
                     gCutsceneIndex = 0x6C;
                 } else {
@@ -1047,13 +1046,14 @@ u16 func_8009C324(u8 arg0) {
             
             if (!checkDailyEventBit(FARM_MORNING_VISIT) && gForecast == TYPHOON && ((npcAffection[HARVEST_SPRITE_1] + npcAffection[HARVEST_SPRITE_2] + npcAffection[HARVEST_SPRITE_3]) / 3) >= 120 && (5 < gHour && gHour < 9)) {
 
-                if ((func_8009B564() + func_8009B374()) >= 2) {           
+                if ((getTotalChickenCount() + getTotalFarmAnimalsCount()) >= 2) {           
                     setDailyEventBit(FARM_MORNING_VISIT);
                     gCutsceneIndex = 0xE3;
                     loadCutscene(arg0);
                     set = TRUE;                               
                 }
             }
+
         }    
 
         if (!set) {
@@ -1070,7 +1070,7 @@ u16 func_8009C324(u8 arg0) {
         }    
 
         if (!set) {
-            if (!checkLifeEventBit(0x8E) && func_8009B374() < 6 && gYear == 1 && gSeason == AUTUMN && gDayOfMonth == 30 && (5 < gHour && gHour < 24)) {
+            if (!checkLifeEventBit(0x8E) && getTotalFarmAnimalsCount() < 6 && gYear == 1 && gSeason == AUTUMN && gDayOfMonth == 30 && (5 < gHour && gHour < 24)) {
                 setLifeEventBit(0x8E);
                 gCutsceneIndex = DOUG_FARM_FAVOR;
                 loadCutscene(arg0);
@@ -1106,7 +1106,7 @@ u16 func_8009C324(u8 arg0) {
         }
         
         if (!set) {
-            if (!checkLifeEventBit(PUPPIES) && (npcAffection[KENT] >= 150 || npcAffection[KENT] + npcAffection[STU] >= 250) && DAYTIME) {
+            if (!checkLifeEventBit(PUPPIES) && (npcAffection[KENT] >= 150 || npcAffection[KENT] + npcAffection[STU] >= 250) && (5 < gHour && gHour < 18)) {
                 setLifeEventBit(PUPPIES);
                 gCutsceneIndex = KENT_AND_STU_FARM_PUPPIES;
                 loadCutscene(arg0);
@@ -1115,7 +1115,7 @@ u16 func_8009C324(u8 arg0) {
         }
         
         if (!set) {
-            if (!checkLifeEventBit(0x6A) && func_800DC008() >= 8 && gWeather == SUNNY && (gSeason && gSeason < 3) && (5 < gHour && gHour < 12)) {
+            if (!checkLifeEventBit(0x6A) && getFarmMoondropFlowerCount() >= 8 && gWeather == SUNNY && (gSeason && gSeason < 3) && (5 < gHour && gHour < 12)) {
                 setLifeEventBit(0x6A);
                 gCutsceneIndex = 0x72;
                 loadCutscene(arg0);
@@ -1124,7 +1124,7 @@ u16 func_8009C324(u8 arg0) {
         }        
         
         if (!set) {
-            if (!checkLifeEventBit(0x6B) && getFarmPinkCatMintFlowersTilesSum() && gWeather == SUNNY && (gSeason && gSeason < 3) && (5 < gHour && gHour < 12)) {
+            if (!checkLifeEventBit(0x6B) && getFarmPinkCatMintFlowersCount() && gWeather == SUNNY && (gSeason && gSeason < 3) && (5 < gHour && gHour < 12)) {
                 setLifeEventBit(0x6B);
                 gCutsceneIndex = 0x73;
                 loadCutscene(arg0);
@@ -1133,7 +1133,7 @@ u16 func_8009C324(u8 arg0) {
         }        
 
         if (!set) {
-            if (!checkLifeEventBit(0x6C) && getFarmPinkCatMintFlowersTilesSum() >= 16 && npcAffection[STU] >= 80 && gWeather == SUNNY && (gSeason && gSeason < 3) && (5 < gHour && gHour < 12)) {
+            if (!checkLifeEventBit(0x6C) && getFarmPinkCatMintFlowersCount() >= 16 && npcAffection[STU] >= 80 && gWeather == SUNNY && (gSeason && gSeason < 3) && (5 < gHour && gHour < 12)) {
                 setLifeEventBit(0x6C);
                 gCutsceneIndex = 0x74;
                 loadCutscene(arg0);
@@ -1160,7 +1160,7 @@ u16 func_8009C324(u8 arg0) {
         }     
 
         if (!set) {
-            if (!checkLifeEventBit(0x6F) && npcAffection[MARIA] >= 200 && gWeather == SUNNY && gSeason == SUMMER && (17 < gHour && gHour < 24) && !checkDailyEventBit(FESTIVAL_DAY_TYPE_2) && !checkLifeEventBit(MARRIED) && !checkLifeEventBit(MARIA_HARRIS_MARRIED)) {
+            if (!checkLifeEventBit(0x6F) && npcAffection[MARIA] >= 200 && gWeather == SUNNY && gSeason == SUMMER && NIGHTTIME && !checkDailyEventBit(FESTIVAL_DAY_TYPE_2) && !checkLifeEventBit(MARRIED) && !checkLifeEventBit(MARIA_HARRIS_MARRIED)) {
                 setLifeEventBit(0x6F);
                 gCutsceneIndex = 0x93;
                 loadCutscene(arg0);
@@ -1187,7 +1187,7 @@ u16 func_8009C324(u8 arg0) {
         }          
         if (!set) {
             
-            if (!checkLifeEventBit(0x72) && blueMistFlowerPlot >= 0xC2 && npcAffection[POPURI] >= 200 && gWeather == SUNNY && gSeason == SUMMER && gDayOfMonth == 30 && DAYTIME 
+            if (!checkLifeEventBit(0x72) && blueMistFlowerPlot >= 0xC2 && npcAffection[POPURI] >= 200 && gWeather == SUNNY && gSeason == SUMMER && gDayOfMonth == 30 && (5 < gHour && gHour < 18) 
                     && ((MARRIED_TO_POPURI) || (!checkLifeEventBit(MARRIED) && !checkLifeEventBit(POPURI_GRAY_MARRIED)))) {
                 
                 blueMistFlowerPlot = 0;
@@ -1219,7 +1219,7 @@ u16 func_8009C324(u8 arg0) {
         }
         
         if (!set) {
-            if (!checkLifeEventBit(0x75) && npcAffection[ELLI] >= 200 && gWeather == SUNNY && gSeason == AUTUMN && gDayOfMonth == 9 && (17 < gHour && gHour < 24) && !checkLifeEventBit(MARRIED) && !checkLifeEventBit(ELLI_JEFF_MARRIED)) {
+            if (!checkLifeEventBit(0x75) && npcAffection[ELLI] >= 200 && gWeather == SUNNY && gSeason == AUTUMN && gDayOfMonth == 9 && NIGHTTIME && !checkLifeEventBit(MARRIED) && !checkLifeEventBit(ELLI_JEFF_MARRIED)) {
                 setLifeEventBit(0x75);
                 gCutsceneIndex = 0xA9;
                 loadCutscene(arg0);
@@ -1228,7 +1228,7 @@ u16 func_8009C324(u8 arg0) {
         }      
 
         if (!set) {
-            if (!checkLifeEventBit(0x76) && func_8009B658() >= 6 && gSeason == WINTER && gDayOfMonth == 9 && (5 < gHour && gHour < 24) && (!checkLifeEventBit(MARRIED) || gWife != ELLI)) {
+            if (!checkLifeEventBit(0x76) && getChickenEggCount() >= 6 && gSeason == WINTER && gDayOfMonth == 9 && (5 < gHour && gHour < 24) && (!checkLifeEventBit(MARRIED) || gWife != ELLI)) {
                 setLifeEventBit(0x76);
                 gCutsceneIndex = 0xAA;
                 loadCutscene(arg0);
@@ -1255,7 +1255,7 @@ u16 func_8009C324(u8 arg0) {
         }  
         
         if (!set) {
-            if (!checkLifeEventBit(0x79) && npcAffection[ANN] >= 200 && gWeather == SUNNY && gSeason == WINTER && DAYTIME && !checkLifeEventBit(MARRIED) && !checkLifeEventBit(ANN_CLIFF_MARRIED)) {
+            if (!checkLifeEventBit(0x79) && npcAffection[ANN] >= 200 && gWeather == SUNNY && gSeason == WINTER && (5 < gHour && gHour < 18) && !checkLifeEventBit(MARRIED) && !checkLifeEventBit(ANN_CLIFF_MARRIED)) {
                 setLifeEventBit(0x79);
                 gCutsceneIndex = 0xB5;
                 loadCutscene(arg0);
@@ -1300,7 +1300,7 @@ u16 func_8009C324(u8 arg0) {
         }  
         
         if (!set) {
-            if (!checkLifeEventBit(0x7E) && checkLifeEventBit(0x96) && npcAffection[KAREN] >= 200 && gWeather == SUNNY && gSeason == AUTUMN && gDayOfMonth == 7 && (17 < gHour && gHour < 24) && !checkLifeEventBit(MARRIED) && !checkLifeEventBit(KAREN_KAI_MARRIED)) {
+            if (!checkLifeEventBit(0x7E) && checkLifeEventBit(0x96) && npcAffection[KAREN] >= 200 && gWeather == SUNNY && gSeason == AUTUMN && gDayOfMonth == 7 && NIGHTTIME && !checkLifeEventBit(MARRIED) && !checkLifeEventBit(KAREN_KAI_MARRIED)) {
                 setLifeEventBit(0x7E);
                 gCutsceneIndex = 0xC1;
                 loadCutscene(arg0);
@@ -1310,7 +1310,7 @@ u16 func_8009C324(u8 arg0) {
         
         if (!set) {
             
-            if (!checkLifeEventBit(0x7F) && checkLifeEventBit(0x96) && gSeason == WINTER && (6 < gDayOfMonth && gDayOfMonth < 31) && DAYTIME) {
+            if (!checkLifeEventBit(0x7F) && checkLifeEventBit(0x96) && gSeason == WINTER && (6 < gDayOfMonth && gDayOfMonth < 31) && (5 < gHour && gHour < 18)) {
                 
                 setLifeEventBit(0x7F);
                 setLifeEventBit(0x20);
@@ -1358,7 +1358,7 @@ u16 func_8009C324(u8 arg0) {
         }       
         
         if (!set) {
-            if (!checkLifeEventBit(0x83) && checkLifeEventBit(0x2A) && DAYTIME && (!checkLifeEventBit(MARRIED) || gWife != KAREN) && !checkLifeEventBit(KAREN_KAI_MARRIED)) {
+            if (!checkLifeEventBit(0x83) && checkLifeEventBit(0x2A) && (5 < gHour && gHour < 18) && (!checkLifeEventBit(MARRIED) || gWife != KAREN) && !checkLifeEventBit(KAREN_KAI_MARRIED)) {
                 setLifeEventBit(0x83);
                 gCutsceneIndex = 0xDA;
                 loadCutscene(arg0);
@@ -1367,7 +1367,7 @@ u16 func_8009C324(u8 arg0) {
         }    
 
         if (!set && arg0 == 0) {
-            if (!checkLifeEventBit(0x84) && checkLifeEventBit(6) && npcAffection[RICK] >= 120 && gWeather == SUNNY && (gSeason && gSeason < 4) && DAYTIME && gEntranceIndex == HOUSE_EXIT) {
+            if (!checkLifeEventBit(0x84) && checkLifeEventBit(6) && npcAffection[RICK] >= 120 && gWeather == SUNNY && (gSeason && gSeason < 4) && (5 < gHour && gHour < 18) && gEntranceIndex == HOUSE_EXIT) {
                 setLifeEventBit(0x84);
                 gCutsceneIndex = 0xDC;
                 loadCutscene(arg0);
@@ -1376,7 +1376,7 @@ u16 func_8009C324(u8 arg0) {
         }
         
         if (!set) {
-            if (!checkLifeEventBit(0x85) && (5 < gHour && gHour < 12) && func_8009B564() >= 5 && chickenFeedQuantity < 990) {
+            if (!checkLifeEventBit(0x85) && (5 < gHour && gHour < 12) && getTotalChickenCount() >= 5 && chickenFeedQuantity < 990) {
                 setLifeEventBit(0x85);
                 gCutsceneIndex = 0xE0;
                 loadCutscene(arg0);
@@ -1394,7 +1394,7 @@ u16 func_8009C324(u8 arg0) {
         }
         
         if (!set && arg0 == 0) {
-            if (!checkLifeEventBit(0x87) && (func_800DC008() + getFarmPinkCatMintFlowersTilesSum()) >= 24 && gWeather == SUNNY && gSeason == SPRING && DAYTIME && gEntranceIndex == HOUSE_EXIT) {
+            if (!checkLifeEventBit(0x87) && (getFarmMoondropFlowerCount() + getFarmPinkCatMintFlowersCount()) >= 24 && gWeather == SUNNY && gSeason == SPRING && (5 < gHour && gHour < 18) && gEntranceIndex == HOUSE_EXIT) {
                 setLifeEventBit(0x87);
                 gCutsceneIndex = 0xE4;
                 loadCutscene(arg0);
@@ -1403,7 +1403,7 @@ u16 func_8009C324(u8 arg0) {
         }
 
         if (!set && arg0 == 0) {
-            if (!checkLifeEventBit(0x88) && getFarmGrassTilesSum() >= 90 && gWeather == SUNNY && gSeason == AUTUMN && DAYTIME && gEntranceIndex == HOUSE_EXIT) {
+            if (!checkLifeEventBit(0x88) && getFarmGrassTilesSum() >= 90 && gWeather == SUNNY && gSeason == AUTUMN && (5 < gHour && gHour < 18) && gEntranceIndex == HOUSE_EXIT) {
                 setLifeEventBit(0x88);
                 gCutsceneIndex = 0xE6;
                 loadCutscene(arg0);
@@ -1412,7 +1412,7 @@ u16 func_8009C324(u8 arg0) {
         }
         
         if (!set && arg0 == 0) {
-            if (!checkLifeEventBit(0x89) && checkLifeEventBit(0x20) && gWeather == SUNNY && gSeason == AUTUMN && DAYTIME) {
+            if (!checkLifeEventBit(0x89) && checkLifeEventBit(0x20) && gWeather == SUNNY && gSeason == AUTUMN && (5 < gHour && gHour < 18)) {
                 setLifeEventBit(0x89);
                 gCutsceneIndex = 0xE7;
                 loadCutscene(arg0);
@@ -1421,7 +1421,7 @@ u16 func_8009C324(u8 arg0) {
         }
         
         if (!set && arg0 == 0) {
-            if (!checkLifeEventBit(0x8A) && checkLifeEventBit(0x53) && gWeather == SUNNY && gSeason == SPRING && DAYTIME && gEntranceIndex == HOUSE_EXIT) {
+            if (!checkLifeEventBit(0x8A) && checkLifeEventBit(0x53) && gWeather == SUNNY && gSeason == SPRING && (5 < gHour && gHour < 18) && gEntranceIndex == HOUSE_EXIT) {
                 setLifeEventBit(0x8A);
                 gCutsceneIndex = 0xE8;
                 loadCutscene(arg0);
@@ -1430,7 +1430,7 @@ u16 func_8009C324(u8 arg0) {
         }
         
         if (!set && arg0 == 0) {
-            if (!checkLifeEventBit(0x8B) && checkLifeEventBit(0x30) && gWeather == SUNNY && func_8009B3DC() >= 3 && gSeason == WINTER && DAYTIME && gEntranceIndex == HOUSE_EXIT) {
+            if (!checkLifeEventBit(0x8B) && checkLifeEventBit(0x30) && gWeather == SUNNY && getTotalCowsCount() >= 3 && gSeason == WINTER && (5 < gHour && gHour < 18) && gEntranceIndex == HOUSE_EXIT) {
                 setLifeEventBit(0x8B);
                 gCutsceneIndex = 0xE9;
                 loadCutscene(arg0);
@@ -1439,7 +1439,8 @@ u16 func_8009C324(u8 arg0) {
         }
         
         if (!set && arg0 == 0) {
-            if (!checkLifeEventBit(0x8C) && checkLifeEventBit(0x30) && func_8009B828(1) && gWeather == SUNNY && gSeason == AUTUMN && DAYTIME && gEntranceIndex == HOUSE_EXIT) {
+            // get cow + grass count
+            if (!checkLifeEventBit(0x8C) && checkLifeEventBit(0x30) && func_8009B828(1) && gWeather == SUNNY && gSeason == AUTUMN && (5 < gHour && gHour < 18) && gEntranceIndex == HOUSE_EXIT) {
                 setLifeEventBit(0x8C);
                 gCutsceneIndex = 0xEA;
                 loadCutscene(arg0);
@@ -1448,7 +1449,7 @@ u16 func_8009C324(u8 arg0) {
         }
 
         if (!set && arg0 == 0) {
-            if (!checkLifeEventBit(0x8D) && (func_800DC008() + getFarmPinkCatMintFlowersTilesSum()) >= 24 && gWeather == SUNNY && gSeason == SUMMER && DAYTIME && gEntranceIndex == HOUSE_EXIT) {
+            if (!checkLifeEventBit(0x8D) && (getFarmMoondropFlowerCount() + getFarmPinkCatMintFlowersCount()) >= 24 && gWeather == SUNNY && gSeason == SUMMER && (5 < gHour && gHour < 18) && gEntranceIndex == HOUSE_EXIT) {
                 setLifeEventBit(0x8D);
                 gCutsceneIndex = 0xEC;
                 loadCutscene(arg0);
@@ -1484,7 +1485,7 @@ u16 func_8009C324(u8 arg0) {
         }       
         
         if (!set) {
-            if (!checkLifeEventBit(0x95) && checkLifeEventBit(0x2F) && npcAffection[KAI] <= 80 && gSeason == WINTER && DAYTIME && gHarvestKing != 5 && gHarvestCoinFinder != 5 && (!checkLifeEventBit(MARRIED) || gWife != KAREN) && !checkLifeEventBit(KAREN_KAI_MARRIED)) {
+            if (!checkLifeEventBit(0x95) && checkLifeEventBit(0x2F) && npcAffection[KAI] <= 80 && gSeason == WINTER && (5 < gHour && gHour < 18) && gHarvestKing != 5 && gHarvestCoinFinder != 5 && (!checkLifeEventBit(MARRIED) || gWife != KAREN) && !checkLifeEventBit(KAREN_KAI_MARRIED)) {
                 setLifeEventBit(0x95);
                 setLifeEventBit(0x2E);
                 setSpecialDialogueBit(0x24);
@@ -1796,18 +1797,18 @@ u16 setFarmCutscenes(void) {
 
     if (!set) {
         if (checkDailyEventBit(4)) {
-            switch (D_801C4216) {         
-                case 4:
+            switch (selectedAnimalType) {         
+                case CHICKEN_TYPE:
                     tempHappiness = adjustValue(gHappiness, -5, MAX_HAPPINESS);
                     gHappiness += tempHappiness;
                     gCutsceneIndex = 0;
                     break;
-                case 2:
+                case COW_TYPE:
                     tempHappiness = adjustValue(gHappiness, -10, MAX_HAPPINESS);
                     gHappiness += tempHappiness;
                     gCutsceneIndex = 1;
                     break;
-                case 3:
+                case SHEEP_TYPE:
                     tempHappiness = adjustValue(gHappiness, -10, MAX_HAPPINESS);
                     gHappiness += tempHappiness;
                     gCutsceneIndex = 2;
@@ -1863,7 +1864,7 @@ u16 setFarmCutscenes(void) {
     }
 
     if (!set) {
-        func_8009C324(0);
+        setFarmVisitCutscenes(0);
     }
     
     return index;
@@ -1913,7 +1914,7 @@ u16 setMountain1Cutscenes(void) {
     }
 
     if (!set) {
-        if (!checkLifeEventBit(0xA4) && npcAffection[JEFF] >= 180 && gWeather == SUNNY && gSeason == SUMMER && DAYTIME && (!checkLifeEventBit(MARRIED) || gWife != ELLI) && !checkLifeEventBit(ELLI_JEFF_MARRIED) && gEntranceIndex == TOP_OF_MOUNTAIN_1_SUMMER) {
+        if (!checkLifeEventBit(0xA4) && npcAffection[JEFF] >= 180 && gWeather == SUNNY && gSeason == SUMMER && (5 < gHour && gHour < 18) && (!checkLifeEventBit(MARRIED) || gWife != ELLI) && !checkLifeEventBit(ELLI_JEFF_MARRIED) && gEntranceIndex == TOP_OF_MOUNTAIN_1_SUMMER) {
             setDailyEventBit(0x21);
             setLifeEventBit(0xA4);
             gCutsceneIndex = 0x134;
@@ -1924,7 +1925,7 @@ u16 setMountain1Cutscenes(void) {
     }
 
     if (!set) {
-        if (!checkLifeEventBit(0xA6) && npcAffection[MARIA] >= 150 && npcAffection[ELLI] >= 150 && gWeather == SUNNY && gSeason == SUMMER && DAYTIME && gEntranceIndex == TOP_OF_MOUNTAIN_1_SUMMER) {
+        if (!checkLifeEventBit(0xA6) && npcAffection[MARIA] >= 150 && npcAffection[ELLI] >= 150 && gWeather == SUNNY && gSeason == SUMMER && (5 < gHour && gHour < 18) && gEntranceIndex == TOP_OF_MOUNTAIN_1_SUMMER) {
             setDailyEventBit(0x21);
             setLifeEventBit(0xA6);
             gCutsceneIndex = 0x136;
@@ -1935,7 +1936,7 @@ u16 setMountain1Cutscenes(void) {
     }
 
     if (!set) {
-        if (!checkLifeEventBit(0xA9) && npcAffection[POPURI] >= 150 && npcAffection[KAREN] >= 150 && gWeather == SUNNY && gSeason == SPRING && DAYTIME && gEntranceIndex == 0x1A) {
+        if (!checkLifeEventBit(0xA9) && npcAffection[POPURI] >= 150 && npcAffection[KAREN] >= 150 && gWeather == SUNNY && gSeason == SPRING && (5 < gHour && gHour < 18) && gEntranceIndex == 0x1A) {
             setDailyEventBit(0x21);
             setLifeEventBit(0xA9);
             gCutsceneIndex = 0x13A;
@@ -1946,7 +1947,7 @@ u16 setMountain1Cutscenes(void) {
     }
 
     if (!set) {
-      if (!checkLifeEventBit(0xAD) && !checkDailyEventBit(FESTIVAL_DAY_TYPE_2) && npcAffection[ELLI] >= 180 && gWeather == SUNNY && DAYTIME && !checkLifeEventBit(MARRIED) && !checkLifeEventBit(ELLI_JEFF_MARRIED)) {
+      if (!checkLifeEventBit(0xAD) && !checkDailyEventBit(FESTIVAL_DAY_TYPE_2) && npcAffection[ELLI] >= 180 && gWeather == SUNNY && (5 < gHour && gHour < 18) && !checkLifeEventBit(MARRIED) && !checkLifeEventBit(ELLI_JEFF_MARRIED)) {
             setDailyEventBit(0x21);
             setLifeEventBit(0xAD);
             setDailyEventBit(0x58);
@@ -1960,7 +1961,6 @@ u16 setMountain1Cutscenes(void) {
 
 }
 
-// mountain 2
 //INCLUDE_ASM("asm/nonmatchings/game/cutscenes", setMountain2Cutscenes);
 
 u16 setMountain2Cutscenes(void) {
@@ -2046,7 +2046,7 @@ u16 setTopOfMountain1Cutscenes(void) {
     bool set = FALSE;
     u16 index = 0xFFFF;
 
-    if (!checkLifeEventBit(0xA8) && checkLifeEventBit(0x4C) && npcAffection[POPURI] >= 150 && npcAffection[JEFF] >= 120 && gWeather == SUNNY && gSeason >= AUTUMN && DAYTIME && (!checkLifeEventBit(MARRIED) || gWife != POPURI) && (!checkLifeEventBit(MARRIED) || gWife != ELLI) && !checkLifeEventBit(POPURI_GRAY_MARRIED) && !checkLifeEventBit(ELLI_JEFF_MARRIED)) {
+    if (!checkLifeEventBit(0xA8) && checkLifeEventBit(0x4C) && npcAffection[POPURI] >= 150 && npcAffection[JEFF] >= 120 && gWeather == SUNNY && gSeason >= AUTUMN && (5 < gHour && gHour < 18) && (!checkLifeEventBit(MARRIED) || gWife != POPURI) && (!checkLifeEventBit(MARRIED) || gWife != ELLI) && !checkLifeEventBit(POPURI_GRAY_MARRIED) && !checkLifeEventBit(ELLI_JEFF_MARRIED)) {
         setLifeEventBit(0xA8);
         gCutsceneIndex = 0x138;
         gCutsceneFlags |= (2 | 4);
@@ -2055,7 +2055,7 @@ u16 setTopOfMountain1Cutscenes(void) {
     }
 
     if (!set) {
-        if (!checkLifeEventBit(0xAB) && checkLifeEventBit(0x4C) && gWeather == SUNNY && gSeason == AUTUMN && DAYTIME) {
+        if (!checkLifeEventBit(0xAB) && checkLifeEventBit(0x4C) && gWeather == SUNNY && gSeason == AUTUMN && (5 < gHour && gHour < 18)) {
             setLifeEventBit(0xAB);
             gCutsceneIndex = 0x153;
             gCutsceneFlags |= (2 | 4);
@@ -2065,7 +2065,7 @@ u16 setTopOfMountain1Cutscenes(void) {
     }
 
     if (!set) {
-        if (!checkLifeEventBit(0xAC) && gWeather == SUNNY && gSeason == WINTER && DAYTIME && checkLifeEventBit(HAVE_KITCHEN) && checkLifeEventBit(HAVE_BATHROOM) && checkLifeEventBit(HAVE_STAIRS) && checkLifeEventBit(HAVE_GREENHOUSE) && checkLifeEventBit(HAVE_LOG_TERRACE) && checkLifeEventBit(HAVE_BABY_BED) && checkLifeEventBit(HOT_SPRINGS_COMPLETED)) {
+        if (!checkLifeEventBit(0xAC) && gWeather == SUNNY && gSeason == WINTER && (5 < gHour && gHour < 18) && checkLifeEventBit(HAVE_KITCHEN) && checkLifeEventBit(HAVE_BATHROOM) && checkLifeEventBit(HAVE_STAIRS) && checkLifeEventBit(HAVE_GREENHOUSE) && checkLifeEventBit(HAVE_LOG_TERRACE) && checkLifeEventBit(HAVE_BABY_BED) && checkLifeEventBit(HOT_SPRINGS_COMPLETED)) {
             setLifeEventBit(0xAC);
             gCutsceneIndex = 0x154;
             gCutsceneFlags |= (2 | 4);
@@ -2110,7 +2110,7 @@ u16 setSpringCutscenes(void) {
     bool set = FALSE;
     u16 index = 0xFFFF;
 
-    if (!checkLifeEventBit(0x9F) && blueMistFlowerPlot >= 0xC2 && gSeason < AUTUMN && DAYTIME) {
+    if (!checkLifeEventBit(0x9F) && blueMistFlowerPlot >= 0xC2 && gSeason < AUTUMN && (5 < gHour && gHour < 18)) {
         setLifeEventBit(0x9F);
         setDailyEventBit(0x46);
         gCutsceneIndex = 0x13B;
@@ -2120,7 +2120,7 @@ u16 setSpringCutscenes(void) {
     }
 
     if (!set) {
-        if (!checkLifeEventBit(0xD5) && checkLifeEventBit(0x9F) && blueMistFlowerPlot >= 0xC2 && gSeason < AUTUMN && DAYTIME) {
+        if (!checkLifeEventBit(0xD5) && checkLifeEventBit(0x9F) && blueMistFlowerPlot >= 0xC2 && gSeason < AUTUMN && (5 < gHour && gHour < 18)) {
             setLifeEventBit(0xD5);
             setDailyEventBit(0x46);
             gCutsceneIndex = 0x13C;
@@ -2131,7 +2131,7 @@ u16 setSpringCutscenes(void) {
     }
 
     if (!set) {
-         if (!checkLifeEventBit(0xD6) && checkLifeEventBit(0xD5) && blueMistFlowerPlot >= 0xC2 && gSeason < AUTUMN && DAYTIME) {
+         if (!checkLifeEventBit(0xD6) && checkLifeEventBit(0xD5) && blueMistFlowerPlot >= 0xC2 && gSeason < AUTUMN && (5 < gHour && gHour < 18)) {
             setLifeEventBit(0xD6);
             setDailyEventBit(0x46);
             gCutsceneIndex = 0x13D;
@@ -2149,7 +2149,7 @@ u16 setHarvestSpriteCaveCutscenes(void) {
 
     u16 index = 0xFFFF;
     
-    if (checkHaveKeyItem(MARBLES) && npcAffection[HARVEST_SPRITE_1] >= 80 && DAYTIME) {
+    if (checkHaveKeyItem(MARBLES) && npcAffection[HARVEST_SPRITE_1] >= 80 && (5 < gHour && gHour < 18)) {
         gCutsceneIndex = 0x142;
         gCutsceneFlags |= (2 | 4);
         loadCutscene(0);
@@ -2176,7 +2176,6 @@ u16 setCaveCutscenes(void) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/cutscenes", setHouseCutscenes);
 
-// house
 u16 setHouseCutscenes(void) {
 
     u16 index = 0xFFFF;
@@ -2230,7 +2229,7 @@ u16 setHouseCutscenes(void) {
     }
 
     if (!set) {
-        if (!checkLifeEventBit(0x62) && npcAffection[CLIFF] >= 30 && gWeather == SUNNY && DAYTIME && (!checkLifeEventBit(MARRIED) || gWife != ANN) && !checkLifeEventBit(ANN_CLIFF_MARRIED)) {
+        if (!checkLifeEventBit(0x62) && npcAffection[CLIFF] >= 30 && gWeather == SUNNY && (5 < gHour && gHour < 18) && (!checkLifeEventBit(MARRIED) || gWife != ANN) && !checkLifeEventBit(ANN_CLIFF_MARRIED)) {
             gCutsceneIndex = 0x26;
             loadCutscene(0);
             set = TRUE;
@@ -2238,7 +2237,7 @@ u16 setHouseCutscenes(void) {
     }
 
     if (!set) {
-        if (!checkDailyEventBit(FARM_MORNING_VISIT) && !checkLifeEventBit(WIFE_LEFT) && DAYTIME && checkLifeEventBit(MARRIED) && gWife == MARIA && npcAffection[MARIA] < 100) {
+        if (!checkDailyEventBit(FARM_MORNING_VISIT) && !checkLifeEventBit(WIFE_LEFT) && (5 < gHour && gHour < 18) && checkLifeEventBit(MARRIED) && gWife == MARIA && npcAffection[MARIA] < 100) {
             setDailyEventBit(FARM_MORNING_VISIT);
             setLifeEventBit(WIFE_LEFT);
             gCutsceneIndex = MARIA_LEAVES_MARRIAGE;
@@ -2249,7 +2248,7 @@ u16 setHouseCutscenes(void) {
     }
 
     if (!set) {
-        if (!checkDailyEventBit(FARM_MORNING_VISIT) && !checkLifeEventBit(WIFE_LEFT) && DAYTIME && MARRIED_TO_POPURI && npcAffection[POPURI] < 100) {
+        if (!checkDailyEventBit(FARM_MORNING_VISIT) && !checkLifeEventBit(WIFE_LEFT) && (5 < gHour && gHour < 18) && MARRIED_TO_POPURI && npcAffection[POPURI] < 100) {
             setDailyEventBit(FARM_MORNING_VISIT);
             setLifeEventBit(WIFE_LEFT);
             gCutsceneIndex = POPURI_LEAVES_MARRIAGE;
@@ -2260,7 +2259,7 @@ u16 setHouseCutscenes(void) {
     }
 
     if (!set) {
-        if (!checkDailyEventBit(FARM_MORNING_VISIT) && !checkLifeEventBit(WIFE_LEFT) && DAYTIME && MARRIED_TO_ELLI && npcAffection[ELLI] < 100) {
+        if (!checkDailyEventBit(FARM_MORNING_VISIT) && !checkLifeEventBit(WIFE_LEFT) && (5 < gHour && gHour < 18) && MARRIED_TO_ELLI && npcAffection[ELLI] < 100) {
             setDailyEventBit(FARM_MORNING_VISIT);
             setLifeEventBit(WIFE_LEFT);
             gCutsceneIndex = ELLI_LEAVES_MARRIAGE;
@@ -2271,7 +2270,7 @@ u16 setHouseCutscenes(void) {
     }
 
     if (!set) {
-        if (!checkDailyEventBit(FARM_MORNING_VISIT) && !checkLifeEventBit(WIFE_LEFT) && DAYTIME && MARRIED_TO_ANN && npcAffection[ANN] < 100) {
+        if (!checkDailyEventBit(FARM_MORNING_VISIT) && !checkLifeEventBit(WIFE_LEFT) && (5 < gHour && gHour < 18) && MARRIED_TO_ANN && npcAffection[ANN] < 100) {
             setDailyEventBit(FARM_MORNING_VISIT);
             setLifeEventBit(WIFE_LEFT);
             gCutsceneIndex = ANN_LEAVES_MARRIAGE;
@@ -2282,7 +2281,7 @@ u16 setHouseCutscenes(void) {
     }
 
     if (!set) {
-        if (!checkDailyEventBit(FARM_MORNING_VISIT) && !checkLifeEventBit(WIFE_LEFT) && DAYTIME && MARRIED_TO_KAREN && npcAffection[KAREN] < 100) {
+        if (!checkDailyEventBit(FARM_MORNING_VISIT) && !checkLifeEventBit(WIFE_LEFT) && (5 < gHour && gHour < 18) && MARRIED_TO_KAREN && npcAffection[KAREN] < 100) {
             setDailyEventBit(FARM_MORNING_VISIT);
             setLifeEventBit(WIFE_LEFT);
             gCutsceneIndex = KAREN_LEAVES_MARRIAGE;
@@ -2296,7 +2295,6 @@ u16 setHouseCutscenes(void) {
     
 }
 
-// kitchen
 //INCLUDE_ASM("asm/nonmatchings/game/cutscenes", setKitchenCutscenes);
 
 u16 setKitchenCutscenes(void) {
@@ -2471,7 +2469,6 @@ u16 setKitchenCutscenes(void) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/cutscenes", setRanchCutscenes);
 
-// ranch
 u16 setRanchCutscenes(void) {
 
     u16 index = 0xFFFF;
@@ -2502,9 +2499,10 @@ u16 setRanchCutscenes(void) {
 
     if (!set && gSeason == AUTUMN && gDayOfMonth == 4 && 5 < gHour && gHour < 18) {
 
-        if (D_80189054 != 0xFF) {
+        if (gCowFestivalEnteredCowIndex!= 0xFF) {
             setDailyEventBit(0x49);
-            D_801886D2 = gFarmAnimals[D_80189054].affection;
+            // set cutscene wild card/score variable
+            D_801886D2 = gFarmAnimals[gCowFestivalEnteredCowIndex].affection;
         } else {
             toggleDailyEventBit(0x49);
         }
@@ -2616,7 +2614,7 @@ u16 setRanchStoreCutscenes(void) {
 
     u16 index = 0xFFFF;
      
-    if (!(checkLifeEventBit(ANN_SICK_VISIT)) && !checkDailyEventBit(FESTIVAL_DAY_TYPE_2) && npcAffection[ANN] >= 120 && RAINING && gDayOfWeek == SUNDAY && DAYTIME && NOT_MARRIED && !checkLifeEventBit(ANN_CLIFF_MARRIED)) {
+    if (!(checkLifeEventBit(ANN_SICK_VISIT)) && !checkDailyEventBit(FESTIVAL_DAY_TYPE_2) && npcAffection[ANN] >= 120 && (2 <= gWeather && gWeather < 4) && gDayOfWeek == SUNDAY && (5 < gHour && gHour < 18) && NOT_MARRIED && !checkLifeEventBit(ANN_CLIFF_MARRIED)) {
         setLifeEventBit(ANN_SICK_VISIT);
         setDailyEventBit(0x59);
         gCutsceneIndex = ANN_SICK_VISIT_CUTSCENE;
@@ -2636,13 +2634,12 @@ u16 setRanchStoreCutscenes(void) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/cutscenes", setVineyardCutscenes);
 
-// vineyard
 u16 setVineyardCutscenes(void) {
 
     u16 index = 0xFFFF;
     bool set = FALSE;
 
-    if (!checkLifeEventBit(0xC3) && DAYTIME && (!checkLifeEventBit(MARRIED) || gWife != 4) && !checkLifeEventBit(KAREN_KAI_MARRIED)) {
+    if (!checkLifeEventBit(0xC3) && (5 < gHour && gHour < 18) && (!checkLifeEventBit(MARRIED) || gWife != 4) && !checkLifeEventBit(KAREN_KAI_MARRIED)) {
         setLifeEventBit(0xC3);
         gCutsceneIndex = 0x2BC;
         gCutsceneFlags |= (2 | 4);
@@ -2651,7 +2648,7 @@ u16 setVineyardCutscenes(void) {
     }
 
     if (!set) {
-        if (!checkLifeEventBit(0xC4) && !checkDailyEventBit(FESTIVAL_DAY_TYPE_2) && npcAffection[KAREN] >= 180 && gWeather == SUNNY && DAYTIME && !checkLifeEventBit(MARRIED) && !checkLifeEventBit(KAREN_KAI_MARRIED)) {
+        if (!checkLifeEventBit(0xC4) && !checkDailyEventBit(FESTIVAL_DAY_TYPE_2) && npcAffection[KAREN] >= 180 && gWeather == SUNNY && (5 < gHour && gHour < 18) && !checkLifeEventBit(MARRIED) && !checkLifeEventBit(KAREN_KAI_MARRIED)) {
             setLifeEventBit(0xC4);
             setDailyEventBit(0x5A);
             gCutsceneIndex = 0x2BD;
@@ -2662,7 +2659,7 @@ u16 setVineyardCutscenes(void) {
     }
 
     if (!set) {
-        if (!checkLifeEventBit(0xC5) && npcAffection[ANN] >= 120 && npcAffection[KAREN] >= 150 && gWeather == SUNNY && gSeason == WINTER && DAYTIME && (!checkLifeEventBit(MARRIED) || gWife != KAREN) && !checkLifeEventBit(KAREN_KAI_MARRIED) && previousMapIndex == 0x4E) {
+        if (!checkLifeEventBit(0xC5) && npcAffection[ANN] >= 120 && npcAffection[KAREN] >= 150 && gWeather == SUNNY && gSeason == WINTER && (5 < gHour && gHour < 18) && (!checkLifeEventBit(MARRIED) || gWife != KAREN) && !checkLifeEventBit(KAREN_KAI_MARRIED) && previousMapIndex == 0x4E) {
             setLifeEventBit(0xC5);
             gCutsceneIndex = 0x2BE;
             gCutsceneFlags |= (2 | 4);
@@ -2672,7 +2669,7 @@ u16 setVineyardCutscenes(void) {
     }
 
     if (!set) {
-        if (!checkLifeEventBit(0xC6) && npcAffection[KAI] >= 50 && npcAffection[KAREN] >= 50 && DAYTIME && !checkLifeEventBit(MARRIED) && !checkLifeEventBit(KAREN_KAI_MARRIED) && previousMapIndex == 0x4E) {
+        if (!checkLifeEventBit(0xC6) && npcAffection[KAI] >= 50 && npcAffection[KAREN] >= 50 && (5 < gHour && gHour < 18) && !checkLifeEventBit(MARRIED) && !checkLifeEventBit(KAREN_KAI_MARRIED) && previousMapIndex == 0x4E) {
             setLifeEventBit(0xC6);
             gCutsceneIndex = 0x2BF;
             gCutsceneFlags |= (2 | 4);
@@ -2690,7 +2687,7 @@ u16 setVineyardHouseCutscenes(void) {
     
     u16 index = 0xFFFF;
     
-    if (!checkLifeEventBit(KAREN_SICK_VISIT) && !checkDailyEventBit(FESTIVAL_DAY_TYPE_2) && npcAffection[KAREN] >= 120U && RAINING && DAYTIME && NOT_MARRIED && !checkLifeEventBit(KAREN_KAI_MARRIED)) {
+    if (!checkLifeEventBit(KAREN_SICK_VISIT) && !checkDailyEventBit(FESTIVAL_DAY_TYPE_2) && npcAffection[KAREN] >= 120U && (2 <= gWeather && gWeather < 4) && (5 < gHour && gHour < 18) && NOT_MARRIED && !checkLifeEventBit(KAREN_KAI_MARRIED)) {
         setLifeEventBit(KAREN_SICK_VISIT);
         setDailyEventBit(0x5A);
         gCutsceneIndex = KAREN_SICK;
@@ -2716,7 +2713,7 @@ u16 setVineyardCellarCutscenes(void) {
 
     set = FALSE;
     
-    if (!checkLifeEventBit(KAREN_YELLOW_HEART_EVENT_CUTSCENE) && checkLifeEventBit(0x67) && DAYTIME && NOT_MARRIED && !checkLifeEventBit(KAREN_KAI_MARRIED) && previousMapIndex == VINEYARD) {
+    if (!checkLifeEventBit(KAREN_YELLOW_HEART_EVENT_CUTSCENE) && checkLifeEventBit(0x67) && (5 < gHour && gHour < 18) && NOT_MARRIED && !checkLifeEventBit(KAREN_KAI_MARRIED) && previousMapIndex == VINEYARD) {
                
         setLifeEventBit(KAREN_YELLOW_HEART_EVENT_CUTSCENE);
         setDailyEventBit(0x4F);
@@ -2741,7 +2738,6 @@ u16 setVineyardCellarCutscenes(void) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/cutscenes", setVillage1Cutscenes);
 
-// village 1
 u16 setVillage1Cutscenes(void) {
 
     u16 index = 0xFFFF;
@@ -3046,7 +3042,7 @@ u16 setRickStoreCutscenes(void) {
     
     u16 index = 0xFFFF;
     
-    if (!checkLifeEventBit(ANN_RICK_CUTSCENE) && npcAffection[RICK] >= 40 && DAYTIME) {
+    if (!checkLifeEventBit(ANN_RICK_CUTSCENE) && npcAffection[RICK] >= 40 && (5 < gHour && gHour < 18)) {
         setLifeEventBit(ANN_RICK_CUTSCENE);
         gCutsceneIndex = ANN_AND_RICK;
         gCutsceneFlags |= (2 | 4);
@@ -3063,7 +3059,7 @@ u16 setFlowerShopCutscenes(void) {
     
     u16 index = 0xFFFF;
     
-    if (!checkLifeEventBit(POPURI_SICK_CUTSCENE) && !checkDailyEventBit(FESTIVAL_DAY_TYPE_2) && npcAffection[POPURI] >= 120 && RAINING && DAYTIME && NOT_MARRIED && !checkLifeEventBit(POPURI_GRAY_MARRIED)) {
+    if (!checkLifeEventBit(POPURI_SICK_CUTSCENE) && !checkDailyEventBit(FESTIVAL_DAY_TYPE_2) && npcAffection[POPURI] >= 120 && (2 <= gWeather && gWeather < 4) && (5 < gHour && gHour < 18) && NOT_MARRIED && !checkLifeEventBit(POPURI_GRAY_MARRIED)) {
         setLifeEventBit(POPURI_SICK_CUTSCENE);
         setDailyEventBit(0x57);
         gCutsceneIndex = POPURI_SICK;
@@ -3083,7 +3079,6 @@ u16 setFlowerShopCutscenes(void) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/cutscenes", setBakeryCutscenes);
 
-// bakery
 u16 setBakeryCutscenes(void) {
 
     bool set = FALSE;
@@ -3172,7 +3167,6 @@ u16 setBakeryCutscenes(void) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/cutscenes", setMayorHouseCutscenes);
 
-// mayor house
 u16 setMayorHouseCutscenes(void) {
 
     u16 index = 0xFFFF;
@@ -3207,7 +3201,6 @@ u16 setMayorHouseCutscenes(void) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/cutscenes", setLibraryCutscenes);
 
-// library
 u16 setLibraryCutscenes(void) {
 
     u16 index = 0xFFFF;
@@ -3262,20 +3255,19 @@ u16 setChurchCutscenes(void) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/cutscenes", setTavernCutscenes);
 
-// tavern
 u16 setTavernCutscenes(void) {
 
     u16 index = 0xFFFF;
     bool set = FALSE;
 
-    if (gSeason == WINTER && gDayOfMonth == 30 && (17 < gHour && gHour < 24)) {
+    if (gSeason == WINTER && gDayOfMonth == 30 && NIGHTTIME) {
         gCutsceneIndex = TAVERN_NEW_YEARS;
         loadCutscene(0);
         set = TRUE;
         gCutsceneFlags |= (2 | 4);
     }
 
-    if (!set && !checkLifeEventBit(KAREN_KAI_TAVERN_CUTSCENE) && npcAffection[KAREN] >= 80 && npcAffection[KAI] >= 80 && (17 < gHour && gHour < 24) && (!checkLifeEventBit(MARRIED) || gWife != KAREN) && !checkLifeEventBit(KAREN_KAI_MARRIED)) {
+    if (!set && !checkLifeEventBit(KAREN_KAI_TAVERN_CUTSCENE) && npcAffection[KAREN] >= 80 && npcAffection[KAI] >= 80 && NIGHTTIME && (!checkLifeEventBit(MARRIED) || gWife != KAREN) && !checkLifeEventBit(KAREN_KAI_MARRIED)) {
         setLifeEventBit(KAREN_KAI_TAVERN_CUTSCENE);
         setSpecialDialogueBit(KAREN_KAI_TAVERN_CUTSCENE_DIALOGUE);
         gCutsceneIndex = KAREN_KAI_TAVERN;
@@ -3289,7 +3281,6 @@ u16 setTavernCutscenes(void) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/cutscenes", setSquareCutscenes);
 
-// square
 u16 setSquareCutscenes(void) {
 
     u16 index = 0xFFFF;
@@ -3370,7 +3361,7 @@ u16 setSquareCutscenes(void) {
     }
 
     if (!set && gSeason == SPRING && gDayOfMonth == 17 && 7 < gHour && gHour < 18) {
-        func_800CB0C4();
+        updateHorseRaceContext();
         gCutsceneIndex = 0x384;
         loadCutscene(0);
         gCutsceneFlags |= (2 | 4);
@@ -3378,7 +3369,7 @@ u16 setSquareCutscenes(void) {
     }
     
     if (!set && gSeason == AUTUMN && gDayOfMonth == 28 && 7 < gHour && gHour < 18) {
-        func_800CB0C4();
+        updateHorseRaceContext();
         gCutsceneIndex = 0x384;
         loadCutscene(0);
         gCutsceneFlags |= (2 | 4);
@@ -3386,7 +3377,7 @@ u16 setSquareCutscenes(void) {
     }
 
     if (!set && gSeason == WINTER && gDayOfMonth == 19 && 7 < gHour && gHour < 18) {
-        func_800CB8F0();
+        updateDogRaceContext();
         gCutsceneIndex = 0x514;
         loadCutscene(0);
         gCutsceneFlags |= (2 | 4);
@@ -3398,14 +3389,13 @@ u16 setSquareCutscenes(void) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/cutscenes", setRaceTrackCutscenes);
 
-// race track
 u16 setRaceTrackCutscenes(void) {
 
     u16 index = 0xFFFF;
     bool set = FALSE;
 
     if (checkDailyEventBit(0x40) && checkDailyEventBit(0x41)) {
-        func_800CB0C4();
+        updateHorseRaceContext();
         toggleDailyEventBit(0x40);
         gCutsceneIndex = HORSE_RACE_STARTING_ANNOUNCEMENT;
         loadCutscene(0);
@@ -3415,7 +3405,7 @@ u16 setRaceTrackCutscenes(void) {
 
     if (!set) {
         if (checkDailyEventBit(0x40) && checkDailyEventBit(0x42)) {
-            func_800CB8F0();
+            updateDogRaceContext();
             toggleDailyEventBit(0x40);
             gCutsceneIndex = DOG_RACE_AFTER_RACE;
             loadCutscene(0);
@@ -3426,7 +3416,7 @@ u16 setRaceTrackCutscenes(void) {
 
     if (!set) { 
         if (gSeason == SPRING && gDayOfMonth == 17 && (7 < gHour && gHour < 18)) {
-            func_800CB0C4();
+            updateHorseRaceContext();
             gCutsceneIndex = HORSE_RACE_STARTING_ANNOUNCEMENT;
             loadCutscene(0);
             set = TRUE;
@@ -3436,7 +3426,7 @@ u16 setRaceTrackCutscenes(void) {
     
     if (!set) { 
         if (gSeason == AUTUMN && gDayOfMonth == 28 && (7 < gHour && gHour < 18)) {
-            func_800CB0C4();
+            updateHorseRaceContext();
             gCutsceneIndex = HORSE_RACE_STARTING_ANNOUNCEMENT;
             loadCutscene(0);
             set = TRUE;
@@ -3446,7 +3436,7 @@ u16 setRaceTrackCutscenes(void) {
 
     if (!set) { 
         if (gSeason == WINTER && gDayOfMonth == 19 && (7 < gHour && gHour < 18)) {
-            func_800CB8F0();
+            updateDogRaceContext();
             gCutsceneIndex = DOG_RACE_AFTER_RACE;
             loadCutscene(0);
             set = TRUE;
@@ -3473,7 +3463,7 @@ u16 setBeachCutscenes(void) {
     }
 
     if (!set) {
-        if (gSeason == SUMMER && gDayOfMonth == 24 && DAYTIME) {
+        if (gSeason == SUMMER && gDayOfMonth == 24 && (5 < gHour && gHour < 18)) {
             gCutsceneIndex = SEA_FESTIVAL;
             loadCutscene(0);
             set = TRUE;
@@ -3491,7 +3481,7 @@ u16 setBeachCutscenes(void) {
     }
     
     if (!set) {
-        if (!checkDailyEventBit(KAREN_MARRIAGE_CUTSCENE) && gSeason == WINTER && gDayOfMonth == 10 && DAYTIME && NOT_MARRIED) {
+        if (!checkDailyEventBit(KAREN_MARRIAGE_CUTSCENE) && gSeason == WINTER && gDayOfMonth == 10 && (5 < gHour && gHour < 18) && NOT_MARRIED) {
             setDailyEventBit(KAREN_MARRIAGE_CUTSCENE);
             gCutsceneIndex = 0x2F1;
             loadCutscene(0);
@@ -3510,7 +3500,7 @@ u16 setBeachCutscenes(void) {
     }
     
     if (!set) {
-        if (!checkLifeEventBit(0xCA) && npcAffection[KAREN] < 101 && DAYTIME && (gYear >= 3 || (gYear == 2 && gSeason == WINTER)) && (NOT_MARRIED || gWife != KAREN) && !checkLifeEventBit(KAREN_KAI_MARRIED) && gFlowerFestivalGoddess != 4) {
+        if (!checkLifeEventBit(0xCA) && npcAffection[KAREN] < 101 && (5 < gHour && gHour < 18) && (gYear >= 3 || (gYear == 2 && gSeason == WINTER)) && (NOT_MARRIED || gWife != KAREN) && !checkLifeEventBit(KAREN_KAI_MARRIED) && gFlowerFestivalGoddess != 4) {
             setLifeEventBit(0xCA);
             setLifeEventBit(0x2F);
             setSpecialDialogueBit(0x23);
@@ -3522,7 +3512,7 @@ u16 setBeachCutscenes(void) {
     }
 
     if (!set) {
-        if (!checkLifeEventBit(KAREN_AND_ELLI_BEACH_CUTSCENE) && npcAffection[ELLI] >= 150 && npcAffection[KAREN] >= 150 && gWeather == SUNNY && gSeason == SUMMER && DAYTIME && (NOT_MARRIED || gWife != KAREN) && !checkLifeEventBit(KAREN_KAI_MARRIED)) {
+        if (!checkLifeEventBit(KAREN_AND_ELLI_BEACH_CUTSCENE) && npcAffection[ELLI] >= 150 && npcAffection[KAREN] >= 150 && gWeather == SUNNY && gSeason == SUMMER && (5 < gHour && gHour < 18) && (NOT_MARRIED || gWife != KAREN) && !checkLifeEventBit(KAREN_KAI_MARRIED)) {
             setLifeEventBit(KAREN_AND_ELLI_BEACH_CUTSCENE);
             gCutsceneIndex = KAREN_AND_ELLI;
             gCutsceneFlags |= (2 | 4);
@@ -3560,7 +3550,7 @@ u16 setRoadCutscenes(void) {
     bool set = FALSE;
     u16 index = 0xFFFF;
 
-    if (!checkLifeEventBit(0xCC) && npcAffection[CLIFF] >= 200 && gSeason == WINTER && DAYTIME && (!checkLifeEventBit(MARRIED) || gWife != ANN) && !checkLifeEventBit(ANN_CLIFF_MARRIED) && previousMapIndex == 0x52) {
+    if (!checkLifeEventBit(0xCC) && npcAffection[CLIFF] >= 200 && gSeason == WINTER && (5 < gHour && gHour < 18) && (!checkLifeEventBit(MARRIED) || gWife != ANN) && !checkLifeEventBit(ANN_CLIFF_MARRIED) && previousMapIndex == 0x52) {
         setLifeEventBit(0xCC);
         gCutsceneIndex = 0x320;
         gCutsceneFlags |= (2 | 4);
@@ -3569,7 +3559,7 @@ u16 setRoadCutscenes(void) {
     }
 
     if (!set) {
-        if (!checkLifeEventBit(0xCD) && bakeryCardPoints >= 6 && npcAffection[ANN] >= 150 && DAYTIME && NOT_MARRIED && !checkLifeEventBit(ANN_CLIFF_MARRIED) && previousMapIndex == RANCH) {
+        if (!checkLifeEventBit(0xCD) && bakeryCardPoints >= 6 && npcAffection[ANN] >= 150 && (5 < gHour && gHour < 18) && NOT_MARRIED && !checkLifeEventBit(ANN_CLIFF_MARRIED) && previousMapIndex == RANCH) {
             setLifeEventBit(0xCD);
             gCutsceneIndex = 0x321;
             gCutsceneFlags |= (2 | 4);
@@ -3579,7 +3569,7 @@ u16 setRoadCutscenes(void) {
     }
 
     if (!set) {
-        if (!checkLifeEventBit(SHADY_SALESMAN_MARIA_CUTSCENE) && checkLifeEventBit(0xB6) && DAYTIME) {
+        if (!checkLifeEventBit(SHADY_SALESMAN_MARIA_CUTSCENE) && checkLifeEventBit(0xB6) && (5 < gHour && gHour < 18)) {
 
             if (previousMapIndex == VILLAGE_1) {
                 setLifeEventBit(SHADY_SALESMAN_MARIA_CUTSCENE);
@@ -3600,7 +3590,7 @@ u16 setRoadCutscenes(void) {
     }
 
     if (!set) {
-        if (!checkLifeEventBit(ANN_SPRAINED_ANKLE_CUTSCENE) && !checkDailyEventBit(FESTIVAL_DAY_TYPE_2) && npcAffection[ANN] >= 180 && DAYTIME && NOT_MARRIED && !checkLifeEventBit(ANN_CLIFF_MARRIED) && previousMapIndex == FARM) {
+        if (!checkLifeEventBit(ANN_SPRAINED_ANKLE_CUTSCENE) && !checkDailyEventBit(FESTIVAL_DAY_TYPE_2) && npcAffection[ANN] >= 180 && (5 < gHour && gHour < 18) && NOT_MARRIED && !checkLifeEventBit(ANN_CLIFF_MARRIED) && previousMapIndex == FARM) {
             setLifeEventBit(ANN_SPRAINED_ANKLE_CUTSCENE);
             setDailyEventBit(0x59);
             gCutsceneIndex = ANN_SPRAINED_ANKLE;
@@ -3668,7 +3658,7 @@ u16 handleTimedDailyCutscenes(u8 arg0) {
         
         if (!set) {
             
-            if (!checkDailyEventBit(0x1D) && !checkDailyEventBit(0x1E) && gSeason == AUTUMN && gDayOfMonth == 3 && (5 < gHour && gHour < 15) && func_8009B2BC(2)) {
+            if (!checkDailyEventBit(0x1D) && !checkDailyEventBit(0x1E) && gSeason == AUTUMN && gDayOfMonth == 3 && (5 < gHour && gHour < 15) && getTotalFarmAnimalsByType(2)) {
                
                 setDailyEventBit(0x1D);
                 
@@ -3688,15 +3678,12 @@ u16 handleTimedDailyCutscenes(u8 arg0) {
         
         if (!set) {
             if (gBaseMapIndex == FARM) {
-                func_8009C324(1);
+                setFarmVisitCutscenes(1);
             }
         }
         
         if (index != 0xFFFF) {
-
-            // DMA cutscene data
-            func_8009BF90(index);
-
+            initializeCutscene(index);
         }
     }
 
@@ -3729,7 +3716,7 @@ u16 handleEndOfDayCutscenes(void) {
             // sick days
             D_801886E0 = gSickDays;
             // dead animals
-            D_801886A8 = D_8013DC2E;
+            D_801886A8 = deadAnimalCount;
             
             D_801C3E1C = gTotalCropsShipped + gTotalMilkShipped + gTotalEggsShipped;
             
@@ -3742,9 +3729,9 @@ u16 handleEndOfDayCutscenes(void) {
             D_80189824 = calculateShippingScore();
             
             // animals
-            D_80205209 = func_8009B3DC();
-            D_801D62C6 = func_8009B4EC();
-            D_801886D0 = func_8009B564();
+            D_80205209 = getTotalCowsCount();
+            D_801D62C6 = getTotalSheepCount();
+            D_801886D0 = getTotalChickenCount();
 
             // recipes sum
             D_80188F68 = getAcquiredRecipesTotal();
@@ -3878,7 +3865,7 @@ u16 handleEndOfDayCutscenes(void) {
             loadCutscene(0);
             gCutsceneFlags |= (2 | 4);
             set = TRUE;
-            D_8013DC2E += adjustValue(D_8013DC2E, 1, 999);
+            deadAnimalCount += adjustValue(deadAnimalCount, 1, 999);
 
         }
 
@@ -4000,11 +3987,11 @@ u16 handleEndOfDayCutscenes(void) {
     }
 
     if (set == 1) {
-        // take care of all animals
-        func_80087D5C();
+        feedAllAnimals();
     }
 
     return result;
+
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/cutscenes", setDreamCutscenes);
@@ -4135,33 +4122,33 @@ void handleCutsceneCompletion(void) {
                     toggleDailyEventBit(1);
                 
                     // switch on acquired animal
-                    switch (D_801C4216) {               
+                    switch (selectedAnimalType) {               
 
-                        case 0:                             
+                        case DOG_TYPE:                             
                             gNamingScreenIndex = 2;
                             break;
                         
-                        case 1:                             
+                        case HORSE_TYPE:                             
                             setLifeEventBit(0x3A);
                             gNamingScreenIndex = 3;
                             break;
-                        case 2:                             
+
+                        case COW_TYPE:                             
                             setLifeEventBit(0x36);
                             gNamingScreenIndex = 5;
-                            D_801FC155 = initializeNewFarmAnimal(1, 0);
+                            gSelectedAnimalIndex = initializeNewFarmAnimal(1, 0);
                             break;
                             
-                        case 3:                             
+                        case SHEEP_TYPE:                             
                             setLifeEventBit(0x34);
                             gNamingScreenIndex = 6;
-                            D_801FC155 = initializeNewFarmAnimal(4, 0);
+                            gSelectedAnimalIndex = initializeNewFarmAnimal(4, 0);
                             break;
 
-                        case 4:                             
+                        case CHICKEN_TYPE:                             
                             setLifeEventBit(0x32);
                             gNamingScreenIndex = 7;
-                            // initialize chicken
-                            D_801FC155 = initializeNewChicken(2, 0xFF);
+                            gSelectedAnimalIndex = initializeNewChicken(2, 0xFF);
                             break;
 
                         default:
@@ -4169,7 +4156,7 @@ void handleCutsceneCompletion(void) {
                         
                     }
                     
-                    func_8005C940(1, NAMING_SCREEN);
+                    handleExitLevel(1, NAMING_SCREEN);
                     break;
 
                 case 7:
@@ -4178,12 +4165,12 @@ void handleCutsceneCompletion(void) {
                     switch (gCutsceneIndex) {
 
                         case 0xAA:
-                            func_8009B6B8();
-                            func_8009B6B8();
-                            func_8009B6B8();
-                            func_8009B6B8();
-                            func_8009B6B8();
-                            func_8009B6B8();
+                            handleHatchChicken();
+                            handleHatchChicken();
+                            handleHatchChicken();
+                            handleHatchChicken();
+                            handleHatchChicken();
+                            handleHatchChicken();
                             break;    
                         
                         case 0x71:
@@ -4271,7 +4258,7 @@ void handleCutsceneCompletion(void) {
                         case 0x20:                          
                             if (gHour >= 6) {
                                 gNamingScreenIndex = 4;
-                                func_8005C940(1, NAMING_SCREEN);
+                                handleExitLevel(1, NAMING_SCREEN);
                             } else {
                                 setMainLoopCallbackFunctionIndex(END_OF_DAY_1);                             
                             }
@@ -4374,7 +4361,7 @@ void handleCutsceneCompletion(void) {
                         case RANCH_GET_HORSE:                         
                         case 0x299:                         
                             gNamingScreenIndex = 3;
-                            func_8005C940(1, NAMING_SCREEN);
+                            handleExitLevel(1, NAMING_SCREEN);
                             setLifeEventBit(HAVE_HORSE);
                             break;
                         case 0x28B:                         
@@ -4556,18 +4543,18 @@ void handleCutsceneCompletion(void) {
 
                         case 0x386 ... 0x387:
 
-                            if (overlayScreenStrings.unk_6D == overlayScreenStrings.unk_6C) {
+                            if (gRacingContext.playerRaceNumber == gRacingContext.currentRaceIndex) {
                                 
-                                if (((D_8018A72C[2] - 1) == 2) && horseInfo.unk_1E >= 3) {
-                                    horseInfo.unk_1E = 2;
+                                if (((gRaceFinishOrder[2] - 1) == 2) && horseInfo.bestRacePlacement >= 3) {
+                                    horseInfo.bestRacePlacement = 2;
                                 }
                                 
-                                if (((D_8018A72C[1] - 1) == 2) && horseInfo.unk_1E >= 2) {
-                                    horseInfo.unk_1E = 1;
+                                if (((gRaceFinishOrder[1] - 1) == 2) && horseInfo.bestRacePlacement >= 2) {
+                                    horseInfo.bestRacePlacement = 1;
                                 }
                                 
-                                if ((D_8018A72C[0] - 1) == 2 && horseInfo.unk_1E) {
-                                    horseInfo.unk_1E = 0;
+                                if ((gRaceFinishOrder[0] - 1) == 2 && horseInfo.bestRacePlacement) {
+                                    horseInfo.bestRacePlacement = 0;
                                 }
      
                             }
@@ -4603,7 +4590,7 @@ void handleCutsceneCompletion(void) {
                 
                 case 24:   
                     if (checkLifeEventBit(0x91)) {
-                        gFarmAnimals[D_80189054].milkType = D_80180710;
+                        gFarmAnimals[gCowFestivalEnteredCowIndex].milkType = D_80180710;
                     }
                     setMainLoopCallbackFunctionIndex(END_OF_FESTIVAL_DAY_1);
                     break;
@@ -4620,18 +4607,18 @@ void handleCutsceneCompletion(void) {
                     
                     if (gCutsceneIndex == 0x516) {
                         
-                        if (overlayScreenStrings.unk_6D == overlayScreenStrings.unk_6C) {
+                        if (gRacingContext.playerRaceNumber == gRacingContext.currentRaceIndex) {
                             
-                            if (D_8018A72C[2] == 1 && dogInfo.unk_1C >= 3) {
-                                dogInfo.unk_1C = 2;
+                            if (gRaceFinishOrder[2] == 1 && dogInfo.bestRacePlacement >= 3) {
+                                dogInfo.bestRacePlacement = 2;
                             }
                             
-                            if (D_8018A72C[1] == 1 && dogInfo.unk_1C >= 2) {
-                                dogInfo.unk_1C = 1;
+                            if (gRaceFinishOrder[1] == 1 && dogInfo.bestRacePlacement >= 2) {
+                                dogInfo.bestRacePlacement = 1;
                             }
                             
-                            if (D_8018A72C[0] == 1 && dogInfo.unk_1C) {
-                                dogInfo.unk_1C = 0;
+                            if (gRaceFinishOrder[0] == 1 && dogInfo.bestRacePlacement) {
+                                dogInfo.bestRacePlacement = 0;
                             }
 
                         }
@@ -4665,7 +4652,7 @@ void handleCutsceneCompletion(void) {
                             // show pink overlay message
                             showPinkOverlayText(23);
                         } else {
-                            func_80055F08(0x5AA, 0x61, 1);
+                            launchIntroCutscene(0x5AA, 0x61, 1);
 
                         }
                     }
@@ -4674,10 +4661,10 @@ void handleCutsceneCompletion(void) {
                 
                 case 32:
                     if (gCutsceneIndex == DEMO_CUTSCENE_2) {
-                        func_80055F08(0x5DE, 0x1A, 1);
+                        launchIntroCutscene(0x5DE, 0x1A, 1);
                     } else {
                         memcpy(farmFieldTiles, D_80113580, FIELD_HEIGHT * FIELD_WIDTH);
-                        func_80055F08(0x5AA, 0x61, 1);
+                        launchIntroCutscene(0x5AA, 0x61, 1);
                     }
                     break;
 
@@ -4896,6 +4883,7 @@ void handleCutsceneCompletion(void) {
                         break;
 
                     case 0x15A:     
+                        // set cutscene wild card/score variables
                         D_801886D2 = getRandomNumberInRange(0, 9);
                         D_80180710 = getRandomNumberInRange(0, 9);
                         clearForagableObjects(MINE_2);
@@ -4911,6 +4899,7 @@ void handleCutsceneCompletion(void) {
                         } else {
     
                             if (D_80189824 < 0xA) {
+                                // set cutscene wild card/score variables
                                 D_801886D2 = getRandomNumberInRange(0, 9);
                                 D_80180710 = getRandomNumberInRange(0, 9);
                             } else {
@@ -5072,8 +5061,9 @@ void handleCutsceneCompletion(void) {
                             transitionCutscenes(0x388, 0x61);
                         } else {
 
-                            if (overlayScreenStrings.unk_6D == overlayScreenStrings.unk_6C) {
+                            if (gRacingContext.playerRaceNumber == gRacingContext.currentRaceIndex) {
                                 gCutsceneIndex = 0x387;
+                                // set cutscene wild card/score variables
                                 D_80189824 = horseInfo.affection;
                                 D_801886D2 = (horseInfo.affection / 3) * 2;
                                 D_80180710 = horseInfo.affection / 3;
@@ -5107,12 +5097,12 @@ void handleCutsceneCompletion(void) {
                         if (gHour >= 17) {
                             transitionCutscenes(0x517, 0x61);
                         } else {
-                            if (overlayScreenStrings.unk_6D == overlayScreenStrings.unk_6C) {
+                            if (gRacingContext.playerRaceNumber == gRacingContext.currentRaceIndex) {
                                 D_801C3F78 |= 0x20;
                             } else {
                                 D_801C3F78 &= ~0x20;
                             }
-                            if (overlayScreenStrings.unk_6E == overlayScreenStrings.unk_6C) {
+                            if (gRacingContext.unk_6E == gRacingContext.currentRaceIndex) {
                                 D_801C3F78 |= 0x40;
                             } else {
                                 D_801C3F78 &= ~0x40;
@@ -5128,7 +5118,7 @@ void handleCutsceneCompletion(void) {
                     case 0x516:
                         setupPlayerEntity(0x6C, 1);
                         handlePlayerAnimation();
-                        setEntitiesColor(0, 0, 0, 0);
+                        setEntitiesRGBA(0, 0, 0, 0);
                         setEntrance(0x6C);
                         gCutsceneIndex = 0x515;
                         loadCutscene(0);
@@ -5282,10 +5272,10 @@ void handleCutsceneCompletion(void) {
 
                 if (gCutsceneIndex != 0xFFFF) {
                     f32 temp = 0.0f;
-                    unknownRGBA.a = temp;
-                    unknownRGBA.b = temp;
-                    unknownRGBA.g = temp;
-                    unknownRGBA.r = temp;
+                    previousLightingRGBA.a = temp;
+                    previousLightingRGBA.b = temp;
+                    previousLightingRGBA.g = temp;
+                    previousLightingRGBA.r = temp;
                     setMainLoopCallbackFunctionIndex(SET_AUDIO_AND_LIGHTING);
                 }
                 
@@ -5309,8 +5299,8 @@ void handleCutsceneCompletion(void) {
 
         // FIXME: struct addressesing needs to be fixed
         if (gCutsceneCompletionFlags & 4) {
-            setGameVariableString(0x28, overlayScreenStrings.unk_6.strings[D_8018A72C[0]], 6);
-            setGameVariableString(0x29, overlayScreenStrings.unk_6.strings[D_8018A72C[1]], 6);
+            setGameVariableString(0x28, gRacingContext.oddsAndNames.racerNameLookup[gRaceFinishOrder[0]], 6);
+            setGameVariableString(0x29, gRacingContext.oddsAndNames.racerNameLookup[gRaceFinishOrder[1]], 6);
             gCutsceneCompletionFlags &= ~4;
         }
 
@@ -5395,6 +5385,7 @@ void handleCutsceneCompletion(void) {
         }
 
         // mining
+        // might be its own inline func
         if ((gCutsceneCompletionFlags & 0x4000000) && (151 < entities[ENTITY_PLAYER].animationIndices.animationIndex && entities[ENTITY_PLAYER].animationIndices.animationIndex < 176)) {
 
             s16 tempX, tempZ;
@@ -5561,7 +5552,7 @@ void handleCutsceneCompletion(void) {
         }
 
         if ((gCutsceneCompletionFlags & 0x8000000) && gItemBeingHeld < 252) {
-            func_80065AA0();
+            initializePlayerHeldItem();
         }
 
         gCutsceneCompletionFlags &= ~0x8000000;
@@ -5601,7 +5592,7 @@ void handleCutsceneCompletion(void) {
 
         if (checkDailyEventBit(0x2A)) {
             toggleDailyEventBit(0x2A);
-            func_8008634C(5);
+            adjustAllAnimalAffection(5);
         }
 
         if (gCutsceneCompletionFlags & 0x8000) {
@@ -5616,17 +5607,18 @@ void handleCutsceneCompletion(void) {
         }
 
         if (gCutsceneFlags & 0x10) {
+            // deactivate animal entities
             func_8008779C();
             gCutsceneFlags &= ~0x10;
         }
 
         if (gCutsceneCompletionFlags & 0x10000000) {
-            // initialize animal entities
             initializeAnimalEntities();
             gCutsceneCompletionFlags &= ~0x10000000;
         }
 
         if (gCutsceneCompletionFlags & 0x20000000) {
+            // deactivate animal entities
             func_8008779C();
             gCutsceneCompletionFlags &= ~0x20000000;
         }
@@ -5636,7 +5628,7 @@ void handleCutsceneCompletion(void) {
         if (checkLifeEventBit(0x4B)) {
             toggleLifeEventBit(0x4B);
             acquireKeyItem(MARBLES);
-            func_800DC1E8();
+            removePinkCatMintFlowerFromFarm();
         }
         
         if (checkLifeEventBit(0x82)) {
@@ -5700,19 +5692,19 @@ void loadCutscene(u8 arg0) {
     if (gCutsceneIndex >= 0x640) {
         
         gCameraRotationOffset = 0;
-        setInitialMapRotation(MAIN_MAP_INDEX, 7);
+        setInitialMapRotation(MAIN_MAP_INDEX, SOUTH);
         bytecodeSegmentIndex = 35;
         
     } else if (gCutsceneIndex >= 0x60E) {
     
         gCameraRotationOffset = 0;
-        setInitialMapRotation(MAIN_MAP_INDEX, 7);
+        setInitialMapRotation(MAIN_MAP_INDEX, SOUTH);
         bytecodeSegmentIndex = 31;        
     
     } else if (gCutsceneIndex >= 0x5DC) {
              
         gCameraRotationOffset = 0;
-        setInitialMapRotation(MAIN_MAP_INDEX, 7);
+        setInitialMapRotation(MAIN_MAP_INDEX, SOUTH);
 
         memcpy(farmFieldTiles, D_80114E50, FIELD_HEIGHT * FIELD_WIDTH);
 
@@ -5721,7 +5713,7 @@ void loadCutscene(u8 arg0) {
     } else if (gCutsceneIndex >= 0x5AA) {
         
         gCameraRotationOffset = 0;
-        setInitialMapRotation(MAIN_MAP_INDEX, 7);
+        setInitialMapRotation(MAIN_MAP_INDEX, SOUTH);
         
         gSeason = SPRING;
 
@@ -5789,11 +5781,11 @@ void loadCutscene(u8 arg0) {
 
                 case 0xDC:
                     gCameraRotationOffset = 0;
-                    setInitialMapRotation(MAIN_MAP_INDEX, 7);
+                    setInitialMapRotation(MAIN_MAP_INDEX, SOUTH);
                     break;
                 case 0xE4 ... 0xEE:
                     gCameraRotationOffset = 0;
-                    setInitialMapRotation(MAIN_MAP_INDEX, 7);
+                    setInitialMapRotation(MAIN_MAP_INDEX, SOUTH);
                     break;
                 default:
                     break;
@@ -5808,7 +5800,7 @@ void loadCutscene(u8 arg0) {
         
         if (gCutsceneIndex == 0x27) {
             gCameraRotationOffset = 0;
-            setInitialMapRotation(MAIN_MAP_INDEX, 7);
+            setInitialMapRotation(MAIN_MAP_INDEX, SOUTH);
         } 
         
     }

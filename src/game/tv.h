@@ -3,7 +3,7 @@
 
 #include "common.h"
 
-extern void func_800D8540(void);
+extern void initializeTVAssets(void);
 extern void incrementVarietyShowCounter(void); 
 extern void tvMainLoopCallback(void);
 

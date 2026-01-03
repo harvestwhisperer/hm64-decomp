@@ -3,7 +3,6 @@
 
 #include "common.h"
 
-// TODO: finish adding these
 /* main loop callback function indices */
 #define NO_OP 0
 #define MAIN_GAME 1
@@ -132,7 +131,7 @@ raceGiftsScreenCallback
 lotteryScreenCallback 
 titleScreenMainLoopCallback
 loadNamingScreenCallback 
-func_800ED974 
+namingScreenCallback
 gameSelectCallback 
 farmRankingScreenCallback 
 func_800657B4 
